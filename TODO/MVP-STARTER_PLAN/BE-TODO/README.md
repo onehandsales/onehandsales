@@ -1,12 +1,12 @@
-# BE-TODO
+# BE TODO
 
 ## 1. 목적
 
-이 폴더는 `BE` NestJS 서버 구현 작업을 상세하게 정리한다.
+이 문서는 `BE` NestJS 서버 구현 작업의 공통 기준을 정리한다.
 
 Backend는 MVP에서 하나의 배포 단위지만 User API와 Admin API를 명확히 분리한다. 모든 비즈니스 도메인은 DDD와 Clean Architecture 기준으로 `domain`, `application`, `infrastructure`, `presentation` 계층을 가진다.
 
-## 2. 문서 구성
+## 2. 관련 문서
 
 - `API-TODO.md`: Backend 모듈과 API 작업 목록
 - `DB-SCHEMA.md`: MVP에 필요한 DB 스키마 초안

@@ -1,8 +1,8 @@
-# FE-TODO
+# FE TODO
 
 ## 1. 목적
 
-이 폴더는 `FE/user-web`과 `FE/admin-web` 구현 작업을 상세하게 나눈다.
+이 문서는 `FE/user-web`과 `FE/admin-web` 구현 작업의 공통 기준을 정리한다.
 
 두 앱은 같은 제품과 Backend를 사용하지만 목적이 다르다. User Web은 개인 영업자의 빠른 업무 흐름을 우선하고, Admin Web은 운영자 조회, 감사, 민감정보 보호를 우선한다.
 
@@ -18,7 +18,7 @@
 - 아이콘은 가능한 lucide-react를 사용한다.
 - API client는 각 앱 내부 `src/shared/api`에 둔다.
 
-## 3. 문서 구성
+## 3. 관련 문서
 
 - `USER-WEB-TODO.md`: 사용자 앱 구현 작업
 - `ADMIN-WEB-TODO.md`: Admin 앱 구현 작업
