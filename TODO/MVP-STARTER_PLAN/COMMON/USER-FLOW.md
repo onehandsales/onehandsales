@@ -113,7 +113,7 @@
 ### Backend 처리
 
 - 이미지 업로드 파일 검증
-- Supabase Storage 또는 선택한 저장소에 이미지 저장
+- 선택한 Storage adapter에 이미지 저장. Supabase Storage는 MVP 1차 범위에서 제외한다.
 - OpenAI OCR port 호출
 - OCR 결과 정규화
 - 기존 회사 후보 검색

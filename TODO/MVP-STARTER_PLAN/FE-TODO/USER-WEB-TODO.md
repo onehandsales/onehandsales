@@ -125,11 +125,12 @@ src/shared/api/
 
 ### 기능
 
-- 카카오 로그인 버튼
-- 구글 로그인 버튼
-- 네이버 로그인 버튼
-- 애플 로그인 버튼
-- 로그인 callback 처리
+- Supabase Auth 기반 카카오 로그인 버튼
+- Supabase Auth 기반 구글 로그인 버튼
+- Supabase Auth 기반 네이버 로그인 버튼
+- Supabase Auth 기반 애플 로그인 버튼
+- Supabase Auth callback 처리
+- 로그인 성공 후 `POST /api/auth/sync` 호출
 - 로그인 실패 메시지
 - 보호 라우트
 - 로그아웃
@@ -139,6 +140,8 @@ src/shared/api/
 - `features/auth/api` 작성
 - `features/auth/hooks` 작성
 - `features/auth/components` 작성
+- Supabase Auth client 초기화
+- Backend API client에 Supabase access token 전달
 - auth query key 정의
 - 로그인 후 `/` 이동
 - 비로그인 사용자가 protected route 접근 시 `/login` 이동
@@ -147,6 +150,7 @@ src/shared/api/
 
 - 로그인 상태에 따라 route 접근이 제어된다.
 - 로그인 UI는 소셜 provider가 명확히 구분된다.
+- 로그인 성공 후 local User 동기화가 완료된다.
 - 인증 실패 시 사용자가 다시 시도할 수 있다.
 
 ## 5. 홈 딜 파이프라인

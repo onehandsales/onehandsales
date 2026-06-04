@@ -23,6 +23,7 @@
 - `AGENT/PM_AGENT/CONVENTION/PLANNING_REVIEW_CHECKLIST.md`
 - `AGENT/PM_AGENT/DECISIONS/018_todo_common_contract_structure.md`
 - `AGENT/PM_AGENT/DECISIONS/019_agent_based_planning_review.md`
+- `AGENT/PM_AGENT/DECISIONS/020_todo_execution_plan_standard.md`
 - `AGENT/SOFTWARE_AGENT/ARCHITECTURE/BACKEND.md`
 - `AGENT/SOFTWARE_AGENT/CONVENTION/BACKEND.md`
 - `AGENT/SOFTWARE_AGENT/ARCHITECTURE/FRONTEND_USER_WEB.md`
@@ -35,6 +36,14 @@
 | 등급 | 문서 | 문제 | 영향 | 권장 조치 |
 |---|---|---|---|---|
 | Major | `COMMON/GOAL-WORK-ORDER.md` | G00 운영 결정이 실제 구현 전 선행되어야 한다. | G01 이후 스캐폴딩에서 package manager, Node 버전, local DB 방식이 흔들릴 수 있다. | 첫 `/goal`은 반드시 G00으로 실행한다. |
+| Resolved | `COMMON/G00-DECISIONS.md` | G00이 기술 결정만 다루는지 API/DB 정책까지 다루는지 불명확했다. | G01 이후 구현자가 삭제 정책, 인증/session, 민감정보, Import/Export 정책을 임의로 선택할 수 있었다. | G00 범위를 기술/API/DB/운영 정책 확정으로 확장했다. |
+| Resolved | `COMMON/G00-DECISIONS.md` | package manager가 확정되지 않았다. | FE/BE 스캐폴딩 명령과 lockfile 기준이 흔들릴 수 있었다. | package manager를 `pnpm`으로 확정했다. |
+| Resolved | `COMMON/G00-DECISIONS.md` | Node.js 버전이 확정되지 않았다. | 개발자 PC, CI, 배포 환경에서 설치/빌드 결과가 달라질 수 있었다. | Node.js 버전을 `Node.js 24 LTS`로 확정했다. |
+| Resolved | `COMMON/G00-DECISIONS.md` | local DB 실행 방식이 확정되지 않았다. | Prisma migration, seed, local test 기준이 개발자마다 달라질 수 있었다. | local DB 실행 방식을 `Docker PostgreSQL`로 확정했다. |
+| Resolved | `COMMON/G00-DECISIONS.md` | PostgreSQL Docker image version이 확정되지 않았다. | local migration과 seed 검증 기준이 PostgreSQL major version에 따라 달라질 수 있었다. | PostgreSQL Docker image version을 `postgres:17-alpine`으로 확정했다. |
+| Resolved | `COMMON/G00-DECISIONS.md` | local DB 이름, 계정, 포트, 테스트 DB 분리 여부가 확정되지 않았다. | `.env.example`, Docker Compose, Prisma test 실행 기준이 흔들릴 수 있었다. | `sales_b2c_dev`, `sales_b2c_test`, user `sales_b2c`, password `sales_b2c_password`, port `5432`로 확정했다. |
+| Resolved | `COMMON/G00-DECISIONS.md` | Supabase 사용 범위와 인증 1차 전략이 확정되지 않았다. | Backend가 OAuth callback/token 발급을 직접 구현할지, Supabase Auth를 검증할지 API 계약이 흔들릴 수 있었다. | MVP 1차에서는 Supabase `Auth`만 사용하고 Backend는 Supabase JWT 검증과 local User 동기화를 수행한다. |
+| Resolved | `COMMON/G00-DECISIONS.md` | Supabase Auth 개발 환경이 확정되지 않았다. | Supabase local Auth와 remote Supabase project 중 무엇을 기준으로 `.env.example`, redirect URL, JWT 검증을 작성할지 흔들릴 수 있었다. | 개발용 `Remote Supabase project`를 사용한다. |
 | Minor | `BE-TODO/API-TODO.md` | 기존 문서는 API 계약보다 Backend 작업 목록 성격이 강하다. | 구현자는 API 계약을 `COMMON/API-SPEC`에서 확인해야 한다. | `BE-TODO/API-TODO.md`는 Backend 구현 TODO로 유지하고, 상세 API 계약은 `COMMON/API-SPEC`을 정본으로 본다. |
 | Resolved | `COMMON/API-SPEC/*-ENDPOINT-CONTRACT.md` | G06 이후 API의 business flow, DB, transaction, error 기준이 도메인 단위로 묶여 있었다. | 구현자가 API별 처리 기준을 추론할 여지가 있었다. | 엔드포인트별 구현 계약 문서를 추가했고 실제 구현 시 해당 문서를 상세 계약 정본으로 본다. |
 | Resolved | `COMMON/GOAL-SPECS/*` | 일부 goal 상세 명세의 API 연결이 요약 API 문서만 가리켰다. | `/goal` 실행자가 엔드포인트별 구현 계약을 놓칠 수 있었다. | Backend/API가 포함된 goal에 `*-ENDPOINT-CONTRACT.md` 링크를 추가했다. |
@@ -53,15 +62,20 @@
 
 ## 5. 사용자의 결정이 필요한 질문
 
-현재 추가 질문 없이 문서 기준 작업은 진행할 수 있다.
+G00은 문서 기준으로 진행할 수 있지만, G01 이후 구현을 시작하기 전에는 아래 운영 결정이 모두 확정되어야 한다.
 
-단, 실제 구현을 시작하는 첫 goal인 G00에서는 다음 운영 결정이 문서로 확정되어야 한다.
-
-- package manager
-- Node 버전
-- local DB 실행 방식
-- Supabase 사용 방식
-- 인증 구현 1차 전략
+- package manager: `pnpm`으로 확정됨
+- Node 버전: `Node.js 24 LTS`로 확정됨
+- local DB 실행 방식: `Docker PostgreSQL`로 확정됨
+- PostgreSQL Docker image version: `postgres:17-alpine`으로 확정됨
+- local DB 세부값: `sales_b2c_dev`, `sales_b2c_test`, user `sales_b2c`, password `sales_b2c_password`, port `5432`로 확정됨
+- Supabase 사용 방식: MVP 1차에서는 `Auth`만 사용하고 business DB는 Docker PostgreSQL/Prisma로 확정됨
+- Supabase Auth 개발 환경: 개발용 `Remote Supabase project` 사용으로 확정됨
+- 인증 구현 1차 전략: `Supabase Auth 중심 + Backend Supabase JWT 검증 + local User 동기화`로 확정됨
+- FE token 전달/보관 방식
+- 삭제/복구/휴지통 정책
+- 민감정보 저장/암호화/Admin masking 정책
+- Import/Export와 외부 provider mock 범위
 - `.env.example` 변수 목록
 
 ## 6. 구현 가능 여부

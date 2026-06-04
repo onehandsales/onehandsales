@@ -13,6 +13,8 @@ MVP-STARTER_PLAN/
   README.md
   COMMON/
     README.md
+    G00-DECISIONS.md
+    G00-PENDING-QUESTIONS.md
     USER-FLOW.md
     GOAL-WORK-ORDER.md
     PLANNING-REVIEW.md
@@ -36,6 +38,8 @@ MVP-STARTER_PLAN/
 - FE와 BE는 같은 계획 폴더 안에서 나누어 관리한다.
 - 실제 구현은 `COMMON/GOAL-WORK-ORDER.md`의 작업 단위 순서대로 나누어 진행한다.
 - 한 번의 `/goal`에는 하나의 작업 단위만 넣는다.
+- G00에서 확정한 구현 전 결정은 `COMMON/G00-DECISIONS.md`에 기록한다.
+- G00에서 아직 확정하지 않은 질문은 `COMMON/G00-PENDING-QUESTIONS.md`에 기록하고, 이후 하나씩 확정한다.
 - API 명세는 `COMMON/API-SPEC`에 둔다. 구현 시에는 API 요약 문서와 `*-ENDPOINT-CONTRACT.md`를 함께 본다.
 - 각 `/goal`별 화면/API/DB 추적 명세는 `COMMON/GOAL-SPECS`에 둔다.
 - DB 스키마는 `BE-TODO/DB-SCHEMA.md`에 둔다.
@@ -71,10 +75,13 @@ MVP-STARTER_PLAN/
 - `AGENT/PM_AGENT/CONVENTION/DOCUMENTATION.md`
 - `AGENT/PM_AGENT/CONVENTION/PLANNING_REVIEW_CHECKLIST.md`
 - `AGENT/PM_AGENT/DECISIONS/018_todo_common_contract_structure.md`
+- `AGENT/PM_AGENT/DECISIONS/020_todo_execution_plan_standard.md`
 
 ## 6. 관련 TODO 문서
 
 - `TODO/MVP-STARTER_PLAN/COMMON/README.md`
+- `TODO/MVP-STARTER_PLAN/COMMON/G00-DECISIONS.md`
+- `TODO/MVP-STARTER_PLAN/COMMON/G00-PENDING-QUESTIONS.md`
 - `TODO/MVP-STARTER_PLAN/COMMON/USER-FLOW.md`
 - `TODO/MVP-STARTER_PLAN/COMMON/GOAL-WORK-ORDER.md`
 - `TODO/MVP-STARTER_PLAN/COMMON/PLANNING-REVIEW.md`

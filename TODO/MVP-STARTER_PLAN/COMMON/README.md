@@ -11,6 +11,8 @@
 ```text
 COMMON/
   README.md
+  G00-DECISIONS.md
+  G00-PENDING-QUESTIONS.md
   USER-FLOW.md
   GOAL-WORK-ORDER.md
   PLANNING-REVIEW.md
@@ -34,6 +36,8 @@ COMMON/
 ## 3. 문서 역할
 
 - `USER-FLOW.md`: 사용자의 실제 업무 흐름과 FE/BE 처리 흐름을 함께 설명한다.
+- `G00-DECISIONS.md`: G00에서 확정하는 기술/API/DB/운영 정책 결정을 기록한다.
+- `G00-PENDING-QUESTIONS.md`: G00에서 아직 확정하지 않은 질문과 선택지, 예시, 추천안을 기록한다.
 - `GOAL-WORK-ORDER.md`: `/goal`로 실행할 작업 순서와 각 goal의 포함/제외/완료 기준을 정의한다.
 - `PLANNING-REVIEW.md`: 구현 전 기획 검토 결과와 남은 보완 항목을 기록한다.
 - `API-SPEC`: FE와 BE가 함께 보는 API 계약 문서를 둔다. 구현 시에는 도메인 API 문서와 해당 `*-ENDPOINT-CONTRACT.md`를 함께 본다.
@@ -42,6 +46,8 @@ COMMON/
 ## 4. 사용 원칙
 
 - 구현 전에는 `PLANNING-REVIEW.md`의 판정을 먼저 확인한다.
+- G01 이후 작업을 시작하기 전에는 `G00-DECISIONS.md`의 확정 결정을 먼저 확인한다.
+- G00 결정이 남아 있으면 `G00-PENDING-QUESTIONS.md`의 질문을 한 번에 하나씩 확정한 뒤 관련 문서에 반영한다.
 - `/goal` 실행 전에는 `GOAL-WORK-ORDER.md`와 `GOAL-SPECS`의 해당 goal을 함께 확인한다.
 - FE 작업자는 화면 명세를 보면서 필요한 API를 `API-SPEC`과 `*-ENDPOINT-CONTRACT.md`에서 확인한다.
 - BE 작업자는 API 명세와 엔드포인트 구현 계약을 보면서 필요한 DB 모델을 `BE-TODO/DB-SCHEMA.md`에서 확인한다.
@@ -50,6 +56,8 @@ COMMON/
 ## 5. 관련 문서
 
 - `TODO/MVP-STARTER_PLAN/README.md`
+- `TODO/MVP-STARTER_PLAN/COMMON/G00-DECISIONS.md`
+- `TODO/MVP-STARTER_PLAN/COMMON/G00-PENDING-QUESTIONS.md`
 - `TODO/MVP-STARTER_PLAN/COMMON/USER-FLOW.md`
 - `TODO/MVP-STARTER_PLAN/COMMON/GOAL-WORK-ORDER.md`
 - `TODO/MVP-STARTER_PLAN/COMMON/API-SPEC/README.md`
@@ -57,3 +65,4 @@ COMMON/
 - `TODO/MVP-STARTER_PLAN/FE-TODO/README.md`
 - `TODO/MVP-STARTER_PLAN/BE-TODO/README.md`
 - `AGENT/PM_AGENT/DECISIONS/018_todo_common_contract_structure.md`
+- `AGENT/PM_AGENT/DECISIONS/020_todo_execution_plan_standard.md`

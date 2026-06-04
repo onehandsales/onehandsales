@@ -67,30 +67,55 @@ P6. 테스트와 릴리즈 준비
 
 목적:
 
-- 실제 스캐폴딩 전에 선택이 필요한 기술 결정을 확정한다.
+- 실제 스캐폴딩 전에 선택이 필요한 기술 결정과 API/DB 정책 결정을 확정한다.
+- G01 이후 구현자가 package manager, 인증/session, 삭제 정책, 민감정보 처리, transaction 기준을 다시 추론하지 않게 한다.
 
 포함 범위:
 
 - 패키지 매니저 결정
+- package manager 의미 정리: Node.js 의존성 설치, lockfile 관리, `dev/build/test` 같은 script 실행을 담당하는 도구다. 후보는 `npm`, `yarn`, `pnpm`이며, `pnpm`은 디스크 효율과 빠른 설치, 엄격한 의존성 관리가 장점인 package manager다.
+- package manager 확정값: `pnpm`
 - Node 버전 결정
+- Node 버전 확정값: `Node.js 24 LTS`
 - 로컬 DB 방식 결정
+- 로컬 DB 방식 확정값: `Docker PostgreSQL`
+- PostgreSQL Docker image version 확정값: `postgres:17-alpine`
+- local DB 세부값 확정값: `sales_b2c_dev`, `sales_b2c_test`, user `sales_b2c`, password `sales_b2c_password`, port `5432`
 - Supabase 사용 방식 결정
+- Supabase 사용 방식 확정값: MVP 1차에서는 `Auth`만 사용하고 business DB는 Docker PostgreSQL/Prisma가 관리한다.
+- Supabase Auth 개발 환경 확정값: 개발용 `Remote Supabase project`를 사용한다.
 - 인증 구현 1차 전략 결정
+- 인증 구현 1차 전략 확정값: `Supabase Auth 중심 + Backend OAuth bridge + httpOnly session cookie + local User 동기화`
+- FE token 전달/보관 방식 결정
+- FE token 전달/보관 방식 확정값: FE는 Supabase access token을 직접 보관하지 않고 Backend httpOnly session cookie를 사용한다.
+- 삭제된 리소스 조회/수정 응답 정책 결정
+- soft delete, restore, hard delete, 휴지통 완전 삭제 정책 결정
+- 개인 메모와 민감정보 저장 위치 결정
+- 민감정보 암호화 adapter 적용 범위 결정
+- Admin masking, 원문 조회, AuditLog transaction 정책 결정
+- Import/Export 처리 방식과 부분 성공 정책 결정
+- Google Calendar, OCR, OpenAI 실연동 또는 mock adapter 범위 결정
+- 일정 기본 조회 기간과 통합검색 기본 정책 결정
 - `.env.example` 기준 변수 목록 정리
 
 제외 범위:
 
 - 실제 앱 생성
 - 실제 DB migration
-- OAuth provider 실연동
+- Supabase Auth provider 실연동
+- 도메인 API 구현
+- 화면 구현
 
 완료 기준:
 
 - 결정 내용이 `AGENT/PM_AGENT/DECISIONS`에 기록된다.
-- 이후 G01, G02, G03 작업자가 선택지를 다시 묻지 않아도 된다.
+- 결정 내용이 `TODO/MVP-STARTER_PLAN/COMMON/G00-DECISIONS.md`에 기록된다.
+- `COMMON/API-SPEC`, `COMMON/GOAL-SPECS`, `BE-TODO/DB-SCHEMA.md`의 미확정 표현이 G00 결정에 맞게 확정 문장으로 정리된다.
+- 이후 G01-G36 작업자가 선택지를 다시 묻지 않아도 된다.
 
 참조 문서:
 
+- `TODO/MVP-STARTER_PLAN/COMMON/G00-DECISIONS.md`
 - `TODO/MVP-STARTER_PLAN/BE-TODO/DB-SCHEMA.md`
 - `TODO/MVP-STARTER_PLAN/COMMON/API-SPEC/README.md`
 - `TODO/MVP-STARTER_PLAN/COMMON/GOAL-SPECS/P0-G00-G04-FOUNDATION.md`
@@ -118,7 +143,7 @@ P6. 테스트와 릴리즈 준비
 
 - 도메인 API 구현
 - Prisma schema 전체 작성
-- OAuth 실제 구현
+- Supabase Auth 연동 구현
 
 완료 기준:
 
@@ -224,21 +249,30 @@ P6. 테스트와 릴리즈 준비
 포함 범위:
 
 - User domain/application 기본 구조
-- AuthGuard 뼈대
+- Supabase Auth redirect/callback port/adapter
+- AuthSession repository
+- httpOnly cookie service
+- CSRF guard
+- AuthGuard
 - CurrentUser decorator
+- `/api/auth/providers`
+- `/api/auth/:provider/start`
+- `/api/auth/callback`
 - `/api/me`
 - `/admin/api/me`
-- AdminGuard 뼈대
-- OAuth 실제 Provider 대신 mock 또는 local 개발용 인증 전략
+- AdminGuard
+- Supabase user와 local User/UserOAuthAccount/UserSetting/AuthSession 동기화
 
 제외 범위:
 
-- Kakao/Google/Naver/Apple 실연동
-- refresh token 고도화
+- Supabase Auth provider 운영 project 설정 고도화
+- refresh token rotation 고도화
 - 권한 관리 UI
 
 완료 기준:
 
+- Backend가 Supabase Auth callback을 처리하고 httpOnly session cookie를 발급할 수 있다.
+- Supabase user가 local User와 동기화되고 AuthSession이 생성된다.
 - User API는 current user context를 받을 수 있다.
 - Admin API는 AdminGuard를 통과해야 접근된다.
 

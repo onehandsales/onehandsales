@@ -32,12 +32,12 @@
 
 | Goal | 구현 관점 | 화면/상태 기준 | API 계약 기준 | DB 기준 |
 |---|---|---|---|---|
-| G00 | 운영 결정 | `P0-G00-G04-FOUNDATION.md`의 G00 화면 명세 | 없음 | package manager, Node, local DB, Supabase, auth, `.env.example` 결정 |
+| G00 | 운영/API/DB 정책 결정 | `P0-G00-G04-FOUNDATION.md`의 G00 화면 명세 | 없음 | `G00-DECISIONS.md` 기준 package manager, Node, local DB, Supabase, auth/session, 삭제/복구, 민감정보, Import/Export, 외부 provider mock, `.env.example` 결정 |
 | G01 | Backend 기반 | health 응답 확인 수준 | `API-SPEC/G01-G05-FOUNDATION-AUTH-API.md` | DB 연결 전 단계 또는 Prisma 연결 준비 |
 | G02 | User Web 기반 | `/login`, `/` shell, 인증 상태 | `API-SPEC/G01-G05-FOUNDATION-AUTH-API.md` | `User`, `UserSetting` 조회 전제 |
 | G03 | Admin Web 기반 | `/login`, `/` admin shell, admin 권한 상태 | `API-SPEC/G01-G05-FOUNDATION-AUTH-API.md`, `API-SPEC/G30-G32-ENDPOINT-CONTRACT.md` | `User.role`, `User.status` |
 | G04 | DB 기반 | 화면 영향 없음 | health/auth DB 연결 확인 | `BE-TODO/DB-SCHEMA.md` 전체 1차 반영 |
-| G05 | Auth/User Backend | 로그인/내 정보/설정 화면 상태 | `API-SPEC/G01-G05-FOUNDATION-AUTH-API.md` | `User`, `UserOAuthAccount`, `UserSetting` |
+| G05 | Supabase Auth/User Backend | Supabase 로그인, Backend callback, httpOnly session cookie, 내 정보/설정 화면 상태 | `API-SPEC/G01-G05-FOUNDATION-AUTH-API.md` | `User`, `UserOAuthAccount`, `AuthSession`, `UserSetting` |
 | G06 | Company Backend | 회사 목록/상세/등록 화면이 기대하는 데이터 | `API-SPEC/G06-G12-CORE-DOMAIN-API.md`, `API-SPEC/G06-G12-ENDPOINT-CONTRACT.md` | `Company`, `CompanyLog`, `TagAssignment` |
 | G07 | Company User Web | 회사 목록, 빠른 등록 modal, 상세 화면 | `API-SPEC/G06-G12-ENDPOINT-CONTRACT.md`의 Company 계약 | `Company`, `CompanyLog` |
 | G08 | Contact Backend | 거래처 목록/상세/등록 화면이 기대하는 데이터 | `API-SPEC/G06-G12-CORE-DOMAIN-API.md`, `API-SPEC/G06-G12-ENDPOINT-CONTRACT.md` | `Contact`, `Company`, `PersonalMemo` |
@@ -61,6 +61,7 @@
 ## 5. 관련 문서
 
 - `TODO/MVP-STARTER_PLAN/COMMON/GOAL-WORK-ORDER.md`
+- `TODO/MVP-STARTER_PLAN/COMMON/G00-DECISIONS.md`
 - `TODO/MVP-STARTER_PLAN/COMMON/API-SPEC/README.md`
 - `TODO/MVP-STARTER_PLAN/BE-TODO/DB-SCHEMA.md`
 - `TODO/MVP-STARTER_PLAN/FE-TODO/README.md`

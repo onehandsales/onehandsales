@@ -209,13 +209,14 @@ MVP 또는 현재 단계에서 반드시 다루는 범위를 적는다.
 
 ## 11. TODO 문서 작성 규칙
 
-`TODO` 문서는 구현 실행을 위한 작업 문서다.
+`TODO` 문서는 구현 실행을 위한 작업 문서다. 단순 아이디어 정리나 초안 목록이 아니라, `/goal`로 바로 실행할 수 있는 계획서에 가깝게 작성한다.
 
 규칙:
 
 - `TODO` 바로 아래에는 기획 또는 구현 계획 단위의 폴더를 1개 만든다.
 - 계획 폴더명은 목적이 드러나게 대문자와 `_PLAN` 접미사를 사용한다.
 - 예: `MVP-STARTER_PLAN`, `IMPORT_EXPORT_PLAN`, `PAYMENT_MANUAL_PLAN`
+- 각 계획 폴더는 구현자가 문서만 보고 첫 `/goal`을 실행할 수 있는 수준의 실행 계획서여야 한다.
 - 각 계획 폴더 안에는 `COMMON`, `FE-TODO`, `BE-TODO`를 둔다.
 - 이렇게 나누는 이유는 Frontend와 Backend가 같은 요구사항과 기획을 기준으로 작업하지만 실제 역할과 산출물이 다르기 때문이다.
 - `COMMON`은 Frontend와 Backend가 함께 봐야 하는 공통 계약 문서를 둔다.
@@ -237,6 +238,9 @@ MVP 또는 현재 단계에서 반드시 다루는 범위를 적는다.
 - API 명세를 작성할 때는 `AGENT/SOFTWARE_AGENT/CONVENTION/API_SPEC.md`의 필수 항목을 따른다.
 - TODO 문서도 정본 문서와 동일하게 한국어로 작성한다.
 - TODO 문서도 기획자 관점에서 목적, 사용자 흐름, 포함 범위, 완료 기준을 함께 적는다.
+- TODO 문서에는 실행 순서, 선행 조건, 제외 범위, API/DB/화면 연결, 검증 가능한 완료 기준을 반드시 적는다.
+- 확정되지 않은 항목은 완료된 계획처럼 쓰지 않고 `Question`, `보류`, 또는 선행 `/goal` 결정 작업으로 분리한다.
+- "적절히", "추후", "나중에", "필요하면"처럼 실행자가 임의 해석해야 하는 표현은 남기지 않는다.
 - 사용자가 별도로 다시 묻지 말라고 확정한 항목은 이후 같은 종류의 기획 문서에서 기본값으로 적용한다.
 
 이유:
@@ -245,6 +249,7 @@ MVP 또는 현재 단계에서 반드시 다루는 범위를 적는다.
 - FE와 BE가 모두 보는 API 명세와 사용자 흐름은 `COMMON`에 있어야 한다.
 - 동시에 FE와 BE 세부 작업은 성격이 다르므로 계획 폴더 내부에서는 `FE-TODO`, `BE-TODO`로 분리한다.
 - 작업 단위를 우선순위로 쪼개면 AI가 큰 범위를 한 번에 처리하면서 누락하는 위험을 줄일 수 있다.
+- TODO 문서를 실행 계획서 수준으로 쓰면 구현자가 순서, 범위, 검증 기준을 임의로 해석할 여지가 줄어든다.
 
 ## 12. 우선순위 순차 실행 규칙
 
@@ -275,6 +280,7 @@ TODO 계획 문서, 기획서, API 명세, DB 스키마, FE/BE 작업 문서를 
 - Critical 문제가 있으면 구현을 시작하지 않고 문서를 먼저 수정하거나 사용자 결정을 요청한다.
 - 사용자의 의도를 임의로 확정하면 안 되는 항목은 질문 또는 결정 필요 항목으로 남긴다.
 - 검토 중 관련 문서 링크, 용어, API 필수 항목, DB 스키마 설명 누락처럼 명확히 보완 가능한 항목은 문서에 반영한다.
+- TODO 문서가 바로 실행 가능한 계획서 수준인지 확인한다.
 - 검토는 반드시 `PLANNING_REVIEW_CHECKLIST.md`의 `AGENT 정본 기반 구체화 검토`를 포함한다.
 - TODO 문서가 SOFTWARE_AGENT의 Clean Architecture, DDD, domain/application/infrastructure/presentation 계층, port/adapter, Prisma infrastructure-only, User/Admin API 분리, transaction, audit log 규칙을 구체 문서로 옮겼는지 확인한다.
 - TODO 문서가 UXUI_AGENT와 Frontend 규칙의 딜 파이프라인 우선순위, 빠른 등록, inline creation, 모바일 카드형 흐름, Admin 데스크톱 운영 콘솔, TanStack Query, React Hook Form + Zod, User/Admin API client 분리 기준을 구체 문서로 옮겼는지 확인한다.
@@ -323,6 +329,7 @@ docs(uxui): 딜 상세 UX 기준 보강
 - 관련 문서와 충돌하지 않는가?
 - 관련 문서 경로를 연결했는가?
 - 기획서, 명세서, TODO 문서라면 `PLANNING_REVIEW_CHECKLIST.md` 기준으로 구현 가능 여부를 검토했는가?
+- TODO 문서라면 구현자가 문서만 보고 다음 `/goal`을 바로 실행할 수 있는 실행 계획서 수준인가?
 - 검토 시 `AGENT` 정본의 소프트웨어 아키텍처, Backend 컨벤션, Frontend 컨벤션, UX/UI 체크리스트가 TODO 문서에 구체화됐는지 확인했는가?
 - TODO 작업이라면 우선순위 순차 실행 규칙을 지켰는가?
 - API 명세라면 API 이름, request 이름, 비즈니스 로직 흐름, response 이름, 연결 DB 스키마를 모두 적었는가?

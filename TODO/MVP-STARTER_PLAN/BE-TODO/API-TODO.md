@@ -78,27 +78,22 @@ BE/
 
 ### 사용자 기능
 
-- 카카오 OAuth 로그인
-- 구글 OAuth 로그인
-- 네이버 OAuth 로그인
-- 애플 OAuth 로그인
-- OAuth callback 처리
-- access token 발급
-- refresh token 발급 또는 session 정책 구현
+- Supabase Auth provider 목록 제공
+- Supabase access token 검증
+- Supabase user와 local User 동기화
 - 로그아웃
 - 내 정보 조회
 
 ### Admin 기능
 
-- Admin 로그인은 같은 auth 흐름을 사용하되 role 확인이 필요하다.
+- Admin 로그인은 Supabase Auth 흐름을 사용하되 local `User.role = ADMIN` 확인이 필요하다.
 
 ### User API
 
 | Method | Path | 설명 |
 |---|---|---|
 | `GET` | `/api/auth/providers` | 사용 가능한 소셜 로그인 provider 목록 |
-| `GET` | `/api/auth/:provider/start` | OAuth 시작 |
-| `GET` | `/api/auth/:provider/callback` | OAuth callback |
+| `POST` | `/api/auth/sync` | Supabase user와 local User 동기화 |
 | `POST` | `/api/auth/logout` | 로그아웃 |
 | `GET` | `/api/me` | 현재 사용자 정보 |
 
@@ -110,17 +105,17 @@ BE/
 
 ### 작업 목록
 
-- OAuth provider port
-- provider별 adapter
-- User upsert use case
-- OAuth account 저장
-- token 발급 정책
+- Supabase Auth verification port
+- Supabase JWT verifier adapter
+- User sync use case
+- Supabase user와 UserOAuthAccount 매핑 저장
 - AuthGuard
 - AdminGuard
 
 ### 완료 기준
 
-- 사용자는 소셜 로그인으로 가입/로그인할 수 있다.
+- 사용자는 Supabase Auth 소셜 로그인 후 local User와 동기화된다.
+- Backend는 Supabase access token을 검증해 현재 사용자 context를 만든다.
 - Admin route는 `role = ADMIN`만 접근할 수 있다.
 
 ## 5. User 모듈

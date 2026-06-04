@@ -15,3 +15,4 @@
 - `017_planning_review_gate.md`
 - `018_todo_common_contract_structure.md`
 - `019_agent_based_planning_review.md`
+- `020_todo_execution_plan_standard.md`

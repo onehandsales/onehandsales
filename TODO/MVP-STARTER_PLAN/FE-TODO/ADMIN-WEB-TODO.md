@@ -114,8 +114,9 @@ adminApiClient
 
 ### 기능
 
-- Admin 로그인
-- 로그인 후 role 확인
+- Supabase Auth 기반 Admin 로그인
+- 로그인 성공 후 `POST /api/auth/sync` 호출
+- 로그인 후 `GET /admin/api/me`로 role 확인
 - `role !== ADMIN`이면 접근 거부
 - Admin protected route guard
 - 로그아웃
@@ -123,6 +124,8 @@ adminApiClient
 ### 작업 목록
 
 - auth API hook
+- Supabase Auth client 초기화
+- `adminApiClient`에 Supabase access token 전달
 - Admin route guard
 - forbidden state
 - 로그인 실패 표시
@@ -182,7 +185,7 @@ adminApiClient
 ### 사용자 상세 정보
 
 - 기본 프로필
-- 연결된 OAuth provider
+- 연결된 Supabase Auth provider
 - 사용자별 회사/거래처/제품/딜 요약
 - 최근 활동
 - 최근 Import/Export
