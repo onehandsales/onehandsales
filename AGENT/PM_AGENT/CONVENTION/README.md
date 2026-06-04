@@ -7,3 +7,4 @@
 ## 2. 현재 문서
 
 - `DOCUMENTATION.md`
+- `PLANNING_REVIEW_CHECKLIST.md`

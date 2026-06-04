@@ -12,3 +12,4 @@
 - `001_문서_정리_정책.md`
 - `015_todo_goal_work_order.md`
 - `016_agent_role_structure.md`
+- `017_planning_review_gate.md`
