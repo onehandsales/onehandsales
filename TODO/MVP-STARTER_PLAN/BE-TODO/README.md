@@ -1,4 +1,4 @@
-# BE TODO
+﻿# BE TODO
 
 ## 1. 목적
 
@@ -63,3 +63,5 @@ shared
 - Admin Web이 사용할 `/admin/api/*`가 준비된다.
 - Prisma schema가 MVP 도메인을 모두 표현한다.
 - 외부 Provider 없이도 mock adapter로 핵심 E2E를 실행할 수 있다.
+
+

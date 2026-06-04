@@ -1,4 +1,4 @@
-# FE
+﻿# FE
 
 Frontend apps are separated by product surface.
 
@@ -13,14 +13,16 @@ Each app has its own package dependencies. No shared frontend package is used at
 
 User Web:
 
-- `../AGENT/ARCHITECTURE/FRONTEND_USER_WEB.md`
-- `../AGENT/CONVENTION/FRONTEND_USER_WEB.md`
+- `../AGENT/SOFTWARE_AGENT/ARCHITECTURE/FRONTEND_USER_WEB.md`
+- `../AGENT/SOFTWARE_AGENT/CONVENTION/FRONTEND_USER_WEB.md`
 
 Admin Web:
 
-- `../AGENT/ARCHITECTURE/ADMIN_WEB.md`
-- `../AGENT/CONVENTION/ADMIN_WEB.md`
+- `../AGENT/SOFTWARE_AGENT/ARCHITECTURE/ADMIN_WEB.md`
+- `../AGENT/SOFTWARE_AGENT/CONVENTION/ADMIN_WEB.md`
 
 Shared comment/logging:
 
-- `../AGENT/CONVENTION/COMMENT_AND_LOGGING.md`
+- `../AGENT/SOFTWARE_AGENT/CONVENTION/COMMENT_AND_LOGGING.md`
+
+

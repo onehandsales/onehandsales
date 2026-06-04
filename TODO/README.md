@@ -1,10 +1,10 @@
-# TODO
+﻿# TODO
 
 ## 1. 목적
 
 이 폴더는 `한손에 영업 / onehand.sales`의 구현 계획별 실행 작업 목록을 정리한다.
 
-`AGENT` 문서가 제품과 아키텍처의 정본이라면, `TODO` 문서는 특정 기획 또는 구현 계획을 실제 작업 단위로 쪼개는 실행 문서다. 구현 중 새로운 결정이 생기면 먼저 `AGENT/DECISIONS`에 확정 내용을 남기고, 그 결과를 해당 계획 폴더의 TODO 문서에 반영한다.
+`AGENT` 문서가 제품과 아키텍처의 정본이라면, `TODO` 문서는 특정 기획 또는 구현 계획을 실제 작업 단위로 쪼개는 실행 문서다. 구현 중 새로운 결정이 생기면 먼저 관련 역할의 `DECISIONS`에 확정 내용을 남기고, 그 결과를 해당 계획 폴더의 TODO 문서에 반영한다.
 
 ## 2. 폴더 구조
 
@@ -65,12 +65,14 @@ MVP 시작 계획의 구현 우선순위:
 
 ## 5. 관련 정본 문서
 
-- `AGENT/DECISIONS/000_확정_결정.md`
-- `AGENT/PLANNING/PRD.md`
-- `AGENT/PLANNING/MVP_SCOPE.md`
-- `AGENT/PLANNING/DATA_MODEL.md`
-- `AGENT/PLANNING/USER_FLOW_AND_SCREENS.md`
-- `AGENT/ARCHITECTURE/BACKEND.md`
-- `AGENT/ARCHITECTURE/FRONTEND_USER_WEB.md`
-- `AGENT/ARCHITECTURE/ADMIN_WEB.md`
-- `AGENT/CONVENTION/DOCUMENTATION.md`
+- `AGENT/PM_AGENT/DECISIONS/000_확정_결정.md`
+- `AGENT/PM_AGENT/PLANNING/PRD.md`
+- `AGENT/PM_AGENT/PLANNING/MVP_SCOPE.md`
+- `AGENT/PM_AGENT/PLANNING/DATA_MODEL.md`
+- `AGENT/UXUI_AGENT/PLANNING/USER_FLOW_AND_SCREENS.md`
+- `AGENT/SOFTWARE_AGENT/ARCHITECTURE/BACKEND.md`
+- `AGENT/SOFTWARE_AGENT/ARCHITECTURE/FRONTEND_USER_WEB.md`
+- `AGENT/SOFTWARE_AGENT/ARCHITECTURE/ADMIN_WEB.md`
+- `AGENT/PM_AGENT/CONVENTION/DOCUMENTATION.md`
+
+

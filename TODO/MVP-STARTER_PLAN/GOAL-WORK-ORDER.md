@@ -1,4 +1,4 @@
-# Goal 작업 순서
+﻿# Goal 작업 순서
 
 ## 1. 목적
 
@@ -70,14 +70,14 @@ P6. 테스트와 릴리즈 준비
 
 완료 기준:
 
-- 결정 내용이 `AGENT/DECISIONS`에 기록된다.
+- 결정 내용이 `AGENT/PM_AGENT/DECISIONS`에 기록된다.
 - 이후 G01, G02, G03 작업자가 선택지를 다시 묻지 않아도 된다.
 
 참조 문서:
 
 - `TODO/MVP-STARTER_PLAN/BE-TODO/DB-SCHEMA.md`
 - `TODO/MVP-STARTER_PLAN/BE-TODO/API-TODO.md`
-- `AGENT/ARCHITECTURE/DEPLOYMENT.md`
+- `AGENT/SOFTWARE_AGENT/ARCHITECTURE/DEPLOYMENT.md`
 
 ### G01. Backend 프로젝트 스캐폴딩
 
@@ -1046,3 +1046,5 @@ G00 -> G01 -> G02 -> G03 -> G04 -> G05
 - 실패하거나 보류한 작업
 - 필요한 결정
 - 다음 goal에서 이어받을 파일과 명령
+
+

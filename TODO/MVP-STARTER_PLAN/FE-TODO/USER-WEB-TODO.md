@@ -1,4 +1,4 @@
-# User Web TODO
+﻿# User Web TODO
 
 ## 1. 목적
 
@@ -576,3 +576,5 @@ src/shared/api/
 
 - PR에서는 smoke E2E를 안정적으로 실행할 수 있다.
 - 외부 Provider는 기본 mock으로 처리한다.
+
+

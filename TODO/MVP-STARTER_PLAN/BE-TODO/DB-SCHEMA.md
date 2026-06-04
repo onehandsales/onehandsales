@@ -1,4 +1,4 @@
-# DB 스키마 TODO
+﻿# DB 스키마 TODO
 
 ## 1. 목적
 
@@ -925,3 +925,5 @@ MVP 구현 전 다음 중 하나를 결정해야 한다.
 - Import/Export job 상태를 추적할 수 있는가?
 - AI 작업 실패와 결과를 추적할 수 있는가?
 - Google Calendar 가져오기 중복 방지를 위한 external event id가 있는가?
+
+
