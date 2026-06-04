@@ -58,7 +58,7 @@ P6. 테스트와 릴리즈 준비
 
 - `/goal` 실행 전 해당 goal이 포함된 `GOAL-SPECS` 문서를 반드시 확인한다.
 - 화면이 포함된 goal은 화면 명세, 상태, validation, 필요한 API를 함께 확인한다.
-- API 구현이 포함된 goal은 `COMMON/API-SPEC`의 연결 문서를 함께 확인한다.
+- API 구현이 포함된 goal은 `COMMON/API-SPEC`의 연결 문서와 해당 `*-ENDPOINT-CONTRACT.md`를 함께 확인한다.
 - DB 변경이 포함된 goal은 `BE-TODO/DB-SCHEMA.md`의 연결 모델을 함께 확인한다.
 
 ## 4. P0. 구현 기반 준비

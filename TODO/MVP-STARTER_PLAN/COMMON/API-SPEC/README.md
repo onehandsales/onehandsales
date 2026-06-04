@@ -11,6 +11,7 @@ API 명세는 Backend 내부 작업 목록이 아니다. 화면이 어떤 reques
 - API 명세는 한국어로 작성한다.
 - API 명세는 전체 MVP API를 한 문서에 몰아넣지 않고 `/goal` 우선순위에 맞춰 나눈다.
 - 각 API는 `AGENT/SOFTWARE_AGENT/CONVENTION/API_SPEC.md`의 필수 항목을 따른다.
+- 도메인 요약 문서와 엔드포인트 구현 계약 문서가 나뉜 경우, 실제 구현 시에는 `*-ENDPOINT-CONTRACT.md`를 API별 상세 계약 정본으로 본다.
 - FE 화면에서 필요한 response 필드는 반드시 명시한다.
 - 연결된 DB model과 transaction 여부를 반드시 명시한다.
 - Admin API는 masking, 원문 조회 사유, 감사 로그 여부를 반드시 명시한다.
@@ -60,8 +61,11 @@ API 명세는 Backend 내부 작업 목록이 아니다. 화면이 어떤 reques
 |---|---|---|---|
 | P0-P1 | `G01-G05-FOUNDATION-AUTH-API.md` | G01-G05 | health, auth, me, settings, admin me |
 | P1-P2 | `G06-G12-CORE-DOMAIN-API.md` | G06-G12 | Company, Contact, Product, Deal Backend |
+| P1-P2 | `G06-G12-ENDPOINT-CONTRACT.md` | G06-G12 | 핵심 도메인 API별 request, business flow, response, DB, transaction, error 구현 계약 |
 | P3-P4 | `G17-G29-WORKFLOW-AUTOMATION-API.md` | G17-G29 | Schedule, MeetingNote, OCR, Import, Export, 알림, 휴지통, 검색 |
+| P3-P4 | `G17-G29-ENDPOINT-CONTRACT.md` | G17-G29 | 업무 흐름/자동화 API별 request, business flow, response, DB, adapter, error 구현 계약 |
 | P5 | `G30-G32-ADMIN-AUDIT-API.md` | G30-G32 | Admin 조회, 민감정보 원문 조회, 감사 로그 |
+| P5 | `G30-G32-ENDPOINT-CONTRACT.md` | G30-G32 | Admin/Audit API별 masking, 원문 조회, 감사 로그 transaction 구현 계약 |
 
 ## 5. 관련 문서
 

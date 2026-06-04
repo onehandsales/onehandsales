@@ -36,7 +36,7 @@ MVP-STARTER_PLAN/
 - FE와 BE는 같은 계획 폴더 안에서 나누어 관리한다.
 - 실제 구현은 `COMMON/GOAL-WORK-ORDER.md`의 작업 단위 순서대로 나누어 진행한다.
 - 한 번의 `/goal`에는 하나의 작업 단위만 넣는다.
-- API 명세는 `COMMON/API-SPEC`에 둔다.
+- API 명세는 `COMMON/API-SPEC`에 둔다. 구현 시에는 API 요약 문서와 `*-ENDPOINT-CONTRACT.md`를 함께 본다.
 - 각 `/goal`별 화면/API/DB 추적 명세는 `COMMON/GOAL-SPECS`에 둔다.
 - DB 스키마는 `BE-TODO/DB-SCHEMA.md`에 둔다.
 - 화면, 컴포넌트, 상태 관리, E2E 작업은 `FE-TODO`에 둔다.

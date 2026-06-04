@@ -14,3 +14,4 @@
 - `016_agent_role_structure.md`
 - `017_planning_review_gate.md`
 - `018_todo_common_contract_structure.md`
+- `019_agent_based_planning_review.md`

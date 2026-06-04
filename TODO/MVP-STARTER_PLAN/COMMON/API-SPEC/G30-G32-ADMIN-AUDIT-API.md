@@ -12,6 +12,8 @@ Admin API는 운영 편의를 위해 존재하지만, 사용자 민감정보를 
 - G31. Admin Web 기본 운영 화면
 - G32. 민감정보 원문 조회와 감사 로그
 
+구현 시 API별 request 필드, 비즈니스 로직 흐름, response 필드, 연결 DB, masking, transaction, 에러 기준은 `TODO/MVP-STARTER_PLAN/COMMON/API-SPEC/G30-G32-ENDPOINT-CONTRACT.md`를 상세 계약 정본으로 본다.
+
 ## 3. 공통 Admin 원칙
 
 - 모든 Admin API는 `/admin/api/*` 경로를 사용한다.
@@ -183,6 +185,7 @@ Admin API는 운영 편의를 위해 존재하지만, 사용자 민감정보를 
 
 - `TODO/MVP-STARTER_PLAN/COMMON/USER-FLOW.md`
 - `TODO/MVP-STARTER_PLAN/COMMON/GOAL-WORK-ORDER.md`
+- `TODO/MVP-STARTER_PLAN/COMMON/API-SPEC/G30-G32-ENDPOINT-CONTRACT.md`
 - `TODO/MVP-STARTER_PLAN/COMMON/GOAL-SPECS/P5-G30-G32-ADMIN-AUDIT.md`
 - `TODO/MVP-STARTER_PLAN/BE-TODO/DB-SCHEMA.md`
 - `AGENT/SOFTWARE_AGENT/CONVENTION/API_SPEC.md`

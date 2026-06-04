@@ -26,7 +26,39 @@
 - DB 변경이 있는 goal은 `BE-TODO/DB-SCHEMA.md`의 연결 모델을 함께 확인한다.
 - 완료 기준은 `GOAL-WORK-ORDER.md`와 이 폴더의 상세 명세를 모두 만족해야 한다.
 
-## 4. 관련 문서
+## 4. Goal별 구현 전 확인 매트릭스
+
+각 `/goal`을 실행하기 전에는 아래 문서 연결을 먼저 확인한다. 화면 구현 goal은 화면 명세와 API 계약을 함께 보고, Backend 구현 goal은 API 계약과 DB 스키마를 함께 본다.
+
+| Goal | 구현 관점 | 화면/상태 기준 | API 계약 기준 | DB 기준 |
+|---|---|---|---|---|
+| G00 | 운영 결정 | `P0-G00-G04-FOUNDATION.md`의 G00 화면 명세 | 없음 | package manager, Node, local DB, Supabase, auth, `.env.example` 결정 |
+| G01 | Backend 기반 | health 응답 확인 수준 | `API-SPEC/G01-G05-FOUNDATION-AUTH-API.md` | DB 연결 전 단계 또는 Prisma 연결 준비 |
+| G02 | User Web 기반 | `/login`, `/` shell, 인증 상태 | `API-SPEC/G01-G05-FOUNDATION-AUTH-API.md` | `User`, `UserSetting` 조회 전제 |
+| G03 | Admin Web 기반 | `/login`, `/` admin shell, admin 권한 상태 | `API-SPEC/G01-G05-FOUNDATION-AUTH-API.md`, `API-SPEC/G30-G32-ENDPOINT-CONTRACT.md` | `User.role`, `User.status` |
+| G04 | DB 기반 | 화면 영향 없음 | health/auth DB 연결 확인 | `BE-TODO/DB-SCHEMA.md` 전체 1차 반영 |
+| G05 | Auth/User Backend | 로그인/내 정보/설정 화면 상태 | `API-SPEC/G01-G05-FOUNDATION-AUTH-API.md` | `User`, `UserOAuthAccount`, `UserSetting` |
+| G06 | Company Backend | 회사 목록/상세/등록 화면이 기대하는 데이터 | `API-SPEC/G06-G12-CORE-DOMAIN-API.md`, `API-SPEC/G06-G12-ENDPOINT-CONTRACT.md` | `Company`, `CompanyLog`, `TagAssignment` |
+| G07 | Company User Web | 회사 목록, 빠른 등록 modal, 상세 화면 | `API-SPEC/G06-G12-ENDPOINT-CONTRACT.md`의 Company 계약 | `Company`, `CompanyLog` |
+| G08 | Contact Backend | 거래처 목록/상세/등록 화면이 기대하는 데이터 | `API-SPEC/G06-G12-CORE-DOMAIN-API.md`, `API-SPEC/G06-G12-ENDPOINT-CONTRACT.md` | `Contact`, `Company`, `PersonalMemo` |
+| G09 | Contact User Web | 거래처 목록, 빠른 등록 modal, 상세 화면 | `API-SPEC/G06-G12-ENDPOINT-CONTRACT.md`의 Contact 계약 | `Contact`, `Company`, `PersonalMemo` |
+| G10 | Product Backend | 제품 목록/상세/연결 화면이 기대하는 데이터 | `API-SPEC/G06-G12-CORE-DOMAIN-API.md`, `API-SPEC/G06-G12-ENDPOINT-CONTRACT.md` | `Product`, `ProductConnection` |
+| G11 | Product User Web | 제품 목록, 빠른 등록 modal, 상세/연결 화면 | `API-SPEC/G06-G12-ENDPOINT-CONTRACT.md`의 Product 계약 | `Product`, `ProductConnection` |
+| G12 | Deal Backend | 딜 목록, 생성, 상세, 다음 행동 화면이 기대하는 데이터 | `API-SPEC/G06-G12-CORE-DOMAIN-API.md`, `API-SPEC/G06-G12-ENDPOINT-CONTRACT.md` | `Deal`, `DealActivity`, `DealActivityType`, `ProductConnection` |
+| G13-G16 | Deal User Web | 딜 목록, inline 생성, 상세 패널, home pipeline | `API-SPEC/G06-G12-ENDPOINT-CONTRACT.md`의 Deal 계약 | `Deal`, `Company`, `Contact`, `Product`, `DealActivity` |
+| G17-G18 | Schedule | 일정 목록/주간표/생성 form | `API-SPEC/G17-G29-WORKFLOW-AUTOMATION-API.md`, `API-SPEC/G17-G29-ENDPOINT-CONTRACT.md` | `Schedule`, `ScheduleReminder`, `ExternalCalendarConnection` |
+| G19-G20 | MeetingNote | 회의록 목록, 생성, AI 결과, 딜 연결 | `API-SPEC/G17-G29-ENDPOINT-CONTRACT.md`의 MeetingNote 계약 | `MeetingNote`, `AiJob`, `DealActivity` |
+| G21-G22 | BusinessCard OCR | 명함 업로드, OCR 결과 확인, 확정 저장 | `API-SPEC/G17-G29-ENDPOINT-CONTRACT.md`의 BusinessCard 계약 | `BusinessCardScan`, `AiJob`, `Company`, `Contact` |
+| G23-G24 | Import | 파일 업로드, 매핑 확인, 실행 결과 | `API-SPEC/G17-G29-ENDPOINT-CONTRACT.md`의 Import 계약 | `ImportJob`, `ImportJobRow`, 대상 도메인 모델 |
+| G25-G26 | Export | Export 생성, 상태, 다운로드 | `API-SPEC/G17-G29-ENDPOINT-CONTRACT.md`의 Export 계약 | `ExportJob`, 대상 도메인 모델 |
+| G27 | Notification | 알림 목록, 읽음 처리, 알림 설정 | `API-SPEC/G17-G29-ENDPOINT-CONTRACT.md`의 Notification 계약 | `Notification`, `UserSetting` |
+| G28 | Trash | 휴지통 목록, 복구, 완전 삭제 확인 | `API-SPEC/G17-G29-ENDPOINT-CONTRACT.md`의 Trash 계약 | 주요 `deletedAt` 모델 |
+| G29 | Search | 통합검색 입력, 그룹 결과, 빈 상태 | `API-SPEC/G17-G29-ENDPOINT-CONTRACT.md`의 Search 계약 | `Company`, `Contact`, `Product`, `Deal`, `Schedule`, `MeetingNote` |
+| G30-G31 | Admin 조회/Admin Web | Admin dashboard, 사용자/도메인 테이블 | `API-SPEC/G30-G32-ADMIN-AUDIT-API.md`, `API-SPEC/G30-G32-ENDPOINT-CONTRACT.md` | `User`, 도메인 모델, `AuditLog` |
+| G32 | 민감정보/감사 | 원문 조회 dialog, 감사 로그 화면 | `API-SPEC/G30-G32-ENDPOINT-CONTRACT.md` | `AuditLog`, `PersonalMemo`, `MeetingNote`, `Deal` |
+| G33-G36 | 테스트/릴리즈 | User/Admin smoke 시나리오, 통합 점검 | 모든 `API-SPEC`과 `ENDPOINT-CONTRACT` | 전체 DB 스키마와 seed |
+
+## 5. 관련 문서
 
 - `TODO/MVP-STARTER_PLAN/COMMON/GOAL-WORK-ORDER.md`
 - `TODO/MVP-STARTER_PLAN/COMMON/API-SPEC/README.md`

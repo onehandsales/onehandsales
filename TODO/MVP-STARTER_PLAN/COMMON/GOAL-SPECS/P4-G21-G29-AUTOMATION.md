@@ -17,7 +17,8 @@ G22 명함 OCR 화면이 사용할 API를 제공한다.
 - `POST /api/business-cards/scan`
 - `GET /api/business-cards/:scanId`
 - `POST /api/business-cards/:scanId/confirm`
-- 상세 계약: `TODO/MVP-STARTER_PLAN/COMMON/API-SPEC/G17-G29-WORKFLOW-AUTOMATION-API.md`
+- API 요약: `TODO/MVP-STARTER_PLAN/COMMON/API-SPEC/G17-G29-WORKFLOW-AUTOMATION-API.md`
+- 엔드포인트 구현 계약: `TODO/MVP-STARTER_PLAN/COMMON/API-SPEC/G17-G29-ENDPOINT-CONTRACT.md`
 
 ### DB 연결
 
@@ -78,6 +79,7 @@ G22 명함 OCR 화면이 사용할 API를 제공한다.
 - `PATCH /api/imports/:importJobId/mapping`
 - `POST /api/imports/:importJobId/confirm`
 - `GET /api/imports/:importJobId`
+- 엔드포인트 구현 계약: `TODO/MVP-STARTER_PLAN/COMMON/API-SPEC/G17-G29-ENDPOINT-CONTRACT.md`
 
 ### DB 연결
 
@@ -139,6 +141,7 @@ G22 명함 OCR 화면이 사용할 API를 제공한다.
 - `GET /api/exports/:exportJobId`
 - `GET /api/exports/:exportJobId/download`
 - `POST /api/schedules/week/export`
+- 엔드포인트 구현 계약: `TODO/MVP-STARTER_PLAN/COMMON/API-SPEC/G17-G29-ENDPOINT-CONTRACT.md`
 
 ### DB 연결
 
@@ -297,6 +300,7 @@ G22 명함 OCR 화면이 사용할 API를 제공한다.
 ## 관련 문서
 
 - `TODO/MVP-STARTER_PLAN/COMMON/API-SPEC/G17-G29-WORKFLOW-AUTOMATION-API.md`
+- `TODO/MVP-STARTER_PLAN/COMMON/API-SPEC/G17-G29-ENDPOINT-CONTRACT.md`
 - `TODO/MVP-STARTER_PLAN/COMMON/USER-FLOW.md`
 - `TODO/MVP-STARTER_PLAN/COMMON/GOAL-WORK-ORDER.md`
 - `TODO/MVP-STARTER_PLAN/BE-TODO/DB-SCHEMA.md`

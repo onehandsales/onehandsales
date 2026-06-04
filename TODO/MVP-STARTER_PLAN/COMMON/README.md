@@ -36,15 +36,15 @@ COMMON/
 - `USER-FLOW.md`: 사용자의 실제 업무 흐름과 FE/BE 처리 흐름을 함께 설명한다.
 - `GOAL-WORK-ORDER.md`: `/goal`로 실행할 작업 순서와 각 goal의 포함/제외/완료 기준을 정의한다.
 - `PLANNING-REVIEW.md`: 구현 전 기획 검토 결과와 남은 보완 항목을 기록한다.
-- `API-SPEC`: FE와 BE가 함께 보는 API 계약 문서를 둔다.
+- `API-SPEC`: FE와 BE가 함께 보는 API 계약 문서를 둔다. 구현 시에는 도메인 API 문서와 해당 `*-ENDPOINT-CONTRACT.md`를 함께 본다.
 - `GOAL-SPECS`: 각 `/goal`별 화면 명세, API 연결, DB 연결, 테스트 기준을 둔다.
 
 ## 4. 사용 원칙
 
 - 구현 전에는 `PLANNING-REVIEW.md`의 판정을 먼저 확인한다.
 - `/goal` 실행 전에는 `GOAL-WORK-ORDER.md`와 `GOAL-SPECS`의 해당 goal을 함께 확인한다.
-- FE 작업자는 화면 명세를 보면서 필요한 API를 `API-SPEC`에서 확인한다.
-- BE 작업자는 API 명세를 보면서 필요한 DB 모델을 `BE-TODO/DB-SCHEMA.md`에서 확인한다.
+- FE 작업자는 화면 명세를 보면서 필요한 API를 `API-SPEC`과 `*-ENDPOINT-CONTRACT.md`에서 확인한다.
+- BE 작업자는 API 명세와 엔드포인트 구현 계약을 보면서 필요한 DB 모델을 `BE-TODO/DB-SCHEMA.md`에서 확인한다.
 - API 명세는 전체를 한 번에 구현하기 위한 문서가 아니라, 우선순위에 따라 goal 단위로 구현할 수 있게 나눈 계약 문서다.
 
 ## 5. 관련 문서

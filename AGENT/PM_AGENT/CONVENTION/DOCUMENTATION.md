@@ -275,6 +275,9 @@ TODO 계획 문서, 기획서, API 명세, DB 스키마, FE/BE 작업 문서를 
 - Critical 문제가 있으면 구현을 시작하지 않고 문서를 먼저 수정하거나 사용자 결정을 요청한다.
 - 사용자의 의도를 임의로 확정하면 안 되는 항목은 질문 또는 결정 필요 항목으로 남긴다.
 - 검토 중 관련 문서 링크, 용어, API 필수 항목, DB 스키마 설명 누락처럼 명확히 보완 가능한 항목은 문서에 반영한다.
+- 검토는 반드시 `PLANNING_REVIEW_CHECKLIST.md`의 `AGENT 정본 기반 구체화 검토`를 포함한다.
+- TODO 문서가 SOFTWARE_AGENT의 Clean Architecture, DDD, domain/application/infrastructure/presentation 계층, port/adapter, Prisma infrastructure-only, User/Admin API 분리, transaction, audit log 규칙을 구체 문서로 옮겼는지 확인한다.
+- TODO 문서가 UXUI_AGENT와 Frontend 규칙의 딜 파이프라인 우선순위, 빠른 등록, inline creation, 모바일 카드형 흐름, Admin 데스크톱 운영 콘솔, TanStack Query, React Hook Form + Zod, User/Admin API client 분리 기준을 구체 문서로 옮겼는지 확인한다.
 
 ## 14. 문서 커밋 요청 처리 규칙
 
@@ -320,6 +323,7 @@ docs(uxui): 딜 상세 UX 기준 보강
 - 관련 문서와 충돌하지 않는가?
 - 관련 문서 경로를 연결했는가?
 - 기획서, 명세서, TODO 문서라면 `PLANNING_REVIEW_CHECKLIST.md` 기준으로 구현 가능 여부를 검토했는가?
+- 검토 시 `AGENT` 정본의 소프트웨어 아키텍처, Backend 컨벤션, Frontend 컨벤션, UX/UI 체크리스트가 TODO 문서에 구체화됐는지 확인했는가?
 - TODO 작업이라면 우선순위 순차 실행 규칙을 지켰는가?
 - API 명세라면 API 이름, request 이름, 비즈니스 로직 흐름, response 이름, 연결 DB 스키마를 모두 적었는가?
 - 커밋 요청을 받았다면 변경 문서 성격에 맞는 커밋 메시지를 판단했는가?
