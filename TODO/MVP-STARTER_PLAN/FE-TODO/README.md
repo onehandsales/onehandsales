@@ -16,7 +16,7 @@
 - 폼은 React Hook Form과 Zod를 사용한다.
 - UI는 Tailwind CSS와 shadcn/ui를 사용한다.
 - 아이콘은 가능한 lucide-react를 사용한다.
-- API client는 각 앱 내부 `src/shared/api`에 둔다.
+- API client는 각 앱 내부 `src/lib`에 둔다.
 
 ## 3. UX/UI Reference 기준
 
@@ -68,5 +68,4 @@
 - Admin Web에서 사용자와 전체 도메인 데이터를 조회할 수 있다.
 - Admin Web에서 민감정보 원문 조회는 사유 입력과 감사 로그 흐름을 탄다.
 - 각 앱은 독립적으로 설치, 실행, 테스트할 수 있다.
-
 

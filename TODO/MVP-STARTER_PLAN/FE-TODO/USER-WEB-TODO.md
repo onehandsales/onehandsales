@@ -98,7 +98,7 @@ FE/user-web/
 위치:
 
 ```text
-src/shared/api/
+src/lib/api-client.ts
 ```
 
 해야 할 일:
@@ -644,5 +644,4 @@ src/shared/api/
 - `TODO/MVP-STARTER_PLAN/FE-TODO/README.md`
 - `AGENT/UXUI_AGENT/PLANNING/UX_UI_DIRECTION.md`
 - `AGENT/SOFTWARE_AGENT/ARCHITECTURE/FRONTEND_USER_WEB.md`
-
 

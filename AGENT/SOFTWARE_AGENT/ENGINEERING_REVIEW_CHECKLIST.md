@@ -20,7 +20,7 @@
 ## 3. Frontend User Web 체크리스트
 
 - 서버 상태는 TanStack Query로 관리되는가?
-- feature 내부 API 호출은 shared API client를 사용하는가?
+- feature 내부 API 호출은 `src/lib`의 앱 API client를 사용하는가?
 - form validation은 React Hook Form과 Zod를 사용하는가?
 - route state가 필요한 목록 필터는 URL search params에 반영되는가?
 - 다른 feature의 internal file을 직접 import하지 않는가?
@@ -51,5 +51,4 @@
 - production secret이 local `.env`에 들어가지 않는가?
 - 배포 전 User Web/Admin Web 전체 E2E를 실행할 수 있는가?
 - 실제 Provider check는 명시적인 smoke job 또는 수동 production-safe 체크로 제한되는가?
-
 

@@ -34,40 +34,66 @@ No root workspace package is used.
 
 OpenAPI-generated types may be generated inside `FE/user-web`, but not through a shared package.
 
-## 3. Feature-Sliced Structure
+## 3. Feature-First Structure
 
-Use Feature-Sliced Design:
+Use a feature-first frontend structure. The frontend is not a backend-style Clean Architecture copy. It has route composition, feature slices, and shared UI/technical primitives.
+
+Canonical source structure:
 
 ```text
 src/
+  assets/
   app/
     providers/
-    routes/
-    styles/
+    router/
     app.tsx
-  pages/
-  features/
-  shared/
+  components/
     ui/
-    lib/
-    api/
-    config/
-    hooks/
-    types/
+    layout/
+  features/
+    <feature>/
+      components/
+      hooks/
+      api/
+      schemas/
+      types/
+      index.ts
+  hooks/
+  lib/
+    api-client.ts
+    env.ts
+    query-client.ts
+  pages/
+  store/
+  types/
+  utils/
+  styles/
+  main.tsx
 ```
 
 Dependency direction:
 
 ```text
-app -> pages -> features -> shared
+main/app/router -> pages -> features -> components/hooks/lib/store/types/utils/styles
 ```
 
 Rules:
 
-- `shared` imports no business feature.
-- `pages` compose features and stay thin.
-- `features` expose public API through `index.ts`.
-- Other features/pages import a feature through its `index.ts`, not internal files.
+- `app` owns providers, router creation, and app-level composition only.
+- `pages` are route entry points. They compose feature components and remain thin.
+- `features` own product-specific behavior, server state hooks, forms, schemas, feature components, and feature-local types.
+- `components/ui` contains generic shadcn-style primitives such as Button, Input, Dialog, Badge, Toast, Table primitives.
+- `components/layout` contains app layout primitives such as Sidebar, Header, PageLayout, EmptyState, PageToolbar.
+- `hooks` contains domain-free shared hooks such as `useDebounce` and `useMediaQuery`.
+- `lib` contains technical clients and singletons such as API client, env wrapper, date helpers with dependencies, and TanStack Query client.
+- `store` is only for cross-page client UI state. Do not store server data there.
+- `types` contains domain-free shared types such as pagination and normalized API error shapes.
+- `utils` contains pure domain-free formatting and calculation helpers.
+- shared root folders cannot import from `pages`, `features`, `app`, or `router`.
+- Feature-to-feature imports are allowed only through the other feature's `index.ts`.
+- Pages must import feature public APIs, not feature internal files.
+
+If a feature is small, `api.ts` and `types.ts` are acceptable. If it grows, split them into `api/` and `types/` without changing imports outside the feature.
 
 ## 4. MVP Feature Folders
 
@@ -114,7 +140,7 @@ URL state:
 The API client lives in:
 
 ```text
-src/shared/api/
+src/lib/api-client.ts
 ```
 
 User Web calls User API only:
@@ -132,7 +158,7 @@ The client handles:
 - refresh or logout behavior
 - error normalization
 
-Feature API files should call the shared API client.
+Feature API files call the app API client from `src/lib/api-client.ts`. Pages and components do not call `fetch` or the client directly for business data.
 
 ## 7. Routing
 
@@ -207,14 +233,14 @@ Images:
 When creating a feature:
 
 - feature folder exists
-- API functions and TanStack Query hooks are under `api`
+- public exports are in `index.ts`
+- API functions and TanStack Query hooks are under `api` or `api.ts`
 - UI components are under `components`
 - business hooks are under `hooks`
-- extra local types are under `types`
-- public exports are in `index.ts`
+- validation schemas are under `schemas`
+- feature-local types are under `types` or `types.ts`
 - page imports from feature public API only
 - form validation uses Zod
 - server data uses TanStack Query
 - route state that affects list views uses search params
-
-
+- feature code does not import from another feature's internal files

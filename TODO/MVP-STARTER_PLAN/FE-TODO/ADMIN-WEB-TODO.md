@@ -91,7 +91,7 @@ FE/admin-web/
 위치:
 
 ```text
-src/shared/api/
+src/lib/admin-api-client.ts
 ```
 
 이름:
@@ -468,5 +468,4 @@ MVP starter 구현에서는 Admin route, sidebar menu, API client, DB table을 �
 - `TODO/MVP-STARTER_PLAN/FE-TODO/README.md`
 - `AGENT/UXUI_AGENT/PLANNING/UX_UI_DIRECTION.md`
 - `AGENT/SOFTWARE_AGENT/ARCHITECTURE/ADMIN_WEB.md`
-
 

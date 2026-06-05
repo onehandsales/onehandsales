@@ -57,15 +57,32 @@ Manual bank transfer management is important, but comes after core user/product 
 
 ## 4. Structure
 
-Use the same FSD base as User Web:
+Use the same feature-first base as User Web. Admin Web has its own source tree and does not share code with User Web.
 
 ```text
 src/
+  assets/
   app/
     providers/
-    routes/
-    styles/
+    router/
     app.tsx
+  components/
+    ui/
+    layout/
+  features/
+    auth/
+    user-management/
+    deal-management/
+    company-management/
+    contact-management/
+    product-management/
+    audit-log/
+    payment-management/
+  hooks/
+  lib/
+    admin-api-client.ts
+    env.ts
+    query-client.ts
   pages/
     login/
     dashboard/
@@ -77,23 +94,31 @@ src/
     audit-log/
     payments/
     settings/
-  features/
-    auth/
-    user-management/
-    deal-management/
-    company-management/
-    contact-management/
-    product-management/
-    audit-log/
-    payment-management/
-  shared/
-    ui/
-    lib/
-    api/
-    config/
-    hooks/
-    types/
+  store/
+  types/
+  utils/
+  styles/
+  main.tsx
 ```
+
+Dependency direction:
+
+```text
+main/app/router -> pages -> features -> components/hooks/lib/store/types/utils/styles
+```
+
+Rules:
+
+- `app` owns providers, router creation, and app-level composition only.
+- `pages` are route entry points. They compose Admin feature components and remain thin.
+- `features` own Admin use cases, table/query hooks, filters, dialogs, schemas, feature components, and feature-local types.
+- `components/ui` contains generic primitives.
+- `components/layout` contains Admin shell, sidebar, header, page layout, table layout primitives, and toolbar primitives.
+- `hooks`, `lib`, `store`, `types`, and `utils` must stay domain-free.
+- `store` is only for cross-page client UI state such as table density, sidebar state, and view preferences.
+- Shared root folders cannot import from `pages`, `features`, `app`, or `router`.
+- Feature-to-feature imports are allowed only through the other feature's `index.ts`.
+- Pages must import feature public APIs, not feature internal files.
 
 ## 5. Auth And Authorization
 
@@ -119,7 +144,7 @@ Backend must still enforce AdminGuard. Client-side role checks are only UX prote
 Admin API client lives in:
 
 ```text
-src/shared/api/
+src/lib/admin-api-client.ts
 ```
 
 Client name:
@@ -138,6 +163,7 @@ Rules:
 
 - Admin Web must not use the User Web API client.
 - Admin Web must not call `/api/*` for Admin data.
+- Feature API files call `adminApiClient`; pages and components do not call `fetch` directly for Admin data.
 - 401 goes to login.
 - 403 goes to forbidden page.
 
@@ -223,11 +249,12 @@ Do not confuse client Sentry logs with audit logs.
 When creating an Admin feature:
 
 - route is protected by Admin route guard
+- feature folder exposes public API through `index.ts`
 - API uses `adminApiClient`
 - query keys start with `admin`
 - table uses server pagination when global data is involved
 - sensitive fields are masked by default
 - dangerous actions require reason if audited
 - client logs do not contain PII or reason text
-
+- page imports from feature public API only
 

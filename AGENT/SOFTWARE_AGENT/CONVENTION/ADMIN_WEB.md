@@ -7,7 +7,7 @@ Admin Web follows `FRONTEND_USER_WEB.md` unless this document says otherwise.
 Use:
 
 ```text
-adminApiClient
+src/lib/admin-api-client.ts
 ```
 
 Base path:
@@ -21,6 +21,7 @@ Forbidden:
 - User Web `apiClient`
 - User API path `/api/*` for admin data
 - client-side bypass for AdminGuard failures
+- direct `fetch` calls from pages/components for Admin business data
 
 ## 2. Query Keys
 
@@ -115,6 +116,5 @@ Forbidden:
 - PII in client logs
 - reason text in client logs
 - client-only pagination for large global data
-
 
 

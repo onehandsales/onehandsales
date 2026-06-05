@@ -18,7 +18,7 @@ deal.api.ts
 deal.types.ts
 date.utils.ts
 auth.store.ts
-api-client.ts
+lib/api-client.ts
 ```
 
 Components:
@@ -124,8 +124,11 @@ Order:
 2. external libraries
 3. `@/app/*`, `@/pages/*`
 4. `@/features/*`
-5. `@/shared/*`
-6. relative paths
+5. `@/components/*`
+6. `@/hooks/*`
+7. `@/lib/*`
+8. `@/store/*`, `@/types/*`, `@/utils/*`
+9. relative paths
 
 Feature imports must use public API:
 
@@ -134,6 +137,8 @@ Feature imports must use public API:
 ```
 
 Do not import another feature's internal files.
+
+Shared root folders such as `components`, `hooks`, `lib`, `store`, `types`, and `utils` must not import from `pages` or `features`.
 
 ## 7. Styling
 
@@ -159,13 +164,13 @@ Use lucide icons for icon buttons when possible.
 Use a single user API client in:
 
 ```text
-src/shared/api/
+src/lib/api-client.ts
 ```
 
 Env variables use `VITE_` prefix and are wrapped in config:
 
 ```text
-src/shared/config/env.ts
+src/lib/env.ts
 ```
 
 Do not access `import.meta.env` throughout feature code.
@@ -193,6 +198,5 @@ Forbidden:
 - direct `console.log`
 - `key={index}`
 - hard-coded form error messages outside Zod when avoidable
-
 
 
