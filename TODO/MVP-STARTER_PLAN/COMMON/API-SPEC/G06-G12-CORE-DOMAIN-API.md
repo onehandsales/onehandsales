@@ -126,7 +126,7 @@ G07, G09, G11, G13-G16의 화면 명세는 `COMMON/GOAL-SPECS`에서 이 API를 
 - 생성: Company, CompanyLog, PersonalMemo
 - 조회: Company, CompanyLog, PersonalMemo, TagAssignment
 - 수정: Company, CompanyLog
-- 삭제: Company.deletedAt/permanentDeleteAt, CompanyLog.deletedAt/permanentDeleteAt. 모든 삭제 대상 리소스는 soft delete 후 30일 보관 정책을 따른다.
+- 삭제: Company.deletedAt/permanentDeleteAt, CompanyLog.deletedAt/permanentDeleteAt. 영속 삭제 대상 리소스는 soft delete 후 30일 보관 정책을 따른다.
 - 감사 로그: MVP User API에서는 필수 아님
 - transaction: 회사 생성과 태그 연결을 함께 처리할 때 transaction 필요
 
@@ -148,7 +148,7 @@ G07, G09, G11, G13-G16의 화면 명세는 `COMMON/GOAL-SPECS`에서 이 API를 
 |---|---|---|---|---|---|---|
 | 거래처 목록 API | `ListContacts` | `GET` | `/api/contacts` | `ListContactsRequest` | `ContactListResponse` | Contact, Company |
 | 거래처 생성 API | `CreateContact` | `POST` | `/api/contacts` | `CreateContactRequest` | `ContactResponse` | Contact, Company, PersonalMemo |
-| 거래처 상세 API | `GetContact` | `GET` | `/api/contacts/:contactId` | `GetContactRequest` | `ContactDetailResponse` | Contact, Company, ContactLog, PersonalMemo |
+| 거래처 상세 API | `GetContact` | `GET` | `/api/contacts/:contactId` | `GetContactRequest` | `ContactDetailResponse` | Contact, Company, PersonalMemo |
 | 거래처 수정 API | `UpdateContact` | `PATCH` | `/api/contacts/:contactId` | `UpdateContactRequest` | `ContactResponse` | Contact |
 | 거래처 삭제 API | `DeleteContact` | `DELETE` | `/api/contacts/:contactId` | `DeleteContactRequest` | `DeleteContactResponse` | Contact |
 | 거래처 복구 API | `RestoreContact` | `POST` | `/api/contacts/:contactId/restore` | `RestoreContactRequest` | `ContactResponse` | Contact |
@@ -172,7 +172,7 @@ G07, G09, G11, G13-G16의 화면 명세는 `COMMON/GOAL-SPECS`에서 이 API를 
 | Response 이름 | 주요 필드 |
 |---|---|
 | `ContactResponse` | `id`, `name`, `companyId`, `companyName`, `department`, `position`, `phone`, `email`, `address`, `hasMemo`, `memoCount`, `latestMemoAt`, `createdAt`, `updatedAt`, `deletedAt`, `permanentDeleteAt` |
-| `ContactDetailResponse` | `contact:ContactResponse`, `company?:CompanyResponse`, `logs:ContactLogResponse[]`, `memos:MemoResponse[]`, `relatedDealCount`, `relatedProductCount` |
+| `ContactDetailResponse` | `contact:ContactResponse`, `company?:CompanyResponse`, `memos:MemoResponse[]`, `relatedDealCount`, `relatedProductCount` |
 | `ContactListResponse` | `items:ContactResponse[]`, `page`, `pageSize`, `totalCount`, `hasNext` |
 | `ContactLogResponse` | `id`, `contactId`, `loggedAt`, `title`, `content`, `createdAt`, `updatedAt` |
 
@@ -184,14 +184,15 @@ G07, G09, G11, G13-G16의 화면 명세는 `COMMON/GOAL-SPECS`에서 이 API를 
 4. 전화번호와 이메일은 User Web에서는 원문을 보여주지만 Admin API에서는 기본 마스킹한다.
 5. 거래처 Log는 거래처에 대해 확인된 객관적 만남/변경/소식/이력으로 `ContactLog`에 저장한다.
 6. 거래처에 대한 사용자의 생각은 `PersonalMemo(targetType=CONTACT)`에 Memo 기록으로 저장한다.
-7. `initialMemo`가 있으면 거래처 생성과 같은 transaction에서 암호화 저장한다.
-8. Memo는 민감정보 후보로 보고 Admin 기본 목록에서는 원문을 내려주지 않는다.
-9. 삭제는 soft delete로 처리한다.
+7. 거래처 상세 API는 `logs[]`를 포함하지 않는다. 거래처 상세 화면의 Log 영역은 `ListContactLogs`를 별도 호출해 페이지네이션으로 조회한다.
+8. `initialMemo`가 있으면 거래처 생성과 같은 transaction에서 암호화 저장한다.
+9. Memo는 민감정보 후보로 보고 Admin 기본 목록에서는 원문을 내려주지 않는다.
+10. 삭제는 soft delete로 처리한다.
 
 ### 5.5 Contact 연결 DB 스키마
 
 - 생성: Contact, ContactLog, PersonalMemo. `initialMemo`가 있으면 `PersonalMemo`에 암호화 저장
-- 조회: Contact, Company, ContactLog, PersonalMemo
+- 조회: Contact, Company, PersonalMemo. Log 목록은 `ListContactLogs`에서 `ContactLog`를 별도 조회
 - 수정: Contact, ContactLog. Memo 수정은 별도 Memo API에서 처리
 - 삭제: Contact.deletedAt/permanentDeleteAt, ContactLog.deletedAt/permanentDeleteAt
 - 감사 로그: Admin 원문 조회 시 AuditLog
@@ -214,7 +215,7 @@ G07, G09, G11, G13-G16의 화면 명세는 `COMMON/GOAL-SPECS`에서 이 API를 
 |---|---|---|---|---|---|---|
 | 제품 목록 API | `ListProducts` | `GET` | `/api/products` | `ListProductsRequest` | `ProductListResponse` | Product |
 | 제품 생성 API | `CreateProduct` | `POST` | `/api/products` | `CreateProductRequest` | `ProductResponse` | Product, PersonalMemo |
-| 제품 상세 API | `GetProduct` | `GET` | `/api/products/:productId` | `GetProductRequest` | `ProductDetailResponse` | Product, ProductLog, ProductConnection, PersonalMemo |
+| 제품 상세 API | `GetProduct` | `GET` | `/api/products/:productId` | `GetProductRequest` | `ProductDetailResponse` | Product, ProductConnection, PersonalMemo |
 | 제품 수정 API | `UpdateProduct` | `PATCH` | `/api/products/:productId` | `UpdateProductRequest` | `ProductResponse` | Product |
 | 제품 삭제 API | `DeleteProduct` | `DELETE` | `/api/products/:productId` | `DeleteProductRequest` | `DeleteProductResponse` | Product |
 | 제품 복구 API | `RestoreProduct` | `POST` | `/api/products/:productId/restore` | `RestoreProductRequest` | `ProductResponse` | Product |
@@ -241,7 +242,7 @@ G07, G09, G11, G13-G16의 화면 명세는 `COMMON/GOAL-SPECS`에서 이 API를 
 | Response 이름 | 주요 필드 |
 |---|---|
 | `ProductResponse` | `id`, `name`, `category`, `unitPrice`, `currency`, `description`, `hasMemo`, `memoCount`, `latestMemoAt`, `createdAt`, `updatedAt`, `deletedAt`, `permanentDeleteAt` |
-| `ProductDetailResponse` | `product:ProductResponse`, `connections:ProductConnectionResponse[]`, `logs:ProductLogResponse[]`, `memos:MemoResponse[]` |
+| `ProductDetailResponse` | `product:ProductResponse`, `connections:ProductConnectionResponse[]`, `memos:MemoResponse[]` |
 | `ProductConnectionResponse` | `id`, `productId`, `targetType`, `targetId`, `targetName`, `connectionType`, `note`, `deletedAt`, `permanentDeleteAt` |
 | `ProductLogResponse` | `id`, `productId`, `loggedAt`, `title`, `content`, `createdAt`, `updatedAt` |
 | `ProductListResponse` | `items:ProductResponse[]`, `page`, `pageSize`, `totalCount`, `hasNext` |
@@ -254,13 +255,14 @@ G07, G09, G11, G13-G16의 화면 명세는 `COMMON/GOAL-SPECS`에서 이 API를 
 4. 제품 연결은 자유 텍스트 대상에 연결하지 않고 반드시 존재하는 Company/Contact/Deal에 연결한다.
 5. 제품 Log는 제품에 대해 확인된 객관적 변경/소식/제안/이력으로 `ProductLog`에 저장한다.
 6. 제품에 대한 사용자의 생각은 `PersonalMemo(targetType=PRODUCT)`에 Memo 기록으로 저장한다.
-7. `initialMemo`가 있으면 제품 생성과 같은 transaction에서 암호화 저장한다.
-8. 삭제는 soft delete로 처리한다.
+7. 제품 상세 API는 `logs[]`를 포함하지 않는다. 제품 상세 화면의 Log 영역은 `ListProductLogs`를 별도 호출해 페이지네이션으로 조회한다.
+8. `initialMemo`가 있으면 제품 생성과 같은 transaction에서 암호화 저장한다.
+9. 삭제는 soft delete로 처리한다.
 
 ### 6.5 Product 연결 DB 스키마
 
 - 생성: Product, ProductLog, ProductConnection, PersonalMemo
-- 조회: Product, ProductLog, ProductConnection, Company, Contact, Deal, PersonalMemo
+- 조회: Product, ProductConnection, Company, Contact, Deal, PersonalMemo. Log 목록은 `ListProductLogs`에서 `ProductLog`를 별도 조회
 - 수정: Product, ProductLog
 - 삭제: Product.deletedAt/permanentDeleteAt, ProductLog.deletedAt/permanentDeleteAt, ProductConnection.deletedAt/permanentDeleteAt
 - 감사 로그: MVP User API에서는 필수 아님

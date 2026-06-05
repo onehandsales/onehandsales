@@ -4,7 +4,7 @@
 
 P4는 사용자가 데이터를 더 빠르게 입력하고, 필요한 데이터를 다시 찾고, 내보내고, 삭제 데이터를 복구할 수 있게 하는 단계다.
 
-Google Calendar, OCR, OpenAI는 MVP 기능에서 처음부터 실제 provider adapter를 호출한다. 자동 테스트에서는 같은 port 뒤의 stub/mock adapter를 사용할 수 있다.
+Google Calendar, OCR, OpenAI, Notification email/browser push는 MVP 기능에서 처음부터 실제 provider adapter를 호출한다. 자동 테스트에서는 같은 port 뒤의 stub/mock adapter를 사용할 수 있다.
 
 파일 저장은 `StoragePort` 뒤의 Supabase Storage adapter로 시작하고, DB에는 public URL 대신 bucket/object key 중심 metadata를 저장한다. 추후 AWS S3 이전은 `StoragePort` 구현체 교체로 처리한다.
 
@@ -217,11 +217,15 @@ G22 명함 OCR 화면이 사용할 API를 제공한다.
 - `GET /api/notifications`
 - `PATCH /api/notifications/:notificationId/read`
 - `PATCH /api/notifications/settings`
+- `GET /api/notifications/browser-push/public-key`
+- `POST /api/notifications/browser-subscriptions`
+- `DELETE /api/notifications/browser-subscriptions/:subscriptionId`
 
 ### DB 연결
 
 - Notification
 - UserSetting
+- BrowserPushSubscription
 - Schedule
 - Deal
 - MeetingNote
@@ -232,17 +236,21 @@ G22 명함 OCR 화면이 사용할 API를 제공한다.
 - 읽지 않은 알림 count
 - 알림 항목: 제목, 내용, 대상, 예정 시각, 읽음 상태
 - 설정 화면의 알림 기본값
+- browser push permission 요청 상태
+- browser push 구독 등록/해제
 
 ### 완료 기준
 
 - 알림 데이터가 생성되고 User Web에서 확인할 수 있다.
 - 읽음 처리가 가능하다.
+- SMTP adapter로 email 알림이 실제 발송된다.
+- Web Push VAPID adapter로 browser push 알림이 실제 발송된다.
 
 ## G28. Trash 기본 흐름
 
 ### 화면 목적
 
-삭제된 주요 데이터를 휴지통에서 확인하고 복구할 수 있게 한다.
+삭제된 모든 soft delete 대상 데이터를 휴지통에서 확인하고 복구할 수 있게 한다.
 
 ### API 연결
 
@@ -252,12 +260,10 @@ G22 명함 OCR 화면이 사용할 API를 제공한다.
 
 ### DB 연결
 
-- Company
-- Contact
-- Product
-- Deal
-- Schedule
-- MeetingNote
+- 모든 deletedAt 삭제 대상 모델
+- 우선 노출: Company, Contact, Product, Deal, Schedule, MeetingNote
+- targetType 필터 지원: CompanyLog, ContactLog, ProductLog, ProductConnection, DealActivity, PersonalMemo
+- 휴지통 제외: Tag, TagAssignment. 태그와 태그 연결은 hard delete하고 `TagLog`로 이력을 남긴다.
 
 ### 화면 구성
 
@@ -269,7 +275,7 @@ G22 명함 OCR 화면이 사용할 API를 제공한다.
 
 ### 완료 기준
 
-- 삭제 데이터가 휴지통에 표시된다.
+- 모든 soft delete 대상 삭제 데이터가 휴지통에 표시된다.
 - `permanentDeleteAt` 이전에는 복구가 가능하다.
 - 30일이 지난 삭제 데이터는 시스템 자동 작업으로 완전 삭제될 수 있다.
 
@@ -307,7 +313,7 @@ G22 명함 OCR 화면이 사용할 API를 제공한다.
 - 진행 중 딜과 최근 항목 우선 표시
 - 삭제된 데이터는 통합검색 기본 결과에서 제외한다.
 - 결과는 type별 최대 5개를 기본으로 표시한다.
-- Memo 원문, `MeetingNote.rawInput`, Admin 민감 원문은 title/subtitle에 노출하지 않는다.
+- Memo 원문, `MeetingNote.rawText`, Admin 민감 원문은 title/subtitle에 노출하지 않는다.
 
 ### 완료 기준
 

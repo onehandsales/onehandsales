@@ -36,12 +36,14 @@ P0는 실제 도메인 기능 구현 전에 Backend, User Web, Admin Web, DB 기
 - local 개발 DB 이름은 `sales_b2c_dev`, 테스트 DB 이름은 `sales_b2c_test`로 고정한다.
 - local DB user/password는 `sales_b2c` / `sales_b2c_password`로 고정한다.
 - local PostgreSQL port는 `5432`로 고정한다.
-- 개발 DB와 테스트 DB는 분리하고, 환경 변수는 `DATABASE_URL`, `TEST_DATABASE_URL`을 사용한다.
+- 개발 DB와 테스트 DB는 분리하고, 환경 변수는 `DATABASE_URL`, `DIRECT_URL`, `TEST_DATABASE_URL`을 사용한다.
 - G04의 Prisma schema validate, migration 또는 db push, seed 실행은 Docker PostgreSQL을 대상으로 한다.
 - `.env.example`의 `DATABASE_URL`은 local Docker PostgreSQL 접속 예시를 포함한다.
-- Supabase Cloud는 MVP 1차에서 `Auth`와 파일 저장소 adapter에만 사용한다.
-- Supabase Auth 개발 환경은 개발용 `Remote Supabase project`로 고정한다.
-- business DB는 Supabase DB가 아니라 Docker PostgreSQL과 Prisma가 관리한다.
+- dev/preview/prod 환경의 `DATABASE_URL`과 `DIRECT_URL`은 Supabase Cloud PostgreSQL 접속값을 사용한다.
+- Supabase Cloud는 MVP 1차에서 `Auth`, `PostgreSQL`, 파일 저장소 adapter에 사용한다.
+- Supabase Cloud 개발 환경은 개발용 `Remote Supabase project`로 고정한다.
+- managed business DB는 Supabase Cloud PostgreSQL이고, NestJS Backend가 Prisma로 직접 접속해 application layer에서 transaction을 관리한다.
+- local/integration/E2E test DB는 재현성과 안전한 reset을 위해 Docker PostgreSQL을 사용할 수 있다.
 - 인증 1차 전략은 `Supabase Auth 외부 Provider + Backend token exchange + Backend 발급 App Bearer Token + local User/AuthDevice/AuthSession`으로 고정한다.
 - FE는 Supabase access token을 token exchange API에만 전달한다.
 - FE는 business API와 Admin API에 Backend가 발급한 App access token을 `Authorization: Bearer` header로 전달한다.
@@ -53,10 +55,10 @@ P0는 실제 도메인 기능 구현 전에 Backend, User Web, Admin Web, DB 기
 - `.env.example`에는 `SUPABASE_URL`, `SUPABASE_ANON_KEY`, `SUPABASE_JWKS_URL`, `SUPABASE_JWT_ISSUER` 예시를 포함한다.
 - `.env.example`에는 `APP_JWT_ISSUER`, `APP_JWT_AUDIENCE`, `APP_JWT_SECRET`, `APP_ACCESS_TOKEN_TTL_MINUTES`, `APP_SESSION_TTL_DAYS` 예시를 포함한다.
 - `.env.example`에는 `USER_WEB_ORIGIN`, `ADMIN_WEB_ORIGIN`, `API_PUBLIC_ORIGIN`, `APP_ALLOWED_ORIGINS`, `APP_REFRESH_COOKIE_DOMAIN` 예시를 포함한다.
-- `.env.example`에는 실제 OpenAI/OCR/Google Calendar 연동에 필요한 `OPENAI_API_KEY`, OpenAI model 변수, `GOOGLE_CALENDAR_CLIENT_ID`, `GOOGLE_CALENDAR_CLIENT_SECRET`, `GOOGLE_CALENDAR_REDIRECT_URI`, `GOOGLE_CALENDAR_SCOPES` 예시를 포함한다.
+- `.env.example`에는 실제 OpenAI/OCR/Google Calendar/SMTP/Web Push VAPID 연동에 필요한 `OPENAI_API_KEY`, OpenAI model 변수, `GOOGLE_CALENDAR_CLIENT_ID`, `GOOGLE_CALENDAR_CLIENT_SECRET`, `GOOGLE_CALENDAR_REDIRECT_URI`, `GOOGLE_CALENDAR_SCOPES`, SMTP 변수, VAPID 변수 예시를 포함한다.
 - 개발용 Supabase project에는 User Web/Admin Web callback URL을 등록한다.
 - local/preview는 분리 domain을 허용하고, production은 `app`, `admin`, `api`를 같은 parent domain 아래 subdomain으로 배포한다.
-- 모든 삭제 대상 리소스는 soft delete하고, 삭제 시 `deletedAt`과 `permanentDeleteAt = deletedAt + 30일`을 기록한다.
+- 모든 영속 삭제 대상 리소스는 soft delete하고, 삭제 시 `deletedAt`과 `permanentDeleteAt = deletedAt + 30일`을 기록한다. `Tag`와 `TagAssignment`는 분류/연결 상태 데이터이므로 hard delete하고 `TagLog`에 이력을 남긴다.
 - 30일 휴지통 보관 후 시스템 자동 작업이 완전 삭제하며, MVP 1차에서 사용자 즉시 완전 삭제는 제공하지 않는다.
 - `Company`, `Contact`, `Product`, `Deal`의 Log는 객관 기록, Memo는 주관 기록으로 분리한다. Memo는 각 엔티티 단일 `memo` 필드가 아니라 `PersonalMemo` 기록 테이블에 암호화 저장한다.
 - 도메인별 Log는 회사 `CompanyLog`, 거래처 `ContactLog`, 제품 `ProductLog`, 딜 `DealActivity`로 구현한다. 각 도메인별 사용자 개인 Memo Log는 `PersonalMemo`로 별도 저장한다.
@@ -124,7 +126,8 @@ P0는 실제 도메인 기능 구현 전에 Backend, User Web, Admin Web, DB 기
 
 - Prisma client 설치 준비
 - local DB는 Docker PostgreSQL을 기준으로 연결한다.
-- `.env.example`에는 `DATABASE_URL`, `TEST_DATABASE_URL` 예시를 모두 작성한다.
+- dev/preview/prod managed DB는 Supabase Cloud PostgreSQL을 기준으로 연결한다.
+- `.env.example`에는 `DATABASE_URL`, `DIRECT_URL`, `TEST_DATABASE_URL` 예시를 모두 작성한다.
 - migration은 G04에서 수행
 
 ### 상태/에러 기준

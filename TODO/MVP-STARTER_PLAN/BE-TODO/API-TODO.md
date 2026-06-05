@@ -13,6 +13,9 @@
 - NestJS 프로젝트 생성
 - TypeScript strict 설정
 - Prisma 설치
+- Prisma datasource는 PostgreSQL provider를 사용하고 `DATABASE_URL`/`DIRECT_URL`을 지원
+- dev/preview/prod managed DB는 Supabase Cloud PostgreSQL 기준으로 연결
+- local/integration/E2E test DB는 Docker PostgreSQL 기준으로 연결 가능
 - ConfigModule 설정
 - `.env.example` 작성
 - global ValidationPipe 설정
@@ -52,6 +55,7 @@ BE/
 - pagination
 - sorting/filtering type
 - transaction manager port
+- Prisma transaction manager adapter
 - current user decorator
 - auth guard base
 - admin guard
@@ -92,6 +96,7 @@ BE/
 - App token refresh
 - 로그아웃
 - 내 정보 조회
+- 회원 탈퇴 시 active session revoke에 사용할 AuthSession 처리
 
 ### Admin 기능
 
@@ -158,6 +163,8 @@ BE/
 - 사용자 설정
 - 알림 기본값
 - 민감정보 경고 설정
+- 계정 soft delete와 30일 보관 정책
+- 회원 탈퇴 시 AuthSession revoke 호출
 
 ### User API
 
@@ -165,6 +172,7 @@ BE/
 |---|---|---|
 | `GET` | `/api/users/me/settings` | 내 설정 조회 |
 | `PATCH` | `/api/users/me/settings` | 내 설정 수정 |
+| `DELETE` | `/api/users/me` | 회원 탈퇴 |
 
 ### Admin API
 
@@ -172,11 +180,13 @@ BE/
 |---|---|---|
 | `GET` | `/admin/api/users` | 사용자 목록 |
 | `GET` | `/admin/api/users/:userId` | 사용자 상세 |
-| `PATCH` | `/admin/api/users/:userId/status` | 사용자 상태 변경 |
+| `PATCH` | `/admin/api/users/:userId/status` | 사용자 상태 변경. `DELETED`는 Admin 강제 계정 삭제, `DELETED -> ACTIVE`는 30일 이내 계정 복구 |
 
 ### 완료 기준
 
 - 사용자별 데이터 조회와 Admin 사용자 관리의 기반이 준비된다.
+- 회원 탈퇴와 Admin 강제 삭제는 모두 `User` soft delete와 30일 자동 완전 삭제 정책을 따른다.
+- 삭제된 계정은 로그인, refresh, 일반 business API 접근이 차단된다.
 
 ## 6. Company 모듈
 
@@ -437,7 +447,7 @@ BE/
 
 - AI 회의록 생성은 실제 OpenAI adapter를 통해 동작한다.
 - 회의록은 딜 없이 저장 가능하다.
-- 회의록 원문 입력값은 `MeetingNote.rawInputCiphertext`로 암호화 저장된다.
+- 회의록 원문 입력값은 `MeetingNote.rawTextCiphertext`로 암호화 저장된다.
 - 딜 연결 시 `DealActivity`가 자동 생성된다.
 
 ## 12. BusinessCard 모듈
@@ -511,10 +521,16 @@ BE/
 | `DELETE` | `/api/tags/:tagId` | 태그 삭제 |
 | `POST` | `/api/tags/:tagId/assignments` | 태그 연결 |
 | `DELETE` | `/api/tags/:tagId/assignments/:assignmentId` | 태그 연결 해제 |
+| `GET` | `/api/tags/logs` | 태그/태그 연결 로그 목록 |
 
 ### 완료 기준
 
 - 주요 엔티티에 태그를 연결할 수 있다.
+- 태그 자체 삭제는 분류 설정 삭제로 보고 `Tag`를 hard delete한다.
+- 태그 삭제 시 해당 태그의 active `TagAssignment`마다 `TagLog(TAG_UNASSIGNED)`를 남기고, `TagLog(TAG_DELETED)`를 남긴 뒤 같은 transaction에서 `TagAssignment`와 `Tag`를 hard delete한다.
+- 태그 생성/수정/삭제와 태그 연결/해제는 모두 `TagLog`에 append-only로 남긴다.
+- 태그와 태그 연결이 hard delete되어도 `TagLog`는 남아야 하므로 태그명/색상/대상 정보 스냅샷을 함께 저장한다.
+- `Tag`와 `TagAssignment`는 휴지통에 넣지 않는다.
 
 ## 15. Notification 모듈
 
@@ -524,8 +540,10 @@ BE/
 - 딜 마감일 알림
 - 다음 행동 알림
 - 회의록 생성 완료 알림
-- 이메일 알림
-- 브라우저 푸시 알림
+- 실제 이메일 알림 발송
+- 실제 브라우저 푸시 알림 발송
+- browser push subscription 등록/해제
+- 알림 발송 job과 실패 재시도
 
 ### User API
 
@@ -534,10 +552,28 @@ BE/
 | `GET` | `/api/notifications` | 알림 목록 |
 | `PATCH` | `/api/notifications/:notificationId/read` | 알림 읽음 처리 |
 | `PATCH` | `/api/notifications/settings` | 알림 기본값 수정 |
+| `GET` | `/api/notifications/browser-push/public-key` | VAPID public key 조회 |
+| `POST` | `/api/notifications/browser-subscriptions` | browser push 구독 등록 |
+| `DELETE` | `/api/notifications/browser-subscriptions/:subscriptionId` | browser push 구독 해제 |
+
+### 작업 목록
+
+- EmailDeliveryPort
+- SMTP email adapter
+- BrowserPushPort
+- Web Push VAPID adapter
+- BrowserPushSubscription repository
+- browser push endpoint/key encryption mapper
+- Notification delivery worker
+- Notification provider error mapper
+- email/browser push 테스트 stub adapter
 
 ### 완료 기준
 
 - 알림은 기본값을 제공하고 사용자가 수정할 수 있다.
+- email 알림은 SMTP adapter로 실제 발송된다.
+- browser push 알림은 Web Push VAPID adapter로 실제 발송된다.
+- 자동 테스트에서는 email/browser push stub adapter를 사용할 수 있다.
 
 ## 16. Trash 모듈
 
@@ -551,7 +587,7 @@ BE/
 
 ### 완료 기준
 
-- 삭제된 주요 데이터는 soft delete 후 30일 보관된다.
+- 삭제된 모든 soft delete 대상 데이터는 30일 보관된다.
 - soft delete 시 `deletedAt`과 `permanentDeleteAt`이 함께 기록된다.
 - 30일 경과 데이터는 시스템 자동 작업으로 완전 삭제될 수 있다.
 - 사용자 즉시 완전 삭제는 MVP 1차에서 허용하지 않는다.

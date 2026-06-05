@@ -91,7 +91,7 @@ Node.js 의미:
 local DB 의미:
 
 - local DB는 개발자 PC에서 개발, Prisma migration, seed, API 테스트, E2E 테스트를 수행하기 위한 개발용 데이터베이스다.
-- 운영 DB가 아니며, 개발 중 schema 변경과 test data reset을 안전하게 반복하기 위한 환경이다.
+- 운영 DB가 아니며, 개발 중 schema 변경과 test data reset을 안전하게 반복하기 위한 환경이다. 실제 dev/preview/prod managed business DB는 Supabase Cloud PostgreSQL을 사용한다.
 
 `Docker PostgreSQL` 의미:
 
@@ -104,14 +104,15 @@ local DB 의미:
 - Prisma migration, relation, index, transaction을 실제 PostgreSQL 기준으로 검증할 수 있다.
 - 개발자가 운영/원격 DB를 건드리지 않고 schema 변경과 seed를 반복할 수 있다.
 - local 환경이 Docker Compose 기준으로 재현되어 개발자 PC 차이를 줄인다.
-- Supabase PostgreSQL, RDS, Railway, Render 같은 PostgreSQL 기반 운영 DB로 옮길 때 DB 구조 전환 비용이 낮다.
-- Supabase local보다 초기 설정이 가볍고, 원격 Supabase DB 직접 연결보다 migration 실수 위험이 낮다.
+- Supabase Cloud PostgreSQL 같은 managed PostgreSQL 운영 DB로 옮길 때 DB 구조 전환 비용이 낮다.
+- local 개발 중 원격 Supabase Cloud DB를 실수로 변경하는 위험을 줄인다.
 
 구현 영향:
 
 - G01-G04에서는 local PostgreSQL container를 기준으로 Backend DB 연결과 Prisma 설정을 작성한다.
 - G04의 Prisma schema validate, migration 또는 db push, seed 실행은 Docker PostgreSQL을 대상으로 한다.
 - `.env.example`의 `DATABASE_URL`은 local Docker PostgreSQL 접속 예시를 포함한다.
+- dev/preview/prod 환경의 `DATABASE_URL`과 `DIRECT_URL`은 Supabase Cloud PostgreSQL 접속값을 사용한다.
 - `docker-compose.yml` 또는 동일 역할의 compose 파일은 DB service를 포함해야 한다.
 - 개발/테스트 데이터는 local DB에서 reset 가능해야 한다.
 
@@ -145,7 +146,7 @@ services:
 
 - `docker-compose.yml` 또는 동일 역할의 compose 파일에서 DB image는 `postgres:17-alpine`을 사용한다.
 - Prisma migration, seed, local API 테스트는 PostgreSQL 17 기준으로 검증한다.
-- 운영 DB를 Supabase PostgreSQL, RDS, Railway, Render 등으로 옮길 때도 PostgreSQL 17 이상 호환성을 기준으로 본다.
+- 운영 DB인 Supabase Cloud PostgreSQL과도 PostgreSQL 17 이상 호환성을 기준으로 본다.
 
 참고:
 
@@ -161,7 +162,7 @@ services:
 - local DB password는 `sales_b2c_password`로 고정한다.
 - local PostgreSQL port는 `5432`로 고정한다.
 - 개발 DB와 테스트 DB는 분리한다.
-- 환경 변수는 `DATABASE_URL`, `TEST_DATABASE_URL`을 사용한다.
+- 환경 변수는 `DATABASE_URL`, `DIRECT_URL`, `TEST_DATABASE_URL`을 사용한다.
 
 local DB 세부값 의미:
 
@@ -172,6 +173,7 @@ local DB 세부값 의미:
 
 ```env
 DATABASE_URL="postgresql://sales_b2c:sales_b2c_password@localhost:5432/sales_b2c_dev"
+DIRECT_URL="postgresql://sales_b2c:sales_b2c_password@localhost:5432/sales_b2c_dev"
 TEST_DATABASE_URL="postgresql://sales_b2c:sales_b2c_password@localhost:5432/sales_b2c_test"
 ```
 
@@ -197,22 +199,24 @@ services:
 
 구현 영향:
 
-- `.env.example`에는 `DATABASE_URL`, `TEST_DATABASE_URL`을 모두 작성한다.
+- `.env.example`에는 `DATABASE_URL`, `DIRECT_URL`, `TEST_DATABASE_URL`을 모두 작성한다.
 - Prisma migration과 seed 기본 대상은 `DATABASE_URL`의 `sales_b2c_dev`다.
 - test command와 integration/E2E test는 `TEST_DATABASE_URL`의 `sales_b2c_test`를 사용한다.
 - Docker Compose에서 `sales_b2c_test` database 생성이 필요하면 init script 또는 setup script를 둔다.
 
-### D07. Supabase 사용 범위와 인증 1차 전략
+### D07. Supabase 사용 범위와 인증/DB 1차 전략
 
 결정:
 
-- MVP 1차에서는 Supabase Cloud를 `Auth`와 D15의 파일 저장소 adapter에만 사용한다.
-- MVP 1차의 business DB는 Supabase DB가 아니라 `Docker PostgreSQL`과 Prisma가 관리한다.
-- Supabase Realtime, Edge Functions, Supabase DB direct access는 MVP 1차 구현 범위에서 제외한다.
+- MVP 1차에서는 Supabase Cloud를 `Auth`, `PostgreSQL`, D15의 파일 저장소 adapter에 사용한다.
+- MVP 1차의 managed business DB는 Supabase Cloud PostgreSQL이다.
+- NestJS Backend는 Prisma로 Supabase Cloud PostgreSQL에 직접 접속하고, 여러 table write의 transaction boundary는 application layer에서 관리한다.
+- local/integration/E2E test DB는 재현성과 안전한 reset을 위해 Docker PostgreSQL을 사용할 수 있다.
+- Supabase Realtime, Edge Functions, FE Supabase DB direct access, PostgREST 기반 business write는 MVP 1차 구현 범위에서 제외한다.
 - Supabase Storage는 파일 저장소 구현체로만 예외 사용하고, domain/application 계층은 `StoragePort`에만 의존한다.
 - 인증 1차 전략은 `Supabase Auth 외부 Provider + Backend token exchange + Backend 발급 App Bearer Token + local User/AuthDevice/AuthSession`으로 고정한다.
 
-Supabase Cloud 제한 사용 의미:
+Supabase Cloud 사용 의미:
 
 - 소셜 로그인 provider 연동, OAuth 인증 화면, Supabase session 발급은 Supabase Auth가 담당한다.
 - User Web과 Admin Web은 Supabase Auth client를 통해 provider 로그인과 callback 처리를 수행한다.
@@ -220,16 +224,19 @@ Supabase Cloud 제한 사용 의미:
 - Backend는 token exchange 단계에서 Supabase JWKS/JWT issuer 기준으로 외부 token을 검증하고, `supabaseUserId`, `email`, `provider`를 기준으로 local `User`, `UserOAuthAccount`, `UserSetting`, `AuthDevice`, `AuthSession`을 조회하거나 생성한다.
 - Backend는 exchange 성공 시 서비스 자체 `App access token`과 refresh 수단을 발급한다.
 - 이후 모든 business API와 Admin API는 Supabase access token이 아니라 Backend가 발급한 `App access token`을 `Authorization: Bearer <app_access_token>` header로 받는다.
-- 서비스의 회사, 거래처, 제품, 딜, 일정, 회의록 같은 business data는 local PostgreSQL과 Prisma schema가 관리한다.
+- 서비스의 회사, 거래처, 제품, 딜, 일정, 회의록, 추후 구독/결제 같은 business data는 Supabase Cloud PostgreSQL과 Prisma schema가 관리한다.
+- FE는 business data를 Supabase client로 직접 읽거나 쓰지 않고, 항상 NestJS API를 호출한다.
+- NestJS application layer는 Prisma transaction 또는 `TransactionManager` port로 결제/구독, 감사 로그, outbox 같은 다중 write를 같은 transaction에서 처리한다.
 - 명함 이미지, Import 원본 파일, Export 생성 파일은 D15의 `StoragePort` 뒤에서 Supabase Storage에 저장할 수 있다.
 - DB에는 Supabase Storage public URL에 직접 묶이는 값이 아니라 bucket, object key, content type, file size 같은 중립 metadata를 저장한다.
 
 선택 이유:
 
 - OAuth와 소셜 로그인 provider 처리는 Supabase Auth에 맡겨 구현 속도를 높일 수 있다.
+- Supabase Cloud PostgreSQL은 managed PostgreSQL이므로 별도 DB 운영 부담을 줄이면서 Prisma transaction을 사용할 수 있다.
 - business data는 NestJS/Prisma/Clean Architecture 기준으로 통제할 수 있다.
-- Supabase DB에 직접 의존하지 않으므로 나중에 RDS, Railway, Render 같은 PostgreSQL 운영 DB로 이전하기 쉽다.
-- Backend의 domain/application/infrastructure 경계를 유지하면서 인증 provider만 Supabase Auth adapter 뒤에 둘 수 있다.
+- 추후 구독/결제가 붙어도 결제 상태, 구독 상태, audit/outbox 기록을 Backend application transaction으로 묶을 수 있다.
+- Backend의 domain/application/infrastructure 경계를 유지하면서 Auth, DB, Storage를 각각 adapter와 repository 뒤에 둘 수 있다.
 - FE/BE가 분리된 배포 구조에서도 cookie sameSite, cross-site cookie, CSRF token 흐름에 덜 묶인다.
 - Backend API 인증이 Supabase token shape에 직접 묶이지 않으므로, 나중에 Supabase Auth를 자체 Auth 또는 다른 OAuth/OIDC provider로 교체하기 쉽다.
 - local `User`, `UserOAuthAccount`, `AuthDevice`, `AuthSession`이 서비스 인증의 중심이 되므로 business data 소유권과 운영 정책을 Backend가 통제할 수 있다.
@@ -242,10 +249,12 @@ Supabase Cloud 제한 사용 의미:
 - Backend `AuthGuard`는 `Authorization: Bearer` header의 App access token을 검증해 현재 사용자 context를 만든다.
 - `POST /api/auth/exchange`는 외부 provider token의 user 정보와 FE가 보낸 기기 정보를 기준으로 local `User`, `UserOAuthAccount`, `UserSetting`, `AuthDevice`, `AuthSession`을 생성하거나 갱신한다.
 - Admin API는 App Bearer Token 검증 후 local `User.role = ADMIN`을 `AdminGuard`에서 확인한다.
+- Prisma datasource는 PostgreSQL provider를 사용하고, local/test에서는 Docker PostgreSQL, dev/preview/prod에서는 Supabase Cloud PostgreSQL의 `DATABASE_URL`/`DIRECT_URL`을 사용한다.
+- Application layer에는 transaction boundary를 명시하고, infrastructure layer의 Prisma repository가 같은 transaction client를 공유할 수 있게 만든다.
 - `UserOAuthAccount`는 Supabase user id와 provider account 정보를 local user와 연결하기 위한 매핑 용도로 사용한다.
 - Backend는 Supabase access token 원문과 Supabase refresh token을 DB에 저장하지 않는다.
 - Backend refresh token 또는 session token은 원문을 저장하지 않고 hash만 저장한다.
-- `.env.example`에는 Supabase Auth 연결에 필요한 환경 변수를 포함한다.
+- `.env.example`에는 Supabase Auth, Supabase Cloud PostgreSQL, Supabase Storage 연결에 필요한 환경 변수를 포함한다.
 - App access token은 FE memory에만 저장한다.
 - refresh token은 httpOnly refresh cookie로 보관하고, DB에는 `AuthSession.refreshTokenHash`만 저장한다.
 - API client가 401을 받으면 `POST /api/auth/refresh`를 1회 호출해 새 App access token을 받은 뒤 원래 요청을 1회 재시도한다.
@@ -254,6 +263,9 @@ Supabase Cloud 제한 사용 의미:
 환경 변수 후보:
 
 ```env
+DATABASE_URL=""
+DIRECT_URL=""
+TEST_DATABASE_URL=""
 SUPABASE_URL=""
 SUPABASE_ANON_KEY=""
 SUPABASE_JWT_ISSUER=""
@@ -305,22 +317,26 @@ CSRF 기준:
 - CORS 허용 origin은 User Web/Admin Web 배포 origin으로 제한한다.
 - Origin 검증은 보조 방어로 둘 수 있지만, `X-CSRF-Token` header는 MVP 1차 기본 요구사항으로 두지 않는다.
 
-### D09. Supabase Auth 개발 환경
+### D09. Supabase Cloud 개발 환경
 
 결정:
 
-- MVP 1차의 Supabase Auth 개발 환경은 `Remote Supabase project`를 사용한다.
-- 개발자는 local FE/BE를 실행하되, 인증은 개발용 원격 Supabase project에 연결한다.
-- Supabase local Auth는 MVP 1차 기본 개발 환경에서 사용하지 않는다.
+- MVP 1차의 Supabase Cloud 개발 환경은 `Remote Supabase project`를 사용한다.
+- 개발자는 local FE/BE를 실행하되, Auth/Storage와 managed PostgreSQL 검증은 개발용 원격 Supabase project에 연결할 수 있다.
+- local schema 검증, seed, integration/E2E reset은 Docker PostgreSQL을 사용할 수 있다.
+- Supabase local stack은 MVP 1차 기본 개발 환경에서 사용하지 않는다.
 
 Remote Supabase project 의미:
 
-- Supabase 웹 콘솔에서 개발용 project를 만들고, 그 project의 Auth 설정을 local FE/BE에서 사용한다.
-- business DB는 계속 Docker PostgreSQL과 Prisma가 관리하며, Supabase project의 DB는 MVP 1차 business data 저장소로 사용하지 않는다.
+- Supabase 웹 콘솔에서 개발용 project를 만들고, 그 project의 Auth, PostgreSQL, Storage 설정을 local FE/BE에서 사용한다.
+- NestJS Backend는 Prisma를 통해 Supabase Cloud PostgreSQL에 접속할 수 있고, FE는 Supabase DB에 직접 접근하지 않는다.
+- local Docker PostgreSQL과 Supabase Cloud PostgreSQL은 같은 Prisma schema/migration 기준을 따른다.
 
 환경 변수 예시:
 
 ```env
+DATABASE_URL="postgresql://..."
+DIRECT_URL="postgresql://..."
 SUPABASE_URL="https://xxxx.supabase.co"
 SUPABASE_ANON_KEY=""
 SUPABASE_JWKS_URL="https://xxxx.supabase.co/auth/v1/.well-known/jwks.json"
@@ -332,13 +348,15 @@ SUPABASE_JWT_ISSUER="https://xxxx.supabase.co/auth/v1"
 - 초기 MVP 개발 속도가 빠르다.
 - 실제 Supabase Auth provider 설정과 redirect URL을 빨리 검증할 수 있다.
 - Supabase local Auth를 띄우기 위한 추가 CLI/Docker 설정 부담을 줄인다.
-- 이미 business DB는 Docker PostgreSQL로 고정했기 때문에 Auth와 파일 저장소 adapter만 원격 Supabase project에 붙이는 편이 구조가 단순하다.
+- Supabase Cloud에서 Auth, PostgreSQL, Storage를 함께 관리하면 MVP 운영 환경 구성이 단순하다.
+- NestJS/Prisma가 DB write를 전담하므로 Supabase Cloud PostgreSQL을 사용해도 코드단 transaction 관리를 유지할 수 있다.
 
 구현 영향:
 
 - `.env.example`에는 remote Supabase project 연결용 환경 변수를 포함한다.
 - User Web과 Admin Web은 Supabase client를 초기화하고 Supabase Auth provider login/callback을 처리한다.
 - Backend는 remote Supabase project의 JWKS와 issuer 정보를 token exchange 단계에서만 사용한다.
+- Backend Prisma는 환경별 `DATABASE_URL`/`DIRECT_URL`로 PostgreSQL에 접속한다.
 - 로그인 callback 이후 FE는 `POST /api/auth/exchange`를 호출해 Backend App token 발급과 local User 동기화를 완료한다.
 - 개발용 Supabase project의 redirect URL에는 User Web/Admin Web callback URL을 등록해야 한다.
 - 실제 운영 배포 시에는 개발용 Supabase project와 운영용 Supabase project를 분리한다.
@@ -512,17 +530,18 @@ SUPABASE_JWT_ISSUER="https://xxxx.supabase.co/auth/v1"
 
 결정:
 
-- MVP 1차 application-level encryption 대상은 `PersonalMemo.content`와 `MeetingNote.rawInput`으로 고정한다.
-- 전화번호, 이메일, 명함 OCR 추출 결과, 회의록 구조화 요약 필드(`detail`, `futurePlan`, `requiredAction` 등)는 MVP 1차에서 암호화하지 않는다.
+- MVP 1차 application-level encryption 대상은 `PersonalMemo.content`, `MeetingNote.rawText`, `BrowserPushSubscription.endpoint/p256dh/auth`로 고정한다.
+- 전화번호, 이메일, 명함 OCR 추출 결과, 회의록 구조화 요약 필드(`details`, `nextPlan`, `requiredAction` 등)는 MVP 1차에서 암호화하지 않는다.
 - 암호화하지 않는 민감 후보 필드도 Admin 목록/상세에서는 기본 마스킹 또는 존재 여부만 반환한다.
 - Backend는 `EncryptionPort`를 정의하고, application/domain 계층은 구체 암호화 library에 직접 의존하지 않는다.
-- DB에는 Memo 원문과 회의록 원문을 평문으로 저장하지 않고 ciphertext와 key version을 저장한다.
+- DB에는 Memo 원문, 회의록 원문, browser push subscription endpoint/key를 평문으로 저장하지 않고 ciphertext와 key version을 저장한다.
 - Admin 민감정보 원문 조회 API는 사유 검증과 `AuditLog` 기록을 통과한 뒤 `EncryptionPort`로 복호화한 값을 반환한다.
 - application log, client log, server error log에는 암호화 전 원문, 복호화 원문, 암호화 key, reason 전문을 남기지 않는다.
 
 선택 이유:
 
 - Memo 원문과 회의록 원문은 사용자가 자유롭게 입력하는 텍스트라 민감정보가 섞일 가능성이 가장 높다.
+- browser push subscription endpoint/key는 외부 발송 credential에 가까우므로 실제 browser push 구현 범위에 포함되면 암호화 저장이 필요하다.
 - 전화번호, 이메일, OCR 전체까지 MVP 1차부터 암호화하면 검색, 중복 검사, 목록 필터, 후보 추천이 복잡해진다.
 - 암호화 adapter를 먼저 도입하면 이후 전화번호, 이메일, OCR 결과까지 암호화 대상을 넓히기 쉽다.
 - DB 유출 시 가장 민감한 자유 입력 원문부터 보호할 수 있다.
@@ -530,8 +549,9 @@ SUPABASE_JWT_ISSUER="https://xxxx.supabase.co/auth/v1"
 구현 영향:
 
 - `PersonalMemo.content`는 `contentCiphertext`, `contentKeyVersion`으로 저장한다.
-- `MeetingNote.rawInput`은 `rawInputCiphertext`, `rawInputKeyVersion`으로 저장한다.
-- `CreateMeetingNote`, `UpdateMeetingNote`, Memo 생성/수정 use case는 저장 전 `EncryptionPort.encrypt`를 호출한다.
+- `MeetingNote.rawText`는 `rawTextCiphertext`, `rawTextKeyVersion`으로 저장한다.
+- `BrowserPushSubscription`은 `endpointHash`, `endpointCiphertext`, `p256dhCiphertext`, `authCiphertext`, `contentKeyVersion`으로 저장한다.
+- `CreateMeetingNote`, `UpdateMeetingNote`, Memo 생성/수정, browser push subscription 등록 use case는 저장 전 `EncryptionPort.encrypt`를 호출한다.
 - 사용자 본인이 조회하는 회의록 상세/Memo 상세는 Backend application layer에서 복호화해 반환할 수 있다.
 - Admin 목록/상세 API는 복호화하지 않고 마스킹 또는 `hasMemo`, `memoCount`, `latestMemoAt` 같은 요약/존재 여부만 반환한다.
 - Admin 원문 조회 API는 허용 field 검증, reason 검증, AuditLog 기록을 거친 후 복호화한다.
@@ -710,29 +730,41 @@ APP_REFRESH_COOKIE_DOMAIN=""
 
 결정:
 
-- 사용자 또는 Admin이 삭제 API로 지우는 모든 삭제 대상 리소스는 즉시 hard delete하지 않고 soft delete한다.
+- 사용자 또는 Admin이 삭제 API로 지우는 영속 삭제 대상 리소스는 즉시 hard delete하지 않고 soft delete한다.
 - 삭제 시 `deletedAt`을 기록하고, `permanentDeleteAt`은 `deletedAt + 30일`로 기록한다.
 - 삭제된 리소스는 30일 동안 휴지통에 보관한다.
 - 30일이 지나면 시스템 자동 작업이 해당 리소스를 완전 삭제한다.
 - MVP 1차에서 사용자가 직접 즉시 완전 삭제하는 API와 UI는 제공하지 않는다.
 - 복구는 `permanentDeleteAt` 이전에만 가능하다.
 - 시스템 자동 완전 삭제는 일반 사용자 액션이 아니므로 별도 확인 dialog 대상이 아니다.
+- 사용자 계정 삭제는 회원 본인의 탈퇴와 Admin 강제 삭제를 모두 제공한다.
+- 회원 탈퇴와 Admin 강제 삭제는 모두 `User.status = DELETED`, `User.deletedAt = now`, `User.permanentDeleteAt = now + 30일`로 처리한다.
+- 삭제된 계정의 active `AuthSession`은 revoke하고, 로그인, token refresh, 일반 business API 접근을 차단한다.
+- 삭제된 계정 복구는 `permanentDeleteAt` 이전에만 Admin이 수행할 수 있으며, 복구 시 `User.status = ACTIVE`, `deletedAt = null`, `permanentDeleteAt = null`로 되돌린다.
+- 30일 경과 후 시스템 계정 삭제 job은 `User`와 계정에 종속된 데이터를 의존성 순서에 맞춰 완전 삭제한다.
 
 선택 이유:
 
 - 사용자가 실수로 삭제한 데이터를 30일 동안 복구할 수 있어야 한다.
-- 모든 삭제를 soft delete로 통일하면 API, DB, UX의 삭제 상태 처리가 단순해진다.
+- 영속 리소스 삭제를 soft delete로 통일하면 API, DB, UX의 삭제 상태 처리가 단순해진다.
 - 사용자의 즉시 완전 삭제를 막으면 MVP 1차에서 위험한 irreversible action을 줄일 수 있다.
 - 자동 완전 삭제 시점을 `permanentDeleteAt`으로 고정하면 휴지통 UI, 배치 작업, 알림 기준이 명확해진다.
 
 구현 영향:
 
 - soft delete 대상 모델은 `deletedAt`과 `permanentDeleteAt`을 함께 가진다.
-- 일반 삭제 API는 `deletedAt`과 `permanentDeleteAt`만 갱신한다.
+- `Tag`와 `TagAssignment`는 soft delete 대상에서 제외한다. 태그 삭제와 태그 연결 해제는 휴지통 이동이 아니라 hard delete로 처리한다.
+- `Tag` 생성/수정/삭제와 `TagAssignment` 연결/해제는 모두 `TagLog`에 append-only로 남긴다.
+- `Tag` 삭제 시 active `TagAssignment`가 있으면 각 연결에 대해 `TagLog(TAG_UNASSIGNED)`를 먼저 남기고, 이어서 `TagLog(TAG_DELETED)`를 남긴 뒤 `TagAssignment`와 `Tag`를 hard delete한다.
+- `TagLog`는 `tagId`, `assignmentId`, 태그명/색상 스냅샷, 대상 type/id/title 스냅샷을 저장하고, hard delete된 `Tag`와 `TagAssignment` 이후에도 남아야 하므로 두 모델에 FK를 걸지 않는다.
+- soft delete 대상의 일반 삭제 API는 `deletedAt`과 `permanentDeleteAt`만 갱신한다.
 - 휴지통 목록은 `permanentDeleteAt`을 반환해 완전 삭제 예정일을 표시한다.
 - 휴지통 복구 API는 `deletedAt`과 `permanentDeleteAt`을 `null`로 되돌린다.
 - 사용자 즉시 완전 삭제 API가 호출되면 MVP 1차에서는 `PermanentDeleteNotAllowed` 409를 반환한다.
 - 30일 경과 리소스를 hard delete하는 시스템 job은 사용자 API와 분리한다.
+- 회원 탈퇴 API는 현재 사용자의 `User`를 soft delete하고 active session을 revoke한다.
+- Admin 사용자 상태 변경 API에서 `status = DELETED`는 강제 계정 삭제로 해석하며, 사유 필수와 `AuditLog` 기록을 요구한다.
+- Admin이 삭제 계정을 30일 이내 `ACTIVE`로 변경하면 계정 복구로 처리하고, 복구 사유와 `AuditLog`를 남긴다.
 
 ### D22. 도메인별 Memo 기록과 민감정보 저장 위치
 
@@ -861,7 +893,7 @@ APP_REFRESH_COOKIE_DOMAIN=""
 - 삭제된 데이터는 통합검색 기본 결과에서 제외한다. 휴지통 데이터는 휴지통 화면/API에서만 조회한다.
 - 검색어는 trim 후 2자 이상부터 실행한다. 1자 이하는 검색 대신 최근 항목 또는 빈 상태를 표시한다.
 - 검색 결과는 type별 group으로 묶고, 기본 limit은 type별 최대 5개로 둔다.
-- Memo 원문, `MeetingNote.rawInput`, Admin 민감 원문은 통합검색 결과의 title/subtitle에 노출하지 않는다.
+- Memo 원문, `MeetingNote.rawText`, Admin 민감 원문은 통합검색 결과의 title/subtitle에 노출하지 않는다.
 
 선택 이유:
 
@@ -875,6 +907,52 @@ APP_REFRESH_COOKIE_DOMAIN=""
 - `SearchAllRequest.limit`은 type별 limit으로 해석하고 기본값 5를 사용한다.
 - 검색 query는 모든 대상에서 `deletedAt IS NULL`을 기본 조건으로 둔다.
 - `SearchAllResponse.groups[]`는 type별 결과를 반환하고, 각 item은 `title`, `subtitle`, `targetId`, 필요 시 `targetPath`를 포함한다.
+
+### D27. Notification 실제 발송 범위
+
+결정:
+
+- MVP 1차에서 앱 내부 알림 데이터 생성뿐 아니라 이메일 발송과 브라우저 푸시 발송을 모두 실제 구현한다.
+- 이메일 발송은 `EmailDeliveryPort` 뒤의 SMTP adapter를 기본 실제 구현으로 둔다.
+- 브라우저 푸시는 `BrowserPushPort` 뒤의 Web Push VAPID adapter를 기본 실제 구현으로 둔다.
+- User Web은 service worker, push permission 요청, browser push subscription 등록/해제를 구현한다.
+- Backend는 browser push subscription endpoint/key를 `BrowserPushSubscription`에 저장한다.
+- `BrowserPushSubscription.endpoint`, `p256dh`, `auth` 값은 민감 가능 데이터이므로 endpoint hash와 암호화된 ciphertext로 저장한다.
+- 자동 테스트는 email/web push 실제 provider를 항상 호출하지 않고 stub adapter를 사용할 수 있다. 단, 별도 provider smoke test는 개발용 SMTP/VAPID credential로 실제 발송 또는 delivery request 성공을 확인한다.
+- 알림 발송 실패는 `Notification.status = FAILED`와 metadata에 provider error summary를 저장하고, 원문 민감정보는 log에 남기지 않는다.
+
+선택 이유:
+
+- 일정/딜/다음 행동 알림은 실제 도달성이 중요하므로 MVP에서 email/browser push까지 검증해야 한다.
+- SMTP와 Web Push VAPID는 특정 SaaS vendor에 강하게 묶이지 않으면서 실제 발송을 구현할 수 있다.
+- port/adapter 경계를 유지하면 운영 전 provider 교체와 테스트 stub 주입이 가능하다.
+
+구현 영향:
+
+- `.env.example`에는 SMTP와 VAPID 설정을 포함한다.
+- `Notification` 생성 job과 발송 job은 분리할 수 있으며, 발송 job은 `PENDING`이고 `scheduledAt <= now`인 알림을 channel별 adapter로 전달한다.
+- email 비활성 사용자는 email channel 알림을 만들지 않거나 `CANCELED` 처리한다.
+- browser push 비활성 또는 active subscription이 없는 사용자는 browser push channel 알림을 만들지 않거나 `CANCELED` 처리한다.
+- browser push subscription 해제는 subscription을 hard delete하지 않고 `REVOKED`로 바꿔 중복 등록과 장애 추적을 제어한다.
+- provider error, timeout, retry 기준, request/response logging redaction을 adapter별로 정의한다.
+
+```env
+SMTP_HOST=""
+SMTP_PORT="587"
+SMTP_SECURE="false"
+SMTP_USER=""
+SMTP_PASSWORD=""
+SMTP_FROM_EMAIL=""
+SMTP_FROM_NAME=""
+
+WEB_PUSH_VAPID_PUBLIC_KEY=""
+WEB_PUSH_VAPID_PRIVATE_KEY=""
+WEB_PUSH_VAPID_SUBJECT="mailto:admin@example.com"
+
+NOTIFICATION_DELIVERY_BATCH_SIZE="100"
+NOTIFICATION_DELIVERY_RETRY_COUNT="2"
+NOTIFICATION_DELIVERY_TIMEOUT_MS="10000"
+```
 
 ## 3. 아직 확정되지 않은 결정
 

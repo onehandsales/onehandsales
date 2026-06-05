@@ -308,6 +308,7 @@ src/shared/api/
 - 거래처 상세 page
 - 연락처/이메일 표시와 복사 버튼
 - Log 기록 영역
+- Log 기록 영역은 거래처 상세 API 응답이 아니라 `GET /api/contacts/:contactId/logs`를 별도 호출해 표시
 - Memo 기록 영역
 - Memo 민감 경고 UI
 - 명함 OCR 진입점
@@ -352,6 +353,7 @@ src/shared/api/
 - 제품 연결 타입 표시
 - 제품 연결 추가/해제 UI
 - 제품 Log 기록 영역
+- 제품 Log 기록 영역은 제품 상세 API 응답이 아니라 `GET /api/products/:productId/logs`를 별도 호출해 표시
 
 ### 완료 기준
 
@@ -594,12 +596,17 @@ src/shared/api/
 - 소셜 계정 직접 연결/해제는 MVP 이후 후속 작업
 - Google Calendar 연결
 - 알림 기본값
+- email 알림 on/off
+- browser push 권한 요청
+- browser push service worker 등록
+- browser push subscription 등록/해제
 - 민감정보 저장 경고 설정
 - 로그아웃
 
 ### 완료 기준
 
 - 사용자가 알림과 외부 연결 상태를 확인할 수 있다.
+- browser push 권한 상태와 구독 상태를 확인하고 변경할 수 있다.
 
 ## 17. User Web E2E
 
@@ -626,7 +633,7 @@ src/shared/api/
 ### 완료 기준
 
 - PR에서는 smoke E2E를 안정적으로 실행할 수 있다.
-- PR smoke E2E는 외부 Provider를 stub/mock으로 처리할 수 있고, 별도 provider smoke에서 실제 OpenAI/OCR/Google Calendar 연동을 확인한다.
+- PR smoke E2E는 외부 Provider를 stub/mock으로 처리할 수 있고, 별도 provider smoke에서 실제 OpenAI/OCR/Google Calendar/SMTP/Web Push VAPID 연동을 확인한다.
 
 ## 18. 관련 문서
 

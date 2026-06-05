@@ -402,7 +402,7 @@ adminApiClient
 ### 대상
 
 - 사용자 정지
-- 사용자 삭제 또는 복구
+- 사용자 강제 삭제 또는 30일 이내 계정 복구
 - 민감정보 원문 보기
 - 강제 데이터 수정
 - 수동 결제 상태 변경
@@ -412,6 +412,8 @@ adminApiClient
 
 - AlertDialog 기반 확인
 - 사유 입력이 필요한 액션 구분
+- 사용자 강제 삭제 시 `DELETED` 상태와 완전 삭제 예정일 표시
+- 삭제 계정 복구는 `permanentDeleteAt` 이전에만 가능하게 표시
 - mutation 성공/실패 처리
 - client log에 PII와 reason text 남기지 않음
 

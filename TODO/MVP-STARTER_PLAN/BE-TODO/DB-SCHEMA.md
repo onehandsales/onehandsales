@@ -4,14 +4,17 @@
 
 이 문서는 MVP 구현에 필요한 데이터베이스 스키마 초안을 정리한다.
 
-기준은 Prisma와 PostgreSQL이다. 실제 구현 시 `BE/prisma/schema.prisma`에 반영하되, migration 적용 후에는 migration 파일을 수정하거나 삭제하지 않는다.
+기준은 Prisma와 PostgreSQL이다. managed business DB는 Supabase Cloud PostgreSQL이고, NestJS Backend가 Prisma로 직접 접속해 application layer에서 transaction을 관리한다. local/integration/E2E test DB는 Docker PostgreSQL을 사용할 수 있다. 실제 구현 시 `BE/prisma/schema.prisma`에 반영하되, migration 적용 후에는 migration 파일을 수정하거나 삭제하지 않는다.
 
 ## 2. 설계 원칙
 
 - 기본 PK는 UUID를 사용한다.
 - 사용자 소유 데이터는 반드시 `userId`를 가진다.
-- 사용자 또는 Admin이 삭제 API로 지우는 모든 삭제 대상 리소스는 `deletedAt`으로 soft delete한다.
+- 사용자 또는 Admin이 삭제 API로 지우는 영속 삭제 대상 리소스는 `deletedAt`으로 soft delete한다.
+- `Tag`와 `TagAssignment`는 분류/연결 상태 데이터로 보고 hard delete한다. 대신 생성, 수정, 삭제, 연결, 연결 해제 이력은 `TagLog`에 append-only로 남긴다.
+- `TagLog`는 삭제된 `Tag`와 `TagAssignment` 이후에도 남아야 하므로 `tagId`, `assignmentId`, 대상 스냅샷을 값으로 저장하고 `Tag`/`TagAssignment` FK를 걸지 않는다.
 - soft delete 시 `permanentDeleteAt`을 `deletedAt + 30일`로 기록하고, 30일 경과 후 시스템 자동 작업이 완전 삭제한다.
+- 회원 탈퇴와 Admin 강제 사용자 삭제도 `User.status = DELETED`, `User.deletedAt`, `User.permanentDeleteAt`을 함께 기록하는 계정 soft delete로 처리한다.
 - MVP 1차에서 사용자가 직접 즉시 완전 삭제하는 API와 UI는 제공하지 않는다.
 - 주요 테이블은 `createdAt`, `updatedAt`을 가진다.
 - 확장 데이터는 `metadata Json?`으로 준비한다.
@@ -45,6 +48,7 @@ User
   ├─ ExportJob
   ├─ Tag
   ├─ TagAssignment
+  ├─ TagLog
   ├─ PersonalMemo
   ├─ Notification
   ├─ ExternalCalendarConnection
@@ -134,6 +138,14 @@ enum TagTargetType {
   MEETING_NOTE
 }
 
+enum TagLogAction {
+  TAG_CREATED
+  TAG_UPDATED
+  TAG_DELETED
+  TAG_ASSIGNED
+  TAG_UNASSIGNED
+}
+
 enum PersonalMemoTargetType {
   COMPANY
   CONTACT
@@ -184,6 +196,11 @@ enum NotificationStatus {
   FAILED
   READ
   CANCELED
+}
+
+enum BrowserPushSubscriptionStatus {
+  ACTIVE
+  REVOKED
 }
 
 enum ImportTargetType {
@@ -324,8 +341,10 @@ model User {
   businessCardScans     BusinessCardScan[]
   tags                  Tag[]
   tagAssignments        TagAssignment[]
+  tagLogs               TagLog[]
   personalMemos         PersonalMemo[]
   notifications         Notification[]
+  browserPushSubscriptions BrowserPushSubscription[]
   importJobs            ImportJob[]
   exportJobs            ExportJob[]
   externalCalendars     ExternalCalendarConnection[]
@@ -741,11 +760,11 @@ model MeetingNote {
   department            String?
   productName           String?
   stageText             String?
-  detail                String?
-  futurePlan            String?
+  details               String?
+  nextPlan              String?
   requiredAction        String?
-  rawInputCiphertext    String
-  rawInputKeyVersion    String
+  rawTextCiphertext     String
+  rawTextKeyVersion     String
   aiOutput              Json?
   metadata              Json?
   createdAt             DateTime  @default(now())
@@ -807,16 +826,12 @@ model Tag {
   color        String?
   createdAt    DateTime        @default(now())
   updatedAt    DateTime        @updatedAt
-  deletedAt    DateTime?
-  permanentDeleteAt DateTime?
 
   user         User            @relation(fields: [userId], references: [id])
   assignments  TagAssignment[]
 
   @@unique([userId, name])
   @@index([userId])
-  @@index([userId, deletedAt])
-  @@index([userId, permanentDeleteAt])
 }
 
 model TagAssignment {
@@ -834,6 +849,31 @@ model TagAssignment {
   @@index([userId])
   @@index([targetType, targetId])
   @@index([userId, targetType, targetId])
+}
+
+model TagLog {
+  id                   String        @id @default(uuid()) @db.Uuid
+  userId               String        @db.Uuid
+  tagId                String        @db.Uuid
+  assignmentId         String?       @db.Uuid
+  action               TagLogAction
+  tagNameSnapshot      String
+  tagColorSnapshot     String?
+  targetType           TagTargetType?
+  targetId             String?       @db.Uuid
+  targetTitleSnapshot  String?
+  metadata             Json?
+  occurredAt           DateTime      @default(now())
+  createdAt            DateTime      @default(now())
+
+  user                 User          @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+  @@index([tagId])
+  @@index([assignmentId])
+  @@index([userId, action])
+  @@index([userId, targetType, targetId])
+  @@index([userId, occurredAt])
 }
 
 model PersonalMemo {
@@ -885,6 +925,28 @@ model Notification {
   @@index([userId, scheduledAt])
   @@index([userId, status])
   @@index([targetType, targetId])
+}
+
+model BrowserPushSubscription {
+  id                    String                         @id @default(uuid()) @db.Uuid
+  userId                String                         @db.Uuid
+  endpointHash          String                         @unique
+  endpointCiphertext    String
+  p256dhCiphertext      String
+  authCiphertext        String
+  contentKeyVersion     String
+  status                BrowserPushSubscriptionStatus  @default(ACTIVE)
+  userAgent             String?
+  deviceLabel           String?
+  lastUsedAt            DateTime?
+  revokedAt             DateTime?
+  createdAt             DateTime                       @default(now())
+  updatedAt             DateTime                       @updatedAt
+
+  user                  User                           @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+  @@index([userId, status])
 }
 
 model ImportJob {
@@ -1090,7 +1152,7 @@ G00에서 파일 저장소 1차 전략은 `Supabase Storage adapter + StoragePor
 
 ### 민감정보 암호화
 
-G00에서 MVP 1차 application-level encryption 대상은 `PersonalMemo.content`와 `MeetingNote.rawInput`으로 확정했다.
+G00에서 MVP 1차 application-level encryption 대상은 `PersonalMemo.content`, `MeetingNote.rawText`, `BrowserPushSubscription.endpoint/p256dh/auth`로 확정했다.
 
 따라서 MVP 1차에서는 다음 기준을 따른다.
 
@@ -1099,9 +1161,10 @@ G00에서 MVP 1차 application-level encryption 대상은 `PersonalMemo.content`
 - Log는 회사 `CompanyLog`, 거래처 `ContactLog`, 제품 `ProductLog`, 딜 `DealActivity`로 도메인별 별도 모델에 저장한다.
 - Memo는 각 엔티티의 단일 `memo` 필드에 섞지 않고 기록 테이블 `PersonalMemo`에 저장한다.
 - `PersonalMemo`는 회사/거래처/제품/딜 Memo 원문을 `contentCiphertext`, `contentKeyVersion`으로 저장한다.
-- `MeetingNote`는 회의록 원문 입력값을 `rawInputCiphertext`, `rawInputKeyVersion`으로 저장한다.
+- `MeetingNote`는 회의록 원문 입력값을 `rawTextCiphertext`, `rawTextKeyVersion`으로 저장한다.
 - DB에는 Memo 원문과 회의록 원문 입력값을 평문으로 저장하지 않는다.
 - `EncryptionPort`가 암호화와 복호화를 담당하고, 구체 crypto library는 infrastructure adapter 내부에 둔다.
+- `PersonalMemo.content`, `MeetingNote.rawText`, `BrowserPushSubscription.endpoint/p256dh/auth`는 MVP 1차 암호화 대상이다.
 - 전화번호, 이메일, 명함 OCR 결과, 회의록 구조화 요약 필드는 MVP 1차 암호화 대상에서 제외하되 Admin 목록/상세에서는 마스킹한다.
 - key rotation은 key version 필드로 확장 가능하게 두고 실제 rotation 운영은 MVP 이후 별도 작업으로 분리한다.
 
@@ -1116,7 +1179,7 @@ G00에서 MVP 1차 application-level encryption 대상은 `PersonalMemo.content`
 ## 7. 구현 체크리스트
 
 - 모든 사용자 소유 테이블에 `userId`가 있는가?
-- 주요 업무 데이터에 `deletedAt`이 있는가?
+- 모든 영속 삭제 대상 리소스에 `deletedAt`과 `permanentDeleteAt`이 있는가?
 - FK 컬럼에 index가 있는가?
 - Admin 조회용 필터에 필요한 index가 있는가?
 - 민감 원문 조회 대상이 `AuditLog`와 연결될 수 있는가?
@@ -1149,10 +1212,12 @@ G00에서 MVP 1차 application-level encryption 대상은 `PersonalMemo.content`
 | `ScheduleReminder` | 일정 알림 예약 | 일정 알림 | 민감 아님 | Schedule 소유권 상속 |
 | `MeetingNote` | 회의록 | 회의록 AI 생성/저장/딜 연결 | 원문 입력값은 암호화, 9개 구조화 항목도 민감 가능 | 딜 없이 저장 가능, 딜 연결 시 활동 로그 |
 | `BusinessCardScan` | 명함 OCR 처리 결과 | 명함 OCR | 이미지 storage metadata, OCR 결과 민감 | 자동 저장 금지, confirm 필요 |
-| `Tag` | 사용자 태그 | 주요 엔티티 태그 | 민감 아님 | userId ownership |
-| `TagAssignment` | 태그 연결 | 태그 필터/표시 | 연결 관계 민감 가능 | targetType/targetId ownership 검증 |
+| `Tag` | 사용자 태그 | 주요 엔티티 태그 | 민감 아님 | userId ownership. 분류 설정 데이터이므로 삭제 시 hard delete하고 `TagLog`에 이력 저장 |
+| `TagAssignment` | 태그 연결 | 태그 필터/표시 | 연결 관계 민감 가능 | targetType/targetId ownership 검증. 장바구니 항목처럼 현재 연결 상태를 표현하므로 연결 해제 시 hard delete하고 `TagLog`에 이력 저장 |
+| `TagLog` | 태그와 태그 연결 변경 이력 | 태그 이력 확인, 장애/CS 확인 | 태그명과 대상 스냅샷은 민감 가능 | append-only. Tag/TagAssignment hard delete 후에도 남아야 하므로 Tag/TagAssignment FK 없음 |
 | `PersonalMemo` | 도메인 Memo 기록 | 회사/거래처/제품/딜별 주관 메모 | 원문 암호화 대상 | Admin 기본 마스킹, 원문 조회 audit 필요 |
-| `Notification` | 알림 데이터 | 알림 목록/읽음 | target 내용에 따라 민감 가능 | 사용자별 조회 |
+| `Notification` | 알림 데이터와 발송 상태 | 알림 목록/읽음, email/browser push 발송 | target 내용에 따라 민감 가능 | 사용자별 조회, channel/status/scheduledAt 기준 발송 job |
+| `BrowserPushSubscription` | 브라우저 push 구독 정보 | Push 구독 등록/해제, browser push 발송 | endpoint와 key는 민감 가능 | endpoint hash unique, endpoint/key는 암호화 저장, userId/status index |
 | `ImportJob` | Import 작업 | Import flow | 업로드 파일 metadata/매핑 민감 가능 | preview 확인 후 실행, confirm은 all-or-nothing |
 | `ImportJobRow` | Import row별 preview/결과 | Import preview/결과 화면 | row 원본 데이터 민감 가능 | Excel/CSV 행 번호와 실패 사유 추적 |
 | `ExportJob` | Export 작업 | Export flow | export 파일 metadata와 민감 데이터 포함 여부 중요 | includeSensitiveData와 confirm 분리 |

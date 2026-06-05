@@ -82,22 +82,24 @@ P6. 테스트와 릴리즈 준비
 - PostgreSQL Docker image version 확정값: `postgres:17-alpine`
 - local DB 세부값 확정값: `sales_b2c_dev`, `sales_b2c_test`, user `sales_b2c`, password `sales_b2c_password`, port `5432`
 - Supabase 사용 방식 결정
-- Supabase 사용 방식 확정값: MVP 1차에서는 `Auth`와 파일 저장소 adapter만 사용하고 business DB는 Docker PostgreSQL/Prisma가 관리한다.
-- Supabase Auth 개발 환경 확정값: 개발용 `Remote Supabase project`를 사용한다.
+- Supabase 사용 방식 확정값: MVP 1차에서는 Supabase Cloud의 `Auth`, `PostgreSQL`, 파일 저장소 adapter를 사용한다. managed business DB는 Supabase Cloud PostgreSQL이고 NestJS Backend가 Prisma로 직접 접속해 transaction을 application layer에서 관리한다.
+- local/integration/E2E test DB 확정값: 재현성과 안전한 reset을 위해 Docker PostgreSQL을 사용할 수 있다.
+- Supabase Cloud 개발 환경 확정값: 개발용 `Remote Supabase project`를 사용한다.
 - 인증 구현 1차 전략 결정
 - 인증 구현 1차 전략 확정값: `Supabase Auth 외부 Provider + Backend token exchange + Backend 발급 App Bearer Token + local User/AuthDevice/AuthSession`
 - FE token 전달/보관 방식 결정
 - FE token 전달/보관 방식 확정값: FE는 Supabase access token을 token exchange API에만 전달하고, business API에는 Backend가 발급한 App access token을 `Authorization: Bearer` header로 전달한다. App access token은 memory에만 저장하고, refresh token은 httpOnly cookie와 `AuthSession.refreshTokenHash`로 관리한다.
 - FE/BE 배포 도메인 전략 확정값: local/preview는 분리 domain을 허용하고, production은 같은 parent domain 아래 `app`, `admin`, `api` subdomain으로 고정한다.
 - 삭제된 리소스 조회/수정 응답 정책 확정값: 기존 상세 URL 조회는 `410 DeletedResource`, 수정/상태 변경/재삭제 같은 변경 요청은 `409 DeletedResource`
-- soft delete, restore, hard delete, 휴지통 완전 삭제 정책 확정값: 모든 삭제 대상 리소스는 soft delete하고, 30일 휴지통 보관 후 시스템이 자동 완전 삭제하며, MVP 1차에서 사용자 즉시 완전 삭제는 제공하지 않는다.
+- soft delete, restore, hard delete, 휴지통 완전 삭제 정책 확정값: 모든 영속 삭제 대상 리소스는 soft delete하고, 30일 휴지통 보관 후 시스템이 자동 완전 삭제하며, MVP 1차에서 사용자 즉시 완전 삭제는 제공하지 않는다. 단, `Tag`와 `TagAssignment`는 분류/연결 상태 데이터이므로 hard delete하고 `TagLog`에 이력을 남긴다.
 - 도메인별 Memo 기록과 민감정보 저장 위치 확정값: `Company`, `Contact`, `Product`, `Deal`은 Log와 Memo 기록을 각각 가질 수 있다. Log는 객관적 사실/변경/만남/소식 기록이고, Memo는 사용자의 주관적 생각/판단 기록이다. Memo는 각 엔티티의 단일 `memo` 필드가 아니라 `PersonalMemo` 기록 테이블에 암호화 저장한다.
 - 도메인별 Log 구현 단위 확정값: 회사는 `CompanyLog`, 거래처는 `ContactLog`, 제품은 `ProductLog`, 딜은 `DealActivity`를 사용한다. 각 도메인별 사용자 개인 Memo Log는 `PersonalMemo`로 별도 저장하고 상세 화면에서 Log와 Memo 섹션을 분리한다.
 - 일정 기본 조회 기간과 view mode 확정값: `/api/schedules`의 `from`, `to`가 없으면 사용자 timezone 기준 이번 달 1일~말일 범위를 조회한다. User Web `/schedules`는 Google Calendar처럼 월간 캘린더를 기본으로 보여주고 월간/주간 view mode 전환을 제공한다. 주간 보고서/Export는 `/api/schedules/week`와 `/api/schedules/week/export`로 분리한다.
-- 민감정보 암호화 adapter 적용 범위 확정값: `PersonalMemo.content`와 `MeetingNote.rawInput`부터 application-level encryption 적용
+- 민감정보 암호화 adapter 적용 범위 확정값: `PersonalMemo.content`, `MeetingNote.rawText`, `BrowserPushSubscription.endpoint/p256dh/auth`부터 application-level encryption 적용
 - Admin masking, 원문 조회, AuditLog transaction 정책 확정값: Admin 목록/기본 상세는 민감 원문을 마스킹하거나 존재 여부만 반환하고, 원문 조회는 사유 필수 전용 API에서 대상 조회와 `AuditLog` 생성을 같은 transaction으로 처리한다.
 - Import 처리 방식 확정값: preview/validation 후 확정 실행, 확정 실행 중 row 오류 발생 시 전체 rollback
 - Google Calendar, OCR, OpenAI 실연동 범위 확정값: MVP 기능은 처음부터 실제 provider를 호출하고, mock/stub은 자동 테스트와 장애 대체 검증 용도로만 사용한다.
+- Notification 실제 발송 범위 확정값: MVP 1차에서 email과 browser push를 모두 실제 발송한다. email은 SMTP adapter, browser push는 Web Push VAPID adapter를 기본 실제 구현으로 두고, mock/stub은 자동 테스트와 장애 재현용으로만 사용한다.
 - 통합검색 기본 정책 확정값: 회사/거래처/제품/딜/일정/회의록을 검색한다. 삭제 데이터는 제외하고, 검색어 2자 이상, type별 최대 5개, 민감 원문 비노출을 기본으로 한다.
 - `.env.example` 기준 변수 목록 정리
 
@@ -851,23 +853,28 @@ P6. 테스트와 릴리즈 준비
 - Notification Backend 기본 CRUD 또는 조회
 - 일정 알림 생성
 - 다음 행동 알림 생성
+- 이메일 실제 발송
+- browser push 실제 발송
+- browser push subscription 등록/해제
+- User Web service worker와 push permission 처리
 - User Web 알림 목록/읽음 처리
-- 실제 email/browser push adapter는 mock
+- 자동 테스트용 email/browser push stub adapter
 
 제외 범위:
 
-- 실제 이메일 발송
-- 실제 browser push subscription
+- 특정 유료 email SaaS vendor 고정
+- native mobile push
 
 완료 기준:
 
 - 알림 데이터가 생성되고 User Web에서 확인할 수 있다.
+- email/browser push가 실제 adapter를 통해 발송된다.
 
 ### G28. Trash 기본 흐름
 
 목적:
 
-- 삭제된 주요 데이터를 휴지통에서 확인하고 복구할 수 있게 한다.
+- 삭제된 모든 soft delete 대상 데이터를 휴지통에서 확인하고 복구할 수 있게 한다.
 
 포함 범위:
 
@@ -1038,7 +1045,7 @@ P6. 테스트와 릴리즈 준비
 
 제외 범위:
 
-- 기본 smoke E2E에서의 실제 OpenAI/OCR/Google Calendar 호출
+- 기본 smoke E2E에서의 실제 OpenAI/OCR/Google Calendar/SMTP/Web Push VAPID 호출
 
 완료 기준:
 

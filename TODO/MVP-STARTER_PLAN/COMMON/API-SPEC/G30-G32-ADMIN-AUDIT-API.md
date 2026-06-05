@@ -20,7 +20,7 @@ Admin API는 운영 편의를 위해 존재하지만, 사용자 민감정보를 
 - 모든 Admin API는 `AuthGuard`와 `AdminGuard`를 통과해야 한다.
 - Admin 목록/상세 API는 민감정보를 기본 마스킹한다.
 - 민감정보 원문 조회 API는 `reason`을 필수로 받고, 같은 transaction에서 `AuditLog`를 생성한다.
-- 암호화된 민감 필드(`PersonalMemo.content`, `MeetingNote.rawInput`)는 `EncryptionPort`로 복호화하며, 원문 조회 승인 전에는 복호화하지 않는다.
+- 암호화된 민감 필드(`PersonalMemo.content`, `MeetingNote.rawText`, `BrowserPushSubscription.endpoint/p256dh/auth`)는 `EncryptionPort`로 복호화하며, 원문 조회 승인 전에는 복호화하지 않는다.
 - client log, server application log에 원문 PII와 reason 전문을 남기지 않는다.
 
 ## 4. Admin 조회 API
@@ -46,7 +46,7 @@ Admin API는 운영 편의를 위해 존재하지만, 사용자 민감정보를 
 |---|---|
 | `ListAdminUsersRequest` | `page?:number`, `pageSize?:number`, `search?:string`, `status?:UserStatus`, `role?:UserRole` |
 | `GetAdminUserRequest` | `userId:string path 필수` |
-| `UpdateAdminUserStatusRequest` | `userId:string path 필수`, `status:ACTIVE|SUSPENDED|DELETED`, `reason:string 필수` |
+| `UpdateAdminUserStatusRequest` | `userId:string path 필수`, `status:ACTIVE|SUSPENDED|DELETED`, `reason:string 필수`. `DELETED`는 Admin 강제 계정 삭제, `DELETED -> ACTIVE`는 30일 이내 계정 복구 |
 | `ListAdminCompaniesRequest` | `page?:number`, `pageSize?:number`, `search?:string`, `userId?:string`, `includeDeleted?:boolean` |
 | `ListAdminContactsRequest` | `page?:number`, `pageSize?:number`, `search?:string`, `userId?:string`, `companyId?:string`, `includeDeleted?:boolean` |
 | `ListAdminProductsRequest` | `page?:number`, `pageSize?:number`, `search?:string`, `userId?:string`, `includeDeleted?:boolean` |
@@ -57,7 +57,7 @@ Admin API는 운영 편의를 위해 존재하지만, 사용자 민감정보를 
 | Response 이름 | 주요 필드 |
 |---|---|
 | `AdminDashboardResponse` | `userCount`, `activeUserCount`, `companyCount`, `contactCount`, `productCount`, `dealCount`, `recentAuditLogs[]` |
-| `AdminUserResponse` | `id`, `name`, `emailMasked`, `role`, `status`, `createdAt`, `lastLoginAt` |
+| `AdminUserResponse` | `id`, `name`, `emailMasked`, `role`, `status`, `createdAt`, `lastLoginAt`, `deletedAt`, `permanentDeleteAt` |
 | `AdminCompanyListResponse` | `items[]`, `items[].id`, `items[].userId`, `items[].userName`, `items[].name`, `items[].industry`, `items[].deletedAt`, `items[].permanentDeleteAt`, pagination |
 | `AdminContactListResponse` | `items[]`, `items[].name`, `items[].companyName`, `items[].phoneMasked`, `items[].emailMasked`, `items[].hasMemo`, `items[].memoCount`, `items[].latestMemoAt`, `items[].deletedAt`, `items[].permanentDeleteAt`, pagination |
 | `AdminProductListResponse` | `items[]`, `items[].name`, `items[].category`, `items[].unitPriceMasked`, `items[].currency`, `items[].deletedAt`, `items[].permanentDeleteAt`, pagination |
@@ -71,13 +71,15 @@ Admin API는 운영 편의를 위해 존재하지만, 사용자 민감정보를 
 4. 민감 필드는 기본 마스킹한다.
 5. 원문 데이터가 필요한 경우 목록/상세 API에서 내려주지 않고 원문 조회 API를 사용하게 한다.
 6. 사용자 상태 변경은 위험 액션이므로 사유를 필수로 받고 `AuditLog`를 기록한다.
+7. `status = DELETED` 변경은 Admin 강제 계정 삭제로 처리하며 `User.deletedAt`, `User.permanentDeleteAt = deletedAt + 30일`을 함께 기록하고 active `AuthSession`을 revoke한다.
+8. `DELETED` 사용자를 `ACTIVE`로 변경하는 요청은 `permanentDeleteAt` 이전에만 허용하며, `deletedAt`과 `permanentDeleteAt`을 null로 되돌린다.
 
 - 생성: AuditLog. 사용자 상태 변경 시
-- 조회: User, Company, Contact, Product, Deal, UserSetting
-- 수정: User.status
-- 삭제: 없음
-- 감사 로그: 상태 변경, 위험 액션
-- transaction: 사용자 상태 변경과 AuditLog 생성은 transaction 필요
+- 조회: User, Company, Contact, Product, Deal, UserSetting, AuthSession
+- 수정: User.status, User.deletedAt, User.permanentDeleteAt, AuthSession.revokedAt
+- 삭제: hard delete 없음
+- 감사 로그: 상태 변경, Admin 강제 삭제, Admin 계정 복구, 위험 액션
+- transaction: 사용자 상태 변경, 계정 삭제/복구, AuthSession revoke, AuditLog 생성은 transaction 필요
 
 ### 4.4 Admin 조회 에러 응답
 
@@ -87,6 +89,8 @@ Admin API는 운영 편의를 위해 존재하지만, 사용자 민감정보를 
 | Admin 아님 | `Forbidden` | 403 |
 | 대상 사용자 없음 | `UserNotFound` | 404 |
 | 상태 변경 사유 없음 | `AuditReasonRequired` | 400 |
+| 자기 자신 상태 변경 시도 | `CannotChangeSelf` | 409 |
+| 30일 복구 가능 기간이 지난 삭제 계정 | `DeletedUserExpired` | 410 |
 
 ## 5. 민감정보 원문 조회 API
 
