@@ -55,7 +55,7 @@
 | Response 이름 | 주요 필드 |
 |---|---|
 | `ScheduleListResponse` | `rangeStart`, `rangeEnd`, `items:ScheduleResponse[]`, pagination 또는 날짜 그룹 |
-| `ScheduleResponse` | `id`, `title`, `startAt`, `endAt`, `location`, `source`, `dealId`, `dealTitle`, `companyId`, `companyName`, `contactId`, `contactName`, `reminders`, `createdAt`, `updatedAt`, `deletedAt` |
+| `ScheduleResponse` | `id`, `title`, `startAt`, `endAt`, `location`, `source`, `dealId`, `dealTitle`, `companyId`, `companyName`, `contactId`, `contactName`, `reminders`, `createdAt`, `updatedAt`, `deletedAt`, `permanentDeleteAt` |
 | `WeeklyScheduleResponse` | `weekStart`, `weekEnd`, `days[]`, `days[].schedules[]` |
 | `GoogleCalendarImportResponse` | `importedCount`, `skippedCount`, `createdScheduleIds[]` |
 
@@ -74,7 +74,7 @@
 - 생성: Schedule, ScheduleReminder, ExportJob
 - 조회: Schedule, Deal, Company, Contact, ExternalCalendarConnection
 - 수정: Schedule, ScheduleReminder
-- 삭제: Schedule.deletedAt
+- 삭제: Schedule.deletedAt, Schedule.permanentDeleteAt
 - transaction: 일정과 알림 생성 동시 처리 시 필요
 - 에러: `ScheduleNotFound` 404, `InvalidScheduleRange` 400, `OwnershipViolation` 403, `DeletedResource` 조회 410/변경 409, `ExternalCalendarNotConnected` 409
 
@@ -102,7 +102,7 @@
 | Response 이름 | 주요 필드 |
 |---|---|
 | `GeneratedMeetingNoteResponse` | `aiJobId`, `meetingDate`, `company`, `contact`, `department`, `item`, `stage`, `details`, `nextPlan`, `requiredAction`, `candidates` |
-| `MeetingNoteResponse` | `id`, `meetingDate`, `companyName`, `contactName`, `department`, `item`, `stage`, `details`, `nextPlan`, `requiredAction`, `dealId`, `dealTitle`, `createdAt`, `updatedAt`, `deletedAt` |
+| `MeetingNoteResponse` | `id`, `meetingDate`, `companyName`, `contactName`, `department`, `item`, `stage`, `details`, `nextPlan`, `requiredAction`, `dealId`, `dealTitle`, `createdAt`, `updatedAt`, `deletedAt`, `permanentDeleteAt` |
 
 ### MeetingNote 비즈니스 로직과 DB
 
@@ -117,7 +117,7 @@
 - 생성: MeetingNote, AiJob, DealActivity
 - 조회: MeetingNote, Deal, Company, Contact
 - 수정: MeetingNote
-- 삭제: MeetingNote.deletedAt
+- 삭제: MeetingNote.deletedAt, MeetingNote.permanentDeleteAt
 - transaction: 딜 연결과 DealActivity 생성은 transaction 필요
 - 에러: `MeetingNoteNotFound` 404, `DealNotFound` 404, `InvalidMeetingNoteGeneratedFields` 400, `OwnershipViolation` 403, `DeletedResource` 조회 410/변경 409
 
@@ -253,7 +253,7 @@
 - 생성: Notification
 - 조회: Company, Contact, Product, Deal, Schedule, MeetingNote, Notification
 - 수정: Notification, UserSetting, deletedAt 복구
-- 삭제: 완전 삭제 대상 모델
+- 삭제: 30일 경과 후 시스템 자동 완전 삭제 대상 모델
 - transaction: 휴지통 복구와 연결 데이터 복구 정책에 따라 필요
 - 에러: `NotificationNotFound` 404, `TrashItemNotFound` 404, `SearchQueryRequired` 400, `PermanentDeleteNotAllowed` 409
 

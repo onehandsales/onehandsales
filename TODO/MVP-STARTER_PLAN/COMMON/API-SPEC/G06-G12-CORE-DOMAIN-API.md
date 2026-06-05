@@ -35,6 +35,7 @@ G07, G09, G11, G13-G16의 화면 명세는 `COMMON/GOAL-SPECS`에서 이 API를 
 | `createdAt` | string | 생성일 |
 | `updatedAt` | string | 수정일 |
 | `deletedAt` | string 또는 null | soft delete 시각 |
+| `permanentDeleteAt` | string 또는 null | 시스템 자동 완전 삭제 예정 시각 |
 
 ### Log/Memo 공통 기준
 
@@ -51,7 +52,7 @@ G07, G09, G11, G13-G16의 화면 명세는 `COMMON/GOAL-SPECS`에서 이 API를 
 
 | 타입 | 필드 |
 |---|---|
-| `MemoResponse` | `id`, `targetType`, `targetId`, `memoDate`, `title`, `content`, `createdAt`, `updatedAt`, `deletedAt` |
+| `MemoResponse` | `id`, `targetType`, `targetId`, `memoDate`, `title`, `content`, `createdAt`, `updatedAt`, `deletedAt`, `permanentDeleteAt` |
 | `MemoSummary` | `hasMemo:boolean`, `memoCount:number`, `latestMemoAt?:string` |
 
 ### Memo 공통 API
@@ -103,7 +104,7 @@ G07, G09, G11, G13-G16의 화면 명세는 `COMMON/GOAL-SPECS`에서 이 API를 
 
 | Response 이름 | 주요 필드 |
 |---|---|
-| `CompanyResponse` | `id`, `name`, `industry`, `region`, `address`, `website`, `description`, `tags`, `hasMemo`, `memoCount`, `latestMemoAt`, `createdAt`, `updatedAt`, `deletedAt` |
+| `CompanyResponse` | `id`, `name`, `industry`, `region`, `address`, `website`, `description`, `tags`, `hasMemo`, `memoCount`, `latestMemoAt`, `createdAt`, `updatedAt`, `deletedAt`, `permanentDeleteAt` |
 | `CompanyDetailResponse` | `company:CompanyResponse`, `logs:CompanyLogResponse[]`, `memos:MemoResponse[]`, `contactCount`, `dealCount`, `productCount` |
 | `CompanyListResponse` | `items:CompanyResponse[]`, `page`, `pageSize`, `totalCount`, `hasNext` |
 | `CompanyLogResponse` | `id`, `companyId`, `loggedAt`, `title`, `content`, `createdAt`, `updatedAt` |
@@ -114,8 +115,8 @@ G07, G09, G11, G13-G16의 화면 명세는 `COMMON/GOAL-SPECS`에서 이 API를 
 2. 모든 조회/수정/삭제는 `userId`와 대상 ID를 함께 조건으로 검증한다.
 3. 목록은 `deletedAt = null`을 기본으로 조회하고, 휴지통 화면에서만 `includeDeleted = true`를 허용한다.
 4. 생성 시 같은 사용자 안에서 회사명 중복 후보를 검색할 수 있지만, MVP에서는 hard block이 아니라 후보 표시 정책으로 둔다.
-5. 삭제는 hard delete가 아니라 `deletedAt`을 기록한다.
-6. 복구는 `deletedAt`을 null로 되돌린다.
+5. 삭제는 hard delete가 아니라 `deletedAt`, `permanentDeleteAt`을 기록한다.
+6. 복구는 `deletedAt`, `permanentDeleteAt`을 null로 되돌린다.
 7. 회사 로그는 회사에 대해 확인된 객관적 사실/변경/소식으로 저장한다.
 8. `initialMemo`가 있으면 회사 생성과 같은 transaction에서 `PersonalMemo(targetType=COMPANY)`를 생성한다.
 9. 회사에 대한 사용자의 생각은 회사 로그가 아니라 Memo 기록으로 저장한다.
@@ -125,7 +126,7 @@ G07, G09, G11, G13-G16의 화면 명세는 `COMMON/GOAL-SPECS`에서 이 API를 
 - 생성: Company, CompanyLog, PersonalMemo
 - 조회: Company, CompanyLog, PersonalMemo, TagAssignment
 - 수정: Company, CompanyLog
-- 삭제: Company.deletedAt, CompanyLog.deletedAt. 모든 삭제 대상 리소스는 soft delete 후 30일 보관 정책을 따른다.
+- 삭제: Company.deletedAt/permanentDeleteAt, CompanyLog.deletedAt/permanentDeleteAt. 모든 삭제 대상 리소스는 soft delete 후 30일 보관 정책을 따른다.
 - 감사 로그: MVP User API에서는 필수 아님
 - transaction: 회사 생성과 태그 연결을 함께 처리할 때 transaction 필요
 
@@ -170,7 +171,7 @@ G07, G09, G11, G13-G16의 화면 명세는 `COMMON/GOAL-SPECS`에서 이 API를 
 
 | Response 이름 | 주요 필드 |
 |---|---|
-| `ContactResponse` | `id`, `name`, `companyId`, `companyName`, `department`, `position`, `phone`, `email`, `address`, `hasMemo`, `memoCount`, `latestMemoAt`, `createdAt`, `updatedAt`, `deletedAt` |
+| `ContactResponse` | `id`, `name`, `companyId`, `companyName`, `department`, `position`, `phone`, `email`, `address`, `hasMemo`, `memoCount`, `latestMemoAt`, `createdAt`, `updatedAt`, `deletedAt`, `permanentDeleteAt` |
 | `ContactDetailResponse` | `contact:ContactResponse`, `company?:CompanyResponse`, `logs:ContactLogResponse[]`, `memos:MemoResponse[]`, `relatedDealCount`, `relatedProductCount` |
 | `ContactListResponse` | `items:ContactResponse[]`, `page`, `pageSize`, `totalCount`, `hasNext` |
 | `ContactLogResponse` | `id`, `contactId`, `loggedAt`, `title`, `content`, `createdAt`, `updatedAt` |
@@ -192,7 +193,7 @@ G07, G09, G11, G13-G16의 화면 명세는 `COMMON/GOAL-SPECS`에서 이 API를 
 - 생성: Contact, ContactLog, PersonalMemo. `initialMemo`가 있으면 `PersonalMemo`에 암호화 저장
 - 조회: Contact, Company, ContactLog, PersonalMemo
 - 수정: Contact, ContactLog. Memo 수정은 별도 Memo API에서 처리
-- 삭제: Contact.deletedAt, ContactLog.deletedAt
+- 삭제: Contact.deletedAt/permanentDeleteAt, ContactLog.deletedAt/permanentDeleteAt
 - 감사 로그: Admin 원문 조회 시 AuditLog
 - transaction: Contact와 PersonalMemo 동시 저장 시 transaction 필요
 
@@ -239,9 +240,9 @@ G07, G09, G11, G13-G16의 화면 명세는 `COMMON/GOAL-SPECS`에서 이 API를 
 
 | Response 이름 | 주요 필드 |
 |---|---|
-| `ProductResponse` | `id`, `name`, `category`, `unitPrice`, `currency`, `description`, `hasMemo`, `memoCount`, `latestMemoAt`, `createdAt`, `updatedAt`, `deletedAt` |
+| `ProductResponse` | `id`, `name`, `category`, `unitPrice`, `currency`, `description`, `hasMemo`, `memoCount`, `latestMemoAt`, `createdAt`, `updatedAt`, `deletedAt`, `permanentDeleteAt` |
 | `ProductDetailResponse` | `product:ProductResponse`, `connections:ProductConnectionResponse[]`, `logs:ProductLogResponse[]`, `memos:MemoResponse[]` |
-| `ProductConnectionResponse` | `id`, `productId`, `targetType`, `targetId`, `targetName`, `connectionType`, `note` |
+| `ProductConnectionResponse` | `id`, `productId`, `targetType`, `targetId`, `targetName`, `connectionType`, `note`, `deletedAt`, `permanentDeleteAt` |
 | `ProductLogResponse` | `id`, `productId`, `loggedAt`, `title`, `content`, `createdAt`, `updatedAt` |
 | `ProductListResponse` | `items:ProductResponse[]`, `page`, `pageSize`, `totalCount`, `hasNext` |
 
@@ -261,7 +262,7 @@ G07, G09, G11, G13-G16의 화면 명세는 `COMMON/GOAL-SPECS`에서 이 API를 
 - 생성: Product, ProductLog, ProductConnection, PersonalMemo
 - 조회: Product, ProductLog, ProductConnection, Company, Contact, Deal, PersonalMemo
 - 수정: Product, ProductLog
-- 삭제: Product.deletedAt, ProductLog.deletedAt, ProductConnection
+- 삭제: Product.deletedAt/permanentDeleteAt, ProductLog.deletedAt/permanentDeleteAt, ProductConnection.deletedAt/permanentDeleteAt
 - 감사 로그: MVP User API에서는 필수 아님
 - transaction: 연결 생성 시 Product와 target ownership 조회 후 insert
 
@@ -312,9 +313,9 @@ G07, G09, G11, G13-G16의 화면 명세는 `COMMON/GOAL-SPECS`에서 이 API를 
 
 | Response 이름 | 주요 필드 |
 |---|---|
-| `DealResponse` | `id`, `title`, `companyId`, `companyName`, `contactId`, `contactName`, `amount`, `currency`, `stage`, `likelihoodStatus`, `likelihoodPercent`, `expectedCloseDate`, `nextActionText`, `nextActionDueAt`, `nextActionStatus`, `hasMemo`, `memoCount`, `latestMemoAt`, `createdAt`, `updatedAt`, `deletedAt` |
+| `DealResponse` | `id`, `title`, `companyId`, `companyName`, `contactId`, `contactName`, `amount`, `currency`, `stage`, `likelihoodStatus`, `likelihoodPercent`, `expectedCloseDate`, `nextActionText`, `nextActionDueAt`, `nextActionStatus`, `hasMemo`, `memoCount`, `latestMemoAt`, `createdAt`, `updatedAt`, `deletedAt`, `permanentDeleteAt` |
 | `DealDetailResponse` | `deal:DealResponse`, `products:ProductResponse[]`, `activities:DealActivityResponse[]`, `memos:MemoResponse[]`, `schedulesSummary`, `meetingNotesSummary` |
-| `DealActivityResponse` | `id`, `dealId`, `typeName`, `occurredAt`, `title`, `content`, `isAutoGenerated`, `createdAt`, `updatedAt` |
+| `DealActivityResponse` | `id`, `dealId`, `typeName`, `occurredAt`, `title`, `content`, `isAutoGenerated`, `createdAt`, `updatedAt`, `deletedAt`, `permanentDeleteAt` |
 | `DealListResponse` | `items:DealResponse[]`, `stageSummary`, `page`, `pageSize`, `totalCount`, `hasNext` |
 
 ### 7.4 Deal 비즈니스 로직 흐름
@@ -335,7 +336,7 @@ G07, G09, G11, G13-G16의 화면 명세는 `COMMON/GOAL-SPECS`에서 이 API를 
 - 생성: Deal, DealActivity, ProductConnection, PersonalMemo
 - 조회: Deal, Company, Contact, Product, DealActivityType, DealActivity, PersonalMemo
 - 수정: Deal, DealActivity. Memo 수정은 별도 Memo API에서 처리
-- 삭제: Deal.deletedAt, DealActivity
+- 삭제: Deal.deletedAt/permanentDeleteAt, DealActivity.deletedAt/permanentDeleteAt
 - 감사 로그: Admin 원문 조회 시 AuditLog
 - transaction: 딜 생성에서 ProductConnection 또는 initial Memo를 함께 처리할 때 필요. 단계 변경, 다음 행동 완료/미루기, 회의록 연결 시 Deal/DealActivity 동시 처리 필요
 

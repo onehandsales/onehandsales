@@ -58,10 +58,10 @@ Admin API는 운영 편의를 위해 존재하지만, 사용자 민감정보를 
 |---|---|
 | `AdminDashboardResponse` | `userCount`, `activeUserCount`, `companyCount`, `contactCount`, `productCount`, `dealCount`, `recentAuditLogs[]` |
 | `AdminUserResponse` | `id`, `name`, `emailMasked`, `role`, `status`, `createdAt`, `lastLoginAt` |
-| `AdminCompanyListResponse` | `items[]`, `items[].id`, `items[].userId`, `items[].userName`, `items[].name`, `items[].industry`, `items[].deletedAt`, pagination |
-| `AdminContactListResponse` | `items[]`, `items[].name`, `items[].companyName`, `items[].phoneMasked`, `items[].emailMasked`, `items[].hasMemo`, `items[].memoCount`, `items[].latestMemoAt`, pagination |
-| `AdminProductListResponse` | `items[]`, `items[].name`, `items[].category`, `items[].unitPrice`, `items[].currency`, pagination |
-| `AdminDealListResponse` | `items[]`, `items[].title`, `items[].companyName`, `items[].contactName`, `items[].amountMasked`, `items[].stage`, `items[].likelihoodStatus`, pagination |
+| `AdminCompanyListResponse` | `items[]`, `items[].id`, `items[].userId`, `items[].userName`, `items[].name`, `items[].industry`, `items[].deletedAt`, `items[].permanentDeleteAt`, pagination |
+| `AdminContactListResponse` | `items[]`, `items[].name`, `items[].companyName`, `items[].phoneMasked`, `items[].emailMasked`, `items[].hasMemo`, `items[].memoCount`, `items[].latestMemoAt`, `items[].deletedAt`, `items[].permanentDeleteAt`, pagination |
+| `AdminProductListResponse` | `items[]`, `items[].name`, `items[].category`, `items[].unitPriceMasked`, `items[].currency`, `items[].deletedAt`, `items[].permanentDeleteAt`, pagination |
+| `AdminDealListResponse` | `items[]`, `items[].title`, `items[].companyName`, `items[].contactName`, `items[].amountMasked`, `items[].stage`, `items[].likelihoodStatus`, `items[].deletedAt`, `items[].permanentDeleteAt`, pagination |
 
 ### 4.3 Admin 조회 비즈니스 로직과 DB
 

@@ -332,7 +332,7 @@ SUPABASE_JWT_ISSUER="https://xxxx.supabase.co/auth/v1"
 - 초기 MVP 개발 속도가 빠르다.
 - 실제 Supabase Auth provider 설정과 redirect URL을 빨리 검증할 수 있다.
 - Supabase local Auth를 띄우기 위한 추가 CLI/Docker 설정 부담을 줄인다.
-- 이미 business DB는 Docker PostgreSQL로 고정했기 때문에 Auth만 원격 Supabase project에 붙이는 편이 구조가 단순하다.
+- 이미 business DB는 Docker PostgreSQL로 고정했기 때문에 Auth와 파일 저장소 adapter만 원격 Supabase project에 붙이는 편이 구조가 단순하다.
 
 구현 영향:
 
@@ -878,9 +878,7 @@ APP_REFRESH_COOKIE_DOMAIN=""
 
 ## 3. 아직 확정되지 않은 결정
 
-다음 항목은 이후 `TODO/MVP-STARTER_PLAN/COMMON/G00-PENDING-QUESTIONS.md`의 질문을 통해 하나씩 확정한다.
-
-- 현재 없음.
+현재 남은 미확정 결정은 없다. 새 미확정 항목이 생기면 `TODO/MVP-STARTER_PLAN/COMMON/G00-PENDING-QUESTIONS.md`에 질문 형식으로 추가하고 하나씩 확정한다.
 
 ## 4. 관련 문서
 
