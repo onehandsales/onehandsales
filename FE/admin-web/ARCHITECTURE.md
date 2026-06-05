@@ -2,7 +2,7 @@
 
 `FE/admin-web`은 `AGENT/SOFTWARE_AGENT/ARCHITECTURE/ADMIN_WEB.md`의 feature-first 구조를 따른다.
 
-현재 구조:
+## 1. 현재 구조
 
 ```text
 src/
@@ -15,6 +15,14 @@ src/
     layout/
     ui/
   features/
+    auth/
+    user-management/
+    organization-management/
+    subscription-management/
+    usage-analytics/
+    audit-log/
+    system-config/
+    support/
   hooks/
   lib/
     admin-api-client.ts
@@ -28,30 +36,31 @@ src/
   main.tsx
 ```
 
-기능 확장 예시:
+## 2. 기능 확장 예시
 
 ```text
-src/features/deal-management/
-  components/
-    admin-deal-table.tsx
-    admin-deal-detail-panel.tsx
-    sensitive-raw-view-dialog.tsx
+src/features/user-management/
   api/
-    admin-deal.api.ts
-    admin-deal.queries.ts
+    admin-user-api.ts
+    admin-user-query-keys.ts
+  components/
+    user-filter-bar.tsx
+    user-table.tsx
+    user-status-dialog.tsx
   hooks/
-    use-admin-deal-table-state.ts
+    use-admin-user-list.ts
+    use-admin-user-mutation.ts
   schemas/
-    sensitive-raw-view.schema.ts
+    admin-user-schema.ts
   types/
-    admin-deal.types.ts
+    admin-user.ts
   index.ts
 ```
 
-route page 예시:
+## 3. 라우트 페이지 기준
 
 ```text
-src/pages/deals/index.tsx
+src/pages/users/index.tsx
 ```
 
-page는 `@/features/deal-management`에서 export한 feature component를 조합한다. feature 내부 파일을 직접 import하지 않는다.
+페이지는 `@/features/user-management`에서 export한 feature component를 조합한다. feature 내부 파일을 직접 import하지 않는다.

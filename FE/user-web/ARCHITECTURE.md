@@ -2,7 +2,7 @@
 
 `FE/user-web`은 `AGENT/SOFTWARE_AGENT/ARCHITECTURE/FRONTEND_USER_WEB.md`의 feature-first 구조를 따른다.
 
-현재 구조:
+## 1. 현재 구조
 
 ```text
 src/
@@ -15,6 +15,18 @@ src/
     layout/
     ui/
   features/
+    auth/
+    deal/
+    contact/
+    company/
+    product/
+    schedule/
+    meeting-note/
+    business-card/
+    tag/
+    import-export/
+    notification/
+    trash/
   hooks/
   lib/
     api-client.ts
@@ -28,30 +40,31 @@ src/
   main.tsx
 ```
 
-기능 확장 예시:
+## 2. 기능 확장 예시
 
 ```text
 src/features/company/
-  components/
-    company-list.tsx
-    company-create-dialog.tsx
-    company-detail-summary.tsx
   api/
-    company.api.ts
-    company.queries.ts
+    company-api.ts
+    company-query-keys.ts
+  components/
+    company-form.tsx
+    company-list.tsx
+    company-selector.tsx
   hooks/
-    use-company-list-params.ts
+    use-company-list.ts
+    use-company-mutation.ts
   schemas/
-    company.schema.ts
+    company-schema.ts
   types/
-    company.types.ts
+    company.ts
   index.ts
 ```
 
-route page 예시:
+## 3. 라우트 페이지 기준
 
 ```text
 src/pages/companies/index.tsx
 ```
 
-page는 `@/features/company`에서 export한 feature component를 조합한다. feature 내부 파일을 직접 import하지 않는다.
+페이지는 `@/features/company`에서 export한 feature component를 조합한다. feature 내부 파일을 직접 import하지 않는다.

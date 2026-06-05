@@ -1,4 +1,4 @@
-# UI Primitive
+# UI 기본 컴포넌트
 
 user-web의 범용 shadcn-style primitive를 이곳에 둔다.
 

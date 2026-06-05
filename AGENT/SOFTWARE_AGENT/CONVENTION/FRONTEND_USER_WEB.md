@@ -1,202 +1,96 @@
-﻿# Frontend User Web Convention
+# User Web 프론트엔드 컨벤션
 
-## 1. Naming
+이 문서는 `FE/user-web` 개발 시 지켜야 할 코드 작성 규칙을 정의한다. 모든 문서는 한글로 작성한다.
 
-Files:
+## 1. 파일과 폴더 이름
 
-- kebab-case
-- role suffix where useful
+- 폴더와 파일 이름은 `kebab-case`를 사용한다.
+- React 컴포넌트 파일은 `deal-card.tsx`, `contact-form.tsx`처럼 의미가 드러나게 짓는다.
+- 도메인 feature 폴더는 단수형을 사용한다. 예: `deal`, `contact`, `company`, `product`, `meeting-note`.
+- 페이지 폴더는 라우트와 맞춰 복수형을 사용할 수 있다. 예: `pages/deals`, `pages/contacts`.
 
-Examples:
+## 2. TypeScript 기준
 
-```text
-company-list.page.tsx
-contact-card.tsx
-deal-form.tsx
-use-deals.ts
-deal.api.ts
-deal.types.ts
-date.utils.ts
-auth.store.ts
-lib/api-client.ts
+- `strict`를 켠다.
+- `noUnusedLocals`, `noUnusedParameters`, `noFallthroughCasesInSwitch`, `noUncheckedIndexedAccess`를 유지한다.
+- API 응답, 폼 값, 도메인 엔티티 타입은 명시적으로 선언한다.
+- `any`는 금지한다. 외부 응답을 바로 믿지 말고 Zod 스키마나 명시 타입을 둔다.
+- 공통 타입은 `src/types`, 도메인 타입은 `src/features/<domain>/types`에 둔다.
+
+## 3. React 작성 규칙
+
+- 컴포넌트는 함수형 컴포넌트만 사용한다.
+- 페이지 컴포넌트는 조립만 담당하고 API 호출과 복잡한 상태 처리를 직접 소유하지 않는다.
+- 기능별 UI는 `features/<domain>/components`에 둔다.
+- 도메인 없는 순수 UI는 `components/ui`, 레이아웃은 `components/layout`에 둔다.
+- 불필요한 전역 상태를 만들지 않는다.
+
+## 4. 데이터 호출과 서버 상태
+
+- 서버 상태는 TanStack Query로 관리한다.
+- API 함수는 `features/<domain>/api` 안에 둔다.
+- API 클라이언트는 `src/lib/api-client.ts`를 통해서만 사용한다.
+- Query Key는 도메인별 파일로 분리한다. 예: `deal-query-keys.ts`.
+- mutation 이후에는 관련 Query Key를 명확히 invalidate한다.
+
+## 5. 폼과 검증
+
+- 폼은 React Hook Form을 기준으로 한다.
+- 검증은 Zod를 기준으로 한다.
+- Zod 스키마는 `features/<domain>/schemas`에 둔다.
+- 서버 에러 메시지는 사용자에게 바로 노출하기 전에 표시 가능한 메시지로 변환한다.
+
+## 6. 클라이언트 상태
+
+- 화면 내부 상태는 `useState`, `useReducer`, React Hook Form으로 관리한다.
+- 서버 데이터 캐시는 Zustand에 넣지 않는다.
+- Zustand는 여러 페이지에서 공유되는 UI 상태가 실제로 필요할 때만 `src/store`에 둔다.
+
+## 7. import 순서
+
+```ts
+// 1. React와 외부 라이브러리
+// 2. @/app/*
+// 3. @/pages/*
+// 4. @/features/*
+// 5. @/components/*
+// 6. @/hooks/*
+// 7. @/lib/*
+// 8. @/store/*
+// 9. @/types/*
+// 10. @/utils/*
+// 11. 상대 경로
 ```
 
-Components:
+경로 alias는 `@/*`를 기준으로 한다.
 
-- PascalCase
-- named export only
+## 8. 스타일과 UI
 
-Variables/functions:
+- Tailwind CSS를 기본 스타일링 도구로 사용한다.
+- 한국어 UI 기본 폰트는 Pretendard를 기준으로 한다.
+- 아이콘은 가능한 한 `lucide-react`를 사용한다.
+- 공통 UI 컴포넌트는 `components/ui`에 둔다.
+- 업무 화면은 정보 밀도와 스캔 가능성을 우선한다.
+- 페이지 섹션을 불필요한 카드로 감싸지 않는다.
 
-- camelCase
+## 9. 환경 변수와 설정
 
-Constants:
+- Vite 환경 변수는 `VITE_` prefix를 사용한다.
+- 환경 변수 접근은 `src/lib/env.ts`를 통한다.
+- `.env.example`에는 실제 secret을 넣지 않는다.
+- API base URL, Supabase 공개 키처럼 브라우저에 노출 가능한 값만 FE 환경 변수로 둔다.
 
-- UPPER_SNAKE_CASE
+## 10. 접근성
 
-Types/interfaces:
+- 버튼에는 명확한 텍스트 또는 `aria-label`을 둔다.
+- 입력 컴포넌트는 label과 에러 메시지를 연결한다.
+- 모달, 드롭다운, 토스트는 키보드 접근을 고려한다.
+- 색상만으로 상태를 구분하지 않는다.
 
-- PascalCase
+## 11. 금지 사항
 
-## 2. TypeScript
-
-Required:
-
-- `strict`
-- `noUnusedLocals`
-- `noUnusedParameters`
-- `noFallthroughCasesInSwitch`
-- `noUncheckedIndexedAccess`
-
-Rules:
-
-- `any` is forbidden.
-- Object shapes use `interface`.
-- unions/utilities use `type`.
-- minimize `as`; validate with Zod where needed.
-- use `import type` for type-only imports.
-
-## 3. React
-
-Rules:
-
-- function components only
-- hooks only
-- named exports only
-- no default component export
-- key uses stable IDs, never array index
-- early return for loading/error/empty states when branches are complex
-
-Component order:
-
-1. library hooks
-2. custom hooks
-3. local state
-4. derived values
-5. event handlers
-6. early returns
-7. JSX
-8. props interface
-
-Event naming:
-
-- prop callbacks: `on*`
-- internal handlers: `handle*`
-
-## 4. Server State
-
-Use TanStack Query.
-
-Rules:
-
-- no `useEffect` + fetch for server data
-- no Redux/Zustand for server data cache
-- use query key factories
-- invalidate after mutations
-- use optimistic updates only when rollback is simple and tested
-
-Query key example:
-
-```text
-['deals']
-['deals', 'list', filter]
-['deals', 'detail', dealId]
-['companies', companyId, 'contacts']
-```
-
-## 5. Forms
-
-Use React Hook Form + Zod.
-
-Rules:
-
-- schema is defined before form usage
-- Korean validation messages live in Zod schema
-- components do not hard-code validation messages when schema can own them
-- default values are explicit
-- async-loaded form values use `reset`
-
-## 6. Imports
-
-Order:
-
-1. React
-2. external libraries
-3. `@/app/*`, `@/pages/*`
-4. `@/features/*`
-5. `@/components/*`
-6. `@/hooks/*`
-7. `@/lib/*`
-8. `@/store/*`, `@/types/*`, `@/utils/*`
-9. relative paths
-
-Feature imports must use public API:
-
-```text
-@/features/contact
-```
-
-Do not import another feature's internal files.
-
-Shared root folders such as `components`, `hooks`, `lib`, `store`, `types`, and `utils` must not import from `pages` or `features`.
-
-## 7. Styling
-
-Use:
-
-- Tailwind CSS
-- shadcn/ui
-- `cn`
-- `cva` where shadcn-style variants are needed
-
-Forbidden:
-
-- CSS modules
-- styled-components
-- inline style except for dynamic values that Tailwind cannot express
-- card-in-card layouts
-- decorative gradient/orb-heavy backgrounds
-
-Use lucide icons for icon buttons when possible.
-
-## 8. API And Env
-
-Use a single user API client in:
-
-```text
-src/lib/api-client.ts
-```
-
-Env variables use `VITE_` prefix and are wrapped in config:
-
-```text
-src/lib/env.ts
-```
-
-Do not access `import.meta.env` throughout feature code.
-
-## 9. Accessibility
-
-Rules:
-
-- interactive elements are semantic buttons/links/inputs
-- form inputs have labels
-- dialogs are keyboard accessible
-- focus states are visible
-- text must not overflow buttons, tabs, cards, or table cells
-
-## 10. Forbidden Summary
-
-Forbidden:
-
-- `any`
-- default component export
-- class components
-- `useEffect` + fetch for server data
-- feature internal-file import from another feature
-- `process.env`
-- direct `console.log`
-- `key={index}`
-- hard-coded form error messages outside Zod when avoidable
-
-
+- 페이지에서 `fetch`를 직접 호출하지 않는다.
+- 사용자 웹에서 관리자 API를 호출하지 않는다.
+- `features` 사이의 내부 파일을 깊게 import하지 않는다. 필요한 export는 `index.ts`를 통해 공개한다.
+- 도메인 없는 공통 폴더에 특정 도메인 로직을 넣지 않는다.
+- 전역 상태에 서버 응답 전체를 복제하지 않는다.

@@ -1,4 +1,4 @@
-# Assets
+# 에셋
 
 admin-web의 static asset을 이곳에 둔다.
 

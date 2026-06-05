@@ -1,4 +1,4 @@
-# Types
+# 타입
 
 도메인과 무관한 공용 frontend type을 이곳에 둔다.
 

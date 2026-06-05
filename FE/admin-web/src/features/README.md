@@ -1,4 +1,4 @@
-# Features
+# 기능
 
 Admin 비즈니스 feature slice를 이곳에 둔다.
 
@@ -6,19 +6,19 @@ Admin 비즈니스 feature slice를 이곳에 둔다.
 
 ```text
 features/user-management/
+  api/
+    admin-user-api.ts
+    admin-user-query-keys.ts
   components/
     admin-user-table.tsx
     admin-user-detail-panel.tsx
     user-status-dialog.tsx
-  api/
-    admin-user.api.ts
-    admin-user.queries.ts
   hooks/
     use-admin-user-table-state.ts
   schemas/
-    user-status.schema.ts
+    user-status-schema.ts
   types/
-    admin-user.types.ts
+    admin-user.ts
   index.ts
 ```
 

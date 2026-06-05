@@ -1,17 +1,17 @@
 const metrics = [
-  { label: "Users", value: "0" },
-  { label: "Deals", value: "0" },
-  { label: "Companies", value: "0" },
-  { label: "Raw views", value: "0" },
+  { label: "사용자", value: "0" },
+  { label: "조직", value: "0" },
+  { label: "구독", value: "0" },
+  { label: "원문 조회", value: "0" },
 ];
 
 export function DashboardPage() {
   return (
     <section className="mx-auto max-w-7xl px-6 py-8">
       <header className="border-b pb-5">
-        <h1 className="text-2xl font-semibold">Admin dashboard</h1>
+        <h1 className="text-2xl font-semibold">관리자 대시보드</h1>
         <p className="mt-1 text-sm text-muted-foreground">
-          Operational metrics, recent records, and audit signals.
+          운영 지표, 최근 기록, 감사 신호를 확인합니다.
         </p>
       </header>
 
@@ -28,10 +28,10 @@ export function DashboardPage() {
 
       <div className="mt-6 rounded-lg border bg-white">
         <div className="border-b px-4 py-3 text-sm font-medium">
-          Recent audit logs
+          최근 감사 로그
         </div>
         <div className="px-4 py-8 text-sm text-muted-foreground">
-          Audit table will be connected in the Admin goal.
+          Admin 목표 작업에서 감사 로그 표를 연결합니다.
         </div>
       </div>
     </section>

@@ -3,12 +3,12 @@ export function LoginPage() {
     <main className="flex min-h-screen items-center justify-center bg-muted px-5">
       <section className="w-full max-w-sm rounded-lg border bg-white p-6">
         <p className="text-sm font-semibold text-primary">onehand.sales admin</p>
-        <h1 className="mt-3 text-2xl font-semibold">Admin sign in</h1>
+        <h1 className="mt-3 text-2xl font-semibold">관리자 로그인</h1>
         <p className="mt-2 text-sm text-muted-foreground">
-          Admin role verification will be connected in the auth goal.
+          Auth 목표 작업에서 관리자 role 검증을 연결합니다.
         </p>
         <button className="mt-6 h-10 w-full rounded-md bg-primary text-sm font-medium text-primary-foreground">
-          Continue
+          계속
         </button>
       </section>
     </main>

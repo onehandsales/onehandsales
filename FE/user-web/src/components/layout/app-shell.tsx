@@ -7,16 +7,25 @@ export function AppShell() {
         <div className="text-sm font-semibold text-primary">onehand.sales</div>
         <nav className="mt-6 grid gap-1 text-sm">
           <Link className="rounded-md px-3 py-2 hover:bg-muted" to="/">
-            Pipeline
+            파이프라인
           </Link>
           <Link className="rounded-md px-3 py-2 hover:bg-muted" to="/companies">
-            Companies
+            회사
+          </Link>
+          <Link className="rounded-md px-3 py-2 hover:bg-muted" to="/contacts">
+            거래처
+          </Link>
+          <Link className="rounded-md px-3 py-2 hover:bg-muted" to="/products">
+            제품
           </Link>
           <Link className="rounded-md px-3 py-2 hover:bg-muted" to="/deals">
-            Deals
+            딜
           </Link>
           <Link className="rounded-md px-3 py-2 hover:bg-muted" to="/schedules">
-            Schedules
+            일정
+          </Link>
+          <Link className="rounded-md px-3 py-2 hover:bg-muted" to="/meeting-notes">
+            회의록
           </Link>
         </nav>
       </aside>

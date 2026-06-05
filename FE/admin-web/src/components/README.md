@@ -1,4 +1,4 @@
-# Components
+# 컴포넌트
 
 admin-web의 공통 UI component를 이곳에 둔다.
 

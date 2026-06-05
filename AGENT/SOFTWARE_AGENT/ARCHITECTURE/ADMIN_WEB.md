@@ -1,260 +1,115 @@
-﻿# Admin Web Architecture
+# Admin Web 프론트엔드 아키텍처
 
-## 1. Position
+이 문서는 `FE/admin-web`의 기준 아키텍처를 정의한다. 관리자 웹은 운영자가 전체 사용자, 조직, 구독, 사용량, 시스템 이벤트를 확인하고 관리하는 내부 운영 도구다.
 
-Admin Web is a separate React app under:
+## 1. 기술 기준
 
-```text
-FE/admin-web
-```
+| 구분 | 기술 |
+| --- | --- |
+| 런타임 | Node.js 24 LTS |
+| 프레임워크 | React 19 |
+| 언어 | TypeScript |
+| 번들러/개발 서버 | Vite 7 |
+| 라우팅 | React Router DOM 7 |
+| 스타일 | Tailwind CSS 3, PostCSS, shadcn/ui, Pretendard Font |
+| 아이콘 | lucide-react |
+| 서버 상태 | TanStack Query |
+| 클라이언트 상태 | 기본은 컴포넌트 로컬 상태, 전역 UI 상태가 필요할 때만 Zustand |
+| 표/대시보드 | TanStack Table, 차트가 필요할 때 Recharts |
+| 폼/검증 | React Hook Form, Zod |
+| 빌드 검증 | `tsc --noEmit`, `vite build` |
 
-Stack:
+## 2. 구조 원칙
 
-- React
-- Vite
-- TypeScript
-- Tailwind CSS
-- shadcn/ui
-- React Router
-- TanStack Query
-- React Hook Form
-- Zod
-- TanStack Table
-- Recharts when charts are needed
+- 사용자 웹과 동일하게 feature-first 구조를 사용한다.
+- 관리자 전용 API는 `/admin/api/*`만 호출한다.
+- 관리자 화면은 데스크톱 운영 도구를 우선한다. 모바일 최적화는 필수가 아니다.
+- 운영 작업은 추적 가능해야 하며, 위험한 변경은 확인 UI와 감사 로그를 고려한다.
 
-Admin Web is desktop-only for MVP.
-
-## 2. Separation Rule
-
-Admin Web does not import or share code with User Web.
-
-This is intentional:
-
-- User Web optimizes for fast sales workflow.
-- Admin Web optimizes for dense data review, auditability, and operational safety.
-
-Both clients call the same backend, but Admin Web only calls:
+## 3. 기준 폴더 구조
 
 ```text
-/admin/api/*
+FE/admin-web/
+├── public/
+├── src/
+│   ├── assets/
+│   ├── app/
+│   │   ├── providers/
+│   │   │   └── app-providers.tsx
+│   │   ├── router/
+│   │   │   └── router.tsx
+│   │   └── app.tsx
+│   ├── components/
+│   │   ├── ui/
+│   │   └── layout/
+│   ├── features/
+│   │   ├── auth/
+│   │   ├── user-management/
+│   │   ├── organization-management/
+│   │   ├── subscription-management/
+│   │   ├── usage-analytics/
+│   │   ├── audit-log/
+│   │   ├── system-config/
+│   │   └── support/
+│   ├── hooks/
+│   ├── lib/
+│   │   ├── admin-api-client.ts
+│   │   ├── env.ts
+│   │   └── query-client.ts
+│   ├── pages/
+│   │   ├── dashboard/
+│   │   ├── users/
+│   │   ├── organizations/
+│   │   ├── subscriptions/
+│   │   ├── analytics/
+│   │   ├── audit-logs/
+│   │   ├── system/
+│   │   └── support/
+│   ├── store/
+│   ├── types/
+│   ├── utils/
+│   ├── styles/
+│   │   └── global.css
+│   └── main.tsx
+├── .env.example
+├── eslint.config.js
+├── index.html
+├── tailwind.config.js
+├── tsconfig.json
+└── vite.config.ts
 ```
 
-## 3. MVP Admin Scope
-
-MVP Admin should include:
-
-- user list/detail
-- all deals
-- all companies
-- all contacts
-- all products
-- per-user deal/company/contact/product view
-- audit log view
-- sensitive raw access workflow
-- basic manual bank transfer/payment status management later
-
-Manual bank transfer management is important, but comes after core user/product data visibility.
-
-## 4. Structure
-
-Use the same feature-first base as User Web. Admin Web has its own source tree and does not share code with User Web.
+## 4. 관리자 도메인 예시
 
 ```text
-src/
-  assets/
-  app/
-    providers/
-    router/
-    app.tsx
-  components/
-    ui/
-    layout/
-  features/
-    auth/
-    user-management/
-    deal-management/
-    company-management/
-    contact-management/
-    product-management/
-    audit-log/
-    payment-management/
-  hooks/
-  lib/
-    admin-api-client.ts
-    env.ts
-    query-client.ts
-  pages/
-    login/
-    dashboard/
-    users/
-    deals/
-    companies/
-    contacts/
-    products/
-    audit-log/
-    payments/
-    settings/
-  store/
-  types/
-  utils/
-  styles/
-  main.tsx
+src/features/user-management/
+├── api/
+│   ├── admin-user-api.ts
+│   └── admin-user-query-keys.ts
+├── components/
+│   ├── user-filter-bar.tsx
+│   ├── user-table.tsx
+│   └── user-status-dialog.tsx
+├── hooks/
+│   ├── use-admin-user-list.ts
+│   └── use-admin-user-mutation.ts
+├── schemas/
+│   └── admin-user-schema.ts
+├── types/
+│   └── admin-user.ts
+└── index.ts
 ```
 
-Dependency direction:
+## 5. 관리자 API 경계
 
-```text
-main/app/router -> pages -> features -> components/hooks/lib/store/types/utils/styles
-```
+- 관리자 웹의 API 클라이언트는 `src/lib/admin-api-client.ts`에 둔다.
+- 일반 사용자 API 클라이언트와 공유하지 않는다.
+- 관리자 Query Key는 `['admin', ...]`으로 시작한다.
+- 관리자 기능은 사용자 앱의 feature 폴더를 직접 import하지 않는다.
 
-Rules:
+## 6. UI 기준
 
-- `app` owns providers, router creation, and app-level composition only.
-- `pages` are route entry points. They compose Admin feature components and remain thin.
-- `features` own Admin use cases, table/query hooks, filters, dialogs, schemas, feature components, and feature-local types.
-- `components/ui` contains generic primitives.
-- `components/layout` contains Admin shell, sidebar, header, page layout, table layout primitives, and toolbar primitives.
-- `hooks`, `lib`, `store`, `types`, and `utils` must stay domain-free.
-- `store` is only for cross-page client UI state such as table density, sidebar state, and view preferences.
-- Shared root folders cannot import from `pages`, `features`, `app`, or `router`.
-- Feature-to-feature imports are allowed only through the other feature's `index.ts`.
-- Pages must import feature public APIs, not feature internal files.
-
-## 5. Auth And Authorization
-
-Admin route requirements:
-
-- authenticated user
-- `role === 'ADMIN'`
-
-Use one route guard for protected admin routes.
-
-Do not scatter role checks across page components.
-
-On login:
-
-- call auth API
-- verify user role
-- reject non-admin users immediately
-
-Backend must still enforce AdminGuard. Client-side role checks are only UX protection.
-
-## 6. API Client
-
-Admin API client lives in:
-
-```text
-src/lib/admin-api-client.ts
-```
-
-Client name:
-
-```text
-adminApiClient
-```
-
-Base path:
-
-```text
-${VITE_API_URL}/admin/api
-```
-
-Rules:
-
-- Admin Web must not use the User Web API client.
-- Admin Web must not call `/api/*` for Admin data.
-- Feature API files call `adminApiClient`; pages and components do not call `fetch` directly for Admin data.
-- 401 goes to login.
-- 403 goes to forbidden page.
-
-## 7. Data Table Policy
-
-Admin uses TanStack Table for large data sets.
-
-Rules:
-
-- server pagination is default for large lists
-- server sorting/filtering is required once data can exceed 10,000 rows
-- avoid client-only pagination for global user/deal/company/contact/product lists
-- table state should be reflected in URL search params when useful
-
-## 8. Sensitive Data Policy
-
-Sensitive fields are masked by default.
-
-Sensitive data includes:
-
-- personal memo
-- meeting note body
-- deal amount
-- user-marked sensitive data
-
-Raw sensitive access requires:
-
-- explicit user action
-- reason input
-- backend audit log
-
-Admin Web must never send raw sensitive data or reason text to client logs.
-
-## 9. Dangerous Actions
-
-Dangerous actions require:
-
-- clear dialog
-- reason input when audit requires it
-- backend mutation
-- audit log in backend transaction
-
-Examples:
-
-- user suspension
-- user deletion or restore
-- sensitive raw view
-- forced data modification
-- payment status override
-
-## 10. UI Direction
-
-Admin is a work tool.
-
-Rules:
-
-- desktop-only layout
-- dense tables and filters
-- smaller spacing than User Web
-- clear side navigation
-- no marketing/hero composition
-- no mobile-specific responsive work in MVP
-- destructive actions use AlertDialog-style confirmation
-
-## 11. Logging Boundary
-
-Client logs:
-
-- UI errors
-- network failures
-- non-sensitive event keys
-
-Backend audit logs:
-
-- actual Admin mutations
-- raw sensitive access
-- reason text
-
-Do not confuse client Sentry logs with audit logs.
-
-## 12. Checklist
-
-When creating an Admin feature:
-
-- route is protected by Admin route guard
-- feature folder exposes public API through `index.ts`
-- API uses `adminApiClient`
-- query keys start with `admin`
-- table uses server pagination when global data is involved
-- sensitive fields are masked by default
-- dangerous actions require reason if audited
-- client logs do not contain PII or reason text
-- page imports from feature public API only
-
+- 리스트 화면은 필터, 검색, 정렬, 페이지네이션, 빈 상태, 오류 상태를 기본으로 고려한다.
+- 표가 필요한 기능은 TanStack Table을 기준으로 한다.
+- 수치 대시보드와 추세 차트는 필요할 때만 Recharts를 추가한다.
+- 위험한 운영 작업은 확인 모달과 명확한 버튼 라벨을 사용한다.

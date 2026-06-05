@@ -1,4 +1,4 @@
-# Features
+# 기능
 
 비즈니스 feature slice를 이곳에 둔다.
 
@@ -6,19 +6,19 @@
 
 ```text
 features/deal/
+  api/
+    deal-api.ts
+    deal-query-keys.ts
   components/
     deal-list.tsx
     deal-detail-panel.tsx
     deal-create-dialog.tsx
   hooks/
     use-deal-filters.ts
-  api/
-    deal.api.ts
-    deal.queries.ts
   schemas/
-    deal.schema.ts
+    deal-schema.ts
   types/
-    deal.types.ts
+    deal.ts
   index.ts
 ```
 
