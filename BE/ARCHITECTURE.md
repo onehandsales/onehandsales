@@ -1,20 +1,20 @@
-# Backend Architecture
+# 백엔드 아키텍처
 
-`BE` is a single NestJS backend that serves User API and Admin API.
+`BE`는 사용자 API와 Admin API를 함께 제공하는 단일 NestJS 백엔드다.
 
-Path rules:
+경로 규칙:
 
-- User API: `/api/*`
+- 사용자 API: `/api/*`
 - Admin API: `/admin/api/*`
 
-Module rules:
+모듈 규칙:
 
-- `domain`: entities, value objects, domain errors. No NestJS, Prisma, HTTP SDK, OpenAI, Supabase, or logger imports.
-- `application`: use cases, ports, repository interfaces, transaction orchestration, permission checks.
-- `infrastructure`: Prisma repositories and external adapters.
-- `presentation`: controllers, DTOs, guards, filters, decorators, response mapping.
+- `domain`: 엔티티, 값 객체, 도메인 에러를 둔다. NestJS, Prisma, HTTP SDK, OpenAI, Supabase, logger 구현체를 import하지 않는다.
+- `application`: use case, port, repository interface, transaction orchestration, permission check를 둔다.
+- `infrastructure`: Prisma repository와 외부 adapter를 둔다.
+- `presentation`: controller, DTO, guard, filter, decorator, response mapping을 둔다.
 
-Feature modules should follow this shape:
+기능 모듈은 다음 구조를 따른다.
 
 ```text
 src/modules/<feature>/
@@ -31,9 +31,9 @@ src/modules/<feature>/
   <feature>.module.ts
 ```
 
-Small modules may leave unused folders absent until needed, but cross-layer dependency direction stays the same.
+작은 모듈은 실제 구현 전까지 사용하지 않는 폴더를 만들지 않아도 된다. 다만 계층 간 의존 방향은 항상 유지한다.
 
-Example when `company` grows:
+`company` 기능이 확장될 때의 예시는 다음과 같다.
 
 ```text
 src/modules/company/
@@ -61,4 +61,4 @@ src/modules/company/
   company.module.ts
 ```
 
-Shared technical primitives live under `src/shared`. Domain/application code may depend on shared domain/application primitives, but not on shared infrastructure or presentation.
+공유 기술 요소는 `src/shared` 아래에 둔다. domain/application 코드는 shared domain/application 요소에 의존할 수 있지만, shared infrastructure나 presentation에는 의존하지 않는다.

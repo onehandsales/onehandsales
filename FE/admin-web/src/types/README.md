@@ -1,11 +1,11 @@
 # Types
 
-Domain-free shared frontend types live here.
+도메인과 무관한 공용 frontend type을 이곳에 둔다.
 
-Examples:
+예시:
 
-- pagination types
+- pagination type
 - normalized API error type
-- server table state type
+- 서버 table state type
 
-Feature-specific types belong inside `src/features/<feature>/types`.
+feature-specific type은 `src/features/<feature>/types`에 둔다.

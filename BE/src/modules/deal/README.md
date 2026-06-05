@@ -1,12 +1,12 @@
-# Deal Module
+# Deal 모듈
 
-Planned scope:
+예정 범위:
 
-- Deal CRUD
-- Stage changes with automatic `DealActivity`
-- Next action update/complete/snooze
-- Deal activity logs
-- Product connections
-- Soft delete and restore
+- 딜 CRUD
+- 단계 변경 시 자동 `DealActivity` 생성
+- 다음 행동 수정/완료/미루기
+- 딜 활동 로그
+- 제품 연결
+- soft delete와 복구
 
-Use `../_template` for the full layer structure when implementation starts.
+구현을 시작할 때 full layer 구조는 `../_template`을 따른다.

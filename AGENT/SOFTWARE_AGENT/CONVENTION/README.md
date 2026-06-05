@@ -17,9 +17,11 @@
 ## 3. 적용 규칙
 
 - Backend 컨벤션은 `BE`에 적용한다.
+- `BE` 내부 Markdown 문서는 한국어로 작성한다.
 - API 명세 작성 규칙은 Backend API 명세를 포함하는 모든 AGENT/TODO 문서에 적용한다.
 - User Web 컨벤션은 `FE/user-web`에 적용한다.
 - Admin Web 컨벤션은 `FE/admin-web`에 적용한다.
+- `FE` 내부 Markdown 문서는 한국어로 작성한다.
 - 주석과 로깅 규칙은 Backend, User Web, Admin Web에 모두 적용한다.
 - 모바일 컨벤션은 아직 정본이 아니다.
 

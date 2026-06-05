@@ -1,8 +1,8 @@
-# Admin Web Architecture
+# Admin Web 아키텍처
 
-`FE/admin-web` follows the feature-first structure from `AGENT/SOFTWARE_AGENT/ARCHITECTURE/ADMIN_WEB.md`.
+`FE/admin-web`은 `AGENT/SOFTWARE_AGENT/ARCHITECTURE/ADMIN_WEB.md`의 feature-first 구조를 따른다.
 
-Current shape:
+현재 구조:
 
 ```text
 src/
@@ -28,7 +28,7 @@ src/
   main.tsx
 ```
 
-Feature expansion example:
+기능 확장 예시:
 
 ```text
 src/features/deal-management/
@@ -48,10 +48,10 @@ src/features/deal-management/
   index.ts
 ```
 
-Route page example:
+route page 예시:
 
 ```text
 src/pages/deals/index.tsx
 ```
 
-The page composes exported feature components from `@/features/deal-management`. It should not import feature internals directly.
+page는 `@/features/deal-management`에서 export한 feature component를 조합한다. feature 내부 파일을 직접 import하지 않는다.

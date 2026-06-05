@@ -1,11 +1,11 @@
-# User Module
+# User 모듈
 
-Planned scope:
+예정 범위:
 
 - `GET /api/me`
 - `GET /api/users/me/settings`
 - `PATCH /api/users/me/settings`
 - `DELETE /api/users/me`
-- Admin user status mutation support
+- Admin 사용자 상태 변경 지원
 
-Use `../_template` for the full layer structure when implementation starts.
+구현을 시작할 때 full layer 구조는 `../_template`을 따른다.

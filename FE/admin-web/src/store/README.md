@@ -1,11 +1,11 @@
 # Store
 
-Cross-page client UI state lives here.
+page를 넘나드는 client UI state를 이곳에 둔다.
 
-Examples:
+예시:
 
 - sidebar state
 - table density
-- view preferences
+- view preference
 
-Do not store server data here. Server data belongs in TanStack Query.
+서버 데이터는 이곳에 저장하지 않는다. 서버 데이터는 TanStack Query에 둔다.

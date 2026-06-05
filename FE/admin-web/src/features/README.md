@@ -1,8 +1,8 @@
 # Features
 
-Admin business feature slices live here.
+Admin 비즈니스 feature slice를 이곳에 둔다.
 
-Example when `user-management` is implemented:
+`user-management` feature를 구현할 때의 예시:
 
 ```text
 features/user-management/
@@ -22,4 +22,4 @@ features/user-management/
   index.ts
 ```
 
-Pages must import from `@/features/user-management`, not from internal feature files.
+page는 내부 feature 파일이 아니라 `@/features/user-management`에서 import해야 한다.

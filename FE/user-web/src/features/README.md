@@ -1,8 +1,8 @@
 # Features
 
-Business feature slices live here.
+비즈니스 feature slice를 이곳에 둔다.
 
-Example when the `deal` feature is implemented:
+`deal` feature를 구현할 때의 예시:
 
 ```text
 features/deal/
@@ -22,4 +22,4 @@ features/deal/
   index.ts
 ```
 
-Pages must import from `@/features/deal`, not from internal feature files.
+page는 내부 feature 파일이 아니라 `@/features/deal`에서 import해야 한다.

@@ -1,10 +1,10 @@
-# Import Export Module
+# Import/Export 모듈
 
-Planned scope:
+예정 범위:
 
-- Import upload, preview, AI mapping, mapping edits, confirm
-- All-or-nothing import execution
-- Export job creation/status/download
-- StoragePort-based file metadata and downloads
+- Import 업로드, preview, AI mapping, mapping 수정, 확정
+- all-or-nothing import 실행
+- Export job 생성/상태 조회/download
+- `StoragePort` 기반 파일 metadata와 download
 
-Use `../_template` for the full layer structure when implementation starts.
+구현을 시작할 때 full layer 구조는 `../_template`을 따른다.

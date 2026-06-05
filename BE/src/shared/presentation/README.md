@@ -1,11 +1,11 @@
-# Shared Presentation
+# 공유 Presentation
 
-HTTP-facing shared utilities live here.
+HTTP-facing 공통 utility를 이곳에 둔다.
 
-Examples:
+예시:
 
-- exception filters
-- auth/admin guards
-- decorators
-- shared DTO helpers
-- response mappers
+- exception filter
+- auth/admin guard
+- decorator
+- shared DTO helper
+- response mapper

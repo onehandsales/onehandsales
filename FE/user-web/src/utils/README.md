@@ -1,11 +1,11 @@
 # Utils
 
-Pure domain-free helpers live here.
+도메인과 무관한 순수 helper를 이곳에 둔다.
 
-Examples:
+예시:
 
 - `cn.ts`
-- date formatting helpers
-- currency formatting helpers
+- 날짜 formatting helper
+- 금액 formatting helper
 
-Helpers that call APIs or own singletons belong in `src/lib`.
+API를 호출하거나 singleton을 소유하는 helper는 `src/lib`에 둔다.

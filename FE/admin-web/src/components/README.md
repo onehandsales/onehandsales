@@ -1,6 +1,6 @@
 # Components
 
-Shared admin-web UI components live here.
+admin-web의 공통 UI component를 이곳에 둔다.
 
 ```text
 components/
@@ -8,5 +8,5 @@ components/
   layout/
 ```
 
-- `ui`: generic shadcn-style primitives.
-- `layout`: Admin shell, sidebar, page layout, table layout primitives, toolbar, empty state.
+- `ui`: 범용 shadcn-style primitive.
+- `layout`: Admin shell, sidebar, page layout, table layout primitive, toolbar, empty state.

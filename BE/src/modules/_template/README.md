@@ -1,6 +1,6 @@
-# Module Template
+# 모듈 템플릿
 
-Use this structure for new backend modules:
+새 백엔드 모듈은 다음 구조를 따른다.
 
 ```text
 <module>/
@@ -28,11 +28,11 @@ Use this structure for new backend modules:
   <module>.module.ts
 ```
 
-Dependency direction:
+의존 방향:
 
 ```text
 presentation -> application -> domain
 infrastructure -> application/domain
 ```
 
-`domain` and `application` must not import Prisma, NestJS controllers, HTTP clients, OpenAI/Supabase SDKs, or frontend-facing DTOs.
+`domain`과 `application`은 Prisma, NestJS controller, HTTP client, OpenAI/Supabase SDK, 프론트엔드 응답 DTO를 import하지 않는다.

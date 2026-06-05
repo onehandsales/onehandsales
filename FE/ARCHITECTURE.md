@@ -1,13 +1,13 @@
-# Frontend Architecture
+# Frontend 아키텍처
 
-`FE` contains two independent frontend apps:
+`FE`에는 독립적인 frontend 앱 두 개를 둔다.
 
-- `user-web`: responsive user-facing sales workflow app
-- `admin-web`: desktop-only admin console
+- `user-web`: 사용자가 직접 쓰는 responsive 영업 workflow 앱
+- `admin-web`: desktop-only Admin console
 
-There is no root frontend package and no shared frontend package. Each app owns its dependencies, API client, UI primitives, tests, and build config.
+root frontend package와 공유 frontend package는 만들지 않는다. 각 앱은 자기 dependency, API client, UI primitive, test, build config를 소유한다.
 
-Both apps follow the feature-first structure:
+두 앱 모두 feature-first 구조를 따른다.
 
 ```text
 src/
@@ -30,19 +30,19 @@ src/
   main.tsx
 ```
 
-User Web API client:
+User Web API client 위치:
 
 ```text
 FE/user-web/src/lib/api-client.ts
 ```
 
-Admin Web API client:
+Admin Web API client 위치:
 
 ```text
 FE/admin-web/src/lib/admin-api-client.ts
 ```
 
-Feature expansion example:
+기능 확장 예시:
 
 ```text
 src/features/<feature>/
@@ -54,4 +54,4 @@ src/features/<feature>/
   index.ts
 ```
 
-Pages are route entry points and should compose feature public exports only.
+page는 route 진입점이며 feature public export만 조합한다.

@@ -1,10 +1,10 @@
-# Company Module
+# Company 모듈
 
-Planned scope:
+예정 범위:
 
-- Company CRUD
-- Company logs
-- Company memo integration through `PersonalMemo`
-- Soft delete and restore
+- 회사 CRUD
+- 회사 로그
+- `PersonalMemo`를 통한 회사 Memo 기록 연동
+- soft delete와 복구
 
-Use `../_template` for the full layer structure when implementation starts.
+구현을 시작할 때 full layer 구조는 `../_template`을 따른다.

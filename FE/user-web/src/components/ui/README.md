@@ -1,8 +1,8 @@
-# UI Primitives
+# UI Primitive
 
-Generic shadcn-style user-web primitives live here.
+user-web의 범용 shadcn-style primitive를 이곳에 둔다.
 
-Examples:
+예시:
 
 - `button.tsx`
 - `input.tsx`
@@ -10,4 +10,4 @@ Examples:
 - `badge.tsx`
 - `table.tsx`
 
-Business-specific components belong inside `src/features/<feature>/components`.
+비즈니스 기능에 특화된 component는 `src/features/<feature>/components`에 둔다.

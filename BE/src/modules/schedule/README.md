@@ -1,11 +1,11 @@
-# Schedule Module
+# Schedule 모듈
 
-Planned scope:
+예정 범위:
 
-- Schedule CRUD
-- Monthly default range and weekly range query
-- Schedule reminders
-- Google Calendar connection/import
-- Weekly report and export integration
+- 일정 CRUD
+- 월간 기본 조회 범위와 주간 범위 조회
+- 일정 알림
+- Google Calendar 연결/import
+- 주간 보고서와 export 연동
 
-Use `../_template` for the full layer structure when implementation starts.
+구현을 시작할 때 full layer 구조는 `../_template`을 따른다.

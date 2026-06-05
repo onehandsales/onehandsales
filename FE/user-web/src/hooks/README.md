@@ -1,10 +1,10 @@
 # Hooks
 
-Domain-free shared hooks live here.
+도메인과 무관한 공용 hook을 이곳에 둔다.
 
-Examples:
+예시:
 
 - `use-debounce.ts`
 - `use-media-query.ts`
 
-Business hooks belong inside `src/features/<feature>/hooks`.
+비즈니스 hook은 `src/features/<feature>/hooks`에 둔다.

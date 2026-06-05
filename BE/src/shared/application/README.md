@@ -1,10 +1,10 @@
-# Shared Application
+# 공유 Application
 
-Application-level shared ports and orchestration primitives live here.
+application 계층에서 공유하는 port와 orchestration primitive를 이곳에 둔다.
 
-Examples:
+예시:
 
 - transaction manager port
-- current user context type
-- storage/encryption/external provider ports
-- pagination request/response types
+- 현재 사용자 context type
+- storage/encryption/external provider port
+- pagination request/response type

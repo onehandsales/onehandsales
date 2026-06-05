@@ -21,6 +21,10 @@
 - `AGENT/PM_AGENT/DECISIONS`
 - `AGENT/PM_AGENT/CONVENTION`
 - 이후 `AGENT` 아래에 추가되는 모든 정본 문서
+- `BE` 아래에 작성하는 README, 아키텍처 문서, 모듈 안내 문서 등 모든 Markdown 문서
+- `FE` 아래에 작성하는 README, 아키텍처 문서, feature 안내 문서 등 모든 Markdown 문서
+
+`BE`와 `FE` 내부 문서는 코드와 함께 있는 실행/구조 안내 문서이지만, 구현자가 실제 작업 중 가장 자주 읽는 문서다. 따라서 `AGENT` 정본과 같은 언어 기준을 적용해 한국어로 작성한다.
 
 예외:
 
@@ -344,5 +348,4 @@ docs(uxui): 딜 상세 UX 기준 보강
 - API 명세라면 API 이름, request 이름, 비즈니스 로직 흐름, response 이름, 연결 DB 스키마를 모두 적었는가?
 - 커밋 요청을 받았다면 변경 문서 성격에 맞는 커밋 메시지를 판단했는가?
 - 필요한 경우 관련 역할의 `DECISIONS`에 결정 기록을 남겼는가?
-
 

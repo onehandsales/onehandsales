@@ -1,10 +1,10 @@
-# Product Module
+# Product 모듈
 
-Planned scope:
+예정 범위:
 
-- Product CRUD
-- Product logs
-- Product connections to company/contact/deal
-- Soft delete and restore
+- 제품 CRUD
+- 제품 로그
+- 회사/거래처(담당자)/딜에 대한 제품 연결
+- soft delete와 복구
 
-Use `../_template` for the full layer structure when implementation starts.
+구현을 시작할 때 full layer 구조는 `../_template`을 따른다.

@@ -1,10 +1,10 @@
-# Admin Module
+# Admin 모듈
 
-Planned scope:
+예정 범위:
 
 - Admin dashboard
-- User and domain global lists
-- Masked detail read models
-- Sensitive raw view workflow with reason and audit transaction
+- 사용자와 전체 도메인 목록
+- 마스킹된 상세 조회 모델
+- 사유 입력과 audit transaction이 포함된 민감정보 원문 조회 workflow
 
-Use `../_template` for the full layer structure when implementation starts.
+구현을 시작할 때 full layer 구조는 `../_template`을 따른다.

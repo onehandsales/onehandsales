@@ -1,11 +1,11 @@
-# Meeting Note Module
+# MeetingNote 모듈
 
-Planned scope:
+예정 범위:
 
-- Meeting note CRUD
-- AI generation
-- Encrypted raw text storage
-- Deal linking with automatic `DealActivity`
-- Soft delete and restore
+- 회의록 CRUD
+- AI 생성
+- 원문 입력값 암호화 저장
+- 딜 연결 시 자동 `DealActivity` 생성
+- soft delete와 복구
 
-Use `../_template` for the full layer structure when implementation starts.
+구현을 시작할 때 full layer 구조는 `../_template`을 따른다.

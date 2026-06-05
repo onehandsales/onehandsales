@@ -1,8 +1,8 @@
 ﻿# BE
 
-Backend app.
+백엔드 앱이다.
 
-## Stack
+## 기술 스택
 
 - NestJS
 - Prisma
@@ -11,18 +11,18 @@ Backend app.
 - Clean Architecture
 - Modular Monolith
 
-## API Split
+## API 분리 기준
 
-- User API: `/api/*`
+- 사용자 API: `/api/*`
 - Admin API: `/admin/api/*`
 
-Admin APIs must be protected by admin guards.
+Admin API는 반드시 Admin guard로 보호한다.
 
-## Local Setup
+## 로컬 실행
 
-Open a separate terminal for Backend.
+백엔드는 별도 터미널에서 실행한다.
 
-Prerequisite: Node.js 24 LTS must be active.
+전제 조건: Node.js 24 LTS가 활성화되어 있어야 한다.
 
 ```bash
 pnpm install
@@ -31,13 +31,12 @@ pnpm run prisma:generate
 pnpm run start:dev
 ```
 
-Local URL: `http://localhost:3000`
+로컬 URL: `http://localhost:3000`
 
-Health check: `GET /api/health`
+헬스 체크: `GET /api/health`
 
-## Canonical Rules
+## 정본 규칙
 
 - `../AGENT/SOFTWARE_AGENT/ARCHITECTURE/BACKEND.md`
 - `../AGENT/SOFTWARE_AGENT/CONVENTION/BACKEND.md`
 - `../AGENT/SOFTWARE_AGENT/CONVENTION/COMMENT_AND_LOGGING.md`
-

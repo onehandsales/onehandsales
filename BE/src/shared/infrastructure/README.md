@@ -1,13 +1,13 @@
-# Shared Infrastructure
+# 공유 Infrastructure
 
-Infrastructure implementations live here.
+infrastructure 구현체를 이곳에 둔다.
 
-Examples:
+예시:
 
 - Prisma service
 - logger wrapper
 - encryption adapter
 - Supabase storage adapter
-- SMTP/Web Push/OpenAI/Google adapters
+- SMTP/Web Push/OpenAI/Google adapter
 
-Feature repositories should stay under their feature module infrastructure folder.
+기능별 repository는 해당 기능 모듈의 infrastructure 폴더 아래에 둔다.

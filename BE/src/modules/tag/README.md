@@ -1,10 +1,10 @@
-# Tag Module
+# Tag 모듈
 
-Planned scope:
+예정 범위:
 
-- Tag CRUD
-- Tag assignment/unassignment
-- Append-only `TagLog`
-- Hard delete for `Tag` and `TagAssignment`
+- 태그 CRUD
+- 태그 연결/연결 해제
+- append-only `TagLog`
+- `Tag`와 `TagAssignment` hard delete
 
-Use `../_template` for the full layer structure when implementation starts.
+구현을 시작할 때 full layer 구조는 `../_template`을 따른다.
