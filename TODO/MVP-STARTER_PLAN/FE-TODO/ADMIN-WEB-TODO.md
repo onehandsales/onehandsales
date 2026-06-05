@@ -18,7 +18,7 @@ Admin Web은 User Web처럼 빠르고 부드러운 입력 경험보다 정확성
 - TanStack Table 설치
 - React Hook Form, Zod 설치
 - lucide-react 설치
-- Recharts 설치 여부 결정
+- Recharts는 MVP starter에서 설치하지 않고, 고급 대시보드 chart가 필요한 후속 goal에서 추가
 - Playwright 설정
 
 ### 권장 구조

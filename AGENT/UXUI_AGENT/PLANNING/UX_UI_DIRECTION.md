@@ -44,6 +44,22 @@ Reference file:
 
 This file is reference-only. It is not the implementation source of truth.
 
+External UX references:
+
+- Toss-like hierarchy: simple information hierarchy, clear CTA, readable typography, low visual noise. Do not make the product as sparse as a consumer finance app.
+- Pipedrive: sales pipeline focus, deal stage visibility, next-action sales workflow. Do not copy pure Kanban as the default desktop layout.
+- Attio: record relationships between companies, people, deals, activity timeline, linked record detail structure.
+- Linear: list-first scanning, fast selection, peek/detail panel behavior, efficient command/search feel.
+- Google Calendar: monthly calendar as the default schedule view with week view switching.
+- Airtable Interface Designer: Admin-style table/filter/detail-panel operational interfaces.
+
+Reference URLs:
+
+- Pipedrive pipeline management: https://www.pipedrive.com/en/features/pipeline-management
+- Attio records: https://attio.com/help/reference/attio-101/attios-data-model/understanding-records
+- Linear Peek: https://linear.app/docs/peek
+- Airtable Interface Designer: https://www.airtable.com/platform/interface-designer
+
 Useful directions to keep:
 
 - left sidebar navigation
@@ -68,6 +84,7 @@ Do not copy blindly:
 - Default likelihood is `긍정 / 중립 / 부정`.
 - Avoid a UI dominated by beige/cream tones.
 - Keep the UI clean, but make deal data more legible than decorative dashboard cards.
+- Do not copy reference product brand, copy, visual assets, or layout one-to-one.
 
 ## 4. Home Screen Layout Direction
 

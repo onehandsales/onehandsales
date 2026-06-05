@@ -18,6 +18,7 @@
 - 다음 행동과 알림 UX
 - Admin UI 톤
 - 모바일 화면 패턴
+- 외부 UX reference 적용 규칙
 - UX/UI 리뷰 체크리스트
 
 ## 3. 폴더 구조
@@ -44,6 +45,7 @@ UXUI_AGENT/
 - 화면 작업은 PM의 MVP 범위와 Software의 API/DB 가능성을 함께 확인한다.
 - UI는 장식보다 업무 흐름과 정보 인식 속도를 우선한다.
 - 모바일과 데스크톱의 기본 패턴이 다를 수 있음을 문서에 명시한다.
+- 외부 UX reference는 패턴만 참고하고 brand, copy, visual asset, layout을 그대로 복제하지 않는다.
 
 ## 6. 관련 문서
 

@@ -19,6 +19,31 @@
 - 텍스트와 상태 표시가 읽기 쉽다.
 - 화면이 과하게 복잡하지 않지만, 딜 비교에 필요한 정보 밀도는 유지한다.
 
+## 외부 UX reference 적용 규칙
+
+외부 제품은 구현 복제 대상이 아니라 패턴 reference로만 사용한다.
+
+| Reference | 참고할 부분 | 복제하지 않을 부분 |
+|---|---|---|
+| Toss | 단순한 정보 위계, 명확한 CTA, 낮은 시각 소음, 읽기 쉬운 typography | 소비자 금융 앱처럼 너무 sparse한 화면 |
+| Pipedrive | 영업 pipeline 중심성, 딜 단계 인식, next action 중심 흐름 | desktop 기본 화면을 pure Kanban으로 고정하는 방식 |
+| Attio | 회사/사람/딜 record 관계, activity timeline, linked record detail | 팀 협업 CRM의 과한 custom object 복잡도 |
+| Linear | list-first 탐색, 빠른 선택, peek/detail panel, command/search 감각 | 개발 도구 특유의 issue 중심 용어와 단축키 의존 UX |
+| Google Calendar | 월간 calendar 기본값, 주간 view 전환, 일정 밀도 | Google 제품 brand/copy/visual asset |
+| Airtable Interface Designer | Admin의 table/filter/detail panel 운영 콘솔 구조 | no-code builder처럼 사용자가 화면 자체를 구성하는 UX |
+| Monday/Salesforce | 참고 우선순위 낮음. 복잡한 enterprise CRM의 위험 요소를 피하는 반례 | 화려한 dashboard, 무거운 CRM density, 과한 자동화/설정 노출 |
+
+Reference URL:
+
+- Pipedrive pipeline management: https://www.pipedrive.com/en/features/pipeline-management
+- Attio records: https://attio.com/help/reference/attio-101/attios-data-model/understanding-records
+- Linear Peek: https://linear.app/docs/peek
+- Airtable Interface Designer: https://www.airtable.com/platform/interface-designer
+
+User Web은 `Toss식 정보 위계 + Pipedrive/Attio식 영업 record 구조 + Linear식 빠른 탐색`을 조합한다.
+
+Admin Web은 `Airtable식 table/filter/detail panel 운영 콘솔`을 참고하되, 민감정보 masking, reason dialog, audit trail을 우선한다.
+
 ## UI 밀도
 
 중간 밀도로 간다.
