@@ -1,14 +1,18 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   confirmImportJob,
+  createExportJob,
   createImportJob,
+  downloadExportFile,
   generateImportMapping,
   updateImportMapping,
 } from "@/features/import-export/api/import-export-api";
 import { importExportQueryKeys } from "@/features/import-export/api/import-export-query-keys";
 import type {
   ConfirmImportJobInput,
+  CreateExportJobInput,
   CreateImportJobInput,
+  DownloadExportFileInput,
   UpdateImportMappingInput,
 } from "@/features/import-export/types/import-export";
 
@@ -60,5 +64,24 @@ export function useConfirmImportJobMutation(importJobId: string) {
       void queryClient.invalidateQueries({ queryKey: ["product"] });
       void queryClient.invalidateQueries({ queryKey: ["deal"] });
     },
+  });
+}
+
+export function useCreateExportJobMutation() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (input: CreateExportJobInput) => createExportJob(input),
+    onSuccess: (job) => {
+      void queryClient.invalidateQueries({
+        queryKey: importExportQueryKeys.exportDetail(job.id),
+      });
+    },
+  });
+}
+
+export function useDownloadExportFileMutation() {
+  return useMutation({
+    mutationFn: (input: DownloadExportFileInput) => downloadExportFile(input),
   });
 }

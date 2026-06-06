@@ -1,14 +1,25 @@
 export {
   confirmImportJob,
+  createExportJob,
   createImportJob,
+  downloadExportFile,
+  getExportJob,
   generateImportMapping,
   getImportJob,
   updateImportMapping,
 } from "./api/import-export-api";
+export { ExportScreen } from "./components/export-screen";
 export { ImportScreen } from "./components/import-screen";
 export type {
   ConfirmImportJobInput,
+  CreateExportJobInput,
   CreateImportJobInput,
+  DownloadExportFileInput,
+  ExportDownloadResponse,
+  ExportFormat,
+  ExportJobResponse,
+  ExportJobStatus,
+  ExportTargetType,
   ImportError,
   ImportFieldValue,
   ImportJobDetailResponse,

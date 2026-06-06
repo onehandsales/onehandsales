@@ -1,4 +1,6 @@
 import type {
+  ExportFormat,
+  ExportTargetType,
   ImportMapping,
   ImportTargetType,
 } from "@/features/import-export/types/import-export";
@@ -14,6 +16,28 @@ export const importTargetOptions: readonly {
   { value: "CONTACT", label: "거래처", description: "담당자와 연락처" },
   { value: "PRODUCT", label: "제품", description: "제품명과 가격" },
   { value: "DEAL", label: "딜", description: "영업 건과 금액" },
+];
+
+export const exportTargetOptions: readonly {
+  readonly value: ExportTargetType;
+  readonly label: string;
+  readonly description: string;
+}[] = [
+  { value: "COMPANY", label: "회사", description: "회사 목록" },
+  { value: "CONTACT", label: "거래처", description: "담당자 목록" },
+  { value: "PRODUCT", label: "제품", description: "제품 목록" },
+  { value: "DEAL", label: "딜", description: "영업 건 목록" },
+  { value: "SCHEDULE", label: "일정", description: "일정 목록" },
+  { value: "MEETING_NOTE", label: "회의록", description: "회의 기록" },
+];
+
+export const exportFormatOptions: readonly {
+  readonly value: ExportFormat;
+  readonly label: string;
+  readonly description: string;
+}[] = [
+  { value: "EXCEL", label: "Excel", description: "표 계산용 XLSX" },
+  { value: "PDF", label: "PDF", description: "공유용 문서" },
 ];
 
 export type ImportTargetFieldKind = "text" | "number" | "date" | "enum";

@@ -1,4 +1,13 @@
 export type ImportTargetType = "COMPANY" | "CONTACT" | "PRODUCT" | "DEAL";
+export type ExportTargetType =
+  | "COMPANY"
+  | "CONTACT"
+  | "PRODUCT"
+  | "DEAL"
+  | "SCHEDULE"
+  | "MEETING_NOTE";
+
+export type ExportFormat = "EXCEL" | "PDF";
 
 export type ImportJobStatus =
   | "UPLOADED"
@@ -11,6 +20,13 @@ export type ImportJobStatus =
   | "COMPLETED"
   | "FAILED"
   | "CANCELED";
+
+export type ExportJobStatus =
+  | "PENDING"
+  | "PROCESSING"
+  | "COMPLETED"
+  | "FAILED"
+  | "EXPIRED";
 
 export type ImportRowStatus =
   | "PENDING"
@@ -87,4 +103,31 @@ export type UpdateImportMappingInput = {
 
 export type ConfirmImportJobInput = {
   readonly importJobId: string;
+};
+
+export type ExportJobResponse = {
+  readonly id: string;
+  readonly targetType: ExportTargetType;
+  readonly format: ExportFormat;
+  readonly status: ExportJobStatus;
+  readonly includeSensitiveData: boolean;
+  readonly downloadReady: boolean;
+  readonly createdAt: string;
+};
+
+export type ExportDownloadResponse = {
+  readonly downloadUrl: string;
+  readonly expiresAt: string;
+};
+
+export type CreateExportJobInput = {
+  readonly targetType: ExportTargetType;
+  readonly format: ExportFormat;
+  readonly includeSensitiveData: boolean;
+  readonly sensitiveConfirm: boolean;
+  readonly filters?: Record<string, unknown>;
+};
+
+export type DownloadExportFileInput = {
+  readonly exportJobId: string;
 };

@@ -1,5 +1,5 @@
-import { PlaceholderPage } from "@/components/layout/placeholder-page";
+import { ExportScreen } from "@/features/import-export";
 
 export function ExportPage() {
-  return <PlaceholderPage title="내보내기" />;
+  return <ExportScreen />;
 }

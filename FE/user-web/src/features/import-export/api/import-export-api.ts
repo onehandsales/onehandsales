@@ -1,6 +1,10 @@
 import type {
   ConfirmImportJobInput,
+  CreateExportJobInput,
   CreateImportJobInput,
+  DownloadExportFileInput,
+  ExportDownloadResponse,
+  ExportJobResponse,
   ImportJobDetailResponse,
   ImportJobResponse,
   ImportJobResultResponse,
@@ -52,4 +56,27 @@ export function confirmImportJob(input: ConfirmImportJobInput) {
 
 export function getImportJob(importJobId: string) {
   return apiClient<ImportJobDetailResponse>(`/api/imports/${importJobId}`);
+}
+
+export function createExportJob(input: CreateExportJobInput) {
+  return apiClient<ExportJobResponse>("/api/exports", {
+    method: "POST",
+    body: {
+      targetType: input.targetType,
+      format: input.format,
+      includeSensitiveData: input.includeSensitiveData,
+      sensitiveConfirm: input.sensitiveConfirm,
+      filters: input.filters,
+    },
+  });
+}
+
+export function getExportJob(exportJobId: string) {
+  return apiClient<ExportJobResponse>(`/api/exports/${exportJobId}`);
+}
+
+export function downloadExportFile(input: DownloadExportFileInput) {
+  return apiClient<ExportDownloadResponse>(
+    `/api/exports/${input.exportJobId}/download`
+  );
 }
