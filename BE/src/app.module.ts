@@ -6,6 +6,7 @@ import { CompanyModule } from "./modules/company/company.module";
 import { ContactModule } from "./modules/contact/contact.module";
 import { DealModule } from "./modules/deal/deal.module";
 import { HealthModule } from "./modules/health/health.module";
+import { ImportExportModule } from "./modules/import-export/import-export.module";
 import { MeetingNoteModule } from "./modules/meeting-note/meeting-note.module";
 import { ProductModule } from "./modules/product/product.module";
 import { ScheduleModule } from "./modules/schedule/schedule.module";
@@ -27,6 +28,7 @@ import { UserModule } from "./modules/user/user.module";
     DealModule,
     ScheduleModule,
     MeetingNoteModule,
+    ImportExportModule,
   ],
 })
 export class AppModule {}

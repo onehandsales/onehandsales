@@ -71,6 +71,9 @@ export class HttpExceptionFilter implements ExceptionFilter {
       case "DeviceSlotAlreadyRegistered":
       case "DuplicateProductConnection":
       case "BusinessCardAlreadyConfirmed":
+      case "ImportMappingRequired":
+      case "ImportValidationFailed":
+      case "ImportExecutionFailed":
         return HttpStatus.CONFLICT;
       case "InactiveUser":
       case "OwnershipViolation":
@@ -84,6 +87,8 @@ export class HttpExceptionFilter implements ExceptionFilter {
       case "InvalidRefreshOrigin":
       case "InvalidBusinessCardConfirmation":
       case "InvalidImageFile":
+      case "InvalidImportFile":
+      case "ImportRowLimitExceeded":
       case "InvalidUserSetting":
       case "InvalidMeetingNoteGeneratedFields":
       case "InvalidScheduleRange":
