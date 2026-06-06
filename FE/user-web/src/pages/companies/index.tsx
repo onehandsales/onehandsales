@@ -1,5 +1,5 @@
-import { PlaceholderPage } from "@/components/layout/placeholder-page";
+import { CompanyListScreen } from "@/features/company";
 
 export function CompaniesPage() {
-  return <PlaceholderPage title="회사" />;
+  return <CompanyListScreen />;
 }

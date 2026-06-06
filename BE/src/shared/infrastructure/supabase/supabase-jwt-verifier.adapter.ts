@@ -42,6 +42,7 @@ export class SupabaseJwtVerifierAdapter implements ExternalAuthVerifier {
   ): Promise<SupabaseJwtPayload & { sub: string }> {
     const { payload } = await jwtVerify(accessToken, this.getJwks(), {
       issuer,
+      audience: this.getAudience(),
     });
 
     if (!payload.sub) {
@@ -58,6 +59,10 @@ export class SupabaseJwtVerifierAdapter implements ExternalAuthVerifier {
     }
 
     return this.jwks;
+  }
+
+  private getAudience(): string {
+    return this.configService.get<string>("SUPABASE_JWT_AUDIENCE") ?? "authenticated";
   }
 
   private getProvider(payload: SupabaseJwtPayload): ExternalAuthProvider {

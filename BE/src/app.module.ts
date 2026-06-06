@@ -1,7 +1,9 @@
 import { Module } from "@nestjs/common";
 import { ConfigModule } from "@nestjs/config";
+import { AuthModule } from "./modules/auth/auth.module";
+import { CompanyModule } from "./modules/company/company.module";
 import { HealthModule } from "./modules/health/health.module";
-import { SupabaseInfrastructureModule } from "./shared/infrastructure/supabase/supabase-infrastructure.module";
+import { UserModule } from "./modules/user/user.module";
 
 @Module({
   imports: [
@@ -9,8 +11,10 @@ import { SupabaseInfrastructureModule } from "./shared/infrastructure/supabase/s
       isGlobal: true,
       envFilePath: [".env.local", ".env"],
     }),
-    SupabaseInfrastructureModule,
     HealthModule,
+    AuthModule,
+    UserModule,
+    CompanyModule,
   ],
 })
 export class AppModule {}

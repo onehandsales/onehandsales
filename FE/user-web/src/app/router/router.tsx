@@ -2,6 +2,7 @@ import { createBrowserRouter } from "react-router-dom";
 import { AppShell } from "@/components/layout/app-shell";
 import { PlaceholderPage } from "@/components/layout/placeholder-page";
 import { BusinessCardsPage } from "@/pages/business-cards";
+import { CompanyDetailPage } from "@/pages/companies/detail";
 import { CompaniesPage } from "@/pages/companies";
 import { ContactsPage } from "@/pages/contacts";
 import { DealsPage } from "@/pages/deals";
@@ -23,7 +24,7 @@ export const router = createBrowserRouter([
     children: [
       { index: true, element: <HomePage /> },
       { path: "companies", element: <CompaniesPage /> },
-      { path: "companies/:companyId", element: <PlaceholderPage title="회사 상세" /> },
+      { path: "companies/:companyId", element: <CompanyDetailPage /> },
       { path: "contacts", element: <ContactsPage /> },
       { path: "contacts/:contactId", element: <PlaceholderPage title="거래처 상세" /> },
       { path: "products", element: <ProductsPage /> },
