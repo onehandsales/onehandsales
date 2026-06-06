@@ -1,5 +1,5 @@
-import { PlaceholderPage } from "@/components/layout/placeholder-page";
+import { DealListScreen } from "@/features/deal";
 
 export function DealsPage() {
-  return <PlaceholderPage title="딜" />;
+  return <DealListScreen />;
 }

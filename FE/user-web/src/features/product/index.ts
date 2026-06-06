@@ -1,4 +1,4 @@
-export {};
+export { listProducts } from "./api/product-api";
 export { ProductDetailScreen } from "./components/product-detail-screen";
 export { ProductListScreen } from "./components/product-list-screen";
 export type {
