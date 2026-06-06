@@ -52,6 +52,10 @@ export class HttpExceptionFilter implements ExceptionFilter {
   }
 
   private getDomainErrorStatus(code: string): HttpStatus {
+    if (code === "NextActionNotFound") {
+      return HttpStatus.CONFLICT;
+    }
+
     if (code.endsWith("NotFound")) {
       return HttpStatus.NOT_FOUND;
     }
