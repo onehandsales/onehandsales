@@ -67,3 +67,17 @@
 - `cd BE && pnpm run build`
 - Import use case unit test: 업로드/preview 생성, AI mapping 저장, mapping validation, confirm 위임 확인
 - Parser adapter unit test: UTF-8 한글 CSV, quoted comma, duplicate header reject 확인
+
+## 완료 감사
+
+- 작업 일자: 2026-06-07
+- 관련 계획과 goal: G23 연속 작업 범위
+- 관련 AGENT/TODO 문서: 위 `기준 문서` 또는 `참고 문서` 섹션 기준
+- 예정 범위: 위 `요구사항 체크`, `목표`, `구현 내용` 섹션 기준
+- 진행 기록: 위 `작업 로그` 또는 `구현 내용` 섹션 기준
+- 적용 범위 또는 변경 파일: 해당 goal 커밋 diff와 위 구현 기록 기준
+- 검증 결과: 위 `검증` 또는 `검증 결과` 섹션 기준
+- 검토 결과: 위 `검토` 또는 `검토 메모` 섹션 기준
+- 남은 리스크 또는 보류 사항: 위 `제외 범위`, `참고`, `검토 메모`에 명시된 항목 외 신규 보류 없음
+- 다음 권장 작업: G16-G36 연속 작업 순서에 따라 다음 goal로 진행했고, G36 이후에는 다음 계획 폴더로 넘길 보류 항목을 `COMMON/PLANNING-REVIEW.md`에 유지
+- 전체 작업 진행 현황: G16-G36 21개 goal 구현, 검토, 검증, TODO_LOG 기록, git commit 완료
