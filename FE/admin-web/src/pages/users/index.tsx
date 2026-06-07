@@ -1,5 +1,5 @@
-import { PlaceholderPage } from "@/components/layout/placeholder-page";
+import { AdminUsersScreen } from "@/features/admin-query";
 
 export function UsersPage() {
-  return <PlaceholderPage title="사용자" />;
+  return <AdminUsersScreen />;
 }

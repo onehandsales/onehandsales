@@ -1,5 +1,5 @@
-import { PlaceholderPage } from "@/components/layout/placeholder-page";
+import { AdminDomainDataScreen } from "@/features/admin-query";
 
 export function OrganizationsPage() {
-  return <PlaceholderPage title="조직" />;
+  return <AdminDomainDataScreen />;
 }
