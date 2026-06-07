@@ -1,6 +1,8 @@
 import type {
   AdminCompany,
   AdminContact,
+  AdminAuditLogListParams,
+  AdminAuditLogSummary,
   AdminDashboardResponse,
   AdminDeal,
   AdminDetailResponse,
@@ -8,6 +10,8 @@ import type {
   AdminDomainType,
   AdminPaginatedResponse,
   AdminProduct,
+  AdminSensitiveRawRequest,
+  AdminSensitiveRawResponse,
   AdminUser,
   AdminUserDetail,
   AdminUserListParams,
@@ -59,7 +63,52 @@ export function getAdminDomainDetail(
   return adminApiClient<AdminDetailResponse>(`/${domain}/${targetId}`);
 }
 
-function toQueryString(params: AdminUserListParams | AdminDomainListParams) {
+export function viewAdminSensitiveRawData(request: AdminSensitiveRawRequest) {
+  if (request.targetType === "DEAL") {
+    return adminApiClient<AdminSensitiveRawResponse>(
+      `/deals/${request.targetId}/sensitive/raw`,
+      {
+        method: "POST",
+        body: JSON.stringify({
+          fields: request.fields,
+          reason: request.reason,
+        }),
+      }
+    );
+  }
+
+  if (request.targetType === "MEETING_NOTE") {
+    return adminApiClient<AdminSensitiveRawResponse>(
+      `/meeting-notes/${request.targetId}/sensitive/raw`,
+      {
+        method: "POST",
+        body: JSON.stringify({
+          fields: request.fields,
+          reason: request.reason,
+        }),
+      }
+    );
+  }
+
+  return adminApiClient<AdminSensitiveRawResponse>("/sensitive/raw", {
+    method: "POST",
+    body: JSON.stringify(request),
+  });
+}
+
+export function listAdminAuditLogs(params: AdminAuditLogListParams) {
+  return adminApiClient<AdminPaginatedResponse<AdminAuditLogSummary>>(
+    `/audit-logs${toQueryString(params)}`
+  );
+}
+
+export function getAdminAuditLog(auditLogId: string) {
+  return adminApiClient<AdminAuditLogSummary>(`/audit-logs/${auditLogId}`);
+}
+
+function toQueryString(
+  params: AdminUserListParams | AdminDomainListParams | AdminAuditLogListParams
+) {
   const searchParams = new URLSearchParams();
 
   const entries = Object.entries(params) as Array<

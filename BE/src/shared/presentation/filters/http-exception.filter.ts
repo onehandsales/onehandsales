@@ -96,6 +96,8 @@ export class HttpExceptionFilter implements ExceptionFilter {
       case "ImportRowLimitExceeded":
       case "SensitiveExportConfirmationRequired":
       case "SearchQueryRequired":
+      case "AuditReasonRequired":
+      case "SensitiveFieldNotAllowed":
       case "InvalidUserSetting":
       case "InvalidMeetingNoteGeneratedFields":
       case "InvalidScheduleRange":

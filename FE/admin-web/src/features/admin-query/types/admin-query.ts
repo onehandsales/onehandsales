@@ -1,5 +1,13 @@
 export type AdminDomainType = "companies" | "contacts" | "products" | "deals";
 
+export type AdminSensitiveTargetType =
+  | "COMPANY"
+  | "CONTACT"
+  | "PRODUCT"
+  | "DEAL"
+  | "MEETING_NOTE"
+  | "PERSONAL_MEMO";
+
 export interface AdminPaginationParams {
   readonly page?: number;
   readonly pageSize?: number;
@@ -19,6 +27,15 @@ export interface AdminUserListParams extends AdminPaginationParams {
   readonly role?: string;
 }
 
+export interface AdminAuditLogListParams extends AdminPaginationParams {
+  readonly actorUserId?: string;
+  readonly targetUserId?: string;
+  readonly action?: string;
+  readonly targetType?: string;
+  readonly from?: string;
+  readonly to?: string;
+}
+
 export interface AdminPaginatedResponse<TItem> {
   readonly items: readonly TItem[];
   readonly page: number;
@@ -36,7 +53,27 @@ export interface AdminAuditLogSummary {
   readonly targetType: string;
   readonly targetId: string | null;
   readonly reasonSummary: string | null;
+  readonly ipAddress?: string | null;
+  readonly userAgent?: string | null;
   readonly createdAt: string;
+}
+
+export interface AdminSensitiveRawRequest {
+  readonly targetType: AdminSensitiveTargetType;
+  readonly targetId: string;
+  readonly fields: readonly string[];
+  readonly reason: string;
+}
+
+export interface AdminSensitiveRawResponse {
+  readonly targetType: AdminSensitiveTargetType;
+  readonly targetId: string;
+  readonly fields: readonly {
+    readonly name: string;
+    readonly value: string | null;
+  }[];
+  readonly auditLogId: string;
+  readonly viewedAt: string;
 }
 
 export interface AdminDashboardResponse {

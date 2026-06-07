@@ -1,16 +1,21 @@
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import {
+  getAdminAuditLog,
   getAdminDashboard,
   getAdminDomainDetail,
   getAdminUser,
+  listAdminAuditLogs,
   listAdminDomain,
   listAdminUserDomain,
   listAdminUsers,
+  viewAdminSensitiveRawData,
 } from "@/features/admin-query/api/admin-query-api";
 import { adminQueryKeys } from "@/features/admin-query/api/admin-query-keys";
 import type {
+  AdminAuditLogListParams,
   AdminDomainListParams,
   AdminDomainType,
+  AdminSensitiveRawRequest,
   AdminUserListParams,
 } from "@/features/admin-query/types/admin-query";
 
@@ -66,5 +71,27 @@ export function useAdminDomainDetail(
     enabled: targetId.length > 0,
     queryKey: adminQueryKeys.domainDetail(domain, targetId),
     queryFn: () => getAdminDomainDetail(domain, targetId),
+  });
+}
+
+export function useAdminSensitiveRawMutation() {
+  return useMutation({
+    mutationFn: (request: AdminSensitiveRawRequest) =>
+      viewAdminSensitiveRawData(request),
+  });
+}
+
+export function useAdminAuditLogs(params: AdminAuditLogListParams) {
+  return useQuery({
+    queryKey: adminQueryKeys.auditLogList(params),
+    queryFn: () => listAdminAuditLogs(params),
+  });
+}
+
+export function useAdminAuditLog(auditLogId: string) {
+  return useQuery({
+    enabled: auditLogId.length > 0,
+    queryKey: adminQueryKeys.auditLogDetail(auditLogId),
+    queryFn: () => getAdminAuditLog(auditLogId),
   });
 }

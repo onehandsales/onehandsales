@@ -1,4 +1,5 @@
 import type {
+  AdminAuditLogListParams,
   AdminDomainListParams,
   AdminDomainType,
   AdminUserListParams,
@@ -29,9 +30,16 @@ export const adminQueryKeys = {
     ] as const,
   domainDetail: (domain: AdminDomainType, targetId: string) =>
     [...adminQueryKeys.domain(domain), "detail", targetId] as const,
+  auditLogs: () => [...adminQueryKeys.all, "audit-logs"] as const,
+  auditLogList: (params: AdminAuditLogListParams) =>
+    [...adminQueryKeys.auditLogs(), "list", normalizeParams(params)] as const,
+  auditLogDetail: (auditLogId: string) =>
+    [...adminQueryKeys.auditLogs(), "detail", auditLogId] as const,
 };
 
-function normalizeParams(params: AdminUserListParams | AdminDomainListParams) {
+function normalizeParams(
+  params: AdminUserListParams | AdminDomainListParams | AdminAuditLogListParams
+) {
   return {
     ...params,
     page: params.page ?? 1,

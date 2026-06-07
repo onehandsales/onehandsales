@@ -1,5 +1,5 @@
-import { PlaceholderPage } from "@/components/layout/placeholder-page";
+import { AdminAuditLogsScreen } from "@/features/admin-query";
 
 export function AuditLogsPage() {
-  return <PlaceholderPage title="감사 로그" />;
+  return <AdminAuditLogsScreen />;
 }

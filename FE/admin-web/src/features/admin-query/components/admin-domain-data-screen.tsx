@@ -1,4 +1,4 @@
-import { Database, Search } from "lucide-react";
+import { Database, Eye, Search, ShieldAlert } from "lucide-react";
 import { useMemo, useState } from "react";
 import {
   useAdminDomainDetail,
@@ -9,6 +9,9 @@ import type {
   AdminDetailResponse,
   AdminDomainItem,
   AdminDomainType,
+  AdminSensitiveRawRequest,
+  AdminSensitiveRawResponse,
+  AdminSensitiveTargetType,
 } from "@/features/admin-query/types/admin-query";
 import { domainLabels, formatDate, getErrorMessage } from "../utils/admin-query-ui";
 import {
@@ -18,6 +21,7 @@ import {
   PageHeader,
   PaginationControls,
 } from "./admin-screen-shared";
+import { SensitiveRawDialog } from "./sensitive-raw-dialog";
 
 const pageSize = 20;
 const domainTabs: readonly AdminDomainType[] = [
@@ -26,6 +30,18 @@ const domainTabs: readonly AdminDomainType[] = [
   "products",
   "deals",
 ];
+const sensitiveTargetTypes: Record<AdminDomainType, AdminSensitiveTargetType> = {
+  companies: "COMPANY",
+  contacts: "CONTACT",
+  products: "PRODUCT",
+  deals: "DEAL",
+};
+
+type RawDialogRequest = Omit<AdminSensitiveRawRequest, "reason"> & {
+  readonly label: string;
+};
+
+type RawValuesByTarget = Record<string, Record<string, string | null>>;
 
 export function AdminDomainDataScreen() {
   const [domain, setDomain] = useState<AdminDomainType>("companies");
@@ -37,6 +53,10 @@ export function AdminDomainDataScreen() {
   const [selectedIdByDomain, setSelectedIdByDomain] = useState<
     Partial<Record<AdminDomainType, string>>
   >({});
+  const [rawDialogRequest, setRawDialogRequest] =
+    useState<RawDialogRequest | null>(null);
+  const [rawValuesByTarget, setRawValuesByTarget] =
+    useState<RawValuesByTarget>({});
   const listQuery = useAdminDomainList(domain, {
     page,
     pageSize,
@@ -47,6 +67,7 @@ export function AdminDomainDataScreen() {
   const selectedId = selectedIdByDomain[domain] ?? "";
   const detailQuery = useAdminDomainDetail(domain, selectedId);
   const currentColumns = useMemo(() => getColumns(domain), [domain]);
+  const rawTargetKey = getRawTargetKey(domain, selectedId);
 
   const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -58,6 +79,18 @@ export function AdminDomainDataScreen() {
     setDomain(nextDomain);
     setPage(1);
     setStage("");
+  };
+
+  const onRawSuccess = (response: AdminSensitiveRawResponse) => {
+    setRawValuesByTarget((current) => ({
+      ...current,
+      [rawTargetKey]: {
+        ...(current[rawTargetKey] ?? {}),
+        ...Object.fromEntries(
+          response.fields.map((field) => [field.name, field.value])
+        ),
+      },
+    }));
   };
 
   return (
@@ -175,10 +208,27 @@ export function AdminDomainDataScreen() {
           detail={detailQuery.data ?? null}
           isError={detailQuery.isError}
           isLoading={detailQuery.isLoading}
+          rawValues={rawValuesByTarget[rawTargetKey] ?? {}}
           selectedId={selectedId}
+          onRequestRaw={(field, label) =>
+            setRawDialogRequest({
+              targetType: sensitiveTargetTypes[domain],
+              targetId: selectedId,
+              fields: [field],
+              label,
+            })
+          }
           onRetry={() => void detailQuery.refetch()}
         />
       </div>
+
+      {rawDialogRequest ? (
+        <SensitiveRawDialog
+          request={rawDialogRequest}
+          onClose={() => setRawDialogRequest(null)}
+          onSuccess={onRawSuccess}
+        />
+      ) : null}
     </section>
   );
 }
@@ -249,14 +299,18 @@ function DomainDetailPanel({
   detail,
   isError,
   isLoading,
+  rawValues,
   selectedId,
+  onRequestRaw,
   onRetry,
 }: {
   readonly domain: AdminDomainType;
   readonly detail: AdminDetailResponse | null;
   readonly isError: boolean;
   readonly isLoading: boolean;
+  readonly rawValues: Record<string, string | null>;
   readonly selectedId: string;
+  readonly onRequestRaw: (field: string, label: string) => void;
   readonly onRetry: () => void;
 }) {
   if (!selectedId) {
@@ -280,8 +334,69 @@ function DomainDetailPanel({
       {isError ? (
         <ErrorState message="상세 정보를 불러오지 못했습니다." onRetry={onRetry} />
       ) : null}
+      {detail ? (
+        <SensitiveFieldsPanel
+          detail={detail}
+          domain={domain}
+          rawValues={rawValues}
+          onRequestRaw={onRequestRaw}
+        />
+      ) : null}
       {detail ? <DetailSummary detail={detail} /> : null}
     </aside>
+  );
+}
+
+function SensitiveFieldsPanel({
+  detail,
+  domain,
+  rawValues,
+  onRequestRaw,
+}: {
+  readonly detail: AdminDetailResponse;
+  readonly domain: AdminDomainType;
+  readonly rawValues: Record<string, string | null>;
+  readonly onRequestRaw: (field: string, label: string) => void;
+}) {
+  const options = getSensitiveOptions(domain, detail);
+
+  if (options.length === 0) {
+    return null;
+  }
+
+  return (
+    <section className="grid gap-2 rounded-lg border border-amber-200 bg-amber-50/50 p-3 text-sm">
+      <div className="flex items-center gap-2 font-semibold">
+        <ShieldAlert className="h-4 w-4 text-amber-600" aria-hidden />
+        민감 원문
+      </div>
+      {options.map((option) => {
+        const hasRawValue = Object.prototype.hasOwnProperty.call(
+          rawValues,
+          option.field
+        );
+
+        return (
+          <div
+            key={option.field}
+            className="grid gap-2 rounded-md border bg-white p-3 sm:grid-cols-[120px_1fr_auto] sm:items-center"
+          >
+            <div className="font-medium">{option.label}</div>
+            <div className="min-w-0 break-words text-muted-foreground">
+              {hasRawValue ? rawValues[option.field] ?? "원문 없음" : option.maskedValue}
+            </div>
+            <button
+              type="button"
+              className="inline-flex h-9 items-center justify-center gap-2 rounded-md border px-3 text-sm font-semibold hover:bg-muted"
+              onClick={() => onRequestRaw(option.field, option.label)}
+            >
+              <Eye className="h-4 w-4" aria-hidden />
+              원문 보기
+            </button>
+          </div>
+        );
+      })}
+    </section>
   );
 }
 
@@ -300,6 +415,62 @@ function DetailSummary({ detail }: { readonly detail: AdminDetailResponse }) {
       ))}
     </div>
   );
+}
+
+type SensitiveOption = {
+  readonly field: string;
+  readonly label: string;
+  readonly maskedValue: string;
+};
+
+function getSensitiveOptions(
+  domain: AdminDomainType,
+  detail: AdminDetailResponse
+) {
+  const options: SensitiveOption[] = [];
+
+  if (
+    domain === "contacts" &&
+    detail.contact &&
+    "phoneMasked" in detail.contact
+  ) {
+    options.push({
+      field: "phone",
+      label: "전화번호",
+      maskedValue: detail.contact.phoneMasked ?? "마스킹됨",
+    });
+    options.push({
+      field: "email",
+      label: "이메일",
+      maskedValue: detail.contact.emailMasked ?? "마스킹됨",
+    });
+  }
+
+  if (domain === "products" && detail.product) {
+    options.push({
+      field: "unitPrice",
+      label: "단가",
+      maskedValue: detail.product.unitPriceMasked ?? "마스킹됨",
+    });
+  }
+
+  if (domain === "deals" && detail.deal) {
+    options.push({
+      field: "amount",
+      label: "금액",
+      maskedValue: detail.deal.amountMasked ?? "마스킹됨",
+    });
+  }
+
+  if (detail.memoSummary?.hasMemo) {
+    options.push({
+      field: "memo",
+      label: "Memo 원문",
+      maskedValue: `${detail.memoSummary.memoCount.toLocaleString()}개 기록`,
+    });
+  }
+
+  return options;
 }
 
 function getColumns(domain: AdminDomainType): readonly Column[] {
@@ -352,4 +523,8 @@ function getDealAmount(item: AdminDomainItem) {
   const deal = item as AdminDeal;
 
   return `${deal.amountMasked ?? "-"} ${deal.currency ?? ""}`.trim();
+}
+
+function getRawTargetKey(domain: AdminDomainType, targetId: string) {
+  return `${domain}:${targetId}`;
 }
