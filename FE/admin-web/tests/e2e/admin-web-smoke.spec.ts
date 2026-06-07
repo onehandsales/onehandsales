@@ -165,8 +165,9 @@ test.describe("Admin Web smoke E2E", () => {
       await expect(auditLogRow).toBeVisible();
       await expect(page.getByText(RAW_VIEW_REASON)).toBeVisible();
       await auditLogRow.click();
-      await expect(page.getByText("감사 로그 상세")).toBeVisible();
-      await expect(page.getByText(ADMIN_NAME)).toBeVisible();
+      const detailPanel = page.locator("aside").filter({ hasText: "감사 로그 상세" });
+      await expect(detailPanel.getByText("감사 로그 상세")).toBeVisible();
+      await expect(detailPanel.getByText(ADMIN_NAME)).toBeVisible();
     });
 
     expect(api.unauthorizedRequests()).toEqual([]);

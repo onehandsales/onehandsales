@@ -35,10 +35,48 @@ Admin API는 `/admin/api/*`를 사용한다.
 전제 조건: Node.js 24 LTS가 활성화되어 있어야 한다.
 
 ```bash
+cp .env.example .env
 pnpm install
 pnpm run dev
 ```
 
 로컬 URL: `http://localhost:5174`
+
+`.env` 기본값:
+
+```text
+VITE_API_URL="http://localhost:3000"
+VITE_SUPABASE_REDIRECT_URL="http://localhost:5174/auth/callback"
+```
+
+## Local Login
+
+MVP starter local에서는 실제 Supabase provider login 대신 memory 기반 mock login을 사용한다.
+
+- `관리자로 계속`: Admin role로 운영 콘솔 진입
+- `일반 사용자로 계속`: non-admin 접근 차단 화면 확인
+
+App access token은 storage에 저장하지 않고 memory에만 둔다.
+
+## 검증
+
+```bash
+pnpm run typecheck
+pnpm run lint
+pnpm run build
+pnpm run test:e2e
+```
+
+`pnpm run test:e2e`는 Playwright smoke를 실행한다. Backend와 외부 Provider는 route mock으로 대체하며, 테스트용 Vite server는 `http://127.0.0.1:5176`을 사용한다.
+
+Smoke 범위:
+
+- Admin login
+- non-admin 접근 차단
+- 사용자 목록/상세 조회
+- 전체 딜 목록 조회
+- 민감 데이터 masking 확인
+- 사유 입력 후 원문 조회
+- 감사 로그 생성 확인
 
 Vercel 프로젝트 root: `FE/admin-web`
