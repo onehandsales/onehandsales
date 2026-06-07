@@ -11,6 +11,7 @@ import { MeetingNoteModule } from "./modules/meeting-note/meeting-note.module";
 import { NotificationModule } from "./modules/notification/notification.module";
 import { ProductModule } from "./modules/product/product.module";
 import { ScheduleModule } from "./modules/schedule/schedule.module";
+import { TrashModule } from "./modules/trash/trash.module";
 import { UserModule } from "./modules/user/user.module";
 
 @Module({
@@ -31,6 +32,7 @@ import { UserModule } from "./modules/user/user.module";
     MeetingNoteModule,
     ImportExportModule,
     NotificationModule,
+    TrashModule,
   ],
 })
 export class AppModule {}

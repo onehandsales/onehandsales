@@ -1,5 +1,5 @@
-import { PlaceholderPage } from "@/components/layout/placeholder-page";
+import { TrashScreen } from "@/features/trash";
 
 export function TrashPage() {
-  return <PlaceholderPage title="휴지통" />;
+  return <TrashScreen />;
 }

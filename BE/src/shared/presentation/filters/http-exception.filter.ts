@@ -76,7 +76,10 @@ export class HttpExceptionFilter implements ExceptionFilter {
       case "ImportExecutionFailed":
       case "ExportFileNotReady":
       case "PushSubscriptionConflict":
+      case "PermanentDeleteNotAllowed":
         return HttpStatus.CONFLICT;
+      case "TrashItemExpired":
+        return HttpStatus.GONE;
       case "InactiveUser":
       case "OwnershipViolation":
         return HttpStatus.FORBIDDEN;
