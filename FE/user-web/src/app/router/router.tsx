@@ -1,5 +1,6 @@
 import { createBrowserRouter } from "react-router-dom";
 import { AppShell } from "@/components/layout/app-shell";
+import { ProtectedRoute } from "@/features/auth";
 import { BusinessCardsPage } from "@/pages/business-cards";
 import { CompanyDetailPage } from "@/pages/companies/detail";
 import { CompaniesPage } from "@/pages/companies";
@@ -26,7 +27,11 @@ export const router = createBrowserRouter([
   { path: "/login", element: <LoginPage /> },
   {
     path: "/",
-    element: <AppShell />,
+    element: (
+      <ProtectedRoute>
+        <AppShell />
+      </ProtectedRoute>
+    ),
     children: [
       { index: true, element: <HomePage /> },
       { path: "companies", element: <CompaniesPage /> },
