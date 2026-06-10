@@ -89,7 +89,7 @@ archive 또는 legacy 문서가 `AGENT` 문서와 충돌하면 `AGENT` 문서를
 
 예:
 
-- `TODO/MVP-STARTER_PLAN`
+- `TODO/DONE/MVP-STARTER_PLAN`
 
 TODO 문서 작성 방식은 `PM_AGENT/CONVENTION/DOCUMENTATION.md`를 따른다.
 

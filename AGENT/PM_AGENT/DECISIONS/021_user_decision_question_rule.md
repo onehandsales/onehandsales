@@ -1,4 +1,4 @@
-# 사용자 결정 질문 진행 규칙
+﻿# 사용자 결정 질문 진행 규칙
 
 ## 1. 결정
 
@@ -58,4 +58,4 @@
 - `AGENT/PM_AGENT/CONVENTION/PLANNING_REVIEW_CHECKLIST.md`
 - `AGENT/PM_AGENT/DECISIONS/017_planning_review_gate.md`
 - `AGENT/PM_AGENT/DECISIONS/020_todo_execution_plan_standard.md`
-- `TODO/MVP-STARTER_PLAN/COMMON/G00-PENDING-QUESTIONS.md`
+- `TODO/DONE/MVP-STARTER_PLAN/COMMON/G00-PENDING-QUESTIONS.md`

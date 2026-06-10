@@ -1,4 +1,4 @@
-# TODO 실행 계획서 기준 결정
+﻿# TODO 실행 계획서 기준 결정
 
 ## 1. 결정
 
@@ -69,4 +69,4 @@
 - `AGENT/PM_AGENT/DECISIONS/015_todo_goal_work_order.md`
 - `AGENT/PM_AGENT/DECISIONS/018_todo_common_contract_structure.md`
 - `AGENT/PM_AGENT/DECISIONS/019_agent_based_planning_review.md`
-- `TODO/MVP-STARTER_PLAN/README.md`
+- `TODO/DONE/MVP-STARTER_PLAN/README.md`
