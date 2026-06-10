@@ -16,13 +16,8 @@ export interface AuthUserRecord {
   readonly deletedAt: Date | null;
 }
 
-export interface AuthSettingRecord {
-  readonly sensitiveWarningEnabled: boolean;
-}
-
 export interface AuthMeRecord extends AuthUserRecord {
   readonly supabaseUserId: string | null;
-  readonly settings: AuthSettingRecord;
 }
 
 export interface AuthOAuthAccountRecord {
@@ -61,7 +56,6 @@ export interface CreateAuthUserInput {
 export interface UpdateUserLoginInput {
   readonly userId: string;
   readonly email: string;
-  readonly displayName: string | null;
   readonly role?: AuthUserRole;
 }
 

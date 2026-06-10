@@ -131,7 +131,6 @@ export class ExchangeExternalAuthTokenUseCase {
       const updateInput = {
         userId: oauthAccount.userId,
         email,
-        displayName: verifiedUser.name,
       };
 
       if (adminRole) {

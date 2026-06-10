@@ -45,9 +45,6 @@ async function seedLocalMockAuth() {
         displayName: demoUser.displayName,
         role: demoUser.role,
         status: UserStatus.ACTIVE,
-        setting: {
-          create: {},
-        },
       },
       update: {
         email: demoUser.email,
@@ -55,14 +52,7 @@ async function seedLocalMockAuth() {
         role: demoUser.role,
         status: UserStatus.ACTIVE,
         deletedAt: null,
-        permanentDeleteAt: null,
       },
-    });
-
-    await prisma.userSetting.upsert({
-      where: { userId: demoUser.id },
-      create: { userId: demoUser.id },
-      update: {},
     });
 
     await prisma.authDevice.upsert({

@@ -72,7 +72,6 @@ export class HttpExceptionFilter implements ExceptionFilter {
       case "InvalidDeviceSlot":
       case "InvalidDeviceId":
       case "InvalidRefreshOrigin":
-      case "InvalidUserSetting":
       case "ValidationError":
         return HttpStatus.BAD_REQUEST;
       default:

@@ -10,7 +10,7 @@ Routes:
 Active modules:
 
 - `auth`: external auth token exchange, app token refresh/logout, current user lookup, device/session management.
-- `user`: current user settings and account deletion.
+- `user`: current user profile and registered device lookup.
 - `health`: health check endpoint.
 
 Layer rules:

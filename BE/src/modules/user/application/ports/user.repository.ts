@@ -1,30 +1,55 @@
 export const USER_REPOSITORY = Symbol("USER_REPOSITORY");
 
-export interface UserSettingRecord {
-  readonly sensitiveWarningEnabled: boolean;
-}
+export type UserProfileRole = "USER" | "ADMIN";
+export type UserProfileStatus = "ACTIVE" | "SUSPENDED" | "DELETED";
+export type UserDeviceSlot = "mobile" | "personal_laptop" | "work_laptop";
+export type UserDeviceStatus = "ACTIVE" | "REPLACED" | "REVOKED";
 
-export interface UpdateUserSettingInput {
-  readonly sensitiveWarningEnabled?: boolean;
-}
-
-export interface DeletedUserRecord {
+export interface UserOAuthAccountSummary {
   readonly id: string;
-  readonly status: "DELETED";
-  readonly deletedAt: Date;
-  readonly permanentDeleteAt: Date;
+  readonly provider: "kakao" | "naver" | "google" | "apple";
+  readonly providerEmail: string | null;
+  readonly createdAt: Date;
+}
+
+export interface UserProfileRecord {
+  readonly id: string;
+  readonly email: string | null;
+  readonly name: string | null;
+  readonly role: UserProfileRole;
+  readonly status: UserProfileStatus;
+  readonly lastLoginAt: Date | null;
+  readonly createdAt: Date;
+  readonly updatedAt: Date;
+  readonly oauthAccounts: UserOAuthAccountSummary[];
+}
+
+export interface UpdateUserProfileInput {
+  readonly name?: string | null;
+}
+
+export interface UserDeviceRecord {
+  readonly id: string;
+  readonly slot: UserDeviceSlot;
+  readonly label: string | null;
+  readonly status: UserDeviceStatus;
+  readonly lastSeenAt: Date | null;
+  readonly createdAt: Date;
+  readonly updatedAt: Date;
+  readonly activeSessionCount: number;
+  readonly isCurrentDevice: boolean;
 }
 
 export interface UserRepository {
-  getOrCreateSetting(userId: string): Promise<UserSettingRecord>;
-  updateSetting(
+  getProfile(userId: string): Promise<UserProfileRecord | null>;
+  updateProfile(
     userId: string,
-    input: UpdateUserSettingInput
-  ): Promise<UserSettingRecord>;
-  softDeleteUserAndRevokeSessions(
+    input: UpdateUserProfileInput
+  ): Promise<UserProfileRecord | null>;
+  listActiveDevices(
     userId: string,
-    now: Date,
-    permanentDeleteAt: Date
-  ): Promise<DeletedUserRecord>;
+    currentSessionId: string,
+    now: Date
+  ): Promise<UserDeviceRecord[]>;
 }
 

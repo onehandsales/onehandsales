@@ -108,7 +108,6 @@ class FakeAuthRepository implements AuthRepository {
     const updated: AuthUserRecord = {
       ...user,
       email: input.email,
-      displayName: input.displayName,
       role: input.role ?? user.role,
     };
     this.users = this.users.map((item) => (item.id === user.id ? updated : item));
@@ -130,9 +129,6 @@ class FakeAuthRepository implements AuthRepository {
     return {
       ...user,
       supabaseUserId: oauthAccount?.providerUserId ?? null,
-      settings: {
-        sensitiveWarningEnabled: true,
-      },
     };
   }
 

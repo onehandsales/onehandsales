@@ -96,9 +96,6 @@ export class PrismaAuthRepository implements AuthRepository {
             providerEmail: input.providerEmail,
           },
         },
-        setting: {
-          create: {},
-        },
       },
     });
 
@@ -111,7 +108,6 @@ export class PrismaAuthRepository implements AuthRepository {
   ): Promise<AuthUserRecord> {
     const data: Prisma.UserUpdateInput = {
       email: input.email,
-      displayName: input.displayName,
       lastLoginAt: now,
     };
 
@@ -124,12 +120,6 @@ export class PrismaAuthRepository implements AuthRepository {
       data,
     });
 
-    await this.client.userSetting.upsert({
-      where: { userId: user.id },
-      create: { userId: user.id },
-      update: {},
-    });
-
     return this.mapUser(user);
   }
 
@@ -137,7 +127,6 @@ export class PrismaAuthRepository implements AuthRepository {
     const user = await this.client.user.findUnique({
       where: { id: userId },
       include: {
-        setting: true,
         oauthAccounts: {
           orderBy: { createdAt: "asc" },
           take: 1,
@@ -149,19 +138,11 @@ export class PrismaAuthRepository implements AuthRepository {
       return null;
     }
 
-    const setting =
-      user.setting ??
-      (await this.client.userSetting.create({
-        data: { userId: user.id },
-      }));
     const firstOauthAccount = user.oauthAccounts[0];
 
     return {
       ...this.mapUser(user),
       supabaseUserId: firstOauthAccount?.providerUserId ?? null,
-      settings: {
-        sensitiveWarningEnabled: setting.sensitiveSaveWarningEnabled,
-      },
     };
   }
 

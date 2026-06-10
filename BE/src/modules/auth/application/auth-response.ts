@@ -22,9 +22,6 @@ export interface MeResponse {
   readonly email: string | null;
   readonly role: string;
   readonly status: string;
-  readonly settings: {
-    readonly sensitiveWarningEnabled: boolean;
-  };
 }
 
 export interface AdminMeResponse {
@@ -70,7 +67,6 @@ export function toMeResponse(user: AuthMeRecord): MeResponse {
     email: user.email,
     role: user.role,
     status: user.status,
-    settings: user.settings,
   };
 }
 
