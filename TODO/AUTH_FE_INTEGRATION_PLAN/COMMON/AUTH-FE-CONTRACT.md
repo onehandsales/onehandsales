@@ -10,7 +10,7 @@ Frontend는 provider 로그인과 Supabase callback 처리를 담당한다. Back
 
 ## 1-1. 문서 작성 기준
 
-이 계약 문서는 `TODO/SOFTWARE_AGENT_REFERENCE.md`에 나열된 `AGENT/SOFTWARE_AGENT` 전체 문서를 먼저 참고해 작성한다.
+이 계약 문서는 `AGENT/PM_AGENT/CONVENTION/TODO_SOFTWARE_AGENT_REFERENCE.md`에 나열된 `AGENT/SOFTWARE_AGENT` 전체 문서를 먼저 참고해 작성한다.
 
 API를 수정할 때는 아래 항목을 반드시 함께 갱신한다.
 

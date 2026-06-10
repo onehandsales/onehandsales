@@ -8,7 +8,7 @@
 
 ## 공통 전제
 
-- 이 계획의 TODO 문서는 `TODO/SOFTWARE_AGENT_REFERENCE.md`에 나열된 `AGENT/SOFTWARE_AGENT` 전체 문서를 먼저 참고한 뒤 작성/수정한다.
+- 이 계획의 TODO 문서는 `AGENT/PM_AGENT/CONVENTION/TODO_SOFTWARE_AGENT_REFERENCE.md`에 나열된 `AGENT/SOFTWARE_AGENT` 전체 문서를 먼저 참고한 뒤 작성/수정한다.
 - 로그인/회원가입은 `Supabase Auth + POST /api/auth/exchange` 흐름을 사용한다.
 - 일반 Backend API는 `Authorization: Bearer <backend_app_access_token>`을 사용한다.
 - refresh token은 httpOnly cookie로만 운용한다.

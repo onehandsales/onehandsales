@@ -11,7 +11,7 @@
 
 ## 공통 전제
 
-- 이 폴더의 계약 문서는 `TODO/SOFTWARE_AGENT_REFERENCE.md`에 나열된 `AGENT/SOFTWARE_AGENT` 전체 문서를 먼저 참고한 뒤 작성/수정한다.
+- 이 폴더의 계약 문서는 `AGENT/PM_AGENT/CONVENTION/TODO_SOFTWARE_AGENT_REFERENCE.md`에 나열된 `AGENT/SOFTWARE_AGENT` 전체 문서를 먼저 참고한 뒤 작성/수정한다.
 - 사용자 페이지 API만 다룬다.
 - 모든 API는 로그인한 사용자 기준으로 동작한다.
 - 모든 조회와 변경은 `userId` ownership을 검증한다.

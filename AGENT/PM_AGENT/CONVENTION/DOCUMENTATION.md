@@ -218,7 +218,7 @@ MVP 또는 현재 단계에서 반드시 다루는 범위를 적는다.
 규칙:
 
 - `TODO` 바로 아래에는 기획 또는 구현 계획 단위의 폴더를 1개 만든다.
-- `TODO` 아래 문서를 새로 작성하거나 수정하기 전에는 `TODO/SOFTWARE_AGENT_REFERENCE.md`에 나열된 `AGENT/SOFTWARE_AGENT` 전체 문서를 먼저 참고한다.
+- `TODO` 아래 문서를 새로 작성하거나 수정하기 전에는 `AGENT/PM_AGENT/CONVENTION/TODO_SOFTWARE_AGENT_REFERENCE.md`에 나열된 `AGENT/SOFTWARE_AGENT` 전체 문서를 먼저 참고한다.
 - TODO 작성자는 Software Agent의 아키텍처, API 명세, Backend/Frontend/Admin 컨벤션, DB schema, 테스트, 배포, 주석/로그 규칙 중 해당 계획에 영향을 주는 기준을 TODO 문서에 구체적으로 옮긴다.
 - 계획 폴더명은 목적이 드러나게 대문자와 `_PLAN` 접미사를 사용한다.
 - 예: `MVP-STARTER_PLAN`, `IMPORT_EXPORT_PLAN`, `PAYMENT_MANUAL_PLAN`
@@ -372,7 +372,7 @@ docs(uxui): 딜 상세 UX 기준 보강
 - 관련 문서 경로를 연결했는가?
 - 기획서, 명세서, TODO 문서라면 `PLANNING_REVIEW_CHECKLIST.md` 기준으로 구현 가능 여부를 검토했는가?
 - TODO 문서라면 구현자가 문서만 보고 다음 `/goal`을 바로 실행할 수 있는 실행 계획서 수준인가?
-- TODO 문서를 작성하거나 수정하기 전에 `TODO/SOFTWARE_AGENT_REFERENCE.md`의 `AGENT/SOFTWARE_AGENT` 전체 문서 목록을 참고했는가?
+- TODO 문서를 작성하거나 수정하기 전에 `AGENT/PM_AGENT/CONVENTION/TODO_SOFTWARE_AGENT_REFERENCE.md`의 `AGENT/SOFTWARE_AGENT` 전체 문서 목록을 참고했는가?
 - 검토 시 `AGENT` 정본의 소프트웨어 아키텍처, Backend 컨벤션, Frontend 컨벤션, UX/UI 체크리스트가 TODO 문서에 구체화됐는지 확인했는가?
 - TODO 작업이라면 우선순위 순차 실행 규칙을 지켰는가?
 - 특정 `/goal` 또는 작업 단위가 끝났다면 사용자에게 검토 여부를 질문했는가?

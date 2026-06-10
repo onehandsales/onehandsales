@@ -6,7 +6,7 @@
 
 ## 공통 전제
 
-- 이 계획의 TODO 문서는 `TODO/SOFTWARE_AGENT_REFERENCE.md`에 나열된 `AGENT/SOFTWARE_AGENT` 전체 문서를 먼저 참고한 뒤 작성/수정한다.
+- 이 계획의 TODO 문서는 `AGENT/PM_AGENT/CONVENTION/TODO_SOFTWARE_AGENT_REFERENCE.md`에 나열된 `AGENT/SOFTWARE_AGENT` 전체 문서를 먼저 참고한 뒤 작성/수정한다.
 - 일반 사용자 페이지 API만 구현한다.
 - 관리자 페이지는 이번 범위에서 제외한다.
 - 모든 API는 `Authorization: Bearer <backend_app_access_token>`을 사용한다.

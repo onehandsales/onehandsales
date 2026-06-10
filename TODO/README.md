@@ -11,7 +11,6 @@
 ```text
 TODO/
   README.md
-  SOFTWARE_AGENT_REFERENCE.md
   COMPANY_DOMAIN_PLAN/
     README.md
     COMMON/
@@ -63,7 +62,7 @@ TODO/
 ## 3. 작업 기준
 
 - 모든 문서는 한국어로 작성한다.
-- `TODO` 아래 문서를 새로 작성하거나 수정하기 전에는 `TODO/SOFTWARE_AGENT_REFERENCE.md`에 나열된 `AGENT/SOFTWARE_AGENT` 전체 문서를 먼저 참고한다.
+- `TODO` 아래 문서를 새로 작성하거나 수정하기 전에는 `AGENT/PM_AGENT/CONVENTION/TODO_SOFTWARE_AGENT_REFERENCE.md`에 나열된 `AGENT/SOFTWARE_AGENT` 전체 문서를 먼저 참고한다.
 - TODO 문서에는 `AGENT/SOFTWARE_AGENT`의 Backend, Frontend, Admin, API 명세, DB schema, 테스트, 배포, 주석/로그 규칙 중 해당 작업에 영향을 주는 기준을 구체적으로 반영한다.
 - `TODO` 바로 아래에는 작업 주제별 계획 폴더를 만든다.
 - 각 계획 폴더 안에는 `COMMON`, `FE-TODO`, `BE-TODO`, `README.md`를 둔다.
@@ -126,7 +125,7 @@ MVP starter 구현 결과를 참조해야 할 때는 `TODO/DONE/MVP-STARTER_PLAN
 
 ## 7. 관련 정본 문서
 
-- `TODO/SOFTWARE_AGENT_REFERENCE.md`
+- `AGENT/PM_AGENT/CONVENTION/TODO_SOFTWARE_AGENT_REFERENCE.md`
 - `AGENT/PM_AGENT/DECISIONS/000_확정_결정.md`
 - `AGENT/PM_AGENT/PLANNING/PRD.md`
 - `AGENT/PM_AGENT/PLANNING/MVP_SCOPE.md`
