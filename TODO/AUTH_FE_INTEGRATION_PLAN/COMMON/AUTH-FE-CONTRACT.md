@@ -20,6 +20,8 @@ API를 수정할 때는 아래 항목을 반드시 함께 갱신한다.
 - 연결 DB 스키마: 생성/조회/수정 model과 transaction 대상
 - FE/BE 처리 기준: token 저장 위치, refresh 재시도, query 재조회, domain error 처리
 
+최종 API별 상세 명세는 `TODO/AUTH_FE_INTEGRATION_PLAN/COMMON/API-SPEC/AUTH_USER_API_DETAIL.md`를 기준으로 한다.
+
 ## 2. Frontend 책임
 
 - Supabase client 초기화

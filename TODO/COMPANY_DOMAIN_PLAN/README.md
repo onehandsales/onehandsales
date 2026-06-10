@@ -22,6 +22,7 @@ TODO/COMPANY_DOMAIN_PLAN/
     WORK-SPLIT.md
     API-SPEC/
       COMPANY_API.md
+      COMPANY_API_DETAIL.md
   FE-TODO/
     README.md
     G01-FE-COMPANY-PAGES.goal.md
@@ -34,9 +35,10 @@ TODO/COMPANY_DOMAIN_PLAN/
 
 1. `AGENT/PM_AGENT/CONVENTION/TODO_SOFTWARE_AGENT_REFERENCE.md`로 Software Agent 전체 정본 선행 참조 규칙을 확인한다.
 2. `COMMON/WORK-SPLIT.md`로 FE/BE 책임 경계를 확인한다.
-3. `COMMON/API-SPEC/COMPANY_API.md`로 API 계약을 확인한다.
-4. BE는 `BE-TODO/G01-BE-COMPANY-DOMAIN.goal.md`를 실행해 DB와 API를 구현한다.
-5. FE는 `FE-TODO/G01-FE-COMPANY-PAGES.goal.md`를 실행해 사용자 페이지를 구현한다.
+3. `COMMON/API-SPEC/COMPANY_API.md`로 API 목록과 기본 계약을 확인한다.
+4. `COMMON/API-SPEC/COMPANY_API_DETAIL.md`로 요청값, 응답값, 내부 비즈니스 로직, DB 연결, 에러, FE/BE 처리 기준을 확인한다.
+5. BE는 `BE-TODO/G01-BE-COMPANY-DOMAIN.goal.md`를 실행해 DB와 API를 구현한다.
+6. FE는 `FE-TODO/G01-FE-COMPANY-PAGES.goal.md`를 실행해 사용자 페이지를 구현한다.
 
 ## 현재 범위
 
@@ -88,6 +90,7 @@ FE가 책임지는 화면:
 ## 완료 기준
 
 - FE와 BE가 같은 API 계약을 기준으로 구현한다.
+- `COMMON/API-SPEC/COMPANY_API_DETAIL.md`에 모든 API의 요청값, 응답값, 내부 비즈니스 로직이 적혀 있다.
 - 회사 목록은 등록일 기준 DESC로 정렬된다.
 - 회사 목록에는 `updatedAt`이 나오지 않는다.
 - 회사 분야/지역 전체 조회에는 `createdAt`이 나오지 않는다.

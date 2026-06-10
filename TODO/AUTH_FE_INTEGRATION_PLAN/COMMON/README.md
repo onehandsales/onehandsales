@@ -6,8 +6,10 @@
 
 - `AUTH-FE-CONTRACT.md`: Auth/User API와 FE 처리 계약
 - `WORK-SPLIT.md`: FE/BE 작업 분리 기준
+- `API-SPEC/AUTH_USER_API_DETAIL.md`: Auth/User API 요청값, 응답값, 내부 비즈니스 로직, DB, 에러, FE/BE 처리 기준
 
 작업자는 `/goal` 실행 전에 `WORK-SPLIT.md`를 먼저 읽고, 그 다음 `AUTH-FE-CONTRACT.md`를 확인한다.
+API 구현 또는 FE 연동을 할 때는 `API-SPEC/AUTH_USER_API_DETAIL.md`를 최종 API 상세 계약으로 사용한다.
 
 ## 필수 선행 정본
 

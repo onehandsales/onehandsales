@@ -4,6 +4,7 @@
 
 - 이 API 계약은 `AGENT/PM_AGENT/CONVENTION/TODO_SOFTWARE_AGENT_REFERENCE.md`에 나열된 `AGENT/SOFTWARE_AGENT` 전체 문서를 먼저 참고한 뒤 작성/수정한다.
 - API를 수정할 때는 요청값 형태, 응답값 형태, 내부 비즈니스 로직, 연결 DB 스키마, 에러 응답, FE/BE 처리 기준을 함께 갱신한다.
+- API별 최종 상세 명세는 `TODO/COMPANY_DOMAIN_PLAN/COMMON/API-SPEC/COMPANY_API_DETAIL.md`를 기준으로 한다.
 - 대상: 사용자 페이지 API
 - 관리자 페이지: 제외
 - 인증: `Authorization: Bearer <backend_app_access_token>`

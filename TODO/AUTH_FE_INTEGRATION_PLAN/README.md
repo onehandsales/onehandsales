@@ -26,6 +26,8 @@ TODO/AUTH_FE_INTEGRATION_PLAN/
     README.md
     AUTH-FE-CONTRACT.md
     WORK-SPLIT.md
+    API-SPEC/
+      AUTH_USER_API_DETAIL.md
   FE-TODO/
     README.md
     G01-AUTH-FE-INTEGRATION.goal.md
@@ -39,15 +41,22 @@ TODO/AUTH_FE_INTEGRATION_PLAN/
 
 1. `AGENT/PM_AGENT/CONVENTION/TODO_SOFTWARE_AGENT_REFERENCE.md`로 Software Agent 전체 정본 선행 참조 규칙을 확인한다.
 2. `COMMON/WORK-SPLIT.md`로 FE/BE 책임 경계를 확인한다.
-3. `COMMON/AUTH-FE-CONTRACT.md`로 API 계약을 확인한다.
-4. BE는 `BE-TODO/G01-BE-USER-PROFILE-DEVICES.goal.md`를 실행한다.
-5. FE는 인증 연동이 필요하면 `FE-TODO/G01-AUTH-FE-INTEGRATION.goal.md`를 실행한다.
-6. FE는 설정 탭 구현이 필요하면 `FE-TODO/G02-FE-SETTINGS-PROFILE-DEVICES.goal.md`를 실행한다.
+3. `COMMON/AUTH-FE-CONTRACT.md`로 Auth/FE 처리 계약을 확인한다.
+4. `COMMON/API-SPEC/AUTH_USER_API_DETAIL.md`로 요청값, 응답값, 내부 비즈니스 로직, DB 연결, 에러, FE/BE 처리 기준을 확인한다.
+5. BE는 `BE-TODO/G01-BE-USER-PROFILE-DEVICES.goal.md`를 실행한다.
+6. FE는 인증 연동이 필요하면 `FE-TODO/G01-AUTH-FE-INTEGRATION.goal.md`를 실행한다.
+7. FE는 설정 탭 구현이 필요하면 `FE-TODO/G02-FE-SETTINGS-PROFILE-DEVICES.goal.md`를 실행한다.
 
 ## 현재 범위
 
 BE가 책임지는 API:
 
+- `GET /api/auth/providers`
+- `POST /api/auth/exchange`
+- `POST /api/auth/refresh`
+- `POST /api/auth/logout`
+- `GET /api/me`
+- `GET /admin/api/me`
 - `GET /api/users/me/profile`
 - `PATCH /api/users/me/profile`
 - `GET /api/users/me/devices`
@@ -70,6 +79,7 @@ FE가 책임지는 화면:
 ## 완료 기준
 
 - FE와 BE가 서로의 작업 영역을 침범하지 않는다.
+- `COMMON/API-SPEC/AUTH_USER_API_DETAIL.md`에 모든 API의 요청값, 응답값, 내부 비즈니스 로직이 적혀 있다.
 - Backend 계약 문서와 실제 API shape가 일치한다.
 - User Web 설정 탭은 개인 정보와 등록 기기 조회만 제공한다.
 - 계정 삭제, user settings, 기기 수정 UI는 노출하지 않는다.

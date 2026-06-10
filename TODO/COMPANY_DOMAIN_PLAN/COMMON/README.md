@@ -8,6 +8,7 @@
 
 - `WORK-SPLIT.md`: FE/BE 책임 경계
 - `API-SPEC/COMPANY_API.md`: 회사 도메인 User API 계약
+- `API-SPEC/COMPANY_API_DETAIL.md`: 회사 도메인 User API 요청값, 응답값, 내부 비즈니스 로직, DB, 에러, FE/BE 처리 기준
 
 ## 공통 전제
 
@@ -22,3 +23,4 @@
 - 독립적인 회사 개인 비밀 메모 로그 생성은 `memo`만 받는다.
 
 API 계약을 수정할 때는 요청값 형태, 응답값 형태, 내부 비즈니스 로직, 연결 DB 스키마, 에러 응답, FE/BE 처리 기준을 누락하지 않는다.
+API 구현 또는 FE 연동을 할 때는 `API-SPEC/COMPANY_API_DETAIL.md`를 최종 API 상세 계약으로 사용한다.
