@@ -70,7 +70,7 @@ TODO/
 
 현재 계획:
 
-- `PROVIDER_CI_RELEASE_PLAN`: MVP starter 이후 실제 인증, 외부 Provider smoke, CI, 배포 준비 방향성 문서
+- `AUTH_FE_INTEGRATION_PLAN`: 현재 Backend Auth/User 계약을 기준으로 User Web/Admin Web이 Supabase Auth + Backend token exchange 로그인을 구현하기 위한 `/goal` 실행 문서
 
 완료된 계획:
 
