@@ -11,6 +11,12 @@
 
 Company, Contact, Product, Deal, Schedule 같은 영업 도메인은 범위 밖이다.
 
+## 필수 선행 정본
+
+이 계획의 모든 문서는 `TODO/SOFTWARE_AGENT_REFERENCE.md`에 나열된 `AGENT/SOFTWARE_AGENT` 전체 문서를 먼저 참고한 뒤 작성/수정한다.
+
+특히 API 계약과 goal 문서에는 요청값 형태, 응답값 형태, 내부 비즈니스 로직, 연결 DB 스키마, 에러 응답, FE/BE 처리 기준을 상세하게 적는다.
+
 ## 문서 구조
 
 ```text
@@ -31,11 +37,12 @@ TODO/AUTH_FE_INTEGRATION_PLAN/
 
 ## 실행 순서
 
-1. `COMMON/WORK-SPLIT.md`로 FE/BE 책임 경계를 확인한다.
-2. `COMMON/AUTH-FE-CONTRACT.md`로 API 계약을 확인한다.
-3. BE는 `BE-TODO/G01-BE-USER-PROFILE-DEVICES.goal.md`를 실행한다.
-4. FE는 인증 연동이 필요하면 `FE-TODO/G01-AUTH-FE-INTEGRATION.goal.md`를 실행한다.
-5. FE는 설정 탭 구현이 필요하면 `FE-TODO/G02-FE-SETTINGS-PROFILE-DEVICES.goal.md`를 실행한다.
+1. `TODO/SOFTWARE_AGENT_REFERENCE.md`로 Software Agent 전체 정본 선행 참조 규칙을 확인한다.
+2. `COMMON/WORK-SPLIT.md`로 FE/BE 책임 경계를 확인한다.
+3. `COMMON/AUTH-FE-CONTRACT.md`로 API 계약을 확인한다.
+4. BE는 `BE-TODO/G01-BE-USER-PROFILE-DEVICES.goal.md`를 실행한다.
+5. FE는 인증 연동이 필요하면 `FE-TODO/G01-AUTH-FE-INTEGRATION.goal.md`를 실행한다.
+6. FE는 설정 탭 구현이 필요하면 `FE-TODO/G02-FE-SETTINGS-PROFILE-DEVICES.goal.md`를 실행한다.
 
 ## 현재 범위
 

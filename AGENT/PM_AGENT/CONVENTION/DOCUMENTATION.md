@@ -218,6 +218,8 @@ MVP 또는 현재 단계에서 반드시 다루는 범위를 적는다.
 규칙:
 
 - `TODO` 바로 아래에는 기획 또는 구현 계획 단위의 폴더를 1개 만든다.
+- `TODO` 아래 문서를 새로 작성하거나 수정하기 전에는 `TODO/SOFTWARE_AGENT_REFERENCE.md`에 나열된 `AGENT/SOFTWARE_AGENT` 전체 문서를 먼저 참고한다.
+- TODO 작성자는 Software Agent의 아키텍처, API 명세, Backend/Frontend/Admin 컨벤션, DB schema, 테스트, 배포, 주석/로그 규칙 중 해당 계획에 영향을 주는 기준을 TODO 문서에 구체적으로 옮긴다.
 - 계획 폴더명은 목적이 드러나게 대문자와 `_PLAN` 접미사를 사용한다.
 - 예: `MVP-STARTER_PLAN`, `IMPORT_EXPORT_PLAN`, `PAYMENT_MANUAL_PLAN`
 - 각 계획 폴더는 구현자가 문서만 보고 첫 `/goal`을 실행할 수 있는 수준의 실행 계획서여야 한다.
@@ -243,6 +245,10 @@ MVP 또는 현재 단계에서 반드시 다루는 범위를 적는다.
 - TODO 문서도 정본 문서와 동일하게 한국어로 작성한다.
 - TODO 문서도 기획자 관점에서 목적, 사용자 흐름, 포함 범위, 완료 기준을 함께 적는다.
 - TODO 문서에는 실행 순서, 선행 조건, 제외 범위, API/DB/화면 연결, 검증 가능한 완료 기준을 반드시 적는다.
+- API가 포함된 TODO 문서에는 요청값 형태, 응답값 형태, 내부 비즈니스 로직, 연결 DB 스키마, 에러 응답, FE/BE 처리 기준을 반드시 상세하게 적는다.
+- 요청값은 path param, query, header, body, 필수 여부, validation 기준을 구분해서 적는다.
+- 응답값은 success status, response body 유무, response DTO 이름, 필드명, 타입, nullable 여부, 예시를 적는다.
+- 내부 비즈니스 로직은 인증, 권한, ownership, validation 이후 흐름, transaction, 외부 Provider 호출, 자동 생성 데이터, 암호화, 감사 로그, 에러 분기를 use case 흐름으로 적는다.
 - 확정되지 않은 항목은 완료된 계획처럼 쓰지 않고 `Question`, `보류`, 또는 선행 `/goal` 결정 작업으로 분리한다.
 - "적절히", "추후", "나중에", "필요하면"처럼 실행자가 임의 해석해야 하는 표현은 남기지 않는다.
 - 사용자가 별도로 다시 묻지 말라고 확정한 항목은 이후 같은 종류의 기획 문서에서 기본값으로 적용한다.
@@ -366,6 +372,7 @@ docs(uxui): 딜 상세 UX 기준 보강
 - 관련 문서 경로를 연결했는가?
 - 기획서, 명세서, TODO 문서라면 `PLANNING_REVIEW_CHECKLIST.md` 기준으로 구현 가능 여부를 검토했는가?
 - TODO 문서라면 구현자가 문서만 보고 다음 `/goal`을 바로 실행할 수 있는 실행 계획서 수준인가?
+- TODO 문서를 작성하거나 수정하기 전에 `TODO/SOFTWARE_AGENT_REFERENCE.md`의 `AGENT/SOFTWARE_AGENT` 전체 문서 목록을 참고했는가?
 - 검토 시 `AGENT` 정본의 소프트웨어 아키텍처, Backend 컨벤션, Frontend 컨벤션, UX/UI 체크리스트가 TODO 문서에 구체화됐는지 확인했는가?
 - TODO 작업이라면 우선순위 순차 실행 규칙을 지켰는가?
 - 특정 `/goal` 또는 작업 단위가 끝났다면 사용자에게 검토 여부를 질문했는가?

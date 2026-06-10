@@ -6,6 +6,7 @@
 User Web에서 회사 도메인 사용자 페이지를 구현해줘.
 
 반드시 먼저 읽을 문서:
+- TODO/SOFTWARE_AGENT_REFERENCE.md
 - TODO/COMPANY_DOMAIN_PLAN/COMMON/WORK-SPLIT.md
 - TODO/COMPANY_DOMAIN_PLAN/COMMON/API-SPEC/COMPANY_API.md
 - AGENT/PM_AGENT/DECISIONS/023_company_domain_basic_scope.md

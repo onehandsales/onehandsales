@@ -2,6 +2,8 @@
 
 ## 1. 공통 규칙
 
+- 이 API 계약은 `TODO/SOFTWARE_AGENT_REFERENCE.md`에 나열된 `AGENT/SOFTWARE_AGENT` 전체 문서를 먼저 참고한 뒤 작성/수정한다.
+- API를 수정할 때는 요청값 형태, 응답값 형태, 내부 비즈니스 로직, 연결 DB 스키마, 에러 응답, FE/BE 처리 기준을 함께 갱신한다.
 - 대상: 사용자 페이지 API
 - 관리자 페이지: 제외
 - 인증: `Authorization: Bearer <backend_app_access_token>`
@@ -960,8 +962,30 @@ Response body 없음.
 | 개인 비밀 메모 로그 없음 또는 수정 권한 없음 | `CompanyPrivateMemoLogNotFound` | 404 |
 | 비밀 메모 암호화 실패 | `PrivateMemoEncryptFailed` | 500 |
 
-## 19. 관련 문서
+## 19. FE/BE 처리 기준
 
+| API | FE 처리 기준 | BE 처리 기준 | 검증 기준 |
+|---|---|---|---|
+| `GET /api/companies` | 검색어, 분야, 지역, page 변경 시 목록 query를 재조회한다. 목록에는 `updatedAt`을 표시하지 않는다. | userId ownership을 기본 조건으로 두고 `createdAt DESC`와 20개 페이지네이션을 적용한다. | 검색, 필터, 페이지 이동, 본인 데이터만 조회를 확인한다. |
+| `GET /api/company-fields` | 회사 목록 필터와 생성/수정 form 옵션으로 사용한다. `createdAt`을 기대하지 않는다. | 현재 userId의 `CompanyField`만 반환한다. | 다른 사용자의 분야가 섞이지 않는지 확인한다. |
+| `GET /api/company-regions` | 회사 목록 필터와 생성/수정 form 옵션으로 사용한다. `createdAt`을 기대하지 않는다. | 현재 userId의 `CompanyRegion`만 반환한다. | 다른 사용자의 지역이 섞이지 않는지 확인한다. |
+| `GET /api/companies/:companyId` | 상세 화면 진입과 수정 성공 후 재조회한다. | companyId와 userId를 함께 조건으로 조회한다. | 본인 소유가 아닌 회사는 404인지 확인한다. |
+| `POST /api/companies` | `201 Created` body 없음으로 처리하고 회사 목록을 재조회한다. | transaction 안에서 `Company`를 만들고 `companyMemo`가 있으면 `CompanyMemoLog`를 함께 만든다. | `companyMemo`가 `memoType: "초기 메모"`로 저장되는지 확인한다. |
+| `PATCH /api/companies/:companyId` | `201 Created` body 없음으로 처리하고 회사 단건과 목록을 필요한 범위에서 재조회한다. | 회사명, 분야, 지역 중 요청에 포함된 값만 수정한다. | 최소 1개 필드 validation과 FK ownership을 확인한다. |
+| `POST /api/company-fields` | 성공 후 회사 분야 목록을 재조회한다. | 같은 userId 안에서 field 중복을 막는다. | 중복 field 409와 정상 생성 201을 확인한다. |
+| `DELETE /api/company-fields/:fieldId` | 성공 후 회사 분야 목록과 필요 시 회사 목록을 재조회한다. | 매핑된 회사가 있으면 삭제를 막는다. | in-use 409와 미사용 삭제 204를 확인한다. |
+| `POST /api/company-regions` | 성공 후 회사 지역 목록을 재조회한다. | 같은 userId 안에서 region 중복을 막는다. | 중복 region 409와 정상 생성 201을 확인한다. |
+| `DELETE /api/company-regions/:regionId` | 성공 후 회사 지역 목록과 필요 시 회사 목록을 재조회한다. | 매핑된 회사가 있으면 삭제를 막는다. | in-use 409와 미사용 삭제 204를 확인한다. |
+| `POST /api/companies/:companyId/memo-logs` | `201 Created` body 없음으로 처리하고 회사 메모 로그 목록을 재조회한다. | `memoType`, `memo`를 필수로 받아 현재 userId와 companyId로 저장한다. | memoType 누락 validation과 정상 생성 201을 확인한다. |
+| `GET /api/companies/:companyId/memo-logs` | infinite scroll cursor로 10개씩 추가 조회하고 `memoType`, `memo`, `createdAt`을 표시한다. | company ownership 확인 후 `createdAt DESC, id DESC`로 조회한다. | cursor 페이지, hasNext, 본인 회사 제한을 확인한다. |
+| `PATCH /api/companies/:companyId/memo-logs/:memoLogId` | `201 Created` body 없음으로 처리하고 메모 로그 목록을 재조회하거나 로컬 상태를 갱신한다. | 같은 회사와 작성자 userId를 검증한 뒤 `memo`만 수정한다. | 타 사용자 로그 수정 차단과 memo-only 수정을 확인한다. |
+| `POST /api/companies/:companyId/private-memo-logs` | `201 Created` body 없음으로 처리하고 개인 비밀 메모 로그 목록을 재조회한다. | 요청 `memo`를 암호화해 `memoCiphertext`, `memoKeyVersion`으로 저장한다. | DB 평문 미저장과 정상 생성 201을 확인한다. |
+| `GET /api/companies/:companyId/private-memo-logs` | infinite scroll cursor로 10개씩 추가 조회하고 복호화된 `memo`, `createdAt`을 표시한다. | 작성자 본인의 로그만 조회하고 복호화한 뒤 반환한다. | 타 사용자 비밀 메모 미노출과 복호화 실패 처리를 확인한다. |
+| `PATCH /api/companies/:companyId/private-memo-logs/:privateMemoLogId` | `201 Created` body 없음으로 처리하고 개인 비밀 메모 로그 목록을 재조회하거나 로컬 상태를 갱신한다. | 작성자 본인의 로그인지 검증하고 `memo`를 다시 암호화해 저장한다. | 타 사용자 로그 수정 차단과 DB 평문 미저장을 확인한다. |
+
+## 20. 관련 문서
+
+- `TODO/SOFTWARE_AGENT_REFERENCE.md`
 - `AGENT/PM_AGENT/DECISIONS/023_company_domain_basic_scope.md`
 - `AGENT/PM_AGENT/PLANNING/DATA_MODEL.md`
 - `AGENT/SOFTWARE_AGENT/DB_SCHEMA/COMPANY_SCHEMA.md`

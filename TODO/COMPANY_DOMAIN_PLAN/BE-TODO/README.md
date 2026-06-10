@@ -10,6 +10,7 @@
 
 ## BE 기준
 
+- BE 작업 문서는 `TODO/SOFTWARE_AGENT_REFERENCE.md`에 나열된 `AGENT/SOFTWARE_AGENT` 전체 문서를 먼저 참고한 뒤 작성/수정한다.
 - 모든 API는 User API다.
 - 관리자 API는 이번 범위에서 제외한다.
 - 모든 함수, 메서드, 복잡한 로직에는 프로젝트 주석 규칙에 맞춰 `// 기능 : ...` 주석을 단다.

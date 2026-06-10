@@ -8,6 +8,8 @@
 
 ## 작업 경계
 
+BE 작업 문서는 `TODO/SOFTWARE_AGENT_REFERENCE.md`에 나열된 `AGENT/SOFTWARE_AGENT` 전체 문서를 먼저 참고한 뒤 작성/수정한다.
+
 BE는 API, schema, repository, use case, controller, Backend 문서를 담당한다.
 
 BE는 다음 작업을 하지 않는다.

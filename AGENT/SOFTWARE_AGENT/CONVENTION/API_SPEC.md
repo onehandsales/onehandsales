@@ -53,7 +53,7 @@ Request 이름: CreateCompanyRequest
 
 ### Request 필드
 
-각 필드의 타입, 필수 여부, validation, 설명을 적는다.
+각 필드의 타입, 필수 여부, validation, 설명을 적는다. path param, query, header, body를 섞어 쓰지 말고 API 실행자가 그대로 DTO를 만들 수 있게 구분한다.
 
 예:
 
@@ -77,6 +77,8 @@ Controller에서 끝나는 설명이 아니라 application use case 기준으로
 - 자동 생성되는 부수 데이터
 - 감사 로그 필요 여부
 - 외부 Provider 호출 여부
+- 암호화 또는 masking 여부
+- response body 없는 성공 응답 처리
 
 예:
 
@@ -101,7 +103,7 @@ Response 이름: CompanyResponse
 
 ### Response 필드
 
-응답 필드의 타입과 설명을 적는다.
+응답 필드의 타입과 설명을 적는다. 성공 status와 response body 유무를 반드시 먼저 적고, body가 있으면 response DTO 이름, 필드명, 타입, nullable 여부, 예시를 함께 적는다.
 
 예:
 
@@ -147,6 +149,19 @@ Response 이름: CompanyResponse
 | 회사명 누락 | ValidationError | 400 |
 | 중복 회사 후보 존재 | DuplicateCompanyCandidate | 409 |
 
+### FE/BE 처리 기준
+
+API 명세에는 FE와 BE가 각각 어떤 처리를 해야 하는지도 적는다.
+
+반드시 포함할 내용:
+
+- FE가 성공 status를 받은 뒤 재조회할 query 또는 갱신할 상태
+- FE가 response body 없는 성공 응답을 처리하는 방식
+- FE가 domain error를 사용자에게 표시하는 방식
+- BE의 application use case 이름 또는 책임
+- BE의 transaction, repository, port/adapter 책임
+- 테스트해야 할 정상/에러 흐름
+
 ## 4. 권장 API 명세 템플릿
 
 ```text
@@ -179,6 +194,8 @@ Response 이름: CompanyResponse
 ### Response
 
 - Response 이름:
+- Status:
+- Body:
 
 | 필드 | 타입 | 설명 |
 |---|---|---|
@@ -197,6 +214,12 @@ Response 이름: CompanyResponse
 | 상황 | 에러 | HTTP |
 |---|---|---|
 
+### FE/BE 처리 기준
+
+- FE:
+- BE:
+- 검증:
+
 ### 관련 문서
 
 - `TODO/{PLAN_NAME}/COMMON/USER-FLOW.md`
@@ -209,6 +232,8 @@ Response 이름: CompanyResponse
 
 - API path와 method만 적고 비즈니스 로직을 생략하지 않는다.
 - request/response 이름 없이 필드만 나열하지 않는다.
+- request의 path param, query, header, body를 구분하지 않은 채 뭉뚱그려 쓰지 않는다.
+- success status와 response body 유무를 생략하지 않는다.
 - DB model 연결을 생략하지 않는다.
 - Frontend 화면 요구사항과 연결하지 않고 Backend 관점만 적지 않는다.
 - Admin API의 권한, masking, 감사 로그 여부를 생략하지 않는다.

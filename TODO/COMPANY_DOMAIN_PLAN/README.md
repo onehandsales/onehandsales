@@ -6,6 +6,12 @@
 
 관리자 페이지, 휴지통, soft delete, 거래처 수와 딜 수 계산은 현재 범위에서 제외한다.
 
+## 필수 선행 정본
+
+이 계획의 모든 문서는 `TODO/SOFTWARE_AGENT_REFERENCE.md`에 나열된 `AGENT/SOFTWARE_AGENT` 전체 문서를 먼저 참고한 뒤 작성/수정한다.
+
+특히 API 계약과 goal 문서에는 요청값 형태, 응답값 형태, 내부 비즈니스 로직, 연결 DB 스키마, 에러 응답, FE/BE 처리 기준을 상세하게 적는다.
+
 ## 문서 구조
 
 ```text
@@ -26,10 +32,11 @@ TODO/COMPANY_DOMAIN_PLAN/
 
 ## 실행 순서
 
-1. `COMMON/WORK-SPLIT.md`로 FE/BE 책임 경계를 확인한다.
-2. `COMMON/API-SPEC/COMPANY_API.md`로 API 계약을 확인한다.
-3. BE는 `BE-TODO/G01-BE-COMPANY-DOMAIN.goal.md`를 실행해 DB와 API를 구현한다.
-4. FE는 `FE-TODO/G01-FE-COMPANY-PAGES.goal.md`를 실행해 사용자 페이지를 구현한다.
+1. `TODO/SOFTWARE_AGENT_REFERENCE.md`로 Software Agent 전체 정본 선행 참조 규칙을 확인한다.
+2. `COMMON/WORK-SPLIT.md`로 FE/BE 책임 경계를 확인한다.
+3. `COMMON/API-SPEC/COMPANY_API.md`로 API 계약을 확인한다.
+4. BE는 `BE-TODO/G01-BE-COMPANY-DOMAIN.goal.md`를 실행해 DB와 API를 구현한다.
+5. FE는 `FE-TODO/G01-FE-COMPANY-PAGES.goal.md`를 실행해 사용자 페이지를 구현한다.
 
 ## 현재 범위
 

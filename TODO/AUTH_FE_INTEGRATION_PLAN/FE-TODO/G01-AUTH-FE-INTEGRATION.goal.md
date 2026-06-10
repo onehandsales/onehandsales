@@ -6,6 +6,7 @@
 User Web과 Admin Web의 mock-only auth를 실제 Supabase Auth + Backend token exchange 방식으로 연결해줘.
 
 반드시 먼저 읽을 문서:
+- TODO/SOFTWARE_AGENT_REFERENCE.md
 - TODO/AUTH_FE_INTEGRATION_PLAN/COMMON/AUTH-FE-CONTRACT.md
 - FE/README.md
 - FE/user-web/README.md
