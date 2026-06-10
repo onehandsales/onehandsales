@@ -55,6 +55,7 @@ pnpm run db:dev:down
 CI/배포처럼 이미 migration 파일을 적용해야 하는 환경에서는 `pnpm run prisma:migrate:deploy`를 사용한다.
 
 현재 seed는 local mock Auth 사용자와 session만 만든다.
+회사 개인 비밀 메모 API를 사용하려면 `.env`에 `COMPANY_PRIVATE_MEMO_ENCRYPTION_KEY`를 채워야 한다.
 
 ## 검증
 

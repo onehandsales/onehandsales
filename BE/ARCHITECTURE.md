@@ -1,6 +1,6 @@
 # Backend Architecture
 
-`BE` is currently reduced to the base NestJS backend plus Auth/User support.
+`BE` is currently the base NestJS backend plus Auth/User support and the user-facing Company domain.
 
 Routes:
 
@@ -11,6 +11,7 @@ Active modules:
 
 - `auth`: external auth token exchange, app token refresh/logout, current user lookup, device/session management.
 - `user`: current user profile and registered device lookup.
+- `company`: user-owned company, company field/region, memo log, and encrypted private memo log management.
 - `health`: health check endpoint.
 
 Layer rules:
@@ -20,4 +21,4 @@ Layer rules:
 - `infrastructure`: Prisma repositories and external provider adapters.
 - `presentation`: controllers, DTOs, guards, filters, decorators, and response mapping.
 
-Business modules such as company, contact, product, deal, schedule, and related DDL have been removed. Add them back later one module and one migration at a time.
+Business modules such as contact, product, deal, schedule, and related DDL should be added later one module and one migration at a time.

@@ -58,6 +58,16 @@ model User {
   oauthAccounts            UserOAuthAccount[]
   authDevices              AuthDevice[]
   authSessions             AuthSession[]
+  /// 기능 : 사용자가 등록한 회사 목록이다.
+  companies                Company[]
+  /// 기능 : 사용자가 만든 회사 분야 옵션 목록이다.
+  companyFields            CompanyField[]
+  /// 기능 : 사용자가 만든 회사 지역 옵션 목록이다.
+  companyRegions           CompanyRegion[]
+  /// 기능 : 사용자가 작성한 회사 일반 메모 로그 목록이다.
+  companyMemoLogs          CompanyMemoLog[]
+  /// 기능 : 사용자가 작성한 회사 개인 비밀 메모 로그 목록이다.
+  companyPrivateMemoLogs   CompanyUserPrivateMemoLog[]
 
   @@index([role])
   @@index([status])
@@ -124,4 +134,96 @@ model AuthSession {
   @@index([authDeviceId])
   @@index([status])
   @@index([expiresAt])
+}
+
+model Company {
+  id              String   @id @default(uuid()) @db.Uuid
+  userId          String   @db.Uuid
+  companyName     String
+  companyFieldId  String   @db.Uuid
+  companyRegionId String   @db.Uuid
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  /// 기능 : 회사를 생성한 사용자다. 모든 회사 API는 이 userId로 소유권을 검증한다.
+  user            User                         @relation(fields: [userId], references: [id])
+  /// 기능 : 회사 목록 필터에 사용되는 회사 분야다.
+  companyField    CompanyField                 @relation(fields: [companyFieldId], references: [id])
+  /// 기능 : 회사 목록 필터에 사용되는 회사 지역이다.
+  companyRegion   CompanyRegion                @relation(fields: [companyRegionId], references: [id])
+  /// 기능 : 회사 특징에 대한 일반 메모 로그 목록이다.
+  memoLogs        CompanyMemoLog[]
+  /// 기능 : 작성자 본인만 복호화해 볼 수 있는 회사 개인 비밀 메모 로그 목록이다.
+  privateMemoLogs CompanyUserPrivateMemoLog[]
+
+  @@index([userId, createdAt])
+  @@index([userId, companyName])
+  @@index([userId, companyFieldId])
+  @@index([userId, companyRegionId])
+}
+
+model CompanyField {
+  id        String   @id @default(uuid()) @db.Uuid
+  userId    String   @db.Uuid
+  field     String
+  createdAt DateTime @default(now())
+
+  /// 기능 : 회사 분야를 생성한 사용자다.
+  user      User      @relation(fields: [userId], references: [id])
+  /// 기능 : 이 분야를 사용하는 회사 목록이다. 하나라도 있으면 분야 삭제를 막는다.
+  companies Company[]
+
+  @@unique([userId, field])
+  @@index([userId])
+}
+
+model CompanyRegion {
+  id        String   @id @default(uuid()) @db.Uuid
+  userId    String   @db.Uuid
+  region    String
+  createdAt DateTime @default(now())
+
+  /// 기능 : 회사 지역을 생성한 사용자다.
+  user      User      @relation(fields: [userId], references: [id])
+  /// 기능 : 이 지역을 사용하는 회사 목록이다. 하나라도 있으면 지역 삭제를 막는다.
+  companies Company[]
+
+  @@unique([userId, region])
+  @@index([userId])
+}
+
+model CompanyMemoLog {
+  id        String   @id @default(uuid()) @db.Uuid
+  companyId String   @db.Uuid
+  userId    String   @db.Uuid
+  memoType  String
+  memo      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  /// 기능 : 메모가 속한 회사다.
+  company   Company @relation(fields: [companyId], references: [id])
+  /// 기능 : 메모를 작성한 사용자다.
+  user      User    @relation(fields: [userId], references: [id])
+
+  @@index([companyId, createdAt])
+  @@index([userId, companyId])
+}
+
+model CompanyUserPrivateMemoLog {
+  id             String   @id @default(uuid()) @db.Uuid
+  companyId      String   @db.Uuid
+  userId         String   @db.Uuid
+  memoCiphertext String
+  memoKeyVersion String
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  /// 기능 : 비밀 메모가 속한 회사다.
+  company        Company @relation(fields: [companyId], references: [id])
+  /// 기능 : 비밀 메모를 작성한 사용자다. 이 사용자만 복호화된 memo를 볼 수 있다.
+  user           User    @relation(fields: [userId], references: [id])
+
+  @@index([companyId, createdAt])
+  @@index([userId, companyId])
 }

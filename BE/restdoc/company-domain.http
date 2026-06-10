@@ -1,0 +1,129 @@
+@baseUrl = http://localhost:3000
+@accessToken = replace-with-backend-app-access-token
+@companyId = replace-with-company-id
+@companyFieldId = replace-with-company-field-id
+@companyRegionId = replace-with-company-region-id
+@memoLogId = replace-with-memo-log-id
+@privateMemoLogId = replace-with-private-memo-log-id
+@cursor = replace-with-next-cursor
+
+### Health
+GET {{baseUrl}}/api/health
+
+### List companies
+GET {{baseUrl}}/api/companies?page=1&companyName=&companyFieldId=&companyRegionId=
+Authorization: Bearer {{accessToken}}
+
+### List company fields
+GET {{baseUrl}}/api/company-fields
+Authorization: Bearer {{accessToken}}
+
+### Create company field
+POST {{baseUrl}}/api/company-fields
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "field": "IT"
+}
+
+### Delete company field
+DELETE {{baseUrl}}/api/company-fields/{{companyFieldId}}
+Authorization: Bearer {{accessToken}}
+
+### List company regions
+GET {{baseUrl}}/api/company-regions
+Authorization: Bearer {{accessToken}}
+
+### Create company region
+POST {{baseUrl}}/api/company-regions
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "region": "서울"
+}
+
+### Delete company region
+DELETE {{baseUrl}}/api/company-regions/{{companyRegionId}}
+Authorization: Bearer {{accessToken}}
+
+### Create company
+POST {{baseUrl}}/api/companies
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "companyName": "샘플 회사",
+  "companyFieldId": "{{companyFieldId}}",
+  "companyRegionId": "{{companyRegionId}}",
+  "companyMemo": "초기 회사 메모"
+}
+
+### Get company
+GET {{baseUrl}}/api/companies/{{companyId}}
+Authorization: Bearer {{accessToken}}
+
+### Update company
+PATCH {{baseUrl}}/api/companies/{{companyId}}
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "companyName": "수정된 회사",
+  "companyFieldId": "{{companyFieldId}}",
+  "companyRegionId": "{{companyRegionId}}"
+}
+
+### Create company memo log
+POST {{baseUrl}}/api/companies/{{companyId}}/memo-logs
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "memoType": "전화 통화",
+  "memo": "담당자와 첫 통화를 완료했다."
+}
+
+### List company memo logs
+GET {{baseUrl}}/api/companies/{{companyId}}/memo-logs
+Authorization: Bearer {{accessToken}}
+
+### List company memo logs with cursor
+GET {{baseUrl}}/api/companies/{{companyId}}/memo-logs?cursor={{cursor}}
+Authorization: Bearer {{accessToken}}
+
+### Update company memo log
+PATCH {{baseUrl}}/api/companies/{{companyId}}/memo-logs/{{memoLogId}}
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "memo": "수정된 일반 메모"
+}
+
+### Create company private memo log
+POST {{baseUrl}}/api/companies/{{companyId}}/private-memo-logs
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "memo": "본인만 볼 수 있는 비밀 메모"
+}
+
+### List company private memo logs
+GET {{baseUrl}}/api/companies/{{companyId}}/private-memo-logs
+Authorization: Bearer {{accessToken}}
+
+### List company private memo logs with cursor
+GET {{baseUrl}}/api/companies/{{companyId}}/private-memo-logs?cursor={{cursor}}
+Authorization: Bearer {{accessToken}}
+
+### Update company private memo log
+PATCH {{baseUrl}}/api/companies/{{companyId}}/private-memo-logs/{{privateMemoLogId}}
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "memo": "수정된 개인 비밀 메모"
+}
