@@ -168,9 +168,9 @@
 | `accessTokenExpiresAt` | string | 아니오 | access token 만료 시각 |
 | `refreshToken` | null | 예 | 항상 null |
 | `user.id` | string | 아니오 | 내부 User ID |
-| `user.supabaseUserId` | string | 아니오 | Supabase user ID |
+| `user.supabaseUserId` | string | 예 | Supabase user ID |
 | `user.name` | string | 예 | 사용자 이름 |
-| `user.email` | string | 아니오 | 이메일 |
+| `user.email` | string | 예 | 이메일 |
 | `user.role` | string | 아니오 | `USER` 또는 `ADMIN` |
 | `user.status` | string | 아니오 | 계정 상태 |
 | `device.id` | string | 아니오 | AuthDevice ID |
@@ -394,9 +394,9 @@
 | 필드 | 타입 | nullable | 설명 |
 |---|---|---:|---|
 | `id` | string | 아니오 | User ID |
-| `supabaseUserId` | string | 아니오 | Supabase user ID |
+| `supabaseUserId` | string | 예 | Supabase user ID |
 | `name` | string | 예 | 사용자 이름 |
-| `email` | string | 아니오 | 이메일 |
+| `email` | string | 예 | 이메일 |
 | `role` | string | 아니오 | `USER` 또는 `ADMIN` |
 | `status` | string | 아니오 | 사용자 상태 |
 
@@ -457,9 +457,9 @@
 | 필드 | 타입 | nullable | 설명 |
 |---|---|---:|---|
 | `id` | string | 아니오 | User ID |
-| `supabaseUserId` | string | 아니오 | Supabase user ID |
+| `supabaseUserId` | string | 예 | Supabase user ID |
 | `name` | string | 예 | 관리자 이름 |
-| `email` | string | 아니오 | 이메일 |
+| `email` | string | 예 | 이메일 |
 | `role` | string | 아니오 | `ADMIN` |
 
 ### 연결된 DB 스키마
@@ -520,7 +520,7 @@
 | 필드 | 타입 | nullable | 설명 |
 |---|---|---:|---|
 | `id` | string | 아니오 | User ID |
-| `email` | string | 아니오 | 이메일 |
+| `email` | string | 예 | 이메일 |
 | `name` | string | 예 | 사용자 이름 |
 | `role` | string | 아니오 | 권한 |
 | `status` | string | 아니오 | 계정 상태 |

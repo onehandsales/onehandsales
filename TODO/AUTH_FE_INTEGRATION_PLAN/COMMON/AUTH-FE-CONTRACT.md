@@ -518,9 +518,9 @@ Response:
 | `refreshToken` | null | 항상 null. JS에서 refresh token을 읽지 않게 하기 위한 자리 |
 | `user` | object | 내부 사용자 정보 |
 | `user.id` | string | 내부 User ID |
-| `user.supabaseUserId` | string | Supabase user ID |
+| `user.supabaseUserId` | string \| null | Supabase user ID |
 | `user.name` | string \| null | 사용자 이름 |
-| `user.email` | string | 이메일 |
+| `user.email` | string \| null | 이메일 |
 | `user.role` | string | `USER` 또는 `ADMIN` |
 | `user.status` | string | 계정 상태 |
 | `device` | object | 등록 기기 정보 |
@@ -672,9 +672,9 @@ Response:
 | 필드 | 타입 | 설명 |
 |---|---|---|
 | `id` | string | User ID |
-| `supabaseUserId` | string | Supabase user ID |
+| `supabaseUserId` | string \| null | Supabase user ID |
 | `name` | string \| null | 사용자 이름 |
-| `email` | string | 이메일 |
+| `email` | string \| null | 이메일 |
 | `role` | string | 사용자 권한 |
 | `status` | string | 계정 상태 |
 
@@ -721,9 +721,9 @@ Response:
 | 필드 | 타입 | 설명 |
 |---|---|---|
 | `id` | string | User ID |
-| `supabaseUserId` | string | Supabase user ID |
+| `supabaseUserId` | string \| null | Supabase user ID |
 | `name` | string \| null | 관리자 이름 |
-| `email` | string | 이메일 |
+| `email` | string \| null | 이메일 |
 | `role` | string | `ADMIN` |
 
 연결 DB 스키마:
@@ -768,7 +768,7 @@ Response:
 | 필드 | 타입 | 설명 |
 |---|---|---|
 | `id` | string | User ID |
-| `email` | string | 이메일 |
+| `email` | string \| null | 이메일 |
 | `name` | string \| null | 사용자 이름 |
 | `role` | string | 권한 |
 | `status` | string | 계정 상태 |
@@ -810,7 +810,7 @@ Request:
 1. AuthGuard로 현재 사용자를 확인한다.
 2. `name`을 validation한다.
 3. 빈 문자열이면 `null`로 정규화한다.
-4. 현재 사용자의 `User.name`만 수정한다.
+4. 현재 사용자의 `User.displayName`만 수정한다.
 5. 수정된 profile을 다시 조회해 `UserProfileResponse`로 반환한다.
 
 Response:
@@ -824,7 +824,7 @@ Response:
 연결 DB 스키마:
 
 - 조회: `User`, `UserOAuthAccount`
-- 수정: `User.name`
+- 수정: `User.displayName`
 - transaction: 없음
 
 FE/BE 처리 기준:

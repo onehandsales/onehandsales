@@ -1,8 +1,8 @@
-import { IsOptional, IsString, MaxLength } from "class-validator";
+import { IsString, MaxLength, ValidateIf } from "class-validator";
 
 export class UpdateMyProfileDto {
-  @IsOptional()
+  @ValidateIf((_, value) => value !== null)
   @IsString()
   @MaxLength(80)
-  name?: string | null;
+  name!: string | null;
 }
