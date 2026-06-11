@@ -142,18 +142,40 @@
 
 ## 완료 체크리스트
 
-- [ ] DB 모델과 관계가 구현되어 있다.
-- [ ] Prisma migration이 생성되어 있다.
-- [ ] 모든 Contact API가 구현되어 있다.
-- [ ] 거래처 생성 + 선택적 초기 메모 생성이 한 트랜잭션으로 처리된다.
-- [ ] 개인 비밀 메모는 암호화 저장되고 응답에서만 복호화된다.
-- [ ] 일반 메모 수정에서 `memoType`과 `memo`를 수정할 수 있다.
-- [ ] 개인 비밀 메모 수정 API가 존재한다.
-- [ ] 직급/부서 삭제 시 사용 중이면 `409 Conflict`를 반환한다.
-- [ ] API별 주석, 기능 주석, 클래스/인터페이스 역할 주석이 반영되어 있다.
-- [ ] 관측성 로그가 민감정보 없이 작성되어 있다.
-- [ ] API 계약 문서가 실제 구현과 일치한다.
-- [ ] 아래 검증 명령을 실행하고 결과를 보고했다.
+- [x] DB 모델과 관계가 구현되어 있다.
+- [x] Prisma migration이 생성되어 있다.
+- [x] 모든 Contact API가 구현되어 있다.
+- [x] 거래처 생성 + 선택적 초기 메모 생성이 한 트랜잭션으로 처리된다.
+- [x] 개인 비밀 메모는 암호화 저장되고 응답에서만 복호화된다.
+- [x] 일반 메모 수정에서 `memoType`과 `memo`를 수정할 수 있다.
+- [x] 개인 비밀 메모 수정 API가 존재한다.
+- [x] 직급/부서 삭제 시 사용 중이면 `409 Conflict`를 반환한다.
+- [x] API별 주석, 기능 주석, 클래스/인터페이스 역할 주석이 반영되어 있다.
+- [x] 관측성 로그가 민감정보 없이 작성되어 있다.
+- [x] API 계약 문서가 실제 구현과 일치한다.
+- [x] 아래 검증 명령을 실행하고 결과를 보고했다.
+
+## 구현 결과
+
+- 구현 위치: `BE/src/modules/contact`
+- DB schema: `BE/prisma/schema.prisma`
+- migration: `BE/prisma/migrations/20260611010000_add_contact_domain/migration.sql`
+- 모듈 등록: `BE/src/app.module.ts`
+- 도메인 오류 HTTP 매핑: `BE/src/shared/presentation/filters/http-exception.filter.ts`
+
+## 검증 결과
+
+2026-06-11 기준으로 아래 명령을 실행했다. 현재 로컬 Node.js는 `v20.11.0`이라 `package.json`의 `>=24 <25` engine 경고가 출력됐지만, 명령 자체는 모두 성공했다.
+
+- `pnpm.cmd run prisma:validate`: 성공
+- `pnpm.cmd run prisma:generate`: 성공
+- `pnpm.cmd run typecheck`: 성공
+- `pnpm.cmd run lint`: 성공
+- `pnpm.cmd run test`: 성공
+- `pnpm.cmd run build`: 성공
+- `rg -n "DELETE /api/contacts|permanentDeleteAt|initialMemo|ContactLog|PersonalMemo|companyId nullable" BE`: 결과 없음
+- `rg -n "API :|기능 :|역할" BE/src/modules/contact`: 주석 존재 확인
+- `git diff --check`: 성공
 
 ## 검증 명령
 

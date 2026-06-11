@@ -53,7 +53,7 @@
 
 ## 4. API 계약 상태 요약
 
-모든 API의 소비자는 `User Web`이며, 구현 전 계약 상태는 `confirmed`다.
+모든 API의 소비자는 `User Web`이며, Backend 구현 후 계약 상태는 `confirmed`다.
 
 | API | 계약 상태 | Transaction | Observability |
 |---|---|---|---|

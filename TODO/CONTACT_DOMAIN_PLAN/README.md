@@ -44,7 +44,7 @@ TODO/CONTACT_DOMAIN_PLAN/
 
 ## 진행 상태
 
-- BE: 미완료
+- BE: 완료
 - FE 거래처 페이지: 미완료
 
 ## 현재 범위
@@ -99,7 +99,8 @@ FE가 책임지는 화면:
 
 ## 완료 기준
 
-- FE와 BE가 같은 API 계약을 기준으로 구현한다.
+- BE는 같은 API 계약을 기준으로 구현됐다.
+- FE는 같은 API 계약을 기준으로 구현한다.
 - `COMMON/API-SPEC/CONTACT_API_DETAIL.md`에 모든 API의 요청값, 응답값, 내부 비즈니스 로직이 적혀 있다.
 - `COMMON/API-SPEC/CONTACT_API_DETAIL.md`에 모든 API의 계약 상태, transaction, observability 기준이 적혀 있다.
 - 거래처는 반드시 회사에 소속된다.

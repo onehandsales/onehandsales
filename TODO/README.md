@@ -93,7 +93,7 @@ TODO/
 
 - `AUTH_FE_INTEGRATION_PLAN`: BE 완료. FE 인증 연동과 설정 탭 구현이 남아 있다.
 - `COMPANY_DOMAIN_PLAN`: BE 완료. User Web 회사 페이지 구현이 남아 있다.
-- `CONTACT_DOMAIN_PLAN`: 거래처(Contact) 도메인 BE/FE 구현 계획. `/goal` 실행 문서 작성 완료, 구현은 미완료다.
+- `CONTACT_DOMAIN_PLAN`: BE 완료. User Web 거래처 페이지 구현이 남아 있다.
 
 완료된 계획:
 

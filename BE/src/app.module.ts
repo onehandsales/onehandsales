@@ -6,6 +6,7 @@ import {
 import { ConfigModule } from "@nestjs/config";
 import { AuthModule } from "./modules/auth/infrastructure/auth.module";
 import { CompanyModule } from "./modules/company/infrastructure/company.module";
+import { ContactModule } from "./modules/contact/infrastructure/contact.module";
 import { HealthModule } from "./modules/health/infrastructure/health.module";
 import { UserModule } from "./modules/user/infrastructure/user.module";
 import { RequestIdMiddleware } from "./shared/presentation/middleware/request-id.middleware";
@@ -21,6 +22,7 @@ import { RequestIdMiddleware } from "./shared/presentation/middleware/request-id
     AuthModule,
     UserModule,
     CompanyModule,
+    ContactModule,
   ],
 })
 export class AppModule implements NestModule {

@@ -9,6 +9,7 @@ Current modules:
 | `auth` | Supabase token exchange, App token, session, device registration |
 | `user` | Current user profile and registered device lookup |
 | `company` | User-owned company, company field/region, memo log, encrypted private memo log APIs |
+| `contact` | User-owned contact, company option, department/job grade, memo log, encrypted private memo log APIs |
 | `health` | Lightweight health endpoint |
 
 Additional sales domain modules and DDL should be added later one request at a time.
