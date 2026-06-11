@@ -1,5 +1,5 @@
-import { DealPipelineHomeScreen } from "@/features/deal";
+import { DealPipelineHomeRedesignScreen } from "@/features/deal-redesign";
 
 export function HomePage() {
-  return <DealPipelineHomeScreen />;
+  return <DealPipelineHomeRedesignScreen />;
 }

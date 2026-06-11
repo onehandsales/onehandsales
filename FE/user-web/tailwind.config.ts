@@ -12,6 +12,30 @@ const config = {
         ring: "hsl(var(--ring))",
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
+        panel: {
+          DEFAULT: "hsl(var(--panel))",
+          foreground: "hsl(var(--panel-foreground))",
+          muted: "hsl(var(--panel-muted))",
+          strong: "hsl(var(--panel-strong))",
+          "strong-foreground": "hsl(var(--panel-strong-foreground))",
+        },
+        sidebar: {
+          DEFAULT: "hsl(var(--sidebar))",
+          foreground: "hsl(var(--sidebar-foreground))",
+          muted: "hsl(var(--sidebar-muted))",
+          accent: "hsl(var(--sidebar-accent))",
+        },
+        chip: {
+          DEFAULT: "hsl(var(--chip))",
+          active: "hsl(var(--chip-active))",
+          foreground: "hsl(var(--chip-active-foreground))",
+        },
+        success: "hsl(var(--success))",
+        warning: "hsl(var(--warning))",
+        fab: {
+          DEFAULT: "hsl(var(--fab))",
+          foreground: "hsl(var(--fab-foreground))",
+        },
         primary: {
           DEFAULT: "hsl(var(--primary))",
           foreground: "hsl(var(--primary-foreground))",
@@ -29,6 +53,12 @@ const config = {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
+        xs: "var(--radius-xs)",
+      },
+      boxShadow: {
+        soft: "var(--shadow-soft)",
+        fab: "var(--shadow-fab)",
+        panel: "var(--shadow-panel)",
       },
       fontFamily: {
         sans: [
