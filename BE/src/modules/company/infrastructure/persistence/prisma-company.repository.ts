@@ -372,11 +372,12 @@ export class PrismaCompanyRepository implements CompanyRepository {
     });
   }
 
-  // 기능 : 회사 일반 메모 로그의 memo만 수정합니다.
+  // 기능 : 회사 일반 메모 로그의 memoType과 memo를 수정합니다.
   async updateMemoLog(input: {
     readonly userId: string;
     readonly companyId: string;
     readonly memoLogId: string;
+    readonly memoType: string;
     readonly memo: string;
   }): Promise<boolean> {
     const result = await this.client.companyMemoLog.updateMany({
@@ -386,6 +387,7 @@ export class PrismaCompanyRepository implements CompanyRepository {
         userId: input.userId,
       },
       data: {
+        memoType: input.memoType,
         memo: input.memo,
       },
     });

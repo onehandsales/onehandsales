@@ -155,11 +155,12 @@ export interface CompanyRepository {
     readonly cursor: MemoLogCursor | null;
     readonly take: number;
   }): Promise<CompanyMemoLogRecord[]>;
-  // 기능 : 회사 일반 메모 로그의 memo만 수정합니다.
+  // 기능 : 회사 일반 메모 로그의 memoType과 memo를 수정합니다.
   updateMemoLog(input: {
     readonly userId: string;
     readonly companyId: string;
     readonly memoLogId: string;
+    readonly memoType: string;
     readonly memo: string;
   }): Promise<boolean>;
   // 기능 : 회사 개인 비밀 메모 로그를 생성합니다.

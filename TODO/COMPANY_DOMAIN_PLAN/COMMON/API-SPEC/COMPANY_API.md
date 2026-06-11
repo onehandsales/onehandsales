@@ -773,6 +773,7 @@ Response body 없음.
 |---|---|---:|---|
 | `companyId` | string | 필수 | 회사 ID |
 | `memoLogId` | string | 필수 | 회사 메모 로그 ID |
+| `memoType` | string | 필수 | 수정할 메모 설명/유형 |
 | `memo` | string | 필수 | 수정할 메모 본문 |
 
 ### 비즈니스 로직 흐름
@@ -781,7 +782,7 @@ Response body 없음.
 2. params와 request body를 validation한다.
 3. 회사가 현재 사용자의 회사인지 확인한다.
 4. 메모 로그가 같은 회사에 속하고 현재 사용자가 작성한 로그인지 확인한다.
-5. `memo`만 수정한다.
+5. `memoType`, `memo`를 수정한다.
 6. `201 Created`와 빈 body를 반환한다.
 
 ### Response
@@ -1002,7 +1003,7 @@ Response body 없음.
 | `DELETE /api/company-regions/:regionId` | 성공 후 회사 지역 목록과 필요 시 회사 목록을 재조회한다. | 매핑된 회사가 있으면 삭제를 막는다. | in-use 409와 미사용 삭제 204를 확인한다. |
 | `POST /api/companies/:companyId/memo-logs` | `201 Created` body 없음으로 처리하고 회사 메모 로그 목록을 재조회한다. | `memoType`, `memo`를 필수로 받아 현재 userId와 companyId로 저장한다. | memoType 누락 validation과 정상 생성 201을 확인한다. |
 | `GET /api/companies/:companyId/memo-logs` | infinite scroll cursor로 10개씩 추가 조회하고 `memoType`, `memo`, `createdAt`을 표시한다. | company ownership 확인 후 `createdAt DESC, id DESC`로 조회한다. | cursor 페이지, hasNext, 본인 회사 제한을 확인한다. |
-| `PATCH /api/companies/:companyId/memo-logs/:memoLogId` | `201 Created` body 없음으로 처리하고 메모 로그 목록을 재조회하거나 로컬 상태를 갱신한다. | 같은 회사와 작성자 userId를 검증한 뒤 `memo`만 수정한다. | 타 사용자 로그 수정 차단과 memo-only 수정을 확인한다. |
+| `PATCH /api/companies/:companyId/memo-logs/:memoLogId` | `201 Created` body 없음으로 처리하고 메모 로그 목록을 재조회하거나 로컬 상태를 갱신한다. | 같은 회사와 작성자 userId를 검증한 뒤 `memoType`, `memo`를 수정한다. | 타 사용자 로그 수정 차단과 `memoType`, `memo` 동시 수정을 확인한다. |
 | `POST /api/companies/:companyId/private-memo-logs` | `201 Created` body 없음으로 처리하고 개인 비밀 메모 로그 목록을 재조회한다. | 요청 `memo`를 암호화해 `memoCiphertext`, `memoKeyVersion`으로 저장한다. | DB 평문 미저장과 정상 생성 201을 확인한다. |
 | `GET /api/companies/:companyId/private-memo-logs` | infinite scroll cursor로 10개씩 추가 조회하고 복호화된 `memo`, `createdAt`을 표시한다. | 작성자 본인의 로그만 조회하고 복호화한 뒤 반환한다. | 타 사용자 비밀 메모 미노출과 복호화 실패 처리를 확인한다. |
 | `PATCH /api/companies/:companyId/private-memo-logs/:privateMemoLogId` | `201 Created` body 없음으로 처리하고 개인 비밀 메모 로그 목록을 재조회하거나 로컬 상태를 갱신한다. | 작성자 본인의 로그인지 검증하고 `memo`를 다시 암호화해 저장한다. | 타 사용자 로그 수정 차단과 DB 평문 미저장을 확인한다. |

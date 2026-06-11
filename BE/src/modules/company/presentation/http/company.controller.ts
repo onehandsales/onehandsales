@@ -130,7 +130,7 @@ export class CompanyController {
       currentUser,
       companyId,
       memoLogId,
-      body.memo
+      body
     );
   }
 

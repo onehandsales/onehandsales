@@ -90,6 +90,9 @@ export class CreateCompanyMemoLogDto {
 // 역할 : UpdateCompanyMemoLogDto HTTP 요청 값을 검증하기 위한 DTO입니다.
 export class UpdateCompanyMemoLogDto {
   @IsString()
+  memoType!: string;
+
+  @IsString()
   memo!: string;
 }
 

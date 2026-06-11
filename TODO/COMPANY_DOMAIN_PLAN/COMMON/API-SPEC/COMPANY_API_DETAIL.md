@@ -62,7 +62,7 @@
 | `DELETE /api/company-regions/:regionId` | implemented | 없음. 사용 여부 검증 후 단일 삭제 | event key: `companyRegion.deleted`, audit log: 없음, request id: 사용, redaction: 없음 |
 | `POST /api/companies/:companyId/memo-logs` | implemented | 없음. 회사 ownership 확인 후 단일 `CompanyMemoLog` 생성 | event key: `companyMemoLog.created`, audit log: 없음, request id: 사용, redaction: `memo` 원문 logging 금지 |
 | `GET /api/companies/:companyId/memo-logs` | implemented | 없음. 조회 전용 | event key: `companyMemoLog.listed`, audit log: 없음, request id: 사용, redaction: `memo` 원문 logging 금지 |
-| `PATCH /api/companies/:companyId/memo-logs/:memoLogId` | implemented | 없음. 단일 `CompanyMemoLog.memo` 수정 | event key: `companyMemoLog.updated`, audit log: 없음, request id: 사용, redaction: `memo` 원문 logging 금지 |
+| `PATCH /api/companies/:companyId/memo-logs/:memoLogId` | implemented | 없음. 단일 `CompanyMemoLog.memoType`, `CompanyMemoLog.memo` 수정 | event key: `companyMemoLog.updated`, audit log: 없음, request id: 사용, redaction: `memo` 원문 logging 금지 |
 | `POST /api/companies/:companyId/private-memo-logs` | implemented | 없음. 암호화 후 단일 `CompanyUserPrivateMemoLog` 생성 | event key: `companyPrivateMemoLog.created`, audit log: 없음, request id: 사용, redaction: 개인 비밀 메모 원문 logging 금지 |
 | `GET /api/companies/:companyId/private-memo-logs` | implemented | 없음. 작성자 본인 로그 조회와 복호화 | event key: `companyPrivateMemoLog.listed`, audit log: 없음, request id: 사용, redaction: 개인 비밀 메모 원문 logging 금지 |
 | `PATCH /api/companies/:companyId/private-memo-logs/:privateMemoLogId` | implemented | 없음. 암호화 후 단일 `CompanyUserPrivateMemoLog` 수정 | event key: `companyPrivateMemoLog.updated`, audit log: 없음, request id: 사용, redaction: 개인 비밀 메모 원문 logging 금지 |
@@ -848,6 +848,7 @@
 | header | `Authorization` | string | 예 | Bearer token | 인증 header |
 | path | `companyId` | string | 예 | UUID | 회사 ID |
 | path | `memoLogId` | string | 예 | UUID | 메모 로그 ID |
+| body | `memoType` | string | 예 | trim 후 1자 이상 | 수정할 메모 설명/유형 |
 | body | `memo` | string | 예 | trim 후 1자 이상 | 수정할 메모 본문 |
 
 ### 내부 비즈니스 로직
@@ -857,9 +858,8 @@
 3. 회사가 현재 userId의 회사인지 확인한다.
 4. 메모 로그가 같은 companyId에 속하는지 확인한다.
 5. 메모 로그의 userId가 현재 userId인지 확인한다.
-6. `memo`만 수정한다.
-7. `memoType`은 이 API에서 수정하지 않는다.
-8. `201 Created`와 빈 body를 반환한다.
+6. `memoType`, `memo`를 수정한다.
+7. `201 Created`와 빈 body를 반환한다.
 
 ### Response
 
@@ -871,7 +871,7 @@
 
 - 생성: 없음
 - 조회: `Company`, `CompanyMemoLog`
-- 수정: `CompanyMemoLog.memo`
+- 수정: `CompanyMemoLog.memoType`, `CompanyMemoLog.memo`
 - 삭제: 없음
 - 감사 로그: 없음
 - transaction: 없음
@@ -888,8 +888,8 @@
 ### FE/BE 처리 기준
 
 - FE: 성공 시 response body를 기대하지 않고 목록 재조회 또는 로컬 상태 갱신을 한다.
-- BE: memo-only update만 허용한다.
-- 검증: 타 사용자 로그 수정 차단, memoType 변경 불가를 확인한다.
+- BE: `memoType`, `memo`를 함께 validation하고 수정한다.
+- 검증: 타 사용자 로그 수정 차단, `memoType`과 `memo` 동시 수정을 확인한다.
 
 ## 17. 회사 개인 비밀 메모 로그 단건 생성 API
 

@@ -60,7 +60,7 @@ User Web에서 회사 도메인 사용자 페이지를 구현해줘.
 32. 회사 메모 로그 생성 성공 `201 Created`를 받으면 response body를 기대하지 말고 메모 로그 목록을 재조회한다.
 33. 회사 메모 로그는 `GET /api/companies/:companyId/memo-logs`로 10개씩 무한스크롤 조회한다.
 34. 회사 메모 로그는 `memoType`, 메모, 등록일을 표시한다.
-35. 회사 메모 로그 수정은 `PATCH /api/companies/:companyId/memo-logs/:memoLogId`를 사용한다.
+35. 회사 메모 로그 수정은 `PATCH /api/companies/:companyId/memo-logs/:memoLogId`에 `memoType`, `memo`를 보낸다.
 36. 회사 메모 로그 수정 성공 `201 Created`를 받으면 response body를 기대하지 말고 해당 목록을 재조회하거나 로컬 상태를 갱신한다.
 37. 회사 개인 비밀 메모 로그 생성 UI를 만든다.
 38. 회사 개인 비밀 메모 로그 생성은 `memo`만 받는다.

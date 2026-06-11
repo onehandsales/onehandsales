@@ -423,22 +423,23 @@ export class CompanyApplicationService {
     return this.toMemoLogConnection(records);
   }
 
-  // 기능 : 현재 사용자의 회사 일반 메모 로그 본문만 수정합니다.
+  // 기능 : 현재 사용자의 회사 일반 메모 로그 유형과 본문을 수정합니다.
   async updateMemoLog(
     currentUser: CurrentUserContext,
     companyId: string,
     memoLogId: string,
-    memo: string
+    input: { readonly memoType: string; readonly memo: string }
   ): Promise<void> {
     // 1. 메모 대상 회사가 현재 사용자 소유인지 검증한다.
     await this.assertCompanyExists(currentUser.id, companyId);
 
-    // 2. 일반 메모 로그 본문을 정규화해 수정한다.
+    // 2. 일반 메모 로그 유형과 본문을 정규화해 수정한다.
     const updated = await this.companyRepository.updateMemoLog({
       userId: currentUser.id,
       companyId,
       memoLogId,
-      memo: this.normalizeRequiredText(memo, "memo is required"),
+      memoType: this.normalizeRequiredText(input.memoType, "memoType is required"),
+      memo: this.normalizeRequiredText(input.memo, "memo is required"),
     });
 
     // 3. 수정 대상 메모 로그가 없으면 오류로 중단한다.
