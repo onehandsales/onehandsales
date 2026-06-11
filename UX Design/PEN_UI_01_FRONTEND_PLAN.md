@@ -1,0 +1,436 @@
+# PEN UI 01 Frontend Plan
+
+## 목적
+
+이 문서는 `/Users/user/Sales_b2c/UX Design/onehand_sales.pen` 기준으로 CRM 프론트엔드를 전면 재설계하기 위한 1차 구현 계획 문서다.
+
+목표:
+- pen 파일의 화면 구조와 UX를 기준으로 새 앱 구조를 정의한다.
+- 기존 UI 구조는 보존 대상이 아니며, 필요 시 대체한다.
+- 기존 API/hook/type/data 로직은 재사용 가능하면 유지한다.
+- 1차 범위는 디자인 토큰, 공통 App Shell, 대표 딜 화면 3개에 집중한다.
+
+구현 원칙:
+- 구현 시작은 모바일 대표 화면을 우선한다.
+- 하지만 앱 구조는 모바일만 기준으로 확정하지 않는다.
+- 토큰, shell, navigation, 상태 구조는 처음부터 desktop/mobile 동시 대응 기준으로 설계한다.
+- desktop과 mobile은 하나의 조건문 많은 컴포넌트로 합치지 않고 레이아웃을 분리한다.
+- 공통화 대상은 데이터, 상태, 액션, 작은 UI 컴포넌트에 한정한다.
+
+---
+
+## 1. pen 구조 요약
+
+현재 pen 파일에서 확인한 핵심 top-level 프레임:
+
+- `[home] Desktop – Deal Pipeline Home`
+- `[home] -Mobile – Deal Pipeline Home`
+- `[home] - 빠른등록 Modal`
+- `[home] - Mobile – Deal Detail Page`
+- `State Loading Panel` 포함 공통 상태 화면
+- 추가 CRM 화면군
+  - 딜 칸반 보드
+  - 회사
+  - 거래처
+  - 제품
+  - 일정
+  - 회의록
+  - 명함 스캔
+  - Import / Export
+  - 휴지통
+  - 검색 / 알림 / 더보기
+
+현재 editor 기준 reusable component:
+
+- `StageBadge`
+- `PrimaryButton`
+- `FilterChip`
+- `NavItem`
+- `MobileDealCard`
+- `ListItem/Deal Row`
+- `Card/Base`
+- `Toast/Success`
+- `Toast/Error`
+
+1차 구현의 대표 화면 기준은 다음으로 본다.
+
+- Desktop Deal Pipeline Home
+- Mobile Deal Pipeline Home
+- Mobile Deal Detail Page
+- 빠른등록 Modal
+
+---
+
+## 2. 화면별 구조 관찰
+
+### Desktop Deal Pipeline Home
+
+- 좌측 240px Sidebar
+- 상단 64px TopBar
+- TopBar 아래 48px Stage Tabs
+- 메인 영역은 `list column + right detail panel(380px)` 구조
+- 리스트와 상세 패널이 동시에 보이는 split view
+
+### Mobile Deal Pipeline Home
+
+- iOS 스타일 Status Bar
+- 브랜드/액션 아이콘이 있는 상단 Header
+- 검색 영역
+- 가로 스크롤 Stage Tabs
+- 필터 행
+- MobileDealCard 리스트
+- 우하단 FAB
+- 하단 Bottom Tab Bar
+
+### 빠른등록 Modal
+
+- 공통 modal shell 위에 딜 생성 폼이 올라가는 구조
+- 헤더 컬러/액션 스타일이 일반 페이지와 다름
+- 회사/거래처/제품 선택 또는 생성 플로우와 연결될 가능성이 높음
+
+### Mobile Deal Detail Page
+
+- 모바일 전용 상세 레이아웃
+- 헤더/상세 카드/탭/액션 구성이 홈 화면과 다른 문법을 가짐
+- Desktop 우측 상세 패널과 동일 데이터를 쓰되 레이아웃은 별도 구현이 맞음
+
+---
+
+## 3. 공통 패턴 요약
+
+### App Shell
+
+- Desktop Shell
+  - `Sidebar`
+  - `TopBar`
+  - `Main Area`
+- Mobile Shell
+  - `Mobile Header`
+  - `Scrollable Content`
+  - `Bottom Tab Bar`
+  - `Floating Action Button`
+
+### Navigation
+
+- Sidebar menu group 구조
+- Desktop top action bar
+- Mobile bottom tab navigation
+- More 화면 진입 구조가 따로 필요함
+
+### List / Card
+
+- `MobileDealCard`
+- `Deal List Row`
+- `Card/Base`
+- 상태 badge와 액션 상태 텍스트가 반복됨
+
+### Filter / Tabs / Badge
+
+- `Stage Tabs`
+- `FilterChip`
+- `StageBadge`
+- 가능성/다음 행동 상태 badge
+
+### Modal / Feedback
+
+- `BaseModal`
+- `Toast/Success`
+- `Toast/Error`
+- loading / empty / error 상태 패널
+
+---
+
+## 4. 디자인 토큰 후보
+
+pen에서 즉시 확인 가능한 토큰 축:
+
+### Color
+
+- background
+  - `#F9FAFB`
+  - `#F6F7F9`
+  - `#FFFFFF`
+  - `#14151F`
+- border
+  - `#E5E7EB`
+  - `#E6EAF0`
+  - `#1E2030`
+- brand / action
+  - `#1D4ED8`
+  - `#2563EB`
+  - `#5E5CE6`
+- semantic
+  - green / amber / red / cyan / indigo 계열
+
+### Typography
+
+- `Inter` 기반
+- desktop / mobile 모두 명시적인 weight 사용
+- 타이틀, 본문, 메타, badge용 폰트 계층 분리 필요
+
+### Spacing
+
+- 주 사용값: `8, 10, 12, 14, 16, 18, 20, 24`
+
+### Radius
+
+- `6, 8, 10, 11, 13, 16, 20, 26`
+
+### Layout Size
+
+- Sidebar: `240`
+- TopBar: `64`
+- Desktop Stage Tab Bar: `48`
+- Right Detail Panel: `380`
+- Mobile Bottom Tab Bar: `72`
+- FAB: `52`
+
+### Shadow
+
+- FAB shadow
+- Toast/Modal shadow
+
+### 토큰 적용 방식 제안
+
+1차는 `global.css`의 CSS 변수 + Tailwind semantic mapping 병행이 적합하다.
+
+이유:
+- pen 파일 값이 매우 구체적이라 CSS 변수로 토큰화하기 쉽다.
+- 컴포넌트 사용성은 Tailwind utility를 유지하는 편이 빠르다.
+- 이후 dark mode나 theme 확장보다 현재는 빠른 재구성이 우선이다.
+
+---
+
+## 5. 현재 코드 구조와 재사용 판단
+
+현재 프론트 루트:
+
+- `FE/user-web/src/app`
+- `FE/user-web/src/components`
+- `FE/user-web/src/features/*`
+- `FE/user-web/src/pages/*`
+
+### 유지 가치가 높은 것
+
+- 도메인별 API client
+- query key
+- query/mutation hooks
+- schema
+- type 정의
+- auth/provider/router의 큰 틀
+- 에러 처리 및 공용 format 유틸
+
+### 대체 가능성이 큰 것
+
+- `src/components/layout/app-shell.tsx`
+- 현재 page 레벨 화면 컴포넌트의 레이아웃
+- 현재 딜 홈/리스트/상세 UI
+- 기존 desktop/mobile 혼합형 화면 계층
+
+### 결론
+
+- 데이터 로직은 재사용
+- 레이아웃/UI 계층은 새로 설계
+- 기존 화면 컴포넌트는 병행 추가 후 라우트 연결 시 교체
+
+---
+
+## 6. 현재 코드와 pen 간 핵심 충돌
+
+### Deal Stage
+
+현재 프론트/백엔드 단계:
+
+- `INITIAL_CONTACT`
+- `IN_DISCUSSION`
+- `WON`
+- `LOST`
+
+pen 단계:
+
+- 초기 접촉
+- 니즈 확인
+- 제안/견적
+- 협상
+- 성사
+- 실패
+
+판단:
+- 1차 프론트 구현은 UI에서 임시 매핑 전략이 필요하다.
+- 백엔드 enum 변경 여부는 별도 결정이 필요하다.
+
+### App Shell
+
+- 현재 셸은 pen 구조보다 단순하다.
+- Mobile Bottom Tab 구조가 현재 앱 구조의 기본 전제는 아니다.
+
+### Detail Layout
+
+- 현재 딜 상세는 panel/page 구조가 있으나 pen 기준으로는 mobile detail page와 desktop side panel을 더 의도적으로 분리해야 한다.
+
+---
+
+## 7. 새 앱 구조 제안
+
+### 추천 디렉터리 구조
+
+- `src/design/tokens`
+- `src/design/system`
+- `src/components/shell`
+- `src/components/navigation`
+- `src/components/feedback`
+- `src/features/deal-redesign`
+
+### 1차 구조 초안
+
+- `src/design/tokens/index.ts`
+- `src/styles/globals.css` 또는 기존 global style 확장
+- `src/components/shell/desktop-app-shell.tsx`
+- `src/components/shell/mobile-app-shell.tsx`
+- `src/components/shell/modal-shell.tsx`
+- `src/components/navigation/sidebar-nav.tsx`
+- `src/components/navigation/bottom-tab-bar.tsx`
+- `src/components/navigation/mobile-app-header.tsx`
+- `src/components/feedback/loading-state.tsx`
+- `src/components/feedback/empty-state.tsx`
+- `src/components/feedback/error-state.tsx`
+- `src/components/feedback/toast.tsx`
+- `src/features/deal-redesign/components/stage-badge.tsx`
+- `src/features/deal-redesign/components/filter-chip.tsx`
+- `src/features/deal-redesign/components/mobile-deal-card.tsx`
+- `src/features/deal-redesign/components/deal-list-row.tsx`
+- `src/features/deal-redesign/components/deal-quick-create-modal.tsx`
+- `src/features/deal-redesign/screens/desktop-deal-pipeline-home.tsx`
+- `src/features/deal-redesign/screens/mobile-deal-pipeline-home.tsx`
+- `src/features/deal-redesign/screens/mobile-deal-detail-page.tsx`
+
+### 구조 설계 원칙
+
+- 구현 우선순위는 mobile-first로 가져간다.
+- 하지만 구조 설계는 `desktop-aware`여야 한다.
+- 즉, 모바일 홈을 먼저 구현하더라도 아래 항목은 처음부터 desktop 기준까지 포함해 결정한다.
+  - app shell 경계
+  - navigation 구조
+  - stage/filter 공통 상태
+  - list/detail 데이터 흐름
+  - modal/toast/feedback 공통 규칙
+
+이유:
+- pen은 mobile과 desktop이 둘 다 존재하고 레이아웃 차이가 크다.
+- mobile만 보고 구조를 고정하면 이후 desktop의 sidebar, split view, right detail panel 대응 과정에서 컴포넌트 경계와 상태 흐름을 다시 뜯을 가능성이 높다.
+- 따라서 `화면 구현 순서`는 모바일 우선으로 가져가되, `구조 결정 순서`는 처음부터 mobile + desktop 동시 고려가 맞다.
+
+---
+
+## 8. 1차 구현 범위
+
+### 포함
+
+- 디자인 토큰
+- Desktop App Shell
+- Mobile App Shell
+- Modal Shell
+- Toast 구조
+- Desktop Deal Pipeline Home
+- Mobile Deal Pipeline Home
+- Mobile Deal Detail Page
+- Deal Quick Create Modal
+- 상태 UI
+  - loading
+  - empty
+  - error
+  - success toast
+
+### 제외
+
+- 회사/거래처/제품 전면 리디자인
+- 일정 캘린더 리디자인
+- 회의록
+- 명함 스캔
+- Import / Export
+- 휴지통
+- 알림 / 검색 / 더보기 고도화
+
+---
+
+## 9. 공통 컴포넌트 1차 목록
+
+- `PrimaryButton`
+- `FilterChip`
+- `StageBadge`
+- `SidebarNavItem`
+- `BottomTabBar`
+- `MobileAppHeader`
+- `MobileDealCard`
+- `DealListRow`
+- `BaseCard`
+- `ModalShell`
+- `SearchBar`
+- `LoadingState`
+- `EmptyState`
+- `ErrorState`
+- `ToastSuccess`
+- `ToastError`
+
+---
+
+## 10. 구현 순서
+
+1. pen 기준 토큰 정의
+2. shell/navigation 공통 구조 구현
+3. feedback/state UI 구현
+4. reusable component 구현
+5. 딜 데이터에 대한 stage 임시 매핑 계층 정의
+6. Mobile Deal Pipeline Home 구현
+7. 같은 데이터/상태 구조 위에 Desktop Deal Pipeline Home 구현
+8. Deal Quick Create Modal 구현
+9. Mobile Deal Detail Page 구현
+10. 필요 시 Desktop Detail Panel/Detail Shell 정리
+11. 기존 라우트 연결 및 화면 교체
+12. 타입체크 / 빌드 / 화면 점검
+
+설명:
+- 모바일 화면을 먼저 구현해서 핵심 UX와 컴포넌트 문법을 빠르게 검증한다.
+- 바로 이어서 같은 도메인의 desktop 화면을 붙여서 구조가 실제로 재사용 가능한지 확인한다.
+- 즉 `모바일만 오래 구현한 뒤 나중에 desktop을 생각하는 방식`은 피한다.
+
+---
+
+## 11. 리스크
+
+- Deal stage 4단계와 pen 6단계 충돌
+- Quick Create modal에서 inline 생성 UX 범위가 커질 수 있음
+- Shell 교체가 전체 라우트에 영향을 줄 수 있음
+- Mobile/Desktop을 지나치게 공유하려고 하면 구조가 다시 꼬일 수 있음
+- 1차 범위를 넘겨 일정/회의록까지 같이 건드리면 구현이 퍼질 수 있음
+
+---
+
+## 12. 현재 시점 결정 제안
+
+### 확정 권장
+
+- 1차 범위는 `딜 중심`으로 제한
+- 데이터 로직은 재사용
+- UI 레이어는 신규 구조 병행 추가
+- `768px`를 mobile/desktop 기준으로 사용
+- 토큰은 CSS 변수 + Tailwind mapping 병행
+
+### 별도 결정 필요
+
+- Deal stage를 프론트 임시 매핑으로 갈지
+- Quick Create에 inline entity create를 1차 포함할지
+- Desktop 홈에서 현재 right detail panel을 그대로 유지할지, 새 detail shell로 바꿀지
+
+---
+
+## 다음 단계
+
+1. pen의 1차 범위 화면만 더 깊게 읽기
+   - Desktop Deal Pipeline Home
+   - Mobile Deal Pipeline Home
+   - Quick Create Modal
+   - Mobile Deal Detail Page
+2. 토큰 추출 고도화
+3. 새 shell/navigation 컴포넌트 구현 시작
+4. 기존 딜 라우트와 연결 전략 확정
