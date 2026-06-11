@@ -57,4 +57,12 @@ TODO 계획 문서는 큰 작업을 한 번에 실행하지 않기 위한 안전
 - 구현자가 임의 해석하지 않아도 된다.
 - 관련 UX/UI와 Software 문서가 연결되어 있다.
 
+## 7. 관련 문서
+
+- `AGENT/README.md`
+- `AGENT/AGENT_USAGE_RULES.md`
+- `AGENT/PM_AGENT/README.md`
+- `AGENT/PM_AGENT/CONVENTION/DOCUMENTATION.md`
+- `AGENT/PM_AGENT/DECISIONS/README.md`
+
 

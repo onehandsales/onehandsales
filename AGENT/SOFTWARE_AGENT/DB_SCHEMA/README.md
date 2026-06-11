@@ -13,7 +13,7 @@
 
 ## 3. 현재 DB 범위
 
-현재 Backend DB는 로그인/회원가입 인증과 사용자 기본 정보만 다룬다.
+현재 Backend DB는 `BE/prisma/schema.prisma`와 migration 기준으로 Auth/User 도메인과 Company 기본 도메인을 포함한다.
 
 포함:
 
@@ -21,21 +21,37 @@
 - `UserOAuthAccount`
 - `AuthDevice`
 - `AuthSession`
+- `Company`
+- `CompanyField`
+- `CompanyRegion`
+- `CompanyMemoLog`
+- `CompanyUserPrivateMemoLog`
 
-포함하지 않음:
+현재 반영된 migration:
+
+- `BE/prisma/migrations/20260611000000_add_company_domain/migration.sql`
+
+아직 포함하지 않음:
 
 - `UserSetting`
 - 계정 영구 삭제 예약 컬럼
 - 계정 삭제 API용 별도 테이블
-- Contact, Product, Deal, Schedule 등 후속 영업 도메인 테이블
+- Contact, Product, Deal, Schedule, MeetingNote 등 후속 영업 도메인 테이블
 - Trash/휴지통 테이블
 - Admin 감사/조회 도메인 테이블
 
-회사 도메인은 별도 구현 전 문서로 `COMPANY_SCHEMA.md`에 정리한다. 실제 Prisma schema와 migration 반영은 회사 도메인 구현 goal에서 수행한다.
+회사 도메인의 테이블 역할, 관계, 인덱스 의도는 `COMPANY_SCHEMA.md`를 기준으로 확인한다.
 
 ## 4. 관리 규칙
 
 - 실제 Prisma schema를 수정하면 이 폴더의 문서도 함께 갱신한다.
-- DDL/migration은 사용자가 별도 요청하기 전까지 만들지 않는다.
+- migration을 추가하거나 이미 적용된 DB 구조를 바꾸면 관련 schema 문서와 API 문서를 함께 갱신한다.
 - 테이블/컬럼을 추가할 때는 역할, nullable 여부, 기본값, 관계, 인덱스 의도를 함께 기록한다.
 - 주석은 실제 구현자가 DB만 보고도 의미를 이해할 수 있을 정도로 구체적으로 작성한다.
+
+## 5. 관련 문서
+
+- `AGENT/SOFTWARE_AGENT/DB_SCHEMA/AUTH_USER_SCHEMA.md`
+- `AGENT/SOFTWARE_AGENT/DB_SCHEMA/COMPANY_SCHEMA.md`
+- `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/ARCHITECTURE/BACKEND.md`
+- `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/CONVENTION/API_SPEC.md`

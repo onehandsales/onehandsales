@@ -35,5 +35,11 @@
 - 모바일 기본 UI를 테이블로 만들지 않는다.
 - 모바일 기본 UI를 가로 스크롤 칸반으로 만들지 않는다.
 
+## 관련 문서
+
+- `AGENT/UXUI_AGENT/DECISIONS/README.md`
+- `AGENT/UXUI_AGENT/PLANNING/USER_FLOW_AND_SCREENS.md`
+- `AGENT/UXUI_AGENT/UX_REVIEW_CHECKLIST.md`
+
 
 

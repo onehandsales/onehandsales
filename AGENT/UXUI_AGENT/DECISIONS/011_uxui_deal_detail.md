@@ -35,5 +35,11 @@ Mobile:
 
 활동 로그는 타임라인 형태로 보여주고, 상세 안에서 빠르게 추가할 수 있게 한다.
 
+## 관련 문서
+
+- `AGENT/UXUI_AGENT/DECISIONS/README.md`
+- `AGENT/UXUI_AGENT/PLANNING/USER_FLOW_AND_SCREENS.md`
+- `AGENT/UXUI_AGENT/UX_REVIEW_CHECKLIST.md`
+
 
 

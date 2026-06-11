@@ -21,5 +21,11 @@
 - 모바일 통합검색은 전체 화면 검색 시트로 열 수 있다.
 - 모바일 필터는 필터 시트로 열 수 있다.
 
+## 관련 문서
+
+- `AGENT/UXUI_AGENT/DECISIONS/README.md`
+- `AGENT/UXUI_AGENT/PLANNING/USER_FLOW_AND_SCREENS.md`
+- `AGENT/UXUI_AGENT/PLANNING/UX_UI_DIRECTION.md`
+
 
 

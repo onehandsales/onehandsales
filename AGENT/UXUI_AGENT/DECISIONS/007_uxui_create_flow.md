@@ -73,4 +73,10 @@ Deal:
 - 회사/거래처/제품을 자유 텍스트로만 딜에 저장하지 않는다.
 - 전체 상세 등록 폼을 딜 등록 모달 안에 넣지 않는다.
 
+## 관련 문서
+
+- `AGENT/UXUI_AGENT/DECISIONS/README.md`
+- `AGENT/UXUI_AGENT/PLANNING/USER_FLOW_AND_SCREENS.md`
+- `AGENT/UXUI_AGENT/PLANNING/UX_UI_DIRECTION.md`
+
 

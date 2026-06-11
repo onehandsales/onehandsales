@@ -35,10 +35,64 @@ Use these terms:
 
 Do not introduce a generic `Customer` domain unless a later decision explicitly redefines it.
 
-## 3. Module List
+## 3. Current Implementation Snapshot
 
-MVP modules:
+Current source of truth:
 
+- server entry: `BE/src/main.ts`
+- root module: `BE/src/app.module.ts`
+- Prisma schema: `BE/prisma/schema.prisma`
+- package scripts: `BE/package.json`
+
+Currently imported modules in `AppModule`:
+
+- `health`
+- `auth`
+- `user`
+- `company`
+
+Currently implemented API surface:
+
+- `GET /api/health`
+- `GET /api/auth/providers`
+- `POST /api/auth/exchange`
+- `POST /api/auth/refresh`
+- `POST /api/auth/logout`
+- `GET /api/me`
+- `GET /admin/api/me`
+- `GET /api/users/me/profile`
+- `PATCH /api/users/me/profile`
+- `GET /api/users/me/devices`
+- `GET /api/companies`
+- `GET /api/companies/:companyId`
+- `POST /api/companies`
+- `PATCH /api/companies/:companyId`
+- Company memo/private memo routes under `/api/companies/:companyId`
+- `GET /api/company-fields`
+- `POST /api/company-fields`
+- `DELETE /api/company-fields/:fieldId`
+- `GET /api/company-regions`
+- `POST /api/company-regions`
+- `DELETE /api/company-regions/:regionId`
+
+Current runtime behavior:
+
+- global `ValidationPipe` uses whitelist, forbidNonWhitelisted, and transform.
+- global `HttpExceptionFilter` is registered.
+- CORS origins are derived from `USER_WEB_ORIGIN` and `ADMIN_WEB_ORIGIN`.
+- default port is `3000`.
+
+Current backend gaps:
+
+- Admin Web query APIs such as `/admin/api/dashboard`, `/admin/api/users`, `/admin/api/companies`, `/admin/api/contacts`, `/admin/api/products`, and `/admin/api/deals` are not implemented yet.
+- Contact/Product/Deal/Schedule/MeetingNote backend modules are not implemented yet.
+- User Web Company API code must be checked against current Company controller contract before Company UI integration work.
+
+## 4. Target Module List
+
+Planned MVP modules:
+
+- `health`
 - `auth`
 - `user`
 - `company`
@@ -74,7 +128,7 @@ src/shared/
   presentation/
 ```
 
-## 4. Layer Rules
+## 5. Layer Rules
 
 ### Domain
 
@@ -142,7 +196,7 @@ Rules:
 - Controllers do not call repositories or Prisma.
 - Domain entities are mapped to response DTOs before returning.
 
-## 5. Module Communication
+## 6. Module Communication
 
 Allowed:
 
@@ -164,7 +218,7 @@ restoreForAdmin
 viewSensitiveForAdmin
 ```
 
-## 6. User API And Admin API
+## 7. User API And Admin API
 
 User controllers:
 
@@ -182,7 +236,7 @@ Admin controllers:
 
 Do not put Admin behavior behind role checks in User controllers. Admin needs separate controllers or an isolated `admin` module.
 
-## 7. Transactions
+## 8. Transactions
 
 Transaction boundary is application layer.
 
@@ -198,7 +252,7 @@ Domain code must not know about transactions.
 
 For event consistency, prefer an outbox pattern when an external side effect follows a DB write.
 
-## 8. Persistence Rules
+## 9. Persistence Rules
 
 Database principles:
 
@@ -217,7 +271,7 @@ Soft delete retention:
 - User is notified 7 days before permanent deletion where applicable.
 - Audit logs are not hard-deleted by normal product flows.
 
-## 9. Enum And Lookup Policy
+## 10. Enum And Lookup Policy
 
 Use enum when values drive application logic and are not user-editable.
 
@@ -230,7 +284,7 @@ Canonical examples:
 - Deal activity types are user-customizable, so prepare a lookup table.
 - Tags are user-customizable and belong in tag tables.
 
-## 10. AI And External Providers
+## 11. AI And External Providers
 
 OpenAI-centered use cases:
 
@@ -252,7 +306,7 @@ Other external integrations:
 - web alerts by email and browser push
 - mobile push later
 
-## 11. Migration Rules
+## 12. Migration Rules
 
 Prisma migrations are not edited or deleted after being applied.
 
@@ -263,7 +317,7 @@ For risky changes:
 - renaming column: add new column, double write, switch reads, drop old column later
 - splitting/merging tables: write an RFC before implementation
 
-## 12. Backend Checklist
+## 13. Backend Checklist
 
 When creating a module:
 
@@ -276,5 +330,13 @@ When creating a module:
 - Admin endpoint uses `/admin/api/*` and AdminGuard
 - sensitive fields are masked by default
 - mutations that require audit log write it in the same transaction
+
+## 14. Related Documents
+
+- `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/ARCHITECTURE/OVERVIEW.md`
+- `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/CONVENTION/BACKEND.md`
+- `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/CONVENTION/API_SPEC.md`
+- `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/ENGINEERING_REVIEW_CHECKLIST.md`
+- `AGENT/SOFTWARE_AGENT/DB_SCHEMA/README.md`
 
 

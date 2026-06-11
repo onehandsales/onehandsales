@@ -17,7 +17,7 @@
 | 클라이언트 상태 | 기본은 컴포넌트 로컬 상태, 전역 UI 상태가 필요할 때만 Zustand |
 | 표/대시보드 | TanStack Table, 차트가 필요할 때 Recharts |
 | 폼/검증 | React Hook Form, Zod |
-| 빌드 검증 | `tsc --noEmit`, `vite build` |
+| 빌드 검증 | `tsc -b`, `vite build` |
 
 ## 2. 구조 원칙
 
@@ -113,3 +113,44 @@ src/features/user-management/
 - 표가 필요한 기능은 TanStack Table을 기준으로 한다.
 - 수치 대시보드와 추세 차트는 필요할 때만 Recharts를 추가한다.
 - 위험한 운영 작업은 확인 모달과 명확한 버튼 라벨을 사용한다.
+
+## 7. 현재 코드 라우트 상태
+
+현재 `FE/admin-web/src/app/router/router.tsx` 기준 라우트:
+
+- `/login`
+- `/`
+- `/users`
+- `/users/:userId`
+- `/organizations`
+- `/subscriptions`
+- `/analytics`
+- `/audit-logs`
+- `/system`
+- `/support`
+
+현재 feature 폴더:
+
+- `admin-query`
+- `audit-log`
+- `auth`
+- `organization-management`
+- `subscription-management`
+- `support`
+- `system-config`
+- `usage-analytics`
+- `user-management`
+
+현재 코드 차이:
+
+- `src/lib/admin-api-client.ts`는 모든 요청을 `/admin/api/*`로 보낸다.
+- `src/features/admin-query/api/admin-query-api.ts`는 `/admin/api/dashboard`, `/admin/api/users`, `/admin/api/companies`, `/admin/api/contacts`, `/admin/api/products`, `/admin/api/deals` 등 운영 조회 API를 기대한다.
+- 현재 Backend에는 `GET /admin/api/me`만 구현되어 있다. Admin Web의 목록/대시보드 화면을 실제 데이터와 연결하려면 Backend admin query API를 먼저 구현하거나 FE mock/placeholder 경계를 명시해야 한다.
+- 기획 화면 목록의 `/users/:id/deals`, `/users/:id/companies`, `/users/:id/contacts`, `/users/:id/products`, `/deals`, `/companies`, `/contacts`, `/products`, `/payments/manual` 라우트는 현재 Admin Web router에 없다.
+
+## 8. 관련 문서
+
+- `AGENT/SOFTWARE_AGENT/FRONT_AGENT/CONVENTION/ADMIN_WEB.md`
+- `AGENT/SOFTWARE_AGENT/FRONT_AGENT/ENGINEERING_REVIEW_CHECKLIST.md`
+- `AGENT/UXUI_AGENT/PLANNING/USER_FLOW_AND_SCREENS.md`
+- `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/ARCHITECTURE/BACKEND.md`

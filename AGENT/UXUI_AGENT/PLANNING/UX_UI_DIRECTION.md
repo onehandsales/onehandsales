@@ -354,7 +354,8 @@ Recommended quick create minimum fields:
 Company:
 
 - company name
-- category/industry optional
+- company field
+- company region
 - memo optional
 
 Contact:
@@ -569,5 +570,13 @@ Admin screens should prioritize:
 - clear audit trail visibility
 
 Admin should not try to feel like the User Web. It should feel like an internal operations console.
+
+## 12. 관련 문서
+
+- `AGENT/UXUI_AGENT/PLANNING/USER_FLOW_AND_SCREENS.md`
+- `AGENT/UXUI_AGENT/DECISIONS/README.md`
+- `AGENT/UXUI_AGENT/UX_REVIEW_CHECKLIST.md`
+- `AGENT/SOFTWARE_AGENT/FRONT_AGENT/ARCHITECTURE/FRONTEND_USER_WEB.md`
+- `AGENT/SOFTWARE_AGENT/FRONT_AGENT/ARCHITECTURE/ADMIN_WEB.md`
 
 

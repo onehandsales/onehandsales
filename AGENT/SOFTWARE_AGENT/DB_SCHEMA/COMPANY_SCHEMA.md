@@ -7,8 +7,9 @@
 구현 기준 파일:
 
 - `BE/prisma/schema.prisma`
+- `BE/prisma/migrations/20260611000000_add_company_domain/migration.sql`
 
-현재는 DDL/migration이 아니라 Prisma schema 기준 구조만 문서화한다. 실제 DDL과 migration은 별도 구현 goal에서 이 문서를 기준으로 작성한다.
+현재 Company 도메인은 Prisma schema와 migration에 반영되어 있다. 실제 DB 변경 내역은 migration 파일을 기준으로 확인하고, 이 문서는 테이블 역할과 관계를 이해하기 위한 구현 설명서로 유지한다.
 
 ## 2. 전체 관계
 
@@ -309,5 +310,5 @@ model CompanyUserPrivateMemoLog {
 
 - `AGENT/PM_AGENT/PLANNING/DATA_MODEL.md`
 - `AGENT/SOFTWARE_AGENT/DB_SCHEMA/README.md`
-- `AGENT/SOFTWARE_AGENT/ARCHITECTURE/BACKEND.md`
+- `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/ARCHITECTURE/BACKEND.md`
 - `TODO/COMPANY_DOMAIN_PLAN/COMMON/API-SPEC/COMPANY_API.md`

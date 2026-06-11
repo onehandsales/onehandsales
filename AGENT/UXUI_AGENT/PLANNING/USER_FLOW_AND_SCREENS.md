@@ -153,7 +153,57 @@
 | `/audit-logs` | 감사 로그 | 포함 |
 | `/payments/manual` | 계좌이체 확인 | 이후 |
 
-## 4. 기본 레이아웃 방향
+## 4. 현재 코드 라우트 상태
+
+현재 User Web router 기준 실제 구현 경로:
+
+- `/login`
+- `/`
+- `/companies`
+- `/companies/:companyId`
+- `/contacts`
+- `/contacts/scan`
+- `/contacts/:contactId`
+- `/products`
+- `/products/:productId`
+- `/deals`
+- `/deals/:dealId`
+- `/schedules`
+- `/schedules/week`
+- `/meeting-notes`
+- `/meeting-notes/new`
+- `/meeting-notes/:meetingNoteId`
+- `/business-cards`
+- `/notifications`
+- `/import`
+- `/export`
+- `/trash`
+- `/settings`
+
+현재 Admin Web router 기준 실제 구현 경로:
+
+- `/login`
+- `/`
+- `/users`
+- `/users/:userId`
+- `/organizations`
+- `/subscriptions`
+- `/analytics`
+- `/audit-logs`
+- `/system`
+- `/support`
+
+현재 화면 목록과 코드의 차이:
+
+- 기획 목록의 `/meetings*`는 현재 코드에서 `/meeting-notes*`로 구현되어 있다.
+- 기획 목록의 `/imports`, `/exports`는 현재 코드에서 `/import`, `/export`로 구현되어 있다.
+- 기획 목록의 `/search` 전용 라우트는 현재 User Web router에 없다.
+- 기획 목록의 Admin 상세 데이터 라우트와 전체 딜/회사/거래처/제품 라우트는 현재 Admin Web router에 없다.
+- Backend에는 현재 Admin Web 운영 조회 API가 `GET /admin/api/me` 외에는 구현되어 있지 않다.
+
+라우트명을 변경하거나 신규 화면을 추가할 때는 이 문서와 `AGENT/SOFTWARE_AGENT/FRONT_AGENT/ARCHITECTURE/FRONTEND_USER_WEB.md`, `AGENT/SOFTWARE_AGENT/FRONT_AGENT/ARCHITECTURE/ADMIN_WEB.md`를 함께 갱신한다.
+
+## 5. 기본 레이아웃 방향
 
 User Web:
 
@@ -180,5 +230,12 @@ Admin Web:
 - User Web보다 더 높은 정보 밀도
 - 필터/서버 페이지네이션/행 상세 패널 중심
 - 민감정보 원문 보기와 위험 액션은 사유 입력과 감사 로그 필수
+
+## 6. 관련 문서
+
+- `AGENT/SOFTWARE_AGENT/FRONT_AGENT/ARCHITECTURE/FRONTEND_USER_WEB.md`
+- `AGENT/SOFTWARE_AGENT/FRONT_AGENT/ARCHITECTURE/ADMIN_WEB.md`
+- `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/ARCHITECTURE/BACKEND.md`
+- `AGENT/PM_AGENT/PLANNING/PRD.md`
 
 

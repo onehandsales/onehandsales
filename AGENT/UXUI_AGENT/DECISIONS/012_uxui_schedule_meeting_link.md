@@ -20,5 +20,11 @@
 - 회의록이 딜과 연결되면 딜 활동 로그가 자동 생성된다.
 - AI 회의록은 회사/거래처/딜 후보를 제안하고, 사용자가 확인 후 저장한다.
 
+## 관련 문서
+
+- `AGENT/UXUI_AGENT/DECISIONS/README.md`
+- `AGENT/UXUI_AGENT/PLANNING/USER_FLOW_AND_SCREENS.md`
+- `AGENT/PM_AGENT/PLANNING/MVP_SCOPE.md`
+
 
 

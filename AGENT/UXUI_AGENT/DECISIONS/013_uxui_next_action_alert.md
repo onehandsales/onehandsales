@@ -35,5 +35,11 @@
 
 알림은 사용자를 압박하지 않게 하되, 임박/지연 항목은 명확히 보여준다.
 
+## 관련 문서
+
+- `AGENT/UXUI_AGENT/DECISIONS/README.md`
+- `AGENT/UXUI_AGENT/PLANNING/USER_FLOW_AND_SCREENS.md`
+- `AGENT/UXUI_AGENT/UX_REVIEW_CHECKLIST.md`
+
 
 

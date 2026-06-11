@@ -139,4 +139,10 @@ Mobile:
 - 숫자 퍼센트 가능성은 고급 옵션으로만 둔다.
 - 베이지/크림 계열이 화면 전체를 지배하지 않게 한다.
 
+## 관련 문서
+
+- `AGENT/UXUI_AGENT/DECISIONS/README.md`
+- `AGENT/UXUI_AGENT/PLANNING/UX_UI_DIRECTION.md`
+- `AGENT/UXUI_AGENT/UX_REVIEW_CHECKLIST.md`
+
 

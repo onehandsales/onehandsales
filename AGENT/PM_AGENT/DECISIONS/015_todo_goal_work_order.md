@@ -1,4 +1,4 @@
-﻿# TODO Goal 작업 단위 결정
+# TODO Goal 작업 단위 결정
 
 ## 결정
 
@@ -61,7 +61,7 @@ Backend API 명세에는 API마다 다음을 반드시 포함한다.
 - response 이름
 - 연결된 DB 스키마
 
-상세 작성 규칙은 `AGENT/SOFTWARE_AGENT/CONVENTION/API_SPEC.md`를 따른다.
+상세 작성 규칙은 `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/CONVENTION/API_SPEC.md`를 따른다.
 
 API 명세 위치는 `TODO/{PLAN_NAME}/COMMON/API-SPEC`을 기본으로 한다.
 
@@ -75,7 +75,7 @@ API 명세 위치는 `TODO/{PLAN_NAME}/COMMON/API-SPEC`을 기본으로 한다.
 
 - `AGENT/PM_AGENT/CONVENTION/DOCUMENTATION.md`
 - `AGENT/PM_AGENT/DECISIONS/018_todo_common_contract_structure.md`
-- `AGENT/SOFTWARE_AGENT/CONVENTION/API_SPEC.md`
+- `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/CONVENTION/API_SPEC.md`
 - `TODO/DONE/MVP-STARTER_PLAN/COMMON/GOAL-WORK-ORDER.md`
 
 

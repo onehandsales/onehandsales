@@ -4,6 +4,38 @@
 
 ---
 
+## 0. 현재 구현 상태
+
+현재 `BE/prisma/schema.prisma`와 migration 기준으로 구현된 DB 범위:
+
+- Auth/User: `User`, `UserOAuthAccount`, `AuthDevice`, `AuthSession`
+- Company 기본 도메인: `Company`, `CompanyField`, `CompanyRegion`, `CompanyMemoLog`, `CompanyUserPrivateMemoLog`
+
+현재 구현 기준 migration:
+
+- `BE/prisma/migrations/20260611000000_add_company_domain/migration.sql`
+
+아직 DB에 구현되지 않은 계획 범위:
+
+- `Contact`
+- `ContactLog`
+- `Product`
+- `ProductLog`
+- `ProductConnection`
+- `Deal`
+- `DealActivity`
+- `Schedule`
+- `MeetingNote`
+- `Tag`
+- `TagAssignment`
+- `PersonalMemo`
+- `AuditLog`
+- `Notification`
+- `ImportJob`
+- `ExportJob`
+
+이 문서는 제품 관점의 전체 목표 모델을 설명한다. 실제 구현 여부와 컬럼 상세는 `AGENT/SOFTWARE_AGENT/DB_SCHEMA/README.md`와 각 schema 문서를 우선 확인한다.
+
 ## 1. 핵심 엔티티
 
 ```text
@@ -442,3 +474,10 @@ erDiagram
   PRODUCT ||--o{ PRODUCT_CONNECTION : connects
   TAG ||--o{ TAG_ASSIGNMENT : assigned
 ```
+
+## 23. 관련 문서
+
+- `AGENT/SOFTWARE_AGENT/DB_SCHEMA/README.md`
+- `AGENT/SOFTWARE_AGENT/DB_SCHEMA/AUTH_USER_SCHEMA.md`
+- `AGENT/SOFTWARE_AGENT/DB_SCHEMA/COMPANY_SCHEMA.md`
+- `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/ARCHITECTURE/BACKEND.md`

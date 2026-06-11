@@ -41,20 +41,18 @@ AGENT/
 
 ### SOFTWARE_AGENT
 
-- Backend/User Web/Admin Web 아키텍처
-- 코드 컨벤션
-- 주석과 로깅
-- 테스트 전략
-- 배포 환경
-- 기술 결정 기록
+- `BACKEND_AGENT`: Backend 아키텍처, API, 코드 컨벤션, 주석과 로깅, 테스트, 배포, 기술 결정
+- `FRONT_AGENT`: User Web/Admin Web 아키텍처, 코드 컨벤션, 주석과 로깅, E2E, 배포, 기술 결정
+- `DB_SCHEMA`: DB schema와 테이블 설명
 
 ## 문서 이동 기준
 
 - 제품 기획 문서는 `PM_AGENT/PLANNING`에 둔다.
 - 사용자 흐름과 UX/UI 방향 문서는 `UXUI_AGENT/PLANNING`에 둔다.
 - UX/UI 관련 결정은 `UXUI_AGENT/DECISIONS`에 둔다.
-- 아키텍처 문서는 `SOFTWARE_AGENT/ARCHITECTURE`에 둔다.
-- 코드/주석/로깅 컨벤션은 `SOFTWARE_AGENT/CONVENTION`에 둔다.
+- Backend 아키텍처와 컨벤션은 `SOFTWARE_AGENT/BACKEND_AGENT`에 둔다.
+- User Web/Admin Web 아키텍처와 컨벤션은 `SOFTWARE_AGENT/FRONT_AGENT`에 둔다.
+- DB schema 문서는 `SOFTWARE_AGENT/DB_SCHEMA`에 둔다.
 - 문서 작성 규칙은 PM 운영 책임으로 보고 `PM_AGENT/CONVENTION`에 둔다.
 
 ## 충돌 처리
@@ -70,4 +68,5 @@ AGENT/
 - `AGENT/PM_AGENT/OPERATING_MODEL.md`
 - `AGENT/PM_AGENT/CONVENTION/DOCUMENTATION.md`
 - `AGENT/UXUI_AGENT/README.md`
-- `AGENT/SOFTWARE_AGENT/README.md`
+- `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/README.md`
+- `AGENT/SOFTWARE_AGENT/FRONT_AGENT/README.md`

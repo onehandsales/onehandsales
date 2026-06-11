@@ -8,7 +8,7 @@
 
 - `BE/prisma/schema.prisma`
 
-현재는 DDL/migration이 아니라 Prisma schema 기준 구조만 문서화한다. 실제 DDL은 별도 요청이 있을 때 이 문서를 기준으로 작성한다.
+현재 Auth/User 도메인은 Prisma schema와 migration에 반영되어 있다. 이 문서는 Auth/User 테이블의 역할, 관계, 컬럼 의미를 빠르게 확인하기 위한 구현 설명서로 유지한다.
 
 ## 2. 전체 관계
 
@@ -34,7 +34,12 @@ AuthDevice 1 ─ N AuthSession
 - `User.permanentDeleteAt`: 영구 삭제 정책을 현재 두지 않는다.
 - 계정 삭제 API: 현재 만들지 않는다.
 - 등록 기기 수정/해제 API용 컬럼: 현재 조회만 제공한다.
-- 영업 도메인 테이블: 이후 요청 순서대로 별도 설계한다.
+- Company를 제외한 Contact, Product, Deal, Schedule, MeetingNote 등 후속 영업 도메인 테이블: 이후 요청 순서대로 별도 설계한다.
+
+참고:
+
+- Company 도메인은 현재 `BE/prisma/schema.prisma`와 `BE/prisma/migrations/20260611000000_add_company_domain/migration.sql`에 포함되어 있다.
+- Company 구조는 `AGENT/SOFTWARE_AGENT/DB_SCHEMA/COMPANY_SCHEMA.md`를 기준으로 확인한다.
 
 ## 4. Enum
 
@@ -339,3 +344,10 @@ model AuthSession {
   @@index([expiresAt])
 }
 ```
+
+## 10. 관련 문서
+
+- `AGENT/SOFTWARE_AGENT/DB_SCHEMA/README.md`
+- `AGENT/SOFTWARE_AGENT/DB_SCHEMA/COMPANY_SCHEMA.md`
+- `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/ARCHITECTURE/BACKEND.md`
+- `AGENT/PM_AGENT/PLANNING/DATA_MODEL.md`

@@ -16,7 +16,7 @@
 | 서버 상태 | TanStack Query |
 | 클라이언트 상태 | 기본은 컴포넌트 로컬 상태, 전역 UI 상태가 필요할 때만 Zustand |
 | 폼/검증 | React Hook Form, Zod |
-| 빌드 검증 | `tsc --noEmit`, `vite build` |
+| 빌드 검증 | `tsc -b`, `vite build` |
 
 참고 구조에서 제안된 Node.js 22.12 이상 기준은 이 프로젝트에서는 Node.js 24 LTS로 상향 고정한다.
 
@@ -162,3 +162,61 @@ src/features/company/
 - 버튼과 도구성 액션에는 가능한 한 `lucide-react` 아이콘을 사용한다.
 - shadcn/ui 컴포넌트를 사용할 때는 `components/ui`에 배치하고 도메인 의미를 넣지 않는다.
 - 업무 도구 화면은 조밀하고 스캔하기 쉬운 레이아웃을 우선한다.
+
+## 8. 현재 코드 라우트 상태
+
+현재 `FE/user-web/src/app/router/router.tsx` 기준 라우트:
+
+- `/login`
+- `/`
+- `/companies`
+- `/companies/:companyId`
+- `/contacts`
+- `/contacts/scan`
+- `/contacts/:contactId`
+- `/products`
+- `/products/:productId`
+- `/deals`
+- `/deals/:dealId`
+- `/schedules`
+- `/schedules/week`
+- `/meeting-notes`
+- `/meeting-notes/new`
+- `/meeting-notes/:meetingNoteId`
+- `/business-cards`
+- `/notifications`
+- `/import`
+- `/export`
+- `/trash`
+- `/settings`
+
+현재 feature 폴더:
+
+- `auth`
+- `business-card`
+- `company`
+- `contact`
+- `deal`
+- `import-export`
+- `meeting-note`
+- `notification`
+- `product`
+- `schedule`
+- `search`
+- `tag`
+- `trash`
+
+현재 코드 차이:
+
+- 기획 화면 목록의 `/meetings`, `/meetings/new`, `/meetings/:id`는 현재 코드에서 `/meeting-notes`, `/meeting-notes/new`, `/meeting-notes/:meetingNoteId`로 구현되어 있다.
+- 기획 화면 목록의 `/imports`, `/exports`는 현재 코드에서 `/import`, `/export`로 구현되어 있다.
+- 기획 화면 목록의 `/search` 전용 라우트는 현재 router에 없다. `search` feature는 존재하지만 상단 검색/내부 기능으로 연결될 수 있다.
+- `src/lib/api-client.ts`는 User Web에서 `/admin/api/*` 호출을 차단한다.
+- `src/features/company/api/company-api.ts`는 현재 Backend Company controller의 `companyName`, `companyFieldId`, `companyRegionId`, memo/private memo contract와 맞지 않는 오래된 필드와 삭제/복구 경로를 포함한다. Company UI/API 통합 작업 전에 반드시 계약을 맞춘다.
+
+## 9. 관련 문서
+
+- `AGENT/SOFTWARE_AGENT/FRONT_AGENT/CONVENTION/FRONTEND_USER_WEB.md`
+- `AGENT/SOFTWARE_AGENT/FRONT_AGENT/ENGINEERING_REVIEW_CHECKLIST.md`
+- `AGENT/UXUI_AGENT/PLANNING/USER_FLOW_AND_SCREENS.md`
+- `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/CONVENTION/API_SPEC.md`

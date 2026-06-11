@@ -18,3 +18,10 @@ PM 관점에서 사용자의 문제, 제품 가치, 포함/제외 범위, 도메
 - 기능 목록만 쓰지 않고 사용자 문제와 결정 이유를 함께 적는다.
 - UX/UI 상세는 `UXUI_AGENT` 문서와 연결한다.
 - DB 구현 상세는 `SOFTWARE_AGENT` 또는 `TODO`의 DB 스키마 문서와 연결한다.
+
+## 4. 관련 문서
+
+- `AGENT/PM_AGENT/README.md`
+- `AGENT/PM_AGENT/DECISIONS/000_확정_결정.md`
+- `AGENT/UXUI_AGENT/PLANNING/README.md`
+- `AGENT/SOFTWARE_AGENT/DB_SCHEMA/README.md`

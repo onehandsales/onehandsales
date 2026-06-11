@@ -19,3 +19,11 @@
 - `021_user_decision_question_rule.md`
 - `022_goal_completion_review_todo_log.md`
 - `023_company_domain_basic_scope.md`
+- `024_software_agent_front_backend_split.md`
+
+## 3. 관련 문서
+
+- `AGENT/PM_AGENT/README.md`
+- `AGENT/PM_AGENT/OPERATING_MODEL.md`
+- `AGENT/PM_AGENT/CONVENTION/DOCUMENTATION.md`
+- `AGENT/PM_AGENT/PLANNING/README.md`

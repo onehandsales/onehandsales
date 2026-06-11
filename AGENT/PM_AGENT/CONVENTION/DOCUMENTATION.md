@@ -1,4 +1,4 @@
-﻿# 문서 작성 규칙
+# 문서 작성 규칙
 
 ## 1. 기본 원칙
 
@@ -15,9 +15,9 @@
 - `AGENT/PM_AGENT/PLANNING`
 - `AGENT/UXUI_AGENT/PLANNING`
 - `AGENT/UXUI_AGENT/DECISIONS`
-- `AGENT/SOFTWARE_AGENT/ARCHITECTURE`
-- `AGENT/SOFTWARE_AGENT/CONVENTION`
-- `AGENT/SOFTWARE_AGENT/DECISIONS`
+- `AGENT/SOFTWARE_AGENT/BACKEND_AGENT`
+- `AGENT/SOFTWARE_AGENT/FRONT_AGENT`
+- `AGENT/SOFTWARE_AGENT/DB_SCHEMA`
 - `AGENT/PM_AGENT/DECISIONS`
 - `AGENT/PM_AGENT/CONVENTION`
 - 이후 `AGENT` 아래에 추가되는 모든 정본 문서
@@ -142,7 +142,8 @@ MVP 또는 현재 단계에서 반드시 다루는 범위를 적는다.
 
 - 제품 범위, 우선순위, 문서 운영 결정: `AGENT/PM_AGENT/DECISIONS`
 - UX/UI 흐름과 화면 결정: `AGENT/UXUI_AGENT/DECISIONS`
-- 아키텍처, 테스트, 배포, 코드 구조 결정: `AGENT/SOFTWARE_AGENT/DECISIONS`
+- Backend 아키텍처, API, 테스트, 배포, 코드 구조 결정: `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/DECISIONS`
+- Frontend 아키텍처, 테스트, 배포, 코드 구조 결정: `AGENT/SOFTWARE_AGENT/FRONT_AGENT/DECISIONS`
 
 결정 문서에는 다음을 포함한다.
 
@@ -189,7 +190,7 @@ MVP 또는 현재 단계에서 반드시 다루는 범위를 적는다.
 
 - `AGENT/PM_AGENT/PLANNING/PRD.md`
 - `AGENT/UXUI_AGENT/PLANNING/USER_FLOW_AND_SCREENS.md`
-- `AGENT/SOFTWARE_AGENT/ARCHITECTURE/BACKEND.md`
+- `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/ARCHITECTURE/BACKEND.md`
 - `TODO/DONE/MVP-STARTER_PLAN/COMMON/GOAL-WORK-ORDER.md`
 ```
 
@@ -207,7 +208,9 @@ MVP 또는 현재 단계에서 반드시 다루는 범위를 적는다.
 
 - 제품 기획과 MVP 범위는 `PM_AGENT`에 작성한다.
 - 사용자 흐름, 화면 목록, UX/UI 방향은 `UXUI_AGENT`에 작성한다.
-- 아키텍처, 코드 컨벤션, 테스트, 배포 기준은 `SOFTWARE_AGENT`에 작성한다.
+- Backend 아키텍처, API, 코드 컨벤션, 테스트, 배포 기준은 `SOFTWARE_AGENT/BACKEND_AGENT`에 작성한다.
+- User Web/Admin Web 아키텍처, 코드 컨벤션, 테스트, 배포 기준은 `SOFTWARE_AGENT/FRONT_AGENT`에 작성한다.
+- DB schema와 테이블 설명은 `SOFTWARE_AGENT/DB_SCHEMA`에 작성한다.
 - 역할 간 충돌은 `PM_AGENT/DECISIONS`에 최종 결정으로 남긴다.
 - 한 문서가 여러 역할에 걸치면 주 책임 역할 폴더에 두고 관련 문서를 링크한다.
 
@@ -241,7 +244,7 @@ MVP 또는 현재 단계에서 반드시 다루는 범위를 적는다.
 - `/goal` 작업은 `GOAL-WORK-ORDER.md`의 우선순위 순서대로 순차 실행한다.
 - 선행 작업이 끝나지 않았거나 완료 기준을 만족하지 못하면 후속 작업으로 넘어가지 않는다.
 - 예외적으로 순서를 바꿔야 할 때는 이유를 해당 계획 폴더의 README 또는 `GOAL-WORK-ORDER.md`에 기록한다.
-- API 명세를 작성할 때는 `AGENT/SOFTWARE_AGENT/CONVENTION/API_SPEC.md`의 필수 항목을 따른다.
+- API 명세를 작성할 때는 `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/CONVENTION/API_SPEC.md`의 필수 항목을 따른다.
 - TODO 문서도 정본 문서와 동일하게 한국어로 작성한다.
 - TODO 문서도 기획자 관점에서 목적, 사용자 흐름, 포함 범위, 완료 기준을 함께 적는다.
 - TODO 문서에는 실행 순서, 선행 조건, 제외 범위, API/DB/화면 연결, 검증 가능한 완료 기준을 반드시 적는다.
