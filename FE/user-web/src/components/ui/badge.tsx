@@ -1,3 +1,4 @@
+import { CircleDot } from "lucide-react";
 import type { ReactNode } from "react";
 import { cn } from "@/utils/cn";
 
@@ -21,7 +22,7 @@ const variantClassNames: Record<BadgeVariant, string> = {
 };
 
 const sizeClassNames: Record<BadgeSize, string> = {
-  md: "h-7 text-xs",
+  md: "h-[22px] text-[11px] font-semibold",
   sm: "h-5 text-[10px] px-2",
 };
 
@@ -35,12 +36,45 @@ export function Badge({
   return (
     <span
       className={cn(
-        "inline-flex items-center rounded-full border px-2.5 font-medium",
+        "inline-flex items-center rounded-full border px-2.5 font-semibold",
         variantClassNames[variant],
         sizeClassNames[size],
         className
       )}
     >
+      {children}
+    </span>
+  );
+}
+
+type StageBadgeVariant = "warning" | "info" | "success" | "danger" | "neutral";
+
+type StageBadgeProps = {
+  readonly variant?: StageBadgeVariant;
+  readonly className?: string;
+  readonly children?: ReactNode;
+};
+
+const stageBadgeVariantClassNames: Record<StageBadgeVariant, { wrap: string; icon: string }> = {
+  warning: { wrap: "bg-amber-100 text-amber-700",  icon: "text-amber-700" },
+  info:    { wrap: "bg-blue-100 text-blue-600",     icon: "text-blue-600" },
+  success: { wrap: "bg-emerald-100 text-emerald-700", icon: "text-emerald-700" },
+  danger:  { wrap: "bg-red-100 text-red-700",       icon: "text-red-700" },
+  neutral: { wrap: "bg-gray-100 text-gray-500",     icon: "text-gray-400" },
+};
+
+// 기능 : pen StageBadge 기준 — icon(circle-dot 10px) + text(11px 600) pill 배지입니다.
+export function StageBadge({ variant = "warning", className, children }: StageBadgeProps) {
+  const styles = stageBadgeVariantClassNames[variant];
+  return (
+    <span
+      className={cn(
+        "inline-flex h-[22px] items-center gap-[5px] rounded-full px-[9px] text-[11px] font-semibold",
+        styles.wrap,
+        className
+      )}
+    >
+      <CircleDot className={cn("h-2.5 w-2.5 shrink-0", styles.icon)} />
       {children}
     </span>
   );

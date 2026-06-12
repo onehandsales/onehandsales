@@ -55,7 +55,7 @@ function NavSection({ items, title }: NavSectionProps) {
           <NavLink
             className={({ isActive }) =>
               cn(
-                "group flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-sidebar-foreground/72 transition hover:bg-sidebar-muted hover:text-sidebar-foreground",
+                "group flex items-center gap-2 rounded-[6px] px-2.5 h-[38px] text-[13px] font-normal text-sidebar-foreground/65 transition hover:bg-sidebar-muted hover:text-sidebar-foreground",
                 isActive && "bg-sidebar-muted text-sidebar-foreground"
               )
             }
@@ -63,7 +63,7 @@ function NavSection({ items, title }: NavSectionProps) {
             key={item.to}
             to={item.to}
           >
-            <item.icon className="h-4 w-4 text-sidebar-foreground/70 transition group-hover:text-sidebar-foreground" />
+            <item.icon className="h-4 w-4 shrink-0 text-sidebar-foreground/55 transition group-hover:text-sidebar-foreground/90" />
             <span>{item.label}</span>
           </NavLink>
         ))}
