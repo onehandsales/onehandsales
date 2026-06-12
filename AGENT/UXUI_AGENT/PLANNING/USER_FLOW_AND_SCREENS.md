@@ -221,6 +221,66 @@ User Web:
 - 딜 상세는 핵심 요약을 먼저 보여주고 활동 로그/일정/회의록/Memo 기록을 섹션화
 - 다음 행동은 딜 목록, 딜 상세, 홈 파이프라인에서 바로 보여준다
 
+## 6. 화면 구현 우선순위
+
+이 프로젝트는 화면 수가 많기 때문에, 라우트 개수 순서대로 구현하지 않는다.
+
+UX/UI 기준 우선순위는 아래와 같다.
+
+1. 공용 토큰
+2. 공용 Shell
+3. 공용 상태 UI
+4. 공용 데이터 표시 컴포넌트
+5. 딜 기준 화면
+6. 로그인/랜딩
+7. 회사
+8. 거래처
+9. 제품
+10. 일정
+11. 부가 기능군
+
+이 순서를 쓰는 이유:
+
+- 로그인 후 첫 핵심 흐름은 딜 파이프라인 확인이다.
+- 회사/거래처/제품은 딜과 강하게 연결되므로 딜 화면의 문법을 먼저 고정해야 한다.
+- 상태 UI, modal, card, filter, detail panel 규칙이 먼저 정리되지 않으면 도메인별 화면이 쉽게 갈라진다.
+
+### 공용 기반에서 먼저 정리할 것
+
+- Desktop Sidebar
+- Desktop TopBar
+- Mobile Header
+- Bottom Tab Bar
+- Modal Shell
+- Toast
+- Loading / Empty / Error 상태 UI
+- BaseCard
+- SectionHeader
+- PrimaryButton
+- FilterChip
+- Badge 계열
+
+### 딜 화면에서 먼저 마감할 것
+
+- Desktop Deal Pipeline Home
+- Mobile Deal Pipeline Home
+- Desktop Detail Panel
+- Mobile Deal Detail
+- Deal Quick Create Modal
+
+### 그 다음 도메인 확장 순서
+
+- 회사
+- 거래처
+- 제품
+- 일정
+- 회의록 / 명함 / Import / Export / 휴지통 / 알림 / 검색
+
+원칙:
+
+- 새 도메인 화면은 공용 shell, 공용 상태 UI, 공용 card/button/filter 문법을 재사용해야 한다.
+- desktop/mobile은 레이아웃을 분리하되, 데이터 로직과 작은 UI는 공유할 수 있다.
+
 Admin Web:
 
 - 데스크톱 전용
@@ -231,11 +291,11 @@ Admin Web:
 - 필터/서버 페이지네이션/행 상세 패널 중심
 - 민감정보 원문 보기와 위험 액션은 사유 입력과 감사 로그 필수
 
-## 6. 관련 문서
+## 7. 관련 문서
 
 - `AGENT/SOFTWARE_AGENT/FRONT_AGENT/ARCHITECTURE/FRONTEND_USER_WEB.md`
 - `AGENT/SOFTWARE_AGENT/FRONT_AGENT/ARCHITECTURE/ADMIN_WEB.md`
 - `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/ARCHITECTURE/BACKEND.md`
 - `AGENT/PM_AGENT/PLANNING/PRD.md`
-
+- `UX Design/PEN_UI_06_SHARED_FIRST_WORK_ORDER.md`
 

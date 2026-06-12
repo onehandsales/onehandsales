@@ -28,6 +28,65 @@
 - 도메인과 무관한 훅은 `hooks`, 유틸은 `utils`, 공통 타입은 `types`에 둔다.
 - API 클라이언트, 환경 변수 파서, QueryClient 설정은 `lib`에 둔다.
 - 라우터와 앱 프로바이더는 앱 셸 책임이므로 `src/app` 아래에 둔다.
+- 새 도메인 화면을 늘리기 전에 공용 토큰, shell, 상태 UI, 공용 데이터 표시 컴포넌트를 먼저 정리한다.
+- desktop/mobile은 레이아웃을 분리하되, 공통 데이터 로직과 작은 UI 컴포넌트는 공유할 수 있다.
+- 도메인별 화면 수를 늘리는 속도보다 공용 컴포넌트 품질을 먼저 고정한다.
+
+## 2A. Shared-First 구현 순서
+
+User Web 리디자인은 route 순서나 도메인 이름 순서대로 구현하지 않는다.
+
+권장 구현 순서:
+
+1. 디자인 토큰
+2. 공용 Shell
+3. 공용 상태 UI
+4. 공용 데이터 표시 컴포넌트
+5. 딜 기준 화면
+6. 로그인/랜딩
+7. company
+8. contact
+9. product
+10. schedule
+11. 부가 기능군
+
+이 순서를 쓰는 이유:
+
+- 로그인 후 첫 핵심 화면은 딜 파이프라인 홈이다.
+- company/contact/product/schedule은 이후에도 같은 shell, modal, card, filter, detail panel, state UI 문법을 재사용한다.
+- 공용 기반이 먼저 고정되지 않으면 도메인마다 다른 visual grammar가 생긴다.
+
+먼저 정리할 공용 레이어:
+
+- global tokens
+- desktop sidebar
+- desktop top bar
+- mobile header
+- bottom tab bar
+- modal shell
+- toast
+- loading / empty / error states
+- base card
+- section header
+- primary button
+- filter chip
+- badge family
+
+딜 화면에서 먼저 기준을 잡을 것:
+
+- desktop deal pipeline home
+- mobile deal pipeline home
+- desktop detail panel
+- mobile deal detail
+- deal quick create modal
+
+그 이후 도메인 확장 순서:
+
+- company
+- contact
+- product
+- schedule
+- meeting note / business card / import-export / trash / notifications / search
 
 ## 3. 기준 폴더 구조
 

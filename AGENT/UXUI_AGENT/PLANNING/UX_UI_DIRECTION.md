@@ -256,6 +256,67 @@ Primary navigation should make these areas easy to reach:
 
 Even though the first screen is deal-centered, company/contact/product registration must remain easy because deals require those entities.
 
+## 9A. Shared-First Implementation Order
+
+This product should not be implemented domain-by-domain from the start.
+
+Recommended order:
+
+1. design tokens
+2. shared shell
+3. shared state UI
+4. shared data display components
+5. deal first-screen completion
+6. login/landing refinement
+7. company
+8. contact
+9. product
+10. schedule
+11. secondary feature groups
+
+Why:
+
+- the first logged-in experience is the deal pipeline home
+- many later screens reuse the same shell, modal, card, filter, detail panel, and state patterns
+- if company/contact/product are implemented before these shared patterns settle, the visual grammar diverges quickly
+
+Shared layer to finish early:
+
+- desktop sidebar
+- desktop top bar
+- mobile header
+- bottom tab bar
+- modal shell
+- toast
+- loading / empty / error states
+- base card
+- section header
+- primary button
+- filter chip
+- badge family
+
+Deal screen work that should define the baseline:
+
+- desktop deal pipeline home
+- mobile deal pipeline home
+- desktop detail panel
+- mobile deal detail
+- deal quick create modal
+
+After that, domain expansion should follow:
+
+- company
+- contact
+- product
+- schedule
+- meeting note / business card / import-export / trash / notifications / search
+
+Rules:
+
+- new domain screens should reuse shared shell and shared state UI
+- desktop and mobile layouts may differ, but they should not invent separate visual systems
+- do not expand route count faster than shared component quality
+
 ## 10. Deal Row Information Priority
 
 A deal row/card should prioritize:
@@ -578,5 +639,4 @@ Admin should not try to feel like the User Web. It should feel like an internal 
 - `AGENT/UXUI_AGENT/UX_REVIEW_CHECKLIST.md`
 - `AGENT/SOFTWARE_AGENT/FRONT_AGENT/ARCHITECTURE/FRONTEND_USER_WEB.md`
 - `AGENT/SOFTWARE_AGENT/FRONT_AGENT/ARCHITECTURE/ADMIN_WEB.md`
-
 

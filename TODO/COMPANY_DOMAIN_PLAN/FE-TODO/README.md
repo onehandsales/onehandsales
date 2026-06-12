@@ -11,7 +11,9 @@
 ## 현재 상태
 
 - 선행 BE API와 Company DB 기준은 완료됐다.
-- User Web 회사 페이지 구현은 아직 미완료다.
+- User Web 회사 목록/상세/생성/분야/지역/메모/내보내기 화면 구현은 완료됐다.
+- 검증은 `pnpm --dir FE/user-web run typecheck`, `pnpm --dir FE/user-web run lint`, `pnpm --dir FE/user-web run build`를 통과했다.
+- 로컬 Node 버전은 프로젝트 요구사항(`>=24 <25`)과 달라 engine warning이 표시됐지만 명령은 성공했다.
 
 ## FE 기준
 

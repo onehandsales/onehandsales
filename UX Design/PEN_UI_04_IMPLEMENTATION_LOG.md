@@ -132,6 +132,42 @@
 - 다음 작업:
   - company 화면 작업으로 이동
 
+### 2026-06-12 20:20 KST
+
+- 작업자: Codex
+- 유형:
+  - frontend
+  - docs
+- 요약:
+  - User Web 회사 목록/상세/생성 화면을 새 Company API 계약 기준으로 재구현했다.
+  - 회사 분야/지역 생성/삭제 UI, 연결 거래처 요약, 일반 메모 로그, 개인 비밀 메모 로그, XLSX 내보내기를 추가했다.
+  - response body 없는 `201`/`204` 성공 응답과 blob 다운로드를 공통 API client에서 처리하도록 보강했다.
+- 변경 파일:
+  - `FE/user-web/src/lib/api-client.ts`
+  - `FE/user-web/src/features/company/**/*`
+  - `FE/user-web/src/features/contact/**/*`
+  - `FE/user-web/src/features/deal/hooks/use-deal-entity-options.ts`
+  - `FE/user-web/src/features/deal/components/deal-create-dialog.tsx`
+  - `FE/user-web/src/features/schedule/hooks/use-schedule-entity-options.ts`
+  - `FE/user-web/src/features/product/hooks/use-product-target-options.ts`
+  - `TODO/COMPANY_DOMAIN_PLAN/FE-TODO/G01-FE-COMPANY-PAGES.goal.md`
+  - `TODO/COMPANY_DOMAIN_PLAN/FE-TODO/README.md`
+- 결정/반영 내용:
+  - 회사 목록은 `companyName`, `companyFieldId`, `companyRegionId`, `page`만 사용한다.
+  - 회사 생성의 `companyMemo`는 첫 회사 메모 로그로 저장되는 선택 입력으로 표시한다.
+  - 회사 목록/상세에는 딜 수를 표시하지 않고, 목록에는 `updatedAt`을 표시하지 않는다.
+  - 딜 생성 모달의 회사 inline create는 새 필수 분야/지역 입력이 없어 회사 화면 등록 안내로 축소했다.
+- 검증:
+  - `pnpm --dir FE/user-web run typecheck`: 통과
+  - `pnpm --dir FE/user-web run lint`: 통과
+  - `pnpm --dir FE/user-web run build`: 통과
+  - Node engine warning: 로컬 `v20.20.2`, 프로젝트 요구사항 `>=24 <25`
+- 남은 이슈:
+  - 인증 세션과 테스트 데이터가 준비된 상태의 브라우저 수동 검증은 별도 실행 필요
+  - Vite build에서 500kB 초과 chunk warning이 기존 번들 크기로 표시됨
+- 다음 작업:
+  - 실제 BE 세션/데이터로 회사 생성, 상세, 메모 수정, 내보내기 수동 smoke 확인
+
 ---
 
 ## 현재 구현 체크리스트
