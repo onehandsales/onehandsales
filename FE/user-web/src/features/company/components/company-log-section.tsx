@@ -2,6 +2,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { LockKeyhole, MessageSquareText, Pencil } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { Button } from "@/components/ui/button";
 import {
   useCreateCompanyMemoLogMutation,
   useCreateCompanyPrivateMemoLogMutation,
@@ -138,13 +139,14 @@ export function CompanyMemoLogSection({
               />
             </div>
             <div className="flex items-end">
-              <button
-                className="h-10 rounded-md bg-primary px-4 text-sm font-medium text-primary-foreground disabled:cursor-not-allowed disabled:opacity-60"
+              <Button
                 disabled={createMemoMutation.isPending}
+                isPending={createMemoMutation.isPending}
                 type="submit"
+                variant="primary"
               >
                 추가
-              </button>
+              </Button>
             </div>
           </div>
           <FormError
@@ -176,20 +178,20 @@ export function CompanyMemoLogSection({
                 {...editForm.register("memo")}
               />
               <div className="flex items-end gap-2">
-                <button
-                  className="h-10 rounded-md border bg-white px-3 text-sm font-medium hover:bg-muted"
+                <Button
                   onClick={() => setEditingLog(null)}
                   type="button"
                 >
                   취소
-                </button>
-                <button
-                  className="h-10 rounded-md bg-primary px-3 text-sm font-medium text-primary-foreground disabled:cursor-not-allowed disabled:opacity-60"
+                </Button>
+                <Button
                   disabled={updateMemoMutation.isPending}
+                  isPending={updateMemoMutation.isPending}
                   type="submit"
+                  variant="primary"
                 >
                   저장
-                </button>
+                </Button>
               </div>
             </div>
             <FormError message={editForm.formState.errors.memoType?.message} />
@@ -316,13 +318,14 @@ export function CompanyPrivateMemoLogSection({
               />
             </div>
             <div className="flex items-end">
-              <button
-                className="h-10 rounded-md bg-primary px-4 text-sm font-medium text-primary-foreground disabled:cursor-not-allowed disabled:opacity-60"
+              <Button
                 disabled={createMemoMutation.isPending}
+                isPending={createMemoMutation.isPending}
                 type="submit"
+                variant="primary"
               >
                 추가
-              </button>
+              </Button>
             </div>
           </div>
           <FormError
@@ -345,20 +348,20 @@ export function CompanyPrivateMemoLogSection({
                 {...editForm.register("memo")}
               />
               <div className="flex items-end gap-2">
-                <button
-                  className="h-10 rounded-md border bg-white px-3 text-sm font-medium hover:bg-muted"
+                <Button
                   onClick={() => setEditingLog(null)}
                   type="button"
                 >
                   취소
-                </button>
-                <button
-                  className="h-10 rounded-md bg-primary px-3 text-sm font-medium text-primary-foreground disabled:cursor-not-allowed disabled:opacity-60"
+                </Button>
+                <Button
                   disabled={updateMemoMutation.isPending}
+                  isPending={updateMemoMutation.isPending}
                   type="submit"
+                  variant="primary"
                 >
                   저장
-                </button>
+                </Button>
               </div>
             </div>
             <FormError message={editForm.formState.errors.memo?.message} />
@@ -428,13 +431,9 @@ function MemoLogList({
     return (
       <div className="grid justify-items-start gap-3 rounded-md border border-destructive/30 bg-red-50 p-4">
         <p className="text-sm text-destructive">{getApiErrorMessage(error)}</p>
-        <button
-          className="h-9 rounded-md border bg-white px-3 text-sm font-medium hover:bg-muted"
-          onClick={onRetry}
-          type="button"
-        >
+        <Button onClick={onRetry} size="sm" type="button">
           다시 시도
-        </button>
+        </Button>
       </div>
     );
   }
@@ -477,14 +476,14 @@ function MemoLogList({
         ))}
       </div>
       {hasNextPage ? (
-        <button
-          className="h-10 rounded-md border px-4 text-sm font-medium hover:bg-muted disabled:cursor-not-allowed disabled:opacity-60"
+        <Button
           disabled={isFetchingNextPage}
+          isPending={isFetchingNextPage}
           onClick={onFetchMore}
           type="button"
         >
           {isFetchingNextPage ? "불러오는 중" : "더 보기"}
-        </button>
+        </Button>
       ) : null}
     </div>
   );

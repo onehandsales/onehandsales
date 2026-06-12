@@ -1,5 +1,4 @@
 import {
-  ArrowLeft,
   Building2,
   IdCard,
   Mail,
@@ -7,6 +6,10 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { Button } from "@/components/ui/button";
+import { PageHeader } from "@/components/ui/page-header";
+import { SectionHeader } from "@/components/ui/section-header";
+import { Toast } from "@/components/ui/toast";
 import { ContactEditForm } from "@/features/contact/components/contact-edit-form";
 import {
   ContactMemoLogSection,
@@ -57,43 +60,32 @@ export function ContactDetailScreen({ contactId }: ContactDetailScreenProps) {
 
   return (
     <section className="mx-auto grid max-w-7xl gap-6 px-5 py-6">
-      <header className="flex flex-col gap-4 border-b pb-5 md:flex-row md:items-center md:justify-between">
-        <div>
-          <Link
-            className="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-primary"
-            to="/contacts"
-          >
-            <ArrowLeft className="h-4 w-4" />
-            거래처 목록
-          </Link>
-          <h1 className="mt-3 text-2xl font-semibold">{contact.username}</h1>
-          <p className="mt-1 text-sm text-muted-foreground">
-            {[
-              contact.company.companyName,
-              contact.contactDepartment.departmentName,
-              contact.contactJobGrade.jobGradeName,
-            ]
-              .filter(Boolean)
-              .join(" · ") || "-"}
-          </p>
-        </div>
-      </header>
+      <PageHeader
+        backHref="/contacts"
+        backLabel="거래처 목록"
+        description={
+          [
+            contact.company.companyName,
+            contact.contactDepartment.departmentName,
+            contact.contactJobGrade.jobGradeName,
+          ]
+            .filter(Boolean)
+            .join(" · ") || "-"
+        }
+        title={contact.username}
+      />
 
       {notice ? (
-        <p className="rounded-md border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm text-emerald-800">
-          {notice}
-        </p>
+        <Toast message={notice} onClose={() => setNotice(null)} variant="success" />
       ) : null}
 
       <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_360px]">
         <div className="grid gap-6">
           <section className="grid gap-4">
-            <div>
-              <h2 className="text-lg font-semibold">기본 정보</h2>
-              <p className="mt-1 text-sm text-muted-foreground">
-                담당자와 회사 연결 정보를 정리합니다.
-              </p>
-            </div>
+            <SectionHeader
+              description="담당자와 회사 연결 정보를 정리합니다."
+              title="기본 정보"
+            />
             <div className="rounded-lg border bg-white p-4">
               <ContactEditForm
                 contact={contact}
@@ -132,7 +124,7 @@ export function ContactDetailScreen({ contactId }: ContactDetailScreenProps) {
 
         <aside className="grid content-start gap-6">
           <section className="grid gap-3">
-            <h2 className="text-lg font-semibold">연결 회사</h2>
+            <SectionHeader title="연결 회사" />
             <div className="rounded-lg border bg-white p-4">
               <Link
                 className="inline-flex items-center gap-2 text-sm font-semibold hover:text-primary"
@@ -145,7 +137,7 @@ export function ContactDetailScreen({ contactId }: ContactDetailScreenProps) {
           </section>
 
           <section className="grid gap-3">
-            <h2 className="text-lg font-semibold">연락 정보</h2>
+            <SectionHeader title="연락 정보" />
             <div className="grid gap-2 rounded-lg border bg-white p-4">
               <CopyRow
                 icon={Phone}
@@ -163,7 +155,7 @@ export function ContactDetailScreen({ contactId }: ContactDetailScreenProps) {
           </section>
 
           <section className="grid gap-3">
-            <h2 className="text-lg font-semibold">등록 정보</h2>
+            <SectionHeader title="등록 정보" />
             <dl className="grid gap-2 rounded-lg border bg-white p-4 text-sm">
               <div>
                 <dt className="text-xs text-muted-foreground">등록일</dt>
@@ -243,13 +235,13 @@ function ContactDetailError({
           {getApiErrorMessage(error)}
         </p>
       </div>
-      <button
-        className="mx-auto inline-flex h-10 items-center rounded-md border px-4 text-sm font-medium hover:bg-muted"
+      <Button
+        className="mx-auto"
         onClick={onRetry}
         type="button"
       >
         재시도
-      </button>
+      </Button>
     </section>
   );
 }

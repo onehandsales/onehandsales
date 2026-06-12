@@ -9,8 +9,11 @@ import {
 } from "lucide-react";
 import { type FormEvent, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
+import { Button } from "@/components/ui/button";
+import { PageHeader } from "@/components/ui/page-header";
+import { Pagination } from "@/components/ui/pagination";
+import { Toast } from "@/components/ui/toast";
 import { CompanyCreateDialog } from "@/features/company/components/company-create-dialog";
-import { SuccessToast } from "@/components/ui/state";
 import {
   useCompanyFields,
   useCompanyList,
@@ -99,34 +102,32 @@ export function CompanyListScreen() {
 
   return (
     <section className="mx-auto grid max-w-7xl gap-5 px-5 py-6">
-      <header className="flex flex-col gap-4 border-b pb-5 md:flex-row md:items-center md:justify-between">
-        <div>
-          <h1 className="text-2xl font-semibold">회사</h1>
-          <p className="mt-1 text-sm text-muted-foreground">
-            회사 기본 정보, 연결 거래처, 회사 메모를 관리합니다.
-          </p>
-        </div>
-        <div className="flex flex-wrap gap-2">
-          <button
-            className="inline-flex h-10 w-fit items-center gap-2 rounded-md border px-4 text-sm font-medium hover:bg-muted disabled:cursor-not-allowed disabled:opacity-60"
-            disabled={exportCompaniesMutation.isPending}
-            onClick={() => void onExport()}
-            type="button"
-          >
-            <Download className="h-4 w-4" />
-            목록 내보내기
-          </button>
-          <button
-            className="inline-flex h-10 w-fit items-center gap-2 rounded-md bg-primary px-4 text-sm font-medium text-primary-foreground disabled:cursor-not-allowed disabled:opacity-60"
-            disabled={fieldsQuery.isLoading || regionsQuery.isLoading}
-            onClick={() => setIsCreateOpen(true)}
-            type="button"
-          >
-            <Plus className="h-4 w-4" />
-            회사 추가
-          </button>
-        </div>
-      </header>
+      <PageHeader
+        actions={
+          <>
+            <Button
+              disabled={exportCompaniesMutation.isPending}
+              isPending={exportCompaniesMutation.isPending}
+              onClick={() => void onExport()}
+              type="button"
+            >
+              <Download className="h-4 w-4" />
+              목록 내보내기
+            </Button>
+            <Button
+              disabled={fieldsQuery.isLoading || regionsQuery.isLoading}
+              onClick={() => setIsCreateOpen(true)}
+              type="button"
+              variant="primary"
+            >
+              <Plus className="h-4 w-4" />
+              회사 추가
+            </Button>
+          </>
+        }
+        description="회사 기본 정보, 연결 거래처, 회사 메모를 관리합니다."
+        title="회사"
+      />
 
       <form
         className="grid gap-3 lg:grid-cols-[minmax(0,1fr)_minmax(160px,220px)_minmax(160px,220px)_auto]"
@@ -174,25 +175,18 @@ export function CompanyListScreen() {
           ))}
         </select>
         <div className="flex flex-wrap gap-2">
-          <button
-            className="inline-flex h-10 items-center gap-2 rounded-md border px-4 text-sm font-medium hover:bg-muted"
-            type="submit"
-          >
+          <Button type="submit">
             <Search className="h-4 w-4" />
             검색
-          </button>
-          <button
-            className="inline-flex h-10 items-center rounded-md border px-4 text-sm font-medium hover:bg-muted"
-            onClick={onResetFilters}
-            type="button"
-          >
+          </Button>
+          <Button onClick={onResetFilters} type="button">
             초기화
-          </button>
+          </Button>
         </div>
       </form>
 
       {notice ? (
-        <SuccessToast message={notice} onClose={() => setNotice(null)} />
+        <Toast message={notice} onClose={() => setNotice(null)} variant="success" />
       ) : null}
 
       {exportCompaniesMutation.error ? (
@@ -229,7 +223,7 @@ export function CompanyListScreen() {
       ) : (
         <>
           <CompanyListContent companies={companyList.items} />
-          <CompanyPagination
+          <Pagination
             page={companyList.page}
             totalCount={companyList.totalCount}
             totalPages={companyList.totalPages}
@@ -417,13 +411,13 @@ function CompanyTaxonomyColumn({
           placeholder={inputPlaceholder}
           value={name}
         />
-        <button
-          className="inline-flex h-9 items-center rounded-md border px-3 text-sm font-medium hover:bg-muted disabled:cursor-not-allowed disabled:opacity-60"
+        <Button
           disabled={isMutating || name.trim().length === 0}
+          size="sm"
           type="submit"
         >
           추가
-        </button>
+        </Button>
       </form>
       <div className="flex min-h-10 flex-wrap gap-2">
         {isLoading ? (
@@ -535,50 +529,6 @@ function CompanyListContent({ companies }: CompanyListContentProps) {
   );
 }
 
-type CompanyPaginationProps = {
-  readonly page: number;
-  readonly totalPages: number;
-  readonly totalCount: number;
-  readonly onPageChange: (page: number) => void;
-};
-
-// 기능 : 회사 목록 페이지네이션을 렌더링합니다.
-function CompanyPagination({
-  page,
-  totalPages,
-  totalCount,
-  onPageChange,
-}: CompanyPaginationProps) {
-  const normalizedTotalPages = Math.max(totalPages, 1);
-
-  return (
-    <div className="flex flex-col gap-3 rounded-lg border bg-white px-4 py-3 text-sm md:flex-row md:items-center md:justify-between">
-      <span className="text-muted-foreground">
-        총 {totalCount.toLocaleString("ko-KR")}개 · {page} /{" "}
-        {normalizedTotalPages}페이지
-      </span>
-      <div className="flex gap-2">
-        <button
-          className="h-9 rounded-md border px-3 font-medium hover:bg-muted disabled:cursor-not-allowed disabled:opacity-60"
-          disabled={page <= 1}
-          onClick={() => onPageChange(page - 1)}
-          type="button"
-        >
-          이전
-        </button>
-        <button
-          className="h-9 rounded-md border px-3 font-medium hover:bg-muted disabled:cursor-not-allowed disabled:opacity-60"
-          disabled={page >= normalizedTotalPages}
-          onClick={() => onPageChange(page + 1)}
-          type="button"
-        >
-          다음
-        </button>
-      </div>
-    </div>
-  );
-}
-
 // 기능 : 회사 목록 로딩 상태를 렌더링합니다.
 function CompanyListSkeleton() {
   return (
@@ -606,13 +556,9 @@ function CompanyListError({
       <p className="text-sm font-medium text-destructive">
         {getApiErrorMessage(error)}
       </p>
-      <button
-        className="h-9 rounded-md border bg-white px-3 text-sm font-medium hover:bg-muted"
-        onClick={onRetry}
-        type="button"
-      >
+      <Button onClick={onRetry} size="sm" type="button">
         다시 시도
-      </button>
+      </Button>
     </div>
   );
 }
@@ -636,14 +582,10 @@ function CompanyEmptyState({
           분야와 지역을 먼저 준비한 뒤 회사를 추가할 수 있습니다.
         </p>
       </div>
-      <button
-        className="inline-flex h-10 items-center gap-2 rounded-md bg-primary px-4 text-sm font-medium text-primary-foreground"
-        onClick={onCreate}
-        type="button"
-      >
+      <Button onClick={onCreate} type="button" variant="primary">
         <Plus className="h-4 w-4" />
         회사 추가
-      </button>
+      </Button>
     </div>
   );
 }

@@ -14,6 +14,24 @@ user-web의 범용 shadcn-style primitive를 이곳에 둔다.
 
 ## 현재 확정된 공용 문법
 
+- `button.tsx`
+  - `Button`: variant(primary/secondary/danger/ghost), size(md/sm/lg/icon), isPending(spinner) 지원
+- `badge.tsx`
+  - `Badge`: variant(success/warning/danger/neutral/info/primary), size(md/sm) 지원
+- `filter-chip.tsx`
+  - `FilterChip`: 선택/미선택 상태 토글 chip
+  - `FilterChipGroup`: chip 묶음 래퍼
+- `search-input.tsx`
+  - `SearchInput`: onSubmit 제공 시 form 래퍼 포함, 검색 아이콘 내장
+- `pagination.tsx`
+  - `Pagination`: page X/Y 표시, 이전/다음 버튼, 첫/마지막 경계 비활성화
+- `section-header.tsx`
+  - `SectionHeader`: 섹션 title, description, 선택적 action 슬롯
+- `page-header.tsx`
+  - `PageHeader`: 페이지 title, description, actions 슬롯, 선택적 backHref/backLabel 링크
+- `toast.tsx`
+  - `Toast`: variant(success/error/info), 3초 자동 닫힘
+  - `useToast`: showToast(message, variant) hook
 - `modal-shell.tsx`
   - `ModalShell`은 overlay, dialog panel, header, body, footer를 담당한다.
   - 생성/수정 폼은 modal body에 `<form id="...">`를 두고 footer submit 버튼은 `form` 속성으로 연결한다.

@@ -3,6 +3,7 @@ import { Save } from "lucide-react";
 import { type FormEvent, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import type { UseFormRegisterReturn } from "react-hook-form";
+import { Button } from "@/components/ui/button";
 import { ContactCompanyField } from "@/features/contact/components/contact-company-field";
 import { useContactDepartments, useContactJobGrades } from "@/features/contact/hooks/use-contact-list";
 import {
@@ -263,14 +264,15 @@ export function ContactEditForm({ contact, onSaved }: ContactEditFormProps) {
       ) : null}
 
       <div className="flex justify-end">
-        <button
-          className="inline-flex h-10 items-center gap-2 rounded-md bg-primary px-4 text-sm font-medium text-primary-foreground disabled:cursor-not-allowed disabled:opacity-60"
+        <Button
           disabled={updateContactMutation.isPending}
+          isPending={updateContactMutation.isPending}
           type="submit"
+          variant="primary"
         >
           <Save className="h-4 w-4" />
           저장
-        </button>
+        </Button>
       </div>
     </form>
   );
