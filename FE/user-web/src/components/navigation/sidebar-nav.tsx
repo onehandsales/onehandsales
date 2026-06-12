@@ -1,22 +1,39 @@
-import { Bell, BriefcaseBusiness, Building2, CalendarDays, Download, FolderArchive, Handshake, LayoutGrid, ScanLine, Settings, Trash2, Upload, Users } from "lucide-react";
+import {
+  Bell,
+  BriefcaseBusiness,
+  Building2,
+  CalendarDays,
+  Download,
+  FolderArchive,
+  Handshake,
+  LayoutGrid,
+  ScanLine,
+  Settings,
+  Trash2,
+  Upload,
+  Users,
+} from "lucide-react";
 import { NavLink } from "react-router-dom";
 import { cn } from "@/utils/cn";
 
-const primaryItems = [
-  { label: "파이프라인", to: "/", icon: LayoutGrid, end: true },
+const group1 = [
+  { label: "홈", to: "/", icon: LayoutGrid, end: true },
+  { label: "딜", to: "/deals", icon: Handshake },
   { label: "회사", to: "/companies", icon: Building2 },
   { label: "거래처", to: "/contacts", icon: Users },
   { label: "제품", to: "/products", icon: BriefcaseBusiness },
-  { label: "딜", to: "/deals", icon: Handshake },
-  { label: "일정", to: "/schedules", icon: CalendarDays },
-  { label: "회의록", to: "/meeting-notes", icon: FolderArchive },
 ] as const;
 
-const secondaryItems = [
-  { label: "명함 스캔", to: "/business-cards", icon: ScanLine },
+const group2 = [
+  { label: "일정", to: "/schedules", icon: CalendarDays },
+  { label: "회의록", to: "/meeting-notes", icon: FolderArchive },
+  { label: "가져오기", to: "/import", icon: Download },
+] as const;
+
+const group3 = [
   { label: "알림", to: "/notifications", icon: Bell },
-  { label: "가져오기", to: "/import", icon: Upload },
-  { label: "내보내기", to: "/export", icon: Download },
+  { label: "명함 스캔", to: "/business-cards", icon: ScanLine },
+  { label: "내보내기", to: "/export", icon: Upload },
   { label: "휴지통", to: "/trash", icon: Trash2 },
   { label: "설정", to: "/settings", icon: Settings },
 ] as const;
@@ -27,47 +44,46 @@ type SidebarNavProps = {
 
 export function SidebarNav({ className }: SidebarNavProps) {
   return (
-    <nav className={cn("grid gap-6", className)}>
-      <NavSection items={primaryItems} title="Workspace" />
-      <NavSection items={secondaryItems} title="Tools" />
+    <nav className={cn("flex flex-col gap-6", className)}>
+      <NavGroup items={group1} />
+      <NavGroup items={group2} />
+      <NavGroup items={group3} />
     </nav>
   );
 }
 
-type NavSectionProps = {
+type NavGroupProps = {
   readonly items: ReadonlyArray<{
     readonly label: string;
     readonly to: string;
     readonly icon: typeof LayoutGrid;
     readonly end?: boolean;
   }>;
-  readonly title: string;
 };
 
-function NavSection({ items, title }: NavSectionProps) {
+function NavGroup({ items }: NavGroupProps) {
   return (
-    <div className="grid gap-2">
-      <p className="px-3 text-[11px] font-semibold uppercase tracking-[0.24em] text-sidebar-foreground/45">
-        {title}
-      </p>
-      <div className="grid gap-1">
-        {items.map((item) => (
-          <NavLink
-            className={({ isActive }) =>
-              cn(
-                "group flex items-center gap-2 rounded-[6px] px-2.5 h-[38px] text-[13px] font-normal text-sidebar-foreground/65 transition hover:bg-sidebar-muted hover:text-sidebar-foreground",
-                isActive && "bg-sidebar-muted text-sidebar-foreground"
-              )
-            }
-            end={item.end}
-            key={item.to}
-            to={item.to}
-          >
-            <item.icon className="h-4 w-4 shrink-0 text-sidebar-foreground/55 transition group-hover:text-sidebar-foreground/90" />
-            <span>{item.label}</span>
-          </NavLink>
-        ))}
-      </div>
+    <div className="flex flex-col gap-0.5">
+      {items.map((item) => (
+        <NavLink
+          className={({ isActive }) =>
+            cn(
+              "group flex h-9 items-center gap-2.5 rounded-lg px-3 text-[13px] font-normal text-sidebar-foreground/60 transition-colors hover:bg-sidebar-muted hover:text-sidebar-foreground",
+              isActive &&
+                "bg-sidebar-foreground/10 text-sidebar-foreground font-medium"
+            )
+          }
+          end={item.end}
+          key={item.to}
+          to={item.to}
+        >
+          <item.icon
+            className="h-[15px] w-[15px] shrink-0 text-sidebar-foreground/45 transition-colors group-hover:text-sidebar-foreground/80"
+            strokeWidth={1.75}
+          />
+          <span>{item.label}</span>
+        </NavLink>
+      ))}
     </div>
   );
 }
