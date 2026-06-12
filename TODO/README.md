@@ -11,6 +11,11 @@
 ```text
 TODO/
   README.md
+  ADDITIONAL_WORK_PLAN/
+    README.md
+    COMMON/
+    BE-TODO/
+    FE-TODO/
   AUTH_FE_INTEGRATION_PLAN/
     README.md
     COMMON/
@@ -43,6 +48,8 @@ TODO/
 ```
 
 `TODO` 바로 아래에는 아직 진행 중이거나 다음에 실행할 기획/구현 계획 폴더를 둔다. 완료된 계획은 `TODO/DONE` 아래로 옮긴다.
+
+`ADDITIONAL_WORK_PLAN`에는 기존 활성 계획에 속하지 않는 추가 유지보수 요청을 모은다. 각 항목은 `AGENT` 정본을 참고해 `COMMON`, `BE-TODO`, `FE-TODO` 기준으로 실행 가능한 작업 단위까지 확장한다.
 
 활성 계획 폴더 안에서는 필요에 따라 다음 구조를 사용한다.
 
