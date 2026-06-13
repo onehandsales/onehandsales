@@ -1,0 +1,45 @@
+import type { ReactNode } from "react";
+import { cn } from "@/utils/cn";
+
+type FilterChipProps = {
+  readonly active?: boolean;
+  readonly onClick?: () => void;
+  readonly className?: string;
+  readonly children?: ReactNode;
+};
+
+type FilterChipGroupProps = {
+  readonly className?: string;
+  readonly children?: ReactNode;
+};
+
+// 기능 : 필터 선택 상태를 표현하는 칩 컴포넌트입니다.
+export function FilterChip({
+  active,
+  onClick,
+  className,
+  children,
+}: FilterChipProps) {
+  return (
+    <button
+      className={cn(
+        "inline-flex h-7 items-center rounded-[6px] px-2.5 text-xs transition cursor-pointer",
+        active
+          ? "bg-primary/10 text-primary font-semibold"
+          : "bg-gray-100 text-gray-700 hover:bg-gray-200",
+        className
+      )}
+      onClick={onClick}
+      type="button"
+    >
+      {children}
+    </button>
+  );
+}
+
+// 기능 : FilterChip을 가로로 나열하는 wrapper 컴포넌트입니다.
+export function FilterChipGroup({ className, children }: FilterChipGroupProps) {
+  return (
+    <div className={cn("flex flex-wrap gap-2", className)}>{children}</div>
+  );
+}

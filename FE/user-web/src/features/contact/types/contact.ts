@@ -1,113 +1,127 @@
-import type { Company } from "@/features/company";
-import type { PaginatedResponse } from "@/types/pagination";
-
-export type Contact = {
+// 거래처 목록 아이템
+export type ContactListItem = {
   readonly id: string;
-  readonly name: string;
-  readonly companyId: string | null;
-  readonly companyName: string | null;
-  readonly department: string | null;
-  readonly position: string | null;
-  readonly phone: string | null;
-  readonly email: string | null;
-  readonly address: string | null;
-  readonly hasMemo: boolean;
-  readonly memoCount: number;
-  readonly latestMemoAt: string | null;
+  readonly company: { readonly id: string; readonly companyName: string };
+  readonly username: string;
+  readonly mobile: string;
+  readonly email: string;
+  readonly contactDepartment: { readonly id: string; readonly departmentName: string };
+  readonly contactJobGrade: { readonly id: string; readonly jobGradeName: string };
   readonly createdAt: string;
-  readonly updatedAt: string;
-  readonly deletedAt: string | null;
-  readonly permanentDeleteAt: string | null;
 };
 
-export type ContactMemo = {
+// 거래처 상세 (목록 + updatedAt)
+export type ContactDetail = ContactListItem & { readonly updatedAt: string };
+
+// 페이지네이션 응답
+export type ContactPageResponse = {
+  readonly items: ContactListItem[];
+  readonly page: number;
+  readonly pageSize: number;
+  readonly totalCount: number;
+  readonly totalPages: number;
+};
+
+// 회사 옵션 (필터/선택용)
+export type ContactCompanyOption = { readonly id: string; readonly companyName: string };
+export type ContactCompanyOptionListResponse = { readonly items: ContactCompanyOption[] };
+
+// 직급
+export type ContactJobGrade = { readonly id: string; readonly jobGradeName: string };
+export type ContactJobGradeListResponse = { readonly items: ContactJobGrade[] };
+
+// 부서
+export type ContactDepartment = { readonly id: string; readonly departmentName: string };
+export type ContactDepartmentListResponse = { readonly items: ContactDepartment[] };
+
+// 메모 로그 (cursor 무한스크롤)
+export type ContactMemoLog = {
   readonly id: string;
-  readonly targetType: "CONTACT";
-  readonly targetId: string;
-  readonly memoDate: string;
-  readonly title: string | null;
-  readonly content: string;
+  readonly memoType: string;
+  readonly memo: string;
   readonly createdAt: string;
-  readonly updatedAt: string;
-  readonly deletedAt: string | null;
-  readonly permanentDeleteAt: string | null;
+};
+export type ContactMemoLogConnection = {
+  readonly items: ContactMemoLog[];
+  readonly nextCursor: string | null;
+  readonly hasNext: boolean;
 };
 
-export type ContactDetail = {
-  readonly contact: Contact;
-  readonly company: Company | null;
-  readonly memos: ContactMemo[];
-  readonly relatedDealCount: number;
-  readonly relatedProductCount: number;
-};
-
-export type ContactLog = {
+// 개인 비밀 메모 로그
+export type ContactPrivateMemoLog = {
   readonly id: string;
-  readonly contactId: string;
-  readonly loggedAt: string;
-  readonly title: string;
-  readonly content: string;
+  readonly memo: string;
   readonly createdAt: string;
-  readonly updatedAt: string;
-  readonly deletedAt?: string | null;
-  readonly permanentDeleteAt?: string | null;
+};
+export type ContactPrivateMemoLogConnection = {
+  readonly items: ContactPrivateMemoLog[];
+  readonly nextCursor: string | null;
+  readonly hasNext: boolean;
 };
 
-export type ContactListResponse = PaginatedResponse<Contact>;
-export type ContactLogListResponse = PaginatedResponse<ContactLog>;
-
-export type DeleteContactResponse = {
-  readonly id: string;
-  readonly deletedAt: string;
-  readonly permanentDeleteAt: string;
-};
-
+// 목록 조회 파라미터
 export type ContactListParams = {
   readonly page?: number;
-  readonly pageSize?: number;
-  readonly search?: string;
+  readonly username?: string;
   readonly companyId?: string;
-  readonly includeDeleted?: boolean;
+  readonly contactDepartmentId?: string;
+  readonly contactJobGradeId?: string;
 };
 
-export type ContactLogListParams = {
-  readonly page?: number;
-  readonly pageSize?: number;
-};
-
+// 생성 입력
 export type CreateContactInput = {
-  readonly name: string;
-  readonly companyId?: string;
-  readonly department?: string;
-  readonly position?: string;
-  readonly phone?: string;
-  readonly email?: string;
-  readonly address?: string;
-  readonly initialMemo?: string;
+  readonly username: string;
+  readonly mobile: string;
+  readonly email: string;
+  readonly companyId: string;
+  readonly contactDepartmentId: string;
+  readonly contactJobGradeId: string;
+  readonly contactMemo?: string;
 };
 
+// 수정 입력
 export type UpdateContactInput = {
   readonly contactId: string;
-  readonly name?: string;
-  readonly companyId?: string | null;
-  readonly department?: string | null;
-  readonly position?: string | null;
-  readonly phone?: string | null;
-  readonly email?: string | null;
-  readonly address?: string | null;
+  readonly username?: string;
+  readonly mobile?: string;
+  readonly email?: string;
+  readonly companyId?: string;
+  readonly contactDepartmentId?: string;
+  readonly contactJobGradeId?: string;
 };
 
-export type CreateContactLogInput = {
+// 메모 로그 입력
+export type CreateContactMemoLogInput = {
   readonly contactId: string;
-  readonly loggedAt: string;
-  readonly title: string;
-  readonly content?: string;
+  readonly memoType: string;
+  readonly memo: string;
+};
+export type UpdateContactMemoLogInput = {
+  readonly contactId: string;
+  readonly memoLogId: string;
+  readonly memoType?: string;
+  readonly memo?: string;
 };
 
-export type UpdateContactLogInput = {
+// 개인 비밀 메모 로그 입력
+export type CreateContactPrivateMemoLogInput = {
   readonly contactId: string;
-  readonly logId: string;
-  readonly loggedAt?: string;
-  readonly title?: string;
-  readonly content?: string;
+  readonly memo: string;
 };
+export type UpdateContactPrivateMemoLogInput = {
+  readonly contactId: string;
+  readonly privateMemoLogId: string;
+  readonly memo: string;
+};
+
+// export 파라미터
+export type ContactExportParams = {
+  readonly username?: string;
+  readonly companyId?: string;
+  readonly contactDepartmentId?: string;
+  readonly contactJobGradeId?: string;
+};
+
+// 직급/부서 생성 입력
+export type CreateContactJobGradeInput = { readonly jobGradeName: string };
+export type CreateContactDepartmentInput = { readonly departmentName: string };

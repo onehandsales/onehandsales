@@ -38,14 +38,16 @@ export function useProductTargetOptions(
 
       const result = await listContacts({
         page: 1,
-        pageSize: 8,
-        search: normalizedSearch,
+        username: normalizedSearch,
       });
 
       return result.items.map<ProductTargetOption>((contact) => ({
         id: contact.id,
-        name: contact.name,
-        subtitle: [contact.companyName, contact.position]
+        name: contact.username,
+        subtitle: [
+          contact.company.companyName,
+          contact.contactJobGrade.jobGradeName,
+        ]
           .filter(Boolean)
           .join(" · "),
       }));

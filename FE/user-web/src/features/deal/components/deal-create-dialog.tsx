@@ -14,7 +14,6 @@ import {
 } from "@/components/ui/modal-form";
 import { ModalShell } from "@/components/ui/modal-shell";
 import { ErrorState } from "@/components/ui/state";
-import { useCreateContactMutation } from "@/features/contact/hooks/use-contact-mutations";
 import { DealEntitySearchField } from "@/features/deal/components/deal-entity-search-field";
 import {
   type DealEntityOption,
@@ -51,7 +50,6 @@ export function DealCreateDialog({
   const [inlineProductUnitPriceError, setInlineProductUnitPriceError] =
     useState<string | null>(null);
   const createDealMutation = useCreateDealMutation();
-  const createContactMutation = useCreateContactMutation();
   const createProductMutation = useCreateProductMutation();
   const {
     control,
@@ -75,20 +73,13 @@ export function DealCreateDialog({
   const companyName = companySearch.trim();
   const contactName = contactSearch.trim();
   const productName = productSearch.trim();
-  const canCreateContactInline = canShowInlineCreate({
-    search: contactSearch,
-    selectedId: contactId,
-    isFetching: contactOptionsQuery.isFetching,
-    isError: contactOptionsQuery.isError,
-  });
   const canCreateProductInline = canShowInlineCreate({
     search: productSearch,
     selectedId: "",
     isFetching: productOptionsQuery.isFetching,
     isError: productOptionsQuery.isError,
   });
-  const isCreatingInlineEntity =
-    createContactMutation.isPending || createProductMutation.isPending;
+  const isCreatingInlineEntity = createProductMutation.isPending;
   const formId = "deal-create-form";
 
   useEffect(() => {
@@ -141,19 +132,6 @@ export function DealCreateDialog({
       nextProducts.map((product) => product.id),
       { shouldValidate: true }
     );
-  };
-
-  const onInlineContactCreate = async () => {
-    if (!contactName) {
-      return;
-    }
-
-    const contact = await createContactMutation.mutateAsync(
-      companyId ? { name: contactName, companyId } : { name: contactName }
-    );
-
-    setValue("contactId", contact.id, { shouldValidate: true });
-    setValue("contactSearch", contact.name, { shouldValidate: true });
   };
 
   const onInlineProductCreate = async () => {
@@ -316,16 +294,13 @@ export function DealCreateDialog({
                   isLoading={contactOptionsQuery.isLoading}
                   label="거래처"
                   onClear={() => {
-                    createContactMutation.reset();
                     clearContact();
                   }}
                   onSearchChange={(value) => {
-                    createContactMutation.reset();
                     setValue("contactSearch", value, { shouldValidate: true });
                     setValue("contactId", "", { shouldValidate: true });
                   }}
                   onSelect={(option) => {
-                    createContactMutation.reset();
                     setValue("contactId", option.id, { shouldValidate: true });
                     setValue("contactSearch", option.name, {
                       shouldValidate: true,
@@ -337,21 +312,10 @@ export function DealCreateDialog({
                   selectedId={contactId}
                 />
 
-                {canCreateContactInline ? (
-                  <ModalInlineCreateArea
-                    actionLabel="새 거래처 만들기"
-                    disabled={!contactName}
-                    errorMessage={
-                      createContactMutation.error
-                        ? getApiErrorMessage(createContactMutation.error)
-                        : null
-                    }
-                    isPending={createContactMutation.isPending}
-                    meta={companyId ? `회사: ${companySearch}` : undefined}
-                    name={contactName}
-                    onCreate={onInlineContactCreate}
-                    title="새 거래처"
-                  />
+                {contactName && !contactId && !contactOptionsQuery.isFetching && !contactOptionsQuery.isError && (contactOptionsQuery.data?.length ?? 0) === 0 ? (
+                  <ModalHelperText className="rounded-md border bg-muted px-3 py-2">
+                    새 거래처는 거래처 화면에서 부서와 직급을 함께 등록해주세요.
+                  </ModalHelperText>
                 ) : null}
               </div>
             </ModalFormRow>
@@ -460,9 +424,11 @@ export function DealCreateDialog({
                   {...register("stage")}
                 >
                   <option value="INITIAL_CONTACT">초기 접촉</option>
-                  <option value="IN_DISCUSSION">논의 중</option>
-                  <option value="WON">수주</option>
-                  <option value="LOST">실주</option>
+                  <option value="NEEDS_ANALYSIS">니즈 확인</option>
+                  <option value="PROPOSAL">제안/견적</option>
+                  <option value="NEGOTIATION">협상</option>
+                  <option value="WON">성사</option>
+                  <option value="LOST">실패</option>
                 </select>
               </ModalFieldGroup>
 

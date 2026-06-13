@@ -2,6 +2,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Building2 } from "lucide-react";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
+import { Button } from "@/components/ui/button";
 import { useUpdateCompanyMutation } from "@/features/company/hooks/use-company-mutations";
 import {
   companyEditFormSchema,
@@ -141,13 +142,14 @@ export function CompanyEditForm({
       ) : null}
 
       <div className="flex justify-end">
-        <button
-          className="h-10 rounded-md bg-primary px-4 text-sm font-medium text-primary-foreground disabled:cursor-not-allowed disabled:opacity-60"
+        <Button
           disabled={updateCompanyMutation.isPending}
+          isPending={updateCompanyMutation.isPending}
           type="submit"
+          variant="primary"
         >
           {updateCompanyMutation.isPending ? "저장 중" : "저장"}
-        </button>
+        </Button>
       </div>
     </form>
   );

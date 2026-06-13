@@ -22,25 +22,27 @@
     --panel-muted: 220 29% 97%;
     --panel-strong: 225 26% 16%;
     --panel-strong-foreground: 210 40% 98%;
-    --sidebar: 228 24% 12%;
+    --sidebar: 235 21% 10%;
     --sidebar-foreground: 210 40% 98%;
     --sidebar-muted: 228 17% 24%;
+    --sidebar-border: 228 21% 15%;
     --sidebar-accent: 221 83% 53%;
     --chip: 220 33% 96%;
     --chip-active: 221 83% 53%;
     --chip-active-foreground: 210 40% 98%;
-    --fab: 248 74% 63%;
+    --fab: 241 74% 63%;
     --fab-foreground: 210 40% 98%;
     --shadow-soft: 0 10px 30px rgba(15, 23, 42, 0.08);
     --shadow-fab: 0 18px 35px rgba(94, 92, 230, 0.28);
     --shadow-panel: 0 20px 45px rgba(15, 23, 42, 0.08);
+    --shadow-modal: 0 8px 32px rgba(0, 0, 0, 0.125);
     --radius: 0.8125rem;
     --radius-sm: 0.625rem;
     --radius-xs: 0.5rem;
     --sidebar-width: 15rem;
     --topbar-height: 4rem;
     --detail-panel-width: 23.75rem;
-    --mobile-tabbar-height: 4.5rem;
+    --mobile-tabbar-height: 4.5rem; /* 72px */
   }
 
   * {

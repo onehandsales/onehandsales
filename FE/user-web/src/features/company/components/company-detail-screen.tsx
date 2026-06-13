@@ -7,7 +7,10 @@ import {
 } from "lucide-react";
 import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import { SuccessToast } from "@/components/ui/state";
+import { Button } from "@/components/ui/button";
+import { PageHeader } from "@/components/ui/page-header";
+import { SectionHeader } from "@/components/ui/section-header";
+import { Toast } from "@/components/ui/toast";
 import { CompanyEditForm } from "@/features/company/components/company-edit-form";
 import {
   CompanyMemoLogSection,
@@ -87,26 +90,15 @@ export function CompanyDetailScreen({ companyId }: CompanyDetailScreenProps) {
 
   return (
     <section className="mx-auto grid max-w-7xl gap-6 px-5 py-6">
-      <header className="flex flex-col gap-4 border-b pb-5 md:flex-row md:items-center md:justify-between">
-        <div>
-          <Link
-            className="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-primary"
-            to="/companies"
-          >
-            <ArrowLeft className="h-4 w-4" />
-            회사 목록
-          </Link>
-          <h1 className="mt-3 text-2xl font-semibold">{company.companyName}</h1>
-          <p className="mt-1 text-sm text-muted-foreground">
-            {[company.companyField.field, company.companyRegion.region].join(
-              " · "
-            )}
-          </p>
-        </div>
-      </header>
+      <PageHeader
+        backHref="/companies"
+        backLabel="회사 목록"
+        description={[company.companyField.field, company.companyRegion.region].join(" · ")}
+        title={company.companyName}
+      />
 
       {notice ? (
-        <SuccessToast message={notice} onClose={() => setNotice(null)} />
+        <Toast message={notice} onClose={() => setNotice(null)} variant="success" />
       ) : null}
 
       {taxonomyError ? (
@@ -126,12 +118,10 @@ export function CompanyDetailScreen({ companyId }: CompanyDetailScreenProps) {
       <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_380px]">
         <div className="grid gap-6">
           <section className="grid gap-4">
-            <div>
-              <h2 className="text-lg font-semibold">기본 정보</h2>
-              <p className="mt-1 text-sm text-muted-foreground">
-                회사명, 분야, 지역을 수정합니다.
-              </p>
-            </div>
+            <SectionHeader
+              description="회사명, 분야, 지역을 수정합니다."
+              title="기본 정보"
+            />
             <div className="rounded-lg border bg-white p-4">
               <CompanyEditForm
                 company={company}
@@ -264,12 +254,10 @@ function CompanyContactPanel({
 }: CompanyContactPanelProps) {
   return (
     <section className="grid gap-3">
-      <div>
-        <h2 className="text-lg font-semibold">연결 거래처</h2>
-        <p className="mt-1 text-sm text-muted-foreground">
-          회사에 연결된 거래처 전체를 표시합니다.
-        </p>
-      </div>
+      <SectionHeader
+        description="회사에 연결된 거래처 전체를 표시합니다."
+        title="연결 거래처"
+      />
       <div className="overflow-hidden rounded-lg border bg-white">
         {isLoading ? (
           <div className="grid gap-2 p-4">
@@ -282,13 +270,9 @@ function CompanyContactPanel({
             <p className="text-sm text-destructive">
               {getApiErrorMessage(error)}
             </p>
-            <button
-              className="h-9 rounded-md border px-3 text-sm font-medium hover:bg-muted"
-              onClick={onRetry}
-              type="button"
-            >
+            <Button onClick={onRetry} size="sm" type="button">
               다시 시도
-            </button>
+            </Button>
           </div>
         ) : contacts.length === 0 ? (
           <p className="px-4 py-5 text-sm text-muted-foreground">
@@ -337,13 +321,9 @@ function CompanyDetailError({
         <p className="text-sm font-medium text-destructive">
           {getApiErrorMessage(error)}
         </p>
-        <button
-          className="h-9 rounded-md border bg-white px-3 text-sm font-medium hover:bg-muted"
-          onClick={onRetry}
-          type="button"
-        >
+        <Button onClick={onRetry} size="sm" type="button">
           다시 시도
-        </button>
+        </Button>
       </div>
     </section>
   );

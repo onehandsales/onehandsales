@@ -1,153 +1,191 @@
 import { z } from "zod";
 import type {
-  Contact,
+  ContactDetail,
   CreateContactInput,
-  CreateContactLogInput,
   UpdateContactInput,
-  UpdateContactLogInput,
+  CreateContactMemoLogInput,
+  UpdateContactMemoLogInput,
+  CreateContactPrivateMemoLogInput,
+  UpdateContactPrivateMemoLogInput,
 } from "@/features/contact/types/contact";
 
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-const loosePhonePattern = /^[0-9+\-\s().]{6,30}$/;
+const mobilePattern = /^010-\d{4}-\d{4}$/;
 
-export const contactFormSchema = z.object({
-  name: z.string().trim().min(1, "이름을 입력해주세요."),
-  companyId: z.string().trim().optional(),
-  companySearch: z.string().trim().optional(),
-  department: z.string().trim().optional(),
-  position: z.string().trim().optional(),
-  phone: z
+// 거래처 생성 폼 스키마
+export const contactCreateFormSchema = z.object({
+  username: z.string().trim().min(1, "이름을 입력해주세요."),
+  mobile: z
     .string()
     .trim()
-    .refine(
-      (value) => value.length === 0 || loosePhonePattern.test(value),
-      "전화번호 형식을 확인해주세요."
-    )
-    .optional(),
+    .regex(mobilePattern, "010-0000-0000 형식으로 입력해주세요."),
   email: z
     .string()
     .trim()
-    .refine(
-      (value) => value.length === 0 || emailPattern.test(value),
-      "이메일 형식을 확인해주세요."
-    )
-    .optional(),
-  address: z.string().trim().optional(),
-  initialMemo: z.string().trim().optional(),
+    .regex(emailPattern, "이메일 형식을 확인해주세요."),
+  companyId: z.string().trim().min(1, "회사를 선택해주세요."),
+  companySearch: z.string().trim().optional(),
+  contactDepartmentId: z.string().trim().min(1, "부서를 선택해주세요."),
+  contactJobGradeId: z.string().trim().min(1, "직급을 선택해주세요."),
+  contactMemo: z.string().trim().optional(),
 });
 
-export type ContactFormValues = z.infer<typeof contactFormSchema>;
+export type ContactCreateFormValues = z.infer<typeof contactCreateFormSchema>;
 
-export const contactLogFormSchema = z.object({
-  loggedAt: z.string().trim().min(1, "기록 시간을 입력해주세요."),
-  title: z.string().trim().min(1, "로그 제목을 입력해주세요."),
-  content: z.string().trim().optional(),
+// 거래처 수정 폼 스키마
+export const contactEditFormSchema = z.object({
+  username: z.string().trim().min(1, "이름을 입력해주세요."),
+  mobile: z
+    .string()
+    .trim()
+    .regex(mobilePattern, "010-0000-0000 형식으로 입력해주세요."),
+  email: z
+    .string()
+    .trim()
+    .regex(emailPattern, "이메일 형식을 확인해주세요."),
+  companyId: z.string().trim().min(1, "회사를 선택해주세요."),
+  companySearch: z.string().trim().optional(),
+  contactDepartmentId: z.string().trim().min(1, "부서를 선택해주세요."),
+  contactJobGradeId: z.string().trim().min(1, "직급을 선택해주세요."),
 });
 
-export type ContactLogFormValues = z.infer<typeof contactLogFormSchema>;
+export type ContactEditFormValues = z.infer<typeof contactEditFormSchema>;
 
-export const emptyContactFormValues: ContactFormValues = {
-  name: "",
+// 메모 로그 폼 스키마
+export const contactMemoLogFormSchema = z.object({
+  memoType: z.string().trim().min(1, "메모 유형을 입력해주세요."),
+  memo: z.string().trim().min(1, "메모를 입력해주세요."),
+});
+
+export type ContactMemoLogFormValues = z.infer<typeof contactMemoLogFormSchema>;
+
+// 개인 메모 로그 폼 스키마
+export const contactPrivateMemoLogFormSchema = z.object({
+  memo: z.string().trim().min(1, "개인 메모를 입력해주세요."),
+});
+
+export type ContactPrivateMemoLogFormValues = z.infer<
+  typeof contactPrivateMemoLogFormSchema
+>;
+
+// 기본값
+export const emptyContactCreateFormValues: ContactCreateFormValues = {
+  username: "",
+  mobile: "",
+  email: "",
   companyId: "",
   companySearch: "",
-  department: "",
-  position: "",
-  phone: "",
-  email: "",
-  address: "",
-  initialMemo: "",
+  contactDepartmentId: "",
+  contactJobGradeId: "",
+  contactMemo: "",
 };
 
-export function toContactFormValues(contact: Contact): ContactFormValues {
+export const emptyContactMemoLogFormValues: ContactMemoLogFormValues = {
+  memoType: "일반 메모",
+  memo: "",
+};
+
+export const emptyContactPrivateMemoLogFormValues: ContactPrivateMemoLogFormValues =
+  {
+    memo: "",
+  };
+
+// 기능 : 거래처 상세 응답을 수정 폼 기본값으로 변환합니다.
+export function toContactEditFormValues(
+  contact: ContactDetail
+): ContactEditFormValues {
   return {
-    name: contact.name,
-    companyId: contact.companyId ?? "",
-    companySearch: contact.companyName ?? "",
-    department: contact.department ?? "",
-    position: contact.position ?? "",
-    phone: contact.phone ?? "",
-    email: contact.email ?? "",
-    address: contact.address ?? "",
-    initialMemo: "",
+    username: contact.username,
+    mobile: contact.mobile,
+    email: contact.email,
+    companyId: contact.company.id,
+    companySearch: contact.company.companyName,
+    contactDepartmentId: contact.contactDepartment.id,
+    contactJobGradeId: contact.contactJobGrade.id,
   };
 }
 
+// 기능 : 거래처 생성 폼 값을 API 요청 값으로 변환합니다.
 export function toCreateContactInput(
-  values: ContactFormValues
+  values: ContactCreateFormValues
 ): CreateContactInput {
   return {
-    name: values.name.trim(),
-    companyId: optionalText(values.companyId),
-    department: optionalText(values.department),
-    position: optionalText(values.position),
-    phone: optionalText(values.phone),
-    email: optionalText(values.email),
-    address: optionalText(values.address),
-    initialMemo: optionalText(values.initialMemo),
+    username: values.username.trim(),
+    mobile: values.mobile.trim(),
+    email: values.email.trim(),
+    companyId: values.companyId,
+    contactDepartmentId: values.contactDepartmentId,
+    contactJobGradeId: values.contactJobGradeId,
+    contactMemo: optionalText(values.contactMemo),
   };
 }
 
+// 기능 : 거래처 수정 폼 값을 API 요청 값으로 변환합니다.
 export function toUpdateContactInput(
   contactId: string,
-  values: ContactFormValues
+  values: ContactEditFormValues
 ): UpdateContactInput {
   return {
     contactId,
-    name: values.name.trim(),
-    companyId: nullableText(values.companyId),
-    department: nullableText(values.department),
-    position: nullableText(values.position),
-    phone: nullableText(values.phone),
-    email: nullableText(values.email),
-    address: nullableText(values.address),
+    username: values.username.trim(),
+    mobile: values.mobile.trim(),
+    email: values.email.trim(),
+    companyId: values.companyId,
+    contactDepartmentId: values.contactDepartmentId,
+    contactJobGradeId: values.contactJobGradeId,
   };
 }
 
-export function toCreateContactLogInput(
+// 기능 : 메모 로그 생성 폼 값을 API 요청 값으로 변환합니다.
+export function toCreateContactMemoLogInput(
   contactId: string,
-  values: ContactLogFormValues
-): CreateContactLogInput {
+  values: ContactMemoLogFormValues
+): CreateContactMemoLogInput {
   return {
     contactId,
-    loggedAt: toIsoDateTime(values.loggedAt),
-    title: values.title.trim(),
-    content: optionalText(values.content),
+    memoType: values.memoType.trim(),
+    memo: values.memo.trim(),
   };
 }
 
-export function toUpdateContactLogInput(
+// 기능 : 메모 로그 수정 폼 값을 API 요청 값으로 변환합니다.
+export function toUpdateContactMemoLogInput(
   contactId: string,
-  logId: string,
-  values: ContactLogFormValues
-): UpdateContactLogInput {
+  memoLogId: string,
+  values: ContactMemoLogFormValues
+): UpdateContactMemoLogInput {
+  return {
+    ...toCreateContactMemoLogInput(contactId, values),
+    memoLogId,
+  };
+}
+
+// 기능 : 개인 메모 로그 생성 폼 값을 API 요청 값으로 변환합니다.
+export function toCreateContactPrivateMemoLogInput(
+  contactId: string,
+  values: ContactPrivateMemoLogFormValues
+): CreateContactPrivateMemoLogInput {
   return {
     contactId,
-    logId,
-    loggedAt: toIsoDateTime(values.loggedAt),
-    title: values.title.trim(),
-    content: optionalText(values.content),
+    memo: values.memo.trim(),
   };
 }
 
-export function toDateTimeLocalValue(value: string | Date) {
-  const date = typeof value === "string" ? new Date(value) : value;
-  const offsetMs = date.getTimezoneOffset() * 60_000;
-
-  return new Date(date.getTime() - offsetMs).toISOString().slice(0, 16);
+// 기능 : 개인 메모 로그 수정 폼 값을 API 요청 값으로 변환합니다.
+export function toUpdateContactPrivateMemoLogInput(
+  contactId: string,
+  privateMemoLogId: string,
+  values: ContactPrivateMemoLogFormValues
+): UpdateContactPrivateMemoLogInput {
+  return {
+    ...toCreateContactPrivateMemoLogInput(contactId, values),
+    privateMemoLogId,
+  };
 }
 
-function optionalText(value: string | undefined | null) {
+// 기능 : 빈 문자열을 API 요청에서 제외할 수 있는 undefined로 변환합니다.
+function optionalText(value: string | undefined) {
   const trimmed = value?.trim() ?? "";
 
   return trimmed.length > 0 ? trimmed : undefined;
-}
-
-function nullableText(value: string | undefined | null) {
-  const trimmed = value?.trim() ?? "";
-
-  return trimmed.length > 0 ? trimmed : null;
-}
-
-function toIsoDateTime(value: string) {
-  return new Date(value).toISOString();
 }

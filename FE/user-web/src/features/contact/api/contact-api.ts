@@ -1,132 +1,243 @@
 import type {
-  Contact,
+  ContactDepartmentListResponse,
   ContactDetail,
+  ContactExportParams,
+  ContactJobGradeListResponse,
   ContactListParams,
-  ContactListResponse,
-  ContactLog,
-  ContactLogListParams,
-  ContactLogListResponse,
+  ContactMemoLogConnection,
+  ContactPageResponse,
+  ContactPrivateMemoLogConnection,
+  ContactCompanyOptionListResponse,
+  CreateContactDepartmentInput,
   CreateContactInput,
-  CreateContactLogInput,
-  DeleteContactResponse,
+  CreateContactJobGradeInput,
+  CreateContactMemoLogInput,
+  CreateContactPrivateMemoLogInput,
   UpdateContactInput,
-  UpdateContactLogInput,
+  UpdateContactMemoLogInput,
+  UpdateContactPrivateMemoLogInput,
 } from "@/features/contact/types/contact";
-import { apiClient } from "@/lib/api-client";
+import {
+  apiBlobClient,
+  apiClient,
+  type ApiBlobResponse,
+} from "@/lib/api-client";
 
+// 기능 : 거래처 목록을 조회합니다.
 export function listContacts(params: ContactListParams) {
   const query = toContactListSearchParams(params);
   const suffix = query.toString() ? `?${query.toString()}` : "";
 
-  return apiClient<ContactListResponse>(`/api/contacts${suffix}`);
+  return apiClient<ContactPageResponse>(`/api/contacts${suffix}`);
 }
 
+// 기능 : 거래처 상세를 조회합니다.
+export function getContact(contactId: string) {
+  return apiClient<ContactDetail>(`/api/contacts/${contactId}`);
+}
+
+// 기능 : 거래처를 생성합니다.
 export function createContact(input: CreateContactInput) {
-  return apiClient<Contact>("/api/contacts", {
+  return apiClient<void>("/api/contacts", {
     method: "POST",
     body: compactBody(input),
   });
 }
 
-export function getContact(contactId: string) {
-  return apiClient<ContactDetail>(`/api/contacts/${contactId}`);
-}
-
+// 기능 : 거래처 기본 정보를 수정합니다.
 export function updateContact(input: UpdateContactInput) {
-  return apiClient<Contact>(`/api/contacts/${input.contactId}`, {
+  return apiClient<void>(`/api/contacts/${input.contactId}`, {
     method: "PATCH",
     body: compactBody({
-      name: input.name,
-      companyId: input.companyId,
-      department: input.department,
-      position: input.position,
-      phone: input.phone,
+      username: input.username,
+      mobile: input.mobile,
       email: input.email,
-      address: input.address,
+      companyId: input.companyId,
+      contactDepartmentId: input.contactDepartmentId,
+      contactJobGradeId: input.contactJobGradeId,
     }),
   });
 }
 
-export function deleteContact(contactId: string) {
-  return apiClient<DeleteContactResponse>(`/api/contacts/${contactId}`, {
+// 기능 : 거래처 회사 옵션 목록을 조회합니다.
+export function listContactCompanyOptions() {
+  return apiClient<ContactCompanyOptionListResponse>(
+    "/api/contacts/company-options"
+  );
+}
+
+// 기능 : 거래처 직급 목록을 조회합니다.
+export function listContactJobGrades() {
+  return apiClient<ContactJobGradeListResponse>("/api/contact-job-grades");
+}
+
+// 기능 : 거래처 직급을 생성합니다.
+export function createContactJobGrade(input: CreateContactJobGradeInput) {
+  return apiClient<void>("/api/contact-job-grades", {
+    method: "POST",
+    body: compactBody(input),
+  });
+}
+
+// 기능 : 거래처 직급을 삭제합니다.
+export function deleteContactJobGrade(jobGradeId: string) {
+  return apiClient<void>(`/api/contact-job-grades/${jobGradeId}`, {
     method: "DELETE",
   });
 }
 
-export function restoreContact(contactId: string) {
-  return apiClient<Contact>(`/api/contacts/${contactId}/restore`, {
+// 기능 : 거래처 부서 목록을 조회합니다.
+export function listContactDepartments() {
+  return apiClient<ContactDepartmentListResponse>("/api/contact-departments");
+}
+
+// 기능 : 거래처 부서를 생성합니다.
+export function createContactDepartment(input: CreateContactDepartmentInput) {
+  return apiClient<void>("/api/contact-departments", {
     method: "POST",
+    body: compactBody(input),
   });
 }
 
-export function listContactLogs(
-  contactId: string,
-  params: ContactLogListParams
-) {
-  const query = new URLSearchParams();
-  query.set("page", String(params.page ?? 1));
-  query.set("pageSize", String(params.pageSize ?? 20));
+// 기능 : 거래처 부서를 삭제합니다.
+export function deleteContactDepartment(departmentId: string) {
+  return apiClient<void>(`/api/contact-departments/${departmentId}`, {
+    method: "DELETE",
+  });
+}
 
-  return apiClient<ContactLogListResponse>(
-    `/api/contacts/${contactId}/logs?${query.toString()}`
+// 기능 : 거래처 일반 메모 로그를 커서 기반으로 조회합니다.
+export function listContactMemoLogs(contactId: string, cursor?: string) {
+  const query = new URLSearchParams();
+
+  if (cursor) {
+    query.set("cursor", cursor);
+  }
+
+  const suffix = query.toString() ? `?${query.toString()}` : "";
+
+  return apiClient<ContactMemoLogConnection>(
+    `/api/contacts/${contactId}/memo-logs${suffix}`
   );
 }
 
-export function createContactLog(input: CreateContactLogInput) {
-  return apiClient<ContactLog>(`/api/contacts/${input.contactId}/logs`, {
+// 기능 : 거래처 일반 메모 로그를 생성합니다.
+export function createContactMemoLog(input: CreateContactMemoLogInput) {
+  return apiClient<void>(`/api/contacts/${input.contactId}/memo-logs`, {
     method: "POST",
     body: compactBody({
-      loggedAt: input.loggedAt,
-      title: input.title,
-      content: input.content,
+      memoType: input.memoType,
+      memo: input.memo,
     }),
   });
 }
 
-export function updateContactLog(input: UpdateContactLogInput) {
-  return apiClient<ContactLog>(
-    `/api/contacts/${input.contactId}/logs/${input.logId}`,
+// 기능 : 거래처 일반 메모 로그를 수정합니다.
+export function updateContactMemoLog(input: UpdateContactMemoLogInput) {
+  return apiClient<void>(
+    `/api/contacts/${input.contactId}/memo-logs/${input.memoLogId}`,
     {
       method: "PATCH",
       body: compactBody({
-        loggedAt: input.loggedAt,
-        title: input.title,
-        content: input.content,
+        memoType: input.memoType,
+        memo: input.memo,
       }),
     }
   );
 }
 
-export function deleteContactLog(contactId: string, logId: string) {
-  return apiClient<DeleteContactResponse>(
-    `/api/contacts/${contactId}/logs/${logId}`,
+// 기능 : 거래처 개인 비밀 메모 로그를 커서 기반으로 조회합니다.
+export function listContactPrivateMemoLogs(contactId: string, cursor?: string) {
+  const query = new URLSearchParams();
+
+  if (cursor) {
+    query.set("cursor", cursor);
+  }
+
+  const suffix = query.toString() ? `?${query.toString()}` : "";
+
+  return apiClient<ContactPrivateMemoLogConnection>(
+    `/api/contacts/${contactId}/private-memo-logs${suffix}`
+  );
+}
+
+// 기능 : 거래처 개인 비밀 메모 로그를 생성합니다.
+export function createContactPrivateMemoLog(
+  input: CreateContactPrivateMemoLogInput
+) {
+  return apiClient<void>(`/api/contacts/${input.contactId}/private-memo-logs`, {
+    method: "POST",
+    body: compactBody({
+      memo: input.memo,
+    }),
+  });
+}
+
+// 기능 : 거래처 개인 비밀 메모 로그를 수정합니다.
+export function updateContactPrivateMemoLog(
+  input: UpdateContactPrivateMemoLogInput
+) {
+  return apiClient<void>(
+    `/api/contacts/${input.contactId}/private-memo-logs/${input.privateMemoLogId}`,
     {
-      method: "DELETE",
+      method: "PATCH",
+      body: compactBody({
+        memo: input.memo,
+      }),
     }
   );
 }
 
+// 기능 : 현재 거래처 필터에 해당하는 목록을 엑셀 Blob으로 내려받습니다.
+export function exportContactsXlsx(
+  filters: ContactExportParams
+): Promise<ApiBlobResponse> {
+  const query = toContactExportSearchParams(filters);
+  const suffix = query.toString() ? `?${query.toString()}` : "";
+
+  return apiBlobClient(`/api/contacts/export/xlsx${suffix}`, {
+    headers: {
+      Accept:
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    },
+    method: "GET",
+  });
+}
+
+// 기능 : 거래처 목록 요청 query string을 API 명세에 맞게 구성합니다.
 function toContactListSearchParams(params: ContactListParams) {
-  const searchParams = new URLSearchParams();
+  const searchParams = toContactExportSearchParams(params);
 
   searchParams.set("page", String(params.page ?? 1));
-  searchParams.set("pageSize", String(params.pageSize ?? 20));
 
-  if (params.search) {
-    searchParams.set("search", params.search);
+  return searchParams;
+}
+
+// 기능 : 거래처 내보내기 요청 query string에서 page를 제외합니다.
+function toContactExportSearchParams(params: ContactExportParams) {
+  const searchParams = new URLSearchParams();
+  const username = params.username?.trim() ?? "";
+
+  if (username) {
+    searchParams.set("username", username);
   }
 
   if (params.companyId) {
     searchParams.set("companyId", params.companyId);
   }
 
-  if (params.includeDeleted) {
-    searchParams.set("includeDeleted", "true");
+  if (params.contactDepartmentId) {
+    searchParams.set("contactDepartmentId", params.contactDepartmentId);
+  }
+
+  if (params.contactJobGradeId) {
+    searchParams.set("contactJobGradeId", params.contactJobGradeId);
   }
 
   return searchParams;
 }
 
+// 기능 : undefined 필드는 요청 본문에서 제외합니다.
 function compactBody(input: Record<string, unknown>) {
   return Object.fromEntries(
     Object.entries(input).filter(([, value]) => value !== undefined)

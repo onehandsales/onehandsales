@@ -1,25 +1,54 @@
-import { Bell, BriefcaseBusiness, Building2, CalendarDays, Download, FolderArchive, Handshake, LayoutGrid, ScanLine, Settings, Trash2, Upload, Users } from "lucide-react";
+import {
+  Bell,
+  BriefcaseBusiness,
+  Building2,
+  CalendarDays,
+  FileText,
+  House,
+  IdCard,
+  Package,
+  Settings,
+  Trash2,
+  Upload,
+} from "lucide-react";
 import { NavLink } from "react-router-dom";
 import { cn } from "@/utils/cn";
 
-const primaryItems = [
-  { label: "파이프라인", to: "/", icon: LayoutGrid, end: true },
-  { label: "회사", to: "/companies", icon: Building2 },
-  { label: "거래처", to: "/contacts", icon: Users },
-  { label: "제품", to: "/products", icon: BriefcaseBusiness },
-  { label: "딜", to: "/deals", icon: Handshake },
-  { label: "일정", to: "/schedules", icon: CalendarDays },
-  { label: "회의록", to: "/meeting-notes", icon: FolderArchive },
-] as const;
-
-const secondaryItems = [
-  { label: "명함 스캔", to: "/business-cards", icon: ScanLine },
-  { label: "알림", to: "/notifications", icon: Bell },
-  { label: "가져오기", to: "/import", icon: Upload },
-  { label: "내보내기", to: "/export", icon: Download },
-  { label: "휴지통", to: "/trash", icon: Trash2 },
-  { label: "설정", to: "/settings", icon: Settings },
-] as const;
+const groups: Array<{
+  readonly label: string;
+  readonly items: ReadonlyArray<{
+    readonly label: string;
+    readonly to: string;
+    readonly icon: typeof House;
+    readonly end?: boolean;
+  }>;
+}> = [
+  {
+    label: "주요 메뉴",
+    items: [
+      { label: "홈", to: "/", icon: House, end: true },
+      { label: "딜", to: "/deals", icon: BriefcaseBusiness },
+      { label: "회사", to: "/companies", icon: Building2 },
+      { label: "담당자", to: "/contacts", icon: IdCard },
+      { label: "제품", to: "/products", icon: Package },
+    ],
+  },
+  {
+    label: "업무",
+    items: [
+      { label: "일정", to: "/schedules", icon: CalendarDays },
+      { label: "회의록", to: "/meeting-notes", icon: FileText },
+      { label: "Import", to: "/import", icon: Upload },
+    ],
+  },
+  {
+    label: "관리",
+    items: [
+      { label: "휴지통", to: "/trash", icon: Trash2 },
+      { label: "설정", to: "/settings", icon: Settings },
+    ],
+  },
+];
 
 type SidebarNavProps = {
   readonly className?: string;
@@ -27,47 +56,44 @@ type SidebarNavProps = {
 
 export function SidebarNav({ className }: SidebarNavProps) {
   return (
-    <nav className={cn("grid gap-6", className)}>
-      <NavSection items={primaryItems} title="Workspace" />
-      <NavSection items={secondaryItems} title="Tools" />
+    <nav className={cn("flex flex-col gap-5", className)}>
+      {groups.map((group) => (
+        <div key={group.label}>
+          <p className="mb-1.5 px-3 text-[11px] font-bold uppercase tracking-[0.06em] text-[#71717A]">
+            {group.label}
+          </p>
+          <div className="flex flex-col gap-0.5">
+            {group.items.map((item) => (
+              <NavLink
+                className={({ isActive }) =>
+                  cn(
+                    "group flex h-10 items-center gap-2.5 rounded-lg border px-3 text-[13px] transition-colors",
+                    isActive
+                      ? "border-[#2563EB30] bg-[#1D4ED822] font-bold text-[#BFDBFE]"
+                      : "border-transparent font-medium text-[#A1A1AA] hover:bg-white/5 hover:text-[#D4D4D8]"
+                  )
+                }
+                end={item.end}
+                key={item.to}
+                to={item.to}
+              >
+                {({ isActive }) => (
+                  <>
+                    <item.icon
+                      className={cn(
+                        "h-4 w-4 shrink-0",
+                        isActive ? "text-[#93C5FD]" : "text-[#71717A] group-hover:text-[#A1A1AA]"
+                      )}
+                      strokeWidth={1.75}
+                    />
+                    <span>{item.label}</span>
+                  </>
+                )}
+              </NavLink>
+            ))}
+          </div>
+        </div>
+      ))}
     </nav>
-  );
-}
-
-type NavSectionProps = {
-  readonly items: ReadonlyArray<{
-    readonly label: string;
-    readonly to: string;
-    readonly icon: typeof LayoutGrid;
-    readonly end?: boolean;
-  }>;
-  readonly title: string;
-};
-
-function NavSection({ items, title }: NavSectionProps) {
-  return (
-    <div className="grid gap-2">
-      <p className="px-3 text-[11px] font-semibold uppercase tracking-[0.24em] text-sidebar-foreground/45">
-        {title}
-      </p>
-      <div className="grid gap-1">
-        {items.map((item) => (
-          <NavLink
-            className={({ isActive }) =>
-              cn(
-                "group flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-sidebar-foreground/72 transition hover:bg-sidebar-muted hover:text-sidebar-foreground",
-                isActive && "bg-sidebar-muted text-sidebar-foreground"
-              )
-            }
-            end={item.end}
-            key={item.to}
-            to={item.to}
-          >
-            <item.icon className="h-4 w-4 text-sidebar-foreground/70 transition group-hover:text-sidebar-foreground" />
-            <span>{item.label}</span>
-          </NavLink>
-        ))}
-      </div>
-    </div>
   );
 }

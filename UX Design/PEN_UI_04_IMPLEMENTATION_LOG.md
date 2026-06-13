@@ -244,6 +244,95 @@
 
 ---
 
+### 2026-06-13 Desktop Deal Pipeline Home pen 기준 재구성
+
+- 작업자: Claude Sonnet 4.6
+- 유형:
+  - frontend
+- 요약:
+  - pen의 Desktop Deal Pipeline Home을 기준으로 딜 목록을 리스트 카드에서 테이블 행 구조로 전환했다.
+  - Stage Tabs를 border-bottom 기반 탭으로 교체하고 각 탭에 건수 뱃지를 붙였다.
+  - DealListRow를 pen 기준 6컬럼(딜명/회사담당자/단계/금액/다음행동/마감일) 테이블 행으로 재구성했다.
+  - 우측 상세 패널은 기존 DealDetailPanel을 그대로 재사용하고 "전체 상세 열기" 링크를 패널 하단에 배치했다.
+  - AppShell을 DesktopAppShell과 통합해 라우터에서 단일 AppShell로 관리하도록 변경했다.
+  - 홈 경로(`/`)에서만 main을 full-height flex로 전환하고 나머지 경로는 기존 px-8 py-8 유지.
+- 변경 파일:
+  - `FE/user-web/src/features/deal-redesign/screens/deal-pipeline-home.tsx`
+  - `FE/user-web/src/features/deal-redesign/components/deal-list-row.tsx`
+  - `FE/user-web/src/components/layout/app-shell.tsx`
+  - `FE/user-web/src/components/shell/desktop-app-shell.tsx`
+- 결정/반영 내용:
+  - Deal stage는 현재 백엔드 4단계(INITIAL_CONTACT/IN_DISCUSSION/WON/LOST)를 그대로 유지. pen 6단계 확장은 별도 결정 필요.
+  - DealListRow에서 단계 변경 select는 제거. 단계 변경은 우측 패널에서만 수행.
+- 검증:
+  - `pnpm --dir FE/user-web run typecheck`: 통과
+  - `pnpm --dir FE/user-web run lint`: 에러 없음 (warning 1건 — fast refresh)
+  - `pnpm --dir FE/user-web run build`: 통과
+- 남은 이슈:
+  - pen Stage Tab은 6단계(초기접촉/니즈확인/제안견적/협상/성사/실패). 현재 코드는 4단계.
+  - 테이블 위 컨트롤바 FilterChip(정렬/금액/마감일)은 미구현.
+  - 브라우저 실제 세션 smoke 확인 필요.
+
+---
+
+### 2026-06-13 DealStage 6단계 확장 (FE 전체)
+
+- 작업자: Claude Sonnet 4.6
+- 유형:
+  - frontend
+- 요약:
+  - `IN_DISCUSSION` 제거, `NEEDS_ANALYSIS` / `PROPOSAL` / `NEGOTIATION` 추가 → FE 기준 6단계로 확장.
+  - types, schema, utils, 모든 select/option, stageTabs, badge 전체 일괄 교체.
+  - `DealStageSummary`를 `Partial<Record<DealStage, number>>`로 변경해 응답 부분 매핑 안전 처리.
+  - WON → "성사", LOST → "실패" (기존 수주/실주에서 변경).
+- 변경 파일:
+  - `FE/user-web/src/features/deal/types/deal.ts`
+  - `FE/user-web/src/features/deal/schemas/deal-schema.ts`
+  - `FE/user-web/src/features/deal/utils/deal-display.ts`
+  - `FE/user-web/src/features/deal-redesign/components/stage-badge.tsx`
+  - `FE/user-web/src/features/deal/components/deal-create-dialog.tsx`
+  - `FE/user-web/src/features/deal/components/deal-detail-panel.tsx`
+  - `FE/user-web/src/features/deal/components/deal-list-screen.tsx`
+  - `FE/user-web/src/features/deal/components/deal-pipeline-home-screen.tsx`
+  - `FE/user-web/src/features/deal-redesign/screens/mobile-deal-detail-page.tsx`
+  - `FE/user-web/src/features/import-export/schemas/import-export-schema.ts`
+- 결정/반영 내용:
+  - FE는 6단계로 완전 전환. BE enum 변경은 별도 작업으로 진행 예정.
+  - `emptyStageSummary = {}`, `getStageCount`는 `Object.values(summary).reduce`로 교체.
+- 검증:
+  - `pnpm --dir FE/user-web run typecheck`: 통과
+- 남은 이슈:
+  - 백엔드 DealStage enum은 아직 4단계. BE Prisma schema + migration 별도 필요.
+
+---
+
+### 2026-06-13 Sidebar & TopBar pen 기준 반영
+
+- 작업자: Claude Sonnet 4.6
+- 유형:
+  - frontend
+  - design
+- 요약:
+  - pen Sidebar (node: NB6r5), TopBar (node: R5ECb) 스펙 기준으로 전면 교체.
+  - Sidebar에 3그룹 레이블 구조(주요 메뉴/업무/관리) 및 pen 활성/비활성 색상 토큰 적용.
+  - TopBar에서 SearchBar를 타이틀 바로 우측으로 이동하고 버튼 배치/크기/스타일 pen 기준으로 정정.
+- 변경 파일:
+  - `FE/user-web/src/components/navigation/sidebar-nav.tsx`
+  - `FE/user-web/src/components/layout/app-shell.tsx`
+  - `FE/user-web/src/components/shell/desktop-app-shell.tsx`
+- 결정/반영 내용:
+  - Sidebar 활성 아이템: `border-[#2563EB30] bg-[#1D4ED822]`, 텍스트 `#BFDBFE`, 아이콘 `#93C5FD`.
+  - Sidebar 비활성 아이템: `border-transparent`, 텍스트 `#A1A1AA`, 아이콘 `#71717A`.
+  - TopBar 타이틀 18px `#111827` bold, 서브타이틀 11px `#6B7280`.
+  - SearchBar(320px)는 타이틀 바로 우측. flex spacer → 오른쪽 버튼 그룹.
+  - 새 딜: h-9, `#1D4ED8` bg. 내보내기: h-9, white + `#E5E7EB` border + Download 아이콘.
+  - Bell: bare 20px, 박스 제거. Avatar: 32px 원형 `#2563EB`.
+  - 사이드바 "거래처" 항목명 유지, 아이콘 `IdCard`.
+- 검증:
+  - `pnpm --dir FE/user-web run typecheck`: 통과
+
+---
+
 ## 현재 구현 체크리스트
 
 ### 문서
@@ -257,22 +346,25 @@
 ### 프론트
 
 - [ ] 디자인 토큰 정의
-- [ ] Desktop App Shell
-- [ ] Mobile App Shell
-- [ ] Modal Shell
-- [ ] Toast 구조
-- [ ] StageBadge
-- [ ] FilterChip
-- [ ] MobileDealCard
-- [ ] DealListRow
-- [ ] Desktop Deal Pipeline Home
-- [ ] Mobile Deal Pipeline Home
-- [ ] Deal Quick Create Modal
-- [ ] Mobile Deal Detail Page
+- [x] Desktop App Shell — Sidebar 3그룹 + pen 색상 토큰, TopBar SearchBar 위치/버튼 pen 기준 전환 완료
+- [x] Mobile App Shell (MobileAppHeader + BottomTabBar)
+- [x] Modal Shell (`modal-shell.tsx`, `modal-form.tsx`)
+- [x] Toast 구조 (`SuccessToast` in `state.tsx`)
+- [x] StageBadge (`stage-badge.tsx`) — 6단계 반영 완료
+- [x] FilterChip (`filter-chip.tsx`)
+- [x] MobileDealCard (`mobile-deal-card.tsx`)
+- [x] DealListRow — pen 기준 6컬럼 테이블 행 + 6단계 완료
+- [x] Desktop Deal Pipeline Home — 테이블 + 우측 패널 구조 + 6단계 Stage Tabs 완료
+- [x] Mobile Deal Pipeline Home
+- [x] Deal Quick Create Modal (`deal-create-dialog.tsx` + ModalShell) — 6단계 반영 완료
+- [x] Mobile Deal Detail Page (`mobile-deal-detail-page.tsx`) — 6단계 반영 완료
+- [x] DealStage 6단계 FE 전체 확장 (types / schema / utils / 모든 화면)
+- [ ] 테이블 컨트롤바 FilterChip (정렬/금액/마감일)
 
 ### 백엔드 / 계약
 
-- [ ] deal stage 전략 확정
+- [x] deal stage 전략 확정 — FE 6단계 확장 완료, BE enum 변경은 별도 작업
+- [ ] BE DealStage enum 6단계 확장 (Prisma schema + migration)
 - [ ] mobile home aggregate API 필요 여부 확정
 - [ ] quick create inline 생성 범위 확정
 - [ ] navigation badge count 필요 여부 확정
@@ -281,16 +373,13 @@
 
 ## 현재 블로커
 
-- Deal stage 4단계 vs pen 6단계 미확정
+- BE DealStage enum이 아직 4단계 (FE는 6단계로 선행 전환됨) — BE 변경 전까지 신규 3단계는 API 응답에 등장하지 않음
 - Quick Create modal의 inline entity create 범위 미확정
-- aggregate endpoint 필요 여부 미확정
 
 ---
 
 ## 다음 작업 우선순위
 
-1. 디자인 토큰 파일 초안 생성
-2. Desktop/Mobile App Shell 구조 생성
-3. 딜 UI 공통 컴포넌트 1차 생성
-4. 딜 홈 2개 화면 구현
-5. Quick Create / Mobile Detail 연결
+1. BE DealStage enum 6단계 확장 (Prisma schema + migration + API 응답 검증)
+2. 테이블 컨트롤바 FilterChip(정렬/금액/마감일) 구현
+3. 브라우저 실제 세션 smoke 확인 (딜 목록/상세/단계변경)

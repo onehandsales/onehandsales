@@ -6,20 +6,30 @@ type ContactCompanyFieldProps = {
   readonly label: string;
   readonly companyId: string;
   readonly search: string;
+  readonly error?: string;
   readonly onCompanyIdChange: (companyId: string) => void;
   readonly onSearchChange: (search: string) => void;
 };
 
+// 기능 : 거래처 회사 선택 필드를 렌더링합니다.
 export function ContactCompanyField({
   id,
   label,
   companyId,
   search,
+  error,
   onCompanyIdChange,
   onSearchChange,
 }: ContactCompanyFieldProps) {
-  const companyOptionsQuery = useCompanyOptions(search);
-  const companies = companyOptionsQuery.data?.items ?? [];
+  const companyOptionsQuery = useCompanyOptions();
+  const allCompanies = companyOptionsQuery.data?.items ?? [];
+  const filteredCompanies =
+    search.trim().length > 0
+      ? allCompanies.filter((c) =>
+          c.companyName.toLowerCase().includes(search.trim().toLowerCase())
+        )
+      : allCompanies;
+  const selectedCompany = allCompanies.find((c) => c.id === companyId);
 
   return (
     <div className="grid gap-2">
@@ -35,7 +45,8 @@ export function ContactCompanyField({
             onSearchChange(event.target.value);
             onCompanyIdChange("");
           }}
-          value={search}
+          placeholder="회사 검색"
+          value={selectedCompany ? selectedCompany.companyName : search}
         />
         {companyId || search ? (
           <button
@@ -52,23 +63,16 @@ export function ContactCompanyField({
         ) : null}
       </div>
 
-      {search.trim().length > 0 ? (
+      {!companyId && search.trim().length > 0 ? (
         <div className="max-h-44 overflow-y-auto rounded-md border bg-white">
           {companyOptionsQuery.isLoading ? (
-            <p className="px-3 py-2 text-sm text-muted-foreground">검색 중</p>
-          ) : companies.length === 0 ? (
-            <button
-              className="w-full px-3 py-2 text-left text-sm text-muted-foreground hover:bg-muted"
-              onClick={() => {
-                onCompanyIdChange("");
-                onSearchChange(search);
-              }}
-              type="button"
-            >
-              회사 없이 저장
-            </button>
+            <p className="px-3 py-2 text-sm text-muted-foreground">불러오는 중</p>
+          ) : filteredCompanies.length === 0 ? (
+            <p className="px-3 py-2 text-sm text-muted-foreground">
+              검색 결과가 없습니다.
+            </p>
           ) : (
-            companies.map((company) => (
+            filteredCompanies.map((company) => (
               <button
                 className="grid w-full gap-0.5 px-3 py-2 text-left text-sm hover:bg-muted"
                 key={company.id}
@@ -79,15 +83,14 @@ export function ContactCompanyField({
                 type="button"
               >
                 <span className="font-medium">{company.companyName}</span>
-                <span className="text-xs text-muted-foreground">
-                  {[company.companyField.field, company.companyRegion.region].join(
-                    " · "
-                  )}
-                </span>
               </button>
             ))
           )}
         </div>
+      ) : null}
+
+      {error ? (
+        <p className="text-xs text-destructive">{error}</p>
       ) : null}
     </div>
   );

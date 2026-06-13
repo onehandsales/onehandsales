@@ -10,12 +10,16 @@ export function getStageLabel(stage: DealStage) {
   switch (stage) {
     case "INITIAL_CONTACT":
       return "초기 접촉";
-    case "IN_DISCUSSION":
-      return "논의 중";
+    case "NEEDS_ANALYSIS":
+      return "니즈 확인";
+    case "PROPOSAL":
+      return "제안/견적";
+    case "NEGOTIATION":
+      return "협상";
     case "WON":
-      return "수주";
+      return "성사";
     case "LOST":
-      return "실주";
+      return "실패";
   }
 }
 
@@ -23,7 +27,11 @@ export function getStageClass(stage: DealStage) {
   switch (stage) {
     case "INITIAL_CONTACT":
       return "bg-sky-50 text-sky-700";
-    case "IN_DISCUSSION":
+    case "NEEDS_ANALYSIS":
+      return "bg-blue-50 text-blue-700";
+    case "PROPOSAL":
+      return "bg-yellow-50 text-yellow-700";
+    case "NEGOTIATION":
       return "bg-amber-50 text-amber-700";
     case "WON":
       return "bg-emerald-50 text-emerald-700";

@@ -1,16 +1,11 @@
 import { useQuery } from "@tanstack/react-query";
-import { listCompanies } from "@/features/company";
+import { listContactCompanyOptions } from "@/features/contact/api/contact-api";
+import { contactQueryKeys } from "@/features/contact/api/contact-query-keys";
 
-export function useCompanyOptions(search: string) {
-  const normalizedSearch = search.trim();
-
+// 기능 : 거래처 회사 옵션 목록을 조회합니다.
+export function useCompanyOptions() {
   return useQuery({
-    enabled: normalizedSearch.length > 0,
-    queryKey: ["contact", "company-options", normalizedSearch],
-    queryFn: () =>
-      listCompanies({
-        page: 1,
-        companyName: normalizedSearch,
-      }),
+    queryKey: contactQueryKeys.companyOptions(),
+    queryFn: () => listContactCompanyOptions(),
   });
 }

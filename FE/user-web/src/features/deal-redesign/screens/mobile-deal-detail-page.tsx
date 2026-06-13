@@ -155,7 +155,9 @@ export function MobileDealDetailPage({ dealId }: MobileDealDetailPageProps) {
                 value={deal.stage}
               >
                 <option value="INITIAL_CONTACT">초기 접촉</option>
-                <option value="IN_DISCUSSION">논의 중</option>
+                <option value="NEEDS_ANALYSIS">니즈 확인</option>
+                <option value="PROPOSAL">제안/견적</option>
+                <option value="NEGOTIATION">협상</option>
                 <option value="WON">성사</option>
                 <option value="LOST">실패</option>
               </select>

@@ -23,6 +23,7 @@ const config = {
           DEFAULT: "hsl(var(--sidebar))",
           foreground: "hsl(var(--sidebar-foreground))",
           muted: "hsl(var(--sidebar-muted))",
+          border: "hsl(var(--sidebar-border))",
           accent: "hsl(var(--sidebar-accent))",
         },
         chip: {
@@ -59,6 +60,7 @@ const config = {
         soft: "var(--shadow-soft)",
         fab: "var(--shadow-fab)",
         panel: "var(--shadow-panel)",
+        modal: "var(--shadow-modal)",
       },
       fontFamily: {
         sans: [

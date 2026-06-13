@@ -24,7 +24,7 @@ type ModalShellProps = {
 
 const sizeClassNames: Record<ModalShellSize, string> = {
   sm: "max-w-[420px]",
-  md: "max-w-2xl",
+  md: "max-w-[520px]",
   lg: "max-w-3xl",
   xl: "max-w-5xl",
 };
@@ -59,7 +59,7 @@ export function ModalShell({
   return (
     <div
       className={cn(
-        "fixed inset-0 z-50 grid bg-slate-950/35 px-4 py-6 backdrop-blur-[2px]",
+        "fixed inset-0 z-50 grid bg-black/[0.44] px-4 py-6 backdrop-blur-[3px]",
         placementClassNames[placement]
       )}
     >
@@ -67,47 +67,62 @@ export function ModalShell({
         aria-labelledby={title ? "modal-shell-title" : undefined}
         aria-modal="true"
         className={cn(
-          "relative flex max-h-[92vh] w-full flex-col overflow-hidden rounded-lg border bg-white shadow-xl",
+          "relative flex max-h-[92vh] w-full flex-col overflow-hidden rounded-xl bg-white shadow-modal",
           sizeClassNames[size],
           panelClassName
         )}
         role="dialog"
       >
-        {showCloseButton ? (
-          <button
-            aria-label={closeLabel}
-            className={cn(
-              "absolute right-4 top-4 z-10 grid h-9 w-9 shrink-0 place-items-center rounded-md border bg-white text-muted-foreground hover:bg-muted",
-              closeButtonClassName
-            )}
-            onClick={() => onOpenChange(false)}
-            type="button"
-          >
-            <X className="h-4 w-4" />
-          </button>
-        ) : null}
-
         {title || description ? (
-          <header className="border-b px-5 py-4 pr-16">
-            {title ? (
-              <h2 className="text-lg font-semibold" id="modal-shell-title">
-                {title}
-              </h2>
-            ) : null}
-            {description ? (
-              <p className="mt-1 text-sm text-muted-foreground">{description}</p>
+          <header className="relative flex h-14 shrink-0 items-center border-b border-gray-200 px-6 pr-14">
+            <div>
+              {title ? (
+                <h2 className="text-[15px] font-semibold text-foreground" id="modal-shell-title">
+                  {title}
+                </h2>
+              ) : null}
+              {description ? (
+                <p className="text-xs text-muted-foreground">{description}</p>
+              ) : null}
+            </div>
+            {showCloseButton ? (
+              <button
+                aria-label={closeLabel}
+                className={cn(
+                  "absolute right-4 top-1/2 -translate-y-1/2 grid h-8 w-8 shrink-0 place-items-center rounded-lg text-gray-400 hover:bg-gray-100 hover:text-gray-600 transition",
+                  closeButtonClassName
+                )}
+                onClick={() => onOpenChange(false)}
+                type="button"
+              >
+                <X className="h-4 w-4" />
+              </button>
             ) : null}
           </header>
-        ) : null}
+        ) : (
+          showCloseButton ? (
+            <button
+              aria-label={closeLabel}
+              className={cn(
+                "absolute right-4 top-4 z-10 grid h-8 w-8 shrink-0 place-items-center rounded-lg text-gray-400 hover:bg-gray-100 hover:text-gray-600 transition",
+                closeButtonClassName
+              )}
+              onClick={() => onOpenChange(false)}
+              type="button"
+            >
+              <X className="h-4 w-4" />
+            </button>
+          ) : null
+        )}
 
-        <div className={cn("overflow-y-auto px-5 py-5", bodyClassName)}>
+        <div className={cn("overflow-y-auto px-6 py-5", bodyClassName)}>
           {children}
         </div>
 
         {footer ? (
           <footer
             className={cn(
-              "flex justify-end gap-2 border-t px-5 py-4",
+              "flex h-16 shrink-0 items-center justify-end gap-3 border-t border-gray-200 px-6",
               footerClassName
             )}
           >

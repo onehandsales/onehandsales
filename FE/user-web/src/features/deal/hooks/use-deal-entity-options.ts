@@ -41,15 +41,17 @@ export function useDealContactOptions(search: string, companyId: string) {
     queryFn: async () => {
       const result = await listContacts({
         page: 1,
-        pageSize: 8,
-        search: normalizedSearch,
+        username: normalizedSearch,
         companyId: companyId || undefined,
       });
 
       return result.items.map<DealEntityOption>((contact) => ({
         id: contact.id,
-        name: contact.name,
-        subtitle: [contact.companyName, contact.position]
+        name: contact.username,
+        subtitle: [
+          contact.company.companyName,
+          contact.contactJobGrade.jobGradeName,
+        ]
           .filter(Boolean)
           .join(" · "),
       }));

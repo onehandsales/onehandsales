@@ -89,7 +89,7 @@ export const importTargetFields: Record<
       label: "단계",
       required: false,
       kind: "enum",
-      enumValues: ["INITIAL_CONTACT", "IN_DISCUSSION", "WON", "LOST"],
+      enumValues: ["INITIAL_CONTACT", "NEEDS_ANALYSIS", "PROPOSAL", "NEGOTIATION", "WON", "LOST"],
     },
     {
       field: "likelihoodStatus",

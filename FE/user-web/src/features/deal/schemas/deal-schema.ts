@@ -30,7 +30,7 @@ export const dealFormSchema = z
     contactSearch: z.string().trim().optional(),
     productIds: z.array(z.string()).optional(),
     productSearch: z.string().trim().optional(),
-    stage: z.enum(["INITIAL_CONTACT", "IN_DISCUSSION", "WON", "LOST"]),
+    stage: z.enum(["INITIAL_CONTACT", "NEEDS_ANALYSIS", "PROPOSAL", "NEGOTIATION", "WON", "LOST"]),
     likelihoodStatus: z.enum(["POSITIVE", "NEUTRAL", "NEGATIVE"]),
     likelihoodPercent: z
       .string()

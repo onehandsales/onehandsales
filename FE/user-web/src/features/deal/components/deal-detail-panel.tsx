@@ -55,9 +55,11 @@ type DealDetailPanelProps = {
 const dealStages: Array<{ readonly value: DealStage; readonly label: string }> =
   [
     { value: "INITIAL_CONTACT", label: "초기 접촉" },
-    { value: "IN_DISCUSSION", label: "논의 중" },
-    { value: "WON", label: "수주" },
-    { value: "LOST", label: "실주" },
+    { value: "NEEDS_ANALYSIS", label: "니즈 확인" },
+    { value: "PROPOSAL", label: "제안/견적" },
+    { value: "NEGOTIATION", label: "협상" },
+    { value: "WON", label: "성사" },
+    { value: "LOST", label: "실패" },
   ];
 
 export function DealDetailPanel({

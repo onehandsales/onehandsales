@@ -32,25 +32,24 @@ const stageTabs: Array<{ readonly value: StageTabValue; readonly label: string }
   [
     { value: "ALL", label: "전체" },
     { value: "INITIAL_CONTACT", label: "초기 접촉" },
-    { value: "IN_DISCUSSION", label: "논의 중" },
-    { value: "WON", label: "수주" },
-    { value: "LOST", label: "실주" },
+    { value: "NEEDS_ANALYSIS", label: "니즈 확인" },
+    { value: "PROPOSAL", label: "제안/견적" },
+    { value: "NEGOTIATION", label: "협상" },
+    { value: "WON", label: "성사" },
+    { value: "LOST", label: "실패" },
   ];
 
 const dealStages: Array<{ readonly value: DealStage; readonly label: string }> =
   [
     { value: "INITIAL_CONTACT", label: "초기 접촉" },
-    { value: "IN_DISCUSSION", label: "논의 중" },
-    { value: "WON", label: "수주" },
-    { value: "LOST", label: "실주" },
+    { value: "NEEDS_ANALYSIS", label: "니즈 확인" },
+    { value: "PROPOSAL", label: "제안/견적" },
+    { value: "NEGOTIATION", label: "협상" },
+    { value: "WON", label: "성사" },
+    { value: "LOST", label: "실패" },
   ];
 
-const emptyStageSummary: DealStageSummary = {
-  INITIAL_CONTACT: 0,
-  IN_DISCUSSION: 0,
-  WON: 0,
-  LOST: 0,
-};
+const emptyStageSummary: DealStageSummary = {};
 
 export function DealPipelineHomeScreen() {
   const [stage, setStage] = useState<StageTabValue>("ALL");
@@ -661,8 +660,8 @@ function applyOptimisticStageSummary(
     const optimisticStage = optimisticStageByDealId[deal.id];
 
     if (optimisticStage && optimisticStage !== deal.stage) {
-      next[deal.stage] = Math.max(0, next[deal.stage] - 1);
-      next[optimisticStage] += 1;
+      next[deal.stage] = Math.max(0, (next[deal.stage] ?? 0) - 1);
+      next[optimisticStage] = (next[optimisticStage] ?? 0) + 1;
     }
   }
 
@@ -671,12 +670,10 @@ function applyOptimisticStageSummary(
 
 function getStageCount(stage: StageTabValue, summary: DealStageSummary) {
   if (stage === "ALL") {
-    return (
-      summary.INITIAL_CONTACT + summary.IN_DISCUSSION + summary.WON + summary.LOST
-    );
+    return Object.values(summary).reduce((sum, n) => sum + (n ?? 0), 0);
   }
 
-  return summary[stage];
+  return summary[stage] ?? 0;
 }
 
 function getFollowUpSummary(deals: Deal[]) {

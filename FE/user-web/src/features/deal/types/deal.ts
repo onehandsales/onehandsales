@@ -1,6 +1,12 @@
 import type { PaginatedResponse } from "@/types/pagination";
 
-export type DealStage = "INITIAL_CONTACT" | "IN_DISCUSSION" | "WON" | "LOST";
+export type DealStage =
+  | "INITIAL_CONTACT"
+  | "NEEDS_ANALYSIS"
+  | "PROPOSAL"
+  | "NEGOTIATION"
+  | "WON"
+  | "LOST";
 
 export type DealLikelihoodStatus = "POSITIVE" | "NEUTRAL" | "NEGATIVE";
 
@@ -100,7 +106,7 @@ export type DealDetail = {
   readonly meetingNotesSummary: DealMeetingNotesSummary;
 };
 
-export type DealStageSummary = Record<DealStage, number>;
+export type DealStageSummary = Partial<Record<DealStage, number>>;
 
 export type DealListResponse = PaginatedResponse<Deal> & {
   readonly stageSummary: DealStageSummary;
