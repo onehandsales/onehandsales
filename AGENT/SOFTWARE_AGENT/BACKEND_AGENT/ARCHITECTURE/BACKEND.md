@@ -67,6 +67,9 @@ Currently implemented API surface:
 - `PATCH /api/users/me/profile`
 - `GET /api/users/me/devices`
 - `GET /api/companies`
+- `GET /api/companies/export/xlsx`
+- `GET /api/companies/:companyId/contacts`
+- `GET /api/companies/:companyId/deals`
 - `GET /api/companies/:companyId`
 - `POST /api/companies`
 - `PATCH /api/companies/:companyId`
@@ -78,6 +81,7 @@ Currently implemented API surface:
 - `POST /api/company-regions`
 - `DELETE /api/company-regions/:regionId`
 - `GET /api/contacts`
+- `GET /api/contacts/export/xlsx`
 - `GET /api/contacts/company-options`
 - `GET /api/contact-job-grades`
 - `POST /api/contact-job-grades`
@@ -87,9 +91,11 @@ Currently implemented API surface:
 - `DELETE /api/contact-departments/:departmentId`
 - `POST /api/contacts`
 - `GET /api/contacts/:contactId`
+- `GET /api/contacts/:contactId/deals`
 - `PATCH /api/contacts/:contactId`
 - Contact memo/private memo routes under `/api/contacts/:contactId`
 - `GET /api/products`
+- `GET /api/products/export/xlsx`
 - `GET /api/product-categories`
 - `POST /api/product-categories`
 - `DELETE /api/product-categories/:categoryId`
@@ -98,6 +104,7 @@ Currently implemented API surface:
 - `DELETE /api/product-statuses/:statusId`
 - `POST /api/products`
 - `GET /api/products/:productId`
+- `GET /api/products/:productId/deals`
 - `PATCH /api/products/:productId`
 - Product memo/private memo routes under `/api/products/:productId`
 - `GET /api/deals/stage-counts`
@@ -119,6 +126,14 @@ Completed Backend TODO plans:
 - `TODO/CONTACT_DOMAIN_PLAN/BE-TODO/G01-BE-CONTACT-DOMAIN.goal.md`: completed. Contact DB/API, company ownership, request id, private memo encryption, transaction contract, and observability contract are implemented and verified.
 - `TODO/PRODUCT_DOMAIN_PLAN/BE-TODO/G01-BE-PRODUCT-DOMAIN.goal.md`: completed. Product DB/API, category/status ownership, private memo encryption, transaction contract, and observability contract are implemented and verified.
 - `TODO/DEAL_DOMAIN_PLAN/BE-TODO/G01-BE-DEAL-DOMAIN.goal.md`: completed. Deal DB/API, DealProduct N:M product mapping, code-level status enum, nested FK responses, following action logs, memo logs, xlsx export, transaction contract, and observability contract are implemented and verified.
+- `TODO/ADDITIONAL_WORK_PLAN/BE-TODO/G01-G12`: completed. Company `contactCount`, Company linked Contact list, Company/Contact/Product xlsx export, Company/Product `dealCount`, Company/Contact/Product linked Deal lists, and Product `sort=dealCountDesc` are implemented and verified.
+
+Current response notes:
+
+- `GET /api/companies` returns `items[].contactCount` and `items[].dealCount`.
+- `GET /api/products` returns `items[].dealCount` and supports `sort=createdAtDesc|dealCountDesc`.
+- Company and Product xlsx export files include `딜 수`; Product export also supports the same product list sort query.
+- Company/Contact/Product linked Deal list APIs return all linked deals ordered by `createdAt DESC`, `id DESC`.
 
 Current runtime behavior:
 
@@ -135,6 +150,7 @@ Current backend gaps:
 - User Web Contact API client alignment is FE-side work; Backend Contact API contract is implemented under `TODO/CONTACT_DOMAIN_PLAN/COMMON/API-SPEC`.
 - User Web Product API client alignment is FE-side work; Backend Product API contract is implemented under `TODO/PRODUCT_DOMAIN_PLAN/COMMON/API-SPEC`.
 - User Web Deal API client alignment is FE-side work; Backend Deal API contract is implemented under `TODO/DEAL_DOMAIN_PLAN/COMMON/API-SPEC`.
+- User Web Additional Work alignment for `dealCount`, linked Deal lists, and product `dealCountDesc` sort is FE-side work; Backend Additional Work API contracts are implemented under `TODO/ADDITIONAL_WORK_PLAN/COMMON/API-SPEC`.
 
 ## 4. Target Module List
 

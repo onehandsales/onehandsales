@@ -79,21 +79,21 @@ TODO/ADDITIONAL_WORK_PLAN/
 - ADD-003 회사 목록 필터 기준 xlsx 내보내기 API 추가: 구현 완료
 - ADD-004 거래처 목록 필터 기준 xlsx 내보내기 API 추가: 구현 완료
 - ADD-005 제품 목록 필터 기준 xlsx 내보내기 API 추가: 구현 완료
-- ADD-006 회사 목록 응답에 `dealCount` 추가: 구현 대기
-- ADD-007 회사 xlsx export에 `dealCount` 추가: 구현 대기
-- ADD-008 회사 단건 상세용 연결 Deal 전체 목록 API 추가: 구현 대기
-- ADD-009 거래처 단건 상세용 연결 Deal 전체 목록 API 추가: 구현 대기
-- ADD-010 제품 목록 응답에 `dealCount` 추가와 딜 많은 순 정렬 추가: 구현 대기
-- ADD-011 제품 xlsx export에 `dealCount` 추가: 구현 대기
-- ADD-012 제품 단건 상세용 연결 Deal 전체 목록 API 추가: 구현 대기
-- Frontend 반영: 기존 5개 API 일부는 도메인 FE 작업에 반영 중이며, ADD-006~012는 Backend 구현 후 `FE-TODO/G01-FE-DEAL-COUNT-LINKED-DEAL-LISTS.goal.md`에서 처리한다.
+- ADD-006 회사 목록 응답에 `dealCount` 추가: 구현 완료
+- ADD-007 회사 xlsx export에 `dealCount` 추가: 구현 완료
+- ADD-008 회사 단건 상세용 연결 Deal 전체 목록 API 추가: 구현 완료
+- ADD-009 거래처 단건 상세용 연결 Deal 전체 목록 API 추가: 구현 완료
+- ADD-010 제품 목록 응답에 `dealCount` 추가와 딜 많은 순 정렬 추가: 구현 완료
+- ADD-011 제품 xlsx export에 `dealCount` 추가: 구현 완료
+- ADD-012 제품 단건 상세용 연결 Deal 전체 목록 API 추가: 구현 완료
+- Frontend 반영: Backend ADD-001~012는 구현 완료 상태이며, User Web 반영은 `FE-TODO/G01-FE-DEAL-COUNT-LINKED-DEAL-LISTS.goal.md`와 각 도메인 FE 작업에서 처리한다.
 
 ## 5. 실행 순서
 
 1. `AGENT` 정본과 기존 Company/Contact/Product/Deal API 계약을 확인한다.
 2. `COMMON/API-SPEC`에서 추가 응답 필드와 호환성 기준을 확정한다.
-3. Backend 작업은 `BE-TODO` goal 기준으로 G06-G12까지 순서대로 구현한다.
-4. Frontend 표시 작업은 Backend 구현 완료 후 `FE-TODO/G01-FE-DEAL-COUNT-LINKED-DEAL-LISTS.goal.md` 기준으로 반영한다.
+3. Backend 작업은 `BE-TODO` goal 기준으로 G06-G12까지 구현 완료 상태를 유지한다.
+4. Frontend 표시 작업은 `FE-TODO/G01-FE-DEAL-COUNT-LINKED-DEAL-LISTS.goal.md` 기준으로 반영한다.
 5. 구현 후 관련 API 계약 문서와 TODO_LOG를 갱신한다.
 
 ## 6. 현재 범위
@@ -125,7 +125,7 @@ TODO/ADDITIONAL_WORK_PLAN/
 
 ## 7.1. Frontend 반영 목적
 
-이 계획의 Backend API 중 ADD-001~005는 이미 구현되어 있고 ADD-006~012는 구현 대기 상태다. Frontend 목적은 목록/상세 화면의 사용자 행동을 완성하는 것이다.
+이 계획의 Backend API 중 ADD-001~012는 구현 완료 상태다. Frontend 목적은 목록/상세 화면의 사용자 행동을 완성하는 것이다.
 
 - 회사 목록: `contactCount`를 `거래처 수`로 표시해 사용자가 회사별 연결 담당자 규모를 목록에서 바로 비교하게 한다.
 - 회사 목록: `dealCount`를 `딜 수`로 표시해 사용자가 회사별 영업 진행 규모를 목록에서 바로 비교하게 한다.

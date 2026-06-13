@@ -302,7 +302,7 @@
 | `createdAt` | string | 회사 등록일 |
 | `updatedAt` | string | 회사 최근 수정일 |
 
-단건 응답에는 `contactCount`, `dealCount`를 넣지 않는다. 회사 목록의 거래처 수는 `GET /api/companies` 응답의 `contactCount`를 사용한다.
+단건 응답에는 `contactCount`, `dealCount`를 넣지 않는다. 회사 목록의 거래처 수와 딜 수는 `GET /api/companies` 응답의 `contactCount`, `dealCount`를 사용한다. 회사 단건의 연결 Deal 목록은 `GET /api/companies/:companyId/deals` 별도 API로 조회한다.
 
 ### 연결된 DB 스키마
 

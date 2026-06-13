@@ -18,7 +18,7 @@
 
 - API: `GET /api/companies/export/xlsx`
 - 소비자: User Web
-- 계약 상태: confirmed
+- 계약 상태: implemented
 - 호환성: 기존 xlsx 파일에 컬럼 추가
 - 응답 형식: xlsx binary file
 

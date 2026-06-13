@@ -24,3 +24,8 @@
 - API 응답이 바뀌는 작업은 `API-SPEC`에 요청값, 응답값, 비즈니스 로직, DB 기준, transaction, observability, 에러, FE/BE 처리 기준을 적는다.
 - 구현 전 계약 상태를 확인한다.
 - 기존 활성 계획의 API 계약과 충돌하면 기존 계획 문서를 함께 갱신한다.
+
+## 4. 현재 구현 상태
+
+- `COMPANY_LIST_CONTACT_COUNT_API.md`, `COMPANY_CONTACT_LIST_API.md`, `COMPANY_EXPORT_XLSX_API.md`, `CONTACT_EXPORT_XLSX_API.md`, `PRODUCT_EXPORT_XLSX_API.md`: implemented
+- `COMPANY_LIST_DEAL_COUNT_API.md`, `COMPANY_EXPORT_DEAL_COUNT_API.md`, `COMPANY_DEAL_LIST_API.md`, `CONTACT_DEAL_LIST_API.md`, `PRODUCT_LIST_DEAL_COUNT_SORT_API.md`, `PRODUCT_EXPORT_DEAL_COUNT_API.md`, `PRODUCT_DEAL_LIST_API.md`: implemented

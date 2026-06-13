@@ -134,7 +134,7 @@
 ### 연결된 DB 스키마
 
 - 생성: 없음
-- 조회: `Company`, `CompanyField`, `CompanyRegion`, `Contact`
+- 조회: `Company`, `CompanyField`, `CompanyRegion`, `Contact`, `Deal`
 - 수정: 없음
 - 삭제: 없음
 - 감사 로그: 없음
@@ -152,7 +152,7 @@
 ### FE/BE 처리 기준
 
 - FE: 검색어/필터/page 변경 시 목록 query를 재조회한다.
-- FE: 회사 목록에는 최근 수정일과 딜 수를 표시하지 않는다. 거래처 수는 `contactCount`를 사용한다.
+- FE: 회사 목록에는 최근 수정일을 표시하지 않는다. 거래처 수는 `contactCount`, 딜 수는 `dealCount`를 사용한다.
 - BE: repository는 항상 userId 조건을 포함한다.
 - 검증: 검색, 필터, 페이지네이션, 타 사용자 데이터 미노출을 확인한다.
 
@@ -304,7 +304,7 @@
 3. `Company.id = companyId`와 `Company.userId = currentUserId`를 함께 조건으로 조회한다.
 4. `CompanyField`, `CompanyRegion` relation을 함께 조회한다.
 5. 상세 response DTO로 변환한다.
-6. 단건 응답에서는 `contactCount`, `dealCount`를 계산하지 않는다. 회사 목록의 거래처 수는 `GET /api/companies` 응답의 `contactCount`를 사용한다.
+6. 단건 응답에서는 `contactCount`, `dealCount`를 계산하지 않는다. 회사 목록의 거래처 수와 딜 수는 `GET /api/companies` 응답의 `contactCount`, `dealCount`를 사용한다.
 
 ### Response
 
@@ -343,7 +343,7 @@
 ### FE/BE 처리 기준
 
 - FE: 상세 진입, 회사 수정 성공 후 재조회한다.
-- FE: 회사 단건 응답 자체에서 거래처 수와 딜 수를 기대하지 않는다. 연결 Contact 목록은 `GET /api/companies/:companyId/contacts`로 별도 조회하고, 딜 수는 표시하지 않는다.
+- FE: 회사 단건 응답 자체에서 거래처 수와 딜 수를 기대하지 않는다. 연결 Contact 목록은 `GET /api/companies/:companyId/contacts`, 연결 Deal 목록은 `GET /api/companies/:companyId/deals`로 별도 조회한다.
 - BE: 타 사용자 회사는 404로 숨긴다.
 - 검증: 본인 회사 조회 성공, 타 사용자 회사 404를 확인한다.
 

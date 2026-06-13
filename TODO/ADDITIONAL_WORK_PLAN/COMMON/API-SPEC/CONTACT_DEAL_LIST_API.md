@@ -19,7 +19,7 @@
 
 - API: `GET /api/contacts/:contactId/deals`
 - 소비자: User Web
-- 계약 상태: confirmed
+- 계약 상태: implemented
 - 호환성: 신규 API
 - 대상 화면: 거래처 단건 상세 페이지
 

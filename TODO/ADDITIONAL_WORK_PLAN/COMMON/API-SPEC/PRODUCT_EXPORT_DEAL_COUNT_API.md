@@ -19,7 +19,7 @@
 
 - API: `GET /api/products/export/xlsx`
 - 소비자: User Web
-- 계약 상태: confirmed
+- 계약 상태: implemented
 - 호환성: 기존 xlsx 파일에 컬럼 추가, 선택 query 추가 가능
 - 응답 형식: xlsx binary file
 

@@ -11,20 +11,21 @@
 - `[완료] G03-BE-COMPANY-EXPORT-XLSX.goal.md`
 - `[완료] G04-BE-CONTACT-EXPORT-XLSX.goal.md`
 - `[완료] G05-BE-PRODUCT-EXPORT-XLSX.goal.md`
-- `[대기] G06-BE-COMPANY-LIST-DEAL-COUNT.goal.md`
-- `[대기] G07-BE-COMPANY-EXPORT-DEAL-COUNT.goal.md`
-- `[대기] G08-BE-COMPANY-DEAL-LIST.goal.md`
-- `[대기] G09-BE-CONTACT-DEAL-LIST.goal.md`
-- `[대기] G10-BE-PRODUCT-LIST-DEAL-COUNT-SORT.goal.md`
-- `[대기] G11-BE-PRODUCT-EXPORT-DEAL-COUNT.goal.md`
-- `[대기] G12-BE-PRODUCT-DEAL-LIST.goal.md`
+- `[완료] G06-BE-COMPANY-LIST-DEAL-COUNT.goal.md`
+- `[완료] G07-BE-COMPANY-EXPORT-DEAL-COUNT.goal.md`
+- `[완료] G08-BE-COMPANY-DEAL-LIST.goal.md`
+- `[완료] G09-BE-CONTACT-DEAL-LIST.goal.md`
+- `[완료] G10-BE-PRODUCT-LIST-DEAL-COUNT-SORT.goal.md`
+- `[완료] G11-BE-PRODUCT-EXPORT-DEAL-COUNT.goal.md`
+- `[완료] G12-BE-PRODUCT-DEAL-LIST.goal.md`
 
 ## 2.1. 현재 Backend 상태
 
-- 추가 Backend API 5개는 구현 완료 상태다.
-- 회사/거래처/제품의 연결 딜 count와 연결 딜 목록 API는 G06-G12로 구현 대기 상태다.
-- 검증 결과는 `TODO_LOG/2026-06-12/ADDITIONAL_WORK_PLAN_BACKEND/WORK_LOG.md`를 기준으로 확인한다.
-- G06-G12 구현 후 `FE-TODO`와 각 도메인 FE goal에서 화면/API client에 반영한다.
+- 추가 Backend API G01-G12는 구현 완료 상태다.
+- 회사/거래처/제품의 연결 딜 count와 연결 딜 목록 API는 G06-G12로 구현 완료됐다.
+- G01-G05 검증 결과는 `TODO_LOG/2026-06-12/ADDITIONAL_WORK_PLAN_BACKEND/WORK_LOG.md`를 기준으로 확인한다.
+- G06-G12 검증 결과는 `TODO_LOG/2026-06-13/LINKED_DEAL_ADDITIONAL_BACKEND/WORK_LOG.md`를 기준으로 확인한다.
+- User Web 화면/API client 반영은 `FE-TODO`와 각 도메인 FE goal에서 처리한다.
 
 ## 3. 규칙
 

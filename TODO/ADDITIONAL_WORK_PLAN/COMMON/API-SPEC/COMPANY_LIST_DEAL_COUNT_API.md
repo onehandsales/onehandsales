@@ -19,7 +19,7 @@
 
 - API: `GET /api/companies`
 - 소비자: User Web
-- 계약 상태: confirmed
+- 계약 상태: implemented
 - 호환성: 기존 응답 item에 필수 숫자 필드 추가
 - 변경 대상 응답: `CompanyListItemResponse`
 

@@ -56,6 +56,8 @@ Product 기본 도메인 1차 구현 범위는 다음 테이블만 포함한다.
 - 필터는 `productCategoryId`, `productStatusId`만 제공한다.
 - 목록 응답에는 `productPrice`, `updatedAt`을 포함하지 않는다.
 - 제품 하나는 `DealProduct`를 통해 여러 딜에 포함될 수 있다.
+- 목록 응답에는 `DealProduct` 기준 `dealCount`를 포함한다.
+- 목록 정렬은 기본 `createdAt DESC`, `id DESC`이며 `sort=dealCountDesc`일 때 `dealCount DESC`, `createdAt DESC`, `id DESC`를 적용한다.
 
 ## 4. ProductCategory
 

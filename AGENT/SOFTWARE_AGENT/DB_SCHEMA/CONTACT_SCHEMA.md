@@ -24,6 +24,7 @@ ContactJobGrade 1 ─ N Contact
 ContactDepartment 1 ─ N Contact
 Contact 1 ─ N ContactMemoLog
 Contact 1 ─ N ContactUserPrivateMemoLog
+Contact 1 ─ N Deal
 ```
 
 관계 요약:
@@ -33,6 +34,7 @@ Contact 1 ─ N ContactUserPrivateMemoLog
 - `ContactDepartment`는 사용자별 거래처 부서 필터 옵션이다.
 - `ContactMemoLog`는 거래처 일반 메모 로그다.
 - `ContactUserPrivateMemoLog`는 거래처별 사용자 비밀 메모 로그다.
+- `Deal`은 특정 거래처 담당자와 진행하는 딜이다.
 
 ## 3. 현재 제외한 구조
 
@@ -43,7 +45,7 @@ Contact 1 ─ N ContactUserPrivateMemoLog
 - 회사 없이 저장되는 거래처
 - 거래처 부서/직급 수정 API
 - 거래처 목록의 최근 수정일 응답
-- 거래처 상세의 딜 수, 제품 수, 일정 수, 회의록 수
+- 거래처 상세 응답 자체에 딜 수, 제품 수, 일정 수, 회의록 수를 병합하는 구조
 - 명함 OCR 저장 연동
 - 기존 `ContactLog` 방식
 - 기존 공통 `PersonalMemo(targetType=CONTACT)` 방식
@@ -73,6 +75,7 @@ Relations:
 - `contactDepartment`: `ContactDepartment`
 - `memoLogs`: `ContactMemoLog[]`
 - `privateMemoLogs`: `ContactUserPrivateMemoLog[]`
+- `deals`: `Deal[]`
 
 Indexes:
 

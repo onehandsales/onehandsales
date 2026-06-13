@@ -117,8 +117,10 @@ User
 - 회사 목록은 `createdAt DESC`로 정렬한다.
 - 회사 목록 응답에는 최근 수정일을 포함하지 않는다.
 - 회사 목록 응답에는 `contactCount`를 포함해 회사별 연결 거래처 수를 표시한다.
+- 회사 목록 응답에는 `dealCount`를 포함해 회사별 연결 딜 수를 표시한다.
 - 회사 단건 응답 자체에는 거래처 수와 딜 수를 병합하지 않는다.
 - 회사 단건 화면에서 필요한 연결 Contact 전체 목록은 별도 API로 조회한다.
+- 회사 단건 화면에서 필요한 연결 Deal 전체 목록은 별도 API로 조회한다.
 - 회사 기본 기능에서는 휴지통과 soft delete를 우선 제외한다.
 - 회사 생성 요청의 `companyMemo`는 `Company` 테이블에 저장하지 않고 `CompanyMemoLog` 첫 데이터로 저장한다.
 - 회사명, 회사분야, 회사지역은 회사 단건 수정 API로 변경할 수 있다.
@@ -217,6 +219,7 @@ User
 - 거래처 목록 응답에는 최근 수정일을 포함하지 않는다.
 - 거래처 목록 검색은 `username`만 대상으로 한다.
 - 거래처 목록 필터는 `companyId`, `contactDepartmentId`, `contactJobGradeId`만 제공한다.
+- 거래처 단건 화면에서 필요한 연결 Deal 전체 목록은 별도 API로 조회한다.
 - 거래처 기본 기능에서는 휴지통과 soft delete를 우선 제외한다.
 - 거래처 생성 요청의 `contactMemo`는 `Contact` 테이블에 저장하지 않고 `ContactMemoLog` 첫 데이터로 저장한다.
 - 핸드폰번호는 API validation 기준으로 `010-1111-2222` 형식만 허용한다.
@@ -305,6 +308,12 @@ User
 - Product 1:N ProductMemoLog
 - Product 1:N ProductUserPrivateMemoLog
 - Product 1:N DealProduct
+
+정책:
+
+- 제품 목록 응답에는 `DealProduct` 기준 `dealCount`를 포함한다.
+- 제품 목록은 기본 `createdAt DESC`, `id DESC`로 정렬하고, `sort=dealCountDesc` 요청 시 `dealCount DESC`, `createdAt DESC`, `id DESC`를 적용한다.
+- 제품 단건 화면에서 필요한 연결 Deal 전체 목록은 별도 API로 조회한다.
 
 1차 구현 제외:
 

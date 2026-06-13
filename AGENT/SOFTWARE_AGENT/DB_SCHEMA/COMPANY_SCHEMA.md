@@ -22,6 +22,7 @@ CompanyRegion 1 ─ N Company
 Company 1 ─ N CompanyMemoLog
 Company 1 ─ N CompanyUserPrivateMemoLog
 Company 1 ─ N Contact
+Company 1 ─ N Deal
 ```
 
 관계 요약:
@@ -32,6 +33,7 @@ Company 1 ─ N Contact
 - `CompanyMemoLog`는 회사 특징에 대한 일반 메모 로그다.
 - `CompanyUserPrivateMemoLog`는 회사별 사용자 비밀 메모 로그다.
 - `Contact`는 회사에 소속된 거래처 담당자다.
+- `Deal`은 특정 회사에 속한 딜이다.
 
 ## 3. 현재 제외한 구조
 
@@ -39,13 +41,12 @@ Company 1 ─ N Contact
 
 - 휴지통과 soft delete 컬럼
 - 회사 목록의 최근 수정일 응답
-- 회사 목록의 딜 수
 - 회사 단건 응답에 거래처 수와 딜 수를 직접 병합하는 구조
 - 회사분야/회사지역 수정 API
 - Admin 원문 조회용 회사 개인 비밀 메모 복호화
 - 기존 공통 `PersonalMemo(targetType=COMPANY)` 방식
 
-회사 목록의 연결 거래처 수는 `Contact.companyId` 관계를 기준으로 `contactCount` 집계값으로 제공한다. 회사 단건 조회 응답 자체에는 거래처 수와 딜 수를 병합하지 않으며, 회사 단건 화면의 연결 Contact 목록은 별도 API로 조회한다.
+회사 목록의 연결 거래처 수는 `Contact.companyId` 관계를 기준으로 `contactCount` 집계값으로 제공한다. 회사 목록의 연결 딜 수는 `Deal.companyId` 관계를 기준으로 `dealCount` 집계값으로 제공한다. 회사 단건 조회 응답 자체에는 거래처 수와 딜 수를 병합하지 않으며, 회사 단건 화면의 연결 Contact/Deal 목록은 별도 API로 조회한다.
 
 ## 4. Table: Company
 
@@ -69,6 +70,7 @@ Relations:
 - `memoLogs`: `CompanyMemoLog[]`
 - `privateMemoLogs`: `CompanyUserPrivateMemoLog[]`
 - `contacts`: `Contact[]`
+- `deals`: `Deal[]`
 
 Indexes:
 

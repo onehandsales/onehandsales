@@ -113,7 +113,7 @@ TODO/
 - `CONTACT_DOMAIN_PLAN`: BE API 완료. User Web 거래처 목록/상세/메모와 xlsx 내보내기 UI 구현이 남아 있다.
 - `PRODUCT_DOMAIN_PLAN`: BE API 완료. User Web 제품 목록/상세/메모와 xlsx 내보내기 UI 구현이 남아 있다.
 - `DEAL_DOMAIN_PLAN`: BE Deal DB/API 완료. User Web 딜 목록/상세/로그/export 연동이 남아 있다.
-- `ADDITIONAL_WORK_PLAN`: Backend 추가 API 5개 완료. 회사/거래처/제품 연결 딜 count와 연결 딜 목록 API G06-G12는 구현 대기이며, 이후 User Web 반영 goal이 남아 있다.
+- `ADDITIONAL_WORK_PLAN`: Backend 추가 API G01-G12 완료. 회사/거래처/제품 연결 딜 count와 연결 딜 목록 API는 구현됐으며, 이후 User Web 반영 goal이 남아 있다.
 
 활성 TODO 재검토 결과:
 
