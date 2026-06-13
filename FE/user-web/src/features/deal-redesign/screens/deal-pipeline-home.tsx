@@ -15,12 +15,6 @@ type StageTab = "ALL" | DealStage;
 type SortKey = "latest" | "amount" | "deadline";
 type SortDir = "asc" | "desc";
 
-const SORT_LABELS: Record<SortKey, string> = {
-  latest: "최신순",
-  amount: "금액순",
-  deadline: "마감일순",
-};
-
 const stageTabs: Array<{ readonly value: StageTab; readonly label: string }> = [
   { value: "ALL", label: "전체" },
   { value: "INITIAL_CONTACT", label: "초기 접촉" },
