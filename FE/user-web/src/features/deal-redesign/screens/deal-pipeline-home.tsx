@@ -12,6 +12,14 @@ import { getApiErrorMessage } from "@/lib/api-client";
 import { cn } from "@/utils/cn";
 
 type StageTab = "ALL" | DealStage;
+type SortKey = "latest" | "amount" | "deadline";
+type SortDir = "asc" | "desc";
+
+const SORT_LABELS: Record<SortKey, string> = {
+  latest: "최신순",
+  amount: "금액순",
+  deadline: "마감일순",
+};
 
 const stageTabs: Array<{ readonly value: StageTab; readonly label: string }> = [
   { value: "ALL", label: "전체" },
@@ -27,6 +35,8 @@ const emptyStageSummary: DealStageSummary = {};
 
 export function DealPipelineHomeRedesignScreen() {
   const [stage, setStage] = useState<StageTab>("ALL");
+  const [sortKey, setSortKey] = useState<SortKey>("latest");
+  const [sortDir, setSortDir] = useState<SortDir>("desc");
   const [selectedDealId, setSelectedDealId] = useState("");
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [notice, setNotice] = useState<string | null>(null);
@@ -43,14 +53,25 @@ export function DealPipelineHomeRedesignScreen() {
     stage: stage === "ALL" ? undefined : stage,
   });
   const rawDeals = useMemo(() => dealsQuery.data?.items ?? [], [dealsQuery.data?.items]);
-  const deals = useMemo(
-    () =>
-      rawDeals.map((deal) => ({
-        ...deal,
-        stage: optimisticStageByDealId[deal.id] ?? deal.stage,
-      })),
-    [optimisticStageByDealId, rawDeals]
-  );
+  const deals = useMemo(() => {
+    const mapped = rawDeals.map((deal) => ({
+      ...deal,
+      stage: optimisticStageByDealId[deal.id] ?? deal.stage,
+    }));
+    const dir = sortDir === "asc" ? 1 : -1;
+    return [...mapped].sort((a, b) => {
+      if (sortKey === "amount") {
+        return dir * ((a.amount ?? 0) - (b.amount ?? 0));
+      }
+      if (sortKey === "deadline") {
+        const aDate = a.expectedCloseDate ?? "";
+        const bDate = b.expectedCloseDate ?? "";
+        return dir * aDate.localeCompare(bDate);
+      }
+      // latest: updatedAt desc by default
+      return dir * a.updatedAt.localeCompare(b.updatedAt);
+    });
+  }, [optimisticStageByDealId, rawDeals, sortDir, sortKey]);
   const stageSummary = useMemo(
     () =>
       applyOptimisticStageSummary(
@@ -172,8 +193,45 @@ export function DealPipelineHomeRedesignScreen() {
             {/* Deal List */}
             <div className="flex min-w-0 flex-1 flex-col overflow-hidden rounded-lg border border-[#E5EAF0] bg-white">
               {/* Controls bar */}
-              <div className="flex h-10 shrink-0 items-center gap-2 border-b border-[#E6EAF0] bg-[#FAFBFC] px-6">
-                <span className="ml-auto text-[12px] text-gray-400">{totalCount}건</span>
+              <div className="flex h-10 shrink-0 items-center gap-2 border-b border-[#E6EAF0] px-4">
+                <FilterChip
+                  active={sortKey === "latest"}
+                  label={sortKey === "latest" ? `최신순 ${sortDir === "asc" ? "↑" : "↓"}` : "최신순"}
+                  onClick={() => {
+                    if (sortKey === "latest") {
+                      setSortDir((d) => (d === "desc" ? "asc" : "desc"));
+                    } else {
+                      setSortKey("latest");
+                      setSortDir("desc");
+                    }
+                  }}
+                />
+                <FilterChip
+                  active={sortKey === "amount"}
+                  label={sortKey === "amount" ? `금액 ${sortDir === "asc" ? "↑" : "↓"}` : "금액"}
+                  onClick={() => {
+                    if (sortKey === "amount") {
+                      setSortDir((d) => (d === "desc" ? "asc" : "desc"));
+                    } else {
+                      setSortKey("amount");
+                      setSortDir("desc");
+                    }
+                  }}
+                />
+                <FilterChip
+                  active={sortKey === "deadline"}
+                  label={sortKey === "deadline" ? `마감일 ${sortDir === "asc" ? "↑" : "↓"}` : "마감일"}
+                  onClick={() => {
+                    if (sortKey === "deadline") {
+                      setSortDir((d) => (d === "desc" ? "asc" : "desc"));
+                    } else {
+                      setSortKey("deadline");
+                      setSortDir("asc");
+                    }
+                  }}
+                />
+                <div className="flex-1" />
+                <span className="text-[12px] text-gray-400">{totalCount}건</span>
               </div>
               {/* Table header */}
               <div className="flex shrink-0 items-center border-b border-[#E6EAF0] bg-[#FAFBFC] px-6" style={{ height: 44 }}>
@@ -312,6 +370,31 @@ export function DealPipelineHomeRedesignScreen() {
         open={isCreateOpen}
       />
     </>
+  );
+}
+
+function FilterChip({
+  label,
+  active,
+  onClick,
+}: {
+  readonly label: string;
+  readonly active: boolean;
+  readonly onClick: () => void;
+}) {
+  return (
+    <button
+      className={cn(
+        "inline-flex h-7 items-center rounded-md px-2.5 text-[12px] font-medium transition-colors",
+        active
+          ? "bg-[#DBEAFE] text-[#1D4ED8]"
+          : "bg-[#F3F4F6] text-[#374151] hover:bg-[#E5E7EB]"
+      )}
+      onClick={onClick}
+      type="button"
+    >
+      {label}
+    </button>
   );
 }
 
