@@ -8,7 +8,7 @@ Frontend 작업자는 이 문서를 먼저 보고 어떤 API가 준비되어 있
 
 ## 2. 검토 기준
 
-- 검토일: 2026-06-12
+- 검토일: 2026-06-13 (최초 2026-06-12, 업데이트)
 - 검토 대상: `TODO/DONE/**`을 제외한 `TODO` 활성 계획
 - Backend 구현 대조 기준: `BE/src/modules/auth`, `BE/src/modules/user`, `BE/src/modules/company`, `BE/src/modules/contact`, `BE/src/modules/product`, `BE/src/modules/deal`, `BE/prisma/schema.prisma`
 - API 명세 기준: 각 활성 계획의 `COMMON/API-SPEC/*`
@@ -18,9 +18,11 @@ Frontend 작업자는 이 문서를 먼저 보고 어떤 API가 준비되어 있
 
 - Auth/User, Company, Contact, Product 기본 Backend API는 구현되어 있다.
 - 추가 유지보수 범위인 Company `contactCount`, 회사 연결 Contact 전체 목록, Company/Contact/Product xlsx export API도 구현되어 있다.
-- Deal Backend API와 Prisma Deal 모델은 구현되어 있으며, API 계약은 `DEAL_DOMAIN_PLAN` 기준 `implemented` 상태다.
+- Deal Backend API와 Prisma Deal 모델은 구현되어 있으며, API 계약은 `DEAL_DOMAIN_PLAN` 기준 `implemented` 상태다. 단, 신규 스키마 재설계 후 local DB migration drift로 실제 DB 미적용 상태 (2026-06-13 기준).
+- Schedule / MeetingNote / BusinessCard OCR / Import / Export / Notification / Trash / Search Backend API 모두 구현 완료 (2026-06-13 기준 확인).
 - 활성 TODO의 API 명세는 request 형태, response 형태, 내부 비즈니스 로직, DB 연결, transaction, observability, 에러, FE/BE 처리 기준을 포함한다.
-- 남은 주요 작업은 `FE/user-web`과 `FE/admin-web`의 실제 API 연동, 화면 상태 관리, 검색/필터/페이지네이션/다운로드 UI 구현이다.
+- **2026-06-13 기준 FE 남은 주요 작업**: 기존 화면을 pen 디자인 기준으로 정교화하는 것. 라우트/hooks/types는 모두 존재. pen 반영이 미완료인 도메인: Product, Schedule, MeetingNote, Notification, Trash, Search, Import/Export, BusinessCard.
+- 상세 현황은 `UX Design/FE_DOMAIN_COMPLETION_STATUS.md` 참조.
 
 ## 4. 활성 계획별 Backend API 상태
 
