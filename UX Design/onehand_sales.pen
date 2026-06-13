@@ -6,7 +6,7 @@
       "id": "spyD9",
       "x": -1,
       "y": 160,
-      "name": "[home] Desktop – Deal Pipeline Home",
+      "name": "[deal] Desktop – Deal Pipeline Home",
       "clip": true,
       "width": 1440,
       "height": 900,
@@ -668,7 +668,7 @@
                           "id": "O8daGj",
                           "name": "TitleText",
                           "fill": "#111827",
-                          "content": "홈",
+                          "content": "딜",
                           "fontFamily": "Inter",
                           "fontSize": 18,
                           "fontWeight": "700"

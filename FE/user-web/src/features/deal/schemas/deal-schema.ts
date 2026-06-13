@@ -11,14 +11,30 @@ const dealStatusEnum = z.enum(
   DEAL_STATUS_LIST as [DealStatus, ...DealStatus[]]
 );
 
+const dealCostSchema = z
+  .string()
+  .trim()
+  .transform((value) => value.replace(/,/g, ""))
+  .refine((value) => value.length > 0, "금액을 입력해주세요.")
+  .refine(
+    (value) => /^\d+$/.test(value) && Number(value) >= 0,
+    "금액은 0 이상의 정수입니다."
+  );
+
+const expectedEndDateSchema = z
+  .string()
+  .trim()
+  .transform((value) => normalizeDateText(value))
+  .refine((value) => value.length > 0, "예상 마감일을 입력해주세요.")
+  .refine(
+    (value) => /^\d{4}-\d{2}-\d{2}$/.test(value),
+    "날짜 형식은 YYYY-MM-DD입니다."
+  );
+
 // 기능 : 딜 생성 form 스키마
 export const dealCreateFormSchema = z.object({
   dealName: z.string().trim().min(1, "딜명을 입력해주세요."),
-  dealCost: z
-    .string()
-    .trim()
-    .min(1, "금액을 입력해주세요.")
-    .refine((v) => /^\d+$/.test(v) && Number(v) >= 0, "금액은 0 이상의 정수입니다."),
+  dealCost: dealCostSchema,
   companyId: z.string().trim().min(1, "회사를 선택해주세요."),
   contactId: z.string().trim().min(1, "거래처를 선택해주세요."),
   productIds: z
@@ -26,11 +42,7 @@ export const dealCreateFormSchema = z.object({
     .min(1, "제품을 1개 이상 선택해주세요."),
   dealStatus: dealStatusEnum,
   followingAction: z.string().trim().min(1, "다음 행동을 입력해주세요."),
-  expectedEndDate: z
-    .string()
-    .trim()
-    .min(1, "예상 마감일을 입력해주세요.")
-    .regex(/^\d{4}-\d{2}-\d{2}$/, "날짜 형식은 YYYY-MM-DD입니다."),
+  expectedEndDate: expectedEndDateSchema,
   // UI 전용 search 필드
   companySearch: z.string().optional(),
   contactSearch: z.string().optional(),
@@ -42,22 +54,14 @@ export type DealCreateFormValues = z.infer<typeof dealCreateFormSchema>;
 // 기능 : 딜 수정 form 스키마
 export const dealUpdateFormSchema = z.object({
   dealName: z.string().trim().min(1, "딜명을 입력해주세요."),
-  dealCost: z
-    .string()
-    .trim()
-    .min(1, "금액을 입력해주세요.")
-    .refine((v) => /^\d+$/.test(v) && Number(v) >= 0, "금액은 0 이상의 정수입니다."),
+  dealCost: dealCostSchema,
   companyId: z.string().trim().min(1, "회사를 선택해주세요."),
   contactId: z.string().trim().min(1, "거래처를 선택해주세요."),
   productIds: z
     .array(z.string())
     .min(1, "제품을 1개 이상 선택해주세요."),
   dealStatus: dealStatusEnum,
-  expectedEndDate: z
-    .string()
-    .trim()
-    .min(1, "예상 마감일을 입력해주세요.")
-    .regex(/^\d{4}-\d{2}-\d{2}$/, "날짜 형식은 YYYY-MM-DD입니다."),
+  expectedEndDate: expectedEndDateSchema,
   // UI 전용 search 필드
   companySearch: z.string().optional(),
   contactSearch: z.string().optional(),
@@ -127,3 +131,13 @@ export const emptyDealCreateFormValues: DealCreateFormValues = {
   contactSearch: "",
   productSearch: "",
 };
+
+function normalizeDateText(value: string) {
+  const digits = value.replace(/\D/g, "").slice(0, 8);
+
+  if (digits.length === 8) {
+    return `${digits.slice(0, 4)}-${digits.slice(4, 6)}-${digits.slice(6, 8)}`;
+  }
+
+  return value;
+}

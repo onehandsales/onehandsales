@@ -1,11 +1,10 @@
 // 기능 : 딜 파이프라인 홈 화면 — split view (Desktop) / 카드 (Mobile)
-import { AlertCircle, Download, Plus } from "lucide-react";
-import { useEffect, useState } from "react";
+import { AlertCircle, Plus } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { DealCreateDialog } from "@/features/deal/components/deal-create-dialog";
 import { DealDetailPanel } from "@/features/deal/components/deal-detail-panel";
 import { useDealList, useDealStageCounts } from "@/features/deal/hooks/use-deal-list";
-import { useExportDealsMutation } from "@/features/deal/hooks/use-deal-mutations";
 import {
   DEAL_STATUS_LABEL,
   DEAL_STATUS_LIST,
@@ -13,7 +12,6 @@ import {
   type DealSort,
   type DealStatus,
 } from "@/features/deal/types/deal";
-import { getApiErrorMessage } from "@/lib/api-client";
 import { Pagination } from "@/components/ui/pagination";
 import { cn } from "@/utils/cn";
 import { formatDate } from "@/utils/format";
@@ -47,18 +45,16 @@ export function DealPipelineHomeScreen() {
     dealStatus: activeTab === "ALL" ? undefined : activeTab,
     sort,
   });
-  const exportMutation = useExportDealsMutation();
 
-  const deals = dealsQuery.data?.items ?? [];
+  const deals = useMemo(
+    () => dealsQuery.data?.items ?? [],
+    [dealsQuery.data?.items]
+  );
 
-  // 목록 변경 시 첫 항목 자동 선택
+  // 기능 : 사용자가 클릭한 딜이 현재 목록에서 사라진 경우에만 상세 선택을 해제합니다.
   useEffect(() => {
-    if (deals.length === 0) {
+    if (selectedDealId && !deals.some((deal) => deal.id === selectedDealId)) {
       setSelectedDealId("");
-      return;
-    }
-    if (!deals.some((d) => d.id === selectedDealId)) {
-      setSelectedDealId(deals[0]?.id ?? "");
     }
   }, [deals, selectedDealId]);
 
@@ -75,14 +71,6 @@ export function DealPipelineHomeScreen() {
   const onSortChange = (value: DealSort) => {
     setSort(value);
     setPage(1);
-  };
-
-  const onExport = () => {
-    void exportMutation.mutateAsync({
-      search: search.trim() || undefined,
-      dealStatus: activeTab === "ALL" ? undefined : activeTab,
-      sort,
-    });
   };
 
   const getStageCount = (tab: StageTab): number => {
@@ -136,19 +124,13 @@ export function DealPipelineHomeScreen() {
         ) : (
           <div className="flex min-h-0 flex-1 gap-5 overflow-hidden px-6 py-5">
             {/* Deal List */}
-            <div className="flex min-w-0 flex-1 flex-col overflow-hidden rounded-lg border border-[#E5EAF0] bg-white">
-              {/* Controls bar */}
-              <div className="flex h-10 shrink-0 items-center gap-2 border-b border-[#E6EAF0] px-4">
-                {/* 검색 */}
-                <input
-                  className="h-7 w-48 rounded-md border border-[#E6EAF0] px-2 text-[12px] outline-none placeholder:text-gray-400 focus:border-primary focus:ring-1 focus:ring-primary"
-                  onChange={(e) => onSearchChange(e.target.value)}
-                  placeholder="딜명 검색"
-                  value={search}
-                />
+            <div className="flex min-w-0 flex-1 flex-col gap-3 overflow-hidden">
+              {/* Controls bar — pen 기준 리스트 네모 밖에 별도 배치 */}
+              <div className="flex h-10 shrink-0 items-center gap-2 px-0.5">
                 {/* 정렬 */}
                 <select
-                  className="h-7 rounded-md border border-[#E6EAF0] px-2 text-[12px] outline-none focus:border-primary"
+                  aria-label="딜 정렬"
+                  className="h-7 rounded-md border border-[#E5E7EB] bg-white px-2 text-[12px] text-gray-700 outline-none focus:border-primary"
                   onChange={(e) => onSortChange(e.target.value as DealSort)}
                   value={sort}
                 >
@@ -158,94 +140,104 @@ export function DealPipelineHomeScreen() {
                     </option>
                   ))}
                 </select>
+                <button
+                  className={cn(
+                    "inline-flex h-7 items-center rounded-md border px-2 text-[12px] font-medium transition-colors",
+                    sort === "dealCostDesc" || sort === "dealCostAsc"
+                      ? "border-primary bg-primary/10 text-primary"
+                      : "border-[#E5E7EB] bg-white text-gray-700 hover:border-gray-300"
+                  )}
+                  onClick={() => onSortChange(sort === "dealCostDesc" ? "dealCostAsc" : "dealCostDesc")}
+                  type="button"
+                >
+                  금액 ▾
+                </button>
+                <button
+                  className={cn(
+                    "inline-flex h-7 items-center rounded-md border px-2 text-[12px] font-medium transition-colors",
+                    sort === "expectedEndDateAsc"
+                      ? "border-primary bg-primary/10 text-primary"
+                      : "border-[#E5E7EB] bg-white text-gray-700 hover:border-gray-300"
+                  )}
+                  onClick={() => onSortChange("expectedEndDateAsc")}
+                  type="button"
+                >
+                  마감일 ▾
+                </button>
                 <div className="flex-1" />
                 <span className="text-[12px] text-gray-400">
                   {dealsQuery.data?.totalCount ?? 0}건
                 </span>
-                {/* Export */}
-                <button
-                  className="inline-flex h-7 items-center gap-1 rounded-md border border-[#E5E7EB] bg-white px-2.5 text-[12px] text-gray-600 hover:bg-gray-50 disabled:opacity-50"
-                  disabled={exportMutation.isPending}
-                  onClick={onExport}
-                  type="button"
+              </div>
+
+              <div className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-lg border border-[#E5EAF0] bg-white">
+                {/* Table header */}
+                <div
+                  className="flex shrink-0 items-center border-b border-[#E6EAF0] bg-[#FAFBFC] px-6"
+                  style={{ height: 44 }}
                 >
-                  <Download className="h-3.5 w-3.5" />
-                  {exportMutation.isPending ? "내보내는 중..." : "내보내기"}
-                </button>
-              </div>
-
-              {/* Table header */}
-              <div
-                className="flex shrink-0 items-center border-b border-[#E6EAF0] bg-[#FAFBFC] px-6"
-                style={{ height: 44 }}
-              >
-                <TableHeaderCell width={200}>딜명</TableHeaderCell>
-                <TableHeaderCell width={140}>회사/거래처</TableHeaderCell>
-                <TableHeaderCell width={100}>단계</TableHeaderCell>
-                <TableHeaderCell width={110}>금액</TableHeaderCell>
-                <TableHeaderCell flex>다음 행동</TableHeaderCell>
-                <TableHeaderCell align="right" width={86}>마감일</TableHeaderCell>
-              </div>
-
-              {/* Rows */}
-              <div className="flex-1 overflow-y-auto">
-                {deals.length === 0 ? (
-                  <div className="flex flex-col items-center py-12 text-sm text-gray-400">
-                    <p>표시할 딜이 없습니다.</p>
-                    <button
-                      className="mt-3 inline-flex h-9 items-center gap-1.5 rounded-md bg-primary px-4 text-sm font-medium text-white"
-                      onClick={() => setIsCreateOpen(true)}
-                      type="button"
-                    >
-                      <Plus className="h-4 w-4" />딜 추가
-                    </button>
-                  </div>
-                ) : (
-                  deals.map((deal) => (
-                    <DealListRow
-                      deal={deal}
-                      isActive={deal.id === selectedDealId}
-                      key={deal.id}
-                      onSelect={setSelectedDealId}
-                    />
-                  ))
-                )}
-              </div>
-
-              {/* Pagination */}
-              {(dealsQuery.data?.totalPages ?? 0) > 1 ? (
-                <div className="shrink-0 border-t border-[#E6EAF0] px-4 py-2">
-                  <Pagination
-                    hasNext={page < (dealsQuery.data?.totalPages ?? 0)}
-                    onPageChange={setPage}
-                    page={page}
-                  />
+                  <TableHeaderCell width={200}>딜명</TableHeaderCell>
+                  <TableHeaderCell width={140}>회사/거래처</TableHeaderCell>
+                  <TableHeaderCell width={100}>단계</TableHeaderCell>
+                  <TableHeaderCell width={110}>금액</TableHeaderCell>
+                  <TableHeaderCell flex>다음 행동</TableHeaderCell>
+                  <TableHeaderCell align="right" width={86}>마감일</TableHeaderCell>
                 </div>
-              ) : null}
+
+                {/* Rows */}
+                <div className="flex-1 overflow-y-auto">
+                  {deals.length === 0 ? (
+                    <div className="flex flex-col items-center py-12 text-sm text-gray-400">
+                      <p>표시할 딜이 없습니다.</p>
+                      <button
+                        className="mt-3 inline-flex h-9 items-center gap-1.5 rounded-md bg-primary px-4 text-sm font-medium text-white"
+                        onClick={() => setIsCreateOpen(true)}
+                        type="button"
+                      >
+                        <Plus className="h-4 w-4" />딜 추가
+                      </button>
+                    </div>
+                  ) : (
+                    deals.map((deal) => (
+                      <DealListRow
+                        deal={deal}
+                        isActive={deal.id === selectedDealId}
+                        key={deal.id}
+                        onSelect={setSelectedDealId}
+                      />
+                    ))
+                  )}
+                </div>
+
+                {/* Pagination */}
+                {(dealsQuery.data?.totalPages ?? 0) > 1 ? (
+                  <div className="shrink-0 border-t border-[#E6EAF0] px-4 py-2">
+                    <Pagination
+                      hasNext={page < (dealsQuery.data?.totalPages ?? 0)}
+                      onPageChange={setPage}
+                      page={page}
+                    />
+                  </div>
+                ) : null}
+              </div>
             </div>
 
             {/* Right Detail Panel */}
-            <div className="flex w-[380px] shrink-0 flex-col overflow-hidden rounded-lg border border-[#E5EAF0] bg-white">
-              {selectedDealId ? (
-                <>
-                  <div className="flex-1 overflow-y-auto">
-                    <DealDetailPanel dealId={selectedDealId} variant="panel" />
-                  </div>
-                  <div className="shrink-0 border-t border-[#E6EAF0] px-5 py-3">
-                    <Link
-                      className="text-[13px] font-medium text-primary hover:underline"
-                      to={`/deals/${selectedDealId}`}
-                    >
-                      전체 상세 열기 →
-                    </Link>
-                  </div>
-                </>
-              ) : (
-                <div className="flex flex-1 items-center justify-center p-6">
-                  <p className="text-sm text-gray-400">딜을 선택하면 상세 정보가 표시됩니다.</p>
+            {selectedDealId ? (
+              <div className="flex w-[380px] shrink-0 flex-col overflow-hidden rounded-lg border border-[#E5EAF0] bg-white">
+                <div className="flex-1 overflow-y-auto">
+                  <DealDetailPanel dealId={selectedDealId} variant="panel" />
                 </div>
-              )}
-            </div>
+                <div className="shrink-0 border-t border-[#E6EAF0] px-5 py-3">
+                  <Link
+                    className="text-[13px] font-medium text-primary hover:underline"
+                    to={`/deals/${selectedDealId}`}
+                  >
+                    전체 상세 열기 →
+                  </Link>
+                </div>
+              </div>
+            ) : null}
           </div>
         )}
       </section>
@@ -344,8 +336,7 @@ export function DealPipelineHomeScreen() {
       </section>
 
       <DealCreateDialog
-        onCreated={(deal) => {
-          setSelectedDealId(deal.id);
+        onCreated={() => {
           setActiveTab("ALL");
           setPage(1);
         }}
@@ -545,12 +536,20 @@ function ErrorState({ onRetry }: { readonly onRetry: () => void }) {
 function DesktopLoadingState() {
   return (
     <div className="flex min-h-0 flex-1 gap-5 overflow-hidden px-6 py-5">
-      <div className="flex min-w-0 flex-1 flex-col gap-0 overflow-hidden rounded-lg border border-[#E5EAF0] bg-white">
-        {Array.from({ length: 6 }).map((_, i) => (
-          <div className="h-[62px] animate-pulse border-b border-[#E8EDF3] bg-gray-50" key={i} />
-        ))}
+      <div className="flex min-w-0 flex-1 flex-col gap-3 overflow-hidden">
+        <div className="flex h-10 shrink-0 items-center gap-2 px-0.5">
+          <div className="h-7 w-20 animate-pulse rounded-md bg-gray-100" />
+          <div className="h-7 w-14 animate-pulse rounded-md bg-gray-100" />
+          <div className="h-7 w-16 animate-pulse rounded-md bg-gray-100" />
+          <div className="flex-1" />
+          <div className="h-4 w-8 animate-pulse rounded bg-gray-100" />
+        </div>
+        <div className="flex min-h-0 flex-1 flex-col gap-0 overflow-hidden rounded-lg border border-[#E5EAF0] bg-white">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <div className="h-[62px] animate-pulse border-b border-[#E8EDF3] bg-gray-50" key={i} />
+          ))}
+        </div>
       </div>
-      <div className="h-full w-[380px] animate-pulse rounded-lg bg-gray-50" />
     </div>
   );
 }
