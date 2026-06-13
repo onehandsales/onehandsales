@@ -2,17 +2,18 @@ import { Outlet, useLocation } from "react-router-dom";
 import { BottomTabBar } from "@/components/navigation/bottom-tab-bar";
 import { MobileAppHeader } from "@/components/navigation/mobile-app-header";
 import { SidebarNav } from "@/components/navigation/sidebar-nav";
-import { Bell, Download, Plus, Search } from "lucide-react";
+import { Bell, ChevronLeft, Download, Plus, Search, Trash2 } from "lucide-react";
 import { type FormEvent, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { GlobalSearch } from "@/features/search";
+import { useProductDetail } from "@/features/product/hooks/use-product-detail";
 
 const PAGE_TITLES: Record<string, { title: string; subtitle: string }> = {
   "/": { title: "홈", subtitle: "오늘 파이프라인을 확인 하세요." },
   "/deals": { title: "딜", subtitle: "진행 중인 딜을 관리합니다." },
   "/companies": { title: "회사", subtitle: "등록된 회사를 관리합니다." },
   "/contacts": { title: "거래처", subtitle: "거래처 담당자를 관리합니다." },
-  "/products": { title: "제품", subtitle: "제품과 서비스를 관리합니다." },
+  "/products": { title: "제품", subtitle: "제품 목록" },
   "/schedules": { title: "일정", subtitle: "예정된 일정을 확인합니다." },
   "/meeting-notes": { title: "회의록", subtitle: "회의 내용을 기록합니다." },
   "/notifications": { title: "알림", subtitle: "최근 알림을 확인합니다." },
@@ -21,19 +22,86 @@ const PAGE_TITLES: Record<string, { title: string; subtitle: string }> = {
 
 const HOME_PATH = "/";
 
+function ProductDetailTopBar({ productId }: {
+  readonly productId: string;
+}) {
+  const navigate = useNavigate();
+  const { search: locationSearch } = useLocation();
+  const isEditing = new URLSearchParams(locationSearch).get("edit") === "1";
+  const productQuery = useProductDetail(productId);
+  const productName = productQuery.data?.productName ?? "...";
+
+  const toggleEdit = () => {
+    void navigate(
+      isEditing
+        ? `/products/${productId}`
+        : `/products/${productId}?edit=1`,
+      { replace: true }
+    );
+  };
+
+  return (
+    <>
+      {/* Title group — breadcrumb */}
+      <div className="flex min-w-0 flex-1 items-center gap-1.5">
+        <Link className="mr-1 shrink-0 text-[#9CA3AF] hover:text-[#374151]" to="/products">
+          <ChevronLeft className="h-5 w-5" />
+        </Link>
+        <Link className="shrink-0 text-[13px] text-[#6B7280] hover:text-[#374151]" to="/products">
+          제품
+        </Link>
+        <span className="text-[13px] text-[#D1D5DB]">/</span>
+        <span className="truncate text-[13px] font-semibold text-[#111827]">{productName}</span>
+      </div>
+      {/* Actions */}
+      <div className="flex shrink-0 items-center gap-2">
+        <button
+          className="inline-flex h-9 items-center gap-1.5 rounded-lg border border-red-100 bg-white px-3.5 text-[13px] font-medium text-red-700 transition hover:bg-red-50"
+          type="button"
+        >
+          <Trash2 className="h-3.5 w-3.5" />
+          삭제
+        </button>
+        <button
+          className="inline-flex h-9 items-center rounded-lg border border-[#E5E7EB] bg-white px-3.5 text-[13px] font-medium text-[#374151] transition hover:bg-[#F9FAFB]"
+          onClick={toggleEdit}
+          type="button"
+        >
+          {isEditing ? "취소" : "수정"}
+        </button>
+        <Link
+          className="inline-flex items-center justify-center text-[#6B7280] transition hover:text-[#374151]"
+          to="/notifications"
+        >
+          <Bell className="h-5 w-5" />
+        </Link>
+        <div className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#2563EB] text-[12px] font-semibold text-white">
+          강
+        </div>
+      </div>
+    </>
+  );
+}
+
 export function AppShell() {
   const { pathname } = useLocation();
   const navigate = useNavigate();
   const isHome = pathname === HOME_PATH;
   const isProducts = pathname === "/products";
+
+  // /products/:id 패턴 감지
+  const productDetailMatch = /^\/products\/([^/]+)$/.exec(pathname);
+  const productDetailId = productDetailMatch ? (productDetailMatch[1] ?? "") : "";
+  const isProductDetail = productDetailId.length > 0;
+
   const page = PAGE_TITLES[pathname] ?? { title: "한손에 영업", subtitle: "" };
   const [productSearch, setProductSearch] = useState("");
 
   const onProductSearchSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const params = new URLSearchParams();
-    if (productSearch.trim()) params.set("q", productSearch.trim());
-    void navigate({ pathname: "/products", search: params.toString() });
+    const params2 = new URLSearchParams();
+    if (productSearch.trim()) params2.set("q", productSearch.trim());
+    void navigate({ pathname: "/products", search: params2.toString() });
   };
 
   return (
@@ -82,90 +150,109 @@ export function AppShell() {
         <div className="flex flex-1 flex-col pl-[var(--sidebar-width)]">
           {/* TopBar */}
           <header className="sticky top-0 z-20 flex h-[var(--topbar-height)] shrink-0 items-center gap-3 border-b border-border bg-white px-6">
-            {/* Title group */}
-            <div className="shrink-0">
-              <h1 className="text-[18px] font-bold leading-tight tracking-[-0.02em] text-[#111827]">
-                {page.title}
-              </h1>
-              {page.subtitle ? (
-                <p className="text-[11px] font-normal text-[#6B7280]">{page.subtitle}</p>
-              ) : null}
-            </div>
-            {/* Search bar — 제품 페이지: 제품 전용 검색, 나머지: GlobalSearch */}
-            {isProducts ? (
-              <form className="relative shrink-0 w-[300px]" onSubmit={onProductSearchSubmit}>
-                <Search className="pointer-events-none absolute left-3.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-[#9CA3AF]" />
-                <input
-                  className="h-10 w-full rounded-lg border border-[#E6EAF0] bg-white pl-9 pr-3 text-[13px] outline-none placeholder:text-[#9CA3AF] focus:border-[#93C5FD] focus:ring-1 focus:ring-[#93C5FD]"
-                  onChange={(e) => setProductSearch(e.target.value)}
-                  placeholder="제품 검색..."
-                  value={productSearch}
-                />
-              </form>
+            {isProductDetail ? (
+              <ProductDetailTopBar
+                productId={productDetailId}
+              />
             ) : (
-              <div className="w-[320px] shrink-0">
-                <GlobalSearch />
-              </div>
+              <>
+                {/* Title group */}
+                <div className="shrink-0">
+                  <h1 className="text-[18px] font-bold leading-tight tracking-[-0.02em] text-[#111827]">
+                    {page.title}
+                  </h1>
+                  {page.subtitle ? (
+                    <p className="text-[11px] font-normal text-[#6B7280]">
+                      {page.subtitle}
+                    </p>
+                  ) : null}
+                </div>
+                {/* Search bar */}
+                {isProducts ? (
+                  <form
+                    className="relative shrink-0 w-[300px]"
+                    onSubmit={onProductSearchSubmit}
+                  >
+                    <Search className="pointer-events-none absolute left-3.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-[#9CA3AF]" />
+                    <input
+                      className="h-10 w-full rounded-lg border border-[#E6EAF0] bg-white pl-9 pr-3 text-[13px] outline-none placeholder:text-[#9CA3AF] focus:border-[#93C5FD] focus:ring-1 focus:ring-[#93C5FD]"
+                      onChange={(e) => setProductSearch(e.target.value)}
+                      placeholder="제품 검색..."
+                      value={productSearch}
+                    />
+                  </form>
+                ) : (
+                  <div className="w-[320px] shrink-0">
+                    <GlobalSearch />
+                  </div>
+                )}
+                {/* Spacer */}
+                <div className="flex-1" />
+                {/* Action buttons */}
+                <div className="flex items-center gap-2">
+                  {isProducts ? (
+                    <>
+                      <button
+                        className="inline-flex h-9 items-center gap-1.5 rounded-lg bg-[#1D4ED8] px-3.5 text-[13px] font-bold text-white transition hover:bg-[#1E40AF]"
+                        onClick={() => void navigate("/products?action=create")}
+                        type="button"
+                      >
+                        <Plus className="h-3.5 w-3.5" strokeWidth={2.5} />
+                        제품 추가
+                      </button>
+                      <button
+                        className="inline-flex h-9 items-center gap-1.5 rounded-lg border border-[#E5E7EB] bg-white px-3 text-[13px] font-medium text-[#374151] transition hover:bg-gray-50"
+                        onClick={() => void navigate("/products?action=export")}
+                        type="button"
+                      >
+                        <Download className="h-3.5 w-3.5" />
+                        내보내기
+                      </button>
+                      <Link
+                        className="inline-flex items-center justify-center text-[#6B7280] transition hover:text-[#374151]"
+                        to="/notifications"
+                      >
+                        <Bell className="h-5 w-5" />
+                      </Link>
+                    </>
+                  ) : (
+                    <>
+                      <Link
+                        className="inline-flex h-9 items-center gap-1.5 rounded-lg bg-[#1D4ED8] px-3.5 text-[13px] font-semibold text-white transition hover:bg-[#1E40AF]"
+                        to="/deals/new"
+                      >
+                        <Plus className="h-3.5 w-3.5" strokeWidth={2.5} />새 딜
+                      </Link>
+                      <button
+                        className="inline-flex h-9 items-center gap-1.5 rounded-lg border border-[#E5E7EB] bg-white px-3 text-[13px] font-medium text-[#374151] transition hover:bg-gray-50"
+                        type="button"
+                      >
+                        <Download className="h-3.5 w-3.5" />
+                        내보내기
+                      </button>
+                      <Link
+                        className="inline-flex items-center justify-center text-[#6B7280] transition hover:text-[#374151]"
+                        to="/notifications"
+                      >
+                        <Bell className="h-5 w-5" />
+                      </Link>
+                    </>
+                  )}
+                  <div className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#2563EB] text-[12px] font-semibold text-white">
+                    강
+                  </div>
+                </div>
+              </>
             )}
-            {/* Spacer */}
-            <div className="flex-1" />
-            {/* Action buttons */}
-            <div className="flex items-center gap-2">
-              {isProducts ? (
-                <>
-                  <button
-                    className="inline-flex h-9 items-center gap-1.5 rounded-lg bg-[#1D4ED8] px-3.5 text-[13px] font-bold text-white transition hover:bg-[#1E40AF]"
-                    onClick={() => void navigate("/products?action=create")}
-                    type="button"
-                  >
-                    <Plus className="h-3.5 w-3.5" strokeWidth={2.5} />
-                    + 제품 추가
-                  </button>
-                  <button
-                    className="inline-flex h-9 items-center gap-1.5 rounded-lg border border-[#BFDBFE] bg-[#EFF6FF] px-3 text-[13px] text-[#2563EB] transition hover:bg-[#DBEAFE]"
-                    type="button"
-                  >
-                    <Download className="h-3.5 w-3.5" />
-                    내보내기
-                  </button>
-                  <Link
-                    className="inline-flex items-center justify-center text-[#6B7280] transition hover:text-[#374151]"
-                    to="/notifications"
-                  >
-                    <Bell className="h-5 w-5" />
-                  </Link>
-                </>
-              ) : (
-                <>
-                  <Link
-                    className="inline-flex h-9 items-center gap-1.5 rounded-lg bg-[#1D4ED8] px-3.5 text-[13px] font-semibold text-white transition hover:bg-[#1E40AF]"
-                    to="/deals/new"
-                  >
-                    <Plus className="h-3.5 w-3.5" strokeWidth={2.5} />
-                    새 딜
-                  </Link>
-                  <button
-                    className="inline-flex h-9 items-center gap-1.5 rounded-lg border border-[#E5E7EB] bg-white px-3 text-[13px] font-medium text-[#374151] transition hover:bg-gray-50"
-                    type="button"
-                  >
-                    <Download className="h-3.5 w-3.5" />
-                    내보내기
-                  </button>
-                  <Link
-                    className="inline-flex items-center justify-center text-[#6B7280] transition hover:text-[#374151]"
-                    to="/notifications"
-                  >
-                    <Bell className="h-5 w-5" />
-                  </Link>
-                </>
-              )}
-              <div className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#2563EB] text-[12px] font-semibold text-white">
-                강
-              </div>
-            </div>
           </header>
 
-          <main className={isHome ? "flex flex-1 flex-col overflow-hidden" : "min-h-[calc(100vh-var(--topbar-height))] px-8 py-8"}>
+          <main
+            className={
+              isHome || isProductDetail
+                ? "flex flex-1 flex-col overflow-hidden"
+                : "min-h-[calc(100vh-var(--topbar-height))] px-8 py-8"
+            }
+          >
             <Outlet />
           </main>
         </div>
@@ -173,9 +260,7 @@ export function AppShell() {
 
       {/* ── Mobile Shell ── */}
       <div className="min-h-screen md:hidden">
-        {isHome ? (
-          <MobileAppHeader title="딜 파이프라인" />
-        ) : null}
+        {isHome ? <MobileAppHeader title="딜 파이프라인" /> : null}
         <main className="pb-[calc(var(--mobile-tabbar-height,4rem)+1.5rem)]">
           <Outlet />
         </main>

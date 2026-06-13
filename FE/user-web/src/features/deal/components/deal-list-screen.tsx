@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { DealCreateDialog } from "@/features/deal/components/deal-create-dialog";
 import { DealDetailPanel } from "@/features/deal/components/deal-detail-panel";
 import { useDealList } from "@/features/deal/hooks/use-deal-list";
+import { Pagination } from "@/components/ui/pagination";
 import {
   formatDealLikelihood,
   formatDealNextAction,
@@ -48,11 +49,12 @@ export function DealListScreen() {
   const [nextActionStatus, setNextActionStatus] =
     useState<OptionalNextActionStatus>("ALL");
   const [includeDeleted, setIncludeDeleted] = useState(false);
+  const [page, setPage] = useState(1);
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [notice, setNotice] = useState<string | null>(null);
   const [selectedDealId, setSelectedDealId] = useState("");
   const dealsQuery = useDealList({
-    page: 1,
+    page,
     pageSize: 20,
     search: search || undefined,
     stage: stage === "ALL" ? undefined : stage,
@@ -83,6 +85,7 @@ export function DealListScreen() {
   const onSearchSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setSearch(searchText.trim());
+    setPage(1);
   };
 
   return (
@@ -113,7 +116,7 @@ export function DealListScreen() {
                 : "border bg-white text-slate-700 hover:bg-muted"
             }`}
             key={tab.value}
-            onClick={() => setStage(tab.value)}
+            onClick={() => { setStage(tab.value); setPage(1); }}
             type="button"
           >
             <span>{tab.label}</span>
@@ -143,9 +146,10 @@ export function DealListScreen() {
         </div>
         <select
           className="h-10 rounded-md border px-3 text-sm outline-none focus:ring-2 focus:ring-ring"
-          onChange={(event) =>
-            setLikelihoodStatus(event.target.value as OptionalLikelihoodStatus)
-          }
+          onChange={(event) => {
+            setLikelihoodStatus(event.target.value as OptionalLikelihoodStatus);
+            setPage(1);
+          }}
           value={likelihoodStatus}
         >
           <option value="ALL">가능성 전체</option>
@@ -155,9 +159,10 @@ export function DealListScreen() {
         </select>
         <select
           className="h-10 rounded-md border px-3 text-sm outline-none focus:ring-2 focus:ring-ring"
-          onChange={(event) =>
-            setNextActionStatus(event.target.value as OptionalNextActionStatus)
-          }
+          onChange={(event) => {
+            setNextActionStatus(event.target.value as OptionalNextActionStatus);
+            setPage(1);
+          }}
           value={nextActionStatus}
         >
           <option value="ALL">다음 행동 전체</option>
@@ -172,7 +177,7 @@ export function DealListScreen() {
             <input
               checked={includeDeleted}
               className="h-4 w-4 rounded border"
-              onChange={(event) => setIncludeDeleted(event.target.checked)}
+              onChange={(event) => { setIncludeDeleted(event.target.checked); setPage(1); }}
               type="checkbox"
             />
             삭제 포함
@@ -218,6 +223,15 @@ export function DealListScreen() {
           selectedDealId={selectedDealId}
         />
       )}
+
+      {dealList && (dealList.hasNext || page > 1) ? (
+        <Pagination
+          hasNext={dealList.hasNext}
+          page={page}
+          totalCount={dealList.totalCount}
+          onPageChange={setPage}
+        />
+      ) : null}
 
       <DealCreateDialog
         onCreated={(deal) => setNotice(`${deal.title} 딜이 추가되었습니다.`)}

@@ -1,22 +1,78 @@
-import type { PaginatedResponse } from "@/types/pagination";
+// BE API response shapes — fields match what the BE actually returns
 
-export type Product = {
+export type ProductCategory = {
   readonly id: string;
-  readonly name: string;
-  readonly category: string | null;
-  readonly unitPrice: number | null;
-  readonly currency: string;
-  readonly description: string | null;
-  readonly connectionCount: number;
-  readonly hasMemo: boolean;
-  readonly memoCount: number;
-  readonly latestMemoAt: string | null;
-  readonly createdAt: string;
-  readonly updatedAt: string;
-  readonly deletedAt: string | null;
-  readonly permanentDeleteAt: string | null;
+  readonly categoryName: string;
 };
 
+export type ProductStatus = {
+  readonly id: string;
+  readonly statusName: string;
+};
+
+// List item returned by GET /api/products
+export type Product = {
+  readonly id: string;
+  readonly productName: string;
+  readonly productCategory: ProductCategory;
+  readonly productStatus: ProductStatus;
+  readonly createdAt: string;
+};
+
+// Detail returned by GET /api/products/:id
+export type ProductDetail = Product & {
+  readonly productPrice: number;
+  readonly updatedAt: string;
+};
+
+export type ProductListResponse = {
+  readonly items: Product[];
+  readonly page: number;
+  readonly pageSize: number;
+  readonly totalCount: number;
+  readonly totalPages: number;
+};
+
+export type ProductCategoryListResponse = {
+  readonly items: ProductCategory[];
+};
+
+export type ProductStatusListResponse = {
+  readonly items: ProductStatus[];
+};
+
+export type ProductListParams = {
+  readonly page?: number;
+  readonly productName?: string;
+  readonly productCategoryId?: string;
+  readonly productStatusId?: string;
+};
+
+export type CreateProductInput = {
+  readonly productName: string;
+  readonly productPrice: number;
+  readonly productCategoryId: string;
+  readonly productStatusId: string;
+  readonly productMemo?: string;
+};
+
+export type UpdateProductInput = {
+  readonly productId: string;
+  readonly productName?: string;
+  readonly productPrice?: number;
+  readonly productCategoryId?: string;
+  readonly productStatusId?: string;
+};
+
+export type CreateProductCategoryInput = {
+  readonly categoryName: string;
+};
+
+export type CreateProductStatusInput = {
+  readonly statusName: string;
+};
+
+// Connection types (kept for schema compatibility)
 export type ProductConnectionTargetType = "COMPANY" | "CONTACT" | "DEAL";
 
 export type ProductConnectionType =
@@ -36,22 +92,6 @@ export type ProductConnection = {
   readonly connectionType: ProductConnectionType;
   readonly note: string | null;
   readonly createdAt: string;
-  readonly updatedAt: string;
-  readonly deletedAt: string | null;
-  readonly permanentDeleteAt: string | null;
-};
-
-export type ProductMemo = {
-  readonly id: string;
-  readonly targetType: "PRODUCT";
-  readonly targetId: string;
-  readonly memoDate: string;
-  readonly title: string | null;
-  readonly content: string;
-  readonly createdAt: string;
-  readonly updatedAt: string;
-  readonly deletedAt: string | null;
-  readonly permanentDeleteAt: string | null;
 };
 
 export type ProductLog = {
@@ -62,54 +102,6 @@ export type ProductLog = {
   readonly content: string;
   readonly createdAt: string;
   readonly updatedAt: string;
-  readonly deletedAt?: string | null;
-  readonly permanentDeleteAt?: string | null;
-};
-
-export type ProductDetail = {
-  readonly product: Product;
-  readonly connections: ProductConnection[];
-  readonly memos: ProductMemo[];
-};
-
-export type ProductListResponse = PaginatedResponse<Product>;
-export type ProductLogListResponse = PaginatedResponse<ProductLog>;
-
-export type DeleteProductResponse = {
-  readonly id: string;
-  readonly deletedAt: string;
-  readonly permanentDeleteAt: string;
-};
-
-export type ProductListParams = {
-  readonly page?: number;
-  readonly pageSize?: number;
-  readonly search?: string;
-  readonly category?: string;
-  readonly includeDeleted?: boolean;
-};
-
-export type ProductLogListParams = {
-  readonly page?: number;
-  readonly pageSize?: number;
-};
-
-export type CreateProductInput = {
-  readonly name: string;
-  readonly category?: string;
-  readonly unitPrice?: number;
-  readonly currency?: string;
-  readonly description?: string;
-  readonly initialMemo?: string;
-};
-
-export type UpdateProductInput = {
-  readonly productId: string;
-  readonly name?: string;
-  readonly category?: string | null;
-  readonly unitPrice?: number | null;
-  readonly currency?: string;
-  readonly description?: string | null;
 };
 
 export type CreateProductConnectionInput = {
@@ -133,4 +125,30 @@ export type UpdateProductLogInput = {
   readonly loggedAt?: string;
   readonly title?: string;
   readonly content?: string;
+};
+
+// Memo log shapes (for detail screen)
+export type ProductMemoLog = {
+  readonly id: string;
+  readonly memoType: string;
+  readonly memo: string;
+  readonly createdAt: string;
+};
+
+export type ProductPrivateMemoLog = {
+  readonly id: string;
+  readonly memo: string;
+  readonly createdAt: string;
+};
+
+export type ProductMemoLogListResponse = {
+  readonly items: ProductMemoLog[];
+  readonly nextCursor: string | null;
+  readonly hasNext: boolean;
+};
+
+export type ProductPrivateMemoLogListResponse = {
+  readonly items: ProductPrivateMemoLog[];
+  readonly nextCursor: string | null;
+  readonly hasNext: boolean;
 };

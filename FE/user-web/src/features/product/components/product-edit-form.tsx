@@ -2,43 +2,72 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Save } from "lucide-react";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { useProductCategories, useProductStatuses } from "@/features/product/hooks/use-product-detail";
 import { useUpdateProductMutation } from "@/features/product/hooks/use-product-mutations";
-import {
-  productFormSchema,
-  toProductFormValues,
-  toUpdateProductInput,
-  type ProductFormValues,
-} from "@/features/product/schemas/product-schema";
-import type { Product } from "@/features/product/types/product";
+import type { ProductDetail } from "@/features/product/types/product";
 import { getApiErrorMessage } from "@/lib/api-client";
 
+const schema = z.object({
+  productName: z.string().trim().min(1, "제품명을 입력해주세요."),
+  productPrice: z
+    .string()
+    .trim()
+    .refine(
+      (v) => v.length === 0 || /^\d+$/.test(v),
+      "단가는 0 이상의 정수로 입력해주세요."
+    )
+    .default("0"),
+  productCategoryId: z.string().trim().min(1, "카테고리를 선택해주세요."),
+  productStatusId: z.string().trim().min(1, "상태를 선택해주세요."),
+});
+
+type FormValues = z.infer<typeof schema>;
+
 type ProductEditFormProps = {
-  readonly product: Product;
-  readonly onSaved: (product: Product) => void;
+  readonly product: ProductDetail;
+  readonly onSaved: () => void;
 };
 
 export function ProductEditForm({ product, onSaved }: ProductEditFormProps) {
   const updateProductMutation = useUpdateProductMutation();
+  const categoriesQuery = useProductCategories();
+  const statusesQuery = useProductStatuses();
+
   const {
     register,
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm<ProductFormValues>({
-    resolver: zodResolver(productFormSchema),
-    defaultValues: toProductFormValues(product),
+  } = useForm<FormValues>({
+    resolver: zodResolver(schema),
+    defaultValues: {
+      productName: product.productName,
+      productPrice: String(product.productPrice ?? 0),
+      productCategoryId: product.productCategory.id,
+      productStatusId: product.productStatus.id,
+    },
   });
 
   useEffect(() => {
-    reset(toProductFormValues(product));
+    reset({
+      productName: product.productName,
+      productPrice: String(product.productPrice ?? 0),
+      productCategoryId: product.productCategory.id,
+      productStatusId: product.productStatus.id,
+    });
   }, [product, reset]);
 
   const onSubmit = handleSubmit(async (values) => {
-    const updatedProduct = await updateProductMutation.mutateAsync(
-      toUpdateProductInput(product.id, values)
-    );
+    await updateProductMutation.mutateAsync({
+      productId: product.id,
+      productName: values.productName,
+      productPrice: Number(values.productPrice || "0"),
+      productCategoryId: values.productCategoryId,
+      productStatusId: values.productStatusId,
+    });
 
-    onSaved(updatedProduct);
+    onSaved();
   });
 
   return (
@@ -48,74 +77,76 @@ export function ProductEditForm({ product, onSaved }: ProductEditFormProps) {
           제품명
         </label>
         <input
-          aria-describedby={
-            errors.name ? "product-detail-name-error" : undefined
-          }
-          aria-invalid={Boolean(errors.name)}
+          aria-invalid={Boolean(errors.productName)}
           className="h-10 rounded-md border px-3 text-sm outline-none focus:ring-2 focus:ring-ring"
           id="product-detail-name"
-          {...register("name")}
+          {...register("productName")}
         />
-        {errors.name ? (
-          <p className="text-xs text-destructive" id="product-detail-name-error">
-            {errors.name.message}
-          </p>
+        {errors.productName ? (
+          <p className="text-xs text-destructive">{errors.productName.message}</p>
         ) : null}
       </div>
 
-      <div className="grid gap-4 md:grid-cols-3">
+      <div className="grid grid-cols-2 gap-4">
         <div className="grid gap-2">
           <label className="text-sm font-medium" htmlFor="product-detail-category">
-            분류
+            카테고리
           </label>
-          <input
+          <select
+            aria-invalid={Boolean(errors.productCategoryId)}
             className="h-10 rounded-md border px-3 text-sm outline-none focus:ring-2 focus:ring-ring"
             id="product-detail-category"
-            {...register("category")}
-          />
-        </div>
-        <div className="grid gap-2">
-          <label className="text-sm font-medium" htmlFor="product-detail-price">
-            단가
-          </label>
-          <input
-            aria-describedby={
-              errors.unitPrice ? "product-detail-price-error" : undefined
-            }
-            aria-invalid={Boolean(errors.unitPrice)}
-            className="h-10 rounded-md border px-3 text-sm outline-none focus:ring-2 focus:ring-ring"
-            id="product-detail-price"
-            inputMode="numeric"
-            {...register("unitPrice")}
-          />
-          {errors.unitPrice ? (
-            <p className="text-xs text-destructive" id="product-detail-price-error">
-              {errors.unitPrice.message}
-            </p>
+            {...register("productCategoryId")}
+          >
+            <option value="">선택</option>
+            {categoriesQuery.data?.items.map((cat) => (
+              <option key={cat.id} value={cat.id}>
+                {cat.categoryName}
+              </option>
+            ))}
+          </select>
+          {errors.productCategoryId ? (
+            <p className="text-xs text-destructive">{errors.productCategoryId.message}</p>
           ) : null}
         </div>
+
         <div className="grid gap-2">
-          <label className="text-sm font-medium" htmlFor="product-detail-currency">
-            통화
+          <label className="text-sm font-medium" htmlFor="product-detail-status">
+            판매 상태
           </label>
-          <input
-            className="h-10 rounded-md border px-3 text-sm uppercase outline-none focus:ring-2 focus:ring-ring"
-            id="product-detail-currency"
-            maxLength={3}
-            {...register("currency")}
-          />
+          <select
+            aria-invalid={Boolean(errors.productStatusId)}
+            className="h-10 rounded-md border px-3 text-sm outline-none focus:ring-2 focus:ring-ring"
+            id="product-detail-status"
+            {...register("productStatusId")}
+          >
+            <option value="">선택</option>
+            {statusesQuery.data?.items.map((st) => (
+              <option key={st.id} value={st.id}>
+                {st.statusName}
+              </option>
+            ))}
+          </select>
+          {errors.productStatusId ? (
+            <p className="text-xs text-destructive">{errors.productStatusId.message}</p>
+          ) : null}
         </div>
       </div>
 
       <div className="grid gap-2">
-        <label className="text-sm font-medium" htmlFor="product-detail-description">
-          설명
+        <label className="text-sm font-medium" htmlFor="product-detail-price">
+          단가 (원)
         </label>
-        <textarea
-          className="min-h-24 resize-y rounded-md border px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-ring"
-          id="product-detail-description"
-          {...register("description")}
+        <input
+          aria-invalid={Boolean(errors.productPrice)}
+          className="h-10 rounded-md border px-3 text-sm outline-none focus:ring-2 focus:ring-ring"
+          id="product-detail-price"
+          inputMode="numeric"
+          {...register("productPrice")}
         />
+        {errors.productPrice ? (
+          <p className="text-xs text-destructive">{errors.productPrice.message}</p>
+        ) : null}
       </div>
 
       {updateProductMutation.error ? (

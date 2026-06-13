@@ -1,54 +1,73 @@
 import { Package, Plus } from "lucide-react";
 import { useEffect, useState } from "react";
-import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { ProductCreateDialog } from "@/features/product/components/product-create-dialog";
+import { exportProductsXlsx } from "@/features/product/api/product-api";
+import { useProductCategories, useProductStatuses } from "@/features/product/hooks/use-product-detail";
 import { useProductList } from "@/features/product/hooks/use-product-list";
 import type { Product } from "@/features/product/types/product";
+import { Pagination } from "@/components/ui/pagination";
 import { getApiErrorMessage } from "@/lib/api-client";
 import { cn } from "@/utils/cn";
 import { formatDate } from "@/utils/format";
 
-type SaleStatus = "ALL" | "active" | "deleted";
-
 export function ProductListScreen() {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-  const [saleStatus, setSaleStatus] = useState<SaleStatus>("ALL");
   const [categoryFilter, setCategoryFilter] = useState("");
-  const [connectionFilter, setConnectionFilter] = useState("");
+  const [statusFilter, setStatusFilter] = useState("");
+  const [page, setPage] = useState(1);
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [notice, setNotice] = useState<string | null>(null);
+  const [isExporting, setIsExporting] = useState(false);
 
   // TopBar SearchBar에서 넘어온 검색어
   const search = searchParams.get("q") ?? "";
 
-  // TopBar "제품 추가" 버튼 → ?action=create
+  // 검색어 변경 시 page 리셋
   useEffect(() => {
-    if (searchParams.get("action") === "create") {
+    setPage(1);
+  }, [search]);
+
+  // TopBar 버튼 액션 처리 → ?action=create | ?action=export
+  useEffect(() => {
+    const action = searchParams.get("action");
+    if (action === "create") {
       setIsCreateOpen(true);
       void navigate("/products", { replace: true });
+    } else if (action === "export") {
+      void navigate("/products", { replace: true });
+      setIsExporting(true);
+      void exportProductsXlsx({
+        productName: search || undefined,
+        productCategoryId: categoryFilter || undefined,
+        productStatusId: statusFilter || undefined,
+      }).then(({ blob, fileName }) => {
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = fileName ?? "products.xlsx";
+        a.click();
+        URL.revokeObjectURL(url);
+      }).finally(() => {
+        setIsExporting(false);
+      });
     }
-  }, [navigate, searchParams]);
+  }, [navigate, searchParams]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const categoriesQuery = useProductCategories();
+  const statusesQuery = useProductStatuses();
 
   const productsQuery = useProductList({
-    page: 1,
-    pageSize: 20,
-    search: search || undefined,
-    includeDeleted: saleStatus === "deleted" || saleStatus === "ALL",
-    category: categoryFilter || undefined,
+    page,
+    productName: search || undefined,
+    productCategoryId: categoryFilter || undefined,
+    productStatusId: statusFilter || undefined,
   });
 
   const products = productsQuery.data?.items ?? [];
   const totalCount = productsQuery.data?.totalCount ?? 0;
-
-  const filteredProducts = (() => {
-    let list = products;
-    if (saleStatus === "active") list = list.filter((p) => !p.deletedAt);
-    if (saleStatus === "deleted") list = list.filter((p) => p.deletedAt);
-    if (connectionFilter === "connected") list = list.filter((p) => p.connectionCount > 0);
-    if (connectionFilter === "none") list = list.filter((p) => p.connectionCount === 0);
-    return list;
-  })();
 
   return (
     <section className="flex flex-col gap-0 px-6 py-5">
@@ -58,11 +77,15 @@ export function ProductListScreen() {
         <button
           className={cn(
             "inline-flex h-[30px] items-center rounded-[7px] px-3 text-[12px] font-bold transition-colors",
-            saleStatus === "ALL"
+            !categoryFilter && !statusFilter
               ? "border border-[#C7D7FE] bg-[#EAF2FF] text-[#1D4ED8]"
               : "border border-[#E6EAF0] bg-white text-[#475569] hover:bg-gray-50"
           )}
-          onClick={() => setSaleStatus("ALL")}
+          onClick={() => {
+            setCategoryFilter("");
+            setStatusFilter("");
+            setPage(1);
+          }}
           type="button"
         >
           전체
@@ -75,52 +98,41 @@ export function ProductListScreen() {
               "inline-flex h-[30px] cursor-pointer appearance-none items-center rounded-[7px] border border-[#E6EAF0] bg-white pl-3 pr-7 text-[12px] font-medium text-[#475569] outline-none transition-colors hover:bg-gray-50",
               categoryFilter && "border-[#C7D7FE] bg-[#EAF2FF] text-[#1D4ED8]"
             )}
-            onChange={(e) => setCategoryFilter(e.target.value)}
+            onChange={(e) => { setCategoryFilter(e.target.value); setPage(1); }}
             value={categoryFilter}
           >
             <option value="">카테고리 ▾</option>
-            <option value="소프트웨어">소프트웨어</option>
-            <option value="하드웨어">하드웨어</option>
-            <option value="SaaS">SaaS</option>
-            <option value="서비스">서비스</option>
-            <option value="기타">기타</option>
+            {categoriesQuery.data?.items.map((cat) => (
+              <option key={cat.id} value={cat.id}>
+                {cat.categoryName}
+              </option>
+            ))}
           </select>
         </div>
 
-        {/* 연결 상태 ▾ */}
+        {/* 상태 ▾ */}
         <div className="relative">
           <select
             className={cn(
               "inline-flex h-[30px] cursor-pointer appearance-none items-center rounded-[7px] border border-[#E6EAF0] bg-white pl-3 pr-7 text-[12px] font-medium text-[#475569] outline-none transition-colors hover:bg-gray-50",
-              connectionFilter && "border-[#C7D7FE] bg-[#EAF2FF] text-[#1D4ED8]"
+              statusFilter && "border-[#C7D7FE] bg-[#EAF2FF] text-[#1D4ED8]"
             )}
-            onChange={(e) => setConnectionFilter(e.target.value)}
-            value={connectionFilter}
+            onChange={(e) => { setStatusFilter(e.target.value); setPage(1); }}
+            value={statusFilter}
           >
-            <option value="">연결 상태 ▾</option>
-            <option value="connected">연결됨</option>
-            <option value="none">미연결</option>
-          </select>
-        </div>
-
-        {/* 판매 상태 ▾ */}
-        <div className="relative">
-          <select
-            className={cn(
-              "inline-flex h-[30px] cursor-pointer appearance-none items-center rounded-[7px] border border-[#E6EAF0] bg-white pl-3 pr-7 text-[12px] font-medium text-[#475569] outline-none transition-colors hover:bg-gray-50",
-              saleStatus !== "ALL" && "border-[#C7D7FE] bg-[#EAF2FF] text-[#1D4ED8]"
-            )}
-            onChange={(e) => setSaleStatus(e.target.value as SaleStatus)}
-            value={saleStatus}
-          >
-            <option value="ALL">판매 상태 ▾</option>
-            <option value="active">활성</option>
-            <option value="deleted">삭제됨</option>
+            <option value="">판매 상태 ▾</option>
+            {statusesQuery.data?.items.map((st) => (
+              <option key={st.id} value={st.id}>
+                {st.statusName}
+              </option>
+            ))}
           </select>
         </div>
 
         <div className="flex-1" />
-        <span className="text-[12px] font-semibold text-[#64748B]">{totalCount}개</span>
+        <span className="text-[12px] font-semibold text-[#64748B]">
+          {isExporting ? "내보내는 중..." : `${totalCount}개`}
+        </span>
       </div>
 
       {/* Table Card */}
@@ -136,7 +148,6 @@ export function ProductListScreen() {
         <div className="flex shrink-0 items-center border-b border-[#E6EAF0] bg-[#FAFBFC] px-6" style={{ height: 44 }}>
           <ProductHeaderCell width={280}>제품명</ProductHeaderCell>
           <ProductHeaderCell width={150}>카테고리</ProductHeaderCell>
-          <ProductHeaderCell width={80}>연결</ProductHeaderCell>
           <ProductHeaderCell width={100}>상태</ProductHeaderCell>
           <ProductHeaderCell flex>등록일</ProductHeaderCell>
         </div>
@@ -149,30 +160,33 @@ export function ProductListScreen() {
             error={productsQuery.error}
             onRetry={() => void productsQuery.refetch()}
           />
-        ) : filteredProducts.length === 0 ? (
+        ) : products.length === 0 ? (
           <ProductEmptyState
             hasSearch={search.length > 0}
             onCreate={() => setIsCreateOpen(true)}
           />
         ) : (
           <div className="flex-1 overflow-y-auto">
-            {filteredProducts.map((product) => (
+            {products.map((product) => (
               <ProductRow key={product.id} product={product} />
             ))}
           </div>
         )}
       </div>
 
-      {/* Mobile cards */}
-      <div className="mt-4 grid gap-3 md:hidden">
-        {filteredProducts.map((product) => (
-          <MobileProductCard key={product.id} product={product} />
-        ))}
-      </div>
+      {productsQuery.data && (productsQuery.data.totalPages > 1 || page > 1) ? (
+        <Pagination
+          page={productsQuery.data.page}
+          totalPages={productsQuery.data.totalPages}
+          totalCount={productsQuery.data.totalCount}
+          onPageChange={setPage}
+        />
+      ) : null}
 
       <ProductCreateDialog
-        onCreated={(product) => {
-          setNotice(`${product.name} 제품이 추가되었습니다.`);
+        onCreated={() => {
+          setNotice("제품이 추가되었습니다.");
+          void productsQuery.refetch();
         }}
         onOpenChange={setIsCreateOpen}
         open={isCreateOpen}
@@ -182,8 +196,6 @@ export function ProductListScreen() {
 }
 
 function ProductRow({ product }: { readonly product: Product }) {
-  const isDeleted = !!product.deletedAt;
-
   return (
     <Link
       className="flex items-center border-b border-[#E8EDF3] px-6 hover:bg-[#F9FAFB] last:border-b-0"
@@ -191,32 +203,19 @@ function ProductRow({ product }: { readonly product: Product }) {
       to={`/products/${product.id}`}
     >
       <div style={{ width: 280 }} className="min-w-0 shrink-0">
-        <span
-          className={cn(
-            "block truncate text-[13px] font-semibold",
-            isDeleted ? "text-[#9CA3AF] line-through" : "text-[#111827]"
-          )}
-        >
-          {product.name}
+        <span className="block truncate text-[13px] font-semibold text-[#111827]">
+          {product.productName}
         </span>
-        {isDeleted ? (
-          <span className="mt-0.5 block text-[11px] text-[#EF4444]">삭제됨</span>
-        ) : null}
       </div>
       <div style={{ width: 150 }} className="shrink-0">
-        {product.category ? (
-          <span className="inline-flex h-6 items-center rounded-md bg-[#F3F4F6] px-2.5 text-[11px] font-medium text-[#374151]">
-            {product.category}
-          </span>
-        ) : (
-          <span className="text-[12px] text-[#9CA3AF]">-</span>
-        )}
-      </div>
-      <div style={{ width: 80 }} className="shrink-0">
-        <span className="text-[13px] text-[#374151]">{product.connectionCount}건</span>
+        <span className="inline-flex h-6 items-center rounded-full bg-[#DBEAFE] px-2.5 text-[11px] font-medium text-[#2568D8]">
+          {product.productCategory.categoryName}
+        </span>
       </div>
       <div style={{ width: 100 }} className="shrink-0">
-        <ProductStatusBadge product={product} />
+        <span className="inline-flex h-6 items-center rounded-md bg-[#D1FAE5] px-2.5 text-[11px] font-medium text-[#065F46]">
+          {product.productStatus.statusName}
+        </span>
       </div>
       <div className="min-w-0 flex-1">
         <span className="text-[12px] text-[#374151]">
@@ -224,21 +223,6 @@ function ProductRow({ product }: { readonly product: Product }) {
         </span>
       </div>
     </Link>
-  );
-}
-
-function ProductStatusBadge({ product }: { readonly product: Product }) {
-  if (product.deletedAt) {
-    return (
-      <span className="inline-flex h-6 items-center rounded-md bg-[#FEF3C7] px-2.5 text-[11px] font-medium text-[#92400E]">
-        삭제됨
-      </span>
-    );
-  }
-  return (
-    <span className="inline-flex h-6 items-center rounded-md bg-[#D1FAE5] px-2.5 text-[11px] font-medium text-[#065F46]">
-      활성
-    </span>
   );
 }
 
@@ -258,29 +242,6 @@ function ProductHeaderCell({
     >
       {children}
     </div>
-  );
-}
-
-function MobileProductCard({ product }: { readonly product: Product }) {
-  return (
-    <Link
-      className="block rounded-lg border border-[#E5EAF0] bg-white p-4 hover:bg-[#F9FAFB]"
-      to={`/products/${product.id}`}
-    >
-      <div className="flex items-start justify-between gap-3">
-        <div className="min-w-0">
-          <p className="truncate text-[14px] font-semibold text-[#111827]">{product.name}</p>
-          <p className="mt-0.5 text-[12px] text-[#6B7280]">
-            {product.category ?? "카테고리 없음"}
-          </p>
-        </div>
-        <ProductStatusBadge product={product} />
-      </div>
-      <div className="mt-3 flex gap-4 text-[12px] text-[#6B7280]">
-        <span>연결 {product.connectionCount}건</span>
-        <span>등록일 {formatDate(product.createdAt, { year: "numeric" })}</span>
-      </div>
-    </Link>
   );
 }
 

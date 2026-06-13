@@ -1,7 +1,4 @@
-import type {
-  ProductListParams,
-  ProductLogListParams,
-} from "@/features/product/types/product";
+import type { ProductListParams } from "@/features/product/types/product";
 
 export const productQueryKeys = {
   all: ["product"] as const,
@@ -11,22 +8,18 @@ export const productQueryKeys = {
       ...productQueryKeys.lists(),
       {
         page: params.page ?? 1,
-        pageSize: params.pageSize ?? 20,
-        search: params.search ?? "",
-        category: params.category ?? "",
-        includeDeleted: params.includeDeleted ?? false,
+        productName: params.productName ?? "",
+        productCategoryId: params.productCategoryId ?? "",
+        productStatusId: params.productStatusId ?? "",
       },
     ] as const,
   details: () => [...productQueryKeys.all, "detail"] as const,
   detail: (productId: string) =>
     [...productQueryKeys.details(), productId] as const,
-  logs: (productId: string, params: ProductLogListParams) =>
-    [
-      ...productQueryKeys.detail(productId),
-      "logs",
-      {
-        page: params.page ?? 1,
-        pageSize: params.pageSize ?? 20,
-      },
-    ] as const,
+  categories: () => [...productQueryKeys.all, "categories"] as const,
+  statuses: () => [...productQueryKeys.all, "statuses"] as const,
+  memoLogs: (productId: string, cursor?: string) =>
+    [...productQueryKeys.detail(productId), "memo-logs", cursor ?? ""] as const,
+  privateMemoLogs: (productId: string, cursor?: string) =>
+    [...productQueryKeys.detail(productId), "private-memo-logs", cursor ?? ""] as const,
 };

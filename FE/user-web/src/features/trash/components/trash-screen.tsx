@@ -3,8 +3,6 @@ import {
   Building2,
   CalendarDays,
   CheckCircle2,
-  ChevronLeft,
-  ChevronRight,
   ClipboardList,
   FileText,
   Filter,
@@ -19,6 +17,7 @@ import {
   X,
   type LucideIcon,
 } from "lucide-react";
+import { Pagination } from "@/components/ui/pagination";
 import { useEffect, useMemo, useState } from "react";
 import { useRestoreTrashItemMutation } from "@/features/trash/hooks/use-trash-mutations";
 import { useTrashList } from "@/features/trash/hooks/use-trash-queries";
@@ -143,13 +142,14 @@ export function TrashScreen() {
             onRestore={(item) => void onRestore(item)}
           />
 
-          <PaginationControls
-            hasNext={trashQuery.data?.hasNext ?? false}
-            page={page}
-            totalCount={trashQuery.data?.totalCount ?? 0}
-            onNext={() => setPage((current) => current + 1)}
-            onPrev={() => setPage((current) => Math.max(1, current - 1))}
-          />
+          {(trashQuery.data?.hasNext || page > 1) ? (
+            <Pagination
+              hasNext={trashQuery.data?.hasNext ?? false}
+              page={page}
+              totalCount={trashQuery.data?.totalCount}
+              onPageChange={setPage}
+            />
+          ) : null}
         </section>
       </div>
     </section>
@@ -372,50 +372,6 @@ function DateBlock({ label, value }: DateBlockProps) {
         {label}
       </div>
       <div className="text-sm">{formatDateTime(value, { includeYear: true })}</div>
-    </div>
-  );
-}
-
-type PaginationControlsProps = {
-  readonly page: number;
-  readonly totalCount: number;
-  readonly hasNext: boolean;
-  readonly onPrev: () => void;
-  readonly onNext: () => void;
-};
-
-function PaginationControls({
-  page,
-  totalCount,
-  hasNext,
-  onPrev,
-  onNext,
-}: PaginationControlsProps) {
-  return (
-    <div className="flex flex-col gap-3 border-t pt-4 sm:flex-row sm:items-center sm:justify-between">
-      <div className="text-sm text-muted-foreground">
-        총 {totalCount.toLocaleString()}개 · {page}페이지
-      </div>
-      <div className="flex items-center gap-2">
-        <button
-          type="button"
-          className="inline-flex h-9 w-9 items-center justify-center rounded-md border hover:bg-muted disabled:cursor-not-allowed disabled:opacity-50"
-          disabled={page <= 1}
-          aria-label="이전 페이지"
-          onClick={onPrev}
-        >
-          <ChevronLeft className="h-4 w-4" aria-hidden />
-        </button>
-        <button
-          type="button"
-          className="inline-flex h-9 w-9 items-center justify-center rounded-md border hover:bg-muted disabled:cursor-not-allowed disabled:opacity-50"
-          disabled={!hasNext}
-          aria-label="다음 페이지"
-          onClick={onNext}
-        >
-          <ChevronRight className="h-4 w-4" aria-hidden />
-        </button>
-      </div>
     </div>
   );
 }
