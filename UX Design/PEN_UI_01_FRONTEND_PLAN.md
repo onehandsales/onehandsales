@@ -239,25 +239,20 @@ pen에서 즉시 확인 가능한 토큰 축:
 
 ### Deal Stage
 
-현재 프론트/백엔드 단계:
+현재 프론트 단계 (2026-06-13 기준, 6단계 확장 완료):
 
-- `INITIAL_CONTACT`
-- `IN_DISCUSSION`
-- `WON`
-- `LOST`
+- `INITIAL_CONTACT` — 초기 접촉
+- `NEEDS_ANALYSIS` — 니즈 확인
+- `PROPOSAL` — 제안/견적
+- `NEGOTIATION` — 협상
+- `WON` — 성사
+- `LOST` — 실패
 
-pen 단계:
-
-- 초기 접촉
-- 니즈 확인
-- 제안/견적
-- 협상
-- 성사
-- 실패
+pen 단계: 위와 동일 (완전 일치 달성).
 
 판단:
-- 1차 프론트 구현은 UI에서 임시 매핑 전략이 필요하다.
-- 백엔드 enum 변경 여부는 별도 결정이 필요하다.
+- FE는 6단계로 완전 전환됨 (2026-06-13).
+- 백엔드 enum은 아직 4단계 (`INITIAL_CONTACT` / `IN_DISCUSSION` / `WON` / `LOST`). BE Prisma schema + migration 변경이 별도로 필요하다.
 
 ### App Shell
 
