@@ -1,207 +1,129 @@
+// 기능 : 딜 생성/수정 form Zod 스키마 — Backend Deal API 계약 기준
 import { z } from "zod";
-import type {
-  CreateDealActivityInput,
-  CreateDealInput,
-  DealLikelihoodStatus,
-  DealStage,
-  SnoozeDealNextActionInput,
+import {
+  DEAL_STATUS_LIST,
+  type CreateDealInput,
+  type DealStatus,
+  type UpdateDealInput,
 } from "@/features/deal/types/deal";
 
-const currencyPattern = /^[A-Za-z]{3}$/;
+const dealStatusEnum = z.enum(
+  DEAL_STATUS_LIST as [DealStatus, ...DealStatus[]]
+);
 
-export const dealFormSchema = z
-  .object({
-    title: z.string().trim().min(1, "딜명을 입력해주세요."),
-    amount: z
-      .string()
-      .trim()
-      .min(1, "금액을 입력해주세요.")
-      .refine((value) => /^\d+$/.test(value), "금액은 0 이상의 정수입니다."),
-    currency: z
-      .string()
-      .trim()
-      .refine(
-        (value) => value.length === 0 || currencyPattern.test(value),
-        "통화는 KRW처럼 3자리 코드로 입력해주세요."
-      ),
-    companyId: z.string().trim().optional(),
-    companySearch: z.string().trim().optional(),
-    contactId: z.string().trim().optional(),
-    contactSearch: z.string().trim().optional(),
-    productIds: z.array(z.string()).optional(),
-    productSearch: z.string().trim().optional(),
-    stage: z.enum(["INITIAL_CONTACT", "NEEDS_ANALYSIS", "PROPOSAL", "NEGOTIATION", "WON", "LOST"]),
-    likelihoodStatus: z.enum(["POSITIVE", "NEUTRAL", "NEGATIVE"]),
-    likelihoodPercent: z
-      .string()
-      .trim()
-      .refine(
-        (value) => value.length === 0 || /^\d+$/.test(value),
-        "가능성 퍼센트는 0에서 100 사이의 정수입니다."
-      )
-      .refine(
-        (value) =>
-          value.length === 0 || (Number(value) >= 0 && Number(value) <= 100),
-        "가능성 퍼센트는 0에서 100 사이의 정수입니다."
-      )
-      .optional(),
-    nextActionText: z.string().trim().optional(),
-    nextActionDueAt: z.string().trim().optional(),
-    expectedCloseDate: z.string().trim().optional(),
-    initialMemo: z.string().trim().optional(),
-  })
-  .superRefine((values, context) => {
-    assertSearchSelection(
-      values.companySearch,
-      values.companyId,
-      "companySearch",
-      "회사 검색 결과에서 선택하거나 입력값을 지워주세요.",
-      context
-    );
-    assertSearchSelection(
-      values.contactSearch,
-      values.contactId,
-      "contactSearch",
-      "거래처 검색 결과에서 선택하거나 입력값을 지워주세요.",
-      context
-    );
-    assertSearchSelection(
-      values.productSearch,
-      "",
-      "productSearch",
-      "제품 검색 결과에서 선택하거나 입력값을 지워주세요.",
-      context
-    );
-  });
-
-export type DealFormValues = z.infer<typeof dealFormSchema>;
-
-export const dealActivityFormSchema = z.object({
-  occurredAt: z.string().trim().min(1, "활동 시간을 입력해주세요."),
-  title: z.string().trim().min(1, "활동 제목을 입력해주세요."),
-  content: z.string().trim().optional(),
+// 기능 : 딜 생성 form 스키마
+export const dealCreateFormSchema = z.object({
+  dealName: z.string().trim().min(1, "딜명을 입력해주세요."),
+  dealCost: z
+    .string()
+    .trim()
+    .min(1, "금액을 입력해주세요.")
+    .refine((v) => /^\d+$/.test(v) && Number(v) >= 0, "금액은 0 이상의 정수입니다."),
+  companyId: z.string().trim().min(1, "회사를 선택해주세요."),
+  contactId: z.string().trim().min(1, "거래처를 선택해주세요."),
+  productIds: z
+    .array(z.string())
+    .min(1, "제품을 1개 이상 선택해주세요."),
+  dealStatus: dealStatusEnum,
+  followingAction: z.string().trim().min(1, "다음 행동을 입력해주세요."),
+  expectedEndDate: z
+    .string()
+    .trim()
+    .min(1, "예상 마감일을 입력해주세요.")
+    .regex(/^\d{4}-\d{2}-\d{2}$/, "날짜 형식은 YYYY-MM-DD입니다."),
+  // UI 전용 search 필드
+  companySearch: z.string().optional(),
+  contactSearch: z.string().optional(),
+  productSearch: z.string().optional(),
 });
 
-export type DealActivityFormValues = z.infer<typeof dealActivityFormSchema>;
+export type DealCreateFormValues = z.infer<typeof dealCreateFormSchema>;
 
-export const dealSnoozeFormSchema = z.object({
-  nextActionDueAt: z.string().trim().min(1, "미룰 일시를 입력해주세요."),
-  reason: z.string().trim().optional(),
+// 기능 : 딜 수정 form 스키마
+export const dealUpdateFormSchema = z.object({
+  dealName: z.string().trim().min(1, "딜명을 입력해주세요."),
+  dealCost: z
+    .string()
+    .trim()
+    .min(1, "금액을 입력해주세요.")
+    .refine((v) => /^\d+$/.test(v) && Number(v) >= 0, "금액은 0 이상의 정수입니다."),
+  companyId: z.string().trim().min(1, "회사를 선택해주세요."),
+  contactId: z.string().trim().min(1, "거래처를 선택해주세요."),
+  productIds: z
+    .array(z.string())
+    .min(1, "제품을 1개 이상 선택해주세요."),
+  dealStatus: dealStatusEnum,
+  expectedEndDate: z
+    .string()
+    .trim()
+    .min(1, "예상 마감일을 입력해주세요.")
+    .regex(/^\d{4}-\d{2}-\d{2}$/, "날짜 형식은 YYYY-MM-DD입니다."),
+  // UI 전용 search 필드
+  companySearch: z.string().optional(),
+  contactSearch: z.string().optional(),
+  productSearch: z.string().optional(),
 });
 
-export type DealSnoozeFormValues = z.infer<typeof dealSnoozeFormSchema>;
+export type DealUpdateFormValues = z.infer<typeof dealUpdateFormSchema>;
 
-export const emptyDealFormValues: DealFormValues = {
-  title: "",
-  amount: "",
-  currency: "KRW",
+// 기능 : 다음 행동 로그 생성 form 스키마
+export const followingActionLogFormSchema = z.object({
+  followingAction: z.string().trim().min(1, "다음 행동을 입력해주세요."),
+});
+
+export type FollowingActionLogFormValues = z.infer<
+  typeof followingActionLogFormSchema
+>;
+
+// 기능 : 메모 로그 생성/수정 form 스키마
+export const memoLogFormSchema = z.object({
+  memoType: z.string().trim().min(1, "메모 타입을 입력해주세요."),
+  memo: z.string().trim().min(1, "메모 내용을 입력해주세요."),
+});
+
+export type MemoLogFormValues = z.infer<typeof memoLogFormSchema>;
+
+// 기능 : form 값 → CreateDealInput 변환
+export function toCreateDealInput(values: DealCreateFormValues): CreateDealInput {
+  return {
+    dealName: values.dealName,
+    dealCost: Number(values.dealCost),
+    companyId: values.companyId,
+    contactId: values.contactId,
+    productIds: values.productIds,
+    dealStatus: values.dealStatus,
+    followingAction: values.followingAction,
+    expectedEndDate: values.expectedEndDate,
+  };
+}
+
+// 기능 : form 값 → UpdateDealInput 변환
+export function toUpdateDealInput(
+  dealId: string,
+  values: DealUpdateFormValues
+): UpdateDealInput {
+  return {
+    dealId,
+    dealName: values.dealName,
+    dealCost: Number(values.dealCost),
+    companyId: values.companyId,
+    contactId: values.contactId,
+    productIds: values.productIds,
+    dealStatus: values.dealStatus,
+    expectedEndDate: values.expectedEndDate,
+  };
+}
+
+export const emptyDealCreateFormValues: DealCreateFormValues = {
+  dealName: "",
+  dealCost: "",
   companyId: "",
-  companySearch: "",
   contactId: "",
-  contactSearch: "",
   productIds: [],
+  dealStatus: "INITIAL_CONTACT",
+  followingAction: "",
+  expectedEndDate: "",
+  companySearch: "",
+  contactSearch: "",
   productSearch: "",
-  stage: "INITIAL_CONTACT",
-  likelihoodStatus: "NEUTRAL",
-  likelihoodPercent: "",
-  nextActionText: "",
-  nextActionDueAt: "",
-  expectedCloseDate: "",
-  initialMemo: "",
 };
-
-export function toCreateDealInput(values: DealFormValues): CreateDealInput {
-  return {
-    title: values.title.trim(),
-    companyId: optionalText(values.companyId),
-    contactId: optionalText(values.contactId),
-    amount: Number(values.amount),
-    currency: normalizeCurrency(values.currency),
-    stage: values.stage as DealStage,
-    likelihoodStatus: values.likelihoodStatus as DealLikelihoodStatus,
-    likelihoodPercent: optionalNumber(values.likelihoodPercent),
-    expectedCloseDate: optionalDate(values.expectedCloseDate),
-    nextActionText: optionalText(values.nextActionText),
-    nextActionDueAt: optionalDateTime(values.nextActionDueAt),
-    productIds: values.productIds ?? [],
-    initialMemo: optionalText(values.initialMemo),
-  };
-}
-
-export function toCreateDealActivityInput(
-  dealId: string,
-  values: DealActivityFormValues
-): CreateDealActivityInput {
-  return {
-    dealId,
-    occurredAt: toIsoDateTime(values.occurredAt),
-    title: values.title.trim(),
-    content: optionalText(values.content),
-  };
-}
-
-export function toSnoozeDealNextActionInput(
-  dealId: string,
-  values: DealSnoozeFormValues
-): SnoozeDealNextActionInput {
-  return {
-    dealId,
-    nextActionDueAt: toIsoDateTime(values.nextActionDueAt),
-    reason: optionalText(values.reason),
-  };
-}
-
-export function toDateTimeLocalValue(value: string | Date) {
-  const date = typeof value === "string" ? new Date(value) : value;
-  const offsetMs = date.getTimezoneOffset() * 60_000;
-
-  return new Date(date.getTime() - offsetMs).toISOString().slice(0, 16);
-}
-
-function assertSearchSelection(
-  search: string | undefined,
-  selectedId: string | undefined,
-  path: string,
-  message: string,
-  context: z.RefinementCtx
-) {
-  if ((search?.trim() ?? "").length > 0 && !selectedId) {
-    context.addIssue({ code: "custom", message, path: [path] });
-  }
-}
-
-function optionalText(value: string | undefined | null) {
-  const trimmed = value?.trim() ?? "";
-
-  return trimmed.length > 0 ? trimmed : undefined;
-}
-
-function optionalNumber(value: string | undefined | null) {
-  const trimmed = value?.trim() ?? "";
-
-  return trimmed.length > 0 ? Number(trimmed) : undefined;
-}
-
-function normalizeCurrency(value: string | undefined | null) {
-  const trimmed = value?.trim().toUpperCase() ?? "";
-
-  return trimmed.length > 0 ? trimmed : "KRW";
-}
-
-function optionalDate(value: string | undefined | null) {
-  const trimmed = value?.trim() ?? "";
-
-  return trimmed.length > 0
-    ? new Date(`${trimmed}T00:00:00`).toISOString()
-    : undefined;
-}
-
-function optionalDateTime(value: string | undefined | null) {
-  const trimmed = value?.trim() ?? "";
-
-  return trimmed.length > 0 ? new Date(trimmed).toISOString() : undefined;
-}
-
-function toIsoDateTime(value: string) {
-  return new Date(value).toISOString();
-}

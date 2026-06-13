@@ -6,6 +6,7 @@ import { Bell, ChevronLeft, Download, Plus, Search, Trash2 } from "lucide-react"
 import { type FormEvent, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { GlobalSearch } from "@/features/search";
+import { useDealDetail } from "@/features/deal/hooks/use-deal-detail";
 import { useProductDetail } from "@/features/product/hooks/use-product-detail";
 
 const PAGE_TITLES: Record<string, { title: string; subtitle: string }> = {
@@ -21,6 +22,39 @@ const PAGE_TITLES: Record<string, { title: string; subtitle: string }> = {
 };
 
 const HOME_PATH = "/";
+
+function DealDetailTopBar({ dealId }: { readonly dealId: string }) {
+  const dealQuery = useDealDetail(dealId);
+  const dealName = dealQuery.data?.dealName ?? "...";
+
+  return (
+    <>
+      {/* Title group — breadcrumb */}
+      <div className="flex min-w-0 flex-1 items-center gap-1.5">
+        <Link className="mr-1 shrink-0 text-[#9CA3AF] hover:text-[#374151]" to="/deals">
+          <ChevronLeft className="h-5 w-5" />
+        </Link>
+        <Link className="shrink-0 text-[13px] text-[#6B7280] hover:text-[#374151]" to="/deals">
+          딜
+        </Link>
+        <span className="text-[13px] text-[#D1D5DB]">/</span>
+        <span className="truncate text-[13px] font-semibold text-[#111827]">{dealName}</span>
+      </div>
+      {/* Actions */}
+      <div className="flex shrink-0 items-center gap-2">
+        <Link
+          className="inline-flex items-center justify-center text-[#6B7280] transition hover:text-[#374151]"
+          to="/notifications"
+        >
+          <Bell className="h-5 w-5" />
+        </Link>
+        <div className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#2563EB] text-[12px] font-semibold text-white">
+          강
+        </div>
+      </div>
+    </>
+  );
+}
 
 function ProductDetailTopBar({ productId }: {
   readonly productId: string;
@@ -88,11 +122,17 @@ export function AppShell() {
   const navigate = useNavigate();
   const isHome = pathname === HOME_PATH;
   const isProducts = pathname === "/products";
+  const isDeals = pathname === "/deals";
 
   // /products/:id 패턴 감지
   const productDetailMatch = /^\/products\/([^/]+)$/.exec(pathname);
   const productDetailId = productDetailMatch ? (productDetailMatch[1] ?? "") : "";
   const isProductDetail = productDetailId.length > 0;
+
+  // /deals/:id 패턴 감지
+  const dealDetailMatch = /^\/deals\/([^/]+)$/.exec(pathname);
+  const dealDetailId = dealDetailMatch ? (dealDetailMatch[1] ?? "") : "";
+  const isDealDetail = dealDetailId.length > 0;
 
   const page = PAGE_TITLES[pathname] ?? { title: "한손에 영업", subtitle: "" };
   const [productSearch, setProductSearch] = useState("");
@@ -154,6 +194,8 @@ export function AppShell() {
               <ProductDetailTopBar
                 productId={productDetailId}
               />
+            ) : isDealDetail ? (
+              <DealDetailTopBar dealId={dealDetailId} />
             ) : (
               <>
                 {/* Title group */}
@@ -248,9 +290,9 @@ export function AppShell() {
 
           <main
             className={
-              isHome || isProductDetail
+              isHome || isProductDetail || isDeals
                 ? "flex flex-1 flex-col overflow-hidden"
-                : "min-h-[calc(100vh-var(--topbar-height))] px-8 py-8"
+                : "min-h-[calc(100vh-var(--topbar-height))]"
             }
           >
             <Outlet />
