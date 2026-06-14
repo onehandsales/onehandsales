@@ -6,24 +6,26 @@
 
 핵심 기준:
 
-- DB에 저장하는 date-time 값은 한국시간(KST, `Asia/Seoul`) 기준으로 저장한다.
-- `createdAt`, `updatedAt` 같은 시스템 시각도 한국시간 기준으로 저장한다.
-- 일정의 `startAt`, `endAt`은 사용자가 선택한 날짜/시간을 한국시간 기준으로 해석하고 DB에도 한국시간 값으로 저장한다.
-- 사용자 화면 표시는 한국시간 기준으로 표시한다.
+- `createdAt`, `updatedAt` 같은 시스템 시각은 UTC 기준으로 저장한다.
+- 일정의 `startAt`, `endAt`은 사용자가 선택한 현지 날짜/시간과 IANA timezone을 해석해 UTC instant로 저장한다.
+- 사용자가 입력한 현지 시간 의미를 복원해야 하는 업무 테이블은 같은 row에 `timeZone` 컬럼을 저장한다.
+- 사용자 화면 표시는 Frontend에서 일정/사용자/조직 timezone 기준으로 변환한다.
 - 날짜만 필요한 값은 Prisma `DateTime @db.Date`를 사용한다.
 
 ## 2. 이유
 
 일정 도메인은 사용자 현지 시간과 DB 저장 시각이 섞이기 쉽다.
 
-이 프로젝트는 국내 사용자와 국내 영업 일정을 1차 기준으로 한다. 따라서 DB 조회값, 운영 확인값, 화면 표시값의 기준을 모두 한국시간으로 맞춘다.
+이 프로젝트는 한국뿐 아니라 미국, 싱가폴 등 여러 timezone의 사용자를 지원할 수 있어야 한다.
 
 이 결정의 핵심은 다음 혼선을 줄이는 것이다.
 
-- DB에서 직접 확인한 `createdAt`, `updatedAt`, 일정 시간이 화면의 한국시간과 다르게 보이는 문제
-- 일정 월간/주간 조회 범위가 한국시간 날짜 경계와 어긋나는 문제
+- 미국 DST 때문에 같은 현지 오전 9시 일정의 UTC offset이 계절마다 달라지는 문제
+- 일정 월간/주간 조회 범위가 사용자 timezone 날짜 경계와 어긋나는 문제
 - Admin Web, User Web, export 결과가 서로 다른 기준으로 표시되는 문제
-- 일정 생성/수정에서 `23:15` 같은 24시간제 입력값이 UTC 변환으로 전날/다음날처럼 보이는 문제
+- 일정 생성/수정에서 `23:15` 같은 24시간제 입력값의 원래 현지 timezone을 잃어버리는 문제
+
+따라서 DB는 UTC instant를 저장하고, 사용자 입력의 현지 의미가 필요한 테이블에는 IANA `timeZone`을 함께 저장한다.
 
 ## 3. 적용 범위
 
@@ -36,13 +38,14 @@
 
 ## 4. 구현 규칙
 
-- API 계약 문서에는 시간 필드마다 `KST date-time`, `날짜 전용` 중 하나를 명시한다.
-- Backend 응답의 date-time은 한국시간 offset이 포함된 문자열을 기본으로 한다. 예: `2026-06-14T12:10:00.000+09:00`
-- 일정 생성/수정 API는 사용자의 입력 날짜/시간을 한국시간으로 해석한다.
-- Frontend는 일정과 시스템 시각을 한국시간 기준으로 표시한다.
+- API 계약 문서에는 시간 필드마다 `UTC instant`, `local date-time + timeZone`, `날짜 전용` 중 하나를 명시한다.
+- Backend 응답의 instant는 ISO 8601 UTC string을 기본으로 한다.
+- 일정 생성/수정 API는 사용자의 입력 local date-time과 IANA `timeZone`을 명시적으로 해석한다.
+- Frontend는 UTC ISO string을 그대로 출력하지 않고 일정/사용자/조직 timezone으로 변환한다.
 - 날짜 전용 값은 timezone 변환 없이 `YYYY-MM-DD`로 다룬다.
 - 기존 적용 migration은 직접 수정하지 않는다. 기존 `TIMESTAMP(3)` 컬럼을 바꿔야 하면 별도 migration 계획을 먼저 만든다.
-- UTC와 한국시간은 같은 값이 아니므로, KST 값을 `Z` suffix가 붙은 UTC 문자열처럼 표현하지 않는다.
+- 사용자가 입력한 현지 날짜/시간을 저장하는 업무 테이블은 `timeZone` 컬럼을 함께 둔다.
+- `timeZone`은 `Asia/Seoul`, `America/Los_Angeles`, `Asia/Singapore` 같은 IANA timezone ID만 허용한다.
 
 ## 5. 관련 문서
 

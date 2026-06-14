@@ -341,7 +341,7 @@ Database principles:
 - PK is UUID/ULID. Do not expose sequential IDs.
 - User-owned data must have `userId`.
 - Non-temporary tables have `createdAt` and `updatedAt`.
-- System timestamps such as `createdAt` and `updatedAt` are stored as KST date-time values. Schedule `startAt` and `endAt` are interpreted and stored as KST date-time values. Date-only values use `@db.Date`.
+- System timestamps such as `createdAt` and `updatedAt` are stored as UTC instants. Schedule `startAt` and `endAt` are stored as UTC instants after interpreting IANA `timeZone`. Tables that own user-entered local date-time fields store `timeZone` in the same row. Date-only values use `@db.Date`.
 - Main business data uses `deletedAt` soft delete.
 - FK constraints are explicit.
 - FK columns are indexed.

@@ -103,18 +103,20 @@ Backend 시간 처리 기준은 `AGENT/SOFTWARE_AGENT/DB_SCHEMA/TIME_AND_TIMEZON
 
 Rules:
 
-- `createdAt`, `updatedAt`, `deletedAt`, `expiresAt`, `revokedAt`, `lastLoginAt` 같은 시스템 시각은 한국시간(KST, `Asia/Seoul`) 기준으로 저장한다.
-- 일정의 `startAt`, `endAt`은 사용자가 입력한 날짜/시간을 한국시간 기준으로 해석하고 DB에도 한국시간 값으로 저장한다.
-- Backend API 응답의 date-time은 한국시간 offset이 포함된 ISO 8601 string을 기본으로 한다.
+- `createdAt`, `updatedAt`, `deletedAt`, `expiresAt`, `revokedAt`, `lastLoginAt` 같은 시스템 시각은 UTC 기준으로 저장한다.
+- 일정의 `startAt`, `endAt`은 사용자가 입력한 local date-time과 IANA `timeZone`을 해석한 뒤 DB에는 UTC instant로 저장한다.
+- Backend API 응답의 instant는 ISO 8601 UTC string을 기본으로 한다.
 - 날짜만 필요한 값은 Prisma `DateTime @db.Date`를 사용하고 API에서는 `YYYY-MM-DD`로 다룬다.
-- 기존 migration에 있는 `TIMESTAMP(3)` 컬럼은 이 정책 이후 프로젝트 기준상 KST date-time으로 취급한다.
-- `toISOString()`은 UTC `Z` 문자열을 만들기 때문에 KST 응답 포맷에 그대로 쓰지 않는다.
+- 기존 migration에 있는 `TIMESTAMP(3)` 컬럼도 애플리케이션 기준으로 UTC instant로 취급한다.
+- 사용자가 입력한 현지 날짜/시간을 저장하는 업무 테이블은 같은 row에 `timeZone` 컬럼을 함께 둔다.
+- `timeZone`은 `Asia/Seoul`, `America/Los_Angeles`, `Asia/Singapore` 같은 IANA timezone ID만 허용한다.
 
-New schedule-like date-time columns should prefer explicit KST wall-clock storage:
+New schedule-like instant columns should prefer explicit native DB intent and timezone metadata:
 
 ```prisma
-startAt DateTime @db.Timestamp(3)
-endAt   DateTime @db.Timestamp(3)
+startAt  DateTime @db.Timestamptz(3)
+endAt    DateTime @db.Timestamptz(3)
+timeZone String   @default("Asia/Seoul")
 ```
 
 ## 5. Async
@@ -293,4 +295,3 @@ Forbidden:
 - `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/CONVENTION/OBSERVABILITY.md`
 - `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/CONVENTION/COMMENT_AND_LOGGING.md`
 - `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/ENGINEERING_REVIEW_CHECKLIST.md`
-

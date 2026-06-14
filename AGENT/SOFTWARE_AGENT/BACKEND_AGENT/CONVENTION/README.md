@@ -21,11 +21,13 @@
 - API 계약 작성과 `/goal` 실행 기준은 `API_CONTRACT.md`를 따른다.
 - transaction 경계와 rollback 범위는 `TRANSACTION.md`를 따른다.
 - structured log, audit log, request context는 `OBSERVABILITY.md`를 따른다.
+- 시간과 timezone 처리는 `AGENT/SOFTWARE_AGENT/DB_SCHEMA/TIME_AND_TIMEZONE_POLICY.md`를 따른다.
 - Backend class/interface는 `// 역할 : ...`, API controller method는 `// API : ...`, 내부 method/function은 `// 기능 : ...` 주석을 사용한다.
 
 ## 4. 관련 문서
 
 - `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/README.md`
 - `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/ARCHITECTURE/README.md`
+- `AGENT/SOFTWARE_AGENT/DB_SCHEMA/TIME_AND_TIMEZONE_POLICY.md`
 - `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/ENGINEERING_REVIEW_CHECKLIST.md`
 - `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/DECISIONS/README.md`

@@ -35,9 +35,9 @@
 
 시간과 timezone 처리는 `AGENT/SOFTWARE_AGENT/DB_SCHEMA/TIME_AND_TIMEZONE_POLICY.md`를 따른다.
 
-- Admin API의 `createdAt`, `updatedAt`, 감사 로그 시각, 민감정보 조회 시각은 한국시간 기준 date-time으로 본다.
-- Admin Web 화면에는 한국시간 기준으로 표시한다.
-- Export나 감사 로그 상세에서 시간 기준이 중요하면 KST 기준임을 함께 드러낸다.
+- Admin API의 `createdAt`, `updatedAt`, 감사 로그 시각, 민감정보 조회 시각은 UTC ISO string으로 본다.
+- Admin Web 화면에는 UTC string을 그대로 출력하지 않고 운영자/조직 timezone으로 변환해 표시한다.
+- Export나 감사 로그 상세에서 시간 기준이 중요하면 표시 timezone을 함께 드러낸다.
 - 날짜만 필요한 `YYYY-MM-DD` 값은 timezone 변환 없이 표시한다.
 
 ## 5. 표와 대시보드

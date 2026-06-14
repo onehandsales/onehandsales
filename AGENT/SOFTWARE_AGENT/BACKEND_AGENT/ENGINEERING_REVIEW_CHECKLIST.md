@@ -32,6 +32,9 @@
 - Domain layer가 NestJS, Prisma, OpenAI, HTTP SDK를 import하지 않는가?
 - 사용자 소유 데이터 조회와 mutation에 `userId` 필터가 있는가?
 - 구현한 API가 User Web/Admin Web의 실제 API client 계약과 일치하는가?
+- 시간 필드는 `AGENT/SOFTWARE_AGENT/DB_SCHEMA/TIME_AND_TIMEZONE_POLICY.md`의 UTC instant + IANA `timeZone` 기준을 따르는가?
+- 사용자가 입력한 현지 날짜/시간을 저장하는 업무 테이블은 같은 row에 `timeZone` 컬럼을 저장하는가?
+- API 계약에서 시간 필드가 `UTC instant`, `local date-time + timeZone`, `날짜 전용` 중 무엇인지 명시되어 있는가?
 - Company API 변경 시 `FE/user-web/src/features/company/api/company-api.ts`의 요청/응답 필드가 Backend controller와 맞는가?
 - Admin Web용 `/admin/api/*`를 추가할 때 `FE/admin-web/src/features/admin-query/api/admin-query-api.ts`의 기대 경로와 응답 형태를 함께 확인했는가?
 - 단계 변경, 회의록 딜 연결, 민감정보 원문 조회처럼 부수 효과가 필요한 흐름이 같은 transaction에서 처리되는가?

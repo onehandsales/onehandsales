@@ -132,12 +132,13 @@ Response 이름: CompanyResponse
 | `companyName` | string | 회사명 |
 | `companyField` | object | 회사 분야 |
 | `companyRegion` | object | 회사 지역 |
-| `createdAt` | string | 생성 시각. ISO 8601 KST offset string |
+| `createdAt` | string | 생성 시각. ISO 8601 UTC string |
 
 시간 필드 작성 규칙:
 
-- `createdAt`, `updatedAt`, `deletedAt`, `expiresAt` 같은 시스템 시각은 KST date-time이며 API 응답은 ISO 8601 KST offset string을 기본으로 한다.
-- 일정의 `startAt`, `endAt`은 한국시간 기준 date-time이며 API 계약에 KST 기준임을 적는다.
+- `createdAt`, `updatedAt`, `deletedAt`, `expiresAt` 같은 시스템 시각은 UTC instant이며 API 응답은 ISO 8601 UTC string을 기본으로 한다.
+- 일정의 `startAt`, `endAt`은 UTC instant이고, API request/response에는 IANA `timeZone`을 함께 적는다.
+- 사용자가 입력한 현지 날짜/시간을 받는 request는 `local date-time + timeZone` 형식임을 명시한다.
 - 날짜만 필요한 값은 `YYYY-MM-DD` string으로 적고 timezone 변환 대상이 아님을 명시한다.
 - 자세한 기준은 `AGENT/SOFTWARE_AGENT/DB_SCHEMA/TIME_AND_TIMEZONE_POLICY.md`를 따른다.
 
