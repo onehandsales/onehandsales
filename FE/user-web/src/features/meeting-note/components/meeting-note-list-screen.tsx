@@ -9,15 +9,17 @@ import {
 import { useDeferredValue, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { useMeetingNoteList } from "@/features/meeting-note/hooks/use-meeting-note-queries";
+import { Pagination } from "@/components/ui/pagination";
 import type { MeetingNote } from "@/features/meeting-note/types/meeting-note";
 import { getApiErrorMessage } from "@/lib/api-client";
 import { formatDateTime } from "@/utils/format";
 
 export function MeetingNoteListScreen() {
   const [search, setSearch] = useState("");
+  const [page, setPage] = useState(1);
   const deferredSearch = useDeferredValue(search.trim());
   const meetingNotesQuery = useMeetingNoteList({
-    page: 1,
+    page,
     pageSize: 20,
     search: deferredSearch || undefined,
   });
@@ -49,7 +51,7 @@ export function MeetingNoteListScreen() {
           <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           <input
             className="h-10 w-full rounded-md border bg-white pl-9 pr-3 text-sm outline-none focus:ring-2 focus:ring-ring"
-            onChange={(event) => setSearch(event.target.value)}
+            onChange={(event) => { setSearch(event.target.value); setPage(1); }}
             placeholder="회사, 담당자, 품목, 상세내용 검색"
             value={search}
           />
@@ -91,6 +93,15 @@ export function MeetingNoteListScreen() {
           ))}
         </div>
       )}
+
+      {meetingNotesQuery.data && (meetingNotesQuery.data.hasNext || page > 1) ? (
+        <Pagination
+          hasNext={meetingNotesQuery.data.hasNext}
+          page={page}
+          totalCount={meetingNotesQuery.data.totalCount}
+          onPageChange={setPage}
+        />
+      ) : null}
     </section>
   );
 }

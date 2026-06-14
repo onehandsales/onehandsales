@@ -16,6 +16,8 @@ type ModalShellProps = {
   readonly closeLabel?: string;
   readonly showCloseButton?: boolean;
   readonly panelClassName?: string;
+  readonly headerClassName?: string;
+  readonly titleClassName?: string;
   readonly bodyClassName?: string;
   readonly footerClassName?: string;
   readonly closeButtonClassName?: string;
@@ -47,6 +49,8 @@ export function ModalShell({
   closeLabel = "모달 닫기",
   showCloseButton = true,
   panelClassName,
+  headerClassName,
+  titleClassName,
   bodyClassName,
   footerClassName,
   closeButtonClassName,
@@ -74,10 +78,10 @@ export function ModalShell({
         role="dialog"
       >
         {title || description ? (
-          <header className="relative flex h-14 shrink-0 items-center border-b border-gray-200 px-6 pr-14">
+          <header className={cn("relative flex h-14 shrink-0 items-center border-b border-gray-200 px-6 pr-14", headerClassName)}>
             <div>
               {title ? (
-                <h2 className="text-[15px] font-semibold text-foreground" id="modal-shell-title">
+                <h2 className={cn("text-[15px] font-semibold text-foreground", titleClassName)} id="modal-shell-title">
                   {title}
                 </h2>
               ) : null}

@@ -1,5 +1,5 @@
-import { DealListScreen } from "@/features/deal";
+import { DealPipelineHomeScreen } from "@/features/deal";
 
 export function DealsPage() {
-  return <DealListScreen />;
+  return <DealPipelineHomeScreen />;
 }

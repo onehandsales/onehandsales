@@ -1,20 +1,23 @@
+// 기능 : 딜 생성/수정, 로그 생성/수정 TanStack Query mutation hook
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import {
-  changeDealStage,
-  completeDealNextAction,
   createDeal,
-  createDealActivity,
-  snoozeDealNextAction,
-  updateDealNextAction,
+  createFollowingActionLog,
+  createMemoLog,
+  exportDealsXlsx,
+  updateDeal,
+  updateFollowingActionLog,
+  updateMemoLog,
 } from "@/features/deal/api/deal-api";
 import { dealQueryKeys } from "@/features/deal/api/deal-query-keys";
 import type {
-  ChangeDealStageInput,
-  CompleteDealNextActionInput,
-  CreateDealActivityInput,
   CreateDealInput,
-  SnoozeDealNextActionInput,
-  UpdateDealNextActionInput,
+  CreateFollowingActionLogInput,
+  CreateMemoLogInput,
+  DealExportParams,
+  UpdateDealInput,
+  UpdateFollowingActionLogInput,
+  UpdateMemoLogInput,
 } from "@/features/deal/types/deal";
 
 export function useCreateDealMutation() {
@@ -23,73 +26,96 @@ export function useCreateDealMutation() {
   return useMutation({
     mutationFn: (input: CreateDealInput) => createDeal(input),
     onSuccess: (deal) => {
-      invalidateDealQueries(queryClient, deal.id);
+      void queryClient.invalidateQueries({ queryKey: dealQueryKeys.lists() });
+      void queryClient.invalidateQueries({ queryKey: dealQueryKeys.stageCounts() });
+      void queryClient.invalidateQueries({ queryKey: dealQueryKeys.detail(deal.id) });
     },
   });
 }
 
-export function useChangeDealStageMutation() {
+export function useUpdateDealMutation() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (input: ChangeDealStageInput) => changeDealStage(input),
+    mutationFn: (input: UpdateDealInput) => updateDeal(input),
     onSuccess: (deal) => {
-      invalidateDealQueries(queryClient, deal.id);
+      void queryClient.invalidateQueries({ queryKey: dealQueryKeys.lists() });
+      void queryClient.invalidateQueries({ queryKey: dealQueryKeys.stageCounts() });
+      void queryClient.invalidateQueries({ queryKey: dealQueryKeys.detail(deal.id) });
     },
   });
 }
 
-export function useUpdateDealNextActionMutation() {
+export function useCreateFollowingActionLogMutation() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (input: UpdateDealNextActionInput) =>
-      updateDealNextAction(input),
-    onSuccess: (deal) => {
-      invalidateDealQueries(queryClient, deal.id);
+    mutationFn: (input: CreateFollowingActionLogInput) =>
+      createFollowingActionLog(input),
+    onSuccess: (_log, input) => {
+      // 다음 행동 생성 후 목록(latestFollowingAction 갱신)과 로그 목록 invalidate
+      void queryClient.invalidateQueries({ queryKey: dealQueryKeys.lists() });
+      void queryClient.invalidateQueries({
+        queryKey: dealQueryKeys.followingActionLogs(input.dealId),
+      });
     },
   });
 }
 
-export function useCompleteDealNextActionMutation() {
+export function useUpdateFollowingActionLogMutation() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (input: CompleteDealNextActionInput) =>
-      completeDealNextAction(input),
-    onSuccess: (deal) => {
-      invalidateDealQueries(queryClient, deal.id);
+    mutationFn: (input: UpdateFollowingActionLogInput) =>
+      updateFollowingActionLog(input),
+    onSuccess: (_log, input) => {
+      void queryClient.invalidateQueries({ queryKey: dealQueryKeys.lists() });
+      void queryClient.invalidateQueries({
+        queryKey: dealQueryKeys.followingActionLogs(input.dealId),
+      });
     },
   });
 }
 
-export function useSnoozeDealNextActionMutation() {
+export function useCreateMemoLogMutation() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (input: SnoozeDealNextActionInput) =>
-      snoozeDealNextAction(input),
-    onSuccess: (deal) => {
-      invalidateDealQueries(queryClient, deal.id);
+    mutationFn: (input: CreateMemoLogInput) => createMemoLog(input),
+    onSuccess: (_log, input) => {
+      void queryClient.invalidateQueries({
+        queryKey: dealQueryKeys.memoLogs(input.dealId),
+      });
     },
   });
 }
 
-export function useCreateDealActivityMutation() {
+export function useUpdateMemoLogMutation() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (input: CreateDealActivityInput) => createDealActivity(input),
-    onSuccess: (activity) => {
-      invalidateDealQueries(queryClient, activity.dealId);
+    mutationFn: (input: UpdateMemoLogInput) => updateMemoLog(input),
+    onSuccess: (_log, input) => {
+      void queryClient.invalidateQueries({
+        queryKey: dealQueryKeys.memoLogs(input.dealId),
+      });
     },
   });
 }
 
-function invalidateDealQueries(
-  queryClient: ReturnType<typeof useQueryClient>,
-  dealId: string
-) {
-  void queryClient.invalidateQueries({ queryKey: dealQueryKeys.lists() });
-  void queryClient.invalidateQueries({ queryKey: dealQueryKeys.detail(dealId) });
+export function useExportDealsMutation() {
+  return useMutation({
+    mutationFn: (params: DealExportParams) => exportDealsXlsx(params),
+    onSuccess: (response) => {
+      // blob을 파일로 다운로드
+      const url = URL.createObjectURL(response.blob);
+      const anchor = document.createElement("a");
+      anchor.href = url;
+      anchor.download = response.fileName ?? `deals_${Date.now()}.xlsx`;
+      document.body.appendChild(anchor);
+      anchor.click();
+      document.body.removeChild(anchor);
+      URL.revokeObjectURL(url);
+    },
+  });
 }

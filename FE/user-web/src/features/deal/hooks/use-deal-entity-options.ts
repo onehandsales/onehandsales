@@ -1,88 +1,46 @@
+// 기능 : 딜 form 회사/거래처/제품 옵션 TanStack Query hook
 import { useQuery } from "@tanstack/react-query";
-import { listCompanies } from "@/features/company";
-import { listContacts } from "@/features/contact";
-import { listProducts } from "@/features/product";
+import {
+  getDealCompanyOptions,
+  getDealContactOptions,
+  getDealProductOptions,
+} from "@/features/deal/api/deal-api";
+import { dealQueryKeys } from "@/features/deal/api/deal-query-keys";
+import type {
+  DealCompanyOption,
+  DealContactOption,
+  DealProductOption,
+} from "@/features/deal/types/deal";
 
+export type { DealCompanyOption, DealContactOption, DealProductOption };
+
+// 기능 : deal-entity-search-field 하위 호환용 범용 옵션 타입
 export type DealEntityOption = {
   readonly id: string;
   readonly name: string;
   readonly subtitle: string;
 };
 
-export function useDealCompanyOptions(search: string) {
-  const normalizedSearch = search.trim();
-
+export function useDealCompanyOptions() {
   return useQuery({
-    enabled: normalizedSearch.length > 0,
-    queryKey: ["deal", "company-options", normalizedSearch] as const,
-    queryFn: async () => {
-      const result = await listCompanies({
-        page: 1,
-        companyName: normalizedSearch,
-      });
-
-      return result.items.map<DealEntityOption>((company) => ({
-        id: company.id,
-        name: company.companyName,
-        subtitle: [company.companyField.field, company.companyRegion.region].join(
-          " · "
-        ),
-      }));
-    },
+    queryKey: dealQueryKeys.companyOptions(),
+    queryFn: () => getDealCompanyOptions(),
+    select: (data) => data.items,
   });
 }
 
-export function useDealContactOptions(search: string, companyId: string) {
-  const normalizedSearch = search.trim();
-
+export function useDealContactOptions() {
   return useQuery({
-    enabled: normalizedSearch.length > 0,
-    queryKey: ["deal", "contact-options", normalizedSearch, companyId] as const,
-    queryFn: async () => {
-      const result = await listContacts({
-        page: 1,
-        username: normalizedSearch,
-        companyId: companyId || undefined,
-      });
-
-      return result.items.map<DealEntityOption>((contact) => ({
-        id: contact.id,
-        name: contact.username,
-        subtitle: [
-          contact.company.companyName,
-          contact.contactJobGrade.jobGradeName,
-        ]
-          .filter(Boolean)
-          .join(" · "),
-      }));
-    },
+    queryKey: dealQueryKeys.contactOptions(),
+    queryFn: () => getDealContactOptions(),
+    select: (data) => data.items,
   });
 }
 
-export function useDealProductOptions(search: string) {
-  const normalizedSearch = search.trim();
-
+export function useDealProductOptions() {
   return useQuery({
-    enabled: normalizedSearch.length > 0,
-    queryKey: ["deal", "product-options", normalizedSearch] as const,
-    queryFn: async () => {
-      const result = await listProducts({
-        page: 1,
-        pageSize: 8,
-        search: normalizedSearch,
-      });
-
-      return result.items.map<DealEntityOption>((product) => ({
-        id: product.id,
-        name: product.name,
-        subtitle: [product.category, formatProductPrice(product.unitPrice)]
-          .filter(Boolean)
-          .join(" · "),
-      }));
-    },
+    queryKey: dealQueryKeys.productOptions(),
+    queryFn: () => getDealProductOptions(),
+    select: (data) => data.items,
   });
-}
-
-function formatProductPrice(unitPrice: number | null) {
-  return unitPrice === null ? "" : unitPrice.toLocaleString("ko-KR");
 }

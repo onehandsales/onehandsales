@@ -1,157 +1,156 @@
 import type {
-  CreateProductConnectionInput,
+  CreateProductCategoryInput,
   CreateProductInput,
-  CreateProductLogInput,
-  DeleteProductResponse,
-  Product,
-  ProductConnection,
+  CreateProductStatusInput,
+  ProductCategoryListResponse,
   ProductDetail,
   ProductListParams,
   ProductListResponse,
-  ProductLog,
-  ProductLogListParams,
-  ProductLogListResponse,
+  ProductMemoLogListResponse,
+  ProductPrivateMemoLogListResponse,
+  ProductStatusListResponse,
   UpdateProductInput,
-  UpdateProductLogInput,
 } from "@/features/product/types/product";
-import { apiClient } from "@/lib/api-client";
+import { apiClient, apiBlobClient } from "@/lib/api-client";
+import type { ApiBlobResponse } from "@/lib/api-client";
 
 export function listProducts(params: ProductListParams) {
-  const query = toProductListSearchParams(params);
+  const query = new URLSearchParams();
+  if (params.page) query.set("page", String(params.page));
+  if (params.productName) query.set("productName", params.productName);
+  if (params.productCategoryId) query.set("productCategoryId", params.productCategoryId);
+  if (params.productStatusId) query.set("productStatusId", params.productStatusId);
   const suffix = query.toString() ? `?${query.toString()}` : "";
-
   return apiClient<ProductListResponse>(`/api/products${suffix}`);
-}
-
-export function createProduct(input: CreateProductInput) {
-  return apiClient<Product>("/api/products", {
-    method: "POST",
-    body: compactBody(input),
-  });
 }
 
 export function getProduct(productId: string) {
   return apiClient<ProductDetail>(`/api/products/${productId}`);
 }
 
-export function updateProduct(input: UpdateProductInput) {
-  return apiClient<Product>(`/api/products/${input.productId}`, {
-    method: "PATCH",
-    body: compactBody({
-      name: input.name,
-      category: input.category,
-      unitPrice: input.unitPrice,
-      currency: input.currency,
-      description: input.description,
-    }),
+export function createProduct(input: CreateProductInput) {
+  return apiClient<void>("/api/products", {
+    method: "POST",
+    body: input,
   });
 }
 
-export function deleteProduct(productId: string) {
-  return apiClient<DeleteProductResponse>(`/api/products/${productId}`, {
+export function updateProduct(input: UpdateProductInput) {
+  const { productId, ...body } = input;
+  return apiClient<void>(`/api/products/${productId}`, {
+    method: "PATCH",
+    body: compactBody(body as Record<string, unknown>),
+  });
+}
+
+export function listCategories() {
+  return apiClient<ProductCategoryListResponse>("/api/product-categories");
+}
+
+export function createCategory(input: CreateProductCategoryInput) {
+  return apiClient<void>("/api/product-categories", {
+    method: "POST",
+    body: input,
+  });
+}
+
+export function listStatuses() {
+  return apiClient<ProductStatusListResponse>("/api/product-statuses");
+}
+
+export function createStatus(input: CreateProductStatusInput) {
+  return apiClient<void>("/api/product-statuses", {
+    method: "POST",
+    body: input,
+  });
+}
+
+export function listMemoLogs(productId: string, cursor?: string) {
+  const query = new URLSearchParams();
+  if (cursor) query.set("cursor", cursor);
+  const suffix = query.toString() ? `?${query.toString()}` : "";
+  return apiClient<ProductMemoLogListResponse>(
+    `/api/products/${productId}/memo-logs${suffix}`
+  );
+}
+
+export function listPrivateMemoLogs(productId: string, cursor?: string) {
+  const query = new URLSearchParams();
+  if (cursor) query.set("cursor", cursor);
+  const suffix = query.toString() ? `?${query.toString()}` : "";
+  return apiClient<ProductPrivateMemoLogListResponse>(
+    `/api/products/${productId}/private-memo-logs${suffix}`
+  );
+}
+
+export function deleteCategory(categoryId: string): Promise<void> {
+  return apiClient<void>(`/api/product-categories/${categoryId}`, {
     method: "DELETE",
   });
 }
 
-export function restoreProduct(productId: string) {
-  return apiClient<Product>(`/api/products/${productId}/restore`, {
-    method: "POST",
+export function deleteStatus(statusId: string): Promise<void> {
+  return apiClient<void>(`/api/product-statuses/${statusId}`, {
+    method: "DELETE",
   });
 }
 
-export function createProductConnection(input: CreateProductConnectionInput) {
-  return apiClient<ProductConnection>(
-    `/api/products/${input.productId}/connections`,
-    {
-      method: "POST",
-      body: compactBody({
-        targetType: input.targetType,
-        targetId: input.targetId,
-        connectionType: input.connectionType,
-        note: input.note,
-      }),
-    }
-  );
-}
-
-export function deleteProductConnection(
+export function createMemoLog(
   productId: string,
-  connectionId: string
-) {
-  return apiClient<DeleteProductResponse>(
-    `/api/products/${productId}/connections/${connectionId}`,
-    {
-      method: "DELETE",
-    }
-  );
-}
-
-export function listProductLogs(
-  productId: string,
-  params: ProductLogListParams
-) {
-  const query = new URLSearchParams();
-  query.set("page", String(params.page ?? 1));
-  query.set("pageSize", String(params.pageSize ?? 20));
-
-  return apiClient<ProductLogListResponse>(
-    `/api/products/${productId}/logs?${query.toString()}`
-  );
-}
-
-export function createProductLog(input: CreateProductLogInput) {
-  return apiClient<ProductLog>(`/api/products/${input.productId}/logs`, {
+  input: { memoType: string; memo: string }
+): Promise<void> {
+  return apiClient<void>(`/api/products/${productId}/memo-logs`, {
     method: "POST",
-    body: compactBody({
-      loggedAt: input.loggedAt,
-      title: input.title,
-      content: input.content,
-    }),
+    body: input,
   });
 }
 
-export function updateProductLog(input: UpdateProductLogInput) {
-  return apiClient<ProductLog>(
-    `/api/products/${input.productId}/logs/${input.logId}`,
+export function updateMemoLog(
+  productId: string,
+  memoLogId: string,
+  input: { memoType?: string; memo?: string }
+): Promise<void> {
+  return apiClient<void>(`/api/products/${productId}/memo-logs/${memoLogId}`, {
+    method: "PATCH",
+    body: compactBody(input as Record<string, unknown>),
+  });
+}
+
+export function createPrivateMemoLog(
+  productId: string,
+  input: { memo: string }
+): Promise<void> {
+  return apiClient<void>(`/api/products/${productId}/private-memo-logs`, {
+    method: "POST",
+    body: input,
+  });
+}
+
+export function updatePrivateMemoLog(
+  productId: string,
+  privateMemoLogId: string,
+  input: { memo: string }
+): Promise<void> {
+  return apiClient<void>(
+    `/api/products/${productId}/private-memo-logs/${privateMemoLogId}`,
     {
       method: "PATCH",
-      body: compactBody({
-        loggedAt: input.loggedAt,
-        title: input.title,
-        content: input.content,
-      }),
+      body: input,
     }
   );
 }
 
-export function deleteProductLog(productId: string, logId: string) {
-  return apiClient<DeleteProductResponse>(
-    `/api/products/${productId}/logs/${logId}`,
-    {
-      method: "DELETE",
-    }
-  );
-}
-
-function toProductListSearchParams(params: ProductListParams) {
-  const searchParams = new URLSearchParams();
-
-  searchParams.set("page", String(params.page ?? 1));
-  searchParams.set("pageSize", String(params.pageSize ?? 20));
-
-  if (params.search) {
-    searchParams.set("search", params.search);
-  }
-
-  if (params.category) {
-    searchParams.set("category", params.category);
-  }
-
-  if (params.includeDeleted) {
-    searchParams.set("includeDeleted", "true");
-  }
-
-  return searchParams;
+export function exportProductsXlsx(params: {
+  productName?: string;
+  productCategoryId?: string;
+  productStatusId?: string;
+}): Promise<ApiBlobResponse> {
+  const query = new URLSearchParams();
+  if (params.productName) query.set("productName", params.productName);
+  if (params.productCategoryId) query.set("productCategoryId", params.productCategoryId);
+  if (params.productStatusId) query.set("productStatusId", params.productStatusId);
+  const suffix = query.toString() ? `?${query.toString()}` : "";
+  return apiBlobClient(`/api/products/export/xlsx${suffix}`);
 }
 
 function compactBody(input: Record<string, unknown>) {

@@ -1,22 +1,22 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import {
+  createCategory,
+  createMemoLog,
+  createPrivateMemoLog,
   createProduct,
-  createProductConnection,
-  createProductLog,
-  deleteProduct,
-  deleteProductConnection,
-  deleteProductLog,
-  restoreProduct,
+  createStatus,
+  deleteCategory,
+  deleteStatus,
+  updateMemoLog,
+  updatePrivateMemoLog,
   updateProduct,
-  updateProductLog,
 } from "@/features/product/api/product-api";
 import { productQueryKeys } from "@/features/product/api/product-query-keys";
 import type {
-  CreateProductConnectionInput,
+  CreateProductCategoryInput,
   CreateProductInput,
-  CreateProductLogInput,
+  CreateProductStatusInput,
   UpdateProductInput,
-  UpdateProductLogInput,
 } from "@/features/product/types/product";
 
 export function useCreateProductMutation() {
@@ -24,11 +24,8 @@ export function useCreateProductMutation() {
 
   return useMutation({
     mutationFn: (input: CreateProductInput) => createProduct(input),
-    onSuccess: (product) => {
+    onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: productQueryKeys.lists() });
-      void queryClient.invalidateQueries({
-        queryKey: productQueryKeys.detail(product.id),
-      });
     },
   });
 }
@@ -38,107 +35,121 @@ export function useUpdateProductMutation() {
 
   return useMutation({
     mutationFn: (input: UpdateProductInput) => updateProduct(input),
-    onSuccess: (product) => {
+    onSuccess: (_data, input) => {
       void queryClient.invalidateQueries({ queryKey: productQueryKeys.lists() });
       void queryClient.invalidateQueries({
-        queryKey: productQueryKeys.detail(product.id),
+        queryKey: productQueryKeys.detail(input.productId),
       });
     },
   });
 }
 
-export function useDeleteProductMutation() {
+export function useCreateCategoryMutation() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (productId: string) => deleteProduct(productId),
-    onSuccess: (result) => {
-      void queryClient.invalidateQueries({ queryKey: productQueryKeys.lists() });
-      void queryClient.invalidateQueries({
-        queryKey: productQueryKeys.detail(result.id),
-      });
-    },
-  });
-}
-
-export function useRestoreProductMutation() {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: (productId: string) => restoreProduct(productId),
-    onSuccess: (product) => {
-      void queryClient.invalidateQueries({ queryKey: productQueryKeys.lists() });
-      void queryClient.invalidateQueries({
-        queryKey: productQueryKeys.detail(product.id),
-      });
-    },
-  });
-}
-
-export function useCreateProductConnectionMutation() {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: (input: CreateProductConnectionInput) =>
-      createProductConnection(input),
-    onSuccess: (connection) => {
-      void queryClient.invalidateQueries({ queryKey: productQueryKeys.lists() });
-      void queryClient.invalidateQueries({
-        queryKey: productQueryKeys.detail(connection.productId),
-      });
-    },
-  });
-}
-
-export function useDeleteProductConnectionMutation(productId: string) {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: (connectionId: string) =>
-      deleteProductConnection(productId, connectionId),
+    mutationFn: (input: CreateProductCategoryInput) => createCategory(input),
     onSuccess: () => {
-      void queryClient.invalidateQueries({ queryKey: productQueryKeys.lists() });
-      void queryClient.invalidateQueries({
-        queryKey: productQueryKeys.detail(productId),
-      });
+      void queryClient.invalidateQueries({ queryKey: productQueryKeys.categories() });
     },
   });
 }
 
-export function useCreateProductLogMutation() {
+export function useCreateStatusMutation() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (input: CreateProductLogInput) => createProductLog(input),
-    onSuccess: (log) => {
-      void queryClient.invalidateQueries({
-        queryKey: productQueryKeys.logs(log.productId, {}),
-      });
+    mutationFn: (input: CreateProductStatusInput) => createStatus(input),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: productQueryKeys.statuses() });
     },
   });
 }
 
-export function useUpdateProductLogMutation() {
+export function useDeleteCategoryMutation() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (input: UpdateProductLogInput) => updateProductLog(input),
-    onSuccess: (log) => {
-      void queryClient.invalidateQueries({
-        queryKey: productQueryKeys.logs(log.productId, {}),
-      });
+    mutationFn: (categoryId: string) => deleteCategory(categoryId),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: productQueryKeys.categories() });
     },
   });
 }
 
-export function useDeleteProductLogMutation(productId: string) {
+export function useDeleteStatusMutation() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (logId: string) => deleteProductLog(productId, logId),
+    mutationFn: (statusId: string) => deleteStatus(statusId),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: productQueryKeys.statuses() });
+    },
+  });
+}
+
+export function useCreateMemoLogMutation(productId: string) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (input: { memoType: string; memo: string }) =>
+      createMemoLog(productId, input),
     onSuccess: () => {
       void queryClient.invalidateQueries({
-        queryKey: productQueryKeys.logs(productId, {}),
+        queryKey: productQueryKeys.memoLogs(productId),
+      });
+    },
+  });
+}
+
+export function useUpdateMemoLogMutation(productId: string) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({
+      memoLogId,
+      ...input
+    }: {
+      memoLogId: string;
+      memoType?: string;
+      memo?: string;
+    }) => updateMemoLog(productId, memoLogId, input),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({
+        queryKey: productQueryKeys.memoLogs(productId),
+      });
+    },
+  });
+}
+
+export function useCreatePrivateMemoLogMutation(productId: string) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (input: { memo: string }) =>
+      createPrivateMemoLog(productId, input),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({
+        queryKey: productQueryKeys.privateMemoLogs(productId),
+      });
+    },
+  });
+}
+
+export function useUpdatePrivateMemoLogMutation(productId: string) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({
+      privateMemoLogId,
+      memo,
+    }: {
+      privateMemoLogId: string;
+      memo: string;
+    }) => updatePrivateMemoLog(productId, privateMemoLogId, { memo }),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({
+        queryKey: productQueryKeys.privateMemoLogs(productId),
       });
     },
   });

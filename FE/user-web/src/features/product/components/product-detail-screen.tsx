@@ -1,73 +1,41 @@
-import {
-  ArchiveRestore,
-  ArrowLeft,
-  CircleDollarSign,
-  Link2,
-  MessageSquareText,
-  Package,
-  Tag,
-  Trash2,
-} from "lucide-react";
+import { Lock, Package, Plus } from "lucide-react";
 import { useState } from "react";
-import { Link } from "react-router-dom";
-import { ProductConnectionSection } from "@/features/product/components/product-connection-section";
 import { ProductEditForm } from "@/features/product/components/product-edit-form";
-import { ProductLogSection } from "@/features/product/components/product-log-section";
 import {
   useProductDetail,
-  useProductLogs,
+  useProductMemoLogsInfinite,
+  useProductPrivateMemoLogsInfinite,
 } from "@/features/product/hooks/use-product-detail";
 import {
-  useDeleteProductMutation,
-  useRestoreProductMutation,
+  useCreateMemoLogMutation,
+  useCreatePrivateMemoLogMutation,
+  useUpdateMemoLogMutation,
+  useUpdatePrivateMemoLogMutation,
 } from "@/features/product/hooks/use-product-mutations";
-import type { Product, ProductMemo } from "@/features/product/types/product";
+import type {
+  ProductMemoLog,
+  ProductPrivateMemoLog,
+} from "@/features/product/types/product";
 import { getApiErrorMessage } from "@/lib/api-client";
-import { isDeletedResourceReadError } from "@/utils/api-error";
-import { formatDateTime, formatMoney } from "@/utils/format";
+import { formatDate, formatDateTime } from "@/utils/format";
 
 type ProductDetailScreenProps = {
   readonly productId: string;
+  readonly isEditing: boolean;
+  readonly onEditingChange: (v: boolean) => void;
 };
 
-export function ProductDetailScreen({ productId }: ProductDetailScreenProps) {
+export function ProductDetailScreen({ productId, isEditing, onEditingChange }: ProductDetailScreenProps) {
   const [notice, setNotice] = useState<string | null>(null);
   const productQuery = useProductDetail(productId);
-  const logsQuery = useProductLogs(productId, { page: 1, pageSize: 20 });
-  const deleteProductMutation = useDeleteProductMutation();
-  const restoreProductMutation = useRestoreProductMutation();
-  const actionError =
-    deleteProductMutation.error ?? restoreProductMutation.error ?? null;
-
-  const onDelete = async (product: Product) => {
-    if (!window.confirm(`${product.name} 제품을 휴지통으로 이동할까요?`)) {
-      return;
-    }
-
-    await deleteProductMutation.mutateAsync(product.id);
-    setNotice("제품이 휴지통으로 이동되었습니다.");
-  };
-
-  const onRestore = async () => {
-    const product = await restoreProductMutation.mutateAsync(productId);
-    setNotice(`${product.name} 제품이 복구되었습니다.`);
-  };
+  const memoLogsQuery = useProductMemoLogsInfinite(productId);
+  const privateMemoLogsQuery = useProductPrivateMemoLogsInfinite(productId);
 
   if (productQuery.isLoading) {
     return <ProductDetailSkeleton />;
   }
 
   if (productQuery.isError) {
-    if (isDeletedResourceReadError(productQuery.error)) {
-      return (
-        <DeletedProductState
-          error={productQuery.error}
-          isRestoring={restoreProductMutation.isPending}
-          onRestore={onRestore}
-        />
-      );
-    }
-
     return (
       <ProductDetailError
         error={productQuery.error}
@@ -76,218 +44,568 @@ export function ProductDetailScreen({ productId }: ProductDetailScreenProps) {
     );
   }
 
-  const productDetail = productQuery.data;
-
-  if (!productDetail) {
+  const product = productQuery.data;
+  if (!product) {
     return <ProductDetailSkeleton />;
   }
 
-  const { product, connections, memos } = productDetail;
-  const logs = logsQuery.data?.items ?? [];
+  const memoLogs = memoLogsQuery.data?.pages.flatMap((p) => p.items) ?? [];
+  const memoTotalCount = memoLogs.length;
+  const memoHasNext = memoLogsQuery.data?.pages.at(-1)?.hasNext ?? false;
+
+  const privateMemoLogs =
+    privateMemoLogsQuery.data?.pages.flatMap((p) => p.items) ?? [];
+  const privateMemoHasNext =
+    privateMemoLogsQuery.data?.pages.at(-1)?.hasNext ?? false;
 
   return (
-    <section className="mx-auto grid max-w-7xl gap-6 px-5 py-6">
-      <header className="flex flex-col gap-4 border-b pb-5 md:flex-row md:items-center md:justify-between">
-        <div>
-          <Link
-            className="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-primary"
-            to="/products"
-          >
-            <ArrowLeft className="h-4 w-4" />
-            제품 목록
-          </Link>
-          <h1 className="mt-3 text-2xl font-semibold">{product.name}</h1>
-          <p className="mt-1 text-sm text-muted-foreground">
-            {formatProductSubtitle(product)}
-          </p>
-        </div>
-        <button
-          className="inline-flex h-10 w-fit items-center gap-2 rounded-md border border-destructive/30 px-4 text-sm font-medium text-destructive hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-60"
-          disabled={deleteProductMutation.isPending}
-          onClick={() => void onDelete(product)}
-          type="button"
-        >
-          <Trash2 className="h-4 w-4" />
-          휴지통 이동
-        </button>
-      </header>
-
+    <div className="flex h-full flex-col">
+      {/* Notices */}
       {notice ? (
-        <p className="rounded-md border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm text-emerald-800">
+        <div className="mx-6 mt-3 rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-2.5 text-sm text-emerald-800">
           {notice}
-        </p>
+        </div>
       ) : null}
 
-      {actionError ? (
-        <p className="rounded-md border border-destructive/30 bg-red-50 px-3 py-2 text-sm text-destructive">
-          {getApiErrorMessage(actionError)}
-        </p>
-      ) : null}
-
-      <ProductSummary product={product} />
-
-      <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_380px]">
-        <div className="grid gap-6">
-          <section className="grid gap-4">
-            <div>
-              <h2 className="text-lg font-semibold">기본 정보</h2>
-              <p className="mt-1 text-sm text-muted-foreground">
-                제품명, 분류, 단가, 설명을 정리합니다.
-              </p>
-            </div>
-            <div className="rounded-lg border bg-white p-4">
+      {/* Content */}
+      <div className="flex min-h-0 flex-1 overflow-hidden bg-[#F9FAFB]">
+        {/* Left */}
+        <div className="flex min-w-0 flex-1 flex-col gap-4 overflow-y-auto p-6">
+          {/* 기본 정보 카드 */}
+          <div className="rounded-lg border border-[#E5E7EB] bg-white p-5">
+            <h2 className="mb-4 text-[14px] font-semibold text-[#111827]">
+              기본 정보
+            </h2>
+            {isEditing ? (
               <ProductEditForm
-                onSaved={(updatedProduct) =>
-                  setNotice(`${updatedProduct.name} 제품이 저장되었습니다.`)
-                }
+                onSaved={() => {
+                  setNotice("제품이 저장되었습니다.");
+                  onEditingChange(false);
+                  void productQuery.refetch();
+                }}
                 product={product}
               />
-            </div>
-          </section>
+            ) : (
+              <div className="grid grid-cols-2 gap-4">
+                <ProductInfoField label="제품명" value={product.productName} />
+                <ProductInfoField
+                  label="등록일"
+                  value={formatDate(product.createdAt, { year: "numeric" })}
+                />
+                <ProductInfoField
+                  label="분류"
+                  value={product.productCategory.categoryName}
+                />
+                <ProductInfoField
+                  label="단위"
+                  value={
+                    product.productPrice
+                      ? `${product.productPrice.toLocaleString()}원`
+                      : "-"
+                  }
+                />
+              </div>
+            )}
+          </div>
 
-          <ProductLogSection
-            error={logsQuery.error}
-            isLoading={logsQuery.isLoading}
-            logs={logs}
-            onChanged={setNotice}
-            onRetry={() => void logsQuery.refetch()}
-            productId={product.id}
+          {/* 메모 기록 카드 */}
+          <MemoLogsCard
+            hasNext={memoHasNext}
+            isFetchingNextPage={memoLogsQuery.isFetchingNextPage}
+            isLoading={memoLogsQuery.isLoading}
+            logs={memoLogs}
+            productId={productId}
+            totalCount={memoTotalCount}
+            onFetchNext={() => void memoLogsQuery.fetchNextPage()}
           />
         </div>
 
-        <aside className="grid content-start gap-6">
-          <ProductConnectionSection
-            connections={connections}
-            onChanged={setNotice}
-            productId={product.id}
-          />
-          <ProductMemoPanel memos={memos} />
-        </aside>
-      </div>
-    </section>
-  );
-}
-
-function ProductSummary({ product }: { readonly product: Product }) {
-  const items = [
-    {
-      label: "단가",
-      value: formatProductMoney(product),
-      icon: CircleDollarSign,
-      className: "border-emerald-200 bg-emerald-50 text-emerald-900",
-    },
-    {
-      label: "분류",
-      value: product.category ?? "-",
-      icon: Tag,
-      className: "border-sky-200 bg-sky-50 text-sky-900",
-    },
-    {
-      label: "연결",
-      value: String(product.connectionCount),
-      icon: Link2,
-      className: "border-violet-200 bg-violet-50 text-violet-900",
-    },
-    {
-      label: "Memo",
-      value: String(product.memoCount),
-      icon: MessageSquareText,
-      className: "border-amber-200 bg-amber-50 text-amber-900",
-    },
-  ];
-
-  return (
-    <section className="grid gap-3 md:grid-cols-4">
-      {items.map((item) => {
-        const Icon = item.icon;
-
-        return (
-          <div
-            className={`flex items-center justify-between rounded-lg border px-4 py-3 ${item.className}`}
-            key={item.label}
-          >
-            <div className="min-w-0">
-              <p className="text-sm font-medium">{item.label}</p>
-              <p className="mt-1 truncate text-xl font-semibold">{item.value}</p>
+        {/* Right */}
+        <div className="flex w-[415px] shrink-0   flex-col gap-4 overflow-y-auto bg-[#F9FAFB] p-6">
+          {/* 판매 현황 카드 */}
+          <div className="rounded-lg border border-[#E5E7EB] bg-white p-4">
+            <h3 className="mb-3 text-[13px] font-semibold text-[#111827]">
+              판매 현황
+            </h3>
+            <div className="grid grid-cols-2 gap-3">
+              <div className="flex flex-col gap-1 rounded-lg bg-[#F9FAFB] p-3">
+                <span className="text-[11px] font-medium text-[#6B7280]">
+                  연결 딜
+                </span>
+                <span className="text-[20px] font-bold text-[#111827]">-</span>
+              </div>
+              <div className="flex flex-col gap-1 rounded-lg bg-[#F9FAFB] p-3">
+                <span className="text-[11px] font-medium text-[#6B7280]">
+                  이번 달 사용
+                </span>
+                <span className="text-[20px] font-bold text-[#111827]">-</span>
+              </div>
             </div>
-            <Icon className="h-5 w-5" />
           </div>
-        );
-      })}
-    </section>
-  );
-}
-
-function ProductMemoPanel({ memos }: { readonly memos: ProductMemo[] }) {
-  return (
-    <section className="grid gap-3">
-      <h2 className="text-lg font-semibold">Memo 기록</h2>
-      <p className="rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-900">
-        메모는 민감정보 후보입니다.
-      </p>
-      <div className="overflow-hidden rounded-lg border bg-white">
-        {memos.length === 0 ? (
-          <p className="px-4 py-5 text-sm text-muted-foreground">
-            등록된 메모가 없습니다.
-          </p>
-        ) : (
-          <div className="divide-y">
-            {memos.map((memo) => (
-              <article className="grid gap-2 px-4 py-4" key={memo.id}>
-                <p className="text-xs text-muted-foreground">
-                  {formatDateTime(memo.memoDate, { includeYear: true })}
-                </p>
-                {memo.title ? (
-                  <h3 className="text-sm font-semibold">{memo.title}</h3>
-                ) : null}
-                <p className="whitespace-pre-wrap text-sm leading-6 text-slate-700">
-                  {memo.content}
-                </p>
-              </article>
-            ))}
-          </div>
-        )}
+          {/* Memo 기록 카드 */}
+          <PrivateMemoLogsCard
+            hasNext={privateMemoHasNext}
+            isFetchingNextPage={privateMemoLogsQuery.isFetchingNextPage}
+            isLoading={privateMemoLogsQuery.isLoading}
+            logs={privateMemoLogs}
+            productId={productId}
+            onFetchNext={() => void privateMemoLogsQuery.fetchNextPage()}
+          />
+        </div>
       </div>
-    </section>
+    </div>
   );
 }
 
-function DeletedProductState({
-  error,
-  isRestoring,
-  onRestore,
+// ── Memo Logs Card ──────────────────────────────────────────────────────────
+
+function MemoLogsCard({
+  productId,
+  logs,
+  totalCount,
+  hasNext,
+  isLoading,
+  isFetchingNextPage,
+  onFetchNext,
 }: {
-  readonly error: unknown;
-  readonly isRestoring: boolean;
-  readonly onRestore: () => Promise<void>;
+  readonly productId: string;
+  readonly logs: ProductMemoLog[];
+  readonly totalCount: number;
+  readonly hasNext: boolean;
+  readonly isLoading: boolean;
+  readonly isFetchingNextPage: boolean;
+  readonly onFetchNext: () => void;
 }) {
+  const createMutation = useCreateMemoLogMutation(productId);
+  const updateMutation = useUpdateMemoLogMutation(productId);
+
+  const [showCreate, setShowCreate] = useState(false);
+  const [createMemoType, setCreateMemoType] = useState("");
+  const [createMemo, setCreateMemo] = useState("");
+  const [createError, setCreateError] = useState<string | null>(null);
+
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editMemoType, setEditMemoType] = useState("");
+  const [editMemo, setEditMemo] = useState("");
+  const [editError, setEditError] = useState<string | null>(null);
+
+  const handleCreate = async () => {
+    if (!createMemo.trim()) return;
+    setCreateError(null);
+    try {
+      await createMutation.mutateAsync({
+        memoType: createMemoType.trim() || "일반",
+        memo: createMemo.trim(),
+      });
+      setCreateMemoType("");
+      setCreateMemo("");
+      setShowCreate(false);
+    } catch (err) {
+      setCreateError(getApiErrorMessage(err));
+    }
+  };
+
+  const handleUpdate = async (logId: string) => {
+    if (!editMemo.trim()) return;
+    setEditError(null);
+    try {
+      await updateMutation.mutateAsync({
+        memoLogId: logId,
+        memoType: editMemoType.trim() || undefined,
+        memo: editMemo.trim(),
+      });
+      setEditingId(null);
+    } catch (err) {
+      setEditError(getApiErrorMessage(err));
+    }
+  };
+
+  const startEdit = (log: ProductMemoLog) => {
+    setEditingId(log.id);
+    setEditMemoType(log.memoType);
+    setEditMemo(log.memo);
+    setEditError(null);
+  };
+
   return (
-    <section className="mx-auto grid max-w-3xl gap-4 px-5 py-10 text-center">
-      <Package className="mx-auto h-10 w-10 text-muted-foreground" />
-      <div>
-        <h1 className="text-xl font-semibold">삭제된 제품입니다.</h1>
-        <p className="mt-2 text-sm text-muted-foreground">
-          {getApiErrorMessage(error)}
-        </p>
-      </div>
-      <div className="flex justify-center gap-2">
-        <Link
-          className="inline-flex h-10 items-center rounded-md border px-4 text-sm font-medium hover:bg-muted"
-          to="/products"
-        >
-          제품 목록
-        </Link>
+    <div className="rounded-lg border border-[#E5E7EB] bg-white p-4">
+      <div className="mb-3 flex items-center gap-2">
+        <h3 className="flex-1 text-[13px] font-semibold text-[#111827]">
+          제품 로그
+        </h3>
+        <span className="text-[12px] text-[#9CA3AF]">{totalCount}건</span>
         <button
-          className="inline-flex h-10 items-center gap-2 rounded-md bg-primary px-4 text-sm font-medium text-primary-foreground disabled:cursor-not-allowed disabled:opacity-60"
-          disabled={isRestoring}
-          onClick={() => void onRestore()}
+          className="inline-flex h-7 items-center gap-1 rounded-md border border-[#E5E7EB] px-2.5 text-[12px] font-medium text-[#374151] hover:bg-[#F9FAFB]"
+          onClick={() => {
+            setShowCreate(true);
+            setCreateError(null);
+          }}
           type="button"
         >
-          <ArchiveRestore className="h-4 w-4" />
-          복구
+          <Plus className="h-3 w-3" strokeWidth={2.5} />
+          메모 추가
         </button>
       </div>
-    </section>
+
+      {/* Inline create form */}
+      {showCreate && (
+        <div className="mb-3 rounded-lg border border-[#BFDBFE] bg-[#EFF6FF] p-3">
+          <div className="flex flex-col gap-2">
+            <input
+              className="h-8 rounded-md border border-[#E6EAF0] bg-white px-2.5 text-[12px] outline-none focus:border-[#93C5FD] focus:ring-1 focus:ring-[#93C5FD]"
+              placeholder="메모 유형 (예: 영업, 기술, 일반)"
+              value={createMemoType}
+              onChange={(e) => setCreateMemoType(e.target.value)}
+            />
+            <textarea
+              className="min-h-[72px] resize-y rounded-md border border-[#E6EAF0] bg-white px-2.5 py-2 text-[12px] outline-none focus:border-[#93C5FD] focus:ring-1 focus:ring-[#93C5FD]"
+              placeholder="메모 내용을 입력하세요"
+              value={createMemo}
+              onChange={(e) => setCreateMemo(e.target.value)}
+            />
+            {createError ? (
+              <p className="text-[11px] text-[#EF4444]">{createError}</p>
+            ) : null}
+            <div className="flex justify-end gap-2">
+              <button
+                className="inline-flex h-7 items-center rounded-md border border-[#E5E7EB] bg-white px-2.5 text-[12px] font-medium text-[#374151] hover:bg-[#F9FAFB]"
+                onClick={() => {
+                  setShowCreate(false);
+                  setCreateMemoType("");
+                  setCreateMemo("");
+                }}
+                type="button"
+              >
+                취소
+              </button>
+              <button
+                className="inline-flex h-7 items-center rounded-md bg-[#1D4ED8] px-2.5 text-[12px] font-medium text-white hover:bg-[#1E40AF] disabled:opacity-60"
+                disabled={createMutation.isPending || !createMemo.trim()}
+                onClick={() => void handleCreate()}
+                type="button"
+              >
+                저장
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {isLoading ? (
+        <div className="py-4 text-center text-[13px] text-[#9CA3AF]">
+          불러오는 중...
+        </div>
+      ) : logs.length === 0 ? (
+        <p className="py-2 text-[13px] text-[#9CA3AF]">
+          등록된 메모가 없습니다.
+        </p>
+      ) : (
+        <div className="flex flex-col gap-2">
+          {logs.map((log) =>
+            editingId === log.id ? (
+              <div
+                key={log.id}
+                className="rounded-lg border border-[#BFDBFE] bg-[#EFF6FF] p-3"
+              >
+                <div className="flex flex-col gap-2">
+                  <input
+                    className="h-8 rounded-md border border-[#E6EAF0] bg-white px-2.5 text-[12px] outline-none focus:border-[#93C5FD] focus:ring-1 focus:ring-[#93C5FD]"
+                    placeholder="메모 유형"
+                    value={editMemoType}
+                    onChange={(e) => setEditMemoType(e.target.value)}
+                  />
+                  <textarea
+                    className="min-h-[72px] resize-y rounded-md border border-[#E6EAF0] bg-white px-2.5 py-2 text-[12px] outline-none focus:border-[#93C5FD] focus:ring-1 focus:ring-[#93C5FD]"
+                    value={editMemo}
+                    onChange={(e) => setEditMemo(e.target.value)}
+                  />
+                  {editError ? (
+                    <p className="text-[11px] text-[#EF4444]">{editError}</p>
+                  ) : null}
+                  <div className="flex justify-end gap-2">
+                    <button
+                      className="inline-flex h-7 items-center rounded-md border border-[#E5E7EB] bg-white px-2.5 text-[12px] font-medium text-[#374151] hover:bg-[#F9FAFB]"
+                      onClick={() => setEditingId(null)}
+                      type="button"
+                    >
+                      취소
+                    </button>
+                    <button
+                      className="inline-flex h-7 items-center rounded-md bg-[#1D4ED8] px-2.5 text-[12px] font-medium text-white hover:bg-[#1E40AF] disabled:opacity-60"
+                      disabled={updateMutation.isPending || !editMemo.trim()}
+                      onClick={() => void handleUpdate(log.id)}
+                      type="button"
+                    >
+                      저장
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <div
+                key={log.id}
+                className="flex flex-col gap-1 rounded-lg bg-[#F9FAFB] p-3"
+              >
+                <div className="flex items-center gap-2">
+                  <span className="inline-flex h-5 items-center rounded bg-[#F3F4F6] px-1.5 text-[10px] font-medium text-[#374151]">
+                    {log.memoType}
+                  </span>
+                  <span className="flex-1 text-[11px] text-[#9CA3AF]">
+                    {formatDateTime(log.createdAt, { includeYear: true })}
+                  </span>
+                  <button
+                    className="text-[11px] font-medium text-[#6B7280] hover:text-[#374151]"
+                    onClick={() => startEdit(log)}
+                    type="button"
+                  >
+                    수정
+                  </button>
+                </div>
+                <p className="whitespace-pre-wrap text-[13px] leading-relaxed text-[#374151]">
+                  {log.memo}
+                </p>
+              </div>
+            ),
+          )}
+        </div>
+      )}
+
+      {hasNext && (
+        <div className="mt-3 flex justify-center">
+          <button
+            className="inline-flex h-8 items-center rounded-lg border border-[#E5E7EB] bg-white px-3 text-[12px] font-medium text-[#374151] hover:bg-[#F9FAFB] disabled:opacity-60"
+            disabled={isFetchingNextPage}
+            onClick={onFetchNext}
+            type="button"
+          >
+            {isFetchingNextPage ? "불러오는 중..." : "더 보기"}
+          </button>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ── Private Memo Logs Card ──────────────────────────────────────────────────
+
+function PrivateMemoLogsCard({
+  productId,
+  logs,
+  hasNext,
+  isLoading,
+  isFetchingNextPage,
+  onFetchNext,
+}: {
+  readonly productId: string;
+  readonly logs: ProductPrivateMemoLog[];
+  readonly hasNext: boolean;
+  readonly isLoading: boolean;
+  readonly isFetchingNextPage: boolean;
+  readonly onFetchNext: () => void;
+}) {
+  const createMutation = useCreatePrivateMemoLogMutation(productId);
+  const updateMutation = useUpdatePrivateMemoLogMutation(productId);
+
+  const [showCreate, setShowCreate] = useState(false);
+  const [createMemo, setCreateMemo] = useState("");
+  const [createError, setCreateError] = useState<string | null>(null);
+
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editMemo, setEditMemo] = useState("");
+  const [editError, setEditError] = useState<string | null>(null);
+
+  const handleCreate = async () => {
+    if (!createMemo.trim()) return;
+    setCreateError(null);
+    try {
+      await createMutation.mutateAsync({ memo: createMemo.trim() });
+      setCreateMemo("");
+      setShowCreate(false);
+    } catch (err) {
+      setCreateError(getApiErrorMessage(err));
+    }
+  };
+
+  const handleUpdate = async (logId: string) => {
+    if (!editMemo.trim()) return;
+    setEditError(null);
+    try {
+      await updateMutation.mutateAsync({
+        privateMemoLogId: logId,
+        memo: editMemo.trim(),
+      });
+      setEditingId(null);
+    } catch (err) {
+      setEditError(getApiErrorMessage(err));
+    }
+  };
+
+  const startEdit = (log: ProductPrivateMemoLog) => {
+    setEditingId(log.id);
+    setEditMemo(log.memo);
+    setEditError(null);
+  };
+
+  return (
+    <div className="rounded-lg border border-[#E5E7EB] bg-white p-4">
+      <div className="mb-3 flex items-center gap-1.5">
+        <h3 className="flex-1 text-[13px] font-semibold text-[#111827]">
+          Memo 기록
+        </h3>
+        <Lock className="h-3 w-3 text-[#B45309]" />
+        <span className="inline-flex h-5 items-center rounded bg-[#FEF3C7] px-1.5 text-[10px] font-medium text-[#B45309]">
+          암호화 저장
+        </span>
+        <button
+          className="ml-1 inline-flex h-7 items-center gap-1 rounded-md border border-[#E5E7EB] px-2.5 text-[12px] font-medium text-[#374151] hover:bg-[#F9FAFB]"
+          onClick={() => {
+            setShowCreate(true);
+            setCreateError(null);
+          }}
+          type="button"
+        >
+          <Plus className="h-3 w-3" strokeWidth={2.5} />
+          추가
+        </button>
+      </div>
+
+      {/* Inline create form */}
+      {showCreate && (
+        <div className="mb-3 rounded-lg border border-[#FDE68A] bg-[#FFFBEB] p-3">
+          <div className="flex flex-col gap-2">
+            <textarea
+              className="min-h-[72px] resize-y rounded-md border border-[#E6EAF0] bg-white px-2.5 py-2 text-[12px] outline-none focus:border-[#93C5FD] focus:ring-1 focus:ring-[#93C5FD]"
+              placeholder="비밀 메모 내용을 입력하세요"
+              value={createMemo}
+              onChange={(e) => setCreateMemo(e.target.value)}
+            />
+            {createError ? (
+              <p className="text-[11px] text-[#EF4444]">{createError}</p>
+            ) : null}
+            <div className="flex justify-end gap-2">
+              <button
+                className="inline-flex h-7 items-center rounded-md border border-[#E5E7EB] bg-white px-2.5 text-[12px] font-medium text-[#374151] hover:bg-[#F9FAFB]"
+                onClick={() => {
+                  setShowCreate(false);
+                  setCreateMemo("");
+                }}
+                type="button"
+              >
+                취소
+              </button>
+              <button
+                className="inline-flex h-7 items-center rounded-md bg-[#1D4ED8] px-2.5 text-[12px] font-medium text-white hover:bg-[#1E40AF] disabled:opacity-60"
+                disabled={createMutation.isPending || !createMemo.trim()}
+                onClick={() => void handleCreate()}
+                type="button"
+              >
+                저장
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {isLoading ? (
+        <div className="py-4 text-center text-[13px] text-[#9CA3AF]">
+          불러오는 중...
+        </div>
+      ) : logs.length === 0 ? (
+        <p className="py-2 text-[13px] text-[#9CA3AF]">
+          등록된 비밀 메모가 없습니다.
+        </p>
+      ) : (
+        <div className="flex flex-col gap-2">
+          {logs.map((log) =>
+            editingId === log.id ? (
+              <div
+                key={log.id}
+                className="rounded-lg border border-[#FDE68A] bg-[#FFFBEB] p-3"
+              >
+                <div className="flex flex-col gap-2">
+                  <textarea
+                    className="min-h-[72px] resize-y rounded-md border border-[#E6EAF0] bg-white px-2.5 py-2 text-[12px] outline-none focus:border-[#93C5FD] focus:ring-1 focus:ring-[#93C5FD]"
+                    value={editMemo}
+                    onChange={(e) => setEditMemo(e.target.value)}
+                  />
+                  {editError ? (
+                    <p className="text-[11px] text-[#EF4444]">{editError}</p>
+                  ) : null}
+                  <div className="flex justify-end gap-2">
+                    <button
+                      className="inline-flex h-7 items-center rounded-md border border-[#E5E7EB] bg-white px-2.5 text-[12px] font-medium text-[#374151] hover:bg-[#F9FAFB]"
+                      onClick={() => setEditingId(null)}
+                      type="button"
+                    >
+                      취소
+                    </button>
+                    <button
+                      className="inline-flex h-7 items-center rounded-md bg-[#1D4ED8] px-2.5 text-[12px] font-medium text-white hover:bg-[#1E40AF] disabled:opacity-60"
+                      disabled={updateMutation.isPending || !editMemo.trim()}
+                      onClick={() => void handleUpdate(log.id)}
+                      type="button"
+                    >
+                      저장
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <div
+                key={log.id}
+                className="flex flex-col gap-1 rounded-lg bg-[#FFFBEB] p-3"
+              >
+                <div className="flex items-center gap-2">
+                  <span className="flex-1 text-[11px] text-[#9CA3AF]">
+                    {formatDateTime(log.createdAt, { includeYear: true })}
+                  </span>
+                  <button
+                    className="text-[11px] font-medium text-[#6B7280] hover:text-[#374151]"
+                    onClick={() => startEdit(log)}
+                    type="button"
+                  >
+                    수정
+                  </button>
+                </div>
+                <p className="whitespace-pre-wrap text-[13px] leading-relaxed text-[#374151]">
+                  {log.memo}
+                </p>
+              </div>
+            ),
+          )}
+        </div>
+      )}
+
+      {hasNext && (
+        <div className="mt-3 flex justify-center">
+          <button
+            className="inline-flex h-8 items-center rounded-lg border border-[#E5E7EB] bg-white px-3 text-[12px] font-medium text-[#374151] hover:bg-[#F9FAFB] disabled:opacity-60"
+            disabled={isFetchingNextPage}
+            onClick={onFetchNext}
+            type="button"
+          >
+            {isFetchingNextPage ? "불러오는 중..." : "더 보기"}
+          </button>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ── Shared helpers ──────────────────────────────────────────────────────────
+
+function ProductInfoField({
+  label,
+  value,
+}: {
+  readonly label: string;
+  readonly value: string;
+}) {
+  return (
+    <div className="flex flex-col gap-1">
+      <span className="text-[11px] font-semibold text-[#6B7280]">{label}</span>
+      <span className="text-[13px] text-[#111827]">{value}</span>
+    </div>
   );
 }
 
@@ -299,56 +617,44 @@ function ProductDetailError({
   readonly onRetry: () => void;
 }) {
   return (
-    <section className="mx-auto grid max-w-3xl gap-4 px-5 py-10 text-center">
-      <Package className="mx-auto h-10 w-10 text-muted-foreground" />
-      <div>
-        <h1 className="text-xl font-semibold">제품 상세를 불러오지 못했습니다.</h1>
-        <p className="mt-2 text-sm text-muted-foreground">
-          {getApiErrorMessage(error)}
-        </p>
-      </div>
+    <div className="grid place-items-center px-5 py-16 text-center">
+      <Package className="h-10 w-10 text-[#D1D5DB]" />
+      <p className="mt-4 text-[14px] font-semibold text-[#374151]">
+        제품 상세를 불러오지 못했습니다.
+      </p>
+      <p className="mt-1 text-[13px] text-[#9CA3AF]">
+        {getApiErrorMessage(error)}
+      </p>
       <button
-        className="mx-auto inline-flex h-10 items-center rounded-md border px-4 text-sm font-medium hover:bg-muted"
+        className="mt-5 inline-flex h-9 items-center rounded-lg border border-[#E5E7EB] bg-white px-4 text-[13px] font-medium text-[#374151] hover:bg-[#F9FAFB]"
         onClick={onRetry}
         type="button"
       >
-        재시도
+        다시 시도
       </button>
-    </section>
+    </div>
   );
 }
 
 function ProductDetailSkeleton() {
   return (
-    <section className="mx-auto grid max-w-7xl gap-5 px-5 py-6">
-      <div className="grid gap-2 border-b pb-5">
-        <div className="h-5 w-28 animate-pulse rounded bg-muted" />
-        <div className="h-8 w-56 animate-pulse rounded bg-muted" />
-        <div className="h-4 w-80 animate-pulse rounded bg-muted" />
+    <div className="flex h-full flex-col">
+      <div className="flex h-16 shrink-0 items-center gap-4 border-b border-[#E5E7EB] bg-white px-6">
+        <div className="h-5 w-5 animate-pulse rounded bg-[#F3F4F6]" />
+        <div className="h-4 w-48 animate-pulse rounded bg-[#F3F4F6]" />
+        <div className="ml-auto flex gap-2">
+          <div className="h-9 w-16 animate-pulse rounded-lg bg-[#F3F4F6]" />
+        </div>
       </div>
-      <div className="grid gap-3 md:grid-cols-4">
-        {Array.from({ length: 4 }, (_, index) => (
-          <div className="h-24 animate-pulse rounded-lg bg-muted" key={index} />
-        ))}
+      <div className="flex flex-1 gap-4 bg-[#F9FAFB] p-6">
+        <div className="flex flex-1 flex-col gap-4">
+          <div className="h-44 animate-pulse rounded-lg bg-[#F3F4F6]" />
+          <div className="h-64 animate-pulse rounded-lg bg-[#F3F4F6]" />
+        </div>
+        <div className="flex w-[415px] flex-col gap-4">
+          <div className="h-36 animate-pulse rounded-lg bg-[#F3F4F6]" />
+        </div>
       </div>
-      <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_380px]">
-        <div className="h-96 animate-pulse rounded-lg bg-muted" />
-        <div className="h-72 animate-pulse rounded-lg bg-muted" />
-      </div>
-    </section>
+    </div>
   );
-}
-
-function formatProductSubtitle(product: Product) {
-  return [product.category, formatProductMoney(product)].filter(Boolean).join(
-    " · "
-  );
-}
-
-function formatProductMoney(product: Product) {
-  if (product.unitPrice === null) {
-    return "-";
-  }
-
-  return formatMoney(product.unitPrice, product.currency || "KRW");
 }

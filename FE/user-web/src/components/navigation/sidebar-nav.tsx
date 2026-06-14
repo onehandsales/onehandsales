@@ -1,5 +1,4 @@
 import {
-  Bell,
   BriefcaseBusiness,
   Building2,
   CalendarDays,

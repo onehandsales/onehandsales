@@ -155,6 +155,8 @@
 
 ## 4. 현재 코드 라우트 상태
 
+> 최종 업데이트: 2026-06-13
+
 현재 User Web router 기준 실제 구현 경로:
 
 - `/login`
@@ -179,6 +181,22 @@
 - `/export`
 - `/trash`
 - `/settings`
+
+pen 디자인 반영 완료 도메인 (2026-06-13 기준):
+- `/` (Deal Pipeline Home) — pen 기준 테이블+우측패널 구조 완료
+- Sidebar / TopBar — pen 기준 재구성 완료
+- DealStage 6단계 FE 전체 확장 완료
+
+pen 디자인 반영 대기 도메인:
+- `/products`, `/products/:productId`
+- `/schedules`, `/schedules/week`
+- `/meeting-notes*`
+- `/notifications`
+- `/trash`
+- `/import`, `/export`
+- `/business-cards`
+- `/contacts`, `/contacts/:contactId` (부분 반영)
+- `/companies`, `/companies/:companyId` (부분 반영)
 
 현재 Admin Web router 기준 실제 구현 경로:
 

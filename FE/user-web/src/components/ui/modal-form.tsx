@@ -92,15 +92,46 @@ export function ModalFieldGroup({
   helper,
   className,
 }: ModalFieldGroupProps) {
+  const message = error ?? helper ?? "";
+
   return (
     <div className={cn("grid gap-2", className)}>
       <label className="text-sm font-medium" htmlFor={id}>
         {label}
       </label>
       {children}
-      {error ? <ModalErrorText id={`${id}-error`} message={error} /> : null}
-      {!error && helper ? <ModalHelperText>{helper}</ModalHelperText> : null}
+      <ModalFieldMessage
+        id={`${id}-message`}
+        message={message}
+        variant={error ? "error" : "helper"}
+      />
     </div>
+  );
+}
+
+type ModalFieldMessageProps = {
+  readonly id: string;
+  readonly message: string;
+  readonly variant: "error" | "helper";
+};
+
+// 기능 : 오류/도움말 영역 높이를 항상 고정해 검증 상태 변화로 필드 위치가 밀리지 않게 합니다.
+function ModalFieldMessage({
+  id,
+  message,
+  variant,
+}: ModalFieldMessageProps) {
+  return (
+    <p
+      className={cn(
+        "h-4 truncate text-xs leading-4",
+        variant === "error" ? "text-destructive" : "text-muted-foreground"
+      )}
+      id={id}
+      title={message || undefined}
+    >
+      {message}
+    </p>
   );
 }
 

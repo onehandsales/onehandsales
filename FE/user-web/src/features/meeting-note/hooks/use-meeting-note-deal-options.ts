@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { listDeals } from "@/features/deal";
+import { listDeals } from "@/features/deal/api/deal-api";
 
 export type MeetingNoteDealOption = {
   readonly id: string;
@@ -16,14 +16,13 @@ export function useMeetingNoteDealOptions(search: string) {
     queryFn: async () => {
       const result = await listDeals({
         page: 1,
-        pageSize: 8,
         search: normalizedSearch,
       });
 
       return result.items.map<MeetingNoteDealOption>((deal) => ({
         id: deal.id,
-        name: deal.title,
-        subtitle: [deal.companyName, deal.contactName, deal.stage]
+        name: deal.dealName,
+        subtitle: [deal.company?.companyName, deal.contact?.username]
           .filter(Boolean)
           .join(" · "),
       }));

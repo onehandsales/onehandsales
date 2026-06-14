@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { listCompanies } from "@/features/company";
 import { listContacts } from "@/features/contact";
-import { listDeals } from "@/features/deal";
+import { listDeals } from "@/features/deal/api/deal-api";
 
 export type ScheduleEntityOption = {
   readonly id: string;
@@ -22,18 +22,19 @@ export function useScheduleDealOptions(search: string) {
     queryFn: async () => {
       const result = await listDeals({
         page: 1,
-        pageSize: 8,
         search: normalizedSearch,
       });
 
       return result.items.map<ScheduleEntityOption>((deal) => ({
         id: deal.id,
-        name: deal.title,
-        subtitle: [deal.companyName, deal.contactName].filter(Boolean).join(" · "),
-        companyId: deal.companyId,
-        companyName: deal.companyName,
-        contactId: deal.contactId,
-        contactName: deal.contactName,
+        name: deal.dealName,
+        subtitle: [deal.company?.companyName, deal.contact?.username]
+          .filter(Boolean)
+          .join(" · "),
+        companyId: deal.company?.id ?? null,
+        companyName: deal.company?.companyName ?? null,
+        contactId: deal.contact?.id ?? null,
+        contactName: deal.contact?.username ?? null,
       }));
     },
   });

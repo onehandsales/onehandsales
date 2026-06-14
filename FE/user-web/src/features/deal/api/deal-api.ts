@@ -1,144 +1,138 @@
+// 기능 : Deal 도메인 API client — Backend /api/deals/* 계약 기준
+import { apiClient, apiBlobClient, type ApiBlobResponse } from "@/lib/api-client";
 import type {
-  ChangeDealStageInput,
-  CompleteDealNextActionInput,
-  CreateDealActivityInput,
   CreateDealInput,
-  Deal,
-  DealActivity,
-  DealActivityListParams,
-  DealActivityListResponse,
+  CreateFollowingActionLogInput,
+  CreateMemoLogInput,
+  DealCompanyOptionsResponse,
+  DealContactOptionsResponse,
   DealDetail,
+  DealExportParams,
+  DealFollowingActionLog,
+  DealFollowingActionLogsResponse,
   DealListParams,
   DealListResponse,
-  SnoozeDealNextActionInput,
-  UpdateDealNextActionInput,
+  DealMemoLog,
+  DealMemoLogsResponse,
+  DealProductOptionsResponse,
+  DealStageCountsResponse,
+  UpdateDealInput,
+  UpdateFollowingActionLogInput,
+  UpdateMemoLogInput,
 } from "@/features/deal/types/deal";
-import { apiClient } from "@/lib/api-client";
 
+// 기능 : 딜 단계별 개수 조회
+export function getDealStageCounts() {
+  return apiClient<DealStageCountsResponse>("/api/deals/stage-counts");
+}
+
+// 기능 : 딜 목록 페이지네이션 조회
 export function listDeals(params: DealListParams) {
-  const query = toDealListSearchParams(params);
-  const suffix = query.toString() ? `?${query.toString()}` : "";
+  const query = new URLSearchParams();
 
-  return apiClient<DealListResponse>(`/api/deals${suffix}`);
+  query.set("page", String(params.page ?? 1));
+  if (params.search) query.set("search", params.search);
+  if (params.dealStatus) query.set("dealStatus", params.dealStatus);
+  if (params.sort) query.set("sort", params.sort);
+
+  return apiClient<DealListResponse>(`/api/deals?${query.toString()}`);
 }
 
-export function createDeal(input: CreateDealInput) {
-  return apiClient<Deal>("/api/deals", {
-    method: "POST",
-    body: compactBody(input),
-  });
-}
-
+// 기능 : 딜 단건 상세 조회
 export function getDeal(dealId: string) {
   return apiClient<DealDetail>(`/api/deals/${dealId}`);
 }
 
-export function changeDealStage(input: ChangeDealStageInput) {
-  return apiClient<Deal>(`/api/deals/${input.dealId}/stage`, {
-    method: "PATCH",
-    body: compactBody({
-      stage: input.stage,
-      activityTitle: input.activityTitle,
-      activityContent: input.activityContent,
-    }),
-  });
-}
-
-export function updateDealNextAction(input: UpdateDealNextActionInput) {
-  return apiClient<Deal>(`/api/deals/${input.dealId}/next-action`, {
-    method: "PATCH",
-    body: compactBody({
-      nextActionText: input.nextActionText,
-      nextActionDueAt: input.nextActionDueAt,
-      nextActionStatus: input.nextActionStatus,
-    }),
-  });
-}
-
-export function completeDealNextAction(input: CompleteDealNextActionInput) {
-  return apiClient<Deal>(`/api/deals/${input.dealId}/next-action/complete`, {
+// 기능 : 딜 생성
+export function createDeal(input: CreateDealInput) {
+  return apiClient<DealDetail>("/api/deals", {
     method: "POST",
-    body: compactBody({
-      completedAt: input.completedAt,
-      activityContent: input.activityContent,
-    }),
+    body: input,
   });
 }
 
-export function snoozeDealNextAction(input: SnoozeDealNextActionInput) {
-  return apiClient<Deal>(`/api/deals/${input.dealId}/next-action/snooze`, {
-    method: "POST",
-    body: compactBody({
-      nextActionDueAt: input.nextActionDueAt,
-      reason: input.reason,
-    }),
+// 기능 : 딜 수정
+export function updateDeal(input: UpdateDealInput) {
+  const { dealId, ...body } = input;
+  return apiClient<DealDetail>(`/api/deals/${dealId}`, {
+    method: "PATCH",
+    body,
   });
 }
 
-export function listDealActivities(
-  dealId: string,
-  params: DealActivityListParams
-) {
+// 기능 : 딜 form 회사 옵션 조회
+export function getDealCompanyOptions() {
+  return apiClient<DealCompanyOptionsResponse>("/api/deals/company-options");
+}
+
+// 기능 : 딜 form 거래처 옵션 조회
+export function getDealContactOptions() {
+  return apiClient<DealContactOptionsResponse>("/api/deals/contact-options");
+}
+
+// 기능 : 딜 form 제품 옵션 조회
+export function getDealProductOptions() {
+  return apiClient<DealProductOptionsResponse>("/api/deals/product-options");
+}
+
+// 기능 : 딜 xlsx export (blob 응답)
+export function exportDealsXlsx(params: DealExportParams): Promise<ApiBlobResponse> {
   const query = new URLSearchParams();
-  query.set("page", String(params.page ?? 1));
-  query.set("pageSize", String(params.pageSize ?? 20));
+  if (params.search) query.set("search", params.search);
+  if (params.dealStatus) query.set("dealStatus", params.dealStatus);
+  if (params.sort) query.set("sort", params.sort);
 
-  return apiClient<DealActivityListResponse>(
-    `/api/deals/${dealId}/activities?${query.toString()}`
+  return apiBlobClient(`/api/deals/export/xlsx?${query.toString()}`);
+}
+
+// 기능 : 다음 행동 로그 전체 목록 조회
+export function listFollowingActionLogs(dealId: string) {
+  return apiClient<DealFollowingActionLogsResponse>(
+    `/api/deals/${dealId}/following-action-logs`
   );
 }
 
-export function createDealActivity(input: CreateDealActivityInput) {
-  return apiClient<DealActivity>(`/api/deals/${input.dealId}/activities`, {
+// 기능 : 다음 행동 로그 생성
+export function createFollowingActionLog(input: CreateFollowingActionLogInput) {
+  return apiClient<DealFollowingActionLog>(
+    `/api/deals/${input.dealId}/following-action-logs`,
+    {
+      method: "POST",
+      body: { followingAction: input.followingAction },
+    }
+  );
+}
+
+// 기능 : 다음 행동 로그 수정
+export function updateFollowingActionLog(input: UpdateFollowingActionLogInput) {
+  const { dealId, followingActionLogId, ...body } = input;
+  return apiClient<DealFollowingActionLog>(
+    `/api/deals/${dealId}/following-action-logs/${followingActionLogId}`,
+    {
+      method: "PATCH",
+      body,
+    }
+  );
+}
+
+// 기능 : 메모 로그 전체 목록 조회
+export function listMemoLogs(dealId: string) {
+  return apiClient<DealMemoLogsResponse>(`/api/deals/${dealId}/memo-logs`);
+}
+
+// 기능 : 메모 로그 생성
+export function createMemoLog(input: CreateMemoLogInput) {
+  return apiClient<DealMemoLog>(`/api/deals/${input.dealId}/memo-logs`, {
     method: "POST",
-    body: compactBody({
-      typeId: input.typeId,
-      occurredAt: input.occurredAt,
-      title: input.title,
-      content: input.content,
-    }),
+    body: { memoType: input.memoType, memo: input.memo },
   });
 }
 
-function toDealListSearchParams(params: DealListParams) {
-  const searchParams = new URLSearchParams();
-
-  searchParams.set("page", String(params.page ?? 1));
-  searchParams.set("pageSize", String(params.pageSize ?? 20));
-
-  if (params.search) {
-    searchParams.set("search", params.search);
-  }
-
-  if (params.stage) {
-    searchParams.set("stage", params.stage);
-  }
-
-  if (params.likelihoodStatus) {
-    searchParams.set("likelihoodStatus", params.likelihoodStatus);
-  }
-
-  if (params.nextActionStatus) {
-    searchParams.set("nextActionStatus", params.nextActionStatus);
-  }
-
-  if (params.companyId) {
-    searchParams.set("companyId", params.companyId);
-  }
-
-  if (params.contactId) {
-    searchParams.set("contactId", params.contactId);
-  }
-
-  if (params.includeDeleted) {
-    searchParams.set("includeDeleted", "true");
-  }
-
-  return searchParams;
-}
-
-function compactBody(input: Record<string, unknown>) {
-  return Object.fromEntries(
-    Object.entries(input).filter(([, value]) => value !== undefined)
-  );
+// 기능 : 메모 로그 수정
+export function updateMemoLog(input: UpdateMemoLogInput) {
+  const { dealId, memoLogId, ...body } = input;
+  return apiClient<DealMemoLog>(`/api/deals/${dealId}/memo-logs/${memoLogId}`, {
+    method: "PATCH",
+    body,
+  });
 }
