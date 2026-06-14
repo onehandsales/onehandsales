@@ -1,103 +1,53 @@
-export type ScheduleSource = "INTERNAL" | "GOOGLE";
+export type ScheduleViewMode = "month" | "week";
 
-export type ScheduleReminderStatus =
-  | "PENDING"
-  | "SENT"
-  | "FAILED"
-  | "READ"
-  | "CANCELED";
-
-export type ScheduleReminder = {
+export type ScheduleDeal = {
   readonly id: string;
-  readonly channel: string;
-  readonly remindAt: string;
-  readonly sentAt: string | null;
-  readonly status: ScheduleReminderStatus;
+  readonly dealName: string;
+};
+
+export type ScheduleDealOption = ScheduleDeal & {
   readonly createdAt: string;
-  readonly updatedAt: string;
 };
 
 export type Schedule = {
   readonly id: string;
-  readonly title: string;
+  readonly scheduleTitle: string;
   readonly startAt: string;
   readonly endAt: string;
-  readonly allDay: boolean;
+  readonly timeZone: string;
   readonly location: string | null;
   readonly memo: string | null;
-  readonly source: ScheduleSource;
-  readonly dealId: string | null;
-  readonly dealTitle: string | null;
-  readonly companyId: string | null;
-  readonly companyName: string | null;
-  readonly contactId: string | null;
-  readonly contactName: string | null;
-  readonly reminders: ScheduleReminder[];
+  readonly deals: ScheduleDeal[];
   readonly createdAt: string;
   readonly updatedAt: string;
-  readonly deletedAt: string | null;
-  readonly permanentDeleteAt: string | null;
 };
 
-export type ScheduleDetail = {
-  readonly schedule: Schedule;
-  readonly deal: { readonly id: string; readonly title: string } | null;
-  readonly company: { readonly id: string; readonly name: string } | null;
-  readonly contact: { readonly id: string; readonly name: string } | null;
-  readonly reminders: ScheduleReminder[];
-};
+export type ScheduleDetail = Schedule;
 
 export type ScheduleListResponse = {
-  readonly rangeStart: string;
-  readonly rangeEnd: string;
   readonly items: Schedule[];
 };
 
-export type WeeklyScheduleDay = {
-  readonly date: string;
-  readonly schedules: Schedule[];
-};
-
-export type WeeklyScheduleResponse = {
-  readonly weekStart: string;
-  readonly weekEnd: string;
-  readonly days: WeeklyScheduleDay[];
+export type ScheduleDealOptionListResponse = {
+  readonly items: ScheduleDealOption[];
 };
 
 export type ScheduleListParams = {
-  readonly from?: string;
-  readonly to?: string;
-  readonly timezone?: string;
-  readonly dealId?: string;
-  readonly companyId?: string;
-  readonly contactId?: string;
-  readonly source?: ScheduleSource;
+  readonly view: ScheduleViewMode;
+  readonly baseDate: string;
+  readonly timeZone?: string;
 };
 
 export type CreateScheduleInput = {
-  readonly title: string;
+  readonly scheduleTitle: string;
   readonly startAt: string;
   readonly endAt: string;
-  readonly allDay?: boolean;
-  readonly location?: string;
-  readonly dealId?: string;
-  readonly companyId?: string;
-  readonly contactId?: string;
-  readonly memo?: string;
-  readonly reminderMinutes?: number[];
+  readonly timeZone: string;
+  readonly location?: string | null;
+  readonly memo?: string | null;
+  readonly dealIds?: string[];
 };
 
 export type UpdateScheduleInput = Partial<CreateScheduleInput> & {
   readonly scheduleId: string;
-};
-
-export type DeleteScheduleResponse = {
-  readonly id: string;
-  readonly deletedAt: string;
-  readonly permanentDeleteAt: string;
-};
-
-export type WeeklyScheduleParams = {
-  readonly weekStart: string;
-  readonly timezone?: string;
 };

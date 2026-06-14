@@ -11,18 +11,19 @@ import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { ScheduleFormDialog } from "@/features/schedule/components/schedule-form-dialog";
 import { useScheduleList } from "@/features/schedule/hooks/use-schedule-queries";
-import type { Schedule } from "@/features/schedule/types/schedule";
+import { getDefaultScheduleTimeZone } from "@/features/schedule/schemas/schedule-schema";
+import type {
+  Schedule,
+  ScheduleViewMode,
+} from "@/features/schedule/types/schedule";
 import { getApiErrorMessage } from "@/lib/api-client";
 import { formatDate, formatDateWithOptions } from "@/utils/format";
 
-type ViewMode = "month" | "week";
-
-const timezone =
-  Intl.DateTimeFormat().resolvedOptions().timeZone || "Asia/Seoul";
+const screenTimeZone = getDefaultScheduleTimeZone();
 const weekDayLabels = ["월", "화", "수", "목", "금", "토", "일"];
 
 export function ScheduleScreen() {
-  const [viewMode, setViewMode] = useState<ViewMode>("month");
+  const [viewMode, setViewMode] = useState<ScheduleViewMode>("month");
   const [anchorDate, setAnchorDate] = useState(() => new Date());
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [selectedSchedule, setSelectedSchedule] = useState<Schedule | null>(null);
@@ -36,16 +37,16 @@ export function ScheduleScreen() {
     [anchorDate, viewMode]
   );
   const schedulesQuery = useScheduleList({
-    from: range.start.toISOString(),
-    to: range.end.toISOString(),
-    timezone,
+    view: viewMode,
+    baseDate: toDateKey(anchorDate),
+    timeZone: screenTimeZone,
   });
   const schedules = useMemo(
     () => schedulesQuery.data?.items ?? [],
     [schedulesQuery.data?.items]
   );
   const schedulesByDate = useMemo(
-    () => groupSchedulesByDate(schedules),
+    () => groupSchedulesByDate(schedules, screenTimeZone),
     [schedules]
   );
   const title =
@@ -85,7 +86,7 @@ export function ScheduleScreen() {
         <div className="min-w-0">
           <h1 className="text-2xl font-semibold">일정</h1>
           <p className="mt-1 text-sm text-muted-foreground">
-            월간 일정 맥락과 이번 주 영업 일정을 함께 확인합니다.
+            월간 일정과 주간 영업 일정을 함께 확인합니다.
           </p>
         </div>
         <div className="flex flex-wrap gap-2">
@@ -186,13 +187,15 @@ export function ScheduleScreen() {
                 onCreate={openCreateDialog}
                 onEdit={openEditDialog}
                 schedulesByDate={schedulesByDate}
+                timeZone={screenTimeZone}
               />
             ) : (
               <WeekCalendar
-                rangeStart={range.start}
                 onCreate={openCreateDialog}
                 onEdit={openEditDialog}
+                rangeStart={range.start}
                 schedulesByDate={schedulesByDate}
+                timeZone={screenTimeZone}
               />
             )}
           </div>
@@ -219,6 +222,7 @@ export function ScheduleScreen() {
 
 type CalendarProps = {
   readonly schedulesByDate: Map<string, Schedule[]>;
+  readonly timeZone: string;
   readonly onCreate: (startAt: Date) => void;
   readonly onEdit: (schedule: Schedule) => void;
 };
@@ -226,6 +230,7 @@ type CalendarProps = {
 function MonthCalendar({
   anchorDate,
   schedulesByDate,
+  timeZone,
   onCreate,
   onEdit,
 }: CalendarProps & { readonly anchorDate: Date }) {
@@ -275,6 +280,7 @@ function MonthCalendar({
                     key={schedule.id}
                     onClick={() => onEdit(schedule)}
                     schedule={schedule}
+                    timeZone={timeZone}
                   />
                 ))}
                 {daySchedules.length > 4 ? (
@@ -294,6 +300,7 @@ function MonthCalendar({
 function WeekCalendar({
   rangeStart,
   schedulesByDate,
+  timeZone,
   onCreate,
   onEdit,
 }: CalendarProps & { readonly rangeStart: Date }) {
@@ -308,7 +315,10 @@ function WeekCalendar({
           const daySchedules = schedulesByDate.get(dateKey) ?? [];
 
           return (
-            <section className="min-h-[460px] border-r border-t p-3 last:border-r-0" key={dateKey}>
+            <section
+              className="min-h-[460px] border-r border-t p-3 last:border-r-0"
+              key={dateKey}
+            >
               <button
                 className={`mb-3 inline-flex h-8 items-center rounded-md px-2 text-sm font-semibold ${
                   isToday(day)
@@ -335,6 +345,7 @@ function WeekCalendar({
                       key={schedule.id}
                       onClick={() => onEdit(schedule)}
                       schedule={schedule}
+                      timeZone={timeZone}
                     />
                   ))
                 )}
@@ -351,7 +362,10 @@ function CalendarHeader() {
   return (
     <div className="grid grid-cols-7 border-b bg-muted">
       {weekDayLabels.map((label) => (
-        <div className="px-3 py-2 text-center text-xs font-semibold text-muted-foreground" key={label}>
+        <div
+          className="px-3 py-2 text-center text-xs font-semibold text-muted-foreground"
+          key={label}
+        >
           {label}
         </div>
       ))}
@@ -361,9 +375,11 @@ function CalendarHeader() {
 
 function SchedulePill({
   schedule,
+  timeZone,
   onClick,
 }: {
   readonly schedule: Schedule;
+  readonly timeZone: string;
   readonly onClick: () => void;
 }) {
   return (
@@ -372,15 +388,8 @@ function SchedulePill({
       onClick={onClick}
       type="button"
     >
-      <span className="flex min-w-0 items-center gap-1 text-xs font-semibold text-slate-900">
-        {schedule.source === "GOOGLE" ? (
-          <span className="shrink-0 rounded bg-emerald-100 px-1 text-[10px] text-emerald-700">
-            G
-          </span>
-        ) : null}
-        <span className="truncate">
-          {formatScheduleTime(schedule)} {schedule.title}
-        </span>
+      <span className="truncate text-xs font-semibold text-slate-900">
+        {formatScheduleTime(schedule, timeZone)} {schedule.scheduleTitle}
       </span>
       <span className="truncate text-[11px] text-slate-600">
         {formatScheduleContext(schedule)}
@@ -391,9 +400,11 @@ function SchedulePill({
 
 function ScheduleCard({
   schedule,
+  timeZone,
   onClick,
 }: {
   readonly schedule: Schedule;
+  readonly timeZone: string;
   readonly onClick: () => void;
 }) {
   return (
@@ -402,14 +413,11 @@ function ScheduleCard({
       onClick={onClick}
       type="button"
     >
-      <div className="flex items-start justify-between gap-2">
-        <div className="min-w-0">
-          <p className="truncate text-sm font-semibold">{schedule.title}</p>
-          <p className="mt-1 text-xs text-muted-foreground">
-            {formatScheduleTimeRange(schedule)}
-          </p>
-        </div>
-        {schedule.source === "GOOGLE" ? <SourceBadge /> : null}
+      <div className="min-w-0">
+        <p className="truncate text-sm font-semibold">{schedule.scheduleTitle}</p>
+        <p className="mt-1 text-xs text-muted-foreground">
+          {formatScheduleTimeRange(schedule, timeZone)}
+        </p>
       </div>
       <p className="truncate text-xs text-slate-700">
         {formatScheduleContext(schedule)}
@@ -421,19 +429,11 @@ function ScheduleCard({
   );
 }
 
-function SourceBadge() {
-  return (
-    <span className="inline-flex h-6 items-center rounded-md bg-emerald-50 px-2 text-xs font-medium text-emerald-700">
-      Google
-    </span>
-  );
-}
-
 function ScheduleEmptyState({
   mode,
   onCreate,
 }: {
-  readonly mode: ViewMode;
+  readonly mode: ScheduleViewMode;
   readonly onCreate: () => void;
 }) {
   return (
@@ -501,11 +501,11 @@ function CalendarSkeleton() {
   );
 }
 
-function groupSchedulesByDate(schedules: Schedule[]) {
+function groupSchedulesByDate(schedules: Schedule[], timeZone: string) {
   const grouped = new Map<string, Schedule[]>();
 
   for (const schedule of schedules) {
-    const key = toDateKey(new Date(schedule.startAt));
+    const key = toDateKeyInTimeZone(schedule.startAt, timeZone);
     const items = grouped.get(key) ?? [];
     items.push(schedule);
     grouped.set(key, items);
@@ -578,6 +578,29 @@ function toDateKey(date: Date) {
   )}`;
 }
 
+function toDateKeyInTimeZone(value: string, timeZone: string) {
+  const date = new Date(value);
+
+  if (Number.isNaN(date.getTime())) {
+    return value.slice(0, 10);
+  }
+
+  const formatter = new Intl.DateTimeFormat("en-CA", {
+    day: "2-digit",
+    month: "2-digit",
+    timeZone,
+    year: "numeric",
+  });
+  const parts = new Map(
+    formatter
+      .formatToParts(date)
+      .filter((part) => part.type !== "literal")
+      .map((part) => [part.type, part.value])
+  );
+
+  return `${parts.get("year")}-${parts.get("month")}-${parts.get("day")}`;
+}
+
 function isToday(date: Date) {
   return toDateKey(date) === toDateKey(new Date());
 }
@@ -601,36 +624,28 @@ function formatMonthDay(date: Date) {
   });
 }
 
-function formatScheduleTime(schedule: Schedule) {
-  if (schedule.allDay) {
-    return "종일";
-  }
-
+function formatScheduleTime(schedule: Schedule, timeZone: string) {
   return formatDateWithOptions(schedule.startAt, {
     hour: "2-digit",
     minute: "2-digit",
+    timeZone,
   });
 }
 
-function formatScheduleTimeRange(schedule: Schedule) {
-  if (schedule.allDay) {
-    return "종일";
-  }
-
-  return `${formatScheduleTime(schedule)} - ${formatDateWithOptions(
+function formatScheduleTimeRange(schedule: Schedule, timeZone: string) {
+  return `${formatScheduleTime(schedule, timeZone)} - ${formatDateWithOptions(
     schedule.endAt,
     {
       hour: "2-digit",
       minute: "2-digit",
+      timeZone,
     }
   )}`;
 }
 
 function formatScheduleContext(schedule: Schedule) {
   return (
-    [schedule.dealTitle, schedule.companyName, schedule.contactName]
-      .filter(Boolean)
-      .join(" · ") || "연결 대상 없음"
+    schedule.deals.map((deal) => deal.dealName).join(" · ") || "연결 딜 없음"
   );
 }
 

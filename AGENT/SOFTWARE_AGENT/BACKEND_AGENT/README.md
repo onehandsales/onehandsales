@@ -62,6 +62,9 @@ BACKEND_AGENT/
 - `TODO/DONE/AUTH_FE_INTEGRATION_PLAN/BE-TODO/G01-BE-USER-PROFILE-DEVICES.goal.md`: 완료. Auth/User API와 User/Auth DB 기준이 구현 및 검증됐다.
 - `TODO/DONE/COMPANY_DOMAIN_PLAN/BE-TODO/G01-BE-COMPANY-DOMAIN.goal.md`: 완료. Company DB/API, transaction, observability, request id, private memo 암호화 기준이 구현 및 검증됐다.
 - `TODO/DONE/CONTACT_DOMAIN_PLAN/BE-TODO/G01-BE-CONTACT-DOMAIN.goal.md`: 완료. Contact DB/API, company ownership, transaction, observability, request id, private memo 암호화 기준이 구현 및 검증됐다.
+- `TODO/DONE/PRODUCT_DOMAIN_PLAN/BE-TODO/G01-BE-PRODUCT-DOMAIN.goal.md`: 완료. Product DB/API, product category/status, memo, private memo, xlsx export 기준이 구현 및 검증됐다.
+- `TODO/DONE/DEAL_DOMAIN_PLAN/BE-TODO/G01-BE-DEAL-DOMAIN.goal.md`: 완료. Deal DB/API, deal-product 연결, 다음 행동 로그, 메모 로그, xlsx export 기준이 구현 및 검증됐다.
+- `TODO/DONE/SCHEDULE_DOMAIN_PLAN/BE-TODO/G01-BE-SCHEDULE-DOMAIN.goal.md`: 완료. Schedule DB/API, ScheduleDeal 연결, hard delete, timezone range 계산 기준이 구현 및 검증됐다.
 
 ## 7. 관련 문서
 

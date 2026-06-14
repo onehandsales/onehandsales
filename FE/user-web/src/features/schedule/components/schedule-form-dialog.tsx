@@ -1,31 +1,27 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
-  Bell,
-  BriefcaseBusiness,
-  Building2,
   CalendarClock,
-  IdCard,
+  Check,
+  Globe2,
   MapPin,
+  Search,
   Trash2,
   X,
 } from "lucide-react";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { useForm, useWatch, type UseFormRegisterReturn } from "react-hook-form";
-import { DealEntitySearchField } from "@/features/deal/components/deal-entity-search-field";
 import {
   useCreateScheduleMutation,
   useDeleteScheduleMutation,
   useUpdateScheduleMutation,
 } from "@/features/schedule/hooks/use-schedule-mutations";
 import {
-  useScheduleCompanyOptions,
-  useScheduleContactOptions,
   useScheduleDealOptions,
-  type ScheduleEntityOption,
-} from "@/features/schedule/hooks/use-schedule-entity-options";
-import { useScheduleDetail } from "@/features/schedule/hooks/use-schedule-queries";
+  useScheduleDetail,
+} from "@/features/schedule/hooks/use-schedule-queries";
 import {
   emptyScheduleFormValues,
+  getDefaultScheduleTimeZone,
   scheduleFormSchema,
   toCreateScheduleInput,
   toDateTimeLocalValue,
@@ -33,7 +29,10 @@ import {
   toUpdateScheduleInput,
   type ScheduleFormValues,
 } from "@/features/schedule/schemas/schedule-schema";
-import type { Schedule } from "@/features/schedule/types/schedule";
+import type {
+  Schedule,
+  ScheduleDealOption,
+} from "@/features/schedule/types/schedule";
 import { getApiErrorMessage } from "@/lib/api-client";
 
 type ScheduleFormDialogProps = {
@@ -44,11 +43,13 @@ type ScheduleFormDialogProps = {
   readonly onSaved: (message: string) => void;
 };
 
-const reminderOptions = [
-  { value: 10, label: "10분 전" },
-  { value: 30, label: "30분 전" },
-  { value: 60, label: "1시간 전" },
-  { value: 24 * 60, label: "1일 전" },
+const fixedTimeZoneOptions = [
+  "Asia/Seoul",
+  "America/Los_Angeles",
+  "America/New_York",
+  "Europe/London",
+  "Asia/Singapore",
+  "UTC",
 ];
 
 export function ScheduleFormDialog({
@@ -60,6 +61,7 @@ export function ScheduleFormDialog({
 }: ScheduleFormDialogProps) {
   const scheduleId = schedule?.id ?? "";
   const detailQuery = useScheduleDetail(scheduleId, open && Boolean(schedule));
+  const dealOptionsQuery = useScheduleDealOptions();
   const createScheduleMutation = useCreateScheduleMutation();
   const updateScheduleMutation = useUpdateScheduleMutation();
   const deleteScheduleMutation = useDeleteScheduleMutation();
@@ -74,17 +76,28 @@ export function ScheduleFormDialog({
     resolver: zodResolver(scheduleFormSchema),
     defaultValues: emptyScheduleFormValues,
   });
-  const dealId = useWatch({ control, name: "dealId" }) ?? "";
+  const watchedDealIds = useWatch({ control, name: "dealIds" });
+  const dealIds = useMemo(() => watchedDealIds ?? [], [watchedDealIds]);
   const dealSearch = useWatch({ control, name: "dealSearch" }) ?? "";
-  const companyId = useWatch({ control, name: "companyId" }) ?? "";
-  const companySearch = useWatch({ control, name: "companySearch" }) ?? "";
-  const contactId = useWatch({ control, name: "contactId" }) ?? "";
-  const contactSearch = useWatch({ control, name: "contactSearch" }) ?? "";
-  const reminderMinutes = useWatch({ control, name: "reminderMinutes" }) ?? [];
-  const dealOptionsQuery = useScheduleDealOptions(dealSearch);
-  const companyOptionsQuery = useScheduleCompanyOptions(companySearch);
-  const contactOptionsQuery = useScheduleContactOptions(contactSearch, companyId);
+  const timeZone = useWatch({ control, name: "timeZone" }) ?? "";
   const isEdit = Boolean(schedule);
+  const mergedDealOptions = useMergedDealOptions(
+    dealOptionsQuery.data?.items ?? [],
+    detailQuery.data ?? schedule
+  );
+  const selectedDealIds = useMemo(() => new Set(dealIds), [dealIds]);
+  const filteredDealOptions = useMemo(
+    () => filterDealOptions(mergedDealOptions, dealSearch),
+    [dealSearch, mergedDealOptions]
+  );
+  const selectedDeals = useMemo(
+    () => mergedDealOptions.filter((deal) => selectedDealIds.has(deal.id)),
+    [mergedDealOptions, selectedDealIds]
+  );
+  const timeZoneOptions = useMemo(
+    () => getTimeZoneOptions(timeZone, schedule?.timeZone),
+    [schedule?.timeZone, timeZone]
+  );
   const actionError =
     createScheduleMutation.error ??
     updateScheduleMutation.error ??
@@ -114,12 +127,12 @@ export function ScheduleFormDialog({
       const updated = await updateScheduleMutation.mutateAsync(
         toUpdateScheduleInput(schedule.id, values)
       );
-      onSaved(`${updated.title} 일정이 수정되었습니다.`);
+      onSaved(`${updated.scheduleTitle} 일정이 수정되었습니다.`);
     } else {
       const created = await createScheduleMutation.mutateAsync(
         toCreateScheduleInput(values)
       );
-      onSaved(`${created.title} 일정이 생성되었습니다.`);
+      onSaved(`${created.scheduleTitle} 일정이 생성되었습니다.`);
     }
 
     onOpenChange(false);
@@ -131,58 +144,24 @@ export function ScheduleFormDialog({
     }
 
     await deleteScheduleMutation.mutateAsync(schedule.id);
-    onSaved(`${schedule.title} 일정이 삭제되었습니다.`);
+    onSaved(`${schedule.scheduleTitle} 일정이 삭제되었습니다.`);
     onOpenChange(false);
   };
 
-  const onDealSelect = (option: ScheduleEntityOption) => {
-    setValue("dealId", option.id, { shouldValidate: true });
-    setValue("dealSearch", option.name, { shouldValidate: true });
+  const toggleDeal = (dealId: string) => {
+    const next = selectedDealIds.has(dealId)
+      ? dealIds.filter((item) => item !== dealId)
+      : [...dealIds, dealId];
 
-    if (option.companyId && option.companyName) {
-      setValue("companyId", option.companyId, { shouldValidate: true });
-      setValue("companySearch", option.companyName, { shouldValidate: true });
-    }
-
-    if (option.contactId && option.contactName) {
-      setValue("contactId", option.contactId, { shouldValidate: true });
-      setValue("contactSearch", option.contactName, { shouldValidate: true });
-    }
+    setValue("dealIds", next, { shouldDirty: true, shouldValidate: true });
   };
 
-  const onCompanySelect = (option: ScheduleEntityOption) => {
-    setValue("companyId", option.id, { shouldValidate: true });
-    setValue("companySearch", option.name, { shouldValidate: true });
-    clearContact();
-  };
-
-  const onContactSelect = (option: ScheduleEntityOption) => {
-    setValue("contactId", option.id, { shouldValidate: true });
-    setValue("contactSearch", option.name, { shouldValidate: true });
-  };
-
-  const toggleReminder = (value: number) => {
-    const next = reminderMinutes.includes(value)
-      ? reminderMinutes.filter((item) => item !== value)
-      : [...reminderMinutes, value].sort((left, right) => left - right);
-
-    setValue("reminderMinutes", next, { shouldValidate: true });
-  };
-
-  const clearDeal = () => {
-    setValue("dealId", "", { shouldValidate: true });
-    setValue("dealSearch", "", { shouldValidate: true });
-  };
-
-  const clearCompany = () => {
-    setValue("companyId", "", { shouldValidate: true });
-    setValue("companySearch", "", { shouldValidate: true });
-    clearContact();
-  };
-
-  const clearContact = () => {
-    setValue("contactId", "", { shouldValidate: true });
-    setValue("contactSearch", "", { shouldValidate: true });
+  const removeDeal = (dealId: string) => {
+    setValue(
+      "dealIds",
+      dealIds.filter((item) => item !== dealId),
+      { shouldDirty: true, shouldValidate: true }
+    );
   };
 
   return (
@@ -198,7 +177,7 @@ export function ScheduleFormDialog({
               {isEdit ? "일정 수정" : "일정 생성"}
             </h2>
             <p className="mt-1 text-sm text-muted-foreground">
-              일정 시간과 연결 대상을 저장합니다.
+              일정 시간과 연결 딜을 저장합니다.
             </p>
           </div>
           <button
@@ -219,25 +198,12 @@ export function ScheduleFormDialog({
               </p>
             ) : null}
 
-            <div className="grid gap-2">
-              <label className="text-sm font-medium" htmlFor="schedule-title">
-                제목
-              </label>
-              <input
-                aria-describedby={
-                  errors.title ? "schedule-title-error" : undefined
-                }
-                aria-invalid={Boolean(errors.title)}
-                className="h-10 rounded-md border px-3 text-sm outline-none focus:ring-2 focus:ring-ring"
-                id="schedule-title"
-                {...register("title")}
-              />
-              {errors.title ? (
-                <p className="text-xs text-destructive" id="schedule-title-error">
-                  {errors.title.message}
-                </p>
-              ) : null}
-            </div>
+            <TextField
+              errorMessage={errors.scheduleTitle?.message}
+              id="schedule-title"
+              label="제목"
+              register={register("scheduleTitle")}
+            />
 
             <div className="grid gap-4 md:grid-cols-2">
               <DateTimeField
@@ -254,115 +220,56 @@ export function ScheduleFormDialog({
               />
             </div>
 
-            <label className="inline-flex w-fit items-center gap-2 rounded-md border px-3 py-2 text-sm font-medium">
-              <input
-                className="h-4 w-4 rounded border"
-                type="checkbox"
-                {...register("allDay")}
-              />
-              종일
-            </label>
+            <TimeZoneField
+              errorMessage={errors.timeZone?.message}
+              options={timeZoneOptions}
+              register={register("timeZone")}
+            />
 
-            <div className="grid gap-4 md:grid-cols-2">
-              <div className="grid gap-2">
-                <label className="text-sm font-medium" htmlFor="schedule-location">
-                  장소
-                </label>
-                <div className="relative">
-                  <MapPin className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-                  <input
-                    className="h-10 w-full rounded-md border pl-9 pr-3 text-sm outline-none focus:ring-2 focus:ring-ring"
-                    id="schedule-location"
-                    {...register("location")}
-                  />
-                </div>
-              </div>
-
-              <div className="grid gap-2">
-                <span className="text-sm font-medium">알림</span>
-                <div className="flex flex-wrap gap-2">
-                  {reminderOptions.map((option) => (
-                    <button
-                      className={`inline-flex h-10 items-center gap-2 rounded-md border px-3 text-sm font-medium ${
-                        reminderMinutes.includes(option.value)
-                          ? "border-primary bg-primary text-primary-foreground"
-                          : "bg-white hover:bg-muted"
-                      }`}
-                      key={option.value}
-                      onClick={() => toggleReminder(option.value)}
-                      type="button"
-                    >
-                      <Bell className="h-4 w-4" />
-                      {option.label}
-                    </button>
-                  ))}
-                </div>
+            <div className="grid gap-2">
+              <label className="text-sm font-medium" htmlFor="schedule-location">
+                장소
+              </label>
+              <div className="relative">
+                <MapPin className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                <input
+                  className="h-10 w-full rounded-md border pl-9 pr-3 text-sm outline-none focus:ring-2 focus:ring-ring"
+                  id="schedule-location"
+                  {...register("location")}
+                />
               </div>
             </div>
 
-            <div className="grid gap-4 md:grid-cols-3">
-              <DealEntitySearchField
-                emptyText="검색된 딜이 없습니다."
-                errorMessage={errors.dealId?.message}
-                icon={BriefcaseBusiness}
-                id="schedule-deal"
-                isLoading={dealOptionsQuery.isFetching}
-                label="딜"
-                onClear={clearDeal}
-                onSearchChange={(value) =>
-                  setValue("dealSearch", value, { shouldValidate: true })
-                }
-                onSelect={onDealSelect}
-                options={dealOptionsQuery.data ?? []}
-                placeholder="딜 검색"
-                search={dealSearch}
-                selectedId={dealId}
-              />
-              <DealEntitySearchField
-                emptyText="검색된 회사가 없습니다."
-                errorMessage={errors.companyId?.message}
-                icon={Building2}
-                id="schedule-company"
-                isLoading={companyOptionsQuery.isFetching}
-                label="회사"
-                onClear={clearCompany}
-                onSearchChange={(value) =>
-                  setValue("companySearch", value, { shouldValidate: true })
-                }
-                onSelect={onCompanySelect}
-                options={companyOptionsQuery.data ?? []}
-                placeholder="회사 검색"
-                search={companySearch}
-                selectedId={companyId}
-              />
-              <DealEntitySearchField
-                emptyText="검색된 거래처가 없습니다."
-                errorMessage={errors.contactId?.message}
-                icon={IdCard}
-                id="schedule-contact"
-                isLoading={contactOptionsQuery.isFetching}
-                label="거래처"
-                onClear={clearContact}
-                onSearchChange={(value) =>
-                  setValue("contactSearch", value, { shouldValidate: true })
-                }
-                onSelect={onContactSelect}
-                options={contactOptionsQuery.data ?? []}
-                placeholder="거래처 검색"
-                search={contactSearch}
-                selectedId={contactId}
-              />
-            </div>
+            <DealMultiSelect
+              errorMessage={errors.dealIds?.message}
+              isLoading={dealOptionsQuery.isFetching}
+              onRemove={removeDeal}
+              onSearchChange={(value) =>
+                setValue("dealSearch", value, { shouldDirty: true })
+              }
+              onToggle={toggleDeal}
+              options={filteredDealOptions}
+              search={dealSearch}
+              selectedDealIds={selectedDealIds}
+              selectedDeals={selectedDeals}
+            />
 
             <div className="grid gap-2">
               <label className="text-sm font-medium" htmlFor="schedule-memo">
                 메모
               </label>
               <textarea
+                aria-describedby={errors.memo ? "schedule-memo-error" : undefined}
+                aria-invalid={Boolean(errors.memo)}
                 className="min-h-28 rounded-md border px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-ring"
                 id="schedule-memo"
                 {...register("memo")}
               />
+              {errors.memo ? (
+                <p className="text-xs text-destructive" id="schedule-memo-error">
+                  {errors.memo.message}
+                </p>
+              ) : null}
             </div>
           </div>
 
@@ -407,6 +314,35 @@ export function ScheduleFormDialog({
   );
 }
 
+type TextFieldProps = {
+  readonly id: string;
+  readonly label: string;
+  readonly errorMessage?: string;
+  readonly register: UseFormRegisterReturn;
+};
+
+function TextField({ id, label, errorMessage, register }: TextFieldProps) {
+  return (
+    <div className="grid gap-2">
+      <label className="text-sm font-medium" htmlFor={id}>
+        {label}
+      </label>
+      <input
+        aria-describedby={errorMessage ? `${id}-error` : undefined}
+        aria-invalid={Boolean(errorMessage)}
+        className="h-10 rounded-md border px-3 text-sm outline-none focus:ring-2 focus:ring-ring"
+        id={id}
+        {...register}
+      />
+      {errorMessage ? (
+        <p className="text-xs text-destructive" id={`${id}-error`}>
+          {errorMessage}
+        </p>
+      ) : null}
+    </div>
+  );
+}
+
 type DateTimeFieldProps = {
   readonly id: string;
   readonly label: string;
@@ -442,14 +378,193 @@ function DateTimeField({
   );
 }
 
+function TimeZoneField({
+  errorMessage,
+  options,
+  register,
+}: {
+  readonly errorMessage?: string;
+  readonly options: string[];
+  readonly register: UseFormRegisterReturn;
+}) {
+  return (
+    <div className="grid gap-2">
+      <label className="text-sm font-medium" htmlFor="schedule-timezone">
+        시간대
+      </label>
+      <div className="relative">
+        <Globe2 className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+        <select
+          aria-describedby={errorMessage ? "schedule-timezone-error" : undefined}
+          aria-invalid={Boolean(errorMessage)}
+          className="h-10 w-full rounded-md border bg-white pl-9 pr-3 text-sm outline-none focus:ring-2 focus:ring-ring"
+          id="schedule-timezone"
+          {...register}
+        >
+          {options.map((option) => (
+            <option key={option} value={option}>
+              {option}
+            </option>
+          ))}
+        </select>
+      </div>
+      {errorMessage ? (
+        <p className="text-xs text-destructive" id="schedule-timezone-error">
+          {errorMessage}
+        </p>
+      ) : null}
+    </div>
+  );
+}
+
+function DealMultiSelect({
+  errorMessage,
+  isLoading,
+  onRemove,
+  onSearchChange,
+  onToggle,
+  options,
+  search,
+  selectedDealIds,
+  selectedDeals,
+}: {
+  readonly errorMessage?: string;
+  readonly isLoading: boolean;
+  readonly onRemove: (dealId: string) => void;
+  readonly onSearchChange: (value: string) => void;
+  readonly onToggle: (dealId: string) => void;
+  readonly options: ScheduleDealOption[];
+  readonly search: string;
+  readonly selectedDealIds: ReadonlySet<string>;
+  readonly selectedDeals: ScheduleDealOption[];
+}) {
+  return (
+    <div className="grid gap-2">
+      <label className="text-sm font-medium" htmlFor="schedule-deal-search">
+        연결 딜
+      </label>
+      <div className="relative">
+        <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+        <input
+          className="h-10 w-full rounded-md border pl-9 pr-3 text-sm outline-none focus:ring-2 focus:ring-ring"
+          id="schedule-deal-search"
+          onChange={(event) => onSearchChange(event.target.value)}
+          placeholder="딜 제목 검색"
+          value={search}
+        />
+      </div>
+
+      {selectedDeals.length > 0 ? (
+        <div className="flex flex-wrap gap-2">
+          {selectedDeals.map((deal) => (
+            <span
+              className="inline-flex h-8 items-center gap-2 rounded-md bg-sky-50 px-2 text-xs font-medium text-sky-900"
+              key={deal.id}
+            >
+              {deal.dealName}
+              <button
+                aria-label={`${deal.dealName} 연결 해제`}
+                className="grid h-5 w-5 place-items-center rounded hover:bg-sky-100"
+                onClick={() => onRemove(deal.id)}
+                type="button"
+              >
+                <X className="h-3.5 w-3.5" />
+              </button>
+            </span>
+          ))}
+        </div>
+      ) : null}
+
+      <div className="max-h-48 overflow-y-auto rounded-md border">
+        {isLoading ? (
+          <p className="px-3 py-4 text-sm text-muted-foreground">
+            딜을 불러오는 중입니다.
+          </p>
+        ) : options.length === 0 ? (
+          <p className="px-3 py-4 text-sm text-muted-foreground">
+            연결할 딜이 없습니다.
+          </p>
+        ) : (
+          options.map((deal) => {
+            const selected = selectedDealIds.has(deal.id);
+
+            return (
+              <button
+                className={`flex w-full items-center justify-between gap-3 border-b px-3 py-2 text-left text-sm last:border-b-0 hover:bg-muted ${
+                  selected ? "bg-sky-50" : "bg-white"
+                }`}
+                key={deal.id}
+                onClick={() => onToggle(deal.id)}
+                type="button"
+              >
+                <span className="min-w-0">
+                  <span className="block truncate font-medium">
+                    {deal.dealName}
+                  </span>
+                  <span className="mt-0.5 block text-xs text-muted-foreground">
+                    {formatDealCreatedAt(deal)}
+                  </span>
+                </span>
+                {selected ? <Check className="h-4 w-4 text-primary" /> : null}
+              </button>
+            );
+          })
+        )}
+      </div>
+      {errorMessage ? (
+        <p className="text-xs text-destructive">{errorMessage}</p>
+      ) : null}
+    </div>
+  );
+}
+
+function useMergedDealOptions(
+  options: ScheduleDealOption[],
+  schedule: Schedule | null
+) {
+  return useMemo(() => {
+    const byId = new Map<string, ScheduleDealOption>();
+
+    for (const option of options) {
+      byId.set(option.id, option);
+    }
+
+    for (const deal of schedule?.deals ?? []) {
+      if (!byId.has(deal.id)) {
+        byId.set(deal.id, {
+          id: deal.id,
+          dealName: deal.dealName,
+          createdAt: "",
+        });
+      }
+    }
+
+    return [...byId.values()];
+  }, [options, schedule?.deals]);
+}
+
+function filterDealOptions(options: ScheduleDealOption[], search: string) {
+  const normalized = search.trim().toLowerCase();
+
+  if (!normalized) {
+    return options;
+  }
+
+  return options.filter((deal) =>
+    deal.dealName.toLowerCase().includes(normalized)
+  );
+}
+
 function getCreateDefaults(initialStartAt: Date | null): ScheduleFormValues {
+  const timeZone = getDefaultScheduleTimeZone();
   const startAt = initialStartAt ?? getNextHour();
   const endAt = new Date(startAt.getTime() + 60 * 60 * 1000);
 
   return {
     ...emptyScheduleFormValues,
-    startAt: toDateTimeLocalValue(startAt),
-    endAt: toDateTimeLocalValue(endAt),
+    timeZone,
+    startAt: toDateTimeLocalValue(startAt, timeZone),
+    endAt: toDateTimeLocalValue(endAt, timeZone),
   };
 }
 
@@ -459,4 +574,16 @@ function getNextHour() {
   date.setHours(date.getHours() + 1);
 
   return date;
+}
+
+function getTimeZoneOptions(currentTimeZone: string, scheduleTimeZone?: string) {
+  return [
+    currentTimeZone || getDefaultScheduleTimeZone(),
+    scheduleTimeZone ?? "",
+    ...fixedTimeZoneOptions,
+  ].filter((option, index, options) => option && options.indexOf(option) === index);
+}
+
+function formatDealCreatedAt(deal: ScheduleDealOption) {
+  return deal.createdAt ? `등록일 ${deal.createdAt.slice(0, 10)}` : "연결된 딜";
 }

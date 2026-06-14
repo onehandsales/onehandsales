@@ -97,6 +97,10 @@ model User {
   dealMemoLogs             DealMemoLog[]
   /// 기능 : 사용자가 딜에 연결한 제품 매핑 목록이다.
   dealProducts             DealProduct[]
+  /// 기능 : 사용자가 등록한 일정 목록이다.
+  schedules                Schedule[]
+  /// 기능 : 사용자가 일정에 연결한 딜 매핑 목록이다.
+  scheduleDeals            ScheduleDeal[]
 
   @@index([role])
   @@index([status])
@@ -414,6 +418,8 @@ model Deal {
   followingActionLogs DealFollowingActionLog[]
   /// 기능 : 딜 일반 메모 로그 목록이다.
   memoLogs            DealMemoLog[]
+  /// 기능 : 이 딜이 연결된 일정 매핑 목록이다.
+  scheduleDeals       ScheduleDeal[]
 
   @@index([userId, createdAt])
   @@index([userId, dealName])
@@ -479,6 +485,46 @@ model DealMemoLog {
   deal Deal @relation(fields: [dealId], references: [id])
 
   @@index([dealId, createdAt])
+  @@index([userId, dealId])
+}
+
+model Schedule {
+  id            String   @id @default(uuid()) @db.Uuid
+  userId        String   @db.Uuid
+  scheduleTitle String
+  startAt       DateTime @db.Timestamptz(3)
+  endAt         DateTime @db.Timestamptz(3)
+  timeZone      String   @default("Asia/Seoul")
+  location      String?
+  memo          String?
+  createdAt     DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt     DateTime @updatedAt @db.Timestamptz(3)
+
+  /// 기능 : 일정을 등록한 사용자다. 모든 일정 API는 이 userId로 소유권을 검증한다.
+  user          User           @relation(fields: [userId], references: [id])
+  /// 기능 : 일정에 연결된 딜 매핑 목록이다.
+  scheduleDeals ScheduleDeal[]
+
+  @@index([userId, startAt])
+  @@index([userId, createdAt])
+}
+
+model ScheduleDeal {
+  id         String   @id @default(uuid()) @db.Uuid
+  userId     String   @db.Uuid
+  scheduleId String   @db.Uuid
+  dealId     String   @db.Uuid
+  createdAt  DateTime @default(now()) @db.Timestamptz(3)
+
+  /// 기능 : 일정-딜 연결을 만든 사용자다. 연결 조회와 변경은 이 userId로 소유권을 검증한다.
+  user     User     @relation(fields: [userId], references: [id])
+  /// 기능 : 딜이 연결된 일정이다.
+  schedule Schedule @relation(fields: [scheduleId], references: [id])
+  /// 기능 : 일정에 연결된 딜이다.
+  deal     Deal     @relation(fields: [dealId], references: [id])
+
+  @@unique([scheduleId, dealId])
+  @@index([userId, scheduleId])
   @@index([userId, dealId])
 }
 

@@ -1,27 +1,32 @@
 import {
   AlertCircle,
-  CalendarDays,
+  BriefcaseBusiness,
   ChevronLeft,
   ChevronRight,
   RotateCcw,
 } from "lucide-react";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import { useWeeklySchedules } from "@/features/schedule/hooks/use-schedule-queries";
+import { useScheduleList } from "@/features/schedule/hooks/use-schedule-queries";
+import { getDefaultScheduleTimeZone } from "@/features/schedule/schemas/schedule-schema";
 import type { Schedule } from "@/features/schedule/types/schedule";
 import { getApiErrorMessage } from "@/lib/api-client";
 import { formatDate, formatDateWithOptions } from "@/utils/format";
 
-const timezone =
-  Intl.DateTimeFormat().resolvedOptions().timeZone || "Asia/Seoul";
+const screenTimeZone = getDefaultScheduleTimeZone();
 
 export function ScheduleWeekReportScreen() {
   const [weekStart, setWeekStart] = useState(() => getWeekStart(new Date()));
-  const weeklyQuery = useWeeklySchedules({
-    weekStart: toDateKey(weekStart),
-    timezone,
+  const scheduleListQuery = useScheduleList({
+    view: "week",
+    baseDate: toDateKey(weekStart),
+    timeZone: screenTimeZone,
   });
   const weekEnd = addDays(weekStart, 6);
+  const days = useMemo(
+    () => buildWeekDays(weekStart, scheduleListQuery.data?.items ?? []),
+    [scheduleListQuery.data?.items, weekStart]
+  );
 
   return (
     <section className="mx-auto grid max-w-6xl gap-5 px-5 py-6">
@@ -69,21 +74,21 @@ export function ScheduleWeekReportScreen() {
         </div>
       </header>
 
-      {weeklyQuery.isLoading ? (
+      {scheduleListQuery.isLoading ? (
         <WeekReportSkeleton />
-      ) : weeklyQuery.isError ? (
+      ) : scheduleListQuery.isError ? (
         <WeekReportError
-          error={weeklyQuery.error}
-          onRetry={() => void weeklyQuery.refetch()}
+          error={scheduleListQuery.error}
+          onRetry={() => void scheduleListQuery.refetch()}
         />
       ) : (
         <div className="grid gap-3">
-          {weeklyQuery.data?.days.map((day) => (
+          {days.map((day) => (
             <article className="rounded-lg border bg-white p-4" key={day.date}>
               <div className="flex items-center justify-between gap-3 border-b pb-3">
                 <div>
                   <h2 className="text-base font-semibold">
-                    {formatDateWithWeekday(new Date(`${day.date}T00:00:00`))}
+                    {formatDateWithWeekday(day.dateObject)}
                   </h2>
                   <p className="mt-1 text-xs text-muted-foreground">
                     {day.schedules.length}개 일정
@@ -100,6 +105,7 @@ export function ScheduleWeekReportScreen() {
                     <WeekReportScheduleRow
                       key={schedule.id}
                       schedule={schedule}
+                      timeZone={screenTimeZone}
                     />
                   ))}
                 </div>
@@ -112,21 +118,27 @@ export function ScheduleWeekReportScreen() {
   );
 }
 
-function WeekReportScheduleRow({ schedule }: { readonly schedule: Schedule }) {
+function WeekReportScheduleRow({
+  schedule,
+  timeZone,
+}: {
+  readonly schedule: Schedule;
+  readonly timeZone: string;
+}) {
   return (
-    <div className="grid gap-2 rounded-md border bg-muted/20 px-3 py-3 md:grid-cols-[130px_minmax(0,1fr)_180px] md:items-center">
-      <span className="text-sm font-medium">{formatTimeRange(schedule)}</span>
+    <div className="grid gap-2 rounded-md border bg-muted/20 px-3 py-3 md:grid-cols-[130px_minmax(0,1fr)_160px] md:items-center">
+      <span className="text-sm font-medium">
+        {formatTimeRange(schedule, timeZone)}
+      </span>
       <div className="min-w-0">
-        <p className="truncate text-sm font-semibold">{schedule.title}</p>
+        <p className="truncate text-sm font-semibold">{schedule.scheduleTitle}</p>
         <p className="mt-1 truncate text-xs text-muted-foreground">
-          {[schedule.dealTitle, schedule.companyName, schedule.contactName]
-            .filter(Boolean)
-            .join(" · ") || "연결 대상 없음"}
+          {formatDealNames(schedule)}
         </p>
       </div>
       <div className="flex items-center gap-2 text-xs text-muted-foreground">
-        <CalendarDays className="h-4 w-4" />
-        {schedule.source === "GOOGLE" ? "Google" : "내부 일정"}
+        <BriefcaseBusiness className="h-4 w-4" />
+        {schedule.deals.length}개 딜
       </div>
     </div>
   );
@@ -174,6 +186,34 @@ function WeekReportSkeleton() {
   );
 }
 
+function buildWeekDays(weekStart: Date, schedules: Schedule[]) {
+  const schedulesByDate = groupSchedulesByDate(schedules);
+
+  return Array.from({ length: 7 }, (_, index) => {
+    const dateObject = addDays(weekStart, index);
+    const date = toDateKey(dateObject);
+
+    return {
+      date,
+      dateObject,
+      schedules: schedulesByDate.get(date) ?? [],
+    };
+  });
+}
+
+function groupSchedulesByDate(schedules: Schedule[]) {
+  const grouped = new Map<string, Schedule[]>();
+
+  for (const schedule of schedules) {
+    const key = toDateKeyInTimeZone(schedule.startAt, screenTimeZone);
+    const items = grouped.get(key) ?? [];
+    items.push(schedule);
+    grouped.set(key, items);
+  }
+
+  return grouped;
+}
+
 function getWeekStart(date: Date) {
   const start = new Date(date.getFullYear(), date.getMonth(), date.getDate());
   const day = start.getDay();
@@ -196,6 +236,29 @@ function toDateKey(date: Date) {
   )}`;
 }
 
+function toDateKeyInTimeZone(value: string, timeZone: string) {
+  const date = new Date(value);
+
+  if (Number.isNaN(date.getTime())) {
+    return value.slice(0, 10);
+  }
+
+  const formatter = new Intl.DateTimeFormat("en-CA", {
+    day: "2-digit",
+    month: "2-digit",
+    timeZone,
+    year: "numeric",
+  });
+  const parts = new Map(
+    formatter
+      .formatToParts(date)
+      .filter((part) => part.type !== "literal")
+      .map((part) => [part.type, part.value])
+  );
+
+  return `${parts.get("year")}-${parts.get("month")}-${parts.get("day")}`;
+}
+
 function formatDateShort(date: Date) {
   return formatDate(date);
 }
@@ -208,18 +271,22 @@ function formatDateWithWeekday(date: Date) {
   });
 }
 
-function formatTimeRange(schedule: Schedule) {
-  if (schedule.allDay) {
-    return "종일";
-  }
-
+function formatTimeRange(schedule: Schedule, timeZone: string) {
   return `${formatDateWithOptions(schedule.startAt, {
     hour: "2-digit",
     minute: "2-digit",
+    timeZone,
   })} - ${formatDateWithOptions(schedule.endAt, {
     hour: "2-digit",
     minute: "2-digit",
+    timeZone,
   })}`;
+}
+
+function formatDealNames(schedule: Schedule) {
+  return (
+    schedule.deals.map((deal) => deal.dealName).join(" · ") || "연결 딜 없음"
+  );
 }
 
 function pad(value: number) {

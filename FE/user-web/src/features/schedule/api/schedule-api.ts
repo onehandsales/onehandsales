@@ -1,21 +1,22 @@
 import type {
   CreateScheduleInput,
-  DeleteScheduleResponse,
   Schedule,
+  ScheduleDealOptionListResponse,
   ScheduleDetail,
   ScheduleListParams,
   ScheduleListResponse,
   UpdateScheduleInput,
-  WeeklyScheduleParams,
-  WeeklyScheduleResponse,
 } from "@/features/schedule/types/schedule";
 import { apiClient } from "@/lib/api-client";
 
+export function listScheduleDealOptions() {
+  return apiClient<ScheduleDealOptionListResponse>("/api/schedules/deal-options");
+}
+
 export function listSchedules(params: ScheduleListParams) {
   const query = toScheduleListSearchParams(params);
-  const suffix = query.toString() ? `?${query.toString()}` : "";
 
-  return apiClient<ScheduleListResponse>(`/api/schedules${suffix}`);
+  return apiClient<ScheduleListResponse>(`/api/schedules?${query.toString()}`);
 }
 
 export function createSchedule(input: CreateScheduleInput) {
@@ -33,68 +34,30 @@ export function updateSchedule(input: UpdateScheduleInput) {
   return apiClient<Schedule>(`/api/schedules/${input.scheduleId}`, {
     method: "PATCH",
     body: compactBody({
-      title: input.title,
+      scheduleTitle: input.scheduleTitle,
       startAt: input.startAt,
       endAt: input.endAt,
-      allDay: input.allDay,
+      timeZone: input.timeZone,
       location: input.location,
-      dealId: input.dealId,
-      companyId: input.companyId,
-      contactId: input.contactId,
       memo: input.memo,
-      reminderMinutes: input.reminderMinutes,
+      dealIds: input.dealIds,
     }),
   });
 }
 
-export function deleteSchedule(scheduleId: string) {
-  return apiClient<DeleteScheduleResponse>(`/api/schedules/${scheduleId}`, {
+export async function deleteSchedule(scheduleId: string) {
+  await apiClient<void>(`/api/schedules/${scheduleId}`, {
     method: "DELETE",
   });
 }
 
-export function getWeeklySchedules(params: WeeklyScheduleParams) {
-  const query = new URLSearchParams();
-  query.set("weekStart", params.weekStart);
-
-  if (params.timezone) {
-    query.set("timezone", params.timezone);
-  }
-
-  return apiClient<WeeklyScheduleResponse>(
-    `/api/schedules/week?${query.toString()}`
-  );
-}
-
 function toScheduleListSearchParams(params: ScheduleListParams) {
   const searchParams = new URLSearchParams();
+  searchParams.set("view", params.view);
+  searchParams.set("baseDate", params.baseDate);
 
-  if (params.from) {
-    searchParams.set("from", params.from);
-  }
-
-  if (params.to) {
-    searchParams.set("to", params.to);
-  }
-
-  if (params.timezone) {
-    searchParams.set("timezone", params.timezone);
-  }
-
-  if (params.dealId) {
-    searchParams.set("dealId", params.dealId);
-  }
-
-  if (params.companyId) {
-    searchParams.set("companyId", params.companyId);
-  }
-
-  if (params.contactId) {
-    searchParams.set("contactId", params.contactId);
-  }
-
-  if (params.source) {
-    searchParams.set("source", params.source);
+  if (params.timeZone) {
+    searchParams.set("timeZone", params.timeZone);
   }
 
   return searchParams;

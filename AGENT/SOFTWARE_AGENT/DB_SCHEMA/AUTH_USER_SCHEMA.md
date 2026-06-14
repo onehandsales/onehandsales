@@ -108,6 +108,7 @@ AuthDevice 1 ─ N AuthSession
 | `displayName` | `String` | 예 | 없음 | 서비스에서 보여줄 이름. 기존 사용자 로그인 시 provider 이름으로 덮어쓰지 않는다. |
 | `role` | `UserRole` | 아니오 | `USER` | 사용자 권한 |
 | `status` | `UserStatus` | 아니오 | `ACTIVE` | 사용자 상태 |
+| `timeZone` | `String` | 아니오 | `Asia/Seoul` | 사용자 기본 IANA timezone ID. 일정 range 계산 기본값으로 사용한다. |
 | `lastLoginAt` | `DateTime` | 예 | 없음 | 마지막 token exchange 성공 시각 |
 | `createdAt` | `DateTime` | 아니오 | `now()` | 생성 시각 |
 | `updatedAt` | `DateTime` | 아니오 | `@updatedAt` | 수정 시각 |
@@ -118,6 +119,8 @@ Relations:
 - `oauthAccounts`: `UserOAuthAccount[]`
 - `authDevices`: `AuthDevice[]`
 - `authSessions`: `AuthSession[]`
+- `schedules`: `Schedule[]`
+- `scheduleDeals`: `ScheduleDeal[]`
 
 Indexes:
 
@@ -274,6 +277,7 @@ model User {
   displayName String?                                      // 서비스 표시 이름
   role        UserRole   @default(USER)                    // USER/ADMIN 권한
   status      UserStatus @default(ACTIVE)                  // 계정 상태
+  timeZone    String     @default("Asia/Seoul")            // 사용자 기본 IANA timezone
   lastLoginAt DateTime?                                    // 마지막 로그인 시각
   createdAt   DateTime   @default(now())                   // 생성 시각
   updatedAt   DateTime   @updatedAt                        // 수정 시각
@@ -282,6 +286,8 @@ model User {
   oauthAccounts UserOAuthAccount[] // 연결된 외부 provider 계정들
   authDevices   AuthDevice[]       // 로그인 과정에서 등록된 기기들
   authSessions  AuthSession[]      // Backend refresh sessions
+  schedules     Schedule[]         // 사용자가 등록한 일정
+  scheduleDeals ScheduleDeal[]     // 사용자가 일정에 연결한 딜 매핑
 
   @@index([role])
   @@index([status])

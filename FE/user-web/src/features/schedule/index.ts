@@ -2,7 +2,7 @@ export {
   createSchedule,
   deleteSchedule,
   getSchedule,
-  getWeeklySchedules,
+  listScheduleDealOptions,
   listSchedules,
   updateSchedule,
 } from "./api/schedule-api";
@@ -10,15 +10,13 @@ export { ScheduleScreen } from "./components/schedule-screen";
 export { ScheduleWeekReportScreen } from "./components/schedule-week-report-screen";
 export type {
   CreateScheduleInput,
-  DeleteScheduleResponse,
   Schedule,
+  ScheduleDeal,
+  ScheduleDealOption,
+  ScheduleDealOptionListResponse,
   ScheduleDetail,
   ScheduleListParams,
   ScheduleListResponse,
-  ScheduleReminder,
-  ScheduleSource,
+  ScheduleViewMode,
   UpdateScheduleInput,
-  WeeklyScheduleDay,
-  WeeklyScheduleParams,
-  WeeklyScheduleResponse,
 } from "./types/schedule";

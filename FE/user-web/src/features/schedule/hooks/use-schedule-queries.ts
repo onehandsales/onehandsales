@@ -1,14 +1,18 @@
 import { useQuery } from "@tanstack/react-query";
 import {
   getSchedule,
-  getWeeklySchedules,
+  listScheduleDealOptions,
   listSchedules,
 } from "@/features/schedule/api/schedule-api";
 import { scheduleQueryKeys } from "@/features/schedule/api/schedule-query-keys";
-import type {
-  ScheduleListParams,
-  WeeklyScheduleParams,
-} from "@/features/schedule/types/schedule";
+import type { ScheduleListParams } from "@/features/schedule/types/schedule";
+
+export function useScheduleDealOptions() {
+  return useQuery({
+    queryKey: scheduleQueryKeys.dealOptions(),
+    queryFn: listScheduleDealOptions,
+  });
+}
 
 export function useScheduleList(params: ScheduleListParams) {
   return useQuery({
@@ -22,12 +26,5 @@ export function useScheduleDetail(scheduleId: string, enabled: boolean) {
     enabled: enabled && scheduleId.length > 0,
     queryKey: scheduleQueryKeys.detail(scheduleId),
     queryFn: () => getSchedule(scheduleId),
-  });
-}
-
-export function useWeeklySchedules(params: WeeklyScheduleParams) {
-  return useQuery({
-    queryKey: scheduleQueryKeys.week(params),
-    queryFn: () => getWeeklySchedules(params),
   });
 }

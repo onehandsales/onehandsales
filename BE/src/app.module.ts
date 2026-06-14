@@ -10,6 +10,7 @@ import { ContactModule } from "./modules/contact/infrastructure/contact.module";
 import { DealModule } from "./modules/deal/infrastructure/deal.module";
 import { HealthModule } from "./modules/health/infrastructure/health.module";
 import { ProductModule } from "./modules/product/infrastructure/product.module";
+import { ScheduleModule } from "./modules/schedule/infrastructure/schedule.module";
 import { UserModule } from "./modules/user/infrastructure/user.module";
 import { RequestIdMiddleware } from "./shared/presentation/middleware/request-id.middleware";
 
@@ -27,6 +28,7 @@ import { RequestIdMiddleware } from "./shared/presentation/middleware/request-id
     ContactModule,
     ProductModule,
     DealModule,
+    ScheduleModule,
   ],
 })
 export class AppModule implements NestModule {

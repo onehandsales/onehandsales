@@ -12,7 +12,7 @@ Frontend 작업자는 이 문서를 먼저 보고 어떤 API가 준비되어 있
 
 - 검토일: 2026-06-14 (최초 2026-06-12, 업데이트)
 - 검토 대상: `TODO/DONE/**`을 제외한 `TODO` 활성 계획
-- Backend 구현 대조 기준: `BE/src/modules/auth`, `BE/src/modules/user`, `BE/src/modules/company`, `BE/src/modules/contact`, `BE/src/modules/product`, `BE/src/modules/deal`, `BE/prisma/schema.prisma`
+- Backend 구현 대조 기준: `BE/src/modules/auth`, `BE/src/modules/user`, `BE/src/modules/company`, `BE/src/modules/contact`, `BE/src/modules/product`, `BE/src/modules/deal`, `BE/src/modules/schedule`, `BE/prisma/schema.prisma`
 - API 명세 기준: 각 활성 계획의 `COMMON/API-SPEC/*`
 - 문서 기준: `AGENT/AGENT_USAGE_RULES.md`, `AGENT/PM_AGENT/CONVENTION/PLANNING_REVIEW_CHECKLIST.md`, `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/CONVENTION/API_SPEC.md`, `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/CONVENTION/API_CONTRACT.md`
 
@@ -21,9 +21,10 @@ Frontend 작업자는 이 문서를 먼저 보고 어떤 API가 준비되어 있
 - Auth/User, Company, Contact, Product 기본 Backend API는 구현되어 있다.
 - 추가 유지보수 범위인 Company `contactCount`, 회사 연결 Contact 전체 목록, Company/Contact/Product xlsx export API도 구현되어 있다.
 - Deal Backend API와 Prisma Deal 모델은 구현되어 있으며, API 계약은 `DEAL_DOMAIN_PLAN` 기준 `implemented` 상태다. 단, 신규 스키마 재설계 후 local DB migration drift로 실제 DB 미적용 상태 (2026-06-13 기준).
-- Schedule / MeetingNote / BusinessCard OCR / Import / Export / Notification / Trash / Search Backend API 모두 구현 완료 (2026-06-13 기준 확인).
+- Schedule Backend API와 User Web 일정 화면은 `TODO/DONE/SCHEDULE_DOMAIN_PLAN` 기준 구현 완료됐다.
+- MeetingNote / BusinessCard OCR / Import / Export / Notification / Trash / Search는 User Web feature/page가 존재하지만, 현재 `BE/src/modules` 기준 독립 Backend module은 없다. 후속 작업 전에 실제 API 계약과 구현 여부를 재검토한다.
 - 활성 TODO의 API 명세는 request 형태, response 형태, 내부 비즈니스 로직, DB 연결, transaction, observability, 에러, FE/BE 처리 기준을 포함한다.
-- **2026-06-14 기준 FE/BE 완료 판정**: Auth/User, Company, Contact, Product, Deal, Additional Work 범위는 Backend API와 Frontend 반영이 모두 완료되어 `TODO/DONE` 이동 대상이다.
+- **2026-06-14 기준 FE/BE 완료 판정**: Auth/User, Company, Contact, Product, Deal, Schedule, Additional Work 범위는 Backend API와 Frontend 반영이 모두 완료되어 `TODO/DONE` 보관 대상이다.
 - 상세 현황은 `UX Design/FE_DOMAIN_COMPLETION_STATUS.md` 참조.
 
 ## 4. 활성 계획별 Backend API 상태
@@ -35,6 +36,7 @@ Frontend 작업자는 이 문서를 먼저 보고 어떤 API가 준비되어 있
 | `CONTACT_DOMAIN_PLAN` | 완료 | `BE/src/modules/contact` | `CONTACT_API.md`, `CONTACT_API_DETAIL.md` 기준 `implemented` | 거래처 목록/생성/상세/메모 화면, xlsx export 표시 |
 | `PRODUCT_DOMAIN_PLAN` | 완료 | `BE/src/modules/product` | `PRODUCT_API.md`, `PRODUCT_API_DETAIL.md` 기준 `implemented` | 제품 목록/생성/상세/메모 화면, xlsx export 표시 |
 | `DEAL_DOMAIN_PLAN` | 완료 | `BE/src/modules/deal`, Prisma `Deal`, `DealProduct`, `DealFollowingActionLog`, `DealMemoLog` | `DEAL_API.md`, `DEAL_API_DETAIL.md` 기준 `implemented` | User Web 딜 목록 split view, 상세 제품 목록, 로그, xlsx export 연동 |
+| `SCHEDULE_DOMAIN_PLAN` | 완료 | `BE/src/modules/schedule`, Prisma `Schedule`, `ScheduleDeal` | `SCHEDULE_API.md` 기준 `implemented` | User Web 월간/주간 일정 화면, 생성/수정/삭제, 딜 연결 |
 | `ADDITIONAL_WORK_PLAN` | 완료 | 추가 API G01-G12 구현 완료 | 12개 모두 `implemented` | User Web dealCount/연결 딜 목록 반영 |
 
 ## 5. Backend API 구성 확인

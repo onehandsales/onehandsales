@@ -37,8 +37,8 @@ export function useDeleteScheduleMutation() {
 
   return useMutation({
     mutationFn: (scheduleId: string) => deleteSchedule(scheduleId),
-    onSuccess: (result) => {
-      invalidateScheduleQueries(queryClient, result.id);
+    onSuccess: (_result, scheduleId) => {
+      invalidateScheduleQueries(queryClient, scheduleId);
     },
   });
 }
@@ -48,8 +48,10 @@ function invalidateScheduleQueries(
   scheduleId: string
 ) {
   void queryClient.invalidateQueries({ queryKey: scheduleQueryKeys.lists() });
-  void queryClient.invalidateQueries({ queryKey: scheduleQueryKeys.weeks() });
   void queryClient.invalidateQueries({
     queryKey: scheduleQueryKeys.detail(scheduleId),
+  });
+  void queryClient.invalidateQueries({
+    queryKey: scheduleQueryKeys.dealOptions(),
   });
 }
