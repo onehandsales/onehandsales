@@ -75,6 +75,9 @@ export function TrashScreen() {
   const [notice, setNotice] = useState<string | null>(null);
   const trashQuery = useTrashList({ targetType, page, pageSize: PAGE_SIZE });
   const restoreMutation = useRestoreTrashItemMutation();
+  const trashTotalPages = Math.ceil(
+    (trashQuery.data?.totalCount ?? 0) / PAGE_SIZE
+  );
   const actionError = trashQuery.error ?? restoreMutation.error ?? null;
   const selectedOption = useMemo(
     () => targetOptions.find((option) => option.value === targetType),
@@ -142,11 +145,11 @@ export function TrashScreen() {
             onRestore={(item) => void onRestore(item)}
           />
 
-          {(trashQuery.data?.hasNext || page > 1) ? (
+          {trashQuery.data && (trashTotalPages > 1 || page > 1) ? (
             <Pagination
-              hasNext={trashQuery.data?.hasNext ?? false}
               page={page}
               totalCount={trashQuery.data?.totalCount}
+              totalPages={trashTotalPages}
               onPageChange={setPage}
             />
           ) : null}

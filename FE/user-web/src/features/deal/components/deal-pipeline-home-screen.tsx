@@ -213,9 +213,10 @@ export function DealPipelineHomeScreen() {
                 {(dealsQuery.data?.totalPages ?? 0) > 1 ? (
                   <div className="shrink-0 border-t border-[#E6EAF0] px-4 py-2">
                     <Pagination
-                      hasNext={page < (dealsQuery.data?.totalPages ?? 0)}
                       onPageChange={setPage}
                       page={page}
+                      totalCount={dealsQuery.data?.totalCount}
+                      totalPages={dealsQuery.data?.totalPages ?? 1}
                     />
                   </div>
                 ) : null}
@@ -317,9 +318,10 @@ export function DealPipelineHomeScreen() {
             {(dealsQuery.data?.totalPages ?? 0) > 1 ? (
               <div className="px-4 pb-8">
                 <Pagination
-                  hasNext={page < (dealsQuery.data?.totalPages ?? 0)}
                   onPageChange={setPage}
                   page={page}
+                  totalCount={dealsQuery.data?.totalCount}
+                  totalPages={dealsQuery.data?.totalPages ?? 1}
                 />
               </div>
             ) : null}

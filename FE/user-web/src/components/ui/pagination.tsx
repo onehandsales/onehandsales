@@ -3,28 +3,23 @@ import { cn } from "@/utils/cn";
 
 type PaginationProps = {
   readonly page: number;
+  readonly totalPages: number;
   readonly totalCount?: number;
   readonly onPageChange: (page: number) => void;
   readonly className?: string;
-} & (
-  | { readonly totalPages: number; readonly hasNext?: never }
-  | { readonly hasNext: boolean; readonly totalPages?: never }
-);
+};
 
 // 기능 : 목록 화면 페이지 이동 컴포넌트입니다.
-// totalPages 또는 hasNext 둘 중 하나를 전달합니다.
 export function Pagination({
   page,
   totalPages,
-  hasNext,
   totalCount,
   onPageChange,
   className,
 }: PaginationProps) {
-  const canNext = totalPages !== undefined ? page < Math.max(totalPages, 1) : (hasNext ?? false);
-  const pageLabel = totalPages !== undefined
-    ? `${page} / ${Math.max(totalPages, 1)}페이지`
-    : `${page}페이지`;
+  const safeTotalPages = Math.max(totalPages, 1);
+  const canNext = page < safeTotalPages;
+  const pageLabel = `${page} / ${safeTotalPages}페이지`;
 
   return (
     <div

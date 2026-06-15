@@ -27,7 +27,6 @@ export interface TrashListResponse {
   readonly page: number;
   readonly pageSize: number;
   readonly totalCount: number;
-  readonly hasNext: boolean;
 }
 
 export interface ListTrashInput {
