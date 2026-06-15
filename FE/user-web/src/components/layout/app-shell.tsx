@@ -19,6 +19,7 @@ import { useProductDetail } from "@/features/product/hooks/use-product-detail";
 const PAGE_TITLES: Record<string, { title: string }> = {
   "/": { title: "홈" },
   "/deals": { title: "딜" },
+  "/deals/new": { title: "딜" },
   "/companies": { title: "회사" },
   "/contacts": { title: "거래처" },
   "/products": { title: "제품" },
@@ -204,7 +205,7 @@ export function AppShell() {
   const navigate = useNavigate();
   const isHome = pathname === HOME_PATH;
   const isProducts = pathname === "/products";
-  const isDeals = pathname === "/deals";
+  const isDeals = pathname.startsWith("/deals");
 
   // /products/:id 패턴 감지
   const productDetailMatch = /^\/products\/([^/]+)$/.exec(pathname);
@@ -216,7 +217,7 @@ export function AppShell() {
   // /deals/:id 패턴 감지
   const dealDetailMatch = /^\/deals\/([^/]+)$/.exec(pathname);
   const dealDetailId = dealDetailMatch ? (dealDetailMatch[1] ?? "") : "";
-  const isDealDetail = dealDetailId.length > 0;
+  const isDealDetail = dealDetailId.length > 0 && dealDetailId !== "new";
 
   const page = PAGE_TITLES[pathname] ?? { title: "한손에 영업" };
   const [productSearch, setProductSearch] = useState("");

@@ -25,6 +25,7 @@
 - 2026-06-13: 목록 로드 시 첫 딜 자동 선택 로직 제거.
 - 2026-06-13: 우측 상세 패널과 로딩 스켈레톤을 클릭 이후에만 렌더링되도록 변경.
 - 2026-06-13: pen 파일 재확인. `[home] Desktop – Deal Pipeline Home`의 `Deal List Column(e8YpyU)`에서 `Deal Controls Bar(v1Gkpn)`와 `Deal List Surface(OD1p5)`가 형제 구조임을 확인하고, 정렬/건수 표시를 리스트 네모 밖으로 이동.
+- 2026-06-15: 딜 홈의 검색/정렬 영역을 공용 `FilterChip` 기반으로 재정리하고, 상단 검색 입력을 데스크톱과 모바일 모두에 맞춰 통일.
 
 ## 적용 범위 또는 변경 파일
 
@@ -34,6 +35,7 @@
   - `DealDetailPanel`은 `selectedDealId`가 있을 때만 렌더링.
   - 새 딜 생성 완료 시에도 상세 패널을 자동 선택하지 않음.
   - 사용자가 클릭한 선택 딜이 현재 목록에서 사라질 때만 선택 해제.
+  - 검색 + 정렬 row를 데스크톱과 모바일 모두에서 `FilterChip` 기반 chip group으로 변경.
 - `TODO_LOG/2026-06-13/DEAL_PIPELINE_HEADER_DETAIL_PANEL/WORK_LOG.md`
 
 ## 검증 결과
@@ -44,6 +46,8 @@
   - 현재 Node는 `v20.20.2`이며 프로젝트 요구 엔진은 `>=24 <25`.
   - 이번 변경 파일 오류는 없음.
   - 남은 오류는 기존 범위로 보이는 `src/features/product/components/product-edit-form.tsx` resolver 타입 불일치.
+- `pnpm --dir FE/user-web typecheck`: 2026-06-15 재검증 통과.
+- `pnpm --dir FE/user-web lint`: 통과. `src/components/ui/toast.tsx`의 react-refresh 경고 1건은 기존 상태로 남아 있음.
 
 ## 검토 결과
 

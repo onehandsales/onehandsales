@@ -2,6 +2,7 @@
 import { AlertCircle, Plus } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
+import { FilterChip, FilterChipGroup } from "@/components/ui/filter-chip";
 import { DealCreateDialog } from "@/features/deal/components/deal-create-dialog";
 import { DealDetailPanel } from "@/features/deal/components/deal-detail-panel";
 import { useDealList, useDealStageCounts } from "@/features/deal/hooks/use-deal-list";
@@ -30,7 +31,13 @@ const SORT_OPTIONS: Array<{ readonly value: DealSort; readonly label: string }> 
   { value: "expectedEndDateAsc", label: "마감일 빠른순" },
 ];
 
-export function DealPipelineHomeScreen() {
+type DealPipelineHomeScreenProps = {
+  readonly initialCreateOpen?: boolean;
+};
+
+export function DealPipelineHomeScreen({
+  initialCreateOpen = false,
+}: DealPipelineHomeScreenProps) {
   const [activeTab, setActiveTab] = useState<StageTab>("ALL");
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState<DealSort>("createdAtDesc");
@@ -57,6 +64,12 @@ export function DealPipelineHomeScreen() {
       setSelectedDealId("");
     }
   }, [deals, selectedDealId]);
+
+  useEffect(() => {
+    if (initialCreateOpen) {
+      setIsCreateOpen(true);
+    }
+  }, [initialCreateOpen]);
 
   const onTabChange = (tab: StageTab) => {
     setActiveTab(tab);
@@ -125,49 +138,33 @@ export function DealPipelineHomeScreen() {
           <div className="flex min-h-0 flex-1 gap-5 overflow-hidden px-6 py-5">
             {/* Deal List */}
             <div className="flex min-w-0 flex-1 flex-col gap-3 overflow-hidden">
-              {/* Controls bar — pen 기준 리스트 네모 밖에 별도 배치 */}
-              <div className="flex h-10 shrink-0 items-center gap-2 px-0.5">
-                {/* 정렬 */}
-                <select
-                  aria-label="딜 정렬"
-                  className="h-7 rounded-md border border-[#E5E7EB] bg-white px-2 text-[12px] text-gray-700 outline-none focus:border-primary"
-                  onChange={(e) => onSortChange(e.target.value as DealSort)}
-                  value={sort}
-                >
+              {/* Controls bar */}
+              <div className="flex shrink-0 flex-col gap-2 px-0.5">
+                <div className="flex items-center gap-2">
+                  <div className="relative min-w-0 flex-1 max-w-[320px]">
+                    <input
+                      className="h-8 w-full rounded-md border border-[#E6EAF0] px-2 text-[12px] outline-none placeholder:text-gray-400 focus:border-primary"
+                      onChange={(e) => onSearchChange(e.target.value)}
+                      placeholder="딜명 검색"
+                      value={search}
+                    />
+                  </div>
+                  <span className="shrink-0 text-[12px] text-gray-400">
+                    {dealsQuery.data?.totalCount ?? 0}건
+                  </span>
+                </div>
+
+                <FilterChipGroup className="flex-nowrap overflow-x-auto pb-0.5">
                   {SORT_OPTIONS.map((opt) => (
-                    <option key={opt.value} value={opt.value}>
+                    <FilterChip
+                      active={sort === opt.value}
+                      key={opt.value}
+                      onClick={() => onSortChange(opt.value)}
+                    >
                       {opt.label}
-                    </option>
+                    </FilterChip>
                   ))}
-                </select>
-                <button
-                  className={cn(
-                    "inline-flex h-7 items-center rounded-md border px-2 text-[12px] font-medium transition-colors",
-                    sort === "dealCostDesc" || sort === "dealCostAsc"
-                      ? "border-primary bg-primary/10 text-primary"
-                      : "border-[#E5E7EB] bg-white text-gray-700 hover:border-gray-300"
-                  )}
-                  onClick={() => onSortChange(sort === "dealCostDesc" ? "dealCostAsc" : "dealCostDesc")}
-                  type="button"
-                >
-                  금액 ▾
-                </button>
-                <button
-                  className={cn(
-                    "inline-flex h-7 items-center rounded-md border px-2 text-[12px] font-medium transition-colors",
-                    sort === "expectedEndDateAsc"
-                      ? "border-primary bg-primary/10 text-primary"
-                      : "border-[#E5E7EB] bg-white text-gray-700 hover:border-gray-300"
-                  )}
-                  onClick={() => onSortChange("expectedEndDateAsc")}
-                  type="button"
-                >
-                  마감일 ▾
-                </button>
-                <div className="flex-1" />
-                <span className="text-[12px] text-gray-400">
-                  {dealsQuery.data?.totalCount ?? 0}건
-                </span>
+                </FilterChipGroup>
               </div>
 
               <div className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-lg border border-[#E5EAF0] bg-white">
@@ -277,24 +274,24 @@ export function DealPipelineHomeScreen() {
         </div>
 
         {/* 검색 + 정렬 */}
-        <div className="flex gap-2 border-b border-[#E6EAF0] px-4 py-2">
+        <div className="grid gap-2 border-b border-[#E6EAF0] px-4 py-2">
           <input
-            className="h-8 flex-1 rounded-md border border-[#E6EAF0] px-2 text-[12px] outline-none placeholder:text-gray-400 focus:border-primary"
+            className="h-8 w-full rounded-md border border-[#E6EAF0] px-2 text-[12px] outline-none placeholder:text-gray-400 focus:border-primary"
             onChange={(e) => onSearchChange(e.target.value)}
             placeholder="딜명 검색"
             value={search}
           />
-          <select
-            className="h-8 rounded-md border border-[#E6EAF0] px-2 text-[12px] outline-none focus:border-primary"
-            onChange={(e) => onSortChange(e.target.value as DealSort)}
-            value={sort}
-          >
+          <FilterChipGroup className="flex-nowrap overflow-x-auto pb-0.5">
             {SORT_OPTIONS.map((opt) => (
-              <option key={opt.value} value={opt.value}>
+              <FilterChip
+                active={sort === opt.value}
+                key={opt.value}
+                onClick={() => onSortChange(opt.value)}
+              >
                 {opt.label}
-              </option>
+              </FilterChip>
             ))}
-          </select>
+          </FilterChipGroup>
         </div>
 
         {dealsQuery.isLoading ? (

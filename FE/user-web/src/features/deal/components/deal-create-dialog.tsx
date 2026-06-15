@@ -57,6 +57,7 @@ import {
   type DealDetail,
   type DealProductOption,
 } from "@/features/deal/types/deal";
+import { ProductCreateDialog } from "@/features/product/components/product-create-dialog";
 import { getApiErrorMessage } from "@/lib/api-client";
 import { cn } from "@/utils/cn";
 
@@ -74,6 +75,7 @@ export function DealCreateDialog({
   const [selectedProductIds, setSelectedProductIds] = useState<string[]>([]);
   const [isCompanyCreateOpen, setIsCompanyCreateOpen] = useState(false);
   const [isContactCreateOpen, setIsContactCreateOpen] = useState(false);
+  const [isProductCreateOpen, setIsProductCreateOpen] = useState(false);
   const createDealMutation = useCreateDealMutation();
   const companyOptionsQuery = useDealCompanyOptions();
   const contactOptionsQuery = useDealContactOptions();
@@ -105,6 +107,7 @@ export function DealCreateDialog({
       setSelectedProductIds([]);
       setIsCompanyCreateOpen(false);
       setIsContactCreateOpen(false);
+      setIsProductCreateOpen(false);
     }
   }, [open, reset]);
 
@@ -188,6 +191,25 @@ export function DealCreateDialog({
     }
   };
 
+  // 기능 : 빠른 등록한 제품을 Deal 선택 옵션에서 찾아 자동 선택합니다.
+  const onProductCreated = async (productName: string) => {
+    const updated = await productOptionsQuery.refetch();
+    const created = findProductOptionByName(updated.data ?? [], productName);
+
+    if (created) {
+      const next = selectedProductIds.includes(created.id)
+        ? selectedProductIds
+        : [...selectedProductIds, created.id];
+
+      setSelectedProductIds(next);
+      setValue("productIds", next, {
+        shouldDirty: true,
+        shouldValidate: true,
+      });
+      setValue("productSearch", "", { shouldDirty: true });
+    }
+  };
+
   const onSubmit = handleSubmit(async (values) => {
     const deal = await createDealMutation.mutateAsync(toCreateDealInput(values));
     onCreated(deal);
@@ -263,12 +285,14 @@ export function DealCreateDialog({
                     getLabel={(company) => company.companyName}
                     icon={Building2}
                     id="deal-company"
+                    createActionLabel="회사 빠른 등록"
                     isLoading={companyOptionsQuery.isLoading}
                     items={companyOptions}
                     placeholder="회사명 검색"
                     search={companySearch}
                     selectedId={selectedCompanyId}
                     selectedLabel={selectedCompany?.companyName ?? ""}
+                    onCreate={() => setIsCompanyCreateOpen(true)}
                     onClear={() => {
                       setValue("companyId", "", {
                         shouldDirty: true,
@@ -310,14 +334,6 @@ export function DealCreateDialog({
                       setValue("contactSearch", "", { shouldDirty: true });
                     }}
                   />
-                  <button
-                    className="inline-flex h-10 shrink-0 items-center gap-1.5 rounded-md border bg-white px-3 text-xs font-medium hover:bg-muted"
-                    onClick={() => setIsCompanyCreateOpen(true)}
-                    type="button"
-                  >
-                    <Plus className="h-3.5 w-3.5" />
-                    등록
-                  </button>
                 </div>
               </ModalFieldGroup>
 
@@ -331,12 +347,14 @@ export function DealCreateDialog({
                     getLabel={(contact) => contact.label}
                     icon={IdCard}
                     id="deal-contact"
+                    createActionLabel="거래처 빠른 등록"
                     isLoading={contactOptionsQuery.isLoading}
                     items={contactOptions}
                     placeholder="거래처명 검색"
                     search={contactSearch}
                     selectedId={selectedContactId}
                     selectedLabel={selectedContact?.label ?? ""}
+                    onCreate={() => setIsContactCreateOpen(true)}
                     onClear={() => {
                       setValue("contactId", "", {
                         shouldDirty: true,
@@ -363,14 +381,6 @@ export function DealCreateDialog({
                       });
                     }}
                   />
-                  <button
-                    className="inline-flex h-10 shrink-0 items-center gap-1.5 rounded-md border bg-white px-3 text-xs font-medium hover:bg-muted"
-                    onClick={() => setIsContactCreateOpen(true)}
-                    type="button"
-                  >
-                    <Plus className="h-3.5 w-3.5" />
-                    등록
-                  </button>
                 </div>
               </ModalFieldGroup>
             </ModalFormRow>
@@ -379,10 +389,12 @@ export function DealCreateDialog({
             <ModalFieldGroup error={errors.productIds?.message} id="deal-products" label="제품 (1개 이상)">
               <ProductMultiSelectDropdown
                 id="deal-products"
+                createActionLabel="제품 빠른 등록"
                 isLoading={productOptionsQuery.isLoading}
                 items={productOptions}
                 search={productSearch}
                 selectedIds={selectedProductIds}
+                onCreate={() => setIsProductCreateOpen(true)}
                 onSearchChange={(value) => {
                   setValue("productSearch", value, { shouldDirty: true });
                 }}
@@ -456,6 +468,11 @@ export function DealCreateDialog({
         open={isContactCreateOpen}
         onCreated={(payload) => void onContactCreated(payload)}
         onOpenChange={setIsContactCreateOpen}
+      />
+      <ProductCreateDialog
+        open={isProductCreateOpen}
+        onCreated={(productName) => void onProductCreated(productName)}
+        onOpenChange={setIsProductCreateOpen}
       />
     </>
   );
@@ -777,8 +794,10 @@ type ProductMultiSelectDropdownProps = {
   readonly search: string;
   readonly selectedIds: string[];
   readonly isLoading: boolean;
+  readonly createActionLabel?: string;
   readonly onSearchChange: (search: string) => void;
   readonly onToggle: (productId: string) => void;
+  readonly onCreate?: () => void;
 };
 
 type SearchSelectFieldProps<TItem extends { readonly id: string }> = {
@@ -791,11 +810,13 @@ type SearchSelectFieldProps<TItem extends { readonly id: string }> = {
   readonly icon: LucideIcon;
   readonly placeholder: string;
   readonly emptyText: string;
+  readonly createActionLabel?: string;
   readonly getLabel: (item: TItem) => string;
   readonly getDescription?: (item: TItem) => string;
   readonly onSearchChange: (search: string) => void;
   readonly onSelect: (item: TItem) => void;
   readonly onClear: () => void;
+  readonly onCreate?: () => void;
 };
 
 // 기능 : 빈 입력에 검색어를 입력하면 일치하는 옵션을 아래에 표시하고 클릭 선택합니다.
@@ -809,11 +830,13 @@ function SearchSelectField<TItem extends { readonly id: string }>({
   icon: Icon,
   placeholder,
   emptyText,
+  createActionLabel,
   getLabel,
   getDescription,
   onSearchChange,
   onSelect,
   onClear,
+  onCreate,
 }: SearchSelectFieldProps<TItem>) {
   const query = search.trim();
   const inputValue = selectedId ? selectedLabel : search;
@@ -855,9 +878,19 @@ function SearchSelectField<TItem extends { readonly id: string }>({
           {isLoading ? (
             <p className="px-3 py-2 text-sm text-muted-foreground">검색 중입니다.</p>
           ) : filteredItems.length === 0 ? (
-            <p className="px-3 py-2 text-sm text-muted-foreground">
-              {emptyText}
-            </p>
+            <div className="grid gap-2 px-3 py-3">
+              <p className="text-sm text-muted-foreground">{emptyText}</p>
+              {onCreate && createActionLabel ? (
+                <button
+                  className="inline-flex h-8 items-center justify-center gap-1.5 self-start rounded-md border border-dashed border-primary/30 bg-primary/5 px-2.5 text-xs font-medium text-primary hover:bg-primary/10"
+                  onClick={onCreate}
+                  type="button"
+                >
+                  <Plus className="h-3.5 w-3.5" />
+                  {createActionLabel}
+                </button>
+              ) : null}
+            </div>
           ) : (
             filteredItems.map((item) => (
               <button
@@ -888,8 +921,10 @@ function ProductMultiSelectDropdown({
   search,
   selectedIds,
   isLoading,
+  createActionLabel,
   onSearchChange,
   onToggle,
+  onCreate,
 }: ProductMultiSelectDropdownProps) {
   const [isOpen, setIsOpen] = useState(false);
   const wrapperRef = useRef<HTMLDivElement>(null);
@@ -986,16 +1021,28 @@ function ProductMultiSelectDropdown({
             </span>
           </div>
 
-          <div className="max-h-52 overflow-y-auto">
-            {isLoading ? (
-              <p className="px-3 py-4 text-center text-sm text-muted-foreground">
-                제품을 불러오는 중입니다.
-              </p>
-            ) : filteredItems.length === 0 ? (
-              <p className="px-3 py-4 text-center text-sm text-muted-foreground">
+        <div className="max-h-52 overflow-y-auto">
+          {isLoading ? (
+            <p className="px-3 py-4 text-center text-sm text-muted-foreground">
+              제품을 불러오는 중입니다.
+            </p>
+          ) : filteredItems.length === 0 ? (
+            <div className="grid gap-2 px-3 py-4">
+              <p className="text-center text-sm text-muted-foreground">
                 검색된 제품이 없습니다.
               </p>
-            ) : (
+              {onCreate && createActionLabel ? (
+                <button
+                  className="inline-flex h-8 items-center justify-center gap-1.5 self-center rounded-md border border-dashed border-primary/30 bg-primary/5 px-2.5 text-xs font-medium text-primary hover:bg-primary/10"
+                  onClick={onCreate}
+                  type="button"
+                >
+                  <Plus className="h-3.5 w-3.5" />
+                  {createActionLabel}
+                </button>
+              ) : null}
+            </div>
+          ) : (
               filteredItems.map((product) => {
                 const isSelected = selectedIds.includes(product.id);
 
@@ -1052,6 +1099,14 @@ function findContactOptionByName(
 ) {
   const target = normalizeText(username);
   return options.find((option) => normalizeText(option.username) === target);
+}
+
+function findProductOptionByName(
+  options: readonly DealProductOption[],
+  productName: string
+) {
+  const target = normalizeText(productName);
+  return options.find((option) => normalizeText(option.productName) === target);
 }
 
 function normalizeCurrencyInput(value: string) {

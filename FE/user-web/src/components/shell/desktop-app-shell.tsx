@@ -7,6 +7,7 @@ import { GlobalSearch } from "@/features/search";
 const PAGE_TITLES: Record<string, { title: string; subtitle: string }> = {
   "/": { title: "홈", subtitle: "오늘 파이프라인을 확인 하세요." },
   "/deals": { title: "딜", subtitle: "진행 중인 딜을 관리합니다." },
+  "/deals/new": { title: "딜", subtitle: "진행 중인 딜을 관리합니다." },
   "/companies": { title: "회사", subtitle: "등록된 회사를 관리합니다." },
   "/contacts": { title: "거래처", subtitle: "거래처 담당자를 관리합니다." },
   "/products": { title: "제품", subtitle: "제품과 서비스를 관리합니다." },

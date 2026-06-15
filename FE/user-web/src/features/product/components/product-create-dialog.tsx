@@ -38,7 +38,7 @@ type FormValues = z.infer<typeof schema>;
 type ProductCreateDialogProps = {
   readonly open: boolean;
   readonly onOpenChange: (open: boolean) => void;
-  readonly onCreated: () => void;
+  readonly onCreated: (productName: string) => void;
 };
 
 export function ProductCreateDialog({
@@ -94,7 +94,7 @@ export function ProductCreateDialog({
       productMemo: values.productMemo?.trim() || undefined,
     });
 
-    onCreated();
+    onCreated(values.productName.trim());
     onOpenChange(false);
   });
 

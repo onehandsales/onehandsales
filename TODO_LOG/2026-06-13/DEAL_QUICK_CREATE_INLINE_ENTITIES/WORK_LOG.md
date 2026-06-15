@@ -39,6 +39,9 @@
 - 2026-06-13: 회사/거래처/제품 선택을 빈 검색 입력에서 검색어 입력 후 결과를 클릭하는 형태로 변경.
 - 2026-06-13: 예상 마감일 입력을 text 입력으로 바꾸고 `20260410` 입력 시 `2026-04-10` form 값으로 변환하도록 변경.
 - 2026-06-13: 딜 등록/빠른 등록 하위 모달의 필드 오류 문구 영역을 고정 높이로 예약하고, 거래처 선택 해제 버튼과 제품 선택 칩으로 인한 높이 변화를 제거.
+- 2026-06-15: 회사/거래처 검색 입력의 검색 결과 없음 상태에 빠른 등록 CTA를 추가해, 생성 경로를 입력 안쪽에서 바로 열 수 있게 정리.
+- 2026-06-15: 딜 빠른 등록 모달의 회사/거래처 보조 등록 버튼을 제거하고, 검색 결과 dropdown 내부에서 `회사 빠른 등록`/`거래처 빠른 등록`을 호출하도록 변경.
+- 2026-06-15: 제품 검색 결과 없음 상태에도 `제품 빠른 등록` CTA를 추가해, 딜 빠른 등록 모달 안에서 회사/거래처/제품 모두 생성 경로를 열 수 있게 범위를 닫음.
 
 ## 적용 범위 또는 변경 파일
 
@@ -49,6 +52,12 @@
   - 제품 선택 UI를 검색 입력 + 결과 클릭 다중 선택으로 변경.
   - 금액 입력의 화면 표시 포맷과 hidden form 값을 분리.
   - 예상 마감일 `YYYYMMDD` 입력을 `YYYY-MM-DD`로 자동 변환.
+  - 회사/거래처 검색 dropdown의 empty state에 빠른 등록 CTA를 추가하고, 옆에 따로 두었던 `등록` 버튼은 제거.
+  - 제품 검색 dropdown의 empty state에도 `제품 빠른 등록` CTA를 추가하고, 제품 생성 모달을 딜 빠른 등록 모달에서 직접 열 수 있게 변경.
+- `FE/user-web/src/features/product/components/product-create-dialog.tsx`
+  - 생성 완료 시 호출자에게 제품명을 넘기도록 변경해, 딜 모달에서 생성된 제품을 바로 다시 찾을 수 있게 함.
+- `FE/user-web/src/features/product/components/product-list-screen.tsx`
+  - 변경된 제품 생성 콜백 시그니처에 맞춰 호출부를 유지 보수.
 - `FE/user-web/src/features/deal/schemas/deal-schema.ts`
   - 금액 schema가 콤마 포함 문자열을 숫자 문자열로 정규화하도록 보강.
   - 날짜 schema가 `YYYYMMDD` 문자열도 `YYYY-MM-DD`로 정규화하도록 보강.
@@ -66,6 +75,8 @@
   - 현재 Node는 `v20.20.2`이며 프로젝트 요구 엔진은 `>=24 <25`.
   - 이번 변경 파일 오류는 없음.
   - 남은 오류는 기존 범위로 보이는 `src/features/product/components/product-edit-form.tsx` resolver 타입 불일치.
+- `pnpm --dir FE/user-web typecheck`: 2026-06-15 재검증 통과.
+- `pnpm --dir FE/user-web lint`: 통과. `src/components/ui/toast.tsx`의 react-refresh 경고 1건은 기존 상태로 남아 있음.
 
 ## 검토 결과
 

@@ -8,6 +8,7 @@ import { ContactDetailPage } from "@/pages/contacts/detail";
 import { ContactsPage } from "@/pages/contacts";
 import { DealDetailPage } from "@/pages/deals/detail";
 import { DealsPage } from "@/pages/deals";
+import { DealNewPage } from "@/pages/deals/new";
 import { ExportPage } from "@/pages/export";
 import { HomePage } from "@/pages/home";
 import { ImportPage } from "@/pages/import";
@@ -43,6 +44,7 @@ export const router = createBrowserRouter([
       { path: "products", element: <ProductsPage /> },
       { path: "products/:productId", element: <ProductDetailPage /> },
       { path: "deals", element: <DealsPage /> },
+      { path: "deals/new", element: <DealNewPage /> },
       { path: "deals/:dealId", element: <DealDetailPage /> },
       { path: "schedules", element: <SchedulesPage /> },
       { path: "schedules/week", element: <ScheduleWeekPage /> },
