@@ -270,9 +270,16 @@ src/features/company/
 - 기획 화면 목록의 `/meetings`, `/meetings/new`, `/meetings/:id`는 현재 코드에서 `/meeting-notes`, `/meeting-notes/new`, `/meeting-notes/:meetingNoteId`로 구현되어 있다.
 - 기획 화면 목록의 `/imports`, `/exports`는 현재 코드에서 `/import`, `/export`로 구현되어 있다.
 - 기획 화면 목록의 `/search` 전용 라우트는 현재 router에 없다. `search` feature는 존재하지만 상단 검색/내부 기능으로 연결될 수 있다.
+- 현재 `/` 홈은 딜 파이프라인이 아니라 `화면 준비중입니다` 준비 상태를 렌더링한다. 실제 딜 파이프라인 화면은 `/deals`에서 운영한다.
+- `IMPORT`, `휴지통`은 라우트와 feature가 남아 있어도 핵심 기능 UX 안정화 전까지 sidebar에서 숨긴다.
 - `src/lib/api-client.ts`는 User Web에서 `/admin/api/*` 호출을 차단한다.
 - Backend는 현재 Auth/User, Company, Contact, Product, Deal, Schedule, MeetingNote 수동 API와 Additional Work G01-G12 API가 구현되어 있다. `business-card`, `import-export`, `notification`, `search`, `trash` feature/API client는 실제 Backend API가 구현되기 전까지 mock/placeholder 경계를 명확히 둔다.
 - `src/features/meeting-note`는 `TODO/DONE/MEETING_NOTE_MANUAL_PLAN/COMMON/API-SPEC/MEETING_NOTE_API.md`의 수동 회의록 계약을 따른다. 단일 `dealId`, `stageText`, `hasNext`, request `timeZone`, request `rawText`, AI/STT 생성, 삭제/복구 계약은 현재 User Web 기준이 아니다.
+- Page-number list pagination은 `totalPages`, `totalCount`를 기준으로 한다. 공용 `Pagination`에 `hasNext`를 넘기지 않는다.
+- `hasNext`는 회사/거래처/제품 상세 메모 로그처럼 cursor 기반 infinite loading에서만 사용한다.
+- Company list는 `useCompanyFields`, `useCompanyRegions` 전체 조회 결과를 `분야 ▾`, `지역 ▾` select 옵션으로 사용한다. 목록 페이지에서 회사 분야/지역 생성/삭제 UI를 노출하지 않는다.
+- Contact list는 `useContactDepartments`, `useContactJobGrades` 전체 조회 결과를 `부서 ▾`, `직급 ▾` select 옵션으로 사용한다. 목록 페이지에서 부서/직급 생성/삭제 UI를 노출하지 않는다.
+- Company/Contact/Product list는 제품형 `Controls Bar + Table Card + Pagination` 문법을 기준으로 맞춘다.
 - `src/features/company/api/company-api.ts`는 구현 완료된 Backend Company API 계약과 맞춰야 한다. Company UI/API 통합 작업 때 `TODO/DONE/COMPANY_DOMAIN_PLAN/COMMON/API-SPEC/COMPANY_API.md`와 `COMPANY_API_DETAIL.md`의 `companyName`, `companyFieldId`, `companyRegionId`, memo/private memo contract를 기준으로 오래된 필드와 삭제/복구 경로를 정리한다.
 - Company 화면은 `TODO/DONE/ADDITIONAL_WORK_PLAN` 기준으로 목록 `contactCount`/`dealCount`, 회사 상세 연결 Contact 목록, 회사 상세 연결 Deal 목록, 현재 필터 기준 xlsx export를 반영해야 한다.
 - `src/features/contact/api`는 구현 완료된 Backend Contact API 계약과 맞춰야 한다. Contact UI/API 통합 작업 때 `TODO/DONE/CONTACT_DOMAIN_PLAN/COMMON/API-SPEC/CONTACT_API.md`와 `CONTACT_API_DETAIL.md`의 `username`, `mobile`, `email`, `companyId`, `contactDepartmentId`, `contactJobGradeId`, `contactMemo`, memo/private memo contract를 기준으로 오래된 `name`, `phone`, `department`, `position`, `initialMemo`, 삭제/복구 경로를 정리한다.

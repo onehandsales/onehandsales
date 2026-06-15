@@ -34,22 +34,25 @@
 
 ### 전체 진행 상태
 
-- 상태: `준비 단계`
+- 상태: `핵심 도메인 UX 정리 진행 중`
 - pen 분석: 완료
 - 프론트 계획 문서: 완료
 - 백엔드 영향 문서: 완료
 - 공통 결정사항 문서: 완료
 - API 변경 추적 문서: 완료
-- 실제 UI 구현: 미착수
+- 실제 UI 구현: 진행 중
 
 ### 현재 확정된 방향
 
 - 1차 범위는 `딜 중심`
 - UI는 신규 구조 병행 추가 후 교체
 - 데이터 로직은 재사용 우선
-- stage는 1차에서 프론트 임시 매핑 우선
+- stage는 FE/BE 모두 6단계 계약으로 정리
 - mobile / desktop 기준은 `768px`
 - 토큰은 `CSS 변수 + Tailwind semantic mapping` 병행
+- `/` 홈은 현재 `화면 준비중입니다` 준비 상태로 두고, 딜 파이프라인은 `/deals`에서 운영
+- 회사/거래처/제품 목록은 제품형 `Controls Bar + Table Card + Pagination` 문법을 기준으로 맞춤
+- 목록 페이지네이션은 `totalPages` 기준이며 `hasNext`는 상세 메모 로그 같은 cursor flow에만 사용
 
 ---
 
@@ -333,6 +336,45 @@
 
 ---
 
+### 2026-06-15 목록 UX와 필터 계약 정리
+
+- 작업자: Codex
+- 유형:
+  - frontend
+  - docs
+- 요약:
+  - `/` 홈을 `화면 준비중입니다` 준비 상태로 전환했다.
+  - Sidebar에서 후순위 기능인 `IMPORT`, `휴지통`을 숨김 처리했다.
+  - 공용 `Pagination`을 `totalPages` 전용으로 정리하고 딜/제품/회사/거래처/회의록 목록 UX는 page-number pagination 기준으로 맞췄다.
+  - 회사/거래처 목록을 제품형 `Controls Bar + Table Card + Pagination` 문법으로 정리했다.
+  - 회사 목록에서 분야/지역 생성·삭제 관리 패널을 제거하고 `분야 ▾`, `지역 ▾` select 필터만 남겼다.
+  - 거래처 목록에서 부서/직급 생성·삭제 관리 패널을 제거하고 `부서 ▾`, `직급 ▾` select 필터만 남겼다.
+- 변경 파일:
+  - `FE/user-web/src/pages/home/index.tsx`
+  - `FE/user-web/src/components/layout/app-shell.tsx`
+  - `FE/user-web/src/components/navigation/sidebar-nav.tsx`
+  - `FE/user-web/src/components/ui/pagination.tsx`
+  - `FE/user-web/src/features/deal/components/deal-pipeline-home-screen.tsx`
+  - `FE/user-web/src/features/company/components/company-list-screen.tsx`
+  - `FE/user-web/src/features/contact/components/contact-list-screen.tsx`
+  - `FE/user-web/src/features/product/components/product-list-screen.tsx`
+  - `FE/user-web/src/features/meeting-note/components/meeting-note-list-screen.tsx`
+- 결정/반영 내용:
+  - 목록 페이지에서는 `hasNext`를 사용하지 않는다.
+  - `hasNext`는 회사/거래처/제품 상세 메모 로그처럼 cursor 기반 incremental loading에서만 사용한다.
+  - 회사 분야/지역, 거래처 부서/직급 옵션은 제품 카테고리/상태처럼 전체 옵션 API를 초회 조회한 select 필터로 사용한다.
+  - 목록 페이지에서는 옵션 생성/삭제 UX를 제공하지 않는다. 해당 관리는 상세/설정/관리 화면에서 다룬다.
+- 검증:
+  - `pnpm.cmd --dir FE\user-web run typecheck`: 통과
+  - `pnpm.cmd --dir FE\user-web run lint`: 통과
+  - `pnpm.cmd --dir FE\user-web run build`: 통과
+  - 기존 경고: Node engine/Vite Node 권장 버전, `toast.tsx` fast-refresh warning, 번들 크기 warning
+- 남은 이슈:
+  - 목록 컨트롤 버튼의 공통 `Button`/control button 공통화 후보가 남아 있다.
+  - `/` 홈의 최종 구성은 핵심 도메인 UX 안정화 이후 재개한다.
+
+---
+
 ## 현재 구현 체크리스트
 
 ### 문서
@@ -358,13 +400,14 @@
 - [x] Mobile Deal Pipeline Home
 - [x] Deal Quick Create Modal (`deal-create-dialog.tsx` + ModalShell) — 6단계 반영 완료
 - [x] Mobile Deal Detail Page (`mobile-deal-detail-page.tsx`) — 6단계 반영 완료
-- [x] DealStage 6단계 FE 전체 확장 (types / schema / utils / 모든 화면)
-- [ ] 테이블 컨트롤바 FilterChip (정렬/금액/마감일)
+- [x] DealStage 6단계 FE/BE 계약 반영 완료
+- [x] Company/Contact/Product 제품형 목록 문법 정리
+- [x] Page-number 목록 pagination `totalPages` 기준 정리
+- [ ] 목록 컨트롤 버튼 공통화
 
 ### 백엔드 / 계약
 
-- [x] deal stage 전략 확정 — FE 6단계 확장 완료, BE enum 변경은 별도 작업
-- [ ] BE DealStage enum 6단계 확장 (Prisma schema + migration)
+- [x] deal stage 전략 확정 — FE/BE 6단계 계약 반영 완료
 - [ ] mobile home aggregate API 필요 여부 확정
 - [ ] quick create inline 생성 범위 확정
 - [ ] navigation badge count 필요 여부 확정
@@ -373,13 +416,14 @@
 
 ## 현재 블로커
 
-- BE DealStage enum이 아직 4단계 (FE는 6단계로 선행 전환됨) — BE 변경 전까지 신규 3단계는 API 응답에 등장하지 않음
+- `/` 홈 최종 구성은 보류 중이다. 현재는 `화면 준비중입니다`를 표시한다.
 - Quick Create modal의 inline entity create 범위 미확정
+- 목록 컨트롤 버튼 공통화 미완료
 
 ---
 
 ## 다음 작업 우선순위
 
-1. BE DealStage enum 6단계 확장 (Prisma schema + migration + API 응답 검증)
-2. 테이블 컨트롤바 FilterChip(정렬/금액/마감일) 구현
-3. 브라우저 실제 세션 smoke 확인 (딜 목록/상세/단계변경)
+1. 회사/거래처/제품/딜 목록 컨트롤 버튼 공통화
+2. `/` 홈 최종 구성 재개 여부 결정
+3. 브라우저 실제 세션 smoke 확인 (딜/회사/거래처/제품/회의록 목록과 상세)

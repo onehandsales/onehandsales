@@ -52,7 +52,9 @@
 
 현재 구조:
 - `INITIAL_CONTACT`
-- `IN_DISCUSSION`
+- `NEEDS_CHECK`
+- `PROPOSAL_QUOTE`
+- `NEGOTIATION`
 - `WON`
 - `LOST`
 
@@ -64,16 +66,10 @@ pen 구조:
 - 성사
 - 실패
 
-결정 필요:
-- 프론트에서 임시 매핑으로 갈지
-- 백엔드 enum / DB / API까지 6단계로 바꿀지
-
-권장:
-- 1차는 프론트 임시 매핑
-- 2차에서 백엔드 stage 재설계 여부 별도 결정
-
-이유:
-- 지금 백엔드까지 같이 바꾸면 범위가 급격히 커진다.
+현재 결정:
+- FE/BE 모두 6단계 코드 계약을 사용한다.
+- DB는 문자열 코드로 저장하고, 코드 단 enum/validation에서 6단계를 관리한다.
+- 과거 `IN_DISCUSSION` 4단계 계약은 현재 기준이 아니다.
 
 ### 2. App Shell 교체 방식
 
@@ -211,7 +207,7 @@ pen 구조:
 
 ## 7. 백엔드 영향이 큰 항목
 
-- stage 6단계 전환 여부
+- stage metadata endpoint 필요 여부
 - 모바일 홈 aggregate endpoint 필요 여부
 - quick create 후보 검색 endpoint 필요 여부
 - summary/metadata 응답 추가 여부
@@ -219,7 +215,7 @@ pen 구조:
 
 1차 권장:
 - 기존 API 재사용
-- 프론트 임시 매핑
+- FE/BE 6단계 stage 계약 유지
 - aggregate 필요성이 확인되면 별도 endpoint 추가 검토
 
 ---
@@ -228,7 +224,7 @@ pen 구조:
 
 ### 리스크
 
-- Deal stage 4단계와 pen 6단계 불일치
+- Stage metadata/API 응답 표시 문법이 화면별로 갈라질 위험
 - App Shell 교체가 모든 화면에 영향
 - Quick Create modal 범위 확장 위험
 - 모바일 홈이 aggregate 없이 다중 호출 과다로 갈 가능성
@@ -238,7 +234,7 @@ pen 구조:
 
 - 1차는 딜 중심으로 제한
 - shell은 병행 추가 후 교체
-- stage는 임시 매핑 우선
+- stage는 FE/BE 6단계 계약 유지
 - aggregate는 실제 호출량 확인 후 결정
 - 일정/회의록/Import/Export는 후속 단계로 분리
 
@@ -250,7 +246,7 @@ pen 구조:
 2. Desktop/Mobile Shell 구현
 3. 공통 상태 UI 구현
 4. 공통 딜 컴포넌트 구현
-5. stage 임시 매핑 정의
+5. stage 6단계 표시/필터 문법 확인
 6. Desktop Deal Pipeline Home 구현
 7. Mobile Deal Pipeline Home 구현
 8. Deal Quick Create Modal 구현
@@ -269,11 +265,11 @@ pen 구조:
 - `CSS 변수 + Tailwind mapping` 사용
 - `새 Shell 병행 추가 후 교체`
 - 데이터 로직 재사용, UI 구조 신규화
-- stage는 1차에서 프론트 임시 매핑
+- stage는 FE/BE 6단계 계약 유지
 
 ### 별도 합의 후 진행할 것
 
-- 백엔드 stage 6단계 전환
+- stage metadata endpoint 필요 여부
 - mobile home aggregate API 추가
 - quick create inline 생성 범위
 - 일정 화면 1차 포함 여부

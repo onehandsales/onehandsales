@@ -8,10 +8,11 @@
 
 ## 최종 업데이트
 
-- 날짜: 2026-06-14
+- 날짜: 2026-06-15
 - 기준:
   - Backend: `BE/src/modules`, `BE/prisma/schema.prisma`
   - User Web: `FE/user-web/src/features`, `FE/user-web/src/pages`
+  - UX 기준: `FE/user-web/src/components`, `FE/user-web/src/features/*/components`
   - 완료 계획: `TODO/DONE`
 
 ## 도메인별 BE x FE 현황
@@ -24,11 +25,11 @@
 | Product | 완료 | 완료 | `/products` | 완료 |
 | Deal | 완료 | 완료 | `/`, `/deals` | 완료 |
 | Schedule | 완료 | 완료 | `/schedules`, `/schedules/week` | 완료 |
-| MeetingNote | 현재 BE module 없음 | FE feature/page 존재 | `/meeting-notes` | BE 재검토 필요 |
-| BusinessCard OCR | 현재 BE module 없음 | FE feature/page 존재 | `/business-cards` | BE 재검토 필요 |
-| Import/Export | 현재 BE module 없음 | FE feature/page 존재 | `/import`, `/export` | BE 재검토 필요 |
+| MeetingNote | 완료 | 완료 | `/meeting-notes` | 완료 |
+| BusinessCard OCR | 현재 BE module 없음 | FE feature/page 존재 | `/business-cards`, `/contacts/scan` | BE 재검토 필요 |
+| Import/Export | 현재 BE module 없음 | FE feature/page 존재 | `/import`, `/export` | 보류/숨김 |
 | Notification | 현재 BE module 없음 | FE feature/page 존재 | `/notifications` | BE 재검토 필요 |
-| Trash | 현재 BE module 없음 | FE feature/page 존재 | `/trash` | BE 재검토 필요 |
+| Trash | 현재 BE module 없음 | FE feature/page 존재 | `/trash` | 보류/숨김 |
 | Search | 현재 BE module 없음 | FE feature 존재 | GlobalSearch | BE 재검토 필요 |
 | Tag | 현재 BE module 없음 | FE feature 존재 | 없음 | 후속 계획 필요 |
 
@@ -43,6 +44,21 @@
 - `product`: 제품, 카테고리/상태, 일반 메모, 개인 비밀 메모, xlsx export, 연결 딜 목록
 - `deal`: 딜, 딜-제품 연결, 다음 행동 로그, 메모 로그, xlsx export
 - `schedule`: 일정, 월간/주간 조회, 일정-딜 연결, 생성/수정/삭제
+- `meeting-note`: 수동 회의록 목록/상세/생성/수정, 회사/담당자 필터 옵션, 회사/담당자/제품/딜 snapshot 연결
+
+## User Web 현재 UX/UI 기준
+
+2026-06-15 기준 User Web의 핵심 목록 UX는 다음 상태를 기준으로 한다.
+
+- `/` 홈은 임시 준비 상태이며 `화면 준비중입니다`를 표시한다.
+- 딜 파이프라인은 `/deals`에서 운영한다.
+- 좌측 사이드바에서 `IMPORT`, `휴지통`은 후순위 기능으로 숨김 처리되어 있다.
+- 회사/거래처/제품/딜/회의록 목록 페이지네이션은 `hasNext`가 아니라 `totalPages`, `totalCount` 기준이다.
+- `hasNext`는 회사/거래처/제품 상세의 메모 로그처럼 cursor/infinite loading 계약에서만 사용한다.
+- 회사 목록 필터는 제품 `category select`와 같은 방식으로 `useCompanyFields`, `useCompanyRegions` 전체 조회 결과를 `분야 ▾`, `지역 ▾` select 옵션으로 사용한다.
+- 거래처 목록 필터는 `useContactDepartments`, `useContactJobGrades` 전체 조회 결과를 `부서 ▾`, `직급 ▾` select 옵션으로 사용한다.
+- 목록 페이지에서 회사 분야/지역, 거래처 부서/직급 생성/삭제 UI는 제공하지 않는다. 해당 관리 기능은 상세 또는 별도 관리 UX에서 다룬다.
+- 회사/거래처 목록은 제품 목록과 같은 조밀한 `Controls Bar + Table Card + Pagination` 문법으로 정렬되어 있다.
 
 ## Schedule 완료 기준
 
