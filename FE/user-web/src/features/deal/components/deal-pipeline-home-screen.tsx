@@ -1,11 +1,12 @@
 // 기능 : 딜 파이프라인 홈 화면 — split view (Desktop) / 카드 (Mobile)
-import { AlertCircle, Plus } from "lucide-react";
+import { AlertCircle, Download, Plus } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { FilterChip, FilterChipGroup } from "@/components/ui/filter-chip";
 import { DealCreateDialog } from "@/features/deal/components/deal-create-dialog";
 import { DealDetailPanel } from "@/features/deal/components/deal-detail-panel";
 import { useDealList, useDealStageCounts } from "@/features/deal/hooks/use-deal-list";
+import { exportDealsXlsx } from "@/features/deal/api/deal-api";
 import {
   DEAL_STATUS_LABEL,
   DEAL_STATUS_LIST,
@@ -44,6 +45,7 @@ export function DealPipelineHomeScreen({
   const [page, setPage] = useState(1);
   const [selectedDealId, setSelectedDealId] = useState("");
   const [isCreateOpen, setIsCreateOpen] = useState(false);
+  const [isExporting, setIsExporting] = useState(false);
 
   const stageCountsQuery = useDealStageCounts();
   const dealsQuery = useDealList({
@@ -86,6 +88,25 @@ export function DealPipelineHomeScreen({
     setPage(1);
   };
 
+  const onExport = async () => {
+    setIsExporting(true);
+    try {
+      const { blob, fileName } = await exportDealsXlsx({
+        search: search.trim() || undefined,
+        dealStatus: activeTab === "ALL" ? undefined : activeTab,
+        sort,
+      });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = fileName ?? "deals.xlsx";
+      a.click();
+      URL.revokeObjectURL(url);
+    } finally {
+      setIsExporting(false);
+    }
+  };
+
   const getStageCount = (tab: StageTab): number => {
     const counts = stageCountsQuery.data?.items ?? [];
     if (tab === "ALL") return counts.reduce((sum, c) => sum + c.count, 0);
@@ -97,17 +118,18 @@ export function DealPipelineHomeScreen({
       {/* ── Desktop ── */}
       <section className="hidden flex-1 flex-col overflow-hidden md:flex">
         {/* Stage Tabs */}
-        <div className="flex shrink-0 items-end border-b border-[#E6EAF0] bg-white px-6">
+        <div className="relative flex shrink-0 items-end px-6">
+          <div className="absolute bottom-0 left-0 right-0 h-px bg-[#E6EAF0]" />
           {stageTabs.map((tab) => {
             const count = getStageCount(tab.value);
             const isActive = activeTab === tab.value;
             return (
               <button
                 className={cn(
-                  "flex h-12 items-center gap-1.5 border-b-2 px-3.5 text-[13px] font-medium transition-colors",
+                  "relative flex h-11 items-center gap-1.5 border-b-2 px-3.5 text-[13px] font-medium transition-colors",
                   isActive
-                    ? "border-primary text-primary"
-                    : "border-transparent text-gray-500 hover:text-gray-700"
+                    ? "border-[#2563EB] text-[#2563EB]"
+                    : "border-transparent text-[#6B7280] hover:text-[#111827]"
                 )}
                 key={tab.value}
                 onClick={() => onTabChange(tab.value)}
@@ -117,7 +139,7 @@ export function DealPipelineHomeScreen({
                 <span
                   className={cn(
                     "rounded-full px-1.5 py-0.5 text-[11px] font-semibold",
-                    isActive ? "bg-primary/10 text-primary" : "bg-gray-100 text-gray-500"
+                    isActive ? "bg-[#EFF6FF] text-[#2563EB]" : "bg-[#F3F4F6] text-[#6B7280]"
                   )}
                 >
                   {count}
@@ -138,23 +160,17 @@ export function DealPipelineHomeScreen({
           <div className="flex min-h-0 flex-1 gap-5 overflow-hidden px-6 py-5">
             {/* Deal List */}
             <div className="flex min-w-0 flex-1 flex-col gap-3 overflow-hidden">
-              {/* Controls bar */}
-              <div className="flex shrink-0 flex-col gap-2 px-0.5">
-                <div className="flex items-center gap-2">
-                  <div className="relative min-w-0 flex-1 max-w-[320px]">
-                    <input
-                      className="h-8 w-full rounded-md border border-[#E6EAF0] px-2 text-[12px] outline-none placeholder:text-gray-400 focus:border-primary"
-                      onChange={(e) => onSearchChange(e.target.value)}
-                      placeholder="딜명 검색"
-                      value={search}
-                    />
-                  </div>
-                  <span className="shrink-0 text-[12px] text-gray-400">
-                    {dealsQuery.data?.totalCount ?? 0}건
-                  </span>
+              {/* Controls bar — 한 줄 */}
+              <div className="flex shrink-0 items-center gap-2 px-0.5">
+                <div className="flex h-7 items-center gap-1.5 rounded-md border border-[#E2E5EC] bg-[#FAFAF8] px-2.5 transition focus-within:border-[#93C5FD] focus-within:bg-white">
+                  <input
+                    className="w-[180px] bg-transparent text-[12px] text-[#111827] outline-none placeholder:text-[#9CA3AF]"
+                    onChange={(e) => onSearchChange(e.target.value)}
+                    placeholder="딜명 검색"
+                    value={search}
+                  />
                 </div>
-
-                <FilterChipGroup className="flex-nowrap overflow-x-auto pb-0.5">
+                <FilterChipGroup className="flex-nowrap overflow-x-auto">
                   {SORT_OPTIONS.map((opt) => (
                     <FilterChip
                       active={sort === opt.value}
@@ -165,9 +181,22 @@ export function DealPipelineHomeScreen({
                     </FilterChip>
                   ))}
                 </FilterChipGroup>
+                <div className="flex-1" />
+                <span className="shrink-0 text-[12px] text-[#9CA3AF]">
+                  {dealsQuery.data?.totalCount ?? 0}건
+                </span>
+                <button
+                  className="inline-flex h-7 items-center gap-1.5 rounded-md border border-[#E2E5EC] bg-white px-2.5 text-[12px] font-medium text-[#374151] transition hover:bg-[#F5F6F8] disabled:opacity-40"
+                  disabled={isExporting}
+                  onClick={() => void onExport()}
+                  type="button"
+                >
+                  <Download className="h-3.5 w-3.5" />
+                  {isExporting ? "내보내는 중..." : "내보내기"}
+                </button>
               </div>
 
-              <div className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-lg border border-[#E5EAF0] bg-white">
+              <div className="flex min-h-0 flex-col overflow-hidden rounded-lg border border-[#E2E5EC] bg-white shadow-sm">
                 {/* Table header */}
                 <div
                   className="flex shrink-0 items-center border-b border-[#E6EAF0] bg-[#FAFBFC] px-6"
@@ -182,7 +211,7 @@ export function DealPipelineHomeScreen({
                 </div>
 
                 {/* Rows */}
-                <div className="flex-1 overflow-y-auto">
+                <div className="overflow-y-auto">
                   {deals.length === 0 ? (
                     <div className="flex flex-col items-center py-12 text-sm text-gray-400">
                       <p>표시할 딜이 없습니다.</p>
@@ -207,12 +236,12 @@ export function DealPipelineHomeScreen({
                 </div>
 
                 {/* Pagination */}
-                {(dealsQuery.data?.totalPages ?? 0) > 1 ? (
-                  <div className="shrink-0 border-t border-[#E6EAF0] px-4 py-2">
+                {dealsQuery.data ? (
+                  <div className="shrink-0 border-t border-[#E6EAF0] px-4">
                     <Pagination
-                      hasNext={page < (dealsQuery.data?.totalPages ?? 0)}
                       onPageChange={setPage}
                       page={page}
+                      totalPages={dealsQuery.data.totalPages}
                     />
                   </div>
                 ) : null}
@@ -222,16 +251,17 @@ export function DealPipelineHomeScreen({
             {/* Right Detail Panel */}
             {selectedDealId ? (
               <div className="flex w-[380px] shrink-0 flex-col overflow-hidden rounded-lg border border-[#E5EAF0] bg-white">
-                <div className="flex-1 overflow-y-auto">
-                  <DealDetailPanel dealId={selectedDealId} variant="panel" />
-                </div>
-                <div className="shrink-0 border-t border-[#E6EAF0] px-5 py-3">
+                <div className="shrink-0 flex items-center justify-between border-b border-[#E6EAF0] px-4 py-2.5">
+                  <span className="text-[12px] font-medium text-[#6B7280]">딜 미리보기</span>
                   <Link
-                    className="text-[13px] font-medium text-primary hover:underline"
+                    className="inline-flex h-7 items-center gap-1 rounded-md border border-[#E2E5EC] bg-white px-2.5 text-[12px] font-medium text-[#374151] transition hover:bg-[#F5F6F8]"
                     to={`/deals/${selectedDealId}`}
                   >
                     전체 상세 열기 →
                   </Link>
+                </div>
+                <div className="flex-1 overflow-y-auto">
+                  <DealDetailPanel dealId={selectedDealId} variant="panel" />
                 </div>
               </div>
             ) : null}
@@ -311,12 +341,12 @@ export function DealPipelineHomeScreen({
                 <MobileDealCard deal={deal} key={deal.id} />
               ))}
             </div>
-            {(dealsQuery.data?.totalPages ?? 0) > 1 ? (
+            {dealsQuery.data ? (
               <div className="px-4 pb-8">
                 <Pagination
-                  hasNext={page < (dealsQuery.data?.totalPages ?? 0)}
                   onPageChange={setPage}
                   page={page}
+                  totalPages={dealsQuery.data.totalPages}
                 />
               </div>
             ) : null}
@@ -416,7 +446,7 @@ function DealListRow({
       {/* 마감일 */}
       <div className="shrink-0 text-right" style={{ width: 86 }}>
         <span className={cn("text-[12px] font-medium", dlClass)}>
-          {deal.expectedEndDate ? formatDate(deal.expectedEndDate) : "-"}
+          {deal.expectedEndDate ? formatDate(deal.expectedEndDate, { year: "2-digit" }) : "-"}
         </span>
       </div>
     </button>
