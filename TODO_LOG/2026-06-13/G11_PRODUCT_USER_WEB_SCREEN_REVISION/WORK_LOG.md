@@ -21,6 +21,7 @@
 ### 공통
 - `src/components/layout/app-shell.tsx` — `/products/:id` 경로 감지 → 상세 전용 TopBar 렌더링 (브레드크럼 + 뒤로가기 + 수정/삭제 버튼), 제품 목록 TopBar에 내보내기 버튼 추가, `?action=export|create` 처리
 - `src/app/router/router.tsx` / `src/pages/products/new.tsx` — `/products/new` 정식 진입점 추가, 목록 화면에서 제품 등록 모달 자동 오픈, 닫기 시 `/products` 복귀
+- `src/components/ui/pagination.tsx` — 목록 하단 페이지네이션을 `1 / 10` 형식의 최소 UI로 단순화
 - `src/components/ui/pagination.tsx` — `totalPages` / `hasNext` 둘 다 지원하도록 확장
 - `src/components/ui/modal-shell.tsx` — `headerClassName`, `titleClassName` prop 추가
 

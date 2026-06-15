@@ -60,6 +60,8 @@ User Web 회사 목록/상세/생성/메모/내보내기 화면 구현
 - `FE/user-web/src/features/company/components/company-list-screen.tsx`
   - `initialCreateOpen` prop 추가로 `/companies/new`에서 회사 생성 모달 자동 오픈 지원
   - 회사 추가 버튼을 `/companies/new`로 연결하고, 모달 닫기 시 `/companies`로 복귀하도록 정리
+- `FE/user-web/src/components/ui/pagination.tsx`
+  - 목록 하단 페이지네이션을 `1 / 10` 형식의 최소 UI로 단순화
 - `FE/user-web/src/features/company/components/company-create-dialog.tsx`
 - `FE/user-web/src/features/company/components/company-detail-screen.tsx`
 - `FE/user-web/src/features/company/components/company-edit-form.tsx`
