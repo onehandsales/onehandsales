@@ -15,7 +15,6 @@ type PageHeaderProps = {
 // 기능 : 목록/상세 페이지 상단 헤더 컴포넌트입니다.
 export function PageHeader({
   title,
-  description,
   actions,
   backHref,
   backLabel,
@@ -41,9 +40,6 @@ export function PageHeader({
         <h1 className={cn("text-2xl font-semibold", backHref ? "mt-3" : "")}>
           {title}
         </h1>
-        {description ? (
-          <p className="mt-1 text-sm text-muted-foreground">{description}</p>
-        ) : null}
       </div>
       {actions ? <div className="flex flex-wrap gap-2">{actions}</div> : null}
     </header>

@@ -1,16 +1,19 @@
-import { Package, Plus } from "lucide-react";
-import { useEffect, useState } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
-import { Link } from "react-router-dom";
+import { Download, Package, Plus, Search } from "lucide-react";
+import { type FormEvent, useEffect, useMemo, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { PageHeader } from "@/components/layout/page-header";
+import { Pagination } from "@/components/ui/pagination";
+import { Toast } from "@/components/ui/toast";
 import { ProductCreateDialog } from "@/features/product/components/product-create-dialog";
 import { exportProductsXlsx } from "@/features/product/api/product-api";
-import { useProductCategories, useProductStatuses } from "@/features/product/hooks/use-product-detail";
+import {
+  useProductCategories,
+  useProductStatuses,
+} from "@/features/product/hooks/use-product-detail";
 import { useProductList } from "@/features/product/hooks/use-product-list";
 import type { Product, ProductSort } from "@/features/product/types/product";
-import { Pagination } from "@/components/ui/pagination";
 import { getApiErrorMessage } from "@/lib/api-client";
 import { cn } from "@/utils/cn";
-import { formatDate } from "@/utils/format";
 
 type ProductListScreenProps = {
   readonly initialCreateOpen?: boolean;
@@ -21,8 +24,9 @@ export function ProductListScreen({
   initialCreateOpen = false,
   onCreateDialogClose,
 }: ProductListScreenProps) {
-  const [searchParams] = useSearchParams();
   const navigate = useNavigate();
+  const [searchText, setSearchText] = useState("");
+  const [search, setSearch] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
   const [sort, setSort] = useState<ProductSort>("createdAtDesc");
@@ -31,40 +35,28 @@ export function ProductListScreen({
   const [notice, setNotice] = useState<string | null>(null);
   const [isExporting, setIsExporting] = useState(false);
 
-  // TopBar SearchBar에서 넘어온 검색어
-  const search = searchParams.get("q") ?? "";
+  const categoriesQuery = useProductCategories();
+  const statusesQuery = useProductStatuses();
 
-  // 검색어 변경 시 page 리셋
-  useEffect(() => {
-    setPage(1);
-  }, [search]);
+  const listParams = useMemo(
+    () => ({
+      page,
+      productName: search || undefined,
+      productCategoryId: categoryFilter || undefined,
+      productStatusId: statusFilter || undefined,
+      sort,
+    }),
+    [categoryFilter, page, search, sort, statusFilter]
+  );
 
-  // TopBar 버튼 액션 처리 → ?action=create | ?action=export
-  useEffect(() => {
-    const action = searchParams.get("action");
-    if (action === "create") {
-      setIsCreateOpen(true);
-      void navigate("/products", { replace: true });
-    } else if (action === "export") {
-      void navigate("/products", { replace: true });
-      setIsExporting(true);
-      void exportProductsXlsx({
-        productName: search || undefined,
-        productCategoryId: categoryFilter || undefined,
-        productStatusId: statusFilter || undefined,
-        sort,
-      }).then(({ blob, fileName }) => {
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = fileName ?? "products.xlsx";
-        a.click();
-        URL.revokeObjectURL(url);
-      }).finally(() => {
-        setIsExporting(false);
-      });
-    }
-  }, [navigate, searchParams]); // eslint-disable-line react-hooks/exhaustive-deps
+  const productsQuery = useProductList(listParams);
+  const products = productsQuery.data?.items ?? [];
+  const totalCount = productsQuery.data?.totalCount ?? 0;
+  const hasFilters =
+    search.length > 0 ||
+    categoryFilter.length > 0 ||
+    statusFilter.length > 0 ||
+    sort !== "createdAtDesc";
 
   useEffect(() => {
     if (initialCreateOpen) {
@@ -72,153 +64,173 @@ export function ProductListScreen({
     }
   }, [initialCreateOpen]);
 
-  const categoriesQuery = useProductCategories();
-  const statusesQuery = useProductStatuses();
+  useEffect(() => {
+    setPage(1);
+  }, [search]);
 
-  const productsQuery = useProductList({
-    page,
-    productName: search || undefined,
-    productCategoryId: categoryFilter || undefined,
-    productStatusId: statusFilter || undefined,
-    sort,
-  });
+  const onSearchSubmit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setSearch(searchText.trim());
+    setPage(1);
+  };
 
-  const products = productsQuery.data?.items ?? [];
-  const totalCount = productsQuery.data?.totalCount ?? 0;
+  const onExport = async () => {
+    setIsExporting(true);
+    try {
+      const { blob, fileName } = await exportProductsXlsx({
+        productName: search || undefined,
+        productCategoryId: categoryFilter || undefined,
+        productStatusId: statusFilter || undefined,
+        sort,
+      });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = fileName ?? "products.xlsx";
+      a.click();
+      URL.revokeObjectURL(url);
+    } finally {
+      setIsExporting(false);
+    }
+  };
 
   return (
-    <section className="flex flex-col gap-0 px-6 py-5">
-      {/* Controls Bar */}
-      <div className="mb-3 flex h-10 shrink-0 items-center gap-2">
-        {/* 전체 */}
-        <button
-          className={cn(
-            "inline-flex h-[30px] items-center rounded-[7px] px-3 text-[12px] font-bold transition-colors",
-            !categoryFilter && !statusFilter
-              ? "border border-[#C7D7FE] bg-[#EAF2FF] text-[#1D4ED8]"
-              : "border border-[#E6EAF0] bg-white text-[#475569] hover:bg-gray-50"
-          )}
+    <section className="flex min-h-full flex-col bg-[#FAFAF8]">
+      <PageHeader
+        breadcrumbs={[{ label: "제품", icon: Package }]}
+        actions={[
+          {
+            icon: Plus,
+            tooltip: "제품 추가",
+            onClick: () => void navigate("/products/new"),
+            variant: "primary",
+          },
+          {
+            icon: Download,
+            tooltip: "파일로 내보내기",
+            onClick: () => void onExport(),
+            disabled: isExporting,
+          },
+        ]}
+      />
+
+      {/* 검색 + 필터 툴바 */}
+      <div className="flex h-10 shrink-0 items-center gap-2 px-5">
+        <form className="flex h-7 items-center gap-1.5 rounded-md border border-[#E2E5EC] bg-[#FAFAF8] px-2.5 transition focus-within:border-[#93C5FD] focus-within:bg-white" onSubmit={onSearchSubmit}>
+          <Search className="h-3 w-3 shrink-0 text-[#9CA3AF]" />
+          <input
+            className="w-[150px] bg-transparent text-[12px] text-[#111827] outline-none placeholder:text-[#9CA3AF]"
+            onChange={(event) => setSearchText(event.target.value)}
+            placeholder="제품 검색"
+            value={searchText}
+          />
+        </form>
+        <FilterChip
+          active={!hasFilters}
+          label="전체"
           onClick={() => {
+            setSearch("");
+            setSearchText("");
             setCategoryFilter("");
             setStatusFilter("");
             setSort("createdAtDesc");
             setPage(1);
           }}
-          type="button"
+        />
+        <select
+          className={cn(
+            "h-7 appearance-none rounded-md border px-2.5 text-[12px] outline-none transition",
+            categoryFilter
+              ? "border-[#BFDBFE] bg-[#EFF6FF] text-[#1D4ED8]"
+              : "border-[#E2E5EC] bg-transparent text-[#6B7280] hover:bg-[#FAFAF8]"
+          )}
+          onChange={(event) => { setCategoryFilter(event.target.value); setPage(1); }}
+          value={categoryFilter}
         >
-          전체
-        </button>
-
-        {/* 카테고리 ▾ */}
-        <div className="relative">
-          <select
-            className={cn(
-              "inline-flex h-[30px] cursor-pointer appearance-none items-center rounded-[7px] border border-[#E6EAF0] bg-white pl-3 pr-7 text-[12px] font-medium text-[#475569] outline-none transition-colors hover:bg-gray-50",
-              categoryFilter && "border-[#C7D7FE] bg-[#EAF2FF] text-[#1D4ED8]"
-            )}
-            onChange={(e) => { setCategoryFilter(e.target.value); setPage(1); }}
-            value={categoryFilter}
-          >
-            <option value="">카테고리 ▾</option>
-            {categoriesQuery.data?.items.map((cat) => (
-              <option key={cat.id} value={cat.id}>
-                {cat.categoryName}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        {/* 상태 ▾ */}
-        <div className="relative">
-          <select
-            className={cn(
-              "inline-flex h-[30px] cursor-pointer appearance-none items-center rounded-[7px] border border-[#E6EAF0] bg-white pl-3 pr-7 text-[12px] font-medium text-[#475569] outline-none transition-colors hover:bg-gray-50",
-              statusFilter && "border-[#C7D7FE] bg-[#EAF2FF] text-[#1D4ED8]"
-            )}
-            onChange={(e) => { setStatusFilter(e.target.value); setPage(1); }}
-            value={statusFilter}
-          >
-            <option value="">판매 상태 ▾</option>
-            {statusesQuery.data?.items.map((st) => (
-              <option key={st.id} value={st.id}>
-                {st.statusName}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        {/* 정렬 ▾ */}
-        <div className="relative">
-          <select
-            className={cn(
-              "inline-flex h-[30px] cursor-pointer appearance-none items-center rounded-[7px] border border-[#E6EAF0] bg-white pl-3 pr-7 text-[12px] font-medium text-[#475569] outline-none transition-colors hover:bg-gray-50",
-              sort !== "createdAtDesc" && "border-[#C7D7FE] bg-[#EAF2FF] text-[#1D4ED8]"
-            )}
-            onChange={(e) => {
-              setSort(e.target.value as ProductSort);
-              setPage(1);
-            }}
-            value={sort}
-          >
-            <option value="createdAtDesc">최신순 ▾</option>
-            <option value="dealCountDesc">딜 많은 순</option>
-          </select>
-        </div>
-
+          <option value="">카테고리</option>
+          {categoriesQuery.data?.items.map((category) => (
+            <option key={category.id} value={category.id}>{category.categoryName}</option>
+          ))}
+        </select>
+        <select
+          className={cn(
+            "h-7 appearance-none rounded-md border px-2.5 text-[12px] outline-none transition",
+            statusFilter
+              ? "border-[#BFDBFE] bg-[#EFF6FF] text-[#1D4ED8]"
+              : "border-[#E2E5EC] bg-transparent text-[#6B7280] hover:bg-[#FAFAF8]"
+          )}
+          onChange={(event) => { setStatusFilter(event.target.value); setPage(1); }}
+          value={statusFilter}
+        >
+          <option value="">판매 상태</option>
+          {statusesQuery.data?.items.map((status) => (
+            <option key={status.id} value={status.id}>{status.statusName}</option>
+          ))}
+        </select>
+        <select
+          className={cn(
+            "h-7 appearance-none rounded-md border px-2.5 text-[12px] outline-none transition",
+            sort !== "createdAtDesc"
+              ? "border-[#BFDBFE] bg-[#EFF6FF] text-[#1D4ED8]"
+              : "border-[#E2E5EC] bg-transparent text-[#6B7280] hover:bg-[#FAFAF8]"
+          )}
+          onChange={(event) => { setSort(event.target.value as ProductSort); setPage(1); }}
+          value={sort}
+        >
+          <option value="createdAtDesc">최신순</option>
+          <option value="dealCountDesc">딜 많은순</option>
+        </select>
         <div className="flex-1" />
-        <span className="text-[12px] font-semibold text-[#64748B]">
+        <span className="text-[12px] text-[#9CA3AF]">
           {isExporting ? "내보내는 중..." : `${totalCount}개`}
         </span>
       </div>
 
-      {/* Table Card */}
-      <div className="flex flex-col overflow-hidden rounded-lg border border-[#E5EAF0] bg-white">
-        {/* Notice */}
+      <div className="flex flex-col gap-3 px-5 py-3">
         {notice ? (
-          <div className="mx-6 mt-3 rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-2.5 text-sm text-emerald-800">
-            {notice}
-          </div>
+          <Toast message={notice} onClose={() => setNotice(null)} variant="success" />
         ) : null}
 
-        {/* Table Header */}
-        <div className="flex shrink-0 items-center border-b border-[#E6EAF0] bg-[#FAFBFC] px-6" style={{ height: 44 }}>
-          <ProductHeaderCell width={260}>제품명</ProductHeaderCell>
-          <ProductHeaderCell width={140}>카테고리</ProductHeaderCell>
-          <ProductHeaderCell width={100}>상태</ProductHeaderCell>
-          <ProductHeaderCell width={90}>딜 수</ProductHeaderCell>
-          <ProductHeaderCell flex>등록일</ProductHeaderCell>
+        {productsQuery.isError ? (
+          <p className="rounded-md border border-destructive/30 bg-red-50 px-3 py-2 text-sm text-destructive">
+            {getApiErrorMessage(productsQuery.error)}
+          </p>
+        ) : null}
+
+        <div className="flex w-full flex-col overflow-hidden rounded-lg border border-[#E2E5EC] bg-white shadow-sm">
+          <div className="flex h-11 shrink-0 items-center border-b border-[#E6EAF0] bg-[#FAFBFC] px-6">
+            <ProductTableHeaderCell width={280}>제품명</ProductTableHeaderCell>
+            <ProductTableHeaderCell width={150}>카테고리</ProductTableHeaderCell>
+            <ProductTableHeaderCell width={80}>연결</ProductTableHeaderCell>
+            <ProductTableHeaderCell width={100}>상태</ProductTableHeaderCell>
+            <ProductTableHeaderCell flex>등록일</ProductTableHeaderCell>
+          </div>
+
+          {productsQuery.isLoading ? (
+            <ProductListSkeleton />
+          ) : products.length === 0 ? (
+            <ProductEmptyState
+              hasSearch={search.length > 0 || categoryFilter.length > 0 || statusFilter.length > 0}
+              onCreate={() => setIsCreateOpen(true)}
+            />
+          ) : (
+            <div className="overflow-hidden">
+              {products.map((product) => (
+                <ProductRow key={product.id} product={product} />
+              ))}
+            </div>
+          )}
         </div>
 
-        {/* Table Body */}
-        {productsQuery.isLoading ? (
-          <ProductListSkeleton />
-        ) : productsQuery.isError ? (
-          <ProductListError
-            error={productsQuery.error}
-            onRetry={() => void productsQuery.refetch()}
+        {productsQuery.data ? (
+          <Pagination
+            className="pt-1"
+            onPageChange={setPage}
+            page={productsQuery.data.page}
+            totalPages={productsQuery.data.totalPages}
           />
-        ) : products.length === 0 ? (
-          <ProductEmptyState
-            hasSearch={search.length > 0}
-            onCreate={() => setIsCreateOpen(true)}
-          />
-        ) : (
-          <div className="flex-1 overflow-y-auto">
-            {products.map((product) => (
-              <ProductRow key={product.id} product={product} />
-            ))}
-          </div>
-        )}
+        ) : null}
       </div>
-
-      {productsQuery.data && (productsQuery.data.totalPages > 1 || page > 1) ? (
-        <Pagination
-          page={productsQuery.data.page}
-          totalPages={productsQuery.data.totalPages}
-          totalCount={productsQuery.data.totalCount}
-          onPageChange={setPage}
-        />
-      ) : null}
 
       <ProductCreateDialog
         onCreated={() => {
@@ -240,40 +252,35 @@ export function ProductListScreen({
 function ProductRow({ product }: { readonly product: Product }) {
   return (
     <Link
-      className="flex items-center border-b border-[#E8EDF3] px-6 hover:bg-[#F9FAFB] last:border-b-0"
-      style={{ height: 62 }}
+      className="flex h-[62px] items-center border-b border-[#E8EDF3] px-6 hover:bg-[#F9FAFB] last:border-b-0"
       to={`/products/${product.id}`}
     >
-      <div style={{ width: 260 }} className="min-w-0 shrink-0">
+      <div className="w-[280px] shrink-0 min-w-0">
         <span className="block truncate text-[13px] font-semibold text-[#111827]">
           {product.productName}
         </span>
       </div>
-      <div style={{ width: 140 }} className="shrink-0">
-        <span className="inline-flex h-6 items-center rounded-full bg-[#DBEAFE] px-2.5 text-[11px] font-medium text-[#2568D8]">
+      <div className="w-[150px] shrink-0">
+        <Badge tone={badgeToneFromCategory(product.productCategory.categoryName)}>
           {product.productCategory.categoryName}
-        </span>
+        </Badge>
       </div>
-      <div style={{ width: 100 }} className="shrink-0">
-        <span className="inline-flex h-6 items-center rounded-md bg-[#D1FAE5] px-2.5 text-[11px] font-medium text-[#065F46]">
+      <div className="w-[80px] shrink-0">
+        <Badge tone="blue">{`${product.dealCount.toLocaleString("ko-KR")}건`}</Badge>
+      </div>
+      <div className="w-[100px] shrink-0">
+        <Badge tone={statusToneFromName(product.productStatus.statusName)}>
           {product.productStatus.statusName}
-        </span>
-      </div>
-      <div style={{ width: 90 }} className="shrink-0">
-        <span className="text-[12px] font-semibold text-[#374151]">
-          {product.dealCount.toLocaleString("ko-KR")}
-        </span>
+        </Badge>
       </div>
       <div className="min-w-0 flex-1">
-        <span className="text-[12px] text-[#374151]">
-          {formatDate(product.createdAt, { year: "numeric" })}
-        </span>
+        <span className="text-[12px] text-[#374151]">{formatCompactDate(product.createdAt)}</span>
       </div>
     </Link>
   );
 }
 
-function ProductHeaderCell({
+function ProductTableHeaderCell({
   children,
   width,
   flex = false,
@@ -284,11 +291,62 @@ function ProductHeaderCell({
 }) {
   return (
     <div
-      className={cn("shrink-0 text-[12px] font-bold text-[#334155]", flex && "min-w-0 flex-1")}
+      className={cn("shrink-0 text-[12px] font-semibold text-[#64748B]", flex && "min-w-0 flex-1")}
       style={width ? { width } : undefined}
     >
       {children}
     </div>
+  );
+}
+
+function Badge({
+  children,
+  tone,
+}: {
+  readonly children: string;
+  readonly tone: "blue" | "green" | "amber" | "slate";
+}) {
+  const styles: Record<typeof tone, string> = {
+    blue: "bg-[#DBEAFE] text-[#2568D8]",
+    green: "bg-[#CCFBF1] text-[#15803D]",
+    amber: "bg-[#FEF3C7] text-[#B45309]",
+    slate: "bg-[#E2E8F0] text-[#475569]",
+  };
+
+  return (
+    <span
+      className={cn(
+        "inline-flex h-[22px] items-center rounded-full px-2.5 text-[11px] font-semibold",
+        styles[tone]
+      )}
+    >
+      {children}
+    </span>
+  );
+}
+
+function FilterChip({
+  active,
+  label,
+  onClick,
+}: {
+  readonly active: boolean;
+  readonly label: string;
+  readonly onClick: () => void;
+}) {
+  return (
+    <button
+      className={cn(
+        "inline-flex h-[30px] items-center rounded-[6px] px-3 text-[12px] transition",
+        active
+          ? "border border-[#C7D7FE] bg-[#EAF2FF] font-bold text-[#1D4ED8]"
+          : "border border-[#E6EAF0] bg-white font-medium text-[#475569] hover:bg-[#F9FAFB]"
+      )}
+      onClick={onClick}
+      type="button"
+    >
+      {label}
+    </button>
   );
 }
 
@@ -301,41 +359,24 @@ function ProductEmptyState({
 }) {
   return (
     <div className="grid place-items-center px-5 py-16 text-center">
-      <Package className="h-10 w-10 text-[#D1D5DB]" />
-      <p className="mt-4 text-[14px] font-semibold text-[#374151]">
-        {hasSearch ? "조건에 맞는 제품이 없습니다." : "등록된 제품이 없습니다."}
-      </p>
-      <p className="mt-1 text-[13px] text-[#9CA3AF]">
-        새 제품을 등록하면 목록에서 바로 확인할 수 있습니다.
-      </p>
+      <div className="flex h-24 w-24 items-center justify-center rounded-full bg-[#EFF6FF] text-[#2563EB]">
+        <Package className="h-10 w-10" />
+      </div>
+      <div className="mt-4">
+        <p className="text-[18px] font-bold text-[#111827]">
+          {hasSearch ? "조건에 맞는 제품이 없습니다." : "등록된 제품이 없어요"}
+        </p>
+        <p className="mt-1 text-[13px] text-[#9CA3AF]">
+          새 제품을 등록하면 목록에서 바로 확인할 수 있습니다
+        </p>
+      </div>
       <button
-        className="mt-5 inline-flex h-9 items-center gap-1.5 rounded-lg bg-[#1D4ED8] px-4 text-[13px] font-semibold text-white hover:bg-[#1E40AF]"
+        className="mt-5 inline-flex h-11 items-center gap-1.5 rounded-[10px] bg-[#2563EB] px-5 text-[14px] font-semibold text-white transition hover:bg-[#1D4ED8]"
         onClick={onCreate}
         type="button"
       >
-        <Plus className="h-3.5 w-3.5" strokeWidth={2.5} />
+        <Plus className="h-4 w-4" />
         제품 추가
-      </button>
-    </div>
-  );
-}
-
-function ProductListError({
-  error,
-  onRetry,
-}: {
-  readonly error: unknown;
-  readonly onRetry: () => void;
-}) {
-  return (
-    <div className="px-6 py-10 text-center">
-      <p className="text-[13px] font-medium text-[#EF4444]">{getApiErrorMessage(error)}</p>
-      <button
-        className="mt-3 inline-flex h-8 items-center rounded-lg border border-[#E5E7EB] px-3 text-[13px] text-[#374151] hover:bg-[#F9FAFB]"
-        onClick={onRetry}
-        type="button"
-      >
-        다시 시도
       </button>
     </div>
   );
@@ -343,14 +384,44 @@ function ProductListError({
 
 function ProductListSkeleton() {
   return (
-    <div>
-      {Array.from({ length: 6 }, (_, i) => (
+    <div className="overflow-hidden">
+      {Array.from({ length: 6 }, (_, index) => (
         <div
-          className="animate-pulse border-b border-[#E8EDF3] bg-[#FAFBFC]"
-          key={i}
-          style={{ height: 62 }}
+          className="h-[62px] animate-pulse border-b border-[#E8EDF3] bg-[#FAFBFC]"
+          key={index}
         />
       ))}
     </div>
   );
+}
+
+function badgeToneFromCategory(categoryName: string) {
+  if (categoryName.includes("하드") || categoryName.includes("장비")) {
+    return "amber";
+  }
+  if (categoryName.includes("서비스") || categoryName.includes("컨설")) {
+    return "green";
+  }
+  return "blue";
+}
+
+function statusToneFromName(statusName: string) {
+  if (statusName.includes("중단") || statusName.includes("보류")) {
+    return "slate";
+  }
+  if (statusName.includes("판매") || statusName.includes("활성")) {
+    return "green";
+  }
+  return "blue";
+}
+
+function formatCompactDate(value: string) {
+  return new Intl.DateTimeFormat("ko-KR", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "2-digit",
+  })
+    .format(new Date(value))
+    .replace(/\s+/g, "")
+    .replace(/\.$/, "");
 }

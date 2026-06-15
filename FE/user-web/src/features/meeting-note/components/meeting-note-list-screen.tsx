@@ -7,7 +7,8 @@ import {
   Search,
 } from "lucide-react";
 import { useDeferredValue, useMemo, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { PageHeader } from "@/components/layout/page-header";
 import { useMeetingNoteList } from "@/features/meeting-note/hooks/use-meeting-note-queries";
 import { Pagination } from "@/components/ui/pagination";
 import type { MeetingNote } from "@/features/meeting-note/types/meeting-note";
@@ -15,57 +16,61 @@ import { getApiErrorMessage } from "@/lib/api-client";
 import { formatDateTime } from "@/utils/format";
 
 export function MeetingNoteListScreen() {
+  const navigate = useNavigate();
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
+  const pageSize = 20;
   const deferredSearch = useDeferredValue(search.trim());
   const meetingNotesQuery = useMeetingNoteList({
     page,
-    pageSize: 20,
+    pageSize,
     search: deferredSearch || undefined,
   });
   const meetingNotes = useMemo(
     () => meetingNotesQuery.data?.items ?? [],
     [meetingNotesQuery.data?.items]
   );
+  const totalPages = meetingNotesQuery.data
+    ? Math.max(1, Math.ceil(meetingNotesQuery.data.totalCount / pageSize))
+    : 1;
 
   return (
-    <section className="mx-auto grid max-w-[1500px] gap-5 px-5 py-6">
-      <header className="flex flex-col gap-4 border-b pb-5 xl:flex-row xl:items-center xl:justify-between">
-        <div className="min-w-0">
-          <h1 className="text-2xl font-semibold">회의록</h1>
-          <p className="mt-1 text-sm text-muted-foreground">
-            AI로 정리한 회의 내용을 확인하고 딜 활동 이력과 연결합니다.
-          </p>
-        </div>
-        <Link
-          className="inline-flex h-10 w-fit items-center gap-2 rounded-md bg-primary px-4 text-sm font-medium text-primary-foreground"
-          to="/meeting-notes/new"
-        >
-          <Plus className="h-4 w-4" />
-          AI 회의록 작성
-        </Link>
-      </header>
+    <section className="flex min-h-full flex-col bg-[#FAFAF8]">
+      <PageHeader
+        breadcrumbs={[{ label: "회의록", icon: FileText }]}
+        actions={[
+          {
+            icon: RefreshCw,
+            tooltip: "새로고침",
+            onClick: () => void meetingNotesQuery.refetch(),
+          },
+          {
+            icon: Plus,
+            tooltip: "AI 회의록 작성",
+            onClick: () => void navigate("/meeting-notes/new"),
+            variant: "primary",
+          },
+        ]}
+      />
 
-      <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
-        <div className="relative max-w-xl flex-1">
-          <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+      {/* 검색 툴바 */}
+      <div className="flex h-10 shrink-0 items-center gap-2 px-5 pb-2">
+        <div className="flex h-7 items-center gap-1.5 rounded-md border border-[#E2E5EC] bg-[#FAFAF8] px-2.5 transition focus-within:border-[#93C5FD] focus-within:bg-white">
+          <Search className="h-3 w-3 shrink-0 text-[#9CA3AF]" />
           <input
-            className="h-10 w-full rounded-md border bg-white pl-9 pr-3 text-sm outline-none focus:ring-2 focus:ring-ring"
+            className="w-[240px] bg-transparent text-[12px] text-[#111827] outline-none placeholder:text-[#9CA3AF]"
             onChange={(event) => { setSearch(event.target.value); setPage(1); }}
             placeholder="회사, 담당자, 품목, 상세내용 검색"
             value={search}
           />
         </div>
-        <button
-          className="inline-flex h-10 w-fit items-center gap-2 rounded-md border bg-white px-3 text-sm font-medium hover:bg-muted"
-          onClick={() => void meetingNotesQuery.refetch()}
-          type="button"
-        >
-          <RefreshCw className="h-4 w-4" />
-          새로고침
-        </button>
+        <div className="flex-1" />
+        <span className="text-[12px] text-[#9CA3AF]">
+          {meetingNotesQuery.data?.totalCount ?? 0}건
+        </span>
       </div>
 
+      <div className="flex min-h-0 flex-1 flex-col px-5 py-3">
       {meetingNotesQuery.isLoading ? (
         <MeetingNoteListSkeleton />
       ) : meetingNotesQuery.isError ? (
@@ -94,14 +99,14 @@ export function MeetingNoteListScreen() {
         </div>
       )}
 
-      {meetingNotesQuery.data && (meetingNotesQuery.data.hasNext || page > 1) ? (
+      {meetingNotesQuery.data && (totalPages > 1 || page > 1) ? (
         <Pagination
-          hasNext={meetingNotesQuery.data.hasNext}
           page={page}
-          totalCount={meetingNotesQuery.data.totalCount}
+          totalPages={totalPages}
           onPageChange={setPage}
         />
       ) : null}
+      </div>
     </section>
   );
 }

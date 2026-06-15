@@ -24,7 +24,7 @@ user-web의 범용 shadcn-style primitive를 이곳에 둔다.
 - `search-input.tsx`
   - `SearchInput`: onSubmit 제공 시 form 래퍼 포함, 검색 아이콘 내장
 - `pagination.tsx`
-  - `Pagination`: page X/Y 표시, 이전/다음 버튼, 첫/마지막 경계 비활성화
+  - `Pagination`: page X/Y 표시, 이전/다음 버튼, 단순한 목록 하단 페이지 이동
 - `section-header.tsx`
   - `SectionHeader`: 섹션 title, description, 선택적 action 슬롯
 - `page-header.tsx`

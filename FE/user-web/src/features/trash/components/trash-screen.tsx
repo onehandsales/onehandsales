@@ -72,6 +72,7 @@ const targetMeta: Record<
 export function TrashScreen() {
   const [targetType, setTargetType] = useState<TrashTargetFilter>("ALL");
   const [page, setPage] = useState(1);
+  const pageSize = PAGE_SIZE;
   const [notice, setNotice] = useState<string | null>(null);
   const trashQuery = useTrashList({ targetType, page, pageSize: PAGE_SIZE });
   const restoreMutation = useRestoreTrashItemMutation();
@@ -83,6 +84,9 @@ export function TrashScreen() {
   const pendingTargetKey = restoreMutation.isPending
     ? getItemKey(restoreMutation.variables)
     : null;
+  const totalPages = trashQuery.data
+    ? Math.max(1, Math.ceil(trashQuery.data.totalCount / pageSize))
+    : 1;
 
   useEffect(() => {
     setPage(1);
@@ -142,11 +146,10 @@ export function TrashScreen() {
             onRestore={(item) => void onRestore(item)}
           />
 
-          {(trashQuery.data?.hasNext || page > 1) ? (
+          {(trashQuery.data && (totalPages > 1 || page > 1)) ? (
             <Pagination
-              hasNext={trashQuery.data?.hasNext ?? false}
               page={page}
-              totalCount={trashQuery.data?.totalCount}
+              totalPages={totalPages}
               onPageChange={setPage}
             />
           ) : null}
