@@ -12,6 +12,7 @@
 TODO/
   README.md
   ACTIVE_BACKEND_API_FE_REVIEW.md
+  MEETING_NOTE_MANUAL_PLAN/
   DONE/
     README.md
     ADDITIONAL_WORK_PLAN/
@@ -85,7 +86,7 @@ TODO/
 
 현재 활성 계획 상태:
 
-- 2026-06-14 기준 활성 계획 폴더: 없음
+- 2026-06-15 기준 활성 계획 폴더: `MEETING_NOTE_MANUAL_PLAN`
 - 새 요구사항이나 후속 구현은 `TODO` 바로 아래에 새 계획 폴더를 만든다.
 
 활성 TODO 재검토 결과:
@@ -94,7 +95,7 @@ TODO/
 
 진행 중인 계획:
 
-- 없음
+- `MEETING_NOTE_MANUAL_PLAN`: 수동 회의록 CRUD, N:N 연결, User Web 연동 계획
 
 완료된 계획:
 
