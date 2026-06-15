@@ -117,6 +117,7 @@ export function AppShell() {
   const isContactDetail = contactDetailId.length > 0 && contactDetailId !== "scan";
 
   // 자체 헤더를 가진 화면들 — app-shell TopBar 숨김
+  const isDealListPage = pathname === "/deals" || pathname === "/deals/new";
   const isProductListPage = pathname === "/products" || pathname === "/products/new";
   const isCompanyListPage =
     pathname === "/companies" ||
@@ -132,6 +133,7 @@ export function AppShell() {
     pathname === "/schedules" || pathname === "/schedules/week";
 
   const hideTopBar =
+    isDealListPage ||
     isCompanyListPage ||
     isProductListPage ||
     isContactListPage ||

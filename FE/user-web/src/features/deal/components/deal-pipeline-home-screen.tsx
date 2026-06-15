@@ -1,7 +1,8 @@
 // 기능 : 딜 파이프라인 홈 화면 — split view (Desktop) / 카드 (Mobile)
-import { AlertCircle, Download, Plus } from "lucide-react";
+import { AlertCircle, BriefcaseBusiness, Download, Plus } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { PageHeader } from "@/components/layout/page-header";
 import { FilterChip, FilterChipGroup } from "@/components/ui/filter-chip";
 import { DealCreateDialog } from "@/features/deal/components/deal-create-dialog";
 import { DealDetailPanel } from "@/features/deal/components/deal-detail-panel";
@@ -39,6 +40,7 @@ type DealPipelineHomeScreenProps = {
 export function DealPipelineHomeScreen({
   initialCreateOpen = false,
 }: DealPipelineHomeScreenProps) {
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<StageTab>("ALL");
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState<DealSort>("createdAtDesc");
@@ -117,6 +119,24 @@ export function DealPipelineHomeScreen({
     <>
       {/* ── Desktop ── */}
       <section className="hidden flex-1 flex-col overflow-hidden md:flex">
+        {/* PageHeader */}
+        <PageHeader
+          breadcrumbs={[{ label: "딜", icon: BriefcaseBusiness }]}
+          actions={[
+            {
+              icon: Plus,
+              tooltip: "새 딜 추가",
+              onClick: () => void navigate("/deals/new"),
+              variant: "primary",
+            },
+            {
+              icon: Download,
+              tooltip: "파일로 내보내기",
+              onClick: () => void onExport(),
+              disabled: isExporting,
+            },
+          ]}
+        />
         {/* Stage Tabs */}
         <div className="relative flex shrink-0 items-end px-6">
           <div className="absolute bottom-0 left-0 right-0 h-px bg-[#E6EAF0]" />
@@ -185,15 +205,6 @@ export function DealPipelineHomeScreen({
                 <span className="shrink-0 text-[12px] text-[#9CA3AF]">
                   {dealsQuery.data?.totalCount ?? 0}건
                 </span>
-                <button
-                  className="inline-flex h-7 items-center gap-1.5 rounded-md border border-[#E2E5EC] bg-white px-2.5 text-[12px] font-medium text-[#374151] transition hover:bg-[#F5F6F8] disabled:opacity-40"
-                  disabled={isExporting}
-                  onClick={() => void onExport()}
-                  type="button"
-                >
-                  <Download className="h-3.5 w-3.5" />
-                  {isExporting ? "내보내는 중..." : "내보내기"}
-                </button>
               </div>
 
               <div className="flex min-h-0 flex-col overflow-hidden rounded-lg border border-[#E2E5EC] bg-white shadow-sm">
@@ -234,19 +245,17 @@ export function DealPipelineHomeScreen({
                     ))
                   )}
                 </div>
-
-                {/* Pagination */}
-                {dealsQuery.data ? (
-                  <div className="shrink-0 border-t border-[#E6EAF0] px-4">
-                    <Pagination
-                      onPageChange={setPage}
-                      page={page}
-                      totalCount={dealsQuery.data.totalCount}
-                      totalPages={dealsQuery.data.totalPages ?? 1}
-                    />
-                  </div>
-                ) : null}
               </div>
+
+              {dealsQuery.data ? (
+                <Pagination
+                  onPageChange={setPage}
+                  page={page}
+                  totalCount={dealsQuery.data.totalCount}
+                  totalPages={dealsQuery.data.totalPages ?? 1}
+                  className="py-3"
+                />
+              ) : null}
             </div>
 
             {/* Right Detail Panel */}
