@@ -29,7 +29,7 @@ import type {
 import { getApiErrorMessage } from "@/lib/api-client";
 import { formatDateTime } from "@/utils/format";
 
-const PAGE_SIZE = 20;
+const PAGE_SIZE = 10;
 
 const targetOptions: readonly {
   readonly value: TrashTargetFilter;

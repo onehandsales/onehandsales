@@ -43,6 +43,6 @@ function normalizeParams(
   return {
     ...params,
     page: params.page ?? 1,
-    pageSize: params.pageSize ?? 20,
+    pageSize: params.pageSize ?? 10,
   };
 }

@@ -1027,7 +1027,7 @@ function requireMeetingNote(store: SmokeStore, meetingNoteId: string) {
 
 function paginated<TItem>(items: readonly TItem[], url: URL) {
   const page = Math.max(1, Number(url.searchParams.get("page") ?? "1"));
-  const pageSize = Math.max(1, Number(url.searchParams.get("pageSize") ?? "20"));
+  const pageSize = Math.max(1, Number(url.searchParams.get("pageSize") ?? "10"));
   const start = (page - 1) * pageSize;
   const pagedItems = items.slice(start, start + pageSize);
 

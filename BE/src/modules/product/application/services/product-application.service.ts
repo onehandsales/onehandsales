@@ -44,7 +44,7 @@ import {
 import { ValidationDomainError } from "@/shared/domain/errors/common.errors";
 import { AppLogger } from "@/shared/infrastructure/logger/app-logger.service";
 
-const PRODUCT_PAGE_SIZE = 20;
+const PRODUCT_PAGE_SIZE = 10;
 const MEMO_LOG_PAGE_SIZE = 10;
 const INITIAL_PRODUCT_MEMO_TYPE = "초기 메모";
 const XLSX_DATE_NUM_FORMAT = "yyyy-mm-dd hh:mm:ss";
@@ -179,7 +179,7 @@ export class ProductApplicationService {
     private readonly logger: AppLogger
   ) {}
 
-  // 기능 : 현재 사용자의 제품 목록을 20개 단위 페이지로 조회합니다.
+  // 기능 : 현재 사용자의 제품 목록을 10개 단위 페이지로 조회합니다.
   async listProducts(
     currentUser: CurrentUserContext,
     query: ProductListQueryInput

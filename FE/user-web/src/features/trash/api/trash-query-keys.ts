@@ -9,7 +9,7 @@ export const trashQueryKeys = {
       {
         targetType: input.targetType ?? "ALL",
         page: input.page ?? 1,
-        pageSize: input.pageSize ?? 20,
+        pageSize: input.pageSize ?? 10,
       },
     ] as const,
 };

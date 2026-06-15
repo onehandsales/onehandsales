@@ -11,7 +11,7 @@ import {
   PaginationControls,
 } from "./admin-screen-shared";
 
-const pageSize = 20;
+const pageSize = 10;
 const actionOptions = ["ADMIN_SENSITIVE_RAW_VIEW", "ADMIN_USER_STATUS_CHANGED"];
 const targetTypeOptions = [
   "USER",

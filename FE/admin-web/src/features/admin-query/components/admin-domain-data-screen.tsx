@@ -23,7 +23,7 @@ import {
 } from "./admin-screen-shared";
 import { SensitiveRawDialog } from "./sensitive-raw-dialog";
 
-const pageSize = 20;
+const pageSize = 10;
 const domainTabs: readonly AdminDomainType[] = [
   "companies",
   "contacts",

@@ -15,7 +15,7 @@ import {
   PaginationControls,
 } from "./admin-screen-shared";
 
-const pageSize = 20;
+const pageSize = 10;
 const domainTabs: readonly AdminDomainType[] = [
   "companies",
   "contacts",
