@@ -245,7 +245,7 @@ export function ContactListScreen() {
       </div>
 
       {/* 테이블 */}
-      <div className="flex flex-col gap-3 px-5 py-3">
+      <div className="px-5 py-3">
         <div className="overflow-hidden rounded-lg border border-[#E2E5EC] bg-white shadow-sm">
           {/* 테이블 헤더 (데스크톱) */}
           <div className="hidden h-9 shrink-0 items-center border-b border-[#E2E5EC] bg-[#F9FAFB] px-4 md:flex">
@@ -304,15 +304,16 @@ export function ContactListScreen() {
             </div>
           )}
         </div>
-
-        {contactList ? (
-          <Pagination
-            page={contactList.page}
-            totalPages={contactList.totalPages}
-            onPageChange={setPage}
-          />
-        ) : null}
       </div>
+
+      {contactList ? (
+        <Pagination
+          page={contactList.page}
+          totalPages={contactList.totalPages}
+          onPageChange={setPage}
+          className="py-3"
+        />
+      ) : null}
 
       <ContactCreateDialog
         onCreated={() => setNotice("거래처가 추가되었습니다.")}

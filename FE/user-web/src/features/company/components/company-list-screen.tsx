@@ -200,7 +200,7 @@ export function CompanyListScreen({
       </div>
 
       {/* 테이블 */}
-      <div className="flex flex-col px-5 py-3 gap-3">
+      <div className="px-5 py-3">
         <div className="overflow-hidden rounded-lg border border-[#E2E5EC] bg-white shadow-sm">
           <div className="flex h-9 shrink-0 items-center border-b border-[#E2E5EC] bg-[#F9FAFB] px-4">
             <div className="w-[220px] shrink-0 text-[11px] font-semibold uppercase tracking-wide text-[#9CA3AF]">회사명</div>
@@ -225,15 +225,16 @@ export function CompanyListScreen({
             </div>
           )}
         </div>
-
-        {companyList ? (
-          <Pagination
-            page={companyList.page}
-            totalPages={companyList.totalPages}
-            onPageChange={setPage}
-          />
-        ) : null}
       </div>
+
+      {companyList ? (
+        <Pagination
+          page={companyList.page}
+          totalPages={companyList.totalPages}
+          onPageChange={setPage}
+          className="py-3"
+        />
+      ) : null}
 
       <CompanyCreateDialog
         fields={fields}

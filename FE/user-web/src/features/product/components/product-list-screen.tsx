@@ -186,7 +186,7 @@ export function ProductListScreen({
         </span>
       </div>
 
-      <div className="flex flex-col gap-3 px-5 py-3">
+      <div className="px-5 py-3">
         {notice ? (
           <Toast message={notice} onClose={() => setNotice(null)} variant="success" />
         ) : null}
@@ -221,16 +221,16 @@ export function ProductListScreen({
             </div>
           )}
         </div>
-
-        {productsQuery.data ? (
-          <Pagination
-            className="pt-1"
-            onPageChange={setPage}
-            page={productsQuery.data.page}
-            totalPages={productsQuery.data.totalPages}
-          />
-        ) : null}
       </div>
+
+      {productsQuery.data ? (
+        <Pagination
+          className="py-3"
+          onPageChange={setPage}
+          page={productsQuery.data.page}
+          totalPages={productsQuery.data.totalPages}
+        />
+      ) : null}
 
       <ProductCreateDialog
         onCreated={() => {
