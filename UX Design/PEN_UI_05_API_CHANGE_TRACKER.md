@@ -75,12 +75,13 @@
   - `NEGOTIATION` — 협상
   - `WON` — 성사
   - `LOST` — 실패
-- 딜 목록 응답은 `totalCount`, `totalPages` 기반 page-number pagination이다.
+- 딜 목록 응답은 `pageSize=10`, `totalCount`, `totalPages` 기반 page-number pagination이다.
 - 과거 문서의 `IN_DISCUSSION`, `NEEDS_ANALYSIS`, `PROPOSAL`, `hasNext` 기반 딜 목록 계약은 현재 User Web/Backend 기준이 아니다.
 
 ### Page List Pagination 정정
 
 - 회사/거래처/제품/딜/회의록 목록 페이지네이션은 `totalPages`, `totalCount`를 사용한다.
+- 회사/거래처/제품/딜/회의록 목록 page size는 10개 단위다.
 - 공용 `Pagination`에 `hasNext`를 넘기지 않는다.
 - `hasNext`는 회사/거래처/제품 상세 메모 로그처럼 cursor 기반 incremental loading에서만 사용한다.
 

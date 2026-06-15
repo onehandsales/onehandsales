@@ -360,7 +360,7 @@ model Deal {
 ### 6.2 공통 목록 페이지네이션
 
 - 일반 페이지네이션 API는 `page`, `pageSize`, `totalCount`, `totalPages`를 반환한다.
-- `pageSize`는 20으로 고정한다. FE는 `pageSize` query를 보내지 않는다.
+- `pageSize`는 10으로 고정한다. FE는 `pageSize` query를 보내지 않는다.
 - `hasNext`는 cursor/infinite scroll 전용이므로 회의록 목록 페이지네이션 응답에는 사용하지 않는다.
 
 ### 6.3 공통 정렬
@@ -433,7 +433,7 @@ type MeetingNoteListItemResponse = {
 type MeetingNotePageResponse = {
   items: MeetingNoteListItemResponse[];
   page: number;
-  pageSize: 20;
+  pageSize: 10;
   totalCount: number;
   totalPages: number;
 };
@@ -585,7 +585,7 @@ type MeetingNoteFilterContactOptionResponse = {
 
 ### 목적
 
-회의록 목록 화면에서 20개 단위 페이지네이션, 회사 다중 필터, 거래처 다중 필터, 정렬을 제공한다.
+회의록 목록 화면에서 10개 단위 페이지네이션, 회사 다중 필터, 거래처 다중 필터, 정렬을 제공한다.
 
 ### Request
 
@@ -604,7 +604,7 @@ Query:
 | query | `contactIds` | string[] | 아니오 | UUID 배열 | 연결 거래처 다중 선택 필터. 같은 key 반복 query로 전송 |
 | query | `sort` | string | 아니오 | `createdAtDesc`, `meetingAtDesc` | 기본값 `createdAtDesc`. `meetingAtDesc`는 회의최신순 |
 
-서버는 `pageSize`를 20으로 고정한다. FE는 `pageSize` query를 보내지 않는다.
+서버는 `pageSize`를 10으로 고정한다. FE는 `pageSize` query를 보내지 않는다.
 검색, 제품 필터, 딜 필터, 회의일 범위 필터는 제공하지 않는다.
 
 ### 비즈니스 로직 흐름
@@ -618,7 +618,7 @@ Query:
 7. 회사 필터와 거래처 필터를 동시에 사용하면 두 그룹은 AND 조건으로 조합한다.
 8. `sort=createdAtDesc`이면 `createdAt DESC`, `id DESC`로 정렬한다.
 9. `sort=meetingAtDesc`이면 `meetingAt DESC NULLS LAST`, `createdAt DESC`, `id DESC`로 정렬한다.
-10. page size 20으로 `items`, `totalCount`를 조회하고 `totalPages`를 계산한다.
+10. page size 10으로 `items`, `totalCount`를 조회하고 `totalPages`를 계산한다.
 11. 회사/거래처/제품/딜 연결 row는 목록 표시용으로만 조회한다.
 12. 연결 요약은 각 연결 row를 `createdAt DESC`, `id DESC`로 정렬한 뒤 첫 항목 기준으로 만든다.
 13. 목록 응답에는 `details`, `nextPlan`, `requiredAction`, `rawText`, `updatedAt`을 넣지 않는다.
@@ -653,7 +653,7 @@ Query:
 | `items[].deals.count` | number | 아니오 | 연결 딜 수 |
 | `items[].createdAt` | string | 아니오 | 등록일 ISO string |
 | `page` | number | 아니오 | 현재 페이지 |
-| `pageSize` | number | 아니오 | 20 |
+| `pageSize` | number | 아니오 | 10 |
 | `totalCount` | number | 아니오 | 조건에 맞는 전체 회의록 수 |
 | `totalPages` | number | 아니오 | 전체 페이지 수 |
 
@@ -686,7 +686,7 @@ Query:
     }
   ],
   "page": 1,
-  "pageSize": 20,
+  "pageSize": 10,
   "totalCount": 1,
   "totalPages": 1
 }

@@ -54,6 +54,7 @@
 - 딜 파이프라인은 `/deals`에서 운영한다.
 - 좌측 사이드바에서 `IMPORT`, `휴지통`은 후순위 기능으로 숨김 처리되어 있다.
 - 회사/거래처/제품/딜/회의록 목록 페이지네이션은 `hasNext`가 아니라 `totalPages`, `totalCount` 기준이다.
+- 회사/거래처/제품/딜/회의록 목록은 10개 단위 page-number pagination을 기준으로 한다.
 - `hasNext`는 회사/거래처/제품 상세의 메모 로그처럼 cursor/infinite loading 계약에서만 사용한다.
 - 회사 목록 필터는 제품 `category select`와 같은 방식으로 `useCompanyFields`, `useCompanyRegions` 전체 조회 결과를 `분야 ▾`, `지역 ▾` select 옵션으로 사용한다.
 - 거래처 목록 필터는 `useContactDepartments`, `useContactJobGrades` 전체 조회 결과를 `부서 ▾`, `직급 ▾` select 옵션으로 사용한다.

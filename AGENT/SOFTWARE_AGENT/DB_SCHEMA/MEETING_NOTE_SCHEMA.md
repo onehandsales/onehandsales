@@ -133,7 +133,14 @@ MeetingNote 도메인은 Backend `BE/src/modules/meeting-note`와 Prisma `Meetin
 - `products`, `deals`는 빈 배열을 허용하며, 빈 배열은 해당 연결 전체 제거를 의미한다.
 - `filter-companies`, `filter-contacts` 조회는 MeetingNote 연결 snapshot이 아니라 현재 Company/Contact 기준 옵션을 반환한다.
 
-## 5. 시간 정책
+## 5. 조회 정책
+
+- `GET /api/meeting-notes`는 page-number pagination을 사용한다.
+- 목록 `pageSize`는 10개 고정이며 응답의 `pageSize`는 `10`이다.
+- 목록 응답은 `totalCount`, `totalPages`를 포함하고 `hasNext`를 사용하지 않는다.
+- User Web은 목록 조회 때 `page`와 필터/정렬 query를 보내며 `pageSize` query에 의존하지 않는다.
+
+## 6. 시간 정책
 
 - API request는 `meetingLocalDateTime`을 선택적으로 받는다.
 - request에서는 `timeZone`을 받지 않고 현재 사용자의 `User.timeZone`을 사용한다.
@@ -143,7 +150,7 @@ MeetingNote 도메인은 Backend `BE/src/modules/meeting-note`와 Prisma `Meetin
 
 상세 기준은 `AGENT/SOFTWARE_AGENT/DB_SCHEMA/TIME_AND_TIMEZONE_POLICY.md`를 따른다.
 
-## 6. 관련 API
+## 7. 관련 API
 
 - `GET /api/meeting-notes`
 - `GET /api/meeting-notes/filter-companies`

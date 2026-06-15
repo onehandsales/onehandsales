@@ -52,7 +52,7 @@
 - 토큰은 `CSS 변수 + Tailwind semantic mapping` 병행
 - `/` 홈은 현재 `화면 준비중입니다` 준비 상태로 두고, 딜 파이프라인은 `/deals`에서 운영
 - 회사/거래처/제품 목록은 제품형 `Controls Bar + Table Card + Pagination` 문법을 기준으로 맞춤
-- 목록 페이지네이션은 `totalPages` 기준이며 `hasNext`는 상세 메모 로그 같은 cursor flow에만 사용
+- 목록 페이지네이션은 10개 단위 `totalPages` 기준이며 `hasNext`는 상세 메모 로그 같은 cursor flow에만 사용
 
 ---
 
@@ -345,7 +345,7 @@
 - 요약:
   - `/` 홈을 `화면 준비중입니다` 준비 상태로 전환했다.
   - Sidebar에서 후순위 기능인 `IMPORT`, `휴지통`을 숨김 처리했다.
-  - 공용 `Pagination`을 `totalPages` 전용으로 정리하고 딜/제품/회사/거래처/회의록 목록 UX는 page-number pagination 기준으로 맞췄다.
+  - 공용 `Pagination`을 `totalPages` 전용으로 정리하고 딜/제품/회사/거래처/회의록 목록 UX는 10개 단위 page-number pagination 기준으로 맞췄다.
   - 회사/거래처 목록을 제품형 `Controls Bar + Table Card + Pagination` 문법으로 정리했다.
   - 회사 목록에서 분야/지역 생성·삭제 관리 패널을 제거하고 `분야 ▾`, `지역 ▾` select 필터만 남겼다.
   - 거래처 목록에서 부서/직급 생성·삭제 관리 패널을 제거하고 `부서 ▾`, `직급 ▾` select 필터만 남겼다.

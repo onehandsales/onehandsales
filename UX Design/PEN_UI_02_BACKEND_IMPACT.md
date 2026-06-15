@@ -343,7 +343,7 @@ pen 기준:
 기본 구조:
 - `items`
 - `page`
-- `pageSize`
+- `pageSize` (`10`개 단위)
 - `totalCount`
 - `totalPages`
 

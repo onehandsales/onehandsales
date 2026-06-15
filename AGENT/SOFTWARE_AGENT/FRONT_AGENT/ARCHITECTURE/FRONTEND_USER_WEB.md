@@ -275,7 +275,8 @@ src/features/company/
 - `src/lib/api-client.ts`는 User Web에서 `/admin/api/*` 호출을 차단한다.
 - Backend는 현재 Auth/User, Company, Contact, Product, Deal, Schedule, MeetingNote 수동 API와 Additional Work G01-G12 API가 구현되어 있다. `business-card`, `import-export`, `notification`, `search`, `trash` feature/API client는 실제 Backend API가 구현되기 전까지 mock/placeholder 경계를 명확히 둔다.
 - `src/features/meeting-note`는 `TODO/DONE/MEETING_NOTE_MANUAL_PLAN/COMMON/API-SPEC/MEETING_NOTE_API.md`의 수동 회의록 계약을 따른다. 단일 `dealId`, `stageText`, `hasNext`, request `timeZone`, request `rawText`, AI/STT 생성, 삭제/복구 계약은 현재 User Web 기준이 아니다.
-- Page-number list pagination은 `totalPages`, `totalCount`를 기준으로 한다. 공용 `Pagination`에 `hasNext`를 넘기지 않는다.
+- Page-number list pagination은 `pageSize=10`, `totalPages`, `totalCount`를 기준으로 한다. 공용 `Pagination`에 `hasNext`를 넘기지 않는다.
+- Company/Contact/Product/Deal/MeetingNote 목록은 10개 단위로 페이지를 나누며, User Web은 서버 응답의 `pageSize`를 표시/계산 기준으로 사용한다.
 - `hasNext`는 회사/거래처/제품 상세 메모 로그처럼 cursor 기반 infinite loading에서만 사용한다.
 - Company list는 `useCompanyFields`, `useCompanyRegions` 전체 조회 결과를 `분야 ▾`, `지역 ▾` select 옵션으로 사용한다. 목록 페이지에서 회사 분야/지역 생성/삭제 UI를 노출하지 않는다.
 - Contact list는 `useContactDepartments`, `useContactJobGrades` 전체 조회 결과를 `부서 ▾`, `직급 ▾` select 옵션으로 사용한다. 목록 페이지에서 부서/직급 생성/삭제 UI를 노출하지 않는다.

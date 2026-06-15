@@ -29,6 +29,7 @@
 ## Pagination 규칙
 
 - 목록 페이지는 `totalPages`, `totalCount`를 사용한다.
+- 목록 페이지는 10개 단위로 페이지를 나눈다.
 - 공용 `Pagination` 컴포넌트에는 `hasNext`를 전달하지 않는다.
 - 1페이지만 존재하면 pagination은 숨길 수 있다.
 - `hasNext`는 상세 메모 로그처럼 cursor 기반 incremental loading에서만 사용한다.

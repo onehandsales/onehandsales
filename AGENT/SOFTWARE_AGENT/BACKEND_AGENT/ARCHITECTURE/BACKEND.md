@@ -151,7 +151,7 @@ Current response notes:
 - Company and Product xlsx export files include `딜 수`; Product export also supports the same product list sort query.
 - Company/Contact/Product linked Deal list APIs return all linked deals ordered by `createdAt DESC`, `id DESC`.
 - `GET /api/schedules` uses local date range query values plus IANA `timeZone` and returns UTC ISO strings.
-- `GET /api/meeting-notes` returns summary objects for `companies`, `contacts`, `products`, `deals` and uses `totalPages`, not `hasNext`.
+- `GET /api/meeting-notes` returns summary objects for `companies`, `contacts`, `products`, `deals`, uses fixed `pageSize=10`, and uses `totalPages`, not `hasNext`.
 - Manual MeetingNote APIs do not expose AI/STT generation, delete/restore, Admin raw access, `stageText`, request `timeZone`, request `rawText`, or single request `dealId`.
 
 Current runtime behavior:

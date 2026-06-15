@@ -272,6 +272,7 @@ Company, contact, product, deal, and meeting-note list pages should use explicit
 Rules:
 
 - Page list UX uses `totalPages` and `totalCount`.
+- Page-number list pages use 10 items per page.
 - Do not use `hasNext` for page-number pagination.
 - `hasNext` is allowed only for cursor/infinite flows such as detail memo logs.
 - Company field and company region list filters behave like Product category/status filters:
@@ -665,4 +666,3 @@ Admin should not try to feel like the User Web. It should feel like an internal 
 - `AGENT/UXUI_AGENT/UX_REVIEW_CHECKLIST.md`
 - `AGENT/SOFTWARE_AGENT/FRONT_AGENT/ARCHITECTURE/FRONTEND_USER_WEB.md`
 - `AGENT/SOFTWARE_AGENT/FRONT_AGENT/ARCHITECTURE/ADMIN_WEB.md`
-
