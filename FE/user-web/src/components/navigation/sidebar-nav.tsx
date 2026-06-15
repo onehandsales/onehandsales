@@ -7,8 +7,8 @@ import {
   IdCard,
   Package,
   Settings,
-  Trash2,
-  Upload,
+  // Trash2,
+  // Upload,
 } from "lucide-react";
 import { NavLink } from "react-router-dom";
 import { cn } from "@/utils/cn";
@@ -37,13 +37,15 @@ const groups: Array<{
     items: [
       { label: "일정", to: "/schedules", icon: CalendarDays },
       { label: "회의록", to: "/meeting-notes", icon: FileText },
-      { label: "Import", to: "/import", icon: Upload },
+      // 핵심 기능 UX 유지보수 이후 Import 기능을 다시 노출한다.
+      // { label: "Import", to: "/import", icon: Upload },
     ],
   },
   {
     label: "관리",
     items: [
-      { label: "휴지통", to: "/trash", icon: Trash2 },
+      // 핵심 기능 UX 유지보수 이후 휴지통 기능을 다시 노출한다.
+      // { label: "휴지통", to: "/trash", icon: Trash2 },
       { label: "설정", to: "/settings", icon: Settings },
     ],
   },
