@@ -99,56 +99,48 @@ export function ContactMemoLogSection({
   return (
     <section className="grid gap-4">
       <SectionTitle
-        description="거래처 공유 메모입니다. 유형과 본문을 함께 저장합니다."
+        description="거래처 공유 메모입니다."
         icon={MessageSquareText}
         title="거래처 메모"
       />
       <div className="grid gap-4 rounded-lg border bg-white p-4">
         <form className="grid gap-3" onSubmit={(e) => void onCreateSubmit(e)}>
-          <div className="grid gap-3 md:grid-cols-[180px_minmax(0,1fr)_auto]">
-            <div className="grid gap-2">
-              <label className="text-sm font-medium" htmlFor="contact-memo-type">
-                메모 유형
-              </label>
-              <input
-                aria-describedby={
-                  createForm.formState.errors.memoType
-                    ? "contact-memo-type-error"
-                    : undefined
-                }
-                aria-invalid={Boolean(createForm.formState.errors.memoType)}
-                className="h-10 rounded-md border px-3 text-sm outline-none focus:ring-2 focus:ring-ring"
-                id="contact-memo-type"
-                {...createForm.register("memoType")}
-              />
-            </div>
-            <div className="grid gap-2">
-              <label className="text-sm font-medium" htmlFor="contact-memo">
-                메모
-              </label>
-              <textarea
-                aria-describedby={
-                  createForm.formState.errors.memo
-                    ? "contact-memo-error"
-                    : undefined
-                }
-                aria-invalid={Boolean(createForm.formState.errors.memo)}
-                className="min-h-20 resize-y rounded-md border px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-ring"
-                id="contact-memo"
-                {...createForm.register("memo")}
-              />
-            </div>
-            <div className="flex items-end">
-              <Button
-                disabled={createMemoMutation.isPending}
-                isPending={createMemoMutation.isPending}
-                type="submit"
-                variant="primary"
-              >
-                추가
-              </Button>
-            </div>
+          {/* 1행: 메모 유형 + 추가 버튼 */}
+          <div className="flex items-center gap-2">
+            <input
+              aria-describedby={
+                createForm.formState.errors.memoType
+                  ? "contact-memo-type-error"
+                  : undefined
+              }
+              aria-invalid={Boolean(createForm.formState.errors.memoType)}
+              className="h-9 flex-1 rounded-md border border-[#E2E5EC] bg-[#FAFAF8] px-3 text-[13px] text-[#111827] outline-none placeholder:text-[#9CA3AF] focus:border-[#93C5FD] focus:bg-white"
+              id="contact-memo-type"
+              placeholder="메모 제목"
+              {...createForm.register("memoType")}
+            />
+            <Button
+              disabled={createMemoMutation.isPending}
+              isPending={createMemoMutation.isPending}
+              type="submit"
+              variant="primary"
+            >
+              추가
+            </Button>
           </div>
+          {/* 2행: 메모 상세 내용 */}
+          <textarea
+            aria-describedby={
+              createForm.formState.errors.memo
+                ? "contact-memo-error"
+                : undefined
+            }
+            aria-invalid={Boolean(createForm.formState.errors.memo)}
+            className="min-h-[80px] resize-y rounded-md border border-[#E2E5EC] bg-[#FAFAF8] px-3 py-2 text-[13px] text-[#111827] outline-none placeholder:text-[#9CA3AF] focus:border-[#93C5FD] focus:bg-white"
+            id="contact-memo"
+            placeholder="메모 상세 내용"
+            {...createForm.register("memo")}
+          />
           <FormError
             id="contact-memo-type-error"
             message={createForm.formState.errors.memoType?.message}
@@ -166,18 +158,14 @@ export function ContactMemoLogSection({
 
         {editingLog ? (
           <form className="grid gap-3 rounded-md border bg-muted p-3" onSubmit={(e) => void onEditSubmit(e)}>
-            <div className="grid gap-3 md:grid-cols-[180px_minmax(0,1fr)_auto]">
+            <div className="flex items-center gap-2">
               <input
                 aria-label="수정할 메모 유형"
-                className="h-10 rounded-md border bg-white px-3 text-sm outline-none focus:ring-2 focus:ring-ring"
+                className="h-9 flex-1 rounded-md border bg-white px-3 text-[13px] outline-none focus:ring-2 focus:ring-ring"
+                placeholder="메모 제목"
                 {...editForm.register("memoType")}
               />
-              <textarea
-                aria-label="수정할 메모"
-                className="min-h-20 resize-y rounded-md border bg-white px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-ring"
-                {...editForm.register("memo")}
-              />
-              <div className="flex items-end gap-2">
+              <div className="flex gap-2">
                 <Button
                   onClick={() => setEditingLog(null)}
                   type="button"
@@ -194,6 +182,12 @@ export function ContactMemoLogSection({
                 </Button>
               </div>
             </div>
+            <textarea
+              aria-label="수정할 메모"
+              className="min-h-[80px] resize-y rounded-md border bg-white px-3 py-2 text-[13px] outline-none focus:ring-2 focus:ring-ring"
+              placeholder="메모 상세 내용"
+              {...editForm.register("memo")}
+            />
             <FormError message={editForm.formState.errors.memoType?.message} />
             <FormError message={editForm.formState.errors.memo?.message} />
           </form>
@@ -232,7 +226,7 @@ type ContactPrivateMemoLogSectionProps = {
   readonly onChanged: (notice: string) => void;
 };
 
-// 기능 : 거래처 개인 비밀 메모 로그 목록과 생성/수정 폼을 렌더링합니다.
+// 기능 : 거래처 비공식 메모 로그 목록과 생성/수정 폼을 렌더링합니다.
 export function ContactPrivateMemoLogSection({
   contactId,
   logs,
@@ -257,16 +251,16 @@ export function ContactPrivateMemoLogSection({
   });
   const actionError = createMemoMutation.error ?? updateMemoMutation.error ?? null;
 
-  // 기능 : 개인 메모 로그를 생성합니다.
+  // 기능 : 비공식 메모 로그를 생성합니다.
   const onCreateSubmit = createForm.handleSubmit(async (values) => {
     await createMemoMutation.mutateAsync(
       toCreateContactPrivateMemoLogInput(contactId, values)
     );
     createForm.reset(emptyContactPrivateMemoLogFormValues);
-    onChanged("개인 메모가 추가되었습니다.");
+    onChanged("비공식 메모가 추가되었습니다.");
   });
 
-  // 기능 : 개인 메모 로그 수정 폼을 엽니다.
+  // 기능 : 비공식 메모 로그 수정 폼을 엽니다.
   const onEditStart = (log: ContactPrivateMemoLog) => {
     setEditingLog(log);
     editForm.reset({
@@ -274,7 +268,7 @@ export function ContactPrivateMemoLogSection({
     });
   };
 
-  // 기능 : 개인 메모 로그를 수정합니다.
+  // 기능 : 비공식 메모 로그를 수정합니다.
   const onEditSubmit = editForm.handleSubmit(async (values) => {
     if (!editingLog) {
       return;
@@ -284,36 +278,36 @@ export function ContactPrivateMemoLogSection({
       toUpdateContactPrivateMemoLogInput(contactId, editingLog.id, values)
     );
     setEditingLog(null);
-    onChanged("개인 메모가 수정되었습니다.");
+    onChanged("비공식 메모가 수정되었습니다.");
   });
 
   return (
     <section className="grid gap-4">
-      <SectionTitle
-        description="암호화는 서버 정책을 따르며 프론트에서는 별도 암호화를 수행하지 않습니다."
-        icon={LockKeyhole}
-        title="개인 메모"
-      />
+      <div>
+        <div className="flex items-center gap-2">
+          <LockKeyhole className="h-5 w-5 text-muted-foreground" />
+          <h2 className="text-lg font-semibold">비공식 메모</h2>
+        </div>
+        <p className="mt-1 text-sm text-muted-foreground">
+          파일로 내보내기 할때 비공식 메모의 내용을 제외 할 수 있습니다.
+        </p>
+      </div>
       <div className="grid gap-4 rounded-lg border bg-white p-4">
         <form className="grid gap-3" onSubmit={(e) => void onCreateSubmit(e)}>
-          <div className="grid gap-3 md:grid-cols-[minmax(0,1fr)_auto]">
-            <div className="grid gap-2">
-              <label className="text-sm font-medium" htmlFor="contact-private-memo">
-                개인 메모
-              </label>
-              <textarea
-                aria-describedby={
-                  createForm.formState.errors.memo
-                    ? "contact-private-memo-error"
-                    : undefined
-                }
-                aria-invalid={Boolean(createForm.formState.errors.memo)}
-                className="min-h-20 resize-y rounded-md border px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-ring"
-                id="contact-private-memo"
-                {...createForm.register("memo")}
-              />
-            </div>
-            <div className="flex items-end">
+          <div className="flex items-center gap-2">
+            <textarea
+              aria-describedby={
+                createForm.formState.errors.memo
+                  ? "contact-private-memo-error"
+                  : undefined
+              }
+              aria-invalid={Boolean(createForm.formState.errors.memo)}
+              className="min-h-[80px] flex-1 resize-y rounded-md border border-[#E2E5EC] bg-[#FAFAF8] px-3 py-2 text-[13px] text-[#111827] outline-none placeholder:text-[#9CA3AF] focus:border-[#93C5FD] focus:bg-white"
+              id="contact-private-memo"
+              placeholder="메모 상세 내용"
+              {...createForm.register("memo")}
+            />
+            <div className="self-end">
               <Button
                 disabled={createMemoMutation.isPending}
                 isPending={createMemoMutation.isPending}
@@ -337,13 +331,14 @@ export function ContactPrivateMemoLogSection({
 
         {editingLog ? (
           <form className="grid gap-3 rounded-md border bg-muted p-3" onSubmit={(e) => void onEditSubmit(e)}>
-            <div className="grid gap-3 md:grid-cols-[minmax(0,1fr)_auto]">
+            <div className="flex items-start gap-2">
               <textarea
-                aria-label="수정할 개인 메모"
-                className="min-h-20 resize-y rounded-md border bg-white px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-ring"
+                aria-label="수정할 비공식 메모"
+                className="min-h-[80px] flex-1 resize-y rounded-md border bg-white px-3 py-2 text-[13px] outline-none focus:ring-2 focus:ring-ring"
+                placeholder="메모 상세 내용"
                 {...editForm.register("memo")}
               />
-              <div className="flex items-end gap-2">
+              <div className="flex flex-col gap-2">
                 <Button
                   onClick={() => setEditingLog(null)}
                   type="button"
@@ -365,7 +360,7 @@ export function ContactPrivateMemoLogSection({
         ) : null}
 
         <MemoLogList
-          emptyText="등록된 개인 메모가 없습니다."
+          emptyText="등록된 비공식 메모가 없습니다."
           error={error}
           hasNextPage={hasNextPage}
           isFetchingNextPage={isFetchingNextPage}
@@ -373,7 +368,7 @@ export function ContactPrivateMemoLogSection({
           logs={logs.map((log) => ({
             id: log.id,
             createdAt: log.createdAt,
-            label: "개인 메모",
+            label: "비공식 메모",
             memo: log.memo,
             onEdit: () => onEditStart(log),
           }))}

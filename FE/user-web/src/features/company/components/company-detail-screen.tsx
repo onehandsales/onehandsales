@@ -1,16 +1,13 @@
 import {
-  ArrowLeft,
   BriefcaseBusiness,
-  CalendarDays,
+  Building2,
   IdCard,
-  Layers3,
   MapPin,
+  Pencil,
+  X,
 } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Button } from "@/components/ui/button";
-import { PageHeader } from "@/components/ui/page-header";
-import { SectionHeader } from "@/components/ui/section-header";
 import { Toast } from "@/components/ui/toast";
 import { CompanyEditForm } from "@/features/company/components/company-edit-form";
 import {
@@ -31,19 +28,29 @@ import {
 import type {
   CompanyContact,
   CompanyDeal,
+  CompanyDetail,
   CompanyField,
+  CompanyMemoLog,
+  CompanyPrivateMemoLog,
   CompanyRegion,
 } from "@/features/company/types/company";
+import { PageHeader } from "@/components/layout/page-header";
 import { getApiErrorMessage } from "@/lib/api-client";
 import { formatDateTime } from "@/utils/format";
+import { useMemo } from "react";
+import { cn } from "@/utils/cn";
+
+type Tab = "memo" | "contacts" | "deals";
 
 type CompanyDetailScreenProps = {
   readonly companyId: string;
 };
 
-// 기능 : 회사 상세, 연결 거래처, 일반/개인 메모 화면을 렌더링합니다.
 export function CompanyDetailScreen({ companyId }: CompanyDetailScreenProps) {
   const [notice, setNotice] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState<Tab>("memo");
+  const [isEditing, setIsEditing] = useState(false);
+
   const companyQuery = useCompanyDetail(companyId);
   const contactsQuery = useCompanyContacts(companyId);
   const dealsQuery = useCompanyDeals(companyId);
@@ -51,6 +58,7 @@ export function CompanyDetailScreen({ companyId }: CompanyDetailScreenProps) {
   const regionsQuery = useCompanyRegions();
   const memoLogsQuery = useCompanyMemoLogs(companyId);
   const privateMemoLogsQuery = useCompanyPrivateMemoLogs(companyId);
+
   const company = companyQuery.data;
   const fields = useMemo(
     () =>
@@ -62,23 +70,14 @@ export function CompanyDetailScreen({ companyId }: CompanyDetailScreenProps) {
   const regions = useMemo(
     () =>
       company
-        ? mergeCompanyRegion(
-            regionsQuery.data?.items ?? [],
-            company.companyRegion
-          )
+        ? mergeCompanyRegion(regionsQuery.data?.items ?? [], company.companyRegion)
         : (regionsQuery.data?.items ?? []),
     [company, regionsQuery.data?.items]
   );
-  const memoLogs =
-    memoLogsQuery.data?.pages.flatMap((page) => page.items) ?? [];
-  const privateMemoLogs =
-    privateMemoLogsQuery.data?.pages.flatMap((page) => page.items) ?? [];
-  const taxonomyError = fieldsQuery.error ?? regionsQuery.error ?? null;
+  const memoLogs = memoLogsQuery.data?.pages.flatMap((page) => page.items) ?? [];
+  const privateMemoLogs = privateMemoLogsQuery.data?.pages.flatMap((page) => page.items) ?? [];
 
-  if (companyQuery.isLoading) {
-    return <CompanyDetailSkeleton />;
-  }
-
+  if (companyQuery.isLoading) return <CompanyDetailSkeleton />;
   if (companyQuery.isError) {
     return (
       <CompanyDetailError
@@ -87,355 +86,387 @@ export function CompanyDetailScreen({ companyId }: CompanyDetailScreenProps) {
       />
     );
   }
+  if (!company) return <CompanyDetailSkeleton />;
 
-  if (!company) {
-    return <CompanyDetailSkeleton />;
-  }
+  const contacts = contactsQuery.data?.items ?? [];
+  const deals = dealsQuery.data?.items ?? [];
+
+  const tabs: Array<{ key: Tab; label: string; count?: number }> = [
+    { key: "memo", label: "메모" },
+    { key: "contacts", label: "거래처", count: contacts.length },
+    { key: "deals", label: "딜", count: deals.length },
+  ];
 
   return (
-    <section className="mx-auto grid max-w-7xl gap-6 px-5 py-6">
+    <div className="flex min-h-full flex-col bg-[#FAFAF8]">
+      {/* PageHeader */}
       <PageHeader
-        backHref="/companies"
-        backLabel="회사 목록"
-        description={[company.companyField.field, company.companyRegion.region].join(" · ")}
-        title={company.companyName}
+        breadcrumbs={[
+          { label: "회사", to: "/companies", icon: Building2 },
+          { label: company.companyName },
+        ]}
+        actions={[
+          {
+            icon: isEditing ? X : Pencil,
+            tooltip: isEditing ? "수정 취소" : "정보 수정",
+            onClick: () => {
+              setIsEditing(!isEditing);
+              if (!isEditing) setActiveTab("memo");
+            },
+          },
+        ]}
       />
 
-      {notice ? (
-        <Toast message={notice} onClose={() => setNotice(null)} variant="success" />
-      ) : null}
-
-      {taxonomyError ? (
-        <p className="rounded-md border border-destructive/30 bg-red-50 px-3 py-2 text-sm text-destructive">
-          {getApiErrorMessage(taxonomyError)}
-        </p>
-      ) : null}
-
-      <CompanySummary
-        contactCount={contactsQuery.data?.items.length ?? 0}
-        createdAt={company.createdAt}
-        dealCount={dealsQuery.data?.items.length ?? 0}
-        field={company.companyField.field}
-        region={company.companyRegion.region}
-        updatedAt={company.updatedAt}
-      />
-
-      <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_380px]">
-        <div className="grid gap-6">
-          <section className="grid gap-4">
-            <SectionHeader
-              description="회사명, 분야, 지역을 수정합니다."
-              title="기본 정보"
+      {/* 회사 요약 카드 */}
+      <div className="px-6 pb-4">
+        {isEditing ? (
+          <div className="rounded-xl border border-[#C7D7FE] bg-white p-5 shadow-sm">
+            <p className="mb-3 text-[12px] font-semibold text-[#1D4ED8]">기본 정보 수정</p>
+            <CompanyEditForm
+              company={company}
+              fields={fields}
+              regions={regions}
+              onSaved={() => {
+                setNotice("회사 정보가 저장되었습니다.");
+                setIsEditing(false);
+              }}
             />
-            <div className="rounded-lg border bg-white p-4">
-              <CompanyEditForm
-                company={company}
-                fields={fields}
-                onSaved={() => setNotice("회사 정보가 저장되었습니다.")}
-                regions={regions}
-              />
+          </div>
+        ) : (
+          <div className="rounded-xl border border-[#E6EAF0] bg-white px-5 py-4 shadow-sm">
+            <div className="flex items-center gap-3">
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[#EFF6FF] text-[16px] font-bold text-[#2563EB]">
+                {company.companyName.charAt(0)}
+              </div>
+              <div className="min-w-0">
+                <h1 className="text-[17px] font-bold text-[#111827]">{company.companyName}</h1>
+                <div className="mt-0.5 flex flex-wrap items-center gap-2 text-[12px] text-[#6B7280]">
+                  <span className="flex items-center gap-1">
+                    <Building2 className="h-3 w-3" />
+                    {company.companyField.field}
+                  </span>
+                  <span className="text-[#D1D5DB]">·</span>
+                  <span className="flex items-center gap-1">
+                    <MapPin className="h-3 w-3" />
+                    {company.companyRegion.region}
+                  </span>
+                  <span className="text-[#D1D5DB]">·</span>
+                  <span className="flex items-center gap-1">
+                    <IdCard className="h-3 w-3" />
+                    거래처 {contacts.length}명
+                  </span>
+                  <span className="text-[#D1D5DB]">·</span>
+                  <span className="flex items-center gap-1">
+                    <BriefcaseBusiness className="h-3 w-3" />
+                    딜 {deals.length}건
+                  </span>
+                  <span className="ml-auto text-[11px] text-[#9CA3AF]">
+                    등록 {formatDateTime(company.createdAt, { includeYear: true })}
+                  </span>
+                </div>
+              </div>
             </div>
-          </section>
+          </div>
+        )}
+      </div>
 
-          <CompanyMemoLogSection
-            companyId={company.id}
-            error={memoLogsQuery.error}
-            hasNextPage={Boolean(memoLogsQuery.hasNextPage)}
-            isFetchingNextPage={memoLogsQuery.isFetchingNextPage}
-            isLoading={memoLogsQuery.isLoading}
-            logs={memoLogs}
-            onChanged={setNotice}
-            onFetchMore={() => void memoLogsQuery.fetchNextPage()}
-            onRetry={() => void memoLogsQuery.refetch()}
-          />
-
-          <CompanyPrivateMemoLogSection
-            companyId={company.id}
-            error={privateMemoLogsQuery.error}
-            hasNextPage={Boolean(privateMemoLogsQuery.hasNextPage)}
-            isFetchingNextPage={privateMemoLogsQuery.isFetchingNextPage}
-            isLoading={privateMemoLogsQuery.isLoading}
-            logs={privateMemoLogs}
-            onChanged={setNotice}
-            onFetchMore={() => void privateMemoLogsQuery.fetchNextPage()}
-            onRetry={() => void privateMemoLogsQuery.refetch()}
-          />
+      {/* 탭 바 */}
+      <div className="relative shrink-0 border-b border-[#E6EAF0] bg-[#FAFAF8] px-6">
+        <div className="flex gap-0">
+          {tabs.map((tab) => (
+            <button
+              className={cn(
+                "relative flex h-10 items-center gap-1.5 px-4 text-[13px] font-medium transition",
+                activeTab === tab.key
+                  ? "text-[#1D4ED8] after:absolute after:bottom-0 after:left-0 after:right-0 after:h-[2px] after:bg-[#1D4ED8]"
+                  : "text-[#6B7280] hover:text-[#374151]"
+              )}
+              key={tab.key}
+              onClick={() => {
+                setActiveTab(tab.key);
+                if (tab.key !== "memo") setIsEditing(false);
+              }}
+              type="button"
+            >
+              {tab.label}
+              {tab.count !== undefined ? (
+                <span
+                  className={cn(
+                    "inline-flex h-[18px] min-w-[18px] items-center justify-center rounded-full px-1 text-[10px] font-semibold",
+                    activeTab === tab.key
+                      ? "bg-[#DBEAFE] text-[#1D4ED8]"
+                      : "bg-[#F3F4F6] text-[#6B7280]"
+                  )}
+                >
+                  {tab.count}
+                </span>
+              ) : null}
+            </button>
+          ))}
         </div>
+      </div>
 
-        <aside className="grid content-start gap-6">
-          <CompanyContactPanel
-            contacts={contactsQuery.data?.items ?? []}
+      {/* 탭 콘텐츠 */}
+      <div className="px-6 py-5">
+        {notice ? (
+          <div className="mb-4">
+            <Toast message={notice} onClose={() => setNotice(null)} variant="success" />
+          </div>
+        ) : null}
+
+        {activeTab === "memo" && (
+          <MemoTab
+            companyId={companyId}
+            memoLogs={memoLogs}
+            memoLogsQuery={memoLogsQuery}
+            privateMemoLogs={privateMemoLogs}
+            privateMemoLogsQuery={privateMemoLogsQuery}
+            onChanged={setNotice}
+          />
+        )}
+
+        {activeTab === "contacts" && (
+          <ContactsTab
+            contacts={contacts}
             error={contactsQuery.error}
             isLoading={contactsQuery.isLoading}
             onRetry={() => void contactsQuery.refetch()}
           />
-          <CompanyDealPanel
-            deals={dealsQuery.data?.items ?? []}
+        )}
+
+        {activeTab === "deals" && (
+          <DealsTab
+            deals={deals}
             error={dealsQuery.error}
             isLoading={dealsQuery.isLoading}
             onRetry={() => void dealsQuery.refetch()}
           />
-        </aside>
-      </div>
-    </section>
-  );
-}
-
-type CompanySummaryProps = {
-  readonly field: string;
-  readonly region: string;
-  readonly contactCount: number;
-  readonly dealCount: number;
-  readonly createdAt: string;
-  readonly updatedAt: string;
-};
-
-// 기능 : 회사 상세 요약 지표를 렌더링합니다.
-function CompanySummary({
-  field,
-  region,
-  contactCount,
-  dealCount,
-  createdAt,
-  updatedAt,
-}: CompanySummaryProps) {
-  const items = [
-    {
-      label: "분야",
-      value: field,
-      icon: Layers3,
-      className: "border-sky-200 bg-sky-50 text-sky-900",
-    },
-    {
-      label: "지역",
-      value: region,
-      icon: MapPin,
-      className: "border-emerald-200 bg-emerald-50 text-emerald-900",
-    },
-    {
-      label: "거래처",
-      value: String(contactCount),
-      icon: IdCard,
-      className: "border-violet-200 bg-violet-50 text-violet-900",
-    },
-    {
-      label: "딜",
-      value: String(dealCount),
-      icon: BriefcaseBusiness,
-      className: "border-amber-200 bg-amber-50 text-amber-900",
-    },
-    {
-      label: "수정일",
-      value: formatDateTime(updatedAt, { includeYear: true }),
-      icon: CalendarDays,
-      className: "border-slate-200 bg-slate-50 text-slate-900",
-    },
-  ];
-
-  return (
-    <section className="grid gap-3 md:grid-cols-5">
-      {items.map((item) => {
-        const Icon = item.icon;
-
-        return (
-          <div
-            className={`flex items-center justify-between rounded-lg border px-4 py-3 ${item.className}`}
-            key={item.label}
-          >
-            <div className="min-w-0">
-              <p className="text-sm font-medium">{item.label}</p>
-              <p className="mt-1 truncate text-lg font-semibold">{item.value}</p>
-            </div>
-            <Icon className="h-5 w-5" />
-          </div>
-        );
-      })}
-      <p className="text-xs text-muted-foreground md:col-span-5">
-        등록일 {formatDateTime(createdAt, { includeYear: true })}
-      </p>
-    </section>
-  );
-}
-
-type CompanyDealPanelProps = {
-  readonly deals: CompanyDeal[];
-  readonly isLoading: boolean;
-  readonly error: unknown;
-  readonly onRetry: () => void;
-};
-
-// 기능 : 회사에 연결된 딜 목록을 렌더링합니다.
-function CompanyDealPanel({
-  deals,
-  isLoading,
-  error,
-  onRetry,
-}: CompanyDealPanelProps) {
-  return (
-    <section className="grid gap-3">
-      <SectionHeader
-        description="회사에 연결된 딜 전체를 표시합니다."
-        title="연결 딜"
-      />
-      <div className="overflow-hidden rounded-lg border bg-white">
-        {isLoading ? (
-          <div className="grid gap-2 p-4">
-            {Array.from({ length: 4 }).map((_, index) => (
-              <div className="h-14 animate-pulse rounded-md bg-muted" key={index} />
-            ))}
-          </div>
-        ) : error ? (
-          <div className="grid justify-items-start gap-3 p-4">
-            <p className="text-sm text-destructive">
-              {getApiErrorMessage(error)}
-            </p>
-            <Button onClick={onRetry} size="sm" type="button">
-              다시 시도
-            </Button>
-          </div>
-        ) : deals.length === 0 ? (
-          <p className="px-4 py-5 text-sm text-muted-foreground">
-            연결된 딜이 없습니다.
-          </p>
-        ) : (
-          <div className="divide-y">
-            {deals.map((deal) => (
-              <article className="grid gap-1 px-4 py-3" key={deal.id}>
-                <Link
-                  className="truncate text-sm font-medium text-slate-950 hover:text-primary"
-                  to={`/deals/${deal.id}`}
-                >
-                  {deal.dealName}
-                </Link>
-                <p className="text-xs text-muted-foreground">
-                  {deal.dealCost.toLocaleString("ko-KR")}원 ·{" "}
-                  {formatDateTime(deal.createdAt, { includeYear: true })}
-                </p>
-              </article>
-            ))}
-          </div>
         )}
       </div>
-    </section>
+    </div>
   );
 }
 
-type CompanyContactPanelProps = {
-  readonly contacts: CompanyContact[];
-  readonly isLoading: boolean;
-  readonly error: unknown;
-  readonly onRetry: () => void;
-};
+// ── 탭 콘텐츠 ──────────────────────────────────────────────────────
 
-// 기능 : 회사에 연결된 거래처 목록을 렌더링합니다.
-function CompanyContactPanel({
+function MemoTab({
+  companyId,
+  memoLogs,
+  memoLogsQuery,
+  privateMemoLogs,
+  privateMemoLogsQuery,
+  onChanged,
+}: {
+  readonly companyId: string;
+  readonly memoLogs: CompanyMemoLog[];
+  readonly memoLogsQuery: ReturnType<typeof useCompanyMemoLogs>;
+  readonly privateMemoLogs: CompanyPrivateMemoLog[];
+  readonly privateMemoLogsQuery: ReturnType<typeof useCompanyPrivateMemoLogs>;
+  readonly onChanged: (notice: string) => void;
+}) {
+  return (
+    <div className="grid gap-5">
+      <CompanyMemoLogSection
+        companyId={companyId}
+        error={memoLogsQuery.error}
+        hasNextPage={Boolean(memoLogsQuery.hasNextPage)}
+        isFetchingNextPage={memoLogsQuery.isFetchingNextPage}
+        isLoading={memoLogsQuery.isLoading}
+        logs={memoLogs}
+        onChanged={onChanged}
+        onFetchMore={() => void memoLogsQuery.fetchNextPage()}
+        onRetry={() => void memoLogsQuery.refetch()}
+      />
+      <CompanyPrivateMemoLogSection
+        companyId={companyId}
+        error={privateMemoLogsQuery.error}
+        hasNextPage={Boolean(privateMemoLogsQuery.hasNextPage)}
+        isFetchingNextPage={privateMemoLogsQuery.isFetchingNextPage}
+        isLoading={privateMemoLogsQuery.isLoading}
+        logs={privateMemoLogs}
+        onChanged={onChanged}
+        onFetchMore={() => void privateMemoLogsQuery.fetchNextPage()}
+        onRetry={() => void privateMemoLogsQuery.refetch()}
+      />
+    </div>
+  );
+}
+
+function ContactsTab({
   contacts,
   isLoading,
   error,
   onRetry,
-}: CompanyContactPanelProps) {
-  return (
-    <section className="grid gap-3">
-      <SectionHeader
-        description="회사에 연결된 거래처 전체를 표시합니다."
-        title="연결 거래처"
-      />
-      <div className="overflow-hidden rounded-lg border bg-white">
-        {isLoading ? (
-          <div className="grid gap-2 p-4">
-            {Array.from({ length: 4 }).map((_, index) => (
-              <div className="h-12 animate-pulse rounded-md bg-muted" key={index} />
-            ))}
-          </div>
-        ) : error ? (
-          <div className="grid justify-items-start gap-3 p-4">
-            <p className="text-sm text-destructive">
-              {getApiErrorMessage(error)}
-            </p>
-            <Button onClick={onRetry} size="sm" type="button">
-              다시 시도
-            </Button>
-          </div>
-        ) : contacts.length === 0 ? (
-          <p className="px-4 py-5 text-sm text-muted-foreground">
-            연결된 거래처가 없습니다.
-          </p>
-        ) : (
-          <div className="divide-y">
-            {contacts.map((contact) => (
-              <article className="grid gap-1 px-4 py-3" key={contact.id}>
-                <Link
-                  className="truncate text-sm font-medium text-slate-950 hover:text-primary"
-                  to={`/contacts/${contact.id}`}
-                >
-                  {contact.username}
-                </Link>
-                <p className="truncate text-xs text-muted-foreground">
-                  {contact.contactDepartment.departmentName}
-                </p>
-              </article>
-            ))}
-          </div>
-        )}
-      </div>
-    </section>
-  );
-}
-
-// 기능 : 회사 상세 조회 실패 상태를 렌더링합니다.
-function CompanyDetailError({
-  error,
-  onRetry,
 }: {
+  readonly contacts: CompanyContact[];
+  readonly isLoading: boolean;
   readonly error: unknown;
   readonly onRetry: () => void;
 }) {
   return (
-    <section className="mx-auto grid max-w-3xl justify-items-start gap-3 px-5 py-12">
-      <Link
-        className="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-primary"
-        to="/companies"
-      >
-        <ArrowLeft className="h-4 w-4" />
-        회사 목록
-      </Link>
-      <div className="grid justify-items-start gap-3 rounded-lg border border-destructive/30 bg-red-50 p-5">
-        <p className="text-sm font-medium text-destructive">
-          {getApiErrorMessage(error)}
-        </p>
-        <Button onClick={onRetry} size="sm" type="button">
-          다시 시도
-        </Button>
+    <div className="overflow-hidden rounded-xl border border-[#E6EAF0] bg-white shadow-sm">
+      <div className="flex items-center gap-2 border-b border-[#F3F4F6] px-5 py-3.5">
+        <IdCard className="h-4 w-4 text-[#6B7280]" />
+        <h2 className="text-[13px] font-semibold text-[#111827]">연결 거래처</h2>
+        <span className="ml-1 text-[12px] text-[#9CA3AF]">{contacts.length}명</span>
       </div>
-    </section>
+      {isLoading ? (
+        <TabLoadingState />
+      ) : error ? (
+        <PanelError error={error} onRetry={onRetry} />
+      ) : contacts.length === 0 ? (
+        <PanelEmpty text="연결된 거래처가 없습니다." />
+      ) : (
+        <div>
+          {contacts.map((contact) => (
+            <Link
+              className="flex items-center gap-3 border-b border-[#F9FAFB] px-5 py-3 last:border-b-0 hover:bg-[#FAFBFC]"
+              key={contact.id}
+              to={`/contacts/${contact.id}`}
+            >
+              <div className="min-w-0 flex-1">
+                <p className="truncate text-[13px] font-medium text-[#111827]">
+                  {contact.username}
+                </p>
+                <p className="truncate text-[12px] text-[#9CA3AF]">
+                  {contact.contactDepartment.departmentName}
+                </p>
+              </div>
+            </Link>
+          ))}
+        </div>
+      )}
+    </div>
   );
 }
 
-// 기능 : 회사 상세 로딩 상태를 렌더링합니다.
+function DealsTab({
+  deals,
+  isLoading,
+  error,
+  onRetry,
+}: {
+  readonly deals: CompanyDeal[];
+  readonly isLoading: boolean;
+  readonly error: unknown;
+  readonly onRetry: () => void;
+}) {
+  return (
+    <div className="overflow-hidden rounded-xl border border-[#E6EAF0] bg-white shadow-sm">
+      <div className="flex items-center gap-2 border-b border-[#F3F4F6] px-5 py-3.5">
+        <BriefcaseBusiness className="h-4 w-4 text-[#6B7280]" />
+        <h2 className="text-[13px] font-semibold text-[#111827]">연결 딜</h2>
+        <span className="ml-1 text-[12px] text-[#9CA3AF]">{deals.length}건</span>
+      </div>
+      {isLoading ? (
+        <TabLoadingState />
+      ) : error ? (
+        <PanelError error={error} onRetry={onRetry} />
+      ) : deals.length === 0 ? (
+        <PanelEmpty text="연결된 딜이 없습니다." />
+      ) : (
+        <div>
+          {deals.map((deal) => (
+            <Link
+              className="flex items-center justify-between gap-3 border-b border-[#F9FAFB] px-5 py-3 last:border-b-0 hover:bg-[#FAFBFC]"
+              key={deal.id}
+              to={`/deals/${deal.id}`}
+            >
+              <div className="min-w-0">
+                <p className="truncate text-[13px] font-medium text-[#111827]">{deal.dealName}</p>
+                <p className="text-[12px] text-[#9CA3AF]">
+                  {formatDateTime(deal.createdAt, { includeYear: true })}
+                </p>
+              </div>
+              <span className="shrink-0 text-[13px] font-semibold text-[#374151]">
+                {deal.dealCost.toLocaleString("ko-KR")}원
+              </span>
+            </Link>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ── 공통 ────────────────────────────────────────────────────────────
+
+function TabLoadingState() {
+  return (
+    <div className="grid gap-2 p-4">
+      {Array.from({ length: 3 }).map((_, i) => (
+        <div className="h-11 animate-pulse rounded-lg bg-[#F3F4F6]" key={i} />
+      ))}
+    </div>
+  );
+}
+
+function PanelEmpty({ text }: { readonly text: string }) {
+  return <p className="px-5 py-8 text-center text-[13px] text-[#9CA3AF]">{text}</p>;
+}
+
+function PanelError({ error, onRetry }: { readonly error: unknown; readonly onRetry: () => void }) {
+  return (
+    <div className="flex flex-col items-start gap-3 p-5">
+      <p className="text-[13px] text-red-500">{getApiErrorMessage(error)}</p>
+      <button
+        className="inline-flex h-8 items-center rounded-lg border border-[#E5E7EB] bg-white px-3 text-[13px] text-[#374151] hover:bg-[#F9FAFB]"
+        onClick={onRetry}
+        type="button"
+      >
+        다시 시도
+      </button>
+    </div>
+  );
+}
+
+function CompanyDetailError({ error, onRetry }: { readonly error: unknown; readonly onRetry: () => void }) {
+  return (
+    <div className="flex min-h-full flex-col bg-[#FAFAF8]">
+      <PageHeader breadcrumbs={[{ label: "회사", to: "/companies", icon: Building2 }, { label: "오류" }]} />
+      <div className="mx-auto max-w-xl px-6 py-12">
+        <div className="rounded-xl border border-red-100 bg-red-50 p-5">
+          <p className="text-[13px] text-red-600">{getApiErrorMessage(error)}</p>
+          <button
+            className="mt-3 inline-flex h-8 items-center rounded-lg border border-red-200 bg-white px-3 text-[13px] text-red-600 hover:bg-red-50"
+            onClick={onRetry}
+            type="button"
+          >
+            다시 시도
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function CompanyDetailSkeleton() {
   return (
-    <section className="mx-auto grid max-w-7xl gap-6 px-5 py-6">
-      <div className="h-24 animate-pulse rounded-lg border bg-muted" />
-      <div className="grid gap-3 md:grid-cols-4">
-        {Array.from({ length: 4 }).map((_, index) => (
-          <div className="h-20 animate-pulse rounded-lg border bg-muted" key={index} />
-        ))}
+    <div className="flex min-h-full flex-col bg-[#FAFAF8]">
+      <div className="flex h-[var(--topbar-height)] items-center px-6">
+        <div className="h-4 w-40 animate-pulse rounded bg-[#F3F4F6]" />
       </div>
-      <div className="h-96 animate-pulse rounded-lg border bg-muted" />
-    </section>
+      <div className="px-6 pb-4">
+        <div className="h-[72px] animate-pulse rounded-xl bg-white" />
+      </div>
+      <div className="border-b border-[#E6EAF0] px-6">
+        <div className="flex gap-2 py-2">
+          {Array.from({ length: 3 }).map((_, i) => (
+            <div className="h-8 w-14 animate-pulse rounded bg-[#F3F4F6]" key={i} />
+          ))}
+        </div>
+      </div>
+      <div className="px-6 py-5">
+        <div className="h-48 animate-pulse rounded-xl bg-white" />
+      </div>
+    </div>
   );
 }
 
-// 기능 : 회사 분야 선택지에 현재 상세 분야가 누락되어도 폼 값이 유지되도록 병합합니다.
 function mergeCompanyField(fields: CompanyField[], current: CompanyField) {
-  return fields.some((field) => field.id === current.id)
-    ? fields
-    : [current, ...fields];
+  return fields.some((f) => f.id === current.id) ? fields : [current, ...fields];
 }
 
-// 기능 : 회사 지역 선택지에 현재 상세 지역이 누락되어도 폼 값이 유지되도록 병합합니다.
 function mergeCompanyRegion(regions: CompanyRegion[], current: CompanyRegion) {
-  return regions.some((region) => region.id === current.id)
-    ? regions
-    : [current, ...regions];
+  return regions.some((r) => r.id === current.id) ? regions : [current, ...regions];
 }
