@@ -8,7 +8,6 @@ import {
   RotateCcw,
 } from "lucide-react";
 import { useMemo, useState } from "react";
-import { Link } from "react-router-dom";
 import { ScheduleFormDialog } from "@/features/schedule/components/schedule-form-dialog";
 import { useScheduleList } from "@/features/schedule/hooks/use-schedule-queries";
 import { getDefaultScheduleTimeZone } from "@/features/schedule/schemas/schedule-schema";
@@ -18,6 +17,7 @@ import type {
 } from "@/features/schedule/types/schedule";
 import { getApiErrorMessage } from "@/lib/api-client";
 import { formatDate, formatDateWithOptions } from "@/utils/format";
+import { PageHeader } from "@/components/layout/page-header";
 
 const screenTimeZone = getDefaultScheduleTimeZone();
 const weekDayLabels = ["월", "화", "수", "목", "금", "토", "일"];
@@ -81,133 +81,117 @@ export function ScheduleScreen() {
   };
 
   return (
-    <section className="mx-auto grid max-w-[1500px] gap-5 px-5 py-6">
-      <header className="flex flex-col gap-4 border-b pb-5 xl:flex-row xl:items-center xl:justify-between">
-        <div className="min-w-0">
-          <h1 className="text-2xl font-semibold">일정</h1>
-          <p className="mt-1 text-sm text-muted-foreground">
-            월간 일정과 주간 영업 일정을 함께 확인합니다.
+    <section className="flex min-h-full flex-col bg-[#FAFAF8]">
+      <PageHeader
+        breadcrumbs={[{ label: "일정", icon: CalendarDays }]}
+        actions={[
+          { icon: FileText, tooltip: "주간 보고서", href: "/schedules/week" },
+          { icon: Plus, tooltip: "일정 생성", onClick: () => openCreateDialog(), variant: "primary" },
+        ]}
+      />
+
+      <div className="flex flex-col gap-4 px-5 pb-6">
+        <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+          <div className="inline-flex w-fit rounded-md border border-[#E2E5EC] bg-white p-1">
+            <button
+              className={`h-7 rounded-md px-3 text-[12px] font-medium ${
+                viewMode === "month"
+                  ? "bg-[#2563EB] text-white"
+                  : "text-[#374151] hover:bg-[#F5F6F8]"
+              }`}
+              onClick={() => setViewMode("month")}
+              type="button"
+            >
+              월간
+            </button>
+            <button
+              className={`h-7 rounded-md px-3 text-[12px] font-medium ${
+                viewMode === "week"
+                  ? "bg-[#2563EB] text-white"
+                  : "text-[#374151] hover:bg-[#F5F6F8]"
+              }`}
+              onClick={() => setViewMode("week")}
+              type="button"
+            >
+              주간
+            </button>
+          </div>
+
+          <div className="flex flex-wrap items-center gap-2">
+            <button
+              aria-label="이전 기간"
+              className="grid h-7 w-7 place-items-center rounded-md border border-[#E2E5EC] bg-white text-[#374151] hover:bg-[#F5F6F8]"
+              onClick={movePrevious}
+              type="button"
+            >
+              <ChevronLeft className="h-4 w-4" />
+            </button>
+            <div className="min-w-[190px] text-center text-[13px] font-semibold text-[#111827]">
+              {title}
+            </div>
+            <button
+              aria-label="다음 기간"
+              className="grid h-7 w-7 place-items-center rounded-md border border-[#E2E5EC] bg-white text-[#374151] hover:bg-[#F5F6F8]"
+              onClick={moveNext}
+              type="button"
+            >
+              <ChevronRight className="h-4 w-4" />
+            </button>
+            <button
+              className="inline-flex h-7 items-center gap-1.5 rounded-md border border-[#E2E5EC] bg-white px-2.5 text-[12px] font-medium text-[#374151] hover:bg-[#F5F6F8]"
+              onClick={() => setAnchorDate(new Date())}
+              type="button"
+            >
+              <RotateCcw className="h-3.5 w-3.5" />
+              오늘
+            </button>
+          </div>
+        </div>
+
+        {notice ? (
+          <p className="rounded-md border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm text-emerald-800">
+            {notice}
           </p>
-        </div>
-        <div className="flex flex-wrap gap-2">
-          <Link
-            className="inline-flex h-10 items-center gap-2 rounded-md border px-3 text-sm font-medium hover:bg-muted"
-            to="/schedules/week"
-          >
-            <FileText className="h-4 w-4" />
-            주간 보고서
-          </Link>
-          <button
-            className="inline-flex h-10 items-center gap-2 rounded-md bg-primary px-4 text-sm font-medium text-primary-foreground"
-            onClick={() => openCreateDialog()}
-            type="button"
-          >
-            <Plus className="h-4 w-4" />
-            일정 생성
-          </button>
-        </div>
-      </header>
+        ) : null}
 
-      <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
-        <div className="inline-flex w-fit rounded-md border bg-white p-1">
-          <button
-            className={`h-8 rounded px-3 text-sm font-medium ${
-              viewMode === "month"
-                ? "bg-primary text-primary-foreground"
-                : "hover:bg-muted"
-            }`}
-            onClick={() => setViewMode("month")}
-            type="button"
-          >
-            월간
-          </button>
-          <button
-            className={`h-8 rounded px-3 text-sm font-medium ${
-              viewMode === "week"
-                ? "bg-primary text-primary-foreground"
-                : "hover:bg-muted"
-            }`}
-            onClick={() => setViewMode("week")}
-            type="button"
-          >
-            주간
-          </button>
-        </div>
+        {schedulesQuery.isLoading ? (
+          <CalendarSkeleton />
+        ) : schedulesQuery.isError ? (
+          <ScheduleError
+            error={schedulesQuery.error}
+            onRetry={() => void schedulesQuery.refetch()}
+          />
+        ) : (
+          <div className="grid gap-4">
+            <div className="overflow-x-auto rounded-lg border border-[#E2E5EC] bg-white shadow-sm">
+              {viewMode === "month" ? (
+                <MonthCalendar
+                  anchorDate={anchorDate}
+                  onCreate={openCreateDialog}
+                  onEdit={openEditDialog}
+                  schedulesByDate={schedulesByDate}
+                  timeZone={screenTimeZone}
+                />
+              ) : (
+                <WeekCalendar
+                  onCreate={openCreateDialog}
+                  onEdit={openEditDialog}
+                  rangeStart={range.start}
+                  schedulesByDate={schedulesByDate}
+                  timeZone={screenTimeZone}
+                />
+              )}
+            </div>
 
-        <div className="flex flex-wrap items-center gap-2">
-          <button
-            aria-label="이전 기간"
-            className="grid h-9 w-9 place-items-center rounded-md border bg-white hover:bg-muted"
-            onClick={movePrevious}
-            type="button"
-          >
-            <ChevronLeft className="h-4 w-4" />
-          </button>
-          <div className="min-w-[190px] text-center text-lg font-semibold">
-            {title}
+            {schedules.length === 0 ? (
+              <ScheduleEmptyState
+                mode={viewMode}
+                onCreate={() => openCreateDialog(range.start)}
+              />
+            ) : null}
           </div>
-          <button
-            aria-label="다음 기간"
-            className="grid h-9 w-9 place-items-center rounded-md border bg-white hover:bg-muted"
-            onClick={moveNext}
-            type="button"
-          >
-            <ChevronRight className="h-4 w-4" />
-          </button>
-          <button
-            className="inline-flex h-9 items-center gap-2 rounded-md border bg-white px-3 text-sm font-medium hover:bg-muted"
-            onClick={() => setAnchorDate(new Date())}
-            type="button"
-          >
-            <RotateCcw className="h-4 w-4" />
-            오늘
-          </button>
-        </div>
+        )}
       </div>
-
-      {notice ? (
-        <p className="rounded-md border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm text-emerald-800">
-          {notice}
-        </p>
-      ) : null}
-
-      {schedulesQuery.isLoading ? (
-        <CalendarSkeleton />
-      ) : schedulesQuery.isError ? (
-        <ScheduleError
-          error={schedulesQuery.error}
-          onRetry={() => void schedulesQuery.refetch()}
-        />
-      ) : (
-        <div className="grid gap-4">
-          <div className="overflow-x-auto rounded-lg border bg-white">
-            {viewMode === "month" ? (
-              <MonthCalendar
-                anchorDate={anchorDate}
-                onCreate={openCreateDialog}
-                onEdit={openEditDialog}
-                schedulesByDate={schedulesByDate}
-                timeZone={screenTimeZone}
-              />
-            ) : (
-              <WeekCalendar
-                onCreate={openCreateDialog}
-                onEdit={openEditDialog}
-                rangeStart={range.start}
-                schedulesByDate={schedulesByDate}
-                timeZone={screenTimeZone}
-              />
-            )}
-          </div>
-
-          {schedules.length === 0 ? (
-            <ScheduleEmptyState
-              mode={viewMode}
-              onCreate={() => openCreateDialog(range.start)}
-            />
-          ) : null}
-        </div>
-      )}
 
       <ScheduleFormDialog
         initialStartAt={initialStartAt}
@@ -248,8 +232,8 @@ function MonthCalendar({
 
           return (
             <section
-              className={`min-h-[142px] border-r border-t p-2 last:border-r-0 ${
-                isOutsideMonth ? "bg-muted/40 text-muted-foreground" : "bg-white"
+              className={`min-h-[142px] border-r border-t border-[#E2E5EC] p-2 last:border-r-0 ${
+                isOutsideMonth ? "bg-[#F5F6F8] text-[#9CA3AF]" : "bg-white"
               }`}
               key={dateKey}
             >
@@ -257,8 +241,8 @@ function MonthCalendar({
                 <button
                   className={`grid h-7 w-7 place-items-center rounded-md text-sm font-medium ${
                     isToday(cell)
-                      ? "bg-primary text-primary-foreground"
-                      : "hover:bg-muted"
+                      ? "bg-[#2563EB] text-white"
+                      : "text-[#111827] hover:bg-[#F5F6F8]"
                   }`}
                   onClick={() => onCreate(setHour(cell, 9))}
                   type="button"
@@ -316,14 +300,14 @@ function WeekCalendar({
 
           return (
             <section
-              className="min-h-[460px] border-r border-t p-3 last:border-r-0"
+              className="min-h-[460px] border-r border-t border-[#E2E5EC] p-3 last:border-r-0"
               key={dateKey}
             >
               <button
                 className={`mb-3 inline-flex h-8 items-center rounded-md px-2 text-sm font-semibold ${
                   isToday(day)
-                    ? "bg-primary text-primary-foreground"
-                    : "hover:bg-muted"
+                    ? "bg-[#2563EB] text-white"
+                    : "text-[#111827] hover:bg-[#F5F6F8]"
                 }`}
                 onClick={() => onCreate(setHour(day, 9))}
                 type="button"
@@ -360,10 +344,10 @@ function WeekCalendar({
 
 function CalendarHeader() {
   return (
-    <div className="grid grid-cols-7 border-b bg-muted">
+    <div className="grid grid-cols-7 border-b border-[#E2E5EC] bg-[#F5F6F8]">
       {weekDayLabels.map((label) => (
         <div
-          className="px-3 py-2 text-center text-xs font-semibold text-muted-foreground"
+          className="px-3 py-2 text-center text-[12px] font-semibold text-[#6B7280]"
           key={label}
         >
           {label}
@@ -384,14 +368,14 @@ function SchedulePill({
 }) {
   return (
     <button
-      className="grid min-h-8 rounded-md border border-sky-100 bg-sky-50 px-2 py-1 text-left hover:border-sky-200 hover:bg-sky-100"
+      className="grid min-h-8 rounded-md border border-[#BFDBFE] bg-[#EFF6FF] px-2 py-1 text-left hover:border-[#93C5FD] hover:bg-[#DBEAFE]"
       onClick={onClick}
       type="button"
     >
-      <span className="truncate text-xs font-semibold text-slate-900">
+      <span className="truncate text-xs font-semibold text-[#1D4ED8]">
         {formatScheduleTime(schedule, timeZone)} {schedule.scheduleTitle}
       </span>
-      <span className="truncate text-[11px] text-slate-600">
+      <span className="truncate text-[11px] text-[#6B7280]">
         {formatScheduleContext(schedule)}
       </span>
     </button>
@@ -437,17 +421,17 @@ function ScheduleEmptyState({
   readonly onCreate: () => void;
 }) {
   return (
-    <div className="grid place-items-center rounded-lg border bg-white px-5 py-10 text-center">
+    <div className="grid place-items-center rounded-lg border border-[#E2E5EC] bg-white px-5 py-10 text-center">
       <div>
-        <CalendarDays className="mx-auto h-8 w-8 text-muted-foreground" />
-        <p className="mt-3 text-base font-semibold">
+        <CalendarDays className="mx-auto h-8 w-8 text-[#9CA3AF]" />
+        <p className="mt-3 text-base font-semibold text-[#111827]">
           {mode === "month" ? "이번 달 일정이 없습니다." : "이번 주 일정이 없습니다."}
         </p>
-        <p className="mt-2 text-sm text-muted-foreground">
+        <p className="mt-2 text-sm text-[#6B7280]">
           새 일정을 만들면 캘린더에서 바로 확인할 수 있습니다.
         </p>
         <button
-          className="mt-5 inline-flex h-10 items-center gap-2 rounded-md bg-primary px-4 text-sm font-medium text-primary-foreground"
+          className="mt-5 inline-flex h-7 items-center gap-1.5 rounded-md bg-[#2563EB] px-3 text-[12px] font-medium text-white hover:bg-[#1D4ED8]"
           onClick={onCreate}
           type="button"
         >
@@ -475,7 +459,7 @@ function ScheduleError({
             {getApiErrorMessage(error)}
           </p>
           <button
-            className="mt-3 inline-flex h-9 items-center gap-2 rounded-md border bg-white px-3 text-sm font-medium hover:bg-muted"
+            className="mt-3 inline-flex h-7 items-center gap-1.5 rounded-md border border-[#E2E5EC] bg-white px-2.5 text-[12px] font-medium text-[#374151] hover:bg-[#F5F6F8]"
             onClick={onRetry}
             type="button"
           >

@@ -57,6 +57,7 @@ import {
   type DealDetail,
   type DealProductOption,
 } from "@/features/deal/types/deal";
+import { CompanyTaxonomyCreateDialog } from "@/features/company/components/company-taxonomy-create-dialog";
 import { ProductCreateDialog } from "@/features/product/components/product-create-dialog";
 import { getApiErrorMessage } from "@/lib/api-client";
 import { cn } from "@/utils/cn";
@@ -497,12 +498,17 @@ function QuickCompanyCreateDialog({
     register,
     handleSubmit,
     reset,
+    setValue,
+    watch,
     formState: { errors },
   } = useForm<CompanyCreateFormValues>({
     resolver: zodResolver(companyCreateFormSchema),
     defaultValues: emptyCompanyCreateFormValues,
   });
   const formId = "deal-quick-company-create-form";
+  const [taxonomyDialog, setTaxonomyDialog] = useState<{ kind: "field" | "region" } | null>(null);
+  const [pendingFieldName, setPendingFieldName] = useState("");
+  const [pendingRegionName, setPendingRegionName] = useState("");
 
   useEffect(() => {
     if (open) {
@@ -510,12 +516,30 @@ function QuickCompanyCreateDialog({
     }
   }, [open, reset]);
 
+  const fields = fieldsQuery.data?.items ?? [];
+  const regions = regionsQuery.data?.items ?? [];
+
+  useEffect(() => {
+    if (!pendingFieldName) return;
+    const matched = fields.find((f) => f.field === pendingFieldName);
+    if (matched) {
+      setValue("companyFieldId", matched.id);
+      setPendingFieldName("");
+    }
+  }, [fields, pendingFieldName, setValue]);
+
+  useEffect(() => {
+    if (!pendingRegionName) return;
+    const matched = regions.find((r) => r.region === pendingRegionName);
+    if (matched) {
+      setValue("companyRegionId", matched.id);
+      setPendingRegionName("");
+    }
+  }, [regions, pendingRegionName, setValue]);
+
   if (!open) {
     return null;
   }
-
-  const fields = fieldsQuery.data?.items ?? [];
-  const regions = regionsQuery.data?.items ?? [];
 
   const onSubmit = handleSubmit(async (values) => {
     await createCompanyMutation.mutateAsync(toCreateCompanyInput(values));
@@ -524,6 +548,7 @@ function QuickCompanyCreateDialog({
   });
 
   return (
+    <>
     <ModalShell
       description="딜에 바로 연결할 회사를 저장합니다."
       footer={
@@ -556,7 +581,15 @@ function QuickCompanyCreateDialog({
                 aria-invalid={Boolean(errors.companyFieldId)}
                 className="h-10 rounded-md border px-3 text-sm outline-none focus:ring-2 focus:ring-ring"
                 id="deal-quick-company-field"
-                {...register("companyFieldId")}
+                value={watch("companyFieldId") ?? ""}
+                onChange={(e) => {
+                  const v = e.target.value;
+                  if (v === ADD_TAXONOMY_VALUE) {
+                    setTaxonomyDialog({ kind: "field" });
+                  } else {
+                    setValue("companyFieldId", v, { shouldValidate: true });
+                  }
+                }}
               >
                 <option value="">분야 선택</option>
                 {fields.map((field) => (
@@ -564,6 +597,7 @@ function QuickCompanyCreateDialog({
                     {field.field}
                   </option>
                 ))}
+                <option value={ADD_TAXONOMY_VALUE}>+ 추가</option>
               </select>
             </ModalFieldGroup>
 
@@ -572,7 +606,15 @@ function QuickCompanyCreateDialog({
                 aria-invalid={Boolean(errors.companyRegionId)}
                 className="h-10 rounded-md border px-3 text-sm outline-none focus:ring-2 focus:ring-ring"
                 id="deal-quick-company-region"
-                {...register("companyRegionId")}
+                value={watch("companyRegionId") ?? ""}
+                onChange={(e) => {
+                  const v = e.target.value;
+                  if (v === ADD_TAXONOMY_VALUE) {
+                    setTaxonomyDialog({ kind: "region" });
+                  } else {
+                    setValue("companyRegionId", v, { shouldValidate: true });
+                  }
+                }}
               >
                 <option value="">지역 선택</option>
                 {regions.map((region) => (
@@ -580,6 +622,7 @@ function QuickCompanyCreateDialog({
                     {region.region}
                   </option>
                 ))}
+                <option value={ADD_TAXONOMY_VALUE}>+ 추가</option>
               </select>
             </ModalFieldGroup>
           </ModalFormRow>
@@ -602,6 +645,20 @@ function QuickCompanyCreateDialog({
         ) : null}
       </ModalForm>
     </ModalShell>
+    <CompanyTaxonomyCreateDialog
+      kind={taxonomyDialog?.kind ?? "field"}
+      fields={fields}
+      regions={regions}
+      open={taxonomyDialog !== null}
+      onCreated={(name) => {
+        if (taxonomyDialog?.kind === "field") setPendingFieldName(name);
+        else setPendingRegionName(name);
+      }}
+      onOpenChange={(isOpen) => {
+        if (!isOpen) setTaxonomyDialog(null);
+      }}
+    />
+    </>
   );
 }
 
@@ -1132,3 +1189,5 @@ function normalizeDateInput(value: string) {
 
   return `${digits.slice(0, 4)}-${digits.slice(4, 6)}-${digits.slice(6)}`;
 }
+
+const ADD_TAXONOMY_VALUE = "__add_taxonomy__";

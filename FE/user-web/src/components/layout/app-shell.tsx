@@ -124,13 +124,19 @@ export function AppShell() {
     isCompanyDetail ||
     isContactDetail;
   const isContactListPage = pathname === "/contacts";
-  const isMeetingNoteListPage = pathname === "/meeting-notes";
+  const isMeetingNoteListPage =
+    pathname === "/meeting-notes" ||
+    pathname === "/meeting-notes/new" ||
+    /^\/meeting-notes\/[^/]+$/.test(pathname);
+  const isSchedulePage =
+    pathname === "/schedules" || pathname === "/schedules/week";
 
   const hideTopBar =
     isCompanyListPage ||
     isProductListPage ||
     isContactListPage ||
-    isMeetingNoteListPage;
+    isMeetingNoteListPage ||
+    isSchedulePage;
 
   // 현재 페이지 브레드크럼 결정
   const topBarContent = (() => {
