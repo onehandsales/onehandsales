@@ -218,7 +218,7 @@ export function DealPipelineHomeScreen({
                   <TableHeaderCell width={100}>단계</TableHeaderCell>
                   <TableHeaderCell width={110}>금액</TableHeaderCell>
                   <TableHeaderCell flex>다음 행동</TableHeaderCell>
-                  <TableHeaderCell align="right" width={86}>마감일</TableHeaderCell>
+                  <TableHeaderCell width={86}>마감일</TableHeaderCell>
                 </div>
 
                 {/* Rows */}
@@ -251,7 +251,6 @@ export function DealPipelineHomeScreen({
                 <Pagination
                   onPageChange={setPage}
                   page={page}
-                  totalCount={dealsQuery.data.totalCount}
                   totalPages={dealsQuery.data.totalPages ?? 1}
                   className="py-3"
                 />
@@ -356,7 +355,6 @@ export function DealPipelineHomeScreen({
                 <Pagination
                   onPageChange={setPage}
                   page={page}
-                  totalCount={dealsQuery.data.totalCount}
                   totalPages={dealsQuery.data.totalPages ?? 1}
                 />
               </div>
@@ -455,7 +453,7 @@ function DealListRow({
       </div>
 
       {/* 마감일 */}
-      <div className="shrink-0 text-right" style={{ width: 86 }}>
+      <div className="shrink-0" style={{ width: 86 }}>
         <span className={cn("text-[12px] font-medium", dlClass)}>
           {deal.expectedEndDate ? formatDate(deal.expectedEndDate, { year: "2-digit" }) : "-"}
         </span>

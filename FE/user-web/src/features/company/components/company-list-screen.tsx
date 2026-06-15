@@ -164,8 +164,8 @@ export function CompanyListScreen({
           value={companyFieldId}
         >
           <option value="">분야</option>
-          {fields.map((f) => <option key={f.id} value={f.id}>{f.field}</option>)}
           <option value={ADD_TAXONOMY_VALUE}>+ 추가</option>
+          {fields.map((f) => <option key={f.id} value={f.id}>{f.field}</option>)}
         </select>
         <select
           className={cn(
@@ -182,8 +182,8 @@ export function CompanyListScreen({
           value={companyRegionId}
         >
           <option value="">지역</option>
-          {regions.map((r) => <option key={r.id} value={r.id}>{r.region}</option>)}
           <option value={ADD_TAXONOMY_VALUE}>+ 추가</option>
+          {regions.map((r) => <option key={r.id} value={r.id}>{r.region}</option>)}
         </select>
         <div className="flex-1" />
         <span className="text-[12px] text-[#9CA3AF]">{companyList?.totalCount ?? 0}개</span>
@@ -208,7 +208,8 @@ export function CompanyListScreen({
             <div className="w-[90px] shrink-0 text-[11px] font-semibold uppercase tracking-wide text-[#9CA3AF]">지역</div>
             <div className="w-[80px] shrink-0 text-center text-[11px] font-semibold uppercase tracking-wide text-[#9CA3AF]">담당자</div>
             <div className="w-[60px] shrink-0 text-center text-[11px] font-semibold uppercase tracking-wide text-[#9CA3AF]">딜</div>
-            <div className="min-w-0 flex-1 text-right text-[11px] font-semibold uppercase tracking-wide text-[#9CA3AF]">등록일</div>
+            <div className="min-w-0 flex-1" />
+            <div className="w-[72px] shrink-0 text-[11px] font-semibold uppercase tracking-wide text-[#9CA3AF]">등록일</div>
           </div>
 
           {companiesQuery.isLoading ? (
@@ -284,7 +285,8 @@ function CompanyRow({ company }: { readonly company: CompanyListItem }) {
       <div className="w-[60px] shrink-0 text-center">
         <span className="text-[12px] font-semibold text-[#1D4ED8]">{company.dealCount}</span>
       </div>
-      <div className="min-w-0 flex-1 text-right">
+      <div className="min-w-0 flex-1" />
+      <div className="w-[72px] shrink-0">
         <span className="text-[12px] text-[#9CA3AF]">{formatCompactDate(company.createdAt)}</span>
       </div>
     </div>

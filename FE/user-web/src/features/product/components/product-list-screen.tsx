@@ -203,7 +203,8 @@ export function ProductListScreen({
             <ProductTableHeaderCell width={150}>카테고리</ProductTableHeaderCell>
             <ProductTableHeaderCell width={80}>연결</ProductTableHeaderCell>
             <ProductTableHeaderCell width={100}>상태</ProductTableHeaderCell>
-            <ProductTableHeaderCell flex>등록일</ProductTableHeaderCell>
+            <div className="min-w-0 flex-1" />
+            <ProductTableHeaderCell width={86}>등록일</ProductTableHeaderCell>
           </div>
 
           {productsQuery.isLoading ? (
@@ -260,7 +261,7 @@ function ProductRow({ product }: { readonly product: Product }) {
           {product.productName}
         </span>
       </div>
-      <div className="w-[150px] shrink-0">
+      <div className="w-[150px] min-w-0 shrink-0">
         <Badge tone={badgeToneFromCategory(product.productCategory.categoryName)}>
           {product.productCategory.categoryName}
         </Badge>
@@ -268,12 +269,13 @@ function ProductRow({ product }: { readonly product: Product }) {
       <div className="w-[80px] shrink-0">
         <Badge tone="blue">{`${product.dealCount.toLocaleString("ko-KR")}건`}</Badge>
       </div>
-      <div className="w-[100px] shrink-0">
+      <div className="w-[100px] min-w-0 shrink-0">
         <Badge tone={statusToneFromName(product.productStatus.statusName)}>
           {product.productStatus.statusName}
         </Badge>
       </div>
-      <div className="min-w-0 flex-1">
+      <div className="min-w-0 flex-1" />
+      <div className="w-[86px] shrink-0">
         <span className="text-[12px] text-[#374151]">{formatCompactDate(product.createdAt)}</span>
       </div>
     </Link>
@@ -316,11 +318,12 @@ function Badge({
   return (
     <span
       className={cn(
-        "inline-flex h-[22px] items-center rounded-full px-2.5 text-[11px] font-semibold",
+        "inline-flex h-[22px] max-w-full min-w-0 items-center overflow-hidden rounded-full px-2.5 text-[11px] font-semibold",
         styles[tone]
       )}
+      title={children}
     >
-      {children}
+      <span className="min-w-0 truncate whitespace-nowrap">{children}</span>
     </span>
   );
 }

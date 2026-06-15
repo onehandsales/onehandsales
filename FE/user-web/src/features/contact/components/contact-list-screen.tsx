@@ -188,12 +188,12 @@ export function ContactListScreen() {
           value={contactDepartmentId}
         >
           <option value="">부서</option>
+          <option value={ADD_TAXONOMY_VALUE}>+ 추가</option>
           {departments.map((d) => (
             <option key={d.id} value={d.id}>
               {d.departmentName}
             </option>
           ))}
-          <option value={ADD_TAXONOMY_VALUE}>+ 추가</option>
         </select>
         <select
           className={cn(
@@ -215,12 +215,12 @@ export function ContactListScreen() {
           value={contactJobGradeId}
         >
           <option value="">직급</option>
+          <option value={ADD_TAXONOMY_VALUE}>+ 추가</option>
           {jobGrades.map((g) => (
             <option key={g.id} value={g.id}>
               {g.jobGradeName}
             </option>
           ))}
-          <option value={ADD_TAXONOMY_VALUE}>+ 추가</option>
         </select>
         <div className="flex-1" />
         <span className="text-[12px] text-[#9CA3AF]">

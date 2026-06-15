@@ -2,15 +2,19 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Building2,
+  BadgeCheck,
   ChevronDown,
   HandCoins,
   IdCard,
+  MapPin,
   Package,
   Plus,
+  Tags,
   type LucideIcon,
+  Users,
   X,
 } from "lucide-react";
-import { type ChangeEvent, useEffect, useRef, useState } from "react";
+import { type ChangeEvent, useEffect, useMemo, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import {
   ModalFieldGroup,
@@ -31,6 +35,7 @@ import {
 } from "@/features/company/schemas/company-schema";
 import { useContactDepartments, useContactJobGrades } from "@/features/contact/hooks/use-contact-list";
 import { useCreateContactMutation } from "@/features/contact/hooks/use-contact-mutations";
+import { ContactTaxonomyManageDialog } from "@/features/contact/components/contact-taxonomy-manage-dialog";
 import {
   contactCreateFormSchema,
   emptyContactCreateFormValues,
@@ -509,21 +514,33 @@ function QuickCompanyCreateDialog({
   const [taxonomyDialog, setTaxonomyDialog] = useState<{ kind: "field" | "region" } | null>(null);
   const [pendingFieldName, setPendingFieldName] = useState("");
   const [pendingRegionName, setPendingRegionName] = useState("");
+  const [fieldSearch, setFieldSearch] = useState("");
+  const [regionSearch, setRegionSearch] = useState("");
+  const selectedFieldId = watch("companyFieldId") ?? "";
+  const selectedRegionId = watch("companyRegionId") ?? "";
 
   useEffect(() => {
     if (open) {
       reset(emptyCompanyCreateFormValues);
+      setTaxonomyDialog(null);
+      setPendingFieldName("");
+      setPendingRegionName("");
+      setFieldSearch("");
+      setRegionSearch("");
     }
   }, [open, reset]);
 
-  const fields = fieldsQuery.data?.items ?? [];
-  const regions = regionsQuery.data?.items ?? [];
+  const fields = useMemo(() => fieldsQuery.data?.items ?? [], [fieldsQuery.data]);
+  const regions = useMemo(() => regionsQuery.data?.items ?? [], [regionsQuery.data]);
+  const selectedField = fields.find((field) => field.id === selectedFieldId);
+  const selectedRegion = regions.find((region) => region.id === selectedRegionId);
 
   useEffect(() => {
     if (!pendingFieldName) return;
     const matched = fields.find((f) => f.field === pendingFieldName);
     if (matched) {
-      setValue("companyFieldId", matched.id);
+      setValue("companyFieldId", matched.id, { shouldDirty: true, shouldValidate: true });
+      setFieldSearch(matched.field);
       setPendingFieldName("");
     }
   }, [fields, pendingFieldName, setValue]);
@@ -532,7 +549,8 @@ function QuickCompanyCreateDialog({
     if (!pendingRegionName) return;
     const matched = regions.find((r) => r.region === pendingRegionName);
     if (matched) {
-      setValue("companyRegionId", matched.id);
+      setValue("companyRegionId", matched.id, { shouldDirty: true, shouldValidate: true });
+      setRegionSearch(matched.region);
       setPendingRegionName("");
     }
   }, [regions, pendingRegionName, setValue]);
@@ -577,53 +595,67 @@ function QuickCompanyCreateDialog({
 
           <ModalFormRow columns={2}>
             <ModalFieldGroup error={errors.companyFieldId?.message} id="deal-quick-company-field" label="분야">
-              <select
-                aria-invalid={Boolean(errors.companyFieldId)}
-                className="h-10 rounded-md border px-3 text-sm outline-none focus:ring-2 focus:ring-ring"
+              <input type="hidden" {...register("companyFieldId")} />
+              <SearchSelectField
+                createActionLabel="분야 빠른 등록"
+                emptyText="검색된 분야가 없습니다."
+                getLabel={(field) => field.field}
+                icon={Tags}
                 id="deal-quick-company-field"
-                value={watch("companyFieldId") ?? ""}
-                onChange={(e) => {
-                  const v = e.target.value;
-                  if (v === ADD_TAXONOMY_VALUE) {
-                    setTaxonomyDialog({ kind: "field" });
-                  } else {
-                    setValue("companyFieldId", v, { shouldValidate: true });
+                isLoading={fieldsQuery.isLoading}
+                items={fields}
+                placeholder="분야 검색"
+                search={fieldSearch}
+                selectedId={selectedFieldId}
+                selectedLabel={selectedField?.field ?? fieldSearch}
+                onCreate={() => setTaxonomyDialog({ kind: "field" })}
+                onClear={() => {
+                  setValue("companyFieldId", "", { shouldDirty: true, shouldValidate: true });
+                  setFieldSearch("");
+                }}
+                onSearchChange={(value) => {
+                  setFieldSearch(value);
+                  if (selectedFieldId) {
+                    setValue("companyFieldId", "", { shouldDirty: true, shouldValidate: true });
                   }
                 }}
-              >
-                <option value="">분야 선택</option>
-                {fields.map((field) => (
-                  <option key={field.id} value={field.id}>
-                    {field.field}
-                  </option>
-                ))}
-                <option value={ADD_TAXONOMY_VALUE}>+ 추가</option>
-              </select>
+                onSelect={(field) => {
+                  setValue("companyFieldId", field.id, { shouldDirty: true, shouldValidate: true });
+                  setFieldSearch(field.field);
+                }}
+              />
             </ModalFieldGroup>
 
             <ModalFieldGroup error={errors.companyRegionId?.message} id="deal-quick-company-region" label="지역">
-              <select
-                aria-invalid={Boolean(errors.companyRegionId)}
-                className="h-10 rounded-md border px-3 text-sm outline-none focus:ring-2 focus:ring-ring"
+              <input type="hidden" {...register("companyRegionId")} />
+              <SearchSelectField
+                createActionLabel="지역 빠른 등록"
+                emptyText="검색된 지역이 없습니다."
+                getLabel={(region) => region.region}
+                icon={MapPin}
                 id="deal-quick-company-region"
-                value={watch("companyRegionId") ?? ""}
-                onChange={(e) => {
-                  const v = e.target.value;
-                  if (v === ADD_TAXONOMY_VALUE) {
-                    setTaxonomyDialog({ kind: "region" });
-                  } else {
-                    setValue("companyRegionId", v, { shouldValidate: true });
+                isLoading={regionsQuery.isLoading}
+                items={regions}
+                placeholder="지역 검색"
+                search={regionSearch}
+                selectedId={selectedRegionId}
+                selectedLabel={selectedRegion?.region ?? regionSearch}
+                onCreate={() => setTaxonomyDialog({ kind: "region" })}
+                onClear={() => {
+                  setValue("companyRegionId", "", { shouldDirty: true, shouldValidate: true });
+                  setRegionSearch("");
+                }}
+                onSearchChange={(value) => {
+                  setRegionSearch(value);
+                  if (selectedRegionId) {
+                    setValue("companyRegionId", "", { shouldDirty: true, shouldValidate: true });
                   }
                 }}
-              >
-                <option value="">지역 선택</option>
-                {regions.map((region) => (
-                  <option key={region.id} value={region.id}>
-                    {region.region}
-                  </option>
-                ))}
-                <option value={ADD_TAXONOMY_VALUE}>+ 추가</option>
-              </select>
+                onSelect={(region) => {
+                  setValue("companyRegionId", region.id, { shouldDirty: true, shouldValidate: true });
+                  setRegionSearch(region.region);
+                }}
+              />
             </ModalFieldGroup>
           </ModalFormRow>
         </ModalFormSection>
@@ -690,12 +722,31 @@ function QuickContactCreateDialog({
     register,
     handleSubmit,
     reset,
+    setValue,
+    watch,
     formState: { errors },
   } = useForm<ContactCreateFormValues>({
     resolver: zodResolver(contactCreateFormSchema),
     defaultValues: emptyContactCreateFormValues,
   });
   const formId = "deal-quick-contact-create-form";
+  const [taxonomyOpen, setTaxonomyOpen] = useState(false);
+  const [pendingDepartmentName, setPendingDepartmentName] = useState("");
+  const [pendingJobGradeName, setPendingJobGradeName] = useState("");
+  const [departmentSearch, setDepartmentSearch] = useState("");
+  const [jobGradeSearch, setJobGradeSearch] = useState("");
+  const selectedDepartmentId = watch("contactDepartmentId") ?? "";
+  const selectedJobGradeId = watch("contactJobGradeId") ?? "";
+  const departments = useMemo(
+    () => departmentsQuery.data?.items ?? [],
+    [departmentsQuery.data]
+  );
+  const jobGrades = useMemo(
+    () => jobGradesQuery.data?.items ?? [],
+    [jobGradesQuery.data]
+  );
+  const selectedDepartment = departments.find((department) => department.id === selectedDepartmentId);
+  const selectedJobGrade = jobGrades.find((jobGrade) => jobGrade.id === selectedJobGradeId);
 
   useEffect(() => {
     if (open) {
@@ -703,15 +754,37 @@ function QuickContactCreateDialog({
         ...emptyContactCreateFormValues,
         companyId: defaultCompanyId,
       });
+      setTaxonomyOpen(false);
+      setPendingDepartmentName("");
+      setPendingJobGradeName("");
+      setDepartmentSearch("");
+      setJobGradeSearch("");
     }
   }, [defaultCompanyId, open, reset]);
+
+  useEffect(() => {
+    if (!pendingDepartmentName) return;
+    const matched = departments.find((department) => department.departmentName === pendingDepartmentName);
+    if (matched) {
+      setValue("contactDepartmentId", matched.id, { shouldDirty: true, shouldValidate: true });
+      setDepartmentSearch(matched.departmentName);
+      setPendingDepartmentName("");
+    }
+  }, [departments, pendingDepartmentName, setValue]);
+
+  useEffect(() => {
+    if (!pendingJobGradeName) return;
+    const matched = jobGrades.find((jobGrade) => jobGrade.jobGradeName === pendingJobGradeName);
+    if (matched) {
+      setValue("contactJobGradeId", matched.id, { shouldDirty: true, shouldValidate: true });
+      setJobGradeSearch(matched.jobGradeName);
+      setPendingJobGradeName("");
+    }
+  }, [jobGrades, pendingJobGradeName, setValue]);
 
   if (!open) {
     return null;
   }
-
-  const departments = departmentsQuery.data?.items ?? [];
-  const jobGrades = jobGradesQuery.data?.items ?? [];
 
   const onSubmit = handleSubmit(async (values) => {
     await createContactMutation.mutateAsync(toCreateContactInput(values));
@@ -723,6 +796,7 @@ function QuickContactCreateDialog({
   });
 
   return (
+    <>
     <ModalShell
       description="딜에 바로 연결할 담당자를 저장합니다."
       footer={
@@ -792,35 +866,67 @@ function QuickContactCreateDialog({
         <ModalFormSection title="소속 정보">
           <ModalFormRow columns={2}>
             <ModalFieldGroup error={errors.contactDepartmentId?.message} id="deal-quick-contact-department" label="부서">
-              <select
-                aria-invalid={Boolean(errors.contactDepartmentId)}
-                className="h-10 rounded-md border px-3 text-sm outline-none focus:ring-2 focus:ring-ring"
+              <input type="hidden" {...register("contactDepartmentId")} />
+              <SearchSelectField
+                createActionLabel="부서 빠른 등록"
+                emptyText="검색된 부서가 없습니다."
+                getLabel={(department) => department.departmentName}
+                icon={Users}
                 id="deal-quick-contact-department"
-                {...register("contactDepartmentId")}
-              >
-                <option value="">부서 선택</option>
-                {departments.map((department) => (
-                  <option key={department.id} value={department.id}>
-                    {department.departmentName}
-                  </option>
-                ))}
-              </select>
+                isLoading={departmentsQuery.isLoading}
+                items={departments}
+                placeholder="부서 검색"
+                search={departmentSearch}
+                selectedId={selectedDepartmentId}
+                selectedLabel={selectedDepartment?.departmentName ?? departmentSearch}
+                onCreate={() => setTaxonomyOpen(true)}
+                onClear={() => {
+                  setValue("contactDepartmentId", "", { shouldDirty: true, shouldValidate: true });
+                  setDepartmentSearch("");
+                }}
+                onSearchChange={(value) => {
+                  setDepartmentSearch(value);
+                  if (selectedDepartmentId) {
+                    setValue("contactDepartmentId", "", { shouldDirty: true, shouldValidate: true });
+                  }
+                }}
+                onSelect={(department) => {
+                  setValue("contactDepartmentId", department.id, { shouldDirty: true, shouldValidate: true });
+                  setDepartmentSearch(department.departmentName);
+                }}
+              />
             </ModalFieldGroup>
 
             <ModalFieldGroup error={errors.contactJobGradeId?.message} id="deal-quick-contact-job-grade" label="직급">
-              <select
-                aria-invalid={Boolean(errors.contactJobGradeId)}
-                className="h-10 rounded-md border px-3 text-sm outline-none focus:ring-2 focus:ring-ring"
+              <input type="hidden" {...register("contactJobGradeId")} />
+              <SearchSelectField
+                createActionLabel="직급 빠른 등록"
+                emptyText="검색된 직급이 없습니다."
+                getLabel={(jobGrade) => jobGrade.jobGradeName}
+                icon={BadgeCheck}
                 id="deal-quick-contact-job-grade"
-                {...register("contactJobGradeId")}
-              >
-                <option value="">직급 선택</option>
-                {jobGrades.map((jobGrade) => (
-                  <option key={jobGrade.id} value={jobGrade.id}>
-                    {jobGrade.jobGradeName}
-                  </option>
-                ))}
-              </select>
+                isLoading={jobGradesQuery.isLoading}
+                items={jobGrades}
+                placeholder="직급 검색"
+                search={jobGradeSearch}
+                selectedId={selectedJobGradeId}
+                selectedLabel={selectedJobGrade?.jobGradeName ?? jobGradeSearch}
+                onCreate={() => setTaxonomyOpen(true)}
+                onClear={() => {
+                  setValue("contactJobGradeId", "", { shouldDirty: true, shouldValidate: true });
+                  setJobGradeSearch("");
+                }}
+                onSearchChange={(value) => {
+                  setJobGradeSearch(value);
+                  if (selectedJobGradeId) {
+                    setValue("contactJobGradeId", "", { shouldDirty: true, shouldValidate: true });
+                  }
+                }}
+                onSelect={(jobGrade) => {
+                  setValue("contactJobGradeId", jobGrade.id, { shouldDirty: true, shouldValidate: true });
+                  setJobGradeSearch(jobGrade.jobGradeName);
+                }}
+              />
             </ModalFieldGroup>
           </ModalFormRow>
         </ModalFormSection>
@@ -842,6 +948,18 @@ function QuickContactCreateDialog({
         ) : null}
       </ModalForm>
     </ModalShell>
+    <ContactTaxonomyManageDialog
+      open={taxonomyOpen}
+      onCreated={(kind, name) => {
+        if (kind === "department") {
+          setPendingDepartmentName(name);
+        } else {
+          setPendingJobGradeName(name);
+        }
+      }}
+      onOpenChange={setTaxonomyOpen}
+    />
+    </>
   );
 }
 
@@ -1189,5 +1307,3 @@ function normalizeDateInput(value: string) {
 
   return `${digits.slice(0, 4)}-${digits.slice(4, 6)}-${digits.slice(6)}`;
 }
-
-const ADD_TAXONOMY_VALUE = "__add_taxonomy__";
