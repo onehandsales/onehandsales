@@ -32,6 +32,7 @@ import { ValidationDomainError } from "@/shared/domain/errors/common.errors";
 import { AppLogger } from "@/shared/infrastructure/logger/app-logger.service";
 
 const PAGE_SIZE = 10;
+const LOCAL_DATE_PATTERN = /^(\d{4})-(\d{2})-(\d{2})$/;
 const LOCAL_DATE_TIME_PATTERN =
   /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})(?::(\d{2})(?:\.(\d{1,3}))?)?$/;
 
@@ -75,6 +76,7 @@ export interface ListMeetingNotesQueryInput {
   readonly companyIds?: string[];
   readonly contactIds?: string[];
   readonly sort?: MeetingNoteSort;
+  readonly meetingDate?: string;
 }
 
 // 역할 : CreateMeetingNoteCommand 회의록 생성 command 구조를 정의합니다.
@@ -291,6 +293,11 @@ export class MeetingNoteApplicationService {
     const companyIds = this.normalizeIdArray(query.companyIds ?? [], "companyIds");
     const contactIds = this.normalizeIdArray(query.contactIds ?? [], "contactIds");
     const sort = query.sort ?? MeetingNoteSort.CREATED_AT_DESC;
+    const timeZone = this.normalizeUserTimeZone(currentUser.timeZone);
+    const meetingDateRange = this.parseOptionalMeetingDateRange(
+      query.meetingDate,
+      timeZone
+    );
 
     // 2. 현재 사용자 소유 회의록만 저장소에서 조회합니다.
     const result = await this.meetingNoteRepository.listMeetingNotes({
@@ -300,6 +307,12 @@ export class MeetingNoteApplicationService {
       companyIds,
       contactIds,
       sort,
+      ...(meetingDateRange
+        ? {
+            meetingAtFrom: meetingDateRange.from,
+            meetingAtTo: meetingDateRange.to,
+          }
+        : {}),
     });
     const totalPages = Math.ceil(result.totalCount / PAGE_SIZE);
 
@@ -1243,6 +1256,55 @@ export class MeetingNoteApplicationService {
     }
 
     return this.zonedTimeToUtc(parts, timeZone);
+  }
+
+  // 기능 : 사용자 timezone 기준 local date 하루 범위를 UTC instant 범위로 변환합니다.
+  private parseOptionalMeetingDateRange(
+    value: string | undefined,
+    timeZone: string
+  ): { readonly from: Date; readonly to: Date } | undefined {
+    if (value === undefined || value.trim().length === 0) {
+      return undefined;
+    }
+
+    const normalized = value.trim();
+    const match = LOCAL_DATE_PATTERN.exec(normalized);
+
+    if (!match) {
+      throw new ValidationDomainError("meetingDate must be a valid local date");
+    }
+
+    const startParts: DateTimeParts = {
+      year: Number(match[1]),
+      month: Number(match[2]),
+      day: Number(match[3]),
+      hour: 0,
+      minute: 0,
+      second: 0,
+      millisecond: 0,
+    };
+
+    if (!this.isValidDateTimeParts(startParts)) {
+      throw new ValidationDomainError("meetingDate must be a valid local date");
+    }
+
+    const nextDay = new Date(
+      Date.UTC(startParts.year, startParts.month - 1, startParts.day + 1)
+    );
+    const endParts: DateTimeParts = {
+      year: nextDay.getUTCFullYear(),
+      month: nextDay.getUTCMonth() + 1,
+      day: nextDay.getUTCDate(),
+      hour: 0,
+      minute: 0,
+      second: 0,
+      millisecond: 0,
+    };
+
+    return {
+      from: this.zonedTimeToUtc(startParts, timeZone),
+      to: this.zonedTimeToUtc(endParts, timeZone),
+    };
   }
 
   // 기능 : timezone 기준 local date-time 구성요소를 UTC instant로 변환합니다.

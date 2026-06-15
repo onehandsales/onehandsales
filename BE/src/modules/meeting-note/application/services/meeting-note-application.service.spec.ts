@@ -157,8 +157,15 @@ class FakeMeetingNoteRepository implements MeetingNoteRepository {
         meetingNote.contacts.some((contact) =>
           contact.contactId ? input.contactIds.includes(contact.contactId) : false
         );
+      const meetingDateMatched =
+        (!input.meetingAtFrom ||
+          (meetingNote.meetingAt !== null &&
+            meetingNote.meetingAt >= input.meetingAtFrom)) &&
+        (!input.meetingAtTo ||
+          (meetingNote.meetingAt !== null &&
+            meetingNote.meetingAt < input.meetingAtTo));
 
-      return companyMatched && contactMatched;
+      return companyMatched && contactMatched && meetingDateMatched;
     });
 
     return { items, totalCount: items.length };

@@ -69,6 +69,9 @@ function toMeetingNoteListSearchParams(params: MeetingNoteListParams) {
   if (params.sort) {
     searchParams.set("sort", params.sort);
   }
+  if (params.meetingDate) {
+    searchParams.set("meetingDate", params.meetingDate);
+  }
 
   return searchParams;
 }

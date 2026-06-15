@@ -426,6 +426,13 @@ export class PrismaMeetingNoteRepository implements MeetingNoteRepository {
       };
     }
 
+    if (input.meetingAtFrom || input.meetingAtTo) {
+      where.meetingAt = {
+        ...(input.meetingAtFrom ? { gte: input.meetingAtFrom } : {}),
+        ...(input.meetingAtTo ? { lt: input.meetingAtTo } : {}),
+      };
+    }
+
     return where;
   }
 

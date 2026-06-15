@@ -137,6 +137,8 @@ export interface ListMeetingNotesInput {
   readonly companyIds: readonly string[];
   readonly contactIds: readonly string[];
   readonly sort: MeetingNoteSort;
+  readonly meetingAtFrom?: Date;
+  readonly meetingAtTo?: Date;
 }
 
 // 역할 : MeetingNoteListRecord 회의록 목록 조회 결과 구조를 정의합니다.

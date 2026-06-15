@@ -4,6 +4,7 @@ import {
   IsArray,
   IsEnum,
   IsInt,
+  Matches,
   IsOptional,
   IsString,
   IsUUID,
@@ -47,6 +48,11 @@ export class ListMeetingNotesQueryDto {
   @IsOptional()
   @IsEnum(MeetingNoteSort)
   sort?: MeetingNoteSort;
+
+  @IsOptional()
+  @IsString()
+  @Matches(/^\d{4}-\d{2}-\d{2}$/)
+  meetingDate?: string;
 }
 
 // 역할 : MeetingNoteCompanyInputDto 회의록 회사 입력 값을 검증합니다.

@@ -31,6 +31,7 @@ export type MeetingNoteListParams = {
   readonly companyIds?: readonly string[];
   readonly contactIds?: readonly string[];
   readonly sort?: MeetingNoteSort;
+  readonly meetingDate?: string;
 };
 
 export type MeetingNoteFilterCompanyOption = {

@@ -14,6 +14,7 @@ export const meetingNoteQueryKeys = {
       {
         companyIds: [...(params.companyIds ?? [])],
         contactIds: [...(params.contactIds ?? [])],
+        meetingDate: params.meetingDate ?? "",
         page: params.page ?? 1,
         sort: params.sort ?? "createdAtDesc",
       },

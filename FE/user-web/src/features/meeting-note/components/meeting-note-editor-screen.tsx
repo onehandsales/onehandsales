@@ -27,6 +27,7 @@ import {
   type MeetingNoteFormValues,
 } from "@/features/meeting-note/schemas/meeting-note-schema";
 import type { MeetingNote } from "@/features/meeting-note/types/meeting-note";
+import { getMeetingDateParts } from "@/features/meeting-note/utils/meeting-note-date";
 import { getApiErrorMessage } from "@/lib/api-client";
 import { formatDateTime, formatMoney } from "@/utils/format";
 
@@ -150,195 +151,282 @@ export function MeetingNoteEditorScreen({
   }
 
   return (
-    <section className="mx-auto grid max-w-[1500px] gap-5 px-5 py-6">
-      <header className="flex flex-col gap-4 border-b pb-5 xl:flex-row xl:items-center xl:justify-between">
-        <div className="min-w-0">
+    <div className="flex h-full flex-col">
+      {notice ? (
+        <div className="mx-6 mt-3">
+          <NoticeMessage message={notice} onDismiss={() => setNotice(null)} />
+        </div>
+      ) : null}
+
+      {actionError ? (
+        <div className="mx-6 mt-3">
+          <ErrorMessage message={getApiErrorMessage(actionError)} />
+        </div>
+      ) : null}
+
+      <div className="flex min-h-0 flex-1 overflow-hidden bg-[#F9FAFB]">
+        <div className="flex min-w-0 flex-1 flex-col gap-4 overflow-y-auto p-6">
           <Link
-            className="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground"
+            className="inline-flex w-fit items-center gap-2 text-[13px] font-medium text-[#64748B] hover:text-[#374151]"
             to="/meeting-notes"
           >
             <ArrowLeft className="h-4 w-4" />
             회의록 목록
           </Link>
-          <h1 className="mt-3 text-2xl font-semibold">
-            {isEdit ? "회의록 상세" : "회의록 작성"}
-          </h1>
-          <p className="mt-1 text-sm text-muted-foreground">
-            회사와 담당자, 미팅 내용, 다음 행동을 수동으로 기록합니다.
-          </p>
+
+          <div className="rounded-lg border border-[#E5E7EB] bg-white p-5">
+            <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
+              <div className="min-w-0">
+                <h1 className="text-[22px] font-semibold leading-tight text-[#111827]">
+                  {isEdit ? "회의록 상세" : "회의록 작성"}
+                </h1>
+                <p className="mt-1 text-[13px] text-[#6B7280]">
+                  회사와 담당자, 미팅 내용, 다음 행동을 기록합니다.
+                </p>
+              </div>
+              <button
+                className="inline-flex h-9 w-fit items-center gap-1.5 rounded-md bg-[#1D4ED8] px-3 text-[13px] font-semibold text-white hover:bg-[#1E40AF] disabled:cursor-not-allowed disabled:opacity-60"
+                disabled={isSaving}
+                form="meeting-note-form"
+                type="submit"
+              >
+                {isSaving ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  <Save className="h-4 w-4" />
+                )}
+                {isEdit ? "수정 저장" : "저장"}
+              </button>
+            </div>
+          </div>
+
+          <form
+            className="grid gap-4"
+            id="meeting-note-form"
+            onSubmit={onSubmit}
+          >
+            <section className="grid gap-4 rounded-lg border border-[#E5E7EB] bg-white p-5">
+              <div className="flex items-center gap-2">
+                <FileText className="h-4 w-4 text-[#6B7280]" />
+                <h2 className="text-[14px] font-semibold text-[#111827]">기본 정보</h2>
+              </div>
+              <div className="grid gap-4 md:grid-cols-3">
+                <TextField
+                  errorMessage={errors.meetingLocalDateTime?.message}
+                  id="meeting-local-date-time"
+                  label="미팅 일시"
+                  register={register("meetingLocalDateTime")}
+                  type="datetime-local"
+                />
+                <TextField
+                  errorMessage={errors.companyName?.message}
+                  id="meeting-company-name"
+                  label="회사"
+                  register={register("companyName")}
+                />
+                <TextField
+                  errorMessage={errors.contactUsername?.message}
+                  id="meeting-contact-username"
+                  label="담당자"
+                  register={register("contactUsername")}
+                />
+              </div>
+              <div className="grid gap-4 md:grid-cols-3">
+                <TextField
+                  errorMessage={errors.companyField?.message}
+                  id="meeting-company-field"
+                  label="업종"
+                  register={register("companyField")}
+                />
+                <TextField
+                  errorMessage={errors.companyRegion?.message}
+                  id="meeting-company-region"
+                  label="지역"
+                  register={register("companyRegion")}
+                />
+                <TextField
+                  errorMessage={errors.department?.message}
+                  id="meeting-contact-department"
+                  label="부서"
+                  register={register("department")}
+                />
+              </div>
+              <div className="grid gap-4 md:grid-cols-3">
+                <TextField
+                  errorMessage={errors.jobGrade?.message}
+                  id="meeting-contact-job-grade"
+                  label="직급"
+                  register={register("jobGrade")}
+                />
+                <TextField
+                  errorMessage={errors.contactEmail?.message}
+                  id="meeting-contact-email"
+                  label="이메일"
+                  register={register("contactEmail")}
+                />
+                <TextField
+                  errorMessage={errors.contactMobile?.message}
+                  id="meeting-contact-mobile"
+                  label="연락처"
+                  register={register("contactMobile")}
+                />
+              </div>
+            </section>
+
+            <section className="grid gap-4 rounded-lg border border-[#E5E7EB] bg-white p-5">
+              <div className="flex items-center gap-2">
+                <BriefcaseBusiness className="h-4 w-4 text-[#6B7280]" />
+                <h2 className="text-[14px] font-semibold text-[#111827]">제품과 딜</h2>
+              </div>
+              <div className="grid gap-4 md:grid-cols-2">
+                <TextField
+                  errorMessage={errors.productName?.message}
+                  id="meeting-product-name"
+                  label="제품"
+                  register={register("productName")}
+                />
+                <TextField
+                  errorMessage={errors.productPrice?.message}
+                  id="meeting-product-price"
+                  label="제품 금액"
+                  register={register("productPrice")}
+                  type="number"
+                />
+                <TextField
+                  errorMessage={errors.productCategory?.message}
+                  id="meeting-product-category"
+                  label="제품 카테고리"
+                  register={register("productCategory")}
+                />
+                <TextField
+                  errorMessage={errors.productStatus?.message}
+                  id="meeting-product-status"
+                  label="제품 상태"
+                  register={register("productStatus")}
+                />
+              </div>
+              <DealSearchField
+                errorMessage={errors.dealId?.message}
+                isLoading={dealOptionsQuery.isFetching}
+                onClear={clearDeal}
+                onSearchChange={updateDealSearch}
+                onSelect={selectDeal}
+                options={dealOptionsQuery.data ?? []}
+                search={dealSearch}
+                selectedId={dealId}
+              />
+            </section>
+
+            <section className="grid gap-4 rounded-lg border border-[#E5E7EB] bg-white p-5">
+              <div>
+                <h2 className="text-[14px] font-semibold text-[#111827]">미팅 내용</h2>
+              </div>
+              <TextAreaField
+                errorMessage={errors.details?.message}
+                id="meeting-details"
+                label="상세 내용"
+                register={register("details")}
+                rows={8}
+              />
+              <div className="grid gap-4 md:grid-cols-2">
+                <TextAreaField
+                  errorMessage={errors.nextPlan?.message}
+                  id="meeting-next-plan"
+                  label="향후 계획"
+                  register={register("nextPlan")}
+                  rows={4}
+                />
+                <TextAreaField
+                  errorMessage={errors.requiredAction?.message}
+                  id="meeting-required-action"
+                  label="필요 액션"
+                  register={register("requiredAction")}
+                  rows={4}
+                />
+              </div>
+            </section>
+          </form>
         </div>
-        <button
-          className="inline-flex h-10 w-fit items-center gap-2 rounded-md bg-primary px-4 text-sm font-medium text-primary-foreground disabled:cursor-not-allowed disabled:opacity-60"
-          disabled={isSaving}
-          form="meeting-note-form"
-          type="submit"
-        >
-          {isSaving ? (
-            <Loader2 className="h-4 w-4 animate-spin" />
-          ) : (
-            <Save className="h-4 w-4" />
-          )}
-          {isEdit ? "수정 저장" : "저장"}
-        </button>
-      </header>
 
-      {notice ? (
-        <NoticeMessage message={notice} onDismiss={() => setNotice(null)} />
-      ) : null}
-
-      {actionError ? <ErrorMessage message={getApiErrorMessage(actionError)} /> : null}
-
-      <div className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_380px]">
-        <form
-          className="grid gap-5 rounded-md border bg-white p-4"
-          id="meeting-note-form"
-          onSubmit={onSubmit}
-        >
-          <section className="grid gap-4">
-            <div className="flex items-center gap-2 border-b pb-3">
-              <FileText className="h-5 w-5 text-muted-foreground" />
-              <h2 className="text-base font-semibold">기본 정보</h2>
-            </div>
-            <div className="grid gap-4 md:grid-cols-3">
-              <TextField
-                errorMessage={errors.meetingLocalDateTime?.message}
-                id="meeting-local-date-time"
-                label="미팅 일시"
-                register={register("meetingLocalDateTime")}
-                type="datetime-local"
-              />
-              <TextField
-                errorMessage={errors.companyName?.message}
-                id="meeting-company-name"
-                label="회사"
-                register={register("companyName")}
-              />
-              <TextField
-                errorMessage={errors.contactUsername?.message}
-                id="meeting-contact-username"
-                label="담당자"
-                register={register("contactUsername")}
-              />
-            </div>
-            <div className="grid gap-4 md:grid-cols-3">
-              <TextField
-                errorMessage={errors.companyField?.message}
-                id="meeting-company-field"
-                label="업종"
-                register={register("companyField")}
-              />
-              <TextField
-                errorMessage={errors.companyRegion?.message}
-                id="meeting-company-region"
-                label="지역"
-                register={register("companyRegion")}
-              />
-              <TextField
-                errorMessage={errors.department?.message}
-                id="meeting-contact-department"
-                label="부서"
-                register={register("department")}
-              />
-            </div>
-            <div className="grid gap-4 md:grid-cols-3">
-              <TextField
-                errorMessage={errors.jobGrade?.message}
-                id="meeting-contact-job-grade"
-                label="직급"
-                register={register("jobGrade")}
-              />
-              <TextField
-                errorMessage={errors.contactEmail?.message}
-                id="meeting-contact-email"
-                label="이메일"
-                register={register("contactEmail")}
-              />
-              <TextField
-                errorMessage={errors.contactMobile?.message}
-                id="meeting-contact-mobile"
-                label="연락처"
-                register={register("contactMobile")}
-              />
-            </div>
-          </section>
-
-          <section className="grid gap-4">
-            <div className="flex items-center gap-2 border-b pb-3">
-              <BriefcaseBusiness className="h-5 w-5 text-muted-foreground" />
-              <h2 className="text-base font-semibold">제품과 딜</h2>
-            </div>
-            <div className="grid gap-4 md:grid-cols-2">
-              <TextField
-                errorMessage={errors.productName?.message}
-                id="meeting-product-name"
-                label="제품"
-                register={register("productName")}
-              />
-              <TextField
-                errorMessage={errors.productPrice?.message}
-                id="meeting-product-price"
-                label="제품 금액"
-                register={register("productPrice")}
-                type="number"
-              />
-              <TextField
-                errorMessage={errors.productCategory?.message}
-                id="meeting-product-category"
-                label="제품 카테고리"
-                register={register("productCategory")}
-              />
-              <TextField
-                errorMessage={errors.productStatus?.message}
-                id="meeting-product-status"
-                label="제품 상태"
-                register={register("productStatus")}
-              />
-            </div>
-            <DealSearchField
-              errorMessage={errors.dealId?.message}
-              isLoading={dealOptionsQuery.isFetching}
-              onClear={clearDeal}
-              onSearchChange={updateDealSearch}
-              onSelect={selectDeal}
-              options={dealOptionsQuery.data ?? []}
-              search={dealSearch}
-              selectedId={dealId}
-            />
-          </section>
-
-          <section className="grid gap-4">
-            <div className="border-b pb-3">
-              <h2 className="text-base font-semibold">미팅 내용</h2>
-            </div>
-            <TextAreaField
-              errorMessage={errors.details?.message}
-              id="meeting-details"
-              label="상세 내용"
-              register={register("details")}
-              rows={8}
-            />
-            <div className="grid gap-4 md:grid-cols-2">
-              <TextAreaField
-                errorMessage={errors.nextPlan?.message}
-                id="meeting-next-plan"
-                label="향후 계획"
-                register={register("nextPlan")}
-                rows={4}
-              />
-              <TextAreaField
-                errorMessage={errors.requiredAction?.message}
-                id="meeting-required-action"
-                label="필요 액션"
-                register={register("requiredAction")}
-                rows={4}
-              />
-            </div>
-          </section>
-        </form>
-
-        <MeetingNoteSnapshotPanel meetingNote={activeMeetingNote} />
+        <div className="flex w-[415px] shrink-0 flex-col gap-4 overflow-y-auto bg-[#F9FAFB] p-6">
+          <MeetingNoteSummaryCard meetingNote={activeMeetingNote} />
+          <MeetingNoteSnapshotPanel meetingNote={activeMeetingNote} />
+        </div>
       </div>
-    </section>
+    </div>
+  );
+}
+
+function MeetingNoteSummaryCard({
+  meetingNote,
+}: {
+  readonly meetingNote: MeetingNote | null;
+}) {
+  return (
+    <div className="rounded-lg border border-[#E5E7EB] bg-white p-4">
+      <h3 className="mb-3 text-[13px] font-semibold text-[#111827]">회의 현황</h3>
+      <div className="grid grid-cols-2 gap-3">
+        <MeetingDateSummaryMetric value={meetingNote?.meetingAt} />
+        <SummaryMetric
+          label="회사"
+          value={`${(meetingNote?.companies.length ?? 0).toLocaleString("ko-KR")}개`}
+        />
+        <SummaryMetric
+          label="담당자"
+          value={`${(meetingNote?.contacts.length ?? 0).toLocaleString("ko-KR")}명`}
+        />
+        <SummaryMetric
+          label="딜"
+          value={`${(meetingNote?.deals.length ?? 0).toLocaleString("ko-KR")}건`}
+        />
+      </div>
+    </div>
+  );
+}
+
+function MeetingDateSummaryMetric({
+  value,
+}: {
+  readonly value: string | null | undefined;
+}) {
+  const meetingDate = getMeetingDateParts(value);
+
+  if (!meetingDate.hasValue) {
+    return (
+      <div className="col-span-2 flex min-w-0 flex-col gap-1 rounded-lg bg-[#F9FAFB] p-3">
+        <span className="text-[11px] font-medium text-[#6B7280]">미팅 일시</span>
+        <span className="text-[18px] font-bold text-[#9CA3AF]">{meetingDate.full}</span>
+      </div>
+    );
+  }
+
+  return (
+    <div className="col-span-2 grid gap-2 rounded-lg border border-[#FED7AA] bg-[#FFF7ED] p-3">
+      <span className="text-[11px] font-medium text-[#9A3412]">미팅 일시</span>
+      <div className="min-w-0">
+        <p className="truncate text-[16px] font-bold text-[#111827]">
+          {meetingDate.date}
+        </p>
+        <p className="mt-1 inline-flex rounded-full bg-white px-2 py-1 text-[13px] font-bold text-[#C2410C] shadow-sm ring-1 ring-[#FED7AA]">
+          {meetingDate.time}
+        </p>
+      </div>
+    </div>
+  );
+}
+
+function SummaryMetric({
+  label,
+  value,
+}: {
+  readonly label: string;
+  readonly value: string;
+}) {
+  return (
+    <div className="flex min-w-0 flex-col gap-1 rounded-lg bg-[#F9FAFB] p-3">
+      <span className="text-[11px] font-medium text-[#6B7280]">{label}</span>
+      <span className="truncate text-[18px] font-bold text-[#111827]">{value}</span>
+    </div>
   );
 }
 
@@ -370,15 +458,15 @@ function DealSearchField({
 
   return (
     <div className="grid gap-2">
-      <label className="text-sm font-medium" htmlFor="meeting-deal-search">
+      <label className="text-[12px] font-medium text-[#374151]" htmlFor="meeting-deal-search">
         딜 검색
       </label>
       <div className="relative">
-        <BriefcaseBusiness className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+        <BriefcaseBusiness className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#9CA3AF]" />
         <input
           aria-describedby={errorMessage ? "meeting-deal-error" : undefined}
           aria-invalid={Boolean(errorMessage)}
-          className="h-10 w-full rounded-md border pl-9 pr-10 text-sm outline-none focus:ring-2 focus:ring-ring"
+          className="h-10 w-full rounded-md border border-[#E6EAF0] bg-white pl-9 pr-10 text-[13px] text-[#111827] outline-none focus:border-[#93C5FD] focus:ring-1 focus:ring-[#93C5FD]"
           id="meeting-deal-search"
           onChange={(event) => onSearchChange(event.target.value)}
           placeholder="딜명 검색"
@@ -387,7 +475,7 @@ function DealSearchField({
         {selectedId || search ? (
           <button
             aria-label="딜 선택 지우기"
-            className="absolute right-2 top-1/2 grid h-7 w-7 -translate-y-1/2 place-items-center rounded-md text-muted-foreground hover:bg-muted"
+            className="absolute right-2 top-1/2 grid h-7 w-7 -translate-y-1/2 place-items-center rounded-md text-[#9CA3AF] hover:bg-[#F3F4F6]"
             onClick={onClear}
             type="button"
           >
@@ -396,23 +484,23 @@ function DealSearchField({
         ) : null}
       </div>
       {shouldShowOptions ? (
-        <div className="max-h-44 overflow-y-auto rounded-md border bg-white">
+        <div className="max-h-44 overflow-y-auto rounded-md border border-[#E5E7EB] bg-white">
           {isLoading ? (
-            <p className="px-3 py-2 text-sm text-muted-foreground">검색 중</p>
+            <p className="px-3 py-2 text-[13px] text-[#9CA3AF]">검색 중</p>
           ) : options.length === 0 ? (
-            <p className="px-3 py-2 text-sm text-muted-foreground">
+            <p className="px-3 py-2 text-[13px] text-[#9CA3AF]">
               검색된 딜이 없습니다.
             </p>
           ) : (
             options.map((option) => (
               <button
-                className="grid w-full gap-0.5 px-3 py-2 text-left text-sm hover:bg-muted"
+                className="grid w-full gap-0.5 px-3 py-2 text-left text-[13px] hover:bg-[#F9FAFB]"
                 key={option.id}
                 onClick={() => onSelect(option)}
                 type="button"
               >
-                <span className="font-medium">{option.name}</span>
-                <span className="text-xs text-muted-foreground">
+                <span className="font-medium text-[#111827]">{option.name}</span>
+                <span className="text-[12px] text-[#6B7280]">
                   {option.subtitle || "-"}
                 </span>
               </button>
@@ -421,7 +509,7 @@ function DealSearchField({
         </div>
       ) : null}
       {errorMessage ? (
-        <p className="text-xs text-destructive" id="meeting-deal-error">
+        <p className="text-[12px] text-[#DC2626]" id="meeting-deal-error">
           {errorMessage}
         </p>
       ) : null}
@@ -437,9 +525,9 @@ function MeetingNoteSnapshotPanel({
 }) {
   if (!meetingNote) {
     return (
-      <aside className="grid h-fit gap-4 rounded-md border bg-white p-4">
-        <h2 className="text-base font-semibold">저장된 스냅샷</h2>
-        <p className="text-sm text-muted-foreground">
+      <aside className="grid h-fit gap-4 rounded-lg border border-[#E5E7EB] bg-white p-4">
+        <h2 className="text-[13px] font-semibold text-[#111827]">저장된 스냅샷</h2>
+        <p className="text-[13px] text-[#9CA3AF]">
           저장 후 회사, 담당자, 제품, 딜 스냅샷이 표시됩니다.
         </p>
       </aside>
@@ -447,10 +535,10 @@ function MeetingNoteSnapshotPanel({
   }
 
   return (
-    <aside className="grid h-fit gap-4 rounded-md border bg-white p-4">
+    <aside className="grid h-fit gap-4 rounded-lg border border-[#E5E7EB] bg-white p-4">
       <div>
-        <h2 className="text-base font-semibold">저장된 스냅샷</h2>
-        <p className="mt-1 text-xs text-muted-foreground">
+        <h2 className="text-[13px] font-semibold text-[#111827]">저장된 스냅샷</h2>
+        <p className="mt-1 text-[12px] text-[#9CA3AF]">
           {formatDateTime(meetingNote.createdAt)} 등록
         </p>
       </div>
@@ -523,17 +611,17 @@ function SnapshotGroup({
   }[];
 }) {
   return (
-    <section className="grid gap-2 border-t pt-3">
-      <h3 className="text-sm font-semibold">{title}</h3>
+    <section className="grid gap-2 border-t border-[#F3F4F6] pt-3">
+      <h3 className="text-[13px] font-semibold text-[#111827]">{title}</h3>
       {items.length === 0 ? (
-        <p className="text-sm text-muted-foreground">{emptyText}</p>
+        <p className="text-[13px] text-[#9CA3AF]">{emptyText}</p>
       ) : (
         <ul className="grid gap-2">
           {items.map((item) => (
-            <li className="rounded-md bg-muted/50 px-3 py-2" key={item.id}>
-              <p className="truncate text-sm font-medium">{item.primary}</p>
+            <li className="rounded-lg border border-[#E5E7EB] px-3 py-2.5" key={item.id}>
+              <p className="truncate text-[13px] font-semibold text-[#111827]">{item.primary}</p>
               {item.secondary ? (
-                <p className="mt-1 truncate text-xs text-muted-foreground">
+                <p className="mt-1 truncate text-[12px] text-[#6B7280]">
                   {item.secondary}
                 </p>
               ) : null}
@@ -561,19 +649,19 @@ function TextField({
 }) {
   return (
     <div className="grid gap-2">
-      <label className="text-sm font-medium" htmlFor={id}>
+      <label className="text-[12px] font-medium text-[#374151]" htmlFor={id}>
         {label}
       </label>
       <input
         aria-describedby={errorMessage ? `${id}-error` : undefined}
         aria-invalid={Boolean(errorMessage)}
-        className="h-10 rounded-md border px-3 text-sm outline-none focus:ring-2 focus:ring-ring"
+        className="h-10 rounded-md border border-[#E6EAF0] bg-white px-3 text-[13px] text-[#111827] outline-none focus:border-[#93C5FD] focus:ring-1 focus:ring-[#93C5FD]"
         id={id}
         type={type}
         {...register}
       />
       {errorMessage ? (
-        <p className="text-xs text-destructive" id={`${id}-error`}>
+        <p className="text-[12px] text-[#DC2626]" id={`${id}-error`}>
           {errorMessage}
         </p>
       ) : null}
@@ -597,19 +685,19 @@ function TextAreaField({
 }) {
   return (
     <div className="grid gap-2">
-      <label className="text-sm font-medium" htmlFor={id}>
+      <label className="text-[12px] font-medium text-[#374151]" htmlFor={id}>
         {label}
       </label>
       <textarea
         aria-describedby={errorMessage ? `${id}-error` : undefined}
         aria-invalid={Boolean(errorMessage)}
-        className="resize-y rounded-md border px-3 py-2 text-sm leading-6 outline-none focus:ring-2 focus:ring-ring"
+        className="resize-y rounded-md border border-[#E6EAF0] bg-white px-3 py-2 text-[13px] leading-6 text-[#111827] outline-none focus:border-[#93C5FD] focus:ring-1 focus:ring-[#93C5FD]"
         id={id}
         rows={rows}
         {...register}
       />
       {errorMessage ? (
-        <p className="text-xs text-destructive" id={`${id}-error`}>
+        <p className="text-[12px] text-[#DC2626]" id={`${id}-error`}>
           {errorMessage}
         </p>
       ) : null}
