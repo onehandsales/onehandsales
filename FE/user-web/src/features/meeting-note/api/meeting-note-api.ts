@@ -1,17 +1,15 @@
 import type {
   CreateMeetingNoteInput,
-  DeleteMeetingNoteResponse,
-  GenerateMeetingNoteInput,
-  GeneratedMeetingNote,
-  LinkMeetingNoteToDealInput,
   MeetingNote,
-  MeetingNoteDetail,
+  MeetingNoteFilterCompanyListResponse,
+  MeetingNoteFilterContactListResponse,
   MeetingNoteListParams,
   MeetingNoteListResponse,
   UpdateMeetingNoteInput,
 } from "@/features/meeting-note/types/meeting-note";
 import { apiClient } from "@/lib/api-client";
 
+// 기능 : 회의록 목록을 Backend MeetingNote API에서 조회합니다.
 export function listMeetingNotes(params: MeetingNoteListParams) {
   const query = toMeetingNoteListSearchParams(params);
   const suffix = query.toString() ? `?${query.toString()}` : "";
@@ -19,13 +17,26 @@ export function listMeetingNotes(params: MeetingNoteListParams) {
   return apiClient<MeetingNoteListResponse>(`/api/meeting-notes${suffix}`);
 }
 
-export function generateMeetingNote(input: GenerateMeetingNoteInput) {
-  return apiClient<GeneratedMeetingNote>("/api/meeting-notes/generate", {
-    method: "POST",
-    body: compactBody(input),
-  });
+// 기능 : 회의록 회사 필터 옵션을 조회합니다.
+export function listMeetingNoteFilterCompanies() {
+  return apiClient<MeetingNoteFilterCompanyListResponse>(
+    "/api/meeting-notes/filter-companies"
+  );
 }
 
+// 기능 : 회의록 연락처 필터 옵션을 조회합니다.
+export function listMeetingNoteFilterContacts() {
+  return apiClient<MeetingNoteFilterContactListResponse>(
+    "/api/meeting-notes/filter-contacts"
+  );
+}
+
+// 기능 : 회의록 단건 상세를 조회합니다.
+export function getMeetingNote(meetingNoteId: string) {
+  return apiClient<MeetingNote>(`/api/meeting-notes/${meetingNoteId}`);
+}
+
+// 기능 : 수동 회의록을 생성합니다.
 export function createMeetingNote(input: CreateMeetingNoteInput) {
   return apiClient<MeetingNote>("/api/meeting-notes", {
     method: "POST",
@@ -33,72 +44,36 @@ export function createMeetingNote(input: CreateMeetingNoteInput) {
   });
 }
 
-export function getMeetingNote(meetingNoteId: string) {
-  return apiClient<MeetingNoteDetail>(`/api/meeting-notes/${meetingNoteId}`);
-}
-
+// 기능 : 수동 회의록을 수정합니다.
 export function updateMeetingNote(input: UpdateMeetingNoteInput) {
-  return apiClient<MeetingNote>(`/api/meeting-notes/${input.meetingNoteId}`, {
+  const { meetingNoteId, ...body } = input;
+
+  return apiClient<MeetingNote>(`/api/meeting-notes/${meetingNoteId}`, {
     method: "PATCH",
-    body: compactBody({
-      rawText: input.rawText,
-      meetingDate: input.meetingDate,
-      companyName: input.companyName,
-      contactName: input.contactName,
-      department: input.department,
-      productName: input.productName,
-      stageText: input.stageText,
-      details: input.details,
-      nextPlan: input.nextPlan,
-      requiredAction: input.requiredAction,
-      dealId: input.dealId,
-    }),
+    body: compactBody(body),
   });
 }
 
-export function linkMeetingNoteToDeal(input: LinkMeetingNoteToDealInput) {
-  return apiClient<MeetingNote>(
-    `/api/meeting-notes/${input.meetingNoteId}/link-deal`,
-    {
-      method: "POST",
-      body: compactBody({
-        dealId: input.dealId,
-        activityTitle: input.activityTitle,
-      }),
-    }
-  );
-}
-
-export function deleteMeetingNote(meetingNoteId: string) {
-  return apiClient<DeleteMeetingNoteResponse>(
-    `/api/meeting-notes/${meetingNoteId}`,
-    {
-      method: "DELETE",
-    }
-  );
-}
-
+// 기능 : 회의록 목록 query string을 API 계약 형식으로 변환합니다.
 function toMeetingNoteListSearchParams(params: MeetingNoteListParams) {
   const searchParams = new URLSearchParams();
 
   searchParams.set("page", String(params.page ?? 1));
-  searchParams.set("pageSize", String(params.pageSize ?? 20));
+  params.companyIds?.forEach((companyId) => {
+    searchParams.append("companyIds", companyId);
+  });
+  params.contactIds?.forEach((contactId) => {
+    searchParams.append("contactIds", contactId);
+  });
 
-  if (params.dealId) {
-    searchParams.set("dealId", params.dealId);
-  }
-
-  if (params.search) {
-    searchParams.set("search", params.search);
-  }
-
-  if (params.includeDeleted) {
-    searchParams.set("includeDeleted", "true");
+  if (params.sort) {
+    searchParams.set("sort", params.sort);
   }
 
   return searchParams;
 }
 
+// 기능 : undefined 값을 제거해 whitelist API body만 전송합니다.
 function compactBody(input: Record<string, unknown>) {
   return Object.fromEntries(
     Object.entries(input).filter(([, value]) => value !== undefined)

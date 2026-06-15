@@ -1,32 +1,71 @@
 import {
   AlertCircle,
+  Building2,
   FileText,
-  Link2,
   Plus,
   RefreshCw,
-  Search,
+  UserRound,
 } from "lucide-react";
-import { useDeferredValue, useMemo, useState } from "react";
+import { useMemo, useState, type ReactNode } from "react";
 import { Link } from "react-router-dom";
-import { useMeetingNoteList } from "@/features/meeting-note/hooks/use-meeting-note-queries";
+import {
+  useMeetingNoteFilterCompanies,
+  useMeetingNoteFilterContacts,
+  useMeetingNoteList,
+} from "@/features/meeting-note/hooks/use-meeting-note-queries";
+import type {
+  MeetingNoteListItem,
+  MeetingNoteSort,
+} from "@/features/meeting-note/types/meeting-note";
 import { Pagination } from "@/components/ui/pagination";
-import type { MeetingNote } from "@/features/meeting-note/types/meeting-note";
 import { getApiErrorMessage } from "@/lib/api-client";
 import { formatDateTime } from "@/utils/format";
 
+// 기능 : 회의록 목록과 필터 화면을 렌더링합니다.
 export function MeetingNoteListScreen() {
-  const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
-  const deferredSearch = useDeferredValue(search.trim());
-  const meetingNotesQuery = useMeetingNoteList({
-    page,
-    pageSize: 20,
-    search: deferredSearch || undefined,
-  });
-  const meetingNotes = useMemo(
-    () => meetingNotesQuery.data?.items ?? [],
-    [meetingNotesQuery.data?.items]
+  const [companyId, setCompanyId] = useState("");
+  const [contactId, setContactId] = useState("");
+  const [sort, setSort] = useState<MeetingNoteSort>("createdAtDesc");
+  const params = useMemo(
+    () => ({
+      companyIds: companyId ? [companyId] : [],
+      contactIds: contactId ? [contactId] : [],
+      page,
+      sort,
+    }),
+    [companyId, contactId, page, sort]
   );
+  const meetingNotesQuery = useMeetingNoteList(params);
+  const companiesQuery = useMeetingNoteFilterCompanies();
+  const contactsQuery = useMeetingNoteFilterContacts();
+  const meetingNotes = meetingNotesQuery.data?.items ?? [];
+
+  // 기능 : 필터 값을 변경하고 목록 page를 첫 페이지로 되돌립니다.
+  const updateCompanyId = (value: string) => {
+    setCompanyId(value);
+    setPage(1);
+  };
+
+  // 기능 : 연락처 필터 값을 변경하고 목록 page를 첫 페이지로 되돌립니다.
+  const updateContactId = (value: string) => {
+    setContactId(value);
+    setPage(1);
+  };
+
+  // 기능 : 정렬 값을 변경하고 목록 page를 첫 페이지로 되돌립니다.
+  const updateSort = (value: MeetingNoteSort) => {
+    setSort(value);
+    setPage(1);
+  };
+
+  // 기능 : 모든 목록 필터를 초기화합니다.
+  const clearFilters = () => {
+    setCompanyId("");
+    setContactId("");
+    setSort("createdAtDesc");
+    setPage(1);
+  };
 
   return (
     <section className="mx-auto grid max-w-[1500px] gap-5 px-5 py-6">
@@ -34,7 +73,7 @@ export function MeetingNoteListScreen() {
         <div className="min-w-0">
           <h1 className="text-2xl font-semibold">회의록</h1>
           <p className="mt-1 text-sm text-muted-foreground">
-            AI로 정리한 회의 내용을 확인하고 딜 활동 이력과 연결합니다.
+            수동으로 기록한 미팅 내용을 회사와 담당자 기준으로 다시 찾습니다.
           </p>
         </div>
         <Link
@@ -42,22 +81,52 @@ export function MeetingNoteListScreen() {
           to="/meeting-notes/new"
         >
           <Plus className="h-4 w-4" />
-          AI 회의록 작성
+          회의록 작성
         </Link>
       </header>
 
-      <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
-        <div className="relative max-w-xl flex-1">
-          <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-          <input
-            className="h-10 w-full rounded-md border bg-white pl-9 pr-3 text-sm outline-none focus:ring-2 focus:ring-ring"
-            onChange={(event) => { setSearch(event.target.value); setPage(1); }}
-            placeholder="회사, 담당자, 품목, 상세내용 검색"
-            value={search}
-          />
-        </div>
+      <div className="grid gap-3 rounded-md border bg-white p-4 lg:grid-cols-[1fr_1fr_180px_auto_auto] lg:items-end">
+        <SelectField
+          icon={<Building2 className="h-4 w-4" />}
+          id="meeting-note-company-filter"
+          label="회사"
+          onChange={updateCompanyId}
+          options={(companiesQuery.data?.items ?? []).map((company) => ({
+            label: company.companyName,
+            value: company.id,
+          }))}
+          value={companyId}
+        />
+        <SelectField
+          icon={<UserRound className="h-4 w-4" />}
+          id="meeting-note-contact-filter"
+          label="담당자"
+          onChange={updateContactId}
+          options={(contactsQuery.data?.items ?? []).map((contact) => ({
+            label: contact.contactUsername,
+            value: contact.id,
+          }))}
+          value={contactId}
+        />
+        <SelectField
+          id="meeting-note-sort"
+          label="정렬"
+          onChange={(value) => updateSort(value as MeetingNoteSort)}
+          options={[
+            { label: "등록 최신순", value: "createdAtDesc" },
+            { label: "미팅 최신순", value: "meetingAtDesc" },
+          ]}
+          value={sort}
+        />
         <button
-          className="inline-flex h-10 w-fit items-center gap-2 rounded-md border bg-white px-3 text-sm font-medium hover:bg-muted"
+          className="inline-flex h-10 items-center justify-center gap-2 rounded-md border bg-white px-3 text-sm font-medium hover:bg-muted"
+          onClick={clearFilters}
+          type="button"
+        >
+          초기화
+        </button>
+        <button
+          className="inline-flex h-10 items-center justify-center gap-2 rounded-md border bg-white px-3 text-sm font-medium hover:bg-muted"
           onClick={() => void meetingNotesQuery.refetch()}
           type="button"
         >
@@ -74,19 +143,19 @@ export function MeetingNoteListScreen() {
           onRetry={() => void meetingNotesQuery.refetch()}
         />
       ) : meetingNotes.length === 0 ? (
-        <MeetingNoteEmptyState hasSearch={deferredSearch.length > 0} />
+        <MeetingNoteEmptyState hasFilter={Boolean(companyId || contactId)} />
       ) : (
         <div className="grid gap-3">
-          <div className="hidden grid-cols-[140px_1.1fr_1fr_1fr_120px] gap-3 rounded-md border bg-muted/50 px-4 py-2 text-xs font-medium text-muted-foreground lg:grid">
-            <span>날짜</span>
-            <span>회사/담당자</span>
-            <span>품목/단계</span>
-            <span>상세내용</span>
-            <span>딜 연결</span>
+          <div className="hidden grid-cols-[150px_1fr_1fr_1fr_1fr_120px] gap-3 rounded-md border bg-muted/50 px-4 py-2 text-xs font-medium text-muted-foreground lg:grid">
+            <span>미팅 일시</span>
+            <span>회사</span>
+            <span>담당자</span>
+            <span>제품</span>
+            <span>딜</span>
+            <span>등록</span>
           </div>
-
           {meetingNotes.map((meetingNote) => (
-            <MeetingNoteListItem
+            <MeetingNoteListRow
               key={meetingNote.id}
               meetingNote={meetingNote}
             />
@@ -94,11 +163,12 @@ export function MeetingNoteListScreen() {
         </div>
       )}
 
-      {meetingNotesQuery.data && (meetingNotesQuery.data.hasNext || page > 1) ? (
+      {meetingNotesQuery.data &&
+      (meetingNotesQuery.data.totalPages > 1 || page > 1) ? (
         <Pagination
-          hasNext={meetingNotesQuery.data.hasNext}
           page={page}
           totalCount={meetingNotesQuery.data.totalCount}
+          totalPages={meetingNotesQuery.data.totalPages}
           onPageChange={setPage}
         />
       ) : null}
@@ -106,78 +176,123 @@ export function MeetingNoteListScreen() {
   );
 }
 
-function MeetingNoteListItem({
+// 기능 : 목록 필터 select 필드를 렌더링합니다.
+function SelectField({
+  id,
+  label,
+  value,
+  options,
+  icon,
+  onChange,
+}: {
+  readonly id: string;
+  readonly label: string;
+  readonly value: string;
+  readonly options: readonly { readonly label: string; readonly value: string }[];
+  readonly icon?: ReactNode;
+  readonly onChange: (value: string) => void;
+}) {
+  return (
+    <div className="grid gap-2">
+      <label className="text-sm font-medium" htmlFor={id}>
+        {label}
+      </label>
+      <div className="relative">
+        {icon ? (
+          <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">
+            {icon}
+          </span>
+        ) : null}
+        <select
+          className={`h-10 w-full rounded-md border bg-white pr-8 text-sm outline-none focus:ring-2 focus:ring-ring ${
+            icon ? "pl-9" : "pl-3"
+          }`}
+          id={id}
+          onChange={(event) => onChange(event.target.value)}
+          value={value}
+        >
+          <option value="">전체</option>
+          {options.map((option) => (
+            <option key={option.value} value={option.value}>
+              {option.label}
+            </option>
+          ))}
+        </select>
+      </div>
+    </div>
+  );
+}
+
+// 기능 : 회의록 목록 row를 렌더링합니다.
+function MeetingNoteListRow({
   meetingNote,
 }: {
-  readonly meetingNote: MeetingNote;
+  readonly meetingNote: MeetingNoteListItem;
 }) {
   return (
     <Link
-      className="grid gap-3 rounded-lg border bg-white p-4 transition hover:border-primary/40 hover:shadow-sm lg:grid-cols-[140px_1.1fr_1fr_1fr_120px] lg:items-center"
+      className="grid gap-3 rounded-md border bg-white p-4 transition hover:border-primary/40 hover:shadow-sm lg:grid-cols-[150px_1fr_1fr_1fr_1fr_120px] lg:items-center"
       to={`/meeting-notes/${meetingNote.id}`}
     >
-      <div className="text-sm font-medium">
-        {formatDateTime(meetingNote.meetingDate, { fallback: "날짜 없음" })}
-      </div>
-      <div className="min-w-0">
-        <p className="truncate text-sm font-semibold">
-          {meetingNote.companyName || "회사 미입력"}
-        </p>
-        <p className="mt-1 truncate text-xs text-muted-foreground">
-          {meetingNote.contactName || "담당자 미입력"}
-          {meetingNote.department ? ` · ${meetingNote.department}` : ""}
-        </p>
-      </div>
-      <div className="min-w-0">
-        <p className="truncate text-sm">{meetingNote.productName || "품목 미입력"}</p>
-        <p className="mt-1 truncate text-xs text-muted-foreground">
-          {meetingNote.stageText || "단계 미입력"}
-        </p>
-      </div>
-      <p className="line-clamp-2 text-sm text-muted-foreground">
-        {meetingNote.details}
-      </p>
-      <div>
-        {meetingNote.dealId ? (
-          <span className="inline-flex max-w-full items-center gap-1 rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-1 text-xs font-medium text-emerald-800">
-            <Link2 className="h-3.5 w-3.5 shrink-0" />
-            <span className="truncate">{meetingNote.dealTitle ?? "연결됨"}</span>
-          </span>
-        ) : (
-          <span className="inline-flex items-center rounded-full border px-2.5 py-1 text-xs font-medium text-muted-foreground">
-            미연결
-          </span>
-        )}
-      </div>
+      <span className="text-sm font-medium">
+        {formatDateTime(meetingNote.meetingAt, { fallback: "미팅 일시 없음" })}
+      </span>
+      <SummaryCell fallback="회사 없음" summary={meetingNote.companies} />
+      <SummaryCell fallback="담당자 없음" summary={meetingNote.contacts} />
+      <SummaryCell fallback="제품 없음" summary={meetingNote.products} />
+      <SummaryCell fallback="딜 없음" summary={meetingNote.deals} />
+      <span className="text-xs text-muted-foreground">
+        {formatDateTime(meetingNote.createdAt)}
+      </span>
     </Link>
   );
 }
 
-function MeetingNoteEmptyState({ hasSearch }: { readonly hasSearch: boolean }) {
+// 기능 : 목록 summary label과 count를 표시합니다.
+function SummaryCell({
+  summary,
+  fallback,
+}: {
+  readonly summary: { readonly label: string; readonly count: number };
+  readonly fallback: string;
+}) {
   return (
-    <div className="grid place-items-center rounded-lg border bg-white px-4 py-16 text-center">
+    <span className="min-w-0 text-sm">
+      <span className="block truncate">{summary.label || fallback}</span>
+      {summary.count > 1 ? (
+        <span className="text-xs text-muted-foreground">총 {summary.count}개</span>
+      ) : null}
+    </span>
+  );
+}
+
+// 기능 : 회의록 목록 empty 상태를 렌더링합니다.
+function MeetingNoteEmptyState({ hasFilter }: { readonly hasFilter: boolean }) {
+  return (
+    <div className="grid place-items-center rounded-md border bg-white px-4 py-16 text-center">
       <div className="grid max-w-sm gap-3">
         <div className="mx-auto grid h-11 w-11 place-items-center rounded-md bg-muted">
           <FileText className="h-5 w-5 text-muted-foreground" />
         </div>
         <h2 className="text-lg font-semibold">
-          {hasSearch ? "검색된 회의록이 없습니다" : "저장된 회의록이 없습니다"}
+          {hasFilter ? "조건에 맞는 회의록이 없습니다" : "저장된 회의록이 없습니다"}
         </h2>
         <p className="text-sm text-muted-foreground">
-          회의 내용을 입력하고 AI 결과를 수정해 첫 회의록을 저장하세요.
+          회사와 담당자를 먼저 기록하면 이후 미팅 맥락을 빠르게 찾을 수 있습니다.
         </p>
         <Link
           className="mx-auto inline-flex h-10 items-center gap-2 rounded-md bg-primary px-4 text-sm font-medium text-primary-foreground"
           to="/meeting-notes/new"
         >
           <Plus className="h-4 w-4" />
-          AI 회의록 작성
+          회의록 작성
         </Link>
       </div>
     </div>
   );
 }
 
+// 기능 : 회의록 목록 error 상태를 렌더링합니다.
 function MeetingNoteListError({
   error,
   onRetry,
@@ -186,7 +301,7 @@ function MeetingNoteListError({
   readonly onRetry: () => void;
 }) {
   return (
-    <div className="flex items-center justify-between gap-4 rounded-lg border border-destructive/30 bg-red-50 px-4 py-3">
+    <div className="flex items-center justify-between gap-4 rounded-md border border-destructive/30 bg-red-50 px-4 py-3">
       <div className="flex items-center gap-2 text-sm text-destructive">
         <AlertCircle className="h-4 w-4" />
         <span>{getApiErrorMessage(error)}</span>
@@ -203,15 +318,16 @@ function MeetingNoteListError({
   );
 }
 
+// 기능 : 회의록 목록 loading skeleton을 렌더링합니다.
 function MeetingNoteListSkeleton() {
   return (
     <div className="grid gap-3">
       {Array.from({ length: 6 }, (_, index) => (
         <div
-          className="grid gap-3 rounded-lg border bg-white p-4 lg:grid-cols-[140px_1.1fr_1fr_1fr_120px]"
+          className="grid gap-3 rounded-md border bg-white p-4 lg:grid-cols-[150px_1fr_1fr_1fr_1fr_120px]"
           key={index}
         >
-          {Array.from({ length: 5 }, (__, cellIndex) => (
+          {Array.from({ length: 6 }, (__, cellIndex) => (
             <div
               className="h-8 animate-pulse rounded-md bg-muted"
               key={cellIndex}

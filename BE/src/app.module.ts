@@ -9,6 +9,7 @@ import { CompanyModule } from "./modules/company/infrastructure/company.module";
 import { ContactModule } from "./modules/contact/infrastructure/contact.module";
 import { DealModule } from "./modules/deal/infrastructure/deal.module";
 import { HealthModule } from "./modules/health/infrastructure/health.module";
+import { MeetingNoteModule } from "./modules/meeting-note/infrastructure/meeting-note.module";
 import { ProductModule } from "./modules/product/infrastructure/product.module";
 import { ScheduleModule } from "./modules/schedule/infrastructure/schedule.module";
 import { UserModule } from "./modules/user/infrastructure/user.module";
@@ -29,6 +30,7 @@ import { RequestIdMiddleware } from "./shared/presentation/middleware/request-id
     ProductModule,
     DealModule,
     ScheduleModule,
+    MeetingNoteModule,
   ],
 })
 export class AppModule implements NestModule {
