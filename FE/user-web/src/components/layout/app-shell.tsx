@@ -4,217 +4,101 @@ import { MobileAppHeader } from "@/components/navigation/mobile-app-header";
 import { SidebarNav } from "@/components/navigation/sidebar-nav";
 import {
   Bell,
-  ChevronLeft,
-  Download,
+  BriefcaseBusiness,
+  CalendarDays,
+  House,
+  Package,
+  Pencil,
   Plus,
   Search,
+  Settings,
   Trash2,
+  X,
 } from "lucide-react";
-import { type FormEvent, useState } from "react";
-import { Link, type NavigateFunction, useNavigate } from "react-router-dom";
-import { GlobalSearch } from "@/features/search";
+import { Link, useNavigate } from "react-router-dom";
+import { SearchModal } from "@/features/search";
+import { useEffect, useState } from "react";
 import { useDealDetail } from "@/features/deal/hooks/use-deal-detail";
 import { useProductDetail } from "@/features/product/hooks/use-product-detail";
-
-const PAGE_TITLES: Record<string, { title: string }> = {
-  "/": { title: "홈" },
-  "/deals": { title: "딜" },
-  "/deals/new": { title: "딜" },
-  "/companies": { title: "회사" },
-  "/companies/new": { title: "회사" },
-  "/contacts": { title: "거래처" },
-  "/products": { title: "제품" },
-  "/products/new": { title: "제품" },
-  "/schedules": { title: "일정" },
-  "/meeting-notes": { title: "회의록" },
-  "/notifications": { title: "알림" },
-  "/settings": { title: "설정" },
-};
+import { PageHeader } from "@/components/layout/page-header";
 
 const HOME_PATH = "/";
 
-function DealDetailTopBar({ dealId }: { readonly dealId: string }) {
+// ── 딜 상세 TopBar ──────────────────────────────────────────
+function DealDetailHeader({ dealId }: { readonly dealId: string }) {
   const dealQuery = useDealDetail(dealId);
   const dealName = dealQuery.data?.dealName ?? "...";
 
   return (
-    <div className="flex min-w-0 shrink items-center gap-1.5">
-      <Link
-        className="mr-1 shrink-0 text-[#9CA3AF] hover:text-[#374151]"
-        to="/deals"
-      >
-        <ChevronLeft className="h-5 w-5" />
-      </Link>
-      <Link
-        className="shrink-0 text-[13px] text-[#6B7280] hover:text-[#374151]"
-        to="/deals"
-      >
-        딜
-      </Link>
-      <span className="text-[13px] text-[#D1D5DB]">/</span>
-      <span className="truncate text-[13px] font-semibold text-[#111827]">
-        {dealName}
-      </span>
-    </div>
+    <PageHeader
+      breadcrumbs={[
+        { label: "딜", to: "/deals", icon: BriefcaseBusiness },
+        { label: dealName },
+      ]}
+    />
   );
 }
 
-function ProductDetailTopBar({ productId }: { readonly productId: string }) {
-  const productQuery = useProductDetail(productId);
-  const productName = productQuery.data?.productName ?? "...";
-
-  return (
-    <div className="flex min-w-0 shrink items-center gap-1.5">
-      <Link
-        className="mr-1 shrink-0 text-[#9CA3AF] hover:text-[#374151]"
-        to="/products"
-      >
-        <ChevronLeft className="h-5 w-5" />
-      </Link>
-      <Link
-        className="shrink-0 text-[13px] text-[#6B7280] hover:text-[#374151]"
-        to="/products"
-      >
-        제품
-      </Link>
-      <span className="text-[13px] text-[#D1D5DB]">/</span>
-      <span className="truncate text-[13px] font-semibold text-[#111827]">
-        {productName}
-      </span>
-    </div>
-  );
-}
-
-function ProductDetailActions({ productId }: { readonly productId: string }) {
+// ── 제품 상세 TopBar ─────────────────────────────────────────
+function ProductDetailHeader({ productId }: { readonly productId: string }) {
   const navigate = useNavigate();
   const { search: locationSearch } = useLocation();
+  const productQuery = useProductDetail(productId);
+  const productName = productQuery.data?.productName ?? "...";
   const isEditing = new URLSearchParams(locationSearch).get("edit") === "1";
 
   const toggleEdit = () => {
     void navigate(
       isEditing ? `/products/${productId}` : `/products/${productId}?edit=1`,
-      { replace: true },
+      { replace: true }
     );
   };
 
   return (
-    <div className="flex shrink-0 items-center gap-2">
-      <button
-        className="inline-flex h-9 items-center gap-1.5 rounded-lg border border-red-100 bg-white px-3.5 text-[13px] font-medium text-red-700 transition hover:bg-red-50"
-        type="button"
-      >
-        <Trash2 className="h-3.5 w-3.5" />
-        삭제
-      </button>
-      <button
-        className="inline-flex h-9 items-center rounded-lg border border-[#E5E7EB] bg-white px-3.5 text-[13px] font-medium text-[#374151] transition hover:bg-[#F9FAFB]"
-        onClick={toggleEdit}
-        type="button"
-      >
-        {isEditing ? "취소" : "수정"}
-      </button>
-    </div>
-  );
-}
-
-function HeaderSearch({
-  isProducts,
-  productSearch,
-  setProductSearch,
-  onProductSearchSubmit,
-}: {
-  readonly isProducts: boolean;
-  readonly productSearch: string;
-  readonly setProductSearch: (value: string) => void;
-  readonly onProductSearchSubmit: (event: FormEvent<HTMLFormElement>) => void;
-}) {
-  if (isProducts) {
-    return (
-      <form
-        className="relative w-[300px] shrink-0"
-        onSubmit={onProductSearchSubmit}
-      >
-        <Search className="pointer-events-none absolute left-3.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-[#9CA3AF]" />
-        <input
-          className="h-10 w-full rounded-lg border border-[#E6EAF0] bg-white pl-9 pr-3 text-[13px] outline-none placeholder:text-[#9CA3AF] focus:border-[#93C5FD] focus:ring-1 focus:ring-[#93C5FD]"
-          onChange={(event) => setProductSearch(event.target.value)}
-          placeholder="제품 검색..."
-          value={productSearch}
-        />
-      </form>
-    );
-  }
-
-  return (
-    <div className="w-[320px] shrink-0">
-      <GlobalSearch />
-    </div>
-  );
-}
-
-function HeaderActions({
-  isProducts,
-  navigate,
-}: {
-  readonly isProducts: boolean;
-  readonly navigate: NavigateFunction;
-}) {
-  if (isProducts) {
-    return (
-      <div className="flex shrink-0 items-center gap-2">
-        <button
-          className="inline-flex h-9 items-center gap-1.5 rounded-lg bg-[#1D4ED8] px-3.5 text-[13px] font-bold text-white transition hover:bg-[#1E40AF]"
-          onClick={() => void navigate("/products/new")}
-          type="button"
-        >
-          <Plus className="h-3.5 w-3.5" strokeWidth={2.5} />
-          제품 추가
-        </button>
-        <button
-          className="inline-flex h-9 items-center gap-1.5 rounded-lg border border-[#E5E7EB] bg-white px-3 text-[13px] font-medium text-[#374151] transition hover:bg-gray-50"
-          onClick={() => void navigate("/products?action=export")}
-          type="button"
-        >
-          <Download className="h-3.5 w-3.5" />
-          내보내기
-        </button>
-      </div>
-    );
-  }
-
-  return (
-    <div className="flex shrink-0 items-center gap-2">
-      <Link
-        className="inline-flex h-9 items-center gap-1.5 rounded-lg bg-[#1D4ED8] px-3.5 text-[13px] font-semibold text-white transition hover:bg-[#1E40AF]"
-        to="/deals/new"
-      >
-        <Plus className="h-3.5 w-3.5" strokeWidth={2.5} />
-        새 딜
-      </Link>
-      <button
-        className="inline-flex h-9 items-center gap-1.5 rounded-lg border border-[#E5E7EB] bg-white px-3 text-[13px] font-medium text-[#374151] transition hover:bg-gray-50"
-        type="button"
-      >
-        <Download className="h-3.5 w-3.5" />
-        내보내기
-      </button>
-    </div>
+    <PageHeader
+      breadcrumbs={[
+        { label: "제품", to: "/products", icon: Package },
+        { label: productName },
+      ]}
+      actions={[
+        {
+          icon: isEditing ? X : Pencil,
+          tooltip: isEditing ? "수정 취소" : "수정",
+          onClick: toggleEdit,
+        },
+        {
+          icon: Trash2,
+          tooltip: "삭제",
+          variant: "danger",
+          onClick: () => undefined, // TODO: 삭제 핸들러 연결
+        },
+      ]}
+    />
   );
 }
 
 export function AppShell() {
   const { pathname } = useLocation();
-  const navigate = useNavigate();
+  const [searchOpen, setSearchOpen] = useState(false);
   const isHome = pathname === HOME_PATH;
-  const isProducts = pathname === "/products" || pathname === "/products/new";
-  const isCompanyPage = pathname === "/companies" || pathname === "/companies/new";
+
+  // ⌘K / Ctrl+K 단축키로 검색 모달 열기
+  useEffect(() => {
+    const onKeyDown = (e: globalThis.KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === "k") {
+        e.preventDefault();
+        setSearchOpen((prev) => !prev);
+      }
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, []);
+
   const isDeals = pathname.startsWith("/deals");
 
   // /products/:id 패턴 감지
   const productDetailMatch = /^\/products\/([^/]+)$/.exec(pathname);
-  const productDetailId = productDetailMatch
-    ? (productDetailMatch[1] ?? "")
-    : "";
+  const productDetailId = productDetailMatch ? (productDetailMatch[1] ?? "") : "";
   const isProductDetail = productDetailId.length > 0 && productDetailId !== "new";
 
   // /deals/:id 패턴 감지
@@ -222,58 +106,105 @@ export function AppShell() {
   const dealDetailId = dealDetailMatch ? (dealDetailMatch[1] ?? "") : "";
   const isDealDetail = dealDetailId.length > 0 && dealDetailId !== "new";
 
-  const page = PAGE_TITLES[pathname] ?? { title: "한손에 영업" };
-  const [productSearch, setProductSearch] = useState("");
+  // /companies/:id 패턴 감지
+  const companyDetailMatch = /^\/companies\/([^/]+)$/.exec(pathname);
+  const companyDetailId = companyDetailMatch ? (companyDetailMatch[1] ?? "") : "";
+  const isCompanyDetail = companyDetailId.length > 0 && companyDetailId !== "new";
 
-  const onProductSearchSubmit = (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const params2 = new URLSearchParams();
-    if (productSearch.trim()) params2.set("q", productSearch.trim());
-    void navigate({ pathname: "/products", search: params2.toString() });
-  };
+  // /contacts/:id 패턴 감지
+  const contactDetailMatch = /^\/contacts\/([^/]+)$/.exec(pathname);
+  const contactDetailId = contactDetailMatch ? (contactDetailMatch[1] ?? "") : "";
+  const isContactDetail = contactDetailId.length > 0 && contactDetailId !== "scan";
+
+  // 자체 헤더를 가진 화면들 — app-shell TopBar 숨김
+  const isProductListPage = pathname === "/products" || pathname === "/products/new";
+  const isCompanyListPage =
+    pathname === "/companies" ||
+    pathname === "/companies/new" ||
+    isCompanyDetail ||
+    isContactDetail;
+  const isContactListPage = pathname === "/contacts";
+  const isMeetingNoteListPage = pathname === "/meeting-notes";
+
+  const hideTopBar =
+    isCompanyListPage ||
+    isProductListPage ||
+    isContactListPage ||
+    isMeetingNoteListPage;
+
+  // 현재 페이지 브레드크럼 결정
+  const topBarContent = (() => {
+    if (isProductDetail) return <ProductDetailHeader productId={productDetailId} />;
+    if (isDealDetail) return <DealDetailHeader dealId={dealDetailId} />;
+
+    type PageMeta = { label: string; icon: typeof House };
+    const pageMetaMap: Record<string, PageMeta> = {
+      "/":            { label: "홈",  icon: House },
+      "/deals":       { label: "딜",  icon: BriefcaseBusiness },
+      "/deals/new":   { label: "딜",  icon: BriefcaseBusiness },
+      "/schedules":   { label: "일정", icon: CalendarDays },
+      "/notifications": { label: "알림", icon: Bell },
+      "/settings":    { label: "설정", icon: Settings },
+    };
+    const meta = pageMetaMap[pathname] ?? { label: "한손에 영업", icon: House };
+    const actions =
+      pathname === "/deals" || pathname === "/"
+        ? [{ icon: Plus, tooltip: "새 딜 추가", href: "/deals/new", variant: "primary" as const }]
+        : [];
+    return <PageHeader breadcrumbs={[{ label: meta.label, icon: meta.icon }]} actions={actions} />;
+  })();
 
   return (
     <div className="min-h-screen bg-background text-foreground">
       {/* ── Desktop Shell ── */}
       <div className="hidden min-h-screen md:flex">
         {/* Sidebar */}
-        <aside className="fixed inset-y-0 left-0 z-30 flex w-[var(--sidebar-width)] flex-col border-r border-sidebar-border bg-sidebar text-sidebar-foreground">
+        <aside className="fixed inset-y-0 left-0 z-30 flex w-[var(--sidebar-width)] flex-col bg-sidebar">
           {/* Brand */}
-          <div className="flex items-center gap-3 px-5 py-5">
-            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-primary text-[15px] font-bold text-white shadow-md">
+          <div className="flex h-[var(--topbar-height)] shrink-0 items-center gap-2.5 px-4">
+            <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-[#2563EB] text-[12px] font-bold text-white">
               한
             </div>
-            <div className="min-w-0">
-              <p className="truncate text-[14px] font-semibold leading-tight tracking-[-0.02em] text-sidebar-foreground">
-                한손에 영업
-              </p>
-              <p className="text-[11px] text-sidebar-foreground/45">
-                onehand.sales
-              </p>
-            </div>
+            <span className="text-[14px] font-semibold text-[#111827]">
+              한손에 영업
+            </span>
           </div>
-          <div className="mx-5 h-px bg-sidebar-border" />
+          <div className="h-px bg-transparent" />
+          {/* Search button */}
+          <div className="px-2 pb-1">
+            <button
+              type="button"
+              className="flex h-8 w-full items-center gap-2 rounded-md px-2 text-[13px] text-[#9CA3AF] transition hover:bg-[#E9EBF0] hover:text-[#374151]"
+              onClick={() => setSearchOpen(true)}
+            >
+              <Search className="h-[15px] w-[15px] shrink-0" strokeWidth={1.75} />
+              <span>검색</span>
+              <kbd className="ml-auto hidden rounded border border-[#E2E5EC] bg-[#F0F1F3] px-1 py-0.5 text-[10px] font-medium leading-none sm:block">
+                ⌘K
+              </kbd>
+            </button>
+          </div>
           {/* Nav */}
-          <div className="flex-1 overflow-y-auto px-3 py-4">
+          <div className="flex-1 overflow-y-auto px-2 py-1">
             <SidebarNav />
           </div>
-          <div className="mx-5 h-px bg-sidebar-border" />
+          <div className="h-px bg-transparent" />
           {/* User profile */}
-          <div className="flex items-center gap-3 px-4 py-4">
-            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary/20 text-[12px] font-semibold text-primary">
-              강
+          <div className="flex items-center gap-2.5 px-3 py-3">
+            <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#2563EB] text-[11px] font-semibold text-white">
+              김
             </div>
             <div className="min-w-0 flex-1">
-              <p className="truncate text-[13px] font-medium text-sidebar-foreground">
-                강변범
+              <p className="truncate text-[13px] font-medium text-[#111827]">
+                김영업
               </p>
-              <p className="text-[11px] text-sidebar-foreground/45">
-                Store Manager
+              <p className="text-[11px] text-[#9CA3AF]">
+                Sales Manager
               </p>
             </div>
             <Link
               aria-label="알림"
-              className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-sidebar-foreground/60 transition hover:bg-sidebar-accent hover:text-sidebar-foreground"
+              className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-md text-[#9CA3AF] transition hover:bg-[#E5E7EB] hover:text-[#374151]"
               to="/notifications"
             >
               <Bell className="h-4 w-4" />
@@ -284,34 +215,11 @@ export function AppShell() {
         {/* Main */}
         <div className="flex flex-1 flex-col pl-[var(--sidebar-width)]">
           {/* TopBar */}
-          <header className="sticky top-0 z-20 flex h-[var(--topbar-height)] shrink-0 items-center gap-3 border-b border-border bg-white px-6">
-            {isProductDetail ? (
-              <ProductDetailTopBar productId={productDetailId} />
-            ) : isDealDetail ? (
-              <DealDetailTopBar dealId={dealDetailId} />
-            ) : (
-              <div className="shrink-0">
-                <h1 className="text-[18px] font-bold leading-tight tracking-[-0.02em] text-[#111827]">
-                  {page.title}
-                </h1>
-              </div>
-            )}
-
-            <div className="flex-1" />
-
-            <HeaderSearch
-              isProducts={isProducts}
-              onProductSearchSubmit={onProductSearchSubmit}
-              productSearch={productSearch}
-              setProductSearch={setProductSearch}
-            />
-
-            {isProductDetail ? (
-              <ProductDetailActions productId={productDetailId} />
-            ) : isDealDetail || isCompanyPage ? null : (
-              <HeaderActions isProducts={isProducts} navigate={navigate} />
-            )}
-          </header>
+          {!hideTopBar ? (
+            <div className="sticky top-0 z-20 bg-[#FAFAF8]">
+              {topBarContent}
+            </div>
+          ) : null}
 
           <main
             className={
@@ -324,6 +232,9 @@ export function AppShell() {
           </main>
         </div>
       </div>
+
+      {/* Search Modal */}
+      <SearchModal open={searchOpen} onClose={() => setSearchOpen(false)} />
 
       {/* ── Mobile Shell ── */}
       <div className="min-h-screen md:hidden">

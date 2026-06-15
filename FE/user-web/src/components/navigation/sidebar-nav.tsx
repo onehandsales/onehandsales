@@ -55,21 +55,21 @@ type SidebarNavProps = {
 
 export function SidebarNav({ className }: SidebarNavProps) {
   return (
-    <nav className={cn("flex flex-col gap-5", className)}>
+    <nav className={cn("flex flex-col gap-4", className)}>
       {groups.map((group) => (
         <div key={group.label}>
-          <p className="mb-1.5 px-3 text-[11px] font-bold uppercase tracking-[0.06em] text-[#71717A]">
+          <p className="mb-1 px-2 text-[11px] font-semibold uppercase tracking-[0.07em] text-[#9CA3AF]">
             {group.label}
           </p>
-          <div className="flex flex-col gap-0.5">
+          <div className="flex flex-col gap-px">
             {group.items.map((item) => (
               <NavLink
                 className={({ isActive }) =>
                   cn(
-                    "group flex h-10 items-center gap-2.5 rounded-lg border px-3 text-[13px] transition-colors",
+                    "group flex h-8 items-center gap-2.5 rounded-md px-2 text-[13px] font-medium transition-colors",
                     isActive
-                      ? "border-[#2563EB30] bg-[#1D4ED822] font-bold text-[#BFDBFE]"
-                      : "border-transparent font-medium text-[#A1A1AA] hover:bg-white/5 hover:text-[#D4D4D8]"
+                      ? "bg-[#EFF6FF] font-semibold text-[#1D4ED8]"
+                      : "text-[#4B5563] hover:bg-[#E9EBF0] hover:text-[#111827]"
                   )
                 }
                 end={item.end}
@@ -80,8 +80,10 @@ export function SidebarNav({ className }: SidebarNavProps) {
                   <>
                     <item.icon
                       className={cn(
-                        "h-4 w-4 shrink-0",
-                        isActive ? "text-[#93C5FD]" : "text-[#71717A] group-hover:text-[#A1A1AA]"
+                        "h-[15px] w-[15px] shrink-0",
+                        isActive
+                          ? "text-[#2563EB]"
+                          : "text-[#9CA3AF] group-hover:text-[#6B7280]"
                       )}
                       strokeWidth={1.75}
                     />
