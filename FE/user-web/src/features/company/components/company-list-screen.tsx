@@ -1,12 +1,4 @@
-import {
-  Building2,
-  Download,
-  Layers3,
-  MapPin,
-  Plus,
-  Search,
-  Trash2,
-} from "lucide-react";
+import { Building2, Download, Plus, Search } from "lucide-react";
 import { type FormEvent, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { Pagination } from "@/components/ui/pagination";
@@ -16,27 +8,13 @@ import {
   useCompanyList,
   useCompanyRegions,
 } from "@/features/company/hooks/use-company-list";
-import {
-  useCreateCompanyFieldMutation,
-  useCreateCompanyRegionMutation,
-  useDeleteCompanyFieldMutation,
-  useDeleteCompanyRegionMutation,
-  useExportCompaniesMutation,
-} from "@/features/company/hooks/use-company-mutations";
-import type {
-  CompanyField,
-  CompanyListItem,
-  CompanyRegion,
-} from "@/features/company/types/company";
-import {
-  ApiClientError,
-  getApiErrorMessage,
-  type ApiBlobResponse,
-} from "@/lib/api-client";
+import { useExportCompaniesMutation } from "@/features/company/hooks/use-company-mutations";
+import type { CompanyListItem } from "@/features/company/types/company";
+import { getApiErrorMessage, type ApiBlobResponse } from "@/lib/api-client";
 import { cn } from "@/utils/cn";
 import { formatDate } from "@/utils/format";
 
-// 기능 : 회사 목록, 검색 필터, 분야/지역 관리, 엑셀 내보내기 화면을 렌더링합니다.
+// 기능 : 회사 목록, select 필터, 엑셀 내보내기 화면을 렌더링합니다.
 export function CompanyListScreen() {
   const [companyNameText, setCompanyNameText] = useState("");
   const [companyName, setCompanyName] = useState("");
@@ -69,7 +47,7 @@ export function CompanyListScreen() {
   const companyList = companiesQuery.data;
   const fields = fieldsQuery.data?.items ?? [];
   const regions = regionsQuery.data?.items ?? [];
-  const taxonomyError = fieldsQuery.error ?? regionsQuery.error ?? null;
+  const filterOptionError = fieldsQuery.error ?? regionsQuery.error ?? null;
   const hasSearch =
     companyName.length > 0 ||
     companyFieldId.length > 0 ||
@@ -137,7 +115,7 @@ export function CompanyListScreen() {
           }}
           value={companyFieldId}
         >
-          <option value="">전체 분야</option>
+          <option value="">분야 ▾</option>
           {fields.map((field) => (
             <option key={field.id} value={field.id}>
               {field.field}
@@ -156,7 +134,7 @@ export function CompanyListScreen() {
           }}
           value={companyRegionId}
         >
-          <option value="">전체 지역</option>
+          <option value="">지역 ▾</option>
           {regions.map((region) => (
             <option key={region.id} value={region.id}>
               {region.region}
@@ -208,18 +186,11 @@ export function CompanyListScreen() {
         </p>
       ) : null}
 
-      {taxonomyError ? (
+      {filterOptionError ? (
         <p className="mb-3 rounded-lg border border-red-100 bg-red-50 px-4 py-2.5 text-sm text-[#EF4444]">
-          {getApiErrorMessage(taxonomyError)}
+          {getApiErrorMessage(filterOptionError)}
         </p>
       ) : null}
-
-      <CompanyTaxonomyManager
-        fields={fields}
-        isLoading={fieldsQuery.isLoading || regionsQuery.isLoading}
-        onNotice={setNotice}
-        regions={regions}
-      />
 
       {companiesQuery.isLoading ? (
         <CompanyListSkeleton />
@@ -255,211 +226,6 @@ export function CompanyListScreen() {
         regions={regions}
       />
     </section>
-  );
-}
-
-type CompanyTaxonomyManagerProps = {
-  readonly fields: CompanyField[];
-  readonly regions: CompanyRegion[];
-  readonly isLoading: boolean;
-  readonly onNotice: (notice: string) => void;
-};
-
-// 기능 : 회사 분야와 지역의 생성/삭제 관리를 렌더링합니다.
-function CompanyTaxonomyManager({
-  fields,
-  regions,
-  isLoading,
-  onNotice,
-}: CompanyTaxonomyManagerProps) {
-  const [fieldName, setFieldName] = useState("");
-  const [regionName, setRegionName] = useState("");
-  const createFieldMutation = useCreateCompanyFieldMutation();
-  const deleteFieldMutation = useDeleteCompanyFieldMutation();
-  const createRegionMutation = useCreateCompanyRegionMutation();
-  const deleteRegionMutation = useDeleteCompanyRegionMutation();
-  const actionError =
-    createFieldMutation.error ??
-    deleteFieldMutation.error ??
-    createRegionMutation.error ??
-    deleteRegionMutation.error ??
-    null;
-  const isMutating =
-    createFieldMutation.isPending ||
-    deleteFieldMutation.isPending ||
-    createRegionMutation.isPending ||
-    deleteRegionMutation.isPending;
-
-  // 기능 : 회사 분야를 생성합니다.
-  const onFieldSubmit = async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-
-    const name = fieldName.trim();
-
-    if (!name) {
-      return;
-    }
-
-    await createFieldMutation.mutateAsync({ field: name });
-    setFieldName("");
-    onNotice("회사 분야가 추가되었습니다.");
-  };
-
-  // 기능 : 회사 지역을 생성합니다.
-  const onRegionSubmit = async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-
-    const name = regionName.trim();
-
-    if (!name) {
-      return;
-    }
-
-    await createRegionMutation.mutateAsync({ region: name });
-    setRegionName("");
-    onNotice("회사 지역이 추가되었습니다.");
-  };
-
-  // 기능 : 사용 중이지 않은 회사 분야를 삭제합니다.
-  const onFieldDelete = async (field: CompanyField) => {
-    if (!window.confirm(`${field.field} 분야를 삭제할까요?`)) {
-      return;
-    }
-
-    await deleteFieldMutation.mutateAsync(field.id);
-    onNotice("회사 분야가 삭제되었습니다.");
-  };
-
-  // 기능 : 사용 중이지 않은 회사 지역을 삭제합니다.
-  const onRegionDelete = async (region: CompanyRegion) => {
-    if (!window.confirm(`${region.region} 지역을 삭제할까요?`)) {
-      return;
-    }
-
-    await deleteRegionMutation.mutateAsync(region.id);
-    onNotice("회사 지역이 삭제되었습니다.");
-  };
-
-  return (
-    <section className="mb-3 grid gap-0 overflow-hidden rounded-lg border border-[#E5EAF0] bg-white lg:grid-cols-2">
-      <CompanyTaxonomyColumn
-        emptyText="등록된 분야가 없습니다."
-        icon={Layers3}
-        inputPlaceholder="새 분야"
-        isLoading={isLoading}
-        isMutating={isMutating}
-        items={fields.map((field) => ({
-          id: field.id,
-          label: field.field,
-          onDelete: () => void onFieldDelete(field),
-        }))}
-        name={fieldName}
-        onNameChange={setFieldName}
-        onSubmit={onFieldSubmit}
-        title="회사 분야"
-      />
-      <CompanyTaxonomyColumn
-        emptyText="등록된 지역이 없습니다."
-        icon={MapPin}
-        inputPlaceholder="새 지역"
-        isLoading={isLoading}
-        isMutating={isMutating}
-        items={regions.map((region) => ({
-          id: region.id,
-          label: region.region,
-          onDelete: () => void onRegionDelete(region),
-        }))}
-        name={regionName}
-        onNameChange={setRegionName}
-        onSubmit={onRegionSubmit}
-        title="회사 지역"
-      />
-      {actionError ? (
-        <p className="border-t border-red-100 bg-red-50 px-4 py-2.5 text-sm text-[#EF4444] lg:col-span-2">
-          {getCompanyTaxonomyErrorMessage(actionError)}
-        </p>
-      ) : null}
-    </section>
-  );
-}
-
-type CompanyTaxonomyColumnProps = {
-  readonly title: string;
-  readonly inputPlaceholder: string;
-  readonly emptyText: string;
-  readonly icon: typeof Layers3;
-  readonly name: string;
-  readonly items: Array<{
-    readonly id: string;
-    readonly label: string;
-    readonly onDelete: () => void;
-  }>;
-  readonly isLoading: boolean;
-  readonly isMutating: boolean;
-  readonly onNameChange: (value: string) => void;
-  readonly onSubmit: (event: FormEvent<HTMLFormElement>) => void;
-};
-
-// 기능 : 분야/지역 관리 컬럼을 렌더링합니다.
-function CompanyTaxonomyColumn({
-  title,
-  inputPlaceholder,
-  emptyText,
-  icon: Icon,
-  name,
-  items,
-  isLoading,
-  isMutating,
-  onNameChange,
-  onSubmit,
-}: CompanyTaxonomyColumnProps) {
-  return (
-    <div className="grid content-start gap-3 border-b border-[#E6EAF0] px-4 py-3 last:border-b-0 lg:border-b-0 lg:border-r lg:last:border-r-0">
-      <div className="flex items-center gap-2">
-        <Icon className="h-3.5 w-3.5 text-[#64748B]" />
-        <h2 className="text-[12px] font-bold text-[#334155]">{title}</h2>
-      </div>
-      <form className="flex gap-2" onSubmit={onSubmit}>
-        <input
-          className="h-[30px] min-w-0 flex-1 rounded-[7px] border border-[#E6EAF0] px-3 text-[12px] outline-none focus:border-[#C7D7FE]"
-          onChange={(event) => onNameChange(event.target.value)}
-          placeholder={inputPlaceholder}
-          value={name}
-        />
-        <button
-          className="inline-flex h-[30px] items-center rounded-[7px] border border-[#E6EAF0] bg-white px-3 text-[12px] font-bold text-[#475569] transition-colors hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-60"
-          disabled={isMutating || name.trim().length === 0}
-          type="submit"
-        >
-          추가
-        </button>
-      </form>
-      <div className="flex min-h-10 flex-wrap gap-2">
-        {isLoading ? (
-          <span className="text-[12px] text-[#94A3B8]">불러오는 중</span>
-        ) : items.length === 0 ? (
-          <span className="text-[12px] text-[#94A3B8]">{emptyText}</span>
-        ) : (
-          items.map((item) => (
-            <span
-              className="inline-flex h-7 items-center gap-2 rounded-md border border-[#E6EAF0] bg-[#FAFBFC] px-2 text-[12px] text-[#475569]"
-              key={item.id}
-            >
-              <span className="max-w-52 truncate">{item.label}</span>
-              <button
-                aria-label={`${item.label} 삭제`}
-                className="grid h-5 w-5 place-items-center rounded text-[#94A3B8] hover:bg-white hover:text-[#EF4444] disabled:cursor-not-allowed disabled:opacity-60"
-                disabled={isMutating}
-                onClick={item.onDelete}
-                type="button"
-              >
-                <Trash2 className="h-3.5 w-3.5" />
-              </button>
-            </span>
-          ))
-        )}
-      </div>
-    </div>
   );
 }
 
@@ -669,23 +435,3 @@ function downloadBlobFile(file: ApiBlobResponse, fallbackFileName: string) {
   window.URL.revokeObjectURL(url);
 }
 
-// 기능 : 분야/지역 삭제 불가 오류를 사용자 메시지로 변환합니다.
-function getCompanyTaxonomyErrorMessage(error: unknown) {
-  if (
-    error instanceof ApiClientError &&
-    error.statusCode === 409 &&
-    error.code === "CompanyFieldInUse"
-  ) {
-    return "사용 중인 분야는 삭제할 수 없음";
-  }
-
-  if (
-    error instanceof ApiClientError &&
-    error.statusCode === 409 &&
-    error.code === "CompanyRegionInUse"
-  ) {
-    return "사용 중인 지역은 삭제할 수 없음";
-  }
-
-  return getApiErrorMessage(error);
-}

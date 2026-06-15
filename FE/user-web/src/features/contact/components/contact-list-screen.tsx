@@ -1,12 +1,4 @@
-import {
-  BriefcaseBusiness,
-  Download,
-  IdCard,
-  Layers3,
-  Plus,
-  Search,
-  Trash2,
-} from "lucide-react";
+import { Download, IdCard, Plus, Search } from "lucide-react";
 import { type FormEvent, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { Pagination } from "@/components/ui/pagination";
@@ -16,27 +8,13 @@ import {
   useContactJobGrades,
   useContactList,
 } from "@/features/contact/hooks/use-contact-list";
-import {
-  useCreateDepartmentMutation,
-  useCreateJobGradeMutation,
-  useDeleteDepartmentMutation,
-  useDeleteJobGradeMutation,
-  useExportContactsMutation,
-} from "@/features/contact/hooks/use-contact-mutations";
-import type {
-  ContactDepartment,
-  ContactJobGrade,
-  ContactListItem,
-} from "@/features/contact/types/contact";
-import {
-  ApiClientError,
-  getApiErrorMessage,
-  type ApiBlobResponse,
-} from "@/lib/api-client";
+import { useExportContactsMutation } from "@/features/contact/hooks/use-contact-mutations";
+import type { ContactListItem } from "@/features/contact/types/contact";
+import { getApiErrorMessage, type ApiBlobResponse } from "@/lib/api-client";
 import { cn } from "@/utils/cn";
 import { formatDate } from "@/utils/format";
 
-// 기능 : 거래처 목록, 검색 필터, 부서/직급 관리, 엑셀 내보내기 화면을 렌더링합니다.
+// 기능 : 거래처 목록, select 필터, 엑셀 내보내기 화면을 렌더링합니다.
 export function ContactListScreen() {
   const [usernameText, setUsernameText] = useState("");
   const [username, setUsername] = useState("");
@@ -74,6 +52,7 @@ export function ContactListScreen() {
   const contactList = contactsQuery.data;
   const jobGrades = jobGradesQuery.data?.items ?? [];
   const departments = departmentsQuery.data?.items ?? [];
+  const filterOptionError = jobGradesQuery.error ?? departmentsQuery.error ?? null;
   const hasSearch =
     username.length > 0 ||
     companyId.length > 0 ||
@@ -142,7 +121,7 @@ export function ContactListScreen() {
           }}
           value={contactDepartmentId}
         >
-          <option value="">전체 부서</option>
+          <option value="">부서 ▾</option>
           {departments.map((dept) => (
             <option key={dept.id} value={dept.id}>
               {dept.departmentName}
@@ -161,7 +140,7 @@ export function ContactListScreen() {
           }}
           value={contactJobGradeId}
         >
-          <option value="">전체 직급</option>
+          <option value="">직급 ▾</option>
           {jobGrades.map((grade) => (
             <option key={grade.id} value={grade.id}>
               {grade.jobGradeName}
@@ -212,12 +191,11 @@ export function ContactListScreen() {
         </p>
       ) : null}
 
-      <ContactTaxonomyManager
-        departments={departments}
-        isLoading={jobGradesQuery.isLoading || departmentsQuery.isLoading}
-        jobGrades={jobGrades}
-        onNotice={setNotice}
-      />
+      {filterOptionError ? (
+        <p className="mb-3 rounded-lg border border-red-100 bg-red-50 px-4 py-2.5 text-sm text-[#EF4444]">
+          {getApiErrorMessage(filterOptionError)}
+        </p>
+      ) : null}
 
       {contactsQuery.isLoading ? (
         <ContactListSkeleton />
@@ -251,209 +229,6 @@ export function ContactListScreen() {
         open={isCreateOpen}
       />
     </section>
-  );
-}
-
-type ContactTaxonomyManagerProps = {
-  readonly jobGrades: ContactJobGrade[];
-  readonly departments: ContactDepartment[];
-  readonly isLoading: boolean;
-  readonly onNotice: (notice: string) => void;
-};
-
-// 기능 : 거래처 부서와 직급의 생성/삭제 관리를 렌더링합니다.
-function ContactTaxonomyManager({
-  jobGrades,
-  departments,
-  isLoading,
-  onNotice,
-}: ContactTaxonomyManagerProps) {
-  const [jobGradeName, setJobGradeName] = useState("");
-  const [departmentName, setDepartmentName] = useState("");
-  const createJobGradeMutation = useCreateJobGradeMutation();
-  const deleteJobGradeMutation = useDeleteJobGradeMutation();
-  const createDepartmentMutation = useCreateDepartmentMutation();
-  const deleteDepartmentMutation = useDeleteDepartmentMutation();
-  const actionError =
-    createJobGradeMutation.error ??
-    deleteJobGradeMutation.error ??
-    createDepartmentMutation.error ??
-    deleteDepartmentMutation.error ??
-    null;
-  const isMutating =
-    createJobGradeMutation.isPending ||
-    deleteJobGradeMutation.isPending ||
-    createDepartmentMutation.isPending ||
-    deleteDepartmentMutation.isPending;
-
-  // 기능 : 거래처 직급을 생성합니다.
-  const onJobGradeSubmit = async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const name = jobGradeName.trim();
-
-    if (!name) {
-      return;
-    }
-
-    await createJobGradeMutation.mutateAsync({ jobGradeName: name });
-    setJobGradeName("");
-    onNotice("직급이 추가되었습니다.");
-  };
-
-  // 기능 : 거래처 부서를 생성합니다.
-  const onDepartmentSubmit = async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const name = departmentName.trim();
-
-    if (!name) {
-      return;
-    }
-
-    await createDepartmentMutation.mutateAsync({ departmentName: name });
-    setDepartmentName("");
-    onNotice("부서가 추가되었습니다.");
-  };
-
-  // 기능 : 사용 중이지 않은 직급을 삭제합니다.
-  const onJobGradeDelete = async (grade: ContactJobGrade) => {
-    if (!window.confirm(`${grade.jobGradeName} 직급을 삭제할까요?`)) {
-      return;
-    }
-
-    await deleteJobGradeMutation.mutateAsync(grade.id);
-    onNotice("직급이 삭제되었습니다.");
-  };
-
-  // 기능 : 사용 중이지 않은 부서를 삭제합니다.
-  const onDepartmentDelete = async (dept: ContactDepartment) => {
-    if (!window.confirm(`${dept.departmentName} 부서를 삭제할까요?`)) {
-      return;
-    }
-
-    await deleteDepartmentMutation.mutateAsync(dept.id);
-    onNotice("부서가 삭제되었습니다.");
-  };
-
-  return (
-    <section className="mb-3 grid gap-0 overflow-hidden rounded-lg border border-[#E5EAF0] bg-white lg:grid-cols-2">
-      <ContactTaxonomyColumn
-        emptyText="등록된 부서가 없습니다."
-        icon={Layers3}
-        inputPlaceholder="새 부서"
-        isLoading={isLoading}
-        isMutating={isMutating}
-        items={departments.map((dept) => ({
-          id: dept.id,
-          label: dept.departmentName,
-          onDelete: () => void onDepartmentDelete(dept),
-        }))}
-        name={departmentName}
-        onNameChange={setDepartmentName}
-        onSubmit={onDepartmentSubmit}
-        title="부서 관리"
-      />
-      <ContactTaxonomyColumn
-        emptyText="등록된 직급이 없습니다."
-        icon={BriefcaseBusiness}
-        inputPlaceholder="새 직급"
-        isLoading={isLoading}
-        isMutating={isMutating}
-        items={jobGrades.map((grade) => ({
-          id: grade.id,
-          label: grade.jobGradeName,
-          onDelete: () => void onJobGradeDelete(grade),
-        }))}
-        name={jobGradeName}
-        onNameChange={setJobGradeName}
-        onSubmit={onJobGradeSubmit}
-        title="직급 관리"
-      />
-      {actionError ? (
-        <p className="border-t border-red-100 bg-red-50 px-4 py-2.5 text-sm text-[#EF4444] lg:col-span-2">
-          {getContactTaxonomyErrorMessage(actionError)}
-        </p>
-      ) : null}
-    </section>
-  );
-}
-
-type ContactTaxonomyColumnProps = {
-  readonly title: string;
-  readonly inputPlaceholder: string;
-  readonly emptyText: string;
-  readonly icon: typeof Layers3;
-  readonly name: string;
-  readonly items: Array<{
-    readonly id: string;
-    readonly label: string;
-    readonly onDelete: () => void;
-  }>;
-  readonly isLoading: boolean;
-  readonly isMutating: boolean;
-  readonly onNameChange: (value: string) => void;
-  readonly onSubmit: (event: FormEvent<HTMLFormElement>) => void;
-};
-
-// 기능 : 부서/직급 관리 컬럼을 렌더링합니다.
-function ContactTaxonomyColumn({
-  title,
-  inputPlaceholder,
-  emptyText,
-  icon: Icon,
-  name,
-  items,
-  isLoading,
-  isMutating,
-  onNameChange,
-  onSubmit,
-}: ContactTaxonomyColumnProps) {
-  return (
-    <div className="grid content-start gap-3 border-b border-[#E6EAF0] px-4 py-3 last:border-b-0 lg:border-b-0 lg:border-r lg:last:border-r-0">
-      <div className="flex items-center gap-2">
-        <Icon className="h-3.5 w-3.5 text-[#64748B]" />
-        <h2 className="text-[12px] font-bold text-[#334155]">{title}</h2>
-      </div>
-      <form className="flex gap-2" onSubmit={(e) => void onSubmit(e)}>
-        <input
-          className="h-[30px] min-w-0 flex-1 rounded-[7px] border border-[#E6EAF0] px-3 text-[12px] outline-none focus:border-[#C7D7FE]"
-          onChange={(event) => onNameChange(event.target.value)}
-          placeholder={inputPlaceholder}
-          value={name}
-        />
-        <button
-          className="inline-flex h-[30px] items-center rounded-[7px] border border-[#E6EAF0] bg-white px-3 text-[12px] font-bold text-[#475569] transition-colors hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-60"
-          disabled={isMutating || name.trim().length === 0}
-          type="submit"
-        >
-          추가
-        </button>
-      </form>
-      <div className="flex min-h-10 flex-wrap gap-2">
-        {isLoading ? (
-          <span className="text-[12px] text-[#94A3B8]">불러오는 중</span>
-        ) : items.length === 0 ? (
-          <span className="text-[12px] text-[#94A3B8]">{emptyText}</span>
-        ) : (
-          items.map((item) => (
-            <span
-              className="inline-flex h-7 items-center gap-2 rounded-md border border-[#E6EAF0] bg-[#FAFBFC] px-2 text-[12px] text-[#475569]"
-              key={item.id}
-            >
-              <span className="max-w-52 truncate">{item.label}</span>
-              <button
-                aria-label={`${item.label} 삭제`}
-                className="grid h-5 w-5 place-items-center rounded text-[#94A3B8] hover:bg-white hover:text-[#EF4444] disabled:cursor-not-allowed disabled:opacity-60"
-                disabled={isMutating}
-                onClick={item.onDelete}
-                type="button"
-              >
-                <Trash2 className="h-3.5 w-3.5" />
-              </button>
-            </span>
-          ))
-        )}
-      </div>
-    </div>
   );
 }
 
@@ -659,14 +434,3 @@ function downloadBlobFile(file: ApiBlobResponse, fallbackFileName: string) {
   window.URL.revokeObjectURL(url);
 }
 
-// 기능 : 부서/직급 삭제 불가 오류를 사용자 메시지로 변환합니다.
-function getContactTaxonomyErrorMessage(error: unknown) {
-  if (
-    error instanceof ApiClientError &&
-    error.statusCode === 409
-  ) {
-    return "사용 중인 항목은 삭제할 수 없습니다.";
-  }
-
-  return getApiErrorMessage(error);
-}
