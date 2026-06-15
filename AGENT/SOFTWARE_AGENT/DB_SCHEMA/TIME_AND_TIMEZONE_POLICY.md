@@ -63,7 +63,7 @@ expectedEndDate DateTime @db.Date
 - 기존 적용 migration 파일은 수정하지 않는다.
 - 기존 `TIMESTAMP(3)` 컬럼을 `TIMESTAMPTZ`로 바꾸려면 별도 migration 계획과 데이터 해석 기준을 먼저 문서화한다.
 - `createdAt`, `updatedAt`만 있는 시스템/로그성 테이블에는 별도 `timeZone` 컬럼을 추가하지 않는다.
-- 사용자가 입력한 현지 날짜/시간을 저장하는 업무 테이블은 `timeZone` 컬럼을 함께 저장한다. 예: `Schedule.timeZone`.
+- 사용자가 입력한 현지 날짜/시간을 저장하는 업무 테이블은 `timeZone` 컬럼을 함께 저장한다. 예: `Schedule.timeZone`, `MeetingNote.timeZone`.
 - `timeZone`은 `KST`, `PST`, `GMT+9` 같은 약어/offset이 아니라 `Asia/Seoul`, `America/Los_Angeles`, `Asia/Singapore` 같은 IANA timezone ID여야 한다.
 
 ## 4. Backend 처리 기준

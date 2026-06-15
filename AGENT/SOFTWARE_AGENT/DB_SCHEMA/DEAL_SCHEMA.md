@@ -9,6 +9,7 @@
 - `BE/prisma/migrations/20260612000000_add_deal_domain/migration.sql`
 - `BE/prisma/migrations/20260612010000_add_deal_product_join/migration.sql`
 - `BE/prisma/migrations/20260614020000_add_schedule_domain/migration.sql`
+- `BE/prisma/migrations/20260615000000_add_meeting_note_domain/migration.sql`
 
 구현 기준 문서:
 
@@ -21,6 +22,8 @@
 - `BE/prisma/migrations/20260612010000_add_deal_product_join/migration.sql`
 - `TODO/DONE/SCHEDULE_DOMAIN_PLAN/README.md`
 - `BE/prisma/migrations/20260614020000_add_schedule_domain/migration.sql`
+- `TODO/DONE/MEETING_NOTE_MANUAL_PLAN/README.md`
+- `BE/prisma/migrations/20260615000000_add_meeting_note_domain/migration.sql`
 
 ## 2. 테이블 목록
 
@@ -57,6 +60,7 @@ Deal 기본 도메인 1차 구현 범위는 다음 테이블만 포함한다.
 - `Deal` 1:N `DealFollowingActionLog`
 - `Deal` 1:N `DealMemoLog`
 - `Deal` 1:N `ScheduleDeal`
+- `Deal` 1:N `MeetingNoteDeal`
 
 정책:
 
@@ -68,6 +72,7 @@ Deal 기본 도메인 1차 구현 범위는 다음 테이블만 포함한다.
 - 딜 하나는 `DealProduct`를 통해 여러 제품에 연결될 수 있다.
 - 제품 하나는 `DealProduct`를 통해 여러 딜에 포함될 수 있다.
 - 딜 하나는 `ScheduleDeal`을 통해 여러 일정에 연결될 수 있다.
+- 딜 하나는 `MeetingNoteDeal`을 통해 여러 회의록 snapshot에 연결될 수 있다.
 - 딜 생성/수정 시 `contact.companyId`가 요청 `companyId`와 같은지 검증한다.
 - 목록 API는 20개 페이지네이션이다.
 - 목록 기본 정렬은 `createdAt DESC`다.

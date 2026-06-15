@@ -53,6 +53,8 @@ Currently imported modules in `AppModule`:
 - `contact`
 - `product`
 - `deal`
+- `schedule`
+- `meeting-note`
 
 Currently implemented API surface:
 
@@ -118,6 +120,18 @@ Currently implemented API surface:
 - `PATCH /api/deals/:dealId`
 - Deal following action log routes under `/api/deals/:dealId`
 - Deal memo log routes under `/api/deals/:dealId`
+- `GET /api/schedules/deal-options`
+- `GET /api/schedules`
+- `GET /api/schedules/:scheduleId`
+- `POST /api/schedules`
+- `PATCH /api/schedules/:scheduleId`
+- `DELETE /api/schedules/:scheduleId`
+- `GET /api/meeting-notes`
+- `GET /api/meeting-notes/filter-companies`
+- `GET /api/meeting-notes/filter-contacts`
+- `GET /api/meeting-notes/:meetingNoteId`
+- `POST /api/meeting-notes`
+- `PATCH /api/meeting-notes/:meetingNoteId`
 
 Completed Backend TODO plans:
 
@@ -126,6 +140,8 @@ Completed Backend TODO plans:
 - `TODO/DONE/CONTACT_DOMAIN_PLAN/BE-TODO/G01-BE-CONTACT-DOMAIN.goal.md`: completed. Contact DB/API, company ownership, request id, private memo encryption, transaction contract, and observability contract are implemented and verified.
 - `TODO/DONE/PRODUCT_DOMAIN_PLAN/BE-TODO/G01-BE-PRODUCT-DOMAIN.goal.md`: completed. Product DB/API, category/status ownership, private memo encryption, transaction contract, and observability contract are implemented and verified.
 - `TODO/DONE/DEAL_DOMAIN_PLAN/BE-TODO/G01-BE-DEAL-DOMAIN.goal.md`: completed. Deal DB/API, DealProduct N:M product mapping, code-level status enum, nested FK responses, following action logs, memo logs, xlsx export, transaction contract, and observability contract are implemented and verified.
+- `TODO/DONE/SCHEDULE_DOMAIN_PLAN/BE-TODO/G01-BE-SCHEDULE-DOMAIN.goal.md`: completed. Schedule DB/API, ScheduleDeal N:M deal mapping, timezone conversion, hard delete transaction, and User Web schedule contract are implemented and verified.
+- `TODO/DONE/MEETING_NOTE_MANUAL_PLAN/BE-TODO/G01-BE-MEETING-NOTE-DOMAIN.goal.md`: completed. Manual MeetingNote DB/API, N:N snapshot links, filter APIs, transaction contract, and User Web meeting-note contract are implemented and verified.
 - `TODO/DONE/ADDITIONAL_WORK_PLAN/BE-TODO/G01-G12`: completed. Company `contactCount`, Company linked Contact list, Company/Contact/Product xlsx export, Company/Product `dealCount`, Company/Contact/Product linked Deal lists, and Product `sort=dealCountDesc` are implemented and verified.
 
 Current response notes:
@@ -134,6 +150,9 @@ Current response notes:
 - `GET /api/products` returns `items[].dealCount` and supports `sort=createdAtDesc|dealCountDesc`.
 - Company and Product xlsx export files include `딜 수`; Product export also supports the same product list sort query.
 - Company/Contact/Product linked Deal list APIs return all linked deals ordered by `createdAt DESC`, `id DESC`.
+- `GET /api/schedules` uses local date range query values plus IANA `timeZone` and returns UTC ISO strings.
+- `GET /api/meeting-notes` returns summary objects for `companies`, `contacts`, `products`, `deals` and uses `totalPages`, not `hasNext`.
+- Manual MeetingNote APIs do not expose AI/STT generation, delete/restore, Admin raw access, `stageText`, request `timeZone`, request `rawText`, or single request `dealId`.
 
 Current runtime behavior:
 
@@ -145,12 +164,8 @@ Current runtime behavior:
 Current backend gaps:
 
 - Admin Web query APIs such as `/admin/api/dashboard`, `/admin/api/users`, `/admin/api/companies`, `/admin/api/contacts`, `/admin/api/products`, and `/admin/api/deals` are not implemented yet.
-- Schedule/MeetingNote backend modules are not implemented yet.
-- User Web Company API client alignment is FE-side work; Backend Company API contract is implemented under `TODO/DONE/COMPANY_DOMAIN_PLAN/COMMON/API-SPEC`.
-- User Web Contact API client alignment is FE-side work; Backend Contact API contract is implemented under `TODO/DONE/CONTACT_DOMAIN_PLAN/COMMON/API-SPEC`.
-- User Web Product API client alignment is FE-side work; Backend Product API contract is implemented under `TODO/DONE/PRODUCT_DOMAIN_PLAN/COMMON/API-SPEC`.
-- User Web Deal API client alignment is FE-side work; Backend Deal API contract is implemented under `TODO/DONE/DEAL_DOMAIN_PLAN/COMMON/API-SPEC`.
-- User Web Additional Work alignment for `dealCount`, linked Deal lists, and product `dealCountDesc` sort is FE-side work; Backend Additional Work API contracts are implemented under `TODO/DONE/ADDITIONAL_WORK_PLAN/COMMON/API-SPEC`.
+- BusinessCard OCR, generic Import/Export jobs, Notification, Trash, Search, Admin operation query/audit/sensitive raw APIs are not implemented yet.
+- MeetingNote AI/STT generation, delete/restore, Admin API, rawText encryption, and DealActivity auto-log are future scope.
 
 ## 4. Target Module List
 

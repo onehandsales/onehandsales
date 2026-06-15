@@ -23,6 +23,8 @@ Company 1 ─ N CompanyMemoLog
 Company 1 ─ N CompanyUserPrivateMemoLog
 Company 1 ─ N Contact
 Company 1 ─ N Deal
+Company 1 ─ N MeetingNoteCompany
+Company 1 ─ N MeetingNoteContact
 ```
 
 관계 요약:
@@ -34,6 +36,7 @@ Company 1 ─ N Deal
 - `CompanyUserPrivateMemoLog`는 회사별 사용자 비밀 메모 로그다.
 - `Contact`는 회사에 소속된 거래처 담당자다.
 - `Deal`은 특정 회사에 속한 딜이다.
+- `MeetingNoteCompany`와 `MeetingNoteContact`는 회의록 작성 시점의 회사/담당자 snapshot 연결이다.
 
 ## 3. 현재 제외한 구조
 
@@ -71,6 +74,8 @@ Relations:
 - `privateMemoLogs`: `CompanyUserPrivateMemoLog[]`
 - `contacts`: `Contact[]`
 - `deals`: `Deal[]`
+- `meetingNoteCompanies`: `MeetingNoteCompany[]`
+- `meetingNoteContacts`: `MeetingNoteContact[]`
 
 Indexes:
 

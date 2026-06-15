@@ -34,7 +34,7 @@ AuthDevice 1 ─ N AuthSession
 - `User.permanentDeleteAt`: 영구 삭제 정책을 현재 두지 않는다.
 - 계정 삭제 API: 현재 만들지 않는다.
 - 등록 기기 수정/해제 API용 컬럼: 현재 조회만 제공한다.
-- DealActivity, Schedule, MeetingNote 등 후속 영업 도메인 테이블: 이후 요청 순서대로 별도 설계한다.
+- DealActivity 등 후속 영업 활동 통합 테이블: 이후 요청 순서대로 별도 설계한다.
 
 참고:
 
@@ -121,6 +121,11 @@ Relations:
 - `authSessions`: `AuthSession[]`
 - `schedules`: `Schedule[]`
 - `scheduleDeals`: `ScheduleDeal[]`
+- `meetingNotes`: `MeetingNote[]`
+- `meetingNoteCompanies`: `MeetingNoteCompany[]`
+- `meetingNoteContacts`: `MeetingNoteContact[]`
+- `meetingNoteProducts`: `MeetingNoteProduct[]`
+- `meetingNoteDeals`: `MeetingNoteDeal[]`
 
 Indexes:
 
@@ -288,6 +293,11 @@ model User {
   authSessions  AuthSession[]      // Backend refresh sessions
   schedules     Schedule[]         // 사용자가 등록한 일정
   scheduleDeals ScheduleDeal[]     // 사용자가 일정에 연결한 딜 매핑
+  meetingNotes         MeetingNote[]        // 사용자가 작성한 회의록
+  meetingNoteCompanies MeetingNoteCompany[] // 사용자가 회의록에 연결한 회사 snapshot
+  meetingNoteContacts  MeetingNoteContact[] // 사용자가 회의록에 연결한 담당자 snapshot
+  meetingNoteProducts  MeetingNoteProduct[] // 사용자가 회의록에 연결한 제품 snapshot
+  meetingNoteDeals     MeetingNoteDeal[]    // 사용자가 회의록에 연결한 딜 snapshot
 
   @@index([role])
   @@index([status])

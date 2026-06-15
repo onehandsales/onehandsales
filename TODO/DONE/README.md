@@ -23,5 +23,6 @@
 - `PRODUCT_DOMAIN_PLAN`: Product Backend API와 User Web 제품 목록/상세/메모/export 화면
 - `DEAL_DOMAIN_PLAN`: Deal Backend API와 User Web 딜 목록/상세/로그/export 화면
 - `SCHEDULE_DOMAIN_PLAN`: Schedule Backend API와 User Web 월간/주간 일정 화면, 생성/수정/삭제, 딜 연결
+- `MEETING_NOTE_MANUAL_PLAN`: MeetingNote 수동 Backend API와 User Web 회의록 목록/상세/생성/수정 화면
 - `ADDITIONAL_WORK_PLAN`: count, linked list, xlsx export, dealCount, product dealCount sort 추가 유지보수 범위
 - `USER_TIMEZONE_FOUNDATION_PLAN`: User.timeZone DB/API와 User Web timezone 설정 기반

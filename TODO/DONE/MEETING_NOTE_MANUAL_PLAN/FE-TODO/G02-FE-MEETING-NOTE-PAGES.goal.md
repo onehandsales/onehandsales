@@ -11,10 +11,10 @@ User Web 회의록 목록/상세/생성/수정 화면을 Backend MeetingNote API
 
 ## 3. 먼저 읽을 문서
 
-- `TODO/MEETING_NOTE_MANUAL_PLAN/README.md`
-- `TODO/MEETING_NOTE_MANUAL_PLAN/COMMON/USER-FLOW.md`
-- `TODO/MEETING_NOTE_MANUAL_PLAN/COMMON/API-SPEC/MEETING_NOTE_API.md`
-- `TODO/MEETING_NOTE_MANUAL_PLAN/COMMON/GOAL-SPECS/G02-FE-MEETING-NOTE-PAGES.md`
+- `TODO/DONE/MEETING_NOTE_MANUAL_PLAN/README.md`
+- `TODO/DONE/MEETING_NOTE_MANUAL_PLAN/COMMON/USER-FLOW.md`
+- `TODO/DONE/MEETING_NOTE_MANUAL_PLAN/COMMON/API-SPEC/MEETING_NOTE_API.md`
+- `TODO/DONE/MEETING_NOTE_MANUAL_PLAN/COMMON/GOAL-SPECS/G02-FE-MEETING-NOTE-PAGES.md`
 - `AGENT/PM_AGENT/CONVENTION/TODO_SOFTWARE_AGENT_REFERENCE.md`
 - `AGENT/SOFTWARE_AGENT/FRONT_AGENT/ARCHITECTURE/FRONTEND_USER_WEB.md`
 - `AGENT/SOFTWARE_AGENT/FRONT_AGENT/CONVENTION/FRONTEND_USER_WEB.md`
@@ -23,25 +23,25 @@ User Web 회의록 목록/상세/생성/수정 화면을 Backend MeetingNote API
 
 ## 4. 작업 체크리스트
 
-- [ ] 기존 `features/meeting-note`에서 stale field 사용 위치를 찾는다.
-- [ ] `dealId`, `stageText`, `hasNext`, request `timeZone`, request `rawText` 의존성을 제거한다.
-- [ ] 새 MeetingNote DTO type을 정의한다.
-- [ ] MeetingNote API client 함수를 작성한다.
-- [ ] TanStack Query key와 hook을 작성한다.
-- [ ] 목록 페이지를 `GET /api/meeting-notes`와 연결한다.
-- [ ] 회사 필터를 `GET /api/meeting-notes/filter-companies`와 연결한다.
-- [ ] 담당자 필터를 `GET /api/meeting-notes/filter-contacts`와 연결한다.
-- [ ] 목록 pagination을 `page`, `totalPages` 기준으로 수정한다.
-- [ ] 상세 페이지를 `GET /api/meeting-notes/:meetingNoteId`와 연결한다.
-- [ ] 생성 form을 `POST /api/meeting-notes`와 연결한다.
-- [ ] 수정 form을 `PATCH /api/meeting-notes/:meetingNoteId`와 연결한다.
-- [ ] 회사와 담당자 1개 이상 선택/입력을 form validation으로 강제한다.
-- [ ] 제품과 딜은 선택 연결로 처리한다.
-- [ ] `products`, `deals` 빈 배열 제거 동작을 구현한다.
-- [ ] 생성/수정 후 관련 query를 invalidate한다.
-- [ ] loading/empty/error/pending 상태를 정리한다.
-- [ ] desktop/mobile 레이아웃을 확인한다.
-- [ ] typecheck/lint/build를 실행한다.
+- [x] 기존 `features/meeting-note`에서 stale field 사용 위치를 찾는다.
+- [x] `dealId`, `stageText`, `hasNext`, request `timeZone`, request `rawText` 의존성을 제거한다.
+- [x] 새 MeetingNote DTO type을 정의한다.
+- [x] MeetingNote API client 함수를 작성한다.
+- [x] TanStack Query key와 hook을 작성한다.
+- [x] 목록 페이지를 `GET /api/meeting-notes`와 연결한다.
+- [x] 회사 필터를 `GET /api/meeting-notes/filter-companies`와 연결한다.
+- [x] 담당자 필터를 `GET /api/meeting-notes/filter-contacts`와 연결한다.
+- [x] 목록 pagination을 `page`, `totalPages` 기준으로 수정한다.
+- [x] 상세 페이지를 `GET /api/meeting-notes/:meetingNoteId`와 연결한다.
+- [x] 생성 form을 `POST /api/meeting-notes`와 연결한다.
+- [x] 수정 form을 `PATCH /api/meeting-notes/:meetingNoteId`와 연결한다.
+- [x] 회사와 담당자 1개 이상 선택/입력을 form validation으로 강제한다.
+- [x] 제품과 딜은 선택 연결로 처리한다.
+- [x] `products`, `deals` 빈 배열 제거 동작을 구현한다.
+- [x] 생성/수정 후 관련 query를 invalidate한다.
+- [x] loading/empty/error/pending 상태를 정리한다.
+- [x] desktop/mobile 레이아웃을 확인한다.
+- [x] typecheck/lint/build를 실행한다.
 
 ## 5. Acceptance Criteria
 

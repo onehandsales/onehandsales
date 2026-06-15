@@ -8,9 +8,9 @@
 
 ## 2. 현재 상태
 
-- Backend에는 `meeting-note` module과 Prisma `MeetingNote*` 모델이 아직 없다.
-- User Web에는 `/meeting-notes`, `/meeting-notes/new`, `/meeting-notes/:meetingNoteId` 라우트와 `features/meeting-note`가 있으나, 기존 단일 딜/AI 중심 API 계약에 맞춰져 있어 N:N 연결 계약으로 수정해야 한다.
-- `UX Design/FE_DOMAIN_COMPLETION_STATUS.md`도 MeetingNote를 "현재 BE module 없음, FE feature/page 존재"로 추적한다.
+- Backend에는 `meeting-note` module과 Prisma `MeetingNote*` 모델이 구현되어 있다.
+- User Web의 `/meeting-notes`, `/meeting-notes/new`, `/meeting-notes/:meetingNoteId` 라우트와 `features/meeting-note`는 수동 N:N 연결 계약으로 수정되어 있다.
+- 이 계획은 2026-06-15에 완료되어 `TODO/DONE/MEETING_NOTE_MANUAL_PLAN`으로 보관한다.
 - `UX Design/PEN_UI_05_API_CHANGE_TRACKER.md`의 Meeting Note API는 오래된 계약이다. 이번 계획에서는 최신 `meetingNote.md`와 이 계획의 `COMMON/API-SPEC/MEETING_NOTE_API.md`를 구현 기준으로 삼는다.
 
 ## 3. 범위
@@ -79,13 +79,21 @@
 
 ## 7. 완료 기준
 
-- Backend MeetingNote API가 계약대로 구현되고 ownership, validation, transaction 테스트가 통과한다.
-- User Web이 기존 단일 `dealId`, `stageText`, `hasNext`, `rawText`, request `timeZone` 계약을 더 이상 사용하지 않는다.
-- 회의록 생성/수정에서 회사와 담당자는 1개 이상 요구된다.
-- 제품과 딜은 선택 연결로 처리된다.
-- 생성/수정 transaction 실패 시 회의록 본문과 연결 row가 함께 rollback된다.
-- 목록 pagination은 `pageSize=20`, `totalCount`, `totalPages`를 사용한다.
-- 완료 후 `TODO_LOG`에 실행한 명령, 검증 결과, 남은 후속 범위를 기록한다.
+- [x] Backend MeetingNote API가 계약대로 구현되고 ownership, validation, transaction 테스트가 통과한다.
+- [x] User Web이 기존 단일 `dealId`, `stageText`, `hasNext`, `rawText`, request `timeZone` 계약을 더 이상 사용하지 않는다.
+- [x] 회의록 생성/수정에서 회사와 담당자는 1개 이상 요구된다.
+- [x] 제품과 딜은 선택 연결로 처리된다.
+- [x] 생성/수정 transaction 실패 시 회의록 본문과 연결 row가 함께 rollback된다.
+- [x] 목록 pagination은 `pageSize=20`, `totalCount`, `totalPages`를 사용한다.
+- [x] 완료 후 `TODO_LOG`에 실행한 명령, 검증 결과, 남은 후속 범위를 기록한다.
+
+완료 기록:
+
+- 구현 커밋: `1d11a71` (`feat(meeting-note): add manual meeting note flow`)
+- 작업 로그:
+  - `TODO_LOG/2026-06-15/G01_BE_MEETING_NOTE_DOMAIN/WORK_LOG.md`
+  - `TODO_LOG/2026-06-15/G02_FE_MEETING_NOTE_PAGES/WORK_LOG.md`
+  - `TODO_LOG/2026-06-15/G03_MEETING_NOTE_INTEGRATION/WORK_LOG.md`
 
 ## 8. 관련 정본
 

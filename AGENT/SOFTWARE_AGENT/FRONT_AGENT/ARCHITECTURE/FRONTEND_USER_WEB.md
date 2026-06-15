@@ -271,7 +271,8 @@ src/features/company/
 - 기획 화면 목록의 `/imports`, `/exports`는 현재 코드에서 `/import`, `/export`로 구현되어 있다.
 - 기획 화면 목록의 `/search` 전용 라우트는 현재 router에 없다. `search` feature는 존재하지만 상단 검색/내부 기능으로 연결될 수 있다.
 - `src/lib/api-client.ts`는 User Web에서 `/admin/api/*` 호출을 차단한다.
-- Backend는 현재 Auth/User, Company, Contact, Product, Deal과 Additional Work G01-G12 API까지만 구현되어 있다. `schedule`, `meeting-note`, `business-card`, `import-export`, `notification`, `search`, `trash` feature/API client는 실제 Backend API가 구현되기 전까지 mock/placeholder 경계를 명확히 둔다.
+- Backend는 현재 Auth/User, Company, Contact, Product, Deal, Schedule, MeetingNote 수동 API와 Additional Work G01-G12 API가 구현되어 있다. `business-card`, `import-export`, `notification`, `search`, `trash` feature/API client는 실제 Backend API가 구현되기 전까지 mock/placeholder 경계를 명확히 둔다.
+- `src/features/meeting-note`는 `TODO/DONE/MEETING_NOTE_MANUAL_PLAN/COMMON/API-SPEC/MEETING_NOTE_API.md`의 수동 회의록 계약을 따른다. 단일 `dealId`, `stageText`, `hasNext`, request `timeZone`, request `rawText`, AI/STT 생성, 삭제/복구 계약은 현재 User Web 기준이 아니다.
 - `src/features/company/api/company-api.ts`는 구현 완료된 Backend Company API 계약과 맞춰야 한다. Company UI/API 통합 작업 때 `TODO/DONE/COMPANY_DOMAIN_PLAN/COMMON/API-SPEC/COMPANY_API.md`와 `COMPANY_API_DETAIL.md`의 `companyName`, `companyFieldId`, `companyRegionId`, memo/private memo contract를 기준으로 오래된 필드와 삭제/복구 경로를 정리한다.
 - Company 화면은 `TODO/DONE/ADDITIONAL_WORK_PLAN` 기준으로 목록 `contactCount`/`dealCount`, 회사 상세 연결 Contact 목록, 회사 상세 연결 Deal 목록, 현재 필터 기준 xlsx export를 반영해야 한다.
 - `src/features/contact/api`는 구현 완료된 Backend Contact API 계약과 맞춰야 한다. Contact UI/API 통합 작업 때 `TODO/DONE/CONTACT_DOMAIN_PLAN/COMMON/API-SPEC/CONTACT_API.md`와 `CONTACT_API_DETAIL.md`의 `username`, `mobile`, `email`, `companyId`, `contactDepartmentId`, `contactJobGradeId`, `contactMemo`, memo/private memo contract를 기준으로 오래된 `name`, `phone`, `department`, `position`, `initialMemo`, 삭제/복구 경로를 정리한다.

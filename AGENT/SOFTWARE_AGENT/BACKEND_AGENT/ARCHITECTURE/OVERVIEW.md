@@ -58,6 +58,8 @@ User API는 현재 사용자 본인 데이터만 다룬다. 모든 사용자 소
 - `ContactModule`
 - `ProductModule`
 - `DealModule`
+- `ScheduleModule`
+- `MeetingNoteModule`
 
 Admin API는 현재 `GET /admin/api/me`만 구현되어 있다. Admin Web이 호출하는 대시보드, 사용자 목록, 회사/거래처/제품/딜 조회용 `/admin/api/*` 엔드포인트는 아직 Backend에 없다.
 

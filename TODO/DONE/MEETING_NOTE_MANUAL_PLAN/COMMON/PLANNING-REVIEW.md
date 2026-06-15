@@ -4,12 +4,12 @@
 
 - 검토일: 2026-06-15
 - 판정: 통과
-- 상태: `/goal` 실행 가능
+- 상태: 완료. 2026-06-15에 `TODO/DONE/MEETING_NOTE_MANUAL_PLAN`으로 보관
 
 ## 2. 통과 근거
 
-- 현재 Backend에 MeetingNote module이 없으므로 새 활성 계획으로 분리하는 것이 맞다.
-- User Web에는 meeting-note feature/page가 있어 Backend 구현 후 새 API 계약으로 교체할 수 있다.
+- 계획 수립 당시 Backend에 MeetingNote module이 없었으므로 새 활성 계획으로 분리하는 것이 맞았다.
+- User Web에는 meeting-note feature/page가 있었고, 구현 완료 후 새 API 계약으로 교체됐다.
 - `meetingNote.md`에서 AI Text/STT가 후속 범위로 분리됐고, 이번 계획도 수동 회의록 CRUD로 범위를 좁혔다.
 - request `timeZone`을 받지 않고 `User.timeZone`을 사용하는 정책이 확정됐다.
 - 회사와 담당자는 필수 연결, 제품과 딜은 선택 연결로 구현 기준을 고정했다.
