@@ -99,7 +99,7 @@
 - search
 
 메모:
-- pen 기준 stage 구조와 현재 백엔드 stage 구조 충돌 여부 확인 필요
+- pen 기준 stage 구조와 현재 백엔드 stage 구조는 6단계로 일치한다.
 - 모바일 홈이 핵심이면 aggregate endpoint 필요성이 높아질 수 있음
 
 ### Deal Quick Create Modal
@@ -265,11 +265,13 @@
 
 ## 5. 현재 구조와 pen 간 충돌 사항
 
-### Deal Stage 충돌
+### Deal Stage 상태
 
 현재 백엔드:
 - `INITIAL_CONTACT`
-- `IN_DISCUSSION`
+- `NEEDS_CHECK`
+- `PROPOSAL_QUOTE`
+- `NEGOTIATION`
 - `WON`
 - `LOST`
 
@@ -281,9 +283,10 @@ pen 기준:
 - 성사
 - 실패
 
-판단 필요:
-- 프론트 임시 매핑으로 갈지
-- 백엔드 enum / DB / API를 6단계로 확장할지
+현재 결정:
+- FE/BE 모두 위 6단계 코드 계약을 사용한다.
+- DB는 문자열 코드로 저장하고, 코드 단 enum/validation에서 6단계를 관리한다.
+- 과거 4단계 `IN_DISCUSSION` 계약은 현재 기준이 아니다.
 
 ### Summary / Aggregate 충돌
 
@@ -342,7 +345,7 @@ pen 기준:
 - `page`
 - `pageSize`
 - `totalCount`
-- `hasNext`
+- `totalPages`
 
 ### Delete / Restore
 
@@ -431,7 +434,7 @@ pen 기준:
 
 ## 11. 구현 전 결정 필요 사항
 
-- deal stage를 백엔드까지 6단계로 바꿀지 여부
+- stage metadata endpoint를 별도로 둘지 여부
 - MVP 범위를 딜만 할지, 회사/거래처/제품/일정까지 확장할지
 - 모바일 홈 전용 aggregate API를 만들지 여부
 - quick create에서 inline 생성 UX를 유지할지 여부

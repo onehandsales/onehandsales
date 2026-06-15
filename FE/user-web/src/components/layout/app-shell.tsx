@@ -238,7 +238,7 @@ export function AppShell() {
 
       {/* ── Mobile Shell ── */}
       <div className="min-h-screen md:hidden">
-        {isHome ? <MobileAppHeader title="딜 파이프라인" /> : null}
+        {isHome ? <MobileAppHeader title="홈" /> : null}
         <main className="pb-[calc(var(--mobile-tabbar-height,4rem)+1.5rem)]">
           <Outlet />
         </main>

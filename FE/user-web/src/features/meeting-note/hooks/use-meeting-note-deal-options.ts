@@ -7,6 +7,7 @@ export type MeetingNoteDealOption = {
   readonly subtitle: string;
 };
 
+// 기능 : 회의록 form에서 선택할 딜 옵션을 딜 목록 API로 검색합니다.
 export function useMeetingNoteDealOptions(search: string) {
   const normalizedSearch = search.trim();
 
@@ -24,7 +25,7 @@ export function useMeetingNoteDealOptions(search: string) {
         name: deal.dealName,
         subtitle: [deal.company?.companyName, deal.contact?.username]
           .filter(Boolean)
-          .join(" · "),
+          .join(" / "),
       }));
     },
   });

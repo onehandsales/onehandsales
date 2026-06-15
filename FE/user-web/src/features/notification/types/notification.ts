@@ -41,7 +41,6 @@ export type NotificationListResponse = {
   readonly page: number;
   readonly pageSize: number;
   readonly totalCount: number;
-  readonly hasNext: boolean;
 };
 
 export type UserNotificationSetting = {

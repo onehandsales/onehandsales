@@ -60,6 +60,9 @@ export function NotificationScreen() {
     pageSize: PAGE_SIZE,
     status,
   });
+  const notificationTotalPages = Math.ceil(
+    (notificationListQuery.data?.totalCount ?? 0) / PAGE_SIZE
+  );
   const settingsQuery = useNotificationSettings();
   const publicKeyQuery = useBrowserPushPublicKey();
   const markReadMutation = useMarkNotificationReadMutation();
@@ -221,9 +224,9 @@ export function NotificationScreen() {
           />
 
           <PaginationControls
-            hasNext={notificationListQuery.data?.hasNext ?? false}
             page={page}
             totalCount={notificationListQuery.data?.totalCount ?? 0}
+            totalPages={notificationTotalPages}
             onNext={() => setPage((current) => current + 1)}
             onPrev={() => setPage((current) => Math.max(1, current - 1))}
           />
@@ -626,24 +629,26 @@ function BrowserPushPanel({
 }
 
 type PaginationControlsProps = {
-  readonly hasNext: boolean;
   readonly page: number;
   readonly totalCount: number;
+  readonly totalPages: number;
   readonly onNext: () => void;
   readonly onPrev: () => void;
 };
 
 function PaginationControls({
-  hasNext,
   page,
   totalCount,
+  totalPages,
   onNext,
   onPrev,
 }: PaginationControlsProps) {
+  const safeTotalPages = Math.max(totalPages, 1);
+
   return (
     <div className="flex flex-col gap-3 border-t pt-4 sm:flex-row sm:items-center sm:justify-between">
       <span className="text-sm text-muted-foreground">
-        {totalCount}개 중 {page}페이지
+        {totalCount}개 · {page} / {safeTotalPages}페이지
       </span>
       <div className="flex gap-2">
         <button
@@ -657,7 +662,7 @@ function PaginationControls({
         </button>
         <button
           className="inline-flex min-h-9 items-center justify-center gap-2 rounded-md border px-3 py-1.5 text-sm font-semibold hover:bg-muted disabled:cursor-not-allowed disabled:opacity-60"
-          disabled={!hasNext}
+          disabled={page >= safeTotalPages}
           type="button"
           onClick={onNext}
         >

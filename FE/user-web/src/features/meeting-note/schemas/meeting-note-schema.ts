@@ -1,134 +1,189 @@
 import { z } from "zod";
 import type {
   CreateMeetingNoteInput,
-  GeneratedMeetingNote,
   MeetingNote,
-  MeetingNoteDetail,
   UpdateMeetingNoteInput,
 } from "@/features/meeting-note/types/meeting-note";
 
 export const meetingNoteFormSchema = z.object({
-  meetingDate: z.string().min(1, "회의 날짜를 입력해주세요."),
-  companyName: z.string().max(160).optional(),
-  contactName: z.string().max(120).optional(),
-  department: z.string().max(120).optional(),
-  productName: z.string().max(160).optional(),
-  stageText: z.string().max(120).optional(),
-  details: z.string().trim().min(1, "상세내용을 입력해주세요.").max(4000),
-  nextPlan: z.string().max(2000).optional(),
-  requiredAction: z.string().max(2000).optional(),
+  meetingLocalDateTime: z.string().optional(),
+  companyName: z.string().trim().min(1, "회사명을 입력해주세요.").max(300),
+  companyField: z.string().max(200).optional(),
+  companyRegion: z.string().max(200).optional(),
+  contactUsername: z.string().trim().min(1, "담당자명을 입력해주세요.").max(200),
+  contactEmail: z.string().max(300).optional(),
+  contactMobile: z.string().max(100).optional(),
+  department: z.string().max(200).optional(),
+  jobGrade: z.string().max(200).optional(),
+  productName: z.string().max(300).optional(),
+  productPrice: z
+    .string()
+    .refine(
+      (value) =>
+        value.trim().length === 0 ||
+        (Number.isInteger(Number(value)) && Number(value) >= 0),
+      "제품 금액은 0 이상의 정수로 입력해주세요."
+    )
+    .optional(),
+  productCategory: z.string().max(200).optional(),
+  productStatus: z.string().max(200).optional(),
   dealId: z.string().optional(),
   dealSearch: z.string().optional(),
+  details: z.string().trim().min(1, "상세 내용을 입력해주세요.").max(10000),
+  nextPlan: z.string().max(2000).optional(),
+  requiredAction: z.string().max(2000).optional(),
 });
 
 export type MeetingNoteFormValues = z.infer<typeof meetingNoteFormSchema>;
 
 export const emptyMeetingNoteFormValues: MeetingNoteFormValues = {
-  meetingDate: toDateTimeLocalValue(new Date()),
+  meetingLocalDateTime: toDateTimeLocalInputValue(new Date()),
   companyName: "",
-  contactName: "",
+  companyField: "",
+  companyRegion: "",
+  contactUsername: "",
+  contactEmail: "",
+  contactMobile: "",
   department: "",
+  jobGrade: "",
   productName: "",
-  stageText: "",
+  productPrice: "",
+  productCategory: "",
+  productStatus: "",
+  dealId: "",
+  dealSearch: "",
   details: "",
   nextPlan: "",
   requiredAction: "",
-  dealId: "",
-  dealSearch: "",
 };
 
+// 기능 : 회의록 form 값을 생성 request body로 변환합니다.
 export function toCreateMeetingNoteInput(
-  rawText: string,
   values: MeetingNoteFormValues
 ): CreateMeetingNoteInput {
+  const product = toProductInput(values);
+  const dealId = toOptionalText(values.dealId);
+
   return {
-    rawText: rawText.trim(),
-    meetingDate: toIsoString(values.meetingDate),
-    companyName: toOptionalText(values.companyName),
-    contactName: toOptionalText(values.contactName),
-    department: toOptionalText(values.department),
-    productName: toOptionalText(values.productName),
-    stageText: toOptionalText(values.stageText),
+    sourceType: "MANUAL",
+    meetingLocalDateTime: toOptionalText(values.meetingLocalDateTime),
     details: values.details.trim(),
     nextPlan: toOptionalText(values.nextPlan),
     requiredAction: toOptionalText(values.requiredAction),
+    companies: [
+      {
+        companyName: values.companyName.trim(),
+        companyField: toOptionalText(values.companyField),
+        companyRegion: toOptionalText(values.companyRegion),
+      },
+    ],
+    contacts: [
+      {
+        contactUsername: values.contactUsername.trim(),
+        contactEmail: toOptionalText(values.contactEmail),
+        contactMobile: toOptionalText(values.contactMobile),
+        companyName: values.companyName.trim(),
+        department: toOptionalText(values.department),
+        jobGrade: toOptionalText(values.jobGrade),
+      },
+    ],
+    products: product ? [product] : [],
+    deals: dealId ? [{ dealId }] : [],
   };
 }
 
+// 기능 : 회의록 form 값을 수정 request body로 변환합니다.
 export function toUpdateMeetingNoteInput(
   meetingNoteId: string,
-  rawText: string,
   values: MeetingNoteFormValues
 ): UpdateMeetingNoteInput {
   return {
     meetingNoteId,
-    ...toCreateMeetingNoteInput(rawText, values),
+    ...toCreateMeetingNoteInput(values),
   };
 }
 
+// 기능 : 회의록 상세 응답을 form 초기값으로 변환합니다.
 export function toMeetingNoteFormValues(
-  detail: MeetingNoteDetail | null,
-  fallback: MeetingNote | null
+  meetingNote: MeetingNote | null
 ): MeetingNoteFormValues {
-  const meetingNote = detail?.meetingNote ?? fallback;
-
   if (!meetingNote) {
     return emptyMeetingNoteFormValues;
   }
 
+  const company = meetingNote.companies[0];
+  const contact = meetingNote.contacts[0];
+  const product = meetingNote.products[0];
+  const deal = meetingNote.deals[0];
+
   return {
-    meetingDate: meetingNote.meetingDate
-      ? toDateTimeLocalValue(meetingNote.meetingDate)
-      : toDateTimeLocalValue(new Date()),
-    companyName: meetingNote.companyName ?? "",
-    contactName: meetingNote.contactName ?? "",
-    department: meetingNote.department ?? "",
-    productName: meetingNote.productName ?? "",
-    stageText: meetingNote.stageText ?? "",
+    meetingLocalDateTime:
+      meetingNote.meetingLocalDateTime?.slice(0, 16) ??
+      emptyMeetingNoteFormValues.meetingLocalDateTime,
+    companyName: company?.companyNameSnapshot ?? "",
+    companyField: company?.companyFieldSnapshot ?? "",
+    companyRegion: company?.companyRegionSnapshot ?? "",
+    contactUsername: contact?.contactUsernameSnapshot ?? "",
+    contactEmail: contact?.contactEmailSnapshot ?? "",
+    contactMobile: contact?.contactMobileSnapshot ?? "",
+    department: contact?.departmentSnapshot ?? "",
+    jobGrade: contact?.jobGradeSnapshot ?? "",
+    productName: product?.productNameSnapshot ?? "",
+    productPrice:
+      product?.productPriceSnapshot !== null &&
+      product?.productPriceSnapshot !== undefined
+        ? String(product.productPriceSnapshot)
+        : "",
+    productCategory: product?.productCategorySnapshot ?? "",
+    productStatus: product?.productStatusSnapshot ?? "",
+    dealId: deal?.dealId ?? "",
+    dealSearch: deal?.dealNameSnapshot ?? "",
     details: meetingNote.details,
     nextPlan: meetingNote.nextPlan ?? "",
     requiredAction: meetingNote.requiredAction ?? "",
-    dealId: meetingNote.dealId ?? "",
-    dealSearch: meetingNote.dealTitle ?? "",
   };
 }
 
-export function toGeneratedMeetingNoteFormValues(
-  generated: GeneratedMeetingNote,
-  current: MeetingNoteFormValues
-): MeetingNoteFormValues {
+// 기능 : 제품 관련 form 값을 선택 입력으로 변환합니다.
+function toProductInput(values: MeetingNoteFormValues) {
+  const productName = toOptionalText(values.productName);
+
+  if (!productName) {
+    return null;
+  }
+
   return {
-    ...current,
-    meetingDate: generated.meetingDate
-      ? toDateTimeLocalValue(generated.meetingDate)
-      : current.meetingDate,
-    companyName: generated.companyName ?? current.companyName,
-    contactName: generated.contactName ?? current.contactName,
-    department: generated.department ?? current.department,
-    productName: generated.productName ?? current.productName,
-    stageText: generated.stageText ?? current.stageText,
-    details: generated.details,
-    nextPlan: generated.nextPlan ?? current.nextPlan,
-    requiredAction: generated.requiredAction ?? current.requiredAction,
+    productName,
+    productPrice: toOptionalNumber(values.productPrice),
+    productCategory: toOptionalText(values.productCategory),
+    productStatus: toOptionalText(values.productStatus),
   };
 }
 
-export function toDateTimeLocalValue(value: string | Date) {
-  const date = value instanceof Date ? value : new Date(value);
-  const offsetMs = date.getTimezoneOffset() * 60 * 1000;
-  const local = new Date(date.getTime() - offsetMs);
-
-  return local.toISOString().slice(0, 16);
-}
-
-function toIsoString(value: string) {
-  const date = new Date(value);
-
-  return date.toISOString();
-}
-
+// 기능 : 문자열 입력을 trim하고 빈 값이면 undefined로 변환합니다.
 function toOptionalText(value: string | undefined) {
   const trimmed = value?.trim() ?? "";
 
   return trimmed.length > 0 ? trimmed : undefined;
+}
+
+// 기능 : 선택 숫자 문자열을 숫자 또는 undefined로 변환합니다.
+function toOptionalNumber(value: string | undefined) {
+  const text = toOptionalText(value);
+
+  if (!text) {
+    return undefined;
+  }
+
+  const number = Number(text);
+
+  return Number.isFinite(number) ? number : undefined;
+}
+
+// 기능 : Date 값을 datetime-local input 값으로 변환합니다.
+function toDateTimeLocalInputValue(value: Date) {
+  const offsetMs = value.getTimezoneOffset() * 60 * 1000;
+  const local = new Date(value.getTime() - offsetMs);
+
+  return local.toISOString().slice(0, 16);
 }

@@ -44,6 +44,12 @@ enum AuthDeviceSlot {
   WORK_LAPTOP
 }
 
+enum MeetingNoteSourceType {
+  MANUAL
+  TEXT_AI
+  STT_AI
+}
+
 model User {
   id                String     @id @default(uuid()) @db.Uuid
   email             String?
@@ -101,6 +107,11 @@ model User {
   schedules                Schedule[]
   /// 기능 : 사용자가 일정에 연결한 딜 매핑 목록이다.
   scheduleDeals            ScheduleDeal[]
+  meetingNotes             MeetingNote[]
+  meetingNoteCompanies     MeetingNoteCompany[]
+  meetingNoteContacts      MeetingNoteContact[]
+  meetingNoteProducts      MeetingNoteProduct[]
+  meetingNoteDeals         MeetingNoteDeal[]
 
   @@index([role])
   @@index([status])
@@ -192,6 +203,8 @@ model Company {
   contacts        Contact[]
   /// 기능 : 회사에 연결된 딜 목록이다.
   deals           Deal[]
+  meetingNoteCompanies MeetingNoteCompany[]
+  meetingNoteContacts  MeetingNoteContact[]
 
   @@index([userId, createdAt])
   @@index([userId, companyName])
@@ -225,6 +238,7 @@ model Contact {
   privateMemoLogs     ContactUserPrivateMemoLog[]
   /// 기능 : 거래처 담당자에 연결된 딜 목록이다.
   deals               Deal[]
+  meetingNoteContacts MeetingNoteContact[]
 
   @@index([userId, createdAt])
   @@index([userId, username])
@@ -321,6 +335,7 @@ model Product {
   privateMemoLogs   ProductUserPrivateMemoLog[]
   /// 기능 : 제품이 연결된 딜 매핑 목록이다.
   dealProducts      DealProduct[]
+  meetingNoteProducts MeetingNoteProduct[]
 
   @@index([userId, createdAt])
   @@index([userId, productName])
@@ -420,6 +435,7 @@ model Deal {
   memoLogs            DealMemoLog[]
   /// 기능 : 이 딜이 연결된 일정 매핑 목록이다.
   scheduleDeals       ScheduleDeal[]
+  meetingNoteDeals    MeetingNoteDeal[]
 
   @@index([userId, createdAt])
   @@index([userId, dealName])
@@ -525,6 +541,110 @@ model ScheduleDeal {
 
   @@unique([scheduleId, dealId])
   @@index([userId, scheduleId])
+  @@index([userId, dealId])
+}
+
+model MeetingNote {
+  id             String                @id @default(uuid()) @db.Uuid
+  userId         String                @db.Uuid
+  sourceType     MeetingNoteSourceType @default(MANUAL)
+  meetingAt      DateTime?             @db.Timestamptz(3)
+  timeZone       String                @default("Asia/Seoul")
+  details        String
+  nextPlan       String?
+  requiredAction String?
+  rawText        String?
+  createdAt      DateTime              @default(now()) @db.Timestamptz(3)
+  updatedAt      DateTime              @updatedAt @db.Timestamptz(3)
+
+  user      User                 @relation(fields: [userId], references: [id])
+  companies MeetingNoteCompany[]
+  contacts  MeetingNoteContact[]
+  products  MeetingNoteProduct[]
+  deals     MeetingNoteDeal[]
+
+  @@index([userId, meetingAt])
+  @@index([userId, createdAt])
+}
+
+model MeetingNoteCompany {
+  id                    String   @id @default(uuid()) @db.Uuid
+  userId                String   @db.Uuid
+  meetingNoteId         String   @db.Uuid
+  companyId             String?  @db.Uuid
+  companyNameSnapshot   String
+  companyFieldSnapshot  String?
+  companyRegionSnapshot String?
+  createdAt             DateTime @default(now()) @db.Timestamptz(3)
+
+  user        User        @relation(fields: [userId], references: [id])
+  meetingNote MeetingNote @relation(fields: [meetingNoteId], references: [id])
+  company     Company?    @relation(fields: [companyId], references: [id])
+
+  @@index([userId, meetingNoteId])
+  @@index([userId, companyId])
+}
+
+model MeetingNoteContact {
+  id                         String   @id @default(uuid()) @db.Uuid
+  userId                     String   @db.Uuid
+  meetingNoteId              String   @db.Uuid
+  contactId                  String?  @db.Uuid
+  companyId                  String?  @db.Uuid
+  contactUsernameSnapshot    String
+  contactEmailSnapshot       String?
+  contactMobileSnapshot      String?
+  contactCompanyNameSnapshot String?
+  contactDepartmentSnapshot  String?
+  contactJobGradeSnapshot    String?
+  createdAt                  DateTime @default(now()) @db.Timestamptz(3)
+
+  user        User        @relation(fields: [userId], references: [id])
+  meetingNote MeetingNote @relation(fields: [meetingNoteId], references: [id])
+  contact     Contact?    @relation(fields: [contactId], references: [id])
+  company     Company?    @relation(fields: [companyId], references: [id])
+
+  @@index([userId, meetingNoteId])
+  @@index([userId, contactId])
+  @@index([userId, companyId])
+}
+
+model MeetingNoteProduct {
+  id                      String   @id @default(uuid()) @db.Uuid
+  userId                  String   @db.Uuid
+  meetingNoteId           String   @db.Uuid
+  productId               String?  @db.Uuid
+  productNameSnapshot     String
+  productPriceSnapshot    Int?
+  productCategorySnapshot String?
+  productStatusSnapshot   String?
+  createdAt               DateTime @default(now()) @db.Timestamptz(3)
+
+  user        User        @relation(fields: [userId], references: [id])
+  meetingNote MeetingNote @relation(fields: [meetingNoteId], references: [id])
+  product     Product?    @relation(fields: [productId], references: [id])
+
+  @@index([userId, meetingNoteId])
+  @@index([userId, productId])
+}
+
+model MeetingNoteDeal {
+  id                          String   @id @default(uuid()) @db.Uuid
+  userId                      String   @db.Uuid
+  meetingNoteId               String   @db.Uuid
+  dealId                      String   @db.Uuid
+  dealNameSnapshot            String
+  dealStatusSnapshot          String
+  dealCostSnapshot            Int
+  dealExpectedEndDateSnapshot DateTime @db.Date
+  createdAt                   DateTime @default(now()) @db.Timestamptz(3)
+
+  user        User        @relation(fields: [userId], references: [id])
+  meetingNote MeetingNote @relation(fields: [meetingNoteId], references: [id])
+  deal        Deal        @relation(fields: [dealId], references: [id])
+
+  @@unique([meetingNoteId, dealId])
+  @@index([userId, meetingNoteId])
   @@index([userId, dealId])
 }
 

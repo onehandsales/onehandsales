@@ -1,25 +1,15 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   createMeetingNote,
-  deleteMeetingNote,
-  generateMeetingNote,
-  linkMeetingNoteToDeal,
   updateMeetingNote,
 } from "@/features/meeting-note/api/meeting-note-api";
 import { meetingNoteQueryKeys } from "@/features/meeting-note/api/meeting-note-query-keys";
 import type {
   CreateMeetingNoteInput,
-  GenerateMeetingNoteInput,
-  LinkMeetingNoteToDealInput,
   UpdateMeetingNoteInput,
 } from "@/features/meeting-note/types/meeting-note";
 
-export function useGenerateMeetingNoteMutation() {
-  return useMutation({
-    mutationFn: (input: GenerateMeetingNoteInput) => generateMeetingNote(input),
-  });
-}
-
+// 기능 : 수동 회의록 생성 mutation을 제공합니다.
 export function useCreateMeetingNoteMutation() {
   const queryClient = useQueryClient();
 
@@ -31,6 +21,7 @@ export function useCreateMeetingNoteMutation() {
   });
 }
 
+// 기능 : 수동 회의록 수정 mutation을 제공합니다.
 export function useUpdateMeetingNoteMutation() {
   const queryClient = useQueryClient();
 
@@ -42,40 +33,13 @@ export function useUpdateMeetingNoteMutation() {
   });
 }
 
-export function useLinkMeetingNoteToDealMutation() {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: (input: LinkMeetingNoteToDealInput) =>
-      linkMeetingNoteToDeal(input),
-    onSuccess: (meetingNote) => {
-      invalidateMeetingNoteQueries(queryClient, meetingNote.id);
-
-      if (meetingNote.dealId) {
-        void queryClient.invalidateQueries({
-          queryKey: ["deal"],
-        });
-      }
-    },
-  });
-}
-
-export function useDeleteMeetingNoteMutation() {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: (meetingNoteId: string) => deleteMeetingNote(meetingNoteId),
-    onSuccess: (result) => {
-      invalidateMeetingNoteQueries(queryClient, result.id);
-    },
-  });
-}
-
+// 기능 : 회의록 변경 후 관련 query cache를 갱신합니다.
 function invalidateMeetingNoteQueries(
   queryClient: ReturnType<typeof useQueryClient>,
   meetingNoteId: string
 ) {
   void queryClient.invalidateQueries({ queryKey: meetingNoteQueryKeys.lists() });
+  void queryClient.invalidateQueries({ queryKey: meetingNoteQueryKeys.filters() });
   void queryClient.invalidateQueries({
     queryKey: meetingNoteQueryKeys.detail(meetingNoteId),
   });

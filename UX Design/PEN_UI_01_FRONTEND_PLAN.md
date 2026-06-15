@@ -239,11 +239,11 @@ pen에서 즉시 확인 가능한 토큰 축:
 
 ### Deal Stage
 
-현재 프론트 단계 (2026-06-13 기준, 6단계 확장 완료):
+현재 단계 계약 (2026-06-15 기준, FE/BE 6단계 반영 완료):
 
 - `INITIAL_CONTACT` — 초기 접촉
-- `NEEDS_ANALYSIS` — 니즈 확인
-- `PROPOSAL` — 제안/견적
+- `NEEDS_CHECK` — 니즈 확인
+- `PROPOSAL_QUOTE` — 제안/견적
 - `NEGOTIATION` — 협상
 - `WON` — 성사
 - `LOST` — 실패
@@ -251,8 +251,8 @@ pen에서 즉시 확인 가능한 토큰 축:
 pen 단계: 위와 동일 (완전 일치 달성).
 
 판단:
-- FE는 6단계로 완전 전환됨 (2026-06-13).
-- 백엔드 enum은 아직 4단계 (`INITIAL_CONTACT` / `IN_DISCUSSION` / `WON` / `LOST`). BE Prisma schema + migration 변경이 별도로 필요하다.
+- FE와 BE는 6단계 계약으로 정리됐다.
+- DB는 문자열 코드로 저장하며 코드 단 enum/validation에서 6단계를 관리한다.
 
 ### App Shell
 
@@ -393,7 +393,7 @@ pen 단계: 위와 동일 (완전 일치 달성).
 
 ## 11. 리스크
 
-- Deal stage 4단계와 pen 6단계 충돌
+- 과거 Deal stage 4단계와 pen 6단계 충돌은 해소됨
 - Quick Create modal에서 inline 생성 UX 범위가 커질 수 있음
 - Shell 교체가 전체 라우트에 영향을 줄 수 있음
 - Mobile/Desktop을 지나치게 공유하려고 하면 구조가 다시 꼬일 수 있음
@@ -413,7 +413,7 @@ pen 단계: 위와 동일 (완전 일치 달성).
 
 ### 별도 결정 필요
 
-- Deal stage를 프론트 임시 매핑으로 갈지
+- Deal stage는 FE/BE 6단계 계약을 유지
 - Quick Create에 inline entity create를 1차 포함할지
 - Desktop 홈에서 현재 right detail panel을 그대로 유지할지, 새 detail shell로 바꿀지
 

@@ -10,9 +10,9 @@ Frontend 작업자는 이 문서를 먼저 보고 어떤 API가 준비되어 있
 
 ## 2. 검토 기준
 
-- 검토일: 2026-06-14 (최초 2026-06-12, 업데이트)
+- 검토일: 2026-06-15 (최초 2026-06-12, 업데이트)
 - 검토 대상: `TODO/DONE/**`을 제외한 `TODO` 활성 계획
-- Backend 구현 대조 기준: `BE/src/modules/auth`, `BE/src/modules/user`, `BE/src/modules/company`, `BE/src/modules/contact`, `BE/src/modules/product`, `BE/src/modules/deal`, `BE/src/modules/schedule`, `BE/prisma/schema.prisma`
+- Backend 구현 대조 기준: `BE/src/modules/auth`, `BE/src/modules/user`, `BE/src/modules/company`, `BE/src/modules/contact`, `BE/src/modules/product`, `BE/src/modules/deal`, `BE/src/modules/schedule`, `BE/src/modules/meeting-note`, `BE/prisma/schema.prisma`
 - API 명세 기준: 각 활성 계획의 `COMMON/API-SPEC/*`
 - 문서 기준: `AGENT/AGENT_USAGE_RULES.md`, `AGENT/PM_AGENT/CONVENTION/PLANNING_REVIEW_CHECKLIST.md`, `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/CONVENTION/API_SPEC.md`, `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/CONVENTION/API_CONTRACT.md`
 
@@ -22,9 +22,10 @@ Frontend 작업자는 이 문서를 먼저 보고 어떤 API가 준비되어 있
 - 추가 유지보수 범위인 Company `contactCount`, 회사 연결 Contact 전체 목록, Company/Contact/Product xlsx export API도 구현되어 있다.
 - Deal Backend API와 Prisma Deal 모델은 구현되어 있으며, API 계약은 `DEAL_DOMAIN_PLAN` 기준 `implemented` 상태다. 단, 신규 스키마 재설계 후 local DB migration drift로 실제 DB 미적용 상태 (2026-06-13 기준).
 - Schedule Backend API와 User Web 일정 화면은 `TODO/DONE/SCHEDULE_DOMAIN_PLAN` 기준 구현 완료됐다.
-- MeetingNote / BusinessCard OCR / Import / Export / Notification / Trash / Search는 User Web feature/page가 존재하지만, 현재 `BE/src/modules` 기준 독립 Backend module은 없다. 후속 작업 전에 실제 API 계약과 구현 여부를 재검토한다.
+- MeetingNote 수동 Backend API와 User Web 회의록 화면은 `TODO/DONE/MEETING_NOTE_MANUAL_PLAN` 기준 구현 완료됐다.
+- BusinessCard OCR / Import / Export / Notification / Trash / Search는 User Web feature/page가 존재하지만, 현재 `BE/src/modules` 기준 독립 Backend module은 없다. 후속 작업 전에 실제 API 계약과 구현 여부를 재검토한다.
 - 활성 TODO의 API 명세는 request 형태, response 형태, 내부 비즈니스 로직, DB 연결, transaction, observability, 에러, FE/BE 처리 기준을 포함한다.
-- **2026-06-14 기준 FE/BE 완료 판정**: Auth/User, Company, Contact, Product, Deal, Schedule, Additional Work 범위는 Backend API와 Frontend 반영이 모두 완료되어 `TODO/DONE` 보관 대상이다.
+- **2026-06-15 기준 FE/BE 완료 판정**: Auth/User, Company, Contact, Product, Deal, Schedule, MeetingNote, Additional Work 범위는 Backend API와 Frontend 반영이 모두 완료되어 `TODO/DONE` 보관 대상이다.
 - 상세 현황은 `UX Design/FE_DOMAIN_COMPLETION_STATUS.md` 참조.
 
 ## 4. 활성 계획별 Backend API 상태
@@ -37,6 +38,7 @@ Frontend 작업자는 이 문서를 먼저 보고 어떤 API가 준비되어 있
 | `PRODUCT_DOMAIN_PLAN` | 완료 | `BE/src/modules/product` | `PRODUCT_API.md`, `PRODUCT_API_DETAIL.md` 기준 `implemented` | 제품 목록/생성/상세/메모 화면, xlsx export 표시 |
 | `DEAL_DOMAIN_PLAN` | 완료 | `BE/src/modules/deal`, Prisma `Deal`, `DealProduct`, `DealFollowingActionLog`, `DealMemoLog` | `DEAL_API.md`, `DEAL_API_DETAIL.md` 기준 `implemented` | User Web 딜 목록 split view, 상세 제품 목록, 로그, xlsx export 연동 |
 | `SCHEDULE_DOMAIN_PLAN` | 완료 | `BE/src/modules/schedule`, Prisma `Schedule`, `ScheduleDeal` | `SCHEDULE_API.md` 기준 `implemented` | User Web 월간/주간 일정 화면, 생성/수정/삭제, 딜 연결 |
+| `MEETING_NOTE_MANUAL_PLAN` | 완료 | `BE/src/modules/meeting-note`, Prisma `MeetingNote*` | `MEETING_NOTE_API.md` 기준 `implemented` | User Web 회의록 목록/상세/생성/수정, 회사/담당자 필터 |
 | `ADDITIONAL_WORK_PLAN` | 완료 | 추가 API G01-G12 구현 완료 | 12개 모두 `implemented` | User Web dealCount/연결 딜 목록 반영 |
 
 ## 5. Backend API 구성 확인
@@ -186,6 +188,41 @@ Frontend 목적:
 - 다음 행동 로그와 메모 로그는 상세 영역에서 등록일 DESC로 표시한다.
 - 딜 export는 현재 검색/필터/정렬을 반영하되 page를 제거하고, id/제품/최근수정일 컬럼을 포함하지 않는다.
 
+### Schedule
+
+구현 API:
+
+- `GET /api/schedules/deal-options`
+- `GET /api/schedules`
+- `GET /api/schedules/:scheduleId`
+- `POST /api/schedules`
+- `PATCH /api/schedules/:scheduleId`
+- `DELETE /api/schedules/:scheduleId`
+
+Frontend 목적:
+
+- 월간/주간 일정 화면에서 사용자 timezone 기준으로 일정을 조회한다.
+- 일정 생성/수정에서 딜 N:M 연결을 관리한다.
+- 삭제는 현재 soft delete가 아니라 일정과 연결 row를 transaction으로 삭제한다.
+
+### MeetingNote
+
+구현 API:
+
+- `GET /api/meeting-notes`
+- `GET /api/meeting-notes/filter-companies`
+- `GET /api/meeting-notes/filter-contacts`
+- `GET /api/meeting-notes/:meetingNoteId`
+- `POST /api/meeting-notes`
+- `PATCH /api/meeting-notes/:meetingNoteId`
+
+Frontend 목적:
+
+- 회의록 목록/상세/생성/수정 화면을 수동 MeetingNote API 계약으로 연결한다.
+- 목록은 `page`, `companyIds`, `contactIds`, `sort`, `totalPages` 기준으로 동작한다.
+- 생성/수정 request는 `timeZone`, `rawText`, `stageText`, 단일 `dealId`를 보내지 않는다.
+- 회사/담당자는 필수 연결, 제품/딜은 선택 연결로 처리한다.
+
 ## 6. API 명세 완성도 점검
 
 | API 명세 범위 | Request 형태 | Response 형태 | 내부 비즈니스 로직 | 판정 |
@@ -195,6 +232,8 @@ Frontend 목적:
 | Contact | 검색/필터/페이지/본문 요청 구분 있음 | 목록/상세/옵션/메모/export 응답 설명 있음 | 회사 필수, ownership, option 검증, memo transaction, export 흐름 있음 | 통과 |
 | Product | 검색/필터/페이지/본문 요청 구분 있음 | 목록/상세/옵션/메모/export 응답 설명 있음 | ownership, option 검증, memo transaction, export 흐름 있음 | 통과 |
 | Deal | path/query/body 구분 있음 | 목록/상세/옵션/로그/export 응답 설명 있음 | ownership, FK 검증, 생성 transaction, export 흐름 있음 | 통과 |
+| Schedule | path/query/body 구분 있음 | 목록/상세/딜 옵션 응답 설명 있음 | ownership, timezone 변환, 생성/수정/삭제 transaction 흐름 있음 | 통과 |
+| MeetingNote | path/query/body 구분 있음 | 목록 summary/상세 snapshot/필터 옵션 응답 설명 있음 | ownership, FK 검증, N:N snapshot, 생성/수정 transaction 흐름 있음 | 통과 |
 | Additional Work | 12개 request/response 작성됨 | `contactCount`, `dealCount`, 연결 Contact/Deal 목록, xlsx binary 응답 설명 있음 | 검색/필터 반영, page 제외, ownership, 정렬, 파일 컬럼 기준 있음 | 통과 |
 
 ## 7. Frontend 우선 작업
@@ -206,6 +245,7 @@ Frontend 목적:
 5. Product 화면을 구현하면서 목록 검색/필터/페이지네이션, 옵션 관리, 메모, 제품 xlsx export를 반영한다.
 6. Additional Work G06-G12로 구현된 회사/거래처/제품 상세의 연결 딜 목록과 회사/제품 `dealCount`를 반영한다.
 7. Deal User Web 딜 목록 split view, 상세, 생성/수정, 로그, xlsx export를 반영한다.
+8. Schedule User Web 월간/주간 일정 화면과 MeetingNote User Web 회의록 화면은 `TODO/DONE` 기준으로 Backend API 연동 완료 상태를 유지한다.
 
 ## 8. 주의사항
 
@@ -229,6 +269,8 @@ Frontend 목적:
 - `TODO/DONE/PRODUCT_DOMAIN_PLAN/COMMON/API-SPEC/PRODUCT_API_DETAIL.md`
 - `TODO/DONE/DEAL_DOMAIN_PLAN/COMMON/API-SPEC/DEAL_API.md`
 - `TODO/DONE/DEAL_DOMAIN_PLAN/COMMON/API-SPEC/DEAL_API_DETAIL.md`
+- `TODO/DONE/SCHEDULE_DOMAIN_PLAN/COMMON/API-SPEC/SCHEDULE_API.md`
+- `TODO/DONE/MEETING_NOTE_MANUAL_PLAN/COMMON/API-SPEC/MEETING_NOTE_API.md`
 - `TODO/DONE/ADDITIONAL_WORK_PLAN/COMMON/API-SPEC/COMPANY_LIST_CONTACT_COUNT_API.md`
 - `TODO/DONE/ADDITIONAL_WORK_PLAN/COMMON/API-SPEC/COMPANY_CONTACT_LIST_API.md`
 - `TODO/DONE/ADDITIONAL_WORK_PLAN/COMMON/API-SPEC/COMPANY_EXPORT_XLSX_API.md`

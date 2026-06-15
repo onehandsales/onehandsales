@@ -15,7 +15,13 @@ The first screen should make the sales pipeline visible before secondary summari
 
 ## 2. First Screen
 
-After login, the first screen is the Deal Pipeline Home.
+Target direction: after login, the first meaningful work screen should be the Deal Pipeline Home.
+
+Current implementation note as of 2026-06-15:
+
+- `/` home intentionally shows `화면 준비중입니다`.
+- The active deal pipeline experience is served from `/deals`.
+- Keep improving core domain UX first, then reopen the home composition.
 
 Primary focus:
 
@@ -250,13 +256,33 @@ Primary navigation should make these areas easy to reach:
 - 일정
 - 회의록
 - 명함 OCR
-- Import/Export
-- 휴지통
 - 설정
+
+Current visibility rule:
+
+- `Import` and `휴지통` routes/features may remain in code, but they are hidden from the main sidebar until core domain UX is stable.
+- Do not surface deferred features in primary navigation just because a route exists.
 
 Even though the first screen is deal-centered, company/contact/product registration must remain easy because deals require those entities.
 
-## 9A. Shared-First Implementation Order
+## 9A. List Filter UX
+
+Company, contact, product, deal, and meeting-note list pages should use explicit page-number pagination for page lists.
+
+Rules:
+
+- Page list UX uses `totalPages` and `totalCount`.
+- Do not use `hasNext` for page-number pagination.
+- `hasNext` is allowed only for cursor/infinite flows such as detail memo logs.
+- Company field and company region list filters behave like Product category/status filters:
+  - fetch the full option list on initial screen load
+  - render a compact select control
+  - pass the selected option id into the paginated list query
+- Contact department and job grade filters follow the same select pattern.
+- List pages do not show create/delete management UI for these option tables. Option creation/deletion belongs in detail/settings/management flows.
+- Company/contact/product/deal operational lists should share the dense `Controls Bar + Table Card + Pagination` visual grammar where possible.
+
+## 9B. Shared-First Implementation Order
 
 This product should not be implemented domain-by-domain from the start.
 

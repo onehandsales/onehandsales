@@ -7,26 +7,29 @@
 
 ## 현재 BE/TODO 구현 상태
 
-기준일: 2026-06-14
+기준일: 2026-06-15
 
-- Backend 구현 완료: Auth/User, Company, Contact, Product, Deal 기본 도메인과 `TODO/DONE/ADDITIONAL_WORK_PLAN` G01-G12.
+- Backend 구현 완료: Auth/User, Company, Contact, Product, Deal, Schedule, MeetingNote 수동 기본 도메인과 `TODO/DONE/ADDITIONAL_WORK_PLAN` G01-G12.
 - Auth/User: `/api/auth/providers`, `/api/auth/exchange`, `/api/auth/refresh`, `/api/auth/logout`, `/api/me`, `/admin/api/me`, `/api/users/me/profile`, `/api/users/me/devices`.
 - Company: 목록/상세/생성/수정, 분야/지역 옵션, 일반 메모, 개인 비밀 메모, `contactCount`, `dealCount`, 연결 Contact/Deal 목록, xlsx export.
 - Contact: 목록/상세/생성/수정, 회사 옵션, 직급/부서 옵션, 일반 메모, 개인 비밀 메모, 연결 Deal 목록, xlsx export.
 - Product: 목록/상세/생성/수정, 카테고리/상태 옵션, 일반 메모, 개인 비밀 메모, `dealCount`, `sort=dealCountDesc`, 연결 Deal 목록, xlsx export.
 - Deal: 단계별 count, 목록/상세/생성/수정, 회사/거래처/제품 옵션, 제품 N:M 연결, 다음 행동 로그, 일반 메모 로그, xlsx export.
-- 현재 Backend 미구현: Schedule, MeetingNote, BusinessCard OCR, 범용 Import/Export job, Notification, Trash, Search, Admin 운영 조회/감사/민감 원문 API.
+- Schedule: 딜 옵션, 목록/상세/생성/수정/삭제, 딜 N:M 연결, 사용자 timezone 기준 local time 변환.
+- MeetingNote: 수동 회의록 목록/상세/생성/수정, 회사/담당자 필터, 회사/담당자/제품/딜 N:N snapshot 연결.
+- 현재 Backend 미구현: BusinessCard OCR, 범용 Import/Export job, Notification, Trash, Search, Admin 운영 조회/감사/민감 원문 API, MeetingNote AI/STT/삭제복구/Admin/DealActivity 자동 로그.
 - Admin Backend는 현재 `/admin/api/me`만 구현되어 있다.
-- User Web은 후속 도메인 화면과 API client가 일부 존재하지만, 위 미구현 Backend 도메인은 실제 API 연동 전까지 mock/placeholder 경계를 명확히 해야 한다.
+- User Web은 Schedule과 MeetingNote 수동 화면까지 실제 API 연동이 완료되어 있다. 나머지 미구현 Backend 도메인은 실제 API 연동 전까지 mock/placeholder 경계를 명확히 해야 한다.
 
 ## 1. 개발 우선순위
 
 1. Company/Contact/Product/Deal Backend 구현 완료 범위의 User Web 계약 동기화
 2. Additional Work G01-G12 Frontend 반영: `dealCount`, 연결 Deal 목록, 연결 Contact 목록, xlsx export
 3. 인증 연동과 사용자 설정 화면
-4. Schedule, MeetingNote, BusinessCard OCR
+4. BusinessCard OCR
 5. 범용 Import/Export, Notification, Trash, Search
-6. Admin 운영 조회/감사/민감 원문 API 보강
+6. MeetingNote AI/STT/삭제복구/Admin/DealActivity 자동 로그
+7. Admin 운영 조회/감사/민감 원문 API 보강
 
 ## 2. 인증
 
@@ -188,14 +191,18 @@
 
 ## 8. 일정
 
-현재 Backend 미구현 도메인이다.
+현재 Backend와 User Web 기본 일정 도메인은 `TODO/DONE/SCHEDULE_DOMAIN_PLAN` 기준 구현 완료 상태다.
 
-### MVP 포함
+### 현재 Backend/User Web 구현
 
 - 일정 CRUD
-- 딜/회사/거래처 연결
-- 월간 일정 목록/캘린더 화면
-- 주간 보기 전환
+- 딜 N:M 연결
+- 월간 일정 화면
+- 주간 일정 화면
+- 사용자 timezone 기준 local date-time 변환
+
+### 후속 MVP 포함
+
 - 주간 일정 보고서 PDF
 - 주간 일정 보고서 Excel
 - 이메일 알림
@@ -210,15 +217,21 @@
 
 ## 9. 회의록
 
-현재 Backend 미구현 도메인이다.
+현재 Backend와 User Web 수동 회의록 도메인은 `TODO/DONE/MEETING_NOTE_MANUAL_PLAN` 기준 구현 완료 상태다.
 
-### MVP 포함
+### 현재 Backend/User Web 구현
 
-- 회의 내용 텍스트 입력
+- 수동 회의록 목록/상세/생성/수정
+- 회사/담당자 필수 연결
+- 제품/딜 선택 연결
+- 회사/담당자 필터
+- 연결 row snapshot 저장
+- 사용자 timezone 기준 `meetingLocalDateTime` 변환
+
+### 후속 MVP 포함
+
 - OpenAI 기반 회의록 생성
 - 생성 결과 수정/저장
-- 딜 없이 저장
-- 나중에 딜 연결
 - 딜 연결 시 활동 로그 자동 생성
 - AI 회사/담당자 후보 제안
 - 딜 연결 시 회사/담당자 상속

@@ -13,6 +13,8 @@
 - Contact 기본 도메인: `Contact`, `ContactJobGrade`, `ContactDepartment`, `ContactMemoLog`, `ContactUserPrivateMemoLog`
 - Product 기본 도메인: `Product`, `ProductCategory`, `ProductStatus`, `ProductMemoLog`, `ProductUserPrivateMemoLog`
 - Deal 기본 도메인: `Deal`, `DealProduct`, `DealFollowingActionLog`, `DealMemoLog`
+- Schedule 기본 도메인: `Schedule`, `ScheduleDeal`
+- MeetingNote 수동 도메인: `MeetingNote`, `MeetingNoteCompany`, `MeetingNoteContact`, `MeetingNoteProduct`, `MeetingNoteDeal`
 
 현재 구현 기준 migration:
 
@@ -21,13 +23,14 @@
 - `BE/prisma/migrations/20260611020000_add_product_domain/migration.sql`
 - `BE/prisma/migrations/20260612000000_add_deal_domain/migration.sql`
 - `BE/prisma/migrations/20260612010000_add_deal_product_join/migration.sql`
+- `BE/prisma/migrations/20260614010000_add_user_timezone/migration.sql`
+- `BE/prisma/migrations/20260614020000_add_schedule_domain/migration.sql`
+- `BE/prisma/migrations/20260615000000_add_meeting_note_domain/migration.sql`
 
 아직 DB에 구현되지 않은 계획 범위:
 
 - Product 후속 확장: `ProductLog`, `ProductConnection`
 - `DealActivity`
-- `Schedule`
-- `MeetingNote`
 - `Tag`
 - `TagAssignment`
 - `PersonalMemo`
@@ -60,9 +63,16 @@ User
   ├─ Deal
   │   ├─ DealProduct
   │   ├─ DealFollowingActionLog
-  │   └─ DealMemoLog
+  │   ├─ DealMemoLog
+  │   ├─ ScheduleDeal
+  │   └─ MeetingNoteDeal
   ├─ Schedule
+  │   └─ ScheduleDeal
   ├─ MeetingNote
+  │   ├─ MeetingNoteCompany
+  │   ├─ MeetingNoteContact
+  │   ├─ MeetingNoteProduct
+  │   └─ MeetingNoteDeal
   ├─ Tag
   └─ ImportJob / ExportJob / AuditLog / Notification
 ```
@@ -109,8 +119,8 @@ User
 - Company 1:N CompanyUserPrivateMemoLog
 - Company N:M Product through ProductConnection
 - Company 1:N Deal
-- Company 1:N Schedule
-- Company 1:N MeetingNote
+- Company 1:N MeetingNoteCompany
+- Company 1:N MeetingNoteContact
 
 정책:
 
@@ -209,8 +219,7 @@ User
 - Contact 1:N ContactUserPrivateMemoLog
 - Contact N:M Product through ProductConnection
 - Contact 1:N Deal
-- Contact 1:N Schedule
-- Contact 1:N MeetingNote
+- Contact 1:N MeetingNoteContact
 
 정책:
 
@@ -308,6 +317,7 @@ User
 - Product 1:N ProductMemoLog
 - Product 1:N ProductUserPrivateMemoLog
 - Product 1:N DealProduct
+- Product 1:N MeetingNoteProduct
 
 정책:
 
@@ -404,6 +414,8 @@ User
 - Deal N:M Product through DealProduct
 - Deal 1:N DealFollowingActionLog
 - Deal 1:N DealMemoLog
+- Deal 1:N ScheduleDeal
+- Deal 1:N MeetingNoteDeal
 
 정책:
 
@@ -416,7 +428,7 @@ User
 - 생성 요청은 `productIds` 배열을 필수로 받고, 수정 요청은 `productIds` 배열을 선택적으로 받아 딜-제품 연결을 교체한다.
 - 딜 생성/수정 시 `contact.companyId`가 딜의 `companyId`와 같은지 검증한다.
 - 생성 시 최초 다음 행동은 같은 transaction 안에서 `DealFollowingActionLog`에 저장한다.
-- 후속 확장 후보인 `DealActivity`, 범용 `ProductConnection`, Schedule/MeetingNote 연동은 현재 1차 구현에 포함하지 않는다.
+- 후속 확장 후보인 `DealActivity`, 범용 `ProductConnection`은 현재 Deal 기본 도메인 1차 구현에 포함하지 않는다. Schedule/MeetingNote 연동은 별도 Schedule/MeetingNote 도메인에서 N:M 연결로 구현한다.
 
 ### DealProduct
 
@@ -498,41 +510,48 @@ User
 
 - id
 - userId
-- title
+- scheduleTitle
 - startAt
 - endAt
-- allDay
-- companyId nullable
-- contactId nullable
-- dealId nullable
+- timeZone
 - location
 - memo
-- source: INTERNAL / GOOGLE
-- externalCalendarId nullable
-- externalEventId nullable
-- metadata
-- deletedAt
+- createdAt
+- updatedAt
+- ScheduleDeal[]
+
+정책:
+
+- 현재 구현은 내부 수동 일정과 딜 N:M 연결이다.
+- `startAt`, `endAt`은 API local date-time과 `timeZone`을 UTC instant로 변환해 저장한다.
+- soft delete를 사용하지 않고 삭제 시 `ScheduleDeal`과 `Schedule`을 transaction으로 실제 삭제한다.
 
 ## 15. MeetingNote
 
 - id
 - userId
-- dealId nullable
-- companyId nullable
-- contactId nullable
-- meetingDate
-- companyName
-- contactName
-- department
-- productName
-- stageText
-- detail
-- futurePlan
+- sourceType: MANUAL / TEXT_AI / STT_AI
+- meetingAt nullable
+- timeZone
+- details
+- nextPlan
 - requiredAction
-- rawInput
-- aiOutput
-- metadata
-- deletedAt
+- rawText nullable
+- createdAt
+- updatedAt
+- MeetingNoteCompany[]
+- MeetingNoteContact[]
+- MeetingNoteProduct[]
+- MeetingNoteDeal[]
+
+정책:
+
+- 현재 생성 방식은 `MANUAL`만 허용한다.
+- 회사와 담당자는 1개 이상 연결해야 한다.
+- 제품과 딜은 선택 연결이다.
+- 회사/담당자/제품/딜 연결 row에는 회의록 작성 시점의 snapshot을 저장한다.
+- request에서는 `timeZone`, `rawText`, `stageText`, 단일 `dealId`를 받지 않는다.
+- AI/STT 생성, 삭제/복구, Admin 조회, DealActivity 자동 생성은 후속 범위다.
 
 ## 16. Tag
 

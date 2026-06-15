@@ -241,7 +241,8 @@ export function DealPipelineHomeScreen({
                     <Pagination
                       onPageChange={setPage}
                       page={page}
-                      totalPages={dealsQuery.data.totalPages}
+                      totalCount={dealsQuery.data.totalCount}
+                      totalPages={dealsQuery.data.totalPages ?? 1}
                     />
                   </div>
                 ) : null}
@@ -346,7 +347,8 @@ export function DealPipelineHomeScreen({
                 <Pagination
                   onPageChange={setPage}
                   page={page}
-                  totalPages={dealsQuery.data.totalPages}
+                  totalCount={dealsQuery.data.totalCount}
+                  totalPages={dealsQuery.data.totalPages ?? 1}
                 />
               </div>
             ) : null}

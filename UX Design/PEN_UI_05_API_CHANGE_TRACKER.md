@@ -31,13 +31,92 @@
 
 ## 현재 기준선
 
-현재 기준선은 `2026-06-11` 시점의 `BE/src/modules/*` 구현이다.
+현재 기준선은 `2026-06-15` 시점의 `BE/src/modules/*`와 `FE/user-web/src/features/*` 구현이다.
 
 주요 확인 범위:
 - controller endpoint
 - response mapper
 - request DTO
 - 공통 error rule
+
+주의:
+- 2026-06-11 baseline으로 작성된 아래 상세 항목 중 일부는 역사 기록으로 남아 있다.
+- 실제 구현 판단은 이 섹션의 2026-06-15 현재 계약 정정을 우선한다.
+
+## 0. 2026-06-15 현재 계약 정정
+
+### 구현 완료 Backend 모듈
+
+- `auth`
+- `user`
+- `company`
+- `contact`
+- `product`
+- `deal`
+- `schedule`
+- `meeting-note`
+
+### 현재 미구현 Backend 모듈
+
+- `business-card`
+- `import-export` generic job
+- `notification`
+- `trash`
+- `search`
+- Admin 운영 조회/감사/민감 원문 API
+
+### Deal 계약 정정
+
+- Deal stage는 FE/BE 모두 6단계 코드 계약을 사용한다.
+- 현재 코드:
+  - `INITIAL_CONTACT` — 초기 접촉
+  - `NEEDS_CHECK` — 니즈 확인
+  - `PROPOSAL_QUOTE` — 제안/견적
+  - `NEGOTIATION` — 협상
+  - `WON` — 성사
+  - `LOST` — 실패
+- 딜 목록 응답은 `totalCount`, `totalPages` 기반 page-number pagination이다.
+- 과거 문서의 `IN_DISCUSSION`, `NEEDS_ANALYSIS`, `PROPOSAL`, `hasNext` 기반 딜 목록 계약은 현재 User Web/Backend 기준이 아니다.
+
+### Page List Pagination 정정
+
+- 회사/거래처/제품/딜/회의록 목록 페이지네이션은 `totalPages`, `totalCount`를 사용한다.
+- 공용 `Pagination`에 `hasNext`를 넘기지 않는다.
+- `hasNext`는 회사/거래처/제품 상세 메모 로그처럼 cursor 기반 incremental loading에서만 사용한다.
+
+### Company/Contact/Product 목록 필터 정정
+
+- 회사 목록은 `GET /api/company-fields`, `GET /api/company-regions` 전체 조회 결과를 select 옵션으로 사용한다.
+- 거래처 목록은 `GET /api/contact-departments`, `GET /api/contact-job-grades` 전체 조회 결과를 select 옵션으로 사용한다.
+- 제품 목록은 `GET /api/product-categories`, `GET /api/product-statuses` 전체 조회 결과를 select 옵션으로 사용한다.
+- 목록 페이지에서는 위 옵션 테이블의 생성/삭제 UI를 노출하지 않는다.
+- 생성/삭제 API는 Backend와 feature API client에 남아 있지만, 목록 페이지 필터 UX와 분리한다.
+
+### MeetingNote 계약 정정
+
+- 수동 MeetingNote Backend API는 구현 완료 상태다.
+- 현재 endpoint:
+  - `GET /api/meeting-notes`
+  - `GET /api/meeting-notes/filter-companies`
+  - `GET /api/meeting-notes/filter-contacts`
+  - `GET /api/meeting-notes/:meetingNoteId`
+  - `POST /api/meeting-notes`
+  - `PATCH /api/meeting-notes/:meetingNoteId`
+- 현재 scope 밖:
+  - AI/STT generate
+  - delete/restore
+  - Admin raw access
+  - request `rawText`
+  - request `timeZone`
+  - 단일 request `dealId`
+  - `stageText`
+  - DealActivity 자동 생성
+
+### Navigation/UI 상태 정정
+
+- `/` 홈은 현재 `화면 준비중입니다` 준비 상태다.
+- 딜 파이프라인은 `/deals`에서 운영한다.
+- `Import`, `휴지통`은 라우트와 feature가 남아 있어도 sidebar에서는 숨김 처리되어 있다.
 
 ---
 
@@ -125,7 +204,7 @@
 - `page`
 - `pageSize`
 - `totalCount`
-- `hasNext`
+- `totalPages`
 
 개별 딜:
 - `id`
@@ -163,9 +242,9 @@
 
 | 항목 | 현재 상태 | 추적 상태 | 메모 |
 |---|---|---|---|
-| Deal stage 4단계 | 운영 중 | 미확정 | pen은 6단계 |
-| ListDeals `stage` enum | 4단계 고정 | 백엔드 변경 가능성 높음 | DTO, domain, DB 영향 |
-| `stageSummary` 구조 | 4단계 기준 | 백엔드 변경 가능성 높음 | 홈 화면과 직결 |
+| Deal stage 6단계 | 운영 중 | 유지 | FE/BE 모두 6단계 코드 계약 |
+| ListDeals `dealStatus` enum | 6단계 고정 | 유지 | `INITIAL_CONTACT`, `NEEDS_CHECK`, `PROPOSAL_QUOTE`, `NEGOTIATION`, `WON`, `LOST` |
+| Stage count 구조 | 6단계 기준 | 유지 | `GET /api/deals/stage-counts` |
 | `nextActionStatus` 구조 | 유지 가능 | 유지 | 현재 pen과 큰 충돌 없음 |
 | 딜 상세 복합 응답 | 재사용 가능 | 유지 | desktop panel / mobile detail 공유 가능 |
 | 모바일 홈 aggregate | 없음 | 신규 API 후보 | 호출량 많아질 수 있음 |
@@ -530,16 +609,30 @@
   - baseline 정리 완료
   - 실제 API 변경 미착수
 
+### 2026-06-15 현재 계약 정정
+
+- 작성자: Codex
+- 기준:
+  - `BE/src/modules`
+  - `FE/user-web/src/features`
+  - `FE/user-web/src/components/ui/pagination.tsx`
+- 상태:
+  - Deal 6단계 FE/BE 계약 반영 상태를 현재 기준으로 정정
+  - MeetingNote 수동 API 구현 완료 상태 반영
+  - 회사/거래처/제품/딜/회의록 목록 pagination을 `totalPages` 기준으로 정정
+  - 회사/거래처 목록 필터 옵션을 제품 category/status select와 같은 전체 옵션 조회 방식으로 정정
+  - `/` 홈 준비중 상태와 Import/휴지통 navigation 숨김 상태 반영
+
 ---
 
 ## 11. 최종 정리
 
-현재 백엔드 계약은 1차 딜 중심 리디자인을 시작하기에 충분한 기반이 있다.
-다만 아래 3개는 실제 구현 중 가장 먼저 다시 부딪힐 가능성이 높다.
+현재 백엔드 계약은 핵심 도메인 User Web 구현에 충분한 기반이 있다.
+다만 아래 항목은 후속 UX 고도화에서 다시 부딪힐 가능성이 높다.
 
-1. deal stage 4단계 vs pen 6단계
-2. mobile home aggregate 필요 여부
-3. quick create에서 inline 생성 / 후보 탐색 전략
+1. mobile home aggregate 필요 여부
+2. quick create에서 inline 생성 / 후보 탐색 전략
+3. 목록 컨트롤 버튼과 필터 컴포넌트 공통화 범위
 
 따라서 이 문서는 “지금 무엇을 바로 바꿀지”보다,
 “무엇을 baseline으로 유지하고, 어떤 항목을 change candidate로 추적할지”를 명확히 하기 위한 기준 문서로 사용한다.

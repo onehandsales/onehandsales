@@ -25,6 +25,7 @@ ContactDepartment 1 ─ N Contact
 Contact 1 ─ N ContactMemoLog
 Contact 1 ─ N ContactUserPrivateMemoLog
 Contact 1 ─ N Deal
+Contact 1 ─ N MeetingNoteContact
 ```
 
 관계 요약:
@@ -35,6 +36,7 @@ Contact 1 ─ N Deal
 - `ContactMemoLog`는 거래처 일반 메모 로그다.
 - `ContactUserPrivateMemoLog`는 거래처별 사용자 비밀 메모 로그다.
 - `Deal`은 특정 거래처 담당자와 진행하는 딜이다.
+- `MeetingNoteContact`는 회의록 작성 시점의 담당자 snapshot 연결이다.
 
 ## 3. 현재 제외한 구조
 
@@ -76,6 +78,7 @@ Relations:
 - `memoLogs`: `ContactMemoLog[]`
 - `privateMemoLogs`: `ContactUserPrivateMemoLog[]`
 - `deals`: `Deal[]`
+- `meetingNoteContacts`: `MeetingNoteContact[]`
 
 Indexes:
 

@@ -72,10 +72,12 @@ const targetMeta: Record<
 export function TrashScreen() {
   const [targetType, setTargetType] = useState<TrashTargetFilter>("ALL");
   const [page, setPage] = useState(1);
-  const pageSize = PAGE_SIZE;
   const [notice, setNotice] = useState<string | null>(null);
   const trashQuery = useTrashList({ targetType, page, pageSize: PAGE_SIZE });
   const restoreMutation = useRestoreTrashItemMutation();
+  const trashTotalPages = Math.ceil(
+    (trashQuery.data?.totalCount ?? 0) / PAGE_SIZE
+  );
   const actionError = trashQuery.error ?? restoreMutation.error ?? null;
   const selectedOption = useMemo(
     () => targetOptions.find((option) => option.value === targetType),
@@ -84,9 +86,6 @@ export function TrashScreen() {
   const pendingTargetKey = restoreMutation.isPending
     ? getItemKey(restoreMutation.variables)
     : null;
-  const totalPages = trashQuery.data
-    ? Math.max(1, Math.ceil(trashQuery.data.totalCount / pageSize))
-    : 1;
 
   useEffect(() => {
     setPage(1);
@@ -146,10 +145,11 @@ export function TrashScreen() {
             onRestore={(item) => void onRestore(item)}
           />
 
-          {(trashQuery.data && (totalPages > 1 || page > 1)) ? (
+          {trashQuery.data && (trashTotalPages > 1 || page > 1) ? (
             <Pagination
               page={page}
-              totalPages={totalPages}
+              totalCount={trashQuery.data?.totalCount}
+              totalPages={trashTotalPages}
               onPageChange={setPage}
             />
           ) : null}
