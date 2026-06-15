@@ -4,16 +4,19 @@ import { Link, useLocation } from "react-router-dom";
 import { SidebarNav } from "@/components/navigation/sidebar-nav";
 import { GlobalSearch } from "@/features/search";
 
-const PAGE_TITLES: Record<string, { title: string; subtitle: string }> = {
-  "/": { title: "홈", subtitle: "오늘 파이프라인을 확인 하세요." },
-  "/deals": { title: "딜", subtitle: "진행 중인 딜을 관리합니다." },
-  "/companies": { title: "회사", subtitle: "등록된 회사를 관리합니다." },
-  "/contacts": { title: "거래처", subtitle: "거래처 담당자를 관리합니다." },
-  "/products": { title: "제품", subtitle: "제품과 서비스를 관리합니다." },
-  "/schedules": { title: "일정", subtitle: "예정된 일정을 확인합니다." },
-  "/meeting-notes": { title: "회의록", subtitle: "회의 내용을 기록합니다." },
-  "/notifications": { title: "알림", subtitle: "최근 알림을 확인합니다." },
-  "/settings": { title: "설정", subtitle: "계정과 환경을 설정합니다." },
+const PAGE_TITLES: Record<string, { title: string }> = {
+  "/": { title: "홈" },
+  "/deals": { title: "딜" },
+  "/deals/new": { title: "딜" },
+  "/companies": { title: "회사" },
+  "/companies/new": { title: "회사" },
+  "/contacts": { title: "거래처" },
+  "/products": { title: "제품" },
+  "/products/new": { title: "제품" },
+  "/schedules": { title: "일정" },
+  "/meeting-notes": { title: "회의록" },
+  "/notifications": { title: "알림" },
+  "/settings": { title: "설정" },
 };
 
 type DesktopAppShellProps = {
@@ -23,7 +26,7 @@ type DesktopAppShellProps = {
 
 export function DesktopAppShell({ children, noPadding = false }: DesktopAppShellProps) {
   const { pathname } = useLocation();
-  const page = PAGE_TITLES[pathname] ?? { title: "한손에 영업", subtitle: "" };
+  const page = PAGE_TITLES[pathname] ?? { title: "한손에 영업" };
 
   return (
     <div className="hidden min-h-screen md:flex">
@@ -68,6 +71,13 @@ export function DesktopAppShell({ children, noPadding = false }: DesktopAppShell
               Store Manager
             </p>
           </div>
+          <Link
+            aria-label="알림"
+            className="ml-auto inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-sidebar-foreground/60 transition hover:bg-sidebar-accent hover:text-sidebar-foreground"
+            to="/notifications"
+          >
+            <Bell className="h-4 w-4" />
+          </Link>
         </div>
       </aside>
 
@@ -79,9 +89,6 @@ export function DesktopAppShell({ children, noPadding = false }: DesktopAppShell
             <h1 className="text-[20px] font-bold leading-tight tracking-[-0.02em] text-foreground">
               {page.title}
             </h1>
-            {page.subtitle ? (
-              <p className="text-[13px] text-muted-foreground">{page.subtitle}</p>
-            ) : null}
           </div>
           <div className="flex items-center gap-2">
             <GlobalSearch />
@@ -92,15 +99,6 @@ export function DesktopAppShell({ children, noPadding = false }: DesktopAppShell
               <Plus className="h-3.5 w-3.5" strokeWidth={2.5} />
               새 딜
             </Link>
-            <Link
-              className="inline-flex h-[34px] w-[34px] items-center justify-center rounded-lg border border-gray-200 bg-white text-gray-500 transition hover:bg-gray-50"
-              to="/notifications"
-            >
-              <Bell className="h-4 w-4" />
-            </Link>
-            <div className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-primary text-[12px] font-semibold text-white">
-              강
-            </div>
           </div>
         </header>
 

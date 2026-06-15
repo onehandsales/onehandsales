@@ -20,6 +20,8 @@
 
 ### 공통
 - `src/components/layout/app-shell.tsx` — `/products/:id` 경로 감지 → 상세 전용 TopBar 렌더링 (브레드크럼 + 뒤로가기 + 수정/삭제 버튼), 제품 목록 TopBar에 내보내기 버튼 추가, `?action=export|create` 처리
+- `src/app/router/router.tsx` / `src/pages/products/new.tsx` — `/products/new` 정식 진입점 추가, 목록 화면에서 제품 등록 모달 자동 오픈, 닫기 시 `/products` 복귀
+- `src/components/ui/pagination.tsx` — 목록 하단 페이지네이션을 `1 / 10` 형식의 최소 UI로 단순화
 - `src/components/ui/pagination.tsx` — `totalPages` / `hasNext` 둘 다 지원하도록 확장
 - `src/components/ui/modal-shell.tsx` — `headerClassName`, `titleClassName` prop 추가
 
@@ -30,7 +32,7 @@
 - `src/features/product/hooks/use-product-list.ts` — `page` 파라미터 지원
 - `src/features/product/hooks/use-product-detail.ts` — `useProductCategories`, `useProductStatuses`, `useProductMemoLogsInfinite`, `useProductPrivateMemoLogsInfinite` 추가
 - `src/features/product/hooks/use-product-mutations.ts` — 전면 재작성 (카테고리·상태·메모 로그·비밀 메모 mutation 추가)
-- `src/features/product/components/product-list-screen.tsx` — 카테고리/상태 필터 API 연동, 페이지네이션, 내보내기 버튼 제거(TopBar 이전), 카테고리 배지 스타일(파란색 rounded-full)
+- `src/features/product/components/product-list-screen.tsx` — 카테고리/상태 필터 API 연동, 페이지네이션, 내보내기 버튼 제거(TopBar 이전), 카테고리 배지 스타일(파란색 rounded-full), `initialCreateOpen` prop 추가
 - `src/features/product/components/product-detail-screen.tsx` — 내부 TopBar 제거, `isEditing`/`onEditingChange` prop화, 기본 정보 필드 재구성(분류/단위), 제품 로그 카드, 판매 현황 카드, Memo 기록 카드
 - `src/features/product/components/product-create-dialog.tsx` — 헤더 amber(`#b45309`), 타이틀 "새 제품 등록", 단가 ₩/KRW 입력 그룹, 카테고리·상태 인라인 CRUD 패널
 - `src/features/product/components/product-edit-form.tsx` — BE 필드명 정합
@@ -66,6 +68,8 @@
 ## 검증 결과
 
 - `npx tsc --noEmit`: 통과 (오류 없음)
+- `pnpm --dir FE/user-web typecheck`: 통과
+- `pnpm --dir FE/user-web lint`: 통과 (`src/components/ui/toast.tsx` 기존 react-refresh 경고 1건만 남음)
 
 ## pen 디자인 대비 적용된 변경
 
@@ -86,6 +90,7 @@
 - BE `GET /api/products` 응답에 `totalPages` 필드 미포함 → BE에 추가 요청 필요 (`Math.ceil(totalCount / pageSize)`)
 - 판매 현황 카드 (연결 딜 수, 이번 달 사용)는 API 없어 정적 `-` 표시 중
 - 상세 TopBar 삭제 버튼은 UI만 있고 실제 DELETE API 미연결
+- 제품 생성 진입점은 `/products/new`로 분리했고, 기존 제품 목록 화면은 동일한 생성 모달을 재사용한다.
 
 ## 다음 권장 작업
 

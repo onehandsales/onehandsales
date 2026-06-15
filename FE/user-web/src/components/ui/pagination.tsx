@@ -18,42 +18,42 @@ export function Pagination({
   className,
 }: PaginationProps) {
   const safeTotalPages = Math.max(totalPages, 1);
+  const canPrev = page > 1;
   const canNext = page < safeTotalPages;
-  const pageLabel = `${page} / ${safeTotalPages}페이지`;
 
   return (
     <div
       className={cn(
-        "flex flex-col gap-3 rounded-lg border bg-white px-4 py-3 text-sm md:flex-row md:items-center md:justify-between",
+        "flex items-center justify-center gap-1",
         className
       )}
     >
-      <span className="text-muted-foreground">
-        {totalCount !== undefined
-          ? `총 ${totalCount.toLocaleString("ko-KR")}개 · `
-          : null}
-        {pageLabel}
+      {totalCount !== undefined ? (
+        <span className="mr-3 text-[12px] text-[#9CA3AF]">
+          총 {totalCount.toLocaleString("ko-KR")}개
+        </span>
+      ) : null}
+      <button
+        className="inline-flex h-7 w-7 items-center justify-center rounded-md text-[#6B7280] transition hover:bg-[#F3F4F6] disabled:cursor-not-allowed disabled:opacity-40"
+        disabled={!canPrev}
+        onClick={() => onPageChange(page - 1)}
+        type="button"
+        aria-label="이전 페이지"
+      >
+        <ChevronLeft className="h-4 w-4" />
+      </button>
+      <span className="min-w-[56px] text-center text-[12px] font-medium text-[#374151]">
+        {page} / {safeTotalPages}
       </span>
-      <div className="flex gap-2">
-        <button
-          className="h-9 rounded-md border px-3 font-medium hover:bg-muted disabled:cursor-not-allowed disabled:opacity-60 inline-flex items-center gap-1"
-          disabled={page <= 1}
-          onClick={() => onPageChange(page - 1)}
-          type="button"
-        >
-          <ChevronLeft className="h-4 w-4" />
-          이전
-        </button>
-        <button
-          className="h-9 rounded-md border px-3 font-medium hover:bg-muted disabled:cursor-not-allowed disabled:opacity-60 inline-flex items-center gap-1"
-          disabled={!canNext}
-          onClick={() => onPageChange(page + 1)}
-          type="button"
-        >
-          다음
-          <ChevronRight className="h-4 w-4" />
-        </button>
-      </div>
+      <button
+        className="inline-flex h-7 w-7 items-center justify-center rounded-md text-[#6B7280] transition hover:bg-[#F3F4F6] disabled:cursor-not-allowed disabled:opacity-40"
+        disabled={!canNext}
+        onClick={() => onPageChange(page + 1)}
+        type="button"
+        aria-label="다음 페이지"
+      >
+        <ChevronRight className="h-4 w-4" />
+      </button>
     </div>
   );
 }
