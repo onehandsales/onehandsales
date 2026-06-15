@@ -4,6 +4,7 @@ import { ProtectedRoute } from "@/features/auth";
 import { BusinessCardsPage } from "@/pages/business-cards";
 import { CompanyDetailPage } from "@/pages/companies/detail";
 import { CompaniesPage } from "@/pages/companies";
+import { CompanyNewPage } from "@/pages/companies/new";
 import { ContactDetailPage } from "@/pages/contacts/detail";
 import { ContactsPage } from "@/pages/contacts";
 import { DealDetailPage } from "@/pages/deals/detail";
@@ -19,6 +20,7 @@ import { MeetingNotesPage } from "@/pages/meeting-notes";
 import { NotificationsPage } from "@/pages/notifications";
 import { ProductDetailPage } from "@/pages/products/detail";
 import { ProductsPage } from "@/pages/products";
+import { ProductNewPage } from "@/pages/products/new";
 import { SchedulesPage } from "@/pages/schedules";
 import { ScheduleWeekPage } from "@/pages/schedules/week";
 import { SettingsPage } from "@/pages/settings";
@@ -37,11 +39,13 @@ export const router = createBrowserRouter([
     children: [
       { index: true, element: <HomePage /> },
       { path: "companies", element: <CompaniesPage /> },
+      { path: "companies/new", element: <CompanyNewPage /> },
       { path: "companies/:companyId", element: <CompanyDetailPage /> },
       { path: "contacts", element: <ContactsPage /> },
       { path: "contacts/scan", element: <BusinessCardsPage /> },
       { path: "contacts/:contactId", element: <ContactDetailPage /> },
       { path: "products", element: <ProductsPage /> },
+      { path: "products/new", element: <ProductNewPage /> },
       { path: "products/:productId", element: <ProductDetailPage /> },
       { path: "deals", element: <DealsPage /> },
       { path: "deals/new", element: <DealNewPage /> },

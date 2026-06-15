@@ -21,8 +21,10 @@ const PAGE_TITLES: Record<string, { title: string }> = {
   "/deals": { title: "딜" },
   "/deals/new": { title: "딜" },
   "/companies": { title: "회사" },
+  "/companies/new": { title: "회사" },
   "/contacts": { title: "거래처" },
   "/products": { title: "제품" },
+  "/products/new": { title: "제품" },
   "/schedules": { title: "일정" },
   "/meeting-notes": { title: "회의록" },
   "/notifications": { title: "알림" },
@@ -162,7 +164,7 @@ function HeaderActions({
       <div className="flex shrink-0 items-center gap-2">
         <button
           className="inline-flex h-9 items-center gap-1.5 rounded-lg bg-[#1D4ED8] px-3.5 text-[13px] font-bold text-white transition hover:bg-[#1E40AF]"
-          onClick={() => void navigate("/products?action=create")}
+          onClick={() => void navigate("/products/new")}
           type="button"
         >
           <Plus className="h-3.5 w-3.5" strokeWidth={2.5} />
@@ -204,7 +206,8 @@ export function AppShell() {
   const { pathname } = useLocation();
   const navigate = useNavigate();
   const isHome = pathname === HOME_PATH;
-  const isProducts = pathname === "/products";
+  const isProducts = pathname === "/products" || pathname === "/products/new";
+  const isCompanyPage = pathname === "/companies" || pathname === "/companies/new";
   const isDeals = pathname.startsWith("/deals");
 
   // /products/:id 패턴 감지
@@ -212,7 +215,7 @@ export function AppShell() {
   const productDetailId = productDetailMatch
     ? (productDetailMatch[1] ?? "")
     : "";
-  const isProductDetail = productDetailId.length > 0;
+  const isProductDetail = productDetailId.length > 0 && productDetailId !== "new";
 
   // /deals/:id 패턴 감지
   const dealDetailMatch = /^\/deals\/([^/]+)$/.exec(pathname);
@@ -305,7 +308,7 @@ export function AppShell() {
 
             {isProductDetail ? (
               <ProductDetailActions productId={productDetailId} />
-            ) : isDealDetail ? null : (
+            ) : isDealDetail || isCompanyPage ? null : (
               <HeaderActions isProducts={isProducts} navigate={navigate} />
             )}
           </header>

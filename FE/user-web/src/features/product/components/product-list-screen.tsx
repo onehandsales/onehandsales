@@ -12,7 +12,15 @@ import { getApiErrorMessage } from "@/lib/api-client";
 import { cn } from "@/utils/cn";
 import { formatDate } from "@/utils/format";
 
-export function ProductListScreen() {
+type ProductListScreenProps = {
+  readonly initialCreateOpen?: boolean;
+  readonly onCreateDialogClose?: () => void;
+};
+
+export function ProductListScreen({
+  initialCreateOpen = false,
+  onCreateDialogClose,
+}: ProductListScreenProps) {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const [categoryFilter, setCategoryFilter] = useState("");
@@ -57,6 +65,12 @@ export function ProductListScreen() {
       });
     }
   }, [navigate, searchParams]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    if (initialCreateOpen) {
+      setIsCreateOpen(true);
+    }
+  }, [initialCreateOpen]);
 
   const categoriesQuery = useProductCategories();
   const statusesQuery = useProductStatuses();
@@ -211,7 +225,12 @@ export function ProductListScreen() {
           setNotice("제품이 추가되었습니다.");
           void productsQuery.refetch();
         }}
-        onOpenChange={setIsCreateOpen}
+        onOpenChange={(open) => {
+          setIsCreateOpen(open);
+          if (!open) {
+            onCreateDialogClose?.();
+          }
+        }}
         open={isCreateOpen}
       />
     </section>

@@ -7,7 +7,8 @@ import {
   Search,
   Trash2,
 } from "lucide-react";
-import { type FormEvent, useMemo, useState } from "react";
+import { type FormEvent, useEffect, useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { PageHeader } from "@/components/ui/page-header";
@@ -38,8 +39,17 @@ import {
 } from "@/lib/api-client";
 import { formatDate } from "@/utils/format";
 
+type CompanyListScreenProps = {
+  readonly initialCreateOpen?: boolean;
+  readonly onCreateDialogClose?: () => void;
+};
+
 // 기능 : 회사 목록, 검색 필터, 분야/지역 관리, 엑셀 내보내기 화면을 렌더링합니다.
-export function CompanyListScreen() {
+export function CompanyListScreen({
+  initialCreateOpen = false,
+  onCreateDialogClose,
+}: CompanyListScreenProps) {
+  const navigate = useNavigate();
   const [companyNameText, setCompanyNameText] = useState("");
   const [companyName, setCompanyName] = useState("");
   const [companyFieldId, setCompanyFieldId] = useState("");
@@ -76,6 +86,12 @@ export function CompanyListScreen() {
     companyName.length > 0 ||
     companyFieldId.length > 0 ||
     companyRegionId.length > 0;
+
+  useEffect(() => {
+    if (initialCreateOpen) {
+      setIsCreateOpen(true);
+    }
+  }, [initialCreateOpen]);
 
   // 기능 : 회사명 검색어를 확정하고 첫 페이지로 이동합니다.
   const onSearchSubmit = (event: FormEvent<HTMLFormElement>) => {
@@ -116,7 +132,7 @@ export function CompanyListScreen() {
             </Button>
             <Button
               disabled={fieldsQuery.isLoading || regionsQuery.isLoading}
-              onClick={() => setIsCreateOpen(true)}
+              onClick={() => void navigate("/companies/new")}
               type="button"
               variant="primary"
             >
@@ -235,7 +251,12 @@ export function CompanyListScreen() {
       <CompanyCreateDialog
         fields={fields}
         onCreated={() => setNotice("회사가 추가되었습니다.")}
-        onOpenChange={setIsCreateOpen}
+        onOpenChange={(open) => {
+          setIsCreateOpen(open);
+          if (!open) {
+            onCreateDialogClose?.();
+          }
+        }}
         open={isCreateOpen}
         regions={regions}
       />

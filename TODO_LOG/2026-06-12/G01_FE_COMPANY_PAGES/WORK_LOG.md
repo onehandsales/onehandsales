@@ -58,6 +58,8 @@ User Web 회사 목록/상세/생성/메모/내보내기 화면 구현
 - `FE/user-web/src/features/company/types/company.ts`
 - `FE/user-web/src/features/company/schemas/company-schema.ts`
 - `FE/user-web/src/features/company/components/company-list-screen.tsx`
+  - `initialCreateOpen` prop 추가로 `/companies/new`에서 회사 생성 모달 자동 오픈 지원
+  - 회사 추가 버튼을 `/companies/new`로 연결하고, 모달 닫기 시 `/companies`로 복귀하도록 정리
 - `FE/user-web/src/features/company/components/company-create-dialog.tsx`
 - `FE/user-web/src/features/company/components/company-detail-screen.tsx`
 - `FE/user-web/src/features/company/components/company-edit-form.tsx`
@@ -98,6 +100,7 @@ User Web 회사 목록/상세/생성/메모/내보내기 화면 구현
 
 - 인증 세션과 테스트 데이터가 준비된 브라우저 수동 검증은 아직 실행하지 못했다.
 - 딜 생성 모달의 회사 inline create는 새 회사 필수값 정책에 맞춰 별도 UX가 필요하다.
+- 회사 생성 진입점은 `/companies/new`로 분리했고, 기존 회사 목록 화면은 동일한 생성 모달을 재사용한다.
 
 ## 다음 권장 작업
 
