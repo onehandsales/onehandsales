@@ -481,6 +481,25 @@ function MemoLogList({
   );
 }
 
+type SectionTitleProps = {
+  readonly title: string;
+  readonly description: string;
+  readonly icon: typeof MessageSquareText;
+};
+
+// 기능 : 메모 섹션 제목을 렌더링합니다.
+function SectionTitle({ title, description, icon: Icon }: SectionTitleProps) {
+  return (
+    <div>
+      <div className="flex items-center gap-2">
+        <Icon className="h-5 w-5 text-muted-foreground" />
+        <h2 className="text-lg font-semibold">{title}</h2>
+      </div>
+      <p className="mt-1 text-sm text-muted-foreground">{description}</p>
+    </div>
+  );
+}
+
 // 기능 : 폼 검증 오류를 렌더링합니다.
 function FormError({
   id,

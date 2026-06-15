@@ -23,7 +23,7 @@ export function FilterChip({
   return (
     <button
       className={cn(
-        "inline-flex h-7 items-center rounded-[6px] px-2.5 text-xs transition cursor-pointer",
+        "inline-flex h-8 items-center rounded-[6px] px-3 text-[13px] transition cursor-pointer",
         active
           ? "bg-primary/10 text-primary font-semibold"
           : "bg-gray-100 text-gray-700 hover:bg-gray-200",

@@ -1,7 +1,6 @@
 import { type LucideIcon } from "lucide-react";
 import { Link } from "react-router-dom";
 import { cn } from "@/utils/cn";
-import { useState } from "react";
 
 // ── 브레드크럼 ──────────────────────────────────────────────
 export type BreadcrumbItem = {
@@ -94,7 +93,6 @@ export function PageHeader({ breadcrumbs, actions = [], className }: PageHeaderP
 
 // ── 툴팁 아이콘 버튼 ────────────────────────────────────────
 function TooltipIconButton({ action }: { readonly action: HeaderAction }) {
-  const [show, setShow] = useState(false);
   const Icon = action.icon;
 
   // variant별 스타일 — 테두리 + 배경을 넣어 눈에 잘 띄게
@@ -111,18 +109,16 @@ function TooltipIconButton({ action }: { readonly action: HeaderAction }) {
     <>
       <Icon className="h-[16px] w-[16px]" strokeWidth={2} />
       {/* 툴팁 — 아래 방향 */}
-      {show && (
-        <span className="pointer-events-none absolute left-1/2 top-full z-50 mt-2 -translate-x-1/2 whitespace-nowrap rounded-md bg-[#111827] px-2.5 py-1.5 text-[11px] font-medium leading-none text-white shadow-lg">
+      <span className="pointer-events-none absolute left-1/2 top-full z-50 mt-2 -translate-x-1/2 whitespace-nowrap rounded-md bg-[#111827] px-2.5 py-1.5 text-[11px] font-medium leading-none text-white opacity-0 shadow-lg transition-opacity duration-100 group-hover:opacity-100 group-focus-visible:opacity-100">
           {/* 위 꼬리 */}
           <span className="absolute bottom-full left-1/2 -translate-x-1/2 border-4 border-transparent border-b-[#111827]" />
           {action.tooltip}
-        </span>
-      )}
+      </span>
     </>
   );
 
   const commonClass = cn(
-    "relative inline-flex h-[30px] w-[30px] items-center justify-center rounded-md shadow-sm transition",
+    "group relative inline-flex h-[30px] w-[30px] items-center justify-center rounded-md shadow-sm transition",
     variantClass,
     action.disabled && "pointer-events-none opacity-40"
   );
@@ -133,8 +129,6 @@ function TooltipIconButton({ action }: { readonly action: HeaderAction }) {
         aria-label={action.tooltip}
         className={commonClass}
         to={action.href}
-        onMouseEnter={() => setShow(true)}
-        onMouseLeave={() => setShow(false)}
       >
         {inner}
       </Link>
@@ -148,8 +142,6 @@ function TooltipIconButton({ action }: { readonly action: HeaderAction }) {
       disabled={action.disabled}
       type="button"
       onClick={action.onClick}
-      onMouseEnter={() => setShow(true)}
-      onMouseLeave={() => setShow(false)}
     >
       {inner}
     </button>

@@ -86,7 +86,7 @@ export function ScheduleScreen() {
         breadcrumbs={[{ label: "일정", icon: CalendarDays }]}
         actions={[
           { icon: FileText, tooltip: "주간 보고서", href: "/schedules/week" },
-          { icon: Plus, tooltip: "일정 생성", onClick: () => openCreateDialog(), variant: "primary" },
+          { icon: Plus, tooltip: "일정 생성", onClick: () => openCreateDialog() },
         ]}
       />
 
@@ -96,7 +96,7 @@ export function ScheduleScreen() {
             <button
               className={`h-7 rounded-md px-3 text-[12px] font-medium ${
                 viewMode === "month"
-                  ? "bg-[#2563EB] text-white"
+                  ? "bg-[#047857] text-white"
                   : "text-[#374151] hover:bg-[#F5F6F8]"
               }`}
               onClick={() => setViewMode("month")}
@@ -107,7 +107,7 @@ export function ScheduleScreen() {
             <button
               className={`h-7 rounded-md px-3 text-[12px] font-medium ${
                 viewMode === "week"
-                  ? "bg-[#2563EB] text-white"
+                  ? "bg-[#047857] text-white"
                   : "text-[#374151] hover:bg-[#F5F6F8]"
               }`}
               onClick={() => setViewMode("week")}
@@ -241,7 +241,7 @@ function MonthCalendar({
                 <button
                   className={`grid h-7 w-7 place-items-center rounded-md text-sm font-medium ${
                     isToday(cell)
-                      ? "bg-[#2563EB] text-white"
+                      ? "bg-[#F59E0B] text-white"
                       : "text-[#111827] hover:bg-[#F5F6F8]"
                   }`}
                   onClick={() => onCreate(setHour(cell, 9))}
@@ -251,7 +251,7 @@ function MonthCalendar({
                 </button>
                 <button
                   aria-label={`${formatDateShort(cell)} 일정 생성`}
-                  className="grid h-7 w-7 place-items-center rounded-md text-muted-foreground hover:bg-muted"
+                  className="grid h-7 w-7 place-items-center rounded-md text-[#64748B] hover:bg-[#F3F4F6]"
                   onClick={() => onCreate(setHour(cell, 9))}
                   type="button"
                 >
@@ -306,7 +306,7 @@ function WeekCalendar({
               <button
                 className={`mb-3 inline-flex h-8 items-center rounded-md px-2 text-sm font-semibold ${
                   isToday(day)
-                    ? "bg-[#2563EB] text-white"
+                    ? "bg-[#F59E0B] text-white"
                     : "text-[#111827] hover:bg-[#F5F6F8]"
                 }`}
                 onClick={() => onCreate(setHour(day, 9))}
@@ -317,7 +317,7 @@ function WeekCalendar({
               <div className="grid gap-2">
                 {daySchedules.length === 0 ? (
                   <button
-                    className="h-16 rounded-md border border-dashed text-sm text-muted-foreground hover:bg-muted"
+                    className="h-16 rounded-md border border-dashed text-sm text-[#64748B] hover:bg-[#F3F4F6]"
                     onClick={() => onCreate(setHour(day, 9))}
                     type="button"
                   >
@@ -366,13 +366,15 @@ function SchedulePill({
   readonly timeZone: string;
   readonly onClick: () => void;
 }) {
+  const tone = getScheduleTone(schedule.id);
+
   return (
     <button
-      className="grid min-h-8 rounded-md border border-[#BFDBFE] bg-[#EFF6FF] px-2 py-1 text-left hover:border-[#93C5FD] hover:bg-[#DBEAFE]"
+      className={`grid min-h-8 rounded-md border px-2 py-1 text-left transition ${tone.pill}`}
       onClick={onClick}
       type="button"
     >
-      <span className="truncate text-xs font-semibold text-[#1D4ED8]">
+      <span className={`truncate text-xs font-semibold ${tone.title}`}>
         {formatScheduleTime(schedule, timeZone)} {schedule.scheduleTitle}
       </span>
       <span className="truncate text-[11px] text-[#6B7280]">
@@ -391,14 +393,18 @@ function ScheduleCard({
   readonly timeZone: string;
   readonly onClick: () => void;
 }) {
+  const tone = getScheduleTone(schedule.id);
+
   return (
     <button
-      className="grid gap-2 rounded-lg border bg-white p-3 text-left hover:bg-muted/50"
+      className={`grid gap-2 rounded-lg border bg-white p-3 text-left transition ${tone.card}`}
       onClick={onClick}
       type="button"
     >
       <div className="min-w-0">
-        <p className="truncate text-sm font-semibold">{schedule.scheduleTitle}</p>
+        <p className={`truncate text-sm font-semibold ${tone.title}`}>
+          {schedule.scheduleTitle}
+        </p>
         <p className="mt-1 text-xs text-muted-foreground">
           {formatScheduleTimeRange(schedule, timeZone)}
         </p>
@@ -411,6 +417,42 @@ function ScheduleCard({
       ) : null}
     </button>
   );
+}
+
+function getScheduleTone(scheduleId: string) {
+  const tones = [
+    {
+      pill: "border-[#A7F3D0] bg-[#ECFDF5] hover:border-[#34D399] hover:bg-[#D1FAE5]",
+      card: "border-[#A7F3D0] hover:bg-[#ECFDF5]",
+      title: "text-[#047857]",
+    },
+    {
+      pill: "border-[#FDE68A] bg-[#FFFBEB] hover:border-[#FBBF24] hover:bg-[#FEF3C7]",
+      card: "border-[#FDE68A] hover:bg-[#FFFBEB]",
+      title: "text-[#B45309]",
+    },
+    {
+      pill: "border-[#FECDD3] bg-[#FFF1F2] hover:border-[#FB7185] hover:bg-[#FFE4E6]",
+      card: "border-[#FECDD3] hover:bg-[#FFF1F2]",
+      title: "text-[#BE123C]",
+    },
+    {
+      pill: "border-[#DDD6FE] bg-[#F5F3FF] hover:border-[#A78BFA] hover:bg-[#EDE9FE]",
+      card: "border-[#DDD6FE] hover:bg-[#F5F3FF]",
+      title: "text-[#6D28D9]",
+    },
+    {
+      pill: "border-[#CBD5E1] bg-[#F8FAFC] hover:border-[#94A3B8] hover:bg-[#F1F5F9]",
+      card: "border-[#CBD5E1] hover:bg-[#F8FAFC]",
+      title: "text-[#475569]",
+    },
+  ];
+  const index = Array.from(scheduleId).reduce(
+    (sum, char) => sum + char.charCodeAt(0),
+    0
+  );
+
+  return tones[index % tones.length] ?? tones[0]!;
 }
 
 function ScheduleEmptyState({
@@ -431,7 +473,7 @@ function ScheduleEmptyState({
           새 일정을 만들면 캘린더에서 바로 확인할 수 있습니다.
         </p>
         <button
-          className="mt-5 inline-flex h-7 items-center gap-1.5 rounded-md bg-[#2563EB] px-3 text-[12px] font-medium text-white hover:bg-[#1D4ED8]"
+          className="mt-5 inline-flex h-7 items-center gap-1.5 rounded-md bg-[#047857] px-3 text-[12px] font-medium text-white hover:bg-[#065F46]"
           onClick={onCreate}
           type="button"
         >

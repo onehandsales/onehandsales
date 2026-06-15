@@ -1,8 +1,8 @@
 import {
+  ArrowLeft,
   BriefcaseBusiness,
   Check,
   Copy,
-  IdCard,
   Mail,
   Pencil,
   Phone,
@@ -10,7 +10,6 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { PageHeader } from "@/components/layout/page-header";
 import { Toast } from "@/components/ui/toast";
 import { ContactEditForm } from "@/features/contact/components/contact-edit-form";
 import {
@@ -29,10 +28,8 @@ import type {
   ContactPrivateMemoLog,
 } from "@/features/contact/types/contact";
 import { getApiErrorMessage } from "@/lib/api-client";
-import { formatDate, formatDateTime } from "@/utils/format";
+import { formatDateTime } from "@/utils/format";
 import { cn } from "@/utils/cn";
-
-type Tab = "memo" | "deals";
 
 type ContactDetailScreenProps = {
   readonly contactId: string;
@@ -41,7 +38,6 @@ type ContactDetailScreenProps = {
 // 기능 : 거래처 상세 화면을 렌더링합니다.
 export function ContactDetailScreen({ contactId }: ContactDetailScreenProps) {
   const [notice, setNotice] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState<Tab>("memo");
   const [isEditing, setIsEditing] = useState(false);
 
   const contactQuery = useContactDetail(contactId);
@@ -75,187 +71,115 @@ export function ContactDetailScreen({ contactId }: ContactDetailScreenProps) {
 
   const deals = dealsQuery.data?.items ?? [];
 
-  const tabs: Array<{ key: Tab; label: string; count?: number }> = [
-    { key: "memo", label: "메모" },
-    { key: "deals", label: "딜", count: deals.length },
-  ];
-
   return (
-    <div className="min-h-full bg-[#FAFAF8]">
-      {/* PageHeader */}
-      <PageHeader
-        breadcrumbs={[
-          { label: "담당자", to: "/contacts", icon: IdCard },
-          { label: contact.username },
-        ]}
-        actions={[
-          {
-            icon: isEditing ? X : Pencil,
-            tooltip: isEditing ? "수정 취소" : "수정",
-            onClick: () => setIsEditing(!isEditing),
-          },
-        ]}
-      />
-
-      {/* 담당자 요약 카드 */}
-      <div className="border-b border-[#E6EAF0] bg-white px-6 py-4">
-        <div className="flex items-center gap-3">
-          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#EFF6FF] text-[18px] font-bold text-[#2563EB]">
-            {contact.username.charAt(0)}
-          </div>
-          <div className="min-w-0">
-            <h1 className="text-[18px] font-bold leading-tight text-[#111827]">
-              {contact.username}
-            </h1>
-            <p className="mt-0.5 text-[13px] text-[#6B7280]">
-              <Link
-                className="hover:text-[#2563EB] hover:underline"
-                to={`/companies/${contact.company.id}`}
-              >
-                {contact.company.companyName}
-              </Link>
-              <span className="mx-1.5 text-[#D1D5DB]">·</span>
-              {contact.contactDepartment.departmentName}
-              <span className="mx-1.5 text-[#D1D5DB]">·</span>
-              {contact.contactJobGrade.jobGradeName}
-            </p>
-          </div>
-        </div>
-
-        {/* 연락처 퀵 복사 */}
-        <div className="mt-3 flex flex-wrap items-center gap-2">
-          <CopyChip icon={Phone} label={contact.mobile || "-"} value={contact.mobile} onCopied={setNotice} />
-          <CopyChip icon={Mail} label={contact.email || "-"} value={contact.email} onCopied={setNotice} />
-          <span className="ml-auto text-[11px] text-[#9CA3AF]">
-            등록 {formatDate(contact.createdAt, { year: "numeric" })}
-          </span>
-        </div>
-      </div>
-
-      {/* 수정 폼 */}
-      {isEditing ? (
-        <div className="border-b border-[#E6EAF0] bg-[#F0F4FF] px-6 py-5">
-          <p className="mb-3 text-[12px] font-semibold text-[#1D4ED8]">정보 수정</p>
-          <div className="rounded-xl border border-[#C7D7FE] bg-white p-5">
-            <ContactEditForm
-              contact={contact}
-              onSaved={() => {
-                void contactQuery.refetch();
-                setNotice("거래처 정보가 저장되었습니다.");
-                setIsEditing(false);
-              }}
-            />
-          </div>
+    <div className="flex h-full flex-col">
+      {notice ? (
+        <div className="mx-6 mt-3">
+          <Toast message={notice} onClose={() => setNotice(null)} variant="success" />
         </div>
       ) : null}
 
-      {/* 탭 바 */}
-      <div className="relative border-b border-[#E6EAF0] bg-white px-6">
-        <div className="absolute bottom-0 left-0 right-0 h-px bg-[#E6EAF0]" />
-        <div className="flex gap-0">
-          {tabs.map((tab) => (
-            <button
-              className={cn(
-                "relative flex h-11 items-center gap-1.5 px-4 text-[13px] font-medium transition",
-                activeTab === tab.key
-                  ? "text-[#1D4ED8] after:absolute after:bottom-0 after:left-0 after:right-0 after:h-[2px] after:bg-[#1D4ED8]"
-                  : "text-[#6B7280] hover:text-[#374151]"
-              )}
-              key={tab.key}
-              onClick={() => setActiveTab(tab.key)}
-              type="button"
-            >
-              {tab.label}
-              {tab.count !== undefined ? (
-                <span
-                  className={cn(
-                    "inline-flex h-[18px] min-w-[18px] items-center justify-center rounded-full px-1 text-[10px] font-semibold",
-                    activeTab === tab.key
-                      ? "bg-[#DBEAFE] text-[#1D4ED8]"
-                      : "bg-[#F3F4F6] text-[#6B7280]"
-                  )}
-                >
-                  {tab.count}
-                </span>
-              ) : null}
-            </button>
-          ))}
-        </div>
-      </div>
+      <div className="flex min-h-0 flex-1 overflow-hidden bg-[#F9FAFB]">
+        <div className="flex min-w-0 flex-1 flex-col gap-4 overflow-y-auto p-6">
+          <Link
+            className="inline-flex w-fit items-center gap-2 text-[13px] font-medium text-[#64748B] hover:text-[#374151]"
+            to="/contacts"
+          >
+            <ArrowLeft className="h-4 w-4" />
+            담당자 목록
+          </Link>
 
-      {/* 탭 콘텐츠 */}
-      <div className="px-6 py-6">
-        {notice ? (
-          <div className="mb-4">
-            <Toast message={notice} onClose={() => setNotice(null)} variant="success" />
+          <div className="rounded-lg border border-[#E5E7EB] bg-white p-5">
+            <div className="mb-4 flex items-center justify-between gap-3">
+              <h2 className="text-[14px] font-semibold text-[#111827]">기본 정보</h2>
+              <button
+                className={cn(
+                  "inline-flex h-9 shrink-0 items-center gap-1.5 rounded-md border px-3 text-[13px] font-semibold transition",
+                  isEditing
+                    ? "border-[#C7D7FE] bg-[#EAF2FF] text-[#1D4ED8]"
+                    : "border-[#E2E5EC] bg-white text-[#374151] hover:bg-[#F5F6F8]"
+                )}
+                onClick={() => setIsEditing((value) => !value)}
+                type="button"
+              >
+                {isEditing ? <X className="h-4 w-4" /> : <Pencil className="h-4 w-4" />}
+                {isEditing ? "수정 취소" : "정보 수정"}
+              </button>
+            </div>
+            {isEditing ? (
+              <ContactEditForm
+                contact={contact}
+                onSaved={() => {
+                  void contactQuery.refetch();
+                  setNotice("거래처 정보가 저장되었습니다.");
+                  setIsEditing(false);
+                }}
+              />
+            ) : (
+              <div className="grid grid-cols-2 gap-4">
+                <InfoField label="이름" value={contact.username} />
+                <InfoField
+                  label="회사"
+                  value={contact.company.companyName}
+                  to={`/companies/${contact.company.id}`}
+                />
+                <InfoField label="부서" value={contact.contactDepartment.departmentName} />
+                <InfoField label="직급" value={contact.contactJobGrade.jobGradeName} />
+                <InfoField label="핸드폰" value={contact.mobile || "-"} />
+                <InfoField label="이메일" value={contact.email || "-"} />
+                <InfoField
+                  label="등록일"
+                  value={formatDateTime(contact.createdAt, { includeYear: true })}
+                />
+              </div>
+            )}
+            <div className="mt-4 flex flex-wrap gap-2">
+              <CopyChip icon={Phone} label={contact.mobile || "-"} value={contact.mobile} onCopied={setNotice} />
+              <CopyChip icon={Mail} label={contact.email || "-"} value={contact.email} onCopied={setNotice} />
+            </div>
           </div>
-        ) : null}
 
-        {activeTab === "memo" && (
-          <MemoTab
+          <ContactMemoLogSection
             contactId={contactId}
-            memoLogs={memoLogs}
-            memoLogsQuery={memoLogsQuery}
-            privateMemoLogs={privateMemoLogs}
-            privateMemoLogsQuery={privateMemoLogsQuery}
+            error={memoLogsQuery.error}
+            hasNextPage={Boolean(memoLogsQuery.hasNextPage)}
+            isFetchingNextPage={memoLogsQuery.isFetchingNextPage}
+            isLoading={memoLogsQuery.isLoading}
+            logs={memoLogs}
             onChanged={setNotice}
+            onFetchMore={() => void memoLogsQuery.fetchNextPage()}
+            onRetry={() => void memoLogsQuery.refetch()}
           />
-        )}
+        </div>
 
-        {activeTab === "deals" && (
+        <div className="flex w-[415px] shrink-0 flex-col gap-4 overflow-y-auto bg-[#F9FAFB] p-6">
+          <div className="rounded-lg border border-[#E5E7EB] bg-white p-4">
+            <h3 className="mb-3 text-[13px] font-semibold text-[#111827]">담당자 현황</h3>
+            <div className="grid grid-cols-2 gap-3">
+              <StatCard label="연결 딜" value={`${deals.length.toLocaleString("ko-KR")}건`} />
+              <StatCard label="회사" value={contact.company.companyName} />
+            </div>
+          </div>
+
           <DealsTab
             deals={deals}
             error={dealsQuery.error}
             isLoading={dealsQuery.isLoading}
             onRetry={() => void dealsQuery.refetch()}
           />
-        )}
+          <ContactPrivateMemoLogSection
+            contactId={contactId}
+            error={privateMemoLogsQuery.error}
+            hasNextPage={Boolean(privateMemoLogsQuery.hasNextPage)}
+            isFetchingNextPage={privateMemoLogsQuery.isFetchingNextPage}
+            isLoading={privateMemoLogsQuery.isLoading}
+            logs={privateMemoLogs}
+            onChanged={setNotice}
+            onFetchMore={() => void privateMemoLogsQuery.fetchNextPage()}
+            onRetry={() => void privateMemoLogsQuery.refetch()}
+          />
+        </div>
       </div>
-    </div>
-  );
-}
-
-// ── 탭 콘텐츠 컴포넌트 ──────────────────────────────────────────────
-
-function MemoTab({
-  contactId,
-  memoLogs,
-  memoLogsQuery,
-  privateMemoLogs,
-  privateMemoLogsQuery,
-  onChanged,
-}: {
-  readonly contactId: string;
-  readonly memoLogs: ContactMemoLog[];
-  readonly memoLogsQuery: ReturnType<typeof useContactMemoLogs>;
-  readonly privateMemoLogs: ContactPrivateMemoLog[];
-  readonly privateMemoLogsQuery: ReturnType<typeof useContactPrivateMemoLogs>;
-  readonly onChanged: (notice: string) => void;
-}) {
-  return (
-    <div className="grid gap-6">
-      <ContactMemoLogSection
-        contactId={contactId}
-        error={memoLogsQuery.error}
-        hasNextPage={memoLogsQuery.hasNextPage}
-        isFetchingNextPage={memoLogsQuery.isFetchingNextPage}
-        isLoading={memoLogsQuery.isLoading}
-        logs={memoLogs}
-        onChanged={onChanged}
-        onFetchMore={() => void memoLogsQuery.fetchNextPage()}
-        onRetry={() => void memoLogsQuery.refetch()}
-      />
-      <ContactPrivateMemoLogSection
-        contactId={contactId}
-        error={privateMemoLogsQuery.error}
-        hasNextPage={privateMemoLogsQuery.hasNextPage}
-        isFetchingNextPage={privateMemoLogsQuery.isFetchingNextPage}
-        isLoading={privateMemoLogsQuery.isLoading}
-        logs={privateMemoLogs}
-        onChanged={onChanged}
-        onFetchMore={() => void privateMemoLogsQuery.fetchNextPage()}
-        onRetry={() => void privateMemoLogsQuery.refetch()}
-      />
     </div>
   );
 }
@@ -272,10 +196,11 @@ function DealsTab({
   readonly onRetry: () => void;
 }) {
   return (
-    <div className="rounded-xl border border-[#E6EAF0] bg-white">
-      <div className="flex items-center gap-2 border-b border-[#F3F4F6] px-5 py-4">
+    <div className="rounded-lg border border-[#E5E7EB] bg-white p-4">
+      <div className="mb-3 flex items-center gap-2">
         <BriefcaseBusiness className="h-4 w-4 text-[#6B7280]" />
-        <h2 className="text-[14px] font-semibold text-[#111827]">연결 딜</h2>
+        <h3 className="flex-1 text-[13px] font-semibold text-[#111827]">연결 딜</h3>
+        <span className="text-[12px] text-[#9CA3AF]">{deals.length}건</span>
       </div>
 
       {isLoading ? (
@@ -283,24 +208,24 @@ function DealsTab({
       ) : error ? (
         <PanelError error={error} onRetry={onRetry} />
       ) : deals.length === 0 ? (
-        <PanelEmpty text="연결된 딜이 없습니다." />
+        <p className="py-2 text-[13px] text-[#9CA3AF]">연결된 딜이 없습니다.</p>
       ) : (
-        <div className="divide-y divide-[#F9FAFB]">
+        <div className="grid gap-2">
           {deals.map((deal) => (
             <Link
-              className="flex items-center justify-between gap-3 px-5 py-3.5 hover:bg-[#FAFBFC]"
+              className="grid gap-1 rounded-lg border border-[#E5E7EB] px-3 py-2.5 hover:bg-[#F9FAFB]"
               key={deal.id}
               to={`/deals/${deal.id}`}
             >
-              <div className="min-w-0">
+              <div className="flex items-center justify-between gap-3">
                 <p className="truncate text-[13px] font-medium text-[#111827]">{deal.dealName}</p>
-                <p className="text-[12px] text-[#9CA3AF]">
-                  {formatDateTime(deal.createdAt, { includeYear: true })}
-                </p>
+                <span className="shrink-0 text-[13px] font-semibold text-[#374151]">
+                  {deal.dealCost.toLocaleString("ko-KR")}원
+                </span>
               </div>
-              <span className="shrink-0 text-[13px] font-semibold text-[#374151]">
-                {deal.dealCost.toLocaleString("ko-KR")}원
-              </span>
+              <p className="text-[12px] text-[#6B7280]">
+                {formatDateTime(deal.createdAt, { includeYear: true })}
+              </p>
             </Link>
           ))}
         </div>
@@ -310,6 +235,38 @@ function DealsTab({
 }
 
 // ── 공통 소형 컴포넌트 ──────────────────────────────────────────────
+
+function InfoField({
+  label,
+  value,
+  to,
+}: {
+  readonly label: string;
+  readonly value: string;
+  readonly to?: string;
+}) {
+  return (
+    <div className="flex min-w-0 flex-col gap-1">
+      <span className="text-[11px] font-semibold text-[#6B7280]">{label}</span>
+      {to ? (
+        <Link className="truncate text-[13px] text-[#111827] hover:text-[#2563EB] hover:underline" to={to}>
+          {value}
+        </Link>
+      ) : (
+        <span className="truncate text-[13px] text-[#111827]">{value}</span>
+      )}
+    </div>
+  );
+}
+
+function StatCard({ label, value }: { readonly label: string; readonly value: string }) {
+  return (
+    <div className="flex min-w-0 flex-col gap-1 rounded-lg bg-[#F9FAFB] p-3">
+      <span className="text-[11px] font-medium text-[#6B7280]">{label}</span>
+      <span className="truncate text-[20px] font-bold text-[#111827]">{value}</span>
+    </div>
+  );
+}
 
 function CopyChip({
   icon: Icon,
@@ -357,12 +314,6 @@ function LoadingState() {
         <div className="h-12 animate-pulse rounded-lg bg-[#F3F4F6]" key={i} />
       ))}
     </div>
-  );
-}
-
-function PanelEmpty({ text }: { readonly text: string }) {
-  return (
-    <p className="px-5 py-8 text-center text-[13px] text-[#9CA3AF]">{text}</p>
   );
 }
 

@@ -7,11 +7,10 @@ import {
   Smartphone,
   Timer,
   UserRound,
+  type LucideIcon,
 } from "lucide-react";
 import { type FormEvent, useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { PageHeader } from "@/components/ui/page-header";
-import { SectionHeader } from "@/components/ui/section-header";
 import { Toast } from "@/components/ui/toast";
 import {
   useMyDevices,
@@ -45,30 +44,27 @@ export function SettingsPage() {
   const devicesQuery = useMyDevices();
 
   return (
-    <section className="mx-auto grid max-w-6xl gap-6 px-5 py-6">
-      <PageHeader
-        description="내 개인 정보와 등록 기기를 확인합니다."
-        title="설정"
-      />
+    <section className="flex min-h-full flex-col bg-[#FAFAF8]">
+      <div className="mx-auto grid w-full max-w-7xl gap-5 px-5 py-6">
+        {notice ? (
+          <Toast message={notice} onClose={() => setNotice(null)} variant="success" />
+        ) : null}
 
-      {notice ? (
-        <Toast message={notice} onClose={() => setNotice(null)} variant="success" />
-      ) : null}
-
-      <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_380px]">
-        <ProfileSection
-          error={profileQuery.error}
-          isLoading={profileQuery.isLoading}
-          onRetry={() => void profileQuery.refetch()}
-          onSaved={() => setNotice("개인 정보가 저장되었습니다.")}
-          profile={profileQuery.data ?? null}
-        />
-        <DeviceSection
-          devices={devicesQuery.data?.devices ?? []}
-          error={devicesQuery.error}
-          isLoading={devicesQuery.isLoading}
-          onRetry={() => void devicesQuery.refetch()}
-        />
+        <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_380px]">
+          <ProfileSection
+            error={profileQuery.error}
+            isLoading={profileQuery.isLoading}
+            onRetry={() => void profileQuery.refetch()}
+            onSaved={() => setNotice("개인 정보가 저장되었습니다.")}
+            profile={profileQuery.data ?? null}
+          />
+          <DeviceSection
+            devices={devicesQuery.data?.devices ?? []}
+            error={devicesQuery.error}
+            isLoading={devicesQuery.isLoading}
+            onRetry={() => void devicesQuery.refetch()}
+          />
+        </div>
       </div>
     </section>
   );
@@ -122,26 +118,57 @@ function ProfileSection({
   };
 
   return (
-    <section className="grid content-start gap-4">
-      <SectionHeader
-        description="이메일, 권한, 계정 상태는 읽기 전용입니다."
-        title="개인 정보"
-      />
-      <div className="rounded-lg border bg-white p-5">
-        {isLoading ? (
-          <SettingsSkeleton rows={5} />
-        ) : error ? (
-          <InlineError error={error} onRetry={onRetry} />
-        ) : profile ? (
-          <div className="grid gap-5">
-            <form className="grid gap-3" onSubmit={onSubmit}>
+    <section className="grid content-start gap-5">
+      {isLoading ? (
+        <section className="grid gap-3">
+          <SettingsCardHeader
+            icon={UserRound}
+            description="개인 표시 정보와 시간대를 설정합니다."
+            title="프로필 설정"
+          />
+          <div className="rounded-lg border border-[#E2E5EC] bg-white p-5 shadow-sm">
+            <SettingsSkeleton rows={3} />
+          </div>
+        </section>
+      ) : error ? (
+        <section className="grid gap-3">
+          <SettingsCardHeader
+            icon={UserRound}
+            description="개인 표시 정보와 시간대를 설정합니다."
+            title="프로필 설정"
+          />
+          <div className="rounded-lg border border-[#E2E5EC] bg-white p-5 shadow-sm">
+            <InlineError error={error} onRetry={onRetry} />
+          </div>
+        </section>
+      ) : profile ? (
+        <>
+          <form className="grid gap-3" onSubmit={onSubmit}>
+            <div className="flex items-start justify-between gap-4">
+              <SettingsCardHeader
+                icon={UserRound}
+                description="화면에 표시되는 이름과 일정 기준 시간대만 수정합니다."
+                title="프로필 설정"
+              />
+              <Button
+                disabled={updateProfileMutation.isPending}
+                isPending={updateProfileMutation.isPending}
+                type="submit"
+                variant="primary"
+              >
+                <Save className="h-4 w-4" />
+                저장
+              </Button>
+            </div>
+
+            <div className="rounded-lg border border-[#E2E5EC] bg-white p-5 shadow-sm">
               <div className="grid gap-3 md:grid-cols-[minmax(0,1fr)_minmax(220px,280px)]">
                 <label className="grid gap-1.5">
                   <span className="text-xs font-medium text-muted-foreground">
                     이름
                   </span>
                   <input
-                    className="h-10 min-w-0 rounded-md border px-3 text-sm outline-none focus:ring-2 focus:ring-ring"
+                    className="h-10 min-w-0 rounded-md border border-[#E2E5EC] bg-[#FAFAF8] px-3 text-sm outline-none focus:border-[#93C5FD] focus:bg-white"
                     maxLength={80}
                     onChange={(event) => setName(event.target.value)}
                     placeholder="이름 없음"
@@ -153,7 +180,7 @@ function ProfileSection({
                     시간대
                   </span>
                   <select
-                    className="h-10 min-w-0 rounded-md border bg-white px-3 text-sm outline-none focus:ring-2 focus:ring-ring"
+                    className="h-10 min-w-0 rounded-md border border-[#E2E5EC] bg-[#FAFAF8] px-3 text-sm outline-none focus:border-[#93C5FD] focus:bg-white"
                     onChange={(event) => setTimeZone(event.target.value)}
                     value={timeZone}
                   >
@@ -165,60 +192,53 @@ function ProfileSection({
                   </select>
                 </label>
               </div>
-              <div className="flex justify-end">
-                <Button
-                  disabled={updateProfileMutation.isPending}
-                  isPending={updateProfileMutation.isPending}
-                  type="submit"
-                  variant="primary"
-                >
-                  <Save className="h-4 w-4" />
-                  저장
-                </Button>
-              </div>
               {formError ? (
-                <p className="text-sm text-destructive">{formError}</p>
+                <p className="mt-3 text-sm text-destructive">{formError}</p>
               ) : null}
-            </form>
+            </div>
+          </form>
 
-            <dl className="grid gap-3 md:grid-cols-2">
-              <ReadOnlyField icon={UserRound} label="이메일" value={profile.email} />
-              <ReadOnlyField
-                icon={ShieldCheck}
-                label="권한"
-                value={toRoleLabel(profile.role)}
-              />
-              <ReadOnlyField
-                icon={BadgeCheck}
-                label="계정 상태"
-                value={toStatusLabel(profile.status)}
-              />
-              <ReadOnlyField
-                icon={Timer}
-                label="기본 시간대"
-                value={toTimeZoneLabel(profile.timeZone)}
-              />
-              <ReadOnlyField
-                icon={Laptop}
-                label="마지막 로그인"
-                value={formatDateTime(profile.lastLoginAt, { includeYear: true })}
-              />
-              <ReadOnlyField
-                icon={UserRound}
-                label="가입일"
-                value={formatDateTime(profile.createdAt, { includeYear: true })}
-              />
-              <ReadOnlyField
-                icon={UserRound}
-                label="최근 수정일"
-                value={formatDateTime(profile.updatedAt, { includeYear: true })}
-              />
-            </dl>
+          <section className="grid gap-3">
+            <SettingsCardHeader
+              icon={ShieldCheck}
+              description="로그인 계정, 권한, 연결 provider와 계정 이력을 확인합니다."
+              title="계정 정보"
+            />
+            <div className="grid gap-5 rounded-lg border border-[#E2E5EC] bg-white p-5 shadow-sm">
+              <dl className="grid gap-3 md:grid-cols-2">
+                <ReadOnlyField icon={UserRound} label="이메일" value={profile.email} />
+                <ReadOnlyField
+                  icon={ShieldCheck}
+                  label="권한"
+                  value={toRoleLabel(profile.role)}
+                />
+                <ReadOnlyField
+                  icon={BadgeCheck}
+                  label="계정 상태"
+                  value={toStatusLabel(profile.status)}
+                />
+                <ReadOnlyField
+                  icon={Laptop}
+                  label="마지막 로그인"
+                  value={formatDateTime(profile.lastLoginAt, { includeYear: true })}
+                />
+                <ReadOnlyField
+                  icon={UserRound}
+                  label="가입일"
+                  value={formatDateTime(profile.createdAt, { includeYear: true })}
+                />
+                <ReadOnlyField
+                  icon={Timer}
+                  label="최근 수정일"
+                  value={formatDateTime(profile.updatedAt, { includeYear: true })}
+                />
+              </dl>
 
-            <OAuthAccountList accounts={profile.oauthAccounts} />
-          </div>
-        ) : null}
-      </div>
+              <OAuthAccountList accounts={profile.oauthAccounts} />
+            </div>
+          </section>
+        </>
+      ) : null}
     </section>
   );
 }
@@ -235,12 +255,13 @@ function DeviceSection({
   readonly onRetry: () => void;
 }) {
   return (
-    <section className="grid content-start gap-4">
-      <SectionHeader
+    <section className="grid content-start gap-3">
+      <SettingsCardHeader
+        icon={Laptop}
         description="로그인에 등록된 활성 기기만 표시합니다."
         title="등록 기기"
       />
-      <div className="rounded-lg border bg-white p-4">
+      <div className="rounded-lg border border-[#E2E5EC] bg-white p-4 shadow-sm">
         {isLoading ? (
           <SettingsSkeleton rows={4} />
         ) : error ? (
@@ -265,9 +286,9 @@ function DeviceItem({ device }: { readonly device: MyDevice }) {
   const Icon = device.slot === "mobile" ? Smartphone : Laptop;
 
   return (
-    <article className="grid gap-3 rounded-md border px-3 py-3">
+    <article className="grid gap-3 rounded-md border border-[#E2E5EC] bg-white px-3 py-3 transition hover:bg-blue-50/60">
       <div className="flex items-start gap-3">
-        <span className="grid h-9 w-9 shrink-0 place-items-center rounded-md bg-muted text-muted-foreground">
+        <span className="grid h-9 w-9 shrink-0 place-items-center rounded-md bg-[#F1F5F9] text-[#64748B]">
           <Icon className="h-4 w-4" />
         </span>
         <div className="min-w-0 flex-1">
@@ -276,7 +297,7 @@ function DeviceItem({ device }: { readonly device: MyDevice }) {
               {device.label || toDeviceSlotLabel(device.slot)}
             </h3>
             {device.isCurrentDevice ? (
-              <span className="rounded-md bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary">
+              <span className="rounded-md bg-[#EAF2FF] px-2 py-0.5 text-xs font-semibold text-[#1D4ED8]">
                 현재 기기
               </span>
             ) : null}
@@ -313,18 +334,18 @@ function OAuthAccountList({
   return (
     <section className="grid gap-3">
       <div className="flex items-center gap-2">
-        <Link2 className="h-4 w-4 text-muted-foreground" />
-        <h3 className="text-sm font-semibold">연결 provider</h3>
+        <Link2 className="h-4 w-4 text-[#64748B]" />
+        <h3 className="text-sm font-semibold text-[#111827]">연결 provider</h3>
       </div>
       {accounts.length === 0 ? (
-        <p className="rounded-md border bg-muted/40 px-3 py-3 text-sm text-muted-foreground">
+        <p className="rounded-md border border-[#E2E5EC] bg-[#FAFAF8] px-3 py-3 text-sm text-[#64748B]">
           연결된 provider가 없습니다.
         </p>
       ) : (
         <div className="grid gap-2">
           {accounts.map((account) => (
             <article
-              className="flex items-center justify-between gap-3 rounded-md border px-3 py-2"
+              className="flex items-center justify-between gap-3 rounded-md border border-[#E2E5EC] px-3 py-2 transition hover:bg-blue-50/60"
               key={account.id}
             >
               <div className="min-w-0">
@@ -351,17 +372,39 @@ function ReadOnlyField({
   label,
   value,
 }: {
-  readonly icon: typeof UserRound;
+  readonly icon: LucideIcon;
   readonly label: string;
   readonly value: string | null | undefined;
 }) {
   return (
-    <div className="rounded-md border bg-muted/30 px-3 py-3">
-      <dt className="flex items-center gap-2 text-xs font-medium text-muted-foreground">
+    <div className="rounded-md border border-[#E2E5EC] bg-[#FAFAF8] px-3 py-3">
+      <dt className="flex items-center gap-2 text-xs font-medium text-[#64748B]">
         <Icon className="h-3.5 w-3.5" />
         {label}
       </dt>
-      <dd className="mt-1 truncate text-sm font-semibold">{value || "-"}</dd>
+      <dd className="mt-1 truncate text-sm font-semibold text-[#111827]">{value || "-"}</dd>
+    </div>
+  );
+}
+
+function SettingsCardHeader({
+  description,
+  icon: Icon,
+  title,
+}: {
+  readonly description: string;
+  readonly icon: LucideIcon;
+  readonly title: string;
+}) {
+  return (
+    <div className="flex items-start gap-3">
+      <span className="grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-[#EAF2FF] text-[#1D4ED8]">
+        <Icon className="h-4 w-4" strokeWidth={1.8} />
+      </span>
+      <div className="min-w-0">
+        <h2 className="text-[15px] font-semibold text-[#111827]">{title}</h2>
+        <p className="mt-0.5 text-[12px] text-[#64748B]">{description}</p>
+      </div>
     </div>
   );
 }
@@ -426,13 +469,6 @@ function toStatusLabel(status: string) {
   };
 
   return labels[status] ?? status;
-}
-
-function toTimeZoneLabel(timeZone: string) {
-  return (
-    TIME_ZONE_OPTIONS.find((option) => option.value === timeZone)?.label ??
-    timeZone
-  );
 }
 
 function getBrowserTimeZoneFallback() {

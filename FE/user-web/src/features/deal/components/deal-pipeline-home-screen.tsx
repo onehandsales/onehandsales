@@ -1,5 +1,5 @@
 // 기능 : 딜 파이프라인 홈 화면 — split view (Desktop) / 카드 (Mobile)
-import { AlertCircle, BriefcaseBusiness, Download, Plus } from "lucide-react";
+import { AlertCircle, BriefcaseBusiness, Download, Plus, X } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { PageHeader } from "@/components/layout/page-header";
@@ -17,7 +17,6 @@ import {
 } from "@/features/deal/types/deal";
 import { Pagination } from "@/components/ui/pagination";
 import { cn } from "@/utils/cn";
-import { formatDate } from "@/utils/format";
 
 type StageTab = "ALL" | DealStatus;
 
@@ -182,9 +181,9 @@ export function DealPipelineHomeScreen({
             <div className="flex min-w-0 flex-1 flex-col gap-3 overflow-hidden">
               {/* Controls bar — 한 줄 */}
               <div className="flex shrink-0 items-center gap-2 px-0.5">
-                <div className="flex h-7 items-center gap-1.5 rounded-md border border-[#E2E5EC] bg-[#FAFAF8] px-2.5 transition focus-within:border-[#93C5FD] focus-within:bg-white">
+                <div className="flex h-8 items-center gap-1.5 rounded-md border border-[#E2E5EC] bg-[#FAFAF8] px-3 transition focus-within:border-[#93C5FD] focus-within:bg-white">
                   <input
-                    className="w-[180px] bg-transparent text-[12px] text-[#111827] outline-none placeholder:text-[#9CA3AF]"
+                    className="w-[220px] bg-transparent text-[13px] text-[#111827] outline-none placeholder:text-[#9CA3AF]"
                     onChange={(e) => onSearchChange(e.target.value)}
                     placeholder="딜명 검색"
                     value={search}
@@ -213,12 +212,12 @@ export function DealPipelineHomeScreen({
                   className="flex shrink-0 items-center border-b border-[#E6EAF0] bg-[#FAFBFC] px-6"
                   style={{ height: 44 }}
                 >
-                  <TableHeaderCell width={200}>딜명</TableHeaderCell>
-                  <TableHeaderCell width={140}>회사/거래처</TableHeaderCell>
-                  <TableHeaderCell width={100}>단계</TableHeaderCell>
-                  <TableHeaderCell width={110}>금액</TableHeaderCell>
-                  <TableHeaderCell flex>다음 행동</TableHeaderCell>
-                  <TableHeaderCell width={86}>마감일</TableHeaderCell>
+                  <TableHeaderCell width={220}>딜명</TableHeaderCell>
+                  <TableHeaderCell width={170}>회사</TableHeaderCell>
+                  <TableHeaderCell width={150}>거래처</TableHeaderCell>
+                  <TableHeaderCell width={110}>단계</TableHeaderCell>
+                  <TableHeaderCell width={130}>금액</TableHeaderCell>
+                  <div className="min-w-0 flex-1" />
                 </div>
 
                 {/* Rows */}
@@ -261,13 +260,26 @@ export function DealPipelineHomeScreen({
             {selectedDealId ? (
               <div className="flex w-[380px] shrink-0 flex-col overflow-hidden rounded-lg border border-[#E5EAF0] bg-white">
                 <div className="shrink-0 flex items-center justify-between border-b border-[#E6EAF0] px-4 py-2.5">
-                  <span className="text-[12px] font-medium text-[#6B7280]">딜 미리보기</span>
-                  <Link
-                    className="inline-flex h-7 items-center gap-1 rounded-md border border-[#E2E5EC] bg-white px-2.5 text-[12px] font-medium text-[#374151] transition hover:bg-[#F5F6F8]"
-                    to={`/deals/${selectedDealId}`}
-                  >
-                    전체 상세 열기 →
-                  </Link>
+                  <div className="flex items-center gap-2">
+                    <button
+                      aria-label="미리보기 닫기"
+                      className="inline-flex h-7 w-7 items-center justify-center rounded-md border border-[#E2E5EC] text-[#64748B] transition hover:bg-blue-50/60 hover:text-[#2563EB]"
+                      onClick={() => setSelectedDealId("")}
+                      title="닫기"
+                      type="button"
+                    >
+                      <X className="h-3.5 w-3.5" strokeWidth={2} />
+                    </button>
+                    <span className="text-[12px] font-medium text-[#6B7280]">미리보기</span>
+                  </div>
+                  <div className="flex items-center gap-1.5">
+                    <Link
+                      className="inline-flex h-7 items-center gap-1 rounded-md border border-[#E2E5EC] bg-white px-2.5 text-[12px] font-medium text-[#374151] transition hover:bg-[#F5F6F8]"
+                      to={`/deals/${selectedDealId}`}
+                    >
+                      상세
+                    </Link>
+                  </div>
                 </div>
                 <div className="flex-1 overflow-y-auto">
                   <DealDetailPanel dealId={selectedDealId} variant="panel" />
@@ -394,8 +406,6 @@ function DealListRow({
   readonly isActive: boolean;
   readonly onSelect: (id: string) => void;
 }) {
-  const dlClass = getDeadlineClass(deal.expectedEndDate);
-
   return (
     <button
       className={cn(
@@ -403,61 +413,51 @@ function DealListRow({
         isActive ? "bg-blue-50" : "bg-white"
       )}
       onClick={() => onSelect(deal.id)}
-      style={{ height: 62 }}
+      style={{ height: 66 }}
       type="button"
     >
       {/* 딜명 */}
-      <div className="flex shrink-0 flex-col gap-0.5" style={{ width: 200 }}>
-        <span className="truncate text-[13px] font-semibold text-gray-900">
+      <div className="min-w-0 shrink-0" style={{ width: 220 }}>
+        <span className="block truncate text-[13px] font-semibold text-gray-900">
           {deal.dealName}
-        </span>
-        <span className="truncate text-[11px] text-gray-400">
-          {formatDate(deal.createdAt)} 등록
         </span>
       </div>
 
-      {/* 회사/거래처 */}
-      <div className="flex shrink-0 flex-col gap-0.5" style={{ width: 140 }}>
-        <span className="truncate text-[12px] text-gray-700">
-          {deal.company.companyName}
+      {/* 회사 */}
+      <div className="min-w-0 shrink-0" style={{ width: 170 }}>
+        <span
+          className="inline-flex h-[22px] max-w-full min-w-0 items-center overflow-hidden rounded-full bg-[#F1F5F9] px-2.5 text-[11px] font-semibold text-[#475569]"
+          title={deal.company.companyName}
+        >
+          <span className="min-w-0 truncate whitespace-nowrap">{deal.company.companyName}</span>
         </span>
-        <span className="truncate text-[11px] text-gray-400">
-          {deal.contact.username} {deal.contact.contactDepartment.departmentName}
+      </div>
+
+      {/* 거래처 */}
+      <div className="min-w-0 shrink-0" style={{ width: 150 }}>
+        <span
+          className="block truncate text-[12px] font-medium text-[#2563EB]"
+          title={deal.contact.username}
+        >
+          {deal.contact.username}
         </span>
       </div>
 
       {/* 단계 */}
-      <div className="shrink-0" style={{ width: 100 }}>
+      <div className="min-w-0 shrink-0" style={{ width: 110 }}>
         <span className={cn("inline-flex h-6 items-center rounded-full px-2 text-[11px] font-semibold", getDealStatusClass(deal.dealStatus))}>
           {deal.dealStatusLabel}
         </span>
       </div>
 
       {/* 금액 */}
-      <div className="shrink-0" style={{ width: 110 }}>
-        <span className="text-[12px] font-medium text-gray-900">
+      <div className="min-w-0 shrink-0" style={{ width: 130 }}>
+        <span className="block truncate text-[12px] font-semibold text-gray-900">
           {deal.dealCost.toLocaleString("ko-KR")}원
         </span>
       </div>
 
-      {/* 다음 행동 */}
-      <div className="min-w-0 flex-1">
-        <p className="truncate text-[12px] text-gray-700">
-          {deal.latestFollowingAction?.followingAction ?? "다음 행동 없음"}
-        </p>
-        {deal.latestFollowingAction ? (
-          <p className={cn("text-[11px]", deal.latestFollowingAction.checkComplete ? "text-emerald-600" : "text-gray-400")}>
-            {deal.latestFollowingAction.checkComplete ? "완료" : "진행 중"}
-          </p>
-        ) : null}
-      </div>
-
-      {/* 마감일 */}
-      <div className="shrink-0" style={{ width: 86 }}>
-        <span className={cn("text-[12px] font-medium", dlClass)}>
-          {deal.expectedEndDate ? formatDate(deal.expectedEndDate, { year: "2-digit" }) : "-"}
-        </span>
-      </div>
+      <div className="min-w-0 flex-1" />
     </button>
   );
 }
@@ -484,23 +484,14 @@ function MobileDealCard({ deal }: { readonly deal: DealListItem }) {
 
       <div className="mt-3 grid grid-cols-2 gap-2 text-sm">
         <div>
-          <p className="text-[11px] text-muted-foreground">금액</p>
-          <p className="font-semibold">{deal.dealCost.toLocaleString("ko-KR")}원</p>
+          <p className="text-[11px] text-muted-foreground">거래처</p>
+          <p className="truncate font-semibold">{deal.contact.username}</p>
         </div>
         <div>
-          <p className="text-[11px] text-muted-foreground">마감일</p>
-          <p className="font-semibold">{deal.expectedEndDate ? formatDate(deal.expectedEndDate) : "-"}</p>
+          <p className="text-[11px] text-muted-foreground">금액</p>
+          <p className="truncate font-semibold">{deal.dealCost.toLocaleString("ko-KR")}원</p>
         </div>
       </div>
-
-      {deal.latestFollowingAction ? (
-        <div className="mt-3 rounded-lg bg-[#F9FAFB] px-3 py-2">
-          <p className="text-[11px] text-muted-foreground">다음 행동</p>
-          <p className="mt-0.5 truncate text-[13px]">
-            {deal.latestFollowingAction.followingAction}
-          </p>
-        </div>
-      ) : null}
     </Link>
   );
 }
@@ -516,14 +507,6 @@ function getDealStatusClass(status: DealStatus): string {
     case "WON": return "bg-emerald-100 text-emerald-700";
     case "LOST": return "bg-rose-100 text-rose-700";
   }
-}
-
-function getDeadlineClass(date: string): string {
-  if (!date) return "text-gray-400";
-  const diff = (new Date(date).getTime() - Date.now()) / 86400000;
-  if (diff < 0) return "text-red-600 font-semibold";
-  if (diff < 7) return "text-red-600";
-  return "text-gray-600";
 }
 
 function TableHeaderCell({
@@ -582,7 +565,7 @@ function DesktopLoadingState() {
         </div>
         <div className="flex min-h-0 flex-1 flex-col gap-0 overflow-hidden rounded-lg border border-[#E5EAF0] bg-white">
           {Array.from({ length: 6 }).map((_, i) => (
-            <div className="h-[62px] animate-pulse border-b border-[#E8EDF3] bg-gray-50" key={i} />
+            <div className="h-[66px] animate-pulse border-b border-[#E8EDF3] bg-gray-50" key={i} />
           ))}
         </div>
       </div>

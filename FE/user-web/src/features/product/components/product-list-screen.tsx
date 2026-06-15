@@ -116,10 +116,10 @@ export function ProductListScreen({
 
       {/* 검색 + 필터 툴바 */}
       <div className="flex h-10 shrink-0 items-center gap-2 px-5">
-        <form className="flex h-7 items-center gap-1.5 rounded-md border border-[#E2E5EC] bg-[#FAFAF8] px-2.5 transition focus-within:border-[#93C5FD] focus-within:bg-white" onSubmit={onSearchSubmit}>
+        <form className="flex h-8 items-center gap-1.5 rounded-md border border-[#E2E5EC] bg-[#FAFAF8] px-3 transition focus-within:border-[#93C5FD] focus-within:bg-white" onSubmit={onSearchSubmit}>
           <Search className="h-3 w-3 shrink-0 text-[#9CA3AF]" />
           <input
-            className="w-[150px] bg-transparent text-[12px] text-[#111827] outline-none placeholder:text-[#9CA3AF]"
+            className="w-[220px] bg-transparent text-[13px] text-[#111827] outline-none placeholder:text-[#9CA3AF]"
             onChange={(event) => setSearchText(event.target.value)}
             placeholder="제품 검색"
             value={searchText}
@@ -139,7 +139,7 @@ export function ProductListScreen({
         />
         <select
           className={cn(
-            "h-7 appearance-none rounded-md border px-2.5 text-[12px] outline-none transition",
+            "h-8 min-w-[132px] appearance-none rounded-md border px-3 text-[13px] outline-none transition",
             categoryFilter
               ? "border-[#BFDBFE] bg-[#EFF6FF] text-[#1D4ED8]"
               : "border-[#E2E5EC] bg-transparent text-[#6B7280] hover:bg-[#FAFAF8]"
@@ -154,7 +154,7 @@ export function ProductListScreen({
         </select>
         <select
           className={cn(
-            "h-7 appearance-none rounded-md border px-2.5 text-[12px] outline-none transition",
+            "h-8 min-w-[132px] appearance-none rounded-md border px-3 text-[13px] outline-none transition",
             statusFilter
               ? "border-[#BFDBFE] bg-[#EFF6FF] text-[#1D4ED8]"
               : "border-[#E2E5EC] bg-transparent text-[#6B7280] hover:bg-[#FAFAF8]"
@@ -169,7 +169,7 @@ export function ProductListScreen({
         </select>
         <select
           className={cn(
-            "h-7 appearance-none rounded-md border px-2.5 text-[12px] outline-none transition",
+            "h-8 min-w-[118px] appearance-none rounded-md border px-3 text-[13px] outline-none transition",
             sort !== "createdAtDesc"
               ? "border-[#BFDBFE] bg-[#EFF6FF] text-[#1D4ED8]"
               : "border-[#E2E5EC] bg-transparent text-[#6B7280] hover:bg-[#FAFAF8]"
@@ -186,7 +186,7 @@ export function ProductListScreen({
         </span>
       </div>
 
-      <div className="px-5 py-3">
+      <div className="px-5 pb-3 pt-1">
         {notice ? (
           <Toast message={notice} onClose={() => setNotice(null)} variant="success" />
         ) : null}
@@ -199,12 +199,10 @@ export function ProductListScreen({
 
         <div className="flex w-full flex-col overflow-hidden rounded-lg border border-[#E2E5EC] bg-white shadow-sm">
           <div className="flex h-11 shrink-0 items-center border-b border-[#E6EAF0] bg-[#FAFBFC] px-6">
-            <ProductTableHeaderCell width={280}>제품명</ProductTableHeaderCell>
-            <ProductTableHeaderCell width={150}>카테고리</ProductTableHeaderCell>
-            <ProductTableHeaderCell width={80}>연결</ProductTableHeaderCell>
-            <ProductTableHeaderCell width={100}>상태</ProductTableHeaderCell>
+            <ProductTableHeaderCell width={320}>제품명</ProductTableHeaderCell>
+            <ProductTableHeaderCell width={180}>카테고리</ProductTableHeaderCell>
+            <ProductTableHeaderCell width={130}>상태</ProductTableHeaderCell>
             <div className="min-w-0 flex-1" />
-            <ProductTableHeaderCell width={86}>등록일</ProductTableHeaderCell>
           </div>
 
           {productsQuery.isLoading ? (
@@ -253,31 +251,25 @@ export function ProductListScreen({
 function ProductRow({ product }: { readonly product: Product }) {
   return (
     <Link
-      className="flex h-[62px] items-center border-b border-[#E8EDF3] px-6 hover:bg-[#F9FAFB] last:border-b-0"
+      className="flex h-[66px] items-center border-b border-[#E8EDF3] px-6 transition-colors hover:bg-blue-50/60 last:border-b-0"
       to={`/products/${product.id}`}
     >
-      <div className="w-[280px] shrink-0 min-w-0">
+      <div className="w-[320px] shrink-0 min-w-0">
         <span className="block truncate text-[13px] font-semibold text-[#111827]">
           {product.productName}
         </span>
       </div>
-      <div className="w-[150px] min-w-0 shrink-0">
-        <Badge tone={badgeToneFromCategory(product.productCategory.categoryName)}>
+      <div className="w-[180px] min-w-0 shrink-0">
+        <Badge tone="indigo">
           {product.productCategory.categoryName}
         </Badge>
       </div>
-      <div className="w-[80px] shrink-0">
-        <Badge tone="blue">{`${product.dealCount.toLocaleString("ko-KR")}건`}</Badge>
-      </div>
-      <div className="w-[100px] min-w-0 shrink-0">
+      <div className="w-[130px] min-w-0 shrink-0">
         <Badge tone={statusToneFromName(product.productStatus.statusName)}>
           {product.productStatus.statusName}
         </Badge>
       </div>
       <div className="min-w-0 flex-1" />
-      <div className="w-[86px] shrink-0">
-        <span className="text-[12px] text-[#374151]">{formatCompactDate(product.createdAt)}</span>
-      </div>
     </Link>
   );
 }
@@ -306,13 +298,13 @@ function Badge({
   tone,
 }: {
   readonly children: string;
-  readonly tone: "blue" | "green" | "amber" | "slate";
+  readonly tone: "indigo" | "green" | "rose" | "slate";
 }) {
   const styles: Record<typeof tone, string> = {
-    blue: "bg-[#DBEAFE] text-[#2568D8]",
-    green: "bg-[#CCFBF1] text-[#15803D]",
-    amber: "bg-[#FEF3C7] text-[#B45309]",
-    slate: "bg-[#E2E8F0] text-[#475569]",
+    indigo: "bg-[#EEF2FF] text-[#4338CA]",
+    green: "bg-[#ECFDF5] text-[#047857]",
+    rose: "bg-[#FEF2F2] text-[#B91C1C]",
+    slate: "bg-[#F1F5F9] text-[#475569]",
   };
 
   return (
@@ -340,7 +332,7 @@ function FilterChip({
   return (
     <button
       className={cn(
-        "inline-flex h-[30px] items-center rounded-[6px] px-3 text-[12px] transition",
+        "inline-flex h-8 items-center rounded-[6px] px-3 text-[13px] transition",
         active
           ? "border border-[#C7D7FE] bg-[#EAF2FF] font-bold text-[#1D4ED8]"
           : "border border-[#E6EAF0] bg-white font-medium text-[#475569] hover:bg-[#F9FAFB]"
@@ -390,7 +382,7 @@ function ProductListSkeleton() {
     <div className="overflow-hidden">
       {Array.from({ length: 6 }, (_, index) => (
         <div
-          className="h-[62px] animate-pulse border-b border-[#E8EDF3] bg-[#FAFBFC]"
+          className="h-[66px] animate-pulse border-b border-[#E8EDF3] bg-[#FAFBFC]"
           key={index}
         />
       ))}
@@ -398,33 +390,12 @@ function ProductListSkeleton() {
   );
 }
 
-function badgeToneFromCategory(categoryName: string) {
-  if (categoryName.includes("하드") || categoryName.includes("장비")) {
-    return "amber";
-  }
-  if (categoryName.includes("서비스") || categoryName.includes("컨설")) {
-    return "green";
-  }
-  return "blue";
-}
-
 function statusToneFromName(statusName: string) {
   if (statusName.includes("중단") || statusName.includes("보류")) {
-    return "slate";
+    return "rose";
   }
   if (statusName.includes("판매") || statusName.includes("활성")) {
     return "green";
   }
-  return "blue";
-}
-
-function formatCompactDate(value: string) {
-  return new Intl.DateTimeFormat("ko-KR", {
-    day: "2-digit",
-    month: "2-digit",
-    year: "2-digit",
-  })
-    .format(new Date(value))
-    .replace(/\s+/g, "")
-    .replace(/\.$/, "");
+  return "slate";
 }
