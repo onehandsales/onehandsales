@@ -154,7 +154,7 @@ export function MeetingNoteListScreen() {
           onChange={(e) => updateCompanyId(e.target.value)}
           value={companyId}
         >
-          <option value="">회사 전체</option>
+          <option value="">회사</option>
           {(companiesQuery.data?.items ?? []).map((company) => (
             <option key={company.id} value={company.id}>
               {company.companyName}
@@ -172,7 +172,7 @@ export function MeetingNoteListScreen() {
           onChange={(e) => updateContactId(e.target.value)}
           value={contactId}
         >
-          <option value="">담당자 전체</option>
+          <option value="">담당자</option>
           {(contactsQuery.data?.items ?? []).map((contact) => (
             <option key={contact.id} value={contact.id}>
               {contact.contactUsername}
@@ -190,8 +190,8 @@ export function MeetingNoteListScreen() {
           onChange={(e) => updateSort(e.target.value as MeetingNoteSort)}
           value={sort}
         >
-          <option value="createdAtDesc">등록 최신순</option>
-          <option value="meetingAtDesc">미팅 최신순</option>
+          <option value="createdAtDesc">최신순</option>
+          <option value="meetingAtDesc">미팅일순</option>
         </select>
 
         <form

@@ -183,7 +183,7 @@ export function ProductListScreen({
           <input
             className="w-[220px] bg-transparent text-[13px] text-[#111827] outline-none placeholder:text-[#9CA3AF]"
             onChange={(event) => setSearchText(event.target.value)}
-            placeholder="제품 검색"
+            placeholder="제품명 검색"
             value={searchText}
           />
         </form>

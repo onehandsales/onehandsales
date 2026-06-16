@@ -299,7 +299,7 @@ export function ContactListScreen() {
             {/* 테이블 헤더 (데스크톱) */}
             <div className="hidden h-11 shrink-0 items-center border-b border-[#E2E5EC] bg-[#F9FAFB] px-6 md:flex">
               <div className="w-[130px] shrink-0 text-[12px] font-semibold text-[#64748B]">
-                이름
+                담당자명
               </div>
               <div className="w-[150px] shrink-0 text-[12px] font-semibold text-[#64748B]">
                 회사
