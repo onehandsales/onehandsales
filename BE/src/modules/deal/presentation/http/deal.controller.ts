@@ -23,6 +23,7 @@ import {
   CreateDealDto,
   CreateDealFollowingActionLogDto,
   CreateDealMemoLogDto,
+  DealStageCountsQueryDto,
   ExportDealsQueryDto,
   ListDealsQueryDto,
   UpdateDealDto,
@@ -39,9 +40,12 @@ export class DealController {
 
   // API : 딜, 단계별 개수 조회
   @Get("stage-counts")
-  countDealsByStatus(@CurrentUser() currentUser: CurrentUserContext) {
+  countDealsByStatus(
+    @CurrentUser() currentUser: CurrentUserContext,
+    @Query() query: DealStageCountsQueryDto
+  ) {
     // 1. 현재 사용자의 딜 단계별 개수 조회를 application 계층으로 위임한다.
-    return this.dealApplicationService.countDealsByStatus(currentUser);
+    return this.dealApplicationService.countDealsByStatus(currentUser, query);
   }
 
   // API : 딜, 딜 목록 조회

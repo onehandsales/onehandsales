@@ -6,6 +6,10 @@ import { PageHeader } from "@/components/layout/page-header";
 import { useAuthSession } from "@/features/auth";
 import { DealCreateDialog } from "@/features/deal/components/deal-create-dialog";
 import { DealDetailPanel } from "@/features/deal/components/deal-detail-panel";
+import {
+  useDealCompanyOptions,
+  useDealContactOptions,
+} from "@/features/deal/hooks/use-deal-entity-options";
 import { useDealList, useDealStageCounts } from "@/features/deal/hooks/use-deal-list";
 import { exportDealsXlsx } from "@/features/deal/api/deal-api";
 import {
@@ -44,16 +48,30 @@ export function DealPipelineHomeScreen({
   const { user } = useAuthSession();
   const [activeTab, setActiveTab] = useState<StageTab>("ALL");
   const [search, setSearch] = useState("");
+  const [companyId, setCompanyId] = useState("");
+  const [contactId, setContactId] = useState("");
   const [sort, setSort] = useState<DealSort>("createdAtDesc");
   const [page, setPage] = useState(1);
   const [selectedDealId, setSelectedDealId] = useState("");
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
 
-  const stageCountsQuery = useDealStageCounts();
+  const searchQuery = search.trim() || undefined;
+  const companyFilter = companyId || undefined;
+  const contactFilter = contactId || undefined;
+
+  const companyOptionsQuery = useDealCompanyOptions();
+  const contactOptionsQuery = useDealContactOptions();
+  const stageCountsQuery = useDealStageCounts({
+    search: searchQuery,
+    companyId: companyFilter,
+    contactId: contactFilter,
+  });
   const dealsQuery = useDealList({
     page,
-    search: search.trim() || undefined,
+    search: searchQuery,
+    companyId: companyFilter,
+    contactId: contactFilter,
     dealStatus: activeTab === "ALL" ? undefined : activeTab,
     sort,
   });
@@ -62,7 +80,22 @@ export function DealPipelineHomeScreen({
     () => dealsQuery.data?.items ?? [],
     [dealsQuery.data?.items]
   );
+  const filteredContactOptions = useMemo(
+    () => {
+      const contactOptions = contactOptionsQuery.data ?? [];
+      return companyId
+        ? contactOptions.filter((contact) => contact.companyId === companyId)
+        : contactOptions;
+    },
+    [companyId, contactOptionsQuery.data]
+  );
   const displayTimeZone = user?.timeZone ?? getBrowserTimeZoneFallback();
+  const hasFilter =
+    activeTab !== "ALL" ||
+    search.trim().length > 0 ||
+    companyId.length > 0 ||
+    contactId.length > 0 ||
+    sort !== "createdAtDesc";
 
   // 기능 : 사용자가 클릭한 딜이 현재 목록에서 사라진 경우에만 상세 선택을 해제합니다.
   useEffect(() => {
@@ -87,6 +120,26 @@ export function DealPipelineHomeScreen({
     setPage(1);
   };
 
+  const clearFilters = () => {
+    setActiveTab("ALL");
+    setSearch("");
+    setCompanyId("");
+    setContactId("");
+    setSort("createdAtDesc");
+    setPage(1);
+  };
+
+  const onCompanyChange = (value: string) => {
+    setCompanyId(value);
+    setContactId("");
+    setPage(1);
+  };
+
+  const onContactChange = (value: string) => {
+    setContactId(value);
+    setPage(1);
+  };
+
   const onSortChange = (value: DealSort) => {
     setSort(value);
     setPage(1);
@@ -96,7 +149,9 @@ export function DealPipelineHomeScreen({
     setIsExporting(true);
     try {
       const { blob, fileName } = await exportDealsXlsx({
-        search: search.trim() || undefined,
+        search: searchQuery,
+        companyId: companyFilter,
+        contactId: contactFilter,
         dealStatus: activeTab === "ALL" ? undefined : activeTab,
         sort,
       });
@@ -195,6 +250,54 @@ export function DealPipelineHomeScreen({
                     value={search}
                   />
                 </div>
+                <button
+                  className={cn(
+                    "inline-flex h-8 items-center rounded-[6px] border px-3 text-[13px] transition",
+                    !hasFilter
+                      ? "border-[#C7D7FE] bg-[#EAF2FF] font-bold text-[#1D4ED8]"
+                      : "border-[#E6EAF0] bg-white font-medium text-[#475569] hover:bg-[#F9FAFB]"
+                  )}
+                  onClick={clearFilters}
+                  type="button"
+                >
+                  전체
+                </button>
+                <select
+                  aria-label="회사 필터"
+                  className={cn(
+                    "h-8 min-w-[140px] appearance-none rounded-md border px-3 text-[13px] outline-none transition",
+                    companyId
+                      ? "border-[#BFDBFE] bg-[#EFF6FF] text-[#1D4ED8]"
+                      : "border-[#E2E5EC] bg-transparent text-[#6B7280] hover:bg-[#FAFAF8]"
+                  )}
+                  onChange={(e) => onCompanyChange(e.target.value)}
+                  value={companyId}
+                >
+                  <option value="">회사</option>
+                  {(companyOptionsQuery.data ?? []).map((company) => (
+                    <option key={company.id} value={company.id}>
+                      {company.companyName}
+                    </option>
+                  ))}
+                </select>
+                <select
+                  aria-label="담당자 필터"
+                  className={cn(
+                    "h-8 min-w-[140px] appearance-none rounded-md border px-3 text-[13px] outline-none transition",
+                    contactId
+                      ? "border-[#BFDBFE] bg-[#EFF6FF] text-[#1D4ED8]"
+                      : "border-[#E2E5EC] bg-transparent text-[#6B7280] hover:bg-[#FAFAF8]"
+                  )}
+                  onChange={(e) => onContactChange(e.target.value)}
+                  value={contactId}
+                >
+                  <option value="">담당자</option>
+                  {filteredContactOptions.map((contact) => (
+                    <option key={contact.id} value={contact.id}>
+                      {contact.label}
+                    </option>
+                  ))}
+                </select>
                 <select
                   aria-label="정렬 조건"
                   className={cn(
@@ -342,6 +445,54 @@ export function DealPipelineHomeScreen({
             placeholder="딜명 검색"
             value={search}
           />
+          <button
+            className={cn(
+              "inline-flex h-8 w-full items-center justify-center rounded-[6px] border px-3 text-[13px] transition",
+              !hasFilter
+                ? "border-[#C7D7FE] bg-[#EAF2FF] font-bold text-[#1D4ED8]"
+                : "border-[#E6EAF0] bg-white font-medium text-[#475569] hover:bg-[#F9FAFB]"
+            )}
+            onClick={clearFilters}
+            type="button"
+          >
+            전체
+          </button>
+          <select
+            aria-label="회사 필터"
+            className={cn(
+              "h-8 w-full appearance-none rounded-md border px-2 text-[12px] outline-none transition",
+              companyId
+                ? "border-[#BFDBFE] bg-[#EFF6FF] text-[#1D4ED8]"
+                : "border-[#E6EAF0] bg-white text-gray-500 focus:border-primary"
+            )}
+            onChange={(e) => onCompanyChange(e.target.value)}
+            value={companyId}
+          >
+            <option value="">회사</option>
+            {(companyOptionsQuery.data ?? []).map((company) => (
+              <option key={company.id} value={company.id}>
+                {company.companyName}
+              </option>
+            ))}
+          </select>
+          <select
+            aria-label="담당자 필터"
+            className={cn(
+              "h-8 w-full appearance-none rounded-md border px-2 text-[12px] outline-none transition",
+              contactId
+                ? "border-[#BFDBFE] bg-[#EFF6FF] text-[#1D4ED8]"
+                : "border-[#E6EAF0] bg-white text-gray-500 focus:border-primary"
+            )}
+            onChange={(e) => onContactChange(e.target.value)}
+            value={contactId}
+          >
+            <option value="">담당자</option>
+            {filteredContactOptions.map((contact) => (
+              <option key={contact.id} value={contact.id}>
+                {contact.label}
+              </option>
+            ))}
+          </select>
           <select
             aria-label="정렬 조건"
             className={cn(

@@ -41,6 +41,7 @@ export type DealContactDepartment = {
 export type DealContact = {
   readonly id: string;
   readonly username: string;
+  readonly companyId: string;
   readonly contactDepartment: DealContactDepartment;
 };
 
@@ -110,8 +111,16 @@ export type DealListResponse = {
 export type DealListParams = {
   readonly page?: number;
   readonly search?: string;
+  readonly companyId?: string;
+  readonly contactId?: string;
   readonly dealStatus?: DealStatus;
   readonly sort?: DealSort;
+};
+
+export type DealStageCountParams = {
+  readonly search?: string;
+  readonly companyId?: string;
+  readonly contactId?: string;
 };
 
 export type DealSort =
@@ -153,6 +162,7 @@ export type DealCompanyOption = {
 export type DealContactOption = {
   readonly id: string;
   readonly username: string;
+  readonly companyId: string;
   readonly contactDepartment: DealContactDepartment;
   readonly label: string;
 };
@@ -228,6 +238,8 @@ export type UpdateMemoLogInput = {
 // 기능 : export query 파라미터
 export type DealExportParams = {
   readonly search?: string;
+  readonly companyId?: string;
+  readonly contactId?: string;
   readonly dealStatus?: DealStatus;
   readonly sort?: DealSort;
 };

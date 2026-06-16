@@ -1,5 +1,6 @@
 import {
   DealListSort,
+  type CountDealsByStatusInput,
   type CreateDealFollowingActionLogInput,
   type CreateDealInput,
   type CreateDealMemoLogInput,
@@ -100,10 +101,12 @@ class FakeDealRepository implements DealRepository {
   }
 
   // 기능 : fake 딜 상태별 개수를 반환합니다.
-  async countDealsByStatus(): Promise<ReadonlyMap<DealStatusCode, number>> {
+  async countDealsByStatus(
+    input: CountDealsByStatusInput
+  ): Promise<ReadonlyMap<DealStatusCode, number>> {
     const result = new Map<DealStatusCode, number>();
 
-    for (const deal of this.deals) {
+    for (const deal of this.filterDeals(input)) {
       result.set(deal.dealStatus, (result.get(deal.dealStatus) ?? 0) + 1);
     }
 
@@ -357,13 +360,30 @@ class FakeDealRepository implements DealRepository {
   }
 
   // 기능 : fake 딜을 조회 조건으로 필터링하고 정렬합니다.
-  private filterDeals(input: ExportDealsInput): StoredDeal[] {
+  private filterDeals(
+    input: {
+      readonly userId: string;
+      readonly search?: string;
+      readonly companyId?: string;
+      readonly contactId?: string;
+      readonly dealStatus?: DealStatusCode;
+      readonly sort?: DealListSort;
+    }
+  ): StoredDeal[] {
     const filtered = this.deals.filter((deal) => {
       if (deal.userId !== input.userId) {
         return false;
       }
 
       if (input.search && !deal.dealName.includes(input.search)) {
+        return false;
+      }
+
+      if (input.companyId && deal.companyId !== input.companyId) {
+        return false;
+      }
+
+      if (input.contactId && deal.contactId !== input.contactId) {
         return false;
       }
 

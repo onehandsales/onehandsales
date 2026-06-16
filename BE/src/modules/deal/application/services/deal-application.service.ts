@@ -48,13 +48,24 @@ const XLSX_DATE_NUM_FORMAT = "yyyy-mm-dd hh:mm:ss";
 export interface DealListQueryInput {
   readonly page?: number;
   readonly search?: string;
+  readonly companyId?: string;
+  readonly contactId?: string;
   readonly dealStatus?: DealStatusCode;
   readonly sort?: DealListSort;
+}
+
+// 역할 : DealStageCountQueryInput 단계별 개수 query 조건을 정의합니다.
+export interface DealStageCountQueryInput {
+  readonly search?: string;
+  readonly companyId?: string;
+  readonly contactId?: string;
 }
 
 // 역할 : DealExportQueryInput 딜 export query 조건을 정의합니다.
 export interface DealExportQueryInput {
   readonly search?: string;
+  readonly companyId?: string;
+  readonly contactId?: string;
   readonly dealStatus?: DealStatusCode;
   readonly sort?: DealListSort;
 }
@@ -128,6 +139,7 @@ export interface DealDetailResponse extends DealListItemResponse {
 export interface DealContactResponse {
   readonly id: string;
   readonly username: string;
+  readonly companyId: string;
   readonly contactDepartment: {
     readonly id: string;
     readonly departmentName: string;
@@ -208,11 +220,23 @@ export class DealApplicationService {
 
   // 기능 : 현재 사용자의 딜 상태별 개수를 조회합니다.
   async countDealsByStatus(
-    currentUser: CurrentUserContext
+    currentUser: CurrentUserContext,
+    query: DealStageCountQueryInput = {}
   ): Promise<DealStageCountResponse> {
-    const counts = await this.dealRepository.countDealsByStatus(currentUser.id);
+    const search = this.normalizeOptionalText(query.search);
+    const counts = await this.dealRepository.countDealsByStatus({
+      userId: currentUser.id,
+      ...(search ? { search } : {}),
+      ...(query.companyId ? { companyId: query.companyId } : {}),
+      ...(query.contactId ? { contactId: query.contactId } : {}),
+    });
 
-    this.logEvent("deal.stage_counts_viewed", { userId: currentUser.id });
+    this.logEvent("deal.stage_counts_viewed", {
+      userId: currentUser.id,
+      hasSearch: Boolean(search),
+      hasCompanyId: Boolean(query.companyId),
+      hasContactId: Boolean(query.contactId),
+    });
 
     return {
       items: DEAL_STATUS_CODES.map((dealStatus) => ({
@@ -238,6 +262,8 @@ export class DealApplicationService {
       pageSize: DEAL_PAGE_SIZE,
       sort,
       ...(search ? { search } : {}),
+      ...(query.companyId ? { companyId: query.companyId } : {}),
+      ...(query.contactId ? { contactId: query.contactId } : {}),
       ...(query.dealStatus ? { dealStatus: query.dealStatus } : {}),
     });
 
@@ -245,6 +271,8 @@ export class DealApplicationService {
       userId: currentUser.id,
       sort,
       hasSearch: Boolean(search),
+      hasCompanyId: Boolean(query.companyId),
+      hasContactId: Boolean(query.contactId),
       hasDealStatus: Boolean(query.dealStatus),
     });
 
@@ -269,6 +297,8 @@ export class DealApplicationService {
       userId: currentUser.id,
       sort,
       ...(search ? { search } : {}),
+      ...(query.companyId ? { companyId: query.companyId } : {}),
+      ...(query.contactId ? { contactId: query.contactId } : {}),
       ...(query.dealStatus ? { dealStatus: query.dealStatus } : {}),
     });
 
@@ -279,6 +309,8 @@ export class DealApplicationService {
       rowCount: deals.length,
       sort,
       hasSearch: Boolean(search),
+      hasCompanyId: Boolean(query.companyId),
+      hasContactId: Boolean(query.contactId),
       hasDealStatus: Boolean(query.dealStatus),
     });
 
@@ -889,6 +921,7 @@ export class DealApplicationService {
     return {
       id: contact.id,
       username: contact.username,
+      companyId: contact.companyId,
       contactDepartment: contact.contactDepartment,
     };
   }

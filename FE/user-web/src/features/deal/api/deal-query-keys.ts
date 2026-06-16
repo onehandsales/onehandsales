@@ -1,11 +1,23 @@
 // 기능 : Deal 도메인 TanStack Query key 팩토리
-import type { DealListParams } from "@/features/deal/types/deal";
+import type {
+  DealListParams,
+  DealStageCountParams,
+} from "@/features/deal/types/deal";
 
 export const dealQueryKeys = {
   all: ["deal"] as const,
 
   // 단계별 개수
-  stageCounts: () => [...dealQueryKeys.all, "stage-counts"] as const,
+  stageCounts: (params: DealStageCountParams = {}) =>
+    [
+      ...dealQueryKeys.all,
+      "stage-counts",
+      {
+        search: params.search ?? "",
+        companyId: params.companyId ?? "",
+        contactId: params.contactId ?? "",
+      },
+    ] as const,
 
   // 목록
   lists: () => [...dealQueryKeys.all, "list"] as const,
@@ -15,6 +27,8 @@ export const dealQueryKeys = {
       {
         page: params.page ?? 1,
         search: params.search ?? "",
+        companyId: params.companyId ?? "",
+        contactId: params.contactId ?? "",
         dealStatus: params.dealStatus ?? "",
         sort: params.sort ?? "createdAtDesc",
       },

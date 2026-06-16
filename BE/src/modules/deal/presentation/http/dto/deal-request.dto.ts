@@ -17,6 +17,20 @@ import { DealStatusCode } from "@/modules/deal/domain/deal-status";
 const DATE_ONLY_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
 
 // 역할 : ListDealsQueryDto HTTP 목록 query 요청 값을 검증하기 위한 DTO입니다.
+export class DealStageCountsQueryDto {
+  @IsOptional()
+  @IsString()
+  search?: string;
+
+  @IsOptional()
+  @IsUUID()
+  companyId?: string;
+
+  @IsOptional()
+  @IsUUID()
+  contactId?: string;
+}
+
 export class ListDealsQueryDto {
   @IsOptional()
   @Type(() => Number)
@@ -27,6 +41,14 @@ export class ListDealsQueryDto {
   @IsOptional()
   @IsString()
   search?: string;
+
+  @IsOptional()
+  @IsUUID()
+  companyId?: string;
+
+  @IsOptional()
+  @IsUUID()
+  contactId?: string;
 
   @IsOptional()
   @IsEnum(DealStatusCode)
@@ -42,6 +64,14 @@ export class ExportDealsQueryDto {
   @IsOptional()
   @IsString()
   search?: string;
+
+  @IsOptional()
+  @IsUUID()
+  companyId?: string;
+
+  @IsOptional()
+  @IsUUID()
+  contactId?: string;
 
   @IsOptional()
   @IsEnum(DealStatusCode)

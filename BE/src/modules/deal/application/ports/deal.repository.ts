@@ -84,14 +84,26 @@ export interface ListDealsInput {
   readonly page: number;
   readonly pageSize: number;
   readonly search?: string;
+  readonly companyId?: string;
+  readonly contactId?: string;
   readonly dealStatus?: DealStatusCode;
   readonly sort: DealListSort;
+}
+
+// 역할 : CountDealsByStatusInput 데이터가 계층 사이에서 전달되는 구조를 정의합니다.
+export interface CountDealsByStatusInput {
+  readonly userId: string;
+  readonly search?: string;
+  readonly companyId?: string;
+  readonly contactId?: string;
 }
 
 // 역할 : ExportDealsInput 데이터가 계층 사이에서 전달되는 구조를 정의합니다.
 export interface ExportDealsInput {
   readonly userId: string;
   readonly search?: string;
+  readonly companyId?: string;
+  readonly contactId?: string;
   readonly dealStatus?: DealStatusCode;
   readonly sort: DealListSort;
 }
@@ -162,7 +174,9 @@ export interface DealRepository {
   // 기능 : 딜 저장소 작업을 트랜잭션 경계 안에서 실행합니다.
   runInTransaction<T>(work: (repository: DealRepository) => Promise<T>): Promise<T>;
   // 기능 : 현재 사용자의 딜 단계별 개수를 조회합니다.
-  countDealsByStatus(userId: string): Promise<ReadonlyMap<DealStatusCode, number>>;
+  countDealsByStatus(
+    input: CountDealsByStatusInput
+  ): Promise<ReadonlyMap<DealStatusCode, number>>;
   // 기능 : 현재 사용자의 딜 목록과 전체 개수를 조회합니다.
   listDeals(input: ListDealsInput): Promise<DealPageRecord>;
   // 기능 : 현재 사용자의 딜 export 대상 전체 목록을 조회합니다.

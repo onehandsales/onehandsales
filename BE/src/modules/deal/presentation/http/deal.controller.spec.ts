@@ -137,7 +137,7 @@ describe("DealController", () => {
     await request(app.getHttpServer()).get("/api/deals/stage-counts").expect(200);
     await request(app.getHttpServer())
       .get(
-        "/api/deals?page=2&search=A&dealStatus=INITIAL_CONTACT&sort=dealCostDesc"
+        `/api/deals?page=2&search=A&companyId=${COMPANY_ID}&contactId=${CONTACT_ID}&dealStatus=INITIAL_CONTACT&sort=dealCostDesc`
       )
       .expect(200);
     await request(app.getHttpServer()).get("/api/deals/company-options").expect(200);
@@ -145,12 +145,14 @@ describe("DealController", () => {
     await request(app.getHttpServer()).get("/api/deals/product-options").expect(200);
     await request(app.getHttpServer()).get("/api/deals/export/xlsx").expect(200);
 
-    expect(service.countDealsByStatus).toHaveBeenCalledWith(CURRENT_USER);
+    expect(service.countDealsByStatus).toHaveBeenCalledWith(CURRENT_USER, {});
     expect(service.listDeals).toHaveBeenCalledWith(
       CURRENT_USER,
       expect.objectContaining({
         page: 2,
         search: "A",
+        companyId: COMPANY_ID,
+        contactId: CONTACT_ID,
         dealStatus: DealStatusCode.INITIAL_CONTACT,
         sort: DealListSort.DEAL_COST_DESC,
       })

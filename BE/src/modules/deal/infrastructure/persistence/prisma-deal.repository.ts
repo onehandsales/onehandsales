@@ -1,6 +1,7 @@
 import { Prisma } from "@prisma/client";
 import {
   DealListSort,
+  type CountDealsByStatusInput,
   type CreateDealProductsInput,
   type CreateDealFollowingActionLogInput,
   type CreateDealInput,
@@ -99,11 +100,11 @@ export class PrismaDealRepository implements DealRepository {
 
   // 기능 : 현재 사용자의 딜 단계별 개수를 조회합니다.
   async countDealsByStatus(
-    userId: string
+    input: CountDealsByStatusInput
   ): Promise<ReadonlyMap<DealStatusCode, number>> {
     const counts = await this.client.deal.groupBy({
       by: ["dealStatus"],
-      where: { userId },
+      where: this.createDealWhere(input),
       _count: {
         _all: true,
       },
@@ -478,7 +479,12 @@ export class PrismaDealRepository implements DealRepository {
   }
 
   // 기능 : 딜 목록과 export에 공통으로 쓰는 Prisma 조회 조건을 생성합니다.
-  private createDealWhere(input: ExportDealsInput): Prisma.DealWhereInput {
+  private createDealWhere(
+    input: Pick<
+      ExportDealsInput,
+      "userId" | "search" | "companyId" | "contactId" | "dealStatus"
+    >
+  ): Prisma.DealWhereInput {
     return {
       userId: input.userId,
       ...(input.search
@@ -488,6 +494,8 @@ export class PrismaDealRepository implements DealRepository {
             },
           }
         : {}),
+      ...(input.companyId ? { companyId: input.companyId } : {}),
+      ...(input.contactId ? { contactId: input.contactId } : {}),
       ...(input.dealStatus ? { dealStatus: input.dealStatus } : {}),
     };
   }

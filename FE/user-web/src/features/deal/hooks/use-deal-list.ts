@@ -5,12 +5,15 @@ import {
   listDeals,
 } from "@/features/deal/api/deal-api";
 import { dealQueryKeys } from "@/features/deal/api/deal-query-keys";
-import type { DealListParams } from "@/features/deal/types/deal";
+import type {
+  DealListParams,
+  DealStageCountParams,
+} from "@/features/deal/types/deal";
 
-export function useDealStageCounts() {
+export function useDealStageCounts(params: DealStageCountParams = {}) {
   return useQuery({
-    queryKey: dealQueryKeys.stageCounts(),
-    queryFn: () => getDealStageCounts(),
+    queryKey: dealQueryKeys.stageCounts(params),
+    queryFn: () => getDealStageCounts(params),
   });
 }
 

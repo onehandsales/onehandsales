@@ -15,6 +15,7 @@ export type {
   DealProductOption,
   DealSort,
   DealStageCount,
+  DealStageCountParams,
   DealStatus,
   UpdateDealInput,
 } from "./types/deal";
