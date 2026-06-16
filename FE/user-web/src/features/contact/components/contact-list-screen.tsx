@@ -351,7 +351,7 @@ export function ContactListScreen() {
                   className="inline-flex h-7 items-center rounded-md border border-[#E2E5EC] bg-white px-2.5 text-[12px] font-medium text-[#374151] transition hover:bg-[#F5F6F8]"
                   to={`/contacts/${selectedContactId}`}
                 >
-                  상세
+                  상세보기
                 </Link>
               </div>
             </div>
