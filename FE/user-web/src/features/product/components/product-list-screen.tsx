@@ -4,6 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { PageHeader } from "@/components/layout/page-header";
 import { Pagination } from "@/components/ui/pagination";
 import { Toast } from "@/components/ui/toast";
+import { useAuthSession } from "@/features/auth";
 import { ProductCreateDialog } from "@/features/product/components/product-create-dialog";
 import { exportProductsXlsx } from "@/features/product/api/product-api";
 import {
@@ -14,6 +15,7 @@ import { useProductList } from "@/features/product/hooks/use-product-list";
 import type { Product, ProductSort } from "@/features/product/types/product";
 import { getApiErrorMessage } from "@/lib/api-client";
 import { cn } from "@/utils/cn";
+import { formatDateWithOptions } from "@/utils/format";
 
 type ProductListScreenProps = {
   readonly initialCreateOpen?: boolean;
@@ -25,6 +27,7 @@ export function ProductListScreen({
   onCreateDialogClose,
 }: ProductListScreenProps) {
   const navigate = useNavigate();
+  const { user } = useAuthSession();
   const [searchText, setSearchText] = useState("");
   const [search, setSearch] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("");
@@ -52,6 +55,7 @@ export function ProductListScreen({
   const productsQuery = useProductList(listParams);
   const products = productsQuery.data?.items ?? [];
   const totalCount = productsQuery.data?.totalCount ?? 0;
+  const displayTimeZone = user?.timeZone ?? getBrowserTimeZoneFallback();
   const hasFilters =
     search.length > 0 ||
     categoryFilter.length > 0 ||
@@ -202,6 +206,8 @@ export function ProductListScreen({
             <ProductTableHeaderCell width={320}>제품명</ProductTableHeaderCell>
             <ProductTableHeaderCell width={180}>카테고리</ProductTableHeaderCell>
             <ProductTableHeaderCell width={130}>상태</ProductTableHeaderCell>
+            <ProductTableHeaderCell align="right" width={80}>딜</ProductTableHeaderCell>
+            <ProductTableHeaderCell align="right" width={128}>등록일</ProductTableHeaderCell>
             <div className="min-w-0 flex-1" />
           </div>
 
@@ -215,7 +221,11 @@ export function ProductListScreen({
           ) : (
             <div className="overflow-hidden">
               {products.map((product) => (
-                <ProductRow key={product.id} product={product} />
+                <ProductRow
+                  key={product.id}
+                  product={product}
+                  displayTimeZone={displayTimeZone}
+                />
               ))}
             </div>
           )}
@@ -248,7 +258,13 @@ export function ProductListScreen({
   );
 }
 
-function ProductRow({ product }: { readonly product: Product }) {
+function ProductRow({
+  product,
+  displayTimeZone,
+}: {
+  readonly product: Product;
+  readonly displayTimeZone: string;
+}) {
   return (
     <Link
       className="flex h-[66px] items-center border-b border-[#E8EDF3] px-6 transition-colors hover:bg-blue-50/60 last:border-b-0"
@@ -269,23 +285,38 @@ function ProductRow({ product }: { readonly product: Product }) {
           {product.productStatus.statusName}
         </Badge>
       </div>
+      <div className="w-[80px] shrink-0 text-right text-[12px] font-medium text-[#475569]">
+        {product.dealCount.toLocaleString("ko-KR")}건
+      </div>
+      <div
+        className="w-[128px] shrink-0 text-right text-[12px] font-medium text-[#64748B]"
+        title={formatProductCreatedAt(product.createdAt, displayTimeZone)}
+      >
+        {formatProductCreatedAt(product.createdAt, displayTimeZone)}
+      </div>
       <div className="min-w-0 flex-1" />
     </Link>
   );
 }
 
 function ProductTableHeaderCell({
+  align = "left",
   children,
   width,
   flex = false,
 }: {
+  readonly align?: "left" | "right";
   readonly children: string;
   readonly width?: number;
   readonly flex?: boolean;
 }) {
   return (
     <div
-      className={cn("shrink-0 text-[12px] font-semibold text-[#64748B]", flex && "min-w-0 flex-1")}
+      className={cn(
+        "shrink-0 text-[12px] font-semibold text-[#64748B]",
+        align === "right" && "text-right",
+        flex && "min-w-0 flex-1"
+      )}
       style={width ? { width } : undefined}
     >
       {children}
@@ -388,6 +419,23 @@ function ProductListSkeleton() {
       ))}
     </div>
   );
+}
+
+function formatProductCreatedAt(value: string, timeZone: string) {
+  return formatDateWithOptions(value, {
+    day: "2-digit",
+    month: "2-digit",
+    timeZone,
+    year: "numeric",
+  });
+}
+
+function getBrowserTimeZoneFallback() {
+  try {
+    return Intl.DateTimeFormat().resolvedOptions().timeZone || "Asia/Seoul";
+  } catch {
+    return "Asia/Seoul";
+  }
 }
 
 function statusToneFromName(statusName: string) {
