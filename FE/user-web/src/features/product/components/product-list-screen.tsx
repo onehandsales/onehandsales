@@ -269,18 +269,19 @@ export function ProductListScreen({
         </span>
       </div>
 
-      <div className="flex min-h-0 flex-1 flex-col px-5 pb-3 pt-1">
-        {notice ? (
-          <Toast message={notice} onClose={() => setNotice(null)} variant="success" />
-        ) : null}
+      <div className="flex min-h-0 flex-1 gap-5 overflow-hidden px-5 pb-3 pt-1">
+        <div className="flex min-w-0 flex-1 flex-col gap-3 overflow-hidden">
+          {notice ? (
+            <Toast message={notice} onClose={() => setNotice(null)} variant="success" />
+          ) : null}
 
-        {productsQuery.isError ? (
-          <p className="rounded-md border border-destructive/30 bg-red-50 px-3 py-2 text-sm text-destructive">
-            {getApiErrorMessage(productsQuery.error)}
-          </p>
-        ) : null}
+          {productsQuery.isError ? (
+            <p className="rounded-md border border-destructive/30 bg-red-50 px-3 py-2 text-sm text-destructive">
+              {getApiErrorMessage(productsQuery.error)}
+            </p>
+          ) : null}
 
-        <div className="flex min-h-0 w-full flex-1 flex-col overflow-hidden rounded-lg border border-[#E2E5EC] bg-white shadow-sm">
+          <div className="flex min-h-0 w-full flex-1 flex-col overflow-hidden rounded-lg border border-[#E2E5EC] bg-white shadow-sm">
           <div className="flex h-11 shrink-0 items-center border-b border-[#E6EAF0] bg-[#FAFBFC] px-6">
             <ProductTableHeaderCell width={320}>제품명</ProductTableHeaderCell>
             <ProductTableHeaderCell width={180}>카테고리</ProductTableHeaderCell>
@@ -309,16 +310,16 @@ export function ProductListScreen({
             </div>
           )}
         </div>
-      </div>
 
-      {productsQuery.data ? (
-        <Pagination
-          className="py-3"
-          onPageChange={setPage}
-          page={productsQuery.data.page}
-          totalPages={productsQuery.data.totalPages}
-        />
-      ) : null}
+          {productsQuery.data ? (
+            <Pagination
+              onPageChange={setPage}
+              page={productsQuery.data.page}
+              totalPages={productsQuery.data.totalPages}
+            />
+          ) : null}
+        </div>
+      </div>
 
       <ProductCreateDialog
         onCreated={() => {

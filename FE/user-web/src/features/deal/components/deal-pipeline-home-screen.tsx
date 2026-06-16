@@ -215,7 +215,7 @@ export function DealPipelineHomeScreen({
                 </span>
               </div>
 
-              <div className="flex min-h-0 flex-col overflow-hidden rounded-lg border border-[#E2E5EC] bg-white shadow-sm">
+              <div className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-lg border border-[#E2E5EC] bg-white shadow-sm">
                 {/* Table header */}
                 <div
                   className="flex shrink-0 items-center border-b border-[#E6EAF0] bg-[#FAFBFC] px-6"
@@ -231,9 +231,9 @@ export function DealPipelineHomeScreen({
                 </div>
 
                 {/* Rows */}
-                <div className="overflow-y-auto">
+                <div className="min-h-0 flex-1 overflow-y-auto">
                   {deals.length === 0 ? (
-                    <div className="flex flex-col items-center py-12 text-sm text-gray-400">
+                    <div className="flex min-h-full flex-col items-center justify-center py-12 text-sm text-gray-400">
                       <p>표시할 딜이 없습니다.</p>
                       <button
                         className="mt-3 inline-flex h-9 items-center gap-1.5 rounded-md bg-primary px-4 text-sm font-medium text-white"
@@ -262,7 +262,6 @@ export function DealPipelineHomeScreen({
                   onPageChange={setPage}
                   page={page}
                   totalPages={dealsQuery.data.totalPages ?? 1}
-                  className="py-3"
                 />
               ) : null}
             </div>

@@ -182,7 +182,7 @@ export function ContactListScreen() {
           <input
             className="w-[220px] bg-transparent text-[13px] text-[#111827] outline-none placeholder:text-[#9CA3AF]"
             onChange={(e) => setUsernameText(e.target.value)}
-            placeholder="이름 검색"
+            placeholder="담당자명 검색"
             value={usernameText}
           />
         </form>
@@ -365,7 +365,6 @@ export function ContactListScreen() {
               page={contactList.page}
               totalPages={contactList.totalPages}
               onPageChange={setPage}
-              className="py-3"
             />
           ) : null}
         </div>

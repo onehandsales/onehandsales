@@ -232,17 +232,17 @@ export function MeetingNoteListScreen() {
         <div className="flex min-w-0 flex-1 flex-col gap-3 overflow-hidden">
           <div className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-lg border border-[#E2E5EC] bg-white shadow-sm">
             {/* 헤더 행 */}
-            <div className="flex h-9 shrink-0 items-center border-b border-[#E2E5EC] bg-[#F9FAFB] px-4">
-              <span className="w-[180px] shrink-0 text-[11px] font-semibold uppercase tracking-wide text-[#9CA3AF]">
+            <div className="flex h-11 shrink-0 items-center border-b border-[#E2E5EC] bg-[#F9FAFB] px-6">
+              <span className="w-[180px] shrink-0 text-[12px] font-semibold text-[#64748B]">
                 미팅 일시
               </span>
-              <span className="w-[190px] shrink-0 text-[11px] font-semibold uppercase tracking-wide text-[#9CA3AF]">
+              <span className="w-[190px] shrink-0 text-[12px] font-semibold text-[#64748B]">
                 회사
               </span>
-              <span className="w-[160px] shrink-0 text-[11px] font-semibold uppercase tracking-wide text-[#9CA3AF]">
+              <span className="w-[160px] shrink-0 text-[12px] font-semibold text-[#64748B]">
                 담당자
               </span>
-              <span className="min-w-0 flex-1 text-[11px] font-semibold uppercase tracking-wide text-[#9CA3AF]">
+              <span className="min-w-0 flex-1 text-[12px] font-semibold text-[#64748B]">
                 딜
               </span>
             </div>
@@ -279,7 +279,6 @@ export function MeetingNoteListScreen() {
               page={page}
               totalPages={meetingNotesQuery.data.totalPages}
               onPageChange={setPage}
-              className="py-3"
             />
           ) : null}
         </div>
@@ -329,7 +328,7 @@ function MeetingNoteListRow({
   return (
     <button
       className={cn(
-        "flex h-[74px] w-full cursor-pointer items-center border-b border-[#E2E5EC] px-4 text-left transition-colors last:border-b-0 hover:bg-blue-50/60",
+        "flex h-[66px] w-full cursor-pointer items-center border-b border-[#E2E5EC] px-6 text-left transition-colors last:border-b-0 hover:bg-blue-50/60",
         isActive ? "bg-blue-50" : "bg-white"
       )}
       onClick={() => onSelect(meetingNote.id)}
@@ -357,7 +356,7 @@ function MeetingDateCell({ value }: { readonly value: string | null }) {
 
   if (!meetingDate.hasValue) {
     return (
-      <span className="w-[180px] shrink-0 pr-4 text-[13px] font-semibold text-[#9CA3AF]">
+      <span className="w-[180px] shrink-0 pr-4 text-[13px] font-semibold text-[#111827]">
         {meetingDate.full}
       </span>
     );
@@ -368,7 +367,7 @@ function MeetingDateCell({ value }: { readonly value: string | null }) {
       <span className="block truncate text-[13px] font-semibold text-[#111827]">
         {meetingDate.compactDate}
       </span>
-      <span className="mt-1 inline-flex max-w-full items-center rounded-full bg-[#FFF7ED] px-2 py-0.5 text-[12px] font-semibold leading-none text-[#C2410C]">
+      <span className="mt-0.5 block truncate text-[12px] font-medium text-[#64748B]">
         {meetingDate.time}
       </span>
     </span>
@@ -457,11 +456,11 @@ function SummaryCell({
 }) {
   return (
     <span className={`min-w-0 pr-3 ${className ?? ""}`}>
-      <span className="block truncate text-[13px] font-medium text-[#111827]">
+      <span className="block truncate text-[13px] font-semibold text-[#111827]">
         {summary.label || "-"}
       </span>
       {summary.count > 1 ? (
-        <span className="text-[12px] text-[#6B7280]">총 {summary.count}개</span>
+        <span className="mt-0.5 block text-[12px] font-medium text-[#64748B]">총 {summary.count}개</span>
       ) : null}
     </span>
   );
@@ -597,7 +596,7 @@ function MeetingNoteListSkeleton() {
     <>
       {Array.from({ length: 6 }, (_, index) => (
         <div
-          className="flex h-[74px] items-center border-b border-[#E2E5EC] px-4 last:border-b-0"
+          className="flex h-[66px] items-center border-b border-[#E2E5EC] px-6 last:border-b-0"
           key={index}
         >
           <div className="w-[180px] shrink-0 pr-4">

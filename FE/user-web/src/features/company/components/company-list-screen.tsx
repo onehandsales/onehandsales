@@ -291,7 +291,6 @@ export function CompanyListScreen({
               page={companyList.page}
               totalPages={companyList.totalPages}
               onPageChange={setPage}
-              className="py-3"
             />
           ) : null}
         </div>

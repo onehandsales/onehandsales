@@ -24,7 +24,7 @@ export function Pagination({
   return (
     <div
       className={cn(
-        "flex items-center justify-center gap-1",
+        "flex h-12 shrink-0 items-center justify-center gap-1",
         className
       )}
     >
