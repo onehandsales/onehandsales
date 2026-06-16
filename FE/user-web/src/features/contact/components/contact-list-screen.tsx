@@ -15,6 +15,7 @@ import { PageHeader } from "@/components/layout/page-header";
 import { Link } from "react-router-dom";
 import { Pagination } from "@/components/ui/pagination";
 import { Toast } from "@/components/ui/toast";
+import { useAuthSession } from "@/features/auth";
 import { ContactCreateDialog } from "@/features/contact/components/contact-create-dialog";
 import { ContactTaxonomyManageDialog } from "@/features/contact/components/contact-taxonomy-manage-dialog";
 import {
@@ -30,8 +31,10 @@ import { useExportContactsMutation } from "@/features/contact/hooks/use-contact-
 import type { ContactListItem } from "@/features/contact/types/contact";
 import { getApiErrorMessage, type ApiBlobResponse } from "@/lib/api-client";
 import { cn } from "@/utils/cn";
+import { formatDateWithOptions } from "@/utils/format";
 
 export function ContactListScreen() {
+  const { user } = useAuthSession();
   const [usernameText, setUsernameText] = useState("");
   const [username, setUsername] = useState("");
   const [companyId] = useState("");
@@ -79,6 +82,7 @@ export function ContactListScreen() {
     [departmentsQuery.data],
   );
 
+  const displayTimeZone = user?.timeZone ?? getBrowserTimeZoneFallback();
   const hasSearch =
     username.length > 0 ||
     companyId.length > 0 ||
@@ -273,17 +277,26 @@ export function ContactListScreen() {
           <div className="overflow-hidden rounded-lg border border-[#E2E5EC] bg-white shadow-sm">
             {/* 테이블 헤더 (데스크톱) */}
             <div className="hidden h-11 shrink-0 items-center border-b border-[#E2E5EC] bg-[#F9FAFB] px-6 md:flex">
-              <div className="w-[170px] shrink-0 text-[12px] font-semibold text-[#64748B]">
+              <div className="w-[130px] shrink-0 text-[12px] font-semibold text-[#64748B]">
                 이름
               </div>
-              <div className="w-[180px] shrink-0 text-[12px] font-semibold text-[#64748B]">
+              <div className="w-[150px] shrink-0 text-[12px] font-semibold text-[#64748B]">
                 회사
               </div>
-              <div className="w-[130px] shrink-0 text-[12px] font-semibold text-[#64748B]">
+              <div className="w-[110px] shrink-0 text-[12px] font-semibold text-[#64748B]">
                 부서
               </div>
-              <div className="w-[110px] shrink-0 text-[12px] font-semibold text-[#64748B]">
+              <div className="w-[90px] shrink-0 text-[12px] font-semibold text-[#64748B]">
                 직급
+              </div>
+              <div className="w-[120px] shrink-0 text-[12px] font-semibold text-[#64748B]">
+                핸드폰
+              </div>
+              <div className="w-[180px] shrink-0 text-[12px] font-semibold text-[#64748B]">
+                이메일
+              </div>
+              <div className="w-[118px] shrink-0 text-right text-[12px] font-semibold text-[#64748B]">
+                등록일
               </div>
               <div className="min-w-0 flex-1" />
             </div>
@@ -306,6 +319,7 @@ export function ContactListScreen() {
                   {contactList.items.map((c) => (
                     <ContactRow
                       contact={c}
+                      displayTimeZone={displayTimeZone}
                       isActive={c.id === selectedContactId}
                       key={c.id}
                       onSelect={setSelectedContactId}
@@ -314,7 +328,11 @@ export function ContactListScreen() {
                 </div>
                 <div className="divide-y divide-[#E2E5EC] md:hidden">
                   {contactList.items.map((c) => (
-                    <ContactCard key={c.id} contact={c} />
+                    <ContactCard
+                      key={c.id}
+                      contact={c}
+                      displayTimeZone={displayTimeZone}
+                    />
                   ))}
                 </div>
               </div>
@@ -379,10 +397,12 @@ export function ContactListScreen() {
 
 function ContactRow({
   contact,
+  displayTimeZone,
   isActive,
   onSelect,
 }: {
   readonly contact: ContactListItem;
+  readonly displayTimeZone: string;
   readonly isActive: boolean;
   readonly onSelect: (contactId: string) => void;
 }) {
@@ -395,12 +415,12 @@ function ContactRow({
       onClick={() => onSelect(contact.id)}
       type="button"
     >
-      <div className="w-[170px] shrink-0 min-w-0">
+      <div className="w-[130px] shrink-0 min-w-0">
         <span className="block truncate text-[13px] font-semibold text-[#111827]">
           {contact.username}
         </span>
       </div>
-      <div className="w-[180px] min-w-0 shrink-0">
+      <div className="w-[150px] min-w-0 shrink-0">
         <span
           className="inline-flex h-[22px] max-w-full min-w-0 items-center overflow-hidden rounded-full bg-[#F1F5F9] px-2.5 text-[11px] font-semibold text-[#475569]"
           title={contact.company.companyName}
@@ -408,7 +428,7 @@ function ContactRow({
           <span className="min-w-0 truncate whitespace-nowrap">{contact.company.companyName}</span>
         </span>
       </div>
-      <div className="w-[130px] min-w-0 shrink-0">
+      <div className="w-[110px] min-w-0 shrink-0">
         <span
           className="block truncate text-[12px] font-medium text-[#2563EB]"
           title={contact.contactDepartment.departmentName}
@@ -416,7 +436,7 @@ function ContactRow({
           {contact.contactDepartment.departmentName}
         </span>
       </div>
-      <div className="w-[110px] min-w-0 shrink-0">
+      <div className="w-[90px] min-w-0 shrink-0">
         <span
           className="inline-flex h-[22px] max-w-full min-w-0 items-center overflow-hidden rounded-full bg-[#FEF3C7] px-2.5 text-[11px] font-semibold text-[#B45309]"
           title={contact.contactJobGrade.jobGradeName}
@@ -424,18 +444,42 @@ function ContactRow({
           <span className="min-w-0 truncate whitespace-nowrap">{contact.contactJobGrade.jobGradeName}</span>
         </span>
       </div>
+      <div
+        className="w-[120px] shrink-0 truncate text-[12px] font-medium text-[#475569]"
+        title={contact.mobile || "-"}
+      >
+        {contact.mobile || "-"}
+      </div>
+      <div
+        className="w-[180px] shrink-0 truncate text-[12px] font-medium text-[#475569]"
+        title={contact.email || "-"}
+      >
+        {contact.email || "-"}
+      </div>
+      <div
+        className="w-[118px] shrink-0 text-right text-[12px] font-medium text-[#64748B]"
+        title={formatContactCreatedAt(contact.createdAt, displayTimeZone)}
+      >
+        {formatContactCreatedAt(contact.createdAt, displayTimeZone)}
+      </div>
       <div className="min-w-0 flex-1" />
     </button>
   );
 }
 
-function ContactCard({ contact }: { readonly contact: ContactListItem }) {
+function ContactCard({
+  contact,
+  displayTimeZone,
+}: {
+  readonly contact: ContactListItem;
+  readonly displayTimeZone: string;
+}) {
   return (
     <Link
-      className="flex items-center justify-between bg-white px-6 py-3 hover:bg-[#FAFAF8]"
+      className="flex items-start justify-between gap-4 bg-white px-6 py-3 hover:bg-[#FAFAF8]"
       to={`/contacts/${contact.id}`}
     >
-      <div className="min-w-0">
+      <div className="min-w-0 flex-1">
         <p className="text-[13px] font-medium text-[#111827]">
           {contact.username}
         </p>
@@ -443,8 +487,13 @@ function ContactCard({ contact }: { readonly contact: ContactListItem }) {
           {contact.company.companyName} ·{" "}
           {contact.contactDepartment.departmentName}
         </p>
+        <div className="mt-2 space-y-1 text-[12px] text-[#64748B]">
+          <p className="truncate">핸드폰 {contact.mobile || "-"}</p>
+          <p className="truncate">이메일 {contact.email || "-"}</p>
+          <p>등록일 {formatContactCreatedAt(contact.createdAt, displayTimeZone)}</p>
+        </div>
       </div>
-      <div className="ml-4 shrink-0 text-right">
+      <div className="shrink-0 text-right">
         <p className="text-[12px] font-medium text-[#1D4ED8]">
           {contact.contactJobGrade.jobGradeName}
         </p>
@@ -719,6 +768,23 @@ function downloadBlobFile(file: ApiBlobResponse, fallbackFileName: string) {
   link.click();
   link.remove();
   window.URL.revokeObjectURL(url);
+}
+
+function formatContactCreatedAt(value: string, timeZone: string) {
+  return formatDateWithOptions(value, {
+    day: "2-digit",
+    month: "2-digit",
+    timeZone,
+    year: "numeric",
+  });
+}
+
+function getBrowserTimeZoneFallback() {
+  try {
+    return Intl.DateTimeFormat().resolvedOptions().timeZone || "Asia/Seoul";
+  } catch {
+    return "Asia/Seoul";
+  }
 }
 
 const ADD_TAXONOMY_VALUE = "__add_taxonomy__";
