@@ -3,7 +3,6 @@ import { AlertCircle, BriefcaseBusiness, Download, Plus, X } from "lucide-react"
 import { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { PageHeader } from "@/components/layout/page-header";
-import { FilterChip, FilterChipGroup } from "@/components/ui/filter-chip";
 import { useAuthSession } from "@/features/auth";
 import { DealCreateDialog } from "@/features/deal/components/deal-create-dialog";
 import { DealDetailPanel } from "@/features/deal/components/deal-detail-panel";
@@ -30,8 +29,8 @@ const stageTabs: Array<{ readonly value: StageTab; readonly label: string }> = [
 const SORT_OPTIONS: Array<{ readonly value: DealSort; readonly label: string }> = [
   { value: "createdAtDesc", label: "최신순" },
   { value: "dealCostDesc", label: "금액 높은순" },
-  { value: "dealCostAsc", label: "금액 낮은순" },
-  { value: "expectedEndDateAsc", label: "마감일 빠른순" },
+  { value: "dealCostAsc", label: "금액 낮은 순" },
+  { value: "expectedEndDateAsc", label: "마감일순" },
 ];
 
 type DealPipelineHomeScreenProps = {
@@ -193,17 +192,23 @@ export function DealPipelineHomeScreen({
                     value={search}
                   />
                 </div>
-                <FilterChipGroup className="flex-nowrap overflow-x-auto">
+                <select
+                  aria-label="정렬 조건"
+                  className={cn(
+                    "h-8 min-w-[136px] appearance-none rounded-md border px-3 text-[13px] outline-none transition",
+                    sort !== "createdAtDesc"
+                      ? "border-[#BFDBFE] bg-[#EFF6FF] text-[#1D4ED8]"
+                      : "border-[#E2E5EC] bg-transparent text-[#6B7280] hover:bg-[#FAFAF8]"
+                  )}
+                  onChange={(e) => onSortChange(e.target.value as DealSort)}
+                  value={sort}
+                >
                   {SORT_OPTIONS.map((opt) => (
-                    <FilterChip
-                      active={sort === opt.value}
-                      key={opt.value}
-                      onClick={() => onSortChange(opt.value)}
-                    >
+                    <option key={opt.value} value={opt.value}>
                       {opt.label}
-                    </FilterChip>
+                    </option>
                   ))}
-                </FilterChipGroup>
+                </select>
                 <div className="flex-1" />
                 <span className="shrink-0 text-[12px] text-[#9CA3AF]">
                   {dealsQuery.data?.totalCount ?? 0}건
@@ -338,17 +343,23 @@ export function DealPipelineHomeScreen({
             placeholder="딜명 검색"
             value={search}
           />
-          <FilterChipGroup className="flex-nowrap overflow-x-auto pb-0.5">
+          <select
+            aria-label="정렬 조건"
+            className={cn(
+              "h-8 w-full appearance-none rounded-md border px-2 text-[12px] outline-none transition",
+              sort !== "createdAtDesc"
+                ? "border-[#BFDBFE] bg-[#EFF6FF] text-[#1D4ED8]"
+                : "border-[#E6EAF0] bg-white text-gray-500 focus:border-primary"
+            )}
+            onChange={(e) => onSortChange(e.target.value as DealSort)}
+            value={sort}
+          >
             {SORT_OPTIONS.map((opt) => (
-              <FilterChip
-                active={sort === opt.value}
-                key={opt.value}
-                onClick={() => onSortChange(opt.value)}
-              >
+              <option key={opt.value} value={opt.value}>
                 {opt.label}
-              </FilterChip>
+              </option>
             ))}
-          </FilterChipGroup>
+          </select>
         </div>
 
         {dealsQuery.isLoading ? (
