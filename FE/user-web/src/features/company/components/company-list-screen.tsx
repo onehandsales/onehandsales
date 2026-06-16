@@ -229,7 +229,7 @@ export function CompanyListScreen({
           }}
           value={sort}
         >
-          <option value="createdAtDesc">등록일</option>
+          <option value="createdAtDesc">최신순</option>
           <option value="contactCountDesc">담당자 높은순</option>
           <option value="contactCountAsc">담당자 낮은순</option>
           <option value="dealCountDesc">딜 높은순</option>
