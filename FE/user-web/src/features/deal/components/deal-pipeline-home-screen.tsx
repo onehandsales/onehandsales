@@ -175,11 +175,13 @@ export function DealPipelineHomeScreen({
         {dealsQuery.isLoading ? (
           <DesktopLoadingState />
         ) : dealsQuery.isError ? (
-          <div className="p-6">
-            <ErrorState onRetry={() => void dealsQuery.refetch()} />
+          <div className="flex min-h-0 flex-1 gap-5 overflow-hidden px-5 pb-3 pt-3">
+            <div className="flex min-w-0 flex-1 flex-col gap-3 overflow-hidden">
+              <ErrorState onRetry={() => void dealsQuery.refetch()} />
+            </div>
           </div>
         ) : (
-          <div className="flex min-h-0 flex-1 gap-5 overflow-hidden px-6 py-5">
+          <div className="flex min-h-0 flex-1 gap-5 overflow-hidden px-5 pb-3 pt-3">
             {/* Deal List */}
             <div className="flex min-w-0 flex-1 flex-col gap-3 overflow-hidden">
               {/* Controls bar — 한 줄 */}
@@ -217,10 +219,7 @@ export function DealPipelineHomeScreen({
 
               <div className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-lg border border-[#E2E5EC] bg-white shadow-sm">
                 {/* Table header */}
-                <div
-                  className="flex shrink-0 items-center border-b border-[#E6EAF0] bg-[#FAFBFC] px-6"
-                  style={{ height: 44 }}
-                >
+                <div className="flex h-11 shrink-0 items-center border-b border-[#E2E5EC] bg-[#F9FAFB] px-6">
                   <TableHeaderCell width={170}>딜명</TableHeaderCell>
                   <TableHeaderCell width={180}>회사/담당자</TableHeaderCell>
                   <TableHeaderCell width={96}>단계</TableHeaderCell>
@@ -433,11 +432,10 @@ function DealListRow({
   return (
     <button
       className={cn(
-        "flex w-full items-center border-b border-[#E8EDF3] px-6 py-0 text-left transition-colors hover:bg-blue-50/60",
+        "flex h-[66px] w-full items-center border-b border-[#E2E5EC] px-6 py-0 text-left transition-colors last:border-b-0 hover:bg-blue-50/60",
         isActive ? "bg-blue-50" : "bg-white"
       )}
       onClick={() => onSelect(deal.id)}
-      style={{ height: 66 }}
       type="button"
     >
       {/* 딜명 */}
@@ -634,7 +632,7 @@ function ErrorState({ onRetry }: { readonly onRetry: () => void }) {
 
 function DesktopLoadingState() {
   return (
-    <div className="flex min-h-0 flex-1 gap-5 overflow-hidden px-6 py-5">
+    <div className="flex min-h-0 flex-1 gap-5 overflow-hidden px-5 pb-3 pt-3">
       <div className="flex min-w-0 flex-1 flex-col gap-3 overflow-hidden">
         <div className="flex h-10 shrink-0 items-center gap-2 px-0.5">
           <div className="h-7 w-20 animate-pulse rounded-md bg-gray-100" />
@@ -643,9 +641,9 @@ function DesktopLoadingState() {
           <div className="flex-1" />
           <div className="h-4 w-8 animate-pulse rounded bg-gray-100" />
         </div>
-        <div className="flex min-h-0 flex-1 flex-col gap-0 overflow-hidden rounded-lg border border-[#E5EAF0] bg-white">
+        <div className="flex min-h-0 flex-1 flex-col gap-0 overflow-hidden rounded-lg border border-[#E2E5EC] bg-white shadow-sm">
           {Array.from({ length: 6 }).map((_, i) => (
-            <div className="h-[66px] animate-pulse border-b border-[#E8EDF3] bg-gray-50" key={i} />
+            <div className="h-[66px] animate-pulse border-b border-[#E2E5EC] bg-[#F9FAFB] last:border-b-0" key={i} />
           ))}
         </div>
       </div>
