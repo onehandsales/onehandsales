@@ -14,6 +14,7 @@ import { PageHeader } from "@/components/layout/page-header";
 import { Link, useNavigate } from "react-router-dom";
 import { Pagination } from "@/components/ui/pagination";
 import { Toast } from "@/components/ui/toast";
+import { useAuthSession } from "@/features/auth";
 import { CompanyCreateDialog } from "@/features/company/components/company-create-dialog";
 import { CompanyTaxonomyCreateDialog } from "@/features/company/components/company-taxonomy-create-dialog";
 import {
@@ -30,6 +31,7 @@ import { useExportCompaniesMutation } from "@/features/company/hooks/use-company
 import type { CompanyListItem } from "@/features/company/types/company";
 import { getApiErrorMessage, type ApiBlobResponse } from "@/lib/api-client";
 import { cn } from "@/utils/cn";
+import { formatDateWithOptions } from "@/utils/format";
 
 type CompanyListScreenProps = {
   readonly initialCreateOpen?: boolean;
@@ -41,6 +43,7 @@ export function CompanyListScreen({
   onCreateDialogClose,
 }: CompanyListScreenProps) {
   const navigate = useNavigate();
+  const { user } = useAuthSession();
   const [companyNameText, setCompanyNameText] = useState("");
   const [companyName, setCompanyName] = useState("");
   const [companyFieldId, setCompanyFieldId] = useState("");
@@ -81,6 +84,7 @@ export function CompanyListScreen({
   const fields = useMemo(() => fieldsQuery.data?.items ?? [], [fieldsQuery.data]);
   const regions = useMemo(() => regionsQuery.data?.items ?? [], [regionsQuery.data]);
   const companyList = companiesQuery.data;
+  const displayTimeZone = user?.timeZone ?? getBrowserTimeZoneFallback();
   const hasSearch =
     companyName.length > 0 ||
     companyFieldId.length > 0 ||
@@ -232,6 +236,9 @@ export function CompanyListScreen({
               <div className="w-[260px] shrink-0 text-[12px] font-semibold text-[#64748B]">회사명</div>
               <div className="w-[150px] shrink-0 text-[12px] font-semibold text-[#64748B]">분야</div>
               <div className="w-[130px] shrink-0 text-[12px] font-semibold text-[#64748B]">지역</div>
+              <div className="w-[80px] shrink-0 text-right text-[12px] font-semibold text-[#64748B]">거래처</div>
+              <div className="w-[72px] shrink-0 text-right text-[12px] font-semibold text-[#64748B]">딜</div>
+              <div className="w-[128px] shrink-0 text-right text-[12px] font-semibold text-[#64748B]">등록일</div>
               <div className="min-w-0 flex-1" />
             </div>
 
@@ -246,6 +253,7 @@ export function CompanyListScreen({
                 {companyList.items.map((company) => (
                   <CompanyRow
                     company={company}
+                    displayTimeZone={displayTimeZone}
                     isActive={company.id === selectedCompanyId}
                     key={company.id}
                     onSelect={setSelectedCompanyId}
@@ -321,10 +329,12 @@ export function CompanyListScreen({
 
 function CompanyRow({
   company,
+  displayTimeZone,
   isActive,
   onSelect,
 }: {
   readonly company: CompanyListItem;
+  readonly displayTimeZone: string;
   readonly isActive: boolean;
   readonly onSelect: (companyId: string) => void;
 }) {
@@ -357,6 +367,18 @@ function CompanyRow({
         >
           <span className="min-w-0 truncate whitespace-nowrap">{company.companyRegion.region}</span>
         </span>
+      </div>
+      <div className="w-[80px] shrink-0 text-right text-[12px] font-medium text-[#475569]">
+        {company.contactCount.toLocaleString("ko-KR")}명
+      </div>
+      <div className="w-[72px] shrink-0 text-right text-[12px] font-medium text-[#475569]">
+        {company.dealCount.toLocaleString("ko-KR")}건
+      </div>
+      <div
+        className="w-[128px] shrink-0 text-right text-[12px] font-medium text-[#64748B]"
+        title={formatCompanyCreatedAt(company.createdAt, displayTimeZone)}
+      >
+        {formatCompanyCreatedAt(company.createdAt, displayTimeZone)}
       </div>
       <div className="min-w-0 flex-1" />
     </button>
@@ -628,6 +650,23 @@ function downloadBlobFile(file: ApiBlobResponse, fallbackFileName: string) {
   link.click();
   link.remove();
   window.URL.revokeObjectURL(url);
+}
+
+function formatCompanyCreatedAt(value: string, timeZone: string) {
+  return formatDateWithOptions(value, {
+    day: "2-digit",
+    month: "2-digit",
+    timeZone,
+    year: "numeric",
+  });
+}
+
+function getBrowserTimeZoneFallback() {
+  try {
+    return Intl.DateTimeFormat().resolvedOptions().timeZone || "Asia/Seoul";
+  } catch {
+    return "Asia/Seoul";
+  }
 }
 
 const ADD_TAXONOMY_VALUE = "__add_taxonomy__";
