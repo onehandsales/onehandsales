@@ -157,7 +157,7 @@ export function ProductListScreen({
   };
 
   return (
-    <section className="flex min-h-full flex-col bg-[#FAFAF8]">
+    <section className="flex flex-1 flex-col overflow-hidden bg-[#FAFAF8]">
       <PageHeader
         breadcrumbs={[{ label: "제품", icon: Package }]}
         actions={[
@@ -269,7 +269,7 @@ export function ProductListScreen({
         </span>
       </div>
 
-      <div className="px-5 pb-3 pt-1">
+      <div className="flex min-h-0 flex-1 flex-col px-5 pb-3 pt-1">
         {notice ? (
           <Toast message={notice} onClose={() => setNotice(null)} variant="success" />
         ) : null}
@@ -280,7 +280,7 @@ export function ProductListScreen({
           </p>
         ) : null}
 
-        <div className="flex w-full flex-col overflow-hidden rounded-lg border border-[#E2E5EC] bg-white shadow-sm">
+        <div className="flex min-h-0 w-full flex-1 flex-col overflow-hidden rounded-lg border border-[#E2E5EC] bg-white shadow-sm">
           <div className="flex h-11 shrink-0 items-center border-b border-[#E6EAF0] bg-[#FAFBFC] px-6">
             <ProductTableHeaderCell width={320}>제품명</ProductTableHeaderCell>
             <ProductTableHeaderCell width={180}>카테고리</ProductTableHeaderCell>
@@ -298,7 +298,7 @@ export function ProductListScreen({
               onCreate={() => setIsCreateOpen(true)}
             />
           ) : (
-            <div className="overflow-hidden">
+            <div className="min-h-0 flex-1 overflow-y-auto">
               {products.map((product) => (
                 <ProductRow
                   key={product.id}
@@ -507,7 +507,7 @@ function ProductEmptyState({
 
 function ProductListSkeleton() {
   return (
-    <div className="overflow-hidden">
+    <div className="min-h-0 flex-1 overflow-hidden">
       {Array.from({ length: 6 }, (_, index) => (
         <div
           className="h-[66px] animate-pulse border-b border-[#E8EDF3] bg-[#FAFBFC]"

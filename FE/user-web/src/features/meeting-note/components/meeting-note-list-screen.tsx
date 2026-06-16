@@ -110,7 +110,7 @@ export function MeetingNoteListScreen() {
   };
 
   return (
-    <section className="flex min-h-full flex-col bg-[#FAFAF8]">
+    <section className="flex flex-1 flex-col overflow-hidden bg-[#FAFAF8]">
       {/* 페이지 헤더 */}
       <PageHeader
         breadcrumbs={[{ label: "회의록", icon: FileText }]}
@@ -230,7 +230,7 @@ export function MeetingNoteListScreen() {
       {/* 테이블 카드 */}
       <div className="flex min-h-0 flex-1 gap-5 overflow-hidden px-5 pb-3 pt-1">
         <div className="flex min-w-0 flex-1 flex-col gap-3 overflow-hidden">
-          <div className="overflow-hidden rounded-lg border border-[#E2E5EC] bg-white shadow-sm">
+          <div className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-lg border border-[#E2E5EC] bg-white shadow-sm">
             {/* 헤더 행 */}
             <div className="flex h-9 shrink-0 items-center border-b border-[#E2E5EC] bg-[#F9FAFB] px-4">
               <span className="w-[180px] shrink-0 text-[11px] font-semibold uppercase tracking-wide text-[#9CA3AF]">
@@ -249,7 +249,9 @@ export function MeetingNoteListScreen() {
 
             {/* 목록 내용 */}
             {meetingNotesQuery.isLoading ? (
-              <MeetingNoteListSkeleton />
+              <div className="min-h-0 flex-1 overflow-y-auto">
+                <MeetingNoteListSkeleton />
+              </div>
             ) : meetingNotesQuery.isError ? (
               <MeetingNoteListError
                 error={meetingNotesQuery.error}
@@ -258,14 +260,16 @@ export function MeetingNoteListScreen() {
             ) : meetingNotes.length === 0 ? (
               <MeetingNoteEmptyState hasFilter={hasFilter} />
             ) : (
-              meetingNotes.map((meetingNote) => (
-                <MeetingNoteListRow
-                  isActive={meetingNote.id === selectedMeetingNoteId}
-                  key={meetingNote.id}
-                  meetingNote={meetingNote}
-                  onSelect={setSelectedMeetingNoteId}
-                />
-              ))
+              <div className="min-h-0 flex-1 overflow-y-auto">
+                {meetingNotes.map((meetingNote) => (
+                  <MeetingNoteListRow
+                    isActive={meetingNote.id === selectedMeetingNoteId}
+                    key={meetingNote.id}
+                    meetingNote={meetingNote}
+                    onSelect={setSelectedMeetingNoteId}
+                  />
+                ))}
+              </div>
             )}
           </div>
 

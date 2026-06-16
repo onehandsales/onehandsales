@@ -131,6 +131,16 @@ export function AppShell() {
     /^\/meeting-notes\/[^/]+$/.test(pathname);
   const isSchedulePage =
     pathname === "/schedules" || pathname === "/schedules/week";
+  const isFixedViewportPage =
+    isHome ||
+    isProductDetail ||
+    isDeals ||
+    pathname === "/companies" ||
+    pathname === "/companies/new" ||
+    pathname === "/contacts" ||
+    pathname === "/products" ||
+    pathname === "/products/new" ||
+    pathname === "/meeting-notes";
 
   const hideTopBar =
     isDealListPage ||
@@ -231,7 +241,7 @@ export function AppShell() {
 
           <main
             className={
-              isHome || isProductDetail || isDeals
+              isFixedViewportPage
                 ? "flex flex-1 flex-col overflow-hidden"
                 : "min-h-[calc(100vh-var(--topbar-height))]"
             }

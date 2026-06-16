@@ -156,7 +156,7 @@ export function ContactListScreen() {
   };
 
   return (
-    <section className="flex min-h-full flex-col bg-[#FAFAF8]">
+    <section className="flex flex-1 flex-col overflow-hidden bg-[#FAFAF8]">
       <PageHeader
         breadcrumbs={[{ label: "담당자", icon: IdCard }]}
         actions={[
@@ -295,7 +295,7 @@ export function ContactListScreen() {
       {/* 테이블 + 미리보기 */}
       <div className="flex min-h-0 flex-1 gap-5 overflow-hidden px-5 pb-3 pt-1">
         <div className="flex min-w-0 flex-1 flex-col gap-3 overflow-hidden">
-          <div className="overflow-hidden rounded-lg border border-[#E2E5EC] bg-white shadow-sm">
+          <div className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-lg border border-[#E2E5EC] bg-white shadow-sm">
             {/* 테이블 헤더 (데스크톱) */}
             <div className="hidden h-11 shrink-0 items-center border-b border-[#E2E5EC] bg-[#F9FAFB] px-6 md:flex">
               <div className="w-[130px] shrink-0 text-[12px] font-semibold text-[#64748B]">
@@ -335,7 +335,7 @@ export function ContactListScreen() {
                 onCreate={() => setIsCreateOpen(true)}
               />
             ) : (
-              <div>
+              <div className="min-h-0 flex-1 overflow-y-auto">
                 <div className="hidden md:block">
                   {contactList.items.map((c) => (
                     <ContactRow
