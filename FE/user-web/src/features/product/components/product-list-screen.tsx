@@ -206,7 +206,7 @@ export function ProductListScreen({
             <ProductTableHeaderCell width={320}>제품명</ProductTableHeaderCell>
             <ProductTableHeaderCell width={180}>카테고리</ProductTableHeaderCell>
             <ProductTableHeaderCell width={130}>상태</ProductTableHeaderCell>
-            <ProductTableHeaderCell align="right" width={80}>딜</ProductTableHeaderCell>
+            <ProductTableHeaderCell align="right" width={80}>딜 수</ProductTableHeaderCell>
             <ProductTableHeaderCell align="right" width={128}>등록일</ProductTableHeaderCell>
             <div className="min-w-0 flex-1" />
           </div>
