@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { PageHeader } from "@/components/layout/page-header";
 import { FilterChip, FilterChipGroup } from "@/components/ui/filter-chip";
+import { useAuthSession } from "@/features/auth";
 import { DealCreateDialog } from "@/features/deal/components/deal-create-dialog";
 import { DealDetailPanel } from "@/features/deal/components/deal-detail-panel";
 import { useDealList, useDealStageCounts } from "@/features/deal/hooks/use-deal-list";
@@ -17,6 +18,7 @@ import {
 } from "@/features/deal/types/deal";
 import { Pagination } from "@/components/ui/pagination";
 import { cn } from "@/utils/cn";
+import { formatDateWithOptions } from "@/utils/format";
 
 type StageTab = "ALL" | DealStatus;
 
@@ -40,6 +42,7 @@ export function DealPipelineHomeScreen({
   initialCreateOpen = false,
 }: DealPipelineHomeScreenProps) {
   const navigate = useNavigate();
+  const { user } = useAuthSession();
   const [activeTab, setActiveTab] = useState<StageTab>("ALL");
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState<DealSort>("createdAtDesc");
@@ -60,6 +63,7 @@ export function DealPipelineHomeScreen({
     () => dealsQuery.data?.items ?? [],
     [dealsQuery.data?.items]
   );
+  const displayTimeZone = user?.timeZone ?? getBrowserTimeZoneFallback();
 
   // 기능 : 사용자가 클릭한 딜이 현재 목록에서 사라진 경우에만 상세 선택을 해제합니다.
   useEffect(() => {
@@ -212,11 +216,12 @@ export function DealPipelineHomeScreen({
                   className="flex shrink-0 items-center border-b border-[#E6EAF0] bg-[#FAFBFC] px-6"
                   style={{ height: 44 }}
                 >
-                  <TableHeaderCell width={220}>딜명</TableHeaderCell>
-                  <TableHeaderCell width={170}>회사</TableHeaderCell>
-                  <TableHeaderCell width={150}>거래처</TableHeaderCell>
-                  <TableHeaderCell width={110}>단계</TableHeaderCell>
-                  <TableHeaderCell width={130}>금액</TableHeaderCell>
+                  <TableHeaderCell width={170}>딜명</TableHeaderCell>
+                  <TableHeaderCell width={180}>회사/거래처</TableHeaderCell>
+                  <TableHeaderCell width={96}>단계</TableHeaderCell>
+                  <TableHeaderCell width={104}>금액</TableHeaderCell>
+                  <TableHeaderCell width={190}>다음 행동 마감일</TableHeaderCell>
+                  <TableHeaderCell align="right" width={104}>등록일</TableHeaderCell>
                   <div className="min-w-0 flex-1" />
                 </div>
 
@@ -237,6 +242,7 @@ export function DealPipelineHomeScreen({
                     deals.map((deal) => (
                       <DealListRow
                         deal={deal}
+                        displayTimeZone={displayTimeZone}
                         isActive={deal.id === selectedDealId}
                         key={deal.id}
                         onSelect={setSelectedDealId}
@@ -359,7 +365,11 @@ export function DealPipelineHomeScreen({
           <>
             <div className="grid gap-3 px-4 py-4 pb-4">
               {deals.map((deal) => (
-                <MobileDealCard deal={deal} key={deal.id} />
+                <MobileDealCard
+                  deal={deal}
+                  displayTimeZone={displayTimeZone}
+                  key={deal.id}
+                />
               ))}
             </div>
             {dealsQuery.data ? (
@@ -399,13 +409,17 @@ export function DealPipelineHomeScreen({
 
 function DealListRow({
   deal,
+  displayTimeZone,
   isActive,
   onSelect,
 }: {
   readonly deal: DealListItem;
+  readonly displayTimeZone: string;
   readonly isActive: boolean;
   readonly onSelect: (id: string) => void;
 }) {
+  const contactLabel = formatDealContactLabel(deal);
+
   return (
     <button
       className={cn(
@@ -417,43 +431,50 @@ function DealListRow({
       type="button"
     >
       {/* 딜명 */}
-      <div className="min-w-0 shrink-0" style={{ width: 220 }}>
+      <div className="min-w-0 shrink-0" style={{ width: 170 }}>
         <span className="block truncate text-[13px] font-semibold text-gray-900">
           {deal.dealName}
         </span>
       </div>
 
-      {/* 회사 */}
-      <div className="min-w-0 shrink-0" style={{ width: 170 }}>
-        <span
-          className="inline-flex h-[22px] max-w-full min-w-0 items-center overflow-hidden rounded-full bg-[#F1F5F9] px-2.5 text-[11px] font-semibold text-[#475569]"
-          title={deal.company.companyName}
-        >
-          <span className="min-w-0 truncate whitespace-nowrap">{deal.company.companyName}</span>
+      {/* 회사/거래처 */}
+      <div className="min-w-0 shrink-0 pr-3" style={{ width: 180 }}>
+        <span className="block truncate text-[12px] font-semibold text-[#111827]" title={deal.company.companyName}>
+          {deal.company.companyName}
         </span>
-      </div>
-
-      {/* 거래처 */}
-      <div className="min-w-0 shrink-0" style={{ width: 150 }}>
-        <span
-          className="block truncate text-[12px] font-medium text-[#2563EB]"
-          title={deal.contact.username}
-        >
-          {deal.contact.username}
+        <span className="mt-0.5 block truncate text-[11px] font-medium text-[#2563EB]" title={contactLabel}>
+          {contactLabel}
         </span>
       </div>
 
       {/* 단계 */}
-      <div className="min-w-0 shrink-0" style={{ width: 110 }}>
+      <div className="min-w-0 shrink-0" style={{ width: 96 }}>
         <span className={cn("inline-flex h-6 items-center rounded-full px-2 text-[11px] font-semibold", getDealStatusClass(deal.dealStatus))}>
           {deal.dealStatusLabel}
         </span>
       </div>
 
       {/* 금액 */}
-      <div className="min-w-0 shrink-0" style={{ width: 130 }}>
+      <div className="min-w-0 shrink-0" style={{ width: 104 }}>
         <span className="block truncate text-[12px] font-semibold text-gray-900">
           {deal.dealCost.toLocaleString("ko-KR")}원
+        </span>
+      </div>
+
+      {/* 다음 행동 마감일 */}
+      <div className="min-w-0 shrink-0 pr-3" style={{ width: 190 }}>
+        <span
+          className="block truncate text-[12px] font-semibold text-[#111827]"
+          title={formatDealDateOnly(deal.expectedEndDate)}
+        >
+          {formatDealDateOnly(deal.expectedEndDate)}
+        </span>
+      </div>
+
+      {/* 등록일 */}
+      <div className="min-w-0 shrink-0 text-right" style={{ width: 104 }}>
+        <span className="block truncate text-[11px] font-medium text-[#64748B]">
+          {formatDealCreatedAt(deal.createdAt, displayTimeZone)}
         </span>
       </div>
 
@@ -464,7 +485,15 @@ function DealListRow({
 
 // ── 모바일 카드 ──
 
-function MobileDealCard({ deal }: { readonly deal: DealListItem }) {
+function MobileDealCard({
+  deal,
+  displayTimeZone,
+}: {
+  readonly deal: DealListItem;
+  readonly displayTimeZone: string;
+}) {
+  const contactLabel = formatDealContactLabel(deal);
+
   return (
     <Link
       className="block rounded-2xl border border-border/70 bg-white p-4 shadow-sm transition hover:-translate-y-0.5"
@@ -472,10 +501,13 @@ function MobileDealCard({ deal }: { readonly deal: DealListItem }) {
     >
       <div className="flex items-start justify-between gap-2">
         <div className="min-w-0">
-          <p className="text-xs text-muted-foreground">{deal.company.companyName}</p>
           <h2 className="mt-0.5 truncate text-[15px] font-semibold text-foreground">
             {deal.dealName}
           </h2>
+          <div className="mt-1 min-w-0">
+            <p className="truncate text-[12px] font-semibold text-[#111827]">{deal.company.companyName}</p>
+            <p className="truncate text-[12px] font-medium text-[#2563EB]">{contactLabel}</p>
+          </div>
         </div>
         <span className={cn("shrink-0 rounded-full px-2.5 py-1 text-[11px] font-semibold", getDealStatusClass(deal.dealStatus))}>
           {deal.dealStatusLabel}
@@ -484,12 +516,16 @@ function MobileDealCard({ deal }: { readonly deal: DealListItem }) {
 
       <div className="mt-3 grid grid-cols-2 gap-2 text-sm">
         <div>
-          <p className="text-[11px] text-muted-foreground">거래처</p>
-          <p className="truncate font-semibold">{deal.contact.username}</p>
-        </div>
-        <div>
           <p className="text-[11px] text-muted-foreground">금액</p>
           <p className="truncate font-semibold">{deal.dealCost.toLocaleString("ko-KR")}원</p>
+        </div>
+        <div className="min-w-0">
+          <p className="text-[11px] text-muted-foreground">다음 행동 마감일</p>
+          <p className="truncate font-semibold">{formatDealDateOnly(deal.expectedEndDate)}</p>
+        </div>
+        <div>
+          <p className="text-[11px] text-muted-foreground">등록일</p>
+          <p className="truncate font-semibold">{formatDealCreatedAt(deal.createdAt, displayTimeZone)}</p>
         </div>
       </div>
     </Link>
@@ -506,6 +542,40 @@ function getDealStatusClass(status: DealStatus): string {
     case "NEGOTIATION": return "bg-amber-100 text-amber-700";
     case "WON": return "bg-emerald-100 text-emerald-700";
     case "LOST": return "bg-rose-100 text-rose-700";
+  }
+}
+
+function formatDealContactLabel(deal: DealListItem) {
+  const departmentName = deal.contact.contactDepartment.departmentName.trim();
+  return departmentName
+    ? `${deal.contact.username} ${departmentName}`
+    : deal.contact.username;
+}
+
+function formatDealCreatedAt(value: string, timeZone: string) {
+  return formatDateWithOptions(value, {
+    day: "2-digit",
+    month: "2-digit",
+    timeZone,
+    year: "numeric",
+  });
+}
+
+function formatDealDateOnly(value: string) {
+  const [year, month, day] = value.slice(0, 10).split("-");
+
+  if (!year || !month || !day) {
+    return value || "-";
+  }
+
+  return `${year}. ${month}. ${day}.`;
+}
+
+function getBrowserTimeZoneFallback() {
+  try {
+    return Intl.DateTimeFormat().resolvedOptions().timeZone || "Asia/Seoul";
+  } catch {
+    return "Asia/Seoul";
   }
 }
 
