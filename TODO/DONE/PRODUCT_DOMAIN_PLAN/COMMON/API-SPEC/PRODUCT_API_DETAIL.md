@@ -25,7 +25,7 @@
 - `Product.productPrice`는 필수 정수이며 0 이상만 허용한다.
 - `Product.productCategoryId`는 필수다.
 - `Product.productStatusId`는 필수다.
-- 제품 목록은 20개 단위 페이지네이션이다.
+- 제품 목록은 10개 단위 페이지네이션이다.
 - 제품 목록 검색은 `productName`만 대상으로 한다.
 - 제품 일반/개인 비밀 메모 로그는 10개 단위 cursor 무한스크롤이다.
 - 상태값만 반환하는 생성/수정/삭제 API는 response body가 없다.
@@ -90,7 +90,7 @@
 
 ### 목적
 
-제품 목록 화면에서 제품명 검색, 제품 카테고리 필터, 제품 상태 필터, 20개 단위 페이지네이션을 제공한다.
+제품 목록 화면에서 제품명 검색, 제품 카테고리 필터, 제품 상태 필터, 10개 단위 페이지네이션을 제공한다.
 
 ### Request
 
@@ -103,7 +103,7 @@
 | query | `productCategoryId` | string | 아니오 | UUID | 제품 카테고리 필터 ID |
 | query | `productStatusId` | string | 아니오 | UUID | 제품 상태 필터 ID |
 
-서버는 `pageSize`를 20으로 고정한다. FE는 `pageSize` query를 보내지 않는다.
+서버는 `pageSize`를 10으로 고정한다. FE는 `pageSize` query를 보내지 않는다.
 
 ### 비즈니스 로직 흐름
 
@@ -113,7 +113,7 @@
 4. `productName`이 있으면 `Product.productName` 부분 검색 조건을 적용한다.
 5. `productCategoryId`가 있으면 현재 사용자의 `ProductCategory`인지 확인한 뒤 필터를 적용한다.
 6. `productStatusId`가 있으면 현재 사용자의 `ProductStatus`인지 확인한 뒤 필터를 적용한다.
-7. `createdAt DESC`로 정렬하고 20개 단위로 조회한다.
+7. `createdAt DESC`로 정렬하고 10개 단위로 조회한다.
 8. 목록 응답으로 변환할 때 `productPrice`, `updatedAt`은 넣지 않는다.
 
 ### Response
@@ -125,7 +125,7 @@
 |---|---|---:|---|
 | `items` | `ProductListItemResponse[]` | 아니오 | 제품 목록 |
 | `page` | number | 아니오 | 현재 페이지 |
-| `pageSize` | number | 아니오 | 20 |
+| `pageSize` | number | 아니오 | 10 |
 | `totalCount` | number | 아니오 | 조건에 맞는 전체 제품 수 |
 | `totalPages` | number | 아니오 | 전체 페이지 수 |
 
@@ -1003,7 +1003,7 @@
 
 | API | FE 처리 기준 | BE 처리 기준 | 검증 기준 |
 |---|---|---|---|
-| `GET /api/products` | 제품명, 카테고리, 상태, page 변경 시 목록 query를 재조회한다. 목록에는 `productPrice`, `updatedAt`을 표시하지 않는다. | userId ownership을 기본 조건으로 두고 `createdAt DESC`와 20개 페이지네이션을 적용한다. | 제품명 검색만 동작하고 본인 데이터만 조회되는지 확인한다. |
+| `GET /api/products` | 제품명, 카테고리, 상태, page 변경 시 목록 query를 재조회한다. 목록에는 `productPrice`, `updatedAt`을 표시하지 않는다. | userId ownership을 기본 조건으로 두고 `createdAt DESC`와 10개 페이지네이션을 적용한다. | 제품명 검색만 동작하고 본인 데이터만 조회되는지 확인한다. |
 | `GET /api/products/export/xlsx` | 제품 목록의 현재 검색어와 필터를 전달하되 `page`는 전달하지 않는다. | 동일 검색/필터 조건으로 전체 제품을 조회하고 xlsx 파일을 반환한다. | 검색/필터 반영, ID와 가격 제외, 컬럼명, 다운로드 헤더를 확인한다. |
 | `GET /api/product-categories` | 목록 필터와 생성/수정 form 옵션으로 사용한다. `createdAt`을 기대하지 않는다. | 현재 userId의 `ProductCategory`만 반환한다. | 다른 사용자의 카테고리가 섞이지 않는지 확인한다. |
 | `POST /api/product-categories` | 성공 후 제품 카테고리 목록을 재조회한다. | 같은 userId 안에서 categoryName 중복을 막는다. | 중복 409와 정상 생성 201을 확인한다. |

@@ -83,7 +83,7 @@ TODO/DONE/ADDITIONAL_WORK_PLAN/
 - ADD-007 회사 xlsx export에 `dealCount` 추가: 구현 완료
 - ADD-008 회사 단건 상세용 연결 Deal 전체 목록 API 추가: 구현 완료
 - ADD-009 담당자 단건 상세용 연결 Deal 전체 목록 API 추가: 구현 완료
-- ADD-010 제품 목록 응답에 `dealCount` 추가와 딜 많은 순 정렬 추가: 구현 완료
+- ADD-010 제품 목록 응답에 `dealCount` 추가와 딜 높은순/딜 낮은순 정렬 추가: 구현 완료
 - ADD-011 제품 xlsx export에 `dealCount` 추가: 구현 완료
 - ADD-012 제품 단건 상세용 연결 Deal 전체 목록 API 추가: 구현 완료
 - Frontend 반영: 구현 완료. User Web 회사/담당자/제품 화면에 ADD-001~012의 count, export, 연결 목록 요구사항을 반영했다.
@@ -109,7 +109,7 @@ TODO/DONE/ADDITIONAL_WORK_PLAN/
 - `GET /api/companies/export/xlsx` 파일에 `딜 수` 컬럼을 추가한다.
 - `GET /api/companies/:companyId/deals` API를 추가해 회사에 연결된 Deal 전체 목록을 반환한다.
 - `GET /api/contacts/:contactId/deals` API를 추가해 담당자에 연결된 Deal 전체 목록을 반환한다.
-- `GET /api/products` 응답에 제품별 `dealCount`를 추가하고 `sort=dealCountDesc`를 지원한다.
+- `GET /api/products` 응답에 제품별 `dealCount`를 추가하고 `sort=dealCountDesc|dealCountAsc`를 지원한다.
 - `GET /api/products/export/xlsx` 파일에 `딜 수` 컬럼을 추가한다.
 - `GET /api/products/:productId/deals` API를 추가해 제품에 연결된 Deal 전체 목록을 반환한다.
 - 모든 export API는 목록 페이지의 현재 검색어와 필터 조건을 함께 적용하고, `page`만 제외한다.
@@ -134,7 +134,7 @@ TODO/DONE/ADDITIONAL_WORK_PLAN/
 - 회사 단건: 연결 Contact 전체 목록을 보여 사용자가 회사 상세에서 관련 담당자를 빠르게 확인하게 한다.
 - 회사 단건: 연결 Deal 전체 목록을 보여 사용자가 회사 상세에서 관련 딜을 빠르게 확인하게 한다.
 - 담당자 단건: 연결 Deal 전체 목록을 보여 사용자가 담당자 기준 진행 딜을 확인하게 한다.
-- 제품 목록: `dealCount`와 딜 많은 순 정렬을 제공해 어떤 제품이 많이 제안/포함되는지 비교하게 한다.
+- 제품 목록: `dealCount`와 딜 높은순/딜 낮은순 정렬을 제공해 어떤 제품이 많이 제안/포함되는지 비교하게 한다.
 - 제품 단건: 연결 Deal 전체 목록을 보여 사용자가 제품 기준 진행 딜을 확인하게 한다.
 - 회사/담당자/제품 목록: 현재 검색어와 필터 기준으로 xlsx를 다운로드하게 한다.
 - export UI: JSON 응답이 아니라 blob 다운로드로 처리하고, `page`를 제외한 현재 검색/필터 query만 전달한다.
@@ -152,7 +152,7 @@ TODO/DONE/ADDITIONAL_WORK_PLAN/
 - `GET /api/companies/export/xlsx`가 `딜 수` 컬럼을 포함한다.
 - `GET /api/companies/:companyId/deals` 응답의 `items[]`가 검증된다.
 - `GET /api/contacts/:contactId/deals` 응답의 `items[]`가 검증된다.
-- `GET /api/products` 응답의 `items[].dealCount`와 `sort=dealCountDesc`가 검증된다.
+- `GET /api/products` 응답의 `items[].dealCount`와 `sort=dealCountDesc|dealCountAsc`가 검증된다.
 - `GET /api/products/export/xlsx`가 `딜 수` 컬럼을 포함한다.
 - `GET /api/products/:productId/deals` 응답의 `items[]`가 검증된다.
 - 기존 Company 목록 응답의 페이지네이션 의미가 유지된다.

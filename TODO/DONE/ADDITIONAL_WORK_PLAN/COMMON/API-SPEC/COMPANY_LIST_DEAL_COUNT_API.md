@@ -77,9 +77,9 @@ dealCount: number
     }
   ],
   "page": 1,
-  "pageSize": 20,
+  "pageSize": 10,
   "totalCount": 100,
-  "totalPages": 5
+  "totalPages": 10
 }
 ```
 

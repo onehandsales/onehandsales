@@ -142,6 +142,8 @@
 
 - 딜 목록/검색/필터/페이지네이션
 - 딜 목록 정렬: `createdAtDesc`, `dealCostDesc`, `dealCostAsc`, `expectedEndDateAsc`
+- 딜 목록 필터: `search`, `companyId`, `contactId`, `dealStatus`
+- 딜 stage count 필터: `search`, `companyId`, `contactId`
 - 단계별 count
 - 딜 상세/생성/수정
 - 회사/담당자/제품 옵션 조회

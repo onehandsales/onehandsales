@@ -61,6 +61,8 @@ Backend Deal 도메인 DB와 User API를 구현한다.
 - 타 사용자 Deal/FK/Log 접근은 404를 반환한다.
 - 목록 응답은 nested company/contact/latestFollowingAction을 사용한다.
 - 목록 응답에는 product가 없다.
+- 목록은 `search`, `companyId`, `contactId`, `dealStatus`, `sort` query를 지원한다.
+- stage counts는 `search`, `companyId`, `contactId` query를 지원한다.
 - 상세 응답은 nested products 배열을 포함한다.
 - 생성 API는 Deal, DealProduct, 최초 다음 행동 로그를 함께 만든다.
 - 생성/수정 API는 contact가 company에 속하는지 검증한다.

@@ -84,7 +84,7 @@
 - [x] 회의록 생성/수정에서 회사와 담당자는 1개 이상 요구된다.
 - [x] 제품과 딜은 선택 연결로 처리된다.
 - [x] 생성/수정 transaction 실패 시 회의록 본문과 연결 row가 함께 rollback된다.
-- [x] 목록 pagination은 `pageSize=20`, `totalCount`, `totalPages`를 사용한다.
+- [x] 목록 pagination은 `pageSize=10`, `totalCount`, `totalPages`를 사용한다.
 - [x] 완료 후 `TODO_LOG`에 실행한 명령, 검증 결과, 남은 후속 범위를 기록한다.
 
 완료 기록:

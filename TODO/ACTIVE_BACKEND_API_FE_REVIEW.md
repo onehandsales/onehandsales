@@ -10,7 +10,7 @@ Frontend 작업자는 이 문서를 먼저 보고 어떤 API가 준비되어 있
 
 ## 2. 검토 기준
 
-- 검토일: 2026-06-15 (최초 2026-06-12, 업데이트)
+- 검토일: 2026-06-16 (최초 2026-06-12, 업데이트)
 - 검토 대상: `TODO/DONE/**`을 제외한 `TODO` 활성 계획
 - Backend 구현 대조 기준: `BE/src/modules/auth`, `BE/src/modules/user`, `BE/src/modules/company`, `BE/src/modules/contact`, `BE/src/modules/product`, `BE/src/modules/deal`, `BE/src/modules/schedule`, `BE/src/modules/meeting-note`, `BE/prisma/schema.prisma`
 - API 명세 기준: 각 활성 계획의 `COMMON/API-SPEC/*`
@@ -153,7 +153,7 @@ Frontend 목적:
 
 - 제품 목록에서 제품명 검색, 카테고리/상태 필터, 10개 단위 페이지네이션을 제공한다.
 - 목록에는 제품명, 카테고리, 상태, 등록일, `dealCount`를 표시하고 가격과 최근수정일은 표시하지 않는다.
-- 제품 목록 정렬에는 `sort=dealCountDesc` 딜 많은 순을 반영한다.
+- 제품 목록 정렬에는 `sort=dealCountDesc` 딜 높은순과 `sort=dealCountAsc` 딜 낮은순을 반영한다.
 - 제품 생성/상세/수정, 일반 메모 로그, 개인 비밀 메모 로그를 API 계약에 맞게 구현한다.
 - 제품 상세에서 `GET /api/products/:productId/deals` 결과를 연결 딜 목록으로 표시한다.
 - 제품 목록 내보내기 버튼은 현재 검색어, 필터, 정렬을 `GET /api/products/export/xlsx`에 전달하되 `page`는 제거한다.
@@ -181,12 +181,14 @@ Frontend 목적:
 Frontend 목적:
 
 - 딜 목록 페이지에서 단계별 개수, 10개 페이지네이션 목록, 선택 딜 상세를 split view로 제공한다.
-- 목록은 딜 이름 검색, 딜 상태 필터, 최신순/금액 높은 순/금액 낮은 순/마감일 빠른 순 정렬을 지원한다.
+- 목록은 딜 이름 검색, 회사/담당자 필터, 딜 상태 필터, 최신순/금액 높은 순/금액 낮은 순/마감일 빠른 순 정렬을 지원한다.
+- stage counts는 `search`, `companyId`, `contactId`를 반영하고, 목록/export는 추가로 `dealStatus`, `sort`를 반영한다.
+- 담당자 필터 select는 `GET /api/deals/contact-options` 응답의 `companyId`로 회사 선택 시 같은 회사 담당자만 노출한다.
 - FK 데이터는 nested object로 받은 뒤 회사명, 담당자명/부서, 제품명을 화면에서 조합한다.
 - 목록에는 제품을 표시하지 않고 상세에는 `products` 배열의 제품 목록을 표시한다.
 - 생성/수정에서는 `productIds` 배열을 보내 딜-제품 연결을 관리한다.
 - 다음 행동 로그와 메모 로그는 상세 영역에서 등록일 DESC로 표시한다.
-- 딜 export는 현재 검색/필터/정렬을 반영하되 page를 제거하고, id/제품/최근수정일 컬럼을 포함하지 않는다.
+- 딜 export는 현재 검색/회사/담당자/상태/정렬을 반영하되 page를 제거하고, id/제품/최근수정일 컬럼을 포함하지 않는다.
 
 ### Schedule
 
@@ -219,7 +221,7 @@ Frontend 목적:
 Frontend 목적:
 
 - 회의록 목록/상세/생성/수정 화면을 수동 MeetingNote API 계약으로 연결한다.
-- 목록은 `page`, `companyIds`, `contactIds`, `sort`, `totalPages` 기준으로 동작한다.
+- 목록은 `page`, `companyIds`, `contactIds`, `meetingDate`, `sort`, `totalPages` 기준으로 동작한다.
 - 생성/수정 request는 `timeZone`, `rawText`, `stageText`, 단일 `dealId`를 보내지 않는다.
 - 회사/담당자는 필수 연결, 제품/딜은 선택 연결로 처리한다.
 

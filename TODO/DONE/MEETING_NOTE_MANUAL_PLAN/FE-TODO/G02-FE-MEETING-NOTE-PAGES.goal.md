@@ -46,7 +46,7 @@ User Web 회의록 목록/상세/생성/수정 화면을 Backend MeetingNote API
 ## 5. Acceptance Criteria
 
 - `/meeting-notes` 진입 시 회의록 목록이 조회된다.
-- 목록 query는 `page`, `companyIds`, `contactIds`, `sort`만 보낸다.
+- 목록 query는 `page`, `companyIds`, `contactIds`, `meetingDate`, `sort`를 보낸다.
 - 목록 response의 `totalPages`로 pagination을 렌더링한다.
 - 목록에서 회사/담당자 필터를 선택하고 해제할 수 있다.
 - 제품/딜 summary는 연결이 없어도 화면이 깨지지 않는다.

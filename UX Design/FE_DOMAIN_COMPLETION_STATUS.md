@@ -58,10 +58,12 @@
 - 회사/담당자/제품/딜/회의록 목록 페이지네이션은 `hasNext`가 아니라 `totalPages`, `totalCount` 기준이다.
 - 회사/담당자/제품/딜/회의록 목록은 10개 단위 page-number pagination을 기준으로 한다.
 - `hasNext`는 회사/담당자/제품 상세의 메모 로그처럼 cursor/infinite loading 계약에서만 사용한다.
-- 회사 목록 필터는 제품 `category select`와 같은 방식으로 `useCompanyFields`, `useCompanyRegions` 전체 조회 결과를 `분야 ▾`, `지역 ▾` select 옵션으로 사용한다.
-- 담당자 목록 필터는 `useContactDepartments`, `useContactJobGrades` 전체 조회 결과를 `부서 ▾`, `직급 ▾` select 옵션으로 사용한다.
-- 목록 페이지에서 회사 분야/지역, 담당자 부서/직급 생성/삭제 UI는 제공하지 않는다. 해당 관리 기능은 상세 또는 별도 관리 UX에서 다룬다.
-- 회사/담당자/제품/딜 목록은 조밀한 `Controls Bar + Table Card + Pagination` 문법으로 정렬되어 있다.
+- 회사 목록 필터는 `useCompanyFields`, `useCompanyRegions` 전체 조회 결과를 `분야`, `지역` select 옵션으로 사용하고, select 안의 `+ 추가`로 회사 분류 관리 다이얼로그를 열 수 있다.
+- 담당자 목록 필터는 `useContactDepartments`, `useContactJobGrades` 전체 조회 결과를 `부서`, `직급` select 옵션으로 사용하고, select 안의 `+ 추가`로 담당자 분류 관리 다이얼로그를 열 수 있다.
+- 제품 목록 필터는 `useProductCategories`, `useProductStatuses` 전체 조회 결과를 `카테고리`, `판매 상태` select 옵션으로 사용하고, select 안의 `+ 추가`로 제품 분류 관리 다이얼로그를 열 수 있다.
+- 딜 목록 필터는 검색 다음에 `전체`, `회사`, `담당자`, 정렬 select 순서로 제공한다. 회사/담당자는 `GET /api/deals/company-options`, `GET /api/deals/contact-options`를 사용하며, 회사 선택 시 담당자 select는 같은 회사의 담당자로 좁힌다.
+- 회사/담당자/제품/딜/회의록 목록은 조밀한 `Controls Bar + Table Card + Pagination` 문법으로 정렬되어 있다.
+- 공용 `Pagination` 높이는 48px(`h-12`)이고, 딜/회사/담당자/회의록 미리보기 header와 목록 table header는 44px(`h-11`) 기준이다.
 - 회사 목록 정렬 select: `최신순`, `담당자 높은순`, `담당자 낮은순`, `딜 높은순`, `딜 낮은순`.
 - 담당자 목록 정렬 select: `최신순`, `이름순`.
 - 제품 목록 정렬 select: `최신순`, `딜 높은순`, `딜 낮은순`.

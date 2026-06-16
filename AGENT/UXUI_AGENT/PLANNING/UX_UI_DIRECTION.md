@@ -280,8 +280,12 @@ Rules:
   - render a compact select control
   - pass the selected option id into the paginated list query
 - Contact department and job grade filters follow the same select pattern.
-- List pages do not show create/delete management UI for these option tables. Option creation/deletion belongs in detail/settings/management flows.
+- Company/contact/product filter selects include a `+ 추가` option that opens the matching taxonomy management dialog.
+- Newly created taxonomy options should be selected in the list filter immediately when possible.
+- Deal list controls are ordered as deal-name search, `전체`, company select, contact select, and sort select.
+- Deal stage counts should receive the same search/company/contact filters as the current list context.
 - Company/contact/product/deal operational lists should share the dense `Controls Bar + Table Card + Pagination` visual grammar where possible.
+- Shared list size baseline: `Pagination` is 48px high, preview headers and table headers are 44px high.
 
 ## 9B. Shared-First Implementation Order
 

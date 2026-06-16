@@ -2,7 +2,7 @@
 
 ## /goal 입력문
 
-아래 문서를 먼저 읽고, 제품 목록 페이지네이션 API에 제품별 딜 수 `dealCount`와 `딜 많은 순` 정렬을 추가해줘.
+아래 문서를 먼저 읽고, 제품 목록 페이지네이션 API에 제품별 딜 수 `dealCount`와 `딜 높은순`, `딜 낮은순` 정렬을 추가해줘.
 
 필수 참고 문서:
 
@@ -21,7 +21,7 @@
 
 ## 목표
 
-`GET /api/products` 응답의 `items[]`에 `dealCount: number`를 추가하고, query `sort=dealCountDesc`를 지원한다.
+`GET /api/products` 응답의 `items[]`에 `dealCount: number`를 추가하고, query `sort=dealCountDesc|dealCountAsc`를 지원한다.
 
 ## 구현 범위
 
@@ -40,6 +40,7 @@
 - 현재 사용자 소유 `DealProduct`만 집계한다.
 - `sort` 기본값은 `createdAtDesc`다.
 - `sort=dealCountDesc`는 딜 수 DESC, `createdAt DESC`, `id DESC` 순서다.
+- `sort=dealCountAsc`는 딜 수 ASC, `createdAt DESC`, `id DESC` 순서다.
 - `totalCount`는 제품 개수 기준을 유지한다.
 
 ## 구현 제한
@@ -69,6 +70,7 @@ pnpm run build
 - 딜에 포함되지 않은 제품은 `dealCount: 0`을 반환한다.
 - 딜에 포함된 제품은 실제 연결 딜 수를 반환한다.
 - `sort=dealCountDesc`에서 딜 수가 큰 제품이 먼저 나온다.
+- `sort=dealCountAsc`에서 딜 수가 작은 제품이 먼저 나온다.
 - 딜 수 동률이면 `createdAt DESC`, `id DESC` 기준이다.
 - 검색/필터/정렬이 함께 적용된다.
 - 다른 사용자의 딜 연결 수가 섞이지 않는다.

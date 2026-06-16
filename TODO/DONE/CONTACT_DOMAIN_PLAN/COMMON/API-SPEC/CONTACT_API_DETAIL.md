@@ -25,7 +25,7 @@
 - `Contact.companyId`는 필수다.
 - `Contact.mobile`은 `010-1111-2222` 형식만 허용한다.
 - `Contact.email`은 이메일 형식만 허용한다.
-- 담당자 목록은 20개 단위 페이지네이션이다.
+- 담당자 목록은 10개 단위 페이지네이션이다.
 - 담당자 일반/개인 비밀 메모 로그는 10개 단위 cursor 무한스크롤이다.
 - 상태값만 반환하는 생성/수정/삭제 API는 response body가 없다.
 - 개인 비밀 메모 원문은 DB, application log, audit log에 저장하거나 출력하지 않는다.
@@ -91,7 +91,7 @@
 
 ### 목적
 
-담당자 목록 화면에서 담당자 이름 검색, 회사 필터, 담당자 부서 필터, 담당자 직급 필터, 20개 단위 페이지네이션을 제공한다.
+담당자 목록 화면에서 담당자 이름 검색, 회사 필터, 담당자 부서 필터, 담당자 직급 필터, 10개 단위 페이지네이션을 제공한다.
 
 ### Request
 
@@ -105,7 +105,7 @@
 | query | `contactDepartmentId` | string | 아니오 | UUID | 담당자 부서 필터 ID |
 | query | `contactJobGradeId` | string | 아니오 | UUID | 담당자 직급 필터 ID |
 
-서버는 `pageSize`를 20으로 고정한다. FE는 `pageSize` query를 보내지 않는다.
+서버는 `pageSize`를 10으로 고정한다. FE는 `pageSize` query를 보내지 않는다.
 
 ### 비즈니스 로직 흐름
 
@@ -116,7 +116,7 @@
 5. `contactDepartmentId`가 있으면 현재 사용자의 담당자 부서인지 검증한다.
 6. `contactJobGradeId`가 있으면 현재 사용자의 담당자 직급인지 검증한다.
 7. `userId` 조건을 기본으로 적용한다.
-8. `createdAt DESC`, `id DESC`로 정렬하고 20개 단위로 조회한다.
+8. `createdAt DESC`, `id DESC`로 정렬하고 10개 단위로 조회한다.
 9. 목록 응답으로 변환할 때 `updatedAt`은 넣지 않는다.
 
 ### Response
@@ -129,7 +129,7 @@
 |---|---|---:|---|
 | `items` | `ContactListItemResponse[]` | 아니오 | 담당자 목록 |
 | `page` | number | 아니오 | 현재 페이지 |
-| `pageSize` | number | 아니오 | 20 |
+| `pageSize` | number | 아니오 | 10 |
 | `totalCount` | number | 아니오 | 조건에 맞는 전체 담당자 수 |
 | `totalPages` | number | 아니오 | 전체 페이지 수 |
 
@@ -178,7 +178,7 @@
     }
   ],
   "page": 1,
-  "pageSize": 20,
+  "pageSize": 10,
   "totalCount": 1,
   "totalPages": 1
 }

@@ -24,7 +24,7 @@ G07, G09, G11, G13-G16의 화면 명세는 `COMMON/GOAL-SPECS`에서 이 API를 
 | 필드 | 타입 | 필수 | 설명 |
 |---|---|---|---|
 | `page` | number | 선택 | 기본 1 |
-| `pageSize` | number | 선택 | 기본 20, 최대 100 |
+| `pageSize` | number | 선택 | 현재 User Web 목록 API는 서버 고정 10개 기준이며 FE는 `pageSize`를 보내지 않는다. |
 | `search` | string | 선택 | 이름, 회사명, 연락처 등 키워드 |
 | `includeDeleted` | boolean | 선택 | 휴지통 포함 여부. 기본 false |
 

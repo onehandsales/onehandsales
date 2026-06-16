@@ -74,7 +74,7 @@ type MeetingNoteListItemResponse = {
 type MeetingNotePageResponse = {
   items: MeetingNoteListItemResponse[];
   page: number;
-  pageSize: 20;
+  pageSize: 10;
   totalCount: number;
   totalPages: number;
 };
@@ -180,8 +180,9 @@ type MeetingNoteDealDetailResponse = {
 | `companyIds` | string[] | 아니오 | UUID 배열 | 반복 query로 전송. 같은 그룹 OR |
 | `contactIds` | string[] | 아니오 | UUID 배열 | 반복 query로 전송. 같은 그룹 OR |
 | `sort` | string | 아니오 | `createdAtDesc`, `meetingAtDesc` | 기본값 `createdAtDesc` |
+| `meetingDate` | string | 아니오 | `YYYY-MM-DD` | 사용자 timezone 기준 회의일 필터 |
 
-FE는 `pageSize`를 보내지 않는다. 서버는 `pageSize=20`으로 고정한다.
+FE는 `pageSize`를 보내지 않는다. 서버는 `pageSize=10`으로 고정한다.
 
 ### 비즈니스 로직
 
@@ -192,10 +193,11 @@ FE는 `pageSize`를 보내지 않는다. 서버는 `pageSize=20`으로 고정한
 5. `companyIds`는 같은 그룹 안에서 OR 조건으로 적용한다.
 6. `contactIds`는 같은 그룹 안에서 OR 조건으로 적용한다.
 7. 회사 필터와 담당자 필터를 동시에 쓰면 두 그룹은 AND 조건으로 조합한다.
-8. `sort=createdAtDesc`이면 `createdAt DESC`, `id DESC`로 정렬한다.
-9. `sort=meetingAtDesc`이면 `meetingAt DESC NULLS LAST`, `createdAt DESC`, `id DESC`로 정렬한다.
-10. `MeetingNote.id` 기준으로 page 대상 id를 먼저 구해 join 중복을 막는다.
-11. page id에 대한 연결 row를 조회해 summary를 만든다.
+8. `meetingDate`가 있으면 사용자 timezone 기준 해당 날짜의 회의 시각 범위로 필터링한다.
+9. `sort=createdAtDesc`이면 `createdAt DESC`, `id DESC`로 정렬한다.
+10. `sort=meetingAtDesc`이면 `meetingAt DESC NULLS LAST`, `createdAt DESC`, `id DESC`로 정렬한다.
+11. `MeetingNote.id` 기준으로 page 대상 id를 먼저 구해 join 중복을 막는다.
+12. page id에 대한 연결 row를 조회해 summary를 만든다.
 
 ### Response
 
@@ -218,7 +220,7 @@ FE는 `pageSize`를 보내지 않는다. 서버는 `pageSize=20`으로 고정한
 | `items[].deals.count` | number | 아니오 | 연결 딜 수 |
 | `items[].createdAt` | string | 아니오 | 등록일 ISO string |
 | `page` | number | 아니오 | 현재 페이지 |
-| `pageSize` | number | 아니오 | 20 |
+| `pageSize` | number | 아니오 | 10 |
 | `totalCount` | number | 아니오 | 전체 개수 |
 | `totalPages` | number | 아니오 | 전체 페이지 수 |
 

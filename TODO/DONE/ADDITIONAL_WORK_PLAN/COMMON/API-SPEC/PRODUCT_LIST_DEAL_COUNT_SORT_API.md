@@ -2,7 +2,7 @@
 
 ## 1. 목적
 
-제품 목록 페이지네이션 API 응답에 제품별 연결 딜 수 `dealCount`를 추가하고, 정렬 조건에 딜 많은 순을 추가한다.
+제품 목록 페이지네이션 API 응답에 제품별 연결 딜 수 `dealCount`를 추가하고, 정렬 조건에 딜 높은순과 딜 낮은순을 추가한다.
 
 작성 기준:
 
@@ -36,7 +36,7 @@ dealCount: number
 추가 query:
 
 ```ts
-sort?: "createdAtDesc" | "dealCountDesc"
+sort?: "createdAtDesc" | "dealCountDesc" | "dealCountAsc"
 ```
 
 ## 4. Request
@@ -59,7 +59,8 @@ sort?: "createdAtDesc" | "dealCountDesc"
 | 값 | 의미 |
 |---|---|
 | `createdAtDesc` | 등록일 최신순. 기존 기본 정렬 |
-| `dealCountDesc` | 연결 딜 많은 순. 동률이면 `createdAt DESC`, `id DESC` |
+| `dealCountDesc` | 연결 딜 높은순. 동률이면 `createdAt DESC`, `id DESC` |
+| `dealCountAsc` | 연결 딜 낮은순. 동률이면 `createdAt DESC`, `id DESC` |
 
 ## 5. Response
 
@@ -86,9 +87,9 @@ sort?: "createdAtDesc" | "dealCountDesc"
     }
   ],
   "page": 1,
-  "pageSize": 20,
+  "pageSize": 10,
   "totalCount": 100,
-  "totalPages": 5
+  "totalPages": 10
 }
 ```
 
@@ -107,7 +108,8 @@ sort?: "createdAtDesc" | "dealCountDesc"
 5. `DealProduct.productId = Product.id`, `DealProduct.userId = currentUserId` 기준으로 연결 딜 수를 집계한다.
 6. `sort=createdAtDesc`이면 기존처럼 `Product.createdAt DESC`, `Product.id DESC`로 정렬한다.
 7. `sort=dealCountDesc`이면 연결 딜 수 DESC, `Product.createdAt DESC`, `Product.id DESC`로 정렬한다.
-8. 20개 단위 페이지네이션을 적용한다.
+8. `sort=dealCountAsc`이면 연결 딜 수 ASC, `Product.createdAt DESC`, `Product.id DESC`로 정렬한다.
+9. 10개 단위 페이지네이션을 적용한다.
 9. 각 item에 `dealCount`를 포함해 반환한다.
 
 ## 7. 연결 DB 스키마
@@ -154,13 +156,13 @@ sort?: "createdAtDesc" | "dealCountDesc"
 FE:
 
 - 제품 목록 item에서 `dealCount`를 `딜 수`로 표시한다.
-- 정렬 UI에 `딜 많은 순`을 추가하고 `sort=dealCountDesc`를 보낸다.
+- 정렬 UI에 `딜 높은순`, `딜 낮은순`을 추가하고 각각 `sort=dealCountDesc`, `sort=dealCountAsc`를 보낸다.
 - 검색/필터/정렬 변경 시 page를 1로 초기화한다.
 
 BE:
 
 - `dealCount` 계산이 N+1이 되지 않도록 group by 또는 relation count 집계를 사용한다.
-- `dealCountDesc` 정렬은 count 집계 결과와 안정적인 보조 정렬을 함께 적용한다.
+- `dealCountDesc`, `dealCountAsc` 정렬은 count 집계 결과와 안정적인 보조 정렬을 함께 적용한다.
 - 다른 사용자의 `DealProduct`가 집계에 섞이지 않도록 `userId` 조건을 유지한다.
 
 ## 12. 검증 기준
@@ -168,5 +170,6 @@ BE:
 - 딜에 포함되지 않은 제품은 `dealCount: 0`을 반환한다.
 - 딜에 포함된 제품은 실제 연결 딜 수를 반환한다.
 - `sort=dealCountDesc`에서 딜 수가 큰 제품이 먼저 나온다.
+- `sort=dealCountAsc`에서 딜 수가 작은 제품이 먼저 나온다.
 - 동률이면 `createdAt DESC`, `id DESC` 기준으로 안정적으로 정렬된다.
 - 검색/필터 조건과 정렬이 함께 적용된다.

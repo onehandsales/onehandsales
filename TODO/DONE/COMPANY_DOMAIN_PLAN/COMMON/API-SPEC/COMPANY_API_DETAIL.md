@@ -21,7 +21,7 @@
 - 모든 조회/생성/수정/삭제는 현재 로그인한 `userId` ownership을 검증한다.
 - response body 없는 성공 응답은 FE가 status code만 보고 성공 처리한다.
 - 날짜는 ISO 8601 string으로 반환한다.
-- 회사 목록 page size는 20개 고정이다.
+- 회사 목록 page size는 10개 고정이다.
 - 회사 메모 로그와 개인 비밀 메모 로그 page size는 10개 고정이다.
 - 회사 개인 비밀 메모는 API에서는 `memo`를 사용하지만 DB에는 평문으로 저장하지 않는다.
 
@@ -127,7 +127,7 @@
 | `items[].contactCount` | number | 아니오 | 해당 회사에 연결된 담당자 수 |
 | `items[].createdAt` | string | 아니오 | 회사 등록일 |
 | `page` | number | 아니오 | 현재 페이지 |
-| `pageSize` | number | 아니오 | 20 |
+| `pageSize` | number | 아니오 | 10 |
 | `totalCount` | number | 아니오 | 전체 개수 |
 | `totalPages` | number | 아니오 | 전체 페이지 수 |
 

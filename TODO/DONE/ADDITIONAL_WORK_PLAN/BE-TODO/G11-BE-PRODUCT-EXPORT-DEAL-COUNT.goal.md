@@ -19,7 +19,7 @@
 
 ## 목표
 
-`GET /api/products/export/xlsx` 파일에 `딜 수` 컬럼을 추가하고, 필요 시 `sort=dealCountDesc`를 export에도 반영한다.
+`GET /api/products/export/xlsx` 파일에 `딜 수` 컬럼을 추가하고, 필요 시 `sort=dealCountDesc|dealCountAsc`를 export에도 반영한다.
 
 ## 구현 범위
 
@@ -37,7 +37,7 @@
 - export에는 `page`를 적용하지 않는다.
 - 파일 컬럼에 `딜 수`를 추가한다.
 - `딜 수`는 현재 사용자 소유 `DealProduct`만 집계한다.
-- `sort=dealCountDesc`가 전달되면 딜 수 DESC 기준으로 파일 row를 정렬한다.
+- `sort=dealCountDesc`가 전달되면 딜 수 DESC 기준으로, `sort=dealCountAsc`가 전달되면 딜 수 ASC 기준으로 파일 row를 정렬한다.
 
 ## 구현 제한
 

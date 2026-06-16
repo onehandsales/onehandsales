@@ -32,7 +32,7 @@ Backend G06-G12로 구현된 연결 딜 API와 응답 변경은 `G01-FE-DEAL-COU
 - 회사 export: 변경된 `딜 수` 컬럼은 기존 blob 다운로드 흐름으로 받는다.
 - 회사 단건: `GET /api/companies/:companyId/deals`로 연결 딜 목록을 표시한다.
 - 담당자 단건: `GET /api/contacts/:contactId/deals`로 연결 딜 목록을 표시한다.
-- 제품 목록: `dealCount` 표시와 `sort=dealCountDesc` 딜 많은 순 정렬을 추가한다.
+- 제품 목록: `dealCount` 표시와 `sort=dealCountDesc|dealCountAsc` 딜 높은순/딜 낮은순 정렬을 추가한다.
 - 제품 export: 현재 검색/필터/정렬 query를 전달하고 `page`는 제거한다.
 - 제품 단건: `GET /api/products/:productId/deals`로 연결 딜 목록을 표시한다.
 

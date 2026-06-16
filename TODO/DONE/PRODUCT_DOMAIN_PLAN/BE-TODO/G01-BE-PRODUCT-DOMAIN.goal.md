@@ -115,7 +115,7 @@
 - 모든 API는 인증된 `userId` 소유 데이터만 접근한다.
 - 제품 목록 검색은 `productName`만 대상으로 한다.
 - 제품 목록 필터는 `productCategoryId`, `productStatusId`만 지원한다.
-- 제품 목록 페이지 크기 기본값은 20개다.
+- 제품 목록 페이지 크기 기본값은 10개다.
 - 제품 목록은 `createdAt DESC`로 정렬한다.
 - 제품 목록 응답에는 `productPrice`, `updatedAt`을 포함하지 않는다.
 - 필터 옵션 API는 드롭다운 선택에 필요한 `id`와 표시명을 반환한다.

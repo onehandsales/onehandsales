@@ -150,7 +150,10 @@ Current response notes:
 - `GET /api/companies` supports `sort=createdAtDesc|contactCountDesc|contactCountAsc|dealCountDesc|dealCountAsc`.
 - `GET /api/contacts` supports `sort=createdAtDesc|usernameAsc`.
 - `GET /api/products` returns `items[].dealCount` and supports `sort=createdAtDesc|dealCountDesc|dealCountAsc`.
-- `GET /api/deals` supports `sort=createdAtDesc|dealCostDesc|dealCostAsc|expectedEndDateAsc`.
+- `GET /api/deals/stage-counts` supports `search`, `companyId`, and `contactId` filters.
+- `GET /api/deals` supports `search`, `companyId`, `contactId`, `dealStatus`, and `sort=createdAtDesc|dealCostDesc|dealCostAsc|expectedEndDateAsc`.
+- `GET /api/deals/export/xlsx` supports the same deal search/company/contact/status/sort filters as the list API, except `page`.
+- `GET /api/deals/contact-options` includes `companyId` so User Web can narrow contact options after a company is selected.
 - Company and Product xlsx export files include `딜 수`; Product export also supports the same product list sort query.
 - Company/Contact/Product linked Deal list APIs return all linked deals ordered by `createdAt DESC`, `id DESC`.
 - `GET /api/schedules` uses local date range query values plus IANA `timeZone` and returns UTC ISO strings.

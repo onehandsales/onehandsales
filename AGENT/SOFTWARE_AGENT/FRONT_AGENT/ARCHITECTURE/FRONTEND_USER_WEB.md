@@ -278,9 +278,16 @@ src/features/company/
 - `src/features/meeting-note`는 `TODO/DONE/MEETING_NOTE_MANUAL_PLAN/COMMON/API-SPEC/MEETING_NOTE_API.md`의 수동 회의록 계약을 따른다. 단일 `dealId`, `stageText`, `hasNext`, request `timeZone`, request `rawText`, AI/STT 생성, 삭제/복구 계약은 현재 User Web 기준이 아니다.
 - Page-number list pagination은 `pageSize=10`, `totalPages`, `totalCount`를 기준으로 한다. 공용 `Pagination`에 `hasNext`를 넘기지 않는다.
 - Company/Contact/Product/Deal/MeetingNote 목록은 10개 단위로 페이지를 나누며, User Web은 서버 응답의 `pageSize`를 표시/계산 기준으로 사용한다.
+- 공용 `Pagination`은 48px(`h-12`) 높이를 기준으로 하고, Deal/Company/Contact/MeetingNote 미리보기 header와 목록 table header는 44px(`h-11`) 기준이다.
+- Company/Contact/Product 목록 필터 select에는 `+ 추가` 옵션이 있으며, 선택 시 각 분류 관리 다이얼로그를 열어 옵션을 추가/삭제하고 새 옵션을 즉시 필터로 선택할 수 있다.
+- Product 목록 정렬 label은 `최신순`, `딜 높은순`, `딜 낮은순`이며 code는 `createdAtDesc`, `dealCountDesc`, `dealCountAsc`다.
+- Deal 목록 control 순서는 `딜명 검색`, `전체`, `회사`, `담당자`, 정렬 select다. `전체`는 검색, 회사, 담당자, 정렬, stage, page를 기본값으로 되돌린다.
+- Deal 목록은 `GET /api/deals/company-options`, `GET /api/deals/contact-options`를 회사/담당자 필터 select에도 재사용한다. Contact option의 `companyId`로 회사 선택 시 담당자 option을 client-side로 좁힌다.
+- Deal stage counts는 목록과 같은 `search`, `companyId`, `contactId`를 전달하고, list/export는 추가로 `dealStatus`, `sort`를 전달한다.
 - `hasNext`는 회사/담당자/제품 상세 메모 로그처럼 cursor 기반 infinite loading에서만 사용한다.
-- Company list는 `useCompanyFields`, `useCompanyRegions` 전체 조회 결과를 `분야 ▾`, `지역 ▾` select 옵션으로 사용한다. 목록 페이지에서 회사 분야/지역 생성/삭제 UI를 노출하지 않는다.
-- Contact list는 `useContactDepartments`, `useContactJobGrades` 전체 조회 결과를 `부서 ▾`, `직급 ▾` select 옵션으로 사용한다. 목록 페이지에서 부서/직급 생성/삭제 UI를 노출하지 않는다.
+- Company list는 `useCompanyFields`, `useCompanyRegions` 전체 조회 결과를 `분야`, `지역` select 옵션으로 사용하고, select 안의 `+ 추가`로 회사 분류 관리 다이얼로그를 연다.
+- Contact list는 `useContactDepartments`, `useContactJobGrades` 전체 조회 결과를 `부서`, `직급` select 옵션으로 사용하고, select 안의 `+ 추가`로 담당자 분류 관리 다이얼로그를 연다.
+- Product list는 `useProductCategories`, `useProductStatuses` 전체 조회 결과를 `카테고리`, `판매 상태` select 옵션으로 사용하고, select 안의 `+ 추가`로 제품 분류 관리 다이얼로그를 연다.
 - Company/Contact/Product list는 제품형 `Controls Bar + Table Card + Pagination` 문법을 기준으로 맞춘다.
 - Company list 정렬 select는 `최신순`, `담당자 높은순`, `담당자 낮은순`, `딜 높은순`, `딜 낮은순`을 제공한다.
 - Contact list 정렬 select는 `최신순`, `이름순`을 제공한다.

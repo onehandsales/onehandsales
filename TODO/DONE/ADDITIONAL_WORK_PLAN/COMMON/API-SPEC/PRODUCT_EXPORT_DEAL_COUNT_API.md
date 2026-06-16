@@ -25,7 +25,7 @@
 
 ## 3. 변경 요약
 
-제품 목록 export 파일에 `딜 수` 컬럼을 추가한다. 제품 목록에 `sort=dealCountDesc`가 추가되므로 export도 목록과 같은 정렬 조건을 반영할 수 있다.
+제품 목록 export 파일에 `딜 수` 컬럼을 추가한다. 제품 목록에 `sort=dealCountDesc|dealCountAsc`가 추가되므로 export도 목록과 같은 정렬 조건을 반영할 수 있다.
 
 ## 4. Request
 
@@ -39,7 +39,7 @@
 | query | `productName` | string | 아니오 | trim 후 빈 문자열이면 미적용 | 제품명 부분 검색 |
 | query | `productCategoryId` | string | 아니오 | UUID | 제품 카테고리 필터 |
 | query | `productStatusId` | string | 아니오 | UUID | 제품 상태 필터 |
-| query | `sort` | string | 아니오 | `createdAtDesc`, `dealCountDesc` | 목록 정렬 조건. 기본값 `createdAtDesc` |
+| query | `sort` | string | 아니오 | `createdAtDesc`, `dealCountDesc`, `dealCountAsc` | 목록 정렬 조건. 기본값 `createdAtDesc` |
 | query | `page` | 없음 | 아니오 | 전송하지 않음 | export는 페이지네이션을 적용하지 않음 |
 | body | 없음 | 없음 | 아니오 | 없음 | body 없음 |
 
@@ -77,8 +77,9 @@
 6. `DealProduct` 기준으로 제품별 연결 딜 수를 집계한다.
 7. `sort=createdAtDesc`이면 `createdAt DESC`, `id DESC`로 정렬한다.
 8. `sort=dealCountDesc`이면 `dealCount DESC`, `createdAt DESC`, `id DESC`로 정렬한다.
-9. xlsx row에 `딜 수`를 포함한다.
-10. xlsx binary와 다운로드 header를 반환한다.
+9. `sort=dealCountAsc`이면 `dealCount ASC`, `createdAt DESC`, `id DESC`로 정렬한다.
+10. xlsx row에 `딜 수`를 포함한다.
+11. xlsx binary와 다운로드 header를 반환한다.
 
 ## 7. 연결 DB 스키마
 
@@ -132,5 +133,6 @@ BE:
 
 - 각 row의 `딜 수`가 실제 제품 연결 딜 수와 일치한다.
 - `sort=dealCountDesc`일 때 딜 수가 큰 제품이 먼저 나온다.
+- `sort=dealCountAsc`일 때 딜 수가 작은 제품이 먼저 나온다.
 - 검색/필터/정렬 조건이 함께 적용된다.
 - 다른 사용자의 딜 연결 수가 섞이지 않는다.

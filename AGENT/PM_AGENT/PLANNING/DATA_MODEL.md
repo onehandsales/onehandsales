@@ -425,6 +425,8 @@ User
 - `expectedEndDate`는 Postgres `date`로 저장하고 API에서는 `YYYY-MM-DD`만 허용한다.
 - 목록/export 응답에는 Product와 최근수정일을 포함하지 않는다.
 - 목록/export 정렬은 `createdAtDesc`, `dealCostDesc`, `dealCostAsc`, `expectedEndDateAsc`를 지원한다.
+- 목록 필터는 `dealStatus`, `companyId`, `contactId`를 지원하고, 검색은 `dealName`만 대상으로 한다.
+- stage count는 `search`, `companyId`, `contactId`를 기준으로 현재 필터에 맞춘 단계별 count를 반환한다.
 - 외부 FK 응답은 flat field가 아니라 `{}` 객체로 감싸서 제공한다.
 - 상세 응답의 제품은 `products: []` 배열로 제공한다.
 - 생성 요청은 `productIds` 배열을 필수로 받고, 수정 요청은 `productIds` 배열을 선택적으로 받아 딜-제품 연결을 교체한다.

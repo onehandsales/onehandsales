@@ -107,7 +107,7 @@
 - 모든 API는 인증된 `userId` 소유 데이터만 접근한다.
 - 담당자 목록 검색은 `username`만 대상으로 한다.
 - 담당자 목록 필터는 `companyId`, `contactDepartmentId`, `contactJobGradeId`만 지원한다.
-- 담당자 목록 페이지 크기 기본값은 20개다.
+- 담당자 목록 페이지 크기 기본값은 10개다.
 - 필터 옵션 API는 드롭다운 선택에 필요한 `id`와 표시명을 반환한다.
 - `mobile`은 `010-1111-2222` 형식만 허용한다.
 - `companyId`, `contactDepartmentId`, `contactJobGradeId`는 해당 사용자의 데이터인지 검증한다.

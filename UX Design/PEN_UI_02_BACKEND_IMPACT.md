@@ -49,7 +49,7 @@
 현재 User Web:
 
 - `/` 홈은 Schedule/Deal/MeetingNote API 조합 대시보드로 구현되어 있다.
-- `/deals` 딜 파이프라인은 stage tabs, 검색, 정렬 select, page-number pagination, 우측 미리보기 패널을 사용한다.
+- `/deals` 딜 파이프라인은 stage tabs, 딜명 검색, 회사/담당자 select 필터, 정렬 select, page-number pagination, 우측 미리보기 패널을 사용한다.
 - `/companies`, `/contacts`, `/products`는 조밀한 Controls Bar + Table Card + Pagination 문법을 따른다.
 - `/schedules`, `/schedules/week`, `/meeting-notes`는 실제 Backend API와 연결되어 있다.
 - `/business-cards`, `/contacts/scan`, `/notifications`, `/import`, `/export`, `/trash` 라우트/feature는 있으나 해당 Backend module이 없어 완료 기능으로 보지 않는다.
@@ -111,10 +111,13 @@
 필요한 필터:
 - `dealStatus`
 - search
+- `companyId`
+- `contactId`
 - sort
 
 메모:
 - pen 기준 stage 구조와 현재 백엔드 stage 구조는 6단계로 일치한다.
+- `GET /api/deals/stage-counts`는 `search`, `companyId`, `contactId`를 받아 stage tab count를 현재 필터 기준으로 맞춘다. `dealStatus`는 stage tab 자체가 담당하므로 count query에는 포함하지 않는다.
 - `/` 홈은 현재 별도 aggregate endpoint 없이 기존 Schedule/Deal/MeetingNote API 조합으로 구현되어 있다.
 
 ### Deal Quick Create Modal

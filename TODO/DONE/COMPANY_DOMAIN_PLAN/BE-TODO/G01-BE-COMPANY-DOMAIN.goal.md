@@ -39,7 +39,7 @@ Backend에서 사용자 페이지 회사 도메인의 DB schema와 API를 구현
 5. `CompanyRegion`은 `region`, `createdAt`을 가진다.
 6. `CompanyMemoLog`는 일반 메모 원문 `memo`와 메모 설명 `memoType`을 가진다.
 7. `CompanyUserPrivateMemoLog`는 평문 `memo`가 아니라 암호화된 본문과 key version을 가진다.
-8. 회사 목록 API는 회사명 검색, 회사 분야 ID 필터, 회사 지역 ID 필터, 20개 페이지네이션, `createdAt DESC` 정렬을 제공한다.
+8. 회사 목록 API는 회사명 검색, 회사 분야 ID 필터, 회사 지역 ID 필터, 10개 페이지네이션, `createdAt DESC` 정렬을 제공한다.
 9. 회사 목록 응답에는 `updatedAt`을 넣지 않는다.
 10. 회사 분야 전체 조회 응답에는 `createdAt`을 넣지 않는다.
 11. 회사 지역 전체 조회 응답에는 `createdAt`을 넣지 않는다.

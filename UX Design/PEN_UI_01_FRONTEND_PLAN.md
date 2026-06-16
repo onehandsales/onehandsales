@@ -28,9 +28,13 @@
 
 - `/` 홈은 실제 대시보드 화면이다. Schedule, Deal, Deal stage count, MeetingNote API를 조합해 오늘 일정, 진행 딜, 마감 임박, 최근 회의록, 빠른 실행, 최근 활동을 표시한다.
 - `/deals`는 딜 파이프라인 화면이다. 데스크톱은 테이블 + 우측 미리보기 패널, 모바일은 stage tab + 카드 리스트를 사용한다.
+- 딜 목록 control 순서는 `딜명 검색`, `전체`, `회사`, `담당자`, 정렬 select다. `전체`는 검색/회사/담당자/정렬/stage/page를 기본값으로 되돌린다.
 - 딜 목록 정렬은 select로 제공하며 라벨은 `최신순`, `금액 높은순`, `금액 낮은 순`, `마감일순`이다.
-- `/companies`, `/contacts`, `/products`는 조밀한 Controls Bar + Table Card + Pagination 문법을 따른다.
+- 딜 목록과 stage counts는 `search`, `companyId`, `contactId` 필터를 함께 반영한다. 목록/export는 여기에 `dealStatus`, `sort`를 추가로 반영한다.
+- `/companies`, `/contacts`, `/products`, `/meeting-notes`는 조밀한 Controls Bar + Table Card + Pagination 문법을 따른다.
+- 회사/담당자/제품의 분류 필터 select는 현재 옵션 전체 조회 결과를 사용하며, select 안의 `+ 추가`로 해당 분류 관리 다이얼로그를 열 수 있다.
 - 담당자 목록 정렬은 select로 `최신순`, `이름순`을 제공한다.
+- 제품 목록 정렬은 select로 `최신순`, `딜 높은순`, `딜 낮은순`을 제공한다.
 - `/schedules`, `/schedules/week`, `/meeting-notes`는 실제 Backend API와 연결되어 있다.
 - `/business-cards`, `/contacts/scan`, `/notifications`, `/import`, `/export`, `/trash`는 라우트/feature가 있으나 대응 Backend module이 없어 완료 기능으로 보지 않는다.
 - Sidebar는 `홈`, `딜`, `회사`, `담당자`, `제품`, `일정`, `회의록`, `설정`을 노출한다. Import와 휴지통은 숨김 처리되어 있다.

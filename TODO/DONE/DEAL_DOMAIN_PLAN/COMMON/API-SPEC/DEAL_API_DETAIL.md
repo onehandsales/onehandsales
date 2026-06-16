@@ -26,8 +26,9 @@
 | 이름 | 용도 |
 |---|---|
 | `DealStatusCode` | 코드 단 enum |
+| `DealStageCountsQueryDto` | 단계별 개수 query |
 | `DealStageCountResponseDto` | 단계별 개수 응답 |
-| `DealListQueryDto` | 목록 query |
+| `ListDealsQueryDto` | 목록 query |
 | `DealListResponseDto` | 목록 페이지 응답 |
 | `DealListItemResponseDto` | 목록 item 응답 |
 | `DealDetailResponseDto` | 상세 응답 |
@@ -67,8 +68,14 @@
 ### 5.1 단계별 개수
 
 1. 인증된 `userId`를 얻는다.
-2. `Deal`을 `userId`로 group by `dealStatus` 한다.
-3. count가 없는 상태도 0으로 채워 전체 enum 순서대로 반환한다.
+2. query를 검증한다.
+3. 조건을 구성한다.
+   - `userId`
+   - `dealName contains search`
+   - `companyId equals`
+   - `contactId equals`
+4. `Deal`을 위 조건으로 group by `dealStatus` 한다.
+5. count가 없는 상태도 0으로 채워 전체 enum 순서대로 반환한다.
 
 ### 5.2 목록
 
@@ -77,13 +84,15 @@
 3. 조건을 구성한다.
    - `userId`
    - `dealName contains search`
+   - `companyId equals`
+   - `contactId equals`
    - `dealStatus equals`
 4. 정렬을 적용한다.
    - `createdAtDesc`: `createdAt DESC`
    - `dealCostDesc`: `dealCost DESC`, `createdAt DESC`
    - `dealCostAsc`: `dealCost ASC`, `createdAt DESC`
    - `expectedEndDateAsc`: `expectedEndDate ASC`, `createdAt DESC`
-5. 20개 단위 pagination을 적용한다.
+5. 10개 단위 pagination을 적용한다.
 6. 각 Deal에 회사, 담당자 부서, 최신 다음 행동 1개를 포함한다.
 7. 제품은 include하지 않고 응답에도 넣지 않는다.
 8. `totalCount`, `totalPages`를 함께 반환한다.
@@ -126,11 +135,12 @@ Rollback:
 1. 인증된 `userId`를 얻는다.
 2. 각 모델을 `userId` 조건으로 조회한다.
 3. `createdAt DESC` 정렬을 적용한다.
-4. 페이지네이션 없이 전체 목록을 반환한다.
+4. 담당자 옵션은 `companyId`를 함께 반환한다.
+5. 페이지네이션 없이 전체 목록을 반환한다.
 
 ### 5.7 Export
 
-1. 목록 API와 동일한 search/filter/sort를 적용한다.
+1. 목록 API와 동일한 `search`, `companyId`, `contactId`, `dealStatus`, `sort`를 적용한다.
 2. page는 받지 않는다.
 3. 회사, 담당자 부서, 최신 다음 행동 1개를 조회한다.
 4. 제품은 조회하지 않는다.
@@ -254,7 +264,7 @@ Redaction:
 ## 9. Frontend 처리 기준
 
 - `DealStatusCode`와 label mapper는 API enum과 동일해야 한다.
-- 목록 query key는 `page`, `search`, `dealStatus`, `sort`를 포함한다.
+- 목록 query key는 `page`, `search`, `companyId`, `contactId`, `dealStatus`, `sort`를 포함한다.
 - 검색/필터/정렬 변경 시 page는 1로 초기화한다.
 - 목록의 제품 필드는 사용하지 않는다.
 - 상세에서만 `products` 객체 배열을 표시한다.

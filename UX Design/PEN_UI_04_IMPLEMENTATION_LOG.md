@@ -349,8 +349,8 @@
   - Sidebar에서 후순위 기능인 `IMPORT`, `휴지통`을 숨김 처리했다.
   - 공용 `Pagination`을 `totalPages` 전용으로 정리하고 딜/제품/회사/담당자/회의록 목록 UX는 10개 단위 page-number pagination 기준으로 맞췄다.
   - 회사/담당자 목록을 제품형 `Controls Bar + Table Card + Pagination` 문법으로 정리했다.
-  - 회사 목록에서 분야/지역 생성·삭제 관리 패널을 제거하고 `분야 ▾`, `지역 ▾` select 필터만 남겼다.
-  - 담당자 목록에서 부서/직급 생성·삭제 관리 패널을 제거하고 `부서 ▾`, `직급 ▾` select 필터만 남겼다.
+  - 회사 목록에서 별도 분야/지역 관리 패널을 제거하고 `분야`, `지역` select 필터로 통합했다.
+  - 담당자 목록에서 별도 부서/직급 관리 패널을 제거하고 `부서`, `직급` select 필터로 통합했다.
 - 변경 파일:
   - `FE/user-web/src/pages/home/index.tsx`
   - `FE/user-web/src/components/layout/app-shell.tsx`
@@ -365,7 +365,7 @@
   - 목록 페이지에서는 `hasNext`를 사용하지 않는다.
   - `hasNext`는 회사/담당자/제품 상세 메모 로그처럼 cursor 기반 incremental loading에서만 사용한다.
   - 회사 분야/지역, 담당자 부서/직급 옵션은 제품 카테고리/상태처럼 전체 옵션 API를 초회 조회한 select 필터로 사용한다.
-  - 목록 페이지에서는 옵션 생성/삭제 UX를 제공하지 않는다. 해당 관리는 상세/설정/관리 화면에서 다룬다.
+  - 이후 현재 기준에서는 회사/담당자/제품 select 안의 `+ 추가`로 분류 관리 다이얼로그를 열어 옵션을 추가/삭제한다.
 - 검증:
   - `pnpm.cmd --dir FE\user-web run typecheck`: 통과
   - `pnpm.cmd --dir FE\user-web run lint`: 통과
@@ -400,6 +400,38 @@
 
 ---
 
+### 2026-06-16 목록 필터와 레이아웃 기준 정정
+
+- 작업자: Codex
+- 유형:
+  - frontend
+  - backend
+  - docs
+- 요약:
+  - 딜 목록 control을 `딜명 검색`, `전체`, `회사`, `담당자`, 정렬 select 순서로 정리했다.
+  - 딜 목록, stage counts, export가 `search`, `companyId`, `contactId` 필터를 공유하는 현재 API 계약을 문서에 반영했다.
+  - 회사/담당자/제품 목록 필터 select의 `+ 추가` 분류 관리 흐름을 현재 기준으로 정정했다.
+  - 제품 목록 정렬 라벨을 `딜 높은순`, `딜 낮은순` 기준으로 정리하고, API code는 `dealCountDesc`, `dealCountAsc`를 기준으로 명시했다.
+  - 회사/담당자/제품/딜/회의록 목록 pagination은 공용 `Pagination` 48px(`h-12`), 미리보기 header와 table header는 44px(`h-11`) 기준으로 맞춘 상태를 문서에 반영했다.
+- 변경 파일:
+  - `UX Design/FE_DOMAIN_COMPLETION_STATUS.md`
+  - `UX Design/PEN_UI_01_FRONTEND_PLAN.md`
+  - `UX Design/PEN_UI_02_BACKEND_IMPACT.md`
+  - `UX Design/PEN_UI_03_COMMON_DECISIONS.md`
+  - `UX Design/PEN_UI_04_IMPLEMENTATION_LOG.md`
+  - `UX Design/PEN_UI_05_API_CHANGE_TRACKER.md`
+  - `UX Design/PEN_UI_06_SHARED_FIRST_WORK_ORDER.md`
+  - `AGENT/**`
+  - `TODO/**`
+- 결정/반영 내용:
+  - 딜 stage count는 stage tab 자체와 독립적으로 검색/회사/담당자 필터 결과 수를 표시한다.
+  - `GET /api/deals/contact-options` 응답의 `companyId`를 이용해 FE에서 회사 선택 시 담당자 목록을 좁힌다.
+  - 분류 select의 `+ 추가`는 목록 페이지 안에서 옵션 생성/삭제를 관리하는 현재 UX로 본다.
+- 남은 이슈:
+  - 목록 control button/select를 코드 수준에서 공용 컴포넌트로 더 묶을지 결정이 필요하다.
+
+---
+
 ## 현재 구현 체크리스트
 
 ### 문서
@@ -429,12 +461,16 @@
 - [x] Company/Contact/Product 제품형 목록 문법 정리
 - [x] Page-number 목록 pagination `totalPages` 기준 정리
 - [x] Deal 목록 정렬 select 전환
+- [x] Deal 목록 회사/담당자 select 필터 반영
+- [x] 회사/담당자/제품 필터 select `+ 추가` 분류 관리 반영
+- [x] 목록 미리보기 header/table header 44px 기준 반영
 - [ ] 목록 컨트롤 버튼 공통화
 
 ### 백엔드 / 계약
 
 - [x] deal stage 전략 확정 — FE/BE 6단계 계약 반영 완료
 - [x] `/` 홈은 신규 aggregate 없이 기존 Schedule/Deal/MeetingNote API 조합으로 구현
+- [x] Deal 목록/stage-count/export 회사·담당자 필터 계약 반영
 - [ ] quick create inline 생성 범위 확정
 - [ ] navigation badge count 필요 여부 확정
 

@@ -79,7 +79,9 @@ Deal 기본 도메인 1차 구현 범위는 다음 테이블만 포함한다.
 - 목록 정렬은 `createdAtDesc`, `dealCostDesc`, `dealCostAsc`, `expectedEndDateAsc`를 지원한다.
 - User Web 정렬 select label은 각각 `최신순`, `금액 높은순`, `금액 낮은 순`, `마감일순`이다.
 - 검색은 `dealName`만 대상으로 한다.
-- 필터는 `dealStatus`만 제공한다.
+- 목록 필터는 `dealStatus`, `companyId`, `contactId`를 제공한다.
+- stage count 필터는 `search`, `companyId`, `contactId`를 제공한다.
+- export 필터는 목록과 같은 `search`, `companyId`, `contactId`, `dealStatus`, `sort`를 제공하되 `page`는 받지 않는다.
 - 목록/export 응답에는 Product와 최근수정일을 포함하지 않는다.
 
 ## 4. DealProduct

@@ -7,8 +7,8 @@
 - Provider: `BE` NestJS User API
 - Base path: `/api`
 - Auth: `Authorization: Bearer <appAccessToken>`
-- Page size: 20
-- 기준일: 2026-06-12
+- Page size: 10
+- 기준일: 2026-06-16
 
 ## 2. 공통 원칙
 
@@ -20,7 +20,8 @@
 - UI는 Backend가 함께 내려주는 label 또는 Frontend enum mapper로 한국어 label을 표시한다.
 - `expectedEndDate`는 `YYYY-MM-DD`만 허용한다.
 - 목록과 export의 딜 검색은 `dealName`만 대상으로 한다.
-- 목록과 export의 필터는 `dealStatus`만 대상으로 한다.
+- 목록과 export의 필터는 `companyId`, `contactId`, `dealStatus`를 대상으로 한다.
+- stage counts는 `search`, `companyId`, `contactId`를 반영한다. `dealStatus`는 stage tab 선택값이므로 stage counts query에는 포함하지 않는다.
 - export는 목록 조건 중 검색/필터/정렬을 반영하되 page는 반영하지 않는다.
 - export에는 id, 제품, 최근수정일을 포함하지 않는다.
 
@@ -72,6 +73,7 @@
 {
   "id": "018f1c59-7f32-7b44-b2d2-2d4b589c0212",
   "username": "송재근",
+  "companyId": "018f1c59-7f32-7b44-b2d2-2d4b589c0211",
   "contactDepartment": {
     "id": "018f1c59-7f32-7b44-b2d2-2d4b589c0213",
     "departmentName": "부장"
@@ -124,7 +126,9 @@ Query:
 
 | 필드 | 타입 | 필수 | 설명 |
 |---|---|---:|---|
-| 없음 |  |  |  |
+| `search` | string | 아니오 | `dealName` 검색 |
+| `companyId` | uuid | 아니오 | 회사 필터 |
+| `contactId` | uuid | 아니오 | 담당자 필터 |
 
 Response `200`:
 
@@ -143,7 +147,7 @@ Response `200`:
 
 ### 6.2 GET `/api/deals`
 
-딜 목록을 20개씩 페이지네이션 조회한다. 제품은 응답하지 않는다.
+딜 목록을 10개씩 페이지네이션 조회한다. 제품은 응답하지 않는다.
 
 Query:
 
@@ -151,6 +155,8 @@ Query:
 |---|---|---:|---|---|
 | `page` | number | 아니오 | `1` | 1 이상 integer |
 | `search` | string | 아니오 |  | `dealName` 검색 |
+| `companyId` | uuid | 아니오 |  | 회사 필터 |
+| `contactId` | uuid | 아니오 |  | 담당자 필터 |
 | `dealStatus` | DealStatus | 아니오 |  | 상태 필터 |
 | `sort` | string | 아니오 | `createdAtDesc` | `createdAtDesc`, `dealCostDesc`, `dealCostAsc`, `expectedEndDateAsc` |
 
@@ -189,7 +195,7 @@ Response `200`:
     }
   ],
   "page": 1,
-  "pageSize": 20,
+  "pageSize": 10,
   "totalCount": 1,
   "totalPages": 1
 }
@@ -305,6 +311,7 @@ Response `200`:
     {
       "id": "018f1c59-7f32-7b44-b2d2-2d4b589c0212",
       "username": "송재근",
+      "companyId": "018f1c59-7f32-7b44-b2d2-2d4b589c0211",
       "contactDepartment": {
         "id": "018f1c59-7f32-7b44-b2d2-2d4b589c0213",
         "departmentName": "부장"
@@ -338,6 +345,8 @@ Query:
 | 필드 | 타입 | 필수 | 설명 |
 |---|---|---:|---|
 | `search` | string | 아니오 | `dealName` 검색 |
+| `companyId` | uuid | 아니오 | 회사 필터 |
+| `contactId` | uuid | 아니오 | 담당자 필터 |
 | `dealStatus` | DealStatus | 아니오 | 상태 필터 |
 | `sort` | string | 아니오 | 목록 API와 동일 |
 

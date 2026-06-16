@@ -46,6 +46,8 @@ Backend에 딜 도메인의 DB 모델과 User API를 구현한다.
 - 모든 조회는 `userId` 조건을 포함한다.
 - FK 검증은 company/contact/products가 모두 같은 user 소유인지 확인한다.
 - 딜 생성/수정 시 contact가 company에 속하는지 확인한다.
+- 목록은 `search`, `companyId`, `contactId`, `dealStatus`, `sort`를 지원한다.
+- stage counts는 `search`, `companyId`, `contactId`를 지원한다.
 - 다음 행동 로그와 메모 로그 수정은 log가 해당 deal에 속하는지도 확인한다.
 - export는 목록 조건을 재사용하되 page를 제외한다.
 

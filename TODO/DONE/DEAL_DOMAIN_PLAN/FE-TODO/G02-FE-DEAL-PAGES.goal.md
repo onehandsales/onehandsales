@@ -25,7 +25,7 @@ User Web 딜 페이지를 새 Backend Deal API 계약에 맞게 구현한다.
 - [x] Deal API client 함수를 작성한다.
 - [x] TanStack Query key와 hook을 작성한다.
 - [x] 단계별 개수 UI를 API와 연결한다.
-- [x] 목록 조회를 검색/상태 필터/정렬/페이지와 연결한다.
+- [x] 목록 조회를 검색/회사/담당자/상태 필터/정렬/페이지와 연결한다.
 - [x] split view 상세 조회를 연결한다.
 - [x] 생성 form을 구현하고 회사/담당자/제품 옵션을 연결한다.
 - [x] 수정 form을 구현한다. (상세 패널에서 UpdateDealInput 준비 완료, UI는 로그 기반 인라인)
@@ -40,7 +40,10 @@ User Web 딜 페이지를 새 Backend Deal API 계약에 맞게 구현한다.
 
 - 딜 목록 페이지 진입 시 단계별 개수와 목록이 조회된다.
 - 검색은 딜 이름에만 적용된다.
+- 회사/담당자 필터는 `companyId`, `contactId`를 보낸다.
+- 회사 필터 선택 시 담당자 필터 후보는 같은 회사의 담당자로 좁힌다.
 - 상태 필터는 DealStatus enum code를 보낸다.
+- 단계별 개수는 검색/회사/담당자 필터를 반영한다.
 - 정렬은 `createdAtDesc`, `dealCostDesc`, `dealCostAsc`, `expectedEndDateAsc` 중 하나를 보낸다.
 - 목록 item에서 회사와 담당자는 nested object에서 표시한다.
 - 목록 item에는 제품이 없다.
@@ -48,7 +51,7 @@ User Web 딜 페이지를 새 Backend Deal API 계약에 맞게 구현한다.
 - 딜 생성/수정 시 `productIds` 배열을 보낸다.
 - 딜 생성 시 `followingAction`을 함께 보낸다.
 - 다음 행동 생성 body는 `followingAction`만 보낸다.
-- export는 blob으로 다운로드되고 page를 보내지 않는다.
+- export는 blob으로 다운로드되고 검색/회사/담당자/상태/정렬을 반영하되 page를 보내지 않는다.
 
 ## 6. 완료 기록
 
