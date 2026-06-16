@@ -1,11 +1,13 @@
 import { Type } from "class-transformer";
 import {
+  IsEnum,
   IsInt,
   IsOptional,
   IsString,
   IsUUID,
   Min,
 } from "class-validator";
+import { ContactListSort } from "@/modules/contact/application/ports/contact.repository";
 
 // 역할 : ListContactsQueryDto HTTP 요청 값을 검증하기 위한 DTO입니다.
 export class ListContactsQueryDto {
@@ -30,6 +32,10 @@ export class ListContactsQueryDto {
   @IsOptional()
   @IsUUID()
   contactJobGradeId?: string;
+
+  @IsOptional()
+  @IsEnum(ContactListSort)
+  sort?: ContactListSort;
 }
 
 // 역할 : ExportContactsQueryDto HTTP export 요청 값을 검증하기 위한 DTO입니다.
@@ -49,6 +55,10 @@ export class ExportContactsQueryDto {
   @IsOptional()
   @IsUUID()
   contactJobGradeId?: string;
+
+  @IsOptional()
+  @IsEnum(ContactListSort)
+  sort?: ContactListSort;
 }
 
 // 역할 : CursorQueryDto HTTP 요청 값을 검증하기 위한 DTO입니다.

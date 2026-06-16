@@ -240,6 +240,10 @@ function toContactExportSearchParams(params: ContactExportParams) {
     searchParams.set("contactJobGradeId", params.contactJobGradeId);
   }
 
+  if (params.sort) {
+    searchParams.set("sort", params.sort);
+  }
+
   return searchParams;
 }
 

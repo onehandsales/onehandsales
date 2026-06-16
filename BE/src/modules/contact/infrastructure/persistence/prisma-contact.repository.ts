@@ -5,6 +5,7 @@ import {
   type ContactDepartmentRecord,
   type ContactJobGradeRecord,
   type ContactLookupRecord,
+  ContactListSort,
   type ContactMemoLogRecord,
   type ContactPageRecord,
   type ContactPrivateMemoLogRecord,
@@ -79,7 +80,7 @@ export class PrismaContactRepository implements ContactRepository {
           contactDepartment: true,
           contactJobGrade: true,
         },
-        orderBy: [{ createdAt: "desc" }, { id: "desc" }],
+        orderBy: this.createContactOrderBy(input.sort),
         skip: (input.page - 1) * input.pageSize,
         take: input.pageSize,
       }),
@@ -103,7 +104,7 @@ export class PrismaContactRepository implements ContactRepository {
         contactDepartment: true,
         contactJobGrade: true,
       },
-      orderBy: [{ createdAt: "desc" }, { id: "desc" }],
+      orderBy: this.createContactOrderBy(input.sort),
     });
 
     return items.map((contact) => this.mapContact(contact));
@@ -603,6 +604,17 @@ export class PrismaContactRepository implements ContactRepository {
         ? { contactJobGradeId: input.contactJobGradeId }
         : {}),
     };
+  }
+
+  // 기능 : 담당자 목록과 export의 정렬 조건을 생성합니다.
+  private createContactOrderBy(
+    sort: ContactListSort | undefined
+  ): Prisma.ContactOrderByWithRelationInput[] {
+    if (sort === ContactListSort.USERNAME_ASC) {
+      return [{ username: "asc" }, { createdAt: "desc" }, { id: "desc" }];
+    }
+
+    return [{ createdAt: "desc" }, { id: "desc" }];
   }
 
   // 기능 : Prisma 담당자 행을 application 레코드로 변환합니다.

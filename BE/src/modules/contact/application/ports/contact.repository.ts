@@ -51,6 +51,12 @@ export interface ContactDealRecord {
   readonly createdAt: Date;
 }
 
+// 역할 : ContactListSort 담당자 목록 정렬 기준을 정의합니다.
+export enum ContactListSort {
+  CREATED_AT_DESC = "createdAtDesc",
+  USERNAME_ASC = "usernameAsc",
+}
+
 // 역할 : ListContactsInput 데이터가 계층 사이에서 전달되는 구조를 정의합니다.
 export interface ListContactsInput {
   readonly userId: string;
@@ -60,6 +66,7 @@ export interface ListContactsInput {
   readonly companyId?: string;
   readonly contactDepartmentId?: string;
   readonly contactJobGradeId?: string;
+  readonly sort?: ContactListSort;
 }
 
 // 역할 : ExportContactsInput 담당자 export 조회 조건을 정의합니다.
@@ -69,6 +76,7 @@ export interface ExportContactsInput {
   readonly companyId?: string;
   readonly contactDepartmentId?: string;
   readonly contactJobGradeId?: string;
+  readonly sort?: ContactListSort;
 }
 
 // 역할 : ListContactDealsInput 담당자에 연결된 딜 조회 조건을 정의합니다.

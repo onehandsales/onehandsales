@@ -28,7 +28,7 @@ import {
   useContactDetail,
 } from "@/features/contact/hooks/use-contact-detail";
 import { useExportContactsMutation } from "@/features/contact/hooks/use-contact-mutations";
-import type { ContactListItem } from "@/features/contact/types/contact";
+import type { ContactListItem, ContactSort } from "@/features/contact/types/contact";
 import { getApiErrorMessage, type ApiBlobResponse } from "@/lib/api-client";
 import { cn } from "@/utils/cn";
 import { formatDateWithOptions } from "@/utils/format";
@@ -40,6 +40,7 @@ export function ContactListScreen() {
   const [companyId] = useState("");
   const [contactDepartmentId, setContactDepartmentId] = useState("");
   const [contactJobGradeId, setContactJobGradeId] = useState("");
+  const [sort, setSort] = useState<ContactSort>("createdAtDesc");
   const [page, setPage] = useState(1);
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [selectedContactId, setSelectedContactId] = useState("");
@@ -55,8 +56,9 @@ export function ContactListScreen() {
       companyId: companyId || undefined,
       contactDepartmentId: contactDepartmentId || undefined,
       contactJobGradeId: contactJobGradeId || undefined,
+      sort,
     }),
-    [companyId, contactDepartmentId, contactJobGradeId, page, username],
+    [companyId, contactDepartmentId, contactJobGradeId, page, sort, username],
   );
   const exportFilters = useMemo(
     () => ({
@@ -64,8 +66,9 @@ export function ContactListScreen() {
       companyId: companyId || undefined,
       contactDepartmentId: contactDepartmentId || undefined,
       contactJobGradeId: contactJobGradeId || undefined,
+      sort,
     }),
-    [companyId, contactDepartmentId, contactJobGradeId, username],
+    [companyId, contactDepartmentId, contactJobGradeId, sort, username],
   );
 
   const contactsQuery = useContactList(listParams);
@@ -87,7 +90,8 @@ export function ContactListScreen() {
     username.length > 0 ||
     companyId.length > 0 ||
     contactDepartmentId.length > 0 ||
-    contactJobGradeId.length > 0;
+    contactJobGradeId.length > 0 ||
+    sort !== "createdAtDesc";
 
   useEffect(() => {
     if (!pendingDepartmentName) return;
@@ -190,6 +194,7 @@ export function ContactListScreen() {
             setUsernameText("");
             setContactDepartmentId("");
             setContactJobGradeId("");
+            setSort("createdAtDesc");
             setPage(1);
           }}
         />
@@ -246,6 +251,22 @@ export function ContactListScreen() {
               {g.jobGradeName}
             </option>
           ))}
+        </select>
+        <select
+          className={cn(
+            "h-8 min-w-[104px] appearance-none rounded-md border px-3 text-[13px] outline-none transition",
+            sort !== "createdAtDesc"
+              ? "border-[#BFDBFE] bg-[#EFF6FF] text-[#1D4ED8]"
+              : "border-[#E2E5EC] bg-transparent text-[#6B7280] hover:bg-[#FAFAF8]",
+          )}
+          onChange={(e) => {
+            setSort(e.target.value as ContactSort);
+            setPage(1);
+          }}
+          value={sort}
+        >
+          <option value="createdAtDesc">최신순</option>
+          <option value="usernameAsc">이름순</option>
         </select>
         <div className="flex-1" />
         <span className="text-[12px] text-[#9CA3AF]">

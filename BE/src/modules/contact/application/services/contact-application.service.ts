@@ -6,6 +6,7 @@ import {
 } from "@/modules/contact/application/ports/contact-private-memo-encryption.port";
 import {
   CONTACT_REPOSITORY,
+  ContactListSort,
   type ContactDealRecord,
   type ContactDepartmentRecord,
   type ContactJobGradeRecord,
@@ -57,6 +58,7 @@ export interface ContactListQueryInput {
   readonly companyId?: string;
   readonly contactDepartmentId?: string;
   readonly contactJobGradeId?: string;
+  readonly sort?: ContactListSort;
 }
 
 // 역할 : ContactExportQueryInput 담당자 export query 조건을 정의합니다.
@@ -65,6 +67,7 @@ export interface ContactExportQueryInput {
   readonly companyId?: string;
   readonly contactDepartmentId?: string;
   readonly contactJobGradeId?: string;
+  readonly sort?: ContactListSort;
 }
 
 // 역할 : CreateContactCommand 데이터가 계층 사이에서 전달되는 구조를 정의합니다.
@@ -234,6 +237,7 @@ export class ContactApplicationService {
       ...(query.contactJobGradeId
         ? { contactJobGradeId: query.contactJobGradeId }
         : {}),
+      sort: query.sort ?? ContactListSort.CREATED_AT_DESC,
     });
 
     // 4. 민감한 검색어 없이 목록 조회 이벤트를 기록한다.
@@ -284,6 +288,7 @@ export class ContactApplicationService {
       ...(query.contactJobGradeId
         ? { contactJobGradeId: query.contactJobGradeId }
         : {}),
+      sort: query.sort ?? ContactListSort.CREATED_AT_DESC,
     });
 
     // 4. xlsx writer로 다운로드 파일 본문을 생성한다.

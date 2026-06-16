@@ -70,6 +70,8 @@ export type ContactDealListResponse = {
   readonly items: ContactDeal[];
 };
 
+export type ContactSort = "createdAtDesc" | "usernameAsc";
+
 // 목록 조회 파라미터
 export type ContactListParams = {
   readonly page?: number;
@@ -77,6 +79,7 @@ export type ContactListParams = {
   readonly companyId?: string;
   readonly contactDepartmentId?: string;
   readonly contactJobGradeId?: string;
+  readonly sort?: ContactSort;
 };
 
 // 생성 입력
@@ -131,6 +134,7 @@ export type ContactExportParams = {
   readonly companyId?: string;
   readonly contactDepartmentId?: string;
   readonly contactJobGradeId?: string;
+  readonly sort?: ContactSort;
 };
 
 // 직급/부서 생성 입력
