@@ -1,5 +1,5 @@
 // 기능 : 딜 파이프라인 홈 화면 — split view (Desktop) / 카드 (Mobile)
-import { AlertCircle, BriefcaseBusiness, Download, Plus, X } from "lucide-react";
+import { AlertCircle, BriefcaseBusiness, Download, Plus, Search, X } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { PageHeader } from "@/components/layout/page-header";
@@ -187,6 +187,7 @@ export function DealPipelineHomeScreen({
               {/* Controls bar — 한 줄 */}
               <div className="flex shrink-0 items-center gap-2 px-0.5">
                 <div className="flex h-8 items-center gap-1.5 rounded-md border border-[#E2E5EC] bg-[#FAFAF8] px-3 transition focus-within:border-[#93C5FD] focus-within:bg-white">
+                  <Search className="h-3 w-3 shrink-0 text-[#9CA3AF]" />
                   <input
                     className="w-[220px] bg-transparent text-[13px] text-[#111827] outline-none placeholder:text-[#9CA3AF]"
                     onChange={(e) => onSearchChange(e.target.value)}
