@@ -28,6 +28,14 @@
 - 먼저 디자인 토큰을 정리한 뒤 공통 App Shell과 대표 화면 구현에 들어간다.
 - 전체 화면을 한 번에 구현하지 않고, 1차 범위를 먼저 완성한다.
 
+2026-06-16 현재 구현 기준:
+
+- `/` 홈은 실제 대시보드 화면으로 구현되어 있다.
+- 딜 파이프라인은 `/deals`에서 운영한다.
+- User Web 핵심 도메인은 Auth/User, Home, Company, Contact, Product, Deal, Schedule, MeetingNote까지 실제 Backend API와 연결되어 있다.
+- BusinessCard OCR, 범용 Import/Export, Notification, Trash, Search, Admin 운영 조회 API는 Backend 미구현 상태다.
+- 실제 구현 판단은 `BE/src/modules`, `BE/prisma/schema.prisma`, `FE/user-web/src/app/router/router.tsx`, `FE/user-web/src/features`를 우선한다.
+
 ---
 
 ## 2. 공통 목표
@@ -73,16 +81,13 @@ pen 구조:
 
 ### 2. App Shell 교체 방식
 
-결정 필요:
-- 기존 AppShell을 직접 교체할지
-- 새 Shell을 병행 추가한 뒤 라우트 연결 시점에 대체할지
+현재 결정:
+- App Shell은 현재 User Web 라우터의 기본 shell로 적용되어 있다.
+- Desktop Sidebar, TopBar, Mobile Header, Bottom Tab Bar를 기준 shell로 사용한다.
 
-권장:
-- `새 Shell 병행 추가 후 교체`
-
-이유:
-- 전체 라우트와 레이아웃 영향이 크다.
-- 병행 구조가 롤백과 비교 검증에 유리하다.
+후속:
+- 새 도메인 화면은 현재 shell/navigation 문법을 재사용한다.
+- Import/Trash처럼 숨김 처리된 라우트를 다시 노출할 때는 navigation 문서와 함께 갱신한다.
 
 ### 3. MVP 범위
 
@@ -91,13 +96,14 @@ pen 구조:
 - 회사/담당자/제품까지 포함할지
 - 일정까지 포함할지
 
-권장:
-- 1차는 `딜 중심`
-- 회사/담당자/제품/일정은 2차
+현재 결정:
+- 1차 딜 중심 구조는 완료 기준으로 본다.
+- 현재는 회사/담당자/제품/일정/수동 회의록까지 User Web/API 연동 완료 상태다.
+- 후속 MVP는 Admin 운영 조회 API와 미구현 부가 기능군을 별도 계획으로 분리한다.
 
 이유:
-- pen 범위가 너무 넓다.
-- 딜 홈/빠른등록/상세만으로도 새 구조를 검증할 수 있다.
+- pen 범위가 넓기 때문에 완료된 핵심 도메인과 Backend 미구현 도메인을 분리해야 한다.
+- Admin/BusinessCard/Import/Notification/Trash/Search를 핵심 도메인 유지보수와 섞으면 작업 범위가 급격히 커진다.
 
 ### 4. 토큰 관리 방식
 
@@ -149,9 +155,8 @@ pen 구조:
 
 ### 제외
 
-- 회사/담당자/제품 전면 리디자인
-- 일정 캘린더 전면 리디자인
-- 회의록
+- 회사/담당자/제품 전면 리디자인은 2026-06-16 기준 목록/상세/API 연동까지 완료 상태로 재분류한다.
+- 일정 캘린더와 수동 회의록은 2026-06-16 기준 기본 구현 완료 상태로 재분류한다.
 - 명함 스캔
 - Import / Export
 - 휴지통
@@ -270,9 +275,14 @@ pen 구조:
 ### 별도 합의 후 진행할 것
 
 - stage metadata endpoint 필요 여부
-- mobile home aggregate API 추가
 - quick create inline 생성 범위
-- 일정 화면 1차 포함 여부
+- Admin 운영 조회 API 범위
+- BusinessCard/Import-Export/Notification/Search/Trash Backend 구현 범위
+
+이미 결정/처리된 것:
+
+- `/` 홈은 별도 aggregate endpoint 없이 기존 Schedule/Deal/MeetingNote API 조합으로 구현한다.
+- 일정 화면과 수동 회의록은 현재 1차 구현 완료 범위로 본다.
 
 ---
 

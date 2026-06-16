@@ -3,6 +3,7 @@
 > 제품명: 한손에 영업 / onehand.sales  
 > 상태: MVP 정본 초안  
 > 기준: `AGENT/PM_AGENT/DECISIONS/000_확정_결정.md`
+> 현재 구현 스냅샷: 2026-06-16 `BE`, `FE/user-web`, `FE/admin-web`
 
 ---
 
@@ -45,6 +46,14 @@
 5. 월간 기본 일정 화면에서 주간 보기로 전환하거나 주간 일정 보고서를 화면/PDF/Excel로 확인한다.
 6. 회의 내용을 텍스트로 입력해 AI 회의록을 생성한다.
 7. 회의록을 딜과 연결해 딜 활동 로그를 자동 생성한다.
+
+현재 구현 기준:
+
+- 구현 완료: Auth/User, 홈 대시보드, 회사, 담당자, 제품, 딜, 일정, 수동 회의록.
+- 부분 구현: 도메인별 xlsx export는 Company/Contact/Product/Deal에 있다. 범용 Import/Export job은 없다.
+- FE만 존재: 명함 OCR, 알림, 휴지통, 통합검색, 범용 Import/Export.
+- Backend 미구현: BusinessCard OCR, Notification, Trash, Search, Admin 운영 조회/감사/민감 원문 API, MeetingNote AI/STT, DealActivity 자동 로그.
+- Admin Backend는 `GET /admin/api/me`만 구현되어 있다.
 
 ## 6. MVP 포함 기능
 

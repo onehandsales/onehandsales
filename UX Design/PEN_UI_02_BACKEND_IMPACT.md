@@ -33,6 +33,26 @@
 주의:
 - 이 문서는 디자인을 코드로 옮기기 전, 백엔드 관점에서 필요한 데이터 계약을 정리하는 용도다.
 - 프론트 구조 자체보다 화면이 요구하는 데이터, 상태, 액션, API를 중심으로 본다.
+- 2026-06-16 현재 구현 판단은 아래 `현재 FE/BE 기준선`을 우선한다. 이후의 후보/리스크 섹션은 후속 확장 검토용이다.
+
+---
+
+## 0. 현재 FE/BE 기준선
+
+기준: `BE/src/modules`, `BE/prisma/schema.prisma`, `FE/user-web/src/app/router/router.tsx`, `FE/user-web/src/features`.
+
+현재 Backend module:
+
+- 구현됨: `auth`, `user`, `company`, `contact`, `product`, `deal`, `schedule`, `meeting-note`
+- 없음: `business-card`, 범용 `import-export`, `notification`, `trash`, `search`, Admin 운영 조회/감사/민감 원문 API
+
+현재 User Web:
+
+- `/` 홈은 Schedule/Deal/MeetingNote API 조합 대시보드로 구현되어 있다.
+- `/deals` 딜 파이프라인은 stage tabs, 검색, 정렬 select, page-number pagination, 우측 미리보기 패널을 사용한다.
+- `/companies`, `/contacts`, `/products`는 조밀한 Controls Bar + Table Card + Pagination 문법을 따른다.
+- `/schedules`, `/schedules/week`, `/meeting-notes`는 실제 Backend API와 연결되어 있다.
+- `/business-cards`, `/contacts/scan`, `/notifications`, `/import`, `/export`, `/trash` 라우트/feature는 있으나 해당 Backend module이 없어 완료 기능으로 보지 않는다.
 
 ---
 
@@ -40,18 +60,19 @@
 
 | 화면 | 목적 | 관련 도메인 | 우선순위 | MVP 포함 여부 |
 |---|---|---|---|---|
-| Deal Pipeline Home | 핵심 홈, 딜 흐름 파악 | deal, company, contact | 높음 | TBD |
-| Deal Quick Create Modal | 빠른 딜 생성 | deal, company, contact, product | 높음 | TBD |
-| Deal Detail | 딜 상세 확인 및 액션 | deal, activity, memo, schedule, meeting-note | 높음 | TBD |
-| Company List/Detail | 회사 관리 | company | 중간 | TBD |
-| Contact List/Detail | 담당자 관리 | contact | 중간 | TBD |
-| Product List/Detail | 제품 관리 | product | 중간 | TBD |
-| Schedule | 일정 관리/캘린더 | schedule, deal, company, contact | 중간 | TBD |
-| Meeting Note | 회의록 관리 | meeting-note, deal | 낮음/중간 | TBD |
-| Business Card Scan | 명함 OCR/확정 | business-card, company, contact | 낮음/중간 | TBD |
-| Import / Export | 데이터 이동 | import-export | 낮음/중간 | TBD |
-| Trash | 삭제 자원 복구 | trash | 낮음 | TBD |
-| Search / Notification / More | 보조 기능 | search, notification, user | 낮음 | TBD |
+| Home Dashboard | 첫 진입 요약 | schedule, deal, meeting-note | 높음 | 포함/구현 |
+| Deal Pipeline Home | 핵심 딜 흐름 파악 | deal, company, contact | 높음 | 포함/구현 |
+| Deal Quick Create Modal | 빠른 딜 생성 | deal, company, contact, product | 높음 | 포함/구현 |
+| Deal Detail | 딜 상세 확인 및 액션 | deal, following-action, memo, product | 높음 | 포함/구현 |
+| Company List/Detail | 회사 관리 | company | 중간 | 포함/구현 |
+| Contact List/Detail | 담당자 관리 | contact | 중간 | 포함/구현 |
+| Product List/Detail | 제품 관리 | product | 중간 | 포함/구현 |
+| Schedule | 일정 관리/캘린더 | schedule, deal | 중간 | 포함/구현 |
+| Meeting Note | 수동 회의록 관리 | meeting-note, company, contact, product, deal | 낮음/중간 | 포함/구현 |
+| Business Card Scan | 명함 OCR/확정 | business-card, company, contact | 낮음/중간 | FE만 존재/BE 없음 |
+| Import / Export | 데이터 이동 | import-export | 낮음/중간 | FE만 존재/BE 없음. 도메인별 xlsx export는 구현 |
+| Trash | 삭제 자원 복구 | trash | 낮음 | FE만 존재/BE 없음 |
+| Search / Notification / More | 보조 기능 | search, notification, user | 낮음 | FE만 존재/BE 없음 |
 
 ---
 
@@ -68,39 +89,33 @@
 
 필요한 쓰기 API:
 - 딜 생성
-- 단계 변경
-- 다음 액션 수정
-- 다음 액션 완료
-- 다음 액션 연기
+- 딜 기본 정보 수정
+- 다음 행동 로그 생성/수정
+- 딜 메모 로그 생성/수정
 
 필요한 응답 필드:
 - `id`
-- `title`
-- `stage`
-- `likelihoodStatus`
-- `likelihoodPercent`
-- `nextActionText`
-- `nextActionDueAt`
-- `nextActionStatus`
-- `companyName`
-- `contactName`
-- `amount`
-- `expectedCloseDate`
-- `deletedAt`
+- `dealName`
+- `dealStatus`
+- `dealStatusLabel`
+- `latestFollowingAction`
+- `company`
+- `contact`
+- `dealCost`
+- `expectedEndDate`
+- `createdAt`
 
 필요한 집계값:
-- stage summary
-- overdue / due soon / scheduled summary
+- stage counts: `GET /api/deals/stage-counts`
 
 필요한 필터:
-- stage
-- likelihood
-- next action status
+- `dealStatus`
 - search
+- sort
 
 메모:
 - pen 기준 stage 구조와 현재 백엔드 stage 구조는 6단계로 일치한다.
-- 모바일 홈이 핵심이면 aggregate endpoint 필요성이 높아질 수 있음
+- `/` 홈은 현재 별도 aggregate endpoint 없이 기존 Schedule/Deal/MeetingNote API 조합으로 구현되어 있다.
 
 ### Deal Quick Create Modal
 
@@ -116,33 +131,32 @@
 - 필요 시 inline 제품 연결
 
 입력 검증 포인트:
-- 제목
+- 딜명
 - 회사/담당자 연계
 - 금액
-- stage
-- next action 관련 값
+- 딜 단계
+- 다음 행동
+- 예상 마감일
 
 메모:
-- UX상 단순 modal로 보여도 실제로는 복합 생성 플로우일 가능성이 높음
+- 현재 딜 생성은 회사 1개, 담당자 1개, 제품 1개 이상을 필수로 받는다.
+- 담당자는 선택한 회사 소속이어야 한다.
 
 ### Deal Detail
 
 필요한 읽기 API:
 - 딜 상세
-- 활동 로그
-- 메모
+- 다음 행동 로그
+- 일반 메모 로그
 - 연결 제품
-- 일정 summary
-- 회의록 summary
 
 필요한 쓰기 API:
 - 딜 수정
-- 단계 변경
-- 다음 액션 처리
-- 활동 생성/수정/삭제
+- 다음 행동 로그 생성/수정
+- 메모 로그 생성/수정
 
 메모:
-- 단일 상세 화면에 복수 도메인 요약값이 동시에 필요함
+- 일정/회의록 summary는 현재 딜 상세 응답에 직접 병합되어 있지 않다.
 - desktop 우측 detail panel과 mobile detail page가 같은 데이터를 쓰는 구조가 적합함
 
 ---
@@ -159,8 +173,7 @@
 필요한 쓰기 API:
 - 생성
 - 수정
-- 삭제
-- 복구
+- 삭제/복구는 현재 Company/Contact/Product 기본 API 기준이 아니며 후속 범위로 본다.
 - 로그 생성/수정/삭제
 
 메모:
@@ -174,7 +187,7 @@
 - 일정 상세
 
 필요한 쓰기 API:
-- 일정 생성/수정/삭제/복구
+- 일정 생성/수정/삭제
 
 메모:
 - 캘린더 UI가 요구하는 월/주/일 데이터 단위 확인 필요
@@ -191,7 +204,7 @@
 - AI 생성
 - 수정
 - 딜 연결
-- 삭제/복구
+- 삭제/복구는 현재 Manual MeetingNote API 기준이 아니며 후속 범위로 본다.
 
 메모:
 - AI 생성 후 저장/확정 흐름이 pen UX와 일치하는지 확인 필요
@@ -239,25 +252,27 @@
 - product
 - schedule
 - meeting-note
+
+### 현재 Backend가 없는 API 후보
+
 - business-card
-- import-export
+- import-export generic job
 - trash
 - search
 - notification
+- Admin 운영 조회/감사/민감 원문 API
 
 ### 재사용 가능성이 높은 기존 로직
 
 - auth guard / current user
 - 도메인별 query/mutation 흐름
-- soft delete / restore 처리
 - paginated response 구조
 - 공통 error handling 규칙
 
 ### 응답 확장 가능성이 있는 영역
 
-- 모바일 홈 전용 summary
+- Admin 운영 조회 summary
 - stage metadata
-- dashboard aggregate
 - quick create candidate endpoints
 - 캘린더 요약/집계 응답
 
@@ -290,8 +305,8 @@ pen 기준:
 
 ### Summary / Aggregate 충돌
 
-- pen 홈 화면은 단일 화면에서 많은 집계 정보를 요구할 가능성이 큼
-- 현재 API가 여러 호출 조합인지, 단일 aggregate endpoint가 필요한지 확인 필요
+- `/` 홈은 현재 별도 aggregate endpoint 없이 `GET /api/schedules`, `GET /api/deals`, `GET /api/deals/stage-counts`, `GET /api/meeting-notes` 조합으로 구현되어 있다.
+- 홈 호출량/응답 속도가 문제가 되면 후속으로 home aggregate endpoint를 검토한다.
 
 ### Quick Create 충돌
 
@@ -301,7 +316,7 @@ pen 기준:
 ### Calendar 충돌
 
 - 일정 화면이 라이브러리 선택과 데이터 shape에 크게 영향 받음
-- 현재 응답 구조로 충분한지 확인 필요
+- 현재 Schedule 목록 API는 `view=month|week`, `baseDate`, `timeZone`으로 월간/주간 렌더링에 사용되고 있다.
 
 ### Navigation Badge 충돌
 
@@ -349,9 +364,9 @@ pen 기준:
 
 ### Delete / Restore
 
-- `deletedAt`
-- `permanentDeleteAt`
-- restore action 지원 여부
+- 현재 core domain API에서 삭제/복구는 공통 기준이 아니다.
+- Schedule은 soft delete 없이 삭제한다.
+- Trash, restore, permanent delete, `deletedAt`, `permanentDeleteAt` 기준은 후속 backend scope에서 별도로 확정한다.
 
 ### Error
 
@@ -377,7 +392,7 @@ pen 기준:
 
 ### Schedule
 
-- 생성/수정/삭제/복구 규칙
+- 생성/수정/삭제 규칙
 - all-day 처리 규칙
 - reminder 상태 처리
 

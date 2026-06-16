@@ -8,10 +8,11 @@
 
 ## 최종 업데이트
 
-- 날짜: 2026-06-15
+- 날짜: 2026-06-16
 - 기준:
   - Backend: `BE/src/modules`, `BE/prisma/schema.prisma`
   - User Web: `FE/user-web/src/features`, `FE/user-web/src/pages`
+  - User Web Router: `FE/user-web/src/app/router/router.tsx`
   - UX 기준: `FE/user-web/src/components`, `FE/user-web/src/features/*/components`
   - 완료 계획: `TODO/DONE`
 
@@ -23,11 +24,12 @@
 | Company | 완료 | 완료 | `/companies` | 완료 |
 | Contact | 완료 | 완료 | `/contacts` | 완료 |
 | Product | 완료 | 완료 | `/products` | 완료 |
-| Deal | 완료 | 완료 | `/`, `/deals` | 완료 |
+| Home | 완료 API 조합 사용 | 완료 | `/` | 완료 |
+| Deal | 완료 | 완료 | `/deals` | 완료 |
 | Schedule | 완료 | 완료 | `/schedules`, `/schedules/week` | 완료 |
 | MeetingNote | 완료 | 완료 | `/meeting-notes` | 완료 |
 | BusinessCard OCR | 현재 BE module 없음 | FE feature/page 존재 | `/business-cards`, `/contacts/scan` | BE 재검토 필요 |
-| Import/Export | 현재 BE module 없음 | FE feature/page 존재 | `/import`, `/export` | 보류/숨김 |
+| Import/Export | 현재 BE module 없음. 도메인별 xlsx export는 Company/Contact/Product/Deal에 구현 | FE feature/page 존재 | `/import`, `/export` | 보류/숨김 |
 | Notification | 현재 BE module 없음 | FE feature/page 존재 | `/notifications` | BE 재검토 필요 |
 | Trash | 현재 BE module 없음 | FE feature/page 존재 | `/trash` | 보류/숨김 |
 | Search | 현재 BE module 없음 | FE feature 존재 | GlobalSearch | BE 재검토 필요 |
@@ -48,9 +50,9 @@
 
 ## User Web 현재 UX/UI 기준
 
-2026-06-15 기준 User Web의 핵심 목록 UX는 다음 상태를 기준으로 한다.
+2026-06-16 기준 User Web의 핵심 UX는 다음 상태를 기준으로 한다.
 
-- `/` 홈은 임시 준비 상태이며 `화면 준비중입니다`를 표시한다.
+- `/` 홈은 실제 대시보드 화면이다. Schedule, Deal, Deal stage count, MeetingNote API를 조합해 오늘 일정, 진행 딜, 마감 임박, 최근 회의록, 빠른 실행, 최근 활동을 표시한다.
 - 딜 파이프라인은 `/deals`에서 운영한다.
 - 좌측 사이드바에서 `IMPORT`, `휴지통`은 후순위 기능으로 숨김 처리되어 있다.
 - 회사/담당자/제품/딜/회의록 목록 페이지네이션은 `hasNext`가 아니라 `totalPages`, `totalCount` 기준이다.
@@ -59,7 +61,11 @@
 - 회사 목록 필터는 제품 `category select`와 같은 방식으로 `useCompanyFields`, `useCompanyRegions` 전체 조회 결과를 `분야 ▾`, `지역 ▾` select 옵션으로 사용한다.
 - 담당자 목록 필터는 `useContactDepartments`, `useContactJobGrades` 전체 조회 결과를 `부서 ▾`, `직급 ▾` select 옵션으로 사용한다.
 - 목록 페이지에서 회사 분야/지역, 담당자 부서/직급 생성/삭제 UI는 제공하지 않는다. 해당 관리 기능은 상세 또는 별도 관리 UX에서 다룬다.
-- 회사/담당자 목록은 제품 목록과 같은 조밀한 `Controls Bar + Table Card + Pagination` 문법으로 정렬되어 있다.
+- 회사/담당자/제품/딜 목록은 조밀한 `Controls Bar + Table Card + Pagination` 문법으로 정렬되어 있다.
+- 회사 목록 정렬 select: `최신순`, `담당자 높은순`, `담당자 낮은순`, `딜 높은순`, `딜 낮은순`.
+- 담당자 목록 정렬 select: `최신순`, `이름순`.
+- 제품 목록 정렬 select: `최신순`, `딜 많은순`.
+- 딜 목록 정렬 select: `최신순`, `금액 높은순`, `금액 낮은 순`, `마감일순`.
 
 ## Schedule 완료 기준
 

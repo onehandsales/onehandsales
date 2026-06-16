@@ -225,6 +225,7 @@ User
 
 - 담당자는 반드시 회사에 소속된다. `companyId`는 nullable이 아니다.
 - 담당자 목록은 `createdAt DESC`로 정렬한다.
+- 담당자 목록은 `sort=usernameAsc` 요청 시 `username ASC`, `createdAt DESC`, `id DESC`로 정렬한다.
 - 담당자 목록 응답에는 최근 수정일을 포함하지 않는다.
 - 담당자 목록 검색은 `username`만 대상으로 한다.
 - 담당자 목록 필터는 `companyId`, `contactDepartmentId`, `contactJobGradeId`만 제공한다.
@@ -423,12 +424,15 @@ User
 - DB에는 English code 문자열만 저장한다.
 - `expectedEndDate`는 Postgres `date`로 저장하고 API에서는 `YYYY-MM-DD`만 허용한다.
 - 목록/export 응답에는 Product와 최근수정일을 포함하지 않는다.
+- 목록/export 정렬은 `createdAtDesc`, `dealCostDesc`, `dealCostAsc`, `expectedEndDateAsc`를 지원한다.
 - 외부 FK 응답은 flat field가 아니라 `{}` 객체로 감싸서 제공한다.
 - 상세 응답의 제품은 `products: []` 배열로 제공한다.
 - 생성 요청은 `productIds` 배열을 필수로 받고, 수정 요청은 `productIds` 배열을 선택적으로 받아 딜-제품 연결을 교체한다.
 - 딜 생성/수정 시 `contact.companyId`가 딜의 `companyId`와 같은지 검증한다.
 - 생성 시 최초 다음 행동은 같은 transaction 안에서 `DealFollowingActionLog`에 저장한다.
 - 후속 확장 후보인 `DealActivity`, 범용 `ProductConnection`은 현재 Deal 기본 도메인 1차 구현에 포함하지 않는다. Schedule/MeetingNote 연동은 별도 Schedule/MeetingNote 도메인에서 N:M 연결로 구현한다.
+- 현재 `Deal`은 회사와 담당자를 각각 하나씩 직접 FK로 가진다. 한 회사는 여러 딜을 가질 수 있고, 한 담당자도 여러 딜에 연결될 수 있다.
+- 현재 `Deal`과 `Product`는 `DealProduct`를 통한 N:M 관계다.
 
 ### DealProduct
 

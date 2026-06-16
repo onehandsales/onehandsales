@@ -147,7 +147,10 @@ Completed Backend TODO plans:
 Current response notes:
 
 - `GET /api/companies` returns `items[].contactCount` and `items[].dealCount`.
+- `GET /api/companies` supports `sort=createdAtDesc|contactCountDesc|contactCountAsc|dealCountDesc|dealCountAsc`.
+- `GET /api/contacts` supports `sort=createdAtDesc|usernameAsc`.
 - `GET /api/products` returns `items[].dealCount` and supports `sort=createdAtDesc|dealCountDesc`.
+- `GET /api/deals` supports `sort=createdAtDesc|dealCostDesc|dealCostAsc|expectedEndDateAsc`.
 - Company and Product xlsx export files include `딜 수`; Product export also supports the same product list sort query.
 - Company/Contact/Product linked Deal list APIs return all linked deals ordered by `createdAt DESC`, `id DESC`.
 - `GET /api/schedules` uses local date range query values plus IANA `timeZone` and returns UTC ISO strings.
@@ -357,7 +360,7 @@ Database principles:
 - User-owned data must have `userId`.
 - Non-temporary tables have `createdAt` and `updatedAt`.
 - System timestamps such as `createdAt` and `updatedAt` are stored as UTC instants. Schedule `startAt` and `endAt` are stored as UTC instants after interpreting IANA `timeZone`. Tables that own user-entered local date-time fields store `timeZone` in the same row. Date-only values use `@db.Date`.
-- Main business data uses `deletedAt` soft delete.
+- Soft delete is domain-specific, not a universal baseline. Current Company/Contact/Product/Deal/Schedule/Manual MeetingNote contracts do not treat `deletedAt` as a shared response/API requirement; add trash/restore fields only when the domain scope explicitly includes them.
 - FK constraints are explicit.
 - FK columns are indexed.
 - RLS is a last line of defense; backend queries still filter by `userId`.

@@ -31,7 +31,7 @@
 
 ## 현재 기준선
 
-현재 기준선은 `2026-06-15` 시점의 `BE/src/modules/*`와 `FE/user-web/src/features/*` 구현이다.
+현재 기준선은 `2026-06-16` 시점의 `BE/src/modules/*`, `BE/prisma/schema.prisma`, `FE/user-web/src/app/router/router.tsx`, `FE/user-web/src/features/*` 구현이다.
 
 주요 확인 범위:
 - controller endpoint
@@ -41,9 +41,9 @@
 
 주의:
 - 2026-06-11 baseline으로 작성된 아래 상세 항목 중 일부는 역사 기록으로 남아 있다.
-- 실제 구현 판단은 이 섹션의 2026-06-15 현재 계약 정정을 우선한다.
+- 실제 구현 판단은 이 섹션의 2026-06-16 현재 계약 정정을 우선한다.
 
-## 0. 2026-06-15 현재 계약 정정
+## 0. 2026-06-16 현재 계약 정정
 
 ### 구현 완료 Backend 모듈
 
@@ -76,6 +76,10 @@
   - `WON` — 성사
   - `LOST` — 실패
 - 딜 목록 응답은 `pageSize=10`, `totalCount`, `totalPages` 기반 page-number pagination이다.
+- 딜 목록 query는 `page`, `search`, `dealStatus`, `sort`만 받는다.
+- 딜 목록 검색은 `dealName`만 대상으로 한다.
+- 딜 목록 정렬 select label은 `최신순`, `금액 높은순`, `금액 낮은 순`, `마감일순`이다.
+- 딜 목록 정렬 code는 `createdAtDesc`, `dealCostDesc`, `dealCostAsc`, `expectedEndDateAsc`다.
 - 과거 문서의 `IN_DISCUSSION`, `NEEDS_ANALYSIS`, `PROPOSAL`, `hasNext` 기반 딜 목록 계약은 현재 User Web/Backend 기준이 아니다.
 
 ### Page List Pagination 정정
@@ -92,6 +96,9 @@
 - 제품 목록은 `GET /api/product-categories`, `GET /api/product-statuses` 전체 조회 결과를 select 옵션으로 사용한다.
 - 목록 페이지에서는 위 옵션 테이블의 생성/삭제 UI를 노출하지 않는다.
 - 생성/삭제 API는 Backend와 feature API client에 남아 있지만, 목록 페이지 필터 UX와 분리한다.
+- 회사 목록 정렬 code는 `createdAtDesc`, `contactCountDesc`, `contactCountAsc`, `dealCountDesc`, `dealCountAsc`다.
+- 담당자 목록 정렬 code는 `createdAtDesc`, `usernameAsc`다.
+- 제품 목록 정렬 code는 `createdAtDesc`, `dealCountDesc`다.
 
 ### MeetingNote 계약 정정
 
@@ -115,7 +122,7 @@
 
 ### Navigation/UI 상태 정정
 
-- `/` 홈은 현재 `화면 준비중입니다` 준비 상태다.
+- `/` 홈은 실제 대시보드 화면이다. 기존 API 조합으로 오늘 일정, 진행 딜, 마감 임박, 최근 회의록, 빠른 실행, 최근 활동을 표시한다.
 - 딜 파이프라인은 `/deals`에서 운영한다.
 - `Import`, `휴지통`은 라우트와 feature가 남아 있어도 sidebar에서는 숨김 처리되어 있다.
 
@@ -126,82 +133,60 @@
 ### 현재 endpoint
 
 - `GET /api/deals`
-- `POST /api/deals`
+- `GET /api/deals/stage-counts`
+- `GET /api/deals/export/xlsx`
+- `GET /api/deals/company-options`
+- `GET /api/deals/contact-options`
+- `GET /api/deals/product-options`
 - `GET /api/deals/:dealId`
+- `POST /api/deals`
 - `PATCH /api/deals/:dealId`
-- `PATCH /api/deals/:dealId/stage`
-- `PATCH /api/deals/:dealId/next-action`
-- `POST /api/deals/:dealId/next-action/complete`
-- `POST /api/deals/:dealId/next-action/snooze`
-- `DELETE /api/deals/:dealId`
-- `POST /api/deals/:dealId/restore`
-- `GET /api/deals/:dealId/activities`
-- `POST /api/deals/:dealId/activities`
-- `PATCH /api/deals/:dealId/activities/:activityId`
-- `DELETE /api/deals/:dealId/activities/:activityId`
+- `GET /api/deals/:dealId/following-action-logs`
+- `POST /api/deals/:dealId/following-action-logs`
+- `PATCH /api/deals/:dealId/following-action-logs/:followingActionLogId`
+- `GET /api/deals/:dealId/memo-logs`
+- `POST /api/deals/:dealId/memo-logs`
+- `PATCH /api/deals/:dealId/memo-logs/:memoLogId`
 
 ### 현재 주요 query / body 규칙
 
 #### ListDealsDto
 
 - `page`
-- `pageSize`
-- `stage`
-- `likelihood`
-- `likelihoodStatus`
-- `companyId`
-- `contactId`
 - `search`
-- `nextActionStatus`
-- `includeDeleted`
+- `dealStatus`
+- `sort`
 
-현재 `stage` 허용값:
+현재 `dealStatus` 허용값:
 - `INITIAL_CONTACT`
-- `IN_DISCUSSION`
+- `NEEDS_CHECK`
+- `PROPOSAL_QUOTE`
+- `NEGOTIATION`
 - `WON`
 - `LOST`
 
-현재 `likelihoodStatus` 허용값:
-- `POSITIVE`
-- `NEUTRAL`
-- `NEGATIVE`
-
-현재 `nextActionStatus` 허용값:
-- `NONE`
-- `SCHEDULED`
-- `DUE_SOON`
-- `OVERDUE`
-- `DONE`
+현재 `sort` 허용값:
+- `createdAtDesc` — 최신순
+- `dealCostDesc` — 금액 높은순
+- `dealCostAsc` — 금액 낮은 순
+- `expectedEndDateAsc` — 마감일순
 
 #### CreateDealDto / UpdateDealDto
 
 핵심 필드:
-- `title`
+- `dealName`
+- `dealCost`
 - `companyId`
 - `contactId`
-- `amount`
-- `currency`
-- `stage`
-- `likelihoodStatus`
-- `likelihoodPercent`
-- `expectedCloseDate`
-- `nextActionText`
-- `nextActionDueAt`
-- `nextActionStatus`
 - `productIds`
-- `initialMemo`
-
-#### ChangeDealStageDto
-
-- `stage`
-- `activityTitle`
-- `activityContent`
+- `dealStatus`
+- `followingAction` 생성 시 필수
+- `expectedEndDate`
 
 ### 현재 응답 shape
 
 목록:
 - `items`
-- `stageSummary`
 - `page`
 - `pageSize`
 - `totalCount`
@@ -209,35 +194,19 @@
 
 개별 딜:
 - `id`
-- `title`
-- `companyId`
-- `companyName`
-- `contactId`
-- `contactName`
-- `amount`
-- `currency`
-- `stage`
-- `likelihoodStatus`
-- `likelihoodPercent`
-- `expectedCloseDate`
-- `nextActionText`
-- `nextActionDueAt`
-- `nextActionStatus`
-- `hasMemo`
-- `memoCount`
-- `latestMemoAt`
+- `dealName`
+- `dealCost`
+- `dealStatus`
+- `dealStatusLabel`
+- `expectedEndDate`
+- `company`
+- `contact`
+- `latestFollowingAction`
 - `createdAt`
 - `updatedAt`
-- `deletedAt`
-- `permanentDeleteAt`
 
 상세:
-- `deal`
 - `products`
-- `activities`
-- `memos`
-- `schedulesSummary`
-- `meetingNotesSummary`
 
 ### 변경 추적
 
@@ -257,13 +226,14 @@
 
 ### 현재 endpoint 성격
 
-- 목록 / 생성 / 상세 / 수정 / 삭제 / 복구
+- 목록 / 생성 / 상세 / 수정
+- 삭제 / 복구는 현재 Company/Contact/Product 기본 API 기준이 아니며 후속 범위다.
 - 로그 목록 / 생성 / 수정 / 삭제
 - 제품은 connection 생성/삭제 포함
 
 ### 현재 응답 특징
 
-- 모두 soft delete 필드 포함
+- 현재 기본 응답은 pagination/detail 요약 중심이며, soft delete 필드를 공통 baseline으로 보지 않는다.
 - 목록은 pagination 공통 구조 사용
 - detail은 요약 count 또는 연결 정보 포함
 
@@ -283,87 +253,54 @@
 ### 현재 endpoint
 
 - `GET /api/schedules`
+- `GET /api/schedules/deal-options`
 - `POST /api/schedules`
-- `GET /api/schedules/week`
 - `GET /api/schedules/:scheduleId`
 - `PATCH /api/schedules/:scheduleId`
 - `DELETE /api/schedules/:scheduleId`
-- `POST /api/schedules/:scheduleId/restore`
 
 ### 현재 query / body 규칙
 
 #### ListSchedulesDto
 
-- `from`
-- `to`
-- `timezone`
-- `dealId`
-- `companyId`
-- `contactId`
-- `source`
-
-`source` 허용값:
-- `INTERNAL`
-- `GOOGLE`
-
-#### GetWeeklySchedulesDto
-
-- `weekStart`
-- `timezone`
+- `view`: `month` 또는 `week`
+- `baseDate`: `YYYY-MM-DD`
+- `timeZone`: optional IANA timezone
 
 #### CreateScheduleDto / UpdateScheduleDto
 
-- `title`
+- `scheduleTitle`
 - `startAt`
 - `endAt`
-- `allDay`
+- `timeZone`
 - `location`
-- `dealId`
-- `companyId`
-- `contactId`
 - `memo`
-- `reminderMinutes`
+- `dealIds`
 
 ### 현재 응답 shape
 
 일정:
 - `id`
-- `title`
+- `scheduleTitle`
 - `startAt`
 - `endAt`
-- `allDay`
+- `timeZone`
 - `location`
 - `memo`
-- `source`
-- `dealId`
-- `dealTitle`
-- `companyId`
-- `companyName`
-- `contactId`
-- `contactName`
-- `reminders`
+- `deals`
 - `createdAt`
 - `updatedAt`
-- `deletedAt`
-- `permanentDeleteAt`
 
 목록:
-- `rangeStart`
-- `rangeEnd`
 - `items`
-
-주간:
-- `weekStart`
-- `weekEnd`
-- `days[]`
 
 ### 변경 추적
 
 | 항목 | 현재 상태 | 추적 상태 | 메모 |
 |---|---|---|---|
-| range list | 존재 | 유지 | 캘린더 UI 연결 가능 |
-| weekly schedules | 존재 | 유지 | 주간 보고서/모바일 주간 뷰에 유리 |
-| 캘린더 렌더링 보조 필드 | 제한적 | 응답 확장 후보 | 실제 UI 확정 후 판단 |
+| month/week 조회 | 존재 | 유지 | 단일 `GET /api/schedules`에서 `view`, `baseDate`, `timeZone`으로 처리 |
+| deal 다중 연결 | 존재 | 유지 | `ScheduleDeal` N:M |
+| 주간 보고서 화면 | FE 구현 | 유지 | `/schedules/week` 라우트에서 동일 목록 API 사용 |
 | 반복 일정 | 없음 | 미확정 | pen 범위 확인 필요 |
 
 ---
@@ -373,58 +310,55 @@
 ### 현재 endpoint
 
 - `GET /api/meeting-notes`
-- `POST /api/meeting-notes/generate`
+- `GET /api/meeting-notes/filter-companies`
+- `GET /api/meeting-notes/filter-contacts`
 - `POST /api/meeting-notes`
 - `GET /api/meeting-notes/:meetingNoteId`
 - `PATCH /api/meeting-notes/:meetingNoteId`
-- `POST /api/meeting-notes/:meetingNoteId/link-deal`
-- `DELETE /api/meeting-notes/:meetingNoteId`
-- `POST /api/meeting-notes/:meetingNoteId/restore`
 
 ### 현재 query / body 규칙
 
 #### ListMeetingNotesDto
 
 - `page`
-- `pageSize`
-- `dealId`
-- `search`
-- `includeDeleted`
-
-#### GenerateMeetingNoteDto
-
-- `rawText`
+- `companyIds`
+- `contactIds`
+- `sort`: `createdAtDesc` 또는 `meetingAtDesc`
 - `meetingDate`
-- `companyHint`
-- `contactHint`
 
 #### Create / Update
 
-- `rawText`
-- `meetingDate`
-- `companyName`
-- `contactName`
-- `department`
-- `productName`
-- `stageText`
+- `sourceType`: 현재 생성은 `MANUAL`만 허용
+- `meetingLocalDateTime`
 - `details`
 - `nextPlan`
 - `requiredAction`
-- `dealId`
+- `companies`
+- `contacts`
+- `products`
+- `deals`
 
 ### 변경 추적
 
 | 항목 | 현재 상태 | 추적 상태 | 메모 |
 |---|---|---|---|
-| AI generate flow | 존재 | 유지 우선 | UX에 맞춰 단계 조정 가능 |
-| `stageText` 자유 문자열 | 존재 | 유지 | deal enum과 직접 연결 안 됨 |
-| meeting note detail | 충분 | 유지 | 2차 범위 |
+| 수동 회의록 CRUD | 존재 | 유지 | 현재 User Web 기준 |
+| 회사/담당자 필터 | 존재 | 유지 | `filter-companies`, `filter-contacts` |
+| 회사/담당자/제품/딜 snapshot 연결 | 존재 | 유지 | 생성/수정 transaction 안에서 교체 |
+| AI generate flow | 없음 | 후속 | OpenAI/STT 범위 |
+| 삭제/복구 | 없음 | 후속 | 현재 API 없음 |
 
 ---
 
 ## 5. Import / Export API
 
-### 현재 endpoint
+### 현재 상태
+
+범용 Import/Export job Backend module은 현재 없다. User Web에는 `/import`, `/export` 라우트와 `features/import-export` API client/type/schema가 남아 있지만 실제 Backend endpoint와 연결된 완료 기능으로 보지 않는다.
+
+Company, Contact, Product, Deal의 도메인별 xlsx export는 각각 구현되어 있으며 범용 ExportJob과 별개다.
+
+### 과거 후보 endpoint
 
 #### Import
 - `POST /api/imports`
@@ -464,9 +398,9 @@
 
 | 항목 | 현재 상태 | 추적 상태 | 메모 |
 |---|---|---|---|
-| job 기반 흐름 | 존재 | 유지 | pen과 잘 맞을 가능성 높음 |
-| export filters | 유연함 | 유지 | UI 필터 요구 따라 확장 가능 |
-| import mapping | 존재 | 유지 | 2차 범위 |
+| job 기반 흐름 | Backend 없음 | 신규 API 후보 | FE feature만 존재 |
+| 도메인별 xlsx export | 존재 | 유지 | Company/Contact/Product/Deal |
+| import mapping | Backend 없음 | 신규 API 후보 | 2차 범위 |
 
 ---
 
@@ -474,58 +408,54 @@
 
 ### Notification
 
-현재 강점:
-- list
-- unreadCount
-- settings
-- browser push key/subscription
+현재 상태:
+- User Web feature/page/API client는 존재한다.
+- Backend `notification` module과 controller endpoint는 현재 없다.
 
 추적:
 
 | 항목 | 현재 상태 | 추적 상태 | 메모 |
 |---|---|---|---|
-| unreadCount | 존재 | 유지 | bell badge에 유리 |
-| 분류/우선순위 시각 필드 | 제한적 | 응답 확장 후보 | 2차 범위 |
+| unreadCount | Backend 없음 | 신규 API 후보 | bell badge에 필요 |
+| settings / browser push | Backend 없음 | 신규 API 후보 | 2차 범위 |
 
 ### Search
 
-현재 강점:
-- grouped search response
-- `title / subtitle / targetId / targetPath`
+현재 상태:
+- User Web `search` feature와 GlobalSearch UI는 존재한다.
+- Backend `search` module과 controller endpoint는 현재 없다.
 
 추적:
 
 | 항목 | 현재 상태 | 추적 상태 | 메모 |
 |---|---|---|---|
-| grouped result | 존재 | 유지 | global search에 적합 |
+| grouped result | Backend 없음 | 신규 API 후보 | global search에 필요 |
 | suggestion endpoint | 없음 | 신규 API 후보 | 필요 시 |
 
 ### Trash
 
-현재 강점:
-- list
-- restore
-- permanent delete
+현재 상태:
+- User Web `/trash` route와 feature는 존재한다.
+- Backend `trash` module, soft delete 기반 휴지통, restore/permanent delete API는 현재 없다.
 
 추적:
 
 | 항목 | 현재 상태 | 추적 상태 | 메모 |
 |---|---|---|---|
-| 기본 흐름 | 존재 | 유지 | 2차 범위 |
+| 기본 흐름 | Backend 없음 | 신규 API 후보 | 2차 범위 |
 
 ### Business Card
 
-현재 강점:
-- scan
-- detail polling
-- confirm
+현재 상태:
+- User Web `/business-cards`, `/contacts/scan`, `features/business-card`는 존재한다.
+- Backend `business-card` module과 OCR endpoint는 현재 없다.
 
 추적:
 
 | 항목 | 현재 상태 | 추적 상태 | 메모 |
 |---|---|---|---|
-| OCR 상태 흐름 | 존재 | 유지 | 2차 범위 |
-| 후보 회사 응답 | 존재 | 유지 | UX 맞춤 정도만 확인 |
+| OCR 상태 흐름 | Backend 없음 | 신규 API 후보 | 2차 범위 |
+| 후보 회사 응답 | Backend 없음 | 신규 API 후보 | UX 맞춤 정도 확인 필요 |
 
 ---
 
@@ -543,8 +473,8 @@
   - write/action: `409`
 
 - soft delete 필드:
-  - `deletedAt`
-  - `permanentDeleteAt`
+  - `deletedAt`, `permanentDeleteAt`는 현재 core domain 공통 응답 기준이 아니다.
+  - Trash/restore/permanent delete backend scope에서 다시 확정한다.
 
 - 대부분의 날짜:
   - ISO string
@@ -624,6 +554,21 @@
   - 회사/담당자 목록 필터 옵션을 제품 category/status select와 같은 전체 옵션 조회 방식으로 정정
   - `/` 홈 준비중 상태와 Import/휴지통 navigation 숨김 상태 반영
 
+### 2026-06-16 현재 계약 정정
+
+- 작성자: Codex
+- 기준:
+  - `BE/src/modules`
+  - `BE/prisma/schema.prisma`
+  - `FE/user-web/src/app/router/router.tsx`
+  - `FE/user-web/src/features`
+- 상태:
+  - `/` 홈이 Schedule/Deal/MeetingNote API 조합 대시보드로 구현된 상태를 반영
+  - Deal 목록 API와 정렬 select 계약을 실제 `page/search/dealStatus/sort` 구조로 정정
+  - Schedule 목록 API를 실제 `view/baseDate/timeZone` 구조로 정정
+  - MeetingNote 수동 API 계약을 실제 endpoint와 snapshot 연결 구조로 정정
+  - BusinessCard/Import-Export/Notification/Search/Trash는 FE feature만 있고 Backend module이 없는 상태로 정정
+
 ---
 
 ## 11. 최종 정리
@@ -631,9 +576,10 @@
 현재 백엔드 계약은 핵심 도메인 User Web 구현에 충분한 기반이 있다.
 다만 아래 항목은 후속 UX 고도화에서 다시 부딪힐 가능성이 높다.
 
-1. mobile home aggregate 필요 여부
+1. Admin 운영 조회 API 필요 여부
 2. quick create에서 inline 생성 / 후보 탐색 전략
-3. 목록 컨트롤 버튼과 필터 컴포넌트 공통화 범위
+3. BusinessCard/Import-Export/Notification/Search/Trash Backend module 계획
+4. 목록 컨트롤 버튼과 필터 컴포넌트 공통화 범위
 
 따라서 이 문서는 “지금 무엇을 바로 바꿀지”보다,
 “무엇을 baseline으로 유지하고, 어떤 항목을 change candidate로 추적할지”를 명확히 하기 위한 기준 문서로 사용한다.

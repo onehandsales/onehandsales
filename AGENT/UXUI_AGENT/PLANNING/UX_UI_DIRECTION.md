@@ -11,24 +11,24 @@ The UI should help a salesperson answer quickly:
 - 다음 행동은 무엇인가?
 - 어떤 회사/담당자/제품 정보가 이 딜과 연결되어 있는가?
 
-The first screen should make the sales pipeline visible before secondary summaries.
+The first screen should make today's sales work visible first, then provide a clear path into the deal pipeline.
 
 ## 2. First Screen
 
-Target direction: after login, the first meaningful work screen should be the Deal Pipeline Home.
+Target direction: after login, `/` should be a work dashboard and `/deals` should remain the high-density Deal Pipeline Home.
 
-Current implementation note as of 2026-06-15:
+Current implementation note as of 2026-06-16:
 
-- `/` home intentionally shows `화면 준비중입니다`.
+- `/` home is an implemented dashboard that combines Schedule, Deal, Deal stage count, and MeetingNote API data.
 - The active deal pipeline experience is served from `/deals`.
-- Keep improving core domain UX first, then reopen the home composition.
+- Keep `/` focused on today/dashboard context and `/deals` focused on comparison, filtering, preview, and mutation.
+- Deal likelihood (`긍정 / 중립 / 부정` or percent) is not implemented in the current Deal API/FE form. Treat it as future UX scope unless a new backend plan adds it.
 
 Primary focus:
 
 - active deals
 - deal stages
 - deal amount
-- likelihood state
 - next action/follow-up
 - recent activity
 - overdue or near-deadline deals

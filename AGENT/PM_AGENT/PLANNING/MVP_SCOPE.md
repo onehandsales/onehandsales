@@ -7,7 +7,7 @@
 
 ## 현재 BE/TODO 구현 상태
 
-기준일: 2026-06-15
+기준일: 2026-06-16
 
 - Backend 구현 완료: Auth/User, Company, Contact, Product, Deal, Schedule, MeetingNote 수동 기본 도메인과 `TODO/DONE/ADDITIONAL_WORK_PLAN` G01-G12.
 - Auth/User: `/api/auth/providers`, `/api/auth/exchange`, `/api/auth/refresh`, `/api/auth/logout`, `/api/me`, `/admin/api/me`, `/api/users/me/profile`, `/api/users/me/devices`.
@@ -19,7 +19,7 @@
 - MeetingNote: 수동 회의록 목록/상세/생성/수정, 회사/담당자 필터, 회사/담당자/제품/딜 N:N snapshot 연결.
 - 현재 Backend 미구현: BusinessCard OCR, 범용 Import/Export job, Notification, Trash, Search, Admin 운영 조회/감사/민감 원문 API, MeetingNote AI/STT/삭제복구/Admin/DealActivity 자동 로그.
 - Admin Backend는 현재 `/admin/api/me`만 구현되어 있다.
-- User Web은 Schedule과 MeetingNote 수동 화면까지 실제 API 연동이 완료되어 있다. 나머지 미구현 Backend 도메인은 실제 API 연동 전까지 mock/placeholder 경계를 명확히 해야 한다.
+- User Web은 `/` 홈 대시보드, Company, Contact, Product, Deal, Schedule, MeetingNote 수동 화면까지 실제 API 연동이 완료되어 있다. 나머지 미구현 Backend 도메인은 실제 API 연동 전까지 mock/placeholder 경계를 명확히 해야 한다.
 
 ## 1. 개발 우선순위
 
@@ -87,6 +87,7 @@
 ### 현재 Backend 구현
 
 - 담당자 목록/검색/필터/페이지네이션
+- 담당자 목록 정렬: `createdAtDesc`, `usernameAsc`
 - 담당자 상세/생성/수정
 - 필터용 회사 옵션
 - 직급, 부서 옵션 조회/생성/삭제
@@ -140,6 +141,7 @@
 ### 현재 Backend 구현
 
 - 딜 목록/검색/필터/페이지네이션
+- 딜 목록 정렬: `createdAtDesc`, `dealCostDesc`, `dealCostAsc`, `expectedEndDateAsc`
 - 단계별 count
 - 딜 상세/생성/수정
 - 회사/담당자/제품 옵션 조회

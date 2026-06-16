@@ -77,6 +77,7 @@ Deal 기본 도메인 1차 구현 범위는 다음 테이블만 포함한다.
 - 목록 API는 10개 단위 page-number pagination이며 `totalCount`, `totalPages`를 반환한다.
 - 목록 기본 정렬은 `createdAt DESC`다.
 - 목록 정렬은 `createdAtDesc`, `dealCostDesc`, `dealCostAsc`, `expectedEndDateAsc`를 지원한다.
+- User Web 정렬 select label은 각각 `최신순`, `금액 높은순`, `금액 낮은 순`, `마감일순`이다.
 - 검색은 `dealName`만 대상으로 한다.
 - 필터는 `dealStatus`만 제공한다.
 - 목록/export 응답에는 Product와 최근수정일을 포함하지 않는다.

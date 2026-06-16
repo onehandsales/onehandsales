@@ -92,6 +92,8 @@ Indexes:
 
 - 모든 담당자 조회는 `userId` ownership을 먼저 적용한다.
 - 담당자 목록 API는 10개 단위 page-number pagination이며 `totalCount`, `totalPages`를 반환한다.
+- 담당자 목록 정렬은 기본 `createdAtDesc`와 이름순 `usernameAsc`를 지원한다.
+- `usernameAsc`는 `username ASC`, `createdAt DESC`, `id DESC` 순서로 정렬한다.
 - 담당자 목록 응답은 `updatedAt`을 반환하지 않는다.
 - 담당자 기본 정보 수정 API는 `username`, `mobile`, `email`, `companyId`, `contactDepartmentId`, `contactJobGradeId` 중 최소 1개를 수정할 수 있다.
 - 담당자 생성 요청의 `contactMemo`는 이 테이블에 저장하지 않고 `ContactMemoLog` 첫 데이터로 저장한다.

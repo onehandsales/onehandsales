@@ -50,9 +50,11 @@
 - stage는 FE/BE 모두 6단계 계약으로 정리
 - mobile / desktop 기준은 `768px`
 - 토큰은 `CSS 변수 + Tailwind semantic mapping` 병행
-- `/` 홈은 현재 `화면 준비중입니다` 준비 상태로 두고, 딜 파이프라인은 `/deals`에서 운영
+- `/` 홈은 Schedule/Deal/MeetingNote API 조합 기반 대시보드로 운영
+- 딜 파이프라인은 `/deals`에서 운영
 - 회사/담당자/제품 목록은 제품형 `Controls Bar + Table Card + Pagination` 문법을 기준으로 맞춤
 - 목록 페이지네이션은 10개 단위 `totalPages` 기준이며 `hasNext`는 상세 메모 로그 같은 cursor flow에만 사용
+- 목록 정렬은 select를 기본 문법으로 사용한다. 딜 목록은 `최신순`, `금액 높은순`, `금액 낮은 순`, `마감일순`을 제공한다.
 
 ---
 
@@ -375,6 +377,29 @@
 
 ---
 
+### 2026-06-16 현재 FE/BE 기준 문서 정정
+
+- 작업자: Codex
+- 유형:
+  - frontend
+  - backend
+  - docs
+- 요약:
+  - `BE/src/modules`, `BE/prisma/schema.prisma`, `FE/user-web/src/app/router/router.tsx`, `FE/user-web/src/features` 기준으로 UX 문서와 AGENT 문서를 재검토했다.
+  - `/` 홈은 더 이상 준비중 화면이 아니라 Schedule/Deal/MeetingNote API를 조합한 실제 대시보드 화면임을 반영했다.
+  - 딜 목록 정렬 UI는 chip이 아니라 select이며 `최신순`, `금액 높은순`, `금액 낮은 순`, `마감일순`을 제공하도록 정정했다.
+  - 담당자 목록 정렬은 `최신순`, `이름순` select 계약으로 정정했다.
+  - BusinessCard OCR, 범용 Import/Export job, Notification, Trash, Search, Admin 운영 조회 API는 FE feature/route가 있어도 Backend module이 없음을 다시 명시했다.
+- 결정/반영 내용:
+  - 현재 기준선은 2026-06-16 FE+BE 코드다.
+  - 과거 2026-06-11~2026-06-15 계획/로그 항목은 역사 기록으로 남기되, 실제 구현 판단은 최신 현재 기준선 섹션을 우선한다.
+  - User Web 핵심 도메인은 Auth/User, Home, Company, Contact, Product, Deal, Schedule, MeetingNote까지 실제 API 연동 완료 상태로 본다.
+- 남은 이슈:
+  - Admin Web 운영 조회 API는 `/admin/api/me` 외 미구현이다.
+  - BusinessCard OCR, Import/Export job, Notification, Trash, Search는 Backend 구현 계획이 필요하다.
+
+---
+
 ## 현재 구현 체크리스트
 
 ### 문서
@@ -403,12 +428,13 @@
 - [x] DealStage 6단계 FE/BE 계약 반영 완료
 - [x] Company/Contact/Product 제품형 목록 문법 정리
 - [x] Page-number 목록 pagination `totalPages` 기준 정리
+- [x] Deal 목록 정렬 select 전환
 - [ ] 목록 컨트롤 버튼 공통화
 
 ### 백엔드 / 계약
 
 - [x] deal stage 전략 확정 — FE/BE 6단계 계약 반영 완료
-- [ ] mobile home aggregate API 필요 여부 확정
+- [x] `/` 홈은 신규 aggregate 없이 기존 Schedule/Deal/MeetingNote API 조합으로 구현
 - [ ] quick create inline 생성 범위 확정
 - [ ] navigation badge count 필요 여부 확정
 
@@ -416,14 +442,14 @@
 
 ## 현재 블로커
 
-- `/` 홈 최종 구성은 보류 중이다. 현재는 `화면 준비중입니다`를 표시한다.
 - Quick Create modal의 inline entity create 범위 미확정
 - 목록 컨트롤 버튼 공통화 미완료
+- Admin 운영 조회 API와 BusinessCard/Import/Notification/Trash/Search Backend module 미구현
 
 ---
 
 ## 다음 작업 우선순위
 
 1. 회사/담당자/제품/딜 목록 컨트롤 버튼 공통화
-2. `/` 홈 최종 구성 재개 여부 결정
-3. 브라우저 실제 세션 smoke 확인 (딜/회사/담당자/제품/회의록 목록과 상세)
+2. 브라우저 실제 세션 smoke 확인 (홈/딜/회사/담당자/제품/일정/회의록 목록과 상세)
+3. Admin 운영 조회 API 또는 미구현 FE feature의 Backend 계획 수립

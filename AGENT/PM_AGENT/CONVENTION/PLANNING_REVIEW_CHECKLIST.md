@@ -108,8 +108,9 @@ Frontend와 UX/UI 구체화 검토:
 - User Web은 `/api/*`만 호출하고 `/admin/api/*`를 호출하지 않는가?
 - Admin Web은 `FE/admin-web`의 별도 앱, `adminApiClient`, TanStack Table, 서버 페이지네이션, 데스크톱 전용 운영 콘솔 기준을 따르는가?
 - FE 문서는 화면, 컴포넌트, 사용자 입력, loading/empty/error/success/권한 없음 상태, optimistic update rollback 가능 여부를 설명하는가?
-- UX/UI 문서는 로그인 후 첫 화면을 딜 파이프라인 중심으로 두고, 딜 목록에서 금액, 가능성, 다음 행동, 마감 상태가 빠르게 보이도록 하는가?
-- 빠른 등록 modal과 inline creation은 전체 상세 form이 아니라 최소 입력 흐름으로 설계되어 있는가?
+- UX/UI 문서는 로그인 후 `/` 홈 대시보드와 `/deals` 딜 파이프라인의 역할을 구분하고, 딜 목록에서 금액, 단계, 다음 행동, 마감 상태가 빠르게 보이도록 하는가?
+- 가능성/likelihood처럼 현재 API에 없는 필드는 후속 범위로 분리되어 있는가?
+- 빠른 등록 modal과 inline creation을 포함한다면 전체 상세 form이 아니라 최소 입력 흐름으로 설계되어 있는가?
 - 모바일 User Web은 테이블이나 가로 칸반을 기본 UI로 쓰지 않고 카드형/리스트형 흐름을 따르는가?
 - Admin UI는 데이터 테이블, 필터, 서버 페이지네이션, 민감정보 마스킹, 원문 조회 사유 dialog를 중심으로 설계되어 있는가?
 - 금지 표현인 `Customer`, `상품`, `오프더레코드`가 정본 의도와 다르게 쓰이지 않는가?

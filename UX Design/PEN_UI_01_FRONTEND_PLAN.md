@@ -9,6 +9,7 @@
 - 기존 UI 구조는 보존 대상이 아니며, 필요 시 대체한다.
 - 기존 API/hook/type/data 로직은 재사용 가능하면 유지한다.
 - 1차 범위는 디자인 토큰, 공통 App Shell, 대표 딜 화면 3개에 집중한다.
+- 2026-06-16 기준으로 이 문서는 초기 계획과 현재 구현 기준선을 함께 담는다. 실제 구현 판단은 `현재 구현 기준선`을 우선한다.
 
 구현 원칙:
 - 구현 시작은 모바일 대표 화면을 우선한다.
@@ -16,6 +17,29 @@
 - 토큰, shell, navigation, 상태 구조는 처음부터 desktop/mobile 동시 대응 기준으로 설계한다.
 - desktop과 mobile은 하나의 조건문 많은 컴포넌트로 합치지 않고 레이아웃을 분리한다.
 - 공통화 대상은 데이터, 상태, 액션, 작은 UI 컴포넌트에 한정한다.
+
+---
+
+## 0. 현재 구현 기준선
+
+기준일: 2026-06-16
+
+현재 User Web 구현 상태:
+
+- `/` 홈은 실제 대시보드 화면이다. Schedule, Deal, Deal stage count, MeetingNote API를 조합해 오늘 일정, 진행 딜, 마감 임박, 최근 회의록, 빠른 실행, 최근 활동을 표시한다.
+- `/deals`는 딜 파이프라인 화면이다. 데스크톱은 테이블 + 우측 미리보기 패널, 모바일은 stage tab + 카드 리스트를 사용한다.
+- 딜 목록 정렬은 select로 제공하며 라벨은 `최신순`, `금액 높은순`, `금액 낮은 순`, `마감일순`이다.
+- `/companies`, `/contacts`, `/products`는 조밀한 Controls Bar + Table Card + Pagination 문법을 따른다.
+- 담당자 목록 정렬은 select로 `최신순`, `이름순`을 제공한다.
+- `/schedules`, `/schedules/week`, `/meeting-notes`는 실제 Backend API와 연결되어 있다.
+- `/business-cards`, `/contacts/scan`, `/notifications`, `/import`, `/export`, `/trash`는 라우트/feature가 있으나 대응 Backend module이 없어 완료 기능으로 보지 않는다.
+- Sidebar는 `홈`, `딜`, `회사`, `담당자`, `제품`, `일정`, `회의록`, `설정`을 노출한다. Import와 휴지통은 숨김 처리되어 있다.
+
+현재 Backend 구현 상태:
+
+- 구현됨: Auth/User, Company, Contact, Product, Deal, Schedule, MeetingNote 수동 도메인.
+- Admin API는 `GET /admin/api/me`만 구현되어 있다.
+- 없음: BusinessCard OCR, 범용 Import/Export job, Notification, Trash, Search, Admin 운영 조회/감사/민감 원문 API.
 
 ---
 
@@ -421,11 +445,8 @@ pen 단계: 위와 동일 (완전 일치 달성).
 
 ## 다음 단계
 
-1. pen의 1차 범위 화면만 더 깊게 읽기
-   - Desktop Deal Pipeline Home
-   - Mobile Deal Pipeline Home
-   - Quick Create Modal
-   - Mobile Deal Detail Page
-2. 토큰 추출 고도화
-3. 새 shell/navigation 컴포넌트 구현 시작
-4. 기존 딜 라우트와 연결 전략 확정
+1. 홈/딜/회사/담당자/제품/일정/회의록 실제 세션 smoke 확인
+2. 목록 컨트롤 select/button 공통화 범위 결정
+3. Quick Create inline entity create 범위 결정
+4. Admin 운영 조회 API 또는 Admin Web placeholder 경계 결정
+5. BusinessCard/Import-Export/Notification/Search/Trash Backend 계획 수립
