@@ -181,7 +181,7 @@ export interface DealRepository {
   ): Promise<boolean>;
   // 기능 : 현재 사용자의 회사 단건을 조회합니다.
   findCompany(userId: string, companyId: string): Promise<DealCompanyRecord | null>;
-  // 기능 : 현재 사용자의 거래처 단건을 조회합니다.
+  // 기능 : 현재 사용자의 담당자 단건을 조회합니다.
   findContact(userId: string, contactId: string): Promise<DealContactRecord | null>;
   // 기능 : 현재 사용자의 제품 단건을 조회합니다.
   findProducts(userId: string, productIds: string[]): Promise<DealProductRecord[]>;
@@ -191,7 +191,7 @@ export interface DealRepository {
   replaceDealProducts(input: CreateDealProductsInput): Promise<void>;
   // 기능 : 현재 사용자의 회사 옵션 전체 목록을 조회합니다.
   listCompanyOptions(userId: string): Promise<DealCompanyRecord[]>;
-  // 기능 : 현재 사용자의 거래처 옵션 전체 목록을 조회합니다.
+  // 기능 : 현재 사용자의 담당자 옵션 전체 목록을 조회합니다.
   listContactOptions(userId: string): Promise<DealContactRecord[]>;
   // 기능 : 현재 사용자의 제품 옵션 전체 목록을 조회합니다.
   listProductOptions(userId: string): Promise<DealProductRecord[]>;

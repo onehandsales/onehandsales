@@ -45,7 +45,7 @@ Deal 기본 도메인 1차 구현 범위는 다음 테이블만 포함한다.
 | `dealName` | string | 아니오 | 딜 이름 |
 | `dealCost` | int | 아니오 | 딜 금액. 정수, 0 이상 |
 | `companyId` | uuid | 아니오 | 연결 회사 ID |
-| `contactId` | uuid | 아니오 | 연결 거래처 ID |
+| `contactId` | uuid | 아니오 | 연결 담당자 ID |
 | `dealStatus` | string | 아니오 | 코드 레벨 enum의 English code |
 | `expectedEndDate` | date | 아니오 | 예상 마감일. API에서는 `YYYY-MM-DD` |
 | `createdAt` | datetime | 아니오 | 생성일 |
@@ -68,7 +68,7 @@ Deal 기본 도메인 1차 구현 범위는 다음 테이블만 포함한다.
 - DB에는 English code 문자열만 저장한다.
 - API 응답은 code와 label을 함께 제공한다.
 - 외부 FK 응답은 flat field가 아니라 `company`, `contact`, `products` 같은 객체/배열로 제공한다.
-- 딜 하나는 회사 하나, 거래처 하나에 연결된다.
+- 딜 하나는 회사 하나, 담당자 하나에 연결된다.
 - 딜 하나는 `DealProduct`를 통해 여러 제품에 연결될 수 있다.
 - 제품 하나는 `DealProduct`를 통해 여러 딜에 포함될 수 있다.
 - 딜 하나는 `ScheduleDeal`을 통해 여러 일정에 연결될 수 있다.

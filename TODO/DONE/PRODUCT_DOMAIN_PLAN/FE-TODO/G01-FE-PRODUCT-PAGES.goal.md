@@ -20,7 +20,7 @@
 - `FE/user-web/package.json`
 - `FE/user-web/src/**`
 - 기존 제품 화면과 API 클라이언트
-- 기존 회사/거래처 메모 화면과 API 처리 패턴
+- 기존 회사/담당자 메모 화면과 API 처리 패턴
 
 ## 목표
 

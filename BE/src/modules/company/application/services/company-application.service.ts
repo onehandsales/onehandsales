@@ -6,6 +6,7 @@ import {
   type CompanyContactRecord,
   type CompanyDealRecord,
   type CompanyListRecord,
+  CompanyListSort,
   type CompanyPrivateMemoLogRecord,
   type CompanyRecord,
   type CompanyRepository,
@@ -53,6 +54,7 @@ export interface CompanyListQueryInput {
   readonly companyName?: string;
   readonly companyFieldId?: string;
   readonly companyRegionId?: string;
+  readonly sort?: CompanyListSort;
 }
 
 // 역할 : CompanyExportQueryInput 회사 export query 조건을 정의합니다.
@@ -60,6 +62,7 @@ export interface CompanyExportQueryInput {
   readonly companyName?: string;
   readonly companyFieldId?: string;
   readonly companyRegionId?: string;
+  readonly sort?: CompanyListSort;
 }
 
 // 역할 : CreateCompanyInput 데이터가 계층 사이에서 전달되는 구조를 정의합니다.
@@ -124,12 +127,12 @@ export interface CompanyDetailResponse {
   readonly updatedAt: string;
 }
 
-// 역할 : CompanyContactListResponse 회사에 연결된 거래처 목록 응답을 정의합니다.
+// 역할 : CompanyContactListResponse 회사에 연결된 담당자 목록 응답을 정의합니다.
 export interface CompanyContactListResponse {
   readonly items: CompanyContactItemResponse[];
 }
 
-// 역할 : CompanyContactItemResponse 회사에 연결된 거래처 응답 항목을 정의합니다.
+// 역할 : CompanyContactItemResponse 회사에 연결된 담당자 응답 항목을 정의합니다.
 export interface CompanyContactItemResponse {
   readonly id: string;
   readonly username: string;
@@ -231,10 +234,14 @@ export class CompanyApplicationService {
       ...(companyName ? { companyName } : {}),
       ...(query.companyFieldId ? { companyFieldId: query.companyFieldId } : {}),
       ...(query.companyRegionId ? { companyRegionId: query.companyRegionId } : {}),
+      sort: query.sort ?? CompanyListSort.CREATED_AT_DESC,
     });
 
     // 4. 민감한 검색어 없이 회사 목록 조회 이벤트를 기록한다.
-    this.logEvent("company.listed", { userId: currentUser.id });
+    this.logEvent("company.listed", {
+      userId: currentUser.id,
+      sort: query.sort ?? CompanyListSort.CREATED_AT_DESC,
+    });
 
     // 5. repository 결과를 페이지 응답 DTO로 변환한다.
     return {
@@ -246,7 +253,7 @@ export class CompanyApplicationService {
     };
   }
 
-  // 기능 : 현재 사용자의 회사에 연결된 거래처 전체 목록을 조회합니다.
+  // 기능 : 현재 사용자의 회사에 연결된 담당자 전체 목록을 조회합니다.
   async listCompanyContacts(
     currentUser: CurrentUserContext,
     companyId: string
@@ -254,13 +261,13 @@ export class CompanyApplicationService {
     // 1. 조회 대상 회사가 현재 사용자 소유인지 검증한다.
     await this.assertCompanyExists(currentUser.id, companyId);
 
-    // 2. 현재 사용자 ownership 기준으로 회사에 연결된 거래처 목록을 조회한다.
+    // 2. 현재 사용자 ownership 기준으로 회사에 연결된 담당자 목록을 조회한다.
     const contacts = await this.companyRepository.listCompanyContacts({
       userId: currentUser.id,
       companyId,
     });
 
-    // 3. 민감한 거래처 본문 없이 회사별 거래처 목록 조회 이벤트를 기록한다.
+    // 3. 민감한 담당자 본문 없이 회사별 담당자 목록 조회 이벤트를 기록한다.
     this.logEvent("company.contactsListed", {
       userId: currentUser.id,
       companyId,
@@ -321,6 +328,7 @@ export class CompanyApplicationService {
       ...(companyName ? { companyName } : {}),
       ...(query.companyFieldId ? { companyFieldId: query.companyFieldId } : {}),
       ...(query.companyRegionId ? { companyRegionId: query.companyRegionId } : {}),
+      sort: query.sort ?? CompanyListSort.CREATED_AT_DESC,
     });
 
     // 4. xlsx writer로 다운로드 파일 본문을 생성한다.
@@ -330,6 +338,7 @@ export class CompanyApplicationService {
     this.logEvent("company.exported", {
       userId: currentUser.id,
       rowCount: companies.length,
+      sort: query.sort ?? CompanyListSort.CREATED_AT_DESC,
     });
 
     // 6. controller가 다운로드 응답으로 변환할 파일 정보를 반환한다.
@@ -839,7 +848,7 @@ export class CompanyApplicationService {
     };
   }
 
-  // 기능 : 회사에 연결된 거래처 레코드를 응답 항목으로 변환합니다.
+  // 기능 : 회사에 연결된 담당자 레코드를 응답 항목으로 변환합니다.
   private toCompanyContactItem(
     contact: CompanyContactRecord
   ): CompanyContactItemResponse {
@@ -871,7 +880,7 @@ export class CompanyApplicationService {
           { header: "회사이름", key: "companyName", width: 28 },
           { header: "회사분야", key: "companyField", width: 18 },
           { header: "회사지역", key: "companyRegion", width: 18 },
-          { header: "거래처 수", key: "contactCount", width: 12 },
+          { header: "담당자 수", key: "contactCount", width: 12 },
           { header: "딜 수", key: "dealCount", width: 12 },
           {
             header: "등록일",

@@ -1,4 +1,4 @@
-// 거래처 목록 아이템
+// 담당자 목록 아이템
 export type ContactListItem = {
   readonly id: string;
   readonly company: { readonly id: string; readonly companyName: string };
@@ -10,7 +10,7 @@ export type ContactListItem = {
   readonly createdAt: string;
 };
 
-// 거래처 상세 (목록 + updatedAt)
+// 담당자 상세 (목록 + updatedAt)
 export type ContactDetail = ContactListItem & { readonly updatedAt: string };
 
 // 페이지네이션 응답

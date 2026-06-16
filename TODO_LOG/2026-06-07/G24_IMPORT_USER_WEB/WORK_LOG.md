@@ -14,7 +14,7 @@
 - `TODO/MVP-STARTER_PLAN/COMMON/API-SPEC/G17-G29-ENDPOINT-CONTRACT.md`
 
 ## 요구사항 체크
-- 대상 선택: 회사, 거래처, 제품, 딜
+- 대상 선택: 회사, 담당자, 제품, 딜
 - Excel/CSV 파일 업로드
 - 업로드 후 preview table 표시
 - AI 컬럼 매핑 결과 표시

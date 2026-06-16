@@ -34,7 +34,7 @@ Company 1 ─ N MeetingNoteContact
 - `CompanyRegion`은 사용자별 회사 지역 필터 옵션이다.
 - `CompanyMemoLog`는 회사 특징에 대한 일반 메모 로그다.
 - `CompanyUserPrivateMemoLog`는 회사별 사용자 비밀 메모 로그다.
-- `Contact`는 회사에 소속된 거래처 담당자다.
+- `Contact`는 회사에 소속된 담당자다.
 - `Deal`은 특정 회사에 속한 딜이다.
 - `MeetingNoteCompany`와 `MeetingNoteContact`는 회의록 작성 시점의 회사/담당자 snapshot 연결이다.
 
@@ -44,12 +44,12 @@ Company 1 ─ N MeetingNoteContact
 
 - 휴지통과 soft delete 컬럼
 - 회사 목록의 최근 수정일 응답
-- 회사 단건 응답에 거래처 수와 딜 수를 직접 병합하는 구조
+- 회사 단건 응답에 담당자 수와 딜 수를 직접 병합하는 구조
 - 회사분야/회사지역 수정 API
 - Admin 원문 조회용 회사 개인 비밀 메모 복호화
 - 기존 공통 `PersonalMemo(targetType=COMPANY)` 방식
 
-회사 목록의 연결 거래처 수는 `Contact.companyId` 관계를 기준으로 `contactCount` 집계값으로 제공한다. 회사 목록의 연결 딜 수는 `Deal.companyId` 관계를 기준으로 `dealCount` 집계값으로 제공한다. 회사 단건 조회 응답 자체에는 거래처 수와 딜 수를 병합하지 않으며, 회사 단건 화면의 연결 Contact/Deal 목록은 별도 API로 조회한다.
+회사 목록의 연결 담당자 수는 `Contact.companyId` 관계를 기준으로 `contactCount` 집계값으로 제공한다. 회사 목록의 연결 딜 수는 `Deal.companyId` 관계를 기준으로 `dealCount` 집계값으로 제공한다. 회사 단건 조회 응답 자체에는 담당자 수와 딜 수를 병합하지 않으며, 회사 단건 화면의 연결 Contact/Deal 목록은 별도 API로 조회한다.
 
 ## 4. Table: Company
 
@@ -245,7 +245,7 @@ model Company {
   memoLogs        CompanyMemoLog[]
   /// 기능 : 작성자 본인만 복호화해 볼 수 있는 회사 개인 비밀 메모 로그 목록이다.
   privateMemoLogs CompanyUserPrivateMemoLog[]
-  /// 기능 : 회사에 소속된 거래처 담당자 목록이다.
+  /// 기능 : 회사에 소속된 담당자 목록이다.
   contacts        Contact[]
 
   @@index([userId, createdAt])

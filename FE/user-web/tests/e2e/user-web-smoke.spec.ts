@@ -290,13 +290,13 @@ test.describe("User Web smoke E2E", () => {
       await expect(page.getByRole("link", { name: COMPANY_NAME })).toBeVisible();
     });
 
-    await test.step("거래처 생성", async () => {
-      await goToNav(page, "거래처");
+    await test.step("담당자 생성", async () => {
+      await goToNav(page, "담당자");
       await expect(
-        page.getByRole("heading", { exact: true, name: "거래처" })
+        page.getByRole("heading", { exact: true, name: "담당자" })
       ).toBeVisible();
-      await page.getByRole("button", { name: "거래처 추가" }).first().click();
-      const dialog = getDialog(page, "거래처 빠른 등록");
+      await page.getByRole("button", { name: "담당자 추가" }).first().click();
+      const dialog = getDialog(page, "담당자 빠른 등록");
       await expect(dialog).toBeVisible();
       await dialog.getByLabel("이름").fill(CONTACT_NAME);
       await dialog.getByLabel("회사").fill(COMPANY_NAME);
@@ -305,11 +305,11 @@ test.describe("User Web smoke E2E", () => {
       await dialog.getByLabel("직책").fill("팀장");
       await dialog.getByLabel("전화번호").fill("010-1234-5678");
       await dialog.getByLabel("이메일").fill("smoke@example.com");
-      await dialog.getByLabel("첫 메모").fill("G34 smoke 거래처 fixture");
+      await dialog.getByLabel("첫 메모").fill("G34 smoke 담당자 fixture");
       await dialog.getByRole("button", { name: "저장" }).click();
       await expect(dialog).toBeHidden();
       await expect(
-        page.getByText(`${CONTACT_NAME} 거래처가 추가되었습니다.`)
+        page.getByText(`${CONTACT_NAME} 담당자가 추가되었습니다.`)
       ).toBeVisible();
       await expect(page.getByRole("link", { name: CONTACT_NAME })).toBeVisible();
     });
@@ -348,7 +348,7 @@ test.describe("User Web smoke E2E", () => {
       await dialog.getByLabel("금액").fill("1200000");
       await dialog.getByLabel("회사").fill(COMPANY_NAME);
       await dialog.getByRole("button", { name: new RegExp(COMPANY_NAME) }).first().click();
-      await dialog.getByLabel("거래처").fill(CONTACT_NAME);
+      await dialog.getByLabel("담당자").fill(CONTACT_NAME);
       await dialog.getByRole("button", { name: new RegExp(CONTACT_NAME) }).first().click();
       await dialog.getByLabel("제품").fill(PRODUCT_NAME);
       await dialog.getByRole("button", { name: new RegExp(PRODUCT_NAME) }).first().click();

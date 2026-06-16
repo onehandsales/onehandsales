@@ -468,7 +468,7 @@ export class DealApplicationService {
     return { items };
   }
 
-  // 기능 : 현재 사용자의 거래처 선택 옵션 목록을 조회합니다.
+  // 기능 : 현재 사용자의 담당자 선택 옵션 목록을 조회합니다.
   async listContactOptions(
     currentUser: CurrentUserContext
   ): Promise<DealContactOptionResponse> {
@@ -655,7 +655,7 @@ export class DealApplicationService {
     }
   }
 
-  // 기능 : 회사, 거래처, 제품이 현재 사용자의 소유이고 거래처가 회사에 속하는지 확인합니다.
+  // 기능 : 회사, 담당자, 제품이 현재 사용자의 소유이고 담당자가 회사에 속하는지 확인합니다.
   private async assertRelatedResourcesExist(
     userId: string,
     companyId: string,
@@ -884,7 +884,7 @@ export class DealApplicationService {
     };
   }
 
-  // 기능 : 거래처 레코드를 API 응답 객체로 변환합니다.
+  // 기능 : 담당자 레코드를 API 응답 객체로 변환합니다.
   private toDealContactResponse(contact: DealContactRecord): DealContactResponse {
     return {
       id: contact.id,
@@ -893,7 +893,7 @@ export class DealApplicationService {
     };
   }
 
-  // 기능 : 거래처 옵션 label을 생성합니다.
+  // 기능 : 담당자 옵션 label을 생성합니다.
   private createContactLabel(contact: DealContactRecord): string {
     return `${contact.username} ${contact.contactDepartment.departmentName}`.trim();
   }
@@ -958,7 +958,7 @@ export class DealApplicationService {
         columns: [
           { header: "딜이름", key: "dealName", width: 28 },
           { header: "회사이름", key: "companyName", width: 24 },
-          { header: "거래처", key: "contactLabel", width: 20 },
+          { header: "담당자", key: "contactLabel", width: 20 },
           { header: "딜단계", key: "dealStatusLabel", width: 18 },
           { header: "딜금액", key: "dealCost", width: 16 },
           { header: "마감일", key: "expectedEndDate", width: 16 },

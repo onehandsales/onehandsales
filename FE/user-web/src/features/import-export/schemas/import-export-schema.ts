@@ -13,7 +13,7 @@ export const importTargetOptions: readonly {
   readonly description: string;
 }[] = [
   { value: "COMPANY", label: "회사", description: "회사명과 기본 속성" },
-  { value: "CONTACT", label: "거래처", description: "담당자와 연락처" },
+  { value: "CONTACT", label: "담당자", description: "담당자와 연락처" },
   { value: "PRODUCT", label: "제품", description: "제품명과 가격" },
   { value: "DEAL", label: "딜", description: "영업 건과 금액" },
 ];
@@ -24,7 +24,7 @@ export const exportTargetOptions: readonly {
   readonly description: string;
 }[] = [
   { value: "COMPANY", label: "회사", description: "회사 목록" },
-  { value: "CONTACT", label: "거래처", description: "담당자 목록" },
+  { value: "CONTACT", label: "담당자", description: "담당자 목록" },
   { value: "PRODUCT", label: "제품", description: "제품 목록" },
   { value: "DEAL", label: "딜", description: "영업 건 목록" },
   { value: "SCHEDULE", label: "일정", description: "일정 목록" },

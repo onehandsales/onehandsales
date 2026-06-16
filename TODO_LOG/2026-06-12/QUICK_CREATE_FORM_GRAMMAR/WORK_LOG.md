@@ -21,13 +21,13 @@
   - `ModalFooterActions`
 - Deal Quick Create Modal
   - 기본 정보, 연결 대상, 진행 상태, 고급 옵션 섹션으로 재구성
-  - 인라인 거래처/제품 생성 영역을 `ModalInlineCreateArea`로 대체
+  - 인라인 담당자/제품 생성 영역을 `ModalInlineCreateArea`로 대체
   - helper/error text 위치를 `ModalFieldGroup` 기준으로 정리
 - Company Create Modal
   - 회사 기본 정보, 첫 메모 섹션으로 재구성
   - footer action을 `ModalFooterActions`로 대체
 - Contact Create Modal
-  - 거래처 기본 정보, 상세 정보, 첫 메모 섹션으로 재구성
+  - 담당자 기본 정보, 상세 정보, 첫 메모 섹션으로 재구성
   - 기존 회사 검색 컴포넌트는 데이터 로직 보존을 위해 유지
 - Product Create Modal
   - 제품 기본 정보, 설명, 첫 메모 섹션으로 재구성
@@ -36,7 +36,7 @@
 ## 남긴 차이점
 
 - `ContactCompanyField`는 자체 검색/선택 로직이 있어 이번 단계에서 내부까지 분해하지 않았다.
-- Deal Quick Create만 인라인 거래처/제품 생성과 고급 옵션을 가진다.
+- Deal Quick Create만 인라인 담당자/제품 생성과 고급 옵션을 가진다.
 - 실제 focus trap, ESC close 등 modal interaction 보강은 별도 작업으로 남긴다.
 
 ## 검증

@@ -39,7 +39,7 @@ user-web의 범용 shadcn-style primitive를 이곳에 둔다.
 - `modal-form.tsx`
   - Quick Create 계열 모달 내부 폼 문법을 담당한다.
   - `ModalFormSection`, `ModalSectionHeader`, `ModalFormRow`, `ModalFieldGroup`으로 섹션/행/필드 묶음을 고정한다.
-  - `ModalInlineCreateArea`는 딜 빠른등록의 인라인 거래처/제품 생성 영역에 사용한다.
+  - `ModalInlineCreateArea`는 딜 빠른등록의 인라인 담당자/제품 생성 영역에 사용한다.
   - `ModalAdvancedSection`은 접을 수 있는 고급 옵션 영역을 담당한다.
   - `ModalFooterActions`는 생성 모달 footer의 취소/저장 action 문법을 담당한다.
 - `state.tsx`

@@ -65,7 +65,7 @@ export function getDealCompanyOptions() {
   return apiClient<DealCompanyOptionsResponse>("/api/deals/company-options");
 }
 
-// 기능 : 딜 form 거래처 옵션 조회
+// 기능 : 딜 form 담당자 옵션 조회
 export function getDealContactOptions() {
   return apiClient<DealContactOptionsResponse>("/api/deals/contact-options");
 }

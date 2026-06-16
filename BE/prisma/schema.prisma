@@ -75,15 +75,15 @@ model User {
   companyMemoLogs          CompanyMemoLog[]
   /// 기능 : 사용자가 작성한 회사 개인 비밀 메모 로그 목록이다.
   companyPrivateMemoLogs   CompanyUserPrivateMemoLog[]
-  /// 기능 : 사용자가 등록한 거래처 목록이다.
+  /// 기능 : 사용자가 등록한 담당자 목록이다.
   contacts                 Contact[]
-  /// 기능 : 사용자가 만든 거래처 직급 옵션 목록이다.
+  /// 기능 : 사용자가 만든 담당자 직급 옵션 목록이다.
   contactJobGrades         ContactJobGrade[]
-  /// 기능 : 사용자가 만든 거래처 부서 옵션 목록이다.
+  /// 기능 : 사용자가 만든 담당자 부서 옵션 목록이다.
   contactDepartments       ContactDepartment[]
-  /// 기능 : 사용자가 작성한 거래처 일반 메모 로그 목록이다.
+  /// 기능 : 사용자가 작성한 담당자 일반 메모 로그 목록이다.
   contactMemoLogs          ContactMemoLog[]
-  /// 기능 : 사용자가 작성한 거래처 개인 비밀 메모 로그 목록이다.
+  /// 기능 : 사용자가 작성한 담당자 개인 비밀 메모 로그 목록이다.
   contactPrivateMemoLogs   ContactUserPrivateMemoLog[]
   /// 기능 : 사용자가 등록한 제품 목록이다.
   products                 Product[]
@@ -199,7 +199,7 @@ model Company {
   memoLogs        CompanyMemoLog[]
   /// 기능 : 작성자 본인만 복호화해 볼 수 있는 회사 개인 비밀 메모 로그 목록이다.
   privateMemoLogs CompanyUserPrivateMemoLog[]
-  /// 기능 : 회사에 소속된 거래처 담당자 목록이다.
+  /// 기능 : 회사에 소속된 담당자 목록이다.
   contacts        Contact[]
   /// 기능 : 회사에 연결된 딜 목록이다.
   deals           Deal[]
@@ -224,19 +224,19 @@ model Contact {
   createdAt           DateTime @default(now())
   updatedAt           DateTime @updatedAt
 
-  /// 기능 : 거래처를 등록한 사용자다. 모든 거래처 API는 이 userId로 소유권을 검증한다.
+  /// 기능 : 담당자를 등록한 사용자다. 모든 담당자 API는 이 userId로 소유권을 검증한다.
   user                User                       @relation(fields: [userId], references: [id])
-  /// 기능 : 거래처가 소속된 회사다. 거래처는 회사 없이 저장되지 않는다.
+  /// 기능 : 담당자가 소속된 회사다. 담당자는 회사 없이 저장되지 않는다.
   company             Company                    @relation(fields: [companyId], references: [id])
-  /// 기능 : 거래처 목록 필터와 상세에 사용되는 거래처 직급이다.
+  /// 기능 : 담당자 목록 필터와 상세에 사용되는 담당자 직급이다.
   contactJobGrade     ContactJobGrade            @relation(fields: [contactJobGradeId], references: [id])
-  /// 기능 : 거래처 목록 필터와 상세에 사용되는 거래처 부서다.
+  /// 기능 : 담당자 목록 필터와 상세에 사용되는 담당자 부서다.
   contactDepartment   ContactDepartment          @relation(fields: [contactDepartmentId], references: [id])
-  /// 기능 : 거래처 일반 메모 로그 목록이다.
+  /// 기능 : 담당자 일반 메모 로그 목록이다.
   memoLogs            ContactMemoLog[]
-  /// 기능 : 작성자 본인만 복호화해 볼 수 있는 거래처 개인 비밀 메모 로그 목록이다.
+  /// 기능 : 작성자 본인만 복호화해 볼 수 있는 담당자 개인 비밀 메모 로그 목록이다.
   privateMemoLogs     ContactUserPrivateMemoLog[]
-  /// 기능 : 거래처 담당자에 연결된 딜 목록이다.
+  /// 기능 : 담당자에 연결된 딜 목록이다.
   deals               Deal[]
   meetingNoteContacts MeetingNoteContact[]
 
@@ -253,9 +253,9 @@ model ContactJobGrade {
   jobGradeName String
   createdAt    DateTime @default(now())
 
-  /// 기능 : 거래처 직급을 생성한 사용자다.
+  /// 기능 : 담당자 직급을 생성한 사용자다.
   user         User      @relation(fields: [userId], references: [id])
-  /// 기능 : 이 직급을 사용하는 거래처 목록이다. 하나라도 있으면 직급 삭제를 막는다.
+  /// 기능 : 이 직급을 사용하는 담당자 목록이다. 하나라도 있으면 직급 삭제를 막는다.
   contacts     Contact[]
 
   @@unique([userId, jobGradeName])
@@ -268,9 +268,9 @@ model ContactDepartment {
   departmentName String
   createdAt      DateTime @default(now())
 
-  /// 기능 : 거래처 부서를 생성한 사용자다.
+  /// 기능 : 담당자 부서를 생성한 사용자다.
   user           User      @relation(fields: [userId], references: [id])
-  /// 기능 : 이 부서를 사용하는 거래처 목록이다. 하나라도 있으면 부서 삭제를 막는다.
+  /// 기능 : 이 부서를 사용하는 담당자 목록이다. 하나라도 있으면 부서 삭제를 막는다.
   contacts       Contact[]
 
   @@unique([userId, departmentName])
@@ -286,7 +286,7 @@ model ContactMemoLog {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  /// 기능 : 메모가 속한 거래처다.
+  /// 기능 : 메모가 속한 담당자다.
   contact   Contact @relation(fields: [contactId], references: [id])
   /// 기능 : 메모를 작성한 사용자다.
   user      User    @relation(fields: [userId], references: [id])
@@ -304,7 +304,7 @@ model ContactUserPrivateMemoLog {
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
 
-  /// 기능 : 비밀 메모가 속한 거래처다.
+  /// 기능 : 비밀 메모가 속한 담당자다.
   contact        Contact @relation(fields: [contactId], references: [id])
   /// 기능 : 비밀 메모를 작성한 사용자다. 이 사용자만 복호화된 memo를 볼 수 있다.
   user           User    @relation(fields: [userId], references: [id])
@@ -425,7 +425,7 @@ model Deal {
   user                User                     @relation(fields: [userId], references: [id])
   /// 기능 : 딜이 연결된 회사다.
   company             Company                  @relation(fields: [companyId], references: [id])
-  /// 기능 : 딜이 연결된 거래처 담당자다.
+  /// 기능 : 딜이 연결된 담당자다.
   contact             Contact                  @relation(fields: [contactId], references: [id])
   /// 기능 : 딜에 연결된 제품 매핑 목록이다. 딜 하나는 여러 제품을 가질 수 있다.
   dealProducts        DealProduct[]

@@ -120,7 +120,7 @@ Authorization: Bearer {{accessToken}}
 Content-Type: application/json
 
 {
-  "memo": "본인만 볼 수 있는 거래처 비밀 메모"
+  "memo": "본인만 볼 수 있는 담당자 비밀 메모"
 }
 
 ### List contact private memo logs

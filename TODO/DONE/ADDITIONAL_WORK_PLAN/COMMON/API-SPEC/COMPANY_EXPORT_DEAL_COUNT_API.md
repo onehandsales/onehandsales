@@ -63,7 +63,7 @@
 | `회사명` | `Company.companyName` | 회사명 |
 | `분야` | `CompanyField.field` | 회사 분야 |
 | `지역` | `CompanyRegion.region` | 회사 지역 |
-| `거래처 수` | `Contact` count | 기존 contactCount |
+| `담당자 수` | `Contact` count | 기존 contactCount |
 | `딜 수` | `Deal` count | 추가 dealCount |
 | `등록일` | `Company.createdAt` | `yyyy-mm-dd` 표시 형식 |
 
@@ -82,7 +82,7 @@
 4. 기존 회사 목록과 동일한 검색/필터 조건을 구성한다.
 5. 페이지네이션 없이 현재 사용자 회사 전체를 조회한다.
 6. `Contact` 개수와 `Deal` 개수를 회사별로 집계한다.
-7. xlsx row에 `거래처 수`, `딜 수`를 포함한다.
+7. xlsx row에 `담당자 수`, `딜 수`를 포함한다.
 8. xlsx binary와 다운로드 header를 반환한다.
 
 ## 7. 연결 DB 스키마

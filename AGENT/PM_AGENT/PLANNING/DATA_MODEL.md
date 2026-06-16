@@ -126,9 +126,9 @@ User
 
 - 회사 목록은 `createdAt DESC`로 정렬한다.
 - 회사 목록 응답에는 최근 수정일을 포함하지 않는다.
-- 회사 목록 응답에는 `contactCount`를 포함해 회사별 연결 거래처 수를 표시한다.
+- 회사 목록 응답에는 `contactCount`를 포함해 회사별 연결 담당자 수를 표시한다.
 - 회사 목록 응답에는 `dealCount`를 포함해 회사별 연결 딜 수를 표시한다.
-- 회사 단건 응답 자체에는 거래처 수와 딜 수를 병합하지 않는다.
+- 회사 단건 응답 자체에는 담당자 수와 딜 수를 병합하지 않는다.
 - 회사 단건 화면에서 필요한 연결 Contact 전체 목록은 별도 API로 조회한다.
 - 회사 단건 화면에서 필요한 연결 Deal 전체 목록은 별도 API로 조회한다.
 - 회사 기본 기능에서는 휴지통과 soft delete를 우선 제외한다.
@@ -223,14 +223,14 @@ User
 
 정책:
 
-- 거래처는 반드시 회사에 소속된다. `companyId`는 nullable이 아니다.
-- 거래처 목록은 `createdAt DESC`로 정렬한다.
-- 거래처 목록 응답에는 최근 수정일을 포함하지 않는다.
-- 거래처 목록 검색은 `username`만 대상으로 한다.
-- 거래처 목록 필터는 `companyId`, `contactDepartmentId`, `contactJobGradeId`만 제공한다.
-- 거래처 단건 화면에서 필요한 연결 Deal 전체 목록은 별도 API로 조회한다.
-- 거래처 기본 기능에서는 휴지통과 soft delete를 우선 제외한다.
-- 거래처 생성 요청의 `contactMemo`는 `Contact` 테이블에 저장하지 않고 `ContactMemoLog` 첫 데이터로 저장한다.
+- 담당자는 반드시 회사에 소속된다. `companyId`는 nullable이 아니다.
+- 담당자 목록은 `createdAt DESC`로 정렬한다.
+- 담당자 목록 응답에는 최근 수정일을 포함하지 않는다.
+- 담당자 목록 검색은 `username`만 대상으로 한다.
+- 담당자 목록 필터는 `companyId`, `contactDepartmentId`, `contactJobGradeId`만 제공한다.
+- 담당자 단건 화면에서 필요한 연결 Deal 전체 목록은 별도 API로 조회한다.
+- 담당자 기본 기능에서는 휴지통과 soft delete를 우선 제외한다.
+- 담당자 생성 요청의 `contactMemo`는 `Contact` 테이블에 저장하지 않고 `ContactMemoLog` 첫 데이터로 저장한다.
 - 핸드폰번호는 API validation 기준으로 `010-1111-2222` 형식만 허용한다.
 
 ## 7. ContactJobGrade / ContactDepartment / ContactMemoLog / ContactUserPrivateMemoLog
@@ -244,8 +244,8 @@ User
 
 목적:
 
-- 거래처 직급 필터 옵션을 사용자별로 관리한다.
-- 이미 거래처에 매핑된 직급은 삭제할 수 없다.
+- 담당자 직급 필터 옵션을 사용자별로 관리한다.
+- 이미 담당자에 매핑된 직급은 삭제할 수 없다.
 - 수정은 제공하지 않고 생성과 삭제만 제공한다.
 
 ### ContactDepartment
@@ -257,8 +257,8 @@ User
 
 목적:
 
-- 거래처 부서 필터 옵션을 사용자별로 관리한다.
-- 이미 거래처에 매핑된 부서는 삭제할 수 없다.
+- 담당자 부서 필터 옵션을 사용자별로 관리한다.
+- 이미 담당자에 매핑된 부서는 삭제할 수 없다.
 - 수정은 제공하지 않고 생성과 삭제만 제공한다.
 
 ### ContactMemoLog
@@ -273,9 +273,9 @@ User
 
 목적:
 
-- 거래처 일반 메모 로그를 저장한다.
-- 거래처 생성 시 `contactMemo`가 있으면 이 테이블의 첫 데이터로 저장하고 `memoType`은 서버가 `초기 메모`로 저장한다.
-- 독립적인 거래처 일반 메모 로그 생성 API는 `memoType`, `memo`를 필수로 받는다.
+- 담당자 일반 메모 로그를 저장한다.
+- 담당자 생성 시 `contactMemo`가 있으면 이 테이블의 첫 데이터로 저장하고 `memoType`은 서버가 `초기 메모`로 저장한다.
+- 독립적인 담당자 일반 메모 로그 생성 API는 `memoType`, `memo`를 필수로 받는다.
 - 수정 API는 `memoType`, `memo` 중 최소 1개를 수정할 수 있다.
 
 ### ContactUserPrivateMemoLog
@@ -290,10 +290,10 @@ User
 
 목적:
 
-- 거래처별 사용자 비밀 메모 로그를 저장한다.
+- 담당자별 사용자 비밀 메모 로그를 저장한다.
 - 비밀 메모 원문은 데이터베이스에 평문으로 저장하지 않는다.
 - 작성자 본인만 복호화된 `memo`를 볼 수 있고, 관리자도 원문을 볼 수 없다.
-- 독립적인 거래처 개인 비밀 메모 로그 생성/수정 API는 `memo`만 필수로 받는다.
+- 독립적인 담당자 개인 비밀 메모 로그 생성/수정 API는 `memo`만 필수로 받는다.
 
 ## 8. Product
 
@@ -350,9 +350,9 @@ User
 
 ## 10. ProductConnection
 
-제품과 회사/거래처의 확장 연결 의미를 저장한다.
+제품과 회사/담당자의 확장 연결 의미를 저장한다.
 
-현재 Product 기본 도메인 1차 구현에서는 `ProductConnection`을 만들지 않는다. 딜-제품 연결은 `DealProduct`로 구현되어 있으며, `ProductConnection`은 회사/거래처와 제품의 후속 확장 연결 후보로 남긴다.
+현재 Product 기본 도메인 1차 구현에서는 `ProductConnection`을 만들지 않는다. 딜-제품 연결은 `DealProduct`로 구현되어 있으며, `ProductConnection`은 회사/담당자와 제품의 후속 확장 연결 후보로 남긴다.
 
 - id
 - userId
@@ -572,12 +572,12 @@ User
 
 ## 18. PersonalMemo
 
-거래처/제품/딜의 Memo는 각 엔티티의 단일 `memo` 필드가 아니라 Log처럼 여러 건 누적되는 기록형 데이터로 저장한다.
+담당자/제품/딜의 Memo는 각 엔티티의 단일 `memo` 필드가 아니라 Log처럼 여러 건 누적되는 기록형 데이터로 저장한다.
 
 Log는 객관적 사실, 변경, 만남, 소식, 이력 기록이고 Memo는 사용자의 주관적 생각, 판단, 개인 참고 기록이다. Memo 원문은 민감정보 후보로 보고 암호화, Admin masking, 원문 조회 감사 정책을 적용한다.
 
 회사 도메인은 최신 요구사항에 따라 `CompanyMemoLog`와 `CompanyUserPrivateMemoLog`를 별도 사용한다. 따라서 `PersonalMemo`의 회사 target은 현재 회사 기본 기능에 사용하지 않는다.
-거래처 도메인도 최신 요구사항에 따라 `ContactMemoLog`와 `ContactUserPrivateMemoLog`를 별도 사용한다. 따라서 `PersonalMemo`의 거래처 target은 현재 거래처 기본 기능에 사용하지 않는다.
+담당자 도메인도 최신 요구사항에 따라 `ContactMemoLog`와 `ContactUserPrivateMemoLog`를 별도 사용한다. 따라서 `PersonalMemo`의 담당자 target은 현재 담당자 기본 기능에 사용하지 않는다.
 
 제품 기본 도메인 1차 구현 계획은 `ProductMemoLog`와 `ProductUserPrivateMemoLog`를 별도 사용한다. 따라서 `PersonalMemo`의 제품 target은 현재 Product 기본 기능에 사용하지 않는다.
 딜 후속 도메인에서는 `DealActivity`처럼 도메인별 기록 테이블을 우선 검토한다. `PersonalMemo`는 아직 DB에 구현하지 않은 후속 확장 후보다.

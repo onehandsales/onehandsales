@@ -10,7 +10,7 @@
 
 - `AUTH_USER_SCHEMA.md`: 현재 Backend에 남아 있는 Auth/User DB 구조
 - `COMPANY_SCHEMA.md`: 회사 도메인 기본 기능에 필요한 Company DB 구조
-- `CONTACT_SCHEMA.md`: 거래처 도메인 기본 기능에 필요한 Contact DB 구조
+- `CONTACT_SCHEMA.md`: 담당자 도메인 기본 기능에 필요한 Contact DB 구조
 - `PRODUCT_SCHEMA.md`: 제품 도메인 기본 기능에 필요한 Product DB 구조
 - `DEAL_SCHEMA.md`: 딜 도메인 기본 기능에 필요한 Deal DB 구조
 - `SCHEDULE_SCHEMA.md`: 일정 도메인 기본 기능에 필요한 Schedule DB 구조
@@ -66,7 +66,7 @@
 - `BE/prisma/migrations/20260614020000_add_schedule_domain/migration.sql`
 - `BE/prisma/migrations/20260615000000_add_meeting_note_domain/migration.sql`
 
-첫 migration에는 Auth/User 기본 테이블과 Company 기본 도메인 테이블이 함께 반영되어 있다. Contact migration에는 거래처, 거래처 직급/부서, 일반 메모 로그, 개인 비밀 메모 로그 테이블이 반영되어 있다. Product migration에는 제품, 제품 카테고리/상태, 일반 메모 로그, 개인 비밀 메모 로그 테이블이 반영되어 있다. Deal migration에는 딜, 다음 행동 로그, 메모 로그 테이블이 반영되어 있고 후속 DealProduct migration에는 딜-제품 N:M 연결 테이블이 반영되어 있다. User timezone migration에는 `User.timeZone`이 반영되어 있다. Schedule migration에는 일정과 일정-딜 N:M 연결 테이블이 반영되어 있다. MeetingNote migration에는 수동 회의록과 회사/담당자/제품/딜 snapshot 연결 테이블이 반영되어 있다.
+첫 migration에는 Auth/User 기본 테이블과 Company 기본 도메인 테이블이 함께 반영되어 있다. Contact migration에는 담당자 직급/부서, 일반 메모 로그, 개인 비밀 메모 로그 테이블이 반영되어 있다. Product migration에는 제품, 제품 카테고리/상태, 일반 메모 로그, 개인 비밀 메모 로그 테이블이 반영되어 있다. Deal migration에는 딜, 다음 행동 로그, 메모 로그 테이블이 반영되어 있고 후속 DealProduct migration에는 딜-제품 N:M 연결 테이블이 반영되어 있다. User timezone migration에는 `User.timeZone`이 반영되어 있다. Schedule migration에는 일정과 일정-딜 N:M 연결 테이블이 반영되어 있다. MeetingNote migration에는 수동 회의록과 회사/담당자/제품/딜 snapshot 연결 테이블이 반영되어 있다.
 
 현재 DB 기준을 완료한 Backend TODO:
 
@@ -89,7 +89,7 @@
 - MeetingNote AI/STT 원문 암호화와 Admin 민감 원문 조회용 감사 구조
 
 회사 도메인의 테이블 역할, 관계, 인덱스 의도는 `COMPANY_SCHEMA.md`를 기준으로 확인한다.
-거래처 도메인의 테이블 역할, 관계, 인덱스 의도는 `CONTACT_SCHEMA.md`를 기준으로 확인한다.
+담당자 도메인의 테이블 역할, 관계, 인덱스 의도는 `CONTACT_SCHEMA.md`를 기준으로 확인한다.
 제품 도메인의 테이블 역할, 관계, 인덱스 의도는 `PRODUCT_SCHEMA.md`를 기준으로 확인한다.
 딜 도메인의 테이블 역할, 관계, 인덱스 의도는 `DEAL_SCHEMA.md`를 기준으로 확인한다.
 일정 도메인의 테이블 역할, 관계, 인덱스 의도는 `SCHEDULE_SCHEMA.md`를 기준으로 확인한다.

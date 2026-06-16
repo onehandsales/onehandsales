@@ -57,7 +57,7 @@
 | 날짜가 timezone으로 밀릴 위험 | API boundary에서 `YYYY-MM-DD` string을 검증하고 응답도 string으로 포맷한다. |
 | export와 목록 컬럼 불일치 | export 컬럼을 API 명세에 고정하고 id, 제품, 최근수정일 제외를 검증한다. |
 | 다른 사용자 FK 참조 위험 | company/contact/products/log/deal 모두 ownership 검증을 필수로 둔다. |
-| 회사와 무관한 거래처를 딜에 연결할 위험 | Deal 생성/수정에서 contact.companyId와 companyId 일치를 검증한다. |
+| 회사와 무관한 담당자를 딜에 연결할 위험 | Deal 생성/수정에서 contact.companyId와 companyId 일치를 검증한다. |
 
 ## 6. 착수 조건
 

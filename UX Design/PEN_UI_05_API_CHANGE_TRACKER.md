@@ -80,15 +80,15 @@
 
 ### Page List Pagination 정정
 
-- 회사/거래처/제품/딜/회의록 목록 페이지네이션은 `totalPages`, `totalCount`를 사용한다.
-- 회사/거래처/제품/딜/회의록 목록 page size는 10개 단위다.
+- 회사/담당자/제품/딜/회의록 목록 페이지네이션은 `totalPages`, `totalCount`를 사용한다.
+- 회사/담당자/제품/딜/회의록 목록 page size는 10개 단위다.
 - 공용 `Pagination`에 `hasNext`를 넘기지 않는다.
-- `hasNext`는 회사/거래처/제품 상세 메모 로그처럼 cursor 기반 incremental loading에서만 사용한다.
+- `hasNext`는 회사/담당자/제품 상세 메모 로그처럼 cursor 기반 incremental loading에서만 사용한다.
 
 ### Company/Contact/Product 목록 필터 정정
 
 - 회사 목록은 `GET /api/company-fields`, `GET /api/company-regions` 전체 조회 결과를 select 옵션으로 사용한다.
-- 거래처 목록은 `GET /api/contact-departments`, `GET /api/contact-job-grades` 전체 조회 결과를 select 옵션으로 사용한다.
+- 담당자 목록은 `GET /api/contact-departments`, `GET /api/contact-job-grades` 전체 조회 결과를 select 옵션으로 사용한다.
 - 제품 목록은 `GET /api/product-categories`, `GET /api/product-statuses` 전체 조회 결과를 select 옵션으로 사용한다.
 - 목록 페이지에서는 위 옵션 테이블의 생성/삭제 UI를 노출하지 않는다.
 - 생성/삭제 API는 Backend와 feature API client에 남아 있지만, 목록 페이지 필터 UX와 분리한다.
@@ -620,8 +620,8 @@
 - 상태:
   - Deal 6단계 FE/BE 계약 반영 상태를 현재 기준으로 정정
   - MeetingNote 수동 API 구현 완료 상태 반영
-  - 회사/거래처/제품/딜/회의록 목록 pagination을 `totalPages` 기준으로 정정
-  - 회사/거래처 목록 필터 옵션을 제품 category/status select와 같은 전체 옵션 조회 방식으로 정정
+  - 회사/담당자/제품/딜/회의록 목록 pagination을 `totalPages` 기준으로 정정
+  - 회사/담당자 목록 필터 옵션을 제품 category/status select와 같은 전체 옵션 조회 방식으로 정정
   - `/` 홈 준비중 상태와 Import/휴지통 navigation 숨김 상태 반영
 
 ---

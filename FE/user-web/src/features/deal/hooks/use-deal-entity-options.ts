@@ -1,4 +1,4 @@
-// 기능 : 딜 form 회사/거래처/제품 옵션 TanStack Query hook
+// 기능 : 딜 form 회사/담당자/제품 옵션 TanStack Query hook
 import { useQuery } from "@tanstack/react-query";
 import {
   getDealCompanyOptions,

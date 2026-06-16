@@ -27,7 +27,7 @@ Legacy documents used `customer` as a broad term. The canonical product model do
 Use these terms:
 
 - `Company`: 회사
-- `Contact`: 거래처/담당자, always a person under a company
+- `Contact`: 담당자, always a person under a company
 - `Product`: 제품
 - `Deal`: 딜/영업 건
 - `Schedule`: 일정

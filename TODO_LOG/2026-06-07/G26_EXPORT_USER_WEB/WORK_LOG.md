@@ -44,7 +44,7 @@
 - `cd FE/user-web && pnpm run typecheck`
 - `cd FE/user-web && pnpm run lint`
 - `cd FE/user-web && pnpm run build`
-- Playwright mock API smoke: `/export` 접속, 거래처 Excel 선택, 민감정보 포함 dialog 확인, Export 생성, 다운로드 링크 표시 확인
+- Playwright mock API smoke: `/export` 접속, 담당자 Excel 선택, 민감정보 포함 dialog 확인, Export 생성, 다운로드 링크 표시 확인
 - 스크린샷 확인: `/tmp/g26-export-desktop.png`, `/tmp/g26-export-mobile.png`
 
 ## 완료 감사

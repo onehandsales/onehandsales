@@ -146,7 +146,7 @@ function LandingBackground({
               <div className="flex h-[52px] items-center px-4 py-1.5">
                 <div className="flex h-10 w-full items-center gap-2 rounded-full bg-[#F3F4F6] px-3 text-xs text-[#9CA3AF]">
                   <Search className="h-3.5 w-3.5" />
-                  회사·거래처·딜 검색...
+                  회사·담당자·딜 검색...
                 </div>
               </div>
               <div className="flex h-11 items-end gap-5 border-b border-[#E5E7EB] px-4 text-xs whitespace-nowrap">

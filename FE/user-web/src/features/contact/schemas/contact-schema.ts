@@ -12,7 +12,7 @@ import type {
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const mobilePattern = /^010-\d{4}-\d{4}$/;
 
-// 거래처 생성 폼 스키마
+// 담당자 생성 폼 스키마
 export const contactCreateFormSchema = z.object({
   username: z.string().trim().min(1, "이름을 입력해주세요."),
   mobile: z
@@ -32,7 +32,7 @@ export const contactCreateFormSchema = z.object({
 
 export type ContactCreateFormValues = z.infer<typeof contactCreateFormSchema>;
 
-// 거래처 수정 폼 스키마
+// 담당자 수정 폼 스키마
 export const contactEditFormSchema = z.object({
   username: z.string().trim().min(1, "이름을 입력해주세요."),
   mobile: z
@@ -90,7 +90,7 @@ export const emptyContactPrivateMemoLogFormValues: ContactPrivateMemoLogFormValu
     memo: "",
   };
 
-// 기능 : 거래처 상세 응답을 수정 폼 기본값으로 변환합니다.
+// 기능 : 담당자 상세 응답을 수정 폼 기본값으로 변환합니다.
 export function toContactEditFormValues(
   contact: ContactDetail
 ): ContactEditFormValues {
@@ -105,7 +105,7 @@ export function toContactEditFormValues(
   };
 }
 
-// 기능 : 거래처 생성 폼 값을 API 요청 값으로 변환합니다.
+// 기능 : 담당자 생성 폼 값을 API 요청 값으로 변환합니다.
 export function toCreateContactInput(
   values: ContactCreateFormValues
 ): CreateContactInput {
@@ -120,7 +120,7 @@ export function toCreateContactInput(
   };
 }
 
-// 기능 : 거래처 수정 폼 값을 API 요청 값으로 변환합니다.
+// 기능 : 담당자 수정 폼 값을 API 요청 값으로 변환합니다.
 export function toUpdateContactInput(
   contactId: string,
   values: ContactEditFormValues

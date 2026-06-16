@@ -36,7 +36,7 @@ export const dealCreateFormSchema = z.object({
   dealName: z.string().trim().min(1, "딜명을 입력해주세요."),
   dealCost: dealCostSchema,
   companyId: z.string().trim().min(1, "회사를 선택해주세요."),
-  contactId: z.string().trim().min(1, "거래처를 선택해주세요."),
+  contactId: z.string().trim().min(1, "담당자를 선택해주세요."),
   productIds: z
     .array(z.string())
     .min(1, "제품을 1개 이상 선택해주세요."),
@@ -56,7 +56,7 @@ export const dealUpdateFormSchema = z.object({
   dealName: z.string().trim().min(1, "딜명을 입력해주세요."),
   dealCost: dealCostSchema,
   companyId: z.string().trim().min(1, "회사를 선택해주세요."),
-  contactId: z.string().trim().min(1, "거래처를 선택해주세요."),
+  contactId: z.string().trim().min(1, "담당자를 선택해주세요."),
   productIds: z
     .array(z.string())
     .min(1, "제품을 1개 이상 선택해주세요."),

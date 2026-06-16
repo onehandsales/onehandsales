@@ -2,7 +2,7 @@
 
 ## 결정
 
-회사, 거래처, 제품, 딜, 회의록의 목록 조회 화면은 page-number pagination을 기준으로 한다.
+회사, 담당자, 제품, 딜, 회의록의 목록 조회 화면은 page-number pagination을 기준으로 한다.
 
 목록 페이지 필터는 제품 목록의 category/status select처럼 전체 옵션 API를 초회 조회한 뒤 compact select로 제공한다.
 
@@ -12,7 +12,7 @@
   - `GET /api/company-fields`
   - `GET /api/company-regions`
   - `분야 ▾`, `지역 ▾` select
-- 거래처 목록
+- 담당자 목록
   - `GET /api/contact-departments`
   - `GET /api/contact-job-grades`
   - `부서 ▾`, `직급 ▾` select
@@ -42,14 +42,14 @@
 
 - 회사 분야 생성/삭제
 - 회사 지역 생성/삭제
-- 거래처 부서 생성/삭제
-- 거래처 직급 생성/삭제
+- 담당자 부서 생성/삭제
+- 담당자 직급 생성/삭제
 
 이 기능들은 상세/설정/관리 화면에서 다룬다.
 
 ## Visual Grammar
 
-회사/거래처/제품/딜 목록은 가능한 한 다음 문법을 공유한다.
+회사/담당자/제품/딜 목록은 가능한 한 다음 문법을 공유한다.
 
 - compact controls bar
 - select filter

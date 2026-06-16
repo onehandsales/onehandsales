@@ -41,8 +41,8 @@ G07, G09, G11, G13-G16의 화면 명세는 `COMMON/GOAL-SPECS`에서 이 API를 
 
 - Log는 대상 도메인에 대한 객관적 사실, 변경, 만남, 소식, 이력 기록이다.
 - Memo는 대상 도메인에 대한 사용자의 주관적 생각, 판단, 개인 참고 기록이다.
-- Log는 회사 `CompanyLog`, 거래처 `ContactLog`, 제품 `ProductLog`, 딜 `DealActivity`로 도메인별 분리한다.
-- 사용자 개인 Memo Log는 `PersonalMemo`로 저장하되 `targetType`과 `targetId`로 회사/거래처/제품/딜을 분리한다.
+- Log는 회사 `CompanyLog`, 담당자 `ContactLog`, 제품 `ProductLog`, 딜 `DealActivity`로 도메인별 분리한다.
+- 사용자 개인 Memo Log는 `PersonalMemo`로 저장하되 `targetType`과 `targetId`로 회사/담당자/제품/딜을 분리한다.
 - `Company`, `Contact`, `Product`, `Deal`의 Memo는 단일 `memo` 필드가 아니라 `PersonalMemo` 기록으로 저장한다.
 - 목록 response는 Memo 원문을 포함하지 않고 `hasMemo`, `memoCount`, `latestMemoAt` 같은 요약만 반환한다.
 - 사용자 본인의 상세 response는 복호화된 `memos:MemoResponse[]`를 포함할 수 있다.
@@ -66,7 +66,7 @@ G07, G09, G11, G13-G16의 화면 명세는 `COMMON/GOAL-SPECS`에서 이 API를 
 | Memo 수정 API | `PATCH` | `/api/memos/:memoId` | `memoDate?`, `title?`, `content?` | `MemoResponse` | Memo 소유권을 확인하고 content 변경 시 다시 암호화한다. |
 | Memo 삭제 API | `DELETE` | `/api/memos/:memoId` | `memoId` | `DeleteMemoResponse` | Memo를 soft delete한다. |
 | 회사 Memo 목록/생성 API | `GET/POST` | `/api/companies/:companyId/memos` | 회사 path 기반 | `MemoListResponse` 또는 `MemoResponse` | 회사 사용자 개인 Memo Log를 조회/생성한다. |
-| 거래처 Memo 목록/생성 API | `GET/POST` | `/api/contacts/:contactId/memos` | 거래처 path 기반 | `MemoListResponse` 또는 `MemoResponse` | 거래처 사용자 개인 Memo Log를 조회/생성한다. |
+| 담당자 Memo 목록/생성 API | `GET/POST` | `/api/contacts/:contactId/memos` | 담당자 path 기반 | `MemoListResponse` 또는 `MemoResponse` | 담당자 사용자 개인 Memo Log를 조회/생성한다. |
 | 제품 Memo 목록/생성 API | `GET/POST` | `/api/products/:productId/memos` | 제품 path 기반 | `MemoListResponse` 또는 `MemoResponse` | 제품 사용자 개인 Memo Log를 조회/생성한다. |
 | 딜 Memo 목록/생성 API | `GET/POST` | `/api/deals/:dealId/memos` | 딜 path 기반 | `MemoListResponse` 또는 `MemoResponse` | 딜 사용자 개인 Memo Log를 조회/생성한다. |
 
@@ -146,16 +146,16 @@ G07, G09, G11, G13-G16의 화면 명세는 `COMMON/GOAL-SPECS`에서 이 API를 
 
 | API 이름 | API 식별자 | Method | Path | Request 이름 | Response 이름 | 연결 DB |
 |---|---|---|---|---|---|---|
-| 거래처 목록 API | `ListContacts` | `GET` | `/api/contacts` | `ListContactsRequest` | `ContactListResponse` | Contact, Company |
-| 거래처 생성 API | `CreateContact` | `POST` | `/api/contacts` | `CreateContactRequest` | `ContactResponse` | Contact, Company, PersonalMemo |
-| 거래처 상세 API | `GetContact` | `GET` | `/api/contacts/:contactId` | `GetContactRequest` | `ContactDetailResponse` | Contact, Company, PersonalMemo |
-| 거래처 수정 API | `UpdateContact` | `PATCH` | `/api/contacts/:contactId` | `UpdateContactRequest` | `ContactResponse` | Contact |
-| 거래처 삭제 API | `DeleteContact` | `DELETE` | `/api/contacts/:contactId` | `DeleteContactRequest` | `DeleteContactResponse` | Contact |
-| 거래처 복구 API | `RestoreContact` | `POST` | `/api/contacts/:contactId/restore` | `RestoreContactRequest` | `ContactResponse` | Contact |
-| 거래처 로그 목록 API | `ListContactLogs` | `GET` | `/api/contacts/:contactId/logs` | `ListContactLogsRequest` | `ContactLogListResponse` | Contact, ContactLog |
-| 거래처 로그 생성 API | `CreateContactLog` | `POST` | `/api/contacts/:contactId/logs` | `CreateContactLogRequest` | `ContactLogResponse` | Contact, ContactLog |
-| 거래처 로그 수정 API | `UpdateContactLog` | `PATCH` | `/api/contacts/:contactId/logs/:logId` | `UpdateContactLogRequest` | `ContactLogResponse` | ContactLog |
-| 거래처 로그 삭제 API | `DeleteContactLog` | `DELETE` | `/api/contacts/:contactId/logs/:logId` | `DeleteContactLogRequest` | `DeleteContactLogResponse` | ContactLog |
+| 담당자 목록 API | `ListContacts` | `GET` | `/api/contacts` | `ListContactsRequest` | `ContactListResponse` | Contact, Company |
+| 담당자 생성 API | `CreateContact` | `POST` | `/api/contacts` | `CreateContactRequest` | `ContactResponse` | Contact, Company, PersonalMemo |
+| 담당자 상세 API | `GetContact` | `GET` | `/api/contacts/:contactId` | `GetContactRequest` | `ContactDetailResponse` | Contact, Company, PersonalMemo |
+| 담당자 수정 API | `UpdateContact` | `PATCH` | `/api/contacts/:contactId` | `UpdateContactRequest` | `ContactResponse` | Contact |
+| 담당자 삭제 API | `DeleteContact` | `DELETE` | `/api/contacts/:contactId` | `DeleteContactRequest` | `DeleteContactResponse` | Contact |
+| 담당자 복구 API | `RestoreContact` | `POST` | `/api/contacts/:contactId/restore` | `RestoreContactRequest` | `ContactResponse` | Contact |
+| 담당자 로그 목록 API | `ListContactLogs` | `GET` | `/api/contacts/:contactId/logs` | `ListContactLogsRequest` | `ContactLogListResponse` | Contact, ContactLog |
+| 담당자 로그 생성 API | `CreateContactLog` | `POST` | `/api/contacts/:contactId/logs` | `CreateContactLogRequest` | `ContactLogResponse` | Contact, ContactLog |
+| 담당자 로그 수정 API | `UpdateContactLog` | `PATCH` | `/api/contacts/:contactId/logs/:logId` | `UpdateContactLogRequest` | `ContactLogResponse` | ContactLog |
+| 담당자 로그 삭제 API | `DeleteContactLog` | `DELETE` | `/api/contacts/:contactId/logs/:logId` | `DeleteContactLogRequest` | `DeleteContactLogResponse` | ContactLog |
 
 ### 5.2 Contact request 필드
 
@@ -180,12 +180,12 @@ G07, G09, G11, G13-G16의 화면 명세는 `COMMON/GOAL-SPECS`에서 이 API를 
 
 1. AuthGuard로 현재 사용자를 확인한다.
 2. `companyId`가 있으면 현재 사용자 소유 Company인지 검증한다.
-3. 거래처(담당자)는 회사 없이도 저장 가능하다.
+3. 담당자는 회사 없이도 저장 가능하다.
 4. 전화번호와 이메일은 User Web에서는 원문을 보여주지만 Admin API에서는 기본 마스킹한다.
-5. 거래처 Log는 거래처에 대해 확인된 객관적 만남/변경/소식/이력으로 `ContactLog`에 저장한다.
-6. 거래처에 대한 사용자의 생각은 `PersonalMemo(targetType=CONTACT)`에 Memo 기록으로 저장한다.
-7. 거래처 상세 API는 `logs[]`를 포함하지 않는다. 거래처 상세 화면의 Log 영역은 `ListContactLogs`를 별도 호출해 페이지네이션으로 조회한다.
-8. `initialMemo`가 있으면 거래처 생성과 같은 transaction에서 암호화 저장한다.
+5. 담당자 Log는 담당자에 대해 확인된 객관적 만남/변경/소식/이력으로 `ContactLog`에 저장한다.
+6. 담당자에 대한 사용자의 생각은 `PersonalMemo(targetType=CONTACT)`에 Memo 기록으로 저장한다.
+7. 담당자 상세 API는 `logs[]`를 포함하지 않는다. 담당자 상세 화면의 Log 영역은 `ListContactLogs`를 별도 호출해 페이지네이션으로 조회한다.
+8. `initialMemo`가 있으면 담당자 생성과 같은 transaction에서 암호화 저장한다.
 9. Memo는 민감정보 후보로 보고 Admin 기본 목록에서는 원문을 내려주지 않는다.
 10. 삭제는 soft delete로 처리한다.
 
@@ -205,7 +205,7 @@ G07, G09, G11, G13-G16의 화면 명세는 `COMMON/GOAL-SPECS`에서 이 API를 
 | 이름 누락 | `ValidationError` | 400 |
 | 연결 회사 없음 | `CompanyNotFound` | 404 |
 | 다른 사용자 회사 연결 | `OwnershipViolation` | 403 |
-| 거래처 없음 | `ContactNotFound` | 404 |
+| 담당자 없음 | `ContactNotFound` | 404 |
 
 ## 6. G10 Product API
 
@@ -348,7 +348,7 @@ G07, G09, G11, G13-G16의 화면 명세는 `COMMON/GOAL-SPECS`에서 이 API를 
 |---|---|---|
 | 딜명 누락 | `ValidationError` | 400 |
 | 금액 누락 또는 음수 | `ValidationError` | 400 |
-| 연결 회사/거래처/제품 없음 | `RelatedEntityNotFound` | 404 |
+| 연결 회사/담당자/제품 없음 | `RelatedEntityNotFound` | 404 |
 | 다른 사용자 소유 데이터 연결 | `OwnershipViolation` | 403 |
 | 딜 없음 | `DealNotFound` | 404 |
 | 삭제된 딜 조회 | `DeletedResource` | 410 |

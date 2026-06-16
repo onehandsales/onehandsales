@@ -14,7 +14,7 @@
 
 - 모든 API는 access token의 `userId`를 기준으로 ownership을 제한한다.
 - User Web은 `/api/*`만 호출한다.
-- FK로 조회한 회사, 거래처, 제품, 다음 행동은 flat field가 아니라 nested object 또는 object array로 응답한다.
+- FK로 조회한 회사, 담당자, 제품, 다음 행동은 flat field가 아니라 nested object 또는 object array로 응답한다.
 - DB의 Deal 상태는 string이다. DB enum을 사용하지 않는다.
 - API request/response의 Deal 상태 값은 영어 code를 사용한다.
 - UI는 Backend가 함께 내려주는 label 또는 Frontend enum mapper로 한국어 label을 표시한다.
@@ -45,7 +45,7 @@
 | 4 | POST | `/api/deals` | 딜 단건 생성 | implemented |
 | 5 | PATCH | `/api/deals/:dealId` | 딜 단건 수정 | implemented |
 | 6 | GET | `/api/deals/company-options` | 회사 전체 목록 조회 | implemented |
-| 7 | GET | `/api/deals/contact-options` | 거래처 전체 목록 조회 | implemented |
+| 7 | GET | `/api/deals/contact-options` | 담당자 전체 목록 조회 | implemented |
 | 8 | GET | `/api/deals/product-options` | 제품 전체 목록 조회 | implemented |
 | 9 | GET | `/api/deals/export/xlsx` | 딜 목록 xlsx export | implemented |
 | 10 | GET | `/api/deals/:dealId/following-action-logs` | 딜 다음 행동 로그 전체 목록 조회 | implemented |
@@ -253,7 +253,7 @@ Body:
 | `dealName` | string | 예 | 1자 이상 |
 | `dealCost` | number | 예 | 0 이상 integer |
 | `companyId` | uuid | 예 | 본인 소유 회사 |
-| `contactId` | uuid | 예 | 본인 소유 거래처 |
+| `contactId` | uuid | 예 | 본인 소유 담당자 |
 | `productIds` | uuid[] | 예 | 본인 소유 제품 ID 배열, 1개 이상 |
 | `dealStatus` | DealStatus | 예 | 영어 code |
 | `followingAction` | string | 예 | 최초 다음 행동 |
@@ -272,7 +272,7 @@ Body:
 | `dealName` | string | 아니오 | 1자 이상 |
 | `dealCost` | number | 아니오 | 0 이상 integer |
 | `companyId` | uuid | 아니오 | 본인 소유 회사 |
-| `contactId` | uuid | 아니오 | 본인 소유 거래처 |
+| `contactId` | uuid | 아니오 | 본인 소유 담당자 |
 | `productIds` | uuid[] | 아니오 | 본인 소유 제품 ID 배열, 1개 이상 |
 | `expectedEndDate` | string | 아니오 | `YYYY-MM-DD` |
 | `dealStatus` | DealStatus | 아니오 | 영어 code |
@@ -295,7 +295,7 @@ Response `200`:
 
 ### 6.7 GET `/api/deals/contact-options`
 
-딜 form에서 사용할 거래처 전체 목록을 `createdAt DESC`로 조회한다.
+딜 form에서 사용할 담당자 전체 목록을 `createdAt DESC`로 조회한다.
 
 Response `200`:
 
@@ -352,7 +352,7 @@ Response `200`:
 |---:|---|---|
 | 1 | 딜이름 | `dealName` |
 | 2 | 회사이름 | `company.companyName` |
-| 3 | 거래처 | `contact.username + " " + contact.contactDepartment.departmentName` |
+| 3 | 담당자 | `contact.username + " " + contact.contactDepartment.departmentName` |
 | 4 | 딜단계 | `dealStatusLabel` |
 | 5 | 딜금액 | `dealCost` |
 | 6 | 마감일 | `expectedEndDate` |

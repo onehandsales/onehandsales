@@ -30,7 +30,7 @@ G01-BE-DEAL-DOMAIN Backend 구현
 - `/api/deals/*` User API 15개 구현
 - Deal 생성과 최초 다음 행동 로그 생성을 transaction으로 처리
 - 딜 목록 최신 다음 행동 1개 조회 구현
-- 회사/거래처/제품 옵션 `createdAt DESC` 조회 구현
+- 회사/담당자/제품 옵션 `createdAt DESC` 조회 구현
 - xlsx export에서 id, 제품, 최근수정일 제외
 - application service 단위 테스트 추가
 
@@ -43,7 +43,7 @@ G01-BE-DEAL-DOMAIN Backend 구현
 - Deal controller를 `AppModule`에 연결해 `/api/deals/*` route를 등록했다.
 - Deal 생성 시 Deal, DealProduct, 최초 `DealFollowingActionLog` 생성이 같은 repository transaction 안에서 실행되도록 구현했다.
 - Deal 수정 시 `productIds`가 전달되면 DealProduct 연결을 transaction 안에서 교체하도록 구현했다.
-- Deal 생성/수정 시 거래처가 선택한 회사에 속하는지 검증하도록 구현했다.
+- Deal 생성/수정 시 담당자가 선택한 회사에 속하는지 검증하도록 구현했다.
 - `expectedEndDate`는 API boundary에서 `YYYY-MM-DD` 문자열만 받고, application layer에서 실제 calendar date인지 검증한다.
 - export 파일명은 기존 Backend xlsx helper 규칙과 동일한 `deals_YYYYMMDD_HHmmss.xlsx` 형식으로 맞췄다.
 - Backend 구현 완료 상태에 맞춰 AGENT Backend architecture와 Deal TODO 상태 문서를 갱신했다.

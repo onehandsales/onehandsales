@@ -56,7 +56,7 @@
 | `GET /api/company-fields` | implemented | 없음. 조회 전용 | event key: `companyField.listed`, audit log: 없음, request id: 사용, redaction: 없음 |
 | `GET /api/company-regions` | implemented | 없음. 조회 전용 | event key: `companyRegion.listed`, audit log: 없음, request id: 사용, redaction: 없음 |
 | `GET /api/companies/:companyId` | implemented | 없음. 조회 전용 | event key: `company.viewed`, audit log: 없음, request id: 사용, redaction: 회사명 원문 logging 금지 |
-| `GET /api/companies/:companyId/contacts` | implemented | 없음. 조회 전용 | event key: `company.contactsListed`, audit log: 없음, request id: 사용, redaction: 거래처명 원문 logging 금지 |
+| `GET /api/companies/:companyId/contacts` | implemented | 없음. 조회 전용 | event key: `company.contactsListed`, audit log: 없음, request id: 사용, redaction: 담당자명 원문 logging 금지 |
 | `GET /api/companies/export/xlsx` | implemented | 없음. 조회 전용 | event key: `company.exported`, audit log: 없음, request id: 사용, redaction: 회사 검색어 원문 logging 금지 |
 | `POST /api/companies` | implemented | 필요. `Company`와 조건부 `CompanyMemoLog`를 같은 transaction에서 생성 | event key: `company.created`, audit log: 없음, request id: 사용, redaction: `companyMemo` 원문 logging 금지 |
 | `PATCH /api/companies/:companyId` | implemented | 없음. 단일 `Company` 수정 | event key: `company.updated`, audit log: 없음, request id: 사용, redaction: 회사명 원문 logging 금지 |
@@ -124,7 +124,7 @@
 | `items[].companyField.field` | string | 아니오 | 회사 분야 이름 |
 | `items[].companyRegion.id` | string | 아니오 | 회사 지역 ID |
 | `items[].companyRegion.region` | string | 아니오 | 회사 지역 이름 |
-| `items[].contactCount` | number | 아니오 | 해당 회사에 연결된 거래처 수 |
+| `items[].contactCount` | number | 아니오 | 해당 회사에 연결된 담당자 수 |
 | `items[].createdAt` | string | 아니오 | 회사 등록일 |
 | `page` | number | 아니오 | 현재 페이지 |
 | `pageSize` | number | 아니오 | 20 |
@@ -152,7 +152,7 @@
 ### FE/BE 처리 기준
 
 - FE: 검색어/필터/page 변경 시 목록 query를 재조회한다.
-- FE: 회사 목록에는 최근 수정일을 표시하지 않는다. 거래처 수는 `contactCount`, 딜 수는 `dealCount`를 사용한다.
+- FE: 회사 목록에는 최근 수정일을 표시하지 않는다. 담당자 수는 `contactCount`, 딜 수는 `dealCount`를 사용한다.
 - BE: repository는 항상 userId 조건을 포함한다.
 - 검증: 검색, 필터, 페이지네이션, 타 사용자 데이터 미노출을 확인한다.
 
@@ -304,7 +304,7 @@
 3. `Company.id = companyId`와 `Company.userId = currentUserId`를 함께 조건으로 조회한다.
 4. `CompanyField`, `CompanyRegion` relation을 함께 조회한다.
 5. 상세 response DTO로 변환한다.
-6. 단건 응답에서는 `contactCount`, `dealCount`를 계산하지 않는다. 회사 목록의 거래처 수와 딜 수는 `GET /api/companies` 응답의 `contactCount`, `dealCount`를 사용한다.
+6. 단건 응답에서는 `contactCount`, `dealCount`를 계산하지 않는다. 회사 목록의 담당자 수와 딜 수는 `GET /api/companies` 응답의 `contactCount`, `dealCount`를 사용한다.
 
 ### Response
 
@@ -343,7 +343,7 @@
 ### FE/BE 처리 기준
 
 - FE: 상세 진입, 회사 수정 성공 후 재조회한다.
-- FE: 회사 단건 응답 자체에서 거래처 수와 딜 수를 기대하지 않는다. 연결 Contact 목록은 `GET /api/companies/:companyId/contacts`, 연결 Deal 목록은 `GET /api/companies/:companyId/deals`로 별도 조회한다.
+- FE: 회사 단건 응답 자체에서 담당자 수와 딜 수를 기대하지 않는다. 연결 Contact 목록은 `GET /api/companies/:companyId/contacts`, 연결 Deal 목록은 `GET /api/companies/:companyId/deals`로 별도 조회한다.
 - BE: 타 사용자 회사는 404로 숨긴다.
 - 검증: 본인 회사 조회 성공, 타 사용자 회사 404를 확인한다.
 
@@ -1103,7 +1103,7 @@
 - Method: `GET`
 - Path: `/api/companies/:companyId/contacts`
 - 인증: Backend App access token
-- 권한: 본인 회사에 연결된 거래처만 조회
+- 권한: 본인 회사에 연결된 담당자만 조회
 
 #### Request
 
@@ -1117,7 +1117,7 @@
 1. AuthGuard로 현재 userId를 확인한다.
 2. `companyId` path param을 validation한다.
 3. `Company.id = companyId`, `Company.userId = currentUserId` 조건으로 회사 ownership을 확인한다.
-4. `Contact.companyId = companyId`, `Contact.userId = currentUserId` 조건으로 연결 거래처 전체 목록을 조회한다.
+4. `Contact.companyId = companyId`, `Contact.userId = currentUserId` 조건으로 연결 담당자 전체 목록을 조회한다.
 5. `createdAt DESC, id DESC`로 정렬한다.
 6. `id`, `username`, `contactDepartment.id`, `contactDepartment.departmentName`만 응답한다.
 
@@ -1128,11 +1128,11 @@
 
 | 필드 | 타입 | nullable | 설명 |
 |---|---|---:|---|
-| `items` | `CompanyContactItemResponse[]` | 아니오 | 회사에 연결된 거래처 목록 |
-| `items[].id` | string | 아니오 | 거래처 ID |
-| `items[].username` | string | 아니오 | 거래처 이름 |
-| `items[].contactDepartment.id` | string | 아니오 | 거래처 부서 ID |
-| `items[].contactDepartment.departmentName` | string | 아니오 | 거래처 부서명 |
+| `items` | `CompanyContactItemResponse[]` | 아니오 | 회사에 연결된 담당자 목록 |
+| `items[].id` | string | 아니오 | 담당자 ID |
+| `items[].username` | string | 아니오 | 담당자 이름 |
+| `items[].contactDepartment.id` | string | 아니오 | 담당자 부서 ID |
+| `items[].contactDepartment.departmentName` | string | 아니오 | 담당자 부서명 |
 
 #### 연결된 DB 스키마
 
@@ -1174,7 +1174,7 @@
 - Status: `200 OK`
 - Content-Type: `application/vnd.openxmlformats-officedocument.spreadsheetml.sheet`
 - Content-Disposition: `attachment; filename="companies_YYYYMMDD_HHmmss.xlsx"`
-- xlsx 컬럼: `회사이름`, `회사분야`, `회사지역`, `거래처 수`, `등록일`
+- xlsx 컬럼: `회사이름`, `회사분야`, `회사지역`, `담당자 수`, `등록일`
 - xlsx 제외 필드: 회사 ID, 분야 ID, 지역 ID, userId, memo/private memo
 
 #### 내부 비즈니스 로직
@@ -1184,7 +1184,7 @@
 3. `companyFieldId`, `companyRegionId`가 있으면 현재 userId 소유인지 확인한다.
 4. `page` 없이 `Company.userId = currentUserId`와 검색/필터 조건을 적용한다.
 5. `createdAt DESC, id DESC`로 정렬한다.
-6. 각 회사의 연결 거래처 수를 `거래처 수` 컬럼으로 넣는다.
+6. 각 회사의 연결 담당자 수를 `담당자 수` 컬럼으로 넣는다.
 7. xlsx 파일을 생성해 다운로드 응답으로 반환한다.
 
 #### 연결된 DB 스키마

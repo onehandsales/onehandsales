@@ -34,7 +34,7 @@
 | `CreateDealRequestDto` | 생성 body |
 | `UpdateDealRequestDto` | 수정 body |
 | `DealCompanyOptionResponseDto` | 회사 옵션 응답 |
-| `DealContactOptionResponseDto` | 거래처 옵션 응답 |
+| `DealContactOptionResponseDto` | 담당자 옵션 응답 |
 | `DealProductOptionResponseDto` | 제품 옵션 응답 |
 | `DealExportQueryDto` | export query |
 | `DealFollowingActionLogResponseDto` | 다음 행동 로그 응답 |
@@ -84,14 +84,14 @@
    - `dealCostAsc`: `dealCost ASC`, `createdAt DESC`
    - `expectedEndDateAsc`: `expectedEndDate ASC`, `createdAt DESC`
 5. 20개 단위 pagination을 적용한다.
-6. 각 Deal에 회사, 거래처, 거래처 부서, 최신 다음 행동 1개를 포함한다.
+6. 각 Deal에 회사, 담당자 부서, 최신 다음 행동 1개를 포함한다.
 7. 제품은 include하지 않고 응답에도 넣지 않는다.
 8. `totalCount`, `totalPages`를 함께 반환한다.
 
 ### 5.3 상세
 
 1. `dealId`와 `userId`로 Deal을 조회한다.
-2. 회사, 거래처, 거래처 부서, 제품 배열을 nested object로 포함한다.
+2. 회사, 담당자 부서, 제품 배열을 nested object로 포함한다.
 3. 없으면 `DEAL_NOT_FOUND`를 반환한다.
 
 ### 5.4 생성
@@ -132,7 +132,7 @@ Rollback:
 
 1. 목록 API와 동일한 search/filter/sort를 적용한다.
 2. page는 받지 않는다.
-3. 회사, 거래처, 거래처 부서, 최신 다음 행동 1개를 조회한다.
+3. 회사, 담당자 부서, 최신 다음 행동 1개를 조회한다.
 4. 제품은 조회하지 않는다.
 5. xlsx 컬럼을 고정 순서로 생성한다.
 6. id, 제품, 최근수정일은 제외한다.
@@ -247,7 +247,7 @@ Redaction:
 | 400 | `VALIDATION_ERROR` | 어떤 필드가 실패했는지 알 수 있게 한다. |
 | 401 | `UNAUTHORIZED` | 인증이 필요하다는 수준만 노출한다. |
 | 404 | `DEAL_NOT_FOUND` | 없는 딜과 타 사용자 딜을 구분하지 않는다. |
-| 404 | `RELATED_RESOURCE_NOT_FOUND` | 없는 FK, 타 사용자 FK, 회사에 속하지 않은 거래처를 구분하지 않는다. |
+| 404 | `RELATED_RESOURCE_NOT_FOUND` | 없는 FK, 타 사용자 FK, 회사에 속하지 않은 담당자를 구분하지 않는다. |
 | 404 | `DEAL_LOG_NOT_FOUND` | 없는 로그와 타 사용자 로그를 구분하지 않는다. |
 | 500 | `INTERNAL_SERVER_ERROR` | 내부 예외 상세를 노출하지 않는다. |
 

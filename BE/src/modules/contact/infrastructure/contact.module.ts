@@ -35,7 +35,7 @@ import {
     AppLogger,
     {
       provide: CONTACT_REPOSITORY,
-      // 기능 : Prisma 서비스로 거래처 저장소 구현체를 생성합니다.
+      // 기능 : Prisma 서비스로 담당자 저장소 구현체를 생성합니다.
       useFactory: (prismaService: PrismaService) =>
         new PrismaContactRepository(prismaService, prismaService),
       inject: [PrismaService],

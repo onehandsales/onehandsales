@@ -27,7 +27,7 @@ User Web 딜 페이지를 새 Backend Deal API 계약에 맞게 구현한다.
 - [x] 단계별 개수 UI를 API와 연결한다.
 - [x] 목록 조회를 검색/상태 필터/정렬/페이지와 연결한다.
 - [x] split view 상세 조회를 연결한다.
-- [x] 생성 form을 구현하고 회사/거래처/제품 옵션을 연결한다.
+- [x] 생성 form을 구현하고 회사/담당자/제품 옵션을 연결한다.
 - [x] 수정 form을 구현한다. (상세 패널에서 UpdateDealInput 준비 완료, UI는 로그 기반 인라인)
 - [x] 다음 행동 로그 목록/생성/수정을 연결한다.
 - [x] 메모 로그 목록/생성/수정을 연결한다.
@@ -42,7 +42,7 @@ User Web 딜 페이지를 새 Backend Deal API 계약에 맞게 구현한다.
 - 검색은 딜 이름에만 적용된다.
 - 상태 필터는 DealStatus enum code를 보낸다.
 - 정렬은 `createdAtDesc`, `dealCostDesc`, `dealCostAsc`, `expectedEndDateAsc` 중 하나를 보낸다.
-- 목록 item에서 회사와 거래처는 nested object에서 표시한다.
+- 목록 item에서 회사와 담당자는 nested object에서 표시한다.
 - 목록 item에는 제품이 없다.
 - 상세에는 제품 목록이 있다.
 - 딜 생성/수정 시 `productIds` 배열을 보낸다.

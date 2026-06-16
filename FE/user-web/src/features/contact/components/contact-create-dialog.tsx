@@ -30,7 +30,7 @@ type ContactCreateDialogProps = {
   readonly onCreated: () => void;
 };
 
-// 기능 : 거래처 생성 모달을 렌더링합니다.
+// 기능 : 담당자 생성 모달을 렌더링합니다.
 export function ContactCreateDialog({
   open,
   onOpenChange,
@@ -125,7 +125,7 @@ export function ContactCreateDialog({
     return null;
   }
 
-  // 기능 : 거래처를 생성하고 모달을 닫습니다.
+  // 기능 : 담당자를 생성하고 모달을 닫습니다.
   const onSubmit = handleSubmit(async (values) => {
     await createContactMutation.mutateAsync(toCreateContactInput(values));
     onCreated();
@@ -144,13 +144,13 @@ export function ContactCreateDialog({
       }
       open={open}
       size="md"
-      title="거래처 빠른 등록"
+      title="담당자 빠른 등록"
       onOpenChange={onOpenChange}
     >
       <ModalForm id={formId} onSubmit={onSubmit}>
         <ModalFormSection
           description="담당자 이름과 연결 회사를 지정합니다."
-          title="거래처 기본 정보"
+          title="담당자 기본 정보"
         >
           <ModalFieldGroup
             error={errors.username?.message}
@@ -295,7 +295,7 @@ export function ContactCreateDialog({
         {createContactMutation.error ? (
           <ErrorState
             message={getApiErrorMessage(createContactMutation.error)}
-            title="거래처 저장 실패"
+            title="담당자 저장 실패"
             variant="inline"
           />
         ) : null}

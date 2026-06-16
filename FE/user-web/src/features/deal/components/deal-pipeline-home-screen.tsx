@@ -217,7 +217,7 @@ export function DealPipelineHomeScreen({
                   style={{ height: 44 }}
                 >
                   <TableHeaderCell width={170}>딜명</TableHeaderCell>
-                  <TableHeaderCell width={180}>회사/거래처</TableHeaderCell>
+                  <TableHeaderCell width={180}>회사/담당자</TableHeaderCell>
                   <TableHeaderCell width={96}>단계</TableHeaderCell>
                   <TableHeaderCell width={104}>금액</TableHeaderCell>
                   <TableHeaderCell width={190}>다음 행동 마감일</TableHeaderCell>
@@ -437,7 +437,7 @@ function DealListRow({
         </span>
       </div>
 
-      {/* 회사/거래처 */}
+      {/* 회사/담당자 */}
       <div className="min-w-0 shrink-0 pr-3" style={{ width: 180 }}>
         <span className="block truncate text-[12px] font-semibold text-[#111827]" title={deal.company.companyName}>
           {deal.company.companyName}

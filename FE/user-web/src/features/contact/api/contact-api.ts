@@ -24,7 +24,7 @@ import {
   type ApiBlobResponse,
 } from "@/lib/api-client";
 
-// 기능 : 거래처 목록을 조회합니다.
+// 기능 : 담당자 목록을 조회합니다.
 export function listContacts(params: ContactListParams) {
   const query = toContactListSearchParams(params);
   const suffix = query.toString() ? `?${query.toString()}` : "";
@@ -32,17 +32,17 @@ export function listContacts(params: ContactListParams) {
   return apiClient<ContactPageResponse>(`/api/contacts${suffix}`);
 }
 
-// 기능 : 거래처 상세를 조회합니다.
+// 기능 : 담당자 상세를 조회합니다.
 export function getContact(contactId: string) {
   return apiClient<ContactDetail>(`/api/contacts/${contactId}`);
 }
 
-// 기능 : 거래처에 연결된 딜 전체 목록을 조회합니다.
+// 기능 : 담당자에 연결된 딜 전체 목록을 조회합니다.
 export function listContactDeals(contactId: string) {
   return apiClient<ContactDealListResponse>(`/api/contacts/${contactId}/deals`);
 }
 
-// 기능 : 거래처를 생성합니다.
+// 기능 : 담당자를 생성합니다.
 export function createContact(input: CreateContactInput) {
   return apiClient<void>("/api/contacts", {
     method: "POST",
@@ -50,7 +50,7 @@ export function createContact(input: CreateContactInput) {
   });
 }
 
-// 기능 : 거래처 기본 정보를 수정합니다.
+// 기능 : 담당자 기본 정보를 수정합니다.
 export function updateContact(input: UpdateContactInput) {
   return apiClient<void>(`/api/contacts/${input.contactId}`, {
     method: "PATCH",
@@ -65,19 +65,19 @@ export function updateContact(input: UpdateContactInput) {
   });
 }
 
-// 기능 : 거래처 회사 옵션 목록을 조회합니다.
+// 기능 : 담당자 회사 옵션 목록을 조회합니다.
 export function listContactCompanyOptions() {
   return apiClient<ContactCompanyOptionListResponse>(
     "/api/contacts/company-options"
   );
 }
 
-// 기능 : 거래처 직급 목록을 조회합니다.
+// 기능 : 담당자 직급 목록을 조회합니다.
 export function listContactJobGrades() {
   return apiClient<ContactJobGradeListResponse>("/api/contact-job-grades");
 }
 
-// 기능 : 거래처 직급을 생성합니다.
+// 기능 : 담당자 직급을 생성합니다.
 export function createContactJobGrade(input: CreateContactJobGradeInput) {
   return apiClient<void>("/api/contact-job-grades", {
     method: "POST",
@@ -85,19 +85,19 @@ export function createContactJobGrade(input: CreateContactJobGradeInput) {
   });
 }
 
-// 기능 : 거래처 직급을 삭제합니다.
+// 기능 : 담당자 직급을 삭제합니다.
 export function deleteContactJobGrade(jobGradeId: string) {
   return apiClient<void>(`/api/contact-job-grades/${jobGradeId}`, {
     method: "DELETE",
   });
 }
 
-// 기능 : 거래처 부서 목록을 조회합니다.
+// 기능 : 담당자 부서 목록을 조회합니다.
 export function listContactDepartments() {
   return apiClient<ContactDepartmentListResponse>("/api/contact-departments");
 }
 
-// 기능 : 거래처 부서를 생성합니다.
+// 기능 : 담당자 부서를 생성합니다.
 export function createContactDepartment(input: CreateContactDepartmentInput) {
   return apiClient<void>("/api/contact-departments", {
     method: "POST",
@@ -105,14 +105,14 @@ export function createContactDepartment(input: CreateContactDepartmentInput) {
   });
 }
 
-// 기능 : 거래처 부서를 삭제합니다.
+// 기능 : 담당자 부서를 삭제합니다.
 export function deleteContactDepartment(departmentId: string) {
   return apiClient<void>(`/api/contact-departments/${departmentId}`, {
     method: "DELETE",
   });
 }
 
-// 기능 : 거래처 일반 메모 로그를 커서 기반으로 조회합니다.
+// 기능 : 담당자 일반 메모 로그를 커서 기반으로 조회합니다.
 export function listContactMemoLogs(contactId: string, cursor?: string) {
   const query = new URLSearchParams();
 
@@ -127,7 +127,7 @@ export function listContactMemoLogs(contactId: string, cursor?: string) {
   );
 }
 
-// 기능 : 거래처 일반 메모 로그를 생성합니다.
+// 기능 : 담당자 일반 메모 로그를 생성합니다.
 export function createContactMemoLog(input: CreateContactMemoLogInput) {
   return apiClient<void>(`/api/contacts/${input.contactId}/memo-logs`, {
     method: "POST",
@@ -138,7 +138,7 @@ export function createContactMemoLog(input: CreateContactMemoLogInput) {
   });
 }
 
-// 기능 : 거래처 일반 메모 로그를 수정합니다.
+// 기능 : 담당자 일반 메모 로그를 수정합니다.
 export function updateContactMemoLog(input: UpdateContactMemoLogInput) {
   return apiClient<void>(
     `/api/contacts/${input.contactId}/memo-logs/${input.memoLogId}`,
@@ -152,7 +152,7 @@ export function updateContactMemoLog(input: UpdateContactMemoLogInput) {
   );
 }
 
-// 기능 : 거래처 개인 비밀 메모 로그를 커서 기반으로 조회합니다.
+// 기능 : 담당자 개인 비밀 메모 로그를 커서 기반으로 조회합니다.
 export function listContactPrivateMemoLogs(contactId: string, cursor?: string) {
   const query = new URLSearchParams();
 
@@ -167,7 +167,7 @@ export function listContactPrivateMemoLogs(contactId: string, cursor?: string) {
   );
 }
 
-// 기능 : 거래처 개인 비밀 메모 로그를 생성합니다.
+// 기능 : 담당자 개인 비밀 메모 로그를 생성합니다.
 export function createContactPrivateMemoLog(
   input: CreateContactPrivateMemoLogInput
 ) {
@@ -179,7 +179,7 @@ export function createContactPrivateMemoLog(
   });
 }
 
-// 기능 : 거래처 개인 비밀 메모 로그를 수정합니다.
+// 기능 : 담당자 개인 비밀 메모 로그를 수정합니다.
 export function updateContactPrivateMemoLog(
   input: UpdateContactPrivateMemoLogInput
 ) {
@@ -194,7 +194,7 @@ export function updateContactPrivateMemoLog(
   );
 }
 
-// 기능 : 현재 거래처 필터에 해당하는 목록을 엑셀 Blob으로 내려받습니다.
+// 기능 : 현재 담당자 필터에 해당하는 목록을 엑셀 Blob으로 내려받습니다.
 export function exportContactsXlsx(
   filters: ContactExportParams
 ): Promise<ApiBlobResponse> {
@@ -210,7 +210,7 @@ export function exportContactsXlsx(
   });
 }
 
-// 기능 : 거래처 목록 요청 query string을 API 명세에 맞게 구성합니다.
+// 기능 : 담당자 목록 요청 query string을 API 명세에 맞게 구성합니다.
 function toContactListSearchParams(params: ContactListParams) {
   const searchParams = toContactExportSearchParams(params);
 
@@ -219,7 +219,7 @@ function toContactListSearchParams(params: ContactListParams) {
   return searchParams;
 }
 
-// 기능 : 거래처 내보내기 요청 query string에서 page를 제외합니다.
+// 기능 : 담당자 내보내기 요청 query string에서 page를 제외합니다.
 function toContactExportSearchParams(params: ContactExportParams) {
   const searchParams = new URLSearchParams();
   const username = params.username?.trim() ?? "";

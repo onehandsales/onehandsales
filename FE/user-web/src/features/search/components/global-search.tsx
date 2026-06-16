@@ -35,7 +35,7 @@ const targetMeta: Record<
   { readonly label: string; readonly icon: LucideIcon }
 > = {
   COMPANY: { label: "회사", icon: Building2 },
-  CONTACT: { label: "거래처", icon: UserRound },
+  CONTACT: { label: "담당자", icon: UserRound },
   PRODUCT: { label: "제품", icon: Package },
   DEAL: { label: "딜", icon: Handshake },
   SCHEDULE: { label: "일정", icon: CalendarDays },
@@ -186,7 +186,7 @@ function SearchInput({
       <input
         ref={inputRef}
         className="h-10 w-full rounded-md border bg-white pl-9 pr-3 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20"
-        placeholder="회사, 거래처, 제품, 딜, 일정 검색"
+        placeholder="회사, 담당자, 제품, 딜, 일정 검색"
         value={query}
         onChange={onChange}
         onFocus={onFocus}

@@ -68,11 +68,11 @@ FE/admin-web/
 | `/users/:userId` | 사용자 상세 | 1 |
 | `/users/:userId/deals` | 사용자별 딜 | 1 |
 | `/users/:userId/companies` | 사용자별 회사 | 1 |
-| `/users/:userId/contacts` | 사용자별 거래처 | 1 |
+| `/users/:userId/contacts` | 사용자별 담당자 | 1 |
 | `/users/:userId/products` | 사용자별 제품 | 1 |
 | `/deals` | 전체 딜 | 1 |
 | `/companies` | 전체 회사 | 1 |
-| `/contacts` | 전체 거래처 | 1 |
+| `/contacts` | 전체 담당자 | 1 |
 | `/products` | 전체 제품 | 1 |
 | `/audit-logs` | 감사 로그 | 1 |
 | `/settings` | Admin 설정 | 2 |
@@ -163,7 +163,7 @@ adminApiClient
 - 전체 사용자 수
 - 최근 가입 사용자
 - 전체 딜 수
-- 전체 회사/거래처/제품 수
+- 전체 회사/담당자/제품 수
 - 최근 Import/Export 작업
 - 최근 감사 로그
 - 민감정보 원문 조회 요청 수
@@ -203,7 +203,7 @@ adminApiClient
 
 - 기본 프로필
 - 연결된 Supabase Auth provider
-- 사용자별 회사/거래처/제품/딜 요약
+- 사용자별 회사/담당자/제품/딜 요약
 - 최근 활동
 - 최근 Import/Export
 - 최근 감사 대상 여부
@@ -239,13 +239,13 @@ adminApiClient
 - 소유 사용자
 - 위치
 - 분야
-- 거래처 수
+- 담당자 수
 - 딜 수
 - 삭제 여부
 - 완전 삭제 예정일
 - 생성일
 
-### 전체 거래처(담당자)
+### 전체 담당자
 
 컬럼:
 
@@ -279,7 +279,7 @@ adminApiClient
 
 - 딜명
 - 소유 사용자
-- 회사/거래처
+- 회사/담당자
 - 단계
 - 금액 masked
 - 가능성

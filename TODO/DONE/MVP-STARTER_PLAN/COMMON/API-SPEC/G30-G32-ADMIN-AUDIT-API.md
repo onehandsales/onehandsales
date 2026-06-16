@@ -33,14 +33,14 @@ Admin API는 운영 편의를 위해 존재하지만, 사용자 민감정보를 
 | 사용자 상태 변경 API | `UpdateAdminUserStatus` | `PATCH` | `/admin/api/users/:userId/status` | `UpdateAdminUserStatusRequest` | `AdminUserResponse` | User, AuditLog |
 | 전체 회사 목록 API | `ListAdminCompanies` | `GET` | `/admin/api/companies` | `ListAdminCompaniesRequest` | `AdminCompanyListResponse` | Company, User |
 | 회사 상세 API | `GetAdminCompany` | `GET` | `/admin/api/companies/:companyId` | `GetAdminCompanyRequest` | `AdminCompanyDetailResponse` | Company, User, Contact, Deal, PersonalMemo |
-| 전체 거래처 목록 API | `ListAdminContacts` | `GET` | `/admin/api/contacts` | `ListAdminContactsRequest` | `AdminContactListResponse` | Contact, Company, User |
-| 거래처 상세 API | `GetAdminContact` | `GET` | `/admin/api/contacts/:contactId` | `GetAdminContactRequest` | `AdminContactDetailResponse` | Contact, Company, User, Deal, PersonalMemo |
+| 전체 담당자 목록 API | `ListAdminContacts` | `GET` | `/admin/api/contacts` | `ListAdminContactsRequest` | `AdminContactListResponse` | Contact, Company, User |
+| 담당자 상세 API | `GetAdminContact` | `GET` | `/admin/api/contacts/:contactId` | `GetAdminContactRequest` | `AdminContactDetailResponse` | Contact, Company, User, Deal, PersonalMemo |
 | 전체 제품 목록 API | `ListAdminProducts` | `GET` | `/admin/api/products` | `ListAdminProductsRequest` | `AdminProductListResponse` | Product, User |
 | 제품 상세 API | `GetAdminProduct` | `GET` | `/admin/api/products/:productId` | `GetAdminProductRequest` | `AdminProductDetailResponse` | Product, User, ProductConnection, PersonalMemo |
 | 전체 딜 목록 API | `ListAdminDeals` | `GET` | `/admin/api/deals` | `ListAdminDealsRequest` | `AdminDealListResponse` | Deal, Company, Contact, User |
 | 딜 상세 API | `GetAdminDeal` | `GET` | `/admin/api/deals/:dealId` | `GetAdminDealRequest` | `AdminDealDetailResponse` | Deal, Company, Contact, User, DealActivity, PersonalMemo |
 | 특정 사용자 회사 목록 API | `ListAdminUserCompanies` | `GET` | `/admin/api/users/:userId/companies` | `ListAdminUserCompaniesRequest` | `AdminCompanyListResponse` | Company |
-| 특정 사용자 거래처 목록 API | `ListAdminUserContacts` | `GET` | `/admin/api/users/:userId/contacts` | `ListAdminUserContactsRequest` | `AdminContactListResponse` | Contact |
+| 특정 사용자 담당자 목록 API | `ListAdminUserContacts` | `GET` | `/admin/api/users/:userId/contacts` | `ListAdminUserContactsRequest` | `AdminContactListResponse` | Contact |
 | 특정 사용자 제품 목록 API | `ListAdminUserProducts` | `GET` | `/admin/api/users/:userId/products` | `ListAdminUserProductsRequest` | `AdminProductListResponse` | Product |
 | 특정 사용자 딜 목록 API | `ListAdminUserDeals` | `GET` | `/admin/api/users/:userId/deals` | `ListAdminUserDealsRequest` | `AdminDealListResponse` | Deal |
 
@@ -102,7 +102,7 @@ Admin API는 운영 편의를 위해 존재하지만, 사용자 민감정보를 
 | Admin 아님 | `Forbidden` | 403 |
 | 대상 사용자 없음 | `UserNotFound` | 404 |
 | 대상 회사 없음 | `CompanyNotFound` | 404 |
-| 대상 거래처 없음 | `ContactNotFound` | 404 |
+| 대상 담당자 없음 | `ContactNotFound` | 404 |
 | 대상 제품 없음 | `ProductNotFound` | 404 |
 | 대상 딜 없음 | `DealNotFound` | 404 |
 | 상태 변경 사유 없음 | `AuditReasonRequired` | 400 |

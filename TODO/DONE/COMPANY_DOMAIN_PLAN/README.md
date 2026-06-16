@@ -4,7 +4,7 @@
 
 사용자가 사용하는 회사 페이지의 기본 기능을 FE와 BE가 같은 계약으로 구현할 수 있게 실행 문서를 둔다.
 
-관리자 페이지, 휴지통, soft delete는 현재 범위에서 제외한다. 회사 목록의 거래처 수(`contactCount`), 회사 목록의 딜 수(`dealCount`), 회사 단건 화면 보조 영역의 연결 Contact/Deal 목록은 추가 유지보수 범위에서 Backend API가 구현되어 FE 표시 범위에 포함한다.
+관리자 페이지, 휴지통, soft delete는 현재 범위에서 제외한다. 회사 목록의 담당자 수(`contactCount`), 회사 목록의 딜 수(`dealCount`), 회사 단건 화면 보조 영역의 연결 Contact/Deal 목록은 추가 유지보수 범위에서 Backend API가 구현되어 FE 표시 범위에 포함한다.
 
 ## 필수 선행 정본
 
@@ -81,7 +81,7 @@ FE가 책임지는 화면:
 - 회사 이름 검색
 - 회사 분야 필터
 - 회사 지역 필터
-- 회사 목록 거래처 수 표시
+- 회사 목록 담당자 수 표시
 - 회사 목록 딜 수 표시
 - 회사 목록 xlsx 내보내기
 - 회사 생성
@@ -103,7 +103,7 @@ FE가 책임지는 화면:
 - 회사 분야 수정 API
 - 회사 지역 수정 API
 - 회사 목록의 최근 수정일 표시
-- 회사 단건 응답 자체에 거래처 수를 병합하는 변경
+- 회사 단건 응답 자체에 담당자 수를 병합하는 변경
 - 회사 단건 응답 자체에 딜 수를 병합하는 변경
 
 ## 완료 기준
@@ -113,7 +113,7 @@ FE가 책임지는 화면:
 - `COMMON/API-SPEC/COMPANY_API_DETAIL.md`에 모든 API의 계약 상태, transaction, observability 기준이 적혀 있다.
 - 회사 목록은 등록일 기준 DESC로 정렬된다.
 - 회사 목록에는 `updatedAt`이 나오지 않는다.
-- 회사 목록 item에는 `contactCount`와 `dealCount`가 있고, FE는 이를 거래처 수와 딜 수로 표시한다.
+- 회사 목록 item에는 `contactCount`와 `dealCount`가 있고, FE는 이를 담당자 수와 딜 수로 표시한다.
 - 회사 단건 페이지의 연결 Contact 목록은 `GET /api/companies/:companyId/contacts` 별도 API로 조회한다.
 - 회사 단건 페이지의 연결 Deal 목록은 `GET /api/companies/:companyId/deals` 별도 API로 조회한다.
 - 회사 목록 xlsx 내보내기는 현재 검색어와 필터를 반영하고 `page`는 제외한다.

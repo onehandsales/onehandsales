@@ -1158,9 +1158,9 @@ G00에서 MVP 1차 application-level encryption 대상은 `PersonalMemo.content`
 
 - `Company`, `Contact`, `Product`, `Deal`은 Log와 Memo 기록을 각각 가질 수 있다.
 - Log는 객관적 사실, 변경, 만남, 소식, 이력 기록이고 Memo는 사용자의 주관적 생각, 판단, 개인 참고 기록이다.
-- Log는 회사 `CompanyLog`, 거래처 `ContactLog`, 제품 `ProductLog`, 딜 `DealActivity`로 도메인별 별도 모델에 저장한다.
+- Log는 회사 `CompanyLog`, 담당자 `ContactLog`, 제품 `ProductLog`, 딜 `DealActivity`로 도메인별 별도 모델에 저장한다.
 - Memo는 각 엔티티의 단일 `memo` 필드에 섞지 않고 기록 테이블 `PersonalMemo`에 저장한다.
-- `PersonalMemo`는 회사/거래처/제품/딜 Memo 원문을 `contentCiphertext`, `contentKeyVersion`으로 저장한다.
+- `PersonalMemo`는 회사/담당자/제품/딜 Memo 원문을 `contentCiphertext`, `contentKeyVersion`으로 저장한다.
 - `MeetingNote`는 회의록 원문 입력값을 `rawTextCiphertext`, `rawTextKeyVersion`으로 저장한다.
 - DB에는 Memo 원문과 회의록 원문 입력값을 평문으로 저장하지 않는다.
 - `EncryptionPort`가 암호화와 복호화를 담당하고, 구체 crypto library는 infrastructure adapter 내부에 둔다.
@@ -1200,11 +1200,11 @@ G00에서 MVP 1차 application-level encryption 대상은 `PersonalMemo.content`
 | `UserSetting` | 사용자별 알림/경고 설정 | 내 설정, 알림 설정 | 민감 아님 | userId 1:1 |
 | `Company` | 회사 기준 데이터 | 회사 CRUD, 딜/일정/제품 연결 | 일반적으로 민감 아님 | userId ownership, soft delete |
 | `CompanyLog` | 회사 자체 히스토리 | 회사 상세 로그 | 내용은 민감 가능 | Company ownership 상속 |
-| `Contact` | 거래처(담당자) | 거래처 CRUD, 딜/일정 연결, OCR 저장 | 전화번호, 이메일, Memo 원문 관련 민감 | userId ownership, company optional |
-| `ContactLog` | 거래처 객관 기록 | 거래처 상세 로그 | 내용은 민감 가능 | Contact ownership 상속 |
+| `Contact` | 담당자 | 담당자 CRUD, 딜/일정 연결, OCR 저장 | 전화번호, 이메일, Memo 원문 관련 민감 | userId ownership, company optional |
+| `ContactLog` | 담당자 객관 기록 | 담당자 상세 로그 | 내용은 민감 가능 | Contact ownership 상속 |
 | `Product` | 제품 기준 데이터 | 제품 CRUD, 딜 제품 선택 | 단가가 영업상 민감 가능 | userId ownership, KRW 기본 |
 | `ProductLog` | 제품 객관 기록 | 제품 상세 로그 | 내용은 민감 가능 | Product ownership 상속 |
-| `ProductConnection` | 제품과 회사/거래처/딜 연결 | 제품 연결, 딜 제품 연결 | 연결 관계가 영업상 민감 가능 | targetType/targetId ownership 검증 |
+| `ProductConnection` | 제품과 회사/담당자/딜 연결 | 제품 연결, 딜 제품 연결 | 연결 관계가 영업상 민감 가능 | targetType/targetId ownership 검증 |
 | `Deal` | 영업 딜 | 딜 목록/상세/단계/다음 행동 | 금액, Memo 원문 관련 민감 | amount 필수, userId ownership, soft delete |
 | `DealActivityType` | 활동 로그 타입 | 딜 활동 로그 | 민감 아님 | system 기본값과 사용자 커스텀 구분 |
 | `DealActivity` | 딜 활동 기록 | 딜 상세 timeline | 내용은 민감 가능 | 단계 변경/회의록 연결 자동 생성 |
@@ -1215,7 +1215,7 @@ G00에서 MVP 1차 application-level encryption 대상은 `PersonalMemo.content`
 | `Tag` | 사용자 태그 | 주요 엔티티 태그 | 민감 아님 | userId ownership. 분류 설정 데이터이므로 삭제 시 hard delete하고 `TagLog`에 이력 저장 |
 | `TagAssignment` | 태그 연결 | 태그 필터/표시 | 연결 관계 민감 가능 | targetType/targetId ownership 검증. 장바구니 항목처럼 현재 연결 상태를 표현하므로 연결 해제 시 hard delete하고 `TagLog`에 이력 저장 |
 | `TagLog` | 태그와 태그 연결 변경 이력 | 태그 이력 확인, 장애/CS 확인 | 태그명과 대상 스냅샷은 민감 가능 | append-only. Tag/TagAssignment hard delete 후에도 남아야 하므로 Tag/TagAssignment FK 없음 |
-| `PersonalMemo` | 도메인 Memo 기록 | 회사/거래처/제품/딜별 주관 메모 | 원문 암호화 대상 | Admin 기본 마스킹, 원문 조회 audit 필요 |
+| `PersonalMemo` | 도메인 Memo 기록 | 회사/담당자/제품/딜별 주관 메모 | 원문 암호화 대상 | Admin 기본 마스킹, 원문 조회 audit 필요 |
 | `Notification` | 알림 데이터와 발송 상태 | 알림 목록/읽음, email/browser push 발송 | target 내용에 따라 민감 가능 | 사용자별 조회, channel/status/scheduledAt 기준 발송 job |
 | `BrowserPushSubscription` | 브라우저 push 구독 정보 | Push 구독 등록/해제, browser push 발송 | endpoint와 key는 민감 가능 | endpoint hash unique, endpoint/key는 암호화 저장, userId/status index |
 | `ImportJob` | Import 작업 | Import flow | 업로드 파일 metadata/매핑 민감 가능 | preview 확인 후 실행, confirm은 all-or-nothing |

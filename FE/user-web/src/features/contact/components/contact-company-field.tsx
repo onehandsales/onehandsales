@@ -11,7 +11,7 @@ type ContactCompanyFieldProps = {
   readonly onSearchChange: (search: string) => void;
 };
 
-// 기능 : 거래처 회사 선택 필드를 렌더링합니다.
+// 기능 : 담당자 회사 선택 필드를 렌더링합니다.
 export function ContactCompanyField({
   id,
   label,

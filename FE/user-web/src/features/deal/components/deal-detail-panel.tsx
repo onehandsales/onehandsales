@@ -172,7 +172,7 @@ function DealDetailSidePanel({
               />
               <MetricCard
                 icon={UserRound}
-                label="거래처"
+                label="담당자"
                 value={`${contactName} ${contactDepartmentName}`}
               />
           </div>
@@ -393,7 +393,7 @@ function DealDetailPageLayout({
             <MetricCard icon={Building2} label="회사" value={companyName} />
             <MetricCard
               icon={UserRound}
-              label="거래처"
+              label="담당자"
               value={`${contactName} ${contactDepartmentName}`}
             />
             <MetricCard

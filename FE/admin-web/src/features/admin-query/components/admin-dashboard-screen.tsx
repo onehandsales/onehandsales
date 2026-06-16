@@ -53,7 +53,7 @@ export function AdminDashboardScreen() {
             />
             <MetricCard
               icon={Users}
-              label="거래처"
+              label="담당자"
               value={dashboardQuery.data.contactCount}
             />
             <MetricCard

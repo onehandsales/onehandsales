@@ -40,7 +40,7 @@ type ContactMemoLogSectionProps = {
   readonly onChanged: (notice: string) => void;
 };
 
-// 기능 : 거래처 일반 메모 로그 목록과 생성/수정 폼을 렌더링합니다.
+// 기능 : 담당자 일반 메모 로그 목록과 생성/수정 폼을 렌더링합니다.
 export function ContactMemoLogSection({
   contactId,
   logs,
@@ -71,7 +71,7 @@ export function ContactMemoLogSection({
       toCreateContactMemoLogInput(contactId, values)
     );
     createForm.reset(emptyContactMemoLogFormValues);
-    onChanged("거래처 메모가 추가되었습니다.");
+    onChanged("담당자 메모가 추가되었습니다.");
   });
 
   // 기능 : 일반 메모 로그 수정 폼을 엽니다.
@@ -93,15 +93,15 @@ export function ContactMemoLogSection({
       toUpdateContactMemoLogInput(contactId, editingLog.id, values)
     );
     setEditingLog(null);
-    onChanged("거래처 메모가 수정되었습니다.");
+    onChanged("담당자 메모가 수정되었습니다.");
   });
 
   return (
     <section className="grid gap-4">
       <SectionTitle
-        description="거래처 공유 메모입니다."
+        description="담당자 공유 메모입니다."
         icon={MessageSquareText}
-        title="거래처 메모"
+        title="담당자 메모"
       />
       <div className="grid gap-4 rounded-lg border bg-white p-4">
         <form className="grid gap-3" onSubmit={(e) => void onCreateSubmit(e)}>
@@ -194,7 +194,7 @@ export function ContactMemoLogSection({
         ) : null}
 
         <MemoLogList
-          emptyText="등록된 거래처 메모가 없습니다."
+          emptyText="등록된 담당자 메모가 없습니다."
           error={error}
           hasNextPage={hasNextPage}
           isFetchingNextPage={isFetchingNextPage}
@@ -226,7 +226,7 @@ type ContactPrivateMemoLogSectionProps = {
   readonly onChanged: (notice: string) => void;
 };
 
-// 기능 : 거래처 비공식 메모 로그 목록과 생성/수정 폼을 렌더링합니다.
+// 기능 : 담당자 비공식 메모 로그 목록과 생성/수정 폼을 렌더링합니다.
 export function ContactPrivateMemoLogSection({
   contactId,
   logs,

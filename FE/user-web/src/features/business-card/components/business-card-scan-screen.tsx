@@ -118,7 +118,7 @@ export function BusinessCardScanScreen() {
     const confirmed = await confirmMutation.mutateAsync(
       toConfirmInput(scanId, values)
     );
-    setNotice("명함 OCR 결과가 거래처로 저장되었습니다.");
+    setNotice("명함 OCR 결과가 담당자로 저장되었습니다.");
     setConfirmedContactId(confirmed.contact.id);
   });
 
@@ -140,7 +140,7 @@ export function BusinessCardScanScreen() {
         <div className="min-w-0">
           <h1 className="text-2xl font-semibold">명함 OCR</h1>
           <p className="mt-1 text-sm text-muted-foreground">
-            명함 이미지를 업로드하고 추출 결과를 확인한 뒤 거래처로 저장합니다.
+            명함 이미지를 업로드하고 추출 결과를 확인한 뒤 담당자로 저장합니다.
           </p>
         </div>
         {confirmedContactId ? (
@@ -149,7 +149,7 @@ export function BusinessCardScanScreen() {
             to={`/contacts/${confirmedContactId}`}
           >
             <UserRound className="h-4 w-4" />
-            저장된 거래처 보기
+            저장된 담당자 보기
           </Link>
         ) : null}
       </header>
@@ -371,7 +371,7 @@ export function BusinessCardScanScreen() {
 
             {companyMode === "NONE" ? (
               <p className="rounded-md border bg-muted/40 px-3 py-2 text-sm text-muted-foreground">
-                회사 없이 담당자만 저장합니다. 나중에 거래처 상세에서 회사 연결을
+                회사 없이 담당자만 저장합니다. 나중에 담당자 상세에서 회사 연결을
                 추가할 수 있습니다.
               </p>
             ) : null}
@@ -392,7 +392,7 @@ export function BusinessCardScanScreen() {
               ) : (
                 <Save className="h-4 w-4" />
               )}
-              거래처로 저장
+              담당자로 저장
             </button>
           </section>
         </form>

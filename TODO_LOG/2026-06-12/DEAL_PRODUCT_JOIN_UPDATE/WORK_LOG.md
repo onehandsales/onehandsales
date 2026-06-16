@@ -10,8 +10,8 @@ Deal-Product N:M 관계 변경
 
 ## 3. 요청
 
-- 회사-거래처 관계는 `Company 1:N Contact`, `Contact N:1 Company`로 유지한다.
-- 딜은 회사 1개, 거래처 1개에 연결된다.
+- 회사-담당자 관계는 `Company 1:N Contact`, `Contact N:1 Company`로 유지한다.
+- 딜은 회사 1개, 담당자 1개에 연결된다.
 - 딜 하나는 제품 여러 개를 포함할 수 있다.
 - 제품 하나는 여러 딜에 포함될 수 있다.
 - 기존 Deal 단일 `productId` 구조를 중간 테이블 구조로 변경한다.

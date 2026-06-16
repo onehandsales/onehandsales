@@ -14,8 +14,8 @@
 
 ## 요구사항 체크
 - Schedule CRUD Backend를 구현한다.
-- 딜/회사/거래처 연결 소유권을 검증한다.
-- 딜에서 만든 일정은 회사/거래처 기본 상속이 가능해야 한다.
+- 딜/회사/담당자 연결 소유권을 검증한다.
+- 딜에서 만든 일정은 회사/담당자 기본 상속이 가능해야 한다.
 - `GET /api/schedules`는 `from`, `to`가 없으면 사용자 timezone 기준 이번 달 범위를 조회한다.
 - 주간 보기 기간 조회는 명시적 `from`, `to`와 별도 `GET /api/schedules/week`를 지원한다.
 - ScheduleReminder 기본 구조를 생성/수정 흐름에 포함한다.
@@ -33,7 +33,7 @@
 - `ScheduleModule`을 추가하고 `AppModule`에 등록했다.
 - `/api/schedules` 목록/생성/상세/수정/삭제/복구 API와 `/api/schedules/week` 조회 API를 추가했다.
 - Schedule repository port, response mapper, input normalizer, use case 계층을 추가했다.
-- Prisma repository에서 딜/회사/거래처 소유권 검증, 딜 기반 회사/거래처 상속, reminder 생성/재구성, soft delete/restore를 구현했다.
+- Prisma repository에서 딜/회사/담당자 소유권 검증, 딜 기반 회사/담당자 상속, reminder 생성/재구성, soft delete/restore를 구현했다.
 - `InvalidScheduleRange`를 HTTP 400으로 변환하도록 공통 exception filter를 갱신했다.
 - Schedule use case 테스트를 추가했다.
 
@@ -44,7 +44,7 @@
 - `/api/schedules/week`는 `weekStart` 기준 7일을 timezone 날짜별로 그룹화한다.
 - 일정 생성 시 `reminderMinutes`가 있으면 `ScheduleReminder`를 `EMAIL`/`PENDING` 기본 구조로 생성한다.
 - 일정 수정 시 `reminderMinutes`가 오면 기존 reminder를 재구성한다.
-- 딜 연결 일정은 딜의 회사/거래처를 기본 상속하며, 명시된 회사/거래처가 딜과 충돌하면 validation error를 낸다.
+- 딜 연결 일정은 딜의 회사/담당자를 기본 상속하며, 명시된 회사/담당자가 딜과 충돌하면 validation error를 낸다.
 
 ## 검증
 - `pnpm run typecheck` 통과

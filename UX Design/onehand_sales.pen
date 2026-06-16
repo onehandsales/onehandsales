@@ -717,7 +717,7 @@
                       "id": "qx9bV",
                       "name": "Search Placeholder",
                       "fill": "$gray-400",
-                      "content": "회사·거래처·딜 검색...",
+                      "content": "회사·담당자·딜 검색...",
                       "fontFamily": "Inter",
                       "fontSize": 13,
                       "fontWeight": "normal"
@@ -3677,7 +3677,7 @@
                   "id": "oK7mH",
                   "name": "Search PH",
                   "fill": "$gray-400",
-                  "content": "회사·거래처·딜 검색...",
+                  "content": "회사·담당자·딜 검색...",
                   "fontFamily": "Inter",
                   "fontSize": 13,
                   "fontWeight": "normal"
@@ -4731,7 +4731,7 @@
             {
               "type": "frame",
               "id": "MeP3D",
-              "name": "Field 거래처(담당자)",
+              "name": "Field 담당자",
               "width": "fill_container",
               "layout": "vertical",
               "gap": 7,
@@ -4739,16 +4739,16 @@
                 {
                   "type": "frame",
                   "id": "g4eX3W",
-                  "name": "Label Row 거래처(담당자)",
+                  "name": "Label Row 담당자",
                   "gap": 4,
                   "alignItems": "center",
                   "children": [
                     {
                       "type": "text",
                       "id": "mEA9m",
-                      "name": "Label 거래처(담당자)",
+                      "name": "Label 담당자",
                       "fill": "#374151",
-                      "content": "거래처(담당자)",
+                      "content": "담당자",
                       "fontFamily": "Inter",
                       "fontSize": 13,
                       "fontWeight": "normal"
@@ -4758,7 +4758,7 @@
                 {
                   "type": "frame",
                   "id": "yMhOw",
-                  "name": "Input 거래처(담당자)",
+                  "name": "Input 담당자",
                   "width": "fill_container",
                   "height": 40,
                   "fill": "#FFFFFF",
@@ -4774,7 +4774,7 @@
                     {
                       "type": "text",
                       "id": "V5f4N7",
-                      "name": "PH 거래처(담당자)",
+                      "name": "PH 담당자",
                       "fill": "#9CA3AF",
                       "textGrowth": "fixed-width",
                       "width": "fill_container",
@@ -11430,7 +11430,7 @@
                                 {
                                   "type": "frame",
                                   "id": "c2BWi1",
-                                  "name": "Field 거래처수",
+                                  "name": "Field 담당자 수",
                                   "width": "fill_container",
                                   "layout": "vertical",
                                   "gap": 4,
@@ -11440,7 +11440,7 @@
                                       "id": "b0mkeC",
                                       "name": "FLabel",
                                       "fill": "$gray-500",
-                                      "content": "거래처수",
+                                      "content": "담당자 수",
                                       "fontFamily": "Inter",
                                       "fontSize": 11,
                                       "fontWeight": "600"
@@ -11997,7 +11997,7 @@
                           "id": "O5061",
                           "name": "Contacts Title",
                           "fill": "$gray-900",
-                          "content": "연결 거래처",
+                          "content": "연결 담당자",
                           "fontFamily": "Inter",
                           "fontSize": 13,
                           "fontWeight": "600"
@@ -14564,7 +14564,7 @@
                   "id": "GxrOL",
                   "name": "CSPH",
                   "fill": "$gray-400",
-                  "content": "거래처 검색...",
+                  "content": "담당자 검색...",
                   "fontFamily": "Inter",
                   "fontSize": 13,
                   "fontWeight": "normal"
@@ -15561,7 +15561,7 @@
       "y": 2560,
       "name": "Lbl ct mobile-list",
       "fill": "$gray-500",
-      "content": "거래처 (Contact) Mobile – 목록",
+      "content": "담당자 (Contact) Mobile – 목록",
       "fontFamily": "Inter",
       "fontSize": 11,
       "fontWeight": "600"
@@ -15573,7 +15573,7 @@
       "y": 2560,
       "name": "Lbl ct modal",
       "fill": "$gray-500",
-      "content": "거래처 (Contact) 빠른 등록 Modal",
+      "content": "담당자 (Contact) 빠른 등록 Modal",
       "fontFamily": "Inter",
       "fontSize": 11,
       "fontWeight": "600"
@@ -16737,7 +16737,7 @@
                               "id": "ajiT2",
                               "name": "CdLogTitle",
                               "fill": "$gray-900",
-                              "content": "거래처 로그",
+                              "content": "담당자 로그",
                               "fontFamily": "Inter",
                               "fontSize": 13,
                               "fontWeight": "600"
@@ -17266,7 +17266,7 @@
       "y": 2560,
       "name": "Lbl ct detail",
       "fill": "$gray-500",
-      "content": "거래처 (Contact) 상세 페이지",
+      "content": "담당자 (Contact) 상세 페이지",
       "fontFamily": "Inter",
       "fontSize": 11,
       "fontWeight": "600"
@@ -22101,7 +22101,7 @@
                     {
                       "type": "frame",
                       "id": "o5OIG",
-                      "name": "F거래처",
+                      "name": "F담당자",
                       "layout": "vertical",
                       "gap": 4,
                       "children": [
@@ -22110,7 +22110,7 @@
                           "id": "zxzSr",
                           "name": "FL",
                           "fill": "$gray-500",
-                          "content": "거래처",
+                          "content": "담당자",
                           "fontFamily": "Inter",
                           "fontSize": 11,
                           "fontWeight": "600"
@@ -41962,7 +41962,7 @@
                     {
                       "type": "frame",
                       "id": "FRy2V",
-                      "name": "TT거래처",
+                      "name": "TT담당자",
                       "height": 34,
                       "fill": "$blue-600",
                       "cornerRadius": 99,
@@ -41978,7 +41978,7 @@
                           "id": "KM8wt",
                           "name": "TBT",
                           "fill": "$white",
-                          "content": "거래처",
+                          "content": "담당자",
                           "fontFamily": "Inter",
                           "fontSize": 13,
                           "fontWeight": "normal"
@@ -42315,7 +42315,7 @@
                   "id": "TxikI",
                   "name": "KIT",
                   "fill": "#334155",
-                  "content": "거래처 44건 (오류 3행 제외)",
+                  "content": "담당자 44건 (오류 3행 제외)",
                   "fontFamily": "Inter",
                   "fontSize": 13,
                   "fontWeight": "500"
@@ -43577,7 +43577,7 @@
                     {
                       "type": "frame",
                       "id": "nu4Kb",
-                      "name": "FI거래처",
+                      "name": "FI담당자",
                       "width": "fill_container",
                       "height": 36,
                       "fill": "#00000000",
@@ -43606,7 +43606,7 @@
                           "fill": "$gray-600",
                           "textGrowth": "fixed-width",
                           "width": "fill_container",
-                          "content": "거래처",
+                          "content": "담당자",
                           "fontFamily": "Inter",
                           "fontSize": 14,
                           "fontWeight": "normal"
@@ -44433,7 +44433,7 @@
                                   "id": "KFrAZ",
                                   "name": "TPT",
                                   "fill": "$gray-600",
-                                  "content": "거래처",
+                                  "content": "담당자",
                                   "fontFamily": "Inter",
                                   "fontSize": 11,
                                   "fontWeight": "normal"
@@ -45099,7 +45099,7 @@
                                   "id": "qU9Vt",
                                   "name": "TPT",
                                   "fill": "$gray-600",
-                                  "content": "거래처",
+                                  "content": "담당자",
                                   "fontFamily": "Inter",
                                   "fontSize": 11,
                                   "fontWeight": "normal"
@@ -45663,7 +45663,7 @@
             {
               "type": "frame",
               "id": "cGzt1",
-              "name": "FC거래처",
+              "name": "FC담당자",
               "height": 30,
               "fill": "$gray-100",
               "cornerRadius": 99,
@@ -45680,7 +45680,7 @@
                   "id": "D8UN9v",
                   "name": "CL",
                   "fill": "$gray-600",
-                  "content": "거래처 8",
+                  "content": "담당자 8",
                   "fontFamily": "Inter",
                   "fontSize": 12,
                   "fontWeight": "normal"
@@ -46140,7 +46140,7 @@
                   "id": "IPd7J",
                   "name": "RS",
                   "fill": "$gray-500",
-                  "content": "거래처 · 2024.01.17",
+                  "content": "담당자 · 2024.01.17",
                   "fontFamily": "Inter",
                   "fontSize": 12,
                   "fontWeight": "normal"
@@ -56413,7 +56413,7 @@
             {
               "type": "frame",
               "id": "Jp6T0",
-              "name": "GH거래처",
+              "name": "GH담당자",
               "width": "fill_container",
               "height": 28,
               "padding": [
@@ -56427,7 +56427,7 @@
                   "id": "Bdafo",
                   "name": "GHT",
                   "fill": "$gray-400",
-                  "content": "거래처",
+                  "content": "담당자",
                   "fontFamily": "Inter",
                   "fontSize": 11,
                   "fontWeight": "600"
@@ -56500,7 +56500,7 @@
                       "id": "g5qqNM",
                       "name": "RBT",
                       "fill": "$gray-500",
-                      "content": "거래처",
+                      "content": "담당자",
                       "fontFamily": "Inter",
                       "fontSize": 11,
                       "fontWeight": "normal"
@@ -56575,7 +56575,7 @@
                       "id": "J3lS8c",
                       "name": "RBT",
                       "fill": "$gray-500",
-                      "content": "거래처",
+                      "content": "담당자",
                       "fontFamily": "Inter",
                       "fontSize": 11,
                       "fontWeight": "normal"
@@ -57435,7 +57435,7 @@
             {
               "type": "frame",
               "id": "dCdqS",
-              "name": "GH거래처",
+              "name": "GH담당자",
               "width": "fill_container",
               "height": 36,
               "fill": "$gray-50",
@@ -57465,7 +57465,7 @@
                   "id": "cObRN",
                   "name": "GHL",
                   "fill": "$green-700",
-                  "content": "거래처",
+                  "content": "담당자",
                   "fontFamily": "Inter",
                   "fontSize": 12,
                   "fontWeight": "600"
@@ -58211,7 +58211,7 @@
               "fill": "$gray-400",
               "textGrowth": "fixed-width",
               "width": "fill_container",
-              "content": "딜, 거래처, 담당자 검색...",
+              "content": "딜, 담당자 검색...",
               "fontFamily": "Inter",
               "fontSize": 16,
               "fontWeight": "normal"
@@ -58636,7 +58636,7 @@
                 {
                   "type": "frame",
                   "id": "rMzvR",
-                  "name": "SC-거래처 목록",
+                  "name": "SC-담당자 목록",
                   "width": "fill_container",
                   "fill": "$gray-50",
                   "cornerRadius": 10,
@@ -58663,7 +58663,7 @@
                       "id": "V07u3",
                       "name": "SCL",
                       "fill": "$gray-700",
-                      "content": "거래처 목록",
+                      "content": "담당자 목록",
                       "fontFamily": "Inter",
                       "fontSize": 12,
                       "fontWeight": "500"
@@ -59328,7 +59328,7 @@
             {
               "type": "frame",
               "id": "F2oGjU",
-              "name": "SC-거래처",
+              "name": "SC-담당자",
               "width": "fill_container",
               "fill": "$gray-50",
               "cornerRadius": 10,
@@ -59355,7 +59355,7 @@
                   "id": "wduhg",
                   "name": "SCL",
                   "fill": "$gray-700",
-                  "content": "거래처",
+                  "content": "담당자",
                   "fontFamily": "Inter",
                   "fontSize": 11,
                   "fontWeight": "500"
@@ -60035,7 +60035,7 @@
                   "fill": "$gray-600",
                   "textGrowth": "fixed-width",
                   "width": "fill_container",
-                  "content": "거래처 44건 Import가 완료되었습니다.",
+                  "content": "담당자 44건 Import가 완료되었습니다.",
                   "fontFamily": "Inter",
                   "fontSize": 12,
                   "fontWeight": "normal"
@@ -60118,7 +60118,7 @@
                   "fill": "$gray-600",
                   "textGrowth": "fixed-width",
                   "width": "fill_container",
-                  "content": "박지수 거래처 팔로업이 3일 지연되었습니다.",
+                  "content": "박지수 담당자 팔로업이 3일 지연되었습니다.",
                   "fontFamily": "Inter",
                   "fontSize": 12,
                   "fontWeight": "normal"
@@ -66805,7 +66805,7 @@
                                       "id": "O4BT7",
                                       "name": "Search PH",
                                       "fill": "$gray-400",
-                                      "content": "회사·거래처·딜 검색...",
+                                      "content": "회사·담당자·딜 검색...",
                                       "fontFamily": "Inter",
                                       "fontSize": 13,
                                       "fontWeight": "normal"
@@ -68478,7 +68478,7 @@
                                           "id": "y6wnd5",
                                           "name": "Search PH",
                                           "fill": "$gray-400",
-                                          "content": "회사·거래처·딜 검색...",
+                                          "content": "회사·담당자·딜 검색...",
                                           "fontFamily": "Inter",
                                           "fontSize": 13,
                                           "fontWeight": "normal"

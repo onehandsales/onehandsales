@@ -165,7 +165,7 @@ export function CompanyDetailScreen({ companyId }: CompanyDetailScreenProps) {
           <div className="rounded-lg border border-[#E5E7EB] bg-white p-4">
             <h3 className="mb-3 text-[13px] font-semibold text-[#111827]">회사 현황</h3>
             <div className="grid grid-cols-2 gap-3">
-              <StatCard label="거래처" value={`${contacts.length.toLocaleString("ko-KR")}명`} />
+              <StatCard label="담당자" value={`${contacts.length.toLocaleString("ko-KR")}명`} />
               <StatCard label="딜" value={`${deals.length.toLocaleString("ko-KR")}건`} />
             </div>
           </div>
@@ -214,7 +214,7 @@ function ContactsTab({
     <div className="rounded-lg border border-[#E5E7EB] bg-white p-4">
       <div className="mb-3 flex items-center gap-2">
         <IdCard className="h-4 w-4 text-[#6B7280]" />
-        <h3 className="flex-1 text-[13px] font-semibold text-[#111827]">연결 거래처</h3>
+        <h3 className="flex-1 text-[13px] font-semibold text-[#111827]">연결 담당자</h3>
         <span className="ml-1 text-[12px] text-[#9CA3AF]">{contacts.length}명</span>
       </div>
       {isLoading ? (
@@ -222,7 +222,7 @@ function ContactsTab({
       ) : error ? (
         <PanelError error={error} onRetry={onRetry} />
       ) : contacts.length === 0 ? (
-        <p className="py-2 text-[13px] text-[#9CA3AF]">연결된 거래처가 없습니다.</p>
+        <p className="py-2 text-[13px] text-[#9CA3AF]">연결된 담당자가 없습니다.</p>
       ) : (
         <div className="grid gap-2">
           {contacts.map((contact) => (

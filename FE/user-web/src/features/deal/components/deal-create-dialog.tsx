@@ -169,7 +169,7 @@ export function DealCreateDialog({
     }
   };
 
-  // 기능 : 빠른 등록한 거래처를 Deal 선택 옵션에서 찾아 자동 선택합니다.
+  // 기능 : 빠른 등록한 담당자를 Deal 선택 옵션에서 찾아 자동 선택합니다.
   const onContactCreated = async (payload: QuickContactCreatedPayload) => {
     setValue("companyId", payload.companyId, {
       shouldDirty: true,
@@ -223,7 +223,7 @@ export function DealCreateDialog({
   });
 
   const companyOptions = companyOptionsQuery.data ?? [];
-  // 모든 거래처를 표시하고 최종 연결 검증은 BE 계약을 따릅니다.
+  // 모든 담당자를 표시하고 최종 연결 검증은 BE 계약을 따릅니다.
   const contactOptions = contactOptionsQuery.data ?? [];
   const productOptions = productOptionsQuery.data ?? [];
   const selectedCompany = companyOptions.find((company) => company.id === selectedCompanyId);
@@ -232,7 +232,7 @@ export function DealCreateDialog({
   return (
     <>
       <ModalShell
-        description="딜명, 금액, 회사/거래처/제품과 다음 행동을 저장합니다."
+        description="딜명, 금액, 회사/담당자/제품과 다음 행동을 저장합니다."
         footer={
           <ModalFooterActions
             formId={formId}
@@ -280,7 +280,7 @@ export function DealCreateDialog({
           </ModalFormSection>
 
           {/* 연결 대상 */}
-          <ModalFormSection description="회사, 거래처, 제품을 선택합니다." title="연결 대상">
+          <ModalFormSection description="회사, 담당자, 제품을 선택합니다." title="연결 대상">
             <ModalFormRow columns={2}>
               {/* 회사 */}
               <ModalFieldGroup error={errors.companyId?.message} id="deal-company" label="회사">
@@ -343,20 +343,20 @@ export function DealCreateDialog({
                 </div>
               </ModalFieldGroup>
 
-              {/* 거래처 */}
-              <ModalFieldGroup error={errors.contactId?.message} id="deal-contact" label="거래처">
+              {/* 담당자 */}
+              <ModalFieldGroup error={errors.contactId?.message} id="deal-contact" label="담당자">
                 <div className="flex gap-2">
                   <input type="hidden" {...register("contactId")} />
                   <SearchSelectField
-                    emptyText="검색된 거래처가 없습니다."
+                    emptyText="검색된 담당자가 없습니다."
                     getDescription={(contact) => contact.contactDepartment.departmentName}
                     getLabel={(contact) => contact.label}
                     icon={IdCard}
                     id="deal-contact"
-                    createActionLabel="거래처 빠른 등록"
+                    createActionLabel="담당자 빠른 등록"
                     isLoading={contactOptionsQuery.isLoading}
                     items={contactOptions}
-                    placeholder="거래처명 검색"
+                    placeholder="담당자명 검색"
                     search={contactSearch}
                     selectedId={selectedContactId}
                     selectedLabel={selectedContact?.label ?? ""}
@@ -707,7 +707,7 @@ type QuickContactCreateDialogProps = {
   readonly onCreated: (payload: QuickContactCreatedPayload) => void;
 };
 
-// 기능 : 딜 빠른 등록 중 새 거래처를 최소 정보로 생성합니다.
+// 기능 : 딜 빠른 등록 중 새 담당자를 최소 정보로 생성합니다.
 function QuickContactCreateDialog({
   open,
   defaultCompanyId,
@@ -803,17 +803,17 @@ function QuickContactCreateDialog({
         <ModalFooterActions
           formId={formId}
           isSubmitting={createContactMutation.isPending}
-          submitLabel="거래처 저장"
+          submitLabel="담당자 저장"
           onCancel={() => onOpenChange(false)}
         />
       }
       open={open}
       size="md"
-      title="거래처 빠른 등록"
+      title="담당자 빠른 등록"
       onOpenChange={onOpenChange}
     >
       <ModalForm id={formId} onSubmit={onSubmit}>
-        <ModalFormSection title="거래처 기본 정보">
+        <ModalFormSection title="담당자 기본 정보">
           <ModalFormRow columns={2}>
             <ModalFieldGroup error={errors.username?.message} id="deal-quick-contact-name" label="이름">
               <input
@@ -942,7 +942,7 @@ function QuickContactCreateDialog({
         {createContactMutation.error ? (
           <ErrorState
             message={getApiErrorMessage(createContactMutation.error)}
-            title="거래처 저장 실패"
+            title="담당자 저장 실패"
             variant="inline"
           />
         ) : null}

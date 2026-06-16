@@ -57,7 +57,7 @@
 - `cd FE/admin-web && pnpm run typecheck`
 - `cd FE/admin-web && pnpm run lint`
 - `cd FE/admin-web && pnpm run build`
-- Playwright mock smoke: 거래처 상세에서 reason dialog 열기, 사유 제출, raw phone 일시 표시, 감사 로그 목록/상세 확인.
+- Playwright mock smoke: 담당자 상세에서 reason dialog 열기, 사유 제출, raw phone 일시 표시, 감사 로그 목록/상세 확인.
 - 캡처: `/tmp/g32-raw-dialog.png`, `/tmp/g32-raw-revealed.png`, `/tmp/g32-audit-logs.png`, `/tmp/g32-audit-logs-mobile.png`
 
 ## 완료 감사

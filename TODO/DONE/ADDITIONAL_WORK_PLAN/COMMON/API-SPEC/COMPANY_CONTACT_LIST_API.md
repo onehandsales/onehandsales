@@ -73,10 +73,10 @@
 | 필드 | 타입 | nullable | 설명 |
 |---|---|---:|---|
 | `id` | string | 아니오 | Contact ID |
-| `username` | string | 아니오 | 거래처 이름 |
-| `contactDepartment` | object | 아니오 | 거래처 부서 |
-| `contactDepartment.id` | string | 아니오 | 거래처 부서 ID |
-| `contactDepartment.departmentName` | string | 아니오 | 거래처 부서명 |
+| `username` | string | 아니오 | 담당자 이름 |
+| `contactDepartment` | object | 아니오 | 담당자 부서 |
+| `contactDepartment.id` | string | 아니오 | 담당자 부서 ID |
+| `contactDepartment.departmentName` | string | 아니오 | 담당자 부서명 |
 
 연결된 Contact가 없으면 다음처럼 빈 배열을 반환한다.
 
@@ -138,7 +138,7 @@
 
 FE:
 
-- 회사 단건 페이지에서 연결된 거래처 요약 목록을 표시할 때 사용한다.
+- 회사 단건 페이지에서 연결된 담당자 요약 목록을 표시할 때 사용한다.
 - 페이지네이션 UI를 만들지 않는다.
 - 응답의 `contactDepartment.departmentName`을 부서 표시값으로 사용한다.
 - `contactDepartment.id`는 후속 상세 이동, 필터, 수정 흐름에서 사용할 수 있다.

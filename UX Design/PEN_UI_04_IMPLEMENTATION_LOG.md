@@ -51,7 +51,7 @@
 - mobile / desktop 기준은 `768px`
 - 토큰은 `CSS 변수 + Tailwind semantic mapping` 병행
 - `/` 홈은 현재 `화면 준비중입니다` 준비 상태로 두고, 딜 파이프라인은 `/deals`에서 운영
-- 회사/거래처/제품 목록은 제품형 `Controls Bar + Table Card + Pagination` 문법을 기준으로 맞춤
+- 회사/담당자/제품 목록은 제품형 `Controls Bar + Table Card + Pagination` 문법을 기준으로 맞춤
 - 목록 페이지네이션은 10개 단위 `totalPages` 기준이며 `hasNext`는 상세 메모 로그 같은 cursor flow에만 사용
 
 ---
@@ -143,7 +143,7 @@
   - docs
 - 요약:
   - User Web 회사 목록/상세/생성 화면을 새 Company API 계약 기준으로 재구현했다.
-  - 회사 분야/지역 생성/삭제 UI, 연결 거래처 요약, 일반 메모 로그, 개인 비밀 메모 로그, XLSX 내보내기를 추가했다.
+  - 회사 분야/지역 생성/삭제 UI, 연결 담당자 요약, 일반 메모 로그, 개인 비밀 메모 로그, XLSX 내보내기를 추가했다.
   - response body 없는 `201`/`204` 성공 응답과 blob 다운로드를 공통 API client에서 처리하도록 보강했다.
 - 변경 파일:
   - `FE/user-web/src/lib/api-client.ts`
@@ -228,11 +228,11 @@
   - `ModalFormSection` + `ModalSectionHeader`로 모달 내부 섹션 타이틀/설명 문법을 고정했다.
   - `ModalFormRow`로 desktop 2/3열, mobile 1열 반응형 form row를 통일했다.
   - `ModalFieldGroup`으로 label, helper, error text 위치를 통일했다.
-  - `ModalInlineCreateArea`로 딜 빠른등록의 인라인 거래처/제품 생성 trigger area를 공용화했다.
+  - `ModalInlineCreateArea`로 딜 빠른등록의 인라인 담당자/제품 생성 trigger area를 공용화했다.
   - `ModalAdvancedSection`으로 딜 고급 옵션 접힘 영역을 분리했다.
   - `ModalFooterActions`로 company/contact/product 생성 모달까지 같은 footer action 문법을 사용하게 했다.
 - 적용 범위:
-  - Deal Quick Create: 기본 정보, 연결 대상, 진행 상태, 고급 옵션, 인라인 거래처/제품 생성 영역에 적용
+  - Deal Quick Create: 기본 정보, 연결 대상, 진행 상태, 고급 옵션, 인라인 담당자/제품 생성 영역에 적용
   - Company Create: 기본 정보, 첫 메모, footer action에 적용
   - Contact Create: 기본 정보, 상세 정보, 첫 메모, footer action에 적용
   - Product Create: 기본 정보, 설명, 첫 메모, footer action에 적용
@@ -242,7 +242,7 @@
   - `pnpm --dir FE/user-web run build`: 통과
   - `git diff --check`: 통과
 - 남은 이슈:
-  - 거래처 생성 모달의 회사 검색 필드는 자체 컴포넌트(`ContactCompanyField`) 구조를 유지했다.
+  - 담당자 생성 모달의 회사 검색 필드는 자체 컴포넌트(`ContactCompanyField`) 구조를 유지했다.
   - 실제 브라우저 기준 modal focus trap과 ESC close는 아직 별도 UX 보강 대상이다.
 
 ---
@@ -330,7 +330,7 @@
   - SearchBar(320px)는 타이틀 바로 우측. flex spacer → 오른쪽 버튼 그룹.
   - 새 딜: h-9, `#1D4ED8` bg. 내보내기: h-9, white + `#E5E7EB` border + Download 아이콘.
   - Bell: bare 20px, 박스 제거. Avatar: 32px 원형 `#2563EB`.
-  - 사이드바 "거래처" 항목명 유지, 아이콘 `IdCard`.
+  - 사이드바 "담당자" 항목명 유지, 아이콘 `IdCard`.
 - 검증:
   - `pnpm --dir FE/user-web run typecheck`: 통과
 
@@ -345,10 +345,10 @@
 - 요약:
   - `/` 홈을 `화면 준비중입니다` 준비 상태로 전환했다.
   - Sidebar에서 후순위 기능인 `IMPORT`, `휴지통`을 숨김 처리했다.
-  - 공용 `Pagination`을 `totalPages` 전용으로 정리하고 딜/제품/회사/거래처/회의록 목록 UX는 10개 단위 page-number pagination 기준으로 맞췄다.
-  - 회사/거래처 목록을 제품형 `Controls Bar + Table Card + Pagination` 문법으로 정리했다.
+  - 공용 `Pagination`을 `totalPages` 전용으로 정리하고 딜/제품/회사/담당자/회의록 목록 UX는 10개 단위 page-number pagination 기준으로 맞췄다.
+  - 회사/담당자 목록을 제품형 `Controls Bar + Table Card + Pagination` 문법으로 정리했다.
   - 회사 목록에서 분야/지역 생성·삭제 관리 패널을 제거하고 `분야 ▾`, `지역 ▾` select 필터만 남겼다.
-  - 거래처 목록에서 부서/직급 생성·삭제 관리 패널을 제거하고 `부서 ▾`, `직급 ▾` select 필터만 남겼다.
+  - 담당자 목록에서 부서/직급 생성·삭제 관리 패널을 제거하고 `부서 ▾`, `직급 ▾` select 필터만 남겼다.
 - 변경 파일:
   - `FE/user-web/src/pages/home/index.tsx`
   - `FE/user-web/src/components/layout/app-shell.tsx`
@@ -361,8 +361,8 @@
   - `FE/user-web/src/features/meeting-note/components/meeting-note-list-screen.tsx`
 - 결정/반영 내용:
   - 목록 페이지에서는 `hasNext`를 사용하지 않는다.
-  - `hasNext`는 회사/거래처/제품 상세 메모 로그처럼 cursor 기반 incremental loading에서만 사용한다.
-  - 회사 분야/지역, 거래처 부서/직급 옵션은 제품 카테고리/상태처럼 전체 옵션 API를 초회 조회한 select 필터로 사용한다.
+  - `hasNext`는 회사/담당자/제품 상세 메모 로그처럼 cursor 기반 incremental loading에서만 사용한다.
+  - 회사 분야/지역, 담당자 부서/직급 옵션은 제품 카테고리/상태처럼 전체 옵션 API를 초회 조회한 select 필터로 사용한다.
   - 목록 페이지에서는 옵션 생성/삭제 UX를 제공하지 않는다. 해당 관리는 상세/설정/관리 화면에서 다룬다.
 - 검증:
   - `pnpm.cmd --dir FE\user-web run typecheck`: 통과
@@ -424,6 +424,6 @@
 
 ## 다음 작업 우선순위
 
-1. 회사/거래처/제품/딜 목록 컨트롤 버튼 공통화
+1. 회사/담당자/제품/딜 목록 컨트롤 버튼 공통화
 2. `/` 홈 최종 구성 재개 여부 결정
-3. 브라우저 실제 세션 smoke 확인 (딜/회사/거래처/제품/회의록 목록과 상세)
+3. 브라우저 실제 세션 smoke 확인 (딜/회사/담당자/제품/회의록 목록과 상세)

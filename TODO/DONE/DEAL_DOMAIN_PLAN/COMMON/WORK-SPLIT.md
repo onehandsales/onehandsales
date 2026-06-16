@@ -24,7 +24,7 @@
 - `FE/user-web`의 API client와 TanStack Query hook을 새 Deal API 계약에 맞춘다.
 - 딜 목록 split view를 구현하거나 현재 UI를 새 계약에 맞게 재구성한다.
 - 단계별 개수, 검색, 상태 필터, 정렬, 20개 페이지네이션을 연결한다.
-- 회사/거래처/제품 옵션을 생성/수정 form에 연결한다.
+- 회사/담당자/제품 옵션을 생성/수정 form에 연결한다.
 - 제품은 `productIds` 배열로 1개 이상 선택한다.
 - 상세, 수정, 다음 행동 로그, 메모 로그, export를 연결한다.
 - loading, empty, error, mutation pending 상태를 제공한다.

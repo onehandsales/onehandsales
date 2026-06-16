@@ -10,7 +10,7 @@ export class DealNotFoundError extends DomainError {
 
 // 역할 : RelatedResourceNotFoundError 도메인 또는 애플리케이션 오류 상태를 표현합니다.
 export class RelatedResourceNotFoundError extends DomainError {
-  // 기능 : 딜에 연결할 회사/거래처/제품이 없거나 거래처가 회사에 속하지 않는 경우의 오류를 생성합니다.
+  // 기능 : 딜에 연결할 회사/담당자/제품이 없거나 담당자가 회사에 속하지 않는 경우의 오류를 생성합니다.
   constructor() {
     super("RelatedResourceNotFound", "Related resource was not found");
   }

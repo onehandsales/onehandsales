@@ -25,7 +25,7 @@ type ContactEditFormProps = {
   readonly onSaved: () => void;
 };
 
-// 기능 : 거래처 기본 정보 수정 폼을 렌더링합니다.
+// 기능 : 담당자 기본 정보 수정 폼을 렌더링합니다.
 export function ContactEditForm({ contact, onSaved }: ContactEditFormProps) {
   const updateContactMutation = useUpdateContactMutation();
   const jobGradesQuery = useContactJobGrades();
@@ -54,7 +54,7 @@ export function ContactEditForm({ contact, onSaved }: ContactEditFormProps) {
     reset(toContactEditFormValues(contact));
   }, [contact, reset]);
 
-  // 기능 : 거래처 기본 정보를 수정합니다.
+  // 기능 : 담당자 기본 정보를 수정합니다.
   const onSubmit = handleSubmit(async (values) => {
     await updateContactMutation.mutateAsync(
       toUpdateContactInput(contact.id, values)

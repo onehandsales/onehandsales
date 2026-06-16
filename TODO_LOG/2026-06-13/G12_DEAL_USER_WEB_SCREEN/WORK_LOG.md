@@ -57,7 +57,7 @@
 ### 8. Deal Create Dialog 전면 재작성
 
 - 파일: `FE/user-web/src/features/deal/components/deal-create-dialog.tsx`
-- 회사/거래처 dropdown (`/api/deals/*-options` 직접 호출)
+- 회사/담당자 dropdown (`/api/deals/*-options` 직접 호출)
 - 제품 다중 선택 toggle
 - `dealName`, `dealCost`, `dealStatus`, `followingAction`, `expectedEndDate` 필드
 

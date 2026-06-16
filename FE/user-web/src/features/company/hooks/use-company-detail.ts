@@ -17,7 +17,7 @@ export function useCompanyDetail(companyId: string) {
   });
 }
 
-// 기능 : 회사에 연결된 거래처 목록을 조회합니다.
+// 기능 : 회사에 연결된 담당자 목록을 조회합니다.
 export function useCompanyContacts(companyId: string) {
   return useQuery({
     enabled: companyId.length > 0,

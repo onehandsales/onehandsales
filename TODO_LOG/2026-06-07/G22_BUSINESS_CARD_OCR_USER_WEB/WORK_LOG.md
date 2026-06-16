@@ -19,9 +19,9 @@
 - OCR 처리 상태를 표시한다.
 - OCR 결과 확인/수정 form을 제공한다.
 - 기존 회사 후보 목록과 선택 UI를 제공한다.
-- 새 회사 생성 또는 회사 없이 거래처 저장 선택을 제공한다.
+- 새 회사 생성 또는 회사 없이 담당자 저장 선택을 제공한다.
 - contactName은 필수다.
-- 사용자가 확정해야 회사/거래처로 저장된다.
+- 사용자가 확정해야 회사/담당자로 저장된다.
 
 ## 제외 범위
 - 카메라 촬영
@@ -36,11 +36,11 @@
 - `/contacts/scan`, `/business-cards`에서 공통으로 사용하는 명함 OCR 화면을 placeholder에서 실제 구현으로 교체했다.
 - 이미지 업로드/미리보기, 파일 형식 및 10MB 크기 검증, OCR 요청/상태 표시, 추출 결과 수정 form을 구현했다.
 - 기존 회사 후보 선택, 새 회사 생성, 회사 없이 저장 모드를 제공하고 confirm 요청 전 `contactName`과 회사 처리 모드를 검증하도록 했다.
-- OCR confirm 이후 저장된 거래처 상세 링크를 노출하도록 했다.
+- OCR confirm 이후 저장된 담당자 상세 링크를 노출하도록 했다.
 
 ## 검토
 - G22 요구사항의 client validation, OCR 처리 상태, 추출 결과 확인/수정, 회사 후보 선택, 새 회사 또는 회사 없이 저장 흐름을 모두 반영했다.
-- OCR 결과는 자동 저장하지 않고 사용자가 `거래처로 저장`을 눌러 confirm API를 호출할 때만 저장되도록 했다.
+- OCR 결과는 자동 저장하지 않고 사용자가 `담당자로 저장`을 눌러 confirm API를 호출할 때만 저장되도록 했다.
 - 구현 범위는 user web 화면과 BusinessCard feature client 계층에 한정했고 카메라 촬영, OCR 정확도 개선은 제외했다.
 - 데스크톱/모바일 스크린샷을 확인해 주요 UI 요소가 겹치지 않고 조작 가능한 상태임을 확인했다.
 
@@ -48,7 +48,7 @@
 - `cd FE/user-web && pnpm run typecheck`
 - `cd FE/user-web && pnpm run lint`
 - `cd FE/user-web && pnpm run build`
-- Playwright smoke: `/contacts/scan`에서 이미지 업로드, OCR 요청, 추출 결과 표시, 기존 회사 선택, confirm 저장, 저장된 거래처 링크 노출 확인
+- Playwright smoke: `/contacts/scan`에서 이미지 업로드, OCR 요청, 추출 결과 표시, 기존 회사 선택, confirm 저장, 저장된 담당자 링크 노출 확인
 - Playwright mobile smoke: `/business-cards` 모바일 viewport 기본 화면 확인
 - 스크린샷: `/tmp/g22-business-card-desktop.png`, `/tmp/g22-business-card-confirmed.png`, `/tmp/g22-business-card-mobile.png`
 

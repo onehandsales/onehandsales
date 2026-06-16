@@ -223,7 +223,7 @@ class FakeDealRepository implements DealRepository {
     return this.companies.find((company) => company.id === companyId) ?? null;
   }
 
-  // 기능 : fake 거래처 단건을 반환합니다.
+  // 기능 : fake 담당자 단건을 반환합니다.
   async findContact(
     userId: string,
     contactId: string
@@ -252,7 +252,7 @@ class FakeDealRepository implements DealRepository {
     return this.companies;
   }
 
-  // 기능 : fake 거래처 옵션 목록을 반환합니다.
+  // 기능 : fake 담당자 옵션 목록을 반환합니다.
   async listContactOptions(): Promise<DealContactRecord[]> {
     return this.contacts;
   }
@@ -428,7 +428,7 @@ class FakeDealRepository implements DealRepository {
     return company;
   }
 
-  // 기능 : fake 거래처 단건을 반환하거나 테스트 오류를 던집니다.
+  // 기능 : fake 담당자 단건을 반환하거나 테스트 오류를 던집니다.
   private getContact(contactId: string): DealContactRecord {
     const contact = this.contacts.find((item) => item.id === contactId);
 
@@ -579,7 +579,7 @@ describe("DealApplicationService", () => {
     expect(repository.dealProductIds.size).toBe(0);
   });
 
-  // 기능 : 선택한 거래처가 선택한 회사에 속하지 않으면 딜 생성을 거부합니다.
+  // 기능 : 선택한 담당자가 선택한 회사에 속하지 않으면 딜 생성을 거부합니다.
   it("rejects a contact that does not belong to the selected company", async () => {
     const repository = new FakeDealRepository();
     const service = createService(repository);

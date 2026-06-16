@@ -10,38 +10,38 @@
 - 인증: `Authorization: Bearer <backend_app_access_token>`
 - 권한: 로그인한 사용자 본인 데이터만 접근 가능
 - 날짜 형식: ISO 8601 string
-- 거래처 목록 페이지 크기: 20개 고정
-- 거래처 일반 메모 로그 페이지 크기: 10개 고정
-- 거래처 개인 비밀 메모 로그 페이지 크기: 10개 고정
-- 거래처 목록 검색: `username` 부분 검색만 제공
-- 거래처 목록 필터: `companyId`, `contactDepartmentId`, `contactJobGradeId`
-- 거래처 목록 정렬: `createdAt DESC`
-- 거래처 목록 응답: `updatedAt` 제외
-- 거래처 필터용 회사/직급/부서 전체 조회 응답: `createdAt` 제외
+- 담당자 목록 페이지 크기: 20개 고정
+- 담당자 일반 메모 로그 페이지 크기: 10개 고정
+- 담당자 개인 비밀 메모 로그 페이지 크기: 10개 고정
+- 담당자 목록 검색: `username` 부분 검색만 제공
+- 담당자 목록 필터: `companyId`, `contactDepartmentId`, `contactJobGradeId`
+- 담당자 목록 정렬: `createdAt DESC`
+- 담당자 목록 응답: `updatedAt` 제외
+- 담당자 필터용 회사/직급/부서 전체 조회 응답: `createdAt` 제외
 - 상태값만 반환하는 API: response body 없음
-- 거래처 핸드폰번호 형식: `010-1111-2222`
-- 거래처 개인 비밀 메모: API에서는 `memo`를 사용하지만 DB에는 평문 저장 금지
+- 담당자 핸드폰번호 형식: `010-1111-2222`
+- 담당자 개인 비밀 메모: API에서는 `memo`를 사용하지만 DB에는 평문 저장 금지
 
 ## 2. API 목록
 
-1. 거래처 페이지네이션 API: `GET /api/contacts`
-2. 거래처 필터용 회사 전체 조회 API: `GET /api/contacts/company-options`
-3. 거래처 필터용 직급 전체 조회 API: `GET /api/contact-job-grades`
-4. 거래처 직급 단건 생성 API: `POST /api/contact-job-grades`
-5. 거래처 직급 단건 삭제 API: `DELETE /api/contact-job-grades/:jobGradeId`
-6. 거래처 필터용 부서 전체 조회 API: `GET /api/contact-departments`
-7. 거래처 부서 단건 생성 API: `POST /api/contact-departments`
-8. 거래처 부서 단건 삭제 API: `DELETE /api/contact-departments/:departmentId`
-9. 거래처 단건 생성 API: `POST /api/contacts`
-10. 거래처 단건 조회 API: `GET /api/contacts/:contactId`
-11. 거래처 기본 정보 수정 API: `PATCH /api/contacts/:contactId`
-12. 거래처 일반 메모 로그 단건 생성 API: `POST /api/contacts/:contactId/memo-logs`
-13. 거래처 일반 메모 로그 무한스크롤 API: `GET /api/contacts/:contactId/memo-logs`
-14. 거래처 일반 메모 로그 단건 수정 API: `PATCH /api/contacts/:contactId/memo-logs/:memoLogId`
-15. 거래처 개인 비밀 메모 로그 단건 생성 API: `POST /api/contacts/:contactId/private-memo-logs`
-16. 거래처 개인 비밀 메모 로그 무한스크롤 API: `GET /api/contacts/:contactId/private-memo-logs`
-17. 거래처 개인 비밀 메모 로그 단건 수정 API: `PATCH /api/contacts/:contactId/private-memo-logs/:privateMemoLogId`
-18. 거래처 목록 xlsx 내보내기 API: `GET /api/contacts/export/xlsx`
+1. 담당자 페이지네이션 API: `GET /api/contacts`
+2. 담당자 필터용 회사 전체 조회 API: `GET /api/contacts/company-options`
+3. 담당자 필터용 직급 전체 조회 API: `GET /api/contact-job-grades`
+4. 담당자 직급 단건 생성 API: `POST /api/contact-job-grades`
+5. 담당자 직급 단건 삭제 API: `DELETE /api/contact-job-grades/:jobGradeId`
+6. 담당자 필터용 부서 전체 조회 API: `GET /api/contact-departments`
+7. 담당자 부서 단건 생성 API: `POST /api/contact-departments`
+8. 담당자 부서 단건 삭제 API: `DELETE /api/contact-departments/:departmentId`
+9. 담당자 단건 생성 API: `POST /api/contacts`
+10. 담당자 단건 조회 API: `GET /api/contacts/:contactId`
+11. 담당자 기본 정보 수정 API: `PATCH /api/contacts/:contactId`
+12. 담당자 일반 메모 로그 단건 생성 API: `POST /api/contacts/:contactId/memo-logs`
+13. 담당자 일반 메모 로그 무한스크롤 API: `GET /api/contacts/:contactId/memo-logs`
+14. 담당자 일반 메모 로그 단건 수정 API: `PATCH /api/contacts/:contactId/memo-logs/:memoLogId`
+15. 담당자 개인 비밀 메모 로그 단건 생성 API: `POST /api/contacts/:contactId/private-memo-logs`
+16. 담당자 개인 비밀 메모 로그 무한스크롤 API: `GET /api/contacts/:contactId/private-memo-logs`
+17. 담당자 개인 비밀 메모 로그 단건 수정 API: `PATCH /api/contacts/:contactId/private-memo-logs/:privateMemoLogId`
+18. 담당자 목록 xlsx 내보내기 API: `GET /api/contacts/export/xlsx`
 
 ## 2.1. API 계약 상태 요약
 
@@ -74,19 +74,19 @@
 
 | 필드 | 타입 | nullable | 설명 |
 |---|---|---:|---|
-| `id` | string | 아니오 | 거래처 ID |
-| `company` | object | 아니오 | 거래처가 소속된 회사 |
+| `id` | string | 아니오 | 담당자 ID |
+| `company` | object | 아니오 | 담당자가 소속된 회사 |
 | `company.id` | string | 아니오 | 회사 ID |
 | `company.companyName` | string | 아니오 | 회사 이름 |
-| `username` | string | 아니오 | 거래처 이름 |
+| `username` | string | 아니오 | 담당자 이름 |
 | `mobile` | string | 아니오 | `010-1111-2222` 형식 핸드폰번호 |
 | `email` | string | 아니오 | 이메일 |
-| `contactDepartment` | object | 아니오 | 거래처 부서 |
-| `contactDepartment.id` | string | 아니오 | 거래처 부서 ID |
-| `contactDepartment.departmentName` | string | 아니오 | 거래처 부서명 |
-| `contactJobGrade` | object | 아니오 | 거래처 직급 |
-| `contactJobGrade.id` | string | 아니오 | 거래처 직급 ID |
-| `contactJobGrade.jobGradeName` | string | 아니오 | 거래처 직급명 |
+| `contactDepartment` | object | 아니오 | 담당자 부서 |
+| `contactDepartment.id` | string | 아니오 | 담당자 부서 ID |
+| `contactDepartment.departmentName` | string | 아니오 | 담당자 부서명 |
+| `contactJobGrade` | object | 아니오 | 담당자 직급 |
+| `contactJobGrade.id` | string | 아니오 | 담당자 직급 ID |
+| `contactJobGrade.jobGradeName` | string | 아니오 | 담당자 직급명 |
 | `createdAt` | string | 아니오 | 등록일 ISO string |
 
 ### ContactDetailResponse
@@ -107,9 +107,9 @@
 - Content-Type: `application/vnd.openxmlformats-officedocument.spreadsheetml.sheet`
 - Content-Disposition: `attachment; filename="contacts_YYYYMMDD_HHmmss.xlsx"`
 - query: `username`, `companyId`, `contactDepartmentId`, `contactJobGradeId`
-- `page`는 받지 않는다. 검색어와 필터 조건에 맞는 전체 거래처를 `createdAt DESC, id DESC`로 export한다.
-- xlsx 컬럼: `회사명`, `거래처명`, `핸드폰번호`, `이메일`, `부서`, `직급`, `등록일`
-- 제외 필드: 거래처 ID, 회사 ID, 부서 ID, 직급 ID, userId, memo/private memo
+- `page`는 받지 않는다. 검색어와 필터 조건에 맞는 전체 담당자를 `createdAt DESC, id DESC`로 export한다.
+- xlsx 컬럼: `회사명`, `담당자명`, `핸드폰번호`, `이메일`, `부서`, `직급`, `등록일`
+- 제외 필드: 담당자 ID, 회사 ID, 부서 ID, 직급 ID, userId, memo/private memo
 
 ## 4. 관련 문서
 

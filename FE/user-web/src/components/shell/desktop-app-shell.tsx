@@ -10,7 +10,7 @@ const PAGE_TITLES: Record<string, { title: string }> = {
   "/deals/new": { title: "딜" },
   "/companies": { title: "회사" },
   "/companies/new": { title: "회사" },
-  "/contacts": { title: "거래처" },
+  "/contacts": { title: "담당자" },
   "/products": { title: "제품" },
   "/products/new": { title: "제품" },
   "/schedules": { title: "일정" },

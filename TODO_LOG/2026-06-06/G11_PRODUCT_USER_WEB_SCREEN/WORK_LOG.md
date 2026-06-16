@@ -38,7 +38,7 @@
 - 2026-06-06: Product 응답에 `connectionCount`를 추가해 목록 연결 수 표시 지원
 - 2026-06-06: Product API, query key, hook, schema, type 추가
 - 2026-06-06: 제품 목록, 빠른 등록 modal, 상세/수정 화면 구현
-- 2026-06-06: ProductConnection 회사/거래처 연결 생성/삭제 UI 구현
+- 2026-06-06: ProductConnection 회사/담당자 연결 생성/삭제 UI 구현
 - 2026-06-06: ProductLog 생성/수정/삭제 UI 구현
 - 2026-06-06: typecheck, lint, build, route smoke 검증 수행
 

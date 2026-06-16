@@ -40,8 +40,8 @@
 | G05 | Supabase Auth/User Backend | Supabase 로그인, Backend App Token 발급/검증, local User/AuthDevice/AuthSession 동기화, 내 정보/설정 화면 상태 | `API-SPEC/G01-G05-FOUNDATION-AUTH-API.md` | `User`, `UserOAuthAccount`, `AuthDevice`, `AuthSession`, `UserSetting` |
 | G06 | Company Backend | 회사 목록/상세/등록 화면이 기대하는 데이터 | `API-SPEC/G06-G12-CORE-DOMAIN-API.md`, `API-SPEC/G06-G12-ENDPOINT-CONTRACT.md` | `Company`, `CompanyLog`, `PersonalMemo`, `TagAssignment` |
 | G07 | Company User Web | 회사 목록, 빠른 등록 modal, 상세 화면 | `API-SPEC/G06-G12-ENDPOINT-CONTRACT.md`의 Company 계약 | `Company`, `CompanyLog`, `PersonalMemo` |
-| G08 | Contact Backend | 거래처 목록/상세/등록 화면이 기대하는 데이터 | `API-SPEC/G06-G12-CORE-DOMAIN-API.md`, `API-SPEC/G06-G12-ENDPOINT-CONTRACT.md` | `Contact`, `ContactLog`, `Company`, `PersonalMemo` |
-| G09 | Contact User Web | 거래처 목록, 빠른 등록 modal, 상세 화면 | `API-SPEC/G06-G12-ENDPOINT-CONTRACT.md`의 Contact 계약 | `Contact`, `ContactLog`, `Company`, `PersonalMemo` |
+| G08 | Contact Backend | 담당자 목록/상세/등록 화면이 기대하는 데이터 | `API-SPEC/G06-G12-CORE-DOMAIN-API.md`, `API-SPEC/G06-G12-ENDPOINT-CONTRACT.md` | `Contact`, `ContactLog`, `Company`, `PersonalMemo` |
+| G09 | Contact User Web | 담당자 목록, 빠른 등록 modal, 상세 화면 | `API-SPEC/G06-G12-ENDPOINT-CONTRACT.md`의 Contact 계약 | `Contact`, `ContactLog`, `Company`, `PersonalMemo` |
 | G10 | Product Backend | 제품 목록/상세/연결 화면이 기대하는 데이터 | `API-SPEC/G06-G12-CORE-DOMAIN-API.md`, `API-SPEC/G06-G12-ENDPOINT-CONTRACT.md` | `Product`, `ProductLog`, `ProductConnection`, `PersonalMemo` |
 | G11 | Product User Web | 제품 목록, 빠른 등록 modal, 상세/연결 화면 | `API-SPEC/G06-G12-ENDPOINT-CONTRACT.md`의 Product 계약 | `Product`, `ProductLog`, `ProductConnection`, `PersonalMemo` |
 | G12 | Deal Backend | 딜 목록, 생성, 상세, 다음 행동 화면이 기대하는 데이터 | `API-SPEC/G06-G12-CORE-DOMAIN-API.md`, `API-SPEC/G06-G12-ENDPOINT-CONTRACT.md` | `Deal`, `DealActivity`, `DealActivityType`, `ProductConnection`, `PersonalMemo` |

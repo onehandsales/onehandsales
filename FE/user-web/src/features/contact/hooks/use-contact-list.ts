@@ -7,7 +7,7 @@ import {
 import { contactQueryKeys } from "@/features/contact/api/contact-query-keys";
 import type { ContactListParams } from "@/features/contact/types/contact";
 
-// 기능 : 거래처 목록을 조회합니다.
+// 기능 : 담당자 목록을 조회합니다.
 export function useContactList(params: ContactListParams) {
   return useQuery({
     queryKey: contactQueryKeys.list(params),
@@ -15,7 +15,7 @@ export function useContactList(params: ContactListParams) {
   });
 }
 
-// 기능 : 거래처 직급 목록을 조회합니다.
+// 기능 : 담당자 직급 목록을 조회합니다.
 export function useContactJobGrades() {
   return useQuery({
     queryKey: contactQueryKeys.jobGrades(),
@@ -23,7 +23,7 @@ export function useContactJobGrades() {
   });
 }
 
-// 기능 : 거래처 부서 목록을 조회합니다.
+// 기능 : 담당자 부서 목록을 조회합니다.
 export function useContactDepartments() {
   return useQuery({
     queryKey: contactQueryKeys.departments(),

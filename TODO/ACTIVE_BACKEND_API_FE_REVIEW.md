@@ -34,7 +34,7 @@ Frontend 작업자는 이 문서를 먼저 보고 어떤 API가 준비되어 있
 |---|---|---|---|---|
 | `AUTH_FE_INTEGRATION_PLAN` | 완료 | `BE/src/modules/auth`, `BE/src/modules/user` | `AUTH_USER_API_DETAIL.md`에 request/response/비즈니스 로직 작성됨 | User/Admin Web 실제 인증 연동, 설정 화면 |
 | `COMPANY_DOMAIN_PLAN` | 완료 | `BE/src/modules/company` | `COMPANY_API.md`, `COMPANY_API_DETAIL.md` 기준 `implemented` | 회사 목록/생성/상세/메모 화면, `contactCount`, 연결 Contact 목록, xlsx export 표시 |
-| `CONTACT_DOMAIN_PLAN` | 완료 | `BE/src/modules/contact` | `CONTACT_API.md`, `CONTACT_API_DETAIL.md` 기준 `implemented` | 거래처 목록/생성/상세/메모 화면, xlsx export 표시 |
+| `CONTACT_DOMAIN_PLAN` | 완료 | `BE/src/modules/contact` | `CONTACT_API.md`, `CONTACT_API_DETAIL.md` 기준 `implemented` | 담당자 목록/생성/상세/메모 화면, xlsx export 표시 |
 | `PRODUCT_DOMAIN_PLAN` | 완료 | `BE/src/modules/product` | `PRODUCT_API.md`, `PRODUCT_API_DETAIL.md` 기준 `implemented` | 제품 목록/생성/상세/메모 화면, xlsx export 표시 |
 | `DEAL_DOMAIN_PLAN` | 완료 | `BE/src/modules/deal`, Prisma `Deal`, `DealProduct`, `DealFollowingActionLog`, `DealMemoLog` | `DEAL_API.md`, `DEAL_API_DETAIL.md` 기준 `implemented` | User Web 딜 목록 split view, 상세 제품 목록, 로그, xlsx export 연동 |
 | `SCHEDULE_DOMAIN_PLAN` | 완료 | `BE/src/modules/schedule`, Prisma `Schedule`, `ScheduleDeal` | `SCHEDULE_API.md` 기준 `implemented` | User Web 월간/주간 일정 화면, 생성/수정/삭제, 딜 연결 |
@@ -90,7 +90,7 @@ Frontend 목적:
 Frontend 목적:
 
 - 회사 목록에서 회사명 검색, 회사 분야/지역 필터, 10개 단위 페이지네이션을 제공한다.
-- 목록 item의 `contactCount`를 `거래처 수`로, `dealCount`를 `딜 수`로 표시한다.
+- 목록 item의 `contactCount`를 `담당자 수`로, `dealCount`를 `딜 수`로 표시한다.
 - 회사 단건 화면에서 기본 정보와 메모를 보여주고, 보조 영역에 `GET /api/companies/:companyId/contacts`와 `GET /api/companies/:companyId/deals` 결과를 표시한다.
 - 회사 목록 내보내기 버튼은 현재 검색어와 필터를 `GET /api/companies/export/xlsx`에 전달하되 `page`는 제거한다.
 
@@ -120,11 +120,11 @@ Frontend 목적:
 
 Frontend 목적:
 
-- 거래처 목록에서 이름 검색, 회사/부서/직급 필터, 10개 단위 페이지네이션을 제공한다.
-- 거래처 생성은 회사 선택을 필수로 하고, `contactMemo`는 초기 일반 메모 로그 입력이라는 의미로 표시한다.
-- 거래처 상세/수정, 일반 메모 로그, 개인 비밀 메모 로그를 API 계약에 맞게 구현한다.
-- 거래처 상세에서 `GET /api/contacts/:contactId/deals` 결과를 연결 딜 목록으로 표시한다.
-- 거래처 목록 내보내기 버튼은 현재 검색어와 필터를 `GET /api/contacts/export/xlsx`에 전달하되 `page`는 제거한다.
+- 담당자 목록에서 이름 검색, 회사/부서/직급 필터, 10개 단위 페이지네이션을 제공한다.
+- 담당자 생성은 회사 선택을 필수로 하고, `contactMemo`는 초기 일반 메모 로그 입력이라는 의미로 표시한다.
+- 담당자 상세/수정, 일반 메모 로그, 개인 비밀 메모 로그를 API 계약에 맞게 구현한다.
+- 담당자 상세에서 `GET /api/contacts/:contactId/deals` 결과를 연결 딜 목록으로 표시한다.
+- 담당자 목록 내보내기 버튼은 현재 검색어와 필터를 `GET /api/contacts/export/xlsx`에 전달하되 `page`는 제거한다.
 
 ### Product
 
@@ -182,7 +182,7 @@ Frontend 목적:
 
 - 딜 목록 페이지에서 단계별 개수, 10개 페이지네이션 목록, 선택 딜 상세를 split view로 제공한다.
 - 목록은 딜 이름 검색, 딜 상태 필터, 최신순/금액 높은 순/금액 낮은 순/마감일 빠른 순 정렬을 지원한다.
-- FK 데이터는 nested object로 받은 뒤 회사명, 거래처명/부서, 제품명을 화면에서 조합한다.
+- FK 데이터는 nested object로 받은 뒤 회사명, 담당자명/부서, 제품명을 화면에서 조합한다.
 - 목록에는 제품을 표시하지 않고 상세에는 `products` 배열의 제품 목록을 표시한다.
 - 생성/수정에서는 `productIds` 배열을 보내 딜-제품 연결을 관리한다.
 - 다음 행동 로그와 메모 로그는 상세 영역에서 등록일 DESC로 표시한다.
@@ -241,9 +241,9 @@ Frontend 목적:
 1. Auth 연동을 먼저 처리한다.
 2. User Web API client가 Backend App access token, refresh-on-401, blob 다운로드를 처리할 수 있게 한다.
 3. Company 화면을 구현하면서 목록 검색/필터/페이지네이션, `contactCount`, 연결 Contact 목록, 회사 xlsx export를 함께 반영한다.
-4. Contact 화면을 구현하면서 목록 검색/필터/페이지네이션, 옵션 관리, 메모, 거래처 xlsx export를 반영한다.
+4. Contact 화면을 구현하면서 목록 검색/필터/페이지네이션, 옵션 관리, 메모, 담당자 xlsx export를 반영한다.
 5. Product 화면을 구현하면서 목록 검색/필터/페이지네이션, 옵션 관리, 메모, 제품 xlsx export를 반영한다.
-6. Additional Work G06-G12로 구현된 회사/거래처/제품 상세의 연결 딜 목록과 회사/제품 `dealCount`를 반영한다.
+6. Additional Work G06-G12로 구현된 회사/담당자/제품 상세의 연결 딜 목록과 회사/제품 `dealCount`를 반영한다.
 7. Deal User Web 딜 목록 split view, 상세, 생성/수정, 로그, xlsx export를 반영한다.
 8. Schedule User Web 월간/주간 일정 화면과 MeetingNote User Web 회의록 화면은 `TODO/DONE` 기준으로 Backend API 연동 완료 상태를 유지한다.
 
@@ -251,11 +251,11 @@ Frontend 목적:
 
 - Export API는 JSON이 아니라 xlsx binary 응답이다.
 - Export API에는 현재 목록의 검색어와 필터만 전달하고 `page`는 전달하지 않는다.
-- Company 목록의 `totalCount`는 회사 개수다. `contactCount`는 각 회사 item의 연결 거래처 수다.
+- Company 목록의 `totalCount`는 회사 개수다. `contactCount`는 각 회사 item의 연결 담당자 수다.
 - Company 목록의 `dealCount`는 각 회사에 연결된 딜 수다.
 - Product 목록의 `dealCount`는 `DealProduct` 기준으로 해당 제품이 포함된 딜 수다.
 - 회사 단건 응답 자체는 변경하지 않는다. 연결 Contact 목록은 별도 API로 조회한다.
-- 회사/거래처/제품 단건 응답 자체는 변경하지 않는다. 연결 Deal 목록은 별도 API로 조회한다.
+- 회사/담당자/제품 단건 응답 자체는 변경하지 않는다. 연결 Deal 목록은 별도 API로 조회한다.
 - Deal export에는 id, 제품, 최근수정일을 포함하지 않는다.
 - Deal 상태는 DB enum이 아니라 코드 단 enum이며 DB에는 영어 code로 저장한다.
 - `TODO/DONE`은 완료 이력 보관 공간이므로 현재 남은 작업 판정에 포함하지 않는다.

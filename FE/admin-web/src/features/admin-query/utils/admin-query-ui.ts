@@ -2,7 +2,7 @@ import type { AdminDomainType } from "@/features/admin-query/types/admin-query";
 
 export const domainLabels: Record<AdminDomainType, string> = {
   companies: "회사",
-  contacts: "거래처",
+  contacts: "담당자",
   products: "제품",
   deals: "딜",
 };

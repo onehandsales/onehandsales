@@ -20,7 +20,7 @@ const CIPHER_ALGORITHM = "aes-256-gcm";
 const CIPHER_PREFIX = "aes-256-gcm";
 const IV_BYTE_LENGTH = 12;
 
-// 역할 : NodeContactPrivateMemoEncryptionService 거래처 개인 비밀 메모 암호화 기능을 제공합니다.
+// 역할 : NodeContactPrivateMemoEncryptionService 담당자 개인 비밀 메모 암호화 기능을 제공합니다.
 @Injectable()
 export class NodeContactPrivateMemoEncryptionService
   implements ContactPrivateMemoEncryptionPort
@@ -28,7 +28,7 @@ export class NodeContactPrivateMemoEncryptionService
   // 기능 : 개인 비밀 메모 암호화에 필요한 설정 서비스를 주입받습니다.
   constructor(private readonly configService: ConfigService) {}
 
-  // 기능 : 거래처 개인 비밀 메모 평문을 AES-256-GCM 암호문으로 변환합니다.
+  // 기능 : 담당자 개인 비밀 메모 평문을 AES-256-GCM 암호문으로 변환합니다.
   encrypt(plaintext: string): EncryptedContactPrivateMemo {
     try {
       const iv = randomBytes(IV_BYTE_LENGTH);
@@ -53,7 +53,7 @@ export class NodeContactPrivateMemoEncryptionService
     }
   }
 
-  // 기능 : AES-256-GCM 암호문을 거래처 개인 비밀 메모 평문으로 복호화합니다.
+  // 기능 : AES-256-GCM 암호문을 담당자 개인 비밀 메모 평문으로 복호화합니다.
   decrypt(ciphertext: string, keyVersion: string): string {
     try {
       if (keyVersion !== this.getKeyVersion()) {
@@ -96,7 +96,7 @@ export class NodeContactPrivateMemoEncryptionService
     return createHash("sha256").update(secret).digest();
   }
 
-  // 기능 : 저장할 거래처 개인 비밀 메모 암호화 key version을 조회합니다.
+  // 기능 : 저장할 담당자 개인 비밀 메모 암호화 key version을 조회합니다.
   private getKeyVersion(): string {
     return (
       this.configService

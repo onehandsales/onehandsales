@@ -11,6 +11,7 @@ import {
   type CompanyRecord,
   type CompanyRegionRecord,
   type CompanyRepository,
+  CompanyListSort,
   type CreateCompanyInput,
   type CreateCompanyMemoLogInput,
   type CreateCompanyPrivateMemoLogInput,
@@ -77,7 +78,7 @@ export class PrismaCompanyRepository implements CompanyRepository {
       this.client.company.findMany({
         where,
         include: this.createCompanyListInclude(input.userId),
-        orderBy: [{ createdAt: "desc" }, { id: "desc" }],
+        orderBy: this.createCompanyOrderBy(input.sort),
         skip: (input.page - 1) * input.pageSize,
         take: input.pageSize,
       }),
@@ -97,13 +98,13 @@ export class PrismaCompanyRepository implements CompanyRepository {
     const items = await this.client.company.findMany({
       where: this.createCompanyWhere(input),
       include: this.createCompanyListInclude(input.userId),
-      orderBy: [{ createdAt: "desc" }, { id: "desc" }],
+      orderBy: this.createCompanyOrderBy(input.sort),
     });
 
     return items.map((company) => this.mapCompanyList(company));
   }
 
-  // 기능 : 현재 사용자의 회사에 연결된 거래처 전체 목록을 조회합니다.
+  // 기능 : 현재 사용자의 회사에 연결된 담당자 전체 목록을 조회합니다.
   async listCompanyContacts(
     input: ListCompanyContactsInput
   ): Promise<CompanyContactRecord[]> {
@@ -578,7 +579,7 @@ export class PrismaCompanyRepository implements CompanyRepository {
     };
   }
 
-  // 기능 : 회사 목록과 export에 필요한 relation과 거래처 수 집계를 정의합니다.
+  // 기능 : 회사 목록과 export에 필요한 relation과 담당자 수 집계를 정의합니다.
   private createCompanyListInclude(userId: string): Prisma.CompanyInclude {
     return {
       companyField: true,
@@ -598,6 +599,45 @@ export class PrismaCompanyRepository implements CompanyRepository {
         },
       },
     };
+  }
+
+  // 기능 : 회사 목록과 export의 정렬 조건을 생성합니다.
+  private createCompanyOrderBy(
+    sort: CompanyListSort | undefined
+  ): Prisma.CompanyOrderByWithRelationInput[] {
+    if (sort === CompanyListSort.CONTACT_COUNT_DESC) {
+      return [
+        { contacts: { _count: "desc" } },
+        { createdAt: "desc" },
+        { id: "desc" },
+      ];
+    }
+
+    if (sort === CompanyListSort.CONTACT_COUNT_ASC) {
+      return [
+        { contacts: { _count: "asc" } },
+        { createdAt: "desc" },
+        { id: "desc" },
+      ];
+    }
+
+    if (sort === CompanyListSort.DEAL_COUNT_DESC) {
+      return [
+        { deals: { _count: "desc" } },
+        { createdAt: "desc" },
+        { id: "desc" },
+      ];
+    }
+
+    if (sort === CompanyListSort.DEAL_COUNT_ASC) {
+      return [
+        { deals: { _count: "asc" } },
+        { createdAt: "desc" },
+        { id: "desc" },
+      ];
+    }
+
+    return [{ createdAt: "desc" }, { id: "desc" }];
   }
 
   // 기능 : Prisma 회사 행을 application 레코드로 변환합니다.

@@ -224,7 +224,7 @@ Supabase Cloud 사용 의미:
 - Backend는 token exchange 단계에서 Supabase JWKS/JWT issuer 기준으로 외부 token을 검증하고, `supabaseUserId`, `email`, `provider`를 기준으로 local `User`, `UserOAuthAccount`, `UserSetting`, `AuthDevice`, `AuthSession`을 조회하거나 생성한다.
 - Backend는 exchange 성공 시 서비스 자체 `App access token`과 refresh 수단을 발급한다.
 - 이후 모든 business API와 Admin API는 Supabase access token이 아니라 Backend가 발급한 `App access token`을 `Authorization: Bearer <app_access_token>` header로 받는다.
-- 서비스의 회사, 거래처, 제품, 딜, 일정, 회의록, 추후 구독/결제 같은 business data는 Supabase Cloud PostgreSQL과 Prisma schema가 관리한다.
+- 서비스의 회사, 담당자, 제품, 딜, 일정, 회의록, 추후 구독/결제 같은 business data는 Supabase Cloud PostgreSQL과 Prisma schema가 관리한다.
 - FE는 business data를 Supabase client로 직접 읽거나 쓰지 않고, 항상 NestJS API를 호출한다.
 - NestJS application layer는 Prisma transaction 또는 `TransactionManager` port로 결제/구독, 감사 로그, outbox 같은 다중 write를 같은 transaction에서 처리한다.
 - 명함 이미지, Import 원본 파일, Export 생성 파일은 D15의 `StoragePort` 뒤에서 Supabase Storage에 저장할 수 있다.
@@ -774,7 +774,7 @@ APP_REFRESH_COOKIE_DOMAIN=""
 - Log는 대상 도메인에 대한 객관적 사실, 변경, 만남, 소식, 이력 기록이다.
 - Memo는 대상 도메인에 대한 사용자의 주관적 생각, 판단, 개인 참고 기록이다.
 - Memo는 각 엔티티의 단일 `memo` 필드에 저장하지 않고, Log처럼 여러 건 누적되는 기록형 데이터로 저장한다.
-- `PersonalMemo`는 회사 Memo, 거래처 Memo, 제품 Memo, 딜 Memo를 담는 기록 테이블로 사용한다.
+- `PersonalMemo`는 회사 Memo, 담당자 Memo, 제품 Memo, 딜 Memo를 담는 기록 테이블로 사용한다.
 - `PersonalMemo`는 `targetType`, `targetId`로 `Company`, `Contact`, `Product`, `Deal` 중 하나에 연결한다.
 - `PersonalMemo`는 `memoDate`, 선택적 `title`, `contentCiphertext`, `contentKeyVersion`을 가진다.
 - `PersonalMemo.content` 원문은 DB에 평문 저장하지 않고 `contentCiphertext`, `contentKeyVersion`으로 저장한다.
@@ -786,12 +786,12 @@ APP_REFRESH_COOKIE_DOMAIN=""
 
 - Log와 Memo의 의미를 분리하면 객관적 이력과 사용자의 생각이 섞이지 않는다.
 - 메모가 여러 건 누적되므로 시간순 맥락을 남길 수 있다.
-- 회사/거래처/제품/딜마다 같은 메모 구조를 쓰면 UI와 API가 일관된다.
+- 회사/담당자/제품/딜마다 같은 메모 구조를 쓰면 UI와 API가 일관된다.
 - 민감 가능성이 높은 주관적 자유 입력 텍스트는 `PersonalMemo`에 모아 암호화, 마스킹, 감사 정책을 일관되게 적용할 수 있다.
 
 구현 영향:
 
-- 회사/거래처/제품/딜의 단일 `memo` 필드는 메모 기능의 정본 저장소로 사용하지 않는다.
+- 회사/담당자/제품/딜의 단일 `memo` 필드는 메모 기능의 정본 저장소로 사용하지 않는다.
 - 메모 생성/수정 use case는 `PersonalMemo` 저장 전 `EncryptionPort.encrypt`를 호출한다.
 - 상세 화면은 Log 섹션과 Memo 섹션을 분리한다.
 - User Web 상세 API는 `PersonalMemo`를 복호화해 Memo 기록 목록으로 표시할 수 있다.
@@ -832,7 +832,7 @@ APP_REFRESH_COOKIE_DOMAIN=""
 
 - 객관 기록인 Log는 도메인별 별도 모델로 둔다.
 - 회사 Log는 `CompanyLog`를 사용한다.
-- 거래처 Log는 `ContactLog`를 추가한다.
+- 담당자 Log는 `ContactLog`를 추가한다.
 - 제품 Log는 `ProductLog`를 추가한다.
 - 딜 Log는 기존 딜 활동 기록 모델인 `DealActivity`를 사용한다.
 - `CompanyLog`, `ContactLog`, `ProductLog`, `DealActivity`는 객관적 사실, 변경, 만남, 소식, 이력, 자동 상태 변경 기록을 저장한다.
@@ -844,7 +844,7 @@ APP_REFRESH_COOKIE_DOMAIN=""
 선택 이유:
 
 - 도메인별 Log 모델을 두면 각 Log가 명확한 FK와 도메인 규칙을 가진다.
-- 회사/거래처/제품/딜마다 객관 기록과 사용자 생각 기록이 섞이지 않는다.
+- 회사/담당자/제품/딜마다 객관 기록과 사용자 생각 기록이 섞이지 않는다.
 - 딜은 단계 변경, 다음 행동 완료, 회의록 연결 같은 자동 기록이 많으므로 기존 `DealActivity`의 특수 규칙을 유지하는 편이 낫다.
 - Memo는 사용자 주관 기록이고 민감 가능성이 높으므로 `PersonalMemo`로 암호화, 마스킹, 원문 조회 감사를 일관되게 적용한다.
 
@@ -854,7 +854,7 @@ APP_REFRESH_COOKIE_DOMAIN=""
 - `User`, `Contact`, `Product` relation에 각 Log 배열을 추가한다.
 - `ContactDetailResponse`, `ProductDetailResponse`는 `logs`와 `memos`를 모두 포함한다.
 - Contact/Product User API에 Log 목록/생성/수정/삭제 endpoint를 추가한다.
-- User Web 상세 화면은 회사/거래처/제품/딜 모두 `Log`와 `Memo` 섹션을 분리한다.
+- User Web 상세 화면은 회사/담당자/제품/딜 모두 `Log`와 `Memo` 섹션을 분리한다.
 - Admin 기본 목록/상세는 Memo 원문을 반환하지 않고 Log 원문도 운영상 민감 가능성을 고려해 필요한 경우 마스킹/요약 정책을 따른다.
 
 ### D25. 일정 기본 조회 기간
@@ -889,7 +889,7 @@ APP_REFRESH_COOKIE_DOMAIN=""
 
 결정:
 
-- 통합검색은 회사, 거래처, 제품, 딜, 일정, 회의록을 기본 검색 대상으로 한다.
+- 통합검색은 회사, 담당자, 제품, 딜, 일정, 회의록을 기본 검색 대상으로 한다.
 - 삭제된 데이터는 통합검색 기본 결과에서 제외한다. 휴지통 데이터는 휴지통 화면/API에서만 조회한다.
 - 검색어는 trim 후 2자 이상부터 실행한다. 1자 이하는 검색 대신 최근 항목 또는 빈 상태를 표시한다.
 - 검색 결과는 type별 group으로 묶고, 기본 limit은 type별 최대 5개로 둔다.
@@ -897,7 +897,7 @@ APP_REFRESH_COOKIE_DOMAIN=""
 
 선택 이유:
 
-- 기존 UX 정본이 이미 상단 통합검색에서 회사/거래처/제품/딜/일정/회의록을 함께 찾는 흐름을 전제로 한다.
+- 기존 UX 정본이 이미 상단 통합검색에서 회사/담당자/제품/딜/일정/회의록을 함께 찾는 흐름을 전제로 한다.
 - 삭제 데이터와 민감 원문을 기본 검색 결과에서 제외하면 사용자 탐색성은 유지하면서 개인정보 노출 위험을 줄일 수 있다.
 - 2자 이상, type별 5개 제한은 MVP에서 DB `ILIKE` 기반 검색의 비용과 화면 복잡도를 적절히 제한한다.
 

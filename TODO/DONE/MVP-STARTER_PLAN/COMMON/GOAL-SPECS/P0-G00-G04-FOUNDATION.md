@@ -61,7 +61,7 @@ P0는 실제 도메인 기능 구현 전에 Backend, User Web, Admin Web, DB 기
 - 모든 영속 삭제 대상 리소스는 soft delete하고, 삭제 시 `deletedAt`과 `permanentDeleteAt = deletedAt + 30일`을 기록한다. `Tag`와 `TagAssignment`는 분류/연결 상태 데이터이므로 hard delete하고 `TagLog`에 이력을 남긴다.
 - 30일 휴지통 보관 후 시스템 자동 작업이 완전 삭제하며, MVP 1차에서 사용자 즉시 완전 삭제는 제공하지 않는다.
 - `Company`, `Contact`, `Product`, `Deal`의 Log는 객관 기록, Memo는 주관 기록으로 분리한다. Memo는 각 엔티티 단일 `memo` 필드가 아니라 `PersonalMemo` 기록 테이블에 암호화 저장한다.
-- 도메인별 Log는 회사 `CompanyLog`, 거래처 `ContactLog`, 제품 `ProductLog`, 딜 `DealActivity`로 구현한다. 각 도메인별 사용자 개인 Memo Log는 `PersonalMemo`로 별도 저장한다.
+- 도메인별 Log는 회사 `CompanyLog`, 담당자 `ContactLog`, 제품 `ProductLog`, 딜 `DealActivity`로 구현한다. 각 도메인별 사용자 개인 Memo Log는 `PersonalMemo`로 별도 저장한다.
 - Admin 목록/기본 상세는 민감 원문을 마스킹하거나 존재 여부만 반환하고, 원문 조회는 사유 필수 전용 API에서 대상 조회와 `AuditLog` 생성을 같은 transaction으로 처리한다.
 
 ### 화면 명세

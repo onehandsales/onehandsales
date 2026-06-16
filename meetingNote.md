@@ -367,7 +367,7 @@ model Deal {
 
 - 목록 기본 정렬: `createdAt DESC`, `id DESC`
 - 회의최신순 정렬: `meetingAt DESC NULLS LAST`, `createdAt DESC`, `id DESC`
-- 연결된 회사/거래처/제품/딜 목록 정렬: `createdAt DESC`, `id DESC`
+- 연결된 회사/담당자/제품/딜 목록 정렬: `createdAt DESC`, `id DESC`
 - 필터 옵션 전체 목록 정렬: `createdAt DESC`, `id DESC`
 
 ### 6.4 공통 redaction
@@ -557,7 +557,7 @@ type MeetingNoteFilterContactOptionResponse = {
 | --- | --- | --- | --- |
 | `GET` | `/api/meeting-notes` | `ListMeetingNotes` | 회의록 목록 페이지네이션 |
 | `GET` | `/api/meeting-notes/filter-companies` | `ListMeetingNoteFilterCompanies` | 회의록 목록 필터용 회사 전체 목록 |
-| `GET` | `/api/meeting-notes/filter-contacts` | `ListMeetingNoteFilterContacts` | 회의록 목록 필터용 거래처 전체 목록 |
+| `GET` | `/api/meeting-notes/filter-contacts` | `ListMeetingNoteFilterContacts` | 회의록 목록 필터용 담당자 전체 목록 |
 | `GET` | `/api/meeting-notes/:meetingNoteId` | `GetMeetingNote` | 회의록 단건 상세 조회 |
 | `POST` | `/api/meeting-notes` | `CreateMeetingNote` | 회의록 최종 생성 |
 | `PATCH` | `/api/meeting-notes/:meetingNoteId` | `UpdateMeetingNote` | 회의록 수정 |
@@ -585,7 +585,7 @@ type MeetingNoteFilterContactOptionResponse = {
 
 ### 목적
 
-회의록 목록 화면에서 10개 단위 페이지네이션, 회사 다중 필터, 거래처 다중 필터, 정렬을 제공한다.
+회의록 목록 화면에서 10개 단위 페이지네이션, 회사 다중 필터, 담당자 다중 필터, 정렬을 제공한다.
 
 ### Request
 
@@ -601,7 +601,7 @@ Query:
 | --- | --- | --- | ---: | --- | --- |
 | query | `page` | number | 아니오 | 정수, 1 이상 | 기본값 1 |
 | query | `companyIds` | string[] | 아니오 | UUID 배열 | 연결 회사 다중 선택 필터. 같은 key 반복 query로 전송 |
-| query | `contactIds` | string[] | 아니오 | UUID 배열 | 연결 거래처 다중 선택 필터. 같은 key 반복 query로 전송 |
+| query | `contactIds` | string[] | 아니오 | UUID 배열 | 연결 담당자 다중 선택 필터. 같은 key 반복 query로 전송 |
 | query | `sort` | string | 아니오 | `createdAtDesc`, `meetingAtDesc` | 기본값 `createdAtDesc`. `meetingAtDesc`는 회의최신순 |
 
 서버는 `pageSize`를 10으로 고정한다. FE는 `pageSize` query를 보내지 않는다.
@@ -615,11 +615,11 @@ Query:
 4. 기본 where 조건에 `MeetingNote.userId = currentUser.id`를 적용한다.
 5. `companyIds`는 같은 그룹 안에서 OR 조건으로 적용한다.
 6. `contactIds`는 같은 그룹 안에서 OR 조건으로 적용한다.
-7. 회사 필터와 거래처 필터를 동시에 사용하면 두 그룹은 AND 조건으로 조합한다.
+7. 회사 필터와 담당자 필터를 동시에 사용하면 두 그룹은 AND 조건으로 조합한다.
 8. `sort=createdAtDesc`이면 `createdAt DESC`, `id DESC`로 정렬한다.
 9. `sort=meetingAtDesc`이면 `meetingAt DESC NULLS LAST`, `createdAt DESC`, `id DESC`로 정렬한다.
 10. page size 10으로 `items`, `totalCount`를 조회하고 `totalPages`를 계산한다.
-11. 회사/거래처/제품/딜 연결 row는 목록 표시용으로만 조회한다.
+11. 회사/담당자/제품/딜 연결 row는 목록 표시용으로만 조회한다.
 12. 연결 요약은 각 연결 row를 `createdAt DESC`, `id DESC`로 정렬한 뒤 첫 항목 기준으로 만든다.
 13. 목록 응답에는 `details`, `nextPlan`, `requiredAction`, `rawText`, `updatedAt`을 넣지 않는다.
 
@@ -645,8 +645,8 @@ Query:
 | `items[].sourceType` | string | 아니오 | 현재 구현에서는 `MANUAL`. `TEXT_AI`, `STT_AI`는 후속 예약 값 |
 | `items[].companies.label` | string | 아니오 | 회사 요약 label |
 | `items[].companies.count` | number | 아니오 | 연결 회사 수 |
-| `items[].contacts.label` | string | 아니오 | 거래처 요약 label |
-| `items[].contacts.count` | number | 아니오 | 연결 거래처 수 |
+| `items[].contacts.label` | string | 아니오 | 담당자 요약 label |
+| `items[].contacts.count` | number | 아니오 | 연결 담당자 수 |
 | `items[].products.label` | string | 아니오 | 제품 요약 label |
 | `items[].products.count` | number | 아니오 | 연결 제품 수 |
 | `items[].deals.label` | string | 아니오 | 딜 요약 label |
@@ -725,7 +725,7 @@ Query:
 | 인증 없음 또는 invalid | `Unauthorized` | 401 | 로그인 또는 refresh 흐름 | warn |
 | query validation 실패 | `ValidationError` | 400 | 목록 오류 상태 | log |
 | 회사 필터가 본인 소유가 아님 | `CompanyNotFound` | 404 | 해당 필터 제거 후 안내 | log |
-| 거래처 필터가 본인 소유가 아님 | `ContactNotFound` | 404 | 해당 필터 제거 후 안내 | log |
+| 담당자 필터가 본인 소유가 아님 | `ContactNotFound` | 404 | 해당 필터 제거 후 안내 | log |
 
 ### FE/BE 처리 기준
 
@@ -734,7 +734,7 @@ Query:
 - FE: 목록 카드에는 요약 label/count만 표시하고 상세 본문은 상세 API에서 조회한다.
 - BE: `userId` 조건을 모든 조회에 포함한다.
 - BE: 동일 회의록이 여러 연결 row 때문에 중복 반환되지 않도록 `MeetingNote.id` 기준으로 페이지네이션한다.
-- 검증: 다중 회사 필터, 다중 거래처 필터, 회사+거래처 AND 조합, 정렬, 타 사용자 데이터 미노출을 확인한다.
+- 검증: 다중 회사 필터, 다중 담당자 필터, 회사+담당자 AND 조합, 정렬, 타 사용자 데이터 미노출을 확인한다.
 
 ## 9.2 회의록 목록 필터용 회사 전체 목록 API
 
@@ -843,9 +843,9 @@ Query:
 - BE: `meeting-note` 모듈 controller/service/repository 계약 안에서 구현한다.
 - 검증: 본인 회사만 반환하고 정렬이 유지되는지 확인한다.
 
-## 9.3 회의록 목록 필터용 거래처 전체 목록 API
+## 9.3 회의록 목록 필터용 담당자 전체 목록 API
 
-- API 이름: 회의록 목록 필터용 거래처 전체 목록 API
+- API 이름: 회의록 목록 필터용 담당자 전체 목록 API
 - API 식별자: `ListMeetingNoteFilterContacts`
 - 계약 상태: `confirmed`
 - 소비자: User Web
@@ -853,7 +853,7 @@ Query:
 - Method: `GET`
 - Path: `/api/meeting-notes/filter-contacts`
 - 인증: Backend App access token 필요
-- 권한: 본인 거래처만 조회
+- 권한: 본인 담당자만 조회
 - Request 이름: `ListMeetingNoteFilterContactsRequest`
 - Response 이름: `MeetingNoteFilterContactOptionListResponse`
 - Transaction: 없음. 조회 전용.
@@ -861,7 +861,7 @@ Query:
 
 ### 목적
 
-회의록 목록 화면의 거래처 다중 선택 필터 옵션을 제공한다.
+회의록 목록 화면의 담당자 다중 선택 필터 옵션을 제공한다.
 
 ### Request
 
@@ -878,8 +878,8 @@ Query:
 ### 비즈니스 로직 흐름
 
 1. AuthGuard로 현재 사용자를 확인한다.
-2. `Contact.userId = currentUser.id` 조건으로 거래처를 조회한다.
-3. 삭제 개념이 생기면 삭제된 거래처는 제외한다.
+2. `Contact.userId = currentUser.id` 조건으로 담당자를 조회한다.
+3. 삭제 개념이 생기면 삭제된 담당자는 제외한다.
 4. `createdAt DESC`, `id DESC`로 정렬한다.
 5. 페이지네이션 없이 전체 목록을 반환한다.
 6. 응답 필드는 `id`, `contactUsername`, `createdAt`만 포함한다.
@@ -892,9 +892,9 @@ Query:
 
 | 필드 | 타입 | nullable | 설명 |
 | --- | --- | ---: | --- |
-| `items` | `MeetingNoteFilterContactOptionResponse[]` | 아니오 | 거래처 필터 옵션 목록 |
-| `items[].id` | string | 아니오 | 거래처 ID |
-| `items[].contactUsername` | string | 아니오 | 거래처 이름 |
+| `items` | `MeetingNoteFilterContactOptionResponse[]` | 아니오 | 담당자 필터 옵션 목록 |
+| `items[].id` | string | 아니오 | 담당자 ID |
+| `items[].contactUsername` | string | 아니오 | 담당자 이름 |
 | `items[].createdAt` | string | 아니오 | 등록일 ISO string |
 
 예시:
@@ -934,7 +934,7 @@ Query:
 - log event key: `meeting_note.filter_contacts.listed`
 - audit log: 없음
 - request id: 사용
-- redaction: 거래처 이름, 이메일, 전화번호 logging 금지
+- redaction: 담당자 이름, 이메일, 전화번호 logging 금지
 - provider error context: 없음
 
 ### 에러 응답
@@ -945,10 +945,10 @@ Query:
 
 ### FE/BE 처리 기준
 
-- FE: 회의록 목록의 거래처 필터 옵션으로만 사용한다.
-- FE: 거래처 목록 화면 API를 재사용하지 않는다.
+- FE: 회의록 목록의 담당자 필터 옵션으로만 사용한다.
+- FE: 담당자 목록 화면 API를 재사용하지 않는다.
 - BE: `meeting-note` 모듈 controller/service/repository 계약 안에서 구현한다.
-- 검증: 본인 거래처만 반환하고 정렬이 유지되는지 확인한다.
+- 검증: 본인 담당자만 반환하고 정렬이 유지되는지 확인한다.
 
 ## 9.4 회의록 단건 상세 조회 API
 
@@ -968,7 +968,7 @@ Query:
 
 ### 목적
 
-회의록 상세 화면에서 회의록 본문, 원문, 최근 수정일, 연결된 회사/거래처/제품/딜의 현재 상태 정보와 snapshot 정보를 함께 조회한다.
+회의록 상세 화면에서 회의록 본문, 원문, 최근 수정일, 연결된 회사/담당자/제품/딜의 현재 상태 정보와 snapshot 정보를 함께 조회한다.
 
 ### Request
 
@@ -990,7 +990,7 @@ Path:
 2. `meetingNoteId`를 validation한다.
 3. `MeetingNote.id = meetingNoteId`, `MeetingNote.userId = currentUser.id` 조건으로 회의록을 조회한다.
 4. 회의록이 없으면 `MeetingNoteNotFound`를 반환한다.
-5. 연결 회사/거래처/제품/딜 목록을 함께 조회한다.
+5. 연결 회사/담당자/제품/딜 목록을 함께 조회한다.
 6. 연결 목록은 각각 `createdAt DESC`, `id DESC`로 정렬한다.
 7. FK가 살아있는 연결은 현재 엔티티 정보를 포함한다.
 8. FK가 nullable이거나 원본 엔티티가 없으면 현재 엔티티 정보는 `null`로 반환하고 snapshot은 유지한다.
@@ -1015,7 +1015,7 @@ Path:
 | `requiredAction` | string | 예 | 필요 액션 |
 | `rawText` | string | 예 | AI/STT 작성에 사용한 원문 텍스트 |
 | `companies` | `MeetingNoteCompanyDetailResponse[]` | 아니오 | 연결 회사 목록 |
-| `contacts` | `MeetingNoteContactDetailResponse[]` | 아니오 | 연결 거래처 목록 |
+| `contacts` | `MeetingNoteContactDetailResponse[]` | 아니오 | 연결 담당자 목록 |
 | `products` | `MeetingNoteProductDetailResponse[]` | 아니오 | 연결 제품 목록 |
 | `deals` | `MeetingNoteDealDetailResponse[]` | 아니오 | 연결 딜 목록 |
 | `createdAt` | string | 아니오 | 등록일 ISO string |
@@ -1211,7 +1211,7 @@ Body:
 | body | `nextPlan` | string | 아니오 | trim | 다음 계획 |
 | body | `requiredAction` | string | 아니오 | trim | 필요 액션 |
 | body | `companies` | `MeetingNoteCompanyInput[]` | 아니오 | 배열 | 연결 회사 목록 |
-| body | `contacts` | `MeetingNoteContactInput[]` | 아니오 | 배열 | 연결 거래처 목록 |
+| body | `contacts` | `MeetingNoteContactInput[]` | 아니오 | 배열 | 연결 담당자 목록 |
 | body | `products` | `MeetingNoteProductInput[]` | 아니오 | 배열 | 연결 제품 목록 |
 | body | `deals` | `MeetingNoteDealInput[]` | 아니오 | 배열 | 연결 딜 목록 |
 
@@ -1286,7 +1286,7 @@ Body:
 5. `meetingLocalDateTime`이 있으면 `User.timeZone` 기준으로 UTC `meetingAt`을 계산하고, 사용한 값을 `MeetingNote.timeZone`에 저장한다.
 6. 연결 대상의 `companyId`, `contactId`, `productId`, `dealId`가 있으면 현재 사용자 소유인지 검증한다.
 7. `MeetingNote`를 `sourceType = MANUAL`로 생성한다.
-8. 회사/거래처/제품/딜 연결 row를 생성한다.
+8. 회사/담당자/제품/딜 연결 row를 생성한다.
 9. 연결 row에는 snapshot을 저장한다.
 10. `companyId`, `contactId`, `productId`가 있으면 현재 엔티티 값을 우선 snapshot으로 사용한다.
 11. `companyId`, `contactId`, `productId`가 없으면 request에 직접 입력된 값을 snapshot-only 항목으로 저장한다.
@@ -1335,7 +1335,7 @@ Body는 생성된 회의록의 `MeetingNoteDetailResponse`다.
 | 인증 없음 또는 invalid | `Unauthorized` | 401 | 로그인 또는 refresh 흐름 | warn |
 | 요청 validation 실패 | `ValidationError` | 400 | form field error 또는 toast | log |
 | 연결 회사 없음 또는 타 사용자 회사 | `CompanyNotFound` | 404 | 회사 선택값 갱신 안내 | log |
-| 연결 거래처 없음 또는 타 사용자 거래처 | `ContactNotFound` | 404 | 거래처 선택값 갱신 안내 | log |
+| 연결 담당자 없음 또는 타 사용자 담당자 | `ContactNotFound` | 404 | 담당자 선택값 갱신 안내 | log |
 | 연결 제품 없음 또는 타 사용자 제품 | `ProductNotFound` | 404 | 제품 선택값 갱신 안내 | log |
 | 연결 딜 없음 또는 타 사용자 딜 | `DealNotFound` | 404 | 딜 선택값 갱신 안내 | log |
 
@@ -1366,7 +1366,7 @@ Body는 생성된 회의록의 `MeetingNoteDetailResponse`다.
 
 ### 목적
 
-회의록 본문, 원문, 회의 일시, 연결 회사/거래처/제품/딜을 수정한다.
+회의록 본문, 원문, 회의 일시, 연결 회사/담당자/제품/딜을 수정한다.
 
 ### Request
 
@@ -1391,7 +1391,7 @@ Body:
 | body | `nextPlan` | string | 아니오 | trim | 다음 계획 |
 | body | `requiredAction` | string | 아니오 | trim | 필요 액션 |
 | body | `companies` | `MeetingNoteCompanyInput[]` | 아니오 | 배열 | 포함되면 회사 연결 전체 교체 |
-| body | `contacts` | `MeetingNoteContactInput[]` | 아니오 | 배열 | 포함되면 거래처 연결 전체 교체 |
+| body | `contacts` | `MeetingNoteContactInput[]` | 아니오 | 배열 | 포함되면 담당자 연결 전체 교체 |
 | body | `products` | `MeetingNoteProductInput[]` | 아니오 | 배열 | 포함되면 제품 연결 전체 교체 |
 | body | `deals` | `MeetingNoteDealInput[]` | 아니오 | 배열 | 포함되면 딜 연결 전체 교체 |
 
@@ -1482,7 +1482,7 @@ Body는 수정된 회의록의 `MeetingNoteDetailResponse`다.
 | 요청 validation 실패 | `ValidationError` | 400 | form field error 또는 toast | log |
 | 회의록 없음 또는 타 사용자 회의록 | `MeetingNoteNotFound` | 404 | 목록으로 이동 또는 삭제된 항목 안내 | warn |
 | 연결 회사 없음 또는 타 사용자 회사 | `CompanyNotFound` | 404 | 회사 선택값 갱신 안내 | log |
-| 연결 거래처 없음 또는 타 사용자 거래처 | `ContactNotFound` | 404 | 거래처 선택값 갱신 안내 | log |
+| 연결 담당자 없음 또는 타 사용자 담당자 | `ContactNotFound` | 404 | 담당자 선택값 갱신 안내 | log |
 | 연결 제품 없음 또는 타 사용자 제품 | `ProductNotFound` | 404 | 제품 선택값 갱신 안내 | log |
 | 연결 딜 없음 또는 타 사용자 딜 | `DealNotFound` | 404 | 딜 선택값 갱신 안내 | log |
 
@@ -1528,7 +1528,7 @@ Body:
 | body | `rawText` | string | 예 | trim 후 1자 이상 | AI 정리에 사용할 원문 텍스트 |
 | body | `meetingLocalDateTime` | string | 아니오 | local date-time | AI 추론 힌트 |
 | body | `companyHint` | string | 아니오 | trim | 회사 추론 힌트 |
-| body | `contactHint` | string | 아니오 | trim | 거래처 추론 힌트 |
+| body | `contactHint` | string | 아니오 | trim | 담당자 추론 힌트 |
 
 예시:
 
@@ -1549,9 +1549,9 @@ Body:
 4. 현재 사용자의 `User.timeZone`을 조회한다.
 5. `meetingLocalDateTime`, `User.timeZone`, `companyHint`, `contactHint`는 AI 추론 힌트로 사용한다.
 6. AI provider는 application port 뒤에서 호출한다.
-7. AI 결과를 회의 일시, 회사 후보, 거래처 후보, 제품 후보, 상세내용, 향후계획, 필요액션 구조로 파싱한다.
-8. AI가 추출한 회사/거래처/제품명으로 현재 사용자 소유 기존 데이터 후보를 조회한다.
-9. 딜 후보는 추출된 회사/거래처/제품명과 기존 딜을 기준으로 제안한다.
+7. AI 결과를 회의 일시, 회사 후보, 담당자 후보, 제품 후보, 상세내용, 향후계획, 필요액션 구조로 파싱한다.
+8. AI가 추출한 회사/담당자/제품명으로 현재 사용자 소유 기존 데이터 후보를 조회한다.
+9. 딜 후보는 추출된 회사/담당자/제품명과 기존 딜을 기준으로 제안한다.
 10. AI 결과는 저장하지 않고 response로만 반환한다.
 11. AI 결과 구조가 유효하지 않으면 `InvalidMeetingNoteGeneratedFields`를 반환한다.
 
@@ -1811,7 +1811,7 @@ Form-data:
 | 요청 validation 실패 | `ValidationError` | 400 | form field error 또는 toast | log |
 | 회의록 없음 또는 타 사용자 회의록 | `MeetingNoteNotFound` | 404 | 목록으로 이동 또는 삭제된 항목 안내 | warn |
 | 연결 회사 없음 또는 타 사용자 회사 | `CompanyNotFound` | 404 | 회사 선택값 갱신 안내 | log |
-| 연결 거래처 없음 또는 타 사용자 거래처 | `ContactNotFound` | 404 | 거래처 선택값 갱신 안내 | log |
+| 연결 담당자 없음 또는 타 사용자 담당자 | `ContactNotFound` | 404 | 담당자 선택값 갱신 안내 | log |
 | 연결 제품 없음 또는 타 사용자 제품 | `ProductNotFound` | 404 | 제품 선택값 갱신 안내 | log |
 | 연결 딜 없음 또는 타 사용자 딜 | `DealNotFound` | 404 | 딜 선택값 갱신 안내 | log |
 

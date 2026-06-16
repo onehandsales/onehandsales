@@ -59,7 +59,7 @@ export interface ContactListQueryInput {
   readonly contactJobGradeId?: string;
 }
 
-// 역할 : ContactExportQueryInput 거래처 export query 조건을 정의합니다.
+// 역할 : ContactExportQueryInput 담당자 export query 조건을 정의합니다.
 export interface ContactExportQueryInput {
   readonly username?: string;
   readonly companyId?: string;
@@ -128,12 +128,12 @@ export interface ContactDetailResponse extends ContactListItemResponse {
   readonly updatedAt: string;
 }
 
-// 역할 : ContactDealListResponse 거래처에 연결된 딜 목록 응답을 정의합니다.
+// 역할 : ContactDealListResponse 담당자에 연결된 딜 목록 응답을 정의합니다.
 export interface ContactDealListResponse {
   readonly items: ContactDealItemResponse[];
 }
 
-// 역할 : ContactDealItemResponse 거래처에 연결된 딜 응답 항목을 정의합니다.
+// 역할 : ContactDealItemResponse 담당자에 연결된 딜 응답 항목을 정의합니다.
 export interface ContactDealItemResponse {
   readonly id: string;
   readonly dealName: string;
@@ -182,10 +182,10 @@ export interface ContactPrivateMemoLogConnectionResponse {
   readonly hasNext: boolean;
 }
 
-// 역할 : ContactApplicationService 거래처 도메인 application 유스케이스를 제공합니다.
+// 역할 : ContactApplicationService 담당자 도메인 application 유스케이스를 제공합니다.
 @Injectable()
 export class ContactApplicationService {
-  // 기능 : 거래처 저장소, 개인 비밀 메모 암호화 포트, 로그 서비스를 주입받습니다.
+  // 기능 : 담당자 저장소, 개인 비밀 메모 암호화 포트, 로그 서비스를 주입받습니다.
   constructor(
     @Inject(CONTACT_REPOSITORY)
     private readonly contactRepository: ContactRepository,
@@ -196,7 +196,7 @@ export class ContactApplicationService {
     private readonly logger: AppLogger
   ) {}
 
-  // 기능 : 현재 사용자의 거래처 목록을 10개 단위 페이지로 조회합니다.
+  // 기능 : 현재 사용자의 담당자 목록을 10개 단위 페이지로 조회합니다.
   async listContacts(
     currentUser: CurrentUserContext,
     query: ContactListQueryInput
@@ -205,7 +205,7 @@ export class ContactApplicationService {
     const page = query.page ?? 1;
     const username = this.normalizeOptionalText(query.username);
 
-    // 2. 필터로 받은 회사, 거래처 부서, 거래처 직급이 현재 사용자 소유인지 검증한다.
+    // 2. 필터로 받은 회사, 담당자 부서, 담당자 직급이 현재 사용자 소유인지 검증한다.
     if (query.companyId) {
       await this.assertCompanyExists(currentUser.id, query.companyId);
     }
@@ -221,7 +221,7 @@ export class ContactApplicationService {
       await this.assertJobGradeExists(currentUser.id, query.contactJobGradeId);
     }
 
-    // 3. 현재 사용자 ownership 기준으로 거래처 목록을 조회한다.
+    // 3. 현재 사용자 ownership 기준으로 담당자 목록을 조회한다.
     const result = await this.contactRepository.listContacts({
       userId: currentUser.id,
       page,
@@ -249,7 +249,7 @@ export class ContactApplicationService {
     };
   }
 
-  // 기능 : 검색과 필터가 반영된 거래처 목록을 xlsx 파일로 생성합니다.
+  // 기능 : 검색과 필터가 반영된 담당자 목록을 xlsx 파일로 생성합니다.
   async exportContactsXlsx(
     currentUser: CurrentUserContext,
     query: ContactExportQueryInput
@@ -257,7 +257,7 @@ export class ContactApplicationService {
     // 1. export 조회 조건을 저장소 입력에 맞게 정규화한다.
     const username = this.normalizeOptionalText(query.username);
 
-    // 2. 필터로 받은 회사, 거래처 부서, 거래처 직급이 현재 사용자 소유인지 검증한다.
+    // 2. 필터로 받은 회사, 담당자 부서, 담당자 직급이 현재 사용자 소유인지 검증한다.
     if (query.companyId) {
       await this.assertCompanyExists(currentUser.id, query.companyId);
     }
@@ -273,7 +273,7 @@ export class ContactApplicationService {
       await this.assertJobGradeExists(currentUser.id, query.contactJobGradeId);
     }
 
-    // 3. 페이지네이션 없이 현재 검색과 필터에 맞는 거래처 전체 목록을 조회한다.
+    // 3. 페이지네이션 없이 현재 검색과 필터에 맞는 담당자 전체 목록을 조회한다.
     const contacts = await this.contactRepository.listContactsForExport({
       userId: currentUser.id,
       ...(username ? { username } : {}),
@@ -289,7 +289,7 @@ export class ContactApplicationService {
     // 4. xlsx writer로 다운로드 파일 본문을 생성한다.
     const content = await this.writeContactExportXlsx(contacts);
 
-    // 5. 검색어 없이 거래처 export 이벤트를 기록한다.
+    // 5. 검색어 없이 담당자 export 이벤트를 기록한다.
     this.logEvent("contact.exported", {
       userId: currentUser.id,
       rowCount: contacts.length,
@@ -303,7 +303,7 @@ export class ContactApplicationService {
     };
   }
 
-  // 기능 : 현재 사용자의 거래처 필터용 회사 옵션 목록을 조회합니다.
+  // 기능 : 현재 사용자의 담당자 필터용 회사 옵션 목록을 조회합니다.
   async listCompanyOptions(
     currentUser: CurrentUserContext
   ): Promise<ContactCompanyOptionListResponse> {
@@ -319,75 +319,75 @@ export class ContactApplicationService {
     return { items };
   }
 
-  // 기능 : 현재 사용자의 거래처 직급 목록을 조회합니다.
+  // 기능 : 현재 사용자의 담당자 직급 목록을 조회합니다.
   async listJobGrades(
     currentUser: CurrentUserContext
   ): Promise<ContactJobGradeListResponse> {
-    // 1. 현재 사용자 소유의 거래처 직급 목록을 조회한다.
+    // 1. 현재 사용자 소유의 담당자 직급 목록을 조회한다.
     const items = await this.contactRepository.listJobGrades(currentUser.id);
 
-    // 2. 거래처 직급 목록 조회 이벤트를 기록한다.
+    // 2. 담당자 직급 목록 조회 이벤트를 기록한다.
     this.logEvent("contactJobGrade.listed", { userId: currentUser.id });
 
-    // 3. 거래처 직급 목록 응답 DTO로 반환한다.
+    // 3. 담당자 직급 목록 응답 DTO로 반환한다.
     return { items };
   }
 
-  // 기능 : 현재 사용자의 거래처 부서 목록을 조회합니다.
+  // 기능 : 현재 사용자의 담당자 부서 목록을 조회합니다.
   async listDepartments(
     currentUser: CurrentUserContext
   ): Promise<ContactDepartmentListResponse> {
-    // 1. 현재 사용자 소유의 거래처 부서 목록을 조회한다.
+    // 1. 현재 사용자 소유의 담당자 부서 목록을 조회한다.
     const items = await this.contactRepository.listDepartments(currentUser.id);
 
-    // 2. 거래처 부서 목록 조회 이벤트를 기록한다.
+    // 2. 담당자 부서 목록 조회 이벤트를 기록한다.
     this.logEvent("contactDepartment.listed", { userId: currentUser.id });
 
-    // 3. 거래처 부서 목록 응답 DTO로 반환한다.
+    // 3. 담당자 부서 목록 응답 DTO로 반환한다.
     return { items };
   }
 
-  // 기능 : 현재 사용자의 거래처 단건 상세를 조회합니다.
+  // 기능 : 현재 사용자의 담당자 단건 상세를 조회합니다.
   async getContact(
     currentUser: CurrentUserContext,
     contactId: string
   ): Promise<ContactDetailResponse> {
-    // 1. 현재 사용자 ownership 기준으로 거래처 단건을 조회한다.
+    // 1. 현재 사용자 ownership 기준으로 담당자 단건을 조회한다.
     const contact = await this.contactRepository.findContact(
       currentUser.id,
       contactId
     );
 
-    // 2. 거래처가 없으면 domain 오류로 중단한다.
+    // 2. 담당자가 없으면 domain 오류로 중단한다.
     if (!contact) {
       throw new ContactNotFoundError();
     }
 
-    // 3. 민감한 필드 없이 거래처 조회 이벤트를 기록한다.
+    // 3. 민감한 필드 없이 담당자 조회 이벤트를 기록한다.
     this.logEvent("contact.viewed", {
       userId: currentUser.id,
       contactId,
     });
 
-    // 4. 거래처 상세 응답 DTO로 변환한다.
+    // 4. 담당자 상세 응답 DTO로 변환한다.
     return this.toContactDetail(contact);
   }
 
-  // 기능 : 현재 사용자의 거래처에 연결된 딜 전체 목록을 조회합니다.
+  // 기능 : 현재 사용자의 담당자에 연결된 딜 전체 목록을 조회합니다.
   async listContactDeals(
     currentUser: CurrentUserContext,
     contactId: string
   ): Promise<ContactDealListResponse> {
-    // 1. 조회 대상 거래처가 현재 사용자 소유인지 검증한다.
+    // 1. 조회 대상 담당자가 현재 사용자 소유인지 검증한다.
     await this.assertContactExists(currentUser.id, contactId);
 
-    // 2. 현재 사용자 ownership 기준으로 거래처에 연결된 딜 목록을 조회한다.
+    // 2. 현재 사용자 ownership 기준으로 담당자에 연결된 딜 목록을 조회한다.
     const deals = await this.contactRepository.listContactDeals({
       userId: currentUser.id,
       contactId,
     });
 
-    // 3. 민감한 딜 본문 없이 거래처별 딜 목록 조회 이벤트를 기록한다.
+    // 3. 민감한 딜 본문 없이 담당자별 딜 목록 조회 이벤트를 기록한다.
     this.logEvent("contact.dealsListed", {
       userId: currentUser.id,
       contactId,
@@ -399,12 +399,12 @@ export class ContactApplicationService {
     };
   }
 
-  // 기능 : 거래처를 생성하고 선택 메모가 있으면 같은 트랜잭션에서 첫 메모 로그를 생성합니다.
+  // 기능 : 담당자를 생성하고 선택 메모가 있으면 같은 트랜잭션에서 첫 메모 로그를 생성합니다.
   async createContact(
     currentUser: CurrentUserContext,
     input: CreateContactCommand
   ): Promise<void> {
-    // 1. 거래처 기본 입력값과 초기 메모를 저장 가능한 형태로 정규화한다.
+    // 1. 담당자 기본 입력값과 초기 메모를 저장 가능한 형태로 정규화한다.
     const username = this.normalizeRequiredText(
       input.username,
       "username is required"
@@ -417,9 +417,9 @@ export class ContactApplicationService {
 
     let createdContactId: string | null = null;
 
-    // 2. 거래처 생성과 초기 메모 생성을 같은 transaction 안에서 실행한다.
+    // 2. 담당자 생성과 초기 메모 생성을 같은 transaction 안에서 실행한다.
     await this.contactRepository.runInTransaction(async (repository) => {
-      // 3. 회사, 거래처 부서, 거래처 직급이 현재 사용자 소유인지 검증한다.
+      // 3. 회사, 담당자 부서, 담당자 직급이 현재 사용자 소유인지 검증한다.
       await this.assertCompanyExists(currentUser.id, input.companyId, repository);
       await this.assertDepartmentExists(
         currentUser.id,
@@ -432,7 +432,7 @@ export class ContactApplicationService {
         repository
       );
 
-      // 4. 거래처 본문 데이터를 생성한다.
+      // 4. 담당자 본문 데이터를 생성한다.
       const contact = await repository.createContact({
         userId: currentUser.id,
         companyId: input.companyId,
@@ -455,14 +455,14 @@ export class ContactApplicationService {
       }
     });
 
-    // 6. 민감한 입력값 없이 거래처 생성 이벤트를 기록한다.
+    // 6. 민감한 입력값 없이 담당자 생성 이벤트를 기록한다.
     this.logEvent("contact.created", {
       userId: currentUser.id,
       contactId: createdContactId,
     });
   }
 
-  // 기능 : 거래처명, 연락처, 이메일, 회사, 부서, 직급 중 요청에 포함된 값만 수정합니다.
+  // 기능 : 담당자명, 연락처, 이메일, 회사, 부서, 직급 중 요청에 포함된 값만 수정합니다.
   async updateContact(
     currentUser: CurrentUserContext,
     contactId: string,
@@ -476,10 +476,10 @@ export class ContactApplicationService {
       throw new ValidationDomainError("At least one contact field is required");
     }
 
-    // 3. 수정 대상 거래처가 현재 사용자 소유인지 검증한다.
+    // 3. 수정 대상 담당자가 현재 사용자 소유인지 검증한다.
     await this.assertContactExists(currentUser.id, contactId);
 
-    // 4. 변경할 회사, 거래처 부서, 거래처 직급이 현재 사용자 소유인지 검증한다.
+    // 4. 변경할 회사, 담당자 부서, 담당자 직급이 현재 사용자 소유인지 검증한다.
     if (updateInput.companyId) {
       await this.assertCompanyExists(currentUser.id, updateInput.companyId);
     }
@@ -498,23 +498,23 @@ export class ContactApplicationService {
       );
     }
 
-    // 5. 거래처 기본 정보를 수정한다.
+    // 5. 담당자 기본 정보를 수정한다.
     const updated = await this.contactRepository.updateContact(
       currentUser.id,
       contactId,
       updateInput
     );
 
-    // 6. 수정 결과가 없으면 거래처 없음 오류로 중단한다.
+    // 6. 수정 결과가 없으면 담당자 없음 오류로 중단한다.
     if (!updated) {
       throw new ContactNotFoundError();
     }
 
-    // 7. 민감한 입력값 없이 거래처 수정 이벤트를 기록한다.
+    // 7. 민감한 입력값 없이 담당자 수정 이벤트를 기록한다.
     this.logEvent("contact.updated", { userId: currentUser.id, contactId });
   }
 
-  // 기능 : 현재 사용자의 거래처 직급을 생성합니다.
+  // 기능 : 현재 사용자의 담당자 직급을 생성합니다.
   async createJobGrade(
     currentUser: CurrentUserContext,
     jobGradeName: string
@@ -535,17 +535,17 @@ export class ContactApplicationService {
       throw new DuplicateContactJobGradeError();
     }
 
-    // 3. 현재 사용자 소유의 거래처 직급을 생성한다.
+    // 3. 현재 사용자 소유의 담당자 직급을 생성한다.
     await this.contactRepository.createJobGrade(
       currentUser.id,
       normalizedJobGradeName
     );
 
-    // 4. 거래처 직급 생성 이벤트를 기록한다.
+    // 4. 담당자 직급 생성 이벤트를 기록한다.
     this.logEvent("contactJobGrade.created", { userId: currentUser.id });
   }
 
-  // 기능 : 사용 중이 아닌 현재 사용자의 거래처 직급을 삭제합니다.
+  // 기능 : 사용 중이 아닌 현재 사용자의 담당자 직급을 삭제합니다.
   async deleteJobGrade(
     currentUser: CurrentUserContext,
     jobGradeId: string
@@ -553,7 +553,7 @@ export class ContactApplicationService {
     // 1. 삭제 대상 직급이 현재 사용자 소유인지 검증한다.
     await this.assertJobGradeExists(currentUser.id, jobGradeId);
 
-    // 2. 거래처에서 사용 중인 직급인지 검증한다.
+    // 2. 담당자에서 사용 중인 직급인지 검증한다.
     if (await this.contactRepository.isJobGradeInUse(currentUser.id, jobGradeId)) {
       throw new ContactJobGradeInUseError();
     }
@@ -561,14 +561,14 @@ export class ContactApplicationService {
     // 3. 사용 중이 아닌 직급을 삭제한다.
     await this.contactRepository.deleteJobGrade(currentUser.id, jobGradeId);
 
-    // 4. 거래처 직급 삭제 이벤트를 기록한다.
+    // 4. 담당자 직급 삭제 이벤트를 기록한다.
     this.logEvent("contactJobGrade.deleted", {
       userId: currentUser.id,
       jobGradeId,
     });
   }
 
-  // 기능 : 현재 사용자의 거래처 부서를 생성합니다.
+  // 기능 : 현재 사용자의 담당자 부서를 생성합니다.
   async createDepartment(
     currentUser: CurrentUserContext,
     departmentName: string
@@ -589,17 +589,17 @@ export class ContactApplicationService {
       throw new DuplicateContactDepartmentError();
     }
 
-    // 3. 현재 사용자 소유의 거래처 부서를 생성한다.
+    // 3. 현재 사용자 소유의 담당자 부서를 생성한다.
     await this.contactRepository.createDepartment(
       currentUser.id,
       normalizedDepartmentName
     );
 
-    // 4. 거래처 부서 생성 이벤트를 기록한다.
+    // 4. 담당자 부서 생성 이벤트를 기록한다.
     this.logEvent("contactDepartment.created", { userId: currentUser.id });
   }
 
-  // 기능 : 사용 중이 아닌 현재 사용자의 거래처 부서를 삭제합니다.
+  // 기능 : 사용 중이 아닌 현재 사용자의 담당자 부서를 삭제합니다.
   async deleteDepartment(
     currentUser: CurrentUserContext,
     departmentId: string
@@ -607,7 +607,7 @@ export class ContactApplicationService {
     // 1. 삭제 대상 부서가 현재 사용자 소유인지 검증한다.
     await this.assertDepartmentExists(currentUser.id, departmentId);
 
-    // 2. 거래처에서 사용 중인 부서인지 검증한다.
+    // 2. 담당자에서 사용 중인 부서인지 검증한다.
     if (
       await this.contactRepository.isDepartmentInUse(
         currentUser.id,
@@ -620,20 +620,20 @@ export class ContactApplicationService {
     // 3. 사용 중이 아닌 부서를 삭제한다.
     await this.contactRepository.deleteDepartment(currentUser.id, departmentId);
 
-    // 4. 거래처 부서 삭제 이벤트를 기록한다.
+    // 4. 담당자 부서 삭제 이벤트를 기록한다.
     this.logEvent("contactDepartment.deleted", {
       userId: currentUser.id,
       departmentId,
     });
   }
 
-  // 기능 : 현재 사용자의 거래처에 일반 메모 로그를 생성합니다.
+  // 기능 : 현재 사용자의 담당자에 일반 메모 로그를 생성합니다.
   async createMemoLog(
     currentUser: CurrentUserContext,
     contactId: string,
     input: { readonly memoType: string; readonly memo: string }
   ): Promise<void> {
-    // 1. 메모 대상 거래처가 현재 사용자 소유인지 검증한다.
+    // 1. 메모 대상 담당자가 현재 사용자 소유인지 검증한다.
     await this.assertContactExists(currentUser.id, contactId);
 
     // 2. 메모 유형과 본문을 정규화해 일반 메모 로그로 저장한다.
@@ -651,13 +651,13 @@ export class ContactApplicationService {
     });
   }
 
-  // 기능 : 현재 사용자의 거래처 일반 메모 로그를 10개 단위 cursor 방식으로 조회합니다.
+  // 기능 : 현재 사용자의 담당자 일반 메모 로그를 10개 단위 cursor 방식으로 조회합니다.
   async listMemoLogs(
     currentUser: CurrentUserContext,
     contactId: string,
     query: CursorQueryInput
   ): Promise<ContactMemoLogConnectionResponse> {
-    // 1. 조회 대상 거래처가 현재 사용자 소유인지 검증한다.
+    // 1. 조회 대상 담당자가 현재 사용자 소유인지 검증한다.
     await this.assertContactExists(currentUser.id, contactId);
 
     // 2. cursor 조건으로 일반 메모 로그를 페이지 크기보다 1개 더 조회한다.
@@ -678,14 +678,14 @@ export class ContactApplicationService {
     return this.toMemoLogConnection(records);
   }
 
-  // 기능 : 현재 사용자의 거래처 일반 메모 로그 유형 또는 본문을 수정합니다.
+  // 기능 : 현재 사용자의 담당자 일반 메모 로그 유형 또는 본문을 수정합니다.
   async updateMemoLog(
     currentUser: CurrentUserContext,
     contactId: string,
     memoLogId: string,
     input: { readonly memoType?: string; readonly memo?: string }
   ): Promise<void> {
-    // 1. 메모 대상 거래처가 현재 사용자 소유인지 검증한다.
+    // 1. 메모 대상 담당자가 현재 사용자 소유인지 검증한다.
     await this.assertContactExists(currentUser.id, contactId);
 
     // 2. 일반 메모 로그 수정 입력을 포함된 필드만 정규화한다.
@@ -715,13 +715,13 @@ export class ContactApplicationService {
     });
   }
 
-  // 기능 : 현재 사용자의 거래처에 암호화된 개인 비밀 메모 로그를 생성합니다.
+  // 기능 : 현재 사용자의 담당자에 암호화된 개인 비밀 메모 로그를 생성합니다.
   async createPrivateMemoLog(
     currentUser: CurrentUserContext,
     contactId: string,
     memo: string
   ): Promise<void> {
-    // 1. 비밀 메모 대상 거래처가 현재 사용자 소유인지 검증한다.
+    // 1. 비밀 메모 대상 담당자가 현재 사용자 소유인지 검증한다.
     await this.assertContactExists(currentUser.id, contactId);
 
     // 2. 비밀 메모 본문을 정규화한 뒤 암호화한다.
@@ -744,13 +744,13 @@ export class ContactApplicationService {
     });
   }
 
-  // 기능 : 현재 사용자가 작성한 거래처 개인 비밀 메모 로그만 복호화해 조회합니다.
+  // 기능 : 현재 사용자가 작성한 담당자 개인 비밀 메모 로그만 복호화해 조회합니다.
   async listPrivateMemoLogs(
     currentUser: CurrentUserContext,
     contactId: string,
     query: CursorQueryInput
   ): Promise<ContactPrivateMemoLogConnectionResponse> {
-    // 1. 조회 대상 거래처가 현재 사용자 소유인지 검증한다.
+    // 1. 조회 대상 담당자가 현재 사용자 소유인지 검증한다.
     await this.assertContactExists(currentUser.id, contactId);
 
     // 2. 현재 사용자가 작성한 비밀 메모 로그를 cursor 조건으로 조회한다.
@@ -771,14 +771,14 @@ export class ContactApplicationService {
     return this.toPrivateMemoLogConnection(records);
   }
 
-  // 기능 : 현재 사용자의 거래처 개인 비밀 메모 로그 본문만 다시 암호화해 수정합니다.
+  // 기능 : 현재 사용자의 담당자 개인 비밀 메모 로그 본문만 다시 암호화해 수정합니다.
   async updatePrivateMemoLog(
     currentUser: CurrentUserContext,
     contactId: string,
     privateMemoLogId: string,
     memo: string
   ): Promise<void> {
-    // 1. 비밀 메모 대상 거래처가 현재 사용자 소유인지 검증한다.
+    // 1. 비밀 메모 대상 담당자가 현재 사용자 소유인지 검증한다.
     await this.assertContactExists(currentUser.id, contactId);
 
     // 2. 새 비밀 메모 본문을 정규화한 뒤 암호화한다.
@@ -786,7 +786,7 @@ export class ContactApplicationService {
       this.normalizeRequiredText(memo, "memo is required")
     );
 
-    // 3. 작성자와 거래처 소유권 조건으로 비밀 메모 로그를 수정한다.
+    // 3. 작성자와 담당자 소유권 조건으로 비밀 메모 로그를 수정한다.
     const updated = await this.contactRepository.updatePrivateMemoLog({
       userId: currentUser.id,
       contactId,
@@ -819,7 +819,7 @@ export class ContactApplicationService {
     }
   }
 
-  // 기능 : 거래처 부서가 현재 사용자의 소유인지 확인합니다.
+  // 기능 : 담당자 부서가 현재 사용자의 소유인지 확인합니다.
   private async assertDepartmentExists(
     userId: string,
     departmentId: string,
@@ -830,7 +830,7 @@ export class ContactApplicationService {
     }
   }
 
-  // 기능 : 거래처 직급이 현재 사용자의 소유인지 확인합니다.
+  // 기능 : 담당자 직급이 현재 사용자의 소유인지 확인합니다.
   private async assertJobGradeExists(
     userId: string,
     jobGradeId: string,
@@ -841,7 +841,7 @@ export class ContactApplicationService {
     }
   }
 
-  // 기능 : 거래처가 현재 사용자의 소유인지 확인합니다.
+  // 기능 : 담당자가 현재 사용자의 소유인지 확인합니다.
   private async assertContactExists(
     userId: string,
     contactId: string
@@ -872,21 +872,21 @@ export class ContactApplicationService {
     return normalized.length > 0 ? normalized : undefined;
   }
 
-  // 기능 : 거래처 핸드폰번호가 계약 형식인지 검증합니다.
+  // 기능 : 담당자 핸드폰번호가 계약 형식인지 검증합니다.
   private assertMobileFormat(mobile: string): void {
     if (!MOBILE_PATTERN.test(mobile)) {
       throw new ValidationDomainError("mobile must match 010-1111-2222");
     }
   }
 
-  // 기능 : 거래처 이메일이 기본 이메일 형식인지 검증합니다.
+  // 기능 : 담당자 이메일이 기본 이메일 형식인지 검증합니다.
   private assertEmailFormat(email: string): void {
     if (!EMAIL_PATTERN.test(email)) {
       throw new ValidationDomainError("email is invalid");
     }
   }
 
-  // 기능 : 거래처 수정 요청에서 포함된 필드만 저장 가능한 값으로 정규화합니다.
+  // 기능 : 담당자 수정 요청에서 포함된 필드만 저장 가능한 값으로 정규화합니다.
   private normalizeContactUpdateInput(
     input: UpdateContactCommand
   ): UpdateContactInput {
@@ -930,7 +930,7 @@ export class ContactApplicationService {
     return normalized;
   }
 
-  // 기능 : 거래처에 연결된 딜 레코드를 응답 항목으로 변환합니다.
+  // 기능 : 담당자에 연결된 딜 레코드를 응답 항목으로 변환합니다.
   private toContactDealItem(deal: ContactDealRecord): ContactDealItemResponse {
     return {
       id: deal.id,
@@ -940,7 +940,7 @@ export class ContactApplicationService {
     };
   }
 
-  // 기능 : 거래처 일반 메모 수정 요청에서 포함된 필드만 저장 가능한 값으로 정규화합니다.
+  // 기능 : 담당자 일반 메모 수정 요청에서 포함된 필드만 저장 가능한 값으로 정규화합니다.
   private normalizeMemoLogUpdateInput(input: {
     readonly memoType?: string;
     readonly memo?: string;
@@ -1019,7 +1019,7 @@ export class ContactApplicationService {
     ).toString("base64url");
   }
 
-  // 기능 : 거래처 레코드를 목록 응답 항목으로 변환합니다.
+  // 기능 : 담당자 레코드를 목록 응답 항목으로 변환합니다.
   private toContactListItem(contact: ContactRecord): ContactListItemResponse {
     return {
       id: contact.id,
@@ -1033,7 +1033,7 @@ export class ContactApplicationService {
     };
   }
 
-  // 기능 : 거래처 레코드를 단건 상세 응답으로 변환합니다.
+  // 기능 : 담당자 레코드를 단건 상세 응답으로 변환합니다.
   private toContactDetail(contact: ContactRecord): ContactDetailResponse {
     return {
       ...this.toContactListItem(contact),
@@ -1041,7 +1041,7 @@ export class ContactApplicationService {
     };
   }
 
-  // 기능 : 거래처 export 레코드를 xlsx Buffer로 변환합니다.
+  // 기능 : 담당자 export 레코드를 xlsx Buffer로 변환합니다.
   private async writeContactExportXlsx(
     contacts: ContactRecord[]
   ): Promise<Buffer> {
@@ -1050,7 +1050,7 @@ export class ContactApplicationService {
         sheetName: "Contacts",
         columns: [
           { header: "회사명", key: "companyName", width: 28 },
-          { header: "거래처명", key: "username", width: 18 },
+          { header: "담당자명", key: "username", width: 18 },
           { header: "핸드폰번호", key: "mobile", width: 18 },
           { header: "이메일", key: "email", width: 28 },
           { header: "부서", key: "departmentName", width: 18 },
@@ -1069,7 +1069,7 @@ export class ContactApplicationService {
     }
   }
 
-  // 기능 : 거래처 export 레코드를 ID 없는 xlsx 행 데이터로 변환합니다.
+  // 기능 : 담당자 export 레코드를 ID 없는 xlsx 행 데이터로 변환합니다.
   private toContactExportRows(contacts: ContactRecord[]): XlsxRow[] {
     return contacts.map((contact) => ({
       companyName: contact.company.companyName,

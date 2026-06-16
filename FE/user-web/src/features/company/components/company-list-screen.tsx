@@ -28,7 +28,7 @@ import {
   useCompanyDetail,
 } from "@/features/company/hooks/use-company-detail";
 import { useExportCompaniesMutation } from "@/features/company/hooks/use-company-mutations";
-import type { CompanyListItem } from "@/features/company/types/company";
+import type { CompanyListItem, CompanySort } from "@/features/company/types/company";
 import { getApiErrorMessage, type ApiBlobResponse } from "@/lib/api-client";
 import { cn } from "@/utils/cn";
 import { formatDateWithOptions } from "@/utils/format";
@@ -48,6 +48,7 @@ export function CompanyListScreen({
   const [companyName, setCompanyName] = useState("");
   const [companyFieldId, setCompanyFieldId] = useState("");
   const [companyRegionId, setCompanyRegionId] = useState("");
+  const [sort, setSort] = useState<CompanySort>("createdAtDesc");
   const [page, setPage] = useState(1);
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [selectedCompanyId, setSelectedCompanyId] = useState("");
@@ -64,16 +65,18 @@ export function CompanyListScreen({
       companyName: companyName || undefined,
       companyFieldId: companyFieldId || undefined,
       companyRegionId: companyRegionId || undefined,
+      sort,
     }),
-    [companyFieldId, companyName, companyRegionId, page]
+    [companyFieldId, companyName, companyRegionId, page, sort]
   );
   const exportFilters = useMemo(
     () => ({
       companyName: companyName || undefined,
       companyFieldId: companyFieldId || undefined,
       companyRegionId: companyRegionId || undefined,
+      sort,
     }),
-    [companyFieldId, companyName, companyRegionId]
+    [companyFieldId, companyName, companyRegionId, sort]
   );
 
   const companiesQuery = useCompanyList(listParams);
@@ -88,7 +91,8 @@ export function CompanyListScreen({
   const hasSearch =
     companyName.length > 0 ||
     companyFieldId.length > 0 ||
-    companyRegionId.length > 0;
+    companyRegionId.length > 0 ||
+    sort !== "createdAtDesc";
 
   useEffect(() => {
     if (initialCreateOpen) setIsCreateOpen(true);
@@ -173,7 +177,7 @@ export function CompanyListScreen({
           label="전체"
           onClick={() => {
             setCompanyName(""); setCompanyNameText("");
-            setCompanyFieldId(""); setCompanyRegionId(""); setPage(1);
+            setCompanyFieldId(""); setCompanyRegionId(""); setSort("createdAtDesc"); setPage(1);
           }}
         />
         <select
@@ -212,6 +216,25 @@ export function CompanyListScreen({
           <option value={ADD_TAXONOMY_VALUE}>+ 추가</option>
           {regions.map((r) => <option key={r.id} value={r.id}>{r.region}</option>)}
         </select>
+        <select
+          className={cn(
+            "h-8 min-w-[132px] appearance-none rounded-md border px-3 text-[13px] outline-none transition",
+            sort !== "createdAtDesc"
+              ? "border-[#BFDBFE] bg-[#EFF6FF] text-[#1D4ED8]"
+              : "border-[#E2E5EC] bg-transparent text-[#6B7280] hover:bg-[#FAFAF8]"
+          )}
+          onChange={(e) => {
+            setSort(e.target.value as CompanySort);
+            setPage(1);
+          }}
+          value={sort}
+        >
+          <option value="createdAtDesc">등록일</option>
+          <option value="contactCountDesc">담당자 높은순</option>
+          <option value="contactCountAsc">담당자 낮은순</option>
+          <option value="dealCountDesc">딜 높은순</option>
+          <option value="dealCountAsc">딜 낮은순</option>
+        </select>
         <div className="flex-1" />
         <span className="text-[12px] text-[#9CA3AF]">{companyList?.totalCount ?? 0}개</span>
       </div>
@@ -236,8 +259,8 @@ export function CompanyListScreen({
               <div className="w-[260px] shrink-0 text-[12px] font-semibold text-[#64748B]">회사명</div>
               <div className="w-[150px] shrink-0 text-[12px] font-semibold text-[#64748B]">분야</div>
               <div className="w-[130px] shrink-0 text-[12px] font-semibold text-[#64748B]">지역</div>
-              <div className="w-[80px] shrink-0 text-right text-[12px] font-semibold text-[#64748B]">거래처</div>
-              <div className="w-[72px] shrink-0 text-right text-[12px] font-semibold text-[#64748B]">딜</div>
+              <div className="w-[80px] shrink-0 text-right text-[12px] font-semibold text-[#64748B]">담당자 수</div>
+              <div className="w-[72px] shrink-0 text-right text-[12px] font-semibold text-[#64748B]">딜 수</div>
               <div className="w-[128px] shrink-0 text-right text-[12px] font-semibold text-[#64748B]">등록일</div>
               <div className="min-w-0 flex-1" />
             </div>

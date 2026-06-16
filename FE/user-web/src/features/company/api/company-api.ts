@@ -97,7 +97,7 @@ export function deleteCompanyRegion(regionId: string) {
   });
 }
 
-// 기능 : 회사에 연결된 거래처 전체 목록을 조회합니다.
+// 기능 : 회사에 연결된 담당자 전체 목록을 조회합니다.
 export function listCompanyContacts(companyId: string) {
   return apiClient<CompanyContactListResponse>(
     `/api/companies/${companyId}/contacts`
@@ -236,6 +236,10 @@ function toCompanyExportSearchParams(params: CompanyExportFilters) {
 
   if (params.companyRegionId) {
     searchParams.set("companyRegionId", params.companyRegionId);
+  }
+
+  if (params.sort) {
+    searchParams.set("sort", params.sort);
   }
 
   return searchParams;

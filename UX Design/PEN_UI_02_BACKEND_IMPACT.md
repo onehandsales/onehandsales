@@ -20,7 +20,7 @@
 - 딜 파이프라인
 - 딜 상세 / 빠른등록
 - 회사
-- 거래처
+- 담당자
 - 제품
 - 일정
 - 회의록
@@ -44,7 +44,7 @@
 | Deal Quick Create Modal | 빠른 딜 생성 | deal, company, contact, product | 높음 | TBD |
 | Deal Detail | 딜 상세 확인 및 액션 | deal, activity, memo, schedule, meeting-note | 높음 | TBD |
 | Company List/Detail | 회사 관리 | company | 중간 | TBD |
-| Contact List/Detail | 거래처 관리 | contact | 중간 | TBD |
+| Contact List/Detail | 담당자 관리 | contact | 중간 | TBD |
 | Product List/Detail | 제품 관리 | product | 중간 | TBD |
 | Schedule | 일정 관리/캘린더 | schedule, deal, company, contact | 중간 | TBD |
 | Meeting Note | 회의록 관리 | meeting-note, deal | 낮음/중간 | TBD |
@@ -63,7 +63,7 @@
 - 딜 목록
 - 단계별 카운트
 - 다음 액션 정보
-- 회사/거래처 연결 정보
+- 회사/담당자 연결 정보
 - 필터 상태에 따른 결과 수
 
 필요한 쓰기 API:
@@ -106,18 +106,18 @@
 
 필요한 읽기 API:
 - 회사 선택 후보
-- 거래처 선택 후보
+- 담당자 선택 후보
 - 제품 선택 후보
 
 필요한 쓰기 API:
 - 딜 생성
 - 필요 시 inline 회사 생성
-- 필요 시 inline 거래처 생성
+- 필요 시 inline 담당자 생성
 - 필요 시 inline 제품 연결
 
 입력 검증 포인트:
 - 제목
-- 회사/거래처 연계
+- 회사/담당자 연계
 - 금액
 - stage
 - next action 관련 값
@@ -296,7 +296,7 @@ pen 기준:
 ### Quick Create 충돌
 
 - 디자인은 단순 modal처럼 보이지만
-- 실제로는 회사/거래처/제품 인라인 생성과 연결될 수 있음
+- 실제로는 회사/담당자/제품 인라인 생성과 연결될 수 있음
 
 ### Calendar 충돌
 
@@ -435,7 +435,7 @@ pen 기준:
 ## 11. 구현 전 결정 필요 사항
 
 - stage metadata endpoint를 별도로 둘지 여부
-- MVP 범위를 딜만 할지, 회사/거래처/제품/일정까지 확장할지
+- MVP 범위를 딜만 할지, 회사/담당자/제품/일정까지 확장할지
 - 모바일 홈 전용 aggregate API를 만들지 여부
 - quick create에서 inline 생성 UX를 유지할지 여부
 - 일정 화면을 1차에 포함할지 여부

@@ -39,11 +39,19 @@ export type CompanyPageResponse = {
 
 export type CompanyListResponse = CompanyPageResponse;
 
+export type CompanySort =
+  | "createdAtDesc"
+  | "contactCountDesc"
+  | "contactCountAsc"
+  | "dealCountDesc"
+  | "dealCountAsc";
+
 export type CompanyListParams = {
   readonly page?: number;
   readonly companyName?: string;
   readonly companyFieldId?: string;
   readonly companyRegionId?: string;
+  readonly sort?: CompanySort;
 };
 
 export type CompanyExportFilters = Omit<CompanyListParams, "page">;

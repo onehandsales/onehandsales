@@ -78,10 +78,10 @@ export class DealController {
     return this.dealApplicationService.listCompanyOptions(currentUser);
   }
 
-  // API : 딜, 거래처 선택 옵션 조회
+  // API : 딜, 담당자 선택 옵션 조회
   @Get("contact-options")
   listContactOptions(@CurrentUser() currentUser: CurrentUserContext) {
-    // 1. 현재 사용자의 거래처 옵션 목록 조회를 application 계층으로 위임한다.
+    // 1. 현재 사용자의 담당자 옵션 목록 조회를 application 계층으로 위임한다.
     return this.dealApplicationService.listContactOptions(currentUser);
   }
 

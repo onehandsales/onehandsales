@@ -53,7 +53,7 @@ export class PrismaContactRepository implements ContactRepository {
     private readonly transactionRunner: PrismaService | null = null
   ) {}
 
-  // 기능 : 거래처 저장소 작업을 트랜잭션 안에서 실행합니다.
+  // 기능 : 담당자 저장소 작업을 트랜잭션 안에서 실행합니다.
   async runInTransaction<T>(
     work: (repository: ContactRepository) => Promise<T>
   ): Promise<T> {
@@ -61,13 +61,13 @@ export class PrismaContactRepository implements ContactRepository {
       return work(this);
     }
 
-    // 기능 : Prisma 트랜잭션 클라이언트로 격리된 거래처 저장소 콜백을 실행합니다.
+    // 기능 : Prisma 트랜잭션 클라이언트로 격리된 담당자 저장소 콜백을 실행합니다.
     return this.transactionRunner.$transaction(async (transaction) => {
       return work(new PrismaContactRepository(transaction, null));
     });
   }
 
-  // 기능 : 현재 사용자의 거래처 목록과 전체 개수를 조회합니다.
+  // 기능 : 현재 사용자의 담당자 목록과 전체 개수를 조회합니다.
   async listContacts(input: ListContactsInput): Promise<ContactPageRecord> {
     const where = this.createContactWhere(input);
 
@@ -92,7 +92,7 @@ export class PrismaContactRepository implements ContactRepository {
     };
   }
 
-  // 기능 : 현재 사용자의 거래처 export 대상 전체 목록을 조회합니다.
+  // 기능 : 현재 사용자의 담당자 export 대상 전체 목록을 조회합니다.
   async listContactsForExport(
     input: ExportContactsInput
   ): Promise<ContactRecord[]> {
@@ -109,7 +109,7 @@ export class PrismaContactRepository implements ContactRepository {
     return items.map((contact) => this.mapContact(contact));
   }
 
-  // 기능 : 현재 사용자의 거래처에 연결된 딜 전체 목록을 조회합니다.
+  // 기능 : 현재 사용자의 담당자에 연결된 딜 전체 목록을 조회합니다.
   async listContactDeals(
     input: ListContactDealsInput
   ): Promise<ContactDealRecord[]> {
@@ -128,7 +128,7 @@ export class PrismaContactRepository implements ContactRepository {
     });
   }
 
-  // 기능 : 현재 사용자의 거래처 단건을 relation과 함께 조회합니다.
+  // 기능 : 현재 사용자의 담당자 단건을 relation과 함께 조회합니다.
   async findContact(
     userId: string,
     contactId: string
@@ -148,7 +148,7 @@ export class PrismaContactRepository implements ContactRepository {
     return contact ? this.mapContact(contact) : null;
   }
 
-  // 기능 : 현재 사용자의 거래처 존재 여부만 조회합니다.
+  // 기능 : 현재 사용자의 담당자 존재 여부만 조회합니다.
   async findContactLookup(
     userId: string,
     contactId: string
@@ -167,7 +167,7 @@ export class PrismaContactRepository implements ContactRepository {
     return contact;
   }
 
-  // 기능 : 현재 사용자의 거래처 단건을 생성합니다.
+  // 기능 : 현재 사용자의 담당자 단건을 생성합니다.
   async createContact(input: CreateContactInput): Promise<ContactLookupRecord> {
     const contact = await this.client.contact.create({
       data: {
@@ -188,7 +188,7 @@ export class PrismaContactRepository implements ContactRepository {
     return contact;
   }
 
-  // 기능 : 현재 사용자의 거래처 기본 정보를 수정합니다.
+  // 기능 : 현재 사용자의 담당자 기본 정보를 수정합니다.
   async updateContact(
     userId: string,
     contactId: string,
@@ -247,7 +247,7 @@ export class PrismaContactRepository implements ContactRepository {
     });
   }
 
-  // 기능 : 현재 사용자의 거래처 직급 목록을 정렬해 조회합니다.
+  // 기능 : 현재 사용자의 담당자 직급 목록을 정렬해 조회합니다.
   async listJobGrades(userId: string): Promise<ContactJobGradeRecord[]> {
     return this.client.contactJobGrade.findMany({
       where: { userId },
@@ -259,7 +259,7 @@ export class PrismaContactRepository implements ContactRepository {
     });
   }
 
-  // 기능 : 현재 사용자의 거래처 직급 단건을 조회합니다.
+  // 기능 : 현재 사용자의 담당자 직급 단건을 조회합니다.
   async findJobGrade(
     userId: string,
     jobGradeId: string
@@ -276,7 +276,7 @@ export class PrismaContactRepository implements ContactRepository {
     });
   }
 
-  // 기능 : 현재 사용자 안에서 같은 거래처 직급 이름이 있는지 확인합니다.
+  // 기능 : 현재 사용자 안에서 같은 담당자 직급 이름이 있는지 확인합니다.
   async existsJobGradeByName(
     userId: string,
     jobGradeName: string
@@ -296,7 +296,7 @@ export class PrismaContactRepository implements ContactRepository {
     return Boolean(existing);
   }
 
-  // 기능 : 현재 사용자의 거래처 직급을 생성합니다.
+  // 기능 : 현재 사용자의 담당자 직급을 생성합니다.
   async createJobGrade(userId: string, jobGradeName: string): Promise<void> {
     await this.client.contactJobGrade.create({
       data: {
@@ -306,7 +306,7 @@ export class PrismaContactRepository implements ContactRepository {
     });
   }
 
-  // 기능 : 현재 사용자의 거래처 직급을 사용하는 거래처가 있는지 확인합니다.
+  // 기능 : 현재 사용자의 담당자 직급을 사용하는 담당자가 있는지 확인합니다.
   async isJobGradeInUse(userId: string, jobGradeId: string): Promise<boolean> {
     const contact = await this.client.contact.findFirst({
       where: {
@@ -321,7 +321,7 @@ export class PrismaContactRepository implements ContactRepository {
     return Boolean(contact);
   }
 
-  // 기능 : 현재 사용자의 거래처 직급을 삭제합니다.
+  // 기능 : 현재 사용자의 담당자 직급을 삭제합니다.
   async deleteJobGrade(userId: string, jobGradeId: string): Promise<void> {
     await this.client.contactJobGrade.deleteMany({
       where: {
@@ -331,7 +331,7 @@ export class PrismaContactRepository implements ContactRepository {
     });
   }
 
-  // 기능 : 현재 사용자의 거래처 부서 목록을 정렬해 조회합니다.
+  // 기능 : 현재 사용자의 담당자 부서 목록을 정렬해 조회합니다.
   async listDepartments(userId: string): Promise<ContactDepartmentRecord[]> {
     return this.client.contactDepartment.findMany({
       where: { userId },
@@ -343,7 +343,7 @@ export class PrismaContactRepository implements ContactRepository {
     });
   }
 
-  // 기능 : 현재 사용자의 거래처 부서 단건을 조회합니다.
+  // 기능 : 현재 사용자의 담당자 부서 단건을 조회합니다.
   async findDepartment(
     userId: string,
     departmentId: string
@@ -360,7 +360,7 @@ export class PrismaContactRepository implements ContactRepository {
     });
   }
 
-  // 기능 : 현재 사용자 안에서 같은 거래처 부서 이름이 있는지 확인합니다.
+  // 기능 : 현재 사용자 안에서 같은 담당자 부서 이름이 있는지 확인합니다.
   async existsDepartmentByName(
     userId: string,
     departmentName: string
@@ -380,7 +380,7 @@ export class PrismaContactRepository implements ContactRepository {
     return Boolean(existing);
   }
 
-  // 기능 : 현재 사용자의 거래처 부서를 생성합니다.
+  // 기능 : 현재 사용자의 담당자 부서를 생성합니다.
   async createDepartment(userId: string, departmentName: string): Promise<void> {
     await this.client.contactDepartment.create({
       data: {
@@ -390,7 +390,7 @@ export class PrismaContactRepository implements ContactRepository {
     });
   }
 
-  // 기능 : 현재 사용자의 거래처 부서를 사용하는 거래처가 있는지 확인합니다.
+  // 기능 : 현재 사용자의 담당자 부서를 사용하는 담당자가 있는지 확인합니다.
   async isDepartmentInUse(
     userId: string,
     departmentId: string
@@ -408,7 +408,7 @@ export class PrismaContactRepository implements ContactRepository {
     return Boolean(contact);
   }
 
-  // 기능 : 현재 사용자의 거래처 부서를 삭제합니다.
+  // 기능 : 현재 사용자의 담당자 부서를 삭제합니다.
   async deleteDepartment(userId: string, departmentId: string): Promise<void> {
     await this.client.contactDepartment.deleteMany({
       where: {
@@ -418,7 +418,7 @@ export class PrismaContactRepository implements ContactRepository {
     });
   }
 
-  // 기능 : 거래처 일반 메모 로그를 생성합니다.
+  // 기능 : 담당자 일반 메모 로그를 생성합니다.
   async createMemoLog(input: CreateContactMemoLogInput): Promise<void> {
     await this.client.contactMemoLog.create({
       data: {
@@ -430,7 +430,7 @@ export class PrismaContactRepository implements ContactRepository {
     });
   }
 
-  // 기능 : 거래처 일반 메모 로그를 cursor 조건으로 조회합니다.
+  // 기능 : 담당자 일반 메모 로그를 cursor 조건으로 조회합니다.
   async listMemoLogs(input: {
     readonly userId: string;
     readonly contactId: string;
@@ -454,7 +454,7 @@ export class PrismaContactRepository implements ContactRepository {
     });
   }
 
-  // 기능 : 거래처 일반 메모 로그의 memoType 또는 memo를 수정합니다.
+  // 기능 : 담당자 일반 메모 로그의 memoType 또는 memo를 수정합니다.
   async updateMemoLog(input: UpdateContactMemoLogInput): Promise<boolean> {
     const result = await this.client.contactMemoLog.updateMany({
       where: {
@@ -471,7 +471,7 @@ export class PrismaContactRepository implements ContactRepository {
     return result.count > 0;
   }
 
-  // 기능 : 거래처 개인 비밀 메모 로그를 생성합니다.
+  // 기능 : 담당자 개인 비밀 메모 로그를 생성합니다.
   async createPrivateMemoLog(
     input: CreateContactPrivateMemoLogInput
   ): Promise<void> {
@@ -485,7 +485,7 @@ export class PrismaContactRepository implements ContactRepository {
     });
   }
 
-  // 기능 : 작성자 본인의 거래처 개인 비밀 메모 로그를 cursor 조건으로 조회합니다.
+  // 기능 : 작성자 본인의 담당자 개인 비밀 메모 로그를 cursor 조건으로 조회합니다.
   async listPrivateMemoLogs(input: {
     readonly userId: string;
     readonly contactId: string;
@@ -509,7 +509,7 @@ export class PrismaContactRepository implements ContactRepository {
     });
   }
 
-  // 기능 : 거래처 개인 비밀 메모 로그의 암호문과 key version만 수정합니다.
+  // 기능 : 담당자 개인 비밀 메모 로그의 암호문과 key version만 수정합니다.
   async updatePrivateMemoLog(input: {
     readonly userId: string;
     readonly contactId: string;
@@ -582,7 +582,7 @@ export class PrismaContactRepository implements ContactRepository {
     };
   }
 
-  // 기능 : 거래처 목록과 export에 공통으로 쓰는 Prisma 조회 조건을 생성합니다.
+  // 기능 : 담당자 목록과 export에 공통으로 쓰는 Prisma 조회 조건을 생성합니다.
   private createContactWhere(
     input: ExportContactsInput
   ): Prisma.ContactWhereInput {
@@ -605,7 +605,7 @@ export class PrismaContactRepository implements ContactRepository {
     };
   }
 
-  // 기능 : Prisma 거래처 행을 application 레코드로 변환합니다.
+  // 기능 : Prisma 담당자 행을 application 레코드로 변환합니다.
   private mapContact(contact: ContactWithRelations): ContactRecord {
     return {
       id: contact.id,

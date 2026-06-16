@@ -11,6 +11,7 @@ export const companyQueryKeys = {
         companyName: params.companyName ?? "",
         companyFieldId: params.companyFieldId ?? "",
         companyRegionId: params.companyRegionId ?? "",
+        sort: params.sort ?? "createdAtDesc",
       },
     ] as const,
   details: () => [...companyQueryKeys.all, "detail"] as const,

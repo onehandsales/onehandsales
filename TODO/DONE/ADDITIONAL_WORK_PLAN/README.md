@@ -74,19 +74,19 @@ TODO/DONE/ADDITIONAL_WORK_PLAN/
 
 ## 4. 진행 상태
 
-- ADD-001 Company 목록 응답에 거래처 수 추가: 구현 완료
+- ADD-001 Company 목록 응답에 담당자 수 추가: 구현 완료
 - ADD-002 회사 단건 페이지용 연결 Contact 전체 목록 API 추가: 구현 완료
 - ADD-003 회사 목록 필터 기준 xlsx 내보내기 API 추가: 구현 완료
-- ADD-004 거래처 목록 필터 기준 xlsx 내보내기 API 추가: 구현 완료
+- ADD-004 담당자 목록 필터 기준 xlsx 내보내기 API 추가: 구현 완료
 - ADD-005 제품 목록 필터 기준 xlsx 내보내기 API 추가: 구현 완료
 - ADD-006 회사 목록 응답에 `dealCount` 추가: 구현 완료
 - ADD-007 회사 xlsx export에 `dealCount` 추가: 구현 완료
 - ADD-008 회사 단건 상세용 연결 Deal 전체 목록 API 추가: 구현 완료
-- ADD-009 거래처 단건 상세용 연결 Deal 전체 목록 API 추가: 구현 완료
+- ADD-009 담당자 단건 상세용 연결 Deal 전체 목록 API 추가: 구현 완료
 - ADD-010 제품 목록 응답에 `dealCount` 추가와 딜 많은 순 정렬 추가: 구현 완료
 - ADD-011 제품 xlsx export에 `dealCount` 추가: 구현 완료
 - ADD-012 제품 단건 상세용 연결 Deal 전체 목록 API 추가: 구현 완료
-- Frontend 반영: 구현 완료. User Web 회사/거래처/제품 화면에 ADD-001~012의 count, export, 연결 목록 요구사항을 반영했다.
+- Frontend 반영: 구현 완료. User Web 회사/담당자/제품 화면에 ADD-001~012의 count, export, 연결 목록 요구사항을 반영했다.
 - Frontend 완료 확인일: 2026-06-14
 - Frontend 검증: `FE/user-web` typecheck/lint/build 통과
 
@@ -103,12 +103,12 @@ TODO/DONE/ADDITIONAL_WORK_PLAN/
 - `GET /api/companies` 목록 응답의 각 item에 `contactCount`를 추가했다.
 - `GET /api/companies/:companyId/contacts` API를 추가해 회사에 연결된 Contact 전체 목록을 반환한다.
 - `GET /api/companies/export/xlsx` API를 추가해 회사 목록 필터 조건에 맞는 전체 데이터를 xlsx로 내려준다.
-- `GET /api/contacts/export/xlsx` API를 추가해 거래처 목록 필터 조건에 맞는 전체 데이터를 xlsx로 내려준다.
+- `GET /api/contacts/export/xlsx` API를 추가해 담당자 목록 필터 조건에 맞는 전체 데이터를 xlsx로 내려준다.
 - `GET /api/products/export/xlsx` API를 추가해 제품 목록 필터 조건에 맞는 전체 데이터를 xlsx로 내려준다.
 - `GET /api/companies` 응답에 회사별 `dealCount`를 추가한다.
 - `GET /api/companies/export/xlsx` 파일에 `딜 수` 컬럼을 추가한다.
 - `GET /api/companies/:companyId/deals` API를 추가해 회사에 연결된 Deal 전체 목록을 반환한다.
-- `GET /api/contacts/:contactId/deals` API를 추가해 거래처에 연결된 Deal 전체 목록을 반환한다.
+- `GET /api/contacts/:contactId/deals` API를 추가해 담당자에 연결된 Deal 전체 목록을 반환한다.
 - `GET /api/products` 응답에 제품별 `dealCount`를 추가하고 `sort=dealCountDesc`를 지원한다.
 - `GET /api/products/export/xlsx` 파일에 `딜 수` 컬럼을 추가한다.
 - `GET /api/products/:productId/deals` API를 추가해 제품에 연결된 Deal 전체 목록을 반환한다.
@@ -121,7 +121,7 @@ TODO/DONE/ADDITIONAL_WORK_PLAN/
 - 기존 Contact 기본 상세 응답 변경
 - 기존 Product 기본 상세 응답 변경
 - 회사 연결 Contact 목록 페이지네이션
-- 회사/거래처/제품 연결 Deal 목록 페이지네이션
+- 회사/담당자/제품 연결 Deal 목록 페이지네이션
 - 범용 Import/Export 모듈 또는 ExportJob 구현
 - Company 삭제, soft delete, 휴지통 기능
 
@@ -129,14 +129,14 @@ TODO/DONE/ADDITIONAL_WORK_PLAN/
 
 이 계획의 Backend API 중 ADD-001~012는 구현 완료 상태다. Frontend 목적은 목록/상세 화면의 사용자 행동을 완성하는 것이다.
 
-- 회사 목록: `contactCount`를 `거래처 수`로 표시해 사용자가 회사별 연결 담당자 규모를 목록에서 바로 비교하게 한다.
+- 회사 목록: `contactCount`를 `담당자 수`로 표시해 사용자가 회사별 연결 담당자 규모를 목록에서 바로 비교하게 한다.
 - 회사 목록: `dealCount`를 `딜 수`로 표시해 사용자가 회사별 영업 진행 규모를 목록에서 바로 비교하게 한다.
 - 회사 단건: 연결 Contact 전체 목록을 보여 사용자가 회사 상세에서 관련 담당자를 빠르게 확인하게 한다.
 - 회사 단건: 연결 Deal 전체 목록을 보여 사용자가 회사 상세에서 관련 딜을 빠르게 확인하게 한다.
-- 거래처 단건: 연결 Deal 전체 목록을 보여 사용자가 거래처 담당자 기준 진행 딜을 확인하게 한다.
+- 담당자 단건: 연결 Deal 전체 목록을 보여 사용자가 담당자 기준 진행 딜을 확인하게 한다.
 - 제품 목록: `dealCount`와 딜 많은 순 정렬을 제공해 어떤 제품이 많이 제안/포함되는지 비교하게 한다.
 - 제품 단건: 연결 Deal 전체 목록을 보여 사용자가 제품 기준 진행 딜을 확인하게 한다.
-- 회사/거래처/제품 목록: 현재 검색어와 필터 기준으로 xlsx를 다운로드하게 한다.
+- 회사/담당자/제품 목록: 현재 검색어와 필터 기준으로 xlsx를 다운로드하게 한다.
 - export UI: JSON 응답이 아니라 blob 다운로드로 처리하고, `page`를 제외한 현재 검색/필터 query만 전달한다.
 
 ## 8. 완료 기준

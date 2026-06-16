@@ -9,7 +9,7 @@ const items: ReadonlyArray<{
   readonly end?: boolean;
 }> = [
   { label: "홈", to: "/", icon: LayoutGrid, end: true },
-  { label: "거래처", to: "/contacts", icon: Users },
+  { label: "담당자", to: "/contacts", icon: Users },
   { label: "회의록", to: "/meeting-notes", icon: FolderArchive },
   { label: "알림", to: "/notifications", icon: Bell },
   { label: "설정", to: "/settings", icon: Settings },

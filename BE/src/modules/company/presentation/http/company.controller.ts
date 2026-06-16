@@ -70,7 +70,7 @@ export class CompanyController {
     return createXlsxDownloadResponse(response, file);
   }
 
-  // API : 회사, 회사에 연결된 거래처 전체 목록 조회
+  // API : 회사, 회사에 연결된 담당자 전체 목록 조회
   @Get(":companyId/contacts")
   listCompanyContacts(
     @CurrentUser() currentUser: CurrentUserContext,

@@ -9,7 +9,7 @@ The UI should help a salesperson answer quickly:
 - 지금 어떤 딜이 진행 중인가?
 - 어떤 딜이 막혀 있는가?
 - 다음 행동은 무엇인가?
-- 어떤 회사/거래처/제품 정보가 이 딜과 연결되어 있는가?
+- 어떤 회사/담당자/제품 정보가 이 딜과 연결되어 있는가?
 
 The first screen should make the sales pipeline visible before secondary summaries.
 
@@ -251,7 +251,7 @@ Primary navigation should make these areas easy to reach:
 
 - 딜
 - 회사
-- 거래처(담당자)
+- 담당자
 - 제품
 - 일정
 - 회의록
@@ -486,7 +486,7 @@ If the needed company/contact/product does not exist, allow inline minimum creat
 Pattern:
 
 - searchable combobox for company/contact/product
-- if there is no result, show `새 회사 만들기`, `새 거래처 만들기`, `새 제품 만들기`
+- if there is no result, show `새 회사 만들기`, `새 담당자 만들기`, `새 제품 만들기`
 - inline creation asks only minimum fields
 - after creation, the new entity is selected automatically
 - full details are edited later on that entity's detail page

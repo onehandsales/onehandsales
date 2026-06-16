@@ -35,7 +35,7 @@ type ContactDetailScreenProps = {
   readonly contactId: string;
 };
 
-// 기능 : 거래처 상세 화면을 렌더링합니다.
+// 기능 : 담당자 상세 화면을 렌더링합니다.
 export function ContactDetailScreen({ contactId }: ContactDetailScreenProps) {
   const [notice, setNotice] = useState<string | null>(null);
   const [isEditing, setIsEditing] = useState(false);
@@ -111,7 +111,7 @@ export function ContactDetailScreen({ contactId }: ContactDetailScreenProps) {
                 contact={contact}
                 onSaved={() => {
                   void contactQuery.refetch();
-                  setNotice("거래처 정보가 저장되었습니다.");
+                  setNotice("담당자 정보가 저장되었습니다.");
                   setIsEditing(false);
                 }}
               />
@@ -338,7 +338,7 @@ function PanelError({
   );
 }
 
-// 기능 : 거래처 상세 조회 실패 상태를 렌더링합니다.
+// 기능 : 담당자 상세 조회 실패 상태를 렌더링합니다.
 function ContactDetailError({
   error,
   onRetry,
@@ -362,7 +362,7 @@ function ContactDetailError({
   );
 }
 
-// 기능 : 거래처 상세 로딩 상태를 렌더링합니다.
+// 기능 : 담당자 상세 로딩 상태를 렌더링합니다.
 function ContactDetailSkeleton() {
   return (
     <div className="min-h-full bg-[#FAFAF8]">

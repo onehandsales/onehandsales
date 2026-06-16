@@ -9,4 +9,5 @@ export type {
   CompanyListParams,
   CompanyListResponse,
   CompanyRegion,
+  CompanySort,
 } from "./types/company";

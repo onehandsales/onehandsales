@@ -1,6 +1,6 @@
 # User Web 프론트엔드 아키텍처
 
-이 문서는 `FE/user-web`의 기준 아키텍처를 정의한다. 사용자 웹은 개인 영업 담당자가 실제로 딜, 거래처, 제품, 일정, 회의록을 관리하는 화면이며, 도메인 기능 중심으로 확장한다.
+이 문서는 `FE/user-web`의 기준 아키텍처를 정의한다. 사용자 웹은 개인 영업 담당자가 실제로 딜, 담당자, 제품, 일정, 회의록을 관리하는 화면이며, 도메인 기능 중심으로 확장한다.
 
 ## 1. 기술 기준
 
@@ -277,14 +277,14 @@ src/features/company/
 - `src/features/meeting-note`는 `TODO/DONE/MEETING_NOTE_MANUAL_PLAN/COMMON/API-SPEC/MEETING_NOTE_API.md`의 수동 회의록 계약을 따른다. 단일 `dealId`, `stageText`, `hasNext`, request `timeZone`, request `rawText`, AI/STT 생성, 삭제/복구 계약은 현재 User Web 기준이 아니다.
 - Page-number list pagination은 `pageSize=10`, `totalPages`, `totalCount`를 기준으로 한다. 공용 `Pagination`에 `hasNext`를 넘기지 않는다.
 - Company/Contact/Product/Deal/MeetingNote 목록은 10개 단위로 페이지를 나누며, User Web은 서버 응답의 `pageSize`를 표시/계산 기준으로 사용한다.
-- `hasNext`는 회사/거래처/제품 상세 메모 로그처럼 cursor 기반 infinite loading에서만 사용한다.
+- `hasNext`는 회사/담당자/제품 상세 메모 로그처럼 cursor 기반 infinite loading에서만 사용한다.
 - Company list는 `useCompanyFields`, `useCompanyRegions` 전체 조회 결과를 `분야 ▾`, `지역 ▾` select 옵션으로 사용한다. 목록 페이지에서 회사 분야/지역 생성/삭제 UI를 노출하지 않는다.
 - Contact list는 `useContactDepartments`, `useContactJobGrades` 전체 조회 결과를 `부서 ▾`, `직급 ▾` select 옵션으로 사용한다. 목록 페이지에서 부서/직급 생성/삭제 UI를 노출하지 않는다.
 - Company/Contact/Product list는 제품형 `Controls Bar + Table Card + Pagination` 문법을 기준으로 맞춘다.
 - `src/features/company/api/company-api.ts`는 구현 완료된 Backend Company API 계약과 맞춰야 한다. Company UI/API 통합 작업 때 `TODO/DONE/COMPANY_DOMAIN_PLAN/COMMON/API-SPEC/COMPANY_API.md`와 `COMPANY_API_DETAIL.md`의 `companyName`, `companyFieldId`, `companyRegionId`, memo/private memo contract를 기준으로 오래된 필드와 삭제/복구 경로를 정리한다.
 - Company 화면은 `TODO/DONE/ADDITIONAL_WORK_PLAN` 기준으로 목록 `contactCount`/`dealCount`, 회사 상세 연결 Contact 목록, 회사 상세 연결 Deal 목록, 현재 필터 기준 xlsx export를 반영해야 한다.
 - `src/features/contact/api`는 구현 완료된 Backend Contact API 계약과 맞춰야 한다. Contact UI/API 통합 작업 때 `TODO/DONE/CONTACT_DOMAIN_PLAN/COMMON/API-SPEC/CONTACT_API.md`와 `CONTACT_API_DETAIL.md`의 `username`, `mobile`, `email`, `companyId`, `contactDepartmentId`, `contactJobGradeId`, `contactMemo`, memo/private memo contract를 기준으로 오래된 `name`, `phone`, `department`, `position`, `initialMemo`, 삭제/복구 경로를 정리한다.
-- Contact 화면은 `TODO/DONE/ADDITIONAL_WORK_PLAN` 기준으로 거래처 상세 연결 Deal 목록과 현재 필터 기준 xlsx export를 반영해야 한다.
+- Contact 화면은 `TODO/DONE/ADDITIONAL_WORK_PLAN` 기준으로 담당자 상세 연결 Deal 목록과 현재 필터 기준 xlsx export를 반영해야 한다.
 - `src/features/product` 또는 `src/features/products`는 구현 완료된 Backend Product API 계약과 맞춰야 한다. Product UI/API 통합 작업 때 `TODO/DONE/PRODUCT_DOMAIN_PLAN/COMMON/API-SPEC/PRODUCT_API.md`와 `PRODUCT_API_DETAIL.md`의 `productName`, `productPrice`, `productCategoryId`, `productStatusId`, `productMemo`, memo/private memo contract를 기준으로 오래된 `unitPrice`, `currency`, `description`, `initialMemo`, 삭제/복구 경로를 정리한다.
 - Product 화면은 `TODO/DONE/ADDITIONAL_WORK_PLAN` 기준으로 목록 `dealCount`, `sort=dealCountDesc`, 제품 상세 연결 Deal 목록, 현재 필터 기준 xlsx export를 반영해야 한다.
 - `src/features/deal/api`는 구현 완료된 Backend Deal API 계약과 맞춰야 한다. Deal UI/API 통합 작업 때 `TODO/DONE/DEAL_DOMAIN_PLAN/COMMON/API-SPEC/DEAL_API.md`와 `DEAL_API_DETAIL.md`의 6단계 상태, `dealName`, `dealCost`, `companyId`, `contactId`, `productIds`, `expectedEndDate`, `followingAction`, 메모 로그 contract를 기준으로 오래된 단계명과 필드를 정리한다.

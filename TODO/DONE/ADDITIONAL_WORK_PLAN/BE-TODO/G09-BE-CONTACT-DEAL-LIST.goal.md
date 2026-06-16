@@ -2,7 +2,7 @@
 
 ## /goal 입력문
 
-아래 문서를 먼저 읽고, 거래처 단건 상세 페이지에서 사용할 거래처 연결 딜 전체 목록 API를 추가해줘.
+아래 문서를 먼저 읽고, 담당자 단건 상세 페이지에서 사용할 담당자 연결 딜 전체 목록 API를 추가해줘.
 
 필수 참고 문서:
 
@@ -19,7 +19,7 @@
 
 ## 목표
 
-`GET /api/contacts/:contactId/deals` API를 추가해 해당 거래처에 연결된 딜 전체 목록을 반환한다.
+`GET /api/contacts/:contactId/deals` API를 추가해 해당 담당자에 연결된 딜 전체 목록을 반환한다.
 
 ## 구현 범위
 
@@ -36,7 +36,7 @@
 - Method: `GET`
 - Path: `/api/contacts/:contactId/deals`
 - 인증: Backend App access token
-- 권한: 본인 거래처에 연결된 딜만 조회
+- 권한: 본인 담당자에 연결된 딜만 조회
 - 페이지네이션: 없음
 - 정렬: `createdAt DESC`, `id DESC`
 
@@ -57,7 +57,7 @@
 
 ## 비즈니스 규칙
 
-- `contactId`가 현재 사용자 소유 거래처인지 먼저 확인한다.
+- `contactId`가 현재 사용자 소유 담당자인지 먼저 확인한다.
 - 딜 조회 조건은 `contactId`와 현재 사용자 `userId`를 모두 포함한다.
 - 응답에는 `id`, `dealName`, `dealCost`, `createdAt`만 포함한다.
 - 연결된 딜이 없으면 `items: []`를 반환한다.
@@ -85,9 +85,9 @@ pnpm run build
 
 동작 검증:
 
-- 본인 거래처에 연결된 딜 목록만 반환한다.
+- 본인 담당자에 연결된 딜 목록만 반환한다.
 - 연결된 딜이 없으면 빈 배열을 반환한다.
-- 다른 사용자 거래처 ID는 `ContactNotFound`로 처리한다.
+- 다른 사용자 담당자 ID는 `ContactNotFound`로 처리한다.
 - 정렬은 `createdAt DESC`, `id DESC` 기준이다.
 
 ## 완료 보고

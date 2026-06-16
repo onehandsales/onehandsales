@@ -1,11 +1,13 @@
 ﻿import { Type } from "class-transformer";
 import {
+  IsEnum,
   IsInt,
   IsOptional,
   IsString,
   IsUUID,
   Min,
 } from "class-validator";
+import { CompanyListSort } from "@/modules/company/application/ports/company.repository";
 
 // 역할 : ListCompaniesQueryDto HTTP 요청 값을 검증하기 위한 DTO입니다.
 export class ListCompaniesQueryDto {
@@ -26,6 +28,10 @@ export class ListCompaniesQueryDto {
   @IsOptional()
   @IsUUID()
   companyRegionId?: string;
+
+  @IsOptional()
+  @IsEnum(CompanyListSort)
+  sort?: CompanyListSort;
 }
 
 // 역할 : ExportCompaniesQueryDto HTTP export 요청 값을 검증하기 위한 DTO입니다.
@@ -41,6 +47,10 @@ export class ExportCompaniesQueryDto {
   @IsOptional()
   @IsUUID()
   companyRegionId?: string;
+
+  @IsOptional()
+  @IsEnum(CompanyListSort)
+  sort?: CompanyListSort;
 }
 
 // 역할 : CursorQueryDto HTTP 요청 값을 검증하기 위한 DTO입니다.

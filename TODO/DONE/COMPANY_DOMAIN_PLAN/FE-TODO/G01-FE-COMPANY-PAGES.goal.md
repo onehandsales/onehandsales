@@ -33,9 +33,9 @@ User Web에서 회사 도메인 사용자 페이지를 구현해줘.
 5. 회사 목록은 회사 분야 필터와 회사 지역 필터를 제공한다.
 6. 회사 분야 필터 옵션은 `GET /api/company-fields`로 조회한다.
 7. 회사 지역 필터 옵션은 `GET /api/company-regions`로 조회한다.
-8. 회사 목록에는 회사 이름, 회사 분야, 회사 지역, 거래처 수, 등록일을 표시한다.
+8. 회사 목록에는 회사 이름, 회사 분야, 회사 지역, 담당자 수, 등록일을 표시한다.
 9. 회사 목록에는 최근 수정일을 표시하지 않는다.
-10. 회사 목록의 거래처 수는 `items[].contactCount`, 딜 수는 `items[].dealCount`를 사용하고, `totalCount`와 혼동하지 않는다.
+10. 회사 목록의 담당자 수는 `items[].contactCount`, 딜 수는 `items[].dealCount`를 사용하고, `totalCount`와 혼동하지 않는다.
 11. 회사 목록 내보내기 버튼을 만든다.
 12. 회사 목록 내보내기는 `GET /api/companies/export/xlsx`를 사용한다.
 13. 내보내기 요청에는 현재 회사 이름 검색어, 회사 분야 필터, 회사 지역 필터를 전달하고 `page`는 전달하지 않는다.
@@ -59,7 +59,7 @@ User Web에서 회사 도메인 사용자 페이지를 구현해줘.
 31. 회사 단건 상세에는 연결 Contact 요약 영역을 둔다.
 32. 연결 Contact 요약은 `GET /api/companies/:companyId/contacts`를 사용한다.
 33. 연결 Contact 요약은 페이지네이션을 만들지 않고 전체 목록을 표시한다.
-34. 연결 Contact 요약은 거래처 이름과 `contactDepartment.departmentName`을 표시한다.
+34. 연결 Contact 요약은 담당자 이름과 `contactDepartment.departmentName`을 표시한다.
 35. 회사 단건 상세에는 연결 Deal 목록 영역을 두고 `GET /api/companies/:companyId/deals`를 사용한다.
 36. 회사명/회사분야/회사지역 수정 UI를 만든다.
 37. 회사 기본 정보 수정은 `PATCH /api/companies/:companyId`를 사용한다.
@@ -113,7 +113,7 @@ User Web에서 회사 도메인 사용자 페이지를 구현해줘.
 - [x] 회사 분야 필터가 있다.
 - [x] 회사 지역 필터가 있다.
 - [x] 20개 단위 페이지네이션 UI가 있다.
-- [x] 회사 목록에 `contactCount`가 거래처 수로 표시된다.
+- [x] 회사 목록에 `contactCount`가 담당자 수로 표시된다.
 - [x] 회사 목록 xlsx 내보내기가 현재 검색어와 필터를 반영한다.
 - [x] 회사 생성 UI가 있다.
 - [x] 회사 생성 요청 필드명이 `companyMemo`다.
@@ -331,7 +331,7 @@ User Web에서 회사 도메인 사용자 페이지를 구현해줘.
 - 20개 단위 페이지네이션
 - 회사 생성 버튼
 - xlsx export 버튼
-- 목록 row/card에 회사 이름, 회사 분야, 회사 지역, 거래처 수, 딜 수, 등록일 표시
+- 목록 row/card에 회사 이름, 회사 분야, 회사 지역, 담당자 수, 딜 수, 등록일 표시
 
 표시 금지:
 

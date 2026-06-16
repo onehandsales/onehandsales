@@ -25,6 +25,6 @@
 - 회사 메모 로그 생성은 `memoType`, `memo`를 보낸다.
 - 회사 개인 비밀 메모 로그 생성은 `memo`만 보낸다.
 - 회사 목록에는 최근 수정일을 표시하지 않는다.
-- 회사 목록에는 `contactCount`를 `거래처 수`로 표시한다.
+- 회사 목록에는 `contactCount`를 `담당자 수`로 표시한다.
 - 회사 단건 화면의 연결 Contact 목록은 `GET /api/companies/:companyId/contacts`로 별도 조회한다.
 - 회사 목록 xlsx 내보내기는 `GET /api/companies/export/xlsx`를 blob으로 받고, 현재 검색어와 필터만 전달하며 `page`는 전달하지 않는다.

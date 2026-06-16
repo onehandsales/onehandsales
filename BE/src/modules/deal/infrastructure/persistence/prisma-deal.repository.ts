@@ -289,7 +289,7 @@ export class PrismaDealRepository implements DealRepository {
     });
   }
 
-  // 기능 : 현재 사용자의 거래처 단건을 조회합니다.
+  // 기능 : 현재 사용자의 담당자 단건을 조회합니다.
   async findContact(
     userId: string,
     contactId: string
@@ -336,7 +336,7 @@ export class PrismaDealRepository implements DealRepository {
     });
   }
 
-  // 기능 : 현재 사용자의 거래처 옵션 전체 목록을 조회합니다.
+  // 기능 : 현재 사용자의 담당자 옵션 전체 목록을 조회합니다.
   async listContactOptions(userId: string): Promise<DealContactRecord[]> {
     const contacts = await this.client.contact.findMany({
       where: { userId },
@@ -529,7 +529,7 @@ export class PrismaDealRepository implements DealRepository {
     } satisfies Prisma.DealInclude;
   }
 
-  // 기능 : 거래처 조회에 필요한 select 조건을 생성합니다.
+  // 기능 : 담당자 조회에 필요한 select 조건을 생성합니다.
   private createContactSelect() {
     return {
       id: true,
@@ -596,7 +596,7 @@ export class PrismaDealRepository implements DealRepository {
     };
   }
 
-  // 기능 : Prisma 거래처 행을 application 레코드로 변환합니다.
+  // 기능 : Prisma 담당자 행을 application 레코드로 변환합니다.
   private mapContact(contact: DealContactRow): DealContactRecord {
     return {
       id: contact.id,

@@ -34,7 +34,7 @@ export interface CompanyListRecord extends CompanyRecord {
   readonly dealCount: number;
 }
 
-// 역할 : CompanyContactRecord 회사에 연결된 거래처 목록 레코드를 정의합니다.
+// 역할 : CompanyContactRecord 회사에 연결된 담당자 목록 레코드를 정의합니다.
 export interface CompanyContactRecord {
   readonly id: string;
   readonly username: string;
@@ -58,6 +58,15 @@ export interface CompanyPageRecord {
   readonly totalCount: number;
 }
 
+// 역할 : CompanyListSort 회사 목록 정렬 기준을 정의합니다.
+export enum CompanyListSort {
+  CREATED_AT_DESC = "createdAtDesc",
+  CONTACT_COUNT_DESC = "contactCountDesc",
+  CONTACT_COUNT_ASC = "contactCountAsc",
+  DEAL_COUNT_DESC = "dealCountDesc",
+  DEAL_COUNT_ASC = "dealCountAsc",
+}
+
 // 역할 : ListCompaniesInput 데이터가 계층 사이에서 전달되는 구조를 정의합니다.
 export interface ListCompaniesInput {
   readonly userId: string;
@@ -66,6 +75,7 @@ export interface ListCompaniesInput {
   readonly companyName?: string;
   readonly companyFieldId?: string;
   readonly companyRegionId?: string;
+  readonly sort?: CompanyListSort;
 }
 
 // 역할 : ExportCompaniesInput 회사 export 조회 조건을 정의합니다.
@@ -74,9 +84,10 @@ export interface ExportCompaniesInput {
   readonly companyName?: string;
   readonly companyFieldId?: string;
   readonly companyRegionId?: string;
+  readonly sort?: CompanyListSort;
 }
 
-// 역할 : ListCompanyContactsInput 회사에 연결된 거래처 조회 조건을 정의합니다.
+// 역할 : ListCompanyContactsInput 회사에 연결된 담당자 조회 조건을 정의합니다.
 export interface ListCompanyContactsInput {
   readonly userId: string;
   readonly companyId: string;
@@ -151,7 +162,7 @@ export interface CompanyRepository {
   listCompanies(input: ListCompaniesInput): Promise<CompanyPageRecord>;
   // 기능 : 현재 사용자의 회사 export 대상 전체 목록을 조회합니다.
   listCompaniesForExport(input: ExportCompaniesInput): Promise<CompanyListRecord[]>;
-  // 기능 : 현재 사용자의 회사에 연결된 거래처 전체 목록을 조회합니다.
+  // 기능 : 현재 사용자의 회사에 연결된 담당자 전체 목록을 조회합니다.
   listCompanyContacts(
     input: ListCompanyContactsInput
   ): Promise<CompanyContactRecord[]>;

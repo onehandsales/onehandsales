@@ -25,7 +25,7 @@ import type {
   UpdateContactPrivateMemoLogInput,
 } from "@/features/contact/types/contact";
 
-// 기능 : 거래처를 생성한 뒤 거래처 목록 캐시를 갱신합니다.
+// 기능 : 담당자를 생성한 뒤 담당자 목록 캐시를 갱신합니다.
 export function useCreateContactMutation() {
   const queryClient = useQueryClient();
 
@@ -37,7 +37,7 @@ export function useCreateContactMutation() {
   });
 }
 
-// 기능 : 거래처 기본 정보를 수정한 뒤 목록과 상세 캐시를 갱신합니다.
+// 기능 : 담당자 기본 정보를 수정한 뒤 목록과 상세 캐시를 갱신합니다.
 export function useUpdateContactMutation() {
   const queryClient = useQueryClient();
 
@@ -52,7 +52,7 @@ export function useUpdateContactMutation() {
   });
 }
 
-// 기능 : 거래처 직급을 생성한 뒤 직급 목록 캐시를 갱신합니다.
+// 기능 : 담당자 직급을 생성한 뒤 직급 목록 캐시를 갱신합니다.
 export function useCreateJobGradeMutation() {
   const queryClient = useQueryClient();
 
@@ -67,7 +67,7 @@ export function useCreateJobGradeMutation() {
   });
 }
 
-// 기능 : 거래처 직급을 삭제한 뒤 직급 목록과 거래처 목록 캐시를 갱신합니다.
+// 기능 : 담당자 직급을 삭제한 뒤 직급 목록과 담당자 목록 캐시를 갱신합니다.
 export function useDeleteJobGradeMutation() {
   const queryClient = useQueryClient();
 
@@ -82,7 +82,7 @@ export function useDeleteJobGradeMutation() {
   });
 }
 
-// 기능 : 거래처 부서를 생성한 뒤 부서 목록 캐시를 갱신합니다.
+// 기능 : 담당자 부서를 생성한 뒤 부서 목록 캐시를 갱신합니다.
 export function useCreateDepartmentMutation() {
   const queryClient = useQueryClient();
 
@@ -97,7 +97,7 @@ export function useCreateDepartmentMutation() {
   });
 }
 
-// 기능 : 거래처 부서를 삭제한 뒤 부서 목록과 거래처 목록 캐시를 갱신합니다.
+// 기능 : 담당자 부서를 삭제한 뒤 부서 목록과 담당자 목록 캐시를 갱신합니다.
 export function useDeleteDepartmentMutation() {
   const queryClient = useQueryClient();
 
@@ -112,7 +112,7 @@ export function useDeleteDepartmentMutation() {
   });
 }
 
-// 기능 : 거래처 일반 메모 로그를 생성한 뒤 메모 로그 캐시를 갱신합니다.
+// 기능 : 담당자 일반 메모 로그를 생성한 뒤 메모 로그 캐시를 갱신합니다.
 export function useCreateContactMemoLogMutation(contactId: string) {
   const queryClient = useQueryClient();
 
@@ -127,7 +127,7 @@ export function useCreateContactMemoLogMutation(contactId: string) {
   });
 }
 
-// 기능 : 거래처 일반 메모 로그를 수정한 뒤 메모 로그 캐시를 갱신합니다.
+// 기능 : 담당자 일반 메모 로그를 수정한 뒤 메모 로그 캐시를 갱신합니다.
 export function useUpdateContactMemoLogMutation(contactId: string) {
   const queryClient = useQueryClient();
 
@@ -142,7 +142,7 @@ export function useUpdateContactMemoLogMutation(contactId: string) {
   });
 }
 
-// 기능 : 거래처 개인 비밀 메모 로그를 생성한 뒤 개인 메모 로그 캐시를 갱신합니다.
+// 기능 : 담당자 개인 비밀 메모 로그를 생성한 뒤 개인 메모 로그 캐시를 갱신합니다.
 export function useCreateContactPrivateMemoLogMutation(contactId: string) {
   const queryClient = useQueryClient();
 
@@ -157,7 +157,7 @@ export function useCreateContactPrivateMemoLogMutation(contactId: string) {
   });
 }
 
-// 기능 : 거래처 개인 비밀 메모 로그를 수정한 뒤 개인 메모 로그 캐시를 갱신합니다.
+// 기능 : 담당자 개인 비밀 메모 로그를 수정한 뒤 개인 메모 로그 캐시를 갱신합니다.
 export function useUpdateContactPrivateMemoLogMutation(contactId: string) {
   const queryClient = useQueryClient();
 
@@ -172,7 +172,7 @@ export function useUpdateContactPrivateMemoLogMutation(contactId: string) {
   });
 }
 
-// 기능 : 현재 거래처 목록 필터의 엑셀 파일을 내려받습니다.
+// 기능 : 현재 담당자 목록 필터의 엑셀 파일을 내려받습니다.
 export function useExportContactsMutation() {
   return useMutation({
     mutationFn: (filters: ContactExportParams) => exportContactsXlsx(filters),

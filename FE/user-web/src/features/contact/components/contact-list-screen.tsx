@@ -379,7 +379,7 @@ export function ContactListScreen() {
       </div>
 
       <ContactCreateDialog
-        onCreated={() => setNotice("거래처가 추가되었습니다.")}
+        onCreated={() => setNotice("담당자가 추가되었습니다.")}
         onOpenChange={setIsCreateOpen}
         open={isCreateOpen}
       />
@@ -728,7 +728,7 @@ function ContactEmptyState({
         type="button"
       >
         <Plus className="h-3.5 w-3.5" strokeWidth={2} />
-        거래처 추가
+        담당자 추가
       </button>
     </div>
   );

@@ -105,7 +105,7 @@ export function ContactTaxonomyManageDialog({
       description="부서와 직급을 추가하거나 삭제합니다."
       open={open}
       size="lg"
-      title="거래처 분류 관리"
+      title="담당자 분류 관리"
       onOpenChange={onOpenChange}
     >
       <div className="grid gap-4 md:grid-cols-2">

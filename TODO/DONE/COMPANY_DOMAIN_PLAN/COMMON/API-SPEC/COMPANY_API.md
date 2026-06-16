@@ -127,7 +127,7 @@
 | `companyRegion` | object | 회사 지역 |
 | `companyRegion.id` | string | 회사 지역 ID |
 | `companyRegion.region` | string | 회사 지역 이름 |
-| `contactCount` | number | 해당 회사에 연결된 거래처 수 |
+| `contactCount` | number | 해당 회사에 연결된 담당자 수 |
 | `createdAt` | string | 회사 등록일 |
 
 ### 연결된 DB 스키마
@@ -302,7 +302,7 @@
 | `createdAt` | string | 회사 등록일 |
 | `updatedAt` | string | 회사 최근 수정일 |
 
-단건 응답에는 `contactCount`, `dealCount`를 넣지 않는다. 회사 목록의 거래처 수와 딜 수는 `GET /api/companies` 응답의 `contactCount`, `dealCount`를 사용한다. 회사 단건의 연결 Deal 목록은 `GET /api/companies/:companyId/deals` 별도 API로 조회한다.
+단건 응답에는 `contactCount`, `dealCount`를 넣지 않는다. 회사 목록의 담당자 수와 딜 수는 `GET /api/companies` 응답의 `contactCount`, `dealCount`를 사용한다. 회사 단건의 연결 Deal 목록은 `GET /api/companies/:companyId/deals` 별도 API로 조회한다.
 
 ### 연결된 DB 스키마
 
@@ -998,7 +998,7 @@ Response body 없음.
 | API | FE 처리 기준 | BE 처리 기준 | 검증 기준 |
 |---|---|---|---|
 | `GET /api/companies` | 검색어, 분야, 지역, page 변경 시 목록 query를 재조회한다. 목록에는 `updatedAt`을 표시하지 않는다. | userId ownership을 기본 조건으로 두고 `createdAt DESC`와 20개 페이지네이션을 적용한다. | 검색, 필터, 페이지 이동, 본인 데이터만 조회를 확인한다. |
-| `GET /api/companies/:companyId/contacts` | 회사 단건 화면에서 연결된 거래처 목록을 표시한다. 페이지네이션을 기대하지 않는다. | company ownership 확인 후 `Contact.createdAt DESC, id DESC`로 전체 목록을 반환한다. | 타 사용자 회사 404, 부서 객체 응답, 정렬을 확인한다. |
+| `GET /api/companies/:companyId/contacts` | 회사 단건 화면에서 연결된 담당자 목록을 표시한다. 페이지네이션을 기대하지 않는다. | company ownership 확인 후 `Contact.createdAt DESC, id DESC`로 전체 목록을 반환한다. | 타 사용자 회사 404, 부서 객체 응답, 정렬을 확인한다. |
 | `GET /api/companies/export/xlsx` | 회사 목록의 현재 검색어와 필터를 전달하되 `page`는 전달하지 않는다. | 동일 검색/필터 조건으로 전체 회사를 조회하고 xlsx 파일을 반환한다. | 검색/필터 반영, ID 제외, 컬럼명, 다운로드 헤더를 확인한다. |
 | `GET /api/company-fields` | 회사 목록 필터와 생성/수정 form 옵션으로 사용한다. `createdAt`을 기대하지 않는다. | 현재 userId의 `CompanyField`만 반환한다. | 다른 사용자의 분야가 섞이지 않는지 확인한다. |
 | `GET /api/company-regions` | 회사 목록 필터와 생성/수정 form 옵션으로 사용한다. `createdAt`을 기대하지 않는다. | 현재 userId의 `CompanyRegion`만 반환한다. | 다른 사용자의 지역이 섞이지 않는지 확인한다. |

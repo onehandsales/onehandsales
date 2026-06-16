@@ -97,7 +97,7 @@ export function AdminDomainDataScreen() {
     <section className="mx-auto grid max-w-[1500px] gap-5 px-4 py-6 sm:px-6 sm:py-8">
       <PageHeader
         title="도메인 데이터"
-        description="전체 회사, 거래처, 제품, 딜 데이터를 마스킹 상태로 조회합니다."
+        description="전체 회사, 담당자, 제품, 딜 데이터를 마스킹 상태로 조회합니다."
       />
 
       <div className="grid gap-5 2xl:grid-cols-[minmax(0,1fr)_420px]">

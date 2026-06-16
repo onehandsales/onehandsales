@@ -229,7 +229,7 @@ BE/
 
 ### 책임
 
-- 회사/거래처/제품/딜 Memo 기록 CRUD
+- 회사/담당자/제품/딜 Memo 기록 CRUD
 - 대상 도메인 ownership 검증
 - Memo 원문 암호화 저장
 - 휴지통 이동과 복구 정책 적용
@@ -253,9 +253,9 @@ BE/
 
 ### 책임
 
-- 거래처(담당자) CRUD
+- 담당자 CRUD
 - 회사 연결
-- 거래처 Log
+- 담당자 Log
 - Memo 기록
 - 명함 OCR 저장 결과 반영
 - 휴지통 이동과 복구
@@ -264,29 +264,29 @@ BE/
 
 | Method | Path | 설명 |
 |---|---|---|
-| `GET` | `/api/contacts` | 거래처 목록 |
-| `POST` | `/api/contacts` | 거래처 생성 |
-| `GET` | `/api/contacts/:contactId` | 거래처 상세 |
-| `PATCH` | `/api/contacts/:contactId` | 거래처 수정 |
-| `DELETE` | `/api/contacts/:contactId` | 거래처 휴지통 이동 |
-| `POST` | `/api/contacts/:contactId/restore` | 거래처 복구 |
-| `GET` | `/api/contacts/:contactId/logs` | 거래처 Log 목록 |
-| `POST` | `/api/contacts/:contactId/logs` | 거래처 Log 생성 |
-| `PATCH` | `/api/contacts/:contactId/logs/:logId` | 거래처 Log 수정 |
-| `DELETE` | `/api/contacts/:contactId/logs/:logId` | 거래처 Log 삭제 |
+| `GET` | `/api/contacts` | 담당자 목록 |
+| `POST` | `/api/contacts` | 담당자 생성 |
+| `GET` | `/api/contacts/:contactId` | 담당자 상세 |
+| `PATCH` | `/api/contacts/:contactId` | 담당자 수정 |
+| `DELETE` | `/api/contacts/:contactId` | 담당자 휴지통 이동 |
+| `POST` | `/api/contacts/:contactId/restore` | 담당자 복구 |
+| `GET` | `/api/contacts/:contactId/logs` | 담당자 Log 목록 |
+| `POST` | `/api/contacts/:contactId/logs` | 담당자 Log 생성 |
+| `PATCH` | `/api/contacts/:contactId/logs/:logId` | 담당자 Log 수정 |
+| `DELETE` | `/api/contacts/:contactId/logs/:logId` | 담당자 Log 삭제 |
 
 ### Admin API
 
 | Method | Path | 설명 |
 |---|---|---|
-| `GET` | `/admin/api/contacts` | 전체 거래처 목록 |
-| `GET` | `/admin/api/contacts/:contactId` | 거래처 상세 |
-| `GET` | `/admin/api/users/:userId/contacts` | 특정 사용자 거래처 목록 |
+| `GET` | `/admin/api/contacts` | 전체 담당자 목록 |
+| `GET` | `/admin/api/contacts/:contactId` | 담당자 상세 |
+| `GET` | `/admin/api/users/:userId/contacts` | 특정 사용자 담당자 목록 |
 
 ### 완료 기준
 
-- 거래처는 회사에 연결될 수 있고, 회사 없이도 예외적으로 저장 가능하다.
-- 거래처 Log는 객관 기록이고, Memo 기록과 분리된다.
+- 담당자는 회사에 연결될 수 있고, 회사 없이도 예외적으로 저장 가능하다.
+- 담당자 Log는 객관 기록이고, Memo 기록과 분리된다.
 - Admin 목록에서는 전화번호와 이메일이 기본 마스킹된다.
 - Memo 원문은 `PersonalMemo.contentCiphertext`로 암호화 저장된다.
 
@@ -299,7 +299,7 @@ BE/
 - 단가
 - 제품 Log
 - 제품 연결 타입
-- 회사/거래처/딜 연결
+- 회사/담당자/딜 연결
 
 ### User API
 
@@ -328,7 +328,7 @@ BE/
 
 ### 완료 기준
 
-- 제품은 회사/거래처/딜과 연결할 수 있다.
+- 제품은 회사/담당자/딜과 연결할 수 있다.
 - 제품 Log는 객관 기록이고, Memo 기록과 분리된다.
 - 연결 타입을 저장한다.
 
@@ -383,7 +383,7 @@ BE/
 ### 책임
 
 - 일정 CRUD
-- 딜/회사/거래처 연결
+- 딜/회사/담당자 연결
 - 일정 알림
 - 월간 기본 일정 조회
 - 주간 보기 기간 조회
@@ -458,7 +458,7 @@ BE/
 - OCR 처리
 - OCR 결과 확인용 데이터 저장
 - 회사 후보 제안
-- 사용자 확정 후 회사/거래처 저장
+- 사용자 확정 후 회사/담당자 저장
 - 명함 이미지는 `StoragePort`로 저장하고 DB에는 bucket/object key 중심 metadata 저장
 
 ### User API
@@ -473,7 +473,7 @@ BE/
 
 - 명함 OCR은 실제 OpenAI/OCR adapter를 통해 동작한다.
 - OCR 결과는 자동 저장되지 않는다.
-- 사용자가 확정해야 회사/거래처 데이터가 생성된다.
+- 사용자가 확정해야 회사/담당자 데이터가 생성된다.
 - Supabase Storage SDK는 infrastructure adapter 내부에서만 사용된다.
 
 ## 13. Import/Export 모듈
@@ -599,7 +599,7 @@ BE/
 
 - Admin dashboard
 - 사용자 목록/상세
-- 전체 딜/회사/거래처/제품 조회
+- 전체 딜/회사/담당자/제품 조회
 - 사용자별 데이터 조회
 - 민감정보 원문 조회
 - 암호화된 Memo/회의록 원문 복호화

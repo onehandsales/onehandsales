@@ -43,7 +43,7 @@ export interface ContactPageRecord {
   readonly totalCount: number;
 }
 
-// 역할 : ContactDealRecord 거래처에 연결된 딜 목록 레코드를 정의합니다.
+// 역할 : ContactDealRecord 담당자에 연결된 딜 목록 레코드를 정의합니다.
 export interface ContactDealRecord {
   readonly id: string;
   readonly dealName: string;
@@ -62,7 +62,7 @@ export interface ListContactsInput {
   readonly contactJobGradeId?: string;
 }
 
-// 역할 : ExportContactsInput 거래처 export 조회 조건을 정의합니다.
+// 역할 : ExportContactsInput 담당자 export 조회 조건을 정의합니다.
 export interface ExportContactsInput {
   readonly userId: string;
   readonly username?: string;
@@ -71,7 +71,7 @@ export interface ExportContactsInput {
   readonly contactJobGradeId?: string;
 }
 
-// 역할 : ListContactDealsInput 거래처에 연결된 딜 조회 조건을 정의합니다.
+// 역할 : ListContactDealsInput 담당자에 연결된 딜 조회 조건을 정의합니다.
 export interface ListContactDealsInput {
   readonly userId: string;
   readonly contactId: string;
@@ -147,26 +147,26 @@ export interface CreateContactPrivateMemoLogInput {
 
 // 역할 : ContactRepository 저장소가 제공해야 하는 영속성 계약을 정의합니다.
 export interface ContactRepository {
-  // 기능 : 거래처 저장소 작업을 트랜잭션 경계 안에서 실행합니다.
+  // 기능 : 담당자 저장소 작업을 트랜잭션 경계 안에서 실행합니다.
   runInTransaction<T>(
     work: (repository: ContactRepository) => Promise<T>
   ): Promise<T>;
-  // 기능 : 현재 사용자의 거래처 목록과 전체 개수를 조회합니다.
+  // 기능 : 현재 사용자의 담당자 목록과 전체 개수를 조회합니다.
   listContacts(input: ListContactsInput): Promise<ContactPageRecord>;
-  // 기능 : 현재 사용자의 거래처 export 대상 전체 목록을 조회합니다.
+  // 기능 : 현재 사용자의 담당자 export 대상 전체 목록을 조회합니다.
   listContactsForExport(input: ExportContactsInput): Promise<ContactRecord[]>;
-  // 기능 : 현재 사용자의 거래처에 연결된 딜 전체 목록을 조회합니다.
+  // 기능 : 현재 사용자의 담당자에 연결된 딜 전체 목록을 조회합니다.
   listContactDeals(input: ListContactDealsInput): Promise<ContactDealRecord[]>;
-  // 기능 : 현재 사용자의 거래처 단건을 조회합니다.
+  // 기능 : 현재 사용자의 담당자 단건을 조회합니다.
   findContact(userId: string, contactId: string): Promise<ContactRecord | null>;
-  // 기능 : 현재 사용자의 거래처 존재 여부만 조회합니다.
+  // 기능 : 현재 사용자의 담당자 존재 여부만 조회합니다.
   findContactLookup(
     userId: string,
     contactId: string
   ): Promise<ContactLookupRecord | null>;
-  // 기능 : 현재 사용자의 거래처 단건을 생성합니다.
+  // 기능 : 현재 사용자의 담당자 단건을 생성합니다.
   createContact(input: CreateContactInput): Promise<ContactLookupRecord>;
-  // 기능 : 현재 사용자의 거래처 기본 정보를 수정합니다.
+  // 기능 : 현재 사용자의 담당자 기본 정보를 수정합니다.
   updateContact(
     userId: string,
     contactId: string,
@@ -179,60 +179,60 @@ export interface ContactRepository {
     userId: string,
     companyId: string
   ): Promise<ContactCompanyOptionRecord | null>;
-  // 기능 : 현재 사용자의 거래처 직급 목록을 조회합니다.
+  // 기능 : 현재 사용자의 담당자 직급 목록을 조회합니다.
   listJobGrades(userId: string): Promise<ContactJobGradeRecord[]>;
-  // 기능 : 현재 사용자의 거래처 직급 단건을 조회합니다.
+  // 기능 : 현재 사용자의 담당자 직급 단건을 조회합니다.
   findJobGrade(
     userId: string,
     jobGradeId: string
   ): Promise<ContactJobGradeRecord | null>;
-  // 기능 : 현재 사용자 안에서 같은 거래처 직급 이름이 있는지 확인합니다.
+  // 기능 : 현재 사용자 안에서 같은 담당자 직급 이름이 있는지 확인합니다.
   existsJobGradeByName(userId: string, jobGradeName: string): Promise<boolean>;
-  // 기능 : 현재 사용자의 거래처 직급을 생성합니다.
+  // 기능 : 현재 사용자의 담당자 직급을 생성합니다.
   createJobGrade(userId: string, jobGradeName: string): Promise<void>;
-  // 기능 : 거래처 직급을 사용하는 거래처가 있는지 확인합니다.
+  // 기능 : 담당자 직급을 사용하는 담당자가 있는지 확인합니다.
   isJobGradeInUse(userId: string, jobGradeId: string): Promise<boolean>;
-  // 기능 : 현재 사용자의 거래처 직급을 삭제합니다.
+  // 기능 : 현재 사용자의 담당자 직급을 삭제합니다.
   deleteJobGrade(userId: string, jobGradeId: string): Promise<void>;
-  // 기능 : 현재 사용자의 거래처 부서 목록을 조회합니다.
+  // 기능 : 현재 사용자의 담당자 부서 목록을 조회합니다.
   listDepartments(userId: string): Promise<ContactDepartmentRecord[]>;
-  // 기능 : 현재 사용자의 거래처 부서 단건을 조회합니다.
+  // 기능 : 현재 사용자의 담당자 부서 단건을 조회합니다.
   findDepartment(
     userId: string,
     departmentId: string
   ): Promise<ContactDepartmentRecord | null>;
-  // 기능 : 현재 사용자 안에서 같은 거래처 부서 이름이 있는지 확인합니다.
+  // 기능 : 현재 사용자 안에서 같은 담당자 부서 이름이 있는지 확인합니다.
   existsDepartmentByName(
     userId: string,
     departmentName: string
   ): Promise<boolean>;
-  // 기능 : 현재 사용자의 거래처 부서를 생성합니다.
+  // 기능 : 현재 사용자의 담당자 부서를 생성합니다.
   createDepartment(userId: string, departmentName: string): Promise<void>;
-  // 기능 : 거래처 부서를 사용하는 거래처가 있는지 확인합니다.
+  // 기능 : 담당자 부서를 사용하는 담당자가 있는지 확인합니다.
   isDepartmentInUse(userId: string, departmentId: string): Promise<boolean>;
-  // 기능 : 현재 사용자의 거래처 부서를 삭제합니다.
+  // 기능 : 현재 사용자의 담당자 부서를 삭제합니다.
   deleteDepartment(userId: string, departmentId: string): Promise<void>;
-  // 기능 : 거래처 일반 메모 로그를 생성합니다.
+  // 기능 : 담당자 일반 메모 로그를 생성합니다.
   createMemoLog(input: CreateContactMemoLogInput): Promise<void>;
-  // 기능 : 거래처 일반 메모 로그를 cursor 기준으로 조회합니다.
+  // 기능 : 담당자 일반 메모 로그를 cursor 기준으로 조회합니다.
   listMemoLogs(input: {
     readonly userId: string;
     readonly contactId: string;
     readonly cursor: MemoLogCursor | null;
     readonly take: number;
   }): Promise<ContactMemoLogRecord[]>;
-  // 기능 : 거래처 일반 메모 로그의 memoType 또는 memo를 수정합니다.
+  // 기능 : 담당자 일반 메모 로그의 memoType 또는 memo를 수정합니다.
   updateMemoLog(input: UpdateContactMemoLogInput): Promise<boolean>;
-  // 기능 : 거래처 개인 비밀 메모 로그를 생성합니다.
+  // 기능 : 담당자 개인 비밀 메모 로그를 생성합니다.
   createPrivateMemoLog(input: CreateContactPrivateMemoLogInput): Promise<void>;
-  // 기능 : 거래처 개인 비밀 메모 로그를 작성자 본인 기준으로 조회합니다.
+  // 기능 : 담당자 개인 비밀 메모 로그를 작성자 본인 기준으로 조회합니다.
   listPrivateMemoLogs(input: {
     readonly userId: string;
     readonly contactId: string;
     readonly cursor: MemoLogCursor | null;
     readonly take: number;
   }): Promise<ContactPrivateMemoLogRecord[]>;
-  // 기능 : 거래처 개인 비밀 메모 로그의 암호문과 key version만 수정합니다.
+  // 기능 : 담당자 개인 비밀 메모 로그의 암호문과 key version만 수정합니다.
   updatePrivateMemoLog(input: {
     readonly userId: string;
     readonly contactId: string;
