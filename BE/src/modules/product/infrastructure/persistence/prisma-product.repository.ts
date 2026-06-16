@@ -587,9 +587,17 @@ export class PrismaProductRepository implements ProductRepository {
   private createProductOrderBy(
     sort: ProductListSort | undefined
   ): Prisma.ProductOrderByWithRelationInput[] {
-    if (sort === ProductListSort.DEAL_COUNT_DESC) {
+    if (
+      sort === ProductListSort.DEAL_COUNT_DESC ||
+      sort === ProductListSort.DEAL_COUNT_ASC
+    ) {
       return [
-        { dealProducts: { _count: "desc" } },
+        {
+          dealProducts: {
+            _count:
+              sort === ProductListSort.DEAL_COUNT_DESC ? "desc" : "asc",
+          },
+        },
         { createdAt: "desc" },
         { id: "desc" },
       ];

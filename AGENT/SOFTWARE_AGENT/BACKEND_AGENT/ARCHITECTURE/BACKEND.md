@@ -142,14 +142,14 @@ Completed Backend TODO plans:
 - `TODO/DONE/DEAL_DOMAIN_PLAN/BE-TODO/G01-BE-DEAL-DOMAIN.goal.md`: completed. Deal DB/API, DealProduct N:M product mapping, code-level status enum, nested FK responses, following action logs, memo logs, xlsx export, transaction contract, and observability contract are implemented and verified.
 - `TODO/DONE/SCHEDULE_DOMAIN_PLAN/BE-TODO/G01-BE-SCHEDULE-DOMAIN.goal.md`: completed. Schedule DB/API, ScheduleDeal N:M deal mapping, timezone conversion, hard delete transaction, and User Web schedule contract are implemented and verified.
 - `TODO/DONE/MEETING_NOTE_MANUAL_PLAN/BE-TODO/G01-BE-MEETING-NOTE-DOMAIN.goal.md`: completed. Manual MeetingNote DB/API, N:N snapshot links, filter APIs, transaction contract, and User Web meeting-note contract are implemented and verified.
-- `TODO/DONE/ADDITIONAL_WORK_PLAN/BE-TODO/G01-G12`: completed. Company `contactCount`, Company linked Contact list, Company/Contact/Product xlsx export, Company/Product `dealCount`, Company/Contact/Product linked Deal lists, and Product `sort=dealCountDesc` are implemented and verified.
+- `TODO/DONE/ADDITIONAL_WORK_PLAN/BE-TODO/G01-G12`: completed. Company `contactCount`, Company linked Contact list, Company/Contact/Product xlsx export, Company/Product `dealCount`, Company/Contact/Product linked Deal lists, and Product `sort=dealCountDesc|dealCountAsc` are implemented and verified.
 
 Current response notes:
 
 - `GET /api/companies` returns `items[].contactCount` and `items[].dealCount`.
 - `GET /api/companies` supports `sort=createdAtDesc|contactCountDesc|contactCountAsc|dealCountDesc|dealCountAsc`.
 - `GET /api/contacts` supports `sort=createdAtDesc|usernameAsc`.
-- `GET /api/products` returns `items[].dealCount` and supports `sort=createdAtDesc|dealCountDesc`.
+- `GET /api/products` returns `items[].dealCount` and supports `sort=createdAtDesc|dealCountDesc|dealCountAsc`.
 - `GET /api/deals` supports `sort=createdAtDesc|dealCostDesc|dealCostAsc|expectedEndDateAsc`.
 - Company and Product xlsx export files include `딜 수`; Product export also supports the same product list sort query.
 - Company/Contact/Product linked Deal list APIs return all linked deals ordered by `createdAt DESC`, `id DESC`.

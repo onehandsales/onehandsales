@@ -55,7 +55,7 @@ export type ProductListParams = {
   readonly sort?: ProductSort;
 };
 
-export type ProductSort = "createdAtDesc" | "dealCountDesc";
+export type ProductSort = "createdAtDesc" | "dealCountDesc" | "dealCountAsc";
 
 export type CreateProductInput = {
   readonly productName: string;

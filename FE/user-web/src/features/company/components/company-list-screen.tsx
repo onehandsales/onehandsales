@@ -513,7 +513,7 @@ function FilterChip({ active, label, onClick }: {
       className={cn(
         "inline-flex h-8 items-center rounded-[6px] border px-3 text-[13px] transition",
         active
-          ? "border-[#CBD5E1] bg-[#F8FAFC] font-bold text-[#111827]"
+          ? "border-[#C7D7FE] bg-[#EAF2FF] font-bold text-[#1D4ED8]"
           : "border-[#E6EAF0] bg-white font-medium text-[#475569] hover:bg-[#F9FAFB]"
       )}
       onClick={onClick}

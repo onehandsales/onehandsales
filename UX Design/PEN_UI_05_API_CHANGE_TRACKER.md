@@ -98,7 +98,7 @@
 - 생성/삭제 API는 Backend와 feature API client에 남아 있지만, 목록 페이지 필터 UX와 분리한다.
 - 회사 목록 정렬 code는 `createdAtDesc`, `contactCountDesc`, `contactCountAsc`, `dealCountDesc`, `dealCountAsc`다.
 - 담당자 목록 정렬 code는 `createdAtDesc`, `usernameAsc`다.
-- 제품 목록 정렬 code는 `createdAtDesc`, `dealCountDesc`다.
+- 제품 목록 정렬 code는 `createdAtDesc`, `dealCountDesc`, `dealCountAsc`다.
 
 ### MeetingNote 계약 정정
 

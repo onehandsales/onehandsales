@@ -323,7 +323,7 @@ User
 정책:
 
 - 제품 목록 응답에는 `DealProduct` 기준 `dealCount`를 포함한다.
-- 제품 목록은 기본 `createdAt DESC`, `id DESC`로 정렬하고, `sort=dealCountDesc` 요청 시 `dealCount DESC`, `createdAt DESC`, `id DESC`를 적용한다.
+- 제품 목록은 기본 `createdAt DESC`, `id DESC`로 정렬하고, `sort=dealCountDesc` 요청 시 `dealCount DESC`, `createdAt DESC`, `id DESC`, `sort=dealCountAsc` 요청 시 `dealCount ASC`, `createdAt DESC`, `id DESC`를 적용한다.
 - 제품 단건 화면에서 필요한 연결 Deal 전체 목록은 별도 API로 조회한다.
 
 1차 구현 제외:

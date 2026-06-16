@@ -13,7 +13,7 @@
 - Auth/User: `/api/auth/providers`, `/api/auth/exchange`, `/api/auth/refresh`, `/api/auth/logout`, `/api/me`, `/admin/api/me`, `/api/users/me/profile`, `/api/users/me/devices`.
 - Company: 목록/상세/생성/수정, 분야/지역 옵션, 일반 메모, 개인 비밀 메모, `contactCount`, `dealCount`, 연결 Contact/Deal 목록, xlsx export.
 - Contact: 목록/상세/생성/수정, 회사 옵션, 직급/부서 옵션, 일반 메모, 개인 비밀 메모, 연결 Deal 목록, xlsx export.
-- Product: 목록/상세/생성/수정, 카테고리/상태 옵션, 일반 메모, 개인 비밀 메모, `dealCount`, `sort=dealCountDesc`, 연결 Deal 목록, xlsx export.
+- Product: 목록/상세/생성/수정, 카테고리/상태 옵션, 일반 메모, 개인 비밀 메모, `dealCount`, `sort=dealCountDesc|dealCountAsc`, 연결 Deal 목록, xlsx export.
 - Deal: 단계별 count, 목록/상세/생성/수정, 회사/담당자/제품 옵션, 제품 N:M 연결, 다음 행동 로그, 일반 메모 로그, xlsx export.
 - Schedule: 딜 옵션, 목록/상세/생성/수정/삭제, 딜 N:M 연결, 사용자 timezone 기준 local time 변환.
 - MeetingNote: 수동 회의록 목록/상세/생성/수정, 회사/담당자 필터, 회사/담당자/제품/딜 N:N snapshot 연결.
@@ -119,7 +119,7 @@
 - 일반 메모 로그
 - 사용자 개인 비밀 메모 로그
 - 목록과 export의 `dealCount`
-- 제품 목록 `sort=dealCountDesc`
+- 제품 목록 `sort=dealCountDesc|dealCountAsc`
 - 제품 상세의 연결 Deal 전체 목록
 - 현재 필터 기준 xlsx export
 

@@ -44,6 +44,7 @@ export interface ProductPageRecord {
 export enum ProductListSort {
   CREATED_AT_DESC = "createdAtDesc",
   DEAL_COUNT_DESC = "dealCountDesc",
+  DEAL_COUNT_ASC = "dealCountAsc",
 }
 
 // 역할 : ListProductsInput 데이터가 계층 사이에서 전달되는 구조를 정의합니다.

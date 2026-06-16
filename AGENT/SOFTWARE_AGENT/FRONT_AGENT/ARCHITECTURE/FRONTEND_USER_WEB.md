@@ -284,14 +284,14 @@ src/features/company/
 - Company/Contact/Product list는 제품형 `Controls Bar + Table Card + Pagination` 문법을 기준으로 맞춘다.
 - Company list 정렬 select는 `최신순`, `담당자 높은순`, `담당자 낮은순`, `딜 높은순`, `딜 낮은순`을 제공한다.
 - Contact list 정렬 select는 `최신순`, `이름순`을 제공한다.
-- Product list 정렬 select는 `최신순`, `딜 많은순`을 제공한다.
+- Product list 정렬 select는 `최신순`, `딜 높은순`, `딜 낮은순`을 제공한다.
 - Deal list 정렬 select는 `최신순`, `금액 높은순`, `금액 낮은 순`, `마감일순`을 제공한다.
 - `src/features/company/api/company-api.ts`는 구현 완료된 Backend Company API 계약과 맞춰야 한다. Company UI/API 통합 작업 때 `TODO/DONE/COMPANY_DOMAIN_PLAN/COMMON/API-SPEC/COMPANY_API.md`와 `COMPANY_API_DETAIL.md`의 `companyName`, `companyFieldId`, `companyRegionId`, memo/private memo contract를 기준으로 오래된 필드와 삭제/복구 경로를 정리한다.
 - Company 화면은 `TODO/DONE/ADDITIONAL_WORK_PLAN` 기준으로 목록 `contactCount`/`dealCount`, 회사 상세 연결 Contact 목록, 회사 상세 연결 Deal 목록, 현재 필터 기준 xlsx export를 반영해야 한다.
 - `src/features/contact/api`는 구현 완료된 Backend Contact API 계약과 맞춰야 한다. Contact UI/API 통합 작업 때 `TODO/DONE/CONTACT_DOMAIN_PLAN/COMMON/API-SPEC/CONTACT_API.md`와 `CONTACT_API_DETAIL.md`의 `username`, `mobile`, `email`, `companyId`, `contactDepartmentId`, `contactJobGradeId`, `contactMemo`, memo/private memo contract를 기준으로 오래된 `name`, `phone`, `department`, `position`, `initialMemo`, 삭제/복구 경로를 정리한다.
 - Contact 화면은 `TODO/DONE/ADDITIONAL_WORK_PLAN` 기준으로 담당자 상세 연결 Deal 목록과 현재 필터 기준 xlsx export를 반영해야 한다.
 - `src/features/product` 또는 `src/features/products`는 구현 완료된 Backend Product API 계약과 맞춰야 한다. Product UI/API 통합 작업 때 `TODO/DONE/PRODUCT_DOMAIN_PLAN/COMMON/API-SPEC/PRODUCT_API.md`와 `PRODUCT_API_DETAIL.md`의 `productName`, `productPrice`, `productCategoryId`, `productStatusId`, `productMemo`, memo/private memo contract를 기준으로 오래된 `unitPrice`, `currency`, `description`, `initialMemo`, 삭제/복구 경로를 정리한다.
-- Product 화면은 `TODO/DONE/ADDITIONAL_WORK_PLAN` 기준으로 목록 `dealCount`, `sort=dealCountDesc`, 제품 상세 연결 Deal 목록, 현재 필터 기준 xlsx export를 반영해야 한다.
+- Product 화면은 `TODO/DONE/ADDITIONAL_WORK_PLAN` 기준으로 목록 `dealCount`, `sort=dealCountDesc|dealCountAsc`, 제품 상세 연결 Deal 목록, 현재 필터 기준 xlsx export를 반영해야 한다.
 - `src/features/deal/api`는 구현 완료된 Backend Deal API 계약과 맞춰야 한다. Deal UI/API 통합 작업 때 `TODO/DONE/DEAL_DOMAIN_PLAN/COMMON/API-SPEC/DEAL_API.md`와 `DEAL_API_DETAIL.md`의 6단계 상태, `dealName`, `dealCost`, `companyId`, `contactId`, `productIds`, `expectedEndDate`, `followingAction`, 메모 로그 contract를 기준으로 오래된 단계명과 필드를 정리한다.
 
 ## 9. 관련 문서
