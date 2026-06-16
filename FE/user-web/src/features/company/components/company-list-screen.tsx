@@ -168,7 +168,7 @@ export function CompanyListScreen({
           <input
             className="w-[220px] bg-transparent text-[13px] text-[#111827] outline-none placeholder:text-[#9CA3AF]"
             onChange={(e) => setCompanyNameText(e.target.value)}
-            placeholder="회사 검색"
+            placeholder="회사명 검색"
             value={companyNameText}
           />
         </form>
@@ -297,7 +297,7 @@ export function CompanyListScreen({
 
         {selectedCompanyId ? (
           <div className="flex w-[380px] shrink-0 flex-col overflow-hidden rounded-lg border border-[#E5EAF0] bg-white">
-            <div className="flex shrink-0 items-center justify-between border-b border-[#E6EAF0] px-4 py-2.5">
+            <div className="flex h-11 shrink-0 items-center justify-between border-b border-[#E6EAF0] px-4">
               <div className="flex items-center gap-2">
                 <button
                   aria-label="미리보기 닫기"
