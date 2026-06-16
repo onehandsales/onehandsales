@@ -141,7 +141,7 @@ export function DealPipelineHomeScreen({
         />
         {/* Stage Tabs */}
         <div className="relative flex shrink-0 items-end px-6">
-          <div className="absolute bottom-0 left-0 right-0 h-px bg-[#E6EAF0]" />
+          <div className="absolute bottom-0 left-5 right-5 h-px bg-[#E6EAF0]" />
           {stageTabs.map((tab) => {
             const count = getStageCount(tab.value);
             const isActive = activeTab === tab.value;
