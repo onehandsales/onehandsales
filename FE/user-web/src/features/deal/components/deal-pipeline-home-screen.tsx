@@ -8,7 +8,7 @@ import {
   Search,
   X,
 } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { PageHeader } from "@/components/layout/page-header";
 import { ListEmptyState } from "@/components/ui/state";
@@ -73,6 +73,7 @@ export function DealPipelineHomeScreen({
   const [selectedDealId, setSelectedDealId] = useState("");
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
+  const dealCreatedRef = useRef(false);
 
   const searchQuery = search.trim() || undefined;
   const companyFilter = companyId || undefined;
@@ -554,11 +555,20 @@ export function DealPipelineHomeScreen({
       </section>
 
       <DealCreateDialog
-        onCreated={() => {
+        onCreated={(deal) => {
+          dealCreatedRef.current = true;
           setActiveTab("ALL");
           setPage(1);
+          if (initialCreateOpen) {
+            void navigate(`/deals/${deal.id}`, { replace: true });
+          }
         }}
-        onOpenChange={setIsCreateOpen}
+        onOpenChange={(open) => {
+          setIsCreateOpen(open);
+          if (!open && initialCreateOpen && !dealCreatedRef.current) {
+            void navigate("/deals", { replace: true });
+          }
+        }}
         open={isCreateOpen}
       />
     </>
