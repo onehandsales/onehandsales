@@ -141,7 +141,7 @@ export function CompanyListScreen({
   };
 
   return (
-    <section className="flex flex-1 flex-col overflow-hidden bg-[#FAFAF8]">
+    <section className="flex min-h-full flex-col bg-[#FAFAF8]">
       <PageHeader
         breadcrumbs={[{ label: "회사", icon: Building2 }]}
         actions={[
@@ -252,9 +252,9 @@ export function CompanyListScreen({
       ) : null}
 
       {/* 테이블 + 미리보기 */}
-      <div className="flex min-h-0 flex-1 gap-5 overflow-hidden px-5 pb-3 pt-1">
-        <div className="flex min-w-0 flex-1 flex-col gap-3 overflow-hidden">
-          <div className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-lg border border-[#E2E5EC] bg-white shadow-sm">
+      <div className="flex gap-5 px-5 pb-3 pt-1">
+        <div className="flex min-w-0 flex-1 flex-col gap-3">
+          <div className="flex flex-col rounded-lg border border-[#E2E5EC] bg-white shadow-sm">
             <div className="flex h-11 shrink-0 items-center border-b border-[#E2E5EC] bg-[#F9FAFB] px-6">
               <div className="w-[260px] shrink-0 text-[12px] font-semibold text-[#64748B]">회사명</div>
               <div className="w-[150px] shrink-0 text-[12px] font-semibold text-[#64748B]">분야</div>
@@ -272,7 +272,7 @@ export function CompanyListScreen({
             ) : !companyList || companyList.items.length === 0 ? (
               <CompanyEmptyState hasSearch={hasSearch} onCreate={() => setIsCreateOpen(true)} />
             ) : (
-              <div className="min-h-0 flex-1 overflow-y-auto">
+              <div>
                 {companyList.items.map((company) => (
                   <CompanyRow
                     company={company}
@@ -296,7 +296,7 @@ export function CompanyListScreen({
         </div>
 
         {selectedCompanyId ? (
-          <div className="flex w-[380px] shrink-0 flex-col overflow-hidden rounded-lg border border-[#E5EAF0] bg-white">
+          <div className="flex w-[380px] shrink-0 flex-col rounded-lg border border-[#E5EAF0] bg-white">
             <div className="flex h-11 shrink-0 items-center justify-between border-b border-[#E6EAF0] px-4">
               <div className="flex items-center gap-2">
                 <button

@@ -94,8 +94,6 @@ export function AppShell() {
     return () => window.removeEventListener("keydown", onKeyDown);
   }, []);
 
-  const isDeals = pathname.startsWith("/deals");
-
   // /products/:id 패턴 감지
   const productDetailMatch = /^\/products\/([^/]+)$/.exec(pathname);
   const productDetailId = productDetailMatch ? (productDetailMatch[1] ?? "") : "";
@@ -133,14 +131,7 @@ export function AppShell() {
     pathname === "/schedules" || pathname === "/schedules/week";
   const isFixedViewportPage =
     isHome ||
-    isProductDetail ||
-    isDeals ||
-    pathname === "/companies" ||
-    pathname === "/companies/new" ||
-    pathname === "/contacts" ||
-    pathname === "/products" ||
-    pathname === "/products/new" ||
-    pathname === "/meeting-notes";
+    isProductDetail;
 
   const hideTopBar =
     isDealListPage ||
