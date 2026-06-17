@@ -353,7 +353,7 @@ function CategoryDropdown({
                 }}
               />
               <button
-                className="h-7 rounded bg-[#1D4ED8] px-2 text-[11px] font-medium text-white hover:bg-[#1E40AF] disabled:opacity-60"
+                className="h-7 rounded bg-[#2463EB] px-2 text-[11px] font-medium text-white hover:bg-[#1D4ED8] disabled:opacity-60"
                 disabled={createMutation.isPending}
                 onClick={() => void handleAdd()}
                 type="button"
@@ -548,7 +548,7 @@ function StatusDropdown({
                 }}
               />
               <button
-                className="h-7 rounded bg-[#1D4ED8] px-2 text-[11px] font-medium text-white hover:bg-[#1E40AF] disabled:opacity-60"
+                className="h-7 rounded bg-[#2463EB] px-2 text-[11px] font-medium text-white hover:bg-[#1D4ED8] disabled:opacity-60"
                 disabled={createMutation.isPending}
                 onClick={() => void handleAdd()}
                 type="button"

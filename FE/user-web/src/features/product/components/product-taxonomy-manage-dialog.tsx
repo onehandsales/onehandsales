@@ -154,7 +154,7 @@ export function ProductTaxonomyManageDialog({
                 value={section.value}
               />
               <button
-                className="inline-flex h-10 shrink-0 items-center gap-1.5 rounded-md bg-[#2563EB] px-3 text-[13px] font-semibold text-white hover:bg-[#1D4ED8] disabled:opacity-60"
+                className="inline-flex h-10 shrink-0 items-center gap-1.5 rounded-md bg-[#2463EB] px-3 text-[13px] font-semibold text-white hover:bg-[#1D4ED8] disabled:opacity-60"
                 disabled={
                   section.value.trim().length === 0 ||
                   (section.key === "category"

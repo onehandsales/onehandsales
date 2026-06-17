@@ -363,7 +363,7 @@ function MemoLogsCard({
                 취소
               </button>
               <button
-                className="inline-flex h-7 items-center rounded-md bg-[#1D4ED8] px-2.5 text-[12px] font-medium text-white hover:bg-[#1E40AF] disabled:opacity-60"
+                className="inline-flex h-7 items-center rounded-md bg-[#2463EB] px-2.5 text-[12px] font-medium text-white hover:bg-[#1D4ED8] disabled:opacity-60"
                 disabled={createMutation.isPending || !createMemo.trim()}
                 onClick={() => void handleCreate()}
                 type="button"
@@ -415,7 +415,7 @@ function MemoLogsCard({
                       취소
                     </button>
                     <button
-                      className="inline-flex h-7 items-center rounded-md bg-[#1D4ED8] px-2.5 text-[12px] font-medium text-white hover:bg-[#1E40AF] disabled:opacity-60"
+                      className="inline-flex h-7 items-center rounded-md bg-[#2463EB] px-2.5 text-[12px] font-medium text-white hover:bg-[#1D4ED8] disabled:opacity-60"
                       disabled={updateMutation.isPending || !editMemo.trim()}
                       onClick={() => void handleUpdate(log.id)}
                       type="button"
@@ -578,7 +578,7 @@ function PrivateMemoLogsCard({
                 취소
               </button>
               <button
-                className="inline-flex h-7 items-center rounded-md bg-[#1D4ED8] px-2.5 text-[12px] font-medium text-white hover:bg-[#1E40AF] disabled:opacity-60"
+                className="inline-flex h-7 items-center rounded-md bg-[#2463EB] px-2.5 text-[12px] font-medium text-white hover:bg-[#1D4ED8] disabled:opacity-60"
                 disabled={createMutation.isPending || !createMemo.trim()}
                 onClick={() => void handleCreate()}
                 type="button"
@@ -624,7 +624,7 @@ function PrivateMemoLogsCard({
                       취소
                     </button>
                     <button
-                      className="inline-flex h-7 items-center rounded-md bg-[#1D4ED8] px-2.5 text-[12px] font-medium text-white hover:bg-[#1E40AF] disabled:opacity-60"
+                      className="inline-flex h-7 items-center rounded-md bg-[#2463EB] px-2.5 text-[12px] font-medium text-white hover:bg-[#1D4ED8] disabled:opacity-60"
                       disabled={updateMutation.isPending || !editMemo.trim()}
                       onClick={() => void handleUpdate(log.id)}
                       type="button"

@@ -298,7 +298,7 @@ function DealInlineEditForm({
       ) : null}
       <div className="flex justify-end">
         <button
-          className="inline-flex h-8 items-center rounded-md bg-[#2563EB] px-3 text-[13px] font-semibold text-white transition hover:bg-[#1D4ED8] disabled:opacity-60"
+          className="inline-flex h-8 items-center rounded-md bg-[#2463EB] px-3 text-[13px] font-semibold text-white transition hover:bg-[#1D4ED8] disabled:opacity-60"
           disabled={
             updateMutation.isPending ||
             dealName.trim().length === 0 ||
