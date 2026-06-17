@@ -45,5 +45,6 @@ user-web의 범용 shadcn-style primitive를 이곳에 둔다.
 - `state.tsx`
   - `LoadingState`: 도메인 공용 로딩 상태
   - `EmptyState`: 도메인 공용 빈 상태
+  - `ListEmptyState`: 목록 테이블/카드 내부에서 쓰는 빈 상태
   - `ErrorState`: 도메인 공용 오류 상태
   - `SuccessToast`: 도메인 공용 성공 피드백

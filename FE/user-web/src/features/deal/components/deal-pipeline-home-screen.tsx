@@ -3,6 +3,7 @@ import { AlertCircle, BriefcaseBusiness, Download, Plus, Search, X } from "lucid
 import { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { PageHeader } from "@/components/layout/page-header";
+import { ListEmptyState } from "@/components/ui/state";
 import { useAuthSession } from "@/features/auth";
 import { DealCreateDialog } from "@/features/deal/components/deal-create-dialog";
 import { DealDetailPanel } from "@/features/deal/components/deal-detail-panel";
@@ -334,20 +335,18 @@ export function DealPipelineHomeScreen({
                 </div>
 
                 {/* Rows */}
-                <div className="min-h-0 flex-1 overflow-y-auto">
-                  {deals.length === 0 ? (
-                    <div className="flex min-h-full flex-col items-center justify-center py-12 text-sm text-gray-400">
-                      <p>표시할 딜이 없습니다.</p>
-                      <button
-                        className="mt-3 inline-flex h-9 items-center gap-1.5 rounded-md bg-primary px-4 text-sm font-medium text-white"
-                        onClick={() => setIsCreateOpen(true)}
-                        type="button"
-                      >
-                        <Plus className="h-4 w-4" />딜 추가
-                      </button>
-                    </div>
-                  ) : (
-                    deals.map((deal) => (
+                {deals.length === 0 ? (
+                  <ListEmptyState
+                    actionIcon={Plus}
+                    actionLabel="딜 추가"
+                    className="-translate-y-7"
+                    icon={BriefcaseBusiness}
+                    onAction={() => setIsCreateOpen(true)}
+                    title={hasFilter ? "조건에 맞는 딜이 없습니다" : "등록된 딜이 없습니다"}
+                  />
+                ) : (
+                  <div className="min-h-0 flex-1 overflow-y-auto">
+                    {deals.map((deal) => (
                       <DealListRow
                         deal={deal}
                         displayTimeZone={displayTimeZone}
@@ -355,9 +354,9 @@ export function DealPipelineHomeScreen({
                         key={deal.id}
                         onSelect={setSelectedDealId}
                       />
-                    ))
-                  )}
-                </div>
+                    ))}
+                  </div>
+                )}
               </div>
 
               {dealsQuery.data ? (
@@ -519,9 +518,14 @@ export function DealPipelineHomeScreen({
             <ErrorState onRetry={() => void dealsQuery.refetch()} />
           </div>
         ) : deals.length === 0 ? (
-          <div className="flex flex-col items-center py-12 text-sm text-gray-400">
-            <p>표시할 딜이 없습니다.</p>
-          </div>
+          <ListEmptyState
+            actionIcon={Plus}
+            actionLabel="딜 추가"
+            className="min-h-[280px] -translate-y-7"
+            icon={BriefcaseBusiness}
+            onAction={() => setIsCreateOpen(true)}
+            title={hasFilter ? "조건에 맞는 딜이 없습니다" : "등록된 딜이 없습니다"}
+          />
         ) : (
           <>
             <div className="grid gap-3 px-4 py-4 pb-4">

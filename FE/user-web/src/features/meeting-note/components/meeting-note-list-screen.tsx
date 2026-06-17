@@ -14,6 +14,7 @@ import {
 import { type FormEvent, useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { PageHeader } from "@/components/layout/page-header";
+import { ListEmptyState } from "@/components/ui/state";
 import {
   useMeetingNoteFilterCompanies,
   useMeetingNoteFilterContacts,
@@ -122,7 +123,7 @@ export function MeetingNoteListScreen() {
           },
           {
             icon: Plus,
-            tooltip: "회의록 작성",
+            tooltip: "회의록 추가",
             href: "/meeting-notes/new",
             variant: "primary",
           },
@@ -258,7 +259,17 @@ export function MeetingNoteListScreen() {
                 onRetry={() => void meetingNotesQuery.refetch()}
               />
             ) : meetingNotes.length === 0 ? (
-              <MeetingNoteEmptyState hasFilter={hasFilter} />
+              <ListEmptyState
+                actionIcon={Plus}
+                actionLabel="회의록 추가"
+                actionTo="/meeting-notes/new"
+                icon={FileText}
+                title={
+                  hasFilter
+                    ? "조건에 맞는 회의록이 없습니다"
+                    : "등록된 회의록이 없습니다"
+                }
+              />
             ) : (
               <div className="min-h-0 flex-1 overflow-y-auto">
                 {meetingNotes.map((meetingNote) => (
@@ -536,32 +547,6 @@ function getMeetingNoteTitle(meetingNote: MeetingNote) {
   }
 
   return companyName || contactName || "회의록";
-}
-
-// 기능 : 회의록 목록 empty 상태를 렌더링합니다.
-function MeetingNoteEmptyState({ hasFilter }: { readonly hasFilter: boolean }) {
-  return (
-    <div className="grid place-items-center px-4 py-16 text-center">
-      <div className="grid max-w-sm gap-3">
-        <div className="mx-auto grid h-11 w-11 place-items-center rounded-md bg-[#F3F4F6]">
-          <FileText className="h-5 w-5 text-[#9CA3AF]" />
-        </div>
-        <h2 className="text-[14px] font-semibold text-[#111827]">
-          {hasFilter ? "조건에 맞는 회의록이 없습니다" : "저장된 회의록이 없습니다"}
-        </h2>
-        <p className="text-[13px] text-[#6B7280]">
-          회사와 담당자를 먼저 기록하면 이후 미팅 맥락을 빠르게 찾을 수 있습니다.
-        </p>
-        <Link
-          className="mx-auto inline-flex h-9 items-center gap-2 rounded-md bg-[#2563EB] px-4 text-[13px] font-medium text-white hover:bg-[#1D4ED8]"
-          to="/meeting-notes/new"
-        >
-          <Plus className="h-4 w-4" />
-          회의록 작성
-        </Link>
-      </div>
-    </div>
-  );
 }
 
 // 기능 : 회의록 목록 error 상태를 렌더링합니다.
