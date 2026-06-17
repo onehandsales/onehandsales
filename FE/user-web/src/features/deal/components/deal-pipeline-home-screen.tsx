@@ -1,5 +1,13 @@
 // 기능 : 딜 파이프라인 홈 화면 — split view (Desktop) / 카드 (Mobile)
-import { AlertCircle, BriefcaseBusiness, Download, Plus, Search, X } from "lucide-react";
+import {
+  AlertCircle,
+  BriefcaseBusiness,
+  ChevronDown,
+  Download,
+  Plus,
+  Search,
+  X,
+} from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { PageHeader } from "@/components/layout/page-header";
@@ -11,7 +19,10 @@ import {
   useDealCompanyOptions,
   useDealContactOptions,
 } from "@/features/deal/hooks/use-deal-entity-options";
-import { useDealList, useDealStageCounts } from "@/features/deal/hooks/use-deal-list";
+import {
+  useDealList,
+  useDealStageCounts,
+} from "@/features/deal/hooks/use-deal-list";
 import { exportDealsXlsx } from "@/features/deal/api/deal-api";
 import {
   DEAL_STATUS_LABEL,
@@ -28,10 +39,16 @@ type StageTab = "ALL" | DealStatus;
 
 const stageTabs: Array<{ readonly value: StageTab; readonly label: string }> = [
   { value: "ALL", label: "전체" },
-  ...DEAL_STATUS_LIST.map((s) => ({ value: s as StageTab, label: DEAL_STATUS_LABEL[s] })),
+  ...DEAL_STATUS_LIST.map((s) => ({
+    value: s as StageTab,
+    label: DEAL_STATUS_LABEL[s],
+  })),
 ];
 
-const SORT_OPTIONS: Array<{ readonly value: DealSort; readonly label: string }> = [
+const SORT_OPTIONS: Array<{
+  readonly value: DealSort;
+  readonly label: string;
+}> = [
   { value: "createdAtDesc", label: "최신순" },
   { value: "dealCostDesc", label: "금액 높은순" },
   { value: "dealCostAsc", label: "금액 낮은 순" },
@@ -79,17 +96,14 @@ export function DealPipelineHomeScreen({
 
   const deals = useMemo(
     () => dealsQuery.data?.items ?? [],
-    [dealsQuery.data?.items]
+    [dealsQuery.data?.items],
   );
-  const filteredContactOptions = useMemo(
-    () => {
-      const contactOptions = contactOptionsQuery.data ?? [];
-      return companyId
-        ? contactOptions.filter((contact) => contact.companyId === companyId)
-        : contactOptions;
-    },
-    [companyId, contactOptionsQuery.data]
-  );
+  const filteredContactOptions = useMemo(() => {
+    const contactOptions = contactOptionsQuery.data ?? [];
+    return companyId
+      ? contactOptions.filter((contact) => contact.companyId === companyId)
+      : contactOptions;
+  }, [companyId, contactOptionsQuery.data]);
   const displayTimeZone = user?.timeZone ?? getBrowserTimeZoneFallback();
   const hasFilter =
     activeTab !== "ALL" ||
@@ -207,7 +221,7 @@ export function DealPipelineHomeScreen({
                   "relative flex h-11 items-center gap-1.5 border-b-2 px-3.5 text-[13px] font-medium transition-colors",
                   isActive
                     ? "border-[#2563EB] text-[#2563EB]"
-                    : "border-transparent text-[#6B7280] hover:text-[#111827]"
+                    : "border-transparent text-[#6B7280] hover:text-[#111827]",
                 )}
                 key={tab.value}
                 onClick={() => onTabChange(tab.value)}
@@ -217,7 +231,9 @@ export function DealPipelineHomeScreen({
                 <span
                   className={cn(
                     "rounded-full px-1.5 py-0.5 text-[11px] font-semibold",
-                    isActive ? "bg-[#EFF6FF] text-[#2563EB]" : "bg-[#F3F4F6] text-[#6B7280]"
+                    isActive
+                      ? "bg-[#EFF6FF] text-[#2563EB]"
+                      : "bg-[#F3F4F6] text-[#6B7280]",
                   )}
                 >
                   {count}
@@ -256,7 +272,7 @@ export function DealPipelineHomeScreen({
                     "inline-flex h-8 items-center rounded-[6px] border px-3 text-[13px] transition",
                     !hasFilter
                       ? "border-[#C7D7FE] bg-[#EAF2FF] font-bold text-[#1D4ED8]"
-                      : "border-[#E6EAF0] bg-white font-medium text-[#475569] hover:bg-[#F9FAFB]"
+                      : "border-[#E6EAF0] bg-white font-medium text-[#475569] hover:bg-[#F9FAFB]",
                   )}
                   onClick={clearFilters}
                   type="button"
@@ -269,7 +285,7 @@ export function DealPipelineHomeScreen({
                     "h-8 min-w-[140px] appearance-none rounded-md border px-3 text-[13px] outline-none transition",
                     companyId
                       ? "border-[#BFDBFE] bg-[#EFF6FF] text-[#1D4ED8]"
-                      : "border-[#E2E5EC] bg-transparent text-[#6B7280] hover:bg-[#FAFAF8]"
+                      : "border-[#E2E5EC] bg-transparent text-[#6B7280] hover:bg-[#FAFAF8]",
                   )}
                   onChange={(e) => onCompanyChange(e.target.value)}
                   value={companyId}
@@ -287,7 +303,7 @@ export function DealPipelineHomeScreen({
                     "h-8 min-w-[140px] appearance-none rounded-md border px-3 text-[13px] outline-none transition",
                     contactId
                       ? "border-[#BFDBFE] bg-[#EFF6FF] text-[#1D4ED8]"
-                      : "border-[#E2E5EC] bg-transparent text-[#6B7280] hover:bg-[#FAFAF8]"
+                      : "border-[#E2E5EC] bg-transparent text-[#6B7280] hover:bg-[#FAFAF8]",
                   )}
                   onChange={(e) => onContactChange(e.target.value)}
                   value={contactId}
@@ -305,7 +321,7 @@ export function DealPipelineHomeScreen({
                     "h-8 min-w-[136px] appearance-none rounded-md border px-3 text-[13px] outline-none transition",
                     sort !== "createdAtDesc"
                       ? "border-[#BFDBFE] bg-[#EFF6FF] text-[#1D4ED8]"
-                      : "border-[#E2E5EC] bg-transparent text-[#6B7280] hover:bg-[#FAFAF8]"
+                      : "border-[#E2E5EC] bg-transparent text-[#6B7280] hover:bg-[#FAFAF8]",
                   )}
                   onChange={(e) => onSortChange(e.target.value as DealSort)}
                   value={sort}
@@ -329,8 +345,10 @@ export function DealPipelineHomeScreen({
                   <TableHeaderCell width={180}>회사/담당자</TableHeaderCell>
                   <TableHeaderCell width={96}>단계</TableHeaderCell>
                   <TableHeaderCell width={104}>금액</TableHeaderCell>
-                  <TableHeaderCell width={190}>다음 행동 마감일</TableHeaderCell>
-                  <TableHeaderCell align="right" width={104}>등록일</TableHeaderCell>
+                  <TableHeaderCell width={190}>
+                    다음 행동 마감일
+                  </TableHeaderCell>
+                  <TableHeaderCell width={104}>등록일</TableHeaderCell>
                   <div className="min-w-0 flex-1" />
                 </div>
 
@@ -382,7 +400,9 @@ export function DealPipelineHomeScreen({
                     >
                       <X className="h-3.5 w-3.5" strokeWidth={2} />
                     </button>
-                    <span className="text-[12px] font-medium text-[#6B7280]">미리보기</span>
+                    <span className="text-[12px] font-medium text-[#6B7280]">
+                      미리보기
+                    </span>
                   </div>
                   <div className="flex items-center gap-1.5">
                     <Link
@@ -401,9 +421,10 @@ export function DealPipelineHomeScreen({
       </section>
 
       {/* ── Mobile ── */}
-      <section className="md:hidden">
+      <section className="relative flex flex-col md:hidden">
+        {/* 단계 탭 — 가로 스크롤 */}
         <div className="overflow-x-auto border-b border-[#E6EAF0] bg-white">
-          <div className="flex gap-0 px-2">
+          <div className="flex min-w-max gap-0 px-2">
             {stageTabs.map((tab) => {
               const count = getStageCount(tab.value);
               const isActive = activeTab === tab.value;
@@ -412,8 +433,8 @@ export function DealPipelineHomeScreen({
                   className={cn(
                     "flex h-11 shrink-0 items-center gap-1 border-b-2 px-3 text-[13px] font-medium transition-colors",
                     isActive
-                      ? "border-primary text-primary"
-                      : "border-transparent text-gray-500"
+                      ? "border-[#5E5CE6] text-[#5E5CE6]"
+                      : "border-transparent text-[#6B7280]",
                   )}
                   key={tab.value}
                   onClick={() => onTabChange(tab.value)}
@@ -423,7 +444,9 @@ export function DealPipelineHomeScreen({
                   <span
                     className={cn(
                       "rounded-full px-1.5 py-0.5 text-[11px] font-semibold",
-                      isActive ? "bg-primary/10 text-primary" : "bg-gray-100 text-gray-500"
+                      isActive
+                        ? "bg-[#EEEEFF] text-[#5E5CE6]"
+                        : "bg-[#F3F4F6] text-[#6B7280]",
                     )}
                   >
                     {count}
@@ -434,81 +457,52 @@ export function DealPipelineHomeScreen({
           </div>
         </div>
 
-        {/* 검색 + 정렬 */}
-        <div className="grid gap-2 border-b border-[#E6EAF0] px-4 py-2">
-          <input
-            className="h-8 w-full rounded-md border border-[#E6EAF0] px-2 text-[12px] outline-none placeholder:text-gray-400 focus:border-primary"
-            onChange={(e) => onSearchChange(e.target.value)}
-            placeholder="딜명 검색"
-            value={search}
-          />
+        {/* 필터 칩 행 */}
+        <div className="flex items-center gap-2 border-b border-[#E6EAF0] bg-white px-4 py-2">
+          {/* 다음 행동 필터 칩 */}
           <button
             className={cn(
-              "inline-flex h-8 w-full items-center justify-center rounded-[6px] border px-3 text-[13px] transition",
-              !hasFilter
-                ? "border-[#C7D7FE] bg-[#EAF2FF] font-bold text-[#1D4ED8]"
-                : "border-[#E6EAF0] bg-white font-medium text-[#475569] hover:bg-[#F9FAFB]"
+              "inline-flex h-[26px] shrink-0 items-center gap-1 rounded-[13px] px-[10px] text-[12px] font-medium transition",
+              "bg-[#F3F4F6] text-[#4B5563]",
             )}
-            onClick={clearFilters}
             type="button"
           >
-            전체
+            다음 행동
+            <ChevronDown className="h-3 w-3" />
           </button>
-          <select
-            aria-label="회사 필터"
-            className={cn(
-              "h-8 w-full appearance-none rounded-md border px-2 text-[12px] outline-none transition",
-              companyId
-                ? "border-[#BFDBFE] bg-[#EFF6FF] text-[#1D4ED8]"
-                : "border-[#E6EAF0] bg-white text-gray-500 focus:border-primary"
-            )}
-            onChange={(e) => onCompanyChange(e.target.value)}
-            value={companyId}
+          {/* 가능성 필터 칩 */}
+          <button
+            className="inline-flex h-[26px] shrink-0 items-center gap-1 rounded-[13px] bg-[#F3F4F6] px-[10px] text-[12px] font-medium text-[#4B5563] transition"
+            type="button"
           >
-            <option value="">회사</option>
-            {(companyOptionsQuery.data ?? []).map((company) => (
-              <option key={company.id} value={company.id}>
-                {company.companyName}
-              </option>
-            ))}
-          </select>
-          <select
-            aria-label="담당자 필터"
+            가능성
+            <ChevronDown className="h-3 w-3" />
+          </button>
+          {/* 금액 필터 칩 */}
+          <button
             className={cn(
-              "h-8 w-full appearance-none rounded-md border px-2 text-[12px] outline-none transition",
-              contactId
-                ? "border-[#BFDBFE] bg-[#EFF6FF] text-[#1D4ED8]"
-                : "border-[#E6EAF0] bg-white text-gray-500 focus:border-primary"
+              "inline-flex h-[26px] shrink-0 items-center gap-1 rounded-[13px] px-[10px] text-[12px] font-medium transition",
+              sort === "dealCostDesc" || sort === "dealCostAsc"
+                ? "border border-[#5E5CE6] bg-[#EEEEFF] text-[#5E5CE6]"
+                : "bg-[#F3F4F6] text-[#4B5563]",
             )}
-            onChange={(e) => onContactChange(e.target.value)}
-            value={contactId}
+            onClick={() =>
+              onSortChange(
+                sort === "dealCostDesc" ? "dealCostAsc" : "dealCostDesc",
+              )
+            }
+            type="button"
           >
-            <option value="">담당자</option>
-            {filteredContactOptions.map((contact) => (
-              <option key={contact.id} value={contact.id}>
-                {contact.label}
-              </option>
-            ))}
-          </select>
-          <select
-            aria-label="정렬 조건"
-            className={cn(
-              "h-8 w-full appearance-none rounded-md border px-2 text-[12px] outline-none transition",
-              sort !== "createdAtDesc"
-                ? "border-[#BFDBFE] bg-[#EFF6FF] text-[#1D4ED8]"
-                : "border-[#E6EAF0] bg-white text-gray-500 focus:border-primary"
-            )}
-            onChange={(e) => onSortChange(e.target.value as DealSort)}
-            value={sort}
-          >
-            {SORT_OPTIONS.map((opt) => (
-              <option key={opt.value} value={opt.value}>
-                {opt.label}
-              </option>
-            ))}
-          </select>
+            금액
+            <ChevronDown className="h-3 w-3" />
+          </button>
+          <div className="flex-1" />
+          <span className="shrink-0 text-[11px] text-[#9CA3AF]">
+            {dealsQuery.data?.totalCount ?? 0}건
+          </span>
         </div>
 
+        {/* 딜 카드 목록 */}
         {dealsQuery.isLoading ? (
           <MobileLoadingState />
         ) : dealsQuery.isError ? (
@@ -522,11 +516,13 @@ export function DealPipelineHomeScreen({
             className="min-h-[280px] -translate-y-7"
             icon={BriefcaseBusiness}
             onAction={() => setIsCreateOpen(true)}
-            title={hasFilter ? "조건에 맞는 딜이 없습니다" : "등록된 딜이 없습니다"}
+            title={
+              hasFilter ? "조건에 맞는 딜이 없습니다" : "등록된 딜이 없습니다"
+            }
           />
         ) : (
           <>
-            <div className="grid gap-3 px-4 py-4 pb-4">
+            <div className="flex flex-col gap-3 px-4 py-4 pb-24">
               {deals.map((deal) => (
                 <MobileDealCard
                   deal={deal}
@@ -547,9 +543,10 @@ export function DealPipelineHomeScreen({
           </>
         )}
 
+        {/* FAB */}
         <button
-          className="fixed bottom-24 right-5 z-40 inline-flex h-14 w-14 items-center justify-center rounded-full bg-fab text-fab-foreground shadow-fab transition hover:scale-[1.02]"
-          onClick={() => setIsCreateOpen(true)}
+          className="fixed bottom-24 right-5 z-40 inline-flex h-[52px] w-[52px] items-center justify-center rounded-full bg-[#5E5CE6] text-white shadow-[0_4px_16px_rgba(59,130,246,0.27)] transition hover:scale-[1.02]"
+          onClick={() => void navigate("/deals/new")}
           type="button"
         >
           <Plus className="h-6 w-6" />
@@ -587,7 +584,7 @@ function DealListRow({
     <button
       className={cn(
         "flex h-[66px] w-full items-center border-b border-[#E2E5EC] px-6 py-0 text-left transition-colors last:border-b-0 hover:bg-blue-50/60",
-        isActive ? "bg-blue-50" : "bg-white"
+        isActive ? "bg-blue-50" : "bg-white",
       )}
       onClick={() => onSelect(deal.id)}
       type="button"
@@ -601,17 +598,28 @@ function DealListRow({
 
       {/* 회사/담당자 */}
       <div className="min-w-0 shrink-0 pr-3" style={{ width: 180 }}>
-        <span className="block truncate text-[12px] font-semibold text-[#111827]" title={deal.company.companyName}>
+        <span
+          className="block truncate text-[12px] font-semibold text-[#111827]"
+          title={deal.company.companyName}
+        >
           {deal.company.companyName}
         </span>
-        <span className="mt-0.5 block truncate text-[11px] font-medium text-[#2563EB]" title={contactLabel}>
+        <span
+          className="mt-0.5 block truncate text-[11px] font-medium text-[#2563EB]"
+          title={contactLabel}
+        >
           {contactLabel}
         </span>
       </div>
 
       {/* 단계 */}
       <div className="min-w-0 shrink-0" style={{ width: 96 }}>
-        <span className={cn("inline-flex h-6 items-center rounded-full px-2 text-[11px] font-semibold", getDealStatusClass(deal.dealStatus))}>
+        <span
+          className={cn(
+            "inline-flex h-6 items-center rounded-full px-2 text-[11px] font-semibold",
+            getDealStatusClass(deal.dealStatus),
+          )}
+        >
           {deal.dealStatusLabel}
         </span>
       </div>
@@ -634,7 +642,7 @@ function DealListRow({
       </div>
 
       {/* 등록일 */}
-      <div className="min-w-0 shrink-0 text-right" style={{ width: 104 }}>
+      <div className="min-w-0 shrink-0" style={{ width: 104 }}>
         <span className="block truncate text-[11px] font-medium text-[#64748B]">
           {formatDealCreatedAt(deal.createdAt, displayTimeZone)}
         </span>
@@ -649,46 +657,81 @@ function DealListRow({
 
 function MobileDealCard({
   deal,
-  displayTimeZone,
 }: {
   readonly deal: DealListItem;
   readonly displayTimeZone: string;
 }) {
   const contactLabel = formatDealContactLabel(deal);
+  const deadlineLabel = getDeadlineDDayLabel(deal.expectedEndDate);
+  const deadlineColor = getDeadlineDDayColor(deal.expectedEndDate);
+  const nextAction = deal.latestFollowingAction;
 
   return (
     <Link
-      className="block rounded-2xl border border-border/70 bg-white p-4 shadow-sm transition hover:-translate-y-0.5"
+      className="block rounded-xl border border-[#E5E7EB] bg-white p-4 shadow-sm transition hover:-translate-y-0.5"
       to={`/deals/${deal.id}`}
     >
-      <div className="flex items-start justify-between gap-2">
-        <div className="min-w-0">
-          <h2 className="mt-0.5 truncate text-[15px] font-semibold text-foreground">
-            {deal.dealName}
-          </h2>
-          <div className="mt-1 min-w-0">
-            <p className="truncate text-[12px] font-semibold text-[#111827]">{deal.company.companyName}</p>
-            <p className="truncate text-[12px] font-medium text-[#2563EB]">{contactLabel}</p>
-          </div>
-        </div>
-        <span className={cn("shrink-0 rounded-full px-2.5 py-1 text-[11px] font-semibold", getDealStatusClass(deal.dealStatus))}>
+      {/* Row1: 단계 배지 + 가능성 배지 자리 */}
+      <div className="flex items-center justify-between gap-2">
+        <span
+          className={cn(
+            "inline-flex h-[22px] items-center rounded-full px-2 text-[11px] font-semibold",
+            getDealStatusClass(deal.dealStatus),
+          )}
+        >
           {deal.dealStatusLabel}
+        </span>
+        {/* 가능성 배지 — 현재 데이터 없으므로 placeholder */}
+        <span className="inline-flex h-[22px] items-center rounded-full bg-[#F3F4F6] px-2 text-[11px] font-semibold text-[#6B7280]">
+          중립
         </span>
       </div>
 
-      <div className="mt-3 grid grid-cols-2 gap-2 text-sm">
-        <div>
-          <p className="text-[11px] text-muted-foreground">금액</p>
-          <p className="truncate font-semibold">{deal.dealCost.toLocaleString("ko-KR")}원</p>
-        </div>
+      {/* Row2: 딜명 */}
+      <h2 className="mt-2 truncate text-[15px] font-semibold text-[#111827]">
+        {deal.dealName}
+      </h2>
+
+      {/* Row3: 회사명 · 담당자명 */}
+      <p className="mt-0.5 truncate text-[13px] text-[#6B7280]">
+        {deal.company.companyName} · {contactLabel}
+      </p>
+
+      {/* Divider */}
+      <div className="my-3 h-px bg-[#E5E7EB]" />
+
+      {/* Row4: 다음 행동 + D-day */}
+      <div className="flex items-start justify-between gap-2">
         <div className="min-w-0">
-          <p className="text-[11px] text-muted-foreground">다음 행동 마감일</p>
-          <p className="truncate font-semibold">{formatDealDateOnly(deal.expectedEndDate)}</p>
+          <p className="text-[12px] text-[#6B7280]">다음 행동</p>
+          <p className="mt-0.5 truncate text-[13px] text-[#1F2937]">
+            {nextAction?.followingAction ?? "—"}
+          </p>
         </div>
-        <div>
-          <p className="text-[11px] text-muted-foreground">등록일</p>
-          <p className="truncate font-semibold">{formatDealCreatedAt(deal.createdAt, displayTimeZone)}</p>
-        </div>
+        {nextAction ? (
+          <div className="shrink-0 text-right">
+            <p className="text-[12px] text-[#6B7280]">마감 D-day</p>
+            <p
+              className="mt-0.5 text-[12px] font-semibold"
+              style={{ color: deadlineColor }}
+            >
+              {deadlineLabel}
+            </p>
+          </div>
+        ) : null}
+      </div>
+
+      {/* Row5: 금액 + 마감일 */}
+      <div className="mt-3 flex items-center justify-between gap-2">
+        <p className="text-[17px] font-bold text-[#111827]">
+          ₩ {deal.dealCost.toLocaleString("ko-KR")}
+        </p>
+        <p
+          className="text-[12px]"
+          style={{ color: deadlineColor }}
+        >
+          마감 {formatDealDateShort(deal.expectedEndDate)}
+        </p>
       </div>
     </Link>
   );
@@ -698,12 +741,18 @@ function MobileDealCard({
 
 function getDealStatusClass(status: DealStatus): string {
   switch (status) {
-    case "INITIAL_CONTACT": return "bg-sky-100 text-sky-700";
-    case "NEEDS_CHECK": return "bg-blue-100 text-blue-700";
-    case "PROPOSAL_QUOTE": return "bg-yellow-100 text-yellow-700";
-    case "NEGOTIATION": return "bg-amber-100 text-amber-700";
-    case "WON": return "bg-emerald-100 text-emerald-700";
-    case "LOST": return "bg-rose-100 text-rose-700";
+    case "INITIAL_CONTACT":
+      return "bg-sky-100 text-sky-700";
+    case "NEEDS_CHECK":
+      return "bg-blue-100 text-blue-700";
+    case "PROPOSAL_QUOTE":
+      return "bg-yellow-100 text-yellow-700";
+    case "NEGOTIATION":
+      return "bg-amber-100 text-amber-700";
+    case "WON":
+      return "bg-emerald-100 text-emerald-700";
+    case "LOST":
+      return "bg-rose-100 text-rose-700";
   }
 }
 
@@ -733,6 +782,39 @@ function formatDealDateOnly(value: string) {
   return `${year}. ${month}. ${day}.`;
 }
 
+function getDeadlineDDayLabel(value: string): string {
+  if (!value) return "—";
+  const deadline = new Date(value);
+  if (Number.isNaN(deadline.getTime())) return "—";
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  deadline.setHours(0, 0, 0, 0);
+  const days = Math.ceil((deadline.getTime() - today.getTime()) / 86400000);
+  if (days < 0) return `D+${Math.abs(days)}`;
+  if (days === 0) return "D-day";
+  return `D-${days}`;
+}
+
+function getDeadlineDDayColor(value: string): string {
+  if (!value) return "#9CA3AF";
+  const deadline = new Date(value);
+  if (Number.isNaN(deadline.getTime())) return "#9CA3AF";
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  deadline.setHours(0, 0, 0, 0);
+  const days = Math.ceil((deadline.getTime() - today.getTime()) / 86400000);
+  if (days < 0) return "#B91C1C";
+  if (days <= 7) return "#B45309";
+  return "#9CA3AF";
+}
+
+function formatDealDateShort(value: string): string {
+  if (!value) return "—";
+  const [, month, day] = value.slice(0, 10).split("-");
+  if (!month || !day) return value || "—";
+  return `${month}/${day}`;
+}
+
 function getBrowserTimeZoneFallback() {
   try {
     return Intl.DateTimeFormat().resolvedOptions().timeZone || "Asia/Seoul";
@@ -757,7 +839,7 @@ function TableHeaderCell({
       className={cn(
         "shrink-0 text-[12px] font-semibold text-[#64748B]",
         flex && "min-w-0 flex-1",
-        align === "right" && "text-right"
+        align === "right" && "text-right",
       )}
       style={width ? { width } : undefined}
     >
@@ -771,7 +853,9 @@ function ErrorState({ onRetry }: { readonly onRetry: () => void }) {
     <div className="rounded-lg border border-red-100 bg-white p-8">
       <div className="flex items-center gap-3 text-red-600">
         <AlertCircle className="h-5 w-5" />
-        <h2 className="text-sm font-semibold">딜 목록을 불러오지 못했습니다.</h2>
+        <h2 className="text-sm font-semibold">
+          딜 목록을 불러오지 못했습니다.
+        </h2>
       </div>
       <button
         className="mt-4 inline-flex h-9 items-center rounded-full border border-gray-200 px-4 text-sm text-gray-700"
@@ -797,7 +881,10 @@ function DesktopLoadingState() {
         </div>
         <div className="flex flex-col rounded-lg border border-[#E2E5EC] bg-white shadow-sm">
           {Array.from({ length: 6 }).map((_, i) => (
-            <div className="h-[66px] animate-pulse border-b border-[#E2E5EC] bg-[#F9FAFB] last:border-b-0" key={i} />
+            <div
+              className="h-[66px] animate-pulse border-b border-[#E2E5EC] bg-[#F9FAFB] last:border-b-0"
+              key={i}
+            />
           ))}
         </div>
       </div>

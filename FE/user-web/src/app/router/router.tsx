@@ -24,6 +24,7 @@ import { SchedulesPage } from "@/pages/schedules";
 import { ScheduleWeekPage } from "@/pages/schedules/week";
 import { SettingsPage } from "@/pages/settings";
 import { TrashPage } from "@/pages/trash";
+import { MorePage } from "@/pages/more";
 
 export const router = createBrowserRouter([
   { path: "/login", element: <LoginPage /> },
@@ -63,6 +64,7 @@ export const router = createBrowserRouter([
       { path: "export", element: <ExportPage /> },
       { path: "trash", element: <TrashPage /> },
       { path: "settings", element: <SettingsPage /> },
+      { path: "more", element: <MorePage /> },
     ],
   },
 ]);

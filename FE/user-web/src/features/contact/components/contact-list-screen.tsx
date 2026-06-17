@@ -12,7 +12,7 @@ import {
 } from "lucide-react";
 import { type FormEvent, type ReactNode, useEffect, useMemo, useState } from "react";
 import { PageHeader } from "@/components/layout/page-header";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Pagination } from "@/components/ui/pagination";
 import { ListEmptyState } from "@/components/ui/state";
 import { Toast } from "@/components/ui/toast";
@@ -35,6 +35,7 @@ import { cn } from "@/utils/cn";
 import { formatDateWithOptions } from "@/utils/format";
 
 export function ContactListScreen() {
+  const navigate = useNavigate();
   const { user } = useAuthSession();
   const [usernameText, setUsernameText] = useState("");
   const [username, setUsername] = useState("");
@@ -176,8 +177,8 @@ export function ContactListScreen() {
         ]}
       />
 
-      {/* 검색 + 필터 툴바 */}
-      <div className="flex h-10 shrink-0 items-center gap-2 px-5">
+      {/* 검색 + 필터 툴바 (데스크톱) */}
+      <div className="hidden h-10 shrink-0 items-center gap-2 px-5 md:flex">
         <form className="flex h-8 items-center gap-1.5 rounded-md border border-[#E2E5EC] bg-[#FAFAF8] px-3 transition focus-within:border-[#93C5FD] focus-within:bg-white" onSubmit={onSearchSubmit}>
           <Search className="h-3 w-3 shrink-0 text-[#9CA3AF]" />
           <input
@@ -277,7 +278,7 @@ export function ContactListScreen() {
 
       {/* 알림 */}
       {notice || exportContactsMutation.error ? (
-        <div className="px-5 pt-2">
+        <div className="hidden px-5 pt-2 md:block">
           {notice ? (
             <Toast
               message={notice}
@@ -293,8 +294,8 @@ export function ContactListScreen() {
         </div>
       ) : null}
 
-      {/* 테이블 + 미리보기 */}
-      <div className="flex gap-5 px-5 pb-3 pt-1">
+      {/* 테이블 + 미리보기 (데스크톱) */}
+      <div className="hidden gap-5 px-5 pb-3 pt-1 md:flex">
         <div className="flex min-w-0 flex-1 flex-col gap-3">
           <div className="flex flex-col rounded-lg border border-[#E2E5EC] bg-white shadow-sm">
             {/* 테이블 헤더 (데스크톱) */}
@@ -317,7 +318,7 @@ export function ContactListScreen() {
               <div className="w-[180px] shrink-0 text-[12px] font-semibold text-[#64748B]">
                 이메일
               </div>
-              <div className="w-[118px] shrink-0 text-right text-[12px] font-semibold text-[#64748B]">
+              <div className="w-[118px] shrink-0 text-[12px] font-semibold text-[#64748B]">
                 등록일
               </div>
               <div className="min-w-0 flex-1" />
@@ -344,26 +345,15 @@ export function ContactListScreen() {
               />
             ) : (
               <div>
-                <div className="hidden md:block">
-                  {contactList.items.map((c) => (
-                    <ContactRow
-                      contact={c}
-                      displayTimeZone={displayTimeZone}
-                      isActive={c.id === selectedContactId}
-                      key={c.id}
-                      onSelect={setSelectedContactId}
-                    />
-                  ))}
-                </div>
-                <div className="divide-y divide-[#E2E5EC] md:hidden">
-                  {contactList.items.map((c) => (
-                    <ContactCard
-                      key={c.id}
-                      contact={c}
-                      displayTimeZone={displayTimeZone}
-                    />
-                  ))}
-                </div>
+                {contactList.items.map((c) => (
+                  <ContactRow
+                    contact={c}
+                    displayTimeZone={displayTimeZone}
+                    isActive={c.id === selectedContactId}
+                    key={c.id}
+                    onSelect={setSelectedContactId}
+                  />
+                ))}
               </div>
             )}
           </div>
@@ -378,7 +368,7 @@ export function ContactListScreen() {
         </div>
 
         {selectedContactId ? (
-          <div className="hidden w-[380px] shrink-0 flex-col rounded-lg border border-[#E5EAF0] bg-white md:flex">
+          <div className="hidden w-[380px] shrink-0 flex-col rounded-lg border border-[#E5EAF0] bg-white md:flex" >
             <div className="flex h-11 shrink-0 items-center justify-between border-b border-[#E6EAF0] px-4">
               <div className="flex items-center gap-2">
                 <button
@@ -406,6 +396,164 @@ export function ContactListScreen() {
         ) : null}
       </div>
 
+      {/* 모바일 뷰 */}
+      <section className="flex min-h-0 flex-1 flex-col md:hidden">
+        {/* 모바일 알림 */}
+        {notice ? (
+          <div className="px-4 pt-2">
+            <Toast
+              message={notice}
+              onClose={() => setNotice(null)}
+              variant="success"
+            />
+          </div>
+        ) : null}
+
+        {/* 모바일 필터 칩 행 */}
+        <div className="flex h-10 shrink-0 items-center gap-2 border-b border-[#E5E7EB] px-4">
+          <button
+            className={cn(
+              "inline-flex h-7 shrink-0 items-center rounded-full border px-3 text-[12px] font-medium transition",
+              !hasSearch
+                ? "border-[#5E5CE6] bg-[#EEEEFF] text-[#5E5CE6]"
+                : "border-[#E5E7EB] bg-[#F3F4F6] text-[#4B5563]",
+            )}
+            onClick={() => {
+              setUsername("");
+              setUsernameText("");
+              setContactDepartmentId("");
+              setContactJobGradeId("");
+              setSort("createdAtDesc");
+              setPage(1);
+            }}
+            type="button"
+          >
+            전체
+          </button>
+          <select
+            className={cn(
+              "h-7 appearance-none rounded-full border px-3 text-[12px] outline-none transition",
+              contactDepartmentId
+                ? "border-[#BFDBFE] bg-[#EFF6FF] text-[#1D4ED8]"
+                : "border-[#E5E7EB] bg-[#F3F4F6] text-[#4B5563]",
+            )}
+            disabled={departmentsQuery.isLoading}
+            onChange={(e) => {
+              const v = e.target.value;
+              if (v === ADD_TAXONOMY_VALUE) {
+                setTaxonomyOpen(true);
+                return;
+              }
+              setContactDepartmentId(v);
+              setPage(1);
+            }}
+            value={contactDepartmentId}
+          >
+            <option value="">부서</option>
+            <option value={ADD_TAXONOMY_VALUE}>+ 추가</option>
+            {departments.map((d) => (
+              <option key={d.id} value={d.id}>
+                {d.departmentName}
+              </option>
+            ))}
+          </select>
+          <select
+            className={cn(
+              "h-7 appearance-none rounded-full border px-3 text-[12px] outline-none transition",
+              contactJobGradeId
+                ? "border-[#BFDBFE] bg-[#EFF6FF] text-[#1D4ED8]"
+                : "border-[#E5E7EB] bg-[#F3F4F6] text-[#4B5563]",
+            )}
+            disabled={jobGradesQuery.isLoading}
+            onChange={(e) => {
+              const v = e.target.value;
+              if (v === ADD_TAXONOMY_VALUE) {
+                setTaxonomyOpen(true);
+                return;
+              }
+              setContactJobGradeId(v);
+              setPage(1);
+            }}
+            value={contactJobGradeId}
+          >
+            <option value="">직급</option>
+            <option value={ADD_TAXONOMY_VALUE}>+ 추가</option>
+            {jobGrades.map((g) => (
+              <option key={g.id} value={g.id}>
+                {g.jobGradeName}
+              </option>
+            ))}
+          </select>
+          <div className="flex-1" />
+          <span className="shrink-0 text-[11px] text-[#9CA3AF]">
+            {contactList?.totalCount ?? 0}명
+          </span>
+        </div>
+
+        {/* 모바일 카드 목록 */}
+        <div className="flex-1 overflow-y-auto bg-white">
+          {contactsQuery.isLoading ? (
+            <div className="space-y-0">
+              {Array.from({ length: 8 }, (_, i) => (
+                <div
+                  key={i}
+                  className="h-[80px] animate-pulse border-b border-[#E5E7EB] bg-[#F9FAFB]"
+                />
+              ))}
+            </div>
+          ) : contactsQuery.isError ? (
+            <div className="flex flex-col items-center justify-center px-5 py-14 text-center">
+              <p className="text-[13px] text-red-500">
+                {getApiErrorMessage(contactsQuery.error)}
+              </p>
+              <button
+                className="mt-3 inline-flex h-8 items-center rounded-md border border-[#E2E5EC] bg-white px-3 text-[12px] text-[#6B7280]"
+                onClick={() => void contactsQuery.refetch()}
+                type="button"
+              >
+                다시 시도
+              </button>
+            </div>
+          ) : !contactList || contactList.items.length === 0 ? (
+            <div className="flex flex-col items-center justify-center px-5 py-16 text-center">
+              <IdCard className="mb-3 h-10 w-10 text-[#D1D5DB]" strokeWidth={1.5} />
+              <p className="text-[14px] font-medium text-[#374151]">
+                {hasSearch ? "조건에 맞는 담당자가 없습니다" : "등록된 담당자가 없습니다"}
+              </p>
+            </div>
+          ) : (
+            contactList.items.map((contact) => (
+              <ContactMobileCard
+                key={contact.id}
+                contact={contact}
+                displayTimeZone={displayTimeZone}
+              />
+            ))
+          )}
+        </div>
+
+        {/* 모바일 페이지네이션 */}
+        {contactList ? (
+          <div className="shrink-0 border-t border-[#E5E7EB] bg-white px-4 py-2">
+            <Pagination
+              page={contactList.page}
+              totalPages={contactList.totalPages}
+              onPageChange={setPage}
+            />
+          </div>
+        ) : null}
+
+        {/* FAB */}
+        <button
+          aria-label="담당자 추가"
+          className="fixed bottom-24 right-5 flex h-[52px] w-[52px] items-center justify-center rounded-full bg-[#5E5CE6] shadow-[0_4px_16px_rgba(59,130,246,0.27)] transition active:opacity-80"
+          onClick={() => setIsCreateOpen(true)}
+          type="button"
+        >
+          <Plus className="h-6 w-6 text-white" strokeWidth={2.5} />
+        </button>
+      </section>
+
       <ContactCreateDialog
         onCreated={() => setNotice("담당자가 추가되었습니다.")}
         onOpenChange={setIsCreateOpen}
@@ -420,6 +568,53 @@ export function ContactListScreen() {
         open={taxonomyOpen}
       />
     </section>
+  );
+}
+
+function ContactMobileCard({
+  contact,
+  displayTimeZone,
+}: {
+  readonly contact: ContactListItem;
+  readonly displayTimeZone: string;
+}) {
+  const initial = contact.username.charAt(0).toUpperCase();
+
+  return (
+    <Link
+      className="flex w-full items-start gap-3 border-b border-[#E5E7EB] bg-white px-4 py-[14px] transition active:bg-[#F9FAFB]"
+      to={`/contacts/${contact.id}`}
+    >
+      {/* 이니셜 아바타 */}
+      <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#F5F3FF]">
+        <span className="text-[13px] font-bold text-[#6D28D9]">{initial}</span>
+      </div>
+      {/* 내용 */}
+      <div className="min-w-0 flex-1">
+        {/* Row1: 이름 + 직급 배지 */}
+        <div className="flex min-w-0 items-center gap-2">
+          <span className="min-w-0 truncate text-[14px] font-semibold text-[#111827]">
+            {contact.username}
+          </span>
+          <span className="inline-flex h-5 shrink-0 items-center rounded-full bg-[#FEF3C7] px-2 text-[11px] font-semibold text-[#B45309]">
+            {contact.contactJobGrade.jobGradeName}
+          </span>
+        </div>
+        {/* Row2: 회사 · 부서 */}
+        <p className="mt-0.5 text-[12px] text-[#6B7280]">
+          {contact.company.companyName} · {contact.contactDepartment.departmentName}
+        </p>
+        {/* Row3: 연락처 + 등록일 */}
+        <div className="mt-1 flex items-center justify-between">
+          <span className="text-[12px] text-[#6B7280]">
+            {contact.mobile || contact.email || "-"}
+          </span>
+          <span className="shrink-0 text-[11px] text-[#9CA3AF]">
+            {formatContactCreatedAt(contact.createdAt, displayTimeZone)}
+          </span>
+        </div>
+      </div>
+    </Link>
   );
 }
 
@@ -485,7 +680,7 @@ function ContactRow({
         {contact.email || "-"}
       </div>
       <div
-        className="w-[118px] shrink-0 text-right text-[12px] font-medium text-[#64748B]"
+        className="w-[118px] shrink-0 text-[12px] font-medium text-[#64748B]"
         title={formatContactCreatedAt(contact.createdAt, displayTimeZone)}
       >
         {formatContactCreatedAt(contact.createdAt, displayTimeZone)}

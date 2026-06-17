@@ -50,7 +50,7 @@ function ProductDetailHeader({ productId }: { readonly productId: string }) {
   const toggleEdit = () => {
     void navigate(
       isEditing ? `/products/${productId}` : `/products/${productId}?edit=1`,
-      { replace: true }
+      { replace: true },
     );
   };
 
@@ -96,8 +96,11 @@ export function AppShell() {
 
   // /products/:id 패턴 감지
   const productDetailMatch = /^\/products\/([^/]+)$/.exec(pathname);
-  const productDetailId = productDetailMatch ? (productDetailMatch[1] ?? "") : "";
-  const isProductDetail = productDetailId.length > 0 && productDetailId !== "new";
+  const productDetailId = productDetailMatch
+    ? (productDetailMatch[1] ?? "")
+    : "";
+  const isProductDetail =
+    productDetailId.length > 0 && productDetailId !== "new";
 
   // /deals/:id 패턴 감지
   const dealDetailMatch = /^\/deals\/([^/]+)$/.exec(pathname);
@@ -106,17 +109,24 @@ export function AppShell() {
 
   // /companies/:id 패턴 감지
   const companyDetailMatch = /^\/companies\/([^/]+)$/.exec(pathname);
-  const companyDetailId = companyDetailMatch ? (companyDetailMatch[1] ?? "") : "";
-  const isCompanyDetail = companyDetailId.length > 0 && companyDetailId !== "new";
+  const companyDetailId = companyDetailMatch
+    ? (companyDetailMatch[1] ?? "")
+    : "";
+  const isCompanyDetail =
+    companyDetailId.length > 0 && companyDetailId !== "new";
 
   // /contacts/:id 패턴 감지
   const contactDetailMatch = /^\/contacts\/([^/]+)$/.exec(pathname);
-  const contactDetailId = contactDetailMatch ? (contactDetailMatch[1] ?? "") : "";
-  const isContactDetail = contactDetailId.length > 0 && contactDetailId !== "scan";
+  const contactDetailId = contactDetailMatch
+    ? (contactDetailMatch[1] ?? "")
+    : "";
+  const isContactDetail =
+    contactDetailId.length > 0 && contactDetailId !== "scan";
 
   // 자체 헤더를 가진 화면들 — app-shell TopBar 숨김
   const isDealListPage = pathname === "/deals" || pathname === "/deals/new";
-  const isProductListPage = pathname === "/products" || pathname === "/products/new";
+  const isProductListPage =
+    pathname === "/products" || pathname === "/products/new";
   const isCompanyListPage =
     pathname === "/companies" ||
     pathname === "/companies/new" ||
@@ -124,13 +134,24 @@ export function AppShell() {
     isContactDetail;
   const isContactListPage = pathname === "/contacts";
   const isMeetingNoteListPage =
-    pathname === "/meeting-notes" ||
-    /^\/meeting-notes\/[^/]+$/.test(pathname);
+    pathname === "/meeting-notes" || /^\/meeting-notes\/[^/]+$/.test(pathname);
   const isSchedulePage =
     pathname === "/schedules" || pathname === "/schedules/week";
-  const isFixedViewportPage =
-    isHome ||
-    isProductDetail;
+  const isFixedViewportPage = isHome || isProductDetail;
+
+  // 모바일 헤더 숨김 처리: 상세 페이지 및 자체 헤더 보유 페이지
+  const isMeetingNoteDetail = /^\/meeting-notes\/[^/]+$/.test(pathname);
+  const isContactScan = pathname === "/contacts/scan";
+  const isScheduleRoute =
+    pathname === "/schedules" || pathname === "/schedules/week";
+  const isMobileHeaderHidden =
+    isDealDetail ||
+    isCompanyDetail ||
+    isContactDetail ||
+    isProductDetail ||
+    isContactScan ||
+    isMeetingNoteDetail ||
+    isScheduleRoute;
 
   const hideTopBar =
     isDealListPage ||
@@ -142,24 +163,37 @@ export function AppShell() {
 
   // 현재 페이지 브레드크럼 결정
   const topBarContent = (() => {
-    if (isProductDetail) return <ProductDetailHeader productId={productDetailId} />;
+    if (isProductDetail)
+      return <ProductDetailHeader productId={productDetailId} />;
     if (isDealDetail) return <DealDetailHeader dealId={dealDetailId} />;
 
     type PageMeta = { label: string; icon: typeof House };
     const pageMetaMap: Record<string, PageMeta> = {
-      "/":            { label: "홈",  icon: House },
-      "/deals":       { label: "딜",  icon: BriefcaseBusiness },
-      "/deals/new":   { label: "딜",  icon: BriefcaseBusiness },
-      "/schedules":   { label: "일정", icon: CalendarDays },
+      "/": { label: "홈", icon: House },
+      "/deals": { label: "딜", icon: BriefcaseBusiness },
+      "/deals/new": { label: "딜", icon: BriefcaseBusiness },
+      "/schedules": { label: "일정", icon: CalendarDays },
       "/notifications": { label: "알림", icon: Bell },
-      "/settings":    { label: "설정", icon: Settings },
+      "/settings": { label: "설정", icon: Settings },
     };
     const meta = pageMetaMap[pathname] ?? { label: "한손에 영업", icon: House };
     const actions =
       pathname === "/deals" || pathname === "/"
-        ? [{ icon: Plus, tooltip: "새 딜 추가", href: "/deals/new", variant: "primary" as const }]
+        ? [
+            {
+              icon: Plus,
+              tooltip: "새 딜 추가",
+              href: "/deals/new",
+              variant: "primary" as const,
+            },
+          ]
         : [];
-    return <PageHeader breadcrumbs={[{ label: meta.label, icon: meta.icon }]} actions={actions} />;
+    return (
+      <PageHeader
+        breadcrumbs={[{ label: meta.label, icon: meta.icon }]}
+        actions={actions}
+      />
+    );
   })();
 
   return (
@@ -185,7 +219,10 @@ export function AppShell() {
               className="flex h-8 w-full items-center gap-2 rounded-md px-2 text-[13px] text-[#9CA3AF] transition hover:bg-[#E9EBF0] hover:text-[#374151]"
               onClick={() => setSearchOpen(true)}
             >
-              <Search className="h-[15px] w-[15px] shrink-0" strokeWidth={1.75} />
+              <Search
+                className="h-[15px] w-[15px] shrink-0"
+                strokeWidth={1.75}
+              />
               <span>검색</span>
               <kbd className="ml-auto hidden rounded border border-[#E2E5EC] bg-[#F0F1F3] px-1 py-0.5 text-[10px] font-medium leading-none sm:block">
                 ⌘K
@@ -206,17 +243,16 @@ export function AppShell() {
               <p className="truncate text-[13px] font-medium text-[#111827]">
                 김영업
               </p>
-              <p className="text-[11px] text-[#9CA3AF]">
-                Sales Manager
-              </p>
+              <p className="text-[11px] text-[#9CA3AF]">Sales Manager</p>
             </div>
-            <Link
+            {/*<Link
               aria-label="알림"
               className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-md text-[#9CA3AF] transition hover:bg-[#E5E7EB] hover:text-[#374151]"
               to="/notifications"
             >
               <Bell className="h-4 w-4" />
             </Link>
+            */}
           </div>
         </aside>
 
@@ -246,8 +282,8 @@ export function AppShell() {
 
       {/* ── Mobile Shell ── */}
       <div className="min-h-screen md:hidden">
-        {isHome ? <MobileAppHeader title="홈" /> : null}
-        <main className="pb-[calc(var(--mobile-tabbar-height,4rem)+1.5rem)]">
+        {!isMobileHeaderHidden ? <MobileAppHeader /> : null}
+        <main className="pb-24">
           <Outlet />
         </main>
         <BottomTabBar />
