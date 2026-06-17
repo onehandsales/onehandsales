@@ -120,8 +120,6 @@ function DealDetailSidePanel({
   detail,
   followingLogs,
   followingLogsLoading,
-  memoLogs,
-  memoLogsLoading,
 }: {
   readonly detail: DealDetail;
   readonly followingLogs: DealFollowingActionLog[];
@@ -132,13 +130,12 @@ function DealDetailSidePanel({
   const nextAction = followingLogs[0];
   const companyName = detail.company?.companyName ?? "-";
   const contactName = detail.contact?.username ?? "-";
-  const contactDepartmentName = detail.contact?.contactDepartment?.departmentName ?? "-";
   const products = Array.isArray(detail.products) ? detail.products : [];
   const dealCost = Number.isFinite(detail.dealCost) ? detail.dealCost : 0;
   const dealName = detail.dealName ?? "-";
 
   return (
-    <div className="flex h-full min-h-0 flex-col bg-white">
+    <div className="flex flex-col bg-white">
       <header className="flex h-[60px] shrink-0 items-center gap-3 border-b border-[#E5EAF0] px-5">
         <div className="min-w-0 flex-1">
           <h2 className="truncate text-[14px] font-semibold text-[#111827]">
@@ -151,30 +148,20 @@ function DealDetailSidePanel({
         <StatusBadge status={detail.dealStatus} />
       </header>
 
-      <div className="min-h-0 flex-1 overflow-y-auto px-5 py-[18px]">
+      <div className="px-5 py-[18px]">
         <div className="grid gap-4">
           <div className="grid grid-cols-2 gap-2.5">
-              <MetricCard
-                icon={HandCoins}
-                label="금액"
-                value={`${dealCost.toLocaleString("ko-KR")}원`}
-              />
+            <MetricCard
+              icon={HandCoins}
+              label="금액"
+              value={`${dealCost.toLocaleString("ko-KR")}원`}
+            />
             <MetricCard
               icon={CalendarClock}
               label="마감"
               value={formatDate(detail.expectedEndDate)}
               subValue={getDeadlineLabel(detail.expectedEndDate)}
             />
-              <MetricCard
-                icon={Building2}
-                label="회사"
-                value={companyName}
-              />
-              <MetricCard
-                icon={UserRound}
-                label="담당자"
-                value={`${contactName} ${contactDepartmentName}`}
-              />
           </div>
 
           <PanelDivider />
@@ -195,19 +182,6 @@ function DealDetailSidePanel({
             dealId={detail.id}
             isLoading={followingLogsLoading}
             logs={followingLogs}
-            tone="panel"
-          />
-
-          <PanelDivider />
-
-          <StageProgressSection activeStatus={detail.dealStatus} />
-
-          <PanelDivider />
-
-          <MemoLogsSection
-            dealId={detail.id}
-            isLoading={memoLogsLoading}
-            logs={memoLogs}
             tone="panel"
           />
         </div>
