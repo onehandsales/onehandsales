@@ -3,6 +3,7 @@ import {
   AlertCircle,
   BriefcaseBusiness,
   ChevronDown,
+  ChevronUp,
   Download,
   Plus,
   Search,
@@ -24,6 +25,7 @@ import {
   useDealStageCounts,
 } from "@/features/deal/hooks/use-deal-list";
 import { exportDealsXlsx } from "@/features/deal/api/deal-api";
+import { getApiErrorMessage } from "@/lib/api-client";
 import {
   DEAL_STATUS_LABEL,
   DEAL_STATUS_LIST,
@@ -73,6 +75,7 @@ export function DealPipelineHomeScreen({
   const [selectedDealId, setSelectedDealId] = useState("");
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
+  const [exportError, setExportError] = useState<string | null>(null);
   const dealCreatedRef = useRef(false);
 
   const searchQuery = search.trim() || undefined;
@@ -163,6 +166,7 @@ export function DealPipelineHomeScreen({
 
   const onExport = async () => {
     setIsExporting(true);
+    setExportError(null);
     try {
       const { blob, fileName } = await exportDealsXlsx({
         search: searchQuery,
@@ -175,8 +179,12 @@ export function DealPipelineHomeScreen({
       const a = document.createElement("a");
       a.href = url;
       a.download = fileName ?? "deals.xlsx";
+      document.body.appendChild(a);
       a.click();
+      document.body.removeChild(a);
       URL.revokeObjectURL(url);
+    } catch (err) {
+      setExportError(getApiErrorMessage(err));
     } finally {
       setIsExporting(false);
     }
@@ -210,6 +218,13 @@ export function DealPipelineHomeScreen({
             },
           ]}
         />
+        {/* 내보내기 에러 배너 */}
+        {exportError ? (
+          <div className="mx-5 mt-3 flex items-center gap-2 rounded-md border border-red-200 bg-red-50 px-3 py-2 text-[13px] text-red-700">
+            <AlertCircle className="h-4 w-4 shrink-0" />
+            {exportError}
+          </div>
+        ) : null}
         {/* Stage Tabs */}
         <div className="relative flex shrink-0 items-end px-6">
           <div className="absolute bottom-0 left-5 right-5 h-px bg-[#E6EAF0]" />
@@ -460,7 +475,7 @@ export function DealPipelineHomeScreen({
 
         {/* 필터 칩 행 */}
         <div className="flex items-center gap-2 border-b border-[#E6EAF0] bg-white px-4 py-2">
-          {/* 금액 필터 칩 */}
+          {/* 금액 정렬 칩: 비활성 → 높은순 → 낮은순 → 비활성 순환 */}
           <button
             className={cn(
               "inline-flex h-[26px] shrink-0 items-center gap-1 rounded-[13px] px-[10px] text-[12px] font-medium transition",
@@ -468,21 +483,59 @@ export function DealPipelineHomeScreen({
                 ? "border border-[#5E5CE6] bg-[#EEEEFF] text-[#5E5CE6]"
                 : "bg-[#F3F4F6] text-[#4B5563]",
             )}
+            onClick={() => {
+              if (sort === "dealCostDesc") onSortChange("dealCostAsc");
+              else if (sort === "dealCostAsc") onSortChange("createdAtDesc");
+              else onSortChange("dealCostDesc");
+            }}
+            type="button"
+          >
+            {sort === "dealCostAsc" ? "금액 낮은순" : "금액 높은순"}
+            {sort === "dealCostAsc" ? (
+              <ChevronUp className="h-3 w-3" />
+            ) : (
+              <ChevronDown className="h-3 w-3" />
+            )}
+          </button>
+          {/* 마감일 정렬 칩: 비활성 → 마감일순(오름) → 비활성 토글 */}
+          <button
+            className={cn(
+              "inline-flex h-[26px] shrink-0 items-center gap-1 rounded-[13px] px-[10px] text-[12px] font-medium transition",
+              sort === "expectedEndDateAsc"
+                ? "border border-[#5E5CE6] bg-[#EEEEFF] text-[#5E5CE6]"
+                : "bg-[#F3F4F6] text-[#4B5563]",
+            )}
             onClick={() =>
               onSortChange(
-                sort === "dealCostDesc" ? "dealCostAsc" : "dealCostDesc",
+                sort === "expectedEndDateAsc" ? "createdAtDesc" : "expectedEndDateAsc",
               )
             }
             type="button"
           >
-            금액
+            마감일순
             <ChevronDown className="h-3 w-3" />
           </button>
           <div className="flex-1" />
           <span className="shrink-0 text-[11px] text-[#9CA3AF]">
             {dealsQuery.data?.totalCount ?? 0}건
           </span>
+          <button
+            aria-label="파일로 내보내기"
+            className="inline-flex h-[26px] w-[26px] shrink-0 items-center justify-center rounded-md bg-[#F3F4F6] text-[#4B5563] disabled:opacity-40"
+            disabled={isExporting}
+            onClick={() => void onExport()}
+            type="button"
+          >
+            <Download className="h-3.5 w-3.5" />
+          </button>
         </div>
+        {/* 내보내기 에러 배너 (모바일) */}
+        {exportError ? (
+          <div className="mx-4 mt-2 flex items-center gap-2 rounded-md border border-red-200 bg-red-50 px-3 py-2 text-[13px] text-red-700">
+            <AlertCircle className="h-4 w-4 shrink-0" />
+            {exportError}
+          </div>
+        ) : null}
 
         {/* 딜 카드 목록 */}
         {dealsQuery.isLoading ? (
