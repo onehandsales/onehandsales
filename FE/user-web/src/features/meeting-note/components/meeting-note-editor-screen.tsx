@@ -142,7 +142,7 @@ export function MeetingNoteEditorScreen({
   }
 
   return (
-    <div className="flex h-full min-h-0 flex-col overflow-hidden bg-[#F9FAFB]">
+    <div className="min-h-screen bg-[#F9FAFB] md:flex md:h-full md:min-h-0 md:flex-col md:overflow-hidden">
       {notice ? (
         <div className="mx-5 mt-3 shrink-0">
           <NoticeMessage message={notice} onDismiss={() => setNotice(null)} />
@@ -155,8 +155,8 @@ export function MeetingNoteEditorScreen({
         </div>
       ) : null}
 
-      <div className="grid min-h-0 flex-1 grid-cols-[minmax(0,1fr)_360px] gap-4 overflow-hidden p-5">
-        <main className="flex min-w-0 flex-col gap-3 overflow-hidden">
+      <div className="grid p-4 md:min-h-0 md:flex-1 md:grid-cols-[minmax(0,1fr)_360px] md:gap-4 md:overflow-hidden md:p-5">
+        <main className="flex min-w-0 flex-col gap-3 md:overflow-hidden">
           <Link
             className="inline-flex w-fit items-center gap-2 text-[13px] font-medium text-[#64748B] hover:text-[#374151]"
             to="/meeting-notes"
@@ -179,8 +179,8 @@ export function MeetingNoteEditorScreen({
             <button
               className="inline-flex h-9 w-fit shrink-0 items-center gap-1.5 rounded-md bg-[#2563EB] px-3 text-[13px] font-semibold text-white hover:bg-[#1D4ED8] disabled:cursor-not-allowed disabled:opacity-60"
               disabled={isSaving}
-              form="meeting-note-form"
-              type="submit"
+              type="button"
+              onClick={() => void onSubmit()}
             >
               {isSaving ? (
                 <Loader2 className="h-4 w-4 animate-spin" />
@@ -339,7 +339,7 @@ export function MeetingNoteEditorScreen({
           </ModalForm>
         </main>
 
-        <aside className="flex min-h-0 flex-col gap-3 overflow-hidden">
+        <aside className="flex flex-col gap-3 md:min-h-0 md:overflow-hidden">
           <MeetingNoteSummaryCard meetingNote={activeMeetingNote} />
           <MeetingNoteSnapshotPanel meetingNote={activeMeetingNote} />
         </aside>

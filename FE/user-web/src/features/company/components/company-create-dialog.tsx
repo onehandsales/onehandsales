@@ -167,6 +167,7 @@ export function CompanyCreateDialog({
           formId={formId}
           isSubmitting={createCompanyMutation.isPending}
           onCancel={() => onOpenChange(false)}
+          onSubmit={() => void onSubmit()}
         />
       }
       open={open}

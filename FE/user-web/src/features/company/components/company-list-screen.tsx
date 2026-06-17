@@ -9,7 +9,13 @@ import {
   X,
   type LucideIcon,
 } from "lucide-react";
-import { type FormEvent, type ReactNode, useEffect, useMemo, useState } from "react";
+import {
+  type FormEvent,
+  type ReactNode,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import { PageHeader } from "@/components/layout/page-header";
 import { Link, useNavigate } from "react-router-dom";
 import { Pagination } from "@/components/ui/pagination";
@@ -29,7 +35,10 @@ import {
   useCompanyDetail,
 } from "@/features/company/hooks/use-company-detail";
 import { useExportCompaniesMutation } from "@/features/company/hooks/use-company-mutations";
-import type { CompanyListItem, CompanySort } from "@/features/company/types/company";
+import type {
+  CompanyListItem,
+  CompanySort,
+} from "@/features/company/types/company";
 import { getApiErrorMessage, type ApiBlobResponse } from "@/lib/api-client";
 import { cn } from "@/utils/cn";
 import { formatDateWithOptions } from "@/utils/format";
@@ -53,9 +62,9 @@ export function CompanyListScreen({
   const [page, setPage] = useState(1);
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [selectedCompanyId, setSelectedCompanyId] = useState("");
-  const [taxonomyDialog, setTaxonomyDialog] = useState<
-    { readonly kind: "field" | "region" } | null
-  >(null);
+  const [taxonomyDialog, setTaxonomyDialog] = useState<{
+    readonly kind: "field" | "region";
+  } | null>(null);
   const [pendingFieldName, setPendingFieldName] = useState("");
   const [pendingRegionName, setPendingRegionName] = useState("");
   const [notice, setNotice] = useState<string | null>(null);
@@ -68,7 +77,7 @@ export function CompanyListScreen({
       companyRegionId: companyRegionId || undefined,
       sort,
     }),
-    [companyFieldId, companyName, companyRegionId, page, sort]
+    [companyFieldId, companyName, companyRegionId, page, sort],
   );
   const exportFilters = useMemo(
     () => ({
@@ -77,7 +86,7 @@ export function CompanyListScreen({
       companyRegionId: companyRegionId || undefined,
       sort,
     }),
-    [companyFieldId, companyName, companyRegionId, sort]
+    [companyFieldId, companyName, companyRegionId, sort],
   );
 
   const companiesQuery = useCompanyList(listParams);
@@ -85,8 +94,14 @@ export function CompanyListScreen({
   const regionsQuery = useCompanyRegions();
   const exportCompaniesMutation = useExportCompaniesMutation();
 
-  const fields = useMemo(() => fieldsQuery.data?.items ?? [], [fieldsQuery.data]);
-  const regions = useMemo(() => regionsQuery.data?.items ?? [], [regionsQuery.data]);
+  const fields = useMemo(
+    () => fieldsQuery.data?.items ?? [],
+    [fieldsQuery.data],
+  );
+  const regions = useMemo(
+    () => regionsQuery.data?.items ?? [],
+    [regionsQuery.data],
+  );
   const companyList = companiesQuery.data;
   const displayTimeZone = user?.timeZone ?? getBrowserTimeZoneFallback();
   const hasSearch =
@@ -101,7 +116,10 @@ export function CompanyListScreen({
 
   useEffect(() => {
     const items = companyList?.items ?? [];
-    if (selectedCompanyId && !items.some((company) => company.id === selectedCompanyId)) {
+    if (
+      selectedCompanyId &&
+      !items.some((company) => company.id === selectedCompanyId)
+    ) {
       setSelectedCompanyId("");
     }
   }, [companyList?.items, selectedCompanyId]);
@@ -109,24 +127,34 @@ export function CompanyListScreen({
   useEffect(() => {
     if (!pendingFieldName) return;
     const matched = fields.find((f) => f.field === pendingFieldName);
-    if (matched) { setCompanyFieldId(matched.id); setPage(1); setPendingFieldName(""); }
+    if (matched) {
+      setCompanyFieldId(matched.id);
+      setPage(1);
+      setPendingFieldName("");
+    }
   }, [fields, pendingFieldName]);
 
   useEffect(() => {
     if (!pendingRegionName) return;
     const matched = regions.find((r) => r.region === pendingRegionName);
-    if (matched) { setCompanyRegionId(matched.id); setPage(1); setPendingRegionName(""); }
+    if (matched) {
+      setCompanyRegionId(matched.id);
+      setPage(1);
+      setPendingRegionName("");
+    }
   }, [regions, pendingRegionName]);
 
   useEffect(() => {
     if (companyFieldId && !fields.some((f) => f.id === companyFieldId)) {
-      setCompanyFieldId(""); setPage(1);
+      setCompanyFieldId("");
+      setPage(1);
     }
   }, [companyFieldId, fields]);
 
   useEffect(() => {
     if (companyRegionId && !regions.some((r) => r.id === companyRegionId)) {
-      setCompanyRegionId(""); setPage(1);
+      setCompanyRegionId("");
+      setPage(1);
     }
   }, [companyRegionId, regions]);
 
@@ -162,9 +190,12 @@ export function CompanyListScreen({
         ]}
       />
 
-      {/* 검색 + 필터 툴바 */}
-      <div className="flex h-10 shrink-0 items-center gap-2 px-5">
-        <form className="flex h-8 items-center gap-1.5 rounded-md border border-[#E2E5EC] bg-[#FAFAF8] px-3 transition focus-within:border-[#93C5FD] focus-within:bg-white" onSubmit={onSearchSubmit}>
+      {/* 검색 + 필터 툴바 (데스크톱) */}
+      <div className="hidden h-10 shrink-0 items-center gap-2 px-5 md:flex">
+        <form
+          className="flex h-8 items-center gap-1.5 rounded-md border border-[#E2E5EC] bg-[#FAFAF8] px-3 transition focus-within:border-[#93C5FD] focus-within:bg-white"
+          onSubmit={onSearchSubmit}
+        >
           <Search className="h-3 w-3 shrink-0 text-[#9CA3AF]" />
           <input
             className="w-[220px] bg-transparent text-[13px] text-[#111827] outline-none placeholder:text-[#9CA3AF]"
@@ -177,8 +208,12 @@ export function CompanyListScreen({
           active={!hasSearch}
           label="전체"
           onClick={() => {
-            setCompanyName(""); setCompanyNameText("");
-            setCompanyFieldId(""); setCompanyRegionId(""); setSort("createdAtDesc"); setPage(1);
+            setCompanyName("");
+            setCompanyNameText("");
+            setCompanyFieldId("");
+            setCompanyRegionId("");
+            setSort("createdAtDesc");
+            setPage(1);
           }}
         />
         <select
@@ -186,43 +221,59 @@ export function CompanyListScreen({
             "h-8 min-w-[118px] appearance-none rounded-md border px-3 text-[13px] outline-none transition",
             companyFieldId
               ? "border-[#FDE68A] bg-[#FFFBEB] text-[#B45309]"
-              : "border-[#E2E5EC] bg-transparent text-[#6B7280] hover:bg-[#FAFAF8]"
+              : "border-[#E2E5EC] bg-transparent text-[#6B7280] hover:bg-[#FAFAF8]",
           )}
           onChange={(e) => {
             const v = e.target.value;
-            if (v === ADD_TAXONOMY_VALUE) { setTaxonomyDialog({ kind: "field" }); return; }
-            setCompanyFieldId(v); setPage(1);
+            if (v === ADD_TAXONOMY_VALUE) {
+              setTaxonomyDialog({ kind: "field" });
+              return;
+            }
+            setCompanyFieldId(v);
+            setPage(1);
           }}
           value={companyFieldId}
         >
           <option value="">분야</option>
           <option value={ADD_TAXONOMY_VALUE}>+ 추가</option>
-          {fields.map((f) => <option key={f.id} value={f.id}>{f.field}</option>)}
+          {fields.map((f) => (
+            <option key={f.id} value={f.id}>
+              {f.field}
+            </option>
+          ))}
         </select>
         <select
           className={cn(
             "h-8 min-w-[118px] appearance-none rounded-md border px-3 text-[13px] outline-none transition",
             companyRegionId
               ? "border-[#BBF7D0] bg-[#F0FDF4] text-[#15803D]"
-              : "border-[#E2E5EC] bg-transparent text-[#6B7280] hover:bg-[#FAFAF8]"
+              : "border-[#E2E5EC] bg-transparent text-[#6B7280] hover:bg-[#FAFAF8]",
           )}
           onChange={(e) => {
             const v = e.target.value;
-            if (v === ADD_TAXONOMY_VALUE) { setTaxonomyDialog({ kind: "region" }); return; }
-            setCompanyRegionId(v); setPage(1);
+            if (v === ADD_TAXONOMY_VALUE) {
+              setTaxonomyDialog({ kind: "region" });
+              return;
+            }
+            setCompanyRegionId(v);
+            setPage(1);
           }}
           value={companyRegionId}
         >
           <option value="">지역</option>
           <option value={ADD_TAXONOMY_VALUE}>+ 추가</option>
-          {regions.map((r) => <option key={r.id} value={r.id}>{r.region}</option>)}
+          {regions.map((r) => (
+            <option key={r.id} value={r.id}>
+              {r.region}
+            </option>
+          ))}
         </select>
         <select
           className={cn(
             "h-8 min-w-[132px] appearance-none rounded-md border px-3 text-[13px] outline-none transition",
             sort !== "createdAtDesc"
               ? "border-[#BFDBFE] bg-[#EFF6FF] text-[#1D4ED8]"
-              : "border-[#E2E5EC] bg-transparent text-[#6B7280] hover:bg-[#FAFAF8]"
+              : "border-[#E2E5EC] bg-transparent text-[#6B7280] hover:bg-[#FAFAF8]",
           )}
           onChange={(e) => {
             setSort(e.target.value as CompanySort);
@@ -237,46 +288,73 @@ export function CompanyListScreen({
           <option value="dealCountAsc">딜 낮은순</option>
         </select>
         <div className="flex-1" />
-        <span className="text-[12px] text-[#9CA3AF]">{companyList?.totalCount ?? 0}개</span>
+        <span className="text-[12px] text-[#9CA3AF]">
+          {companyList?.totalCount ?? 0}개
+        </span>
       </div>
 
       {/* 알림 */}
       {notice || exportCompaniesMutation.error ? (
-        <div className="px-5 pt-2">
-          {notice ? <Toast message={notice} onClose={() => setNotice(null)} variant="success" /> : null}
+        <div className="hidden px-5 pt-2 md:block">
+          {notice ? (
+            <Toast
+              message={notice}
+              onClose={() => setNotice(null)}
+              variant="success"
+            />
+          ) : null}
           {exportCompaniesMutation.error ? (
-          <p className="rounded-md border border-red-200 bg-red-50 px-3 py-2 text-[12px] text-red-600">
-            {getApiErrorMessage(exportCompaniesMutation.error)}
-          </p>
+            <p className="rounded-md border border-red-200 bg-red-50 px-3 py-2 text-[12px] text-red-600">
+              {getApiErrorMessage(exportCompaniesMutation.error)}
+            </p>
           ) : null}
         </div>
       ) : null}
 
-      {/* 테이블 + 미리보기 */}
-      <div className="flex gap-5 px-5 pb-3 pt-1">
+      {/* 테이블 + 미리보기 (데스크톱) */}
+      <div className="hidden gap-5 px-5 pb-3 pt-1 md:flex">
         <div className="flex min-w-0 flex-1 flex-col gap-3">
           <div className="flex flex-col rounded-lg border border-[#E2E5EC] bg-white shadow-sm">
             <div className="flex h-11 shrink-0 items-center border-b border-[#E2E5EC] bg-[#F9FAFB] px-6">
-              <div className="w-[260px] shrink-0 text-[12px] font-semibold text-[#64748B]">회사명</div>
-              <div className="w-[150px] shrink-0 text-[12px] font-semibold text-[#64748B]">분야</div>
-              <div className="w-[130px] shrink-0 text-[12px] font-semibold text-[#64748B]">지역</div>
-              <div className="w-[80px] shrink-0 text-right text-[12px] font-semibold text-[#64748B]">담당자 수</div>
-              <div className="w-[72px] shrink-0 text-right text-[12px] font-semibold text-[#64748B]">딜 수</div>
-              <div className="w-[128px] shrink-0 text-right text-[12px] font-semibold text-[#64748B]">등록일</div>
+              <div className="w-[260px] shrink-0 text-[12px] font-semibold text-[#64748B]">
+                회사명
+              </div>
+              <div className="w-[150px] shrink-0 text-[12px] font-semibold text-[#64748B]">
+                분야
+              </div>
+              <div className="w-[130px] shrink-0 text-[12px] font-semibold text-[#64748B]">
+                지역
+              </div>
+              <div className="w-[80px] shrink-0 text-[12px] font-semibold text-[#64748B]">
+                담당자 수
+              </div>
+              <div className="w-[72px] shrink-0  text-[12px] font-semibold text-[#64748B]">
+                딜 수
+              </div>
+              <div className="w-[128px] shrink-0 text-[12px] font-semibold text-[#64748B]">
+                등록일
+              </div>
               <div className="min-w-0 flex-1" />
             </div>
 
             {companiesQuery.isLoading ? (
               <CompanyListSkeleton />
             ) : companiesQuery.isError ? (
-              <CompanyListError error={companiesQuery.error} onRetry={() => void companiesQuery.refetch()} />
+              <CompanyListError
+                error={companiesQuery.error}
+                onRetry={() => void companiesQuery.refetch()}
+              />
             ) : !companyList || companyList.items.length === 0 ? (
               <ListEmptyState
                 actionIcon={Plus}
                 actionLabel="회사 추가"
                 icon={Building2}
                 onAction={() => setIsCreateOpen(true)}
-                title={hasSearch ? "조건에 맞는 회사가 없습니다" : "등록된 회사가 없습니다"}
+                title={
+                  hasSearch
+                    ? "조건에 맞는 회사가 없습니다"
+                    : "등록된 회사가 없습니다"
+                }
               />
             ) : (
               <div>
@@ -315,7 +393,9 @@ export function CompanyListScreen({
                 >
                   <X className="h-3.5 w-3.5" strokeWidth={2} />
                 </button>
-                <span className="text-[12px] font-medium text-[#6B7280]">미리보기</span>
+                <span className="text-[12px] font-medium text-[#6B7280]">
+                  미리보기
+                </span>
               </div>
               <div className="flex items-center gap-1.5">
                 <Link
@@ -330,6 +410,162 @@ export function CompanyListScreen({
           </div>
         ) : null}
       </div>
+
+      {/* 모바일 뷰 */}
+      <section className="flex min-h-0 flex-1 flex-col md:hidden">
+        {/* 모바일 알림 */}
+        {notice ? (
+          <div className="px-4 pt-2">
+            <Toast
+              message={notice}
+              onClose={() => setNotice(null)}
+              variant="success"
+            />
+          </div>
+        ) : null}
+
+        {/* 모바일 필터 칩 행 */}
+        <div className="flex h-10 shrink-0 items-center gap-2 border-b border-[#E5E7EB] px-4">
+          <button
+            className={cn(
+              "inline-flex h-7 shrink-0 items-center rounded-full border px-3 text-[12px] font-medium transition",
+              !hasSearch
+                ? "border-[#5E5CE6] bg-[#EEEEFF] text-[#5E5CE6]"
+                : "border-[#E5E7EB] bg-[#F3F4F6] text-[#4B5563]",
+            )}
+            onClick={() => {
+              setCompanyName("");
+              setCompanyNameText("");
+              setCompanyFieldId("");
+              setCompanyRegionId("");
+              setSort("createdAtDesc");
+              setPage(1);
+            }}
+            type="button"
+          >
+            전체
+          </button>
+          <select
+            className={cn(
+              "h-7 appearance-none rounded-full border px-3 text-[12px] outline-none transition",
+              companyFieldId
+                ? "border-[#FDE68A] bg-[#FFFBEB] text-[#B45309]"
+                : "border-[#E5E7EB] bg-[#F3F4F6] text-[#4B5563]",
+            )}
+            onChange={(e) => {
+              const v = e.target.value;
+              if (v === ADD_TAXONOMY_VALUE) {
+                setTaxonomyDialog({ kind: "field" });
+                return;
+              }
+              setCompanyFieldId(v);
+              setPage(1);
+            }}
+            value={companyFieldId}
+          >
+            <option value="">분야</option>
+            <option value={ADD_TAXONOMY_VALUE}>+ 추가</option>
+            {fields.map((f) => (
+              <option key={f.id} value={f.id}>
+                {f.field}
+              </option>
+            ))}
+          </select>
+          <select
+            className={cn(
+              "h-7 appearance-none rounded-full border px-3 text-[12px] outline-none transition",
+              companyRegionId
+                ? "border-[#BBF7D0] bg-[#F0FDF4] text-[#15803D]"
+                : "border-[#E5E7EB] bg-[#F3F4F6] text-[#4B5563]",
+            )}
+            onChange={(e) => {
+              const v = e.target.value;
+              if (v === ADD_TAXONOMY_VALUE) {
+                setTaxonomyDialog({ kind: "region" });
+                return;
+              }
+              setCompanyRegionId(v);
+              setPage(1);
+            }}
+            value={companyRegionId}
+          >
+            <option value="">지역</option>
+            <option value={ADD_TAXONOMY_VALUE}>+ 추가</option>
+            {regions.map((r) => (
+              <option key={r.id} value={r.id}>
+                {r.region}
+              </option>
+            ))}
+          </select>
+          <div className="flex-1" />
+          <span className="shrink-0 text-[11px] text-[#9CA3AF]">
+            {companyList?.totalCount ?? 0}개
+          </span>
+        </div>
+
+        {/* 모바일 카드 목록 */}
+        <div className="flex-1 overflow-y-auto bg-white">
+          {companiesQuery.isLoading ? (
+            <div className="space-y-0">
+              {Array.from({ length: 8 }, (_, i) => (
+                <div
+                  key={i}
+                  className="h-[80px] animate-pulse border-b border-[#E5E7EB] bg-[#F9FAFB]"
+                />
+              ))}
+            </div>
+          ) : companiesQuery.isError ? (
+            <div className="flex flex-col items-center justify-center px-5 py-14 text-center">
+              <p className="text-[13px] text-red-500">
+                {getApiErrorMessage(companiesQuery.error)}
+              </p>
+              <button
+                className="mt-3 inline-flex h-8 items-center rounded-md border border-[#E2E5EC] bg-white px-3 text-[12px] text-[#6B7280]"
+                onClick={() => void companiesQuery.refetch()}
+                type="button"
+              >
+                다시 시도
+              </button>
+            </div>
+          ) : !companyList || companyList.items.length === 0 ? (
+            <div className="flex flex-col items-center justify-center px-5 py-16 text-center">
+              <Building2 className="mb-3 h-10 w-10 text-[#D1D5DB]" strokeWidth={1.5} />
+              <p className="text-[14px] font-medium text-[#374151]">
+                {hasSearch ? "조건에 맞는 회사가 없습니다" : "등록된 회사가 없습니다"}
+              </p>
+            </div>
+          ) : (
+            companyList.items.map((company) => (
+              <CompanyMobileCard
+                key={company.id}
+                company={company}
+                displayTimeZone={displayTimeZone}
+              />
+            ))
+          )}
+        </div>
+
+        {/* 모바일 페이지네이션 */}
+        {companyList ? (
+          <div className="shrink-0 border-t border-[#E5E7EB] bg-white px-4 py-2">
+            <Pagination
+              page={companyList.page}
+              totalPages={companyList.totalPages}
+              onPageChange={setPage}
+            />
+          </div>
+        ) : null}
+
+        {/* FAB */}
+        <button
+          aria-label="회사 추가"
+          className="fixed bottom-24 right-5 flex h-[52px] w-[52px] items-center justify-center rounded-full bg-[#5E5CE6] shadow-[0_4px_16px_rgba(59,130,246,0.27)] transition active:opacity-80"
+          onClick={() => void navigate("/companies/new")}
+          type="button"
+        >
+          <Plus className="h-6 w-6 text-white" strokeWidth={2.5} />
+        </button>
+      </section>
 
       <CompanyCreateDialog
         fields={fields}
@@ -347,9 +583,12 @@ export function CompanyListScreen({
         regions={regions}
         onCreated={(name) => {
           if (taxonomyDialog?.kind === "field") setPendingFieldName(name);
-          else if (taxonomyDialog?.kind === "region") setPendingRegionName(name);
+          else if (taxonomyDialog?.kind === "region")
+            setPendingRegionName(name);
         }}
-        onOpenChange={(isOpen) => { if (!isOpen) setTaxonomyDialog(null); }}
+        onOpenChange={(isOpen) => {
+          if (!isOpen) setTaxonomyDialog(null);
+        }}
         open={taxonomyDialog !== null}
       />
     </section>
@@ -371,7 +610,7 @@ function CompanyRow({
     <button
       className={cn(
         "group flex h-[66px] w-full cursor-pointer items-center border-b border-[#E2E5EC] px-6 text-left transition-colors last:border-b-0 hover:bg-[#FFFBEB]",
-        isActive ? "bg-[#FFFBEB]" : "bg-white"
+        isActive ? "bg-[#FFFBEB]" : "bg-white",
       )}
       onClick={() => onSelect(company.id)}
       type="button"
@@ -386,7 +625,9 @@ function CompanyRow({
           className="inline-flex h-[22px] max-w-full min-w-0 items-center overflow-hidden rounded-full bg-[#FFFBEB] px-2.5 text-[11px] font-semibold text-[#B45309]"
           title={company.companyField.field}
         >
-          <span className="min-w-0 truncate whitespace-nowrap">{company.companyField.field}</span>
+          <span className="min-w-0 truncate whitespace-nowrap">
+            {company.companyField.field}
+          </span>
         </span>
       </div>
       <div className="w-[130px] min-w-0 shrink-0">
@@ -394,17 +635,19 @@ function CompanyRow({
           className="inline-flex h-[22px] max-w-full min-w-0 items-center overflow-hidden rounded-full bg-[#ECFDF5] px-2.5 text-[11px] font-semibold text-[#047857]"
           title={company.companyRegion.region}
         >
-          <span className="min-w-0 truncate whitespace-nowrap">{company.companyRegion.region}</span>
+          <span className="min-w-0 truncate whitespace-nowrap">
+            {company.companyRegion.region}
+          </span>
         </span>
       </div>
-      <div className="w-[80px] shrink-0 text-right text-[12px] font-medium text-[#475569]">
+      <div className="w-[80px] shrink-0 text-[12px] font-medium text-[#475569]">
         {company.contactCount.toLocaleString("ko-KR")}명
       </div>
-      <div className="w-[72px] shrink-0 text-right text-[12px] font-medium text-[#475569]">
+      <div className="w-[72px] shrink-0 text-[12px] font-medium text-[#475569]">
         {company.dealCount.toLocaleString("ko-KR")}건
       </div>
       <div
-        className="w-[128px] shrink-0 text-right text-[12px] font-medium text-[#64748B]"
+        className="w-[128px] shrink-0 text-[12px] font-medium text-[#64748B]"
         title={formatCompanyCreatedAt(company.createdAt, displayTimeZone)}
       >
         {formatCompanyCreatedAt(company.createdAt, displayTimeZone)}
@@ -456,8 +699,14 @@ function CompanyPreviewPanel({ companyId }: { readonly companyId: string }) {
       </div>
 
       <div className="mt-5 grid grid-cols-2 gap-2">
-        <PreviewMetric label="담당자" value={`${contacts.length.toLocaleString("ko-KR")}명`} />
-        <PreviewMetric label="딜" value={`${deals.length.toLocaleString("ko-KR")}건`} />
+        <PreviewMetric
+          label="담당자"
+          value={`${contacts.length.toLocaleString("ko-KR")}명`}
+        />
+        <PreviewMetric
+          label="딜"
+          value={`${deals.length.toLocaleString("ko-KR")}건`}
+        />
       </div>
 
       <PreviewSection icon={IdCard} title="담당자">
@@ -509,7 +758,11 @@ function CompanyPreviewPanel({ companyId }: { readonly companyId: string }) {
   );
 }
 
-function FilterChip({ active, label, onClick }: {
+function FilterChip({
+  active,
+  label,
+  onClick,
+}: {
   readonly active: boolean;
   readonly label: string;
   readonly onClick: () => void;
@@ -520,7 +773,7 @@ function FilterChip({ active, label, onClick }: {
         "inline-flex h-8 items-center rounded-[6px] border px-3 text-[13px] transition",
         active
           ? "border-[#C7D7FE] bg-[#EAF2FF] font-bold text-[#1D4ED8]"
-          : "border-[#E6EAF0] bg-white font-medium text-[#475569] hover:bg-[#F9FAFB]"
+          : "border-[#E6EAF0] bg-white font-medium text-[#475569] hover:bg-[#F9FAFB]",
       )}
       onClick={onClick}
       type="button"
@@ -530,7 +783,10 @@ function FilterChip({ active, label, onClick }: {
   );
 }
 
-function CompanyListError({ error, onRetry }: {
+function CompanyListError({
+  error,
+  onRetry,
+}: {
   readonly error: unknown;
   readonly onRetry: () => void;
 }) {
@@ -552,7 +808,10 @@ function CompanyListSkeleton() {
   return (
     <div className="overflow-hidden">
       {Array.from({ length: 10 }, (_, i) => (
-        <div key={i} className="h-[66px] animate-pulse border-b border-[#E2E5EC] bg-[#F9FAFB] last:border-b-0" />
+        <div
+          key={i}
+          className="h-[66px] animate-pulse border-b border-[#E2E5EC] bg-[#F9FAFB] last:border-b-0"
+        />
       ))}
     </div>
   );
@@ -567,15 +826,16 @@ function InfoPill({
   readonly icon: LucideIcon;
   readonly tone: "amber" | "green";
 }) {
-  const toneClass = tone === "amber"
-    ? "bg-[#FFFBEB] text-[#B45309]"
-    : "bg-[#ECFDF5] text-[#047857]";
+  const toneClass =
+    tone === "amber"
+      ? "bg-[#FFFBEB] text-[#B45309]"
+      : "bg-[#ECFDF5] text-[#047857]";
 
   return (
     <span
       className={cn(
         "inline-flex h-6 max-w-full min-w-0 items-center gap-1 overflow-hidden rounded-full px-2.5 text-[11px] font-semibold",
-        toneClass
+        toneClass,
       )}
       title={children}
     >
@@ -595,7 +855,9 @@ function PreviewMetric({
   return (
     <div className="rounded-md border border-[#E6EAF0] bg-[#FAFBFC] px-3 py-2.5">
       <p className="text-[11px] font-medium text-[#94A3B8]">{label}</p>
-      <p className="mt-0.5 truncate text-[15px] font-semibold text-[#111827]">{value}</p>
+      <p className="mt-0.5 truncate text-[15px] font-semibold text-[#111827]">
+        {value}
+      </p>
     </div>
   );
 }
@@ -671,6 +933,56 @@ function getBrowserTimeZoneFallback() {
   } catch {
     return "Asia/Seoul";
   }
+}
+
+function CompanyMobileCard({
+  company,
+  displayTimeZone,
+}: {
+  readonly company: CompanyListItem;
+  readonly displayTimeZone: string;
+}) {
+  const navigate = useNavigate();
+  const initial = company.companyName.charAt(0).toUpperCase();
+
+  return (
+    <button
+      className="flex w-full items-start gap-3 border-b border-[#E5E7EB] bg-white px-4 py-[14px] text-left transition active:bg-[#F9FAFB]"
+      onClick={() => void navigate(`/companies/${company.id}`)}
+      type="button"
+    >
+      {/* 이니셜 아바타 */}
+      <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#EEEEFF]">
+        <span className="text-[13px] font-bold text-[#5E5CE6]">{initial}</span>
+      </div>
+      {/* 내용 */}
+      <div className="min-w-0 flex-1">
+        {/* Row1: 회사명 + 분야 배지 */}
+        <div className="flex min-w-0 items-center gap-2">
+          <span className="min-w-0 truncate text-[14px] font-semibold text-[#111827]">
+            {company.companyName}
+          </span>
+          <span className="inline-flex h-5 shrink-0 items-center rounded-full bg-[#FFFBEB] px-2 text-[11px] font-semibold text-[#B45309]">
+            {company.companyField.field}
+          </span>
+        </div>
+        {/* Row2: 지역 */}
+        <p className="mt-0.5 text-[12px] text-[#6B7280]">
+          {company.companyRegion.region}
+        </p>
+        {/* Row3: 담당자·딜 + 등록일 */}
+        <div className="mt-1 flex items-center justify-between">
+          <span className="text-[12px] text-[#6B7280]">
+            담당자 {company.contactCount.toLocaleString("ko-KR")}명 · 딜{" "}
+            {company.dealCount.toLocaleString("ko-KR")}건
+          </span>
+          <span className="shrink-0 text-[11px] text-[#9CA3AF]">
+            {formatCompanyCreatedAt(company.createdAt, displayTimeZone)}
+          </span>
+        </div>
+      </div>
+    </button>
+  );
 }
 
 const ADD_TAXONOMY_VALUE = "__add_taxonomy__";

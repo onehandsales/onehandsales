@@ -143,6 +143,7 @@ export function MeetingNoteCreateDialog({
           formId={formId}
           isSubmitting={createMeetingNoteMutation.isPending}
           onCancel={() => onOpenChange(false)}
+          onSubmit={() => void onSubmit()}
           pendingLabel="추가 중"
           submitLabel="회의록 추가"
         />

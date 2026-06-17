@@ -136,8 +136,8 @@ export function MeetingNoteListScreen() {
         ]}
       />
 
-      {/* 필터 툴바 */}
-      <div className="flex h-10 shrink-0 items-center gap-2 px-5">
+      {/* 필터 툴바 (데스크톱) */}
+      <div className="hidden h-10 shrink-0 items-center gap-2 px-5 md:flex">
         {/* 전체(초기화) FilterChip */}
         <button
           className={
@@ -203,7 +203,7 @@ export function MeetingNoteListScreen() {
       </div>
 
       {notice ? (
-        <div className="px-5 pt-2">
+        <div className="hidden px-5 pt-2 md:block">
           <Toast
             message={notice}
             onClose={() => setNotice(null)}
@@ -212,8 +212,8 @@ export function MeetingNoteListScreen() {
         </div>
       ) : null}
 
-      {/* 테이블 카드 */}
-      <div className="flex gap-5 px-5 pb-3 pt-1">
+      {/* 테이블 카드 (데스크톱) */}
+      <div className="hidden gap-5 px-5 pb-3 pt-1 md:flex">
         <div className="flex min-w-0 flex-1 flex-col gap-3">
           <div className="flex flex-col rounded-lg border border-[#E2E5EC] bg-white shadow-sm">
             {/* 헤더 행 */}
@@ -305,6 +305,136 @@ export function MeetingNoteListScreen() {
         ) : null}
       </div>
 
+      {/* 모바일 뷰 */}
+      <section className="flex min-h-0 flex-1 flex-col md:hidden">
+        {/* 모바일 알림 */}
+        {notice ? (
+          <div className="px-4 pt-2">
+            <Toast
+              message={notice}
+              onClose={() => setNotice(null)}
+              variant="success"
+            />
+          </div>
+        ) : null}
+
+        {/* 모바일 필터 칩 행 */}
+        <div className="flex h-10 shrink-0 items-center gap-2 border-b border-[#E5E7EB] px-4">
+          <button
+            className={cn(
+              "inline-flex h-7 shrink-0 items-center rounded-full border px-3 text-[12px] font-medium transition",
+              !hasFilter
+                ? "border-[#5E5CE6] bg-[#EEEEFF] text-[#5E5CE6]"
+                : "border-[#E5E7EB] bg-[#F3F4F6] text-[#4B5563]",
+            )}
+            onClick={clearFilters}
+            type="button"
+          >
+            전체
+          </button>
+          <select
+            className={cn(
+              "h-7 appearance-none rounded-full border px-3 text-[12px] outline-none transition",
+              companyId
+                ? "border-[#BFDBFE] bg-[#EFF6FF] text-[#1D4ED8]"
+                : "border-[#E5E7EB] bg-[#F3F4F6] text-[#4B5563]",
+            )}
+            onChange={(e) => updateCompanyId(e.target.value)}
+            value={companyId}
+          >
+            <option value="">회사</option>
+            {(companiesQuery.data?.items ?? []).map((company) => (
+              <option key={company.id} value={company.id}>
+                {company.companyName}
+              </option>
+            ))}
+          </select>
+          <select
+            className={cn(
+              "h-7 appearance-none rounded-full border px-3 text-[12px] outline-none transition",
+              contactId
+                ? "border-[#BFDBFE] bg-[#EFF6FF] text-[#1D4ED8]"
+                : "border-[#E5E7EB] bg-[#F3F4F6] text-[#4B5563]",
+            )}
+            onChange={(e) => updateContactId(e.target.value)}
+            value={contactId}
+          >
+            <option value="">담당자</option>
+            {(contactsQuery.data?.items ?? []).map((contact) => (
+              <option key={contact.id} value={contact.id}>
+                {contact.contactUsername}
+              </option>
+            ))}
+          </select>
+          <div className="flex-1" />
+          <span className="shrink-0 text-[11px] text-[#9CA3AF]">
+            {meetingNotesQuery.data?.totalCount ?? 0}개
+          </span>
+        </div>
+
+        {/* 모바일 카드 목록 */}
+        <div className="flex-1 overflow-y-auto bg-white">
+          {meetingNotesQuery.isLoading ? (
+            <div className="space-y-0">
+              {Array.from({ length: 8 }, (_, i) => (
+                <div
+                  key={i}
+                  className="h-[80px] animate-pulse border-b border-[#E5E7EB] bg-[#F9FAFB]"
+                />
+              ))}
+            </div>
+          ) : meetingNotesQuery.isError ? (
+            <div className="flex flex-col items-center justify-center px-5 py-14 text-center">
+              <p className="text-[13px] text-red-500">
+                {getApiErrorMessage(meetingNotesQuery.error)}
+              </p>
+              <button
+                className="mt-3 inline-flex h-8 items-center rounded-md border border-[#E2E5EC] bg-white px-3 text-[12px] text-[#6B7280]"
+                onClick={() => void meetingNotesQuery.refetch()}
+                type="button"
+              >
+                다시 시도
+              </button>
+            </div>
+          ) : meetingNotes.length === 0 ? (
+            <div className="flex flex-col items-center justify-center px-5 py-16 text-center">
+              <FileText className="mb-3 h-10 w-10 text-[#D1D5DB]" strokeWidth={1.5} />
+              <p className="text-[14px] font-medium text-[#374151]">
+                {hasFilter ? "조건에 맞는 회의록이 없습니다" : "등록된 회의록이 없습니다"}
+              </p>
+            </div>
+          ) : (
+            meetingNotes.map((meetingNote) => (
+              <MeetingNoteMobileCard
+                key={meetingNote.id}
+                meetingNote={meetingNote}
+              />
+            ))
+          )}
+        </div>
+
+        {/* 모바일 페이지네이션 */}
+        {meetingNotesQuery.data ? (
+          <div className="shrink-0 border-t border-[#E5E7EB] bg-white px-4 py-2">
+            <Pagination
+              page={page}
+              totalPages={meetingNotesQuery.data.totalPages}
+              onPageChange={setPage}
+            />
+          </div>
+        ) : null}
+
+        {/* FAB */}
+        <button
+          aria-label="회의록 추가"
+          className="fixed bottom-24 right-5 flex h-[52px] w-[52px] items-center justify-center rounded-full bg-[#5E5CE6] shadow-[0_4px_16px_rgba(59,130,246,0.27)] transition active:opacity-80"
+          onClick={() => setIsCreateOpen(true)}
+          type="button"
+        >
+          <Plus className="h-6 w-6 text-white" strokeWidth={2.5} />
+        </button>
+      </section>
+
       {isCreateOpen ? (
         <MeetingNoteCreateDialog
           onCreated={(meetingNote) => {
@@ -319,6 +449,48 @@ export function MeetingNoteListScreen() {
         />
       ) : null}
     </section>
+  );
+}
+
+function MeetingNoteMobileCard({
+  meetingNote,
+}: {
+  readonly meetingNote: MeetingNoteListItem;
+}) {
+  const meetingDate = getMeetingDateParts(meetingNote.meetingAt);
+
+  return (
+    <Link
+      className="flex w-full items-start gap-3 border-b border-[#E5E7EB] bg-white px-4 py-[14px] transition active:bg-[#F9FAFB]"
+      to={`/meeting-notes/${meetingNote.id}`}
+    >
+      {/* 날짜 아이콘 */}
+      <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#FFF7ED]">
+        <CalendarClock className="h-4 w-4 text-[#EA580C]" strokeWidth={2} />
+      </div>
+      {/* 내용 */}
+      <div className="min-w-0 flex-1">
+        {/* Row1: 회사 · 담당자 */}
+        <div className="flex min-w-0 items-center gap-1.5">
+          <span className="min-w-0 truncate text-[14px] font-semibold text-[#111827]">
+            {meetingNote.companies.label || meetingNote.contacts.label || "회의록"}
+          </span>
+          {meetingNote.companies.count > 1 || meetingNote.contacts.count > 1 ? (
+            <span className="inline-flex h-5 shrink-0 items-center rounded-full bg-[#F1F5F9] px-2 text-[11px] font-semibold text-[#475569]">
+              외 {Math.max(meetingNote.companies.count, meetingNote.contacts.count) - 1}
+            </span>
+          ) : null}
+        </div>
+        {/* Row2: 딜 */}
+        <p className="mt-0.5 truncate text-[12px] text-[#6B7280]">
+          {meetingNote.deals.label || "-"}
+        </p>
+        {/* Row3: 미팅 일시 */}
+        <p className="mt-0.5 text-[11px] text-[#9CA3AF]">
+          {meetingDate.hasValue ? `${meetingDate.compactDate} ${meetingDate.time}` : meetingDate.full}
+        </p>
+      </div>
+    </Link>
   );
 }
 

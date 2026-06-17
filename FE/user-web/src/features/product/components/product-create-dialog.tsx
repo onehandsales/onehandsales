@@ -116,6 +116,7 @@ export function ProductCreateDialog({
           pendingLabel="추가 중"
           submitLabel="제품 추가"
           onCancel={() => onOpenChange(false)}
+          onSubmit={() => void onSubmit()}
         />
       }
       open={open}

@@ -24,7 +24,10 @@ type DesktopAppShellProps = {
   readonly noPadding?: boolean;
 };
 
-export function DesktopAppShell({ children, noPadding = false }: DesktopAppShellProps) {
+export function DesktopAppShell({
+  children,
+  noPadding = false,
+}: DesktopAppShellProps) {
   const { pathname } = useLocation();
   const page = PAGE_TITLES[pathname] ?? { title: "한손에 영업" };
 
@@ -71,13 +74,14 @@ export function DesktopAppShell({ children, noPadding = false }: DesktopAppShell
               Store Manager
             </p>
           </div>
-          <Link
+          {/*<Link
             aria-label="알림"
             className="ml-auto inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-sidebar-foreground/60 transition hover:bg-sidebar-accent hover:text-sidebar-foreground"
             to="/notifications"
           >
             <Bell className="h-4 w-4" />
           </Link>
+          */}
         </div>
       </aside>
 
@@ -96,13 +100,18 @@ export function DesktopAppShell({ children, noPadding = false }: DesktopAppShell
               className="inline-flex h-[34px] items-center gap-1.5 rounded-lg bg-primary px-3 text-[13px] font-semibold text-white transition hover:bg-primary/90"
               to="/deals/new"
             >
-              <Plus className="h-3.5 w-3.5" strokeWidth={2.5} />
-              새 딜
+              <Plus className="h-3.5 w-3.5" strokeWidth={2.5} />새 딜
             </Link>
           </div>
         </header>
 
-        <main className={noPadding ? "flex flex-col overflow-hidden" : "min-h-[calc(100vh-var(--topbar-height))] px-8 py-8"}>
+        <main
+          className={
+            noPadding
+              ? "flex flex-col overflow-hidden"
+              : "min-h-[calc(100vh-var(--topbar-height))] px-8 py-8"
+          }
+        >
           {children}
         </main>
       </div>

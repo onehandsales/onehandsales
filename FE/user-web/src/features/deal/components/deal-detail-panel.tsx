@@ -10,8 +10,11 @@ import {
   FileText,
   HandCoins,
   Lock,
+  Mail,
+  MessageCircle,
   Package,
   Pencil,
+  Phone,
   Plus,
   RefreshCw,
   UserRound,
@@ -302,153 +305,342 @@ function DealDetailPageLayout({
 }) {
   const nextAction = followingLogs[0];
   const [isEditing, setIsEditing] = useState(false);
+  const [activeSection, setActiveSection] = useState<"activity" | "memo" | "schedule">("activity");
   const companyName = detail.company?.companyName ?? "-";
   const contactName = detail.contact?.username ?? "-";
   const contactDepartmentName = detail.contact?.contactDepartment?.departmentName ?? "-";
   const products = Array.isArray(detail.products) ? detail.products : [];
   const dealCost = Number.isFinite(detail.dealCost) ? detail.dealCost : 0;
   const dealName = detail.dealName ?? "-";
+  const deadlineLabel = getDeadlineLabel(detail.expectedEndDate);
+  const isOverdue = deadlineLabel.includes("지남");
 
   return (
-    <main className="min-h-[calc(100vh-var(--topbar-height))] bg-[#F9FAFB] px-4 py-4 md:px-6 md:py-6">
-      <div className="mx-auto grid max-w-7xl gap-5">
-        <Link
-          className="inline-flex w-fit items-center gap-1.5 text-[13px] font-medium text-[#64748B] hover:text-[#374151]"
-          to="/deals"
-        >
-          <ArrowLeft className="h-4 w-4" />
-          딜 목록
-        </Link>
+    <>
+      {/* ── Mobile ── */}
+      <div className="flex flex-col bg-[#F3F4F6] md:hidden">
+        {/* 뒤로가기 헤더 */}
+        <div className="flex h-12 items-center gap-2 bg-white px-4 border-b border-[#E5E7EB]">
+          <Link
+            className="inline-flex h-8 w-8 items-center justify-center rounded-lg text-[#374151] hover:bg-[#F3F4F6]"
+            to="/deals"
+          >
+            <ArrowLeft className="h-5 w-5" />
+          </Link>
+          <span className="flex-1 truncate text-[15px] font-semibold text-[#111827]">
+            {dealName}
+          </span>
+        </div>
 
-        <section className="rounded-lg border border-[#E5EAF0] bg-white p-4 md:p-5">
-          <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
-            <div className="min-w-0">
-              <div className="flex flex-wrap items-center gap-2">
-                <StatusBadge status={detail.dealStatus} />
-                <span className="rounded-full bg-[#F3F4F6] px-2.5 py-1 text-[11px] font-medium text-[#64748B]">
-                  {getDeadlineLabel(detail.expectedEndDate)}
-                </span>
-              </div>
-              <h1 className="mt-3 text-[22px] font-semibold leading-tight text-[#111827] md:text-[26px]">
-                {dealName}
-              </h1>
-              <p className="mt-2 text-[13px] text-[#64748B]">
-                {companyName} · {contactName} · {contactDepartmentName}
-              </p>
-            </div>
+        {/* Key Info Card */}
+        <div className="bg-white px-4 pb-4 pt-4">
+          {/* 단계 배지 */}
+          <div className="flex items-center gap-2">
+            <StatusBadge status={detail.dealStatus} />
+          </div>
 
-            <div className="flex shrink-0 flex-col gap-3 lg:min-w-[260px]">
+          {/* 금액 */}
+          <p className="mt-3 text-[26px] font-bold text-[#111827]">
+            ₩ {dealCost.toLocaleString("ko-KR")}
+          </p>
+
+          {/* 담당자 · 회사 */}
+          <p className="mt-1 text-[13px] text-[#374151]">
+            {contactName} · {companyName}
+          </p>
+
+          {/* 마감일 */}
+          <p
+            className="mt-1 text-[13px]"
+            style={{ color: isOverdue ? "#B91C1C" : "#6B7280" }}
+          >
+            {deadlineLabel} · {formatDate(detail.expectedEndDate)}
+          </p>
+
+          {/* Divider */}
+          <div className="my-3 h-px bg-[#F3F4F6]" />
+
+          {/* QuickActions */}
+          <div className="flex items-center justify-between">
+            <span className="text-[13px] font-medium text-[#374151]">
+              {contactName}
+            </span>
+            <div className="flex items-center gap-2">
+              <a
+                aria-label="전화"
+                className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-[#BFDBFE] bg-[#EFF6FF] text-[#2563EB] transition hover:bg-[#DBEAFE]"
+                href={`tel:`}
+              >
+                <Phone className="h-4 w-4" />
+              </a>
               <button
-                className={cn(
-                  "inline-flex h-9 items-center justify-center gap-1.5 rounded-md border px-3 text-[13px] font-semibold transition",
-                  isEditing
-                    ? "border-[#C7D7FE] bg-[#EAF2FF] text-[#1D4ED8]"
-                    : "border-[#E2E5EC] bg-white text-[#374151] hover:bg-[#F5F6F8]"
-                )}
-                onClick={() => setIsEditing((value) => !value)}
+                aria-label="문자"
+                className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-[#BFDBFE] bg-[#EFF6FF] text-[#2563EB] transition hover:bg-[#DBEAFE]"
                 type="button"
               >
-                {isEditing ? <X className="h-4 w-4" /> : <Pencil className="h-4 w-4" />}
-                {isEditing ? "수정 취소" : "정보 수정"}
+                <MessageCircle className="h-4 w-4" />
               </button>
-              <div className="rounded-lg bg-[#F9FAFB] px-4 py-3">
-                <p className="text-[12px] font-medium text-[#64748B]">예상 금액</p>
-                <p className="mt-1 text-[26px] font-semibold tracking-normal text-[#111827]">
-                  {dealCost.toLocaleString("ko-KR")}원
-                </p>
-                <p className="mt-2 text-[12px] text-[#94A3B8]">
-                  마감 예정일 {formatDate(detail.expectedEndDate)}
-                </p>
-              </div>
+              <a
+                aria-label="이메일"
+                className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-[#BFDBFE] bg-[#EFF6FF] text-[#2563EB] transition hover:bg-[#DBEAFE]"
+                href={`mailto:`}
+              >
+                <Mail className="h-4 w-4" />
+              </a>
             </div>
           </div>
+        </div>
 
-          <div className="mt-5 grid gap-3 md:grid-cols-4">
-            <MetricCard icon={Building2} label="회사" value={companyName} />
-            <MetricCard
-              icon={UserRound}
-              label="담당자"
-              value={`${contactName} ${contactDepartmentName}`}
-            />
-            <MetricCard
-              icon={CalendarClock}
-              label="등록일"
-              value={formatDateTime(detail.createdAt)}
-            />
-            <MetricCard
-              icon={RefreshCw}
-              label="수정일"
-              value={formatDateTime(detail.updatedAt)}
-            />
-          </div>
+        {/* 두꺼운 Divider */}
+        <div className="h-[6px] bg-[#F3F4F6]" />
 
-          {isEditing ? (
-            <div className="mt-5">
-              <DealInlineEditForm
-                detail={detail}
-                onSaved={() => setIsEditing(false)}
-              />
+        {/* Next Action Card */}
+        <div className="bg-white px-4 pb-4 pt-[14px]">
+          <div className="flex items-center justify-between gap-3">
+            <div className="flex items-center gap-2">
+              <span className="h-2 w-2 rounded-full bg-[#F59E0B]" />
+              <h3 className="text-[14px] font-semibold text-[#374151]">다음 행동</h3>
             </div>
-          ) : null}
-        </section>
+            <button
+              className="inline-flex h-7 items-center rounded-md bg-[#F3F4F6] px-2.5 text-[12px] font-medium text-[#374151] hover:bg-[#E5E7EB]"
+              type="button"
+            >
+              완료
+            </button>
+          </div>
+          {followingLogsLoading ? (
+            <div className="mt-3 h-12 animate-pulse rounded-lg bg-[#F3F4F6]" />
+          ) : nextAction ? (
+            <div className="mt-3">
+              <p className="text-[14px] font-semibold text-[#111827]">
+                {nextAction.followingAction}
+              </p>
+              <p
+                className="mt-1 text-[12px]"
+                style={{ color: nextAction.checkComplete ? "#9CA3AF" : "#B91C1C" }}
+              >
+                {nextAction.checkComplete ? "완료됨" : "미완료"}
+              </p>
+            </div>
+          ) : (
+            <p className="mt-3 text-[13px] text-[#9CA3AF]">등록된 다음 행동이 없습니다.</p>
+          )}
+        </div>
 
-        <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_360px]">
-          <div className="grid min-w-0 gap-5">
-            <NextActionSummary
+        {/* Thin Divider */}
+        <div className="h-px bg-[#E5E7EB]" />
+
+        {/* Section Tabs */}
+        <div className="flex bg-white">
+          {(
+            [
+              { key: "activity", label: "활동 로그" },
+              { key: "memo", label: "Memo" },
+              { key: "schedule", label: "일정" },
+            ] as const
+          ).map((tab) => (
+            <button
+              className={cn(
+                "flex-1 border-b-2 py-2.5 text-[13px] font-medium transition",
+                activeSection === tab.key
+                  ? "border-[#5E5CE6] bg-[#EEEEFF] text-[#5E5CE6]"
+                  : "border-transparent bg-transparent text-[#6B7280]",
+              )}
+              key={tab.key}
+              onClick={() => setActiveSection(tab.key)}
+              type="button"
+            >
+              {tab.label}
+            </button>
+          ))}
+        </div>
+
+        {/* + 활동 추가 row */}
+        {activeSection === "activity" ? (
+          <div className="flex items-center bg-[#EEEEFF] px-4 py-2">
+            <span className="text-[13px] font-medium text-[#2568D8]">+ 활동 추가</span>
+          </div>
+        ) : null}
+
+        {/* Section Content */}
+        <div className="bg-white px-4 pb-4 pt-3">
+          {activeSection === "activity" ? (
+            <FollowingActionLogsSection
+              dealId={detail.id}
               isLoading={followingLogsLoading}
-              log={nextAction}
-              tone="page"
+              logs={followingLogs}
+              tone="page-inner"
             />
+          ) : activeSection === "memo" ? (
+            <>
+              <MemoLogsSection
+                dealId={detail.id}
+                isLoading={memoLogsLoading}
+                logs={memoLogs}
+                tone="page-inner"
+              />
+            </>
+          ) : (
+            <p className="py-6 text-center text-[13px] text-[#9CA3AF]">일정 기능 준비 중입니다.</p>
+          )}
+        </div>
 
-            <section className="rounded-lg border border-[#E5EAF0] bg-white">
-              <div className="flex h-11 items-center border-b border-[#E5EAF0] px-2">
-                <span className="inline-flex h-8 items-center rounded-md bg-[#EEEEFF] px-3 text-[13px] font-semibold text-[#5E5CE6]">
-                  활동 로그
-                </span>
-                <span className="inline-flex h-8 items-center px-3 text-[13px] font-medium text-[#64748B]">
-                  Memo
-                </span>
-                <span className="inline-flex h-8 items-center px-3 text-[13px] font-medium text-[#64748B]">
-                  일정
-                </span>
-              </div>
-              <div className="grid gap-5 p-4">
-                <FollowingActionLogsSection
-                  dealId={detail.id}
-                  isLoading={followingLogsLoading}
-                  logs={followingLogs}
-                  tone="page-inner"
-                />
-                <MemoLogsSection
-                  dealId={detail.id}
-                  isLoading={memoLogsLoading}
-                  logs={memoLogs}
-                  tone="page-inner"
-                />
-              </div>
-            </section>
-          </div>
+        {/* 두꺼운 Divider */}
+        <div className="h-[6px] bg-[#F3F4F6]" />
 
-          <aside className="grid h-fit gap-5">
-            <section className="rounded-lg border border-[#E5EAF0] bg-white p-4">
-              <DealProductsSection products={products} />
-            </section>
-            <section className="rounded-lg border border-[#E5EAF0] bg-white p-4">
-              <StageProgressSection activeStatus={detail.dealStatus} />
-            </section>
-            <section className="rounded-lg border border-[#E5EAF0] bg-white p-4">
-              <h3 className="text-[13px] font-semibold text-[#374151]">요약 정보</h3>
-              <dl className="mt-3 grid gap-2 text-sm">
-                <DetailRow label="단계" value={DEAL_STATUS_LABEL[detail.dealStatus]} />
-                <DetailRow label="마감일" value={formatDate(detail.expectedEndDate)} />
-                <DetailRow label="제품 수" value={`${products.length}개`} />
-                <DetailRow label="수정일" value={formatDateTime(detail.updatedAt)} />
-              </dl>
-            </section>
-          </aside>
+        {/* Memo Section (딜 Memo) */}
+        <div className="bg-white px-4 pb-6 pt-[14px]">
+          <MemoLogsSection
+            dealId={detail.id}
+            isLoading={memoLogsLoading}
+            logs={memoLogs}
+            tone="page-inner"
+          />
+          <p className="mt-2 text-[12px] text-[#9CA3AF]">개인 메모는 암호화 저장됩니다.</p>
         </div>
       </div>
-    </main>
+
+      {/* ── Desktop ── */}
+      <main className="hidden min-h-[calc(100vh-var(--topbar-height))] bg-[#F9FAFB] px-4 py-4 md:block md:px-6 md:py-6">
+        <div className="mx-auto grid max-w-7xl gap-5">
+          <Link
+            className="inline-flex w-fit items-center gap-1.5 text-[13px] font-medium text-[#64748B] hover:text-[#374151]"
+            to="/deals"
+          >
+            <ArrowLeft className="h-4 w-4" />
+            딜 목록
+          </Link>
+
+          <section className="rounded-lg border border-[#E5EAF0] bg-white p-4 md:p-5">
+            <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+              <div className="min-w-0">
+                <div className="flex flex-wrap items-center gap-2">
+                  <StatusBadge status={detail.dealStatus} />
+                  <span className="rounded-full bg-[#F3F4F6] px-2.5 py-1 text-[11px] font-medium text-[#64748B]">
+                    {getDeadlineLabel(detail.expectedEndDate)}
+                  </span>
+                </div>
+                <h1 className="mt-3 text-[22px] font-semibold leading-tight text-[#111827] md:text-[26px]">
+                  {dealName}
+                </h1>
+                <p className="mt-2 text-[13px] text-[#64748B]">
+                  {companyName} · {contactName} · {contactDepartmentName}
+                </p>
+              </div>
+
+              <div className="flex shrink-0 flex-col gap-3 lg:min-w-[260px]">
+                <button
+                  className={cn(
+                    "inline-flex h-9 items-center justify-center gap-1.5 rounded-md border px-3 text-[13px] font-semibold transition",
+                    isEditing
+                      ? "border-[#C7D7FE] bg-[#EAF2FF] text-[#1D4ED8]"
+                      : "border-[#E2E5EC] bg-white text-[#374151] hover:bg-[#F5F6F8]",
+                  )}
+                  onClick={() => setIsEditing((value) => !value)}
+                  type="button"
+                >
+                  {isEditing ? <X className="h-4 w-4" /> : <Pencil className="h-4 w-4" />}
+                  {isEditing ? "수정 취소" : "정보 수정"}
+                </button>
+                <div className="rounded-lg bg-[#F9FAFB] px-4 py-3">
+                  <p className="text-[12px] font-medium text-[#64748B]">예상 금액</p>
+                  <p className="mt-1 text-[26px] font-semibold tracking-normal text-[#111827]">
+                    {dealCost.toLocaleString("ko-KR")}원
+                  </p>
+                  <p className="mt-2 text-[12px] text-[#94A3B8]">
+                    마감 예정일 {formatDate(detail.expectedEndDate)}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div className="mt-5 grid gap-3 md:grid-cols-4">
+              <MetricCard icon={Building2} label="회사" value={companyName} />
+              <MetricCard
+                icon={UserRound}
+                label="담당자"
+                value={`${contactName} ${contactDepartmentName}`}
+              />
+              <MetricCard
+                icon={CalendarClock}
+                label="등록일"
+                value={formatDateTime(detail.createdAt)}
+              />
+              <MetricCard
+                icon={RefreshCw}
+                label="수정일"
+                value={formatDateTime(detail.updatedAt)}
+              />
+            </div>
+
+            {isEditing ? (
+              <div className="mt-5">
+                <DealInlineEditForm
+                  detail={detail}
+                  onSaved={() => setIsEditing(false)}
+                />
+              </div>
+            ) : null}
+          </section>
+
+          <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_360px]">
+            <div className="grid min-w-0 gap-5">
+              <NextActionSummary
+                isLoading={followingLogsLoading}
+                log={nextAction}
+                tone="page"
+              />
+
+              <section className="rounded-lg border border-[#E5EAF0] bg-white">
+                <div className="flex h-11 items-center border-b border-[#E5EAF0] px-2">
+                  <span className="inline-flex h-8 items-center rounded-md bg-[#EEEEFF] px-3 text-[13px] font-semibold text-[#5E5CE6]">
+                    활동 로그
+                  </span>
+                  <span className="inline-flex h-8 items-center px-3 text-[13px] font-medium text-[#64748B]">
+                    Memo
+                  </span>
+                  <span className="inline-flex h-8 items-center px-3 text-[13px] font-medium text-[#64748B]">
+                    일정
+                  </span>
+                </div>
+                <div className="grid gap-5 p-4">
+                  <FollowingActionLogsSection
+                    dealId={detail.id}
+                    isLoading={followingLogsLoading}
+                    logs={followingLogs}
+                    tone="page-inner"
+                  />
+                  <MemoLogsSection
+                    dealId={detail.id}
+                    isLoading={memoLogsLoading}
+                    logs={memoLogs}
+                    tone="page-inner"
+                  />
+                </div>
+              </section>
+            </div>
+
+            <aside className="grid h-fit gap-5">
+              <section className="rounded-lg border border-[#E5EAF0] bg-white p-4">
+                <DealProductsSection products={products} />
+              </section>
+              <section className="rounded-lg border border-[#E5EAF0] bg-white p-4">
+                <StageProgressSection activeStatus={detail.dealStatus} />
+              </section>
+              <section className="rounded-lg border border-[#E5EAF0] bg-white p-4">
+                <h3 className="text-[13px] font-semibold text-[#374151]">요약 정보</h3>
+                <dl className="mt-3 grid gap-2 text-sm">
+                  <DetailRow label="단계" value={DEAL_STATUS_LABEL[detail.dealStatus]} />
+                  <DetailRow label="마감일" value={formatDate(detail.expectedEndDate)} />
+                  <DetailRow label="제품 수" value={`${products.length}개`} />
+                  <DetailRow label="수정일" value={formatDateTime(detail.updatedAt)} />
+                </dl>
+              </section>
+            </aside>
+          </div>
+        </div>
+      </main>
+    </>
   );
 }
 
