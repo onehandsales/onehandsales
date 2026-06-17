@@ -182,6 +182,7 @@ export function ContactCreateDialog({
           formId={formId}
           isSubmitting={createContactMutation.isPending}
           onCancel={() => onOpenChange(false)}
+          onSubmit={() => void onSubmit()}
         />
       }
       open={open}

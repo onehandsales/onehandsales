@@ -239,6 +239,7 @@ type ModalFooterActionsProps = {
   readonly isSubmitting?: boolean;
   readonly disabled?: boolean;
   readonly onCancel: () => void;
+  readonly onSubmit?: () => void;
 };
 
 // 기능 : Quick Create 계열 모달 footer의 취소/저장 액션을 통일합니다.
@@ -249,6 +250,7 @@ export function ModalFooterActions({
   isSubmitting = false,
   disabled = false,
   onCancel,
+  onSubmit,
 }: ModalFooterActionsProps) {
   return (
     <>
@@ -259,15 +261,27 @@ export function ModalFooterActions({
       >
         취소
       </button>
-      <button
-        className="inline-flex h-10 items-center gap-2 rounded-md bg-primary px-4 text-sm font-medium text-primary-foreground disabled:cursor-not-allowed disabled:opacity-60"
-        disabled={disabled || isSubmitting}
-        form={formId}
-        type="submit"
-      >
-        <Plus className="h-4 w-4" />
-        {isSubmitting ? pendingLabel : submitLabel}
-      </button>
+      {onSubmit ? (
+        <button
+          className="inline-flex h-10 items-center gap-2 rounded-md bg-primary px-4 text-sm font-medium text-primary-foreground disabled:cursor-not-allowed disabled:opacity-60"
+          disabled={disabled || isSubmitting}
+          onClick={onSubmit}
+          type="button"
+        >
+          <Plus className="h-4 w-4" />
+          {isSubmitting ? pendingLabel : submitLabel}
+        </button>
+      ) : (
+        <button
+          className="inline-flex h-10 items-center gap-2 rounded-md bg-primary px-4 text-sm font-medium text-primary-foreground disabled:cursor-not-allowed disabled:opacity-60"
+          disabled={disabled || isSubmitting}
+          form={formId}
+          type="submit"
+        >
+          <Plus className="h-4 w-4" />
+          {isSubmitting ? pendingLabel : submitLabel}
+        </button>
+      )}
     </>
   );
 }
