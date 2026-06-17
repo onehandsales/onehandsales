@@ -6,7 +6,7 @@ import type {
 } from "@/features/meeting-note/types/meeting-note";
 
 export const meetingNoteFormSchema = z.object({
-  meetingLocalDateTime: z.string().optional(),
+  meetingLocalDateTime: z.string().trim().min(1, "미팅 일시를 선택해주세요."),
   companyName: z.string().trim().min(1, "회사명을 입력해주세요.").max(300),
   companyField: z.string().max(200).optional(),
   companyRegion: z.string().max(200).optional(),
@@ -58,15 +58,60 @@ export const emptyMeetingNoteFormValues: MeetingNoteFormValues = {
 };
 
 // 기능 : 회의록 form 값을 생성 request body로 변환합니다.
+export const meetingNoteCreateFormSchema = z.object({
+  meetingLocalDateTime: z.string().trim().min(1, "미팅 일시를 선택해주세요."),
+  companyIds: z.array(z.string()).min(1, "회사를 1개 이상 선택해주세요."),
+  contactIds: z.array(z.string()).min(1, "담당자를 1명 이상 선택해주세요."),
+  productIds: z.array(z.string()).optional(),
+  dealIds: z.array(z.string()).optional(),
+  details: z.string().trim().min(1, "상세 내용을 입력해주세요.").max(10000),
+  nextPlan: z.string().max(2000).optional(),
+  requiredAction: z.string().max(2000).optional(),
+});
+
+export type MeetingNoteCreateFormValues = z.infer<
+  typeof meetingNoteCreateFormSchema
+>;
+
+export const emptyMeetingNoteCreateFormValues: MeetingNoteCreateFormValues = {
+  meetingLocalDateTime: toDateTimeLocalInputValue(new Date()),
+  companyIds: [],
+  contactIds: [],
+  productIds: [],
+  dealIds: [],
+  details: "",
+  nextPlan: "",
+  requiredAction: "",
+};
+
 export function toCreateMeetingNoteInput(
-  values: MeetingNoteFormValues
+  values: MeetingNoteCreateFormValues
 ): CreateMeetingNoteInput {
+  return {
+    sourceType: "MANUAL",
+    meetingLocalDateTime: values.meetingLocalDateTime.trim(),
+    details: values.details.trim(),
+    nextPlan: toOptionalText(values.nextPlan),
+    requiredAction: toOptionalText(values.requiredAction),
+    companies: values.companyIds,
+    contacts: values.contactIds,
+    products: values.productIds?.length ? values.productIds : undefined,
+    deals: values.dealIds?.length ? values.dealIds : undefined,
+  };
+}
+
+// 기능 : 회의록 form 값을 수정 request body로 변환합니다.
+export function toUpdateMeetingNoteInput(
+  meetingNoteId: string,
+  values: MeetingNoteFormValues
+): UpdateMeetingNoteInput {
   const product = toProductInput(values);
   const dealId = toOptionalText(values.dealId);
 
   return {
+    meetingNoteId,
     sourceType: "MANUAL",
-    meetingLocalDateTime: toOptionalText(values.meetingLocalDateTime),
+    meetingLocalDateTime: values.meetingLocalDateTime.trim(),
     details: values.details.trim(),
     nextPlan: toOptionalText(values.nextPlan),
     requiredAction: toOptionalText(values.requiredAction),
@@ -89,17 +134,6 @@ export function toCreateMeetingNoteInput(
     ],
     products: product ? [product] : [],
     deals: dealId ? [{ dealId }] : [],
-  };
-}
-
-// 기능 : 회의록 form 값을 수정 request body로 변환합니다.
-export function toUpdateMeetingNoteInput(
-  meetingNoteId: string,
-  values: MeetingNoteFormValues
-): UpdateMeetingNoteInput {
-  return {
-    meetingNoteId,
-    ...toCreateMeetingNoteInput(values),
   };
 }
 

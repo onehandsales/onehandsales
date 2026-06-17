@@ -47,7 +47,7 @@ const QUICK_ACTIONS: QuickAction[] = [
   },
   {
     description: "미팅 내용과 필요 조치 기록",
-    href: "/meeting-notes/new",
+    href: "/meeting-notes?create=1",
     icon: FileText,
     label: "회의록 작성",
     tone: "emerald",

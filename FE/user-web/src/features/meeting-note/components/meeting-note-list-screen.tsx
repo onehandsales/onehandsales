@@ -7,13 +7,15 @@ import {
   IdCard,
   Plus,
   RefreshCw,
-  Search,
   X,
   type LucideIcon,
 } from "lucide-react";
-import { type FormEvent, useEffect, useMemo, useState } from "react";
-import { Link } from "react-router-dom";
+import { useEffect, useMemo, useState } from "react";
+import { Link, useSearchParams } from "react-router-dom";
 import { PageHeader } from "@/components/layout/page-header";
+import { ListEmptyState } from "@/components/ui/state";
+import { Toast } from "@/components/ui/toast";
+import { MeetingNoteCreateDialog } from "@/features/meeting-note/components/meeting-note-create-dialog";
 import {
   useMeetingNoteFilterCompanies,
   useMeetingNoteFilterContacts,
@@ -37,18 +39,19 @@ export function MeetingNoteListScreen() {
   const [companyId, setCompanyId] = useState("");
   const [contactId, setContactId] = useState("");
   const [sort, setSort] = useState<MeetingNoteSort>("createdAtDesc");
-  const [meetingDateText, setMeetingDateText] = useState("");
-  const [meetingDate, setMeetingDate] = useState("");
   const [selectedMeetingNoteId, setSelectedMeetingNoteId] = useState("");
+  const [pinnedMeetingNoteId, setPinnedMeetingNoteId] = useState("");
+  const [isCreateOpen, setIsCreateOpen] = useState(false);
+  const [notice, setNotice] = useState<string | null>(null);
+  const [searchParams, setSearchParams] = useSearchParams();
   const params = useMemo(
     () => ({
       companyIds: companyId ? [companyId] : [],
       contactIds: contactId ? [contactId] : [],
-      meetingDate: meetingDate || undefined,
       page,
       sort,
     }),
-    [companyId, contactId, meetingDate, page, sort]
+    [companyId, contactId, page, sort]
   );
   const meetingNotesQuery = useMeetingNoteList(params);
   const companiesQuery = useMeetingNoteFilterCompanies();
@@ -58,16 +61,39 @@ export function MeetingNoteListScreen() {
     [meetingNotesQuery.data?.items]
   );
 
-  const hasFilter = Boolean(companyId || contactId || meetingDate || sort !== "createdAtDesc");
+  const hasFilter = Boolean(companyId || contactId || sort !== "createdAtDesc");
+
+  useEffect(() => {
+    if (searchParams.get("create") !== "1") {
+      return;
+    }
+
+    setIsCreateOpen(true);
+
+    const nextSearchParams = new URLSearchParams(searchParams);
+    nextSearchParams.delete("create");
+    setSearchParams(nextSearchParams, { replace: true });
+  }, [searchParams, setSearchParams]);
 
   useEffect(() => {
     if (
       selectedMeetingNoteId &&
+      selectedMeetingNoteId !== pinnedMeetingNoteId &&
       !meetingNotes.some((meetingNote) => meetingNote.id === selectedMeetingNoteId)
     ) {
       setSelectedMeetingNoteId("");
     }
-  }, [meetingNotes, selectedMeetingNoteId]);
+  }, [meetingNotes, pinnedMeetingNoteId, selectedMeetingNoteId]);
+
+  const selectMeetingNote = (meetingNoteId: string) => {
+    setPinnedMeetingNoteId("");
+    setSelectedMeetingNoteId(meetingNoteId);
+  };
+
+  const closePreview = () => {
+    setPinnedMeetingNoteId("");
+    setSelectedMeetingNoteId("");
+  };
 
   // 기능 : 필터 값을 변경하고 목록 page를 첫 페이지로 되돌립니다.
   const updateCompanyId = (value: string) => {
@@ -87,24 +113,10 @@ export function MeetingNoteListScreen() {
     setPage(1);
   };
 
-  const onDateSearchSubmit = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    setMeetingDate(meetingDateText);
-    setPage(1);
-  };
-
-  const clearMeetingDate = () => {
-    setMeetingDate("");
-    setMeetingDateText("");
-    setPage(1);
-  };
-
   // 기능 : 모든 목록 필터를 초기화합니다.
   const clearFilters = () => {
     setCompanyId("");
     setContactId("");
-    setMeetingDate("");
-    setMeetingDateText("");
     setSort("createdAtDesc");
     setPage(1);
   };
@@ -116,14 +128,9 @@ export function MeetingNoteListScreen() {
         breadcrumbs={[{ label: "회의록", icon: FileText }]}
         actions={[
           {
-            icon: RefreshCw,
-            tooltip: "새로고침",
-            onClick: () => void meetingNotesQuery.refetch(),
-          },
-          {
             icon: Plus,
-            tooltip: "회의록 작성",
-            href: "/meeting-notes/new",
+            tooltip: "회의록 추가",
+            onClick: () => setIsCreateOpen(true),
             variant: "primary",
           },
         ]}
@@ -193,39 +200,17 @@ export function MeetingNoteListScreen() {
           <option value="createdAtDesc">최신순</option>
           <option value="meetingAtDesc">미팅일순</option>
         </select>
-
-        <form
-          className="flex h-8 items-center gap-1.5 rounded-md border border-[#E2E5EC] bg-white px-2 transition focus-within:border-[#93C5FD]"
-          onSubmit={onDateSearchSubmit}
-        >
-          <CalendarClock className="h-3.5 w-3.5 shrink-0 text-[#64748B]" />
-          <input
-            aria-label="회의 날짜"
-            className="h-7 w-[130px] bg-transparent text-[13px] text-[#111827] outline-none"
-            onChange={(event) => setMeetingDateText(event.target.value)}
-            type="date"
-            value={meetingDateText}
-          />
-          {meetingDate ? (
-            <button
-              aria-label="회의 날짜 검색 해제"
-              className="grid h-6 w-6 place-items-center rounded-md text-[#9CA3AF] transition hover:bg-[#F3F4F6] hover:text-[#374151]"
-              onClick={clearMeetingDate}
-              type="button"
-            >
-              <X className="h-3.5 w-3.5" />
-            </button>
-          ) : null}
-          <button
-            className="inline-flex h-6 items-center gap-1 rounded-md bg-[#374151] px-2 text-[12px] font-medium text-white transition hover:bg-[#111827] disabled:opacity-50"
-            disabled={!meetingDateText}
-            type="submit"
-          >
-            <Search className="h-3 w-3" />
-            검색
-          </button>
-        </form>
       </div>
+
+      {notice ? (
+        <div className="px-5 pt-2">
+          <Toast
+            message={notice}
+            onClose={() => setNotice(null)}
+            variant="success"
+          />
+        </div>
+      ) : null}
 
       {/* 테이블 카드 */}
       <div className="flex gap-5 px-5 pb-3 pt-1">
@@ -256,7 +241,17 @@ export function MeetingNoteListScreen() {
                 onRetry={() => void meetingNotesQuery.refetch()}
               />
             ) : meetingNotes.length === 0 ? (
-              <MeetingNoteEmptyState hasFilter={hasFilter} />
+              <ListEmptyState
+                actionIcon={Plus}
+                actionLabel="회의록 추가"
+                icon={FileText}
+                onAction={() => setIsCreateOpen(true)}
+                title={
+                  hasFilter
+                    ? "조건에 맞는 회의록이 없습니다"
+                    : "등록된 회의록이 없습니다"
+                }
+              />
             ) : (
               <div>
                 {meetingNotes.map((meetingNote) => (
@@ -264,7 +259,7 @@ export function MeetingNoteListScreen() {
                     isActive={meetingNote.id === selectedMeetingNoteId}
                     key={meetingNote.id}
                     meetingNote={meetingNote}
-                    onSelect={setSelectedMeetingNoteId}
+                    onSelect={selectMeetingNote}
                   />
                 ))}
               </div>
@@ -288,7 +283,7 @@ export function MeetingNoteListScreen() {
                 <button
                   aria-label="미리보기 닫기"
                   className="inline-flex h-7 w-7 items-center justify-center rounded-md border border-[#E2E5EC] text-[#64748B] transition hover:bg-blue-50/60 hover:text-[#2563EB]"
-                  onClick={() => setSelectedMeetingNoteId("")}
+                  onClick={closePreview}
                   title="닫기"
                   type="button"
                 >
@@ -309,6 +304,20 @@ export function MeetingNoteListScreen() {
           </div>
         ) : null}
       </div>
+
+      {isCreateOpen ? (
+        <MeetingNoteCreateDialog
+          onCreated={(meetingNote) => {
+            setNotice("회의록이 추가되었습니다.");
+            setPage(1);
+            setPinnedMeetingNoteId(meetingNote.id);
+            setSelectedMeetingNoteId(meetingNote.id);
+            void meetingNotesQuery.refetch();
+          }}
+          onOpenChange={setIsCreateOpen}
+          open={isCreateOpen}
+        />
+      ) : null}
     </section>
   );
 }
@@ -534,32 +543,6 @@ function getMeetingNoteTitle(meetingNote: MeetingNote) {
   }
 
   return companyName || contactName || "회의록";
-}
-
-// 기능 : 회의록 목록 empty 상태를 렌더링합니다.
-function MeetingNoteEmptyState({ hasFilter }: { readonly hasFilter: boolean }) {
-  return (
-    <div className="grid place-items-center px-4 py-16 text-center">
-      <div className="grid max-w-sm gap-3">
-        <div className="mx-auto grid h-11 w-11 place-items-center rounded-md bg-[#F3F4F6]">
-          <FileText className="h-5 w-5 text-[#9CA3AF]" />
-        </div>
-        <h2 className="text-[14px] font-semibold text-[#111827]">
-          {hasFilter ? "조건에 맞는 회의록이 없습니다" : "저장된 회의록이 없습니다"}
-        </h2>
-        <p className="text-[13px] text-[#6B7280]">
-          회사와 담당자를 먼저 기록하면 이후 미팅 맥락을 빠르게 찾을 수 있습니다.
-        </p>
-        <Link
-          className="mx-auto inline-flex h-9 items-center gap-2 rounded-md bg-[#2563EB] px-4 text-[13px] font-medium text-white hover:bg-[#1D4ED8]"
-          to="/meeting-notes/new"
-        >
-          <Plus className="h-4 w-4" />
-          회의록 작성
-        </Link>
-      </div>
-    </div>
-  );
 }
 
 // 기능 : 회의록 목록 error 상태를 렌더링합니다.

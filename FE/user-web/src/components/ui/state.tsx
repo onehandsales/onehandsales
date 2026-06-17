@@ -1,6 +1,7 @@
 import { AlertCircle, CheckCircle2, Loader2 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import type { ReactNode } from "react";
+import { Link } from "react-router-dom";
 import { cn } from "@/utils/cn";
 
 type StateVariant = "panel" | "inline";
@@ -70,6 +71,60 @@ export function EmptyState({
         ) : null}
       </div>
       {action ? <div>{action}</div> : null}
+    </div>
+  );
+}
+
+type ListEmptyStateProps = {
+  readonly title: string;
+  readonly icon: LucideIcon;
+  readonly actionLabel?: string;
+  readonly actionIcon?: LucideIcon;
+  readonly actionTo?: string;
+  readonly onAction?: () => void;
+  readonly className?: string;
+};
+
+// 기능 : 목록 테이블/카드 내부에서 쓰는 공통 빈 상태를 렌더링합니다.
+export function ListEmptyState({
+  title,
+  icon: Icon,
+  actionLabel,
+  actionIcon: ActionIcon,
+  actionTo,
+  onAction,
+  className,
+}: ListEmptyStateProps) {
+  const actionContent = actionLabel ? (
+    <>
+      {ActionIcon ? <ActionIcon className="h-3.5 w-3.5" strokeWidth={2} /> : null}
+      {actionLabel}
+    </>
+  ) : null;
+  const actionClassName =
+    "mt-5 inline-flex h-8 items-center gap-1.5 rounded-md bg-[#2563EB] px-3.5 text-[13px] font-medium text-white transition hover:bg-[#1D4ED8]";
+
+  return (
+    <div
+      className={cn(
+        "flex min-h-full flex-1 flex-col items-center justify-center px-5 py-16 text-center",
+        className
+      )}
+    >
+      <div className="flex h-12 w-12 items-center justify-center rounded-xl border border-[#E2E5EC] bg-[#FAFAF8]">
+        <Icon className="h-5 w-5 text-[#9CA3AF]" strokeWidth={1.5} />
+      </div>
+      <p className="mt-4 text-[14px] font-semibold text-[#111827]">{title}</p>
+      {actionContent && actionTo ? (
+        <Link className={actionClassName} to={actionTo}>
+          {actionContent}
+        </Link>
+      ) : null}
+      {actionContent && !actionTo ? (
+        <button className={actionClassName} onClick={onAction} type="button">
+          {actionContent}
+        </button>
+      ) : null}
     </div>
   );
 }

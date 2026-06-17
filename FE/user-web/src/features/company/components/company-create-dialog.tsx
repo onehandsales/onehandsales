@@ -2,6 +2,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Building2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { ManagedTaxonomyDropdown } from "@/components/ui/managed-taxonomy-dropdown";
 import {
   ModalFieldGroup,
   ModalFooterActions,
@@ -11,8 +12,13 @@ import {
 } from "@/components/ui/modal-form";
 import { ModalShell } from "@/components/ui/modal-shell";
 import { ErrorState } from "@/components/ui/state";
-import { CompanyTaxonomyCreateDialog } from "@/features/company/components/company-taxonomy-create-dialog";
-import { useCreateCompanyMutation } from "@/features/company/hooks/use-company-mutations";
+import {
+  useCreateCompanyFieldMutation,
+  useCreateCompanyMutation,
+  useCreateCompanyRegionMutation,
+  useDeleteCompanyFieldMutation,
+  useDeleteCompanyRegionMutation,
+} from "@/features/company/hooks/use-company-mutations";
 import {
   companyCreateFormSchema,
   emptyCompanyCreateFormValues,
@@ -42,6 +48,10 @@ export function CompanyCreateDialog({
   onCreated,
 }: CompanyCreateDialogProps) {
   const createCompanyMutation = useCreateCompanyMutation();
+  const createFieldMutation = useCreateCompanyFieldMutation();
+  const createRegionMutation = useCreateCompanyRegionMutation();
+  const deleteFieldMutation = useDeleteCompanyFieldMutation();
+  const deleteRegionMutation = useDeleteCompanyRegionMutation();
   const {
     register,
     handleSubmit,
@@ -54,20 +64,16 @@ export function CompanyCreateDialog({
     defaultValues: emptyCompanyCreateFormValues,
   });
   const formId = "company-create-form";
-  const [taxonomyDialog, setTaxonomyDialog] = useState<
-    | { readonly kind: "field" | "region" }
-    | null
-  >(null);
   const [pendingFieldName, setPendingFieldName] = useState("");
   const [pendingRegionName, setPendingRegionName] = useState("");
   const selectedFieldId = watch("companyFieldId");
   const selectedRegionId = watch("companyRegionId");
-  const companyFieldRegister = register("companyFieldId");
-  const companyRegionRegister = register("companyRegionId");
 
   useEffect(() => {
     if (open) {
       reset(emptyCompanyCreateFormValues);
+      setPendingFieldName("");
+      setPendingRegionName("");
     }
   }, [open, reset]);
 
@@ -122,9 +128,40 @@ export function CompanyCreateDialog({
     onOpenChange(false);
   });
 
+  const createField = async (name: string) => {
+    await createFieldMutation.mutateAsync({ field: name });
+    setPendingFieldName(name);
+  };
+
+  const createRegion = async (name: string) => {
+    await createRegionMutation.mutateAsync({ region: name });
+    setPendingRegionName(name);
+  };
+
+  const deleteField = async (field: CompanyField) => {
+    await deleteFieldMutation.mutateAsync(field.id);
+
+    if (selectedFieldId === field.id) {
+      setValue("companyFieldId", "", {
+        shouldDirty: true,
+        shouldValidate: true,
+      });
+    }
+  };
+
+  const deleteRegion = async (region: CompanyRegion) => {
+    await deleteRegionMutation.mutateAsync(region.id);
+
+    if (selectedRegionId === region.id) {
+      setValue("companyRegionId", "", {
+        shouldDirty: true,
+        shouldValidate: true,
+      });
+    }
+  };
+
   return (
     <ModalShell
-      description="회사명, 분야, 지역을 저장합니다."
       footer={
         <ModalFooterActions
           formId={formId}
@@ -138,10 +175,7 @@ export function CompanyCreateDialog({
       onOpenChange={onOpenChange}
     >
       <ModalForm id={formId} onSubmit={onSubmit}>
-        <ModalFormSection
-          description="회사명과 분류 기준을 먼저 저장합니다."
-          title="회사 기본 정보"
-        >
+        <ModalFormSection title="회사 기본 정보">
           <ModalFieldGroup
             error={errors.companyName?.message}
             id="company-name"
@@ -167,31 +201,27 @@ export function CompanyCreateDialog({
               id="company-field-id"
               label="분야"
             >
-              <select
-                aria-describedby={
-                  errors.companyFieldId ? "company-field-id-error" : undefined
-                }
-                aria-invalid={Boolean(errors.companyFieldId)}
-                className="h-10 rounded-md border px-3 text-sm outline-none focus:ring-2 focus:ring-ring"
+              <input type="hidden" {...register("companyFieldId")} />
+              <ManagedTaxonomyDropdown
+                addPlaceholder="분야명"
+                emptyText="분야가 없습니다"
+                getLabel={(field) => field.field}
                 id="company-field-id"
-                onChange={(event) => {
-                  const value = event.target.value;
-                  if (value === ADD_TAXONOMY_VALUE) {
-                    setTaxonomyDialog({ kind: "field" });
-                    return;
-                  }
-                  companyFieldRegister.onChange(event);
-                }}
-                value={selectedFieldId}
-              >
-                <option value="">분야 선택</option>
-                {fields.map((field) => (
-                  <option key={field.id} value={field.id}>
-                    {field.field}
-                  </option>
-                ))}
-                <option value={ADD_TAXONOMY_VALUE}>+ 추가</option>
-              </select>
+                isCreating={createFieldMutation.isPending}
+                isDeleting={deleteFieldMutation.isPending}
+                items={fields}
+                placeholder="분야 선택"
+                selectedId={selectedFieldId}
+                title="분야"
+                onCreate={createField}
+                onDelete={deleteField}
+                onSelect={(id) =>
+                  setValue("companyFieldId", id, {
+                    shouldDirty: true,
+                    shouldValidate: true,
+                  })
+                }
+              />
             </ModalFieldGroup>
 
             <ModalFieldGroup
@@ -199,47 +229,35 @@ export function CompanyCreateDialog({
               id="company-region-id"
               label="지역"
             >
-              <select
-                aria-describedby={
-                  errors.companyRegionId
-                    ? "company-region-id-error"
-                    : undefined
-                }
-                aria-invalid={Boolean(errors.companyRegionId)}
-                className="h-10 rounded-md border px-3 text-sm outline-none focus:ring-2 focus:ring-ring"
+              <input type="hidden" {...register("companyRegionId")} />
+              <ManagedTaxonomyDropdown
+                addPlaceholder="지역명"
+                emptyText="지역이 없습니다"
+                getLabel={(region) => region.region}
                 id="company-region-id"
-                onChange={(event) => {
-                  const value = event.target.value;
-                  if (value === ADD_TAXONOMY_VALUE) {
-                    setTaxonomyDialog({ kind: "region" });
-                    return;
-                  }
-                  companyRegionRegister.onChange(event);
-                }}
-                value={selectedRegionId}
-              >
-                <option value="">지역 선택</option>
-                {regions.map((region) => (
-                  <option key={region.id} value={region.id}>
-                    {region.region}
-                  </option>
-                ))}
-                <option value={ADD_TAXONOMY_VALUE}>+ 추가</option>
-              </select>
+                isCreating={createRegionMutation.isPending}
+                isDeleting={deleteRegionMutation.isPending}
+                items={regions}
+                placeholder="지역 선택"
+                selectedId={selectedRegionId}
+                title="지역"
+                onCreate={createRegion}
+                onDelete={deleteRegion}
+                onSelect={(id) =>
+                  setValue("companyRegionId", id, {
+                    shouldDirty: true,
+                    shouldValidate: true,
+                  })
+                }
+              />
             </ModalFieldGroup>
           </ModalFormRow>
         </ModalFormSection>
 
-        <ModalFormSection
-          description="입력하면 첫 회사 메모 로그로 저장됩니다."
-          title="첫 메모"
-        >
-          <ModalFieldGroup
-            helper="회사 기본 정보 필드는 아닙니다."
-            id="company-memo"
-            label="첫 회사 메모"
-          >
+        <ModalFormSection title="메모(옵션)">
+          <ModalFieldGroup id="company-memo">
               <textarea
+                aria-label="메모"
                 className="min-h-24 resize-y rounded-md border px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-ring"
                 id="company-memo"
                 {...register("companyMemo")}
@@ -255,27 +273,6 @@ export function CompanyCreateDialog({
           />
         ) : null}
       </ModalForm>
-
-      <CompanyTaxonomyCreateDialog
-        kind={taxonomyDialog?.kind ?? "field"}
-        fields={fields}
-        regions={regions}
-        onCreated={(name) => {
-          if (taxonomyDialog?.kind === "field") {
-            setPendingFieldName(name);
-          } else if (taxonomyDialog?.kind === "region") {
-            setPendingRegionName(name);
-          }
-        }}
-        onOpenChange={(isOpen) => {
-          if (!isOpen) {
-            setTaxonomyDialog(null);
-          }
-        }}
-        open={taxonomyDialog !== null}
-      />
     </ModalShell>
   );
 }
-
-const ADD_TAXONOMY_VALUE = "__add_taxonomy__";

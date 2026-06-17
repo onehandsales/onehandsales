@@ -1,4 +1,4 @@
-import { createBrowserRouter } from "react-router-dom";
+import { createBrowserRouter, Navigate } from "react-router-dom";
 import { AppShell } from "@/components/layout/app-shell";
 import { ProtectedRoute } from "@/features/auth";
 import { BusinessCardsPage } from "@/pages/business-cards";
@@ -15,7 +15,6 @@ import { HomePage } from "@/pages/home";
 import { ImportPage } from "@/pages/import";
 import { LoginPage } from "@/pages/login";
 import { MeetingNoteDetailPage } from "@/pages/meeting-notes/detail";
-import { MeetingNoteNewPage } from "@/pages/meeting-notes/new";
 import { MeetingNotesPage } from "@/pages/meeting-notes";
 import { NotificationsPage } from "@/pages/notifications";
 import { ProductDetailPage } from "@/pages/products/detail";
@@ -53,7 +52,10 @@ export const router = createBrowserRouter([
       { path: "schedules", element: <SchedulesPage /> },
       { path: "schedules/week", element: <ScheduleWeekPage /> },
       { path: "meeting-notes", element: <MeetingNotesPage /> },
-      { path: "meeting-notes/new", element: <MeetingNoteNewPage /> },
+      {
+        path: "meeting-notes/new",
+        element: <Navigate replace to="/meeting-notes?create=1" />,
+      },
       { path: "meeting-notes/:meetingNoteId", element: <MeetingNoteDetailPage /> },
       { path: "business-cards", element: <BusinessCardsPage /> },
       { path: "notifications", element: <NotificationsPage /> },

@@ -14,6 +14,7 @@ import { type FormEvent, type ReactNode, useEffect, useMemo, useState } from "re
 import { PageHeader } from "@/components/layout/page-header";
 import { Link } from "react-router-dom";
 import { Pagination } from "@/components/ui/pagination";
+import { ListEmptyState } from "@/components/ui/state";
 import { Toast } from "@/components/ui/toast";
 import { useAuthSession } from "@/features/auth";
 import { ContactCreateDialog } from "@/features/contact/components/contact-create-dialog";
@@ -330,9 +331,16 @@ export function ContactListScreen() {
                 onRetry={() => void contactsQuery.refetch()}
               />
             ) : !contactList || contactList.items.length === 0 ? (
-              <ContactEmptyState
-                hasSearch={hasSearch}
-                onCreate={() => setIsCreateOpen(true)}
+              <ListEmptyState
+                actionIcon={Plus}
+                actionLabel="담당자 추가"
+                icon={IdCard}
+                onAction={() => setIsCreateOpen(true)}
+                title={
+                  hasSearch
+                    ? "조건에 맞는 담당자가 없습니다"
+                    : "등록된 담당자가 없습니다"
+                }
               />
             ) : (
               <div>
@@ -717,38 +725,6 @@ function ContactListError({
         type="button"
       >
         다시 시도
-      </button>
-    </div>
-  );
-}
-
-function ContactEmptyState({
-  hasSearch,
-  onCreate,
-}: {
-  readonly hasSearch: boolean;
-  readonly onCreate: () => void;
-}) {
-  return (
-    <div className="flex flex-1 flex-col items-center justify-center px-5 py-16 text-center">
-      <div className="flex h-12 w-12 items-center justify-center rounded-xl border border-[#E2E5EC] bg-[#FAFAF8]">
-        <IdCard className="h-5 w-5 text-[#9CA3AF]" strokeWidth={1.5} />
-      </div>
-      <p className="mt-4 text-[14px] font-semibold text-[#111827]">
-        {hasSearch
-          ? "조건에 맞는 담당자가 없습니다"
-          : "등록된 담당자가 없습니다"}
-      </p>
-      <p className="mt-1 text-[13px] text-[#9CA3AF]">
-        담당자를 추가하고 딜과 연결해보세요
-      </p>
-      <button
-        className="mt-5 inline-flex h-8 items-center gap-1.5 rounded-md bg-[#1D4ED8] px-3.5 text-[13px] font-medium text-white transition hover:bg-[#1E40AF]"
-        onClick={onCreate}
-        type="button"
-      >
-        <Plus className="h-3.5 w-3.5" strokeWidth={2} />
-        담당자 추가
       </button>
     </div>
   );

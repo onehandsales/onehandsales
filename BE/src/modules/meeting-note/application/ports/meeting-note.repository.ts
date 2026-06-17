@@ -63,7 +63,7 @@ export interface MeetingNoteDealRecord {
 export interface MeetingNoteRecord {
   readonly id: string;
   readonly sourceType: MeetingNoteSourceTypeValue;
-  readonly meetingAt: Date | null;
+  readonly meetingAt: Date;
   readonly timeZone: string;
   readonly details: string;
   readonly nextPlan: string | null;
@@ -151,7 +151,7 @@ export interface MeetingNoteListRecord {
 export interface CreateMeetingNoteInput {
   readonly userId: string;
   readonly sourceType: MeetingNoteSourceTypeValue;
-  readonly meetingAt: Date | null;
+  readonly meetingAt: Date;
   readonly timeZone: string;
   readonly details: string;
   readonly nextPlan: string | null;
@@ -162,7 +162,7 @@ export interface CreateMeetingNoteInput {
 // 역할 : UpdateMeetingNoteInput 회의록 기본 row 수정 값을 정의합니다.
 export interface UpdateMeetingNoteInput {
   readonly sourceType?: MeetingNoteSourceTypeValue;
-  readonly meetingAt?: Date | null;
+  readonly meetingAt?: Date;
   readonly timeZone?: string;
   readonly details?: string;
   readonly nextPlan?: string | null;

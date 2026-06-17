@@ -82,14 +82,14 @@ export interface ListMeetingNotesQueryInput {
 // 역할 : CreateMeetingNoteCommand 회의록 생성 command 구조를 정의합니다.
 export interface CreateMeetingNoteCommand {
   readonly sourceType?: MeetingNoteSourceTypeValue;
-  readonly meetingLocalDateTime?: string | null;
+  readonly meetingLocalDateTime: string;
   readonly details: string;
   readonly nextPlan?: string | null;
   readonly requiredAction?: string | null;
-  readonly companies: MeetingNoteCompanyCommand[];
-  readonly contacts: MeetingNoteContactCommand[];
-  readonly products?: MeetingNoteProductCommand[];
-  readonly deals?: MeetingNoteDealCommand[];
+  readonly companies: string[];
+  readonly contacts: string[];
+  readonly products?: string[];
+  readonly deals?: string[];
 }
 
 // 역할 : UpdateMeetingNoteCommand 회의록 수정 command 구조를 정의합니다.
@@ -548,7 +548,7 @@ export class MeetingNoteApplicationService {
     input: CreateMeetingNoteCommand,
     timeZone: string
   ): {
-    readonly meetingAt: Date | null;
+    readonly meetingAt: Date;
     readonly details: string;
     readonly nextPlan: string | null;
     readonly requiredAction: string | null;
@@ -557,7 +557,7 @@ export class MeetingNoteApplicationService {
     this.assertManualSourceType(input.sourceType);
 
     return {
-      meetingAt: this.parseOptionalMeetingLocalDateTime(
+      meetingAt: this.parseRequiredMeetingLocalDateTime(
         input.meetingLocalDateTime,
         timeZone
       ),
@@ -569,10 +569,10 @@ export class MeetingNoteApplicationService {
         "requiredAction"
       ),
       relations: {
-        companies: this.normalizeCompanies(input.companies, true),
-        contacts: this.normalizeContacts(input.contacts, true),
-        products: this.normalizeProducts(input.products ?? [], false),
-        deals: this.normalizeDeals(input.deals ?? [], false),
+        companies: this.normalizeCompanyIds(input.companies, true),
+        contacts: this.normalizeContactIds(input.contacts, true),
+        products: this.normalizeProductIds(input.products ?? [], false),
+        deals: this.normalizeDealIds(input.deals ?? [], false),
       },
     };
   }
@@ -587,7 +587,7 @@ export class MeetingNoteApplicationService {
   } {
     const fields: {
       sourceType?: MeetingNoteSourceTypeValue;
-      meetingAt?: Date | null;
+      meetingAt?: Date;
       timeZone?: string;
       details?: string;
       nextPlan?: string | null;
@@ -600,7 +600,7 @@ export class MeetingNoteApplicationService {
     }
 
     if (input.meetingLocalDateTime !== undefined) {
-      fields.meetingAt = this.parseOptionalMeetingLocalDateTime(
+      fields.meetingAt = this.parseRequiredMeetingLocalDateTime(
         input.meetingLocalDateTime,
         timeZone
       );
@@ -691,6 +691,89 @@ export class MeetingNoteApplicationService {
   }
 
   // 기능 : 회사 입력 배열을 trim과 nullable 규칙에 맞게 정규화합니다.
+  private normalizeCompanyIds(
+    value: readonly string[],
+    required: boolean
+  ): NormalizedCompanyInput[] {
+    return this.normalizeRelationIds(value, "companies", required).map(
+      (companyId) => ({
+        companyId,
+        companyNameSnapshot: null,
+        companyFieldSnapshot: null,
+        companyRegionSnapshot: null,
+      })
+    );
+  }
+
+  private normalizeContactIds(
+    value: readonly string[],
+    required: boolean
+  ): NormalizedContactInput[] {
+    return this.normalizeRelationIds(value, "contacts", required).map(
+      (contactId) => ({
+        contactId,
+        companyId: null,
+        contactUsernameSnapshot: null,
+        contactEmailSnapshot: null,
+        contactMobileSnapshot: null,
+        contactCompanyNameSnapshot: null,
+        contactDepartmentSnapshot: null,
+        contactJobGradeSnapshot: null,
+      })
+    );
+  }
+
+  private normalizeProductIds(
+    value: readonly string[],
+    required: boolean
+  ): NormalizedProductInput[] {
+    return this.normalizeRelationIds(value, "products", required).map(
+      (productId) => ({
+        productId,
+        productNameSnapshot: null,
+        productPriceSnapshot: null,
+        productCategorySnapshot: null,
+        productStatusSnapshot: null,
+      })
+    );
+  }
+
+  private normalizeDealIds(
+    value: readonly string[],
+    required: boolean
+  ): NormalizedDealInput[] {
+    return this.normalizeRelationIds(value, "deals", required).map((dealId) => ({
+      dealId,
+    }));
+  }
+
+  private normalizeRelationIds(
+    value: readonly string[],
+    fieldName: string,
+    required: boolean
+  ): string[] {
+    if (!Array.isArray(value)) {
+      throw new ValidationDomainError(`${fieldName} must be an array`);
+    }
+
+    if (required && value.length === 0) {
+      throw new ValidationDomainError(`${fieldName} must not be empty`);
+    }
+
+    const ids = value.map((item) =>
+      this.normalizeRequiredText(item, 100, `${fieldName}Id`)
+    );
+    const uniqueIds = new Set(ids);
+
+    if (uniqueIds.size !== ids.length) {
+      throw new ValidationDomainError(
+        `${fieldName} must not contain duplicate ids`
+      );
+    }
+
+    return ids;
+  }
+
   private normalizeCompanies(
     value: readonly MeetingNoteCompanyCommand[],
     required: boolean
@@ -1217,6 +1300,19 @@ export class MeetingNoteApplicationService {
   }
 
   // 기능 : 사용자 local date-time 입력을 timezone 기준 UTC instant로 변환합니다.
+  private parseRequiredMeetingLocalDateTime(
+    value: string | null | undefined,
+    timeZone: string
+  ): Date {
+    const parsed = this.parseOptionalMeetingLocalDateTime(value, timeZone);
+
+    if (!parsed) {
+      throw new ValidationDomainError("meetingLocalDateTime is required");
+    }
+
+    return parsed;
+  }
+
   private parseOptionalMeetingLocalDateTime(
     value: string | null | undefined,
     timeZone: string

@@ -281,7 +281,7 @@ test.describe("User Web smoke E2E", () => {
       await dialog.getByLabel("분야").fill("B2C SaaS");
       await dialog.getByLabel("지역").fill("서울");
       await dialog.getByLabel("태그").fill("smoke, mvp");
-      await dialog.getByLabel("첫 메모").fill("G34 smoke 회사 fixture");
+      await dialog.getByLabel("메모").fill("G34 smoke 회사 fixture");
       await dialog.getByRole("button", { name: "저장" }).click();
       await expect(dialog).toBeHidden();
       await expect(
@@ -305,7 +305,7 @@ test.describe("User Web smoke E2E", () => {
       await dialog.getByLabel("직책").fill("팀장");
       await dialog.getByLabel("전화번호").fill("010-1234-5678");
       await dialog.getByLabel("이메일").fill("smoke@example.com");
-      await dialog.getByLabel("첫 메모").fill("G34 smoke 담당자 fixture");
+      await dialog.getByLabel("메모").fill("G34 smoke 담당자 fixture");
       await dialog.getByRole("button", { name: "저장" }).click();
       await expect(dialog).toBeHidden();
       await expect(
@@ -327,7 +327,7 @@ test.describe("User Web smoke E2E", () => {
       await dialog.getByLabel("단가").fill("390000");
       await dialog.getByLabel("통화").fill("KRW");
       await dialog.getByLabel("설명").fill("MVP starter smoke 상품");
-      await dialog.getByLabel("첫 메모").fill("G34 smoke 제품 fixture");
+      await dialog.getByLabel("메모").fill("G34 smoke 제품 fixture");
       await dialog.getByRole("button", { name: "저장" }).click();
       await expect(dialog).toBeHidden();
       await expect(

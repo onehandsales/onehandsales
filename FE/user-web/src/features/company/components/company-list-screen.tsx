@@ -13,6 +13,7 @@ import { type FormEvent, type ReactNode, useEffect, useMemo, useState } from "re
 import { PageHeader } from "@/components/layout/page-header";
 import { Link, useNavigate } from "react-router-dom";
 import { Pagination } from "@/components/ui/pagination";
+import { ListEmptyState } from "@/components/ui/state";
 import { Toast } from "@/components/ui/toast";
 import { useAuthSession } from "@/features/auth";
 import { CompanyCreateDialog } from "@/features/company/components/company-create-dialog";
@@ -270,7 +271,13 @@ export function CompanyListScreen({
             ) : companiesQuery.isError ? (
               <CompanyListError error={companiesQuery.error} onRetry={() => void companiesQuery.refetch()} />
             ) : !companyList || companyList.items.length === 0 ? (
-              <CompanyEmptyState hasSearch={hasSearch} onCreate={() => setIsCreateOpen(true)} />
+              <ListEmptyState
+                actionIcon={Plus}
+                actionLabel="회사 추가"
+                icon={Building2}
+                onAction={() => setIsCreateOpen(true)}
+                title={hasSearch ? "조건에 맞는 회사가 없습니다" : "등록된 회사가 없습니다"}
+              />
             ) : (
               <div>
                 {companyList.items.map((company) => (
@@ -520,31 +527,6 @@ function FilterChip({ active, label, onClick }: {
     >
       {label}
     </button>
-  );
-}
-
-function CompanyEmptyState({ hasSearch, onCreate }: {
-  readonly hasSearch: boolean;
-  readonly onCreate: () => void;
-}) {
-  return (
-    <div className="flex flex-1 flex-col items-center justify-center px-5 py-16 text-center">
-      <div className="flex h-12 w-12 items-center justify-center rounded-xl border border-[#E2E5EC] bg-[#FAFAF8]">
-        <Building2 className="h-5 w-5 text-[#9CA3AF]" strokeWidth={1.5} />
-      </div>
-      <p className="mt-4 text-[14px] font-semibold text-[#111827]">
-        {hasSearch ? "조건에 맞는 회사가 없습니다" : "등록된 회사가 없습니다"}
-      </p>
-      <p className="mt-1 text-[13px] text-[#9CA3AF]">고객사를 추가하고 딜과 연결해보세요</p>
-      <button
-        className="mt-5 inline-flex h-8 items-center gap-1.5 rounded-md bg-[#047857] px-3.5 text-[13px] font-medium text-white transition hover:bg-[#065F46]"
-        onClick={onCreate}
-        type="button"
-      >
-        <Plus className="h-3.5 w-3.5" strokeWidth={2} />
-        회사 추가
-      </button>
-    </div>
   );
 }
 

@@ -3,6 +3,7 @@ import { type FormEvent, useEffect, useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { PageHeader } from "@/components/layout/page-header";
 import { Pagination } from "@/components/ui/pagination";
+import { ListEmptyState } from "@/components/ui/state";
 import { Toast } from "@/components/ui/toast";
 import { useAuthSession } from "@/features/auth";
 import { ProductCreateDialog } from "@/features/product/components/product-create-dialog";
@@ -294,9 +295,16 @@ export function ProductListScreen({
           {productsQuery.isLoading ? (
             <ProductListSkeleton />
           ) : products.length === 0 ? (
-            <ProductEmptyState
-              hasSearch={search.length > 0 || categoryFilter.length > 0 || statusFilter.length > 0}
-              onCreate={() => setIsCreateOpen(true)}
+            <ListEmptyState
+              actionIcon={Plus}
+              actionLabel="제품 추가"
+              icon={Package}
+              onAction={() => setIsCreateOpen(true)}
+              title={
+                hasFilters
+                  ? "조건에 맞는 제품이 없습니다"
+                  : "등록된 제품이 없습니다"
+              }
             />
           ) : (
             <div>
@@ -471,38 +479,6 @@ function FilterChip({
     >
       {label}
     </button>
-  );
-}
-
-function ProductEmptyState({
-  hasSearch,
-  onCreate,
-}: {
-  readonly hasSearch: boolean;
-  readonly onCreate: () => void;
-}) {
-  return (
-    <div className="grid place-items-center px-5 py-16 text-center">
-      <div className="flex h-24 w-24 items-center justify-center rounded-full bg-[#EFF6FF] text-[#2563EB]">
-        <Package className="h-10 w-10" />
-      </div>
-      <div className="mt-4">
-        <p className="text-[18px] font-bold text-[#111827]">
-          {hasSearch ? "조건에 맞는 제품이 없습니다." : "등록된 제품이 없어요"}
-        </p>
-        <p className="mt-1 text-[13px] text-[#9CA3AF]">
-          새 제품을 등록하면 목록에서 바로 확인할 수 있습니다
-        </p>
-      </div>
-      <button
-        className="mt-5 inline-flex h-11 items-center gap-1.5 rounded-[10px] bg-[#2563EB] px-5 text-[14px] font-semibold text-white transition hover:bg-[#1D4ED8]"
-        onClick={onCreate}
-        type="button"
-      >
-        <Plus className="h-4 w-4" />
-        제품 추가
-      </button>
-    </div>
   );
 }
 
