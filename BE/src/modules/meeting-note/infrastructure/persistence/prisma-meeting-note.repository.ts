@@ -442,7 +442,7 @@ export class PrismaMeetingNoteRepository implements MeetingNoteRepository {
   ): Prisma.MeetingNoteOrderByWithRelationInput[] {
     if (sort === MeetingNoteSort.MEETING_AT_DESC) {
       return [
-        { meetingAt: { sort: "desc", nulls: "last" } },
+        { meetingAt: "desc" },
         { createdAt: "desc" },
         { id: "desc" },
       ];

@@ -548,7 +548,7 @@ model MeetingNote {
   id             String                @id @default(uuid()) @db.Uuid
   userId         String                @db.Uuid
   sourceType     MeetingNoteSourceType @default(MANUAL)
-  meetingAt      DateTime?             @db.Timestamptz(3)
+  meetingAt      DateTime              @db.Timestamptz(3)
   timeZone       String                @default("Asia/Seoul")
   details        String
   nextPlan       String?

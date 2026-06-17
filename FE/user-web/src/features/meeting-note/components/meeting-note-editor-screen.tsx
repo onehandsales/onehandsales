@@ -10,7 +10,7 @@ import {
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useForm, useWatch, type UseFormRegisterReturn } from "react-hook-form";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import {
   ModalFieldGroup,
   ModalForm,
@@ -18,15 +18,11 @@ import {
   ModalFormSection,
 } from "@/components/ui/modal-form";
 import { useMeetingNoteDealOptions } from "@/features/meeting-note/hooks/use-meeting-note-deal-options";
-import {
-  useCreateMeetingNoteMutation,
-  useUpdateMeetingNoteMutation,
-} from "@/features/meeting-note/hooks/use-meeting-note-mutations";
+import { useUpdateMeetingNoteMutation } from "@/features/meeting-note/hooks/use-meeting-note-mutations";
 import { useMeetingNoteDetail } from "@/features/meeting-note/hooks/use-meeting-note-queries";
 import {
   emptyMeetingNoteFormValues,
   meetingNoteFormSchema,
-  toCreateMeetingNoteInput,
   toMeetingNoteFormValues,
   toUpdateMeetingNoteInput,
   type MeetingNoteFormValues,
@@ -45,10 +41,8 @@ export function MeetingNoteEditorScreen({
   meetingNoteId,
 }: MeetingNoteEditorScreenProps) {
   const isEdit = Boolean(meetingNoteId);
-  const navigate = useNavigate();
   const location = useLocation();
   const detailQuery = useMeetingNoteDetail(meetingNoteId ?? "", isEdit);
-  const createMutation = useCreateMeetingNoteMutation();
   const updateMutation = useUpdateMeetingNoteMutation();
   const [notice, setNotice] = useState(() => readLocationNotice(location.state));
   const [savedMeetingNote, setSavedMeetingNote] = useState<MeetingNote | null>(
@@ -70,9 +64,8 @@ export function MeetingNoteEditorScreen({
   const dealSearch = useWatch({ control, name: "dealSearch" }) ?? "";
   const dealOptionsQuery = useMeetingNoteDealOptions(dealSearch);
   const activeMeetingNote = savedMeetingNote ?? detailQuery.data ?? null;
-  const actionError =
-    createMutation.error ?? updateMutation.error ?? detailQuery.error ?? null;
-  const isSaving = createMutation.isPending || updateMutation.isPending;
+  const actionError = updateMutation.error ?? detailQuery.error ?? null;
+  const isSaving = updateMutation.isPending;
 
   useEffect(() => {
     if (isEdit) {
@@ -96,23 +89,16 @@ export function MeetingNoteEditorScreen({
 
   // 기능 : 회의록 form submit을 생성 또는 수정 mutation으로 처리합니다.
   const onSubmit = handleSubmit(async (values) => {
-    if (isEdit && meetingNoteId) {
-      const updated = await updateMutation.mutateAsync(
-        toUpdateMeetingNoteInput(meetingNoteId, values)
-      );
-      setSavedMeetingNote(updated);
-      reset(toMeetingNoteFormValues(updated));
-      setNotice("회의록이 수정되었습니다.");
+    if (!meetingNoteId) {
       return;
     }
 
-    const created = await createMutation.mutateAsync(
-      toCreateMeetingNoteInput(values)
+    const updated = await updateMutation.mutateAsync(
+      toUpdateMeetingNoteInput(meetingNoteId, values)
     );
-    navigate(`/meeting-notes/${created.id}`, {
-      replace: true,
-      state: { notice: "회의록이 저장되었습니다." },
-    });
+    setSavedMeetingNote(updated);
+    reset(toMeetingNoteFormValues(updated));
+    setNotice("회의록이 수정되었습니다.");
   });
 
   // 기능 : 딜 검색어를 변경하고 기존 선택 딜을 해제합니다.

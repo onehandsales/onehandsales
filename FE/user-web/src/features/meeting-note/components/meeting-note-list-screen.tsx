@@ -11,9 +11,11 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { PageHeader } from "@/components/layout/page-header";
 import { ListEmptyState } from "@/components/ui/state";
+import { Toast } from "@/components/ui/toast";
+import { MeetingNoteCreateDialog } from "@/features/meeting-note/components/meeting-note-create-dialog";
 import {
   useMeetingNoteFilterCompanies,
   useMeetingNoteFilterContacts,
@@ -38,6 +40,10 @@ export function MeetingNoteListScreen() {
   const [contactId, setContactId] = useState("");
   const [sort, setSort] = useState<MeetingNoteSort>("createdAtDesc");
   const [selectedMeetingNoteId, setSelectedMeetingNoteId] = useState("");
+  const [pinnedMeetingNoteId, setPinnedMeetingNoteId] = useState("");
+  const [isCreateOpen, setIsCreateOpen] = useState(false);
+  const [notice, setNotice] = useState<string | null>(null);
+  const [searchParams, setSearchParams] = useSearchParams();
   const params = useMemo(
     () => ({
       companyIds: companyId ? [companyId] : [],
@@ -58,13 +64,36 @@ export function MeetingNoteListScreen() {
   const hasFilter = Boolean(companyId || contactId || sort !== "createdAtDesc");
 
   useEffect(() => {
+    if (searchParams.get("create") !== "1") {
+      return;
+    }
+
+    setIsCreateOpen(true);
+
+    const nextSearchParams = new URLSearchParams(searchParams);
+    nextSearchParams.delete("create");
+    setSearchParams(nextSearchParams, { replace: true });
+  }, [searchParams, setSearchParams]);
+
+  useEffect(() => {
     if (
       selectedMeetingNoteId &&
+      selectedMeetingNoteId !== pinnedMeetingNoteId &&
       !meetingNotes.some((meetingNote) => meetingNote.id === selectedMeetingNoteId)
     ) {
       setSelectedMeetingNoteId("");
     }
-  }, [meetingNotes, selectedMeetingNoteId]);
+  }, [meetingNotes, pinnedMeetingNoteId, selectedMeetingNoteId]);
+
+  const selectMeetingNote = (meetingNoteId: string) => {
+    setPinnedMeetingNoteId("");
+    setSelectedMeetingNoteId(meetingNoteId);
+  };
+
+  const closePreview = () => {
+    setPinnedMeetingNoteId("");
+    setSelectedMeetingNoteId("");
+  };
 
   // 기능 : 필터 값을 변경하고 목록 page를 첫 페이지로 되돌립니다.
   const updateCompanyId = (value: string) => {
@@ -101,7 +130,7 @@ export function MeetingNoteListScreen() {
           {
             icon: Plus,
             tooltip: "회의록 추가",
-            href: "/meeting-notes/new",
+            onClick: () => setIsCreateOpen(true),
             variant: "primary",
           },
         ]}
@@ -173,6 +202,16 @@ export function MeetingNoteListScreen() {
         </select>
       </div>
 
+      {notice ? (
+        <div className="px-5 pt-2">
+          <Toast
+            message={notice}
+            onClose={() => setNotice(null)}
+            variant="success"
+          />
+        </div>
+      ) : null}
+
       {/* 테이블 카드 */}
       <div className="flex min-h-0 flex-1 gap-5 overflow-hidden px-5 pb-3 pt-1">
         <div className="flex min-w-0 flex-1 flex-col gap-3 overflow-hidden">
@@ -207,8 +246,8 @@ export function MeetingNoteListScreen() {
               <ListEmptyState
                 actionIcon={Plus}
                 actionLabel="회의록 추가"
-                actionTo="/meeting-notes/new"
                 icon={FileText}
+                onAction={() => setIsCreateOpen(true)}
                 title={
                   hasFilter
                     ? "조건에 맞는 회의록이 없습니다"
@@ -222,7 +261,7 @@ export function MeetingNoteListScreen() {
                     isActive={meetingNote.id === selectedMeetingNoteId}
                     key={meetingNote.id}
                     meetingNote={meetingNote}
-                    onSelect={setSelectedMeetingNoteId}
+                    onSelect={selectMeetingNote}
                   />
                 ))}
               </div>
@@ -246,7 +285,7 @@ export function MeetingNoteListScreen() {
                 <button
                   aria-label="미리보기 닫기"
                   className="inline-flex h-7 w-7 items-center justify-center rounded-md border border-[#E2E5EC] text-[#64748B] transition hover:bg-blue-50/60 hover:text-[#2563EB]"
-                  onClick={() => setSelectedMeetingNoteId("")}
+                  onClick={closePreview}
                   title="닫기"
                   type="button"
                 >
@@ -267,6 +306,20 @@ export function MeetingNoteListScreen() {
           </div>
         ) : null}
       </div>
+
+      {isCreateOpen ? (
+        <MeetingNoteCreateDialog
+          onCreated={(meetingNote) => {
+            setNotice("회의록이 추가되었습니다.");
+            setPage(1);
+            setPinnedMeetingNoteId(meetingNote.id);
+            setSelectedMeetingNoteId(meetingNote.id);
+            void meetingNotesQuery.refetch();
+          }}
+          onOpenChange={setIsCreateOpen}
+          open={isCreateOpen}
+        />
+      ) : null}
     </section>
   );
 }

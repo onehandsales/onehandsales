@@ -316,15 +316,16 @@ describe("MeetingNoteApplicationService", () => {
     await expect(
       service.createMeetingNote(CURRENT_USER, {
         sourceType: MeetingNoteSourceTypeValue.TEXT_AI,
+        meetingLocalDateTime: "2026-06-15T09:30",
         details: "details",
-        companies: [{ companyName: "Acme" }],
-        contacts: [{ contactUsername: "Kim" }],
+        companies: ["company-1"],
+        contacts: ["contact-1"],
       })
     ).rejects.toBeInstanceOf(ValidationDomainError);
     expect(repository.transactionCount).toBe(0);
   });
 
-  it("snapshot-only 회사와 연락처로 회의록을 트랜잭션 안에서 생성한다", async () => {
+  it("회사와 연락처 ID로 원본을 조회해 스냅샷을 저장한다", async () => {
     const { repository, service } = createService();
 
     const created = await service.createMeetingNote(CURRENT_USER, {
@@ -332,9 +333,9 @@ describe("MeetingNoteApplicationService", () => {
       details: "상세 내용",
       nextPlan: "다음 계획",
       requiredAction: "필요 액션",
-      companies: [{ companyName: "Acme", companyField: "Software" }],
-      contacts: [{ contactUsername: "Kim", department: "Sales" }],
-      products: [{ productName: "CRM", productPrice: 1000 }],
+      companies: ["company-1"],
+      contacts: ["contact-1"],
+      products: ["product-1"],
       deals: [],
     });
 
@@ -353,9 +354,10 @@ describe("MeetingNoteApplicationService", () => {
     await expect(
       service.createMeetingNote(CURRENT_USER, {
         details: "상세 내용",
-        companies: [{ companyName: "Acme" }],
-        contacts: [{ contactUsername: "Kim" }],
-        deals: [{ dealId: "missing-deal" }],
+        meetingLocalDateTime: "2026-06-15T09:30",
+        companies: ["company-1"],
+        contacts: ["contact-1"],
+        deals: ["missing-deal"],
       })
     ).rejects.toBeInstanceOf(RelatedDealNotFoundError);
     expect(repository.transactionCount).toBe(1);
@@ -366,10 +368,11 @@ describe("MeetingNoteApplicationService", () => {
     const { repository, service } = createService();
     const created = await service.createMeetingNote(CURRENT_USER, {
       details: "상세 내용",
-      companies: [{ companyId: "company-1" }],
-      contacts: [{ contactId: "contact-1" }],
-      products: [{ productId: "product-1" }],
-      deals: [{ dealId: "deal-1" }],
+      meetingLocalDateTime: "2026-06-15T09:30",
+      companies: ["company-1"],
+      contacts: ["contact-1"],
+      products: ["product-1"],
+      deals: ["deal-1"],
     });
 
     const updated = await service.updateMeetingNote(CURRENT_USER, created.id, {
@@ -390,8 +393,9 @@ describe("MeetingNoteApplicationService", () => {
     const { service } = createService();
     await service.createMeetingNote(CURRENT_USER, {
       details: "상세 내용",
-      companies: [{ companyName: "Acme" }],
-      contacts: [{ contactUsername: "Kim" }],
+      meetingLocalDateTime: "2026-06-15T09:30",
+      companies: ["company-1"],
+      contacts: ["contact-1"],
       products: [],
       deals: [],
     });

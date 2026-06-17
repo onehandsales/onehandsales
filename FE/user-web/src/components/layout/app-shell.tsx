@@ -127,7 +127,6 @@ export function AppShell() {
   const isContactListPage = pathname === "/contacts";
   const isMeetingNoteListPage =
     pathname === "/meeting-notes" ||
-    pathname === "/meeting-notes/new" ||
     /^\/meeting-notes\/[^/]+$/.test(pathname);
   const isSchedulePage =
     pathname === "/schedules" || pathname === "/schedules/week";

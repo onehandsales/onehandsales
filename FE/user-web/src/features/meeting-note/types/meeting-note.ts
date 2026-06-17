@@ -145,16 +145,25 @@ export type MeetingNoteDealInput = {
 
 export type CreateMeetingNoteInput = {
   readonly sourceType?: "MANUAL";
-  readonly meetingLocalDateTime?: string | null;
+  readonly meetingLocalDateTime: string;
   readonly details: string;
   readonly nextPlan?: string | null;
   readonly requiredAction?: string | null;
-  readonly companies: readonly MeetingNoteCompanyInput[];
-  readonly contacts: readonly MeetingNoteContactInput[];
-  readonly products?: readonly MeetingNoteProductInput[];
-  readonly deals?: readonly MeetingNoteDealInput[];
+  readonly companies: readonly string[];
+  readonly contacts: readonly string[];
+  readonly products?: readonly string[];
+  readonly deals?: readonly string[];
 };
 
-export type UpdateMeetingNoteInput = Partial<CreateMeetingNoteInput> & {
+export type UpdateMeetingNoteInput = {
   readonly meetingNoteId: string;
+  readonly sourceType?: "MANUAL";
+  readonly meetingLocalDateTime?: string | null;
+  readonly details?: string;
+  readonly nextPlan?: string | null;
+  readonly requiredAction?: string | null;
+  readonly companies?: readonly MeetingNoteCompanyInput[];
+  readonly contacts?: readonly MeetingNoteContactInput[];
+  readonly products?: readonly MeetingNoteProductInput[];
+  readonly deals?: readonly MeetingNoteDealInput[];
 };

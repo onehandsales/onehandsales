@@ -145,9 +145,8 @@ export class CreateMeetingNoteDto {
   @IsEnum(MeetingNoteSourceTypeValue)
   sourceType?: MeetingNoteSourceTypeValue;
 
-  @IsOptional()
   @IsString()
-  meetingLocalDateTime?: string | null;
+  meetingLocalDateTime!: string;
 
   @IsString()
   details!: string;
@@ -162,27 +161,23 @@ export class CreateMeetingNoteDto {
 
   @IsArray()
   @ArrayNotEmpty()
-  @ValidateNested({ each: true })
-  @Type(() => MeetingNoteCompanyInputDto)
-  companies!: MeetingNoteCompanyInputDto[];
+  @IsUUID(undefined, { each: true })
+  companies!: string[];
 
   @IsArray()
   @ArrayNotEmpty()
-  @ValidateNested({ each: true })
-  @Type(() => MeetingNoteContactInputDto)
-  contacts!: MeetingNoteContactInputDto[];
+  @IsUUID(undefined, { each: true })
+  contacts!: string[];
 
   @IsOptional()
   @IsArray()
-  @ValidateNested({ each: true })
-  @Type(() => MeetingNoteProductInputDto)
-  products?: MeetingNoteProductInputDto[];
+  @IsUUID(undefined, { each: true })
+  products?: string[];
 
   @IsOptional()
   @IsArray()
-  @ValidateNested({ each: true })
-  @Type(() => MeetingNoteDealInputDto)
-  deals?: MeetingNoteDealInputDto[];
+  @IsUUID(undefined, { each: true })
+  deals?: string[];
 }
 
 // 역할 : UpdateMeetingNoteDto 회의록 수정 request body 값을 검증합니다.
