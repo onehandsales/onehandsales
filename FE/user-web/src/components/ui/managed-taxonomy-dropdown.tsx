@@ -48,6 +48,7 @@ export function ManagedTaxonomyDropdown<TItem extends ManagedTaxonomyItem>({
   const inputRef = useRef<HTMLInputElement>(null);
   const selectedItem = items.find((item) => item.id === selectedId);
   const selectedLabel = selectedItem ? getLabel(selectedItem) : "";
+  const isActive = isOpen || selectedId.length > 0;
 
   useEffect(() => {
     if (!isOpen) {
@@ -129,10 +130,11 @@ export function ManagedTaxonomyDropdown<TItem extends ManagedTaxonomyItem>({
     <div ref={wrapperRef} className="relative">
       <button
         className={cn(
-          "flex h-10 w-full items-center justify-between rounded-md border px-3 text-[13px] outline-none transition-colors",
-          isOpen
-            ? "border-[#93C5FD] ring-1 ring-[#93C5FD]"
-            : "border-[#E6EAF0] hover:border-[#93C5FD]",
+          "flex h-10 w-full items-center justify-between rounded-md border px-3 text-[13px] outline-none transition-colors focus:border-[#2563EB] focus:ring-1 focus:ring-[#2563EB]",
+          isActive
+            ? "border-[#2563EB]"
+            : "border-[#E6EAF0]",
+          isOpen && "ring-1 ring-[#2563EB]",
           selectedLabel ? "text-[#111827]" : "text-[#9CA3AF]"
         )}
         id={id}
@@ -173,7 +175,7 @@ export function ManagedTaxonomyDropdown<TItem extends ManagedTaxonomyItem>({
             <div className="flex items-center gap-1.5 border-b border-[#E6EAF0] p-1.5">
               <input
                 ref={inputRef}
-                className="h-7 min-w-0 flex-1 rounded border border-[#E6EAF0] px-2 text-[12px] outline-none focus:border-[#93C5FD]"
+                className="h-7 min-w-0 flex-1 rounded border border-[#E6EAF0] px-2 text-[12px] outline-none focus:border-[#2563EB]"
                 placeholder={addPlaceholder}
                 value={newName}
                 onChange={(event) => setNewName(event.target.value)}
