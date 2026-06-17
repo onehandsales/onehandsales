@@ -64,18 +64,15 @@ export function ProductDetailScreen({ productId, isEditing, onEditingChange }: P
     privateMemoLogsQuery.data?.pages.at(-1)?.hasNext ?? false;
 
   return (
-    <div className="flex h-full flex-col">
-      {/* Notices */}
-      {notice ? (
-        <div className="mx-6 mt-3 rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-2.5 text-sm text-emerald-800">
-          {notice}
-        </div>
-      ) : null}
-
-      {/* Content */}
-      <div className="flex min-h-0 flex-1 overflow-hidden bg-[#F9FAFB]">
-        {/* Left */}
-        <div className="flex min-w-0 flex-1 flex-col gap-4 overflow-y-auto p-6">
+    <>
+      {/* Mobile */}
+      <div className="md:hidden min-h-screen bg-[#F9FAFB]">
+        {notice ? (
+          <div className="mx-4 mt-3 rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-2.5 text-sm text-emerald-800">
+            {notice}
+          </div>
+        ) : null}
+        <div className="flex flex-col gap-4 p-4 pb-24 overflow-y-auto">
           {/* 기본 정보 카드 */}
           <div className="rounded-lg border border-[#E5E7EB] bg-white p-5">
             <h2 className="mb-4 text-[14px] font-semibold text-[#111827]">
@@ -113,20 +110,6 @@ export function ProductDetailScreen({ productId, isEditing, onEditingChange }: P
             )}
           </div>
 
-          {/* 메모 기록 카드 */}
-          <MemoLogsCard
-            hasNext={memoHasNext}
-            isFetchingNextPage={memoLogsQuery.isFetchingNextPage}
-            isLoading={memoLogsQuery.isLoading}
-            logs={memoLogs}
-            productId={productId}
-            totalCount={memoTotalCount}
-            onFetchNext={() => void memoLogsQuery.fetchNextPage()}
-          />
-        </div>
-
-        {/* Right */}
-        <div className="flex w-[415px] shrink-0   flex-col gap-4 overflow-y-auto bg-[#F9FAFB] p-6">
           {/* 판매 현황 카드 */}
           <div className="rounded-lg border border-[#E5E7EB] bg-white p-4">
             <h3 className="mb-3 text-[13px] font-semibold text-[#111827]">
@@ -151,12 +134,25 @@ export function ProductDetailScreen({ productId, isEditing, onEditingChange }: P
               </div>
             </div>
           </div>
+
           <ProductDealListCard
             deals={dealsQuery.data?.items ?? []}
             error={dealsQuery.error}
             isLoading={dealsQuery.isLoading}
             onRetry={() => void dealsQuery.refetch()}
           />
+
+          {/* 메모 기록 카드 */}
+          <MemoLogsCard
+            hasNext={memoHasNext}
+            isFetchingNextPage={memoLogsQuery.isFetchingNextPage}
+            isLoading={memoLogsQuery.isLoading}
+            logs={memoLogs}
+            productId={productId}
+            totalCount={memoTotalCount}
+            onFetchNext={() => void memoLogsQuery.fetchNextPage()}
+          />
+
           {/* Memo 기록 카드 */}
           <PrivateMemoLogsCard
             hasNext={privateMemoHasNext}
@@ -168,7 +164,114 @@ export function ProductDetailScreen({ productId, isEditing, onEditingChange }: P
           />
         </div>
       </div>
-    </div>
+
+      {/* Desktop */}
+      <div className="hidden md:flex h-full flex-col">
+        {/* Notices */}
+        {notice ? (
+          <div className="mx-6 mt-3 rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-2.5 text-sm text-emerald-800">
+            {notice}
+          </div>
+        ) : null}
+
+        {/* Content */}
+        <div className="flex min-h-0 flex-1 overflow-hidden bg-[#F9FAFB]">
+          {/* Left */}
+          <div className="flex min-w-0 flex-1 flex-col gap-4 overflow-y-auto p-6">
+            {/* 기본 정보 카드 */}
+            <div className="rounded-lg border border-[#E5E7EB] bg-white p-5">
+              <h2 className="mb-4 text-[14px] font-semibold text-[#111827]">
+                기본 정보
+              </h2>
+              {isEditing ? (
+                <ProductEditForm
+                  onSaved={() => {
+                    setNotice("제품이 저장되었습니다.");
+                    onEditingChange(false);
+                    void productQuery.refetch();
+                  }}
+                  product={product}
+                />
+              ) : (
+                <div className="grid grid-cols-2 gap-4">
+                  <ProductInfoField label="제품명" value={product.productName} />
+                  <ProductInfoField
+                    label="등록일"
+                    value={formatDate(product.createdAt, { year: "numeric" })}
+                  />
+                  <ProductInfoField
+                    label="분류"
+                    value={product.productCategory.categoryName}
+                  />
+                  <ProductInfoField
+                    label="단위"
+                    value={
+                      product.productPrice
+                        ? `${product.productPrice.toLocaleString()}원`
+                        : "-"
+                    }
+                  />
+                </div>
+              )}
+            </div>
+
+            {/* 메모 기록 카드 */}
+            <MemoLogsCard
+              hasNext={memoHasNext}
+              isFetchingNextPage={memoLogsQuery.isFetchingNextPage}
+              isLoading={memoLogsQuery.isLoading}
+              logs={memoLogs}
+              productId={productId}
+              totalCount={memoTotalCount}
+              onFetchNext={() => void memoLogsQuery.fetchNextPage()}
+            />
+          </div>
+
+          {/* Right */}
+          <div className="flex w-[415px] shrink-0 flex-col gap-4 overflow-y-auto bg-[#F9FAFB] p-6">
+            {/* 판매 현황 카드 */}
+            <div className="rounded-lg border border-[#E5E7EB] bg-white p-4">
+              <h3 className="mb-3 text-[13px] font-semibold text-[#111827]">
+                판매 현황
+              </h3>
+              <div className="grid grid-cols-2 gap-3">
+                <div className="flex flex-col gap-1 rounded-lg bg-[#F9FAFB] p-3">
+                  <span className="text-[11px] font-medium text-[#6B7280]">
+                    연결 딜
+                  </span>
+                  <span className="text-[20px] font-bold text-[#111827]">
+                    {dealsQuery.isLoading
+                      ? "-"
+                      : (dealsQuery.data?.items.length ?? 0).toLocaleString("ko-KR")}
+                  </span>
+                </div>
+                <div className="flex flex-col gap-1 rounded-lg bg-[#F9FAFB] p-3">
+                  <span className="text-[11px] font-medium text-[#6B7280]">
+                    이번 달 사용
+                  </span>
+                  <span className="text-[20px] font-bold text-[#111827]">-</span>
+                </div>
+              </div>
+            </div>
+            <ProductDealListCard
+              deals={dealsQuery.data?.items ?? []}
+              error={dealsQuery.error}
+              isLoading={dealsQuery.isLoading}
+              onRetry={() => void dealsQuery.refetch()}
+            />
+            {/* Memo 기록 카드 */}
+            <PrivateMemoLogsCard
+              hasNext={privateMemoHasNext}
+              isFetchingNextPage={privateMemoLogsQuery.isFetchingNextPage}
+              isLoading={privateMemoLogsQuery.isLoading}
+              logs={privateMemoLogs}
+              productId={productId}
+              onFetchNext={() => void privateMemoLogsQuery.fetchNextPage()}
+            />
+          </div>
+        </div>
+      </div>
+    </>
   );
 }
 

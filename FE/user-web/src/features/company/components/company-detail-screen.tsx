@@ -86,17 +86,17 @@ export function CompanyDetailScreen({ companyId }: CompanyDetailScreenProps) {
   const deals = dealsQuery.data?.items ?? [];
 
   return (
-    <div className="flex h-full flex-col">
-      {notice ? (
-        <div className="mx-6 mt-3">
-          <Toast message={notice} onClose={() => setNotice(null)} variant="success" />
-        </div>
-      ) : null}
-
-      <div className="flex min-h-0 flex-1 overflow-hidden bg-[#F9FAFB]">
-        <div className="flex min-w-0 flex-1 flex-col gap-4 overflow-y-auto p-6">
+    <>
+      {/* Mobile */}
+      <div className="md:hidden min-h-screen bg-[#F9FAFB]">
+        {notice ? (
+          <div className="px-4 pt-3">
+            <Toast message={notice} onClose={() => setNotice(null)} variant="success" />
+          </div>
+        ) : null}
+        <div className="flex flex-col gap-4 p-4 pb-24 overflow-y-auto">
           <Link
-            className="inline-flex w-fit items-center gap-2 text-[13px] font-medium text-[#64748B] hover:text-[#374151]"
+            className="inline-flex items-center gap-2 text-[13px] font-medium text-[#64748B]"
             to="/companies"
           >
             <ArrowLeft className="h-4 w-4" />
@@ -148,20 +148,6 @@ export function CompanyDetailScreen({ companyId }: CompanyDetailScreenProps) {
             )}
           </div>
 
-          <CompanyMemoLogSection
-            companyId={companyId}
-            error={memoLogsQuery.error}
-            hasNextPage={Boolean(memoLogsQuery.hasNextPage)}
-            isFetchingNextPage={memoLogsQuery.isFetchingNextPage}
-            isLoading={memoLogsQuery.isLoading}
-            logs={memoLogs}
-            onChanged={setNotice}
-            onFetchMore={() => void memoLogsQuery.fetchNextPage()}
-            onRetry={() => void memoLogsQuery.refetch()}
-          />
-        </div>
-
-        <div className="flex w-[415px] shrink-0 flex-col gap-4 overflow-y-auto bg-[#F9FAFB] p-6">
           <div className="rounded-lg border border-[#E5E7EB] bg-white p-4">
             <h3 className="mb-3 text-[13px] font-semibold text-[#111827]">회사 현황</h3>
             <div className="grid grid-cols-2 gap-3">
@@ -182,6 +168,19 @@ export function CompanyDetailScreen({ companyId }: CompanyDetailScreenProps) {
             isLoading={dealsQuery.isLoading}
             onRetry={() => void dealsQuery.refetch()}
           />
+
+          <CompanyMemoLogSection
+            companyId={companyId}
+            error={memoLogsQuery.error}
+            hasNextPage={Boolean(memoLogsQuery.hasNextPage)}
+            isFetchingNextPage={memoLogsQuery.isFetchingNextPage}
+            isLoading={memoLogsQuery.isLoading}
+            logs={memoLogs}
+            onChanged={setNotice}
+            onFetchMore={() => void memoLogsQuery.fetchNextPage()}
+            onRetry={() => void memoLogsQuery.refetch()}
+          />
+
           <CompanyPrivateMemoLogSection
             companyId={companyId}
             error={privateMemoLogsQuery.error}
@@ -195,7 +194,119 @@ export function CompanyDetailScreen({ companyId }: CompanyDetailScreenProps) {
           />
         </div>
       </div>
-    </div>
+
+      {/* Desktop */}
+      <div className="hidden md:flex h-full flex-col">
+        {notice ? (
+          <div className="mx-6 mt-3">
+            <Toast message={notice} onClose={() => setNotice(null)} variant="success" />
+          </div>
+        ) : null}
+
+        <div className="flex min-h-0 flex-1 overflow-hidden bg-[#F9FAFB]">
+          <div className="flex min-w-0 flex-1 flex-col gap-4 overflow-y-auto p-6">
+            <Link
+              className="inline-flex w-fit items-center gap-2 text-[13px] font-medium text-[#64748B] hover:text-[#374151]"
+              to="/companies"
+            >
+              <ArrowLeft className="h-4 w-4" />
+              회사 목록
+            </Link>
+
+            <div className="rounded-lg border border-[#E5E7EB] bg-white p-5">
+              <div className="mb-4 flex items-center justify-between gap-3">
+                <h2 className="text-[14px] font-semibold text-[#111827]">기본 정보</h2>
+                <button
+                  className={cn(
+                    "inline-flex h-9 shrink-0 items-center gap-1.5 rounded-md border px-3 text-[13px] font-semibold transition",
+                    isEditing
+                      ? "border-[#C7D7FE] bg-[#EAF2FF] text-[#1D4ED8]"
+                      : "border-[#E2E5EC] bg-white text-[#374151] hover:bg-[#F5F6F8]"
+                  )}
+                  onClick={() => setIsEditing((value) => !value)}
+                  type="button"
+                >
+                  {isEditing ? <X className="h-4 w-4" /> : <Pencil className="h-4 w-4" />}
+                  {isEditing ? "수정 취소" : "정보 수정"}
+                </button>
+              </div>
+              {isEditing ? (
+                <CompanyEditForm
+                  company={company}
+                  fields={fields}
+                  regions={regions}
+                  onSaved={() => {
+                    void companyQuery.refetch();
+                    setNotice("회사 정보가 저장되었습니다.");
+                    setIsEditing(false);
+                  }}
+                />
+              ) : (
+                <div className="grid grid-cols-2 gap-4">
+                  <InfoField label="회사명" value={company.companyName} />
+                  <InfoField
+                    label="등록일"
+                    value={formatDateTime(company.createdAt, { includeYear: true })}
+                  />
+                  <InfoField label="분야" value={company.companyField.field} />
+                  <InfoField label="지역" value={company.companyRegion.region} />
+                  <InfoField
+                    label="수정일"
+                    value={formatDateTime(company.updatedAt, { includeYear: true })}
+                  />
+                </div>
+              )}
+            </div>
+
+            <CompanyMemoLogSection
+              companyId={companyId}
+              error={memoLogsQuery.error}
+              hasNextPage={Boolean(memoLogsQuery.hasNextPage)}
+              isFetchingNextPage={memoLogsQuery.isFetchingNextPage}
+              isLoading={memoLogsQuery.isLoading}
+              logs={memoLogs}
+              onChanged={setNotice}
+              onFetchMore={() => void memoLogsQuery.fetchNextPage()}
+              onRetry={() => void memoLogsQuery.refetch()}
+            />
+          </div>
+
+          <div className="flex w-[415px] shrink-0 flex-col gap-4 overflow-y-auto bg-[#F9FAFB] p-6">
+            <div className="rounded-lg border border-[#E5E7EB] bg-white p-4">
+              <h3 className="mb-3 text-[13px] font-semibold text-[#111827]">회사 현황</h3>
+              <div className="grid grid-cols-2 gap-3">
+                <StatCard label="담당자" value={`${contacts.length.toLocaleString("ko-KR")}명`} />
+                <StatCard label="딜" value={`${deals.length.toLocaleString("ko-KR")}건`} />
+              </div>
+            </div>
+
+            <ContactsTab
+              contacts={contacts}
+              error={contactsQuery.error}
+              isLoading={contactsQuery.isLoading}
+              onRetry={() => void contactsQuery.refetch()}
+            />
+            <DealsTab
+              deals={deals}
+              error={dealsQuery.error}
+              isLoading={dealsQuery.isLoading}
+              onRetry={() => void dealsQuery.refetch()}
+            />
+            <CompanyPrivateMemoLogSection
+              companyId={companyId}
+              error={privateMemoLogsQuery.error}
+              hasNextPage={Boolean(privateMemoLogsQuery.hasNextPage)}
+              isFetchingNextPage={privateMemoLogsQuery.isFetchingNextPage}
+              isLoading={privateMemoLogsQuery.isLoading}
+              logs={privateMemoLogs}
+              onChanged={setNotice}
+              onFetchMore={() => void privateMemoLogsQuery.fetchNextPage()}
+              onRetry={() => void privateMemoLogsQuery.refetch()}
+            />
+          </div>
+        </div>
+      </div>
+    </>
   );
 }
 

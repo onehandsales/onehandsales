@@ -460,25 +460,6 @@ export function DealPipelineHomeScreen({
 
         {/* 필터 칩 행 */}
         <div className="flex items-center gap-2 border-b border-[#E6EAF0] bg-white px-4 py-2">
-          {/* 다음 행동 필터 칩 */}
-          <button
-            className={cn(
-              "inline-flex h-[26px] shrink-0 items-center gap-1 rounded-[13px] px-[10px] text-[12px] font-medium transition",
-              "bg-[#F3F4F6] text-[#4B5563]",
-            )}
-            type="button"
-          >
-            다음 행동
-            <ChevronDown className="h-3 w-3" />
-          </button>
-          {/* 가능성 필터 칩 */}
-          <button
-            className="inline-flex h-[26px] shrink-0 items-center gap-1 rounded-[13px] bg-[#F3F4F6] px-[10px] text-[12px] font-medium text-[#4B5563] transition"
-            type="button"
-          >
-            가능성
-            <ChevronDown className="h-3 w-3" />
-          </button>
           {/* 금액 필터 칩 */}
           <button
             className={cn(

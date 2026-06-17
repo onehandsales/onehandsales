@@ -319,6 +319,19 @@ function DealDetailPageLayout({
     <>
       {/* ── Mobile ── */}
       <div className="flex flex-col bg-[#F3F4F6] md:hidden">
+        {/* 뒤로가기 헤더 */}
+        <div className="flex h-12 items-center gap-2 bg-white px-4 border-b border-[#E5E7EB]">
+          <Link
+            className="inline-flex h-8 w-8 items-center justify-center rounded-lg text-[#374151] hover:bg-[#F3F4F6]"
+            to="/deals"
+          >
+            <ArrowLeft className="h-5 w-5" />
+          </Link>
+          <span className="flex-1 truncate text-[15px] font-semibold text-[#111827]">
+            {dealName}
+          </span>
+        </div>
+
         {/* Key Info Card */}
         <div className="bg-white px-4 pb-4 pt-4">
           {/* 단계 배지 */}
