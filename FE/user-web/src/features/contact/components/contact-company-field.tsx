@@ -1,5 +1,7 @@
-import { Building2, X } from "lucide-react";
+import { Building2, ChevronDown, X } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 import { useCompanyOptions } from "@/features/contact/hooks/use-company-options";
+import { cn } from "@/utils/cn";
 
 type ContactCompanyFieldProps = {
   readonly id: string;
@@ -22,29 +24,57 @@ export function ContactCompanyField({
   onSearchChange,
 }: ContactCompanyFieldProps) {
   const companyOptionsQuery = useCompanyOptions();
+  const [isOpen, setIsOpen] = useState(false);
+  const wrapperRef = useRef<HTMLDivElement>(null);
   const allCompanies = companyOptionsQuery.data?.items ?? [];
+  const filterText = companyId ? "" : search.trim();
   const filteredCompanies =
-    search.trim().length > 0
+    filterText.length > 0
       ? allCompanies.filter((c) =>
-          c.companyName.toLowerCase().includes(search.trim().toLowerCase())
+          c.companyName.toLowerCase().includes(filterText.toLowerCase())
         )
       : allCompanies;
   const selectedCompany = allCompanies.find((c) => c.id === companyId);
 
+  useEffect(() => {
+    if (!isOpen) {
+      return;
+    }
+
+    const onMouseDown = (event: MouseEvent) => {
+      if (
+        wrapperRef.current &&
+        !wrapperRef.current.contains(event.target as Node)
+      ) {
+        setIsOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", onMouseDown);
+    return () => document.removeEventListener("mousedown", onMouseDown);
+  }, [isOpen]);
+
   return (
-    <div className="grid gap-2">
+    <div ref={wrapperRef} className="grid gap-2">
       <label className="text-sm font-medium" htmlFor={id}>
         {label}
       </label>
       <div className="relative">
         <Building2 className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
         <input
-          className="h-10 w-full rounded-md border pl-9 pr-10 text-sm outline-none focus:ring-2 focus:ring-ring"
+          aria-describedby={error ? `${id}-error` : undefined}
+          aria-invalid={Boolean(error)}
+          className={cn(
+            "h-10 w-full rounded-md border pl-9 pr-10 text-sm outline-none focus:ring-2 focus:ring-ring",
+            isOpen && "ring-2 ring-ring"
+          )}
           id={id}
           onChange={(event) => {
             onSearchChange(event.target.value);
             onCompanyIdChange("");
+            setIsOpen(true);
           }}
+          onFocus={() => setIsOpen(true)}
           placeholder="회사 검색"
           value={selectedCompany ? selectedCompany.companyName : search}
         />
@@ -55,42 +85,62 @@ export function ContactCompanyField({
             onClick={() => {
               onCompanyIdChange("");
               onSearchChange("");
+              setIsOpen(true);
             }}
             type="button"
           >
             <X className="h-4 w-4" />
           </button>
+        ) : (
+          <ChevronDown
+            className={cn(
+              "pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#9CA3AF] transition-transform",
+              isOpen && "rotate-180"
+            )}
+          />
+        )}
+
+        {isOpen ? (
+          <div className="absolute left-0 right-0 top-[calc(100%+4px)] z-50 max-h-44 overflow-y-auto rounded-md border bg-white shadow-lg">
+            {companyOptionsQuery.isLoading ? (
+              <p className="px-3 py-2 text-sm text-muted-foreground">
+                불러오는 중
+              </p>
+            ) : companyOptionsQuery.isError ? (
+              <p className="px-3 py-2 text-sm text-muted-foreground">
+                회사 목록을 불러오지 못했습니다.
+              </p>
+            ) : filteredCompanies.length === 0 ? (
+              <p className="px-3 py-2 text-sm text-muted-foreground">
+                검색된 회사가 없습니다.
+              </p>
+            ) : (
+              filteredCompanies.map((company) => (
+                <button
+                  className={cn(
+                    "grid w-full gap-0.5 px-3 py-2 text-left text-sm hover:bg-muted",
+                    company.id === companyId && "bg-[#EFF6FF]"
+                  )}
+                  key={company.id}
+                  onClick={() => {
+                    onCompanyIdChange(company.id);
+                    onSearchChange(company.companyName);
+                    setIsOpen(false);
+                  }}
+                  type="button"
+                >
+                  <span className="font-medium">{company.companyName}</span>
+                </button>
+              ))
+            )}
+          </div>
         ) : null}
       </div>
 
-      {!companyId && search.trim().length > 0 ? (
-        <div className="max-h-44 overflow-y-auto rounded-md border bg-white">
-          {companyOptionsQuery.isLoading ? (
-            <p className="px-3 py-2 text-sm text-muted-foreground">불러오는 중</p>
-          ) : filteredCompanies.length === 0 ? (
-            <p className="px-3 py-2 text-sm text-muted-foreground">
-              검색 결과가 없습니다.
-            </p>
-          ) : (
-            filteredCompanies.map((company) => (
-              <button
-                className="grid w-full gap-0.5 px-3 py-2 text-left text-sm hover:bg-muted"
-                key={company.id}
-                onClick={() => {
-                  onCompanyIdChange(company.id);
-                  onSearchChange(company.companyName);
-                }}
-                type="button"
-              >
-                <span className="font-medium">{company.companyName}</span>
-              </button>
-            ))
-          )}
-        </div>
-      ) : null}
-
       {error ? (
-        <p className="text-xs text-destructive">{error}</p>
+        <p className="text-xs text-destructive" id={`${id}-error`}>
+          {error}
+        </p>
       ) : null}
     </div>
   );

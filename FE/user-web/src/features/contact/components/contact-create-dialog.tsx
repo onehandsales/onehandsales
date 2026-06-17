@@ -1,6 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
+import { ManagedTaxonomyDropdown } from "@/components/ui/managed-taxonomy-dropdown";
 import {
   ModalFieldGroup,
   ModalFooterActions,
@@ -11,10 +12,13 @@ import {
 import { ModalShell } from "@/components/ui/modal-shell";
 import { ErrorState } from "@/components/ui/state";
 import { ContactCompanyField } from "@/features/contact/components/contact-company-field";
-import { ContactTaxonomyManageDialog } from "@/features/contact/components/contact-taxonomy-manage-dialog";
 import { useContactDepartments, useContactJobGrades } from "@/features/contact/hooks/use-contact-list";
 import {
+  useCreateDepartmentMutation,
   useCreateContactMutation,
+  useCreateJobGradeMutation,
+  useDeleteDepartmentMutation,
+  useDeleteJobGradeMutation,
 } from "@/features/contact/hooks/use-contact-mutations";
 import {
   contactCreateFormSchema,
@@ -22,6 +26,10 @@ import {
   toCreateContactInput,
   type ContactCreateFormValues,
 } from "@/features/contact/schemas/contact-schema";
+import type {
+  ContactDepartment,
+  ContactJobGrade,
+} from "@/features/contact/types/contact";
 import { getApiErrorMessage } from "@/lib/api-client";
 
 type ContactCreateDialogProps = {
@@ -39,10 +47,10 @@ export function ContactCreateDialog({
   const createContactMutation = useCreateContactMutation();
   const jobGradesQuery = useContactJobGrades();
   const departmentsQuery = useContactDepartments();
-  const [taxonomyDialog, setTaxonomyDialog] = useState<
-    | { readonly kind: "department" | "jobGrade" }
-    | null
-  >(null);
+  const createDepartmentMutation = useCreateDepartmentMutation();
+  const createJobGradeMutation = useCreateJobGradeMutation();
+  const deleteDepartmentMutation = useDeleteDepartmentMutation();
+  const deleteJobGradeMutation = useDeleteJobGradeMutation();
   const [pendingDepartmentName, setPendingDepartmentName] = useState("");
   const [pendingJobGradeName, setPendingJobGradeName] = useState("");
 
@@ -62,8 +70,6 @@ export function ContactCreateDialog({
   const departmentId = watch("contactDepartmentId") ?? "";
   const jobGradeId = watch("contactJobGradeId") ?? "";
   const formId = "contact-create-form";
-  const departmentRegister = register("contactDepartmentId");
-  const jobGradeRegister = register("contactJobGradeId");
   const jobGrades = useMemo(() => jobGradesQuery.data?.items ?? [], [jobGradesQuery.data]);
   const departments = useMemo(
     () => departmentsQuery.data?.items ?? [],
@@ -73,7 +79,6 @@ export function ContactCreateDialog({
   useEffect(() => {
     if (open) {
       reset(emptyContactCreateFormValues);
-      setTaxonomyDialog(null);
       setPendingDepartmentName("");
       setPendingJobGradeName("");
     }
@@ -89,7 +94,10 @@ export function ContactCreateDialog({
     );
 
     if (matchedDepartment) {
-      setValue("contactDepartmentId", matchedDepartment.id, { shouldDirty: true });
+      setValue("contactDepartmentId", matchedDepartment.id, {
+        shouldDirty: true,
+        shouldValidate: true,
+      });
       setPendingDepartmentName("");
     }
   }, [departments, pendingDepartmentName, setValue]);
@@ -104,7 +112,10 @@ export function ContactCreateDialog({
     );
 
     if (matchedJobGrade) {
-      setValue("contactJobGradeId", matchedJobGrade.id, { shouldDirty: true });
+      setValue("contactJobGradeId", matchedJobGrade.id, {
+        shouldDirty: true,
+        shouldValidate: true,
+      });
       setPendingJobGradeName("");
     }
   }, [jobGrades, pendingJobGradeName, setValue]);
@@ -132,9 +143,40 @@ export function ContactCreateDialog({
     onOpenChange(false);
   });
 
+  const createDepartment = async (name: string) => {
+    await createDepartmentMutation.mutateAsync({ departmentName: name });
+    setPendingDepartmentName(name);
+  };
+
+  const createJobGrade = async (name: string) => {
+    await createJobGradeMutation.mutateAsync({ jobGradeName: name });
+    setPendingJobGradeName(name);
+  };
+
+  const deleteDepartment = async (department: ContactDepartment) => {
+    await deleteDepartmentMutation.mutateAsync(department.id);
+
+    if (departmentId === department.id) {
+      setValue("contactDepartmentId", "", {
+        shouldDirty: true,
+        shouldValidate: true,
+      });
+    }
+  };
+
+  const deleteJobGrade = async (jobGrade: ContactJobGrade) => {
+    await deleteJobGradeMutation.mutateAsync(jobGrade.id);
+
+    if (jobGradeId === jobGrade.id) {
+      setValue("contactJobGradeId", "", {
+        shouldDirty: true,
+        shouldValidate: true,
+      });
+    }
+  };
+
   return (
     <ModalShell
-      description="담당자 정보와 연결 회사를 저장합니다."
       footer={
         <ModalFooterActions
           formId={formId}
@@ -144,14 +186,11 @@ export function ContactCreateDialog({
       }
       open={open}
       size="md"
-      title="담당자 빠른 등록"
+      title="담당자 추가"
       onOpenChange={onOpenChange}
     >
       <ModalForm id={formId} onSubmit={onSubmit}>
-        <ModalFormSection
-          description="담당자 이름과 연결 회사를 지정합니다."
-          title="담당자 기본 정보"
-        >
+        <ModalFormSection title="담당자 기본 정보">
           <ModalFieldGroup
             error={errors.username?.message}
             id="contact-username"
@@ -166,22 +205,6 @@ export function ContactCreateDialog({
             />
           </ModalFieldGroup>
 
-          <ContactCompanyField
-            companyId={companyId}
-            error={errors.companyId?.message}
-            id="contact-company"
-            label="회사"
-            onCompanyIdChange={(value) =>
-              setValue("companyId", value, { shouldDirty: true })
-            }
-            onSearchChange={(value) =>
-              setValue("companySearch", value, { shouldDirty: true })
-            }
-            search={companySearch}
-          />
-        </ModalFormSection>
-
-        <ModalFormSection title="연락 정보">
           <ModalFormRow columns={2}>
             <ModalFieldGroup
               error={errors.mobile?.message}
@@ -214,36 +237,50 @@ export function ContactCreateDialog({
         </ModalFormSection>
 
         <ModalFormSection title="소속 정보">
+          <ContactCompanyField
+            companyId={companyId}
+            error={errors.companyId?.message}
+            id="contact-company"
+            label="회사"
+            onCompanyIdChange={(value) =>
+              setValue("companyId", value, {
+                shouldDirty: true,
+                shouldValidate: true,
+              })
+            }
+            onSearchChange={(value) =>
+              setValue("companySearch", value, { shouldDirty: true })
+            }
+            search={companySearch}
+          />
+
           <ModalFormRow columns={2}>
             <ModalFieldGroup
               error={errors.contactDepartmentId?.message}
               id="contact-department-id"
               label="부서"
             >
-              <select
-                aria-describedby={
-                  errors.contactDepartmentId ? "contact-department-id-error" : undefined
-                }
-                aria-invalid={Boolean(errors.contactDepartmentId)}
-                className="h-10 rounded-md border px-3 text-sm outline-none focus:ring-2 focus:ring-ring"
+              <input type="hidden" {...register("contactDepartmentId")} />
+              <ManagedTaxonomyDropdown
+                addPlaceholder="부서명"
+                emptyText="부서가 없습니다"
+                getLabel={(department) => department.departmentName}
                 id="contact-department-id"
-                onChange={(event) => {
-                  if (event.target.value === ADD_TAXONOMY_VALUE) {
-                    setTaxonomyDialog({ kind: "department" });
-                    return;
-                  }
-                  departmentRegister.onChange(event);
-                }}
-                value={departmentId}
-              >
-                <option value="">부서 선택</option>
-                {departments.map((dept) => (
-                  <option key={dept.id} value={dept.id}>
-                    {dept.departmentName}
-                  </option>
-                ))}
-                <option value={ADD_TAXONOMY_VALUE}>+ 추가</option>
-              </select>
+                isCreating={createDepartmentMutation.isPending}
+                isDeleting={deleteDepartmentMutation.isPending}
+                items={departments}
+                placeholder="부서 선택"
+                selectedId={departmentId}
+                title="부서"
+                onCreate={createDepartment}
+                onDelete={deleteDepartment}
+                onSelect={(id) =>
+                  setValue("contactDepartmentId", id, {
+                    shouldDirty: true,
+                    shouldValidate: true,
+                  })
+                }
+              />
             </ModalFieldGroup>
 
             <ModalFieldGroup
@@ -251,40 +288,35 @@ export function ContactCreateDialog({
               id="contact-job-grade-id"
               label="직급"
             >
-              <select
-                aria-describedby={
-                  errors.contactJobGradeId ? "contact-job-grade-id-error" : undefined
-                }
-                aria-invalid={Boolean(errors.contactJobGradeId)}
-                className="h-10 rounded-md border px-3 text-sm outline-none focus:ring-2 focus:ring-ring"
+              <input type="hidden" {...register("contactJobGradeId")} />
+              <ManagedTaxonomyDropdown
+                addPlaceholder="직급명"
+                emptyText="직급이 없습니다"
+                getLabel={(jobGrade) => jobGrade.jobGradeName}
                 id="contact-job-grade-id"
-                onChange={(event) => {
-                  if (event.target.value === ADD_TAXONOMY_VALUE) {
-                    setTaxonomyDialog({ kind: "jobGrade" });
-                    return;
-                  }
-                  jobGradeRegister.onChange(event);
-                }}
-                value={jobGradeId}
-              >
-                <option value="">직급 선택</option>
-                {jobGrades.map((grade) => (
-                  <option key={grade.id} value={grade.id}>
-                    {grade.jobGradeName}
-                  </option>
-                ))}
-                <option value={ADD_TAXONOMY_VALUE}>+ 추가</option>
-              </select>
+                isCreating={createJobGradeMutation.isPending}
+                isDeleting={deleteJobGradeMutation.isPending}
+                items={jobGrades}
+                placeholder="직급 선택"
+                selectedId={jobGradeId}
+                title="직급"
+                onCreate={createJobGrade}
+                onDelete={deleteJobGrade}
+                onSelect={(id) =>
+                  setValue("contactJobGradeId", id, {
+                    shouldDirty: true,
+                    shouldValidate: true,
+                  })
+                }
+              />
             </ModalFieldGroup>
           </ModalFormRow>
         </ModalFormSection>
 
-        <ModalFormSection
-          description="입력하면 첫 메모 로그로 저장됩니다."
-          title="첫 메모"
-        >
-          <ModalFieldGroup id="contact-memo" label="첫 메모">
+        <ModalFormSection title="메모(옵션)">
+          <ModalFieldGroup id="contact-memo">
             <textarea
+              aria-label="메모"
               className="min-h-24 resize-y rounded-md border px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-ring"
               id="contact-memo"
               {...register("contactMemo")}
@@ -300,24 +332,6 @@ export function ContactCreateDialog({
           />
         ) : null}
       </ModalForm>
-
-      <ContactTaxonomyManageDialog
-        onCreated={(kind, name) => {
-          if (kind === "department") {
-            setPendingDepartmentName(name);
-          } else {
-            setPendingJobGradeName(name);
-          }
-        }}
-        onOpenChange={(isOpen) => {
-          if (!isOpen) {
-            setTaxonomyDialog(null);
-          }
-        }}
-        open={taxonomyDialog !== null}
-      />
     </ModalShell>
   );
 }
-
-const ADD_TAXONOMY_VALUE = "__add_taxonomy__";

@@ -8,7 +8,6 @@ type ModalShellPlacement = "center" | "top" | "bottom";
 type ModalShellProps = {
   readonly open: boolean;
   readonly title?: string;
-  readonly description?: string;
   readonly children: ReactNode;
   readonly footer?: ReactNode;
   readonly size?: ModalShellSize;
@@ -41,7 +40,6 @@ const placementClassNames: Record<ModalShellPlacement, string> = {
 export function ModalShell({
   open,
   title,
-  description,
   children,
   footer,
   size = "md",
@@ -77,17 +75,12 @@ export function ModalShell({
         )}
         role="dialog"
       >
-        {title || description ? (
+        {title ? (
           <header className={cn("relative flex h-14 shrink-0 items-center border-b border-gray-200 px-6 pr-14", headerClassName)}>
             <div>
-              {title ? (
-                <h2 className={cn("text-[15px] font-semibold text-foreground", titleClassName)} id="modal-shell-title">
-                  {title}
-                </h2>
-              ) : null}
-              {description ? (
-                <p className="text-xs text-muted-foreground">{description}</p>
-              ) : null}
+              <h2 className={cn("text-[15px] font-semibold text-foreground", titleClassName)} id="modal-shell-title">
+                {title}
+              </h2>
             </div>
             {showCloseButton ? (
               <button

@@ -4,7 +4,6 @@ import {
   ArrowLeft,
   BriefcaseBusiness,
   CheckCircle2,
-  FileText,
   Loader2,
   Save,
   X,
@@ -12,6 +11,12 @@ import {
 import { useEffect, useState } from "react";
 import { useForm, useWatch, type UseFormRegisterReturn } from "react-hook-form";
 import { Link, useLocation, useNavigate } from "react-router-dom";
+import {
+  ModalFieldGroup,
+  ModalForm,
+  ModalFormRow,
+  ModalFormSection,
+} from "@/components/ui/modal-form";
 import { useMeetingNoteDealOptions } from "@/features/meeting-note/hooks/use-meeting-note-deal-options";
 import {
   useCreateMeetingNoteMutation,
@@ -200,18 +205,17 @@ export function MeetingNoteEditorScreen({
             </button>
           </div>
 
-          <form
+          <ModalForm
             className="grid min-h-0 flex-1 grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)] gap-3 overflow-hidden"
             id="meeting-note-form"
             onSubmit={onSubmit}
           >
             <div className="grid min-h-0 grid-rows-[auto_1fr] gap-3 overflow-hidden">
-              <section className="grid gap-3 rounded-lg border border-[#E5E7EB] bg-white p-4">
-                <div className="flex items-center gap-2">
-                  <FileText className="h-4 w-4 text-[#6B7280]" />
-                  <h2 className="text-[14px] font-semibold text-[#111827]">기본 정보</h2>
-                </div>
-                <div className="grid gap-3 md:grid-cols-3">
+              <ModalFormSection
+                className="rounded-lg border border-[#E5E7EB] bg-white p-4"
+                title="기본 정보"
+              >
+                <ModalFormRow columns={3} className="gap-3">
                   <TextField
                     errorMessage={errors.meetingLocalDateTime?.message}
                     id="meeting-local-date-time"
@@ -231,8 +235,8 @@ export function MeetingNoteEditorScreen({
                     label="담당자"
                     register={register("contactUsername")}
                   />
-                </div>
-                <div className="grid gap-3 md:grid-cols-3">
+                </ModalFormRow>
+                <ModalFormRow columns={3} className="gap-3">
                   <TextField
                     errorMessage={errors.companyField?.message}
                     id="meeting-company-field"
@@ -251,8 +255,8 @@ export function MeetingNoteEditorScreen({
                     label="부서"
                     register={register("department")}
                   />
-                </div>
-                <div className="grid gap-3 md:grid-cols-3">
+                </ModalFormRow>
+                <ModalFormRow columns={3} className="gap-3">
                   <TextField
                     errorMessage={errors.jobGrade?.message}
                     id="meeting-contact-job-grade"
@@ -271,15 +275,14 @@ export function MeetingNoteEditorScreen({
                     label="연락처"
                     register={register("contactMobile")}
                   />
-                </div>
-              </section>
+                </ModalFormRow>
+              </ModalFormSection>
 
-              <section className="grid min-h-0 gap-3 rounded-lg border border-[#E5E7EB] bg-white p-4">
-                <div className="flex items-center gap-2">
-                  <BriefcaseBusiness className="h-4 w-4 text-[#6B7280]" />
-                  <h2 className="text-[14px] font-semibold text-[#111827]">제품과 딜</h2>
-                </div>
-                <div className="grid gap-3 md:grid-cols-2">
+              <ModalFormSection
+                className="min-h-0 rounded-lg border border-[#E5E7EB] bg-white p-4"
+                title="제품과 딜"
+              >
+                <ModalFormRow columns={2} className="gap-3">
                   <TextField
                     errorMessage={errors.productName?.message}
                     id="meeting-product-name"
@@ -305,7 +308,7 @@ export function MeetingNoteEditorScreen({
                     label="제품 상태"
                     register={register("productStatus")}
                   />
-                </div>
+                </ModalFormRow>
                 <DealSearchField
                   errorMessage={errors.dealId?.message}
                   isLoading={dealOptionsQuery.isFetching}
@@ -316,11 +319,13 @@ export function MeetingNoteEditorScreen({
                   search={dealSearch}
                   selectedId={dealId}
                 />
-              </section>
+              </ModalFormSection>
             </div>
 
-            <section className="flex min-h-0 flex-col gap-3 rounded-lg border border-[#E5E7EB] bg-white p-4">
-              <h2 className="text-[14px] font-semibold text-[#111827]">미팅 내용</h2>
+            <ModalFormSection
+              className="min-h-0 rounded-lg border border-[#E5E7EB] bg-white p-4"
+              title="미팅 내용"
+            >
               <TextAreaField
                 errorMessage={errors.details?.message}
                 id="meeting-details"
@@ -328,7 +333,7 @@ export function MeetingNoteEditorScreen({
                 register={register("details")}
                 rows={6}
               />
-              <div className="grid gap-3 md:grid-cols-2">
+              <ModalFormRow columns={2} className="gap-3">
                 <TextAreaField
                   errorMessage={errors.nextPlan?.message}
                   id="meeting-next-plan"
@@ -343,9 +348,9 @@ export function MeetingNoteEditorScreen({
                   register={register("requiredAction")}
                   rows={3}
                 />
-              </div>
-            </section>
-          </form>
+              </ModalFormRow>
+            </ModalFormSection>
+          </ModalForm>
         </main>
 
         <aside className="flex min-h-0 flex-col gap-3 overflow-hidden">
@@ -457,16 +462,17 @@ function DealSearchField({
   const shouldShowOptions = search.trim().length > 0 && !selectedId;
 
   return (
-    <div className="grid gap-2">
-      <label className="text-[12px] font-medium text-[#374151]" htmlFor="meeting-deal-search">
-        딜 검색
-      </label>
+    <ModalFieldGroup
+      error={errorMessage}
+      id="meeting-deal-search"
+      label="딜 검색"
+    >
       <div className="relative">
         <BriefcaseBusiness className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#9CA3AF]" />
         <input
-          aria-describedby={errorMessage ? "meeting-deal-error" : undefined}
+          aria-describedby={errorMessage ? "meeting-deal-search-message" : undefined}
           aria-invalid={Boolean(errorMessage)}
-          className="h-9 w-full rounded-md border border-[#E6EAF0] bg-white pl-9 pr-10 text-[13px] text-[#111827] outline-none focus:border-[#93C5FD] focus:ring-1 focus:ring-[#93C5FD]"
+          className="h-9 w-full rounded-md border bg-white pl-9 pr-10 text-sm text-[#111827] outline-none focus:ring-2 focus:ring-ring"
           id="meeting-deal-search"
           onChange={(event) => onSearchChange(event.target.value)}
           placeholder="딜명 검색"
@@ -508,12 +514,7 @@ function DealSearchField({
           )}
         </div>
       ) : null}
-      {errorMessage ? (
-        <p className="text-[12px] text-[#DC2626]" id="meeting-deal-error">
-          {errorMessage}
-        </p>
-      ) : null}
-    </div>
+    </ModalFieldGroup>
   );
 }
 
@@ -650,24 +651,21 @@ function TextField({
   readonly type?: string;
 }) {
   return (
-    <div className="grid gap-1.5">
-      <label className="text-[12px] font-medium text-[#374151]" htmlFor={id}>
-        {label}
-      </label>
+    <ModalFieldGroup
+      className="gap-1.5"
+      error={errorMessage}
+      id={id}
+      label={label}
+    >
       <input
-        aria-describedby={errorMessage ? `${id}-error` : undefined}
+        aria-describedby={errorMessage ? `${id}-message` : undefined}
         aria-invalid={Boolean(errorMessage)}
-        className="h-9 rounded-md border border-[#E6EAF0] bg-white px-3 text-[13px] text-[#111827] outline-none focus:border-[#93C5FD] focus:ring-1 focus:ring-[#93C5FD]"
+        className="h-9 rounded-md border bg-white px-3 text-sm text-[#111827] outline-none focus:ring-2 focus:ring-ring"
         id={id}
         type={type}
         {...register}
       />
-      {errorMessage ? (
-        <p className="text-[12px] text-[#DC2626]" id={`${id}-error`}>
-          {errorMessage}
-        </p>
-      ) : null}
-    </div>
+    </ModalFieldGroup>
   );
 }
 
@@ -686,24 +684,21 @@ function TextAreaField({
   readonly rows: number;
 }) {
   return (
-    <div className="grid gap-1.5">
-      <label className="text-[12px] font-medium text-[#374151]" htmlFor={id}>
-        {label}
-      </label>
+    <ModalFieldGroup
+      className="gap-1.5"
+      error={errorMessage}
+      id={id}
+      label={label}
+    >
       <textarea
-        aria-describedby={errorMessage ? `${id}-error` : undefined}
+        aria-describedby={errorMessage ? `${id}-message` : undefined}
         aria-invalid={Boolean(errorMessage)}
-        className="resize-none rounded-md border border-[#E6EAF0] bg-white px-3 py-2 text-[13px] leading-5 text-[#111827] outline-none focus:border-[#93C5FD] focus:ring-1 focus:ring-[#93C5FD]"
+        className="resize-none rounded-md border bg-white px-3 py-2 text-sm leading-5 text-[#111827] outline-none focus:ring-2 focus:ring-ring"
         id={id}
         rows={rows}
         {...register}
       />
-      {errorMessage ? (
-        <p className="text-[12px] text-[#DC2626]" id={`${id}-error`}>
-          {errorMessage}
-        </p>
-      ) : null}
-    </div>
+    </ModalFieldGroup>
   );
 }
 

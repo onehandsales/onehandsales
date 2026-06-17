@@ -102,7 +102,6 @@ export function ContactTaxonomyManageDialog({
 
   return (
     <ModalShell
-      description="부서와 직급을 추가하거나 삭제합니다."
       open={open}
       size="lg"
       title="담당자 분류 관리"

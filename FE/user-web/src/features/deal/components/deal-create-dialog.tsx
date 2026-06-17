@@ -1,4 +1,4 @@
-// 기능 : 딜 빠른 등록 모달 — Backend Deal API 생성 계약 기준
+// 기능 : 딜 추가 모달 — Backend Deal API 생성 계약 기준
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Building2,
@@ -146,7 +146,7 @@ export function DealCreateDialog({
     });
   };
 
-  // 기능 : 빠른 등록한 회사를 Deal 선택 옵션에서 찾아 자동 선택합니다.
+  // 기능 : 추가한 회사를 Deal 선택 옵션에서 찾아 자동 선택합니다.
   const onCompanyCreated = async (companyName: string) => {
     const updated = await companyOptionsQuery.refetch();
     const created = findCompanyOptionByName(updated.data ?? [], companyName);
@@ -169,7 +169,7 @@ export function DealCreateDialog({
     }
   };
 
-  // 기능 : 빠른 등록한 담당자를 Deal 선택 옵션에서 찾아 자동 선택합니다.
+  // 기능 : 추가한 담당자를 Deal 선택 옵션에서 찾아 자동 선택합니다.
   const onContactCreated = async (payload: QuickContactCreatedPayload) => {
     setValue("companyId", payload.companyId, {
       shouldDirty: true,
@@ -197,7 +197,7 @@ export function DealCreateDialog({
     }
   };
 
-  // 기능 : 빠른 등록한 제품을 Deal 선택 옵션에서 찾아 자동 선택합니다.
+  // 기능 : 추가한 제품을 Deal 선택 옵션에서 찾아 자동 선택합니다.
   const onProductCreated = async (productName: string) => {
     const updated = await productOptionsQuery.refetch();
     const created = findProductOptionByName(updated.data ?? [], productName);
@@ -232,7 +232,6 @@ export function DealCreateDialog({
   return (
     <>
       <ModalShell
-        description="딜명, 금액, 회사/담당자/제품과 다음 행동을 저장합니다."
         footer={
           <ModalFooterActions
             formId={formId}
@@ -242,12 +241,12 @@ export function DealCreateDialog({
         }
         open={open}
         size="lg"
-        title="딜 빠른 등록"
+        title="딜 추가"
         onOpenChange={onOpenChange}
       >
         <ModalForm id={formId} onSubmit={onSubmit}>
           {/* 딜 기본 정보 */}
-          <ModalFormSection description="딜의 이름과 예상 금액을 입력합니다." title="딜 기본 정보">
+          <ModalFormSection title="딜 기본 정보">
             <ModalFormRow columns={2}>
               <ModalFieldGroup error={errors.dealName?.message} id="deal-name" label="딜명">
                 <input
@@ -280,7 +279,7 @@ export function DealCreateDialog({
           </ModalFormSection>
 
           {/* 연결 대상 */}
-          <ModalFormSection description="회사, 담당자, 제품을 선택합니다." title="연결 대상">
+          <ModalFormSection title="연결 대상">
             <ModalFormRow columns={2}>
               {/* 회사 */}
               <ModalFieldGroup error={errors.companyId?.message} id="deal-company" label="회사">
@@ -291,7 +290,7 @@ export function DealCreateDialog({
                     getLabel={(company) => company.companyName}
                     icon={Building2}
                     id="deal-company"
-                    createActionLabel="회사 빠른 등록"
+                    createActionLabel="회사 추가"
                     isLoading={companyOptionsQuery.isLoading}
                     items={companyOptions}
                     placeholder="회사명 검색"
@@ -353,7 +352,7 @@ export function DealCreateDialog({
                     getLabel={(contact) => contact.label}
                     icon={IdCard}
                     id="deal-contact"
-                    createActionLabel="담당자 빠른 등록"
+                    createActionLabel="담당자 추가"
                     isLoading={contactOptionsQuery.isLoading}
                     items={contactOptions}
                     placeholder="담당자명 검색"
@@ -395,7 +394,7 @@ export function DealCreateDialog({
             <ModalFieldGroup error={errors.productIds?.message} id="deal-products" label="제품 (1개 이상)">
               <ProductMultiSelectDropdown
                 id="deal-products"
-                createActionLabel="제품 빠른 등록"
+                createActionLabel="제품 추가"
                 isLoading={productOptionsQuery.isLoading}
                 items={productOptions}
                 search={productSearch}
@@ -410,7 +409,7 @@ export function DealCreateDialog({
           </ModalFormSection>
 
           {/* 진행 상태 */}
-          <ModalFormSection description="딜 단계와 예상 마감일, 다음 행동을 지정합니다." title="진행 상태">
+          <ModalFormSection title="진행 상태">
             <ModalFormRow columns={2}>
               <ModalFieldGroup error={errors.dealStatus?.message} id="deal-status" label="딜 단계">
                 <select
@@ -490,7 +489,7 @@ type QuickCompanyCreateDialogProps = {
   readonly onCreated: (companyName: string) => void;
 };
 
-// 기능 : 딜 빠른 등록 중 새 회사를 최소 정보로 생성합니다.
+// 기능 : 딜 추가 중 새 회사를 최소 정보로 생성합니다.
 function QuickCompanyCreateDialog({
   open,
   onOpenChange,
@@ -568,7 +567,6 @@ function QuickCompanyCreateDialog({
   return (
     <>
     <ModalShell
-      description="딜에 바로 연결할 회사를 저장합니다."
       footer={
         <ModalFooterActions
           formId={formId}
@@ -579,7 +577,7 @@ function QuickCompanyCreateDialog({
       }
       open={open}
       size="sm"
-      title="회사 빠른 등록"
+      title="회사 추가"
       onOpenChange={onOpenChange}
     >
       <ModalForm id={formId} onSubmit={onSubmit}>
@@ -597,7 +595,7 @@ function QuickCompanyCreateDialog({
             <ModalFieldGroup error={errors.companyFieldId?.message} id="deal-quick-company-field" label="분야">
               <input type="hidden" {...register("companyFieldId")} />
               <SearchSelectField
-                createActionLabel="분야 빠른 등록"
+                createActionLabel="분야 추가"
                 emptyText="검색된 분야가 없습니다."
                 getLabel={(field) => field.field}
                 icon={Tags}
@@ -629,7 +627,7 @@ function QuickCompanyCreateDialog({
             <ModalFieldGroup error={errors.companyRegionId?.message} id="deal-quick-company-region" label="지역">
               <input type="hidden" {...register("companyRegionId")} />
               <SearchSelectField
-                createActionLabel="지역 빠른 등록"
+                createActionLabel="지역 추가"
                 emptyText="검색된 지역이 없습니다."
                 getLabel={(region) => region.region}
                 icon={MapPin}
@@ -660,13 +658,16 @@ function QuickCompanyCreateDialog({
           </ModalFormRow>
         </ModalFormSection>
 
-        <ModalFieldGroup id="deal-quick-company-memo" label="첫 메모">
-          <textarea
-            className="min-h-20 resize-y rounded-md border px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-ring"
-            id="deal-quick-company-memo"
-            {...register("companyMemo")}
-          />
-        </ModalFieldGroup>
+        <ModalFormSection title="메모(옵션)">
+          <ModalFieldGroup id="deal-quick-company-memo">
+            <textarea
+              aria-label="메모"
+              className="min-h-20 resize-y rounded-md border px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-ring"
+              id="deal-quick-company-memo"
+              {...register("companyMemo")}
+            />
+          </ModalFieldGroup>
+        </ModalFormSection>
 
         {createCompanyMutation.error ? (
           <ErrorState
@@ -707,7 +708,7 @@ type QuickContactCreateDialogProps = {
   readonly onCreated: (payload: QuickContactCreatedPayload) => void;
 };
 
-// 기능 : 딜 빠른 등록 중 새 담당자를 최소 정보로 생성합니다.
+// 기능 : 딜 추가 중 새 담당자를 최소 정보로 생성합니다.
 function QuickContactCreateDialog({
   open,
   defaultCompanyId,
@@ -798,7 +799,6 @@ function QuickContactCreateDialog({
   return (
     <>
     <ModalShell
-      description="딜에 바로 연결할 담당자를 저장합니다."
       footer={
         <ModalFooterActions
           formId={formId}
@@ -809,7 +809,7 @@ function QuickContactCreateDialog({
       }
       open={open}
       size="md"
-      title="담당자 빠른 등록"
+      title="담당자 추가"
       onOpenChange={onOpenChange}
     >
       <ModalForm id={formId} onSubmit={onSubmit}>
@@ -868,7 +868,7 @@ function QuickContactCreateDialog({
             <ModalFieldGroup error={errors.contactDepartmentId?.message} id="deal-quick-contact-department" label="부서">
               <input type="hidden" {...register("contactDepartmentId")} />
               <SearchSelectField
-                createActionLabel="부서 빠른 등록"
+                createActionLabel="부서 추가"
                 emptyText="검색된 부서가 없습니다."
                 getLabel={(department) => department.departmentName}
                 icon={Users}
@@ -900,7 +900,7 @@ function QuickContactCreateDialog({
             <ModalFieldGroup error={errors.contactJobGradeId?.message} id="deal-quick-contact-job-grade" label="직급">
               <input type="hidden" {...register("contactJobGradeId")} />
               <SearchSelectField
-                createActionLabel="직급 빠른 등록"
+                createActionLabel="직급 추가"
                 emptyText="검색된 직급이 없습니다."
                 getLabel={(jobGrade) => jobGrade.jobGradeName}
                 icon={BadgeCheck}
@@ -931,13 +931,16 @@ function QuickContactCreateDialog({
           </ModalFormRow>
         </ModalFormSection>
 
-        <ModalFieldGroup id="deal-quick-contact-memo" label="첫 메모">
-          <textarea
-            className="min-h-20 resize-y rounded-md border px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-ring"
-            id="deal-quick-contact-memo"
-            {...register("contactMemo")}
-          />
-        </ModalFieldGroup>
+        <ModalFormSection title="메모(옵션)">
+          <ModalFieldGroup id="deal-quick-contact-memo">
+            <textarea
+              aria-label="메모"
+              className="min-h-20 resize-y rounded-md border px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-ring"
+              id="deal-quick-contact-memo"
+              {...register("contactMemo")}
+            />
+          </ModalFieldGroup>
+        </ModalFormSection>
 
         {createContactMutation.error ? (
           <ErrorState

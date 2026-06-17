@@ -3,7 +3,15 @@ import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import {
+  ModalFieldGroup,
+  ModalFooterActions,
+  ModalForm,
+  ModalFormRow,
+  ModalFormSection,
+} from "@/components/ui/modal-form";
 import { ModalShell } from "@/components/ui/modal-shell";
+import { ErrorState } from "@/components/ui/state";
 import {
   useProductCategories,
   useProductStatuses,
@@ -70,6 +78,7 @@ export function ProductCreateDialog({
 
   const selectedCategoryId = watch("productCategoryId");
   const selectedStatusId = watch("productStatusId");
+  const formId = "product-create-form";
 
   useEffect(() => {
     if (open) {
@@ -100,60 +109,45 @@ export function ProductCreateDialog({
 
   return (
     <ModalShell
-      description="제품명, 카테고리, 상태를 선택하고 저장합니다."
       footer={
-        <div className="flex justify-end gap-2">
-          <button
-            className="inline-flex h-9 items-center gap-1.5 rounded-lg border border-[#E5E7EB] bg-white px-3 text-[13px] font-medium text-[#374151] hover:bg-[#F9FAFB]"
-            onClick={() => onOpenChange(false)}
-            type="button"
-          >
-            취소
-          </button>
-          <button
-            className="inline-flex h-9 items-center gap-1.5 rounded-lg bg-[#b45309] px-3 text-[13px] font-medium text-white hover:bg-[#92400e] disabled:opacity-60"
-            disabled={createProductMutation.isPending}
-            form="product-create-form"
-            type="submit"
-          >
-            {createProductMutation.isPending ? "추가 중..." : "제품 추가"}
-          </button>
-        </div>
+        <ModalFooterActions
+          formId={formId}
+          isSubmitting={createProductMutation.isPending}
+          pendingLabel="추가 중"
+          submitLabel="제품 추가"
+          onCancel={() => onOpenChange(false)}
+        />
       }
       open={open}
-      closeButtonClassName="text-white/80 hover:bg-white/20 hover:text-white"
-      headerClassName="bg-[#b45309] border-[#92400e]"
       size="md"
-      title="새 제품 등록"
-      titleClassName="text-white"
+      title="제품 추가"
       onOpenChange={onOpenChange}
     >
-      <form className="flex flex-col gap-5" id="product-create-form" onSubmit={onSubmit}>
-        {/* 제품 기본 정보 */}
-        <section>
-          <h3 className="mb-3 text-[12px] font-semibold uppercase tracking-wide text-[#6B7280]">
-            제품 기본 정보
-          </h3>
-          <div className="flex flex-col gap-3">
-            <div className="flex flex-col gap-1">
-              <label className="text-[13px] font-medium text-[#374151]" htmlFor="pc-product-name">
-                제품명 <span className="text-[#EF4444]">*</span>
-              </label>
+      <ModalForm id={formId} onSubmit={onSubmit}>
+        <ModalFormSection title="제품 기본 정보">
+          <ModalFormRow columns={2}>
+            <ModalFieldGroup
+              error={errors.productName?.message}
+              id="pc-product-name"
+              label="제품명"
+            >
               <input
-                className="h-10 rounded-md border border-[#E6EAF0] px-3 text-[13px] outline-none focus:border-[#93C5FD] focus:ring-1 focus:ring-[#93C5FD]"
+                aria-describedby={
+                  errors.productName ? "pc-product-name-message" : undefined
+                }
+                aria-invalid={Boolean(errors.productName)}
+                className="h-10 rounded-md border px-3 text-sm outline-none focus:ring-2 focus:ring-ring"
                 id="pc-product-name"
                 placeholder="제품명 입력"
                 {...register("productName")}
               />
-              {errors.productName ? (
-                <p className="text-[12px] text-[#EF4444]">{errors.productName.message}</p>
-              ) : null}
-            </div>
+            </ModalFieldGroup>
 
-            <div className="flex flex-col gap-1">
-              <label className="text-[13px] font-medium text-[#374151]" htmlFor="pc-product-price">
-                단가
-              </label>
+            <ModalFieldGroup
+              error={errors.productPrice?.message}
+              id="pc-product-price"
+              label="단가"
+            >
               <div className="flex items-center overflow-hidden rounded-md border border-[#E6EAF0] focus-within:border-[#93C5FD] focus-within:ring-1 focus-within:ring-[#93C5FD]">
                 <span className="shrink-0 select-none border-r border-[#E6EAF0] bg-[#F9FAFB] px-3 text-[13px] font-medium text-[#6B7280]">
                   ₩
@@ -169,52 +163,59 @@ export function ProductCreateDialog({
                   KRW
                 </span>
               </div>
-              {errors.productPrice ? (
-                <p className="text-[12px] text-[#EF4444]">{errors.productPrice.message}</p>
-              ) : null}
-            </div>
-          </div>
-        </section>
+            </ModalFieldGroup>
+          </ModalFormRow>
+        </ModalFormSection>
 
-        {/* 카테고리 / 상태 */}
-        <section>
-          <h3 className="mb-3 text-[12px] font-semibold uppercase tracking-wide text-[#6B7280]">
-            카테고리 / 상태
-          </h3>
-          <div className="grid grid-cols-2 gap-4">
-            <CategoryDropdown
+        <ModalFormSection title="카테고리 / 상태">
+          <ModalFormRow columns={2}>
+            <ModalFieldGroup
               error={errors.productCategoryId?.message}
+              id="pc-product-category"
+              label="카테고리"
+            >
+            <CategoryDropdown
+              id="pc-product-category"
               items={categoriesQuery.data?.items ?? []}
               selectedId={selectedCategoryId}
               onSelect={(id) => setValue("productCategoryId", id, { shouldValidate: true })}
             />
-            <StatusDropdown
+            </ModalFieldGroup>
+
+            <ModalFieldGroup
               error={errors.productStatusId?.message}
+              id="pc-product-status"
+              label="상태"
+            >
+            <StatusDropdown
+              id="pc-product-status"
               items={statusesQuery.data?.items ?? []}
               selectedId={selectedStatusId}
               onSelect={(id) => setValue("productStatusId", id, { shouldValidate: true })}
             />
-          </div>
-        </section>
+            </ModalFieldGroup>
+          </ModalFormRow>
+        </ModalFormSection>
 
-        {/* 첫 메모 */}
-        <section>
-          <h3 className="mb-3 text-[12px] font-semibold uppercase tracking-wide text-[#6B7280]">
-            첫 메모 (선택)
-          </h3>
+        <ModalFormSection title="메모(옵션)">
+          <ModalFieldGroup id="pc-product-memo">
           <textarea
-            className="min-h-[80px] w-full resize-y rounded-md border border-[#E6EAF0] px-3 py-2 text-[13px] outline-none focus:border-[#93C5FD] focus:ring-1 focus:ring-[#93C5FD]"
-            placeholder="메모를 입력하세요 (선택)"
+            aria-label="메모"
+            className="min-h-24 resize-y rounded-md border px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-ring"
+            id="pc-product-memo"
             {...register("productMemo")}
           />
-        </section>
+          </ModalFieldGroup>
+        </ModalFormSection>
 
         {createProductMutation.error ? (
-          <p className="rounded-md border border-red-200 bg-red-50 px-3 py-2 text-[13px] text-[#EF4444]">
-            {getApiErrorMessage(createProductMutation.error)}
-          </p>
+          <ErrorState
+            message={getApiErrorMessage(createProductMutation.error)}
+            title="제품 저장 실패"
+            variant="inline"
+          />
         ) : null}
-      </form>
+      </ModalForm>
     </ModalShell>
   );
 }
@@ -222,15 +223,15 @@ export function ProductCreateDialog({
 // ── Category Dropdown ────────────────────────────────────────────────────────
 
 function CategoryDropdown({
+  id,
   items,
   selectedId,
   onSelect,
-  error,
 }: {
+  readonly id: string;
   readonly items: ProductCategory[];
   readonly selectedId: string;
   readonly onSelect: (id: string) => void;
-  readonly error?: string;
 }) {
   const createMutation = useCreateCategoryMutation();
   const deleteMutation = useDeleteCategoryMutation();
@@ -301,10 +302,7 @@ function CategoryDropdown({
   const selectedName = items.find((c) => c.id === selectedId)?.categoryName;
 
   return (
-    <div ref={wrapperRef} className="relative flex flex-col gap-1.5">
-      <span className="text-[13px] font-medium text-[#374151]">
-        카테고리 <span className="text-[#EF4444]">*</span>
-      </span>
+    <div ref={wrapperRef} className="relative">
       {/* Trigger */}
       <button
         className={cn(
@@ -314,6 +312,7 @@ function CategoryDropdown({
             : "border-[#E6EAF0] hover:border-[#93C5FD]",
           selectedName ? "text-[#111827]" : "text-[#9CA3AF]"
         )}
+        id={id}
         onClick={() => setIsOpen((v) => !v)}
         type="button"
       >
@@ -412,8 +411,6 @@ function CategoryDropdown({
           </div>
         </div>
       )}
-
-      {error ? <p className="text-[12px] text-[#EF4444]">{error}</p> : null}
     </div>
   );
 }
@@ -421,15 +418,15 @@ function CategoryDropdown({
 // ── Status Dropdown ──────────────────────────────────────────────────────────
 
 function StatusDropdown({
+  id,
   items,
   selectedId,
   onSelect,
-  error,
 }: {
+  readonly id: string;
   readonly items: ProductStatus[];
   readonly selectedId: string;
   readonly onSelect: (id: string) => void;
-  readonly error?: string;
 }) {
   const createMutation = useCreateStatusMutation();
   const deleteMutation = useDeleteStatusMutation();
@@ -500,10 +497,7 @@ function StatusDropdown({
   const selectedName = items.find((s) => s.id === selectedId)?.statusName;
 
   return (
-    <div ref={wrapperRef} className="relative flex flex-col gap-1.5">
-      <span className="text-[13px] font-medium text-[#374151]">
-        상태 <span className="text-[#EF4444]">*</span>
-      </span>
+    <div ref={wrapperRef} className="relative">
       {/* Trigger */}
       <button
         className={cn(
@@ -513,6 +507,7 @@ function StatusDropdown({
             : "border-[#E6EAF0] hover:border-[#93C5FD]",
           selectedName ? "text-[#111827]" : "text-[#9CA3AF]"
         )}
+        id={id}
         onClick={() => setIsOpen((v) => !v)}
         type="button"
       >
@@ -611,8 +606,6 @@ function StatusDropdown({
           </div>
         </div>
       )}
-
-      {error ? <p className="text-[12px] text-[#EF4444]">{error}</p> : null}
     </div>
   );
 }

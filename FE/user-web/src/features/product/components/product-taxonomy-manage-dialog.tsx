@@ -126,7 +126,6 @@ export function ProductTaxonomyManageDialog({
 
   return (
     <ModalShell
-      description="카테고리와 제품 상태를 추가하거나 삭제합니다."
       open={open}
       size="lg"
       title="제품 분류 관리"

@@ -81,7 +81,6 @@ export function CompanyTaxonomyCreateDialog({
 
   return (
     <ModalShell
-      description="분야와 지역을 추가하거나 삭제합니다."
       open={open}
       size="lg"
       title="회사 분류 관리"

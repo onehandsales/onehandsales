@@ -11,7 +11,6 @@ export function ModalForm({ className, ...props }: ModalFormProps) {
 
 type ModalFormSectionProps = {
   readonly title?: string;
-  readonly description?: string;
   readonly children: ReactNode;
   readonly className?: string;
 };
@@ -19,15 +18,12 @@ type ModalFormSectionProps = {
 // 기능 : 모달 내부 폼을 의미 단위 section으로 묶습니다.
 export function ModalFormSection({
   title,
-  description,
   children,
   className,
 }: ModalFormSectionProps) {
   return (
     <section className={cn("grid gap-3", className)}>
-      {title || description ? (
-        <ModalSectionHeader title={title} description={description} />
-      ) : null}
+      {title ? <ModalSectionHeader title={title} /> : null}
       {children}
     </section>
   );
@@ -35,20 +31,13 @@ export function ModalFormSection({
 
 type ModalSectionHeaderProps = {
   readonly title?: string;
-  readonly description?: string;
 };
 
-// 기능 : 모달 내부 section 제목과 설명 문법을 통일합니다.
-export function ModalSectionHeader({
-  title,
-  description,
-}: ModalSectionHeaderProps) {
+// 기능 : 모달 내부 section 제목 문법을 통일합니다.
+export function ModalSectionHeader({ title }: ModalSectionHeaderProps) {
   return (
     <div>
       {title ? <h3 className="text-sm font-semibold">{title}</h3> : null}
-      {description ? (
-        <p className="mt-1 text-xs text-muted-foreground">{description}</p>
-      ) : null}
     </div>
   );
 }
@@ -76,7 +65,7 @@ export function ModalFormRow({
 
 type ModalFieldGroupProps = {
   readonly id: string;
-  readonly label: string;
+  readonly label?: string;
   readonly children: ReactNode;
   readonly error?: string;
   readonly helper?: string;
@@ -96,9 +85,11 @@ export function ModalFieldGroup({
 
   return (
     <div className={cn("grid gap-2", className)}>
-      <label className="text-sm font-medium" htmlFor={id}>
-        {label}
-      </label>
+      {label ? (
+        <label className="text-sm font-medium" htmlFor={id}>
+          {label}
+        </label>
+      ) : null}
       {children}
       <ModalFieldMessage
         id={`${id}-message`}
