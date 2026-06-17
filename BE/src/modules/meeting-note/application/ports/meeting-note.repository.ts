@@ -63,7 +63,7 @@ export interface MeetingNoteDealRecord {
 export interface MeetingNoteRecord {
   readonly id: string;
   readonly sourceType: MeetingNoteSourceTypeValue;
-  readonly meetingAt: Date;
+  readonly meetingAt: Date | null;
   readonly timeZone: string;
   readonly details: string;
   readonly nextPlan: string | null;
