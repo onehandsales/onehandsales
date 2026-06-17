@@ -301,6 +301,7 @@ function MeetingDateTimeField({
 }) {
   const [isOpen, setIsOpen] = useState(false);
   const wrapperRef = useRef<HTMLDivElement>(null);
+  const groupId = `${id}-field`;
   const parts = parseDateTimeValue(value);
   const [viewYear, setViewYear] = useState(parts.year);
   const [viewMonth, setViewMonth] = useState(parts.month);
@@ -347,13 +348,13 @@ function MeetingDateTimeField({
     <ModalFieldGroup
       className="gap-1.5"
       error={errorMessage}
-      id={id}
+      id={groupId}
       label={label}
     >
       <div ref={wrapperRef} className="relative">
-        <input type="hidden" {...register} />
+        <input id={`${id}-value`} type="hidden" {...register} />
         <button
-          aria-describedby={errorMessage ? `${id}-message` : undefined}
+          aria-describedby={errorMessage ? `${groupId}-message` : undefined}
           aria-expanded={isOpen}
           aria-invalid={Boolean(errorMessage)}
           className={cn(
@@ -430,31 +431,37 @@ function MeetingDateTimeField({
               })}
             </div>
 
-            <div className="mt-3 grid grid-cols-[1fr_1fr] gap-2 border-t border-[#E6EAF0] pt-3">
-              <select
-                className="h-9 rounded-md border border-[#E6EAF0] bg-white px-2 text-[13px] outline-none focus:border-[#2563EB] focus:ring-1 focus:ring-[#2563EB]"
-                value={parts.hour}
-                onChange={(event) => updateTime({ hour: Number(event.target.value) })}
-              >
-                {Array.from({ length: 24 }, (_, hour) => (
-                  <option key={hour} value={hour}>
-                    {String(hour).padStart(2, "0")}시
-                  </option>
-                ))}
-              </select>
-              <select
-                className="h-9 rounded-md border border-[#E6EAF0] bg-white px-2 text-[13px] outline-none focus:border-[#2563EB] focus:ring-1 focus:ring-[#2563EB]"
-                value={parts.minute}
-                onChange={(event) =>
-                  updateTime({ minute: Number(event.target.value) })
-                }
-              >
-                {Array.from({ length: 60 }, (_, minute) => (
-                  <option key={minute} value={minute}>
-                    {String(minute).padStart(2, "0")}분
-                  </option>
-                ))}
-              </select>
+            <div className="mt-3 flex items-center gap-2 border-t border-[#E6EAF0] pt-3">
+              <span className="shrink-0 text-[12px] font-medium text-[#6B7280]">
+                시간
+              </span>
+              <div className="ml-auto flex items-center gap-1.5">
+                <input
+                  aria-label="시간"
+                  className="h-9 w-12 rounded-md border border-[#E6EAF0] bg-white text-center text-[13px] outline-none focus:border-[#2563EB] focus:ring-1 focus:ring-[#2563EB]"
+                  inputMode="numeric"
+                  maxLength={2}
+                  value={padTwo(parts.hour)}
+                  onChange={(event) =>
+                    updateTime({
+                      hour: clampTimeUnit(event.target.value, 23),
+                    })
+                  }
+                />
+                <span className="text-[13px] font-semibold text-[#6B7280]">:</span>
+                <input
+                  aria-label="분"
+                  className="h-9 w-12 rounded-md border border-[#E6EAF0] bg-white text-center text-[13px] outline-none focus:border-[#2563EB] focus:ring-1 focus:ring-[#2563EB]"
+                  inputMode="numeric"
+                  maxLength={2}
+                  value={padTwo(parts.minute)}
+                  onChange={(event) =>
+                    updateTime({
+                      minute: clampTimeUnit(event.target.value, 59),
+                    })
+                  }
+                />
+              </div>
             </div>
           </div>
         ) : null}
@@ -716,6 +723,16 @@ function createCalendarDays(year: number, month: number) {
       day: date.getDate(),
     };
   });
+}
+
+function clampTimeUnit(value: string, max: number): number {
+  const digits = value.replace(/\D/g, "").slice(0, 2);
+
+  if (!digits) {
+    return 0;
+  }
+
+  return Math.min(max, Number(digits));
 }
 
 function padTwo(value: number): string {
