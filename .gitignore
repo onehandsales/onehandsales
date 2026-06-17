@@ -10,3 +10,5 @@ test-results/
 .env.local
 .env.*.local
 *.log
+
+/IMAGE_SAMPLE
