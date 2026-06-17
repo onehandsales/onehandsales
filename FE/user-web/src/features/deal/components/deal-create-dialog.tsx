@@ -223,8 +223,11 @@ export function DealCreateDialog({
   });
 
   const companyOptions = companyOptionsQuery.data ?? [];
-  // 모든 담당자를 표시하고 최종 연결 검증은 BE 계약을 따릅니다.
-  const contactOptions = contactOptionsQuery.data ?? [];
+  // 선택된 회사에 속한 담당자만 표시합니다. 백엔드에서 contact.companyId !== companyId 검사를 합니다.
+  const allContactOptions = contactOptionsQuery.data ?? [];
+  const contactOptions = selectedCompanyId
+    ? allContactOptions.filter((contact) => contact.companyId === selectedCompanyId)
+    : allContactOptions;
   const productOptions = productOptionsQuery.data ?? [];
   const selectedCompany = companyOptions.find((company) => company.id === selectedCompanyId);
   const selectedContact = contactOptions.find((contact) => contact.id === selectedContactId);
@@ -237,6 +240,7 @@ export function DealCreateDialog({
             formId={formId}
             isSubmitting={createDealMutation.isPending}
             onCancel={() => onOpenChange(false)}
+            onSubmit={() => void onSubmit()}
           />
         }
         open={open}
@@ -353,6 +357,7 @@ export function DealCreateDialog({
                     icon={IdCard}
                     id="deal-contact"
                     createActionLabel="담당자 추가"
+                    disabled={!selectedCompanyId}
                     isLoading={contactOptionsQuery.isLoading}
                     items={contactOptions}
                     placeholder="담당자명 검색"
@@ -573,6 +578,7 @@ function QuickCompanyCreateDialog({
           isSubmitting={createCompanyMutation.isPending}
           submitLabel="회사 저장"
           onCancel={() => onOpenChange(false)}
+          onSubmit={() => void onSubmit()}
         />
       }
       open={open}
@@ -805,6 +811,7 @@ function QuickContactCreateDialog({
           isSubmitting={createContactMutation.isPending}
           submitLabel="담당자 저장"
           onCancel={() => onOpenChange(false)}
+          onSubmit={() => void onSubmit()}
         />
       }
       open={open}
@@ -985,6 +992,7 @@ type SearchSelectFieldProps<TItem extends { readonly id: string }> = {
   readonly selectedId: string;
   readonly selectedLabel: string;
   readonly isLoading: boolean;
+  readonly disabled?: boolean;
   readonly icon: LucideIcon;
   readonly placeholder: string;
   readonly emptyText: string;
@@ -1005,6 +1013,7 @@ function SearchSelectField<TItem extends { readonly id: string }>({
   selectedId,
   selectedLabel,
   isLoading,
+  disabled = false,
   icon: Icon,
   placeholder,
   emptyText,
@@ -1034,10 +1043,11 @@ function SearchSelectField<TItem extends { readonly id: string }>({
         aria-autocomplete="list"
         aria-expanded={query.length > 0 && !selectedId}
         autoComplete="off"
-        className="h-10 w-full rounded-md border pl-9 pr-10 text-sm outline-none focus:ring-2 focus:ring-ring"
+        className="h-10 w-full rounded-md border pl-9 pr-10 text-sm outline-none focus:ring-2 focus:ring-ring disabled:cursor-not-allowed disabled:bg-muted disabled:text-muted-foreground"
+        disabled={disabled}
         id={id}
         onChange={(event) => onSearchChange(event.target.value)}
-        placeholder={placeholder}
+        placeholder={disabled ? "회사를 먼저 선택해주세요" : placeholder}
         value={inputValue}
       />
       {selectedId || search ? (
