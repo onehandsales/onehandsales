@@ -176,7 +176,7 @@ export function DealPipelineHomeScreen({
   return (
     <>
       {/* ── Desktop ── */}
-      <section className="hidden flex-1 flex-col overflow-hidden md:flex">
+      <section className="hidden min-h-full flex-col md:flex">
         {/* PageHeader */}
         <PageHeader
           breadcrumbs={[{ label: "딜", icon: BriefcaseBusiness }]}
@@ -231,15 +231,15 @@ export function DealPipelineHomeScreen({
         {dealsQuery.isLoading ? (
           <DesktopLoadingState />
         ) : dealsQuery.isError ? (
-          <div className="flex min-h-0 flex-1 gap-5 overflow-hidden px-5 pb-3 pt-3">
-            <div className="flex min-w-0 flex-1 flex-col gap-3 overflow-hidden">
+          <div className="flex gap-5 px-5 pb-3 pt-3">
+            <div className="flex min-w-0 flex-1 flex-col gap-3">
               <ErrorState onRetry={() => void dealsQuery.refetch()} />
             </div>
           </div>
         ) : (
-          <div className="flex min-h-0 flex-1 gap-5 overflow-hidden px-5 pb-3 pt-3">
+          <div className="flex gap-5 px-5 pb-3 pt-3">
             {/* Deal List */}
-            <div className="flex min-w-0 flex-1 flex-col gap-3 overflow-hidden">
+            <div className="flex min-w-0 flex-1 flex-col gap-3">
               {/* Controls bar — 한 줄 */}
               <div className="flex shrink-0 items-center gap-2 px-0.5">
                 <div className="flex h-8 items-center gap-1.5 rounded-md border border-[#E2E5EC] bg-[#FAFAF8] px-3 transition focus-within:border-[#93C5FD] focus-within:bg-white">
@@ -322,7 +322,7 @@ export function DealPipelineHomeScreen({
                 </span>
               </div>
 
-              <div className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-lg border border-[#E2E5EC] bg-white shadow-sm">
+              <div className="flex flex-col rounded-lg border border-[#E2E5EC] bg-white shadow-sm">
                 {/* Table header */}
                 <div className="flex h-11 shrink-0 items-center border-b border-[#E2E5EC] bg-[#F9FAFB] px-6">
                   <TableHeaderCell width={170}>딜명</TableHeaderCell>
@@ -336,26 +336,26 @@ export function DealPipelineHomeScreen({
 
                 {/* Rows */}
                 {deals.length === 0 ? (
-                  <ListEmptyState
-                    actionIcon={Plus}
-                    actionLabel="딜 추가"
-                    className="-translate-y-7"
-                    icon={BriefcaseBusiness}
-                    onAction={() => setIsCreateOpen(true)}
-                    title={hasFilter ? "조건에 맞는 딜이 없습니다" : "등록된 딜이 없습니다"}
-                  />
-                ) : (
-                  <div className="min-h-0 flex-1 overflow-y-auto">
-                    {deals.map((deal) => (
-                      <DealListRow
-                        deal={deal}
-                        displayTimeZone={displayTimeZone}
-                        isActive={deal.id === selectedDealId}
-                        key={deal.id}
-                        onSelect={setSelectedDealId}
-                      />
-                    ))}
+                  <div className="flex flex-col items-center justify-center py-12 text-sm text-gray-400">
+                    <p>표시할 딜이 없습니다.</p>
+                    <button
+                      className="mt-3 inline-flex h-9 items-center gap-1.5 rounded-md bg-primary px-4 text-sm font-medium text-white"
+                      onClick={() => setIsCreateOpen(true)}
+                      type="button"
+                    >
+                      <Plus className="h-4 w-4" />딜 추가
+                    </button>
                   </div>
+                ) : (
+                  deals.map((deal) => (
+                    <DealListRow
+                      deal={deal}
+                      displayTimeZone={displayTimeZone}
+                      isActive={deal.id === selectedDealId}
+                      key={deal.id}
+                      onSelect={setSelectedDealId}
+                    />
+                  ))
                 )}
               </div>
 
@@ -370,7 +370,7 @@ export function DealPipelineHomeScreen({
 
             {/* Right Detail Panel */}
             {selectedDealId ? (
-              <div className="flex w-[380px] shrink-0 flex-col overflow-hidden rounded-lg border border-[#E5EAF0] bg-white">
+              <div className="flex w-[380px] shrink-0 flex-col rounded-lg border border-[#E5EAF0] bg-white">
                 <div className="flex h-11 shrink-0 items-center justify-between border-b border-[#E6EAF0] px-4">
                   <div className="flex items-center gap-2">
                     <button
@@ -393,9 +393,7 @@ export function DealPipelineHomeScreen({
                     </Link>
                   </div>
                 </div>
-                <div className="flex-1 overflow-y-auto">
-                  <DealDetailPanel dealId={selectedDealId} variant="panel" />
-                </div>
+                <DealDetailPanel dealId={selectedDealId} variant="panel" />
               </div>
             ) : null}
           </div>
@@ -788,8 +786,8 @@ function ErrorState({ onRetry }: { readonly onRetry: () => void }) {
 
 function DesktopLoadingState() {
   return (
-    <div className="flex min-h-0 flex-1 gap-5 overflow-hidden px-5 pb-3 pt-3">
-      <div className="flex min-w-0 flex-1 flex-col gap-3 overflow-hidden">
+    <div className="flex gap-5 px-5 pb-3 pt-3">
+      <div className="flex min-w-0 flex-1 flex-col gap-3">
         <div className="flex h-10 shrink-0 items-center gap-2 px-0.5">
           <div className="h-7 w-20 animate-pulse rounded-md bg-gray-100" />
           <div className="h-7 w-14 animate-pulse rounded-md bg-gray-100" />
@@ -797,7 +795,7 @@ function DesktopLoadingState() {
           <div className="flex-1" />
           <div className="h-4 w-8 animate-pulse rounded bg-gray-100" />
         </div>
-        <div className="flex min-h-0 flex-1 flex-col gap-0 overflow-hidden rounded-lg border border-[#E2E5EC] bg-white shadow-sm">
+        <div className="flex flex-col rounded-lg border border-[#E2E5EC] bg-white shadow-sm">
           {Array.from({ length: 6 }).map((_, i) => (
             <div className="h-[66px] animate-pulse border-b border-[#E2E5EC] bg-[#F9FAFB] last:border-b-0" key={i} />
           ))}

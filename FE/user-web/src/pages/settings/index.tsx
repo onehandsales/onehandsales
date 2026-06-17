@@ -27,17 +27,6 @@ import { formatDateTime } from "@/utils/format";
 
 const DEFAULT_TIME_ZONE = "Asia/Seoul";
 
-const TIME_ZONE_OPTIONS = [
-  { label: "서울 (Asia/Seoul)", value: "Asia/Seoul" },
-  { label: "싱가폴 (Asia/Singapore)", value: "Asia/Singapore" },
-  {
-    label: "로스앤젤레스 (America/Los_Angeles)",
-    value: "America/Los_Angeles",
-  },
-  { label: "뉴욕 (America/New_York)", value: "America/New_York" },
-  { label: "런던 (Europe/London)", value: "Europe/London" },
-] as const;
-
 export function SettingsPage() {
   const [notice, setNotice] = useState<string | null>(null);
   const profileQuery = useMyProfile();
@@ -84,15 +73,12 @@ function ProfileSection({
   readonly onSaved: () => void;
 }) {
   const [name, setName] = useState("");
-  const [timeZone, setTimeZone] = useState(DEFAULT_TIME_ZONE);
   const [formError, setFormError] = useState<string | null>(null);
   const updateProfileMutation = useUpdateMyProfileMutation();
-  const visibleTimeZoneOptions = getVisibleTimeZoneOptions(timeZone);
 
   useEffect(() => {
     setName(profile?.name ?? "");
-    setTimeZone(profile?.timeZone ?? getBrowserTimeZoneFallback());
-  }, [profile?.name, profile?.timeZone]);
+  }, [profile?.name]);
 
   const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -109,7 +95,6 @@ function ProfileSection({
     try {
       await updateProfileMutation.mutateAsync({
         name: nextName.length > 0 ? nextName : null,
-        timeZone,
       });
       onSaved();
     } catch (nextError) {
@@ -143,57 +128,32 @@ function ProfileSection({
         </section>
       ) : profile ? (
         <>
-          <form className="grid gap-3" onSubmit={onSubmit}>
-            <div className="flex items-start justify-between gap-4">
-              <SettingsCardHeader
-                icon={UserRound}
-                description="화면에 표시되는 이름과 일정 기준 시간대만 수정합니다."
-                title="프로필 설정"
-              />
-              <Button
-                disabled={updateProfileMutation.isPending}
-                isPending={updateProfileMutation.isPending}
-                type="submit"
-                variant="primary"
-              >
-                <Save className="h-4 w-4" />
-                저장
-              </Button>
-            </div>
-
-            <div className="rounded-lg border border-[#E2E5EC] bg-white p-5 shadow-sm">
-              <div className="grid gap-3 md:grid-cols-[minmax(0,1fr)_minmax(220px,280px)]">
-                <label className="grid gap-1.5">
-                  <span className="text-xs font-medium text-muted-foreground">
-                    이름
-                  </span>
+          <form onSubmit={onSubmit}>
+            <div className="rounded-lg border border-[#E2E5EC] bg-white px-5 py-4 shadow-sm">
+              <div className="flex items-center justify-between gap-4">
+                <label className="flex min-w-0 flex-1 items-center gap-3">
+                  <span className="shrink-0 text-sm font-medium text-[#374151]">이름</span>
                   <input
-                    className="h-10 min-w-0 rounded-md border border-[#E2E5EC] bg-[#FAFAF8] px-3 text-sm outline-none focus:border-[#93C5FD] focus:bg-white"
+                    className="h-8 min-w-0 flex-1 rounded-md border border-[#E2E5EC] bg-[#FAFAF8] px-3 text-sm outline-none focus:border-[#93C5FD] focus:bg-white"
                     maxLength={80}
                     onChange={(event) => setName(event.target.value)}
                     placeholder="이름 없음"
                     value={name}
                   />
                 </label>
-                <label className="grid gap-1.5">
-                  <span className="text-xs font-medium text-muted-foreground">
-                    시간대
-                  </span>
-                  <select
-                    className="h-10 min-w-0 rounded-md border border-[#E2E5EC] bg-[#FAFAF8] px-3 text-sm outline-none focus:border-[#93C5FD] focus:bg-white"
-                    onChange={(event) => setTimeZone(event.target.value)}
-                    value={timeZone}
-                  >
-                    {visibleTimeZoneOptions.map((option) => (
-                      <option key={option.value} value={option.value}>
-                        {option.label}
-                      </option>
-                    ))}
-                  </select>
-                </label>
+                <Button
+                  disabled={updateProfileMutation.isPending}
+                  isPending={updateProfileMutation.isPending}
+                  size="sm"
+                  type="submit"
+                  variant="primary"
+                >
+                  <Save className="h-3.5 w-3.5" />
+                  저장
+                </Button>
               </div>
               {formError ? (
-                <p className="mt-3 text-sm text-destructive">{formError}</p>
+                <p className="mt-2 text-sm text-destructive">{formError}</p>
               ) : null}
             </div>
           </form>
@@ -231,6 +191,11 @@ function ProfileSection({
                   icon={Timer}
                   label="최근 수정일"
                   value={formatDateTime(profile.updatedAt, { includeYear: true })}
+                />
+                <ReadOnlyField
+                  icon={Timer}
+                  label="시간대"
+                  value={profile.timeZone ?? DEFAULT_TIME_ZONE}
                 />
               </dl>
 
@@ -471,17 +436,3 @@ function toStatusLabel(status: string) {
   return labels[status] ?? status;
 }
 
-function getBrowserTimeZoneFallback() {
-  const browserTimeZone =
-    Intl.DateTimeFormat().resolvedOptions().timeZone || DEFAULT_TIME_ZONE;
-
-  return TIME_ZONE_OPTIONS.some((option) => option.value === browserTimeZone)
-    ? browserTimeZone
-    : DEFAULT_TIME_ZONE;
-}
-
-function getVisibleTimeZoneOptions(timeZone: string) {
-  return TIME_ZONE_OPTIONS.some((option) => option.value === timeZone)
-    ? TIME_ZONE_OPTIONS
-    : [...TIME_ZONE_OPTIONS, { label: timeZone, value: timeZone }];
-}

@@ -158,7 +158,7 @@ export function ProductListScreen({
   };
 
   return (
-    <section className="flex flex-1 flex-col overflow-hidden bg-[#FAFAF8]">
+    <section className="flex min-h-full flex-col bg-[#FAFAF8]">
       <PageHeader
         breadcrumbs={[{ label: "제품", icon: Package }]}
         actions={[
@@ -270,8 +270,8 @@ export function ProductListScreen({
         </span>
       </div>
 
-      <div className="flex min-h-0 flex-1 gap-5 overflow-hidden px-5 pb-3 pt-1">
-        <div className="flex min-w-0 flex-1 flex-col gap-3 overflow-hidden">
+      <div className="flex gap-5 px-5 pb-3 pt-1">
+        <div className="flex min-w-0 flex-1 flex-col gap-3">
           {notice ? (
             <Toast message={notice} onClose={() => setNotice(null)} variant="success" />
           ) : null}
@@ -282,7 +282,7 @@ export function ProductListScreen({
             </p>
           ) : null}
 
-          <div className="flex min-h-0 w-full flex-1 flex-col overflow-hidden rounded-lg border border-[#E2E5EC] bg-white shadow-sm">
+          <div className="flex w-full flex-col rounded-lg border border-[#E2E5EC] bg-white shadow-sm">
           <div className="flex h-11 shrink-0 items-center border-b border-[#E6EAF0] bg-[#FAFBFC] px-6">
             <ProductTableHeaderCell width={320}>제품명</ProductTableHeaderCell>
             <ProductTableHeaderCell width={180}>카테고리</ProductTableHeaderCell>
@@ -307,7 +307,7 @@ export function ProductListScreen({
               }
             />
           ) : (
-            <div className="min-h-0 flex-1 overflow-y-auto">
+            <div>
               {products.map((product) => (
                 <ProductRow
                   key={product.id}
