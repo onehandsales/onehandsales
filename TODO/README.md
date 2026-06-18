@@ -11,7 +11,8 @@
 ```text
 TODO/
   README.md
-  ACTIVE_BACKEND_API_FE_REVIEW.md
+  INTEGRATED_SEARCH_PLAN/
+  MEETING_NOTE_AI_STT_PLAN/
   DONE/
     README.md
     ADDITIONAL_WORK_PLAN/
@@ -22,7 +23,6 @@ TODO/
     DEAL_DOMAIN_PLAN/
     SCHEDULE_DOMAIN_PLAN/
     MEETING_NOTE_MANUAL_PLAN/
-    INTEGRATED_SEARCH_PLAN/
     MVP-STARTER_PLAN/
       README.md
       COMMON/
@@ -81,27 +81,23 @@ TODO/
 - User Web과 Admin Web은 코드를 공유하지 않는다.
 - 루트에는 `package.json`과 workspace 설정을 만들지 않는다.
 - Backend는 하나의 NestJS 서버로 시작하되 User API와 Admin API를 분리한다.
-- 활성 TODO 전체를 재검토할 때는 `DONE`을 제외하고 `ACTIVE_BACKEND_API_FE_REVIEW.md`에 Backend API 구성 여부, API 명세 완성도, Frontend 남은 작업 목적을 기록한다.
+- 활성 TODO 전체를 재검토할 때는 `DONE`을 제외하고 각 활성 계획의 `README.md`, `COMMON/GOAL-WORK-ORDER.md`, `/goal` 문서에 Backend API 구성 여부, API 명세 완성도, Frontend 남은 작업 목적을 기록한다.
 
 ## 4. 구현 우선순위
 
 현재 활성 계획 상태:
 
-- 2026-06-18 기준 활성 계획 폴더: `MEETING_NOTE_AI_STT_PLAN`
+- 2026-06-18 기준 활성 계획 폴더: `INTEGRATED_SEARCH_PLAN`, `MEETING_NOTE_AI_STT_PLAN`
 - 새 요구사항이나 후속 구현은 `TODO` 바로 아래에 새 계획 폴더를 만든다.
-
-활성 TODO 재검토 결과:
-
-- `ACTIVE_BACKEND_API_FE_REVIEW.md`
 
 진행 중인 계획:
 
+- `INTEGRATED_SEARCH_PLAN`: Backend `GET /api/search`는 구현 완료, User Web 통합검색 최종 FE 연결/검수는 진행 중
 - `MEETING_NOTE_AI_STT_PLAN`: 회의록 AI/STT 초안 생성 Backend API와 Frontend 후속 작업 계획
 
 완료된 계획:
 
 - `MEETING_NOTE_MANUAL_PLAN`: `TODO/DONE/MEETING_NOTE_MANUAL_PLAN`
-- `INTEGRATED_SEARCH_PLAN`: `TODO/DONE/INTEGRATED_SEARCH_PLAN`
 - `SCHEDULE_DOMAIN_PLAN`: `TODO/DONE/SCHEDULE_DOMAIN_PLAN`
 - `USER_TIMEZONE_FOUNDATION_PLAN`: `TODO/DONE/USER_TIMEZONE_FOUNDATION_PLAN`
 - `MVP-STARTER_PLAN`: `TODO/DONE/MVP-STARTER_PLAN`

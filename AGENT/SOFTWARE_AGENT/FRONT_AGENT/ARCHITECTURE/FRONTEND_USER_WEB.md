@@ -92,10 +92,10 @@
 - Deal: 목록/상세/생성/수정, stage counts, 옵션, 다음 행동 로그, 메모 로그, xlsx export
 - Schedule: 월/주 목록, 단건 상세, 생성, 수정, 삭제, deal options
 - MeetingNote: 수동 목록/상세/생성/수정, filter options
-- Search: `GET /api/search`
 
 Backend는 구현되었지만 Frontend 연결이 남은 항목:
 
+- Search 최종 연결/UX 검수: `GET /api/search`
 - MeetingNote AI draft: `POST /api/meeting-notes/ai-draft`
 - MeetingNote STT draft: `POST /api/meeting-notes/stt-draft`
 
@@ -115,6 +115,7 @@ mock/placeholder 경계를 유지해야 하는 항목:
 - 응답은 도메인별 group과 item을 반환한다.
 - item은 상세 화면 이동에 필요한 `targetType`, `targetId`, `href` 또는 이에 준하는 navigation metadata를 포함해야 한다.
 - 전용 `/search` 라우트는 현재 없다. 상단 검색 UI 안에서 결과를 선택해 상세 화면으로 이동한다.
+- 현재 최종 FE 연결과 loading/empty/error UX 검수는 `TODO/INTEGRATED_SEARCH_PLAN`의 `G02-FE-INTEGRATED-SEARCH`에서 진행 중이다.
 
 ## 7. MeetingNote AI/STT Frontend 후속 기준
 
@@ -149,5 +150,5 @@ Frontend는 draft API 결과를 자동 저장하지 않는다. 결과를 form fi
 - `AGENT/SOFTWARE_AGENT/FRONT_AGENT/ENGINEERING_REVIEW_CHECKLIST.md`
 - `AGENT/UXUI_AGENT/PLANNING/USER_FLOW_AND_SCREENS.md`
 - `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/CONVENTION/API_SPEC.md`
-- `TODO/DONE/INTEGRATED_SEARCH_PLAN/COMMON/API-SPEC/SEARCH_API.md`
+- `TODO/INTEGRATED_SEARCH_PLAN/COMMON/API-SPEC/SEARCH_API.md`
 - `TODO/MEETING_NOTE_AI_STT_PLAN/COMMON/API-SPEC/MEETING_NOTE_AI_STT_API.md`

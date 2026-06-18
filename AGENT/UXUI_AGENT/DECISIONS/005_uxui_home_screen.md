@@ -10,7 +10,7 @@
 - 홈은 오늘 일정, 진행 딜, 마감 임박, 최근 회의록, 빠른 실행, 최근 활동을 표시한다.
 - 딜 파이프라인 경험은 `/deals`에서 운영한다.
 - 딜 목록/상세/생성의 고밀도 작업은 `/deals`를 기준으로 유지한다.
-- 상단 통합검색은 Backend `GET /api/search`와 연결되어 있다.
+- 상단 통합검색은 Backend `GET /api/search`를 기준으로 설계하며, User Web 최종 연결/UX 검수는 `TODO/INTEGRATED_SEARCH_PLAN`에서 진행 중이다.
 
 ## 이유
 

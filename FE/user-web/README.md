@@ -56,10 +56,10 @@ VITE_SUPABASE_REDIRECT_URL="http://localhost:5173/auth/callback"
 - Deal
 - Schedule
 - MeetingNote manual CRUD
-- Search
 
 Backend는 구현되었고 Frontend 연결이 남은 항목:
 
+- Search 최종 연결/UX 검수: `GET /api/search`
 - MeetingNote AI draft: `POST /api/meeting-notes/ai-draft`
 - MeetingNote STT draft: `POST /api/meeting-notes/stt-draft`
 
@@ -90,6 +90,6 @@ Smoke 범위:
 - 딜 생성과 단계 변경
 - 일정 생성
 - 회의록 저장과 딜 연결
-- 상단 통합검색
+- 상단 통합검색은 `TODO/INTEGRATED_SEARCH_PLAN`의 G02 완료 후 smoke 범위로 확정한다.
 
 Vercel project root: `FE/user-web`

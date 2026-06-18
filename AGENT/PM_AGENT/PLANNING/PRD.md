@@ -49,11 +49,11 @@
 
 현재 구현 기준:
 
-- 구현 완료: Auth/User, 홈 대시보드, 회사, 담당자, 제품, 딜, 일정, 수동 회의록, 통합검색 Backend/User Web 연동, 회의록 AI/STT draft Backend API.
+- 구현 완료: Auth/User, 홈 대시보드, 회사, 담당자, 제품, 딜, 일정, 수동 회의록, 통합검색 Backend API, 회의록 AI/STT draft Backend API.
 - 부분 구현: 도메인별 xlsx export는 Company/Contact/Product/Deal에 있다. 범용 Import/Export job은 없다.
 - FE만 존재 또는 mock/placeholder 경계: 명함 OCR, 알림, 휴지통, 범용 Import/Export.
 - Backend 미구현: BusinessCard OCR, Notification, Trash, Admin 운영 조회/감사/민감 원문 API, MeetingNote 삭제복구/Admin API, DealActivity 자동 로그.
-- Frontend 미연결: MeetingNote AI/STT draft 생성 UI.
+- Frontend 미연결: Search 최종 연결/UX 검수, MeetingNote AI/STT draft 생성 UI.
 - Admin Backend는 `GET /admin/api/me`만 구현되어 있다.
 
 ## 6. MVP 포함 기능

@@ -204,7 +204,7 @@ pen 디자인 반영 완료/정리 도메인 (2026-06-18 기준):
 - DealStage 6단계 FE/BE 계약 반영 완료
 - `/companies`, `/contacts`, `/products` — 제품형 조밀 목록 UX로 정렬
 - `/meeting-notes` — 수동 회의록 목록/상세/생성 API 연동 완료
-- 상단 통합검색 — Backend `GET /api/search` 연동 완료
+- 상단 통합검색 — Backend `GET /api/search` 구현 완료, User Web 최종 연결/UX 검수 진행 중
 
 현재 의도적으로 보류된 화면:
 - `/import`, `/trash` — 라우트와 feature는 남아 있지만 사이드바에서는 숨김 처리
@@ -236,7 +236,7 @@ pen 디자인 반영 대기 도메인:
 
 - 기획 목록의 `/meetings*`는 현재 코드에서 `/meeting-notes*`로 구현되어 있다.
 - 기획 목록의 `/imports`, `/exports`는 현재 코드에서 `/import`, `/export`로 구현되어 있다.
-- 기획 목록의 `/search` 전용 라우트는 현재 User Web router에 없다. 현재 통합검색은 상단 UI에서 `GET /api/search`를 호출하고 결과 선택 시 상세 화면으로 이동한다.
+- 기획 목록의 `/search` 전용 라우트는 현재 User Web router에 없다. 통합검색 목표 흐름은 상단 UI에서 `GET /api/search`를 호출하고 결과 선택 시 상세 화면으로 이동하는 것이며, 최종 FE 연결/검수는 `TODO/INTEGRATED_SEARCH_PLAN`에서 진행 중이다.
 - 현재 `/`는 딜 파이프라인이 아니라 홈 대시보드다. 딜 파이프라인은 `/deals`에서 운영한다.
 - Import와 휴지통은 핵심 기능 UX 안정화 전까지 navigation에서 숨김 처리한다.
 - 기획 목록의 Admin 상세 데이터 라우트와 전체 딜/회사/담당자/제품 라우트는 현재 Admin Web router에 없다.

@@ -20,7 +20,7 @@
 - Search: 회사/담당자/제품/딜/일정/회의록 통합검색 API.
 - 현재 Backend 미구현: BusinessCard OCR, 범용 Import/Export job, Notification, Trash, Admin 운영 조회/감사/민감 원문 API, MeetingNote 삭제복구/Admin/DealActivity 자동 로그.
 - Admin Backend는 현재 `/admin/api/me`만 구현되어 있다.
-- User Web은 `/` 홈 대시보드, Company, Contact, Product, Deal, Schedule, MeetingNote 수동 화면, 상단 통합검색까지 실제 API 연동이 완료되어 있다. MeetingNote AI/STT draft UI 연결은 아직 Frontend 후속 작업이다. 나머지 미구현 Backend 도메인은 실제 API 연동 전까지 mock/placeholder 경계를 명확히 해야 한다.
+- User Web은 `/` 홈 대시보드, Company, Contact, Product, Deal, Schedule, MeetingNote 수동 화면의 실제 API 연동이 완료되어 있다. Search는 Backend API와 일부 FE 기반 작업이 있으나 상단 통합검색 최종 연결/UX 검수는 아직 Frontend 후속 작업이다. MeetingNote AI/STT draft UI 연결도 아직 Frontend 후속 작업이다. 나머지 미구현 Backend 도메인은 실제 API 연동 전까지 mock/placeholder 경계를 명확히 해야 한다.
 
 ## 1. 개발 우선순위
 

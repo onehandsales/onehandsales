@@ -65,7 +65,8 @@ Snapshot date: 2026-06-18
 User Web:
 
 - routes: `/login`, `/auth/callback`, `/`, `/companies`, `/companies/new`, `/companies/:companyId`, `/contacts`, `/contacts/scan`, `/contacts/:contactId`, `/products`, `/products/new`, `/products/:productId`, `/deals`, `/deals/new`, `/deals/:dealId`, `/schedules`, `/schedules/week`, `/schedules/:scheduleId`, `/meeting-notes`, `/meeting-notes/new`, `/meeting-notes/:meetingNoteId`, `/business-cards`, `/notifications`, `/import`, `/export`, `/trash`, `/settings`, `/more`
-- implemented API integration: Auth/User, Home, Company, Contact, Product, Deal, Schedule, MeetingNote manual CRUD, Search
+- implemented API integration: Auth/User, Home, Company, Contact, Product, Deal, Schedule, MeetingNote manual CRUD
+- partial FE integration: Search Backend API client/UI 기반과 `/schedules/:scheduleId` route는 있으나 통합검색 최종 연결/UX 검수는 `TODO/INTEGRATED_SEARCH_PLAN`에서 진행 중
 - pending FE integration: MeetingNote AI/STT draft APIs
 - mock/placeholder boundary: BusinessCard OCR, generic Import/Export, Notification, Trash
 

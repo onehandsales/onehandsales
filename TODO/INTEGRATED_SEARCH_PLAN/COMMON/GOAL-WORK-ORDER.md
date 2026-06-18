@@ -5,7 +5,7 @@
 | 순서 | Goal | 담당 | 상태 | 선행 조건 |
 |---:|---|---|---|---|
 | 1 | `G01-BE-INTEGRATED-SEARCH` | Backend | completed | 기존 Company, Contact, Product, Deal, Schedule, MeetingNote API/DB 구현 |
-| 2 | `G02-FE-INTEGRATED-SEARCH` | Frontend | completed | `G01-BE-INTEGRATED-SEARCH` 완료 |
+| 2 | `G02-FE-INTEGRATED-SEARCH` | Frontend | in_progress | `G01-BE-INTEGRATED-SEARCH` 완료 |
 
 ## 2. G01-BE-INTEGRATED-SEARCH
 
@@ -35,7 +35,9 @@
 - 결과 선택 시 `targetPath`로 이동한다.
 - 일정 단건 상세 화면이 존재한다.
 - User Web typecheck/build가 통과한다.
+- 회사/담당자/제품/딜/일정/회의록 결과 선택이 실제 화면에서 모두 검수된다.
+- loading, empty, error 상태가 실제 UI에서 깨지지 않는다.
 
 ## 4. 이번 작업 상태
 
-계획 전체 completed.
+Backend goal은 completed다. Frontend goal은 일정 상세 route 추가까지 일부 진행되었지만, 상단 통합검색 최종 연결과 end-to-end UX 검수가 남아 있어 계획 전체는 아직 active 상태다.

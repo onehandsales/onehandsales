@@ -129,13 +129,14 @@ Status: `200 OK`
 - FE: `q` 두 글자 이상에서만 호출한다.
 - FE: 결과 선택 시 `targetPath`로 이동한다.
 - FE: 일정 결과는 `/schedules/:scheduleId` route에서 `GET /api/schedules/{scheduleId}`로 다시 조회한다.
+- FE: 상단 통합검색의 실제 화면 연결과 상태 UX 검수는 `G02-FE-INTEGRATED-SEARCH`에서 완료해야 한다.
 - BE: controller는 request를 application service에 위임한다.
 - BE: application service는 query 정규화, type validation, log event를 담당한다.
 - BE: Prisma 조회는 search infrastructure repository에만 둔다.
 
 ## 10. 관련 문서
 
-- `TODO/DONE/INTEGRATED_SEARCH_PLAN/COMMON/USER-FLOW.md`
-- `TODO/DONE/INTEGRATED_SEARCH_PLAN/BE-TODO/DB-SCHEMA.md`
+- `TODO/INTEGRATED_SEARCH_PLAN/COMMON/USER-FLOW.md`
+- `TODO/INTEGRATED_SEARCH_PLAN/BE-TODO/DB-SCHEMA.md`
 - `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/CONVENTION/API_SPEC.md`
 - `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/CONVENTION/API_CONTRACT.md`
