@@ -1,38 +1,51 @@
-﻿# Meeting Note AI/STT Plan
+# Meeting Note AI/STT Plan
 
-## 1. 紐⑹쟻
+## 1. 목적
 
-?뚯쓽濡??앹꽦 紐⑤떖?먯꽌 ?ъ슜?먭? ?뚯궗, ?대떦?? ?쒗뭹, ?? ?뚯쓽 ?쇱떆瑜?吏곸젒 ?좏깮?섍퀬, AI/STT??`details`, `nextPlan`, `requiredAction` 珥덉븞留??앹꽦?섎룄濡?Backend? Frontend ?묒뾽??遺꾨━?쒕떎.
+회의록 생성 모달에서 사용자가 회사, 담당자, 제품, 딜, 회의 일시를 직접 선택하고, AI/STT는 `details`, `nextPlan`, `requiredAction` 초안만 생성하도록 Backend와 Frontend 작업을 분리한다.
 
-## 2. ?듭떖 寃곗젙
+## 2. 핵심 결정
 
-- ?ъ슜?먭? ?좏깮?댁빞 ?섎뒗 媛? ?뚯궗, ?대떦?? ?쒗뭹, ?? ?뚯쓽 ?쇱떆
-- AI/STT媛 ?앹꽦?대룄 ?섎뒗 媛? ?뚯쓽 ?댁슜, ?ㅼ쓬 怨꾪쉷, ?꾩슂 ?됰룞
-- 珥덉븞 ?앹꽦 API??DB????ν븯吏 ?딅뒗??
-- AI/STT 濡쒓렇 ?뚯씠釉? transcript ????뚯씠釉? provider ?몄텧 ?대젰 ?뚯씠釉붿? ?대쾲 踰붿쐞?먯꽌 留뚮뱾吏 ?딅뒗??
-- 理쒖쥌 ??μ? 湲곗〈 `POST /api/meeting-notes`瑜??ъ슜?쒕떎.
-- 理쒖쥌 ?????`sourceType`? `MANUAL`, `TEXT_AI`, `STT_AI`瑜??덉슜?섎릺 `rawText`????ν븯吏 ?딅뒗??
+- 사용자가 직접 선택해야 하는 값: 회사, 담당자, 제품, 딜, 회의 일시
+- AI가 생성해도 되는 값: 회의 내용, 다음 계획, 필요 행동
+- AI 초안 생성은 OpenAI를 사용하되 `MeetingNoteAiDraftProvider` port 뒤에 둔다.
+- STT는 변경 가능성이 있으므로 `MeetingNoteSttProvider` port로 AI draft provider와 분리한다.
+- 현재 STT 기본 구현은 OpenAI `audio/transcriptions` adapter다.
+- 추후 Google/NAVER/AWS STT로 바꿀 때는 STT adapter만 추가/교체한다.
+- 초안 생성 API는 DB에 저장하지 않는다.
+- transcript, provider raw response, provider 호출 이력 테이블은 이번 범위에서 만들지 않는다.
+- 최종 저장은 기존 `POST /api/meeting-notes`를 사용한다.
+- 최종 저장의 `sourceType`은 `MANUAL`, `TEXT_AI`, `STT_AI`를 허용하되 `rawText`는 저장하지 않는다.
 
-## 3. ?ы븿 踰붿쐞
+## 3. 포함 범위
 
 - `POST /api/meeting-notes/ai-draft`
 - `POST /api/meeting-notes/stt-draft`
-- OpenAI provider adapter瑜?application port ?ㅼ뿉 諛곗튂
-- provider ?ㅼ젙 env 異붽?
-- Backend service/controller ?뚯뒪??- Frontend ?꾩냽 goal 臾몄꽌??
-## 4. ?쒖쇅 踰붿쐞
+- `MeetingNoteAiDraftProvider` port와 OpenAI AI draft adapter
+- `MeetingNoteSttProvider` port와 OpenAI STT adapter
+- provider 설정 env 추가
+- Backend service/controller 테스트
+- Frontend 후속 goal 문서
 
-- Frontend 肄붾뱶 ?섏젙
-- AI/STT 濡쒓렇 DB ?뚯씠釉?- transcript ?곴뎄 ???- ?뚯쓽濡??먮룞 ???- AI媛 ?뚯궗, ?대떦?? ?쒗뭹, ?? ?뚯쓽 ?쇱떆瑜?異붾줎?섍굅???좏깮?섎뒗 湲곕뒫
-- provider蹂??ъ슜??鍮꾩슜 ??쒕낫??
-## 5. 臾몄꽌 吏??
-- ?ъ슜???먮쫫: `COMMON/USER-FLOW.md`
-- goal ?쒖꽌: `COMMON/GOAL-WORK-ORDER.md`
-- API 怨꾩빟: `COMMON/API-SPEC/MEETING_NOTE_AI_STT_API.md`
+## 4. 제외 범위
+
+- Frontend 코드 수정
+- Google/NAVER/AWS STT adapter 구현
+- AI/STT 로그 DB 테이블
+- transcript 영구 저장
+- provider별 비용 추적
+- 회의록 자동 저장
+- AI가 회사, 담당자, 제품, 딜, 회의 일시를 추론하거나 선택하는 기능
+
+## 5. 문서 지도
+
+- 사용자 흐름: `COMMON/USER-FLOW.md`
+- goal 순서: `COMMON/GOAL-WORK-ORDER.md`
+- API 계약: `COMMON/API-SPEC/MEETING_NOTE_AI_STT_API.md`
 - Backend goal: `BE-TODO/G01-BE-MEETING-NOTE-AI-STT-DRAFT.goal.md`
 - Frontend goal: `FE-TODO/G02-FE-MEETING-NOTE-AI-STT-DRAFT.goal.md`
 
-## 6. ?꾩옱 援ы쁽 ?곹깭
+## 6. 현재 구현 상태
 
 - `G01-BE-MEETING-NOTE-AI-STT-DRAFT`: completed
 - `G02-FE-MEETING-NOTE-AI-STT-DRAFT`: pending

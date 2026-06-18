@@ -1,51 +1,63 @@
-﻿# Meeting Note AI/STT Draft API
+# Meeting Note AI/STT Draft API
 
-## 1. 怨듯넻 怨꾩빟
+## 1. 공통 계약
 
-- 怨꾩빟 ?곹깭: `implemented`
-- ?뚮퉬?? User Web
-- ?몄쬆: `Authorization: Bearer {accessToken}`
-- 沅뚰븳: ?꾩옱 濡쒓렇?명븳 ?ъ슜?먯쓽 ?곗씠?곕쭔 ?묎렐
-- Admin API: ?놁쓬
-- DB ??? 珥덉븞 API???놁쓬
-- AI/STT 濡쒓렇 ?뚯씠釉? ?놁쓬
-- ?몃? Provider: OpenAI adapter, application port ?ㅼ뿉 諛곗튂
+- 계약 상태: `implemented`
+- 서비스: User Web
+- 인증: `Authorization: Bearer {accessToken}`
+- 권한: 현재 로그인한 사용자의 데이터만 접근
+- Admin API: 없음
+- DB 저장: 초안 API에서는 없음
+- AI/STT 로그 테이블: 없음
 
-## 2. 怨듯넻 ?뺤콉
+Provider 구조:
 
-- ?ъ슜?먭? 吏곸젒 ?좏깮?섎뒗 ?꾨뱶: `meetingLocalDateTime`, `companies`, `contacts`, `products`, `deals`
-- AI/STT媛 ?앹꽦 媛?ν븳 ?꾨뱶: `details`, `nextPlan`, `requiredAction`
-- `companies`, `contacts`???꾩닔 諛곗뿴?대ŉ 理쒖냼 1媛??댁긽?대떎.
-- `products`, `deals`???좏깮 諛곗뿴?대ŉ ?놁쑝硫?鍮?諛곗뿴濡?泥섎━?쒕떎.
-- Backend??紐⑤뱺 ?좏깮 ID瑜?`currentUser.id` 湲곗??쇰줈 ownership 寃利앺븳??
-- Provider prompt?먮뒗 ?좏깮???뷀떚?곗쓽 snapshot 留λ씫留??꾨떖?쒕떎.
-- Provider 寃곌낵????ν븯吏 ?딄퀬 ?묐떟?쇰줈留?諛섑솚?쒕떎.
-- 理쒖쥌 ??μ? 湲곗〈 `POST /api/meeting-notes`瑜??몄텧?쒕떎.
+- AI 초안 provider port: `MeetingNoteAiDraftProvider`
+- AI 초안 provider token: `MEETING_NOTE_AI_DRAFT_PROVIDER`
+- 현재 AI 초안 adapter: `OpenAiMeetingNoteAiDraftProvider`
+- STT provider port: `MeetingNoteSttProvider`
+- STT provider token: `MEETING_NOTE_STT_PROVIDER`
+- 현재 STT adapter: `OpenAiMeetingNoteSttProvider`
+- AI 초안 생성은 OpenAI 사용을 기본 정책으로 한다.
+- STT는 향후 Google, NAVER, AWS 등으로 교체될 수 있으므로 AI 초안 provider와 분리한다.
+
+## 2. 공통 정책
+
+- 사용자가 직접 선택하는 필드: `meetingLocalDateTime`, `companies`, `contacts`, `products`, `deals`
+- AI가 생성 가능한 필드: `details`, `nextPlan`, `requiredAction`
+- STT가 생성하는 필드: `transcript`
+- `companies`, `contacts`는 필수 배열이며 최소 1개 이상이다.
+- `products`, `deals`는 선택 배열이며 없으면 빈 배열로 처리한다.
+- Backend는 모든 선택 ID를 `currentUser.id` 기준으로 ownership 검증한다.
+- Provider prompt에는 사용자가 선택한 엔티티 snapshot 맥락만 전달한다.
+- Provider 결과는 저장하지 않고 응답으로만 반환한다.
+- 최종 저장은 기존 `POST /api/meeting-notes`를 호출한다.
 
 ## 3. POST /api/meeting-notes/ai-draft
 
-- API ?대쫫: ?뚯쓽濡??띿뒪??AI 珥덉븞 ?앹꽦 API
-- API ?앸퀎?? `CreateMeetingNoteTextAiDraft`
+- API 이름: 회의록 텍스트 AI 초안 생성 API
+- API 식별자: `CreateMeetingNoteTextAiDraft`
 - Request DTO: `CreateMeetingNoteTextAiDraftDto`
 - Response DTO: `MeetingNoteAiDraftResponse`
 - Success Status: `200 OK`
+- Provider flow: `MeetingNoteAiDraftProvider.createTextDraft`
 
 ### Body
 
-| ?꾨뱶 | ???| ?꾩닔 | nullable | validation | ?ㅻ챸 |
+| 필드 | 타입 | 필수 | nullable | validation | 설명 |
 |---|---|---:|---:|---|---|
-| `text` | string | ??| 遺덇? | trim ??1???댁긽, 理쒕? 60000??| ?ъ슜?먭? ?낅젰???뚯쓽 ?먮Ц |
-| `meetingLocalDateTime` | string | ??| 遺덇? | local date-time | ?ъ슜?먭? ?좏깮???뚯쓽 ?쇱떆 |
-| `companies` | string[] | ??| 遺덇? | UUID 諛곗뿴, 理쒖냼 1媛?| ?ъ슜?먭? ?좏깮???뚯궗 ID |
-| `contacts` | string[] | ??| 遺덇? | UUID 諛곗뿴, 理쒖냼 1媛?| ?ъ슜?먭? ?좏깮???대떦??ID |
-| `products` | string[] | ?꾨땲??| 遺덇? | UUID 諛곗뿴 | ?ъ슜?먭? ?좏깮???쒗뭹 ID |
-| `deals` | string[] | ?꾨땲??| 遺덇? | UUID 諛곗뿴 | ?ъ슜?먭? ?좏깮????ID |
+| `text` | string | 예 | 불가 | trim 후 1자 이상, 최대 60000자 | 사용자가 입력한 회의 원문 |
+| `meetingLocalDateTime` | string | 예 | 불가 | local date-time | 사용자가 선택한 회의 일시 |
+| `companies` | string[] | 예 | 불가 | UUID 배열, 최소 1개 | 사용자가 선택한 회사 ID |
+| `contacts` | string[] | 예 | 불가 | UUID 배열, 최소 1개 | 사용자가 선택한 담당자 ID |
+| `products` | string[] | 아니오 | 불가 | UUID 배열 | 사용자가 선택한 제품 ID |
+| `deals` | string[] | 아니오 | 불가 | UUID 배열 | 사용자가 선택한 딜 ID |
 
-### Request ?덉떆
+### Request 예시
 
 ```json
 {
-  "text": "?ㅻ뒛 媛寃?議곌굔怨??꾩엯 ?쇱젙???쇱쓽?덈떎. ?ㅼ쓬 二??붿슂?쇱뿉 ?쒖븞?쒕? 蹂대궡怨?蹂댁븞 寃???먮즺???④퍡 ?꾨떖?섍린濡??덈떎.",
+  "text": "오늘 가격 조건과 도입 일정을 논의했습니다. 다음 주 화요일에 제안서를 보내고 보안 검토 자료를 함께 전달하기로 했습니다.",
   "meetingLocalDateTime": "2026-06-18T14:00",
   "companies": ["00000000-0000-4000-8000-000000000001"],
   "contacts": ["00000000-0000-4000-8000-000000000002"],
@@ -54,39 +66,40 @@
 }
 ```
 
-### Response ?덉떆
+### Response 예시
 
 ```json
 {
   "sourceType": "TEXT_AI",
   "transcript": null,
-  "details": "媛寃?議곌굔怨??꾩엯 ?쇱젙???쇱쓽?덉쑝硫? 蹂댁븞 寃???먮즺媛 異붽?濡??꾩슂?섎떎???먯쓣 ?뺤씤?덉뒿?덈떎.",
-  "nextPlan": "?ㅼ쓬 二??붿슂?쇱뿉 ?쒖븞?쒕? ?꾨떖?섍퀬 ?꾩냽 誘명똿 ?쇱젙??議곗쑉?⑸땲??",
-  "requiredAction": "?쒖븞?쒖? 蹂댁븞 寃???먮즺瑜?以鍮꾪빐 ?대떦?먯뿉寃??꾨떖?⑸땲??"
+  "details": "가격 조건과 도입 일정을 논의했으며, 보안 검토 자료가 추가로 필요하다는 점을 확인했습니다.",
+  "nextPlan": "다음 주 화요일에 제안서를 전달하고 후속 미팅 일정을 조율합니다.",
+  "requiredAction": "제안서와 보안 검토 자료를 준비해 담당자에게 전달합니다."
 }
 ```
 
 ## 4. POST /api/meeting-notes/stt-draft
 
-- API ?대쫫: ?뚯쓽濡??뚯꽦 STT+AI 珥덉븞 ?앹꽦 API
-- API ?앸퀎?? `CreateMeetingNoteSttAiDraft`
+- API 이름: 회의록 음성 STT+AI 초안 생성 API
+- API 식별자: `CreateMeetingNoteSttAiDraft`
 - Request DTO: `CreateMeetingNoteSttAiDraftDto`
 - Response DTO: `MeetingNoteAiDraftResponse`
 - Success Status: `200 OK`
 - Content-Type: `multipart/form-data`
+- Provider flow: `MeetingNoteSttProvider.transcribe` -> `MeetingNoteAiDraftProvider.createTextDraft`
 
 ### Multipart Field
 
-| ?꾨뱶 | ???| ?꾩닔 | validation | ?ㅻ챸 |
+| 필드 | 타입 | 필수 | validation | 설명 |
 |---|---|---:|---|---|
-| `audio` | file | ??| 理쒕? 25MB, audio 怨꾩뿴 mime type | STT ????뚯꽦 ?뚯씪 |
-| `meetingLocalDateTime` | string | ??| local date-time | ?ъ슜?먭? ?좏깮???뚯쓽 ?쇱떆 |
-| `companies` | string ?먮뒗 string[] | ??| UUID, 理쒖냼 1媛?| 諛섎났 field ?먮뒗 comma-separated ?덉슜 |
-| `contacts` | string ?먮뒗 string[] | ??| UUID, 理쒖냼 1媛?| 諛섎났 field ?먮뒗 comma-separated ?덉슜 |
-| `products` | string ?먮뒗 string[] | ?꾨땲??| UUID | 諛섎났 field ?먮뒗 comma-separated ?덉슜 |
-| `deals` | string ?먮뒗 string[] | ?꾨땲??| UUID | 諛섎났 field ?먮뒗 comma-separated ?덉슜 |
+| `audio` | file | 예 | 최대 25MB, audio 계열 mime type | STT 대상 음성 파일 |
+| `meetingLocalDateTime` | string | 예 | local date-time | 사용자가 선택한 회의 일시 |
+| `companies` | string 또는 string[] | 예 | UUID, 최소 1개 | 반복 field 또는 comma-separated 허용 |
+| `contacts` | string 또는 string[] | 예 | UUID, 최소 1개 | 반복 field 또는 comma-separated 허용 |
+| `products` | string 또는 string[] | 아니오 | UUID | 반복 field 또는 comma-separated 허용 |
+| `deals` | string 또는 string[] | 아니오 | UUID | 반복 field 또는 comma-separated 허용 |
 
-### Request ?덉떆
+### Request 예시
 
 ```text
 POST /api/meeting-notes/stt-draft
@@ -100,29 +113,29 @@ products=00000000-0000-4000-8000-000000000003
 deals=00000000-0000-4000-8000-000000000004
 ```
 
-### Response ?덉떆
+### Response 예시
 
 ```json
 {
   "sourceType": "STT_AI",
-  "transcript": "?ㅻ뒛 媛寃?議곌굔怨??꾩엯 ?쇱젙???쇱쓽?덉뒿?덈떎. ?ㅼ쓬 二??붿슂?쇱뿉 ?쒖븞?쒕? 蹂대궡湲곕줈 ?덉뒿?덈떎.",
-  "details": "媛寃?議곌굔怨??꾩엯 ?쇱젙???쇱쓽?덇퀬, ?쒖븞???꾨떖 ?쇱젙???뺤젙?덉뒿?덈떎.",
-  "nextPlan": "?ㅼ쓬 二??붿슂?쇱뿉 ?쒖븞?쒕? ?꾨떖?⑸땲??",
-  "requiredAction": "?쒖븞?쒖? 蹂댁븞 寃???먮즺瑜?以鍮꾪빀?덈떎."
+  "transcript": "오늘 가격 조건과 도입 일정을 논의했습니다. 다음 주 화요일에 제안서를 보내기로 했습니다.",
+  "details": "가격 조건과 도입 일정을 논의했고, 제안서 전달 일정이 확정되었습니다.",
+  "nextPlan": "다음 주 화요일에 제안서를 전달합니다.",
+  "requiredAction": "제안서와 보안 검토 자료를 준비합니다."
 }
 ```
 
-## 5. 理쒖쥌 ????곌퀎
+## 5. 최종 저장 연계
 
-珥덉븞 ?앹꽦 ??Frontend??湲곗〈 ?뚯쓽濡??앹꽦 API瑜??몄텧?쒕떎.
+초안 생성 후 Frontend는 사용자가 수정할 수 있는 form field에 값을 채운 뒤 기존 회의록 생성 API를 호출한다.
 
 ```json
 {
   "sourceType": "STT_AI",
   "meetingLocalDateTime": "2026-06-18T14:00",
-  "details": "媛寃?議곌굔怨??꾩엯 ?쇱젙???쇱쓽?덇퀬, ?쒖븞???꾨떖 ?쇱젙???뺤젙?덉뒿?덈떎.",
-  "nextPlan": "?ㅼ쓬 二??붿슂?쇱뿉 ?쒖븞?쒕? ?꾨떖?⑸땲??",
-  "requiredAction": "?쒖븞?쒖? 蹂댁븞 寃???먮즺瑜?以鍮꾪빀?덈떎.",
+  "details": "가격 조건과 도입 일정을 논의했고, 제안서 전달 일정이 확정되었습니다.",
+  "nextPlan": "다음 주 화요일에 제안서를 전달합니다.",
+  "requiredAction": "제안서와 보안 검토 자료를 준비합니다.",
   "companies": ["00000000-0000-4000-8000-000000000001"],
   "contacts": ["00000000-0000-4000-8000-000000000002"],
   "products": ["00000000-0000-4000-8000-000000000003"],
@@ -130,47 +143,49 @@ deals=00000000-0000-4000-8000-000000000004
 }
 ```
 
-Backend??理쒖쥌 ?????`sourceType`????ν븯吏留?`transcript`??provider raw response????ν븯吏 ?딅뒗??
+Backend는 최종 저장 시 `sourceType`은 저장하지만 `transcript`와 provider raw response는 저장하지 않는다.
 
 ## 6. Error
 
-| ?곹솴 | error code | HTTP | FE 泥섎━ |
+| 상황 | error code | HTTP | FE 처리 |
 |---|---|---:|---|
-| ?몄쬆 ?놁쓬 | `Unauthorized` | 401 | refresh ?먮뒗 濡쒓렇???대룞 |
-| DTO validation ?ㅽ뙣 | validation error | 400 | form field error ?먮뒗 toast |
-| ?뚯꽦 ?뚯씪 ?놁쓬 | `ValidationError` | 400 | ?뚯씪 ?좏깮 ?덈궡 |
-| ?좏깮 ?뚯궗 ?놁쓬 ?먮뒗 ? ?ъ슜???뚯쑀 | `CompanyNotFound` | 404 | ?좏깮媛??덈줈怨좎묠 ?덈궡 |
-| ?좏깮 ?대떦???놁쓬 ?먮뒗 ? ?ъ슜???뚯쑀 | `ContactNotFound` | 404 | ?좏깮媛??덈줈怨좎묠 ?덈궡 |
-| ?좏깮 ?쒗뭹 ?놁쓬 ?먮뒗 ? ?ъ슜???뚯쑀 | `ProductNotFound` | 404 | ?좏깮媛??덈줈怨좎묠 ?덈궡 |
-| ?좏깮 ???놁쓬 ?먮뒗 ? ?ъ슜???뚯쑀 | `DealNotFound` | 404 | ?좏깮媛??덈줈怨좎묠 ?덈궡 |
-| Provider ?ㅼ젙 ?꾨씫 | `MeetingNoteAiDraftProviderUnavailable` | 503 | 愿由ъ옄 ?ㅼ젙 ?꾩슂 ?덈궡 |
-| Provider ?몄텧 ?먮뒗 ?묐떟 ?뚯떛 ?ㅽ뙣 | `MeetingNoteAiDraftFailed` | 502 | ?좎떆 ???ъ떆???덈궡 |
+| 인증 없음 | `Unauthorized` | 401 | refresh 또는 로그인 이동 |
+| DTO validation 실패 | validation error | 400 | form field error 또는 toast |
+| 음성 파일 없음 | `ValidationError` | 400 | 파일 선택 안내 |
+| 선택 회사 없음 또는 타 사용자 소유 | `CompanyNotFound` | 404 | 선택값 새로고침 안내 |
+| 선택 담당자 없음 또는 타 사용자 소유 | `ContactNotFound` | 404 | 선택값 새로고침 안내 |
+| 선택 제품 없음 또는 타 사용자 소유 | `ProductNotFound` | 404 | 선택값 새로고침 안내 |
+| 선택 딜 없음 또는 타 사용자 소유 | `DealNotFound` | 404 | 선택값 새로고침 안내 |
+| Provider 설정 누락 | `MeetingNoteAiDraftProviderUnavailable` | 503 | 관리자 설정 필요 안내 |
+| Provider 호출 또는 응답 파싱 실패 | `MeetingNoteAiDraftFailed` | 502 | 잠시 후 재시도 안내 |
 
 ## 7. Transaction
 
-- transaction ?꾩슂 ?щ?: ?놁쓬
-- ?댁쑀: 珥덉븞 ?앹꽦 API??DB write媛 ?녾퀬 provider ?몄텧 寃곌낵瑜???ν븯吏 ?딅뒗??
-- 蹂寃?model: ?놁쓬
-- rollback 踰붿쐞: ?놁쓬
-- audit log transaction ?ы븿 ?щ?: ?놁쓬
-- ?몃? Provider ?몄텧 ?꾩튂: application service?먯꽌 寃利??꾨즺 ??provider port ?몄텧, DB transaction 諛?
-理쒖쥌 ???API `POST /api/meeting-notes`??湲곗〈 ?뚯쓽濡????transaction??洹몃?濡??ъ슜?쒕떎.
+- transaction 필요 여부: 없음
+- 이유: 초안 생성 API는 DB write가 없고 provider 호출 결과를 저장하지 않는다.
+- 변경 model: 없음
+- rollback 범위: 없음
+- audit log transaction 포함 여부: 없음
+- 외부 Provider 호출 위치: application service에서 ownership 검증 후 provider port 호출, DB transaction 밖
+- 최종 저장 API `POST /api/meeting-notes`는 기존 회의록 저장 transaction을 그대로 사용한다.
 
 ## 8. Observability
 
-- application log event key: 珥덉븞 ?깃났 濡쒓렇 ?놁쓬
-- provider ?ㅽ뙣 event key: `provider.openai.meetingNoteDraft.failed`
-- audit log: ?놁쓬
-- request id: 湲곗〈 middleware 湲곗? ?ъ슜
-- redaction: `text`, `transcript`, `details`, `nextPlan`, `requiredAction`, ?뚯꽦 ?뚯씪 ?댁슜, provider raw response??濡쒓렇???④린吏 ?딅뒗??
-- provider error context: provider, operation, statusCode, retryable留??덉슜?쒕떎.
-- DB 濡쒓렇 ?뚯씠釉? ?놁쓬
+- application log event key: 초안 성공 로그 없음
+- AI provider 실패 event key: `provider.openai.meetingNoteDraft.failed`
+- STT provider 실패 event key: `provider.openai.meetingNoteStt.failed`
+- audit log: 없음
+- request id: 기존 middleware 기준 사용
+- redaction: `text`, `transcript`, `details`, `nextPlan`, `requiredAction`, 음성 파일 내용, provider raw response는 로그에 남기지 않는다.
+- provider error context: provider, operation, statusCode, retryable만 허용한다.
+- DB 로그 테이블 없음
 
-## 9. DB Schema ?곌껐
+## 9. DB Schema 연결
 
-- ?좉퇋 table: ?놁쓬
-- ?좉퇋 column: ?놁쓬
-- ?좉퇋 migration: ?놁쓬
-- ?ъ슜 model: `Company`, `Contact`, `Product`, `Deal`, `MeetingNote`
-- `MeetingNote.sourceType`: 理쒖쥌 ?????`MANUAL`, `TEXT_AI`, `STT_AI` ?덉슜
-- `MeetingNote.rawText`: ?대쾲 踰붿쐞?먯꽌????ν븯吏 ?딆쓬
+- 신규 table: 없음
+- 신규 column: 없음
+- 신규 migration: 없음
+- 조회 model: `Company`, `Contact`, `Product`, `Deal`
+- 최종 저장 model: 기존 `MeetingNote`, `MeetingNoteCompany`, `MeetingNoteContact`, `MeetingNoteProduct`, `MeetingNoteDeal`
+- `MeetingNote.sourceType`: 최종 저장 시 `MANUAL`, `TEXT_AI`, `STT_AI` 허용
+- `MeetingNote.rawText`: 이번 범위에서는 저장하지 않음

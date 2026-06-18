@@ -1,11 +1,7 @@
-import { Buffer } from "node:buffer";
 import { ConfigService } from "@nestjs/config";
 import type {
-  CreateMeetingNoteAudioDraftInput,
-  CreateMeetingNoteAudioDraftOutput,
   CreateMeetingNoteTextDraftInput,
   MeetingNoteAiDraftProvider,
-  MeetingNoteDraftAudioFile,
   MeetingNoteDraftContent,
   MeetingNoteDraftContext,
 } from "@/modules/meeting-note/application/ports/meeting-note-ai-draft.provider";
@@ -16,7 +12,6 @@ import {
 import { AppLogger } from "@/shared/infrastructure/logger/app-logger.service";
 
 const DEFAULT_OPENAI_BASE_URL = "https://api.openai.com/v1";
-const DEFAULT_STT_MODEL = "gpt-4o-mini-transcribe";
 const OPENAI_PROVIDER = "openai";
 
 // 역할 : OpenAiConfig OpenAI provider 호출에 필요한 설정 값을 정의합니다.
@@ -24,7 +19,6 @@ interface OpenAiConfig {
   readonly apiKey: string;
   readonly baseUrl: string;
   readonly draftModel: string;
-  readonly sttModel: string;
 }
 
 // 역할 : OpenAiDraftJson OpenAI structured output의 회의록 초안 JSON schema를 정의합니다.
@@ -34,7 +28,7 @@ interface OpenAiDraftJson {
   readonly requiredAction: string | null;
 }
 
-// 역할 : OpenAiMeetingNoteAiDraftProvider OpenAI API로 회의록 AI/STT 초안을 생성하는 infrastructure adapter입니다.
+// 역할 : OpenAiMeetingNoteAiDraftProvider OpenAI API로 회의록 AI 초안을 생성하는 infrastructure adapter입니다.
 export class OpenAiMeetingNoteAiDraftProvider
   implements MeetingNoteAiDraftProvider
 {
@@ -79,26 +73,6 @@ export class OpenAiMeetingNoteAiDraftProvider
     return this.parseDraftResponse(responseBody);
   }
 
-  // 기능 : 음성 파일을 OpenAI transcription API로 텍스트화한 뒤 회의록 본문 초안을 생성합니다.
-  async createAudioDraft(
-    input: CreateMeetingNoteAudioDraftInput
-  ): Promise<CreateMeetingNoteAudioDraftOutput> {
-    // 1. 음성 파일을 transcript 텍스트로 변환합니다.
-    const transcript = await this.transcribeAudio(input.audioFile);
-
-    // 2. transcript를 원문으로 사용해 동일한 텍스트 초안 생성 흐름을 재사용합니다.
-    const draft = await this.createTextDraft({
-      rawText: transcript,
-      context: input.context,
-    });
-
-    // 3. FE가 사용자가 확인할 수 있도록 transcript와 초안 필드를 함께 반환합니다.
-    return {
-      transcript,
-      ...draft,
-    };
-  }
-
   // 기능 : OpenAI API 호출에 필요한 환경변수를 ConfigService에서 읽고 검증합니다.
   private getConfig(): OpenAiConfig {
     const apiKey = this.getRequiredConfig("OPENAI_API_KEY");
@@ -106,15 +80,11 @@ export class OpenAiMeetingNoteAiDraftProvider
     const baseUrl =
       this.configService.get<string>("OPENAI_BASE_URL")?.trim() ||
       DEFAULT_OPENAI_BASE_URL;
-    const sttModel =
-      this.configService.get<string>("OPENAI_MEETING_NOTE_STT_MODEL")?.trim() ||
-      DEFAULT_STT_MODEL;
 
     return {
       apiKey,
       baseUrl: baseUrl.replace(/\/+$/, ""),
       draftModel,
-      sttModel,
     };
   }
 
@@ -183,80 +153,6 @@ export class OpenAiMeetingNoteAiDraftProvider
       throw new MeetingNoteAiDraftFailedError(
         "OpenAI meeting note draft response was not JSON"
       );
-    }
-  }
-
-  // 기능 : OpenAI audio transcription API로 음성 파일을 transcript 텍스트로 변환합니다.
-  private async transcribeAudio(
-    audioFile: MeetingNoteDraftAudioFile
-  ): Promise<string> {
-    const config = this.getConfig();
-    const formData = new FormData();
-    formData.set("model", config.sttModel);
-    formData.set("response_format", "json");
-    formData.set(
-      "file",
-      this.createAudioBlob(audioFile),
-      audioFile.fileName
-    );
-
-    const response = await fetch(`${config.baseUrl}/audio/transcriptions`, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${config.apiKey}`,
-      },
-      body: formData,
-    });
-
-    if (!response.ok) {
-      this.logProviderFailure(
-        "audio.transcriptions",
-        response.status,
-        response.statusText
-      );
-      throw new MeetingNoteAiDraftFailedError("OpenAI transcription failed");
-    }
-
-    const responseBody = await this.readJsonResponse(
-      response,
-      "OpenAI transcription response was not JSON"
-    );
-
-    if (!this.isRecord(responseBody)) {
-      throw new MeetingNoteAiDraftFailedError(
-        "OpenAI transcription response did not match schema"
-      );
-    }
-
-    const transcript = this.readStringField(responseBody, "text");
-
-    if (!transcript || transcript.trim().length === 0) {
-      throw new MeetingNoteAiDraftFailedError("OpenAI transcript was empty");
-    }
-
-    return transcript.trim();
-  }
-
-  // 기능 : Node Buffer 음성 데이터를 FormData가 전송할 수 있는 Blob으로 변환합니다.
-  private createAudioBlob(audioFile: MeetingNoteDraftAudioFile): Blob {
-    const audioBytes = Buffer.from(audioFile.buffer);
-    const arrayBuffer = audioBytes.buffer.slice(
-      audioBytes.byteOffset,
-      audioBytes.byteOffset + audioBytes.byteLength
-    ) as ArrayBuffer;
-
-    return new Blob([arrayBuffer], { type: audioFile.mimeType });
-  }
-
-  // 기능 : fetch response body를 JSON으로 안전하게 파싱합니다.
-  private async readJsonResponse(
-    response: Response,
-    errorMessage: string
-  ): Promise<unknown> {
-    try {
-      return await response.json();
-    } catch {
-      throw new MeetingNoteAiDraftFailedError(errorMessage);
     }
   }
 

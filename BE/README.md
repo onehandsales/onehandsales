@@ -90,7 +90,9 @@ pnpm run build
 
 기본 Backend 테스트는 외부 Provider를 실제 호출하지 않는다. 실제 Supabase Auth 또는 OpenAI MeetingNote draft smoke를 하려면 `.env`에 credential을 채운 뒤 별도 provider smoke로 확인한다.
 
-주요 env는 `.env.example`에 있다. local에서 최소 서버만 띄울 때도 `DATABASE_URL`, `DIRECT_URL`, `TEST_DATABASE_URL`, token secret 값은 실제 안전한 값으로 채우는 것을 권장한다. MeetingNote AI/STT draft는 `OPENAI_API_KEY`, `OPENAI_MEETING_NOTE_DRAFT_MODEL`, `OPENAI_MEETING_NOTE_STT_MODEL`을 사용한다.
+주요 env는 `.env.example`에 있다. local에서 최소 서버만 띄울 때도 `DATABASE_URL`, `DIRECT_URL`, `TEST_DATABASE_URL`, token secret 값은 실제 안전한 값으로 채우는 것을 권장한다.
+
+MeetingNote AI 초안 생성은 `MeetingNoteAiDraftProvider` port와 OpenAI adapter를 사용하며 `OPENAI_API_KEY`, `OPENAI_MEETING_NOTE_DRAFT_MODEL`이 필요하다. MeetingNote STT는 별도 `MeetingNoteSttProvider` port와 OpenAI STT adapter를 사용하며 `OPENAI_MEETING_NOTE_STT_MODEL`로 모델을 지정한다. 추후 STT provider를 바꿀 때는 STT adapter만 교체한다.
 
 ## 정본 규칙
 

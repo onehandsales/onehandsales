@@ -137,6 +137,8 @@ AI/STT가 생성:
 
 Frontend는 draft API 결과를 자동 저장하지 않는다. 결과를 form field에 채우고 사용자가 수정한 뒤 기존 `POST /api/meeting-notes`로 저장한다. STT transcript는 검토용으로 표시하고 현재 범위에서는 저장하지 않는다.
 
+Backend는 AI 초안 provider와 STT provider를 분리한다. Frontend는 provider 종류를 직접 알 필요가 없고, `ai-draft`와 `stt-draft` API 계약만 유지하면 된다.
+
 ## 8. Pagination 기준
 
 - Company/Contact/Product/Deal/MeetingNote 목록은 page-number pagination을 사용한다.

@@ -1,29 +1,55 @@
-﻿# User Flow
+# Meeting Note AI/STT 사용자 흐름
 
-## 1. ?띿뒪??AI 珥덉븞
+## 1. 텍스트 AI 초안
 
-1. ?ъ슜?먭? ?뚯쓽濡??앹꽦 紐⑤떖???곕떎.
-2. ?ъ슜?먭? ?뚯궗, ?대떦?? ?쒗뭹, ?? ?뚯쓽 ?쇱떆瑜?吏곸젒 ?좏깮?쒕떎.
-3. ?ъ슜?먭? ?뚯쓽 ?먮Ц?대굹 硫붾え瑜??띿뒪?몃줈 ?낅젰?쒕떎.
-4. Frontend媛 `POST /api/meeting-notes/ai-draft`瑜??몄텧?쒕떎.
-5. Backend???좏깮 ID???뚯쑀沅뚯쓣 寃利앺븯怨?AI 珥덉븞???앹꽦?쒕떎.
-6. Frontend??`details`, `nextPlan`, `requiredAction` ?낅젰移몄뿉 珥덉븞??梨꾩슫??
-7. ?ъ슜?먭? ?댁슜???뺤씤?섍퀬 ?섏젙?쒕떎.
-8. 理쒖쥌 ??μ? `POST /api/meeting-notes`濡??섑뻾?쒕떎.
+1. 사용자가 회의록 생성 모달을 연다.
+2. 사용자가 회사, 담당자, 제품, 딜, 회의 일시를 직접 선택한다.
+3. 사용자가 회의 원문 텍스트를 입력한다.
+4. Frontend가 `POST /api/meeting-notes/ai-draft`를 호출한다.
+5. Backend가 선택 ID ownership을 검증한다.
+6. Backend가 `MeetingNoteAiDraftProvider`를 통해 OpenAI AI 초안을 생성한다.
+7. Frontend가 `details`, `nextPlan`, `requiredAction` field에 초안을 채운다.
+8. 사용자가 초안을 확인/수정한다.
+9. Frontend가 기존 `POST /api/meeting-notes`로 최종 저장한다.
 
-## 2. STT+AI 珥덉븞
+## 2. STT+AI 초안
 
-1. ?ъ슜?먭? ?뚯쓽濡??앹꽦 紐⑤떖???곕떎.
-2. ?ъ슜?먭? ?뚯궗, ?대떦?? ?쒗뭹, ?? ?뚯쓽 ?쇱떆瑜?吏곸젒 ?좏깮?쒕떎.
-3. ?ъ슜?먭? ?뚯꽦 ?뚯씪???낅줈?쒗븯嫄곕굹 ?뱀쓬?쒕떎.
-4. Frontend媛 `POST /api/meeting-notes/stt-draft`瑜?multipart濡??몄텧?쒕떎.
-5. Backend???뚯꽦??transcript濡?蹂?섑븳 ??AI 珥덉븞???앹꽦?쒕떎.
-6. Frontend??transcript瑜??ъ슜?먭? ?뺤씤?????덇쾶 蹂댁뿬二쇨퀬 珥덉븞 ?꾨뱶瑜?梨꾩슫??
-7. ?ъ슜?먭? ?댁슜???뺤씤?섍퀬 ?섏젙?쒕떎.
-8. 理쒖쥌 ??μ? `POST /api/meeting-notes`濡??섑뻾?쒕떎.
+1. 사용자가 회의록 생성 모달을 연다.
+2. 사용자가 회사, 담당자, 제품, 딜, 회의 일시를 직접 선택한다.
+3. 사용자가 음성 파일을 업로드하거나 녹음한다.
+4. Frontend가 `POST /api/meeting-notes/stt-draft`를 multipart로 호출한다.
+5. Backend가 선택 ID ownership과 음성 파일을 검증한다.
+6. Backend가 `MeetingNoteSttProvider`를 통해 음성을 transcript로 변환한다.
+7. Backend가 transcript를 `MeetingNoteAiDraftProvider`에 전달해 AI 초안을 생성한다.
+8. Frontend가 transcript를 검토용으로 보여주고 `details`, `nextPlan`, `requiredAction` field에 초안을 채운다.
+9. 사용자가 초안을 확인/수정한다.
+10. Frontend가 기존 `POST /api/meeting-notes`로 최종 저장한다.
 
-## 3. ?ъ슜?먯뿉寃?蹂댁씠硫????섎뒗 ?먮쫫
+## 3. 선택 책임
 
-- AI媛 ?뚯궗, ?대떦?? ?쒗뭹, ?? ?뚯쓽 ?쇱떆瑜??꾩쓽濡??좏깮?섎뒗 ?먮쫫
-- 珥덉븞 ?앹꽦留??덈뒗???뚯쓽濡앹씠 ?먮룞 ??λ릺???먮쫫
-- ?뱀랬 ?먮Ц?대굹 ?뚯쓽 蹂몃Ц???댁쁺 濡쒓렇???됰Ц?쇰줈 ?⑤뒗 ?먮쫫
+사용자가 선택:
+
+- 회사
+- 담당자
+- 제품
+- 딜
+- 회의 일시
+
+AI/STT가 생성:
+
+- transcript
+- 회의 내용
+- 다음 계획
+- 필요 행동
+
+AI/STT가 하지 않는 것:
+
+- 회사/담당자/제품/딜 자동 선택
+- 회의 일시 추론
+- 자동 저장
+- transcript 영구 저장
+
+## 4. 관련 문서
+
+- `COMMON/API-SPEC/MEETING_NOTE_AI_STT_API.md`
+- `COMMON/GOAL-WORK-ORDER.md`

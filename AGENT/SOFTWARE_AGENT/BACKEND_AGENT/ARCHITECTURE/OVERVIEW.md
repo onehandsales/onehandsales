@@ -82,8 +82,8 @@ OpenAI, Google Calendar, email, browser push, file parser 같은 외부 Provider
 
 현재 OpenAI 관련 구현 상태:
 
-- MeetingNote text AI draft API 구현.
-- MeetingNote STT+AI draft API 구현.
+- MeetingNote text AI draft API 구현. AI 초안 생성은 `MeetingNoteAiDraftProvider` port 뒤에 두고 현재 adapter는 OpenAI다.
+- MeetingNote STT+AI draft API 구현. STT는 `MeetingNoteSttProvider` port로 AI provider와 분리되어 있으며 현재 adapter는 OpenAI transcription이다.
 - BusinessCard OCR과 Import AI mapping은 후속 범위.
 
 Provider-specific prompt, response parsing, SDK 호출은 infrastructure adapter에서만 처리한다.

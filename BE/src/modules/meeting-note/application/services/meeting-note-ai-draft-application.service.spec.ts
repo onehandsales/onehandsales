@@ -1,8 +1,11 @@
 import { Buffer } from "node:buffer";
 import {
   type MeetingNoteAiDraftProvider,
-  type MeetingNoteDraftAudioFile,
 } from "@/modules/meeting-note/application/ports/meeting-note-ai-draft.provider";
+import {
+  type MeetingNoteDraftAudioFile,
+  type MeetingNoteSttProvider,
+} from "@/modules/meeting-note/application/ports/meeting-note-stt.provider";
 import {
   MeetingNoteSourceTypeValue,
   type CompanySnapshotRecord,
@@ -70,7 +73,8 @@ type DraftRepositoryFake = Pick<
 // 역할 : FakeMeetingNoteDraftFixture 회의록 AI/STT 초안 생성 테스트 의존성을 구성합니다.
 interface FakeMeetingNoteDraftFixture {
   readonly repository: jest.Mocked<DraftRepositoryFake>;
-  readonly provider: jest.Mocked<MeetingNoteAiDraftProvider>;
+  readonly aiDraftProvider: jest.Mocked<MeetingNoteAiDraftProvider>;
+  readonly sttProvider: jest.Mocked<MeetingNoteSttProvider>;
   readonly service: MeetingNoteAiDraftApplicationService;
 }
 
@@ -82,30 +86,30 @@ function createFixture(): FakeMeetingNoteDraftFixture {
     findProductsByIds: jest.fn().mockResolvedValue([PRODUCT]),
     findDealsByIds: jest.fn().mockResolvedValue([DEAL]),
   };
-  const provider: jest.Mocked<MeetingNoteAiDraftProvider> = {
+  const aiDraftProvider: jest.Mocked<MeetingNoteAiDraftProvider> = {
     createTextDraft: jest.fn().mockResolvedValue({
       details: "회의 내용 초안",
       nextPlan: "다음 계획 초안",
       requiredAction: "필요 행동 초안",
     }),
-    createAudioDraft: jest.fn().mockResolvedValue({
+  };
+  const sttProvider: jest.Mocked<MeetingNoteSttProvider> = {
+    transcribe: jest.fn().mockResolvedValue({
       transcript: "녹취 transcript",
-      details: "회의 내용 초안",
-      nextPlan: "다음 계획 초안",
-      requiredAction: "필요 행동 초안",
     }),
   };
   const service = new MeetingNoteAiDraftApplicationService(
     repository as unknown as MeetingNoteRepository,
-    provider
+    aiDraftProvider,
+    sttProvider
   );
 
-  return { repository, provider, service };
+  return { repository, aiDraftProvider, sttProvider, service };
 }
 
 describe("MeetingNoteAiDraftApplicationService", () => {
   it("사용자가 선택한 맥락을 검증하고 텍스트 AI 초안만 반환한다", async () => {
-    const { provider, service } = createFixture();
+    const { aiDraftProvider, service } = createFixture();
 
     const result = await service.createTextAiDraft(CURRENT_USER, {
       text: "가격 조건과 다음 미팅을 논의했다.",
@@ -123,7 +127,7 @@ describe("MeetingNoteAiDraftApplicationService", () => {
       nextPlan: "다음 계획 초안",
       requiredAction: "필요 행동 초안",
     });
-    expect(provider.createTextDraft).toHaveBeenCalledWith(
+    expect(aiDraftProvider.createTextDraft).toHaveBeenCalledWith(
       expect.objectContaining({
         rawText: "가격 조건과 다음 미팅을 논의했다.",
         context: expect.objectContaining({
@@ -137,8 +141,8 @@ describe("MeetingNoteAiDraftApplicationService", () => {
     );
   });
 
-  it("음성 파일은 provider에서 transcript와 초안으로 변환해 반환한다", async () => {
-    const { provider, service } = createFixture();
+  it("음성 파일은 STT provider transcript와 AI draft provider 초안으로 변환해 반환한다", async () => {
+    const { aiDraftProvider, sttProvider, service } = createFixture();
     const audioFile: MeetingNoteDraftAudioFile = {
       buffer: Buffer.from("audio"),
       fileName: "meeting.webm",
@@ -155,9 +159,14 @@ describe("MeetingNoteAiDraftApplicationService", () => {
 
     expect(result.sourceType).toBe(MeetingNoteSourceTypeValue.STT_AI);
     expect(result.transcript).toBe("녹취 transcript");
-    expect(provider.createAudioDraft).toHaveBeenCalledWith(
+    expect(sttProvider.transcribe).toHaveBeenCalledWith(
       expect.objectContaining({
         audioFile,
+      })
+    );
+    expect(aiDraftProvider.createTextDraft).toHaveBeenCalledWith(
+      expect.objectContaining({
+        rawText: "녹취 transcript",
         context: expect.objectContaining({
           companies: [expect.objectContaining({ id: "company-1" })],
           contacts: [expect.objectContaining({ id: "contact-1" })],
@@ -167,7 +176,7 @@ describe("MeetingNoteAiDraftApplicationService", () => {
   });
 
   it("선택한 회사가 현재 사용자 소유가 아니면 provider를 호출하지 않는다", async () => {
-    const { repository, provider, service } = createFixture();
+    const { repository, aiDraftProvider, sttProvider, service } = createFixture();
     repository.findCompaniesByIds.mockResolvedValueOnce([]);
 
     await expect(
@@ -178,6 +187,7 @@ describe("MeetingNoteAiDraftApplicationService", () => {
         contacts: ["contact-1"],
       })
     ).rejects.toBeInstanceOf(RelatedCompanyNotFoundError);
-    expect(provider.createTextDraft).not.toHaveBeenCalled();
+    expect(aiDraftProvider.createTextDraft).not.toHaveBeenCalled();
+    expect(sttProvider.transcribe).not.toHaveBeenCalled();
   });
 });

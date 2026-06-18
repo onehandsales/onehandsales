@@ -1,10 +1,20 @@
-﻿# Common
+# COMMON
 
-Frontend? Backend媛 ?④퍡 遊먯빞 ?섎뒗 ?뚯쓽濡?AI/STT 珥덉븞 ?앹꽦 怨꾩빟???붾떎.
+## 1. 목적
 
-?대쾲 怨꾪쉷??怨듯넻 ?먯튃? ?ㅼ쓬怨?媛숇떎.
+이 폴더는 회의록 AI/STT 초안 생성 작업에서 Frontend와 Backend가 함께 봐야 하는 사용자 흐름, API 계약, goal 순서, 구현 전 검토 결과를 관리한다.
 
-- ?좏깮???낅Т ?곗씠?곕뒗 ?ъ슜???낅젰???뺣낯?쇰줈 ?쇰뒗??
-- AI/STT 寃곌낵???????珥덉븞?대ŉ ?ъ슜?먭? ?뺤씤?섍퀬 ?섏젙?????덉뼱???쒕떎.
-- Backend??ownership 寃利앷낵 provider ?몄텧 寃쎄퀎瑜?梨낆엫吏꾨떎.
-- Frontend???좏깮 UI, ?뱀쓬/?낅줈??UI, 珥덉븞 ?곸슜 UX瑜?梨낆엫吏꾨떎.
+## 2. 문서 구성
+
+- `USER-FLOW.md`: 사용자가 AI/STT 초안을 생성하고 저장하는 흐름
+- `GOAL-WORK-ORDER.md`: `/goal` 작업 순서와 완료 기준
+- `API-SPEC/MEETING_NOTE_AI_STT_API.md`: AI/STT draft API 계약
+- `GOAL-SPECS/G01-BE-MEETING-NOTE-AI-STT-DRAFT.md`: Backend 구현 goal 상세
+- `GOAL-SPECS/G02-FE-MEETING-NOTE-AI-STT-DRAFT.md`: Frontend 연결 goal 상세
+- `PLANNING-REVIEW.md`: 구현 전 기획 검토 결과
+
+## 3. 관련 문서
+
+- `TODO/MEETING_NOTE_AI_STT_PLAN/README.md`
+- `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/ARCHITECTURE/BACKEND.md`
+- `AGENT/SOFTWARE_AGENT/FRONT_AGENT/ARCHITECTURE/FRONTEND_USER_WEB.md`

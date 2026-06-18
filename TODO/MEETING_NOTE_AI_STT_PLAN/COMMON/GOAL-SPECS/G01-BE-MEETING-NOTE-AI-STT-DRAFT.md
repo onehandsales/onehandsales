@@ -1,24 +1,27 @@
-﻿# G01-BE-MEETING-NOTE-AI-STT-DRAFT
+# G01-BE-MEETING-NOTE-AI-STT-DRAFT
 
-## 紐⑺몴
+## 목표
 
-?뚯쓽濡?AI/STT 珥덉븞 ?앹꽦 Backend API瑜?援ы쁽?쒕떎.
+회의록 AI/STT 초안 생성 Backend API를 구현한다.
 
-## ?붽뎄?ы빆
+## 요구사항
 
-- `POST /api/meeting-notes/ai-draft`瑜??쒓났?쒕떎.
-- `POST /api/meeting-notes/stt-draft`瑜??쒓났?쒕떎.
-- ?ъ슜?먭? ?좏깮???뚯궗, ?대떦?? ?쒗뭹, ?? ?뚯쓽 ?쇱떆??Backend媛 寃利앸쭔 ?섍퀬 AI媛 ?앹꽦?섏? ?딅뒗??
-- AI/STT??`details`, `nextPlan`, `requiredAction`留??앹꽦?쒕떎.
-- 珥덉븞 ?앹꽦 寃곌낵??DB????ν븯吏 ?딅뒗??
-- provider??application port/interface ?ㅼ뿉 ?붾떎.
-- OpenAI adapter??infrastructure???붾떎.
-- 湲곕낯 ?뚯뒪?몃뒗 provider fake濡?寃利앺븳??
+- `POST /api/meeting-notes/ai-draft`를 제공한다.
+- `POST /api/meeting-notes/stt-draft`를 제공한다.
+- 사용자가 선택한 회사, 담당자, 제품, 딜, 회의 일시는 Backend가 검증만 하고 AI가 생성하지 않는다.
+- AI/STT는 `details`, `nextPlan`, `requiredAction`만 생성한다.
+- 초안 생성 결과는 DB에 저장하지 않는다.
+- AI 초안 생성은 `MeetingNoteAiDraftProvider` application port 뒤에 둔다.
+- STT 변환은 `MeetingNoteSttProvider` application port 뒤에 둔다.
+- AI provider 기본 구현은 OpenAI adapter를 사용한다.
+- STT provider 기본 구현은 OpenAI adapter를 사용하되 Google, NAVER, AWS 등으로 교체 가능해야 한다.
+- 기본 테스트는 provider fake로 검증한다.
 
-## ?꾨즺 湲곗?
+## 완료 기준
 
-- ??API媛 controller???깅줉?섏뼱 ?덈떎.
-- application service媛 ?좏깮 ID ownership??寃利앺븳??
-- provider ?ㅽ뙣???꾨찓???ㅻ쪟濡?蹂?섎맂??
-- `.env.example`??provider ?ㅼ젙 ?ㅺ? 異붽??섏뼱 ?덈떎.
-- typecheck? 愿???뚯뒪?멸? ?듦낵?쒕떎.
+- 두 API가 controller에 등록되어 있다.
+- application service가 선택 ID ownership을 검증한다.
+- `stt-draft`는 STT provider로 transcript를 만든 뒤 AI provider로 본문 초안을 만든다.
+- provider 실패가 일관된 외부 provider 오류로 변환된다.
+- `.env.example`에 AI/STT provider 설정이 추가되어 있다.
+- typecheck와 관련 테스트가 통과한다.

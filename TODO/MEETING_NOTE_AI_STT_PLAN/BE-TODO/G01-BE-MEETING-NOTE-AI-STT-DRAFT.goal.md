@@ -1,10 +1,10 @@
-﻿# /goal G01-BE-MEETING-NOTE-AI-STT-DRAFT
+# /goal G01-BE-MEETING-NOTE-AI-STT-DRAFT
 
 ## 1. Goal
 
-?뚯쓽濡?AI/STT 珥덉븞 ?앹꽦 Backend API瑜?援ы쁽?쒕떎.
+회의록 AI/STT 초안 생성 Backend API를 구현한다.
 
-## 2. 癒쇱? ?쎌쓣 臾몄꽌
+## 2. 먼저 읽을 문서
 
 - `TODO/MEETING_NOTE_AI_STT_PLAN/README.md`
 - `TODO/MEETING_NOTE_AI_STT_PLAN/COMMON/API-SPEC/MEETING_NOTE_AI_STT_API.md`
@@ -12,39 +12,43 @@
 - `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/ARCHITECTURE/BACKEND.md`
 - `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/CONVENTION/BACKEND.md`
 - `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/CONVENTION/API_CONTRACT.md`
-- `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/CONVENTION/TRANSACTION.md`
 - `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/CONVENTION/OBSERVABILITY.md`
-- `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/CONVENTION/COMMENT_AND_LOGGING.md`
 
-## 3. ?묒뾽 泥댄겕由ъ뒪??
-- [x] `MeetingNoteAiDraftProvider` application port ?뺤쓽
-- [x] `MeetingNoteAiDraftApplicationService` 援ы쁽
-- [x] OpenAI provider adapter 援ы쁽
-- [x] `POST /api/meeting-notes/ai-draft` controller route 異붽?
-- [x] `POST /api/meeting-notes/stt-draft` controller route 異붽?
-- [x] AI/STT 珥덉븞 DTO 異붽?
-- [x] `MeetingNoteModule` DI ?깅줉
-- [x] `.env.example` provider ?ㅼ젙 異붽?
-- [x] 理쒖쥌 ???API?먯꽌 `TEXT_AI`, `STT_AI` sourceType ?덉슜
-- [x] 愿??application/controller ?뚯뒪??異붽?
-- [x] typecheck? 愿???뚯뒪???ㅽ뻾
+## 3. 작업 체크리스트
 
-## 4. 援ы쁽 API
+- [x] `POST /api/meeting-notes/ai-draft` controller/DTO 추가
+- [x] `POST /api/meeting-notes/stt-draft` multipart controller/DTO 추가
+- [x] `MeetingNoteAiDraftProvider` port 추가
+- [x] `MeetingNoteSttProvider` port 추가
+- [x] OpenAI AI draft adapter 구현
+- [x] OpenAI STT adapter 구현
+- [x] `MeetingNoteAiDraftApplicationService`에서 STT -> AI draft 조합 구현
+- [x] 최종 저장 API에서 `TEXT_AI`, `STT_AI` sourceType 허용
+- [x] `.env.example` provider 설정 추가
+- [x] application/controller 테스트 추가
 
-- `POST /api/meeting-notes/ai-draft`
-- `POST /api/meeting-notes/stt-draft`
-- 湲곗〈 `POST /api/meeting-notes` sourceType ???踰붿쐞 ?뺤옣
+## 4. API 완료 목록
+
+- [x] `POST /api/meeting-notes/ai-draft`
+- [x] `POST /api/meeting-notes/stt-draft`
 
 ## 5. Acceptance Criteria
 
-- ?뚯궗, ?대떦?? ?쒗뭹, ?? ?뚯쓽 ?쇱떆???ъ슜?먭? ?좏깮??媛믩쭔 ?ъ슜?쒕떎.
-- AI/STT??`details`, `nextPlan`, `requiredAction`留??앹꽦?쒕떎.
-- 珥덉븞 API??DB write瑜??섏? ?딅뒗??
-- ?뚯꽦 ?뚯씪???녾굅??吏?먰븯吏 ?딅뒗 ??낆씠硫?400??諛섑솚?쒕떎.
-- provider env媛 ?놁쑝硫?503??諛섑솚?쒕떎.
-- provider ?ㅽ뙣??502瑜?諛섑솚?쒕떎.
-- provider ?ㅽ뙣 濡쒓렇?먮뒗 ?뚯쓽 蹂몃Ц, transcript, ?뚯꽦 ?댁슜???ы븿?섏? ?딅뒗??
+- 사용자가 선택한 회사/담당자/제품/딜 ID를 현재 사용자 소유 데이터로 검증한다.
+- AI는 `details`, `nextPlan`, `requiredAction`만 생성한다.
+- STT는 transcript만 생성하고, AI draft provider가 transcript 기반 초안을 생성한다.
+- AI draft provider와 STT provider는 별도 port/interface로 분리되어 있다.
+- 초안 생성 API는 DB에 저장하지 않는다.
+- provider env가 없으면 503을 반환한다.
+- provider 실패는 502를 반환한다.
+- provider 실패 로그에는 회의 본문, transcript, 음성 내용을 포함하지 않는다.
 
-## 6. 寃利?
-- `pnpm.cmd run typecheck`
-- `pnpm.cmd test -- meeting-note-ai-draft-application.service.spec.ts meeting-note.controller.spec.ts`
+## 6. 완료 기록
+
+- 상태: completed
+- 구현 위치:
+  - `BE/src/modules/meeting-note/application/ports/meeting-note-ai-draft.provider.ts`
+  - `BE/src/modules/meeting-note/application/ports/meeting-note-stt.provider.ts`
+  - `BE/src/modules/meeting-note/infrastructure/providers/openai-meeting-note-ai-draft.provider.ts`
+  - `BE/src/modules/meeting-note/infrastructure/providers/openai-meeting-note-stt.provider.ts`
+- 남은 작업: `G02-FE-MEETING-NOTE-AI-STT-DRAFT`에서 Frontend 연결

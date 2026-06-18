@@ -3,10 +3,14 @@ import { Inject, Injectable } from "@nestjs/common";
 import {
   MEETING_NOTE_AI_DRAFT_PROVIDER,
   type MeetingNoteAiDraftProvider,
-  type MeetingNoteDraftAudioFile,
   type MeetingNoteDraftContent,
   type MeetingNoteDraftContext,
 } from "@/modules/meeting-note/application/ports/meeting-note-ai-draft.provider";
+import {
+  MEETING_NOTE_STT_PROVIDER,
+  type MeetingNoteDraftAudioFile,
+  type MeetingNoteSttProvider,
+} from "@/modules/meeting-note/application/ports/meeting-note-stt.provider";
 import {
   MEETING_NOTE_REPOSITORY,
   MeetingNoteSourceTypeValue,
@@ -93,7 +97,9 @@ export class MeetingNoteAiDraftApplicationService {
     @Inject(MEETING_NOTE_REPOSITORY)
     private readonly meetingNoteRepository: MeetingNoteRepository,
     @Inject(MEETING_NOTE_AI_DRAFT_PROVIDER)
-    private readonly aiDraftProvider: MeetingNoteAiDraftProvider
+    private readonly aiDraftProvider: MeetingNoteAiDraftProvider,
+    @Inject(MEETING_NOTE_STT_PROVIDER)
+    private readonly sttProvider: MeetingNoteSttProvider
   ) {}
 
   // 기능 : 회의 원문 텍스트와 선택 맥락을 검증한 뒤 AI 초안 필드만 반환합니다.
@@ -128,19 +134,25 @@ export class MeetingNoteAiDraftApplicationService {
     const audioFile = this.normalizeAudioFile(input.audioFile);
     const context = await this.buildContext(currentUser.id, input);
 
-    // 2. 외부 provider port를 호출해 transcript와 저장 없는 회의록 본문 초안을 생성합니다.
-    const draft = await this.aiDraftProvider.createAudioDraft({
+    // 2. STT provider port를 호출해 음성 파일을 transcript로 변환합니다.
+    const { transcript } = await this.sttProvider.transcribe({
       audioFile,
+    });
+    const normalizedTranscript = this.normalizeGeneratedRequiredText(
+      transcript,
+      "transcript"
+    );
+
+    // 3. AI draft provider port를 호출해 transcript 기반의 저장 없는 회의록 본문 초안을 생성합니다.
+    const draft = await this.aiDraftProvider.createTextDraft({
+      rawText: normalizedTranscript,
       context,
     });
 
-    // 3. FE가 transcript 확인과 초안 적용을 함께 처리할 수 있는 응답으로 변환합니다.
+    // 4. FE가 transcript 확인과 초안 적용을 함께 처리할 수 있는 응답으로 변환합니다.
     return {
       sourceType: MeetingNoteSourceTypeValue.STT_AI,
-      transcript: this.normalizeGeneratedRequiredText(
-        draft.transcript,
-        "transcript"
-      ),
+      transcript: normalizedTranscript,
       ...this.normalizeGeneratedDraft(draft),
     };
   }

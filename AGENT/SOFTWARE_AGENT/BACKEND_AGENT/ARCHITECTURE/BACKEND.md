@@ -96,6 +96,7 @@ Current response notes:
 - `GET /api/schedules` uses local date range query values plus IANA `timeZone` and returns UTC ISO strings.
 - `GET /api/meeting-notes` returns summary objects for `companies`, `contacts`, `products`, `deals`, uses fixed `pageSize=10`, and uses `totalPages`.
 - `POST /api/meeting-notes/ai-draft` and `POST /api/meeting-notes/stt-draft` generate draft fields only. They do not create a meeting note row.
+- MeetingNote AI draft and STT are separated as `MeetingNoteAiDraftProvider` and `MeetingNoteSttProvider`; current adapters are OpenAI.
 - MeetingNote AI/STT writes no transcript table, provider log table, or raw-text storage in the current scope.
 - `GET /api/search` reads Company, Contact, Product, Deal, Schedule, and MeetingNote data owned by the current user and returns navigation target metadata.
 
@@ -300,6 +301,8 @@ Rules:
 - OpenAI must be wrapped behind backend ports.
 - Domain/application code must not depend on OpenAI SDK directly.
 - Provider-specific prompt/response handling belongs in infrastructure adapters.
+- MeetingNote AI draft and STT must remain separate provider ports.
+- STT provider adapters may be replaced independently of the OpenAI AI draft adapter.
 - MeetingNote AI/STT draft APIs generate editable drafts only. Final save remains `POST /api/meeting-notes`.
 
 ## 13. Migration Rules

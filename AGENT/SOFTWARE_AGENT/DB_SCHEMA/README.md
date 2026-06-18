@@ -70,7 +70,7 @@ Snapshot date: 2026-06-18
 
 Search는 기존 table을 읽는 기능이므로 별도 table이나 migration이 없다.
 
-MeetingNote AI/STT draft는 현재 DB table을 추가하지 않는다. `POST /api/meeting-notes/ai-draft`와 `POST /api/meeting-notes/stt-draft`는 draft만 반환하고, 최종 저장은 기존 `MeetingNote`와 snapshot link table을 사용한다. transcript, raw text, provider call log table은 후속 범위다.
+MeetingNote AI/STT draft는 현재 DB table을 추가하지 않는다. `POST /api/meeting-notes/ai-draft`와 `POST /api/meeting-notes/stt-draft`는 draft만 반환하고, 최종 저장은 기존 `MeetingNote`와 snapshot link table을 사용한다. AI 초안 provider와 STT provider는 application port로 분리되어 있으며, transcript, raw text, provider call log table은 후속 범위다.
 
 ## 4. 현재 DB 기준 완료된 Backend TODO
 

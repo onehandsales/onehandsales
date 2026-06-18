@@ -11,7 +11,7 @@ MeetingNote 도메인은 Backend `BE/src/modules/meeting-note`와 Prisma `Meetin
 - Backend module: `BE/src/modules/meeting-note`
 - User Web feature: `FE/user-web/src/features/meeting-note`
 
-현재 범위는 수동 회의록 CRUD다. AI/STT 생성, 삭제/복구, Admin API, rawText 암호화, DealActivity 자동 생성은 후속 범위다.
+현재 범위는 수동 회의록 CRUD와 AI/STT 초안 기반 저장이다. AI/STT 초안 API는 DB에 초안 결과를 저장하지 않으며, 삭제/복구, Admin API, rawText 암호화, DealActivity 자동 생성은 후속 범위다.
 
 ## 2. 모델 책임
 
@@ -23,13 +23,13 @@ MeetingNote 도메인은 Backend `BE/src/modules/meeting-note`와 Prisma `Meetin
 |---|---|---:|---|
 | `id` | `String @db.Uuid` | 아니오 | 회의록 ID |
 | `userId` | `String @db.Uuid` | 아니오 | 회의록 소유 사용자 ID |
-| `sourceType` | `MeetingNoteSourceType` | 아니오 | 생성 방식. 현재 생성은 `MANUAL`만 허용 |
+| `sourceType` | `MeetingNoteSourceType` | 아니오 | 생성 방식. 현재 저장 API는 `MANUAL`, `TEXT_AI`, `STT_AI`를 허용 |
 | `meetingAt` | `DateTime @db.Timestamptz(3)` | 예 | 사용자 local date-time을 timezone 기준으로 변환한 UTC instant |
 | `timeZone` | `String` | 아니오 | UTC 변환에 사용한 IANA timezone snapshot |
 | `details` | `String` | 아니오 | 회의 상세 내용 |
 | `nextPlan` | `String` | 예 | 향후 계획 |
 | `requiredAction` | `String` | 예 | 필요 조치 |
-| `rawText` | `String` | 예 | AI/STT 후속 범위 예약 필드. 현재 API request에서는 받지 않음 |
+| `rawText` | `String` | 예 | AI/STT 후속 범위 예약 필드. 현재 API request에서는 받지 않고 저장하지 않음 |
 | `createdAt` | `DateTime @db.Timestamptz(3)` | 아니오 | 생성 시각 |
 | `updatedAt` | `DateTime @db.Timestamptz(3)` | 아니오 | 수정 시각 |
 
@@ -156,7 +156,9 @@ MeetingNote 도메인은 Backend `BE/src/modules/meeting-note`와 Prisma `Meetin
 - `GET /api/meeting-notes/filter-companies`
 - `GET /api/meeting-notes/filter-contacts`
 - `GET /api/meeting-notes/:meetingNoteId`
+- `POST /api/meeting-notes/ai-draft`
+- `POST /api/meeting-notes/stt-draft`
 - `POST /api/meeting-notes`
 - `PATCH /api/meeting-notes/:meetingNoteId`
 
-API 계약은 `TODO/DONE/MEETING_NOTE_MANUAL_PLAN/COMMON/API-SPEC/MEETING_NOTE_API.md`를 기준으로 확인한다.
+수동 저장 API 계약은 `TODO/DONE/MEETING_NOTE_MANUAL_PLAN/COMMON/API-SPEC/MEETING_NOTE_API.md`를 기준으로 확인한다. AI/STT 초안 API 계약은 `TODO/MEETING_NOTE_AI_STT_PLAN/COMMON/API-SPEC/MEETING_NOTE_AI_STT_API.md`를 기준으로 확인한다.

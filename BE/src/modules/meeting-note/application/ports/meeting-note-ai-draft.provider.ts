@@ -1,5 +1,3 @@
-import type { Buffer } from "node:buffer";
-
 export const MEETING_NOTE_AI_DRAFT_PROVIDER = Symbol(
   "MEETING_NOTE_AI_DRAFT_PROVIDER"
 );
@@ -51,14 +49,6 @@ export interface MeetingNoteDraftContext {
   readonly deals: readonly MeetingNoteDraftDealContext[];
 }
 
-// 역할 : MeetingNoteDraftAudioFile STT provider에 전달할 업로드 음성 파일 계약을 정의합니다.
-export interface MeetingNoteDraftAudioFile {
-  readonly buffer: Buffer;
-  readonly fileName: string;
-  readonly mimeType: string;
-  readonly size: number;
-}
-
 // 역할 : MeetingNoteDraftContent AI가 생성해도 되는 회의록 본문 초안 필드만 정의합니다.
 export interface MeetingNoteDraftContent {
   readonly details: string;
@@ -72,27 +62,10 @@ export interface CreateMeetingNoteTextDraftInput {
   readonly context: MeetingNoteDraftContext;
 }
 
-// 역할 : CreateMeetingNoteAudioDraftInput 음성 기반 STT+AI 초안 생성 provider 입력 계약을 정의합니다.
-export interface CreateMeetingNoteAudioDraftInput {
-  readonly audioFile: MeetingNoteDraftAudioFile;
-  readonly context: MeetingNoteDraftContext;
-}
-
-// 역할 : CreateMeetingNoteAudioDraftOutput STT transcript와 AI 초안 생성 결과 계약을 정의합니다.
-export interface CreateMeetingNoteAudioDraftOutput
-  extends MeetingNoteDraftContent {
-  readonly transcript: string;
-}
-
-// 역할 : MeetingNoteAiDraftProvider 회의록 AI/STT 초안 생성을 외부 provider 뒤로 숨기는 application port입니다.
+// 역할 : MeetingNoteAiDraftProvider 회의록 AI 초안 생성을 외부 provider 뒤로 숨기는 application port입니다.
 export interface MeetingNoteAiDraftProvider {
   // 기능 : 회의 원문 텍스트를 회의록 본문 초안으로 변환합니다.
   createTextDraft(
     input: CreateMeetingNoteTextDraftInput
   ): Promise<MeetingNoteDraftContent>;
-
-  // 기능 : 음성 파일을 transcript와 회의록 본문 초안으로 변환합니다.
-  createAudioDraft(
-    input: CreateMeetingNoteAudioDraftInput
-  ): Promise<CreateMeetingNoteAudioDraftOutput>;
 }

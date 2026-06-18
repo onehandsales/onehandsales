@@ -1,19 +1,34 @@
-﻿# Planning Review
+# 기획 검토 결과
 
-## 1. AGENT 湲곗? 諛섏쁺
+## 1. 결론
 
-- Clean Architecture: controller, application service, provider port, infrastructure adapter濡?遺꾨━?쒕떎.
-- API 怨꾩빟: `COMMON/API-SPEC/MEETING_NOTE_AI_STT_API.md`??request, response, error, transaction, observability瑜?紐낆떆?쒕떎.
-- Transaction: 珥덉븞 API??DB write媛 ?놁뼱 transaction ?놁쓬?쇰줈 紐낆떆?쒕떎.
-- Observability: provider ?ㅽ뙣 context留??덉쟾?섍쾶 ?④린硫??뚯쓽 蹂몃Ц怨??뱀랬 ?먮Ц? ?④린吏 ?딅뒗??
-- Testing: ?ㅼ젣 Provider ?몄텧 ?놁씠 fake provider濡?application/controller ?뚯뒪?몃? ?묒꽦?쒕떎.
+- 판정: 통과
+- 이유: 회의록 AI/STT 초안 생성은 기존 MeetingNote 저장 API와 분리된 읽기/외부 provider 호출 기능이며, DB 저장 없이 응답으로만 초안을 반환할 수 있다.
 
-## 2. 二쇱슂 由ъ뒪??
-- ?뚯꽦 ?뚯씪 ?ш린? 釉뚮씪?곗? ?뱀쓬 ?щ㎎ ?명솚?깆? Frontend ?묒뾽?먯꽌 異붽? 寃利앹씠 ?꾩슂?섎떎.
-- Provider model/env媛 ?댁쁺 ?섍꼍???ㅼ젙?섏? ?딆쑝硫?503?쇰줈 ?ㅽ뙣?쒕떎.
-- 珥덉븞 ?덉쭏? prompt? 紐⑤뜽???섏〈?섎?濡??ㅼ젣 ?곗씠???녿뒗 ?뚯뒪?몄뿉?쒕뒗 ?덉쭏??蹂댁옣?섏? ?딅뒗??
+## 2. 검토 기준
 
-## 3. 蹂대쪟???묒뾽
+- Clean Architecture: controller, application service, provider port, infrastructure adapter로 분리한다.
+- Provider 경계: AI 초안 생성과 STT를 별도 provider port로 둔다.
+- Ownership: 사용자가 선택한 회사/담당자/제품/딜 ID를 현재 사용자 소유 데이터로 검증한다.
+- Persistence: 초안 API는 transcript, raw text, provider raw response를 저장하지 않는다.
+- Observability: provider 실패 context만 안전하게 남기고 회의 본문, transcript, 음성 내용은 로그에 남기지 않는다.
+- Testing: 실제 provider 호출 없이 fake provider로 application/controller 테스트를 작성한다.
 
-- AI/STT 濡쒓렇 ?뚯씠釉?- transcript ?곴뎄 ???- provider ?ъ슜??鍮꾩슜 異붿쟻
-- ?뚯쓽濡?AI ?덉쭏 ?됯? UI
+## 3. 검토 발견 사항
+
+| 등급 | 항목 | 내용 | 조치 |
+|---|---|---|---|
+| Major | Provider 분리 | AI는 OpenAI 고정이지만 STT는 향후 Google/NAVER/AWS로 바뀔 수 있다. | `MeetingNoteAiDraftProvider`와 `MeetingNoteSttProvider`를 분리한다. |
+| Minor | 파일 크기 | 브라우저 녹음/업로드 파일 크기와 형식 제한이 필요하다. | Backend 25MB 제한과 audio 계열 mime type 검증을 둔다. |
+| Minor | Provider 설정 | 운영 환경에 provider env가 없으면 장애가 명확히 드러나야 한다. | 설정 누락은 503으로 변환한다. |
+
+## 4. 후속 검토 사항
+
+- Google/NAVER/AWS STT adapter 비교와 품질 테스트
+- provider 사용량/비용 추적 테이블
+- transcript 영구 저장 여부
+- 브라우저 녹음 UX
+
+## 5. 첫 실행 goal
+
+- `G01-BE-MEETING-NOTE-AI-STT-DRAFT`

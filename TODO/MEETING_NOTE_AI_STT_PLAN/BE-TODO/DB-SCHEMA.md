@@ -1,27 +1,53 @@
-﻿# DB Schema
+# Meeting Note AI/STT DB 스키마
 
-## 1. 蹂寃??щ?
+## 1. 결론
 
-- ?좉퇋 table: ?놁쓬
-- ?좉퇋 column: ?놁쓬
-- ?좉퇋 enum: ?놁쓬
-- ?좉퇋 migration: ?놁쓬
+이번 Backend 작업은 새 DB table, column, migration을 만들지 않는다.
 
-## 2. ?ъ슜?섎뒗 湲곗〈 紐⑤뜽
+## 2. 기존 schema 사용
 
-- `Company`: ?ъ슜???좏깮 ?뚯궗 寃利?- `Contact`: ?ъ슜???좏깮 ?대떦??寃利?- `Product`: ?ъ슜???좏깮 ?쒗뭹 寃利?- `Deal`: ?ъ슜???좏깮 ??寃利?- `MeetingNote`: 理쒖쥌 ?????湲곗〈 create API ?ъ슜
+최종 저장은 기존 `MeetingNote`와 snapshot link table을 사용한다.
 
-## 3. MeetingNote sourceType
+사용 model:
 
-湲곗〈 enum 媛?
+- `MeetingNote`
+- `MeetingNoteCompany`
+- `MeetingNoteContact`
+- `MeetingNoteProduct`
+- `MeetingNoteDeal`
+- `Company`
+- `Contact`
+- `Product`
+- `Deal`
+
+## 3. sourceType
+
+기존 `MeetingNoteSourceType` enum 값을 사용한다.
 
 - `MANUAL`
 - `TEXT_AI`
 - `STT_AI`
 
-?대쾲 Backend ?묒뾽?먯꽌??理쒖쥌 ???API媛 `TEXT_AI`, `STT_AI` sourceType??諛쏆쓣 ???덇쾶 ?쒕떎.
+이번 Backend 작업에서 최종 저장 API가 `TEXT_AI`, `STT_AI` sourceType을 받을 수 있게 한다.
 
-## 4. rawText ?뺤콉
+## 4. 저장하지 않는 데이터
 
-- ?대쾲 踰붿쐞?먯꽌??`rawText`???뚯쓽 ?먮Ц, transcript, provider raw response瑜???ν븯吏 ?딅뒗??
-- ?ъ슜?먭? 理쒖쥌 ?뺤씤??`details`, `nextPlan`, `requiredAction`留?湲곗〈 ?뚯쓽濡??꾨뱶????ν븳??
+이번 범위에서는 아래 값을 저장하지 않는다.
+
+- 회의 원문 text
+- STT transcript
+- provider raw response
+- provider prompt
+- provider 호출 이력
+- provider 비용/사용량
+
+## 5. 후속 범위
+
+아래 기능이 필요해지면 별도 계획에서 DB 설계를 추가한다.
+
+- transcript 영구 저장
+- rawText 암호화 저장
+- provider call log
+- provider 비용/사용량 집계
+- 회의록 삭제/복구
+- DealActivity 자동 로그
