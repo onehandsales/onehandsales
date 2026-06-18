@@ -72,14 +72,26 @@ E2E 전용 Vite port:
 - User Web: `http://127.0.0.1:5175`
 - Admin Web: `http://127.0.0.1:5176`
 
-## Local Mock Auth
+## Auth 상태
 
-MVP starter local FE는 실제 Supabase provider login 대신 memory 기반 mock login을 제공한다.
+User Web은 Supabase OAuth provider login, `/auth/callback`, Backend `POST /api/auth/exchange`, refresh cookie 기반 access token 재발급 흐름을 사용한다. 개발 편의를 위해 mock login 경로도 유지한다.
 
-- User Web: `/login`에서 `계속`
-- Admin Web: `/login`에서 `관리자로 계속` 또는 `일반 사용자로 계속`
+Admin Web은 현재 local mock admin/user token으로 `/admin/api/me` 보호 라우트를 검증한다.
 
-App access token은 storage에 저장하지 않고 memory에만 둔다. 실제 Supabase Auth callback, token exchange, refresh cookie 검증은 후속 provider smoke에서 다룬다.
+App access token은 storage에 저장하지 않고 memory 중심으로 둔다. 실제 provider credential 검증은 별도 smoke에서 다룬다.
+
+## 현재 구현 상태
+
+User Web:
+
+- 실제 API 연동 완료: Auth/User, Home, Company, Contact, Product, Deal, Schedule, MeetingNote 수동 CRUD, Search.
+- Backend는 구현되었고 FE 연결이 남은 기능: MeetingNote AI/STT draft.
+- mock/placeholder 경계가 필요한 기능: BusinessCard OCR, 범용 Import/Export, Notification, Trash.
+
+Admin Web:
+
+- 실제 Backend 연동 완료: `/admin/api/me`.
+- Backend 미구현 경계: dashboard, users, companies, contacts, products, deals, audit logs, sensitive raw access.
 
 ## 정본 규칙
 

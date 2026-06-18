@@ -7,7 +7,7 @@ Frontend가 Backend 통합검색 API를 실제 사용자 흐름에 맞게 사용
 ## 2. 포함 범위
 
 - 기존 `features/search` API client와 Backend 응답 계약 확인
-- 검색 결과 label, loading, empty, error 상태 점검
+- 검색 결과 label, loading, empty, error 상태 확인
 - `targetPath` navigation 확인
 - 일정 결과 이동을 위한 `/schedules/:scheduleId` route와 일정 상세 화면 추가
 
@@ -21,6 +21,7 @@ Frontend가 Backend 통합검색 API를 실제 사용자 흐름에 맞게 사용
 ## 4. API 연결
 
 - `GET /api/search`
+- 일정 상세 이동 후 `GET /api/schedules/{scheduleId}`
 
 ## 5. 완료 기준
 
@@ -30,4 +31,4 @@ Frontend가 Backend 통합검색 API를 실제 사용자 흐름에 맞게 사용
 
 ## 6. 이번 작업 상태
 
-이번 commit에서는 실행하지 않는다. Frontend 파일은 수정하지 않는다.
+completed

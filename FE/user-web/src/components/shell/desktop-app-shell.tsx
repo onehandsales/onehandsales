@@ -1,4 +1,4 @@
-import { Bell, Plus } from "lucide-react";
+import { Plus } from "lucide-react";
 import type { ReactNode } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { SidebarNav } from "@/components/navigation/sidebar-nav";

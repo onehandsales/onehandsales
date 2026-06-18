@@ -27,6 +27,8 @@ Admin API는 반드시 Admin guard로 보호한다.
 - `product`: 사용자 소유 제품, 제품 카테고리/상태, 일반 메모 로그, 개인 비밀 메모 로그
 - `deal`: 사용자 소유 딜, 딜-제품 연결, 다음 행동 로그, 메모 로그
 - `schedule`: 사용자 소유 일정, 월간/주간 조회, 일정-딜 연결, hard delete
+- `meeting-note`: 사용자 소유 회의록, 연결 스냅샷, 수동 저장/수정, AI/STT draft 생성
+- `search`: 회사/담당자/제품/딜/일정/회의록 통합검색
 - `health`: health check
 
 ## 로컬 실행
@@ -54,6 +56,7 @@ pnpm run start:dev
 - 회사 도메인: `restdoc/company-domain.http`
 - 담당자 도메인: `restdoc/contact-domain.http`
 - 제품 도메인: `restdoc/product-domain.http`
+- 전체 API 한 줄 설명: `../API_SAMPLE.md`
 
 ## DB
 
@@ -85,9 +88,9 @@ pnpm run build
 
 ## 외부 Provider
 
-기본 Backend 테스트는 외부 Provider를 실제 호출하지 않는다. 실제 Supabase Auth smoke를 하려면 `.env`에 credential을 채운 뒤 별도 provider smoke로 확인한다.
+기본 Backend 테스트는 외부 Provider를 실제 호출하지 않는다. 실제 Supabase Auth 또는 OpenAI MeetingNote draft smoke를 하려면 `.env`에 credential을 채운 뒤 별도 provider smoke로 확인한다.
 
-주요 env는 `.env.example`에 있다. local에서 최소 서버만 띄울 때도 `DATABASE_URL`, `DIRECT_URL`, `TEST_DATABASE_URL`, token secret 값은 실제 안전한 값으로 채우는 것을 권장한다.
+주요 env는 `.env.example`에 있다. local에서 최소 서버만 띄울 때도 `DATABASE_URL`, `DIRECT_URL`, `TEST_DATABASE_URL`, token secret 값은 실제 안전한 값으로 채우는 것을 권장한다. MeetingNote AI/STT draft는 `OPENAI_API_KEY`, `OPENAI_MEETING_NOTE_DRAFT_MODEL`, `OPENAI_MEETING_NOTE_STT_MODEL`을 사용한다.
 
 ## 정본 규칙
 

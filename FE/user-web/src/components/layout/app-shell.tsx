@@ -15,7 +15,7 @@ import {
   Trash2,
   X,
 } from "lucide-react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { SearchModal } from "@/features/search";
 import { useEffect, useState } from "react";
 import { useDealDetail } from "@/features/deal/hooks/use-deal-detail";

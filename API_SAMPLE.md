@@ -1,4 +1,4 @@
-아래는 현재 BE 구현 기준 API별 한 줄 설명입니다.
+아래는 2026-06-18 현재 BE 구현 기준 API별 한 줄 설명입니다.
 
 **User / Auth**
 | API | 설명 |
@@ -117,8 +117,15 @@
 | `GET /api/meeting-notes/filter-contacts` | 회의록 필터에 사용할 연락처 옵션을 조회합니다. |
 | `GET /api/meeting-notes` | 회의록 목록을 필터, 정렬, 페이지네이션으로 조회합니다. |
 | `GET /api/meeting-notes/{meetingNoteId}` | 회의록 단건 상세와 연결 스냅샷 정보를 조회합니다. |
-| `POST /api/meeting-notes` | 수동 회의록을 생성하고 회사, 연락처, 제품, 거래 스냅샷을 저장합니다. |
+| `POST /api/meeting-notes/ai-draft` | 사용자가 선택한 회의 맥락과 텍스트 원문으로 회의 내용, 다음 계획, 필요 행동 초안을 생성합니다. |
+| `POST /api/meeting-notes/stt-draft` | 사용자가 선택한 회의 맥락과 음성 파일로 transcript와 회의록 본문 초안을 생성합니다. |
+| `POST /api/meeting-notes` | 수동 또는 AI/STT 초안 기반 회의록을 생성하고 회사, 연락처, 제품, 거래 스냅샷을 저장합니다. |
 | `PATCH /api/meeting-notes/{meetingNoteId}` | 회의록 본문과 연결 스냅샷 정보를 수정합니다. |
+
+**Search**
+| API | 설명 |
+|---|---|
+| `GET /api/search` | 회사, 담당자, 제품, 거래, 일정, 회의록을 한 번에 검색하고 상세 화면 이동에 필요한 target 정보를 반환합니다. |
 
 **기타**
 | API | 설명 |

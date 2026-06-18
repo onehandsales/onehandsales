@@ -114,24 +114,32 @@
 | 경로 | 화면 | MVP |
 |---|---|---|
 | `/login` | 로그인 | 포함 |
+| `/auth/callback` | Supabase OAuth callback | 포함 |
 | `/` | 홈 대시보드 | 포함 |
 | `/companies` | 회사 목록 | 포함 |
+| `/companies/new` | 회사 생성 | 포함 |
 | `/companies/:id` | 회사 상세 | 포함 |
 | `/contacts` | 담당자 목록 | 포함 |
 | `/contacts/:id` | 담당자 상세 | 포함 |
 | `/contacts/scan` | 명함 OCR 업로드 | 포함 |
 | `/products` | 제품 목록 | 포함 |
+| `/products/new` | 제품 생성 | 포함 |
 | `/products/:id` | 제품 상세 | 포함 |
 | `/deals` | 딜 목록 | 포함 |
+| `/deals/new` | 딜 생성 | 포함 |
 | `/deals/:id` | 딜 상세 | 포함 |
 | `/schedules` | 일정 목록/캘린더 | 포함 |
 | `/schedules/week` | 주간 일정 보고서 | 포함 |
+| `/schedules/:scheduleId` | 일정 상세 | 포함 |
 | `/meeting-notes` | 수동 회의록 목록 | 포함 |
 | `/meeting-notes/new` | 수동 회의록 생성 | 포함 |
 | `/meeting-notes/:meetingNoteId` | 회의록 상세 | 포함 |
 | `/import` | Import 작업 | 보류 |
 | `/export` | Export 작업 | 보류 |
 | `/settings` | 설정 | 포함 |
+| `/more` | 더보기 | 포함 |
+| `/business-cards` | 명함 OCR | 보류 |
+| `/notifications` | 알림 | 보류 |
 | `/trash` | 휴지통 | 보류 |
 | `/search` | 통합검색 결과 | 전용 라우트 없음 |
 
@@ -156,23 +164,28 @@
 
 ## 4. 현재 코드 라우트 상태
 
-> 최종 업데이트: 2026-06-16
+> 최종 업데이트: 2026-06-18
 
 현재 User Web router 기준 실제 구현 경로:
 
 - `/login`
+- `/auth/callback`
 - `/`
 - `/companies`
+- `/companies/new`
 - `/companies/:companyId`
 - `/contacts`
 - `/contacts/scan`
 - `/contacts/:contactId`
 - `/products`
+- `/products/new`
 - `/products/:productId`
 - `/deals`
+- `/deals/new`
 - `/deals/:dealId`
 - `/schedules`
 - `/schedules/week`
+- `/schedules/:scheduleId`
 - `/meeting-notes`
 - `/meeting-notes/new`
 - `/meeting-notes/:meetingNoteId`
@@ -182,17 +195,20 @@
 - `/export`
 - `/trash`
 - `/settings`
+- `/more`
 
-pen 디자인 반영 완료/정리 도메인 (2026-06-16 기준):
+pen 디자인 반영 완료/정리 도메인 (2026-06-18 기준):
 - `/` — Schedule/Deal/MeetingNote API 조합 대시보드 구현 완료
 - `/deals` — pen 기준 테이블+우측패널 구조 완료
 - Sidebar / TopBar — pen 기준 재구성 완료
 - DealStage 6단계 FE/BE 계약 반영 완료
 - `/companies`, `/contacts`, `/products` — 제품형 조밀 목록 UX로 정렬
 - `/meeting-notes` — 수동 회의록 목록/상세/생성 API 연동 완료
+- 상단 통합검색 — Backend `GET /api/search` 연동 완료
 
 현재 의도적으로 보류된 화면:
 - `/import`, `/trash` — 라우트와 feature는 남아 있지만 사이드바에서는 숨김 처리
+- MeetingNote AI/STT draft UI — Backend API는 있으나 Frontend 연결은 후속 작업
 
 pen 디자인 반영 대기 도메인:
 - `/products/:productId`
@@ -220,7 +236,7 @@ pen 디자인 반영 대기 도메인:
 
 - 기획 목록의 `/meetings*`는 현재 코드에서 `/meeting-notes*`로 구현되어 있다.
 - 기획 목록의 `/imports`, `/exports`는 현재 코드에서 `/import`, `/export`로 구현되어 있다.
-- 기획 목록의 `/search` 전용 라우트는 현재 User Web router에 없다.
+- 기획 목록의 `/search` 전용 라우트는 현재 User Web router에 없다. 현재 통합검색은 상단 UI에서 `GET /api/search`를 호출하고 결과 선택 시 상세 화면으로 이동한다.
 - 현재 `/`는 딜 파이프라인이 아니라 홈 대시보드다. 딜 파이프라인은 `/deals`에서 운영한다.
 - Import와 휴지통은 핵심 기능 UX 안정화 전까지 navigation에서 숨김 처리한다.
 - 기획 목록의 Admin 상세 데이터 라우트와 전체 딜/회사/담당자/제품 라우트는 현재 Admin Web router에 없다.

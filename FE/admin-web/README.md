@@ -10,13 +10,13 @@
 | 프레임워크 | React 19 |
 | 언어 | TypeScript |
 | 번들러/개발 서버 | Vite 7 |
-| 라우팅 | React Router DOM 7 |
+| 라우터 | React Router DOM 7 |
 | 스타일 | Tailwind CSS 3, PostCSS, shadcn/ui, Pretendard Font |
 | 아이콘 | lucide-react |
 | 서버 상태 | TanStack Query |
 | 클라이언트 상태 | 필요할 때만 Zustand |
-| 표/대시보드 | TanStack Table, 차트가 필요할 때 Recharts |
-| 폼/검증 | React Hook Form, Zod |
+| 표/대시보드 | TanStack Table, 필요 시 Recharts |
+| 폼 검증 | React Hook Form, Zod |
 
 ## 초기 범위
 
@@ -49,14 +49,31 @@ VITE_API_URL="http://localhost:3000"
 VITE_SUPABASE_REDIRECT_URL="http://localhost:5174/auth/callback"
 ```
 
-## Local Login
+## Auth
 
-MVP starter local에서는 실제 Supabase provider login 대신 memory 기반 mock login을 사용한다.
+현재 local에서는 memory 기반 mock admin/user token을 사용한다.
 
 - `관리자로 계속`: Admin role로 운영 콘솔 진입
 - `일반 사용자로 계속`: non-admin 접근 차단 화면 확인
 
-App access token은 storage에 저장하지 않고 memory에만 둔다.
+Backend는 현재 `GET /admin/api/me`만 구현되어 있다.
+
+## 현재 구현 상태
+
+실제 Backend API 연동 완료:
+
+- `GET /admin/api/me`
+
+Backend 미구현 경계:
+
+- `/admin/api/dashboard`
+- `/admin/api/users`
+- `/admin/api/companies`
+- `/admin/api/contacts`
+- `/admin/api/products`
+- `/admin/api/deals`
+- 감사 로그 조회 API
+- 민감 원문 조회 API
 
 ## 검증
 
@@ -73,10 +90,10 @@ Smoke 범위:
 
 - Admin login
 - non-admin 접근 차단
-- 사용자 목록/상세 조회
-- 전체 딜 목록 조회
+- 사용자 목록/상세 조회 화면
+- 전체 딜 목록 조회 화면
 - 민감 데이터 masking 확인
-- 사유 입력 후 원문 조회
-- 감사 로그 생성 확인
+- 사유 입력 후 원문 조회 UI 확인
+- 감사 로그 UI 확인
 
-Vercel 프로젝트 root: `FE/admin-web`
+Vercel project root: `FE/admin-web`

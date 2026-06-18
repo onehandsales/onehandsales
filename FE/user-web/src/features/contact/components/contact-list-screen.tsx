@@ -12,7 +12,7 @@ import {
 } from "lucide-react";
 import { type FormEvent, type ReactNode, useEffect, useMemo, useState } from "react";
 import { PageHeader } from "@/components/layout/page-header";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { Pagination } from "@/components/ui/pagination";
 import { ListEmptyState } from "@/components/ui/state";
 import { Toast } from "@/components/ui/toast";
@@ -35,7 +35,6 @@ import { cn } from "@/utils/cn";
 import { formatDateWithOptions } from "@/utils/format";
 
 export function ContactListScreen() {
-  const navigate = useNavigate();
   const { user } = useAuthSession();
   const [usernameText, setUsernameText] = useState("");
   const [username, setUsername] = useState("");
@@ -690,7 +689,7 @@ function ContactRow({
   );
 }
 
-function ContactCard({
+export function ContactCard({
   contact,
   displayTimeZone,
 }: {

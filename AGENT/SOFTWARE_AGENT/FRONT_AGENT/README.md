@@ -2,16 +2,16 @@
 
 ## 1. 목적
 
-`FRONT_AGENT`는 User Web과 Admin Web의 Frontend 구현 방향과 품질 기준을 책임지는 문서 영역이다.
+`FRONT_AGENT`는 User Web과 Admin Web의 Frontend 구현 방향과 엔지니어링 기준을 책임지는 문서 영역이다.
 
-User Web, Admin Web, 화면 상태 관리, API client 경계, 폼 검증, E2E, 프론트 배포 기준은 이 폴더를 기준으로 판단한다.
+User Web, Admin Web, 화면 상태 관리, API client 경계, 폼 검증, E2E, frontend 배포 기준은 이 폴더를 기준으로 판단한다.
 
 ## 2. 관리 범위
 
 - User Web 아키텍처
 - Admin Web 아키텍처
 - Frontend 코드 컨벤션
-- Frontend 주석과 로깅 규칙
+- Frontend 주석/로깅 규칙
 - User Web과 Admin Web의 API client 분리
 - TanStack Query, React Hook Form, Zod 기준
 - Playwright E2E 기준
@@ -40,7 +40,7 @@ FRONT_AGENT/
 7. `CONVENTION/COMMENT_AND_LOGGING.md`
 8. `ENGINEERING_REVIEW_CHECKLIST.md`
 
-## 5. 협업 원칙
+## 5. 작업 원칙
 
 - PM의 MVP 범위와 UXUI_AGENT의 화면 흐름을 먼저 확인한다.
 - User Web과 Admin Web은 별도 앱으로 유지한다.
@@ -48,8 +48,24 @@ FRONT_AGENT/
 - Admin Web은 `/admin/api/*`만 호출한다.
 - 서버 상태는 TanStack Query로 관리한다.
 - 폼 검증은 React Hook Form과 Zod를 기준으로 한다.
+- 실제 Backend 미구현 영역은 mock/placeholder 경계를 문서와 코드에서 명확히 둔다.
 
-## 6. 관련 문서
+## 6. 현재 구현 스냅샷
+
+Snapshot date: 2026-06-18
+
+User Web:
+
+- 실제 API 연동 완료: Auth/User, Home, Company, Contact, Product, Deal, Schedule, MeetingNote manual CRUD, Search.
+- Frontend 후속 작업: MeetingNote AI/STT draft API 연결.
+- mock/placeholder 경계: BusinessCard OCR, generic Import/Export, Notification, Trash.
+
+Admin Web:
+
+- 실제 API 연동 완료: `GET /admin/api/me`.
+- Backend 후속 작업: Admin dashboard/users/domain query/audit/sensitive raw APIs.
+
+## 7. 관련 문서
 
 - `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/README.md`
 - `AGENT/UXUI_AGENT/PLANNING/USER_FLOW_AND_SCREENS.md`

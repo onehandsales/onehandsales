@@ -3,7 +3,7 @@
 > 제품명: 한손에 영업 / onehand.sales  
 > 상태: MVP 정본 초안  
 > 기준: `AGENT/PM_AGENT/DECISIONS/000_확정_결정.md`
-> 현재 구현 스냅샷: 2026-06-16 `BE`, `FE/user-web`, `FE/admin-web`
+> 현재 구현 스냅샷: 2026-06-18 `BE`, `FE/user-web`, `FE/admin-web`
 
 ---
 
@@ -49,10 +49,11 @@
 
 현재 구현 기준:
 
-- 구현 완료: Auth/User, 홈 대시보드, 회사, 담당자, 제품, 딜, 일정, 수동 회의록.
+- 구현 완료: Auth/User, 홈 대시보드, 회사, 담당자, 제품, 딜, 일정, 수동 회의록, 통합검색 Backend/User Web 연동, 회의록 AI/STT draft Backend API.
 - 부분 구현: 도메인별 xlsx export는 Company/Contact/Product/Deal에 있다. 범용 Import/Export job은 없다.
-- FE만 존재: 명함 OCR, 알림, 휴지통, 통합검색, 범용 Import/Export.
-- Backend 미구현: BusinessCard OCR, Notification, Trash, Search, Admin 운영 조회/감사/민감 원문 API, MeetingNote AI/STT, DealActivity 자동 로그.
+- FE만 존재 또는 mock/placeholder 경계: 명함 OCR, 알림, 휴지통, 범용 Import/Export.
+- Backend 미구현: BusinessCard OCR, Notification, Trash, Admin 운영 조회/감사/민감 원문 API, MeetingNote 삭제복구/Admin API, DealActivity 자동 로그.
+- Frontend 미연결: MeetingNote AI/STT draft 생성 UI.
 - Admin Backend는 `GET /admin/api/me`만 구현되어 있다.
 
 ## 6. MVP 포함 기능
@@ -84,7 +85,7 @@
 
 - 결제/구독 자동화
 - 모바일 앱
-- 음성 녹음/STT
+- STT transcript 영구 저장과 고도화된 브라우저 녹음 UX
 - 구글 캘린더 양방향 동기화
 - 우리 서비스 일정의 구글 캘린더 내보내기
 - 카카오 알림톡

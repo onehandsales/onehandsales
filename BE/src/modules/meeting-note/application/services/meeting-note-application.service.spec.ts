@@ -17,7 +17,6 @@ import {
 } from "@/modules/meeting-note/application/ports/meeting-note.repository";
 import { RelatedDealNotFoundError } from "@/modules/meeting-note/domain/meeting-note.errors";
 import type { CurrentUserContext } from "@/shared/application/context/current-user.context";
-import { ValidationDomainError } from "@/shared/domain/errors/common.errors";
 import type { AppLogger } from "@/shared/infrastructure/logger/app-logger.service";
 import { MeetingNoteApplicationService } from "./meeting-note-application.service";
 
@@ -310,19 +309,20 @@ function createService() {
 }
 
 describe("MeetingNoteApplicationService", () => {
-  it("수동 1차 범위가 아닌 sourceType 생성을 차단한다", async () => {
+  it("TEXT_AI sourceType 생성 요청은 원문 저장 없이 출처만 보존한다", async () => {
     const { repository, service } = createService();
 
-    await expect(
-      service.createMeetingNote(CURRENT_USER, {
-        sourceType: MeetingNoteSourceTypeValue.TEXT_AI,
-        meetingLocalDateTime: "2026-06-15T09:30",
-        details: "details",
-        companies: ["company-1"],
-        contacts: ["contact-1"],
-      })
-    ).rejects.toBeInstanceOf(ValidationDomainError);
-    expect(repository.transactionCount).toBe(0);
+    const created = await service.createMeetingNote(CURRENT_USER, {
+      sourceType: MeetingNoteSourceTypeValue.TEXT_AI,
+      meetingLocalDateTime: "2026-06-15T09:30",
+      details: "details",
+      companies: ["company-1"],
+      contacts: ["contact-1"],
+    });
+
+    expect(created.sourceType).toBe(MeetingNoteSourceTypeValue.TEXT_AI);
+    expect(repository.meetingNotes[0]?.rawText).toBeNull();
+    expect(repository.transactionCount).toBe(1);
   });
 
   it("회사와 연락처 ID로 원본을 조회해 스냅샷을 저장한다", async () => {

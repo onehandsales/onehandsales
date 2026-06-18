@@ -1,11 +1,13 @@
-# Frontend 아키텍처
+# Frontend Architecture
 
-`FE`에는 독립적인 frontend 앱 두 개를 둔다.
+`FE`에는 독립적인 frontend 앱 두 개가 있다.
 
 - `user-web`: 사용자가 직접 쓰는 responsive 영업 workflow 앱
-- `admin-web`: desktop-only Admin console
+- `admin-web`: 운영자를 위한 desktop-first Admin console
 
-root frontend package와 공유 frontend package는 만들지 않는다. 각 앱은 자기 dependency, API client, UI primitive, test, build config를 소유한다.
+루트 frontend package와 공유 frontend package는 만들지 않는다. 각 앱은 자기 dependency, API client, UI primitive, test, build config를 소유한다.
+
+## 공통 구조
 
 두 앱 모두 feature-first 구조를 따른다.
 
@@ -30,19 +32,19 @@ src/
   main.tsx
 ```
 
-User Web API client 위치:
+User Web API client:
 
 ```text
 FE/user-web/src/lib/api-client.ts
 ```
 
-Admin Web API client 위치:
+Admin Web API client:
 
 ```text
 FE/admin-web/src/lib/admin-api-client.ts
 ```
 
-기능 확장 예시:
+Feature folder example:
 
 ```text
 src/features/<feature>/
@@ -54,4 +56,31 @@ src/features/<feature>/
   index.ts
 ```
 
-page는 route 진입점이며 feature public export만 조합한다.
+Page는 route entry이며 feature public export를 조합한다. API 호출, schema, business UI는 `features/<domain>`에 둔다.
+
+## 현재 구현 스냅샷
+
+Snapshot date: 2026-06-18
+
+User Web:
+
+- routes: `/login`, `/auth/callback`, `/`, `/companies`, `/companies/new`, `/companies/:companyId`, `/contacts`, `/contacts/scan`, `/contacts/:contactId`, `/products`, `/products/new`, `/products/:productId`, `/deals`, `/deals/new`, `/deals/:dealId`, `/schedules`, `/schedules/week`, `/schedules/:scheduleId`, `/meeting-notes`, `/meeting-notes/new`, `/meeting-notes/:meetingNoteId`, `/business-cards`, `/notifications`, `/import`, `/export`, `/trash`, `/settings`, `/more`
+- implemented API integration: Auth/User, Home, Company, Contact, Product, Deal, Schedule, MeetingNote manual CRUD, Search
+- pending FE integration: MeetingNote AI/STT draft APIs
+- mock/placeholder boundary: BusinessCard OCR, generic Import/Export, Notification, Trash
+
+Admin Web:
+
+- routes: `/login`, `/`, `/users`, `/users/:userId`, `/organizations`, `/subscriptions`, `/analytics`, `/audit-logs`, `/system`, `/support`
+- implemented Backend integration: `/admin/api/me`
+- expected but Backend-pending APIs: `/admin/api/dashboard`, `/admin/api/users`, `/admin/api/companies`, `/admin/api/contacts`, `/admin/api/products`, `/admin/api/deals`
+
+## Rules
+
+- User Web must not call `/admin/api/*`.
+- Admin Web must use `src/lib/admin-api-client.ts` and `/admin/api/*`.
+- TanStack Query owns server state.
+- React Hook Form and component local state own form/modal state.
+- Zustand is only for cross-page UI state when local state is insufficient.
+- Icons in tool buttons should use `lucide-react`.
+- API response types live in each feature's `types` folder or a shared app-level type only when truly cross-domain.

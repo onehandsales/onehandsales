@@ -1,6 +1,6 @@
 # user-web
 
-사용자가 직접 쓰는 Web 앱이다. iOS/Android native app보다 먼저 만드는 첫 MVP 클라이언트다.
+사용자가 직접 쓰는 Web MVP 앱이다. iOS/Android native app보다 먼저 만드는 첫 MVP client다.
 
 ## 기술 스택
 
@@ -10,12 +10,12 @@
 | 프레임워크 | React 19 |
 | 언어 | TypeScript |
 | 번들러/개발 서버 | Vite 7 |
-| 라우팅 | React Router DOM 7 |
+| 라우터 | React Router DOM 7 |
 | 스타일 | Tailwind CSS 3, PostCSS, shadcn/ui, Pretendard Font |
 | 아이콘 | lucide-react |
 | 서버 상태 | TanStack Query |
 | 클라이언트 상태 | 필요할 때만 Zustand |
-| 폼/검증 | React Hook Form, Zod |
+| 폼 검증 | React Hook Form, Zod |
 
 ## 로컬 실행
 
@@ -36,13 +36,39 @@ VITE_API_URL="http://localhost:3000"
 VITE_SUPABASE_REDIRECT_URL="http://localhost:5173/auth/callback"
 ```
 
-## Local Login
+## Auth
 
-`/login`은 비로그인 랜딩 페이지 위에 로그인 모달이 뜨는 구조다. 기본 진입은 provider 기반 소셜 로그인이며, Supabase access token을 받은 뒤 `/api/auth/exchange`로 앱 access token을 교환한다.
+`/login`은 Supabase provider login과 개발용 mock login을 제공한다.
 
-로컬에서 Supabase env가 없거나 provider 연결이 준비되지 않은 경우에는 개발용 mock login을 사용할 수 있다. mock login은 memory/localStorage 기반 세션을 설정하고 보호 라우트로 진입한다.
+- Supabase OAuth 성공 후 `/auth/callback`으로 돌아온다.
+- callback에서 Supabase access token을 Backend `POST /api/auth/exchange`로 보내 app access token과 refresh cookie를 받는다.
+- local에서 Supabase env가 없거나 provider 연결이 준비되지 않은 경우에는 mock login을 사용할 수 있다.
 
-`/auth/callback`은 Supabase OAuth redirect 후 exchange가 수행되는 진입점이다.
+## 현재 구현 상태
+
+실제 Backend API 연동 완료:
+
+- Auth/User
+- Home dashboard
+- Company
+- Contact
+- Product
+- Deal
+- Schedule
+- MeetingNote manual CRUD
+- Search
+
+Backend는 구현되었고 Frontend 연결이 남은 항목:
+
+- MeetingNote AI draft: `POST /api/meeting-notes/ai-draft`
+- MeetingNote STT draft: `POST /api/meeting-notes/stt-draft`
+
+mock/placeholder 경계:
+
+- BusinessCard OCR
+- generic Import/Export job
+- Notification
+- Trash
 
 ## 검증
 
@@ -57,12 +83,13 @@ pnpm run test:e2e
 
 Smoke 범위:
 
-- mock login과 보호 라우트
+- login/mock login과 보호 라우트
 - 회사 생성
 - 담당자 생성
 - 제품 생성
 - 딜 생성과 단계 변경
 - 일정 생성
 - 회의록 저장과 딜 연결
+- 상단 통합검색
 
-Vercel 프로젝트 root: `FE/user-web`
+Vercel project root: `FE/user-web`

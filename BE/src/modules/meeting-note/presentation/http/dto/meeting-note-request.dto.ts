@@ -5,6 +5,7 @@ import {
   IsEnum,
   IsInt,
   Matches,
+  MaxLength,
   IsOptional,
   IsString,
   IsUUID,
@@ -23,6 +24,29 @@ function toOptionalArray({ value }: TransformFnParams): string[] | undefined {
   }
 
   return Array.isArray(value) ? value : [value];
+}
+
+// 기능 : JSON array, 반복 multipart field, comma-separated field를 문자열 배열로 정규화합니다.
+function toArray({ value }: TransformFnParams): unknown[] | undefined {
+  if (value === undefined) {
+    return undefined;
+  }
+
+  if (Array.isArray(value)) {
+    return value.flatMap((item) =>
+      typeof item === "string" ? splitArrayField(item) : [item]
+    );
+  }
+
+  return typeof value === "string" ? splitArrayField(value) : [value];
+}
+
+// 기능 : multipart 문자열 배열 field를 comma 기준으로 나누고 빈 값을 제거합니다.
+function splitArrayField(value: string): string[] {
+  return value
+    .split(",")
+    .map((item) => item.trim())
+    .filter((item) => item.length > 0);
 }
 
 // 역할 : ListMeetingNotesQueryDto 회의록 목록 query 요청 값을 검증합니다.
@@ -181,6 +205,46 @@ export class CreateMeetingNoteDto {
 }
 
 // 역할 : UpdateMeetingNoteDto 회의록 수정 request body 값을 검증합니다.
+// 역할 : MeetingNoteAiDraftContextDto AI/STT 초안 생성에 사용할 사용자 선택 맥락 request body를 검증합니다.
+export class MeetingNoteAiDraftContextDto {
+  @IsString()
+  meetingLocalDateTime!: string;
+
+  @Transform(toArray)
+  @IsArray()
+  @ArrayNotEmpty()
+  @IsUUID(undefined, { each: true })
+  companies!: string[];
+
+  @Transform(toArray)
+  @IsArray()
+  @ArrayNotEmpty()
+  @IsUUID(undefined, { each: true })
+  contacts!: string[];
+
+  @IsOptional()
+  @Transform(toArray)
+  @IsArray()
+  @IsUUID(undefined, { each: true })
+  products?: string[];
+
+  @IsOptional()
+  @Transform(toArray)
+  @IsArray()
+  @IsUUID(undefined, { each: true })
+  deals?: string[];
+}
+
+// 역할 : CreateMeetingNoteTextAiDraftDto 텍스트 기반 회의록 AI 초안 생성 request body를 검증합니다.
+export class CreateMeetingNoteTextAiDraftDto extends MeetingNoteAiDraftContextDto {
+  @IsString()
+  @MaxLength(60000)
+  text!: string;
+}
+
+// 역할 : CreateMeetingNoteSttAiDraftDto 음성 기반 회의록 STT+AI 초안 생성 request body를 검증합니다.
+export class CreateMeetingNoteSttAiDraftDto extends MeetingNoteAiDraftContextDto {}
+
 export class UpdateMeetingNoteDto {
   @IsOptional()
   @IsEnum(MeetingNoteSourceTypeValue)

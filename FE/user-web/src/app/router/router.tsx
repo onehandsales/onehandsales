@@ -20,6 +20,7 @@ import { NotificationsPage } from "@/pages/notifications";
 import { ProductDetailPage } from "@/pages/products/detail";
 import { ProductsPage } from "@/pages/products";
 import { ProductNewPage } from "@/pages/products/new";
+import { ScheduleDetailPage } from "@/pages/schedules/detail";
 import { SchedulesPage } from "@/pages/schedules";
 import { ScheduleWeekPage } from "@/pages/schedules/week";
 import { SettingsPage } from "@/pages/settings";
@@ -52,6 +53,7 @@ export const router = createBrowserRouter([
       { path: "deals/:dealId", element: <DealDetailPage /> },
       { path: "schedules", element: <SchedulesPage /> },
       { path: "schedules/week", element: <ScheduleWeekPage /> },
+      { path: "schedules/:scheduleId", element: <ScheduleDetailPage /> },
       { path: "meeting-notes", element: <MeetingNotesPage /> },
       {
         path: "meeting-notes/new",

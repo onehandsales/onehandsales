@@ -2,7 +2,6 @@ import {
   Building2,
   ChevronRight,
   CreditCard,
-  Download,
   Package,
   Settings,
   Trash2,

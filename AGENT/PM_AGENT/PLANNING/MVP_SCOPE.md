@@ -7,29 +7,31 @@
 
 ## 현재 BE/TODO 구현 상태
 
-기준일: 2026-06-16
+기준일: 2026-06-18
 
-- Backend 구현 완료: Auth/User, Company, Contact, Product, Deal, Schedule, MeetingNote 수동 기본 도메인과 `TODO/DONE/ADDITIONAL_WORK_PLAN` G01-G12.
+- Backend 구현 완료: Auth/User, Company, Contact, Product, Deal, Schedule, MeetingNote 수동 기본 도메인, Search, MeetingNote AI/STT draft API와 `TODO/DONE/ADDITIONAL_WORK_PLAN` G01-G12.
 - Auth/User: `/api/auth/providers`, `/api/auth/exchange`, `/api/auth/refresh`, `/api/auth/logout`, `/api/me`, `/admin/api/me`, `/api/users/me/profile`, `/api/users/me/devices`.
 - Company: 목록/상세/생성/수정, 분야/지역 옵션, 일반 메모, 개인 비밀 메모, `contactCount`, `dealCount`, 연결 Contact/Deal 목록, xlsx export.
 - Contact: 목록/상세/생성/수정, 회사 옵션, 직급/부서 옵션, 일반 메모, 개인 비밀 메모, 연결 Deal 목록, xlsx export.
 - Product: 목록/상세/생성/수정, 카테고리/상태 옵션, 일반 메모, 개인 비밀 메모, `dealCount`, `sort=dealCountDesc|dealCountAsc`, 연결 Deal 목록, xlsx export.
 - Deal: 단계별 count, 목록/상세/생성/수정, 회사/담당자/제품 옵션, 제품 N:M 연결, 다음 행동 로그, 일반 메모 로그, xlsx export.
 - Schedule: 딜 옵션, 목록/상세/생성/수정/삭제, 딜 N:M 연결, 사용자 timezone 기준 local time 변환.
-- MeetingNote: 수동 회의록 목록/상세/생성/수정, 회사/담당자 필터, 회사/담당자/제품/딜 N:N snapshot 연결.
-- 현재 Backend 미구현: BusinessCard OCR, 범용 Import/Export job, Notification, Trash, Search, Admin 운영 조회/감사/민감 원문 API, MeetingNote AI/STT/삭제복구/Admin/DealActivity 자동 로그.
+- MeetingNote: 수동 회의록 목록/상세/생성/수정, 회사/담당자 필터, 회사/담당자/제품/딜 N:N snapshot 연결, 텍스트 AI 초안 생성, STT+AI 초안 생성.
+- Search: 회사/담당자/제품/딜/일정/회의록 통합검색 API.
+- 현재 Backend 미구현: BusinessCard OCR, 범용 Import/Export job, Notification, Trash, Admin 운영 조회/감사/민감 원문 API, MeetingNote 삭제복구/Admin/DealActivity 자동 로그.
 - Admin Backend는 현재 `/admin/api/me`만 구현되어 있다.
-- User Web은 `/` 홈 대시보드, Company, Contact, Product, Deal, Schedule, MeetingNote 수동 화면까지 실제 API 연동이 완료되어 있다. 나머지 미구현 Backend 도메인은 실제 API 연동 전까지 mock/placeholder 경계를 명확히 해야 한다.
+- User Web은 `/` 홈 대시보드, Company, Contact, Product, Deal, Schedule, MeetingNote 수동 화면, 상단 통합검색까지 실제 API 연동이 완료되어 있다. MeetingNote AI/STT draft UI 연결은 아직 Frontend 후속 작업이다. 나머지 미구현 Backend 도메인은 실제 API 연동 전까지 mock/placeholder 경계를 명확히 해야 한다.
 
 ## 1. 개발 우선순위
 
 1. Company/Contact/Product/Deal Backend 구현 완료 범위의 User Web 계약 동기화
 2. Additional Work G01-G12 Frontend 반영: `dealCount`, 연결 Deal 목록, 연결 Contact 목록, xlsx export
 3. 인증 연동과 사용자 설정 화면
-4. BusinessCard OCR
-5. 범용 Import/Export, Notification, Trash, Search
-6. MeetingNote AI/STT/삭제복구/Admin/DealActivity 자동 로그
-7. Admin 운영 조회/감사/민감 원문 API 보강
+4. MeetingNote AI/STT Frontend 연결
+5. BusinessCard OCR
+6. 범용 Import/Export, Notification, Trash
+7. MeetingNote 삭제복구/Admin/DealActivity 자동 로그
+8. Admin 운영 조회/감사/민감 원문 API 보강
 
 ## 2. 인증
 
@@ -221,7 +223,7 @@
 
 ## 9. 회의록
 
-현재 Backend와 User Web 수동 회의록 도메인은 `TODO/DONE/MEETING_NOTE_MANUAL_PLAN` 기준 구현 완료 상태다.
+현재 Backend와 User Web 수동 회의록 도메인은 `TODO/DONE/MEETING_NOTE_MANUAL_PLAN` 기준 구현 완료 상태다. Backend의 AI/STT draft API는 `TODO/MEETING_NOTE_AI_STT_PLAN` 기준 구현되었고, User Web 연결은 후속 작업이다.
 
 ### 현재 Backend/User Web 구현
 
@@ -231,10 +233,12 @@
 - 회사/담당자 필터
 - 연결 row snapshot 저장
 - 사용자 timezone 기준 `meetingLocalDateTime` 변환
+- Backend 텍스트 AI 초안 생성: `POST /api/meeting-notes/ai-draft`
+- Backend STT+AI 초안 생성: `POST /api/meeting-notes/stt-draft`
 
 ### 후속 MVP 포함
 
-- OpenAI 기반 회의록 생성
+- AI/STT 초안 생성 UI 연결
 - 생성 결과 수정/저장
 - 딜 연결 시 활동 로그 자동 생성
 - AI 회사/담당자 후보 제안
@@ -252,10 +256,11 @@
 - 향후계획
 - 필요액션
 
-### 제외
+### 제외 또는 후속
 
-- 음성 녹음
-- STT
+- 브라우저 내 음성 녹음 UX 고도화
+- STT transcript 영구 저장
+- AI/STT provider 호출 이력 테이블
 - 사용자 템플릿 커스터마이즈 UI
 
 ## 10. Import / Export

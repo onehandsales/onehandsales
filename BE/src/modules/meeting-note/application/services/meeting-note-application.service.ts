@@ -417,7 +417,7 @@ export class MeetingNoteApplicationService {
       );
       const created = await repository.createMeetingNote({
         userId: currentUser.id,
-        sourceType: MeetingNoteSourceTypeValue.MANUAL,
+        sourceType: normalized.sourceType,
         meetingAt: normalized.meetingAt,
         timeZone,
         details: normalized.details,
@@ -548,15 +548,15 @@ export class MeetingNoteApplicationService {
     input: CreateMeetingNoteCommand,
     timeZone: string
   ): {
+    readonly sourceType: MeetingNoteSourceTypeValue;
     readonly meetingAt: Date;
     readonly details: string;
     readonly nextPlan: string | null;
     readonly requiredAction: string | null;
     readonly relations: Required<NormalizedRelationInput>;
   } {
-    this.assertManualSourceType(input.sourceType);
-
     return {
+      sourceType: this.normalizeCreateSourceType(input.sourceType),
       meetingAt: this.parseRequiredMeetingLocalDateTime(
         input.meetingLocalDateTime,
         timeZone
@@ -678,7 +678,14 @@ export class MeetingNoteApplicationService {
     );
   }
 
-  // 기능 : 수동 회의록 1차 범위에서 허용되는 sourceType인지 검증합니다.
+  // 기능 : 회의록 생성 sourceType을 기본값 또는 요청 출처 값으로 정규화합니다.
+  private normalizeCreateSourceType(
+    sourceType: MeetingNoteSourceTypeValue | undefined
+  ): MeetingNoteSourceTypeValue {
+    return sourceType ?? MeetingNoteSourceTypeValue.MANUAL;
+  }
+
+  // 기능 : 수정 요청에서 sourceType 변경을 기존 수동 회의록 범위로 제한합니다.
   private assertManualSourceType(
     sourceType: MeetingNoteSourceTypeValue | undefined
   ): void {

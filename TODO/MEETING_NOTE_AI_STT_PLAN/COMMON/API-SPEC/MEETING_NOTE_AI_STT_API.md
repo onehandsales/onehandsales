@@ -1,0 +1,176 @@
+﻿# Meeting Note AI/STT Draft API
+
+## 1. 怨듯넻 怨꾩빟
+
+- 怨꾩빟 ?곹깭: `implemented`
+- ?뚮퉬?? User Web
+- ?몄쬆: `Authorization: Bearer {accessToken}`
+- 沅뚰븳: ?꾩옱 濡쒓렇?명븳 ?ъ슜?먯쓽 ?곗씠?곕쭔 ?묎렐
+- Admin API: ?놁쓬
+- DB ??? 珥덉븞 API???놁쓬
+- AI/STT 濡쒓렇 ?뚯씠釉? ?놁쓬
+- ?몃? Provider: OpenAI adapter, application port ?ㅼ뿉 諛곗튂
+
+## 2. 怨듯넻 ?뺤콉
+
+- ?ъ슜?먭? 吏곸젒 ?좏깮?섎뒗 ?꾨뱶: `meetingLocalDateTime`, `companies`, `contacts`, `products`, `deals`
+- AI/STT媛 ?앹꽦 媛?ν븳 ?꾨뱶: `details`, `nextPlan`, `requiredAction`
+- `companies`, `contacts`???꾩닔 諛곗뿴?대ŉ 理쒖냼 1媛??댁긽?대떎.
+- `products`, `deals`???좏깮 諛곗뿴?대ŉ ?놁쑝硫?鍮?諛곗뿴濡?泥섎━?쒕떎.
+- Backend??紐⑤뱺 ?좏깮 ID瑜?`currentUser.id` 湲곗??쇰줈 ownership 寃利앺븳??
+- Provider prompt?먮뒗 ?좏깮???뷀떚?곗쓽 snapshot 留λ씫留??꾨떖?쒕떎.
+- Provider 寃곌낵????ν븯吏 ?딄퀬 ?묐떟?쇰줈留?諛섑솚?쒕떎.
+- 理쒖쥌 ??μ? 湲곗〈 `POST /api/meeting-notes`瑜??몄텧?쒕떎.
+
+## 3. POST /api/meeting-notes/ai-draft
+
+- API ?대쫫: ?뚯쓽濡??띿뒪??AI 珥덉븞 ?앹꽦 API
+- API ?앸퀎?? `CreateMeetingNoteTextAiDraft`
+- Request DTO: `CreateMeetingNoteTextAiDraftDto`
+- Response DTO: `MeetingNoteAiDraftResponse`
+- Success Status: `200 OK`
+
+### Body
+
+| ?꾨뱶 | ???| ?꾩닔 | nullable | validation | ?ㅻ챸 |
+|---|---|---:|---:|---|---|
+| `text` | string | ??| 遺덇? | trim ??1???댁긽, 理쒕? 60000??| ?ъ슜?먭? ?낅젰???뚯쓽 ?먮Ц |
+| `meetingLocalDateTime` | string | ??| 遺덇? | local date-time | ?ъ슜?먭? ?좏깮???뚯쓽 ?쇱떆 |
+| `companies` | string[] | ??| 遺덇? | UUID 諛곗뿴, 理쒖냼 1媛?| ?ъ슜?먭? ?좏깮???뚯궗 ID |
+| `contacts` | string[] | ??| 遺덇? | UUID 諛곗뿴, 理쒖냼 1媛?| ?ъ슜?먭? ?좏깮???대떦??ID |
+| `products` | string[] | ?꾨땲??| 遺덇? | UUID 諛곗뿴 | ?ъ슜?먭? ?좏깮???쒗뭹 ID |
+| `deals` | string[] | ?꾨땲??| 遺덇? | UUID 諛곗뿴 | ?ъ슜?먭? ?좏깮????ID |
+
+### Request ?덉떆
+
+```json
+{
+  "text": "?ㅻ뒛 媛寃?議곌굔怨??꾩엯 ?쇱젙???쇱쓽?덈떎. ?ㅼ쓬 二??붿슂?쇱뿉 ?쒖븞?쒕? 蹂대궡怨?蹂댁븞 寃???먮즺???④퍡 ?꾨떖?섍린濡??덈떎.",
+  "meetingLocalDateTime": "2026-06-18T14:00",
+  "companies": ["00000000-0000-4000-8000-000000000001"],
+  "contacts": ["00000000-0000-4000-8000-000000000002"],
+  "products": ["00000000-0000-4000-8000-000000000003"],
+  "deals": ["00000000-0000-4000-8000-000000000004"]
+}
+```
+
+### Response ?덉떆
+
+```json
+{
+  "sourceType": "TEXT_AI",
+  "transcript": null,
+  "details": "媛寃?議곌굔怨??꾩엯 ?쇱젙???쇱쓽?덉쑝硫? 蹂댁븞 寃???먮즺媛 異붽?濡??꾩슂?섎떎???먯쓣 ?뺤씤?덉뒿?덈떎.",
+  "nextPlan": "?ㅼ쓬 二??붿슂?쇱뿉 ?쒖븞?쒕? ?꾨떖?섍퀬 ?꾩냽 誘명똿 ?쇱젙??議곗쑉?⑸땲??",
+  "requiredAction": "?쒖븞?쒖? 蹂댁븞 寃???먮즺瑜?以鍮꾪빐 ?대떦?먯뿉寃??꾨떖?⑸땲??"
+}
+```
+
+## 4. POST /api/meeting-notes/stt-draft
+
+- API ?대쫫: ?뚯쓽濡??뚯꽦 STT+AI 珥덉븞 ?앹꽦 API
+- API ?앸퀎?? `CreateMeetingNoteSttAiDraft`
+- Request DTO: `CreateMeetingNoteSttAiDraftDto`
+- Response DTO: `MeetingNoteAiDraftResponse`
+- Success Status: `200 OK`
+- Content-Type: `multipart/form-data`
+
+### Multipart Field
+
+| ?꾨뱶 | ???| ?꾩닔 | validation | ?ㅻ챸 |
+|---|---|---:|---|---|
+| `audio` | file | ??| 理쒕? 25MB, audio 怨꾩뿴 mime type | STT ????뚯꽦 ?뚯씪 |
+| `meetingLocalDateTime` | string | ??| local date-time | ?ъ슜?먭? ?좏깮???뚯쓽 ?쇱떆 |
+| `companies` | string ?먮뒗 string[] | ??| UUID, 理쒖냼 1媛?| 諛섎났 field ?먮뒗 comma-separated ?덉슜 |
+| `contacts` | string ?먮뒗 string[] | ??| UUID, 理쒖냼 1媛?| 諛섎났 field ?먮뒗 comma-separated ?덉슜 |
+| `products` | string ?먮뒗 string[] | ?꾨땲??| UUID | 諛섎났 field ?먮뒗 comma-separated ?덉슜 |
+| `deals` | string ?먮뒗 string[] | ?꾨땲??| UUID | 諛섎났 field ?먮뒗 comma-separated ?덉슜 |
+
+### Request ?덉떆
+
+```text
+POST /api/meeting-notes/stt-draft
+Content-Type: multipart/form-data
+
+audio=@meeting.webm
+meetingLocalDateTime=2026-06-18T14:00
+companies=00000000-0000-4000-8000-000000000001
+contacts=00000000-0000-4000-8000-000000000002
+products=00000000-0000-4000-8000-000000000003
+deals=00000000-0000-4000-8000-000000000004
+```
+
+### Response ?덉떆
+
+```json
+{
+  "sourceType": "STT_AI",
+  "transcript": "?ㅻ뒛 媛寃?議곌굔怨??꾩엯 ?쇱젙???쇱쓽?덉뒿?덈떎. ?ㅼ쓬 二??붿슂?쇱뿉 ?쒖븞?쒕? 蹂대궡湲곕줈 ?덉뒿?덈떎.",
+  "details": "媛寃?議곌굔怨??꾩엯 ?쇱젙???쇱쓽?덇퀬, ?쒖븞???꾨떖 ?쇱젙???뺤젙?덉뒿?덈떎.",
+  "nextPlan": "?ㅼ쓬 二??붿슂?쇱뿉 ?쒖븞?쒕? ?꾨떖?⑸땲??",
+  "requiredAction": "?쒖븞?쒖? 蹂댁븞 寃???먮즺瑜?以鍮꾪빀?덈떎."
+}
+```
+
+## 5. 理쒖쥌 ????곌퀎
+
+珥덉븞 ?앹꽦 ??Frontend??湲곗〈 ?뚯쓽濡??앹꽦 API瑜??몄텧?쒕떎.
+
+```json
+{
+  "sourceType": "STT_AI",
+  "meetingLocalDateTime": "2026-06-18T14:00",
+  "details": "媛寃?議곌굔怨??꾩엯 ?쇱젙???쇱쓽?덇퀬, ?쒖븞???꾨떖 ?쇱젙???뺤젙?덉뒿?덈떎.",
+  "nextPlan": "?ㅼ쓬 二??붿슂?쇱뿉 ?쒖븞?쒕? ?꾨떖?⑸땲??",
+  "requiredAction": "?쒖븞?쒖? 蹂댁븞 寃???먮즺瑜?以鍮꾪빀?덈떎.",
+  "companies": ["00000000-0000-4000-8000-000000000001"],
+  "contacts": ["00000000-0000-4000-8000-000000000002"],
+  "products": ["00000000-0000-4000-8000-000000000003"],
+  "deals": ["00000000-0000-4000-8000-000000000004"]
+}
+```
+
+Backend??理쒖쥌 ?????`sourceType`????ν븯吏留?`transcript`??provider raw response????ν븯吏 ?딅뒗??
+
+## 6. Error
+
+| ?곹솴 | error code | HTTP | FE 泥섎━ |
+|---|---|---:|---|
+| ?몄쬆 ?놁쓬 | `Unauthorized` | 401 | refresh ?먮뒗 濡쒓렇???대룞 |
+| DTO validation ?ㅽ뙣 | validation error | 400 | form field error ?먮뒗 toast |
+| ?뚯꽦 ?뚯씪 ?놁쓬 | `ValidationError` | 400 | ?뚯씪 ?좏깮 ?덈궡 |
+| ?좏깮 ?뚯궗 ?놁쓬 ?먮뒗 ? ?ъ슜???뚯쑀 | `CompanyNotFound` | 404 | ?좏깮媛??덈줈怨좎묠 ?덈궡 |
+| ?좏깮 ?대떦???놁쓬 ?먮뒗 ? ?ъ슜???뚯쑀 | `ContactNotFound` | 404 | ?좏깮媛??덈줈怨좎묠 ?덈궡 |
+| ?좏깮 ?쒗뭹 ?놁쓬 ?먮뒗 ? ?ъ슜???뚯쑀 | `ProductNotFound` | 404 | ?좏깮媛??덈줈怨좎묠 ?덈궡 |
+| ?좏깮 ???놁쓬 ?먮뒗 ? ?ъ슜???뚯쑀 | `DealNotFound` | 404 | ?좏깮媛??덈줈怨좎묠 ?덈궡 |
+| Provider ?ㅼ젙 ?꾨씫 | `MeetingNoteAiDraftProviderUnavailable` | 503 | 愿由ъ옄 ?ㅼ젙 ?꾩슂 ?덈궡 |
+| Provider ?몄텧 ?먮뒗 ?묐떟 ?뚯떛 ?ㅽ뙣 | `MeetingNoteAiDraftFailed` | 502 | ?좎떆 ???ъ떆???덈궡 |
+
+## 7. Transaction
+
+- transaction ?꾩슂 ?щ?: ?놁쓬
+- ?댁쑀: 珥덉븞 ?앹꽦 API??DB write媛 ?녾퀬 provider ?몄텧 寃곌낵瑜???ν븯吏 ?딅뒗??
+- 蹂寃?model: ?놁쓬
+- rollback 踰붿쐞: ?놁쓬
+- audit log transaction ?ы븿 ?щ?: ?놁쓬
+- ?몃? Provider ?몄텧 ?꾩튂: application service?먯꽌 寃利??꾨즺 ??provider port ?몄텧, DB transaction 諛?
+理쒖쥌 ???API `POST /api/meeting-notes`??湲곗〈 ?뚯쓽濡????transaction??洹몃?濡??ъ슜?쒕떎.
+
+## 8. Observability
+
+- application log event key: 珥덉븞 ?깃났 濡쒓렇 ?놁쓬
+- provider ?ㅽ뙣 event key: `provider.openai.meetingNoteDraft.failed`
+- audit log: ?놁쓬
+- request id: 湲곗〈 middleware 湲곗? ?ъ슜
+- redaction: `text`, `transcript`, `details`, `nextPlan`, `requiredAction`, ?뚯꽦 ?뚯씪 ?댁슜, provider raw response??濡쒓렇???④린吏 ?딅뒗??
+- provider error context: provider, operation, statusCode, retryable留??덉슜?쒕떎.
+- DB 濡쒓렇 ?뚯씠釉? ?놁쓬
+
+## 9. DB Schema ?곌껐
+
+- ?좉퇋 table: ?놁쓬
+- ?좉퇋 column: ?놁쓬
+- ?좉퇋 migration: ?놁쓬
+- ?ъ슜 model: `Company`, `Contact`, `Product`, `Deal`, `MeetingNote`
+- `MeetingNote.sourceType`: 理쒖쥌 ?????`MANUAL`, `TEXT_AI`, `STT_AI` ?덉슜
+- `MeetingNote.rawText`: ?대쾲 踰붿쐞?먯꽌????ν븯吏 ?딆쓬

@@ -1,0 +1,10 @@
+﻿# BE-TODO
+
+Backend ?묒뾽? `G01-BE-MEETING-NOTE-AI-STT-DRAFT.goal.md`瑜??곕Ⅸ??
+
+?꾩옱 ?곹깭:
+
+- AI/STT 珥덉븞 ?앹꽦 API 援ы쁽 ?꾨즺
+- ?좉퇋 DB ?뚯씠釉??놁쓬
+- ?좉퇋 migration ?놁쓬
+- provider ?ㅼ젙 env 異붽? ?꾨즺

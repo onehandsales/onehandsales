@@ -1,6 +1,5 @@
 import { Briefcase, Calendar, FileText, House, MoreHorizontal } from "lucide-react";
 import { NavLink } from "react-router-dom";
-import { cn } from "@/utils/cn";
 
 const items: ReadonlyArray<{
   readonly label: string;

@@ -89,6 +89,10 @@ export class HttpExceptionFilter implements ExceptionFilter {
       case "InvalidRefreshOrigin":
       case "ValidationError":
         return HttpStatus.BAD_REQUEST;
+      case "MeetingNoteAiDraftProviderUnavailable":
+        return HttpStatus.SERVICE_UNAVAILABLE;
+      case "MeetingNoteAiDraftFailed":
+        return HttpStatus.BAD_GATEWAY;
       default:
         return HttpStatus.INTERNAL_SERVER_ERROR;
     }

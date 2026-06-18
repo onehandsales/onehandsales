@@ -39,3 +39,19 @@ export class RelatedDealNotFoundError extends DomainError {
     super("DealNotFound", "Related deal was not found");
   }
 }
+
+// 역할 : MeetingNoteAiDraftProviderUnavailableError AI/STT provider 설정이 없는 오류를 표현합니다.
+export class MeetingNoteAiDraftProviderUnavailableError extends DomainError {
+  // 기능 : provider 설정 누락 오류를 도메인 오류 코드로 생성합니다.
+  constructor(message = "Meeting note AI draft provider is not configured") {
+    super("MeetingNoteAiDraftProviderUnavailable", message);
+  }
+}
+
+// 역할 : MeetingNoteAiDraftFailedError AI/STT provider 초안 생성 실패 오류를 표현합니다.
+export class MeetingNoteAiDraftFailedError extends DomainError {
+  // 기능 : provider 호출 또는 응답 파싱 실패를 도메인 오류 코드로 생성합니다.
+  constructor(message = "Meeting note AI draft generation failed") {
+    super("MeetingNoteAiDraftFailed", message);
+  }
+}

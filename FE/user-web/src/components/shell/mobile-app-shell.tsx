@@ -13,9 +13,7 @@ export function MobileAppShell({ children }: MobileAppShellProps) {
 
   return (
     <div className="min-h-screen md:hidden">
-      {isHome ? (
-        <MobileAppHeader title="딜 파이프라인" />
-      ) : null}
+      {isHome ? <MobileAppHeader /> : null}
       <main className="pb-[calc(var(--mobile-tabbar-height)+1.5rem)]">
         {children}
       </main>
