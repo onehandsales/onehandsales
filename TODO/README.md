@@ -86,7 +86,7 @@ TODO/
 
 현재 활성 계획 상태:
 
-- 2026-06-15 기준 활성 계획 폴더: 없음
+- 2026-06-18 기준 활성 계획 폴더: `INTEGRATED_SEARCH_PLAN`
 - 새 요구사항이나 후속 구현은 `TODO` 바로 아래에 새 계획 폴더를 만든다.
 
 활성 TODO 재검토 결과:
@@ -95,7 +95,7 @@ TODO/
 
 진행 중인 계획:
 
-- 없음
+- `INTEGRATED_SEARCH_PLAN`: 통합검색 Backend API와 Frontend 후속 작업 계획
 
 완료된 계획:
 
