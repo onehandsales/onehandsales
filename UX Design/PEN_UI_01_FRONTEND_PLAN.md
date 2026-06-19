@@ -9,7 +9,7 @@
 - 기존 UI 구조는 보존 대상이 아니며, 필요 시 대체한다.
 - 기존 API/hook/type/data 로직은 재사용 가능하면 유지한다.
 - 1차 범위는 디자인 토큰, 공통 App Shell, 대표 딜 화면 3개에 집중한다.
-- 2026-06-16 기준으로 이 문서는 초기 계획과 현재 구현 기준선을 함께 담는다. 실제 구현 판단은 `현재 구현 기준선`을 우선한다.
+- 2026-06-19 기준으로 이 문서는 초기 계획과 현재 구현 기준선을 함께 담는다. 실제 구현 판단은 `현재 구현 기준선`을 우선한다.
 
 구현 원칙:
 - 구현 시작은 모바일 대표 화면을 우선한다.
@@ -22,7 +22,7 @@
 
 ## 0. 현재 구현 기준선
 
-기준일: 2026-06-16
+기준일: 2026-06-19
 
 현재 User Web 구현 상태:
 
@@ -33,17 +33,24 @@
 - 딜 목록과 stage counts는 `search`, `companyId`, `contactId` 필터를 함께 반영한다. 목록/export는 여기에 `dealStatus`, `sort`를 추가로 반영한다.
 - `/companies`, `/contacts`, `/products`, `/meeting-notes`는 조밀한 Controls Bar + Table Card + Pagination 문법을 따른다.
 - 회사/담당자/제품의 분류 필터 select는 현재 옵션 전체 조회 결과를 사용하며, select 안의 `+ 추가`로 해당 분류 관리 다이얼로그를 열 수 있다.
+- 회사/담당자/제품 생성 모달의 연결/분류 필드는 딜 추가 모달과 같은 검색 입력형 선택 UX를 따른다.
+  - 회사 추가: 분야/지역 검색, 결과 없음 시 즉시 추가 후 자동 선택
+  - 담당자 추가: 회사 검색, 결과 없음 시 회사 생성 모달 연결 후 자동 선택. 부서/직급은 즉시 추가 후 자동 선택
+  - 제품 추가: 카테고리/상태 검색, 결과 없음 시 즉시 추가 후 자동 선택
 - 담당자 목록 정렬은 select로 `최신순`, `이름순`을 제공한다.
 - 제품 목록 정렬은 select로 `최신순`, `딜 높은순`, `딜 낮은순`을 제공한다.
 - `/schedules`, `/schedules/week`, `/meeting-notes`는 실제 Backend API와 연결되어 있다.
 - `/business-cards`, `/contacts/scan`, `/notifications`, `/import`, `/export`, `/trash`는 라우트/feature가 있으나 대응 Backend module이 없어 완료 기능으로 보지 않는다.
+- `GET /api/search` Backend와 User Web `GlobalSearch`가 연결되어 있다. 별도 검색 결과 라우트는 없고 상단/모바일 검색 UI에서 사용한다.
+- MeetingNote AI/STT 초안 endpoint는 Backend에 존재하지만, User Web 초안 UI 연결은 후속 범위다.
 - Sidebar는 `홈`, `딜`, `회사`, `담당자`, `제품`, `일정`, `회의록`, `설정`을 노출한다. Import와 휴지통은 숨김 처리되어 있다.
 
 현재 Backend 구현 상태:
 
 - 구현됨: Auth/User, Company, Contact, Product, Deal, Schedule, MeetingNote 수동 도메인.
 - Admin API는 `GET /admin/api/me`만 구현되어 있다.
-- 없음: BusinessCard OCR, 범용 Import/Export job, Notification, Trash, Search, Admin 운영 조회/감사/민감 원문 API.
+- 없음: BusinessCard OCR, 범용 Import/Export job, Notification, Trash, Admin 운영 조회/감사/민감 원문 API.
+- 구현됨/검수 진행: Search 통합검색 API와 User Web GlobalSearch.
 
 ---
 
@@ -422,7 +429,7 @@ pen 단계: 위와 동일 (완전 일치 달성).
 ## 11. 리스크
 
 - 과거 Deal stage 4단계와 pen 6단계 충돌은 해소됨
-- Quick Create modal에서 inline 생성 UX 범위가 커질 수 있음
+- Quick Create 및 핵심 생성 모달의 inline 생성 UX는 회사/담당자/제품 연결과 분류 선택 범위까지 포함해 구현됨
 - Shell 교체가 전체 라우트에 영향을 줄 수 있음
 - Mobile/Desktop을 지나치게 공유하려고 하면 구조가 다시 꼬일 수 있음
 - 1차 범위를 넘겨 일정/회의록까지 같이 건드리면 구현이 퍼질 수 있음
@@ -442,7 +449,7 @@ pen 단계: 위와 동일 (완전 일치 달성).
 ### 별도 결정 필요
 
 - Deal stage는 FE/BE 6단계 계약을 유지
-- Quick Create에 inline entity create를 1차 포함할지
+- Quick Create와 핵심 생성 모달의 inline entity create는 1차 포함으로 확정
 - Desktop 홈에서 현재 right detail panel을 그대로 유지할지, 새 detail shell로 바꿀지
 
 ---
@@ -451,6 +458,6 @@ pen 단계: 위와 동일 (완전 일치 달성).
 
 1. 홈/딜/회사/담당자/제품/일정/회의록 실제 세션 smoke 확인
 2. 목록 컨트롤 select/button 공통화 범위 결정
-3. Quick Create inline entity create 범위 결정
+3. 생성 모달 입력 검색형 inline create의 실제 세션 smoke 확인
 4. Admin 운영 조회 API 또는 Admin Web placeholder 경계 결정
 5. BusinessCard/Import-Export/Notification/Search/Trash Backend 계획 수립

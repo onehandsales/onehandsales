@@ -33,7 +33,7 @@
 주의:
 - 이 문서는 디자인을 코드로 옮기기 전, 백엔드 관점에서 필요한 데이터 계약을 정리하는 용도다.
 - 프론트 구조 자체보다 화면이 요구하는 데이터, 상태, 액션, API를 중심으로 본다.
-- 2026-06-16 현재 구현 판단은 아래 `현재 FE/BE 기준선`을 우선한다. 이후의 후보/리스크 섹션은 후속 확장 검토용이다.
+- 2026-06-19 현재 구현 판단은 아래 `현재 FE/BE 기준선`을 우선한다. 이후의 후보/리스크 섹션은 후속 확장 검토용이다.
 
 ---
 
@@ -43,8 +43,8 @@
 
 현재 Backend module:
 
-- 구현됨: `auth`, `user`, `company`, `contact`, `product`, `deal`, `schedule`, `meeting-note`
-- 없음: `business-card`, 범용 `import-export`, `notification`, `trash`, `search`, Admin 운영 조회/감사/민감 원문 API
+- 구현됨: `auth`, `user`, `company`, `contact`, `product`, `deal`, `schedule`, `meeting-note`, `search`
+- 없음: `business-card`, 범용 `import-export`, `notification`, `trash`, Admin 운영 조회/감사/민감 원문 API
 
 현재 User Web:
 
@@ -52,6 +52,8 @@
 - `/deals` 딜 파이프라인은 stage tabs, 딜명 검색, 회사/담당자 select 필터, 정렬 select, page-number pagination, 우측 미리보기 패널을 사용한다.
 - `/companies`, `/contacts`, `/products`는 조밀한 Controls Bar + Table Card + Pagination 문법을 따른다.
 - `/schedules`, `/schedules/week`, `/meeting-notes`는 실제 Backend API와 연결되어 있다.
+- 통합검색은 `GET /api/search`와 User Web `GlobalSearch`가 연결되어 있다.
+- MeetingNote AI/STT 초안 생성은 Backend endpoint가 있으나 User Web draft UI 연결은 후속 범위다.
 - `/business-cards`, `/contacts/scan`, `/notifications`, `/import`, `/export`, `/trash` 라우트/feature는 있으나 해당 Backend module이 없어 완료 기능으로 보지 않는다.
 
 ---
@@ -72,7 +74,8 @@
 | Business Card Scan | 명함 OCR/확정 | business-card, company, contact | 낮음/중간 | FE만 존재/BE 없음 |
 | Import / Export | 데이터 이동 | import-export | 낮음/중간 | FE만 존재/BE 없음. 도메인별 xlsx export는 구현 |
 | Trash | 삭제 자원 복구 | trash | 낮음 | FE만 존재/BE 없음 |
-| Search / Notification / More | 보조 기능 | search, notification, user | 낮음 | FE만 존재/BE 없음 |
+| Global Search | 통합검색 | search | 중간 | 포함/구현, UX 검수 진행 |
+| Notification / More | 보조 기능 | notification, user | 낮음 | FE만 존재/BE 없음 |
 
 ---
 
@@ -144,6 +147,8 @@
 메모:
 - 현재 딜 생성은 회사 1개, 담당자 1개, 제품 1개 이상을 필수로 받는다.
 - 담당자는 선택한 회사 소속이어야 한다.
+- 딜/회사/담당자/제품 생성 모달의 inline 선택/생성은 현재 별도 후보 검색 API 없이 기존 옵션 조회 API, 생성 API, refetch 조합으로 구현한다.
+- 회사/담당자/제품의 분류 추가는 기존 taxonomy 생성 API를 사용한다.
 
 ### Deal Detail
 
@@ -261,7 +266,6 @@
 - business-card
 - import-export generic job
 - trash
-- search
 - notification
 - Admin 운영 조회/감사/민감 원문 API
 
@@ -276,7 +280,7 @@
 
 - Admin 운영 조회 summary
 - stage metadata
-- quick create candidate endpoints
+- quick create candidate endpoints 후속 후보
 - 캘린더 요약/집계 응답
 
 ---
@@ -314,7 +318,9 @@ pen 기준:
 ### Quick Create 충돌
 
 - 디자인은 단순 modal처럼 보이지만
-- 실제로는 회사/담당자/제품 인라인 생성과 연결될 수 있음
+- 실제로는 회사/담당자/제품 인라인 생성과 연결된다.
+- 2026-06-19 기준 딜 추가, 회사 추가, 담당자 추가, 제품 추가 모달은 기존 옵션 조회/생성 API 조합으로 검색 입력형 선택과 없을 때 즉시 추가를 처리한다.
+- 별도 quick create candidate search endpoint는 현재 필수 요구가 아니다.
 
 ### Calendar 충돌
 
@@ -334,7 +340,7 @@ pen 기준:
 
 - mobile home aggregate endpoint
 - stage metadata endpoint
-- quick create candidate search endpoint
+- quick create candidate search endpoint 후속 후보
 - dashboard summary endpoint
 - navigation badge count endpoint
 - unified global search suggestion endpoint
@@ -455,7 +461,7 @@ pen 기준:
 - stage metadata endpoint를 별도로 둘지 여부
 - MVP 범위를 딜만 할지, 회사/담당자/제품/일정까지 확장할지
 - 모바일 홈 전용 aggregate API를 만들지 여부
-- quick create에서 inline 생성 UX를 유지할지 여부
+- quick create와 핵심 생성 모달의 inline 생성 UX는 유지한다. 별도 후보 검색 API는 현재 보류한다.
 - 일정 화면을 1차에 포함할지 여부
 - 디자인 기준으로 필요한 summary field를 어디까지 백엔드에서 책임질지 여부
 

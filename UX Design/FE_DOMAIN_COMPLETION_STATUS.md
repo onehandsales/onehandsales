@@ -8,7 +8,7 @@
 
 ## 최종 업데이트
 
-- 날짜: 2026-06-16
+- 날짜: 2026-06-19
 - 기준:
   - Backend: `BE/src/modules`, `BE/prisma/schema.prisma`
   - User Web: `FE/user-web/src/features`, `FE/user-web/src/pages`
@@ -32,7 +32,7 @@
 | Import/Export | 현재 BE module 없음. 도메인별 xlsx export는 Company/Contact/Product/Deal에 구현 | FE feature/page 존재 | `/import`, `/export` | 보류/숨김 |
 | Notification | 현재 BE module 없음 | FE feature/page 존재 | `/notifications` | BE 재검토 필요 |
 | Trash | 현재 BE module 없음 | FE feature/page 존재 | `/trash` | 보류/숨김 |
-| Search | 현재 BE module 없음 | FE feature 존재 | GlobalSearch | BE 재검토 필요 |
+| Search | 완료 | FE GlobalSearch 연결 | GlobalSearch | 구현/검수 진행 |
 | Tag | 현재 BE module 없음 | FE feature 존재 | 없음 | 후속 계획 필요 |
 
 ## Backend 완료 도메인
@@ -47,10 +47,11 @@
 - `deal`: 딜, 딜-제품 연결, 다음 행동 로그, 메모 로그, xlsx export
 - `schedule`: 일정, 월간/주간 조회, 일정-딜 연결, 생성/수정/삭제
 - `meeting-note`: 수동 회의록 목록/상세/생성/수정, 회사/담당자 필터 옵션, 회사/담당자/제품/딜 snapshot 연결
+- `search`: 회사/담당자/제품/딜/일정/회의록 통합검색
 
 ## User Web 현재 UX/UI 기준
 
-2026-06-16 기준 User Web의 핵심 UX는 다음 상태를 기준으로 한다.
+2026-06-19 기준 User Web의 핵심 UX는 다음 상태를 기준으로 한다.
 
 - `/` 홈은 실제 대시보드 화면이다. Schedule, Deal, Deal stage count, MeetingNote API를 조합해 오늘 일정, 진행 딜, 마감 임박, 최근 회의록, 빠른 실행, 최근 활동을 표시한다.
 - 딜 파이프라인은 `/deals`에서 운영한다.
@@ -61,7 +62,12 @@
 - 회사 목록 필터는 `useCompanyFields`, `useCompanyRegions` 전체 조회 결과를 `분야`, `지역` select 옵션으로 사용하고, select 안의 `+ 추가`로 회사 분류 관리 다이얼로그를 열 수 있다.
 - 담당자 목록 필터는 `useContactDepartments`, `useContactJobGrades` 전체 조회 결과를 `부서`, `직급` select 옵션으로 사용하고, select 안의 `+ 추가`로 담당자 분류 관리 다이얼로그를 열 수 있다.
 - 제품 목록 필터는 `useProductCategories`, `useProductStatuses` 전체 조회 결과를 `카테고리`, `판매 상태` select 옵션으로 사용하고, select 안의 `+ 추가`로 제품 분류 관리 다이얼로그를 열 수 있다.
+- 회사 추가 모달의 `분야`, `지역`은 검색 입력형 선택 필드이며, 검색 결과가 없으면 입력값으로 바로 분류를 추가하고 자동 선택한다.
+- 담당자 추가 모달의 `회사`는 검색 입력형 선택 필드이며, 검색 결과가 없으면 회사 생성 모달을 열고 생성 후 자동 선택한다. `부서`, `직급`도 검색 입력형 선택 + 즉시 추가를 사용한다.
+- 제품 추가 모달의 `카테고리`, `상태`는 검색 입력형 선택 필드이며, 검색 결과가 없으면 입력값으로 바로 추가하고 자동 선택한다.
 - 딜 목록 필터는 검색 다음에 `전체`, `회사`, `담당자`, 정렬 select 순서로 제공한다. 회사/담당자는 `GET /api/deals/company-options`, `GET /api/deals/contact-options`를 사용하며, 회사 선택 시 담당자 select는 같은 회사의 담당자로 좁힌다.
+- 통합검색은 `GET /api/search`와 User Web `GlobalSearch`를 사용한다. 검색 대상은 회사/담당자/제품/딜/일정/회의록이며, 상단 검색 UI와 모바일 검색 UI에서 같은 API를 사용한다.
+- MeetingNote는 수동 회의록 흐름이 User Web에 연결되어 있다. `POST /api/meeting-notes/ai-draft`, `POST /api/meeting-notes/stt-draft` Backend endpoint는 있으나 User Web draft UI 연결은 후속 작업이다.
 - 회사/담당자/제품/딜/회의록 목록은 조밀한 `Controls Bar + Table Card + Pagination` 문법으로 정렬되어 있다.
 - 공용 `Pagination` 높이는 48px(`h-12`)이고, 딜/회사/담당자/회의록 미리보기 header와 목록 table header는 44px(`h-11`) 기준이다.
 - 회사 목록 정렬 select: `최신순`, `담당자 높은순`, `담당자 낮은순`, `딜 높은순`, `딜 낮은순`.

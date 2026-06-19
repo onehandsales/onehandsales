@@ -53,8 +53,11 @@
 - `/` 홈은 Schedule/Deal/MeetingNote API 조합 기반 대시보드로 운영
 - 딜 파이프라인은 `/deals`에서 운영
 - 회사/담당자/제품 목록은 제품형 `Controls Bar + Table Card + Pagination` 문법을 기준으로 맞춤
+- 회사/담당자/제품 생성 모달의 연결/분류 선택은 검색 입력형 필드와 결과 없음 즉시 추가 흐름으로 맞춤
 - 목록 페이지네이션은 10개 단위 `totalPages` 기준이며 `hasNext`는 상세 메모 로그 같은 cursor flow에만 사용
 - 목록 정렬은 select를 기본 문법으로 사용한다. 딜 목록은 `최신순`, `금액 높은순`, `금액 낮은 순`, `마감일순`을 제공한다.
+- 통합검색은 `GET /api/search`와 User Web `GlobalSearch` 연결 기준으로 본다.
+- MeetingNote AI/STT 초안 endpoint는 Backend에 있으나 User Web draft UI 연결은 후속 범위다.
 
 ---
 
@@ -389,14 +392,14 @@
   - `/` 홈은 더 이상 준비중 화면이 아니라 Schedule/Deal/MeetingNote API를 조합한 실제 대시보드 화면임을 반영했다.
   - 딜 목록 정렬 UI는 chip이 아니라 select이며 `최신순`, `금액 높은순`, `금액 낮은 순`, `마감일순`을 제공하도록 정정했다.
   - 담당자 목록 정렬은 `최신순`, `이름순` select 계약으로 정정했다.
-  - BusinessCard OCR, 범용 Import/Export job, Notification, Trash, Search, Admin 운영 조회 API는 FE feature/route가 있어도 Backend module이 없음을 다시 명시했다.
+  - BusinessCard OCR, 범용 Import/Export job, Notification, Trash, Admin 운영 조회 API는 FE feature/route가 있어도 Backend module이 없음을 다시 명시했다. 당시 Search도 미구현으로 기록했으나, 2026-06-19 로그에서 구현 상태로 재정정했다.
 - 결정/반영 내용:
   - 현재 기준선은 2026-06-16 FE+BE 코드다.
   - 과거 2026-06-11~2026-06-15 계획/로그 항목은 역사 기록으로 남기되, 실제 구현 판단은 최신 현재 기준선 섹션을 우선한다.
   - User Web 핵심 도메인은 Auth/User, Home, Company, Contact, Product, Deal, Schedule, MeetingNote까지 실제 API 연동 완료 상태로 본다.
 - 남은 이슈:
   - Admin Web 운영 조회 API는 `/admin/api/me` 외 미구현이다.
-  - BusinessCard OCR, Import/Export job, Notification, Trash, Search는 Backend 구현 계획이 필요하다.
+  - BusinessCard OCR, Import/Export job, Notification, Trash는 Backend 구현 계획이 필요하다. Search는 2026-06-19 로그에서 구현 상태로 재정정했다.
 
 ---
 
@@ -432,6 +435,41 @@
 
 ---
 
+### 2026-06-19 생성 모달 입력 검색형 inline create 반영
+
+- 작업자: Codex
+- 유형:
+  - frontend
+  - docs
+- 요약:
+  - 회사/담당자/제품 생성 모달의 연결/분류 선택을 딜 추가 모달과 같은 입력 검색형 UX로 맞췄다.
+  - 회사 추가 모달의 분야/지역, 담당자 추가 모달의 부서/직급, 제품 추가 모달의 카테고리/상태는 검색 결과가 없으면 현재 입력값으로 바로 추가하고 자동 선택한다.
+  - 담당자 추가 모달의 회사 검색 결과가 없으면 회사 생성 모달을 열고, 생성 후 회사 옵션을 다시 조회해 자동 선택한다.
+  - Search와 MeetingNote AI/STT의 현재 코드 상태를 문서 기준선에 반영한다.
+- 변경 파일:
+  - `FE/user-web/src/components/ui/managed-taxonomy-dropdown.tsx`
+  - `FE/user-web/src/features/company/components/company-create-dialog.tsx`
+  - `FE/user-web/src/features/contact/components/contact-company-field.tsx`
+  - `FE/user-web/src/features/contact/components/contact-create-dialog.tsx`
+  - `FE/user-web/src/features/product/components/product-create-dialog.tsx`
+  - `TODO_LOG/2026-06-19/INLINE_CREATE_SEARCH_FIELDS/WORK_LOG.md`
+  - `UX Design/**`
+  - `AGENT/UXUI_AGENT/DECISIONS/008_uxui_inline_entity_creation.md`
+- 결정/반영 내용:
+  - quick create inline 생성 범위는 딜 추가와 핵심 생성 모달의 연결/분류 선택까지 포함한다.
+  - 별도 quick create candidate search endpoint는 현재 필수 요구가 아니며, 기존 옵션 조회/생성 API와 refetch 조합을 baseline으로 둔다.
+  - Search는 Backend `search` module과 User Web `GlobalSearch` 연결 상태로 본다.
+  - MeetingNote AI/STT는 Backend endpoint 구현, FE draft UI 후속 상태로 본다.
+- 검증:
+  - `pnpm --dir FE/user-web exec eslint src/components/ui/managed-taxonomy-dropdown.tsx src/features/company/components/company-create-dialog.tsx src/features/contact/components/contact-company-field.tsx src/features/contact/components/contact-create-dialog.tsx src/features/product/components/product-create-dialog.tsx`
+  - `pnpm --dir FE/user-web typecheck`
+  - `git diff --check`
+- 남은 이슈:
+  - 실제 브라우저 세션에서 생성 모달별 검색/추가/자동선택 smoke 확인 필요
+  - 목록 control button/select 공통화 후보가 남아 있다.
+
+---
+
 ## 현재 구현 체크리스트
 
 ### 문서
@@ -456,6 +494,7 @@
 - [x] Desktop Deal Pipeline Home — 테이블 + 우측 패널 구조 + 6단계 Stage Tabs 완료
 - [x] Mobile Deal Pipeline Home
 - [x] Deal Quick Create Modal (`deal-create-dialog.tsx` + ModalShell) — 6단계 반영 완료
+- [x] 회사/담당자/제품 생성 모달 입력 검색형 선택 및 결과 없음 즉시 추가
 - [x] Mobile Deal Detail Page (`mobile-deal-detail-page.tsx`) — 6단계 반영 완료
 - [x] DealStage 6단계 FE/BE 계약 반영 완료
 - [x] Company/Contact/Product 제품형 목록 문법 정리
@@ -471,21 +510,21 @@
 - [x] deal stage 전략 확정 — FE/BE 6단계 계약 반영 완료
 - [x] `/` 홈은 신규 aggregate 없이 기존 Schedule/Deal/MeetingNote API 조합으로 구현
 - [x] Deal 목록/stage-count/export 회사·담당자 필터 계약 반영
-- [ ] quick create inline 생성 범위 확정
+- [x] quick create inline 생성 범위 확정
 - [ ] navigation badge count 필요 여부 확정
 
 ---
 
 ## 현재 블로커
 
-- Quick Create modal의 inline entity create 범위 미확정
 - 목록 컨트롤 버튼 공통화 미완료
-- Admin 운영 조회 API와 BusinessCard/Import/Notification/Trash/Search Backend module 미구현
+- Admin 운영 조회 API와 BusinessCard/Import/Notification/Trash Backend module 미구현
+- MeetingNote AI/STT User Web draft UI 미연결
 
 ---
 
 ## 다음 작업 우선순위
 
-1. 회사/담당자/제품/딜 목록 컨트롤 버튼 공통화
-2. 브라우저 실제 세션 smoke 확인 (홈/딜/회사/담당자/제품/일정/회의록 목록과 상세)
+1. 브라우저 실제 세션 smoke 확인 (생성 모달 입력 검색형 추가/자동선택, 홈/딜/회사/담당자/제품/일정/회의록 목록과 상세)
+2. 회사/담당자/제품/딜 목록 컨트롤 버튼 공통화
 3. Admin 운영 조회 API 또는 미구현 FE feature의 Backend 계획 수립

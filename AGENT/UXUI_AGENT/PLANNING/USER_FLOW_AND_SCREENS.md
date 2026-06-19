@@ -164,7 +164,7 @@
 
 ## 4. 현재 코드 라우트 상태
 
-> 최종 업데이트: 2026-06-18
+> 최종 업데이트: 2026-06-19
 
 현재 User Web router 기준 실제 구현 경로:
 
@@ -197,14 +197,15 @@
 - `/settings`
 - `/more`
 
-pen 디자인 반영 완료/정리 도메인 (2026-06-18 기준):
+pen 디자인 반영 완료/정리 도메인 (2026-06-19 기준):
 - `/` — Schedule/Deal/MeetingNote API 조합 대시보드 구현 완료
 - `/deals` — pen 기준 테이블+우측패널 구조 완료
 - Sidebar / TopBar — pen 기준 재구성 완료
 - DealStage 6단계 FE/BE 계약 반영 완료
 - `/companies`, `/contacts`, `/products` — 제품형 조밀 목록 UX로 정렬
+- 회사/담당자/제품 생성 모달 — 입력 검색형 선택, 결과 없음 즉시 추가, 생성 후 자동 선택 기준 반영
 - `/meeting-notes` — 수동 회의록 목록/상세/생성 API 연동 완료
-- 상단 통합검색 — Backend `GET /api/search` 구현 완료, User Web 최종 연결/UX 검수 진행 중
+- 상단 통합검색 — Backend `GET /api/search`와 User Web GlobalSearch 연결 완료, UX 검수 진행 중
 
 현재 의도적으로 보류된 화면:
 - `/import`, `/trash` — 라우트와 feature는 남아 있지만 사이드바에서는 숨김 처리
@@ -343,4 +344,3 @@ Admin Web:
 - `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/ARCHITECTURE/BACKEND.md`
 - `AGENT/PM_AGENT/PLANNING/PRD.md`
 - `UX Design/PEN_UI_06_SHARED_FIRST_WORK_ORDER.md`
-

@@ -17,13 +17,14 @@ The first screen should make today's sales work visible first, then provide a cl
 
 Target direction: after login, `/` should be a work dashboard and `/deals` should remain the high-density Deal Pipeline Home.
 
-Current implementation note as of 2026-06-18:
+Current implementation note as of 2026-06-19:
 
 - `/` home is an implemented dashboard that combines Schedule, Deal, Deal stage count, and MeetingNote API data.
 - The active deal pipeline experience is served from `/deals`.
 - Keep `/` focused on today/dashboard context and `/deals` focused on comparison, filtering, preview, and mutation.
-- Global Search has Backend `GET /api/search`; final top-bar FE connection and UX QA are still tracked in `TODO/INTEGRATED_SEARCH_PLAN`.
+- Global Search has Backend `GET /api/search` and User Web GlobalSearch connection; UX QA remains tracked in `TODO/INTEGRATED_SEARCH_PLAN`.
 - MeetingNote AI/STT draft Backend APIs exist, but User Web draft UI integration is still pending.
+- Company/contact/product create modals use search-input selection, immediate creation when no result exists, and automatic selection after creation.
 - Deal likelihood (`긍정 / 중립 / 부정` or percent) is not implemented in the current Deal API/FE form. Treat it as future UX scope unless a new backend plan adds it.
 
 Primary focus:
@@ -479,7 +480,7 @@ Deal:
 
 Do not use a large modal for complex editing. If the user needs more than the minimum fields, send them to the detail page.
 
-## 13. Inline Entity Creation In Deal Quick Create
+## 13. Inline Entity Creation In Deal Quick Create And Core Create Modals
 
 When creating a deal, the user must connect:
 
@@ -489,6 +490,8 @@ When creating a deal, the user must connect:
 
 If the needed company/contact/product does not exist, allow inline minimum creation inside the deal quick create modal.
 
+When creating company/contact/product records, required linked or taxonomy options should follow the same search-first rule.
+
 Pattern:
 
 - searchable combobox for company/contact/product
@@ -496,6 +499,8 @@ Pattern:
 - inline creation asks only minimum fields
 - after creation, the new entity is selected automatically
 - full details are edited later on that entity's detail page
+- company field/region, contact department/job grade, and product category/status use searchable inputs and create missing options from the current input.
+- contact company search opens company creation when no company exists, then selects the created company after option refetch.
 
 Rules:
 
@@ -503,6 +508,7 @@ Rules:
 - show existing candidates before creating to reduce duplicates
 - keep inline creation small; never open a full entity form inside the deal modal
 - if creation gets complicated, save the deal after creating minimum entity data and send the user to detail page
+- do not persist required option fields as free text; create or select a real option/entity first
 
 ## 14. Search UX
 

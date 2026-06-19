@@ -28,12 +28,14 @@
 - 먼저 디자인 토큰을 정리한 뒤 공통 App Shell과 대표 화면 구현에 들어간다.
 - 전체 화면을 한 번에 구현하지 않고, 1차 범위를 먼저 완성한다.
 
-2026-06-16 현재 구현 기준:
+2026-06-19 현재 구현 기준:
 
 - `/` 홈은 실제 대시보드 화면으로 구현되어 있다.
 - 딜 파이프라인은 `/deals`에서 운영한다.
-- User Web 핵심 도메인은 Auth/User, Home, Company, Contact, Product, Deal, Schedule, MeetingNote까지 실제 Backend API와 연결되어 있다.
-- BusinessCard OCR, 범용 Import/Export, Notification, Trash, Search, Admin 운영 조회 API는 Backend 미구현 상태다.
+- User Web 핵심 도메인은 Auth/User, Home, Company, Contact, Product, Deal, Schedule, MeetingNote, Search까지 실제 Backend API와 연결되어 있다.
+- BusinessCard OCR, 범용 Import/Export, Notification, Trash, Admin 운영 조회 API는 Backend 미구현 상태다.
+- 회사/담당자/제품 생성 모달은 딜 추가 모달처럼 검색 입력형 선택과 결과 없음 즉시 추가를 사용한다.
+- MeetingNote AI/STT 초안 endpoint는 Backend에 있으나 User Web draft UI 연결은 후속 범위다.
 - 실제 구현 판단은 `BE/src/modules`, `BE/prisma/schema.prisma`, `FE/user-web/src/app/router/router.tsx`, `FE/user-web/src/features`를 우선한다.
 
 ---
@@ -155,12 +157,13 @@ pen 구조:
 
 ### 제외
 
-- 회사/담당자/제품 전면 리디자인은 2026-06-16 기준 목록/상세/API 연동까지 완료 상태로 재분류한다.
-- 일정 캘린더와 수동 회의록은 2026-06-16 기준 기본 구현 완료 상태로 재분류한다.
+- 회사/담당자/제품 전면 리디자인은 2026-06-19 기준 목록/상세/API 연동과 생성 모달 입력 검색형 선택까지 완료 상태로 재분류한다.
+- 일정 캘린더와 수동 회의록은 2026-06-19 기준 기본 구현 완료 상태로 재분류한다.
 - 명함 스캔
 - Import / Export
 - 휴지통
-- 검색 / 알림 / 더보기 고도화
+- 알림 / 더보기 고도화
+- Search 고도화는 현재 GlobalSearch 구현 이후의 품질/범위 확장으로 본다.
 
 ---
 
@@ -214,7 +217,7 @@ pen 구조:
 
 - stage metadata endpoint 필요 여부
 - 모바일 홈 aggregate endpoint 필요 여부
-- quick create 후보 검색 endpoint 필요 여부
+- quick create 후보 검색 endpoint 필요 여부는 현재 보류. 기존 옵션 조회/생성 API 조합으로 구현된 상태를 우선한다.
 - summary/metadata 응답 추가 여부
 - navigation badge count 필요 여부
 
@@ -231,7 +234,7 @@ pen 구조:
 
 - Stage metadata/API 응답 표시 문법이 화면별로 갈라질 위험
 - App Shell 교체가 모든 화면에 영향
-- Quick Create modal 범위 확장 위험
+- Quick Create modal 범위가 다시 커질 위험
 - 모바일 홈이 aggregate 없이 다중 호출 과다로 갈 가능성
 - 일정 화면까지 범위를 넓히면 일정/캘린더 설계가 별도 축으로 커짐
 
@@ -275,15 +278,17 @@ pen 구조:
 ### 별도 합의 후 진행할 것
 
 - stage metadata endpoint 필요 여부
-- quick create inline 생성 범위
 - Admin 운영 조회 API 범위
-- BusinessCard/Import-Export/Notification/Search/Trash Backend 구현 범위
+- BusinessCard/Import-Export/Notification/Trash Backend 구현 범위
+- Search 고도화 범위
 
 이미 결정/처리된 것:
 
 - `/` 홈은 별도 aggregate endpoint 없이 기존 Schedule/Deal/MeetingNote API 조합으로 구현한다.
 - 일정 화면과 수동 회의록은 현재 1차 구현 완료 범위로 본다.
 - 회사/담당자/제품 분류 필터는 목록 select 안의 `+ 추가`로 관리 다이얼로그를 열 수 있다.
+- quick create inline 생성 범위는 딜 추가와 회사/담당자/제품 생성 모달의 연결/분류 선택까지 포함한다.
+- 회사/담당자/제품 생성 모달의 연결/분류 선택은 검색 입력형 필드에서 검색하고, 검색 결과가 없으면 현재 입력값 또는 연결 생성 모달로 새 항목을 만든 뒤 자동 선택한다.
 - 딜 목록 필터는 stage tab과 별도로 `딜명 검색`, `전체`, `회사`, `담당자`, 정렬 select를 사용한다.
 
 ---

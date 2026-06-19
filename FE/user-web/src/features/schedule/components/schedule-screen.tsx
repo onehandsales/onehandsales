@@ -26,7 +26,9 @@ export function ScheduleScreen() {
   const [viewMode, setViewMode] = useState<ScheduleViewMode>("month");
   const [anchorDate, setAnchorDate] = useState(() => new Date());
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [selectedSchedule, setSelectedSchedule] = useState<Schedule | null>(null);
+  const [selectedSchedule, setSelectedSchedule] = useState<Schedule | null>(
+    null,
+  );
   const [initialStartAt, setInitialStartAt] = useState<Date | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
   const range = useMemo(
@@ -34,7 +36,7 @@ export function ScheduleScreen() {
       viewMode === "month"
         ? getMonthRange(anchorDate)
         : getWeekRange(anchorDate),
-    [anchorDate, viewMode]
+    [anchorDate, viewMode],
   );
   const schedulesQuery = useScheduleList({
     view: viewMode,
@@ -43,17 +45,17 @@ export function ScheduleScreen() {
   });
   const schedules = useMemo(
     () => schedulesQuery.data?.items ?? [],
-    [schedulesQuery.data?.items]
+    [schedulesQuery.data?.items],
   );
   const schedulesByDate = useMemo(
     () => groupSchedulesByDate(schedules, screenTimeZone),
-    [schedules]
+    [schedules],
   );
   const title =
     viewMode === "month"
       ? formatMonthTitle(anchorDate)
       : `${formatDateShort(range.start)} - ${formatDateShort(
-          addDays(range.end, -1)
+          addDays(range.end, -1),
         )}`;
 
   const openCreateDialog = (startAt: Date | null = null) => {
@@ -70,13 +72,13 @@ export function ScheduleScreen() {
 
   const movePrevious = () => {
     setAnchorDate((current) =>
-      viewMode === "month" ? addMonths(current, -1) : addDays(current, -7)
+      viewMode === "month" ? addMonths(current, -1) : addDays(current, -7),
     );
   };
 
   const moveNext = () => {
     setAnchorDate((current) =>
-      viewMode === "month" ? addMonths(current, 1) : addDays(current, 7)
+      viewMode === "month" ? addMonths(current, 1) : addDays(current, 7),
     );
   };
 
@@ -86,7 +88,12 @@ export function ScheduleScreen() {
         breadcrumbs={[{ label: "일정", icon: CalendarDays }]}
         actions={[
           { icon: FileText, tooltip: "주간 보고서", href: "/schedules/week" },
-          { icon: Plus, tooltip: "일정 생성", onClick: () => openCreateDialog() },
+          {
+            icon: Plus,
+            tooltip: "일정 생성",
+            variant: "primary",
+            onClick: () => openCreateDialog(),
+          },
         ]}
       />
 
@@ -288,7 +295,9 @@ function WeekCalendar({
   onCreate,
   onEdit,
 }: CalendarProps & { readonly rangeStart: Date }) {
-  const days = Array.from({ length: 7 }, (_, index) => addDays(rangeStart, index));
+  const days = Array.from({ length: 7 }, (_, index) =>
+    addDays(rangeStart, index),
+  );
 
   return (
     <div className="min-w-[820px]">
@@ -413,7 +422,9 @@ function ScheduleCard({
         {formatScheduleContext(schedule)}
       </p>
       {schedule.location ? (
-        <p className="truncate text-xs text-muted-foreground">{schedule.location}</p>
+        <p className="truncate text-xs text-muted-foreground">
+          {schedule.location}
+        </p>
       ) : null}
     </button>
   );
@@ -449,7 +460,7 @@ function getScheduleTone(scheduleId: string) {
   ];
   const index = Array.from(scheduleId).reduce(
     (sum, char) => sum + char.charCodeAt(0),
-    0
+    0,
   );
 
   return tones[index % tones.length] ?? tones[0]!;
@@ -467,7 +478,9 @@ function ScheduleEmptyState({
       <div>
         <CalendarDays className="mx-auto h-8 w-8 text-[#9CA3AF]" />
         <p className="mt-3 text-base font-semibold text-[#111827]">
-          {mode === "month" ? "이번 달 일정이 없습니다." : "이번 주 일정이 없습니다."}
+          {mode === "month"
+            ? "이번 달 일정이 없습니다."
+            : "이번 주 일정이 없습니다."}
         </p>
         <p className="mt-2 text-sm text-[#6B7280]">
           새 일정을 만들면 캘린더에서 바로 확인할 수 있습니다.
@@ -541,8 +554,16 @@ function groupSchedulesByDate(schedules: Schedule[], timeZone: string) {
 }
 
 function getMonthCells(anchorDate: Date) {
-  const monthStart = new Date(anchorDate.getFullYear(), anchorDate.getMonth(), 1);
-  const monthEnd = new Date(anchorDate.getFullYear(), anchorDate.getMonth() + 1, 0);
+  const monthStart = new Date(
+    anchorDate.getFullYear(),
+    anchorDate.getMonth(),
+    1,
+  );
+  const monthEnd = new Date(
+    anchorDate.getFullYear(),
+    anchorDate.getMonth() + 1,
+    0,
+  );
   const gridStart = getWeekStart(monthStart);
   const gridEnd = addDays(getWeekStart(monthEnd), 7);
   const cells: Date[] = [];
@@ -600,7 +621,7 @@ function setHour(date: Date, hour: number) {
 
 function toDateKey(date: Date) {
   return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(
-    date.getDate()
+    date.getDate(),
   )}`;
 }
 
@@ -621,7 +642,7 @@ function toDateKeyInTimeZone(value: string, timeZone: string) {
     formatter
       .formatToParts(date)
       .filter((part) => part.type !== "literal")
-      .map((part) => [part.type, part.value])
+      .map((part) => [part.type, part.value]),
   );
 
   return `${parts.get("year")}-${parts.get("month")}-${parts.get("day")}`;
@@ -665,7 +686,7 @@ function formatScheduleTimeRange(schedule: Schedule, timeZone: string) {
       hour: "2-digit",
       minute: "2-digit",
       timeZone,
-    }
+    },
   )}`;
 }
 
