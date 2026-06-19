@@ -1,6 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   createMeetingNote,
+  deleteMeetingNote,
   updateMeetingNote,
 } from "@/features/meeting-note/api/meeting-note-api";
 import { meetingNoteQueryKeys } from "@/features/meeting-note/api/meeting-note-query-keys";
@@ -29,6 +30,18 @@ export function useUpdateMeetingNoteMutation() {
     mutationFn: (input: UpdateMeetingNoteInput) => updateMeetingNote(input),
     onSuccess: (meetingNote) => {
       invalidateMeetingNoteQueries(queryClient, meetingNote.id);
+    },
+  });
+}
+
+// 기능 : 회의록 삭제 mutation을 제공합니다.
+export function useDeleteMeetingNoteMutation() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (meetingNoteId: string) => deleteMeetingNote(meetingNoteId),
+    onSuccess: (_result, meetingNoteId) => {
+      invalidateMeetingNoteQueries(queryClient, meetingNoteId);
     },
   });
 }

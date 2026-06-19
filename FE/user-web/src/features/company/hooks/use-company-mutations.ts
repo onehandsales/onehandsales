@@ -5,6 +5,7 @@ import {
   createCompanyMemoLog,
   createCompanyPrivateMemoLog,
   createCompanyRegion,
+  deleteCompany,
   deleteCompanyField,
   deleteCompanyRegion,
   exportCompaniesXlsx,
@@ -13,6 +14,9 @@ import {
   updateCompanyPrivateMemoLog,
 } from "@/features/company/api/company-api";
 import { companyQueryKeys } from "@/features/company/api/company-query-keys";
+import { contactQueryKeys } from "@/features/contact/api/contact-query-keys";
+import { dealQueryKeys } from "@/features/deal/api/deal-query-keys";
+import { meetingNoteQueryKeys } from "@/features/meeting-note/api/meeting-note-query-keys";
 import type {
   CompanyExportFilters,
   CreateCompanyFieldInput,
@@ -47,6 +51,31 @@ export function useUpdateCompanyMutation() {
       void queryClient.invalidateQueries({ queryKey: companyQueryKeys.lists() });
       void queryClient.invalidateQueries({
         queryKey: companyQueryKeys.detail(input.companyId),
+      });
+    },
+  });
+}
+
+// 기능 : 회사를 삭제한 뒤 목록, 상세, 연결 옵션 캐시를 갱신합니다.
+export function useDeleteCompanyMutation() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (companyId: string) => deleteCompany(companyId),
+    onSuccess: (_result, companyId) => {
+      void queryClient.invalidateQueries({ queryKey: companyQueryKeys.lists() });
+      void queryClient.invalidateQueries({ queryKey: companyQueryKeys.details() });
+      void queryClient.invalidateQueries({
+        queryKey: companyQueryKeys.detail(companyId),
+      });
+      void queryClient.invalidateQueries({
+        queryKey: contactQueryKeys.companyOptions(),
+      });
+      void queryClient.invalidateQueries({
+        queryKey: dealQueryKeys.companyOptions(),
+      });
+      void queryClient.invalidateQueries({
+        queryKey: meetingNoteQueryKeys.filterCompanies(),
       });
     },
   });

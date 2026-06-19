@@ -65,6 +65,13 @@ export function updateContact(input: UpdateContactInput) {
   });
 }
 
+// 기능 : 참조가 없는 담당자를 삭제합니다.
+export function deleteContact(contactId: string) {
+  return apiClient<void>(`/api/contacts/${contactId}`, {
+    method: "DELETE",
+  });
+}
+
 // 기능 : 담당자 회사 옵션 목록을 조회합니다.
 export function listContactCompanyOptions() {
   return apiClient<ContactCompanyOptionListResponse>(

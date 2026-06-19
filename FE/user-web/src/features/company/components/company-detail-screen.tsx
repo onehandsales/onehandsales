@@ -4,10 +4,11 @@ import {
   Building2,
   IdCard,
   Pencil,
+  Trash2,
   X,
 } from "lucide-react";
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Toast } from "@/components/ui/toast";
 import { CompanyEditForm } from "@/features/company/components/company-edit-form";
 import {
@@ -21,6 +22,9 @@ import {
   useCompanyMemoLogs,
   useCompanyPrivateMemoLogs,
 } from "@/features/company/hooks/use-company-detail";
+import {
+  useDeleteCompanyMutation,
+} from "@/features/company/hooks/use-company-mutations";
 import {
   useCompanyFields,
   useCompanyRegions,
@@ -42,7 +46,9 @@ type CompanyDetailScreenProps = {
 };
 
 export function CompanyDetailScreen({ companyId }: CompanyDetailScreenProps) {
+  const navigate = useNavigate();
   const [notice, setNotice] = useState<string | null>(null);
+  const [actionError, setActionError] = useState<string | null>(null);
   const [isEditing, setIsEditing] = useState(false);
 
   const companyQuery = useCompanyDetail(companyId);
@@ -52,6 +58,7 @@ export function CompanyDetailScreen({ companyId }: CompanyDetailScreenProps) {
   const regionsQuery = useCompanyRegions();
   const memoLogsQuery = useCompanyMemoLogs(companyId);
   const privateMemoLogsQuery = useCompanyPrivateMemoLogs(companyId);
+  const deleteCompanyMutation = useDeleteCompanyMutation();
 
   const company = companyQuery.data;
   const fields = useMemo(
@@ -85,6 +92,24 @@ export function CompanyDetailScreen({ companyId }: CompanyDetailScreenProps) {
   const contacts = contactsQuery.data?.items ?? [];
   const deals = dealsQuery.data?.items ?? [];
 
+  const onDeleteCompany = async () => {
+    if (!window.confirm(`${company.companyName} 회사를 삭제할까요?`)) {
+      return;
+    }
+
+    setActionError(null);
+
+    try {
+      await deleteCompanyMutation.mutateAsync(company.id);
+      void navigate("/companies", {
+        replace: true,
+        state: { notice: "회사가 삭제되었습니다." },
+      });
+    } catch (error) {
+      setActionError(getApiErrorMessage(error));
+    }
+  };
+
   return (
     <>
       {/* Mobile */}
@@ -92,6 +117,15 @@ export function CompanyDetailScreen({ companyId }: CompanyDetailScreenProps) {
         {notice ? (
           <div className="px-4 pt-3">
             <Toast message={notice} onClose={() => setNotice(null)} variant="success" />
+          </div>
+        ) : null}
+        {actionError ? (
+          <div className="px-4 pt-3">
+            <Toast
+              message={actionError}
+              onClose={() => setActionError(null)}
+              variant="error"
+            />
           </div>
         ) : null}
         <div className="flex flex-col gap-4 p-4 pb-24 overflow-y-auto">
@@ -106,19 +140,30 @@ export function CompanyDetailScreen({ companyId }: CompanyDetailScreenProps) {
           <div className="rounded-lg border border-[#E5E7EB] bg-white p-5">
             <div className="mb-4 flex items-center justify-between gap-3">
               <h2 className="text-[14px] font-semibold text-[#111827]">기본 정보</h2>
-              <button
-                className={cn(
-                  "inline-flex h-9 shrink-0 items-center gap-1.5 rounded-md border px-3 text-[13px] font-semibold transition",
-                  isEditing
-                    ? "border-[#C7D7FE] bg-[#EAF2FF] text-[#1D4ED8]"
-                    : "border-[#E2E5EC] bg-white text-[#374151] hover:bg-[#F5F6F8]"
-                )}
-                onClick={() => setIsEditing((value) => !value)}
-                type="button"
-              >
-                {isEditing ? <X className="h-4 w-4" /> : <Pencil className="h-4 w-4" />}
-                {isEditing ? "수정 취소" : "정보 수정"}
-              </button>
+              <div className="flex items-center gap-2">
+                <button
+                  className={cn(
+                    "inline-flex h-9 shrink-0 items-center gap-1.5 rounded-md border px-3 text-[13px] font-semibold transition",
+                    isEditing
+                      ? "border-[#C7D7FE] bg-[#EAF2FF] text-[#1D4ED8]"
+                      : "border-[#E2E5EC] bg-white text-[#374151] hover:bg-[#F5F6F8]"
+                  )}
+                  onClick={() => setIsEditing((value) => !value)}
+                  type="button"
+                >
+                  {isEditing ? <X className="h-4 w-4" /> : <Pencil className="h-4 w-4" />}
+                  {isEditing ? "수정 취소" : "정보 수정"}
+                </button>
+                <button
+                  aria-label="회사 삭제"
+                  className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-md border border-red-200 bg-white text-red-600 transition hover:border-red-300 hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-50"
+                  disabled={deleteCompanyMutation.isPending}
+                  onClick={() => void onDeleteCompany()}
+                  type="button"
+                >
+                  <Trash2 className="h-4 w-4" />
+                </button>
+              </div>
             </div>
             {isEditing ? (
               <CompanyEditForm
@@ -202,6 +247,15 @@ export function CompanyDetailScreen({ companyId }: CompanyDetailScreenProps) {
             <Toast message={notice} onClose={() => setNotice(null)} variant="success" />
           </div>
         ) : null}
+        {actionError ? (
+          <div className="mx-6 mt-3">
+            <Toast
+              message={actionError}
+              onClose={() => setActionError(null)}
+              variant="error"
+            />
+          </div>
+        ) : null}
 
         <div className="flex min-h-0 flex-1 overflow-hidden bg-[#F9FAFB]">
           <div className="flex min-w-0 flex-1 flex-col gap-4 overflow-y-auto p-6">
@@ -216,19 +270,30 @@ export function CompanyDetailScreen({ companyId }: CompanyDetailScreenProps) {
             <div className="rounded-lg border border-[#E5E7EB] bg-white p-5">
               <div className="mb-4 flex items-center justify-between gap-3">
                 <h2 className="text-[14px] font-semibold text-[#111827]">기본 정보</h2>
-                <button
-                  className={cn(
-                    "inline-flex h-9 shrink-0 items-center gap-1.5 rounded-md border px-3 text-[13px] font-semibold transition",
-                    isEditing
-                      ? "border-[#C7D7FE] bg-[#EAF2FF] text-[#1D4ED8]"
-                      : "border-[#E2E5EC] bg-white text-[#374151] hover:bg-[#F5F6F8]"
-                  )}
-                  onClick={() => setIsEditing((value) => !value)}
-                  type="button"
-                >
-                  {isEditing ? <X className="h-4 w-4" /> : <Pencil className="h-4 w-4" />}
-                  {isEditing ? "수정 취소" : "정보 수정"}
-                </button>
+                <div className="flex items-center gap-2">
+                  <button
+                    className={cn(
+                      "inline-flex h-9 shrink-0 items-center gap-1.5 rounded-md border px-3 text-[13px] font-semibold transition",
+                      isEditing
+                        ? "border-[#C7D7FE] bg-[#EAF2FF] text-[#1D4ED8]"
+                        : "border-[#E2E5EC] bg-white text-[#374151] hover:bg-[#F5F6F8]"
+                    )}
+                    onClick={() => setIsEditing((value) => !value)}
+                    type="button"
+                  >
+                    {isEditing ? <X className="h-4 w-4" /> : <Pencil className="h-4 w-4" />}
+                    {isEditing ? "수정 취소" : "정보 수정"}
+                  </button>
+                  <button
+                    aria-label="회사 삭제"
+                    className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-md border border-red-200 bg-white text-red-600 transition hover:border-red-300 hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-50"
+                    disabled={deleteCompanyMutation.isPending}
+                    onClick={() => void onDeleteCompany()}
+                    type="button"
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </button>
+                </div>
               </div>
               {isEditing ? (
                 <CompanyEditForm

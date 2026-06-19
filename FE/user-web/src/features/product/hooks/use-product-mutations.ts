@@ -6,11 +6,13 @@ import {
   createProduct,
   createStatus,
   deleteCategory,
+  deleteProduct,
   deleteStatus,
   updateMemoLog,
   updatePrivateMemoLog,
   updateProduct,
 } from "@/features/product/api/product-api";
+import { dealQueryKeys } from "@/features/deal/api/deal-query-keys";
 import { productQueryKeys } from "@/features/product/api/product-query-keys";
 import type {
   CreateProductCategoryInput,
@@ -39,6 +41,24 @@ export function useUpdateProductMutation() {
       void queryClient.invalidateQueries({ queryKey: productQueryKeys.lists() });
       void queryClient.invalidateQueries({
         queryKey: productQueryKeys.detail(input.productId),
+      });
+    },
+  });
+}
+
+export function useDeleteProductMutation() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (productId: string) => deleteProduct(productId),
+    onSuccess: (_data, productId) => {
+      void queryClient.invalidateQueries({ queryKey: productQueryKeys.lists() });
+      void queryClient.invalidateQueries({ queryKey: productQueryKeys.details() });
+      void queryClient.invalidateQueries({
+        queryKey: productQueryKeys.detail(productId),
+      });
+      void queryClient.invalidateQueries({
+        queryKey: dealQueryKeys.productOptions(),
       });
     },
   });

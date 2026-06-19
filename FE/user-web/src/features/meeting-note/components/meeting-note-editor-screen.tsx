@@ -6,11 +6,12 @@ import {
   CheckCircle2,
   Loader2,
   Save,
+  Trash2,
   X,
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useForm, useWatch, type UseFormRegisterReturn } from "react-hook-form";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   ModalFieldGroup,
   ModalForm,
@@ -18,7 +19,10 @@ import {
   ModalFormSection,
 } from "@/components/ui/modal-form";
 import { useMeetingNoteDealOptions } from "@/features/meeting-note/hooks/use-meeting-note-deal-options";
-import { useUpdateMeetingNoteMutation } from "@/features/meeting-note/hooks/use-meeting-note-mutations";
+import {
+  useDeleteMeetingNoteMutation,
+  useUpdateMeetingNoteMutation,
+} from "@/features/meeting-note/hooks/use-meeting-note-mutations";
 import { useMeetingNoteDetail } from "@/features/meeting-note/hooks/use-meeting-note-queries";
 import {
   emptyMeetingNoteFormValues,
@@ -42,8 +46,10 @@ export function MeetingNoteEditorScreen({
 }: MeetingNoteEditorScreenProps) {
   const isEdit = Boolean(meetingNoteId);
   const location = useLocation();
+  const navigate = useNavigate();
   const detailQuery = useMeetingNoteDetail(meetingNoteId ?? "", isEdit);
   const updateMutation = useUpdateMeetingNoteMutation();
+  const deleteMutation = useDeleteMeetingNoteMutation();
   const [notice, setNotice] = useState(() => readLocationNotice(location.state));
   const [savedMeetingNote, setSavedMeetingNote] = useState<MeetingNote | null>(
     null
@@ -64,8 +70,10 @@ export function MeetingNoteEditorScreen({
   const dealSearch = useWatch({ control, name: "dealSearch" }) ?? "";
   const dealOptionsQuery = useMeetingNoteDealOptions(dealSearch);
   const activeMeetingNote = savedMeetingNote ?? detailQuery.data ?? null;
-  const actionError = updateMutation.error ?? detailQuery.error ?? null;
+  const actionError =
+    updateMutation.error ?? deleteMutation.error ?? detailQuery.error ?? null;
   const isSaving = updateMutation.isPending;
+  const isDeleting = deleteMutation.isPending;
 
   useEffect(() => {
     if (isEdit) {
@@ -100,6 +108,22 @@ export function MeetingNoteEditorScreen({
     reset(toMeetingNoteFormValues(updated));
     setNotice("회의록이 수정되었습니다.");
   });
+
+  const onDelete = async () => {
+    if (!meetingNoteId || !window.confirm("회의록을 삭제할까요?")) {
+      return;
+    }
+
+    try {
+      await deleteMutation.mutateAsync(meetingNoteId);
+      void navigate("/meeting-notes", {
+        replace: true,
+        state: { notice: "회의록이 삭제되었습니다." },
+      });
+    } catch {
+      // actionError가 같은 화면 상단 오류 배너로 표시됩니다.
+    }
+  };
 
   // 기능 : 딜 검색어를 변경하고 기존 선택 딜을 해제합니다.
   const updateDealSearch = (value: string) => {
@@ -176,19 +200,36 @@ export function MeetingNoteEditorScreen({
                 </p>
               </div>
             </div>
-            <button
-              className="inline-flex h-9 w-fit shrink-0 items-center gap-1.5 rounded-md bg-[#2563EB] px-3 text-[13px] font-semibold text-white hover:bg-[#1D4ED8] disabled:cursor-not-allowed disabled:opacity-60"
-              disabled={isSaving}
-              type="button"
-              onClick={() => void onSubmit()}
-            >
-              {isSaving ? (
-                <Loader2 className="h-4 w-4 animate-spin" />
-              ) : (
-                <Save className="h-4 w-4" />
-              )}
-              {isEdit ? "수정 저장" : "저장"}
-            </button>
+            <div className="flex shrink-0 items-center gap-2">
+              {isEdit ? (
+                <button
+                  aria-label="회의록 삭제"
+                  className="inline-flex h-9 w-9 items-center justify-center rounded-md border border-red-200 bg-white text-red-600 transition hover:border-red-300 hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-60"
+                  disabled={isDeleting}
+                  onClick={() => void onDelete()}
+                  type="button"
+                >
+                  {isDeleting ? (
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  ) : (
+                    <Trash2 className="h-4 w-4" />
+                  )}
+                </button>
+              ) : null}
+              <button
+                className="inline-flex h-9 w-fit items-center gap-1.5 rounded-md bg-[#2563EB] px-3 text-[13px] font-semibold text-white hover:bg-[#1D4ED8] disabled:cursor-not-allowed disabled:opacity-60"
+                disabled={isSaving}
+                type="button"
+                onClick={() => void onSubmit()}
+              >
+                {isSaving ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  <Save className="h-4 w-4" />
+                )}
+                {isEdit ? "수정 저장" : "저장"}
+              </button>
+            </div>
           </div>
 
           <ModalForm

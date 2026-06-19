@@ -5,6 +5,7 @@ import {
   createContactJobGrade,
   createContactMemoLog,
   createContactPrivateMemoLog,
+  deleteContact,
   deleteContactDepartment,
   deleteContactJobGrade,
   exportContactsXlsx,
@@ -13,6 +14,8 @@ import {
   updateContactPrivateMemoLog,
 } from "@/features/contact/api/contact-api";
 import { contactQueryKeys } from "@/features/contact/api/contact-query-keys";
+import { dealQueryKeys } from "@/features/deal/api/deal-query-keys";
+import { meetingNoteQueryKeys } from "@/features/meeting-note/api/meeting-note-query-keys";
 import type {
   ContactExportParams,
   CreateContactDepartmentInput,
@@ -47,6 +50,28 @@ export function useUpdateContactMutation() {
       void queryClient.invalidateQueries({ queryKey: contactQueryKeys.lists() });
       void queryClient.invalidateQueries({
         queryKey: contactQueryKeys.detail(input.contactId),
+      });
+    },
+  });
+}
+
+// 기능 : 담당자를 삭제한 뒤 목록, 상세, 연결 옵션 캐시를 갱신합니다.
+export function useDeleteContactMutation() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (contactId: string) => deleteContact(contactId),
+    onSuccess: (_result, contactId) => {
+      void queryClient.invalidateQueries({ queryKey: contactQueryKeys.lists() });
+      void queryClient.invalidateQueries({ queryKey: contactQueryKeys.details() });
+      void queryClient.invalidateQueries({
+        queryKey: contactQueryKeys.detail(contactId),
+      });
+      void queryClient.invalidateQueries({
+        queryKey: dealQueryKeys.contactOptions(),
+      });
+      void queryClient.invalidateQueries({
+        queryKey: meetingNoteQueryKeys.filterContacts(),
       });
     },
   });

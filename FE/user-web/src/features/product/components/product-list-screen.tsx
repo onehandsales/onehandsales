@@ -1,7 +1,8 @@
 import { Download, Package, Plus, Search } from "lucide-react";
 import { type FormEvent, useEffect, useMemo, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { PageHeader } from "@/components/layout/page-header";
+import { ListRowActions } from "@/components/ui/list-row-actions";
 import { Pagination } from "@/components/ui/pagination";
 import { ListEmptyState } from "@/components/ui/state";
 import { Toast } from "@/components/ui/toast";
@@ -14,14 +15,21 @@ import {
   useProductStatuses,
 } from "@/features/product/hooks/use-product-detail";
 import { useProductList } from "@/features/product/hooks/use-product-list";
+import { useDeleteProductMutation } from "@/features/product/hooks/use-product-mutations";
 import type { Product, ProductSort } from "@/features/product/types/product";
 import { getApiErrorMessage } from "@/lib/api-client";
 import { cn } from "@/utils/cn";
 import { formatDateWithOptions } from "@/utils/format";
+import { readLocationNotice } from "@/utils/location-state";
 
 type ProductListScreenProps = {
   readonly initialCreateOpen?: boolean;
   readonly onCreateDialogClose?: () => void;
+};
+
+const PRODUCT_TABLE_GRID_STYLE = {
+  gridTemplateColumns:
+    "minmax(136px,1.7fr) minmax(84px,0.8fr) minmax(68px,0.65fr) minmax(42px,0.35fr) minmax(78px,0.55fr) minmax(74px,0.5fr)",
 };
 
 export function ProductListScreen({
@@ -29,6 +37,7 @@ export function ProductListScreen({
   onCreateDialogClose,
 }: ProductListScreenProps) {
   const navigate = useNavigate();
+  const location = useLocation();
   const { user } = useAuthSession();
   const [searchText, setSearchText] = useState("");
   const [search, setSearch] = useState("");
@@ -43,6 +52,7 @@ export function ProductListScreen({
   const [pendingCategoryName, setPendingCategoryName] = useState("");
   const [pendingStatusName, setPendingStatusName] = useState("");
   const [notice, setNotice] = useState<string | null>(null);
+  const [actionError, setActionError] = useState<string | null>(null);
   const [isExporting, setIsExporting] = useState(false);
 
   const categoriesQuery = useProductCategories();
@@ -68,6 +78,7 @@ export function ProductListScreen({
   );
 
   const productsQuery = useProductList(listParams);
+  const deleteProductMutation = useDeleteProductMutation();
   const products = productsQuery.data?.items ?? [];
   const totalCount = productsQuery.data?.totalCount ?? 0;
   const displayTimeZone = user?.timeZone ?? getBrowserTimeZoneFallback();
@@ -76,6 +87,16 @@ export function ProductListScreen({
     categoryFilter.length > 0 ||
     statusFilter.length > 0 ||
     sort !== "createdAtDesc";
+
+  useEffect(() => {
+    const message = readLocationNotice(location.state);
+    if (!message) {
+      return;
+    }
+
+    setNotice(message);
+    void navigate(location.pathname, { replace: true, state: null });
+  }, [location.pathname, location.state, navigate]);
 
   useEffect(() => {
     if (initialCreateOpen) {
@@ -157,35 +178,50 @@ export function ProductListScreen({
     }
   };
 
+  const onDeleteProduct = async (product: Product) => {
+    if (!window.confirm(`${product.productName} 제품을 삭제할까요?`)) {
+      return;
+    }
+
+    setActionError(null);
+
+    try {
+      await deleteProductMutation.mutateAsync(product.id);
+      setNotice("제품이 삭제되었습니다.");
+    } catch (error) {
+      setActionError(getApiErrorMessage(error));
+    }
+  };
+
   return (
     <section className="flex min-h-full flex-col bg-[#FAFAF8]">
       <PageHeader
         breadcrumbs={[{ label: "제품", icon: Package }]}
         actions={[
           {
-            icon: Plus,
-            tooltip: "제품 추가",
-            onClick: () => void navigate("/products/new"),
-            variant: "primary",
-          },
-          {
             icon: Download,
             tooltip: "파일로 내보내기",
             onClick: () => void onExport(),
             disabled: isExporting,
           },
+          {
+            icon: Plus,
+            tooltip: "제품 추가",
+            onClick: () => void navigate("/products/new"),
+            variant: "primary",
+          },
         ]}
       />
 
       {/* 검색 + 필터 툴바 (데스크톱) */}
-      <div className="hidden h-10 shrink-0 items-center gap-2 px-5 md:flex">
+      <div className="hidden min-h-10 shrink-0 items-center gap-1.5 overflow-x-auto px-5 py-1 md:flex lg:gap-2">
         <form
-          className="flex h-8 items-center gap-1.5 rounded-md border border-[#E2E5EC] bg-[#FAFAF8] px-3 transition focus-within:border-[#93C5FD] focus-within:bg-white"
+          className="flex h-8 w-[clamp(150px,20vw,220px)] shrink-0 items-center gap-1.5 rounded-md border border-[#E2E5EC] bg-[#FAFAF8] px-3 transition focus-within:border-[#93C5FD] focus-within:bg-white"
           onSubmit={onSearchSubmit}
         >
           <Search className="h-3 w-3 shrink-0 text-[#9CA3AF]" />
           <input
-            className="w-[220px] bg-transparent text-[13px] text-[#111827] outline-none placeholder:text-[#9CA3AF]"
+            className="min-w-0 flex-1 bg-transparent text-[13px] text-[#111827] outline-none placeholder:text-[#9CA3AF]"
             onChange={(event) => setSearchText(event.target.value)}
             placeholder="제품명 검색"
             value={searchText}
@@ -205,7 +241,7 @@ export function ProductListScreen({
         />
         <select
           className={cn(
-            "h-8 min-w-[132px] appearance-none rounded-md border px-3 text-[13px] outline-none transition",
+            "h-8 w-[clamp(112px,12vw,132px)] shrink-0 appearance-none rounded-md border px-3 text-[13px] outline-none transition",
             categoryFilter
               ? "border-[#BFDBFE] bg-[#EFF6FF] text-[#1D4ED8]"
               : "border-[#E2E5EC] bg-transparent text-[#6B7280] hover:bg-[#FAFAF8]",
@@ -232,7 +268,7 @@ export function ProductListScreen({
         </select>
         <select
           className={cn(
-            "h-8 min-w-[132px] appearance-none rounded-md border px-3 text-[13px] outline-none transition",
+            "h-8 w-[clamp(112px,12vw,132px)] shrink-0 appearance-none rounded-md border px-3 text-[13px] outline-none transition",
             statusFilter
               ? "border-[#BFDBFE] bg-[#EFF6FF] text-[#1D4ED8]"
               : "border-[#E2E5EC] bg-transparent text-[#6B7280] hover:bg-[#FAFAF8]",
@@ -259,7 +295,7 @@ export function ProductListScreen({
         </select>
         <select
           className={cn(
-            "h-8 min-w-[118px] appearance-none rounded-md border px-3 text-[13px] outline-none transition",
+            "h-8 w-[clamp(100px,11vw,118px)] shrink-0 appearance-none rounded-md border px-3 text-[13px] outline-none transition",
             sort !== "createdAtDesc"
               ? "border-[#BFDBFE] bg-[#EFF6FF] text-[#1D4ED8]"
               : "border-[#E2E5EC] bg-transparent text-[#6B7280] hover:bg-[#FAFAF8]",
@@ -275,13 +311,13 @@ export function ProductListScreen({
           <option value="dealCountAsc">딜 낮은순</option>
         </select>
         <div className="flex-1" />
-        <span className="text-[12px] text-[#9CA3AF]">
+        <span className="shrink-0 text-[12px] text-[#9CA3AF]">
           {isExporting ? "내보내는 중..." : `${totalCount}개`}
         </span>
       </div>
 
       {/* 테이블 (데스크톱) */}
-      <div className="hidden gap-5 px-5 pb-3 pt-1 md:flex">
+      <div className="hidden gap-3 overflow-x-auto px-5 pb-3 pt-1 md:flex xl:gap-5">
         <div className="flex min-w-0 flex-1 flex-col gap-3">
           {notice ? (
             <Toast
@@ -291,28 +327,29 @@ export function ProductListScreen({
             />
           ) : null}
 
+          {actionError ? (
+            <p className="rounded-md border border-red-200 bg-red-50 px-3 py-2 text-[12px] text-red-600">
+              {actionError}
+            </p>
+          ) : null}
+
           {productsQuery.isError ? (
             <p className="rounded-md border border-destructive/30 bg-red-50 px-3 py-2 text-sm text-destructive">
               {getApiErrorMessage(productsQuery.error)}
             </p>
           ) : null}
 
-          <div className="flex w-full flex-col rounded-lg border border-[#E2E5EC] bg-white shadow-sm">
-            <div className="flex h-11 shrink-0 items-center border-b border-[#E6EAF0] bg-[#FAFBFC] px-6">
-              <ProductTableHeaderCell width={320}>
-                제품명
-              </ProductTableHeaderCell>
-              <ProductTableHeaderCell width={180}>
-                카테고리
-              </ProductTableHeaderCell>
-              <ProductTableHeaderCell width={130}>상태</ProductTableHeaderCell>
-              <ProductTableHeaderCell align="right" width={80}>
-                딜 수
-              </ProductTableHeaderCell>
-              <ProductTableHeaderCell width={128}>
-                등록일
-              </ProductTableHeaderCell>
-              <div className="min-w-0 flex-1" />
+          <div className="flex w-full min-w-[520px] flex-col overflow-hidden rounded-lg border border-[#E2E5EC] bg-white shadow-sm">
+            <div
+              className="grid h-11 shrink-0 items-center border-b border-[#E6EAF0] bg-[#FAFBFC] px-3 md:px-4 xl:px-6"
+              style={PRODUCT_TABLE_GRID_STYLE}
+            >
+              <ProductTableHeaderCell>제품명</ProductTableHeaderCell>
+              <ProductTableHeaderCell>카테고리</ProductTableHeaderCell>
+              <ProductTableHeaderCell>상태</ProductTableHeaderCell>
+              <ProductTableHeaderCell>딜 수</ProductTableHeaderCell>
+              <ProductTableHeaderCell>등록일</ProductTableHeaderCell>
+              <ProductTableHeaderCell>관리</ProductTableHeaderCell>
             </div>
 
             {productsQuery.isLoading ? (
@@ -330,12 +367,14 @@ export function ProductListScreen({
                 }
               />
             ) : (
-              <div>
+              <div className="min-w-0">
                 {products.map((product) => (
                   <ProductRow
-                    key={product.id}
-                    product={product}
+                    deleteDisabled={deleteProductMutation.isPending}
                     displayTimeZone={displayTimeZone}
+                    key={product.id}
+                    onDelete={() => void onDeleteProduct(product)}
+                    product={product}
                   />
                 ))}
               </div>
@@ -436,7 +475,7 @@ export function ProductListScreen({
         </div>
 
         {/* 모바일 카드 목록 */}
-        <div className="flex-1 overflow-y-auto bg-white">
+        <div className="bg-white">
           {productsQuery.isLoading ? (
             <div className="space-y-0">
               {Array.from({ length: 8 }, (_, i) => (
@@ -460,12 +499,17 @@ export function ProductListScreen({
               </button>
             </div>
           ) : products.length === 0 ? (
-            <div className="flex flex-col items-center justify-center px-5 py-16 text-center">
-              <Package className="mb-3 h-10 w-10 text-[#D1D5DB]" strokeWidth={1.5} />
-              <p className="text-[14px] font-medium text-[#374151]">
-                {hasFilters ? "조건에 맞는 제품이 없습니다" : "등록된 제품이 없습니다"}
-              </p>
-            </div>
+            <ListEmptyState
+              actionIcon={Plus}
+              actionLabel="제품 추가"
+              icon={Package}
+              onAction={() => setIsCreateOpen(true)}
+              title={
+                hasFilters
+                  ? "조건에 맞는 제품이 없습니다"
+                  : "등록된 제품이 없습니다"
+              }
+            />
           ) : (
             products.map((product) => (
               <ProductMobileCard
@@ -582,63 +626,66 @@ function ProductMobileCard({
 }
 
 function ProductRow({
+  deleteDisabled,
   product,
   displayTimeZone,
+  onDelete,
 }: {
+  readonly deleteDisabled: boolean;
   readonly product: Product;
   readonly displayTimeZone: string;
+  readonly onDelete: () => void;
 }) {
   return (
-    <Link
-      className="flex h-[66px] items-center border-b border-[#E8EDF3] px-6 transition-colors hover:bg-blue-50/60 last:border-b-0"
-      to={`/products/${product.id}`}
+    <div
+      className="grid h-[66px] items-center border-b border-[#E8EDF3] px-3 transition-colors last:border-b-0 hover:bg-blue-50/60 md:px-4 xl:px-6"
+      style={PRODUCT_TABLE_GRID_STYLE}
     >
-      <div className="w-[320px] shrink-0 min-w-0">
+      <div className="min-w-0">
         <span className="block truncate text-[13px] font-semibold text-[#111827]">
           {product.productName}
         </span>
       </div>
-      <div className="w-[180px] min-w-0 shrink-0">
+      <div className="min-w-0">
         <Badge tone="indigo">{product.productCategory.categoryName}</Badge>
       </div>
-      <div className="w-[130px] min-w-0 shrink-0">
+      <div className="min-w-0">
         <Badge tone={statusToneFromName(product.productStatus.statusName)}>
           {product.productStatus.statusName}
         </Badge>
       </div>
-      <div className="w-[80px] shrink-0 text-[12px] font-medium text-[#475569]">
+      <div className="min-w-0 whitespace-nowrap text-[12px] font-medium text-[#475569]">
         {product.dealCount.toLocaleString("ko-KR")}건
       </div>
       <div
-        className="w-[128px] shrink-0 text-[12px] font-medium text-[#64748B]"
+        className="min-w-0 truncate text-[12px] font-medium text-[#64748B]"
         title={formatProductCreatedAt(product.createdAt, displayTimeZone)}
       >
         {formatProductCreatedAt(product.createdAt, displayTimeZone)}
       </div>
-      <div className="min-w-0 flex-1" />
-    </Link>
+      <ListRowActions
+        deleteLabel={`${product.productName} 삭제`}
+        detailTo={`/products/${product.id}`}
+        disabled={deleteDisabled}
+        onDelete={onDelete}
+      />
+    </div>
   );
 }
 
 function ProductTableHeaderCell({
   align = "left",
   children,
-  width,
-  flex = false,
 }: {
   readonly align?: "left" | "right";
   readonly children: string;
-  readonly width?: number;
-  readonly flex?: boolean;
 }) {
   return (
     <div
       className={cn(
-        "shrink-0 text-[12px] font-semibold text-[#64748B]",
-        flex && "min-w-0 flex-1",
+        "min-w-0 truncate text-[12px] font-semibold text-[#64748B]",
         align === "right" && "text-right",
       )}
-      style={width ? { width } : undefined}
     >
       {children}
     </div>
@@ -684,7 +731,7 @@ function FilterChip({
   return (
     <button
       className={cn(
-        "inline-flex h-8 items-center rounded-[6px] px-3 text-[13px] transition",
+        "inline-flex h-8 shrink-0 items-center whitespace-nowrap rounded-[6px] px-3 text-[13px] transition",
         active
           ? "border border-[#C7D7FE] bg-[#EAF2FF] font-bold text-[#1D4ED8]"
           : "border border-[#E6EAF0] bg-white font-medium text-[#475569] hover:bg-[#F9FAFB]",

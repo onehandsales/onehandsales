@@ -4,12 +4,14 @@ import {
   createDeal,
   createFollowingActionLog,
   createMemoLog,
+  deleteDeal,
   exportDealsXlsx,
   updateDeal,
   updateFollowingActionLog,
   updateMemoLog,
 } from "@/features/deal/api/deal-api";
 import { dealQueryKeys } from "@/features/deal/api/deal-query-keys";
+import { scheduleQueryKeys } from "@/features/schedule/api/schedule-query-keys";
 import type {
   CreateDealInput,
   CreateFollowingActionLogInput,
@@ -42,6 +44,25 @@ export function useUpdateDealMutation() {
       void queryClient.invalidateQueries({ queryKey: dealQueryKeys.lists() });
       void queryClient.invalidateQueries({ queryKey: dealQueryKeys.stageCounts() });
       void queryClient.invalidateQueries({ queryKey: dealQueryKeys.detail(deal.id) });
+    },
+  });
+}
+
+export function useDeleteDealMutation() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (dealId: string) => deleteDeal(dealId),
+    onSuccess: (_data, dealId) => {
+      void queryClient.invalidateQueries({ queryKey: dealQueryKeys.lists() });
+      void queryClient.invalidateQueries({
+        queryKey: [...dealQueryKeys.all, "stage-counts"] as const,
+      });
+      void queryClient.invalidateQueries({ queryKey: dealQueryKeys.details() });
+      void queryClient.invalidateQueries({ queryKey: dealQueryKeys.detail(dealId) });
+      void queryClient.invalidateQueries({
+        queryKey: scheduleQueryKeys.dealOptions(),
+      });
     },
   });
 }

@@ -10,9 +10,11 @@ import {
   X,
 } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { PageHeader } from "@/components/layout/page-header";
+import { ListRowActions } from "@/components/ui/list-row-actions";
 import { ListEmptyState } from "@/components/ui/state";
+import { Toast } from "@/components/ui/toast";
 import { useAuthSession } from "@/features/auth";
 import { DealCreateDialog } from "@/features/deal/components/deal-create-dialog";
 import { DealDetailPanel } from "@/features/deal/components/deal-detail-panel";
@@ -25,6 +27,7 @@ import {
   useDealStageCounts,
 } from "@/features/deal/hooks/use-deal-list";
 import { exportDealsXlsx } from "@/features/deal/api/deal-api";
+import { useDeleteDealMutation } from "@/features/deal/hooks/use-deal-mutations";
 import { getApiErrorMessage } from "@/lib/api-client";
 import {
   DEAL_STATUS_LABEL,
@@ -36,6 +39,7 @@ import {
 import { Pagination } from "@/components/ui/pagination";
 import { cn } from "@/utils/cn";
 import { formatDateWithOptions } from "@/utils/format";
+import { readLocationNotice } from "@/utils/location-state";
 
 type StageTab = "ALL" | DealStatus;
 
@@ -57,6 +61,11 @@ const SORT_OPTIONS: Array<{
   { value: "expectedEndDateAsc", label: "마감일순" },
 ];
 
+const DEAL_TABLE_GRID_STYLE = {
+  gridTemplateColumns:
+    "minmax(96px,1.1fr) minmax(104px,1.05fr) minmax(58px,0.55fr) minmax(68px,0.65fr) minmax(96px,0.95fr) minmax(74px,0.55fr) minmax(74px,0.5fr)",
+};
+
 type DealPipelineHomeScreenProps = {
   readonly initialCreateOpen?: boolean;
 };
@@ -65,6 +74,7 @@ export function DealPipelineHomeScreen({
   initialCreateOpen = false,
 }: DealPipelineHomeScreenProps) {
   const navigate = useNavigate();
+  const location = useLocation();
   const { user } = useAuthSession();
   const [activeTab, setActiveTab] = useState<StageTab>("ALL");
   const [search, setSearch] = useState("");
@@ -76,6 +86,8 @@ export function DealPipelineHomeScreen({
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
   const [exportError, setExportError] = useState<string | null>(null);
+  const [notice, setNotice] = useState<string | null>(null);
+  const [actionError, setActionError] = useState<string | null>(null);
   const dealCreatedRef = useRef(false);
 
   const searchQuery = search.trim() || undefined;
@@ -102,6 +114,17 @@ export function DealPipelineHomeScreen({
     () => dealsQuery.data?.items ?? [],
     [dealsQuery.data?.items],
   );
+  const deleteDealMutation = useDeleteDealMutation();
+
+  useEffect(() => {
+    const message = readLocationNotice(location.state);
+    if (!message) {
+      return;
+    }
+
+    setNotice(message);
+    void navigate(location.pathname, { replace: true, state: null });
+  }, [location.pathname, location.state, navigate]);
   const filteredContactOptions = useMemo(() => {
     const contactOptions = contactOptionsQuery.data ?? [];
     return companyId
@@ -190,6 +213,24 @@ export function DealPipelineHomeScreen({
     }
   };
 
+  const onDeleteDeal = async (deal: DealListItem) => {
+    if (!window.confirm(`${deal.dealName} 딜을 삭제할까요?`)) {
+      return;
+    }
+
+    setActionError(null);
+
+    try {
+      await deleteDealMutation.mutateAsync(deal.id);
+      if (selectedDealId === deal.id) {
+        setSelectedDealId("");
+      }
+      setNotice("딜이 삭제되었습니다.");
+    } catch (error) {
+      setActionError(getApiErrorMessage(error));
+    }
+  };
+
   const getStageCount = (tab: StageTab): number => {
     const counts = stageCountsQuery.data?.items ?? [];
     if (tab === "ALL") return counts.reduce((sum, c) => sum + c.count, 0);
@@ -205,16 +246,16 @@ export function DealPipelineHomeScreen({
           breadcrumbs={[{ label: "딜", icon: BriefcaseBusiness }]}
           actions={[
             {
-              icon: Plus,
-              tooltip: "새 딜 추가",
-              onClick: () => void navigate("/deals/new"),
-              variant: "primary",
-            },
-            {
               icon: Download,
               tooltip: "파일로 내보내기",
               onClick: () => void onExport(),
               disabled: isExporting,
+            },
+            {
+              icon: Plus,
+              tooltip: "새 딜 추가",
+              onClick: () => void navigate("/deals/new"),
+              variant: "primary",
             },
           ]}
         />
@@ -223,6 +264,21 @@ export function DealPipelineHomeScreen({
           <div className="mx-5 mt-3 flex items-center gap-2 rounded-md border border-red-200 bg-red-50 px-3 py-2 text-[13px] text-red-700">
             <AlertCircle className="h-4 w-4 shrink-0" />
             {exportError}
+          </div>
+        ) : null}
+        {notice ? (
+          <div className="mx-5 mt-3">
+            <Toast
+              message={notice}
+              onClose={() => setNotice(null)}
+              variant="success"
+            />
+          </div>
+        ) : null}
+        {actionError ? (
+          <div className="mx-5 mt-3 flex items-center gap-2 rounded-md border border-red-200 bg-red-50 px-3 py-2 text-[13px] text-red-700">
+            <AlertCircle className="h-4 w-4 shrink-0" />
+            {actionError}
           </div>
         ) : null}
         {/* Stage Tabs */}
@@ -263,21 +319,21 @@ export function DealPipelineHomeScreen({
         {dealsQuery.isLoading ? (
           <DesktopLoadingState />
         ) : dealsQuery.isError ? (
-          <div className="flex gap-5 px-5 pb-3 pt-3">
+          <div className="flex gap-3 overflow-x-auto px-5 pb-3 pt-3 xl:gap-5">
             <div className="flex min-w-0 flex-1 flex-col gap-3">
               <ErrorState onRetry={() => void dealsQuery.refetch()} />
             </div>
           </div>
         ) : (
-          <div className="flex gap-5 px-5 pb-3 pt-3">
+          <div className="flex gap-3 overflow-x-auto px-5 pb-3 pt-3 xl:gap-5">
             {/* Deal List */}
             <div className="flex min-w-0 flex-1 flex-col gap-3">
               {/* Controls bar — 한 줄 */}
-              <div className="flex shrink-0 items-center gap-2 px-0.5">
-                <div className="flex h-8 items-center gap-1.5 rounded-md border border-[#E2E5EC] bg-[#FAFAF8] px-3 transition focus-within:border-[#93C5FD] focus-within:bg-white">
+              <div className="flex shrink-0 items-center gap-1.5 px-0.5 lg:gap-2">
+                <div className="flex h-8 w-[clamp(120px,18vw,220px)] shrink-0 items-center gap-1.5 rounded-md border border-[#E2E5EC] bg-[#FAFAF8] px-3 transition focus-within:border-[#93C5FD] focus-within:bg-white">
                   <Search className="h-3 w-3 shrink-0 text-[#9CA3AF]" />
                   <input
-                    className="w-[220px] bg-transparent text-[13px] text-[#111827] outline-none placeholder:text-[#9CA3AF]"
+                    className="min-w-0 flex-1 bg-transparent text-[13px] text-[#111827] outline-none placeholder:text-[#9CA3AF]"
                     onChange={(e) => onSearchChange(e.target.value)}
                     placeholder="딜명 검색"
                     value={search}
@@ -285,7 +341,7 @@ export function DealPipelineHomeScreen({
                 </div>
                 <button
                   className={cn(
-                    "inline-flex h-8 items-center rounded-[6px] border px-3 text-[13px] transition",
+                    "inline-flex h-8 shrink-0 items-center whitespace-nowrap rounded-[6px] border px-3 text-[13px] transition",
                     !hasFilter
                       ? "border-[#C7D7FE] bg-[#EAF2FF] font-bold text-[#1D4ED8]"
                       : "border-[#E6EAF0] bg-white font-medium text-[#475569] hover:bg-[#F9FAFB]",
@@ -298,7 +354,7 @@ export function DealPipelineHomeScreen({
                 <select
                   aria-label="회사 필터"
                   className={cn(
-                    "h-8 min-w-[140px] appearance-none rounded-md border px-3 text-[13px] outline-none transition",
+                    "h-8 w-[clamp(92px,11vw,140px)] shrink-0 appearance-none rounded-md border px-3 text-[13px] outline-none transition",
                     companyId
                       ? "border-[#BFDBFE] bg-[#EFF6FF] text-[#1D4ED8]"
                       : "border-[#E2E5EC] bg-transparent text-[#6B7280] hover:bg-[#FAFAF8]",
@@ -316,7 +372,7 @@ export function DealPipelineHomeScreen({
                 <select
                   aria-label="담당자 필터"
                   className={cn(
-                    "h-8 min-w-[140px] appearance-none rounded-md border px-3 text-[13px] outline-none transition",
+                    "h-8 w-[clamp(92px,11vw,140px)] shrink-0 appearance-none rounded-md border px-3 text-[13px] outline-none transition",
                     contactId
                       ? "border-[#BFDBFE] bg-[#EFF6FF] text-[#1D4ED8]"
                       : "border-[#E2E5EC] bg-transparent text-[#6B7280] hover:bg-[#FAFAF8]",
@@ -334,7 +390,7 @@ export function DealPipelineHomeScreen({
                 <select
                   aria-label="정렬 조건"
                   className={cn(
-                    "h-8 min-w-[136px] appearance-none rounded-md border px-3 text-[13px] outline-none transition",
+                    "h-8 w-[clamp(96px,11vw,136px)] shrink-0 appearance-none rounded-md border px-3 text-[13px] outline-none transition",
                     sort !== "createdAtDesc"
                       ? "border-[#BFDBFE] bg-[#EFF6FF] text-[#1D4ED8]"
                       : "border-[#E2E5EC] bg-transparent text-[#6B7280] hover:bg-[#FAFAF8]",
@@ -354,42 +410,48 @@ export function DealPipelineHomeScreen({
                 </span>
               </div>
 
-              <div className="flex flex-col rounded-lg border border-[#E2E5EC] bg-white shadow-sm">
+              <div className="flex w-full min-w-[600px] flex-col overflow-hidden rounded-lg border border-[#E2E5EC] bg-white shadow-sm">
                 {/* Table header */}
-                <div className="flex h-11 shrink-0 items-center border-b border-[#E2E5EC] bg-[#F9FAFB] px-6">
-                  <TableHeaderCell width={170}>딜명</TableHeaderCell>
-                  <TableHeaderCell width={180}>회사/담당자</TableHeaderCell>
-                  <TableHeaderCell width={96}>단계</TableHeaderCell>
-                  <TableHeaderCell width={104}>금액</TableHeaderCell>
-                  <TableHeaderCell width={190}>
-                    다음 행동 마감일
-                  </TableHeaderCell>
-                  <TableHeaderCell width={104}>등록일</TableHeaderCell>
-                  <div className="min-w-0 flex-1" />
+                <div
+                  className="grid h-11 shrink-0 items-center border-b border-[#E2E5EC] bg-[#F9FAFB] px-3 md:px-4 xl:px-6"
+                  style={DEAL_TABLE_GRID_STYLE}
+                >
+                  <TableHeaderCell>딜명</TableHeaderCell>
+                  <TableHeaderCell>회사/담당자</TableHeaderCell>
+                  <TableHeaderCell>단계</TableHeaderCell>
+                  <TableHeaderCell>금액</TableHeaderCell>
+                  <TableHeaderCell>다음 행동 마감일</TableHeaderCell>
+                  <TableHeaderCell>등록일</TableHeaderCell>
+                  <TableHeaderCell>관리</TableHeaderCell>
                 </div>
 
                 {/* Rows */}
                 {deals.length === 0 ? (
-                  <div className="flex flex-col items-center justify-center py-12 text-sm text-gray-400">
-                    <p>표시할 딜이 없습니다.</p>
-                    <button
-                      className="mt-3 inline-flex h-9 items-center gap-1.5 rounded-md bg-primary px-4 text-sm font-medium text-white"
-                      onClick={() => setIsCreateOpen(true)}
-                      type="button"
-                    >
-                      <Plus className="h-4 w-4" />딜 추가
-                    </button>
-                  </div>
+                  <ListEmptyState
+                    actionIcon={Plus}
+                    actionLabel="딜 추가"
+                    icon={BriefcaseBusiness}
+                    onAction={() => setIsCreateOpen(true)}
+                    title={
+                      hasFilter
+                        ? "조건에 맞는 딜이 없습니다"
+                        : "등록된 딜이 없습니다"
+                    }
+                  />
                 ) : (
-                  deals.map((deal) => (
-                    <DealListRow
-                      deal={deal}
-                      displayTimeZone={displayTimeZone}
-                      isActive={deal.id === selectedDealId}
-                      key={deal.id}
-                      onSelect={setSelectedDealId}
-                    />
-                  ))
+                  <div className="min-w-0">
+                    {deals.map((deal) => (
+                      <DealListRow
+                        deal={deal}
+                        deleteDisabled={deleteDealMutation.isPending}
+                        displayTimeZone={displayTimeZone}
+                        isActive={deal.id === selectedDealId}
+                        key={deal.id}
+                        onDelete={() => void onDeleteDeal(deal)}
+                        onSelect={setSelectedDealId}
+                      />
+                    ))}
+                  </div>
                 )}
               </div>
 
@@ -404,7 +466,7 @@ export function DealPipelineHomeScreen({
 
             {/* Right Detail Panel */}
             {selectedDealId ? (
-              <div className="flex w-[380px] shrink-0 flex-col rounded-lg border border-[#E5EAF0] bg-white">
+              <div className="flex w-[380px] shrink-0 flex-col overflow-hidden rounded-lg border border-[#E5EAF0] bg-white">
                 <div className="flex h-11 shrink-0 items-center justify-between border-b border-[#E6EAF0] px-4">
                   <div className="flex items-center gap-2">
                     <button
@@ -507,7 +569,9 @@ export function DealPipelineHomeScreen({
             )}
             onClick={() =>
               onSortChange(
-                sort === "expectedEndDateAsc" ? "createdAtDesc" : "expectedEndDateAsc",
+                sort === "expectedEndDateAsc"
+                  ? "createdAtDesc"
+                  : "expectedEndDateAsc",
               )
             }
             type="button"
@@ -538,45 +602,46 @@ export function DealPipelineHomeScreen({
         ) : null}
 
         {/* 딜 카드 목록 */}
-        {dealsQuery.isLoading ? (
-          <MobileLoadingState />
-        ) : dealsQuery.isError ? (
-          <div className="px-4 pt-4">
-            <ErrorState onRetry={() => void dealsQuery.refetch()} />
-          </div>
-        ) : deals.length === 0 ? (
-          <ListEmptyState
-            actionIcon={Plus}
-            actionLabel="딜 추가"
-            className="min-h-[280px] -translate-y-7"
-            icon={BriefcaseBusiness}
-            onAction={() => setIsCreateOpen(true)}
-            title={
-              hasFilter ? "조건에 맞는 딜이 없습니다" : "등록된 딜이 없습니다"
-            }
-          />
-        ) : (
-          <>
-            <div className="flex flex-col gap-3 px-4 py-4 pb-24">
-              {deals.map((deal) => (
-                <MobileDealCard
-                  deal={deal}
-                  displayTimeZone={displayTimeZone}
-                  key={deal.id}
-                />
-              ))}
+        <div className="bg-white">
+          {dealsQuery.isLoading ? (
+            <MobileLoadingState />
+          ) : dealsQuery.isError ? (
+            <div className="px-4 pt-4">
+              <ErrorState onRetry={() => void dealsQuery.refetch()} />
             </div>
-            {dealsQuery.data ? (
-              <div className="px-4 pb-8">
-                <Pagination
-                  onPageChange={setPage}
-                  page={page}
-                  totalPages={dealsQuery.data.totalPages ?? 1}
-                />
+          ) : deals.length === 0 ? (
+            <ListEmptyState
+              actionIcon={Plus}
+              actionLabel="딜 추가"
+              icon={BriefcaseBusiness}
+              onAction={() => setIsCreateOpen(true)}
+              title={
+                hasFilter ? "조건에 맞는 딜이 없습니다" : "등록된 딜이 없습니다"
+              }
+            />
+          ) : (
+            <>
+              <div className="flex flex-col gap-3 px-4 py-4 pb-24">
+                {deals.map((deal) => (
+                  <MobileDealCard
+                    deal={deal}
+                    displayTimeZone={displayTimeZone}
+                    key={deal.id}
+                  />
+                ))}
               </div>
-            ) : null}
-          </>
-        )}
+              {dealsQuery.data ? (
+                <div className="px-4 pb-8">
+                  <Pagination
+                    onPageChange={setPage}
+                    page={page}
+                    totalPages={dealsQuery.data.totalPages ?? 1}
+                  />
+                </div>
+              ) : null}
+            </>
+          )}
+        </div>
 
         {/* FAB */}
         <button
@@ -613,35 +678,47 @@ export function DealPipelineHomeScreen({
 
 function DealListRow({
   deal,
+  deleteDisabled,
   displayTimeZone,
   isActive,
+  onDelete,
   onSelect,
 }: {
   readonly deal: DealListItem;
+  readonly deleteDisabled: boolean;
   readonly displayTimeZone: string;
   readonly isActive: boolean;
+  readonly onDelete: () => void;
   readonly onSelect: (id: string) => void;
 }) {
   const contactLabel = formatDealContactLabel(deal);
 
   return (
-    <button
+    <div
       className={cn(
-        "flex h-[66px] w-full items-center border-b border-[#E2E5EC] px-6 py-0 text-left transition-colors last:border-b-0 hover:bg-blue-50/60",
+        "grid h-[66px] w-full items-center border-b border-[#E2E5EC] px-3 py-0 text-left transition-colors last:border-b-0 hover:bg-blue-50/60 md:px-4 xl:px-6",
         isActive ? "bg-blue-50" : "bg-white",
       )}
       onClick={() => onSelect(deal.id)}
-      type="button"
+      onKeyDown={(event) => {
+        if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault();
+          onSelect(deal.id);
+        }
+      }}
+      role="button"
+      style={DEAL_TABLE_GRID_STYLE}
+      tabIndex={0}
     >
       {/* 딜명 */}
-      <div className="min-w-0 shrink-0" style={{ width: 170 }}>
+      <div className="min-w-0">
         <span className="block truncate text-[13px] font-semibold text-gray-900">
           {deal.dealName}
         </span>
       </div>
 
       {/* 회사/담당자 */}
-      <div className="min-w-0 shrink-0 pr-3" style={{ width: 180 }}>
+      <div className="min-w-0 pr-3">
         <span
           className="block truncate text-[12px] font-semibold text-[#111827]"
           title={deal.company.companyName}
@@ -657,7 +734,7 @@ function DealListRow({
       </div>
 
       {/* 단계 */}
-      <div className="min-w-0 shrink-0" style={{ width: 96 }}>
+      <div className="min-w-0">
         <span
           className={cn(
             "inline-flex h-6 items-center rounded-full px-2 text-[11px] font-semibold",
@@ -669,14 +746,14 @@ function DealListRow({
       </div>
 
       {/* 금액 */}
-      <div className="min-w-0 shrink-0" style={{ width: 104 }}>
+      <div className="min-w-0">
         <span className="block truncate text-[12px] font-semibold text-gray-900">
           {deal.dealCost.toLocaleString("ko-KR")}원
         </span>
       </div>
 
       {/* 다음 행동 마감일 */}
-      <div className="min-w-0 shrink-0 pr-3" style={{ width: 190 }}>
+      <div className="min-w-0 pr-3">
         <span
           className="block truncate text-[12px] font-semibold text-[#111827]"
           title={formatDealDateOnly(deal.expectedEndDate)}
@@ -686,14 +763,18 @@ function DealListRow({
       </div>
 
       {/* 등록일 */}
-      <div className="min-w-0 shrink-0" style={{ width: 104 }}>
+      <div className="min-w-0">
         <span className="block truncate text-[11px] font-medium text-[#64748B]">
           {formatDealCreatedAt(deal.createdAt, displayTimeZone)}
         </span>
       </div>
-
-      <div className="min-w-0 flex-1" />
-    </button>
+      <ListRowActions
+        deleteLabel={`${deal.dealName} 삭제`}
+        detailTo={`/deals/${deal.id}`}
+        disabled={deleteDisabled}
+        onDelete={onDelete}
+      />
+    </div>
   );
 }
 
@@ -770,10 +851,7 @@ function MobileDealCard({
         <p className="text-[17px] font-bold text-[#111827]">
           ₩ {deal.dealCost.toLocaleString("ko-KR")}
         </p>
-        <p
-          className="text-[12px]"
-          style={{ color: deadlineColor }}
-        >
+        <p className="text-[12px]" style={{ color: deadlineColor }}>
           마감 {formatDealDateShort(deal.expectedEndDate)}
         </p>
       </div>
@@ -869,23 +947,17 @@ function getBrowserTimeZoneFallback() {
 
 function TableHeaderCell({
   children,
-  width,
-  flex = false,
   align = "left",
 }: {
   readonly children: string;
-  readonly width?: number;
-  readonly flex?: boolean;
   readonly align?: "left" | "right";
 }) {
   return (
     <div
       className={cn(
-        "shrink-0 text-[12px] font-semibold text-[#64748B]",
-        flex && "min-w-0 flex-1",
+        "min-w-0 truncate text-[12px] font-semibold text-[#64748B]",
         align === "right" && "text-right",
       )}
-      style={width ? { width } : undefined}
     >
       {children}
     </div>
@@ -914,7 +986,7 @@ function ErrorState({ onRetry }: { readonly onRetry: () => void }) {
 
 function DesktopLoadingState() {
   return (
-    <div className="flex gap-5 px-5 pb-3 pt-3">
+    <div className="flex gap-3 overflow-x-auto px-5 pb-3 pt-3 xl:gap-5">
       <div className="flex min-w-0 flex-1 flex-col gap-3">
         <div className="flex h-10 shrink-0 items-center gap-2 px-0.5">
           <div className="h-7 w-20 animate-pulse rounded-md bg-gray-100" />
@@ -923,7 +995,7 @@ function DesktopLoadingState() {
           <div className="flex-1" />
           <div className="h-4 w-8 animate-pulse rounded bg-gray-100" />
         </div>
-        <div className="flex flex-col rounded-lg border border-[#E2E5EC] bg-white shadow-sm">
+        <div className="flex w-full min-w-[600px] flex-col overflow-hidden rounded-lg border border-[#E2E5EC] bg-white shadow-sm">
           {Array.from({ length: 6 }).map((_, i) => (
             <div
               className="h-[66px] animate-pulse border-b border-[#E2E5EC] bg-[#F9FAFB] last:border-b-0"

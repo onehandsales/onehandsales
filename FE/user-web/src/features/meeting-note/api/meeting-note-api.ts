@@ -54,6 +54,13 @@ export function updateMeetingNote(input: UpdateMeetingNoteInput) {
   });
 }
 
+// 기능 : 회의록을 삭제합니다.
+export function deleteMeetingNote(meetingNoteId: string) {
+  return apiClient<void>(`/api/meeting-notes/${meetingNoteId}`, {
+    method: "DELETE",
+  });
+}
+
 // 기능 : 회의록 목록 query string을 API 계약 형식으로 변환합니다.
 function toMeetingNoteListSearchParams(params: MeetingNoteListParams) {
   const searchParams = new URLSearchParams();

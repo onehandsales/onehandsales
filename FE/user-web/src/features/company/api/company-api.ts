@@ -67,6 +67,13 @@ export function updateCompany(input: UpdateCompanyInput) {
   });
 }
 
+// 기능 : 참조가 없는 회사를 삭제합니다.
+export function deleteCompany(companyId: string) {
+  return apiClient<void>(`/api/companies/${companyId}`, {
+    method: "DELETE",
+  });
+}
+
 // 기능 : 회사 분야를 생성합니다.
 export function createCompanyField(input: CreateCompanyFieldInput) {
   return apiClient<void>("/api/company-fields", {

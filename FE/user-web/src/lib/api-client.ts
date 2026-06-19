@@ -136,6 +136,11 @@ export function getApiErrorMessage(error: unknown): string {
       return "삭제된 항목은 복구한 뒤 수정할 수 있습니다.";
     }
 
+    const conflictMessage = getConflictErrorMessage(error.code);
+    if (conflictMessage) {
+      return conflictMessage;
+    }
+
     return error.message;
   }
 
@@ -144,6 +149,21 @@ export function getApiErrorMessage(error: unknown): string {
   }
 
   return "요청을 처리하지 못했습니다.";
+}
+
+function getConflictErrorMessage(code: string) {
+  switch (code) {
+    case "CompanyInUse":
+      return "연결된 담당자, 딜 또는 회의록이 있어 회사를 삭제할 수 없습니다.";
+    case "ContactInUse":
+      return "연결된 딜 또는 회의록이 있어 담당자를 삭제할 수 없습니다.";
+    case "ProductInUse":
+      return "연결된 딜 또는 회의록이 있어 제품을 삭제할 수 없습니다.";
+    case "DealInUse":
+      return "연결된 일정 또는 회의록이 있어 딜을 삭제할 수 없습니다.";
+    default:
+      return null;
+  }
 }
 
 async function request(path: string, options: ApiClientOptions) {
