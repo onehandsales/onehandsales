@@ -1,4 +1,4 @@
-import { ChevronDown, Plus, X } from "lucide-react";
+import { Plus, Search, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { getApiErrorMessage } from "@/lib/api-client";
 import { cn } from "@/utils/cn";
@@ -23,7 +23,7 @@ type ManagedTaxonomyDropdownProps<TItem extends ManagedTaxonomyItem> = {
   readonly onSelect: (id: string) => void;
 };
 
-// 기능 : 분류 선택, 추가, 삭제를 한 드롭다운 안에서 처리합니다.
+// 기능 : 분류를 검색해 선택하고 검색 결과가 없으면 입력값으로 바로 추가합니다.
 export function ManagedTaxonomyDropdown<TItem extends ManagedTaxonomyItem>({
   id,
   title,
@@ -40,15 +40,30 @@ export function ManagedTaxonomyDropdown<TItem extends ManagedTaxonomyItem>({
   onSelect,
 }: ManagedTaxonomyDropdownProps<TItem>) {
   const [isOpen, setIsOpen] = useState(false);
-  const [isAdding, setIsAdding] = useState(false);
-  const [newName, setNewName] = useState("");
+  const [search, setSearch] = useState("");
   const [addError, setAddError] = useState<string | null>(null);
   const [deleteErrors, setDeleteErrors] = useState<Record<string, string>>({});
   const wrapperRef = useRef<HTMLDivElement>(null);
-  const inputRef = useRef<HTMLInputElement>(null);
   const selectedItem = items.find((item) => item.id === selectedId);
   const selectedLabel = selectedItem ? getLabel(selectedItem) : "";
-  const isActive = isOpen || selectedId.length > 0;
+  const query = search.trim();
+  const normalizedQuery = normalizeText(query);
+  const filteredItems =
+    query.length > 0
+      ? items.filter((item) =>
+          normalizeText(getLabel(item)).includes(normalizedQuery)
+        )
+      : items;
+  const hasExactMatch = items.some(
+    (item) => normalizeText(getLabel(item)) === normalizedQuery
+  );
+  const canCreate = query.length > 0 && !hasExactMatch;
+
+  useEffect(() => {
+    if (selectedLabel) {
+      setSearch(selectedLabel);
+    }
+  }, [selectedLabel]);
 
   useEffect(() => {
     if (!isOpen) {
@@ -61,15 +76,14 @@ export function ManagedTaxonomyDropdown<TItem extends ManagedTaxonomyItem>({
         !wrapperRef.current.contains(event.target as Node)
       ) {
         setIsOpen(false);
-        setIsAdding(false);
-        setNewName("");
         setAddError(null);
+        setSearch(selectedLabel);
       }
     };
 
     document.addEventListener("mousedown", onMouseDown);
     return () => document.removeEventListener("mousedown", onMouseDown);
-  }, [isOpen]);
+  }, [isOpen, selectedLabel]);
 
   useEffect(() => {
     if (!isOpen) {
@@ -79,24 +93,17 @@ export function ManagedTaxonomyDropdown<TItem extends ManagedTaxonomyItem>({
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
         setIsOpen(false);
-        setIsAdding(false);
-        setNewName("");
         setAddError(null);
+        setSearch(selectedLabel);
       }
     };
 
     document.addEventListener("keydown", onKeyDown);
     return () => document.removeEventListener("keydown", onKeyDown);
-  }, [isOpen]);
-
-  useEffect(() => {
-    if (isAdding) {
-      window.setTimeout(() => inputRef.current?.focus(), 0);
-    }
-  }, [isAdding]);
+  }, [isOpen, selectedLabel]);
 
   const handleCreate = async () => {
-    const name = newName.trim();
+    const name = query;
 
     if (!name) {
       return;
@@ -106,8 +113,8 @@ export function ManagedTaxonomyDropdown<TItem extends ManagedTaxonomyItem>({
 
     try {
       await onCreate(name);
-      setNewName("");
-      setIsAdding(false);
+      setSearch(name);
+      setIsOpen(false);
     } catch (error) {
       setAddError(getApiErrorMessage(error));
     }
@@ -128,104 +135,85 @@ export function ManagedTaxonomyDropdown<TItem extends ManagedTaxonomyItem>({
 
   return (
     <div ref={wrapperRef} className="relative">
-      <button
-        className={cn(
-          "flex h-10 w-full items-center justify-between rounded-md border px-3 text-[13px] outline-none transition-colors focus:border-[#2563EB] focus:ring-1 focus:ring-[#2563EB]",
-          isActive
-            ? "border-[#2563EB]"
-            : "border-[#E6EAF0]",
-          isOpen && "ring-1 ring-[#2563EB]",
-          selectedLabel ? "text-[#111827]" : "text-[#9CA3AF]"
-        )}
-        id={id}
-        onClick={() => setIsOpen((value) => !value)}
-        type="button"
-      >
-        <span className="min-w-0 flex-1 truncate text-left">
-          {selectedLabel || placeholder}
-        </span>
-        <ChevronDown
+      <div className="relative">
+        <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+        <input
+          aria-autocomplete="list"
+          aria-expanded={isOpen}
+          aria-label={addPlaceholder}
+          autoComplete="off"
           className={cn(
-            "ml-2 h-4 w-4 shrink-0 text-[#9CA3AF] transition-transform",
-            isOpen && "rotate-180"
+            "h-10 w-full rounded-md border pl-9 pr-10 text-[13px] outline-none transition-colors focus:border-[#2563EB] focus:ring-1 focus:ring-[#2563EB]",
+            isOpen || selectedId.length > 0 ? "border-[#2563EB]" : "border-[#E6EAF0]"
           )}
+          id={id}
+          onChange={(event) => {
+            setSearch(event.target.value);
+            setAddError(null);
+            setIsOpen(true);
+
+            if (selectedId) {
+              onSelect("");
+            }
+          }}
+          onFocus={() => setIsOpen(true)}
+          onKeyDown={(event) => {
+            if (event.key === "Enter" && canCreate && filteredItems.length === 0) {
+              event.preventDefault();
+              void handleCreate();
+            }
+          }}
+          placeholder={placeholder}
+          value={search}
         />
-      </button>
+        {selectedId || search ? (
+          <button
+            aria-label={`${title} 선택 지우기`}
+            className="absolute right-2 top-1/2 grid h-7 w-7 -translate-y-1/2 place-items-center rounded-md text-muted-foreground hover:bg-muted"
+            onClick={() => {
+              setSearch("");
+              setAddError(null);
+              setIsOpen(true);
+              onSelect("");
+            }}
+            type="button"
+          >
+            <X className="h-4 w-4" />
+          </button>
+        ) : null}
+      </div>
 
       {isOpen ? (
         <div className="absolute left-0 right-0 top-[calc(100%+4px)] z-50 rounded-md border border-[#E6EAF0] bg-white shadow-lg">
-          <div className="flex items-center justify-between border-b border-[#E6EAF0] px-3 py-2">
+          <div className="border-b border-[#E6EAF0] px-3 py-2">
             <span className="text-[11px] font-semibold text-[#6B7280]">
-              {title} 관리
+              {title} 검색
             </span>
-            <button
-              className="inline-flex h-6 items-center gap-1 rounded px-2 text-[11px] font-medium text-[#1D4ED8] hover:bg-[#EFF6FF]"
-              onClick={() => {
-                setIsAdding(true);
-                setAddError(null);
-              }}
-              type="button"
-            >
-              <Plus className="h-3 w-3" strokeWidth={2.5} />
-              추가
-            </button>
           </div>
-
-          {isAdding ? (
-            <div className="flex items-center gap-1.5 border-b border-[#E6EAF0] p-1.5">
-              <input
-                ref={inputRef}
-                className="h-7 min-w-0 flex-1 rounded border border-[#E6EAF0] px-2 text-[12px] outline-none focus:border-[#2563EB]"
-                placeholder={addPlaceholder}
-                value={newName}
-                onChange={(event) => setNewName(event.target.value)}
-                onKeyDown={(event) => {
-                  if (event.key === "Enter") {
-                    event.preventDefault();
-                    void handleCreate();
-                  }
-
-                  if (event.key === "Escape") {
-                    setIsAdding(false);
-                    setNewName("");
-                    setAddError(null);
-                  }
-                }}
-              />
-              <button
-                className="h-7 rounded bg-[#2463EB] px-2 text-[11px] font-medium text-white hover:bg-[#1D4ED8] disabled:opacity-60"
-                disabled={isCreating || newName.trim().length === 0}
-                onClick={() => void handleCreate()}
-                type="button"
-              >
-                저장
-              </button>
-              <button
-                className="h-7 rounded border border-[#E5E7EB] px-2 text-[11px] text-[#374151] hover:bg-[#F9FAFB]"
-                onClick={() => {
-                  setIsAdding(false);
-                  setNewName("");
-                  setAddError(null);
-                }}
-                type="button"
-              >
-                취소
-              </button>
-            </div>
-          ) : null}
 
           {addError ? (
             <p className="px-2 py-1 text-[11px] text-[#EF4444]">{addError}</p>
           ) : null}
 
           <div className="max-h-[160px] overflow-y-auto">
-            {items.length === 0 && !isAdding ? (
-              <p className="px-3 py-4 text-center text-[12px] text-[#9CA3AF]">
-                {emptyText}
-              </p>
+            {filteredItems.length === 0 ? (
+              <div className="grid gap-2 px-3 py-3">
+                <p className="text-[12px] text-[#9CA3AF]">{emptyText}</p>
+                {canCreate ? (
+                  <button
+                    className="inline-flex h-8 items-center justify-center gap-1.5 self-start rounded-md border border-dashed border-primary/30 bg-primary/5 px-2.5 text-xs font-medium text-primary hover:bg-primary/10 disabled:cursor-not-allowed disabled:opacity-60"
+                    disabled={isCreating}
+                    onClick={() => void handleCreate()}
+                    type="button"
+                  >
+                    <Plus className="h-3.5 w-3.5" />
+                    {query} {title} 추가
+                  </button>
+                ) : null}
+              </div>
             ) : null}
 
-            {items.map((item) => {
+            {filteredItems.map((item) => {
               const label = getLabel(item);
               const isSelected = selectedId === item.id;
 
@@ -241,6 +229,8 @@ export function ManagedTaxonomyDropdown<TItem extends ManagedTaxonomyItem>({
                       className="flex min-w-0 flex-1 items-center gap-2 px-1 text-left text-[13px]"
                       onClick={() => {
                         onSelect(item.id);
+                        setSearch(label);
+                        setAddError(null);
                         setIsOpen(false);
                       }}
                       type="button"
@@ -281,8 +271,26 @@ export function ManagedTaxonomyDropdown<TItem extends ManagedTaxonomyItem>({
               );
             })}
           </div>
+
+          {canCreate && filteredItems.length > 0 ? (
+            <div className="border-t border-[#E6EAF0] px-2 py-1.5">
+              <button
+                className="inline-flex h-8 items-center justify-center gap-1.5 rounded-md px-2 text-xs font-medium text-primary hover:bg-primary/10 disabled:cursor-not-allowed disabled:opacity-60"
+                disabled={isCreating}
+                onClick={() => void handleCreate()}
+                type="button"
+              >
+                <Plus className="h-3.5 w-3.5" />
+                {query} {title} 추가
+              </button>
+            </div>
+          ) : null}
         </div>
       ) : null}
     </div>
   );
+}
+
+function normalizeText(value: string) {
+  return value.trim().toLowerCase();
 }

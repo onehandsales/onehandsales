@@ -34,15 +34,17 @@ import { getApiErrorMessage } from "@/lib/api-client";
 type CompanyCreateDialogProps = {
   readonly open: boolean;
   readonly fields: CompanyField[];
+  readonly initialCompanyName?: string;
   readonly regions: CompanyRegion[];
   readonly onOpenChange: (open: boolean) => void;
-  readonly onCreated: () => void;
+  readonly onCreated: (companyName: string) => void;
 };
 
 // 기능 : 회사 생성 모달을 렌더링합니다.
 export function CompanyCreateDialog({
   open,
   fields,
+  initialCompanyName = "",
   regions,
   onOpenChange,
   onCreated,
@@ -71,11 +73,14 @@ export function CompanyCreateDialog({
 
   useEffect(() => {
     if (open) {
-      reset(emptyCompanyCreateFormValues);
+      reset({
+        ...emptyCompanyCreateFormValues,
+        companyName: initialCompanyName.trim(),
+      });
       setPendingFieldName("");
       setPendingRegionName("");
     }
-  }, [open, reset]);
+  }, [initialCompanyName, open, reset]);
 
   useEffect(() => {
     if (!pendingFieldName) {
@@ -124,7 +129,7 @@ export function CompanyCreateDialog({
   // 기능 : 회사 생성 요청을 보내고 성공 시 모달을 닫습니다.
   const onSubmit = handleSubmit(async (values) => {
     await createCompanyMutation.mutateAsync(toCreateCompanyInput(values));
-    onCreated();
+    onCreated(values.companyName.trim());
     onOpenChange(false);
   });
 
@@ -211,7 +216,7 @@ export function CompanyCreateDialog({
                 isCreating={createFieldMutation.isPending}
                 isDeleting={deleteFieldMutation.isPending}
                 items={fields}
-                placeholder="분야 선택"
+                placeholder="분야 검색"
                 selectedId={selectedFieldId}
                 title="분야"
                 onCreate={createField}
@@ -239,7 +244,7 @@ export function CompanyCreateDialog({
                 isCreating={createRegionMutation.isPending}
                 isDeleting={deleteRegionMutation.isPending}
                 items={regions}
-                placeholder="지역 선택"
+                placeholder="지역 검색"
                 selectedId={selectedRegionId}
                 title="지역"
                 onCreate={createRegion}

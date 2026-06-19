@@ -11,7 +11,10 @@ import {
 } from "@/components/ui/modal-form";
 import { ModalShell } from "@/components/ui/modal-shell";
 import { ErrorState } from "@/components/ui/state";
+import { CompanyCreateDialog } from "@/features/company/components/company-create-dialog";
+import { useCompanyFields, useCompanyRegions } from "@/features/company/hooks/use-company-list";
 import { ContactCompanyField } from "@/features/contact/components/contact-company-field";
+import { useCompanyOptions } from "@/features/contact/hooks/use-company-options";
 import { useContactDepartments, useContactJobGrades } from "@/features/contact/hooks/use-contact-list";
 import {
   useCreateDepartmentMutation,
@@ -45,6 +48,9 @@ export function ContactCreateDialog({
   onCreated,
 }: ContactCreateDialogProps) {
   const createContactMutation = useCreateContactMutation();
+  const companyOptionsQuery = useCompanyOptions();
+  const companyFieldsQuery = useCompanyFields();
+  const companyRegionsQuery = useCompanyRegions();
   const jobGradesQuery = useContactJobGrades();
   const departmentsQuery = useContactDepartments();
   const createDepartmentMutation = useCreateDepartmentMutation();
@@ -53,6 +59,8 @@ export function ContactCreateDialog({
   const deleteJobGradeMutation = useDeleteJobGradeMutation();
   const [pendingDepartmentName, setPendingDepartmentName] = useState("");
   const [pendingJobGradeName, setPendingJobGradeName] = useState("");
+  const [isCompanyCreateOpen, setIsCompanyCreateOpen] = useState(false);
+  const [companyCreateName, setCompanyCreateName] = useState("");
 
   const {
     register,
@@ -70,6 +78,14 @@ export function ContactCreateDialog({
   const departmentId = watch("contactDepartmentId") ?? "";
   const jobGradeId = watch("contactJobGradeId") ?? "";
   const formId = "contact-create-form";
+  const companyFields = useMemo(
+    () => companyFieldsQuery.data?.items ?? [],
+    [companyFieldsQuery.data]
+  );
+  const companyRegions = useMemo(
+    () => companyRegionsQuery.data?.items ?? [],
+    [companyRegionsQuery.data]
+  );
   const jobGrades = useMemo(() => jobGradesQuery.data?.items ?? [], [jobGradesQuery.data]);
   const departments = useMemo(
     () => departmentsQuery.data?.items ?? [],
@@ -81,6 +97,8 @@ export function ContactCreateDialog({
       reset(emptyContactCreateFormValues);
       setPendingDepartmentName("");
       setPendingJobGradeName("");
+      setIsCompanyCreateOpen(false);
+      setCompanyCreateName("");
     }
   }, [open, reset]);
 
@@ -145,12 +163,53 @@ export function ContactCreateDialog({
 
   const createDepartment = async (name: string) => {
     await createDepartmentMutation.mutateAsync({ departmentName: name });
+    const updated = await departmentsQuery.refetch();
+    const created = updated.data?.items.find(
+      (department) => department.departmentName === name
+    );
+
+    if (created) {
+      setValue("contactDepartmentId", created.id, {
+        shouldDirty: true,
+        shouldValidate: true,
+      });
+      return;
+    }
+
     setPendingDepartmentName(name);
   };
 
   const createJobGrade = async (name: string) => {
     await createJobGradeMutation.mutateAsync({ jobGradeName: name });
+    const updated = await jobGradesQuery.refetch();
+    const created = updated.data?.items.find(
+      (jobGrade) => jobGrade.jobGradeName === name
+    );
+
+    if (created) {
+      setValue("contactJobGradeId", created.id, {
+        shouldDirty: true,
+        shouldValidate: true,
+      });
+      return;
+    }
+
     setPendingJobGradeName(name);
+  };
+
+  const onCompanyCreated = async (companyName: string) => {
+    const updated = await companyOptionsQuery.refetch();
+    const created = updated.data?.items.find(
+      (company) => company.companyName === companyName
+    );
+
+    if (created) {
+      setValue("companyId", created.id, {
+        shouldDirty: true,
+        shouldValidate: true,
+      });
+      setValue("companySearch", created.companyName, { shouldDirty: true });
+    }
   };
 
   const deleteDepartment = async (department: ContactDepartment) => {
@@ -176,6 +235,7 @@ export function ContactCreateDialog({
   };
 
   return (
+    <>
     <ModalShell
       footer={
         <ModalFooterActions
@@ -243,6 +303,10 @@ export function ContactCreateDialog({
             error={errors.companyId?.message}
             id="contact-company"
             label="회사"
+            onCreate={(companyName) => {
+              setCompanyCreateName(companyName);
+              setIsCompanyCreateOpen(true);
+            }}
             onCompanyIdChange={(value) =>
               setValue("companyId", value, {
                 shouldDirty: true,
@@ -270,7 +334,7 @@ export function ContactCreateDialog({
                 isCreating={createDepartmentMutation.isPending}
                 isDeleting={deleteDepartmentMutation.isPending}
                 items={departments}
-                placeholder="부서 선택"
+                placeholder="부서 검색"
                 selectedId={departmentId}
                 title="부서"
                 onCreate={createDepartment}
@@ -298,7 +362,7 @@ export function ContactCreateDialog({
                 isCreating={createJobGradeMutation.isPending}
                 isDeleting={deleteJobGradeMutation.isPending}
                 items={jobGrades}
-                placeholder="직급 선택"
+                placeholder="직급 검색"
                 selectedId={jobGradeId}
                 title="직급"
                 onCreate={createJobGrade}
@@ -334,5 +398,14 @@ export function ContactCreateDialog({
         ) : null}
       </ModalForm>
     </ModalShell>
+    <CompanyCreateDialog
+      fields={companyFields}
+      initialCompanyName={companyCreateName}
+      onCreated={(companyName) => void onCompanyCreated(companyName)}
+      onOpenChange={setIsCompanyCreateOpen}
+      open={isCompanyCreateOpen}
+      regions={companyRegions}
+    />
+    </>
   );
 }
