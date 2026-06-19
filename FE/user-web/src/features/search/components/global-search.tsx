@@ -78,9 +78,11 @@ export function GlobalSearch() {
     }
   };
 
-  const onSelect = (item: SearchItem) => {
-    if (item.targetPath) {
-      navigate(item.targetPath);
+  const onSelect = (group: SearchGroup, item: SearchItem) => {
+    const targetPath = item.targetPath ?? getFallbackTargetPath(group.type, item);
+
+    if (targetPath) {
+      navigate(targetPath);
     }
 
     setDesktopOpen(false);
@@ -186,7 +188,7 @@ function SearchInput({
       <input
         ref={inputRef}
         className="h-10 w-full rounded-md border bg-white pl-9 pr-3 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20"
-        placeholder="회사, 담당자, 제품, 딜, 일정 검색"
+        placeholder="회사, 담당자, 제품, 딜, 일정, 회의록 검색"
         value={query}
         onChange={onChange}
         onFocus={onFocus}
@@ -203,7 +205,7 @@ type SearchResultsPanelProps = {
   readonly isFetching: boolean;
   readonly totalCount: number;
   readonly onClose: () => void;
-  readonly onSelect: (item: SearchItem) => void;
+  readonly onSelect: (group: SearchGroup, item: SearchItem) => void;
 };
 
 function SearchResultsPanel({
@@ -311,7 +313,7 @@ function PanelShell({
 
 type SearchGroupSectionProps = {
   readonly group: SearchGroup;
-  readonly onSelect: (item: SearchItem) => void;
+  readonly onSelect: (group: SearchGroup, item: SearchItem) => void;
 };
 
 function SearchGroupSection({ group, onSelect }: SearchGroupSectionProps) {
@@ -330,7 +332,7 @@ function SearchGroupSection({ group, onSelect }: SearchGroupSectionProps) {
             key={`${group.type}:${item.targetId}`}
             type="button"
             className="grid min-h-14 gap-1 rounded-md px-3 py-2 text-left hover:bg-muted"
-            onClick={() => onSelect(item)}
+            onClick={() => onSelect(group, item)}
           >
             <span className="truncate text-sm font-semibold">{item.title}</span>
             {item.subtitle ? (
@@ -347,6 +349,23 @@ function SearchGroupSection({ group, onSelect }: SearchGroupSectionProps) {
       </div>
     </section>
   );
+}
+
+function getFallbackTargetPath(type: SearchTargetType, item: SearchItem) {
+  switch (type) {
+    case "COMPANY":
+      return `/companies/${item.targetId}`;
+    case "CONTACT":
+      return `/contacts/${item.targetId}`;
+    case "PRODUCT":
+      return `/products/${item.targetId}`;
+    case "DEAL":
+      return `/deals/${item.targetId}`;
+    case "SCHEDULE":
+      return `/schedules/${item.targetId}`;
+    case "MEETING_NOTE":
+      return `/meeting-notes/${item.targetId}`;
+  }
 }
 
 type EmptyPanelProps = {
