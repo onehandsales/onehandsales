@@ -5,7 +5,7 @@
 | 순서 | Goal | 담당 | 상태 | 선행 조건 |
 |---:|---|---|---|---|
 | 1 | `G01-BE-MEETING-NOTE-AI-STT-DRAFT` | Backend | completed | 기존 수동 회의록 생성 API 구현 |
-| 2 | `G02-FE-MEETING-NOTE-AI-STT-DRAFT` | Frontend | pending | G01 Backend API 사용 가능 |
+| 2 | `G02-FE-MEETING-NOTE-AI-STT-DRAFT` | Frontend | completed | G01 Backend API 사용 가능 |
 
 ## 2. G01-BE-MEETING-NOTE-AI-STT-DRAFT
 
@@ -44,4 +44,4 @@
 
 ## 4. 현재 상태
 
-Backend goal은 completed다. Frontend goal은 pending이다.
+Backend goal과 Frontend goal은 completed다. 저장 후 딜 활동기록 자동 생성 API 계약은 별도 후속 범위다.

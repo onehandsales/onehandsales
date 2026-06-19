@@ -35,12 +35,12 @@
 - 공용 Shell, navigation, modal shell, 상태 UI, page-number pagination은 User Web에 적용되어 있다.
 - `/` 홈은 실제 대시보드 화면으로 구현되어 있다.
 - `/deals`는 딜 파이프라인 기준 화면으로 운영한다.
-- Company, Contact, Product, Schedule, 수동 MeetingNote는 실제 Backend API와 연결되어 있다.
+- Company, Contact, Product, Schedule, MeetingNote는 실제 Backend API와 연결되어 있다.
 - 회사/담당자/제품/딜/회의록 목록은 10개 단위 page-number pagination과 공용 `Pagination`을 사용한다.
 - 회사/담당자/제품 필터 select에는 `+ 추가` 옵션이 있고, 각 분류 관리 다이얼로그에서 추가/삭제 후 해당 필터를 바로 선택할 수 있다.
 - 회사/담당자/제품 생성 모달의 연결/분류 선택은 검색 입력형 필드와 결과 없음 즉시 추가 흐름을 사용한다.
 - 통합검색은 Backend `GET /api/search`와 User Web `GlobalSearch`가 연결되어 있다.
-- MeetingNote AI/STT 초안 endpoint는 Backend에 있으나 User Web draft UI 연결은 후속 범위다.
+- MeetingNote AI/STT 초안 endpoint와 User Web draft UI 연결은 구현 완료 상태다.
 - 딜 목록은 `딜명 검색`, `전체`, `회사`, `담당자`, 정렬 select 순서를 사용하며, 회사/담당자 필터는 stage counts, 목록, export에 반영된다.
 - BusinessCard, Import/Export job, Notification, Trash는 FE feature/route가 있어도 Backend module이 없어 후속 범위다.
 

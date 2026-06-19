@@ -27,11 +27,10 @@
 - `MeetingNoteSttProvider` port와 OpenAI STT adapter
 - provider 설정 env 추가
 - Backend service/controller 테스트
-- Frontend 후속 goal 문서
+- Frontend User Web draft UI 연결
 
 ## 4. 제외 범위
 
-- Frontend 코드 수정
 - Google/NAVER/AWS STT adapter 구현
 - AI/STT 로그 DB 테이블
 - transcript 영구 저장
@@ -50,4 +49,4 @@
 ## 6. 현재 구현 상태
 
 - `G01-BE-MEETING-NOTE-AI-STT-DRAFT`: completed
-- `G02-FE-MEETING-NOTE-AI-STT-DRAFT`: pending
+- `G02-FE-MEETING-NOTE-AI-STT-DRAFT`: completed

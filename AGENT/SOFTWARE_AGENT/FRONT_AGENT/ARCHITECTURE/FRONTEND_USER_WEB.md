@@ -91,13 +91,11 @@
 - Product: 목록/상세/생성/수정, 옵션, 메모, 개인 메모, 연결 Deal, xlsx export
 - Deal: 목록/상세/생성/수정, stage counts, 옵션, 다음 행동 로그, 메모 로그, xlsx export
 - Schedule: 월/주 목록, 단건 상세, 생성, 수정, 삭제, deal options
-- MeetingNote: 수동 목록/상세/생성/수정, filter options
+- MeetingNote: 목록/상세/생성/수정, filter options, AI text draft, STT+AI draft
 
 Backend는 구현되었지만 Frontend 연결이 남은 항목:
 
 - Search 최종 연결/UX 검수: `GET /api/search`
-- MeetingNote AI draft: `POST /api/meeting-notes/ai-draft`
-- MeetingNote STT draft: `POST /api/meeting-notes/stt-draft`
 
 mock/placeholder 경계를 유지해야 하는 항목:
 
@@ -117,7 +115,7 @@ mock/placeholder 경계를 유지해야 하는 항목:
 - 전용 `/search` 라우트는 현재 없다. 상단 검색 UI 안에서 결과를 선택해 상세 화면으로 이동한다.
 - 현재 최종 FE 연결과 loading/empty/error UX 검수는 `TODO/INTEGRATED_SEARCH_PLAN`의 `G02-FE-INTEGRATED-SEARCH`에서 진행 중이다.
 
-## 7. MeetingNote AI/STT Frontend 후속 기준
+## 7. MeetingNote AI/STT Frontend 기준
 
 회의록 AI/STT는 사용자가 직접 선택해야 하는 값과 AI가 생성할 값을 분리한다.
 
@@ -135,7 +133,7 @@ AI/STT가 생성:
 - 다음 계획
 - 필요 행동
 
-Frontend는 draft API 결과를 자동 저장하지 않는다. 결과를 form field에 채우고 사용자가 수정한 뒤 기존 `POST /api/meeting-notes`로 저장한다. STT transcript는 검토용으로 표시하고 현재 범위에서는 저장하지 않는다.
+Frontend는 draft API 결과를 자동 저장하지 않는다. 결과를 form field에 채우고 사용자가 수정한 뒤 기존 `POST /api/meeting-notes`로 저장한다. STT transcript는 검토용으로 표시하고 현재 범위에서는 저장하지 않는다. 직접 작성 저장은 AI/STT draft API를 호출하지 않고 `sourceType: MANUAL`로 저장한다.
 
 Backend는 AI 초안 provider와 STT provider를 분리한다. Frontend는 provider 종류를 직접 알 필요가 없고, `ai-draft`와 `stt-draft` API 계약만 유지하면 된다.
 

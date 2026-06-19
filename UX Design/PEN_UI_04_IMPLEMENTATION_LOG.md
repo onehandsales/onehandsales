@@ -57,7 +57,7 @@
 - 목록 페이지네이션은 10개 단위 `totalPages` 기준이며 `hasNext`는 상세 메모 로그 같은 cursor flow에만 사용
 - 목록 정렬은 select를 기본 문법으로 사용한다. 딜 목록은 `최신순`, `금액 높은순`, `금액 낮은 순`, `마감일순`을 제공한다.
 - 통합검색은 `GET /api/search`와 User Web `GlobalSearch` 연결 기준으로 본다.
-- MeetingNote AI/STT 초안 endpoint는 Backend에 있으나 User Web draft UI 연결은 후속 범위다.
+- MeetingNote AI/STT 초안 endpoint와 User Web draft UI 연결은 구현 완료 상태다.
 - MeetingNote 작성 UX는 직접 작성/저장을 기본 흐름으로 유지하고, AI/STT는 `AI로 정리`, `음성으로 작성` 보조 액션으로 연결한다.
 
 ---
@@ -460,7 +460,7 @@
   - quick create inline 생성 범위는 딜 추가와 핵심 생성 모달의 연결/분류 선택까지 포함한다.
   - 별도 quick create candidate search endpoint는 현재 필수 요구가 아니며, 기존 옵션 조회/생성 API와 refetch 조합을 baseline으로 둔다.
   - Search는 Backend `search` module과 User Web `GlobalSearch` 연결 상태로 본다.
-  - MeetingNote AI/STT는 Backend endpoint 구현, FE draft UI 후속 상태로 본다.
+  - MeetingNote AI/STT는 당시 Backend endpoint 구현, FE draft UI 후속 상태로 보았고, 이후 2026-06-19 User Web 연결 작업에서 완료했다.
 - 검증:
   - `pnpm --dir FE/user-web exec eslint src/components/ui/managed-taxonomy-dropdown.tsx src/features/company/components/company-create-dialog.tsx src/features/contact/components/contact-company-field.tsx src/features/contact/components/contact-create-dialog.tsx src/features/product/components/product-create-dialog.tsx`
   - `pnpm --dir FE/user-web typecheck`
@@ -496,9 +496,40 @@
 - 결정/반영 내용:
   - 직접 작성 저장은 `sourceType: MANUAL`이며 AI/STT draft API를 호출하지 않는다.
   - AI/STT 초안 저장은 최종 `POST /api/meeting-notes`에 `TEXT_AI` 또는 `STT_AI` sourceType을 전달한다.
-  - 현재 User Web `CreateMeetingNoteInput`은 `MANUAL`로 고정되어 있어 후속 FE 연결 작업에서 확장해야 한다.
+  - User Web `CreateMeetingNoteInput` 확장은 이후 2026-06-19 User Web 연결 작업에서 완료했다.
 - 남은 이슈:
-  - MeetingNote AI/STT User Web draft UI 미연결
+  - 저장 후 딜 활동기록 자동 생성 API 계약 미확정
+
+---
+
+### 2026-06-19 MeetingNote AI/STT User Web 연결
+
+- 작업자: Codex
+- 유형:
+  - frontend
+  - docs
+- 요약:
+  - 회의록 생성 모달에 `AI 정리` 섹션을 추가하고 텍스트 `AI로 정리`, 음성 파일 `음성으로 작성` 흐름을 연결했다.
+  - `POST /api/meeting-notes/ai-draft`, `POST /api/meeting-notes/stt-draft` API client/hook을 추가했다.
+  - AI/STT 결과는 form field에만 반영하고 자동 저장하지 않는다.
+  - 직접 저장은 `MANUAL`, 텍스트 AI 저장은 `TEXT_AI`, STT+AI 저장은 `STT_AI` sourceType을 기존 `POST /api/meeting-notes`에 전달한다.
+  - STT transcript는 검토용으로 표시하고 최종 저장 payload에는 포함하지 않는다.
+- 변경 파일:
+  - `FE/user-web/src/features/meeting-note/types/meeting-note.ts`
+  - `FE/user-web/src/features/meeting-note/api/meeting-note-api.ts`
+  - `FE/user-web/src/features/meeting-note/hooks/use-meeting-note-mutations.ts`
+  - `FE/user-web/src/features/meeting-note/schemas/meeting-note-schema.ts`
+  - `FE/user-web/src/features/meeting-note/components/meeting-note-create-dialog.tsx`
+  - `FE/user-web/src/features/meeting-note/index.ts`
+  - `TODO/MEETING_NOTE_AI_STT_PLAN/**`
+  - `AGENT/**`
+  - `UX Design/**`
+- 검증:
+  - `pnpm --dir FE/user-web typecheck`
+  - `pnpm --dir FE/user-web exec eslint src/features/meeting-note/types/meeting-note.ts src/features/meeting-note/api/meeting-note-api.ts src/features/meeting-note/hooks/use-meeting-note-mutations.ts src/features/meeting-note/schemas/meeting-note-schema.ts src/features/meeting-note/components/meeting-note-create-dialog.tsx src/features/meeting-note/index.ts`
+  - `pnpm --dir FE/user-web build`
+  - `git diff --check`
+- 남은 이슈:
   - 저장 후 딜 활동기록 자동 생성 API 계약 미확정
 
 ---
@@ -536,6 +567,7 @@
 - [x] Deal 목록 회사/담당자 select 필터 반영
 - [x] 회사/담당자/제품 필터 select `+ 추가` 분류 관리 반영
 - [x] 목록 미리보기 header/table header 44px 기준 반영
+- [x] MeetingNote AI/STT draft UI 연결
 - [ ] 목록 컨트롤 버튼 공통화
 
 ### 백엔드 / 계약
@@ -552,7 +584,6 @@
 
 - 목록 컨트롤 버튼 공통화 미완료
 - Admin 운영 조회 API와 BusinessCard/Import/Notification/Trash Backend module 미구현
-- MeetingNote AI/STT User Web draft UI 미연결
 - MeetingNote 저장 후 딜 활동기록 자동 생성 API 계약 미확정
 
 ---

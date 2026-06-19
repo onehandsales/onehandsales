@@ -218,6 +218,14 @@ export interface ReplaceMeetingNoteRelationsInput {
   readonly deals?: readonly SaveMeetingNoteDealInput[];
 }
 
+// 역할 : LinkMeetingNoteDealsInput 회의록에 딜을 추가 연결하고 활동 로그를 생성하는 값을 정의합니다.
+export interface LinkMeetingNoteDealsInput {
+  readonly userId: string;
+  readonly meetingNoteId: string;
+  readonly deals: readonly SaveMeetingNoteDealInput[];
+  readonly activityLogText: string;
+}
+
 // 역할 : MeetingNoteRepository 회의록 저장소가 구현해야 하는 영속성 계약을 정의합니다.
 export interface MeetingNoteRepository {
   // 기능 : 회의록 저장소 작업을 트랜잭션 경계 안에서 실행합니다.
@@ -273,4 +281,6 @@ export interface MeetingNoteRepository {
   replaceMeetingNoteRelations(
     input: ReplaceMeetingNoteRelationsInput
   ): Promise<void>;
+  // 기능 : 회의록에 딜 스냅샷을 추가하고 새 연결 딜에 활동 로그를 생성합니다.
+  linkMeetingNoteDeals(input: LinkMeetingNoteDealsInput): Promise<void>;
 }

@@ -42,7 +42,7 @@
 - `/schedules`, `/schedules/week`, `/meeting-notes`는 실제 Backend API와 연결되어 있다.
 - `/business-cards`, `/contacts/scan`, `/notifications`, `/import`, `/export`, `/trash`는 라우트/feature가 있으나 대응 Backend module이 없어 완료 기능으로 보지 않는다.
 - `GET /api/search` Backend와 User Web `GlobalSearch`가 연결되어 있다. 별도 검색 결과 라우트는 없고 상단/모바일 검색 UI에서 사용한다.
-- MeetingNote AI/STT 초안 endpoint는 Backend에 존재하지만, User Web 초안 UI 연결은 후속 범위다.
+- MeetingNote AI/STT 초안 endpoint와 User Web 초안 UI 연결은 구현 완료 상태다.
 - MeetingNote 후속 UI는 `/meeting-notes/new`의 직접 작성/저장 흐름을 기본으로 두고 `AI로 정리`, `음성으로 작성`을 선택 보조 액션으로 붙인다.
 - Sidebar는 `홈`, `딜`, `회사`, `담당자`, `제품`, `일정`, `회의록`, `설정`을 노출한다. Import와 휴지통은 숨김 처리되어 있다.
 

@@ -20,14 +20,14 @@
 - Search: 회사/담당자/제품/딜/일정/회의록 통합검색 API.
 - 현재 Backend 미구현: BusinessCard OCR, 범용 Import/Export job, Notification, Trash, Admin 운영 조회/감사/민감 원문 API, MeetingNote 삭제복구/Admin/DealActivity 자동 로그.
 - Admin Backend는 현재 `/admin/api/me`만 구현되어 있다.
-- User Web은 `/` 홈 대시보드, Company, Contact, Product, Deal, Schedule, MeetingNote 수동 화면의 실제 API 연동이 완료되어 있다. Search는 Backend API와 일부 FE 기반 작업이 있으나 상단 통합검색 최종 연결/UX 검수는 아직 Frontend 후속 작업이다. MeetingNote AI/STT draft UI 연결도 아직 Frontend 후속 작업이다. 나머지 미구현 Backend 도메인은 실제 API 연동 전까지 mock/placeholder 경계를 명확히 해야 한다.
+- User Web은 `/` 홈 대시보드, Company, Contact, Product, Deal, Schedule, MeetingNote 수동 화면, MeetingNote AI/STT draft UI의 실제 API 연동이 완료되어 있다. Search는 Backend API와 일부 FE 기반 작업이 있으나 상단 통합검색 최종 연결/UX 검수는 아직 Frontend 후속 작업이다. 나머지 미구현 Backend 도메인은 실제 API 연동 전까지 mock/placeholder 경계를 명확히 해야 한다.
 
 ## 1. 개발 우선순위
 
 1. Company/Contact/Product/Deal Backend 구현 완료 범위의 User Web 계약 동기화
 2. Additional Work G01-G12 Frontend 반영: `dealCount`, 연결 Deal 목록, 연결 Contact 목록, xlsx export
 3. 인증 연동과 사용자 설정 화면
-4. MeetingNote AI/STT Frontend 연결
+4. MeetingNote 저장 후 딜 활동기록 자동 생성 API 계약
 5. BusinessCard OCR
 6. 범용 Import/Export, Notification, Trash
 7. MeetingNote 삭제복구/Admin/DealActivity 자동 로그
@@ -223,7 +223,7 @@
 
 ## 9. 회의록
 
-현재 Backend와 User Web 수동 회의록 도메인은 `TODO/DONE/MEETING_NOTE_MANUAL_PLAN` 기준 구현 완료 상태다. Backend의 AI/STT draft API는 `TODO/MEETING_NOTE_AI_STT_PLAN` 기준 구현되었고, User Web 연결은 후속 작업이다.
+현재 Backend와 User Web 수동 회의록 도메인은 `TODO/DONE/MEETING_NOTE_MANUAL_PLAN` 기준 구현 완료 상태다. Backend의 AI/STT draft API와 User Web draft UI 연결은 `TODO/MEETING_NOTE_AI_STT_PLAN` 기준 구현 완료 상태다.
 
 제품 플로우 기준으로 회의록 작성은 AI 없이 직접 작성 후 저장할 수 있어야 한다. AI/STT는 별도 필수 플로우가 아니라 같은 작성 화면에서 `AI로 정리`, `음성으로 작성`으로 초안을 채워주는 보조 기능이다.
 
@@ -237,13 +237,13 @@
 - 사용자 timezone 기준 `meetingLocalDateTime` 변환
 - Backend 텍스트 AI 초안 생성: `POST /api/meeting-notes/ai-draft`
 - Backend STT+AI 초안 생성: `POST /api/meeting-notes/stt-draft`
+- User Web 텍스트 `AI로 정리` draft UI
+- User Web 음성 파일 업로드 `음성으로 작성` draft UI
+- 직접 작성 저장은 AI/STT API를 호출하지 않음
+- AI/STT 저장 시 최종 `POST /api/meeting-notes`에 `TEXT_AI` 또는 `STT_AI` sourceType 전달
 
 ### 후속 MVP 포함
 
-- AI/STT 초안 생성 UI 연결
-- 생성 결과 수정/저장
-- 직접 작성 저장은 유지하고 AI/STT API를 호출하지 않음
-- AI/STT 저장 시 최종 `POST /api/meeting-notes`에 `TEXT_AI` 또는 `STT_AI` sourceType 전달
 - 딜 연결 시 활동 로그 자동 생성
 - 딜 연결 시 회사/담당자 상속
 

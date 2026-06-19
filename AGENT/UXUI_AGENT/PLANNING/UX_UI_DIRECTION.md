@@ -23,7 +23,7 @@ Current implementation note as of 2026-06-19:
 - The active deal pipeline experience is served from `/deals`.
 - Keep `/` focused on today/dashboard context and `/deals` focused on comparison, filtering, preview, and mutation.
 - Global Search has Backend `GET /api/search` and User Web GlobalSearch connection; UX QA remains tracked in `TODO/INTEGRATED_SEARCH_PLAN`.
-- MeetingNote AI/STT draft Backend APIs exist, but User Web draft UI integration is still pending.
+- MeetingNote AI/STT draft Backend APIs and User Web draft UI integration are implemented.
 - Company/contact/product create modals use search-input selection, immediate creation when no result exists, and automatic selection after creation.
 - Deal likelihood (`긍정 / 중립 / 부정` or percent) is not implemented in the current Deal API/FE form. Treat it as future UX scope unless a new backend plan adds it.
 

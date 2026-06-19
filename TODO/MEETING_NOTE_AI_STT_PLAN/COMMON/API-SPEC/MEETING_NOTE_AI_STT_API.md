@@ -169,7 +169,7 @@ AI/STT를 사용하지 않는 직접 작성 경로는 기존 회의록 생성 fo
 
 Backend는 최종 저장 시 `sourceType`은 저장하지만 `transcript`와 provider raw response는 저장하지 않는다.
 
-Backend 생성 DTO는 `MANUAL`, `TEXT_AI`, `STT_AI`를 받을 수 있다. 현재 User Web 수동 생성 form은 `MANUAL`로 고정되어 있으므로, Frontend 연결 작업에서 `CreateMeetingNoteInput`과 저장 변환 로직이 초안 결과의 `sourceType`을 전달하도록 확장해야 한다.
+Backend 생성 DTO는 `MANUAL`, `TEXT_AI`, `STT_AI`를 받을 수 있다. User Web `CreateMeetingNoteInput`과 저장 변환 로직도 초안 결과의 `sourceType`을 최종 저장 요청에 전달한다.
 
 ## 6. 저장 후 딜 연동
 

@@ -26,3 +26,18 @@
 - `TEXT_AI`, `STT_AI` 저장을 위해 User Web `CreateMeetingNoteInput`과 저장 변환 로직이 `sourceType`을 전달할 수 있어야 한다.
 - Backend STT provider가 바뀌어도 Frontend API 계약은 바뀌지 않는다.
 - User Web typecheck/build가 통과한다.
+
+## 현재 상태
+
+- 상태: completed
+- 구현 위치:
+  - `FE/user-web/src/features/meeting-note/types/meeting-note.ts`
+  - `FE/user-web/src/features/meeting-note/api/meeting-note-api.ts`
+  - `FE/user-web/src/features/meeting-note/hooks/use-meeting-note-mutations.ts`
+  - `FE/user-web/src/features/meeting-note/schemas/meeting-note-schema.ts`
+  - `FE/user-web/src/features/meeting-note/components/meeting-note-create-dialog.tsx`
+- 검증:
+  - `pnpm --dir FE/user-web typecheck`
+  - `pnpm --dir FE/user-web exec eslint src/features/meeting-note/types/meeting-note.ts src/features/meeting-note/api/meeting-note-api.ts src/features/meeting-note/hooks/use-meeting-note-mutations.ts src/features/meeting-note/schemas/meeting-note-schema.ts src/features/meeting-note/components/meeting-note-create-dialog.tsx src/features/meeting-note/index.ts`
+  - `pnpm --dir FE/user-web build`
+  - `git diff --check`

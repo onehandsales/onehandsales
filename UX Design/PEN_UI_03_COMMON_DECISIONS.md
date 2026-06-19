@@ -35,7 +35,7 @@
 - User Web 핵심 도메인은 Auth/User, Home, Company, Contact, Product, Deal, Schedule, MeetingNote, Search까지 실제 Backend API와 연결되어 있다.
 - BusinessCard OCR, 범용 Import/Export, Notification, Trash, Admin 운영 조회 API는 Backend 미구현 상태다.
 - 회사/담당자/제품 생성 모달은 딜 추가 모달처럼 검색 입력형 선택과 결과 없음 즉시 추가를 사용한다.
-- MeetingNote AI/STT 초안 endpoint는 Backend에 있으나 User Web draft UI 연결은 후속 범위다.
+- MeetingNote AI/STT 초안 endpoint와 User Web draft UI 연결은 구현 완료 상태다.
 - 실제 구현 판단은 `BE/src/modules`, `BE/prisma/schema.prisma`, `FE/user-web/src/app/router/router.tsx`, `FE/user-web/src/features`를 우선한다.
 
 ---
