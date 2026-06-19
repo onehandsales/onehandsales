@@ -605,11 +605,16 @@ Meeting note:
 - can be linked to a deal later
 - if linked to a deal, creates deal activity log automatically
 - if created from deal detail, inherit deal/company/contact by default
+- primary create path is direct writing and save; AI/STT is optional assistance inside the same create surface
 
 AI meeting note:
 
-- suggests company/contact/deal candidates
-- user confirms before saving links
+- does not replace manual save
+- text AI fills details, next plan, and required action after the user enters raw notes
+- STT transcribes audio, then fills details, next plan, and required action
+- user-selected company/contact/product/deal/date remain authoritative for the current MVP flow
+- user confirms and edits generated fields before final save
+- avoid naming the whole feature `AI 회의록`; use `회의록`, `회의록 작성`, `AI로 정리`, and `음성으로 작성`
 
 ## 17. Next Action And Alert UX
 

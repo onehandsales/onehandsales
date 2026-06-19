@@ -552,12 +552,13 @@ User
 
 정책:
 
-- 현재 생성 방식은 `MANUAL`만 허용한다.
+- Backend 생성 API는 `MANUAL`, `TEXT_AI`, `STT_AI` sourceType을 저장할 수 있다.
+- 현재 User Web 작성 form은 `MANUAL` 저장만 연결되어 있으며 AI/STT draft UI 연결 시 `TEXT_AI`, `STT_AI` 전달을 확장해야 한다.
 - 회사와 담당자는 1개 이상 연결해야 한다.
 - 제품과 딜은 선택 연결이다.
 - 회사/담당자/제품/딜 연결 row에는 회의록 작성 시점의 snapshot을 저장한다.
 - request에서는 `timeZone`, `rawText`, `stageText`, 단일 `dealId`를 받지 않는다.
-- AI/STT 생성, 삭제/복구, Admin 조회, DealActivity 자동 생성은 후속 범위다.
+- AI/STT User Web draft UI 연결, 삭제/복구, Admin 조회, 저장 후 DealActivity 자동 생성 API 계약은 후속 범위다.
 
 ## 16. Tag
 

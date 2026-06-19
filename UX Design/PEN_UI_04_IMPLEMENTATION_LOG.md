@@ -58,6 +58,7 @@
 - 목록 정렬은 select를 기본 문법으로 사용한다. 딜 목록은 `최신순`, `금액 높은순`, `금액 낮은 순`, `마감일순`을 제공한다.
 - 통합검색은 `GET /api/search`와 User Web `GlobalSearch` 연결 기준으로 본다.
 - MeetingNote AI/STT 초안 endpoint는 Backend에 있으나 User Web draft UI 연결은 후속 범위다.
+- MeetingNote 작성 UX는 직접 작성/저장을 기본 흐름으로 유지하고, AI/STT는 `AI로 정리`, `음성으로 작성` 보조 액션으로 연결한다.
 
 ---
 
@@ -470,6 +471,38 @@
 
 ---
 
+### 2026-06-19 MeetingNote AI/STT 사용자 플로우 동기화
+
+- 작업자: Codex
+- 유형:
+  - docs
+  - planning
+- 요약:
+  - 회의록 작성 화면의 기본 흐름을 `직접 작성 후 저장`으로 확정하고, AI/STT는 선택 보조 액션으로 문서화했다.
+  - 텍스트 AI는 `AI로 정리`, STT+AI는 `음성으로 작성` 버튼으로 form field를 채우되 자동 저장하지 않는 흐름으로 정리했다.
+  - 저장 후 `영업 딜과 연동`은 회의록 상세의 별도 액션으로 분리하고, 딜 활동기록 자동 생성 API 계약은 후속 확정 항목으로 표시했다.
+- 변경 파일:
+  - `TODO/MEETING_NOTE_AI_STT_PLAN/COMMON/USER-FLOW.md`
+  - `TODO/MEETING_NOTE_AI_STT_PLAN/COMMON/API-SPEC/MEETING_NOTE_AI_STT_API.md`
+  - `TODO/MEETING_NOTE_AI_STT_PLAN/COMMON/GOAL-SPECS/G02-FE-MEETING-NOTE-AI-STT-DRAFT.md`
+  - `TODO/MEETING_NOTE_AI_STT_PLAN/FE-TODO/G02-FE-MEETING-NOTE-AI-STT-DRAFT.goal.md`
+  - `AGENT/UXUI_AGENT/PLANNING/USER_FLOW_AND_SCREENS.md`
+  - `AGENT/UXUI_AGENT/PLANNING/UX_UI_DIRECTION.md`
+  - `AGENT/PM_AGENT/PLANNING/MVP_SCOPE.md`
+  - `AGENT/PM_AGENT/PLANNING/SERVICE_OVERVIEW.md`
+  - `AGENT/PM_AGENT/PLANNING/PRD.md`
+  - `AGENT/PM_AGENT/PLANNING/DATA_MODEL.md`
+  - `UX Design/**`
+- 결정/반영 내용:
+  - 직접 작성 저장은 `sourceType: MANUAL`이며 AI/STT draft API를 호출하지 않는다.
+  - AI/STT 초안 저장은 최종 `POST /api/meeting-notes`에 `TEXT_AI` 또는 `STT_AI` sourceType을 전달한다.
+  - 현재 User Web `CreateMeetingNoteInput`은 `MANUAL`로 고정되어 있어 후속 FE 연결 작업에서 확장해야 한다.
+- 남은 이슈:
+  - MeetingNote AI/STT User Web draft UI 미연결
+  - 저장 후 딜 활동기록 자동 생성 API 계약 미확정
+
+---
+
 ## 현재 구현 체크리스트
 
 ### 문서
@@ -520,6 +553,7 @@
 - 목록 컨트롤 버튼 공통화 미완료
 - Admin 운영 조회 API와 BusinessCard/Import/Notification/Trash Backend module 미구현
 - MeetingNote AI/STT User Web draft UI 미연결
+- MeetingNote 저장 후 딜 활동기록 자동 생성 API 계약 미확정
 
 ---
 

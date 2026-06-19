@@ -54,6 +54,8 @@
 - `/schedules`, `/schedules/week`, `/meeting-notes`는 실제 Backend API와 연결되어 있다.
 - 통합검색은 `GET /api/search`와 User Web `GlobalSearch`가 연결되어 있다.
 - MeetingNote AI/STT 초안 생성은 Backend endpoint가 있으나 User Web draft UI 연결은 후속 범위다.
+- MeetingNote 직접 저장은 기존 `POST /api/meeting-notes`의 `MANUAL` sourceType을 사용한다. AI/STT draft endpoint는 저장하지 않고, 최종 저장 시 기존 생성 API에 `TEXT_AI` 또는 `STT_AI` sourceType을 전달한다.
+- 회의록 저장 후 딜 활동기록 자동 생성은 AI/STT draft API 책임이 아니며, 별도 딜 연동/활동기록 API 계약 확정이 필요하다.
 - `/business-cards`, `/contacts/scan`, `/notifications`, `/import`, `/export`, `/trash` 라우트/feature는 있으나 해당 Backend module이 없어 완료 기능으로 보지 않는다.
 
 ---

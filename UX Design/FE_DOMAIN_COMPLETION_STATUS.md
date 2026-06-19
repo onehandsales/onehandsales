@@ -68,6 +68,7 @@
 - 딜 목록 필터는 검색 다음에 `전체`, `회사`, `담당자`, 정렬 select 순서로 제공한다. 회사/담당자는 `GET /api/deals/company-options`, `GET /api/deals/contact-options`를 사용하며, 회사 선택 시 담당자 select는 같은 회사의 담당자로 좁힌다.
 - 통합검색은 `GET /api/search`와 User Web `GlobalSearch`를 사용한다. 검색 대상은 회사/담당자/제품/딜/일정/회의록이며, 상단 검색 UI와 모바일 검색 UI에서 같은 API를 사용한다.
 - MeetingNote는 수동 회의록 흐름이 User Web에 연결되어 있다. `POST /api/meeting-notes/ai-draft`, `POST /api/meeting-notes/stt-draft` Backend endpoint는 있으나 User Web draft UI 연결은 후속 작업이다.
+- MeetingNote 작성 UX는 직접 작성 후 저장을 기본 흐름으로 유지한다. AI/STT는 같은 작성 화면에서 `AI로 정리`, `음성으로 작성`으로 field를 채우는 선택 보조 액션이며, 직접 저장 시 AI/STT API를 호출하지 않는다.
 - 회사/담당자/제품/딜/회의록 목록은 조밀한 `Controls Bar + Table Card + Pagination` 문법으로 정렬되어 있다.
 - 공용 `Pagination` 높이는 48px(`h-12`)이고, 딜/회사/담당자/회의록 미리보기 header와 목록 table header는 44px(`h-11`) 기준이다.
 - 회사 목록 정렬 select: `최신순`, `담당자 높은순`, `담당자 낮은순`, `딜 높은순`, `딜 낮은순`.

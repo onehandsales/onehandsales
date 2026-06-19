@@ -225,6 +225,8 @@
 
 현재 Backend와 User Web 수동 회의록 도메인은 `TODO/DONE/MEETING_NOTE_MANUAL_PLAN` 기준 구현 완료 상태다. Backend의 AI/STT draft API는 `TODO/MEETING_NOTE_AI_STT_PLAN` 기준 구현되었고, User Web 연결은 후속 작업이다.
 
+제품 플로우 기준으로 회의록 작성은 AI 없이 직접 작성 후 저장할 수 있어야 한다. AI/STT는 별도 필수 플로우가 아니라 같은 작성 화면에서 `AI로 정리`, `음성으로 작성`으로 초안을 채워주는 보조 기능이다.
+
 ### 현재 Backend/User Web 구현
 
 - 수동 회의록 목록/상세/생성/수정
@@ -240,8 +242,9 @@
 
 - AI/STT 초안 생성 UI 연결
 - 생성 결과 수정/저장
+- 직접 작성 저장은 유지하고 AI/STT API를 호출하지 않음
+- AI/STT 저장 시 최종 `POST /api/meeting-notes`에 `TEXT_AI` 또는 `STT_AI` sourceType 전달
 - 딜 연결 시 활동 로그 자동 생성
-- AI 회사/담당자 후보 제안
 - 딜 연결 시 회사/담당자 상속
 
 ### 고정 결과 항목
@@ -259,6 +262,7 @@
 ### 제외 또는 후속
 
 - 브라우저 내 음성 녹음 UX 고도화
+- AI 회사/담당자/딜 후보 제안
 - STT transcript 영구 저장
 - AI/STT provider 호출 이력 테이블
 - 사용자 템플릿 커스터마이즈 UI

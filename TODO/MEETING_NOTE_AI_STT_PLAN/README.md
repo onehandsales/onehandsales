@@ -2,11 +2,12 @@
 
 ## 1. 목적
 
-회의록 생성 모달에서 사용자가 회사, 담당자, 제품, 딜, 회의 일시를 직접 선택하고, AI/STT는 `details`, `nextPlan`, `requiredAction` 초안만 생성하도록 Backend와 Frontend 작업을 분리한다.
+회의록 작성 화면에서 사용자가 AI 없이 직접 저장할 수 있는 흐름을 유지하고, 필요할 때만 AI/STT가 `details`, `nextPlan`, `requiredAction` 초안을 생성하도록 Backend와 Frontend 작업을 분리한다.
 
 ## 2. 핵심 결정
 
 - 사용자가 직접 선택해야 하는 값: 회사, 담당자, 제품, 딜, 회의 일시
+- 직접 작성 저장은 기본 흐름이며 `sourceType: MANUAL`로 기존 `POST /api/meeting-notes`를 호출한다.
 - AI가 생성해도 되는 값: 회의 내용, 다음 계획, 필요 행동
 - AI 초안 생성은 OpenAI를 사용하되 `MeetingNoteAiDraftProvider` port 뒤에 둔다.
 - STT는 변경 가능성이 있으므로 `MeetingNoteSttProvider` port로 AI draft provider와 분리한다.
@@ -16,6 +17,7 @@
 - transcript, provider raw response, provider 호출 이력 테이블은 이번 범위에서 만들지 않는다.
 - 최종 저장은 기존 `POST /api/meeting-notes`를 사용한다.
 - 최종 저장의 `sourceType`은 `MANUAL`, `TEXT_AI`, `STT_AI`를 허용하되 `rawText`는 저장하지 않는다.
+- 저장 후 딜 연동은 별도 액션이며, 딜 활동기록 자동 생성 API 계약은 후속 확정이 필요하다.
 
 ## 3. 포함 범위
 
