@@ -118,7 +118,7 @@ function TooltipIconButton({ action }: { readonly action: HeaderAction }) {
   );
 
   const commonClass = cn(
-    "group relative inline-flex h-[30px] w-[30px] items-center justify-center rounded-md shadow-sm transition",
+    "group relative inline-flex h-11 w-11 items-center justify-center rounded-md shadow-sm transition",
     variantClass,
     action.disabled && "pointer-events-none opacity-40"
   );

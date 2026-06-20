@@ -34,7 +34,7 @@ export function Pagination({
         </span>
       ) : null}
       <button
-        className="inline-flex h-7 w-7 items-center justify-center rounded-md text-[#6B7280] transition hover:bg-[#F3F4F6] disabled:cursor-not-allowed disabled:opacity-40"
+        className="inline-flex h-11 w-11 items-center justify-center rounded-md text-[#6B7280] transition hover:bg-[#F3F4F6] disabled:cursor-not-allowed disabled:opacity-40"
         disabled={!canPrev}
         onClick={() => onPageChange(page - 1)}
         type="button"
@@ -46,7 +46,7 @@ export function Pagination({
         {page} / {safeTotalPages}
       </span>
       <button
-        className="inline-flex h-7 w-7 items-center justify-center rounded-md text-[#6B7280] transition hover:bg-[#F3F4F6] disabled:cursor-not-allowed disabled:opacity-40"
+        className="inline-flex h-11 w-11 items-center justify-center rounded-md text-[#6B7280] transition hover:bg-[#F3F4F6] disabled:cursor-not-allowed disabled:opacity-40"
         disabled={!canNext}
         onClick={() => onPageChange(page + 1)}
         type="button"
