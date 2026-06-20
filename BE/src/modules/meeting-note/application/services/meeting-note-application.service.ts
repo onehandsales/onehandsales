@@ -105,6 +105,11 @@ export interface UpdateMeetingNoteCommand {
   readonly deals?: MeetingNoteDealCommand[];
 }
 
+// 역할 : LinkMeetingNoteDealsCommand 저장된 회의록에 추가 연결할 딜 ID 목록을 정의합니다.
+export interface LinkMeetingNoteDealsCommand {
+  readonly deals: string[];
+}
+
 // 역할 : MeetingNoteListResponse 회의록 목록 응답 구조를 정의합니다.
 export interface MeetingNoteListResponse {
   readonly items: MeetingNoteListItemResponse[];
@@ -540,6 +545,71 @@ export class MeetingNoteApplicationService {
     });
 
     // 9. 저장소 record를 API 응답 구조로 변환합니다.
+    return this.toMeetingNoteResponse(meetingNote);
+  }
+
+  // 기능 : 저장된 회의록에 딜을 추가 연결하고 딜 활동 로그를 자동 생성합니다.
+  async linkMeetingNoteDeals(
+    currentUser: CurrentUserContext,
+    meetingNoteId: string,
+    input: LinkMeetingNoteDealsCommand
+  ): Promise<MeetingNoteResponse> {
+    // 1. 현재 사용자 소유 회의록인지 먼저 조회합니다.
+    const existing = await this.meetingNoteRepository.findMeetingNote(
+      currentUser.id,
+      meetingNoteId
+    );
+
+    if (!existing) {
+      throw new MeetingNoteNotFoundError();
+    }
+
+    // 2. 요청 딜 ID를 정규화하고 이미 연결된 딜은 제외합니다.
+    const requestedDeals = this.normalizeDealIds(input.deals, true);
+    const existingDealIds = new Set(existing.deals.map((deal) => deal.dealId));
+    const dealsToLink = requestedDeals.filter(
+      (deal) => !existingDealIds.has(deal.dealId)
+    );
+
+    // 3. 새로 연결할 딜이 없으면 현재 회의록 상세를 그대로 반환합니다.
+    if (dealsToLink.length === 0) {
+      return this.toMeetingNoteResponse(existing);
+    }
+
+    // 4. 신규 딜 연결과 딜 활동 로그 생성을 하나의 transaction에서 처리합니다.
+    await this.meetingNoteRepository.runInTransaction(async (repository) => {
+      const relationInput = await this.resolveRelationInputs(
+        currentUser.id,
+        { deals: dealsToLink },
+        repository
+      );
+
+      await repository.linkMeetingNoteDeals({
+        userId: currentUser.id,
+        meetingNoteId,
+        deals: relationInput.deals ?? [],
+        activityLogText: this.createDealLinkActivityLogText(existing),
+      });
+    });
+
+    // 5. 연결 결과를 다시 조회합니다.
+    const meetingNote = await this.meetingNoteRepository.findMeetingNote(
+      currentUser.id,
+      meetingNoteId
+    );
+
+    if (!meetingNote) {
+      throw new MeetingNoteNotFoundError();
+    }
+
+    // 6. 본문 없이 연결 이벤트만 구조화 로그로 남깁니다.
+    this.logEvent("meeting_note.deals_linked", {
+      userId: currentUser.id,
+      meetingNoteId,
+      linkedDealCount: dealsToLink.length,
+    });
+
+    // 7. 저장소 record를 API 응답 구조로 변환합니다.
     return this.toMeetingNoteResponse(meetingNote);
   }
 
@@ -1507,6 +1577,29 @@ export class MeetingNoteApplicationService {
     )}-${this.pad2(parts.day)}T${this.pad2(parts.hour)}:${this.pad2(
       parts.minute
     )}:${this.pad2(parts.second)}`;
+  }
+
+  // 기능 : 딜 활동 로그에 표시할 회의록 연결 문구를 생성합니다.
+  private createDealLinkActivityLogText(meetingNote: MeetingNoteRecord): string {
+    const meetingLocalDate =
+      this.formatLocalDateTime(meetingNote.meetingAt, meetingNote.timeZone)?.slice(
+        0,
+        10
+      ) ?? "날짜 없음";
+    const details = this.toSingleLineSnippet(meetingNote.details, 140);
+
+    return `[회의록 연결] ${meetingLocalDate} /meeting-notes/${meetingNote.id} - ${details}`;
+  }
+
+  // 기능 : 긴 본문을 활동 로그 한 줄 요약으로 축약합니다.
+  private toSingleLineSnippet(value: string, maxLength: number): string {
+    const normalized = value.replace(/\s+/g, " ").trim();
+
+    if (normalized.length <= maxLength) {
+      return normalized;
+    }
+
+    return `${normalized.slice(0, maxLength - 3)}...`;
   }
 
   // 기능 : 숫자를 두 자리 문자열로 채웁니다.

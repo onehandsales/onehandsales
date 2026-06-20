@@ -204,6 +204,14 @@ export class CreateMeetingNoteDto {
   deals?: string[];
 }
 
+// 역할 : LinkMeetingNoteDealsDto 저장된 회의록에 연결할 딜 ID 목록을 검증합니다.
+export class LinkMeetingNoteDealsDto {
+  @IsArray()
+  @ArrayNotEmpty()
+  @IsUUID(undefined, { each: true })
+  deals!: string[];
+}
+
 // 역할 : UpdateMeetingNoteDto 회의록 수정 request body 값을 검증합니다.
 // 역할 : MeetingNoteAiDraftContextDto AI/STT 초안 생성에 사용할 사용자 선택 맥락 request body를 검증합니다.
 export class MeetingNoteAiDraftContextDto {

@@ -25,6 +25,7 @@ import {
   CreateMeetingNoteDto,
   CreateMeetingNoteSttAiDraftDto,
   CreateMeetingNoteTextAiDraftDto,
+  LinkMeetingNoteDealsDto,
   ListMeetingNotesQueryDto,
   UpdateMeetingNoteDto,
 } from "./dto/meeting-note-request.dto";
@@ -136,6 +137,22 @@ export class MeetingNoteController {
     // 1. request body와 현재 사용자 정보를 application 계층으로 전달합니다.
     return this.meetingNoteApplicationService.createMeetingNote(
       currentUser,
+      body
+    );
+  }
+
+  // API : 저장된 회의록 딜 추가 연결과 딜 활동 로그 자동 생성
+  @Post(":meetingNoteId/deals")
+  @HttpCode(HttpStatus.OK)
+  linkMeetingNoteDeals(
+    @CurrentUser() currentUser: CurrentUserContext,
+    @Param("meetingNoteId", ParseUUIDPipe) meetingNoteId: string,
+    @Body() body: LinkMeetingNoteDealsDto
+  ) {
+    // 1. 회의록 ID와 추가 연결할 딜 목록을 application 계층으로 전달합니다.
+    return this.meetingNoteApplicationService.linkMeetingNoteDeals(
+      currentUser,
+      meetingNoteId,
       body
     );
   }
