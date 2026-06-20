@@ -6,8 +6,13 @@ import {
   ChevronDown,
   ChevronLeft,
   ChevronRight,
+  FileAudio,
   IdCard,
+  Loader2,
+  Mic,
   Package,
+  Sparkles,
+  X,
   type LucideIcon,
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
@@ -27,14 +32,23 @@ import {
   useDealProductOptions,
 } from "@/features/deal/hooks/use-deal-entity-options";
 import { useDealList } from "@/features/deal/hooks/use-deal-list";
-import { useCreateMeetingNoteMutation } from "@/features/meeting-note/hooks/use-meeting-note-mutations";
+import {
+  useCreateMeetingNoteMutation,
+  useCreateMeetingNoteSttAiDraftMutation,
+  useCreateMeetingNoteTextAiDraftMutation,
+} from "@/features/meeting-note/hooks/use-meeting-note-mutations";
 import {
   emptyMeetingNoteCreateFormValues,
   meetingNoteCreateFormSchema,
   toCreateMeetingNoteInput,
   type MeetingNoteCreateFormValues,
 } from "@/features/meeting-note/schemas/meeting-note-schema";
-import type { MeetingNote } from "@/features/meeting-note/types/meeting-note";
+import type {
+  MeetingNote,
+  MeetingNoteAiDraftContextInput,
+  MeetingNoteAiDraftResponse,
+  MeetingNoteSourceType,
+} from "@/features/meeting-note/types/meeting-note";
 import { getApiErrorMessage } from "@/lib/api-client";
 import { cn } from "@/utils/cn";
 
@@ -51,8 +65,11 @@ type EntitySelectOption = {
 };
 
 const formId = "meeting-note-create-form";
+const maxAudioFileSizeBytes = 25 * 1024 * 1024;
 const textareaClassName =
   "resize-none rounded-md border border-[#E2E5EC] bg-white px-3 py-2 text-sm leading-5 text-[#111827] outline-none focus:border-[#2463EB] focus:ring-2 focus:ring-[#DBEAFE]";
+const actionButtonClassName =
+  "inline-flex h-9 items-center justify-center gap-2 rounded-md border border-[#D8E0EA] bg-white px-3 text-[13px] font-semibold text-[#1F2937] transition-colors hover:bg-[#F8FAFC] disabled:cursor-not-allowed disabled:opacity-60";
 const weekdayLabels = ["일", "월", "화", "수", "목", "금", "토"];
 
 export function MeetingNoteCreateDialog({
@@ -61,10 +78,18 @@ export function MeetingNoteCreateDialog({
   onCreated,
 }: MeetingNoteCreateDialogProps) {
   const createMeetingNoteMutation = useCreateMeetingNoteMutation();
+  const textAiDraftMutation = useCreateMeetingNoteTextAiDraftMutation();
+  const sttAiDraftMutation = useCreateMeetingNoteSttAiDraftMutation();
   const companyOptionsQuery = useDealCompanyOptions();
   const contactOptionsQuery = useDealContactOptions();
   const productOptionsQuery = useDealProductOptions();
   const dealOptionsQuery = useDealList({ page: 1, sort: "createdAtDesc" });
+  const [draftSourceType, setDraftSourceType] =
+    useState<MeetingNoteSourceType>("MANUAL");
+  const [rawDraftText, setRawDraftText] = useState("");
+  const [audioFile, setAudioFile] = useState<File | null>(null);
+  const [transcript, setTranscript] = useState<string | null>(null);
+  const [draftClientError, setDraftClientError] = useState<string | null>(null);
   const {
     register,
     control,
@@ -88,12 +113,21 @@ export function MeetingNoteCreateDialog({
     contactOptionsQuery.error ??
     productOptionsQuery.error ??
     dealOptionsQuery.error;
+  const resetTextAiDraftMutation = textAiDraftMutation.reset;
+  const resetSttAiDraftMutation = sttAiDraftMutation.reset;
 
   useEffect(() => {
     if (open) {
       reset(emptyMeetingNoteCreateFormValues);
+      setDraftSourceType("MANUAL");
+      setRawDraftText("");
+      setAudioFile(null);
+      setTranscript(null);
+      setDraftClientError(null);
+      resetTextAiDraftMutation();
+      resetSttAiDraftMutation();
     }
-  }, [open, reset]);
+  }, [open, reset, resetSttAiDraftMutation, resetTextAiDraftMutation]);
 
   if (!open) {
     return null;
@@ -128,13 +162,110 @@ export function MeetingNoteCreateDialog({
       .join(" / "),
   }));
 
+  const applyDraft = (draft: MeetingNoteAiDraftResponse) => {
+    setValue("details", draft.details, {
+      shouldDirty: true,
+      shouldValidate: true,
+    });
+    setValue("nextPlan", draft.nextPlan ?? "", {
+      shouldDirty: true,
+      shouldValidate: true,
+    });
+    setValue("requiredAction", draft.requiredAction ?? "", {
+      shouldDirty: true,
+      shouldValidate: true,
+    });
+    setDraftSourceType(draft.sourceType);
+    setTranscript(draft.transcript);
+    setDraftClientError(null);
+  };
+
+  const getDraftContext = (): MeetingNoteAiDraftContextInput | null => {
+    if (
+      !meetingLocalDateTime.trim() ||
+      companyIds.length === 0 ||
+      contactIds.length === 0
+    ) {
+      setDraftClientError("미팅일, 회사, 담당자를 먼저 선택해주세요.");
+      return null;
+    }
+
+    return {
+      meetingLocalDateTime: meetingLocalDateTime.trim(),
+      companies: companyIds,
+      contacts: contactIds,
+      products: productIds.length ? productIds : undefined,
+      deals: dealIds.length ? dealIds : undefined,
+    };
+  };
+
+  const onCreateTextAiDraft = async () => {
+    const text = rawDraftText.trim();
+
+    if (!text) {
+      setDraftClientError("원문 메모를 입력해주세요.");
+      return;
+    }
+
+    const context = getDraftContext();
+
+    if (!context) {
+      return;
+    }
+
+    setDraftClientError(null);
+    textAiDraftMutation.reset();
+    sttAiDraftMutation.reset();
+
+    try {
+      const draft = await textAiDraftMutation.mutateAsync({
+        ...context,
+        text,
+      });
+      applyDraft(draft);
+    } catch {
+      // React Query mutation state renders the API error below.
+    }
+  };
+
+  const onCreateSttAiDraft = async () => {
+    if (!audioFile) {
+      setDraftClientError("음성 파일을 선택해주세요.");
+      return;
+    }
+
+    const context = getDraftContext();
+
+    if (!context) {
+      return;
+    }
+
+    setDraftClientError(null);
+    textAiDraftMutation.reset();
+    sttAiDraftMutation.reset();
+
+    try {
+      const draft = await sttAiDraftMutation.mutateAsync({
+        ...context,
+        audioFile,
+      });
+      applyDraft(draft);
+    } catch {
+      // React Query mutation state renders the API error below.
+    }
+  };
+
   const onSubmit = handleSubmit(async (values) => {
     const created = await createMeetingNoteMutation.mutateAsync(
-      toCreateMeetingNoteInput(values)
+      toCreateMeetingNoteInput(values, draftSourceType)
     );
     onCreated(created);
     onOpenChange(false);
   });
+
+  const isDraftPending =
+    textAiDraftMutation.isPending || sttAiDraftMutation.isPending;
+  const draftApiError = textAiDraftMutation.error ?? sttAiDraftMutation.error;
 
   return (
     <ModalShell
@@ -241,6 +372,109 @@ export function MeetingNoteCreateDialog({
           </ModalFormRow>
         </ModalFormSection>
 
+        <ModalFormSection className="gap-2" title="AI 정리">
+          <TextAreaField
+            id="meeting-create-ai-raw-text"
+            label="원문 메모"
+            rows={2}
+            value={rawDraftText}
+            onChange={setRawDraftText}
+          />
+
+          <div className="grid gap-2 rounded-md border border-[#E6EAF0] bg-[#F9FAFB] p-3">
+            <div className="flex flex-wrap items-center gap-2">
+              <button
+                className={actionButtonClassName}
+                disabled={isDraftPending}
+                type="button"
+                onClick={() => void onCreateTextAiDraft()}
+              >
+                {textAiDraftMutation.isPending ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  <Sparkles className="h-4 w-4" />
+                )}
+                AI로 정리
+              </button>
+
+              <label
+                className={cn(
+                  actionButtonClassName,
+                  isDraftPending && "cursor-not-allowed opacity-60"
+                )}
+                htmlFor="meeting-create-audio-file"
+              >
+                <FileAudio className="h-4 w-4" />
+                음성 파일
+              </label>
+              <input
+                accept="audio/*"
+                className="sr-only"
+                disabled={isDraftPending}
+                id="meeting-create-audio-file"
+                type="file"
+                onChange={(event) => {
+                  const selectedFile = event.target.files?.[0] ?? null;
+                  event.currentTarget.value = "";
+
+                  if (
+                    selectedFile &&
+                    selectedFile.size > maxAudioFileSizeBytes
+                  ) {
+                    setAudioFile(null);
+                    setDraftClientError("음성 파일은 25MB 이하만 선택해주세요.");
+                    return;
+                  }
+
+                  setAudioFile(selectedFile);
+                }}
+              />
+
+              <button
+                className={actionButtonClassName}
+                disabled={isDraftPending}
+                type="button"
+                onClick={() => void onCreateSttAiDraft()}
+              >
+                {sttAiDraftMutation.isPending ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  <Mic className="h-4 w-4" />
+                )}
+                음성으로 작성
+              </button>
+            </div>
+
+            {audioFile ? (
+              <div className="flex items-center justify-between gap-3 rounded-md border border-[#E6EAF0] bg-white px-3 py-2 text-[13px] text-[#374151]">
+                <span className="inline-flex min-w-0 items-center gap-2">
+                  <FileAudio className="h-4 w-4 shrink-0 text-[#6B7280]" />
+                  <span className="truncate">{audioFile.name}</span>
+                </span>
+                <button
+                  aria-label="선택한 음성 파일 지우기"
+                  className="grid h-7 w-7 place-items-center rounded-md text-[#6B7280] hover:bg-[#F3F4F6]"
+                  type="button"
+                  onClick={() => setAudioFile(null)}
+                >
+                  <X className="h-4 w-4" />
+                </button>
+              </div>
+            ) : null}
+
+            {transcript ? (
+              <div className="grid gap-1.5 rounded-md border border-[#D8E0EA] bg-white p-3">
+                <span className="text-[12px] font-semibold text-[#374151]">
+                  녹취 텍스트
+                </span>
+                <p className="max-h-24 overflow-y-auto whitespace-pre-wrap text-[13px] leading-5 text-[#4B5563]">
+                  {transcript}
+                </p>
+              </div>
+            ) : null}
+          </div>
+        </ModalFormSection>
+
         <ModalFormSection className="gap-2" title="미팅 내용">
           <TextAreaField
             errorMessage={errors.details?.message}
@@ -264,6 +498,22 @@ export function MeetingNoteCreateDialog({
             rows={1}
           />
         </ModalFormSection>
+
+        {draftClientError ? (
+          <ErrorState
+            message={draftClientError}
+            title="AI 정리 조건 확인"
+            variant="inline"
+          />
+        ) : null}
+
+        {draftApiError ? (
+          <ErrorState
+            message={getApiErrorMessage(draftApiError)}
+            title="AI 정리 실패"
+            variant="inline"
+          />
+        ) : null}
 
         {optionError ? (
           <ErrorState
@@ -477,13 +727,19 @@ function TextAreaField({
   register,
   errorMessage,
   rows,
+  value,
+  onChange,
 }: {
   readonly id: string;
   readonly label: string;
-  readonly register: UseFormRegisterReturn;
+  readonly register?: UseFormRegisterReturn;
   readonly errorMessage?: string;
   readonly rows: number;
+  readonly value?: string;
+  readonly onChange?: (value: string) => void;
 }) {
+  const registrationProps = register ?? {};
+
   return (
     <ModalFieldGroup
       className="gap-1.5"
@@ -497,7 +753,13 @@ function TextAreaField({
         className={textareaClassName}
         id={id}
         rows={rows}
-        {...register}
+        value={value}
+        onChange={
+          onChange
+            ? (event) => onChange(event.target.value)
+            : register?.onChange
+        }
+        {...registrationProps}
       />
     </ModalFieldGroup>
   );

@@ -1,11 +1,15 @@
-import { Bell, Download } from "lucide-react";
+import { Bell, Download, Search } from "lucide-react";
 import { useAuthSession } from "@/features/auth";
 
 type MobileAppHeaderProps = {
   readonly logoColor?: string;
+  readonly onSearchClick?: () => void;
 };
 
-export function MobileAppHeader({ logoColor = "#5E5CE6" }: MobileAppHeaderProps) {
+export function MobileAppHeader({
+  logoColor = "#5E5CE6",
+  onSearchClick,
+}: MobileAppHeaderProps) {
   const { user } = useAuthSession();
   const initial = user?.name ? user.name.charAt(0) : "?";
 
@@ -19,6 +23,16 @@ export function MobileAppHeader({ logoColor = "#5E5CE6" }: MobileAppHeaderProps)
 
         {/* Spacer */}
         <div className="flex-1" />
+
+        {/* Search icon */}
+        <button
+          type="button"
+          aria-label="통합검색"
+          className="inline-flex items-center justify-center"
+          onClick={onSearchClick}
+        >
+          <Search className="h-5 w-5" style={{ color: "#6B7280" }} />
+        </button>
 
         {/* Export icon */}
         <button

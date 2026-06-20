@@ -72,6 +72,13 @@ export function updateDeal(input: UpdateDealInput) {
   });
 }
 
+// 기능 : 참조가 없는 딜을 삭제합니다.
+export function deleteDeal(dealId: string) {
+  return apiClient<void>(`/api/deals/${dealId}`, {
+    method: "DELETE",
+  });
+}
+
 // 기능 : 딜 form 회사 옵션 조회
 export function getDealCompanyOptions() {
   return apiClient<DealCompanyOptionsResponse>("/api/deals/company-options");

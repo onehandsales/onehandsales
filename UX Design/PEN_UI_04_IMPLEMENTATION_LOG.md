@@ -53,8 +53,13 @@
 - `/` 홈은 Schedule/Deal/MeetingNote API 조합 기반 대시보드로 운영
 - 딜 파이프라인은 `/deals`에서 운영
 - 회사/담당자/제품 목록은 제품형 `Controls Bar + Table Card + Pagination` 문법을 기준으로 맞춤
+- 회사/담당자/제품 생성 모달의 연결/분류 선택은 검색 입력형 필드와 결과 없음 즉시 추가 흐름으로 맞춤
 - 목록 페이지네이션은 10개 단위 `totalPages` 기준이며 `hasNext`는 상세 메모 로그 같은 cursor flow에만 사용
 - 목록 정렬은 select를 기본 문법으로 사용한다. 딜 목록은 `최신순`, `금액 높은순`, `금액 낮은 순`, `마감일순`을 제공한다.
+- 통합검색은 `GET /api/search`와 User Web `GlobalSearch` 연결 기준으로 본다.
+- MeetingNote AI/STT 초안 endpoint와 User Web draft UI 연결은 구현 완료 상태다.
+- MeetingNote 작성 UX는 직접 작성/저장을 기본 흐름으로 유지하고, AI/STT는 `AI로 정리`, `음성으로 작성` 보조 액션으로 연결한다.
+- MeetingNote 저장 후 딜 추가 연동 endpoint와 User Web 상세 카드 연결은 구현 완료 상태다. 활동 로그는 현재 딜 상세가 사용하는 `DealFollowingActionLog`를 재사용한다.
 
 ---
 
@@ -82,6 +87,33 @@
 ---
 
 ## 작업 로그
+
+### 2026-06-19 회의록 저장 후 딜 연동 구현
+
+- 작업자: Codex
+- 유형:
+  - backend
+  - frontend
+  - docs
+- 요약:
+  - 저장된 회의록에 딜을 추가 연결하는 API와 User Web 상세 화면 연동 카드를 구현했다.
+  - 신규 연결 딜마다 `MeetingNoteDeal` snapshot row를 추가하고, 딜 상세 활동 로그에 회의록 링크/요약을 남기도록 연결했다.
+  - 현재 별도 `DealActivity` table이 없으므로 기존 `DealFollowingActionLog`를 재사용하는 방식으로 계약을 확정했다.
+- 변경 파일:
+  - `BE/src/modules/meeting-note/**/*`
+  - `FE/user-web/src/features/meeting-note/**/*`
+  - `TODO/MEETING_NOTE_AI_STT_PLAN/COMMON/API-SPEC/MEETING_NOTE_AI_STT_API.md`
+  - `AGENT/PM_AGENT/PLANNING/MVP_SCOPE.md`
+  - `AGENT/PM_AGENT/PLANNING/DATA_MODEL.md`
+  - `UX Design/PEN_UI_05_API_CHANGE_TRACKER.md`
+- 결정/반영 내용:
+  - `POST /api/meeting-notes/:meetingNoteId/deals`를 추가했다.
+  - 이미 연결된 딜은 중복 연결하지 않는다.
+  - 연결 성공 후 회의록 상세와 해당 딜 상세/활동 로그 cache를 무효화한다.
+- 남은 이슈:
+  - 범용 `DealActivity` table과 activity type 관리는 후속 확장이다.
+- 다음 작업:
+  - 실제 로그인 세션과 샘플 딜 데이터로 브라우저 smoke를 수행한다.
 
 ### 2026-06-11 초기 문서화
 
@@ -389,14 +421,14 @@
   - `/` 홈은 더 이상 준비중 화면이 아니라 Schedule/Deal/MeetingNote API를 조합한 실제 대시보드 화면임을 반영했다.
   - 딜 목록 정렬 UI는 chip이 아니라 select이며 `최신순`, `금액 높은순`, `금액 낮은 순`, `마감일순`을 제공하도록 정정했다.
   - 담당자 목록 정렬은 `최신순`, `이름순` select 계약으로 정정했다.
-  - BusinessCard OCR, 범용 Import/Export job, Notification, Trash, Search, Admin 운영 조회 API는 FE feature/route가 있어도 Backend module이 없음을 다시 명시했다.
+  - BusinessCard OCR, 범용 Import/Export job, Notification, Trash, Admin 운영 조회 API는 FE feature/route가 있어도 Backend module이 없음을 다시 명시했다. 당시 Search도 미구현으로 기록했으나, 2026-06-19 로그에서 구현 상태로 재정정했다.
 - 결정/반영 내용:
   - 현재 기준선은 2026-06-16 FE+BE 코드다.
   - 과거 2026-06-11~2026-06-15 계획/로그 항목은 역사 기록으로 남기되, 실제 구현 판단은 최신 현재 기준선 섹션을 우선한다.
   - User Web 핵심 도메인은 Auth/User, Home, Company, Contact, Product, Deal, Schedule, MeetingNote까지 실제 API 연동 완료 상태로 본다.
 - 남은 이슈:
   - Admin Web 운영 조회 API는 `/admin/api/me` 외 미구현이다.
-  - BusinessCard OCR, Import/Export job, Notification, Trash, Search는 Backend 구현 계획이 필요하다.
+  - BusinessCard OCR, Import/Export job, Notification, Trash는 Backend 구현 계획이 필요하다. Search는 2026-06-19 로그에서 구현 상태로 재정정했다.
 
 ---
 
@@ -432,6 +464,104 @@
 
 ---
 
+### 2026-06-19 생성 모달 입력 검색형 inline create 반영
+
+- 작업자: Codex
+- 유형:
+  - frontend
+  - docs
+- 요약:
+  - 회사/담당자/제품 생성 모달의 연결/분류 선택을 딜 추가 모달과 같은 입력 검색형 UX로 맞췄다.
+  - 회사 추가 모달의 분야/지역, 담당자 추가 모달의 부서/직급, 제품 추가 모달의 카테고리/상태는 검색 결과가 없으면 현재 입력값으로 바로 추가하고 자동 선택한다.
+  - 담당자 추가 모달의 회사 검색 결과가 없으면 회사 생성 모달을 열고, 생성 후 회사 옵션을 다시 조회해 자동 선택한다.
+  - Search와 MeetingNote AI/STT의 현재 코드 상태를 문서 기준선에 반영한다.
+- 변경 파일:
+  - `FE/user-web/src/components/ui/managed-taxonomy-dropdown.tsx`
+  - `FE/user-web/src/features/company/components/company-create-dialog.tsx`
+  - `FE/user-web/src/features/contact/components/contact-company-field.tsx`
+  - `FE/user-web/src/features/contact/components/contact-create-dialog.tsx`
+  - `FE/user-web/src/features/product/components/product-create-dialog.tsx`
+  - `TODO_LOG/2026-06-19/INLINE_CREATE_SEARCH_FIELDS/WORK_LOG.md`
+  - `UX Design/**`
+  - `AGENT/UXUI_AGENT/DECISIONS/008_uxui_inline_entity_creation.md`
+- 결정/반영 내용:
+  - quick create inline 생성 범위는 딜 추가와 핵심 생성 모달의 연결/분류 선택까지 포함한다.
+  - 별도 quick create candidate search endpoint는 현재 필수 요구가 아니며, 기존 옵션 조회/생성 API와 refetch 조합을 baseline으로 둔다.
+  - Search는 Backend `search` module과 User Web `GlobalSearch` 연결 상태로 본다.
+  - MeetingNote AI/STT는 당시 Backend endpoint 구현, FE draft UI 후속 상태로 보았고, 이후 2026-06-19 User Web 연결 작업에서 완료했다.
+- 검증:
+  - `pnpm --dir FE/user-web exec eslint src/components/ui/managed-taxonomy-dropdown.tsx src/features/company/components/company-create-dialog.tsx src/features/contact/components/contact-company-field.tsx src/features/contact/components/contact-create-dialog.tsx src/features/product/components/product-create-dialog.tsx`
+  - `pnpm --dir FE/user-web typecheck`
+  - `git diff --check`
+- 남은 이슈:
+  - 실제 브라우저 세션에서 생성 모달별 검색/추가/자동선택 smoke 확인 필요
+  - 목록 control button/select 공통화 후보가 남아 있다.
+
+---
+
+### 2026-06-19 MeetingNote AI/STT 사용자 플로우 동기화
+
+- 작업자: Codex
+- 유형:
+  - docs
+  - planning
+- 요약:
+  - 회의록 작성 화면의 기본 흐름을 `직접 작성 후 저장`으로 확정하고, AI/STT는 선택 보조 액션으로 문서화했다.
+  - 텍스트 AI는 `AI로 정리`, STT+AI는 `음성으로 작성` 버튼으로 form field를 채우되 자동 저장하지 않는 흐름으로 정리했다.
+  - 저장 후 `영업 딜과 연동`은 회의록 상세의 별도 액션으로 분리했다.
+- 변경 파일:
+  - `TODO/MEETING_NOTE_AI_STT_PLAN/COMMON/USER-FLOW.md`
+  - `TODO/MEETING_NOTE_AI_STT_PLAN/COMMON/API-SPEC/MEETING_NOTE_AI_STT_API.md`
+  - `TODO/MEETING_NOTE_AI_STT_PLAN/COMMON/GOAL-SPECS/G02-FE-MEETING-NOTE-AI-STT-DRAFT.md`
+  - `TODO/MEETING_NOTE_AI_STT_PLAN/FE-TODO/G02-FE-MEETING-NOTE-AI-STT-DRAFT.goal.md`
+  - `AGENT/UXUI_AGENT/PLANNING/USER_FLOW_AND_SCREENS.md`
+  - `AGENT/UXUI_AGENT/PLANNING/UX_UI_DIRECTION.md`
+  - `AGENT/PM_AGENT/PLANNING/MVP_SCOPE.md`
+  - `AGENT/PM_AGENT/PLANNING/SERVICE_OVERVIEW.md`
+  - `AGENT/PM_AGENT/PLANNING/PRD.md`
+  - `AGENT/PM_AGENT/PLANNING/DATA_MODEL.md`
+  - `UX Design/**`
+- 결정/반영 내용:
+  - 직접 작성 저장은 `sourceType: MANUAL`이며 AI/STT draft API를 호출하지 않는다.
+  - AI/STT 초안 저장은 최종 `POST /api/meeting-notes`에 `TEXT_AI` 또는 `STT_AI` sourceType을 전달한다.
+  - User Web `CreateMeetingNoteInput` 확장은 이후 2026-06-19 User Web 연결 작업에서 완료했다.
+- 남은 이슈:
+  - 저장 후 딜 활동기록 자동 생성 API 계약은 이후 2026-06-19 회의록 저장 후 딜 연동 작업에서 확정/구현했다.
+
+---
+
+### 2026-06-19 MeetingNote AI/STT User Web 연결
+
+- 작업자: Codex
+- 유형:
+  - frontend
+  - docs
+- 요약:
+  - 회의록 생성 모달에 `AI 정리` 섹션을 추가하고 텍스트 `AI로 정리`, 음성 파일 `음성으로 작성` 흐름을 연결했다.
+  - `POST /api/meeting-notes/ai-draft`, `POST /api/meeting-notes/stt-draft` API client/hook을 추가했다.
+  - AI/STT 결과는 form field에만 반영하고 자동 저장하지 않는다.
+  - 직접 저장은 `MANUAL`, 텍스트 AI 저장은 `TEXT_AI`, STT+AI 저장은 `STT_AI` sourceType을 기존 `POST /api/meeting-notes`에 전달한다.
+  - STT transcript는 검토용으로 표시하고 최종 저장 payload에는 포함하지 않는다.
+- 변경 파일:
+  - `FE/user-web/src/features/meeting-note/types/meeting-note.ts`
+  - `FE/user-web/src/features/meeting-note/api/meeting-note-api.ts`
+  - `FE/user-web/src/features/meeting-note/hooks/use-meeting-note-mutations.ts`
+  - `FE/user-web/src/features/meeting-note/schemas/meeting-note-schema.ts`
+  - `FE/user-web/src/features/meeting-note/components/meeting-note-create-dialog.tsx`
+  - `FE/user-web/src/features/meeting-note/index.ts`
+  - `TODO/MEETING_NOTE_AI_STT_PLAN/**`
+  - `AGENT/**`
+  - `UX Design/**`
+- 검증:
+  - `pnpm --dir FE/user-web typecheck`
+  - `pnpm --dir FE/user-web exec eslint src/features/meeting-note/types/meeting-note.ts src/features/meeting-note/api/meeting-note-api.ts src/features/meeting-note/hooks/use-meeting-note-mutations.ts src/features/meeting-note/schemas/meeting-note-schema.ts src/features/meeting-note/components/meeting-note-create-dialog.tsx src/features/meeting-note/index.ts`
+  - `pnpm --dir FE/user-web build`
+  - `git diff --check`
+- 남은 이슈:
+  - 저장 후 딜 활동기록 자동 생성 API 계약은 이후 2026-06-19 회의록 저장 후 딜 연동 작업에서 확정/구현했다.
+
+---
+
 ## 현재 구현 체크리스트
 
 ### 문서
@@ -456,6 +586,7 @@
 - [x] Desktop Deal Pipeline Home — 테이블 + 우측 패널 구조 + 6단계 Stage Tabs 완료
 - [x] Mobile Deal Pipeline Home
 - [x] Deal Quick Create Modal (`deal-create-dialog.tsx` + ModalShell) — 6단계 반영 완료
+- [x] 회사/담당자/제품 생성 모달 입력 검색형 선택 및 결과 없음 즉시 추가
 - [x] Mobile Deal Detail Page (`mobile-deal-detail-page.tsx`) — 6단계 반영 완료
 - [x] DealStage 6단계 FE/BE 계약 반영 완료
 - [x] Company/Contact/Product 제품형 목록 문법 정리
@@ -464,6 +595,7 @@
 - [x] Deal 목록 회사/담당자 select 필터 반영
 - [x] 회사/담당자/제품 필터 select `+ 추가` 분류 관리 반영
 - [x] 목록 미리보기 header/table header 44px 기준 반영
+- [x] MeetingNote AI/STT draft UI 연결
 - [ ] 목록 컨트롤 버튼 공통화
 
 ### 백엔드 / 계약
@@ -471,21 +603,21 @@
 - [x] deal stage 전략 확정 — FE/BE 6단계 계약 반영 완료
 - [x] `/` 홈은 신규 aggregate 없이 기존 Schedule/Deal/MeetingNote API 조합으로 구현
 - [x] Deal 목록/stage-count/export 회사·담당자 필터 계약 반영
-- [ ] quick create inline 생성 범위 확정
+- [x] quick create inline 생성 범위 확정
 - [ ] navigation badge count 필요 여부 확정
 
 ---
 
 ## 현재 블로커
 
-- Quick Create modal의 inline entity create 범위 미확정
 - 목록 컨트롤 버튼 공통화 미완료
-- Admin 운영 조회 API와 BusinessCard/Import/Notification/Trash/Search Backend module 미구현
+- Admin 운영 조회 API와 BusinessCard/Import/Notification/Trash Backend module 미구현
+- 범용 DealActivity table과 activity type 관리 미구현
 
 ---
 
 ## 다음 작업 우선순위
 
-1. 회사/담당자/제품/딜 목록 컨트롤 버튼 공통화
-2. 브라우저 실제 세션 smoke 확인 (홈/딜/회사/담당자/제품/일정/회의록 목록과 상세)
+1. 브라우저 실제 세션 smoke 확인 (생성 모달 입력 검색형 추가/자동선택, 홈/딜/회사/담당자/제품/일정/회의록 목록과 상세)
+2. 회사/담당자/제품/딜 목록 컨트롤 버튼 공통화
 3. Admin 운영 조회 API 또는 미구현 FE feature의 Backend 계획 수립

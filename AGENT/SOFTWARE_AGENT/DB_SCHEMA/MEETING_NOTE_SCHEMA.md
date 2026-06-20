@@ -11,7 +11,7 @@ MeetingNote 도메인은 Backend `BE/src/modules/meeting-note`와 Prisma `Meetin
 - Backend module: `BE/src/modules/meeting-note`
 - User Web feature: `FE/user-web/src/features/meeting-note`
 
-현재 범위는 수동 회의록 CRUD와 AI/STT 초안 기반 저장이다. AI/STT 초안 API는 DB에 초안 결과를 저장하지 않으며, 삭제/복구, Admin API, rawText 암호화, DealActivity 자동 생성은 후속 범위다.
+현재 범위는 수동 회의록 CRUD, AI/STT 초안 기반 저장, 저장 후 딜 추가 연동이다. AI/STT 초안 API는 DB에 초안 결과를 저장하지 않는다. 저장 후 딜 추가 연동은 기존 `MeetingNoteDeal`과 `DealFollowingActionLog`를 사용하며, 삭제/복구, Admin API, rawText 암호화, 범용 DealActivity table은 후속 범위다.
 
 ## 2. 모델 책임
 

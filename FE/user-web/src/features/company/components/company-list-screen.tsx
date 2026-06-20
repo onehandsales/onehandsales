@@ -17,7 +17,8 @@ import {
   useState,
 } from "react";
 import { PageHeader } from "@/components/layout/page-header";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { ListRowActions } from "@/components/ui/list-row-actions";
 import { Pagination } from "@/components/ui/pagination";
 import { ListEmptyState } from "@/components/ui/state";
 import { Toast } from "@/components/ui/toast";
@@ -34,7 +35,10 @@ import {
   useCompanyDeals,
   useCompanyDetail,
 } from "@/features/company/hooks/use-company-detail";
-import { useExportCompaniesMutation } from "@/features/company/hooks/use-company-mutations";
+import {
+  useDeleteCompanyMutation,
+  useExportCompaniesMutation,
+} from "@/features/company/hooks/use-company-mutations";
 import type {
   CompanyListItem,
   CompanySort,
@@ -42,10 +46,16 @@ import type {
 import { getApiErrorMessage, type ApiBlobResponse } from "@/lib/api-client";
 import { cn } from "@/utils/cn";
 import { formatDateWithOptions } from "@/utils/format";
+import { readLocationNotice } from "@/utils/location-state";
 
 type CompanyListScreenProps = {
   readonly initialCreateOpen?: boolean;
   readonly onCreateDialogClose?: () => void;
+};
+
+const COMPANY_TABLE_GRID_STYLE = {
+  gridTemplateColumns:
+    "minmax(120px,1.5fr) minmax(76px,0.75fr) minmax(64px,0.65fr) minmax(52px,0.4fr) minmax(44px,0.35fr) minmax(82px,0.6fr) minmax(74px,0.5fr)",
 };
 
 export function CompanyListScreen({
@@ -53,6 +63,7 @@ export function CompanyListScreen({
   onCreateDialogClose,
 }: CompanyListScreenProps) {
   const navigate = useNavigate();
+  const location = useLocation();
   const { user } = useAuthSession();
   const [companyNameText, setCompanyNameText] = useState("");
   const [companyName, setCompanyName] = useState("");
@@ -68,6 +79,7 @@ export function CompanyListScreen({
   const [pendingFieldName, setPendingFieldName] = useState("");
   const [pendingRegionName, setPendingRegionName] = useState("");
   const [notice, setNotice] = useState<string | null>(null);
+  const [actionError, setActionError] = useState<string | null>(null);
 
   const listParams = useMemo(
     () => ({
@@ -93,6 +105,17 @@ export function CompanyListScreen({
   const fieldsQuery = useCompanyFields();
   const regionsQuery = useCompanyRegions();
   const exportCompaniesMutation = useExportCompaniesMutation();
+  const deleteCompanyMutation = useDeleteCompanyMutation();
+
+  useEffect(() => {
+    const message = readLocationNotice(location.state);
+    if (!message) {
+      return;
+    }
+
+    setNotice(message);
+    void navigate(location.pathname, { replace: true, state: null });
+  }, [location.pathname, location.state, navigate]);
 
   const fields = useMemo(
     () => fieldsQuery.data?.items ?? [],
@@ -169,11 +192,35 @@ export function CompanyListScreen({
     downloadBlobFile(file, "companies.xlsx");
   };
 
+  const onDeleteCompany = async (company: CompanyListItem) => {
+    if (!window.confirm(`${company.companyName} 회사를 삭제할까요?`)) {
+      return;
+    }
+
+    setActionError(null);
+
+    try {
+      await deleteCompanyMutation.mutateAsync(company.id);
+      if (selectedCompanyId === company.id) {
+        setSelectedCompanyId("");
+      }
+      setNotice("회사가 삭제되었습니다.");
+    } catch (error) {
+      setActionError(getApiErrorMessage(error));
+    }
+  };
+
   return (
     <section className="flex min-h-full flex-col bg-[#FAFAF8]">
       <PageHeader
         breadcrumbs={[{ label: "회사", icon: Building2 }]}
         actions={[
+          {
+            icon: Download,
+            tooltip: "파일로 내보내기",
+            onClick: () => void onExport(),
+            disabled: exportCompaniesMutation.isPending,
+          },
           {
             icon: Plus,
             tooltip: "회사 추가",
@@ -181,24 +228,18 @@ export function CompanyListScreen({
             disabled: fieldsQuery.isLoading || regionsQuery.isLoading,
             variant: "primary",
           },
-          {
-            icon: Download,
-            tooltip: "파일로 내보내기",
-            onClick: () => void onExport(),
-            disabled: exportCompaniesMutation.isPending,
-          },
         ]}
       />
 
       {/* 검색 + 필터 툴바 (데스크톱) */}
-      <div className="hidden h-10 shrink-0 items-center gap-2 px-5 md:flex">
+      <div className="hidden min-h-10 shrink-0 items-center gap-1.5 overflow-x-auto px-5 py-1 md:flex lg:gap-2">
         <form
-          className="flex h-8 items-center gap-1.5 rounded-md border border-[#E2E5EC] bg-[#FAFAF8] px-3 transition focus-within:border-[#93C5FD] focus-within:bg-white"
+          className="flex h-8 w-[clamp(150px,20vw,220px)] shrink-0 items-center gap-1.5 rounded-md border border-[#E2E5EC] bg-[#FAFAF8] px-3 transition focus-within:border-[#93C5FD] focus-within:bg-white"
           onSubmit={onSearchSubmit}
         >
           <Search className="h-3 w-3 shrink-0 text-[#9CA3AF]" />
           <input
-            className="w-[220px] bg-transparent text-[13px] text-[#111827] outline-none placeholder:text-[#9CA3AF]"
+            className="min-w-0 flex-1 bg-transparent text-[13px] text-[#111827] outline-none placeholder:text-[#9CA3AF]"
             onChange={(e) => setCompanyNameText(e.target.value)}
             placeholder="회사명 검색"
             value={companyNameText}
@@ -218,7 +259,7 @@ export function CompanyListScreen({
         />
         <select
           className={cn(
-            "h-8 min-w-[118px] appearance-none rounded-md border px-3 text-[13px] outline-none transition",
+            "h-8 w-[clamp(96px,10vw,118px)] shrink-0 appearance-none rounded-md border px-3 text-[13px] outline-none transition",
             companyFieldId
               ? "border-[#FDE68A] bg-[#FFFBEB] text-[#B45309]"
               : "border-[#E2E5EC] bg-transparent text-[#6B7280] hover:bg-[#FAFAF8]",
@@ -244,7 +285,7 @@ export function CompanyListScreen({
         </select>
         <select
           className={cn(
-            "h-8 min-w-[118px] appearance-none rounded-md border px-3 text-[13px] outline-none transition",
+            "h-8 w-[clamp(96px,10vw,118px)] shrink-0 appearance-none rounded-md border px-3 text-[13px] outline-none transition",
             companyRegionId
               ? "border-[#BBF7D0] bg-[#F0FDF4] text-[#15803D]"
               : "border-[#E2E5EC] bg-transparent text-[#6B7280] hover:bg-[#FAFAF8]",
@@ -270,7 +311,7 @@ export function CompanyListScreen({
         </select>
         <select
           className={cn(
-            "h-8 min-w-[132px] appearance-none rounded-md border px-3 text-[13px] outline-none transition",
+            "h-8 w-[clamp(108px,12vw,132px)] shrink-0 appearance-none rounded-md border px-3 text-[13px] outline-none transition",
             sort !== "createdAtDesc"
               ? "border-[#BFDBFE] bg-[#EFF6FF] text-[#1D4ED8]"
               : "border-[#E2E5EC] bg-transparent text-[#6B7280] hover:bg-[#FAFAF8]",
@@ -288,13 +329,13 @@ export function CompanyListScreen({
           <option value="dealCountAsc">딜 낮은순</option>
         </select>
         <div className="flex-1" />
-        <span className="text-[12px] text-[#9CA3AF]">
+        <span className="shrink-0 text-[12px] text-[#9CA3AF]">
           {companyList?.totalCount ?? 0}개
         </span>
       </div>
 
       {/* 알림 */}
-      {notice || exportCompaniesMutation.error ? (
+      {notice || exportCompaniesMutation.error || actionError ? (
         <div className="hidden px-5 pt-2 md:block">
           {notice ? (
             <Toast
@@ -308,33 +349,43 @@ export function CompanyListScreen({
               {getApiErrorMessage(exportCompaniesMutation.error)}
             </p>
           ) : null}
+          {actionError ? (
+            <p className="rounded-md border border-red-200 bg-red-50 px-3 py-2 text-[12px] text-red-600">
+              {actionError}
+            </p>
+          ) : null}
         </div>
       ) : null}
 
       {/* 테이블 + 미리보기 (데스크톱) */}
-      <div className="hidden gap-5 px-5 pb-3 pt-1 md:flex">
+      <div className="hidden gap-3 overflow-x-auto px-5 pb-3 pt-1 md:flex xl:gap-5">
         <div className="flex min-w-0 flex-1 flex-col gap-3">
-          <div className="flex flex-col rounded-lg border border-[#E2E5EC] bg-white shadow-sm">
-            <div className="flex h-11 shrink-0 items-center border-b border-[#E2E5EC] bg-[#F9FAFB] px-6">
-              <div className="w-[260px] shrink-0 text-[12px] font-semibold text-[#64748B]">
+          <div className="flex w-full min-w-[520px] flex-col overflow-hidden rounded-lg border border-[#E2E5EC] bg-white shadow-sm">
+            <div
+              className="grid h-11 shrink-0 items-center border-b border-[#E2E5EC] bg-[#F9FAFB] px-3 md:px-4 xl:px-6"
+              style={COMPANY_TABLE_GRID_STYLE}
+            >
+              <div className="min-w-0 truncate text-[12px] font-semibold text-[#64748B]">
                 회사명
               </div>
-              <div className="w-[150px] shrink-0 text-[12px] font-semibold text-[#64748B]">
+              <div className="min-w-0 truncate text-[12px] font-semibold text-[#64748B]">
                 분야
               </div>
-              <div className="w-[130px] shrink-0 text-[12px] font-semibold text-[#64748B]">
+              <div className="min-w-0 truncate text-[12px] font-semibold text-[#64748B]">
                 지역
               </div>
-              <div className="w-[80px] shrink-0 text-[12px] font-semibold text-[#64748B]">
+              <div className="min-w-0 truncate whitespace-nowrap text-[12px] font-semibold text-[#64748B]">
                 담당자 수
               </div>
-              <div className="w-[72px] shrink-0  text-[12px] font-semibold text-[#64748B]">
+              <div className="min-w-0 truncate whitespace-nowrap text-[12px] font-semibold text-[#64748B]">
                 딜 수
               </div>
-              <div className="w-[128px] shrink-0 text-[12px] font-semibold text-[#64748B]">
+              <div className="min-w-0 truncate whitespace-nowrap text-[12px] font-semibold text-[#64748B]">
                 등록일
               </div>
-              <div className="min-w-0 flex-1" />
+              <div className="min-w-0 truncate text-[12px] font-semibold text-[#64748B]">
+                관리
+              </div>
             </div>
 
             {companiesQuery.isLoading ? (
@@ -357,14 +408,16 @@ export function CompanyListScreen({
                 }
               />
             ) : (
-              <div>
+              <div className="min-w-0">
                 {companyList.items.map((company) => (
                   <CompanyRow
                     company={company}
                     displayTimeZone={displayTimeZone}
                     isActive={company.id === selectedCompanyId}
                     key={company.id}
+                    onDelete={() => void onDeleteCompany(company)}
                     onSelect={setSelectedCompanyId}
+                    deleteDisabled={deleteCompanyMutation.isPending}
                   />
                 ))}
               </div>
@@ -430,7 +483,7 @@ export function CompanyListScreen({
             className={cn(
               "inline-flex h-7 shrink-0 items-center rounded-full border px-3 text-[12px] font-medium transition",
               !hasSearch
-                ? "border-[#5E5CE6] bg-[#EEEEFF] text-[#5E5CE6]"
+                ? "border-[#C7D7FE] bg-[#EAF2FF] font-bold text-[#1D4ED8]"
                 : "border-[#E5E7EB] bg-[#F3F4F6] text-[#4B5563]",
             )}
             onClick={() => {
@@ -504,7 +557,7 @@ export function CompanyListScreen({
         </div>
 
         {/* 모바일 카드 목록 */}
-        <div className="flex-1 overflow-y-auto bg-white">
+        <div className="bg-white">
           {companiesQuery.isLoading ? (
             <div className="space-y-0">
               {Array.from({ length: 8 }, (_, i) => (
@@ -528,12 +581,17 @@ export function CompanyListScreen({
               </button>
             </div>
           ) : !companyList || companyList.items.length === 0 ? (
-            <div className="flex flex-col items-center justify-center px-5 py-16 text-center">
-              <Building2 className="mb-3 h-10 w-10 text-[#D1D5DB]" strokeWidth={1.5} />
-              <p className="text-[14px] font-medium text-[#374151]">
-                {hasSearch ? "조건에 맞는 회사가 없습니다" : "등록된 회사가 없습니다"}
-              </p>
-            </div>
+            <ListEmptyState
+              actionIcon={Plus}
+              actionLabel="회사 추가"
+              icon={Building2}
+              onAction={() => setIsCreateOpen(true)}
+              title={
+                hasSearch
+                  ? "조건에 맞는 회사가 없습니다"
+                  : "등록된 회사가 없습니다"
+              }
+            />
           ) : (
             companyList.items.map((company) => (
               <CompanyMobileCard
@@ -559,7 +617,7 @@ export function CompanyListScreen({
         {/* FAB */}
         <button
           aria-label="회사 추가"
-          className="fixed bottom-24 right-5 flex h-[52px] w-[52px] items-center justify-center rounded-full bg-[#5E5CE6] shadow-[0_4px_16px_rgba(59,130,246,0.27)] transition active:opacity-80"
+          className="fixed bottom-24 right-5 flex h-[52px] w-[52px] items-center justify-center rounded-full bg-[#2563EB] shadow-[0_4px_16px_rgba(59,130,246,0.27)] transition active:opacity-80"
           onClick={() => void navigate("/companies/new")}
           type="button"
         >
@@ -597,30 +655,42 @@ export function CompanyListScreen({
 
 function CompanyRow({
   company,
+  deleteDisabled,
   displayTimeZone,
   isActive,
+  onDelete,
   onSelect,
 }: {
   readonly company: CompanyListItem;
+  readonly deleteDisabled: boolean;
   readonly displayTimeZone: string;
   readonly isActive: boolean;
+  readonly onDelete: () => void;
   readonly onSelect: (companyId: string) => void;
 }) {
   return (
-    <button
+    <div
       className={cn(
-        "group flex h-[66px] w-full cursor-pointer items-center border-b border-[#E2E5EC] px-6 text-left transition-colors last:border-b-0 hover:bg-[#FFFBEB]",
+        "group grid h-[66px] w-full cursor-pointer items-center border-b border-[#E2E5EC] px-3 text-left transition-colors last:border-b-0 hover:bg-[#FFFBEB] md:px-4 xl:px-6",
         isActive ? "bg-[#FFFBEB]" : "bg-white",
       )}
       onClick={() => onSelect(company.id)}
-      type="button"
+      onKeyDown={(event) => {
+        if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault();
+          onSelect(company.id);
+        }
+      }}
+      role="button"
+      style={COMPANY_TABLE_GRID_STYLE}
+      tabIndex={0}
     >
-      <div className="w-[260px] min-w-0 shrink-0">
+      <div className="min-w-0">
         <span className="block truncate text-[13px] font-semibold text-[#111827]">
           {company.companyName}
         </span>
       </div>
-      <div className="w-[150px] min-w-0 shrink-0">
+      <div className="min-w-0">
         <span
           className="inline-flex h-[22px] max-w-full min-w-0 items-center overflow-hidden rounded-full bg-[#FFFBEB] px-2.5 text-[11px] font-semibold text-[#B45309]"
           title={company.companyField.field}
@@ -630,7 +700,7 @@ function CompanyRow({
           </span>
         </span>
       </div>
-      <div className="w-[130px] min-w-0 shrink-0">
+      <div className="min-w-0">
         <span
           className="inline-flex h-[22px] max-w-full min-w-0 items-center overflow-hidden rounded-full bg-[#ECFDF5] px-2.5 text-[11px] font-semibold text-[#047857]"
           title={company.companyRegion.region}
@@ -640,20 +710,25 @@ function CompanyRow({
           </span>
         </span>
       </div>
-      <div className="w-[80px] shrink-0 text-[12px] font-medium text-[#475569]">
+      <div className="min-w-0 truncate whitespace-nowrap text-[12px] font-medium text-[#475569]">
         {company.contactCount.toLocaleString("ko-KR")}명
       </div>
-      <div className="w-[72px] shrink-0 text-[12px] font-medium text-[#475569]">
+      <div className="min-w-0 truncate whitespace-nowrap text-[12px] font-medium text-[#475569]">
         {company.dealCount.toLocaleString("ko-KR")}건
       </div>
       <div
-        className="w-[128px] shrink-0 text-[12px] font-medium text-[#64748B]"
+        className="min-w-0 truncate text-[12px] font-medium text-[#64748B]"
         title={formatCompanyCreatedAt(company.createdAt, displayTimeZone)}
       >
         {formatCompanyCreatedAt(company.createdAt, displayTimeZone)}
       </div>
-      <div className="min-w-0 flex-1" />
-    </button>
+      <ListRowActions
+        deleteLabel={`${company.companyName} 삭제`}
+        detailTo={`/companies/${company.id}`}
+        disabled={deleteDisabled}
+        onDelete={onDelete}
+      />
+    </div>
   );
 }
 
@@ -770,7 +845,7 @@ function FilterChip({
   return (
     <button
       className={cn(
-        "inline-flex h-8 items-center rounded-[6px] border px-3 text-[13px] transition",
+        "inline-flex h-8 shrink-0 items-center whitespace-nowrap rounded-[6px] border px-3 text-[13px] transition",
         active
           ? "border-[#C7D7FE] bg-[#EAF2FF] font-bold text-[#1D4ED8]"
           : "border-[#E6EAF0] bg-white font-medium text-[#475569] hover:bg-[#F9FAFB]",

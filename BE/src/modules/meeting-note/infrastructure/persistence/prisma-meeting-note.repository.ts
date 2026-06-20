@@ -9,6 +9,7 @@ import {
   type ContactSnapshotRecord,
   type CreateMeetingNoteInput,
   type DealSnapshotRecord,
+  type LinkMeetingNoteDealsInput,
   type ListMeetingNotesInput,
   type MeetingNoteCompanyRecord,
   type MeetingNoteContactRecord,
@@ -397,6 +398,30 @@ export class PrismaMeetingNoteRepository implements MeetingNoteRepository {
 
     if (input.deals !== undefined) {
       await this.replaceDeals(input, input.deals);
+    }
+  }
+
+  // 기능 : 회의록에 딜 스냅샷을 추가하고 연결된 딜 활동 로그를 생성합니다.
+  async linkMeetingNoteDeals(input: LinkMeetingNoteDealsInput): Promise<void> {
+    for (const deal of input.deals) {
+      await this.client.meetingNoteDeal.create({
+        data: {
+          userId: input.userId,
+          meetingNoteId: input.meetingNoteId,
+          dealId: deal.dealId,
+          dealNameSnapshot: deal.dealNameSnapshot,
+          dealStatusSnapshot: deal.dealStatusSnapshot,
+          dealCostSnapshot: deal.dealCostSnapshot,
+          dealExpectedEndDateSnapshot: deal.dealExpectedEndDateSnapshot,
+        },
+      });
+      await this.client.dealFollowingActionLog.create({
+        data: {
+          userId: input.userId,
+          dealId: deal.dealId,
+          followingAction: input.activityLogText,
+        },
+      });
     }
   }
 

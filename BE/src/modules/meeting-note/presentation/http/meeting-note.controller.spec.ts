@@ -27,6 +27,8 @@ const CURRENT_USER: CurrentUserContext = {
 
 const COMPANY_ID = "00000000-0000-4000-8000-000000000001";
 const CONTACT_ID = "00000000-0000-4000-8000-000000000002";
+const DEAL_ID = "00000000-0000-4000-8000-000000000003";
+const MEETING_NOTE_ID = "00000000-0000-4000-8000-000000000004";
 
 type RequestWithCurrentUser = Request & {
   currentUser?: CurrentUserContext;
@@ -39,6 +41,7 @@ type MeetingNoteServiceFake = Pick<
   | "listMeetingNotes"
   | "getMeetingNote"
   | "createMeetingNote"
+  | "linkMeetingNoteDeals"
   | "updateMeetingNote"
 >;
 
@@ -66,6 +69,7 @@ function createMeetingNoteServiceFake(): jest.Mocked<MeetingNoteServiceFake> {
     listMeetingNotes: jest.fn().mockResolvedValue({ items: [] }),
     getMeetingNote: jest.fn().mockResolvedValue({ id: "meeting-note-1" }),
     createMeetingNote: jest.fn().mockResolvedValue({ id: "meeting-note-1" }),
+    linkMeetingNoteDeals: jest.fn().mockResolvedValue({ id: "meeting-note-1" }),
     updateMeetingNote: jest.fn().mockResolvedValue({ id: "meeting-note-1" }),
   };
 }
@@ -171,6 +175,19 @@ describe("MeetingNoteController", () => {
           size: 5,
         }),
       })
+    );
+  });
+
+  it("회의록 딜 추가 연결 요청을 application service로 전달한다", async () => {
+    await request(app.getHttpServer())
+      .post(`/api/meeting-notes/${MEETING_NOTE_ID}/deals`)
+      .send({ deals: [DEAL_ID] })
+      .expect(200);
+
+    expect(meetingNoteService.linkMeetingNoteDeals).toHaveBeenCalledWith(
+      CURRENT_USER,
+      MEETING_NOTE_ID,
+      { deals: [DEAL_ID] }
     );
   });
 });

@@ -19,7 +19,7 @@
 
 ## 3. 현재 DB 범위
 
-Snapshot date: 2026-06-18
+Snapshot date: 2026-06-19
 
 현재 Backend DB는 `BE/prisma/schema.prisma`와 migration 기준으로 Auth/User, Company, Contact, Product, Deal, Schedule, MeetingNote 도메인을 포함한다.
 

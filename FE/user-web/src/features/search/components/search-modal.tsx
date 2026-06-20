@@ -80,9 +80,11 @@ export function SearchModal({ open, onClose }: SearchModalProps) {
     }
   };
 
-  const onSelect = (item: SearchItem) => {
-    if (item.targetPath) {
-      navigate(item.targetPath);
+  const onSelect = (group: SearchGroup, item: SearchItem) => {
+    const targetPath = item.targetPath ?? getFallbackTargetPath(group.type, item);
+
+    if (targetPath) {
+      navigate(targetPath);
     }
     onClose();
   };
@@ -108,7 +110,7 @@ export function SearchModal({ open, onClose }: SearchModalProps) {
           <input
             ref={inputRef}
             className="flex-1 bg-transparent text-[15px] text-[#111827] outline-none placeholder:text-[#9CA3AF]"
-            placeholder="회사, 담당자, 제품, 딜, 일정 검색..."
+            placeholder="회사, 담당자, 제품, 딜, 일정, 회의록 검색..."
             value={query}
             onChange={(e: ChangeEvent<HTMLInputElement>) => setQuery(e.target.value)}
             onKeyDown={onKeyDown}
@@ -151,7 +153,7 @@ type SearchResultsBodyProps = {
   readonly groups: readonly SearchGroup[];
   readonly isFetching: boolean;
   readonly totalCount: number;
-  readonly onSelect: (item: SearchItem) => void;
+  readonly onSelect: (group: SearchGroup, item: SearchItem) => void;
 };
 
 function SearchResultsBody({
@@ -212,7 +214,7 @@ function SearchResultsBody({
 
 type SearchGroupSectionProps = {
   readonly group: SearchGroup;
-  readonly onSelect: (item: SearchItem) => void;
+  readonly onSelect: (group: SearchGroup, item: SearchItem) => void;
 };
 
 function SearchGroupSection({ group, onSelect }: SearchGroupSectionProps) {
@@ -233,7 +235,7 @@ function SearchGroupSection({ group, onSelect }: SearchGroupSectionProps) {
             key={`${group.type}:${item.targetId}`}
             type="button"
             className="flex w-full flex-col gap-0.5 rounded-md px-2 py-2 text-left transition hover:bg-[#FAFAF8]"
-            onClick={() => onSelect(item)}
+            onClick={() => onSelect(group, item)}
           >
             <span className="truncate text-[13px] font-medium text-[#111827]">
               {item.title}
@@ -248,4 +250,21 @@ function SearchGroupSection({ group, onSelect }: SearchGroupSectionProps) {
       </div>
     </div>
   );
+}
+
+function getFallbackTargetPath(type: SearchTargetType, item: SearchItem) {
+  switch (type) {
+    case "COMPANY":
+      return `/companies/${item.targetId}`;
+    case "CONTACT":
+      return `/contacts/${item.targetId}`;
+    case "PRODUCT":
+      return `/products/${item.targetId}`;
+    case "DEAL":
+      return `/deals/${item.targetId}`;
+    case "SCHEDULE":
+      return `/schedules/${item.targetId}`;
+    case "MEETING_NOTE":
+      return `/meeting-notes/${item.targetId}`;
+  }
 }

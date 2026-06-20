@@ -144,7 +144,7 @@ export type MeetingNoteDealInput = {
 };
 
 export type CreateMeetingNoteInput = {
-  readonly sourceType?: "MANUAL";
+  readonly sourceType?: MeetingNoteSourceType;
   readonly meetingLocalDateTime: string;
   readonly details: string;
   readonly nextPlan?: string | null;
@@ -153,6 +153,32 @@ export type CreateMeetingNoteInput = {
   readonly contacts: readonly string[];
   readonly products?: readonly string[];
   readonly deals?: readonly string[];
+};
+
+export type MeetingNoteAiDraftContextInput = {
+  readonly meetingLocalDateTime: string;
+  readonly companies: readonly string[];
+  readonly contacts: readonly string[];
+  readonly products?: readonly string[];
+  readonly deals?: readonly string[];
+};
+
+export type CreateMeetingNoteTextAiDraftInput =
+  MeetingNoteAiDraftContextInput & {
+    readonly text: string;
+  };
+
+export type CreateMeetingNoteSttAiDraftInput =
+  MeetingNoteAiDraftContextInput & {
+    readonly audioFile: File;
+  };
+
+export type MeetingNoteAiDraftResponse = {
+  readonly sourceType: Extract<MeetingNoteSourceType, "TEXT_AI" | "STT_AI">;
+  readonly transcript: string | null;
+  readonly details: string;
+  readonly nextPlan: string | null;
+  readonly requiredAction: string | null;
 };
 
 export type UpdateMeetingNoteInput = {
@@ -166,4 +192,9 @@ export type UpdateMeetingNoteInput = {
   readonly contacts?: readonly MeetingNoteContactInput[];
   readonly products?: readonly MeetingNoteProductInput[];
   readonly deals?: readonly MeetingNoteDealInput[];
+};
+
+export type LinkMeetingNoteDealsInput = {
+  readonly meetingNoteId: string;
+  readonly deals: readonly string[];
 };

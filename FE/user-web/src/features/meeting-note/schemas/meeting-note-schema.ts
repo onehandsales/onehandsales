@@ -2,6 +2,7 @@ import { z } from "zod";
 import type {
   CreateMeetingNoteInput,
   MeetingNote,
+  MeetingNoteSourceType,
   UpdateMeetingNoteInput,
 } from "@/features/meeting-note/types/meeting-note";
 
@@ -85,10 +86,11 @@ export const emptyMeetingNoteCreateFormValues: MeetingNoteCreateFormValues = {
 };
 
 export function toCreateMeetingNoteInput(
-  values: MeetingNoteCreateFormValues
+  values: MeetingNoteCreateFormValues,
+  sourceType: MeetingNoteSourceType = "MANUAL"
 ): CreateMeetingNoteInput {
   return {
-    sourceType: "MANUAL",
+    sourceType,
     meetingLocalDateTime: values.meetingLocalDateTime.trim(),
     details: values.details.trim(),
     nextPlan: toOptionalText(values.nextPlan),

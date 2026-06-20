@@ -9,6 +9,7 @@
 - Admin API: 없음
 - DB 저장: 초안 API에서는 없음
 - AI/STT 로그 테이블: 없음
+- UX 원칙: 회의록은 AI 없이 직접 작성 후 저장할 수 있어야 하며, AI/STT는 작성 화면의 보조 액션이다.
 
 Provider 구조:
 
@@ -32,6 +33,9 @@ Provider 구조:
 - Provider prompt에는 사용자가 선택한 엔티티 snapshot 맥락만 전달한다.
 - Provider 결과는 저장하지 않고 응답으로만 반환한다.
 - 최종 저장은 기존 `POST /api/meeting-notes`를 호출한다.
+- 직접 작성 저장은 초안 API를 호출하지 않고 기존 `POST /api/meeting-notes`를 `sourceType: MANUAL`로 호출한다.
+- 텍스트 AI 초안 저장은 기존 `POST /api/meeting-notes`를 `sourceType: TEXT_AI`로 호출한다.
+- STT+AI 초안 저장은 기존 `POST /api/meeting-notes`를 `sourceType: STT_AI`로 호출한다.
 
 ## 3. POST /api/meeting-notes/ai-draft
 
@@ -127,6 +131,26 @@ deals=00000000-0000-4000-8000-000000000004
 
 ## 5. 최종 저장 연계
 
+### 직접 작성 저장
+
+AI/STT를 사용하지 않는 직접 작성 경로는 기존 회의록 생성 form을 그대로 사용한다. 이 경로에서는 초안 API를 호출하지 않는다.
+
+```json
+{
+  "sourceType": "MANUAL",
+  "meetingLocalDateTime": "2026-06-18T14:00",
+  "details": "가격 조건과 도입 일정을 논의했습니다.",
+  "nextPlan": "다음 주 화요일에 제안서를 전달합니다.",
+  "requiredAction": "보안 검토 자료를 준비합니다.",
+  "companies": ["00000000-0000-4000-8000-000000000001"],
+  "contacts": ["00000000-0000-4000-8000-000000000002"],
+  "products": ["00000000-0000-4000-8000-000000000003"],
+  "deals": ["00000000-0000-4000-8000-000000000004"]
+}
+```
+
+### AI/STT 초안 저장
+
 초안 생성 후 Frontend는 사용자가 수정할 수 있는 form field에 값을 채운 뒤 기존 회의록 생성 API를 호출한다.
 
 ```json
@@ -145,7 +169,51 @@ deals=00000000-0000-4000-8000-000000000004
 
 Backend는 최종 저장 시 `sourceType`은 저장하지만 `transcript`와 provider raw response는 저장하지 않는다.
 
-## 6. Error
+Backend 생성 DTO는 `MANUAL`, `TEXT_AI`, `STT_AI`를 받을 수 있다. User Web `CreateMeetingNoteInput`과 저장 변환 로직도 초안 결과의 `sourceType`을 최종 저장 요청에 전달한다.
+
+## 6. 저장 후 딜 연동
+
+회의록과 영업 딜 연동은 최종 저장 이후의 별도 흐름이다.
+
+- 회의록 저장 전 AI/STT 초안 API가 딜 활동기록을 만들지 않는다.
+- 회의록 저장 후 `영업 딜과 연동` 액션에서 딜을 선택한다.
+- 연결 성공 후 딜 상세 활동기록에는 회의록 링크와 요약을 표시한다.
+- 현재 구현은 별도 `DealActivity` table을 만들지 않고 기존 딜 상세의 활동 로그 저장소인 `DealFollowingActionLog`를 재사용한다.
+- 같은 회의록에 이미 연결된 딜은 중복 생성하지 않고 건너뛴다.
+- 연결 row는 `MeetingNoteDeal`에 추가하며, 회의록 작성 시점의 딜 snapshot을 저장한다.
+
+### POST /api/meeting-notes/:meetingNoteId/deals
+
+- API 이름: 저장된 회의록 딜 추가 연동 API
+- API 식별자: `LinkMeetingNoteDeals`
+- Request DTO: `LinkMeetingNoteDealsDto`
+- Success Status: `200 OK`
+- Response DTO: `MeetingNoteResponse`
+- Backend flow: `MeetingNoteApplicationService.linkMeetingNoteDeals`
+
+### Body
+
+| 필드 | 타입 | 필수 | nullable | validation | 설명 |
+|---|---|---:|---:|---|---|
+| `deals` | string[] | 예 | 불가 | UUID 배열, 최소 1개 | 회의록에 추가 연결할 딜 ID 목록 |
+
+### Request 예시
+
+```json
+{
+  "deals": ["00000000-0000-4000-8000-000000000004"]
+}
+```
+
+### 처리 결과
+
+- Backend는 `currentUser.id` 기준으로 회의록과 딜 ownership을 검증한다.
+- 신규 연결 딜마다 `MeetingNoteDeal` row를 생성한다.
+- 신규 연결 딜마다 `DealFollowingActionLog` row를 생성한다.
+- 활동 로그의 `followingAction`에는 회의록 날짜, 회의록 상세 링크, 회의록 요약 snippet을 저장한다.
+- 응답은 갱신된 회의록 상세 payload다.
+
+## 7. Error
 
 | 상황 | error code | HTTP | FE 처리 |
 |---|---|---:|---|
@@ -156,10 +224,11 @@ Backend는 최종 저장 시 `sourceType`은 저장하지만 `transcript`와 pro
 | 선택 담당자 없음 또는 타 사용자 소유 | `ContactNotFound` | 404 | 선택값 새로고침 안내 |
 | 선택 제품 없음 또는 타 사용자 소유 | `ProductNotFound` | 404 | 선택값 새로고침 안내 |
 | 선택 딜 없음 또는 타 사용자 소유 | `DealNotFound` | 404 | 선택값 새로고침 안내 |
+| 회의록 없음 또는 타 사용자 소유 | `MeetingNoteNotFound` | 404 | 목록 새로고침 또는 접근 불가 안내 |
 | Provider 설정 누락 | `MeetingNoteAiDraftProviderUnavailable` | 503 | 관리자 설정 필요 안내 |
 | Provider 호출 또는 응답 파싱 실패 | `MeetingNoteAiDraftFailed` | 502 | 잠시 후 재시도 안내 |
 
-## 7. Transaction
+## 8. Transaction
 
 - transaction 필요 여부: 없음
 - 이유: 초안 생성 API는 DB write가 없고 provider 호출 결과를 저장하지 않는다.
@@ -168,8 +237,9 @@ Backend는 최종 저장 시 `sourceType`은 저장하지만 `transcript`와 pro
 - audit log transaction 포함 여부: 없음
 - 외부 Provider 호출 위치: application service에서 ownership 검증 후 provider port 호출, DB transaction 밖
 - 최종 저장 API `POST /api/meeting-notes`는 기존 회의록 저장 transaction을 그대로 사용한다.
+- 딜 추가 연동 API `POST /api/meeting-notes/:meetingNoteId/deals`는 `MeetingNoteDeal` 생성과 `DealFollowingActionLog` 생성을 같은 transaction 안에서 처리한다.
 
-## 8. Observability
+## 9. Observability
 
 - application log event key: 초안 성공 로그 없음
 - AI provider 실패 event key: `provider.openai.meetingNoteDraft.failed`
@@ -180,12 +250,13 @@ Backend는 최종 저장 시 `sourceType`은 저장하지만 `transcript`와 pro
 - provider error context: provider, operation, statusCode, retryable만 허용한다.
 - DB 로그 테이블 없음
 
-## 9. DB Schema 연결
+## 10. DB Schema 연결
 
 - 신규 table: 없음
 - 신규 column: 없음
 - 신규 migration: 없음
 - 조회 model: `Company`, `Contact`, `Product`, `Deal`
 - 최종 저장 model: 기존 `MeetingNote`, `MeetingNoteCompany`, `MeetingNoteContact`, `MeetingNoteProduct`, `MeetingNoteDeal`
+- 저장 후 딜 추가 연동 model: 기존 `MeetingNoteDeal`, `DealFollowingActionLog`
 - `MeetingNote.sourceType`: 최종 저장 시 `MANUAL`, `TEXT_AI`, `STT_AI` 허용
 - `MeetingNote.rawText`: 이번 범위에서는 저장하지 않음

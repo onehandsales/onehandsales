@@ -11,8 +11,9 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
-import { Link, useSearchParams } from "react-router-dom";
+import { Link, useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { PageHeader } from "@/components/layout/page-header";
+import { ListRowActions } from "@/components/ui/list-row-actions";
 import { ListEmptyState } from "@/components/ui/state";
 import { Toast } from "@/components/ui/toast";
 import { MeetingNoteCreateDialog } from "@/features/meeting-note/components/meeting-note-create-dialog";
@@ -22,6 +23,7 @@ import {
   useMeetingNoteDetail,
   useMeetingNoteList,
 } from "@/features/meeting-note/hooks/use-meeting-note-queries";
+import { useDeleteMeetingNoteMutation } from "@/features/meeting-note/hooks/use-meeting-note-mutations";
 import type {
   MeetingNote,
   MeetingNoteListItem,
@@ -32,9 +34,17 @@ import { getApiErrorMessage } from "@/lib/api-client";
 import { getMeetingDateParts } from "@/features/meeting-note/utils/meeting-note-date";
 import { formatDateTime } from "@/utils/format";
 import { cn } from "@/utils/cn";
+import { readLocationNotice } from "@/utils/location-state";
+
+const MEETING_NOTE_TABLE_GRID_STYLE = {
+  gridTemplateColumns:
+    "minmax(100px,0.8fr) minmax(86px,0.85fr) minmax(78px,0.75fr) minmax(116px,1.1fr) minmax(74px,0.5fr)",
+};
 
 // 기능 : 회의록 목록과 필터 화면을 렌더링합니다.
 export function MeetingNoteListScreen() {
+  const navigate = useNavigate();
+  const location = useLocation();
   const [page, setPage] = useState(1);
   const [companyId, setCompanyId] = useState("");
   const [contactId, setContactId] = useState("");
@@ -43,6 +53,7 @@ export function MeetingNoteListScreen() {
   const [pinnedMeetingNoteId, setPinnedMeetingNoteId] = useState("");
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [notice, setNotice] = useState<string | null>(null);
+  const [actionError, setActionError] = useState<string | null>(null);
   const [searchParams, setSearchParams] = useSearchParams();
   const params = useMemo(
     () => ({
@@ -51,15 +62,26 @@ export function MeetingNoteListScreen() {
       page,
       sort,
     }),
-    [companyId, contactId, page, sort]
+    [companyId, contactId, page, sort],
   );
   const meetingNotesQuery = useMeetingNoteList(params);
   const companiesQuery = useMeetingNoteFilterCompanies();
   const contactsQuery = useMeetingNoteFilterContacts();
+  const deleteMeetingNoteMutation = useDeleteMeetingNoteMutation();
   const meetingNotes = useMemo(
     () => meetingNotesQuery.data?.items ?? [],
-    [meetingNotesQuery.data?.items]
+    [meetingNotesQuery.data?.items],
   );
+
+  useEffect(() => {
+    const message = readLocationNotice(location.state);
+    if (!message) {
+      return;
+    }
+
+    setNotice(message);
+    void navigate(location.pathname, { replace: true, state: null });
+  }, [location.pathname, location.state, navigate]);
 
   const hasFilter = Boolean(companyId || contactId || sort !== "createdAtDesc");
 
@@ -79,7 +101,9 @@ export function MeetingNoteListScreen() {
     if (
       selectedMeetingNoteId &&
       selectedMeetingNoteId !== pinnedMeetingNoteId &&
-      !meetingNotes.some((meetingNote) => meetingNote.id === selectedMeetingNoteId)
+      !meetingNotes.some(
+        (meetingNote) => meetingNote.id === selectedMeetingNoteId,
+      )
     ) {
       setSelectedMeetingNoteId("");
     }
@@ -121,6 +145,28 @@ export function MeetingNoteListScreen() {
     setPage(1);
   };
 
+  const onDeleteMeetingNote = async (meetingNote: MeetingNoteListItem) => {
+    const title = getMeetingNoteListTitle(meetingNote);
+    if (!window.confirm(`${title} 회의록을 삭제할까요?`)) {
+      return;
+    }
+
+    setActionError(null);
+
+    try {
+      await deleteMeetingNoteMutation.mutateAsync(meetingNote.id);
+      if (selectedMeetingNoteId === meetingNote.id) {
+        setSelectedMeetingNoteId("");
+      }
+      if (pinnedMeetingNoteId === meetingNote.id) {
+        setPinnedMeetingNoteId("");
+      }
+      setNotice("회의록이 삭제되었습니다.");
+    } catch (error) {
+      setActionError(getApiErrorMessage(error));
+    }
+  };
+
   return (
     <section className="flex min-h-full flex-col bg-[#FAFAF8]">
       {/* 페이지 헤더 */}
@@ -137,13 +183,13 @@ export function MeetingNoteListScreen() {
       />
 
       {/* 필터 툴바 (데스크톱) */}
-      <div className="hidden h-10 shrink-0 items-center gap-2 px-5 md:flex">
+      <div className="hidden min-h-10 shrink-0 items-center gap-1.5 overflow-x-auto px-5 py-1 md:flex lg:gap-2">
         {/* 전체(초기화) FilterChip */}
         <button
           className={
             hasFilter
-              ? "inline-flex h-8 items-center rounded-[6px] border border-[#E6EAF0] bg-white px-3 text-[13px] font-medium text-[#475569] transition hover:bg-[#F9FAFB]"
-              : "inline-flex h-8 items-center rounded-[6px] border border-[#C7D7FE] bg-[#EAF2FF] px-3 text-[13px] font-bold text-[#1D4ED8] transition"
+              ? "inline-flex h-8 shrink-0 items-center whitespace-nowrap rounded-[6px] border border-[#E6EAF0] bg-white px-3 text-[13px] font-medium text-[#475569] transition hover:bg-[#F9FAFB]"
+              : "inline-flex h-8 shrink-0 items-center whitespace-nowrap rounded-[6px] border border-[#C7D7FE] bg-[#EAF2FF] px-3 text-[13px] font-bold text-[#1D4ED8] transition"
           }
           onClick={clearFilters}
           type="button"
@@ -155,8 +201,8 @@ export function MeetingNoteListScreen() {
         <select
           className={
             companyId
-              ? "h-8 min-w-[140px] appearance-none rounded-md border border-[#BFDBFE] bg-[#EFF6FF] px-3 text-[13px] text-[#1D4ED8] outline-none transition"
-              : "h-8 min-w-[140px] appearance-none rounded-md border border-[#E2E5EC] bg-transparent px-3 text-[13px] text-[#6B7280] outline-none transition hover:bg-[#FAFAF8]"
+              ? "h-8 w-[clamp(112px,12vw,140px)] shrink-0 appearance-none rounded-md border border-[#BFDBFE] bg-[#EFF6FF] px-3 text-[13px] text-[#1D4ED8] outline-none transition"
+              : "h-8 w-[clamp(112px,12vw,140px)] shrink-0 appearance-none rounded-md border border-[#E2E5EC] bg-transparent px-3 text-[13px] text-[#6B7280] outline-none transition hover:bg-[#FAFAF8]"
           }
           onChange={(e) => updateCompanyId(e.target.value)}
           value={companyId}
@@ -173,8 +219,8 @@ export function MeetingNoteListScreen() {
         <select
           className={
             contactId
-              ? "h-8 min-w-[140px] appearance-none rounded-md border border-[#BFDBFE] bg-[#EFF6FF] px-3 text-[13px] text-[#1D4ED8] outline-none transition"
-              : "h-8 min-w-[140px] appearance-none rounded-md border border-[#E2E5EC] bg-transparent px-3 text-[13px] text-[#6B7280] outline-none transition hover:bg-[#FAFAF8]"
+              ? "h-8 w-[clamp(112px,12vw,140px)] shrink-0 appearance-none rounded-md border border-[#BFDBFE] bg-[#EFF6FF] px-3 text-[13px] text-[#1D4ED8] outline-none transition"
+              : "h-8 w-[clamp(112px,12vw,140px)] shrink-0 appearance-none rounded-md border border-[#E2E5EC] bg-transparent px-3 text-[13px] text-[#6B7280] outline-none transition hover:bg-[#FAFAF8]"
           }
           onChange={(e) => updateContactId(e.target.value)}
           value={contactId}
@@ -191,8 +237,8 @@ export function MeetingNoteListScreen() {
         <select
           className={
             sort !== "createdAtDesc"
-              ? "h-8 min-w-[128px] appearance-none rounded-md border border-[#BFDBFE] bg-[#EFF6FF] px-3 text-[13px] text-[#1D4ED8] outline-none transition"
-              : "h-8 min-w-[128px] appearance-none rounded-md border border-[#E2E5EC] bg-transparent px-3 text-[13px] text-[#6B7280] outline-none transition hover:bg-[#FAFAF8]"
+              ? "h-8 w-[clamp(108px,11vw,128px)] shrink-0 appearance-none rounded-md border border-[#BFDBFE] bg-[#EFF6FF] px-3 text-[13px] text-[#1D4ED8] outline-none transition"
+              : "h-8 w-[clamp(108px,11vw,128px)] shrink-0 appearance-none rounded-md border border-[#E2E5EC] bg-transparent px-3 text-[13px] text-[#6B7280] outline-none transition hover:bg-[#FAFAF8]"
           }
           onChange={(e) => updateSort(e.target.value as MeetingNoteSort)}
           value={sort}
@@ -211,24 +257,37 @@ export function MeetingNoteListScreen() {
           />
         </div>
       ) : null}
+      {actionError ? (
+        <div className="hidden px-5 pt-2 md:block">
+          <p className="rounded-md border border-red-200 bg-red-50 px-3 py-2 text-[12px] text-red-600">
+            {actionError}
+          </p>
+        </div>
+      ) : null}
 
       {/* 테이블 카드 (데스크톱) */}
-      <div className="hidden gap-5 px-5 pb-3 pt-1 md:flex">
+      <div className="hidden gap-3 overflow-x-auto px-5 pb-3 pt-1 md:flex xl:gap-5">
         <div className="flex min-w-0 flex-1 flex-col gap-3">
-          <div className="flex flex-col rounded-lg border border-[#E2E5EC] bg-white shadow-sm">
+          <div className="flex w-full min-w-[500px] flex-col overflow-hidden rounded-lg border border-[#E2E5EC] bg-white shadow-sm">
             {/* 헤더 행 */}
-            <div className="flex h-11 shrink-0 items-center border-b border-[#E2E5EC] bg-[#F9FAFB] px-6">
-              <span className="w-[180px] shrink-0 text-[12px] font-semibold text-[#64748B]">
+            <div
+              className="grid h-11 shrink-0 items-center border-b border-[#E2E5EC] bg-[#F9FAFB] px-3 md:px-4 xl:px-6"
+              style={MEETING_NOTE_TABLE_GRID_STYLE}
+            >
+              <span className="min-w-0 truncate text-[12px] font-semibold text-[#64748B]">
                 미팅 일시
               </span>
-              <span className="w-[190px] shrink-0 text-[12px] font-semibold text-[#64748B]">
+              <span className="min-w-0 truncate text-[12px] font-semibold text-[#64748B]">
                 회사
               </span>
-              <span className="w-[160px] shrink-0 text-[12px] font-semibold text-[#64748B]">
+              <span className="min-w-0 truncate text-[12px] font-semibold text-[#64748B]">
                 담당자
               </span>
-              <span className="min-w-0 flex-1 text-[12px] font-semibold text-[#64748B]">
+              <span className="min-w-0 truncate text-[12px] font-semibold text-[#64748B]">
                 딜
+              </span>
+              <span className="min-w-0 truncate text-[12px] font-semibold text-[#64748B]">
+                관리
               </span>
             </div>
 
@@ -253,12 +312,14 @@ export function MeetingNoteListScreen() {
                 }
               />
             ) : (
-              <div>
+              <div className="min-w-0">
                 {meetingNotes.map((meetingNote) => (
                   <MeetingNoteListRow
+                    deleteDisabled={deleteMeetingNoteMutation.isPending}
                     isActive={meetingNote.id === selectedMeetingNoteId}
                     key={meetingNote.id}
                     meetingNote={meetingNote}
+                    onDelete={() => void onDeleteMeetingNote(meetingNote)}
                     onSelect={selectMeetingNote}
                   />
                 ))}
@@ -289,7 +350,9 @@ export function MeetingNoteListScreen() {
                 >
                   <X className="h-3.5 w-3.5" strokeWidth={2} />
                 </button>
-                <span className="text-[12px] font-medium text-[#6B7280]">미리보기</span>
+                <span className="text-[12px] font-medium text-[#6B7280]">
+                  미리보기
+                </span>
               </div>
               <div className="flex items-center gap-1.5">
                 <Link
@@ -373,7 +436,7 @@ export function MeetingNoteListScreen() {
         </div>
 
         {/* 모바일 카드 목록 */}
-        <div className="flex-1 overflow-y-auto bg-white">
+        <div className="bg-white">
           {meetingNotesQuery.isLoading ? (
             <div className="space-y-0">
               {Array.from({ length: 8 }, (_, i) => (
@@ -397,12 +460,17 @@ export function MeetingNoteListScreen() {
               </button>
             </div>
           ) : meetingNotes.length === 0 ? (
-            <div className="flex flex-col items-center justify-center px-5 py-16 text-center">
-              <FileText className="mb-3 h-10 w-10 text-[#D1D5DB]" strokeWidth={1.5} />
-              <p className="text-[14px] font-medium text-[#374151]">
-                {hasFilter ? "조건에 맞는 회의록이 없습니다" : "등록된 회의록이 없습니다"}
-              </p>
-            </div>
+            <ListEmptyState
+              actionIcon={Plus}
+              actionLabel="회의록 추가"
+              icon={FileText}
+              onAction={() => setIsCreateOpen(true)}
+              title={
+                hasFilter
+                  ? "조건에 맞는 회의록이 없습니다"
+                  : "등록된 회의록이 없습니다"
+              }
+            />
           ) : (
             meetingNotes.map((meetingNote) => (
               <MeetingNoteMobileCard
@@ -473,11 +541,17 @@ function MeetingNoteMobileCard({
         {/* Row1: 회사 · 담당자 */}
         <div className="flex min-w-0 items-center gap-1.5">
           <span className="min-w-0 truncate text-[14px] font-semibold text-[#111827]">
-            {meetingNote.companies.label || meetingNote.contacts.label || "회의록"}
+            {meetingNote.companies.label ||
+              meetingNote.contacts.label ||
+              "회의록"}
           </span>
           {meetingNote.companies.count > 1 || meetingNote.contacts.count > 1 ? (
             <span className="inline-flex h-5 shrink-0 items-center rounded-full bg-[#F1F5F9] px-2 text-[11px] font-semibold text-[#475569]">
-              외 {Math.max(meetingNote.companies.count, meetingNote.contacts.count) - 1}
+              외{" "}
+              {Math.max(
+                meetingNote.companies.count,
+                meetingNote.contacts.count,
+              ) - 1}
             </span>
           ) : null}
         </div>
@@ -487,7 +561,9 @@ function MeetingNoteMobileCard({
         </p>
         {/* Row3: 미팅 일시 */}
         <p className="mt-0.5 text-[11px] text-[#9CA3AF]">
-          {meetingDate.hasValue ? `${meetingDate.compactDate} ${meetingDate.time}` : meetingDate.full}
+          {meetingDate.hasValue
+            ? `${meetingDate.compactDate} ${meetingDate.time}`
+            : meetingDate.full}
         </p>
       </div>
     </Link>
@@ -496,37 +572,46 @@ function MeetingNoteMobileCard({
 
 // 기능 : 회의록 목록 row를 렌더링합니다.
 function MeetingNoteListRow({
+  deleteDisabled,
   isActive,
   meetingNote,
+  onDelete,
   onSelect,
 }: {
+  readonly deleteDisabled: boolean;
   readonly isActive: boolean;
   readonly meetingNote: MeetingNoteListItem;
+  readonly onDelete: () => void;
   readonly onSelect: (meetingNoteId: string) => void;
 }) {
   return (
-    <button
+    <div
       className={cn(
-        "flex h-[66px] w-full cursor-pointer items-center border-b border-[#E2E5EC] px-6 text-left transition-colors last:border-b-0 hover:bg-blue-50/60",
-        isActive ? "bg-blue-50" : "bg-white"
+        "grid h-[66px] w-full cursor-pointer items-center border-b border-[#E2E5EC] px-3 text-left transition-colors last:border-b-0 hover:bg-blue-50/60 md:px-4 xl:px-6",
+        isActive ? "bg-blue-50" : "bg-white",
       )}
       onClick={() => onSelect(meetingNote.id)}
-      type="button"
+      onKeyDown={(event) => {
+        if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault();
+          onSelect(meetingNote.id);
+        }
+      }}
+      role="button"
+      style={MEETING_NOTE_TABLE_GRID_STYLE}
+      tabIndex={0}
     >
       <MeetingDateCell value={meetingNote.meetingAt} />
-      <SummaryCell
-        className="w-[190px] shrink-0"
-        summary={meetingNote.companies}
+      <SummaryCell summary={meetingNote.companies} />
+      <SummaryCell summary={meetingNote.contacts} />
+      <SummaryCell summary={meetingNote.deals} />
+      <ListRowActions
+        deleteLabel={`${getMeetingNoteListTitle(meetingNote)} 삭제`}
+        detailTo={`/meeting-notes/${meetingNote.id}`}
+        disabled={deleteDisabled}
+        onDelete={onDelete}
       />
-      <SummaryCell
-        className="w-[160px] shrink-0"
-        summary={meetingNote.contacts}
-      />
-      <SummaryCell
-        className="min-w-0 flex-1"
-        summary={meetingNote.deals}
-      />
-    </button>
+    </div>
   );
 }
 
@@ -535,14 +620,14 @@ function MeetingDateCell({ value }: { readonly value: string | null }) {
 
   if (!meetingDate.hasValue) {
     return (
-      <span className="w-[180px] shrink-0 pr-4 text-[13px] font-semibold text-[#111827]">
+      <span className="min-w-0 pr-3 text-[13px] font-semibold text-[#111827]">
         {meetingDate.full}
       </span>
     );
   }
 
   return (
-    <span className="w-[180px] shrink-0 pr-4">
+    <span className="min-w-0 pr-3">
       <span className="block truncate text-[13px] font-semibold text-[#111827]">
         {meetingDate.compactDate}
       </span>
@@ -584,16 +669,38 @@ function MeetingNotePreviewPanel({
         </header>
 
         <div className="grid grid-cols-2 gap-2.5">
-          <PreviewMetric icon={Building2} label="회사" value={meetingNote.companies[0]?.companyNameSnapshot ?? "-"} />
-          <PreviewMetric icon={IdCard} label="담당자" value={meetingNote.contacts[0]?.contactUsernameSnapshot ?? "-"} />
-          <PreviewMetric icon={BriefcaseBusiness} label="딜" value={meetingNote.deals[0]?.dealNameSnapshot ?? "-"} />
-          <PreviewMetric icon={CalendarClock} label="등록" value={formatDateTime(meetingNote.createdAt)} />
+          <PreviewMetric
+            icon={Building2}
+            label="회사"
+            value={meetingNote.companies[0]?.companyNameSnapshot ?? "-"}
+          />
+          <PreviewMetric
+            icon={IdCard}
+            label="담당자"
+            value={meetingNote.contacts[0]?.contactUsernameSnapshot ?? "-"}
+          />
+          <PreviewMetric
+            icon={BriefcaseBusiness}
+            label="딜"
+            value={meetingNote.deals[0]?.dealNameSnapshot ?? "-"}
+          />
+          <PreviewMetric
+            icon={CalendarClock}
+            label="등록"
+            value={formatDateTime(meetingNote.createdAt)}
+          />
         </div>
 
         <PanelDivider />
         <PreviewTextSection title="회의 내용" value={meetingNote.details} />
-        <PreviewTextSection title="다음 계획" value={meetingNote.nextPlan ?? ""} />
-        <PreviewTextSection title="필요 조치" value={meetingNote.requiredAction ?? ""} />
+        <PreviewTextSection
+          title="다음 계획"
+          value={meetingNote.nextPlan ?? ""}
+        />
+        <PreviewTextSection
+          title="필요 조치"
+          value={meetingNote.requiredAction ?? ""}
+        />
       </div>
     </div>
   );
@@ -612,7 +719,10 @@ function MeetingDatePreviewBadge({ value }: { readonly value: string | null }) {
 
   return (
     <div className="inline-flex max-w-full items-center gap-2 rounded-lg border border-[#FED7AA] bg-[#FFF7ED] px-2.5 py-1.5">
-      <CalendarClock className="h-4 w-4 shrink-0 text-[#EA580C]" strokeWidth={1.9} />
+      <CalendarClock
+        className="h-4 w-4 shrink-0 text-[#EA580C]"
+        strokeWidth={1.9}
+      />
       <div className="min-w-0">
         <p className="truncate text-[12px] font-semibold text-[#9A3412]">
           {meetingDate.date}
@@ -628,18 +738,18 @@ function MeetingDatePreviewBadge({ value }: { readonly value: string | null }) {
 // 기능 : 목록 summary label과 count를 표시합니다.
 function SummaryCell({
   summary,
-  className,
 }: {
   readonly summary: { readonly label: string; readonly count: number };
-  readonly className?: string;
 }) {
   return (
-    <span className={`min-w-0 pr-3 ${className ?? ""}`}>
+    <span className="min-w-0 pr-3">
       <span className="block truncate text-[13px] font-semibold text-[#111827]">
         {summary.label || "-"}
       </span>
       {summary.count > 1 ? (
-        <span className="mt-0.5 block text-[12px] font-medium text-[#64748B]">총 {summary.count}개</span>
+        <span className="mt-0.5 block text-[12px] font-medium text-[#64748B]">
+          총 {summary.count}개
+        </span>
       ) : null}
     </span>
   );
@@ -697,7 +807,10 @@ function MeetingNotePreviewSkeleton() {
       </div>
       <div className="grid grid-cols-2 gap-2.5">
         {Array.from({ length: 4 }).map((_, index) => (
-          <div className="h-16 animate-pulse rounded-lg bg-[#EEF2F7]" key={index} />
+          <div
+            className="h-16 animate-pulse rounded-lg bg-[#EEF2F7]"
+            key={index}
+          />
         ))}
       </div>
       <div className="h-28 animate-pulse rounded-lg bg-[#EEF2F7]" />
@@ -709,6 +822,17 @@ function MeetingNotePreviewSkeleton() {
 function getMeetingNoteTitle(meetingNote: MeetingNote) {
   const companyName = meetingNote.companies[0]?.companyNameSnapshot;
   const contactName = meetingNote.contacts[0]?.contactUsernameSnapshot;
+
+  if (companyName && contactName) {
+    return `${companyName} · ${contactName}`;
+  }
+
+  return companyName || contactName || "회의록";
+}
+
+function getMeetingNoteListTitle(meetingNote: MeetingNoteListItem) {
+  const companyName = meetingNote.companies.label;
+  const contactName = meetingNote.contacts.label;
 
   if (companyName && contactName) {
     return `${companyName} · ${contactName}`;
@@ -749,20 +873,21 @@ function MeetingNoteListSkeleton() {
     <>
       {Array.from({ length: 6 }, (_, index) => (
         <div
-          className="flex h-[66px] items-center border-b border-[#E2E5EC] px-6 last:border-b-0"
+          className="grid h-[66px] items-center border-b border-[#E2E5EC] px-3 last:border-b-0 md:px-4 xl:px-6"
           key={index}
+          style={MEETING_NOTE_TABLE_GRID_STYLE}
         >
-          <div className="w-[180px] shrink-0 pr-4">
+          <div className="min-w-0 pr-3">
             <div className="h-4 w-24 animate-pulse rounded bg-[#F3F4F6]" />
             <div className="mt-2 h-5 w-20 animate-pulse rounded-full bg-[#F3F4F6]" />
           </div>
-          <div className="w-[190px] shrink-0 pr-3">
+          <div className="min-w-0 pr-3">
             <div className="h-4 w-24 animate-pulse rounded bg-[#F3F4F6]" />
           </div>
-          <div className="w-[160px] shrink-0 pr-3">
+          <div className="min-w-0 pr-3">
             <div className="h-4 w-20 animate-pulse rounded bg-[#F3F4F6]" />
           </div>
-          <div className="min-w-0 flex-1 pr-3">
+          <div className="min-w-0 pr-3">
             <div className="h-4 w-32 animate-pulse rounded bg-[#F3F4F6]" />
           </div>
         </div>

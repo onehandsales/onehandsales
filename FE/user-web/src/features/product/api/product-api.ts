@@ -49,6 +49,13 @@ export function updateProduct(input: UpdateProductInput) {
   });
 }
 
+// 기능 : 참조가 없는 제품을 삭제합니다.
+export function deleteProduct(productId: string) {
+  return apiClient<void>(`/api/products/${productId}`, {
+    method: "DELETE",
+  });
+}
+
 export function listCategories() {
   return apiClient<ProductCategoryListResponse>("/api/product-categories");
 }

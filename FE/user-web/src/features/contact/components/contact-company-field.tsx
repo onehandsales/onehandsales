@@ -1,4 +1,4 @@
-import { Building2, ChevronDown, X } from "lucide-react";
+import { Building2, ChevronDown, Plus, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useCompanyOptions } from "@/features/contact/hooks/use-company-options";
 import { cn } from "@/utils/cn";
@@ -9,6 +9,7 @@ type ContactCompanyFieldProps = {
   readonly companyId: string;
   readonly search: string;
   readonly error?: string;
+  readonly onCreate?: (companyName: string) => void;
   readonly onCompanyIdChange: (companyId: string) => void;
   readonly onSearchChange: (search: string) => void;
 };
@@ -20,6 +21,7 @@ export function ContactCompanyField({
   companyId,
   search,
   error,
+  onCreate,
   onCompanyIdChange,
   onSearchChange,
 }: ContactCompanyFieldProps) {
@@ -35,6 +37,7 @@ export function ContactCompanyField({
         )
       : allCompanies;
   const selectedCompany = allCompanies.find((c) => c.id === companyId);
+  const canCreate = filterText.length > 0 && filteredCompanies.length === 0;
 
   useEffect(() => {
     if (!isOpen) {
@@ -111,9 +114,24 @@ export function ContactCompanyField({
                 회사 목록을 불러오지 못했습니다.
               </p>
             ) : filteredCompanies.length === 0 ? (
-              <p className="px-3 py-2 text-sm text-muted-foreground">
-                검색된 회사가 없습니다.
-              </p>
+              <div className="grid gap-2 px-3 py-3">
+                <p className="text-sm text-muted-foreground">
+                  검색된 회사가 없습니다.
+                </p>
+                {canCreate && onCreate ? (
+                  <button
+                    className="inline-flex h-8 items-center justify-center gap-1.5 self-start rounded-md border border-dashed border-primary/30 bg-primary/5 px-2.5 text-xs font-medium text-primary hover:bg-primary/10"
+                    onClick={() => {
+                      setIsOpen(false);
+                      onCreate(filterText);
+                    }}
+                    type="button"
+                  >
+                    <Plus className="h-3.5 w-3.5" />
+                    {filterText} 회사 추가
+                  </button>
+                ) : null}
+              </div>
             ) : (
               filteredCompanies.map((company) => (
                 <button

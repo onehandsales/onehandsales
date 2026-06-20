@@ -107,7 +107,7 @@ export function ListEmptyState({
   return (
     <div
       className={cn(
-        "flex min-h-full flex-1 flex-col items-center justify-center px-5 py-16 text-center",
+        "flex min-h-[320px] flex-col items-center justify-center px-5 py-12 text-center",
         className
       )}
     >

@@ -19,21 +19,52 @@ import { useNavigate } from "react-router-dom";
 import { SearchModal } from "@/features/search";
 import { useEffect, useState } from "react";
 import { useDealDetail } from "@/features/deal/hooks/use-deal-detail";
+import { useDeleteDealMutation } from "@/features/deal/hooks/use-deal-mutations";
 import { useProductDetail } from "@/features/product/hooks/use-product-detail";
+import { useDeleteProductMutation } from "@/features/product/hooks/use-product-mutations";
 import { PageHeader } from "@/components/layout/page-header";
+import { getApiErrorMessage } from "@/lib/api-client";
 
 const HOME_PATH = "/";
 
 // ── 딜 상세 TopBar ──────────────────────────────────────────
 function DealDetailHeader({ dealId }: { readonly dealId: string }) {
+  const navigate = useNavigate();
   const dealQuery = useDealDetail(dealId);
+  const deleteDealMutation = useDeleteDealMutation();
   const dealName = dealQuery.data?.dealName ?? "...";
+
+  const onDelete = async () => {
+    const label = dealQuery.data?.dealName ?? "딜";
+    if (!window.confirm(`${label} 딜을 삭제할까요?`)) {
+      return;
+    }
+
+    try {
+      await deleteDealMutation.mutateAsync(dealId);
+      void navigate("/deals", {
+        replace: true,
+        state: { notice: "딜이 삭제되었습니다." },
+      });
+    } catch (error) {
+      window.alert(getApiErrorMessage(error));
+    }
+  };
 
   return (
     <PageHeader
       breadcrumbs={[
         { label: "딜", to: "/deals", icon: BriefcaseBusiness },
         { label: dealName },
+      ]}
+      actions={[
+        {
+          icon: Trash2,
+          tooltip: "삭제",
+          variant: "danger",
+          disabled: deleteDealMutation.isPending,
+          onClick: () => void onDelete(),
+        },
       ]}
     />
   );
@@ -44,6 +75,7 @@ function ProductDetailHeader({ productId }: { readonly productId: string }) {
   const navigate = useNavigate();
   const { search: locationSearch } = useLocation();
   const productQuery = useProductDetail(productId);
+  const deleteProductMutation = useDeleteProductMutation();
   const productName = productQuery.data?.productName ?? "...";
   const isEditing = new URLSearchParams(locationSearch).get("edit") === "1";
 
@@ -52,6 +84,23 @@ function ProductDetailHeader({ productId }: { readonly productId: string }) {
       isEditing ? `/products/${productId}` : `/products/${productId}?edit=1`,
       { replace: true },
     );
+  };
+
+  const onDelete = async () => {
+    const label = productQuery.data?.productName ?? "제품";
+    if (!window.confirm(`${label} 제품을 삭제할까요?`)) {
+      return;
+    }
+
+    try {
+      await deleteProductMutation.mutateAsync(productId);
+      void navigate("/products", {
+        replace: true,
+        state: { notice: "제품이 삭제되었습니다." },
+      });
+    } catch (error) {
+      window.alert(getApiErrorMessage(error));
+    }
   };
 
   return (
@@ -70,7 +119,8 @@ function ProductDetailHeader({ productId }: { readonly productId: string }) {
           icon: Trash2,
           tooltip: "삭제",
           variant: "danger",
-          onClick: () => undefined, // TODO: 삭제 핸들러 연결
+          disabled: deleteProductMutation.isPending,
+          onClick: () => void onDelete(),
         },
       ]}
     />
@@ -197,9 +247,9 @@ export function AppShell() {
   })();
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div className="min-h-dvh bg-background text-foreground">
       {/* ── Desktop Shell ── */}
-      <div className="hidden min-h-screen md:flex">
+      <div className="hidden min-h-dvh md:flex">
         {/* Sidebar */}
         <aside className="fixed inset-y-0 left-0 z-30 flex w-[var(--sidebar-width)] flex-col bg-sidebar">
           {/* Brand */}
@@ -257,7 +307,7 @@ export function AppShell() {
         </aside>
 
         {/* Main */}
-        <div className="flex flex-1 flex-col pl-[var(--sidebar-width)]">
+        <div className="flex min-w-0 flex-1 flex-col pl-[var(--sidebar-width)]">
           {/* TopBar */}
           {!hideTopBar ? (
             <div className="sticky top-0 z-20 bg-[#FAFAF8]">
@@ -268,8 +318,10 @@ export function AppShell() {
           <main
             className={
               isFixedViewportPage
-                ? "flex flex-1 flex-col overflow-hidden"
-                : "min-h-[calc(100vh-var(--topbar-height))]"
+                ? "flex min-h-[calc(100dvh-var(--topbar-height))] flex-col"
+                : hideTopBar
+                  ? "min-h-dvh"
+                  : "min-h-[calc(100dvh-var(--topbar-height))]"
             }
           >
             <Outlet />
@@ -281,8 +333,10 @@ export function AppShell() {
       <SearchModal open={searchOpen} onClose={() => setSearchOpen(false)} />
 
       {/* ── Mobile Shell ── */}
-      <div className="min-h-screen md:hidden">
-        {!isMobileHeaderHidden ? <MobileAppHeader /> : null}
+      <div className="min-h-dvh md:hidden">
+        {!isMobileHeaderHidden ? (
+          <MobileAppHeader onSearchClick={() => setSearchOpen(true)} />
+        ) : null}
         <main className="pb-24">
           <Outlet />
         </main>

@@ -433,6 +433,7 @@ User
 - 딜 생성/수정 시 `contact.companyId`가 딜의 `companyId`와 같은지 검증한다.
 - 생성 시 최초 다음 행동은 같은 transaction 안에서 `DealFollowingActionLog`에 저장한다.
 - 후속 확장 후보인 `DealActivity`, 범용 `ProductConnection`은 현재 Deal 기본 도메인 1차 구현에 포함하지 않는다. Schedule/MeetingNote 연동은 별도 Schedule/MeetingNote 도메인에서 N:M 연결로 구현한다.
+- 저장된 회의록을 딜에 추가 연동하면 `MeetingNoteDeal`을 append하고, 현재 딜 상세 활동 로그 UI가 읽는 `DealFollowingActionLog`에 회의록 링크/요약 로그를 자동 생성한다.
 - 현재 `Deal`은 회사와 담당자를 각각 하나씩 직접 FK로 가진다. 한 회사는 여러 딜을 가질 수 있고, 한 담당자도 여러 딜에 연결될 수 있다.
 - 현재 `Deal`과 `Product`는 `DealProduct`를 통한 N:M 관계다.
 
@@ -483,6 +484,7 @@ User
 ## 12. DealActivity
 
 후속 확장 후보. 현재 Deal 기본 도메인 1차 Backend 구현에는 포함하지 않는다.
+회의록-딜 연동 자동 로그는 범용 `DealActivity`가 아니라 기존 `DealFollowingActionLog`로 구현되어 있다.
 
 - id
 - userId
@@ -552,12 +554,14 @@ User
 
 정책:
 
-- 현재 생성 방식은 `MANUAL`만 허용한다.
+- Backend 생성 API는 `MANUAL`, `TEXT_AI`, `STT_AI` sourceType을 저장할 수 있다.
+- 현재 User Web 작성 form은 직접 작성 시 `MANUAL`, AI/STT draft 저장 시 `TEXT_AI`, `STT_AI`를 전달한다.
 - 회사와 담당자는 1개 이상 연결해야 한다.
 - 제품과 딜은 선택 연결이다.
 - 회사/담당자/제품/딜 연결 row에는 회의록 작성 시점의 snapshot을 저장한다.
+- 저장 후 딜 추가 연동 API는 기존 `MeetingNoteDeal`에 snapshot row를 추가하고 `DealFollowingActionLog`에 회의록 링크/요약 로그를 생성한다.
 - request에서는 `timeZone`, `rawText`, `stageText`, 단일 `dealId`를 받지 않는다.
-- AI/STT 생성, 삭제/복구, Admin 조회, DealActivity 자동 생성은 후속 범위다.
+- 삭제/복구, Admin 조회, 범용 DealActivity table 전환은 후속 범위다.
 
 ## 16. Tag
 

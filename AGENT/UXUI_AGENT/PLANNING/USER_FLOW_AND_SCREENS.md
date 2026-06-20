@@ -60,15 +60,16 @@
 3. 가져온 일정을 우리 서비스 일정으로 표시한다.
 4. 필요 시 회사/담당자/딜에 연결한다.
 
-### Flow 6. AI 회의록
+### Flow 6. 회의록 작성
 
-1. 사용자가 회의 내용을 텍스트로 입력한다.
-2. AI가 9개 항목으로 회의록을 생성한다.
-3. AI가 회사/담당자 후보를 제안한다.
-4. 사용자가 결과를 수정한다.
-5. 회의록을 저장한다.
-6. 필요 시 딜과 연결한다.
-7. 딜 활동 로그가 자동 생성된다.
+1. 사용자가 `/meeting-notes`에서 회의록 작성을 시작한다.
+2. 사용자가 회의 일시, 회사, 담당자를 선택하고 필요 시 제품, 딜을 선택한다.
+3. 사용자는 직접 작성, 텍스트 `AI로 정리`, `음성으로 작성` 중 하나를 선택한다.
+4. 직접 작성 시 상세내용, 향후계획, 필요액션을 입력하고 바로 저장한다.
+5. AI/STT 사용 시 결과가 상세내용, 향후계획, 필요액션 field에 채워진다.
+6. 사용자가 결과를 확인/수정한 뒤 저장한다.
+7. 저장 후 필요 시 회의록 상세에서 영업 딜과 연동한다.
+8. 딜 연동 성공 후 딜 활동기록에 회의록 링크와 요약이 표시된다.
 
 ### Flow 7. Import
 
@@ -131,8 +132,8 @@
 | `/schedules` | 일정 목록/캘린더 | 포함 |
 | `/schedules/week` | 주간 일정 보고서 | 포함 |
 | `/schedules/:scheduleId` | 일정 상세 | 포함 |
-| `/meeting-notes` | 수동 회의록 목록 | 포함 |
-| `/meeting-notes/new` | 수동 회의록 생성 | 포함 |
+| `/meeting-notes` | 회의록 목록 | 포함 |
+| `/meeting-notes/new` | 회의록 작성 | 포함 |
 | `/meeting-notes/:meetingNoteId` | 회의록 상세 | 포함 |
 | `/import` | Import 작업 | 보류 |
 | `/export` | Export 작업 | 보류 |
@@ -164,7 +165,7 @@
 
 ## 4. 현재 코드 라우트 상태
 
-> 최종 업데이트: 2026-06-18
+> 최종 업데이트: 2026-06-19
 
 현재 User Web router 기준 실제 구현 경로:
 
@@ -197,18 +198,19 @@
 - `/settings`
 - `/more`
 
-pen 디자인 반영 완료/정리 도메인 (2026-06-18 기준):
+pen 디자인 반영 완료/정리 도메인 (2026-06-19 기준):
 - `/` — Schedule/Deal/MeetingNote API 조합 대시보드 구현 완료
 - `/deals` — pen 기준 테이블+우측패널 구조 완료
 - Sidebar / TopBar — pen 기준 재구성 완료
 - DealStage 6단계 FE/BE 계약 반영 완료
 - `/companies`, `/contacts`, `/products` — 제품형 조밀 목록 UX로 정렬
-- `/meeting-notes` — 수동 회의록 목록/상세/생성 API 연동 완료
-- 상단 통합검색 — Backend `GET /api/search` 구현 완료, User Web 최종 연결/UX 검수 진행 중
+- 회사/담당자/제품 생성 모달 — 입력 검색형 선택, 결과 없음 즉시 추가, 생성 후 자동 선택 기준 반영
+- `/meeting-notes` — 회의록 목록/상세/생성 API, AI/STT draft UI, 저장 후 딜 추가 연동 연결 완료
+- 상단 통합검색 — Backend `GET /api/search`와 User Web GlobalSearch 연결 완료, UX 검수 진행 중
 
 현재 의도적으로 보류된 화면:
 - `/import`, `/trash` — 라우트와 feature는 남아 있지만 사이드바에서는 숨김 처리
-- MeetingNote AI/STT draft UI — Backend API는 있으나 Frontend 연결은 후속 작업
+- MeetingNote AI/STT draft UI — 작성 화면의 기본 흐름은 직접 작성 저장이며, AI/STT는 선택 보조 액션으로 연결되어 있다.
 
 pen 디자인 반영 대기 도메인:
 - `/products/:productId`
@@ -343,4 +345,3 @@ Admin Web:
 - `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/ARCHITECTURE/BACKEND.md`
 - `AGENT/PM_AGENT/PLANNING/PRD.md`
 - `UX Design/PEN_UI_06_SHARED_FIRST_WORK_ORDER.md`
-

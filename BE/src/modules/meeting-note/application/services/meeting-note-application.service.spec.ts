@@ -5,6 +5,7 @@ import {
   type ContactSnapshotRecord,
   type CreateMeetingNoteInput,
   type DealSnapshotRecord,
+  type LinkMeetingNoteDealsInput,
   type ListMeetingNotesInput,
   type MeetingNoteFilterCompanyOptionRecord,
   type MeetingNoteFilterContactOptionRecord,
@@ -36,6 +37,10 @@ const BASE_DATE = new Date("2026-06-15T00:00:00.000Z");
 class FakeMeetingNoteRepository implements MeetingNoteRepository {
   transactionCount = 0;
   meetingNotes: MeetingNoteRecord[] = [];
+  dealActivityLogs: Array<{
+    readonly dealId: string;
+    readonly followingAction: string;
+  }> = [];
   companies: CompanySnapshotRecord[] = [
     {
       id: "company-1",
@@ -295,6 +300,37 @@ class FakeMeetingNoteRepository implements MeetingNoteRepository {
         : {}),
     };
   }
+
+  // 기능 : fake 회의록 딜 연결을 추가하고 활동 로그 생성을 기록합니다.
+  async linkMeetingNoteDeals(input: LinkMeetingNoteDealsInput): Promise<void> {
+    const index = this.meetingNotes.findIndex(
+      (meetingNote) => meetingNote.id === input.meetingNoteId
+    );
+    const existing = this.meetingNotes[index];
+
+    if (!existing) {
+      return;
+    }
+
+    const appendedDeals = input.deals.map((deal, relationIndex) => ({
+      id: `meeting-note-deal-${existing.deals.length + relationIndex + 1}`,
+      ...deal,
+      createdAt: BASE_DATE,
+    }));
+
+    this.meetingNotes[index] = {
+      ...existing,
+      deals: [...existing.deals, ...appendedDeals],
+      updatedAt: new Date("2026-06-15T01:00:00.000Z"),
+    };
+
+    input.deals.forEach((deal) => {
+      this.dealActivityLogs.push({
+        dealId: deal.dealId,
+        followingAction: input.activityLogText,
+      });
+    });
+  }
 }
 
 // 기능 : 테스트용 MeetingNoteApplicationService와 fake 저장소를 생성합니다.
@@ -387,6 +423,56 @@ describe("MeetingNoteApplicationService", () => {
     expect(updated.companies).toHaveLength(1);
     expect(updated.contacts).toHaveLength(1);
     expect(repository.transactionCount).toBe(2);
+  });
+
+  it("저장된 회의록에 신규 딜을 연결하고 딜 활동 로그를 생성한다", async () => {
+    const { repository, service } = createService();
+    repository.deals.push({
+      id: "deal-2",
+      dealName: "Acme Upsell",
+      dealStatus: "PROPOSAL_QUOTE",
+      dealCost: 7000,
+      expectedEndDate: new Date("2026-07-31T00:00:00.000Z"),
+    });
+    const created = await service.createMeetingNote(CURRENT_USER, {
+      details: "상세 내용",
+      meetingLocalDateTime: "2026-06-15T09:30",
+      companies: ["company-1"],
+      contacts: ["contact-1"],
+      deals: ["deal-1"],
+    });
+
+    const linked = await service.linkMeetingNoteDeals(CURRENT_USER, created.id, {
+      deals: ["deal-1", "deal-2"],
+    });
+
+    expect(linked.deals.map((deal) => deal.dealId)).toEqual(["deal-1", "deal-2"]);
+    expect(repository.dealActivityLogs).toEqual([
+      {
+        dealId: "deal-2",
+        followingAction: expect.stringContaining(`/meeting-notes/${created.id}`),
+      },
+    ]);
+    expect(repository.transactionCount).toBe(2);
+  });
+
+  it("이미 연결된 딜만 요청하면 중복 연결과 활동 로그 생성을 건너뛴다", async () => {
+    const { repository, service } = createService();
+    const created = await service.createMeetingNote(CURRENT_USER, {
+      details: "상세 내용",
+      meetingLocalDateTime: "2026-06-15T09:30",
+      companies: ["company-1"],
+      contacts: ["contact-1"],
+      deals: ["deal-1"],
+    });
+
+    const linked = await service.linkMeetingNoteDeals(CURRENT_USER, created.id, {
+      deals: ["deal-1"],
+    });
+
+    expect(linked.deals).toHaveLength(1);
+    expect(repository.dealActivityLogs).toEqual([]);
+    expect(repository.transactionCount).toBe(1);
   });
 
   it("목록 응답은 관계 배열 대신 label과 count summary를 반환한다", async () => {

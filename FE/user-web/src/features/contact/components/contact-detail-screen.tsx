@@ -6,10 +6,11 @@ import {
   Mail,
   Pencil,
   Phone,
+  Trash2,
   X,
 } from "lucide-react";
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Toast } from "@/components/ui/toast";
 import { ContactEditForm } from "@/features/contact/components/contact-edit-form";
 import {
@@ -22,6 +23,7 @@ import {
   useContactMemoLogs,
   useContactPrivateMemoLogs,
 } from "@/features/contact/hooks/use-contact-detail";
+import { useDeleteContactMutation } from "@/features/contact/hooks/use-contact-mutations";
 import type {
   ContactDeal,
   ContactMemoLog,
@@ -37,13 +39,16 @@ type ContactDetailScreenProps = {
 
 // 기능 : 담당자 상세 화면을 렌더링합니다.
 export function ContactDetailScreen({ contactId }: ContactDetailScreenProps) {
+  const navigate = useNavigate();
   const [notice, setNotice] = useState<string | null>(null);
+  const [actionError, setActionError] = useState<string | null>(null);
   const [isEditing, setIsEditing] = useState(false);
 
   const contactQuery = useContactDetail(contactId);
   const dealsQuery = useContactDeals(contactId);
   const memoLogsQuery = useContactMemoLogs(contactId);
   const privateMemoLogsQuery = useContactPrivateMemoLogs(contactId);
+  const deleteContactMutation = useDeleteContactMutation();
 
   const memoLogs: ContactMemoLog[] =
     memoLogsQuery.data?.pages.flatMap((page) => page.items) ?? [];
@@ -71,6 +76,24 @@ export function ContactDetailScreen({ contactId }: ContactDetailScreenProps) {
 
   const deals = dealsQuery.data?.items ?? [];
 
+  const onDeleteContact = async () => {
+    if (!window.confirm(`${contact.username} 담당자를 삭제할까요?`)) {
+      return;
+    }
+
+    setActionError(null);
+
+    try {
+      await deleteContactMutation.mutateAsync(contact.id);
+      void navigate("/contacts", {
+        replace: true,
+        state: { notice: "담당자가 삭제되었습니다." },
+      });
+    } catch (error) {
+      setActionError(getApiErrorMessage(error));
+    }
+  };
+
   return (
     <>
       {/* Mobile */}
@@ -78,6 +101,15 @@ export function ContactDetailScreen({ contactId }: ContactDetailScreenProps) {
         {notice ? (
           <div className="px-4 pt-3">
             <Toast message={notice} onClose={() => setNotice(null)} variant="success" />
+          </div>
+        ) : null}
+        {actionError ? (
+          <div className="px-4 pt-3">
+            <Toast
+              message={actionError}
+              onClose={() => setActionError(null)}
+              variant="error"
+            />
           </div>
         ) : null}
         <div className="flex flex-col gap-4 p-4 pb-24 overflow-y-auto">
@@ -92,19 +124,30 @@ export function ContactDetailScreen({ contactId }: ContactDetailScreenProps) {
           <div className="rounded-lg border border-[#E5E7EB] bg-white p-5">
             <div className="mb-4 flex items-center justify-between gap-3">
               <h2 className="text-[14px] font-semibold text-[#111827]">기본 정보</h2>
-              <button
-                className={cn(
-                  "inline-flex h-9 shrink-0 items-center gap-1.5 rounded-md border px-3 text-[13px] font-semibold transition",
-                  isEditing
-                    ? "border-[#C7D7FE] bg-[#EAF2FF] text-[#1D4ED8]"
-                    : "border-[#E2E5EC] bg-white text-[#374151] hover:bg-[#F5F6F8]"
-                )}
-                onClick={() => setIsEditing((value) => !value)}
-                type="button"
-              >
-                {isEditing ? <X className="h-4 w-4" /> : <Pencil className="h-4 w-4" />}
-                {isEditing ? "수정 취소" : "정보 수정"}
-              </button>
+              <div className="flex items-center gap-2">
+                <button
+                  className={cn(
+                    "inline-flex h-9 shrink-0 items-center gap-1.5 rounded-md border px-3 text-[13px] font-semibold transition",
+                    isEditing
+                      ? "border-[#C7D7FE] bg-[#EAF2FF] text-[#1D4ED8]"
+                      : "border-[#E2E5EC] bg-white text-[#374151] hover:bg-[#F5F6F8]"
+                  )}
+                  onClick={() => setIsEditing((value) => !value)}
+                  type="button"
+                >
+                  {isEditing ? <X className="h-4 w-4" /> : <Pencil className="h-4 w-4" />}
+                  {isEditing ? "수정 취소" : "정보 수정"}
+                </button>
+                <button
+                  aria-label="담당자 삭제"
+                  className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-md border border-red-200 bg-white text-red-600 transition hover:border-red-300 hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-50"
+                  disabled={deleteContactMutation.isPending}
+                  onClick={() => void onDeleteContact()}
+                  type="button"
+                >
+                  <Trash2 className="h-4 w-4" />
+                </button>
+              </div>
             </div>
             {isEditing ? (
               <ContactEditForm
@@ -187,6 +230,15 @@ export function ContactDetailScreen({ contactId }: ContactDetailScreenProps) {
             <Toast message={notice} onClose={() => setNotice(null)} variant="success" />
           </div>
         ) : null}
+        {actionError ? (
+          <div className="mx-6 mt-3">
+            <Toast
+              message={actionError}
+              onClose={() => setActionError(null)}
+              variant="error"
+            />
+          </div>
+        ) : null}
 
         <div className="flex min-h-0 flex-1 overflow-hidden bg-[#F9FAFB]">
           <div className="flex min-w-0 flex-1 flex-col gap-4 overflow-y-auto p-6">
@@ -201,19 +253,30 @@ export function ContactDetailScreen({ contactId }: ContactDetailScreenProps) {
             <div className="rounded-lg border border-[#E5E7EB] bg-white p-5">
               <div className="mb-4 flex items-center justify-between gap-3">
                 <h2 className="text-[14px] font-semibold text-[#111827]">기본 정보</h2>
-                <button
-                  className={cn(
-                    "inline-flex h-9 shrink-0 items-center gap-1.5 rounded-md border px-3 text-[13px] font-semibold transition",
-                    isEditing
-                      ? "border-[#C7D7FE] bg-[#EAF2FF] text-[#1D4ED8]"
-                      : "border-[#E2E5EC] bg-white text-[#374151] hover:bg-[#F5F6F8]"
-                  )}
-                  onClick={() => setIsEditing((value) => !value)}
-                  type="button"
-                >
-                  {isEditing ? <X className="h-4 w-4" /> : <Pencil className="h-4 w-4" />}
-                  {isEditing ? "수정 취소" : "정보 수정"}
-                </button>
+                <div className="flex items-center gap-2">
+                  <button
+                    className={cn(
+                      "inline-flex h-9 shrink-0 items-center gap-1.5 rounded-md border px-3 text-[13px] font-semibold transition",
+                      isEditing
+                        ? "border-[#C7D7FE] bg-[#EAF2FF] text-[#1D4ED8]"
+                        : "border-[#E2E5EC] bg-white text-[#374151] hover:bg-[#F5F6F8]"
+                    )}
+                    onClick={() => setIsEditing((value) => !value)}
+                    type="button"
+                  >
+                    {isEditing ? <X className="h-4 w-4" /> : <Pencil className="h-4 w-4" />}
+                    {isEditing ? "수정 취소" : "정보 수정"}
+                  </button>
+                  <button
+                    aria-label="담당자 삭제"
+                    className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-md border border-red-200 bg-white text-red-600 transition hover:border-red-300 hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-50"
+                    disabled={deleteContactMutation.isPending}
+                    onClick={() => void onDeleteContact()}
+                    type="button"
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </button>
+                </div>
               </div>
               {isEditing ? (
                 <ContactEditForm

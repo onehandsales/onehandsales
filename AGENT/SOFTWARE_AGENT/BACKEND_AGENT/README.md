@@ -79,7 +79,7 @@ Snapshot date: 2026-06-18
 - Trash
 - Admin 운영 조회/감사/민감 원문 API
 - MeetingNote 삭제/복구/Admin API
-- DealActivity 자동 로그
+- 범용 DealActivity table
 
 ## 8. 관련 문서
 

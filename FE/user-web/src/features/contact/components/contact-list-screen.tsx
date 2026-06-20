@@ -10,9 +10,16 @@ import {
   X,
   type LucideIcon,
 } from "lucide-react";
-import { type FormEvent, type ReactNode, useEffect, useMemo, useState } from "react";
+import {
+  type FormEvent,
+  type ReactNode,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import { PageHeader } from "@/components/layout/page-header";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { ListRowActions } from "@/components/ui/list-row-actions";
 import { Pagination } from "@/components/ui/pagination";
 import { ListEmptyState } from "@/components/ui/state";
 import { Toast } from "@/components/ui/toast";
@@ -28,13 +35,27 @@ import {
   useContactDeals,
   useContactDetail,
 } from "@/features/contact/hooks/use-contact-detail";
-import { useExportContactsMutation } from "@/features/contact/hooks/use-contact-mutations";
-import type { ContactListItem, ContactSort } from "@/features/contact/types/contact";
+import {
+  useDeleteContactMutation,
+  useExportContactsMutation,
+} from "@/features/contact/hooks/use-contact-mutations";
+import type {
+  ContactListItem,
+  ContactSort,
+} from "@/features/contact/types/contact";
 import { getApiErrorMessage, type ApiBlobResponse } from "@/lib/api-client";
 import { cn } from "@/utils/cn";
 import { formatDateWithOptions } from "@/utils/format";
+import { readLocationNotice } from "@/utils/location-state";
+
+const CONTACT_TABLE_GRID_STYLE = {
+  gridTemplateColumns:
+    "minmax(84px,0.8fr) minmax(96px,0.9fr) minmax(64px,0.6fr) minmax(54px,0.5fr) minmax(76px,0.7fr) minmax(96px,1fr) minmax(82px,0.65fr) minmax(74px,0.5fr)",
+};
 
 export function ContactListScreen() {
+  const navigate = useNavigate();
+  const location = useLocation();
   const { user } = useAuthSession();
   const [usernameText, setUsernameText] = useState("");
   const [username, setUsername] = useState("");
@@ -49,6 +70,7 @@ export function ContactListScreen() {
   const [pendingDepartmentName, setPendingDepartmentName] = useState("");
   const [pendingJobGradeName, setPendingJobGradeName] = useState("");
   const [notice, setNotice] = useState<string | null>(null);
+  const [actionError, setActionError] = useState<string | null>(null);
 
   const listParams = useMemo(
     () => ({
@@ -76,6 +98,17 @@ export function ContactListScreen() {
   const jobGradesQuery = useContactJobGrades();
   const departmentsQuery = useContactDepartments();
   const exportContactsMutation = useExportContactsMutation();
+  const deleteContactMutation = useDeleteContactMutation();
+
+  useEffect(() => {
+    const message = readLocationNotice(location.state);
+    if (!message) {
+      return;
+    }
+
+    setNotice(message);
+    void navigate(location.pathname, { replace: true, state: null });
+  }, [location.pathname, location.state, navigate]);
   const contactList = contactsQuery.data;
   const jobGrades = useMemo(
     () => jobGradesQuery.data?.items ?? [],
@@ -108,7 +141,10 @@ export function ContactListScreen() {
 
   useEffect(() => {
     const items = contactList?.items ?? [];
-    if (selectedContactId && !items.some((contact) => contact.id === selectedContactId)) {
+    if (
+      selectedContactId &&
+      !items.some((contact) => contact.id === selectedContactId)
+    ) {
       setSelectedContactId("");
     }
   }, [contactList?.items, selectedContactId]);
@@ -156,32 +192,53 @@ export function ContactListScreen() {
     downloadBlobFile(file, "contacts.xlsx");
   };
 
+  const onDeleteContact = async (contact: ContactListItem) => {
+    if (!window.confirm(`${contact.username} 담당자를 삭제할까요?`)) {
+      return;
+    }
+
+    setActionError(null);
+
+    try {
+      await deleteContactMutation.mutateAsync(contact.id);
+      if (selectedContactId === contact.id) {
+        setSelectedContactId("");
+      }
+      setNotice("담당자가 삭제되었습니다.");
+    } catch (error) {
+      setActionError(getApiErrorMessage(error));
+    }
+  };
+
   return (
     <section className="flex min-h-full flex-col bg-[#FAFAF8]">
       <PageHeader
         breadcrumbs={[{ label: "담당자", icon: IdCard }]}
         actions={[
           {
-            icon: Plus,
-            tooltip: "담당자 추가",
-            onClick: () => setIsCreateOpen(true),
-            variant: "primary",
-          },
-          {
             icon: Download,
             tooltip: "파일로 내보내기",
             onClick: () => void onExport(),
             disabled: exportContactsMutation.isPending,
           },
+          {
+            icon: Plus,
+            tooltip: "담당자 추가",
+            onClick: () => setIsCreateOpen(true),
+            variant: "primary",
+          },
         ]}
       />
 
       {/* 검색 + 필터 툴바 (데스크톱) */}
-      <div className="hidden h-10 shrink-0 items-center gap-2 px-5 md:flex">
-        <form className="flex h-8 items-center gap-1.5 rounded-md border border-[#E2E5EC] bg-[#FAFAF8] px-3 transition focus-within:border-[#93C5FD] focus-within:bg-white" onSubmit={onSearchSubmit}>
+      <div className="hidden min-h-10 shrink-0 items-center gap-1.5 overflow-x-auto px-5 py-1 md:flex lg:gap-2">
+        <form
+          className="flex h-8 w-[clamp(150px,20vw,220px)] shrink-0 items-center gap-1.5 rounded-md border border-[#E2E5EC] bg-[#FAFAF8] px-3 transition focus-within:border-[#93C5FD] focus-within:bg-white"
+          onSubmit={onSearchSubmit}
+        >
           <Search className="h-3 w-3 shrink-0 text-[#9CA3AF]" />
           <input
-            className="w-[220px] bg-transparent text-[13px] text-[#111827] outline-none placeholder:text-[#9CA3AF]"
+            className="min-w-0 flex-1 bg-transparent text-[13px] text-[#111827] outline-none placeholder:text-[#9CA3AF]"
             onChange={(e) => setUsernameText(e.target.value)}
             placeholder="담당자명 검색"
             value={usernameText}
@@ -201,7 +258,7 @@ export function ContactListScreen() {
         />
         <select
           className={cn(
-            "h-8 min-w-[118px] appearance-none rounded-md border px-3 text-[13px] outline-none transition",
+            "h-8 w-[clamp(96px,10vw,118px)] shrink-0 appearance-none rounded-md border px-3 text-[13px] outline-none transition",
             contactDepartmentId
               ? "border-[#BFDBFE] bg-[#EFF6FF] text-[#1D4ED8]"
               : "border-[#E2E5EC] bg-transparent text-[#6B7280] hover:bg-[#FAFAF8]",
@@ -228,7 +285,7 @@ export function ContactListScreen() {
         </select>
         <select
           className={cn(
-            "h-8 min-w-[118px] appearance-none rounded-md border px-3 text-[13px] outline-none transition",
+            "h-8 w-[clamp(96px,10vw,118px)] shrink-0 appearance-none rounded-md border px-3 text-[13px] outline-none transition",
             contactJobGradeId
               ? "border-[#BFDBFE] bg-[#EFF6FF] text-[#1D4ED8]"
               : "border-[#E2E5EC] bg-transparent text-[#6B7280] hover:bg-[#FAFAF8]",
@@ -255,7 +312,7 @@ export function ContactListScreen() {
         </select>
         <select
           className={cn(
-            "h-8 min-w-[104px] appearance-none rounded-md border px-3 text-[13px] outline-none transition",
+            "h-8 w-[clamp(92px,10vw,104px)] shrink-0 appearance-none rounded-md border px-3 text-[13px] outline-none transition",
             sort !== "createdAtDesc"
               ? "border-[#BFDBFE] bg-[#EFF6FF] text-[#1D4ED8]"
               : "border-[#E2E5EC] bg-transparent text-[#6B7280] hover:bg-[#FAFAF8]",
@@ -270,13 +327,13 @@ export function ContactListScreen() {
           <option value="usernameAsc">이름순</option>
         </select>
         <div className="flex-1" />
-        <span className="text-[12px] text-[#9CA3AF]">
+        <span className="shrink-0 text-[12px] text-[#9CA3AF]">
           {contactList?.totalCount ?? 0}명
         </span>
       </div>
 
       {/* 알림 */}
-      {notice || exportContactsMutation.error ? (
+      {notice || exportContactsMutation.error || actionError ? (
         <div className="hidden px-5 pt-2 md:block">
           {notice ? (
             <Toast
@@ -290,37 +347,47 @@ export function ContactListScreen() {
               {getApiErrorMessage(exportContactsMutation.error)}
             </p>
           ) : null}
+          {actionError ? (
+            <p className="rounded-md border border-red-200 bg-red-50 px-3 py-2 text-[12px] text-red-600">
+              {actionError}
+            </p>
+          ) : null}
         </div>
       ) : null}
 
       {/* 테이블 + 미리보기 (데스크톱) */}
-      <div className="hidden gap-5 px-5 pb-3 pt-1 md:flex">
+      <div className="hidden gap-3 overflow-x-auto px-5 pb-3 pt-1 md:flex xl:gap-5">
         <div className="flex min-w-0 flex-1 flex-col gap-3">
-          <div className="flex flex-col rounded-lg border border-[#E2E5EC] bg-white shadow-sm">
+          <div className="flex w-full min-w-[620px] flex-col overflow-hidden rounded-lg border border-[#E2E5EC] bg-white shadow-sm">
             {/* 테이블 헤더 (데스크톱) */}
-            <div className="hidden h-11 shrink-0 items-center border-b border-[#E2E5EC] bg-[#F9FAFB] px-6 md:flex">
-              <div className="w-[130px] shrink-0 text-[12px] font-semibold text-[#64748B]">
+            <div
+              className="hidden h-11 shrink-0 items-center border-b border-[#E2E5EC] bg-[#F9FAFB] px-3 md:grid md:px-4 xl:px-6"
+              style={CONTACT_TABLE_GRID_STYLE}
+            >
+              <div className="min-w-0 truncate text-[12px] font-semibold text-[#64748B]">
                 담당자명
               </div>
-              <div className="w-[150px] shrink-0 text-[12px] font-semibold text-[#64748B]">
+              <div className="min-w-0 truncate text-[12px] font-semibold text-[#64748B]">
                 회사
               </div>
-              <div className="w-[110px] shrink-0 text-[12px] font-semibold text-[#64748B]">
+              <div className="min-w-0 truncate text-[12px] font-semibold text-[#64748B]">
                 부서
               </div>
-              <div className="w-[90px] shrink-0 text-[12px] font-semibold text-[#64748B]">
+              <div className="min-w-0 truncate text-[12px] font-semibold text-[#64748B]">
                 직급
               </div>
-              <div className="w-[120px] shrink-0 text-[12px] font-semibold text-[#64748B]">
+              <div className="min-w-0 truncate text-[12px] font-semibold text-[#64748B]">
                 핸드폰
               </div>
-              <div className="w-[180px] shrink-0 text-[12px] font-semibold text-[#64748B]">
+              <div className="min-w-0 truncate text-[12px] font-semibold text-[#64748B]">
                 이메일
               </div>
-              <div className="w-[118px] shrink-0 text-[12px] font-semibold text-[#64748B]">
+              <div className="min-w-0 truncate whitespace-nowrap text-[12px] font-semibold text-[#64748B]">
                 등록일
               </div>
-              <div className="min-w-0 flex-1" />
+              <div className="min-w-0 truncate text-[12px] font-semibold text-[#64748B]">
+                관리
+              </div>
             </div>
 
             {contactsQuery.isLoading ? (
@@ -343,13 +410,15 @@ export function ContactListScreen() {
                 }
               />
             ) : (
-              <div>
+              <div className="min-w-0">
                 {contactList.items.map((c) => (
                   <ContactRow
                     contact={c}
+                    deleteDisabled={deleteContactMutation.isPending}
                     displayTimeZone={displayTimeZone}
                     isActive={c.id === selectedContactId}
                     key={c.id}
+                    onDelete={() => void onDeleteContact(c)}
                     onSelect={setSelectedContactId}
                   />
                 ))}
@@ -367,7 +436,7 @@ export function ContactListScreen() {
         </div>
 
         {selectedContactId ? (
-          <div className="hidden w-[380px] shrink-0 flex-col rounded-lg border border-[#E5EAF0] bg-white md:flex" >
+          <div className="hidden w-[380px] shrink-0 flex-col rounded-lg border border-[#E5EAF0] bg-white md:flex">
             <div className="flex h-11 shrink-0 items-center justify-between border-b border-[#E6EAF0] px-4">
               <div className="flex items-center gap-2">
                 <button
@@ -379,7 +448,9 @@ export function ContactListScreen() {
                 >
                   <X className="h-3.5 w-3.5" strokeWidth={2} />
                 </button>
-                <span className="text-[12px] font-medium text-[#6B7280]">미리보기</span>
+                <span className="text-[12px] font-medium text-[#6B7280]">
+                  미리보기
+                </span>
               </div>
               <div className="flex items-center gap-1.5">
                 <Link
@@ -414,7 +485,7 @@ export function ContactListScreen() {
             className={cn(
               "inline-flex h-7 shrink-0 items-center rounded-full border px-3 text-[12px] font-medium transition",
               !hasSearch
-                ? "border-[#5E5CE6] bg-[#EEEEFF] text-[#5E5CE6]"
+                ? "border-[#C7D7FE] bg-[#EAF2FF] font-bold text-[#1D4ED8]"
                 : "border-[#E5E7EB] bg-[#F3F4F6] text-[#4B5563]",
             )}
             onClick={() => {
@@ -490,7 +561,7 @@ export function ContactListScreen() {
         </div>
 
         {/* 모바일 카드 목록 */}
-        <div className="flex-1 overflow-y-auto bg-white">
+        <div className="bg-white">
           {contactsQuery.isLoading ? (
             <div className="space-y-0">
               {Array.from({ length: 8 }, (_, i) => (
@@ -514,12 +585,17 @@ export function ContactListScreen() {
               </button>
             </div>
           ) : !contactList || contactList.items.length === 0 ? (
-            <div className="flex flex-col items-center justify-center px-5 py-16 text-center">
-              <IdCard className="mb-3 h-10 w-10 text-[#D1D5DB]" strokeWidth={1.5} />
-              <p className="text-[14px] font-medium text-[#374151]">
-                {hasSearch ? "조건에 맞는 담당자가 없습니다" : "등록된 담당자가 없습니다"}
-              </p>
-            </div>
+            <ListEmptyState
+              actionIcon={Plus}
+              actionLabel="담당자 추가"
+              icon={IdCard}
+              onAction={() => setIsCreateOpen(true)}
+              title={
+                hasSearch
+                  ? "조건에 맞는 담당자가 없습니다"
+                  : "등록된 담당자가 없습니다"
+              }
+            />
           ) : (
             contactList.items.map((contact) => (
               <ContactMobileCard
@@ -545,7 +621,7 @@ export function ContactListScreen() {
         {/* FAB */}
         <button
           aria-label="담당자 추가"
-          className="fixed bottom-24 right-5 flex h-[52px] w-[52px] items-center justify-center rounded-full bg-[#5E5CE6] shadow-[0_4px_16px_rgba(59,130,246,0.27)] transition active:opacity-80"
+          className="fixed bottom-24 right-5 flex h-[52px] w-[52px] items-center justify-center rounded-full bg-[#2563EB] shadow-[0_4px_16px_rgba(59,130,246,0.27)] transition active:opacity-80"
           onClick={() => setIsCreateOpen(true)}
           type="button"
         >
@@ -601,7 +677,8 @@ function ContactMobileCard({
         </div>
         {/* Row2: 회사 · 부서 */}
         <p className="mt-0.5 text-[12px] text-[#6B7280]">
-          {contact.company.companyName} · {contact.contactDepartment.departmentName}
+          {contact.company.companyName} ·{" "}
+          {contact.contactDepartment.departmentName}
         </p>
         {/* Row3: 연락처 + 등록일 */}
         <div className="mt-1 flex items-center justify-between">
@@ -619,38 +696,52 @@ function ContactMobileCard({
 
 function ContactRow({
   contact,
+  deleteDisabled,
   displayTimeZone,
   isActive,
+  onDelete,
   onSelect,
 }: {
   readonly contact: ContactListItem;
+  readonly deleteDisabled: boolean;
   readonly displayTimeZone: string;
   readonly isActive: boolean;
+  readonly onDelete: () => void;
   readonly onSelect: (contactId: string) => void;
 }) {
   return (
-    <button
+    <div
       className={cn(
-        "flex h-[66px] w-full cursor-pointer items-center border-b border-[#E2E5EC] px-6 text-left transition-colors last:border-b-0 hover:bg-blue-50/60",
-        isActive ? "bg-blue-50" : "bg-white"
+        "grid h-[66px] w-full cursor-pointer items-center border-b border-[#E2E5EC] px-3 text-left transition-colors last:border-b-0 hover:bg-blue-50/60 md:px-4 xl:px-6",
+        isActive ? "bg-blue-50" : "bg-white",
       )}
       onClick={() => onSelect(contact.id)}
-      type="button"
+      onKeyDown={(event) => {
+        if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault();
+          onSelect(contact.id);
+        }
+      }}
+      role="button"
+      style={CONTACT_TABLE_GRID_STYLE}
+      tabIndex={0}
     >
-      <div className="w-[130px] shrink-0 min-w-0">
+      <div className="min-w-0">
         <span className="block truncate text-[13px] font-semibold text-[#111827]">
           {contact.username}
         </span>
       </div>
-      <div className="w-[150px] min-w-0 shrink-0">
+      <div className="min-w-0">
         <span
           className="inline-flex h-[22px] max-w-full min-w-0 items-center overflow-hidden rounded-full bg-[#F1F5F9] px-2.5 text-[11px] font-semibold text-[#475569]"
           title={contact.company.companyName}
         >
-          <span className="min-w-0 truncate whitespace-nowrap">{contact.company.companyName}</span>
+          <span className="min-w-0 truncate whitespace-nowrap">
+            {contact.company.companyName}
+          </span>
         </span>
       </div>
-      <div className="w-[110px] min-w-0 shrink-0">
+      <div className="min-w-0">
         <span
           className="block truncate text-[12px] font-medium text-[#2563EB]"
           title={contact.contactDepartment.departmentName}
@@ -658,34 +749,41 @@ function ContactRow({
           {contact.contactDepartment.departmentName}
         </span>
       </div>
-      <div className="w-[90px] min-w-0 shrink-0">
+      <div className="min-w-0">
         <span
           className="inline-flex h-[22px] max-w-full min-w-0 items-center overflow-hidden rounded-full bg-[#FEF3C7] px-2.5 text-[11px] font-semibold text-[#B45309]"
           title={contact.contactJobGrade.jobGradeName}
         >
-          <span className="min-w-0 truncate whitespace-nowrap">{contact.contactJobGrade.jobGradeName}</span>
+          <span className="min-w-0 truncate whitespace-nowrap">
+            {contact.contactJobGrade.jobGradeName}
+          </span>
         </span>
       </div>
       <div
-        className="w-[120px] shrink-0 truncate text-[12px] font-medium text-[#475569]"
+        className="min-w-0 truncate text-[12px] font-medium text-[#475569]"
         title={contact.mobile || "-"}
       >
         {contact.mobile || "-"}
       </div>
       <div
-        className="w-[180px] shrink-0 truncate text-[12px] font-medium text-[#475569]"
+        className="min-w-0 truncate text-[12px] font-medium text-[#475569]"
         title={contact.email || "-"}
       >
         {contact.email || "-"}
       </div>
       <div
-        className="w-[118px] shrink-0 text-[12px] font-medium text-[#64748B]"
+        className="min-w-0 truncate text-[12px] font-medium text-[#64748B]"
         title={formatContactCreatedAt(contact.createdAt, displayTimeZone)}
       >
         {formatContactCreatedAt(contact.createdAt, displayTimeZone)}
       </div>
-      <div className="min-w-0 flex-1" />
-    </button>
+      <ListRowActions
+        deleteLabel={`${contact.username} 삭제`}
+        detailTo={`/contacts/${contact.id}`}
+        disabled={deleteDisabled}
+        onDelete={onDelete}
+      />
+    </div>
   );
 }
 
@@ -712,7 +810,9 @@ export function ContactCard({
         <div className="mt-2 space-y-1 text-[12px] text-[#64748B]">
           <p className="truncate">핸드폰 {contact.mobile || "-"}</p>
           <p className="truncate">이메일 {contact.email || "-"}</p>
-          <p>등록일 {formatContactCreatedAt(contact.createdAt, displayTimeZone)}</p>
+          <p>
+            등록일 {formatContactCreatedAt(contact.createdAt, displayTimeZone)}
+          </p>
         </div>
       </div>
       <div className="shrink-0 text-right">
@@ -767,8 +867,16 @@ function ContactPreviewPanel({ contactId }: { readonly contactId: string }) {
       </div>
 
       <div className="mt-5 grid gap-2">
-        <ContactInfoRow icon={Phone} label="핸드폰" value={contact.mobile || "-"} />
-        <ContactInfoRow icon={Mail} label="이메일" value={contact.email || "-"} />
+        <ContactInfoRow
+          icon={Phone}
+          label="핸드폰"
+          value={contact.mobile || "-"}
+        />
+        <ContactInfoRow
+          icon={Mail}
+          label="이메일"
+          value={contact.email || "-"}
+        />
       </div>
 
       <PreviewSection icon={BriefcaseBusiness} title="딜">
@@ -806,15 +914,16 @@ function InfoPill({
   readonly icon: LucideIcon;
   readonly tone: "blue" | "amber";
 }) {
-  const toneClass = tone === "blue"
-    ? "bg-[#DBEAFE] text-[#1D4ED8]"
-    : "bg-[#FEF3C7] text-[#B45309]";
+  const toneClass =
+    tone === "blue"
+      ? "bg-[#DBEAFE] text-[#1D4ED8]"
+      : "bg-[#FEF3C7] text-[#B45309]";
 
   return (
     <span
       className={cn(
         "inline-flex h-6 max-w-full min-w-0 items-center gap-1 overflow-hidden rounded-full px-2.5 text-[11px] font-semibold",
-        toneClass
+        toneClass,
       )}
       title={children}
     >
@@ -838,7 +947,9 @@ function ContactInfoRow({
       <Icon className="h-4 w-4 shrink-0 text-[#94A3B8]" strokeWidth={1.8} />
       <div className="min-w-0 flex-1">
         <p className="text-[11px] font-medium text-[#94A3B8]">{label}</p>
-        <p className="truncate text-[13px] font-semibold text-[#111827]">{value}</p>
+        <p className="truncate text-[13px] font-semibold text-[#111827]">
+          {value}
+        </p>
       </div>
     </div>
   );
@@ -936,7 +1047,7 @@ function FilterChip({
   return (
     <button
       className={cn(
-        "inline-flex h-8 items-center rounded-[6px] border px-3 text-[13px] transition",
+        "inline-flex h-8 shrink-0 items-center whitespace-nowrap rounded-[6px] border px-3 text-[13px] transition",
         active
           ? "border-[#C7D7FE] bg-[#EAF2FF] font-bold text-[#1D4ED8]"
           : "border-[#E6EAF0] bg-white font-medium text-[#475569] hover:bg-[#F9FAFB]",
