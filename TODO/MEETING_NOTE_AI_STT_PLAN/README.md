@@ -17,17 +17,19 @@
 - transcript, provider raw response, provider 호출 이력 테이블은 이번 범위에서 만들지 않는다.
 - 최종 저장은 기존 `POST /api/meeting-notes`를 사용한다.
 - 최종 저장의 `sourceType`은 `MANUAL`, `TEXT_AI`, `STT_AI`를 허용하되 `rawText`는 저장하지 않는다.
-- 저장 후 딜 연동은 별도 액션이며, 딜 활동기록 자동 생성 API 계약은 후속 확정이 필요하다.
+- 저장 후 딜 연동은 별도 액션이며, `POST /api/meeting-notes/:meetingNoteId/deals`가 `MeetingNoteDeal` 추가와 `DealFollowingActionLog` 생성을 처리한다.
 
 ## 3. 포함 범위
 
 - `POST /api/meeting-notes/ai-draft`
 - `POST /api/meeting-notes/stt-draft`
+- `POST /api/meeting-notes/:meetingNoteId/deals`
 - `MeetingNoteAiDraftProvider` port와 OpenAI AI draft adapter
 - `MeetingNoteSttProvider` port와 OpenAI STT adapter
 - provider 설정 env 추가
 - Backend service/controller 테스트
 - Frontend User Web draft UI 연결
+- Frontend User Web 회의록 상세 딜 연동 UI 연결
 
 ## 4. 제외 범위
 

@@ -50,4 +50,6 @@
 - provider call log
 - provider 비용/사용량 집계
 - 회의록 삭제/복구
-- DealActivity 자동 로그
+- 범용 DealActivity table 전환
+
+현재 저장 후 딜 추가 연동은 새 DB schema 없이 기존 `MeetingNoteDeal`과 `DealFollowingActionLog`를 사용한다.

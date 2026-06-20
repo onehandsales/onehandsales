@@ -46,7 +46,7 @@
 - `product`: 제품, 카테고리/상태, 일반 메모, 개인 비밀 메모, xlsx export, 연결 딜 목록
 - `deal`: 딜, 딜-제품 연결, 다음 행동 로그, 메모 로그, xlsx export
 - `schedule`: 일정, 월간/주간 조회, 일정-딜 연결, 생성/수정/삭제
-- `meeting-note`: 수동 회의록 목록/상세/생성/수정, 회사/담당자 필터 옵션, 회사/담당자/제품/딜 snapshot 연결
+- `meeting-note`: 수동 회의록 목록/상세/생성/수정, 회사/담당자 필터 옵션, 회사/담당자/제품/딜 snapshot 연결, AI/STT 초안 생성, 저장 후 딜 추가 연동
 - `search`: 회사/담당자/제품/딜/일정/회의록 통합검색
 
 ## User Web 현재 UX/UI 기준
@@ -69,6 +69,7 @@
 - 통합검색은 `GET /api/search`와 User Web `GlobalSearch`를 사용한다. 검색 대상은 회사/담당자/제품/딜/일정/회의록이며, 상단 검색 UI와 모바일 검색 UI에서 같은 API를 사용한다.
 - MeetingNote는 수동 회의록 흐름과 AI/STT draft UI가 User Web에 연결되어 있다. `POST /api/meeting-notes/ai-draft`, `POST /api/meeting-notes/stt-draft`는 작성 화면의 보조 액션으로 사용한다.
 - MeetingNote 작성 UX는 직접 작성 후 저장을 기본 흐름으로 유지한다. AI/STT는 같은 작성 화면에서 `AI로 정리`, `음성으로 작성`으로 field를 채우는 선택 보조 액션이며, 직접 저장 시 AI/STT API를 호출하지 않는다.
+- MeetingNote 상세 화면은 `영업 딜과 연동` 카드에서 딜 검색/선택 후 `POST /api/meeting-notes/:meetingNoteId/deals`를 호출한다. 성공 시 회의록 상세와 해당 딜 상세/활동 로그 cache를 갱신한다.
 - 회사/담당자/제품/딜/회의록 목록은 조밀한 `Controls Bar + Table Card + Pagination` 문법으로 정렬되어 있다.
 - 공용 `Pagination` 높이는 48px(`h-12`)이고, 딜/회사/담당자/회의록 미리보기 header와 목록 table header는 44px(`h-11`) 기준이다.
 - 회사 목록 정렬 select: `최신순`, `담당자 높은순`, `담당자 낮은순`, `딜 높은순`, `딜 낮은순`.

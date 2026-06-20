@@ -59,6 +59,7 @@
 - 통합검색은 `GET /api/search`와 User Web `GlobalSearch` 연결 기준으로 본다.
 - MeetingNote AI/STT 초안 endpoint와 User Web draft UI 연결은 구현 완료 상태다.
 - MeetingNote 작성 UX는 직접 작성/저장을 기본 흐름으로 유지하고, AI/STT는 `AI로 정리`, `음성으로 작성` 보조 액션으로 연결한다.
+- MeetingNote 저장 후 딜 추가 연동 endpoint와 User Web 상세 카드 연결은 구현 완료 상태다. 활동 로그는 현재 딜 상세가 사용하는 `DealFollowingActionLog`를 재사용한다.
 
 ---
 
@@ -86,6 +87,33 @@
 ---
 
 ## 작업 로그
+
+### 2026-06-19 회의록 저장 후 딜 연동 구현
+
+- 작업자: Codex
+- 유형:
+  - backend
+  - frontend
+  - docs
+- 요약:
+  - 저장된 회의록에 딜을 추가 연결하는 API와 User Web 상세 화면 연동 카드를 구현했다.
+  - 신규 연결 딜마다 `MeetingNoteDeal` snapshot row를 추가하고, 딜 상세 활동 로그에 회의록 링크/요약을 남기도록 연결했다.
+  - 현재 별도 `DealActivity` table이 없으므로 기존 `DealFollowingActionLog`를 재사용하는 방식으로 계약을 확정했다.
+- 변경 파일:
+  - `BE/src/modules/meeting-note/**/*`
+  - `FE/user-web/src/features/meeting-note/**/*`
+  - `TODO/MEETING_NOTE_AI_STT_PLAN/COMMON/API-SPEC/MEETING_NOTE_AI_STT_API.md`
+  - `AGENT/PM_AGENT/PLANNING/MVP_SCOPE.md`
+  - `AGENT/PM_AGENT/PLANNING/DATA_MODEL.md`
+  - `UX Design/PEN_UI_05_API_CHANGE_TRACKER.md`
+- 결정/반영 내용:
+  - `POST /api/meeting-notes/:meetingNoteId/deals`를 추가했다.
+  - 이미 연결된 딜은 중복 연결하지 않는다.
+  - 연결 성공 후 회의록 상세와 해당 딜 상세/활동 로그 cache를 무효화한다.
+- 남은 이슈:
+  - 범용 `DealActivity` table과 activity type 관리는 후속 확장이다.
+- 다음 작업:
+  - 실제 로그인 세션과 샘플 딜 데이터로 브라우저 smoke를 수행한다.
 
 ### 2026-06-11 초기 문서화
 
@@ -480,7 +508,7 @@
 - 요약:
   - 회의록 작성 화면의 기본 흐름을 `직접 작성 후 저장`으로 확정하고, AI/STT는 선택 보조 액션으로 문서화했다.
   - 텍스트 AI는 `AI로 정리`, STT+AI는 `음성으로 작성` 버튼으로 form field를 채우되 자동 저장하지 않는 흐름으로 정리했다.
-  - 저장 후 `영업 딜과 연동`은 회의록 상세의 별도 액션으로 분리하고, 딜 활동기록 자동 생성 API 계약은 후속 확정 항목으로 표시했다.
+  - 저장 후 `영업 딜과 연동`은 회의록 상세의 별도 액션으로 분리했다.
 - 변경 파일:
   - `TODO/MEETING_NOTE_AI_STT_PLAN/COMMON/USER-FLOW.md`
   - `TODO/MEETING_NOTE_AI_STT_PLAN/COMMON/API-SPEC/MEETING_NOTE_AI_STT_API.md`
@@ -498,7 +526,7 @@
   - AI/STT 초안 저장은 최종 `POST /api/meeting-notes`에 `TEXT_AI` 또는 `STT_AI` sourceType을 전달한다.
   - User Web `CreateMeetingNoteInput` 확장은 이후 2026-06-19 User Web 연결 작업에서 완료했다.
 - 남은 이슈:
-  - 저장 후 딜 활동기록 자동 생성 API 계약 미확정
+  - 저장 후 딜 활동기록 자동 생성 API 계약은 이후 2026-06-19 회의록 저장 후 딜 연동 작업에서 확정/구현했다.
 
 ---
 
@@ -530,7 +558,7 @@
   - `pnpm --dir FE/user-web build`
   - `git diff --check`
 - 남은 이슈:
-  - 저장 후 딜 활동기록 자동 생성 API 계약 미확정
+  - 저장 후 딜 활동기록 자동 생성 API 계약은 이후 2026-06-19 회의록 저장 후 딜 연동 작업에서 확정/구현했다.
 
 ---
 
@@ -584,7 +612,7 @@
 
 - 목록 컨트롤 버튼 공통화 미완료
 - Admin 운영 조회 API와 BusinessCard/Import/Notification/Trash Backend module 미구현
-- MeetingNote 저장 후 딜 활동기록 자동 생성 API 계약 미확정
+- 범용 DealActivity table과 activity type 관리 미구현
 
 ---
 

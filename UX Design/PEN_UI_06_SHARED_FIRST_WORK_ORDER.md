@@ -41,6 +41,7 @@
 - 회사/담당자/제품 생성 모달의 연결/분류 선택은 검색 입력형 필드와 결과 없음 즉시 추가 흐름을 사용한다.
 - 통합검색은 Backend `GET /api/search`와 User Web `GlobalSearch`가 연결되어 있다.
 - MeetingNote AI/STT 초안 endpoint와 User Web draft UI 연결은 구현 완료 상태다.
+- MeetingNote 저장 후 딜 추가 연동과 딜 활동 로그 생성은 구현 완료 상태다.
 - 딜 목록은 `딜명 검색`, `전체`, `회사`, `담당자`, 정렬 select 순서를 사용하며, 회사/담당자 필터는 stage counts, 목록, export에 반영된다.
 - BusinessCard, Import/Export job, Notification, Trash는 FE feature/route가 있어도 Backend module이 없어 후속 범위다.
 

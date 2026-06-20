@@ -30,6 +30,9 @@
 ## 현재 상태
 
 - 상태: completed
+- 후속 저장 후 딜 연동 액션도 User Web 상세 화면에서 구현 완료:
+  - `POST /api/meeting-notes/:meetingNoteId/deals`
+  - `FE/user-web/src/features/meeting-note/components/meeting-note-editor-screen.tsx`
 - 구현 위치:
   - `FE/user-web/src/features/meeting-note/types/meeting-note.ts`
   - `FE/user-web/src/features/meeting-note/api/meeting-note-api.ts`

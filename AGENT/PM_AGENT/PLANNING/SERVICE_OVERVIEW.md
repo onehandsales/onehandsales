@@ -123,6 +123,7 @@ Admin Web은 사용자 앱과 다르게 데스크톱 전용 운영 콘솔이다.
 - 수동 회의록 관리
 - 회의록 텍스트 AI 초안
 - 회의록 STT+AI 초안
+- 회의록 저장 후 딜 연동과 딜 활동 로그 생성
 - 상단 통합검색
 - 도메인별 Excel export 일부
 - 민감정보 기본 보호 정책
@@ -148,14 +149,13 @@ Admin Web은 사용자 앱과 다르게 데스크톱 전용 운영 콘솔이다.
 
 ## 10. 현재 구현 관점의 요약
 
-2026-06-18 기준으로 Backend는 Auth/User, Company, Contact, Product, Deal, Schedule, MeetingNote 수동 도메인, Search, MeetingNote AI/STT draft API를 구현한 상태다.
+2026-06-19 기준으로 Backend는 Auth/User, Company, Contact, Product, Deal, Schedule, MeetingNote 수동 도메인, Search, MeetingNote AI/STT draft API, 회의록 저장 후 딜 연동 API를 구현한 상태다.
 
-User Web은 홈 대시보드, 회사, 담당자, 제품, 딜, 일정, 수동 회의록 화면이 실제 API와 연결되어 있다.
+User Web은 홈 대시보드, 회사, 담당자, 제품, 딜, 일정, 수동 회의록, 회의록 AI/STT 초안, 회의록 저장 후 딜 연동 화면이 실제 API와 연결되어 있다.
 
-남은 활성 Frontend 작업은 크게 두 가지다.
+남은 활성 Frontend 작업은 다음이다.
 
 - 상단 통합검색 최종 연결과 UX 검수
-- 회의록 AI/STT 초안 생성 UI 연결
 
 Admin Backend는 현재 `GET /admin/api/me`만 구현되어 있으므로, Admin Web의 운영 조회 화면은 아직 실제 데이터 연동 완료 상태로 보지 않는다.
 

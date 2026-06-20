@@ -7,7 +7,7 @@
 
 ## 현재 BE/TODO 구현 상태
 
-기준일: 2026-06-18
+기준일: 2026-06-19
 
 - Backend 구현 완료: Auth/User, Company, Contact, Product, Deal, Schedule, MeetingNote 수동 기본 도메인, Search, MeetingNote AI/STT draft API와 `TODO/DONE/ADDITIONAL_WORK_PLAN` G01-G12.
 - Auth/User: `/api/auth/providers`, `/api/auth/exchange`, `/api/auth/refresh`, `/api/auth/logout`, `/api/me`, `/admin/api/me`, `/api/users/me/profile`, `/api/users/me/devices`.
@@ -16,9 +16,9 @@
 - Product: 목록/상세/생성/수정, 카테고리/상태 옵션, 일반 메모, 개인 비밀 메모, `dealCount`, `sort=dealCountDesc|dealCountAsc`, 연결 Deal 목록, xlsx export.
 - Deal: 단계별 count, 목록/상세/생성/수정, 회사/담당자/제품 옵션, 제품 N:M 연결, 다음 행동 로그, 일반 메모 로그, xlsx export.
 - Schedule: 딜 옵션, 목록/상세/생성/수정/삭제, 딜 N:M 연결, 사용자 timezone 기준 local time 변환.
-- MeetingNote: 수동 회의록 목록/상세/생성/수정, 회사/담당자 필터, 회사/담당자/제품/딜 N:N snapshot 연결, 텍스트 AI 초안 생성, STT+AI 초안 생성.
+- MeetingNote: 수동 회의록 목록/상세/생성/수정, 회사/담당자 필터, 회사/담당자/제품/딜 N:N snapshot 연결, 텍스트 AI 초안 생성, STT+AI 초안 생성, 저장 후 딜 추가 연동과 딜 활동 로그 생성.
 - Search: 회사/담당자/제품/딜/일정/회의록 통합검색 API.
-- 현재 Backend 미구현: BusinessCard OCR, 범용 Import/Export job, Notification, Trash, Admin 운영 조회/감사/민감 원문 API, MeetingNote 삭제복구/Admin/DealActivity 자동 로그.
+- 현재 Backend 미구현: BusinessCard OCR, 범용 Import/Export job, Notification, Trash, Admin 운영 조회/감사/민감 원문 API, MeetingNote 삭제복구/Admin, 범용 DealActivity table.
 - Admin Backend는 현재 `/admin/api/me`만 구현되어 있다.
 - User Web은 `/` 홈 대시보드, Company, Contact, Product, Deal, Schedule, MeetingNote 수동 화면, MeetingNote AI/STT draft UI의 실제 API 연동이 완료되어 있다. Search는 Backend API와 일부 FE 기반 작업이 있으나 상단 통합검색 최종 연결/UX 검수는 아직 Frontend 후속 작업이다. 나머지 미구현 Backend 도메인은 실제 API 연동 전까지 mock/placeholder 경계를 명확히 해야 한다.
 
@@ -27,10 +27,10 @@
 1. Company/Contact/Product/Deal Backend 구현 완료 범위의 User Web 계약 동기화
 2. Additional Work G01-G12 Frontend 반영: `dealCount`, 연결 Deal 목록, 연결 Contact 목록, xlsx export
 3. 인증 연동과 사용자 설정 화면
-4. MeetingNote 저장 후 딜 활동기록 자동 생성 API 계약
-5. BusinessCard OCR
-6. 범용 Import/Export, Notification, Trash
-7. MeetingNote 삭제복구/Admin/DealActivity 자동 로그
+4. BusinessCard OCR
+5. 범용 Import/Export, Notification, Trash
+6. MeetingNote 삭제복구/Admin
+7. 범용 DealActivity table
 8. Admin 운영 조회/감사/민감 원문 API 보강
 
 ## 2. 인증
@@ -237,14 +237,16 @@
 - 사용자 timezone 기준 `meetingLocalDateTime` 변환
 - Backend 텍스트 AI 초안 생성: `POST /api/meeting-notes/ai-draft`
 - Backend STT+AI 초안 생성: `POST /api/meeting-notes/stt-draft`
+- 저장 후 딜 추가 연동: `POST /api/meeting-notes/:meetingNoteId/deals`
 - User Web 텍스트 `AI로 정리` draft UI
 - User Web 음성 파일 업로드 `음성으로 작성` draft UI
 - 직접 작성 저장은 AI/STT API를 호출하지 않음
 - AI/STT 저장 시 최종 `POST /api/meeting-notes`에 `TEXT_AI` 또는 `STT_AI` sourceType 전달
+- 저장 후 `영업 딜과 연동` 액션에서 기존 딜 검색/선택 후 `MeetingNoteDeal`을 추가하고, 딜 상세 활동 로그 저장소인 `DealFollowingActionLog`에 회의록 링크와 요약을 생성함
 
 ### 후속 MVP 포함
 
-- 딜 연결 시 활동 로그 자동 생성
+- 범용 `DealActivity` table 전환 또는 activity type 확장
 - 딜 연결 시 회사/담당자 상속
 
 ### 고정 결과 항목

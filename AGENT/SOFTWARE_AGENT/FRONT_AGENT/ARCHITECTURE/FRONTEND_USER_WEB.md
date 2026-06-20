@@ -91,7 +91,7 @@
 - Product: 목록/상세/생성/수정, 옵션, 메모, 개인 메모, 연결 Deal, xlsx export
 - Deal: 목록/상세/생성/수정, stage counts, 옵션, 다음 행동 로그, 메모 로그, xlsx export
 - Schedule: 월/주 목록, 단건 상세, 생성, 수정, 삭제, deal options
-- MeetingNote: 목록/상세/생성/수정, filter options, AI text draft, STT+AI draft
+- MeetingNote: 목록/상세/생성/수정, filter options, AI text draft, STT+AI draft, 저장 후 딜 추가 연동
 
 Backend는 구현되었지만 Frontend 연결이 남은 항목:
 

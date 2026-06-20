@@ -205,7 +205,7 @@ pen 디자인 반영 완료/정리 도메인 (2026-06-19 기준):
 - DealStage 6단계 FE/BE 계약 반영 완료
 - `/companies`, `/contacts`, `/products` — 제품형 조밀 목록 UX로 정렬
 - 회사/담당자/제품 생성 모달 — 입력 검색형 선택, 결과 없음 즉시 추가, 생성 후 자동 선택 기준 반영
-- `/meeting-notes` — 회의록 목록/상세/생성 API와 AI/STT draft UI 연결 완료
+- `/meeting-notes` — 회의록 목록/상세/생성 API, AI/STT draft UI, 저장 후 딜 추가 연동 연결 완료
 - 상단 통합검색 — Backend `GET /api/search`와 User Web GlobalSearch 연결 완료, UX 검수 진행 중
 
 현재 의도적으로 보류된 화면:

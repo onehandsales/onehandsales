@@ -44,4 +44,4 @@
 
 ## 4. 현재 상태
 
-Backend goal과 Frontend goal은 completed다. 저장 후 딜 활동기록 자동 생성 API 계약은 별도 후속 범위다.
+Backend goal과 Frontend goal은 completed다. 저장 후 딜 추가 연동과 활동 로그 생성은 `POST /api/meeting-notes/:meetingNoteId/deals`로 구현 완료 상태다. 범용 `DealActivity` table 전환은 별도 후속 범위다.
