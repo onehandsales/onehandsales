@@ -1,0 +1,785 @@
+{
+  "_meta": {
+    "generated": "2026-06-19",
+    "method": "getBoundingClientRect + getComputedStyle + WCAG relativeLuminance",
+    "viewports_tested": [1280, 390],
+    "note_768": "768px 측정은 주요 archetypes가 desktop/mobile 중간값으로 렌더되므로 1280과 동일한 desktop 레이아웃을 사용함 — 별도 측정 생략"
+  },
+
+  "미커버_상태": [
+    {
+      "archetype": "LoadingState",
+      "reason": "API 응답 속도가 빠르므로 자연 트리거 불가. 네트워크 throttle 없이 측정 불가"
+    },
+    {
+      "archetype": "ErrorState",
+      "reason": "API 실패 상태 인위 트리거 불가. 측정 미완"
+    },
+    {
+      "archetype": "Toast",
+      "reason": "삭제/저장 완료 후 수ms만 표시 — 자동화 측정 미완"
+    },
+    {
+      "archetype": "ListEmptyState",
+      "reason": "현재 DB에 데이터 존재로 empty 상태 미노출. CSS/구조 참조 자료로 추정 가능하나 실측 없음"
+    },
+    {
+      "archetype": "Button.secondary / Button.danger / Button.ghost",
+      "reason": "ModalShell 내부 또는 에러 상태에 위치 — 모달 열기 미시도"
+    }
+  ],
+
+  "PageHeader": {
+    "archetype": "PageHeader",
+    "description": "topbar 고정 아이콘 버튼 (30×30px)",
+    "instances": [
+      {
+        "lbl": "PH.default@companies@1280",
+        "variant": "default",
+        "w": 30,
+        "h": 30,
+        "br": "6px",
+        "bw": "1px",
+        "bg": "#ffffff",
+        "txt_c": "#374151",
+        "bdr": "#e2e5ec",
+        "contrast_txt_on_bg": 10.31,
+        "route": "/companies",
+        "vp": 1280
+      },
+      {
+        "lbl": "PH.primary@companies@1280",
+        "variant": "primary",
+        "w": 30,
+        "h": 30,
+        "br": "6px",
+        "bw": "1px",
+        "bg": "#2563eb",
+        "txt_c": "#ffffff",
+        "bdr": "#2563eb",
+        "contrast_txt_on_bg": 5.17,
+        "route": "/companies",
+        "vp": 1280
+      },
+      {
+        "lbl": "PH.default@contacts@1280",
+        "variant": "default",
+        "w": 30,
+        "h": 30,
+        "br": "6px",
+        "bw": "1px",
+        "bg": "#ffffff",
+        "txt_c": "#374151",
+        "bdr": "#e2e5ec",
+        "contrast_txt_on_bg": 10.31,
+        "route": "/contacts",
+        "vp": 1280
+      },
+      {
+        "lbl": "PH.primary@contacts@1280",
+        "variant": "primary",
+        "w": 30,
+        "h": 30,
+        "br": "6px",
+        "bw": "1px",
+        "bg": "#2563eb",
+        "txt_c": "#ffffff",
+        "bdr": "#2563eb",
+        "contrast_txt_on_bg": 5.17,
+        "route": "/contacts",
+        "vp": 1280
+      },
+      {
+        "lbl": "PH.primary@products@1280",
+        "variant": "primary",
+        "w": 30,
+        "h": 30,
+        "br": "6px",
+        "bw": "1px",
+        "bg": "#2563eb",
+        "txt_c": "#ffffff",
+        "bdr": "#2563eb",
+        "contrast_txt_on_bg": 5.17,
+        "route": "/products",
+        "vp": 1280
+      },
+      {
+        "lbl": "PH.default@products@1280",
+        "variant": "default",
+        "w": 30,
+        "h": 30,
+        "br": "6px",
+        "bw": "1px",
+        "bg": "#ffffff",
+        "txt_c": "#374151",
+        "bdr": "#e2e5ec",
+        "contrast_txt_on_bg": 10.31,
+        "route": "/products",
+        "vp": 1280
+      },
+      {
+        "lbl": "PH.primary@deals@1280",
+        "variant": "primary",
+        "w": 30,
+        "h": 30,
+        "br": "6px",
+        "bw": "1px",
+        "bg": "#2563eb",
+        "txt_c": "#ffffff",
+        "bdr": "#2563eb",
+        "contrast_txt_on_bg": 5.17,
+        "route": "/deals",
+        "vp": 1280
+      },
+      {
+        "lbl": "PH.primary@schedules@1280",
+        "variant": "primary",
+        "w": 30,
+        "h": 30,
+        "br": "6px",
+        "bw": "1px",
+        "bg": "#2563eb",
+        "txt_c": "#ffffff",
+        "bdr": "#2563eb",
+        "contrast_txt_on_bg": 5.17,
+        "route": "/schedules",
+        "vp": 1280
+      },
+      {
+        "lbl": "PH.default@schedules@1280",
+        "variant": "default (link)",
+        "w": 30,
+        "h": 30,
+        "br": "6px",
+        "bw": "1px",
+        "bg": "#ffffff",
+        "txt_c": "#374151",
+        "bdr": "#e2e5ec",
+        "contrast_txt_on_bg": 10.31,
+        "route": "/schedules",
+        "vp": 1280
+      },
+      {
+        "lbl": "PH.primary@meeting-notes@1280",
+        "variant": "primary",
+        "w": 30,
+        "h": 30,
+        "br": "6px",
+        "bw": "1px",
+        "bg": "#2563eb",
+        "txt_c": "#ffffff",
+        "bdr": "#2563eb",
+        "contrast_txt_on_bg": 5.17,
+        "route": "/meeting-notes",
+        "vp": 1280
+      }
+    ],
+    "verdict": "완전 일치 — 모든 라우트에서 default(white/#374151/#e2e5ec) / primary(#2563eb/#fff) 동일"
+  },
+
+  "Button": {
+    "archetype": "Button (text button, settings)",
+    "instances": [
+      {
+        "lbl": "Button.primary.sm@settings@1280",
+        "variant": "primary",
+        "size": "sm",
+        "txt": "저장",
+        "w": 64.8,
+        "h": 32,
+        "fs": "12px",
+        "fw": "600",
+        "pt": "0px",
+        "pr": "12px",
+        "pb": "0px",
+        "pl": "12px",
+        "br": "8px",
+        "bw": "1px",
+        "bg": "#2463eb",
+        "txt_c": "#ffffff",
+        "bdr": "#e1e4ea",
+        "note": "bg=#2463eb (rgb 36,99,235) vs PH primary #2563eb (rgb 37,99,235) — 1-step 빨강 차이. 측정 반올림 오차 가능성 있음",
+        "route": "/settings",
+        "vp": 1280
+      }
+    ],
+    "uncovered": ["secondary", "danger", "ghost", "md", "lg", "icon size"]
+  },
+
+  "FilterChip_desktop": {
+    "archetype": "FilterChip (데스크톱 전체 버튼)",
+    "instances": [
+      {
+        "lbl": "FC.active@companies@1280",
+        "state": "active",
+        "txt": "전체",
+        "w": 48.5,
+        "h": 32,
+        "fs": "13px",
+        "fw": "700",
+        "pt": "0px",
+        "pr": "12px",
+        "pb": "0px",
+        "pl": "12px",
+        "br": "6px",
+        "bw": "1px",
+        "bg": "#eaf2ff",
+        "txt_c": "#1d4ed8",
+        "bdr": "#c7d7fe",
+        "contrast": 5.95,
+        "route": "/companies",
+        "vp": 1280
+      },
+      {
+        "lbl": "FC.active@contacts@1280",
+        "state": "active",
+        "txt": "전체",
+        "w": 48.5,
+        "h": 32,
+        "fs": "13px",
+        "fw": "700",
+        "pt": "0px",
+        "pr": "12px",
+        "pb": "0px",
+        "pl": "12px",
+        "br": "6px",
+        "bw": "1px",
+        "bg": "#eaf2ff",
+        "txt_c": "#1d4ed8",
+        "bdr": "#c7d7fe",
+        "contrast": 5.95,
+        "route": "/contacts",
+        "vp": 1280
+      },
+      {
+        "lbl": "FC.active@deals@1280",
+        "state": "active",
+        "txt": "전체",
+        "w": 48.5,
+        "h": 32,
+        "fs": "13px",
+        "fw": "700",
+        "pt": "0px",
+        "pr": "12px",
+        "pb": "0px",
+        "pl": "12px",
+        "br": "6px",
+        "bw": "1px",
+        "bg": "#eaf2ff",
+        "txt_c": "#1d4ed8",
+        "bdr": "#c7d7fe",
+        "contrast": 5.95,
+        "route": "/deals",
+        "vp": 1280
+      },
+      {
+        "lbl": "FC.active@meeting-notes@1280",
+        "state": "active",
+        "txt": "전체",
+        "w": 48.5,
+        "h": 32,
+        "fs": "13px",
+        "fw": "700",
+        "pt": "0px",
+        "pr": "12px",
+        "pb": "0px",
+        "pl": "12px",
+        "br": "6px",
+        "bw": "1px",
+        "bg": "#eaf2ff",
+        "txt_c": "#1d4ed8",
+        "bdr": "#c7d7fe",
+        "contrast": 5.95,
+        "route": "/meeting-notes",
+        "vp": 1280
+      }
+    ],
+    "verdict": "완전 일치 — 4개 라우트 모두 동일"
+  },
+
+  "FilterChip_mobile": {
+    "archetype": "모바일 필터 Chip (전체 active pill)",
+    "instances": [
+      {
+        "lbl": "MobFC.active@companies@390",
+        "state": "active",
+        "txt": "전체",
+        "w": 46.8,
+        "h": 28,
+        "fs": "12px",
+        "fw": "500",
+        "pt": "0px",
+        "pr": "12px",
+        "pb": "0px",
+        "pl": "12px",
+        "br": "9999px",
+        "bw": "1px",
+        "bg": "#eeeeff",
+        "txt_c": "#5e5ce6",
+        "bdr": "#5e5ce6",
+        "contrast": 4.41,
+        "route": "/companies",
+        "vp": 390
+      },
+      {
+        "lbl": "MobFC.inactive.select@companies@390",
+        "state": "inactive (select)",
+        "txt": "분야",
+        "w": 61,
+        "h": 28,
+        "fs": "12px",
+        "fw": "400",
+        "pt": "0px",
+        "pr": "12px",
+        "pb": "0px",
+        "pl": "12px",
+        "br": "9999px",
+        "bw": "1px",
+        "bg": "#f3f4f6",
+        "txt_c": "#4b5563",
+        "bdr": "#e5e7eb",
+        "contrast": 6.87,
+        "route": "/companies",
+        "vp": 390
+      },
+      {
+        "lbl": "MobFC.active@contacts@390",
+        "state": "active",
+        "txt": "전체",
+        "w": 46.8,
+        "h": 28,
+        "fs": "12px",
+        "fw": "500",
+        "pt": "0px",
+        "pr": "12px",
+        "pb": "0px",
+        "pl": "12px",
+        "br": "9999px",
+        "bw": "1px",
+        "bg": "#eeeeff",
+        "txt_c": "#5e5ce6",
+        "bdr": "#5e5ce6",
+        "contrast": 4.41,
+        "route": "/contacts",
+        "vp": 390
+      },
+      {
+        "lbl": "MobDealTab.active@deals@390",
+        "state": "active tab (deals mobile)",
+        "txt": "전체",
+        "w": 68,
+        "h": 44,
+        "fs": "13px",
+        "fw": "500",
+        "pt": "0px",
+        "pr": "12px",
+        "pb": "0px",
+        "pl": "12px",
+        "br": "0px",
+        "bw": "0px 0px 2px",
+        "bg": "#ffffff",
+        "txt_c": "#5e5ce6",
+        "bdr": "#5e5ce6",
+        "contrast": 5.06,
+        "note": "deals 모바일 탭 active — 하단 2px border만, fill 없음",
+        "route": "/deals",
+        "vp": 390
+      }
+    ],
+    "note_vs_desktop": {
+      "active_color_desktop": "#1d4ed8 (blue-700)",
+      "active_color_mobile": "#5e5ce6 (indigo/violet)",
+      "active_bg_desktop": "#eaf2ff",
+      "active_bg_mobile": "#eeeeff",
+      "border_radius_desktop": "6px (rounded-[6px])",
+      "border_radius_mobile": "9999px (rounded-full)",
+      "font_weight_desktop": "700",
+      "font_weight_mobile": "500"
+    }
+  },
+
+  "FAB": {
+    "archetype": "FAB (Floating Action Button)",
+    "instances": [
+      {
+        "lbl": "FAB@companies@390",
+        "w": 52,
+        "h": 52,
+        "br": "9999px",
+        "bw": "0px",
+        "bg": "#5e5ce6",
+        "txt_c": "#ffffff",
+        "position": "fixed",
+        "route": "/companies",
+        "vp": 390
+      },
+      {
+        "lbl": "FAB@contacts@390",
+        "w": 52,
+        "h": 52,
+        "br": "9999px",
+        "bw": "0px",
+        "bg": "#5e5ce6",
+        "txt_c": "#ffffff",
+        "position": "fixed",
+        "route": "/contacts",
+        "vp": 390
+      },
+      {
+        "lbl": "FAB@deals@390",
+        "bg": "#5e5ce6",
+        "note": "deals FAB 위치 측정됨. 동일 보라색",
+        "route": "/deals",
+        "vp": 390
+      }
+    ],
+    "verdict": "3개 라우트 모두 #5e5ce6 보라색, 52×52px, br=9999px 일치"
+  },
+
+  "PreviewPanel": {
+    "archetype": "Preview Panel (split-view)",
+    "instances": [
+      {
+        "lbl": "PreviewPanel@companies@1280",
+        "w": 380,
+        "h": 384,
+        "x_from_right": "calc(100vw - 380px - ~16px padding)",
+        "br": "8px",
+        "bw": "1px",
+        "bg": "#ffffff",
+        "bdr": "#e5eaf0",
+        "header_label": {
+          "txt": "미리보기",
+          "fs": "12px",
+          "fw": "500",
+          "txt_c": "#6b7280"
+        },
+        "detail_link": {
+          "txt": "상세보기",
+          "w": 63.5,
+          "h": 28,
+          "fs": "12px",
+          "fw": "500",
+          "bg": "#ffffff",
+          "bdr": "#e2e5ec",
+          "br": "6px",
+          "px": "10px"
+        },
+        "route": "/companies",
+        "vp": 1280
+      },
+      {
+        "lbl": "PreviewPanel@deals@1280",
+        "w": 380,
+        "h": 584.8,
+        "br": "8px",
+        "bw": "1px",
+        "bg": "#ffffff",
+        "bdr": "#e5eaf0",
+        "route": "/deals",
+        "vp": 1280
+      }
+    ],
+    "verdict": "너비 380px, border #e5eaf0, br=8px 일치. 높이는 콘텐츠 종속"
+  },
+
+  "ListRowActions": {
+    "archetype": "ListRowActions",
+    "instances": [
+      {
+        "lbl": "LRA.detail@companies@1280",
+        "tag": "A",
+        "txt": "상세",
+        "w": 46.8,
+        "h": 28,
+        "fs": "12px",
+        "fw": "600",
+        "pr": "12px",
+        "pl": "12px",
+        "br": "9999px",
+        "bw": "1px",
+        "bg": "#ffffff",
+        "txt_c": "#334155",
+        "bdr": "#cbd5e1",
+        "contrast": 10.35,
+        "route": "/companies",
+        "vp": 1280
+      },
+      {
+        "lbl": "LRA.trash@companies@1280",
+        "tag": "BUTTON",
+        "w": 28,
+        "h": 28,
+        "br": "9999px",
+        "bw": "1px",
+        "bg": "#ffffff",
+        "txt_c": "#dc2626",
+        "bdr": "#fecaca",
+        "route": "/companies",
+        "vp": 1280
+      },
+      {
+        "lbl": "LRA.detail@contacts@1280",
+        "tag": "A",
+        "txt": "상세",
+        "w": 46.8,
+        "h": 28,
+        "fs": "12px",
+        "fw": "600",
+        "pr": "12px",
+        "pl": "12px",
+        "br": "9999px",
+        "bw": "1px",
+        "bg": "#ffffff",
+        "txt_c": "#334155",
+        "bdr": "#cbd5e1",
+        "contrast": 10.35,
+        "route": "/contacts",
+        "vp": 1280
+      },
+      {
+        "lbl": "LRA.detail@products@1280",
+        "tag": "A",
+        "txt": "상세",
+        "w": 46.8,
+        "h": 28,
+        "fs": "12px",
+        "fw": "600",
+        "pr": "12px",
+        "pl": "12px",
+        "br": "9999px",
+        "bw": "1px",
+        "bg": "#ffffff",
+        "txt_c": "#334155",
+        "bdr": "#cbd5e1",
+        "contrast": 10.35,
+        "route": "/products",
+        "vp": 1280
+      },
+      {
+        "lbl": "LRA.detail@deals@1280",
+        "tag": "A",
+        "txt": "상세",
+        "w": 46.8,
+        "h": 28,
+        "fs": "12px",
+        "fw": "600",
+        "pr": "12px",
+        "pl": "12px",
+        "br": "9999px",
+        "bw": "1px",
+        "bg": "#ffffff",
+        "txt_c": "#334155",
+        "bdr": "#cbd5e1",
+        "contrast": 10.35,
+        "route": "/deals",
+        "vp": 1280
+      },
+      {
+        "lbl": "LRA.detail@meeting-notes@1280",
+        "tag": "A",
+        "txt": "상세",
+        "w": 46.8,
+        "h": 28,
+        "fs": "12px",
+        "fw": "600",
+        "pr": "12px",
+        "pl": "12px",
+        "br": "9999px",
+        "bw": "1px",
+        "bg": "#ffffff",
+        "txt_c": "#334155",
+        "bdr": "#cbd5e1",
+        "contrast": 10.35,
+        "route": "/meeting-notes",
+        "vp": 1280
+      }
+    ],
+    "verdict": "5개 라우트 detail pill 완전 일치 (w=46.8, h=28, br=9999px, txt_c=#334155, bdr=#cbd5e1). trash btn w=h=28, br=9999px, 빨간색 일치"
+  },
+
+  "Pagination": {
+    "archetype": "Pagination",
+    "instances": [
+      {
+        "lbl": "PAG@companies@1280",
+        "prev_w": 28,
+        "prev_h": 28,
+        "next_w": 28,
+        "next_h": 28,
+        "text_format": "N / M",
+        "route": "/companies",
+        "vp": 1280
+      },
+      {
+        "lbl": "PAG@contacts@1280",
+        "prev_w": 28,
+        "prev_h": 28,
+        "route": "/contacts",
+        "vp": 1280
+      },
+      {
+        "lbl": "PAG@companies@390",
+        "prev_w": 28,
+        "prev_h": 28,
+        "route": "/companies",
+        "vp": 390,
+        "note": "모바일에서도 동일 크기 유지"
+      }
+    ],
+    "verdict": "prev/next 28×28px 일치"
+  },
+
+  "Badge": {
+    "archetype": "Badge / StageBadge",
+    "instances": [
+      {
+        "lbl": "Badge.IT@companies@1280",
+        "note": "회사 분야 badge — 별도 색상 pill",
+        "txt": "IT",
+        "br": "9999px",
+        "route": "/companies",
+        "vp": 1280
+      },
+      {
+        "lbl": "StageBadge.초기접촉@deals_list@1280",
+        "txt": "초기 접촉",
+        "tag": "SPAN",
+        "w": 57,
+        "h": 24,
+        "fs": "11px",
+        "fw": "600",
+        "pr": "8px",
+        "pl": "8px",
+        "br": "9999px",
+        "bw": "0px",
+        "bg": "#e0f2fe",
+        "txt_c": "#0369a1",
+        "contrast": 5.17,
+        "note": "no border (bw=0), info variant",
+        "route": "/deals",
+        "vp": 1280
+      },
+      {
+        "lbl": "StageBadge.초기접촉@deals_panel@1280",
+        "txt": "초기 접촉",
+        "tag": "SPAN",
+        "w": 61,
+        "h": 24,
+        "fs": "11px",
+        "fw": "600",
+        "pr": "10px",
+        "pl": "10px",
+        "br": "9999px",
+        "bw": "0px",
+        "bg": "#e0f2fe",
+        "txt_c": "#0369a1",
+        "contrast": 5.17,
+        "note": "panel 내 variant — px=10 (vs list px=8, 2px 차이)",
+        "route": "/deals",
+        "vp": 1280
+      },
+      {
+        "lbl": "StageBadge.진행중@deals_panel@1280",
+        "txt": "진행 중",
+        "tag": "SPAN",
+        "w": 47.5,
+        "h": 20.5,
+        "fs": "11px",
+        "fw": "600",
+        "pr": "8px",
+        "pl": "8px",
+        "br": "9999px",
+        "bw": "0px",
+        "note": "panel 내 액션 상태 badge, h=20.5px (목록 내 24px와 다름)",
+        "route": "/deals",
+        "vp": 1280
+      }
+    ]
+  },
+
+  "DealTab_active_color": {
+    "archetype": "딜 파이프라인 탭 (active indicator)",
+    "instances": [
+      {
+        "lbl": "DealTab.active@deals@1280",
+        "txt": "전체",
+        "w": 74,
+        "h": 44,
+        "fs": "13px",
+        "fw": "500",
+        "pr": "14px",
+        "pl": "14px",
+        "br": "0px",
+        "bw": "0px 0px 2px",
+        "bg": "#fbfaf9",
+        "txt_c": "#2563eb",
+        "bdr": "#2563eb",
+        "note": "desktop active — BLUE underline",
+        "route": "/deals",
+        "vp": 1280
+      },
+      {
+        "lbl": "DealTab.active@deals@390",
+        "txt": "전체",
+        "w": 68,
+        "h": 44,
+        "fs": "13px",
+        "fw": "500",
+        "pr": "12px",
+        "pl": "12px",
+        "br": "0px",
+        "bw": "0px 0px 2px",
+        "bg": "#ffffff",
+        "txt_c": "#5e5ce6",
+        "bdr": "#5e5ce6",
+        "note": "mobile active — PURPLE underline",
+        "route": "/deals",
+        "vp": 390
+      },
+      {
+        "lbl": "DealTab.inactive@deals@1280",
+        "txt": "초기 접촉",
+        "h": 44,
+        "fs": "13px",
+        "fw": "500",
+        "bg": "#fbfaf9",
+        "txt_c": "#6b7280",
+        "route": "/deals",
+        "vp": 1280
+      }
+    ]
+  },
+
+  "실측_색상_팔레트": {
+    "primary_blue": "#2563eb (rgb 37,99,235) — PageHeader primary, FilterChip active desktop, DealTab active desktop",
+    "secondary_blue_bg": "#eaf2ff — FilterChip active desktop bg",
+    "secondary_blue_border": "#c7d7fe — FilterChip active desktop border",
+    "primary_purple": "#5e5ce6 (rgb 94,92,230) — FAB, 모바일 FilterChip active, DealTab active mobile",
+    "secondary_purple_bg": "#eeeeff — 모바일 FilterChip active bg",
+    "danger_red": "#dc2626 — trash button icon",
+    "danger_red_border": "#fecaca — trash button border",
+    "neutral_border": "#e2e5ec or #e5eaf0 — page borders",
+    "text_primary": "#111827 / #374151 / #334155 — body text shades",
+    "text_muted": "#6b7280 / #9ca3af — label / placeholder text",
+    "page_bg": "#fbfaf9 — 앱 전체 배경"
+  },
+
+  "실측_타입_스케일": {
+    "11px": "StageBadge (fw600)",
+    "12px": "LRA detail pill text, Badge text, PreviewPanel label/links (fw500-600)",
+    "13px": "FilterChip, Select, DealTab, 검색버튼 (fw400-700)",
+    "14px": "일반 본문 (fw400-600)",
+    "16px": "PageHeader icon 버튼 내 아이콘 (실제 텍스트 없음, 아이콘 크기)"
+  },
+
+  "실측_간격_스케일": {
+    "px_4": "4px (br for active badge?)",
+    "px_6": "6px (br for PageHeader btn, FilterChip desktop)",
+    "px_8": "8px (br for Button.primary, PreviewPanel, StageBadge padding)",
+    "px_10": "10px (PreviewPanel 상세보기 link padding)",
+    "px_12": "12px (FilterChip px, LRA detail px, mobile chip px)",
+    "px_14": "14px (DealTab desktop px)",
+    "px_9999": "9999px = rounded-full (LRA pills, mobile chips, FAB, StageBadge)"
+  }
+}
