@@ -1,6 +1,9 @@
 export {
   createMeetingNote,
+  createMeetingNoteSttAiDraft,
+  createMeetingNoteTextAiDraft,
   getMeetingNote,
+  linkMeetingNoteDeals,
   listMeetingNoteFilterCompanies,
   listMeetingNoteFilterContacts,
   listMeetingNotes,
@@ -9,8 +12,13 @@ export {
 export { MeetingNoteEditorScreen } from "./components/meeting-note-editor-screen";
 export { MeetingNoteListScreen } from "./components/meeting-note-list-screen";
 export type {
+  CreateMeetingNoteSttAiDraftInput,
+  CreateMeetingNoteTextAiDraftInput,
   CreateMeetingNoteInput,
+  LinkMeetingNoteDealsInput,
   MeetingNote,
+  MeetingNoteAiDraftContextInput,
+  MeetingNoteAiDraftResponse,
   MeetingNoteCompany,
   MeetingNoteContact,
   MeetingNoteDeal,
@@ -21,5 +29,6 @@ export type {
   MeetingNoteListResponse,
   MeetingNoteProduct,
   MeetingNoteSort,
+  MeetingNoteSourceType,
   UpdateMeetingNoteInput,
 } from "./types/meeting-note";

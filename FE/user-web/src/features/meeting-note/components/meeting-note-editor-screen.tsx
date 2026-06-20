@@ -4,7 +4,9 @@ import {
   ArrowLeft,
   BriefcaseBusiness,
   CheckCircle2,
+  Link2,
   Loader2,
+  Plus,
   Save,
   Trash2,
   X,
@@ -21,6 +23,7 @@ import {
 import { useMeetingNoteDealOptions } from "@/features/meeting-note/hooks/use-meeting-note-deal-options";
 import {
   useDeleteMeetingNoteMutation,
+  useLinkMeetingNoteDealsMutation,
   useUpdateMeetingNoteMutation,
 } from "@/features/meeting-note/hooks/use-meeting-note-mutations";
 import { useMeetingNoteDetail } from "@/features/meeting-note/hooks/use-meeting-note-queries";
@@ -49,6 +52,7 @@ export function MeetingNoteEditorScreen({
   const navigate = useNavigate();
   const detailQuery = useMeetingNoteDetail(meetingNoteId ?? "", isEdit);
   const updateMutation = useUpdateMeetingNoteMutation();
+  const linkDealsMutation = useLinkMeetingNoteDealsMutation();
   const deleteMutation = useDeleteMeetingNoteMutation();
   const [notice, setNotice] = useState(() => readLocationNotice(location.state));
   const [savedMeetingNote, setSavedMeetingNote] = useState<MeetingNote | null>(
@@ -71,7 +75,11 @@ export function MeetingNoteEditorScreen({
   const dealOptionsQuery = useMeetingNoteDealOptions(dealSearch);
   const activeMeetingNote = savedMeetingNote ?? detailQuery.data ?? null;
   const actionError =
-    updateMutation.error ?? deleteMutation.error ?? detailQuery.error ?? null;
+    updateMutation.error ??
+    linkDealsMutation.error ??
+    deleteMutation.error ??
+    detailQuery.error ??
+    null;
   const isSaving = updateMutation.isPending;
   const isDeleting = deleteMutation.isPending;
 
@@ -144,6 +152,20 @@ export function MeetingNoteEditorScreen({
   const clearDeal = () => {
     setValue("dealId", "", { shouldValidate: true });
     setValue("dealSearch", "", { shouldValidate: true });
+  };
+
+  const onLinkDeals = async (dealIds: readonly string[]) => {
+    if (!meetingNoteId) {
+      return;
+    }
+
+    const updated = await linkDealsMutation.mutateAsync({
+      meetingNoteId,
+      deals: dealIds,
+    });
+    setSavedMeetingNote(updated);
+    reset(toMeetingNoteFormValues(updated));
+    setNotice("영업 딜과 연동되었습니다.");
   };
 
   if (detailQuery.isLoading && isEdit) {
@@ -382,6 +404,11 @@ export function MeetingNoteEditorScreen({
 
         <aside className="flex flex-col gap-3 md:min-h-0 md:overflow-hidden">
           <MeetingNoteSummaryCard meetingNote={activeMeetingNote} />
+          <MeetingNoteDealLinkCard
+            isPending={linkDealsMutation.isPending}
+            meetingNote={activeMeetingNote}
+            onLink={onLinkDeals}
+          />
           <MeetingNoteSnapshotPanel meetingNote={activeMeetingNote} />
         </aside>
       </div>
@@ -442,6 +469,146 @@ function MeetingDateSummaryMetric({
         <p className="mt-1 inline-flex rounded-full bg-white px-2 py-1 text-[12px] font-bold text-[#C2410C] shadow-sm ring-1 ring-[#FED7AA]">
           {meetingDate.time}
         </p>
+      </div>
+    </div>
+  );
+}
+
+function MeetingNoteDealLinkCard({
+  meetingNote,
+  isPending,
+  onLink,
+}: {
+  readonly meetingNote: MeetingNote | null;
+  readonly isPending: boolean;
+  readonly onLink: (dealIds: readonly string[]) => Promise<void>;
+}) {
+  const [search, setSearch] = useState("");
+  const [selectedOption, setSelectedOption] = useState<{
+    readonly id: string;
+    readonly name: string;
+  } | null>(null);
+  const [clientError, setClientError] = useState<string | null>(null);
+  const dealOptionsQuery = useMeetingNoteDealOptions(search);
+  const linkedDealIds = new Set(
+    meetingNote?.deals.map((deal) => deal.dealId) ?? []
+  );
+  const options = (dealOptionsQuery.data ?? []).filter(
+    (option) => !linkedDealIds.has(option.id)
+  );
+  const shouldShowOptions =
+    search.trim().length > 0 && selectedOption === null && options.length > 0;
+
+  if (!meetingNote) {
+    return null;
+  }
+
+  const submit = async () => {
+    if (!selectedOption) {
+      setClientError("연동할 딜을 선택해주세요.");
+      return;
+    }
+
+    setClientError(null);
+
+    try {
+      await onLink([selectedOption.id]);
+      setSearch("");
+      setSelectedOption(null);
+    } catch {
+      // actionError가 같은 화면 상단 오류 배너로 표시됩니다.
+    }
+  };
+
+  const clear = () => {
+    setSearch("");
+    setSelectedOption(null);
+    setClientError(null);
+  };
+
+  return (
+    <div className="rounded-lg border border-[#E5E7EB] bg-white p-4">
+      <div className="mb-3 flex items-start justify-between gap-3">
+        <div>
+          <h3 className="text-[13px] font-semibold text-[#111827]">
+            영업 딜과 연동
+          </h3>
+        </div>
+        <Link2 className="mt-0.5 h-4 w-4 shrink-0 text-[#64748B]" />
+      </div>
+
+      <div className="grid gap-2">
+        <div className="relative">
+          <BriefcaseBusiness className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#9CA3AF]" />
+          <input
+            className="h-9 w-full rounded-md border border-[#E5E7EB] bg-white pl-9 pr-10 text-sm text-[#111827] outline-none focus:ring-2 focus:ring-ring"
+            disabled={isPending}
+            onChange={(event) => {
+              setSearch(event.target.value);
+              setSelectedOption(null);
+              setClientError(null);
+            }}
+            placeholder="연동할 딜 검색"
+            value={selectedOption?.name ?? search}
+          />
+          {selectedOption || search ? (
+            <button
+              aria-label="딜 연동 선택 지우기"
+              className="absolute right-2 top-1/2 grid h-7 w-7 -translate-y-1/2 place-items-center rounded-md text-[#9CA3AF] hover:bg-[#F3F4F6]"
+              disabled={isPending}
+              onClick={clear}
+              type="button"
+            >
+              <X className="h-4 w-4" />
+            </button>
+          ) : null}
+        </div>
+
+        {shouldShowOptions ? (
+          <div className="max-h-40 overflow-y-auto rounded-md border border-[#E5E7EB] bg-white">
+            {options.map((option) => (
+              <button
+                className="grid w-full gap-0.5 px-3 py-2 text-left text-[13px] hover:bg-[#F9FAFB]"
+                key={option.id}
+                onClick={() => {
+                  setSelectedOption({ id: option.id, name: option.name });
+                  setSearch(option.name);
+                  setClientError(null);
+                }}
+                type="button"
+              >
+                <span className="font-medium text-[#111827]">{option.name}</span>
+                <span className="text-[12px] text-[#6B7280]">
+                  {option.subtitle || "-"}
+                </span>
+              </button>
+            ))}
+          </div>
+        ) : search.trim().length > 0 &&
+          !selectedOption &&
+          !dealOptionsQuery.isFetching ? (
+          <p className="rounded-md bg-[#F9FAFB] px-3 py-2 text-[12px] text-[#94A3B8]">
+            연동 가능한 딜이 없습니다.
+          </p>
+        ) : null}
+
+        {clientError ? (
+          <p className="text-[12px] text-red-600">{clientError}</p>
+        ) : null}
+
+        <button
+          className="inline-flex h-9 items-center justify-center gap-1.5 rounded-md bg-[#2563EB] px-3 text-[13px] font-semibold text-white hover:bg-[#1D4ED8] disabled:cursor-not-allowed disabled:opacity-60"
+          disabled={isPending}
+          onClick={() => void submit()}
+          type="button"
+        >
+          {isPending ? (
+            <Loader2 className="h-4 w-4 animate-spin" />
+          ) : (
+            <Plus className="h-4 w-4" />
+          )}
+          연동
+        </button>
       </div>
     </div>
   );
