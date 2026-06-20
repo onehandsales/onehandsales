@@ -483,7 +483,7 @@ export function CompanyListScreen({
             className={cn(
               "inline-flex h-7 shrink-0 items-center rounded-full border px-3 text-[12px] font-medium transition",
               !hasSearch
-                ? "border-[#5E5CE6] bg-[#EEEEFF] text-[#5E5CE6]"
+                ? "border-[#C7D7FE] bg-[#EAF2FF] font-bold text-[#1D4ED8]"
                 : "border-[#E5E7EB] bg-[#F3F4F6] text-[#4B5563]",
             )}
             onClick={() => {
@@ -617,7 +617,7 @@ export function CompanyListScreen({
         {/* FAB */}
         <button
           aria-label="회사 추가"
-          className="fixed bottom-24 right-5 flex h-[52px] w-[52px] items-center justify-center rounded-full bg-[#5E5CE6] shadow-[0_4px_16px_rgba(59,130,246,0.27)] transition active:opacity-80"
+          className="fixed bottom-24 right-5 flex h-[52px] w-[52px] items-center justify-center rounded-full bg-[#2563EB] shadow-[0_4px_16px_rgba(59,130,246,0.27)] transition active:opacity-80"
           onClick={() => void navigate("/companies/new")}
           type="button"
         >

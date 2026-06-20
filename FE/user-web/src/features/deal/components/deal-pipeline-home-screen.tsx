@@ -511,7 +511,7 @@ export function DealPipelineHomeScreen({
                   className={cn(
                     "flex h-11 shrink-0 items-center gap-1 border-b-2 px-3 text-[13px] font-medium transition-colors",
                     isActive
-                      ? "border-[#5E5CE6] text-[#5E5CE6]"
+                      ? "border-[#2563EB] text-[#2563EB]"
                       : "border-transparent text-[#6B7280]",
                   )}
                   key={tab.value}
@@ -523,7 +523,7 @@ export function DealPipelineHomeScreen({
                     className={cn(
                       "rounded-full px-1.5 py-0.5 text-[11px] font-semibold",
                       isActive
-                        ? "bg-[#EEEEFF] text-[#5E5CE6]"
+                        ? "bg-[#EFF6FF] text-[#2563EB]"
                         : "bg-[#F3F4F6] text-[#6B7280]",
                     )}
                   >
@@ -542,7 +542,7 @@ export function DealPipelineHomeScreen({
             className={cn(
               "inline-flex h-[26px] shrink-0 items-center gap-1 rounded-[13px] px-[10px] text-[12px] font-medium transition",
               sort === "dealCostDesc" || sort === "dealCostAsc"
-                ? "border border-[#5E5CE6] bg-[#EEEEFF] text-[#5E5CE6]"
+                ? "border border-[#C7D7FE] bg-[#EAF2FF] font-bold text-[#1D4ED8]"
                 : "bg-[#F3F4F6] text-[#4B5563]",
             )}
             onClick={() => {
@@ -564,7 +564,7 @@ export function DealPipelineHomeScreen({
             className={cn(
               "inline-flex h-[26px] shrink-0 items-center gap-1 rounded-[13px] px-[10px] text-[12px] font-medium transition",
               sort === "expectedEndDateAsc"
-                ? "border border-[#5E5CE6] bg-[#EEEEFF] text-[#5E5CE6]"
+                ? "border border-[#C7D7FE] bg-[#EAF2FF] font-bold text-[#1D4ED8]"
                 : "bg-[#F3F4F6] text-[#4B5563]",
             )}
             onClick={() =>
@@ -645,7 +645,7 @@ export function DealPipelineHomeScreen({
 
         {/* FAB */}
         <button
-          className="fixed bottom-24 right-5 z-40 inline-flex h-[52px] w-[52px] items-center justify-center rounded-full bg-[#5E5CE6] text-white shadow-[0_4px_16px_rgba(59,130,246,0.27)] transition hover:scale-[1.02]"
+          className="fixed bottom-24 right-5 z-40 inline-flex h-[52px] w-[52px] items-center justify-center rounded-full bg-[#2563EB] text-white shadow-[0_4px_16px_rgba(59,130,246,0.27)] transition hover:scale-[1.02]"
           onClick={() => void navigate("/deals/new")}
           type="button"
         >
