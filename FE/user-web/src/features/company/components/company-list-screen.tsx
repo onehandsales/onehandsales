@@ -44,8 +44,7 @@ type CompanyListScreenProps = {
 };
 
 const COMPANY_TABLE_GRID_STYLE = {
-  gridTemplateColumns:
-    "minmax(120px,1.5fr) minmax(76px,0.75fr) minmax(64px,0.65fr) minmax(52px,0.4fr) minmax(44px,0.35fr) minmax(82px,0.6fr)",
+  gridTemplateColumns: "repeat(6, minmax(90px, 1fr))",
 };
 
 export function CompanyListScreen({
