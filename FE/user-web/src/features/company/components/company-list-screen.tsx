@@ -1,5 +1,6 @@
 import {
   Building2,
+  ChevronDown,
   Download,
   Plus,
   RotateCcw,
@@ -15,7 +16,7 @@ import {
   useState,
 } from "react";
 import { PageHeader } from "@/components/layout/page-header";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { Pagination } from "@/components/ui/pagination";
 import { ListEmptyState } from "@/components/ui/state";
 import { Toast } from "@/components/ui/toast";
@@ -44,7 +45,7 @@ type CompanyListScreenProps = {
 
 const COMPANY_TABLE_GRID_STYLE = {
   gridTemplateColumns:
-    "minmax(120px,1.5fr) minmax(76px,0.75fr) minmax(64px,0.65fr) minmax(52px,0.4fr) minmax(44px,0.35fr) minmax(82px,0.6fr) minmax(74px,0.5fr)",
+    "minmax(120px,1.5fr) minmax(76px,0.75fr) minmax(64px,0.65fr) minmax(52px,0.4fr) minmax(44px,0.35fr) minmax(82px,0.6fr)",
 };
 
 export function CompanyListScreen({
@@ -323,9 +324,6 @@ export function CompanyListScreen({
               <div className="min-w-0 truncate whitespace-nowrap text-[12px] font-semibold text-[#64748B]">
                 등록일
               </div>
-              <div className="min-w-0 truncate text-[12px] font-semibold text-[#64748B]">
-                관리
-              </div>
             </div>
 
             {companiesQuery.isLoading ? (
@@ -543,9 +541,20 @@ function CompanyRow({
   readonly company: CompanyListItem;
   readonly displayTimeZone: string;
 }) {
+  const navigate = useNavigate();
+
   return (
     <div
-      className="group grid h-[66px] w-full items-center border-b border-[#E2E5EC] bg-white px-3 text-left transition-colors last:border-b-0 hover:bg-[#FFFBEB] md:px-4 xl:px-6"
+      className="group grid h-[66px] w-full cursor-pointer items-center border-b border-[#E2E5EC] bg-white px-3 text-left transition-colors last:border-b-0 hover:bg-[#FFFBEB] md:px-4 xl:px-6"
+      onClick={() => void navigate(`/companies/${company.id}`)}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          void navigate(`/companies/${company.id}`);
+        }
+      }}
+      role="button"
+      tabIndex={0}
       style={COMPANY_TABLE_GRID_STYLE}
     >
       <div className="min-w-0">
@@ -584,14 +593,6 @@ function CompanyRow({
         title={formatCompanyCreatedAt(company.createdAt, displayTimeZone)}
       >
         {formatCompanyCreatedAt(company.createdAt, displayTimeZone)}
-      </div>
-      <div className="flex min-w-0 justify-end">
-        <Link
-          className="inline-flex h-7 items-center justify-center rounded-full border border-[#E2E5EC] bg-white px-3 text-[12px] font-medium text-[#374151] transition hover:border-[#CBD5E1] hover:bg-[#F8FAFC] focus:border-[#2563EB] focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
-          to={`/companies/${company.id}`}
-        >
-          상세
-        </Link>
       </div>
     </div>
   );
@@ -762,12 +763,15 @@ function CompanyTaxonomyFilterCombobox<
       )}
     >
       <div className="relative">
-        <Search
-          className={cn(
-            "pointer-events-none absolute top-1/2 shrink-0 -translate-y-1/2 text-[#9CA3AF]",
-            isMobile ? "left-2.5 h-3 w-3" : "left-3 h-3 w-3",
-          )}
-        />
+        {/* Search icon — only visible when open */}
+        {isOpen ? (
+          <Search
+            className={cn(
+              "pointer-events-none absolute top-1/2 shrink-0 -translate-y-1/2 text-[#9CA3AF]",
+              isMobile ? "left-2.5 h-3 w-3" : "left-3 h-3 w-3",
+            )}
+          />
+        ) : null}
         <input
           ref={inputRef}
           aria-autocomplete="list"
@@ -775,17 +779,23 @@ function CompanyTaxonomyFilterCombobox<
           aria-label={`${itemKindLabel} 필터`}
           autoComplete="off"
           className={cn(
-            "w-full min-w-0 border outline-none transition hover:border-[#93C5FD] focus:border-[#2563EB] focus:ring-1 focus:ring-[#2563EB]",
+            "w-full min-w-0 border outline-none transition",
             isMobile
-              ? "h-7 rounded-full pl-7 pr-7 text-[12px]"
-              : "h-8 rounded-md pl-8 pr-7 text-[13px]",
+              ? "h-7 rounded-full text-[12px]"
+              : "h-8 rounded-full text-[13px]",
             isOpen
-              ? "border-[#2563EB] bg-white text-[#111827] ring-1 ring-[#2563EB]"
+              ? cn(
+                  "border-[#2563EB] bg-white text-[#111827] ring-1 ring-[#2563EB]",
+                  isMobile ? "pl-7 pr-7" : "pl-8 pr-7",
+                )
               : selectedIds.length > 0
-                ? getTaxonomyFilterInputSelectedClass(tone)
-              : isMobile
-                ? "border-[#E5E7EB] bg-[#F3F4F6] text-[#4B5563]"
-                : "border-[#E2E5EC] bg-transparent text-[#6B7280] hover:bg-[#FAFAF8]",
+                ? cn(
+                    getTaxonomyFilterInputSelectedClass(tone),
+                    isMobile ? "pl-3 pr-7" : "pl-3.5 pr-7",
+                  )
+                : isMobile
+                  ? "border-[#E5E7EB] bg-[#F3F4F6] pl-3 pr-7 text-[#4B5563] hover:border-[#D1D5DB]"
+                  : "cursor-pointer border-[#E2E5EC] bg-transparent pl-3.5 pr-7 text-[#6B7280] hover:border-[#D1D5DB] hover:bg-[#F5F6F8]",
           )}
           onChange={(event) => {
             openOptions(event.target.value);
@@ -809,9 +819,10 @@ function CompanyTaxonomyFilterCombobox<
               toggleItem(firstItem);
             }
           }}
-          placeholder={`${itemKindLabel} 검색`}
+          placeholder={`${itemKindLabel} 선택`}
           value={inputValue}
         />
+        {/* Right icon: × when selected/searching, ▾ when idle */}
         {selectedIds.length > 0 || search ? (
           <button
             aria-label={`${itemKindLabel} 필터 지우기`}
@@ -824,7 +835,15 @@ function CompanyTaxonomyFilterCombobox<
           >
             <X className={isMobile ? "h-3 w-3" : "h-3.5 w-3.5"} />
           </button>
-        ) : null}
+        ) : (
+          <ChevronDown
+            className={cn(
+              "pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-[#9CA3AF] transition-transform",
+              isMobile ? "h-3 w-3" : "h-3.5 w-3.5",
+              isOpen && "rotate-180",
+            )}
+          />
+        )}
       </div>
 
       {isOpen ? (

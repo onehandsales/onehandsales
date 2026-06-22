@@ -1,25 +1,22 @@
 import {
-  BriefcaseBusiness,
-  Building2,
+  ChevronDown,
   Download,
   IdCard,
-  Mail,
-  Phone,
   Plus,
+  RotateCcw,
   Search,
   X,
   type LucideIcon,
 } from "lucide-react";
 import {
   type FormEvent,
-  type ReactNode,
   useEffect,
   useMemo,
+  useRef,
   useState,
 } from "react";
 import { PageHeader } from "@/components/layout/page-header";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { ListRowActions } from "@/components/ui/list-row-actions";
 import { Pagination } from "@/components/ui/pagination";
 import { ListEmptyState } from "@/components/ui/state";
 import { Toast } from "@/components/ui/toast";
@@ -28,17 +25,10 @@ import { ContactCreateDialog } from "@/features/contact/components/contact-creat
 import { ContactTaxonomyManageDialog } from "@/features/contact/components/contact-taxonomy-manage-dialog";
 import {
   useContactDepartments,
-  useContactJobGrades,
   useContactList,
 } from "@/features/contact/hooks/use-contact-list";
-import {
-  useContactDeals,
-  useContactDetail,
-} from "@/features/contact/hooks/use-contact-detail";
-import {
-  useDeleteContactMutation,
-  useExportContactsMutation,
-} from "@/features/contact/hooks/use-contact-mutations";
+import { useCompanyOptions } from "@/features/contact/hooks/use-company-options";
+import { useExportContactsMutation } from "@/features/contact/hooks/use-contact-mutations";
 import type {
   ContactListItem,
   ContactSort,
@@ -50,7 +40,7 @@ import { readLocationNotice } from "@/utils/location-state";
 
 const CONTACT_TABLE_GRID_STYLE = {
   gridTemplateColumns:
-    "minmax(84px,0.8fr) minmax(96px,0.9fr) minmax(64px,0.6fr) minmax(54px,0.5fr) minmax(76px,0.7fr) minmax(96px,1fr) minmax(82px,0.65fr) minmax(74px,0.5fr)",
+    "minmax(84px,0.8fr) minmax(96px,0.9fr) minmax(64px,0.6fr) minmax(54px,0.5fr) minmax(76px,0.7fr) minmax(96px,1fr) minmax(82px,0.65fr)",
 };
 
 export function ContactListScreen() {
@@ -59,16 +49,13 @@ export function ContactListScreen() {
   const { user } = useAuthSession();
   const [usernameText, setUsernameText] = useState("");
   const [username, setUsername] = useState("");
-  const [companyId] = useState("");
-  const [contactDepartmentId, setContactDepartmentId] = useState("");
-  const [contactJobGradeId, setContactJobGradeId] = useState("");
+  const [companyId, setCompanyId] = useState("");
+  const [contactDepartmentIds, setContactDepartmentIds] = useState<string[]>([]);
   const [sort, setSort] = useState<ContactSort>("createdAtDesc");
   const [page, setPage] = useState(1);
   const [isCreateOpen, setIsCreateOpen] = useState(false);
-  const [selectedContactId, setSelectedContactId] = useState("");
   const [taxonomyOpen, setTaxonomyOpen] = useState(false);
   const [pendingDepartmentName, setPendingDepartmentName] = useState("");
-  const [pendingJobGradeName, setPendingJobGradeName] = useState("");
   const [notice, setNotice] = useState<string | null>(null);
   const [actionError, setActionError] = useState<string | null>(null);
 
@@ -77,28 +64,25 @@ export function ContactListScreen() {
       page,
       username: username || undefined,
       companyId: companyId || undefined,
-      contactDepartmentId: contactDepartmentId || undefined,
-      contactJobGradeId: contactJobGradeId || undefined,
+      contactDepartmentId: contactDepartmentIds[0] ?? undefined,
       sort,
     }),
-    [companyId, contactDepartmentId, contactJobGradeId, page, sort, username],
+    [companyId, contactDepartmentIds, page, sort, username],
   );
   const exportFilters = useMemo(
     () => ({
       username: username || undefined,
       companyId: companyId || undefined,
-      contactDepartmentId: contactDepartmentId || undefined,
-      contactJobGradeId: contactJobGradeId || undefined,
+      contactDepartmentId: contactDepartmentIds[0] ?? undefined,
       sort,
     }),
-    [companyId, contactDepartmentId, contactJobGradeId, sort, username],
+    [companyId, contactDepartmentIds, sort, username],
   );
 
   const contactsQuery = useContactList(listParams);
-  const jobGradesQuery = useContactJobGrades();
   const departmentsQuery = useContactDepartments();
+  const companyOptionsQuery = useCompanyOptions();
   const exportContactsMutation = useExportContactsMutation();
-  const deleteContactMutation = useDeleteContactMutation();
 
   useEffect(() => {
     const message = readLocationNotice(location.state);
@@ -109,22 +93,22 @@ export function ContactListScreen() {
     setNotice(message);
     void navigate(location.pathname, { replace: true, state: null });
   }, [location.pathname, location.state, navigate]);
+
   const contactList = contactsQuery.data;
-  const jobGrades = useMemo(
-    () => jobGradesQuery.data?.items ?? [],
-    [jobGradesQuery.data],
-  );
   const departments = useMemo(
     () => departmentsQuery.data?.items ?? [],
     [departmentsQuery.data],
+  );
+  const companyOptions = useMemo(
+    () => companyOptionsQuery.data?.items ?? [],
+    [companyOptionsQuery.data],
   );
 
   const displayTimeZone = user?.timeZone ?? getBrowserTimeZoneFallback();
   const hasSearch =
     username.length > 0 ||
     companyId.length > 0 ||
-    contactDepartmentId.length > 0 ||
-    contactJobGradeId.length > 0 ||
+    contactDepartmentIds.length > 0 ||
     sort !== "createdAtDesc";
 
   useEffect(() => {
@@ -133,53 +117,20 @@ export function ContactListScreen() {
       (d) => d.departmentName === pendingDepartmentName,
     );
     if (matched) {
-      setContactDepartmentId(matched.id);
+      setContactDepartmentIds((prev) => addUniqueId(prev, matched.id));
       setPage(1);
       setPendingDepartmentName("");
     }
   }, [departments, pendingDepartmentName]);
 
   useEffect(() => {
-    const items = contactList?.items ?? [];
-    if (
-      selectedContactId &&
-      !items.some((contact) => contact.id === selectedContactId)
-    ) {
-      setSelectedContactId("");
-    }
-  }, [contactList?.items, selectedContactId]);
-
-  useEffect(() => {
-    if (!pendingJobGradeName) return;
-    const matched = jobGrades.find(
-      (j) => j.jobGradeName === pendingJobGradeName,
-    );
-    if (matched) {
-      setContactJobGradeId(matched.id);
-      setPage(1);
-      setPendingJobGradeName("");
-    }
-  }, [jobGrades, pendingJobGradeName]);
-
-  useEffect(() => {
-    if (
-      contactDepartmentId &&
-      !departments.some((d) => d.id === contactDepartmentId)
-    ) {
-      setContactDepartmentId("");
+    const validIds = new Set(departments.map((d) => d.id));
+    const nextIds = contactDepartmentIds.filter((id) => validIds.has(id));
+    if (nextIds.length !== contactDepartmentIds.length) {
+      setContactDepartmentIds(nextIds);
       setPage(1);
     }
-  }, [contactDepartmentId, departments]);
-
-  useEffect(() => {
-    if (
-      contactJobGradeId &&
-      !jobGrades.some((j) => j.id === contactJobGradeId)
-    ) {
-      setContactJobGradeId("");
-      setPage(1);
-    }
-  }, [contactJobGradeId, jobGrades]);
+  }, [contactDepartmentIds, departments]);
 
   const onSearchSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -190,24 +141,6 @@ export function ContactListScreen() {
   const onExport = async () => {
     const file = await exportContactsMutation.mutateAsync(exportFilters);
     downloadBlobFile(file, "contacts.xlsx");
-  };
-
-  const onDeleteContact = async (contact: ContactListItem) => {
-    if (!window.confirm(`${contact.username} 담당자를 삭제할까요?`)) {
-      return;
-    }
-
-    setActionError(null);
-
-    try {
-      await deleteContactMutation.mutateAsync(contact.id);
-      if (selectedContactId === contact.id) {
-        setSelectedContactId("");
-      }
-      setNotice("담당자가 삭제되었습니다.");
-    } catch (error) {
-      setActionError(getApiErrorMessage(error));
-    }
   };
 
   return (
@@ -246,70 +179,44 @@ export function ContactListScreen() {
         </form>
         <FilterChip
           active={!hasSearch}
-          label="전체"
+          icon={RotateCcw}
+          label="초기화"
           onClick={() => {
             setUsername("");
             setUsernameText("");
-            setContactDepartmentId("");
-            setContactJobGradeId("");
+            setCompanyId("");
+            setContactDepartmentIds([]);
             setSort("createdAtDesc");
             setPage(1);
           }}
         />
-        <select
-          className={cn(
-            "h-8 w-[clamp(96px,10vw,118px)] shrink-0 appearance-none rounded-md border px-3 text-[13px] outline-none transition",
-            contactDepartmentId
-              ? "border-[#BFDBFE] bg-[#EFF6FF] text-[#1D4ED8]"
-              : "border-[#E2E5EC] bg-transparent text-[#6B7280] hover:bg-[#FAFAF8]",
-          )}
-          disabled={departmentsQuery.isLoading}
-          onChange={(e) => {
-            const v = e.target.value;
-            if (v === ADD_TAXONOMY_VALUE) {
-              setTaxonomyOpen(true);
-              return;
-            }
-            setContactDepartmentId(v);
+        <ContactTaxonomyFilterCombobox
+          emptyText="조건에 맞는 회사가 없습니다."
+          getLabel={(c) => c.companyName}
+          itemKindLabel="회사"
+          items={companyOptions}
+          selectedIds={companyId ? [companyId] : []}
+          size="desktop"
+          tone="green"
+          onSelectedIdsChange={(ids) => {
+            setCompanyId(ids[ids.length - 1] ?? "");
             setPage(1);
           }}
-          value={contactDepartmentId}
-        >
-          <option value="">부서</option>
-          <option value={ADD_TAXONOMY_VALUE}>+ 추가</option>
-          {departments.map((d) => (
-            <option key={d.id} value={d.id}>
-              {d.departmentName}
-            </option>
-          ))}
-        </select>
-        <select
-          className={cn(
-            "h-8 w-[clamp(96px,10vw,118px)] shrink-0 appearance-none rounded-md border px-3 text-[13px] outline-none transition",
-            contactJobGradeId
-              ? "border-[#BFDBFE] bg-[#EFF6FF] text-[#1D4ED8]"
-              : "border-[#E2E5EC] bg-transparent text-[#6B7280] hover:bg-[#FAFAF8]",
-          )}
-          disabled={jobGradesQuery.isLoading}
-          onChange={(e) => {
-            const v = e.target.value;
-            if (v === ADD_TAXONOMY_VALUE) {
-              setTaxonomyOpen(true);
-              return;
-            }
-            setContactJobGradeId(v);
+        />
+        <ContactTaxonomyFilterCombobox
+          emptyText="조건에 맞는 부서가 없습니다."
+          getLabel={(d) => d.departmentName}
+          itemKindLabel="부서"
+          items={departments}
+          selectedIds={contactDepartmentIds}
+          size="desktop"
+          tone="amber"
+          onCreateClick={() => setTaxonomyOpen(true)}
+          onSelectedIdsChange={(ids) => {
+            setContactDepartmentIds(ids);
             setPage(1);
           }}
-          value={contactJobGradeId}
-        >
-          <option value="">직급</option>
-          <option value={ADD_TAXONOMY_VALUE}>+ 추가</option>
-          {jobGrades.map((g) => (
-            <option key={g.id} value={g.id}>
-              {g.jobGradeName}
-            </option>
-          ))}
-        </select>
+        />
         <select
           className={cn(
             "h-8 w-[clamp(92px,10vw,104px)] shrink-0 appearance-none rounded-md border px-3 text-[13px] outline-none transition",
@@ -355,7 +262,7 @@ export function ContactListScreen() {
         </div>
       ) : null}
 
-      {/* 테이블 + 미리보기 (데스크톱) */}
+      {/* 테이블 (데스크톱) */}
       <div className="hidden gap-3 overflow-x-auto px-5 pb-3 pt-1 md:flex xl:gap-5">
         <div className="flex min-w-0 flex-1 flex-col gap-3">
           <div className="flex w-full min-w-[620px] flex-col overflow-hidden rounded-lg border border-[#E2E5EC] bg-white shadow-sm">
@@ -385,9 +292,6 @@ export function ContactListScreen() {
               <div className="min-w-0 truncate whitespace-nowrap text-[12px] font-semibold text-[#64748B]">
                 등록일
               </div>
-              <div className="min-w-0 truncate text-[12px] font-semibold text-[#64748B]">
-                관리
-              </div>
             </div>
 
             {contactsQuery.isLoading ? (
@@ -414,12 +318,8 @@ export function ContactListScreen() {
                 {contactList.items.map((c) => (
                   <ContactRow
                     contact={c}
-                    deleteDisabled={deleteContactMutation.isPending}
                     displayTimeZone={displayTimeZone}
-                    isActive={c.id === selectedContactId}
                     key={c.id}
-                    onDelete={() => void onDeleteContact(c)}
-                    onSelect={setSelectedContactId}
                   />
                 ))}
               </div>
@@ -434,36 +334,6 @@ export function ContactListScreen() {
             />
           ) : null}
         </div>
-
-        {selectedContactId ? (
-          <div className="hidden w-[380px] shrink-0 flex-col rounded-lg border border-[#E5EAF0] bg-white md:flex">
-            <div className="flex h-11 shrink-0 items-center justify-between border-b border-[#E6EAF0] px-4">
-              <div className="flex items-center gap-2">
-                <button
-                  aria-label="미리보기 닫기"
-                  className="inline-flex h-7 w-7 items-center justify-center rounded-md border border-[#E2E5EC] text-[#64748B] transition hover:bg-blue-50/60 hover:text-[#2563EB]"
-                  onClick={() => setSelectedContactId("")}
-                  title="닫기"
-                  type="button"
-                >
-                  <X className="h-3.5 w-3.5" strokeWidth={2} />
-                </button>
-                <span className="text-[12px] font-medium text-[#6B7280]">
-                  미리보기
-                </span>
-              </div>
-              <div className="flex items-center gap-1.5">
-                <Link
-                  className="inline-flex h-7 items-center rounded-md border border-[#E2E5EC] bg-white px-2.5 text-[12px] font-medium text-[#374151] transition hover:bg-[#F5F6F8]"
-                  to={`/contacts/${selectedContactId}`}
-                >
-                  상세보기
-                </Link>
-              </div>
-            </div>
-            <ContactPreviewPanel contactId={selectedContactId} />
-          </div>
-        ) : null}
       </div>
 
       {/* 모바일 뷰 */}
@@ -480,10 +350,10 @@ export function ContactListScreen() {
         ) : null}
 
         {/* 모바일 필터 칩 행 */}
-        <div className="flex h-10 shrink-0 items-center gap-2 border-b border-[#E5E7EB] px-4">
+        <div className="flex h-10 shrink-0 items-center gap-2 overflow-x-auto border-b border-[#E5E7EB] px-4">
           <button
             className={cn(
-              "inline-flex h-7 shrink-0 items-center rounded-full border px-3 text-[12px] font-medium transition",
+              "inline-flex h-7 shrink-0 items-center gap-1.5 rounded-full border px-3 text-[12px] font-medium transition hover:border-[#93C5FD] focus:border-[#2563EB] focus:outline-none focus:ring-1 focus:ring-[#2563EB]",
               !hasSearch
                 ? "border-[#C7D7FE] bg-[#EAF2FF] font-bold text-[#1D4ED8]"
                 : "border-[#E5E7EB] bg-[#F3F4F6] text-[#4B5563]",
@@ -491,69 +361,43 @@ export function ContactListScreen() {
             onClick={() => {
               setUsername("");
               setUsernameText("");
-              setContactDepartmentId("");
-              setContactJobGradeId("");
+              setCompanyId("");
+              setContactJobGradeIds([]);
               setSort("createdAtDesc");
               setPage(1);
             }}
             type="button"
           >
-            전체
+            <RotateCcw className="h-3 w-3" />
+            초기화
           </button>
-          <select
-            className={cn(
-              "h-7 appearance-none rounded-full border px-3 text-[12px] outline-none transition",
-              contactDepartmentId
-                ? "border-[#BFDBFE] bg-[#EFF6FF] text-[#1D4ED8]"
-                : "border-[#E5E7EB] bg-[#F3F4F6] text-[#4B5563]",
-            )}
-            disabled={departmentsQuery.isLoading}
-            onChange={(e) => {
-              const v = e.target.value;
-              if (v === ADD_TAXONOMY_VALUE) {
-                setTaxonomyOpen(true);
-                return;
-              }
-              setContactDepartmentId(v);
+          <ContactTaxonomyFilterCombobox
+            emptyText="조건에 맞는 회사가 없습니다."
+            getLabel={(c) => c.companyName}
+            itemKindLabel="회사"
+            items={companyOptions}
+            selectedIds={companyId ? [companyId] : []}
+            size="mobile"
+            tone="green"
+              onSelectedIdsChange={(ids) => {
+              setCompanyId(ids[ids.length - 1] ?? "");
               setPage(1);
             }}
-            value={contactDepartmentId}
-          >
-            <option value="">부서</option>
-            <option value={ADD_TAXONOMY_VALUE}>+ 추가</option>
-            {departments.map((d) => (
-              <option key={d.id} value={d.id}>
-                {d.departmentName}
-              </option>
-            ))}
-          </select>
-          <select
-            className={cn(
-              "h-7 appearance-none rounded-full border px-3 text-[12px] outline-none transition",
-              contactJobGradeId
-                ? "border-[#BFDBFE] bg-[#EFF6FF] text-[#1D4ED8]"
-                : "border-[#E5E7EB] bg-[#F3F4F6] text-[#4B5563]",
-            )}
-            disabled={jobGradesQuery.isLoading}
-            onChange={(e) => {
-              const v = e.target.value;
-              if (v === ADD_TAXONOMY_VALUE) {
-                setTaxonomyOpen(true);
-                return;
-              }
-              setContactJobGradeId(v);
+          />
+          <ContactTaxonomyFilterCombobox
+            emptyText="조건에 맞는 부서가 없습니다."
+            getLabel={(d) => d.departmentName}
+            itemKindLabel="부서"
+            items={departments}
+            selectedIds={contactDepartmentIds}
+            size="mobile"
+            tone="amber"
+            onCreateClick={() => setTaxonomyOpen(true)}
+            onSelectedIdsChange={(ids) => {
+              setContactDepartmentIds(ids);
               setPage(1);
             }}
-            value={contactJobGradeId}
-          >
-            <option value="">직급</option>
-            <option value={ADD_TAXONOMY_VALUE}>+ 추가</option>
-            {jobGrades.map((g) => (
-              <option key={g.id} value={g.id}>
-                {g.jobGradeName}
-              </option>
-            ))}
-          </select>
+          />
           <div className="flex-1" />
           <span className="shrink-0 text-[11px] text-[#9CA3AF]">
             {contactList?.totalCount ?? 0}명
@@ -637,7 +481,6 @@ export function ContactListScreen() {
       <ContactTaxonomyManageDialog
         onCreated={(kind, name) => {
           if (kind === "department") setPendingDepartmentName(name);
-          else setPendingJobGradeName(name);
         }}
         onOpenChange={setTaxonomyOpen}
         open={taxonomyOpen}
@@ -696,30 +539,21 @@ function ContactMobileCard({
 
 function ContactRow({
   contact,
-  deleteDisabled,
   displayTimeZone,
-  isActive,
-  onDelete,
-  onSelect,
 }: {
   readonly contact: ContactListItem;
-  readonly deleteDisabled: boolean;
   readonly displayTimeZone: string;
-  readonly isActive: boolean;
-  readonly onDelete: () => void;
-  readonly onSelect: (contactId: string) => void;
 }) {
+  const navigate = useNavigate();
+
   return (
     <div
-      className={cn(
-        "grid h-[66px] w-full cursor-pointer items-center border-b border-[#E2E5EC] px-3 text-left transition-colors last:border-b-0 hover:bg-blue-50/60 md:px-4 xl:px-6",
-        isActive ? "bg-blue-50" : "bg-white",
-      )}
-      onClick={() => onSelect(contact.id)}
-      onKeyDown={(event) => {
-        if (event.key === "Enter" || event.key === " ") {
-          event.preventDefault();
-          onSelect(contact.id);
+      className="grid h-[66px] w-full cursor-pointer items-center border-b border-[#E2E5EC] bg-white px-3 text-left transition-colors last:border-b-0 hover:bg-[#EFF6FF] md:px-4 xl:px-6"
+      onClick={() => void navigate(`/contacts/${contact.id}`)}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          void navigate(`/contacts/${contact.id}`);
         }
       }}
       role="button"
@@ -777,12 +611,6 @@ function ContactRow({
       >
         {formatContactCreatedAt(contact.createdAt, displayTimeZone)}
       </div>
-      <ListRowActions
-        deleteLabel={`${contact.username} 삭제`}
-        detailTo={`/contacts/${contact.id}`}
-        disabled={deleteDisabled}
-        onDelete={onDelete}
-      />
     </div>
   );
 }
@@ -824,183 +652,6 @@ export function ContactCard({
   );
 }
 
-function ContactPreviewPanel({ contactId }: { readonly contactId: string }) {
-  const contactQuery = useContactDetail(contactId);
-  const dealsQuery = useContactDeals(contactId);
-  const contact = contactQuery.data;
-  const deals = dealsQuery.data?.items ?? [];
-
-  if (contactQuery.isLoading) {
-    return <ContactPreviewSkeleton />;
-  }
-
-  if (contactQuery.isError || !contact) {
-    return (
-      <div className="flex flex-1 items-center justify-center px-6 text-center text-[13px] text-red-500">
-        담당자 정보를 불러오지 못했습니다.
-      </div>
-    );
-  }
-
-  return (
-    <div className="flex-1 overflow-y-auto px-4 py-4">
-      <div className="flex items-start gap-3">
-        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[#EFF6FF] text-[#2563EB]">
-          <IdCard className="h-5 w-5" strokeWidth={1.7} />
-        </div>
-        <div className="min-w-0 flex-1">
-          <h2 className="truncate text-[16px] font-semibold text-[#111827]">
-            {contact.username}
-          </h2>
-          <p className="mt-1 truncate text-[13px] font-medium text-[#475569]">
-            {contact.company.companyName}
-          </p>
-          <div className="mt-2 flex min-w-0 flex-wrap gap-1.5">
-            <InfoPill icon={Building2} tone="blue">
-              {contact.contactDepartment.departmentName}
-            </InfoPill>
-            <InfoPill icon={IdCard} tone="amber">
-              {contact.contactJobGrade.jobGradeName}
-            </InfoPill>
-          </div>
-        </div>
-      </div>
-
-      <div className="mt-5 grid gap-2">
-        <ContactInfoRow
-          icon={Phone}
-          label="핸드폰"
-          value={contact.mobile || "-"}
-        />
-        <ContactInfoRow
-          icon={Mail}
-          label="이메일"
-          value={contact.email || "-"}
-        />
-      </div>
-
-      <PreviewSection icon={BriefcaseBusiness} title="딜">
-        {dealsQuery.isLoading ? (
-          <PreviewMutedText>불러오는 중</PreviewMutedText>
-        ) : deals.length === 0 ? (
-          <PreviewMutedText>연결된 딜이 없습니다.</PreviewMutedText>
-        ) : (
-          deals.slice(0, 5).map((deal) => (
-            <Link
-              className="flex min-w-0 items-center justify-between gap-3 rounded-md px-2 py-2 transition hover:bg-[#F9FAFB]"
-              key={deal.id}
-              to={`/deals/${deal.id}`}
-            >
-              <span className="min-w-0 truncate text-[13px] font-medium text-[#111827]">
-                {deal.dealName}
-              </span>
-              <span className="shrink-0 text-[12px] font-semibold text-[#1D4ED8]">
-                {deal.dealCost.toLocaleString("ko-KR")}원
-              </span>
-            </Link>
-          ))
-        )}
-      </PreviewSection>
-    </div>
-  );
-}
-
-function InfoPill({
-  children,
-  icon: Icon,
-  tone,
-}: {
-  readonly children: string;
-  readonly icon: LucideIcon;
-  readonly tone: "blue" | "amber";
-}) {
-  const toneClass =
-    tone === "blue"
-      ? "bg-[#DBEAFE] text-[#1D4ED8]"
-      : "bg-[#FEF3C7] text-[#B45309]";
-
-  return (
-    <span
-      className={cn(
-        "inline-flex h-6 max-w-full min-w-0 items-center gap-1 overflow-hidden rounded-full px-2.5 text-[11px] font-semibold",
-        toneClass,
-      )}
-      title={children}
-    >
-      <Icon className="h-3 w-3 shrink-0" strokeWidth={1.8} />
-      <span className="min-w-0 truncate whitespace-nowrap">{children}</span>
-    </span>
-  );
-}
-
-function ContactInfoRow({
-  icon: Icon,
-  label,
-  value,
-}: {
-  readonly icon: LucideIcon;
-  readonly label: string;
-  readonly value: string;
-}) {
-  return (
-    <div className="flex min-w-0 items-center gap-3 rounded-md border border-[#E6EAF0] bg-[#FAFBFC] px-3 py-2.5">
-      <Icon className="h-4 w-4 shrink-0 text-[#94A3B8]" strokeWidth={1.8} />
-      <div className="min-w-0 flex-1">
-        <p className="text-[11px] font-medium text-[#94A3B8]">{label}</p>
-        <p className="truncate text-[13px] font-semibold text-[#111827]">
-          {value}
-        </p>
-      </div>
-    </div>
-  );
-}
-
-function PreviewSection({
-  children,
-  icon: Icon,
-  title,
-}: {
-  readonly children: ReactNode;
-  readonly icon: LucideIcon;
-  readonly title: string;
-}) {
-  return (
-    <div className="mt-5">
-      <div className="mb-2 flex items-center gap-1.5 text-[12px] font-semibold text-[#475569]">
-        <Icon className="h-3.5 w-3.5" strokeWidth={1.8} />
-        {title}
-      </div>
-      <div className="divide-y divide-[#EEF2F7] rounded-md border border-[#E6EAF0] bg-white">
-        {children}
-      </div>
-    </div>
-  );
-}
-
-function PreviewMutedText({ children }: { readonly children: string }) {
-  return <p className="px-3 py-3 text-[12px] text-[#94A3B8]">{children}</p>;
-}
-
-function ContactPreviewSkeleton() {
-  return (
-    <div className="flex-1 space-y-4 overflow-hidden px-4 py-4">
-      <div className="flex gap-3">
-        <div className="h-10 w-10 animate-pulse rounded-lg bg-[#EEF2F7]" />
-        <div className="min-w-0 flex-1 space-y-2">
-          <div className="h-4 w-28 animate-pulse rounded bg-[#EEF2F7]" />
-          <div className="h-4 w-40 animate-pulse rounded bg-[#EEF2F7]" />
-          <div className="h-5 w-44 animate-pulse rounded-full bg-[#EEF2F7]" />
-        </div>
-      </div>
-      <div className="space-y-2">
-        <div className="h-14 animate-pulse rounded-md bg-[#EEF2F7]" />
-        <div className="h-14 animate-pulse rounded-md bg-[#EEF2F7]" />
-      </div>
-      <div className="h-36 animate-pulse rounded-md bg-[#EEF2F7]" />
-    </div>
-  );
-}
-
 function ContactListSkeleton() {
   return (
     <div className="overflow-hidden">
@@ -1037,17 +688,19 @@ function ContactListError({
 
 function FilterChip({
   active,
+  icon: Icon,
   label,
   onClick,
 }: {
   readonly active: boolean;
+  readonly icon?: LucideIcon;
   readonly label: string;
   readonly onClick: () => void;
 }) {
   return (
     <button
       className={cn(
-        "inline-flex h-8 shrink-0 items-center whitespace-nowrap rounded-[6px] border px-3 text-[13px] transition",
+        "inline-flex h-8 shrink-0 items-center gap-1.5 whitespace-nowrap rounded-[6px] border px-3 text-[13px] transition hover:border-[#93C5FD] focus:border-[#2563EB] focus:outline-none focus:ring-1 focus:ring-[#2563EB]",
         active
           ? "border-[#C7D7FE] bg-[#EAF2FF] font-bold text-[#1D4ED8]"
           : "border-[#E6EAF0] bg-white font-medium text-[#475569] hover:bg-[#F9FAFB]",
@@ -1055,10 +708,397 @@ function FilterChip({
       onClick={onClick}
       type="button"
     >
+      {Icon ? <Icon className="h-3.5 w-3.5" /> : null}
       {label}
     </button>
   );
 }
+
+// ── ContactTaxonomyFilterCombobox ────────────────────────────────────────────
+
+type FieldFilterPopoverPosition = {
+  readonly left: number;
+  readonly top: number;
+  readonly width: number;
+};
+
+type ContactTaxonomyFilterItem = {
+  readonly id: string;
+};
+
+type ContactTaxonomyFilterTone = "blue" | "amber" | "green";
+
+function ContactTaxonomyFilterCombobox<
+  TItem extends ContactTaxonomyFilterItem,
+>({
+  emptyText,
+  getLabel,
+  itemKindLabel,
+  items,
+  selectedIds,
+  size,
+  tone,
+  onCreateClick,
+  onSelectedIdsChange,
+}: {
+  readonly emptyText: string;
+  readonly getLabel: (item: TItem) => string;
+  readonly itemKindLabel: string;
+  readonly items: readonly TItem[];
+  readonly selectedIds: readonly string[];
+  readonly size: "desktop" | "mobile";
+  readonly tone: ContactTaxonomyFilterTone;
+  readonly onCreateClick?: () => void;
+  readonly onSelectedIdsChange: (ids: string[]) => void;
+}) {
+  const [isOpen, setIsOpen] = useState(false);
+  const [search, setSearch] = useState("");
+  const [popoverPosition, setPopoverPosition] =
+    useState<FieldFilterPopoverPosition | null>(null);
+  const wrapperRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const selectedIdSet = useMemo(() => new Set(selectedIds), [selectedIds]);
+  const selectedItems = useMemo(
+    () => items.filter((item) => selectedIdSet.has(item.id)),
+    [items, selectedIdSet],
+  );
+  const selectedSummary = getSelectedTaxonomyFilterSummary(
+    selectedItems,
+    getLabel,
+    itemKindLabel,
+  );
+  const query = search.trim();
+  const normalizedQuery = normalizeFilterText(query);
+  const filteredItems =
+    normalizedQuery.length > 0
+      ? items.filter((item) =>
+          normalizeFilterText(getLabel(item)).includes(normalizedQuery),
+        )
+      : items;
+  const isMobile = size === "mobile";
+  const inputValue = isOpen ? search : selectedSummary;
+
+  useEffect(() => {
+    if (!isOpen) {
+      setSearch("");
+    }
+  }, [isOpen]);
+
+  useEffect(() => {
+    if (!isOpen) {
+      return;
+    }
+
+    const updatePopoverPosition = () => {
+      if (!inputRef.current) {
+        return;
+      }
+
+      setPopoverPosition(
+        getFieldFilterPopoverPosition(inputRef.current, isMobile),
+      );
+    };
+    const onMouseDown = (event: MouseEvent) => {
+      if (
+        wrapperRef.current &&
+        !wrapperRef.current.contains(event.target as Node)
+      ) {
+        setIsOpen(false);
+        setSearch("");
+      }
+    };
+
+    updatePopoverPosition();
+    document.addEventListener("mousedown", onMouseDown);
+    window.addEventListener("resize", updatePopoverPosition);
+    window.addEventListener("scroll", updatePopoverPosition, true);
+
+    return () => {
+      document.removeEventListener("mousedown", onMouseDown);
+      window.removeEventListener("resize", updatePopoverPosition);
+      window.removeEventListener("scroll", updatePopoverPosition, true);
+    };
+  }, [isMobile, isOpen]);
+
+  const toggleItem = (item: TItem) => {
+    const nextIds = selectedIdSet.has(item.id)
+      ? selectedIds.filter((id) => id !== item.id)
+      : [...selectedIds, item.id];
+
+    setSearch("");
+    onSelectedIdsChange(nextIds);
+  };
+
+  const openOptions = (nextSearch: string) => {
+    setSearch(nextSearch);
+
+    if (inputRef.current) {
+      setPopoverPosition(
+        getFieldFilterPopoverPosition(inputRef.current, isMobile),
+      );
+    }
+
+    setIsOpen(true);
+  };
+
+  const clearSelection = () => {
+    setSearch("");
+    onSelectedIdsChange([]);
+    inputRef.current?.focus();
+    openOptions("");
+  };
+
+  return (
+    <div
+      ref={wrapperRef}
+      className={cn(
+        "relative shrink-0",
+        isMobile ? "w-[120px]" : "w-[clamp(136px,14vw,178px)]",
+      )}
+    >
+      <div className="relative">
+        {/* Search icon — only visible when open */}
+        {isOpen ? (
+          <Search
+            className={cn(
+              "pointer-events-none absolute top-1/2 shrink-0 -translate-y-1/2 text-[#9CA3AF]",
+              isMobile ? "left-2.5 h-3 w-3" : "left-3 h-3 w-3",
+            )}
+          />
+        ) : null}
+        <input
+          ref={inputRef}
+          aria-autocomplete="list"
+          aria-expanded={isOpen}
+          aria-label={`${itemKindLabel} 필터`}
+          autoComplete="off"
+          className={cn(
+            "w-full min-w-0 border outline-none transition",
+            isMobile
+              ? "h-7 rounded-full text-[12px]"
+              : "h-8 rounded-full text-[13px]",
+            isOpen
+              ? cn(
+                  "border-[#2563EB] bg-white text-[#111827] ring-1 ring-[#2563EB]",
+                  isMobile ? "pl-7 pr-7" : "pl-8 pr-7",
+                )
+              : selectedIds.length > 0
+                ? cn(
+                    getTaxonomyFilterInputSelectedClass(tone),
+                    isMobile ? "pl-3 pr-7" : "pl-3.5 pr-7",
+                  )
+                : isMobile
+                  ? "border-[#E5E7EB] bg-[#F3F4F6] pl-3 pr-7 text-[#4B5563] hover:border-[#D1D5DB]"
+                  : "cursor-pointer border-[#E2E5EC] bg-transparent pl-3.5 pr-7 text-[#6B7280] hover:border-[#D1D5DB] hover:bg-[#F5F6F8]",
+          )}
+          onChange={(event) => {
+            openOptions(event.target.value);
+          }}
+          onFocus={() => openOptions("")}
+          onKeyDown={(event) => {
+            if (event.key === "Escape") {
+              setIsOpen(false);
+              setSearch("");
+              inputRef.current?.blur();
+              return;
+            }
+
+            if (event.key === "Enter") {
+              const firstItem = filteredItems[0];
+              if (!firstItem) {
+                return;
+              }
+
+              event.preventDefault();
+              toggleItem(firstItem);
+            }
+          }}
+          placeholder={`${itemKindLabel} 선택`}
+          value={inputValue}
+        />
+        {/* Right icon: × when selected/searching, ▾ when idle */}
+        {selectedIds.length > 0 || search ? (
+          <button
+            aria-label={`${itemKindLabel} 필터 지우기`}
+            className={cn(
+              "absolute right-1 top-1/2 grid -translate-y-1/2 place-items-center rounded-full text-[#9CA3AF] transition hover:bg-white hover:text-[#374151]",
+              isMobile ? "h-6 w-6" : "h-7 w-7",
+            )}
+            onClick={clearSelection}
+            type="button"
+          >
+            <X className={isMobile ? "h-3 w-3" : "h-3.5 w-3.5"} />
+          </button>
+        ) : (
+          <ChevronDown
+            className={cn(
+              "pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-[#9CA3AF] transition-transform",
+              isMobile ? "h-3 w-3" : "h-3.5 w-3.5",
+              isOpen && "rotate-180",
+            )}
+          />
+        )}
+      </div>
+
+      {isOpen ? (
+        <div
+          className={cn(
+            "fixed z-50 overflow-hidden rounded-md border border-[#E6EAF0] bg-white shadow-lg",
+            !popoverPosition && "invisible",
+          )}
+          style={{
+            left: popoverPosition?.left ?? 0,
+            top: popoverPosition?.top ?? 0,
+            width: popoverPosition?.width ?? 256,
+          }}
+        >
+          <button
+            className={cn(
+              "flex h-9 w-full items-center gap-1.5 px-3 text-left text-[13px] transition hover:bg-[#F9FAFB]",
+              selectedIds.length === 0
+                ? "font-semibold text-[#1D4ED8]"
+                : "font-medium text-[#475569]",
+            )}
+            onClick={() => {
+              setSearch("");
+              setIsOpen(false);
+              onSelectedIdsChange([]);
+            }}
+            type="button"
+          >
+            <RotateCcw className="h-3.5 w-3.5" />
+            {itemKindLabel} 초기화
+          </button>
+
+          <div className="max-h-[184px] overflow-y-auto border-y border-[#E6EAF0] py-1">
+            {filteredItems.length === 0 ? (
+              <p className="px-3 py-3 text-[12px] text-[#9CA3AF]">
+                {emptyText}
+              </p>
+            ) : (
+              filteredItems.map((item) => {
+                const isSelected = selectedIdSet.has(item.id);
+
+                return (
+                  <button
+                    className={cn(
+                      "flex h-8 w-full min-w-0 items-center gap-2 px-3 text-left text-[13px] transition hover:bg-[#F9FAFB]",
+                      isSelected && getTaxonomyFilterItemSelectedClass(tone),
+                    )}
+                    key={item.id}
+                    onClick={() => toggleItem(item)}
+                    type="button"
+                  >
+                    <span
+                      className={cn(
+                        "grid h-3.5 w-3.5 shrink-0 place-items-center rounded-full border",
+                        isSelected
+                          ? getTaxonomyFilterCheckBorderClass(tone)
+                          : "border-[#CBD5E1]",
+                      )}
+                    >
+                      {isSelected ? (
+                        <span
+                          className={cn(
+                            "h-1.5 w-1.5 rounded-full",
+                            getTaxonomyFilterCheckDotClass(tone),
+                          )}
+                        />
+                      ) : null}
+                    </span>
+                    <span className="min-w-0 flex-1 truncate">
+                      {getLabel(item)}
+                    </span>
+                  </button>
+                );
+              })
+            )}
+          </div>
+
+          {onCreateClick ? (
+            <button
+              className="flex h-9 w-full items-center gap-1.5 px-3 text-left text-[12px] font-semibold text-[#2563EB] transition hover:bg-[#EFF6FF]"
+              onClick={() => {
+                setIsOpen(false);
+                setSearch("");
+                onCreateClick();
+              }}
+              type="button"
+            >
+              <Plus className="h-3.5 w-3.5" />
+              새 {itemKindLabel} 추가
+            </button>
+          ) : null}
+        </div>
+      ) : null}
+    </div>
+  );
+}
+
+function getFieldFilterPopoverPosition(
+  input: HTMLInputElement,
+  isMobile: boolean,
+): FieldFilterPopoverPosition {
+  const rect = input.getBoundingClientRect();
+  const viewportWidth = window.innerWidth;
+  const margin = 16;
+  const width = isMobile
+    ? Math.min(256, Math.max(160, viewportWidth - margin * 2))
+    : 256;
+  const maxLeft = Math.max(margin, viewportWidth - width - margin);
+  const left = Math.min(Math.max(rect.left, margin), maxLeft);
+
+  return {
+    left,
+    top: rect.bottom + 4,
+    width,
+  };
+}
+
+function getSelectedTaxonomyFilterSummary<
+  TItem extends ContactTaxonomyFilterItem,
+>(
+  selectedItems: readonly TItem[],
+  getLabel: (item: TItem) => string,
+  itemKindLabel: string,
+) {
+  if (selectedItems.length === 0) {
+    return "";
+  }
+
+  if (selectedItems.length === 1) {
+    const selectedItem = selectedItems[0];
+    return selectedItem ? getLabel(selectedItem) : "";
+  }
+
+  return `${itemKindLabel} ${selectedItems.length}개`;
+}
+
+function getTaxonomyFilterInputSelectedClass(tone: ContactTaxonomyFilterTone) {
+  if (tone === "blue") return "border-[#BFDBFE] bg-[#EFF6FF] font-semibold text-[#1D4ED8]";
+  if (tone === "green") return "border-[#BBF7D0] bg-[#F0FDF4] font-semibold text-[#15803D]";
+  return "border-[#FDE68A] bg-[#FFFBEB] font-semibold text-[#B45309]";
+}
+
+function getTaxonomyFilterItemSelectedClass(tone: ContactTaxonomyFilterTone) {
+  if (tone === "blue") return "bg-[#EFF6FF] font-semibold text-[#1D4ED8]";
+  if (tone === "green") return "bg-[#F0FDF4] font-semibold text-[#15803D]";
+  return "bg-[#FFFBEB] font-semibold text-[#B45309]";
+}
+
+function getTaxonomyFilterCheckBorderClass(tone: ContactTaxonomyFilterTone) {
+  if (tone === "blue") return "border-[#1D4ED8]";
+  if (tone === "green") return "border-[#15803D]";
+  return "border-[#B45309]";
+}
+
+function getTaxonomyFilterCheckDotClass(tone: ContactTaxonomyFilterTone) {
+  if (tone === "blue") return "bg-[#1D4ED8]";
+  if (tone === "green") return "bg-[#15803D]";
+  return "bg-[#B45309]";
+}
+
+// ── Utilities ────────────────────────────────────────────────────────────────
 
 function downloadBlobFile(file: ApiBlobResponse, fallbackFileName: string) {
   const url = window.URL.createObjectURL(file.blob);
@@ -1088,4 +1128,10 @@ function getBrowserTimeZoneFallback() {
   }
 }
 
-const ADD_TAXONOMY_VALUE = "__add_taxonomy__";
+function normalizeFilterText(value: string) {
+  return value.trim().toLowerCase();
+}
+
+function addUniqueId(ids: readonly string[], id: string) {
+  return ids.includes(id) ? [...ids] : [...ids, id];
+}

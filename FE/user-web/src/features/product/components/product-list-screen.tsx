@@ -1,8 +1,22 @@
-import { Download, Package, Plus, Search } from "lucide-react";
-import { type FormEvent, useEffect, useMemo, useState } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import {
+  ChevronDown,
+  Download,
+  Package,
+  Plus,
+  RotateCcw,
+  Search,
+  X,
+  type LucideIcon,
+} from "lucide-react";
+import {
+  type FormEvent,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import { PageHeader } from "@/components/layout/page-header";
-import { ListRowActions } from "@/components/ui/list-row-actions";
 import { Pagination } from "@/components/ui/pagination";
 import { ListEmptyState } from "@/components/ui/state";
 import { Toast } from "@/components/ui/toast";
@@ -15,7 +29,6 @@ import {
   useProductStatuses,
 } from "@/features/product/hooks/use-product-detail";
 import { useProductList } from "@/features/product/hooks/use-product-list";
-import { useDeleteProductMutation } from "@/features/product/hooks/use-product-mutations";
 import type { Product, ProductSort } from "@/features/product/types/product";
 import { getApiErrorMessage } from "@/lib/api-client";
 import { cn } from "@/utils/cn";
@@ -29,7 +42,7 @@ type ProductListScreenProps = {
 
 const PRODUCT_TABLE_GRID_STYLE = {
   gridTemplateColumns:
-    "minmax(136px,1.7fr) minmax(84px,0.8fr) minmax(68px,0.65fr) minmax(42px,0.35fr) minmax(78px,0.55fr) minmax(74px,0.5fr)",
+    "minmax(136px,1.2fr) minmax(84px,0.8fr) minmax(68px,0.65fr) minmax(42px,0.35fr) minmax(78px,0.55fr)",
 };
 
 export function ProductListScreen({
@@ -52,7 +65,6 @@ export function ProductListScreen({
   const [pendingCategoryName, setPendingCategoryName] = useState("");
   const [pendingStatusName, setPendingStatusName] = useState("");
   const [notice, setNotice] = useState<string | null>(null);
-  const [actionError, setActionError] = useState<string | null>(null);
   const [isExporting, setIsExporting] = useState(false);
 
   const categoriesQuery = useProductCategories();
@@ -78,7 +90,6 @@ export function ProductListScreen({
   );
 
   const productsQuery = useProductList(listParams);
-  const deleteProductMutation = useDeleteProductMutation();
   const products = productsQuery.data?.items ?? [];
   const totalCount = productsQuery.data?.totalCount ?? 0;
   const displayTimeZone = user?.timeZone ?? getBrowserTimeZoneFallback();
@@ -178,21 +189,6 @@ export function ProductListScreen({
     }
   };
 
-  const onDeleteProduct = async (product: Product) => {
-    if (!window.confirm(`${product.productName} 제품을 삭제할까요?`)) {
-      return;
-    }
-
-    setActionError(null);
-
-    try {
-      await deleteProductMutation.mutateAsync(product.id);
-      setNotice("제품이 삭제되었습니다.");
-    } catch (error) {
-      setActionError(getApiErrorMessage(error));
-    }
-  };
-
   return (
     <section className="flex min-h-full flex-col bg-[#FAFAF8]">
       <PageHeader
@@ -229,7 +225,8 @@ export function ProductListScreen({
         </form>
         <FilterChip
           active={!hasFilters}
-          label="전체"
+          icon={RotateCcw}
+          label="초기화"
           onClick={() => {
             setSearch("");
             setSearchText("");
@@ -239,60 +236,34 @@ export function ProductListScreen({
             setPage(1);
           }}
         />
-        <select
-          className={cn(
-            "h-8 w-[clamp(112px,12vw,132px)] shrink-0 appearance-none rounded-md border px-3 text-[13px] outline-none transition",
-            categoryFilter
-              ? "border-[#BFDBFE] bg-[#EFF6FF] text-[#1D4ED8]"
-              : "border-[#E2E5EC] bg-transparent text-[#6B7280] hover:bg-[#FAFAF8]",
-          )}
-          disabled={categoriesQuery.isLoading}
-          onChange={(event) => {
-            const value = event.target.value;
-            if (value === ADD_TAXONOMY_VALUE) {
-              setTaxonomyDialog({ kind: "category" });
-              return;
-            }
-            setCategoryFilter(value);
+        <ProductTaxonomyFilterCombobox
+          emptyText="조건에 맞는 카테고리가 없습니다."
+          getLabel={(c) => c.categoryName}
+          itemKindLabel="카테고리"
+          items={categories}
+          selectedId={categoryFilter}
+          size="desktop"
+          tone="indigo"
+          onCreateClick={() => setTaxonomyDialog({ kind: "category" })}
+          onSelectedIdChange={(id) => {
+            setCategoryFilter(id);
             setPage(1);
           }}
-          value={categoryFilter}
-        >
-          <option value="">카테고리</option>
-          <option value={ADD_TAXONOMY_VALUE}>+ 추가</option>
-          {categories.map((category) => (
-            <option key={category.id} value={category.id}>
-              {category.categoryName}
-            </option>
-          ))}
-        </select>
-        <select
-          className={cn(
-            "h-8 w-[clamp(112px,12vw,132px)] shrink-0 appearance-none rounded-md border px-3 text-[13px] outline-none transition",
-            statusFilter
-              ? "border-[#BFDBFE] bg-[#EFF6FF] text-[#1D4ED8]"
-              : "border-[#E2E5EC] bg-transparent text-[#6B7280] hover:bg-[#FAFAF8]",
-          )}
-          disabled={statusesQuery.isLoading}
-          onChange={(event) => {
-            const value = event.target.value;
-            if (value === ADD_TAXONOMY_VALUE) {
-              setTaxonomyDialog({ kind: "status" });
-              return;
-            }
-            setStatusFilter(value);
+        />
+        <ProductTaxonomyFilterCombobox
+          emptyText="조건에 맞는 상태가 없습니다."
+          getLabel={(s) => s.statusName}
+          itemKindLabel="상태"
+          items={statuses}
+          selectedId={statusFilter}
+          size="desktop"
+          tone="green"
+          onCreateClick={() => setTaxonomyDialog({ kind: "status" })}
+          onSelectedIdChange={(id) => {
+            setStatusFilter(id);
             setPage(1);
           }}
-          value={statusFilter}
-        >
-          <option value="">판매 상태</option>
-          <option value={ADD_TAXONOMY_VALUE}>+ 추가</option>
-          {statuses.map((status) => (
-            <option key={status.id} value={status.id}>
-              {status.statusName}
-            </option>
-          ))}
-        </select>
+        />
         <select
           className={cn(
             "h-8 w-[clamp(100px,11vw,118px)] shrink-0 appearance-none rounded-md border px-3 text-[13px] outline-none transition",
@@ -318,19 +289,13 @@ export function ProductListScreen({
 
       {/* 테이블 (데스크톱) */}
       <div className="hidden gap-3 overflow-x-auto px-5 pb-3 pt-1 md:flex xl:gap-5">
-        <div className="flex min-w-0 flex-1 flex-col gap-3">
+        <div className="mx-auto flex w-full max-w-[1400px] flex-col gap-3">
           {notice ? (
             <Toast
               message={notice}
               onClose={() => setNotice(null)}
               variant="success"
             />
-          ) : null}
-
-          {actionError ? (
-            <p className="rounded-md border border-red-200 bg-red-50 px-3 py-2 text-[12px] text-red-600">
-              {actionError}
-            </p>
           ) : null}
 
           {productsQuery.isError ? (
@@ -349,7 +314,6 @@ export function ProductListScreen({
               <ProductTableHeaderCell>상태</ProductTableHeaderCell>
               <ProductTableHeaderCell>딜 수</ProductTableHeaderCell>
               <ProductTableHeaderCell>등록일</ProductTableHeaderCell>
-              <ProductTableHeaderCell>관리</ProductTableHeaderCell>
             </div>
 
             {productsQuery.isLoading ? (
@@ -370,10 +334,8 @@ export function ProductListScreen({
               <div className="min-w-0">
                 {products.map((product) => (
                   <ProductRow
-                    deleteDisabled={deleteProductMutation.isPending}
                     displayTimeZone={displayTimeZone}
                     key={product.id}
-                    onDelete={() => void onDeleteProduct(product)}
                     product={product}
                   />
                 ))}
@@ -394,12 +356,12 @@ export function ProductListScreen({
       {/* 모바일 뷰 */}
       <section className="flex min-h-0 flex-1 flex-col md:hidden">
         {/* 모바일 필터 칩 행 */}
-        <div className="flex h-10 shrink-0 items-center gap-2 border-b border-[#E5E7EB] px-4">
+        <div className="flex h-10 shrink-0 items-center gap-2 overflow-x-auto border-b border-[#E5E7EB] px-4">
           <button
             className={cn(
-              "inline-flex h-7 shrink-0 items-center rounded-full border px-3 text-[12px] font-medium transition",
+              "inline-flex h-7 shrink-0 items-center gap-1.5 rounded-full border px-3 text-[12px] font-medium transition",
               !hasFilters
-                ? "border-[#5E5CE6] bg-[#EEEEFF] text-[#5E5CE6]"
+                ? "border-[#C7D7FE] bg-[#EAF2FF] font-bold text-[#1D4ED8]"
                 : "border-[#E5E7EB] bg-[#F3F4F6] text-[#4B5563]",
             )}
             onClick={() => {
@@ -412,67 +374,53 @@ export function ProductListScreen({
             }}
             type="button"
           >
-            전체
+            <RotateCcw className="h-3 w-3" />
+            초기화
           </button>
-          <select
-            className={cn(
-              "h-7 appearance-none rounded-full border px-3 text-[12px] outline-none transition",
-              categoryFilter
-                ? "border-[#BFDBFE] bg-[#EFF6FF] text-[#1D4ED8]"
-                : "border-[#E5E7EB] bg-[#F3F4F6] text-[#4B5563]",
-            )}
-            disabled={categoriesQuery.isLoading}
-            onChange={(e) => {
-              const v = e.target.value;
-              if (v === ADD_TAXONOMY_VALUE) {
-                setTaxonomyDialog({ kind: "category" });
-                return;
-              }
-              setCategoryFilter(v);
+          <ProductTaxonomyFilterCombobox
+            emptyText="조건에 맞는 카테고리가 없습니다."
+            getLabel={(c) => c.categoryName}
+            itemKindLabel="카테고리"
+            items={categories}
+            selectedId={categoryFilter}
+            size="mobile"
+            tone="indigo"
+            onCreateClick={() => setTaxonomyDialog({ kind: "category" })}
+            onSelectedIdChange={(id) => {
+              setCategoryFilter(id);
               setPage(1);
             }}
-            value={categoryFilter}
-          >
-            <option value="">카테고리</option>
-            <option value={ADD_TAXONOMY_VALUE}>+ 추가</option>
-            {categories.map((c) => (
-              <option key={c.id} value={c.id}>
-                {c.categoryName}
-              </option>
-            ))}
-          </select>
-          <select
-            className={cn(
-              "h-7 appearance-none rounded-full border px-3 text-[12px] outline-none transition",
-              statusFilter
-                ? "border-[#BFDBFE] bg-[#EFF6FF] text-[#1D4ED8]"
-                : "border-[#E5E7EB] bg-[#F3F4F6] text-[#4B5563]",
-            )}
-            disabled={statusesQuery.isLoading}
-            onChange={(e) => {
-              const v = e.target.value;
-              if (v === ADD_TAXONOMY_VALUE) {
-                setTaxonomyDialog({ kind: "status" });
-                return;
-              }
-              setStatusFilter(v);
+          />
+          <ProductTaxonomyFilterCombobox
+            emptyText="조건에 맞는 상태가 없습니다."
+            getLabel={(s) => s.statusName}
+            itemKindLabel="상태"
+            items={statuses}
+            selectedId={statusFilter}
+            size="mobile"
+            tone="green"
+            onCreateClick={() => setTaxonomyDialog({ kind: "status" })}
+            onSelectedIdChange={(id) => {
+              setStatusFilter(id);
               setPage(1);
             }}
-            value={statusFilter}
-          >
-            <option value="">상태</option>
-            <option value={ADD_TAXONOMY_VALUE}>+ 추가</option>
-            {statuses.map((s) => (
-              <option key={s.id} value={s.id}>
-                {s.statusName}
-              </option>
-            ))}
-          </select>
+          />
           <div className="flex-1" />
           <span className="shrink-0 text-[11px] text-[#9CA3AF]">
             {totalCount}개
           </span>
         </div>
+
+        {/* 모바일 알림 */}
+        {notice ? (
+          <div className="px-4 pt-2">
+            <Toast
+              message={notice}
+              onClose={() => setNotice(null)}
+              variant="success"
+            />
+          </div>
+        ) : null}
 
         {/* 모바일 카드 목록 */}
         <div className="bg-white">
@@ -585,10 +533,13 @@ function ProductMobileCard({
   readonly product: Product;
   readonly displayTimeZone: string;
 }) {
+  const navigate = useNavigate();
+
   return (
-    <Link
-      className="flex w-full items-start gap-3 border-b border-[#E5E7EB] bg-white px-4 py-[14px] transition active:bg-[#F9FAFB]"
-      to={`/products/${product.id}`}
+    <button
+      className="flex w-full items-start gap-3 border-b border-[#E5E7EB] bg-white px-4 py-[14px] text-left transition active:bg-[#F9FAFB] hover:bg-[#FFFBEB]"
+      onClick={() => void navigate(`/products/${product.id}`)}
+      type="button"
     >
       {/* 아이콘 */}
       <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#EEEEFF]">
@@ -621,25 +572,32 @@ function ProductMobileCard({
           </span>
         </div>
       </div>
-    </Link>
+    </button>
   );
 }
 
 function ProductRow({
-  deleteDisabled,
   product,
   displayTimeZone,
-  onDelete,
 }: {
-  readonly deleteDisabled: boolean;
   readonly product: Product;
   readonly displayTimeZone: string;
-  readonly onDelete: () => void;
 }) {
+  const navigate = useNavigate();
+
   return (
     <div
-      className="grid h-[66px] items-center border-b border-[#E8EDF3] px-3 transition-colors last:border-b-0 hover:bg-blue-50/60 md:px-4 xl:px-6"
+      className="grid h-[66px] cursor-pointer items-center border-b border-[#E8EDF3] px-3 transition-colors last:border-b-0 hover:bg-[#FFFBEB] md:px-4 xl:px-6"
+      onClick={() => void navigate(`/products/${product.id}`)}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          void navigate(`/products/${product.id}`);
+        }
+      }}
+      role="button"
       style={PRODUCT_TABLE_GRID_STYLE}
+      tabIndex={0}
     >
       <div className="min-w-0">
         <span className="block truncate text-[13px] font-semibold text-[#111827]">
@@ -663,12 +621,6 @@ function ProductRow({
       >
         {formatProductCreatedAt(product.createdAt, displayTimeZone)}
       </div>
-      <ListRowActions
-        deleteLabel={`${product.productName} 삭제`}
-        detailTo={`/products/${product.id}`}
-        disabled={deleteDisabled}
-        onDelete={onDelete}
-      />
     </div>
   );
 }
@@ -721,27 +673,380 @@ function Badge({
 
 function FilterChip({
   active,
+  icon: Icon,
   label,
   onClick,
 }: {
   readonly active: boolean;
+  readonly icon?: LucideIcon;
   readonly label: string;
   readonly onClick: () => void;
 }) {
   return (
     <button
       className={cn(
-        "inline-flex h-8 shrink-0 items-center whitespace-nowrap rounded-[6px] px-3 text-[13px] transition",
+        "inline-flex h-8 shrink-0 items-center gap-1.5 whitespace-nowrap rounded-[6px] border px-3 text-[13px] transition hover:border-[#93C5FD] focus:border-[#2563EB] focus:outline-none focus:ring-1 focus:ring-[#2563EB]",
         active
-          ? "border border-[#C7D7FE] bg-[#EAF2FF] font-bold text-[#1D4ED8]"
-          : "border border-[#E6EAF0] bg-white font-medium text-[#475569] hover:bg-[#F9FAFB]",
+          ? "border-[#C7D7FE] bg-[#EAF2FF] font-bold text-[#1D4ED8]"
+          : "border-[#E6EAF0] bg-white font-medium text-[#475569] hover:bg-[#F9FAFB]",
       )}
       onClick={onClick}
       type="button"
     >
+      {Icon ? <Icon className="h-3.5 w-3.5" /> : null}
       {label}
     </button>
   );
+}
+
+// ── ProductTaxonomyFilterCombobox ─────────────────────────────────────────────
+
+type FieldFilterPopoverPosition = {
+  readonly left: number;
+  readonly top: number;
+  readonly width: number;
+};
+
+type ProductTaxonomyFilterItem = {
+  readonly id: string;
+};
+
+type ProductTaxonomyFilterTone = "indigo" | "green";
+
+function ProductTaxonomyFilterCombobox<
+  TItem extends ProductTaxonomyFilterItem,
+>({
+  emptyText,
+  getLabel,
+  itemKindLabel,
+  items,
+  selectedId,
+  size,
+  tone,
+  onCreateClick,
+  onSelectedIdChange,
+}: {
+  readonly emptyText: string;
+  readonly getLabel: (item: TItem) => string;
+  readonly itemKindLabel: string;
+  readonly items: readonly TItem[];
+  readonly selectedId: string;
+  readonly size: "desktop" | "mobile";
+  readonly tone: ProductTaxonomyFilterTone;
+  readonly onCreateClick: () => void;
+  readonly onSelectedIdChange: (id: string) => void;
+}) {
+  const [isOpen, setIsOpen] = useState(false);
+  const [search, setSearch] = useState("");
+  const [popoverPosition, setPopoverPosition] =
+    useState<FieldFilterPopoverPosition | null>(null);
+  const wrapperRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const selectedItem = useMemo(
+    () => items.find((item) => item.id === selectedId) ?? null,
+    [items, selectedId],
+  );
+  const selectedSummary = selectedItem ? getLabel(selectedItem) : "";
+
+  const query = search.trim();
+  const normalizedQuery = normalizeFilterText(query);
+  const filteredItems =
+    normalizedQuery.length > 0
+      ? items.filter((item) =>
+          normalizeFilterText(getLabel(item)).includes(normalizedQuery),
+        )
+      : items;
+  const isMobile = size === "mobile";
+  const inputValue = isOpen ? search : selectedSummary;
+
+  useEffect(() => {
+    if (!isOpen) {
+      setSearch("");
+    }
+  }, [isOpen]);
+
+  useEffect(() => {
+    if (!isOpen) {
+      return;
+    }
+
+    const updatePopoverPosition = () => {
+      if (!inputRef.current) {
+        return;
+      }
+      setPopoverPosition(
+        getFieldFilterPopoverPosition(inputRef.current, isMobile),
+      );
+    };
+    const onMouseDown = (event: MouseEvent) => {
+      if (
+        wrapperRef.current &&
+        !wrapperRef.current.contains(event.target as Node)
+      ) {
+        setIsOpen(false);
+        setSearch("");
+      }
+    };
+
+    updatePopoverPosition();
+    document.addEventListener("mousedown", onMouseDown);
+    window.addEventListener("resize", updatePopoverPosition);
+    window.addEventListener("scroll", updatePopoverPosition, true);
+
+    return () => {
+      document.removeEventListener("mousedown", onMouseDown);
+      window.removeEventListener("resize", updatePopoverPosition);
+      window.removeEventListener("scroll", updatePopoverPosition, true);
+    };
+  }, [isMobile, isOpen]);
+
+  const selectItem = (item: TItem) => {
+    const nextId = selectedId === item.id ? "" : item.id;
+    setSearch("");
+    onSelectedIdChange(nextId);
+    setIsOpen(false);
+  };
+
+  const openOptions = (nextSearch: string) => {
+    setSearch(nextSearch);
+    if (inputRef.current) {
+      setPopoverPosition(
+        getFieldFilterPopoverPosition(inputRef.current, isMobile),
+      );
+    }
+    setIsOpen(true);
+  };
+
+  const clearSelection = () => {
+    setSearch("");
+    onSelectedIdChange("");
+    inputRef.current?.focus();
+    openOptions("");
+  };
+
+  return (
+    <div
+      ref={wrapperRef}
+      className={cn(
+        "relative shrink-0",
+        isMobile ? "w-[120px]" : "w-[clamp(136px,14vw,178px)]",
+      )}
+    >
+      <div className="relative">
+        {/* Search icon — only visible when open */}
+        {isOpen ? (
+          <Search
+            className={cn(
+              "pointer-events-none absolute top-1/2 shrink-0 -translate-y-1/2 text-[#9CA3AF]",
+              isMobile ? "left-2.5 h-3 w-3" : "left-3 h-3 w-3",
+            )}
+          />
+        ) : null}
+        <input
+          ref={inputRef}
+          aria-autocomplete="list"
+          aria-expanded={isOpen}
+          aria-label={`${itemKindLabel} 필터`}
+          autoComplete="off"
+          className={cn(
+            "w-full min-w-0 border outline-none transition",
+            isMobile
+              ? "h-7 rounded-full text-[12px]"
+              : "h-8 rounded-full text-[13px]",
+            isOpen
+              ? cn(
+                  "border-[#2563EB] bg-white text-[#111827] ring-1 ring-[#2563EB]",
+                  isMobile ? "pl-7 pr-7" : "pl-8 pr-7",
+                )
+              : selectedId
+                ? cn(
+                    getTaxonomyFilterInputSelectedClass(tone),
+                    isMobile ? "pl-3 pr-7" : "pl-3.5 pr-7",
+                  )
+                : isMobile
+                  ? "border-[#E5E7EB] bg-[#F3F4F6] pl-3 pr-7 text-[#4B5563] hover:border-[#D1D5DB]"
+                  : "cursor-pointer border-[#E2E5EC] bg-transparent pl-3.5 pr-7 text-[#6B7280] hover:border-[#D1D5DB] hover:bg-[#F5F6F8]",
+          )}
+          onChange={(event) => {
+            openOptions(event.target.value);
+          }}
+          onFocus={() => openOptions("")}
+          onKeyDown={(event) => {
+            if (event.key === "Escape") {
+              setIsOpen(false);
+              setSearch("");
+              inputRef.current?.blur();
+              return;
+            }
+
+            if (event.key === "Enter") {
+              const firstItem = filteredItems[0];
+              if (!firstItem) {
+                return;
+              }
+              event.preventDefault();
+              selectItem(firstItem);
+            }
+          }}
+          placeholder={`${itemKindLabel} 선택`}
+          value={inputValue}
+        />
+        {/* Right icon: × when selected/searching, ▾ when idle */}
+        {selectedId || search ? (
+          <button
+            aria-label={`${itemKindLabel} 필터 지우기`}
+            className={cn(
+              "absolute right-1 top-1/2 grid -translate-y-1/2 place-items-center rounded-full text-[#9CA3AF] transition hover:bg-white hover:text-[#374151]",
+              isMobile ? "h-6 w-6" : "h-7 w-7",
+            )}
+            onClick={clearSelection}
+            type="button"
+          >
+            <X className={isMobile ? "h-3 w-3" : "h-3.5 w-3.5"} />
+          </button>
+        ) : (
+          <ChevronDown
+            className={cn(
+              "pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-[#9CA3AF] transition-transform",
+              isMobile ? "h-3 w-3" : "h-3.5 w-3.5",
+              isOpen && "rotate-180",
+            )}
+          />
+        )}
+      </div>
+
+      {isOpen ? (
+        <div
+          className={cn(
+            "fixed z-50 overflow-hidden rounded-md border border-[#E6EAF0] bg-white shadow-lg",
+            !popoverPosition && "invisible",
+          )}
+          style={{
+            left: popoverPosition?.left ?? 0,
+            top: popoverPosition?.top ?? 0,
+            width: popoverPosition?.width ?? 256,
+          }}
+        >
+          <button
+            className={cn(
+              "flex h-9 w-full items-center gap-1.5 px-3 text-left text-[13px] transition hover:bg-[#F9FAFB]",
+              !selectedId
+                ? "font-semibold text-[#1D4ED8]"
+                : "font-medium text-[#475569]",
+            )}
+            onClick={() => {
+              setSearch("");
+              setIsOpen(false);
+              onSelectedIdChange("");
+            }}
+            type="button"
+          >
+            <RotateCcw className="h-3.5 w-3.5" />
+            {itemKindLabel} 초기화
+          </button>
+
+          <div className="max-h-[184px] overflow-y-auto border-y border-[#E6EAF0] py-1">
+            {filteredItems.length === 0 ? (
+              <p className="px-3 py-3 text-[12px] text-[#9CA3AF]">
+                {emptyText}
+              </p>
+            ) : (
+              filteredItems.map((item) => {
+                const isSelected = item.id === selectedId;
+
+                return (
+                  <button
+                    className={cn(
+                      "flex h-8 w-full min-w-0 items-center gap-2 px-3 text-left text-[13px] transition hover:bg-[#F9FAFB]",
+                      isSelected && getTaxonomyFilterItemSelectedClass(tone),
+                    )}
+                    key={item.id}
+                    onClick={() => selectItem(item)}
+                    type="button"
+                  >
+                    <span
+                      className={cn(
+                        "grid h-3.5 w-3.5 shrink-0 place-items-center rounded-full border",
+                        isSelected
+                          ? getTaxonomyFilterCheckBorderClass(tone)
+                          : "border-[#CBD5E1]",
+                      )}
+                    >
+                      {isSelected ? (
+                        <span
+                          className={cn(
+                            "h-1.5 w-1.5 rounded-full",
+                            getTaxonomyFilterCheckDotClass(tone),
+                          )}
+                        />
+                      ) : null}
+                    </span>
+                    <span className="min-w-0 flex-1 truncate">
+                      {getLabel(item)}
+                    </span>
+                  </button>
+                );
+              })
+            )}
+          </div>
+
+          <button
+            className="flex h-9 w-full items-center gap-1.5 px-3 text-left text-[12px] font-semibold text-[#2563EB] transition hover:bg-[#EFF6FF]"
+            onClick={() => {
+              setIsOpen(false);
+              setSearch("");
+              onCreateClick();
+            }}
+            type="button"
+          >
+            <Plus className="h-3.5 w-3.5" />
+            새 {itemKindLabel} 추가
+          </button>
+        </div>
+      ) : null}
+    </div>
+  );
+}
+
+function getFieldFilterPopoverPosition(
+  input: HTMLInputElement,
+  isMobile: boolean,
+): FieldFilterPopoverPosition {
+  const rect = input.getBoundingClientRect();
+  const viewportWidth = window.innerWidth;
+  const margin = 16;
+  const width = isMobile
+    ? Math.min(256, Math.max(160, viewportWidth - margin * 2))
+    : 256;
+  const maxLeft = Math.max(margin, viewportWidth - width - margin);
+  const left = Math.min(Math.max(rect.left, margin), maxLeft);
+
+  return {
+    left,
+    top: rect.bottom + 4,
+    width,
+  };
+}
+
+function getTaxonomyFilterInputSelectedClass(tone: ProductTaxonomyFilterTone) {
+  return tone === "indigo"
+    ? "border-[#BFDBFE] bg-[#EFF6FF] font-semibold text-[#1D4ED8]"
+    : "border-[#A7F3D0] bg-[#ECFDF5] font-semibold text-[#047857]";
+}
+
+function getTaxonomyFilterItemSelectedClass(tone: ProductTaxonomyFilterTone) {
+  return tone === "indigo"
+    ? "bg-[#EFF6FF] font-semibold text-[#1D4ED8]"
+    : "bg-[#ECFDF5] font-semibold text-[#047857]";
+}
+
+function getTaxonomyFilterCheckBorderClass(tone: ProductTaxonomyFilterTone) {
+  return tone === "indigo" ? "border-[#1D4ED8]" : "border-[#047857]";
+}
+
+function getTaxonomyFilterCheckDotClass(tone: ProductTaxonomyFilterTone) {
+  return tone === "indigo" ? "bg-[#1D4ED8]" : "bg-[#047857]";
 }
 
 function ProductListSkeleton() {
@@ -776,12 +1081,14 @@ function getBrowserTimeZoneFallback() {
 
 function statusToneFromName(statusName: string) {
   if (statusName.includes("중단") || statusName.includes("보류")) {
-    return "rose";
+    return "rose" as const;
   }
   if (statusName.includes("판매") || statusName.includes("활성")) {
-    return "green";
+    return "green" as const;
   }
-  return "slate";
+  return "slate" as const;
 }
 
-const ADD_TAXONOMY_VALUE = "__add_taxonomy__";
+function normalizeFilterText(value: string) {
+  return value.trim().toLowerCase();
+}
