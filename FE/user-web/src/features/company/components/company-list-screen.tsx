@@ -14,6 +14,7 @@ import {
   type ReactNode,
   useEffect,
   useMemo,
+  useRef,
   useState,
 } from "react";
 import { PageHeader } from "@/components/layout/page-header";
@@ -40,6 +41,7 @@ import {
   useExportCompaniesMutation,
 } from "@/features/company/hooks/use-company-mutations";
 import type {
+  CompanyField,
   CompanyListItem,
   CompanySort,
 } from "@/features/company/types/company";
@@ -257,32 +259,16 @@ export function CompanyListScreen({
             setPage(1);
           }}
         />
-        <select
-          className={cn(
-            "h-8 w-[clamp(96px,10vw,118px)] shrink-0 appearance-none rounded-md border px-3 text-[13px] outline-none transition",
-            companyFieldId
-              ? "border-[#FDE68A] bg-[#FFFBEB] text-[#B45309]"
-              : "border-[#E2E5EC] bg-transparent text-[#6B7280] hover:bg-[#FAFAF8]",
-          )}
-          onChange={(e) => {
-            const v = e.target.value;
-            if (v === ADD_TAXONOMY_VALUE) {
-              setTaxonomyDialog({ kind: "field" });
-              return;
-            }
-            setCompanyFieldId(v);
+        <CompanyFieldFilterCombobox
+          fields={fields}
+          selectedId={companyFieldId}
+          size="desktop"
+          onCreateClick={() => setTaxonomyDialog({ kind: "field" })}
+          onSelect={(id) => {
+            setCompanyFieldId(id);
             setPage(1);
           }}
-          value={companyFieldId}
-        >
-          <option value="">분야</option>
-          <option value={ADD_TAXONOMY_VALUE}>+ 추가</option>
-          {fields.map((f) => (
-            <option key={f.id} value={f.id}>
-              {f.field}
-            </option>
-          ))}
-        </select>
+        />
         <select
           className={cn(
             "h-8 w-[clamp(96px,10vw,118px)] shrink-0 appearance-none rounded-md border px-3 text-[13px] outline-none transition",
@@ -498,32 +484,16 @@ export function CompanyListScreen({
           >
             전체
           </button>
-          <select
-            className={cn(
-              "h-7 appearance-none rounded-full border px-3 text-[12px] outline-none transition",
-              companyFieldId
-                ? "border-[#FDE68A] bg-[#FFFBEB] text-[#B45309]"
-                : "border-[#E5E7EB] bg-[#F3F4F6] text-[#4B5563]",
-            )}
-            onChange={(e) => {
-              const v = e.target.value;
-              if (v === ADD_TAXONOMY_VALUE) {
-                setTaxonomyDialog({ kind: "field" });
-                return;
-              }
-              setCompanyFieldId(v);
+          <CompanyFieldFilterCombobox
+            fields={fields}
+            selectedId={companyFieldId}
+            size="mobile"
+            onCreateClick={() => setTaxonomyDialog({ kind: "field" })}
+            onSelect={(id) => {
+              setCompanyFieldId(id);
               setPage(1);
             }}
-            value={companyFieldId}
-          >
-            <option value="">분야</option>
-            <option value={ADD_TAXONOMY_VALUE}>+ 추가</option>
-            {fields.map((f) => (
-              <option key={f.id} value={f.id}>
-                {f.field}
-              </option>
-            ))}
-          </select>
+          />
           <select
             className={cn(
               "h-7 appearance-none rounded-full border px-3 text-[12px] outline-none transition",
@@ -858,6 +828,287 @@ function FilterChip({
   );
 }
 
+type FieldFilterPopoverPosition = {
+  readonly left: number;
+  readonly top: number;
+  readonly width: number;
+};
+
+function CompanyFieldFilterCombobox({
+  fields,
+  selectedId,
+  size,
+  onCreateClick,
+  onSelect,
+}: {
+  readonly fields: readonly CompanyField[];
+  readonly selectedId: string;
+  readonly size: "desktop" | "mobile";
+  readonly onCreateClick: () => void;
+  readonly onSelect: (id: string) => void;
+}) {
+  const [isOpen, setIsOpen] = useState(false);
+  const [search, setSearch] = useState("");
+  const [popoverPosition, setPopoverPosition] =
+    useState<FieldFilterPopoverPosition | null>(null);
+  const wrapperRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const selectedField = fields.find((field) => field.id === selectedId);
+  const selectedLabel = selectedField?.field ?? "";
+  const query = search.trim();
+  const normalizedQuery = normalizeFilterText(query);
+  const filteredFields =
+    normalizedQuery.length > 0
+      ? fields.filter((field) =>
+          normalizeFilterText(field.field).includes(normalizedQuery),
+        )
+      : fields;
+  const isMobile = size === "mobile";
+
+  useEffect(() => {
+    if (!isOpen) {
+      setSearch(selectedLabel);
+    }
+  }, [isOpen, selectedLabel]);
+
+  useEffect(() => {
+    if (!isOpen) {
+      return;
+    }
+
+    const updatePopoverPosition = () => {
+      if (!inputRef.current) {
+        return;
+      }
+
+      setPopoverPosition(getFieldFilterPopoverPosition(inputRef.current, isMobile));
+    };
+    const onMouseDown = (event: MouseEvent) => {
+      if (
+        wrapperRef.current &&
+        !wrapperRef.current.contains(event.target as Node)
+      ) {
+        setIsOpen(false);
+        setSearch(selectedLabel);
+      }
+    };
+
+    updatePopoverPosition();
+    document.addEventListener("mousedown", onMouseDown);
+    window.addEventListener("resize", updatePopoverPosition);
+    window.addEventListener("scroll", updatePopoverPosition, true);
+
+    return () => {
+      document.removeEventListener("mousedown", onMouseDown);
+      window.removeEventListener("resize", updatePopoverPosition);
+      window.removeEventListener("scroll", updatePopoverPosition, true);
+    };
+  }, [isMobile, isOpen, selectedLabel]);
+
+  const selectField = (field: CompanyField) => {
+    setSearch(field.field);
+    setIsOpen(false);
+    onSelect(field.id);
+  };
+
+  const openOptions = (nextSearch: string) => {
+    setSearch(nextSearch);
+
+    if (inputRef.current) {
+      setPopoverPosition(getFieldFilterPopoverPosition(inputRef.current, isMobile));
+    }
+
+    setIsOpen(true);
+  };
+
+  const clearSelection = () => {
+    setSearch("");
+    onSelect("");
+    inputRef.current?.focus();
+    openOptions("");
+  };
+
+  return (
+    <div
+      ref={wrapperRef}
+      className={cn(
+        "relative shrink-0",
+        isMobile ? "w-[120px]" : "w-[clamp(136px,14vw,178px)]",
+      )}
+    >
+      <div className="relative">
+        <Search
+          className={cn(
+            "pointer-events-none absolute top-1/2 shrink-0 -translate-y-1/2 text-[#9CA3AF]",
+            isMobile ? "left-2.5 h-3 w-3" : "left-3 h-3 w-3",
+          )}
+        />
+        <input
+          ref={inputRef}
+          aria-autocomplete="list"
+          aria-expanded={isOpen}
+          aria-label="분야 필터"
+          autoComplete="off"
+          className={cn(
+            "w-full min-w-0 border outline-none transition",
+            isMobile
+              ? "h-7 rounded-full pl-7 pr-7 text-[12px]"
+              : "h-8 rounded-md pl-8 pr-7 text-[13px]",
+            selectedId
+              ? "border-[#FDE68A] bg-[#FFFBEB] font-semibold text-[#B45309]"
+              : isMobile
+                ? "border-[#E5E7EB] bg-[#F3F4F6] text-[#4B5563]"
+                : "border-[#E2E5EC] bg-transparent text-[#6B7280] hover:bg-[#FAFAF8]",
+          )}
+          onChange={(event) => {
+            openOptions(event.target.value);
+
+            if (selectedId) {
+              onSelect("");
+            }
+          }}
+          onFocus={() => openOptions("")}
+          onKeyDown={(event) => {
+            if (event.key === "Escape") {
+              setIsOpen(false);
+              setSearch(selectedLabel);
+              inputRef.current?.blur();
+              return;
+            }
+
+            if (event.key === "Enter") {
+              const firstField = filteredFields[0];
+              if (!firstField) {
+                return;
+              }
+
+              event.preventDefault();
+              selectField(firstField);
+            }
+          }}
+          placeholder="분야 검색"
+          value={search}
+        />
+        {selectedId || search ? (
+          <button
+            aria-label="분야 필터 지우기"
+            className={cn(
+              "absolute right-1 top-1/2 grid -translate-y-1/2 place-items-center rounded-full text-[#9CA3AF] transition hover:bg-white hover:text-[#374151]",
+              isMobile ? "h-6 w-6" : "h-7 w-7",
+            )}
+            onClick={clearSelection}
+            type="button"
+          >
+            <X className={isMobile ? "h-3 w-3" : "h-3.5 w-3.5"} />
+          </button>
+        ) : null}
+      </div>
+
+      {isOpen ? (
+        <div
+          className={cn(
+            "fixed z-50 overflow-hidden rounded-md border border-[#E6EAF0] bg-white shadow-lg",
+            !popoverPosition && "invisible",
+          )}
+          style={{
+            left: popoverPosition?.left ?? 0,
+            top: popoverPosition?.top ?? 0,
+            width: popoverPosition?.width ?? 256,
+          }}
+        >
+          <button
+            className={cn(
+              "flex h-9 w-full items-center px-3 text-left text-[13px] transition hover:bg-[#F9FAFB]",
+              !selectedId
+                ? "font-semibold text-[#1D4ED8]"
+                : "font-medium text-[#475569]",
+            )}
+            onClick={() => {
+              setSearch("");
+              setIsOpen(false);
+              onSelect("");
+            }}
+            type="button"
+          >
+            전체 분야
+          </button>
+
+          <div className="max-h-[184px] overflow-y-auto border-y border-[#E6EAF0] py-1">
+            {filteredFields.length === 0 ? (
+              <p className="px-3 py-3 text-[12px] text-[#9CA3AF]">
+                조건에 맞는 분야가 없습니다.
+              </p>
+            ) : (
+              filteredFields.map((field) => {
+                const isSelected = selectedId === field.id;
+
+                return (
+                  <button
+                    className={cn(
+                      "flex h-8 w-full min-w-0 items-center gap-2 px-3 text-left text-[13px] transition hover:bg-[#F9FAFB]",
+                      isSelected && "bg-[#FFFBEB] font-semibold text-[#B45309]",
+                    )}
+                    key={field.id}
+                    onClick={() => selectField(field)}
+                    type="button"
+                  >
+                    <span
+                      className={cn(
+                        "grid h-3.5 w-3.5 shrink-0 place-items-center rounded-full border",
+                        isSelected ? "border-[#B45309]" : "border-[#CBD5E1]",
+                      )}
+                    >
+                      {isSelected ? (
+                        <span className="h-1.5 w-1.5 rounded-full bg-[#B45309]" />
+                      ) : null}
+                    </span>
+                    <span className="min-w-0 flex-1 truncate">
+                      {field.field}
+                    </span>
+                  </button>
+                );
+              })
+            )}
+          </div>
+
+          <button
+            className="flex h-9 w-full items-center gap-1.5 px-3 text-left text-[12px] font-semibold text-[#2563EB] transition hover:bg-[#EFF6FF]"
+            onClick={() => {
+              setIsOpen(false);
+              setSearch(selectedLabel);
+              onCreateClick();
+            }}
+            type="button"
+          >
+            <Plus className="h-3.5 w-3.5" />
+            새 분야 추가
+          </button>
+        </div>
+      ) : null}
+    </div>
+  );
+}
+
+function getFieldFilterPopoverPosition(
+  input: HTMLInputElement,
+  isMobile: boolean,
+): FieldFilterPopoverPosition {
+  const rect = input.getBoundingClientRect();
+  const viewportWidth = window.innerWidth;
+  const margin = 16;
+  const width = isMobile
+    ? Math.min(256, Math.max(160, viewportWidth - margin * 2))
+    : 256;
+  const maxLeft = Math.max(margin, viewportWidth - width - margin);
+  const left = Math.min(Math.max(rect.left, margin), maxLeft);
+
+  return {
+    left,
+    top: rect.bottom + 4,
+    width,
+  };
+}
+
 function CompanyListError({
   error,
   onRetry,
@@ -1008,6 +1259,10 @@ function getBrowserTimeZoneFallback() {
   } catch {
     return "Asia/Seoul";
   }
+}
+
+function normalizeFilterText(value: string) {
+  return value.trim().toLowerCase();
 }
 
 function CompanyMobileCard({
