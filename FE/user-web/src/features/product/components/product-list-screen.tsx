@@ -41,8 +41,7 @@ type ProductListScreenProps = {
 };
 
 const PRODUCT_TABLE_GRID_STYLE = {
-  gridTemplateColumns:
-    "minmax(136px,1.2fr) minmax(84px,0.8fr) minmax(68px,0.65fr) minmax(42px,0.35fr) minmax(78px,0.55fr)",
+  gridTemplateColumns: "repeat(5, minmax(90px, 1fr))",
 };
 
 export function ProductListScreen({
@@ -289,7 +288,7 @@ export function ProductListScreen({
 
       {/* 테이블 (데스크톱) */}
       <div className="hidden gap-3 overflow-x-auto px-5 pb-3 pt-1 md:flex xl:gap-5">
-        <div className="mx-auto flex w-full max-w-[1400px] flex-col gap-3">
+        <div className="flex min-w-0 flex-1 flex-col gap-3">
           {notice ? (
             <Toast
               message={notice}

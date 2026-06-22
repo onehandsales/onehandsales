@@ -346,8 +346,8 @@ function ProductSummaryHeader({
       </div>
       <div className="flex-1" />
       <div className="flex items-center gap-4 text-[12px] text-[#9CA3AF]">
-        <span>등록 {formatDate(product.createdAt, { includeYear: true })}</span>
-        <span>수정 {formatDate(product.updatedAt, { includeYear: true })}</span>
+        <span>등록 {formatDateTime(product.createdAt, { includeYear: true })}</span>
+        <span>수정 {formatDateTime(product.updatedAt, { includeYear: true })}</span>
       </div>
     </div>
   );
