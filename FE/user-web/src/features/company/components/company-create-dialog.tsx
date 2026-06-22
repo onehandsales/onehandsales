@@ -20,6 +20,10 @@ import {
   useDeleteCompanyRegionMutation,
 } from "@/features/company/hooks/use-company-mutations";
 import {
+  useCompanyFields,
+  useCompanyRegions,
+} from "@/features/company/hooks/use-company-list";
+import {
   companyCreateFormSchema,
   emptyCompanyCreateFormValues,
   toCreateCompanyInput,
@@ -54,6 +58,8 @@ export function CompanyCreateDialog({
   const createRegionMutation = useCreateCompanyRegionMutation();
   const deleteFieldMutation = useDeleteCompanyFieldMutation();
   const deleteRegionMutation = useDeleteCompanyRegionMutation();
+  const fieldsQuery = useCompanyFields();
+  const regionsQuery = useCompanyRegions();
   const {
     register,
     handleSubmit,
@@ -143,11 +149,33 @@ export function CompanyCreateDialog({
 
   const createField = async (name: string) => {
     await createFieldMutation.mutateAsync({ field: name });
+    const updated = await fieldsQuery.refetch();
+    const created = updated.data?.items.find((field) => field.field === name);
+
+    if (created) {
+      setValue("companyFieldId", created.id, {
+        shouldDirty: true,
+        shouldValidate: true,
+      });
+      return;
+    }
+
     setPendingFieldName(name);
   };
 
   const createRegion = async (name: string) => {
     await createRegionMutation.mutateAsync({ region: name });
+    const updated = await regionsQuery.refetch();
+    const created = updated.data?.items.find((region) => region.region === name);
+
+    if (created) {
+      setValue("companyRegionId", created.id, {
+        shouldDirty: true,
+        shouldValidate: true,
+      });
+      return;
+    }
+
     setPendingRegionName(name);
   };
 
@@ -218,6 +246,7 @@ export function CompanyCreateDialog({
               <input type="hidden" {...register("companyFieldId")} />
               <ManagedTaxonomyDropdown
                 addPlaceholder="분야명"
+                createActionLabel="새 분야 추가"
                 emptyText="분야가 없습니다"
                 getLabel={(field) => field.field}
                 id="company-field-id"
@@ -246,6 +275,7 @@ export function CompanyCreateDialog({
               <input type="hidden" {...register("companyRegionId")} />
               <ManagedTaxonomyDropdown
                 addPlaceholder="지역명"
+                createActionLabel="새 지역 추가"
                 emptyText="지역이 없습니다"
                 getLabel={(region) => region.region}
                 id="company-region-id"

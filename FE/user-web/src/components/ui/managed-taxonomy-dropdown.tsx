@@ -17,6 +17,7 @@ type ManagedTaxonomyDropdownProps<TItem extends ManagedTaxonomyItem> = {
   readonly selectedId: string;
   readonly isCreating?: boolean;
   readonly isDeleting?: boolean;
+  readonly createActionLabel?: string;
   readonly getLabel: (item: TItem) => string;
   readonly onCreate: (name: string) => Promise<void>;
   readonly onDelete: (item: TItem) => Promise<void>;
@@ -34,6 +35,7 @@ export function ManagedTaxonomyDropdown<TItem extends ManagedTaxonomyItem>({
   selectedId,
   isCreating = false,
   isDeleting = false,
+  createActionLabel,
   getLabel,
   onCreate,
   onDelete,
@@ -44,6 +46,7 @@ export function ManagedTaxonomyDropdown<TItem extends ManagedTaxonomyItem>({
   const [addError, setAddError] = useState<string | null>(null);
   const [deleteErrors, setDeleteErrors] = useState<Record<string, string>>({});
   const wrapperRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
   const selectedItem = items.find((item) => item.id === selectedId);
   const selectedLabel = selectedItem ? getLabel(selectedItem) : "";
   const query = search.trim();
@@ -102,10 +105,21 @@ export function ManagedTaxonomyDropdown<TItem extends ManagedTaxonomyItem>({
     return () => document.removeEventListener("keydown", onKeyDown);
   }, [isOpen, selectedLabel]);
 
-  const handleCreate = async () => {
+  const handleCreate = async (options: { readonly promptWhenEmpty?: boolean } = {}) => {
     const name = query;
 
     if (!name) {
+      if (options.promptWhenEmpty) {
+        setAddError("추가할 이름을 입력해주세요.");
+        setIsOpen(true);
+        inputRef.current?.focus();
+      }
+      return;
+    }
+
+    if (hasExactMatch) {
+      setAddError("이미 있는 항목입니다.");
+      inputRef.current?.focus();
       return;
     }
 
@@ -147,6 +161,7 @@ export function ManagedTaxonomyDropdown<TItem extends ManagedTaxonomyItem>({
             isOpen || selectedId.length > 0 ? "border-[#2563EB]" : "border-[#E6EAF0]"
           )}
           id={id}
+          ref={inputRef}
           onChange={(event) => {
             setSearch(event.target.value);
             setAddError(null);
@@ -199,7 +214,7 @@ export function ManagedTaxonomyDropdown<TItem extends ManagedTaxonomyItem>({
             {filteredItems.length === 0 ? (
               <div className="grid gap-2 px-3 py-3">
                 <p className="text-[12px] text-[#9CA3AF]">{emptyText}</p>
-                {canCreate ? (
+                {!createActionLabel && canCreate ? (
                   <button
                     className="inline-flex h-8 items-center justify-center gap-1.5 self-start rounded-md border border-dashed border-primary/30 bg-primary/5 px-2.5 text-xs font-medium text-primary hover:bg-primary/10 disabled:cursor-not-allowed disabled:opacity-60"
                     disabled={isCreating}
@@ -207,7 +222,7 @@ export function ManagedTaxonomyDropdown<TItem extends ManagedTaxonomyItem>({
                     type="button"
                   >
                     <Plus className="h-3.5 w-3.5" />
-                    {query} {title} 추가
+                    {createActionLabel ?? `${query} ${title} 추가`}
                   </button>
                 ) : null}
               </div>
@@ -272,16 +287,16 @@ export function ManagedTaxonomyDropdown<TItem extends ManagedTaxonomyItem>({
             })}
           </div>
 
-          {canCreate && filteredItems.length > 0 ? (
+          {createActionLabel || (canCreate && filteredItems.length > 0) ? (
             <div className="border-t border-[#E6EAF0] px-2 py-1.5">
               <button
                 className="inline-flex h-8 items-center justify-center gap-1.5 rounded-md px-2 text-xs font-medium text-primary hover:bg-primary/10 disabled:cursor-not-allowed disabled:opacity-60"
-                disabled={isCreating}
-                onClick={() => void handleCreate()}
+                disabled={createActionLabel ? isCreating : !canCreate || isCreating}
+                onClick={() => void handleCreate({ promptWhenEmpty: Boolean(createActionLabel) })}
                 type="button"
               >
                 <Plus className="h-3.5 w-3.5" />
-                {query} {title} 추가
+                {createActionLabel ?? `${query} ${title} 추가`}
               </button>
             </div>
           ) : null}
