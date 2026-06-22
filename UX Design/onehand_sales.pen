@@ -10486,1753 +10486,6 @@
       "fontWeight": "600"
     },
     {
-      "type": "frame",
-      "id": "DmCpH",
-      "x": 2560,
-      "y": 1480,
-      "name": "[co] 상세 페이지",
-      "clip": true,
-      "width": 1440,
-      "height": 900,
-      "fill": "#F9FAFB",
-      "children": [
-        {
-          "type": "frame",
-          "id": "R6Es9",
-          "name": "Sidebar",
-          "width": 240,
-          "height": 900,
-          "fill": "#14151F",
-          "stroke": "#1E2030",
-          "strokeWidth": {
-            "right": 1
-          },
-          "layout": "vertical",
-          "children": [
-            {
-              "type": "frame",
-              "id": "B6SPA",
-              "name": "Sidebar Brand",
-              "width": "fill_container",
-              "height": 64,
-              "stroke": "#1E2030",
-              "strokeWidth": {
-                "bottom": 1
-              },
-              "gap": 10,
-              "padding": [
-                0,
-                18
-              ],
-              "alignItems": "center",
-              "children": [
-                {
-                  "type": "frame",
-                  "id": "N4SXo",
-                  "name": "Brand Mark",
-                  "width": 32,
-                  "height": 32,
-                  "fill": "#1D4ED8",
-                  "cornerRadius": 8,
-                  "justifyContent": "center",
-                  "alignItems": "center",
-                  "children": [
-                    {
-                      "type": "text",
-                      "id": "Z2xER8",
-                      "name": "Brand Initial",
-                      "fill": "#FFFFFF",
-                      "content": "한",
-                      "fontFamily": "Inter",
-                      "fontSize": 14,
-                      "fontWeight": "800"
-                    }
-                  ]
-                },
-                {
-                  "type": "frame",
-                  "id": "jEMEf",
-                  "name": "Brand Text",
-                  "width": "fill_container",
-                  "layout": "vertical",
-                  "gap": 1,
-                  "children": [
-                    {
-                      "type": "text",
-                      "id": "dWHqo",
-                      "name": "Brand Name",
-                      "fill": "#F4F4F5",
-                      "content": "한손에 영업",
-                      "fontFamily": "Inter",
-                      "fontSize": 16,
-                      "fontWeight": "800"
-                    },
-                    {
-                      "type": "text",
-                      "id": "kyWVC",
-                      "name": "Brand Sub",
-                      "fill": "#71717A",
-                      "content": "Onehand Sales",
-                      "fontFamily": "Inter",
-                      "fontSize": 11,
-                      "fontWeight": "600"
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              "type": "frame",
-              "id": "Rvjud",
-              "name": "Sidebar Menu",
-              "width": "fill_container",
-              "height": "fill_container",
-              "layout": "vertical",
-              "gap": 8,
-              "padding": [
-                14,
-                10
-              ],
-              "children": [
-                {
-                  "type": "text",
-                  "id": "Ja6uK",
-                  "name": "Menu Group 주요 메뉴",
-                  "fill": "#71717A",
-                  "textGrowth": "fixed-width",
-                  "width": "fill_container",
-                  "content": "주요 메뉴",
-                  "fontFamily": "Inter",
-                  "fontSize": 11,
-                  "fontWeight": "700"
-                },
-                {
-                  "type": "frame",
-                  "id": "Jwnav",
-                  "name": "Menu 홈",
-                  "width": "fill_container",
-                  "height": 40,
-                  "fill": "#00000000",
-                  "cornerRadius": 8,
-                  "stroke": "#00000000",
-                  "strokeWidth": 1,
-                  "gap": 10,
-                  "padding": [
-                    0,
-                    12
-                  ],
-                  "alignItems": "center",
-                  "children": [
-                    {
-                      "type": "icon",
-                      "id": "tOgGU",
-                      "name": "Menu Icon 홈",
-                      "width": 16,
-                      "height": 16,
-                      "icon": "house",
-                      "library": "lucide",
-                      "fill": "#71717A"
-                    },
-                    {
-                      "type": "text",
-                      "id": "r271VG",
-                      "name": "Menu Label 홈",
-                      "fill": "#A1A1AA",
-                      "content": "홈",
-                      "fontFamily": "Inter",
-                      "fontSize": 13,
-                      "fontWeight": "500"
-                    }
-                  ]
-                },
-                {
-                  "type": "frame",
-                  "id": "Cu2LS",
-                  "name": "Menu 딜",
-                  "width": "fill_container",
-                  "height": 40,
-                  "fill": "#00000000",
-                  "cornerRadius": 8,
-                  "stroke": "#00000000",
-                  "strokeWidth": 1,
-                  "gap": 10,
-                  "padding": [
-                    0,
-                    12
-                  ],
-                  "alignItems": "center",
-                  "children": [
-                    {
-                      "type": "icon",
-                      "id": "OFBKW",
-                      "name": "Menu Icon 딜",
-                      "width": 16,
-                      "height": 16,
-                      "icon": "briefcase-business",
-                      "library": "lucide",
-                      "fill": "#71717A"
-                    },
-                    {
-                      "type": "text",
-                      "id": "i2O0Qs",
-                      "name": "Menu Label 딜",
-                      "fill": "#A1A1AA",
-                      "content": "딜",
-                      "fontFamily": "Inter",
-                      "fontSize": 13,
-                      "fontWeight": "500"
-                    }
-                  ]
-                },
-                {
-                  "type": "frame",
-                  "id": "IvxJQ",
-                  "name": "Menu 회사",
-                  "width": "fill_container",
-                  "height": 40,
-                  "fill": "#1D4ED822",
-                  "cornerRadius": 8,
-                  "stroke": "#2563EB30",
-                  "strokeWidth": 1,
-                  "gap": 10,
-                  "padding": [
-                    0,
-                    12
-                  ],
-                  "alignItems": "center",
-                  "children": [
-                    {
-                      "type": "icon",
-                      "id": "elet3",
-                      "name": "Menu Icon 회사",
-                      "width": 16,
-                      "height": 16,
-                      "icon": "building-2",
-                      "library": "lucide",
-                      "fill": "#93C5FD"
-                    },
-                    {
-                      "type": "text",
-                      "id": "OmnDl",
-                      "name": "Menu Label 회사",
-                      "fill": "#BFDBFE",
-                      "content": "회사",
-                      "fontFamily": "Inter",
-                      "fontSize": 13,
-                      "fontWeight": "700"
-                    }
-                  ]
-                },
-                {
-                  "type": "frame",
-                  "id": "YgdMf",
-                  "name": "Menu 담당자",
-                  "width": "fill_container",
-                  "height": 40,
-                  "fill": "#00000000",
-                  "cornerRadius": 8,
-                  "stroke": "#00000000",
-                  "strokeWidth": 1,
-                  "gap": 10,
-                  "padding": [
-                    0,
-                    12
-                  ],
-                  "alignItems": "center",
-                  "children": [
-                    {
-                      "type": "icon",
-                      "id": "ZBs7P",
-                      "name": "Menu Icon 담당자",
-                      "width": 16,
-                      "height": 16,
-                      "icon": "id-card",
-                      "library": "lucide",
-                      "fill": "#71717A"
-                    },
-                    {
-                      "type": "text",
-                      "id": "LXvrP",
-                      "name": "Menu Label 담당자",
-                      "fill": "#A1A1AA",
-                      "content": "담당자",
-                      "fontFamily": "Inter",
-                      "fontSize": 13,
-                      "fontWeight": "500"
-                    }
-                  ]
-                },
-                {
-                  "type": "frame",
-                  "id": "fs47Y",
-                  "name": "Menu 제품",
-                  "width": "fill_container",
-                  "height": 40,
-                  "fill": "#00000000",
-                  "cornerRadius": 8,
-                  "stroke": "#00000000",
-                  "strokeWidth": 1,
-                  "gap": 10,
-                  "padding": [
-                    0,
-                    12
-                  ],
-                  "alignItems": "center",
-                  "children": [
-                    {
-                      "type": "icon",
-                      "id": "jdxxd",
-                      "name": "Menu Icon 제품",
-                      "width": 16,
-                      "height": 16,
-                      "icon": "package",
-                      "library": "lucide",
-                      "fill": "#71717A"
-                    },
-                    {
-                      "type": "text",
-                      "id": "UjptD",
-                      "name": "Menu Label 제품",
-                      "fill": "#A1A1AA",
-                      "content": "제품",
-                      "fontFamily": "Inter",
-                      "fontSize": 13,
-                      "fontWeight": "500"
-                    }
-                  ]
-                },
-                {
-                  "type": "text",
-                  "id": "XBZ9E",
-                  "name": "Menu Group 업무",
-                  "fill": "#71717A",
-                  "textGrowth": "fixed-width",
-                  "width": "fill_container",
-                  "content": "업무",
-                  "fontFamily": "Inter",
-                  "fontSize": 11,
-                  "fontWeight": "700"
-                },
-                {
-                  "type": "frame",
-                  "id": "LwbUX",
-                  "name": "Menu 일정",
-                  "width": "fill_container",
-                  "height": 40,
-                  "fill": "#00000000",
-                  "cornerRadius": 8,
-                  "stroke": "#00000000",
-                  "strokeWidth": 1,
-                  "gap": 10,
-                  "padding": [
-                    0,
-                    12
-                  ],
-                  "alignItems": "center",
-                  "children": [
-                    {
-                      "type": "icon",
-                      "id": "O76KS",
-                      "name": "Menu Icon 일정",
-                      "width": 16,
-                      "height": 16,
-                      "icon": "calendar",
-                      "library": "lucide",
-                      "fill": "#71717A"
-                    },
-                    {
-                      "type": "text",
-                      "id": "H0abXu",
-                      "name": "Menu Label 일정",
-                      "fill": "#A1A1AA",
-                      "content": "일정",
-                      "fontFamily": "Inter",
-                      "fontSize": 13,
-                      "fontWeight": "500"
-                    }
-                  ]
-                },
-                {
-                  "type": "frame",
-                  "id": "W9sZH",
-                  "name": "Menu 회의록",
-                  "width": "fill_container",
-                  "height": 40,
-                  "fill": "#00000000",
-                  "cornerRadius": 8,
-                  "stroke": "#00000000",
-                  "strokeWidth": 1,
-                  "gap": 10,
-                  "padding": [
-                    0,
-                    12
-                  ],
-                  "alignItems": "center",
-                  "children": [
-                    {
-                      "type": "icon",
-                      "id": "T3LUF",
-                      "name": "Menu Icon 회의록",
-                      "width": 16,
-                      "height": 16,
-                      "icon": "file-text",
-                      "library": "lucide",
-                      "fill": "#71717A"
-                    },
-                    {
-                      "type": "text",
-                      "id": "nIVCe",
-                      "name": "Menu Label 회의록",
-                      "fill": "#A1A1AA",
-                      "content": "회의록",
-                      "fontFamily": "Inter",
-                      "fontSize": 13,
-                      "fontWeight": "500"
-                    }
-                  ]
-                },
-                {
-                  "type": "frame",
-                  "id": "xu19A",
-                  "name": "Menu Import",
-                  "width": "fill_container",
-                  "height": 40,
-                  "fill": "#00000000",
-                  "cornerRadius": 8,
-                  "stroke": "#00000000",
-                  "strokeWidth": 1,
-                  "gap": 10,
-                  "padding": [
-                    0,
-                    12
-                  ],
-                  "alignItems": "center",
-                  "children": [
-                    {
-                      "type": "icon",
-                      "id": "TEn9E",
-                      "name": "Menu Icon Import",
-                      "width": 16,
-                      "height": 16,
-                      "icon": "upload",
-                      "library": "lucide",
-                      "fill": "#71717A"
-                    },
-                    {
-                      "type": "text",
-                      "id": "y2C7f",
-                      "name": "Menu Label Import",
-                      "fill": "#A1A1AA",
-                      "content": "Import",
-                      "fontFamily": "Inter",
-                      "fontSize": 13,
-                      "fontWeight": "500"
-                    }
-                  ]
-                },
-                {
-                  "type": "text",
-                  "id": "Cc08u",
-                  "name": "Menu Group 관리",
-                  "fill": "#71717A",
-                  "textGrowth": "fixed-width",
-                  "width": "fill_container",
-                  "content": "관리",
-                  "fontFamily": "Inter",
-                  "fontSize": 11,
-                  "fontWeight": "700"
-                },
-                {
-                  "type": "frame",
-                  "id": "JfVb1",
-                  "name": "Menu 휴지통",
-                  "width": "fill_container",
-                  "height": 40,
-                  "fill": "#00000000",
-                  "cornerRadius": 8,
-                  "stroke": "#00000000",
-                  "strokeWidth": 1,
-                  "gap": 10,
-                  "padding": [
-                    0,
-                    12
-                  ],
-                  "alignItems": "center",
-                  "children": [
-                    {
-                      "type": "icon",
-                      "id": "PJxzN",
-                      "name": "Menu Icon 휴지통",
-                      "width": 16,
-                      "height": 16,
-                      "icon": "trash-2",
-                      "library": "lucide",
-                      "fill": "#71717A"
-                    },
-                    {
-                      "type": "text",
-                      "id": "I6Lmq",
-                      "name": "Menu Label 휴지통",
-                      "fill": "#A1A1AA",
-                      "content": "휴지통",
-                      "fontFamily": "Inter",
-                      "fontSize": 13,
-                      "fontWeight": "500"
-                    }
-                  ]
-                },
-                {
-                  "type": "frame",
-                  "id": "t9DEe1",
-                  "name": "Menu 설정",
-                  "width": "fill_container",
-                  "height": 40,
-                  "fill": "#00000000",
-                  "cornerRadius": 8,
-                  "stroke": "#00000000",
-                  "strokeWidth": 1,
-                  "gap": 10,
-                  "padding": [
-                    0,
-                    12
-                  ],
-                  "alignItems": "center",
-                  "children": [
-                    {
-                      "type": "icon",
-                      "id": "pXdA9",
-                      "name": "Menu Icon 설정",
-                      "width": 16,
-                      "height": 16,
-                      "icon": "settings",
-                      "library": "lucide",
-                      "fill": "#71717A"
-                    },
-                    {
-                      "type": "text",
-                      "id": "zzo0n",
-                      "name": "Menu Label 설정",
-                      "fill": "#A1A1AA",
-                      "content": "설정",
-                      "fontFamily": "Inter",
-                      "fontSize": 13,
-                      "fontWeight": "500"
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              "type": "frame",
-              "id": "qH0ku",
-              "name": "Sidebar Account",
-              "width": "fill_container",
-              "height": 64,
-              "stroke": "#1E2030",
-              "strokeWidth": {
-                "top": 1
-              },
-              "gap": 10,
-              "padding": [
-                0,
-                16
-              ],
-              "alignItems": "center",
-              "children": [
-                {
-                  "type": "frame",
-                  "id": "AcVZF",
-                  "name": "Account Avatar",
-                  "width": 32,
-                  "height": 32,
-                  "fill": "#1E3A8A",
-                  "cornerRadius": 16,
-                  "justifyContent": "center",
-                  "alignItems": "center",
-                  "children": [
-                    {
-                      "type": "text",
-                      "id": "s3qzi",
-                      "name": "Account Initial",
-                      "fill": "#93C5FD",
-                      "content": "김",
-                      "fontFamily": "Inter",
-                      "fontSize": 13,
-                      "fontWeight": "800"
-                    }
-                  ]
-                },
-                {
-                  "type": "frame",
-                  "id": "a86yFL",
-                  "name": "Account Text",
-                  "width": "fill_container",
-                  "layout": "vertical",
-                  "gap": 1,
-                  "children": [
-                    {
-                      "type": "text",
-                      "id": "m0tkHm",
-                      "name": "Account Name",
-                      "fill": "#F4F4F5",
-                      "content": "김영업",
-                      "fontFamily": "Inter",
-                      "fontSize": 13,
-                      "fontWeight": "700"
-                    },
-                    {
-                      "type": "text",
-                      "id": "h4NDEe",
-                      "name": "Account Role",
-                      "fill": "#71717A",
-                      "content": "Sales Manager",
-                      "fontFamily": "Inter",
-                      "fontSize": 11,
-                      "fontWeight": "500"
-                    }
-                  ]
-                },
-                {
-                  "type": "icon",
-                  "id": "rixN3",
-                  "name": "Account Menu",
-                  "width": 16,
-                  "height": 16,
-                  "icon": "chevron-down",
-                  "library": "lucide",
-                  "fill": "#71717A"
-                }
-              ]
-            }
-          ]
-        },
-        {
-          "type": "frame",
-          "id": "GrEIB",
-          "name": "Main Area",
-          "width": "fill_container",
-          "height": "fill_container",
-          "fill": "#F9FAFB",
-          "layout": "vertical",
-          "children": [
-            {
-              "type": "frame",
-              "id": "LVJgd",
-              "name": "TopBar",
-              "width": "fill_container",
-              "height": 64,
-              "fill": "#FFFFFF",
-              "stroke": "#E5E7EB",
-              "strokeWidth": {
-                "bottom": 1
-              },
-              "gap": 12,
-              "padding": [
-                0,
-                24
-              ],
-              "alignItems": "center",
-              "children": [
-                {
-                  "type": "icon",
-                  "id": "oNWCq",
-                  "name": "Back Icon",
-                  "width": 20,
-                  "height": 20,
-                  "icon": "chevron-left",
-                  "library": "lucide",
-                  "fill": "$gray-400"
-                },
-                {
-                  "type": "frame",
-                  "id": "JLvoV",
-                  "name": "Breadcrumb",
-                  "width": "fill_container",
-                  "gap": 6,
-                  "alignItems": "center",
-                  "children": [
-                    {
-                      "type": "text",
-                      "id": "TNLoq",
-                      "name": "BC Parent",
-                      "fill": "#6B7280",
-                      "content": "회사",
-                      "fontFamily": "Inter",
-                      "fontSize": 13,
-                      "fontWeight": "normal"
-                    },
-                    {
-                      "type": "text",
-                      "id": "o5asH",
-                      "name": "BC Sep",
-                      "fill": "$gray-400",
-                      "content": "/",
-                      "fontFamily": "Inter",
-                      "fontSize": 13,
-                      "fontWeight": "normal"
-                    },
-                    {
-                      "type": "text",
-                      "id": "ilg0N",
-                      "name": "BC Current",
-                      "fill": "$gray-900",
-                      "content": "삼성전자",
-                      "fontFamily": "Inter",
-                      "fontSize": 13,
-                      "fontWeight": "600"
-                    }
-                  ]
-                },
-                {
-                  "type": "frame",
-                  "id": "wI6SE",
-                  "name": "Edit Button",
-                  "height": 36,
-                  "fill": "$white",
-                  "cornerRadius": 8,
-                  "stroke": "$gray-200",
-                  "strokeWidth": 1,
-                  "padding": [
-                    0,
-                    14
-                  ],
-                  "alignItems": "center",
-                  "children": [
-                    {
-                      "type": "text",
-                      "id": "BUIpm",
-                      "name": "Edit Label",
-                      "fill": "$gray-700",
-                      "content": "수정",
-                      "fontFamily": "Inter",
-                      "fontSize": 13,
-                      "fontWeight": "500"
-                    }
-                  ]
-                },
-                {
-                  "type": "frame",
-                  "id": "Ccrgz",
-                  "name": "Delete Button",
-                  "height": 36,
-                  "fill": "$white",
-                  "cornerRadius": 8,
-                  "stroke": "$red-100",
-                  "strokeWidth": 1,
-                  "padding": [
-                    0,
-                    14
-                  ],
-                  "alignItems": "center",
-                  "children": [
-                    {
-                      "type": "text",
-                      "id": "AUvXw",
-                      "name": "Delete Label",
-                      "fill": "$red-700",
-                      "content": "삭제",
-                      "fontFamily": "Inter",
-                      "fontSize": 13,
-                      "fontWeight": "500"
-                    }
-                  ]
-                },
-                {
-                  "type": "icon",
-                  "id": "A6yZ7b",
-                  "name": "Bell Icon",
-                  "width": 20,
-                  "height": 20,
-                  "icon": "bell",
-                  "library": "lucide",
-                  "fill": "$gray-500"
-                },
-                {
-                  "type": "frame",
-                  "id": "MYDuB",
-                  "name": "Account Avatar",
-                  "width": 32,
-                  "height": 32,
-                  "fill": "#5E5CE6",
-                  "cornerRadius": 16,
-                  "justifyContent": "center",
-                  "alignItems": "center",
-                  "children": [
-                    {
-                      "type": "text",
-                      "id": "Mu2bx",
-                      "name": "Account Initial",
-                      "fill": "#FFFFFF",
-                      "content": "김",
-                      "fontFamily": "Inter",
-                      "fontSize": 13,
-                      "fontWeight": "800"
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              "type": "frame",
-              "id": "DgBY7",
-              "name": "Content Area",
-              "width": "fill_container",
-              "height": "fill_container",
-              "children": [
-                {
-                  "type": "frame",
-                  "id": "RkFGd",
-                  "name": "Left Panel",
-                  "width": "fill_container",
-                  "height": "fill_container",
-                  "fill": "$gray-50",
-                  "layout": "vertical",
-                  "gap": 16,
-                  "padding": 24,
-                  "children": [
-                    {
-                      "type": "frame",
-                      "id": "r0WZ7",
-                      "name": "Info Card",
-                      "width": "fill_container",
-                      "fill": "$white",
-                      "cornerRadius": 8,
-                      "stroke": "$gray-200",
-                      "strokeWidth": 1,
-                      "layout": "vertical",
-                      "gap": 16,
-                      "padding": 20,
-                      "children": [
-                        {
-                          "type": "text",
-                          "id": "cb3Sy",
-                          "name": "Card Title",
-                          "fill": "$gray-900",
-                          "content": "기본 정보",
-                          "fontFamily": "Inter",
-                          "fontSize": 14,
-                          "fontWeight": "600"
-                        },
-                        {
-                          "type": "frame",
-                          "id": "j8o4g",
-                          "name": "Info Grid",
-                          "width": "fill_container",
-                          "layout": "vertical",
-                          "gap": 12,
-                          "children": [
-                            {
-                              "type": "frame",
-                              "id": "FLXNc",
-                              "name": "Grid Row",
-                              "width": "fill_container",
-                              "gap": 24,
-                              "children": [
-                                {
-                                  "type": "frame",
-                                  "id": "QTnTR",
-                                  "name": "Field 회사명",
-                                  "width": "fill_container",
-                                  "layout": "vertical",
-                                  "gap": 4,
-                                  "children": [
-                                    {
-                                      "type": "text",
-                                      "id": "ZeRKr",
-                                      "name": "FLabel",
-                                      "fill": "$gray-500",
-                                      "content": "회사명",
-                                      "fontFamily": "Inter",
-                                      "fontSize": 11,
-                                      "fontWeight": "600"
-                                    },
-                                    {
-                                      "type": "text",
-                                      "id": "Iufs1",
-                                      "name": "FValue",
-                                      "fill": "$gray-900",
-                                      "content": "삼성전자",
-                                      "fontFamily": "Inter",
-                                      "fontSize": 13,
-                                      "fontWeight": "normal"
-                                    }
-                                  ]
-                                },
-                                {
-                                  "type": "frame",
-                                  "id": "SGBrz",
-                                  "name": "Field 분야",
-                                  "width": "fill_container",
-                                  "layout": "vertical",
-                                  "gap": 4,
-                                  "children": [
-                                    {
-                                      "type": "text",
-                                      "id": "byLao",
-                                      "name": "FLabel",
-                                      "fill": "$gray-500",
-                                      "content": "분야",
-                                      "fontFamily": "Inter",
-                                      "fontSize": 11,
-                                      "fontWeight": "600"
-                                    },
-                                    {
-                                      "type": "text",
-                                      "id": "dCRwc",
-                                      "name": "FValue",
-                                      "fill": "$gray-900",
-                                      "content": "IT/전자",
-                                      "fontFamily": "Inter",
-                                      "fontSize": 13,
-                                      "fontWeight": "normal"
-                                    }
-                                  ]
-                                }
-                              ]
-                            },
-                            {
-                              "type": "frame",
-                              "id": "tueSg",
-                              "name": "Grid Row",
-                              "width": "fill_container",
-                              "gap": 24,
-                              "children": [
-                                {
-                                  "type": "frame",
-                                  "id": "X2jTG",
-                                  "name": "Field 지역",
-                                  "width": "fill_container",
-                                  "layout": "vertical",
-                                  "gap": 4,
-                                  "children": [
-                                    {
-                                      "type": "text",
-                                      "id": "gFNI8",
-                                      "name": "FLabel",
-                                      "fill": "$gray-500",
-                                      "content": "지역",
-                                      "fontFamily": "Inter",
-                                      "fontSize": 11,
-                                      "fontWeight": "600"
-                                    },
-                                    {
-                                      "type": "text",
-                                      "id": "X8F7L",
-                                      "name": "FValue",
-                                      "fill": "$gray-900",
-                                      "content": "서울",
-                                      "fontFamily": "Inter",
-                                      "fontSize": 13,
-                                      "fontWeight": "normal"
-                                    }
-                                  ]
-                                },
-                                {
-                                  "type": "frame",
-                                  "id": "c2BWi1",
-                                  "name": "Field 거래처수",
-                                  "width": "fill_container",
-                                  "layout": "vertical",
-                                  "gap": 4,
-                                  "children": [
-                                    {
-                                      "type": "text",
-                                      "id": "b0mkeC",
-                                      "name": "FLabel",
-                                      "fill": "$gray-500",
-                                      "content": "거래처수",
-                                      "fontFamily": "Inter",
-                                      "fontSize": 11,
-                                      "fontWeight": "600"
-                                    },
-                                    {
-                                      "type": "text",
-                                      "id": "nUVf0",
-                                      "name": "FValue",
-                                      "fill": "$gray-900",
-                                      "content": "12명",
-                                      "fontFamily": "Inter",
-                                      "fontSize": 13,
-                                      "fontWeight": "normal"
-                                    }
-                                  ]
-                                }
-                              ]
-                            },
-                            {
-                              "type": "frame",
-                              "id": "I3EIoR",
-                              "name": "Grid Row",
-                              "width": "fill_container",
-                              "gap": 24,
-                              "children": [
-                                {
-                                  "type": "frame",
-                                  "id": "oolTZ",
-                                  "name": "Field 딜수",
-                                  "width": "fill_container",
-                                  "layout": "vertical",
-                                  "gap": 4,
-                                  "children": [
-                                    {
-                                      "type": "text",
-                                      "id": "lQLDd",
-                                      "name": "FLabel",
-                                      "fill": "$gray-500",
-                                      "content": "딜수",
-                                      "fontFamily": "Inter",
-                                      "fontSize": 11,
-                                      "fontWeight": "600"
-                                    },
-                                    {
-                                      "type": "text",
-                                      "id": "Hud5W",
-                                      "name": "FValue",
-                                      "fill": "$gray-900",
-                                      "content": "3건",
-                                      "fontFamily": "Inter",
-                                      "fontSize": 13,
-                                      "fontWeight": "normal"
-                                    }
-                                  ]
-                                },
-                                {
-                                  "type": "frame",
-                                  "id": "Jyhnp",
-                                  "name": "Field 등록일",
-                                  "width": "fill_container",
-                                  "layout": "vertical",
-                                  "gap": 4,
-                                  "children": [
-                                    {
-                                      "type": "text",
-                                      "id": "WF7mu",
-                                      "name": "FLabel",
-                                      "fill": "$gray-500",
-                                      "content": "등록일",
-                                      "fontFamily": "Inter",
-                                      "fontSize": 11,
-                                      "fontWeight": "600"
-                                    },
-                                    {
-                                      "type": "text",
-                                      "id": "s9pFon",
-                                      "name": "FValue",
-                                      "fill": "$gray-900",
-                                      "content": "2025.12.01",
-                                      "fontFamily": "Inter",
-                                      "fontSize": 13,
-                                      "fontWeight": "normal"
-                                    }
-                                  ]
-                                }
-                              ]
-                            }
-                          ]
-                        }
-                      ]
-                    },
-                    {
-                      "type": "frame",
-                      "id": "cflPX",
-                      "name": "Log Section",
-                      "width": "fill_container",
-                      "layout": "vertical",
-                      "gap": 12,
-                      "children": [
-                        {
-                          "type": "frame",
-                          "id": "bcqT0",
-                          "name": "Log Header",
-                          "width": "fill_container",
-                          "alignItems": "center",
-                          "children": [
-                            {
-                              "type": "text",
-                              "id": "qa864",
-                              "name": "Log Title",
-                              "fill": "$gray-900",
-                              "content": "회사 로그",
-                              "fontFamily": "Inter",
-                              "fontSize": 14,
-                              "fontWeight": "600"
-                            },
-                            {
-                              "type": "frame",
-                              "id": "INjX1",
-                              "name": "Add Log Btn",
-                              "height": 28,
-                              "fill": "#EFF6FF",
-                              "cornerRadius": 6,
-                              "stroke": "#BFDBFE",
-                              "strokeWidth": 1,
-                              "padding": [
-                                0,
-                                10
-                              ],
-                              "alignItems": "center",
-                              "children": [
-                                {
-                                  "type": "text",
-                                  "id": "lUO6c",
-                                  "name": "Add Log Label",
-                                  "fill": "#2568D8",
-                                  "content": "+ 로그 추가",
-                                  "fontFamily": "Inter",
-                                  "fontSize": 12,
-                                  "fontWeight": "500"
-                                }
-                              ]
-                            }
-                          ]
-                        },
-                        {
-                          "type": "frame",
-                          "id": "CEt8D",
-                          "name": "Log 25.12.29 · 영업 방문",
-                          "width": "fill_container",
-                          "stroke": "$gray-100",
-                          "strokeWidth": {
-                            "bottom": 1
-                          },
-                          "gap": 10,
-                          "padding": [
-                            0,
-                            0,
-                            16,
-                            0
-                          ],
-                          "children": [
-                            {
-                              "type": "ellipse",
-                              "id": "L8VKs",
-                              "layoutPosition": "absolute",
-                              "x": 0,
-                              "y": 4,
-                              "name": "Dot",
-                              "fill": "$blue-600",
-                              "width": 9,
-                              "height": 9
-                            },
-                            {
-                              "type": "frame",
-                              "id": "l02u6i",
-                              "name": "Log Content",
-                              "width": "fill_container",
-                              "layout": "vertical",
-                              "gap": 4,
-                              "padding": [
-                                0,
-                                0,
-                                0,
-                                18
-                              ],
-                              "children": [
-                                {
-                                  "type": "text",
-                                  "id": "jUIBS",
-                                  "name": "Log Date",
-                                  "fill": "$gray-500",
-                                  "content": "25.12.29 · 영업 방문",
-                                  "fontFamily": "Inter",
-                                  "fontSize": 11,
-                                  "fontWeight": "normal"
-                                },
-                                {
-                                  "type": "text",
-                                  "id": "BnK36",
-                                  "name": "Log Text",
-                                  "fill": "$gray-700",
-                                  "textGrowth": "fixed-width",
-                                  "width": "fill_container",
-                                  "content": "신규 ERP 도입 검토 미팅 완료. 담당자 김철수 부장 확인.",
-                                  "fontFamily": "Inter",
-                                  "fontSize": 13,
-                                  "fontWeight": "normal"
-                                }
-                              ]
-                            }
-                          ]
-                        },
-                        {
-                          "type": "frame",
-                          "id": "O9oTps",
-                          "name": "Log 25.12.15 · 전화 통화",
-                          "width": "fill_container",
-                          "stroke": "$gray-100",
-                          "strokeWidth": {
-                            "bottom": 1
-                          },
-                          "gap": 10,
-                          "padding": [
-                            0,
-                            0,
-                            16,
-                            0
-                          ],
-                          "children": [
-                            {
-                              "type": "ellipse",
-                              "id": "vq5TV",
-                              "layoutPosition": "absolute",
-                              "x": 0,
-                              "y": 4,
-                              "name": "Dot",
-                              "fill": "$gray-300",
-                              "width": 9,
-                              "height": 9
-                            },
-                            {
-                              "type": "frame",
-                              "id": "BZCtk",
-                              "name": "Log Content",
-                              "width": "fill_container",
-                              "layout": "vertical",
-                              "gap": 4,
-                              "padding": [
-                                0,
-                                0,
-                                0,
-                                18
-                              ],
-                              "children": [
-                                {
-                                  "type": "text",
-                                  "id": "BsTT5",
-                                  "name": "Log Date",
-                                  "fill": "$gray-500",
-                                  "content": "25.12.15 · 전화 통화",
-                                  "fontFamily": "Inter",
-                                  "fontSize": 11,
-                                  "fontWeight": "normal"
-                                },
-                                {
-                                  "type": "text",
-                                  "id": "C0KWV",
-                                  "name": "Log Text",
-                                  "fill": "$gray-700",
-                                  "textGrowth": "fixed-width",
-                                  "width": "fill_container",
-                                  "content": "초기 제안서 발송 후 반응 확인 통화",
-                                  "fontFamily": "Inter",
-                                  "fontSize": 13,
-                                  "fontWeight": "normal"
-                                }
-                              ]
-                            }
-                          ]
-                        },
-                        {
-                          "type": "frame",
-                          "id": "s8KSX",
-                          "name": "Log 25.12.01 · 첫 접촉",
-                          "width": "fill_container",
-                          "stroke": "$gray-100",
-                          "strokeWidth": {
-                            "bottom": 1
-                          },
-                          "gap": 10,
-                          "padding": [
-                            0,
-                            0,
-                            16,
-                            0
-                          ],
-                          "children": [
-                            {
-                              "type": "ellipse",
-                              "id": "yozrj",
-                              "layoutPosition": "absolute",
-                              "x": 0,
-                              "y": 4,
-                              "name": "Dot",
-                              "fill": "$gray-300",
-                              "width": 9,
-                              "height": 9
-                            },
-                            {
-                              "type": "frame",
-                              "id": "jMwDW",
-                              "name": "Log Content",
-                              "width": "fill_container",
-                              "layout": "vertical",
-                              "gap": 4,
-                              "padding": [
-                                0,
-                                0,
-                                0,
-                                18
-                              ],
-                              "children": [
-                                {
-                                  "type": "text",
-                                  "id": "KxdbS",
-                                  "name": "Log Date",
-                                  "fill": "$gray-500",
-                                  "content": "25.12.01 · 첫 접촉",
-                                  "fontFamily": "Inter",
-                                  "fontSize": 11,
-                                  "fontWeight": "normal"
-                                },
-                                {
-                                  "type": "text",
-                                  "id": "BZ5Pz",
-                                  "name": "Log Text",
-                                  "fill": "$gray-700",
-                                  "textGrowth": "fixed-width",
-                                  "width": "fill_container",
-                                  "content": "회사 등록 및 초기 접촉 시작",
-                                  "fontFamily": "Inter",
-                                  "fontSize": 13,
-                                  "fontWeight": "normal"
-                                }
-                              ]
-                            }
-                          ]
-                        }
-                      ]
-                    }
-                  ]
-                },
-                {
-                  "type": "frame",
-                  "id": "A9YKQ",
-                  "name": "Right Panel",
-                  "width": 360,
-                  "height": "fill_container",
-                  "fill": "$gray-50",
-                  "layout": "vertical",
-                  "gap": 16,
-                  "padding": 24,
-                  "children": [
-                    {
-                      "type": "frame",
-                      "id": "Ffq3u",
-                      "name": "Memo Section",
-                      "width": "fill_container",
-                      "fill": "$white",
-                      "cornerRadius": 8,
-                      "stroke": "$gray-200",
-                      "strokeWidth": 1,
-                      "layout": "vertical",
-                      "gap": 10,
-                      "padding": 16,
-                      "children": [
-                        {
-                          "type": "frame",
-                          "id": "D60mB",
-                          "name": "Memo Header",
-                          "width": "fill_container",
-                          "alignItems": "center",
-                          "children": [
-                            {
-                              "type": "text",
-                              "id": "LOhcW",
-                              "name": "Memo Title",
-                              "fill": "$gray-900",
-                              "content": "Memo 기록",
-                              "fontFamily": "Inter",
-                              "fontSize": 13,
-                              "fontWeight": "600"
-                            },
-                            {
-                              "type": "text",
-                              "id": "RyMR9",
-                              "name": "Add Memo",
-                              "fill": "#2568D8",
-                              "content": "+ 추가",
-                              "fontFamily": "Inter",
-                              "fontSize": 12,
-                              "fontWeight": "500"
-                            }
-                          ]
-                        },
-                        {
-                          "type": "frame",
-                          "id": "JaYmx",
-                          "name": "Warning Row",
-                          "width": "fill_container",
-                          "gap": 6,
-                          "alignItems": "center",
-                          "children": [
-                            {
-                              "type": "icon",
-                              "id": "BqCNp",
-                              "name": "Lock Icon",
-                              "width": 12,
-                              "height": 12,
-                              "icon": "lock",
-                              "library": "lucide",
-                              "fill": "$amber-700"
-                            },
-                            {
-                              "type": "text",
-                              "id": "j6iRs",
-                              "name": "Warning Text",
-                              "fill": "$amber-700",
-                              "content": "메모는 암호화 저장됩니다",
-                              "fontFamily": "Inter",
-                              "fontSize": 11,
-                              "fontWeight": "normal"
-                            }
-                          ]
-                        },
-                        {
-                          "type": "frame",
-                          "id": "xC9x8",
-                          "name": "Memo Card",
-                          "width": "fill_container",
-                          "fill": "$gray-50",
-                          "cornerRadius": 8,
-                          "layout": "vertical",
-                          "gap": 4,
-                          "padding": 12,
-                          "children": [
-                            {
-                              "type": "text",
-                              "id": "n7A8d",
-                              "name": "Memo Date",
-                              "fill": "$gray-400",
-                              "content": "25.12.29",
-                              "fontFamily": "Inter",
-                              "fontSize": 11,
-                              "fontWeight": "normal"
-                            },
-                            {
-                              "type": "text",
-                              "id": "sL4sk",
-                              "name": "Memo Content",
-                              "fill": "$gray-700",
-                              "textGrowth": "fixed-width",
-                              "width": "fill_container",
-                              "content": "가격 협상에 유연한 편. 담당자와 좋은 관계 형성 필요.",
-                              "fontFamily": "Inter",
-                              "fontSize": 13,
-                              "fontWeight": "normal"
-                            }
-                          ]
-                        }
-                      ]
-                    },
-                    {
-                      "type": "frame",
-                      "id": "o2HWse",
-                      "name": "CoSensWarn",
-                      "width": "fill_container",
-                      "fill": "$amber-50",
-                      "cornerRadius": 8,
-                      "stroke": "$amber-200",
-                      "strokeWidth": 1,
-                      "layout": "vertical",
-                      "gap": 4,
-                      "padding": 12,
-                      "children": [
-                        {
-                          "type": "frame",
-                          "id": "LB3nh",
-                          "name": "CoWHdr",
-                          "width": "fill_container",
-                          "gap": 6,
-                          "alignItems": "center",
-                          "children": [
-                            {
-                              "type": "icon",
-                              "id": "Df8mS",
-                              "name": "CoWIco",
-                              "width": 13,
-                              "height": 13,
-                              "icon": "lock",
-                              "library": "lucide",
-                              "fill": "$amber-700"
-                            },
-                            {
-                              "type": "text",
-                              "id": "bAEVz",
-                              "name": "CoWTitle",
-                              "fill": "#374151",
-                              "content": "개인정보 보호 안내",
-                              "fontFamily": "Inter",
-                              "fontSize": 12,
-                              "fontWeight": "700"
-                            }
-                          ]
-                        },
-                        {
-                          "type": "text",
-                          "id": "XyVsy",
-                          "name": "CoWT1",
-                          "fill": "$amber-700",
-                          "content": "담당자 전화번호·이메일은 민감정보입니다.",
-                          "fontFamily": "Inter",
-                          "fontSize": 11,
-                          "fontWeight": "normal"
-                        },
-                        {
-                          "type": "text",
-                          "id": "WIuCO",
-                          "name": "CoWT2",
-                          "fill": "$amber-700",
-                          "content": "화면 공유 시 주의하세요.",
-                          "fontFamily": "Inter",
-                          "fontSize": 11,
-                          "fontWeight": "normal"
-                        }
-                      ]
-                    },
-                    {
-                      "type": "frame",
-                      "id": "ZcGVM",
-                      "name": "Contacts Section",
-                      "width": "fill_container",
-                      "fill": "$white",
-                      "cornerRadius": 8,
-                      "stroke": "$gray-200",
-                      "strokeWidth": 1,
-                      "layout": "vertical",
-                      "gap": 8,
-                      "padding": 16,
-                      "children": [
-                        {
-                          "type": "text",
-                          "id": "O5061",
-                          "name": "Contacts Title",
-                          "fill": "$gray-900",
-                          "content": "연결 거래처",
-                          "fontFamily": "Inter",
-                          "fontSize": 13,
-                          "fontWeight": "600"
-                        },
-                        {
-                          "type": "frame",
-                          "id": "mXQz0",
-                          "name": "Contact 김철수",
-                          "width": "fill_container",
-                          "height": 36,
-                          "gap": 8,
-                          "alignItems": "center",
-                          "children": [
-                            {
-                              "type": "ellipse",
-                              "id": "dLxDE",
-                              "name": "Avatar",
-                              "fill": "$blue-100",
-                              "width": 24,
-                              "height": 24
-                            },
-                            {
-                              "type": "text",
-                              "id": "W33lqQ",
-                              "name": "Name",
-                              "fill": "$gray-900",
-                              "content": "김철수",
-                              "fontFamily": "Inter",
-                              "fontSize": 13,
-                              "fontWeight": "normal"
-                            },
-                            {
-                              "type": "text",
-                              "id": "LLDY9",
-                              "name": "Role",
-                              "fill": "$gray-400",
-                              "content": "부장",
-                              "fontFamily": "Inter",
-                              "fontSize": 12,
-                              "fontWeight": "normal"
-                            }
-                          ]
-                        },
-                        {
-                          "type": "frame",
-                          "id": "nkpOs",
-                          "name": "Contact 박민준",
-                          "width": "fill_container",
-                          "height": 36,
-                          "gap": 8,
-                          "alignItems": "center",
-                          "children": [
-                            {
-                              "type": "ellipse",
-                              "id": "PjPEK",
-                              "name": "Avatar",
-                              "fill": "$blue-100",
-                              "width": 24,
-                              "height": 24
-                            },
-                            {
-                              "type": "text",
-                              "id": "QKFoQ",
-                              "name": "Name",
-                              "fill": "$gray-900",
-                              "content": "박민준",
-                              "fontFamily": "Inter",
-                              "fontSize": 13,
-                              "fontWeight": "normal"
-                            },
-                            {
-                              "type": "text",
-                              "id": "f940nz",
-                              "name": "Role",
-                              "fill": "$gray-400",
-                              "content": "이사",
-                              "fontFamily": "Inter",
-                              "fontSize": 12,
-                              "fontWeight": "normal"
-                            }
-                          ]
-                        },
-                        {
-                          "type": "frame",
-                          "id": "nmRBX",
-                          "name": "Contact 이지영",
-                          "width": "fill_container",
-                          "height": 36,
-                          "gap": 8,
-                          "alignItems": "center",
-                          "children": [
-                            {
-                              "type": "ellipse",
-                              "id": "lbUU9",
-                              "name": "Avatar",
-                              "fill": "$blue-100",
-                              "width": 24,
-                              "height": 24
-                            },
-                            {
-                              "type": "text",
-                              "id": "CCZzk",
-                              "name": "Name",
-                              "fill": "$gray-900",
-                              "content": "이지영",
-                              "fontFamily": "Inter",
-                              "fontSize": 13,
-                              "fontWeight": "normal"
-                            },
-                            {
-                              "type": "text",
-                              "id": "SeFAW",
-                              "name": "Role",
-                              "fill": "$gray-400",
-                              "content": "팀장",
-                              "fontFamily": "Inter",
-                              "fontSize": 12,
-                              "fontWeight": "normal"
-                            }
-                          ]
-                        }
-                      ]
-                    },
-                    {
-                      "type": "frame",
-                      "id": "oDVI2",
-                      "name": "Deals Section",
-                      "width": "fill_container",
-                      "fill": "$white",
-                      "cornerRadius": 8,
-                      "stroke": "$gray-200",
-                      "strokeWidth": 1,
-                      "layout": "vertical",
-                      "gap": 8,
-                      "padding": 16,
-                      "children": [
-                        {
-                          "type": "text",
-                          "id": "gphJ0",
-                          "name": "Deals Title",
-                          "fill": "$gray-900",
-                          "content": "연결 딜",
-                          "fontFamily": "Inter",
-                          "fontSize": 13,
-                          "fontWeight": "600"
-                        },
-                        {
-                          "type": "frame",
-                          "id": "Z9ygI",
-                          "name": "Deal ERP 도입",
-                          "width": "fill_container",
-                          "height": 44,
-                          "gap": 8,
-                          "alignItems": "center",
-                          "children": [
-                            {
-                              "type": "ellipse",
-                              "id": "HMGu5",
-                              "name": "Dot",
-                              "fill": "$blue-600",
-                              "width": 8,
-                              "height": 8
-                            },
-                            {
-                              "type": "text",
-                              "id": "xWJrN",
-                              "name": "Deal Name",
-                              "fill": "$gray-900",
-                              "content": "ERP 도입",
-                              "fontFamily": "Inter",
-                              "fontSize": 13,
-                              "fontWeight": "normal"
-                            },
-                            {
-                              "type": "text",
-                              "id": "DZ32L",
-                              "name": "Amount",
-                              "fill": "$gray-600",
-                              "content": "₩48,000,000",
-                              "fontFamily": "Inter",
-                              "fontSize": 12,
-                              "fontWeight": "normal"
-                            }
-                          ]
-                        },
-                        {
-                          "type": "frame",
-                          "id": "YkdPB",
-                          "name": "Deal MES 구축",
-                          "width": "fill_container",
-                          "height": 44,
-                          "gap": 8,
-                          "alignItems": "center",
-                          "children": [
-                            {
-                              "type": "ellipse",
-                              "id": "T6x3m",
-                              "name": "Dot",
-                              "fill": "$blue-600",
-                              "width": 8,
-                              "height": 8
-                            },
-                            {
-                              "type": "text",
-                              "id": "r7Pi6p",
-                              "name": "Deal Name",
-                              "fill": "$gray-900",
-                              "content": "MES 구축",
-                              "fontFamily": "Inter",
-                              "fontSize": 13,
-                              "fontWeight": "normal"
-                            },
-                            {
-                              "type": "text",
-                              "id": "bxo5e",
-                              "name": "Amount",
-                              "fill": "$gray-600",
-                              "content": "₩120,000,000",
-                              "fontFamily": "Inter",
-                              "fontSize": 12,
-                              "fontWeight": "normal"
-                            }
-                          ]
-                        }
-                      ]
-                    }
-                  ]
-                }
-              ]
-            }
-          ]
-        }
-      ]
-    },
-    {
       "type": "text",
       "id": "u24bKt",
       "x": 2560,
@@ -76476,6 +74729,2571 @@
               "fill": "#EAECF2",
               "gap": 12,
               "padding": 20
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "tSFDe",
+      "x": 2560,
+      "y": 1480,
+      "name": "[co] 상세 페이지",
+      "clip": true,
+      "width": 1440,
+      "height": 900,
+      "fill": "#F9FAFB",
+      "layout": "none",
+      "children": [
+        {
+          "type": "frame",
+          "id": "r4jhu6",
+          "x": 0,
+          "y": 0,
+          "name": "Sidebar",
+          "width": 240,
+          "height": 900,
+          "fill": "#14151F",
+          "stroke": "#1E2030",
+          "strokeWidth": {
+            "right": 1
+          },
+          "layout": "vertical",
+          "children": [
+            {
+              "type": "frame",
+              "id": "W3Tlrc",
+              "name": "Sidebar Brand",
+              "width": "fill_container",
+              "height": 64,
+              "stroke": "#1E2030",
+              "strokeWidth": {
+                "bottom": 1
+              },
+              "gap": 10,
+              "padding": [
+                0,
+                18
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "GJVDv",
+                  "name": "Brand Mark",
+                  "width": 32,
+                  "height": 32,
+                  "fill": "#1D4ED8",
+                  "cornerRadius": 8,
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "KKTs0",
+                      "name": "Brand Initial",
+                      "fill": "#FFFFFF",
+                      "content": "한",
+                      "fontFamily": "Inter",
+                      "fontSize": 14,
+                      "fontWeight": "800"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "n9fu9o",
+                  "name": "Brand Text",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 1,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "x3ZXP",
+                      "name": "Brand Name",
+                      "fill": "#F4F4F5",
+                      "content": "한손에 영업",
+                      "fontFamily": "Inter",
+                      "fontSize": 16,
+                      "fontWeight": "800"
+                    },
+                    {
+                      "type": "text",
+                      "id": "a9E80q",
+                      "name": "Brand Sub",
+                      "fill": "#71717A",
+                      "content": "Onehand Sales",
+                      "fontFamily": "Inter",
+                      "fontSize": 11,
+                      "fontWeight": "600"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "dB6xo",
+              "name": "Sidebar Menu",
+              "width": "fill_container",
+              "height": "fill_container",
+              "layout": "vertical",
+              "gap": 8,
+              "padding": [
+                14,
+                10
+              ],
+              "children": [
+                {
+                  "type": "text",
+                  "id": "kK73D",
+                  "name": "Menu Group",
+                  "fill": "#71717A",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "주요 메뉴",
+                  "fontFamily": "Inter",
+                  "fontSize": 11,
+                  "fontWeight": "700"
+                },
+                {
+                  "type": "frame",
+                  "id": "C6iPKG",
+                  "name": "Menu 홈",
+                  "width": "fill_container",
+                  "height": 40,
+                  "fill": "#00000000",
+                  "cornerRadius": 8,
+                  "stroke": "#00000000",
+                  "strokeWidth": 1,
+                  "gap": 10,
+                  "padding": [
+                    0,
+                    12
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "icon",
+                      "id": "M3AL5",
+                      "name": "Menu Icon 홈",
+                      "width": 16,
+                      "height": 16,
+                      "icon": "house",
+                      "library": "lucide",
+                      "fill": "#71717A"
+                    },
+                    {
+                      "type": "text",
+                      "id": "VMQSD",
+                      "name": "Menu Label 홈",
+                      "fill": "#A1A1AA",
+                      "content": "홈",
+                      "fontFamily": "Inter",
+                      "fontSize": 13,
+                      "fontWeight": "500"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "cJPqL",
+                  "name": "Menu 딜",
+                  "width": "fill_container",
+                  "height": 40,
+                  "fill": "#00000000",
+                  "cornerRadius": 8,
+                  "stroke": "#00000000",
+                  "strokeWidth": 1,
+                  "gap": 10,
+                  "padding": [
+                    0,
+                    12
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "icon",
+                      "id": "b1r65e",
+                      "name": "Menu Icon 딜",
+                      "width": 16,
+                      "height": 16,
+                      "icon": "briefcase-business",
+                      "library": "lucide",
+                      "fill": "#71717A"
+                    },
+                    {
+                      "type": "text",
+                      "id": "Zmszx",
+                      "name": "Menu Label 딜",
+                      "fill": "#A1A1AA",
+                      "content": "딜",
+                      "fontFamily": "Inter",
+                      "fontSize": 13,
+                      "fontWeight": "500"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "k8BPn",
+                  "name": "Menu 회사",
+                  "width": "fill_container",
+                  "height": 40,
+                  "fill": "#1D4ED822",
+                  "cornerRadius": 8,
+                  "stroke": "#2563EB30",
+                  "strokeWidth": 1,
+                  "gap": 10,
+                  "padding": [
+                    0,
+                    12
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "icon",
+                      "id": "eY2N5",
+                      "name": "Menu Icon 회사",
+                      "width": 16,
+                      "height": 16,
+                      "icon": "building-2",
+                      "library": "lucide",
+                      "fill": "#93C5FD"
+                    },
+                    {
+                      "type": "text",
+                      "id": "dAN8O",
+                      "name": "Menu Label 회사",
+                      "fill": "#BFDBFE",
+                      "content": "회사",
+                      "fontFamily": "Inter",
+                      "fontSize": 13,
+                      "fontWeight": "700"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "FZ9UD",
+                  "name": "Menu 담당자",
+                  "width": "fill_container",
+                  "height": 40,
+                  "fill": "#00000000",
+                  "cornerRadius": 8,
+                  "stroke": "#00000000",
+                  "strokeWidth": 1,
+                  "gap": 10,
+                  "padding": [
+                    0,
+                    12
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "icon",
+                      "id": "P0nV5",
+                      "name": "Menu Icon 담당자",
+                      "width": 16,
+                      "height": 16,
+                      "icon": "id-card",
+                      "library": "lucide",
+                      "fill": "#71717A"
+                    },
+                    {
+                      "type": "text",
+                      "id": "LMi5P",
+                      "name": "Menu Label 담당자",
+                      "fill": "#A1A1AA",
+                      "content": "담당자",
+                      "fontFamily": "Inter",
+                      "fontSize": 13,
+                      "fontWeight": "500"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "Fmlkx",
+                  "name": "Menu 제품",
+                  "width": "fill_container",
+                  "height": 40,
+                  "fill": "#00000000",
+                  "cornerRadius": 8,
+                  "stroke": "#00000000",
+                  "strokeWidth": 1,
+                  "gap": 10,
+                  "padding": [
+                    0,
+                    12
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "icon",
+                      "id": "TQsVu",
+                      "name": "Menu Icon 제품",
+                      "width": 16,
+                      "height": 16,
+                      "icon": "package",
+                      "library": "lucide",
+                      "fill": "#71717A"
+                    },
+                    {
+                      "type": "text",
+                      "id": "v00qS",
+                      "name": "Menu Label 제품",
+                      "fill": "#A1A1AA",
+                      "content": "제품",
+                      "fontFamily": "Inter",
+                      "fontSize": 13,
+                      "fontWeight": "500"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "Q5fDJ",
+                  "name": "Menu 일정",
+                  "width": "fill_container",
+                  "height": 40,
+                  "fill": "#00000000",
+                  "cornerRadius": 8,
+                  "stroke": "#00000000",
+                  "strokeWidth": 1,
+                  "gap": 10,
+                  "padding": [
+                    0,
+                    12
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "icon",
+                      "id": "Jw16l",
+                      "name": "Menu Icon 일정",
+                      "width": 16,
+                      "height": 16,
+                      "icon": "calendar",
+                      "library": "lucide",
+                      "fill": "#71717A"
+                    },
+                    {
+                      "type": "text",
+                      "id": "LYlVa",
+                      "name": "Menu Label 일정",
+                      "fill": "#A1A1AA",
+                      "content": "일정",
+                      "fontFamily": "Inter",
+                      "fontSize": 13,
+                      "fontWeight": "500"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "NfsWU",
+                  "name": "Menu 회의록",
+                  "width": "fill_container",
+                  "height": 40,
+                  "fill": "#00000000",
+                  "cornerRadius": 8,
+                  "stroke": "#00000000",
+                  "strokeWidth": 1,
+                  "gap": 10,
+                  "padding": [
+                    0,
+                    12
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "icon",
+                      "id": "zCTi1",
+                      "name": "Menu Icon 회의록",
+                      "width": 16,
+                      "height": 16,
+                      "icon": "file-text",
+                      "library": "lucide",
+                      "fill": "#71717A"
+                    },
+                    {
+                      "type": "text",
+                      "id": "j8Q91X",
+                      "name": "Menu Label 회의록",
+                      "fill": "#A1A1AA",
+                      "content": "회의록",
+                      "fontFamily": "Inter",
+                      "fontSize": 13,
+                      "fontWeight": "500"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "O4moD",
+                  "name": "Menu Import",
+                  "width": "fill_container",
+                  "height": 40,
+                  "fill": "#00000000",
+                  "cornerRadius": 8,
+                  "stroke": "#00000000",
+                  "strokeWidth": 1,
+                  "gap": 10,
+                  "padding": [
+                    0,
+                    12
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "icon",
+                      "id": "MOrEh",
+                      "name": "Menu Icon Import",
+                      "width": 16,
+                      "height": 16,
+                      "icon": "upload",
+                      "library": "lucide",
+                      "fill": "#71717A"
+                    },
+                    {
+                      "type": "text",
+                      "id": "w8W2e",
+                      "name": "Menu Label Import",
+                      "fill": "#A1A1AA",
+                      "content": "Import",
+                      "fontFamily": "Inter",
+                      "fontSize": 13,
+                      "fontWeight": "500"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "NEIxD",
+          "x": 240,
+          "y": 0,
+          "name": "Main Area",
+          "width": 1200,
+          "height": 900,
+          "fill": "#F9FAFB",
+          "layout": "vertical",
+          "children": [
+            {
+              "type": "frame",
+              "id": "pD27P",
+              "name": "TopBar",
+              "width": "fill_container",
+              "height": 64,
+              "fill": "#FFFFFF",
+              "stroke": "#E5E7EB",
+              "strokeWidth": {
+                "bottom": 1
+              },
+              "gap": 12,
+              "padding": [
+                0,
+                24
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "xatzZ",
+                  "name": "Back Icon",
+                  "width": 20,
+                  "height": 20,
+                  "icon": "chevron-left",
+                  "library": "lucide",
+                  "fill": "#9CA3AF"
+                },
+                {
+                  "type": "frame",
+                  "id": "WS996",
+                  "name": "Breadcrumb",
+                  "width": "fill_container",
+                  "gap": 6,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "MjGqo",
+                      "name": "Breadcrumb Text",
+                      "fill": "#6B7280",
+                      "content": "회사",
+                      "fontFamily": "Inter",
+                      "fontSize": 13,
+                      "fontWeight": "500"
+                    },
+                    {
+                      "type": "text",
+                      "id": "e2K0eo",
+                      "name": "Breadcrumb Text",
+                      "fill": "#9CA3AF",
+                      "content": "/",
+                      "fontFamily": "Inter",
+                      "fontSize": 13,
+                      "fontWeight": "500"
+                    },
+                    {
+                      "type": "text",
+                      "id": "dp4nj",
+                      "name": "Breadcrumb Text",
+                      "fill": "#111827",
+                      "content": "삼성전자",
+                      "fontFamily": "Inter",
+                      "fontSize": 13,
+                      "fontWeight": "700"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "qGEQ8",
+                  "name": "수정 Button",
+                  "height": 36,
+                  "fill": "#FFFFFF",
+                  "cornerRadius": 8,
+                  "stroke": "#E5E7EB",
+                  "strokeWidth": 1,
+                  "padding": [
+                    0,
+                    14
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "r5nATi",
+                      "name": "수정 Label",
+                      "fill": "#374151",
+                      "content": "수정",
+                      "fontFamily": "Inter",
+                      "fontSize": 13,
+                      "fontWeight": "600"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "Ogeng",
+                  "name": "삭제 Button",
+                  "height": 36,
+                  "fill": "#FFFFFF",
+                  "cornerRadius": 8,
+                  "stroke": "#FEE2E2",
+                  "strokeWidth": 1,
+                  "padding": [
+                    0,
+                    14
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "n59xlV",
+                      "name": "삭제 Label",
+                      "fill": "#B91C1C",
+                      "content": "삭제",
+                      "fontFamily": "Inter",
+                      "fontSize": 13,
+                      "fontWeight": "600"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "dW8By",
+              "name": "Content Area - Scalable Company Detail",
+              "width": "fill_container",
+              "height": "fill_container",
+              "fill": "#F6F7F9",
+              "gap": 20,
+              "padding": 24,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "IhxrO",
+                  "name": "Main Relationship Workspace",
+                  "width": "fill_container",
+                  "height": "fill_container",
+                  "layout": "vertical",
+                  "gap": 16,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "bXq1k",
+                      "name": "Company Summary Header",
+                      "width": "fill_container",
+                      "height": 150,
+                      "fill": "#FFFFFF",
+                      "cornerRadius": 10,
+                      "stroke": "#E5E7EB",
+                      "strokeWidth": 1,
+                      "gap": 18,
+                      "padding": 18,
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "P4Y45",
+                          "name": "Company Identity Block",
+                          "width": "fill_container",
+                          "height": "fill_container",
+                          "layout": "vertical",
+                          "gap": 14,
+                          "children": [
+                            {
+                              "type": "frame",
+                              "id": "nRrK0",
+                              "name": "Company Identity Row",
+                              "width": "fill_container",
+                              "height": 48,
+                              "gap": 14,
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "frame",
+                                  "id": "kyvyd",
+                                  "name": "Company Logo",
+                                  "width": 48,
+                                  "height": 48,
+                                  "fill": "#EEF2FF",
+                                  "cornerRadius": 12,
+                                  "justifyContent": "center",
+                                  "alignItems": "center",
+                                  "children": [
+                                    {
+                                      "type": "text",
+                                      "id": "rpFBu",
+                                      "name": "Logo Text",
+                                      "fill": "#4F46E5",
+                                      "content": "삼",
+                                      "fontFamily": "Inter",
+                                      "fontSize": 22,
+                                      "fontWeight": "800"
+                                    }
+                                  ]
+                                },
+                                {
+                                  "type": "frame",
+                                  "id": "wQ6kK",
+                                  "name": "Company Title Stack",
+                                  "width": "fill_container",
+                                  "layout": "vertical",
+                                  "gap": 4,
+                                  "children": [
+                                    {
+                                      "type": "text",
+                                      "id": "wIFKP",
+                                      "name": "Company Name",
+                                      "fill": "#111827",
+                                      "content": "삼성전자",
+                                      "fontFamily": "Inter",
+                                      "fontSize": 30,
+                                      "fontWeight": "800"
+                                    },
+                                    {
+                                      "type": "text",
+                                      "id": "pUGcB",
+                                      "name": "Company Type Text",
+                                      "fill": "#6B7280",
+                                      "content": "회사 상세",
+                                      "fontFamily": "Inter",
+                                      "fontSize": 12,
+                                      "fontWeight": "700"
+                                    }
+                                  ]
+                                }
+                              ]
+                            },
+                            {
+                              "type": "frame",
+                              "id": "mOfdT",
+                              "name": "Company Meta Row",
+                              "width": "fill_container",
+                              "height": 53,
+                              "fill": "#F9FAFB",
+                              "cornerRadius": 8,
+                              "stroke": "#E5E7EB",
+                              "strokeWidth": 1,
+                              "gap": 14,
+                              "padding": [
+                                0,
+                                14
+                              ],
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "frame",
+                                  "id": "R4DAgU",
+                                  "name": "Meta 분야",
+                                  "width": "fill_container",
+                                  "layout": "vertical",
+                                  "gap": 2,
+                                  "children": [
+                                    {
+                                      "type": "text",
+                                      "id": "ccI0i",
+                                      "name": "Meta Label",
+                                      "fill": "#6B7280",
+                                      "content": "분야",
+                                      "fontFamily": "Inter",
+                                      "fontSize": 10,
+                                      "fontWeight": "800"
+                                    },
+                                    {
+                                      "type": "text",
+                                      "id": "gv6sm",
+                                      "name": "Meta Value",
+                                      "fill": "#111827",
+                                      "textGrowth": "fixed-width",
+                                      "width": "fill_container",
+                                      "content": "IT/전자 · 제조",
+                                      "fontFamily": "Inter",
+                                      "fontSize": 12,
+                                      "fontWeight": "800"
+                                    }
+                                  ]
+                                },
+                                {
+                                  "type": "frame",
+                                  "id": "iCsEp",
+                                  "name": "Meta 지역",
+                                  "width": "fill_container",
+                                  "layout": "vertical",
+                                  "gap": 2,
+                                  "children": [
+                                    {
+                                      "type": "text",
+                                      "id": "S3HLzr",
+                                      "name": "Meta Label",
+                                      "fill": "#6B7280",
+                                      "content": "지역",
+                                      "fontFamily": "Inter",
+                                      "fontSize": 10,
+                                      "fontWeight": "800"
+                                    },
+                                    {
+                                      "type": "text",
+                                      "id": "PtQMT",
+                                      "name": "Meta Value",
+                                      "fill": "#111827",
+                                      "textGrowth": "fixed-width",
+                                      "width": "fill_container",
+                                      "content": "서울",
+                                      "fontFamily": "Inter",
+                                      "fontSize": 12,
+                                      "fontWeight": "800"
+                                    }
+                                  ]
+                                },
+                                {
+                                  "type": "frame",
+                                  "id": "xoA52",
+                                  "name": "Meta 등록일",
+                                  "width": "fill_container",
+                                  "layout": "vertical",
+                                  "gap": 2,
+                                  "children": [
+                                    {
+                                      "type": "text",
+                                      "id": "AGrDD",
+                                      "name": "Meta Label",
+                                      "fill": "#6B7280",
+                                      "content": "등록일",
+                                      "fontFamily": "Inter",
+                                      "fontSize": 10,
+                                      "fontWeight": "800"
+                                    },
+                                    {
+                                      "type": "text",
+                                      "id": "WZDts",
+                                      "name": "Meta Value",
+                                      "fill": "#111827",
+                                      "textGrowth": "fixed-width",
+                                      "width": "fill_container",
+                                      "content": "2025.12.01",
+                                      "fontFamily": "Inter",
+                                      "fontSize": 12,
+                                      "fontWeight": "800"
+                                    }
+                                  ]
+                                },
+                                {
+                                  "type": "frame",
+                                  "id": "FyWhN",
+                                  "name": "Meta 담당 오너",
+                                  "width": "fill_container",
+                                  "layout": "vertical",
+                                  "gap": 2,
+                                  "children": [
+                                    {
+                                      "type": "text",
+                                      "id": "CR3mA",
+                                      "name": "Meta Label",
+                                      "fill": "#6B7280",
+                                      "content": "담당 오너",
+                                      "fontFamily": "Inter",
+                                      "fontSize": 10,
+                                      "fontWeight": "800"
+                                    },
+                                    {
+                                      "type": "text",
+                                      "id": "mo3d3",
+                                      "name": "Meta Value",
+                                      "fill": "#111827",
+                                      "textGrowth": "fixed-width",
+                                      "width": "fill_container",
+                                      "content": "김영업",
+                                      "fontFamily": "Inter",
+                                      "fontSize": 12,
+                                      "fontWeight": "800"
+                                    }
+                                  ]
+                                },
+                                {
+                                  "type": "frame",
+                                  "id": "wzSJz",
+                                  "name": "Meta 최근 업데이트",
+                                  "width": "fill_container",
+                                  "layout": "vertical",
+                                  "gap": 2,
+                                  "children": [
+                                    {
+                                      "type": "text",
+                                      "id": "FLH48",
+                                      "name": "Meta Label",
+                                      "fill": "#6B7280",
+                                      "content": "최근 업데이트",
+                                      "fontFamily": "Inter",
+                                      "fontSize": 10,
+                                      "fontWeight": "800"
+                                    },
+                                    {
+                                      "type": "text",
+                                      "id": "Oztx5",
+                                      "name": "Meta Value",
+                                      "fill": "#111827",
+                                      "textGrowth": "fixed-width",
+                                      "width": "fill_container",
+                                      "content": "2025.12.29",
+                                      "fontFamily": "Inter",
+                                      "fontSize": 12,
+                                      "fontWeight": "800"
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "VHTp5",
+                          "name": "Linked Records Summary",
+                          "width": 360,
+                          "height": 117,
+                          "fill": "#F8FAFC",
+                          "cornerRadius": 8,
+                          "stroke": "#E5E7EB",
+                          "strokeWidth": 1,
+                          "layout": "vertical",
+                          "gap": 10,
+                          "padding": 14,
+                          "children": [
+                            {
+                              "type": "frame",
+                              "id": "bF2Oi",
+                              "name": "Linked Summary Row 1",
+                              "width": "fill_container",
+                              "gap": 10,
+                              "children": [
+                                {
+                                  "type": "frame",
+                                  "id": "SI4pL",
+                                  "name": "Linked 담당자",
+                                  "width": "fill_container",
+                                  "layout": "vertical",
+                                  "gap": 2,
+                                  "children": [
+                                    {
+                                      "type": "text",
+                                      "id": "HV1Wx",
+                                      "name": "Linked Label",
+                                      "fill": "#6B7280",
+                                      "content": "담당자",
+                                      "fontFamily": "Inter",
+                                      "fontSize": 11,
+                                      "fontWeight": "700"
+                                    },
+                                    {
+                                      "type": "text",
+                                      "id": "N6xl3g",
+                                      "name": "Linked Value",
+                                      "fill": "#2563EB",
+                                      "content": "12명",
+                                      "fontFamily": "Inter",
+                                      "fontSize": 19,
+                                      "fontWeight": "800"
+                                    }
+                                  ]
+                                },
+                                {
+                                  "type": "frame",
+                                  "id": "k9CsJ9",
+                                  "name": "Linked 딜",
+                                  "width": "fill_container",
+                                  "layout": "vertical",
+                                  "gap": 2,
+                                  "children": [
+                                    {
+                                      "type": "text",
+                                      "id": "tWhTa",
+                                      "name": "Linked Label",
+                                      "fill": "#6B7280",
+                                      "content": "딜",
+                                      "fontFamily": "Inter",
+                                      "fontSize": 11,
+                                      "fontWeight": "700"
+                                    },
+                                    {
+                                      "type": "text",
+                                      "id": "t8hn8",
+                                      "name": "Linked Value",
+                                      "fill": "#7C3AED",
+                                      "content": "3건",
+                                      "fontFamily": "Inter",
+                                      "fontSize": 19,
+                                      "fontWeight": "800"
+                                    }
+                                  ]
+                                }
+                              ]
+                            },
+                            {
+                              "type": "frame",
+                              "id": "nKeb7",
+                              "name": "Linked Summary Row 2",
+                              "width": "fill_container",
+                              "gap": 10,
+                              "children": [
+                                {
+                                  "type": "frame",
+                                  "id": "qR7PW",
+                                  "name": "Linked 메모",
+                                  "width": "fill_container",
+                                  "layout": "vertical",
+                                  "gap": 2,
+                                  "children": [
+                                    {
+                                      "type": "text",
+                                      "id": "M86Y6t",
+                                      "name": "Linked Label",
+                                      "fill": "#6B7280",
+                                      "content": "메모",
+                                      "fontFamily": "Inter",
+                                      "fontSize": 11,
+                                      "fontWeight": "700"
+                                    },
+                                    {
+                                      "type": "text",
+                                      "id": "dPqtN",
+                                      "name": "Linked Value",
+                                      "fill": "#B45309",
+                                      "content": "2건",
+                                      "fontFamily": "Inter",
+                                      "fontSize": 19,
+                                      "fontWeight": "800"
+                                    }
+                                  ]
+                                },
+                                {
+                                  "type": "frame",
+                                  "id": "cSI3O",
+                                  "name": "Linked 활동 로그",
+                                  "width": "fill_container",
+                                  "layout": "vertical",
+                                  "gap": 2,
+                                  "children": [
+                                    {
+                                      "type": "text",
+                                      "id": "K5nAe",
+                                      "name": "Linked Label",
+                                      "fill": "#6B7280",
+                                      "content": "활동 로그",
+                                      "fontFamily": "Inter",
+                                      "fontSize": 11,
+                                      "fontWeight": "700"
+                                    },
+                                    {
+                                      "type": "text",
+                                      "id": "okmYr",
+                                      "name": "Linked Value",
+                                      "fill": "#0D9488",
+                                      "content": "4건",
+                                      "fontFamily": "Inter",
+                                      "fontSize": 19,
+                                      "fontWeight": "800"
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "q8OOm3",
+                      "name": "Growing Relationship Lists",
+                      "width": "fill_container",
+                      "height": 330,
+                      "gap": 16,
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "KHUgS",
+                          "name": "Connected Contacts - Table",
+                          "width": "fill_container",
+                          "height": "fill_container",
+                          "fill": "#FFFFFF",
+                          "cornerRadius": 10,
+                          "stroke": "#E5E7EB",
+                          "strokeWidth": 1,
+                          "layout": "vertical",
+                          "children": [
+                            {
+                              "type": "frame",
+                              "id": "RWHAe",
+                              "name": "연결 담당자 Header",
+                              "width": "fill_container",
+                              "height": 52,
+                              "stroke": "#E5E7EB",
+                              "strokeWidth": {
+                                "bottom": 1
+                              },
+                              "gap": 10,
+                              "padding": [
+                                0,
+                                16
+                              ],
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "sKNvA",
+                                  "name": "연결 담당자 Title",
+                                  "fill": "#111827",
+                                  "content": "연결 담당자",
+                                  "fontFamily": "Inter",
+                                  "fontSize": 15,
+                                  "fontWeight": "800"
+                                },
+                                {
+                                  "type": "frame",
+                                  "id": "kai0t",
+                                  "name": "연결 담당자 Count",
+                                  "height": 24,
+                                  "fill": "#F3F4F6",
+                                  "cornerRadius": 12,
+                                  "padding": [
+                                    0,
+                                    8
+                                  ],
+                                  "alignItems": "center",
+                                  "children": [
+                                    {
+                                      "type": "text",
+                                      "id": "AUx8b",
+                                      "name": "Count Text",
+                                      "fill": "#374151",
+                                      "content": "12",
+                                      "fontFamily": "Inter",
+                                      "fontSize": 12,
+                                      "fontWeight": "700"
+                                    }
+                                  ]
+                                },
+                                {
+                                  "type": "frame",
+                                  "id": "BS3WC",
+                                  "name": "연결 담당자 Spacer",
+                                  "width": "fill_container",
+                                  "height": 1
+                                }
+                              ]
+                            },
+                            {
+                              "type": "frame",
+                              "id": "ebIMq",
+                              "name": "Contact Row 김철수",
+                              "width": "fill_container",
+                              "height": 54,
+                              "stroke": "#F3F4F6",
+                              "strokeWidth": {
+                                "bottom": 1
+                              },
+                              "gap": 12,
+                              "padding": [
+                                0,
+                                16
+                              ],
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "ellipse",
+                                  "id": "z4Vfn",
+                                  "name": "Contact Avatar",
+                                  "fill": "#DBEAFE",
+                                  "width": 28,
+                                  "height": 28
+                                },
+                                {
+                                  "type": "frame",
+                                  "id": "nk2h8",
+                                  "name": "Contact Identity",
+                                  "width": 150,
+                                  "layout": "vertical",
+                                  "gap": 2,
+                                  "children": [
+                                    {
+                                      "type": "text",
+                                      "id": "mGIyP",
+                                      "name": "Contact Name",
+                                      "fill": "#111827",
+                                      "content": "김철수",
+                                      "fontFamily": "Inter",
+                                      "fontSize": 13,
+                                      "fontWeight": "800"
+                                    },
+                                    {
+                                      "type": "text",
+                                      "id": "ig2tN",
+                                      "name": "Contact Role",
+                                      "fill": "#6B7280",
+                                      "textGrowth": "fixed-width",
+                                      "width": "fill_container",
+                                      "content": "부장 · IT기획팀",
+                                      "fontFamily": "Inter",
+                                      "fontSize": 11,
+                                      "fontWeight": "500"
+                                    }
+                                  ]
+                                },
+                                {
+                                  "type": "text",
+                                  "id": "B1lWLE",
+                                  "name": "Contact Phone",
+                                  "fill": "#6B7280",
+                                  "textGrowth": "fixed-width",
+                                  "width": 104,
+                                  "content": "010-1234-5678",
+                                  "fontFamily": "Inter",
+                                  "fontSize": 12,
+                                  "fontWeight": "500"
+                                },
+                                {
+                                  "type": "frame",
+                                  "id": "jXRig",
+                                  "name": "Contact Row Spacer",
+                                  "width": "fill_container",
+                                  "height": 1
+                                },
+                                {
+                                  "type": "icon",
+                                  "id": "rQGC7",
+                                  "name": "Contact Detail Arrow",
+                                  "width": 16,
+                                  "height": 16,
+                                  "icon": "chevron-right",
+                                  "library": "lucide",
+                                  "fill": "#D1D5DB"
+                                }
+                              ]
+                            },
+                            {
+                              "type": "frame",
+                              "id": "rZBsA",
+                              "name": "Contact Row 박민준",
+                              "width": "fill_container",
+                              "height": 54,
+                              "stroke": "#F3F4F6",
+                              "strokeWidth": {
+                                "bottom": 1
+                              },
+                              "gap": 12,
+                              "padding": [
+                                0,
+                                16
+                              ],
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "ellipse",
+                                  "id": "swJbt",
+                                  "name": "Contact Avatar",
+                                  "fill": "#DBEAFE",
+                                  "width": 28,
+                                  "height": 28
+                                },
+                                {
+                                  "type": "frame",
+                                  "id": "d7Y6L1",
+                                  "name": "Contact Identity",
+                                  "width": 150,
+                                  "layout": "vertical",
+                                  "gap": 2,
+                                  "children": [
+                                    {
+                                      "type": "text",
+                                      "id": "AJrd9",
+                                      "name": "Contact Name",
+                                      "fill": "#111827",
+                                      "content": "박민준",
+                                      "fontFamily": "Inter",
+                                      "fontSize": 13,
+                                      "fontWeight": "800"
+                                    },
+                                    {
+                                      "type": "text",
+                                      "id": "vPFgD",
+                                      "name": "Contact Role",
+                                      "fill": "#6B7280",
+                                      "textGrowth": "fixed-width",
+                                      "width": "fill_container",
+                                      "content": "이사 · 구매팀",
+                                      "fontFamily": "Inter",
+                                      "fontSize": 11,
+                                      "fontWeight": "500"
+                                    }
+                                  ]
+                                },
+                                {
+                                  "type": "text",
+                                  "id": "P41NV",
+                                  "name": "Contact Phone",
+                                  "fill": "#6B7280",
+                                  "textGrowth": "fixed-width",
+                                  "width": 104,
+                                  "content": "010-2345-6789",
+                                  "fontFamily": "Inter",
+                                  "fontSize": 12,
+                                  "fontWeight": "500"
+                                },
+                                {
+                                  "type": "frame",
+                                  "id": "JGuaO",
+                                  "name": "Contact Row Spacer",
+                                  "width": "fill_container",
+                                  "height": 1
+                                },
+                                {
+                                  "type": "icon",
+                                  "id": "w4jlA",
+                                  "name": "Contact Detail Arrow",
+                                  "width": 16,
+                                  "height": 16,
+                                  "icon": "chevron-right",
+                                  "library": "lucide",
+                                  "fill": "#D1D5DB"
+                                }
+                              ]
+                            },
+                            {
+                              "type": "frame",
+                              "id": "i9RoIt",
+                              "name": "Contact Row 이지영",
+                              "width": "fill_container",
+                              "height": 54,
+                              "stroke": "#F3F4F6",
+                              "strokeWidth": {
+                                "bottom": 1
+                              },
+                              "gap": 12,
+                              "padding": [
+                                0,
+                                16
+                              ],
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "ellipse",
+                                  "id": "z3PrU2",
+                                  "name": "Contact Avatar",
+                                  "fill": "#DBEAFE",
+                                  "width": 28,
+                                  "height": 28
+                                },
+                                {
+                                  "type": "frame",
+                                  "id": "sbXo5",
+                                  "name": "Contact Identity",
+                                  "width": 150,
+                                  "layout": "vertical",
+                                  "gap": 2,
+                                  "children": [
+                                    {
+                                      "type": "text",
+                                      "id": "S7VUgg",
+                                      "name": "Contact Name",
+                                      "fill": "#111827",
+                                      "content": "이지영",
+                                      "fontFamily": "Inter",
+                                      "fontSize": 13,
+                                      "fontWeight": "800"
+                                    },
+                                    {
+                                      "type": "text",
+                                      "id": "iC6e1",
+                                      "name": "Contact Role",
+                                      "fill": "#6B7280",
+                                      "textGrowth": "fixed-width",
+                                      "width": "fill_container",
+                                      "content": "팀장 · DX전략",
+                                      "fontFamily": "Inter",
+                                      "fontSize": 11,
+                                      "fontWeight": "500"
+                                    }
+                                  ]
+                                },
+                                {
+                                  "type": "text",
+                                  "id": "e6ORCL",
+                                  "name": "Contact Phone",
+                                  "fill": "#6B7280",
+                                  "textGrowth": "fixed-width",
+                                  "width": 104,
+                                  "content": "010-3456-7890",
+                                  "fontFamily": "Inter",
+                                  "fontSize": 12,
+                                  "fontWeight": "500"
+                                },
+                                {
+                                  "type": "frame",
+                                  "id": "xEfab",
+                                  "name": "Contact Row Spacer",
+                                  "width": "fill_container",
+                                  "height": 1
+                                },
+                                {
+                                  "type": "icon",
+                                  "id": "ATFgy",
+                                  "name": "Contact Detail Arrow",
+                                  "width": 16,
+                                  "height": 16,
+                                  "icon": "chevron-right",
+                                  "library": "lucide",
+                                  "fill": "#D1D5DB"
+                                }
+                              ]
+                            },
+                            {
+                              "type": "frame",
+                              "id": "l0i5P",
+                              "name": "Contact Row 최유진",
+                              "width": "fill_container",
+                              "height": 54,
+                              "stroke": "#F3F4F6",
+                              "strokeWidth": {
+                                "bottom": 1
+                              },
+                              "gap": 12,
+                              "padding": [
+                                0,
+                                16
+                              ],
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "ellipse",
+                                  "id": "p82USU",
+                                  "name": "Contact Avatar",
+                                  "fill": "#DBEAFE",
+                                  "width": 28,
+                                  "height": 28
+                                },
+                                {
+                                  "type": "frame",
+                                  "id": "B09vP",
+                                  "name": "Contact Identity",
+                                  "width": 150,
+                                  "layout": "vertical",
+                                  "gap": 2,
+                                  "children": [
+                                    {
+                                      "type": "text",
+                                      "id": "ZdENl",
+                                      "name": "Contact Name",
+                                      "fill": "#111827",
+                                      "content": "최유진",
+                                      "fontFamily": "Inter",
+                                      "fontSize": 13,
+                                      "fontWeight": "800"
+                                    },
+                                    {
+                                      "type": "text",
+                                      "id": "UVv0g",
+                                      "name": "Contact Role",
+                                      "fill": "#6B7280",
+                                      "textGrowth": "fixed-width",
+                                      "width": "fill_container",
+                                      "content": "매니저 · 재무",
+                                      "fontFamily": "Inter",
+                                      "fontSize": 11,
+                                      "fontWeight": "500"
+                                    }
+                                  ]
+                                },
+                                {
+                                  "type": "text",
+                                  "id": "X7J66l",
+                                  "name": "Contact Phone",
+                                  "fill": "#6B7280",
+                                  "textGrowth": "fixed-width",
+                                  "width": 104,
+                                  "content": "010-4567-8901",
+                                  "fontFamily": "Inter",
+                                  "fontSize": 12,
+                                  "fontWeight": "500"
+                                },
+                                {
+                                  "type": "frame",
+                                  "id": "PoQYJ",
+                                  "name": "Contact Row Spacer",
+                                  "width": "fill_container",
+                                  "height": 1
+                                },
+                                {
+                                  "type": "icon",
+                                  "id": "JFw7R",
+                                  "name": "Contact Detail Arrow",
+                                  "width": 16,
+                                  "height": 16,
+                                  "icon": "chevron-right",
+                                  "library": "lucide",
+                                  "fill": "#D1D5DB"
+                                }
+                              ]
+                            },
+                            {
+                              "type": "frame",
+                              "id": "TcIVq",
+                              "name": "Contacts List Status",
+                              "width": "fill_container",
+                              "height": 36,
+                              "fill": "#FFFFFF",
+                              "gap": 8,
+                              "padding": [
+                                0,
+                                16
+                              ],
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "n4iPX2",
+                                  "name": "Contacts Visible Count",
+                                  "fill": "#6B7280",
+                                  "content": "12명 중 4명 표시",
+                                  "fontFamily": "Inter",
+                                  "fontSize": 12,
+                                  "fontWeight": "600"
+                                },
+                                {
+                                  "type": "frame",
+                                  "id": "g2sHK",
+                                  "name": "Contacts Status Spacer",
+                                  "width": "fill_container",
+                                  "height": 1
+                                },
+                                {
+                                  "type": "icon",
+                                  "id": "TbMH2",
+                                  "name": "Contacts Scroll Indicator",
+                                  "width": 14,
+                                  "height": 14,
+                                  "icon": "chevrons-down",
+                                  "library": "lucide",
+                                  "fill": "#9CA3AF"
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "Nwxhi",
+                          "name": "Connected Deals - Table",
+                          "width": "fill_container",
+                          "height": "fill_container",
+                          "fill": "#FFFFFF",
+                          "cornerRadius": 10,
+                          "stroke": "#E5E7EB",
+                          "strokeWidth": 1,
+                          "layout": "vertical",
+                          "children": [
+                            {
+                              "type": "frame",
+                              "id": "S7STiN",
+                              "name": "연결 딜 Header",
+                              "width": "fill_container",
+                              "height": 52,
+                              "stroke": "#E5E7EB",
+                              "strokeWidth": {
+                                "bottom": 1
+                              },
+                              "gap": 10,
+                              "padding": [
+                                0,
+                                16
+                              ],
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "w7jpiE",
+                                  "name": "연결 딜 Title",
+                                  "fill": "#111827",
+                                  "content": "연결 딜",
+                                  "fontFamily": "Inter",
+                                  "fontSize": 15,
+                                  "fontWeight": "800"
+                                },
+                                {
+                                  "type": "frame",
+                                  "id": "snos0",
+                                  "name": "연결 딜 Count",
+                                  "height": 24,
+                                  "fill": "#F3F4F6",
+                                  "cornerRadius": 12,
+                                  "padding": [
+                                    0,
+                                    8
+                                  ],
+                                  "alignItems": "center",
+                                  "children": [
+                                    {
+                                      "type": "text",
+                                      "id": "K8CzeC",
+                                      "name": "Count Text",
+                                      "fill": "#374151",
+                                      "content": "3",
+                                      "fontFamily": "Inter",
+                                      "fontSize": 12,
+                                      "fontWeight": "700"
+                                    }
+                                  ]
+                                },
+                                {
+                                  "type": "frame",
+                                  "id": "i8rAN",
+                                  "name": "연결 딜 Spacer",
+                                  "width": "fill_container",
+                                  "height": 1
+                                }
+                              ]
+                            },
+                            {
+                              "type": "frame",
+                              "id": "Q7rp79",
+                              "name": "Deal Row ERP 도입",
+                              "width": "fill_container",
+                              "height": 62,
+                              "stroke": "#F3F4F6",
+                              "strokeWidth": {
+                                "bottom": 1
+                              },
+                              "gap": 12,
+                              "padding": [
+                                0,
+                                16
+                              ],
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "ellipse",
+                                  "id": "eyQfW",
+                                  "name": "Deal Dot",
+                                  "fill": "#B45309",
+                                  "width": 9,
+                                  "height": 9
+                                },
+                                {
+                                  "type": "frame",
+                                  "id": "KK4ww",
+                                  "name": "Deal Identity",
+                                  "width": 145,
+                                  "layout": "vertical",
+                                  "gap": 2,
+                                  "children": [
+                                    {
+                                      "type": "text",
+                                      "id": "YOzzc",
+                                      "name": "Deal Name",
+                                      "fill": "#111827",
+                                      "content": "ERP 도입",
+                                      "fontFamily": "Inter",
+                                      "fontSize": 13,
+                                      "fontWeight": "800"
+                                    },
+                                    {
+                                      "type": "text",
+                                      "id": "cAzyx",
+                                      "name": "Deal Stage",
+                                      "fill": "#B45309",
+                                      "content": "협상",
+                                      "fontFamily": "Inter",
+                                      "fontSize": 11,
+                                      "fontWeight": "700"
+                                    }
+                                  ]
+                                },
+                                {
+                                  "type": "text",
+                                  "id": "z34qyb",
+                                  "name": "Deal Amount",
+                                  "fill": "#111827",
+                                  "textGrowth": "fixed-width",
+                                  "width": 100,
+                                  "content": "₩48,000,000",
+                                  "fontFamily": "Inter",
+                                  "fontSize": 13,
+                                  "fontWeight": "800"
+                                },
+                                {
+                                  "type": "text",
+                                  "id": "seefY",
+                                  "name": "Deal Next Action",
+                                  "fill": "#4B5563",
+                                  "textGrowth": "fixed-width",
+                                  "width": "fill_container",
+                                  "content": "계약서 검토 요청",
+                                  "fontFamily": "Inter",
+                                  "fontSize": 12,
+                                  "fontWeight": "500"
+                                }
+                              ]
+                            },
+                            {
+                              "type": "frame",
+                              "id": "utnqQ",
+                              "name": "Deal Row MES 구축",
+                              "width": "fill_container",
+                              "height": 62,
+                              "stroke": "#F3F4F6",
+                              "strokeWidth": {
+                                "bottom": 1
+                              },
+                              "gap": 12,
+                              "padding": [
+                                0,
+                                16
+                              ],
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "ellipse",
+                                  "id": "r69ZQm",
+                                  "name": "Deal Dot",
+                                  "fill": "#0369A1",
+                                  "width": 9,
+                                  "height": 9
+                                },
+                                {
+                                  "type": "frame",
+                                  "id": "UO3wP",
+                                  "name": "Deal Identity",
+                                  "width": 145,
+                                  "layout": "vertical",
+                                  "gap": 2,
+                                  "children": [
+                                    {
+                                      "type": "text",
+                                      "id": "cXojU",
+                                      "name": "Deal Name",
+                                      "fill": "#111827",
+                                      "content": "MES 구축",
+                                      "fontFamily": "Inter",
+                                      "fontSize": 13,
+                                      "fontWeight": "800"
+                                    },
+                                    {
+                                      "type": "text",
+                                      "id": "JlgZU",
+                                      "name": "Deal Stage",
+                                      "fill": "#0369A1",
+                                      "content": "제안/견적",
+                                      "fontFamily": "Inter",
+                                      "fontSize": 11,
+                                      "fontWeight": "700"
+                                    }
+                                  ]
+                                },
+                                {
+                                  "type": "text",
+                                  "id": "pwHIW",
+                                  "name": "Deal Amount",
+                                  "fill": "#111827",
+                                  "textGrowth": "fixed-width",
+                                  "width": 100,
+                                  "content": "₩120,000,000",
+                                  "fontFamily": "Inter",
+                                  "fontSize": 13,
+                                  "fontWeight": "800"
+                                },
+                                {
+                                  "type": "text",
+                                  "id": "VrmR7",
+                                  "name": "Deal Next Action",
+                                  "fill": "#4B5563",
+                                  "textGrowth": "fixed-width",
+                                  "width": "fill_container",
+                                  "content": "기술 제안서 전달",
+                                  "fontFamily": "Inter",
+                                  "fontSize": 12,
+                                  "fontWeight": "500"
+                                }
+                              ]
+                            },
+                            {
+                              "type": "frame",
+                              "id": "T9Lkk",
+                              "name": "Deal Row 보안 솔루션",
+                              "width": "fill_container",
+                              "height": 62,
+                              "stroke": "#F3F4F6",
+                              "strokeWidth": {
+                                "bottom": 1
+                              },
+                              "gap": 12,
+                              "padding": [
+                                0,
+                                16
+                              ],
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "ellipse",
+                                  "id": "F6UyxT",
+                                  "name": "Deal Dot",
+                                  "fill": "#2563EB",
+                                  "width": 9,
+                                  "height": 9
+                                },
+                                {
+                                  "type": "frame",
+                                  "id": "K9ZvEl",
+                                  "name": "Deal Identity",
+                                  "width": 145,
+                                  "layout": "vertical",
+                                  "gap": 2,
+                                  "children": [
+                                    {
+                                      "type": "text",
+                                      "id": "iadJK",
+                                      "name": "Deal Name",
+                                      "fill": "#111827",
+                                      "content": "보안 솔루션",
+                                      "fontFamily": "Inter",
+                                      "fontSize": 13,
+                                      "fontWeight": "800"
+                                    },
+                                    {
+                                      "type": "text",
+                                      "id": "MLNju",
+                                      "name": "Deal Stage",
+                                      "fill": "#2563EB",
+                                      "content": "니즈 확인",
+                                      "fontFamily": "Inter",
+                                      "fontSize": 11,
+                                      "fontWeight": "700"
+                                    }
+                                  ]
+                                },
+                                {
+                                  "type": "text",
+                                  "id": "YOOa7",
+                                  "name": "Deal Amount",
+                                  "fill": "#111827",
+                                  "textGrowth": "fixed-width",
+                                  "width": 100,
+                                  "content": "₩35,000,000",
+                                  "fontFamily": "Inter",
+                                  "fontSize": 13,
+                                  "fontWeight": "800"
+                                },
+                                {
+                                  "type": "text",
+                                  "id": "O9evJQ",
+                                  "name": "Deal Next Action",
+                                  "fill": "#4B5563",
+                                  "textGrowth": "fixed-width",
+                                  "width": "fill_container",
+                                  "content": "다음 행동 없음",
+                                  "fontFamily": "Inter",
+                                  "fontSize": 12,
+                                  "fontWeight": "500"
+                                }
+                              ]
+                            },
+                            {
+                              "type": "frame",
+                              "id": "X5V67O",
+                              "name": "Deals List Status",
+                              "width": "fill_container",
+                              "height": 36,
+                              "fill": "#FFFFFF",
+                              "gap": 8,
+                              "padding": [
+                                0,
+                                16
+                              ],
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "OSdzm",
+                                  "name": "Deals Visible Count",
+                                  "fill": "#6B7280",
+                                  "content": "3건 모두 표시",
+                                  "fontFamily": "Inter",
+                                  "fontSize": 12,
+                                  "fontWeight": "600"
+                                },
+                                {
+                                  "type": "frame",
+                                  "id": "CVgDv",
+                                  "name": "Deals Status Spacer",
+                                  "width": "fill_container",
+                                  "height": 1
+                                },
+                                {
+                                  "type": "icon",
+                                  "id": "ADpWn",
+                                  "name": "Deals Scroll Indicator",
+                                  "width": 14,
+                                  "height": 14,
+                                  "icon": "check",
+                                  "library": "lucide",
+                                  "fill": "#15803D"
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "ivALt",
+                      "name": "Memo and Activity Area",
+                      "width": "fill_container",
+                      "height": 299,
+                      "gap": 16,
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "zdWjQ",
+                          "name": "Memo Panel",
+                          "width": "fill_container",
+                          "height": "fill_container",
+                          "fill": "#FFFFFF",
+                          "cornerRadius": 10,
+                          "stroke": "#E5E7EB",
+                          "strokeWidth": 1,
+                          "layout": "vertical",
+                          "children": [
+                            {
+                              "type": "frame",
+                              "id": "M1WSZy",
+                              "name": "Memo Header",
+                              "width": "fill_container",
+                              "height": 52,
+                              "stroke": "#E5E7EB",
+                              "strokeWidth": {
+                                "bottom": 1
+                              },
+                              "gap": 10,
+                              "padding": [
+                                0,
+                                16
+                              ],
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "P4qLkz",
+                                  "name": "Memo Title",
+                                  "fill": "#111827",
+                                  "content": "메모",
+                                  "fontFamily": "Inter",
+                                  "fontSize": 15,
+                                  "fontWeight": "800"
+                                },
+                                {
+                                  "type": "frame",
+                                  "id": "n1YHt5",
+                                  "name": "Memo Header Spacer",
+                                  "width": "fill_container",
+                                  "height": 1
+                                },
+                                {
+                                  "type": "frame",
+                                  "id": "T9xIKq",
+                                  "name": "Memo Security Badge",
+                                  "height": 24,
+                                  "fill": "#FFFBEB",
+                                  "cornerRadius": 12,
+                                  "gap": 5,
+                                  "padding": [
+                                    0,
+                                    8
+                                  ],
+                                  "alignItems": "center",
+                                  "children": [
+                                    {
+                                      "type": "icon",
+                                      "id": "bkvJk",
+                                      "name": "Memo Lock Icon",
+                                      "width": 12,
+                                      "height": 12,
+                                      "icon": "lock",
+                                      "library": "lucide",
+                                      "fill": "#B45309"
+                                    },
+                                    {
+                                      "type": "text",
+                                      "id": "KdBMI",
+                                      "name": "Memo Security Text",
+                                      "fill": "#B45309",
+                                      "content": "암호화",
+                                      "fontFamily": "Inter",
+                                      "fontSize": 11,
+                                      "fontWeight": "700"
+                                    }
+                                  ]
+                                }
+                              ]
+                            },
+                            {
+                              "type": "frame",
+                              "id": "a5q9oQ",
+                              "name": "Memo Composer",
+                              "width": "fill_container",
+                              "stroke": "#F3F4F6",
+                              "strokeWidth": {
+                                "bottom": 1
+                              },
+                              "layout": "vertical",
+                              "gap": 10,
+                              "padding": 16,
+                              "children": [
+                                {
+                                  "type": "frame",
+                                  "id": "YssWI",
+                                  "name": "Memo Title Row",
+                                  "width": "fill_container",
+                                  "height": 36,
+                                  "gap": 8,
+                                  "alignItems": "center",
+                                  "children": [
+                                    {
+                                      "type": "frame",
+                                      "id": "H1xDi",
+                                      "name": "Memo Title Input",
+                                      "width": "fill_container",
+                                      "height": 36,
+                                      "fill": "#F9FAFB",
+                                      "cornerRadius": 8,
+                                      "stroke": "#E5E7EB",
+                                      "strokeWidth": 1,
+                                      "padding": [
+                                        0,
+                                        12
+                                      ],
+                                      "alignItems": "center",
+                                      "children": [
+                                        {
+                                          "type": "text",
+                                          "id": "WbXmZ",
+                                          "name": "Memo Title Placeholder",
+                                          "fill": "#9CA3AF",
+                                          "content": "메모 제목",
+                                          "fontFamily": "Inter",
+                                          "fontSize": 13,
+                                          "fontWeight": "600"
+                                        }
+                                      ]
+                                    },
+                                    {
+                                      "type": "frame",
+                                      "id": "Nep5D",
+                                      "name": "Save Memo Button",
+                                      "width": 98,
+                                      "height": 36,
+                                      "fill": "#2563EB",
+                                      "cornerRadius": 8,
+                                      "gap": 6,
+                                      "justifyContent": "center",
+                                      "alignItems": "center",
+                                      "children": [
+                                        {
+                                          "type": "icon",
+                                          "id": "hTamp",
+                                          "name": "Save Memo Icon",
+                                          "width": 14,
+                                          "height": 14,
+                                          "icon": "plus",
+                                          "library": "lucide",
+                                          "fill": "#FFFFFF"
+                                        },
+                                        {
+                                          "type": "text",
+                                          "id": "SjmmI",
+                                          "name": "Save Memo Label",
+                                          "fill": "#FFFFFF",
+                                          "content": "추가",
+                                          "fontFamily": "Inter",
+                                          "fontSize": 13,
+                                          "fontWeight": "800"
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                },
+                                {
+                                  "type": "frame",
+                                  "id": "tm1El",
+                                  "name": "Memo Body Input",
+                                  "width": "fill_container",
+                                  "height": 52,
+                                  "fill": "#F9FAFB",
+                                  "cornerRadius": 8,
+                                  "stroke": "#E5E7EB",
+                                  "strokeWidth": 1,
+                                  "padding": 12,
+                                  "children": [
+                                    {
+                                      "type": "text",
+                                      "id": "dMCVV",
+                                      "name": "Memo Body Placeholder",
+                                      "fill": "#9CA3AF",
+                                      "textGrowth": "fixed-width",
+                                      "width": "fill_container",
+                                      "content": "내용 입력",
+                                      "fontFamily": "Inter",
+                                      "fontSize": 13,
+                                      "fontWeight": "500"
+                                    }
+                                  ]
+                                }
+                              ]
+                            },
+                            {
+                              "type": "frame",
+                              "id": "LR50w",
+                              "name": "Memo List",
+                              "width": "fill_container",
+                              "height": "fill_container",
+                              "layout": "vertical",
+                              "gap": 10,
+                              "padding": [
+                                12,
+                                16,
+                                16,
+                                16
+                              ],
+                              "children": [
+                                {
+                                  "type": "frame",
+                                  "id": "W8dUVr",
+                                  "name": "Memo Item 25.12.29",
+                                  "width": "fill_container",
+                                  "stroke": "#F3F4F6",
+                                  "strokeWidth": {
+                                    "bottom": 1
+                                  },
+                                  "layout": "vertical",
+                                  "gap": 4,
+                                  "padding": [
+                                    0,
+                                    0,
+                                    10,
+                                    0
+                                  ],
+                                  "children": [
+                                    {
+                                      "type": "text",
+                                      "id": "W2Fs6",
+                                      "name": "Memo Date",
+                                      "fill": "#9CA3AF",
+                                      "content": "25.12.29 · 김영업",
+                                      "fontFamily": "Inter",
+                                      "fontSize": 11,
+                                      "fontWeight": "700"
+                                    },
+                                    {
+                                      "type": "text",
+                                      "id": "yJxT8",
+                                      "name": "Memo Text",
+                                      "fill": "#374151",
+                                      "textGrowth": "fixed-width",
+                                      "width": "fill_container",
+                                      "content": "가격 협상에 유연한 편. 담당자와 좋은 관계 형성 필요. 다음 통화에서는 유지보수 범위를 먼저 정리하기.",
+                                      "lineHeight": 1.35,
+                                      "fontFamily": "Inter",
+                                      "fontSize": 13,
+                                      "fontWeight": "500"
+                                    }
+                                  ]
+                                },
+                                {
+                                  "type": "frame",
+                                  "id": "AKuVl",
+                                  "name": "Memo Item 25.12.18",
+                                  "width": "fill_container",
+                                  "stroke": "#F3F4F6",
+                                  "strokeWidth": {
+                                    "bottom": 1
+                                  },
+                                  "layout": "vertical",
+                                  "gap": 4,
+                                  "padding": [
+                                    0,
+                                    0,
+                                    10,
+                                    0
+                                  ],
+                                  "children": [
+                                    {
+                                      "type": "text",
+                                      "id": "PMZso",
+                                      "name": "Memo Date",
+                                      "fill": "#9CA3AF",
+                                      "content": "25.12.18 · 김영업",
+                                      "fontFamily": "Inter",
+                                      "fontSize": 11,
+                                      "fontWeight": "700"
+                                    },
+                                    {
+                                      "type": "text",
+                                      "id": "fIWhh",
+                                      "name": "Memo Text",
+                                      "fill": "#374151",
+                                      "textGrowth": "fixed-width",
+                                      "width": "fill_container",
+                                      "content": "구매팀보다 IT기획팀 영향력이 더 큼. 제안서는 기술 효과 중심으로 다시 정리 필요.",
+                                      "lineHeight": 1.35,
+                                      "fontFamily": "Inter",
+                                      "fontSize": 13,
+                                      "fontWeight": "500"
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "aILE9",
+                          "name": "Activity Log Panel",
+                          "width": 380,
+                          "height": 296,
+                          "fill": "#FFFFFF",
+                          "cornerRadius": 10,
+                          "stroke": "#E5E7EB",
+                          "strokeWidth": 1,
+                          "layout": "vertical",
+                          "children": [
+                            {
+                              "type": "frame",
+                              "id": "mkZfy",
+                              "name": "Activity Header",
+                              "width": "fill_container",
+                              "height": 52,
+                              "stroke": "#E5E7EB",
+                              "strokeWidth": {
+                                "bottom": 1
+                              },
+                              "gap": 8,
+                              "padding": [
+                                0,
+                                16
+                              ],
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "u5Uose",
+                                  "name": "Activity Title",
+                                  "fill": "#111827",
+                                  "content": "활동 로그",
+                                  "fontFamily": "Inter",
+                                  "fontSize": 15,
+                                  "fontWeight": "800"
+                                }
+                              ]
+                            },
+                            {
+                              "type": "frame",
+                              "id": "Lf2N1",
+                              "name": "Activity Items",
+                              "width": "fill_container",
+                              "height": "fill_container",
+                              "layout": "vertical",
+                              "gap": 10,
+                              "padding": [
+                                14,
+                                16
+                              ],
+                              "children": [
+                                {
+                                  "type": "frame",
+                                  "id": "w3NJ54",
+                                  "name": "Activity 영업 방문",
+                                  "width": "fill_container",
+                                  "stroke": "#F3F4F6",
+                                  "strokeWidth": {
+                                    "bottom": 1
+                                  },
+                                  "gap": 10,
+                                  "padding": [
+                                    0,
+                                    0,
+                                    10,
+                                    0
+                                  ],
+                                  "children": [
+                                    {
+                                      "type": "frame",
+                                      "id": "dv5cM",
+                                      "name": "Activity Icon",
+                                      "width": 28,
+                                      "height": 28,
+                                      "fill": "#EFF6FF",
+                                      "cornerRadius": 14,
+                                      "justifyContent": "center",
+                                      "alignItems": "center",
+                                      "children": [
+                                        {
+                                          "type": "ellipse",
+                                          "id": "dXzED",
+                                          "name": "Activity Dot",
+                                          "fill": "#2563EB",
+                                          "width": 7,
+                                          "height": 7
+                                        }
+                                      ]
+                                    },
+                                    {
+                                      "type": "frame",
+                                      "id": "Wamko",
+                                      "name": "Activity Body",
+                                      "width": "fill_container",
+                                      "layout": "vertical",
+                                      "gap": 2,
+                                      "children": [
+                                        {
+                                          "type": "text",
+                                          "id": "OEdkL",
+                                          "name": "Activity Type",
+                                          "fill": "#111827",
+                                          "content": "영업 방문",
+                                          "fontFamily": "Inter",
+                                          "fontSize": 13,
+                                          "fontWeight": "800"
+                                        },
+                                        {
+                                          "type": "text",
+                                          "id": "Qd4C5",
+                                          "name": "Activity Detail",
+                                          "fill": "#4B5563",
+                                          "textGrowth": "fixed-width",
+                                          "width": "fill_container",
+                                          "content": "김철수 부장 미팅 완료",
+                                          "fontFamily": "Inter",
+                                          "fontSize": 12,
+                                          "fontWeight": "500"
+                                        },
+                                        {
+                                          "type": "text",
+                                          "id": "Xuw5s",
+                                          "name": "Activity Date",
+                                          "fill": "#9CA3AF",
+                                          "content": "25.12.29",
+                                          "fontFamily": "Inter",
+                                          "fontSize": 11,
+                                          "fontWeight": "600"
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                },
+                                {
+                                  "type": "frame",
+                                  "id": "r5HC3b",
+                                  "name": "Activity 딜 업데이트",
+                                  "width": "fill_container",
+                                  "stroke": "#F3F4F6",
+                                  "strokeWidth": {
+                                    "bottom": 1
+                                  },
+                                  "gap": 10,
+                                  "padding": [
+                                    0,
+                                    0,
+                                    10,
+                                    0
+                                  ],
+                                  "children": [
+                                    {
+                                      "type": "frame",
+                                      "id": "K6Rc9",
+                                      "name": "Activity Icon",
+                                      "width": 28,
+                                      "height": 28,
+                                      "fill": "#EFF6FF",
+                                      "cornerRadius": 14,
+                                      "justifyContent": "center",
+                                      "alignItems": "center",
+                                      "children": [
+                                        {
+                                          "type": "ellipse",
+                                          "id": "YUail",
+                                          "name": "Activity Dot",
+                                          "fill": "#2563EB",
+                                          "width": 7,
+                                          "height": 7
+                                        }
+                                      ]
+                                    },
+                                    {
+                                      "type": "frame",
+                                      "id": "RozWr",
+                                      "name": "Activity Body",
+                                      "width": "fill_container",
+                                      "layout": "vertical",
+                                      "gap": 2,
+                                      "children": [
+                                        {
+                                          "type": "text",
+                                          "id": "wwevJ",
+                                          "name": "Activity Type",
+                                          "fill": "#111827",
+                                          "content": "딜 업데이트",
+                                          "fontFamily": "Inter",
+                                          "fontSize": 13,
+                                          "fontWeight": "800"
+                                        },
+                                        {
+                                          "type": "text",
+                                          "id": "Fw2or",
+                                          "name": "Activity Detail",
+                                          "fill": "#4B5563",
+                                          "textGrowth": "fixed-width",
+                                          "width": "fill_container",
+                                          "content": "ERP 도입 단계가 협상으로 변경",
+                                          "fontFamily": "Inter",
+                                          "fontSize": 12,
+                                          "fontWeight": "500"
+                                        },
+                                        {
+                                          "type": "text",
+                                          "id": "ymnx9",
+                                          "name": "Activity Date",
+                                          "fill": "#9CA3AF",
+                                          "content": "25.12.27",
+                                          "fontFamily": "Inter",
+                                          "fontSize": 11,
+                                          "fontWeight": "600"
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                },
+                                {
+                                  "type": "frame",
+                                  "id": "RwBi7",
+                                  "name": "Activity 파일 첨부",
+                                  "width": "fill_container",
+                                  "stroke": "#F3F4F6",
+                                  "strokeWidth": {
+                                    "bottom": 1
+                                  },
+                                  "gap": 10,
+                                  "padding": [
+                                    0,
+                                    0,
+                                    10,
+                                    0
+                                  ],
+                                  "children": [
+                                    {
+                                      "type": "frame",
+                                      "id": "A0rIT",
+                                      "name": "Activity Icon",
+                                      "width": 28,
+                                      "height": 28,
+                                      "fill": "#EFF6FF",
+                                      "cornerRadius": 14,
+                                      "justifyContent": "center",
+                                      "alignItems": "center",
+                                      "children": [
+                                        {
+                                          "type": "ellipse",
+                                          "id": "FI21a",
+                                          "name": "Activity Dot",
+                                          "fill": "#2563EB",
+                                          "width": 7,
+                                          "height": 7
+                                        }
+                                      ]
+                                    },
+                                    {
+                                      "type": "frame",
+                                      "id": "fhLoT",
+                                      "name": "Activity Body",
+                                      "width": "fill_container",
+                                      "layout": "vertical",
+                                      "gap": 2,
+                                      "children": [
+                                        {
+                                          "type": "text",
+                                          "id": "UaIPK",
+                                          "name": "Activity Type",
+                                          "fill": "#111827",
+                                          "content": "파일 첨부",
+                                          "fontFamily": "Inter",
+                                          "fontSize": 13,
+                                          "fontWeight": "800"
+                                        },
+                                        {
+                                          "type": "text",
+                                          "id": "Jvmqb",
+                                          "name": "Activity Detail",
+                                          "fill": "#4B5563",
+                                          "textGrowth": "fixed-width",
+                                          "width": "fill_container",
+                                          "content": "제안서 v2 업로드",
+                                          "fontFamily": "Inter",
+                                          "fontSize": 12,
+                                          "fontWeight": "500"
+                                        },
+                                        {
+                                          "type": "text",
+                                          "id": "l8T6ll",
+                                          "name": "Activity Date",
+                                          "fill": "#9CA3AF",
+                                          "content": "25.12.21",
+                                          "fontFamily": "Inter",
+                                          "fontSize": 11,
+                                          "fontWeight": "600"
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                },
+                                {
+                                  "type": "frame",
+                                  "id": "H0lUkR",
+                                  "name": "Activity 전화 통화",
+                                  "width": "fill_container",
+                                  "stroke": "#F3F4F6",
+                                  "strokeWidth": {
+                                    "bottom": 1
+                                  },
+                                  "gap": 10,
+                                  "padding": [
+                                    0,
+                                    0,
+                                    10,
+                                    0
+                                  ],
+                                  "children": [
+                                    {
+                                      "type": "frame",
+                                      "id": "hyeAd",
+                                      "name": "Activity Icon",
+                                      "width": 28,
+                                      "height": 28,
+                                      "fill": "#EFF6FF",
+                                      "cornerRadius": 14,
+                                      "justifyContent": "center",
+                                      "alignItems": "center",
+                                      "children": [
+                                        {
+                                          "type": "ellipse",
+                                          "id": "y53uoI",
+                                          "name": "Activity Dot",
+                                          "fill": "#2563EB",
+                                          "width": 7,
+                                          "height": 7
+                                        }
+                                      ]
+                                    },
+                                    {
+                                      "type": "frame",
+                                      "id": "RLQWU",
+                                      "name": "Activity Body",
+                                      "width": "fill_container",
+                                      "layout": "vertical",
+                                      "gap": 2,
+                                      "children": [
+                                        {
+                                          "type": "text",
+                                          "id": "as53K",
+                                          "name": "Activity Type",
+                                          "fill": "#111827",
+                                          "content": "전화 통화",
+                                          "fontFamily": "Inter",
+                                          "fontSize": 13,
+                                          "fontWeight": "800"
+                                        },
+                                        {
+                                          "type": "text",
+                                          "id": "yaBFK",
+                                          "name": "Activity Detail",
+                                          "fill": "#4B5563",
+                                          "textGrowth": "fixed-width",
+                                          "width": "fill_container",
+                                          "content": "초기 제안서 반응 확인",
+                                          "fontFamily": "Inter",
+                                          "fontSize": 12,
+                                          "fontWeight": "500"
+                                        },
+                                        {
+                                          "type": "text",
+                                          "id": "GAlKM",
+                                          "name": "Activity Date",
+                                          "fill": "#9CA3AF",
+                                          "content": "25.12.15",
+                                          "fontFamily": "Inter",
+                                          "fontSize": 11,
+                                          "fontWeight": "600"
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
             }
           ]
         }
