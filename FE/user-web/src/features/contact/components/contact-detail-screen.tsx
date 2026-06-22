@@ -1,16 +1,13 @@
 import {
   BriefcaseBusiness,
-  Check,
   ChevronLeft,
   ChevronRight,
-  Copy,
   Mail,
   Pencil,
   Phone,
   Plus,
   Trash2,
   UserRound,
-  X,
 } from "lucide-react";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
@@ -162,10 +159,7 @@ export function ContactDetailScreen({ contactId }: ContactDetailScreenProps) {
         </div>
 
         <div className="flex flex-col gap-4 p-4 pb-24">
-          <ContactSummaryHeader
-            contact={contact}
-            onCopied={setNotice}
-          />
+          <ContactSummaryHeader contact={contact} />
 
           {isEditing ? (
             <div className="rounded-xl border border-[#E5E7EB] bg-white p-4">
@@ -262,7 +256,7 @@ export function ContactDetailScreen({ contactId }: ContactDetailScreenProps) {
 
         {/* Content Area */}
         <div className="flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto p-6">
-          <ContactSummaryHeader contact={contact} onCopied={setNotice} />
+          <ContactSummaryHeader contact={contact} />
 
           {isEditing ? (
             <div className="rounded-xl border border-[#E5E7EB] bg-white p-5">
@@ -322,7 +316,6 @@ export function ContactDetailScreen({ contactId }: ContactDetailScreenProps) {
 
 function ContactSummaryHeader({
   contact,
-  onCopied,
 }: {
   readonly contact: {
     readonly username: string;
@@ -334,7 +327,6 @@ function ContactSummaryHeader({
     readonly createdAt: string;
     readonly updatedAt: string;
   };
-  readonly onCopied: (msg: string) => void;
 }) {
   return (
     <div className="flex flex-wrap items-center gap-3 rounded-xl border border-[#E5E7EB] bg-white px-5 py-4">
@@ -369,22 +361,18 @@ function ContactSummaryHeader({
         </span>
       </div>
       <div className="h-5 w-px shrink-0 bg-[#E5E7EB]" />
-      <CopyChip
+      <ContactInfoChip
         icon={Phone}
         label={contact.mobile || "-"}
-        value={contact.mobile}
-        onCopied={onCopied}
       />
-      <CopyChip
+      <ContactInfoChip
         icon={Mail}
         label={contact.email || "-"}
-        value={contact.email}
-        onCopied={onCopied}
       />
       <div className="flex-1" />
       <div className="flex items-center gap-4 text-[12px] text-[#9CA3AF]">
-        <span>등록 {formatDate(contact.createdAt, { includeYear: true })}</span>
-        <span>수정 {formatDate(contact.updatedAt, { includeYear: true })}</span>
+        <span>등록 {formatDateTime(contact.createdAt, { includeYear: true })}</span>
+        <span>수정 {formatDateTime(contact.updatedAt, { includeYear: true })}</span>
       </div>
     </div>
   );
@@ -838,42 +826,18 @@ function ContactActivityLogPanel({
 
 // ── 공통 소형 컴포넌트 ──────────────────────────────────────────────
 
-function CopyChip({
+function ContactInfoChip({
   icon: Icon,
   label,
-  value,
-  onCopied,
 }: {
   readonly icon: typeof Phone;
   readonly label: string;
-  readonly value: string;
-  readonly onCopied: (msg: string) => void;
 }) {
-  const [copied, setCopied] = useState(false);
-
-  const onCopy = async () => {
-    if (!value) return;
-    await navigator.clipboard.writeText(value);
-    setCopied(true);
-    onCopied("복사되었습니다.");
-    setTimeout(() => setCopied(false), 1500);
-  };
-
   return (
-    <button
-      className="inline-flex h-8 items-center gap-2 rounded-lg border border-[#E6EAF0] bg-white px-3 text-[12px] text-[#374151] transition hover:bg-[#F9FAFB] disabled:cursor-not-allowed disabled:opacity-50"
-      disabled={!value}
-      onClick={() => void onCopy()}
-      type="button"
-    >
+    <span className="inline-flex h-8 items-center gap-2 rounded-lg border border-[#E6EAF0] bg-white px-3 text-[12px] text-[#374151]">
       <Icon className="h-3.5 w-3.5 text-[#9CA3AF]" />
       {label}
-      {copied ? (
-        <Check className="h-3 w-3 text-[#16A34A]" />
-      ) : (
-        <Copy className="h-3 w-3 text-[#D1D5DB]" />
-      )}
-    </button>
+    </span>
   );
 }
 
