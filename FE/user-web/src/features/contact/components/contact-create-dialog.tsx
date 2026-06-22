@@ -328,6 +328,7 @@ export function ContactCreateDialog({
               <input type="hidden" {...register("contactDepartmentId")} />
               <ManagedTaxonomyDropdown
                 addPlaceholder="부서명"
+                createActionLabel="새 부서 생성"
                 emptyText="부서가 없습니다"
                 getLabel={(department) => department.departmentName}
                 id="contact-department-id"
@@ -356,6 +357,7 @@ export function ContactCreateDialog({
               <input type="hidden" {...register("contactJobGradeId")} />
               <ManagedTaxonomyDropdown
                 addPlaceholder="직급명"
+                createActionLabel="새 직급 생성"
                 emptyText="직급이 없습니다"
                 getLabel={(jobGrade) => jobGrade.jobGradeName}
                 id="contact-job-grade-id"
