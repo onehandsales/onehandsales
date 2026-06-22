@@ -59,6 +59,8 @@
     {
       "id": "contact-id",
       "username": "홍길동",
+      "mobile": "010-1234-5678",
+      "email": "sales@example.com",
       "contactDepartment": {
         "id": "department-id",
         "departmentName": "영업팀"
@@ -74,6 +76,8 @@
 |---|---|---:|---|
 | `id` | string | 아니오 | Contact ID |
 | `username` | string | 아니오 | 담당자 이름 |
+| `mobile` | string | 아니오 | 담당자 휴대폰 번호 |
+| `email` | string | 아니오 | 담당자 이메일 |
 | `contactDepartment` | object | 아니오 | 담당자 부서 |
 | `contactDepartment.id` | string | 아니오 | 담당자 부서 ID |
 | `contactDepartment.departmentName` | string | 아니오 | 담당자 부서명 |
@@ -95,7 +99,7 @@
 5. `Contact.companyId = companyId`, `Contact.userId = currentUserId` 조건으로 Contact 목록을 조회한다.
 6. `ContactDepartment` relation을 함께 조회한다.
 7. `createdAt DESC`, `id DESC`로 정렬한다.
-8. 응답에는 `id`, `username`, `contactDepartment.id`, `contactDepartment.departmentName`만 포함한다.
+8. 응답에는 `id`, `username`, `mobile`, `email`, `contactDepartment.id`, `contactDepartment.departmentName`만 포함한다.
 
 ## 7. 연결 DB 스키마
 

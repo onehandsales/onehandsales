@@ -140,6 +140,8 @@ export interface CompanyContactListResponse {
 export interface CompanyContactItemResponse {
   readonly id: string;
   readonly username: string;
+  readonly mobile: string;
+  readonly email: string;
   readonly contactDepartment: {
     readonly id: string;
     readonly departmentName: string;
@@ -907,6 +909,8 @@ export class CompanyApplicationService {
     return {
       id: contact.id,
       username: contact.username,
+      mobile: contact.mobile,
+      email: contact.email,
       contactDepartment: contact.contactDepartment,
     };
   }

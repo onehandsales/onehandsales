@@ -38,6 +38,8 @@ export interface CompanyListRecord extends CompanyRecord {
 export interface CompanyContactRecord {
   readonly id: string;
   readonly username: string;
+  readonly mobile: string;
+  readonly email: string;
   readonly contactDepartment: {
     readonly id: string;
     readonly departmentName: string;

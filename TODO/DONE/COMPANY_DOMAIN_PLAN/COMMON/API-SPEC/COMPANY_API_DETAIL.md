@@ -1119,7 +1119,7 @@
 3. `Company.id = companyId`, `Company.userId = currentUserId` 조건으로 회사 ownership을 확인한다.
 4. `Contact.companyId = companyId`, `Contact.userId = currentUserId` 조건으로 연결 담당자 전체 목록을 조회한다.
 5. `createdAt DESC, id DESC`로 정렬한다.
-6. `id`, `username`, `contactDepartment.id`, `contactDepartment.departmentName`만 응답한다.
+6. `id`, `username`, `mobile`, `email`, `contactDepartment.id`, `contactDepartment.departmentName`만 응답한다.
 
 #### Response
 
@@ -1131,6 +1131,8 @@
 | `items` | `CompanyContactItemResponse[]` | 아니오 | 회사에 연결된 담당자 목록 |
 | `items[].id` | string | 아니오 | 담당자 ID |
 | `items[].username` | string | 아니오 | 담당자 이름 |
+| `items[].mobile` | string | 아니오 | 담당자 휴대폰 번호 |
+| `items[].email` | string | 아니오 | 담당자 이메일 |
 | `items[].contactDepartment.id` | string | 아니오 | 담당자 부서 ID |
 | `items[].contactDepartment.departmentName` | string | 아니오 | 담당자 부서명 |
 

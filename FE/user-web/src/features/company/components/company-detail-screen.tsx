@@ -2,12 +2,9 @@ import {
   Building2,
   ChevronLeft,
   ChevronRight,
-  ChevronsDown,
-  Check,
   Plus,
   Pencil,
   Trash2,
-  X,
 } from "lucide-react";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
@@ -393,7 +390,7 @@ function ConnectedContactsTable({
       {isLoading ? (
         <div className="flex flex-col">
           {[1, 2, 3].map((i) => (
-            <div className="h-[50px] animate-pulse border-b border-[#F3F4F6] bg-white/60" key={i} />
+            <div className="h-[64px] animate-pulse border-b border-[#F3F4F6] bg-white/60" key={i} />
           ))}
         </div>
       ) : contacts.length === 0 ? (
@@ -403,7 +400,7 @@ function ConnectedContactsTable({
           <div className={hasMore ? "max-h-[250px] overflow-y-auto" : ""}>
             {visible.map((contact) => (
               <Link
-                className="flex h-[50px] items-center gap-3 border-b border-[#F3F4F6] bg-white px-4 hover:bg-[#F9FAFB] transition-colors last:border-0"
+                className="flex min-h-[64px] items-center gap-3 border-b border-[#F3F4F6] bg-white px-4 py-2 hover:bg-[#F9FAFB] transition-colors last:border-0"
                 key={contact.id}
                 to={`/contacts/${contact.id}`}
               >
@@ -412,9 +409,17 @@ function ConnectedContactsTable({
                   <span className="text-[13px] font-extrabold text-[#111827]">
                     {contact.username}
                   </span>
-                  <span className="truncate text-[11px] font-medium text-[#6B7280]">
-                    {contact.contactDepartment.departmentName}
-                  </span>
+                  <div className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-0.5 text-[11px] font-medium text-[#6B7280]">
+                    <span className="max-w-full truncate">
+                      {contact.contactDepartment.departmentName}
+                    </span>
+                    <span className="max-w-full truncate">
+                      {contact.email}
+                    </span>
+                    <span className="max-w-full truncate">
+                      {contact.mobile}
+                    </span>
+                  </div>
                 </div>
                 <ChevronRight className="h-4 w-4 shrink-0 text-[#D1D5DB]" />
               </Link>

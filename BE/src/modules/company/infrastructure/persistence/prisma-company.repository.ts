@@ -116,6 +116,8 @@ export class PrismaCompanyRepository implements CompanyRepository {
       select: {
         id: true,
         username: true,
+        mobile: true,
+        email: true,
         contactDepartment: {
           select: {
             id: true,
