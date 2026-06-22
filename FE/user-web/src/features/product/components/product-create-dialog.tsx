@@ -314,6 +314,7 @@ export function ProductCreateDialog({
               <input type="hidden" {...register("productCategoryId")} />
               <ManagedTaxonomyDropdown
                 addPlaceholder="카테고리명"
+                createActionLabel="새 제품 생성"
                 emptyText="검색된 카테고리가 없습니다"
                 getLabel={(category) => category.categoryName}
                 id="pc-product-category"
@@ -342,6 +343,7 @@ export function ProductCreateDialog({
               <input type="hidden" {...register("productStatusId")} />
               <ManagedTaxonomyDropdown
                 addPlaceholder="상태명"
+                createActionLabel="새 상태 생성"
                 emptyText="검색된 상태가 없습니다"
                 getLabel={(status) => status.statusName}
                 id="pc-product-status"

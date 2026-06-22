@@ -24,7 +24,7 @@ export function Pagination({
   return (
     <div
       className={cn(
-        "flex h-12 shrink-0 items-center justify-center gap-1",
+        "flex h-12 shrink-0 items-center justify-center",
         className
       )}
     >
@@ -33,27 +33,29 @@ export function Pagination({
           총 {totalCount.toLocaleString("ko-KR")}개
         </span>
       ) : null}
-      <button
-        className="inline-flex h-11 w-11 items-center justify-center rounded-md text-[#6B7280] transition hover:bg-[#F3F4F6] disabled:cursor-not-allowed disabled:opacity-40"
-        disabled={!canPrev}
-        onClick={() => onPageChange(page - 1)}
-        type="button"
-        aria-label="이전 페이지"
-      >
-        <ChevronLeft className="h-4 w-4" />
-      </button>
-      <span className="min-w-[56px] text-center text-[12px] font-medium text-[#374151]">
-        {page} / {safeTotalPages}
-      </span>
-      <button
-        className="inline-flex h-11 w-11 items-center justify-center rounded-md text-[#6B7280] transition hover:bg-[#F3F4F6] disabled:cursor-not-allowed disabled:opacity-40"
-        disabled={!canNext}
-        onClick={() => onPageChange(page + 1)}
-        type="button"
-        aria-label="다음 페이지"
-      >
-        <ChevronRight className="h-4 w-4" />
-      </button>
+      <div className="grid grid-cols-[44px_64px_44px] items-center gap-2">
+        <button
+          className="inline-flex h-11 w-11 items-center justify-center rounded-md text-[#6B7280] transition hover:bg-[#F3F4F6] disabled:cursor-not-allowed disabled:opacity-40"
+          disabled={!canPrev}
+          onClick={() => onPageChange(page - 1)}
+          type="button"
+          aria-label="이전 페이지"
+        >
+          <ChevronLeft className="h-4 w-4" />
+        </button>
+        <span className="flex h-11 items-center justify-center text-center text-[12px] font-medium text-[#374151]">
+          {page} / {safeTotalPages}
+        </span>
+        <button
+          className="inline-flex h-11 w-11 items-center justify-center rounded-md text-[#6B7280] transition hover:bg-[#F3F4F6] disabled:cursor-not-allowed disabled:opacity-40"
+          disabled={!canNext}
+          onClick={() => onPageChange(page + 1)}
+          type="button"
+          aria-label="다음 페이지"
+        >
+          <ChevronRight className="h-4 w-4" />
+        </button>
+      </div>
     </div>
   );
 }
