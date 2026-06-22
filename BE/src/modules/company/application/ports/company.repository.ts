@@ -73,8 +73,8 @@ export interface ListCompaniesInput {
   readonly page: number;
   readonly pageSize: number;
   readonly companyName?: string;
-  readonly companyFieldId?: string;
-  readonly companyRegionId?: string;
+  readonly companyFieldIds?: readonly string[];
+  readonly companyRegionIds?: readonly string[];
   readonly sort?: CompanyListSort;
 }
 
@@ -82,8 +82,8 @@ export interface ListCompaniesInput {
 export interface ExportCompaniesInput {
   readonly userId: string;
   readonly companyName?: string;
-  readonly companyFieldId?: string;
-  readonly companyRegionId?: string;
+  readonly companyFieldIds?: readonly string[];
+  readonly companyRegionIds?: readonly string[];
   readonly sort?: CompanyListSort;
 }
 

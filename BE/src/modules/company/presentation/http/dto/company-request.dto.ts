@@ -1,5 +1,6 @@
-﻿import { Type } from "class-transformer";
+﻿import { Transform, type TransformFnParams, Type } from "class-transformer";
 import {
+  IsArray,
   IsEnum,
   IsInt,
   IsOptional,
@@ -8,6 +9,23 @@ import {
   Min,
 } from "class-validator";
 import { CompanyListSort } from "@/modules/company/application/ports/company.repository";
+
+// 기능 : 반복 query와 comma-separated query를 UUID 배열 검증 대상으로 정규화합니다.
+function toOptionalStringArray(params: TransformFnParams): string[] | undefined {
+  const { value } = params;
+
+  if (value === undefined || value === null) {
+    return undefined;
+  }
+
+  const values = Array.isArray(value) ? value : [value];
+  const normalizedValues = values
+    .flatMap((item) => (typeof item === "string" ? item.split(",") : []))
+    .map((item) => item.trim())
+    .filter((item) => item.length > 0);
+
+  return normalizedValues.length > 0 ? normalizedValues : undefined;
+}
 
 // 역할 : ListCompaniesQueryDto HTTP 요청 값을 검증하기 위한 DTO입니다.
 export class ListCompaniesQueryDto {
@@ -26,8 +44,20 @@ export class ListCompaniesQueryDto {
   companyFieldId?: string;
 
   @IsOptional()
+  @Transform(toOptionalStringArray)
+  @IsArray()
+  @IsUUID("all", { each: true })
+  companyFieldIds?: string[];
+
+  @IsOptional()
   @IsUUID()
   companyRegionId?: string;
+
+  @IsOptional()
+  @Transform(toOptionalStringArray)
+  @IsArray()
+  @IsUUID("all", { each: true })
+  companyRegionIds?: string[];
 
   @IsOptional()
   @IsEnum(CompanyListSort)
@@ -45,8 +75,20 @@ export class ExportCompaniesQueryDto {
   companyFieldId?: string;
 
   @IsOptional()
+  @Transform(toOptionalStringArray)
+  @IsArray()
+  @IsUUID("all", { each: true })
+  companyFieldIds?: string[];
+
+  @IsOptional()
   @IsUUID()
   companyRegionId?: string;
+
+  @IsOptional()
+  @Transform(toOptionalStringArray)
+  @IsArray()
+  @IsUUID("all", { each: true })
+  companyRegionIds?: string[];
 
   @IsOptional()
   @IsEnum(CompanyListSort)

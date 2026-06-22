@@ -572,9 +572,11 @@ export class PrismaCompanyRepository implements CompanyRepository {
             },
           }
         : {}),
-      ...(input.companyFieldId ? { companyFieldId: input.companyFieldId } : {}),
-      ...(input.companyRegionId
-        ? { companyRegionId: input.companyRegionId }
+      ...(input.companyFieldIds && input.companyFieldIds.length > 0
+        ? { companyFieldId: { in: [...input.companyFieldIds] } }
+        : {}),
+      ...(input.companyRegionIds && input.companyRegionIds.length > 0
+        ? { companyRegionId: { in: [...input.companyRegionIds] } }
         : {}),
     };
   }

@@ -16,8 +16,8 @@
 **Company**
 | API | 설명 |
 |---|---|
-| `GET /api/companies` | 회사 목록을 검색, 필터, 정렬, 페이지네이션으로 조회합니다. |
-| `GET /api/companies/export/xlsx` | 현재 필터 조건의 회사 목록을 엑셀 파일로 다운로드합니다. |
+| `GET /api/companies` | 회사 목록을 검색, 다중 필터, 정렬, 페이지네이션으로 조회합니다. |
+| `GET /api/companies/export/xlsx` | 현재 검색과 다중 필터 조건의 회사 목록을 엑셀 파일로 다운로드합니다. |
 | `GET /api/companies/{companyId}` | 회사 단건 상세 정보를 조회합니다. |
 | `POST /api/companies` | 새 회사를 생성하고 선택적으로 초기 메모를 남깁니다. |
 | `PATCH /api/companies/{companyId}` | 회사명, 분야, 지역 정보를 수정합니다. |

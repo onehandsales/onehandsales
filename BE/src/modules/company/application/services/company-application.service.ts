@@ -53,7 +53,9 @@ export interface CompanyListQueryInput {
   readonly page?: number;
   readonly companyName?: string;
   readonly companyFieldId?: string;
+  readonly companyFieldIds?: readonly string[];
   readonly companyRegionId?: string;
+  readonly companyRegionIds?: readonly string[];
   readonly sort?: CompanyListSort;
 }
 
@@ -61,7 +63,9 @@ export interface CompanyListQueryInput {
 export interface CompanyExportQueryInput {
   readonly companyName?: string;
   readonly companyFieldId?: string;
+  readonly companyFieldIds?: readonly string[];
   readonly companyRegionId?: string;
+  readonly companyRegionIds?: readonly string[];
   readonly sort?: CompanyListSort;
 }
 
@@ -216,15 +220,18 @@ export class CompanyApplicationService {
     // 1. 목록 조회 조건을 기본값과 검색 가능한 텍스트로 정규화한다.
     const page = query.page ?? 1;
     const companyName = this.normalizeOptionalText(query.companyName);
+    const companyFieldIds = this.normalizeFilterIds(
+      query.companyFieldId,
+      query.companyFieldIds
+    );
+    const companyRegionIds = this.normalizeFilterIds(
+      query.companyRegionId,
+      query.companyRegionIds
+    );
 
     // 2. 필터로 받은 회사 분야와 지역이 현재 사용자 소유인지 검증한다.
-    if (query.companyFieldId) {
-      await this.assertFieldExists(currentUser.id, query.companyFieldId);
-    }
-
-    if (query.companyRegionId) {
-      await this.assertRegionExists(currentUser.id, query.companyRegionId);
-    }
+    await this.assertFieldsExist(currentUser.id, companyFieldIds);
+    await this.assertRegionsExist(currentUser.id, companyRegionIds);
 
     // 3. 현재 사용자 ownership 기준으로 회사 목록을 조회한다.
     const result = await this.companyRepository.listCompanies({
@@ -232,8 +239,8 @@ export class CompanyApplicationService {
       page,
       pageSize: COMPANY_PAGE_SIZE,
       ...(companyName ? { companyName } : {}),
-      ...(query.companyFieldId ? { companyFieldId: query.companyFieldId } : {}),
-      ...(query.companyRegionId ? { companyRegionId: query.companyRegionId } : {}),
+      ...(companyFieldIds.length > 0 ? { companyFieldIds } : {}),
+      ...(companyRegionIds.length > 0 ? { companyRegionIds } : {}),
       sort: query.sort ?? CompanyListSort.CREATED_AT_DESC,
     });
 
@@ -241,6 +248,8 @@ export class CompanyApplicationService {
     this.logEvent("company.listed", {
       userId: currentUser.id,
       sort: query.sort ?? CompanyListSort.CREATED_AT_DESC,
+      companyFieldFilterCount: companyFieldIds.length,
+      companyRegionFilterCount: companyRegionIds.length,
     });
 
     // 5. repository 결과를 페이지 응답 DTO로 변환한다.
@@ -312,22 +321,25 @@ export class CompanyApplicationService {
   ): Promise<ExportedXlsxFileResponse> {
     // 1. export 조회 조건을 저장소 입력에 맞게 정규화한다.
     const companyName = this.normalizeOptionalText(query.companyName);
+    const companyFieldIds = this.normalizeFilterIds(
+      query.companyFieldId,
+      query.companyFieldIds
+    );
+    const companyRegionIds = this.normalizeFilterIds(
+      query.companyRegionId,
+      query.companyRegionIds
+    );
 
     // 2. 필터로 받은 회사 분야와 지역이 현재 사용자 소유인지 검증한다.
-    if (query.companyFieldId) {
-      await this.assertFieldExists(currentUser.id, query.companyFieldId);
-    }
-
-    if (query.companyRegionId) {
-      await this.assertRegionExists(currentUser.id, query.companyRegionId);
-    }
+    await this.assertFieldsExist(currentUser.id, companyFieldIds);
+    await this.assertRegionsExist(currentUser.id, companyRegionIds);
 
     // 3. 페이지네이션 없이 현재 검색과 필터에 맞는 회사 전체 목록을 조회한다.
     const companies = await this.companyRepository.listCompaniesForExport({
       userId: currentUser.id,
       ...(companyName ? { companyName } : {}),
-      ...(query.companyFieldId ? { companyFieldId: query.companyFieldId } : {}),
-      ...(query.companyRegionId ? { companyRegionId: query.companyRegionId } : {}),
+      ...(companyFieldIds.length > 0 ? { companyFieldIds } : {}),
+      ...(companyRegionIds.length > 0 ? { companyRegionIds } : {}),
       sort: query.sort ?? CompanyListSort.CREATED_AT_DESC,
     });
 
@@ -339,6 +351,8 @@ export class CompanyApplicationService {
       userId: currentUser.id,
       rowCount: companies.length,
       sort: query.sort ?? CompanyListSort.CREATED_AT_DESC,
+      companyFieldFilterCount: companyFieldIds.length,
+      companyRegionFilterCount: companyRegionIds.length,
     });
 
     // 6. controller가 다운로드 응답으로 변환할 파일 정보를 반환한다.
@@ -695,6 +709,16 @@ export class CompanyApplicationService {
     }
   }
 
+  // 기능 : 회사 분야들이 현재 사용자의 소유인지 확인합니다.
+  private async assertFieldsExist(
+    userId: string,
+    fieldIds: readonly string[]
+  ): Promise<void> {
+    for (const fieldId of fieldIds) {
+      await this.assertFieldExists(userId, fieldId);
+    }
+  }
+
   // 기능 : 회사 분야가 현재 사용자의 소유인지 확인합니다.
   private async assertFieldExists(
     userId: string,
@@ -703,6 +727,16 @@ export class CompanyApplicationService {
   ): Promise<void> {
     if (!(await repository.findField(userId, fieldId))) {
       throw new CompanyFieldNotFoundError();
+    }
+  }
+
+  // 기능 : 회사 지역들이 현재 사용자의 소유인지 확인합니다.
+  private async assertRegionsExist(
+    userId: string,
+    regionIds: readonly string[]
+  ): Promise<void> {
+    for (const regionId of regionIds) {
+      await this.assertRegionExists(userId, regionId);
     }
   }
 
@@ -746,6 +780,24 @@ export class CompanyApplicationService {
 
     const normalized = value.trim();
     return normalized.length > 0 ? normalized : undefined;
+  }
+
+  // 기능 : 단일 필터 ID와 다중 필터 ID를 중복 없는 배열로 정규화합니다.
+  private normalizeFilterIds(
+    singleId: string | undefined,
+    ids: readonly string[] | undefined
+  ): string[] {
+    const normalizedIds: string[] = [];
+
+    for (const id of [singleId, ...(ids ?? [])]) {
+      const normalizedId = this.normalizeOptionalText(id);
+
+      if (normalizedId && !normalizedIds.includes(normalizedId)) {
+        normalizedIds.push(normalizedId);
+      }
+    }
+
+    return normalizedIds;
   }
 
   // 기능 : 회사 수정 요청에서 포함된 필드만 저장 가능한 값으로 정규화합니다.
