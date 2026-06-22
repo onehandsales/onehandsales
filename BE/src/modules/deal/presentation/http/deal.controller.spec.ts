@@ -88,14 +88,22 @@ function createDealServiceFake(): jest.Mocked<DealServiceFake> {
     getDeal: jest.fn().mockResolvedValue({ id: DEAL_ID }),
     createDeal: jest.fn().mockResolvedValue({ id: DEAL_ID }),
     updateDeal: jest.fn().mockResolvedValue({ id: DEAL_ID }),
-    listFollowingActionLogs: jest.fn().mockResolvedValue({ items: [] }),
+    listFollowingActionLogs: jest.fn().mockResolvedValue({
+      items: [],
+      nextCursor: null,
+      hasNext: false,
+    }),
     createFollowingActionLog: jest.fn().mockResolvedValue({
       id: FOLLOWING_ACTION_LOG_ID,
     }),
     updateFollowingActionLog: jest.fn().mockResolvedValue({
       id: FOLLOWING_ACTION_LOG_ID,
     }),
-    listMemoLogs: jest.fn().mockResolvedValue({ items: [] }),
+    listMemoLogs: jest.fn().mockResolvedValue({
+      items: [],
+      nextCursor: null,
+      hasNext: false,
+    }),
     createMemoLog: jest.fn().mockResolvedValue({ id: MEMO_LOG_ID }),
     updateMemoLog: jest.fn().mockResolvedValue({ id: MEMO_LOG_ID }),
   };
@@ -207,7 +215,7 @@ describe("DealController", () => {
   // 기능 : 다음 행동 로그와 메모 로그 route가 계약 body를 application 계층으로 전달하는지 검증합니다.
   it("routes following action and memo log requests", async () => {
     await request(app.getHttpServer())
-      .get(`/api/deals/${DEAL_ID}/following-action-logs`)
+      .get(`/api/deals/${DEAL_ID}/following-action-logs?cursor=next-following`)
       .expect(200);
     await request(app.getHttpServer())
       .post(`/api/deals/${DEAL_ID}/following-action-logs`)
@@ -220,7 +228,7 @@ describe("DealController", () => {
       .send({ followingAction: "제안서 재발송", checkComplete: true })
       .expect(200);
     await request(app.getHttpServer())
-      .get(`/api/deals/${DEAL_ID}/memo-logs`)
+      .get(`/api/deals/${DEAL_ID}/memo-logs?cursor=next-memo`)
       .expect(200);
     await request(app.getHttpServer())
       .post(`/api/deals/${DEAL_ID}/memo-logs`)
@@ -233,7 +241,8 @@ describe("DealController", () => {
 
     expect(service.listFollowingActionLogs).toHaveBeenCalledWith(
       CURRENT_USER,
-      DEAL_ID
+      DEAL_ID,
+      { cursor: "next-following" }
     );
     expect(service.createFollowingActionLog).toHaveBeenCalledWith(
       CURRENT_USER,
@@ -246,7 +255,9 @@ describe("DealController", () => {
       FOLLOWING_ACTION_LOG_ID,
       { followingAction: "제안서 재발송", checkComplete: true }
     );
-    expect(service.listMemoLogs).toHaveBeenCalledWith(CURRENT_USER, DEAL_ID);
+    expect(service.listMemoLogs).toHaveBeenCalledWith(CURRENT_USER, DEAL_ID, {
+      cursor: "next-memo",
+    });
     expect(service.createMemoLog).toHaveBeenCalledWith(CURRENT_USER, DEAL_ID, {
       memoType: "일반",
       memo: "예산 확인 필요",

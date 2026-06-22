@@ -23,6 +23,7 @@ import {
   CreateDealDto,
   CreateDealFollowingActionLogDto,
   CreateDealMemoLogDto,
+  CursorQueryDto,
   DealStageCountsQueryDto,
   ExportDealsQueryDto,
   ListDealsQueryDto,
@@ -132,12 +133,14 @@ export class DealController {
   @Get(":dealId/following-action-logs")
   listFollowingActionLogs(
     @CurrentUser() currentUser: CurrentUserContext,
-    @Param("dealId", ParseUUIDPipe) dealId: string
+    @Param("dealId", ParseUUIDPipe) dealId: string,
+    @Query() query: CursorQueryDto
   ) {
-    // 1. 딜 ID와 현재 사용자를 application 계층으로 전달한다.
+    // 1. 딜 ID, cursor query, 현재 사용자를 application 계층으로 전달한다.
     return this.dealApplicationService.listFollowingActionLogs(
       currentUser,
-      dealId
+      dealId,
+      query
     );
   }
 
@@ -178,10 +181,11 @@ export class DealController {
   @Get(":dealId/memo-logs")
   listMemoLogs(
     @CurrentUser() currentUser: CurrentUserContext,
-    @Param("dealId", ParseUUIDPipe) dealId: string
+    @Param("dealId", ParseUUIDPipe) dealId: string,
+    @Query() query: CursorQueryDto
   ) {
-    // 1. 딜 ID와 현재 사용자를 application 계층으로 전달한다.
-    return this.dealApplicationService.listMemoLogs(currentUser, dealId);
+    // 1. 딜 ID, cursor query, 현재 사용자를 application 계층으로 전달한다.
+    return this.dealApplicationService.listMemoLogs(currentUser, dealId, query);
   }
 
   // API : 딜 메모, 로그 생성

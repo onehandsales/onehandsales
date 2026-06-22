@@ -132,7 +132,7 @@ Deal 기본 도메인 1차 구현 범위는 다음 테이블만 포함한다.
 - 첫 로그의 `checkComplete`는 항상 `false`다.
 - 단건 생성 API는 `followingAction`만 받는다.
 - 단건 수정 API는 `followingAction`, `checkComplete`를 수정할 수 있다.
-- 목록 조회는 `createdAt DESC`로 제공한다.
+- 목록 조회는 10개 단위 `createdAt DESC, id DESC` cursor 기반 incremental loading으로 제공한다.
 - 딜 목록의 다음 행동은 가장 최근에 생성된 로그 1개만 표시한다.
 
 ## 6. DealMemoLog
@@ -153,7 +153,7 @@ Deal 기본 도메인 1차 구현 범위는 다음 테이블만 포함한다.
 
 - 단건 생성 API는 `memoType`, `memo`를 필수로 받는다.
 - 단건 수정 API는 `memoType`, `memo`를 수정할 수 있다.
-- 목록 조회는 `createdAt DESC`로 제공한다.
+- 목록 조회는 10개 단위 `createdAt DESC, id DESC` cursor 기반 incremental loading으로 제공한다.
 
 ## 7. DealStatus
 

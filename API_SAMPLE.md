@@ -27,7 +27,7 @@
 | `GET /api/companies/{companyId}/memo-logs` | 회사 공개 메모 로그를 cursor 방식으로 조회합니다. |
 | `PATCH /api/companies/{companyId}/memo-logs/{memoLogId}` | 회사 공개 메모 로그를 수정합니다. |
 | `POST /api/companies/{companyId}/private-memo-logs` | 회사 개인 비밀 메모 로그를 생성합니다. |
-| `GET /api/companies/{companyId}/private-memo-logs` | 회사 개인 비밀 메모 로그를 조회합니다. |
+| `GET /api/companies/{companyId}/private-memo-logs` | 회사 개인 비밀 메모 로그를 cursor 방식으로 조회합니다. |
 | `PATCH /api/companies/{companyId}/private-memo-logs/{privateMemoLogId}` | 회사 개인 비밀 메모 로그를 수정합니다. |
 | `GET /api/company-fields` | 회사 분야 옵션 목록을 조회합니다. |
 | `POST /api/company-fields` | 회사 분야 옵션을 생성합니다. |
@@ -50,7 +50,7 @@
 | `GET /api/contacts/{contactId}/memo-logs` | 연락처 공개 메모 로그를 cursor 방식으로 조회합니다. |
 | `PATCH /api/contacts/{contactId}/memo-logs/{memoLogId}` | 연락처 공개 메모 로그를 수정합니다. |
 | `POST /api/contacts/{contactId}/private-memo-logs` | 연락처 개인 비밀 메모 로그를 생성합니다. |
-| `GET /api/contacts/{contactId}/private-memo-logs` | 연락처 개인 비밀 메모 로그를 조회합니다. |
+| `GET /api/contacts/{contactId}/private-memo-logs` | 연락처 개인 비밀 메모 로그를 cursor 방식으로 조회합니다. |
 | `PATCH /api/contacts/{contactId}/private-memo-logs/{privateMemoLogId}` | 연락처 개인 비밀 메모 로그를 수정합니다. |
 | `GET /api/contact-job-grades` | 연락처 직급 옵션 목록을 조회합니다. |
 | `POST /api/contact-job-grades` | 연락처 직급 옵션을 생성합니다. |
@@ -72,7 +72,7 @@
 | `GET /api/products/{productId}/memo-logs` | 제품 공개 메모 로그를 cursor 방식으로 조회합니다. |
 | `PATCH /api/products/{productId}/memo-logs/{memoLogId}` | 제품 공개 메모 로그를 수정합니다. |
 | `POST /api/products/{productId}/private-memo-logs` | 제품 개인 비밀 메모 로그를 생성합니다. |
-| `GET /api/products/{productId}/private-memo-logs` | 제품 개인 비밀 메모 로그를 조회합니다. |
+| `GET /api/products/{productId}/private-memo-logs` | 제품 개인 비밀 메모 로그를 cursor 방식으로 조회합니다. |
 | `PATCH /api/products/{productId}/private-memo-logs/{privateMemoLogId}` | 제품 개인 비밀 메모 로그를 수정합니다. |
 | `GET /api/product-categories` | 제품 카테고리 옵션 목록을 조회합니다. |
 | `POST /api/product-categories` | 제품 카테고리 옵션을 생성합니다. |
@@ -93,10 +93,10 @@
 | `GET /api/deals/company-options` | 거래 생성/수정에 사용할 회사 옵션을 조회합니다. |
 | `GET /api/deals/contact-options` | 거래 생성/수정에 사용할 연락처 옵션을 조회합니다. |
 | `GET /api/deals/product-options` | 거래 생성/수정에 사용할 제품 옵션을 조회합니다. |
-| `GET /api/deals/{dealId}/following-action-logs` | 거래의 다음 행동 로그 목록을 조회합니다. |
+| `GET /api/deals/{dealId}/following-action-logs` | 거래의 다음 행동 로그 목록을 cursor 방식으로 조회합니다. |
 | `POST /api/deals/{dealId}/following-action-logs` | 거래의 다음 행동 로그를 생성합니다. |
 | `PATCH /api/deals/{dealId}/following-action-logs/{followingActionLogId}` | 거래의 다음 행동 내용이나 완료 여부를 수정합니다. |
-| `GET /api/deals/{dealId}/memo-logs` | 거래 메모 로그 목록을 조회합니다. |
+| `GET /api/deals/{dealId}/memo-logs` | 거래 메모 로그 목록을 cursor 방식으로 조회합니다. |
 | `POST /api/deals/{dealId}/memo-logs` | 거래 메모 로그를 생성합니다. |
 | `PATCH /api/deals/{dealId}/memo-logs/{memoLogId}` | 거래 메모 로그를 수정합니다. |
 

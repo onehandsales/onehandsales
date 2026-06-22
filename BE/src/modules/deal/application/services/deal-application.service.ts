@@ -8,6 +8,7 @@ import {
   type DealDetailRecord,
   type DealFollowingActionLogRecord,
   type DealListRecord,
+  type DealLogCursor,
   type DealMemoLogRecord,
   type DealProductRecord,
   type DealRepository,
@@ -42,6 +43,7 @@ import { ValidationDomainError } from "@/shared/domain/errors/common.errors";
 import { AppLogger } from "@/shared/infrastructure/logger/app-logger.service";
 
 const DEAL_PAGE_SIZE = 10;
+const DEAL_LOG_PAGE_SIZE = 10;
 const XLSX_DATE_NUM_FORMAT = "yyyy-mm-dd hh:mm:ss";
 
 // 역할 : DealListQueryInput 데이터가 계층 사이에서 전달되는 구조를 정의합니다.
@@ -68,6 +70,11 @@ export interface DealExportQueryInput {
   readonly contactId?: string;
   readonly dealStatus?: DealStatusCode;
   readonly sort?: DealListSort;
+}
+
+// 역할 : CursorQueryInput 데이터가 계층 사이에서 전달되는 구조를 정의합니다.
+export interface CursorQueryInput {
+  readonly cursor?: string;
 }
 
 // 역할 : CreateDealCommand 데이터가 계층 사이에서 전달되는 구조를 정의합니다.
@@ -172,6 +179,8 @@ export interface DealProductOptionResponse {
 // 역할 : DealFollowingActionLogListResponse 데이터가 계층 사이에서 전달되는 구조를 정의합니다.
 export interface DealFollowingActionLogListResponse {
   readonly items: DealFollowingActionLogListItemResponse[];
+  readonly nextCursor: string | null;
+  readonly hasNext: boolean;
 }
 
 // 역할 : DealFollowingActionLogListItemResponse 데이터가 계층 사이에서 전달되는 구조를 정의합니다.
@@ -191,6 +200,8 @@ export interface DealFollowingActionLogResponse
 // 역할 : DealMemoLogListResponse 데이터가 계층 사이에서 전달되는 구조를 정의합니다.
 export interface DealMemoLogListResponse {
   readonly items: DealMemoLogListItemResponse[];
+  readonly nextCursor: string | null;
+  readonly hasNext: boolean;
 }
 
 // 역할 : DealMemoLogListItemResponse 데이터가 계층 사이에서 전달되는 구조를 정의합니다.
@@ -530,23 +541,29 @@ export class DealApplicationService {
   // 기능 : 현재 사용자의 딜 다음 행동 로그 전체 목록을 조회합니다.
   async listFollowingActionLogs(
     currentUser: CurrentUserContext,
-    dealId: string
+    dealId: string,
+    query: CursorQueryInput
   ): Promise<DealFollowingActionLogListResponse> {
+    // 1. 조회 대상 딜이 현재 사용자 소유인지 검증한다.
     await this.assertDealExists(currentUser.id, dealId);
 
-    const logs = await this.dealRepository.listFollowingActionLogs(
-      currentUser.id,
-      dealId
-    );
+    // 2. cursor 조건으로 다음 행동 로그를 페이지 크기보다 1개 더 조회한다.
+    const logs = await this.dealRepository.listFollowingActionLogs({
+      userId: currentUser.id,
+      dealId,
+      cursor: this.parseCursor(query.cursor),
+      take: DEAL_LOG_PAGE_SIZE + 1,
+    });
 
+    // 3. 조회 이벤트를 구조화 로그로 남긴다.
     this.logEvent("deal.following_action.listed", {
       userId: currentUser.id,
       dealId,
+      hasCursor: Boolean(query.cursor),
     });
 
-    return {
-      items: logs.map((log) => this.toFollowingActionLogListItem(log)),
-    };
+    // 4. 조회 결과를 cursor connection 응답으로 변환한다.
+    return this.toFollowingActionLogConnection(logs);
   }
 
   // 기능 : 현재 사용자의 딜 다음 행동 로그를 생성합니다.
@@ -609,20 +626,29 @@ export class DealApplicationService {
   // 기능 : 현재 사용자의 딜 메모 로그 전체 목록을 조회합니다.
   async listMemoLogs(
     currentUser: CurrentUserContext,
-    dealId: string
+    dealId: string,
+    query: CursorQueryInput
   ): Promise<DealMemoLogListResponse> {
+    // 1. 조회 대상 딜이 현재 사용자 소유인지 검증한다.
     await this.assertDealExists(currentUser.id, dealId);
 
-    const logs = await this.dealRepository.listMemoLogs(currentUser.id, dealId);
+    // 2. cursor 조건으로 메모 로그를 페이지 크기보다 1개 더 조회한다.
+    const logs = await this.dealRepository.listMemoLogs({
+      userId: currentUser.id,
+      dealId,
+      cursor: this.parseCursor(query.cursor),
+      take: DEAL_LOG_PAGE_SIZE + 1,
+    });
 
+    // 3. 조회 이벤트를 구조화 로그로 남긴다.
     this.logEvent("deal.memo.listed", {
       userId: currentUser.id,
       dealId,
+      hasCursor: Boolean(query.cursor),
     });
 
-    return {
-      items: logs.map((log) => this.toMemoLogListItem(log)),
-    };
+    // 4. 조회 결과를 cursor connection 응답으로 변환한다.
+    return this.toMemoLogConnection(logs);
   }
 
   // 기능 : 현재 사용자의 딜 메모 로그를 생성합니다.
@@ -730,6 +756,59 @@ export class DealApplicationService {
 
     const normalized = value.trim();
     return normalized.length > 0 ? normalized : undefined;
+  }
+
+  // 기능 : 서버가 발급한 cursor 문자열을 조회 조건으로 복원합니다.
+  private parseCursor(cursor: string | undefined): DealLogCursor | null {
+    if (!cursor) {
+      return null;
+    }
+
+    try {
+      const raw = JSON.parse(Buffer.from(cursor, "base64url").toString("utf8"));
+
+      if (!this.isCursorPayload(raw)) {
+        throw new Error("Invalid cursor payload");
+      }
+
+      const createdAt = new Date(raw.createdAt);
+
+      if (Number.isNaN(createdAt.getTime())) {
+        throw new Error("Invalid cursor date");
+      }
+
+      return {
+        createdAt,
+        id: raw.id,
+      };
+    } catch {
+      throw new ValidationDomainError("Cursor is invalid");
+    }
+  }
+
+  // 기능 : cursor payload가 필요한 필드를 가진 객체인지 확인합니다.
+  private isCursorPayload(
+    value: unknown
+  ): value is { readonly createdAt: string; readonly id: string } {
+    return (
+      typeof value === "object" &&
+      value !== null &&
+      "createdAt" in value &&
+      "id" in value &&
+      typeof value.createdAt === "string" &&
+      typeof value.id === "string"
+    );
+  }
+
+  // 기능 : 응답용 다음 페이지 cursor 문자열을 생성합니다.
+  private createCursor(record: { readonly createdAt: Date; readonly id: string }): string {
+    return Buffer.from(
+      JSON.stringify({
+        createdAt: record.createdAt.toISOString(),
+        id: record.id,
+      }),
+      "utf8"
+    ).toString("base64url");
   }
 
   // 기능 : 딜 금액 입력이 0 이상 정수인지 검증합니다.
@@ -965,6 +1044,21 @@ export class DealApplicationService {
     };
   }
 
+  // 기능 : 다음 행동 로그 목록을 cursor connection 응답으로 변환합니다.
+  private toFollowingActionLogConnection(
+    records: DealFollowingActionLogRecord[]
+  ): DealFollowingActionLogListResponse {
+    const items = records.slice(0, DEAL_LOG_PAGE_SIZE);
+    const hasNext = records.length > DEAL_LOG_PAGE_SIZE;
+    const lastItem = items[items.length - 1] ?? null;
+
+    return {
+      items: items.map((record) => this.toFollowingActionLogListItem(record)),
+      nextCursor: hasNext && lastItem ? this.createCursor(lastItem) : null,
+      hasNext,
+    };
+  }
+
   // 기능 : 메모 로그를 목록 응답 객체로 변환합니다.
   private toMemoLogListItem(log: DealMemoLogRecord): DealMemoLogListItemResponse {
     return {
@@ -980,6 +1074,21 @@ export class DealApplicationService {
     return {
       ...this.toMemoLogListItem(log),
       updatedAt: log.updatedAt.toISOString(),
+    };
+  }
+
+  // 기능 : 메모 로그 목록을 cursor connection 응답으로 변환합니다.
+  private toMemoLogConnection(
+    records: DealMemoLogRecord[]
+  ): DealMemoLogListResponse {
+    const items = records.slice(0, DEAL_LOG_PAGE_SIZE);
+    const hasNext = records.length > DEAL_LOG_PAGE_SIZE;
+    const lastItem = items[items.length - 1] ?? null;
+
+    return {
+      items: items.map((record) => this.toMemoLogListItem(record)),
+      nextCursor: hasNext && lastItem ? this.createCursor(lastItem) : null,
+      hasNext,
     };
   }
 

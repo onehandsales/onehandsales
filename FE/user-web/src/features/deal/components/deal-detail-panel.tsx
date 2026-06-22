@@ -93,17 +93,24 @@ export function DealDetailPanel({ dealId, variant = "panel" }: DealDetailPanelPr
     );
   }
 
-  const followingLogs = followingLogsQuery.data?.items ?? [];
-  const memoLogs = memoLogsQuery.data?.items ?? [];
+  const followingLogs =
+    followingLogsQuery.data?.pages.flatMap((page) => page.items) ?? [];
+  const memoLogs = memoLogsQuery.data?.pages.flatMap((page) => page.items) ?? [];
 
   if (variant === "page") {
     return (
       <DealDetailPageLayout
         detail={detail}
         followingLogs={followingLogs}
+        followingLogsHasNext={Boolean(followingLogsQuery.hasNextPage)}
+        followingLogsFetchingNext={followingLogsQuery.isFetchingNextPage}
         followingLogsLoading={followingLogsQuery.isLoading}
+        onFetchFollowingLogsNext={() => void followingLogsQuery.fetchNextPage()}
         memoLogs={memoLogs}
+        memoLogsHasNext={Boolean(memoLogsQuery.hasNextPage)}
+        memoLogsFetchingNext={memoLogsQuery.isFetchingNextPage}
         memoLogsLoading={memoLogsQuery.isLoading}
+        onFetchMemoLogsNext={() => void memoLogsQuery.fetchNextPage()}
       />
     );
   }
@@ -112,9 +119,10 @@ export function DealDetailPanel({ dealId, variant = "panel" }: DealDetailPanelPr
     <DealDetailSidePanel
       detail={detail}
       followingLogs={followingLogs}
+      followingLogsHasNext={Boolean(followingLogsQuery.hasNextPage)}
+      followingLogsFetchingNext={followingLogsQuery.isFetchingNextPage}
       followingLogsLoading={followingLogsQuery.isLoading}
-      memoLogs={memoLogs}
-      memoLogsLoading={memoLogsQuery.isLoading}
+      onFetchFollowingLogsNext={() => void followingLogsQuery.fetchNextPage()}
     />
   );
 }
@@ -122,13 +130,17 @@ export function DealDetailPanel({ dealId, variant = "panel" }: DealDetailPanelPr
 function DealDetailSidePanel({
   detail,
   followingLogs,
+  followingLogsHasNext,
+  followingLogsFetchingNext,
   followingLogsLoading,
+  onFetchFollowingLogsNext,
 }: {
   readonly detail: DealDetail;
   readonly followingLogs: DealFollowingActionLog[];
+  readonly followingLogsHasNext: boolean;
+  readonly followingLogsFetchingNext: boolean;
   readonly followingLogsLoading: boolean;
-  readonly memoLogs: DealMemoLog[];
-  readonly memoLogsLoading: boolean;
+  readonly onFetchFollowingLogsNext: () => void;
 }) {
   const nextAction = followingLogs[0];
   const companyName = detail.company?.companyName ?? "-";
@@ -183,8 +195,11 @@ function DealDetailSidePanel({
 
           <FollowingActionLogsSection
             dealId={detail.id}
+            hasNext={followingLogsHasNext}
+            isFetchingNext={followingLogsFetchingNext}
             isLoading={followingLogsLoading}
             logs={followingLogs}
+            onFetchNext={onFetchFollowingLogsNext}
             tone="panel"
           />
         </div>
@@ -293,15 +308,27 @@ function DealInlineEditForm({
 function DealDetailPageLayout({
   detail,
   followingLogs,
+  followingLogsHasNext,
+  followingLogsFetchingNext,
   followingLogsLoading,
   memoLogs,
+  memoLogsHasNext,
+  memoLogsFetchingNext,
   memoLogsLoading,
+  onFetchFollowingLogsNext,
+  onFetchMemoLogsNext,
 }: {
   readonly detail: DealDetail;
   readonly followingLogs: DealFollowingActionLog[];
+  readonly followingLogsHasNext: boolean;
+  readonly followingLogsFetchingNext: boolean;
   readonly followingLogsLoading: boolean;
   readonly memoLogs: DealMemoLog[];
+  readonly memoLogsHasNext: boolean;
+  readonly memoLogsFetchingNext: boolean;
   readonly memoLogsLoading: boolean;
+  readonly onFetchFollowingLogsNext: () => void;
+  readonly onFetchMemoLogsNext: () => void;
 }) {
   const nextAction = followingLogs[0];
   const [isEditing, setIsEditing] = useState(false);
@@ -467,16 +494,22 @@ function DealDetailPageLayout({
           {activeSection === "activity" ? (
             <FollowingActionLogsSection
               dealId={detail.id}
+              hasNext={followingLogsHasNext}
+              isFetchingNext={followingLogsFetchingNext}
               isLoading={followingLogsLoading}
               logs={followingLogs}
+              onFetchNext={onFetchFollowingLogsNext}
               tone="page-inner"
             />
           ) : activeSection === "memo" ? (
             <>
               <MemoLogsSection
                 dealId={detail.id}
+                hasNext={memoLogsHasNext}
+                isFetchingNext={memoLogsFetchingNext}
                 isLoading={memoLogsLoading}
                 logs={memoLogs}
+                onFetchNext={onFetchMemoLogsNext}
                 tone="page-inner"
               />
             </>
@@ -492,8 +525,11 @@ function DealDetailPageLayout({
         <div className="bg-white px-4 pb-6 pt-[14px]">
           <MemoLogsSection
             dealId={detail.id}
+            hasNext={memoLogsHasNext}
+            isFetchingNext={memoLogsFetchingNext}
             isLoading={memoLogsLoading}
             logs={memoLogs}
+            onFetchNext={onFetchMemoLogsNext}
             tone="page-inner"
           />
           <p className="mt-2 text-[12px] text-[#9CA3AF]">개인 메모는 암호화 저장됩니다.</p>
@@ -606,14 +642,20 @@ function DealDetailPageLayout({
                 <div className="grid gap-5 p-4">
                   <FollowingActionLogsSection
                     dealId={detail.id}
+                    hasNext={followingLogsHasNext}
+                    isFetchingNext={followingLogsFetchingNext}
                     isLoading={followingLogsLoading}
                     logs={followingLogs}
+                    onFetchNext={onFetchFollowingLogsNext}
                     tone="page-inner"
                   />
                   <MemoLogsSection
                     dealId={detail.id}
+                    hasNext={memoLogsHasNext}
+                    isFetchingNext={memoLogsFetchingNext}
                     isLoading={memoLogsLoading}
                     logs={memoLogs}
+                    onFetchNext={onFetchMemoLogsNext}
                     tone="page-inner"
                   />
                 </div>
@@ -830,13 +872,19 @@ function StageProgressSection({ activeStatus }: { readonly activeStatus: DealSta
 
 function FollowingActionLogsSection({
   dealId,
+  hasNext,
+  isFetchingNext,
   logs,
   isLoading,
+  onFetchNext,
   tone,
 }: {
   readonly dealId: string;
+  readonly hasNext: boolean;
+  readonly isFetchingNext: boolean;
   readonly logs: DealFollowingActionLog[];
   readonly isLoading: boolean;
+  readonly onFetchNext: () => void;
   readonly tone: "panel" | "page-inner";
 }) {
   const [isAdding, setIsAdding] = useState(false);
@@ -923,6 +971,17 @@ function FollowingActionLogsSection({
           ))}
         </div>
       )}
+
+      {!isLoading && hasNext ? (
+        <button
+          className="mt-2 inline-flex h-8 w-full items-center justify-center rounded-md border border-[#E5EAF0] bg-white text-[12px] font-medium text-[#374151] transition hover:bg-[#F9FAFB] disabled:cursor-not-allowed disabled:opacity-60"
+          disabled={isFetchingNext}
+          onClick={onFetchNext}
+          type="button"
+        >
+          {isFetchingNext ? "불러오는 중" : "더 보기"}
+        </button>
+      ) : null}
     </section>
   );
 }
@@ -1036,13 +1095,19 @@ function FollowingActionLogItem({
 
 function MemoLogsSection({
   dealId,
+  hasNext,
+  isFetchingNext,
   logs,
   isLoading,
+  onFetchNext,
   tone,
 }: {
   readonly dealId: string;
+  readonly hasNext: boolean;
+  readonly isFetchingNext: boolean;
   readonly logs: DealMemoLog[];
   readonly isLoading: boolean;
+  readonly onFetchNext: () => void;
   readonly tone: "panel" | "page-inner";
 }) {
   const [isAdding, setIsAdding] = useState(false);
@@ -1138,6 +1203,17 @@ function MemoLogsSection({
           ))}
         </div>
       )}
+
+      {!isLoading && hasNext ? (
+        <button
+          className="mt-2 inline-flex h-8 w-full items-center justify-center rounded-md border border-[#E5EAF0] bg-white text-[12px] font-medium text-[#374151] transition hover:bg-[#F9FAFB] disabled:cursor-not-allowed disabled:opacity-60"
+          disabled={isFetchingNext}
+          onClick={onFetchNext}
+          type="button"
+        >
+          {isFetchingNext ? "불러오는 중" : "더 보기"}
+        </button>
+      ) : null}
 
       <p className="mt-2 flex items-center gap-1.5 text-[11px] text-[#B45309]">
         <Lock className="h-3.5 w-3.5" />

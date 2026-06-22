@@ -106,10 +106,18 @@ export function exportDealsXlsx(params: DealExportParams): Promise<ApiBlobRespon
   return apiBlobClient(`/api/deals/export/xlsx?${query.toString()}`);
 }
 
-// 기능 : 다음 행동 로그 전체 목록 조회
-export function listFollowingActionLogs(dealId: string) {
+// 기능 : 다음 행동 로그 목록을 cursor 방식으로 조회
+export function listFollowingActionLogs(dealId: string, cursor?: string) {
+  const query = new URLSearchParams();
+
+  if (cursor) {
+    query.set("cursor", cursor);
+  }
+
+  const suffix = query.toString();
+
   return apiClient<DealFollowingActionLogsResponse>(
-    `/api/deals/${dealId}/following-action-logs`
+    `/api/deals/${dealId}/following-action-logs${suffix ? `?${suffix}` : ""}`
   );
 }
 
@@ -136,9 +144,19 @@ export function updateFollowingActionLog(input: UpdateFollowingActionLogInput) {
   );
 }
 
-// 기능 : 메모 로그 전체 목록 조회
-export function listMemoLogs(dealId: string) {
-  return apiClient<DealMemoLogsResponse>(`/api/deals/${dealId}/memo-logs`);
+// 기능 : 메모 로그 목록을 cursor 방식으로 조회
+export function listMemoLogs(dealId: string, cursor?: string) {
+  const query = new URLSearchParams();
+
+  if (cursor) {
+    query.set("cursor", cursor);
+  }
+
+  const suffix = query.toString();
+
+  return apiClient<DealMemoLogsResponse>(
+    `/api/deals/${dealId}/memo-logs${suffix ? `?${suffix}` : ""}`
+  );
 }
 
 // 기능 : 메모 로그 생성

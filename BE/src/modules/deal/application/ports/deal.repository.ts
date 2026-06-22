@@ -53,6 +53,12 @@ export interface DealMemoLogRecord {
   readonly updatedAt: Date;
 }
 
+// 역할 : DealLogCursor 데이터가 계층 사이에서 전달되는 cursor 조회 기준을 정의합니다.
+export interface DealLogCursor {
+  readonly createdAt: Date;
+  readonly id: string;
+}
+
 // 역할 : DealListRecord 데이터가 계층 사이에서 전달되는 구조를 정의합니다.
 export interface DealListRecord {
   readonly id: string;
@@ -213,19 +219,26 @@ export interface DealRepository {
   createFollowingActionLog(
     input: CreateDealFollowingActionLogInput
   ): Promise<DealFollowingActionLogRecord>;
-  // 기능 : 딜 다음 행동 로그 목록을 조회합니다.
-  listFollowingActionLogs(
-    userId: string,
-    dealId: string
-  ): Promise<DealFollowingActionLogRecord[]>;
+  // 기능 : 딜 다음 행동 로그 목록을 cursor 기준으로 조회합니다.
+  listFollowingActionLogs(input: {
+    readonly userId: string;
+    readonly dealId: string;
+    readonly cursor: DealLogCursor | null;
+    readonly take: number;
+  }): Promise<DealFollowingActionLogRecord[]>;
   // 기능 : 딜 다음 행동 로그를 수정합니다.
   updateFollowingActionLog(
     input: UpdateDealFollowingActionLogInput
   ): Promise<DealFollowingActionLogRecord | null>;
   // 기능 : 딜 메모 로그를 생성합니다.
   createMemoLog(input: CreateDealMemoLogInput): Promise<DealMemoLogRecord>;
-  // 기능 : 딜 메모 로그 목록을 조회합니다.
-  listMemoLogs(userId: string, dealId: string): Promise<DealMemoLogRecord[]>;
+  // 기능 : 딜 메모 로그 목록을 cursor 기준으로 조회합니다.
+  listMemoLogs(input: {
+    readonly userId: string;
+    readonly dealId: string;
+    readonly cursor: DealLogCursor | null;
+    readonly take: number;
+  }): Promise<DealMemoLogRecord[]>;
   // 기능 : 딜 메모 로그를 수정합니다.
   updateMemoLog(input: UpdateDealMemoLogInput): Promise<DealMemoLogRecord | null>;
 }

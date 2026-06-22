@@ -49,10 +49,10 @@
 | 7 | GET | `/api/deals/contact-options` | 담당자 전체 목록 조회 | implemented |
 | 8 | GET | `/api/deals/product-options` | 제품 전체 목록 조회 | implemented |
 | 9 | GET | `/api/deals/export/xlsx` | 딜 목록 xlsx export | implemented |
-| 10 | GET | `/api/deals/:dealId/following-action-logs` | 딜 다음 행동 로그 전체 목록 조회 | implemented |
+| 10 | GET | `/api/deals/:dealId/following-action-logs` | 딜 다음 행동 로그 cursor 목록 조회 | implemented |
 | 11 | POST | `/api/deals/:dealId/following-action-logs` | 딜 다음 행동 로그 단건 생성 | implemented |
 | 12 | PATCH | `/api/deals/:dealId/following-action-logs/:followingActionLogId` | 딜 다음 행동 로그 단건 수정 | implemented |
-| 13 | GET | `/api/deals/:dealId/memo-logs` | 딜 메모 로그 전체 목록 조회 | implemented |
+| 13 | GET | `/api/deals/:dealId/memo-logs` | 딜 메모 로그 cursor 목록 조회 | implemented |
 | 14 | POST | `/api/deals/:dealId/memo-logs` | 딜 메모 로그 단건 생성 | implemented |
 | 15 | PATCH | `/api/deals/:dealId/memo-logs/:memoLogId` | 딜 메모 로그 단건 수정 | implemented |
 
@@ -370,7 +370,13 @@ Response `200`:
 
 ### 6.10 GET `/api/deals/:dealId/following-action-logs`
 
-딜 다음 행동 로그를 `createdAt DESC`로 조회한다.
+딜 다음 행동 로그를 `createdAt DESC, id DESC` 정렬의 cursor 방식으로 10개씩 조회한다.
+
+Query:
+
+| 필드 | 타입 | 필수 | 설명 |
+|---|---|---:|---|
+| `cursor` | string | 아니오 | 이전 응답의 `nextCursor`. 없으면 첫 페이지를 조회한다. |
 
 Response `200`:
 
@@ -383,7 +389,9 @@ Response `200`:
       "checkComplete": false,
       "createdAt": "2026-06-12T10:00:00.000Z"
     }
-  ]
+  ],
+  "nextCursor": null,
+  "hasNext": false
 }
 ```
 
@@ -424,7 +432,13 @@ Response `200`: `DealFollowingActionLogResponse`
 
 ### 6.13 GET `/api/deals/:dealId/memo-logs`
 
-딜 메모 로그를 `createdAt DESC`로 조회한다.
+딜 메모 로그를 `createdAt DESC, id DESC` 정렬의 cursor 방식으로 10개씩 조회한다.
+
+Query:
+
+| 필드 | 타입 | 필수 | 설명 |
+|---|---|---:|---|
+| `cursor` | string | 아니오 | 이전 응답의 `nextCursor`. 없으면 첫 페이지를 조회한다. |
 
 Response `200`:
 
@@ -437,7 +451,9 @@ Response `200`:
       "memo": "도입 예산 확인 필요",
       "createdAt": "2026-06-12T10:00:00.000Z"
     }
-  ]
+  ],
+  "nextCursor": null,
+  "hasNext": false
 }
 ```
 

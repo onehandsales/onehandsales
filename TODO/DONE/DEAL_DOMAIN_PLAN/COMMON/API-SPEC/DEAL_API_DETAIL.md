@@ -153,7 +153,8 @@ Rollback:
 목록:
 
 1. deal ownership을 검증한다.
-2. `DealFollowingActionLog`를 `dealId`, `userId` 조건으로 `createdAt DESC` 조회한다.
+2. `DealFollowingActionLog`를 `dealId`, `userId` 조건으로 `createdAt DESC, id DESC` cursor 방식으로 10개씩 조회한다.
+3. 응답은 `items`, `nextCursor`, `hasNext`를 반환한다.
 
 생성:
 
@@ -173,7 +174,8 @@ Rollback:
 목록:
 
 1. deal ownership을 검증한다.
-2. `DealMemoLog`를 `dealId`, `userId` 조건으로 `createdAt DESC` 조회한다.
+2. `DealMemoLog`를 `dealId`, `userId` 조건으로 `createdAt DESC, id DESC` cursor 방식으로 10개씩 조회한다.
+3. 응답은 `items`, `nextCursor`, `hasNext`를 반환한다.
 
 생성:
 

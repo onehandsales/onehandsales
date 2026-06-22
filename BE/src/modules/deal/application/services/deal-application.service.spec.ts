@@ -9,6 +9,7 @@ import {
   type DealDetailRecord,
   type DealFollowingActionLogRecord,
   type DealListRecord,
+  type DealLogCursor,
   type DealMemoLogRecord,
   type DealPageRecord,
   type DealProductRecord,
@@ -282,9 +283,15 @@ class FakeDealRepository implements DealRepository {
     return log;
   }
 
-  // 기능 : fake 다음 행동 로그 목록을 반환합니다.
-  async listFollowingActionLogs(): Promise<DealFollowingActionLogRecord[]> {
-    return this.sortLogs(this.followingActionLogs);
+  // 기능 : fake 다음 행동 로그 목록을 cursor 조건으로 반환합니다.
+  async listFollowingActionLogs(input: {
+    readonly cursor: DealLogCursor | null;
+    readonly take: number;
+  }): Promise<DealFollowingActionLogRecord[]> {
+    return this.applyCursor(this.sortLogs(this.followingActionLogs), input.cursor).slice(
+      0,
+      input.take
+    );
   }
 
   // 기능 : fake 다음 행동 로그를 수정합니다.
@@ -331,9 +338,15 @@ class FakeDealRepository implements DealRepository {
     return log;
   }
 
-  // 기능 : fake 메모 로그 목록을 반환합니다.
-  async listMemoLogs(): Promise<DealMemoLogRecord[]> {
-    return this.sortLogs(this.memoLogs);
+  // 기능 : fake 메모 로그 목록을 cursor 조건으로 반환합니다.
+  async listMemoLogs(input: {
+    readonly cursor: DealLogCursor | null;
+    readonly take: number;
+  }): Promise<DealMemoLogRecord[]> {
+    return this.applyCursor(this.sortLogs(this.memoLogs), input.cursor).slice(
+      0,
+      input.take
+    );
   }
 
   // 기능 : fake 메모 로그를 수정합니다.
@@ -477,6 +490,27 @@ class FakeDealRepository implements DealRepository {
     return [...records].sort((left, right) => {
       const timeDiff = right.createdAt.getTime() - left.createdAt.getTime();
       return timeDiff !== 0 ? timeDiff : right.id.localeCompare(left.id);
+    });
+  }
+
+  // 기능 : fake 로그 목록에 cursor 이후 조건을 적용합니다.
+  private applyCursor<T extends { readonly createdAt: Date; readonly id: string }>(
+    records: T[],
+    cursor: DealLogCursor | null
+  ): T[] {
+    if (!cursor) {
+      return records;
+    }
+
+    return records.filter((record) => {
+      if (record.createdAt.getTime() < cursor.createdAt.getTime()) {
+        return true;
+      }
+
+      return (
+        record.createdAt.getTime() === cursor.createdAt.getTime() &&
+        record.id < cursor.id
+      );
     });
   }
 }
@@ -659,5 +693,93 @@ describe("DealApplicationService", () => {
     expect(row).not.toHaveProperty("id");
     expect(row).not.toHaveProperty("product");
     expect(row).not.toHaveProperty("updatedAt");
+  });
+
+  // 기능 : 딜 다음 행동 로그 조회가 cursor connection으로 동작하는지 검증합니다.
+  it("lists following action logs with cursor connection", async () => {
+    const repository = new FakeDealRepository();
+    const service = createService(repository);
+    await service.createDeal(CURRENT_USER, createDealCommand());
+
+    repository.followingActionLogs = Array.from({ length: 11 }, (_, index) => {
+      const order = index + 1;
+      const createdAt = new Date(
+        `2026-06-12T10:${order.toString().padStart(2, "0")}:00.000Z`
+      );
+
+      return {
+        id: `following-${order.toString().padStart(2, "0")}`,
+        followingAction: `다음 행동 ${order}`,
+        checkComplete: false,
+        createdAt,
+        updatedAt: createdAt,
+      };
+    });
+
+    const firstPage = await service.listFollowingActionLogs(
+      CURRENT_USER,
+      "deal-1",
+      {}
+    );
+
+    expect(firstPage.items).toHaveLength(10);
+    expect(firstPage.items[0]?.followingAction).toBe("다음 행동 11");
+    expect(firstPage.hasNext).toBe(true);
+    expect(firstPage.nextCursor).toEqual(expect.any(String));
+
+    if (!firstPage.nextCursor) {
+      throw new Error("Missing following action next cursor");
+    }
+
+    const secondPage = await service.listFollowingActionLogs(CURRENT_USER, "deal-1", {
+      cursor: firstPage.nextCursor,
+    });
+
+    expect(secondPage.items).toHaveLength(1);
+    expect(secondPage.items[0]?.followingAction).toBe("다음 행동 1");
+    expect(secondPage.hasNext).toBe(false);
+    expect(secondPage.nextCursor).toBeNull();
+  });
+
+  // 기능 : 딜 메모 로그 조회가 cursor connection으로 동작하는지 검증합니다.
+  it("lists memo logs with cursor connection", async () => {
+    const repository = new FakeDealRepository();
+    const service = createService(repository);
+    await service.createDeal(CURRENT_USER, createDealCommand());
+
+    repository.memoLogs = Array.from({ length: 11 }, (_, index) => {
+      const order = index + 1;
+      const createdAt = new Date(
+        `2026-06-12T11:${order.toString().padStart(2, "0")}:00.000Z`
+      );
+
+      return {
+        id: `memo-${order.toString().padStart(2, "0")}`,
+        memoType: `메모 ${order}`,
+        memo: `내용 ${order}`,
+        createdAt,
+        updatedAt: createdAt,
+      };
+    });
+
+    const firstPage = await service.listMemoLogs(CURRENT_USER, "deal-1", {});
+
+    expect(firstPage.items).toHaveLength(10);
+    expect(firstPage.items[0]?.memoType).toBe("메모 11");
+    expect(firstPage.hasNext).toBe(true);
+    expect(firstPage.nextCursor).toEqual(expect.any(String));
+
+    if (!firstPage.nextCursor) {
+      throw new Error("Missing memo log next cursor");
+    }
+
+    const secondPage = await service.listMemoLogs(CURRENT_USER, "deal-1", {
+      cursor: firstPage.nextCursor,
+    });
+
+    expect(secondPage.items).toHaveLength(1);
+    expect(secondPage.items[0]?.memoType).toBe("메모 1");
+    expect(secondPage.hasNext).toBe(false);
+    expect(secondPage.nextCursor).toBeNull();
   });
 });

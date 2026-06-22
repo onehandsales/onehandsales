@@ -1,5 +1,5 @@
 // 기능 : 딜 상세, 다음 행동 로그, 메모 로그 TanStack Query hook
-import { useQuery } from "@tanstack/react-query";
+import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import {
   getDeal,
   listFollowingActionLogs,
@@ -16,17 +16,22 @@ export function useDealDetail(dealId: string) {
 }
 
 export function useDealFollowingActionLogs(dealId: string) {
-  return useQuery({
+  return useInfiniteQuery({
     enabled: dealId.length > 0,
     queryKey: dealQueryKeys.followingActionLogs(dealId),
-    queryFn: () => listFollowingActionLogs(dealId),
+    queryFn: ({ pageParam }) =>
+      listFollowingActionLogs(dealId, pageParam ?? undefined),
+    initialPageParam: null as string | null,
+    getNextPageParam: (lastPage) => lastPage.nextCursor,
   });
 }
 
 export function useDealMemoLogs(dealId: string) {
-  return useQuery({
+  return useInfiniteQuery({
     enabled: dealId.length > 0,
     queryKey: dealQueryKeys.memoLogs(dealId),
-    queryFn: () => listMemoLogs(dealId),
+    queryFn: ({ pageParam }) => listMemoLogs(dealId, pageParam ?? undefined),
+    initialPageParam: null as string | null,
+    getNextPageParam: (lastPage) => lastPage.nextCursor,
   });
 }
