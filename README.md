@@ -135,3 +135,6 @@ MeetingNote AI 초안 생성과 STT는 Backend에서 별도 provider port로 분
 - 모바일 앱은 아직 만들지 않는다. MVP 이후 모바일 개발 때 추가한다.
 - `AGENT`는 PM, UX/UI, Software 역할별 정본 문서 공간이다.
 - `archive`는 참고용이며 `AGENT`를 override하지 않는다.
+
+
+실제로 동작하는지 테스트
