@@ -87,7 +87,9 @@ export function CompanyCreateDialog({
       return;
     }
 
-    const matchedField = fields.find((field) => field.field === pendingFieldName);
+    const matchedField = fields.find(
+      (field) => field.field === pendingFieldName,
+    );
 
     if (matchedField) {
       setValue("companyFieldId", matchedField.id, { shouldValidate: true });
@@ -101,7 +103,7 @@ export function CompanyCreateDialog({
     }
 
     const matchedRegion = regions.find(
-      (region) => region.region === pendingRegionName
+      (region) => region.region === pendingRegionName,
     );
 
     if (matchedRegion) {
@@ -111,13 +113,19 @@ export function CompanyCreateDialog({
   }, [regions, pendingRegionName, setValue]);
 
   useEffect(() => {
-    if (selectedFieldId && !fields.some((field) => field.id === selectedFieldId)) {
+    if (
+      selectedFieldId &&
+      !fields.some((field) => field.id === selectedFieldId)
+    ) {
       setValue("companyFieldId", "", { shouldValidate: true });
     }
   }, [fields, selectedFieldId, setValue]);
 
   useEffect(() => {
-    if (selectedRegionId && !regions.some((region) => region.id === selectedRegionId)) {
+    if (
+      selectedRegionId &&
+      !regions.some((region) => region.id === selectedRegionId)
+    ) {
       setValue("companyRegionId", "", { shouldValidate: true });
     }
   }, [regions, selectedRegionId, setValue]);
@@ -187,18 +195,18 @@ export function CompanyCreateDialog({
             id="company-name"
             label="회사명"
           >
-              <div className="relative">
-                <Building2 className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-                <input
-                  aria-describedby={
-                    errors.companyName ? "company-name-error" : undefined
-                  }
-                  aria-invalid={Boolean(errors.companyName)}
-                  className="h-10 w-full rounded-md border pl-9 pr-3 text-sm outline-none focus:ring-2 focus:ring-ring"
-                  id="company-name"
-                  {...register("companyName")}
-                />
-              </div>
+            <div className="relative">
+              <Building2 className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+              <input
+                aria-describedby={
+                  errors.companyName ? "company-name-error" : undefined
+                }
+                aria-invalid={Boolean(errors.companyName)}
+                className="h-10 w-full rounded-md border pl-9 pr-3 text-sm outline-none focus:ring-2 focus:ring-ring"
+                id="company-name"
+                {...register("companyName")}
+              />
+            </div>
           </ModalFieldGroup>
 
           <ModalFormRow columns={2}>
@@ -216,7 +224,7 @@ export function CompanyCreateDialog({
                 isCreating={createFieldMutation.isPending}
                 isDeleting={deleteFieldMutation.isPending}
                 items={fields}
-                placeholder="분야 검색"
+                placeholder="분야 선택"
                 selectedId={selectedFieldId}
                 title="분야"
                 onCreate={createField}
@@ -244,7 +252,7 @@ export function CompanyCreateDialog({
                 isCreating={createRegionMutation.isPending}
                 isDeleting={deleteRegionMutation.isPending}
                 items={regions}
-                placeholder="지역 검색"
+                placeholder="지역 선택"
                 selectedId={selectedRegionId}
                 title="지역"
                 onCreate={createRegion}
@@ -262,12 +270,12 @@ export function CompanyCreateDialog({
 
         <ModalFormSection title="메모(옵션)">
           <ModalFieldGroup id="company-memo">
-              <textarea
-                aria-label="메모"
-                className="min-h-24 resize-y rounded-md border px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-ring"
-                id="company-memo"
-                {...register("companyMemo")}
-              />
+            <textarea
+              aria-label="메모"
+              className="min-h-24 resize-y rounded-md border px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-ring"
+              id="company-memo"
+              {...register("companyMemo")}
+            />
           </ModalFieldGroup>
         </ModalFormSection>
 

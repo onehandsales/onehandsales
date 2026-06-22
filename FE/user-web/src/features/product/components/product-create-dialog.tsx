@@ -23,7 +23,10 @@ import {
   useDeleteCategoryMutation,
   useDeleteStatusMutation,
 } from "@/features/product/hooks/use-product-mutations";
-import type { ProductCategory, ProductStatus } from "@/features/product/types/product";
+import type {
+  ProductCategory,
+  ProductStatus,
+} from "@/features/product/types/product";
 import { getApiErrorMessage } from "@/lib/api-client";
 
 const schema = z.object({
@@ -33,7 +36,7 @@ const schema = z.object({
     .trim()
     .refine(
       (v) => v.length === 0 || /^\d+$/.test(v),
-      "단가는 0 이상의 정수로 입력해주세요."
+      "단가는 0 이상의 정수로 입력해주세요.",
     ),
   productCategoryId: z.string().trim().min(1, "카테고리를 선택해주세요."),
   productStatusId: z.string().trim().min(1, "상태를 선택해주세요."),
@@ -86,11 +89,11 @@ export function ProductCreateDialog({
   const formId = "product-create-form";
   const categories = useMemo(
     () => categoriesQuery.data?.items ?? [],
-    [categoriesQuery.data]
+    [categoriesQuery.data],
   );
   const statuses = useMemo(
     () => statusesQuery.data?.items ?? [],
-    [statusesQuery.data]
+    [statusesQuery.data],
   );
 
   useEffect(() => {
@@ -113,7 +116,7 @@ export function ProductCreateDialog({
     }
 
     const matchedCategory = categories.find(
-      (category) => category.categoryName === pendingCategoryName
+      (category) => category.categoryName === pendingCategoryName,
     );
 
     if (matchedCategory) {
@@ -131,7 +134,7 @@ export function ProductCreateDialog({
     }
 
     const matchedStatus = statuses.find(
-      (status) => status.statusName === pendingStatusName
+      (status) => status.statusName === pendingStatusName,
     );
 
     if (matchedStatus) {
@@ -186,7 +189,7 @@ export function ProductCreateDialog({
     await createCategoryMutation.mutateAsync({ categoryName: name });
     const updated = await categoriesQuery.refetch();
     const created = updated.data?.items.find(
-      (category) => category.categoryName === name
+      (category) => category.categoryName === name,
     );
 
     if (created) {
@@ -204,7 +207,7 @@ export function ProductCreateDialog({
     await createStatusMutation.mutateAsync({ statusName: name });
     const updated = await statusesQuery.refetch();
     const created = updated.data?.items.find(
-      (status) => status.statusName === name
+      (status) => status.statusName === name,
     );
 
     if (created) {
@@ -317,7 +320,7 @@ export function ProductCreateDialog({
                 isCreating={createCategoryMutation.isPending}
                 isDeleting={deleteCategoryMutation.isPending}
                 items={categories}
-                placeholder="카테고리 검색"
+                placeholder="카테고리 선택"
                 selectedId={selectedCategoryId}
                 title="카테고리"
                 onCreate={createCategory}
@@ -345,7 +348,7 @@ export function ProductCreateDialog({
                 isCreating={createStatusMutation.isPending}
                 isDeleting={deleteStatusMutation.isPending}
                 items={statuses}
-                placeholder="상태 검색"
+                placeholder="상태 선택"
                 selectedId={selectedStatusId}
                 title="상태"
                 onCreate={createStatus}
@@ -363,12 +366,12 @@ export function ProductCreateDialog({
 
         <ModalFormSection title="메모(옵션)">
           <ModalFieldGroup id="pc-product-memo">
-          <textarea
-            aria-label="메모"
-            className="min-h-24 resize-y rounded-md border px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-ring"
-            id="pc-product-memo"
-            {...register("productMemo")}
-          />
+            <textarea
+              aria-label="메모"
+              className="min-h-24 resize-y rounded-md border px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-ring"
+              id="pc-product-memo"
+              {...register("productMemo")}
+            />
           </ModalFieldGroup>
         </ModalFormSection>
 

@@ -25,7 +25,10 @@ import {
 } from "@/components/ui/modal-form";
 import { ModalShell } from "@/components/ui/modal-shell";
 import { ErrorState } from "@/components/ui/state";
-import { useCompanyFields, useCompanyRegions } from "@/features/company/hooks/use-company-list";
+import {
+  useCompanyFields,
+  useCompanyRegions,
+} from "@/features/company/hooks/use-company-list";
 import { useCreateCompanyMutation } from "@/features/company/hooks/use-company-mutations";
 import {
   companyCreateFormSchema,
@@ -33,7 +36,10 @@ import {
   toCreateCompanyInput,
   type CompanyCreateFormValues,
 } from "@/features/company/schemas/company-schema";
-import { useContactDepartments, useContactJobGrades } from "@/features/contact/hooks/use-contact-list";
+import {
+  useContactDepartments,
+  useContactJobGrades,
+} from "@/features/contact/hooks/use-contact-list";
 import { useCreateContactMutation } from "@/features/contact/hooks/use-contact-mutations";
 import { ContactTaxonomyManageDialog } from "@/features/contact/components/contact-taxonomy-manage-dialog";
 import {
@@ -175,7 +181,9 @@ export function DealCreateDialog({
       shouldDirty: true,
       shouldValidate: true,
     });
-    const company = companyOptionsQuery.data?.find((option) => option.id === payload.companyId);
+    const company = companyOptionsQuery.data?.find(
+      (option) => option.id === payload.companyId,
+    );
 
     if (company) {
       setValue("companySearch", company.companyName, {
@@ -184,7 +192,10 @@ export function DealCreateDialog({
     }
 
     const updated = await contactOptionsQuery.refetch();
-    const created = findContactOptionByName(updated.data ?? [], payload.username);
+    const created = findContactOptionByName(
+      updated.data ?? [],
+      payload.username,
+    );
 
     if (created) {
       setValue("contactId", created.id, {
@@ -217,7 +228,9 @@ export function DealCreateDialog({
   };
 
   const onSubmit = handleSubmit(async (values) => {
-    const deal = await createDealMutation.mutateAsync(toCreateDealInput(values));
+    const deal = await createDealMutation.mutateAsync(
+      toCreateDealInput(values),
+    );
     onCreated(deal);
     onOpenChange(false);
   });
@@ -226,11 +239,17 @@ export function DealCreateDialog({
   // 선택된 회사에 속한 담당자만 표시합니다. 백엔드에서 contact.companyId !== companyId 검사를 합니다.
   const allContactOptions = contactOptionsQuery.data ?? [];
   const contactOptions = selectedCompanyId
-    ? allContactOptions.filter((contact) => contact.companyId === selectedCompanyId)
+    ? allContactOptions.filter(
+        (contact) => contact.companyId === selectedCompanyId,
+      )
     : allContactOptions;
   const productOptions = productOptionsQuery.data ?? [];
-  const selectedCompany = companyOptions.find((company) => company.id === selectedCompanyId);
-  const selectedContact = contactOptions.find((contact) => contact.id === selectedContactId);
+  const selectedCompany = companyOptions.find(
+    (company) => company.id === selectedCompanyId,
+  );
+  const selectedContact = contactOptions.find(
+    (contact) => contact.id === selectedContactId,
+  );
 
   return (
     <>
@@ -252,7 +271,11 @@ export function DealCreateDialog({
           {/* 딜 기본 정보 */}
           <ModalFormSection title="딜 기본 정보">
             <ModalFormRow columns={2}>
-              <ModalFieldGroup error={errors.dealName?.message} id="deal-name" label="딜명">
+              <ModalFieldGroup
+                error={errors.dealName?.message}
+                id="deal-name"
+                label="딜명"
+              >
                 <input
                   aria-invalid={Boolean(errors.dealName)}
                   className="h-10 rounded-md border px-3 text-sm outline-none focus:ring-2 focus:ring-ring"
@@ -261,7 +284,11 @@ export function DealCreateDialog({
                 />
               </ModalFieldGroup>
 
-              <ModalFieldGroup error={errors.dealCost?.message} id="deal-cost" label="금액">
+              <ModalFieldGroup
+                error={errors.dealCost?.message}
+                id="deal-cost"
+                label="금액"
+              >
                 <div className="relative">
                   <input type="hidden" {...register("dealCost")} />
                   <HandCoins className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
@@ -286,7 +313,11 @@ export function DealCreateDialog({
           <ModalFormSection title="연결 대상">
             <ModalFormRow columns={2}>
               {/* 회사 */}
-              <ModalFieldGroup error={errors.companyId?.message} id="deal-company" label="회사">
+              <ModalFieldGroup
+                error={errors.companyId?.message}
+                id="deal-company"
+                label="회사"
+              >
                 <div className="flex gap-2">
                   <input type="hidden" {...register("companyId")} />
                   <SearchSelectField
@@ -347,12 +378,18 @@ export function DealCreateDialog({
               </ModalFieldGroup>
 
               {/* 담당자 */}
-              <ModalFieldGroup error={errors.contactId?.message} id="deal-contact" label="담당자">
+              <ModalFieldGroup
+                error={errors.contactId?.message}
+                id="deal-contact"
+                label="담당자"
+              >
                 <div className="flex gap-2">
                   <input type="hidden" {...register("contactId")} />
                   <SearchSelectField
                     emptyText="검색된 담당자가 없습니다."
-                    getDescription={(contact) => contact.contactDepartment.departmentName}
+                    getDescription={(contact) =>
+                      contact.contactDepartment.departmentName
+                    }
                     getLabel={(contact) => contact.label}
                     icon={IdCard}
                     id="deal-contact"
@@ -396,7 +433,11 @@ export function DealCreateDialog({
             </ModalFormRow>
 
             {/* 제품 다중 선택 */}
-            <ModalFieldGroup error={errors.productIds?.message} id="deal-products" label="제품 (1개 이상)">
+            <ModalFieldGroup
+              error={errors.productIds?.message}
+              id="deal-products"
+              label="제품 (1개 이상)"
+            >
               <ProductMultiSelectDropdown
                 id="deal-products"
                 createActionLabel="제품 추가"
@@ -416,7 +457,11 @@ export function DealCreateDialog({
           {/* 진행 상태 */}
           <ModalFormSection title="진행 상태">
             <ModalFormRow columns={2}>
-              <ModalFieldGroup error={errors.dealStatus?.message} id="deal-status" label="딜 단계">
+              <ModalFieldGroup
+                error={errors.dealStatus?.message}
+                id="deal-status"
+                label="딜 단계"
+              >
                 <select
                   className="h-10 rounded-md border px-3 text-sm outline-none focus:ring-2 focus:ring-ring"
                   id="deal-status"
@@ -430,7 +475,11 @@ export function DealCreateDialog({
                 </select>
               </ModalFieldGroup>
 
-              <ModalFieldGroup error={errors.expectedEndDate?.message} id="deal-end-date" label="예상 마감일">
+              <ModalFieldGroup
+                error={errors.expectedEndDate?.message}
+                id="deal-end-date"
+                label="예상 마감일"
+              >
                 <div className="relative">
                   <input type="hidden" {...register("expectedEndDate")} />
                   <input
@@ -446,7 +495,11 @@ export function DealCreateDialog({
               </ModalFieldGroup>
             </ModalFormRow>
 
-            <ModalFieldGroup error={errors.followingAction?.message} id="deal-following" label="다음 행동">
+            <ModalFieldGroup
+              error={errors.followingAction?.message}
+              id="deal-following"
+              label="다음 행동"
+            >
               <input
                 aria-invalid={Boolean(errors.followingAction)}
                 className="h-10 rounded-md border px-3 text-sm outline-none focus:ring-2 focus:ring-ring"
@@ -515,7 +568,9 @@ function QuickCompanyCreateDialog({
     defaultValues: emptyCompanyCreateFormValues,
   });
   const formId = "deal-quick-company-create-form";
-  const [taxonomyDialog, setTaxonomyDialog] = useState<{ kind: "field" | "region" } | null>(null);
+  const [taxonomyDialog, setTaxonomyDialog] = useState<{
+    kind: "field" | "region";
+  } | null>(null);
   const [pendingFieldName, setPendingFieldName] = useState("");
   const [pendingRegionName, setPendingRegionName] = useState("");
   const [fieldSearch, setFieldSearch] = useState("");
@@ -534,16 +589,27 @@ function QuickCompanyCreateDialog({
     }
   }, [open, reset]);
 
-  const fields = useMemo(() => fieldsQuery.data?.items ?? [], [fieldsQuery.data]);
-  const regions = useMemo(() => regionsQuery.data?.items ?? [], [regionsQuery.data]);
+  const fields = useMemo(
+    () => fieldsQuery.data?.items ?? [],
+    [fieldsQuery.data],
+  );
+  const regions = useMemo(
+    () => regionsQuery.data?.items ?? [],
+    [regionsQuery.data],
+  );
   const selectedField = fields.find((field) => field.id === selectedFieldId);
-  const selectedRegion = regions.find((region) => region.id === selectedRegionId);
+  const selectedRegion = regions.find(
+    (region) => region.id === selectedRegionId,
+  );
 
   useEffect(() => {
     if (!pendingFieldName) return;
     const matched = fields.find((f) => f.field === pendingFieldName);
     if (matched) {
-      setValue("companyFieldId", matched.id, { shouldDirty: true, shouldValidate: true });
+      setValue("companyFieldId", matched.id, {
+        shouldDirty: true,
+        shouldValidate: true,
+      });
       setFieldSearch(matched.field);
       setPendingFieldName("");
     }
@@ -553,7 +619,10 @@ function QuickCompanyCreateDialog({
     if (!pendingRegionName) return;
     const matched = regions.find((r) => r.region === pendingRegionName);
     if (matched) {
-      setValue("companyRegionId", matched.id, { shouldDirty: true, shouldValidate: true });
+      setValue("companyRegionId", matched.id, {
+        shouldDirty: true,
+        shouldValidate: true,
+      });
       setRegionSearch(matched.region);
       setPendingRegionName("");
     }
@@ -571,132 +640,162 @@ function QuickCompanyCreateDialog({
 
   return (
     <>
-    <ModalShell
-      footer={
-        <ModalFooterActions
-          formId={formId}
-          isSubmitting={createCompanyMutation.isPending}
-          submitLabel="회사 저장"
-          onCancel={() => onOpenChange(false)}
-          onSubmit={() => void onSubmit()}
-        />
-      }
-      open={open}
-      size="sm"
-      title="회사 추가"
-      onOpenChange={onOpenChange}
-    >
-      <ModalForm id={formId} onSubmit={onSubmit}>
-        <ModalFormSection title="회사 기본 정보">
-          <ModalFieldGroup error={errors.companyName?.message} id="deal-quick-company-name" label="회사명">
-            <input
-              aria-invalid={Boolean(errors.companyName)}
-              className="h-10 rounded-md border px-3 text-sm outline-none focus:ring-2 focus:ring-ring"
-              id="deal-quick-company-name"
-              {...register("companyName")}
-            />
-          </ModalFieldGroup>
-
-          <ModalFormRow columns={2}>
-            <ModalFieldGroup error={errors.companyFieldId?.message} id="deal-quick-company-field" label="분야">
-              <input type="hidden" {...register("companyFieldId")} />
-              <SearchSelectField
-                createActionLabel="분야 추가"
-                emptyText="검색된 분야가 없습니다."
-                getLabel={(field) => field.field}
-                icon={Tags}
-                id="deal-quick-company-field"
-                isLoading={fieldsQuery.isLoading}
-                items={fields}
-                placeholder="분야 검색"
-                search={fieldSearch}
-                selectedId={selectedFieldId}
-                selectedLabel={selectedField?.field ?? fieldSearch}
-                onCreate={() => setTaxonomyDialog({ kind: "field" })}
-                onClear={() => {
-                  setValue("companyFieldId", "", { shouldDirty: true, shouldValidate: true });
-                  setFieldSearch("");
-                }}
-                onSearchChange={(value) => {
-                  setFieldSearch(value);
-                  if (selectedFieldId) {
-                    setValue("companyFieldId", "", { shouldDirty: true, shouldValidate: true });
-                  }
-                }}
-                onSelect={(field) => {
-                  setValue("companyFieldId", field.id, { shouldDirty: true, shouldValidate: true });
-                  setFieldSearch(field.field);
-                }}
-              />
-            </ModalFieldGroup>
-
-            <ModalFieldGroup error={errors.companyRegionId?.message} id="deal-quick-company-region" label="지역">
-              <input type="hidden" {...register("companyRegionId")} />
-              <SearchSelectField
-                createActionLabel="지역 추가"
-                emptyText="검색된 지역이 없습니다."
-                getLabel={(region) => region.region}
-                icon={MapPin}
-                id="deal-quick-company-region"
-                isLoading={regionsQuery.isLoading}
-                items={regions}
-                placeholder="지역 검색"
-                search={regionSearch}
-                selectedId={selectedRegionId}
-                selectedLabel={selectedRegion?.region ?? regionSearch}
-                onCreate={() => setTaxonomyDialog({ kind: "region" })}
-                onClear={() => {
-                  setValue("companyRegionId", "", { shouldDirty: true, shouldValidate: true });
-                  setRegionSearch("");
-                }}
-                onSearchChange={(value) => {
-                  setRegionSearch(value);
-                  if (selectedRegionId) {
-                    setValue("companyRegionId", "", { shouldDirty: true, shouldValidate: true });
-                  }
-                }}
-                onSelect={(region) => {
-                  setValue("companyRegionId", region.id, { shouldDirty: true, shouldValidate: true });
-                  setRegionSearch(region.region);
-                }}
-              />
-            </ModalFieldGroup>
-          </ModalFormRow>
-        </ModalFormSection>
-
-        <ModalFormSection title="메모(옵션)">
-          <ModalFieldGroup id="deal-quick-company-memo">
-            <textarea
-              aria-label="메모"
-              className="min-h-20 resize-y rounded-md border px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-ring"
-              id="deal-quick-company-memo"
-              {...register("companyMemo")}
-            />
-          </ModalFieldGroup>
-        </ModalFormSection>
-
-        {createCompanyMutation.error ? (
-          <ErrorState
-            message={getApiErrorMessage(createCompanyMutation.error)}
-            title="회사 저장 실패"
-            variant="inline"
+      <ModalShell
+        footer={
+          <ModalFooterActions
+            formId={formId}
+            isSubmitting={createCompanyMutation.isPending}
+            submitLabel="회사 저장"
+            onCancel={() => onOpenChange(false)}
+            onSubmit={() => void onSubmit()}
           />
-        ) : null}
-      </ModalForm>
-    </ModalShell>
-    <CompanyTaxonomyCreateDialog
-      kind={taxonomyDialog?.kind ?? "field"}
-      fields={fields}
-      regions={regions}
-      open={taxonomyDialog !== null}
-      onCreated={(name) => {
-        if (taxonomyDialog?.kind === "field") setPendingFieldName(name);
-        else setPendingRegionName(name);
-      }}
-      onOpenChange={(isOpen) => {
-        if (!isOpen) setTaxonomyDialog(null);
-      }}
-    />
+        }
+        open={open}
+        size="sm"
+        title="회사 추가"
+        onOpenChange={onOpenChange}
+      >
+        <ModalForm id={formId} onSubmit={onSubmit}>
+          <ModalFormSection title="회사 기본 정보">
+            <ModalFieldGroup
+              error={errors.companyName?.message}
+              id="deal-quick-company-name"
+              label="회사명"
+            >
+              <input
+                aria-invalid={Boolean(errors.companyName)}
+                className="h-10 rounded-md border px-3 text-sm outline-none focus:ring-2 focus:ring-ring"
+                id="deal-quick-company-name"
+                {...register("companyName")}
+              />
+            </ModalFieldGroup>
+
+            <ModalFormRow columns={2}>
+              <ModalFieldGroup
+                error={errors.companyFieldId?.message}
+                id="deal-quick-company-field"
+                label="분야"
+              >
+                <input type="hidden" {...register("companyFieldId")} />
+                <SearchSelectField
+                  createActionLabel="분야 추가"
+                  emptyText="검색된 분야가 없습니다."
+                  getLabel={(field) => field.field}
+                  icon={Tags}
+                  id="deal-quick-company-field"
+                  isLoading={fieldsQuery.isLoading}
+                  items={fields}
+                  placeholder="분야 선택"
+                  search={fieldSearch}
+                  selectedId={selectedFieldId}
+                  selectedLabel={selectedField?.field ?? fieldSearch}
+                  onCreate={() => setTaxonomyDialog({ kind: "field" })}
+                  onClear={() => {
+                    setValue("companyFieldId", "", {
+                      shouldDirty: true,
+                      shouldValidate: true,
+                    });
+                    setFieldSearch("");
+                  }}
+                  onSearchChange={(value) => {
+                    setFieldSearch(value);
+                    if (selectedFieldId) {
+                      setValue("companyFieldId", "", {
+                        shouldDirty: true,
+                        shouldValidate: true,
+                      });
+                    }
+                  }}
+                  onSelect={(field) => {
+                    setValue("companyFieldId", field.id, {
+                      shouldDirty: true,
+                      shouldValidate: true,
+                    });
+                    setFieldSearch(field.field);
+                  }}
+                />
+              </ModalFieldGroup>
+
+              <ModalFieldGroup
+                error={errors.companyRegionId?.message}
+                id="deal-quick-company-region"
+                label="지역"
+              >
+                <input type="hidden" {...register("companyRegionId")} />
+                <SearchSelectField
+                  createActionLabel="지역 추가"
+                  emptyText="검색된 지역이 없습니다."
+                  getLabel={(region) => region.region}
+                  icon={MapPin}
+                  id="deal-quick-company-region"
+                  isLoading={regionsQuery.isLoading}
+                  items={regions}
+                  placeholder="지역 검색"
+                  search={regionSearch}
+                  selectedId={selectedRegionId}
+                  selectedLabel={selectedRegion?.region ?? regionSearch}
+                  onCreate={() => setTaxonomyDialog({ kind: "region" })}
+                  onClear={() => {
+                    setValue("companyRegionId", "", {
+                      shouldDirty: true,
+                      shouldValidate: true,
+                    });
+                    setRegionSearch("");
+                  }}
+                  onSearchChange={(value) => {
+                    setRegionSearch(value);
+                    if (selectedRegionId) {
+                      setValue("companyRegionId", "", {
+                        shouldDirty: true,
+                        shouldValidate: true,
+                      });
+                    }
+                  }}
+                  onSelect={(region) => {
+                    setValue("companyRegionId", region.id, {
+                      shouldDirty: true,
+                      shouldValidate: true,
+                    });
+                    setRegionSearch(region.region);
+                  }}
+                />
+              </ModalFieldGroup>
+            </ModalFormRow>
+          </ModalFormSection>
+
+          <ModalFormSection title="메모(옵션)">
+            <ModalFieldGroup id="deal-quick-company-memo">
+              <textarea
+                aria-label="메모"
+                className="min-h-20 resize-y rounded-md border px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-ring"
+                id="deal-quick-company-memo"
+                {...register("companyMemo")}
+              />
+            </ModalFieldGroup>
+          </ModalFormSection>
+
+          {createCompanyMutation.error ? (
+            <ErrorState
+              message={getApiErrorMessage(createCompanyMutation.error)}
+              title="회사 저장 실패"
+              variant="inline"
+            />
+          ) : null}
+        </ModalForm>
+      </ModalShell>
+      <CompanyTaxonomyCreateDialog
+        kind={taxonomyDialog?.kind ?? "field"}
+        fields={fields}
+        regions={regions}
+        open={taxonomyDialog !== null}
+        onCreated={(name) => {
+          if (taxonomyDialog?.kind === "field") setPendingFieldName(name);
+          else setPendingRegionName(name);
+        }}
+        onOpenChange={(isOpen) => {
+          if (!isOpen) setTaxonomyDialog(null);
+        }}
+      />
     </>
   );
 }
@@ -746,14 +845,18 @@ function QuickContactCreateDialog({
   const selectedJobGradeId = watch("contactJobGradeId") ?? "";
   const departments = useMemo(
     () => departmentsQuery.data?.items ?? [],
-    [departmentsQuery.data]
+    [departmentsQuery.data],
   );
   const jobGrades = useMemo(
     () => jobGradesQuery.data?.items ?? [],
-    [jobGradesQuery.data]
+    [jobGradesQuery.data],
   );
-  const selectedDepartment = departments.find((department) => department.id === selectedDepartmentId);
-  const selectedJobGrade = jobGrades.find((jobGrade) => jobGrade.id === selectedJobGradeId);
+  const selectedDepartment = departments.find(
+    (department) => department.id === selectedDepartmentId,
+  );
+  const selectedJobGrade = jobGrades.find(
+    (jobGrade) => jobGrade.id === selectedJobGradeId,
+  );
 
   useEffect(() => {
     if (open) {
@@ -771,9 +874,14 @@ function QuickContactCreateDialog({
 
   useEffect(() => {
     if (!pendingDepartmentName) return;
-    const matched = departments.find((department) => department.departmentName === pendingDepartmentName);
+    const matched = departments.find(
+      (department) => department.departmentName === pendingDepartmentName,
+    );
     if (matched) {
-      setValue("contactDepartmentId", matched.id, { shouldDirty: true, shouldValidate: true });
+      setValue("contactDepartmentId", matched.id, {
+        shouldDirty: true,
+        shouldValidate: true,
+      });
       setDepartmentSearch(matched.departmentName);
       setPendingDepartmentName("");
     }
@@ -781,9 +889,14 @@ function QuickContactCreateDialog({
 
   useEffect(() => {
     if (!pendingJobGradeName) return;
-    const matched = jobGrades.find((jobGrade) => jobGrade.jobGradeName === pendingJobGradeName);
+    const matched = jobGrades.find(
+      (jobGrade) => jobGrade.jobGradeName === pendingJobGradeName,
+    );
     if (matched) {
-      setValue("contactJobGradeId", matched.id, { shouldDirty: true, shouldValidate: true });
+      setValue("contactJobGradeId", matched.id, {
+        shouldDirty: true,
+        shouldValidate: true,
+      });
       setJobGradeSearch(matched.jobGradeName);
       setPendingJobGradeName("");
     }
@@ -804,171 +917,217 @@ function QuickContactCreateDialog({
 
   return (
     <>
-    <ModalShell
-      footer={
-        <ModalFooterActions
-          formId={formId}
-          isSubmitting={createContactMutation.isPending}
-          submitLabel="담당자 저장"
-          onCancel={() => onOpenChange(false)}
-          onSubmit={() => void onSubmit()}
-        />
-      }
-      open={open}
-      size="md"
-      title="담당자 추가"
-      onOpenChange={onOpenChange}
-    >
-      <ModalForm id={formId} onSubmit={onSubmit}>
-        <ModalFormSection title="담당자 기본 정보">
-          <ModalFormRow columns={2}>
-            <ModalFieldGroup error={errors.username?.message} id="deal-quick-contact-name" label="이름">
-              <input
-                aria-invalid={Boolean(errors.username)}
-                className="h-10 rounded-md border px-3 text-sm outline-none focus:ring-2 focus:ring-ring"
-                id="deal-quick-contact-name"
-                {...register("username")}
-              />
-            </ModalFieldGroup>
-
-            <ModalFieldGroup error={errors.companyId?.message} id="deal-quick-contact-company" label="회사">
-              <select
-                aria-invalid={Boolean(errors.companyId)}
-                className="h-10 rounded-md border px-3 text-sm outline-none focus:ring-2 focus:ring-ring"
-                id="deal-quick-contact-company"
-                {...register("companyId")}
-              >
-                <option value="">회사 선택</option>
-                {companyOptions.map((company) => (
-                  <option key={company.id} value={company.id}>
-                    {company.companyName}
-                  </option>
-                ))}
-              </select>
-            </ModalFieldGroup>
-          </ModalFormRow>
-
-          <ModalFormRow columns={2}>
-            <ModalFieldGroup error={errors.mobile?.message} id="deal-quick-contact-mobile" label="휴대폰번호">
-              <input
-                aria-invalid={Boolean(errors.mobile)}
-                className="h-10 rounded-md border px-3 text-sm outline-none focus:ring-2 focus:ring-ring"
-                id="deal-quick-contact-mobile"
-                placeholder="010-0000-0000"
-                {...register("mobile")}
-              />
-            </ModalFieldGroup>
-
-            <ModalFieldGroup error={errors.email?.message} id="deal-quick-contact-email" label="이메일">
-              <input
-                aria-invalid={Boolean(errors.email)}
-                className="h-10 rounded-md border px-3 text-sm outline-none focus:ring-2 focus:ring-ring"
-                id="deal-quick-contact-email"
-                {...register("email")}
-              />
-            </ModalFieldGroup>
-          </ModalFormRow>
-        </ModalFormSection>
-
-        <ModalFormSection title="소속 정보">
-          <ModalFormRow columns={2}>
-            <ModalFieldGroup error={errors.contactDepartmentId?.message} id="deal-quick-contact-department" label="부서">
-              <input type="hidden" {...register("contactDepartmentId")} />
-              <SearchSelectField
-                createActionLabel="부서 추가"
-                emptyText="검색된 부서가 없습니다."
-                getLabel={(department) => department.departmentName}
-                icon={Users}
-                id="deal-quick-contact-department"
-                isLoading={departmentsQuery.isLoading}
-                items={departments}
-                placeholder="부서 검색"
-                search={departmentSearch}
-                selectedId={selectedDepartmentId}
-                selectedLabel={selectedDepartment?.departmentName ?? departmentSearch}
-                onCreate={() => setTaxonomyOpen(true)}
-                onClear={() => {
-                  setValue("contactDepartmentId", "", { shouldDirty: true, shouldValidate: true });
-                  setDepartmentSearch("");
-                }}
-                onSearchChange={(value) => {
-                  setDepartmentSearch(value);
-                  if (selectedDepartmentId) {
-                    setValue("contactDepartmentId", "", { shouldDirty: true, shouldValidate: true });
-                  }
-                }}
-                onSelect={(department) => {
-                  setValue("contactDepartmentId", department.id, { shouldDirty: true, shouldValidate: true });
-                  setDepartmentSearch(department.departmentName);
-                }}
-              />
-            </ModalFieldGroup>
-
-            <ModalFieldGroup error={errors.contactJobGradeId?.message} id="deal-quick-contact-job-grade" label="직급">
-              <input type="hidden" {...register("contactJobGradeId")} />
-              <SearchSelectField
-                createActionLabel="직급 추가"
-                emptyText="검색된 직급이 없습니다."
-                getLabel={(jobGrade) => jobGrade.jobGradeName}
-                icon={BadgeCheck}
-                id="deal-quick-contact-job-grade"
-                isLoading={jobGradesQuery.isLoading}
-                items={jobGrades}
-                placeholder="직급 검색"
-                search={jobGradeSearch}
-                selectedId={selectedJobGradeId}
-                selectedLabel={selectedJobGrade?.jobGradeName ?? jobGradeSearch}
-                onCreate={() => setTaxonomyOpen(true)}
-                onClear={() => {
-                  setValue("contactJobGradeId", "", { shouldDirty: true, shouldValidate: true });
-                  setJobGradeSearch("");
-                }}
-                onSearchChange={(value) => {
-                  setJobGradeSearch(value);
-                  if (selectedJobGradeId) {
-                    setValue("contactJobGradeId", "", { shouldDirty: true, shouldValidate: true });
-                  }
-                }}
-                onSelect={(jobGrade) => {
-                  setValue("contactJobGradeId", jobGrade.id, { shouldDirty: true, shouldValidate: true });
-                  setJobGradeSearch(jobGrade.jobGradeName);
-                }}
-              />
-            </ModalFieldGroup>
-          </ModalFormRow>
-        </ModalFormSection>
-
-        <ModalFormSection title="메모(옵션)">
-          <ModalFieldGroup id="deal-quick-contact-memo">
-            <textarea
-              aria-label="메모"
-              className="min-h-20 resize-y rounded-md border px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-ring"
-              id="deal-quick-contact-memo"
-              {...register("contactMemo")}
-            />
-          </ModalFieldGroup>
-        </ModalFormSection>
-
-        {createContactMutation.error ? (
-          <ErrorState
-            message={getApiErrorMessage(createContactMutation.error)}
-            title="담당자 저장 실패"
-            variant="inline"
+      <ModalShell
+        footer={
+          <ModalFooterActions
+            formId={formId}
+            isSubmitting={createContactMutation.isPending}
+            submitLabel="담당자 저장"
+            onCancel={() => onOpenChange(false)}
+            onSubmit={() => void onSubmit()}
           />
-        ) : null}
-      </ModalForm>
-    </ModalShell>
-    <ContactTaxonomyManageDialog
-      open={taxonomyOpen}
-      onCreated={(kind, name) => {
-        if (kind === "department") {
-          setPendingDepartmentName(name);
-        } else {
-          setPendingJobGradeName(name);
         }
-      }}
-      onOpenChange={setTaxonomyOpen}
-    />
+        open={open}
+        size="md"
+        title="담당자 추가"
+        onOpenChange={onOpenChange}
+      >
+        <ModalForm id={formId} onSubmit={onSubmit}>
+          <ModalFormSection title="담당자 기본 정보">
+            <ModalFormRow columns={2}>
+              <ModalFieldGroup
+                error={errors.username?.message}
+                id="deal-quick-contact-name"
+                label="이름"
+              >
+                <input
+                  aria-invalid={Boolean(errors.username)}
+                  className="h-10 rounded-md border px-3 text-sm outline-none focus:ring-2 focus:ring-ring"
+                  id="deal-quick-contact-name"
+                  {...register("username")}
+                />
+              </ModalFieldGroup>
+
+              <ModalFieldGroup
+                error={errors.companyId?.message}
+                id="deal-quick-contact-company"
+                label="회사"
+              >
+                <select
+                  aria-invalid={Boolean(errors.companyId)}
+                  className="h-10 rounded-md border px-3 text-sm outline-none focus:ring-2 focus:ring-ring"
+                  id="deal-quick-contact-company"
+                  {...register("companyId")}
+                >
+                  <option value="">회사 선택</option>
+                  {companyOptions.map((company) => (
+                    <option key={company.id} value={company.id}>
+                      {company.companyName}
+                    </option>
+                  ))}
+                </select>
+              </ModalFieldGroup>
+            </ModalFormRow>
+
+            <ModalFormRow columns={2}>
+              <ModalFieldGroup
+                error={errors.mobile?.message}
+                id="deal-quick-contact-mobile"
+                label="휴대폰번호"
+              >
+                <input
+                  aria-invalid={Boolean(errors.mobile)}
+                  className="h-10 rounded-md border px-3 text-sm outline-none focus:ring-2 focus:ring-ring"
+                  id="deal-quick-contact-mobile"
+                  placeholder="010-0000-0000"
+                  {...register("mobile")}
+                />
+              </ModalFieldGroup>
+
+              <ModalFieldGroup
+                error={errors.email?.message}
+                id="deal-quick-contact-email"
+                label="이메일"
+              >
+                <input
+                  aria-invalid={Boolean(errors.email)}
+                  className="h-10 rounded-md border px-3 text-sm outline-none focus:ring-2 focus:ring-ring"
+                  id="deal-quick-contact-email"
+                  {...register("email")}
+                />
+              </ModalFieldGroup>
+            </ModalFormRow>
+          </ModalFormSection>
+
+          <ModalFormSection title="소속 정보">
+            <ModalFormRow columns={2}>
+              <ModalFieldGroup
+                error={errors.contactDepartmentId?.message}
+                id="deal-quick-contact-department"
+                label="부서"
+              >
+                <input type="hidden" {...register("contactDepartmentId")} />
+                <SearchSelectField
+                  createActionLabel="부서 추가"
+                  emptyText="검색된 부서가 없습니다."
+                  getLabel={(department) => department.departmentName}
+                  icon={Users}
+                  id="deal-quick-contact-department"
+                  isLoading={departmentsQuery.isLoading}
+                  items={departments}
+                  placeholder="부서 검색"
+                  search={departmentSearch}
+                  selectedId={selectedDepartmentId}
+                  selectedLabel={
+                    selectedDepartment?.departmentName ?? departmentSearch
+                  }
+                  onCreate={() => setTaxonomyOpen(true)}
+                  onClear={() => {
+                    setValue("contactDepartmentId", "", {
+                      shouldDirty: true,
+                      shouldValidate: true,
+                    });
+                    setDepartmentSearch("");
+                  }}
+                  onSearchChange={(value) => {
+                    setDepartmentSearch(value);
+                    if (selectedDepartmentId) {
+                      setValue("contactDepartmentId", "", {
+                        shouldDirty: true,
+                        shouldValidate: true,
+                      });
+                    }
+                  }}
+                  onSelect={(department) => {
+                    setValue("contactDepartmentId", department.id, {
+                      shouldDirty: true,
+                      shouldValidate: true,
+                    });
+                    setDepartmentSearch(department.departmentName);
+                  }}
+                />
+              </ModalFieldGroup>
+
+              <ModalFieldGroup
+                error={errors.contactJobGradeId?.message}
+                id="deal-quick-contact-job-grade"
+                label="직급"
+              >
+                <input type="hidden" {...register("contactJobGradeId")} />
+                <SearchSelectField
+                  createActionLabel="직급 추가"
+                  emptyText="검색된 직급이 없습니다."
+                  getLabel={(jobGrade) => jobGrade.jobGradeName}
+                  icon={BadgeCheck}
+                  id="deal-quick-contact-job-grade"
+                  isLoading={jobGradesQuery.isLoading}
+                  items={jobGrades}
+                  placeholder="직급 검색"
+                  search={jobGradeSearch}
+                  selectedId={selectedJobGradeId}
+                  selectedLabel={
+                    selectedJobGrade?.jobGradeName ?? jobGradeSearch
+                  }
+                  onCreate={() => setTaxonomyOpen(true)}
+                  onClear={() => {
+                    setValue("contactJobGradeId", "", {
+                      shouldDirty: true,
+                      shouldValidate: true,
+                    });
+                    setJobGradeSearch("");
+                  }}
+                  onSearchChange={(value) => {
+                    setJobGradeSearch(value);
+                    if (selectedJobGradeId) {
+                      setValue("contactJobGradeId", "", {
+                        shouldDirty: true,
+                        shouldValidate: true,
+                      });
+                    }
+                  }}
+                  onSelect={(jobGrade) => {
+                    setValue("contactJobGradeId", jobGrade.id, {
+                      shouldDirty: true,
+                      shouldValidate: true,
+                    });
+                    setJobGradeSearch(jobGrade.jobGradeName);
+                  }}
+                />
+              </ModalFieldGroup>
+            </ModalFormRow>
+          </ModalFormSection>
+
+          <ModalFormSection title="메모(옵션)">
+            <ModalFieldGroup id="deal-quick-contact-memo">
+              <textarea
+                aria-label="메모"
+                className="min-h-20 resize-y rounded-md border px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-ring"
+                id="deal-quick-contact-memo"
+                {...register("contactMemo")}
+              />
+            </ModalFieldGroup>
+          </ModalFormSection>
+
+          {createContactMutation.error ? (
+            <ErrorState
+              message={getApiErrorMessage(createContactMutation.error)}
+              title="담당자 저장 실패"
+              variant="inline"
+            />
+          ) : null}
+        </ModalForm>
+      </ModalShell>
+      <ContactTaxonomyManageDialog
+        open={taxonomyOpen}
+        onCreated={(kind, name) => {
+          if (kind === "department") {
+            setPendingDepartmentName(name);
+          } else {
+            setPendingJobGradeName(name);
+          }
+        }}
+        onOpenChange={setTaxonomyOpen}
+      />
     </>
   );
 }
@@ -1030,9 +1189,9 @@ function SearchSelectField<TItem extends { readonly id: string }>({
   const filteredItems =
     query.length > 0
       ? items.filter((item) =>
-          normalizeText([getLabel(item), getDescription?.(item) ?? ""].join(" ")).includes(
-            normalizeText(query)
-          )
+          normalizeText(
+            [getLabel(item), getDescription?.(item) ?? ""].join(" "),
+          ).includes(normalizeText(query)),
         )
       : [];
 
@@ -1064,7 +1223,9 @@ function SearchSelectField<TItem extends { readonly id: string }>({
       {query.length > 0 && !selectedId ? (
         <div className="absolute left-0 right-0 top-[calc(100%+4px)] z-50 max-h-44 overflow-y-auto rounded-md border bg-white shadow-lg">
           {isLoading ? (
-            <p className="px-3 py-2 text-sm text-muted-foreground">검색 중입니다.</p>
+            <p className="px-3 py-2 text-sm text-muted-foreground">
+              검색 중입니다.
+            </p>
           ) : filteredItems.length === 0 ? (
             <div className="grid gap-2 px-3 py-3">
               <p className="text-sm text-muted-foreground">{emptyText}</p>
@@ -1121,7 +1282,7 @@ function ProductMultiSelectDropdown({
   const filteredItems =
     query.length > 0
       ? items.filter((item) =>
-          normalizeText(item.productName).includes(normalizeText(query))
+          normalizeText(item.productName).includes(normalizeText(query)),
         )
       : [];
 
@@ -1131,7 +1292,10 @@ function ProductMultiSelectDropdown({
     }
 
     const onMouseDown = (event: MouseEvent) => {
-      if (wrapperRef.current && !wrapperRef.current.contains(event.target as Node)) {
+      if (
+        wrapperRef.current &&
+        !wrapperRef.current.contains(event.target as Node)
+      ) {
         setIsOpen(false);
       }
     };
@@ -1170,13 +1334,15 @@ function ProductMultiSelectDropdown({
             setIsOpen(true);
           }}
           onFocus={() => setIsOpen(true)}
-          placeholder={selectedItems.length > 0 ? "제품 추가 검색" : "제품명 검색"}
+          placeholder={
+            selectedItems.length > 0 ? "제품 추가 검색" : "제품명 검색"
+          }
           value={search}
         />
         <ChevronDown
           className={cn(
             "pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground transition-transform",
-            isOpen && "rotate-180"
+            isOpen && "rotate-180",
           )}
         />
       </div>
@@ -1209,28 +1375,28 @@ function ProductMultiSelectDropdown({
             </span>
           </div>
 
-        <div className="max-h-52 overflow-y-auto">
-          {isLoading ? (
-            <p className="px-3 py-4 text-center text-sm text-muted-foreground">
-              제품을 불러오는 중입니다.
-            </p>
-          ) : filteredItems.length === 0 ? (
-            <div className="grid gap-2 px-3 py-4">
-              <p className="text-center text-sm text-muted-foreground">
-                검색된 제품이 없습니다.
+          <div className="max-h-52 overflow-y-auto">
+            {isLoading ? (
+              <p className="px-3 py-4 text-center text-sm text-muted-foreground">
+                제품을 불러오는 중입니다.
               </p>
-              {onCreate && createActionLabel ? (
-                <button
-                  className="inline-flex h-8 items-center justify-center gap-1.5 self-center rounded-md border border-dashed border-primary/30 bg-primary/5 px-2.5 text-xs font-medium text-primary hover:bg-primary/10"
-                  onClick={onCreate}
-                  type="button"
-                >
-                  <Plus className="h-3.5 w-3.5" />
-                  {createActionLabel}
-                </button>
-              ) : null}
-            </div>
-          ) : (
+            ) : filteredItems.length === 0 ? (
+              <div className="grid gap-2 px-3 py-4">
+                <p className="text-center text-sm text-muted-foreground">
+                  검색된 제품이 없습니다.
+                </p>
+                {onCreate && createActionLabel ? (
+                  <button
+                    className="inline-flex h-8 items-center justify-center gap-1.5 self-center rounded-md border border-dashed border-primary/30 bg-primary/5 px-2.5 text-xs font-medium text-primary hover:bg-primary/10"
+                    onClick={onCreate}
+                    type="button"
+                  >
+                    <Plus className="h-3.5 w-3.5" />
+                    {createActionLabel}
+                  </button>
+                ) : null}
+              </div>
+            ) : (
               filteredItems.map((product) => {
                 const isSelected = selectedIds.includes(product.id);
 
@@ -1238,7 +1404,7 @@ function ProductMultiSelectDropdown({
                   <button
                     className={cn(
                       "flex w-full cursor-pointer items-center gap-2 px-3 py-2 text-left text-sm transition-colors hover:bg-muted",
-                      isSelected && "bg-primary/10"
+                      isSelected && "bg-primary/10",
                     )}
                     key={product.id}
                     onClick={() => {
@@ -1275,7 +1441,7 @@ function normalizeText(value: string) {
 
 function findCompanyOptionByName(
   options: readonly DealCompanyOption[],
-  companyName: string
+  companyName: string,
 ) {
   const target = normalizeText(companyName);
   return options.find((option) => normalizeText(option.companyName) === target);
@@ -1283,7 +1449,7 @@ function findCompanyOptionByName(
 
 function findContactOptionByName(
   options: readonly DealContactOption[],
-  username: string
+  username: string,
 ) {
   const target = normalizeText(username);
   return options.find((option) => normalizeText(option.username) === target);
@@ -1291,7 +1457,7 @@ function findContactOptionByName(
 
 function findProductOptionByName(
   options: readonly DealProductOption[],
-  productName: string
+  productName: string,
 ) {
   const target = normalizeText(productName);
   return options.find((option) => normalizeText(option.productName) === target);
