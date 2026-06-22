@@ -209,7 +209,8 @@ export function AppShell() {
     isProductListPage ||
     isContactListPage ||
     isMeetingNoteListPage ||
-    isSchedulePage;
+    isSchedulePage ||
+    isProductDetail;
 
   // 현재 페이지 브레드크럼 결정
   const topBarContent = (() => {
