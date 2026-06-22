@@ -11,6 +11,7 @@ import {
   type DealDetailRecord,
   type DealFollowingActionLogRecord,
   type DealListRecord,
+  type DealLogCursor,
   type DealMemoLogRecord,
   type DealPageRecord,
   type DealProductRecord,
@@ -374,18 +375,22 @@ export class PrismaDealRepository implements DealRepository {
     });
   }
 
-  // 기능 : 딜 다음 행동 로그 목록을 조회합니다.
-  async listFollowingActionLogs(
-    userId: string,
-    dealId: string
-  ): Promise<DealFollowingActionLogRecord[]> {
+  // 기능 : 딜 다음 행동 로그 목록을 cursor 조건으로 조회합니다.
+  async listFollowingActionLogs(input: {
+    readonly userId: string;
+    readonly dealId: string;
+    readonly cursor: DealLogCursor | null;
+    readonly take: number;
+  }): Promise<DealFollowingActionLogRecord[]> {
     return this.client.dealFollowingActionLog.findMany({
       where: {
-        userId,
-        dealId,
+        userId: input.userId,
+        dealId: input.dealId,
+        ...this.createFollowingActionLogCursorWhere(input.cursor),
       },
       select: this.createFollowingActionLogSelect(),
       orderBy: [{ createdAt: "desc" }, { id: "desc" }],
+      take: input.take,
     });
   }
 
@@ -436,15 +441,22 @@ export class PrismaDealRepository implements DealRepository {
     });
   }
 
-  // 기능 : 딜 메모 로그 목록을 조회합니다.
-  async listMemoLogs(userId: string, dealId: string): Promise<DealMemoLogRecord[]> {
+  // 기능 : 딜 메모 로그 목록을 cursor 조건으로 조회합니다.
+  async listMemoLogs(input: {
+    readonly userId: string;
+    readonly dealId: string;
+    readonly cursor: DealLogCursor | null;
+    readonly take: number;
+  }): Promise<DealMemoLogRecord[]> {
     return this.client.dealMemoLog.findMany({
       where: {
-        userId,
-        dealId,
+        userId: input.userId,
+        dealId: input.dealId,
+        ...this.createMemoLogCursorWhere(input.cursor),
       },
       select: this.createMemoLogSelect(),
       orderBy: [{ createdAt: "desc" }, { id: "desc" }],
+      take: input.take,
     });
   }
 
@@ -572,6 +584,56 @@ export class PrismaDealRepository implements DealRepository {
       createdAt: true,
       updatedAt: true,
     } satisfies Prisma.DealMemoLogSelect;
+  }
+
+  // 기능 : 다음 행동 로그 cursor 기준보다 이전 데이터만 조회하는 Prisma 조건을 생성합니다.
+  private createFollowingActionLogCursorWhere(
+    cursor: DealLogCursor | null
+  ): Prisma.DealFollowingActionLogWhereInput {
+    if (!cursor) {
+      return {};
+    }
+
+    return {
+      OR: [
+        {
+          createdAt: {
+            lt: cursor.createdAt,
+          },
+        },
+        {
+          createdAt: cursor.createdAt,
+          id: {
+            lt: cursor.id,
+          },
+        },
+      ],
+    };
+  }
+
+  // 기능 : 메모 로그 cursor 기준보다 이전 데이터만 조회하는 Prisma 조건을 생성합니다.
+  private createMemoLogCursorWhere(
+    cursor: DealLogCursor | null
+  ): Prisma.DealMemoLogWhereInput {
+    if (!cursor) {
+      return {};
+    }
+
+    return {
+      OR: [
+        {
+          createdAt: {
+            lt: cursor.createdAt,
+          },
+        },
+        {
+          createdAt: cursor.createdAt,
+          id: {
+            lt: cursor.id,
+          },
+        },
+      ],
+    };
   }
 
   // 기능 : Prisma 딜 목록 행을 application 레코드로 변환합니다.

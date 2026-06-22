@@ -8,7 +8,7 @@
 
 ## 최종 업데이트
 
-- 날짜: 2026-06-19
+- 날짜: 2026-06-22
 - 기준:
   - Backend: `BE/src/modules`, `BE/prisma/schema.prisma`
   - User Web: `FE/user-web/src/features`, `FE/user-web/src/pages`
@@ -32,7 +32,7 @@
 | Import/Export | 현재 BE module 없음. 도메인별 xlsx export는 Company/Contact/Product/Deal에 구현 | FE feature/page 존재 | `/import`, `/export` | 보류/숨김 |
 | Notification | 현재 BE module 없음 | FE feature/page 존재 | `/notifications` | BE 재검토 필요 |
 | Trash | 현재 BE module 없음 | FE feature/page 존재 | `/trash` | 보류/숨김 |
-| Search | 완료 | FE GlobalSearch 연결 | GlobalSearch | 구현/검수 진행 |
+| Search | 완료 | 완료 | GlobalSearch | 완료 |
 | Tag | 현재 BE module 없음 | FE feature 존재 | 없음 | 후속 계획 필요 |
 
 ## Backend 완료 도메인
@@ -51,7 +51,7 @@
 
 ## User Web 현재 UX/UI 기준
 
-2026-06-19 기준 User Web의 핵심 UX는 다음 상태를 기준으로 한다.
+2026-06-22 기준 User Web의 핵심 UX는 다음 상태를 기준으로 한다.
 
 - `/` 홈은 실제 대시보드 화면이다. Schedule, Deal, Deal stage count, MeetingNote API를 조합해 오늘 일정, 진행 딜, 마감 임박, 최근 회의록, 빠른 실행, 최근 활동을 표시한다.
 - 딜 파이프라인은 `/deals`에서 운영한다.

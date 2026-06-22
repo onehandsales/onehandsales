@@ -25,7 +25,7 @@ const groups: Array<{
   {
     label: "주요 메뉴",
     items: [
-      { label: "홈", to: "/", icon: House, end: true },
+      // { label: "홈", to: "/", icon: House, end: true },
       { label: "딜", to: "/deals", icon: BriefcaseBusiness },
       { label: "회사", to: "/companies", icon: Building2 },
       { label: "담당자", to: "/contacts", icon: IdCard },

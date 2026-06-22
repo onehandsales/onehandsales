@@ -60,14 +60,12 @@ Page는 route entry이며 feature public export를 조합한다. API 호출, sch
 
 ## 현재 구현 스냅샷
 
-Snapshot date: 2026-06-18
+Snapshot date: 2026-06-22
 
 User Web:
 
 - routes: `/login`, `/auth/callback`, `/`, `/companies`, `/companies/new`, `/companies/:companyId`, `/contacts`, `/contacts/scan`, `/contacts/:contactId`, `/products`, `/products/new`, `/products/:productId`, `/deals`, `/deals/new`, `/deals/:dealId`, `/schedules`, `/schedules/week`, `/schedules/:scheduleId`, `/meeting-notes`, `/meeting-notes/new`, `/meeting-notes/:meetingNoteId`, `/business-cards`, `/notifications`, `/import`, `/export`, `/trash`, `/settings`, `/more`
-- implemented API integration: Auth/User, Home, Company, Contact, Product, Deal, Schedule, MeetingNote manual CRUD
-- partial FE integration: Search Backend API client/UI 기반과 `/schedules/:scheduleId` route는 있으나 통합검색 최종 연결/UX 검수는 `TODO/INTEGRATED_SEARCH_PLAN`에서 진행 중
-- pending FE integration: MeetingNote AI/STT draft APIs
+- implemented API integration: Auth/User, Home, Company, Contact, Product, Deal, Schedule, MeetingNote manual CRUD, MeetingNote AI/STT draft, MeetingNote deal link, Search
 - mock/placeholder boundary: BusinessCard OCR, generic Import/Export, Notification, Trash
 
 Admin Web:

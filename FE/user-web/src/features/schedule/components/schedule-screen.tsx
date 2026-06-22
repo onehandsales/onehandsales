@@ -3,7 +3,7 @@ import {
   CalendarDays,
   ChevronLeft,
   ChevronRight,
-  FileText,
+  // FileText,
   Plus,
   RotateCcw,
 } from "lucide-react";
@@ -87,7 +87,8 @@ export function ScheduleScreen() {
       <PageHeader
         breadcrumbs={[{ label: "일정", icon: CalendarDays }]}
         actions={[
-          { icon: FileText, tooltip: "주간 보고서", href: "/schedules/week" },
+          // 주간 보고서 Backend 구현 전까지 노출하지 않는다.
+          // { icon: FileText, tooltip: "주간 보고서", href: "/schedules/week" },
           {
             icon: Plus,
             tooltip: "일정 생성",

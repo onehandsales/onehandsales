@@ -102,7 +102,7 @@
 - 변경 파일:
   - `BE/src/modules/meeting-note/**/*`
   - `FE/user-web/src/features/meeting-note/**/*`
-  - `TODO/MEETING_NOTE_AI_STT_PLAN/COMMON/API-SPEC/MEETING_NOTE_AI_STT_API.md`
+  - `TODO/DONE/MEETING_NOTE_AI_STT_PLAN/COMMON/API-SPEC/MEETING_NOTE_AI_STT_API.md`
   - `AGENT/PM_AGENT/PLANNING/MVP_SCOPE.md`
   - `AGENT/PM_AGENT/PLANNING/DATA_MODEL.md`
   - `UX Design/PEN_UI_05_API_CHANGE_TRACKER.md`
@@ -510,10 +510,10 @@
   - 텍스트 AI는 `AI로 정리`, STT+AI는 `음성으로 작성` 버튼으로 form field를 채우되 자동 저장하지 않는 흐름으로 정리했다.
   - 저장 후 `영업 딜과 연동`은 회의록 상세의 별도 액션으로 분리했다.
 - 변경 파일:
-  - `TODO/MEETING_NOTE_AI_STT_PLAN/COMMON/USER-FLOW.md`
-  - `TODO/MEETING_NOTE_AI_STT_PLAN/COMMON/API-SPEC/MEETING_NOTE_AI_STT_API.md`
-  - `TODO/MEETING_NOTE_AI_STT_PLAN/COMMON/GOAL-SPECS/G02-FE-MEETING-NOTE-AI-STT-DRAFT.md`
-  - `TODO/MEETING_NOTE_AI_STT_PLAN/FE-TODO/G02-FE-MEETING-NOTE-AI-STT-DRAFT.goal.md`
+  - `TODO/DONE/MEETING_NOTE_AI_STT_PLAN/COMMON/USER-FLOW.md`
+  - `TODO/DONE/MEETING_NOTE_AI_STT_PLAN/COMMON/API-SPEC/MEETING_NOTE_AI_STT_API.md`
+  - `TODO/DONE/MEETING_NOTE_AI_STT_PLAN/COMMON/GOAL-SPECS/G02-FE-MEETING-NOTE-AI-STT-DRAFT.md`
+  - `TODO/DONE/MEETING_NOTE_AI_STT_PLAN/FE-TODO/G02-FE-MEETING-NOTE-AI-STT-DRAFT.goal.md`
   - `AGENT/UXUI_AGENT/PLANNING/USER_FLOW_AND_SCREENS.md`
   - `AGENT/UXUI_AGENT/PLANNING/UX_UI_DIRECTION.md`
   - `AGENT/PM_AGENT/PLANNING/MVP_SCOPE.md`
@@ -549,7 +549,7 @@
   - `FE/user-web/src/features/meeting-note/schemas/meeting-note-schema.ts`
   - `FE/user-web/src/features/meeting-note/components/meeting-note-create-dialog.tsx`
   - `FE/user-web/src/features/meeting-note/index.ts`
-  - `TODO/MEETING_NOTE_AI_STT_PLAN/**`
+  - `TODO/DONE/MEETING_NOTE_AI_STT_PLAN/**`
   - `AGENT/**`
   - `UX Design/**`
 - 검증:
@@ -559,6 +559,24 @@
   - `git diff --check`
 - 남은 이슈:
   - 저장 후 딜 활동기록 자동 생성 API 계약은 이후 2026-06-19 회의록 저장 후 딜 연동 작업에서 확정/구현했다.
+
+---
+
+### 2026-06-22 통합검색 및 회의록 AI/STT 완료 상태 동기화
+
+- 목적:
+  - `BE`와 `FE/user-web` 실제 구현 기준으로 Search와 MeetingNote AI/STT의 완료 상태를 재확인했다.
+  - 완료된 `TODO/DONE/INTEGRATED_SEARCH_PLAN`, `TODO/DONE/MEETING_NOTE_AI_STT_PLAN`으로 이동했다.
+  - AGENT, FE, UX Design 문서의 현재 구현 스냅샷에서 오래된 “진행 중/후속” 표현을 제거했다.
+- 확인 결과:
+  - Search는 Backend `GET /api/search`와 User Web GlobalSearch가 연결되어 있고, 결과 선택은 `targetPath`로 이동한다.
+  - 일정 검색 결과는 `/schedules/:scheduleId` 상세 route와 `GET /api/schedules/{scheduleId}`를 사용한다.
+  - MeetingNote AI/STT draft UI와 저장 후 딜 추가 연동은 Backend API와 연결되어 있다.
+- 검증:
+  - `pnpm run typecheck` (`BE`, `FE/user-web`)
+  - `pnpm run lint` (`BE`, `FE/user-web`)
+  - `pnpm test` (`BE`)
+  - `pnpm run build` (`BE`, `FE/user-web`)
 
 ---
 
@@ -595,6 +613,7 @@
 - [x] Deal 목록 회사/담당자 select 필터 반영
 - [x] 회사/담당자/제품 필터 select `+ 추가` 분류 관리 반영
 - [x] 목록 미리보기 header/table header 44px 기준 반영
+- [x] GlobalSearch API 연결 및 `targetPath` 이동
 - [x] MeetingNote AI/STT draft UI 연결
 - [ ] 목록 컨트롤 버튼 공통화
 

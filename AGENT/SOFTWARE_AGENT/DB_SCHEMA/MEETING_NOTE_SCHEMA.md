@@ -161,4 +161,4 @@ MeetingNote 도메인은 Backend `BE/src/modules/meeting-note`와 Prisma `Meetin
 - `POST /api/meeting-notes`
 - `PATCH /api/meeting-notes/:meetingNoteId`
 
-수동 저장 API 계약은 `TODO/DONE/MEETING_NOTE_MANUAL_PLAN/COMMON/API-SPEC/MEETING_NOTE_API.md`를 기준으로 확인한다. AI/STT 초안 API 계약은 `TODO/MEETING_NOTE_AI_STT_PLAN/COMMON/API-SPEC/MEETING_NOTE_AI_STT_API.md`를 기준으로 확인한다.
+수동 저장 API 계약은 `TODO/DONE/MEETING_NOTE_MANUAL_PLAN/COMMON/API-SPEC/MEETING_NOTE_API.md`를 기준으로 확인한다. AI/STT 초안 API 계약은 `TODO/DONE/MEETING_NOTE_AI_STT_PLAN/COMMON/API-SPEC/MEETING_NOTE_AI_STT_API.md`를 기준으로 확인한다.

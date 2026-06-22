@@ -82,6 +82,13 @@ export class ExportDealsQueryDto {
   sort?: DealListSort;
 }
 
+// 역할 : CursorQueryDto HTTP cursor 조회 요청 값을 검증하기 위한 DTO입니다.
+export class CursorQueryDto {
+  @IsOptional()
+  @IsString()
+  cursor?: string;
+}
+
 // 역할 : CreateDealDto HTTP 딜 생성 요청 값을 검증하기 위한 DTO입니다.
 export class CreateDealDto {
   @IsString()

@@ -92,10 +92,11 @@
 - Deal: 목록/상세/생성/수정, stage counts, 옵션, 다음 행동 로그, 메모 로그, xlsx export
 - Schedule: 월/주 목록, 단건 상세, 생성, 수정, 삭제, deal options
 - MeetingNote: 목록/상세/생성/수정, filter options, AI text draft, STT+AI draft, 저장 후 딜 추가 연동
+- Search: 상단/모바일 GlobalSearch, `GET /api/search`, 결과 `targetPath` 이동
 
 Backend는 구현되었지만 Frontend 연결이 남은 항목:
 
-- Search 최종 연결/UX 검수: `GET /api/search`
+- 없음
 
 mock/placeholder 경계를 유지해야 하는 항목:
 
@@ -111,9 +112,10 @@ mock/placeholder 경계를 유지해야 하는 항목:
 - 두 글자 이상 입력 시 `GET /api/search`를 호출한다.
 - 요청 query: `q`, optional `types`, optional `limit`.
 - 응답은 도메인별 group과 item을 반환한다.
-- item은 상세 화면 이동에 필요한 `targetType`, `targetId`, `href` 또는 이에 준하는 navigation metadata를 포함해야 한다.
+- item은 상세 화면 이동에 필요한 `targetType`, `targetId`, `targetPath`를 포함한다.
 - 전용 `/search` 라우트는 현재 없다. 상단 검색 UI 안에서 결과를 선택해 상세 화면으로 이동한다.
-- 현재 최종 FE 연결과 loading/empty/error UX 검수는 `TODO/INTEGRATED_SEARCH_PLAN`의 `G02-FE-INTEGRATED-SEARCH`에서 진행 중이다.
+- User Web GlobalSearch는 `GET /api/search`와 연결되어 있으며 loading, empty, error 상태를 처리한다.
+- 일정 검색 결과는 `/schedules/:scheduleId` route로 이동하고 일정 상세 화면에서 `GET /api/schedules/{scheduleId}`를 호출한다.
 
 ## 7. MeetingNote AI/STT Frontend 기준
 
@@ -150,5 +152,5 @@ Backend는 AI 초안 provider와 STT provider를 분리한다. Frontend는 provi
 - `AGENT/SOFTWARE_AGENT/FRONT_AGENT/ENGINEERING_REVIEW_CHECKLIST.md`
 - `AGENT/UXUI_AGENT/PLANNING/USER_FLOW_AND_SCREENS.md`
 - `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/CONVENTION/API_SPEC.md`
-- `TODO/INTEGRATED_SEARCH_PLAN/COMMON/API-SPEC/SEARCH_API.md`
-- `TODO/MEETING_NOTE_AI_STT_PLAN/COMMON/API-SPEC/MEETING_NOTE_AI_STT_API.md`
+- `TODO/DONE/INTEGRATED_SEARCH_PLAN/COMMON/API-SPEC/SEARCH_API.md`
+- `TODO/DONE/MEETING_NOTE_AI_STT_PLAN/COMMON/API-SPEC/MEETING_NOTE_AI_STT_API.md`

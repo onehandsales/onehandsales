@@ -88,6 +88,7 @@ Indexes:
 
 - 모든 회사 조회는 `userId` ownership을 먼저 적용한다.
 - 회사 목록 API는 10개 단위 page-number pagination이며 `totalCount`, `totalPages`를 반환한다.
+- 회사 목록과 export의 회사 분야/지역 필터는 다중 ID를 지원하며 `companyFieldId IN (...)`, `companyRegionId IN (...)` 조건으로 적용한다.
 - 회사 목록 정렬은 `createdAtDesc`, `contactCountDesc`, `contactCountAsc`, `dealCountDesc`, `dealCountAsc`를 지원한다.
 - 회사 목록 응답은 `updatedAt`을 반환하지 않는다.
 - 회사 목록 응답은 `Contact.companyId` 기준 집계값 `contactCount`를 반환한다.

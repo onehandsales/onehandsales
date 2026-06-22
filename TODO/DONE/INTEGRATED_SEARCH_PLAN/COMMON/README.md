@@ -15,5 +15,5 @@
 
 ## 3. 관련 문서
 
-- `TODO/INTEGRATED_SEARCH_PLAN/README.md`
+- `TODO/DONE/INTEGRATED_SEARCH_PLAN/README.md`
 - `AGENT/PM_AGENT/DECISIONS/018_todo_common_contract_structure.md`

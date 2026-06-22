@@ -76,7 +76,7 @@
 
 ### 목적
 
-회사 목록 화면에서 회사 이름 검색, 회사 분야 필터, 회사 지역 필터, 10개 단위 페이지네이션을 제공한다.
+회사 목록 화면에서 회사 이름 검색, 회사 분야 다중 필터, 회사 지역 다중 필터, 10개 단위 페이지네이션을 제공한다.
 
 ### Request
 
@@ -86,10 +86,13 @@
 |---|---|---:|---|
 | `page` | number | 선택 | 1부터 시작. 기본값은 1 |
 | `companyName` | string | 선택 | 회사 이름 부분 검색어 |
-| `companyFieldId` | string | 선택 | 회사 분야 필터 ID |
-| `companyRegionId` | string | 선택 | 회사 지역 필터 ID |
+| `companyFieldIds` | string[] | 선택 | 회사 분야 필터 ID 목록. 반복 query와 comma-separated query를 지원 |
+| `companyRegionIds` | string[] | 선택 | 회사 지역 필터 ID 목록. 반복 query와 comma-separated query를 지원 |
+| `companyFieldId` | string | 선택 | 단일 회사 분야 필터 ID. 기존 클라이언트 호환용 |
+| `companyRegionId` | string | 선택 | 단일 회사 지역 필터 ID. 기존 클라이언트 호환용 |
 
 서버는 `pageSize`를 10으로 고정한다. FE는 `pageSize` query를 보내지 않는다.
+`companyFieldId`와 `companyFieldIds`가 함께 오면 중복을 제거해 하나의 분야 ID 목록으로 처리한다. `companyRegionId`와 `companyRegionIds`도 동일하게 처리한다.
 
 ### 비즈니스 로직 흐름
 
@@ -97,8 +100,8 @@
 2. query를 validation한다.
 3. `userId` 조건을 기본으로 적용한다.
 4. `companyName`이 있으면 회사 이름 부분 검색 조건을 적용한다.
-5. `companyFieldId`가 있으면 같은 사용자의 회사 분야 ID인지 확인한 뒤 필터를 적용한다.
-6. `companyRegionId`가 있으면 같은 사용자의 회사 지역 ID인지 확인한 뒤 필터를 적용한다.
+5. 회사 분야 필터 ID가 있으면 모든 ID가 같은 사용자의 회사 분야 ID인지 확인한 뒤 `IN` 필터를 적용한다.
+6. 회사 지역 필터 ID가 있으면 모든 ID가 같은 사용자의 회사 지역 ID인지 확인한 뒤 `IN` 필터를 적용한다.
 7. `createdAt DESC`로 정렬하고 10개 단위로 조회한다.
 8. 각 회사에 연결된 `Contact` 개수를 계산해 `contactCount`로 넣는다.
 9. 목록 응답으로 변환할 때 `updatedAt`은 넣지 않는다.
@@ -997,9 +1000,9 @@ Response body 없음.
 
 | API | FE 처리 기준 | BE 처리 기준 | 검증 기준 |
 |---|---|---|---|
-| `GET /api/companies` | 검색어, 분야, 지역, page 변경 시 목록 query를 재조회한다. 목록에는 `updatedAt`을 표시하지 않는다. | userId ownership을 기본 조건으로 두고 `createdAt DESC`와 10개 페이지네이션을 적용한다. | 검색, 필터, 페이지 이동, 본인 데이터만 조회를 확인한다. |
+| `GET /api/companies` | 검색어, 분야/지역 다중 필터, page 변경 시 목록 query를 재조회한다. 목록에는 `updatedAt`을 표시하지 않는다. | userId ownership을 기본 조건으로 두고 분야/지역 필터는 `IN` 조건, `createdAt DESC`, 10개 페이지네이션을 적용한다. | 검색, 다중 필터, 페이지 이동, 본인 데이터만 조회를 확인한다. |
 | `GET /api/companies/:companyId/contacts` | 회사 단건 화면에서 연결된 담당자 목록을 표시한다. 페이지네이션을 기대하지 않는다. | company ownership 확인 후 `Contact.createdAt DESC, id DESC`로 전체 목록을 반환한다. | 타 사용자 회사 404, 부서 객체 응답, 정렬을 확인한다. |
-| `GET /api/companies/export/xlsx` | 회사 목록의 현재 검색어와 필터를 전달하되 `page`는 전달하지 않는다. | 동일 검색/필터 조건으로 전체 회사를 조회하고 xlsx 파일을 반환한다. | 검색/필터 반영, ID 제외, 컬럼명, 다운로드 헤더를 확인한다. |
+| `GET /api/companies/export/xlsx` | 회사 목록의 현재 검색어와 분야/지역 다중 필터를 전달하되 `page`는 전달하지 않는다. | 동일 검색/다중 필터 조건으로 전체 회사를 조회하고 xlsx 파일을 반환한다. | 검색/다중 필터 반영, ID 제외, 컬럼명, 다운로드 헤더를 확인한다. |
 | `GET /api/company-fields` | 회사 목록 필터와 생성/수정 form 옵션으로 사용한다. `createdAt`을 기대하지 않는다. | 현재 userId의 `CompanyField`만 반환한다. | 다른 사용자의 분야가 섞이지 않는지 확인한다. |
 | `GET /api/company-regions` | 회사 목록 필터와 생성/수정 form 옵션으로 사용한다. `createdAt`을 기대하지 않는다. | 현재 userId의 `CompanyRegion`만 반환한다. | 다른 사용자의 지역이 섞이지 않는지 확인한다. |
 | `GET /api/companies/:companyId` | 상세 화면 진입과 수정 성공 후 재조회한다. | companyId와 userId를 함께 조건으로 조회한다. | 본인 소유가 아닌 회사는 404인지 확인한다. |

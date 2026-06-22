@@ -52,12 +52,11 @@ FRONT_AGENT/
 
 ## 6. 현재 구현 스냅샷
 
-Snapshot date: 2026-06-18
+Snapshot date: 2026-06-22
 
 User Web:
 
-- 실제 API 연동 완료: Auth/User, Home, Company, Contact, Product, Deal, Schedule, MeetingNote manual CRUD.
-- Frontend 후속 작업: Search 최종 연결/UX 검수, MeetingNote AI/STT draft API 연결.
+- 실제 API 연동 완료: Auth/User, Home, Company, Contact, Product, Deal, Schedule, MeetingNote manual CRUD, MeetingNote AI/STT draft, MeetingNote deal link, Search.
 - mock/placeholder 경계: BusinessCard OCR, generic Import/Export, Notification, Trash.
 
 Admin Web:

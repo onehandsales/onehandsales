@@ -195,6 +195,8 @@ export type DealFollowingActionLog = {
 
 export type DealFollowingActionLogsResponse = {
   readonly items: DealFollowingActionLog[];
+  readonly nextCursor: string | null;
+  readonly hasNext: boolean;
 };
 
 export type CreateFollowingActionLogInput = {
@@ -220,6 +222,8 @@ export type DealMemoLog = {
 
 export type DealMemoLogsResponse = {
   readonly items: DealMemoLog[];
+  readonly nextCursor: string | null;
+  readonly hasNext: boolean;
 };
 
 export type CreateMemoLogInput = {

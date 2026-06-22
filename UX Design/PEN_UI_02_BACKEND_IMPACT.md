@@ -33,7 +33,7 @@
 주의:
 - 이 문서는 디자인을 코드로 옮기기 전, 백엔드 관점에서 필요한 데이터 계약을 정리하는 용도다.
 - 프론트 구조 자체보다 화면이 요구하는 데이터, 상태, 액션, API를 중심으로 본다.
-- 2026-06-19 현재 구현 판단은 아래 `현재 FE/BE 기준선`을 우선한다. 이후의 후보/리스크 섹션은 후속 확장 검토용이다.
+- 2026-06-22 현재 구현 판단은 아래 `현재 FE/BE 기준선`을 우선한다. 이후의 후보/리스크 섹션은 후속 확장 검토용이다.
 
 ---
 
@@ -77,7 +77,7 @@
 | Business Card Scan | 명함 OCR/확정 | business-card, company, contact | 낮음/중간 | FE만 존재/BE 없음 |
 | Import / Export | 데이터 이동 | import-export | 낮음/중간 | FE만 존재/BE 없음. 도메인별 xlsx export는 구현 |
 | Trash | 삭제 자원 복구 | trash | 낮음 | FE만 존재/BE 없음 |
-| Global Search | 통합검색 | search | 중간 | 포함/구현, UX 검수 진행 |
+| Global Search | 통합검색 | search | 중간 | 포함/구현 |
 | Notification / More | 보조 기능 | notification, user | 낮음 | FE만 존재/BE 없음 |
 
 ---

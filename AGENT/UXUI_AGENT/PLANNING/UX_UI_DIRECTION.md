@@ -17,12 +17,12 @@ The first screen should make today's sales work visible first, then provide a cl
 
 Target direction: after login, `/` should be a work dashboard and `/deals` should remain the high-density Deal Pipeline Home.
 
-Current implementation note as of 2026-06-19:
+Current implementation note as of 2026-06-22:
 
 - `/` home is an implemented dashboard that combines Schedule, Deal, Deal stage count, and MeetingNote API data.
 - The active deal pipeline experience is served from `/deals`.
 - Keep `/` focused on today/dashboard context and `/deals` focused on comparison, filtering, preview, and mutation.
-- Global Search has Backend `GET /api/search` and User Web GlobalSearch connection; UX QA remains tracked in `TODO/INTEGRATED_SEARCH_PLAN`.
+- Global Search has Backend `GET /api/search` and User Web GlobalSearch connection with loading, empty, error states implemented.
 - MeetingNote AI/STT draft Backend APIs and User Web draft UI integration are implemented.
 - Company/contact/product create modals use search-input selection, immediate creation when no result exists, and automatic selection after creation.
 - Deal likelihood (`긍정 / 중립 / 부정` or percent) is not implemented in the current Deal API/FE form. Treat it as future UX scope unless a new backend plan adds it.
