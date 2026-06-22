@@ -1119,7 +1119,7 @@
 3. `Company.id = companyId`, `Company.userId = currentUserId` 조건으로 회사 ownership을 확인한다.
 4. `Contact.companyId = companyId`, `Contact.userId = currentUserId` 조건으로 연결 담당자 전체 목록을 조회한다.
 5. `createdAt DESC, id DESC`로 정렬한다.
-6. `id`, `username`, `mobile`, `email`, `contactDepartment.id`, `contactDepartment.departmentName`만 응답한다.
+6. `id`, `username`, `mobile`, `email`, `contactDepartment.id`, `contactDepartment.departmentName`, `contactJobGrade.id`, `contactJobGrade.jobGradeName`만 응답한다.
 
 #### Response
 
@@ -1135,10 +1135,12 @@
 | `items[].email` | string | 아니오 | 담당자 이메일 |
 | `items[].contactDepartment.id` | string | 아니오 | 담당자 부서 ID |
 | `items[].contactDepartment.departmentName` | string | 아니오 | 담당자 부서명 |
+| `items[].contactJobGrade.id` | string | 아니오 | 담당자 직급 ID |
+| `items[].contactJobGrade.jobGradeName` | string | 아니오 | 담당자 직급명 |
 
 #### 연결된 DB 스키마
 
-- 조회: `Company`, `Contact`, `ContactDepartment`
+- 조회: `Company`, `Contact`, `ContactDepartment`, `ContactJobGrade`
 - transaction: 없음. 조회 전용
 - 감사 로그: 없음
 

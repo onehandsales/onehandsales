@@ -44,6 +44,10 @@ export interface CompanyContactRecord {
     readonly id: string;
     readonly departmentName: string;
   };
+  readonly contactJobGrade: {
+    readonly id: string;
+    readonly jobGradeName: string;
+  };
 }
 
 // 역할 : CompanyDealRecord 회사에 연결된 딜 목록 레코드를 정의합니다.

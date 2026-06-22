@@ -146,6 +146,10 @@ export interface CompanyContactItemResponse {
     readonly id: string;
     readonly departmentName: string;
   };
+  readonly contactJobGrade: {
+    readonly id: string;
+    readonly jobGradeName: string;
+  };
 }
 
 // 역할 : CompanyDealListResponse 회사에 연결된 딜 목록 응답을 정의합니다.
@@ -912,6 +916,7 @@ export class CompanyApplicationService {
       mobile: contact.mobile,
       email: contact.email,
       contactDepartment: contact.contactDepartment,
+      contactJobGrade: contact.contactJobGrade,
     };
   }
 

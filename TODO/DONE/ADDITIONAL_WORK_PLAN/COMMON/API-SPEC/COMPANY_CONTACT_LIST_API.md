@@ -30,7 +30,7 @@
 
 - 페이지네이션 없음
 - 정렬: `createdAt DESC`, 보조 정렬 `id DESC`
-- 응답 필드: `id`, `username`, `contactDepartment.id`, `contactDepartment.departmentName`
+- 응답 필드: `id`, `username`, `mobile`, `email`, `contactDepartment.id`, `contactDepartment.departmentName`, `contactJobGrade.id`, `contactJobGrade.jobGradeName`
 
 ## 4. Request
 
@@ -64,6 +64,10 @@
       "contactDepartment": {
         "id": "department-id",
         "departmentName": "영업팀"
+      },
+      "contactJobGrade": {
+        "id": "job-grade-id",
+        "jobGradeName": "대리"
       }
     }
   ]
@@ -81,6 +85,9 @@
 | `contactDepartment` | object | 아니오 | 담당자 부서 |
 | `contactDepartment.id` | string | 아니오 | 담당자 부서 ID |
 | `contactDepartment.departmentName` | string | 아니오 | 담당자 부서명 |
+| `contactJobGrade` | object | 아니오 | 담당자 직급 |
+| `contactJobGrade.id` | string | 아니오 | 담당자 직급 ID |
+| `contactJobGrade.jobGradeName` | string | 아니오 | 담당자 직급명 |
 
 연결된 Contact가 없으면 다음처럼 빈 배열을 반환한다.
 
@@ -97,13 +104,13 @@
 3. `Company.id = companyId`, `Company.userId = currentUserId` 조건으로 회사 ownership을 확인한다.
 4. 회사가 없거나 현재 사용자 소유가 아니면 `CompanyNotFound`를 반환한다.
 5. `Contact.companyId = companyId`, `Contact.userId = currentUserId` 조건으로 Contact 목록을 조회한다.
-6. `ContactDepartment` relation을 함께 조회한다.
+6. `ContactDepartment`, `ContactJobGrade` relation을 함께 조회한다.
 7. `createdAt DESC`, `id DESC`로 정렬한다.
-8. 응답에는 `id`, `username`, `mobile`, `email`, `contactDepartment.id`, `contactDepartment.departmentName`만 포함한다.
+8. 응답에는 `id`, `username`, `mobile`, `email`, `contactDepartment.id`, `contactDepartment.departmentName`, `contactJobGrade.id`, `contactJobGrade.jobGradeName`만 포함한다.
 
 ## 7. 연결 DB 스키마
 
-- 조회: `Company`, `Contact`, `ContactDepartment`
+- 조회: `Company`, `Contact`, `ContactDepartment`, `ContactJobGrade`
 - 생성: 없음
 - 수정: 없음
 - 삭제: 없음
@@ -113,7 +120,8 @@
 
 - `Contact.companyId`는 `Company.id`를 참조한다.
 - `Contact.contactDepartmentId`는 `ContactDepartment.id`를 참조한다.
-- `Company`, `Contact`, `ContactDepartment`는 모두 사용자 소유 데이터다.
+- `Contact.contactJobGradeId`는 `ContactJobGrade.id`를 참조한다.
+- `Company`, `Contact`, `ContactDepartment`, `ContactJobGrade`는 모두 사용자 소유 데이터다.
 
 ## 8. Transaction
 
@@ -144,8 +152,9 @@ FE:
 
 - 회사 단건 페이지에서 연결된 담당자 요약 목록을 표시할 때 사용한다.
 - 페이지네이션 UI를 만들지 않는다.
+- 응답의 `contactJobGrade.jobGradeName`을 이름 옆 직급 표시값으로 사용한다.
 - 응답의 `contactDepartment.departmentName`을 부서 표시값으로 사용한다.
-- `contactDepartment.id`는 후속 상세 이동, 필터, 수정 흐름에서 사용할 수 있다.
+- `contactDepartment.id`, `contactJobGrade.id`는 후속 상세 이동, 필터, 수정 흐름에서 사용할 수 있다.
 
 BE:
 
@@ -161,4 +170,4 @@ BE:
 - 다른 사용자의 회사 ID는 `CompanyNotFound`로 처리한다.
 - 다른 사용자의 Contact가 응답에 섞이지 않는다.
 - 정렬은 `createdAt DESC`, `id DESC` 기준을 따른다.
-- 응답 item에는 `id`, `username`, `contactDepartment.id`, `contactDepartment.departmentName`만 포함된다.
+- 응답 item에는 `id`, `username`, `mobile`, `email`, `contactDepartment.id`, `contactDepartment.departmentName`, `contactJobGrade.id`, `contactJobGrade.jobGradeName`만 포함된다.

@@ -124,6 +124,12 @@ export class PrismaCompanyRepository implements CompanyRepository {
             departmentName: true,
           },
         },
+        contactJobGrade: {
+          select: {
+            id: true,
+            jobGradeName: true,
+          },
+        },
       },
       orderBy: [{ createdAt: "desc" }, { id: "desc" }],
     });

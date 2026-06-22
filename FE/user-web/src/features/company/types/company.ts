@@ -97,6 +97,10 @@ export type CompanyContact = {
     readonly id: string;
     readonly departmentName: string;
   };
+  readonly contactJobGrade?: {
+    readonly id: string;
+    readonly jobGradeName: string;
+  };
 };
 
 export type CompanyContactListResponse = {
