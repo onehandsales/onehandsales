@@ -545,7 +545,7 @@ function CompanyRow({
 
   return (
     <div
-      className="group grid h-[66px] w-full cursor-pointer items-center border-b border-[#E2E5EC] bg-white px-3 text-left transition-colors last:border-b-0 hover:bg-[#FFFBEB] md:px-4 xl:px-6"
+      className="group grid h-[66px] w-full cursor-pointer items-center border-b border-[#E2E5EC] bg-white px-3 text-left transition-colors last:border-b-0 hover:bg-[#EAF2FF] md:px-4 xl:px-6"
       onClick={() => void navigate(`/companies/${company.id}`)}
       onKeyDown={(e) => {
         if (e.key === "Enter" || e.key === " ") {

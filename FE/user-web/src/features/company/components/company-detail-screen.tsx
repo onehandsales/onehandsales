@@ -357,8 +357,8 @@ function CompanySummaryHeader({
       </div>
       <div className="flex-1" />
       <div className="flex items-center gap-4 text-[12px] text-[#9CA3AF]">
-        <span>등록 {formatDate(company.createdAt, { includeYear: true })}</span>
-        <span>수정 {formatDate(company.updatedAt, { includeYear: true })}</span>
+        <span>등록 {formatDateTime(company.createdAt, { includeYear: true })}</span>
+        <span>수정 {formatDateTime(company.updatedAt, { includeYear: true })}</span>
       </div>
     </div>
   );
