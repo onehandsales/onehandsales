@@ -16,13 +16,13 @@ Backend 추가 API G01-G12는 구현 완료 상태다. Frontend도 아래 항목
 
 회사 단건 페이지에서 `GET /api/companies/:companyId/contacts` 응답을 연결 Contact 목록으로 표시한다. 이 목록은 페이지네이션 없이 전체를 보여준다.
 
-회사 목록 페이지의 내보내기 버튼에서 `GET /api/companies/export/xlsx`를 호출한다. 이때 목록의 현재 검색어와 필터 query는 전달하고 `page`는 전달하지 않는다.
+회사 목록 페이지의 내보내기 버튼에서 `GET /api/companies/export/xlsx`를 호출한다. 이때 목록의 현재 검색어, 필터, 정렬 query는 전달하고 `page`는 전달하지 않는다.
 
-담당자 목록 페이지의 내보내기 버튼에서 `GET /api/contacts/export/xlsx`를 호출한다. 이때 목록의 현재 검색어와 필터 query는 전달하고 `page`는 전달하지 않는다.
+담당자 목록 페이지의 내보내기 버튼에서 `GET /api/contacts/export/xlsx`를 호출한다. 이때 목록의 현재 검색어, 필터, 정렬 query는 전달하고 `page`는 전달하지 않는다.
 
-제품 목록 페이지의 내보내기 버튼에서 `GET /api/products/export/xlsx`를 호출한다. 이때 목록의 현재 검색어와 필터 query는 전달하고 `page`는 전달하지 않는다.
+제품 목록 페이지의 내보내기 버튼에서 `GET /api/products/export/xlsx`를 호출한다. 이때 목록의 현재 검색어, 필터, 정렬 query는 전달하고 `page`는 전달하지 않는다.
 
-모든 export 호출은 목록 페이지의 현재 검색어와 필터 query를 함께 전달한다. 예를 들어 목록이 `page=2`와 검색어, 필터를 함께 사용 중이면 export API에는 검색어와 필터만 전달하고 `page=2`는 제거한다.
+모든 export 호출은 목록 페이지의 현재 검색어, 필터, 정렬 query를 함께 전달한다. 예를 들어 목록이 `page=2`와 검색어, 필터, 정렬을 함께 사용 중이면 export API에는 검색어, 필터, 정렬만 전달하고 `page=2`는 제거한다.
 
 Backend G06-G12로 구현된 연결 딜 API와 응답 변경은 `G01-FE-DEAL-COUNT-LINKED-DEAL-LISTS.goal.md`에서 처리한다.
 

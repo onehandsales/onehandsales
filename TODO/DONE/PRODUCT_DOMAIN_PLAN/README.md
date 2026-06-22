@@ -112,10 +112,10 @@ FE가 책임지는 화면:
 - `COMMON/API-SPEC/PRODUCT_API_DETAIL.md`에 모든 API의 요청값, 응답값, 내부 비즈니스 로직이 적혀 있다.
 - `COMMON/API-SPEC/PRODUCT_API_DETAIL.md`에 모든 API의 계약 상태, transaction, observability 기준이 적혀 있다.
 - 제품 목록 검색은 `productName`만 대상으로 한다.
-- 제품 목록은 등록일 기준 DESC로 정렬된다.
+- 제품 목록은 기본 등록일 DESC로 정렬되며 딜 높은순/딜 낮은순 정렬을 지원한다.
 - 제품 목록에는 `updatedAt`, `productPrice`가 나오지 않는다.
-- 제품 목록 xlsx 내보내기는 현재 검색어와 필터를 반영하고 `page`는 제외한다.
-- 제품 목록 xlsx에는 제품명, 카테고리, 상태, 등록일만 포함하고 ID와 제품 가격은 포함하지 않는다.
+- 제품 목록 xlsx 내보내기는 현재 검색어, 필터, 정렬을 반영하고 `page`는 제외한다.
+- 제품 목록 xlsx에는 제품명, 카테고리, 상태, 딜 수, 등록일을 포함하고 ID와 제품 가격은 포함하지 않는다.
 - 제품 카테고리/상태 전체 조회에는 `createdAt`이 나오지 않는다.
 - 제품 생성의 `productMemo`는 값이 있을 때만 `ProductMemoLog` 첫 데이터로 저장된다.
 - 제품 생성의 `productMemo`로 만들어진 첫 메모 로그는 `memoType`이 `초기 메모`다.

@@ -112,7 +112,7 @@ TODO/DONE/ADDITIONAL_WORK_PLAN/
 - `GET /api/products` 응답에 제품별 `dealCount`를 추가하고 `sort=dealCountDesc|dealCountAsc`를 지원한다.
 - `GET /api/products/export/xlsx` 파일에 `딜 수` 컬럼을 추가한다.
 - `GET /api/products/:productId/deals` API를 추가해 제품에 연결된 Deal 전체 목록을 반환한다.
-- 모든 export API는 목록 페이지의 현재 검색어와 필터 조건을 함께 적용하고, `page`만 제외한다.
+- 모든 export API는 목록 페이지의 현재 검색어, 필터, 정렬 조건을 함께 적용하고, `page`만 제외한다.
 - `totalCount`, `totalPages`, 페이지네이션, 검색, 필터 동작은 기존과 동일하게 유지한다.
 
 ## 7. 현재 범위 밖

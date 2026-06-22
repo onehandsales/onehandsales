@@ -91,8 +91,11 @@
 | header | `Authorization` | string | 예 | `Bearer <backend_app_access_token>` | 인증 header |
 | query | `page` | number | 아니오 | 1 이상 정수. 기본 1 | 현재 페이지 |
 | query | `companyName` | string | 아니오 | trim 후 빈 문자열이면 미적용 | 회사 이름 부분 검색어 |
-| query | `companyFieldId` | string | 아니오 | UUID | 회사 분야 필터 ID |
-| query | `companyRegionId` | string | 아니오 | UUID | 회사 지역 필터 ID |
+| query | `companyFieldIds` | string[] | 아니오 | UUID 반복 query 또는 comma-separated | 회사 분야 다중 필터 ID 목록 |
+| query | `companyRegionIds` | string[] | 아니오 | UUID 반복 query 또는 comma-separated | 회사 지역 다중 필터 ID 목록 |
+| query | `companyFieldId` | string | 아니오 | UUID | 단일 회사 분야 필터 ID. 기존 클라이언트 호환용 |
+| query | `companyRegionId` | string | 아니오 | UUID | 단일 회사 지역 필터 ID. 기존 클라이언트 호환용 |
+| query | `sort` | string | 아니오 | `createdAtDesc`, `contactCountDesc`, `contactCountAsc`, `dealCountDesc`, `dealCountAsc` | 정렬 조건. 기본값 `createdAtDesc` |
 | body | 없음 | 없음 | 아니오 | 없음 | body 없음 |
 
 ### 내부 비즈니스 로직
@@ -101,13 +104,14 @@
 2. query를 validation하고 page 기본값을 1로 정한다.
 3. 기본 where 조건에 `Company.userId = currentUserId`를 적용한다.
 4. `companyName`이 있으면 회사 이름 부분 검색 조건을 적용한다.
-5. `companyFieldId`가 있으면 같은 userId의 `CompanyField`인지 확인한 뒤 필터를 적용한다.
-6. `companyRegionId`가 있으면 같은 userId의 `CompanyRegion`인지 확인한 뒤 필터를 적용한다.
-7. `createdAt DESC, id DESC`로 정렬한다.
-8. page size 20으로 `items`, `totalCount`를 조회한다.
+5. 회사 분야 필터 ID가 있으면 모든 ID가 같은 userId의 `CompanyField`인지 확인한 뒤 `IN` 필터를 적용한다.
+6. 회사 지역 필터 ID가 있으면 모든 ID가 같은 userId의 `CompanyRegion`인지 확인한 뒤 `IN` 필터를 적용한다.
+7. `sort`가 없으면 `createdAt DESC, id DESC`로 정렬한다. 담당자 수/딜 수 정렬은 각 count ASC/DESC 뒤에 `createdAt DESC`, `id DESC`를 적용한다.
+8. page size 10으로 `items`, `totalCount`를 조회한다.
 9. 각 회사에 연결된 `Contact` 개수를 계산해 `contactCount`로 넣는다.
-10. `CompanyField`, `CompanyRegion` relation을 포함해 list item DTO로 변환한다.
-11. 목록 응답에는 `updatedAt`을 넣지 않는다.
+10. 각 회사에 연결된 `Deal` 개수를 계산해 `dealCount`로 넣는다.
+11. `CompanyField`, `CompanyRegion` relation을 포함해 list item DTO로 변환한다.
+12. 목록 응답에는 `updatedAt`을 넣지 않는다.
 
 ### Response
 
@@ -125,6 +129,7 @@
 | `items[].companyRegion.id` | string | 아니오 | 회사 지역 ID |
 | `items[].companyRegion.region` | string | 아니오 | 회사 지역 이름 |
 | `items[].contactCount` | number | 아니오 | 해당 회사에 연결된 담당자 수 |
+| `items[].dealCount` | number | 아니오 | 해당 회사에 연결된 딜 수 |
 | `items[].createdAt` | string | 아니오 | 회사 등록일 |
 | `page` | number | 아니오 | 현재 페이지 |
 | `pageSize` | number | 아니오 | 10 |
@@ -1168,32 +1173,36 @@
 | 위치 | 필드 | 타입 | 필수 | validation | 설명 |
 |---|---|---|---:|---|---|
 | query | `companyName` | string | 아니오 | trim 후 빈 문자열이면 미적용 | 회사 이름 부분 검색어 |
-| query | `companyFieldId` | string | 아니오 | UUID | 회사 분야 필터 ID |
-| query | `companyRegionId` | string | 아니오 | UUID | 회사 지역 필터 ID |
+| query | `companyFieldIds` | string[] | 아니오 | UUID 반복 query 또는 comma-separated | 회사 분야 다중 필터 ID 목록 |
+| query | `companyRegionIds` | string[] | 아니오 | UUID 반복 query 또는 comma-separated | 회사 지역 다중 필터 ID 목록 |
+| query | `companyFieldId` | string | 아니오 | UUID | 단일 회사 분야 필터 ID. 기존 클라이언트 호환용 |
+| query | `companyRegionId` | string | 아니오 | UUID | 단일 회사 지역 필터 ID. 기존 클라이언트 호환용 |
+| query | `sort` | string | 아니오 | `createdAtDesc`, `contactCountDesc`, `contactCountAsc`, `dealCountDesc`, `dealCountAsc` | 회사 목록 정렬 조건. 기본값 `createdAtDesc` |
 
-`page`는 받지 않는다. export는 현재 검색어와 필터 조건에 맞는 전체 데이터를 대상으로 한다.
+`page`는 받지 않는다. export는 현재 검색어, 필터, 정렬 조건에 맞는 전체 데이터를 대상으로 한다.
 
 #### Response
 
 - Status: `200 OK`
 - Content-Type: `application/vnd.openxmlformats-officedocument.spreadsheetml.sheet`
 - Content-Disposition: `attachment; filename="companies_YYYYMMDD_HHmmss.xlsx"`
-- xlsx 컬럼: `회사이름`, `회사분야`, `회사지역`, `담당자 수`, `등록일`
-- xlsx 제외 필드: 회사 ID, 분야 ID, 지역 ID, userId, memo/private memo
+- xlsx 컬럼: `회사이름`, `회사분야`, `회사지역`, `담당자 수`, `딜 수`, `등록일`
+- xlsx 제외 필드: 회사 ID, 분야 ID, 지역 ID, userId, memo/private memo, 딜 ID
 
 #### 내부 비즈니스 로직
 
 1. AuthGuard로 현재 userId를 확인한다.
 2. query를 validation한다.
-3. `companyFieldId`, `companyRegionId`가 있으면 현재 userId 소유인지 확인한다.
+3. 회사 분야/지역 필터 ID가 있으면 모두 현재 userId 소유인지 확인한다.
 4. `page` 없이 `Company.userId = currentUserId`와 검색/필터 조건을 적용한다.
-5. `createdAt DESC, id DESC`로 정렬한다.
+5. 회사 목록 API와 같은 정렬 조건을 적용한다.
 6. 각 회사의 연결 담당자 수를 `담당자 수` 컬럼으로 넣는다.
-7. xlsx 파일을 생성해 다운로드 응답으로 반환한다.
+7. 각 회사의 연결 딜 수를 `딜 수` 컬럼으로 넣는다.
+8. xlsx 파일을 생성해 다운로드 응답으로 반환한다.
 
 #### 연결된 DB 스키마
 
-- 조회: `Company`, `CompanyField`, `CompanyRegion`, `Contact`
+- 조회: `Company`, `CompanyField`, `CompanyRegion`, `Contact`, `Deal`
 - transaction: 없음. 조회 전용
 - 감사 로그: 없음
 

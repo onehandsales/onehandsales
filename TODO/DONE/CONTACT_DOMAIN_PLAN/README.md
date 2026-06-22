@@ -118,9 +118,9 @@ FE가 책임지는 화면:
 - `COMMON/API-SPEC/CONTACT_API_DETAIL.md`에 모든 API의 요청값, 응답값, 내부 비즈니스 로직이 적혀 있다.
 - `COMMON/API-SPEC/CONTACT_API_DETAIL.md`에 모든 API의 계약 상태, transaction, observability 기준이 적혀 있다.
 - 담당자는 반드시 회사에 소속된다.
-- 담당자 목록은 등록일 기준 DESC로 정렬된다.
+- 담당자 목록은 기본 등록일 DESC로 정렬되며 이름순 정렬을 지원한다.
 - 담당자 목록에는 `updatedAt`이 나오지 않는다.
-- 담당자 목록 xlsx 내보내기는 현재 검색어와 필터를 반영하고 `page`는 제외한다.
+- 담당자 목록 xlsx 내보내기는 현재 검색어, 필터, 정렬을 반영하고 `page`는 제외한다.
 - 담당자 필터용 회사/부서/직급 전체 조회에는 `createdAt`이 나오지 않는다.
 - 담당자 생성의 `contactMemo`는 값이 있을 때만 `ContactMemoLog` 첫 데이터로 저장된다.
 - 담당자 생성의 `contactMemo`로 만들어진 첫 메모 로그는 `memoType`이 `초기 메모`다.

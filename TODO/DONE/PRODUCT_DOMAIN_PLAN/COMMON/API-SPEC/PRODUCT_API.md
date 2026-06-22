@@ -15,7 +15,7 @@
 - 제품 개인 비밀 메모 로그 페이지 크기: 10개 고정
 - 제품 목록 검색: `productName` 부분 검색만 제공
 - 제품 목록 필터: `productCategoryId`, `productStatusId`
-- 제품 목록 정렬: `createdAt DESC`
+- 제품 목록 정렬: `createdAtDesc`, `dealCountDesc`, `dealCountAsc`
 - 제품 목록 응답: `productPrice`, `updatedAt` 제외
 - 제품 카테고리/상태 전체 조회 응답: `createdAt` 제외
 - 상태값만 반환하는 API: response body 없음
@@ -80,6 +80,7 @@
 | `productStatus` | object | 아니오 | 제품 상태 |
 | `productStatus.id` | string | 아니오 | 제품 상태 ID |
 | `productStatus.statusName` | string | 아니오 | 제품 상태명 |
+| `dealCount` | number | 아니오 | 해당 제품이 포함된 딜 수 |
 | `createdAt` | string | 아니오 | 등록일 ISO string |
 
 ### ProductDetailResponse
@@ -131,10 +132,10 @@
 - API: `GET /api/products/export/xlsx`
 - Content-Type: `application/vnd.openxmlformats-officedocument.spreadsheetml.sheet`
 - Content-Disposition: `attachment; filename="products_YYYYMMDD_HHmmss.xlsx"`
-- query: `productName`, `productCategoryId`, `productStatusId`
-- `page`는 받지 않는다. 검색어와 필터 조건에 맞는 전체 제품을 `createdAt DESC, id DESC`로 export한다.
-- xlsx 컬럼: `제품명`, `카테고리`, `상태`, `등록일`
-- 제외 필드: 제품 ID, 카테고리 ID, 상태 ID, userId, 제품가격, memo/private memo
+- query: `productName`, `productCategoryId`, `productStatusId`, `sort`
+- `page`는 받지 않는다. 검색어, 필터, 정렬 조건에 맞는 전체 제품을 export한다.
+- xlsx 컬럼: `제품명`, `카테고리`, `상태`, `딜 수`, `등록일`
+- 제외 필드: 제품 ID, 카테고리 ID, 상태 ID, userId, 제품가격, memo/private memo, 딜 연결 ID
 
 ## 4. 관련 문서
 

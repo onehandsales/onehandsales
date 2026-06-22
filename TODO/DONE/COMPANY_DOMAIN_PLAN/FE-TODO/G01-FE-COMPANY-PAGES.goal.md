@@ -33,12 +33,12 @@ User Web에서 회사 도메인 사용자 페이지를 구현해줘.
 5. 회사 목록은 회사 분야 필터와 회사 지역 필터를 제공한다.
 6. 회사 분야 필터 옵션은 `GET /api/company-fields`로 조회한다.
 7. 회사 지역 필터 옵션은 `GET /api/company-regions`로 조회한다.
-8. 회사 목록에는 회사 이름, 회사 분야, 회사 지역, 담당자 수, 등록일을 표시한다.
+8. 회사 목록에는 회사 이름, 회사 분야, 회사 지역, 담당자 수, 딜 수, 등록일을 표시한다.
 9. 회사 목록에는 최근 수정일을 표시하지 않는다.
 10. 회사 목록의 담당자 수는 `items[].contactCount`, 딜 수는 `items[].dealCount`를 사용하고, `totalCount`와 혼동하지 않는다.
 11. 회사 목록 내보내기 버튼을 만든다.
 12. 회사 목록 내보내기는 `GET /api/companies/export/xlsx`를 사용한다.
-13. 내보내기 요청에는 현재 회사 이름 검색어, 회사 분야 필터, 회사 지역 필터를 전달하고 `page`는 전달하지 않는다.
+13. 내보내기 요청에는 현재 회사 이름 검색어, 회사 분야 필터, 회사 지역 필터, 정렬을 전달하고 `page`는 전달하지 않는다.
 14. 내보내기 응답은 JSON이 아니라 blob으로 처리하고 Backend `Content-Disposition` 파일명을 우선 사용한다.
 15. 회사 생성 화면 또는 모달을 만든다.
 16. 회사 생성은 `companyName`, `companyFieldId`, `companyRegionId`를 필수로 받고 `companyMemo`를 선택으로 받는다.
@@ -55,11 +55,11 @@ User Web에서 회사 도메인 사용자 페이지를 구현해줘.
 27. 회사 지역 삭제 성공 `204 No Content`를 받으면 response body를 기대하지 말고 회사 지역 목록과 회사 목록을 필요한 범위에서 재조회한다.
 28. 매핑된 회사가 있는 회사 지역 삭제 실패는 사용자에게 삭제 불가 상태로 표시한다.
 29. 회사 단건 상세 화면을 만든다.
-30. 회사 단건 상세는 회사명, 회사분야, 회사지역, 등록일, 최근수정일을 표시한다.
+30. 회사 단건 상세는 회사명, 회사분야, 회사지역, 등록일, 최근수정일을 시간과 분까지 표시한다.
 31. 회사 단건 상세에는 연결 Contact 요약 영역을 둔다.
 32. 연결 Contact 요약은 `GET /api/companies/:companyId/contacts`를 사용한다.
 33. 연결 Contact 요약은 페이지네이션을 만들지 않고 전체 목록을 표시한다.
-34. 연결 Contact 요약은 담당자 이름과 `contactDepartment.departmentName`을 표시한다.
+34. 연결 Contact 요약은 담당자 이름, `contactJobGrade.jobGradeName`, `contactDepartment.departmentName`, `email`, `mobile`을 한 줄에 표시한다.
 35. 회사 단건 상세에는 연결 Deal 목록 영역을 두고 `GET /api/companies/:companyId/deals`를 사용한다.
 36. 회사명/회사분야/회사지역 수정 UI를 만든다.
 37. 회사 기본 정보 수정은 `PATCH /api/companies/:companyId`를 사용한다.
@@ -114,7 +114,7 @@ User Web에서 회사 도메인 사용자 페이지를 구현해줘.
 - [x] 회사 지역 필터가 있다.
 - [x] 10개 단위 페이지네이션 UI가 있다.
 - [x] 회사 목록에 `contactCount`가 담당자 수로 표시된다.
-- [x] 회사 목록 xlsx 내보내기가 현재 검색어와 필터를 반영한다.
+- [x] 회사 목록 xlsx 내보내기가 현재 검색어, 필터, 정렬을 반영한다.
 - [x] 회사 생성 UI가 있다.
 - [x] 회사 생성 요청 필드명이 `companyMemo`다.
 - [x] 회사 분야 생성/삭제 UI가 있다.

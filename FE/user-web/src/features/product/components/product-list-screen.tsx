@@ -536,7 +536,7 @@ function ProductMobileCard({
 
   return (
     <button
-      className="flex w-full items-start gap-3 border-b border-[#E5E7EB] bg-white px-4 py-[14px] text-left transition active:bg-[#F9FAFB] hover:bg-[#FFFBEB]"
+      className="flex w-full items-start gap-3 border-b border-[#E5E7EB] bg-white px-4 py-[14px] text-left transition active:bg-[#F9FAFB] hover:bg-[#EAF2FF]"
       onClick={() => void navigate(`/products/${product.id}`)}
       type="button"
     >
@@ -586,7 +586,7 @@ function ProductRow({
 
   return (
     <div
-      className="grid h-[66px] cursor-pointer items-center border-b border-[#E8EDF3] px-3 transition-colors last:border-b-0 hover:bg-[#FFFBEB] md:px-4 xl:px-6"
+      className="grid h-[66px] cursor-pointer items-center border-b border-[#E8EDF3] px-3 transition-colors last:border-b-0 hover:bg-[#EAF2FF] md:px-4 xl:px-6"
       onClick={() => void navigate(`/products/${product.id}`)}
       onKeyDown={(e) => {
         if (e.key === "Enter" || e.key === " ") {

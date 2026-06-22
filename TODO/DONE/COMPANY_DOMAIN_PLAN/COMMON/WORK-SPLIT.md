@@ -12,11 +12,11 @@
 - 모든 API는 `Authorization: Bearer <backend_app_access_token>`을 사용한다.
 - 모든 API는 현재 로그인한 `userId` 기준으로 데이터 소유권을 검증한다.
 - 모든 API 계약은 `COMMON/API-SPEC/COMPANY_API_DETAIL.md`의 계약 상태, transaction, observability 기준을 따른다.
-- 회사 목록은 `createdAt DESC`로 정렬한다.
+- 회사 목록은 기본 `createdAt DESC`로 정렬하고 담당자 수/딜 수 정렬을 지원한다.
 - 회사 목록 응답에는 `updatedAt`을 포함하지 않는다.
 - 회사 목록 응답에는 회사별 연결 담당자 수 `contactCount`를 포함한다.
 - 회사 연결 Contact 목록은 회사 단건 응답에 병합하지 않고 `GET /api/companies/:companyId/contacts` 별도 API로 조회한다.
-- 회사 목록 xlsx 내보내기는 현재 검색어와 필터 조건을 적용하고 `page`는 적용하지 않는다.
+- 회사 목록 xlsx 내보내기는 현재 검색어, 필터, 정렬 조건을 적용하고 `page`는 적용하지 않는다.
 - 회사 분야/지역 전체 조회 응답에는 `createdAt`을 포함하지 않는다.
 - 회사 생성 요청의 `companyMemo`는 `CompanyMemoLog` 첫 데이터로 저장한다.
 - 회사 생성 요청의 `companyMemo`로 만들어지는 첫 메모 로그는 `memoType`을 `초기 메모`로 저장한다.

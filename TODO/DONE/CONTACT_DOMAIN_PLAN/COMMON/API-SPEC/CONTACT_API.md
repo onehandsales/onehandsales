@@ -15,7 +15,7 @@
 - 담당자 개인 비밀 메모 로그 페이지 크기: 10개 고정
 - 담당자 목록 검색: `username` 부분 검색만 제공
 - 담당자 목록 필터: `companyId`, `contactDepartmentId`, `contactJobGradeId`
-- 담당자 목록 정렬: `createdAt DESC`
+- 담당자 목록 정렬: `createdAtDesc`, `usernameAsc`
 - 담당자 목록 응답: `updatedAt` 제외
 - 담당자 필터용 회사/직급/부서 전체 조회 응답: `createdAt` 제외
 - 상태값만 반환하는 API: response body 없음
@@ -106,8 +106,8 @@
 - API: `GET /api/contacts/export/xlsx`
 - Content-Type: `application/vnd.openxmlformats-officedocument.spreadsheetml.sheet`
 - Content-Disposition: `attachment; filename="contacts_YYYYMMDD_HHmmss.xlsx"`
-- query: `username`, `companyId`, `contactDepartmentId`, `contactJobGradeId`
-- `page`는 받지 않는다. 검색어와 필터 조건에 맞는 전체 담당자를 `createdAt DESC, id DESC`로 export한다.
+- query: `username`, `companyId`, `contactDepartmentId`, `contactJobGradeId`, `sort`
+- `page`는 받지 않는다. 검색어, 필터, 정렬 조건에 맞는 전체 담당자를 export한다.
 - xlsx 컬럼: `회사명`, `담당자명`, `핸드폰번호`, `이메일`, `부서`, `직급`, `등록일`
 - 제외 필드: 담당자 ID, 회사 ID, 부서 ID, 직급 ID, userId, memo/private memo
 

@@ -28,7 +28,7 @@
 - 모든 API는 `AuthGuard`를 사용한다.
 - 모든 조회와 변경은 현재 사용자 `userId` ownership 기준으로 처리한다.
 - 담당자는 반드시 회사에 소속된다.
-- 담당자 export는 검색/필터 조건을 적용하고 `page` 없이 전체 대상 xlsx를 반환한다.
+- 담당자 export는 검색/필터/정렬 조건을 적용하고 `page` 없이 전체 대상 xlsx를 반환한다.
 - 담당자 생성 시 `contactMemo`가 있으면 같은 transaction에서 `ContactMemoLog` 첫 데이터로 저장한다.
 - 개인 비밀 메모 평문은 API DTO에서만 `memo`로 다루고, DB에는 `memoCiphertext`, `memoKeyVersion`만 저장한다.
 - API 계약은 `TODO/CONTACT_DOMAIN_PLAN/COMMON/API-SPEC/CONTACT_API_DETAIL.md`를 따른다.

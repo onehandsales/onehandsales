@@ -32,11 +32,12 @@
 - 페이지네이션 없음
 - `page` query는 사용하지 않는다.
 - `companyName` 검색어는 export에도 적용한다.
-- `companyFieldId`, `companyRegionId` 필터는 export에도 적용한다.
+- `companyFieldId`, `companyFieldIds`, `companyRegionId`, `companyRegionIds` 필터는 export에도 적용한다.
+- `sort` 정렬 조건은 export에도 적용한다.
 - 검색어와 필터가 동시에 있으면 두 조건을 모두 만족하는 회사 전체를 내보낸다.
 - 필터가 있으면 필터링된 전체 회사 데이터를 내보낸다.
 - 필터가 없으면 현재 사용자의 전체 회사 데이터를 내보낸다.
-- 정렬: `createdAt DESC`, 보조 정렬 `id DESC`
+- 기본 정렬: `createdAt DESC`, 보조 정렬 `id DESC`
 - id 계열 값은 파일에 포함하지 않는다.
 
 ## 4. Request
@@ -52,11 +53,14 @@
 | header | `Authorization` | string | 예 | `Bearer <backend_app_access_token>` | 인증 header |
 | query | `companyName` | string | 아니오 | trim 후 빈 문자열이면 미적용 | 회사 이름 부분 검색어 |
 | query | `companyFieldId` | string | 아니오 | UUID | 회사 분야 필터 ID |
+| query | `companyFieldIds` | string[] | 아니오 | UUID 배열. 반복 query 또는 comma-separated | 회사 분야 다중 필터 ID |
 | query | `companyRegionId` | string | 아니오 | UUID | 회사 지역 필터 ID |
+| query | `companyRegionIds` | string[] | 아니오 | UUID 배열. 반복 query 또는 comma-separated | 회사 지역 다중 필터 ID |
+| query | `sort` | string | 아니오 | `createdAtDesc`, `contactCountDesc`, `contactCountAsc`, `dealCountDesc`, `dealCountAsc` | 회사 목록 정렬 조건. 기본값 `createdAtDesc` |
 | query | `page` | 없음 | 아니오 | 전송하지 않음 | 내보내기는 페이지네이션을 적용하지 않음 |
 | body | 없음 | 없음 | 아니오 | 없음 | body 없음 |
 
-FE는 회사 목록 화면의 현재 검색어와 필터 query를 전달하되 `page`는 제거한다.
+FE는 회사 목록 화면의 현재 검색어, 다중 필터, 정렬 query를 전달하되 `page`는 제거한다.
 
 ## 5. Response
 
@@ -79,6 +83,7 @@ FE는 회사 목록 화면의 현재 검색어와 필터 query를 전달하되 `
 | `회사분야` | `CompanyField.field` | 회사 분야 표시값 |
 | `회사지역` | `CompanyRegion.region` | 회사 지역 표시값 |
 | `담당자 수` | 연결된 `Contact` 개수 | 해당 회사에 연결된 담당자 수 |
+| `딜 수` | 연결된 `Deal` 개수 | 해당 회사에 연결된 딜 수 |
 | `등록일` | `Company.createdAt` | `yyyy-mm-dd` 표시 형식 |
 
 파일에 포함하지 않는 값:
@@ -87,6 +92,7 @@ FE는 회사 목록 화면의 현재 검색어와 필터 query를 전달하되 `
 - `CompanyField.id`
 - `CompanyRegion.id`
 - `Contact.id`
+- `Deal.id`
 - 내부 userId
 - 메모 원문
 - 개인 비밀 메모 원문 또는 암호문
@@ -102,37 +108,37 @@ FE는 회사 목록 화면의 현재 검색어와 필터 query를 전달하되 `
 회사 목록 API:
 
 ```http
-GET /api/companies?page=1&companyName=테크&companyFieldId=field-it&companyRegionId=region-seoul
+GET /api/companies?page=1&companyName=테크&companyFieldIds=field-it&companyRegionIds=region-seoul&sort=createdAtDesc
 ```
 
 내보내기 API:
 
 ```http
-GET /api/companies/export/xlsx?companyName=테크&companyFieldId=field-it&companyRegionId=region-seoul
+GET /api/companies/export/xlsx?companyName=테크&companyFieldIds=field-it&companyRegionIds=region-seoul&sort=createdAtDesc
 ```
 
 이때 `page=1`은 export에 적용하지 않는다. xlsx에는 회사명에 `테크`가 포함되고, 회사분야가 `field-it`이며, 회사지역이 `region-seoul`인 회사 전체가 들어간다.
 
 xlsx 예시:
 
-| 회사이름 | 회사분야 | 회사지역 | 담당자 수 | 등록일 |
-|---|---|---|---:|---|
-| 테크솔루션 | IT | 서울 | 4 | 2026-06-12 |
-| 미래테크 | IT | 서울 | 2 | 2026-06-10 |
-| 한빛테크 | IT | 서울 | 0 | 2026-06-07 |
+| 회사이름 | 회사분야 | 회사지역 | 담당자 수 | 딜 수 | 등록일 |
+|---|---|---|---:|---:|---|
+| 테크솔루션 | IT | 서울 | 4 | 3 | 2026-06-12 |
+| 미래테크 | IT | 서울 | 2 | 1 | 2026-06-10 |
+| 한빛테크 | IT | 서울 | 0 | 0 | 2026-06-07 |
 
 지역만 필터링한 경우:
 
 ```http
-GET /api/companies/export/xlsx?companyRegionId=region-busan
+GET /api/companies/export/xlsx?companyRegionIds=region-busan
 ```
 
 xlsx 예시:
 
-| 회사이름 | 회사분야 | 회사지역 | 담당자 수 | 등록일 |
-|---|---|---|---:|---|
-| 부산세일즈랩 | 유통 | 부산 | 3 | 2026-06-11 |
-| 해운대파트너스 | 금융 | 부산 | 1 | 2026-06-08 |
+| 회사이름 | 회사분야 | 회사지역 | 담당자 수 | 딜 수 | 등록일 |
+|---|---|---|---:|---:|---|
+| 부산세일즈랩 | 유통 | 부산 | 3 | 2 | 2026-06-11 |
+| 해운대파트너스 | 금융 | 부산 | 1 | 0 | 2026-06-08 |
 
 필터가 없는 경우:
 
@@ -146,18 +152,18 @@ GET /api/companies/export/xlsx
 
 1. AuthGuard로 현재 사용자를 확인한다.
 2. export query를 validation한다.
-3. `companyFieldId`, `companyRegionId`가 있으면 현재 사용자 소유인지 검증한다.
-4. 기존 회사 목록과 같은 검색어와 필터 조건을 구성한다.
+3. `companyFieldId(s)`, `companyRegionId(s)`가 있으면 현재 사용자 소유인지 검증한다.
+4. 기존 회사 목록과 같은 검색어, 필터, 정렬 조건을 구성한다.
 5. `Company.userId = currentUserId` ownership 조건을 기본으로 적용한다.
 6. 페이지네이션 없이 조건에 맞는 전체 회사를 조회한다.
-7. 각 회사의 연결 Contact 개수를 함께 계산한다.
-8. `createdAt DESC`, `id DESC`로 정렬한다.
+7. 각 회사의 연결 Contact 개수와 Deal 개수를 함께 계산한다.
+8. `sort`에 따라 목록 API와 같은 정렬을 적용한다. 기본값은 `createdAt DESC`, `id DESC`다.
 9. id 계열 값과 민감 원문을 제외하고 xlsx row를 만든다.
 10. xlsx binary와 다운로드 header를 반환한다.
 
 ## 8. 연결 DB 스키마
 
-- 조회: `Company`, `CompanyField`, `CompanyRegion`, `Contact`
+- 조회: `Company`, `CompanyField`, `CompanyRegion`, `Contact`, `Deal`
 - 생성: 없음
 - 수정: 없음
 - 삭제: 없음
@@ -166,7 +172,8 @@ GET /api/companies/export/xlsx
 관계 기준:
 
 - `Contact.companyId`는 `Company.id`를 참조한다.
-- `Company`, `Contact`는 모두 `userId`를 가진 사용자 소유 데이터다.
+- `Deal.companyId`는 `Company.id`를 참조한다.
+- `Company`, `Contact`, `Deal`은 모두 `userId`를 가진 사용자 소유 데이터다.
 
 ## 9. Transaction
 
@@ -197,7 +204,7 @@ GET /api/companies/export/xlsx
 
 FE:
 
-- 회사 목록 화면의 현재 검색어와 필터 query를 export API에 전달한다.
+- 회사 목록 화면의 현재 검색어, 다중 필터, 정렬 query를 export API에 전달한다.
 - `page`는 전달하지 않는다.
 - 응답은 JSON이 아니라 blob으로 처리한다.
 - 다운로드 파일명은 Backend의 `Content-Disposition` header를 우선 사용한다.
@@ -206,17 +213,18 @@ BE:
 
 - 기존 `GET /api/companies` JSON 응답은 변경하지 않는다.
 - export API는 xlsx binary를 반환한다.
-- 파일 컬럼명은 `회사이름`, `회사분야`, `회사지역`, `담당자 수`, `등록일`로 고정한다.
-- N+1 count 쿼리가 생기지 않도록 회사 조회 단계에서 담당자 수를 함께 집계한다.
+- 파일 컬럼명은 `회사이름`, `회사분야`, `회사지역`, `담당자 수`, `딜 수`, `등록일`로 고정한다.
+- N+1 count 쿼리가 생기지 않도록 회사 조회 단계에서 담당자 수와 딜 수를 함께 집계한다.
 - 범용 `ExportJob`이나 비동기 export queue는 이 API 범위에 포함하지 않는다.
 
 ## 13. 검증 기준
 
 - 필터가 없으면 현재 사용자의 전체 회사가 xlsx에 포함된다.
 - `companyName` 필터가 있으면 해당 검색어 조건에 맞는 회사만 포함된다.
-- `companyFieldId`, `companyRegionId` 필터가 있으면 해당 조건에 맞는 회사만 포함된다.
-- `companyName`, `companyFieldId`, `companyRegionId`가 함께 있으면 세 조건을 모두 만족하는 회사만 포함된다.
-- xlsx 컬럼명은 `회사이름`, `회사분야`, `회사지역`, `담당자 수`, `등록일`이다.
+- `companyFieldId(s)`, `companyRegionId(s)` 필터가 있으면 해당 조건에 맞는 회사만 포함된다.
+- `companyName`, `companyFieldId(s)`, `companyRegionId(s)`가 함께 있으면 세 조건을 모두 만족하는 회사만 포함된다.
+- `sort`는 목록 API와 같은 기준으로 적용된다.
+- xlsx 컬럼명은 `회사이름`, `회사분야`, `회사지역`, `담당자 수`, `딜 수`, `등록일`이다.
 - id 계열 값은 xlsx에 포함되지 않는다.
-- 정렬은 `createdAt DESC`, `id DESC` 기준이다.
-- 다른 사용자의 회사나 담당자 수가 섞이지 않는다.
+- 기본 정렬은 `createdAt DESC`, `id DESC` 기준이다.
+- 다른 사용자의 회사, 담당자 수, 딜 수가 섞이지 않는다.

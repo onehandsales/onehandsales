@@ -41,13 +41,14 @@
 - 권한: 본인 제품만 내보내기 가능
 - 응답: xlsx binary file
 - 페이지네이션: 없음
-- 정렬: `createdAt DESC`, `id DESC`
+- 정렬: `createdAtDesc`, `dealCountDesc`, `dealCountAsc`
 
 Query:
 
 - `productName`
 - `productCategoryId`
 - `productStatusId`
+- `sort`
 
 `page`는 전달하지 않는다.
 
@@ -58,18 +59,19 @@ Query:
 | `제품명` | `Product.productName` |
 | `카테고리` | `ProductCategory.categoryName` |
 | `상태` | `ProductStatus.statusName` |
+| `딜 수` | 해당 제품이 포함된 DealProduct 개수 |
 | `등록일` | `Product.createdAt`의 날짜 표시값 |
 
-id 계열 값과 제품 가격은 xlsx에 포함하지 않는다.
+id 계열 값, 딜 연결 ID, 제품 가격은 xlsx에 포함하지 않는다.
 
 ## 비즈니스 규칙
 
-- 기존 제품 목록 API와 동일한 검색어와 필터 조건을 사용한다.
+- 기존 제품 목록 API와 동일한 검색어, 필터, 정렬 조건을 사용한다.
 - 검색어와 필터가 동시에 있으면 모든 조건을 만족하는 제품 전체를 내보낸다.
 - 필터가 있으면 필터링된 전체 제품 데이터를 내보낸다.
 - 필터가 없으면 현재 사용자의 전체 제품 데이터를 내보낸다.
 - 제품 목록 화면의 `page`는 export에 적용하지 않는다.
-- 다른 사용자의 제품, 카테고리, 상태가 섞이면 안 된다.
+- 다른 사용자의 제품, 카테고리, 상태, 딜 수가 섞이면 안 된다.
 
 ## 구현 제한
 
@@ -100,9 +102,9 @@ pnpm run build
 - 필터 없이 호출하면 현재 사용자의 전체 제품이 xlsx에 포함된다.
 - 제품명 검색어, 카테고리, 상태 필터가 각각 적용된다.
 - 제품명 검색어, 카테고리, 상태 필터가 동시에 있으면 모든 조건을 만족하는 제품만 포함된다.
-- xlsx 컬럼명은 `제품명`, `카테고리`, `상태`, `등록일`이다.
-- id 계열 값과 제품 가격은 xlsx에 포함되지 않는다.
-- 정렬은 `createdAt DESC`, `id DESC` 기준이다.
+- xlsx 컬럼명은 `제품명`, `카테고리`, `상태`, `딜 수`, `등록일`이다.
+- id 계열 값, 딜 연결 ID, 제품 가격은 xlsx에 포함되지 않는다.
+- 정렬은 목록 API와 같은 `sort` 기준이며 기본값은 `createdAt DESC`, `id DESC`다.
 - 다른 사용자의 데이터가 섞이지 않는다.
 
 ## 완료 보고

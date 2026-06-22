@@ -102,6 +102,7 @@
 | query | `productName` | string | 아니오 | trim 후 빈 문자열이면 미적용 | 제품명 부분 검색어 |
 | query | `productCategoryId` | string | 아니오 | UUID | 제품 카테고리 필터 ID |
 | query | `productStatusId` | string | 아니오 | UUID | 제품 상태 필터 ID |
+| query | `sort` | string | 아니오 | `createdAtDesc`, `dealCountDesc`, `dealCountAsc` | 정렬 조건. 기본값 `createdAtDesc` |
 
 서버는 `pageSize`를 10으로 고정한다. FE는 `pageSize` query를 보내지 않는다.
 
@@ -113,8 +114,12 @@
 4. `productName`이 있으면 `Product.productName` 부분 검색 조건을 적용한다.
 5. `productCategoryId`가 있으면 현재 사용자의 `ProductCategory`인지 확인한 뒤 필터를 적용한다.
 6. `productStatusId`가 있으면 현재 사용자의 `ProductStatus`인지 확인한 뒤 필터를 적용한다.
-7. `createdAt DESC`로 정렬하고 10개 단위로 조회한다.
-8. 목록 응답으로 변환할 때 `productPrice`, `updatedAt`은 넣지 않는다.
+7. `sort`가 없으면 `createdAt DESC, id DESC`로 정렬한다.
+8. `sort=dealCountDesc`이면 딜 수 DESC, `createdAt DESC`, `id DESC` 순서로 정렬한다.
+9. `sort=dealCountAsc`이면 딜 수 ASC, `createdAt DESC`, `id DESC` 순서로 정렬한다.
+10. 10개 단위로 조회한다.
+11. 각 제품이 포함된 딜 수를 `dealCount`로 넣는다.
+12. 목록 응답으로 변환할 때 `productPrice`, `updatedAt`은 넣지 않는다.
 
 ### Response
 
@@ -141,11 +146,12 @@
 | `productStatus` | object | 아니오 | 제품 상태 |
 | `productStatus.id` | string | 아니오 | 상태 ID |
 | `productStatus.statusName` | string | 아니오 | 상태명 |
+| `dealCount` | number | 아니오 | 해당 제품이 포함된 딜 수 |
 | `createdAt` | string | 아니오 | 등록일 |
 
 ### 연결된 DB 스키마
 
-- 조회: `Product`, `ProductCategory`, `ProductStatus`
+- 조회: `Product`, `ProductCategory`, `ProductStatus`, `DealProduct`
 - transaction: 없음
 - 감사 로그: 없음
 
@@ -956,8 +962,9 @@
 | query | `productName` | string | 아니오 | trim 후 빈 문자열이면 미적용 | 제품명 부분 검색어 |
 | query | `productCategoryId` | string | 아니오 | UUID | 제품 카테고리 필터 ID |
 | query | `productStatusId` | string | 아니오 | UUID | 제품 상태 필터 ID |
+| query | `sort` | string | 아니오 | `createdAtDesc`, `dealCountDesc`, `dealCountAsc` | 제품 목록 정렬 조건. 기본값 `createdAtDesc` |
 
-`page`는 받지 않는다. export는 현재 검색어와 필터 조건에 맞는 전체 제품을 대상으로 한다.
+`page`는 받지 않는다. export는 현재 검색어, 필터, 정렬 조건에 맞는 전체 제품을 대상으로 한다.
 
 ### 내부 비즈니스 로직
 
@@ -966,20 +973,20 @@
 3. `productName`을 trim하고 값이 있으면 제품명 부분 검색 조건을 적용한다.
 4. `productCategoryId`, `productStatusId`가 있으면 현재 사용자 소유인지 확인한다.
 5. `Product.userId = currentUserId`와 검색/필터 조건을 적용한다.
-6. `createdAt DESC, id DESC`로 정렬한다.
-7. `ProductCategory`, `ProductStatus` relation을 포함해 조회한다.
-8. ID, 제품가격, memo/private memo 필드를 제외하고 xlsx 파일을 생성한다.
+6. `sort`에 따라 제품 목록 API와 같은 정렬을 적용한다.
+7. `ProductCategory`, `ProductStatus` relation과 제품별 연결 딜 수를 포함해 조회한다.
+8. ID, 제품가격, memo/private memo, 딜 연결 ID를 제외하고 xlsx 파일을 생성한다.
 
 ### Response
 
 - Status: `200 OK`
 - Content-Type: `application/vnd.openxmlformats-officedocument.spreadsheetml.sheet`
 - Content-Disposition: `attachment; filename="products_YYYYMMDD_HHmmss.xlsx"`
-- xlsx 컬럼: `제품명`, `카테고리`, `상태`, `등록일`
+- xlsx 컬럼: `제품명`, `카테고리`, `상태`, `딜 수`, `등록일`
 
 ### 연결된 DB 스키마
 
-- 조회: `Product`, `ProductCategory`, `ProductStatus`
+- 조회: `Product`, `ProductCategory`, `ProductStatus`, `DealProduct`
 - 생성/수정/삭제/감사 로그/transaction: 없음
 
 ### Observability
@@ -1003,8 +1010,8 @@
 
 | API | FE 처리 기준 | BE 처리 기준 | 검증 기준 |
 |---|---|---|---|
-| `GET /api/products` | 제품명, 카테고리, 상태, page 변경 시 목록 query를 재조회한다. 목록에는 `productPrice`, `updatedAt`을 표시하지 않는다. | userId ownership을 기본 조건으로 두고 `createdAt DESC`와 10개 페이지네이션을 적용한다. | 제품명 검색만 동작하고 본인 데이터만 조회되는지 확인한다. |
-| `GET /api/products/export/xlsx` | 제품 목록의 현재 검색어와 필터를 전달하되 `page`는 전달하지 않는다. | 동일 검색/필터 조건으로 전체 제품을 조회하고 xlsx 파일을 반환한다. | 검색/필터 반영, ID와 가격 제외, 컬럼명, 다운로드 헤더를 확인한다. |
+| `GET /api/products` | 제품명, 카테고리, 상태, 정렬, page 변경 시 목록 query를 재조회한다. 목록에는 `dealCount`를 표시하고 `productPrice`, `updatedAt`은 표시하지 않는다. | userId ownership을 기본 조건으로 두고 sort 조건과 10개 페이지네이션을 적용한다. | 제품명 검색, 필터, 딜 수 정렬, 본인 데이터만 조회되는지 확인한다. |
+| `GET /api/products/export/xlsx` | 제품 목록의 현재 검색어, 필터, 정렬을 전달하되 `page`는 전달하지 않는다. | 동일 검색/필터/정렬 조건으로 전체 제품을 조회하고 xlsx 파일을 반환한다. | 검색/필터/정렬 반영, 딜 수 컬럼, ID와 가격 제외, 다운로드 헤더를 확인한다. |
 | `GET /api/product-categories` | 목록 필터와 생성/수정 form 옵션으로 사용한다. `createdAt`을 기대하지 않는다. | 현재 userId의 `ProductCategory`만 반환한다. | 다른 사용자의 카테고리가 섞이지 않는지 확인한다. |
 | `POST /api/product-categories` | 성공 후 제품 카테고리 목록을 재조회한다. | 같은 userId 안에서 categoryName 중복을 막는다. | 중복 409와 정상 생성 201을 확인한다. |
 | `DELETE /api/product-categories/:categoryId` | 성공 후 카테고리 목록과 필요 시 제품 목록을 재조회한다. | 매핑된 제품이 있으면 삭제를 막는다. | in-use 409와 미사용 삭제 204를 확인한다. |

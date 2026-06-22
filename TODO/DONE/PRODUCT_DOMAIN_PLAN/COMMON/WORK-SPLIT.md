@@ -12,12 +12,12 @@
 - 모든 API는 `Authorization: Bearer <backend_app_access_token>`을 사용한다.
 - 모든 API는 현재 로그인한 `userId` 기준으로 데이터 소유권을 검증한다.
 - 모든 API 계약은 `COMMON/API-SPEC/PRODUCT_API_DETAIL.md`의 계약 상태, transaction, observability 기준을 따른다.
-- 제품 목록은 `createdAt DESC`로 정렬한다.
+- 제품 목록은 기본 `createdAt DESC`로 정렬하고 `dealCountDesc`, `dealCountAsc` 정렬을 지원한다.
 - 제품 목록 검색은 `productName`만 대상으로 한다.
 - 제품 목록 필터는 `productCategoryId`, `productStatusId`만 지원한다.
 - 제품 목록 응답에는 `productPrice`, `updatedAt`을 포함하지 않는다.
-- 제품 목록 xlsx 내보내기는 현재 검색어와 필터 조건을 적용하고 `page`는 적용하지 않는다.
-- 제품 목록 xlsx에는 제품명, 카테고리, 상태, 등록일만 포함하고 ID와 제품 가격은 포함하지 않는다.
+- 제품 목록 xlsx 내보내기는 현재 검색어, 필터, 정렬 조건을 적용하고 `page`는 적용하지 않는다.
+- 제품 목록 xlsx에는 제품명, 카테고리, 상태, 딜 수, 등록일을 포함하고 ID와 제품 가격은 포함하지 않는다.
 - 제품 카테고리/상태 전체 조회 응답에는 `createdAt`을 포함하지 않는다.
 - 제품 생성 요청의 `productMemo`는 값이 있을 때만 `ProductMemoLog` 첫 데이터로 저장한다.
 - 제품 생성 요청의 `productMemo`로 만들어지는 첫 메모 로그는 `memoType`을 `초기 메모`로 저장한다.

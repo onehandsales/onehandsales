@@ -111,12 +111,12 @@ FE가 책임지는 화면:
 - FE와 BE가 같은 API 계약을 기준으로 구현한다.
 - `COMMON/API-SPEC/COMPANY_API_DETAIL.md`에 모든 API의 요청값, 응답값, 내부 비즈니스 로직이 적혀 있다.
 - `COMMON/API-SPEC/COMPANY_API_DETAIL.md`에 모든 API의 계약 상태, transaction, observability 기준이 적혀 있다.
-- 회사 목록은 등록일 기준 DESC로 정렬된다.
+- 회사 목록은 기본 등록일 DESC로 정렬되며 담당자 수/딜 수 정렬을 지원한다.
 - 회사 목록에는 `updatedAt`이 나오지 않는다.
 - 회사 목록 item에는 `contactCount`와 `dealCount`가 있고, FE는 이를 담당자 수와 딜 수로 표시한다.
 - 회사 단건 페이지의 연결 Contact 목록은 `GET /api/companies/:companyId/contacts` 별도 API로 조회한다.
 - 회사 단건 페이지의 연결 Deal 목록은 `GET /api/companies/:companyId/deals` 별도 API로 조회한다.
-- 회사 목록 xlsx 내보내기는 현재 검색어와 필터를 반영하고 `page`는 제외한다.
+- 회사 목록 xlsx 내보내기는 현재 검색어, 필터, 정렬을 반영하고 `page`는 제외한다.
 - 회사 분야/지역 전체 조회에는 `createdAt`이 나오지 않는다.
 - 회사 생성의 `companyMemo`는 `CompanyMemoLog` 첫 데이터로 저장된다.
 - 회사 생성의 `companyMemo`로 만들어진 첫 메모 로그는 `memoType`이 `초기 메모`다.

@@ -51,9 +51,15 @@
     {
       "id": "contact-id",
       "username": "홍길동",
+      "mobile": "010-1111-2222",
+      "email": "hong@example.com",
       "contactDepartment": {
         "id": "department-id",
         "departmentName": "영업팀"
+      },
+      "contactJobGrade": {
+        "id": "job-grade-id",
+        "jobGradeName": "대리"
       }
     }
   ]
@@ -64,8 +70,8 @@
 
 - `companyId`가 현재 사용자 소유 회사인지 먼저 확인한다.
 - Contact 조회 조건은 `companyId`와 현재 사용자 `userId`를 모두 포함한다.
-- `ContactDepartment` relation을 함께 조회한다.
-- 응답에는 `id`, `username`, `contactDepartment.id`, `contactDepartment.departmentName`만 포함한다.
+- `ContactDepartment`, `ContactJobGrade` relation을 함께 조회한다.
+- 응답에는 `id`, `username`, `mobile`, `email`, `contactDepartment.id`, `contactDepartment.departmentName`, `contactJobGrade.id`, `contactJobGrade.jobGradeName`을 포함한다.
 - 연결된 Contact가 없으면 `items: []`를 반환한다.
 
 ## 구현 제한

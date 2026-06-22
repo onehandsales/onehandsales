@@ -13,9 +13,9 @@
 - 모든 API는 현재 로그인한 `userId` 기준으로 데이터 소유권을 검증한다.
 - 모든 API 계약은 `COMMON/API-SPEC/CONTACT_API_DETAIL.md`의 계약 상태, transaction, observability 기준을 따른다.
 - `Contact`는 반드시 `Company`에 소속된다.
-- 담당자 목록은 `createdAt DESC`로 정렬한다.
+- 담당자 목록은 기본 `createdAt DESC`로 정렬하고 이름순 정렬을 지원한다.
 - 담당자 목록 응답에는 `updatedAt`을 포함하지 않는다.
-- 담당자 목록 xlsx 내보내기는 현재 검색어와 필터 조건을 적용하고 `page`는 적용하지 않는다.
+- 담당자 목록 xlsx 내보내기는 현재 검색어, 필터, 정렬 조건을 적용하고 `page`는 적용하지 않는다.
 - 담당자 필터용 회사/부서/직급 전체 조회 응답에는 `createdAt`을 포함하지 않는다.
 - 담당자 생성 요청의 `contactMemo`는 값이 있을 때만 `ContactMemoLog` 첫 데이터로 저장한다.
 - 담당자 생성 요청의 `contactMemo`로 만들어지는 첫 메모 로그는 `memoType`을 `초기 메모`로 저장한다.

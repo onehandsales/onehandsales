@@ -104,6 +104,7 @@
 | query | `companyId` | string | 아니오 | UUID | 회사 필터 ID |
 | query | `contactDepartmentId` | string | 아니오 | UUID | 담당자 부서 필터 ID |
 | query | `contactJobGradeId` | string | 아니오 | UUID | 담당자 직급 필터 ID |
+| query | `sort` | string | 아니오 | `createdAtDesc`, `usernameAsc` | 정렬 조건. 기본값 `createdAtDesc` |
 
 서버는 `pageSize`를 10으로 고정한다. FE는 `pageSize` query를 보내지 않는다.
 
@@ -116,8 +117,9 @@
 5. `contactDepartmentId`가 있으면 현재 사용자의 담당자 부서인지 검증한다.
 6. `contactJobGradeId`가 있으면 현재 사용자의 담당자 직급인지 검증한다.
 7. `userId` 조건을 기본으로 적용한다.
-8. `createdAt DESC`, `id DESC`로 정렬하고 10개 단위로 조회한다.
-9. 목록 응답으로 변환할 때 `updatedAt`은 넣지 않는다.
+8. `sort=usernameAsc`이면 `username ASC`, `createdAt DESC`, `id DESC` 순서로 정렬하고, 그 외에는 `createdAt DESC`, `id DESC`로 정렬한다.
+9. 10개 단위로 조회한다.
+10. 목록 응답으로 변환할 때 `updatedAt`은 넣지 않는다.
 
 ### Response
 
@@ -223,10 +225,10 @@
 ### FE/BE 처리 기준
 
 - FE: 검색어는 `username` query로만 보낸다.
-- FE: 목록 필터는 URL search params와 TanStack Query key에 반영한다.
+- FE: 목록 필터와 정렬은 URL search params와 TanStack Query key에 반영한다.
 - FE: 응답의 `items[].company.id`, 부서 ID, 직급 ID는 상세/수정 화면 이동과 필터 유지에 사용한다.
 - BE: `userId` 조건을 모든 조회에 포함한다.
-- 검증: 이름 검색, 회사 필터, 부서 필터, 직급 필터, 타 사용자 데이터 미노출을 확인한다.
+- 검증: 이름 검색, 회사 필터, 부서 필터, 직급 필터, 정렬, 타 사용자 데이터 미노출을 확인한다.
 
 ## 6. 담당자 필터용 회사 전체 조회 API
 
@@ -1477,8 +1479,9 @@
 | query | `companyId` | string | 아니오 | UUID | 회사 필터 ID |
 | query | `contactDepartmentId` | string | 아니오 | UUID | 담당자 부서 필터 ID |
 | query | `contactJobGradeId` | string | 아니오 | UUID | 담당자 직급 필터 ID |
+| query | `sort` | string | 아니오 | `createdAtDesc`, `usernameAsc` | 담당자 목록 정렬 조건. 기본값 `createdAtDesc` |
 
-`page`는 받지 않는다. export는 현재 검색어와 필터 조건에 맞는 전체 담당자를 대상으로 한다.
+`page`는 받지 않는다. export는 현재 검색어, 필터, 정렬 조건에 맞는 전체 담당자를 대상으로 한다.
 
 ### 내부 비즈니스 로직
 
@@ -1487,7 +1490,7 @@
 3. `username`을 trim하고 값이 있으면 이름 부분 검색 조건을 적용한다.
 4. `companyId`, `contactDepartmentId`, `contactJobGradeId`가 있으면 현재 사용자 소유인지 확인한다.
 5. `Contact.userId = currentUserId`와 검색/필터 조건을 적용한다.
-6. `createdAt DESC, id DESC`로 정렬한다.
+6. 담당자 목록 API와 같은 정렬 조건을 적용한다.
 7. `Company`, `ContactDepartment`, `ContactJobGrade` relation을 포함해 조회한다.
 8. ID와 memo/private memo 필드를 제외하고 xlsx 파일을 생성한다.
 
