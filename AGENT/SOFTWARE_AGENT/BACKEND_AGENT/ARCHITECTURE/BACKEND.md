@@ -36,7 +36,7 @@ Canonical domain:
 
 ## 3. Current Implementation Snapshot
 
-Snapshot date: 2026-06-18
+Snapshot date: 2026-06-22
 
 Current source of truth:
 
@@ -81,8 +81,8 @@ Completed Backend TODO plans:
 - `TODO/DONE/SCHEDULE_DOMAIN_PLAN/BE-TODO/G01-BE-SCHEDULE-DOMAIN.goal.md`
 - `TODO/DONE/MEETING_NOTE_MANUAL_PLAN/BE-TODO/G01-BE-MEETING-NOTE-DOMAIN.goal.md`
 - `TODO/DONE/ADDITIONAL_WORK_PLAN/BE-TODO/G01-G12`
-- `TODO/INTEGRATED_SEARCH_PLAN/BE-TODO/G01-BE-INTEGRATED-SEARCH.goal.md`
-- `TODO/MEETING_NOTE_AI_STT_PLAN/BE-TODO/G01-BE-MEETING-NOTE-AI-STT-DRAFT.goal.md`
+- `TODO/DONE/INTEGRATED_SEARCH_PLAN/BE-TODO/G01-BE-INTEGRATED-SEARCH.goal.md`
+- `TODO/DONE/MEETING_NOTE_AI_STT_PLAN/BE-TODO/G01-BE-MEETING-NOTE-AI-STT-DRAFT.goal.md`
 
 Current response notes:
 
@@ -113,7 +113,6 @@ Current backend gaps:
 - Admin Web query APIs such as `/admin/api/dashboard`, `/admin/api/users`, `/admin/api/companies`, `/admin/api/contacts`, `/admin/api/products`, and `/admin/api/deals` are not implemented yet.
 - BusinessCard OCR, generic Import/Export jobs, Notification, Trash, Admin operation query/audit/sensitive raw APIs are not implemented yet.
 - MeetingNote delete/restore, Admin API, rawText encryption/raw access, and DealActivity auto-log are future scope.
-- MeetingNote AI/STT Frontend integration is pending even though the Backend draft APIs exist.
 
 ## 4. Target Module List
 

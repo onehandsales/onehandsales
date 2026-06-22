@@ -165,7 +165,7 @@
 
 ## 4. 현재 코드 라우트 상태
 
-> 최종 업데이트: 2026-06-19
+> 최종 업데이트: 2026-06-22
 
 현재 User Web router 기준 실제 구현 경로:
 
@@ -198,7 +198,7 @@
 - `/settings`
 - `/more`
 
-pen 디자인 반영 완료/정리 도메인 (2026-06-19 기준):
+pen 디자인 반영 완료/정리 도메인 (2026-06-22 기준):
 - `/` — Schedule/Deal/MeetingNote API 조합 대시보드 구현 완료
 - `/deals` — pen 기준 테이블+우측패널 구조 완료
 - Sidebar / TopBar — pen 기준 재구성 완료
@@ -206,7 +206,7 @@ pen 디자인 반영 완료/정리 도메인 (2026-06-19 기준):
 - `/companies`, `/contacts`, `/products` — 제품형 조밀 목록 UX로 정렬
 - 회사/담당자/제품 생성 모달 — 입력 검색형 선택, 결과 없음 즉시 추가, 생성 후 자동 선택 기준 반영
 - `/meeting-notes` — 회의록 목록/상세/생성 API, AI/STT draft UI, 저장 후 딜 추가 연동 연결 완료
-- 상단 통합검색 — Backend `GET /api/search`와 User Web GlobalSearch 연결 완료, UX 검수 진행 중
+- 상단 통합검색 — Backend `GET /api/search`와 User Web GlobalSearch 연결 완료
 
 현재 의도적으로 보류된 화면:
 - `/import`, `/trash` — 라우트와 feature는 남아 있지만 사이드바에서는 숨김 처리
@@ -238,7 +238,7 @@ pen 디자인 반영 대기 도메인:
 
 - 기획 목록의 `/meetings*`는 현재 코드에서 `/meeting-notes*`로 구현되어 있다.
 - 기획 목록의 `/imports`, `/exports`는 현재 코드에서 `/import`, `/export`로 구현되어 있다.
-- 기획 목록의 `/search` 전용 라우트는 현재 User Web router에 없다. 통합검색 목표 흐름은 상단 UI에서 `GET /api/search`를 호출하고 결과 선택 시 상세 화면으로 이동하는 것이며, 최종 FE 연결/검수는 `TODO/INTEGRATED_SEARCH_PLAN`에서 진행 중이다.
+- 기획 목록의 `/search` 전용 라우트는 현재 User Web router에 없다. 통합검색 흐름은 상단 UI에서 `GET /api/search`를 호출하고 결과 선택 시 상세 화면으로 이동하는 방식으로 구현되어 있다.
 - 현재 `/`는 딜 파이프라인이 아니라 홈 대시보드다. 딜 파이프라인은 `/deals`에서 운영한다.
 - Import와 휴지통은 핵심 기능 UX 안정화 전까지 navigation에서 숨김 처리한다.
 - 기획 목록의 Admin 상세 데이터 라우트와 전체 딜/회사/담당자/제품 라우트는 현재 Admin Web router에 없다.

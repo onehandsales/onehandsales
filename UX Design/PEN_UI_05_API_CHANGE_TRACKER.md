@@ -31,7 +31,7 @@
 
 ## 현재 기준선
 
-현재 기준선은 `2026-06-19` 시점의 `BE/src/modules/*`, `BE/prisma/schema.prisma`, `FE/user-web/src/app/router/router.tsx`, `FE/user-web/src/features/*` 구현이다.
+현재 기준선은 `2026-06-22` 시점의 `BE/src/modules/*`, `BE/prisma/schema.prisma`, `FE/user-web/src/app/router/router.tsx`, `FE/user-web/src/features/*` 구현이다.
 
 주요 확인 범위:
 - controller endpoint
@@ -41,9 +41,9 @@
 
 주의:
 - 2026-06-11 baseline으로 작성된 아래 상세 항목 중 일부는 역사 기록으로 남아 있다.
-- 실제 구현 판단은 이 섹션의 2026-06-19 현재 계약 정정을 우선한다.
+- 실제 구현 판단은 이 섹션의 2026-06-22 현재 계약 정정을 우선한다.
 
-## 0. 2026-06-19 현재 계약 정정
+## 0. 2026-06-22 현재 계약 정정
 
 ### 구현 완료 Backend 모듈
 

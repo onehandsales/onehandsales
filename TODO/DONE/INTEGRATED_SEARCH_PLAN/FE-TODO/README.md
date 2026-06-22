@@ -19,9 +19,11 @@
 현재 상태:
 
 - `/schedules/:scheduleId` route와 일정 상세 화면은 추가되어 있다.
-- 상단 통합검색 최종 연결/검수는 아직 완료되지 않았다.
+- 상단/모바일 GlobalSearch는 `GET /api/search`에 연결되어 있고 결과 선택 시 `targetPath`로 이동한다.
+- loading, empty, error 상태 처리가 구현되어 있다.
+- User Web typecheck, lint, build 검증을 통과했다.
 
 ## 4. 관련 문서
 
-- `TODO/INTEGRATED_SEARCH_PLAN/COMMON/API-SPEC/SEARCH_API.md`
+- `TODO/DONE/INTEGRATED_SEARCH_PLAN/COMMON/API-SPEC/SEARCH_API.md`
 - `AGENT/SOFTWARE_AGENT/FRONT_AGENT/ARCHITECTURE/FRONTEND_USER_WEB.md`

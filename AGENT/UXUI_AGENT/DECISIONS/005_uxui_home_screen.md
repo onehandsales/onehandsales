@@ -6,11 +6,11 @@
 
 현재 구현 상태:
 
-- 2026-06-18 기준 `/` 홈은 Schedule/Deal/MeetingNote API 조합 대시보드다.
+- 2026-06-22 기준 `/` 홈은 Schedule/Deal/MeetingNote API 조합 대시보드다.
 - 홈은 오늘 일정, 진행 딜, 마감 임박, 최근 회의록, 빠른 실행, 최근 활동을 표시한다.
 - 딜 파이프라인 경험은 `/deals`에서 운영한다.
 - 딜 목록/상세/생성의 고밀도 작업은 `/deals`를 기준으로 유지한다.
-- 상단 통합검색은 Backend `GET /api/search`를 기준으로 설계하며, User Web 최종 연결/UX 검수는 `TODO/INTEGRATED_SEARCH_PLAN`에서 진행 중이다.
+- 상단 통합검색은 Backend `GET /api/search`와 User Web GlobalSearch 연결 기준으로 구현 완료 상태다.
 
 ## 이유
 
@@ -66,5 +66,4 @@
 
 - `AGENT/UXUI_AGENT/PLANNING/UX_UI_DIRECTION.md`
 - `AGENT/UXUI_AGENT/PLANNING/USER_FLOW_AND_SCREENS.md`
-
 

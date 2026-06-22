@@ -32,17 +32,13 @@ Frontend가 Backend 통합검색 API를 실제 사용자 흐름에 맞게 사용
 
 ## 6. 이번 작업 상태
 
-in_progress
+completed
 
-부분 완료:
+완료된 작업:
 
 - `/schedules/:scheduleId` route와 일정 상세 화면은 추가되어 있다.
 - 일정 상세 화면은 `GET /api/schedules/{scheduleId}`를 사용한다.
-
-남은 작업:
-
-- 상단 통합검색 API 호출 end-to-end 검수
-- 도메인별 결과 label/group 표시 검수
-- 모든 `targetPath` 이동 검수
-- loading, empty, error 상태 검수
-- User Web build와 필요한 smoke/e2e 재검증
+- 상단 GlobalSearch는 `GET /api/search`를 호출한다.
+- 도메인별 결과 label/group 표시와 `targetPath` 이동 처리가 구현되어 있다.
+- loading, empty, error 상태 처리가 구현되어 있다.
+- User Web typecheck, lint, build 검증을 통과했다.

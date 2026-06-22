@@ -5,7 +5,7 @@
 | 순서 | Goal | 담당 | 상태 | 선행 조건 |
 |---:|---|---|---|---|
 | 1 | `G01-BE-INTEGRATED-SEARCH` | Backend | completed | 기존 Company, Contact, Product, Deal, Schedule, MeetingNote API/DB 구현 |
-| 2 | `G02-FE-INTEGRATED-SEARCH` | Frontend | in_progress | `G01-BE-INTEGRATED-SEARCH` 완료 |
+| 2 | `G02-FE-INTEGRATED-SEARCH` | Frontend | completed | `G01-BE-INTEGRATED-SEARCH` 완료 |
 
 ## 2. G01-BE-INTEGRATED-SEARCH
 
@@ -40,4 +40,4 @@
 
 ## 4. 이번 작업 상태
 
-Backend goal은 completed다. Frontend goal은 일정 상세 route 추가까지 일부 진행되었지만, 상단 통합검색 최종 연결과 end-to-end UX 검수가 남아 있어 계획 전체는 아직 active 상태다.
+Backend goal과 Frontend goal은 completed다. User Web GlobalSearch는 `GET /api/search`를 호출하고, 결과 선택 시 `targetPath`로 이동하며, 일정 결과는 `/schedules/:scheduleId` 상세 화면에서 `GET /api/schedules/{scheduleId}`로 다시 조회한다.

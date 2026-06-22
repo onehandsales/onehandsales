@@ -7,7 +7,7 @@
 
 ## 현재 BE/TODO 구현 상태
 
-기준일: 2026-06-19
+기준일: 2026-06-22
 
 - Backend 구현 완료: Auth/User, Company, Contact, Product, Deal, Schedule, MeetingNote 수동 기본 도메인, Search, MeetingNote AI/STT draft API와 `TODO/DONE/ADDITIONAL_WORK_PLAN` G01-G12.
 - Auth/User: `/api/auth/providers`, `/api/auth/exchange`, `/api/auth/refresh`, `/api/auth/logout`, `/api/me`, `/admin/api/me`, `/api/users/me/profile`, `/api/users/me/devices`.
@@ -20,7 +20,7 @@
 - Search: 회사/담당자/제품/딜/일정/회의록 통합검색 API.
 - 현재 Backend 미구현: BusinessCard OCR, 범용 Import/Export job, Notification, Trash, Admin 운영 조회/감사/민감 원문 API, MeetingNote 삭제복구/Admin, 범용 DealActivity table.
 - Admin Backend는 현재 `/admin/api/me`만 구현되어 있다.
-- User Web은 `/` 홈 대시보드, Company, Contact, Product, Deal, Schedule, MeetingNote 수동 화면, MeetingNote AI/STT draft UI의 실제 API 연동이 완료되어 있다. Search는 Backend API와 일부 FE 기반 작업이 있으나 상단 통합검색 최종 연결/UX 검수는 아직 Frontend 후속 작업이다. 나머지 미구현 Backend 도메인은 실제 API 연동 전까지 mock/placeholder 경계를 명확히 해야 한다.
+- User Web은 `/` 홈 대시보드, Company, Contact, Product, Deal, Schedule, MeetingNote 수동 화면, MeetingNote AI/STT draft UI, 저장 후 딜 연동, Search GlobalSearch의 실제 API 연동이 완료되어 있다. 나머지 미구현 Backend 도메인은 실제 API 연동 전까지 mock/placeholder 경계를 명확히 해야 한다.
 
 ## 1. 개발 우선순위
 
@@ -223,7 +223,7 @@
 
 ## 9. 회의록
 
-현재 Backend와 User Web 수동 회의록 도메인은 `TODO/DONE/MEETING_NOTE_MANUAL_PLAN` 기준 구현 완료 상태다. Backend의 AI/STT draft API와 User Web draft UI 연결은 `TODO/MEETING_NOTE_AI_STT_PLAN` 기준 구현 완료 상태다.
+현재 Backend와 User Web 수동 회의록 도메인은 `TODO/DONE/MEETING_NOTE_MANUAL_PLAN` 기준 구현 완료 상태다. Backend의 AI/STT draft API와 User Web draft UI 연결은 `TODO/DONE/MEETING_NOTE_AI_STT_PLAN` 기준 구현 완료 상태다.
 
 제품 플로우 기준으로 회의록 작성은 AI 없이 직접 작성 후 저장할 수 있어야 한다. AI/STT는 별도 필수 플로우가 아니라 같은 작성 화면에서 `AI로 정리`, `음성으로 작성`으로 초안을 채워주는 보조 기능이다.
 

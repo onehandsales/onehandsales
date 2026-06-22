@@ -9,7 +9,7 @@
 - 기존 UI 구조는 보존 대상이 아니며, 필요 시 대체한다.
 - 기존 API/hook/type/data 로직은 재사용 가능하면 유지한다.
 - 1차 범위는 디자인 토큰, 공통 App Shell, 대표 딜 화면 3개에 집중한다.
-- 2026-06-19 기준으로 이 문서는 초기 계획과 현재 구현 기준선을 함께 담는다. 실제 구현 판단은 `현재 구현 기준선`을 우선한다.
+- 2026-06-22 기준으로 이 문서는 초기 계획과 현재 구현 기준선을 함께 담는다. 실제 구현 판단은 `현재 구현 기준선`을 우선한다.
 
 구현 원칙:
 - 구현 시작은 모바일 대표 화면을 우선한다.
@@ -22,7 +22,7 @@
 
 ## 0. 현재 구현 기준선
 
-기준일: 2026-06-19
+기준일: 2026-06-22
 
 현재 User Web 구현 상태:
 
@@ -51,7 +51,7 @@
 - 구현됨: Auth/User, Company, Contact, Product, Deal, Schedule, MeetingNote 수동/AI/STT/딜 연동 도메인.
 - Admin API는 `GET /admin/api/me`만 구현되어 있다.
 - 없음: BusinessCard OCR, 범용 Import/Export job, Notification, Trash, Admin 운영 조회/감사/민감 원문 API.
-- 구현됨/검수 진행: Search 통합검색 API와 User Web GlobalSearch.
+- 구현됨: Search 통합검색 API와 User Web GlobalSearch.
 
 ---
 
@@ -461,4 +461,4 @@ pen 단계: 위와 동일 (완전 일치 달성).
 2. 목록 컨트롤 select/button 공통화 범위 결정
 3. 생성 모달 입력 검색형 inline create의 실제 세션 smoke 확인
 4. Admin 운영 조회 API 또는 Admin Web placeholder 경계 결정
-5. BusinessCard/Import-Export/Notification/Search/Trash Backend 계획 수립
+5. BusinessCard/Import-Export/Notification/Trash Backend 계획 수립
