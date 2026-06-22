@@ -241,9 +241,17 @@ function toCompanyExportSearchParams(params: CompanyExportFilters) {
     searchParams.set("companyFieldId", params.companyFieldId);
   }
 
+  appendSearchParamValues(searchParams, "companyFieldIds", params.companyFieldIds);
+
   if (params.companyRegionId) {
     searchParams.set("companyRegionId", params.companyRegionId);
   }
+
+  appendSearchParamValues(
+    searchParams,
+    "companyRegionIds",
+    params.companyRegionIds
+  );
 
   if (params.sort) {
     searchParams.set("sort", params.sort);
@@ -257,4 +265,16 @@ function compactBody(input: Record<string, unknown>) {
   return Object.fromEntries(
     Object.entries(input).filter(([, value]) => value !== undefined)
   );
+}
+
+function appendSearchParamValues(
+  searchParams: URLSearchParams,
+  key: string,
+  values?: readonly string[]
+) {
+  for (const value of values ?? []) {
+    if (value) {
+      searchParams.append(key, value);
+    }
+  }
 }

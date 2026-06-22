@@ -50,7 +50,9 @@ export type CompanyListParams = {
   readonly page?: number;
   readonly companyName?: string;
   readonly companyFieldId?: string;
+  readonly companyFieldIds?: readonly string[];
   readonly companyRegionId?: string;
+  readonly companyRegionIds?: readonly string[];
   readonly sort?: CompanySort;
 };
 
