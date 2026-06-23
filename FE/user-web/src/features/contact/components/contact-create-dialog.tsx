@@ -335,6 +335,7 @@ export function ContactCreateDialog({
                 isCreating={createDepartmentMutation.isPending}
                 isDeleting={deleteDepartmentMutation.isPending}
                 items={departments}
+                listClassName="max-h-[88px]"
                 placeholder="부서 검색"
                 selectedId={departmentId}
                 title="부서"
@@ -364,6 +365,7 @@ export function ContactCreateDialog({
                 isCreating={createJobGradeMutation.isPending}
                 isDeleting={deleteJobGradeMutation.isPending}
                 items={jobGrades}
+                listClassName="max-h-[88px]"
                 placeholder="직급 검색"
                 selectedId={jobGradeId}
                 title="직급"

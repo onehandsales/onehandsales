@@ -321,6 +321,7 @@ export function ProductCreateDialog({
                 isCreating={createCategoryMutation.isPending}
                 isDeleting={deleteCategoryMutation.isPending}
                 items={categories}
+                listClassName="max-h-[88px]"
                 placeholder="카테고리 선택"
                 selectedId={selectedCategoryId}
                 title="카테고리"
@@ -350,6 +351,7 @@ export function ProductCreateDialog({
                 isCreating={createStatusMutation.isPending}
                 isDeleting={deleteStatusMutation.isPending}
                 items={statuses}
+                listClassName="max-h-[88px]"
                 placeholder="상태 선택"
                 selectedId={selectedStatusId}
                 title="상태"

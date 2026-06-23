@@ -18,6 +18,7 @@ type ManagedTaxonomyDropdownProps<TItem extends ManagedTaxonomyItem> = {
   readonly isCreating?: boolean;
   readonly isDeleting?: boolean;
   readonly createActionLabel?: string;
+  readonly listClassName?: string;
   readonly getLabel: (item: TItem) => string;
   readonly onCreate: (name: string) => Promise<void>;
   readonly onDelete: (item: TItem) => Promise<void>;
@@ -36,6 +37,7 @@ export function ManagedTaxonomyDropdown<TItem extends ManagedTaxonomyItem>({
   isCreating = false,
   isDeleting = false,
   createActionLabel,
+  listClassName,
   getLabel,
   onCreate,
   onDelete,
@@ -210,7 +212,7 @@ export function ManagedTaxonomyDropdown<TItem extends ManagedTaxonomyItem>({
             <p className="px-2 py-1 text-[11px] text-[#EF4444]">{addError}</p>
           ) : null}
 
-          <div className="max-h-[160px] overflow-y-auto">
+          <div className={cn("max-h-[160px] overflow-y-auto", listClassName)}>
             {filteredItems.length === 0 ? (
               <div className="grid gap-2 px-3 py-3">
                 <p className="text-[12px] text-[#9CA3AF]">{emptyText}</p>

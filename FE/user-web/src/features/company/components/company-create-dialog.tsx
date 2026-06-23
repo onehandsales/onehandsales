@@ -253,6 +253,7 @@ export function CompanyCreateDialog({
                 isCreating={createFieldMutation.isPending}
                 isDeleting={deleteFieldMutation.isPending}
                 items={fields}
+                listClassName="max-h-[88px]"
                 placeholder="분야 선택"
                 selectedId={selectedFieldId}
                 title="분야"
@@ -282,6 +283,7 @@ export function CompanyCreateDialog({
                 isCreating={createRegionMutation.isPending}
                 isDeleting={deleteRegionMutation.isPending}
                 items={regions}
+                listClassName="max-h-[88px]"
                 placeholder="지역 선택"
                 selectedId={selectedRegionId}
                 title="지역"
