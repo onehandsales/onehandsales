@@ -205,6 +205,7 @@ export function AppShell() {
 
   const hideTopBar =
     isDealListPage ||
+    isDealDetail ||
     isCompanyListPage ||
     isProductListPage ||
     isContactListPage ||

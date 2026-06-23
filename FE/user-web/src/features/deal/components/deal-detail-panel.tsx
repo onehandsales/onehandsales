@@ -1,30 +1,29 @@
 // 기능 : 딜 상세 패널/페이지 — 다음 행동 로그, 메모 로그, 제품 표시
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
-  ArrowLeft,
+  BriefcaseBusiness,
   Building2,
   CalendarClock,
   Check,
+  ChevronLeft,
   ChevronRight,
   Clock3,
   FileText,
   HandCoins,
   Lock,
-  Mail,
-  MessageCircle,
   Package,
   Pencil,
-  Phone,
   Plus,
-  RefreshCw,
+  Trash2,
   UserRound,
   X,
   type LucideIcon,
 } from "lucide-react";
 import type { FormEvent, ReactNode } from "react";
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
+import { Toast } from "@/components/ui/toast";
 import {
   useDealDetail,
   useDealFollowingActionLogs,
@@ -33,6 +32,7 @@ import {
 import {
   useCreateFollowingActionLogMutation,
   useCreateMemoLogMutation,
+  useDeleteDealMutation,
   useUpdateDealMutation,
   useUpdateFollowingActionLogMutation,
   useUpdateMemoLogMutation,
@@ -61,9 +61,13 @@ type DealDetailPanelProps = {
 };
 
 export function DealDetailPanel({ dealId, variant = "panel" }: DealDetailPanelProps) {
+  const navigate = useNavigate();
+  const [notice, setNotice] = useState<string | null>(null);
+  const [actionError, setActionError] = useState<string | null>(null);
   const dealQuery = useDealDetail(dealId);
   const followingLogsQuery = useDealFollowingActionLogs(dealId);
   const memoLogsQuery = useDealMemoLogs(dealId);
+  const deleteDealMutation = useDeleteDealMutation();
   const detail = dealQuery.data;
 
   if (!dealId) {
@@ -97,14 +101,41 @@ export function DealDetailPanel({ dealId, variant = "panel" }: DealDetailPanelPr
     followingLogsQuery.data?.pages.flatMap((page) => page.items) ?? [];
   const memoLogs = memoLogsQuery.data?.pages.flatMap((page) => page.items) ?? [];
 
+  const onDeleteDeal = async () => {
+    if (!detail) return;
+    if (!window.confirm(`${detail.dealName} 딜을 삭제할까요?`)) return;
+
+    setActionError(null);
+
+    try {
+      await deleteDealMutation.mutateAsync(detail.id);
+      void navigate("/deals", {
+        replace: true,
+        state: { notice: "딜이 삭제되었습니다." },
+      });
+    } catch (error) {
+      setActionError(getApiErrorMessage(error));
+    }
+  };
+
   if (variant === "page") {
     return (
       <DealDetailPageLayout
+        actionError={actionError}
+        deletePending={deleteDealMutation.isPending}
         detail={detail}
         followingLogs={followingLogs}
         followingLogsHasNext={Boolean(followingLogsQuery.hasNextPage)}
         followingLogsFetchingNext={followingLogsQuery.isFetchingNextPage}
         followingLogsLoading={followingLogsQuery.isLoading}
+        notice={notice}
+        onClearActionError={() => setActionError(null)}
+        onClearNotice={() => setNotice(null)}
+        onDeleteDeal={() => void onDeleteDeal()}
+        onDetailSaved={() => {
+          void dealQuery.refetch();
+          setNotice("딜 정보가 저장되었습니다.");
+        }}
         onFetchFollowingLogsNext={() => void followingLogsQuery.fetchNextPage()}
         memoLogs={memoLogs}
         memoLogsHasNext={Boolean(memoLogsQuery.hasNextPage)}
@@ -306,6 +337,8 @@ function DealInlineEditForm({
 }
 
 function DealDetailPageLayout({
+  actionError,
+  deletePending,
   detail,
   followingLogs,
   followingLogsHasNext,
@@ -315,9 +348,16 @@ function DealDetailPageLayout({
   memoLogsHasNext,
   memoLogsFetchingNext,
   memoLogsLoading,
+  notice,
+  onClearActionError,
+  onClearNotice,
+  onDeleteDeal,
+  onDetailSaved,
   onFetchFollowingLogsNext,
   onFetchMemoLogsNext,
 }: {
+  readonly actionError: string | null;
+  readonly deletePending: boolean;
   readonly detail: DealDetail;
   readonly followingLogs: DealFollowingActionLog[];
   readonly followingLogsHasNext: boolean;
@@ -327,182 +367,79 @@ function DealDetailPageLayout({
   readonly memoLogsHasNext: boolean;
   readonly memoLogsFetchingNext: boolean;
   readonly memoLogsLoading: boolean;
+  readonly notice: string | null;
+  readonly onClearActionError: () => void;
+  readonly onClearNotice: () => void;
+  readonly onDeleteDeal: () => void;
+  readonly onDetailSaved: () => void;
   readonly onFetchFollowingLogsNext: () => void;
   readonly onFetchMemoLogsNext: () => void;
 }) {
   const nextAction = followingLogs[0];
   const [isEditing, setIsEditing] = useState(false);
-  const [activeSection, setActiveSection] = useState<"activity" | "memo" | "schedule">("activity");
   const companyName = formatDealCompanySummary(detail);
   const contactName = formatDealContactSummary(detail);
   const contactDepartmentName = formatDealContactDepartmentSummary(detail);
   const products = Array.isArray(detail.products) ? detail.products : [];
   const dealCost = Number.isFinite(detail.dealCost) ? detail.dealCost : 0;
   const dealName = detail.dealName ?? "-";
-  const deadlineLabel = getDeadlineLabel(detail.expectedEndDate);
-  const isOverdue = deadlineLabel.includes("지남");
 
   return (
     <>
-      {/* ── Mobile ── */}
-      <div className="flex flex-col bg-[#F3F4F6] md:hidden">
-        {/* 뒤로가기 헤더 */}
-        <div className="flex h-12 items-center gap-2 bg-white px-4 border-b border-[#E5E7EB]">
-          <Link
-            className="inline-flex h-8 w-8 items-center justify-center rounded-lg text-[#374151] hover:bg-[#F3F4F6]"
-            to="/deals"
-          >
-            <ArrowLeft className="h-5 w-5" />
-          </Link>
-          <span className="flex-1 truncate text-[15px] font-semibold text-[#111827]">
-            {dealName}
-          </span>
-        </div>
-
-        {/* Key Info Card */}
-        <div className="bg-white px-4 pb-4 pt-4">
-          {/* 단계 배지 */}
-          <div className="flex items-center gap-2">
-            <StatusBadge status={detail.dealStatus} />
-          </div>
-
-          {/* 금액 */}
-          <p className="mt-3 text-[26px] font-bold text-[#111827]">
-            ₩ {dealCost.toLocaleString("ko-KR")}
-          </p>
-
-          {/* 담당자 · 회사 */}
-          <p className="mt-1 text-[13px] text-[#374151]">
-            {contactName} · {companyName}
-          </p>
-
-          {/* 마감일 */}
-          <p
-            className="mt-1 text-[13px]"
-            style={{ color: isOverdue ? "#B91C1C" : "#6B7280" }}
-          >
-            {deadlineLabel} · {formatDate(detail.expectedEndDate)}
-          </p>
-
-          {/* Divider */}
-          <div className="my-3 h-px bg-[#F3F4F6]" />
-
-          {/* QuickActions */}
-          <div className="flex items-center justify-between">
-            <span className="text-[13px] font-medium text-[#374151]">
-              {contactName}
-            </span>
-            <div className="flex items-center gap-2">
-              <a
-                aria-label="전화"
-                className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-[#BFDBFE] bg-[#EFF6FF] text-[#2563EB] transition hover:bg-[#DBEAFE]"
-                href={`tel:`}
-              >
-                <Phone className="h-4 w-4" />
-              </a>
-              <button
-                aria-label="문자"
-                className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-[#BFDBFE] bg-[#EFF6FF] text-[#2563EB] transition hover:bg-[#DBEAFE]"
-                type="button"
-              >
-                <MessageCircle className="h-4 w-4" />
-              </button>
-              <a
-                aria-label="이메일"
-                className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-[#BFDBFE] bg-[#EFF6FF] text-[#2563EB] transition hover:bg-[#DBEAFE]"
-                href={`mailto:`}
-              >
-                <Mail className="h-4 w-4" />
-              </a>
-            </div>
-          </div>
-        </div>
-
-        {/* 두꺼운 Divider */}
-        <div className="h-[6px] bg-[#F3F4F6]" />
-
-        {/* Next Action Card */}
-        <div className="bg-white px-4 pb-4 pt-[14px]">
-          <div className="flex items-center justify-between gap-3">
-            <div className="flex items-center gap-2">
-              <span className="h-2 w-2 rounded-full bg-[#F59E0B]" />
-              <h3 className="text-[14px] font-semibold text-[#374151]">다음 행동</h3>
-            </div>
-            <button
-              className="inline-flex h-7 items-center rounded-md bg-[#F3F4F6] px-2.5 text-[12px] font-medium text-[#374151] hover:bg-[#E5E7EB]"
-              type="button"
-            >
-              완료
-            </button>
-          </div>
-          {followingLogsLoading ? (
-            <div className="mt-3 h-12 animate-pulse rounded-lg bg-[#F3F4F6]" />
-          ) : nextAction ? (
-            <div className="mt-3">
-              <p className="text-[14px] font-semibold text-[#111827]">
-                {nextAction.followingAction}
-              </p>
-              <p
-                className="mt-1 text-[12px]"
-                style={{ color: nextAction.checkComplete ? "#9CA3AF" : "#B91C1C" }}
-              >
-                {nextAction.checkComplete ? "완료됨" : "미완료"}
-              </p>
-            </div>
-          ) : (
-            <p className="mt-3 text-[13px] text-[#9CA3AF]">등록된 다음 행동이 없습니다.</p>
-          )}
-        </div>
-
-        {/* Thin Divider */}
-        <div className="h-px bg-[#E5E7EB]" />
-
-        {/* Section Tabs */}
-        <div className="flex bg-white">
-          {(
-            [
-              { key: "activity", label: "활동 로그" },
-              { key: "memo", label: "Memo" },
-              { key: "schedule", label: "일정" },
-            ] as const
-          ).map((tab) => (
-            <button
-              className={cn(
-                "flex-1 border-b-2 py-2.5 text-[13px] font-medium transition",
-                activeSection === tab.key
-                  ? "border-[#5E5CE6] bg-[#EEEEFF] text-[#5E5CE6]"
-                  : "border-transparent bg-transparent text-[#6B7280]",
-              )}
-              key={tab.key}
-              onClick={() => setActiveSection(tab.key)}
-              type="button"
-            >
-              {tab.label}
-            </button>
-          ))}
-        </div>
-
-        {/* + 활동 추가 row */}
-        {activeSection === "activity" ? (
-          <div className="flex items-center bg-[#EEEEFF] px-4 py-2">
-            <span className="text-[13px] font-medium text-[#2568D8]">+ 활동 추가</span>
+      <div className="md:hidden min-h-screen bg-[#FAFAF8]">
+        {notice ? (
+          <div className="px-4 pt-3">
+            <Toast message={notice} onClose={onClearNotice} variant="success" />
           </div>
         ) : null}
+        {actionError ? (
+          <div className="px-4 pt-3">
+            <Toast message={actionError} onClose={onClearActionError} variant="error" />
+          </div>
+        ) : null}
+        <DealDetailTopBar
+          deletePending={deletePending}
+          dealName={dealName}
+          isEditing={isEditing}
+          onDelete={onDeleteDeal}
+          onToggleEdit={() => setIsEditing((value) => !value)}
+        />
 
-        {/* Section Content */}
-        <div className="bg-white px-4 pb-4 pt-3">
-          {activeSection === "activity" ? (
-            <FollowingActionLogsSection
-              dealId={detail.id}
-              hasNext={followingLogsHasNext}
-              isFetchingNext={followingLogsFetchingNext}
+        <div className="flex flex-col gap-4 p-4 pb-24">
+          <DealSummaryHeader
+            companyName={companyName}
+            contactDepartmentName={contactDepartmentName}
+            contactName={contactName}
+            dealCost={dealCost}
+            detail={detail}
+            isEditing={isEditing}
+            onCancelEdit={() => setIsEditing(false)}
+            onSaved={() => {
+              onDetailSaved();
+              setIsEditing(false);
+            }}
+          />
+          <div className="grid gap-4">
+            <DealLinkedCompaniesTable companies={detail.companies} />
+            <DealLinkedContactsTable contacts={detail.contacts} />
+            <DealLinkedProductsTable products={products} />
+            <NextActionSummary
               isLoading={followingLogsLoading}
-              logs={followingLogs}
-              onFetchNext={onFetchFollowingLogsNext}
-              tone="page-inner"
+              log={nextAction}
+              tone="page"
             />
-          ) : activeSection === "memo" ? (
-            <>
+            <DealLogPanel>
+              <FollowingActionLogsSection
+                dealId={detail.id}
+                hasNext={followingLogsHasNext}
+                isFetchingNext={followingLogsFetchingNext}
+                isLoading={followingLogsLoading}
+                logs={followingLogs}
+                onFetchNext={onFetchFollowingLogsNext}
+                tone="page-inner"
+              />
+            </DealLogPanel>
+            <DealLogPanel>
               <MemoLogsSection
                 dealId={detail.id}
                 hasNext={memoLogsHasNext}
@@ -512,177 +449,370 @@ function DealDetailPageLayout({
                 onFetchNext={onFetchMemoLogsNext}
                 tone="page-inner"
               />
-            </>
-          ) : (
-            <p className="py-6 text-center text-[13px] text-[#9CA3AF]">일정 기능 준비 중입니다.</p>
-          )}
-        </div>
-
-        {/* 두꺼운 Divider */}
-        <div className="h-[6px] bg-[#F3F4F6]" />
-
-        {/* Memo Section (딜 Memo) */}
-        <div className="bg-white px-4 pb-6 pt-[14px]">
-          <MemoLogsSection
-            dealId={detail.id}
-            hasNext={memoLogsHasNext}
-            isFetchingNext={memoLogsFetchingNext}
-            isLoading={memoLogsLoading}
-            logs={memoLogs}
-            onFetchNext={onFetchMemoLogsNext}
-            tone="page-inner"
-          />
-          <p className="mt-2 text-[12px] text-[#9CA3AF]">개인 메모는 암호화 저장됩니다.</p>
+            </DealLogPanel>
+          </div>
         </div>
       </div>
 
-      {/* ── Desktop ── */}
-      <main className="hidden min-h-[calc(100vh-var(--topbar-height))] bg-[#F9FAFB] px-4 py-4 md:block md:px-6 md:py-6">
-        <div className="mx-auto grid max-w-7xl gap-5">
-          <Link
-            className="inline-flex w-fit items-center gap-1.5 text-[13px] font-medium text-[#64748B] hover:text-[#374151]"
-            to="/deals"
-          >
-            <ArrowLeft className="h-4 w-4" />
-            딜 목록
-          </Link>
+      <div className="hidden md:flex h-full flex-col bg-[#FAFAF8]">
+        {notice ? (
+          <div className="mx-6 mt-3">
+            <Toast message={notice} onClose={onClearNotice} variant="success" />
+          </div>
+        ) : null}
+        {actionError ? (
+          <div className="mx-6 mt-3">
+            <Toast message={actionError} onClose={onClearActionError} variant="error" />
+          </div>
+        ) : null}
+        <DealDetailTopBar
+          deletePending={deletePending}
+          dealName={dealName}
+          isEditing={isEditing}
+          onDelete={onDeleteDeal}
+          onToggleEdit={() => setIsEditing((value) => !value)}
+        />
 
-          <section className="rounded-lg border border-[#E5EAF0] bg-white p-4 md:p-5">
-            <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
-              <div className="min-w-0">
-                <div className="flex flex-wrap items-center gap-2">
-                  <StatusBadge status={detail.dealStatus} />
-                  <span className="rounded-full bg-[#F3F4F6] px-2.5 py-1 text-[11px] font-medium text-[#64748B]">
-                    {getDeadlineLabel(detail.expectedEndDate)}
-                  </span>
-                </div>
-                <h1 className="mt-3 text-[22px] font-semibold leading-tight text-[#111827] md:text-[26px]">
-                  {dealName}
-                </h1>
-                <p className="mt-2 text-[13px] text-[#64748B]">
-                  {companyName} · {contactName} · {contactDepartmentName}
-                </p>
-              </div>
+        <div className="flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto p-6">
+          <DealSummaryHeader
+            companyName={companyName}
+            contactDepartmentName={contactDepartmentName}
+            contactName={contactName}
+            dealCost={dealCost}
+            detail={detail}
+            isEditing={isEditing}
+            onCancelEdit={() => setIsEditing(false)}
+            onSaved={() => {
+              onDetailSaved();
+              setIsEditing(false);
+            }}
+          />
 
-              <div className="flex shrink-0 flex-col gap-3 lg:min-w-[260px]">
-                <button
-                  className={cn(
-                    "inline-flex h-9 items-center justify-center gap-1.5 rounded-md border px-3 text-[13px] font-semibold transition",
-                    isEditing
-                      ? "border-[#C7D7FE] bg-[#EAF2FF] text-[#1D4ED8]"
-                      : "border-[#E2E5EC] bg-white text-[#374151] hover:bg-[#F5F6F8]",
-                  )}
-                  onClick={() => setIsEditing((value) => !value)}
-                  type="button"
-                >
-                  {isEditing ? <X className="h-4 w-4" /> : <Pencil className="h-4 w-4" />}
-                  {isEditing ? "수정 취소" : "정보 수정"}
-                </button>
-                <div className="rounded-lg bg-[#F9FAFB] px-4 py-3">
-                  <p className="text-[12px] font-medium text-[#64748B]">예상 금액</p>
-                  <p className="mt-1 text-[26px] font-semibold tracking-normal text-[#111827]">
-                    {dealCost.toLocaleString("ko-KR")}원
-                  </p>
-                  <p className="mt-2 text-[12px] text-[#94A3B8]">
-                    마감 예정일 {formatDate(detail.expectedEndDate)}
-                  </p>
-                </div>
-              </div>
-            </div>
+          <div className="grid grid-cols-3 gap-4">
+            <DealLinkedCompaniesTable companies={detail.companies} />
+            <DealLinkedContactsTable contacts={detail.contacts} />
+            <DealLinkedProductsTable products={products} />
+          </div>
 
-            <div className="mt-5 grid gap-3 md:grid-cols-4">
-              <MetricCard icon={Building2} label="회사" value={companyName} />
-              <MetricCard
-                icon={UserRound}
-                label="담당자"
-                value={`${contactName} ${contactDepartmentName}`}
+          <div className="grid grid-cols-[minmax(0,1fr)_360px] gap-4">
+            <DealLogPanel>
+              <FollowingActionLogsSection
+                dealId={detail.id}
+                hasNext={followingLogsHasNext}
+                isFetchingNext={followingLogsFetchingNext}
+                isLoading={followingLogsLoading}
+                logs={followingLogs}
+                onFetchNext={onFetchFollowingLogsNext}
+                tone="page-inner"
               />
-              <MetricCard
-                icon={CalendarClock}
-                label="등록일"
-                value={formatDateTime(detail.createdAt)}
-              />
-              <MetricCard
-                icon={RefreshCw}
-                label="수정일"
-                value={formatDateTime(detail.updatedAt)}
-              />
-            </div>
-
-            {isEditing ? (
-              <div className="mt-5">
-                <DealInlineEditForm
-                  detail={detail}
-                  onSaved={() => setIsEditing(false)}
-                />
-              </div>
-            ) : null}
-          </section>
-
-          <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_360px]">
-            <div className="grid min-w-0 gap-5">
+            </DealLogPanel>
+            <div className="grid h-fit gap-4">
               <NextActionSummary
                 isLoading={followingLogsLoading}
                 log={nextAction}
                 tone="page"
               />
-
-              <section className="rounded-lg border border-[#E5EAF0] bg-white">
-                <div className="flex h-11 items-center border-b border-[#E5EAF0] px-2">
-                  <span className="inline-flex h-8 items-center rounded-md bg-[#EEEEFF] px-3 text-[13px] font-semibold text-[#5E5CE6]">
-                    활동 로그
-                  </span>
-                  <span className="inline-flex h-8 items-center px-3 text-[13px] font-medium text-[#64748B]">
-                    Memo
-                  </span>
-                  <span className="inline-flex h-8 items-center px-3 text-[13px] font-medium text-[#64748B]">
-                    일정
-                  </span>
-                </div>
-                <div className="grid gap-5 p-4">
-                  <FollowingActionLogsSection
-                    dealId={detail.id}
-                    hasNext={followingLogsHasNext}
-                    isFetchingNext={followingLogsFetchingNext}
-                    isLoading={followingLogsLoading}
-                    logs={followingLogs}
-                    onFetchNext={onFetchFollowingLogsNext}
-                    tone="page-inner"
-                  />
-                  <MemoLogsSection
-                    dealId={detail.id}
-                    hasNext={memoLogsHasNext}
-                    isFetchingNext={memoLogsFetchingNext}
-                    isLoading={memoLogsLoading}
-                    logs={memoLogs}
-                    onFetchNext={onFetchMemoLogsNext}
-                    tone="page-inner"
-                  />
-                </div>
-              </section>
-            </div>
-
-            <aside className="grid h-fit gap-5">
-              <section className="rounded-lg border border-[#E5EAF0] bg-white p-4">
-                <DealProductsSection products={products} />
-              </section>
-              <section className="rounded-lg border border-[#E5EAF0] bg-white p-4">
+              <section className="rounded-xl border border-[#E5E7EB] bg-white p-4">
                 <StageProgressSection activeStatus={detail.dealStatus} />
               </section>
-              <section className="rounded-lg border border-[#E5EAF0] bg-white p-4">
-                <h3 className="text-[13px] font-semibold text-[#374151]">요약 정보</h3>
-                <dl className="mt-3 grid gap-2 text-sm">
-                  <DetailRow label="단계" value={DEAL_STATUS_LABEL[detail.dealStatus]} />
-                  <DetailRow label="마감일" value={formatDate(detail.expectedEndDate)} />
-                  <DetailRow label="제품 수" value={`${products.length}개`} />
-                  <DetailRow label="수정일" value={formatDateTime(detail.updatedAt)} />
-                </dl>
-              </section>
-            </aside>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <DealLogPanel>
+              <MemoLogsSection
+                dealId={detail.id}
+                hasNext={memoLogsHasNext}
+                isFetchingNext={memoLogsFetchingNext}
+                isLoading={memoLogsLoading}
+                logs={memoLogs}
+                onFetchNext={onFetchMemoLogsNext}
+                tone="page-inner"
+              />
+            </DealLogPanel>
+            <DealInfoPanel
+              detail={detail}
+              productCount={products.length}
+            />
           </div>
         </div>
-      </main>
+      </div>
     </>
+  );
+}
+
+function DealDetailTopBar({
+  deletePending,
+  dealName,
+  isEditing,
+  onDelete,
+  onToggleEdit,
+}: {
+  readonly deletePending: boolean;
+  readonly dealName: string;
+  readonly isEditing: boolean;
+  readonly onDelete: () => void;
+  readonly onToggleEdit: () => void;
+}) {
+  return (
+    <div className="flex h-16 shrink-0 items-center gap-3 bg-transparent px-6">
+      <Link to="/deals">
+        <ChevronLeft className="h-5 w-5 text-[#9CA3AF]" />
+      </Link>
+      <div className="flex min-w-0 flex-1 items-center gap-1.5 text-[13px]">
+        <BriefcaseBusiness className="h-3.5 w-3.5 shrink-0 text-[#9CA3AF]" />
+        <span className="font-medium text-[#6B7280]">딜</span>
+        <span className="text-[#9CA3AF]">/</span>
+        <span className="truncate font-bold text-[#111827]">{dealName}</span>
+      </div>
+      <button
+        aria-label={isEditing ? "수정 취소" : "수정"}
+        className="flex h-9 w-9 items-center justify-center rounded-lg border border-[#E5E7EB] bg-white text-[#374151] transition-colors hover:bg-[#F9FAFB]"
+        onClick={onToggleEdit}
+        type="button"
+      >
+        {isEditing ? <X className="h-4 w-4" /> : <Pencil className="h-4 w-4" />}
+      </button>
+      <button
+        aria-label="삭제"
+        className="flex h-9 w-9 items-center justify-center rounded-lg border border-[#FEE2E2] bg-white text-[#B91C1C] transition-colors hover:bg-red-50 disabled:opacity-50"
+        disabled={deletePending}
+        onClick={onDelete}
+        type="button"
+      >
+        <Trash2 className="h-4 w-4" />
+      </button>
+    </div>
+  );
+}
+
+function DealSummaryHeader({
+  companyName,
+  contactDepartmentName,
+  contactName,
+  dealCost,
+  detail,
+  isEditing,
+  onCancelEdit,
+  onSaved,
+}: {
+  readonly companyName: string;
+  readonly contactDepartmentName: string;
+  readonly contactName: string;
+  readonly dealCost: number;
+  readonly detail: DealDetail;
+  readonly isEditing: boolean;
+  readonly onCancelEdit: () => void;
+  readonly onSaved: () => void;
+}) {
+  if (isEditing) {
+    return (
+      <div className="rounded-xl border border-[#BFDBFE] bg-white p-4">
+        <DealInlineEditForm
+          detail={detail}
+          onSaved={onSaved}
+        />
+        <div className="mt-3 flex justify-end">
+          <button
+            className="h-9 rounded-lg border border-[#DDE3EE] bg-white px-3 text-[13px] font-semibold text-[#6B7280] transition-colors hover:bg-[#F9FAFB]"
+            onClick={onCancelEdit}
+            type="button"
+          >
+            취소
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex min-h-[74px] flex-wrap items-center gap-3 rounded-xl border border-[#E5E7EB] bg-white px-5 py-4">
+      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#EEF2FF]">
+        <BriefcaseBusiness className="h-5 w-5 text-[#4F46E5]" />
+      </div>
+      <span className="min-w-[180px] flex-1 truncate text-[20px] font-extrabold leading-none text-[#111827]">
+        {detail.dealName}
+      </span>
+      <StatusBadge status={detail.dealStatus} />
+      <div className="hidden h-5 w-px shrink-0 bg-[#E5E7EB] md:block" />
+      <DealSummaryChip label="금액" value={`${dealCost.toLocaleString("ko-KR")}원`} />
+      <DealSummaryChip label="마감" value={formatDate(detail.expectedEndDate)} />
+      <DealSummaryChip label="회사" value={companyName} />
+      <DealSummaryChip label="담당자" value={`${contactName} ${contactDepartmentName}`} />
+      <div className="flex-1" />
+      <div className="flex items-center gap-4 text-[12px] text-[#9CA3AF]">
+        <span>등록 {formatDateTime(detail.createdAt, { includeYear: true })}</span>
+        <span>수정 {formatDateTime(detail.updatedAt, { includeYear: true })}</span>
+      </div>
+    </div>
+  );
+}
+
+function DealSummaryChip({
+  label,
+  value,
+}: {
+  readonly label: string;
+  readonly value: string;
+}) {
+  return (
+    <div className="flex min-w-0 items-center gap-1.5 text-[13px]">
+      <span className="shrink-0 font-semibold text-[#9CA3AF]">{label}</span>
+      <span className="truncate font-extrabold text-[#111827]">{value}</span>
+    </div>
+  );
+}
+
+function DealLinkedCompaniesTable({
+  companies,
+}: {
+  readonly companies: DealDetail["companies"];
+}) {
+  return (
+    <DealLinkedTableFrame count={companies.length} title="연결 회사">
+      {companies.length === 0 ? (
+        <p className="px-4 py-4 text-[13px] text-[#9CA3AF]">연결된 회사가 없습니다.</p>
+      ) : (
+        <div className={companies.length > 4 ? "max-h-[232px] overflow-y-auto" : ""}>
+          {companies.map((company) => (
+            <Link
+              className="flex h-[58px] items-center gap-3 border-b border-[#F3F4F6] bg-white px-4 transition-colors last:border-0 hover:bg-[#F9FAFB]"
+              key={company.id}
+              to={`/companies/${company.id}`}
+            >
+              <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#EEF2FF]">
+                <Building2 className="h-3.5 w-3.5 text-[#4F46E5]" />
+              </div>
+              <span className="min-w-0 flex-1 truncate text-[13px] font-extrabold text-[#111827]">
+                {company.companyName}
+              </span>
+              <ChevronRight className="h-4 w-4 shrink-0 text-[#D1D5DB]" />
+            </Link>
+          ))}
+        </div>
+      )}
+    </DealLinkedTableFrame>
+  );
+}
+
+function DealLinkedContactsTable({
+  contacts,
+}: {
+  readonly contacts: DealDetail["contacts"];
+}) {
+  return (
+    <DealLinkedTableFrame count={contacts.length} title="연결 담당자">
+      {contacts.length === 0 ? (
+        <p className="px-4 py-4 text-[13px] text-[#9CA3AF]">연결된 담당자가 없습니다.</p>
+      ) : (
+        <div className={contacts.length > 4 ? "max-h-[232px] overflow-y-auto" : ""}>
+          {contacts.map((contact) => (
+            <Link
+              className="flex h-[58px] items-center gap-3 border-b border-[#F3F4F6] bg-white px-4 transition-colors last:border-0 hover:bg-[#F9FAFB]"
+              key={contact.id}
+              to={`/contacts/${contact.id}`}
+            >
+              <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#DBEAFE]">
+                <UserRound className="h-3.5 w-3.5 text-[#2563EB]" />
+              </div>
+              <div className="min-w-0 flex-1">
+                <span className="block truncate text-[13px] font-extrabold text-[#111827]">
+                  {contact.username}
+                </span>
+                <span className="mt-0.5 block truncate text-[11px] font-semibold text-[#9CA3AF]">
+                  {contact.contactDepartment.departmentName}
+                </span>
+              </div>
+              <ChevronRight className="h-4 w-4 shrink-0 text-[#D1D5DB]" />
+            </Link>
+          ))}
+        </div>
+      )}
+    </DealLinkedTableFrame>
+  );
+}
+
+function DealLinkedProductsTable({
+  products,
+}: {
+  readonly products: DealDetail["products"];
+}) {
+  return (
+    <DealLinkedTableFrame count={products.length} title="연결 제품">
+      {products.length === 0 ? (
+        <p className="px-4 py-4 text-[13px] text-[#9CA3AF]">연결된 제품이 없습니다.</p>
+      ) : (
+        <div className={products.length > 4 ? "max-h-[232px] overflow-y-auto" : ""}>
+          {products.map((product) => (
+            <Link
+              className="flex h-[58px] items-center gap-3 border-b border-[#F3F4F6] bg-white px-4 transition-colors last:border-0 hover:bg-[#F9FAFB]"
+              key={product.id}
+              to={`/products/${product.id}`}
+            >
+              <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#F0FDF4]">
+                <Package className="h-3.5 w-3.5 text-[#15803D]" />
+              </div>
+              <span className="min-w-0 flex-1 truncate text-[13px] font-extrabold text-[#111827]">
+                {product.productName}
+              </span>
+              <ChevronRight className="h-4 w-4 shrink-0 text-[#D1D5DB]" />
+            </Link>
+          ))}
+        </div>
+      )}
+    </DealLinkedTableFrame>
+  );
+}
+
+function DealLinkedTableFrame({
+  children,
+  count,
+  title,
+}: {
+  readonly children: ReactNode;
+  readonly count: number;
+  readonly title: string;
+}) {
+  return (
+    <div className="flex flex-col overflow-hidden rounded-xl border border-[#E5E7EB] bg-white">
+      <div className="flex h-[48px] shrink-0 items-center gap-2 border-b border-[#E5E7EB] px-4">
+        <span className="text-[14px] font-extrabold text-[#111827]">{title}</span>
+        <span className="text-[13px] font-semibold text-[#9CA3AF]">{count}</span>
+      </div>
+      {children}
+    </div>
+  );
+}
+
+function DealLogPanel({
+  children,
+}: {
+  readonly children: ReactNode;
+}) {
+  return (
+    <div className="rounded-xl border border-[#E5E7EB] bg-white p-4">
+      {children}
+    </div>
+  );
+}
+
+function DealInfoPanel({
+  detail,
+  productCount,
+}: {
+  readonly detail: DealDetail;
+  readonly productCount: number;
+}) {
+  return (
+    <div className="rounded-xl border border-[#E5E7EB] bg-white p-4">
+      <h2 className="mb-3 text-[14px] font-extrabold text-[#111827]">요약 정보</h2>
+      <dl className="grid gap-2 text-sm">
+        <DetailRow label="단계" value={DEAL_STATUS_LABEL[detail.dealStatus]} />
+        <DetailRow label="마감일" value={formatDate(detail.expectedEndDate)} />
+        <DetailRow label="제품 수" value={`${productCount}개`} />
+        <DetailRow label="수정일" value={formatDateTime(detail.updatedAt)} />
+      </dl>
+    </div>
   );
 }
 
