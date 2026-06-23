@@ -143,8 +143,8 @@ function DealDetailSidePanel({
   readonly onFetchFollowingLogsNext: () => void;
 }) {
   const nextAction = followingLogs[0];
-  const companyName = detail.company?.companyName ?? "-";
-  const contactName = detail.contact?.username ?? "-";
+  const companyName = formatDealCompanySummary(detail);
+  const contactName = formatDealContactSummary(detail);
   const products = Array.isArray(detail.products) ? detail.products : [];
   const dealCost = Number.isFinite(detail.dealCost) ? detail.dealCost : 0;
   const dealName = detail.dealName ?? "-";
@@ -333,9 +333,9 @@ function DealDetailPageLayout({
   const nextAction = followingLogs[0];
   const [isEditing, setIsEditing] = useState(false);
   const [activeSection, setActiveSection] = useState<"activity" | "memo" | "schedule">("activity");
-  const companyName = detail.company?.companyName ?? "-";
-  const contactName = detail.contact?.username ?? "-";
-  const contactDepartmentName = detail.contact?.contactDepartment?.departmentName ?? "-";
+  const companyName = formatDealCompanySummary(detail);
+  const contactName = formatDealContactSummary(detail);
+  const contactDepartmentName = formatDealContactDepartmentSummary(detail);
   const products = Array.isArray(detail.products) ? detail.products : [];
   const dealCost = Number.isFinite(detail.dealCost) ? detail.dealCost : 0;
   const dealName = detail.dealName ?? "-";
@@ -702,6 +702,23 @@ function DealStateShell({
   }
 
   return <div className="grid gap-5 p-5">{children}</div>;
+}
+
+function formatDealCompanySummary(detail: DealDetail): string {
+  return detail.companies.map((company) => company.companyName).join(", ") || "-";
+}
+
+function formatDealContactSummary(detail: DealDetail): string {
+  return detail.contacts.map((contact) => contact.username).join(", ") || "-";
+}
+
+function formatDealContactDepartmentSummary(detail: DealDetail): string {
+  return (
+    detail.contacts
+      .map((contact) => contact.contactDepartment.departmentName)
+      .filter(Boolean)
+      .join(", ") || "-"
+  );
 }
 
 function StatusBadge({ status }: { readonly status: DealStatus }) {

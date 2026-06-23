@@ -97,6 +97,10 @@ model User {
   productPrivateMemoLogs   ProductUserPrivateMemoLog[]
   /// 기능 : 사용자가 등록한 딜 목록이다.
   deals                    Deal[]
+  /// 기능 : 사용자가 딜에 연결한 회사 매핑 목록이다.
+  dealCompanies            DealCompany[]
+  /// 기능 : 사용자가 딜에 연결한 담당자 매핑 목록이다.
+  dealContacts             DealContact[]
   /// 기능 : 사용자가 작성한 딜 다음 행동 로그 목록이다.
   dealFollowingActionLogs  DealFollowingActionLog[]
   /// 기능 : 사용자가 작성한 딜 메모 로그 목록이다.
@@ -201,8 +205,8 @@ model Company {
   privateMemoLogs CompanyUserPrivateMemoLog[]
   /// 기능 : 회사에 소속된 담당자 목록이다.
   contacts        Contact[]
-  /// 기능 : 회사에 연결된 딜 목록이다.
-  deals           Deal[]
+  /// 기능 : 회사가 연결된 딜 매핑 목록이다.
+  dealCompanies   DealCompany[]
   meetingNoteCompanies MeetingNoteCompany[]
   meetingNoteContacts  MeetingNoteContact[]
 
@@ -236,8 +240,8 @@ model Contact {
   memoLogs            ContactMemoLog[]
   /// 기능 : 작성자 본인만 복호화해 볼 수 있는 담당자 개인 비밀 메모 로그 목록이다.
   privateMemoLogs     ContactUserPrivateMemoLog[]
-  /// 기능 : 담당자에 연결된 딜 목록이다.
-  deals               Deal[]
+  /// 기능 : 담당자가 연결된 딜 매핑 목록이다.
+  dealContacts        DealContact[]
   meetingNoteContacts MeetingNoteContact[]
 
   @@index([userId, createdAt])
@@ -414,8 +418,6 @@ model Deal {
   userId          String   @db.Uuid
   dealName        String
   dealCost        Int
-  companyId       String   @db.Uuid
-  contactId       String   @db.Uuid
   dealStatus      String
   expectedEndDate DateTime @db.Date
   createdAt       DateTime @default(now())
@@ -423,10 +425,10 @@ model Deal {
 
   /// 기능 : 딜을 등록한 사용자다. 모든 딜 API는 이 userId로 소유권을 검증한다.
   user                User                     @relation(fields: [userId], references: [id])
-  /// 기능 : 딜이 연결된 회사다.
-  company             Company                  @relation(fields: [companyId], references: [id])
-  /// 기능 : 딜이 연결된 담당자다.
-  contact             Contact                  @relation(fields: [contactId], references: [id])
+  /// 기능 : 딜에 연결된 회사 매핑 목록이다. 딜 하나는 여러 회사와 연결될 수 있다.
+  dealCompanies       DealCompany[]
+  /// 기능 : 딜에 연결된 담당자 매핑 목록이다. 딜 하나는 여러 담당자와 연결될 수 있다.
+  dealContacts        DealContact[]
   /// 기능 : 딜에 연결된 제품 매핑 목록이다. 딜 하나는 여러 제품을 가질 수 있다.
   dealProducts        DealProduct[]
   /// 기능 : 딜 다음 행동 로그 목록이다.
@@ -442,7 +444,47 @@ model Deal {
   @@index([userId, dealStatus])
   @@index([userId, expectedEndDate])
   @@index([userId, dealCost])
+}
+
+model DealCompany {
+  id        String   @id @default(uuid()) @db.Uuid
+  userId    String   @db.Uuid
+  dealId    String   @db.Uuid
+  companyId String   @db.Uuid
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  /// 기능 : 딜-회사 연결을 만든 사용자다. 모든 딜 회사 연결은 이 userId로 소유권을 검증한다.
+  user      User    @relation(fields: [userId], references: [id])
+  /// 기능 : 회사가 연결된 딜이다.
+  deal      Deal    @relation(fields: [dealId], references: [id])
+  /// 기능 : 딜에 연결된 회사다.
+  company   Company @relation(fields: [companyId], references: [id])
+
+  @@unique([dealId, companyId])
+  @@index([userId, dealId])
+  @@index([userId, companyId])
   @@index([companyId])
+}
+
+model DealContact {
+  id        String   @id @default(uuid()) @db.Uuid
+  userId    String   @db.Uuid
+  dealId    String   @db.Uuid
+  contactId String   @db.Uuid
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  /// 기능 : 딜-담당자 연결을 만든 사용자다. 모든 딜 담당자 연결은 이 userId로 소유권을 검증한다.
+  user      User    @relation(fields: [userId], references: [id])
+  /// 기능 : 담당자가 연결된 딜이다.
+  deal      Deal    @relation(fields: [dealId], references: [id])
+  /// 기능 : 딜에 연결된 담당자다.
+  contact   Contact @relation(fields: [contactId], references: [id])
+
+  @@unique([dealId, contactId])
+  @@index([userId, dealId])
+  @@index([userId, contactId])
   @@index([contactId])
 }
 

@@ -66,8 +66,8 @@ export interface DealListRecord {
   readonly dealCost: number;
   readonly dealStatus: DealStatusCode;
   readonly expectedEndDate: Date;
-  readonly company: DealCompanyRecord;
-  readonly contact: DealContactRecord;
+  readonly companies: DealCompanyRecord[];
+  readonly contacts: DealContactRecord[];
   readonly latestFollowingAction: DealFollowingActionLogRecord | null;
   readonly createdAt: Date;
   readonly updatedAt: Date;
@@ -90,8 +90,8 @@ export interface ListDealsInput {
   readonly page: number;
   readonly pageSize: number;
   readonly search?: string;
-  readonly companyId?: string;
-  readonly contactId?: string;
+  readonly companyIds?: readonly string[];
+  readonly contactIds?: readonly string[];
   readonly dealStatus?: DealStatusCode;
   readonly sort: DealListSort;
 }
@@ -100,16 +100,16 @@ export interface ListDealsInput {
 export interface CountDealsByStatusInput {
   readonly userId: string;
   readonly search?: string;
-  readonly companyId?: string;
-  readonly contactId?: string;
+  readonly companyIds?: readonly string[];
+  readonly contactIds?: readonly string[];
 }
 
 // 역할 : ExportDealsInput 데이터가 계층 사이에서 전달되는 구조를 정의합니다.
 export interface ExportDealsInput {
   readonly userId: string;
   readonly search?: string;
-  readonly companyId?: string;
-  readonly contactId?: string;
+  readonly companyIds?: readonly string[];
+  readonly contactIds?: readonly string[];
   readonly dealStatus?: DealStatusCode;
   readonly sort: DealListSort;
 }
@@ -119,8 +119,6 @@ export interface CreateDealInput {
   readonly userId: string;
   readonly dealName: string;
   readonly dealCost: number;
-  readonly companyId: string;
-  readonly contactId: string;
   readonly dealStatus: DealStatusCode;
   readonly expectedEndDate: Date;
 }
@@ -129,8 +127,6 @@ export interface CreateDealInput {
 export interface UpdateDealInput {
   readonly dealName?: string;
   readonly dealCost?: number;
-  readonly companyId?: string;
-  readonly contactId?: string;
   readonly expectedEndDate?: Date;
   readonly dealStatus?: DealStatusCode;
 }
@@ -147,6 +143,20 @@ export interface CreateDealProductsInput {
   readonly userId: string;
   readonly dealId: string;
   readonly productIds: string[];
+}
+
+// 역할 : CreateDealCompaniesInput 데이터가 계층 사이에서 전달되는 구조를 정의합니다.
+export interface CreateDealCompaniesInput {
+  readonly userId: string;
+  readonly dealId: string;
+  readonly companyIds: string[];
+}
+
+// 역할 : CreateDealContactsInput 데이터가 계층 사이에서 전달되는 구조를 정의합니다.
+export interface CreateDealContactsInput {
+  readonly userId: string;
+  readonly dealId: string;
+  readonly contactIds: string[];
 }
 
 // 역할 : UpdateDealFollowingActionLogInput 데이터가 계층 사이에서 전달되는 구조를 정의합니다.
@@ -199,12 +209,29 @@ export interface DealRepository {
     dealId: string,
     input: UpdateDealInput
   ): Promise<boolean>;
-  // 기능 : 현재 사용자의 회사 단건을 조회합니다.
-  findCompany(userId: string, companyId: string): Promise<DealCompanyRecord | null>;
-  // 기능 : 현재 사용자의 담당자 단건을 조회합니다.
-  findContact(userId: string, contactId: string): Promise<DealContactRecord | null>;
+  // 기능 : 현재 사용자의 회사 목록을 조회합니다.
+  findCompanies(
+    userId: string,
+    companyIds: readonly string[]
+  ): Promise<DealCompanyRecord[]>;
+  // 기능 : 현재 사용자의 담당자 목록을 조회합니다.
+  findContacts(
+    userId: string,
+    contactIds: readonly string[]
+  ): Promise<DealContactRecord[]>;
   // 기능 : 현재 사용자의 제품 단건을 조회합니다.
-  findProducts(userId: string, productIds: string[]): Promise<DealProductRecord[]>;
+  findProducts(
+    userId: string,
+    productIds: readonly string[]
+  ): Promise<DealProductRecord[]>;
+  // 기능 : 딜에 회사 목록을 연결합니다.
+  createDealCompanies(input: CreateDealCompaniesInput): Promise<void>;
+  // 기능 : 딜에 연결된 회사 목록을 교체합니다.
+  replaceDealCompanies(input: CreateDealCompaniesInput): Promise<void>;
+  // 기능 : 딜에 담당자 목록을 연결합니다.
+  createDealContacts(input: CreateDealContactsInput): Promise<void>;
+  // 기능 : 딜에 연결된 담당자 목록을 교체합니다.
+  replaceDealContacts(input: CreateDealContactsInput): Promise<void>;
   // 기능 : 딜에 제품 목록을 연결합니다.
   createDealProducts(input: CreateDealProductsInput): Promise<void>;
   // 기능 : 딜에 연결된 제품 목록을 교체합니다.

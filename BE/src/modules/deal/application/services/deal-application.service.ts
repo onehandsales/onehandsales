@@ -50,8 +50,8 @@ const XLSX_DATE_NUM_FORMAT = "yyyy-mm-dd hh:mm:ss";
 export interface DealListQueryInput {
   readonly page?: number;
   readonly search?: string;
-  readonly companyId?: string;
-  readonly contactId?: string;
+  readonly companyIds?: string[];
+  readonly contactIds?: string[];
   readonly dealStatus?: DealStatusCode;
   readonly sort?: DealListSort;
 }
@@ -59,15 +59,15 @@ export interface DealListQueryInput {
 // 역할 : DealStageCountQueryInput 단계별 개수 query 조건을 정의합니다.
 export interface DealStageCountQueryInput {
   readonly search?: string;
-  readonly companyId?: string;
-  readonly contactId?: string;
+  readonly companyIds?: string[];
+  readonly contactIds?: string[];
 }
 
 // 역할 : DealExportQueryInput 딜 export query 조건을 정의합니다.
 export interface DealExportQueryInput {
   readonly search?: string;
-  readonly companyId?: string;
-  readonly contactId?: string;
+  readonly companyIds?: string[];
+  readonly contactIds?: string[];
   readonly dealStatus?: DealStatusCode;
   readonly sort?: DealListSort;
 }
@@ -81,8 +81,8 @@ export interface CursorQueryInput {
 export interface CreateDealCommand {
   readonly dealName: string;
   readonly dealCost: number;
-  readonly companyId: string;
-  readonly contactId: string;
+  readonly companyIds: string[];
+  readonly contactIds: string[];
   readonly productIds: string[];
   readonly dealStatus: DealStatusCode;
   readonly followingAction: string;
@@ -93,14 +93,16 @@ export interface CreateDealCommand {
 export interface UpdateDealCommand {
   readonly dealName?: string;
   readonly dealCost?: number;
-  readonly companyId?: string;
-  readonly contactId?: string;
+  readonly companyIds?: string[];
+  readonly contactIds?: string[];
   readonly productIds?: string[];
   readonly expectedEndDate?: string;
   readonly dealStatus?: DealStatusCode;
 }
 
 type NormalizedDealUpdateInput = UpdateDealInput & {
+  readonly companyIds?: string[];
+  readonly contactIds?: string[];
   readonly productIds?: string[];
 };
 
@@ -130,8 +132,8 @@ export interface DealListItemResponse {
   readonly dealStatus: DealStatusCode;
   readonly dealStatusLabel: string;
   readonly expectedEndDate: string;
-  readonly company: DealCompanyRecord;
-  readonly contact: DealContactResponse;
+  readonly companies: DealCompanyRecord[];
+  readonly contacts: DealContactResponse[];
   readonly latestFollowingAction: DealLatestFollowingActionResponse | null;
   readonly createdAt: string;
   readonly updatedAt: string;
@@ -235,18 +237,20 @@ export class DealApplicationService {
     query: DealStageCountQueryInput = {}
   ): Promise<DealStageCountResponse> {
     const search = this.normalizeOptionalText(query.search);
+    const companyIds = this.normalizeOptionalIdArray(query.companyIds ?? []);
+    const contactIds = this.normalizeOptionalIdArray(query.contactIds ?? []);
     const counts = await this.dealRepository.countDealsByStatus({
       userId: currentUser.id,
       ...(search ? { search } : {}),
-      ...(query.companyId ? { companyId: query.companyId } : {}),
-      ...(query.contactId ? { contactId: query.contactId } : {}),
+      ...(companyIds.length > 0 ? { companyIds } : {}),
+      ...(contactIds.length > 0 ? { contactIds } : {}),
     });
 
     this.logEvent("deal.stage_counts_viewed", {
       userId: currentUser.id,
       hasSearch: Boolean(search),
-      hasCompanyId: Boolean(query.companyId),
-      hasContactId: Boolean(query.contactId),
+      companyFilterCount: companyIds.length,
+      contactFilterCount: contactIds.length,
     });
 
     return {
@@ -266,6 +270,8 @@ export class DealApplicationService {
     const page = query.page ?? 1;
     const search = this.normalizeOptionalText(query.search);
     const sort = query.sort ?? DealListSort.CREATED_AT_DESC;
+    const companyIds = this.normalizeOptionalIdArray(query.companyIds ?? []);
+    const contactIds = this.normalizeOptionalIdArray(query.contactIds ?? []);
 
     const result = await this.dealRepository.listDeals({
       userId: currentUser.id,
@@ -273,8 +279,8 @@ export class DealApplicationService {
       pageSize: DEAL_PAGE_SIZE,
       sort,
       ...(search ? { search } : {}),
-      ...(query.companyId ? { companyId: query.companyId } : {}),
-      ...(query.contactId ? { contactId: query.contactId } : {}),
+      ...(companyIds.length > 0 ? { companyIds } : {}),
+      ...(contactIds.length > 0 ? { contactIds } : {}),
       ...(query.dealStatus ? { dealStatus: query.dealStatus } : {}),
     });
 
@@ -282,8 +288,8 @@ export class DealApplicationService {
       userId: currentUser.id,
       sort,
       hasSearch: Boolean(search),
-      hasCompanyId: Boolean(query.companyId),
-      hasContactId: Boolean(query.contactId),
+      companyFilterCount: companyIds.length,
+      contactFilterCount: contactIds.length,
       hasDealStatus: Boolean(query.dealStatus),
     });
 
@@ -303,13 +309,15 @@ export class DealApplicationService {
   ): Promise<ExportedXlsxFileResponse> {
     const search = this.normalizeOptionalText(query.search);
     const sort = query.sort ?? DealListSort.CREATED_AT_DESC;
+    const companyIds = this.normalizeOptionalIdArray(query.companyIds ?? []);
+    const contactIds = this.normalizeOptionalIdArray(query.contactIds ?? []);
 
     const deals = await this.dealRepository.listDealsForExport({
       userId: currentUser.id,
       sort,
       ...(search ? { search } : {}),
-      ...(query.companyId ? { companyId: query.companyId } : {}),
-      ...(query.contactId ? { contactId: query.contactId } : {}),
+      ...(companyIds.length > 0 ? { companyIds } : {}),
+      ...(contactIds.length > 0 ? { contactIds } : {}),
       ...(query.dealStatus ? { dealStatus: query.dealStatus } : {}),
     });
 
@@ -320,8 +328,8 @@ export class DealApplicationService {
       rowCount: deals.length,
       sort,
       hasSearch: Boolean(search),
-      hasCompanyId: Boolean(query.companyId),
-      hasContactId: Boolean(query.contactId),
+      companyFilterCount: companyIds.length,
+      contactFilterCount: contactIds.length,
       hasDealStatus: Boolean(query.dealStatus),
     });
 
@@ -362,6 +370,16 @@ export class DealApplicationService {
       input.followingAction,
       "followingAction is required"
     );
+    const companyIds = this.normalizeRequiredIdArray(
+      input.companyIds,
+      "companyIds must contain at least one company",
+      "companyIds must not contain duplicates"
+    );
+    const contactIds = this.normalizeRequiredIdArray(
+      input.contactIds,
+      "contactIds must contain at least one contact",
+      "contactIds must not contain duplicates"
+    );
     const productIds = this.normalizeProductIds(input.productIds);
     const expectedEndDate = this.parseDateOnly(input.expectedEndDate);
 
@@ -370,8 +388,8 @@ export class DealApplicationService {
     await this.dealRepository.runInTransaction(async (repository) => {
       await this.assertRelatedResourcesExist(
         currentUser.id,
-        input.companyId,
-        input.contactId,
+        companyIds,
+        contactIds,
         productIds,
         repository
       );
@@ -380,12 +398,22 @@ export class DealApplicationService {
         userId: currentUser.id,
         dealName,
         dealCost,
-        companyId: input.companyId,
-        contactId: input.contactId,
         dealStatus: input.dealStatus,
         expectedEndDate,
       });
       createdDealId = deal.id;
+
+      await repository.createDealCompanies({
+        userId: currentUser.id,
+        dealId: deal.id,
+        companyIds,
+      });
+
+      await repository.createDealContacts({
+        userId: currentUser.id,
+        dealId: deal.id,
+        contactIds,
+      });
 
       await repository.createDealProducts({
         userId: currentUser.id,
@@ -416,8 +444,8 @@ export class DealApplicationService {
     this.logEvent("deal.created", {
       userId: currentUser.id,
       dealId: createdDealId,
-      companyId: input.companyId,
-      contactId: input.contactId,
+      companyIds,
+      contactIds,
       productIds,
       dealStatus: input.dealStatus,
     });
@@ -443,8 +471,10 @@ export class DealApplicationService {
       throw new DealNotFoundError();
     }
 
-    const finalCompanyId = updateInput.companyId ?? existingDeal.company.id;
-    const finalContactId = updateInput.contactId ?? existingDeal.contact.id;
+    const finalCompanyIds =
+      updateInput.companyIds ?? existingDeal.companies.map((company) => company.id);
+    const finalContactIds =
+      updateInput.contactIds ?? existingDeal.contacts.map((contact) => contact.id);
     const finalProductIds =
       updateInput.productIds ?? existingDeal.products.map((product) => product.id);
 
@@ -453,13 +483,13 @@ export class DealApplicationService {
     await this.dealRepository.runInTransaction(async (repository) => {
       await this.assertRelatedResourcesExist(
         currentUser.id,
-        finalCompanyId,
-        finalContactId,
+        finalCompanyIds,
+        finalContactIds,
         finalProductIds,
         repository
       );
 
-      const { productIds, ...dealFields } = updateInput;
+      const { companyIds, contactIds, productIds, ...dealFields } = updateInput;
 
       if (Object.keys(dealFields).length > 0) {
         dealUpdated = await repository.updateDeal(
@@ -478,6 +508,22 @@ export class DealApplicationService {
           productIds,
         });
       }
+
+      if (companyIds !== undefined) {
+        await repository.replaceDealCompanies({
+          userId: currentUser.id,
+          dealId,
+          companyIds,
+        });
+      }
+
+      if (contactIds !== undefined) {
+        await repository.replaceDealContacts({
+          userId: currentUser.id,
+          dealId,
+          contactIds,
+        });
+      }
     });
 
     if (!dealUpdated) {
@@ -494,6 +540,8 @@ export class DealApplicationService {
       userId: currentUser.id,
       dealId,
       dealStatus: updateInput.dealStatus ?? null,
+      companyIds: updateInput.companyIds ?? null,
+      contactIds: updateInput.contactIds ?? null,
       productIds: updateInput.productIds ?? null,
     });
 
@@ -713,24 +761,28 @@ export class DealApplicationService {
     }
   }
 
-  // 기능 : 회사, 담당자, 제품이 현재 사용자의 소유이고 담당자가 회사에 속하는지 확인합니다.
+  // 기능 : 회사, 담당자, 제품이 현재 사용자의 소유이고 담당자들이 선택 회사에 속하는지 확인합니다.
   private async assertRelatedResourcesExist(
     userId: string,
-    companyId: string,
-    contactId: string,
+    companyIds: readonly string[],
+    contactIds: readonly string[],
     productIds: string[],
     repository: DealRepository = this.dealRepository
   ): Promise<void> {
-    const [company, contact, products] = await Promise.all([
-      repository.findCompany(userId, companyId),
-      repository.findContact(userId, contactId),
+    const [companies, contacts, products] = await Promise.all([
+      repository.findCompanies(userId, companyIds),
+      repository.findContacts(userId, contactIds),
       repository.findProducts(userId, productIds),
     ]);
+    const companyIdSet = new Set(companyIds);
+    const hasContactOutsideCompanies = contacts.some(
+      (contact) => !companyIdSet.has(contact.companyId)
+    );
 
     if (
-      !company ||
-      !contact ||
-      contact.companyId !== companyId ||
+      companies.length !== companyIds.length ||
+      contacts.length !== contactIds.length ||
+      hasContactOutsideCompanies ||
       products.length !== productIds.length
     ) {
       throw new RelatedResourceNotFoundError();
@@ -822,17 +874,39 @@ export class DealApplicationService {
 
   // 기능 : 딜에 연결할 제품 ID 배열이 비어 있지 않고 중복이 없는지 검증합니다.
   private normalizeProductIds(value: readonly string[]): string[] {
+    return this.normalizeRequiredIdArray(
+      value,
+      "productIds must contain at least one product",
+      "productIds must not contain duplicates"
+    );
+  }
+
+  // 기능 : 필수 ID 배열이 비어 있지 않고 중복이 없는지 검증합니다.
+  private normalizeRequiredIdArray(
+    value: readonly string[],
+    emptyMessage: string,
+    duplicateMessage: string
+  ): string[] {
     if (!Array.isArray(value) || value.length === 0) {
-      throw new ValidationDomainError("productIds must contain at least one product");
+      throw new ValidationDomainError(emptyMessage);
     }
 
     const uniqueIds = new Set(value);
 
     if (uniqueIds.size !== value.length) {
-      throw new ValidationDomainError("productIds must not contain duplicates");
+      throw new ValidationDomainError(duplicateMessage);
     }
 
     return [...value];
+  }
+
+  // 기능 : 선택 ID 배열의 빈 값과 중복을 제거합니다.
+  private normalizeOptionalIdArray(value: readonly string[]): string[] {
+    if (!Array.isArray(value) || value.length === 0) {
+      return [];
+    }
+
+    return [...new Set(value.filter((id) => id.trim().length > 0))];
   }
 
   // 기능 : YYYY-MM-DD 문자열을 날짜 전용 Date 값으로 변환합니다.
@@ -889,8 +963,24 @@ export class DealApplicationService {
       ...(input.dealCost !== undefined
         ? { dealCost: this.normalizeDealCost(input.dealCost) }
         : {}),
-      ...(input.companyId !== undefined ? { companyId: input.companyId } : {}),
-      ...(input.contactId !== undefined ? { contactId: input.contactId } : {}),
+      ...(input.companyIds !== undefined
+        ? {
+            companyIds: this.normalizeRequiredIdArray(
+              input.companyIds,
+              "companyIds must contain at least one company",
+              "companyIds must not contain duplicates"
+            ),
+          }
+        : {}),
+      ...(input.contactIds !== undefined
+        ? {
+            contactIds: this.normalizeRequiredIdArray(
+              input.contactIds,
+              "contactIds must contain at least one contact",
+              "contactIds must not contain duplicates"
+            ),
+          }
+        : {}),
       ...(input.productIds !== undefined
         ? { productIds: this.normalizeProductIds(input.productIds) }
         : {}),
@@ -977,8 +1067,8 @@ export class DealApplicationService {
       dealStatus: deal.dealStatus,
       dealStatusLabel: getDealStatusLabel(deal.dealStatus),
       expectedEndDate: this.toDateOnlyString(deal.expectedEndDate),
-      company: deal.company,
-      contact: this.toDealContactResponse(deal.contact),
+      companies: deal.companies,
+      contacts: deal.contacts.map((contact) => this.toDealContactResponse(contact)),
       latestFollowingAction: deal.latestFollowingAction
         ? this.toLatestFollowingAction(deal.latestFollowingAction)
         : null,
@@ -1123,8 +1213,12 @@ export class DealApplicationService {
   private toDealExportRows(deals: DealListRecord[]): XlsxRow[] {
     return deals.map((deal) => ({
       dealName: deal.dealName,
-      companyName: deal.company.companyName,
-      contactLabel: this.createContactLabel(deal.contact),
+      companyName: deal.companies
+        .map((company) => company.companyName)
+        .join(", "),
+      contactLabel: deal.contacts
+        .map((contact) => this.createContactLabel(contact))
+        .join(", "),
       dealStatusLabel: getDealStatusLabel(deal.dealStatus),
       dealCost: deal.dealCost,
       expectedEndDate: this.toDateOnlyString(deal.expectedEndDate),

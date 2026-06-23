@@ -37,8 +37,12 @@ type DealSearchRow = {
   readonly dealName: string;
   readonly dealCost: number;
   readonly dealStatus: string;
-  readonly company: { readonly companyName: string };
-  readonly contact: { readonly username: string };
+  readonly dealCompanies: ReadonlyArray<{
+    readonly company: { readonly companyName: string };
+  }>;
+  readonly dealContacts: ReadonlyArray<{
+    readonly contact: { readonly username: string };
+  }>;
 };
 
 type ScheduleSearchRow = {
@@ -206,8 +210,20 @@ export class PrismaSearchRepository implements SearchRepository {
         OR: [
           { dealName: { contains: input.query } },
           { dealStatus: { contains: input.query } },
-          { company: { companyName: { contains: input.query } } },
-          { contact: { username: { contains: input.query } } },
+          {
+            dealCompanies: {
+              some: {
+                company: { companyName: { contains: input.query } },
+              },
+            },
+          },
+          {
+            dealContacts: {
+              some: {
+                contact: { username: { contains: input.query } },
+              },
+            },
+          },
         ],
       },
       select: {
@@ -215,8 +231,18 @@ export class PrismaSearchRepository implements SearchRepository {
         dealName: true,
         dealCost: true,
         dealStatus: true,
-        company: { select: { companyName: true } },
-        contact: { select: { username: true } },
+        dealCompanies: {
+          select: {
+            company: { select: { companyName: true } },
+          },
+          orderBy: [{ createdAt: "asc" }, { id: "asc" }],
+        },
+        dealContacts: {
+          select: {
+            contact: { select: { username: true } },
+          },
+          orderBy: [{ createdAt: "asc" }, { id: "asc" }],
+        },
       },
       orderBy: [{ createdAt: "desc" }, { id: "desc" }],
       take: input.limit,
@@ -385,8 +411,14 @@ export class PrismaSearchRepository implements SearchRepository {
     return {
       title: deal.dealName,
       subtitle: this.joinParts([
-        deal.company.companyName,
-        deal.contact.username,
+        this.joinParts(
+          deal.dealCompanies.map(
+            (dealCompany) => dealCompany.company.companyName
+          )
+        ),
+        this.joinParts(
+          deal.dealContacts.map((dealContact) => dealContact.contact.username)
+        ),
         deal.dealStatus,
         this.formatMoney(deal.dealCost),
       ]),

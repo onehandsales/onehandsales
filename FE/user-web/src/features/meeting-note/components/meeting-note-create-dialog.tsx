@@ -157,7 +157,10 @@ export function MeetingNoteCreateDialog({
   ).map((deal) => ({
     id: deal.id,
     label: deal.dealName,
-    description: [deal.company.companyName, deal.contact.username]
+    description: [
+      deal.companies.map((company) => company.companyName).join(", "),
+      deal.contacts.map((contact) => contact.username).join(", "),
+    ]
       .filter(Boolean)
       .join(" / "),
   }));

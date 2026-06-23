@@ -84,6 +84,8 @@ export function DealCreateDialog({
   onOpenChange,
   onCreated,
 }: DealCreateDialogProps) {
+  const [selectedCompanyIds, setSelectedCompanyIds] = useState<string[]>([]);
+  const [selectedContactIds, setSelectedContactIds] = useState<string[]>([]);
   const [selectedProductIds, setSelectedProductIds] = useState<string[]>([]);
   const [isCompanyCreateOpen, setIsCompanyCreateOpen] = useState(false);
   const [isContactCreateOpen, setIsContactCreateOpen] = useState(false);
@@ -105,8 +107,6 @@ export function DealCreateDialog({
     defaultValues: emptyDealCreateFormValues,
   });
 
-  const selectedCompanyId = watch("companyId");
-  const selectedContactId = watch("contactId");
   const dealCostValue = watch("dealCost");
   const expectedEndDateValue = watch("expectedEndDate");
   const companySearch = watch("companySearch") ?? "";
@@ -116,6 +116,8 @@ export function DealCreateDialog({
   useEffect(() => {
     if (open) {
       reset(emptyDealCreateFormValues);
+      setSelectedCompanyIds([]);
+      setSelectedContactIds([]);
       setSelectedProductIds([]);
       setIsCompanyCreateOpen(false);
       setIsContactCreateOpen(false);
@@ -126,6 +128,35 @@ export function DealCreateDialog({
   if (!open) return null;
 
   const formId = "deal-create-form";
+
+  const onCompanyToggle = (companyId: string) => {
+    const next = selectedCompanyIds.includes(companyId)
+      ? selectedCompanyIds.filter((id) => id !== companyId)
+      : [...selectedCompanyIds, companyId];
+    const nextCompanySet = new Set(next);
+    const contacts = contactOptionsQuery.data ?? [];
+    const nextContactIds = selectedContactIds.filter((contactId) => {
+      const contact = contacts.find((item) => item.id === contactId);
+      return contact ? nextCompanySet.has(contact.companyId) : false;
+    });
+
+    setSelectedCompanyIds(next);
+    setSelectedContactIds(nextContactIds);
+    setValue("companyIds", next, { shouldDirty: true, shouldValidate: true });
+    setValue("contactIds", nextContactIds, {
+      shouldDirty: true,
+      shouldValidate: true,
+    });
+  };
+
+  const onContactToggle = (contactId: string) => {
+    const next = selectedContactIds.includes(contactId)
+      ? selectedContactIds.filter((id) => id !== contactId)
+      : [...selectedContactIds, contactId];
+
+    setSelectedContactIds(next);
+    setValue("contactIds", next, { shouldDirty: true, shouldValidate: true });
+  };
 
   const onProductToggle = (productId: string) => {
     const next = selectedProductIds.includes(productId)
@@ -158,39 +189,24 @@ export function DealCreateDialog({
     const created = findCompanyOptionByName(updated.data ?? [], companyName);
 
     if (created) {
-      setValue("companyId", created.id, {
+      const next = selectedCompanyIds.includes(created.id)
+        ? selectedCompanyIds
+        : [...selectedCompanyIds, created.id];
+
+      setSelectedCompanyIds(next);
+      setValue("companyIds", next, {
         shouldDirty: true,
         shouldValidate: true,
       });
-      setValue("companySearch", created.companyName, {
-        shouldDirty: true,
-      });
-      setValue("contactId", "", {
-        shouldDirty: true,
-        shouldValidate: true,
-      });
-      setValue("contactSearch", "", {
-        shouldDirty: true,
-      });
+      setValue("companySearch", "", { shouldDirty: true });
     }
   };
 
   // 기능 : 추가한 담당자를 Deal 선택 옵션에서 찾아 자동 선택합니다.
   const onContactCreated = async (payload: QuickContactCreatedPayload) => {
-    setValue("companyId", payload.companyId, {
-      shouldDirty: true,
-      shouldValidate: true,
-    });
-    const company = companyOptionsQuery.data?.find(
-      (option) => option.id === payload.companyId,
-    );
-
-    if (company) {
-      setValue("companySearch", company.companyName, {
-        shouldDirty: true,
-      });
-    }
-
+    const nextCompanyIds = selectedCompanyIds.includes(payload.companyId)
+      ? selectedCompanyIds
+      : [...selectedCompanyIds, payload.companyId];
     const updated = await contactOptionsQuery.refetch();
     const created = findContactOptionByName(
       updated.data ?? [],
@@ -198,13 +214,22 @@ export function DealCreateDialog({
     );
 
     if (created) {
-      setValue("contactId", created.id, {
+      const nextContactIds = selectedContactIds.includes(created.id)
+        ? selectedContactIds
+        : [...selectedContactIds, created.id];
+
+      setSelectedCompanyIds(nextCompanyIds);
+      setSelectedContactIds(nextContactIds);
+      setValue("companyIds", nextCompanyIds, {
         shouldDirty: true,
         shouldValidate: true,
       });
-      setValue("contactSearch", created.label, {
+      setValue("companySearch", "", { shouldDirty: true });
+      setValue("contactIds", nextContactIds, {
         shouldDirty: true,
+        shouldValidate: true,
       });
+      setValue("contactSearch", "", { shouldDirty: true });
     }
   };
 
@@ -238,18 +263,14 @@ export function DealCreateDialog({
   const companyOptions = companyOptionsQuery.data ?? [];
   // 선택된 회사에 속한 담당자만 표시합니다. 백엔드에서 contact.companyId !== companyId 검사를 합니다.
   const allContactOptions = contactOptionsQuery.data ?? [];
-  const contactOptions = selectedCompanyId
-    ? allContactOptions.filter(
-        (contact) => contact.companyId === selectedCompanyId,
-      )
-    : allContactOptions;
+  const selectedCompanyIdSet = new Set(selectedCompanyIds);
+  const contactOptions =
+    selectedCompanyIds.length > 0
+      ? allContactOptions.filter((contact) =>
+          selectedCompanyIdSet.has(contact.companyId),
+        )
+      : [];
   const productOptions = productOptionsQuery.data ?? [];
-  const selectedCompany = companyOptions.find(
-    (company) => company.id === selectedCompanyId,
-  );
-  const selectedContact = contactOptions.find(
-    (contact) => contact.id === selectedContactId,
-  );
 
   return (
     <>
@@ -314,12 +335,11 @@ export function DealCreateDialog({
             <ModalFormRow columns={2}>
               {/* 회사 */}
               <ModalFieldGroup
-                error={errors.companyId?.message}
+                error={errors.companyIds?.message}
                 id="deal-company"
                 label="회사"
               >
-                <div className="flex gap-2">
-                  <input type="hidden" {...register("companyId")} />
+                <div className="grid gap-2">
                   <SearchSelectField
                     emptyText="검색된 회사가 없습니다."
                     getLabel={(company) => company.companyName}
@@ -330,61 +350,40 @@ export function DealCreateDialog({
                     items={companyOptions}
                     placeholder="회사명 검색"
                     search={companySearch}
-                    selectedId={selectedCompanyId}
-                    selectedLabel={selectedCompany?.companyName ?? ""}
+                    selectedId=""
+                    selectedLabel=""
                     onCreate={() => setIsCompanyCreateOpen(true)}
                     onClear={() => {
-                      setValue("companyId", "", {
-                        shouldDirty: true,
-                        shouldValidate: true,
-                      });
                       setValue("companySearch", "", { shouldDirty: true });
-                      setValue("contactId", "", {
-                        shouldDirty: true,
-                        shouldValidate: true,
-                      });
-                      setValue("contactSearch", "", { shouldDirty: true });
                     }}
                     onSearchChange={(value) => {
                       setValue("companySearch", value, { shouldDirty: true });
-                      if (selectedCompanyId) {
-                        setValue("companyId", "", {
-                          shouldDirty: true,
-                          shouldValidate: true,
-                        });
-                        setValue("contactId", "", {
-                          shouldDirty: true,
-                          shouldValidate: true,
-                        });
-                        setValue("contactSearch", "", { shouldDirty: true });
-                      }
                     }}
                     onSelect={(company) => {
-                      setValue("companyId", company.id, {
-                        shouldDirty: true,
-                        shouldValidate: true,
-                      });
-                      setValue("companySearch", company.companyName, {
-                        shouldDirty: true,
-                      });
-                      setValue("contactId", "", {
-                        shouldDirty: true,
-                        shouldValidate: true,
-                      });
+                      if (!selectedCompanyIds.includes(company.id)) {
+                        onCompanyToggle(company.id);
+                      }
+                      setValue("companySearch", "", { shouldDirty: true });
                       setValue("contactSearch", "", { shouldDirty: true });
                     }}
+                  />
+                  <SelectedOptionChips
+                    items={companyOptions.filter((company) =>
+                      selectedCompanyIds.includes(company.id),
+                    )}
+                    getLabel={(company) => company.companyName}
+                    onRemove={onCompanyToggle}
                   />
                 </div>
               </ModalFieldGroup>
 
               {/* 담당자 */}
               <ModalFieldGroup
-                error={errors.contactId?.message}
+                error={errors.contactIds?.message}
                 id="deal-contact"
                 label="담당자"
               >
-                <div className="flex gap-2">
-                  <input type="hidden" {...register("contactId")} />
+                <div className="grid gap-2">
                   <SearchSelectField
                     emptyText="검색된 담당자가 없습니다."
                     getDescription={(contact) =>
@@ -394,39 +393,33 @@ export function DealCreateDialog({
                     icon={IdCard}
                     id="deal-contact"
                     createActionLabel="담당자 추가"
-                    disabled={!selectedCompanyId}
+                    disabled={selectedCompanyIds.length === 0}
                     isLoading={contactOptionsQuery.isLoading}
                     items={contactOptions}
                     placeholder="담당자명 검색"
                     search={contactSearch}
-                    selectedId={selectedContactId}
-                    selectedLabel={selectedContact?.label ?? ""}
+                    selectedId=""
+                    selectedLabel=""
                     onCreate={() => setIsContactCreateOpen(true)}
                     onClear={() => {
-                      setValue("contactId", "", {
-                        shouldDirty: true,
-                        shouldValidate: true,
-                      });
                       setValue("contactSearch", "", { shouldDirty: true });
                     }}
                     onSearchChange={(value) => {
                       setValue("contactSearch", value, { shouldDirty: true });
-                      if (selectedContactId) {
-                        setValue("contactId", "", {
-                          shouldDirty: true,
-                          shouldValidate: true,
-                        });
-                      }
                     }}
                     onSelect={(contact) => {
-                      setValue("contactId", contact.id, {
-                        shouldDirty: true,
-                        shouldValidate: true,
-                      });
-                      setValue("contactSearch", contact.label, {
-                        shouldDirty: true,
-                      });
+                      if (!selectedContactIds.includes(contact.id)) {
+                        onContactToggle(contact.id);
+                      }
+                      setValue("contactSearch", "", { shouldDirty: true });
                     }}
+                  />
+                  <SelectedOptionChips
+                    items={contactOptions.filter((contact) =>
+                      selectedContactIds.includes(contact.id),
+                    )}
+                    getLabel={(contact) => contact.label}
+                    onRemove={onContactToggle}
                   />
                 </div>
               </ModalFieldGroup>
@@ -527,7 +520,7 @@ export function DealCreateDialog({
       />
       <QuickContactCreateDialog
         companyOptions={companyOptions}
-        defaultCompanyId={selectedCompanyId}
+        defaultCompanyId={selectedCompanyIds[0] ?? ""}
         open={isContactCreateOpen}
         onCreated={(payload) => void onContactCreated(payload)}
         onOpenChange={setIsContactCreateOpen}
@@ -1264,6 +1257,34 @@ function SearchSelectField<TItem extends { readonly id: string }>({
 }
 
 // 기능 : 제품명을 검색해 결과를 클릭하는 다중 선택 입력을 제공합니다.
+type SelectedOptionChipsProps<TItem extends { readonly id: string }> = {
+  readonly items: readonly TItem[];
+  readonly getLabel: (item: TItem) => string;
+  readonly onRemove: (id: string) => void;
+};
+
+function SelectedOptionChips<TItem extends { readonly id: string }>({
+  items,
+  getLabel,
+  onRemove,
+}: SelectedOptionChipsProps<TItem>) {
+  return (
+    <div className="mt-2 flex h-7 flex-nowrap gap-2 overflow-x-auto">
+      {items.map((item) => (
+        <button
+          className="inline-flex h-7 shrink-0 items-center gap-1.5 rounded-md border border-primary/30 bg-primary/10 px-2 text-xs font-medium text-primary"
+          key={item.id}
+          onClick={() => onRemove(item.id)}
+          type="button"
+        >
+          {getLabel(item)}
+          <X className="h-3 w-3" />
+        </button>
+      ))}
+    </div>
+  );
+}
+
 function ProductMultiSelectDropdown({
   id,
   items,

@@ -117,7 +117,12 @@ export class PrismaContactRepository implements ContactRepository {
     return this.client.deal.findMany({
       where: {
         userId: input.userId,
-        contactId: input.contactId,
+        dealContacts: {
+          some: {
+            userId: input.userId,
+            contactId: input.contactId,
+          },
+        },
       },
       select: {
         id: true,

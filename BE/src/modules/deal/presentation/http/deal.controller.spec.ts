@@ -145,7 +145,7 @@ describe("DealController", () => {
     await request(app.getHttpServer()).get("/api/deals/stage-counts").expect(200);
     await request(app.getHttpServer())
       .get(
-        `/api/deals?page=2&search=A&companyId=${COMPANY_ID}&contactId=${CONTACT_ID}&dealStatus=INITIAL_CONTACT&sort=dealCostDesc`
+        `/api/deals?page=2&search=A&companyIds=${COMPANY_ID}&contactIds=${CONTACT_ID}&dealStatus=INITIAL_CONTACT&sort=dealCostDesc`
       )
       .expect(200);
     await request(app.getHttpServer()).get("/api/deals/company-options").expect(200);
@@ -159,8 +159,8 @@ describe("DealController", () => {
       expect.objectContaining({
         page: 2,
         search: "A",
-        companyId: COMPANY_ID,
-        contactId: CONTACT_ID,
+        companyIds: [COMPANY_ID],
+        contactIds: [CONTACT_ID],
         dealStatus: DealStatusCode.INITIAL_CONTACT,
         sort: DealListSort.DEAL_COST_DESC,
       })
@@ -176,8 +176,8 @@ describe("DealController", () => {
     const createBody = {
       dealName: "A회사 신규 도입",
       dealCost: 3000000,
-      companyId: COMPANY_ID,
-      contactId: CONTACT_ID,
+      companyIds: [COMPANY_ID],
+      contactIds: [CONTACT_ID],
       productIds: [PRODUCT_ID],
       dealStatus: DealStatusCode.INITIAL_CONTACT,
       followingAction: "제안서 발송",
@@ -186,8 +186,8 @@ describe("DealController", () => {
     const updateBody = {
       dealName: "A회사 재협상",
       dealCost: 5000000,
-      companyId: COMPANY_ID,
-      contactId: CONTACT_ID,
+      companyIds: [COMPANY_ID],
+      contactIds: [CONTACT_ID],
       productIds: [PRODUCT_ID],
       dealStatus: DealStatusCode.NEGOTIATION,
       expectedEndDate: "2026-02-01",
@@ -277,8 +277,8 @@ describe("DealController", () => {
       .send({
         dealName: "A회사 신규 도입",
         dealCost: 3000000,
-        companyId: COMPANY_ID,
-        contactId: CONTACT_ID,
+        companyIds: [COMPANY_ID],
+        contactIds: [CONTACT_ID],
         productIds: [PRODUCT_ID],
         dealStatus: "초기 접촉",
         followingAction: "제안서 발송",
@@ -291,8 +291,8 @@ describe("DealController", () => {
       .send({
         dealName: "A회사 신규 도입",
         dealCost: 3000000,
-        companyId: COMPANY_ID,
-        contactId: CONTACT_ID,
+        companyIds: [COMPANY_ID],
+        contactIds: [CONTACT_ID],
         productIds: [PRODUCT_ID],
         dealStatus: DealStatusCode.INITIAL_CONTACT,
         followingAction: "제안서 발송",

@@ -76,8 +76,8 @@ export type DealListItem = {
   readonly dealStatus: DealStatus;
   readonly dealStatusLabel: string;
   readonly expectedEndDate: string;
-  readonly company: DealCompany;
-  readonly contact: DealContact;
+  readonly companies: DealCompany[];
+  readonly contacts: DealContact[];
   readonly latestFollowingAction: LatestFollowingAction | null;
   readonly createdAt: string;
   readonly updatedAt: string;
@@ -91,8 +91,8 @@ export type DealDetail = {
   readonly dealStatus: DealStatus;
   readonly dealStatusLabel: string;
   readonly expectedEndDate: string;
-  readonly company: DealCompany;
-  readonly contact: DealContact;
+  readonly companies: DealCompany[];
+  readonly contacts: DealContact[];
   readonly products: DealProduct[];
   readonly createdAt: string;
   readonly updatedAt: string;
@@ -111,16 +111,16 @@ export type DealListResponse = {
 export type DealListParams = {
   readonly page?: number;
   readonly search?: string;
-  readonly companyId?: string;
-  readonly contactId?: string;
+  readonly companyIds?: readonly string[];
+  readonly contactIds?: readonly string[];
   readonly dealStatus?: DealStatus;
   readonly sort?: DealSort;
 };
 
 export type DealStageCountParams = {
   readonly search?: string;
-  readonly companyId?: string;
-  readonly contactId?: string;
+  readonly companyIds?: readonly string[];
+  readonly contactIds?: readonly string[];
 };
 
 export type DealSort =
@@ -133,8 +133,8 @@ export type DealSort =
 export type CreateDealInput = {
   readonly dealName: string;
   readonly dealCost: number;
-  readonly companyId: string;
-  readonly contactId: string;
+  readonly companyIds: string[];
+  readonly contactIds: string[];
   readonly productIds: string[];
   readonly dealStatus: DealStatus;
   readonly followingAction: string;
@@ -146,8 +146,8 @@ export type UpdateDealInput = {
   readonly dealId: string;
   readonly dealName?: string;
   readonly dealCost?: number;
-  readonly companyId?: string;
-  readonly contactId?: string;
+  readonly companyIds?: string[];
+  readonly contactIds?: string[];
   readonly productIds?: string[];
   readonly expectedEndDate?: string;
   readonly dealStatus?: DealStatus;
@@ -242,8 +242,8 @@ export type UpdateMemoLogInput = {
 // 기능 : export query 파라미터
 export type DealExportParams = {
   readonly search?: string;
-  readonly companyId?: string;
-  readonly contactId?: string;
+  readonly companyIds?: readonly string[];
+  readonly contactIds?: readonly string[];
   readonly dealStatus?: DealStatus;
   readonly sort?: DealSort;
 };

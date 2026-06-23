@@ -91,21 +91,21 @@ export function DealPipelineHomeScreen({
   const dealCreatedRef = useRef(false);
 
   const searchQuery = search.trim() || undefined;
-  const companyFilter = companyId || undefined;
-  const contactFilter = contactId || undefined;
+  const companyFilter = companyId ? [companyId] : undefined;
+  const contactFilter = contactId ? [contactId] : undefined;
 
   const companyOptionsQuery = useDealCompanyOptions();
   const contactOptionsQuery = useDealContactOptions();
   const stageCountsQuery = useDealStageCounts({
     search: searchQuery,
-    companyId: companyFilter,
-    contactId: contactFilter,
+    companyIds: companyFilter,
+    contactIds: contactFilter,
   });
   const dealsQuery = useDealList({
     page,
     search: searchQuery,
-    companyId: companyFilter,
-    contactId: contactFilter,
+    companyIds: companyFilter,
+    contactIds: contactFilter,
     dealStatus: activeTab === "ALL" ? undefined : activeTab,
     sort,
   });
@@ -193,8 +193,8 @@ export function DealPipelineHomeScreen({
     try {
       const { blob, fileName } = await exportDealsXlsx({
         search: searchQuery,
-        companyId: companyFilter,
-        contactId: contactFilter,
+        companyIds: companyFilter,
+        contactIds: contactFilter,
         dealStatus: activeTab === "ALL" ? undefined : activeTab,
         sort,
       });
@@ -692,6 +692,7 @@ function DealListRow({
   readonly onSelect: (id: string) => void;
 }) {
   const contactLabel = formatDealContactLabel(deal);
+  const companyLabel = formatDealCompanyLabel(deal);
 
   return (
     <div
@@ -721,9 +722,9 @@ function DealListRow({
       <div className="min-w-0 pr-3">
         <span
           className="block truncate text-[12px] font-semibold text-[#111827]"
-          title={deal.company.companyName}
+          title={companyLabel}
         >
-          {deal.company.companyName}
+          {companyLabel}
         </span>
         <span
           className="mt-0.5 block truncate text-[11px] font-medium text-[#2563EB]"
@@ -787,6 +788,7 @@ function MobileDealCard({
   readonly displayTimeZone: string;
 }) {
   const contactLabel = formatDealContactLabel(deal);
+  const companyLabel = formatDealCompanyLabel(deal);
   const deadlineLabel = getDeadlineDDayLabel(deal.expectedEndDate);
   const deadlineColor = getDeadlineDDayColor(deal.expectedEndDate);
   const nextAction = deal.latestFollowingAction;
@@ -819,7 +821,7 @@ function MobileDealCard({
 
       {/* Row3: 회사명 · 담당자명 */}
       <p className="mt-0.5 truncate text-[13px] text-[#6B7280]">
-        {deal.company.companyName} · {contactLabel}
+        {companyLabel} · {contactLabel}
       </p>
 
       {/* Divider */}
@@ -879,10 +881,18 @@ function getDealStatusClass(status: DealStatus): string {
 }
 
 function formatDealContactLabel(deal: DealListItem) {
-  const departmentName = deal.contact.contactDepartment.departmentName.trim();
-  return departmentName
-    ? `${deal.contact.username} ${departmentName}`
-    : deal.contact.username;
+  return deal.contacts
+    .map((contact) => {
+      const departmentName = contact.contactDepartment.departmentName.trim();
+      return departmentName
+        ? `${contact.username} ${departmentName}`
+        : contact.username;
+    })
+    .join(", ");
+}
+
+function formatDealCompanyLabel(deal: DealListItem) {
+  return deal.companies.map((company) => company.companyName).join(", ") || "-";
 }
 
 function formatDealCreatedAt(value: string, timeZone: string) {

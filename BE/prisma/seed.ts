@@ -359,6 +359,8 @@ async function resetLocalDemoDomainData(userId: string) {
     prisma.scheduleDeal.deleteMany({ where: { userId } }),
     prisma.schedule.deleteMany({ where: { userId } }),
     prisma.dealProduct.deleteMany({ where: { userId } }),
+    prisma.dealContact.deleteMany({ where: { userId } }),
+    prisma.dealCompany.deleteMany({ where: { userId } }),
     prisma.dealFollowingActionLog.deleteMany({ where: { userId } }),
     prisma.dealMemoLog.deleteMany({ where: { userId } }),
     prisma.deal.deleteMany({ where: { userId } }),
@@ -549,8 +551,6 @@ async function seedLocalDemoSalesData() {
       const deal = await prisma.deal.create({
         data: {
           userId,
-          companyId: company.id,
-          contactId: contact.id,
           dealName: `${company.companyName} ${template.suffix}`,
           dealCost: template.baseCost + companyIndex * 820000 + templateIndex * 430000,
           dealStatus: status,
@@ -559,6 +559,22 @@ async function seedLocalDemoSalesData() {
       });
       companyDeals.push(deal);
       allDeals.push(deal);
+
+      await prisma.dealCompany.create({
+        data: {
+          userId,
+          dealId: deal.id,
+          companyId: company.id,
+        },
+      });
+
+      await prisma.dealContact.create({
+        data: {
+          userId,
+          dealId: deal.id,
+          contactId: contact.id,
+        },
+      });
 
       await prisma.dealProduct.createMany({
         data: linkedProducts.map((product) => ({

@@ -230,14 +230,36 @@ CREATE TABLE "Deal" (
     "userId" UUID NOT NULL,
     "dealName" TEXT NOT NULL,
     "dealCost" INTEGER NOT NULL,
-    "companyId" UUID NOT NULL,
-    "contactId" UUID NOT NULL,
     "dealStatus" TEXT NOT NULL,
     "expectedEndDate" DATE NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
     CONSTRAINT "Deal_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "DealCompany" (
+    "id" UUID NOT NULL,
+    "userId" UUID NOT NULL,
+    "dealId" UUID NOT NULL,
+    "companyId" UUID NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "DealCompany_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "DealContact" (
+    "id" UUID NOT NULL,
+    "userId" UUID NOT NULL,
+    "dealId" UUID NOT NULL,
+    "contactId" UUID NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "DealContact_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -569,10 +591,28 @@ CREATE INDEX "Deal_userId_expectedEndDate_idx" ON "Deal"("userId", "expectedEndD
 CREATE INDEX "Deal_userId_dealCost_idx" ON "Deal"("userId", "dealCost");
 
 -- CreateIndex
-CREATE INDEX "Deal_companyId_idx" ON "Deal"("companyId");
+CREATE INDEX "DealCompany_userId_dealId_idx" ON "DealCompany"("userId", "dealId");
 
 -- CreateIndex
-CREATE INDEX "Deal_contactId_idx" ON "Deal"("contactId");
+CREATE INDEX "DealCompany_userId_companyId_idx" ON "DealCompany"("userId", "companyId");
+
+-- CreateIndex
+CREATE INDEX "DealCompany_companyId_idx" ON "DealCompany"("companyId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "DealCompany_dealId_companyId_key" ON "DealCompany"("dealId", "companyId");
+
+-- CreateIndex
+CREATE INDEX "DealContact_userId_dealId_idx" ON "DealContact"("userId", "dealId");
+
+-- CreateIndex
+CREATE INDEX "DealContact_userId_contactId_idx" ON "DealContact"("userId", "contactId");
+
+-- CreateIndex
+CREATE INDEX "DealContact_contactId_idx" ON "DealContact"("contactId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "DealContact_dealId_contactId_key" ON "DealContact"("dealId", "contactId");
 
 -- CreateIndex
 CREATE INDEX "DealProduct_userId_dealId_idx" ON "DealProduct"("userId", "dealId");
@@ -758,10 +798,22 @@ ALTER TABLE "ProductUserPrivateMemoLog" ADD CONSTRAINT "ProductUserPrivateMemoLo
 ALTER TABLE "Deal" ADD CONSTRAINT "Deal_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Deal" ADD CONSTRAINT "Deal_companyId_fkey" FOREIGN KEY ("companyId") REFERENCES "Company"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "DealCompany" ADD CONSTRAINT "DealCompany_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Deal" ADD CONSTRAINT "Deal_contactId_fkey" FOREIGN KEY ("contactId") REFERENCES "Contact"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "DealCompany" ADD CONSTRAINT "DealCompany_dealId_fkey" FOREIGN KEY ("dealId") REFERENCES "Deal"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "DealCompany" ADD CONSTRAINT "DealCompany_companyId_fkey" FOREIGN KEY ("companyId") REFERENCES "Company"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "DealContact" ADD CONSTRAINT "DealContact_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "DealContact" ADD CONSTRAINT "DealContact_dealId_fkey" FOREIGN KEY ("dealId") REFERENCES "Deal"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "DealContact" ADD CONSTRAINT "DealContact_contactId_fkey" FOREIGN KEY ("contactId") REFERENCES "Contact"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "DealProduct" ADD CONSTRAINT "DealProduct_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

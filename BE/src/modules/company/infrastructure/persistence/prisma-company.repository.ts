@@ -44,7 +44,7 @@ type CompanyWithRelations = {
 type CompanyListWithRelations = CompanyWithRelations & {
   readonly _count: {
     readonly contacts: number;
-    readonly deals: number;
+    readonly dealCompanies: number;
   };
 };
 
@@ -142,7 +142,12 @@ export class PrismaCompanyRepository implements CompanyRepository {
     return this.client.deal.findMany({
       where: {
         userId: input.userId,
-        companyId: input.companyId,
+        dealCompanies: {
+          some: {
+            userId: input.userId,
+            companyId: input.companyId,
+          },
+        },
       },
       select: {
         id: true,
@@ -601,7 +606,7 @@ export class PrismaCompanyRepository implements CompanyRepository {
               userId,
             },
           },
-          deals: {
+          dealCompanies: {
             where: {
               userId,
             },
@@ -633,7 +638,7 @@ export class PrismaCompanyRepository implements CompanyRepository {
 
     if (sort === CompanyListSort.DEAL_COUNT_DESC) {
       return [
-        { deals: { _count: "desc" } },
+        { dealCompanies: { _count: "desc" } },
         { createdAt: "desc" },
         { id: "desc" },
       ];
@@ -641,7 +646,7 @@ export class PrismaCompanyRepository implements CompanyRepository {
 
     if (sort === CompanyListSort.DEAL_COUNT_ASC) {
       return [
-        { deals: { _count: "asc" } },
+        { dealCompanies: { _count: "asc" } },
         { createdAt: "desc" },
         { id: "desc" },
       ];
@@ -673,7 +678,7 @@ export class PrismaCompanyRepository implements CompanyRepository {
     return {
       ...this.mapCompany(company),
       contactCount: company._count.contacts,
-      dealCount: company._count.deals,
+      dealCount: company._count.dealCompanies,
     };
   }
 }

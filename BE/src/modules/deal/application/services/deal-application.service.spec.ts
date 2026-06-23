@@ -1,6 +1,8 @@
 import {
   DealListSort,
   type CountDealsByStatusInput,
+  type CreateDealCompaniesInput,
+  type CreateDealContactsInput,
   type CreateDealFollowingActionLogInput,
   type CreateDealInput,
   type CreateDealMemoLogInput,
@@ -46,8 +48,8 @@ interface StoredDeal {
   readonly userId: string;
   readonly dealName: string;
   readonly dealCost: number;
-  readonly companyId: string;
-  readonly contactId: string;
+  readonly companyIds: string[];
+  readonly contactIds: string[];
   readonly dealStatus: DealStatusCode;
   readonly expectedEndDate: Date;
   readonly createdAt: Date;
@@ -157,8 +159,8 @@ class FakeDealRepository implements DealRepository {
       userId: input.userId,
       dealName: input.dealName,
       dealCost: input.dealCost,
-      companyId: input.companyId,
-      contactId: input.contactId,
+      companyIds: [],
+      contactIds: [],
       dealStatus: input.dealStatus,
       expectedEndDate: input.expectedEndDate,
       createdAt,
@@ -186,8 +188,6 @@ class FakeDealRepository implements DealRepository {
       ...deal,
       ...(input.dealName !== undefined ? { dealName: input.dealName } : {}),
       ...(input.dealCost !== undefined ? { dealCost: input.dealCost } : {}),
-      ...(input.companyId !== undefined ? { companyId: input.companyId } : {}),
-      ...(input.contactId !== undefined ? { contactId: input.contactId } : {}),
       ...(input.expectedEndDate !== undefined
         ? { expectedEndDate: input.expectedEndDate }
         : {}),
@@ -197,6 +197,22 @@ class FakeDealRepository implements DealRepository {
 
     this.deals = this.deals.map((item) => (item.id === dealId ? updated : item));
     return true;
+  }
+
+  async createDealCompanies(input: CreateDealCompaniesInput): Promise<void> {
+    this.replaceStoredDeal(input.dealId, { companyIds: [...input.companyIds] });
+  }
+
+  async replaceDealCompanies(input: CreateDealCompaniesInput): Promise<void> {
+    this.replaceStoredDeal(input.dealId, { companyIds: [...input.companyIds] });
+  }
+
+  async createDealContacts(input: CreateDealContactsInput): Promise<void> {
+    this.replaceStoredDeal(input.dealId, { contactIds: [...input.contactIds] });
+  }
+
+  async replaceDealContacts(input: CreateDealContactsInput): Promise<void> {
+    this.replaceStoredDeal(input.dealId, { contactIds: [...input.contactIds] });
   }
 
   // 기능 : fake 딜-제품 매핑을 생성합니다.
@@ -216,33 +232,33 @@ class FakeDealRepository implements DealRepository {
   }
 
   // 기능 : fake 회사 단건을 반환합니다.
-  async findCompany(
+  async findCompanies(
     userId: string,
-    companyId: string
-  ): Promise<DealCompanyRecord | null> {
+    companyIds: readonly string[]
+  ): Promise<DealCompanyRecord[]> {
     if (userId !== CURRENT_USER.id) {
-      return null;
+      return [];
     }
 
-    return this.companies.find((company) => company.id === companyId) ?? null;
+    return this.companies.filter((company) => companyIds.includes(company.id));
   }
 
   // 기능 : fake 담당자 단건을 반환합니다.
-  async findContact(
+  async findContacts(
     userId: string,
-    contactId: string
-  ): Promise<DealContactRecord | null> {
+    contactIds: readonly string[]
+  ): Promise<DealContactRecord[]> {
     if (userId !== CURRENT_USER.id) {
-      return null;
+      return [];
     }
 
-    return this.contacts.find((contact) => contact.id === contactId) ?? null;
+    return this.contacts.filter((contact) => contactIds.includes(contact.id));
   }
 
   // 기능 : fake 제품 목록을 반환합니다.
   async findProducts(
     userId: string,
-    productIds: string[]
+    productIds: readonly string[]
   ): Promise<DealProductRecord[]> {
     if (userId !== CURRENT_USER.id) {
       return [];
@@ -377,8 +393,8 @@ class FakeDealRepository implements DealRepository {
     input: {
       readonly userId: string;
       readonly search?: string;
-      readonly companyId?: string;
-      readonly contactId?: string;
+      readonly companyIds?: readonly string[];
+      readonly contactIds?: readonly string[];
       readonly dealStatus?: DealStatusCode;
       readonly sort?: DealListSort;
     }
@@ -392,11 +408,17 @@ class FakeDealRepository implements DealRepository {
         return false;
       }
 
-      if (input.companyId && deal.companyId !== input.companyId) {
+      if (
+        input.companyIds?.length &&
+        !deal.companyIds.some((companyId) => input.companyIds?.includes(companyId))
+      ) {
         return false;
       }
 
-      if (input.contactId && deal.contactId !== input.contactId) {
+      if (
+        input.contactIds?.length &&
+        !deal.contactIds.some((contactId) => input.contactIds?.includes(contactId))
+      ) {
         return false;
       }
 
@@ -432,8 +454,8 @@ class FakeDealRepository implements DealRepository {
       dealCost: deal.dealCost,
       dealStatus: deal.dealStatus,
       expectedEndDate: deal.expectedEndDate,
-      company: this.getCompany(deal.companyId),
-      contact: this.getContact(deal.contactId),
+      companies: deal.companyIds.map((companyId) => this.getCompany(companyId)),
+      contacts: deal.contactIds.map((contactId) => this.getContact(contactId)),
       latestFollowingAction: this.sortLogs(this.followingActionLogs)[0] ?? null,
       createdAt: deal.createdAt,
       updatedAt: deal.updatedAt,
@@ -484,6 +506,15 @@ class FakeDealRepository implements DealRepository {
   }
 
   // 기능 : fake 로그를 최신순으로 정렬합니다.
+  private replaceStoredDeal(
+    dealId: string,
+    fields: Pick<StoredDeal, "companyIds"> | Pick<StoredDeal, "contactIds">
+  ): void {
+    this.deals = this.deals.map((deal) =>
+      deal.id === dealId ? { ...deal, ...fields } : deal
+    );
+  }
+
   private sortLogs<T extends { readonly createdAt: Date; readonly id: string }>(
     records: T[]
   ): T[] {
@@ -544,8 +575,8 @@ function createService(
 function createDealCommand(): {
   readonly dealName: string;
   readonly dealCost: number;
-  readonly companyId: string;
-  readonly contactId: string;
+  readonly companyIds: string[];
+  readonly contactIds: string[];
   readonly productIds: string[];
   readonly dealStatus: DealStatusCode;
   readonly followingAction: string;
@@ -554,8 +585,8 @@ function createDealCommand(): {
   return {
     dealName: " A회사 신규 도입 ",
     dealCost: 3000000,
-    companyId: "company-1",
-    contactId: "contact-1",
+    companyIds: ["company-1"],
+    contactIds: ["contact-1"],
     productIds: ["product-1", "product-2"],
     dealStatus: DealStatusCode.INITIAL_CONTACT,
     followingAction: " 제안서 발송 ",
@@ -589,11 +620,11 @@ describe("DealApplicationService", () => {
     expect(followingAction.checkComplete).toBe(false);
     expect(result.dealName).toBe("A회사 신규 도입");
     expect(result.expectedEndDate).toBe("2026-01-05");
-    expect(result.company).toEqual({
+    expect(result.companies).toEqual([{
       id: "company-1",
       companyName: "A회사",
-    });
-    expect(result.contact.contactDepartment.departmentName).toBe("부장");
+    }]);
+    expect(result.contacts[0]?.contactDepartment.departmentName).toBe("부장");
     expect(result.products.map((product) => product.productName)).toEqual([
       "프리미엄 상품",
       "추가 상품",
@@ -641,8 +672,8 @@ describe("DealApplicationService", () => {
     await expect(
       service.createDeal(CURRENT_USER, {
         ...createDealCommand(),
-        companyId: "company-1",
-        contactId: "contact-2",
+        companyIds: ["company-1"],
+        contactIds: ["contact-2"],
       })
     ).rejects.toBeInstanceOf(RelatedResourceNotFoundError);
 

@@ -1,4 +1,4 @@
-import { Type } from "class-transformer";
+import { Transform, Type, type TransformFnParams } from "class-transformer";
 import {
   ArrayNotEmpty,
   IsBoolean,
@@ -16,6 +16,14 @@ import { DealStatusCode } from "@/modules/deal/domain/deal-status";
 
 const DATE_ONLY_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
 
+function toOptionalArray({ value }: TransformFnParams): string[] | undefined {
+  if (value === undefined) {
+    return undefined;
+  }
+
+  return Array.isArray(value) ? value : [value];
+}
+
 // 역할 : ListDealsQueryDto HTTP 목록 query 요청 값을 검증하기 위한 DTO입니다.
 export class DealStageCountsQueryDto {
   @IsOptional()
@@ -23,12 +31,16 @@ export class DealStageCountsQueryDto {
   search?: string;
 
   @IsOptional()
-  @IsUUID()
-  companyId?: string;
+  @Transform(toOptionalArray)
+  @IsArray()
+  @IsUUID(undefined, { each: true })
+  companyIds?: string[];
 
   @IsOptional()
-  @IsUUID()
-  contactId?: string;
+  @Transform(toOptionalArray)
+  @IsArray()
+  @IsUUID(undefined, { each: true })
+  contactIds?: string[];
 }
 
 export class ListDealsQueryDto {
@@ -43,12 +55,16 @@ export class ListDealsQueryDto {
   search?: string;
 
   @IsOptional()
-  @IsUUID()
-  companyId?: string;
+  @Transform(toOptionalArray)
+  @IsArray()
+  @IsUUID(undefined, { each: true })
+  companyIds?: string[];
 
   @IsOptional()
-  @IsUUID()
-  contactId?: string;
+  @Transform(toOptionalArray)
+  @IsArray()
+  @IsUUID(undefined, { each: true })
+  contactIds?: string[];
 
   @IsOptional()
   @IsEnum(DealStatusCode)
@@ -66,12 +82,16 @@ export class ExportDealsQueryDto {
   search?: string;
 
   @IsOptional()
-  @IsUUID()
-  companyId?: string;
+  @Transform(toOptionalArray)
+  @IsArray()
+  @IsUUID(undefined, { each: true })
+  companyIds?: string[];
 
   @IsOptional()
-  @IsUUID()
-  contactId?: string;
+  @Transform(toOptionalArray)
+  @IsArray()
+  @IsUUID(undefined, { each: true })
+  contactIds?: string[];
 
   @IsOptional()
   @IsEnum(DealStatusCode)
@@ -99,11 +119,15 @@ export class CreateDealDto {
   @Min(0)
   dealCost!: number;
 
-  @IsUUID()
-  companyId!: string;
+  @IsArray()
+  @ArrayNotEmpty()
+  @IsUUID(undefined, { each: true })
+  companyIds!: string[];
 
-  @IsUUID()
-  contactId!: string;
+  @IsArray()
+  @ArrayNotEmpty()
+  @IsUUID(undefined, { each: true })
+  contactIds!: string[];
 
   @IsArray()
   @ArrayNotEmpty()
@@ -134,12 +158,16 @@ export class UpdateDealDto {
   dealCost?: number;
 
   @IsOptional()
-  @IsUUID()
-  companyId?: string;
+  @IsArray()
+  @ArrayNotEmpty()
+  @IsUUID(undefined, { each: true })
+  companyIds?: string[];
 
   @IsOptional()
-  @IsUUID()
-  contactId?: string;
+  @IsArray()
+  @ArrayNotEmpty()
+  @IsUUID(undefined, { each: true })
+  contactIds?: string[];
 
   @IsOptional()
   @IsArray()

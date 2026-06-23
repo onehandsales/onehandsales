@@ -14,8 +14,8 @@ export const dealQueryKeys = {
       "stage-counts",
       {
         search: params.search ?? "",
-        companyId: params.companyId ?? "",
-        contactId: params.contactId ?? "",
+        companyIds: [...(params.companyIds ?? [])],
+        contactIds: [...(params.contactIds ?? [])],
       },
     ] as const,
 
@@ -27,8 +27,8 @@ export const dealQueryKeys = {
       {
         page: params.page ?? 1,
         search: params.search ?? "",
-        companyId: params.companyId ?? "",
-        contactId: params.contactId ?? "",
+        companyIds: [...(params.companyIds ?? [])],
+        contactIds: [...(params.contactIds ?? [])],
         dealStatus: params.dealStatus ?? "",
         sort: params.sort ?? "createdAtDesc",
       },

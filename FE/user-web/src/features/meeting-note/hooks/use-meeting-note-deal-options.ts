@@ -23,7 +23,10 @@ export function useMeetingNoteDealOptions(search: string) {
       return result.items.map<MeetingNoteDealOption>((deal) => ({
         id: deal.id,
         name: deal.dealName,
-        subtitle: [deal.company?.companyName, deal.contact?.username]
+        subtitle: [
+          deal.companies.map((company) => company.companyName).join(", "),
+          deal.contacts.map((contact) => contact.username).join(", "),
+        ]
           .filter(Boolean)
           .join(" / "),
       }));

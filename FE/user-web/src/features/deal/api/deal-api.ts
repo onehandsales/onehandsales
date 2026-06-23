@@ -23,12 +23,24 @@ import type {
 } from "@/features/deal/types/deal";
 
 // 기능 : 딜 단계별 개수 조회
+function appendArrayParam(
+  query: URLSearchParams,
+  key: string,
+  values?: readonly string[]
+) {
+  values?.forEach((value) => {
+    if (value) {
+      query.append(key, value);
+    }
+  });
+}
+
 export function getDealStageCounts(params: DealStageCountParams = {}) {
   const query = new URLSearchParams();
 
   if (params.search) query.set("search", params.search);
-  if (params.companyId) query.set("companyId", params.companyId);
-  if (params.contactId) query.set("contactId", params.contactId);
+  appendArrayParam(query, "companyIds", params.companyIds);
+  appendArrayParam(query, "contactIds", params.contactIds);
 
   const suffix = query.toString();
   return apiClient<DealStageCountsResponse>(
@@ -42,8 +54,8 @@ export function listDeals(params: DealListParams) {
 
   query.set("page", String(params.page ?? 1));
   if (params.search) query.set("search", params.search);
-  if (params.companyId) query.set("companyId", params.companyId);
-  if (params.contactId) query.set("contactId", params.contactId);
+  appendArrayParam(query, "companyIds", params.companyIds);
+  appendArrayParam(query, "contactIds", params.contactIds);
   if (params.dealStatus) query.set("dealStatus", params.dealStatus);
   if (params.sort) query.set("sort", params.sort);
 
@@ -98,8 +110,8 @@ export function getDealProductOptions() {
 export function exportDealsXlsx(params: DealExportParams): Promise<ApiBlobResponse> {
   const query = new URLSearchParams();
   if (params.search) query.set("search", params.search);
-  if (params.companyId) query.set("companyId", params.companyId);
-  if (params.contactId) query.set("contactId", params.contactId);
+  appendArrayParam(query, "companyIds", params.companyIds);
+  appendArrayParam(query, "contactIds", params.contactIds);
   if (params.dealStatus) query.set("dealStatus", params.dealStatus);
   if (params.sort) query.set("sort", params.sort);
 

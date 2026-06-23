@@ -35,8 +35,8 @@ const expectedEndDateSchema = z
 export const dealCreateFormSchema = z.object({
   dealName: z.string().trim().min(1, "딜명을 입력해주세요."),
   dealCost: dealCostSchema,
-  companyId: z.string().trim().min(1, "회사를 선택해주세요."),
-  contactId: z.string().trim().min(1, "담당자를 선택해주세요."),
+  companyIds: z.array(z.string()).min(1, "회사를 선택해주세요."),
+  contactIds: z.array(z.string()).min(1, "담당자를 선택해주세요."),
   productIds: z
     .array(z.string())
     .min(1, "제품을 1개 이상 선택해주세요."),
@@ -55,8 +55,8 @@ export type DealCreateFormValues = z.infer<typeof dealCreateFormSchema>;
 export const dealUpdateFormSchema = z.object({
   dealName: z.string().trim().min(1, "딜명을 입력해주세요."),
   dealCost: dealCostSchema,
-  companyId: z.string().trim().min(1, "회사를 선택해주세요."),
-  contactId: z.string().trim().min(1, "담당자를 선택해주세요."),
+  companyIds: z.array(z.string()).min(1, "회사를 선택해주세요."),
+  contactIds: z.array(z.string()).min(1, "담당자를 선택해주세요."),
   productIds: z
     .array(z.string())
     .min(1, "제품을 1개 이상 선택해주세요."),
@@ -92,8 +92,8 @@ export function toCreateDealInput(values: DealCreateFormValues): CreateDealInput
   return {
     dealName: values.dealName,
     dealCost: Number(values.dealCost),
-    companyId: values.companyId,
-    contactId: values.contactId,
+    companyIds: values.companyIds,
+    contactIds: values.contactIds,
     productIds: values.productIds,
     dealStatus: values.dealStatus,
     followingAction: values.followingAction,
@@ -110,8 +110,8 @@ export function toUpdateDealInput(
     dealId,
     dealName: values.dealName,
     dealCost: Number(values.dealCost),
-    companyId: values.companyId,
-    contactId: values.contactId,
+    companyIds: values.companyIds,
+    contactIds: values.contactIds,
     productIds: values.productIds,
     dealStatus: values.dealStatus,
     expectedEndDate: values.expectedEndDate,
@@ -121,8 +121,8 @@ export function toUpdateDealInput(
 export const emptyDealCreateFormValues: DealCreateFormValues = {
   dealName: "",
   dealCost: "",
-  companyId: "",
-  contactId: "",
+  companyIds: [],
+  contactIds: [],
   productIds: [],
   dealStatus: "INITIAL_CONTACT",
   followingAction: "",

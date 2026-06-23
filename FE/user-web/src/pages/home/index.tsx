@@ -457,7 +457,7 @@ function FollowUpTaskItem({ deal }: { readonly deal: DealListItem }) {
           {deal.latestFollowingAction?.followingAction ?? "-"}
         </p>
         <p className="mt-0.5 truncate text-[12px] text-[#64748B]">
-          {deal.dealName} · {deal.company.companyName}
+          {deal.dealName} · {getDealCompanyLabel(deal)}
         </p>
       </div>
       <span className="h-fit rounded-full bg-[#EFF6FF] px-2 py-1 text-[11px] font-semibold text-[#2563EB]">
@@ -546,7 +546,7 @@ function DeadlineDealItem({
       <div className="min-w-0">
         <p className="truncate text-[13px] font-semibold text-[#111827]">{deal.dealName}</p>
         <p className="mt-0.5 truncate text-[12px] text-[#64748B]">
-          {deal.company.companyName} · {formatWon(deal.dealCost)}
+          {getDealCompanyLabel(deal)} · {formatWon(deal.dealCost)}
         </p>
       </div>
       <span
@@ -745,6 +745,10 @@ function getActiveDealCount(counts: readonly DealStageCount[]) {
     .reduce((sum, item) => sum + item.count, 0);
 }
 
+function getDealCompanyLabel(deal: DealListItem) {
+  return deal.companies.map((company) => company.companyName).join(", ") || "-";
+}
+
 function buildRecentActivity(
   deals: readonly DealListItem[],
   meetingNotes: readonly MeetingNoteListItem[]
@@ -752,7 +756,7 @@ function buildRecentActivity(
   const dealItems: ActivityItem[] = deals.slice(0, 5).map((deal) => ({
     createdAt: deal.createdAt,
     href: `/deals/${deal.id}`,
-    meta: `${deal.company.companyName} · ${formatWon(deal.dealCost)}`,
+    meta: `${getDealCompanyLabel(deal)} · ${formatWon(deal.dealCost)}`,
     title: deal.dealName,
     type: "deal",
   }));

@@ -100,6 +100,11 @@
 | `POST /api/deals/{dealId}/memo-logs` | 거래 메모 로그를 생성합니다. |
 | `PATCH /api/deals/{dealId}/memo-logs/{memoLogId}` | 거래 메모 로그를 수정합니다. |
 
+Deal relation payload:
+- `POST /api/deals`, `PATCH /api/deals/{dealId}` use `companyIds`, `contactIds`, `productIds` arrays.
+- Every `contactIds[]` item must belong to one of the selected `companyIds[]`.
+- Deal list/detail responses return `companies[]` and `contacts[]`; detail additionally returns `products[]`.
+
 **Schedule**
 | API | 설명 |
 |---|---|

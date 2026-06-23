@@ -2,6 +2,8 @@ import { Prisma } from "@prisma/client";
 import {
   DealListSort,
   type CountDealsByStatusInput,
+  type CreateDealCompaniesInput,
+  type CreateDealContactsInput,
   type CreateDealProductsInput,
   type CreateDealFollowingActionLogInput,
   type CreateDealInput,
@@ -64,8 +66,12 @@ type DealListRow = {
   readonly dealCost: number;
   readonly dealStatus: string;
   readonly expectedEndDate: Date;
-  readonly company: DealCompanyRow;
-  readonly contact: DealContactRow;
+  readonly dealCompanies: Array<{
+    readonly company: DealCompanyRow;
+  }>;
+  readonly dealContacts: Array<{
+    readonly contact: DealContactRow;
+  }>;
   readonly followingActionLogs: DealFollowingActionLogRow[];
   readonly createdAt: Date;
   readonly updatedAt: Date;
@@ -205,8 +211,6 @@ export class PrismaDealRepository implements DealRepository {
         userId: input.userId,
         dealName: input.dealName,
         dealCost: input.dealCost,
-        companyId: input.companyId,
-        contactId: input.contactId,
         dealStatus: input.dealStatus,
         expectedEndDate: input.expectedEndDate,
       },
@@ -217,6 +221,62 @@ export class PrismaDealRepository implements DealRepository {
   }
 
   // 기능 : 딜에 연결할 제품 매핑을 생성합니다.
+  async createDealCompanies(input: CreateDealCompaniesInput): Promise<void> {
+    await Promise.all(
+      input.companyIds.map((companyId) =>
+        this.client.dealCompany.create({
+          data: {
+            userId: input.userId,
+            dealId: input.dealId,
+            companyId,
+          },
+          select: {
+            id: true,
+          },
+        })
+      )
+    );
+  }
+
+  async replaceDealCompanies(input: CreateDealCompaniesInput): Promise<void> {
+    await this.client.dealCompany.deleteMany({
+      where: {
+        userId: input.userId,
+        dealId: input.dealId,
+      },
+    });
+
+    await this.createDealCompanies(input);
+  }
+
+  async createDealContacts(input: CreateDealContactsInput): Promise<void> {
+    await Promise.all(
+      input.contactIds.map((contactId) =>
+        this.client.dealContact.create({
+          data: {
+            userId: input.userId,
+            dealId: input.dealId,
+            contactId,
+          },
+          select: {
+            id: true,
+          },
+        })
+      )
+    );
+  }
+
+  async replaceDealContacts(input: CreateDealContactsInput): Promise<void> {
+    await this.client.dealContact.deleteMany({
+      where: {
+        userId: input.userId,
+        dealId: input.dealId,
+      },
+    });
+
+    await this.createDealContacts(input);
+  }
+
   async createDealProducts(input: CreateDealProductsInput): Promise<void> {
     await Promise.all(
       input.productIds.map((productId) =>
@@ -260,8 +320,6 @@ export class PrismaDealRepository implements DealRepository {
       data: {
         ...(input.dealName !== undefined ? { dealName: input.dealName } : {}),
         ...(input.dealCost !== undefined ? { dealCost: input.dealCost } : {}),
-        ...(input.companyId !== undefined ? { companyId: input.companyId } : {}),
-        ...(input.contactId !== undefined ? { contactId: input.contactId } : {}),
         ...(input.expectedEndDate !== undefined
           ? { expectedEndDate: input.expectedEndDate }
           : {}),
@@ -275,13 +333,15 @@ export class PrismaDealRepository implements DealRepository {
   }
 
   // 기능 : 현재 사용자의 회사 단건을 조회합니다.
-  async findCompany(
+  async findCompanies(
     userId: string,
-    companyId: string
-  ): Promise<DealCompanyRecord | null> {
-    return this.client.company.findFirst({
+    companyIds: readonly string[]
+  ): Promise<DealCompanyRecord[]> {
+    return this.client.company.findMany({
       where: {
-        id: companyId,
+        id: {
+          in: [...companyIds],
+        },
         userId,
       },
       select: {
@@ -292,30 +352,32 @@ export class PrismaDealRepository implements DealRepository {
   }
 
   // 기능 : 현재 사용자의 담당자 단건을 조회합니다.
-  async findContact(
+  async findContacts(
     userId: string,
-    contactId: string
-  ): Promise<DealContactRecord | null> {
-    const contact = await this.client.contact.findFirst({
+    contactIds: readonly string[]
+  ): Promise<DealContactRecord[]> {
+    const contacts = await this.client.contact.findMany({
       where: {
-        id: contactId,
+        id: {
+          in: [...contactIds],
+        },
         userId,
       },
       select: this.createContactSelect(),
     });
 
-    return contact ? this.mapContact(contact) : null;
+    return contacts.map((contact) => this.mapContact(contact));
   }
 
   // 기능 : 현재 사용자의 제품 목록을 조회합니다.
   async findProducts(
     userId: string,
-    productIds: string[]
+    productIds: readonly string[]
   ): Promise<DealProductRecord[]> {
     return this.client.product.findMany({
       where: {
         id: {
-          in: productIds,
+          in: [...productIds],
         },
         userId,
       },
@@ -494,7 +556,7 @@ export class PrismaDealRepository implements DealRepository {
   private createDealWhere(
     input: Pick<
       ExportDealsInput,
-      "userId" | "search" | "companyId" | "contactId" | "dealStatus"
+      "userId" | "search" | "companyIds" | "contactIds" | "dealStatus"
     >
   ): Prisma.DealWhereInput {
     return {
@@ -506,8 +568,28 @@ export class PrismaDealRepository implements DealRepository {
             },
           }
         : {}),
-      ...(input.companyId ? { companyId: input.companyId } : {}),
-      ...(input.contactId ? { contactId: input.contactId } : {}),
+      ...(input.companyIds?.length
+        ? {
+            dealCompanies: {
+              some: {
+                companyId: {
+                  in: [...input.companyIds],
+                },
+              },
+            },
+          }
+        : {}),
+      ...(input.contactIds?.length
+        ? {
+            dealContacts: {
+              some: {
+                contactId: {
+                  in: [...input.contactIds],
+                },
+              },
+            },
+          }
+        : {}),
       ...(input.dealStatus ? { dealStatus: input.dealStatus } : {}),
     };
   }
@@ -532,14 +614,24 @@ export class PrismaDealRepository implements DealRepository {
   // 기능 : 딜 목록 조회에 필요한 relation include 조건을 생성합니다.
   private createDealListInclude() {
     return {
-      company: {
+      dealCompanies: {
         select: {
-          id: true,
-          companyName: true,
+          company: {
+            select: {
+              id: true,
+              companyName: true,
+            },
+          },
         },
+        orderBy: [{ createdAt: "asc" }, { id: "asc" }],
       },
-      contact: {
-        select: this.createContactSelect(),
+      dealContacts: {
+        select: {
+          contact: {
+            select: this.createContactSelect(),
+          },
+        },
+        orderBy: [{ createdAt: "asc" }, { id: "asc" }],
       },
       followingActionLogs: {
         select: this.createFollowingActionLogSelect(),
@@ -644,11 +736,13 @@ export class PrismaDealRepository implements DealRepository {
       dealCost: deal.dealCost,
       dealStatus: this.mapDealStatus(deal.dealStatus),
       expectedEndDate: deal.expectedEndDate,
-      company: {
-        id: deal.company.id,
-        companyName: deal.company.companyName,
-      },
-      contact: this.mapContact(deal.contact),
+      companies: deal.dealCompanies.map((dealCompany) => ({
+        id: dealCompany.company.id,
+        companyName: dealCompany.company.companyName,
+      })),
+      contacts: deal.dealContacts.map((dealContact) =>
+        this.mapContact(dealContact.contact)
+      ),
       latestFollowingAction: deal.followingActionLogs[0] ?? null,
       createdAt: deal.createdAt,
       updatedAt: deal.updatedAt,

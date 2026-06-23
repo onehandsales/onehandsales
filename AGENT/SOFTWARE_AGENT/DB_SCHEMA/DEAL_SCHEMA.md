@@ -8,6 +8,7 @@
 
 - `BE/prisma/migrations/20260612000000_add_deal_domain/migration.sql`
 - `BE/prisma/migrations/20260612010000_add_deal_product_join/migration.sql`
+- `BE/prisma/migrations/20260623010000_add_deal_company_contact_joins/migration.sql`
 - `BE/prisma/migrations/20260614020000_add_schedule_domain/migration.sql`
 - `BE/prisma/migrations/20260615000000_add_meeting_note_domain/migration.sql`
 
@@ -20,6 +21,7 @@
 - `BE/prisma/schema.prisma`
 - `BE/prisma/migrations/20260612000000_add_deal_domain/migration.sql`
 - `BE/prisma/migrations/20260612010000_add_deal_product_join/migration.sql`
+- `BE/prisma/migrations/20260623010000_add_deal_company_contact_joins/migration.sql`
 - `TODO/DONE/SCHEDULE_DOMAIN_PLAN/README.md`
 - `BE/prisma/migrations/20260614020000_add_schedule_domain/migration.sql`
 - `TODO/DONE/MEETING_NOTE_MANUAL_PLAN/README.md`
@@ -30,6 +32,8 @@
 Deal 기본 도메인 1차 구현 범위는 다음 테이블만 포함한다.
 
 - `Deal`
+- `DealCompany`
+- `DealContact`
 - `DealProduct`
 - `DealFollowingActionLog`
 - `DealMemoLog`
@@ -44,8 +48,6 @@ Deal 기본 도메인 1차 구현 범위는 다음 테이블만 포함한다.
 | `userId` | uuid | 아니오 | 딜을 소유한 사용자 ID |
 | `dealName` | string | 아니오 | 딜 이름 |
 | `dealCost` | int | 아니오 | 딜 금액. 정수, 0 이상 |
-| `companyId` | uuid | 아니오 | 연결 회사 ID |
-| `contactId` | uuid | 아니오 | 연결 담당자 ID |
 | `dealStatus` | string | 아니오 | 코드 레벨 enum의 English code |
 | `expectedEndDate` | date | 아니오 | 예상 마감일. API에서는 `YYYY-MM-DD` |
 | `createdAt` | datetime | 아니오 | 생성일 |
@@ -54,8 +56,8 @@ Deal 기본 도메인 1차 구현 범위는 다음 테이블만 포함한다.
 관계:
 
 - `Deal.userId` -> `User.id`
-- `Deal.companyId` -> `Company.id`
-- `Deal.contactId` -> `Contact.id`
+- `Deal` 1:N `DealCompany`
+- `Deal` 1:N `DealContact`
 - `Deal` 1:N `DealProduct`
 - `Deal` 1:N `DealFollowingActionLog`
 - `Deal` 1:N `DealMemoLog`
@@ -67,24 +69,49 @@ Deal 기본 도메인 1차 구현 범위는 다음 테이블만 포함한다.
 - 상태는 DB enum이 아니라 Backend 코드 레벨 enum으로 관리한다.
 - DB에는 English code 문자열만 저장한다.
 - API 응답은 code와 label을 함께 제공한다.
-- 외부 FK 응답은 flat field가 아니라 `company`, `contact`, `products` 같은 객체/배열로 제공한다.
-- 딜 하나는 회사 하나, 담당자 하나에 연결된다.
+- 외부 FK 응답은 flat field가 아니라 `companies`, `contacts`, `products` 같은 배열로 제공한다.
+- 딜 하나는 여러 회사, 여러 담당자에 연결될 수 있다.
 - 딜 하나는 `DealProduct`를 통해 여러 제품에 연결될 수 있다.
 - 제품 하나는 `DealProduct`를 통해 여러 딜에 포함될 수 있다.
 - 딜 하나는 `ScheduleDeal`을 통해 여러 일정에 연결될 수 있다.
 - 딜 하나는 `MeetingNoteDeal`을 통해 여러 회의록 snapshot에 연결될 수 있다.
-- 딜 생성/수정 시 `contact.companyId`가 요청 `companyId`와 같은지 검증한다.
+- 딜 생성/수정 시 모든 `contactIds[]`가 선택된 `companyIds[]` 중 하나에 소속되는지 검증한다.
 - 목록 API는 10개 단위 page-number pagination이며 `totalCount`, `totalPages`를 반환한다.
 - 목록 기본 정렬은 `createdAt DESC`다.
 - 목록 정렬은 `createdAtDesc`, `dealCostDesc`, `dealCostAsc`, `expectedEndDateAsc`를 지원한다.
 - User Web 정렬 select label은 각각 `최신순`, `금액 높은순`, `금액 낮은 순`, `마감일순`이다.
 - 검색은 `dealName`만 대상으로 한다.
-- 목록 필터는 `dealStatus`, `companyId`, `contactId`를 제공한다.
-- stage count 필터는 `search`, `companyId`, `contactId`를 제공한다.
-- export 필터는 목록과 같은 `search`, `companyId`, `contactId`, `dealStatus`, `sort`를 제공하되 `page`는 받지 않는다.
+- 목록 필터는 `dealStatus`, `companyIds`, `contactIds`를 제공한다.
+- stage count 필터는 `search`, `companyIds`, `contactIds`를 제공한다.
+- export 필터는 목록과 같은 `search`, `companyIds`, `contactIds`, `dealStatus`, `sort`를 제공하되 `page`는 받지 않는다.
 - 목록/export 응답에는 Product와 최근수정일을 포함하지 않는다.
 
-## 4. DealProduct
+## 4. DealCompany / DealContact
+
+딜과 회사, 딜과 담당자의 N:M 관계를 저장한다.
+
+| 테이블 | 주요 컬럼 | unique | 설명 |
+|---|---|---|---|
+| `DealCompany` | `id`, `userId`, `dealId`, `companyId`, `createdAt`, `updatedAt` | `dealId + companyId` | 딜-회사 연결 |
+| `DealContact` | `id`, `userId`, `dealId`, `contactId`, `createdAt`, `updatedAt` | `dealId + contactId` | 딜-담당자 연결 |
+
+관계:
+
+- `DealCompany.userId` -> `User.id`
+- `DealCompany.dealId` -> `Deal.id`
+- `DealCompany.companyId` -> `Company.id`
+- `DealContact.userId` -> `User.id`
+- `DealContact.dealId` -> `Deal.id`
+- `DealContact.contactId` -> `Contact.id`
+
+정책:
+
+- 딜 하나는 여러 회사와 연결될 수 있다.
+- 딜 하나는 여러 담당자와 연결될 수 있다.
+- 딜 생성/수정 시 모든 `contactIds[]`는 선택된 `companyIds[]` 중 하나에 소속되어야 한다.
+- 현재 대표 회사/대표 담당자 컬럼은 두지 않는다.
+
+## 5. DealProduct
 
 딜과 제품의 N:M 관계를 저장한다.
 
@@ -112,7 +139,7 @@ Deal 기본 도메인 1차 구현 범위는 다음 테이블만 포함한다.
 - 딜 생성 요청은 `productIds` 배열을 필수로 받으며 최소 1개 이상이어야 한다.
 - 딜 수정 요청은 `productIds` 배열을 선택적으로 받을 수 있고, 전달되면 기존 연결을 새 목록으로 교체한다.
 
-## 5. DealFollowingActionLog
+## 6. DealFollowingActionLog
 
 딜의 다음 행동 로그를 저장한다.
 
@@ -135,7 +162,7 @@ Deal 기본 도메인 1차 구현 범위는 다음 테이블만 포함한다.
 - 목록 조회는 10개 단위 `createdAt DESC, id DESC` cursor 기반 incremental loading으로 제공한다.
 - 딜 목록의 다음 행동은 가장 최근에 생성된 로그 1개만 표시한다.
 
-## 6. DealMemoLog
+## 7. DealMemoLog
 
 딜의 일반 메모 로그를 저장한다.
 
@@ -155,7 +182,7 @@ Deal 기본 도메인 1차 구현 범위는 다음 테이블만 포함한다.
 - 단건 수정 API는 `memoType`, `memo`를 수정할 수 있다.
 - 목록 조회는 10개 단위 `createdAt DESC, id DESC` cursor 기반 incremental loading으로 제공한다.
 
-## 7. DealStatus
+## 8. DealStatus
 
 DB에는 아래 string code만 저장한다.
 
@@ -168,15 +195,21 @@ DB에는 아래 string code만 저장한다.
 | `WON` | 성사 |
 | `LOST` | 실패 |
 
-## 8. 권장 인덱스
+## 9. 권장 인덱스
 
 - `Deal.userId + Deal.createdAt`
 - `Deal.userId + Deal.dealName`
 - `Deal.userId + Deal.dealStatus`
 - `Deal.userId + Deal.expectedEndDate`
 - `Deal.userId + Deal.dealCost`
-- `Deal.companyId`
-- `Deal.contactId`
+- `DealCompany.dealId + DealCompany.companyId` unique
+- `DealCompany.userId + DealCompany.dealId`
+- `DealCompany.userId + DealCompany.companyId`
+- `DealCompany.companyId`
+- `DealContact.dealId + DealContact.contactId` unique
+- `DealContact.userId + DealContact.dealId`
+- `DealContact.userId + DealContact.contactId`
+- `DealContact.contactId`
 - `DealProduct.dealId + DealProduct.productId` unique
 - `DealProduct.userId + DealProduct.dealId`
 - `DealProduct.userId + DealProduct.productId`
@@ -187,7 +220,7 @@ DB에는 아래 string code만 저장한다.
 - `DealMemoLog.dealId + DealMemoLog.createdAt`
 - `DealMemoLog.userId + DealMemoLog.dealId`
 
-## 9. 현재 제외 범위
+## 10. 현재 제외 범위
 
 다음 테이블과 필드는 Deal 기본 도메인 1차 구현에 포함하지 않는다.
 
@@ -203,7 +236,7 @@ DB에는 아래 string code만 저장한다.
 - `metadata`
 - `nextActionDueAt`
 
-## 10. 관련 문서
+## 11. 관련 문서
 
 - `AGENT/PM_AGENT/PLANNING/DATA_MODEL.md`
 - `TODO/DONE/DEAL_DOMAIN_PLAN/COMMON/API-SPEC/DEAL_API.md`
