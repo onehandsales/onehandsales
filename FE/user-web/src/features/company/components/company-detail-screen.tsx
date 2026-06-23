@@ -390,42 +390,44 @@ function ConnectedContactsTable({
       {isLoading ? (
         <div className="flex flex-col">
           {[1, 2, 3].map((i) => (
-            <div className="h-[50px] animate-pulse border-b border-[#F3F4F6] bg-white/60" key={i} />
+            <div className="h-[58px] animate-pulse border-b border-[#F3F4F6] bg-white/60" key={i} />
           ))}
         </div>
       ) : contacts.length === 0 ? (
         <p className="px-4 py-4 text-[13px] text-[#9CA3AF]">연결된 담당자가 없습니다.</p>
       ) : (
         <>
-          <div className={hasMore ? "max-h-[250px] overflow-y-auto" : ""}>
+          <div className={hasMore ? "max-h-[290px] overflow-y-auto" : ""}>
             {visible.map((contact) => {
               const jobGradeName = contact.contactJobGrade?.jobGradeName;
 
               return (
                 <Link
-                  className="flex h-[50px] items-center gap-3 border-b border-[#F3F4F6] bg-white px-4 hover:bg-[#F9FAFB] transition-colors last:border-0"
+                  className="flex h-[58px] items-center gap-3 border-b border-[#F3F4F6] bg-white px-4 hover:bg-[#F9FAFB] transition-colors last:border-0"
                   key={contact.id}
                   to={`/contacts/${contact.id}`}
                 >
                   <div className="h-6 w-6 shrink-0 rounded-full bg-[#DBEAFE]" />
-                  <div className="grid min-w-0 flex-1 grid-cols-[minmax(120px,160px)_60px_minmax(180px,1fr)_120px] items-center gap-3 whitespace-nowrap text-[12px] font-medium text-[#6B7280]">
-                    <div className="flex min-w-0 items-center gap-1.5">
-                      <span className="truncate text-[13px] font-extrabold text-[#111827]">
-                        {contact.username}
-                      </span>
-                      {jobGradeName ? (
-                        <span className="shrink-0 text-[13px] font-extrabold text-[#111827]">
-                          {jobGradeName}
+                  <div className="grid min-w-0 flex-1 grid-cols-[minmax(132px,1fr)_minmax(160px,1.1fr)_120px] items-center gap-3 whitespace-nowrap text-[12px] font-medium text-[#6B7280] max-sm:grid-cols-[minmax(0,1fr)_112px] max-sm:grid-rows-2">
+                    <div className="min-w-0">
+                      <div className="flex min-w-0 items-center gap-1.5">
+                        <span className="truncate text-[13px] font-extrabold text-[#111827]">
+                          {contact.username}
                         </span>
-                      ) : null}
+                        {jobGradeName ? (
+                          <span className="shrink-0 text-[13px] font-extrabold text-[#111827]">
+                            {jobGradeName}
+                          </span>
+                        ) : null}
+                      </div>
+                      <span className="mt-0.5 block min-w-0 truncate text-[11px] font-semibold leading-4 text-[#9CA3AF]">
+                        {contact.contactDepartment.departmentName}
+                      </span>
                     </div>
-                    <span className="min-w-0 truncate">
-                      {contact.contactDepartment.departmentName}
-                    </span>
-                    <span className="min-w-0 truncate">
+                    <span className="min-w-0 truncate max-sm:col-start-1 max-sm:row-start-2">
                       {contact.email}
                     </span>
-                    <span className="min-w-0 truncate">
+                    <span className="min-w-0 truncate text-right text-[#374151] max-sm:col-start-2 max-sm:row-span-2 max-sm:row-start-1">
                       {contact.mobile}
                     </span>
                   </div>
