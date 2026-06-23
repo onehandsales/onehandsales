@@ -1,18 +1,15 @@
 import {
   Building2,
-  ChevronDown,
   ChevronLeft,
   ChevronRight,
   Plus,
   Pencil,
-  RotateCcw,
-  Search,
   Trash2,
-  X,
 } from "lucide-react";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Toast } from "@/components/ui/toast";
+import { SummaryTaxonomySelect } from "@/components/ui/summary-taxonomy-select";
 import {
   useCompanyContacts,
   useCompanyDeals,
@@ -59,7 +56,6 @@ import {
 } from "@/features/company/schemas/company-schema";
 import { PageHeader } from "@/components/layout/page-header";
 import { getApiErrorMessage } from "@/lib/api-client";
-import { cn } from "@/utils/cn";
 import { formatDate, formatDateTime } from "@/utils/format";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -378,9 +374,10 @@ function CompanySummaryHeader({
         <div className="hidden h-5 w-px shrink-0 bg-[#E5E7EB] md:block" />
 
         <input type="hidden" {...register("companyFieldId")} />
-        <CompanySummaryTaxonomySelect
+        <SummaryTaxonomySelect
           emptyText="조건에 맞는 분야가 없습니다."
           getLabel={(field) => field.field}
+          id="company-summary-edit-field"
           invalid={Boolean(errors.companyFieldId)}
           itemKindLabel="분야"
           items={fields}
@@ -396,9 +393,10 @@ function CompanySummaryHeader({
         />
 
         <input type="hidden" {...register("companyRegionId")} />
-        <CompanySummaryTaxonomySelect
+        <SummaryTaxonomySelect
           emptyText="조건에 맞는 지역이 없습니다."
           getLabel={(region) => region.region}
+          id="company-summary-edit-region"
           invalid={Boolean(errors.companyRegionId)}
           itemKindLabel="지역"
           items={regions}
@@ -482,331 +480,6 @@ function CompanySummaryHeader({
       </div>
     </div>
   );
-}
-
-type CompanySummaryTaxonomyItem = {
-  readonly id: string;
-};
-
-type CompanySummaryTaxonomyTone = "amber" | "green";
-
-type CompanySummaryTaxonomyPopoverPosition = {
-  readonly left: number;
-  readonly top: number;
-  readonly width: number;
-};
-
-function CompanySummaryTaxonomySelect<TItem extends CompanySummaryTaxonomyItem>({
-  emptyText,
-  getLabel,
-  invalid,
-  itemKindLabel,
-  items,
-  selectedId,
-  tone,
-  widthClassName,
-  onSelect,
-}: {
-  readonly emptyText: string;
-  readonly getLabel: (item: TItem) => string;
-  readonly invalid: boolean;
-  readonly itemKindLabel: string;
-  readonly items: readonly TItem[];
-  readonly selectedId: string;
-  readonly tone: CompanySummaryTaxonomyTone;
-  readonly widthClassName: string;
-  readonly onSelect: (id: string) => void;
-}) {
-  const [isOpen, setIsOpen] = useState(false);
-  const [search, setSearch] = useState("");
-  const [popoverPosition, setPopoverPosition] =
-    useState<CompanySummaryTaxonomyPopoverPosition | null>(null);
-  const wrapperRef = useRef<HTMLDivElement>(null);
-  const inputRef = useRef<HTMLInputElement>(null);
-  const selectedItem = useMemo(
-    () => items.find((item) => item.id === selectedId),
-    [items, selectedId]
-  );
-  const selectedLabel = selectedItem ? getLabel(selectedItem) : "";
-  const normalizedQuery = normalizeCompanySummaryTaxonomyText(search);
-  const filteredItems =
-    normalizedQuery.length > 0
-      ? items.filter((item) =>
-          normalizeCompanySummaryTaxonomyText(getLabel(item)).includes(
-            normalizedQuery
-          )
-        )
-      : items;
-  const inputValue = isOpen ? search : selectedLabel;
-
-  useEffect(() => {
-    if (!isOpen) {
-      setSearch("");
-    }
-  }, [isOpen]);
-
-  useEffect(() => {
-    if (!isOpen) {
-      return;
-    }
-
-    const updatePopoverPosition = () => {
-      if (!inputRef.current) {
-        return;
-      }
-
-      setPopoverPosition(
-        getCompanySummaryTaxonomyPopoverPosition(inputRef.current)
-      );
-    };
-    const onMouseDown = (event: MouseEvent) => {
-      if (
-        wrapperRef.current &&
-        !wrapperRef.current.contains(event.target as Node)
-      ) {
-        setIsOpen(false);
-        setSearch("");
-      }
-    };
-
-    updatePopoverPosition();
-    document.addEventListener("mousedown", onMouseDown);
-    window.addEventListener("resize", updatePopoverPosition);
-    window.addEventListener("scroll", updatePopoverPosition, true);
-
-    return () => {
-      document.removeEventListener("mousedown", onMouseDown);
-      window.removeEventListener("resize", updatePopoverPosition);
-      window.removeEventListener("scroll", updatePopoverPosition, true);
-    };
-  }, [isOpen]);
-
-  const openOptions = (nextSearch: string) => {
-    setSearch(nextSearch);
-
-    if (inputRef.current) {
-      setPopoverPosition(
-        getCompanySummaryTaxonomyPopoverPosition(inputRef.current)
-      );
-    }
-
-    setIsOpen(true);
-  };
-
-  const selectItem = (id: string) => {
-    onSelect(id);
-    setSearch("");
-    setIsOpen(false);
-    inputRef.current?.blur();
-  };
-
-  const clearSelection = () => {
-    onSelect("");
-    setSearch("");
-    inputRef.current?.focus();
-    openOptions("");
-  };
-
-  return (
-    <div className="flex items-center gap-1.5 text-[13px]">
-      <label
-        className="shrink-0 font-semibold text-[#9CA3AF]"
-        htmlFor={`company-summary-edit-${itemKindLabel}`}
-      >
-        {itemKindLabel}
-      </label>
-      <div ref={wrapperRef} className={cn("relative shrink-0", widthClassName)}>
-        <div className="relative">
-          {isOpen ? (
-            <Search className="pointer-events-none absolute left-3 top-1/2 h-3 w-3 -translate-y-1/2 text-[#9CA3AF]" />
-          ) : null}
-          <input
-            ref={inputRef}
-            aria-autocomplete="list"
-            aria-expanded={isOpen}
-            aria-invalid={invalid}
-            aria-label={`${itemKindLabel} 선택`}
-            autoComplete="off"
-            className={cn(
-              "h-8 w-full min-w-0 rounded-full border outline-none transition",
-              isOpen
-                ? "border-[#2563EB] bg-white pl-8 pr-7 text-[#111827] ring-1 ring-[#2563EB]"
-                : selectedId
-                  ? cn(
-                      getCompanySummaryTaxonomyInputSelectedClass(tone),
-                      "cursor-pointer pl-3.5 pr-7"
-                    )
-                  : "cursor-pointer border-[#E2E5EC] bg-transparent pl-3.5 pr-7 text-[#6B7280] hover:border-[#D1D5DB] hover:bg-[#F5F6F8]",
-              invalid && "border-[#FCA5A5] ring-1 ring-[#FCA5A5]"
-            )}
-            id={`company-summary-edit-${itemKindLabel}`}
-            onChange={(event) => openOptions(event.target.value)}
-            onFocus={() => openOptions("")}
-            onKeyDown={(event) => {
-              if (event.key === "Escape") {
-                setIsOpen(false);
-                setSearch("");
-                inputRef.current?.blur();
-                return;
-              }
-
-              if (event.key === "Enter") {
-                const firstItem = filteredItems[0];
-                if (!firstItem) {
-                  return;
-                }
-
-                event.preventDefault();
-                selectItem(firstItem.id);
-              }
-            }}
-            placeholder={`${itemKindLabel} 선택`}
-            value={inputValue}
-          />
-          {selectedId || search ? (
-            <button
-              aria-label={`${itemKindLabel} 선택 지우기`}
-              className="absolute right-1 top-1/2 grid h-7 w-7 -translate-y-1/2 place-items-center rounded-full text-[#9CA3AF] transition hover:bg-white hover:text-[#374151]"
-              onClick={clearSelection}
-              type="button"
-            >
-              <X className="h-3.5 w-3.5" />
-            </button>
-          ) : (
-            <ChevronDown
-              className={cn(
-                "pointer-events-none absolute right-2 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-[#9CA3AF] transition-transform",
-                isOpen && "rotate-180"
-              )}
-            />
-          )}
-        </div>
-
-        {isOpen ? (
-          <div
-            className={cn(
-              "fixed z-50 overflow-hidden rounded-md border border-[#E6EAF0] bg-white shadow-lg",
-              !popoverPosition && "invisible"
-            )}
-            style={{
-              left: popoverPosition?.left ?? 0,
-              top: popoverPosition?.top ?? 0,
-              width: popoverPosition?.width ?? 256,
-            }}
-          >
-            <button
-              className={cn(
-                "flex h-9 w-full items-center gap-1.5 px-3 text-left text-[13px] transition hover:bg-[#F9FAFB]",
-                selectedId
-                  ? "font-medium text-[#475569]"
-                  : "font-semibold text-[#1D4ED8]"
-              )}
-              onClick={() => selectItem("")}
-              type="button"
-            >
-              <RotateCcw className="h-3.5 w-3.5" />
-              {itemKindLabel} 초기화
-            </button>
-
-            <div className="max-h-[184px] overflow-y-auto border-t border-[#E6EAF0] py-1">
-              {filteredItems.length === 0 ? (
-                <p className="px-3 py-3 text-[12px] text-[#9CA3AF]">
-                  {emptyText}
-                </p>
-              ) : (
-                filteredItems.map((item) => {
-                  const isSelected = selectedId === item.id;
-
-                  return (
-                    <button
-                      className={cn(
-                        "flex h-8 w-full min-w-0 items-center gap-2 px-3 text-left text-[13px] transition hover:bg-[#F9FAFB]",
-                        isSelected &&
-                          getCompanySummaryTaxonomyItemSelectedClass(tone)
-                      )}
-                      key={item.id}
-                      onClick={() => selectItem(item.id)}
-                      type="button"
-                    >
-                      <span
-                        className={cn(
-                          "grid h-3.5 w-3.5 shrink-0 place-items-center rounded-full border",
-                          isSelected
-                            ? getCompanySummaryTaxonomyCheckBorderClass(tone)
-                            : "border-[#CBD5E1]"
-                        )}
-                      >
-                        {isSelected ? (
-                          <span
-                            className={cn(
-                              "h-1.5 w-1.5 rounded-full",
-                              getCompanySummaryTaxonomyCheckDotClass(tone)
-                            )}
-                          />
-                        ) : null}
-                      </span>
-                      <span className="min-w-0 flex-1 truncate">
-                        {getLabel(item)}
-                      </span>
-                    </button>
-                  );
-                })
-              )}
-            </div>
-          </div>
-        ) : null}
-      </div>
-    </div>
-  );
-}
-
-function getCompanySummaryTaxonomyPopoverPosition(
-  input: HTMLInputElement
-): CompanySummaryTaxonomyPopoverPosition {
-  const rect = input.getBoundingClientRect();
-  const viewportWidth = window.innerWidth;
-  const margin = 16;
-  const width = Math.min(256, Math.max(200, viewportWidth - margin * 2));
-  const maxLeft = Math.max(margin, viewportWidth - width - margin);
-  const left = Math.min(Math.max(rect.left, margin), maxLeft);
-
-  return {
-    left,
-    top: rect.bottom + 4,
-    width,
-  };
-}
-
-function normalizeCompanySummaryTaxonomyText(value: string) {
-  return value.trim().toLowerCase();
-}
-
-function getCompanySummaryTaxonomyInputSelectedClass(
-  tone: CompanySummaryTaxonomyTone
-) {
-  return tone === "amber"
-    ? "border-[#FDE68A] bg-[#FFFBEB] font-semibold text-[#B45309]"
-    : "border-[#BBF7D0] bg-[#F0FDF4] font-semibold text-[#15803D]";
-}
-
-function getCompanySummaryTaxonomyItemSelectedClass(
-  tone: CompanySummaryTaxonomyTone
-) {
-  return tone === "amber"
-    ? "bg-[#FFFBEB] font-semibold text-[#B45309]"
-    : "bg-[#F0FDF4] font-semibold text-[#15803D]";
-}
-
-function getCompanySummaryTaxonomyCheckBorderClass(
-  tone: CompanySummaryTaxonomyTone
-) {
-  return tone === "amber" ? "border-[#B45309]" : "border-[#15803D]";
-}
-
-function getCompanySummaryTaxonomyCheckDotClass(
-  tone: CompanySummaryTaxonomyTone
-) {
-  return tone === "amber" ? "bg-[#B45309]" : "bg-[#15803D]";
 }
 
 // ── Connected Contacts Table ────────────────────────────────────────

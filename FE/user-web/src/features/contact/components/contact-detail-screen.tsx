@@ -9,8 +9,9 @@ import {
   Trash2,
   UserRound,
 } from "lucide-react";
-import { type ReactNode, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { SummaryTaxonomySelect } from "@/components/ui/summary-taxonomy-select";
 import { Toast } from "@/components/ui/toast";
 import {
   useContactDeals,
@@ -334,11 +335,16 @@ function ContactSummaryHeader({
     register,
     handleSubmit,
     reset,
+    setValue,
+    watch,
     formState: { errors },
   } = useForm<ContactEditFormValues>({
     resolver: zodResolver(contactEditFormSchema),
     defaultValues: toContactEditFormValues(contact),
   });
+  const selectedCompanyId = watch("companyId");
+  const selectedDepartmentId = watch("contactDepartmentId");
+  const selectedJobGradeId = watch("contactJobGradeId");
 
   useEffect(() => {
     if (isEditing) {
@@ -386,47 +392,62 @@ function ContactSummaryHeader({
 
         <div className="hidden h-5 w-px shrink-0 bg-[#E5E7EB] md:block" />
 
-        <InlineSelect
+        <input type="hidden" {...register("companyId")} />
+        <SummaryTaxonomySelect
+          emptyText="조건에 맞는 회사가 없습니다."
+          getLabel={(company) => company.companyName}
           id="contact-summary-edit-company"
-          label="회사"
-          register={register("companyId")}
+          invalid={Boolean(errors.companyId)}
+          itemKindLabel="회사"
+          items={companyOptions}
+          selectedId={selectedCompanyId}
+          tone="blue"
           widthClassName="w-[150px]"
-        >
-          <option value="">회사 선택</option>
-          {companyOptions.map((company) => (
-            <option key={company.id} value={company.id}>
-              {company.companyName}
-            </option>
-          ))}
-        </InlineSelect>
+          onSelect={(id) =>
+            setValue("companyId", id, {
+              shouldDirty: true,
+              shouldValidate: true,
+            })
+          }
+        />
 
-        <InlineSelect
+        <input type="hidden" {...register("contactDepartmentId")} />
+        <SummaryTaxonomySelect
+          emptyText="조건에 맞는 부서가 없습니다."
+          getLabel={(department) => department.departmentName}
           id="contact-summary-edit-department"
-          label="부서"
-          register={register("contactDepartmentId")}
-          widthClassName="w-[116px]"
-        >
-          <option value="">부서 선택</option>
-          {departments.map((department) => (
-            <option key={department.id} value={department.id}>
-              {department.departmentName}
-            </option>
-          ))}
-        </InlineSelect>
+          invalid={Boolean(errors.contactDepartmentId)}
+          itemKindLabel="부서"
+          items={departments}
+          selectedId={selectedDepartmentId}
+          tone="amber"
+          widthClassName="w-[128px]"
+          onSelect={(id) =>
+            setValue("contactDepartmentId", id, {
+              shouldDirty: true,
+              shouldValidate: true,
+            })
+          }
+        />
 
-        <InlineSelect
+        <input type="hidden" {...register("contactJobGradeId")} />
+        <SummaryTaxonomySelect
+          emptyText="조건에 맞는 직급이 없습니다."
+          getLabel={(jobGrade) => jobGrade.jobGradeName}
           id="contact-summary-edit-job-grade"
-          label="직급"
-          register={register("contactJobGradeId")}
-          widthClassName="w-[104px]"
-        >
-          <option value="">직급 선택</option>
-          {jobGrades.map((jobGrade) => (
-            <option key={jobGrade.id} value={jobGrade.id}>
-              {jobGrade.jobGradeName}
-            </option>
-          ))}
-        </InlineSelect>
+          invalid={Boolean(errors.contactJobGradeId)}
+          itemKindLabel="직급"
+          items={jobGrades}
+          selectedId={selectedJobGradeId}
+          tone="green"
+          widthClassName="w-[116px]"
+          onSelect={(id) =>
+            setValue("contactJobGradeId", id, {
+              shouldDirty: true,
+              shouldValidate: true,
+            })
+          }
+        />
 
         <div className="hidden h-5 w-px shrink-0 bg-[#E5E7EB] lg:block" />
 
@@ -979,35 +1000,6 @@ function ContactInfoChip({
       <Icon className="h-3.5 w-3.5 text-[#9CA3AF]" />
       {label}
     </span>
-  );
-}
-
-function InlineSelect({
-  id,
-  label,
-  register,
-  widthClassName,
-  children,
-}: {
-  readonly id: string;
-  readonly label: string;
-  readonly register: UseFormRegisterReturn;
-  readonly widthClassName: string;
-  readonly children: ReactNode;
-}) {
-  return (
-    <div className="flex items-center gap-1.5 text-[13px]">
-      <label className="shrink-0 font-semibold text-[#9CA3AF]" htmlFor={id}>
-        {label}
-      </label>
-      <select
-        className={`${widthClassName} h-8 rounded-lg border border-[#DDE3EE] bg-white px-2 text-[13px] font-extrabold text-[#111827] outline-none transition-colors focus:border-[#2563EB] focus:ring-1 focus:ring-[#2563EB]`}
-        id={id}
-        {...register}
-      >
-        {children}
-      </select>
-    </div>
   );
 }
 

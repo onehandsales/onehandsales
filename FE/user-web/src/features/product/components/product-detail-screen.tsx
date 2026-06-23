@@ -7,11 +7,12 @@ import {
   Plus,
   Trash2,
 } from "lucide-react";
-import { type ReactNode, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, type UseFormRegisterReturn } from "react-hook-form";
 import { z } from "zod";
+import { SummaryTaxonomySelect } from "@/components/ui/summary-taxonomy-select";
 import { Toast } from "@/components/ui/toast";
 import {
   useProductCategories,
@@ -325,11 +326,15 @@ function ProductSummaryHeader({
     register,
     handleSubmit,
     reset,
+    setValue,
+    watch,
     formState: { errors },
   } = useForm<ProductSummaryEditFormValues>({
     resolver: zodResolver(productSummaryEditSchema),
     defaultValues: toProductSummaryEditFormValues(product),
   });
+  const selectedCategoryId = watch("productCategoryId");
+  const selectedStatusId = watch("productStatusId");
 
   useEffect(() => {
     if (isEditing) {
@@ -377,33 +382,43 @@ function ProductSummaryHeader({
 
         <div className="hidden h-5 w-px shrink-0 bg-[#E5E7EB] md:block" />
 
-        <ProductInlineSelect
+        <input type="hidden" {...register("productCategoryId")} />
+        <SummaryTaxonomySelect
+          emptyText="조건에 맞는 카테고리가 없습니다."
+          getLabel={(category) => category.categoryName}
           id="product-summary-edit-category"
-          label="카테고리"
-          register={register("productCategoryId")}
+          invalid={Boolean(errors.productCategoryId)}
+          itemKindLabel="카테고리"
+          items={categories}
+          selectedId={selectedCategoryId}
+          tone="amber"
           widthClassName="w-[132px]"
-        >
-          <option value="">카테고리 선택</option>
-          {categories.map((category) => (
-            <option key={category.id} value={category.id}>
-              {category.categoryName}
-            </option>
-          ))}
-        </ProductInlineSelect>
+          onSelect={(id) =>
+            setValue("productCategoryId", id, {
+              shouldDirty: true,
+              shouldValidate: true,
+            })
+          }
+        />
 
-        <ProductInlineSelect
+        <input type="hidden" {...register("productStatusId")} />
+        <SummaryTaxonomySelect
+          emptyText="조건에 맞는 상태가 없습니다."
+          getLabel={(status) => status.statusName}
           id="product-summary-edit-status"
-          label="상태"
-          register={register("productStatusId")}
+          invalid={Boolean(errors.productStatusId)}
+          itemKindLabel="상태"
+          items={statuses}
+          selectedId={selectedStatusId}
+          tone="green"
           widthClassName="w-[116px]"
-        >
-          <option value="">상태 선택</option>
-          {statuses.map((status) => (
-            <option key={status.id} value={status.id}>
-              {status.statusName}
-            </option>
-          ))}
-        </ProductInlineSelect>
+          onSelect={(id) =>
+            setValue("productStatusId", id, {
+              shouldDirty: true,
+              shouldValidate: true,
+            })
+          }
+        />
 
         <ProductInlineTextInput
           id="product-summary-edit-price"
@@ -486,35 +501,6 @@ function ProductSummaryHeader({
         <span>등록 {formatDateTime(product.createdAt, { includeYear: true })}</span>
         <span>수정 {formatDateTime(product.updatedAt, { includeYear: true })}</span>
       </div>
-    </div>
-  );
-}
-
-function ProductInlineSelect({
-  id,
-  label,
-  register,
-  widthClassName,
-  children,
-}: {
-  readonly id: string;
-  readonly label: string;
-  readonly register: UseFormRegisterReturn;
-  readonly widthClassName: string;
-  readonly children: ReactNode;
-}) {
-  return (
-    <div className="flex items-center gap-1.5 text-[13px]">
-      <label className="shrink-0 font-semibold text-[#9CA3AF]" htmlFor={id}>
-        {label}
-      </label>
-      <select
-        className={`${widthClassName} h-8 rounded-lg border border-[#DDE3EE] bg-white px-2 text-[13px] font-extrabold text-[#111827] outline-none transition-colors focus:border-[#2563EB] focus:ring-1 focus:ring-[#2563EB]`}
-        id={id}
-        {...register}
-      >
-        {children}
-      </select>
     </div>
   );
 }
