@@ -7,15 +7,19 @@ import {
   Plus,
   Trash2,
 } from "lucide-react";
-import { useState } from "react";
+import { type ReactNode, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm, type UseFormRegisterReturn } from "react-hook-form";
+import { z } from "zod";
 import { Toast } from "@/components/ui/toast";
-import { ProductEditForm } from "@/features/product/components/product-edit-form";
 import {
+  useProductCategories,
   useProductDeals,
   useProductDetail,
   useProductMemoLogsInfinite,
   useProductPrivateMemoLogsInfinite,
+  useProductStatuses,
 } from "@/features/product/hooks/use-product-detail";
 import {
   useCreateMemoLogMutation,
@@ -23,11 +27,15 @@ import {
   useDeleteProductMutation,
   useUpdateMemoLogMutation,
   useUpdatePrivateMemoLogMutation,
+  useUpdateProductMutation,
 } from "@/features/product/hooks/use-product-mutations";
 import type {
+  ProductCategory,
   ProductDeal,
+  ProductDetail,
   ProductMemoLog,
   ProductPrivateMemoLog,
+  ProductStatus,
 } from "@/features/product/types/product";
 import { DEAL_STATUS_LABEL, type DealStatus } from "@/features/deal/types/deal";
 import { getApiErrorMessage } from "@/lib/api-client";
@@ -36,6 +44,21 @@ import { formatDate, formatDateTime } from "@/utils/format";
 type ProductDetailScreenProps = {
   readonly productId: string;
 };
+
+const productSummaryEditSchema = z.object({
+  productName: z.string().trim().min(1, "제품명을 입력해주세요."),
+  productPrice: z
+    .string()
+    .trim()
+    .refine(
+      (value) => value.length === 0 || /^\d+$/.test(value),
+      "가격은 0 이상의 정수로 입력해주세요."
+    ),
+  productCategoryId: z.string().trim().min(1, "카테고리를 선택해주세요."),
+  productStatusId: z.string().trim().min(1, "상태를 선택해주세요."),
+});
+
+type ProductSummaryEditFormValues = z.infer<typeof productSummaryEditSchema>;
 
 export function ProductDetailScreen({ productId }: ProductDetailScreenProps) {
   const navigate = useNavigate();
@@ -122,9 +145,9 @@ export function ProductDetailScreen({ productId }: ProductDetailScreenProps) {
             <span className="font-bold text-[#111827]">{product.productName}</span>
           </div>
           <button
-            aria-label="수정"
+            aria-label={isEditing ? "수정 취소" : "수정"}
             className="flex h-9 w-9 items-center justify-center rounded-lg border border-[#E5E7EB] bg-white text-[#374151] disabled:opacity-50"
-            onClick={() => setIsEditing(true)}
+            onClick={() => setIsEditing((value) => !value)}
             type="button"
           >
             <Pencil className="h-4 w-4" />
@@ -141,28 +164,17 @@ export function ProductDetailScreen({ productId }: ProductDetailScreenProps) {
         </div>
 
         <div className="flex flex-col gap-4 p-4 pb-24">
-          <ProductSummaryHeader product={product} dealCount={deals.length} />
-
-          {isEditing ? (
-            <div className="rounded-xl border border-[#E5E7EB] bg-white p-4">
-              <h2 className="mb-4 text-[14px] font-bold text-[#111827]">제품 정보 수정</h2>
-              <ProductEditForm
-                product={product}
-                onSaved={() => {
-                  void productQuery.refetch();
-                  setNotice("제품 정보가 저장되었습니다.");
-                  setIsEditing(false);
-                }}
-              />
-              <button
-                className="mt-3 text-[13px] text-[#6B7280] underline"
-                onClick={() => setIsEditing(false)}
-                type="button"
-              >
-                취소
-              </button>
-            </div>
-          ) : null}
+          <ProductSummaryHeader
+            dealCount={deals.length}
+            isEditing={isEditing}
+            product={product}
+            onCancelEdit={() => setIsEditing(false)}
+            onSaved={() => {
+              void productQuery.refetch();
+              setNotice("제품 정보가 저장되었습니다.");
+              setIsEditing(false);
+            }}
+          />
 
           <ConnectedDealsTable
             deals={deals}
@@ -238,28 +250,17 @@ export function ProductDetailScreen({ productId }: ProductDetailScreenProps) {
 
         {/* Content Area */}
         <div className="flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto p-6">
-          <ProductSummaryHeader product={product} dealCount={deals.length} />
-
-          {isEditing ? (
-            <div className="rounded-xl border border-[#E5E7EB] bg-white p-5">
-              <h2 className="mb-4 text-[14px] font-bold text-[#111827]">제품 정보 수정</h2>
-              <ProductEditForm
-                product={product}
-                onSaved={() => {
-                  void productQuery.refetch();
-                  setNotice("제품 정보가 저장되었습니다.");
-                  setIsEditing(false);
-                }}
-              />
-              <button
-                className="mt-3 text-[13px] text-[#6B7280] underline hover:text-[#374151]"
-                onClick={() => setIsEditing(false)}
-                type="button"
-              >
-                취소
-              </button>
-            </div>
-          ) : null}
+          <ProductSummaryHeader
+            dealCount={deals.length}
+            isEditing={isEditing}
+            product={product}
+            onCancelEdit={() => setIsEditing(false)}
+            onSaved={() => {
+              void productQuery.refetch();
+              setNotice("제품 정보가 저장되었습니다.");
+              setIsEditing(false);
+            }}
+          />
 
           {/* 1행: 연결딜 (전체 너비) */}
           <ConnectedDealsTable
@@ -299,19 +300,155 @@ export function ProductDetailScreen({ productId }: ProductDetailScreenProps) {
 function ProductSummaryHeader({
   product,
   dealCount,
+  isEditing,
+  onCancelEdit,
+  onSaved,
 }: {
-  readonly product: {
-    readonly productName: string;
-    readonly productCategory: { readonly categoryName: string };
-    readonly productStatus: { readonly statusName: string };
-    readonly productPrice: number;
-    readonly createdAt: string;
-    readonly updatedAt: string;
-  };
+  readonly product: ProductDetail;
   readonly dealCount: number;
+  readonly isEditing: boolean;
+  readonly onCancelEdit: () => void;
+  readonly onSaved: () => void;
 }) {
+  const updateProductMutation = useUpdateProductMutation();
+  const categoriesQuery = useProductCategories();
+  const statusesQuery = useProductStatuses();
+  const categories = mergeProductCategories(
+    categoriesQuery.data?.items ?? [],
+    product.productCategory
+  );
+  const statuses = mergeProductStatuses(
+    statusesQuery.data?.items ?? [],
+    product.productStatus
+  );
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<ProductSummaryEditFormValues>({
+    resolver: zodResolver(productSummaryEditSchema),
+    defaultValues: toProductSummaryEditFormValues(product),
+  });
+
+  useEffect(() => {
+    if (isEditing) {
+      reset(toProductSummaryEditFormValues(product));
+    }
+  }, [isEditing, product, reset]);
+
+  const onSubmit = handleSubmit(async (values) => {
+    await updateProductMutation.mutateAsync({
+      productId: product.id,
+      productName: values.productName.trim(),
+      productPrice: Number(values.productPrice || "0"),
+      productCategoryId: values.productCategoryId,
+      productStatusId: values.productStatusId,
+    });
+    onSaved();
+  });
+  const validationError =
+    errors.productName?.message ??
+    errors.productCategoryId?.message ??
+    errors.productStatusId?.message ??
+    errors.productPrice?.message;
+
+  if (isEditing) {
+    return (
+      <form
+        className="flex min-h-[74px] flex-wrap items-center gap-3 rounded-xl border border-[#BFDBFE] bg-white px-5 py-4 shadow-[0_0_0_1px_rgba(37,99,235,0.04)]"
+        onSubmit={onSubmit}
+      >
+        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#EEF2FF]">
+          <Package className="h-5 w-5 text-[#4338CA]" strokeWidth={2} />
+        </div>
+
+        <div className="min-w-[180px] flex-[1_1_220px] md:max-w-[280px] md:flex-none">
+          <label className="sr-only" htmlFor="product-summary-edit-name">
+            제품명
+          </label>
+          <input
+            aria-invalid={Boolean(errors.productName)}
+            className="h-9 w-full rounded-lg border border-[#DDE3EE] bg-white px-3 text-[15px] font-extrabold text-[#111827] outline-none transition-colors focus:border-[#2563EB] focus:ring-1 focus:ring-[#2563EB]"
+            id="product-summary-edit-name"
+            {...register("productName")}
+          />
+        </div>
+
+        <div className="hidden h-5 w-px shrink-0 bg-[#E5E7EB] md:block" />
+
+        <ProductInlineSelect
+          id="product-summary-edit-category"
+          label="카테고리"
+          register={register("productCategoryId")}
+          widthClassName="w-[132px]"
+        >
+          <option value="">카테고리 선택</option>
+          {categories.map((category) => (
+            <option key={category.id} value={category.id}>
+              {category.categoryName}
+            </option>
+          ))}
+        </ProductInlineSelect>
+
+        <ProductInlineSelect
+          id="product-summary-edit-status"
+          label="상태"
+          register={register("productStatusId")}
+          widthClassName="w-[116px]"
+        >
+          <option value="">상태 선택</option>
+          {statuses.map((status) => (
+            <option key={status.id} value={status.id}>
+              {status.statusName}
+            </option>
+          ))}
+        </ProductInlineSelect>
+
+        <ProductInlineTextInput
+          id="product-summary-edit-price"
+          inputMode="numeric"
+          label="가격"
+          register={register("productPrice")}
+          widthClassName="w-[132px]"
+        />
+
+        <div className="hidden h-5 w-px shrink-0 bg-[#E5E7EB] lg:block" />
+        <div className="flex items-center gap-1.5 text-[13px]">
+          <span className="font-semibold text-[#9CA3AF]">딜</span>
+          <span className="font-extrabold text-[#111827]">
+            {dealCount.toLocaleString("ko-KR")}건
+          </span>
+        </div>
+
+        <div className="flex-1" />
+
+        {validationError || updateProductMutation.error ? (
+          <span className="basis-full text-[12px] font-semibold text-[#B91C1C] md:basis-auto">
+            {validationError ?? getApiErrorMessage(updateProductMutation.error)}
+          </span>
+        ) : null}
+
+        <button
+          className="h-9 rounded-lg border border-[#DDE3EE] bg-white px-3 text-[13px] font-semibold text-[#6B7280] transition-colors hover:bg-[#F9FAFB]"
+          onClick={onCancelEdit}
+          type="button"
+        >
+          취소
+        </button>
+        <button
+          className="h-9 rounded-lg bg-[#2563EB] px-4 text-[13px] font-extrabold text-white transition-colors hover:bg-[#1D4ED8] disabled:cursor-not-allowed disabled:opacity-60"
+          disabled={updateProductMutation.isPending}
+          type="submit"
+        >
+          {updateProductMutation.isPending ? "저장 중" : "저장"}
+        </button>
+      </form>
+    );
+  }
+
   return (
-    <div className="flex flex-wrap items-center gap-3 rounded-xl border border-[#E5E7EB] bg-white px-5 py-4">
+    <div className="flex min-h-[74px] flex-wrap items-center gap-3 rounded-xl border border-[#E5E7EB] bg-white px-5 py-4">
       <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#EEF2FF]">
         <Package className="h-5 w-5 text-[#4338CA]" strokeWidth={2} />
       </div>
@@ -351,6 +488,89 @@ function ProductSummaryHeader({
       </div>
     </div>
   );
+}
+
+function ProductInlineSelect({
+  id,
+  label,
+  register,
+  widthClassName,
+  children,
+}: {
+  readonly id: string;
+  readonly label: string;
+  readonly register: UseFormRegisterReturn;
+  readonly widthClassName: string;
+  readonly children: ReactNode;
+}) {
+  return (
+    <div className="flex items-center gap-1.5 text-[13px]">
+      <label className="shrink-0 font-semibold text-[#9CA3AF]" htmlFor={id}>
+        {label}
+      </label>
+      <select
+        className={`${widthClassName} h-8 rounded-lg border border-[#DDE3EE] bg-white px-2 text-[13px] font-extrabold text-[#111827] outline-none transition-colors focus:border-[#2563EB] focus:ring-1 focus:ring-[#2563EB]`}
+        id={id}
+        {...register}
+      >
+        {children}
+      </select>
+    </div>
+  );
+}
+
+function ProductInlineTextInput({
+  id,
+  inputMode,
+  label,
+  register,
+  widthClassName,
+}: {
+  readonly id: string;
+  readonly inputMode?: "numeric";
+  readonly label: string;
+  readonly register: UseFormRegisterReturn;
+  readonly widthClassName: string;
+}) {
+  return (
+    <div className="flex items-center gap-1.5 text-[13px]">
+      <label className="shrink-0 font-semibold text-[#9CA3AF]" htmlFor={id}>
+        {label}
+      </label>
+      <input
+        className={`${widthClassName} h-8 rounded-lg border border-[#DDE3EE] bg-white px-2 text-[13px] font-extrabold text-[#111827] outline-none transition-colors focus:border-[#2563EB] focus:ring-1 focus:ring-[#2563EB]`}
+        id={id}
+        inputMode={inputMode}
+        {...register}
+      />
+    </div>
+  );
+}
+
+function toProductSummaryEditFormValues(
+  product: ProductDetail
+): ProductSummaryEditFormValues {
+  return {
+    productName: product.productName,
+    productPrice: String(product.productPrice ?? 0),
+    productCategoryId: product.productCategory.id,
+    productStatusId: product.productStatus.id,
+  };
+}
+
+function mergeProductCategories(
+  categories: ProductCategory[],
+  current: ProductCategory
+) {
+  return categories.some((category) => category.id === current.id)
+    ? categories
+    : [current, ...categories];
+}
+
+function mergeProductStatuses(statuses: ProductStatus[], current: ProductStatus) {
+  return statuses.some((status) => status.id === current.id)
+    ? statuses
+    : [current, ...statuses];
 }
 
 // ── Connected Deals Table ───────────────────────────────────────────

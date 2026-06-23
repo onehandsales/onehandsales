@@ -9,10 +9,9 @@ import {
   Trash2,
   UserRound,
 } from "lucide-react";
-import { useState } from "react";
+import { type ReactNode, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Toast } from "@/components/ui/toast";
-import { ContactEditForm } from "@/features/contact/components/contact-edit-form";
 import {
   useContactDeals,
   useContactDetail,
@@ -20,13 +19,22 @@ import {
   useContactPrivateMemoLogs,
 } from "@/features/contact/hooks/use-contact-detail";
 import {
+  useContactDepartments,
+  useContactJobGrades,
+} from "@/features/contact/hooks/use-contact-list";
+import { useCompanyOptions } from "@/features/contact/hooks/use-company-options";
+import {
   useDeleteContactMutation,
+  useUpdateContactMutation,
   useCreateContactMemoLogMutation,
   useUpdateContactMemoLogMutation,
   useCreateContactPrivateMemoLogMutation,
   useUpdateContactPrivateMemoLogMutation,
 } from "@/features/contact/hooks/use-contact-mutations";
 import {
+  contactEditFormSchema,
+  toContactEditFormValues,
+  toUpdateContactInput,
   toCreateContactMemoLogInput,
   toUpdateContactMemoLogInput,
   toCreateContactPrivateMemoLogInput,
@@ -35,17 +43,22 @@ import {
   contactPrivateMemoLogFormSchema,
   emptyContactMemoLogFormValues,
   emptyContactPrivateMemoLogFormValues,
+  type ContactEditFormValues,
   type ContactMemoLogFormValues,
   type ContactPrivateMemoLogFormValues,
 } from "@/features/contact/schemas/contact-schema";
 import type {
+  ContactCompanyOption,
+  ContactDepartment,
   ContactDeal,
+  ContactDetail,
+  ContactJobGrade,
   ContactMemoLog,
   ContactPrivateMemoLog,
 } from "@/features/contact/types/contact";
 import { getApiErrorMessage } from "@/lib/api-client";
 import { formatDate, formatDateTime } from "@/utils/format";
-import { useForm } from "react-hook-form";
+import { useForm, type UseFormRegisterReturn } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 type ContactDetailScreenProps = {
@@ -140,9 +153,9 @@ export function ContactDetailScreen({ contactId }: ContactDetailScreenProps) {
             <span className="font-bold text-[#111827]">{contact.username}</span>
           </div>
           <button
-            aria-label="수정"
+            aria-label={isEditing ? "수정 취소" : "수정"}
             className="flex h-9 w-9 items-center justify-center rounded-lg border border-[#E5E7EB] bg-white text-[#374151] disabled:opacity-50"
-            onClick={() => setIsEditing(true)}
+            onClick={() => setIsEditing((value) => !value)}
             type="button"
           >
             <Pencil className="h-4 w-4" />
@@ -159,28 +172,16 @@ export function ContactDetailScreen({ contactId }: ContactDetailScreenProps) {
         </div>
 
         <div className="flex flex-col gap-4 p-4 pb-24">
-          <ContactSummaryHeader contact={contact} />
-
-          {isEditing ? (
-            <div className="rounded-xl border border-[#E5E7EB] bg-white p-4">
-              <h2 className="mb-4 text-[14px] font-bold text-[#111827]">담당자 정보 수정</h2>
-              <ContactEditForm
-                contact={contact}
-                onSaved={() => {
-                  void contactQuery.refetch();
-                  setNotice("담당자 정보가 저장되었습니다.");
-                  setIsEditing(false);
-                }}
-              />
-              <button
-                className="mt-3 text-[13px] text-[#6B7280] underline"
-                onClick={() => setIsEditing(false)}
-                type="button"
-              >
-                취소
-              </button>
-            </div>
-          ) : null}
+          <ContactSummaryHeader
+            contact={contact}
+            isEditing={isEditing}
+            onCancelEdit={() => setIsEditing(false)}
+            onSaved={() => {
+              void contactQuery.refetch();
+              setNotice("담당자 정보가 저장되었습니다.");
+              setIsEditing(false);
+            }}
+          />
 
           <ConnectedDealsTable
             deals={deals}
@@ -256,28 +257,16 @@ export function ContactDetailScreen({ contactId }: ContactDetailScreenProps) {
 
         {/* Content Area */}
         <div className="flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto p-6">
-          <ContactSummaryHeader contact={contact} />
-
-          {isEditing ? (
-            <div className="rounded-xl border border-[#E5E7EB] bg-white p-5">
-              <h2 className="mb-4 text-[14px] font-bold text-[#111827]">담당자 정보 수정</h2>
-              <ContactEditForm
-                contact={contact}
-                onSaved={() => {
-                  void contactQuery.refetch();
-                  setNotice("담당자 정보가 저장되었습니다.");
-                  setIsEditing(false);
-                }}
-              />
-              <button
-                className="mt-3 text-[13px] text-[#6B7280] underline hover:text-[#374151]"
-                onClick={() => setIsEditing(false)}
-                type="button"
-              >
-                취소
-              </button>
-            </div>
-          ) : null}
+          <ContactSummaryHeader
+            contact={contact}
+            isEditing={isEditing}
+            onCancelEdit={() => setIsEditing(false)}
+            onSaved={() => {
+              void contactQuery.refetch();
+              setNotice("담당자 정보가 저장되었습니다.");
+              setIsEditing(false);
+            }}
+          />
 
           {/* 1행: 연결딜 (전체 너비) */}
           <ConnectedDealsTable
@@ -316,20 +305,172 @@ export function ContactDetailScreen({ contactId }: ContactDetailScreenProps) {
 
 function ContactSummaryHeader({
   contact,
+  isEditing,
+  onCancelEdit,
+  onSaved,
 }: {
-  readonly contact: {
-    readonly username: string;
-    readonly mobile: string;
-    readonly email: string;
-    readonly company: { readonly id: string; readonly companyName: string };
-    readonly contactDepartment: { readonly departmentName: string };
-    readonly contactJobGrade: { readonly jobGradeName: string };
-    readonly createdAt: string;
-    readonly updatedAt: string;
-  };
+  readonly contact: ContactDetail;
+  readonly isEditing: boolean;
+  readonly onCancelEdit: () => void;
+  readonly onSaved: () => void;
 }) {
+  const updateContactMutation = useUpdateContactMutation();
+  const companiesQuery = useCompanyOptions();
+  const departmentsQuery = useContactDepartments();
+  const jobGradesQuery = useContactJobGrades();
+  const companyOptions = mergeContactCompanyOptions(
+    companiesQuery.data?.items ?? [],
+    contact.company
+  );
+  const departments = mergeContactDepartments(
+    departmentsQuery.data?.items ?? [],
+    contact.contactDepartment
+  );
+  const jobGrades = mergeContactJobGrades(
+    jobGradesQuery.data?.items ?? [],
+    contact.contactJobGrade
+  );
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<ContactEditFormValues>({
+    resolver: zodResolver(contactEditFormSchema),
+    defaultValues: toContactEditFormValues(contact),
+  });
+
+  useEffect(() => {
+    if (isEditing) {
+      reset(toContactEditFormValues(contact));
+    }
+  }, [contact, isEditing, reset]);
+
+  const onSubmit = handleSubmit(async (values) => {
+    await updateContactMutation.mutateAsync(
+      toUpdateContactInput(contact.id, values)
+    );
+    onSaved();
+  });
+  const validationError =
+    errors.username?.message ??
+    errors.companyId?.message ??
+    errors.contactDepartmentId?.message ??
+    errors.contactJobGradeId?.message ??
+    errors.mobile?.message ??
+    errors.email?.message;
+
+  if (isEditing) {
+    return (
+      <form
+        className="flex min-h-[74px] flex-wrap items-center gap-3 rounded-xl border border-[#BFDBFE] bg-white px-5 py-4 shadow-[0_0_0_1px_rgba(37,99,235,0.04)]"
+        onSubmit={onSubmit}
+      >
+        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#EEF2FF]">
+          <span className="text-[16px] font-extrabold text-[#4F46E5]">
+            {contact.username.charAt(0)}
+          </span>
+        </div>
+
+        <div className="min-w-[120px] flex-[1_1_160px] md:max-w-[180px] md:flex-none">
+          <label className="sr-only" htmlFor="contact-summary-edit-name">
+            이름
+          </label>
+          <input
+            aria-invalid={Boolean(errors.username)}
+            className="h-9 w-full rounded-lg border border-[#DDE3EE] bg-white px-3 text-[15px] font-extrabold text-[#111827] outline-none transition-colors focus:border-[#2563EB] focus:ring-1 focus:ring-[#2563EB]"
+            id="contact-summary-edit-name"
+            {...register("username")}
+          />
+        </div>
+
+        <div className="hidden h-5 w-px shrink-0 bg-[#E5E7EB] md:block" />
+
+        <InlineSelect
+          id="contact-summary-edit-company"
+          label="회사"
+          register={register("companyId")}
+          widthClassName="w-[150px]"
+        >
+          <option value="">회사 선택</option>
+          {companyOptions.map((company) => (
+            <option key={company.id} value={company.id}>
+              {company.companyName}
+            </option>
+          ))}
+        </InlineSelect>
+
+        <InlineSelect
+          id="contact-summary-edit-department"
+          label="부서"
+          register={register("contactDepartmentId")}
+          widthClassName="w-[116px]"
+        >
+          <option value="">부서 선택</option>
+          {departments.map((department) => (
+            <option key={department.id} value={department.id}>
+              {department.departmentName}
+            </option>
+          ))}
+        </InlineSelect>
+
+        <InlineSelect
+          id="contact-summary-edit-job-grade"
+          label="직급"
+          register={register("contactJobGradeId")}
+          widthClassName="w-[104px]"
+        >
+          <option value="">직급 선택</option>
+          {jobGrades.map((jobGrade) => (
+            <option key={jobGrade.id} value={jobGrade.id}>
+              {jobGrade.jobGradeName}
+            </option>
+          ))}
+        </InlineSelect>
+
+        <div className="hidden h-5 w-px shrink-0 bg-[#E5E7EB] lg:block" />
+
+        <InlineTextInput
+          id="contact-summary-edit-mobile"
+          label="휴대폰"
+          register={register("mobile")}
+          widthClassName="w-[128px]"
+        />
+        <InlineTextInput
+          id="contact-summary-edit-email"
+          label="이메일"
+          register={register("email")}
+          widthClassName="w-[210px]"
+        />
+
+        <div className="flex-1" />
+
+        {validationError || updateContactMutation.error ? (
+          <span className="basis-full text-[12px] font-semibold text-[#B91C1C] md:basis-auto">
+            {validationError ?? getApiErrorMessage(updateContactMutation.error)}
+          </span>
+        ) : null}
+
+        <button
+          className="h-9 rounded-lg border border-[#DDE3EE] bg-white px-3 text-[13px] font-semibold text-[#6B7280] transition-colors hover:bg-[#F9FAFB]"
+          onClick={onCancelEdit}
+          type="button"
+        >
+          취소
+        </button>
+        <button
+          className="h-9 rounded-lg bg-[#2563EB] px-4 text-[13px] font-extrabold text-white transition-colors hover:bg-[#1D4ED8] disabled:cursor-not-allowed disabled:opacity-60"
+          disabled={updateContactMutation.isPending}
+          type="submit"
+        >
+          {updateContactMutation.isPending ? "저장 중" : "저장"}
+        </button>
+      </form>
+    );
+  }
+
   return (
-    <div className="flex flex-wrap items-center gap-3 rounded-xl border border-[#E5E7EB] bg-white px-5 py-4">
+    <div className="flex min-h-[74px] flex-wrap items-center gap-3 rounded-xl border border-[#E5E7EB] bg-white px-5 py-4">
       <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#EEF2FF]">
         <span className="text-[16px] font-extrabold text-[#4F46E5]">
           {contact.username.charAt(0)}
@@ -839,6 +980,87 @@ function ContactInfoChip({
       {label}
     </span>
   );
+}
+
+function InlineSelect({
+  id,
+  label,
+  register,
+  widthClassName,
+  children,
+}: {
+  readonly id: string;
+  readonly label: string;
+  readonly register: UseFormRegisterReturn;
+  readonly widthClassName: string;
+  readonly children: ReactNode;
+}) {
+  return (
+    <div className="flex items-center gap-1.5 text-[13px]">
+      <label className="shrink-0 font-semibold text-[#9CA3AF]" htmlFor={id}>
+        {label}
+      </label>
+      <select
+        className={`${widthClassName} h-8 rounded-lg border border-[#DDE3EE] bg-white px-2 text-[13px] font-extrabold text-[#111827] outline-none transition-colors focus:border-[#2563EB] focus:ring-1 focus:ring-[#2563EB]`}
+        id={id}
+        {...register}
+      >
+        {children}
+      </select>
+    </div>
+  );
+}
+
+function InlineTextInput({
+  id,
+  label,
+  register,
+  widthClassName,
+}: {
+  readonly id: string;
+  readonly label: string;
+  readonly register: UseFormRegisterReturn;
+  readonly widthClassName: string;
+}) {
+  return (
+    <div className="flex items-center gap-1.5 text-[13px]">
+      <label className="shrink-0 font-semibold text-[#9CA3AF]" htmlFor={id}>
+        {label}
+      </label>
+      <input
+        className={`${widthClassName} h-8 rounded-lg border border-[#DDE3EE] bg-white px-2 text-[13px] font-extrabold text-[#111827] outline-none transition-colors focus:border-[#2563EB] focus:ring-1 focus:ring-[#2563EB]`}
+        id={id}
+        {...register}
+      />
+    </div>
+  );
+}
+
+function mergeContactCompanyOptions(
+  companies: ContactCompanyOption[],
+  current: ContactCompanyOption
+) {
+  return companies.some((company) => company.id === current.id)
+    ? companies
+    : [current, ...companies];
+}
+
+function mergeContactDepartments(
+  departments: ContactDepartment[],
+  current: ContactDepartment
+) {
+  return departments.some((department) => department.id === current.id)
+    ? departments
+    : [current, ...departments];
+}
+
+function mergeContactJobGrades(
+  jobGrades: ContactJobGrade[],
+  current: ContactJobGrade
+) {
+  return jobGrades.some((jobGrade) => jobGrade.id === current.id)
+    ? jobGrades
+    : [current, ...jobGrades];
 }
 
 // ── Skeleton / Error ────────────────────────────────────────────────
