@@ -570,8 +570,7 @@ function ConnectedDealsTable({
   readonly deals: ProductDeal[];
   readonly isLoading: boolean;
 }) {
-  const SHOW_LIMIT = 5;
-  const visible = deals.slice(0, SHOW_LIMIT);
+  const SHOW_LIMIT = 4;
   const hasMore = deals.length > SHOW_LIMIT;
 
   return (
@@ -586,47 +585,38 @@ function ConnectedDealsTable({
       {isLoading ? (
         <div className="flex flex-col">
           {[1, 2, 3].map((i) => (
-            <div className="h-[54px] animate-pulse border-b border-[#F3F4F6] bg-white/60" key={i} />
+            <div className="h-[58px] animate-pulse border-b border-[#F3F4F6] bg-white/60" key={i} />
           ))}
         </div>
       ) : deals.length === 0 ? (
         <p className="px-4 py-4 text-[13px] text-[#9CA3AF]">연결된 딜이 없습니다.</p>
       ) : (
-        <>
-          <div className={hasMore ? "max-h-[270px] overflow-y-auto" : ""}>
-            {visible.map((deal, idx) => (
-              <Link
-                className="flex h-[54px] items-center gap-3 border-b border-[#F3F4F6] bg-white px-4 hover:bg-[#F9FAFB] transition-colors last:border-0"
-                key={deal.id}
-                to={`/deals/${deal.id}`}
-              >
-                <div
-                  className="h-[8px] w-[8px] shrink-0 rounded-full"
-                  style={{ backgroundColor: DEAL_DOT_COLORS[idx % DEAL_DOT_COLORS.length] }}
-                />
-                <span className="min-w-0 flex-1 truncate text-[13px] font-extrabold text-[#111827]">
-                  {deal.dealName}
-                </span>
-                <span className="shrink-0 text-[13px] font-semibold text-[#374151]">
-                  ₩{deal.dealCost.toLocaleString("ko-KR")}
-                </span>
-                <span className="ml-1 shrink-0 rounded-md bg-[#EEF2FF] px-2 py-0.5 text-[11px] font-medium text-[#4338CA]">
-                  {toDealStatusLabel(deal.dealStatus)}
-                </span>
-                <span className="ml-2 shrink-0 text-[12px] text-[#9CA3AF]">
-                  {formatDate(deal.createdAt, { includeYear: true })}
-                </span>
-              </Link>
-            ))}
-          </div>
-          {hasMore ? (
-            <div className="flex h-8 items-center px-4">
-              <span className="text-[12px] font-semibold text-[#9CA3AF]">
-                +{deals.length - SHOW_LIMIT}건 더 있음
+        <div className={hasMore ? "max-h-[232px] overflow-y-auto" : ""}>
+          {deals.map((deal, idx) => (
+            <Link
+              className="flex h-[58px] items-center gap-3 border-b border-[#F3F4F6] bg-white px-4 hover:bg-[#F9FAFB] transition-colors last:border-0"
+              key={deal.id}
+              to={`/deals/${deal.id}`}
+            >
+              <div
+                className="h-[8px] w-[8px] shrink-0 rounded-full"
+                style={{ backgroundColor: DEAL_DOT_COLORS[idx % DEAL_DOT_COLORS.length] }}
+              />
+              <span className="min-w-0 flex-1 truncate text-[13px] font-extrabold text-[#111827]">
+                {deal.dealName}
               </span>
-            </div>
-          ) : null}
-        </>
+              <span className="shrink-0 text-[13px] font-semibold text-[#374151]">
+                ₩{deal.dealCost.toLocaleString("ko-KR")}
+              </span>
+              <span className="ml-1 shrink-0 rounded-md bg-[#EEF2FF] px-2 py-0.5 text-[11px] font-medium text-[#4338CA]">
+                {toDealStatusLabel(deal.dealStatus)}
+              </span>
+              <span className="ml-2 shrink-0 text-[12px] text-[#9CA3AF]">
+                {formatDate(deal.createdAt, { includeYear: true })}
+              </span>
+            </Link>
+          ))}
+        </div>
       )}
     </div>
   );

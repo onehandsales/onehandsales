@@ -491,9 +491,7 @@ function ConnectedContactsTable({
   readonly contacts: CompanyContact[];
   readonly isLoading: boolean;
 }) {
-  // 5개까지 전부 표시, 초과 시 스크롤
-  const SHOW_LIMIT = 5;
-  const visible = contacts.slice(0, SHOW_LIMIT);
+  const SHOW_LIMIT = 4;
   const hasMore = contacts.length > SHOW_LIMIT;
 
   return (
@@ -514,54 +512,45 @@ function ConnectedContactsTable({
       ) : contacts.length === 0 ? (
         <p className="px-4 py-4 text-[13px] text-[#9CA3AF]">연결된 담당자가 없습니다.</p>
       ) : (
-        <>
-          <div className={hasMore ? "max-h-[290px] overflow-y-auto" : ""}>
-            {visible.map((contact) => {
-              const jobGradeName = contact.contactJobGrade?.jobGradeName;
+        <div className={hasMore ? "max-h-[232px] overflow-y-auto" : ""}>
+          {contacts.map((contact) => {
+            const jobGradeName = contact.contactJobGrade?.jobGradeName;
 
-              return (
-                <Link
-                  className="flex h-[58px] items-center gap-3 border-b border-[#F3F4F6] bg-white px-4 hover:bg-[#F9FAFB] transition-colors last:border-0"
-                  key={contact.id}
-                  to={`/contacts/${contact.id}`}
-                >
-                  <div className="h-6 w-6 shrink-0 rounded-full bg-[#DBEAFE]" />
-                  <div className="grid min-w-0 flex-1 grid-cols-[minmax(132px,1fr)_minmax(160px,1.1fr)_120px] items-center gap-3 whitespace-nowrap text-[12px] font-medium text-[#6B7280] max-sm:grid-cols-[minmax(0,1fr)_112px] max-sm:grid-rows-2">
-                    <div className="min-w-0">
-                      <div className="flex min-w-0 items-center gap-1.5">
-                        <span className="truncate text-[13px] font-extrabold text-[#111827]">
-                          {contact.username}
-                        </span>
-                        {jobGradeName ? (
-                          <span className="shrink-0 text-[13px] font-extrabold text-[#111827]">
-                            {jobGradeName}
-                          </span>
-                        ) : null}
-                      </div>
-                      <span className="mt-0.5 block min-w-0 truncate text-[11px] font-semibold leading-4 text-[#9CA3AF]">
-                        {contact.contactDepartment.departmentName}
+            return (
+              <Link
+                className="flex h-[58px] items-center gap-3 border-b border-[#F3F4F6] bg-white px-4 hover:bg-[#F9FAFB] transition-colors last:border-0"
+                key={contact.id}
+                to={`/contacts/${contact.id}`}
+              >
+                <div className="h-6 w-6 shrink-0 rounded-full bg-[#DBEAFE]" />
+                <div className="grid min-w-0 flex-1 grid-cols-[minmax(132px,1fr)_minmax(160px,1.1fr)_120px] items-center gap-3 whitespace-nowrap text-[12px] font-medium text-[#6B7280] max-sm:grid-cols-[minmax(0,1fr)_112px] max-sm:grid-rows-2">
+                  <div className="min-w-0">
+                    <div className="flex min-w-0 items-center gap-1.5">
+                      <span className="truncate text-[13px] font-extrabold text-[#111827]">
+                        {contact.username}
                       </span>
+                      {jobGradeName ? (
+                        <span className="shrink-0 text-[13px] font-extrabold text-[#111827]">
+                          {jobGradeName}
+                        </span>
+                      ) : null}
                     </div>
-                    <span className="min-w-0 truncate max-sm:col-start-1 max-sm:row-start-2">
-                      {contact.email}
-                    </span>
-                    <span className="min-w-0 truncate text-right text-[#374151] max-sm:col-start-2 max-sm:row-span-2 max-sm:row-start-1">
-                      {contact.mobile}
+                    <span className="mt-0.5 block min-w-0 truncate text-[11px] font-semibold leading-4 text-[#9CA3AF]">
+                      {contact.contactDepartment.departmentName}
                     </span>
                   </div>
-                  <ChevronRight className="h-4 w-4 shrink-0 text-[#D1D5DB]" />
-                </Link>
-              );
-            })}
-          </div>
-          {hasMore ? (
-            <div className="flex h-8 items-center px-4">
-              <span className="text-[12px] font-semibold text-[#9CA3AF]">
-                +{contacts.length - SHOW_LIMIT}명 더 있음
-              </span>
-            </div>
-          ) : null}
-        </>
+                  <span className="min-w-0 truncate max-sm:col-start-1 max-sm:row-start-2">
+                    {contact.email}
+                  </span>
+                  <span className="min-w-0 truncate text-right text-[#374151] max-sm:col-start-2 max-sm:row-span-2 max-sm:row-start-1">
+                    {contact.mobile}
+                  </span>
+                </div>
+                <ChevronRight className="h-4 w-4 shrink-0 text-[#D1D5DB]" />
+              </Link>
+            );
+          })}
+        </div>
       )}
     </div>
   );
@@ -578,8 +567,7 @@ function ConnectedDealsTable({
   readonly deals: CompanyDeal[];
   readonly isLoading: boolean;
 }) {
-  const SHOW_LIMIT = 5;
-  const visible = deals.slice(0, SHOW_LIMIT);
+  const SHOW_LIMIT = 4;
   const hasMore = deals.length > SHOW_LIMIT;
 
   return (
@@ -594,44 +582,35 @@ function ConnectedDealsTable({
       {isLoading ? (
         <div className="flex flex-col">
           {[1, 2, 3].map((i) => (
-            <div className="h-[54px] animate-pulse border-b border-[#F3F4F6] bg-white/60" key={i} />
+            <div className="h-[58px] animate-pulse border-b border-[#F3F4F6] bg-white/60" key={i} />
           ))}
         </div>
       ) : deals.length === 0 ? (
         <p className="px-4 py-4 text-[13px] text-[#9CA3AF]">연결된 딜이 없습니다.</p>
       ) : (
-        <>
-          <div className={hasMore ? "max-h-[270px] overflow-y-auto" : ""}>
-            {visible.map((deal, idx) => (
-              <Link
-                className="flex h-[54px] items-center gap-3 border-b border-[#F3F4F6] bg-white px-4 hover:bg-[#F9FAFB] transition-colors last:border-0"
-                key={deal.id}
-                to={`/deals/${deal.id}`}
-              >
-                <div
-                  className="h-[8px] w-[8px] shrink-0 rounded-full"
-                  style={{ backgroundColor: DEAL_DOT_COLORS[idx % DEAL_DOT_COLORS.length] }}
-                />
-                <span className="min-w-0 flex-1 truncate text-[13px] font-extrabold text-[#111827]">
-                  {deal.dealName}
-                </span>
-                <span className="shrink-0 text-[13px] font-semibold text-[#374151]">
-                  ₩{deal.dealCost.toLocaleString("ko-KR")}
-                </span>
-                <span className="ml-3 shrink-0 text-[12px] text-[#9CA3AF]">
-                  {formatDate(deal.createdAt, { includeYear: true })}
-                </span>
-              </Link>
-            ))}
-          </div>
-          {hasMore ? (
-            <div className="flex h-8 items-center px-4">
-              <span className="text-[12px] font-semibold text-[#9CA3AF]">
-                +{deals.length - SHOW_LIMIT}건 더 있음
+        <div className={hasMore ? "max-h-[232px] overflow-y-auto" : ""}>
+          {deals.map((deal, idx) => (
+            <Link
+              className="flex h-[58px] items-center gap-3 border-b border-[#F3F4F6] bg-white px-4 hover:bg-[#F9FAFB] transition-colors last:border-0"
+              key={deal.id}
+              to={`/deals/${deal.id}`}
+            >
+              <div
+                className="h-[8px] w-[8px] shrink-0 rounded-full"
+                style={{ backgroundColor: DEAL_DOT_COLORS[idx % DEAL_DOT_COLORS.length] }}
+              />
+              <span className="min-w-0 flex-1 truncate text-[13px] font-extrabold text-[#111827]">
+                {deal.dealName}
               </span>
-            </div>
-          ) : null}
-        </>
+              <span className="shrink-0 text-[13px] font-semibold text-[#374151]">
+                ₩{deal.dealCost.toLocaleString("ko-KR")}
+              </span>
+              <span className="ml-3 shrink-0 text-[12px] text-[#9CA3AF]">
+                {formatDate(deal.createdAt, { includeYear: true })}
+              </span>
+            </Link>
+          ))}
+        </div>
       )}
     </div>
   );
