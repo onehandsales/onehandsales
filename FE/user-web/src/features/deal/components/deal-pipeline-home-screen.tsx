@@ -14,12 +14,10 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { PageHeader } from "@/components/layout/page-header";
 import { ListFilterSelect } from "@/components/ui/list-filter-select";
-import { ListRowActions } from "@/components/ui/list-row-actions";
 import { ListEmptyState } from "@/components/ui/state";
 import { Toast } from "@/components/ui/toast";
 import { useAuthSession } from "@/features/auth";
 import { DealCreateDialog } from "@/features/deal/components/deal-create-dialog";
-import { DealDetailPanel } from "@/features/deal/components/deal-detail-panel";
 import {
   useDealCompanyOptions,
   useDealContactOptions,
@@ -29,7 +27,6 @@ import {
   useDealStageCounts,
 } from "@/features/deal/hooks/use-deal-list";
 import { exportDealsXlsx } from "@/features/deal/api/deal-api";
-import { useDeleteDealMutation } from "@/features/deal/hooks/use-deal-mutations";
 import { getApiErrorMessage } from "@/lib/api-client";
 import {
   DEAL_STATUS_LABEL,
@@ -65,7 +62,7 @@ const SORT_OPTIONS: Array<{
 
 const DEAL_TABLE_GRID_STYLE = {
   gridTemplateColumns:
-    "minmax(96px,1.1fr) minmax(104px,1.05fr) minmax(58px,0.55fr) minmax(68px,0.65fr) minmax(96px,0.95fr) minmax(74px,0.55fr) minmax(74px,0.5fr)",
+    "minmax(96px,1.1fr) minmax(104px,1.05fr) minmax(58px,0.55fr) minmax(68px,0.65fr) minmax(96px,0.95fr) minmax(74px,0.55fr)",
 };
 
 type DealPipelineHomeScreenProps = {
@@ -84,12 +81,10 @@ export function DealPipelineHomeScreen({
   const [contactIds, setContactIds] = useState<string[]>([]);
   const [sort, setSort] = useState<DealSort>("createdAtDesc");
   const [page, setPage] = useState(1);
-  const [selectedDealId, setSelectedDealId] = useState("");
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
   const [exportError, setExportError] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
-  const [actionError, setActionError] = useState<string | null>(null);
   const dealCreatedRef = useRef(false);
 
   const searchQuery = search.trim() || undefined;
@@ -116,7 +111,6 @@ export function DealPipelineHomeScreen({
     () => dealsQuery.data?.items ?? [],
     [dealsQuery.data?.items],
   );
-  const deleteDealMutation = useDeleteDealMutation();
 
   useEffect(() => {
     const message = readLocationNotice(location.state);
@@ -140,13 +134,6 @@ export function DealPipelineHomeScreen({
     companyIds.length > 0 ||
     contactIds.length > 0 ||
     sort !== "createdAtDesc";
-
-  // 기능 : 사용자가 클릭한 딜이 현재 목록에서 사라진 경우에만 상세 선택을 해제합니다.
-  useEffect(() => {
-    if (selectedDealId && !deals.some((deal) => deal.id === selectedDealId)) {
-      setSelectedDealId("");
-    }
-  }, [deals, selectedDealId]);
 
   useEffect(() => {
     if (initialCreateOpen) {
@@ -231,24 +218,6 @@ export function DealPipelineHomeScreen({
     }
   };
 
-  const onDeleteDeal = async (deal: DealListItem) => {
-    if (!window.confirm(`${deal.dealName} 딜을 삭제할까요?`)) {
-      return;
-    }
-
-    setActionError(null);
-
-    try {
-      await deleteDealMutation.mutateAsync(deal.id);
-      if (selectedDealId === deal.id) {
-        setSelectedDealId("");
-      }
-      setNotice("딜이 삭제되었습니다.");
-    } catch (error) {
-      setActionError(getApiErrorMessage(error));
-    }
-  };
-
   const getStageCount = (tab: StageTab): number => {
     const counts = stageCountsQuery.data?.items ?? [];
     if (tab === "ALL") return counts.reduce((sum, c) => sum + c.count, 0);
@@ -291,12 +260,6 @@ export function DealPipelineHomeScreen({
               onClose={() => setNotice(null)}
               variant="success"
             />
-          </div>
-        ) : null}
-        {actionError ? (
-          <div className="mx-5 mt-3 flex items-center gap-2 rounded-md border border-red-200 bg-red-50 px-3 py-2 text-[13px] text-red-700">
-            <AlertCircle className="h-4 w-4 shrink-0" />
-            {actionError}
           </div>
         ) : null}
         {/* Stage Tabs */}
@@ -412,7 +375,6 @@ export function DealPipelineHomeScreen({
                   <TableHeaderCell>금액</TableHeaderCell>
                   <TableHeaderCell>다음 행동 마감일</TableHeaderCell>
                   <TableHeaderCell>등록일</TableHeaderCell>
-                  <TableHeaderCell>관리</TableHeaderCell>
                 </div>
 
                 {/* Rows */}
@@ -433,12 +395,9 @@ export function DealPipelineHomeScreen({
                     {deals.map((deal) => (
                       <DealListRow
                         deal={deal}
-                        deleteDisabled={deleteDealMutation.isPending}
                         displayTimeZone={displayTimeZone}
-                        isActive={deal.id === selectedDealId}
                         key={deal.id}
-                        onDelete={() => void onDeleteDeal(deal)}
-                        onSelect={setSelectedDealId}
+                        onSelect={(dealId) => void navigate(`/deals/${dealId}`)}
                       />
                     ))}
                   </div>
@@ -453,37 +412,6 @@ export function DealPipelineHomeScreen({
                 />
               ) : null}
             </div>
-
-            {/* Right Detail Panel */}
-            {selectedDealId ? (
-              <div className="flex w-[380px] shrink-0 flex-col overflow-hidden rounded-lg border border-[#E5EAF0] bg-white">
-                <div className="flex h-11 shrink-0 items-center justify-between border-b border-[#E6EAF0] px-4">
-                  <div className="flex items-center gap-2">
-                    <button
-                      aria-label="미리보기 닫기"
-                      className="inline-flex h-7 w-7 items-center justify-center rounded-md border border-[#E2E5EC] text-[#64748B] transition hover:bg-blue-50/60 hover:text-[#2563EB]"
-                      onClick={() => setSelectedDealId("")}
-                      title="닫기"
-                      type="button"
-                    >
-                      <X className="h-3.5 w-3.5" strokeWidth={2} />
-                    </button>
-                    <span className="text-[12px] font-medium text-[#6B7280]">
-                      미리보기
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-1.5">
-                    <Link
-                      className="inline-flex h-7 items-center gap-1 rounded-md border border-[#E2E5EC] bg-white px-2.5 text-[12px] font-medium text-[#374151] transition hover:bg-[#F5F6F8]"
-                      to={`/deals/${selectedDealId}`}
-                    >
-                      상세
-                    </Link>
-                  </div>
-                </div>
-                <DealDetailPanel dealId={selectedDealId} variant="panel" />
-              </div>
-            ) : null}
           </div>
         )}
       </section>
@@ -668,17 +596,11 @@ export function DealPipelineHomeScreen({
 
 function DealListRow({
   deal,
-  deleteDisabled,
   displayTimeZone,
-  isActive,
-  onDelete,
   onSelect,
 }: {
   readonly deal: DealListItem;
-  readonly deleteDisabled: boolean;
   readonly displayTimeZone: string;
-  readonly isActive: boolean;
-  readonly onDelete: () => void;
   readonly onSelect: (id: string) => void;
 }) {
   const contactLabel = formatDealContactLabel(deal);
@@ -686,10 +608,7 @@ function DealListRow({
 
   return (
     <div
-      className={cn(
-        "grid h-[66px] w-full items-center border-b border-[#E2E5EC] px-3 py-0 text-left transition-colors last:border-b-0 hover:bg-blue-50/60 md:px-4 xl:px-6",
-        isActive ? "bg-blue-50" : "bg-white",
-      )}
+      className="grid h-[66px] w-full cursor-pointer items-center border-b border-[#E2E5EC] bg-white px-3 py-0 text-left transition-colors last:border-b-0 hover:bg-blue-50/60 md:px-4 xl:px-6"
       onClick={() => onSelect(deal.id)}
       onKeyDown={(event) => {
         if (event.key === "Enter" || event.key === " ") {
@@ -728,10 +647,16 @@ function DealListRow({
       <div className="min-w-0">
         <span
           className={cn(
-            "inline-flex h-6 items-center rounded-full px-2 text-[11px] font-semibold",
+            "inline-flex h-6 items-center gap-1.5 rounded-full border px-2 text-[11px] font-semibold",
             getDealStatusClass(deal.dealStatus),
           )}
         >
+          <span
+            className={cn(
+              "h-1.5 w-1.5 shrink-0 rounded-full",
+              getDealStatusDotClass(deal.dealStatus),
+            )}
+          />
           {deal.dealStatusLabel}
         </span>
       </div>
@@ -759,12 +684,6 @@ function DealListRow({
           {formatDealCreatedAt(deal.createdAt, displayTimeZone)}
         </span>
       </div>
-      <ListRowActions
-        deleteLabel={`${deal.dealName} 삭제`}
-        detailTo={`/deals/${deal.id}`}
-        disabled={deleteDisabled}
-        onDelete={onDelete}
-      />
     </div>
   );
 }
@@ -792,10 +711,16 @@ function MobileDealCard({
       <div className="flex items-center justify-between gap-2">
         <span
           className={cn(
-            "inline-flex h-[22px] items-center rounded-full px-2 text-[11px] font-semibold",
+            "inline-flex h-[22px] items-center gap-1.5 rounded-full border px-2 text-[11px] font-semibold",
             getDealStatusClass(deal.dealStatus),
           )}
         >
+          <span
+            className={cn(
+              "h-1.5 w-1.5 shrink-0 rounded-full",
+              getDealStatusDotClass(deal.dealStatus),
+            )}
+          />
           {deal.dealStatusLabel}
         </span>
         {/* 가능성 배지 — 현재 데이터 없으므로 placeholder */}
@@ -856,17 +781,34 @@ function MobileDealCard({
 function getDealStatusClass(status: DealStatus): string {
   switch (status) {
     case "INITIAL_CONTACT":
-      return "bg-sky-100 text-sky-700";
+      return "border-[#22D3EE] bg-[#ECFEFF] text-[#0E7490]";
     case "NEEDS_CHECK":
-      return "bg-blue-100 text-blue-700";
+      return "border-[#60A5FA] bg-[#EFF6FF] text-[#1D4ED8]";
     case "PROPOSAL_QUOTE":
-      return "bg-yellow-100 text-yellow-700";
+      return "border-[#FACC15] bg-[#FEFCE8] text-[#A16207]";
     case "NEGOTIATION":
-      return "bg-amber-100 text-amber-700";
+      return "border-[#FB923C] bg-[#FFF7ED] text-[#C2410C]";
     case "WON":
-      return "bg-emerald-100 text-emerald-700";
+      return "border-[#34D399] bg-[#ECFDF5] text-[#047857]";
     case "LOST":
-      return "bg-rose-100 text-rose-700";
+      return "border-[#FB7185] bg-[#FFF1F2] text-[#BE123C]";
+  }
+}
+
+function getDealStatusDotClass(status: DealStatus): string {
+  switch (status) {
+    case "INITIAL_CONTACT":
+      return "bg-[#0891B2]";
+    case "NEEDS_CHECK":
+      return "bg-[#2563EB]";
+    case "PROPOSAL_QUOTE":
+      return "bg-[#CA8A04]";
+    case "NEGOTIATION":
+      return "bg-[#EA580C]";
+    case "WON":
+      return "bg-[#059669]";
+    case "LOST":
+      return "bg-[#E11D48]";
   }
 }
 
