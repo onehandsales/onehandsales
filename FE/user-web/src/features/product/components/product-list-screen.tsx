@@ -17,6 +17,7 @@ import {
 } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { PageHeader } from "@/components/layout/page-header";
+import { ListFilterSelect } from "@/components/ui/list-filter-select";
 import { Pagination } from "@/components/ui/pagination";
 import { ListEmptyState } from "@/components/ui/state";
 import { Toast } from "@/components/ui/toast";
@@ -39,6 +40,15 @@ type ProductListScreenProps = {
   readonly initialCreateOpen?: boolean;
   readonly onCreateDialogClose?: () => void;
 };
+
+const PRODUCT_SORT_OPTIONS: Array<{
+  readonly value: ProductSort;
+  readonly label: string;
+}> = [
+  { value: "createdAtDesc", label: "최신순" },
+  { value: "dealCountDesc", label: "딜 높은순" },
+  { value: "dealCountAsc", label: "딜 낮은순" },
+];
 
 const PRODUCT_TABLE_GRID_STYLE = {
   gridTemplateColumns: "repeat(5, minmax(90px, 1fr))",
@@ -263,23 +273,17 @@ export function ProductListScreen({
             setPage(1);
           }}
         />
-        <select
-          className={cn(
-            "h-8 w-[clamp(100px,11vw,118px)] shrink-0 appearance-none rounded-md border px-3 text-[13px] outline-none transition",
-            sort !== "createdAtDesc"
-              ? "border-[#BFDBFE] bg-[#EFF6FF] text-[#1D4ED8]"
-              : "border-[#E2E5EC] bg-transparent text-[#6B7280] hover:bg-[#FAFAF8]",
-          )}
-          onChange={(event) => {
-            setSort(event.target.value as ProductSort);
+        <ListFilterSelect
+          active={sort !== "createdAtDesc"}
+          ariaLabel="정렬 조건"
+          className="w-[clamp(112px,11vw,132px)]"
+          onChange={(nextSort) => {
+            setSort(nextSort);
             setPage(1);
           }}
+          options={PRODUCT_SORT_OPTIONS}
           value={sort}
-        >
-          <option value="createdAtDesc">최신순</option>
-          <option value="dealCountDesc">딜 높은순</option>
-          <option value="dealCountAsc">딜 낮은순</option>
-        </select>
+        />
         <div className="flex-1" />
         <span className="shrink-0 text-[12px] text-[#9CA3AF]">
           {isExporting ? "내보내는 중..." : `${totalCount}개`}

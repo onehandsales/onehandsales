@@ -17,6 +17,7 @@ import {
 } from "react";
 import { PageHeader } from "@/components/layout/page-header";
 import { useLocation, useNavigate } from "react-router-dom";
+import { ListFilterSelect } from "@/components/ui/list-filter-select";
 import { Pagination } from "@/components/ui/pagination";
 import { ListEmptyState } from "@/components/ui/state";
 import { Toast } from "@/components/ui/toast";
@@ -42,6 +43,17 @@ type CompanyListScreenProps = {
   readonly initialCreateOpen?: boolean;
   readonly onCreateDialogClose?: () => void;
 };
+
+const COMPANY_SORT_OPTIONS: Array<{
+  readonly value: CompanySort;
+  readonly label: string;
+}> = [
+  { value: "createdAtDesc", label: "최신순" },
+  { value: "contactCountDesc", label: "담당자 높은순" },
+  { value: "contactCountAsc", label: "담당자 낮은순" },
+  { value: "dealCountDesc", label: "딜 높은순" },
+  { value: "dealCountAsc", label: "딜 낮은순" },
+];
 
 const COMPANY_TABLE_GRID_STYLE = {
   gridTemplateColumns: "repeat(6, minmax(90px, 1fr))",
@@ -254,25 +266,17 @@ export function CompanyListScreen({
             setPage(1);
           }}
         />
-        <select
-          className={cn(
-            "h-8 w-[clamp(108px,12vw,132px)] shrink-0 appearance-none rounded-md border px-3 text-[13px] outline-none transition hover:border-[#93C5FD] focus:border-[#2563EB] focus:ring-1 focus:ring-[#2563EB]",
-            sort !== "createdAtDesc"
-              ? "border-[#BFDBFE] bg-[#EFF6FF] text-[#1D4ED8]"
-              : "border-[#E2E5EC] bg-transparent text-[#6B7280] hover:bg-[#FAFAF8]",
-          )}
-          onChange={(e) => {
-            setSort(e.target.value as CompanySort);
+        <ListFilterSelect
+          active={sort !== "createdAtDesc"}
+          ariaLabel="정렬 조건"
+          className="w-[clamp(124px,13vw,148px)]"
+          onChange={(nextSort) => {
+            setSort(nextSort);
             setPage(1);
           }}
+          options={COMPANY_SORT_OPTIONS}
           value={sort}
-        >
-          <option value="createdAtDesc">최신순</option>
-          <option value="contactCountDesc">담당자 높은순</option>
-          <option value="contactCountAsc">담당자 낮은순</option>
-          <option value="dealCountDesc">딜 높은순</option>
-          <option value="dealCountAsc">딜 낮은순</option>
-        </select>
+        />
         <div className="flex-1" />
         <span className="shrink-0 text-[12px] text-[#9CA3AF]">
           {companyList?.totalCount ?? 0}개

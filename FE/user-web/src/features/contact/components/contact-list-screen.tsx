@@ -17,6 +17,7 @@ import {
 } from "react";
 import { PageHeader } from "@/components/layout/page-header";
 import { Link, useLocation, useNavigate } from "react-router-dom";
+import { ListFilterSelect } from "@/components/ui/list-filter-select";
 import { Pagination } from "@/components/ui/pagination";
 import { ListEmptyState } from "@/components/ui/state";
 import { Toast } from "@/components/ui/toast";
@@ -37,6 +38,14 @@ import { getApiErrorMessage, type ApiBlobResponse } from "@/lib/api-client";
 import { cn } from "@/utils/cn";
 import { formatDateWithOptions } from "@/utils/format";
 import { readLocationNotice } from "@/utils/location-state";
+
+const CONTACT_SORT_OPTIONS: Array<{
+  readonly value: ContactSort;
+  readonly label: string;
+}> = [
+  { value: "createdAtDesc", label: "최신순" },
+  { value: "usernameAsc", label: "이름순" },
+];
 
 const CONTACT_TABLE_GRID_STYLE = {
   gridTemplateColumns:
@@ -217,22 +226,17 @@ export function ContactListScreen() {
             setPage(1);
           }}
         />
-        <select
-          className={cn(
-            "h-8 w-[clamp(92px,10vw,104px)] shrink-0 appearance-none rounded-md border px-3 text-[13px] outline-none transition",
-            sort !== "createdAtDesc"
-              ? "border-[#BFDBFE] bg-[#EFF6FF] text-[#1D4ED8]"
-              : "border-[#E2E5EC] bg-transparent text-[#6B7280] hover:bg-[#FAFAF8]",
-          )}
-          onChange={(e) => {
-            setSort(e.target.value as ContactSort);
+        <ListFilterSelect
+          active={sort !== "createdAtDesc"}
+          ariaLabel="정렬 조건"
+          className="w-[clamp(104px,10vw,118px)]"
+          onChange={(nextSort) => {
+            setSort(nextSort);
             setPage(1);
           }}
+          options={CONTACT_SORT_OPTIONS}
           value={sort}
-        >
-          <option value="createdAtDesc">최신순</option>
-          <option value="usernameAsc">이름순</option>
-        </select>
+        />
         <div className="flex-1" />
         <span className="shrink-0 text-[12px] text-[#9CA3AF]">
           {contactList?.totalCount ?? 0}명

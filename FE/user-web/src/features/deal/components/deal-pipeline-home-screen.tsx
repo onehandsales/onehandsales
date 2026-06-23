@@ -6,12 +6,14 @@ import {
   ChevronUp,
   Download,
   Plus,
+  RotateCcw,
   Search,
   X,
 } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { PageHeader } from "@/components/layout/page-header";
+import { ListFilterSelect } from "@/components/ui/list-filter-select";
 import { ListRowActions } from "@/components/ui/list-row-actions";
 import { ListEmptyState } from "@/components/ui/state";
 import { Toast } from "@/components/ui/toast";
@@ -78,8 +80,8 @@ export function DealPipelineHomeScreen({
   const { user } = useAuthSession();
   const [activeTab, setActiveTab] = useState<StageTab>("ALL");
   const [search, setSearch] = useState("");
-  const [companyId, setCompanyId] = useState("");
-  const [contactId, setContactId] = useState("");
+  const [companyIds, setCompanyIds] = useState<string[]>([]);
+  const [contactIds, setContactIds] = useState<string[]>([]);
   const [sort, setSort] = useState<DealSort>("createdAtDesc");
   const [page, setPage] = useState(1);
   const [selectedDealId, setSelectedDealId] = useState("");
@@ -91,8 +93,8 @@ export function DealPipelineHomeScreen({
   const dealCreatedRef = useRef(false);
 
   const searchQuery = search.trim() || undefined;
-  const companyFilter = companyId ? [companyId] : undefined;
-  const contactFilter = contactId ? [contactId] : undefined;
+  const companyFilter = companyIds.length > 0 ? companyIds : undefined;
+  const contactFilter = contactIds.length > 0 ? contactIds : undefined;
 
   const companyOptionsQuery = useDealCompanyOptions();
   const contactOptionsQuery = useDealContactOptions();
@@ -127,16 +129,16 @@ export function DealPipelineHomeScreen({
   }, [location.pathname, location.state, navigate]);
   const filteredContactOptions = useMemo(() => {
     const contactOptions = contactOptionsQuery.data ?? [];
-    return companyId
-      ? contactOptions.filter((contact) => contact.companyId === companyId)
+    return companyIds.length > 0
+      ? contactOptions.filter((contact) => companyIds.includes(contact.companyId))
       : contactOptions;
-  }, [companyId, contactOptionsQuery.data]);
+  }, [companyIds, contactOptionsQuery.data]);
   const displayTimeZone = user?.timeZone ?? getBrowserTimeZoneFallback();
   const hasFilter =
     activeTab !== "ALL" ||
     search.trim().length > 0 ||
-    companyId.length > 0 ||
-    contactId.length > 0 ||
+    companyIds.length > 0 ||
+    contactIds.length > 0 ||
     sort !== "createdAtDesc";
 
   // 기능 : 사용자가 클릭한 딜이 현재 목록에서 사라진 경우에만 상세 선택을 해제합니다.
@@ -152,6 +154,23 @@ export function DealPipelineHomeScreen({
     }
   }, [initialCreateOpen]);
 
+  // 기능 : 회사 필터 변경으로 범위 밖이 된 담당자 필터를 정리합니다.
+  useEffect(() => {
+    if (contactIds.length === 0) {
+      return;
+    }
+
+    const validContactIds = new Set(filteredContactOptions.map((contact) => contact.id));
+    const nextContactIds = contactIds.filter((contactId) =>
+      validContactIds.has(contactId),
+    );
+
+    if (nextContactIds.length !== contactIds.length) {
+      setContactIds(nextContactIds);
+      setPage(1);
+    }
+  }, [contactIds, filteredContactOptions]);
+
   const onTabChange = (tab: StageTab) => {
     setActiveTab(tab);
     setPage(1);
@@ -165,20 +184,19 @@ export function DealPipelineHomeScreen({
   const clearFilters = () => {
     setActiveTab("ALL");
     setSearch("");
-    setCompanyId("");
-    setContactId("");
+    setCompanyIds([]);
+    setContactIds([]);
     setSort("createdAtDesc");
     setPage(1);
   };
 
-  const onCompanyChange = (value: string) => {
-    setCompanyId(value);
-    setContactId("");
+  const onCompanyIdsChange = (ids: string[]) => {
+    setCompanyIds(ids);
     setPage(1);
   };
 
-  const onContactChange = (value: string) => {
-    setContactId(value);
+  const onContactIdsChange = (ids: string[]) => {
+    setContactIds(ids);
     setPage(1);
   };
 
@@ -341,7 +359,7 @@ export function DealPipelineHomeScreen({
                 </div>
                 <button
                   className={cn(
-                    "inline-flex h-8 shrink-0 items-center whitespace-nowrap rounded-[6px] border px-3 text-[13px] transition",
+                    "inline-flex h-8 shrink-0 items-center gap-1.5 whitespace-nowrap rounded-[6px] border px-3 text-[13px] transition",
                     !hasFilter
                       ? "border-[#C7D7FE] bg-[#EAF2FF] font-bold text-[#1D4ED8]"
                       : "border-[#E6EAF0] bg-white font-medium text-[#475569] hover:bg-[#F9FAFB]",
@@ -349,61 +367,33 @@ export function DealPipelineHomeScreen({
                   onClick={clearFilters}
                   type="button"
                 >
-                  전체
+                  <RotateCcw className="h-3.5 w-3.5" />
+                  초기화
                 </button>
-                <select
-                  aria-label="회사 필터"
-                  className={cn(
-                    "h-8 w-[clamp(92px,11vw,140px)] shrink-0 appearance-none rounded-md border px-3 text-[13px] outline-none transition",
-                    companyId
-                      ? "border-[#BFDBFE] bg-[#EFF6FF] text-[#1D4ED8]"
-                      : "border-[#E2E5EC] bg-transparent text-[#6B7280] hover:bg-[#FAFAF8]",
-                  )}
-                  onChange={(e) => onCompanyChange(e.target.value)}
-                  value={companyId}
-                >
-                  <option value="">회사</option>
-                  {(companyOptionsQuery.data ?? []).map((company) => (
-                    <option key={company.id} value={company.id}>
-                      {company.companyName}
-                    </option>
-                  ))}
-                </select>
-                <select
-                  aria-label="담당자 필터"
-                  className={cn(
-                    "h-8 w-[clamp(92px,11vw,140px)] shrink-0 appearance-none rounded-md border px-3 text-[13px] outline-none transition",
-                    contactId
-                      ? "border-[#BFDBFE] bg-[#EFF6FF] text-[#1D4ED8]"
-                      : "border-[#E2E5EC] bg-transparent text-[#6B7280] hover:bg-[#FAFAF8]",
-                  )}
-                  onChange={(e) => onContactChange(e.target.value)}
-                  value={contactId}
-                >
-                  <option value="">담당자</option>
-                  {filteredContactOptions.map((contact) => (
-                    <option key={contact.id} value={contact.id}>
-                      {contact.label}
-                    </option>
-                  ))}
-                </select>
-                <select
-                  aria-label="정렬 조건"
-                  className={cn(
-                    "h-8 w-[clamp(96px,11vw,136px)] shrink-0 appearance-none rounded-md border px-3 text-[13px] outline-none transition",
-                    sort !== "createdAtDesc"
-                      ? "border-[#BFDBFE] bg-[#EFF6FF] text-[#1D4ED8]"
-                      : "border-[#E2E5EC] bg-transparent text-[#6B7280] hover:bg-[#FAFAF8]",
-                  )}
-                  onChange={(e) => onSortChange(e.target.value as DealSort)}
+                <DealFilterMultiSelect
+                  emptyText="조건에 맞는 회사가 없습니다."
+                  getLabel={(company) => company.companyName}
+                  itemKindLabel="회사"
+                  items={companyOptionsQuery.data ?? []}
+                  selectedIds={companyIds}
+                  onSelectedIdsChange={onCompanyIdsChange}
+                />
+                <DealFilterMultiSelect
+                  emptyText="조건에 맞는 담당자가 없습니다."
+                  getLabel={(contact) => contact.label}
+                  itemKindLabel="담당자"
+                  items={filteredContactOptions}
+                  selectedIds={contactIds}
+                  onSelectedIdsChange={onContactIdsChange}
+                />
+                <ListFilterSelect
+                  active={sort !== "createdAtDesc"}
+                  ariaLabel="정렬 조건"
+                  className="w-[clamp(112px,12vw,144px)]"
+                  onChange={onSortChange}
+                  options={SORT_OPTIONS}
                   value={sort}
-                >
-                  {SORT_OPTIONS.map((opt) => (
-                    <option key={opt.value} value={opt.value}>
-                      {opt.label}
-                    </option>
-                  ))}
-                </select>
+                />
                 <div className="flex-1" />
                 <span className="shrink-0 text-[12px] text-[#9CA3AF]">
                   {dealsQuery.data?.totalCount ?? 0}건
@@ -953,6 +943,299 @@ function getBrowserTimeZoneFallback() {
   } catch {
     return "Asia/Seoul";
   }
+}
+
+type DealFilterPopoverPosition = {
+  readonly left: number;
+  readonly top: number;
+  readonly width: number;
+};
+
+type DealFilterItem = {
+  readonly id: string;
+};
+
+// 기능 : 딜 목록에서 회사/담당자를 여러 개 선택할 수 있는 검색형 필터입니다.
+function DealFilterMultiSelect<TItem extends DealFilterItem>({
+  emptyText,
+  getLabel,
+  itemKindLabel,
+  items,
+  selectedIds,
+  onSelectedIdsChange,
+}: {
+  readonly emptyText: string;
+  readonly getLabel: (item: TItem) => string;
+  readonly itemKindLabel: string;
+  readonly items: readonly TItem[];
+  readonly selectedIds: readonly string[];
+  readonly onSelectedIdsChange: (ids: string[]) => void;
+}) {
+  const [isOpen, setIsOpen] = useState(false);
+  const [filterText, setFilterText] = useState("");
+  const [popoverPosition, setPopoverPosition] =
+    useState<DealFilterPopoverPosition | null>(null);
+  const wrapperRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const selectedIdSet = useMemo(() => new Set(selectedIds), [selectedIds]);
+  const selectedItems = useMemo(
+    () => items.filter((item) => selectedIdSet.has(item.id)),
+    [items, selectedIdSet],
+  );
+  const selectedSummary = getSelectedDealFilterSummary(
+    selectedItems,
+    getLabel,
+    itemKindLabel,
+  );
+  const normalizedFilterText = normalizeDealFilterText(filterText.trim());
+  const filteredItems =
+    normalizedFilterText.length > 0
+      ? items.filter((item) =>
+          normalizeDealFilterText(getLabel(item)).includes(normalizedFilterText),
+        )
+      : items;
+  const inputValue = isOpen ? filterText : selectedSummary;
+
+  useEffect(() => {
+    if (!isOpen) {
+      setFilterText("");
+    }
+  }, [isOpen]);
+
+  useEffect(() => {
+    if (!isOpen) {
+      return;
+    }
+
+    const updatePopoverPosition = () => {
+      if (!inputRef.current) {
+        return;
+      }
+
+      setPopoverPosition(getDealFilterPopoverPosition(inputRef.current));
+    };
+    const onMouseDown = (event: MouseEvent) => {
+      if (
+        wrapperRef.current &&
+        !wrapperRef.current.contains(event.target as Node)
+      ) {
+        setIsOpen(false);
+        setFilterText("");
+      }
+    };
+
+    updatePopoverPosition();
+    document.addEventListener("mousedown", onMouseDown);
+    window.addEventListener("resize", updatePopoverPosition);
+    window.addEventListener("scroll", updatePopoverPosition, true);
+
+    return () => {
+      document.removeEventListener("mousedown", onMouseDown);
+      window.removeEventListener("resize", updatePopoverPosition);
+      window.removeEventListener("scroll", updatePopoverPosition, true);
+    };
+  }, [isOpen]);
+
+  const openOptions = (nextFilterText: string) => {
+    setFilterText(nextFilterText);
+
+    if (inputRef.current) {
+      setPopoverPosition(getDealFilterPopoverPosition(inputRef.current));
+    }
+
+    setIsOpen(true);
+  };
+
+  const toggleItem = (item: TItem) => {
+    const nextIds = selectedIdSet.has(item.id)
+      ? selectedIds.filter((id) => id !== item.id)
+      : [...selectedIds, item.id];
+
+    setFilterText("");
+    onSelectedIdsChange(nextIds);
+  };
+
+  const clearSelection = () => {
+    setFilterText("");
+    onSelectedIdsChange([]);
+    inputRef.current?.focus();
+    openOptions("");
+  };
+
+  return (
+    <div
+      className="relative w-[clamp(136px,14vw,178px)] shrink-0"
+      ref={wrapperRef}
+    >
+      <div className="relative">
+        {isOpen ? (
+          <Search className="pointer-events-none absolute left-3 top-1/2 h-3 w-3 shrink-0 -translate-y-1/2 text-[#9CA3AF]" />
+        ) : null}
+        <input
+          aria-autocomplete="list"
+          aria-expanded={isOpen}
+          aria-label={`${itemKindLabel} 필터`}
+          autoComplete="off"
+          className={cn(
+            "h-8 w-full min-w-0 border text-[13px] outline-none transition",
+            isOpen
+              ? "rounded-full border-[#2563EB] bg-white pl-8 pr-7 text-[#111827] ring-1 ring-[#2563EB]"
+              : selectedIds.length > 0
+                ? "rounded-full border-[#BFDBFE] bg-[#EFF6FF] pl-3.5 pr-7 font-semibold text-[#1D4ED8]"
+                : "cursor-pointer rounded-full border-[#E2E5EC] bg-transparent pl-3.5 pr-7 text-[#6B7280] hover:border-[#D1D5DB] hover:bg-[#FAFAF8]",
+          )}
+          onChange={(event) => openOptions(event.target.value)}
+          onFocus={() => openOptions("")}
+          onKeyDown={(event) => {
+            if (event.key === "Escape") {
+              setIsOpen(false);
+              setFilterText("");
+              inputRef.current?.blur();
+              return;
+            }
+
+            if (event.key === "Enter") {
+              const firstItem = filteredItems[0];
+              if (!firstItem) {
+                return;
+              }
+
+              event.preventDefault();
+              toggleItem(firstItem);
+            }
+          }}
+          placeholder={`${itemKindLabel} 선택`}
+          ref={inputRef}
+          value={inputValue}
+        />
+        {selectedIds.length > 0 || filterText ? (
+          <button
+            aria-label={`${itemKindLabel} 필터 지우기`}
+            className="absolute right-1 top-1/2 grid h-7 w-7 -translate-y-1/2 place-items-center rounded-full text-[#9CA3AF] transition hover:bg-white hover:text-[#374151]"
+            onClick={clearSelection}
+            type="button"
+          >
+            <X className="h-3.5 w-3.5" />
+          </button>
+        ) : (
+          <ChevronDown
+            className={cn(
+              "pointer-events-none absolute right-2 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-[#9CA3AF] transition-transform",
+              isOpen && "rotate-180",
+            )}
+          />
+        )}
+      </div>
+
+      {isOpen ? (
+        <div
+          className={cn(
+            "fixed z-50 overflow-hidden rounded-md border border-[#E6EAF0] bg-white shadow-lg",
+            !popoverPosition && "invisible",
+          )}
+          style={{
+            left: popoverPosition?.left ?? 0,
+            top: popoverPosition?.top ?? 0,
+            width: popoverPosition?.width ?? 256,
+          }}
+        >
+          <button
+            className={cn(
+              "flex h-9 w-full items-center gap-1.5 px-3 text-left text-[13px] transition hover:bg-[#F9FAFB]",
+              selectedIds.length === 0
+                ? "font-semibold text-[#1D4ED8]"
+                : "font-medium text-[#475569]",
+            )}
+            onClick={() => {
+              setFilterText("");
+              setIsOpen(false);
+              onSelectedIdsChange([]);
+            }}
+            type="button"
+          >
+            <RotateCcw className="h-3.5 w-3.5" />
+            {itemKindLabel} 초기화
+          </button>
+
+          <div className="max-h-[184px] overflow-y-auto border-y border-[#E6EAF0] py-1">
+            {filteredItems.length === 0 ? (
+              <p className="px-3 py-3 text-[12px] text-[#9CA3AF]">
+                {emptyText}
+              </p>
+            ) : (
+              filteredItems.map((item) => {
+                const isSelected = selectedIdSet.has(item.id);
+
+                return (
+                  <button
+                    className={cn(
+                      "flex h-8 w-full min-w-0 items-center gap-2 px-3 text-left text-[13px] transition hover:bg-[#F9FAFB]",
+                      isSelected && "bg-[#EFF6FF] font-semibold text-[#1D4ED8]",
+                    )}
+                    key={item.id}
+                    onClick={() => toggleItem(item)}
+                    type="button"
+                  >
+                    <span
+                      className={cn(
+                        "grid h-3.5 w-3.5 shrink-0 place-items-center rounded-full border",
+                        isSelected ? "border-[#2563EB]" : "border-[#CBD5E1]",
+                      )}
+                    >
+                      {isSelected ? (
+                        <span className="h-1.5 w-1.5 rounded-full bg-[#2563EB]" />
+                      ) : null}
+                    </span>
+                    <span className="min-w-0 flex-1 truncate">
+                      {getLabel(item)}
+                    </span>
+                  </button>
+                );
+              })
+            )}
+          </div>
+        </div>
+      ) : null}
+    </div>
+  );
+}
+
+function getDealFilterPopoverPosition(
+  input: HTMLInputElement,
+): DealFilterPopoverPosition {
+  const rect = input.getBoundingClientRect();
+  const viewportWidth = window.innerWidth;
+  const margin = 16;
+  const width = 256;
+  const maxLeft = Math.max(margin, viewportWidth - width - margin);
+  const left = Math.min(Math.max(rect.left, margin), maxLeft);
+
+  return {
+    left,
+    top: rect.bottom + 4,
+    width,
+  };
+}
+
+function getSelectedDealFilterSummary<TItem extends DealFilterItem>(
+  selectedItems: readonly TItem[],
+  getLabel: (item: TItem) => string,
+  itemKindLabel: string,
+) {
+  if (selectedItems.length === 0) {
+    return "";
+  }
+
+  if (selectedItems.length === 1) {
+    const selectedItem = selectedItems[0];
+    return selectedItem ? getLabel(selectedItem) : "";
+  }
+
+  return `${itemKindLabel} ${selectedItems.length}개`;
+}
+
+function normalizeDealFilterText(value: string) {
+  return value.trim().toLocaleLowerCase("ko-KR");
 }
 
 function TableHeaderCell({
