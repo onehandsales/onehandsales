@@ -53,6 +53,15 @@ export interface DealContactRecord {
 export interface DealProductRecord {
   readonly id: string;
   readonly productName: string;
+  readonly productPrice: number;
+  readonly productCategory: {
+    readonly id: string;
+    readonly categoryName: string;
+  };
+  readonly productStatus: {
+    readonly id: string;
+    readonly statusName: string;
+  };
 }
 
 // 역할 : DealFollowingActionLogRecord 데이터가 계층 사이에서 전달되는 구조를 정의합니다.

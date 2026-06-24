@@ -5,6 +5,7 @@ import {
   Plus,
   Pencil,
   Trash2,
+  UserRound,
 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
@@ -522,7 +523,9 @@ function ConnectedContactsTable({
                 key={contact.id}
                 to={`/contacts/${contact.id}`}
               >
-                <div className="h-6 w-6 shrink-0 rounded-full bg-[#DBEAFE]" />
+                <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#DBEAFE]">
+                  <UserRound className="h-3.5 w-3.5 text-[#2563EB]" />
+                </div>
                 <div className="grid min-w-0 flex-1 grid-cols-[minmax(132px,1fr)_minmax(160px,1.1fr)_120px] items-center gap-3 whitespace-nowrap text-[12px] font-medium text-[#6B7280] max-sm:grid-cols-[minmax(0,1fr)_112px] max-sm:grid-rows-2">
                   <div className="min-w-0">
                     <div className="flex min-w-0 items-center gap-1.5">

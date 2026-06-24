@@ -103,8 +103,20 @@ class FakeDealRepository implements DealRepository {
   ];
 
   readonly products: DealProductRecord[] = [
-    { id: "product-1", productName: "프리미엄 상품" },
-    { id: "product-2", productName: "추가 상품" },
+    {
+      id: "product-1",
+      productName: "프리미엄 상품",
+      productPrice: 1200000,
+      productCategory: { id: "category-1", categoryName: "보안" },
+      productStatus: { id: "status-1", statusName: "판매중" },
+    },
+    {
+      id: "product-2",
+      productName: "추가 상품",
+      productPrice: 300000,
+      productCategory: { id: "category-2", categoryName: "연동" },
+      productStatus: { id: "status-2", statusName: "검토중" },
+    },
   ];
 
   deals: StoredDeal[] = [];
@@ -653,6 +665,9 @@ describe("DealApplicationService", () => {
       "프리미엄 상품",
       "추가 상품",
     ]);
+    expect(result.products[0]?.productCategory.categoryName).toBe("보안");
+    expect(result.products[0]?.productStatus.statusName).toBe("판매중");
+    expect(result.products[0]?.productPrice).toBe(1200000);
     expect(result.latestFollowingAction?.followingAction).toBe("제안서 발송");
   });
 

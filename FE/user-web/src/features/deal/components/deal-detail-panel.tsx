@@ -781,9 +781,27 @@ function DealLinkedProductsTable({
               <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#F0FDF4]">
                 <Package className="h-3.5 w-3.5 text-[#15803D]" />
               </div>
-              <span className="min-w-0 flex-1 truncate text-[13px] font-extrabold text-[#111827]">
-                {product.productName}
-              </span>
+              <div className="grid min-w-0 flex-1 grid-cols-2 items-center gap-4">
+                <div className="min-w-0">
+                  <span
+                    className="block truncate text-[13px] font-extrabold text-[#111827]"
+                    title={product.productName}
+                  >
+                    {product.productName}
+                  </span>
+                  <span
+                    className="block truncate text-[11px] font-semibold leading-4 text-[#9CA3AF]"
+                    title={`${product.productCategory.categoryName} · ${product.productStatus.statusName}`}
+                  >
+                    {product.productCategory.categoryName} · {product.productStatus.statusName}
+                  </span>
+                </div>
+                <div className="grid min-w-0 gap-0.5 text-right text-[11px] font-semibold leading-4">
+                  <span className="truncate text-[#374151]">
+                    {product.productPrice.toLocaleString("ko-KR")}원
+                  </span>
+                </div>
+              </div>
               <ChevronRight className="h-4 w-4 shrink-0 text-[#D1D5DB]" />
             </Link>
           ))}

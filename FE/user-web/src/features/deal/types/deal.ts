@@ -68,6 +68,15 @@ export type DealContact = {
 export type DealProduct = {
   readonly id: string;
   readonly productName: string;
+  readonly productPrice: number;
+  readonly productCategory: {
+    readonly id: string;
+    readonly categoryName: string;
+  };
+  readonly productStatus: {
+    readonly id: string;
+    readonly statusName: string;
+  };
 };
 
 export type LatestFollowingAction = {
@@ -205,6 +214,15 @@ export type DealContactOption = {
 export type DealProductOption = {
   readonly id: string;
   readonly productName: string;
+  readonly productPrice: number;
+  readonly productCategory: {
+    readonly id: string;
+    readonly categoryName: string;
+  };
+  readonly productStatus: {
+    readonly id: string;
+    readonly statusName: string;
+  };
 };
 
 export type DealCompanyOptionsResponse = {

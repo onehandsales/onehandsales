@@ -68,6 +68,15 @@ type DealContactRow = {
 type DealProductRow = {
   readonly id: string;
   readonly productName: string;
+  readonly productPrice: number;
+  readonly productCategory: {
+    readonly id: string;
+    readonly categoryName: string;
+  };
+  readonly productStatus: {
+    readonly id: string;
+    readonly statusName: string;
+  };
 };
 
 type DealFollowingActionLogRow = {
@@ -193,10 +202,7 @@ export class PrismaDealRepository implements DealRepository {
         dealProducts: {
           select: {
             product: {
-              select: {
-                id: true,
-                productName: true,
-              },
+              select: this.createProductSelect(),
             },
           },
           orderBy: [{ createdAt: "asc" }, { id: "asc" }],
@@ -396,10 +402,7 @@ export class PrismaDealRepository implements DealRepository {
         },
         userId,
       },
-      select: {
-        id: true,
-        productName: true,
-      },
+      select: this.createProductSelect(),
     });
   }
 
@@ -427,10 +430,7 @@ export class PrismaDealRepository implements DealRepository {
   async listProductOptions(userId: string): Promise<DealProductRecord[]> {
     return this.client.product.findMany({
       where: { userId },
-      select: {
-        id: true,
-        productName: true,
-      },
+      select: this.createProductSelect(),
       orderBy: [{ createdAt: "desc" }, { id: "desc" }],
     });
   }
@@ -700,6 +700,26 @@ export class PrismaDealRepository implements DealRepository {
   }
 
   // 기능 : 다음 행동 로그 조회에 필요한 select 조건을 생성합니다.
+  private createProductSelect() {
+    return {
+      id: true,
+      productName: true,
+      productPrice: true,
+      productCategory: {
+        select: {
+          id: true,
+          categoryName: true,
+        },
+      },
+      productStatus: {
+        select: {
+          id: true,
+          statusName: true,
+        },
+      },
+    } satisfies Prisma.ProductSelect;
+  }
+
   private createFollowingActionLogSelect() {
     return {
       id: true,
@@ -795,10 +815,9 @@ export class PrismaDealRepository implements DealRepository {
   private mapDealDetailRecord(deal: DealDetailRow): DealDetailRecord {
     return {
       ...this.mapDealListRecord(deal),
-      products: deal.dealProducts.map((dealProduct) => ({
-        id: dealProduct.product.id,
-        productName: dealProduct.product.productName,
-      })),
+      products: deal.dealProducts.map((dealProduct) =>
+        this.mapProduct(dealProduct.product)
+      ),
     };
   }
 
@@ -842,6 +861,22 @@ export class PrismaDealRepository implements DealRepository {
   }
 
   // 기능 : DB 문자열 상태를 코드 단 DealStatusCode로 변환합니다.
+  private mapProduct(product: DealProductRow): DealProductRecord {
+    return {
+      id: product.id,
+      productName: product.productName,
+      productPrice: product.productPrice,
+      productCategory: {
+        id: product.productCategory.id,
+        categoryName: product.productCategory.categoryName,
+      },
+      productStatus: {
+        id: product.productStatus.id,
+        statusName: product.productStatus.statusName,
+      },
+    };
+  }
+
   private mapDealStatus(status: string): DealStatusCode {
     if (!isDealStatusCode(status)) {
       throw new Error(`Invalid deal status in database: ${status}`);
