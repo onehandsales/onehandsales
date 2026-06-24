@@ -728,23 +728,25 @@ function DealLinkedContactsTable({
               <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#DBEAFE]">
                 <UserRound className="h-3.5 w-3.5 text-[#2563EB]" />
               </div>
-              <div className="min-w-0 flex-1">
-                <div className="flex min-w-0 items-center gap-1.5 text-[13px] font-extrabold text-[#111827]">
-                  <span className="truncate">{contact.username}</span>
-                  <span className="shrink-0">{contact.contactJobGrade.jobGradeName}</span>
+              <div className="grid min-w-0 flex-1 grid-cols-2 items-center gap-4">
+                <div className="min-w-0">
+                  <div className="flex min-w-0 items-center gap-1.5 text-[13px] font-extrabold text-[#111827]">
+                    <span className="truncate">{contact.username}</span>
+                    <span className="shrink-0">{contact.contactJobGrade.jobGradeName}</span>
+                  </div>
+                  <span
+                    className="block truncate text-[11px] font-semibold leading-4 text-[#9CA3AF]"
+                    title={`${contact.contactDepartment.departmentName} · ${contact.company.companyName}`}
+                  >
+                    {contact.contactDepartment.departmentName} · {contact.company.companyName}
+                  </span>
                 </div>
-                <span
-                  className="block truncate text-[11px] font-semibold leading-4 text-[#9CA3AF]"
-                  title={`${contact.company.companyName} · ${contact.contactDepartment.departmentName}`}
-                >
-                  {contact.company.companyName} · {contact.contactDepartment.departmentName}
-                </span>
-                <div className="grid min-w-0 grid-cols-2 gap-3 text-[11px] font-semibold leading-4 text-[#9CA3AF]">
-                  <span className="inline-flex min-w-0 flex-1 items-center gap-1">
+                <div className="grid min-w-0 gap-0.5 text-[11px] font-semibold leading-4 text-[#9CA3AF]">
+                  <span className="inline-flex min-w-0 items-center gap-1">
                     <Mail className="h-3 w-3 shrink-0 text-[#9CA3AF]" />
                     <span className="truncate">{contact.email || "-"}</span>
                   </span>
-                  <span className="inline-flex min-w-0 flex-1 items-center gap-1">
+                  <span className="inline-flex min-w-0 items-center gap-1">
                     <Phone className="h-3 w-3 shrink-0 text-[#9CA3AF]" />
                     <span className="truncate">{contact.mobile || "-"}</span>
                   </span>
