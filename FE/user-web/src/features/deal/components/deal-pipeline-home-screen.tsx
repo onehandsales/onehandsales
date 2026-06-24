@@ -815,10 +815,15 @@ function getDealStatusDotClass(status: DealStatus): string {
 function formatDealContactLabel(deal: DealListItem) {
   return deal.contacts
     .map((contact) => {
+      const jobGradeName = contact.contactJobGrade.jobGradeName.trim();
       const departmentName = contact.contactDepartment.departmentName.trim();
-      return departmentName
-        ? `${contact.username} ${departmentName}`
+      const nameWithJobGrade = jobGradeName
+        ? `${contact.username} ${jobGradeName}`
         : contact.username;
+
+      return departmentName
+        ? `${nameWithJobGrade} · ${departmentName}`
+        : nameWithJobGrade;
     })
     .join(", ");
 }

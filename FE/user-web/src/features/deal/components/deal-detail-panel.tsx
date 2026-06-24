@@ -8,9 +8,7 @@ import {
   ChevronLeft,
   ChevronRight,
   Clock3,
-  FileText,
   HandCoins,
-  Lock,
   Mail,
   Package,
   Pencil,
@@ -25,6 +23,13 @@ import type { FormEvent, ReactNode } from "react";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
+import {
+  ModalFieldGroup,
+  ModalFooterActions,
+  ModalForm,
+  ModalFormSection,
+} from "@/components/ui/modal-form";
+import { ModalShell } from "@/components/ui/modal-shell";
 import { Toast } from "@/components/ui/toast";
 import {
   useDealDetail,
@@ -377,7 +382,6 @@ function DealDetailPageLayout({
   readonly onFetchFollowingLogsNext: () => void;
   readonly onFetchMemoLogsNext: () => void;
 }) {
-  const nextAction = followingLogs[0];
   const [isEditing, setIsEditing] = useState(false);
   const companyName = formatDealCompanySummary(detail);
   const contactName = formatDealContactSummary(detail);
@@ -425,33 +429,24 @@ function DealDetailPageLayout({
             <DealLinkedCompaniesTable companies={detail.companies} />
             <DealLinkedContactsTable contacts={detail.contacts} />
             <DealLinkedProductsTable products={products} />
-            <NextActionSummary
-              isLoading={followingLogsLoading}
-              log={nextAction}
-              tone="page"
-            />
-            <DealLogPanel>
-              <FollowingActionLogsSection
-                dealId={detail.id}
-                hasNext={followingLogsHasNext}
-                isFetchingNext={followingLogsFetchingNext}
-                isLoading={followingLogsLoading}
-                logs={followingLogs}
-                onFetchNext={onFetchFollowingLogsNext}
-                tone="page-inner"
-              />
-            </DealLogPanel>
-            <DealLogPanel>
-              <MemoLogsSection
+            <div className="grid gap-4">
+              <DealMemoLogsPanel
                 dealId={detail.id}
                 hasNext={memoLogsHasNext}
                 isFetchingNext={memoLogsFetchingNext}
                 isLoading={memoLogsLoading}
                 logs={memoLogs}
                 onFetchNext={onFetchMemoLogsNext}
-                tone="page-inner"
               />
-            </DealLogPanel>
+              <DealFollowingActionsPanel
+                dealId={detail.id}
+                hasNext={followingLogsHasNext}
+                isFetchingNext={followingLogsFetchingNext}
+                isLoading={followingLogsLoading}
+                logs={followingLogs}
+                onFetchNext={onFetchFollowingLogsNext}
+              />
+            </div>
           </div>
         </div>
       </div>
@@ -496,45 +491,22 @@ function DealDetailPageLayout({
             <DealLinkedProductsTable products={products} />
           </div>
 
-          <div className="grid grid-cols-[minmax(0,1fr)_360px] gap-4">
-            <DealLogPanel>
-              <FollowingActionLogsSection
-                dealId={detail.id}
-                hasNext={followingLogsHasNext}
-                isFetchingNext={followingLogsFetchingNext}
-                isLoading={followingLogsLoading}
-                logs={followingLogs}
-                onFetchNext={onFetchFollowingLogsNext}
-                tone="page-inner"
-              />
-            </DealLogPanel>
-            <div className="grid h-fit gap-4">
-              <NextActionSummary
-                isLoading={followingLogsLoading}
-                log={nextAction}
-                tone="page"
-              />
-              <section className="rounded-xl border border-[#E5E7EB] bg-white p-4">
-                <StageProgressSection activeStatus={detail.dealStatus} />
-              </section>
-            </div>
-          </div>
-
           <div className="grid grid-cols-2 gap-4">
-            <DealLogPanel>
-              <MemoLogsSection
-                dealId={detail.id}
-                hasNext={memoLogsHasNext}
-                isFetchingNext={memoLogsFetchingNext}
-                isLoading={memoLogsLoading}
-                logs={memoLogs}
-                onFetchNext={onFetchMemoLogsNext}
-                tone="page-inner"
-              />
-            </DealLogPanel>
-            <DealInfoPanel
-              detail={detail}
-              productCount={products.length}
+            <DealMemoLogsPanel
+              dealId={detail.id}
+              hasNext={memoLogsHasNext}
+              isFetchingNext={memoLogsFetchingNext}
+              isLoading={memoLogsLoading}
+              logs={memoLogs}
+              onFetchNext={onFetchMemoLogsNext}
+            />
+            <DealFollowingActionsPanel
+              dealId={detail.id}
+              hasNext={followingLogsHasNext}
+              isFetchingNext={followingLogsFetchingNext}
+              isLoading={followingLogsLoading}
+              logs={followingLogs}
+              onFetchNext={onFetchFollowingLogsNext}
             />
           </div>
         </div>
@@ -831,19 +803,588 @@ function DealLinkedTableFrame({
   );
 }
 
-function DealLogPanel({
-  children,
+function DealTimelineMarker({
+  isFirst,
+  isLast,
 }: {
-  readonly children: ReactNode;
+  readonly isFirst: boolean;
+  readonly isLast: boolean;
 }) {
   return (
-    <div className="rounded-xl border border-[#E5E7EB] bg-white p-4">
-      {children}
+    <div className="relative flex w-[8px] shrink-0 self-stretch items-start justify-center pt-[16px]">
+      {!isFirst ? (
+        <div className="absolute left-1/2 top-0 h-[20px] w-px -translate-x-1/2 bg-[#DBEAFE]" />
+      ) : null}
+      {!isLast ? (
+        <div className="absolute bottom-0 left-1/2 top-[20px] w-px -translate-x-1/2 bg-[#DBEAFE]" />
+      ) : null}
+      <div className="relative h-[8px] w-[8px] rounded-full bg-[#2563EB]" />
     </div>
   );
 }
 
-function DealInfoPanel({
+function DealPanelShell({
+  children,
+  count,
+  onAdd,
+  title,
+}: {
+  readonly children: ReactNode;
+  readonly count: number;
+  readonly onAdd: () => void;
+  readonly title: string;
+}) {
+  return (
+    <section className="flex h-[420px] flex-col overflow-hidden rounded-xl border border-[#E5E7EB] bg-white">
+      <div className="flex h-[52px] shrink-0 items-center gap-2.5 border-b border-[#E5E7EB] px-4">
+        <span className="text-[15px] font-extrabold text-[#111827]">{title}</span>
+        <span className="text-[13px] font-semibold text-[#9CA3AF]">{count}</span>
+        <div className="flex-1" />
+        <button
+          aria-label={`${title} 추가`}
+          className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#2563EB] text-white transition-colors hover:bg-[#1D4ED8]"
+          onClick={onAdd}
+          type="button"
+        >
+          <Plus className="h-3.5 w-3.5" />
+        </button>
+      </div>
+      <div className="flex min-h-0 flex-1 flex-col overflow-y-auto px-4 pb-4 pt-2">
+        {children}
+      </div>
+    </section>
+  );
+}
+
+function DealFollowingActionsPanel({
+  dealId,
+  hasNext,
+  isFetchingNext,
+  logs,
+  isLoading,
+  onFetchNext,
+}: {
+  readonly dealId: string;
+  readonly hasNext: boolean;
+  readonly isFetchingNext: boolean;
+  readonly logs: DealFollowingActionLog[];
+  readonly isLoading: boolean;
+  readonly onFetchNext: () => void;
+}) {
+  const [isCreateOpen, setIsCreateOpen] = useState(false);
+  const [editingLog, setEditingLog] = useState<DealFollowingActionLog | null>(null);
+  const createMutation = useCreateFollowingActionLogMutation();
+  const updateMutation = useUpdateFollowingActionLogMutation();
+  const {
+    register: registerCreate,
+    handleSubmit: handleSubmitCreate,
+    reset: resetCreate,
+    formState: { errors: createErrors },
+  } = useForm<FollowingActionLogFormValues>({
+    resolver: zodResolver(followingActionLogFormSchema),
+    defaultValues: { followingAction: "" },
+  });
+  const {
+    register: registerEdit,
+    handleSubmit: handleSubmitEdit,
+    reset: resetEdit,
+    formState: { errors: editErrors },
+  } = useForm<FollowingActionLogFormValues>({
+    resolver: zodResolver(followingActionLogFormSchema),
+    defaultValues: { followingAction: "" },
+  });
+
+  const createFormId = "deal-following-action-create-form";
+  const editFormId = "deal-following-action-edit-form";
+
+  const onCreate = handleSubmitCreate(async (values) => {
+    await createMutation.mutateAsync({
+      dealId,
+      followingAction: values.followingAction,
+    });
+    resetCreate({ followingAction: "" });
+    setIsCreateOpen(false);
+  });
+
+  const onStartEdit = (log: DealFollowingActionLog) => {
+    setEditingLog(log);
+    resetEdit({ followingAction: log.followingAction });
+  };
+
+  const onEdit = handleSubmitEdit(async (values) => {
+    if (!editingLog) return;
+    await updateMutation.mutateAsync({
+      dealId,
+      followingActionLogId: editingLog.id,
+      followingAction: values.followingAction,
+    });
+    setEditingLog(null);
+  });
+
+  return (
+    <>
+      <DealPanelShell
+        count={logs.length}
+        title="다음 행동"
+        onAdd={() => setIsCreateOpen(true)}
+      >
+        {isLoading ? (
+          <div className="flex flex-col gap-2">
+            {Array.from({ length: 2 }).map((_, index) => (
+              <div className="h-10 animate-pulse rounded-md bg-muted" key={index} />
+            ))}
+          </div>
+        ) : logs.length === 0 ? (
+          <p className="py-2 text-[13px] text-[#9CA3AF]">
+            등록된 다음 행동이 없습니다.
+          </p>
+        ) : (
+          <div className="flex flex-col">
+            {logs.map((log, index) => (
+              <DealFollowingActionRow
+                dealId={dealId}
+                isFirst={index === 0}
+                isLast={index === logs.length - 1}
+                key={log.id}
+                log={log}
+                onStartEdit={onStartEdit}
+              />
+            ))}
+          </div>
+        )}
+        {!isLoading && hasNext ? (
+          <button
+            className="mt-2 inline-flex h-8 w-full items-center justify-center rounded-md border border-[#E5EAF0] bg-white text-[12px] font-medium text-[#374151] transition hover:bg-[#F9FAFB] disabled:cursor-not-allowed disabled:opacity-60"
+            disabled={isFetchingNext}
+            onClick={onFetchNext}
+            type="button"
+          >
+            {isFetchingNext ? "불러오는 중..." : "더 보기"}
+          </button>
+        ) : null}
+      </DealPanelShell>
+
+      <ModalShell
+        footer={
+          <ModalFooterActions
+            formId={createFormId}
+            isSubmitting={createMutation.isPending}
+            pendingLabel="저장 중..."
+            submitLabel="저장"
+            onCancel={() => {
+              resetCreate({ followingAction: "" });
+              setIsCreateOpen(false);
+            }}
+          />
+        }
+        open={isCreateOpen}
+        size="md"
+        title="다음 행동 추가"
+        onOpenChange={setIsCreateOpen}
+      >
+        <ModalForm id={createFormId} onSubmit={onCreate}>
+          <ModalFormSection title="다음 행동">
+            <ModalFieldGroup
+              error={createErrors.followingAction?.message}
+              id="deal-following-action-create"
+              label="내용"
+            >
+              <textarea
+                className="min-h-28 resize-y rounded-md border px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-ring"
+                id="deal-following-action-create"
+                placeholder="다음에 해야 할 행동"
+                rows={4}
+                {...registerCreate("followingAction")}
+              />
+            </ModalFieldGroup>
+          </ModalFormSection>
+          {createMutation.error ? (
+            <p className="text-xs text-[#B91C1C]">
+              {getApiErrorMessage(createMutation.error)}
+            </p>
+          ) : null}
+        </ModalForm>
+      </ModalShell>
+
+      <ModalShell
+        footer={
+          <ModalFooterActions
+            formId={editFormId}
+            isSubmitting={updateMutation.isPending}
+            pendingLabel="저장 중..."
+            submitLabel="저장"
+            onCancel={() => setEditingLog(null)}
+          />
+        }
+        open={editingLog !== null}
+        size="md"
+        title="다음 행동 수정"
+        onOpenChange={(open) => {
+          if (!open) setEditingLog(null);
+        }}
+      >
+        <ModalForm id={editFormId} onSubmit={onEdit}>
+          <ModalFormSection title="다음 행동">
+            <ModalFieldGroup
+              error={editErrors.followingAction?.message}
+              id="deal-following-action-edit"
+              label="내용"
+            >
+              <textarea
+                className="min-h-28 resize-y rounded-md border px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-ring"
+                id="deal-following-action-edit"
+                placeholder="다음에 해야 할 행동"
+                rows={4}
+                {...registerEdit("followingAction")}
+              />
+            </ModalFieldGroup>
+          </ModalFormSection>
+          {updateMutation.error ? (
+            <p className="text-xs text-[#B91C1C]">
+              {getApiErrorMessage(updateMutation.error)}
+            </p>
+          ) : null}
+        </ModalForm>
+      </ModalShell>
+    </>
+  );
+}
+
+function DealFollowingActionRow({
+  dealId,
+  isFirst,
+  isLast,
+  log,
+  onStartEdit,
+}: {
+  readonly dealId: string;
+  readonly isFirst: boolean;
+  readonly isLast: boolean;
+  readonly log: DealFollowingActionLog;
+  readonly onStartEdit: (log: DealFollowingActionLog) => void;
+}) {
+  const updateMutation = useUpdateFollowingActionLogMutation();
+
+  const onToggleComplete = async () => {
+    await updateMutation.mutateAsync({
+      dealId,
+      followingActionLogId: log.id,
+      checkComplete: !log.checkComplete,
+    });
+  };
+
+  return (
+    <div className="group flex gap-3">
+      <DealTimelineMarker isFirst={isFirst} isLast={isLast} />
+      <div className="flex min-h-[40px] min-w-0 flex-1 items-center bg-white text-left">
+        <button
+          aria-label={log.checkComplete ? "완료 취소" : "완료 처리"}
+          className={cn(
+            "mr-2 flex h-5 w-5 shrink-0 items-center justify-center rounded-full border-2 transition-colors",
+            log.checkComplete
+              ? "border-emerald-500 bg-emerald-500 text-white"
+              : "border-[#CBD5E1]"
+          )}
+          disabled={updateMutation.isPending}
+          onClick={() => void onToggleComplete()}
+          type="button"
+        >
+          {log.checkComplete ? <Check className="h-3 w-3" /> : null}
+        </button>
+        <span
+          className={cn(
+            "min-w-0 flex-1 truncate text-[13px] font-semibold",
+            log.checkComplete ? "text-[#9CA3AF] line-through" : "text-[#111827]"
+          )}
+        >
+          {log.followingAction}
+        </span>
+        <span className="shrink-0 text-[11px] font-bold text-[#9CA3AF]">
+          {formatDateTime(log.createdAt, { includeYear: true })}
+        </span>
+        <button
+          aria-label="수정"
+          className="invisible ml-1 flex h-6 w-6 shrink-0 items-center justify-center rounded group-hover:visible"
+          onClick={() => onStartEdit(log)}
+          type="button"
+        >
+          <Pencil className="h-3 w-3 text-[#9CA3AF]" />
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function DealMemoLogsPanel({
+  dealId,
+  hasNext,
+  isFetchingNext,
+  logs,
+  isLoading,
+  onFetchNext,
+}: {
+  readonly dealId: string;
+  readonly hasNext: boolean;
+  readonly isFetchingNext: boolean;
+  readonly logs: DealMemoLog[];
+  readonly isLoading: boolean;
+  readonly onFetchNext: () => void;
+}) {
+  const [isCreateOpen, setIsCreateOpen] = useState(false);
+  const [editingLog, setEditingLog] = useState<DealMemoLog | null>(null);
+  const createMutation = useCreateMemoLogMutation();
+  const updateMutation = useUpdateMemoLogMutation();
+  const {
+    register: registerCreate,
+    handleSubmit: handleSubmitCreate,
+    reset: resetCreate,
+    formState: { errors: createErrors },
+  } = useForm<MemoLogFormValues>({
+    resolver: zodResolver(memoLogFormSchema),
+    defaultValues: { memoType: "일반", memo: "" },
+  });
+  const {
+    register: registerEdit,
+    handleSubmit: handleSubmitEdit,
+    reset: resetEdit,
+    formState: { errors: editErrors },
+  } = useForm<MemoLogFormValues>({
+    resolver: zodResolver(memoLogFormSchema),
+    defaultValues: { memoType: "일반", memo: "" },
+  });
+
+  const createFormId = "deal-memo-log-create-form";
+  const editFormId = "deal-memo-log-edit-form";
+
+  const onCreate = handleSubmitCreate(async (values) => {
+    await createMutation.mutateAsync({
+      dealId,
+      memoType: values.memoType,
+      memo: values.memo,
+    });
+    resetCreate({ memoType: "일반", memo: "" });
+    setIsCreateOpen(false);
+  });
+
+  const onStartEdit = (log: DealMemoLog) => {
+    setEditingLog(log);
+    resetEdit({ memoType: log.memoType, memo: log.memo });
+  };
+
+  const onEdit = handleSubmitEdit(async (values) => {
+    if (!editingLog) return;
+    await updateMutation.mutateAsync({
+      dealId,
+      memoLogId: editingLog.id,
+      memoType: values.memoType,
+      memo: values.memo,
+    });
+    setEditingLog(null);
+  });
+
+  return (
+    <>
+      <DealPanelShell
+        count={logs.length}
+        title="딜 로그"
+        onAdd={() => setIsCreateOpen(true)}
+      >
+        {isLoading ? (
+          <div className="flex flex-col gap-2">
+            {Array.from({ length: 2 }).map((_, index) => (
+              <div className="h-10 animate-pulse rounded-md bg-muted" key={index} />
+            ))}
+          </div>
+        ) : logs.length === 0 ? (
+          <p className="py-2 text-[13px] text-[#9CA3AF]">
+            등록된 딜 로그가 없습니다.
+          </p>
+        ) : (
+          <div className="flex flex-col">
+            {logs.map((log, index) => (
+              <DealMemoLogRow
+                isFirst={index === 0}
+                isLast={index === logs.length - 1}
+                key={log.id}
+                log={log}
+                onStartEdit={onStartEdit}
+              />
+            ))}
+          </div>
+        )}
+        {!isLoading && hasNext ? (
+          <button
+            className="mt-2 inline-flex h-8 w-full items-center justify-center rounded-md border border-[#E5EAF0] bg-white text-[12px] font-medium text-[#374151] transition hover:bg-[#F9FAFB] disabled:cursor-not-allowed disabled:opacity-60"
+            disabled={isFetchingNext}
+            onClick={onFetchNext}
+            type="button"
+          >
+            {isFetchingNext ? "불러오는 중..." : "더 보기"}
+          </button>
+        ) : null}
+      </DealPanelShell>
+
+      <ModalShell
+        footer={
+          <ModalFooterActions
+            formId={createFormId}
+            isSubmitting={createMutation.isPending}
+            pendingLabel="저장 중..."
+            submitLabel="저장"
+            onCancel={() => {
+              resetCreate({ memoType: "일반", memo: "" });
+              setIsCreateOpen(false);
+            }}
+          />
+        }
+        open={isCreateOpen}
+        size="md"
+        title="딜 로그 추가"
+        onOpenChange={setIsCreateOpen}
+      >
+        <ModalForm id={createFormId} onSubmit={onCreate}>
+          <ModalFormSection title="딜 로그">
+            <ModalFieldGroup
+              error={createErrors.memoType?.message}
+              id="deal-memo-log-create-title"
+              label="제목"
+            >
+              <input
+                className="h-10 w-full rounded-md border px-3 text-sm outline-none focus:ring-2 focus:ring-ring"
+                id="deal-memo-log-create-title"
+                placeholder="딜 로그 제목"
+                {...registerCreate("memoType")}
+              />
+            </ModalFieldGroup>
+            <ModalFieldGroup
+              error={createErrors.memo?.message}
+              id="deal-memo-log-create-memo"
+              label="내용"
+            >
+              <textarea
+                className="min-h-28 resize-y rounded-md border px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-ring"
+                id="deal-memo-log-create-memo"
+                placeholder="내용 입력"
+                rows={4}
+                {...registerCreate("memo")}
+              />
+            </ModalFieldGroup>
+          </ModalFormSection>
+          {createMutation.error ? (
+            <p className="text-xs text-[#B91C1C]">
+              {getApiErrorMessage(createMutation.error)}
+            </p>
+          ) : null}
+        </ModalForm>
+      </ModalShell>
+
+      <ModalShell
+        footer={
+          <ModalFooterActions
+            formId={editFormId}
+            isSubmitting={updateMutation.isPending}
+            pendingLabel="저장 중..."
+            submitLabel="저장"
+            onCancel={() => setEditingLog(null)}
+          />
+        }
+        open={editingLog !== null}
+        size="md"
+        title="딜 로그 수정"
+        onOpenChange={(open) => {
+          if (!open) setEditingLog(null);
+        }}
+      >
+        <ModalForm id={editFormId} onSubmit={onEdit}>
+          <ModalFormSection title="딜 로그">
+            <ModalFieldGroup
+              error={editErrors.memoType?.message}
+              id="deal-memo-log-edit-title"
+              label="제목"
+            >
+              <input
+                className="h-10 w-full rounded-md border px-3 text-sm outline-none focus:ring-2 focus:ring-ring"
+                id="deal-memo-log-edit-title"
+                placeholder="딜 로그 제목"
+                {...registerEdit("memoType")}
+              />
+            </ModalFieldGroup>
+            <ModalFieldGroup
+              error={editErrors.memo?.message}
+              id="deal-memo-log-edit-memo"
+              label="내용"
+            >
+              <textarea
+                className="min-h-28 resize-y rounded-md border px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-ring"
+                id="deal-memo-log-edit-memo"
+                placeholder="내용 입력"
+                rows={4}
+                {...registerEdit("memo")}
+              />
+            </ModalFieldGroup>
+          </ModalFormSection>
+          {updateMutation.error ? (
+            <p className="text-xs text-[#B91C1C]">
+              {getApiErrorMessage(updateMutation.error)}
+            </p>
+          ) : null}
+        </ModalForm>
+      </ModalShell>
+    </>
+  );
+}
+
+function DealMemoLogRow({
+  isFirst,
+  isLast,
+  log,
+  onStartEdit,
+}: {
+  readonly isFirst: boolean;
+  readonly isLast: boolean;
+  readonly log: DealMemoLog;
+  readonly onStartEdit: (log: DealMemoLog) => void;
+}) {
+  const [isOpen, setIsOpen] = useState(false);
+
+  return (
+    <div className="group flex gap-3">
+      <DealTimelineMarker isFirst={isFirst} isLast={isLast} />
+      <div className="min-w-0 flex-1">
+        <div className="flex min-h-[40px] w-full items-center bg-white text-left">
+          <button
+            aria-expanded={isOpen}
+            className="flex min-w-0 flex-1 items-center text-left"
+            onClick={() => setIsOpen((value) => !value)}
+            type="button"
+          >
+            <span className="flex-1 truncate text-[13px] font-semibold text-[#111827]">
+              {log.memoType || "일반 메모"}
+            </span>
+            <span className="shrink-0 text-[11px] font-bold text-[#9CA3AF]">
+              {formatDateTime(log.createdAt, { includeYear: true })}
+            </span>
+          </button>
+          <button
+            aria-label="수정"
+            className="invisible ml-1 flex h-6 w-6 shrink-0 items-center justify-center rounded group-hover:visible"
+            onClick={() => onStartEdit(log)}
+            type="button"
+          >
+            <Pencil className="h-3 w-3 text-[#9CA3AF]" />
+          </button>
+        </div>
+        {isOpen ? (
+          <p className="pb-3 pt-1 text-[13px] font-medium leading-[1.35] text-[#374151] whitespace-pre-wrap">
+            {log.memo}
+          </p>
+        ) : null}
+      </div>
+    </div>
+  );
+}
+
+export function DealInfoPanel({
   detail,
   productCount,
 }: {
@@ -1035,7 +1576,7 @@ function DealProductsSection({
   );
 }
 
-function StageProgressSection({ activeStatus }: { readonly activeStatus: DealStatus }) {
+export function StageProgressSection({ activeStatus }: { readonly activeStatus: DealStatus }) {
   return (
     <section>
       <h3 className="mb-2 text-[13px] font-semibold text-[#374151]">단계</h3>
@@ -1287,7 +1828,7 @@ function FollowingActionLogItem({
 
 // ── 메모 로그 ──
 
-function MemoLogsSection({
+export function MemoLogsSection({
   dealId,
   hasNext,
   isFetchingNext,
@@ -1326,7 +1867,6 @@ function MemoLogsSection({
     <section>
       <div className="mb-2 flex items-center justify-between">
         <h3 className="flex items-center gap-1.5 text-[13px] font-semibold text-[#374151]">
-          <FileText className="h-3.5 w-3.5" />
           {tone === "panel" ? "메모 로그" : "딜 Memo"}
         </h3>
         <button
@@ -1409,10 +1949,6 @@ function MemoLogsSection({
         </button>
       ) : null}
 
-      <p className="mt-2 flex items-center gap-1.5 text-[11px] text-[#B45309]">
-        <Lock className="h-3.5 w-3.5" />
-        개인 메모는 암호화 저장됩니다.
-      </p>
     </section>
   );
 }
