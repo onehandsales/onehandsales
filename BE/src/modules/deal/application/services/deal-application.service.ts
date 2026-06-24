@@ -149,6 +149,10 @@ export interface DealContactResponse {
   readonly id: string;
   readonly username: string;
   readonly companyId: string;
+  readonly company: {
+    readonly id: string;
+    readonly companyName: string;
+  };
   readonly mobile: string;
   readonly email: string;
   readonly contactDepartment: {
@@ -1093,6 +1097,7 @@ export class DealApplicationService {
       id: contact.id,
       username: contact.username,
       companyId: contact.companyId,
+      company: contact.company,
       mobile: contact.mobile,
       email: contact.email,
       contactDepartment: contact.contactDepartment,

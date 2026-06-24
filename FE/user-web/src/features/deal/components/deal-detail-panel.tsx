@@ -734,8 +734,11 @@ function DealLinkedContactsTable({
                 <span className="block truncate text-[13px] font-extrabold text-[#111827]">
                   {contact.username}
                 </span>
-                <span className="mt-0.5 block truncate text-[11px] font-semibold text-[#9CA3AF]">
-                  {contact.contactDepartment.departmentName}
+                <span
+                  className="mt-0.5 block truncate text-[11px] font-semibold text-[#9CA3AF]"
+                  title={`${contact.company.companyName} · ${contact.contactDepartment.departmentName}`}
+                >
+                  {contact.company.companyName} · {contact.contactDepartment.departmentName}
                 </span>
                 <div className="mt-1 flex min-w-0 flex-wrap gap-x-3 gap-y-0.5 text-[11px] font-semibold leading-4 text-[#9CA3AF]">
                   <span className="inline-flex min-w-0 max-w-full items-center gap-1">

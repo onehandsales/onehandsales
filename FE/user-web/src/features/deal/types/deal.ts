@@ -50,6 +50,10 @@ export type DealContact = {
   readonly id: string;
   readonly username: string;
   readonly companyId: string;
+  readonly company: {
+    readonly id: string;
+    readonly companyName: string;
+  };
   readonly mobile: string;
   readonly email: string;
   readonly contactDepartment: DealContactDepartment;
@@ -181,6 +185,10 @@ export type DealContactOption = {
   readonly id: string;
   readonly username: string;
   readonly companyId: string;
+  readonly company: {
+    readonly id: string;
+    readonly companyName: string;
+  };
   readonly mobile: string;
   readonly email: string;
   readonly contactDepartment: DealContactDepartment;

@@ -78,6 +78,7 @@ class FakeDealRepository implements DealRepository {
       id: "contact-1",
       username: "송재근",
       companyId: "company-1",
+      company: { id: "company-1", companyName: "A회사" },
       mobile: "010-1111-2222",
       email: "song@example.com",
       contactDepartment: {
@@ -89,6 +90,7 @@ class FakeDealRepository implements DealRepository {
       id: "contact-2",
       username: "김영업",
       companyId: "company-2",
+      company: { id: "company-2", companyName: "B회사" },
       mobile: "010-3333-4444",
       email: "kim@example.com",
       contactDepartment: {
@@ -642,6 +644,7 @@ describe("DealApplicationService", () => {
     }]);
     expect(result.contacts[0]?.email).toBe("song@example.com");
     expect(result.contacts[0]?.mobile).toBe("010-1111-2222");
+    expect(result.contacts[0]?.company.companyName).toBe("A회사");
     expect(result.contacts[0]?.contactDepartment.departmentName).toBe("부장");
     expect(result.products.map((product) => product.productName)).toEqual([
       "프리미엄 상품",
