@@ -86,6 +86,10 @@ export type LatestFollowingAction = {
   readonly createdAt: string;
 };
 
+export type NextFollowingAction = LatestFollowingAction & {
+  readonly remainingCount: number;
+};
+
 // 기능 : 단계별 개수 응답 item
 export type DealStageCount = {
   readonly dealStatus: DealStatus;
@@ -108,6 +112,7 @@ export type DealListItem = {
   readonly companies: DealCompany[];
   readonly contacts: DealContact[];
   readonly latestFollowingAction: LatestFollowingAction | null;
+  readonly nextFollowingAction: NextFollowingAction | null;
   readonly createdAt: string;
   readonly updatedAt: string;
 };

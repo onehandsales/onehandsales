@@ -10,6 +10,7 @@ import {
   type DealListRecord,
   type DealLogCursor,
   type DealMemoLogRecord,
+  type DealNextFollowingActionRecord,
   type DealProductRecord,
   type DealRepository,
   type UpdateDealFollowingActionLogInput,
@@ -135,6 +136,7 @@ export interface DealListItemResponse {
   readonly companies: DealCompanyRecord[];
   readonly contacts: DealContactResponse[];
   readonly latestFollowingAction: DealLatestFollowingActionResponse | null;
+  readonly nextFollowingAction: DealNextFollowingActionResponse | null;
   readonly createdAt: string;
   readonly updatedAt: string;
 }
@@ -171,6 +173,11 @@ export interface DealLatestFollowingActionResponse {
   readonly followingAction: string;
   readonly checkComplete: boolean;
   readonly createdAt: string;
+}
+
+export interface DealNextFollowingActionResponse
+  extends DealLatestFollowingActionResponse {
+  readonly remainingCount: number;
 }
 
 // 역할 : DealCompanyOptionResponse 데이터가 계층 사이에서 전달되는 구조를 정의합니다.
@@ -1082,6 +1089,9 @@ export class DealApplicationService {
       latestFollowingAction: deal.latestFollowingAction
         ? this.toLatestFollowingAction(deal.latestFollowingAction)
         : null,
+      nextFollowingAction: deal.nextFollowingAction
+        ? this.toNextFollowingAction(deal.nextFollowingAction)
+        : null,
       createdAt: deal.createdAt.toISOString(),
       updatedAt: deal.updatedAt.toISOString(),
     };
@@ -1123,6 +1133,15 @@ export class DealApplicationService {
       followingAction: log.followingAction,
       checkComplete: log.checkComplete,
       createdAt: log.createdAt.toISOString(),
+    };
+  }
+
+  private toNextFollowingAction(
+    nextAction: DealNextFollowingActionRecord
+  ): DealNextFollowingActionResponse {
+    return {
+      ...this.toLatestFollowingAction(nextAction.log),
+      remainingCount: nextAction.remainingCount,
     };
   }
 
@@ -1236,7 +1255,7 @@ export class DealApplicationService {
       dealStatusLabel: getDealStatusLabel(deal.dealStatus),
       dealCost: deal.dealCost,
       expectedEndDate: this.toDateOnlyString(deal.expectedEndDate),
-      followingAction: deal.latestFollowingAction?.followingAction ?? null,
+      followingAction: deal.nextFollowingAction?.log.followingAction ?? null,
       createdAt: deal.createdAt,
     }));
   }

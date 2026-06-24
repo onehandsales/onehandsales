@@ -73,6 +73,11 @@ export interface DealFollowingActionLogRecord {
   readonly updatedAt: Date;
 }
 
+export interface DealNextFollowingActionRecord {
+  readonly log: DealFollowingActionLogRecord;
+  readonly remainingCount: number;
+}
+
 // 역할 : DealMemoLogRecord 데이터가 계층 사이에서 전달되는 구조를 정의합니다.
 export interface DealMemoLogRecord {
   readonly id: string;
@@ -98,6 +103,7 @@ export interface DealListRecord {
   readonly companies: DealCompanyRecord[];
   readonly contacts: DealContactRecord[];
   readonly latestFollowingAction: DealFollowingActionLogRecord | null;
+  readonly nextFollowingAction: DealNextFollowingActionRecord | null;
   readonly createdAt: Date;
   readonly updatedAt: Date;
 }

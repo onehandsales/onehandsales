@@ -373,7 +373,7 @@ export function DealPipelineHomeScreen({
                   <TableHeaderCell>회사/담당자</TableHeaderCell>
                   <TableHeaderCell>단계</TableHeaderCell>
                   <TableHeaderCell>금액</TableHeaderCell>
-                  <TableHeaderCell>다음 행동 마감일</TableHeaderCell>
+                  <TableHeaderCell>다음 행동</TableHeaderCell>
                   <TableHeaderCell>등록일</TableHeaderCell>
                 </div>
 
@@ -605,6 +605,7 @@ function DealListRow({
 }) {
   const contactLabel = formatDealContactLabel(deal);
   const companyLabel = formatDealCompanyLabel(deal);
+  const nextActionLabel = formatDealNextActionLabel(deal);
 
   return (
     <div
@@ -668,13 +669,16 @@ function DealListRow({
         </span>
       </div>
 
-      {/* 다음 행동 마감일 */}
+      {/* 다음 행동 */}
       <div className="min-w-0 pr-3">
         <span
-          className="block truncate text-[12px] font-semibold text-[#111827]"
-          title={formatDealDateOnly(deal.expectedEndDate)}
+          className={cn(
+            "block truncate text-[12px] font-semibold",
+            deal.nextFollowingAction ? "text-[#111827]" : "text-[#9CA3AF]",
+          )}
+          title={nextActionLabel}
         >
-          {formatDealDateOnly(deal.expectedEndDate)}
+          {nextActionLabel}
         </span>
       </div>
 
@@ -700,7 +704,8 @@ function MobileDealCard({
   const companyLabel = formatDealCompanyLabel(deal);
   const deadlineLabel = getDeadlineDDayLabel(deal.expectedEndDate);
   const deadlineColor = getDeadlineDDayColor(deal.expectedEndDate);
-  const nextAction = deal.latestFollowingAction;
+  const nextAction = deal.nextFollowingAction;
+  const nextActionLabel = formatDealNextActionLabel(deal);
 
   return (
     <Link
@@ -747,7 +752,7 @@ function MobileDealCard({
         <div className="min-w-0">
           <p className="text-[12px] text-[#6B7280]">다음 행동</p>
           <p className="mt-0.5 truncate text-[13px] text-[#1F2937]">
-            {nextAction?.followingAction ?? "—"}
+            {nextActionLabel}
           </p>
         </div>
         {nextAction ? (
@@ -832,6 +837,19 @@ function formatDealCompanyLabel(deal: DealListItem) {
   return deal.companies.map((company) => company.companyName).join(", ") || "-";
 }
 
+function formatDealNextActionLabel(deal: DealListItem) {
+  const nextAction = deal.nextFollowingAction;
+
+  if (!nextAction) {
+    return "없음";
+  }
+
+  const remainingLabel =
+    nextAction.remainingCount > 0 ? ` 외 ${nextAction.remainingCount}개` : "";
+
+  return `${nextAction.followingAction}${remainingLabel}`;
+}
+
 function formatDealCreatedAt(value: string, timeZone: string) {
   return formatDateWithOptions(value, {
     day: "2-digit",
@@ -839,16 +857,6 @@ function formatDealCreatedAt(value: string, timeZone: string) {
     timeZone,
     year: "numeric",
   });
-}
-
-function formatDealDateOnly(value: string) {
-  const [year, month, day] = value.slice(0, 10).split("-");
-
-  if (!year || !month || !day) {
-    return value || "-";
-  }
-
-  return `${year}. ${month}. ${day}.`;
 }
 
 function getDeadlineDDayLabel(value: string): string {

@@ -15,6 +15,7 @@ import {
   type DealListRecord,
   type DealLogCursor,
   type DealMemoLogRecord,
+  type DealNextFollowingActionRecord,
   type DealPageRecord,
   type DealProductRecord,
   type DealRepository,
@@ -85,6 +86,10 @@ type DealFollowingActionLogRow = {
   readonly checkComplete: boolean;
   readonly createdAt: Date;
   readonly updatedAt: Date;
+};
+
+type DealFollowingActionLogWithDealIdRow = DealFollowingActionLogRow & {
+  readonly dealId: string;
 };
 
 type DealListRow = {
@@ -170,8 +175,18 @@ export class PrismaDealRepository implements DealRepository {
       this.client.deal.count({ where }),
     ]);
 
+    const nextFollowingActions = await this.findNextFollowingActions(
+      input.userId,
+      items.map((deal) => deal.id)
+    );
+
     return {
-      items: items.map((deal) => this.mapDealListRecord(deal)),
+      items: items.map((deal) =>
+        this.mapDealListRecord(
+          deal,
+          nextFollowingActions.get(deal.id) ?? null
+        )
+      ),
       totalCount,
     };
   }
@@ -184,7 +199,14 @@ export class PrismaDealRepository implements DealRepository {
       orderBy: this.createDealOrderBy(input.sort),
     });
 
-    return items.map((deal) => this.mapDealListRecord(deal));
+    const nextFollowingActions = await this.findNextFollowingActions(
+      input.userId,
+      items.map((deal) => deal.id)
+    );
+
+    return items.map((deal) =>
+      this.mapDealListRecord(deal, nextFollowingActions.get(deal.id) ?? null)
+    );
   }
 
   // 기능 : 현재 사용자의 딜 단건을 relation과 함께 조회합니다.
@@ -210,7 +232,18 @@ export class PrismaDealRepository implements DealRepository {
       },
     });
 
-    return deal ? this.mapDealDetailRecord(deal) : null;
+    if (!deal) {
+      return null;
+    }
+
+    const nextFollowingActions = await this.findNextFollowingActions(userId, [
+      deal.id,
+    ]);
+
+    return this.mapDealDetailRecord(
+      deal,
+      nextFollowingActions.get(deal.id) ?? null
+    );
   }
 
   // 기능 : 현재 사용자의 딜 존재 여부만 조회합니다.
@@ -791,8 +824,63 @@ export class PrismaDealRepository implements DealRepository {
     };
   }
 
+  // 기능 : 목록용 미완료 다음 행동 대표 항목을 딜별로 조회합니다.
+  private async findNextFollowingActions(
+    userId: string,
+    dealIds: string[]
+  ): Promise<Map<string, DealNextFollowingActionRecord>> {
+    if (dealIds.length === 0) {
+      return new Map();
+    }
+
+    const logs: DealFollowingActionLogWithDealIdRow[] =
+      await this.client.dealFollowingActionLog.findMany({
+        where: {
+          userId,
+          dealId: { in: dealIds },
+          checkComplete: false,
+        },
+        select: {
+          dealId: true,
+          ...this.createFollowingActionLogSelect(),
+        },
+        orderBy: [{ dealId: "asc" }, { createdAt: "asc" }, { id: "asc" }],
+      });
+
+    const firstLogs = new Map<string, DealFollowingActionLogRecord>();
+    const counts = new Map<string, number>();
+
+    for (const log of logs) {
+      counts.set(log.dealId, (counts.get(log.dealId) ?? 0) + 1);
+
+      if (!firstLogs.has(log.dealId)) {
+        firstLogs.set(log.dealId, {
+          id: log.id,
+          followingAction: log.followingAction,
+          checkComplete: log.checkComplete,
+          createdAt: log.createdAt,
+          updatedAt: log.updatedAt,
+        });
+      }
+    }
+
+    const result = new Map<string, DealNextFollowingActionRecord>();
+
+    for (const [dealId, log] of firstLogs) {
+      result.set(dealId, {
+        log,
+        remainingCount: Math.max((counts.get(dealId) ?? 1) - 1, 0),
+      });
+    }
+
+    return result;
+  }
+
   // 기능 : Prisma 딜 목록 행을 application 레코드로 변환합니다.
-  private mapDealListRecord(deal: DealListRow): DealListRecord {
+  private mapDealListRecord(
+    deal: DealListRow,
+    nextFollowingAction: DealNextFollowingActionRecord | null = null
+  ): DealListRecord {
     return {
       id: deal.id,
       dealName: deal.dealName,
@@ -806,15 +894,19 @@ export class PrismaDealRepository implements DealRepository {
         this.mapContact(dealContact.contact)
       ),
       latestFollowingAction: deal.followingActionLogs[0] ?? null,
+      nextFollowingAction,
       createdAt: deal.createdAt,
       updatedAt: deal.updatedAt,
     };
   }
 
   // 기능 : Prisma 딜 상세 행을 application 레코드로 변환합니다.
-  private mapDealDetailRecord(deal: DealDetailRow): DealDetailRecord {
+  private mapDealDetailRecord(
+    deal: DealDetailRow,
+    nextFollowingAction: DealNextFollowingActionRecord | null = null
+  ): DealDetailRecord {
     return {
-      ...this.mapDealListRecord(deal),
+      ...this.mapDealListRecord(deal, nextFollowingAction),
       products: deal.dealProducts.map((dealProduct) =>
         this.mapProduct(dealProduct.product)
       ),

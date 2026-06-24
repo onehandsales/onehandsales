@@ -74,7 +74,7 @@ export function useCreateFollowingActionLogMutation() {
     mutationFn: (input: CreateFollowingActionLogInput) =>
       createFollowingActionLog(input),
     onSuccess: (_log, input) => {
-      // 다음 행동 생성 후 목록(latestFollowingAction 갱신)과 로그 목록 invalidate
+      // 다음 행동 생성 후 목록(nextFollowingAction 갱신)과 로그 목록 invalidate
       void queryClient.invalidateQueries({ queryKey: dealQueryKeys.lists() });
       void queryClient.invalidateQueries({
         queryKey: dealQueryKeys.followingActionLogs(input.dealId),

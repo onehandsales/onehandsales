@@ -478,6 +478,15 @@ class FakeDealRepository implements DealRepository {
 
   // 기능 : fake 저장 딜을 목록 레코드로 변환합니다.
   private toDealListRecord(deal: StoredDeal): DealListRecord {
+    const sortedLogs = this.sortLogs(this.followingActionLogs);
+    const openLogs = [...this.followingActionLogs]
+      .filter((log) => !log.checkComplete)
+      .sort((left, right) => {
+        const timeDiff = left.createdAt.getTime() - right.createdAt.getTime();
+        return timeDiff === 0 ? left.id.localeCompare(right.id) : timeDiff;
+      });
+    const nextLog = openLogs[0] ?? null;
+
     return {
       id: deal.id,
       dealName: deal.dealName,
@@ -486,7 +495,10 @@ class FakeDealRepository implements DealRepository {
       expectedEndDate: deal.expectedEndDate,
       companies: deal.companyIds.map((companyId) => this.getCompany(companyId)),
       contacts: deal.contactIds.map((contactId) => this.getContact(contactId)),
-      latestFollowingAction: this.sortLogs(this.followingActionLogs)[0] ?? null,
+      latestFollowingAction: sortedLogs[0] ?? null,
+      nextFollowingAction: nextLog
+        ? { log: nextLog, remainingCount: openLogs.length - 1 }
+        : null,
       createdAt: deal.createdAt,
       updatedAt: deal.updatedAt,
     };
@@ -669,6 +681,51 @@ describe("DealApplicationService", () => {
     expect(result.products[0]?.productStatus.statusName).toBe("판매중");
     expect(result.products[0]?.productPrice).toBe(1200000);
     expect(result.latestFollowingAction?.followingAction).toBe("제안서 발송");
+  });
+
+  it("lists the oldest incomplete following action with a remaining count", async () => {
+    const repository = new FakeDealRepository();
+    const service = createService(repository);
+    await service.createDeal(CURRENT_USER, createDealCommand());
+
+    const completedAt = new Date("2026-06-12T10:01:00.000Z");
+    const oldestOpenAt = new Date("2026-06-12T10:02:00.000Z");
+    const newestOpenAt = new Date("2026-06-12T10:03:00.000Z");
+
+    repository.followingActionLogs = [
+      {
+        id: "following-completed",
+        followingAction: "completed action",
+        checkComplete: true,
+        createdAt: completedAt,
+        updatedAt: completedAt,
+      },
+      {
+        id: "following-open-oldest",
+        followingAction: "oldest open action",
+        checkComplete: false,
+        createdAt: oldestOpenAt,
+        updatedAt: oldestOpenAt,
+      },
+      {
+        id: "following-open-newest",
+        followingAction: "newest open action",
+        checkComplete: false,
+        createdAt: newestOpenAt,
+        updatedAt: newestOpenAt,
+      },
+    ];
+
+    const result = await service.listDeals(CURRENT_USER, {});
+
+    expect(result.items[0]?.nextFollowingAction).toMatchObject({
+      followingAction: "oldest open action",
+      checkComplete: false,
+      remainingCount: 1,
+    });
+    expect(result.items[0]?.nextFollowingAction?.createdAt).toBe(
+      "2026-06-12T10:02:00.000Z"
+    );
   });
 
   // 기능 : 실제 달력에 없는 expectedEndDate를 거부하는지 검증합니다.
