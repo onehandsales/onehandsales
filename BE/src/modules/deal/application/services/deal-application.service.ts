@@ -155,6 +155,10 @@ export interface DealContactResponse {
   };
   readonly mobile: string;
   readonly email: string;
+  readonly contactJobGrade: {
+    readonly id: string;
+    readonly jobGradeName: string;
+  };
   readonly contactDepartment: {
     readonly id: string;
     readonly departmentName: string;
@@ -1100,6 +1104,7 @@ export class DealApplicationService {
       company: contact.company,
       mobile: contact.mobile,
       email: contact.email,
+      contactJobGrade: contact.contactJobGrade,
       contactDepartment: contact.contactDepartment,
     };
   }

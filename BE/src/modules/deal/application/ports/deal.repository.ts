@@ -29,6 +29,11 @@ export interface DealContactDepartmentRecord {
   readonly departmentName: string;
 }
 
+export interface DealContactJobGradeRecord {
+  readonly id: string;
+  readonly jobGradeName: string;
+}
+
 // 역할 : DealContactRecord 데이터가 계층 사이에서 전달되는 구조를 정의합니다.
 export interface DealContactRecord {
   readonly id: string;
@@ -40,6 +45,7 @@ export interface DealContactRecord {
   };
   readonly mobile: string;
   readonly email: string;
+  readonly contactJobGrade: DealContactJobGradeRecord;
   readonly contactDepartment: DealContactDepartmentRecord;
 }
 

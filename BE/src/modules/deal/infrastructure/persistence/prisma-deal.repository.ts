@@ -55,6 +55,10 @@ type DealContactRow = {
   };
   readonly mobile: string;
   readonly email: string;
+  readonly contactJobGrade: {
+    readonly id: string;
+    readonly jobGradeName: string;
+  };
   readonly contactDepartment: {
     readonly id: string;
     readonly departmentName: string;
@@ -680,6 +684,12 @@ export class PrismaDealRepository implements DealRepository {
       },
       mobile: true,
       email: true,
+      contactJobGrade: {
+        select: {
+          id: true,
+          jobGradeName: true,
+        },
+      },
       contactDepartment: {
         select: {
           id: true,
@@ -820,6 +830,10 @@ export class PrismaDealRepository implements DealRepository {
       },
       mobile: contact.mobile,
       email: contact.email,
+      contactJobGrade: {
+        id: contact.contactJobGrade.id,
+        jobGradeName: contact.contactJobGrade.jobGradeName,
+      },
       contactDepartment: {
         id: contact.contactDepartment.id,
         departmentName: contact.contactDepartment.departmentName,

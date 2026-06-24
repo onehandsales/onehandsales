@@ -490,12 +490,10 @@ function DealDetailPageLayout({
             }}
           />
 
-          <div className="grid grid-cols-4 gap-4">
+          <div className="grid grid-cols-3 gap-4">
             <DealLinkedCompaniesTable companies={detail.companies} />
             <DealLinkedContactsTable contacts={detail.contacts} />
-            <div className="col-span-2 min-w-0">
-              <DealLinkedProductsTable products={products} />
-            </div>
+            <DealLinkedProductsTable products={products} />
           </div>
 
           <div className="grid grid-cols-[minmax(0,1fr)_360px] gap-4">
@@ -677,7 +675,7 @@ function DealLinkedCompaniesTable({
       {companies.length === 0 ? (
         <p className="px-4 py-4 text-[13px] text-[#9CA3AF]">연결된 회사가 없습니다.</p>
       ) : (
-        <div className={companies.length > 4 ? "max-h-[232px] overflow-y-auto" : ""}>
+        <div className={companies.length > 2 ? "max-h-[116px] overflow-y-auto" : ""}>
           {companies.map((company) => (
             <Link
               className="flex h-[58px] items-center gap-3 border-b border-[#F3F4F6] bg-white px-4 transition-colors last:border-0 hover:bg-[#F9FAFB]"
@@ -720,10 +718,10 @@ function DealLinkedContactsTable({
       {contacts.length === 0 ? (
         <p className="px-4 py-4 text-[13px] text-[#9CA3AF]">연결된 담당자가 없습니다.</p>
       ) : (
-        <div className={contacts.length > 4 ? "max-h-[288px] overflow-y-auto" : ""}>
+        <div className={contacts.length > 2 ? "max-h-[116px] overflow-y-auto" : ""}>
           {contacts.map((contact) => (
             <Link
-              className="flex min-h-[72px] items-center gap-3 border-b border-[#F3F4F6] bg-white px-4 py-3 transition-colors last:border-0 hover:bg-[#F9FAFB]"
+              className="flex h-[58px] items-center gap-3 border-b border-[#F3F4F6] bg-white px-4 transition-colors last:border-0 hover:bg-[#F9FAFB]"
               key={contact.id}
               to={`/contacts/${contact.id}`}
             >
@@ -731,21 +729,22 @@ function DealLinkedContactsTable({
                 <UserRound className="h-3.5 w-3.5 text-[#2563EB]" />
               </div>
               <div className="min-w-0 flex-1">
-                <span className="block truncate text-[13px] font-extrabold text-[#111827]">
-                  {contact.username}
-                </span>
+                <div className="flex min-w-0 items-center gap-1.5 text-[13px] font-extrabold text-[#111827]">
+                  <span className="truncate">{contact.username}</span>
+                  <span className="shrink-0">{contact.contactJobGrade.jobGradeName}</span>
+                </div>
                 <span
-                  className="mt-0.5 block truncate text-[11px] font-semibold text-[#9CA3AF]"
+                  className="block truncate text-[11px] font-semibold leading-4 text-[#9CA3AF]"
                   title={`${contact.company.companyName} · ${contact.contactDepartment.departmentName}`}
                 >
                   {contact.company.companyName} · {contact.contactDepartment.departmentName}
                 </span>
-                <div className="mt-1 flex min-w-0 flex-wrap gap-x-3 gap-y-0.5 text-[11px] font-semibold leading-4 text-[#9CA3AF]">
-                  <span className="inline-flex min-w-0 max-w-full items-center gap-1">
+                <div className="grid min-w-0 grid-cols-2 gap-3 text-[11px] font-semibold leading-4 text-[#9CA3AF]">
+                  <span className="inline-flex min-w-0 flex-1 items-center gap-1">
                     <Mail className="h-3 w-3 shrink-0 text-[#9CA3AF]" />
                     <span className="truncate">{contact.email || "-"}</span>
                   </span>
-                  <span className="inline-flex min-w-0 max-w-full items-center gap-1">
+                  <span className="inline-flex min-w-0 flex-1 items-center gap-1">
                     <Phone className="h-3 w-3 shrink-0 text-[#9CA3AF]" />
                     <span className="truncate">{contact.mobile || "-"}</span>
                   </span>
@@ -770,7 +769,7 @@ function DealLinkedProductsTable({
       {products.length === 0 ? (
         <p className="px-4 py-4 text-[13px] text-[#9CA3AF]">연결된 제품이 없습니다.</p>
       ) : (
-        <div className={products.length > 4 ? "max-h-[232px] overflow-y-auto" : ""}>
+        <div className={products.length > 2 ? "max-h-[116px] overflow-y-auto" : ""}>
           {products.map((product) => (
             <Link
               className="flex h-[58px] items-center gap-3 border-b border-[#F3F4F6] bg-white px-4 transition-colors last:border-0 hover:bg-[#F9FAFB]"

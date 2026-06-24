@@ -46,6 +46,11 @@ export type DealContactDepartment = {
   readonly departmentName: string;
 };
 
+export type DealContactJobGrade = {
+  readonly id: string;
+  readonly jobGradeName: string;
+};
+
 export type DealContact = {
   readonly id: string;
   readonly username: string;
@@ -56,6 +61,7 @@ export type DealContact = {
   };
   readonly mobile: string;
   readonly email: string;
+  readonly contactJobGrade: DealContactJobGrade;
   readonly contactDepartment: DealContactDepartment;
 };
 
@@ -191,6 +197,7 @@ export type DealContactOption = {
   };
   readonly mobile: string;
   readonly email: string;
+  readonly contactJobGrade: DealContactJobGrade;
   readonly contactDepartment: DealContactDepartment;
   readonly label: string;
 };
