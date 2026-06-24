@@ -297,16 +297,7 @@ export function DealPipelineHomeScreen({
         </div>
 
         {/* Content */}
-        {dealsQuery.isLoading ? (
-          <DesktopLoadingState />
-        ) : dealsQuery.isError ? (
-          <div className="flex gap-3 overflow-x-auto px-5 pb-3 pt-3 xl:gap-5">
-            <div className="flex min-w-0 flex-1 flex-col gap-3">
-              <ErrorState onRetry={() => void dealsQuery.refetch()} />
-            </div>
-          </div>
-        ) : (
-          <div className="flex gap-3 overflow-x-auto px-5 pb-3 pt-3 xl:gap-5">
+        <div className="flex gap-3 overflow-x-auto px-5 pb-3 pt-3 xl:gap-5">
             {/* Deal List */}
             <div className="flex min-w-0 flex-1 flex-col gap-3">
               {/* Controls bar — 한 줄 */}
@@ -363,6 +354,12 @@ export function DealPipelineHomeScreen({
                 </span>
               </div>
 
+              {dealsQuery.isLoading ? (
+                <DesktopLoadingState />
+              ) : dealsQuery.isError ? (
+                <ErrorState onRetry={() => void dealsQuery.refetch()} />
+              ) : (
+                <>
               <div className="flex w-full min-w-[600px] flex-col overflow-hidden rounded-lg border border-[#E2E5EC] bg-white shadow-sm">
                 {/* Table header */}
                 <div
@@ -411,9 +408,10 @@ export function DealPipelineHomeScreen({
                   totalPages={dealsQuery.data.totalPages ?? 1}
                 />
               ) : null}
+                </>
+              )}
             </div>
           </div>
-        )}
       </section>
 
       {/* ── Mobile ── */}
@@ -1234,24 +1232,13 @@ function ErrorState({ onRetry }: { readonly onRetry: () => void }) {
 
 function DesktopLoadingState() {
   return (
-    <div className="flex gap-3 overflow-x-auto px-5 pb-3 pt-3 xl:gap-5">
-      <div className="flex min-w-0 flex-1 flex-col gap-3">
-        <div className="flex h-10 shrink-0 items-center gap-2 px-0.5">
-          <div className="h-7 w-20 animate-pulse rounded-md bg-gray-100" />
-          <div className="h-7 w-14 animate-pulse rounded-md bg-gray-100" />
-          <div className="h-7 w-16 animate-pulse rounded-md bg-gray-100" />
-          <div className="flex-1" />
-          <div className="h-4 w-8 animate-pulse rounded bg-gray-100" />
-        </div>
-        <div className="flex w-full min-w-[600px] flex-col overflow-hidden rounded-lg border border-[#E2E5EC] bg-white shadow-sm">
-          {Array.from({ length: 6 }).map((_, i) => (
-            <div
-              className="h-[66px] animate-pulse border-b border-[#E2E5EC] bg-[#F9FAFB] last:border-b-0"
-              key={i}
-            />
-          ))}
-        </div>
-      </div>
+    <div className="flex w-full min-w-[600px] flex-col overflow-hidden rounded-lg border border-[#E2E5EC] bg-white shadow-sm">
+      {Array.from({ length: 6 }).map((_, i) => (
+        <div
+          className="h-[66px] animate-pulse border-b border-[#E2E5EC] bg-[#F9FAFB] last:border-b-0"
+          key={i}
+        />
+      ))}
     </div>
   );
 }

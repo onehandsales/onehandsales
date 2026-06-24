@@ -601,7 +601,11 @@ export class PrismaContactRepository implements ContactRepository {
             },
           }
         : {}),
-      ...(input.companyId ? { companyId: input.companyId } : {}),
+      ...(input.companyIds && input.companyIds.length > 0
+        ? { companyId: { in: [...input.companyIds] } }
+        : input.companyId
+          ? { companyId: input.companyId }
+          : {}),
       ...(input.contactDepartmentId
         ? { contactDepartmentId: input.contactDepartmentId }
         : {}),

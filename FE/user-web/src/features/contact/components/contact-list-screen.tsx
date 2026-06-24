@@ -58,7 +58,7 @@ export function ContactListScreen() {
   const { user } = useAuthSession();
   const [usernameText, setUsernameText] = useState("");
   const [username, setUsername] = useState("");
-  const [companyId, setCompanyId] = useState("");
+  const [companyIds, setCompanyIds] = useState<string[]>([]);
   const [contactDepartmentIds, setContactDepartmentIds] = useState<string[]>([]);
   const [sort, setSort] = useState<ContactSort>("createdAtDesc");
   const [page, setPage] = useState(1);
@@ -72,20 +72,20 @@ export function ContactListScreen() {
     () => ({
       page,
       username: username || undefined,
-      companyId: companyId || undefined,
+      companyIds: companyIds.length > 0 ? companyIds : undefined,
       contactDepartmentId: contactDepartmentIds[0] ?? undefined,
       sort,
     }),
-    [companyId, contactDepartmentIds, page, sort, username],
+    [companyIds, contactDepartmentIds, page, sort, username],
   );
   const exportFilters = useMemo(
     () => ({
       username: username || undefined,
-      companyId: companyId || undefined,
+      companyIds: companyIds.length > 0 ? companyIds : undefined,
       contactDepartmentId: contactDepartmentIds[0] ?? undefined,
       sort,
     }),
-    [companyId, contactDepartmentIds, sort, username],
+    [companyIds, contactDepartmentIds, sort, username],
   );
 
   const contactsQuery = useContactList(listParams);
@@ -116,7 +116,7 @@ export function ContactListScreen() {
   const displayTimeZone = user?.timeZone ?? getBrowserTimeZoneFallback();
   const hasSearch =
     username.length > 0 ||
-    companyId.length > 0 ||
+    companyIds.length > 0 ||
     contactDepartmentIds.length > 0 ||
     sort !== "createdAtDesc";
 
@@ -193,7 +193,7 @@ export function ContactListScreen() {
           onClick={() => {
             setUsername("");
             setUsernameText("");
-            setCompanyId("");
+            setCompanyIds([]);
             setContactDepartmentIds([]);
             setSort("createdAtDesc");
             setPage(1);
@@ -204,11 +204,11 @@ export function ContactListScreen() {
           getLabel={(c) => c.companyName}
           itemKindLabel="회사"
           items={companyOptions}
-          selectedIds={companyId ? [companyId] : []}
+          selectedIds={companyIds}
           size="desktop"
-          tone="green"
+          tone="blue"
           onSelectedIdsChange={(ids) => {
-            setCompanyId(ids[ids.length - 1] ?? "");
+            setCompanyIds(ids);
             setPage(1);
           }}
         />
@@ -219,7 +219,7 @@ export function ContactListScreen() {
           items={departments}
           selectedIds={contactDepartmentIds}
           size="desktop"
-          tone="amber"
+          tone="blue"
           onCreateClick={() => setTaxonomyOpen(true)}
           onSelectedIdsChange={(ids) => {
             setContactDepartmentIds(ids);
@@ -365,7 +365,7 @@ export function ContactListScreen() {
             onClick={() => {
               setUsername("");
               setUsernameText("");
-              setCompanyId("");
+              setCompanyIds([]);
               setContactDepartmentIds([]);
               setSort("createdAtDesc");
               setPage(1);
@@ -380,11 +380,11 @@ export function ContactListScreen() {
             getLabel={(c) => c.companyName}
             itemKindLabel="회사"
             items={companyOptions}
-            selectedIds={companyId ? [companyId] : []}
+            selectedIds={companyIds}
             size="mobile"
-            tone="green"
+            tone="blue"
               onSelectedIdsChange={(ids) => {
-              setCompanyId(ids[ids.length - 1] ?? "");
+              setCompanyIds(ids);
               setPage(1);
             }}
           />
@@ -395,7 +395,7 @@ export function ContactListScreen() {
             items={departments}
             selectedIds={contactDepartmentIds}
             size="mobile"
-            tone="amber"
+            tone="blue"
             onCreateClick={() => setTaxonomyOpen(true)}
             onSelectedIdsChange={(ids) => {
               setContactDepartmentIds(ids);
@@ -1091,13 +1091,13 @@ function getTaxonomyFilterItemSelectedClass(tone: ContactTaxonomyFilterTone) {
 }
 
 function getTaxonomyFilterCheckBorderClass(tone: ContactTaxonomyFilterTone) {
-  if (tone === "blue") return "border-[#1D4ED8]";
+  if (tone === "blue") return "border-[#2563EB]";
   if (tone === "green") return "border-[#15803D]";
   return "border-[#B45309]";
 }
 
 function getTaxonomyFilterCheckDotClass(tone: ContactTaxonomyFilterTone) {
-  if (tone === "blue") return "bg-[#1D4ED8]";
+  if (tone === "blue") return "bg-[#2563EB]";
   if (tone === "green") return "bg-[#15803D]";
   return "bg-[#B45309]";
 }

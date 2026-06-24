@@ -1,5 +1,6 @@
-import { Type } from "class-transformer";
+import { Transform, type TransformFnParams, Type } from "class-transformer";
 import {
+  IsArray,
   IsEnum,
   IsInt,
   IsOptional,
@@ -8,6 +9,22 @@ import {
   Min,
 } from "class-validator";
 import { ContactListSort } from "@/modules/contact/application/ports/contact.repository";
+
+function toOptionalStringArray(params: TransformFnParams): string[] | undefined {
+  const { value } = params;
+
+  if (value === undefined || value === null) {
+    return undefined;
+  }
+
+  const values = Array.isArray(value) ? value : [value];
+  const normalizedValues = values
+    .flatMap((item) => (typeof item === "string" ? item.split(",") : []))
+    .map((item) => item.trim())
+    .filter((item) => item.length > 0);
+
+  return normalizedValues.length > 0 ? normalizedValues : undefined;
+}
 
 // 역할 : ListContactsQueryDto HTTP 요청 값을 검증하기 위한 DTO입니다.
 export class ListContactsQueryDto {
@@ -24,6 +41,12 @@ export class ListContactsQueryDto {
   @IsOptional()
   @IsUUID()
   companyId?: string;
+
+  @IsOptional()
+  @Transform(toOptionalStringArray)
+  @IsArray()
+  @IsUUID("all", { each: true })
+  companyIds?: string[];
 
   @IsOptional()
   @IsUUID()
@@ -47,6 +70,12 @@ export class ExportContactsQueryDto {
   @IsOptional()
   @IsUUID()
   companyId?: string;
+
+  @IsOptional()
+  @Transform(toOptionalStringArray)
+  @IsArray()
+  @IsUUID("all", { each: true })
+  companyIds?: string[];
 
   @IsOptional()
   @IsUUID()

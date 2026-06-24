@@ -64,6 +64,7 @@ export interface ListContactsInput {
   readonly pageSize: number;
   readonly username?: string;
   readonly companyId?: string;
+  readonly companyIds?: readonly string[];
   readonly contactDepartmentId?: string;
   readonly contactJobGradeId?: string;
   readonly sort?: ContactListSort;
@@ -74,6 +75,7 @@ export interface ExportContactsInput {
   readonly userId: string;
   readonly username?: string;
   readonly companyId?: string;
+  readonly companyIds?: readonly string[];
   readonly contactDepartmentId?: string;
   readonly contactJobGradeId?: string;
   readonly sort?: ContactListSort;

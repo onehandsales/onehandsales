@@ -557,12 +557,16 @@ export class PrismaProductRepository implements ProductRepository {
             },
           }
         : {}),
-      ...(input.productCategoryId
-        ? { productCategoryId: input.productCategoryId }
-        : {}),
-      ...(input.productStatusId
-        ? { productStatusId: input.productStatusId }
-        : {}),
+      ...(input.productCategoryIds && input.productCategoryIds.length > 0
+        ? { productCategoryId: { in: [...input.productCategoryIds] } }
+        : input.productCategoryId
+          ? { productCategoryId: input.productCategoryId }
+          : {}),
+      ...(input.productStatusIds && input.productStatusIds.length > 0
+        ? { productStatusId: { in: [...input.productStatusIds] } }
+        : input.productStatusId
+          ? { productStatusId: input.productStatusId }
+          : {}),
     };
   }
 

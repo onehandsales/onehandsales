@@ -20,7 +20,9 @@ export function listProducts(params: ProductListParams) {
   if (params.page) query.set("page", String(params.page));
   if (params.productName) query.set("productName", params.productName);
   if (params.productCategoryId) query.set("productCategoryId", params.productCategoryId);
+  appendSearchParamValues(query, "productCategoryIds", params.productCategoryIds);
   if (params.productStatusId) query.set("productStatusId", params.productStatusId);
+  appendSearchParamValues(query, "productStatusIds", params.productStatusIds);
   if (params.sort) query.set("sort", params.sort);
   const suffix = query.toString() ? `?${query.toString()}` : "";
   return apiClient<ProductListResponse>(`/api/products${suffix}`);
@@ -156,13 +158,17 @@ export function updatePrivateMemoLog(
 export function exportProductsXlsx(params: {
   productName?: string;
   productCategoryId?: string;
+  productCategoryIds?: readonly string[];
   productStatusId?: string;
+  productStatusIds?: readonly string[];
   sort?: string;
 }): Promise<ApiBlobResponse> {
   const query = new URLSearchParams();
   if (params.productName) query.set("productName", params.productName);
   if (params.productCategoryId) query.set("productCategoryId", params.productCategoryId);
+  appendSearchParamValues(query, "productCategoryIds", params.productCategoryIds);
   if (params.productStatusId) query.set("productStatusId", params.productStatusId);
+  appendSearchParamValues(query, "productStatusIds", params.productStatusIds);
   if (params.sort) query.set("sort", params.sort);
   const suffix = query.toString() ? `?${query.toString()}` : "";
   return apiBlobClient(`/api/products/export/xlsx${suffix}`);
@@ -172,4 +178,16 @@ function compactBody(input: Record<string, unknown>) {
   return Object.fromEntries(
     Object.entries(input).filter(([, value]) => value !== undefined)
   );
+}
+
+function appendSearchParamValues(
+  searchParams: URLSearchParams,
+  key: string,
+  values?: readonly string[]
+) {
+  for (const value of values ?? []) {
+    if (value) {
+      searchParams.append(key, value);
+    }
+  }
 }

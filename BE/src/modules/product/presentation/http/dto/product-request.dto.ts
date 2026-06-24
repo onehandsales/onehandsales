@@ -1,5 +1,6 @@
-import { Type } from "class-transformer";
+import { Transform, type TransformFnParams, Type } from "class-transformer";
 import {
+  IsArray,
   IsEnum,
   IsInt,
   IsOptional,
@@ -8,6 +9,22 @@ import {
   Min,
 } from "class-validator";
 import { ProductListSort } from "@/modules/product/application/ports/product.repository";
+
+function toOptionalStringArray(params: TransformFnParams): string[] | undefined {
+  const { value } = params;
+
+  if (value === undefined || value === null) {
+    return undefined;
+  }
+
+  const values = Array.isArray(value) ? value : [value];
+  const normalizedValues = values
+    .flatMap((item) => (typeof item === "string" ? item.split(",") : []))
+    .map((item) => item.trim())
+    .filter((item) => item.length > 0);
+
+  return normalizedValues.length > 0 ? normalizedValues : undefined;
+}
 
 // 역할 : ListProductsQueryDto HTTP 요청 값을 검증하기 위한 DTO입니다.
 export class ListProductsQueryDto {
@@ -26,8 +43,20 @@ export class ListProductsQueryDto {
   productCategoryId?: string;
 
   @IsOptional()
+  @Transform(toOptionalStringArray)
+  @IsArray()
+  @IsUUID("all", { each: true })
+  productCategoryIds?: string[];
+
+  @IsOptional()
   @IsUUID()
   productStatusId?: string;
+
+  @IsOptional()
+  @Transform(toOptionalStringArray)
+  @IsArray()
+  @IsUUID("all", { each: true })
+  productStatusIds?: string[];
 
   @IsOptional()
   @IsEnum(ProductListSort)
@@ -45,8 +74,20 @@ export class ExportProductsQueryDto {
   productCategoryId?: string;
 
   @IsOptional()
+  @Transform(toOptionalStringArray)
+  @IsArray()
+  @IsUUID("all", { each: true })
+  productCategoryIds?: string[];
+
+  @IsOptional()
   @IsUUID()
   productStatusId?: string;
+
+  @IsOptional()
+  @Transform(toOptionalStringArray)
+  @IsArray()
+  @IsUUID("all", { each: true })
+  productStatusIds?: string[];
 
   @IsOptional()
   @IsEnum(ProductListSort)

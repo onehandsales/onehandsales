@@ -56,6 +56,7 @@ export interface ContactListQueryInput {
   readonly page?: number;
   readonly username?: string;
   readonly companyId?: string;
+  readonly companyIds?: readonly string[];
   readonly contactDepartmentId?: string;
   readonly contactJobGradeId?: string;
   readonly sort?: ContactListSort;
@@ -65,6 +66,7 @@ export interface ContactListQueryInput {
 export interface ContactExportQueryInput {
   readonly username?: string;
   readonly companyId?: string;
+  readonly companyIds?: readonly string[];
   readonly contactDepartmentId?: string;
   readonly contactJobGradeId?: string;
   readonly sort?: ContactListSort;
@@ -207,11 +209,10 @@ export class ContactApplicationService {
     // 1. 목록 조회 조건을 기본값과 검색 가능한 텍스트로 정규화한다.
     const page = query.page ?? 1;
     const username = this.normalizeOptionalText(query.username);
+    const companyIds = this.normalizeFilterIds(query.companyId, query.companyIds);
 
     // 2. 필터로 받은 회사, 담당자 부서, 담당자 직급이 현재 사용자 소유인지 검증한다.
-    if (query.companyId) {
-      await this.assertCompanyExists(currentUser.id, query.companyId);
-    }
+    await this.assertCompaniesExist(currentUser.id, companyIds);
 
     if (query.contactDepartmentId) {
       await this.assertDepartmentExists(
@@ -230,7 +231,7 @@ export class ContactApplicationService {
       page,
       pageSize: CONTACT_PAGE_SIZE,
       ...(username ? { username } : {}),
-      ...(query.companyId ? { companyId: query.companyId } : {}),
+      ...(companyIds.length > 0 ? { companyIds } : {}),
       ...(query.contactDepartmentId
         ? { contactDepartmentId: query.contactDepartmentId }
         : {}),
@@ -260,11 +261,10 @@ export class ContactApplicationService {
   ): Promise<ExportedXlsxFileResponse> {
     // 1. export 조회 조건을 저장소 입력에 맞게 정규화한다.
     const username = this.normalizeOptionalText(query.username);
+    const companyIds = this.normalizeFilterIds(query.companyId, query.companyIds);
 
     // 2. 필터로 받은 회사, 담당자 부서, 담당자 직급이 현재 사용자 소유인지 검증한다.
-    if (query.companyId) {
-      await this.assertCompanyExists(currentUser.id, query.companyId);
-    }
+    await this.assertCompaniesExist(currentUser.id, companyIds);
 
     if (query.contactDepartmentId) {
       await this.assertDepartmentExists(
@@ -281,7 +281,7 @@ export class ContactApplicationService {
     const contacts = await this.contactRepository.listContactsForExport({
       userId: currentUser.id,
       ...(username ? { username } : {}),
-      ...(query.companyId ? { companyId: query.companyId } : {}),
+      ...(companyIds.length > 0 ? { companyIds } : {}),
       ...(query.contactDepartmentId
         ? { contactDepartmentId: query.contactDepartmentId }
         : {}),
@@ -825,6 +825,15 @@ export class ContactApplicationService {
   }
 
   // 기능 : 담당자 부서가 현재 사용자의 소유인지 확인합니다.
+  private async assertCompaniesExist(
+    userId: string,
+    companyIds: readonly string[]
+  ): Promise<void> {
+    await Promise.all(
+      companyIds.map((companyId) => this.assertCompanyExists(userId, companyId))
+    );
+  }
+
   private async assertDepartmentExists(
     userId: string,
     departmentId: string,
@@ -878,6 +887,23 @@ export class ContactApplicationService {
   }
 
   // 기능 : 담당자 핸드폰번호가 계약 형식인지 검증합니다.
+  private normalizeFilterIds(
+    singleId: string | undefined,
+    ids: readonly string[] | undefined
+  ): string[] {
+    const normalizedIds: string[] = [];
+
+    for (const id of [singleId, ...(ids ?? [])]) {
+      const normalizedId = this.normalizeOptionalText(id);
+
+      if (normalizedId && !normalizedIds.includes(normalizedId)) {
+        normalizedIds.push(normalizedId);
+      }
+    }
+
+    return normalizedIds;
+  }
+
   private assertMobileFormat(mobile: string): void {
     if (!MOBILE_PATTERN.test(mobile)) {
       throw new ValidationDomainError("mobile must match 010-1111-2222");

@@ -54,7 +54,9 @@ export interface ProductListQueryInput {
   readonly page?: number;
   readonly productName?: string;
   readonly productCategoryId?: string;
+  readonly productCategoryIds?: readonly string[];
   readonly productStatusId?: string;
+  readonly productStatusIds?: readonly string[];
   readonly sort?: ProductListSort;
 }
 
@@ -62,7 +64,9 @@ export interface ProductListQueryInput {
 export interface ProductExportQueryInput {
   readonly productName?: string;
   readonly productCategoryId?: string;
+  readonly productCategoryIds?: readonly string[];
   readonly productStatusId?: string;
+  readonly productStatusIds?: readonly string[];
   readonly sort?: ProductListSort;
 }
 
@@ -187,15 +191,18 @@ export class ProductApplicationService {
     // 1. 목록 조회 조건을 기본값과 검색 가능한 텍스트로 정규화한다.
     const page = query.page ?? 1;
     const productName = this.normalizeOptionalText(query.productName);
+    const productCategoryIds = this.normalizeFilterIds(
+      query.productCategoryId,
+      query.productCategoryIds
+    );
+    const productStatusIds = this.normalizeFilterIds(
+      query.productStatusId,
+      query.productStatusIds
+    );
 
     // 2. 필터로 받은 제품 카테고리와 상태가 현재 사용자 소유인지 검증한다.
-    if (query.productCategoryId) {
-      await this.assertCategoryExists(currentUser.id, query.productCategoryId);
-    }
-
-    if (query.productStatusId) {
-      await this.assertStatusExists(currentUser.id, query.productStatusId);
-    }
+    await this.assertCategoriesExist(currentUser.id, productCategoryIds);
+    await this.assertStatusesExist(currentUser.id, productStatusIds);
 
     // 3. 현재 사용자 ownership 기준으로 제품 목록을 조회한다.
     const result = await this.productRepository.listProducts({
@@ -203,10 +210,8 @@ export class ProductApplicationService {
       page,
       pageSize: PRODUCT_PAGE_SIZE,
       ...(productName ? { productName } : {}),
-      ...(query.productCategoryId
-        ? { productCategoryId: query.productCategoryId }
-        : {}),
-      ...(query.productStatusId ? { productStatusId: query.productStatusId } : {}),
+      ...(productCategoryIds.length > 0 ? { productCategoryIds } : {}),
+      ...(productStatusIds.length > 0 ? { productStatusIds } : {}),
       sort: query.sort ?? ProductListSort.CREATED_AT_DESC,
     });
 
@@ -233,24 +238,25 @@ export class ProductApplicationService {
   ): Promise<ExportedXlsxFileResponse> {
     // 1. export 조회 조건을 저장소 입력에 맞게 정규화한다.
     const productName = this.normalizeOptionalText(query.productName);
+    const productCategoryIds = this.normalizeFilterIds(
+      query.productCategoryId,
+      query.productCategoryIds
+    );
+    const productStatusIds = this.normalizeFilterIds(
+      query.productStatusId,
+      query.productStatusIds
+    );
 
     // 2. 필터로 받은 제품 카테고리와 상태가 현재 사용자 소유인지 검증한다.
-    if (query.productCategoryId) {
-      await this.assertCategoryExists(currentUser.id, query.productCategoryId);
-    }
-
-    if (query.productStatusId) {
-      await this.assertStatusExists(currentUser.id, query.productStatusId);
-    }
+    await this.assertCategoriesExist(currentUser.id, productCategoryIds);
+    await this.assertStatusesExist(currentUser.id, productStatusIds);
 
     // 3. 페이지네이션 없이 현재 검색과 필터에 맞는 제품 전체 목록을 조회한다.
     const products = await this.productRepository.listProductsForExport({
       userId: currentUser.id,
       ...(productName ? { productName } : {}),
-      ...(query.productCategoryId
-        ? { productCategoryId: query.productCategoryId }
-        : {}),
-      ...(query.productStatusId ? { productStatusId: query.productStatusId } : {}),
+      ...(productCategoryIds.length > 0 ? { productCategoryIds } : {}),
+      ...(productStatusIds.length > 0 ? { productStatusIds } : {}),
       sort: query.sort ?? ProductListSort.CREATED_AT_DESC,
     });
 
@@ -748,6 +754,17 @@ export class ProductApplicationService {
   }
 
   // 기능 : 제품 상태가 현재 사용자의 소유인지 확인합니다.
+  private async assertCategoriesExist(
+    userId: string,
+    categoryIds: readonly string[]
+  ): Promise<void> {
+    await Promise.all(
+      categoryIds.map((categoryId) =>
+        this.assertCategoryExists(userId, categoryId)
+      )
+    );
+  }
+
   private async assertStatusExists(
     userId: string,
     statusId: string,
@@ -759,6 +776,15 @@ export class ProductApplicationService {
   }
 
   // 기능 : 제품이 현재 사용자의 소유인지 확인합니다.
+  private async assertStatusesExist(
+    userId: string,
+    statusIds: readonly string[]
+  ): Promise<void> {
+    await Promise.all(
+      statusIds.map((statusId) => this.assertStatusExists(userId, statusId))
+    );
+  }
+
   private async assertProductExists(
     userId: string,
     productId: string
@@ -790,6 +816,23 @@ export class ProductApplicationService {
   }
 
   // 기능 : 제품 가격 입력이 0 이상 정수인지 검증합니다.
+  private normalizeFilterIds(
+    singleId: string | undefined,
+    ids: readonly string[] | undefined
+  ): string[] {
+    const normalizedIds: string[] = [];
+
+    for (const id of [singleId, ...(ids ?? [])]) {
+      const normalizedId = this.normalizeOptionalText(id);
+
+      if (normalizedId && !normalizedIds.includes(normalizedId)) {
+        normalizedIds.push(normalizedId);
+      }
+    }
+
+    return normalizedIds;
+  }
+
   private normalizeProductPrice(value: number): number {
     if (!Number.isInteger(value) || value < 0) {
       throw new ValidationDomainError("productPrice must be an integer >= 0");

@@ -51,7 +51,9 @@ export type ProductListParams = {
   readonly page?: number;
   readonly productName?: string;
   readonly productCategoryId?: string;
+  readonly productCategoryIds?: readonly string[];
   readonly productStatusId?: string;
+  readonly productStatusIds?: readonly string[];
   readonly sort?: ProductSort;
 };
 

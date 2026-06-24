@@ -239,6 +239,8 @@ function toContactExportSearchParams(params: ContactExportParams) {
     searchParams.set("companyId", params.companyId);
   }
 
+  appendSearchParamValues(searchParams, "companyIds", params.companyIds);
+
   if (params.contactDepartmentId) {
     searchParams.set("contactDepartmentId", params.contactDepartmentId);
   }
@@ -259,4 +261,16 @@ function compactBody(input: Record<string, unknown>) {
   return Object.fromEntries(
     Object.entries(input).filter(([, value]) => value !== undefined)
   );
+}
+
+function appendSearchParamValues(
+  searchParams: URLSearchParams,
+  key: string,
+  values?: readonly string[]
+) {
+  for (const value of values ?? []) {
+    if (value) {
+      searchParams.append(key, value);
+    }
+  }
 }

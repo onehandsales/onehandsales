@@ -77,6 +77,7 @@ export type ContactListParams = {
   readonly page?: number;
   readonly username?: string;
   readonly companyId?: string;
+  readonly companyIds?: readonly string[];
   readonly contactDepartmentId?: string;
   readonly contactJobGradeId?: string;
   readonly sort?: ContactSort;
@@ -132,6 +133,7 @@ export type UpdateContactPrivateMemoLogInput = {
 export type ContactExportParams = {
   readonly username?: string;
   readonly companyId?: string;
+  readonly companyIds?: readonly string[];
   readonly contactDepartmentId?: string;
   readonly contactJobGradeId?: string;
   readonly sort?: ContactSort;

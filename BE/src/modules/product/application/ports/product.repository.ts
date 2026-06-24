@@ -54,7 +54,9 @@ export interface ListProductsInput {
   readonly pageSize: number;
   readonly productName?: string;
   readonly productCategoryId?: string;
+  readonly productCategoryIds?: readonly string[];
   readonly productStatusId?: string;
+  readonly productStatusIds?: readonly string[];
   readonly sort?: ProductListSort;
 }
 
@@ -63,7 +65,9 @@ export interface ExportProductsInput {
   readonly userId: string;
   readonly productName?: string;
   readonly productCategoryId?: string;
+  readonly productCategoryIds?: readonly string[];
   readonly productStatusId?: string;
+  readonly productStatusIds?: readonly string[];
   readonly sort?: ProductListSort;
 }
 

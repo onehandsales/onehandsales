@@ -245,7 +245,7 @@ export function CompanyListScreen({
           items={fields}
           selectedIds={companyFieldIds}
           size="desktop"
-          tone="amber"
+          tone="blue"
           onCreateClick={() => setTaxonomyDialog({ kind: "field" })}
           onSelectedIdsChange={(ids) => {
             setCompanyFieldIds(ids);
@@ -259,7 +259,7 @@ export function CompanyListScreen({
           items={regions}
           selectedIds={companyRegionIds}
           size="desktop"
-          tone="green"
+          tone="blue"
           onCreateClick={() => setTaxonomyDialog({ kind: "region" })}
           onSelectedIdsChange={(ids) => {
             setCompanyRegionIds(ids);
@@ -413,7 +413,7 @@ export function CompanyListScreen({
             items={fields}
             selectedIds={companyFieldIds}
             size="mobile"
-            tone="amber"
+            tone="blue"
             onCreateClick={() => setTaxonomyDialog({ kind: "field" })}
             onSelectedIdsChange={(ids) => {
               setCompanyFieldIds(ids);
@@ -427,7 +427,7 @@ export function CompanyListScreen({
             items={regions}
             selectedIds={companyRegionIds}
             size="mobile"
-            tone="green"
+            tone="blue"
             onCreateClick={() => setTaxonomyDialog({ kind: "region" })}
             onSelectedIdsChange={(ids) => {
               setCompanyRegionIds(ids);
@@ -639,7 +639,7 @@ type CompanyTaxonomyFilterItem = {
   readonly id: string;
 };
 
-type CompanyTaxonomyFilterTone = "amber" | "green";
+type CompanyTaxonomyFilterTone = "blue";
 
 function CompanyTaxonomyFilterCombobox<
   TItem extends CompanyTaxonomyFilterItem,
@@ -982,27 +982,35 @@ function getSelectedTaxonomyFilterSummary<TItem extends CompanyTaxonomyFilterIte
 function getTaxonomyFilterInputSelectedClass(
   tone: CompanyTaxonomyFilterTone,
 ) {
-  return tone === "amber"
-    ? "border-[#FDE68A] bg-[#FFFBEB] font-semibold text-[#B45309]"
-    : "border-[#BBF7D0] bg-[#F0FDF4] font-semibold text-[#15803D]";
+  switch (tone) {
+    case "blue":
+      return "border-[#BFDBFE] bg-[#EFF6FF] font-semibold text-[#1D4ED8]";
+  }
 }
 
 function getTaxonomyFilterItemSelectedClass(
   tone: CompanyTaxonomyFilterTone,
 ) {
-  return tone === "amber"
-    ? "bg-[#FFFBEB] font-semibold text-[#B45309]"
-    : "bg-[#F0FDF4] font-semibold text-[#15803D]";
+  switch (tone) {
+    case "blue":
+      return "bg-[#EFF6FF] font-semibold text-[#1D4ED8]";
+  }
 }
 
 function getTaxonomyFilterCheckBorderClass(
   tone: CompanyTaxonomyFilterTone,
 ) {
-  return tone === "amber" ? "border-[#B45309]" : "border-[#15803D]";
+  switch (tone) {
+    case "blue":
+      return "border-[#2563EB]";
+  }
 }
 
 function getTaxonomyFilterCheckDotClass(tone: CompanyTaxonomyFilterTone) {
-  return tone === "amber" ? "bg-[#B45309]" : "bg-[#15803D]";
+  switch (tone) {
+    case "blue":
+      return "bg-[#2563EB]";
+  }
 }
 
 function CompanyListError({

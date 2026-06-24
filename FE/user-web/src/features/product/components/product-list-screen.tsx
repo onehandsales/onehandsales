@@ -63,8 +63,8 @@ export function ProductListScreen({
   const { user } = useAuthSession();
   const [searchText, setSearchText] = useState("");
   const [search, setSearch] = useState("");
-  const [categoryFilter, setCategoryFilter] = useState("");
-  const [statusFilter, setStatusFilter] = useState("");
+  const [categoryFilterIds, setCategoryFilterIds] = useState<string[]>([]);
+  const [statusFilterIds, setStatusFilterIds] = useState<string[]>([]);
   const [sort, setSort] = useState<ProductSort>("createdAtDesc");
   const [page, setPage] = useState(1);
   const [isCreateOpen, setIsCreateOpen] = useState(false);
@@ -91,11 +91,11 @@ export function ProductListScreen({
     () => ({
       page,
       productName: search || undefined,
-      productCategoryId: categoryFilter || undefined,
-      productStatusId: statusFilter || undefined,
+      productCategoryIds: categoryFilterIds.length > 0 ? categoryFilterIds : undefined,
+      productStatusIds: statusFilterIds.length > 0 ? statusFilterIds : undefined,
       sort,
     }),
-    [categoryFilter, page, search, sort, statusFilter],
+    [categoryFilterIds, page, search, sort, statusFilterIds],
   );
 
   const productsQuery = useProductList(listParams);
@@ -104,8 +104,8 @@ export function ProductListScreen({
   const displayTimeZone = user?.timeZone ?? getBrowserTimeZoneFallback();
   const hasFilters =
     search.length > 0 ||
-    categoryFilter.length > 0 ||
-    statusFilter.length > 0 ||
+    categoryFilterIds.length > 0 ||
+    statusFilterIds.length > 0 ||
     sort !== "createdAtDesc";
 
   useEffect(() => {
@@ -134,7 +134,7 @@ export function ProductListScreen({
       (category) => category.categoryName === pendingCategoryName,
     );
     if (matched) {
-      setCategoryFilter(matched.id);
+      setCategoryFilterIds((prev) => addUniqueId(prev, matched.id));
       setPage(1);
       setPendingCategoryName("");
     }
@@ -146,31 +146,29 @@ export function ProductListScreen({
       (status) => status.statusName === pendingStatusName,
     );
     if (matched) {
-      setStatusFilter(matched.id);
+      setStatusFilterIds((prev) => addUniqueId(prev, matched.id));
       setPage(1);
       setPendingStatusName("");
     }
   }, [statuses, pendingStatusName]);
 
   useEffect(() => {
-    if (
-      categoryFilter &&
-      !categories.some((category) => category.id === categoryFilter)
-    ) {
-      setCategoryFilter("");
+    const validIds = new Set(categories.map((category) => category.id));
+    const nextIds = categoryFilterIds.filter((id) => validIds.has(id));
+    if (nextIds.length !== categoryFilterIds.length) {
+      setCategoryFilterIds(nextIds);
       setPage(1);
     }
-  }, [categoryFilter, categories]);
+  }, [categoryFilterIds, categories]);
 
   useEffect(() => {
-    if (
-      statusFilter &&
-      !statuses.some((status) => status.id === statusFilter)
-    ) {
-      setStatusFilter("");
+    const validIds = new Set(statuses.map((status) => status.id));
+    const nextIds = statusFilterIds.filter((id) => validIds.has(id));
+    if (nextIds.length !== statusFilterIds.length) {
+      setStatusFilterIds(nextIds);
       setPage(1);
     }
-  }, [statusFilter, statuses]);
+  }, [statusFilterIds, statuses]);
 
   const onSearchSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -183,8 +181,8 @@ export function ProductListScreen({
     try {
       const { blob, fileName } = await exportProductsXlsx({
         productName: search || undefined,
-        productCategoryId: categoryFilter || undefined,
-        productStatusId: statusFilter || undefined,
+        productCategoryIds: categoryFilterIds.length > 0 ? categoryFilterIds : undefined,
+        productStatusIds: statusFilterIds.length > 0 ? statusFilterIds : undefined,
         sort,
       });
       const url = URL.createObjectURL(blob);
@@ -239,8 +237,8 @@ export function ProductListScreen({
           onClick={() => {
             setSearch("");
             setSearchText("");
-            setCategoryFilter("");
-            setStatusFilter("");
+            setCategoryFilterIds([]);
+            setStatusFilterIds([]);
             setSort("createdAtDesc");
             setPage(1);
           }}
@@ -250,12 +248,12 @@ export function ProductListScreen({
           getLabel={(c) => c.categoryName}
           itemKindLabel="카테고리"
           items={categories}
-          selectedId={categoryFilter}
+          selectedIds={categoryFilterIds}
           size="desktop"
-          tone="indigo"
+          tone="blue"
           onCreateClick={() => setTaxonomyDialog({ kind: "category" })}
-          onSelectedIdChange={(id) => {
-            setCategoryFilter(id);
+          onSelectedIdsChange={(ids) => {
+            setCategoryFilterIds(ids);
             setPage(1);
           }}
         />
@@ -264,12 +262,12 @@ export function ProductListScreen({
           getLabel={(s) => s.statusName}
           itemKindLabel="상태"
           items={statuses}
-          selectedId={statusFilter}
+          selectedIds={statusFilterIds}
           size="desktop"
-          tone="green"
+          tone="blue"
           onCreateClick={() => setTaxonomyDialog({ kind: "status" })}
-          onSelectedIdChange={(id) => {
-            setStatusFilter(id);
+          onSelectedIdsChange={(ids) => {
+            setStatusFilterIds(ids);
             setPage(1);
           }}
         />
@@ -370,8 +368,8 @@ export function ProductListScreen({
             onClick={() => {
               setSearch("");
               setSearchText("");
-              setCategoryFilter("");
-              setStatusFilter("");
+              setCategoryFilterIds([]);
+              setStatusFilterIds([]);
               setSort("createdAtDesc");
               setPage(1);
             }}
@@ -385,12 +383,12 @@ export function ProductListScreen({
             getLabel={(c) => c.categoryName}
             itemKindLabel="카테고리"
             items={categories}
-            selectedId={categoryFilter}
+            selectedIds={categoryFilterIds}
             size="mobile"
-            tone="indigo"
+            tone="blue"
             onCreateClick={() => setTaxonomyDialog({ kind: "category" })}
-            onSelectedIdChange={(id) => {
-              setCategoryFilter(id);
+            onSelectedIdsChange={(ids) => {
+              setCategoryFilterIds(ids);
               setPage(1);
             }}
           />
@@ -399,12 +397,12 @@ export function ProductListScreen({
             getLabel={(s) => s.statusName}
             itemKindLabel="상태"
             items={statuses}
-            selectedId={statusFilter}
+            selectedIds={statusFilterIds}
             size="mobile"
-            tone="green"
+            tone="blue"
             onCreateClick={() => setTaxonomyDialog({ kind: "status" })}
-            onSelectedIdChange={(id) => {
-              setStatusFilter(id);
+            onSelectedIdsChange={(ids) => {
+              setStatusFilterIds(ids);
               setPage(1);
             }}
           />
@@ -714,7 +712,7 @@ type ProductTaxonomyFilterItem = {
   readonly id: string;
 };
 
-type ProductTaxonomyFilterTone = "indigo" | "green";
+type ProductTaxonomyFilterTone = "blue";
 
 function ProductTaxonomyFilterCombobox<
   TItem extends ProductTaxonomyFilterItem,
@@ -723,21 +721,21 @@ function ProductTaxonomyFilterCombobox<
   getLabel,
   itemKindLabel,
   items,
-  selectedId,
+  selectedIds,
   size,
   tone,
   onCreateClick,
-  onSelectedIdChange,
+  onSelectedIdsChange,
 }: {
   readonly emptyText: string;
   readonly getLabel: (item: TItem) => string;
   readonly itemKindLabel: string;
   readonly items: readonly TItem[];
-  readonly selectedId: string;
+  readonly selectedIds: readonly string[];
   readonly size: "desktop" | "mobile";
   readonly tone: ProductTaxonomyFilterTone;
   readonly onCreateClick: () => void;
-  readonly onSelectedIdChange: (id: string) => void;
+  readonly onSelectedIdsChange: (ids: string[]) => void;
 }) {
   const [isOpen, setIsOpen] = useState(false);
   const [search, setSearch] = useState("");
@@ -746,11 +744,16 @@ function ProductTaxonomyFilterCombobox<
   const wrapperRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const selectedItem = useMemo(
-    () => items.find((item) => item.id === selectedId) ?? null,
-    [items, selectedId],
+  const selectedIdSet = useMemo(() => new Set(selectedIds), [selectedIds]);
+  const selectedItems = useMemo(
+    () => items.filter((item) => selectedIdSet.has(item.id)),
+    [items, selectedIdSet],
   );
-  const selectedSummary = selectedItem ? getLabel(selectedItem) : "";
+  const selectedSummary = getSelectedTaxonomyFilterSummary(
+    selectedItems,
+    getLabel,
+    itemKindLabel,
+  );
 
   const query = search.trim();
   const normalizedQuery = normalizeFilterText(query);
@@ -804,11 +807,13 @@ function ProductTaxonomyFilterCombobox<
     };
   }, [isMobile, isOpen]);
 
-  const selectItem = (item: TItem) => {
-    const nextId = selectedId === item.id ? "" : item.id;
+  const toggleItem = (item: TItem) => {
+    const nextIds = selectedIdSet.has(item.id)
+      ? selectedIds.filter((id) => id !== item.id)
+      : [...selectedIds, item.id];
+
     setSearch("");
-    onSelectedIdChange(nextId);
-    setIsOpen(false);
+    onSelectedIdsChange(nextIds);
   };
 
   const openOptions = (nextSearch: string) => {
@@ -823,7 +828,7 @@ function ProductTaxonomyFilterCombobox<
 
   const clearSelection = () => {
     setSearch("");
-    onSelectedIdChange("");
+    onSelectedIdsChange([]);
     inputRef.current?.focus();
     openOptions("");
   };
@@ -862,7 +867,7 @@ function ProductTaxonomyFilterCombobox<
                   "border-[#2563EB] bg-white text-[#111827] ring-1 ring-[#2563EB]",
                   isMobile ? "pl-7 pr-7" : "pl-8 pr-7",
                 )
-              : selectedId
+              : selectedIds.length > 0
                 ? cn(
                     getTaxonomyFilterInputSelectedClass(tone),
                     isMobile ? "pl-3 pr-7" : "pl-3.5 pr-7",
@@ -889,14 +894,14 @@ function ProductTaxonomyFilterCombobox<
                 return;
               }
               event.preventDefault();
-              selectItem(firstItem);
+              toggleItem(firstItem);
             }
           }}
           placeholder={`${itemKindLabel} 선택`}
           value={inputValue}
         />
         {/* Right icon: × when selected/searching, ▾ when idle */}
-        {selectedId || search ? (
+        {selectedIds.length > 0 || search ? (
           <button
             aria-label={`${itemKindLabel} 필터 지우기`}
             className={cn(
@@ -934,14 +939,14 @@ function ProductTaxonomyFilterCombobox<
           <button
             className={cn(
               "flex h-9 w-full items-center gap-1.5 px-3 text-left text-[13px] transition hover:bg-[#F9FAFB]",
-              !selectedId
+              selectedIds.length === 0
                 ? "font-semibold text-[#1D4ED8]"
                 : "font-medium text-[#475569]",
             )}
             onClick={() => {
               setSearch("");
               setIsOpen(false);
-              onSelectedIdChange("");
+              onSelectedIdsChange([]);
             }}
             type="button"
           >
@@ -956,7 +961,7 @@ function ProductTaxonomyFilterCombobox<
               </p>
             ) : (
               filteredItems.map((item) => {
-                const isSelected = item.id === selectedId;
+                const isSelected = selectedIdSet.has(item.id);
 
                 return (
                   <button
@@ -965,7 +970,7 @@ function ProductTaxonomyFilterCombobox<
                       isSelected && getTaxonomyFilterItemSelectedClass(tone),
                     )}
                     key={item.id}
-                    onClick={() => selectItem(item)}
+                    onClick={() => toggleItem(item)}
                     type="button"
                   >
                     <span
@@ -1032,24 +1037,51 @@ function getFieldFilterPopoverPosition(
   };
 }
 
+function getSelectedTaxonomyFilterSummary<
+  TItem extends ProductTaxonomyFilterItem,
+>(
+  selectedItems: readonly TItem[],
+  getLabel: (item: TItem) => string,
+  itemKindLabel: string,
+) {
+  if (selectedItems.length === 0) {
+    return "";
+  }
+
+  if (selectedItems.length === 1) {
+    const selectedItem = selectedItems[0];
+    return selectedItem ? getLabel(selectedItem) : "";
+  }
+
+  return `${itemKindLabel} ${selectedItems.length}개`;
+}
+
 function getTaxonomyFilterInputSelectedClass(tone: ProductTaxonomyFilterTone) {
-  return tone === "indigo"
-    ? "border-[#BFDBFE] bg-[#EFF6FF] font-semibold text-[#1D4ED8]"
-    : "border-[#A7F3D0] bg-[#ECFDF5] font-semibold text-[#047857]";
+  switch (tone) {
+    case "blue":
+      return "border-[#BFDBFE] bg-[#EFF6FF] font-semibold text-[#1D4ED8]";
+  }
 }
 
 function getTaxonomyFilterItemSelectedClass(tone: ProductTaxonomyFilterTone) {
-  return tone === "indigo"
-    ? "bg-[#EFF6FF] font-semibold text-[#1D4ED8]"
-    : "bg-[#ECFDF5] font-semibold text-[#047857]";
+  switch (tone) {
+    case "blue":
+      return "bg-[#EFF6FF] font-semibold text-[#1D4ED8]";
+  }
 }
 
 function getTaxonomyFilterCheckBorderClass(tone: ProductTaxonomyFilterTone) {
-  return tone === "indigo" ? "border-[#1D4ED8]" : "border-[#047857]";
+  switch (tone) {
+    case "blue":
+      return "border-[#2563EB]";
+  }
 }
 
 function getTaxonomyFilterCheckDotClass(tone: ProductTaxonomyFilterTone) {
-  return tone === "indigo" ? "bg-[#1D4ED8]" : "bg-[#047857]";
+  switch (tone) {
+    case "blue":
+      return "bg-[#2563EB]";
+  }
 }
 
 function ProductListSkeleton() {
@@ -1090,6 +1122,10 @@ function statusToneFromName(statusName: string) {
     return "green" as const;
   }
   return "slate" as const;
+}
+
+function addUniqueId(ids: readonly string[], id: string) {
+  return ids.includes(id) ? [...ids] : [...ids, id];
 }
 
 function normalizeFilterText(value: string) {
