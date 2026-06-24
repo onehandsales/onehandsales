@@ -62,7 +62,7 @@ const SORT_OPTIONS: Array<{
 
 const DEAL_TABLE_GRID_STYLE = {
   gridTemplateColumns:
-    "minmax(96px,1.1fr) minmax(104px,1.05fr) minmax(58px,0.55fr) minmax(68px,0.65fr) minmax(96px,0.95fr) minmax(74px,0.55fr)",
+    "minmax(96px,1.05fr) minmax(88px,0.7fr) minmax(58px,0.5fr) minmax(64px,0.5fr) minmax(148px,1.45fr) minmax(70px,0.5fr)",
 };
 
 type DealPipelineHomeScreenProps = {
