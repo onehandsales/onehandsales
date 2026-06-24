@@ -67,6 +67,7 @@ import {
   type DealContactOption,
   type DealDetail,
   type DealProductOption,
+  type DealStatus,
 } from "@/features/deal/types/deal";
 import { CompanyTaxonomyCreateDialog } from "@/features/company/components/company-taxonomy-create-dialog";
 import { ProductCreateDialog } from "@/features/product/components/product-create-dialog";
@@ -108,6 +109,7 @@ export function DealCreateDialog({
   });
 
   const dealCostValue = watch("dealCost");
+  const dealStatusValue = watch("dealStatus");
   const expectedEndDateValue = watch("expectedEndDate");
   const companySearch = watch("companySearch") ?? "";
   const contactSearch = watch("contactSearch") ?? "";
@@ -331,8 +333,8 @@ export function DealCreateDialog({
           </ModalFormSection>
 
           {/* 연결 대상 */}
-          <ModalFormSection title="연결 대상">
-            <ModalFormRow columns={2}>
+          <ModalFormSection>
+            <ModalFormRow className="items-start" columns={2}>
               {/* 회사 */}
               <ModalFieldGroup
                 error={errors.companyIds?.message}
@@ -455,17 +457,17 @@ export function DealCreateDialog({
                 id="deal-status"
                 label="딜 단계"
               >
-                <select
-                  className="h-10 rounded-md border px-3 text-sm outline-none focus:ring-2 focus:ring-ring"
+                <input type="hidden" {...register("dealStatus")} />
+                <DealStatusDropdown
                   id="deal-status"
-                  {...register("dealStatus")}
-                >
-                  {DEAL_STATUS_LIST.map((status) => (
-                    <option key={status} value={status}>
-                      {DEAL_STATUS_LABEL[status]}
-                    </option>
-                  ))}
-                </select>
+                  value={dealStatusValue}
+                  onChange={(status) =>
+                    setValue("dealStatus", status, {
+                      shouldDirty: true,
+                      shouldValidate: true,
+                    })
+                  }
+                />
               </ModalFieldGroup>
 
               <ModalFieldGroup
@@ -479,9 +481,8 @@ export function DealCreateDialog({
                     aria-invalid={Boolean(errors.expectedEndDate)}
                     className="h-10 w-full rounded-md border px-3 text-sm outline-none focus:ring-2 focus:ring-ring"
                     id="deal-end-date"
-                    inputMode="numeric"
                     onChange={onExpectedEndDateChange}
-                    placeholder="예: 20260410"
+                    type="date"
                     value={expectedEndDateValue ?? ""}
                   />
                 </div>
@@ -499,6 +500,17 @@ export function DealCreateDialog({
                 id="deal-following"
                 placeholder="예: 제안서 발송"
                 {...register("followingAction")}
+              />
+            </ModalFieldGroup>
+          </ModalFormSection>
+
+          <ModalFormSection title="메모(옵션)">
+            <ModalFieldGroup id="deal-memo">
+              <textarea
+                aria-label="메모"
+                className="min-h-24 resize-y rounded-md border px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-ring"
+                id="deal-memo"
+                {...register("dealMemo")}
               />
             </ModalFieldGroup>
           </ModalFormSection>
@@ -1177,6 +1189,8 @@ function SearchSelectField<TItem extends { readonly id: string }>({
   onClear,
   onCreate,
 }: SearchSelectFieldProps<TItem>) {
+  const [isOpen, setIsOpen] = useState(false);
+  const wrapperRef = useRef<HTMLDivElement>(null);
   const query = search.trim();
   const inputValue = selectedId ? selectedLabel : search;
   const filteredItems =
@@ -1187,18 +1201,44 @@ function SearchSelectField<TItem extends { readonly id: string }>({
           ).includes(normalizeText(query)),
         )
       : [];
+  const visibleItems = query.length > 0 ? filteredItems : items;
+
+  useEffect(() => {
+    if (!isOpen) {
+      return;
+    }
+
+    const onMouseDown = (event: MouseEvent) => {
+      if (
+        wrapperRef.current &&
+        !wrapperRef.current.contains(event.target as Node)
+      ) {
+        setIsOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", onMouseDown);
+    return () => document.removeEventListener("mousedown", onMouseDown);
+  }, [isOpen]);
 
   return (
-    <div className="relative min-w-0 flex-1">
+    <div className="relative min-w-0 flex-1" ref={wrapperRef}>
       <Icon className="pointer-events-none absolute left-3 top-5 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
       <input
         aria-autocomplete="list"
-        aria-expanded={query.length > 0 && !selectedId}
+        aria-expanded={isOpen && !selectedId}
         autoComplete="off"
-        className="h-10 w-full rounded-md border pl-9 pr-10 text-sm outline-none focus:ring-2 focus:ring-ring disabled:cursor-not-allowed disabled:bg-muted disabled:text-muted-foreground"
+        className={cn(
+          "h-10 w-full rounded-md border pl-9 pr-10 text-sm outline-none focus:ring-2 focus:ring-ring disabled:cursor-not-allowed disabled:bg-muted disabled:text-muted-foreground",
+          isOpen && "ring-2 ring-ring",
+        )}
         disabled={disabled}
         id={id}
-        onChange={(event) => onSearchChange(event.target.value)}
+        onChange={(event) => {
+          onSearchChange(event.target.value);
+          setIsOpen(true);
+        }}
+        onFocus={() => setIsOpen(true)}
         placeholder={disabled ? "회사를 먼저 선택해주세요" : placeholder}
         value={inputValue}
       />
@@ -1206,26 +1246,39 @@ function SearchSelectField<TItem extends { readonly id: string }>({
         <button
           aria-label={`${placeholder} 지우기`}
           className="absolute right-2 top-5 grid h-7 w-7 -translate-y-1/2 place-items-center rounded-md text-muted-foreground hover:bg-muted"
-          onClick={onClear}
+          onClick={() => {
+            onClear();
+            setIsOpen(true);
+          }}
           type="button"
         >
           <X className="h-4 w-4" />
         </button>
-      ) : null}
+      ) : (
+        <ChevronDown
+          className={cn(
+            "pointer-events-none absolute right-3 top-5 h-4 w-4 -translate-y-1/2 text-[#9CA3AF] transition-transform",
+            isOpen && "rotate-180",
+          )}
+        />
+      )}
 
-      {query.length > 0 && !selectedId ? (
+      {isOpen && !selectedId ? (
         <div className="absolute left-0 right-0 top-[calc(100%+4px)] z-50 max-h-44 overflow-y-auto rounded-md border bg-white shadow-lg">
           {isLoading ? (
             <p className="px-3 py-2 text-sm text-muted-foreground">
               검색 중입니다.
             </p>
-          ) : filteredItems.length === 0 ? (
+          ) : visibleItems.length === 0 ? (
             <div className="grid gap-2 px-3 py-3">
               <p className="text-sm text-muted-foreground">{emptyText}</p>
-              {onCreate && createActionLabel ? (
+              {query.length > 0 && onCreate && createActionLabel ? (
                 <button
                   className="inline-flex h-8 items-center justify-center gap-1.5 self-start rounded-md border border-dashed border-primary/30 bg-primary/5 px-2.5 text-xs font-medium text-primary hover:bg-primary/10"
-                  onClick={onCreate}
+                  onClick={() => {
+                    setIsOpen(false);
+                    onCreate();
+                  }}
                   type="button"
                 >
                   <Plus className="h-3.5 w-3.5" />
@@ -1234,11 +1287,14 @@ function SearchSelectField<TItem extends { readonly id: string }>({
               ) : null}
             </div>
           ) : (
-            filteredItems.map((item) => (
+            visibleItems.map((item) => (
               <button
                 className="grid w-full gap-0.5 px-3 py-2 text-left text-sm hover:bg-muted"
                 key={item.id}
-                onClick={() => onSelect(item)}
+                onClick={() => {
+                  onSelect(item);
+                  setIsOpen(false);
+                }}
                 type="button"
               >
                 <span className="font-medium">{getLabel(item)}</span>
@@ -1268,8 +1324,12 @@ function SelectedOptionChips<TItem extends { readonly id: string }>({
   getLabel,
   onRemove,
 }: SelectedOptionChipsProps<TItem>) {
+  if (items.length === 0) {
+    return null;
+  }
+
   return (
-    <div className="mt-2 flex h-7 flex-nowrap gap-2 overflow-x-auto">
+    <div className="flex flex-wrap gap-2">
       {items.map((item) => (
         <button
           className="inline-flex h-7 shrink-0 items-center gap-1.5 rounded-md border border-primary/30 bg-primary/10 px-2 text-xs font-medium text-primary"
@@ -1281,6 +1341,95 @@ function SelectedOptionChips<TItem extends { readonly id: string }>({
           <X className="h-3 w-3" />
         </button>
       ))}
+    </div>
+  );
+}
+
+type DealStatusDropdownProps = {
+  readonly id: string;
+  readonly value: DealStatus;
+  readonly onChange: (status: DealStatus) => void;
+};
+
+function DealStatusDropdown({
+  id,
+  value,
+  onChange,
+}: DealStatusDropdownProps) {
+  const [isOpen, setIsOpen] = useState(false);
+  const wrapperRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!isOpen) {
+      return;
+    }
+
+    const onMouseDown = (event: MouseEvent) => {
+      if (
+        wrapperRef.current &&
+        !wrapperRef.current.contains(event.target as Node)
+      ) {
+        setIsOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", onMouseDown);
+    return () => document.removeEventListener("mousedown", onMouseDown);
+  }, [isOpen]);
+
+  return (
+    <div className="relative" ref={wrapperRef}>
+      <button
+        aria-expanded={isOpen}
+        aria-haspopup="listbox"
+        className={cn(
+          "flex h-10 w-full items-center rounded-md border px-3 pr-10 text-left text-sm outline-none focus:ring-2 focus:ring-ring",
+          isOpen && "ring-2 ring-ring",
+        )}
+        id={id}
+        onClick={() => setIsOpen((current) => !current)}
+        type="button"
+      >
+        <span className="min-w-0 flex-1 truncate">
+          {DEAL_STATUS_LABEL[value]}
+        </span>
+      </button>
+      <ChevronDown
+        className={cn(
+          "pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#9CA3AF] transition-transform",
+          isOpen && "rotate-180",
+        )}
+      />
+
+      {isOpen ? (
+        <div
+          className="absolute bottom-[calc(100%+4px)] left-0 right-0 z-50 max-h-44 overflow-y-auto rounded-md border bg-white shadow-lg"
+          role="listbox"
+        >
+          {DEAL_STATUS_LIST.map((status) => {
+            const isSelected = status === value;
+
+            return (
+              <button
+                aria-selected={isSelected}
+                className={cn(
+                  "w-full px-3 py-2 text-left text-sm hover:bg-muted",
+                  isSelected && "bg-primary/10 font-medium text-primary",
+                )}
+                key={status}
+                onClick={() => {
+                  onChange(status);
+                  setIsOpen(false);
+                }}
+                role="option"
+                type="button"
+              >
+                {DEAL_STATUS_LABEL[status]}
+              </button>
+            );
+          })}
+        </div>
+      ) : null}
     </div>
   );
 }
@@ -1306,6 +1455,7 @@ function ProductMultiSelectDropdown({
           normalizeText(item.productName).includes(normalizeText(query)),
         )
       : [];
+  const visibleItems = query.length > 0 ? filteredItems : items;
 
   useEffect(() => {
     if (!isOpen) {
@@ -1346,9 +1496,12 @@ function ProductMultiSelectDropdown({
         <Package className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
         <input
           aria-autocomplete="list"
-          aria-expanded={isOpen && query.length > 0}
+          aria-expanded={isOpen}
           autoComplete="off"
-          className="h-10 w-full rounded-md border pl-9 pr-10 text-sm outline-none focus:ring-2 focus:ring-ring"
+          className={cn(
+            "h-10 w-full rounded-md border pl-9 pr-10 text-sm outline-none focus:ring-2 focus:ring-ring",
+            isOpen && "ring-2 ring-ring",
+          )}
           id={id}
           onChange={(event) => {
             onSearchChange(event.target.value);
@@ -1368,26 +1521,28 @@ function ProductMultiSelectDropdown({
         />
       </div>
 
-      <div className="mt-2 flex h-7 flex-nowrap gap-2 overflow-x-auto">
-        {selectedItems.map((product) => (
-          <button
-            className="inline-flex h-7 shrink-0 items-center gap-1.5 rounded-md border border-primary/30 bg-primary/10 px-2 text-xs font-medium text-primary"
-            key={product.id}
-            onClick={() => onToggle(product.id)}
-            type="button"
-          >
-            {product.productName}
-            <X className="h-3 w-3" />
-          </button>
-        ))}
-      </div>
+      {selectedItems.length > 0 ? (
+        <div className="mt-2 flex flex-wrap gap-2">
+          {selectedItems.map((product) => (
+            <button
+              className="inline-flex h-7 shrink-0 items-center gap-1.5 rounded-md border border-primary/30 bg-primary/10 px-2 text-xs font-medium text-primary"
+              key={product.id}
+              onClick={() => onToggle(product.id)}
+              type="button"
+            >
+              {product.productName}
+              <X className="h-3 w-3" />
+            </button>
+          ))}
+        </div>
+      ) : null}
 
-      {isOpen && query.length > 0 ? (
+      {isOpen ? (
         <div
           className="absolute left-0 right-0 top-[calc(100%+4px)] z-50 overflow-hidden rounded-md border bg-white shadow-lg"
           role="listbox"
         >
-          <div className="flex items-center justify-between border-b px-3 py-2">
+          <div className="hidden items-center justify-between border-b px-3 py-2">
             <span className="text-[11px] font-semibold text-muted-foreground">
               제품 선택
             </span>
@@ -1396,20 +1551,23 @@ function ProductMultiSelectDropdown({
             </span>
           </div>
 
-          <div className="max-h-52 overflow-y-auto">
+          <div className="max-h-44 overflow-y-auto">
             {isLoading ? (
               <p className="px-3 py-4 text-center text-sm text-muted-foreground">
                 제품을 불러오는 중입니다.
               </p>
-            ) : filteredItems.length === 0 ? (
+            ) : visibleItems.length === 0 ? (
               <div className="grid gap-2 px-3 py-4">
                 <p className="text-center text-sm text-muted-foreground">
                   검색된 제품이 없습니다.
                 </p>
-                {onCreate && createActionLabel ? (
+                {query.length > 0 && onCreate && createActionLabel ? (
                   <button
                     className="inline-flex h-8 items-center justify-center gap-1.5 self-center rounded-md border border-dashed border-primary/30 bg-primary/5 px-2.5 text-xs font-medium text-primary hover:bg-primary/10"
-                    onClick={onCreate}
+                    onClick={() => {
+                      setIsOpen(false);
+                      onCreate();
+                    }}
                     type="button"
                   >
                     <Plus className="h-3.5 w-3.5" />
@@ -1418,32 +1576,29 @@ function ProductMultiSelectDropdown({
                 ) : null}
               </div>
             ) : (
-              filteredItems.map((product) => {
+              visibleItems.map((product) => {
                 const isSelected = selectedIds.includes(product.id);
 
                 return (
                   <button
                     className={cn(
-                      "flex w-full cursor-pointer items-center gap-2 px-3 py-2 text-left text-sm transition-colors hover:bg-muted",
+                      "grid w-full cursor-pointer gap-0.5 px-3 py-2 text-left text-sm transition-colors hover:bg-muted",
                       isSelected && "bg-primary/10",
                     )}
                     key={product.id}
                     onClick={() => {
                       onToggle(product.id);
                       onSearchChange("");
-                      setIsOpen(true);
+                      setIsOpen(false);
                     }}
                     type="button"
                   >
-                    <input
-                      readOnly
-                      checked={isSelected}
-                      className="h-3.5 w-3.5 accent-primary"
-                      type="checkbox"
-                    />
-                    <Package className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
-                    <span className="min-w-0 flex-1 truncate">
+                    <span className="font-medium">
                       {product.productName}
+                    </span>
+                    <span className="text-xs text-muted-foreground">
+                      {product.productCategory.categoryName} ·{" "}
+                      {product.productStatus.statusName}
                     </span>
                   </button>
                 );

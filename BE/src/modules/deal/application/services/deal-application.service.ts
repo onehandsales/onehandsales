@@ -46,6 +46,7 @@ import { AppLogger } from "@/shared/infrastructure/logger/app-logger.service";
 const DEAL_PAGE_SIZE = 10;
 const DEAL_LOG_PAGE_SIZE = 10;
 const XLSX_DATE_NUM_FORMAT = "yyyy-mm-dd hh:mm:ss";
+const INITIAL_DEAL_MEMO_TYPE = "초기 메모";
 
 // 역할 : DealListQueryInput 데이터가 계층 사이에서 전달되는 구조를 정의합니다.
 export interface DealListQueryInput {
@@ -88,6 +89,7 @@ export interface CreateDealCommand {
   readonly dealStatus: DealStatusCode;
   readonly followingAction: string;
   readonly expectedEndDate: string;
+  readonly dealMemo?: string | null;
 }
 
 // 역할 : UpdateDealCommand 데이터가 계층 사이에서 전달되는 구조를 정의합니다.
@@ -387,6 +389,7 @@ export class DealApplicationService {
       input.followingAction,
       "followingAction is required"
     );
+    const dealMemo = this.normalizeOptionalText(input.dealMemo);
     const companyIds = this.normalizeRequiredIdArray(
       input.companyIds,
       "companyIds must contain at least one company",
@@ -443,6 +446,15 @@ export class DealApplicationService {
         dealId: deal.id,
         followingAction,
       });
+
+      if (dealMemo) {
+        await repository.createMemoLog({
+          userId: currentUser.id,
+          dealId: deal.id,
+          memoType: INITIAL_DEAL_MEMO_TYPE,
+          memo: dealMemo,
+        });
+      }
     });
 
     if (!createdDealId) {

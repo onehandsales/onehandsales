@@ -43,6 +43,7 @@ export const dealCreateFormSchema = z.object({
   dealStatus: dealStatusEnum,
   followingAction: z.string().trim().min(1, "다음 행동을 입력해주세요."),
   expectedEndDate: expectedEndDateSchema,
+  dealMemo: z.string().trim().optional(),
   // UI 전용 search 필드
   companySearch: z.string().optional(),
   contactSearch: z.string().optional(),
@@ -98,6 +99,7 @@ export function toCreateDealInput(values: DealCreateFormValues): CreateDealInput
     dealStatus: values.dealStatus,
     followingAction: values.followingAction,
     expectedEndDate: values.expectedEndDate,
+    dealMemo: values.dealMemo?.trim() || undefined,
   };
 }
 
@@ -127,6 +129,7 @@ export const emptyDealCreateFormValues: DealCreateFormValues = {
   dealStatus: "INITIAL_CONTACT",
   followingAction: "",
   expectedEndDate: "",
+  dealMemo: "",
   companySearch: "",
   contactSearch: "",
   productSearch: "",

@@ -143,6 +143,10 @@ export class CreateDealDto {
   @IsString()
   @Matches(DATE_ONLY_PATTERN)
   expectedEndDate!: string;
+
+  @IsOptional()
+  @IsString()
+  dealMemo?: string | null;
 }
 
 // 역할 : UpdateDealDto HTTP 딜 수정 요청 값을 검증하기 위한 DTO입니다.

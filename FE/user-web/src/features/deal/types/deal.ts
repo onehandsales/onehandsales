@@ -173,6 +173,7 @@ export type CreateDealInput = {
   readonly dealStatus: DealStatus;
   readonly followingAction: string;
   readonly expectedEndDate: string;
+  readonly dealMemo?: string;
 };
 
 // 기능 : 딜 수정 request body
