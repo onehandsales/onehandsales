@@ -631,13 +631,13 @@ function DealListRow({
       {/* 회사/담당자 */}
       <div className="min-w-0 pr-3">
         <span
-          className="block truncate text-[12px] font-semibold text-[#111827]"
+          className="block truncate text-[12px] text-[#111827]"
           title={companyLabel}
         >
           {companyLabel}
         </span>
         <span
-          className="mt-0.5 block truncate text-[11px] font-medium text-[#2563EB]"
+          className="mt-0.5 block truncate text-[11px] text-[#2563EB]"
           title={contactLabel}
         >
           {contactLabel}
@@ -664,7 +664,7 @@ function DealListRow({
 
       {/* 금액 */}
       <div className="min-w-0">
-        <span className="block truncate text-[12px] font-semibold text-gray-900">
+        <span className="block truncate text-[12px] text-gray-900">
           {deal.dealCost.toLocaleString("ko-KR")}원
         </span>
       </div>
@@ -770,7 +770,7 @@ function MobileDealCard({
 
       {/* Row5: 금액 + 마감일 */}
       <div className="mt-3 flex items-center justify-between gap-2">
-        <p className="text-[17px] font-bold text-[#111827]">
+        <p className="text-[17px] text-[#111827]">
           ₩ {deal.dealCost.toLocaleString("ko-KR")}
         </p>
         <p className="text-[12px]" style={{ color: deadlineColor }}>
