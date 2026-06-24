@@ -159,7 +159,7 @@ export function ContactListScreen() {
         actions={[
           {
             icon: Download,
-            tooltip: "파일로 내보내기",
+            tooltip: "액셀 다운로드",
             onClick: () => void onExport(),
             disabled: exportContactsMutation.isPending,
           },

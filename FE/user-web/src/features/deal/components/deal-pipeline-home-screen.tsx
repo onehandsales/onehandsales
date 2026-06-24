@@ -234,7 +234,7 @@ export function DealPipelineHomeScreen({
           actions={[
             {
               icon: Download,
-              tooltip: "파일로 내보내기",
+              tooltip: "액셀 다운로드",
               onClick: () => void onExport(),
               disabled: isExporting,
             },
@@ -502,7 +502,7 @@ export function DealPipelineHomeScreen({
             {dealsQuery.data?.totalCount ?? 0}건
           </span>
           <button
-            aria-label="파일로 내보내기"
+            aria-label="액셀 다운로드"
             className="inline-flex h-[26px] w-[26px] shrink-0 items-center justify-center rounded-md bg-[#F3F4F6] text-[#4B5563] disabled:opacity-40"
             disabled={isExporting}
             onClick={() => void onExport()}
