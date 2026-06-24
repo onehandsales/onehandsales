@@ -11,8 +11,10 @@ import {
   FileText,
   HandCoins,
   Lock,
+  Mail,
   Package,
   Pencil,
+  Phone,
   Plus,
   Trash2,
   UserRound,
@@ -488,10 +490,12 @@ function DealDetailPageLayout({
             }}
           />
 
-          <div className="grid grid-cols-3 gap-4">
+          <div className="grid grid-cols-4 gap-4">
             <DealLinkedCompaniesTable companies={detail.companies} />
             <DealLinkedContactsTable contacts={detail.contacts} />
-            <DealLinkedProductsTable products={products} />
+            <div className="col-span-2 min-w-0">
+              <DealLinkedProductsTable products={products} />
+            </div>
           </div>
 
           <div className="grid grid-cols-[minmax(0,1fr)_360px] gap-4">
@@ -673,19 +677,31 @@ function DealLinkedCompaniesTable({
       {companies.length === 0 ? (
         <p className="px-4 py-4 text-[13px] text-[#9CA3AF]">연결된 회사가 없습니다.</p>
       ) : (
-        <div className={companies.length > 4 ? "max-h-[232px] overflow-y-auto" : ""}>
+        <div className={companies.length > 4 ? "max-h-[272px] overflow-y-auto" : ""}>
           {companies.map((company) => (
             <Link
-              className="flex h-[58px] items-center gap-3 border-b border-[#F3F4F6] bg-white px-4 transition-colors last:border-0 hover:bg-[#F9FAFB]"
+              className="flex min-h-[68px] items-center gap-3 border-b border-[#F3F4F6] bg-white px-4 py-3 transition-colors last:border-0 hover:bg-[#F9FAFB]"
               key={company.id}
               to={`/companies/${company.id}`}
             >
               <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#EEF2FF]">
                 <Building2 className="h-3.5 w-3.5 text-[#4F46E5]" />
               </div>
-              <span className="min-w-0 flex-1 truncate text-[13px] font-extrabold text-[#111827]">
-                {company.companyName}
-              </span>
+              <div className="min-w-0 flex-1">
+                <span className="block truncate text-[13px] font-extrabold text-[#111827]">
+                  {company.companyName}
+                </span>
+                <div className="mt-1 flex min-w-0 flex-wrap gap-x-3 gap-y-0.5 text-[11px] font-semibold leading-4 text-[#9CA3AF]">
+                  <span className="min-w-0 max-w-full truncate">
+                    <span className="text-[#6B7280]">분야</span>{" "}
+                    {company.companyField.field}
+                  </span>
+                  <span className="min-w-0 max-w-full truncate">
+                    <span className="text-[#6B7280]">지역</span>{" "}
+                    {company.companyRegion.region}
+                  </span>
+                </div>
+              </div>
               <ChevronRight className="h-4 w-4 shrink-0 text-[#D1D5DB]" />
             </Link>
           ))}
@@ -705,10 +721,10 @@ function DealLinkedContactsTable({
       {contacts.length === 0 ? (
         <p className="px-4 py-4 text-[13px] text-[#9CA3AF]">연결된 담당자가 없습니다.</p>
       ) : (
-        <div className={contacts.length > 4 ? "max-h-[232px] overflow-y-auto" : ""}>
+        <div className={contacts.length > 4 ? "max-h-[288px] overflow-y-auto" : ""}>
           {contacts.map((contact) => (
             <Link
-              className="flex h-[58px] items-center gap-3 border-b border-[#F3F4F6] bg-white px-4 transition-colors last:border-0 hover:bg-[#F9FAFB]"
+              className="flex min-h-[72px] items-center gap-3 border-b border-[#F3F4F6] bg-white px-4 py-3 transition-colors last:border-0 hover:bg-[#F9FAFB]"
               key={contact.id}
               to={`/contacts/${contact.id}`}
             >
@@ -722,6 +738,16 @@ function DealLinkedContactsTable({
                 <span className="mt-0.5 block truncate text-[11px] font-semibold text-[#9CA3AF]">
                   {contact.contactDepartment.departmentName}
                 </span>
+                <div className="mt-1 flex min-w-0 flex-wrap gap-x-3 gap-y-0.5 text-[11px] font-semibold leading-4 text-[#9CA3AF]">
+                  <span className="inline-flex min-w-0 max-w-full items-center gap-1">
+                    <Mail className="h-3 w-3 shrink-0 text-[#9CA3AF]" />
+                    <span className="truncate">{contact.email || "-"}</span>
+                  </span>
+                  <span className="inline-flex min-w-0 max-w-full items-center gap-1">
+                    <Phone className="h-3 w-3 shrink-0 text-[#9CA3AF]" />
+                    <span className="truncate">{contact.mobile || "-"}</span>
+                  </span>
+                </div>
               </div>
               <ChevronRight className="h-4 w-4 shrink-0 text-[#D1D5DB]" />
             </Link>

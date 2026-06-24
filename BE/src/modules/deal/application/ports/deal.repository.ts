@@ -13,6 +13,14 @@ export enum DealListSort {
 export interface DealCompanyRecord {
   readonly id: string;
   readonly companyName: string;
+  readonly companyField: {
+    readonly id: string;
+    readonly field: string;
+  };
+  readonly companyRegion: {
+    readonly id: string;
+    readonly region: string;
+  };
 }
 
 // 역할 : DealContactDepartmentRecord 데이터가 계층 사이에서 전달되는 구조를 정의합니다.
@@ -26,6 +34,8 @@ export interface DealContactRecord {
   readonly id: string;
   readonly username: string;
   readonly companyId: string;
+  readonly mobile: string;
+  readonly email: string;
   readonly contactDepartment: DealContactDepartmentRecord;
 }
 

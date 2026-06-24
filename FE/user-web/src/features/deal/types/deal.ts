@@ -31,6 +31,14 @@ export const DEAL_STATUS_LIST: DealStatus[] = [
 export type DealCompany = {
   readonly id: string;
   readonly companyName: string;
+  readonly companyField: {
+    readonly id: string;
+    readonly field: string;
+  };
+  readonly companyRegion: {
+    readonly id: string;
+    readonly region: string;
+  };
 };
 
 export type DealContactDepartment = {
@@ -42,6 +50,8 @@ export type DealContact = {
   readonly id: string;
   readonly username: string;
   readonly companyId: string;
+  readonly mobile: string;
+  readonly email: string;
   readonly contactDepartment: DealContactDepartment;
 };
 
@@ -157,12 +167,22 @@ export type UpdateDealInput = {
 export type DealCompanyOption = {
   readonly id: string;
   readonly companyName: string;
+  readonly companyField: {
+    readonly id: string;
+    readonly field: string;
+  };
+  readonly companyRegion: {
+    readonly id: string;
+    readonly region: string;
+  };
 };
 
 export type DealContactOption = {
   readonly id: string;
   readonly username: string;
   readonly companyId: string;
+  readonly mobile: string;
+  readonly email: string;
   readonly contactDepartment: DealContactDepartment;
   readonly label: string;
 };

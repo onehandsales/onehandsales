@@ -35,12 +35,22 @@ type DealPrismaClient = PrismaService | Prisma.TransactionClient;
 type DealCompanyRow = {
   readonly id: string;
   readonly companyName: string;
+  readonly companyField: {
+    readonly id: string;
+    readonly field: string;
+  };
+  readonly companyRegion: {
+    readonly id: string;
+    readonly region: string;
+  };
 };
 
 type DealContactRow = {
   readonly id: string;
   readonly username: string;
   readonly companyId: string;
+  readonly mobile: string;
+  readonly email: string;
   readonly contactDepartment: {
     readonly id: string;
     readonly departmentName: string;
@@ -344,10 +354,7 @@ export class PrismaDealRepository implements DealRepository {
         },
         userId,
       },
-      select: {
-        id: true,
-        companyName: true,
-      },
+      select: this.createCompanySelect(),
     });
   }
 
@@ -392,10 +399,7 @@ export class PrismaDealRepository implements DealRepository {
   async listCompanyOptions(userId: string): Promise<DealCompanyRecord[]> {
     return this.client.company.findMany({
       where: { userId },
-      select: {
-        id: true,
-        companyName: true,
-      },
+      select: this.createCompanySelect(),
       orderBy: [{ createdAt: "desc" }, { id: "desc" }],
     });
   }
@@ -617,10 +621,7 @@ export class PrismaDealRepository implements DealRepository {
       dealCompanies: {
         select: {
           company: {
-            select: {
-              id: true,
-              companyName: true,
-            },
+            select: this.createCompanySelect(),
           },
         },
         orderBy: [{ createdAt: "asc" }, { id: "asc" }],
@@ -641,12 +642,34 @@ export class PrismaDealRepository implements DealRepository {
     } satisfies Prisma.DealInclude;
   }
 
+  // 기능 : 회사 조회에 필요한 select 조건을 생성합니다.
+  private createCompanySelect() {
+    return {
+      id: true,
+      companyName: true,
+      companyField: {
+        select: {
+          id: true,
+          field: true,
+        },
+      },
+      companyRegion: {
+        select: {
+          id: true,
+          region: true,
+        },
+      },
+    } satisfies Prisma.CompanySelect;
+  }
+
   // 기능 : 담당자 조회에 필요한 select 조건을 생성합니다.
   private createContactSelect() {
     return {
       id: true,
       username: true,
       companyId: true,
+      mobile: true,
+      email: true,
       contactDepartment: {
         select: {
           id: true,
@@ -736,10 +759,9 @@ export class PrismaDealRepository implements DealRepository {
       dealCost: deal.dealCost,
       dealStatus: this.mapDealStatus(deal.dealStatus),
       expectedEndDate: deal.expectedEndDate,
-      companies: deal.dealCompanies.map((dealCompany) => ({
-        id: dealCompany.company.id,
-        companyName: dealCompany.company.companyName,
-      })),
+      companies: deal.dealCompanies.map((dealCompany) =>
+        this.mapCompany(dealCompany.company)
+      ),
       contacts: deal.dealContacts.map((dealContact) =>
         this.mapContact(dealContact.contact)
       ),
@@ -760,12 +782,30 @@ export class PrismaDealRepository implements DealRepository {
     };
   }
 
+  // 기능 : Prisma 회사 행을 application 레코드로 변환합니다.
+  private mapCompany(company: DealCompanyRow): DealCompanyRecord {
+    return {
+      id: company.id,
+      companyName: company.companyName,
+      companyField: {
+        id: company.companyField.id,
+        field: company.companyField.field,
+      },
+      companyRegion: {
+        id: company.companyRegion.id,
+        region: company.companyRegion.region,
+      },
+    };
+  }
+
   // 기능 : Prisma 담당자 행을 application 레코드로 변환합니다.
   private mapContact(contact: DealContactRow): DealContactRecord {
     return {
       id: contact.id,
       username: contact.username,
       companyId: contact.companyId,
+      mobile: contact.mobile,
+      email: contact.email,
       contactDepartment: {
         id: contact.contactDepartment.id,
         departmentName: contact.contactDepartment.departmentName,

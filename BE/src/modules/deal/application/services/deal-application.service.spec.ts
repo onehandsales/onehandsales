@@ -59,8 +59,18 @@ interface StoredDeal {
 // 역할 : FakeDealRepository 테스트용 딜 저장소를 메모리에서 구현합니다.
 class FakeDealRepository implements DealRepository {
   readonly companies: DealCompanyRecord[] = [
-    { id: "company-1", companyName: "A회사" },
-    { id: "company-2", companyName: "B회사" },
+    {
+      id: "company-1",
+      companyName: "A회사",
+      companyField: { id: "field-1", field: "SaaS" },
+      companyRegion: { id: "region-1", region: "Seoul" },
+    },
+    {
+      id: "company-2",
+      companyName: "B회사",
+      companyField: { id: "field-2", field: "Commerce" },
+      companyRegion: { id: "region-2", region: "Busan" },
+    },
   ];
 
   readonly contacts: DealContactRecord[] = [
@@ -68,6 +78,8 @@ class FakeDealRepository implements DealRepository {
       id: "contact-1",
       username: "송재근",
       companyId: "company-1",
+      mobile: "010-1111-2222",
+      email: "song@example.com",
       contactDepartment: {
         id: "department-1",
         departmentName: "부장",
@@ -77,6 +89,8 @@ class FakeDealRepository implements DealRepository {
       id: "contact-2",
       username: "김영업",
       companyId: "company-2",
+      mobile: "010-3333-4444",
+      email: "kim@example.com",
       contactDepartment: {
         id: "department-2",
         departmentName: "팀장",
@@ -623,7 +637,11 @@ describe("DealApplicationService", () => {
     expect(result.companies).toEqual([{
       id: "company-1",
       companyName: "A회사",
+      companyField: { id: "field-1", field: "SaaS" },
+      companyRegion: { id: "region-1", region: "Seoul" },
     }]);
+    expect(result.contacts[0]?.email).toBe("song@example.com");
+    expect(result.contacts[0]?.mobile).toBe("010-1111-2222");
     expect(result.contacts[0]?.contactDepartment.departmentName).toBe("부장");
     expect(result.products.map((product) => product.productName)).toEqual([
       "프리미엄 상품",
