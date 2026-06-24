@@ -784,7 +784,7 @@ function ProductMemoPanel({
                     {formatDateTime(log.createdAt, { includeYear: true })}
                   </span>
                   <div
-                    className="ml-1 hidden h-6 w-6 shrink-0 items-center justify-center rounded hover:bg-[#F3F4F6] transition-colors group-hover:flex"
+                    className="invisible ml-1 flex h-6 w-6 shrink-0 items-center justify-center rounded group-hover:visible"
                     onClick={(e) => { e.stopPropagation(); onStartEdit(log); }}
                     role="button"
                     tabIndex={-1}
@@ -1005,7 +1005,7 @@ function ProductActivityLogPanel({
                     {formatDateTime(log.createdAt, { includeYear: true })}
                   </span>
                   <div
-                    className="ml-0.5 hidden h-6 w-6 shrink-0 items-center justify-center rounded hover:bg-[#F3F4F6] transition-colors group-hover:flex"
+                    className="invisible ml-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded group-hover:visible"
                     onClick={(e) => { e.stopPropagation(); onStartEdit(log); }}
                     role="button"
                     tabIndex={-1}
