@@ -5,6 +5,7 @@ import {
   Package,
   Pencil,
   Plus,
+  ShieldCheck,
   Trash2,
 } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -269,7 +270,7 @@ export function ProductDetailScreen({ productId }: ProductDetailScreenProps) {
             isLoading={dealsQuery.isLoading}
           />
 
-          {/* 2행: 메모 + 활동 로그 */}
+          {/* 2행: 제품 로그 + 비밀 메모 */}
           <div className="grid grid-cols-2 gap-4">
             <ProductMemoPanel
               productId={productId}
@@ -665,7 +666,7 @@ function ProductMemoPanel({
     });
     setCreateMemoType("");
     setCreateMemo("");
-    onChanged("메모가 추가되었습니다.");
+    onChanged("제품 로그가 추가되었습니다.");
   };
 
   const onStartEdit = (log: ProductMemoLog) => {
@@ -683,14 +684,14 @@ function ProductMemoPanel({
       memo: editMemo.trim(),
     });
     setEditingId(null);
-    onChanged("메모가 수정되었습니다.");
+    onChanged("제품 로그가 수정되었습니다.");
   };
 
   return (
     <div className="flex h-[420px] flex-col rounded-xl border border-[#E5E7EB] bg-white overflow-hidden">
       {/* Header */}
       <div className="flex h-[52px] shrink-0 items-center gap-2.5 border-b border-[#E5E7EB] px-4">
-        <span className="text-[15px] font-extrabold text-[#111827]">메모</span>
+        <span className="text-[15px] font-extrabold text-[#111827]">제품 로그</span>
         <div className="flex-1" />
       </div>
 
@@ -703,18 +704,18 @@ function ProductMemoPanel({
           <div className="flex h-9 flex-1 items-center rounded-lg border border-[#E5E7EB] bg-[#F9FAFB] px-3">
             <input
               className="flex-1 bg-transparent text-[13px] font-semibold text-[#111827] outline-none placeholder:text-[#9CA3AF]"
-              placeholder="메모 제목"
+              placeholder="제품 로그 제목"
               value={createMemoType}
               onChange={(e) => setCreateMemoType(e.target.value)}
             />
           </div>
           <button
-            className="flex h-9 w-[72px] shrink-0 items-center justify-center gap-1 rounded-lg bg-[#2563EB] text-[12px] font-extrabold text-white hover:bg-[#1D4ED8] transition-colors disabled:opacity-50"
+            aria-label="제품 로그 추가"
+            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#2563EB] text-white hover:bg-[#1D4ED8] transition-colors disabled:opacity-50"
             disabled={createMemoMutation.isPending}
             type="submit"
           >
             <Plus className="h-3.5 w-3.5" />
-            추가
           </button>
         </div>
         <div className="flex rounded-lg border border-[#E5E7EB] bg-[#F9FAFB] px-3 py-3" style={{ minHeight: 52 }}>
@@ -737,7 +738,7 @@ function ProductMemoPanel({
             ))}
           </div>
         ) : memoLogs.length === 0 ? (
-          <p className="text-[13px] text-[#9CA3AF]">등록된 메모가 없습니다.</p>
+          <p className="text-[13px] text-[#9CA3AF]">제품 로그가 없습니다.</p>
         ) : (
           memoLogs.map((log) =>
             editingId === log.id ? (
@@ -861,7 +862,7 @@ function ProductActivityLogPanel({
     if (!createMemo.trim()) return;
     await createMutation.mutateAsync({ memo: createMemo.trim() });
     setCreateMemo("");
-    onChanged("활동 로그가 추가되었습니다.");
+    onChanged("비밀 메모가 추가되었습니다.");
   };
 
   const onStartEdit = (log: ProductPrivateMemoLog) => {
@@ -877,14 +878,19 @@ function ProductActivityLogPanel({
       memo: editMemo.trim(),
     });
     setEditingId(null);
-    onChanged("활동 로그가 수정되었습니다.");
+    onChanged("비밀 메모가 수정되었습니다.");
   };
 
   return (
     <div className="flex h-[420px] flex-col rounded-xl border border-[#E5E7EB] bg-white overflow-hidden">
       {/* Header */}
-      <div className="flex h-[52px] shrink-0 items-center border-b border-[#E5E7EB] px-4">
-        <span className="text-[15px] font-extrabold text-[#111827]">활동 로그</span>
+      <div className="flex h-[52px] shrink-0 items-center gap-2.5 border-b border-[#E5E7EB] px-4">
+        <span className="text-[15px] font-extrabold text-[#111827]">비밀 메모</span>
+        <div className="flex-1" />
+        <div className="flex h-6 items-center gap-1.5 rounded-xl bg-[#FFFBEB] px-2">
+          <ShieldCheck className="h-3 w-3 text-[#92400E]" />
+          <span className="text-[11px] font-semibold text-[#92400E]">암호화</span>
+        </div>
       </div>
 
       {/* Composer */}
@@ -895,7 +901,7 @@ function ProductActivityLogPanel({
         <div className="flex rounded-lg border border-[#E5E7EB] bg-[#F9FAFB] px-3 py-2.5" style={{ minHeight: 48 }}>
           <textarea
             className="flex-1 resize-none bg-transparent text-[13px] font-medium text-[#111827] outline-none placeholder:text-[#9CA3AF]"
-            placeholder="활동 내용 입력"
+            placeholder="비밀 메모 입력"
             rows={2}
             value={createMemo}
             onChange={(e) => setCreateMemo(e.target.value)}
@@ -903,12 +909,12 @@ function ProductActivityLogPanel({
         </div>
         <div className="flex justify-end">
           <button
-            className="flex h-8 items-center justify-center gap-1.5 rounded-lg bg-[#0D9488] px-3 text-[13px] font-extrabold text-white hover:bg-[#0F766E] transition-colors disabled:opacity-50"
+            aria-label="비밀 메모 추가"
+            className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#2563EB] text-white hover:bg-[#1D4ED8] transition-colors disabled:opacity-50"
             disabled={createMutation.isPending}
             type="submit"
           >
             <Plus className="h-3.5 w-3.5" />
-            추가
           </button>
         </div>
       </form>
@@ -922,7 +928,7 @@ function ProductActivityLogPanel({
             ))}
           </div>
         ) : privateMemoLogs.length === 0 ? (
-          <p className="text-[13px] text-[#9CA3AF]">활동 기록이 없습니다.</p>
+          <p className="text-[13px] text-[#9CA3AF]">등록된 비밀 메모가 없습니다.</p>
         ) : (
           privateMemoLogs.map((log) =>
             editingId === log.id ? (
@@ -946,7 +952,7 @@ function ProductActivityLogPanel({
                     취소
                   </button>
                   <button
-                    className="h-7 rounded bg-[#0D9488] px-2.5 text-[12px] font-extrabold text-white hover:bg-[#0F766E] transition-colors disabled:opacity-50"
+                    className="h-7 rounded bg-[#2563EB] px-2.5 text-[12px] font-extrabold text-white hover:bg-[#1D4ED8] transition-colors disabled:opacity-50"
                     disabled={updateMutation.isPending}
                     type="submit"
                   >
