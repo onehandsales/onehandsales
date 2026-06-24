@@ -604,7 +604,7 @@ function DealSummaryHeader({
       <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#EEF2FF]">
         <BriefcaseBusiness className="h-5 w-5 text-[#4F46E5]" />
       </div>
-      <span className="min-w-[180px] flex-1 truncate text-[20px] font-extrabold leading-none text-[#111827]">
+      <span className="min-w-[180px] flex-1 truncate text-[14px] font-extrabold leading-none text-[#111827]">
         {detail.dealName}
       </span>
       <StatusBadge status={detail.dealStatus} />

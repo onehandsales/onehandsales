@@ -284,7 +284,7 @@ export function DealCreateDialog({
           />
         }
         open={open}
-        size="lg"
+        size="md"
         title="딜 추가"
         onOpenChange={onOpenChange}
       >
