@@ -717,6 +717,7 @@ function ProductMemoPanel({
   };
 
   const createFormId = "product-log-create-form";
+  const editFormId = "product-log-edit-form";
 
   return (
     <>
@@ -736,7 +737,7 @@ function ProductMemoPanel({
       </div>
 
       {/* Memo List */}
-      <div className="flex min-h-0 flex-1 flex-col overflow-y-auto p-4">
+      <div className="flex min-h-0 flex-1 flex-col overflow-y-auto px-4 pb-4 pt-2">
         {isLoading ? (
           <div className="flex flex-col gap-2">
             {[1, 2].map((i) => (
@@ -746,44 +747,7 @@ function ProductMemoPanel({
         ) : memoLogs.length === 0 ? (
           <p className="text-[13px] text-[#9CA3AF]">제품 로그가 없습니다.</p>
         ) : (
-          memoLogs.map((log, index) =>
-            editingId === log.id ? (
-              <form
-                className="flex flex-col gap-2 rounded-lg border border-[#DBEAFE] bg-[#EFF6FF] p-3"
-                key={log.id}
-                onSubmit={(e) => void onSubmitEdit(e)}
-              >
-                <div className="flex h-8 items-center rounded border border-[#BFDBFE] bg-white px-2">
-                  <input
-                    className="flex-1 bg-transparent text-[12px] font-semibold text-[#111827] outline-none"
-                    value={editMemoType}
-                    onChange={(e) => setEditMemoType(e.target.value)}
-                  />
-                </div>
-                <textarea
-                  className="resize-none rounded border border-[#BFDBFE] bg-white p-2 text-[13px] font-medium text-[#374151] outline-none"
-                  rows={3}
-                  value={editMemo}
-                  onChange={(e) => setEditMemo(e.target.value)}
-                />
-                <div className="flex justify-end gap-2">
-                  <button
-                    className="h-7 rounded px-2.5 text-[12px] font-semibold text-[#6B7280] hover:bg-white transition-colors"
-                    onClick={() => setEditingId(null)}
-                    type="button"
-                  >
-                    취소
-                  </button>
-                  <button
-                    className="h-7 rounded bg-[#2563EB] px-2.5 text-[12px] font-extrabold text-white hover:bg-[#1D4ED8] transition-colors disabled:opacity-50"
-                    disabled={updateMemoMutation.isPending}
-                    type="submit"
-                  >
-                    저장
-                  </button>
-                </div>
-              </form>
-            ) : (
+          memoLogs.map((log, index) => (
               <div
                 className="group flex gap-3"
                 key={log.id}
@@ -880,6 +844,52 @@ function ProductMemoPanel({
         ) : null}
       </ModalForm>
     </ModalShell>
+    <ModalShell
+      footer={
+        <ModalFooterActions
+          formId={editFormId}
+          isSubmitting={updateMemoMutation.isPending}
+          pendingLabel="저장 중..."
+          submitLabel="저장"
+          onCancel={() => setEditingId(null)}
+        />
+      }
+      open={editingId !== null}
+      size="md"
+      title="제품 로그 수정"
+      onOpenChange={(open) => {
+        if (!open) setEditingId(null);
+      }}
+    >
+      <ModalForm id={editFormId} onSubmit={(e) => void onSubmitEdit(e)}>
+        <ModalFormSection title="제품 로그">
+          <ModalFieldGroup id="product-log-edit-title" label="제목">
+            <input
+              className="h-10 w-full rounded-md border px-3 text-sm outline-none focus:ring-2 focus:ring-ring"
+              id="product-log-edit-title"
+              placeholder="제품 로그 제목"
+              value={editMemoType}
+              onChange={(e) => setEditMemoType(e.target.value)}
+            />
+          </ModalFieldGroup>
+          <ModalFieldGroup id="product-log-edit-memo" label="내용">
+            <textarea
+              className="min-h-28 resize-y rounded-md border px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-ring"
+              id="product-log-edit-memo"
+              placeholder="내용 입력"
+              rows={4}
+              value={editMemo}
+              onChange={(e) => setEditMemo(e.target.value)}
+            />
+          </ModalFieldGroup>
+        </ModalFormSection>
+        {updateMemoMutation.error ? (
+          <p className="text-xs text-[#B91C1C]">
+            {getApiErrorMessage(updateMemoMutation.error)}
+          </p>
+        ) : null}
+      </ModalForm>
+    </ModalShell>
     </>
   );
 }
@@ -938,6 +948,7 @@ function ProductActivityLogPanel({
   };
 
   const createFormId = "product-private-memo-create-form";
+  const editFormId = "product-private-memo-edit-form";
 
   return (
     <>
@@ -969,7 +980,7 @@ function ProductActivityLogPanel({
       </div>
 
       {/* Items */}
-      <div className="flex min-h-0 flex-1 flex-col overflow-y-auto p-4">
+      <div className="flex min-h-0 flex-1 flex-col overflow-y-auto px-4 pb-4 pt-2">
         {isLoading ? (
           <div className="flex flex-col gap-2">
             {[1, 2, 3].map((i) => (
@@ -979,37 +990,7 @@ function ProductActivityLogPanel({
         ) : privateMemoLogs.length === 0 ? (
           <p className="text-[13px] text-[#9CA3AF]">등록된 비밀 메모가 없습니다.</p>
         ) : (
-          privateMemoLogs.map((log, index) =>
-            editingId === log.id ? (
-              <form
-                className="flex flex-col gap-2 rounded-lg border border-[#CCFBF1] bg-[#F0FDFA] p-3"
-                key={log.id}
-                onSubmit={(e) => void onSubmitEdit(e)}
-              >
-                <textarea
-                  className="resize-none rounded border border-[#99F6E4] bg-white p-2 text-[13px] font-medium text-[#374151] outline-none"
-                  rows={3}
-                  value={editMemo}
-                  onChange={(e) => setEditMemo(e.target.value)}
-                />
-                <div className="flex justify-end gap-2">
-                  <button
-                    className="h-7 rounded px-2.5 text-[12px] font-semibold text-[#6B7280] hover:bg-white transition-colors"
-                    onClick={() => setEditingId(null)}
-                    type="button"
-                  >
-                    취소
-                  </button>
-                  <button
-                    className="h-7 rounded bg-[#2563EB] px-2.5 text-[12px] font-extrabold text-white hover:bg-[#1D4ED8] transition-colors disabled:opacity-50"
-                    disabled={updateMutation.isPending}
-                    type="submit"
-                  >
-                    저장
-                  </button>
-                </div>
-              </form>
-            ) : (
+          privateMemoLogs.map((log, index) => (
               <div
                 className="group flex gap-3"
                 key={log.id}
@@ -1093,6 +1074,43 @@ function ProductActivityLogPanel({
         {createMutation.error ? (
           <p className="text-xs text-[#B91C1C]">
             {getApiErrorMessage(createMutation.error)}
+          </p>
+        ) : null}
+      </ModalForm>
+    </ModalShell>
+    <ModalShell
+      footer={
+        <ModalFooterActions
+          formId={editFormId}
+          isSubmitting={updateMutation.isPending}
+          pendingLabel="저장 중..."
+          submitLabel="저장"
+          onCancel={() => setEditingId(null)}
+        />
+      }
+      open={editingId !== null}
+      size="md"
+      title="비밀 메모 수정"
+      onOpenChange={(open) => {
+        if (!open) setEditingId(null);
+      }}
+    >
+      <ModalForm id={editFormId} onSubmit={(e) => void onSubmitEdit(e)}>
+        <ModalFormSection title="비밀 메모">
+          <ModalFieldGroup id="product-private-memo-edit-memo" label="내용">
+            <textarea
+              className="min-h-32 resize-y rounded-md border px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-ring"
+              id="product-private-memo-edit-memo"
+              placeholder="비밀 메모 입력"
+              rows={5}
+              value={editMemo}
+              onChange={(e) => setEditMemo(e.target.value)}
+            />
+          </ModalFieldGroup>
+        </ModalFormSection>
+        {updateMutation.error ? (
+          <p className="text-xs text-[#B91C1C]">
+            {getApiErrorMessage(updateMutation.error)}
           </p>
         ) : null}
       </ModalForm>

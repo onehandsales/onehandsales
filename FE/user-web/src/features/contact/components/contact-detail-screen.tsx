@@ -689,6 +689,7 @@ function ContactMemoPanel({
   });
 
   const createFormId = "contact-log-create-form";
+  const editFormId = "contact-log-edit-form";
 
   return (
     <>
@@ -708,7 +709,7 @@ function ContactMemoPanel({
       </div>
 
       {/* Memo List */}
-      <div className="flex min-h-0 flex-1 flex-col overflow-y-auto p-4">
+      <div className="flex min-h-0 flex-1 flex-col overflow-y-auto px-4 pb-4 pt-2">
         {isLoading ? (
           <div className="flex flex-col gap-2">
             {[1, 2].map((i) => (
@@ -718,42 +719,7 @@ function ContactMemoPanel({
         ) : memoLogs.length === 0 ? (
           <p className="text-[13px] text-[#9CA3AF]">담당자 로그가 없습니다.</p>
         ) : (
-          memoLogs.map((log, index) =>
-            editingId === log.id ? (
-              <form
-                className="flex flex-col gap-2 rounded-lg border border-[#DBEAFE] bg-[#EFF6FF] p-3"
-                key={log.id}
-                onSubmit={onSubmitEdit}
-              >
-                <div className="flex h-8 items-center rounded border border-[#BFDBFE] bg-white px-2">
-                  <input
-                    className="flex-1 bg-transparent text-[12px] font-semibold text-[#111827] outline-none"
-                    {...editForm.register("memoType")}
-                  />
-                </div>
-                <textarea
-                  className="resize-none rounded border border-[#BFDBFE] bg-white p-2 text-[13px] font-medium text-[#374151] outline-none"
-                  rows={3}
-                  {...editForm.register("memo")}
-                />
-                <div className="flex justify-end gap-2">
-                  <button
-                    className="h-7 rounded px-2.5 text-[12px] font-semibold text-[#6B7280] hover:bg-white transition-colors"
-                    onClick={() => setEditingId(null)}
-                    type="button"
-                  >
-                    취소
-                  </button>
-                  <button
-                    className="h-7 rounded bg-[#2563EB] px-2.5 text-[12px] font-extrabold text-white hover:bg-[#1D4ED8] transition-colors disabled:opacity-50"
-                    disabled={updateMemoMutation.isPending}
-                    type="submit"
-                  >
-                    저장
-                  </button>
-                </div>
-              </form>
-            ) : (
+          memoLogs.map((log, index) => (
               <div
                 className="group flex gap-3"
                 key={log.id}
@@ -857,6 +823,58 @@ function ContactMemoPanel({
         ) : null}
       </ModalForm>
     </ModalShell>
+    <ModalShell
+      footer={
+        <ModalFooterActions
+          formId={editFormId}
+          isSubmitting={updateMemoMutation.isPending}
+          pendingLabel="저장 중..."
+          submitLabel="저장"
+          onCancel={() => setEditingId(null)}
+        />
+      }
+      open={editingId !== null}
+      size="md"
+      title="담당자 로그 수정"
+      onOpenChange={(open) => {
+        if (!open) setEditingId(null);
+      }}
+    >
+      <ModalForm id={editFormId} onSubmit={onSubmitEdit}>
+        <ModalFormSection title="담당자 로그">
+          <ModalFieldGroup
+            error={editForm.formState.errors.memoType?.message}
+            id="contact-log-edit-title"
+            label="제목"
+          >
+            <input
+              className="h-10 w-full rounded-md border px-3 text-sm outline-none focus:ring-2 focus:ring-ring"
+              id="contact-log-edit-title"
+              placeholder="담당자 로그 제목"
+              {...editForm.register("memoType")}
+            />
+          </ModalFieldGroup>
+          <ModalFieldGroup
+            error={editForm.formState.errors.memo?.message}
+            id="contact-log-edit-memo"
+            label="내용"
+          >
+            <textarea
+              className="min-h-28 resize-y rounded-md border px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-ring"
+              id="contact-log-edit-memo"
+              placeholder="내용 입력"
+              rows={4}
+              {...editForm.register("memo")}
+            />
+          </ModalFieldGroup>
+        </ModalFormSection>
+        {updateMemoMutation.error ? (
+          <p className="text-xs text-[#B91C1C]">
+            {getApiErrorMessage(updateMemoMutation.error)}
+          </p>
+        ) : null}
+      </ModalForm>
+    </ModalShell>
     </>
   );
 }
@@ -920,6 +938,7 @@ function ContactActivityLogPanel({
   });
 
   const createFormId = "contact-private-memo-create-form";
+  const editFormId = "contact-private-memo-edit-form";
 
   return (
     <>
@@ -951,7 +970,7 @@ function ContactActivityLogPanel({
       </div>
 
       {/* Items */}
-      <div className="flex min-h-0 flex-1 flex-col overflow-y-auto p-4">
+      <div className="flex min-h-0 flex-1 flex-col overflow-y-auto px-4 pb-4 pt-2">
         {isLoading ? (
           <div className="flex flex-col gap-2">
             {[1, 2, 3].map((i) => (
@@ -961,36 +980,7 @@ function ContactActivityLogPanel({
         ) : privateMemoLogs.length === 0 ? (
           <p className="text-[13px] text-[#9CA3AF]">등록된 비밀 메모가 없습니다.</p>
         ) : (
-          privateMemoLogs.map((log, index) =>
-            editingId === log.id ? (
-              <form
-                className="flex flex-col gap-2 rounded-lg border border-[#CCFBF1] bg-[#F0FDFA] p-3"
-                key={log.id}
-                onSubmit={onSubmitEdit}
-              >
-                <textarea
-                  className="resize-none rounded border border-[#99F6E4] bg-white p-2 text-[13px] font-medium text-[#374151] outline-none"
-                  rows={3}
-                  {...editForm.register("memo")}
-                />
-                <div className="flex justify-end gap-2">
-                  <button
-                    className="h-7 rounded px-2.5 text-[12px] font-semibold text-[#6B7280] hover:bg-white transition-colors"
-                    onClick={() => setEditingId(null)}
-                    type="button"
-                  >
-                    취소
-                  </button>
-                  <button
-                    className="h-7 rounded bg-[#2563EB] px-2.5 text-[12px] font-extrabold text-white hover:bg-[#1D4ED8] transition-colors disabled:opacity-50"
-                    disabled={updateMutation.isPending}
-                    type="submit"
-                  >
-                    저장
-                  </button>
-                </div>
-              </form>
-            ) : (
+          privateMemoLogs.map((log, index) => (
               <div
                 className="group flex gap-3"
                 key={log.id}
@@ -1078,6 +1068,46 @@ function ContactActivityLogPanel({
         {createMutation.error ? (
           <p className="text-xs text-[#B91C1C]">
             {getApiErrorMessage(createMutation.error)}
+          </p>
+        ) : null}
+      </ModalForm>
+    </ModalShell>
+    <ModalShell
+      footer={
+        <ModalFooterActions
+          formId={editFormId}
+          isSubmitting={updateMutation.isPending}
+          pendingLabel="저장 중..."
+          submitLabel="저장"
+          onCancel={() => setEditingId(null)}
+        />
+      }
+      open={editingId !== null}
+      size="md"
+      title="비밀 메모 수정"
+      onOpenChange={(open) => {
+        if (!open) setEditingId(null);
+      }}
+    >
+      <ModalForm id={editFormId} onSubmit={onSubmitEdit}>
+        <ModalFormSection title="비밀 메모">
+          <ModalFieldGroup
+            error={editForm.formState.errors.memo?.message}
+            id="contact-private-memo-edit-memo"
+            label="내용"
+          >
+            <textarea
+              className="min-h-32 resize-y rounded-md border px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-ring"
+              id="contact-private-memo-edit-memo"
+              placeholder="비밀 메모 입력"
+              rows={5}
+              {...editForm.register("memo")}
+            />
+          </ModalFieldGroup>
+        </ModalFormSection>
+        {updateMutation.error ? (
+          <p className="text-xs text-[#B91C1C]">
+            {getApiErrorMessage(updateMutation.error)}
           </p>
         ) : null}
       </ModalForm>
