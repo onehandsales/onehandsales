@@ -312,8 +312,9 @@ export function DealPipelineHomeScreen({
                   />
                 </div>
                 <button
+                  aria-label="초기화"
                   className={cn(
-                    "inline-flex h-8 shrink-0 items-center gap-1.5 whitespace-nowrap rounded-[6px] border px-3 text-[13px] transition",
+                    "inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-[6px] border text-[13px] transition",
                     !hasFilter
                       ? "border-[#C7D7FE] bg-[#EAF2FF] font-bold text-[#1D4ED8]"
                       : "border-[#E6EAF0] bg-white font-medium text-[#475569] hover:bg-[#F9FAFB]",
@@ -322,7 +323,6 @@ export function DealPipelineHomeScreen({
                   type="button"
                 >
                   <RotateCcw className="h-3.5 w-3.5" />
-                  초기화
                 </button>
                 <DealFilterMultiSelect
                   emptyText="조건에 맞는 회사가 없습니다."

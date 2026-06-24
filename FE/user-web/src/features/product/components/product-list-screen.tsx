@@ -359,8 +359,9 @@ export function ProductListScreen({
         {/* 모바일 필터 칩 행 */}
         <div className="flex h-10 shrink-0 items-center gap-2 overflow-x-auto border-b border-[#E5E7EB] px-4">
           <button
+            aria-label="초기화"
             className={cn(
-              "inline-flex h-7 shrink-0 items-center gap-1.5 rounded-full border px-3 text-[12px] font-medium transition",
+              "inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full border text-[12px] font-medium transition",
               !hasFilters
                 ? "border-[#C7D7FE] bg-[#EAF2FF] font-bold text-[#1D4ED8]"
                 : "border-[#E5E7EB] bg-[#F3F4F6] text-[#4B5563]",
@@ -376,7 +377,6 @@ export function ProductListScreen({
             type="button"
           >
             <RotateCcw className="h-3 w-3" />
-            초기화
           </button>
           <ProductTaxonomyFilterCombobox
             emptyText="조건에 맞는 카테고리가 없습니다."
@@ -685,8 +685,9 @@ function FilterChip({
 }) {
   return (
     <button
+      aria-label={label}
       className={cn(
-        "inline-flex h-8 shrink-0 items-center gap-1.5 whitespace-nowrap rounded-[6px] border px-3 text-[13px] transition hover:border-[#93C5FD] focus:border-[#2563EB] focus:outline-none focus:ring-1 focus:ring-[#2563EB]",
+        "inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-[6px] border text-[13px] transition hover:border-[#93C5FD] focus:border-[#2563EB] focus:outline-none focus:ring-1 focus:ring-[#2563EB]",
         active
           ? "border-[#C7D7FE] bg-[#EAF2FF] font-bold text-[#1D4ED8]"
           : "border-[#E6EAF0] bg-white font-medium text-[#475569] hover:bg-[#F9FAFB]",
@@ -695,7 +696,6 @@ function FilterChip({
       type="button"
     >
       {Icon ? <Icon className="h-3.5 w-3.5" /> : null}
-      {label}
     </button>
   );
 }
