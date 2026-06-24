@@ -14,6 +14,13 @@ import { Link, useNavigate } from "react-router-dom";
 import { Toast } from "@/components/ui/toast";
 import { SummaryTaxonomySelect } from "@/components/ui/summary-taxonomy-select";
 import {
+  ModalFieldGroup,
+  ModalFooterActions,
+  ModalForm,
+  ModalFormSection,
+} from "@/components/ui/modal-form";
+import { ModalShell } from "@/components/ui/modal-shell";
+import {
   useCompanyContacts,
   useCompanyDeals,
   useCompanyDetail,
@@ -158,7 +165,7 @@ export function CompanyDetailScreen({ companyId }: CompanyDetailScreenProps) {
           </div>
           <button
             aria-label={isEditing ? "수정 취소" : "수정"}
-            className="flex h-9 w-9 items-center justify-center rounded-lg border border-[#E5E7EB] bg-white text-[#374151] transition-colors hover:bg-[#F9FAFB]"
+            className="flex h-8 w-8 items-center justify-center rounded-lg border border-[#E5E7EB] bg-white text-[#374151] transition-colors hover:bg-[#F9FAFB]"
             onClick={() => setIsEditing((value) => !value)}
             type="button"
           >
@@ -166,7 +173,7 @@ export function CompanyDetailScreen({ companyId }: CompanyDetailScreenProps) {
           </button>
           <button
             aria-label="삭제"
-            className="flex h-9 w-9 items-center justify-center rounded-lg border border-[#FEE2E2] bg-white text-[#B91C1C] transition-colors hover:bg-red-50 disabled:opacity-50"
+            className="flex h-8 w-8 items-center justify-center rounded-lg border border-[#FEE2E2] bg-white text-[#B91C1C] transition-colors hover:bg-red-50 disabled:opacity-50"
             disabled={deleteCompanyMutation.isPending}
             onClick={() => void onDeleteCompany()}
             type="button"
@@ -232,7 +239,7 @@ export function CompanyDetailScreen({ companyId }: CompanyDetailScreenProps) {
           </div>
           <button
             aria-label="수정"
-            className="flex h-9 w-9 items-center justify-center rounded-lg border border-[#E5E7EB] bg-white text-[#374151] transition-colors hover:bg-[#F9FAFB]"
+            className="flex h-8 w-8 items-center justify-center rounded-lg border border-[#E5E7EB] bg-white text-[#374151] transition-colors hover:bg-[#F9FAFB]"
             onClick={() => setIsEditing((v) => !v)}
             type="button"
           >
@@ -240,7 +247,7 @@ export function CompanyDetailScreen({ companyId }: CompanyDetailScreenProps) {
           </button>
           <button
             aria-label="삭제"
-            className="flex h-9 w-9 items-center justify-center rounded-lg border border-[#FEE2E2] bg-white text-[#B91C1C] transition-colors hover:bg-red-50 disabled:opacity-50"
+            className="flex h-8 w-8 items-center justify-center rounded-lg border border-[#FEE2E2] bg-white text-[#B91C1C] transition-colors hover:bg-red-50 disabled:opacity-50"
             disabled={deleteCompanyMutation.isPending}
             onClick={() => void onDeleteCompany()}
             type="button"
@@ -644,6 +651,7 @@ function MemoPanel({
   const updateMemoMutation = useUpdateCompanyMemoLogMutation();
   const [editingId, setEditingId] = useState<string | null>(null);
   const [expandedId, setExpandedId] = useState<string | null>(null);
+  const [isCreateOpen, setIsCreateOpen] = useState(false);
 
   const createForm = useForm<CompanyMemoLogFormValues>({
     resolver: zodResolver(companyMemoLogFormSchema),
@@ -658,6 +666,7 @@ function MemoPanel({
   const onSubmitCreate = createForm.handleSubmit(async (values) => {
     await createMemoMutation.mutateAsync(toCreateCompanyMemoLogInput(companyId, values));
     createForm.reset(emptyCompanyMemoLogFormValues);
+    setIsCreateOpen(false);
     onChanged("회사 로그가 추가되었습니다.");
   });
 
@@ -675,44 +684,24 @@ function MemoPanel({
     onChanged("회사 로그가 수정되었습니다.");
   });
 
+  const createFormId = "company-log-create-form";
+
   return (
+    <>
     <div className="flex h-[420px] flex-col rounded-xl border border-[#E5E7EB] bg-white overflow-hidden">
       {/* Header */}
       <div className="flex h-[52px] shrink-0 items-center gap-2.5 border-b border-[#E5E7EB] px-4">
         <span className="text-[15px] font-extrabold text-[#111827]">회사 로그</span>
+        <div className="flex-1" />
+        <button
+          aria-label="회사 로그 추가"
+          className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#2563EB] text-white transition-colors hover:bg-[#1D4ED8]"
+          onClick={() => setIsCreateOpen(true)}
+          type="button"
+        >
+          <Plus className="h-3.5 w-3.5" />
+        </button>
       </div>
-
-      {/* Composer */}
-      <form
-        className="flex shrink-0 flex-col gap-2.5 border-b border-[#F3F4F6] p-4"
-        onSubmit={onSubmitCreate}
-      >
-        <div className="flex items-center gap-2">
-          <div className="flex h-9 flex-1 items-center rounded-lg border border-[#E5E7EB] bg-[#F9FAFB] px-3">
-            <input
-              className="flex-1 bg-transparent text-[13px] font-semibold text-[#111827] outline-none placeholder:text-[#9CA3AF]"
-              placeholder="회사 로그 제목"
-              {...createForm.register("memoType")}
-            />
-          </div>
-          <button
-            aria-label="회사 로그 추가"
-            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#2563EB] text-white hover:bg-[#1D4ED8] transition-colors disabled:opacity-50"
-            disabled={createMemoMutation.isPending}
-            type="submit"
-          >
-            <Plus className="h-3.5 w-3.5" />
-          </button>
-        </div>
-        <div className="flex rounded-lg border border-[#E5E7EB] bg-[#F9FAFB] px-3 py-3" style={{ minHeight: 52 }}>
-          <textarea
-            className="flex-1 resize-none bg-transparent text-[13px] font-medium text-[#111827] outline-none placeholder:text-[#9CA3AF]"
-            placeholder="내용 입력"
-            rows={2}
-            {...createForm.register("memo")}
-          />
-        </div>
-      </form>
 
       {/* Memo List */}
       <div className="flex min-h-0 flex-1 flex-col gap-2.5 overflow-y-auto p-4">
@@ -812,6 +801,58 @@ function MemoPanel({
         ) : null}
       </div>
     </div>
+    <ModalShell
+      footer={
+        <ModalFooterActions
+          formId={createFormId}
+          isSubmitting={createMemoMutation.isPending}
+          pendingLabel="추가 중"
+          submitLabel="추가"
+          onCancel={() => setIsCreateOpen(false)}
+          onSubmit={() => void onSubmitCreate()}
+        />
+      }
+      open={isCreateOpen}
+      size="md"
+      title="회사 로그 추가"
+      onOpenChange={setIsCreateOpen}
+    >
+      <ModalForm id={createFormId} onSubmit={onSubmitCreate}>
+        <ModalFormSection title="회사 로그">
+          <ModalFieldGroup
+            error={createForm.formState.errors.memoType?.message}
+            id="company-log-create-title"
+            label="제목"
+          >
+            <input
+              className="h-10 w-full rounded-md border px-3 text-sm outline-none focus:ring-2 focus:ring-ring"
+              id="company-log-create-title"
+              placeholder="회사 로그 제목"
+              {...createForm.register("memoType")}
+            />
+          </ModalFieldGroup>
+          <ModalFieldGroup
+            error={createForm.formState.errors.memo?.message}
+            id="company-log-create-memo"
+            label="내용"
+          >
+            <textarea
+              className="min-h-28 resize-y rounded-md border px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-ring"
+              id="company-log-create-memo"
+              placeholder="내용 입력"
+              rows={4}
+              {...createForm.register("memo")}
+            />
+          </ModalFieldGroup>
+        </ModalFormSection>
+        {createMemoMutation.error ? (
+          <p className="text-xs text-[#B91C1C]">
+            {getApiErrorMessage(createMemoMutation.error)}
+          </p>
+        ) : null}
+      </ModalForm>
+    </ModalShell>
+    </>
   );
 }
 
@@ -838,6 +879,7 @@ function ActivityLogPanel({
   const updateMutation = useUpdateCompanyPrivateMemoLogMutation();
   const [editingId, setEditingId] = useState<string | null>(null);
   const [expandedId, setExpandedId] = useState<string | null>(null);
+  const [isCreateOpen, setIsCreateOpen] = useState(false);
 
   const createForm = useForm<CompanyPrivateMemoLogFormValues>({
     resolver: zodResolver(companyPrivateMemoLogFormSchema),
@@ -854,6 +896,7 @@ function ActivityLogPanel({
       toCreateCompanyPrivateMemoLogInput(companyId, values)
     );
     createForm.reset(emptyCompanyPrivateMemoLogFormValues);
+    setIsCreateOpen(false);
     onChanged("비밀 메모가 추가되었습니다.");
   });
 
@@ -871,12 +914,14 @@ function ActivityLogPanel({
     onChanged("비밀 메모가 수정되었습니다.");
   });
 
+  const createFormId = "company-private-memo-create-form";
+
   return (
+    <>
     <div className="flex h-[420px] flex-col rounded-xl border border-[#E5E7EB] bg-white overflow-hidden">
       {/* Header */}
       <div className="flex h-[52px] shrink-0 items-center gap-2.5 border-b border-[#E5E7EB] px-4">
         <span className="text-[15px] font-extrabold text-[#111827]">비밀 메모</span>
-        <div className="flex-1" />
         <div
           aria-label="암호화 보안 메모"
           className="flex items-center gap-1.5"
@@ -889,32 +934,16 @@ function ActivityLogPanel({
             <LockKeyhole className="h-4 w-4 text-[#1D4ED8]" />
           </span>
         </div>
+        <div className="flex-1" />
+        <button
+          aria-label="비밀 메모 추가"
+          className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#2563EB] text-white transition-colors hover:bg-[#1D4ED8]"
+          onClick={() => setIsCreateOpen(true)}
+          type="button"
+        >
+          <Plus className="h-3.5 w-3.5" />
+        </button>
       </div>
-
-      {/* Composer */}
-      <form
-        className="flex shrink-0 flex-col gap-2 border-b border-[#F3F4F6] p-4"
-        onSubmit={onSubmitCreate}
-      >
-        <div className="flex rounded-lg border border-[#E5E7EB] bg-[#F9FAFB] px-3 py-2.5" style={{ minHeight: 48 }}>
-          <textarea
-            className="flex-1 resize-none bg-transparent text-[13px] font-medium text-[#111827] outline-none placeholder:text-[#9CA3AF]"
-            placeholder="비밀 메모 입력"
-            rows={2}
-            {...createForm.register("memo")}
-          />
-        </div>
-        <div className="flex justify-end">
-          <button
-            aria-label="비밀 메모 추가"
-            className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#2563EB] text-white hover:bg-[#1D4ED8] transition-colors disabled:opacity-50"
-            disabled={createMutation.isPending}
-            type="submit"
-          >
-            <Plus className="h-3.5 w-3.5" />
-          </button>
-        </div>
-      </form>
 
       {/* Items */}
       <div className="flex min-h-0 flex-1 flex-col gap-2.5 overflow-y-auto p-4">
@@ -967,9 +996,7 @@ function ActivityLogPanel({
                   onClick={() => setExpandedId(expandedId === log.id ? null : log.id)}
                   type="button"
                 >
-                  <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-2xl bg-[#EFF6FF]">
-                    <div className="h-[6px] w-[6px] rounded-full bg-[#2563EB]" />
-                  </div>
+                  <div className="h-[8px] w-[8px] shrink-0 rounded-full bg-[#2563EB]" />
                   <span className={`flex-1 text-[12px] font-medium text-[#4B5563] ${expandedId === log.id ? "whitespace-pre-wrap" : "truncate"}`}>
                     {log.memo}
                   </span>
@@ -1002,6 +1029,46 @@ function ActivityLogPanel({
         ) : null}
       </div>
     </div>
+    <ModalShell
+      footer={
+        <ModalFooterActions
+          formId={createFormId}
+          isSubmitting={createMutation.isPending}
+          pendingLabel="추가 중"
+          submitLabel="추가"
+          onCancel={() => setIsCreateOpen(false)}
+          onSubmit={() => void onSubmitCreate()}
+        />
+      }
+      open={isCreateOpen}
+      size="md"
+      title="비밀 메모 추가"
+      onOpenChange={setIsCreateOpen}
+    >
+      <ModalForm id={createFormId} onSubmit={onSubmitCreate}>
+        <ModalFormSection title="비밀 메모">
+          <ModalFieldGroup
+            error={createForm.formState.errors.memo?.message}
+            id="company-private-memo-create-memo"
+            label="내용"
+          >
+            <textarea
+              className="min-h-32 resize-y rounded-md border px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-ring"
+              id="company-private-memo-create-memo"
+              placeholder="비밀 메모 입력"
+              rows={5}
+              {...createForm.register("memo")}
+            />
+          </ModalFieldGroup>
+        </ModalFormSection>
+        {createMutation.error ? (
+          <p className="text-xs text-[#B91C1C]">
+            {getApiErrorMessage(createMutation.error)}
+          </p>
+        ) : null}
+      </ModalForm>
+    </ModalShell>
+    </>
   );
 }
 
