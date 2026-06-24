@@ -2,6 +2,7 @@ import {
   Building2,
   ChevronLeft,
   ChevronRight,
+  LockKeyhole,
   Plus,
   Pencil,
   ShieldCheck,
@@ -876,9 +877,17 @@ function ActivityLogPanel({
       <div className="flex h-[52px] shrink-0 items-center gap-2.5 border-b border-[#E5E7EB] px-4">
         <span className="text-[15px] font-extrabold text-[#111827]">비밀 메모</span>
         <div className="flex-1" />
-        <div className="flex h-6 items-center gap-1.5 rounded-xl bg-[#FFFBEB] px-2">
-          <ShieldCheck className="h-3 w-3 text-[#92400E]" />
-          <span className="text-[11px] font-semibold text-[#92400E]">암호화</span>
+        <div
+          aria-label="암호화 보안 메모"
+          className="flex items-center gap-1.5"
+          title="암호화 보안 메모"
+        >
+          <span className="flex h-7 w-7 items-center justify-center rounded-full bg-[#DBEAFE]">
+            <ShieldCheck className="h-4 w-4 text-[#1D4ED8]" />
+          </span>
+          <span className="flex h-7 w-7 items-center justify-center rounded-full bg-[#DBEAFE]">
+            <LockKeyhole className="h-4 w-4 text-[#1D4ED8]" />
+          </span>
         </div>
       </div>
 
