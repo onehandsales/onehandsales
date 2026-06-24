@@ -1,7 +1,6 @@
 import {
   BriefcaseBusiness,
   ChevronLeft,
-  ChevronRight,
   LockKeyhole,
   Mail,
   Pencil,
@@ -613,6 +612,26 @@ function ConnectedDealsTable({
 
 // ── Memo Panel ──────────────────────────────────────────────────────
 
+function TimelineMarker({
+  isFirst,
+  isLast,
+}: {
+  readonly isFirst: boolean;
+  readonly isLast: boolean;
+}) {
+  return (
+    <div className="relative flex w-[8px] shrink-0 self-stretch items-start justify-center pt-[16px]">
+      {!isFirst ? (
+        <div className="absolute left-1/2 top-0 h-[20px] w-px -translate-x-1/2 bg-[#DBEAFE]" />
+      ) : null}
+      {!isLast ? (
+        <div className="absolute bottom-0 left-1/2 top-[20px] w-px -translate-x-1/2 bg-[#DBEAFE]" />
+      ) : null}
+      <div className="relative h-[8px] w-[8px] rounded-full bg-[#2563EB]" />
+    </div>
+  );
+}
+
 function ContactMemoPanel({
   contactId,
   memoLogs,
@@ -689,7 +708,7 @@ function ContactMemoPanel({
       </div>
 
       {/* Memo List */}
-      <div className="flex min-h-0 flex-1 flex-col gap-2.5 overflow-y-auto p-4">
+      <div className="flex min-h-0 flex-1 flex-col overflow-y-auto p-4">
         {isLoading ? (
           <div className="flex flex-col gap-2">
             {[1, 2].map((i) => (
@@ -699,7 +718,7 @@ function ContactMemoPanel({
         ) : memoLogs.length === 0 ? (
           <p className="text-[13px] text-[#9CA3AF]">담당자 로그가 없습니다.</p>
         ) : (
-          memoLogs.map((log) =>
+          memoLogs.map((log, index) =>
             editingId === log.id ? (
               <form
                 className="flex flex-col gap-2 rounded-lg border border-[#DBEAFE] bg-[#EFF6FF] p-3"
@@ -736,17 +755,19 @@ function ContactMemoPanel({
               </form>
             ) : (
               <div
-                className="group flex flex-col gap-1 border-b border-[#F3F4F6] pb-2.5 last:border-0"
+                className="group flex gap-3"
                 key={log.id}
               >
+                <TimelineMarker
+                  isFirst={index === 0}
+                  isLast={index === memoLogs.length - 1}
+                />
+                <div className="min-w-0 flex-1">
                 <button
-                  className="flex w-full items-center gap-1 text-left"
+                  className="flex min-h-[40px] w-full items-center bg-white text-left"
                   onClick={() => setExpandedId(expandedId === log.id ? null : log.id)}
                   type="button"
                 >
-                  <ChevronRight
-                    className={`h-3.5 w-3.5 shrink-0 text-[#9CA3AF] transition-transform ${expandedId === log.id ? "rotate-90" : ""}`}
-                  />
                   <span className="flex-1 truncate text-[13px] font-semibold text-[#111827]">
                     {log.memoType || "제목 없음"}
                   </span>
@@ -764,10 +785,11 @@ function ContactMemoPanel({
                   </div>
                 </button>
                 {expandedId === log.id ? (
-                  <p className="pl-5 text-[13px] font-medium leading-[1.35] text-[#374151] whitespace-pre-wrap">
+                  <p className="pb-3 pt-1 text-[13px] font-medium leading-[1.35] text-[#374151] whitespace-pre-wrap">
                     {log.memo}
                   </p>
                 ) : null}
+                </div>
               </div>
             )
           )
@@ -929,7 +951,7 @@ function ContactActivityLogPanel({
       </div>
 
       {/* Items */}
-      <div className="flex min-h-0 flex-1 flex-col gap-2.5 overflow-y-auto p-4">
+      <div className="flex min-h-0 flex-1 flex-col overflow-y-auto p-4">
         {isLoading ? (
           <div className="flex flex-col gap-2">
             {[1, 2, 3].map((i) => (
@@ -939,7 +961,7 @@ function ContactActivityLogPanel({
         ) : privateMemoLogs.length === 0 ? (
           <p className="text-[13px] text-[#9CA3AF]">등록된 비밀 메모가 없습니다.</p>
         ) : (
-          privateMemoLogs.map((log) =>
+          privateMemoLogs.map((log, index) =>
             editingId === log.id ? (
               <form
                 className="flex flex-col gap-2 rounded-lg border border-[#CCFBF1] bg-[#F0FDFA] p-3"
@@ -970,16 +992,20 @@ function ContactActivityLogPanel({
               </form>
             ) : (
               <div
-                className="group flex flex-col gap-1 border-b border-[#F3F4F6] pb-2.5 last:border-0"
+                className="group flex gap-3"
                 key={log.id}
               >
+                <TimelineMarker
+                  isFirst={index === 0}
+                  isLast={index === privateMemoLogs.length - 1}
+                />
+                <div className="min-w-0 flex-1">
                 <button
-                  className="flex w-full items-center gap-2 text-left"
+                  className="flex min-h-[40px] w-full items-center bg-white text-left"
                   onClick={() => setExpandedId(expandedId === log.id ? null : log.id)}
                   type="button"
                 >
-                  <div className="h-[8px] w-[8px] shrink-0 rounded-full bg-[#2563EB]" />
-                  <span className={`flex-1 text-[12px] font-medium text-[#4B5563] ${expandedId === log.id ? "whitespace-pre-wrap" : "truncate"}`}>
+                  <span className="flex-1 truncate text-[12px] font-medium text-[#4B5563]">
                     {log.memo}
                   </span>
                   <span className="shrink-0 text-[11px] font-semibold text-[#9CA3AF]">
@@ -995,6 +1021,12 @@ function ContactActivityLogPanel({
                     <Pencil className="h-3 w-3 text-[#9CA3AF]" />
                   </div>
                 </button>
+                {expandedId === log.id ? (
+                  <p className="pb-3 pt-1 text-[12px] font-medium leading-[1.35] text-[#4B5563] whitespace-pre-wrap">
+                    {log.memo}
+                  </p>
+                ) : null}
+                </div>
               </div>
             )
           )
