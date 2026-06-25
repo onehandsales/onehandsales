@@ -147,6 +147,9 @@ CREATE TABLE "ContactMemoLog" (
     "memo" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
+    "deletedAt" TIMESTAMPTZ(3),
+    "deletedByUserId" UUID,
+    "trashExpiresAt" TIMESTAMPTZ(3),
 
     CONSTRAINT "ContactMemoLog_pkey" PRIMARY KEY ("id")
 );
@@ -160,6 +163,9 @@ CREATE TABLE "ContactUserPrivateMemoLog" (
     "memoKeyVersion" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
+    "deletedAt" TIMESTAMPTZ(3),
+    "deletedByUserId" UUID,
+    "trashExpiresAt" TIMESTAMPTZ(3),
 
     CONSTRAINT "ContactUserPrivateMemoLog_pkey" PRIMARY KEY ("id")
 );
@@ -207,6 +213,9 @@ CREATE TABLE "ProductMemoLog" (
     "memo" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
+    "deletedAt" TIMESTAMPTZ(3),
+    "deletedByUserId" UUID,
+    "trashExpiresAt" TIMESTAMPTZ(3),
 
     CONSTRAINT "ProductMemoLog_pkey" PRIMARY KEY ("id")
 );
@@ -220,6 +229,9 @@ CREATE TABLE "ProductUserPrivateMemoLog" (
     "memoKeyVersion" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
+    "deletedAt" TIMESTAMPTZ(3),
+    "deletedByUserId" UUID,
+    "trashExpiresAt" TIMESTAMPTZ(3),
 
     CONSTRAINT "ProductUserPrivateMemoLog_pkey" PRIMARY KEY ("id")
 );
@@ -283,6 +295,9 @@ CREATE TABLE "DealFollowingActionLog" (
     "checkComplete" BOOLEAN NOT NULL DEFAULT false,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
+    "deletedAt" TIMESTAMPTZ(3),
+    "deletedByUserId" UUID,
+    "trashExpiresAt" TIMESTAMPTZ(3),
 
     CONSTRAINT "DealFollowingActionLog_pkey" PRIMARY KEY ("id")
 );
@@ -296,6 +311,9 @@ CREATE TABLE "DealMemoLog" (
     "memo" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
+    "deletedAt" TIMESTAMPTZ(3),
+    "deletedByUserId" UUID,
+    "trashExpiresAt" TIMESTAMPTZ(3),
 
     CONSTRAINT "DealMemoLog_pkey" PRIMARY KEY ("id")
 );
@@ -435,6 +453,9 @@ CREATE TABLE "CompanyMemoLog" (
     "memo" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
+    "deletedAt" TIMESTAMPTZ(3),
+    "deletedByUserId" UUID,
+    "trashExpiresAt" TIMESTAMPTZ(3),
 
     CONSTRAINT "CompanyMemoLog_pkey" PRIMARY KEY ("id")
 );
@@ -448,6 +469,9 @@ CREATE TABLE "CompanyUserPrivateMemoLog" (
     "memoKeyVersion" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
+    "deletedAt" TIMESTAMPTZ(3),
+    "deletedByUserId" UUID,
+    "trashExpiresAt" TIMESTAMPTZ(3),
 
     CONSTRAINT "CompanyUserPrivateMemoLog_pkey" PRIMARY KEY ("id")
 );
@@ -534,10 +558,22 @@ CREATE INDEX "ContactMemoLog_contactId_createdAt_idx" ON "ContactMemoLog"("conta
 CREATE INDEX "ContactMemoLog_userId_contactId_idx" ON "ContactMemoLog"("userId", "contactId");
 
 -- CreateIndex
+CREATE INDEX "ContactMemoLog_userId_deletedAt_idx" ON "ContactMemoLog"("userId", "deletedAt");
+
+-- CreateIndex
+CREATE INDEX "ContactMemoLog_userId_trashExpiresAt_idx" ON "ContactMemoLog"("userId", "trashExpiresAt");
+
+-- CreateIndex
 CREATE INDEX "ContactUserPrivateMemoLog_contactId_createdAt_idx" ON "ContactUserPrivateMemoLog"("contactId", "createdAt");
 
 -- CreateIndex
 CREATE INDEX "ContactUserPrivateMemoLog_userId_contactId_idx" ON "ContactUserPrivateMemoLog"("userId", "contactId");
+
+-- CreateIndex
+CREATE INDEX "ContactUserPrivateMemoLog_userId_deletedAt_idx" ON "ContactUserPrivateMemoLog"("userId", "deletedAt");
+
+-- CreateIndex
+CREATE INDEX "ContactUserPrivateMemoLog_userId_trashExpiresAt_idx" ON "ContactUserPrivateMemoLog"("userId", "trashExpiresAt");
 
 -- CreateIndex
 CREATE INDEX "Product_userId_createdAt_idx" ON "Product"("userId", "createdAt");
@@ -570,10 +606,22 @@ CREATE INDEX "ProductMemoLog_productId_createdAt_idx" ON "ProductMemoLog"("produ
 CREATE INDEX "ProductMemoLog_userId_productId_idx" ON "ProductMemoLog"("userId", "productId");
 
 -- CreateIndex
+CREATE INDEX "ProductMemoLog_userId_deletedAt_idx" ON "ProductMemoLog"("userId", "deletedAt");
+
+-- CreateIndex
+CREATE INDEX "ProductMemoLog_userId_trashExpiresAt_idx" ON "ProductMemoLog"("userId", "trashExpiresAt");
+
+-- CreateIndex
 CREATE INDEX "ProductUserPrivateMemoLog_productId_createdAt_idx" ON "ProductUserPrivateMemoLog"("productId", "createdAt");
 
 -- CreateIndex
 CREATE INDEX "ProductUserPrivateMemoLog_userId_productId_idx" ON "ProductUserPrivateMemoLog"("userId", "productId");
+
+-- CreateIndex
+CREATE INDEX "ProductUserPrivateMemoLog_userId_deletedAt_idx" ON "ProductUserPrivateMemoLog"("userId", "deletedAt");
+
+-- CreateIndex
+CREATE INDEX "ProductUserPrivateMemoLog_userId_trashExpiresAt_idx" ON "ProductUserPrivateMemoLog"("userId", "trashExpiresAt");
 
 -- CreateIndex
 CREATE INDEX "Deal_userId_createdAt_idx" ON "Deal"("userId", "createdAt");
@@ -636,10 +684,22 @@ CREATE INDEX "DealFollowingActionLog_userId_dealId_idx" ON "DealFollowingActionL
 CREATE INDEX "DealFollowingActionLog_userId_checkComplete_idx" ON "DealFollowingActionLog"("userId", "checkComplete");
 
 -- CreateIndex
+CREATE INDEX "DealFollowingActionLog_userId_deletedAt_idx" ON "DealFollowingActionLog"("userId", "deletedAt");
+
+-- CreateIndex
+CREATE INDEX "DealFollowingActionLog_userId_trashExpiresAt_idx" ON "DealFollowingActionLog"("userId", "trashExpiresAt");
+
+-- CreateIndex
 CREATE INDEX "DealMemoLog_dealId_createdAt_idx" ON "DealMemoLog"("dealId", "createdAt");
 
 -- CreateIndex
 CREATE INDEX "DealMemoLog_userId_dealId_idx" ON "DealMemoLog"("userId", "dealId");
+
+-- CreateIndex
+CREATE INDEX "DealMemoLog_userId_deletedAt_idx" ON "DealMemoLog"("userId", "deletedAt");
+
+-- CreateIndex
+CREATE INDEX "DealMemoLog_userId_trashExpiresAt_idx" ON "DealMemoLog"("userId", "trashExpiresAt");
 
 -- CreateIndex
 CREATE INDEX "Schedule_userId_startAt_idx" ON "Schedule"("userId", "startAt");
@@ -711,10 +771,22 @@ CREATE INDEX "CompanyMemoLog_companyId_createdAt_idx" ON "CompanyMemoLog"("compa
 CREATE INDEX "CompanyMemoLog_userId_companyId_idx" ON "CompanyMemoLog"("userId", "companyId");
 
 -- CreateIndex
+CREATE INDEX "CompanyMemoLog_userId_deletedAt_idx" ON "CompanyMemoLog"("userId", "deletedAt");
+
+-- CreateIndex
+CREATE INDEX "CompanyMemoLog_userId_trashExpiresAt_idx" ON "CompanyMemoLog"("userId", "trashExpiresAt");
+
+-- CreateIndex
 CREATE INDEX "CompanyUserPrivateMemoLog_companyId_createdAt_idx" ON "CompanyUserPrivateMemoLog"("companyId", "createdAt");
 
 -- CreateIndex
 CREATE INDEX "CompanyUserPrivateMemoLog_userId_companyId_idx" ON "CompanyUserPrivateMemoLog"("userId", "companyId");
+
+-- CreateIndex
+CREATE INDEX "CompanyUserPrivateMemoLog_userId_deletedAt_idx" ON "CompanyUserPrivateMemoLog"("userId", "deletedAt");
+
+-- CreateIndex
+CREATE INDEX "CompanyUserPrivateMemoLog_userId_trashExpiresAt_idx" ON "CompanyUserPrivateMemoLog"("userId", "trashExpiresAt");
 
 -- AddForeignKey
 ALTER TABLE "UserOAuthAccount" ADD CONSTRAINT "UserOAuthAccount_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

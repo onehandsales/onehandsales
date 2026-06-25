@@ -131,7 +131,8 @@ User
 - 회사 단건 응답 자체에는 담당자 수와 딜 수를 병합하지 않는다.
 - 회사 단건 화면에서 필요한 연결 Contact 전체 목록은 별도 API로 조회한다.
 - 회사 단건 화면에서 필요한 연결 Deal 전체 목록은 별도 API로 조회한다.
-- 회사 기본 기능에서는 휴지통과 soft delete를 우선 제외한다.
+- 회사 본문 row의 삭제/복구는 아직 제외한다.
+- 회사 일반 메모/비밀 메모 로그 삭제는 `deletedAt`, `deletedByUserId`, `trashExpiresAt` 기반 7일 휴지통 보관으로 처리한다.
 - 회사 생성 요청의 `companyMemo`는 `Company` 테이블에 저장하지 않고 `CompanyMemoLog` 첫 데이터로 저장한다.
 - 회사명, 회사분야, 회사지역은 회사 단건 수정 API로 변경할 수 있다.
 
@@ -172,6 +173,9 @@ User
 - memo
 - createdAt
 - updatedAt
+- deletedAt
+- deletedByUserId
+- trashExpiresAt
 
 목적:
 
@@ -179,6 +183,7 @@ User
 - 회사 생성 시 `companyMemo`가 있으면 이 테이블의 첫 데이터로 저장하고 `memoType`은 서버가 `초기 메모`로 저장한다.
 - 독립적인 회사 메모 로그 생성 API는 `memoType`, `memo`를 필수로 받는다.
 - 회사 메모 로그 수정 API는 `memoType`, `memo`를 필수로 받아 함께 수정한다.
+- 삭제된 회사 메모 로그는 일반 목록과 수정 대상에서 제외한다.
 
 ### CompanyUserPrivateMemoLog
 
@@ -189,6 +194,9 @@ User
 - memoKeyVersion
 - createdAt
 - updatedAt
+- deletedAt
+- deletedByUserId
+- trashExpiresAt
 
 목적:
 
@@ -196,6 +204,7 @@ User
 - 비밀 메모 원문은 데이터베이스에 평문으로 저장하지 않는다.
 - 작성자 본인만 복호화된 `memo`를 볼 수 있고, 관리자도 원문을 볼 수 없다.
 - 독립적인 회사 개인 비밀 메모 로그 생성 API는 `memo`만 필수로 받는다.
+- 삭제된 회사 개인 비밀 메모 로그도 암호문은 변경하지 않고 일반 목록과 수정 대상에서 제외한다.
 
 ## 6. Contact
 
@@ -230,7 +239,8 @@ User
 - 담당자 목록 검색은 `username`만 대상으로 한다.
 - 담당자 목록 필터는 `companyId`, `contactDepartmentId`, `contactJobGradeId`만 제공한다.
 - 담당자 단건 화면에서 필요한 연결 Deal 전체 목록은 별도 API로 조회한다.
-- 담당자 기본 기능에서는 휴지통과 soft delete를 우선 제외한다.
+- 담당자 본문 row의 삭제/복구는 아직 제외한다.
+- 담당자 일반 메모/비밀 메모 로그 삭제는 `deletedAt`, `deletedByUserId`, `trashExpiresAt` 기반 7일 휴지통 보관으로 처리한다.
 - 담당자 생성 요청의 `contactMemo`는 `Contact` 테이블에 저장하지 않고 `ContactMemoLog` 첫 데이터로 저장한다.
 - 핸드폰번호는 API validation 기준으로 `010-1111-2222` 형식만 허용한다.
 
@@ -271,6 +281,9 @@ User
 - memo
 - createdAt
 - updatedAt
+- deletedAt
+- deletedByUserId
+- trashExpiresAt
 
 목적:
 
@@ -278,6 +291,7 @@ User
 - 담당자 생성 시 `contactMemo`가 있으면 이 테이블의 첫 데이터로 저장하고 `memoType`은 서버가 `초기 메모`로 저장한다.
 - 독립적인 담당자 일반 메모 로그 생성 API는 `memoType`, `memo`를 필수로 받는다.
 - 수정 API는 `memoType`, `memo` 중 최소 1개를 수정할 수 있다.
+- 삭제된 담당자 일반 메모 로그는 일반 목록과 수정 대상에서 제외한다.
 
 ### ContactUserPrivateMemoLog
 
@@ -288,6 +302,9 @@ User
 - memoKeyVersion
 - createdAt
 - updatedAt
+- deletedAt
+- deletedByUserId
+- trashExpiresAt
 
 목적:
 
@@ -295,6 +312,7 @@ User
 - 비밀 메모 원문은 데이터베이스에 평문으로 저장하지 않는다.
 - 작성자 본인만 복호화된 `memo`를 볼 수 있고, 관리자도 원문을 볼 수 없다.
 - 독립적인 담당자 개인 비밀 메모 로그 생성/수정 API는 `memo`만 필수로 받는다.
+- 삭제된 담당자 개인 비밀 메모 로그도 암호문은 변경하지 않고 일반 목록과 수정 대상에서 제외한다.
 
 ## 8. Product
 
@@ -330,7 +348,8 @@ User
 
 - Product N:M Company/Contact through ProductConnection
 - Product 1:N ProductLog
-- deletedAt
+- 제품 본문 row의 삭제/복구와 permanent delete
+- 제품 일반 메모/비밀 메모 로그의 `deletedAt`, `deletedByUserId`, `trashExpiresAt`은 구현되어 있다.
 - unitPrice, currency, description, metadata
 
 ## 9. ProductLog
@@ -461,11 +480,16 @@ User
 - checkComplete default false
 - createdAt
 - updatedAt
+- deletedAt
+- deletedByUserId
+- trashExpiresAt
 
 정책:
 
 - 다음 행동 로그 목록은 `createdAt DESC`로 조회한다.
 - 딜 생성 시 최초 다음 행동의 `checkComplete`는 항상 `false`다.
+- 삭제된 다음 행동 로그는 일반 목록, 딜 목록의 최근/다음 행동 계산, 수정 대상에서 제외한다.
+- 삭제는 실제 row 삭제가 아니라 `deletedAt`, `deletedByUserId`, `trashExpiresAt = deletedAt + 7일` 설정이다.
 
 ### DealMemoLog
 
@@ -476,10 +500,15 @@ User
 - memo
 - createdAt
 - updatedAt
+- deletedAt
+- deletedByUserId
+- trashExpiresAt
 
 정책:
 
 - 메모 로그 목록은 `createdAt DESC`로 조회한다.
+- 삭제된 메모 로그는 일반 목록과 수정 대상에서 제외한다.
+- 삭제는 실제 row 삭제가 아니라 `deletedAt`, `deletedByUserId`, `trashExpiresAt = deletedAt + 7일` 설정이다.
 
 ## 12. DealActivity
 

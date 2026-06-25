@@ -8,6 +8,7 @@
 
 - `BE/prisma/schema.prisma`
 - `BE/prisma/migrations/20260611000000_add_company_domain/migration.sql`
+- `BE/prisma/migrations/20260625010000_add_log_soft_delete_columns/migration.sql`
 
 현재 Company 도메인은 Prisma schema와 migration에 반영되어 있다. 실제 DB 변경 내역은 migration 파일을 기준으로 확인하고, 이 문서는 테이블 역할과 관계를 이해하기 위한 구현 설명서로 유지한다.
 
@@ -42,7 +43,7 @@ Company 1 ─ N MeetingNoteContact
 
 현재 회사 기본 기능에는 아래 항목을 넣지 않는다.
 
-- 휴지통과 soft delete 컬럼
+- 회사 본문 row 삭제/복구 API
 - 회사 목록의 최근 수정일 응답
 - 회사 단건 응답에 담당자 수와 딜 수를 직접 병합하는 구조
 - 회사분야/회사지역 수정 API
@@ -170,6 +171,9 @@ Indexes:
 | `memo` | `String` | 아니오 | 없음 | 회사 특징 메모 원문 |
 | `createdAt` | `DateTime` | 아니오 | `now()` | 메모 작성 시각 |
 | `updatedAt` | `DateTime` | 아니오 | `@updatedAt` | 메모 수정 시각 |
+| `deletedAt` | `DateTime? @db.Timestamptz(3)` | 예 | 없음 | 삭제 버튼을 누른 UTC 시각. `null`이면 일반 화면에 노출되는 활성 로그 |
+| `deletedByUserId` | `String? @db.Uuid` | 예 | 없음 | 삭제를 실행한 내부 `User.id` |
+| `trashExpiresAt` | `DateTime? @db.Timestamptz(3)` | 예 | 없음 | 무료 복구 가능 기간 종료 시각. 현재 정책은 `deletedAt + 7일` |
 
 Relations:
 
@@ -180,6 +184,8 @@ Indexes:
 
 - `companyId + createdAt`: 회사 단건 화면의 메모 로그 무한스크롤 기준
 - `userId + companyId`: 사용자 ownership 검증 기준
+- `userId + deletedAt`: 사용자별 활성/삭제 로그 분리 조회 기준
+- `userId + trashExpiresAt`: 향후 휴지통 만료 처리 기준
 
 주석:
 
@@ -188,8 +194,11 @@ Indexes:
 - 조회 API는 10개씩 무한스크롤 방식으로 반환한다.
 - 조회 응답은 `id`, `memoType`, `memo`, `createdAt`을 반환한다.
 - 수정 API는 `memoType`, `memo`를 함께 수정할 수 있다.
+- 삭제 API는 row를 실제 삭제하지 않고 `deletedAt`, `deletedByUserId`, `trashExpiresAt`만 설정한다.
+- 일반 조회와 수정은 `deletedAt IS NULL`인 로그만 대상으로 한다.
 - 생성 성공 시 API는 `201 Created`와 빈 body를 반환한다.
 - 수정 성공 시 현재 요구사항은 `201 Created`와 빈 body를 반환한다.
+- 삭제 성공 시 API는 `204 No Content`와 빈 body를 반환한다.
 
 ## 8. Table: CompanyUserPrivateMemoLog
 
@@ -204,6 +213,9 @@ Indexes:
 | `memoKeyVersion` | `String` | 아니오 | 없음 | 암호화 key version |
 | `createdAt` | `DateTime` | 아니오 | `now()` | 비밀 메모 작성 시각 |
 | `updatedAt` | `DateTime` | 아니오 | `@updatedAt` | 비밀 메모 수정 시각 |
+| `deletedAt` | `DateTime? @db.Timestamptz(3)` | 예 | 없음 | 삭제 버튼을 누른 UTC 시각. `null`이면 일반 화면에 노출되는 활성 로그 |
+| `deletedByUserId` | `String? @db.Uuid` | 예 | 없음 | 삭제를 실행한 내부 `User.id` |
+| `trashExpiresAt` | `DateTime? @db.Timestamptz(3)` | 예 | 없음 | 무료 복구 가능 기간 종료 시각. 현재 정책은 `deletedAt + 7일` |
 
 Relations:
 
@@ -214,6 +226,8 @@ Indexes:
 
 - `companyId + createdAt`: 회사 단건 화면의 개인 비밀 메모 무한스크롤 기준
 - `userId + companyId`: 작성자 본인 조회와 복호화 권한 검증 기준
+- `userId + deletedAt`: 사용자별 활성/삭제 비밀 메모 분리 조회 기준
+- `userId + trashExpiresAt`: 향후 휴지통 만료 처리 기준
 
 주석:
 
@@ -223,7 +237,11 @@ Indexes:
 - 조회 시 작성자 본인에게만 복호화된 `memo`를 반환한다.
 - 관리자는 이 테이블의 원문을 볼 수 없다.
 - 수정 API는 `memo`만 수정할 수 있고, 저장 시 다시 암호화한다.
+- 삭제 API는 row를 실제 삭제하지 않고 `deletedAt`, `deletedByUserId`, `trashExpiresAt`만 설정한다.
+- 일반 조회와 수정은 `deletedAt IS NULL`인 로그만 대상으로 한다.
+- 삭제 로그도 암호문은 변경하지 않는다. 복구/유료 복구 정책을 위해 원문 복구 가능성을 유지한다.
 - 수정 성공 시 현재 요구사항은 `201 Created`와 빈 body를 반환한다.
+- 삭제 성공 시 API는 `204 No Content`와 빈 body를 반환한다.
 
 ## 9. 주석 포함 Prisma 기준 구조
 
@@ -294,6 +312,9 @@ model CompanyMemoLog {
   memo      String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  deletedAt DateTime? @db.Timestamptz(3)
+  deletedByUserId String? @db.Uuid
+  trashExpiresAt DateTime? @db.Timestamptz(3)
 
   /// 기능 : 메모가 속한 회사다.
   company   Company @relation(fields: [companyId], references: [id])
@@ -302,6 +323,8 @@ model CompanyMemoLog {
 
   @@index([companyId, createdAt])
   @@index([userId, companyId])
+  @@index([userId, deletedAt])
+  @@index([userId, trashExpiresAt])
 }
 
 model CompanyUserPrivateMemoLog {
@@ -312,6 +335,9 @@ model CompanyUserPrivateMemoLog {
   memoKeyVersion  String
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
+  deletedAt       DateTime? @db.Timestamptz(3)
+  deletedByUserId String? @db.Uuid
+  trashExpiresAt  DateTime? @db.Timestamptz(3)
 
   /// 기능 : 비밀 메모가 속한 회사다.
   company         Company @relation(fields: [companyId], references: [id])
@@ -320,6 +346,8 @@ model CompanyUserPrivateMemoLog {
 
   @@index([companyId, createdAt])
   @@index([userId, companyId])
+  @@index([userId, deletedAt])
+  @@index([userId, trashExpiresAt])
 }
 ```
 

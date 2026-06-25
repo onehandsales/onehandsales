@@ -1,4 +1,4 @@
-import { AlertCircle, CheckCircle2, Info, X } from "lucide-react";
+import { AlertCircle, Check, Info, X } from "lucide-react";
 import { cn } from "@/utils/cn";
 
 export type ToastVariant = "success" | "error" | "info";
@@ -11,14 +11,14 @@ type ToastProps = {
   readonly className?: string;
 };
 
-const variantClassNames: Record<ToastVariant, string> = {
-  success: "border-emerald-200 bg-emerald-50 text-emerald-900",
-  error: "border-red-200 bg-red-50 text-red-900",
-  info: "border-blue-200 bg-blue-50 text-blue-900",
+const variantIconClassNames: Record<ToastVariant, string> = {
+  success: "bg-[#2563EB] text-white ring-1 ring-[#2563EB]",
+  error: "bg-red-50 text-red-600",
+  info: "bg-blue-50 text-blue-600",
 };
 
 const variantIcons = {
-  success: CheckCircle2,
+  success: Check,
   error: AlertCircle,
   info: Info,
 } as const;
@@ -33,31 +33,42 @@ export function Toast({
   const Icon = variantIcons[variant];
 
   return (
-    <div
-      className={cn(
-        "fixed bottom-5 right-5 z-[60] flex max-w-sm items-start gap-3 rounded-lg border px-4 py-3 text-sm shadow-lg",
-        variantClassNames[variant],
-        className
-      )}
-      role="status"
-    >
-      <Icon className="h-5 w-5 shrink-0" />
-      <span className="min-w-0 flex-1">
-        <span className="block">{message}</span>
-        {description ? (
-          <span className="mt-0.5 block text-xs opacity-80">{description}</span>
+    <div className="fixed inset-0 z-[80] flex items-center justify-center bg-black/35 px-4">
+      <div
+        aria-modal="true"
+        className={cn(
+          "relative w-full max-w-[288px] rounded-lg border border-[#E5E7EB] bg-white p-5 text-center shadow-xl",
+          className
+        )}
+        role="dialog"
+      >
+        {onClose ? (
+          <button
+            className="absolute right-3 top-3 rounded-md p-1 text-[#6B7280] hover:bg-[#F3F4F6] hover:text-[#111827]"
+            onClick={onClose}
+            type="button"
+            aria-label="닫기"
+          >
+            <X className="h-4 w-4" />
+          </button>
         ) : null}
-      </span>
-      {onClose ? (
-        <button
-          className="rounded-md p-1 hover:opacity-70"
-          onClick={onClose}
-          type="button"
-          aria-label="닫기"
+        <span
+          className={cn(
+            "mx-auto flex h-10 w-10 items-center justify-center rounded-full",
+            variantIconClassNames[variant]
+          )}
         >
-          <X className="h-4 w-4" />
-        </button>
-      ) : null}
+          <Icon className="h-5 w-5" />
+        </span>
+        <span className="mt-3 block text-sm font-semibold text-[#111827]">
+          {message}
+        </span>
+        {description ? (
+          <span className="mt-1 block text-xs leading-5 text-[#6B7280]">
+            {description}
+          </span>
+        ) : null}
+      </div>
     </div>
   );
 }

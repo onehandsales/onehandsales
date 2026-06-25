@@ -11,6 +11,7 @@
 - `BE/prisma/migrations/20260623010000_add_deal_company_contact_joins/migration.sql`
 - `BE/prisma/migrations/20260614020000_add_schedule_domain/migration.sql`
 - `BE/prisma/migrations/20260615000000_add_meeting_note_domain/migration.sql`
+- `BE/prisma/migrations/20260625010000_add_log_soft_delete_columns/migration.sql`
 
 구현 기준 문서:
 
@@ -22,6 +23,7 @@
 - `BE/prisma/migrations/20260612000000_add_deal_domain/migration.sql`
 - `BE/prisma/migrations/20260612010000_add_deal_product_join/migration.sql`
 - `BE/prisma/migrations/20260623010000_add_deal_company_contact_joins/migration.sql`
+- `BE/prisma/migrations/20260625010000_add_log_soft_delete_columns/migration.sql`
 - `TODO/DONE/SCHEDULE_DOMAIN_PLAN/README.md`
 - `BE/prisma/migrations/20260614020000_add_schedule_domain/migration.sql`
 - `TODO/DONE/MEETING_NOTE_MANUAL_PLAN/README.md`
@@ -152,6 +154,9 @@ Deal 기본 도메인 1차 구현 범위는 다음 테이블만 포함한다.
 | `checkComplete` | boolean | 아니오 | 완료 여부. 기본값 `false` |
 | `createdAt` | datetime | 아니오 | 생성일 |
 | `updatedAt` | datetime | 아니오 | 수정일 |
+| `deletedAt` | timestamptz | 예 | 삭제 버튼을 누른 UTC 시각. `null`이면 일반 화면에 노출되는 활성 로그 |
+| `deletedByUserId` | uuid | 예 | 삭제를 실행한 내부 `User.id` |
+| `trashExpiresAt` | timestamptz | 예 | 무료 복구 가능 기간 종료 시각. 현재 정책은 `deletedAt + 7일` |
 
 정책:
 
@@ -160,7 +165,8 @@ Deal 기본 도메인 1차 구현 범위는 다음 테이블만 포함한다.
 - 단건 생성 API는 `followingAction`만 받는다.
 - 단건 수정 API는 `followingAction`, `checkComplete`를 수정할 수 있다.
 - 목록 조회는 10개 단위 `createdAt DESC, id DESC` cursor 기반 incremental loading으로 제공한다.
-- 딜 목록의 다음 행동은 가장 최근에 생성된 로그 1개만 표시한다.
+- 딜 목록의 최근/다음 행동 계산과 로그 목록/수정은 `deletedAt IS NULL`인 로그만 대상으로 한다.
+- 삭제 API는 row를 실제 삭제하지 않고 `deletedAt`, `deletedByUserId`, `trashExpiresAt`만 설정한다.
 
 ## 7. DealMemoLog
 
@@ -175,12 +181,17 @@ Deal 기본 도메인 1차 구현 범위는 다음 테이블만 포함한다.
 | `memo` | string | 아니오 | 메모 본문 |
 | `createdAt` | datetime | 아니오 | 생성일 |
 | `updatedAt` | datetime | 아니오 | 수정일 |
+| `deletedAt` | timestamptz | 예 | 삭제 버튼을 누른 UTC 시각. `null`이면 일반 화면에 노출되는 활성 로그 |
+| `deletedByUserId` | uuid | 예 | 삭제를 실행한 내부 `User.id` |
+| `trashExpiresAt` | timestamptz | 예 | 무료 복구 가능 기간 종료 시각. 현재 정책은 `deletedAt + 7일` |
 
 정책:
 
 - 단건 생성 API는 `memoType`, `memo`를 필수로 받는다.
 - 단건 수정 API는 `memoType`, `memo`를 수정할 수 있다.
 - 목록 조회는 10개 단위 `createdAt DESC, id DESC` cursor 기반 incremental loading으로 제공한다.
+- 삭제 API는 row를 실제 삭제하지 않고 `deletedAt`, `deletedByUserId`, `trashExpiresAt`만 설정한다.
+- 일반 조회와 수정은 `deletedAt IS NULL`인 로그만 대상으로 한다.
 
 ## 8. DealStatus
 
@@ -217,8 +228,12 @@ DB에는 아래 string code만 저장한다.
 - `DealFollowingActionLog.dealId + DealFollowingActionLog.createdAt`
 - `DealFollowingActionLog.userId + DealFollowingActionLog.dealId`
 - `DealFollowingActionLog.userId + DealFollowingActionLog.checkComplete`
+- `DealFollowingActionLog.userId + DealFollowingActionLog.deletedAt`
+- `DealFollowingActionLog.userId + DealFollowingActionLog.trashExpiresAt`
 - `DealMemoLog.dealId + DealMemoLog.createdAt`
 - `DealMemoLog.userId + DealMemoLog.dealId`
+- `DealMemoLog.userId + DealMemoLog.deletedAt`
+- `DealMemoLog.userId + DealMemoLog.trashExpiresAt`
 
 ## 10. 현재 제외 범위
 
@@ -228,8 +243,7 @@ DB에는 아래 string code만 저장한다.
 - `DealActivityType`
 - `ProductConnection`
 - `PersonalMemo(targetType=DEAL)`
-- `deletedAt`
-- `permanentDeleteAt`
+- 딜 본문 row의 삭제/복구 API와 `permanentDeleteAt`
 - `currency`
 - `likelihoodStatus`
 - `likelihoodPercent`

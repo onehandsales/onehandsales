@@ -14,6 +14,7 @@
 - `TODO/DONE/PRODUCT_DOMAIN_PLAN/BE-TODO/G01-BE-PRODUCT-DOMAIN.goal.md`
 - `BE/prisma/schema.prisma`
 - `BE/prisma/migrations/20260611020000_add_product_domain/migration.sql`
+- `BE/prisma/migrations/20260625010000_add_log_soft_delete_columns/migration.sql`
 
 ## 2. 테이블 목록
 
@@ -111,6 +112,9 @@ Product 기본 도메인 1차 구현 범위는 다음 테이블만 포함한다.
 | `memo` | string | 아니오 | 메모 본문 |
 | `createdAt` | datetime | 아니오 | 생성일 |
 | `updatedAt` | datetime | 아니오 | 수정일 |
+| `deletedAt` | timestamptz | 예 | 삭제 버튼을 누른 UTC 시각. `null`이면 일반 화면에 노출되는 활성 로그 |
+| `deletedByUserId` | uuid | 예 | 삭제를 실행한 내부 `User.id` |
+| `trashExpiresAt` | timestamptz | 예 | 무료 복구 가능 기간 종료 시각. 현재 정책은 `deletedAt + 7일` |
 
 정책:
 
@@ -119,6 +123,8 @@ Product 기본 도메인 1차 구현 범위는 다음 테이블만 포함한다.
 - 독립적인 일반 메모 로그 생성 API는 `memoType`, `memo`를 필수로 받는다.
 - 일반 메모 로그 수정 API는 `memoType`, `memo` 중 최소 1개를 수정할 수 있다.
 - 목록 조회는 10개 단위 cursor 기반 무한스크롤로 제공한다.
+- 삭제 API는 row를 실제 삭제하지 않고 `deletedAt`, `deletedByUserId`, `trashExpiresAt`만 설정한다.
+- 일반 조회와 수정은 `deletedAt IS NULL`인 로그만 대상으로 한다.
 
 ## 7. ProductUserPrivateMemoLog
 
@@ -133,6 +139,9 @@ Product 기본 도메인 1차 구현 범위는 다음 테이블만 포함한다.
 | `memoKeyVersion` | string | 아니오 | 암호화 키 버전 |
 | `createdAt` | datetime | 아니오 | 생성일 |
 | `updatedAt` | datetime | 아니오 | 수정일 |
+| `deletedAt` | timestamptz | 예 | 삭제 버튼을 누른 UTC 시각. `null`이면 일반 화면에 노출되는 활성 로그 |
+| `deletedByUserId` | uuid | 예 | 삭제를 실행한 내부 `User.id` |
+| `trashExpiresAt` | timestamptz | 예 | 무료 복구 가능 기간 종료 시각. 현재 정책은 `deletedAt + 7일` |
 
 정책:
 
@@ -141,6 +150,9 @@ Product 기본 도메인 1차 구현 범위는 다음 테이블만 포함한다.
 - 목록 응답은 작성자 본인의 로그만 복호화해서 반환한다.
 - 관리자도 개인 비밀 메모 원문을 볼 수 없다.
 - 목록 조회는 10개 단위 cursor 기반 무한스크롤로 제공한다.
+- 삭제 API는 row를 실제 삭제하지 않고 `deletedAt`, `deletedByUserId`, `trashExpiresAt`만 설정한다.
+- 일반 조회와 수정은 `deletedAt IS NULL`인 로그만 대상으로 한다.
+- 삭제 로그도 암호문은 변경하지 않는다. 복구/유료 복구 정책을 위해 원문 복구 가능성을 유지한다.
 
 ## 8. 권장 인덱스
 
@@ -152,8 +164,12 @@ Product 기본 도메인 1차 구현 범위는 다음 테이블만 포함한다.
 - `ProductStatus.userId + ProductStatus.statusName`
 - `ProductMemoLog.productId + ProductMemoLog.createdAt`
 - `ProductMemoLog.userId + ProductMemoLog.productId`
+- `ProductMemoLog.userId + ProductMemoLog.deletedAt`
+- `ProductMemoLog.userId + ProductMemoLog.trashExpiresAt`
 - `ProductUserPrivateMemoLog.productId + ProductUserPrivateMemoLog.createdAt`
 - `ProductUserPrivateMemoLog.userId + ProductUserPrivateMemoLog.productId`
+- `ProductUserPrivateMemoLog.userId + ProductUserPrivateMemoLog.deletedAt`
+- `ProductUserPrivateMemoLog.userId + ProductUserPrivateMemoLog.trashExpiresAt`
 - `DealProduct.userId + DealProduct.productId`
 
 ## 9. 현재 제외 범위
@@ -164,8 +180,7 @@ Product 기본 도메인 1차 구현 범위는 다음 테이블만 포함한다.
 - `ProductLog`
 - `ProductMemo`
 - `PersonalMemo(targetType=PRODUCT)`
-- `deletedAt`
-- `permanentDeleteAt`
+- 제품 본문 row의 삭제/복구 API와 `permanentDeleteAt`
 - `unitPrice`
 - `currency`
 - `description`

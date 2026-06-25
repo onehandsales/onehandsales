@@ -707,8 +707,10 @@ export class DealApplicationService {
     dealId: string,
     followingActionLogId: string
   ): Promise<void> {
+    // 1. 다음 행동 로그 대상 딜이 현재 사용자 소유인지 검증한다.
     await this.assertDealExists(currentUser.id, dealId);
 
+    // 2. 다음 행동 로그를 휴지통 보관 정책에 맞춰 삭제 상태로 전환한다.
     const timestamps = createTrashRetentionTimestamps();
     const deleted = await this.dealRepository.deleteFollowingActionLog({
       userId: currentUser.id,
@@ -718,10 +720,12 @@ export class DealApplicationService {
       ...timestamps,
     });
 
+    // 3. 삭제 대상 다음 행동 로그가 없으면 오류로 중단한다.
     if (!deleted) {
       throw new DealFollowingActionLogNotFoundError();
     }
 
+    // 4. 다음 행동 본문 없이 삭제 이벤트를 기록한다.
     this.logEvent("deal.following_action.deleted", {
       userId: currentUser.id,
       dealId,
@@ -818,8 +822,10 @@ export class DealApplicationService {
     dealId: string,
     memoLogId: string
   ): Promise<void> {
+    // 1. 메모 대상 딜이 현재 사용자 소유인지 검증한다.
     await this.assertDealExists(currentUser.id, dealId);
 
+    // 2. 메모 로그를 휴지통 보관 정책에 맞춰 삭제 상태로 전환한다.
     const timestamps = createTrashRetentionTimestamps();
     const deleted = await this.dealRepository.deleteMemoLog({
       userId: currentUser.id,
@@ -829,10 +835,12 @@ export class DealApplicationService {
       ...timestamps,
     });
 
+    // 3. 삭제 대상 메모 로그가 없으면 오류로 중단한다.
     if (!deleted) {
       throw new DealMemoLogNotFoundError();
     }
 
+    // 4. 메모 원문 없이 삭제 이벤트를 기록한다.
     this.logEvent("deal.memo.deleted", {
       userId: currentUser.id,
       dealId,

@@ -10,6 +10,15 @@
 - Restore: 휴지통에서 `deletedAt`을 다시 `null`로 돌리는 복구
 - Hard delete 또는 purge: 삭제 후 30일이 지난 row를 DB에서 실제 삭제하는 작업
 
+현재 구현된 로그 단위 삭제는 주요 데이터 row 삭제 정책과 다르게 7일 보관 정책을 따른다.
+
+- 대상: `CompanyMemoLog`, `CompanyUserPrivateMemoLog`, `ContactMemoLog`, `ContactUserPrivateMemoLog`, `ProductMemoLog`, `ProductUserPrivateMemoLog`, `DealFollowingActionLog`, `DealMemoLog`
+- 삭제 시 실제 row를 삭제하지 않고 `deletedAt`, `deletedByUserId`, `trashExpiresAt`만 설정한다.
+- `trashExpiresAt`은 `deletedAt + 7일`이다.
+- 7일 후에는 일반 휴지통 목록에서 보이지 않는 영구 삭제 상태로 취급할 예정이지만, DB row를 hard delete하지 않는다.
+- 비밀 메모 로그도 복구 가능성을 유지해야 하므로 `memoCiphertext`, `memoKeyVersion`은 삭제 시 변경하지 않는다.
+- 휴지통 목록, 무료 복구, 7일 후 유료 복구 API는 후속 범위다.
+
 ## 대상
 
 1. 회사 `Company`
