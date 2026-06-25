@@ -282,7 +282,7 @@ export function DealPipelineHomeScreen({
                 className={cn(
                   "relative flex h-11 items-center gap-1.5 border-b-2 px-3.5 text-[13px] font-medium transition-colors",
                   isActive
-                    ? "border-[#2563EB] text-[#2563EB]"
+                    ? "border-[#4880EE] text-[#4880EE]"
                     : "border-transparent text-[#6B7280] hover:text-[#111827]",
                 )}
                 key={tab.value}
@@ -294,7 +294,7 @@ export function DealPipelineHomeScreen({
                   className={cn(
                     "rounded-full px-1.5 py-0.5 text-[11px] font-semibold",
                     isActive
-                      ? "bg-[#EFF6FF] text-[#2563EB]"
+                      ? "bg-[#EFF6FF] text-[#4880EE]"
                       : "bg-[#F3F4F6] text-[#6B7280]",
                   )}
                 >
@@ -436,7 +436,7 @@ export function DealPipelineHomeScreen({
                   className={cn(
                     "flex h-11 shrink-0 items-center gap-1 border-b-2 px-3 text-[13px] font-medium transition-colors",
                     isActive
-                      ? "border-[#2563EB] text-[#2563EB]"
+                      ? "border-[#4880EE] text-[#4880EE]"
                       : "border-transparent text-[#6B7280]",
                   )}
                   key={tab.value}
@@ -448,7 +448,7 @@ export function DealPipelineHomeScreen({
                     className={cn(
                       "rounded-full px-1.5 py-0.5 text-[11px] font-semibold",
                       isActive
-                        ? "bg-[#EFF6FF] text-[#2563EB]"
+                        ? "bg-[#EFF6FF] text-[#4880EE]"
                         : "bg-[#F3F4F6] text-[#6B7280]",
                     )}
                   >
@@ -570,7 +570,7 @@ export function DealPipelineHomeScreen({
 
         {/* FAB */}
         <button
-          className="fixed bottom-24 right-5 z-40 inline-flex h-[52px] w-[52px] items-center justify-center rounded-full bg-[#2563EB] text-white shadow-[0_4px_16px_rgba(59,130,246,0.27)] transition hover:scale-[1.02]"
+          className="fixed bottom-24 right-5 z-40 inline-flex h-[52px] w-[52px] items-center justify-center rounded-full bg-[#4880EE] text-white shadow-[0_4px_16px_rgba(59,130,246,0.27)] transition hover:scale-[1.02]"
           onClick={() => void navigate("/deals/new")}
           type="button"
         >
@@ -644,7 +644,7 @@ function DealListRow({
           {companyLabel}
         </span>
         <span
-          className="mt-0.5 block truncate text-[11px] text-[#2563EB]"
+          className="mt-0.5 block truncate text-[11px] text-[#4880EE]"
           title={contactLabel}
         >
           {contactLabel}
@@ -812,7 +812,7 @@ function getDealStatusDotClass(status: DealStatus): string {
     case "INITIAL_CONTACT":
       return "bg-[#0891B2]";
     case "NEEDS_CHECK":
-      return "bg-[#2563EB]";
+      return "bg-[#4880EE]";
     case "PROPOSAL_QUOTE":
       return "bg-[#CA8A04]";
     case "NEGOTIATION":
@@ -1050,7 +1050,7 @@ function DealFilterMultiSelect<TItem extends DealFilterItem>({
           className={cn(
             "h-8 w-full min-w-0 border text-[13px] outline-none transition",
             isOpen
-              ? "rounded-full border-[#2563EB] bg-white pl-8 pr-7 text-[#111827] ring-1 ring-[#2563EB]"
+              ? "rounded-full border-[#4880EE] bg-white pl-8 pr-7 text-[#111827] ring-1 ring-[#4880EE]"
               : selectedIds.length > 0
                 ? "rounded-full border-[#BFDBFE] bg-[#EFF6FF] pl-3.5 pr-7 font-semibold text-[#1D4ED8]"
                 : "cursor-pointer rounded-full border-[#E2E5EC] bg-transparent pl-3.5 pr-7 text-[#6B7280] hover:border-[#D1D5DB] hover:bg-[#FAFAF8]",
@@ -1150,11 +1150,11 @@ function DealFilterMultiSelect<TItem extends DealFilterItem>({
                     <span
                       className={cn(
                         "grid h-3.5 w-3.5 shrink-0 place-items-center rounded-full border",
-                        isSelected ? "border-[#2563EB]" : "border-[#CBD5E1]",
+                        isSelected ? "border-[#4880EE]" : "border-[#CBD5E1]",
                       )}
                     >
                       {isSelected ? (
-                        <span className="h-1.5 w-1.5 rounded-full bg-[#2563EB]" />
+                        <span className="h-1.5 w-1.5 rounded-full bg-[#4880EE]" />
                       ) : null}
                     </span>
                     <span className="min-w-0 flex-1 truncate">

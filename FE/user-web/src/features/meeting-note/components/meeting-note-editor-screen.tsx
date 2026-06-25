@@ -239,7 +239,7 @@ export function MeetingNoteEditorScreen({
                 </button>
               ) : null}
               <button
-                className="inline-flex h-9 w-fit items-center gap-1.5 rounded-md bg-[#2563EB] px-3 text-[13px] font-semibold text-white hover:bg-[#1D4ED8] disabled:cursor-not-allowed disabled:opacity-60"
+                className="inline-flex h-9 w-fit items-center gap-1.5 rounded-md bg-[#4880EE] px-3 text-[13px] font-semibold text-white hover:bg-[#1D4ED8] disabled:cursor-not-allowed disabled:opacity-60"
                 disabled={isSaving}
                 type="button"
                 onClick={() => void onSubmit()}
@@ -597,7 +597,7 @@ function MeetingNoteDealLinkCard({
         ) : null}
 
         <button
-          className="inline-flex h-9 items-center justify-center gap-1.5 rounded-md bg-[#2563EB] px-3 text-[13px] font-semibold text-white hover:bg-[#1D4ED8] disabled:cursor-not-allowed disabled:opacity-60"
+          className="inline-flex h-9 items-center justify-center gap-1.5 rounded-md bg-[#4880EE] px-3 text-[13px] font-semibold text-white hover:bg-[#1D4ED8] disabled:cursor-not-allowed disabled:opacity-60"
           disabled={isPending}
           onClick={() => void submit()}
           type="button"

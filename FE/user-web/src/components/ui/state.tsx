@@ -102,7 +102,7 @@ export function ListEmptyState({
     </>
   ) : null;
   const actionClassName =
-    "mt-5 inline-flex h-8 items-center gap-1.5 rounded-md bg-[#2563EB] px-3.5 text-[13px] font-medium text-white transition hover:bg-[#1D4ED8]";
+    "mt-5 inline-flex h-8 items-center gap-1.5 rounded-md bg-[#4880EE] px-3.5 text-[13px] font-medium text-white transition hover:bg-[#1D4ED8]";
 
   return (
     <div

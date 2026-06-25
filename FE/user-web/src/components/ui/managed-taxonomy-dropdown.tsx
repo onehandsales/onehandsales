@@ -159,8 +159,8 @@ export function ManagedTaxonomyDropdown<TItem extends ManagedTaxonomyItem>({
           aria-label={addPlaceholder}
           autoComplete="off"
           className={cn(
-            "h-10 w-full rounded-md border pl-9 pr-10 text-[13px] outline-none transition-colors focus:border-[#2563EB] focus:ring-1 focus:ring-[#2563EB]",
-            isOpen || selectedId.length > 0 ? "border-[#2563EB]" : "border-[#E6EAF0]"
+            "h-10 w-full rounded-md border pl-9 pr-10 text-[13px] outline-none transition-colors focus:border-[#4880EE] focus:ring-1 focus:ring-[#4880EE]",
+            isOpen || selectedId.length > 0 ? "border-[#4880EE]" : "border-[#E6EAF0]"
           )}
           id={id}
           ref={inputRef}

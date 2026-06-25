@@ -12,7 +12,7 @@ const items: ReadonlyArray<{
   { label: "딜", to: "/deals", icon: Briefcase, activeColor: "#5E5CE6" },
   { label: "일정", to: "/schedules", icon: Calendar, activeColor: "#5E5CE6" },
   { label: "회의록", to: "/meeting-notes", icon: FileText, activeColor: "#5E5CE6" },
-  { label: "더보기", to: "/more", icon: MoreHorizontal, activeColor: "#2563EB" },
+  { label: "더보기", to: "/more", icon: MoreHorizontal, activeColor: "#4880EE" },
 ];
 
 export function BottomTabBar() {

@@ -12,7 +12,7 @@ type ToastProps = {
 };
 
 const variantIconClassNames: Record<ToastVariant, string> = {
-  success: "bg-[#2563EB] text-white ring-1 ring-[#2563EB]",
+  success: "bg-[#4880EE] text-white ring-1 ring-[#4880EE]",
   error: "bg-red-50 text-red-600",
   info: "bg-blue-50 text-blue-600",
 };

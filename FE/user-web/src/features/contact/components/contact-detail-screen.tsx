@@ -422,7 +422,7 @@ function ContactSummaryHeader({
   if (isEditing) {
     return (
       <form
-        className="flex min-h-[74px] flex-wrap items-center gap-3 rounded-xl border border-[#BFDBFE] bg-white px-5 py-4 shadow-[0_0_0_1px_rgba(37,99,235,0.04)]"
+        className="flex min-h-[74px] flex-wrap items-center gap-3 rounded-xl border border-[#BFDBFE] bg-white px-5 py-4 shadow-[0_0_0_1px_rgba(72,128,238,0.04)]"
         onSubmit={onSubmit}
       >
         <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#EEF2FF]">
@@ -437,7 +437,7 @@ function ContactSummaryHeader({
           </label>
           <input
             aria-invalid={Boolean(errors.username)}
-            className="h-9 w-full rounded-lg border border-[#DDE3EE] bg-white px-3 text-[15px] font-extrabold text-[#111827] outline-none transition-colors focus:border-[#2563EB] focus:ring-1 focus:ring-[#2563EB]"
+            className="h-9 w-full rounded-lg border border-[#DDE3EE] bg-white px-3 text-[15px] font-extrabold text-[#111827] outline-none transition-colors focus:border-[#4880EE] focus:ring-1 focus:ring-[#4880EE]"
             id="contact-summary-edit-name"
             {...register("username")}
           />
@@ -533,7 +533,7 @@ function ContactSummaryHeader({
           취소
         </button>
         <button
-          className="h-9 rounded-lg bg-[#2563EB] px-4 text-[13px] font-extrabold text-white transition-colors hover:bg-[#1D4ED8] disabled:cursor-not-allowed disabled:opacity-60"
+          className="h-9 rounded-lg bg-[#4880EE] px-4 text-[13px] font-extrabold text-white transition-colors hover:bg-[#1D4ED8] disabled:cursor-not-allowed disabled:opacity-60"
           disabled={updateContactMutation.isPending}
           type="submit"
         >
@@ -557,7 +557,7 @@ function ContactSummaryHeader({
       <div className="flex items-center gap-1.5 text-[13px]">
         <span className="font-semibold text-[#9CA3AF]">회사</span>
         <Link
-          className="font-extrabold text-[#111827] hover:text-[#2563EB] hover:underline"
+          className="font-extrabold text-[#111827] hover:text-[#4880EE] hover:underline"
           to={`/companies/${contact.company.id}`}
         >
           {contact.company.companyName}
@@ -597,7 +597,7 @@ function ContactSummaryHeader({
 
 // ── Connected Deals Table ───────────────────────────────────────────
 
-const DEAL_DOT_COLORS = ["#B45309", "#0369A1", "#2563EB", "#15803D", "#9CA3AF"];
+const DEAL_DOT_COLORS = ["#B45309", "#0369A1", "#4880EE", "#15803D", "#9CA3AF"];
 
 function ConnectedDealsTable({
   deals,
@@ -672,7 +672,7 @@ function TimelineMarker({
       {!isLast ? (
         <div className="absolute bottom-0 left-1/2 top-[20px] w-px -translate-x-1/2 bg-[#DBEAFE]" />
       ) : null}
-      <div className="relative h-[8px] w-[8px] rounded-full bg-[#2563EB]" />
+      <div className="relative h-[8px] w-[8px] rounded-full bg-[#4880EE]" />
     </div>
   );
 }
@@ -766,7 +766,7 @@ function ContactMemoPanel({
         <div className="flex-1" />
         <button
           aria-label="담당자 로그 추가"
-          className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#2563EB] text-white transition-colors hover:bg-[#1D4ED8]"
+          className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#4880EE] text-white transition-colors hover:bg-[#1D4ED8]"
           onClick={() => setIsCreateOpen(true)}
           type="button"
         >
@@ -1077,7 +1077,7 @@ function ContactActivityLogPanel({
         <div className="flex-1" />
         <button
           aria-label="비밀 메모 추가"
-          className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#2563EB] text-white transition-colors hover:bg-[#1D4ED8]"
+          className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#4880EE] text-white transition-colors hover:bg-[#1D4ED8]"
           onClick={() => setIsCreateOpen(true)}
           type="button"
         >
@@ -1295,7 +1295,7 @@ function InlineTextInput({
         {label}
       </label>
       <input
-        className={`${widthClassName} h-8 rounded-lg border border-[#DDE3EE] bg-white px-2 text-[13px] font-extrabold text-[#111827] outline-none transition-colors focus:border-[#2563EB] focus:ring-1 focus:ring-[#2563EB]`}
+        className={`${widthClassName} h-8 rounded-lg border border-[#DDE3EE] bg-white px-2 text-[13px] font-extrabold text-[#111827] outline-none transition-colors focus:border-[#4880EE] focus:ring-1 focus:ring-[#4880EE]`}
         id={id}
         {...register}
       />

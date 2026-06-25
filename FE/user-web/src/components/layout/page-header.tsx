@@ -64,7 +64,7 @@ export function PageHeader({ breadcrumbs, actions = [], className }: PageHeaderP
                     <Icon
                       className={cn(
                         "h-[15px] w-[15px] shrink-0",
-                        isLast ? "text-[#2563EB]" : "text-[#9CA3AF]"
+                        isLast ? "text-[#4880EE]" : "text-[#9CA3AF]"
                       )}
                       strokeWidth={1.75}
                     />
@@ -98,7 +98,7 @@ function TooltipIconButton({ action }: { readonly action: HeaderAction }) {
   // variant별 스타일 — 테두리 + 배경을 넣어 눈에 잘 띄게
   const variantClass = {
     primary:
-      "border border-[#2563EB] bg-[#2563EB] text-white hover:bg-[#1D4ED8] hover:border-[#1D4ED8]",
+      "border border-[#4880EE] bg-[#4880EE] text-white hover:bg-[#1D4ED8] hover:border-[#1D4ED8]",
     default:
       "border border-[#E2E5EC] bg-white text-[#374151] hover:bg-[#F5F6F8] hover:border-[#C9CDD6]",
     danger:

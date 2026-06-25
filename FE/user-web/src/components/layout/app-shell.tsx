@@ -256,7 +256,7 @@ export function AppShell() {
         <aside className="fixed inset-y-0 left-0 z-30 flex w-[var(--sidebar-width)] flex-col bg-sidebar">
           {/* Brand */}
           <div className="flex h-[var(--topbar-height)] shrink-0 items-center gap-2.5 px-4">
-            <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-[#2563EB] text-[12px] font-bold text-white">
+            <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-[#4880EE] text-[12px] font-bold text-white">
               한
             </div>
             <span className="text-[14px] font-semibold text-[#111827]">
@@ -288,7 +288,7 @@ export function AppShell() {
           <div className="h-px bg-transparent" />
           {/* User profile */}
           <div className="flex items-center gap-2.5 px-3 py-3">
-            <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#2563EB] text-[11px] font-semibold text-white">
+            <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#4880EE] text-[11px] font-semibold text-white">
               김
             </div>
             <div className="min-w-0 flex-1">

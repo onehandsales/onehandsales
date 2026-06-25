@@ -358,12 +358,12 @@
   - `FE/user-web/src/components/layout/app-shell.tsx`
   - `FE/user-web/src/components/shell/desktop-app-shell.tsx`
 - 결정/반영 내용:
-  - Sidebar 활성 아이템: `border-[#2563EB30] bg-[#1D4ED822]`, 텍스트 `#BFDBFE`, 아이콘 `#93C5FD`.
+  - Sidebar 활성 아이템: `border-[#4880EE30] bg-[#1D4ED822]`, 텍스트 `#BFDBFE`, 아이콘 `#93C5FD`.
   - Sidebar 비활성 아이템: `border-transparent`, 텍스트 `#A1A1AA`, 아이콘 `#71717A`.
   - TopBar 타이틀 18px `#111827` bold, 서브타이틀 11px `#6B7280`.
   - SearchBar(320px)는 타이틀 바로 우측. flex spacer → 오른쪽 버튼 그룹.
   - 새 딜: h-9, `#1D4ED8` bg. 내보내기: h-9, white + `#E5E7EB` border + Download 아이콘.
-  - Bell: bare 20px, 박스 제거. Avatar: 32px 원형 `#2563EB`.
+  - Bell: bare 20px, 박스 제거. Avatar: 32px 원형 `#4880EE`.
   - 사이드바 "담당자" 항목명 유지, 아이콘 `IdCard`.
 - 검증:
   - `pnpm --dir FE/user-web run typecheck`: 통과

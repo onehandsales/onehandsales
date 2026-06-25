@@ -358,7 +358,7 @@ function DealInlineEditForm({
       ) : null}
       <div className="flex justify-end">
         <button
-          className="inline-flex h-8 items-center rounded-md bg-[#2463EB] px-3 text-[13px] font-semibold text-white transition hover:bg-[#1D4ED8] disabled:opacity-60"
+          className="inline-flex h-8 items-center rounded-md bg-[#4880EE] px-3 text-[13px] font-semibold text-white transition hover:bg-[#1D4ED8] disabled:opacity-60"
           disabled={
             updateMutation.isPending ||
             dealName.trim().length === 0 ||
@@ -739,7 +739,7 @@ function DealLinkedContactsTable({
               to={`/contacts/${contact.id}`}
             >
               <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#DBEAFE]">
-                <UserRound className="h-3.5 w-3.5 text-[#2563EB]" />
+                <UserRound className="h-3.5 w-3.5 text-[#4880EE]" />
               </div>
               <div className="grid min-w-0 flex-1 grid-cols-2 items-center gap-4">
                 <div className="min-w-0">
@@ -864,7 +864,7 @@ function DealTimelineMarker({
       {!isLast ? (
         <div className="absolute bottom-0 left-1/2 top-[20px] w-px -translate-x-1/2 bg-[#DBEAFE]" />
       ) : null}
-      <div className="relative h-[8px] w-[8px] rounded-full bg-[#2563EB]" />
+      <div className="relative h-[8px] w-[8px] rounded-full bg-[#4880EE]" />
     </div>
   );
 }
@@ -888,7 +888,7 @@ function DealPanelShell({
         <div className="flex-1" />
         <button
           aria-label={`${title} 추가`}
-          className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#2563EB] text-white transition-colors hover:bg-[#1D4ED8]"
+          className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#4880EE] text-white transition-colors hover:bg-[#1D4ED8]"
           onClick={onAdd}
           type="button"
         >
@@ -1176,14 +1176,14 @@ function DealFollowingActionRow({
           className={cn(
             "mr-2 flex h-5 w-5 shrink-0 items-center justify-center rounded-full border-2 transition-colors",
             log.checkComplete
-              ? "border-emerald-500 bg-emerald-500 text-white"
+              ? "border-[#4880EE] bg-[#4880EE] text-white"
               : "border-[#CBD5E1]"
           )}
           disabled={updateMutation.isPending}
           onClick={() => void onToggleComplete()}
           type="button"
         >
-          {log.checkComplete ? <Check className="h-3 w-3" /> : null}
+          {log.checkComplete ? <Check className="h-3 w-3 text-white" /> : null}
         </button>
         <span
           className={cn(
@@ -2012,13 +2012,15 @@ function FollowingActionLogItem({
         aria-label={log.checkComplete ? "완료 취소" : "완료 처리"}
         className={cn(
           "flex h-5 w-5 shrink-0 items-center justify-center rounded-full border-2 transition-colors",
-          log.checkComplete ? "border-emerald-500 bg-emerald-500 text-white" : "border-gray-300"
+          log.checkComplete
+            ? "border-[#4880EE] bg-[#4880EE] text-white"
+            : "border-gray-300"
         )}
         disabled={updateMutation.isPending}
         onClick={() => void onToggleComplete()}
         type="button"
       >
-        {log.checkComplete ? <Check className="h-3 w-3" /> : null}
+        {log.checkComplete ? <Check className="h-3 w-3 text-white" /> : null}
       </button>
       <div className="min-w-0 flex-1">
         <p

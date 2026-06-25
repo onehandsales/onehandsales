@@ -141,7 +141,7 @@ export function SummaryTaxonomySelect<TItem extends SummaryTaxonomyItem>({
             className={cn(
               "h-8 w-full min-w-0 rounded-full border outline-none transition",
               isOpen
-                ? "border-[#2563EB] bg-white pl-8 pr-7 text-[#111827] ring-1 ring-[#2563EB]"
+                ? "border-[#4880EE] bg-white pl-8 pr-7 text-[#111827] ring-1 ring-[#4880EE]"
                 : selectedId
                   ? cn(
                       getSummaryTaxonomyInputSelectedClass(tone),

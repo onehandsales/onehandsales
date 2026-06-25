@@ -224,7 +224,7 @@ export function ProductListScreen({
       {/* 검색 + 필터 툴바 (데스크톱) */}
       <div className="hidden min-h-10 shrink-0 items-center gap-1.5 overflow-x-auto px-5 py-1 md:flex lg:gap-2">
         <form
-          className="flex h-8 w-[clamp(150px,20vw,220px)] shrink-0 items-center gap-1.5 rounded-md border border-[#E2E5EC] bg-[#FAFAF8] px-3 transition hover:border-[#93C5FD] hover:bg-white focus-within:border-[#2563EB] focus-within:bg-white focus-within:ring-1 focus-within:ring-[#2563EB]"
+          className="flex h-8 w-[clamp(150px,20vw,220px)] shrink-0 items-center gap-1.5 rounded-md border border-[#E2E5EC] bg-[#FAFAF8] px-3 transition hover:border-[#93C5FD] hover:bg-white focus-within:border-[#4880EE] focus-within:bg-white focus-within:ring-1 focus-within:ring-[#4880EE]"
           onSubmit={onSearchSubmit}
         >
           <Search className="h-3 w-3 shrink-0 text-[#9CA3AF]" />
@@ -700,7 +700,7 @@ function FilterChip({
     <button
       aria-label={label}
       className={cn(
-        "inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-[6px] border text-[13px] transition hover:border-[#93C5FD] focus:border-[#2563EB] focus:outline-none focus:ring-1 focus:ring-[#2563EB]",
+        "inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-[6px] border text-[13px] transition hover:border-[#93C5FD] focus:border-[#4880EE] focus:outline-none focus:ring-1 focus:ring-[#4880EE]",
         active
           ? "border-[#C7D7FE] bg-[#EAF2FF] font-bold text-[#1D4ED8]"
           : "border-[#E6EAF0] bg-white font-medium text-[#475569] hover:bg-[#F9FAFB]",
@@ -877,7 +877,7 @@ function ProductTaxonomyFilterCombobox<
               : "h-8 rounded-full text-[13px]",
             isOpen
               ? cn(
-                  "border-[#2563EB] bg-white text-[#111827] ring-1 ring-[#2563EB]",
+                  "border-[#4880EE] bg-white text-[#111827] ring-1 ring-[#4880EE]",
                   isMobile ? "pl-7 pr-7" : "pl-8 pr-7",
                 )
               : selectedIds.length > 0
@@ -1013,7 +1013,7 @@ function ProductTaxonomyFilterCombobox<
           </div>
 
           <button
-            className="flex h-9 w-full items-center gap-1.5 px-3 text-left text-[12px] font-semibold text-[#2563EB] transition hover:bg-[#EFF6FF]"
+            className="flex h-9 w-full items-center gap-1.5 px-3 text-left text-[12px] font-semibold text-[#4880EE] transition hover:bg-[#EFF6FF]"
             onClick={() => {
               setIsOpen(false);
               setSearch("");
@@ -1086,14 +1086,14 @@ function getTaxonomyFilterItemSelectedClass(tone: ProductTaxonomyFilterTone) {
 function getTaxonomyFilterCheckBorderClass(tone: ProductTaxonomyFilterTone) {
   switch (tone) {
     case "blue":
-      return "border-[#2563EB]";
+      return "border-[#4880EE]";
   }
 }
 
 function getTaxonomyFilterCheckDotClass(tone: ProductTaxonomyFilterTone) {
   switch (tone) {
     case "blue":
-      return "bg-[#2563EB]";
+      return "bg-[#4880EE]";
   }
 }
 

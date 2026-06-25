@@ -63,7 +63,7 @@ function LandingBackground({
             로그인
           </button>
           <button
-            className="h-10 rounded-[10px] bg-[#2563EB] px-5 text-sm font-semibold text-white"
+            className="h-10 rounded-[10px] bg-[#4880EE] px-5 text-sm font-semibold text-white"
             onClick={onOpenLogin}
             type="button"
           >
@@ -75,7 +75,7 @@ function LandingBackground({
       <section className="grid min-h-[calc(100vh-72px)] md:grid-cols-[640px_minmax(0,1fr)]">
         <div className="flex min-h-[calc(100vh-72px)] flex-col justify-center px-6 pb-20 pt-10 md:px-0 md:pb-[60px] md:pl-20">
           <div className="inline-flex w-fit items-center gap-2 rounded-full border border-[#BFDBFE] bg-[#EFF6FF] px-3.5 py-1.5">
-            <span className="h-2 w-2 rounded-full bg-[#2563EB]" />
+            <span className="h-2 w-2 rounded-full bg-[#4880EE]" />
             <span className="text-xs font-semibold text-[#1D4ED8]">
               B2C Sales CRM
             </span>
@@ -91,7 +91,7 @@ function LandingBackground({
 
           <div className="mt-[26px] flex flex-col gap-3 sm:flex-row">
             <button
-              className="inline-flex h-[52px] items-center justify-center gap-3 rounded-[12px] bg-[#2563EB] px-6 text-[15px] font-semibold text-white shadow-[0_12px_28px_rgba(37,99,235,0.22)]"
+              className="inline-flex h-[52px] items-center justify-center gap-3 rounded-[12px] bg-[#4880EE] px-6 text-[15px] font-semibold text-white shadow-[0_12px_28px_rgba(72,128,238,0.22)]"
               onClick={onOpenLogin}
               type="button"
             >
@@ -217,7 +217,7 @@ function LandingBackground({
           </div>
 
           <div className="absolute left-[42px] top-[138px] w-[214px] rounded-[14px] border border-[#F1F5F9] bg-white px-3.5 py-3 shadow-[0_8px_28px_rgba(0,0,0,0.11)]">
-            <p className="text-xs font-semibold text-[#2563EB]">Next action</p>
+            <p className="text-xs font-semibold text-[#4880EE]">Next action</p>
             <p className="mt-1 truncate text-sm font-semibold text-[#111827]">
               견적서 확인 요청
             </p>
@@ -283,7 +283,7 @@ function PhoneDeal({
   const toneClass = {
     red: "text-[#B91C1C]",
     amber: "text-[#B45309]",
-    blue: "text-[#2563EB]",
+    blue: "text-[#4880EE]",
   }[tone];
 
   return (

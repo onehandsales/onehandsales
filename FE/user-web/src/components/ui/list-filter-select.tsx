@@ -91,7 +91,7 @@ export function ListFilterSelect<TValue extends string>({
         className={cn(
           "inline-flex h-8 w-full min-w-0 items-center justify-between gap-2 rounded-full border pl-3.5 pr-2.5 text-[13px] outline-none transition",
           isOpen
-            ? "border-[#2563EB] bg-white text-[#111827] ring-1 ring-[#2563EB]"
+            ? "border-[#4880EE] bg-white text-[#111827] ring-1 ring-[#4880EE]"
             : active
               ? "border-[#BFDBFE] bg-[#EFF6FF] font-semibold text-[#1D4ED8]"
               : "border-[#E2E5EC] bg-transparent text-[#6B7280] hover:border-[#D1D5DB] hover:bg-[#FAFAF8]",

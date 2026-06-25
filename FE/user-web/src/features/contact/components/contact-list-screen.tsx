@@ -180,7 +180,7 @@ export function ContactListScreen() {
       {/* 검색 + 필터 툴바 (데스크톱) */}
       <div className="hidden min-h-10 shrink-0 items-center gap-1.5 overflow-x-auto px-5 py-1 md:flex lg:gap-2">
         <form
-          className="flex h-8 w-[clamp(150px,20vw,220px)] shrink-0 items-center gap-1.5 rounded-md border border-[#E2E5EC] bg-[#FAFAF8] px-3 transition hover:border-[#93C5FD] hover:bg-white focus-within:border-[#2563EB] focus-within:bg-white focus-within:ring-1 focus-within:ring-[#2563EB]"
+          className="flex h-8 w-[clamp(150px,20vw,220px)] shrink-0 items-center gap-1.5 rounded-md border border-[#E2E5EC] bg-[#FAFAF8] px-3 transition hover:border-[#93C5FD] hover:bg-white focus-within:border-[#4880EE] focus-within:bg-white focus-within:ring-1 focus-within:ring-[#4880EE]"
           onSubmit={onSearchSubmit}
         >
           <Search className="h-3 w-3 shrink-0 text-[#9CA3AF]" />
@@ -371,7 +371,7 @@ export function ContactListScreen() {
           <button
             aria-label="초기화"
             className={cn(
-              "inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full border text-[12px] font-medium transition hover:border-[#93C5FD] focus:border-[#2563EB] focus:outline-none focus:ring-1 focus:ring-[#2563EB]",
+              "inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full border text-[12px] font-medium transition hover:border-[#93C5FD] focus:border-[#4880EE] focus:outline-none focus:ring-1 focus:ring-[#4880EE]",
               !hasSearch
                 ? "border-[#C7D7FE] bg-[#EAF2FF] font-bold text-[#1D4ED8]"
                 : "border-[#E5E7EB] bg-[#F3F4F6] text-[#4B5563]",
@@ -482,7 +482,7 @@ export function ContactListScreen() {
         {/* FAB */}
         <button
           aria-label="담당자 추가"
-          className="fixed bottom-24 right-5 flex h-[52px] w-[52px] items-center justify-center rounded-full bg-[#2563EB] shadow-[0_4px_16px_rgba(59,130,246,0.27)] transition active:opacity-80"
+          className="fixed bottom-24 right-5 flex h-[52px] w-[52px] items-center justify-center rounded-full bg-[#4880EE] shadow-[0_4px_16px_rgba(59,130,246,0.27)] transition active:opacity-80"
           onClick={() => setIsCreateOpen(true)}
           type="button"
         >
@@ -594,7 +594,7 @@ function ContactRow({
       </div>
       <div className="min-w-0">
         <span
-          className="block truncate text-[12px] font-medium text-[#2563EB]"
+          className="block truncate text-[12px] font-medium text-[#4880EE]"
           title={contact.contactDepartment.departmentName}
         >
           {contact.contactDepartment.departmentName}
@@ -718,7 +718,7 @@ function FilterChip({
     <button
       aria-label={label}
       className={cn(
-        "inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-[6px] border text-[13px] transition hover:border-[#93C5FD] focus:border-[#2563EB] focus:outline-none focus:ring-1 focus:ring-[#2563EB]",
+        "inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-[6px] border text-[13px] transition hover:border-[#93C5FD] focus:border-[#4880EE] focus:outline-none focus:ring-1 focus:ring-[#4880EE]",
         active
           ? "border-[#C7D7FE] bg-[#EAF2FF] font-bold text-[#1D4ED8]"
           : "border-[#E6EAF0] bg-white font-medium text-[#475569] hover:bg-[#F9FAFB]",
@@ -896,7 +896,7 @@ function ContactTaxonomyFilterCombobox<
               : "h-8 rounded-full text-[13px]",
             isOpen
               ? cn(
-                  "border-[#2563EB] bg-white text-[#111827] ring-1 ring-[#2563EB]",
+                  "border-[#4880EE] bg-white text-[#111827] ring-1 ring-[#4880EE]",
                   isMobile ? "pl-7 pr-7" : "pl-8 pr-7",
                 )
               : selectedIds.length > 0
@@ -1034,7 +1034,7 @@ function ContactTaxonomyFilterCombobox<
 
           {onCreateClick ? (
             <button
-              className="flex h-9 w-full items-center gap-1.5 px-3 text-left text-[12px] font-semibold text-[#2563EB] transition hover:bg-[#EFF6FF]"
+              className="flex h-9 w-full items-center gap-1.5 px-3 text-left text-[12px] font-semibold text-[#4880EE] transition hover:bg-[#EFF6FF]"
               onClick={() => {
                 setIsOpen(false);
                 setSearch("");
@@ -1104,13 +1104,13 @@ function getTaxonomyFilterItemSelectedClass(tone: ContactTaxonomyFilterTone) {
 }
 
 function getTaxonomyFilterCheckBorderClass(tone: ContactTaxonomyFilterTone) {
-  if (tone === "blue") return "border-[#2563EB]";
+  if (tone === "blue") return "border-[#4880EE]";
   if (tone === "green") return "border-[#15803D]";
   return "border-[#B45309]";
 }
 
 function getTaxonomyFilterCheckDotClass(tone: ContactTaxonomyFilterTone) {
-  if (tone === "blue") return "bg-[#2563EB]";
+  if (tone === "blue") return "bg-[#4880EE]";
   if (tone === "green") return "bg-[#15803D]";
   return "bg-[#B45309]";
 }

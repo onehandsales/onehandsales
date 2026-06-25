@@ -63,7 +63,7 @@ export function AuthLoginModal({
     >
       <div className="grid justify-items-center gap-2.5">
         <div className="flex items-center gap-2.5">
-          <div className="grid h-10 w-10 place-items-center rounded-[10px] bg-[#2563EB]">
+          <div className="grid h-10 w-10 place-items-center rounded-[10px] bg-[#4880EE]">
             <span className="text-base font-extrabold text-white">한</span>
           </div>
           <h2

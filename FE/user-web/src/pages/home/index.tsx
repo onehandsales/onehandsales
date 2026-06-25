@@ -334,7 +334,7 @@ function SummaryCard({
 }) {
   const styles = {
     amber: "border-[#FED7AA] bg-[#FFF7ED] text-[#C2410C]",
-    blue: "border-[#BFDBFE] bg-[#EFF6FF] text-[#2563EB]",
+    blue: "border-[#BFDBFE] bg-[#EFF6FF] text-[#4880EE]",
     emerald: "border-[#BBF7D0] bg-[#F0FDF4] text-[#047857]",
     violet: "border-[#DDD6FE] bg-[#F5F3FF] text-[#6D28D9]",
   };
@@ -460,7 +460,7 @@ function FollowUpTaskItem({ deal }: { readonly deal: DealListItem }) {
           {deal.dealName} · {getDealCompanyLabel(deal)}
         </p>
       </div>
-      <span className="h-fit rounded-full bg-[#EFF6FF] px-2 py-1 text-[11px] font-semibold text-[#2563EB]">
+      <span className="h-fit rounded-full bg-[#EFF6FF] px-2 py-1 text-[11px] font-semibold text-[#4880EE]">
         {deal.dealStatusLabel}
       </span>
     </Link>
@@ -614,7 +614,7 @@ function QuickActionLink({ action }: { readonly action: QuickAction }) {
   const Icon = action.icon;
   const toneClass = {
     amber: "bg-[#FFF7ED] text-[#C2410C]",
-    blue: "bg-[#EFF6FF] text-[#2563EB]",
+    blue: "bg-[#EFF6FF] text-[#4880EE]",
     emerald: "bg-[#ECFDF5] text-[#047857]",
     slate: "bg-[#F8FAFC] text-[#475569]",
   }[action.tone];
@@ -678,7 +678,7 @@ function ActivityItemRow({ activity }: { readonly activity: ActivityItem }) {
       <span
         className={cn(
           "flex h-7 w-7 items-center justify-center rounded-lg",
-          isDeal ? "bg-[#EFF6FF] text-[#2563EB]" : "bg-[#F5F3FF] text-[#6D28D9]"
+          isDeal ? "bg-[#EFF6FF] text-[#4880EE]" : "bg-[#F5F3FF] text-[#6D28D9]"
         )}
       >
         {isDeal ? (

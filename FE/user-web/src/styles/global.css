@@ -11,10 +11,10 @@
     --muted-foreground: 220 12% 46%; /* #6B7280 */
     --border: 220 16% 90%;           /* #E2E5EC */
     --input: 220 16% 90%;
-    --ring: 221 83% 53%;             /* #2563EB */
+    --ring: 220 83% 61%;             /* #4880EE */
 
     /* ── 주요 액센트 (기존 파란색 유지) ── */
-    --primary: 221 83% 53%;          /* #2563EB */
+    --primary: 220 83% 61%;          /* #4880EE */
     --primary-foreground: 0 0% 100%;
 
     --destructive: 0 72% 51%;
@@ -34,18 +34,18 @@
     --sidebar-foreground: 222 20% 22%; /* #2D3341 */
     --sidebar-muted: 220 13% 91%;    /* #E5E7EB */
     --sidebar-border: 40 13% 98%;    /* 배경과 동일 → 보더 사라짐 */
-    --sidebar-accent: 221 83% 53%;   /* #2563EB */
+    --sidebar-accent: 220 83% 61%;   /* #4880EE */
 
     /* ── 칩 / FAB ── */
     --chip: 220 16% 94%;
-    --chip-active: 221 83% 53%;
+    --chip-active: 220 83% 61%;
     --chip-active-foreground: 0 0% 100%;
-    --fab: 221 83% 53%;
+    --fab: 220 83% 61%;
     --fab-foreground: 0 0% 100%;
 
     /* ── 그림자 ── */
     --shadow-soft: 0 1px 3px rgba(15, 23, 42, 0.06), 0 4px 12px rgba(15, 23, 42, 0.04);
-    --shadow-fab: 0 8px 24px rgba(37, 99, 235, 0.22);
+    --shadow-fab: 0 8px 24px rgba(72, 128, 238, 0.22);
     --shadow-panel: 0 2px 8px rgba(15, 23, 42, 0.08);
     --shadow-modal: 0 4px 24px rgba(15, 23, 42, 0.12);
 

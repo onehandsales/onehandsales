@@ -193,7 +193,7 @@ pen에서 즉시 확인 가능한 토큰 축:
   - `#1E2030`
 - brand / action
   - `#1D4ED8`
-  - `#2563EB`
+  - `#4880EE`
   - `#5E5CE6`
 - semantic
   - green / amber / red / cyan / indigo 계열

@@ -224,7 +224,7 @@ function SearchGroupSection({ group, onSelect }: SearchGroupSectionProps) {
   return (
     <div className="px-2 py-1">
       <div className="flex items-center gap-1.5 px-2 py-1.5">
-        <Icon className="h-3.5 w-3.5 text-[#2563EB]" strokeWidth={2} />
+        <Icon className="h-3.5 w-3.5 text-[#4880EE]" strokeWidth={2} />
         <span className="text-[11px] font-semibold uppercase tracking-wide text-[#9CA3AF]">
           {meta.label}
         </span>

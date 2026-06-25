@@ -84,7 +84,7 @@ export function SidebarNav({ className }: SidebarNavProps) {
                       className={cn(
                         "h-[15px] w-[15px] shrink-0",
                         isActive
-                          ? "text-[#2563EB]"
+                          ? "text-[#4880EE]"
                           : "text-[#9CA3AF] group-hover:text-[#6B7280]"
                       )}
                       strokeWidth={1.75}

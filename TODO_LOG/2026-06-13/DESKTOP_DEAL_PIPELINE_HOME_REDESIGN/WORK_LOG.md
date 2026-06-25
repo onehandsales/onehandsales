@@ -38,7 +38,7 @@ pen 파일 기준 Desktop Deal Pipeline Home 테이블 레이아웃 구현 + Dea
 ### 3차 — Sidebar & TopBar pen 기준 반영
 
 - `sidebar-nav.tsx`: 3그룹 구조(주요 메뉴/업무/관리) + 그룹 레이블 11px bold uppercase.
-  - 활성: `#BFDBFE` 텍스트 + `#1D4ED822` bg + `#2563EB30` 보더, 아이콘 `#93C5FD`.
+  - 활성: `#BFDBFE` 텍스트 + `#1D4ED822` bg + `#4880EE30` 보더, 아이콘 `#93C5FD`.
   - 비활성: `#A1A1AA` 텍스트, 아이콘 `#71717A`.
   - "담당자" 항목 `IdCard` 아이콘.
 - `app-shell.tsx` TopBar pen 스펙 반영:
@@ -47,7 +47,7 @@ pen 파일 기준 Desktop Deal Pipeline Home 테이블 레이아웃 구현 + Dea
   - `새 딜` 버튼: h-9, `#1D4ED8` bg, 13px semibold.
   - `내보내기` 버튼: h-9, white bg + `#E5E7EB` border + `Download` 아이콘.
   - Bell: 박스 없이 bare 아이콘 20px `#6B7280`.
-  - Avatar: 32px 원형 `#2563EB`.
+  - Avatar: 32px 원형 `#4880EE`.
 
 ## 적용 범위 또는 변경 파일
 

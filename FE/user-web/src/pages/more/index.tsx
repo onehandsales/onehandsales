@@ -95,7 +95,7 @@ export function MorePage() {
             width: 48,
             height: 48,
             backgroundColor: "#EFF6FF",
-            color: "#2563EB",
+            color: "#4880EE",
           }}
         >
           {initial}
@@ -154,8 +154,8 @@ export function MorePage() {
         <MenuRow
           label="Import"
           to="/import"
-          iconBg="#2563EB18"
-          iconColor="#2563EB"
+          iconBg="#4880EE18"
+          iconColor="#4880EE"
           icon={Upload}
           isLast
         />

@@ -130,7 +130,7 @@
                   "height": 40,
                   "fill": "#1D4ED822",
                   "cornerRadius": 8,
-                  "stroke": "#2563EB30",
+                  "stroke": "#4880EE30",
                   "strokeWidth": 1,
                   "gap": 10,
                   "padding": [
@@ -798,7 +798,7 @@
                   "name": "Account Avatar",
                   "width": 32,
                   "height": 32,
-                  "fill": "#2563EB",
+                  "fill": "#4880EE",
                   "cornerRadius": 16,
                   "justifyContent": "center",
                   "alignItems": "center",
@@ -840,7 +840,7 @@
                   "name": "Tab 전체",
                   "height": 48,
                   "fill": "#00000000",
-                  "stroke": "#2563EB",
+                  "stroke": "#4880EE",
                   "strokeWidth": {
                     "bottom": 2
                   },
@@ -855,7 +855,7 @@
                       "type": "text",
                       "id": "kvZI9",
                       "name": "Tab Label 전체",
-                      "fill": "#2563EB",
+                      "fill": "#4880EE",
                       "content": "전체",
                       "fontFamily": "Inter",
                       "fontSize": 13,
@@ -878,7 +878,7 @@
                           "type": "text",
                           "id": "mCVHT",
                           "name": "Badge Count 전체",
-                          "fill": "#2563EB",
+                          "fill": "#4880EE",
                           "content": "24",
                           "fontFamily": "Inter",
                           "fontSize": 10,
@@ -2921,7 +2921,7 @@
                               "type": "ellipse",
                               "id": "zkDoQ",
                               "name": "TL Dot",
-                              "fill": "#2563EB",
+                              "fill": "#4880EE",
                               "width": 9,
                               "height": 9
                             },
@@ -7101,9 +7101,9 @@
           "id": "csZ87",
           "name": "Empty CTA Btn",
           "height": 40,
-          "fill": "#2563EB",
+          "fill": "#4880EE",
           "cornerRadius": 8,
-          "stroke": "#2563EB",
+          "stroke": "#4880EE",
           "strokeWidth": 1,
           "padding": [
             0,
@@ -7571,7 +7571,7 @@
                   "height": 40,
                   "fill": "#1D4ED822",
                   "cornerRadius": 8,
-                  "stroke": "#2563EB30",
+                  "stroke": "#4880EE30",
                   "strokeWidth": 1,
                   "gap": 10,
                   "padding": [
@@ -8170,7 +8170,7 @@
                   "name": "Account Avatar",
                   "width": 32,
                   "height": 32,
-                  "fill": "#2563EB",
+                  "fill": "#4880EE",
                   "cornerRadius": 16,
                   "justifyContent": "center",
                   "alignItems": "center",
@@ -10743,7 +10743,7 @@
                   "height": 40,
                   "fill": "#1D4ED822",
                   "cornerRadius": 8,
-                  "stroke": "#2563EB30",
+                  "stroke": "#4880EE30",
                   "strokeWidth": 1,
                   "gap": 10,
                   "padding": [
@@ -11273,13 +11273,13 @@
                       "height": 14,
                       "icon": "download",
                       "library": "lucide",
-                      "fill": "#2563EB"
+                      "fill": "#4880EE"
                     },
                     {
                       "type": "text",
                       "id": "tHAYL",
                       "name": "Export Label",
-                      "fill": "#2563EB",
+                      "fill": "#4880EE",
                       "content": "내보내기",
                       "fontFamily": "Inter",
                       "fontSize": 13,
@@ -11303,7 +11303,7 @@
                   "name": "Account Avatar",
                   "width": 32,
                   "height": 32,
-                  "fill": "#2563EB",
+                  "fill": "#4880EE",
                   "cornerRadius": 16,
                   "justifyContent": "center",
                   "alignItems": "center",
@@ -14077,7 +14077,7 @@
                   "height": 40,
                   "fill": "#1D4ED822",
                   "cornerRadius": 8,
-                  "stroke": "#2563EB30",
+                  "stroke": "#4880EE30",
                   "strokeWidth": 1,
                   "gap": 10,
                   "padding": [
@@ -15809,7 +15809,7 @@
                   "height": 40,
                   "fill": "#1D4ED822",
                   "cornerRadius": 8,
-                  "stroke": "#2563EB30",
+                  "stroke": "#4880EE30",
                   "strokeWidth": 1,
                   "gap": 10,
                   "padding": [
@@ -16300,13 +16300,13 @@
                       "height": 14,
                       "icon": "download",
                       "library": "lucide",
-                      "fill": "#2563EB"
+                      "fill": "#4880EE"
                     },
                     {
                       "type": "text",
                       "id": "YLoHW",
                       "name": "Export Label",
-                      "fill": "#2563EB",
+                      "fill": "#4880EE",
                       "content": "내보내기",
                       "fontFamily": "Inter",
                       "fontSize": 13,
@@ -16330,7 +16330,7 @@
                   "name": "Account Avatar",
                   "width": 32,
                   "height": 32,
-                  "fill": "#2563EB",
+                  "fill": "#4880EE",
                   "cornerRadius": 16,
                   "justifyContent": "center",
                   "alignItems": "center",
@@ -18596,7 +18596,7 @@
                   "height": 40,
                   "fill": "#1D4ED822",
                   "cornerRadius": 8,
-                  "stroke": "#2563EB30",
+                  "stroke": "#4880EE30",
                   "strokeWidth": 1,
                   "gap": 10,
                   "padding": [
@@ -29456,7 +29456,7 @@
                   "height": 34,
                   "fill": "#1d4ed822",
                   "cornerRadius": 8,
-                  "stroke": "#2563eb30",
+                  "stroke": "#4880EE30",
                   "strokeWidth": 1,
                   "gap": 10,
                   "padding": [
@@ -32617,7 +32617,7 @@
                   "height": 34,
                   "fill": "#1d4ed822",
                   "cornerRadius": 8,
-                  "stroke": "#2563eb30",
+                  "stroke": "#4880EE30",
                   "strokeWidth": 1,
                   "gap": 10,
                   "padding": [
@@ -34319,7 +34319,7 @@
                   "height": 34,
                   "fill": "#1d4ed822",
                   "cornerRadius": 8,
-                  "stroke": "#2563eb30",
+                  "stroke": "#4880EE30",
                   "strokeWidth": 1,
                   "gap": 10,
                   "padding": [
@@ -35279,13 +35279,13 @@
                                   "height": 12,
                                   "icon": "sparkles",
                                   "library": "lucide",
-                                  "fill": "#2563EB"
+                                  "fill": "#4880EE"
                                 },
                                 {
                                   "type": "text",
                                   "id": "R4izy",
                                   "name": "AI Badge Text",
-                                  "fill": "#2563EB",
+                                  "fill": "#4880EE",
                                   "content": "AI 자동",
                                   "fontFamily": "Inter",
                                   "fontSize": 11,
@@ -35935,7 +35935,7 @@
                   "height": 34,
                   "fill": "#1D4ED822",
                   "cornerRadius": 8,
-                  "stroke": "#2563EB30",
+                  "stroke": "#4880EE30",
                   "strokeWidth": 1,
                   "gap": 10,
                   "padding": [
@@ -36459,7 +36459,7 @@
                                   "x": 0,
                                   "y": 0,
                                   "name": "H",
-                                  "fill": "#2563EB",
+                                  "fill": "#4880EE",
                                   "width": 24,
                                   "height": 3
                                 },
@@ -36469,7 +36469,7 @@
                                   "x": 0,
                                   "y": 0,
                                   "name": "V",
-                                  "fill": "#2563EB",
+                                  "fill": "#4880EE",
                                   "width": 3,
                                   "height": 24
                                 }
@@ -36492,7 +36492,7 @@
                                   "x": 0,
                                   "y": 0,
                                   "name": "H",
-                                  "fill": "#2563EB",
+                                  "fill": "#4880EE",
                                   "width": 24,
                                   "height": 3
                                 },
@@ -36502,7 +36502,7 @@
                                   "x": 21,
                                   "y": 0,
                                   "name": "V",
-                                  "fill": "#2563EB",
+                                  "fill": "#4880EE",
                                   "width": 3,
                                   "height": 24
                                 }
@@ -36525,7 +36525,7 @@
                                   "x": 0,
                                   "y": 21,
                                   "name": "H",
-                                  "fill": "#2563EB",
+                                  "fill": "#4880EE",
                                   "width": 24,
                                   "height": 3
                                 },
@@ -36535,7 +36535,7 @@
                                   "x": 0,
                                   "y": 0,
                                   "name": "V",
-                                  "fill": "#2563EB",
+                                  "fill": "#4880EE",
                                   "width": 3,
                                   "height": 24
                                 }
@@ -36558,7 +36558,7 @@
                                   "x": 0,
                                   "y": 21,
                                   "name": "H",
-                                  "fill": "#2563EB",
+                                  "fill": "#4880EE",
                                   "width": 24,
                                   "height": 3
                                 },
@@ -36568,7 +36568,7 @@
                                   "x": 21,
                                   "y": 0,
                                   "name": "V",
-                                  "fill": "#2563EB",
+                                  "fill": "#4880EE",
                                   "width": 3,
                                   "height": 24
                                 }
@@ -36582,7 +36582,7 @@
                               "y": 105,
                               "name": "Scan Line",
                               "opacity": 0.4,
-                              "fill": "#2563EB",
+                              "fill": "#4880EE",
                               "width": 356,
                               "height": 2
                             },
@@ -37024,7 +37024,7 @@
                                   "name": "O기존 회사 연결",
                                   "width": "fill_container",
                                   "height": 36,
-                                  "fill": "#2563EB",
+                                  "fill": "#4880EE",
                                   "cornerRadius": 8,
                                   "padding": [
                                     0,
@@ -39041,7 +39041,7 @@
                   "height": 34,
                   "fill": "#1D4ED822",
                   "cornerRadius": 8,
-                  "stroke": "#2563EB30",
+                  "stroke": "#4880EE30",
                   "strokeWidth": 1,
                   "gap": 10,
                   "padding": [
@@ -39404,9 +39404,9 @@
                       "name": "Step Circle 1",
                       "width": 28,
                       "height": 28,
-                      "fill": "#2563EB",
+                      "fill": "#4880EE",
                       "cornerRadius": 14,
-                      "stroke": "#2563EB",
+                      "stroke": "#4880EE",
                       "strokeWidth": 1,
                       "justifyContent": "center",
                       "alignItems": "center",
@@ -41398,7 +41398,7 @@
                   "height": 34,
                   "fill": "#1D4ED822",
                   "cornerRadius": 8,
-                  "stroke": "#2563EB30",
+                  "stroke": "#4880EE30",
                   "strokeWidth": 1,
                   "gap": 10,
                   "padding": [
@@ -42554,7 +42554,7 @@
                                   "type": "text",
                                   "id": "iTCh4",
                                   "name": "Restore Text",
-                                  "fill": "#2563EB",
+                                  "fill": "#4880EE",
                                   "content": "복구",
                                   "fontFamily": "Inter",
                                   "fontSize": 12,
@@ -42776,7 +42776,7 @@
                                   "type": "text",
                                   "id": "s9Pd6",
                                   "name": "Restore Text",
-                                  "fill": "#2563EB",
+                                  "fill": "#4880EE",
                                   "content": "복구",
                                   "fontFamily": "Inter",
                                   "fontSize": 12,
@@ -42998,7 +42998,7 @@
                                   "type": "text",
                                   "id": "wO6vU",
                                   "name": "Restore Text",
-                                  "fill": "#2563EB",
+                                  "fill": "#4880EE",
                                   "content": "복구",
                                   "fontFamily": "Inter",
                                   "fontSize": 12,
@@ -43220,7 +43220,7 @@
                                   "type": "text",
                                   "id": "iST0U",
                                   "name": "Restore Text",
-                                  "fill": "#2563EB",
+                                  "fill": "#4880EE",
                                   "content": "복구",
                                   "fontFamily": "Inter",
                                   "fontSize": 12,
@@ -43442,7 +43442,7 @@
                                   "type": "text",
                                   "id": "E9aKXQ",
                                   "name": "Restore Text",
-                                  "fill": "#2563EB",
+                                  "fill": "#4880EE",
                                   "content": "복구",
                                   "fontFamily": "Inter",
                                   "fontSize": 12,
@@ -43664,7 +43664,7 @@
                                   "type": "text",
                                   "id": "Y9l7CU",
                                   "name": "Restore Text",
-                                  "fill": "#2563EB",
+                                  "fill": "#4880EE",
                                   "content": "복구",
                                   "fontFamily": "Inter",
                                   "fontSize": 12,
@@ -44171,7 +44171,7 @@
                       "type": "text",
                       "id": "cDR4p",
                       "name": "CRBT",
-                      "fill": "#2563EB",
+                      "fill": "#4880EE",
                       "content": "복구",
                       "fontFamily": "Inter",
                       "fontSize": 11,
@@ -44317,7 +44317,7 @@
                       "type": "text",
                       "id": "Qp3BF",
                       "name": "RBT",
-                      "fill": "#2563EB",
+                      "fill": "#4880EE",
                       "content": "복구",
                       "fontFamily": "Inter",
                       "fontSize": 11,
@@ -44438,7 +44438,7 @@
                       "type": "text",
                       "id": "eL72e",
                       "name": "RBT",
-                      "fill": "#2563EB",
+                      "fill": "#4880EE",
                       "content": "복구",
                       "fontFamily": "Inter",
                       "fontSize": 11,
@@ -44559,7 +44559,7 @@
                       "type": "text",
                       "id": "Ku5ce",
                       "name": "RBT",
-                      "fill": "#2563EB",
+                      "fill": "#4880EE",
                       "content": "복구",
                       "fontFamily": "Inter",
                       "fontSize": 11,
@@ -45227,7 +45227,7 @@
                   "height": 34,
                   "fill": "#1D4ED822",
                   "cornerRadius": 8,
-                  "stroke": "#2563EB30",
+                  "stroke": "#4880EE30",
                   "strokeWidth": 1,
                   "gap": 10,
                   "padding": [
@@ -45645,9 +45645,9 @@
                       "name": "Step Circle 2",
                       "width": 28,
                       "height": 28,
-                      "fill": "#2563EB",
+                      "fill": "#4880EE",
                       "cornerRadius": 14,
-                      "stroke": "#2563EB",
+                      "stroke": "#4880EE",
                       "strokeWidth": 1,
                       "justifyContent": "center",
                       "alignItems": "center",
@@ -45952,13 +45952,13 @@
                           "height": 12,
                           "icon": "sparkles",
                           "library": "lucide",
-                          "fill": "#2563EB"
+                          "fill": "#4880EE"
                         },
                         {
                           "type": "text",
                           "id": "Q5Yl2P",
                           "name": "AI Badge Text",
-                          "fill": "#2563EB",
+                          "fill": "#4880EE",
                           "content": "AI 정확도 91%",
                           "fontFamily": "Inter",
                           "fontSize": 11,
@@ -47242,7 +47242,7 @@
                   "height": 34,
                   "fill": "#1D4ED822",
                   "cornerRadius": 8,
-                  "stroke": "#2563EB30",
+                  "stroke": "#4880EE30",
                   "strokeWidth": 1,
                   "gap": 10,
                   "padding": [
@@ -47717,9 +47717,9 @@
                       "name": "Step Circle 3",
                       "width": 28,
                       "height": 28,
-                      "fill": "#2563EB",
+                      "fill": "#4880EE",
                       "cornerRadius": 14,
-                      "stroke": "#2563EB",
+                      "stroke": "#4880EE",
                       "strokeWidth": 1,
                       "justifyContent": "center",
                       "alignItems": "center",
@@ -48317,13 +48317,13 @@
                           "height": 12,
                           "icon": "sparkles",
                           "library": "lucide",
-                          "fill": "#2563EB"
+                          "fill": "#4880EE"
                         },
                         {
                           "type": "text",
                           "id": "BQc5F",
                           "name": "AI Badge Text",
-                          "fill": "#2563EB",
+                          "fill": "#4880EE",
                           "content": "AI 매핑 정확도 91%",
                           "fontFamily": "Inter",
                           "fontSize": 11,
@@ -48483,7 +48483,7 @@
                               "type": "text",
                               "id": "y3idrA",
                               "name": "Edit T",
-                              "fill": "#2563EB",
+                              "fill": "#4880EE",
                               "content": "직접 수정",
                               "fontFamily": "Inter",
                               "fontSize": 12,
@@ -50316,7 +50316,7 @@
                   "height": 34,
                   "fill": "#1D4ED822",
                   "cornerRadius": 8,
-                  "stroke": "#2563EB30",
+                  "stroke": "#4880EE30",
                   "strokeWidth": 1,
                   "gap": 10,
                   "padding": [
@@ -50848,9 +50848,9 @@
                       "name": "Step Circle 4",
                       "width": 28,
                       "height": 28,
-                      "fill": "#2563EB",
+                      "fill": "#4880EE",
                       "cornerRadius": 14,
-                      "stroke": "#2563EB",
+                      "stroke": "#4880EE",
                       "strokeWidth": 1,
                       "justifyContent": "center",
                       "alignItems": "center",
@@ -58566,7 +58566,7 @@
       "name": "PrimaryButton",
       "reusable": true,
       "height": 38,
-      "fill": "#2563EB",
+      "fill": "#4880EE",
       "cornerRadius": 8,
       "gap": 6,
       "padding": [
@@ -59865,7 +59865,7 @@
                   "name": "Avatar",
                   "width": 36,
                   "height": 36,
-                  "fill": "#2563EB",
+                  "fill": "#4880EE",
                   "cornerRadius": 18,
                   "justifyContent": "center",
                   "alignItems": "center",
@@ -60348,7 +60348,7 @@
                           "name": "Date Badge 15",
                           "width": 28,
                           "height": 28,
-                          "fill": "#2563EB",
+                          "fill": "#4880EE",
                           "cornerRadius": 14,
                           "justifyContent": "center",
                           "alignItems": "center",
@@ -60405,7 +60405,7 @@
                               "height": 46,
                               "fill": "#EFF6FF",
                               "cornerRadius": 6,
-                              "stroke": "#2563EB",
+                              "stroke": "#4880EE",
                               "strokeWidth": {
                                 "left": 3
                               },
@@ -60420,7 +60420,7 @@
                                   "type": "text",
                                   "id": "F5RqO",
                                   "name": "Mon All Day Title",
-                                  "fill": "#2563EB",
+                                  "fill": "#4880EE",
                                   "content": "주간 목표 점검",
                                   "fontFamily": "Inter",
                                   "fontSize": 12,
@@ -62708,7 +62708,7 @@
                   "name": "RowIconBg",
                   "width": 34,
                   "height": 34,
-                  "fill": "#2563EB18",
+                  "fill": "#4880EE18",
                   "cornerRadius": 10,
                   "justifyContent": "center",
                   "alignItems": "center",
@@ -62721,7 +62721,7 @@
                       "height": 18,
                       "icon": "upload",
                       "library": "lucide",
-                      "fill": "#2563EB"
+                      "fill": "#4880EE"
                     }
                   ]
                 },
@@ -64459,7 +64459,7 @@
                   "id": "hdyjV",
                   "name": "NavCTA",
                   "height": 40,
-                  "fill": "#2563EB",
+                  "fill": "#4880EE",
                   "cornerRadius": 10,
                   "padding": [
                     0,
@@ -64525,7 +64525,7 @@
                       "type": "text",
                       "id": "yCQDY",
                       "name": "BadgeTxt",
-                      "fill": "#2563EB",
+                      "fill": "#4880EE",
                       "content": "B2B 영업팀을 위한 CRM",
                       "fontFamily": "Inter",
                       "fontSize": 12,
@@ -64571,7 +64571,7 @@
                       "id": "jGC0I",
                       "name": "PrimaryCTA",
                       "height": 52,
-                      "fill": "#2563EB",
+                      "fill": "#4880EE",
                       "cornerRadius": 12,
                       "padding": [
                         0,
@@ -65850,7 +65850,7 @@
                           "height": 18,
                           "icon": "briefcase-business",
                           "library": "lucide",
-                          "fill": "#2563EB"
+                          "fill": "#4880EE"
                         }
                       ]
                     },
@@ -66275,7 +66275,7 @@
                       "id": "E14mO",
                       "name": "NavCTA",
                       "height": 40,
-                      "fill": "#2563EB",
+                      "fill": "#4880EE",
                       "cornerRadius": 10,
                       "padding": [
                         0,
@@ -66341,7 +66341,7 @@
                           "type": "text",
                           "id": "flPL1",
                           "name": "BadgeTxt",
-                          "fill": "#2563EB",
+                          "fill": "#4880EE",
                           "content": "B2B 영업팀을 위한 CRM",
                           "fontFamily": "Inter",
                           "fontSize": 12,
@@ -66387,7 +66387,7 @@
                           "id": "ppvfZ",
                           "name": "PrimaryCTA",
                           "height": 52,
-                          "fill": "#2563EB",
+                          "fill": "#4880EE",
                           "cornerRadius": 12,
                           "padding": [
                             0,
@@ -67523,7 +67523,7 @@
                               "height": 18,
                               "icon": "briefcase-business",
                               "library": "lucide",
-                              "fill": "#2563EB"
+                              "fill": "#4880EE"
                             }
                           ]
                         },
@@ -69340,7 +69340,7 @@
                       "height": 40,
                       "fill": "#1D4ED822",
                       "cornerRadius": 8,
-                      "stroke": "#2563EB30",
+                      "stroke": "#4880EE30",
                       "strokeWidth": 1,
                       "gap": 10,
                       "padding": [
@@ -69880,7 +69880,7 @@
                           "height": 48,
                           "icon": "briefcase-business",
                           "library": "lucide",
-                          "fill": "#2563EB"
+                          "fill": "#4880EE"
                         }
                       ]
                     },
@@ -69909,7 +69909,7 @@
                       "id": "i8njxm",
                       "name": "CTA Button",
                       "height": 44,
-                      "fill": "#2563EB",
+                      "fill": "#4880EE",
                       "cornerRadius": 10,
                       "padding": [
                         0,
@@ -70143,7 +70143,7 @@
                       "height": 40,
                       "fill": "#1D4ED822",
                       "cornerRadius": 8,
-                      "stroke": "#2563EB30",
+                      "stroke": "#4880EE30",
                       "strokeWidth": 1,
                       "gap": 10,
                       "padding": [
@@ -70605,7 +70605,7 @@
                           "height": 48,
                           "icon": "building-2",
                           "library": "lucide",
-                          "fill": "#2563EB"
+                          "fill": "#4880EE"
                         }
                       ]
                     },
@@ -70634,7 +70634,7 @@
                       "id": "BVems",
                       "name": "CTA Button",
                       "height": 44,
-                      "fill": "#2563EB",
+                      "fill": "#4880EE",
                       "cornerRadius": 10,
                       "padding": [
                         0,
@@ -70907,7 +70907,7 @@
                       "height": 40,
                       "fill": "#1D4ED822",
                       "cornerRadius": 8,
-                      "stroke": "#2563EB30",
+                      "stroke": "#4880EE30",
                       "strokeWidth": 1,
                       "gap": 10,
                       "padding": [
@@ -71330,7 +71330,7 @@
                           "height": 48,
                           "icon": "id-card",
                           "library": "lucide",
-                          "fill": "#2563EB"
+                          "fill": "#4880EE"
                         }
                       ]
                     },
@@ -71359,7 +71359,7 @@
                       "id": "jECHq",
                       "name": "CTA Button",
                       "height": 44,
-                      "fill": "#2563EB",
+                      "fill": "#4880EE",
                       "cornerRadius": 10,
                       "padding": [
                         0,
@@ -71525,7 +71525,7 @@
                       "height": 40,
                       "fill": "#1D4ED822",
                       "cornerRadius": 8,
-                      "stroke": "#2563EB30",
+                      "stroke": "#4880EE30",
                       "strokeWidth": 1,
                       "gap": 10,
                       "padding": [
@@ -72070,7 +72070,7 @@
                           "type": "text",
                           "id": "T7XGe",
                           "name": "View Label",
-                          "fill": "#2563EB",
+                          "fill": "#4880EE",
                           "content": "칸반 뷰",
                           "fontFamily": "Inter",
                           "fontSize": 12,
@@ -72090,7 +72090,7 @@
                       "id": "A8ZHJ",
                       "name": "Add Deal Button",
                       "height": 36,
-                      "fill": "#2563EB",
+                      "fill": "#4880EE",
                       "cornerRadius": 8,
                       "padding": [
                         0,
@@ -72221,7 +72221,7 @@
                                   "type": "text",
                                   "id": "k5cxNn",
                                   "name": "Deal Amount",
-                                  "fill": "#2563EB",
+                                  "fill": "#4880EE",
                                   "content": "₩85,000,000",
                                   "fontFamily": "Inter",
                                   "fontSize": 12,
@@ -72287,7 +72287,7 @@
                                   "type": "text",
                                   "id": "aF0b5",
                                   "name": "Deal Amount",
-                                  "fill": "#2563EB",
+                                  "fill": "#4880EE",
                                   "content": "₩32,000,000",
                                   "fontFamily": "Inter",
                                   "fontSize": 12,
@@ -72353,7 +72353,7 @@
                                   "type": "text",
                                   "id": "z6FIcU",
                                   "name": "Deal Amount",
-                                  "fill": "#2563EB",
+                                  "fill": "#4880EE",
                                   "content": "₩15,000,000",
                                   "fontFamily": "Inter",
                                   "fontSize": 12,
@@ -72489,7 +72489,7 @@
                                   "type": "text",
                                   "id": "aAevE",
                                   "name": "Deal Amount",
-                                  "fill": "#2563EB",
+                                  "fill": "#4880EE",
                                   "content": "₩230,000,000",
                                   "fontFamily": "Inter",
                                   "fontSize": 12,
@@ -72555,7 +72555,7 @@
                                   "type": "text",
                                   "id": "cn72S",
                                   "name": "Deal Amount",
-                                  "fill": "#2563EB",
+                                  "fill": "#4880EE",
                                   "content": "₩120,000,000",
                                   "fontFamily": "Inter",
                                   "fontSize": 12,
@@ -72691,7 +72691,7 @@
                                   "type": "text",
                                   "id": "N12pI",
                                   "name": "Deal Amount",
-                                  "fill": "#2563EB",
+                                  "fill": "#4880EE",
                                   "content": "₩450,000,000",
                                   "fontFamily": "Inter",
                                   "fontSize": 12,
@@ -72757,7 +72757,7 @@
                                   "type": "text",
                                   "id": "yjEPp",
                                   "name": "Deal Amount",
-                                  "fill": "#2563EB",
+                                  "fill": "#4880EE",
                                   "content": "₩28,000,000",
                                   "fontFamily": "Inter",
                                   "fontSize": 12,
@@ -72823,7 +72823,7 @@
                                   "type": "text",
                                   "id": "q8zCe",
                                   "name": "Deal Amount",
-                                  "fill": "#2563EB",
+                                  "fill": "#4880EE",
                                   "content": "₩67,000,000",
                                   "fontFamily": "Inter",
                                   "fontSize": 12,
@@ -72889,7 +72889,7 @@
                                   "type": "text",
                                   "id": "aVOUx",
                                   "name": "Deal Amount",
-                                  "fill": "#2563EB",
+                                  "fill": "#4880EE",
                                   "content": "₩95,000,000",
                                   "fontFamily": "Inter",
                                   "fontSize": 12,
@@ -73025,7 +73025,7 @@
                                   "type": "text",
                                   "id": "jodul",
                                   "name": "Deal Amount",
-                                  "fill": "#2563EB",
+                                  "fill": "#4880EE",
                                   "content": "₩380,000,000",
                                   "fontFamily": "Inter",
                                   "fontSize": 12,
@@ -73091,7 +73091,7 @@
                                   "type": "text",
                                   "id": "M5VEF9",
                                   "name": "Deal Amount",
-                                  "fill": "#2563EB",
+                                  "fill": "#4880EE",
                                   "content": "₩210,000,000",
                                   "fontFamily": "Inter",
                                   "fontSize": 12,
@@ -73227,7 +73227,7 @@
                                   "type": "text",
                                   "id": "H77WzS",
                                   "name": "Deal Amount",
-                                  "fill": "#2563EB",
+                                  "fill": "#4880EE",
                                   "content": "₩175,000,000",
                                   "fontFamily": "Inter",
                                   "fontSize": 12,
@@ -73608,7 +73608,7 @@
                   "height": 40,
                   "fill": "#1D4ED822",
                   "cornerRadius": 8,
-                  "stroke": "#2563EB30",
+                  "stroke": "#4880EE30",
                   "strokeWidth": 1,
                   "gap": 10,
                   "padding": [
@@ -74944,7 +74944,7 @@
                   "height": 40,
                   "fill": "#1D4ED822",
                   "cornerRadius": 8,
-                  "stroke": "#2563EB30",
+                  "stroke": "#4880EE30",
                   "strokeWidth": 1,
                   "gap": 10,
                   "padding": [
@@ -75638,7 +75638,7 @@
                                       "type": "text",
                                       "id": "N6xl3g",
                                       "name": "Linked Value",
-                                      "fill": "#2563EB",
+                                      "fill": "#4880EE",
                                       "content": "12명",
                                       "fontFamily": "Inter",
                                       "fontSize": 19,
@@ -76485,7 +76485,7 @@
                                   "type": "ellipse",
                                   "id": "F6UyxT",
                                   "name": "Deal Dot",
-                                  "fill": "#2563EB",
+                                  "fill": "#4880EE",
                                   "width": 9,
                                   "height": 9
                                 },
@@ -76511,7 +76511,7 @@
                                       "type": "text",
                                       "id": "MLNju",
                                       "name": "Deal Stage",
-                                      "fill": "#2563EB",
+                                      "fill": "#4880EE",
                                       "content": "니즈 확인",
                                       "fontFamily": "Inter",
                                       "fontSize": 11,
@@ -76740,7 +76740,7 @@
                                       "name": "Save Memo Button",
                                       "width": 98,
                                       "height": 36,
-                                      "fill": "#2563EB",
+                                      "fill": "#4880EE",
                                       "cornerRadius": 8,
                                       "gap": 6,
                                       "justifyContent": "center",
@@ -76989,7 +76989,7 @@
                                           "type": "ellipse",
                                           "id": "dXzED",
                                           "name": "Activity Dot",
-                                          "fill": "#2563EB",
+                                          "fill": "#4880EE",
                                           "width": 7,
                                           "height": 7
                                         }
@@ -77071,7 +77071,7 @@
                                           "type": "ellipse",
                                           "id": "YUail",
                                           "name": "Activity Dot",
-                                          "fill": "#2563EB",
+                                          "fill": "#4880EE",
                                           "width": 7,
                                           "height": 7
                                         }
@@ -77153,7 +77153,7 @@
                                           "type": "ellipse",
                                           "id": "FI21a",
                                           "name": "Activity Dot",
-                                          "fill": "#2563EB",
+                                          "fill": "#4880EE",
                                           "width": 7,
                                           "height": 7
                                         }
@@ -77235,7 +77235,7 @@
                                           "type": "ellipse",
                                           "id": "y53uoI",
                                           "name": "Activity Dot",
-                                          "fill": "#2563EB",
+                                          "fill": "#4880EE",
                                           "width": 7,
                                           "height": 7
                                         }
@@ -77303,7 +77303,7 @@
   "variables": {
     "blue-600": {
       "type": "color",
-      "value": "#2563EB"
+      "value": "#4880EE"
     },
     "blue-500": {
       "type": "color",
@@ -77587,7 +77587,7 @@
     },
     "action-primary-blue": {
       "type": "color",
-      "value": "#2563EB"
+      "value": "#4880EE"
     },
     "action-soft-blue-bg": {
       "type": "color",

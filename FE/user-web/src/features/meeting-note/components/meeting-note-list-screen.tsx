@@ -343,7 +343,7 @@ export function MeetingNoteListScreen() {
               <div className="flex items-center gap-2">
                 <button
                   aria-label="미리보기 닫기"
-                  className="inline-flex h-7 w-7 items-center justify-center rounded-md border border-[#E2E5EC] text-[#64748B] transition hover:bg-blue-50/60 hover:text-[#2563EB]"
+                  className="inline-flex h-7 w-7 items-center justify-center rounded-md border border-[#E2E5EC] text-[#64748B] transition hover:bg-blue-50/60 hover:text-[#4880EE]"
                   onClick={closePreview}
                   title="닫기"
                   type="button"

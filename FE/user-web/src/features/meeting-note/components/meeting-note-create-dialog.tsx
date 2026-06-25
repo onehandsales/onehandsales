@@ -67,7 +67,7 @@ type EntitySelectOption = {
 const formId = "meeting-note-create-form";
 const maxAudioFileSizeBytes = 25 * 1024 * 1024;
 const textareaClassName =
-  "resize-none rounded-md border border-[#E2E5EC] bg-white px-3 py-2 text-sm leading-5 text-[#111827] outline-none focus:border-[#2463EB] focus:ring-2 focus:ring-[#DBEAFE]";
+  "resize-none rounded-md border border-[#E2E5EC] bg-white px-3 py-2 text-sm leading-5 text-[#111827] outline-none focus:border-[#4880EE] focus:ring-2 focus:ring-[#DBEAFE]";
 const actionButtonClassName =
   "inline-flex h-9 items-center justify-center gap-2 rounded-md border border-[#D8E0EA] bg-white px-3 text-[13px] font-semibold text-[#1F2937] transition-colors hover:bg-[#F8FAFC] disabled:cursor-not-allowed disabled:opacity-60";
 const weekdayLabels = ["일", "월", "화", "수", "목", "금", "토"];
@@ -612,8 +612,8 @@ function MeetingDateTimeField({
           aria-expanded={isOpen}
           aria-invalid={Boolean(errorMessage)}
           className={cn(
-            "flex h-10 w-full items-center gap-2.5 rounded-md border bg-white px-3 text-[13px] text-[#111827] outline-none transition-colors focus:border-[#2563EB] focus:ring-1 focus:ring-[#2563EB]",
-            isOpen ? "border-[#2563EB] ring-1 ring-[#2563EB]" : "border-[#E6EAF0]"
+            "flex h-10 w-full items-center gap-2.5 rounded-md border bg-white px-3 text-[13px] text-[#111827] outline-none transition-colors focus:border-[#4880EE] focus:ring-1 focus:ring-[#4880EE]",
+            isOpen ? "border-[#4880EE] ring-1 ring-[#4880EE]" : "border-[#E6EAF0]"
           )}
           id={id}
           type="button"
@@ -673,7 +673,7 @@ function MeetingDateTimeField({
                     className={cn(
                       "h-7 rounded-md text-[12px] transition-colors hover:bg-[#EFF6FF]",
                       isCurrentMonth ? "text-[#111827]" : "text-[#CBD5E1]",
-                      isSelected && "bg-[#2463EB] font-semibold text-white hover:bg-[#1D4ED8]"
+                      isSelected && "bg-[#4880EE] font-semibold text-white hover:bg-[#1D4ED8]"
                     )}
                     key={`${day.year}-${day.month}-${day.day}`}
                     type="button"
@@ -692,7 +692,7 @@ function MeetingDateTimeField({
               <div className="ml-auto flex items-center gap-1.5">
                 <input
                   aria-label="시간"
-                  className="h-9 w-12 rounded-md border border-[#E6EAF0] bg-white text-center text-[13px] outline-none focus:border-[#2563EB] focus:ring-1 focus:ring-[#2563EB]"
+                  className="h-9 w-12 rounded-md border border-[#E6EAF0] bg-white text-center text-[13px] outline-none focus:border-[#4880EE] focus:ring-1 focus:ring-[#4880EE]"
                   inputMode="numeric"
                   maxLength={2}
                   value={padTwo(parts.hour)}
@@ -705,7 +705,7 @@ function MeetingDateTimeField({
                 <span className="text-[13px] font-semibold text-[#6B7280]">:</span>
                 <input
                   aria-label="분"
-                  className="h-9 w-12 rounded-md border border-[#E6EAF0] bg-white text-center text-[13px] outline-none focus:border-[#2563EB] focus:ring-1 focus:ring-[#2563EB]"
+                  className="h-9 w-12 rounded-md border border-[#E6EAF0] bg-white text-center text-[13px] outline-none focus:border-[#4880EE] focus:ring-1 focus:ring-[#4880EE]"
                   inputMode="numeric"
                   maxLength={2}
                   value={padTwo(parts.minute)}
@@ -859,9 +859,9 @@ function EntityMultiSelectField({
           aria-expanded={isOpen}
           aria-invalid={Boolean(errorMessage)}
           className={cn(
-            "flex h-10 w-full items-center gap-2.5 rounded-md border bg-white px-3 text-[13px] outline-none transition-colors focus:border-[#2563EB] focus:ring-1 focus:ring-[#2563EB]",
-            isOpen || hasSelection ? "border-[#2563EB]" : "border-[#E6EAF0]",
-            isOpen && "ring-1 ring-[#2563EB]",
+            "flex h-10 w-full items-center gap-2.5 rounded-md border bg-white px-3 text-[13px] outline-none transition-colors focus:border-[#4880EE] focus:ring-1 focus:ring-[#4880EE]",
+            isOpen || hasSelection ? "border-[#4880EE]" : "border-[#E6EAF0]",
+            isOpen && "ring-1 ring-[#4880EE]",
             hasSelection ? "text-[#111827]" : "text-[#9CA3AF]"
           )}
           disabled={isLoading}
@@ -904,7 +904,7 @@ function EntityMultiSelectField({
                     >
                       <input
                         checked={isSelected}
-                        className="h-3.5 w-3.5 shrink-0 accent-[#2463EB]"
+                        className="h-3.5 w-3.5 shrink-0 accent-[#4880EE]"
                         type="checkbox"
                         onChange={() => toggleOption(option.id)}
                       />

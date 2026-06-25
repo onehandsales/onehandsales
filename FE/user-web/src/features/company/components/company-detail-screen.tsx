@@ -409,7 +409,7 @@ function CompanySummaryHeader({
   if (isEditing) {
     return (
       <form
-        className="flex min-h-[74px] flex-wrap items-center gap-3 rounded-xl border border-[#BFDBFE] bg-white px-5 py-4 shadow-[0_0_0_1px_rgba(37,99,235,0.04)] md:flex-nowrap"
+        className="flex min-h-[74px] flex-wrap items-center gap-3 rounded-xl border border-[#BFDBFE] bg-white px-5 py-4 shadow-[0_0_0_1px_rgba(72,128,238,0.04)] md:flex-nowrap"
         onSubmit={onSubmit}
       >
         <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#EEF2FF]">
@@ -423,7 +423,7 @@ function CompanySummaryHeader({
           </label>
           <input
             aria-invalid={Boolean(errors.companyName)}
-            className="h-9 w-full rounded-lg border border-[#DDE3EE] bg-white pl-8 pr-3 text-[15px] font-extrabold text-[#111827] outline-none transition-colors focus:border-[#2563EB] focus:ring-1 focus:ring-[#2563EB]"
+            className="h-9 w-full rounded-lg border border-[#DDE3EE] bg-white pl-8 pr-3 text-[15px] font-extrabold text-[#111827] outline-none transition-colors focus:border-[#4880EE] focus:ring-1 focus:ring-[#4880EE]"
             id="company-summary-edit-name"
             {...register("companyName")}
           />
@@ -495,7 +495,7 @@ function CompanySummaryHeader({
           취소
         </button>
         <button
-          className="h-9 rounded-lg bg-[#2563EB] px-4 text-[13px] font-extrabold text-white transition-colors hover:bg-[#1D4ED8] disabled:cursor-not-allowed disabled:opacity-60"
+          className="h-9 rounded-lg bg-[#4880EE] px-4 text-[13px] font-extrabold text-white transition-colors hover:bg-[#1D4ED8] disabled:cursor-not-allowed disabled:opacity-60"
           disabled={updateCompanyMutation.isPending}
           type="submit"
         >
@@ -581,7 +581,7 @@ function ConnectedContactsTable({
                 to={`/contacts/${contact.id}`}
               >
                 <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#DBEAFE]">
-                  <UserRound className="h-3.5 w-3.5 text-[#2563EB]" />
+                  <UserRound className="h-3.5 w-3.5 text-[#4880EE]" />
                 </div>
                 <div className="grid min-w-0 flex-1 grid-cols-[minmax(132px,1fr)_minmax(160px,1.1fr)_120px] items-center gap-3 whitespace-nowrap text-[12px] font-medium text-[#6B7280] max-sm:grid-cols-[minmax(0,1fr)_112px] max-sm:grid-rows-2">
                   <div className="min-w-0">
@@ -618,7 +618,7 @@ function ConnectedContactsTable({
 
 // ── Connected Deals Table ───────────────────────────────────────────
 
-const DEAL_DOT_COLORS = ["#B45309", "#0369A1", "#2563EB", "#15803D", "#9CA3AF"];
+const DEAL_DOT_COLORS = ["#B45309", "#0369A1", "#4880EE", "#15803D", "#9CA3AF"];
 
 function ConnectedDealsTable({
   deals,
@@ -693,7 +693,7 @@ function TimelineMarker({
       {!isLast ? (
         <div className="absolute bottom-0 left-1/2 top-[20px] w-px -translate-x-1/2 bg-[#DBEAFE]" />
       ) : null}
-      <div className="relative h-[8px] w-[8px] rounded-full bg-[#2563EB]" />
+      <div className="relative h-[8px] w-[8px] rounded-full bg-[#4880EE]" />
     </div>
   );
 }
@@ -788,7 +788,7 @@ function MemoPanel({
         <div className="flex-1" />
         <button
           aria-label="회사 로그 추가"
-          className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#2563EB] text-white transition-colors hover:bg-[#1D4ED8]"
+          className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#4880EE] text-white transition-colors hover:bg-[#1D4ED8]"
           onClick={() => setIsCreateOpen(true)}
           type="button"
         >
@@ -1104,7 +1104,7 @@ function ActivityLogPanel({
         <div className="flex-1" />
         <button
           aria-label="비밀 메모 추가"
-          className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#2563EB] text-white transition-colors hover:bg-[#1D4ED8]"
+          className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#4880EE] text-white transition-colors hover:bg-[#1D4ED8]"
           onClick={() => setIsCreateOpen(true)}
           type="button"
         >
