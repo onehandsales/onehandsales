@@ -205,13 +205,26 @@ Purpose:
 Direction:
 
 - base: white and neutral gray
-- primary: clear blue
+- primary: service blue palette
 - primary usage: main CTA, selected navigation, active tab, focused input, important link
 - status colors: restrained secondary use only
 - success/positive: green
 - warning/follow-up needed: amber
 - danger/failure/overdue: red
 - sensitive/private: distinct but not loud
+
+Core service blue palette:
+
+- `#1F4EF5`: strong primary, high-emphasis CTA, active navigation, selected tab
+- `#4880EE`: default primary action, focused state, important link, confirmation feedback
+- `#83B4F9`: supporting blue, hover/subtle emphasis, low-emphasis accent
+
+Blue component rule:
+
+- when a blue component has both fill and border, use the same solid color for both
+- examples: fill `#1F4EF5` with border `#1F4EF5`, fill `#4880EE` with border `#4880EE`
+- do not mix a strong blue fill with a pale blue border for primary UI
+- do not introduce another primary blue or purple family unless this direction is updated first
 
 Avoid:
 
