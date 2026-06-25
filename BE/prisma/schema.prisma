@@ -192,6 +192,9 @@ model Company {
   companyRegionId String   @db.Uuid
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
+  deletedAt       DateTime? @db.Timestamptz(3)
+  deletedByUserId String?   @db.Uuid
+  trashExpiresAt  DateTime? @db.Timestamptz(3)
 
   /// 기능 : 회사를 생성한 사용자다. 모든 회사 API는 이 userId로 소유권을 검증한다.
   user                 User                        @relation(fields: [userId], references: [id])
@@ -214,6 +217,8 @@ model Company {
   @@index([userId, companyName])
   @@index([userId, companyFieldId])
   @@index([userId, companyRegionId])
+  @@index([userId, deletedAt])
+  @@index([userId, trashExpiresAt])
 }
 
 model Contact {
@@ -227,6 +232,9 @@ model Contact {
   contactDepartmentId String   @db.Uuid
   createdAt           DateTime @default(now())
   updatedAt           DateTime @updatedAt
+  deletedAt           DateTime? @db.Timestamptz(3)
+  deletedByUserId     String?   @db.Uuid
+  trashExpiresAt      DateTime? @db.Timestamptz(3)
 
   /// 기능 : 담당자를 등록한 사용자다. 모든 담당자 API는 이 userId로 소유권을 검증한다.
   user                User                        @relation(fields: [userId], references: [id])
@@ -249,6 +257,8 @@ model Contact {
   @@index([userId, companyId])
   @@index([userId, contactDepartmentId])
   @@index([userId, contactJobGradeId])
+  @@index([userId, deletedAt])
+  @@index([userId, trashExpiresAt])
 }
 
 model ContactJobGrade {
@@ -336,6 +346,9 @@ model Product {
   productStatusId   String   @db.Uuid
   createdAt         DateTime @default(now())
   updatedAt         DateTime @updatedAt
+  deletedAt         DateTime? @db.Timestamptz(3)
+  deletedByUserId   String?   @db.Uuid
+  trashExpiresAt    DateTime? @db.Timestamptz(3)
 
   /// 기능 : 제품을 등록한 사용자다. 모든 제품 API는 이 userId로 소유권을 검증한다.
   user                User                        @relation(fields: [userId], references: [id])
@@ -355,6 +368,8 @@ model Product {
   @@index([userId, productName])
   @@index([userId, productCategoryId])
   @@index([userId, productStatusId])
+  @@index([userId, deletedAt])
+  @@index([userId, trashExpiresAt])
 }
 
 model ProductCategory {
@@ -442,6 +457,9 @@ model Deal {
   expectedEndDate DateTime @db.Date
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
+  deletedAt       DateTime? @db.Timestamptz(3)
+  deletedByUserId String?   @db.Uuid
+  trashExpiresAt  DateTime? @db.Timestamptz(3)
 
   /// 기능 : 딜을 등록한 사용자다. 모든 딜 API는 이 userId로 소유권을 검증한다.
   user                User                     @relation(fields: [userId], references: [id])
@@ -464,6 +482,8 @@ model Deal {
   @@index([userId, dealStatus])
   @@index([userId, expectedEndDate])
   @@index([userId, dealCost])
+  @@index([userId, deletedAt])
+  @@index([userId, trashExpiresAt])
 }
 
 model DealCompany {

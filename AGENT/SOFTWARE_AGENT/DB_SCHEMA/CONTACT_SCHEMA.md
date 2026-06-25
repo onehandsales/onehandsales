@@ -9,6 +9,7 @@
 - `BE/prisma/schema.prisma`
 - `BE/prisma/migrations/20260611010000_add_contact_domain/migration.sql`
 - `BE/prisma/migrations/20260625010000_add_log_soft_delete_columns/migration.sql`
+- `BE/prisma/migrations/20260625020000_add_core_entity_soft_delete_columns/migration.sql`
 
 현재 Contact 도메인은 Prisma schema와 migration에 반영되어 있다. 실제 DB 변경 내역은 migration 파일을 기준으로 확인하고, 이 문서는 테이블 역할과 관계를 이해하기 위한 구현 설명서로 유지한다.
 
@@ -25,7 +26,7 @@ ContactJobGrade 1 ─ N Contact
 ContactDepartment 1 ─ N Contact
 Contact 1 ─ N ContactMemoLog
 Contact 1 ─ N ContactUserPrivateMemoLog
-Contact 1 ─ N Deal
+Contact 1 ─ N DealContact
 Contact 1 ─ N MeetingNoteContact
 ```
 
@@ -43,8 +44,7 @@ Contact 1 ─ N MeetingNoteContact
 
 현재 담당자 기본 기능에는 아래 항목을 넣지 않는다.
 
-- 담당자 본문 row 삭제/복구 API
-- 담당자 삭제/복구/영구삭제 API
+- 담당자 복구/영구삭제 API
 - 회사 없이 저장되는 담당자
 - 담당자 부서/직급 수정 API
 - 담당자 목록의 최근 수정일 응답
@@ -69,6 +69,9 @@ Contact 1 ─ N MeetingNoteContact
 | `contactDepartmentId` | `String @db.Uuid` | 아니오 | 없음 | 담당자 부서 `ContactDepartment.id` FK |
 | `createdAt` | `DateTime` | 아니오 | `now()` | 담당자 등록일. 담당자 목록은 이 값을 기준으로 DESC 정렬한다. |
 | `updatedAt` | `DateTime` | 아니오 | `@updatedAt` | 담당자 최근 수정일. 담당자 목록 응답에는 포함하지 않고 단건 조회 응답에만 포함한다. |
+| `deletedAt` | `DateTime? @db.Timestamptz(3)` | 예 | 없음 | 삭제 버튼을 누른 UTC 시각. `null`이면 활성 담당자 |
+| `deletedByUserId` | `String? @db.Uuid` | 예 | 없음 | 삭제를 수행한 `User.id` |
+| `trashExpiresAt` | `DateTime? @db.Timestamptz(3)` | 예 | 없음 | 무료 복구 가능 기간 종료 시각. 현재 정책은 `deletedAt + 7일` |
 
 Relations:
 
@@ -78,7 +81,7 @@ Relations:
 - `contactDepartment`: `ContactDepartment`
 - `memoLogs`: `ContactMemoLog[]`
 - `privateMemoLogs`: `ContactUserPrivateMemoLog[]`
-- `deals`: `Deal[]`
+- `dealContacts`: `DealContact[]`
 - `meetingNoteContacts`: `MeetingNoteContact[]`
 
 Indexes:
@@ -88,6 +91,8 @@ Indexes:
 - `userId + companyId`: 사용자별 회사 필터 기준
 - `userId + contactDepartmentId`: 사용자별 담당자 부서 필터 기준
 - `userId + contactJobGradeId`: 사용자별 담당자 직급 필터 기준
+- `userId + deletedAt`: 사용자별 활성/삭제 담당자 분리 조회 기준
+- `userId + trashExpiresAt`: 향후 휴지통 만료 처리 기준
 
 주석:
 
@@ -98,6 +103,8 @@ Indexes:
 - 담당자 목록 응답은 `updatedAt`을 반환하지 않는다.
 - 담당자 기본 정보 수정 API는 `username`, `mobile`, `email`, `companyId`, `contactDepartmentId`, `contactJobGradeId` 중 최소 1개를 수정할 수 있다.
 - 담당자 생성 요청의 `contactMemo`는 이 테이블에 저장하지 않고 `ContactMemoLog` 첫 데이터로 저장한다.
+- 담당자 삭제 API는 row를 실제 삭제하지 않고 `deletedAt`, `deletedByUserId`, `trashExpiresAt`만 설정한다.
+- 일반 목록/상세/검색/옵션/export와 연결 딜 목록은 `deletedAt IS NULL` 담당자만 대상으로 한다.
 
 ## 5. Table: ContactJobGrade
 

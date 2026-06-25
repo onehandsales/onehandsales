@@ -130,6 +130,17 @@ export class DealController {
     return this.dealApplicationService.updateDeal(currentUser, dealId, body);
   }
 
+  // API : 딜, 딜 삭제
+  @Delete(":dealId")
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async deleteDeal(
+    @CurrentUser() currentUser: CurrentUserContext,
+    @Param("dealId", ParseUUIDPipe) dealId: string
+  ): Promise<void> {
+    // 1. path param의 딜 ID와 현재 사용자를 application 계층으로 전달한다.
+    await this.dealApplicationService.deleteDeal(currentUser, dealId);
+  }
+
   // API : 딜 다음 행동, 로그 목록 조회
   @Get(":dealId/following-action-logs")
   listFollowingActionLogs(

@@ -4,6 +4,7 @@ import {
   type CreateProductMemoLogInput,
   type CreateProductPrivateMemoLogInput,
   type DeleteProductMemoLogInput,
+  type DeleteProductInput,
   type DeleteProductPrivateMemoLogInput,
   type ExportProductsInput,
   type ListProductDealsInput,
@@ -112,6 +113,7 @@ export class PrismaProductRepository implements ProductRepository {
     return this.client.deal.findMany({
       where: {
         userId: input.userId,
+        deletedAt: null,
         dealProducts: {
           some: {
             userId: input.userId,
@@ -139,6 +141,7 @@ export class PrismaProductRepository implements ProductRepository {
       where: {
         id: productId,
         userId,
+        deletedAt: null,
       },
       include: {
         productCategory: true,
@@ -158,6 +161,7 @@ export class PrismaProductRepository implements ProductRepository {
       where: {
         id: productId,
         userId,
+        deletedAt: null,
       },
       select: {
         id: true,
@@ -197,6 +201,7 @@ export class PrismaProductRepository implements ProductRepository {
       where: {
         id: productId,
         userId,
+        deletedAt: null,
       },
       data: {
         ...(input.productName !== undefined
@@ -437,6 +442,24 @@ export class PrismaProductRepository implements ProductRepository {
     return result.count > 0;
   }
 
+  // 기능 : 현재 사용자의 제품을 휴지통 상태로 전환합니다.
+  async deleteProduct(input: DeleteProductInput): Promise<boolean> {
+    const result = await this.client.product.updateMany({
+      where: {
+        id: input.productId,
+        userId: input.userId,
+        deletedAt: null,
+      },
+      data: {
+        deletedAt: input.deletedAt,
+        deletedByUserId: input.deletedByUserId,
+        trashExpiresAt: input.trashExpiresAt,
+      },
+    });
+
+    return result.count > 0;
+  }
+
   // 기능 : 제품 일반 메모 로그를 휴지통 상태로 전환합니다.
   async deleteMemoLog(input: DeleteProductMemoLogInput): Promise<boolean> {
     const result = await this.client.productMemoLog.updateMany({
@@ -596,6 +619,7 @@ export class PrismaProductRepository implements ProductRepository {
   ): Prisma.ProductWhereInput {
     return {
       userId: input.userId,
+      deletedAt: null,
       ...(input.productName
         ? {
             productName: {

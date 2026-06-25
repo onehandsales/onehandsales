@@ -153,10 +153,12 @@ export interface DealDetailResponse extends DealListItemResponse {
 export interface DealContactResponse {
   readonly id: string;
   readonly username: string;
+  readonly isDeleted: boolean;
   readonly companyId: string;
   readonly company: {
     readonly id: string;
     readonly companyName: string;
+    readonly isDeleted: boolean;
   };
   readonly mobile: string;
   readonly email: string;
@@ -576,6 +578,35 @@ export class DealApplicationService {
     });
 
     return this.toDealDetail(deal);
+  }
+
+  // 기능 : 현재 사용자의 딜을 휴지통 상태로 전환합니다.
+  async deleteDeal(
+    currentUser: CurrentUserContext,
+    dealId: string
+  ): Promise<void> {
+    // 1. 삭제 대상 딜이 현재 사용자 소유의 활성 딜인지 검증한다.
+    await this.assertDealExists(currentUser.id, dealId);
+
+    // 2. 휴지통 보관 정책에 맞는 삭제 시각과 만료 시각을 계산한다.
+    const timestamps = createTrashRetentionTimestamps();
+
+    // 3. 딜 자체만 휴지통 상태로 전환하고 연결/로그 row는 유지한다.
+    const deleted = await this.dealRepository.deleteDeal({
+      userId: currentUser.id,
+      dealId,
+      deletedAt: timestamps.deletedAt,
+      deletedByUserId: currentUser.id,
+      trashExpiresAt: timestamps.trashExpiresAt,
+    });
+
+    // 4. 삭제 결과가 없으면 딜 없음 오류로 중단한다.
+    if (!deleted) {
+      throw new DealNotFoundError();
+    }
+
+    // 5. 민감한 입력값 없이 딜 삭제 이벤트를 기록한다.
+    this.logEvent("deal.deleted", { userId: currentUser.id, dealId });
   }
 
   // 기능 : 현재 사용자의 회사 선택 옵션 목록을 조회합니다.
@@ -1187,6 +1218,7 @@ export class DealApplicationService {
     return {
       id: contact.id,
       username: contact.username,
+      isDeleted: contact.isDeleted,
       companyId: contact.companyId,
       company: contact.company,
       mobile: contact.mobile,

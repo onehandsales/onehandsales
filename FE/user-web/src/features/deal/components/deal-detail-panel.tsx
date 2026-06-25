@@ -80,6 +80,7 @@ export function DealDetailPanel({ dealId, variant = "panel" }: DealDetailPanelPr
   const navigate = useNavigate();
   const [notice, setNotice] = useState<string | null>(null);
   const [actionError, setActionError] = useState<string | null>(null);
+  const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
   const dealQuery = useDealDetail(dealId);
   const followingLogsQuery = useDealFollowingActionLogs(dealId);
   const memoLogsQuery = useDealMemoLogs(dealId);
@@ -119,15 +120,18 @@ export function DealDetailPanel({ dealId, variant = "panel" }: DealDetailPanelPr
 
   const onDeleteDeal = async () => {
     if (!detail) return;
-    if (!window.confirm(`${detail.dealName} 딜을 삭제할까요?`)) return;
 
     setActionError(null);
 
     try {
       await deleteDealMutation.mutateAsync(detail.id);
+      setDeleteConfirmOpen(false);
       void navigate("/deals", {
         replace: true,
-        state: { notice: "딜이 삭제되었습니다." },
+        state: {
+          notice: LOG_DELETE_SUCCESS_MESSAGE,
+          noticeDescription: LOG_DELETE_SUCCESS_DESCRIPTION,
+        },
       });
     } catch (error) {
       setActionError(getApiErrorMessage(error));
@@ -136,6 +140,7 @@ export function DealDetailPanel({ dealId, variant = "panel" }: DealDetailPanelPr
 
   if (variant === "page") {
     return (
+      <>
       <DealDetailPageLayout
         actionError={actionError}
         deletePending={deleteDealMutation.isPending}
@@ -147,7 +152,7 @@ export function DealDetailPanel({ dealId, variant = "panel" }: DealDetailPanelPr
         notice={notice}
         onClearActionError={() => setActionError(null)}
         onClearNotice={() => setNotice(null)}
-        onDeleteDeal={() => void onDeleteDeal()}
+        onDeleteDeal={() => setDeleteConfirmOpen(true)}
         onDetailSaved={() => {
           void dealQuery.refetch();
           setNotice("딜 정보가 저장되었습니다.");
@@ -159,6 +164,22 @@ export function DealDetailPanel({ dealId, variant = "panel" }: DealDetailPanelPr
         memoLogsLoading={memoLogsQuery.isLoading}
         onFetchMemoLogsNext={() => void memoLogsQuery.fetchNextPage()}
       />
+      <ConfirmDialog
+        cancelLabel="아니요"
+        confirmLabel="예"
+        errorMessage={actionError}
+        isPending={deleteDealMutation.isPending}
+        open={deleteConfirmOpen}
+        title={LOG_DELETE_CONFIRM_MESSAGE}
+        onCancel={() => {
+          if (!deleteDealMutation.isPending) {
+            setActionError(null);
+            setDeleteConfirmOpen(false);
+          }
+        }}
+        onConfirm={() => void onDeleteDeal()}
+      />
+      </>
     );
   }
 
@@ -657,8 +678,11 @@ function DealLinkedCompaniesTable({
         <p className="px-4 py-4 text-[13px] text-[#9CA3AF]">연결된 회사가 없습니다.</p>
       ) : (
         <div className={companies.length > 2 ? "max-h-[116px] overflow-y-auto" : ""}>
-          {companies.map((company) => (
-            <Link
+          {companies.map((company) => {
+            const companyName = formatDeletedLabel(company.companyName, company.isDeleted);
+
+            return (
+              <Link
               className="flex h-[58px] items-center gap-3 border-b border-[#F3F4F6] bg-white px-4 transition-colors last:border-0 hover:bg-[#F9FAFB]"
               key={company.id}
               to={`/companies/${company.id}`}
@@ -669,9 +693,9 @@ function DealLinkedCompaniesTable({
               <div className="grid min-w-0 flex-1 grid-cols-3 items-center gap-3 text-[12px] font-semibold text-[#6B7280]">
                 <span
                   className="truncate text-[13px] font-extrabold text-[#111827]"
-                  title={company.companyName}
+                  title={companyName}
                 >
-                  {company.companyName}
+                  {companyName}
                 </span>
                 <span className="truncate text-center" title={company.companyField.field}>
                   {company.companyField.field}
@@ -681,8 +705,9 @@ function DealLinkedCompaniesTable({
                 </span>
               </div>
               <ChevronRight className="h-4 w-4 shrink-0 text-[#D1D5DB]" />
-            </Link>
-          ))}
+              </Link>
+            );
+          })}
         </div>
       )}
     </DealLinkedTableFrame>
@@ -700,8 +725,15 @@ function DealLinkedContactsTable({
         <p className="px-4 py-4 text-[13px] text-[#9CA3AF]">연결된 담당자가 없습니다.</p>
       ) : (
         <div className={contacts.length > 2 ? "max-h-[116px] overflow-y-auto" : ""}>
-          {contacts.map((contact) => (
-            <Link
+          {contacts.map((contact) => {
+            const contactName = formatDeletedLabel(contact.username, contact.isDeleted);
+            const companyName = formatDeletedLabel(
+              contact.company.companyName,
+              contact.company.isDeleted
+            );
+
+            return (
+              <Link
               className="flex h-[58px] items-center gap-3 border-b border-[#F3F4F6] bg-white px-4 transition-colors last:border-0 hover:bg-[#F9FAFB]"
               key={contact.id}
               to={`/contacts/${contact.id}`}
@@ -712,14 +744,14 @@ function DealLinkedContactsTable({
               <div className="grid min-w-0 flex-1 grid-cols-2 items-center gap-4">
                 <div className="min-w-0">
                   <div className="flex min-w-0 items-center gap-1.5 text-[13px] font-extrabold text-[#111827]">
-                    <span className="truncate">{contact.username}</span>
+                    <span className="truncate">{contactName}</span>
                     <span className="shrink-0">{contact.contactJobGrade.jobGradeName}</span>
                   </div>
                   <span
                     className="block truncate text-[11px] font-semibold leading-4 text-[#9CA3AF]"
-                    title={`${contact.contactDepartment.departmentName} · ${contact.company.companyName}`}
+                    title={`${contact.contactDepartment.departmentName} · ${companyName}`}
                   >
-                    {contact.contactDepartment.departmentName} · {contact.company.companyName}
+                    {contact.contactDepartment.departmentName} · {companyName}
                   </span>
                 </div>
                 <div className="grid min-w-0 gap-0.5 text-[11px] font-semibold leading-4 text-[#9CA3AF]">
@@ -734,8 +766,9 @@ function DealLinkedContactsTable({
                 </div>
               </div>
               <ChevronRight className="h-4 w-4 shrink-0 text-[#D1D5DB]" />
-            </Link>
-          ))}
+              </Link>
+            );
+          })}
         </div>
       )}
     </DealLinkedTableFrame>
@@ -753,8 +786,11 @@ function DealLinkedProductsTable({
         <p className="px-4 py-4 text-[13px] text-[#9CA3AF]">연결된 제품이 없습니다.</p>
       ) : (
         <div className={products.length > 2 ? "max-h-[116px] overflow-y-auto" : ""}>
-          {products.map((product) => (
-            <Link
+          {products.map((product) => {
+            const productName = formatDeletedLabel(product.productName, product.isDeleted);
+
+            return (
+              <Link
               className="flex h-[58px] items-center gap-3 border-b border-[#F3F4F6] bg-white px-4 transition-colors last:border-0 hover:bg-[#F9FAFB]"
               key={product.id}
               to={`/products/${product.id}`}
@@ -766,9 +802,9 @@ function DealLinkedProductsTable({
                 <div className="min-w-0">
                   <span
                     className="block truncate text-[13px] font-extrabold text-[#111827]"
-                    title={product.productName}
+                    title={productName}
                   >
-                    {product.productName}
+                    {productName}
                   </span>
                   <span
                     className="block truncate text-[11px] font-semibold leading-4 text-[#9CA3AF]"
@@ -784,8 +820,9 @@ function DealLinkedProductsTable({
                 </div>
               </div>
               <ChevronRight className="h-4 w-4 shrink-0 text-[#D1D5DB]" />
-            </Link>
-          ))}
+              </Link>
+            );
+          })}
         </div>
       )}
     </DealLinkedTableFrame>
@@ -1544,11 +1581,19 @@ function DealStateShell({
 }
 
 function formatDealCompanySummary(detail: DealDetail): string {
-  return detail.companies.map((company) => company.companyName).join(", ") || "-";
+  return (
+    detail.companies
+      .map((company) => formatDeletedLabel(company.companyName, company.isDeleted))
+      .join(", ") || "-"
+  );
 }
 
 function formatDealContactSummary(detail: DealDetail): string {
-  return detail.contacts.map((contact) => contact.username).join(", ") || "-";
+  return (
+    detail.contacts
+      .map((contact) => formatDeletedLabel(contact.username, contact.isDeleted))
+      .join(", ") || "-"
+  );
 }
 
 function formatDealContactDepartmentSummary(detail: DealDetail): string {
@@ -1558,6 +1603,10 @@ function formatDealContactDepartmentSummary(detail: DealDetail): string {
       .filter(Boolean)
       .join(", ") || "-"
   );
+}
+
+function formatDeletedLabel(label: string, isDeleted: boolean): string {
+  return isDeleted ? `${label} (삭제됨)` : label;
 }
 
 function StatusBadge({ status }: { readonly status: DealStatus }) {
@@ -1669,7 +1718,7 @@ function NextActionSummary({
 function DealProductsSection({
   products,
 }: {
-  readonly products: Array<{ readonly id: string; readonly productName: string }>;
+  readonly products: DealDetail["products"];
 }) {
   return (
     <section>
@@ -1688,7 +1737,7 @@ function DealProductsSection({
               className="inline-flex h-7 items-center rounded-md bg-[#F3F4F6] px-2.5 text-[12px] font-medium text-[#374151]"
               key={p.id}
             >
-              {p.productName}
+              {formatDeletedLabel(p.productName, p.isDeleted)}
             </span>
           ))}
         </div>

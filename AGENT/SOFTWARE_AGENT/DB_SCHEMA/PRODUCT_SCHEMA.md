@@ -15,6 +15,7 @@
 - `BE/prisma/schema.prisma`
 - `BE/prisma/migrations/20260611020000_add_product_domain/migration.sql`
 - `BE/prisma/migrations/20260625010000_add_log_soft_delete_columns/migration.sql`
+- `BE/prisma/migrations/20260625020000_add_core_entity_soft_delete_columns/migration.sql`
 
 ## 2. 테이블 목록
 
@@ -40,6 +41,9 @@ Product 기본 도메인 1차 구현 범위는 다음 테이블만 포함한다.
 | `productStatusId` | uuid | 아니오 | 제품 상태 ID |
 | `createdAt` | datetime | 아니오 | 생성일 |
 | `updatedAt` | datetime | 아니오 | 수정일 |
+| `deletedAt` | timestamptz | 예 | 삭제 버튼을 누른 UTC 시각. `null`이면 활성 제품 |
+| `deletedByUserId` | uuid | 예 | 삭제를 수행한 `User.id` |
+| `trashExpiresAt` | timestamptz | 예 | 무료 복구 가능 기간 종료 시각. 현재 정책은 `deletedAt + 7일` |
 
 관계:
 
@@ -62,6 +66,11 @@ Product 기본 도메인 1차 구현 범위는 다음 테이블만 포함한다.
 - 제품 하나는 `MeetingNoteProduct`를 통해 여러 회의록 snapshot에 연결될 수 있다.
 - 목록 응답에는 `DealProduct` 기준 `dealCount`를 포함한다.
 - 목록 정렬은 기본 `createdAt DESC`, `id DESC`이며 `sort=dealCountDesc`일 때 `dealCount DESC`, `createdAt DESC`, `id DESC`, `sort=dealCountAsc`일 때 `dealCount ASC`, `createdAt DESC`, `id DESC`를 적용한다.
+
+삭제 정책:
+
+- 제품 삭제 API는 row를 실제 삭제하지 않고 `deletedAt`, `deletedByUserId`, `trashExpiresAt`만 설정한다.
+- 일반 목록/상세/검색/옵션/export와 연결 딜 목록은 `deletedAt IS NULL` 제품만 대상으로 한다.
 
 ## 4. ProductCategory
 
@@ -160,6 +169,8 @@ Product 기본 도메인 1차 구현 범위는 다음 테이블만 포함한다.
 - `Product.userId + Product.productName`
 - `Product.userId + Product.productCategoryId`
 - `Product.userId + Product.productStatusId`
+- `Product.userId + Product.deletedAt`
+- `Product.userId + Product.trashExpiresAt`
 - `ProductCategory.userId + ProductCategory.categoryName`
 - `ProductStatus.userId + ProductStatus.statusName`
 - `ProductMemoLog.productId + ProductMemoLog.createdAt`
@@ -180,7 +191,7 @@ Product 기본 도메인 1차 구현 범위는 다음 테이블만 포함한다.
 - `ProductLog`
 - `ProductMemo`
 - `PersonalMemo(targetType=PRODUCT)`
-- 제품 본문 row의 삭제/복구 API와 `permanentDeleteAt`
+- 제품 본문 row의 복구/영구삭제 API와 `permanentDeleteAt`
 - `unitPrice`
 - `currency`
 - `description`

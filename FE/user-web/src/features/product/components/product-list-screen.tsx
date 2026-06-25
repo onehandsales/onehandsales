@@ -34,7 +34,10 @@ import type { Product, ProductSort } from "@/features/product/types/product";
 import { getApiErrorMessage } from "@/lib/api-client";
 import { cn } from "@/utils/cn";
 import { formatDateWithOptions } from "@/utils/format";
-import { readLocationNotice } from "@/utils/location-state";
+import {
+  readLocationNotice,
+  readLocationNoticeDescription,
+} from "@/utils/location-state";
 
 type ProductListScreenProps = {
   readonly initialCreateOpen?: boolean;
@@ -74,6 +77,7 @@ export function ProductListScreen({
   const [pendingCategoryName, setPendingCategoryName] = useState("");
   const [pendingStatusName, setPendingStatusName] = useState("");
   const [notice, setNotice] = useState<string | null>(null);
+  const [noticeDescription, setNoticeDescription] = useState<string | null>(null);
   const [isExporting, setIsExporting] = useState(false);
 
   const categoriesQuery = useProductCategories();
@@ -115,6 +119,7 @@ export function ProductListScreen({
     }
 
     setNotice(message);
+    setNoticeDescription(readLocationNoticeDescription(location.state));
     void navigate(location.pathname, { replace: true, state: null });
   }, [location.pathname, location.state, navigate]);
 
@@ -293,8 +298,12 @@ export function ProductListScreen({
         <div className="flex min-w-0 flex-1 flex-col gap-3">
           {notice ? (
             <Toast
+              description={noticeDescription ?? undefined}
               message={notice}
-              onClose={() => setNotice(null)}
+              onClose={() => {
+                setNotice(null);
+                setNoticeDescription(null);
+              }}
               variant="success"
             />
           ) : null}
@@ -416,8 +425,12 @@ export function ProductListScreen({
         {notice ? (
           <div className="px-4 pt-2">
             <Toast
+              description={noticeDescription ?? undefined}
               message={notice}
-              onClose={() => setNotice(null)}
+              onClose={() => {
+                setNotice(null);
+                setNoticeDescription(null);
+              }}
               variant="success"
             />
           </div>

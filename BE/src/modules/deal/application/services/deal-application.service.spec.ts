@@ -17,6 +17,7 @@ import {
   type DealProductRecord,
   type DealRepository,
   type DeleteDealFollowingActionLogInput,
+  type DeleteDealInput,
   type DeleteDealMemoLogInput,
   type ExportDealsInput,
   type ListDealsInput,
@@ -64,12 +65,14 @@ class FakeDealRepository implements DealRepository {
     {
       id: "company-1",
       companyName: "A회사",
+      isDeleted: false,
       companyField: { id: "field-1", field: "SaaS" },
       companyRegion: { id: "region-1", region: "Seoul" },
     },
     {
       id: "company-2",
       companyName: "B회사",
+      isDeleted: false,
       companyField: { id: "field-2", field: "Commerce" },
       companyRegion: { id: "region-2", region: "Busan" },
     },
@@ -79,8 +82,9 @@ class FakeDealRepository implements DealRepository {
     {
       id: "contact-1",
       username: "송재근",
+      isDeleted: false,
       companyId: "company-1",
-      company: { id: "company-1", companyName: "A회사" },
+      company: { id: "company-1", companyName: "A회사", isDeleted: false },
       mobile: "010-1111-2222",
       email: "song@example.com",
       contactJobGrade: { id: "job-grade-1", jobGradeName: "과장" },
@@ -92,8 +96,9 @@ class FakeDealRepository implements DealRepository {
     {
       id: "contact-2",
       username: "김영업",
+      isDeleted: false,
       companyId: "company-2",
-      company: { id: "company-2", companyName: "B회사" },
+      company: { id: "company-2", companyName: "B회사", isDeleted: false },
       mobile: "010-3333-4444",
       email: "kim@example.com",
       contactJobGrade: { id: "job-grade-2", jobGradeName: "팀장" },
@@ -108,6 +113,7 @@ class FakeDealRepository implements DealRepository {
     {
       id: "product-1",
       productName: "프리미엄 상품",
+      isDeleted: false,
       productPrice: 1200000,
       productCategory: { id: "category-1", categoryName: "보안" },
       productStatus: { id: "status-1", statusName: "판매중" },
@@ -115,6 +121,7 @@ class FakeDealRepository implements DealRepository {
     {
       id: "product-2",
       productName: "추가 상품",
+      isDeleted: false,
       productPrice: 300000,
       productCategory: { id: "category-2", categoryName: "연동" },
       productStatus: { id: "status-2", statusName: "검토중" },
@@ -228,6 +235,12 @@ class FakeDealRepository implements DealRepository {
     };
 
     this.deals = this.deals.map((item) => (item.id === dealId ? updated : item));
+    return true;
+  }
+
+  // 기능 : fake 딜 삭제를 처리합니다.
+  async deleteDeal(_input: DeleteDealInput): Promise<boolean> {
+    void _input;
     return true;
   }
 
@@ -687,6 +700,7 @@ describe("DealApplicationService", () => {
     expect(result.companies).toEqual([{
       id: "company-1",
       companyName: "A회사",
+      isDeleted: false,
       companyField: { id: "field-1", field: "SaaS" },
       companyRegion: { id: "region-1", region: "Seoul" },
     }]);

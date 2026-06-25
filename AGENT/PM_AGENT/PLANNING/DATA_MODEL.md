@@ -109,6 +109,9 @@ User
 - companyRegionId
 - createdAt
 - updatedAt
+- deletedAt
+- deletedByUserId
+- trashExpiresAt
 
 관계:
 
@@ -118,7 +121,7 @@ User
 - Company 1:N CompanyMemoLog
 - Company 1:N CompanyUserPrivateMemoLog
 - Company N:M Product through ProductConnection
-- Company 1:N Deal
+- Company 1:N DealCompany
 - Company 1:N MeetingNoteCompany
 - Company 1:N MeetingNoteContact
 
@@ -131,7 +134,8 @@ User
 - 회사 단건 응답 자체에는 담당자 수와 딜 수를 병합하지 않는다.
 - 회사 단건 화면에서 필요한 연결 Contact 전체 목록은 별도 API로 조회한다.
 - 회사 단건 화면에서 필요한 연결 Deal 전체 목록은 별도 API로 조회한다.
-- 회사 본문 row의 삭제/복구는 아직 제외한다.
+- 회사 본문 row 삭제는 실제 삭제가 아니라 `deletedAt`, `deletedByUserId`, `trashExpiresAt = deletedAt + 7일` 설정으로 처리한다.
+- 회사 목록/상세/검색/옵션/export와 회사 연결 담당자/딜 목록은 `deletedAt IS NULL` 데이터만 대상으로 한다.
 - 회사 일반 메모/비밀 메모 로그 삭제는 `deletedAt`, `deletedByUserId`, `trashExpiresAt` 기반 7일 휴지통 보관으로 처리한다.
 - 회사 생성 요청의 `companyMemo`는 `Company` 테이블에 저장하지 않고 `CompanyMemoLog` 첫 데이터로 저장한다.
 - 회사명, 회사분야, 회사지역은 회사 단건 수정 API로 변경할 수 있다.
@@ -218,6 +222,9 @@ User
 - contactDepartmentId
 - createdAt
 - updatedAt
+- deletedAt
+- deletedByUserId
+- trashExpiresAt
 
 관계:
 
@@ -227,7 +234,7 @@ User
 - Contact 1:N ContactMemoLog
 - Contact 1:N ContactUserPrivateMemoLog
 - Contact N:M Product through ProductConnection
-- Contact 1:N Deal
+- Contact 1:N DealContact
 - Contact 1:N MeetingNoteContact
 
 정책:
@@ -239,7 +246,8 @@ User
 - 담당자 목록 검색은 `username`만 대상으로 한다.
 - 담당자 목록 필터는 `companyId`, `contactDepartmentId`, `contactJobGradeId`만 제공한다.
 - 담당자 단건 화면에서 필요한 연결 Deal 전체 목록은 별도 API로 조회한다.
-- 담당자 본문 row의 삭제/복구는 아직 제외한다.
+- 담당자 본문 row 삭제는 실제 삭제가 아니라 `deletedAt`, `deletedByUserId`, `trashExpiresAt = deletedAt + 7일` 설정으로 처리한다.
+- 담당자 목록/상세/검색/옵션/export와 연결 딜 목록은 `deletedAt IS NULL` 데이터만 대상으로 한다.
 - 담당자 일반 메모/비밀 메모 로그 삭제는 `deletedAt`, `deletedByUserId`, `trashExpiresAt` 기반 7일 휴지통 보관으로 처리한다.
 - 담당자 생성 요청의 `contactMemo`는 `Contact` 테이블에 저장하지 않고 `ContactMemoLog` 첫 데이터로 저장한다.
 - 핸드폰번호는 API validation 기준으로 `010-1111-2222` 형식만 허용한다.
@@ -328,6 +336,9 @@ User
 - productStatusId
 - createdAt
 - updatedAt
+- deletedAt
+- deletedByUserId
+- trashExpiresAt
 
 관계:
 
@@ -343,12 +354,14 @@ User
 - 제품 목록 응답에는 `DealProduct` 기준 `dealCount`를 포함한다.
 - 제품 목록은 기본 `createdAt DESC`, `id DESC`로 정렬하고, `sort=dealCountDesc` 요청 시 `dealCount DESC`, `createdAt DESC`, `id DESC`, `sort=dealCountAsc` 요청 시 `dealCount ASC`, `createdAt DESC`, `id DESC`를 적용한다.
 - 제품 단건 화면에서 필요한 연결 Deal 전체 목록은 별도 API로 조회한다.
+- 제품 본문 row 삭제는 실제 삭제가 아니라 `deletedAt`, `deletedByUserId`, `trashExpiresAt = deletedAt + 7일` 설정으로 처리한다.
+- 제품 목록/상세/검색/옵션/export와 연결 딜 목록은 `deletedAt IS NULL` 데이터만 대상으로 한다.
 
 1차 구현 제외:
 
 - Product N:M Company/Contact through ProductConnection
 - Product 1:N ProductLog
-- 제품 본문 row의 삭제/복구와 permanent delete
+- 제품 본문 row의 복구 API와 휴지통 API
 - 제품 일반 메모/비밀 메모 로그의 `deletedAt`, `deletedByUserId`, `trashExpiresAt`은 구현되어 있다.
 - unitPrice, currency, description, metadata
 
@@ -402,12 +415,13 @@ User
 - userId
 - dealName
 - dealCost
-- companyId
-- contactId
 - dealStatus
 - expectedEndDate
 - createdAt
 - updatedAt
+- deletedAt
+- deletedByUserId
+- trashExpiresAt
 
 기본 dealStatus code:
 
@@ -429,8 +443,8 @@ User
 
 관계:
 
-- Deal N:1 Company
-- Deal N:1 Contact
+- Deal N:M Company through DealCompany
+- Deal N:M Contact through DealContact
 - Deal N:M Product through DealProduct
 - Deal 1:N DealFollowingActionLog
 - Deal 1:N DealMemoLog
@@ -453,8 +467,11 @@ User
 - 생성 시 최초 다음 행동은 같은 transaction 안에서 `DealFollowingActionLog`에 저장한다.
 - 후속 확장 후보인 `DealActivity`, 범용 `ProductConnection`은 현재 Deal 기본 도메인 1차 구현에 포함하지 않는다. Schedule/MeetingNote 연동은 별도 Schedule/MeetingNote 도메인에서 N:M 연결로 구현한다.
 - 저장된 회의록을 딜에 추가 연동하면 `MeetingNoteDeal`을 append하고, 현재 딜 상세 활동 로그 UI가 읽는 `DealFollowingActionLog`에 회의록 링크/요약 로그를 자동 생성한다.
-- 현재 `Deal`은 회사와 담당자를 각각 하나씩 직접 FK로 가진다. 한 회사는 여러 딜을 가질 수 있고, 한 담당자도 여러 딜에 연결될 수 있다.
+- 현재 `Deal`은 회사와 담당자를 직접 FK로 갖지 않고 `DealCompany`, `DealContact`를 통한 N:M 관계로 연결한다.
 - 현재 `Deal`과 `Product`는 `DealProduct`를 통한 N:M 관계다.
+- 딜 본문 row 삭제는 실제 삭제가 아니라 `deletedAt`, `deletedByUserId`, `trashExpiresAt = deletedAt + 7일` 설정으로 처리한다.
+- 딜 목록/상세/검색/옵션/export와 일정/회의록 딜 옵션은 `deletedAt IS NULL` 데이터만 대상으로 한다.
+- 딜 기존 연결 응답은 삭제된 회사/담당자/제품 이력을 유지할 수 있도록 연결 대상에 `isDeleted`를 포함한다. 신규 선택 옵션에는 삭제된 대상이 나오지 않는다.
 
 ### DealProduct
 

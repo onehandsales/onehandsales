@@ -12,6 +12,7 @@
 - `BE/prisma/migrations/20260614020000_add_schedule_domain/migration.sql`
 - `BE/prisma/migrations/20260615000000_add_meeting_note_domain/migration.sql`
 - `BE/prisma/migrations/20260625010000_add_log_soft_delete_columns/migration.sql`
+- `BE/prisma/migrations/20260625020000_add_core_entity_soft_delete_columns/migration.sql`
 
 구현 기준 문서:
 
@@ -24,6 +25,7 @@
 - `BE/prisma/migrations/20260612010000_add_deal_product_join/migration.sql`
 - `BE/prisma/migrations/20260623010000_add_deal_company_contact_joins/migration.sql`
 - `BE/prisma/migrations/20260625010000_add_log_soft_delete_columns/migration.sql`
+- `BE/prisma/migrations/20260625020000_add_core_entity_soft_delete_columns/migration.sql`
 - `TODO/DONE/SCHEDULE_DOMAIN_PLAN/README.md`
 - `BE/prisma/migrations/20260614020000_add_schedule_domain/migration.sql`
 - `TODO/DONE/MEETING_NOTE_MANUAL_PLAN/README.md`
@@ -54,6 +56,9 @@ Deal 기본 도메인 1차 구현 범위는 다음 테이블만 포함한다.
 | `expectedEndDate` | date | 아니오 | 예상 마감일. API에서는 `YYYY-MM-DD` |
 | `createdAt` | datetime | 아니오 | 생성일 |
 | `updatedAt` | datetime | 아니오 | 수정일 |
+| `deletedAt` | timestamptz | 예 | 삭제 버튼을 누른 UTC 시각. `null`이면 활성 딜 |
+| `deletedByUserId` | uuid | 예 | 삭제를 수행한 `User.id` |
+| `trashExpiresAt` | timestamptz | 예 | 무료 복구 가능 기간 종료 시각. 현재 정책은 `deletedAt + 7일` |
 
 관계:
 
@@ -87,6 +92,9 @@ Deal 기본 도메인 1차 구현 범위는 다음 테이블만 포함한다.
 - stage count 필터는 `search`, `companyIds`, `contactIds`를 제공한다.
 - export 필터는 목록과 같은 `search`, `companyIds`, `contactIds`, `dealStatus`, `sort`를 제공하되 `page`는 받지 않는다.
 - 목록/export 응답에는 Product와 최근수정일을 포함하지 않는다.
+- 딜 삭제 API는 row를 실제 삭제하지 않고 `deletedAt`, `deletedByUserId`, `trashExpiresAt`만 설정한다.
+- 일반 목록/상세/검색/export와 일정/회의록 딜 옵션은 `deletedAt IS NULL` 딜만 대상으로 한다.
+- 딜 기존 연결 응답은 삭제된 회사/담당자/제품 이력을 유지할 수 있도록 연결 대상에 `isDeleted`를 포함한다. 신규 선택 옵션에는 삭제된 대상이 나오지 않는다.
 
 ## 4. DealCompany / DealContact
 
@@ -213,6 +221,8 @@ DB에는 아래 string code만 저장한다.
 - `Deal.userId + Deal.dealStatus`
 - `Deal.userId + Deal.expectedEndDate`
 - `Deal.userId + Deal.dealCost`
+- `Deal.userId + Deal.deletedAt`
+- `Deal.userId + Deal.trashExpiresAt`
 - `DealCompany.dealId + DealCompany.companyId` unique
 - `DealCompany.userId + DealCompany.dealId`
 - `DealCompany.userId + DealCompany.companyId`
@@ -243,7 +253,7 @@ DB에는 아래 string code만 저장한다.
 - `DealActivityType`
 - `ProductConnection`
 - `PersonalMemo(targetType=DEAL)`
-- 딜 본문 row의 삭제/복구 API와 `permanentDeleteAt`
+- 딜 본문 row의 복구/영구삭제 API와 `permanentDeleteAt`
 - `currency`
 - `likelihoodStatus`
 - `likelihoodPercent`

@@ -13,6 +13,7 @@
 - `POST /api/products`
 - `GET /api/products/:productId`
 - `PATCH /api/products/:productId`
+- `DELETE /api/products/:productId`
 - `POST /api/products/:productId/memo-logs`
 - `GET /api/products/:productId/memo-logs`
 - `PATCH /api/products/:productId/memo-logs/:memoLogId`
@@ -32,5 +33,6 @@
 - 제품 export는 검색/필터/정렬 조건을 적용하고 `page` 없이 전체 대상 xlsx를 반환한다.
 - 제품 생성 시 `productMemo`가 있으면 같은 transaction에서 `ProductMemoLog` 첫 데이터로 저장한다.
 - 제품 생성 시 초기 메모의 `memoType`은 서버가 `초기 메모`로 저장한다.
+- 제품 삭제는 실제 row 삭제가 아니라 `deletedAt`, `deletedByUserId`, `trashExpiresAt` 설정으로 처리한다.
 - 개인 비밀 메모 평문은 API DTO에서만 `memo`로 다루고, DB에는 `memoCiphertext`, `memoKeyVersion`만 저장한다.
 - API 계약은 `TODO/PRODUCT_DOMAIN_PLAN/COMMON/API-SPEC/PRODUCT_API_DETAIL.md`를 따른다.

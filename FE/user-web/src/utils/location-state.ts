@@ -8,3 +8,13 @@ export function readLocationNotice(state: unknown) {
 
   return typeof value === "string" ? value : null;
 }
+
+export function readLocationNoticeDescription(state: unknown) {
+  if (!state || typeof state !== "object" || Array.isArray(state)) {
+    return null;
+  }
+
+  const value = (state as Record<string, unknown>).noticeDescription;
+
+  return typeof value === "string" ? value : null;
+}

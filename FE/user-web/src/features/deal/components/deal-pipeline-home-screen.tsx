@@ -38,7 +38,10 @@ import {
 import { Pagination } from "@/components/ui/pagination";
 import { cn } from "@/utils/cn";
 import { formatDateWithOptions } from "@/utils/format";
-import { readLocationNotice } from "@/utils/location-state";
+import {
+  readLocationNotice,
+  readLocationNoticeDescription,
+} from "@/utils/location-state";
 
 type StageTab = "ALL" | DealStatus;
 
@@ -85,6 +88,7 @@ export function DealPipelineHomeScreen({
   const [isExporting, setIsExporting] = useState(false);
   const [exportError, setExportError] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
+  const [noticeDescription, setNoticeDescription] = useState<string | null>(null);
   const dealCreatedRef = useRef(false);
 
   const searchQuery = search.trim() || undefined;
@@ -119,6 +123,7 @@ export function DealPipelineHomeScreen({
     }
 
     setNotice(message);
+    setNoticeDescription(readLocationNoticeDescription(location.state));
     void navigate(location.pathname, { replace: true, state: null });
   }, [location.pathname, location.state, navigate]);
   const filteredContactOptions = useMemo(() => {
@@ -256,8 +261,12 @@ export function DealPipelineHomeScreen({
         {notice ? (
           <div className="mx-5 mt-3">
             <Toast
+              description={noticeDescription ?? undefined}
               message={notice}
-              onClose={() => setNotice(null)}
+              onClose={() => {
+                setNotice(null);
+                setNoticeDescription(null);
+              }}
               variant="success"
             />
           </div>
@@ -820,9 +829,10 @@ function formatDealContactLabel(deal: DealListItem) {
     .map((contact) => {
       const jobGradeName = contact.contactJobGrade.jobGradeName.trim();
       const departmentName = contact.contactDepartment.departmentName.trim();
+      const contactName = formatDeletedLabel(contact.username, contact.isDeleted);
       const nameWithJobGrade = jobGradeName
-        ? `${contact.username} ${jobGradeName}`
-        : contact.username;
+        ? `${contactName} ${jobGradeName}`
+        : contactName;
 
       return departmentName
         ? `${nameWithJobGrade} · ${departmentName}`
@@ -832,7 +842,15 @@ function formatDealContactLabel(deal: DealListItem) {
 }
 
 function formatDealCompanyLabel(deal: DealListItem) {
-  return deal.companies.map((company) => company.companyName).join(", ") || "-";
+  return (
+    deal.companies
+      .map((company) => formatDeletedLabel(company.companyName, company.isDeleted))
+      .join(", ") || "-"
+  );
+}
+
+function formatDeletedLabel(label: string, isDeleted: boolean): string {
+  return isDeleted ? `${label} (삭제됨)` : label;
 }
 
 function formatDealNextActionLabel(deal: DealListItem) {

@@ -120,6 +120,17 @@ export class ProductController {
     );
   }
 
+  // API : 제품, 제품 삭제
+  @Delete(":productId")
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async deleteProduct(
+    @CurrentUser() currentUser: CurrentUserContext,
+    @Param("productId", ParseUUIDPipe) productId: string
+  ): Promise<void> {
+    // 1. path param의 제품 ID와 현재 사용자를 application 계층으로 전달한다.
+    await this.productApplicationService.deleteProduct(currentUser, productId);
+  }
+
   // API : 제품 메모, 일반 메모 로그 생성
   @Post(":productId/memo-logs")
   @HttpCode(HttpStatus.CREATED)

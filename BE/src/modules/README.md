@@ -11,7 +11,7 @@ Current modules:
 | `company` | User-owned company, company field/region, memo log, encrypted private memo log APIs |
 | `contact` | User-owned contact, company option, department/job grade, memo log, encrypted private memo log APIs |
 | `product` | User-owned product, product category/status, memo log, encrypted private memo log APIs |
-| `deal` | User-owned deal, deal-product link, following action log, memo log APIs |
+| `deal` | User-owned deal, company/contact/product links, following action log, memo log, soft delete APIs |
 | `schedule` | User-owned schedule, month/week list, schedule-deal link, hard delete APIs |
 | `health` | Lightweight health endpoint |
 

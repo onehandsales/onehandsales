@@ -9,6 +9,7 @@
 - `BE/prisma/schema.prisma`
 - `BE/prisma/migrations/20260611000000_add_company_domain/migration.sql`
 - `BE/prisma/migrations/20260625010000_add_log_soft_delete_columns/migration.sql`
+- `BE/prisma/migrations/20260625020000_add_core_entity_soft_delete_columns/migration.sql`
 
 현재 Company 도메인은 Prisma schema와 migration에 반영되어 있다. 실제 DB 변경 내역은 migration 파일을 기준으로 확인하고, 이 문서는 테이블 역할과 관계를 이해하기 위한 구현 설명서로 유지한다.
 
@@ -23,7 +24,7 @@ CompanyRegion 1 ─ N Company
 Company 1 ─ N CompanyMemoLog
 Company 1 ─ N CompanyUserPrivateMemoLog
 Company 1 ─ N Contact
-Company 1 ─ N Deal
+Company 1 ─ N DealCompany
 Company 1 ─ N MeetingNoteCompany
 Company 1 ─ N MeetingNoteContact
 ```
@@ -43,7 +44,7 @@ Company 1 ─ N MeetingNoteContact
 
 현재 회사 기본 기능에는 아래 항목을 넣지 않는다.
 
-- 회사 본문 row 삭제/복구 API
+- 회사 본문 row 복구/영구삭제 API
 - 회사 목록의 최근 수정일 응답
 - 회사 단건 응답에 담당자 수와 딜 수를 직접 병합하는 구조
 - 회사분야/회사지역 수정 API
@@ -65,6 +66,9 @@ Company 1 ─ N MeetingNoteContact
 | `companyRegionId` | `String @db.Uuid` | 아니오 | 없음 | 회사 지역 `CompanyRegion.id` FK |
 | `createdAt` | `DateTime` | 아니오 | `now()` | 회사 등록일. 회사 목록은 이 값을 기준으로 DESC 정렬한다. |
 | `updatedAt` | `DateTime` | 아니오 | `@updatedAt` | 회사 최근 수정일. 회사 목록 응답에는 포함하지 않고 단건 조회 응답에만 포함한다. |
+| `deletedAt` | `DateTime? @db.Timestamptz(3)` | 예 | 없음 | 삭제 버튼을 누른 UTC 시각. `null`이면 활성 회사 |
+| `deletedByUserId` | `String? @db.Uuid` | 예 | 없음 | 삭제를 수행한 `User.id` |
+| `trashExpiresAt` | `DateTime? @db.Timestamptz(3)` | 예 | 없음 | 무료 복구 가능 기간 종료 시각. 현재 정책은 `deletedAt + 7일` |
 
 Relations:
 
@@ -74,7 +78,7 @@ Relations:
 - `memoLogs`: `CompanyMemoLog[]`
 - `privateMemoLogs`: `CompanyUserPrivateMemoLog[]`
 - `contacts`: `Contact[]`
-- `deals`: `Deal[]`
+- `dealCompanies`: `DealCompany[]`
 - `meetingNoteCompanies`: `MeetingNoteCompany[]`
 - `meetingNoteContacts`: `MeetingNoteContact[]`
 
@@ -84,6 +88,8 @@ Indexes:
 - `userId + companyName`: 사용자별 회사 이름 검색 기준
 - `userId + companyFieldId`: 사용자별 회사 분야 필터 기준
 - `userId + companyRegionId`: 사용자별 회사 지역 필터 기준
+- `userId + deletedAt`: 사용자별 활성/삭제 회사 분리 조회 기준
+- `userId + trashExpiresAt`: 향후 휴지통 만료 처리 기준
 
 주석:
 
@@ -95,6 +101,8 @@ Indexes:
 - 회사 목록 응답은 `Contact.companyId` 기준 집계값 `contactCount`를 반환한다.
 - 회사 기본 정보 수정 API는 `companyName`, `companyFieldId`, `companyRegionId` 중 최소 1개를 수정할 수 있다.
 - 회사 생성 요청의 `companyMemo`는 이 테이블에 저장하지 않고 `CompanyMemoLog` 첫 데이터로 저장한다.
+- 회사 삭제 API는 row를 실제 삭제하지 않고 `deletedAt`, `deletedByUserId`, `trashExpiresAt`만 설정한다.
+- 일반 목록/상세/검색/옵션/export와 연결 담당자/딜 목록은 `deletedAt IS NULL` 회사만 대상으로 한다.
 
 ## 5. Table: CompanyField
 
@@ -254,6 +262,9 @@ model Company {
   companyRegionId String   @db.Uuid
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
+  deletedAt       DateTime? @db.Timestamptz(3)
+  deletedByUserId String?   @db.Uuid
+  trashExpiresAt  DateTime? @db.Timestamptz(3)
 
   /// 기능 : 회사를 생성한 사용자다. 모든 회사 API는 이 userId로 소유권을 검증한다.
   user            User          @relation(fields: [userId], references: [id])
@@ -272,6 +283,8 @@ model Company {
   @@index([userId, companyName])
   @@index([userId, companyFieldId])
   @@index([userId, companyRegionId])
+  @@index([userId, deletedAt])
+  @@index([userId, trashExpiresAt])
 }
 
 model CompanyField {

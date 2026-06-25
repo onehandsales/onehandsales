@@ -16,6 +16,7 @@ import {
   type CreateCompanyMemoLogInput,
   type CreateCompanyPrivateMemoLogInput,
   type DeleteCompanyMemoLogInput,
+  type DeleteCompanyInput,
   type DeleteCompanyPrivateMemoLogInput,
   type ExportCompaniesInput,
   type ListCompanyContactsInput,
@@ -114,6 +115,7 @@ export class PrismaCompanyRepository implements CompanyRepository {
       where: {
         userId: input.userId,
         companyId: input.companyId,
+        deletedAt: null,
       },
       select: {
         id: true,
@@ -144,6 +146,7 @@ export class PrismaCompanyRepository implements CompanyRepository {
     return this.client.deal.findMany({
       where: {
         userId: input.userId,
+        deletedAt: null,
         dealCompanies: {
           some: {
             userId: input.userId,
@@ -170,6 +173,7 @@ export class PrismaCompanyRepository implements CompanyRepository {
       where: {
         id: companyId,
         userId,
+        deletedAt: null,
       },
       include: {
         companyField: true,
@@ -189,6 +193,7 @@ export class PrismaCompanyRepository implements CompanyRepository {
       where: {
         id: companyId,
         userId,
+        deletedAt: null,
       },
       select: {
         id: true,
@@ -227,6 +232,7 @@ export class PrismaCompanyRepository implements CompanyRepository {
       where: {
         id: companyId,
         userId,
+        deletedAt: null,
       },
       data: {
         ...(input.companyName !== undefined
@@ -465,6 +471,24 @@ export class PrismaCompanyRepository implements CompanyRepository {
     return result.count > 0;
   }
 
+  // 기능 : 현재 사용자의 회사를 휴지통 상태로 전환합니다.
+  async deleteCompany(input: DeleteCompanyInput): Promise<boolean> {
+    const result = await this.client.company.updateMany({
+      where: {
+        id: input.companyId,
+        userId: input.userId,
+        deletedAt: null,
+      },
+      data: {
+        deletedAt: input.deletedAt,
+        deletedByUserId: input.deletedByUserId,
+        trashExpiresAt: input.trashExpiresAt,
+      },
+    });
+
+    return result.count > 0;
+  }
+
   // 기능 : 회사 일반 메모 로그를 휴지통 상태로 전환합니다.
   async deleteMemoLog(input: DeleteCompanyMemoLogInput): Promise<boolean> {
     const result = await this.client.companyMemoLog.updateMany({
@@ -624,6 +648,7 @@ export class PrismaCompanyRepository implements CompanyRepository {
   ): Prisma.CompanyWhereInput {
     return {
       userId: input.userId,
+      deletedAt: null,
       ...(input.companyName
         ? {
             companyName: {
@@ -650,11 +675,15 @@ export class PrismaCompanyRepository implements CompanyRepository {
           contacts: {
             where: {
               userId,
+              deletedAt: null,
             },
           },
           dealCompanies: {
             where: {
               userId,
+              deal: {
+                deletedAt: null,
+              },
             },
           },
         },

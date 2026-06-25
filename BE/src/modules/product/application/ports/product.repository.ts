@@ -103,6 +103,15 @@ export interface UpdateProductInput {
   readonly productStatusId?: string;
 }
 
+// 역할 : DeleteProductInput 제품 휴지통 이동에 필요한 값을 정의합니다.
+export interface DeleteProductInput {
+  readonly userId: string;
+  readonly productId: string;
+  readonly deletedAt: Date;
+  readonly deletedByUserId: string;
+  readonly trashExpiresAt: Date;
+}
+
 // 역할 : CreateProductMemoLogInput 데이터가 계층 사이에서 전달되는 구조를 정의합니다.
 export interface CreateProductMemoLogInput {
   readonly productId: string;
@@ -197,6 +206,8 @@ export interface ProductRepository {
     productId: string,
     input: UpdateProductInput
   ): Promise<boolean>;
+  // 기능 : 현재 사용자의 제품을 휴지통 상태로 전환합니다.
+  deleteProduct(input: DeleteProductInput): Promise<boolean>;
   // 기능 : 현재 사용자의 제품 카테고리 목록을 조회합니다.
   listCategories(userId: string): Promise<ProductCategoryRecord[]>;
   // 기능 : 현재 사용자의 제품 카테고리 단건을 조회합니다.

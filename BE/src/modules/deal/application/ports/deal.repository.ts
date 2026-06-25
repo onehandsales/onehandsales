@@ -13,6 +13,7 @@ export enum DealListSort {
 export interface DealCompanyRecord {
   readonly id: string;
   readonly companyName: string;
+  readonly isDeleted: boolean;
   readonly companyField: {
     readonly id: string;
     readonly field: string;
@@ -38,10 +39,12 @@ export interface DealContactJobGradeRecord {
 export interface DealContactRecord {
   readonly id: string;
   readonly username: string;
+  readonly isDeleted: boolean;
   readonly companyId: string;
   readonly company: {
     readonly id: string;
     readonly companyName: string;
+    readonly isDeleted: boolean;
   };
   readonly mobile: string;
   readonly email: string;
@@ -53,6 +56,7 @@ export interface DealContactRecord {
 export interface DealProductRecord {
   readonly id: string;
   readonly productName: string;
+  readonly isDeleted: boolean;
   readonly productPrice: number;
   readonly productCategory: {
     readonly id: string;
@@ -166,6 +170,15 @@ export interface UpdateDealInput {
   readonly dealStatus?: DealStatusCode;
 }
 
+// 역할 : DeleteDealInput 딜 휴지통 이동에 필요한 값을 정의합니다.
+export interface DeleteDealInput {
+  readonly userId: string;
+  readonly dealId: string;
+  readonly deletedAt: Date;
+  readonly deletedByUserId: string;
+  readonly trashExpiresAt: Date;
+}
+
 // 역할 : CreateDealFollowingActionLogInput 데이터가 계층 사이에서 전달되는 구조를 정의합니다.
 export interface CreateDealFollowingActionLogInput {
   readonly userId: string;
@@ -264,6 +277,8 @@ export interface DealRepository {
     dealId: string,
     input: UpdateDealInput
   ): Promise<boolean>;
+  // 기능 : 현재 사용자의 딜을 휴지통 상태로 전환합니다.
+  deleteDeal(input: DeleteDealInput): Promise<boolean>;
   // 기능 : 현재 사용자의 회사 목록을 조회합니다.
   findCompanies(
     userId: string,

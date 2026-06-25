@@ -59,6 +59,7 @@ VITE_SUPABASE_REDIRECT_URL="http://localhost:5173/auth/callback"
 - MeetingNote AI/STT draft
 - MeetingNote deal link
 - Search
+- Company/Contact/Product/Deal soft delete UX/API
 
 mock/placeholder 경계:
 

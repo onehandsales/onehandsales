@@ -12,7 +12,11 @@ import {
   updateFollowingActionLog,
   updateMemoLog,
 } from "@/features/deal/api/deal-api";
+import { companyQueryKeys } from "@/features/company/api/company-query-keys";
+import { contactQueryKeys } from "@/features/contact/api/contact-query-keys";
 import { dealQueryKeys } from "@/features/deal/api/deal-query-keys";
+import { meetingNoteQueryKeys } from "@/features/meeting-note/api/meeting-note-query-keys";
+import { productQueryKeys } from "@/features/product/api/product-query-keys";
 import { scheduleQueryKeys } from "@/features/schedule/api/schedule-query-keys";
 import type {
   CreateDealInput,
@@ -64,6 +68,11 @@ export function useDeleteDealMutation() {
       });
       void queryClient.invalidateQueries({ queryKey: dealQueryKeys.details() });
       void queryClient.invalidateQueries({ queryKey: dealQueryKeys.detail(dealId) });
+      void queryClient.invalidateQueries({ queryKey: companyQueryKeys.details() });
+      void queryClient.invalidateQueries({ queryKey: contactQueryKeys.details() });
+      void queryClient.invalidateQueries({ queryKey: productQueryKeys.details() });
+      void queryClient.invalidateQueries({ queryKey: meetingNoteQueryKeys.lists() });
+      void queryClient.invalidateQueries({ queryKey: meetingNoteQueryKeys.details() });
       void queryClient.invalidateQueries({
         queryKey: scheduleQueryKeys.dealOptions(),
       });

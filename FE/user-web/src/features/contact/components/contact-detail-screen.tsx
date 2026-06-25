@@ -89,6 +89,7 @@ export function ContactDetailScreen({ contactId }: ContactDetailScreenProps) {
   const [noticeDescription, setNoticeDescription] = useState<string | null>(null);
   const [actionError, setActionError] = useState<string | null>(null);
   const [isEditing, setIsEditing] = useState(false);
+  const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
 
   const contactQuery = useContactDetail(contactId);
   const dealsQuery = useContactDeals(contactId);
@@ -133,17 +134,17 @@ export function ContactDetailScreen({ contactId }: ContactDetailScreenProps) {
   const deals = dealsQuery.data?.items ?? [];
 
   const onDeleteContact = async () => {
-    if (!window.confirm(`${contact.username} 담당자를 삭제할까요?`)) {
-      return;
-    }
-
     setActionError(null);
 
     try {
       await deleteContactMutation.mutateAsync(contact.id);
+      setDeleteConfirmOpen(false);
       void navigate("/contacts", {
         replace: true,
-        state: { notice: "담당자가 삭제되었습니다." },
+        state: {
+          notice: LOG_DELETE_SUCCESS_MESSAGE,
+          noticeDescription: LOG_DELETE_SUCCESS_DESCRIPTION,
+        },
       });
     } catch (error) {
       setActionError(getApiErrorMessage(error));
@@ -197,7 +198,7 @@ export function ContactDetailScreen({ contactId }: ContactDetailScreenProps) {
             aria-label="삭제"
             className="flex h-8 w-8 items-center justify-center rounded-lg border border-[#FEE2E2] bg-white text-[#B91C1C] disabled:opacity-50"
             disabled={deleteContactMutation.isPending}
-            onClick={() => void onDeleteContact()}
+            onClick={() => setDeleteConfirmOpen(true)}
             type="button"
           >
             <Trash2 className="h-4 w-4" />
@@ -286,7 +287,7 @@ export function ContactDetailScreen({ contactId }: ContactDetailScreenProps) {
             aria-label="삭제"
             className="flex h-8 w-8 items-center justify-center rounded-lg border border-[#FEE2E2] bg-white text-[#B91C1C] transition-colors hover:bg-red-50 disabled:opacity-50"
             disabled={deleteContactMutation.isPending}
-            onClick={() => void onDeleteContact()}
+            onClick={() => setDeleteConfirmOpen(true)}
             type="button"
           >
             <Trash2 className="h-4 w-4" />
@@ -335,6 +336,21 @@ export function ContactDetailScreen({ contactId }: ContactDetailScreenProps) {
           </div>
         </div>
       </div>
+      <ConfirmDialog
+        cancelLabel="아니요"
+        confirmLabel="예"
+        errorMessage={actionError}
+        isPending={deleteContactMutation.isPending}
+        open={deleteConfirmOpen}
+        title={LOG_DELETE_CONFIRM_MESSAGE}
+        onCancel={() => {
+          if (!deleteContactMutation.isPending) {
+            setActionError(null);
+            setDeleteConfirmOpen(false);
+          }
+        }}
+        onConfirm={() => void onDeleteContact()}
+      />
     </>
   );
 }

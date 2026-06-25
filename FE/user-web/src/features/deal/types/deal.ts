@@ -31,6 +31,7 @@ export const DEAL_STATUS_LIST: DealStatus[] = [
 export type DealCompany = {
   readonly id: string;
   readonly companyName: string;
+  readonly isDeleted: boolean;
   readonly companyField: {
     readonly id: string;
     readonly field: string;
@@ -54,10 +55,12 @@ export type DealContactJobGrade = {
 export type DealContact = {
   readonly id: string;
   readonly username: string;
+  readonly isDeleted: boolean;
   readonly companyId: string;
   readonly company: {
     readonly id: string;
     readonly companyName: string;
+    readonly isDeleted: boolean;
   };
   readonly mobile: string;
   readonly email: string;
@@ -68,6 +71,7 @@ export type DealContact = {
 export type DealProduct = {
   readonly id: string;
   readonly productName: string;
+  readonly isDeleted: boolean;
   readonly productPrice: number;
   readonly productCategory: {
     readonly id: string;
@@ -192,6 +196,7 @@ export type UpdateDealInput = {
 export type DealCompanyOption = {
   readonly id: string;
   readonly companyName: string;
+  readonly isDeleted: boolean;
   readonly companyField: {
     readonly id: string;
     readonly field: string;
@@ -205,10 +210,12 @@ export type DealCompanyOption = {
 export type DealContactOption = {
   readonly id: string;
   readonly username: string;
+  readonly isDeleted: boolean;
   readonly companyId: string;
   readonly company: {
     readonly id: string;
     readonly companyName: string;
+    readonly isDeleted: boolean;
   };
   readonly mobile: string;
   readonly email: string;
@@ -220,6 +227,7 @@ export type DealContactOption = {
 export type DealProductOption = {
   readonly id: string;
   readonly productName: string;
+  readonly isDeleted: boolean;
   readonly productPrice: number;
   readonly productCategory: {
     readonly id: string;

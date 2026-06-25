@@ -71,6 +71,10 @@ Snapshot date: 2026-06-22
 - `TODO/DONE/INTEGRATED_SEARCH_PLAN/BE-TODO/G01-BE-INTEGRATED-SEARCH.goal.md`
 - `TODO/DONE/MEETING_NOTE_AI_STT_PLAN/BE-TODO/G01-BE-MEETING-NOTE-AI-STT-DRAFT.goal.md`
 
+Current additional backend scope:
+
+- Company/Contact/Product/Deal 본문 삭제 API는 soft delete로 구현되어 있다. 삭제 시 `deletedAt`, `deletedByUserId`, `trashExpiresAt`만 설정하고 실제 row는 삭제하지 않는다.
+
 ## 7. 현재 주요 미구현 Backend 범위
 
 - BusinessCard OCR

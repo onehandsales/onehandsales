@@ -72,6 +72,13 @@ export function useDeleteCompanyMutation() {
       void queryClient.invalidateQueries({
         queryKey: companyQueryKeys.detail(companyId),
       });
+      void queryClient.invalidateQueries({ queryKey: contactQueryKeys.lists() });
+      void queryClient.invalidateQueries({ queryKey: contactQueryKeys.details() });
+      void queryClient.invalidateQueries({ queryKey: dealQueryKeys.lists() });
+      void queryClient.invalidateQueries({
+        queryKey: [...dealQueryKeys.all, "stage-counts"] as const,
+      });
+      void queryClient.invalidateQueries({ queryKey: dealQueryKeys.details() });
       void queryClient.invalidateQueries({
         queryKey: contactQueryKeys.companyOptions(),
       });
@@ -81,6 +88,8 @@ export function useDeleteCompanyMutation() {
       void queryClient.invalidateQueries({
         queryKey: meetingNoteQueryKeys.filterCompanies(),
       });
+      void queryClient.invalidateQueries({ queryKey: meetingNoteQueryKeys.lists() });
+      void queryClient.invalidateQueries({ queryKey: meetingNoteQueryKeys.details() });
     },
   });
 }

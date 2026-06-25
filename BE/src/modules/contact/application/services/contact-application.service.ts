@@ -520,6 +520,35 @@ export class ContactApplicationService {
     this.logEvent("contact.updated", { userId: currentUser.id, contactId });
   }
 
+  // 기능 : 현재 사용자의 담당자를 휴지통 상태로 전환합니다.
+  async deleteContact(
+    currentUser: CurrentUserContext,
+    contactId: string
+  ): Promise<void> {
+    // 1. 삭제 대상 담당자가 현재 사용자 소유의 활성 담당자인지 검증한다.
+    await this.assertContactExists(currentUser.id, contactId);
+
+    // 2. 휴지통 보관 정책에 맞는 삭제 시각과 만료 시각을 계산한다.
+    const timestamps = createTrashRetentionTimestamps();
+
+    // 3. 담당자 자체만 휴지통 상태로 전환하고 기존 연결 row는 유지한다.
+    const deleted = await this.contactRepository.deleteContact({
+      userId: currentUser.id,
+      contactId,
+      deletedAt: timestamps.deletedAt,
+      deletedByUserId: currentUser.id,
+      trashExpiresAt: timestamps.trashExpiresAt,
+    });
+
+    // 4. 삭제 결과가 없으면 담당자 없음 오류로 중단한다.
+    if (!deleted) {
+      throw new ContactNotFoundError();
+    }
+
+    // 5. 민감한 입력값 없이 담당자 삭제 이벤트를 기록한다.
+    this.logEvent("contact.deleted", { userId: currentUser.id, contactId });
+  }
+
   // 기능 : 현재 사용자의 담당자 직급을 생성합니다.
   async createJobGrade(
     currentUser: CurrentUserContext,

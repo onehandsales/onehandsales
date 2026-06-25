@@ -495,6 +495,35 @@ export class CompanyApplicationService {
     }
   }
 
+  // 기능 : 현재 사용자의 회사를 휴지통 상태로 전환합니다.
+  async deleteCompany(
+    currentUser: CurrentUserContext,
+    companyId: string
+  ): Promise<void> {
+    // 1. 삭제 대상 회사가 현재 사용자 소유의 활성 회사인지 검증한다.
+    await this.assertCompanyExists(currentUser.id, companyId);
+
+    // 2. 휴지통 보관 정책에 맞는 삭제 시각과 만료 시각을 계산한다.
+    const timestamps = createTrashRetentionTimestamps();
+
+    // 3. 회사 자체만 휴지통 상태로 전환하고 연결된 담당자/딜/로그는 변경하지 않는다.
+    const deleted = await this.companyRepository.deleteCompany({
+      userId: currentUser.id,
+      companyId,
+      deletedAt: timestamps.deletedAt,
+      deletedByUserId: currentUser.id,
+      trashExpiresAt: timestamps.trashExpiresAt,
+    });
+
+    // 4. 삭제 결과가 없으면 회사 없음 오류로 중단한다.
+    if (!deleted) {
+      throw new CompanyNotFoundError();
+    }
+
+    // 5. 민감한 입력값 없이 회사 삭제 이벤트를 기록한다.
+    this.logEvent("company.deleted", { userId: currentUser.id, companyId });
+  }
+
   // 기능 : 현재 사용자의 회사 분야를 생성합니다.
   async createField(
     currentUser: CurrentUserContext,

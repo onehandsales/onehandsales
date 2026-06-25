@@ -15,6 +15,7 @@ import {
   type CreateContactMemoLogInput,
   type CreateContactPrivateMemoLogInput,
   type DeleteContactMemoLogInput,
+  type DeleteContactInput,
   type DeleteContactPrivateMemoLogInput,
   type ExportContactsInput,
   type ListContactsInput,
@@ -119,6 +120,7 @@ export class PrismaContactRepository implements ContactRepository {
     return this.client.deal.findMany({
       where: {
         userId: input.userId,
+        deletedAt: null,
         dealContacts: {
           some: {
             userId: input.userId,
@@ -145,6 +147,7 @@ export class PrismaContactRepository implements ContactRepository {
       where: {
         id: contactId,
         userId,
+        deletedAt: null,
       },
       include: {
         company: true,
@@ -165,6 +168,7 @@ export class PrismaContactRepository implements ContactRepository {
       where: {
         id: contactId,
         userId,
+        deletedAt: null,
       },
       select: {
         id: true,
@@ -206,6 +210,7 @@ export class PrismaContactRepository implements ContactRepository {
       where: {
         id: contactId,
         userId,
+        deletedAt: null,
       },
       data: {
         ...(input.companyId !== undefined ? { companyId: input.companyId } : {}),
@@ -224,12 +229,30 @@ export class PrismaContactRepository implements ContactRepository {
     return result.count > 0;
   }
 
+  // 기능 : 현재 사용자의 담당자를 휴지통 상태로 전환합니다.
+  async deleteContact(input: DeleteContactInput): Promise<boolean> {
+    const result = await this.client.contact.updateMany({
+      where: {
+        id: input.contactId,
+        userId: input.userId,
+        deletedAt: null,
+      },
+      data: {
+        deletedAt: input.deletedAt,
+        deletedByUserId: input.deletedByUserId,
+        trashExpiresAt: input.trashExpiresAt,
+      },
+    });
+
+    return result.count > 0;
+  }
+
   // 기능 : 현재 사용자의 회사 옵션 목록을 정렬해 조회합니다.
   async listCompanyOptions(
     userId: string
   ): Promise<ContactCompanyOptionRecord[]> {
     return this.client.company.findMany({
-      where: { userId },
+      where: { userId, deletedAt: null },
       select: {
         id: true,
         companyName: true,
@@ -247,6 +270,7 @@ export class PrismaContactRepository implements ContactRepository {
       where: {
         id: companyId,
         userId,
+        deletedAt: null,
       },
       select: {
         id: true,
@@ -640,6 +664,7 @@ export class PrismaContactRepository implements ContactRepository {
   ): Prisma.ContactWhereInput {
     return {
       userId: input.userId,
+      deletedAt: null,
       ...(input.username
         ? {
             username: {

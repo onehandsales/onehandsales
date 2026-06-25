@@ -80,6 +80,7 @@ export class PrismaMeetingNoteRepository implements MeetingNoteRepository {
       where: {
         userId,
         companyId: { not: null },
+        company: { deletedAt: null },
       },
       select: {
         companyId: true,
@@ -115,6 +116,7 @@ export class PrismaMeetingNoteRepository implements MeetingNoteRepository {
       where: {
         userId,
         contactId: { not: null },
+        contact: { deletedAt: null },
       },
       select: {
         contactId: true,
@@ -155,6 +157,7 @@ export class PrismaMeetingNoteRepository implements MeetingNoteRepository {
       where: {
         id: { in: [...companyIds] },
         userId,
+        deletedAt: null,
       },
       select: {
         id: true,
@@ -185,6 +188,10 @@ export class PrismaMeetingNoteRepository implements MeetingNoteRepository {
       where: {
         id: { in: [...contactIds] },
         userId,
+        deletedAt: null,
+        company: {
+          deletedAt: null,
+        },
       },
       select: {
         id: true,
@@ -223,6 +230,7 @@ export class PrismaMeetingNoteRepository implements MeetingNoteRepository {
       where: {
         id: { in: [...productIds] },
         userId,
+        deletedAt: null,
       },
       select: {
         id: true,
@@ -255,6 +263,7 @@ export class PrismaMeetingNoteRepository implements MeetingNoteRepository {
       where: {
         id: { in: [...dealIds] },
         userId,
+        deletedAt: null,
       },
       select: {
         id: true,

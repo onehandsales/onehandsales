@@ -133,6 +133,17 @@ export class CompanyController {
     );
   }
 
+  // API : 회사, 회사 삭제
+  @Delete(":companyId")
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async deleteCompany(
+    @CurrentUser() currentUser: CurrentUserContext,
+    @Param("companyId", ParseUUIDPipe) companyId: string
+  ): Promise<void> {
+    // 1. path param의 회사 ID와 현재 사용자를 application 계층으로 전달한다.
+    await this.companyApplicationService.deleteCompany(currentUser, companyId);
+  }
+
   // API : 회사 메모, 일반 메모 로그 생성
   @Post(":companyId/memo-logs")
   @HttpCode(HttpStatus.CREATED)

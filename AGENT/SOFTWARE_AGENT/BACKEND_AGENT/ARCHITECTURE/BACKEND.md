@@ -62,10 +62,10 @@ Currently imported modules in `AppModule`:
 Currently implemented API surface:
 
 - Auth/User: `/api/auth/providers`, `/api/auth/exchange`, `/api/auth/refresh`, `/api/auth/logout`, `/api/me`, `/admin/api/me`, `/api/users/me/profile`, `/api/users/me/devices`
-- Company: list/detail/create/update, field/region options, memo/private memo logs, linked contacts/deals, xlsx export
-- Contact: list/detail/create/update, company options, department/job grade options, memo/private memo logs, linked deals, xlsx export
-- Product: list/detail/create/update, category/status options, memo/private memo logs, linked deals, xlsx export
-- Deal: stage counts, list/detail/create/update, company/contact/product options, following action logs, memo logs, xlsx export
+- Company: list/detail/create/update/delete, field/region options, memo/private memo logs, linked contacts/deals, xlsx export
+- Contact: list/detail/create/update/delete, company options, department/job grade options, memo/private memo logs, linked deals, xlsx export
+- Product: list/detail/create/update/delete, category/status options, memo/private memo logs, linked deals, xlsx export
+- Deal: stage counts, list/detail/create/update/delete, company/contact/product options, following action logs, memo logs, xlsx export
 - Schedule: deal options, month/week list, detail/create/update/delete, schedule-deal N:M link
 - MeetingNote: filter options, list/detail/create/update, AI text draft, STT+AI draft
 - Search: `GET /api/search`
@@ -99,6 +99,7 @@ Current response notes:
 - MeetingNote AI draft and STT are separated as `MeetingNoteAiDraftProvider` and `MeetingNoteSttProvider`; current adapters are OpenAI.
 - MeetingNote AI/STT writes no transcript table, provider log table, or raw-text storage in the current scope.
 - `GET /api/search` reads Company, Contact, Product, Deal, Schedule, and MeetingNote data owned by the current user and returns navigation target metadata.
+- `DELETE /api/companies/:companyId`, `DELETE /api/contacts/:contactId`, `DELETE /api/products/:productId`, and `DELETE /api/deals/:dealId` are soft delete APIs. They set `deletedAt`, `deletedByUserId`, and `trashExpiresAt` and return `204 No Content`.
 
 Current runtime behavior:
 

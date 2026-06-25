@@ -88,6 +88,7 @@ export function CompanyDetailScreen({ companyId }: CompanyDetailScreenProps) {
   const [noticeDescription, setNoticeDescription] = useState<string | null>(null);
   const [actionError, setActionError] = useState<string | null>(null);
   const [isEditing, setIsEditing] = useState(false);
+  const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
 
   const companyQuery = useCompanyDetail(companyId);
   const contactsQuery = useCompanyContacts(companyId);
@@ -141,13 +142,16 @@ export function CompanyDetailScreen({ companyId }: CompanyDetailScreenProps) {
   };
 
   const onDeleteCompany = async () => {
-    if (!window.confirm(`${company.companyName} 회사를 삭제할까요?`)) return;
     setActionError(null);
     try {
       await deleteCompanyMutation.mutateAsync(company.id);
+      setDeleteConfirmOpen(false);
       void navigate("/companies", {
         replace: true,
-        state: { notice: "회사가 삭제되었습니다." },
+        state: {
+          notice: LOG_DELETE_SUCCESS_MESSAGE,
+          noticeDescription: LOG_DELETE_SUCCESS_DESCRIPTION,
+        },
       });
     } catch (error) {
       setActionError(getApiErrorMessage(error));
@@ -199,7 +203,7 @@ export function CompanyDetailScreen({ companyId }: CompanyDetailScreenProps) {
             aria-label="삭제"
             className="flex h-8 w-8 items-center justify-center rounded-lg border border-[#FEE2E2] bg-white text-[#B91C1C] transition-colors hover:bg-red-50 disabled:opacity-50"
             disabled={deleteCompanyMutation.isPending}
-            onClick={() => void onDeleteCompany()}
+            onClick={() => setDeleteConfirmOpen(true)}
             type="button"
           >
             <Trash2 className="h-4 w-4" />
@@ -278,7 +282,7 @@ export function CompanyDetailScreen({ companyId }: CompanyDetailScreenProps) {
             aria-label="삭제"
             className="flex h-8 w-8 items-center justify-center rounded-lg border border-[#FEE2E2] bg-white text-[#B91C1C] transition-colors hover:bg-red-50 disabled:opacity-50"
             disabled={deleteCompanyMutation.isPending}
-            onClick={() => void onDeleteCompany()}
+            onClick={() => setDeleteConfirmOpen(true)}
             type="button"
           >
             <Trash2 className="h-4 w-4" />
@@ -332,6 +336,21 @@ export function CompanyDetailScreen({ companyId }: CompanyDetailScreenProps) {
           </div>
         </div>
       </div>
+      <ConfirmDialog
+        cancelLabel="아니요"
+        confirmLabel="예"
+        errorMessage={actionError}
+        isPending={deleteCompanyMutation.isPending}
+        open={deleteConfirmOpen}
+        title={LOG_DELETE_CONFIRM_MESSAGE}
+        onCancel={() => {
+          if (!deleteCompanyMutation.isPending) {
+            setActionError(null);
+            setDeleteConfirmOpen(false);
+          }
+        }}
+        onConfirm={() => void onDeleteCompany()}
+      />
     </>
   );
 }

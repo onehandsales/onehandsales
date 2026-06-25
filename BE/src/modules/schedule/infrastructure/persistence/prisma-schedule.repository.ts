@@ -59,7 +59,7 @@ export class PrismaScheduleRepository implements ScheduleRepository {
   // 기능 : 현재 사용자의 일정 연결용 딜 옵션 전체 목록을 조회합니다.
   async listDealOptions(userId: string): Promise<ScheduleDealOptionRecord[]> {
     const deals = await this.client.deal.findMany({
-      where: { userId },
+      where: { userId, deletedAt: null },
       select: {
         id: true,
         dealName: true,
@@ -88,6 +88,7 @@ export class PrismaScheduleRepository implements ScheduleRepository {
       where: {
         id: { in: [...dealIds] },
         userId,
+        deletedAt: null,
       },
       select: {
         id: true,

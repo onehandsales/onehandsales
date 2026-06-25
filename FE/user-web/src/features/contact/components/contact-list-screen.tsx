@@ -37,7 +37,10 @@ import type {
 import { getApiErrorMessage, type ApiBlobResponse } from "@/lib/api-client";
 import { cn } from "@/utils/cn";
 import { formatDateWithOptions } from "@/utils/format";
-import { readLocationNotice } from "@/utils/location-state";
+import {
+  readLocationNotice,
+  readLocationNoticeDescription,
+} from "@/utils/location-state";
 
 const CONTACT_SORT_OPTIONS: Array<{
   readonly value: ContactSort;
@@ -66,6 +69,7 @@ export function ContactListScreen() {
   const [taxonomyOpen, setTaxonomyOpen] = useState(false);
   const [pendingDepartmentName, setPendingDepartmentName] = useState("");
   const [notice, setNotice] = useState<string | null>(null);
+  const [noticeDescription, setNoticeDescription] = useState<string | null>(null);
   const [actionError] = useState<string | null>(null);
 
   const listParams = useMemo(
@@ -100,6 +104,7 @@ export function ContactListScreen() {
     }
 
     setNotice(message);
+    setNoticeDescription(readLocationNoticeDescription(location.state));
     void navigate(location.pathname, { replace: true, state: null });
   }, [location.pathname, location.state, navigate]);
 
@@ -248,8 +253,12 @@ export function ContactListScreen() {
         <div className="hidden px-5 pt-2 md:block">
           {notice ? (
             <Toast
+              description={noticeDescription ?? undefined}
               message={notice}
-              onClose={() => setNotice(null)}
+              onClose={() => {
+                setNotice(null);
+                setNoticeDescription(null);
+              }}
               variant="success"
             />
           ) : null}
@@ -346,8 +355,12 @@ export function ContactListScreen() {
         {notice ? (
           <div className="px-4 pt-2">
             <Toast
+              description={noticeDescription ?? undefined}
               message={notice}
-              onClose={() => setNotice(null)}
+              onClose={() => {
+                setNotice(null);
+                setNoticeDescription(null);
+              }}
               variant="success"
             />
           </div>

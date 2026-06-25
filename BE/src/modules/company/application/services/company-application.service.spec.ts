@@ -14,6 +14,7 @@ import {
   type CreateCompanyMemoLogInput,
   type CreateCompanyPrivateMemoLogInput,
   type DeleteCompanyMemoLogInput,
+  type DeleteCompanyInput,
   type DeleteCompanyPrivateMemoLogInput,
   type ExportCompaniesInput,
   type ListCompaniesInput,
@@ -130,6 +131,12 @@ class FakeCompanyRepository implements CompanyRepository {
   ): Promise<boolean> {
     void _userId;
     void _companyId;
+    void _input;
+    return true;
+  }
+
+  // 기능 : fake 회사 삭제를 처리합니다.
+  async deleteCompany(_input: DeleteCompanyInput): Promise<boolean> {
     void _input;
     return true;
   }

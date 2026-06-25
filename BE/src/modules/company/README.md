@@ -10,6 +10,7 @@
 - `GET /api/companies/export/xlsx`
 - `POST /api/companies`
 - `PATCH /api/companies/:companyId`
+- `DELETE /api/companies/:companyId`
 - `POST /api/company-fields`
 - `DELETE /api/company-fields/:fieldId`
 - `POST /api/company-regions`
@@ -33,5 +34,6 @@
 - 회사 연결 담당자 목록 응답에는 이름, 휴대폰 번호, 이메일, 부서, 직급을 포함한다.
 - 회사 export는 검색/다중 필터/정렬 조건을 적용하고 `page` 없이 전체 대상 xlsx를 반환한다.
 - 회사 생성 시 `companyMemo`가 있으면 같은 transaction에서 `CompanyMemoLog` 첫 데이터로 저장한다.
+- 회사 삭제는 실제 row 삭제가 아니라 `deletedAt`, `deletedByUserId`, `trashExpiresAt` 설정으로 처리한다.
 - 개인 비밀 메모 평문은 API DTO에서만 `memo`로 다루고, DB에는 `memoCiphertext`, `memoKeyVersion`만 저장한다.
 - API 계약은 `TODO/COMPANY_DOMAIN_PLAN/COMMON/API-SPEC/COMPANY_API_DETAIL.md`를 따른다.

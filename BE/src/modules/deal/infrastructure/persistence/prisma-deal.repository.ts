@@ -20,6 +20,7 @@ import {
   type DealProductRecord,
   type DealRepository,
   type DeleteDealFollowingActionLogInput,
+  type DeleteDealInput,
   type DeleteDealMemoLogInput,
   type ExportDealsInput,
   type ListDealsInput,
@@ -38,6 +39,7 @@ type DealPrismaClient = PrismaService | Prisma.TransactionClient;
 type DealCompanyRow = {
   readonly id: string;
   readonly companyName: string;
+  readonly deletedAt: Date | null;
   readonly companyField: {
     readonly id: string;
     readonly field: string;
@@ -55,7 +57,9 @@ type DealContactRow = {
   readonly company: {
     readonly id: string;
     readonly companyName: string;
+    readonly deletedAt: Date | null;
   };
+  readonly deletedAt: Date | null;
   readonly mobile: string;
   readonly email: string;
   readonly contactJobGrade: {
@@ -71,6 +75,7 @@ type DealContactRow = {
 type DealProductRow = {
   readonly id: string;
   readonly productName: string;
+  readonly deletedAt: Date | null;
   readonly productPrice: number;
   readonly productCategory: {
     readonly id: string;
@@ -220,6 +225,7 @@ export class PrismaDealRepository implements DealRepository {
       where: {
         id: dealId,
         userId,
+        deletedAt: null,
       },
       include: {
         ...this.createDealListInclude(),
@@ -254,6 +260,7 @@ export class PrismaDealRepository implements DealRepository {
       where: {
         id: dealId,
         userId,
+        deletedAt: null,
       },
       select: {
         id: true,
@@ -375,6 +382,7 @@ export class PrismaDealRepository implements DealRepository {
       where: {
         id: dealId,
         userId,
+        deletedAt: null,
       },
       data: {
         ...(input.dealName !== undefined ? { dealName: input.dealName } : {}),
@@ -391,20 +399,41 @@ export class PrismaDealRepository implements DealRepository {
     return result.count > 0;
   }
 
+  // 기능 : 현재 사용자의 딜을 휴지통 상태로 전환합니다.
+  async deleteDeal(input: DeleteDealInput): Promise<boolean> {
+    const result = await this.client.deal.updateMany({
+      where: {
+        id: input.dealId,
+        userId: input.userId,
+        deletedAt: null,
+      },
+      data: {
+        deletedAt: input.deletedAt,
+        deletedByUserId: input.deletedByUserId,
+        trashExpiresAt: input.trashExpiresAt,
+      },
+    });
+
+    return result.count > 0;
+  }
+
   // 기능 : 현재 사용자의 회사 단건을 조회합니다.
   async findCompanies(
     userId: string,
     companyIds: readonly string[]
   ): Promise<DealCompanyRecord[]> {
-    return this.client.company.findMany({
+    const companies = await this.client.company.findMany({
       where: {
         id: {
           in: [...companyIds],
         },
         userId,
+        deletedAt: null,
       },
       select: this.createCompanySelect(),
     });
+
+    return companies.map((company) => this.mapCompany(company));
   }
 
   // 기능 : 현재 사용자의 담당자 단건을 조회합니다.
@@ -418,6 +447,10 @@ export class PrismaDealRepository implements DealRepository {
           in: [...contactIds],
         },
         userId,
+        deletedAt: null,
+        company: {
+          deletedAt: null,
+        },
       },
       select: this.createContactSelect(),
     });
@@ -430,30 +463,41 @@ export class PrismaDealRepository implements DealRepository {
     userId: string,
     productIds: readonly string[]
   ): Promise<DealProductRecord[]> {
-    return this.client.product.findMany({
+    const products = await this.client.product.findMany({
       where: {
         id: {
           in: [...productIds],
         },
         userId,
+        deletedAt: null,
       },
       select: this.createProductSelect(),
     });
+
+    return products.map((product) => this.mapProduct(product));
   }
 
   // 기능 : 현재 사용자의 회사 옵션 전체 목록을 조회합니다.
   async listCompanyOptions(userId: string): Promise<DealCompanyRecord[]> {
-    return this.client.company.findMany({
-      where: { userId },
+    const companies = await this.client.company.findMany({
+      where: { userId, deletedAt: null },
       select: this.createCompanySelect(),
       orderBy: [{ createdAt: "desc" }, { id: "desc" }],
     });
+
+    return companies.map((company) => this.mapCompany(company));
   }
 
   // 기능 : 현재 사용자의 담당자 옵션 전체 목록을 조회합니다.
   async listContactOptions(userId: string): Promise<DealContactRecord[]> {
     const contacts = await this.client.contact.findMany({
-      where: { userId },
+      where: {
+        userId,
+        deletedAt: null,
+        company: {
+          deletedAt: null,
+        },
+      },
       select: this.createContactSelect(),
       orderBy: [{ createdAt: "desc" }, { id: "desc" }],
     });
@@ -463,11 +507,13 @@ export class PrismaDealRepository implements DealRepository {
 
   // 기능 : 현재 사용자의 제품 옵션 전체 목록을 조회합니다.
   async listProductOptions(userId: string): Promise<DealProductRecord[]> {
-    return this.client.product.findMany({
-      where: { userId },
+    const products = await this.client.product.findMany({
+      where: { userId, deletedAt: null },
       select: this.createProductSelect(),
       orderBy: [{ createdAt: "desc" }, { id: "desc" }],
     });
+
+    return products.map((product) => this.mapProduct(product));
   }
 
   // 기능 : 딜 다음 행동 로그를 생성합니다.
@@ -654,6 +700,7 @@ export class PrismaDealRepository implements DealRepository {
   ): Prisma.DealWhereInput {
     return {
       userId: input.userId,
+      deletedAt: null,
       ...(input.search
         ? {
             dealName: {
@@ -665,6 +712,9 @@ export class PrismaDealRepository implements DealRepository {
         ? {
             dealCompanies: {
               some: {
+                company: {
+                  deletedAt: null,
+                },
                 companyId: {
                   in: [...input.companyIds],
                 },
@@ -676,6 +726,9 @@ export class PrismaDealRepository implements DealRepository {
         ? {
             dealContacts: {
               some: {
+                contact: {
+                  deletedAt: null,
+                },
                 contactId: {
                   in: [...input.contactIds],
                 },
@@ -739,6 +792,7 @@ export class PrismaDealRepository implements DealRepository {
     return {
       id: true,
       companyName: true,
+      deletedAt: true,
       companyField: {
         select: {
           id: true,
@@ -759,11 +813,13 @@ export class PrismaDealRepository implements DealRepository {
     return {
       id: true,
       username: true,
+      deletedAt: true,
       companyId: true,
       company: {
         select: {
           id: true,
           companyName: true,
+          deletedAt: true,
         },
       },
       mobile: true,
@@ -788,6 +844,7 @@ export class PrismaDealRepository implements DealRepository {
     return {
       id: true,
       productName: true,
+      deletedAt: true,
       productPrice: true,
       productCategory: {
         select: {
@@ -970,6 +1027,7 @@ export class PrismaDealRepository implements DealRepository {
     return {
       id: company.id,
       companyName: company.companyName,
+      isDeleted: Boolean(company.deletedAt),
       companyField: {
         id: company.companyField.id,
         field: company.companyField.field,
@@ -986,10 +1044,12 @@ export class PrismaDealRepository implements DealRepository {
     return {
       id: contact.id,
       username: contact.username,
+      isDeleted: Boolean(contact.deletedAt),
       companyId: contact.companyId,
       company: {
         id: contact.company.id,
         companyName: contact.company.companyName,
+        isDeleted: Boolean(contact.company.deletedAt),
       },
       mobile: contact.mobile,
       email: contact.email,
@@ -1009,6 +1069,7 @@ export class PrismaDealRepository implements DealRepository {
     return {
       id: product.id,
       productName: product.productName,
+      isDeleted: Boolean(product.deletedAt),
       productPrice: product.productPrice,
       productCategory: {
         id: product.productCategory.id,

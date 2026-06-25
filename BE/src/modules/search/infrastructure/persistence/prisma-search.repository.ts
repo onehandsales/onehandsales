@@ -118,6 +118,7 @@ export class PrismaSearchRepository implements SearchRepository {
     const companies = await this.prismaService.company.findMany({
       where: {
         userId: input.userId,
+        deletedAt: null,
         OR: [
           { companyName: { contains: input.query } },
           { companyField: { field: { contains: input.query } } },
@@ -144,11 +145,17 @@ export class PrismaSearchRepository implements SearchRepository {
     const contacts = await this.prismaService.contact.findMany({
       where: {
         userId: input.userId,
+        deletedAt: null,
         OR: [
           { username: { contains: input.query } },
           { email: { contains: input.query } },
           { mobile: { contains: input.query } },
-          { company: { companyName: { contains: input.query } } },
+          {
+            company: {
+              deletedAt: null,
+              companyName: { contains: input.query },
+            },
+          },
           {
             contactDepartment: {
               departmentName: { contains: input.query },
@@ -180,6 +187,7 @@ export class PrismaSearchRepository implements SearchRepository {
     const products = await this.prismaService.product.findMany({
       where: {
         userId: input.userId,
+        deletedAt: null,
         OR: [
           { productName: { contains: input.query } },
           { productCategory: { categoryName: { contains: input.query } } },
@@ -207,20 +215,27 @@ export class PrismaSearchRepository implements SearchRepository {
     const deals = await this.prismaService.deal.findMany({
       where: {
         userId: input.userId,
+        deletedAt: null,
         OR: [
           { dealName: { contains: input.query } },
           { dealStatus: { contains: input.query } },
           {
             dealCompanies: {
               some: {
-                company: { companyName: { contains: input.query } },
+                company: {
+                  deletedAt: null,
+                  companyName: { contains: input.query },
+                },
               },
             },
           },
           {
             dealContacts: {
               some: {
-                contact: { username: { contains: input.query } },
+                contact: {
+                  deletedAt: null,
+                  username: { contains: input.query },
+                },
               },
             },
           },
@@ -266,7 +281,10 @@ export class PrismaSearchRepository implements SearchRepository {
             scheduleDeals: {
               some: {
                 userId: input.userId,
-                deal: { dealName: { contains: input.query } },
+                deal: {
+                  deletedAt: null,
+                  dealName: { contains: input.query },
+                },
               },
             },
           },

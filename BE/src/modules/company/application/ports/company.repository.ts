@@ -120,6 +120,15 @@ export interface UpdateCompanyInput {
   readonly companyRegionId?: string;
 }
 
+// 역할 : DeleteCompanyInput 회사 휴지통 이동에 필요한 값을 정의합니다.
+export interface DeleteCompanyInput {
+  readonly userId: string;
+  readonly companyId: string;
+  readonly deletedAt: Date;
+  readonly deletedByUserId: string;
+  readonly trashExpiresAt: Date;
+}
+
 // 역할 : CreateCompanyMemoLogInput 데이터가 계층 사이에서 전달되는 구조를 정의합니다.
 export interface CreateCompanyMemoLogInput {
   readonly companyId: string;
@@ -209,6 +218,8 @@ export interface CompanyRepository {
     companyId: string,
     input: UpdateCompanyInput
   ): Promise<boolean>;
+  // 기능 : 현재 사용자의 회사를 휴지통 상태로 전환합니다.
+  deleteCompany(input: DeleteCompanyInput): Promise<boolean>;
   // 기능 : 현재 사용자의 회사 분야 목록을 조회합니다.
   listFields(userId: string): Promise<CompanyFieldRecord[]>;
   // 기능 : 현재 사용자의 회사 분야 단건을 조회합니다.

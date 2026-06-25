@@ -46,6 +46,7 @@ type DealServiceFake = Pick<
   | "getDeal"
   | "createDeal"
   | "updateDeal"
+  | "deleteDeal"
   | "listFollowingActionLogs"
   | "createFollowingActionLog"
   | "updateFollowingActionLog"
@@ -90,6 +91,7 @@ function createDealServiceFake(): jest.Mocked<DealServiceFake> {
     getDeal: jest.fn().mockResolvedValue({ id: DEAL_ID }),
     createDeal: jest.fn().mockResolvedValue({ id: DEAL_ID }),
     updateDeal: jest.fn().mockResolvedValue({ id: DEAL_ID }),
+    deleteDeal: jest.fn().mockResolvedValue(undefined),
     listFollowingActionLogs: jest.fn().mockResolvedValue({
       items: [],
       nextCursor: null,
@@ -206,6 +208,7 @@ describe("DealController", () => {
       .patch(`/api/deals/${DEAL_ID}`)
       .send(updateBody)
       .expect(200);
+    await request(app.getHttpServer()).delete(`/api/deals/${DEAL_ID}`).expect(204);
 
     expect(service.getDeal).toHaveBeenCalledWith(CURRENT_USER, DEAL_ID);
     expect(service.createDeal).toHaveBeenCalledWith(CURRENT_USER, createBody);
@@ -214,6 +217,7 @@ describe("DealController", () => {
       DEAL_ID,
       updateBody
     );
+    expect(service.deleteDeal).toHaveBeenCalledWith(CURRENT_USER, DEAL_ID);
   });
 
   // 기능 : 다음 행동 로그와 메모 로그 route가 계약 body를 application 계층으로 전달하는지 검증합니다.

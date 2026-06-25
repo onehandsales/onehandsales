@@ -127,6 +127,17 @@ export class ContactController {
     );
   }
 
+  // API : 담당자 삭제
+  @Delete(":contactId")
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async deleteContact(
+    @CurrentUser() currentUser: CurrentUserContext,
+    @Param("contactId", ParseUUIDPipe) contactId: string
+  ): Promise<void> {
+    // 1. path param의 담당자 ID와 현재 사용자를 application 계층으로 전달한다.
+    await this.contactApplicationService.deleteContact(currentUser, contactId);
+  }
+
   // API : 담당자 메모, 일반 메모 로그 생성
   @Post(":contactId/memo-logs")
   @HttpCode(HttpStatus.CREATED)

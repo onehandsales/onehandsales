@@ -746,7 +746,15 @@ function getActiveDealCount(counts: readonly DealStageCount[]) {
 }
 
 function getDealCompanyLabel(deal: DealListItem) {
-  return deal.companies.map((company) => company.companyName).join(", ") || "-";
+  return (
+    deal.companies
+      .map((company) => formatDeletedLabel(company.companyName, company.isDeleted))
+      .join(", ") || "-"
+  );
+}
+
+function formatDeletedLabel(label: string, isDeleted: boolean): string {
+  return isDeleted ? `${label} (삭제됨)` : label;
 }
 
 function buildRecentActivity(

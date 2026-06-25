@@ -108,6 +108,15 @@ export interface UpdateContactInput {
   readonly contactJobGradeId?: string;
 }
 
+// 역할 : DeleteContactInput 담당자 휴지통 이동에 필요한 값을 정의합니다.
+export interface DeleteContactInput {
+  readonly userId: string;
+  readonly contactId: string;
+  readonly deletedAt: Date;
+  readonly deletedByUserId: string;
+  readonly trashExpiresAt: Date;
+}
+
 // 역할 : CreateContactMemoLogInput 데이터가 계층 사이에서 전달되는 구조를 정의합니다.
 export interface CreateContactMemoLogInput {
   readonly contactId: string;
@@ -202,6 +211,8 @@ export interface ContactRepository {
     contactId: string,
     input: UpdateContactInput
   ): Promise<boolean>;
+  // 기능 : 현재 사용자의 담당자를 휴지통 상태로 전환합니다.
+  deleteContact(input: DeleteContactInput): Promise<boolean>;
   // 기능 : 현재 사용자의 회사 옵션 목록을 조회합니다.
   listCompanyOptions(userId: string): Promise<ContactCompanyOptionRecord[]>;
   // 기능 : 현재 사용자의 회사 옵션 단건을 조회합니다.

@@ -457,6 +457,35 @@ export class ProductApplicationService {
     this.logEvent("product.updated", { userId: currentUser.id, productId });
   }
 
+  // 기능 : 현재 사용자의 제품을 휴지통 상태로 전환합니다.
+  async deleteProduct(
+    currentUser: CurrentUserContext,
+    productId: string
+  ): Promise<void> {
+    // 1. 삭제 대상 제품이 현재 사용자 소유의 활성 제품인지 검증한다.
+    await this.assertProductExists(currentUser.id, productId);
+
+    // 2. 휴지통 보관 정책에 맞는 삭제 시각과 만료 시각을 계산한다.
+    const timestamps = createTrashRetentionTimestamps();
+
+    // 3. 제품 자체만 휴지통 상태로 전환하고 기존 딜 연결 row는 유지한다.
+    const deleted = await this.productRepository.deleteProduct({
+      userId: currentUser.id,
+      productId,
+      deletedAt: timestamps.deletedAt,
+      deletedByUserId: currentUser.id,
+      trashExpiresAt: timestamps.trashExpiresAt,
+    });
+
+    // 4. 삭제 결과가 없으면 제품 없음 오류로 중단한다.
+    if (!deleted) {
+      throw new ProductNotFoundError();
+    }
+
+    // 5. 민감한 입력값 없이 제품 삭제 이벤트를 기록한다.
+    this.logEvent("product.deleted", { userId: currentUser.id, productId });
+  }
+
   // 기능 : 현재 사용자의 제품 카테고리를 생성합니다.
   async createCategory(
     currentUser: CurrentUserContext,

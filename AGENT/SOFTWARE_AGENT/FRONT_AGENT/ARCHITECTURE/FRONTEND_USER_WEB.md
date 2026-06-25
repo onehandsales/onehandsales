@@ -86,13 +86,14 @@
 
 - Auth/User: Supabase OAuth callback, Backend token exchange, refresh/logout, current user/profile/devices
 - Home dashboard: 일정/딜/회의록 조합 조회
-- Company: 목록/상세/생성/수정, 옵션, 메모, 개인 메모, 연결 Contact/Deal, xlsx export
-- Contact: 목록/상세/생성/수정, 옵션, 메모, 개인 메모, 연결 Deal, xlsx export
-- Product: 목록/상세/생성/수정, 옵션, 메모, 개인 메모, 연결 Deal, xlsx export
-- Deal: 목록/상세/생성/수정, stage counts, 옵션, 다음 행동 로그, 메모 로그, xlsx export
+- Company: 목록/상세/생성/수정/삭제, 옵션, 메모, 개인 메모, 연결 Contact/Deal, xlsx export
+- Contact: 목록/상세/생성/수정/삭제, 옵션, 메모, 개인 메모, 연결 Deal, xlsx export
+- Product: 목록/상세/생성/수정/삭제, 옵션, 메모, 개인 메모, 연결 Deal, xlsx export
+- Deal: 목록/상세/생성/수정/삭제, stage counts, 옵션, 다음 행동 로그, 메모 로그, xlsx export
 - Schedule: 월/주 목록, 단건 상세, 생성, 수정, 삭제, deal options
 - MeetingNote: 목록/상세/생성/수정, filter options, AI text draft, STT+AI draft, 저장 후 딜 추가 연동
 - Search: 상단/모바일 GlobalSearch, `GET /api/search`, 결과 `targetPath` 이동
+- 삭제 UX: 회사/담당자/제품/딜 본문과 로그 삭제는 빨간 휴지통 아이콘 클릭 후 중앙 확인 모달을 열고, 성공 시 중앙 성공 모달로 `삭제가 완료되었습니다.`와 7일 복구 안내를 보여준다.
 
 Backend는 구현되었지만 Frontend 연결이 남은 항목:
 
