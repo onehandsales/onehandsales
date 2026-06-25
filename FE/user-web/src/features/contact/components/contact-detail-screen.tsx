@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { SummaryTaxonomySelect } from "@/components/ui/summary-taxonomy-select";
 import { Toast } from "@/components/ui/toast";
 import {
@@ -34,6 +35,8 @@ import {
 import { useCompanyOptions } from "@/features/contact/hooks/use-company-options";
 import {
   useDeleteContactMutation,
+  useDeleteContactMemoLogMutation,
+  useDeleteContactPrivateMemoLogMutation,
   useUpdateContactMutation,
   useCreateContactMemoLogMutation,
   useUpdateContactMemoLogMutation,
@@ -67,6 +70,11 @@ import type {
 } from "@/features/contact/types/contact";
 import { getApiErrorMessage } from "@/lib/api-client";
 import { formatDate, formatDateTime } from "@/utils/format";
+import {
+  LOG_DELETE_CONFIRM_MESSAGE,
+  LOG_DELETE_SUCCESS_DESCRIPTION,
+  LOG_DELETE_SUCCESS_MESSAGE,
+} from "@/utils/log-delete-feedback";
 import { useForm, type UseFormRegisterReturn } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
@@ -78,6 +86,7 @@ type ContactDetailScreenProps = {
 export function ContactDetailScreen({ contactId }: ContactDetailScreenProps) {
   const navigate = useNavigate();
   const [notice, setNotice] = useState<string | null>(null);
+  const [noticeDescription, setNoticeDescription] = useState<string | null>(null);
   const [actionError, setActionError] = useState<string | null>(null);
   const [isEditing, setIsEditing] = useState(false);
 
@@ -106,6 +115,16 @@ export function ContactDetailScreen({ contactId }: ContactDetailScreenProps) {
   }
 
   const contact = contactQuery.data;
+
+  const showNotice = (message: string, description?: string) => {
+    setNotice(message);
+    setNoticeDescription(description ?? null);
+  };
+
+  const clearNotice = () => {
+    setNotice(null);
+    setNoticeDescription(null);
+  };
 
   if (!contact) {
     return <ContactDetailSkeleton />;
@@ -137,7 +156,12 @@ export function ContactDetailScreen({ contactId }: ContactDetailScreenProps) {
       <div className="md:hidden min-h-screen bg-[#FAFAF8]">
         {notice ? (
           <div className="px-4 pt-3">
-            <Toast message={notice} onClose={() => setNotice(null)} variant="success" />
+            <Toast
+              description={noticeDescription ?? undefined}
+              message={notice}
+              onClose={clearNotice}
+              variant="success"
+            />
           </div>
         ) : null}
         {actionError ? (
@@ -187,7 +211,7 @@ export function ContactDetailScreen({ contactId }: ContactDetailScreenProps) {
             onCancelEdit={() => setIsEditing(false)}
             onSaved={() => {
               void contactQuery.refetch();
-              setNotice("담당자 정보가 저장되었습니다.");
+              showNotice("담당자 정보가 저장되었습니다.");
               setIsEditing(false);
             }}
           />
@@ -203,7 +227,7 @@ export function ContactDetailScreen({ contactId }: ContactDetailScreenProps) {
             hasNext={Boolean(memoLogsQuery.hasNextPage)}
             isFetchingNext={memoLogsQuery.isFetchingNextPage}
             onFetchMore={() => void memoLogsQuery.fetchNextPage()}
-            onChanged={setNotice}
+            onChanged={showNotice}
           />
           <ContactActivityLogPanel
             contactId={contactId}
@@ -212,7 +236,7 @@ export function ContactDetailScreen({ contactId }: ContactDetailScreenProps) {
             hasNext={Boolean(privateMemoLogsQuery.hasNextPage)}
             isFetchingNext={privateMemoLogsQuery.isFetchingNextPage}
             onFetchMore={() => void privateMemoLogsQuery.fetchNextPage()}
-            onChanged={setNotice}
+            onChanged={showNotice}
           />
         </div>
       </div>
@@ -221,7 +245,12 @@ export function ContactDetailScreen({ contactId }: ContactDetailScreenProps) {
       <div className="hidden md:flex h-full flex-col bg-[#FAFAF8]">
         {notice ? (
           <div className="mx-6 mt-3">
-            <Toast message={notice} onClose={() => setNotice(null)} variant="success" />
+            <Toast
+              description={noticeDescription ?? undefined}
+              message={notice}
+              onClose={clearNotice}
+              variant="success"
+            />
           </div>
         ) : null}
         {actionError ? (
@@ -272,7 +301,7 @@ export function ContactDetailScreen({ contactId }: ContactDetailScreenProps) {
             onCancelEdit={() => setIsEditing(false)}
             onSaved={() => {
               void contactQuery.refetch();
-              setNotice("담당자 정보가 저장되었습니다.");
+              showNotice("담당자 정보가 저장되었습니다.");
               setIsEditing(false);
             }}
           />
@@ -292,7 +321,7 @@ export function ContactDetailScreen({ contactId }: ContactDetailScreenProps) {
               hasNext={Boolean(memoLogsQuery.hasNextPage)}
               isFetchingNext={memoLogsQuery.isFetchingNextPage}
               onFetchMore={() => void memoLogsQuery.fetchNextPage()}
-              onChanged={setNotice}
+              onChanged={showNotice}
             />
             <ContactActivityLogPanel
               contactId={contactId}
@@ -301,7 +330,7 @@ export function ContactDetailScreen({ contactId }: ContactDetailScreenProps) {
               hasNext={Boolean(privateMemoLogsQuery.hasNextPage)}
               isFetchingNext={privateMemoLogsQuery.isFetchingNextPage}
               onFetchMore={() => void privateMemoLogsQuery.fetchNextPage()}
-              onChanged={setNotice}
+              onChanged={showNotice}
             />
           </div>
         </div>
@@ -647,12 +676,15 @@ function ContactMemoPanel({
   readonly hasNext: boolean;
   readonly isFetchingNext: boolean;
   readonly onFetchMore: () => void;
-  readonly onChanged: (notice: string) => void;
+  readonly onChanged: (notice: string, description?: string) => void;
 }) {
   const createMemoMutation = useCreateContactMemoLogMutation(contactId);
   const updateMemoMutation = useUpdateContactMemoLogMutation(contactId);
+  const deleteMemoMutation = useDeleteContactMemoLogMutation(contactId);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [expandedId, setExpandedId] = useState<string | null>(null);
+  const [deletingLog, setDeletingLog] = useState<ContactMemoLog | null>(null);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
   const [isCreateOpen, setIsCreateOpen] = useState(false);
 
   const createForm = useForm<ContactMemoLogFormValues>({
@@ -687,6 +719,24 @@ function ContactMemoPanel({
     setEditingId(null);
     onChanged("담당자 로그가 수정되었습니다.");
   });
+
+  const onConfirmDelete = async () => {
+    if (!deletingLog) return;
+    setDeleteError(null);
+    try {
+      await deleteMemoMutation.mutateAsync({ memoLogId: deletingLog.id });
+      if (editingId === deletingLog.id) {
+        setEditingId(null);
+      }
+      if (expandedId === deletingLog.id) {
+        setExpandedId(null);
+      }
+      setDeletingLog(null);
+      onChanged(LOG_DELETE_SUCCESS_MESSAGE, LOG_DELETE_SUCCESS_DESCRIPTION);
+    } catch (error) {
+      setDeleteError(getApiErrorMessage(error));
+    }
+  };
 
   const createFormId = "contact-log-create-form";
   const editFormId = "contact-log-edit-form";
@@ -748,6 +798,20 @@ function ContactMemoPanel({
                     onKeyDown={(e) => { if (e.key === "Enter") { e.stopPropagation(); onStartEdit(log); } }}
                   >
                     <Pencil className="h-3 w-3 text-[#9CA3AF]" />
+                  </div>
+                  <div
+                    aria-label="삭제"
+                    className="invisible ml-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded text-[#DC2626] hover:bg-[#FEE2E2] group-hover:visible"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setDeleteError(null);
+                      setDeletingLog(log);
+                    }}
+                    role="button"
+                    tabIndex={-1}
+                    onKeyDown={(e) => { if (e.key === "Enter") { e.stopPropagation(); setDeleteError(null); setDeletingLog(log); } }}
+                  >
+                    <Trash2 className="h-3 w-3" />
                   </div>
                 </button>
                 {expandedId === log.id ? (
@@ -875,6 +939,21 @@ function ContactMemoPanel({
         ) : null}
       </ModalForm>
     </ModalShell>
+    <ConfirmDialog
+      cancelLabel="아니요"
+      confirmLabel="예"
+      errorMessage={deleteError}
+      isPending={deleteMemoMutation.isPending}
+      open={deletingLog !== null}
+      title={LOG_DELETE_CONFIRM_MESSAGE}
+      onCancel={() => {
+        if (!deleteMemoMutation.isPending) {
+          setDeleteError(null);
+          setDeletingLog(null);
+        }
+      }}
+      onConfirm={() => void onConfirmDelete()}
+    />
     </>
   );
 }
@@ -896,12 +975,15 @@ function ContactActivityLogPanel({
   readonly hasNext: boolean;
   readonly isFetchingNext: boolean;
   readonly onFetchMore: () => void;
-  readonly onChanged: (notice: string) => void;
+  readonly onChanged: (notice: string, description?: string) => void;
 }) {
   const createMutation = useCreateContactPrivateMemoLogMutation(contactId);
   const updateMutation = useUpdateContactPrivateMemoLogMutation(contactId);
+  const deleteMutation = useDeleteContactPrivateMemoLogMutation(contactId);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [expandedId, setExpandedId] = useState<string | null>(null);
+  const [deletingLog, setDeletingLog] = useState<ContactPrivateMemoLog | null>(null);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
   const [isCreateOpen, setIsCreateOpen] = useState(false);
 
   const createForm = useForm<ContactPrivateMemoLogFormValues>({
@@ -936,6 +1018,24 @@ function ContactActivityLogPanel({
     setEditingId(null);
     onChanged("비밀 메모가 수정되었습니다.");
   });
+
+  const onConfirmDelete = async () => {
+    if (!deletingLog) return;
+    setDeleteError(null);
+    try {
+      await deleteMutation.mutateAsync({ privateMemoLogId: deletingLog.id });
+      if (editingId === deletingLog.id) {
+        setEditingId(null);
+      }
+      if (expandedId === deletingLog.id) {
+        setExpandedId(null);
+      }
+      setDeletingLog(null);
+      onChanged(LOG_DELETE_SUCCESS_MESSAGE, LOG_DELETE_SUCCESS_DESCRIPTION);
+    } catch (error) {
+      setDeleteError(getApiErrorMessage(error));
+    }
+  };
 
   const createFormId = "contact-private-memo-create-form";
   const editFormId = "contact-private-memo-edit-form";
@@ -1009,6 +1109,20 @@ function ContactActivityLogPanel({
                     onKeyDown={(e) => { if (e.key === "Enter") { e.stopPropagation(); onStartEdit(log); } }}
                   >
                     <Pencil className="h-3 w-3 text-[#9CA3AF]" />
+                  </div>
+                  <div
+                    aria-label="삭제"
+                    className="invisible ml-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded text-[#DC2626] hover:bg-[#FEE2E2] group-hover:visible"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setDeleteError(null);
+                      setDeletingLog(log);
+                    }}
+                    role="button"
+                    tabIndex={-1}
+                    onKeyDown={(e) => { if (e.key === "Enter") { e.stopPropagation(); setDeleteError(null); setDeletingLog(log); } }}
+                  >
+                    <Trash2 className="h-3 w-3" />
                   </div>
                 </button>
                 {expandedId === log.id ? (
@@ -1112,6 +1226,21 @@ function ContactActivityLogPanel({
         ) : null}
       </ModalForm>
     </ModalShell>
+    <ConfirmDialog
+      cancelLabel="아니요"
+      confirmLabel="예"
+      errorMessage={deleteError}
+      isPending={deleteMutation.isPending}
+      open={deletingLog !== null}
+      title={LOG_DELETE_CONFIRM_MESSAGE}
+      onCancel={() => {
+        if (!deleteMutation.isPending) {
+          setDeleteError(null);
+          setDeletingLog(null);
+        }
+      }}
+      onConfirm={() => void onConfirmDelete()}
+    />
     </>
   );
 }

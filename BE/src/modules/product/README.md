@@ -16,9 +16,11 @@
 - `POST /api/products/:productId/memo-logs`
 - `GET /api/products/:productId/memo-logs`
 - `PATCH /api/products/:productId/memo-logs/:memoLogId`
+- `DELETE /api/products/:productId/memo-logs/:memoLogId`
 - `POST /api/products/:productId/private-memo-logs`
 - `GET /api/products/:productId/private-memo-logs`
 - `PATCH /api/products/:productId/private-memo-logs/:privateMemoLogId`
+- `DELETE /api/products/:productId/private-memo-logs/:privateMemoLogId`
 
 이 모듈은 User Web에서 사용하는 제품, 제품 카테고리, 제품 상태, 제품 일반 메모 로그, 제품 개인 비밀 메모 로그 API를 담당한다.
 

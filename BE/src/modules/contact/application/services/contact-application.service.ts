@@ -41,6 +41,7 @@ import {
   type XlsxRow,
   type XlsxWorkbookWriter,
 } from "@/shared/application/ports/xlsx-workbook.writer";
+import { createTrashRetentionTimestamps } from "@/shared/application/trash/trash-retention";
 import { ValidationDomainError } from "@/shared/domain/errors/common.errors";
 import { AppLogger } from "@/shared/infrastructure/logger/app-logger.service";
 
@@ -720,6 +721,37 @@ export class ContactApplicationService {
     });
   }
 
+  // 기능 : 현재 사용자의 담당자 일반 메모 로그를 휴지통 상태로 전환합니다.
+  async deleteMemoLog(
+    currentUser: CurrentUserContext,
+    contactId: string,
+    memoLogId: string
+  ): Promise<void> {
+    // 1. 메모 대상 담당자가 현재 사용자 소유인지 검증한다.
+    await this.assertContactExists(currentUser.id, contactId);
+
+    // 2. 일반 메모 로그를 휴지통 보관 정책에 맞춰 삭제 상태로 전환한다.
+    const timestamps = createTrashRetentionTimestamps();
+    const deleted = await this.contactRepository.deleteMemoLog({
+      userId: currentUser.id,
+      contactId,
+      memoLogId,
+      deletedByUserId: currentUser.id,
+      ...timestamps,
+    });
+
+    // 3. 삭제 대상 메모 로그가 없으면 오류로 중단한다.
+    if (!deleted) {
+      throw new ContactMemoLogNotFoundError();
+    }
+
+    this.logEvent("contactMemoLog.deleted", {
+      userId: currentUser.id,
+      contactId,
+      memoLogId,
+    });
+  }
+
   // 기능 : 현재 사용자의 담당자에 암호화된 개인 비밀 메모 로그를 생성합니다.
   async createPrivateMemoLog(
     currentUser: CurrentUserContext,
@@ -807,6 +839,37 @@ export class ContactApplicationService {
 
     // 5. 비밀 메모 원문과 암호문 없이 수정 이벤트를 기록한다.
     this.logEvent("contactPrivateMemoLog.updated", {
+      userId: currentUser.id,
+      contactId,
+      privateMemoLogId,
+    });
+  }
+
+  // 기능 : 현재 사용자의 담당자 개인 비밀 메모 로그를 휴지통 상태로 전환합니다.
+  async deletePrivateMemoLog(
+    currentUser: CurrentUserContext,
+    contactId: string,
+    privateMemoLogId: string
+  ): Promise<void> {
+    // 1. 비밀 메모 대상 담당자가 현재 사용자 소유인지 검증한다.
+    await this.assertContactExists(currentUser.id, contactId);
+
+    // 2. 비밀 메모 로그를 휴지통 보관 정책에 맞춰 삭제 상태로 전환한다.
+    const timestamps = createTrashRetentionTimestamps();
+    const deleted = await this.contactRepository.deletePrivateMemoLog({
+      userId: currentUser.id,
+      contactId,
+      privateMemoLogId,
+      deletedByUserId: currentUser.id,
+      ...timestamps,
+    });
+
+    // 3. 삭제 대상 비밀 메모 로그가 없으면 오류로 중단한다.
+    if (!deleted) {
+      throw new ContactPrivateMemoLogNotFoundError();
+    }
+
+    this.logEvent("contactPrivateMemoLog.deleted", {
       userId: currentUser.id,
       contactId,
       privateMemoLogId,

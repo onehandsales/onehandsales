@@ -51,71 +51,71 @@ enum MeetingNoteSourceType {
 }
 
 model User {
-  id                String     @id @default(uuid()) @db.Uuid
-  email             String?
-  displayName       String?
-  role              UserRole   @default(USER)
-  status            UserStatus @default(ACTIVE)
-  timeZone          String     @default("Asia/Seoul")
-  lastLoginAt       DateTime?
-  createdAt         DateTime   @default(now())
-  updatedAt         DateTime   @updatedAt
-  deletedAt         DateTime?
+  id          String     @id @default(uuid()) @db.Uuid
+  email       String?
+  displayName String?
+  role        UserRole   @default(USER)
+  status      UserStatus @default(ACTIVE)
+  timeZone    String     @default("Asia/Seoul")
+  lastLoginAt DateTime?
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  deletedAt   DateTime?
 
-  oauthAccounts            UserOAuthAccount[]
-  authDevices              AuthDevice[]
-  authSessions             AuthSession[]
+  oauthAccounts           UserOAuthAccount[]
+  authDevices             AuthDevice[]
+  authSessions            AuthSession[]
   /// 기능 : 사용자가 등록한 회사 목록이다.
-  companies                Company[]
+  companies               Company[]
   /// 기능 : 사용자가 만든 회사 분야 옵션 목록이다.
-  companyFields            CompanyField[]
+  companyFields           CompanyField[]
   /// 기능 : 사용자가 만든 회사 지역 옵션 목록이다.
-  companyRegions           CompanyRegion[]
+  companyRegions          CompanyRegion[]
   /// 기능 : 사용자가 작성한 회사 일반 메모 로그 목록이다.
-  companyMemoLogs          CompanyMemoLog[]
+  companyMemoLogs         CompanyMemoLog[]
   /// 기능 : 사용자가 작성한 회사 개인 비밀 메모 로그 목록이다.
-  companyPrivateMemoLogs   CompanyUserPrivateMemoLog[]
+  companyPrivateMemoLogs  CompanyUserPrivateMemoLog[]
   /// 기능 : 사용자가 등록한 담당자 목록이다.
-  contacts                 Contact[]
+  contacts                Contact[]
   /// 기능 : 사용자가 만든 담당자 직급 옵션 목록이다.
-  contactJobGrades         ContactJobGrade[]
+  contactJobGrades        ContactJobGrade[]
   /// 기능 : 사용자가 만든 담당자 부서 옵션 목록이다.
-  contactDepartments       ContactDepartment[]
+  contactDepartments      ContactDepartment[]
   /// 기능 : 사용자가 작성한 담당자 일반 메모 로그 목록이다.
-  contactMemoLogs          ContactMemoLog[]
+  contactMemoLogs         ContactMemoLog[]
   /// 기능 : 사용자가 작성한 담당자 개인 비밀 메모 로그 목록이다.
-  contactPrivateMemoLogs   ContactUserPrivateMemoLog[]
+  contactPrivateMemoLogs  ContactUserPrivateMemoLog[]
   /// 기능 : 사용자가 등록한 제품 목록이다.
-  products                 Product[]
+  products                Product[]
   /// 기능 : 사용자가 만든 제품 카테고리 옵션 목록이다.
-  productCategories        ProductCategory[]
+  productCategories       ProductCategory[]
   /// 기능 : 사용자가 만든 제품 상태 옵션 목록이다.
-  productStatuses          ProductStatus[]
+  productStatuses         ProductStatus[]
   /// 기능 : 사용자가 작성한 제품 일반 메모 로그 목록이다.
-  productMemoLogs          ProductMemoLog[]
+  productMemoLogs         ProductMemoLog[]
   /// 기능 : 사용자가 작성한 제품 개인 비밀 메모 로그 목록이다.
-  productPrivateMemoLogs   ProductUserPrivateMemoLog[]
+  productPrivateMemoLogs  ProductUserPrivateMemoLog[]
   /// 기능 : 사용자가 등록한 딜 목록이다.
-  deals                    Deal[]
+  deals                   Deal[]
   /// 기능 : 사용자가 딜에 연결한 회사 매핑 목록이다.
-  dealCompanies            DealCompany[]
+  dealCompanies           DealCompany[]
   /// 기능 : 사용자가 딜에 연결한 담당자 매핑 목록이다.
-  dealContacts             DealContact[]
+  dealContacts            DealContact[]
   /// 기능 : 사용자가 작성한 딜 다음 행동 로그 목록이다.
-  dealFollowingActionLogs  DealFollowingActionLog[]
+  dealFollowingActionLogs DealFollowingActionLog[]
   /// 기능 : 사용자가 작성한 딜 메모 로그 목록이다.
-  dealMemoLogs             DealMemoLog[]
+  dealMemoLogs            DealMemoLog[]
   /// 기능 : 사용자가 딜에 연결한 제품 매핑 목록이다.
-  dealProducts             DealProduct[]
+  dealProducts            DealProduct[]
   /// 기능 : 사용자가 등록한 일정 목록이다.
-  schedules                Schedule[]
+  schedules               Schedule[]
   /// 기능 : 사용자가 일정에 연결한 딜 매핑 목록이다.
-  scheduleDeals            ScheduleDeal[]
-  meetingNotes             MeetingNote[]
-  meetingNoteCompanies     MeetingNoteCompany[]
-  meetingNoteContacts      MeetingNoteContact[]
-  meetingNoteProducts      MeetingNoteProduct[]
-  meetingNoteDeals         MeetingNoteDeal[]
+  scheduleDeals           ScheduleDeal[]
+  meetingNotes            MeetingNote[]
+  meetingNoteCompanies    MeetingNoteCompany[]
+  meetingNoteContacts     MeetingNoteContact[]
+  meetingNoteProducts     MeetingNoteProduct[]
+  meetingNoteDeals        MeetingNoteDeal[]
 
   @@index([role])
   @@index([status])
@@ -194,19 +194,19 @@ model Company {
   updatedAt       DateTime @updatedAt
 
   /// 기능 : 회사를 생성한 사용자다. 모든 회사 API는 이 userId로 소유권을 검증한다.
-  user            User                         @relation(fields: [userId], references: [id])
+  user                 User                        @relation(fields: [userId], references: [id])
   /// 기능 : 회사 목록 필터에 사용되는 회사 분야다.
-  companyField    CompanyField                 @relation(fields: [companyFieldId], references: [id])
+  companyField         CompanyField                @relation(fields: [companyFieldId], references: [id])
   /// 기능 : 회사 목록 필터에 사용되는 회사 지역이다.
-  companyRegion   CompanyRegion                @relation(fields: [companyRegionId], references: [id])
+  companyRegion        CompanyRegion               @relation(fields: [companyRegionId], references: [id])
   /// 기능 : 회사 특징에 대한 일반 메모 로그 목록이다.
-  memoLogs        CompanyMemoLog[]
+  memoLogs             CompanyMemoLog[]
   /// 기능 : 작성자 본인만 복호화해 볼 수 있는 회사 개인 비밀 메모 로그 목록이다.
-  privateMemoLogs CompanyUserPrivateMemoLog[]
+  privateMemoLogs      CompanyUserPrivateMemoLog[]
   /// 기능 : 회사에 소속된 담당자 목록이다.
-  contacts        Contact[]
+  contacts             Contact[]
   /// 기능 : 회사가 연결된 딜 매핑 목록이다.
-  dealCompanies   DealCompany[]
+  dealCompanies        DealCompany[]
   meetingNoteCompanies MeetingNoteCompany[]
   meetingNoteContacts  MeetingNoteContact[]
 
@@ -229,13 +229,13 @@ model Contact {
   updatedAt           DateTime @updatedAt
 
   /// 기능 : 담당자를 등록한 사용자다. 모든 담당자 API는 이 userId로 소유권을 검증한다.
-  user                User                       @relation(fields: [userId], references: [id])
+  user                User                        @relation(fields: [userId], references: [id])
   /// 기능 : 담당자가 소속된 회사다. 담당자는 회사 없이 저장되지 않는다.
-  company             Company                    @relation(fields: [companyId], references: [id])
+  company             Company                     @relation(fields: [companyId], references: [id])
   /// 기능 : 담당자 목록 필터와 상세에 사용되는 담당자 직급이다.
-  contactJobGrade     ContactJobGrade            @relation(fields: [contactJobGradeId], references: [id])
+  contactJobGrade     ContactJobGrade             @relation(fields: [contactJobGradeId], references: [id])
   /// 기능 : 담당자 목록 필터와 상세에 사용되는 담당자 부서다.
-  contactDepartment   ContactDepartment          @relation(fields: [contactDepartmentId], references: [id])
+  contactDepartment   ContactDepartment           @relation(fields: [contactDepartmentId], references: [id])
   /// 기능 : 담당자 일반 메모 로그 목록이다.
   memoLogs            ContactMemoLog[]
   /// 기능 : 작성자 본인만 복호화해 볼 수 있는 담당자 개인 비밀 메모 로그 목록이다.
@@ -258,9 +258,9 @@ model ContactJobGrade {
   createdAt    DateTime @default(now())
 
   /// 기능 : 담당자 직급을 생성한 사용자다.
-  user         User      @relation(fields: [userId], references: [id])
+  user     User      @relation(fields: [userId], references: [id])
   /// 기능 : 이 직급을 사용하는 담당자 목록이다. 하나라도 있으면 직급 삭제를 막는다.
-  contacts     Contact[]
+  contacts Contact[]
 
   @@unique([userId, jobGradeName])
   @@index([userId])
@@ -273,48 +273,58 @@ model ContactDepartment {
   createdAt      DateTime @default(now())
 
   /// 기능 : 담당자 부서를 생성한 사용자다.
-  user           User      @relation(fields: [userId], references: [id])
+  user     User      @relation(fields: [userId], references: [id])
   /// 기능 : 이 부서를 사용하는 담당자 목록이다. 하나라도 있으면 부서 삭제를 막는다.
-  contacts       Contact[]
+  contacts Contact[]
 
   @@unique([userId, departmentName])
   @@index([userId])
 }
 
 model ContactMemoLog {
-  id        String   @id @default(uuid()) @db.Uuid
-  contactId String   @db.Uuid
-  userId    String   @db.Uuid
-  memoType  String
-  memo      String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id              String    @id @default(uuid()) @db.Uuid
+  contactId       String    @db.Uuid
+  userId          String    @db.Uuid
+  memoType        String
+  memo            String
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  deletedAt       DateTime? @db.Timestamptz(3)
+  deletedByUserId String?   @db.Uuid
+  trashExpiresAt  DateTime? @db.Timestamptz(3)
 
   /// 기능 : 메모가 속한 담당자다.
-  contact   Contact @relation(fields: [contactId], references: [id])
+  contact Contact @relation(fields: [contactId], references: [id])
   /// 기능 : 메모를 작성한 사용자다.
-  user      User    @relation(fields: [userId], references: [id])
+  user    User    @relation(fields: [userId], references: [id])
 
   @@index([contactId, createdAt])
   @@index([userId, contactId])
+  @@index([userId, deletedAt])
+  @@index([userId, trashExpiresAt])
 }
 
 model ContactUserPrivateMemoLog {
-  id             String   @id @default(uuid()) @db.Uuid
-  contactId      String   @db.Uuid
-  userId         String   @db.Uuid
-  memoCiphertext String
-  memoKeyVersion String
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
+  id              String    @id @default(uuid()) @db.Uuid
+  contactId       String    @db.Uuid
+  userId          String    @db.Uuid
+  memoCiphertext  String
+  memoKeyVersion  String
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  deletedAt       DateTime? @db.Timestamptz(3)
+  deletedByUserId String?   @db.Uuid
+  trashExpiresAt  DateTime? @db.Timestamptz(3)
 
   /// 기능 : 비밀 메모가 속한 담당자다.
-  contact        Contact @relation(fields: [contactId], references: [id])
+  contact Contact @relation(fields: [contactId], references: [id])
   /// 기능 : 비밀 메모를 작성한 사용자다. 이 사용자만 복호화된 memo를 볼 수 있다.
-  user           User    @relation(fields: [userId], references: [id])
+  user    User    @relation(fields: [userId], references: [id])
 
   @@index([contactId, createdAt])
   @@index([userId, contactId])
+  @@index([userId, deletedAt])
+  @@index([userId, trashExpiresAt])
 }
 
 model Product {
@@ -328,17 +338,17 @@ model Product {
   updatedAt         DateTime @updatedAt
 
   /// 기능 : 제품을 등록한 사용자다. 모든 제품 API는 이 userId로 소유권을 검증한다.
-  user              User                           @relation(fields: [userId], references: [id])
+  user                User                        @relation(fields: [userId], references: [id])
   /// 기능 : 제품 목록 필터와 상세에 사용되는 제품 카테고리다.
-  productCategory   ProductCategory                @relation(fields: [productCategoryId], references: [id])
+  productCategory     ProductCategory             @relation(fields: [productCategoryId], references: [id])
   /// 기능 : 제품 목록 필터와 상세에 사용되는 제품 상태다.
-  productStatus     ProductStatus                  @relation(fields: [productStatusId], references: [id])
+  productStatus       ProductStatus               @relation(fields: [productStatusId], references: [id])
   /// 기능 : 제품 일반 메모 로그 목록이다.
-  memoLogs          ProductMemoLog[]
+  memoLogs            ProductMemoLog[]
   /// 기능 : 작성자 본인만 복호화해 볼 수 있는 제품 개인 비밀 메모 로그 목록이다.
-  privateMemoLogs   ProductUserPrivateMemoLog[]
+  privateMemoLogs     ProductUserPrivateMemoLog[]
   /// 기능 : 제품이 연결된 딜 매핑 목록이다.
-  dealProducts      DealProduct[]
+  dealProducts        DealProduct[]
   meetingNoteProducts MeetingNoteProduct[]
 
   @@index([userId, createdAt])
@@ -354,9 +364,9 @@ model ProductCategory {
   createdAt    DateTime @default(now())
 
   /// 기능 : 제품 카테고리를 생성한 사용자다.
-  user         User      @relation(fields: [userId], references: [id])
+  user     User      @relation(fields: [userId], references: [id])
   /// 기능 : 이 카테고리를 사용하는 제품 목록이다. 하나라도 있으면 카테고리 삭제를 막는다.
-  products     Product[]
+  products Product[]
 
   @@unique([userId, categoryName])
   @@index([userId])
@@ -369,48 +379,58 @@ model ProductStatus {
   createdAt  DateTime @default(now())
 
   /// 기능 : 제품 상태를 생성한 사용자다.
-  user       User      @relation(fields: [userId], references: [id])
+  user     User      @relation(fields: [userId], references: [id])
   /// 기능 : 이 상태를 사용하는 제품 목록이다. 하나라도 있으면 상태 삭제를 막는다.
-  products   Product[]
+  products Product[]
 
   @@unique([userId, statusName])
   @@index([userId])
 }
 
 model ProductMemoLog {
-  id        String   @id @default(uuid()) @db.Uuid
-  productId String   @db.Uuid
-  userId    String   @db.Uuid
-  memoType  String
-  memo      String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id              String    @id @default(uuid()) @db.Uuid
+  productId       String    @db.Uuid
+  userId          String    @db.Uuid
+  memoType        String
+  memo            String
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  deletedAt       DateTime? @db.Timestamptz(3)
+  deletedByUserId String?   @db.Uuid
+  trashExpiresAt  DateTime? @db.Timestamptz(3)
 
   /// 기능 : 메모가 속한 제품이다.
-  product   Product @relation(fields: [productId], references: [id])
+  product Product @relation(fields: [productId], references: [id])
   /// 기능 : 메모를 작성한 사용자다.
-  user      User    @relation(fields: [userId], references: [id])
+  user    User    @relation(fields: [userId], references: [id])
 
   @@index([productId, createdAt])
   @@index([userId, productId])
+  @@index([userId, deletedAt])
+  @@index([userId, trashExpiresAt])
 }
 
 model ProductUserPrivateMemoLog {
-  id             String   @id @default(uuid()) @db.Uuid
-  productId      String   @db.Uuid
-  userId         String   @db.Uuid
-  memoCiphertext String
-  memoKeyVersion String
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
+  id              String    @id @default(uuid()) @db.Uuid
+  productId       String    @db.Uuid
+  userId          String    @db.Uuid
+  memoCiphertext  String
+  memoKeyVersion  String
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  deletedAt       DateTime? @db.Timestamptz(3)
+  deletedByUserId String?   @db.Uuid
+  trashExpiresAt  DateTime? @db.Timestamptz(3)
 
   /// 기능 : 비밀 메모가 속한 제품이다.
-  product        Product @relation(fields: [productId], references: [id])
+  product Product @relation(fields: [productId], references: [id])
   /// 기능 : 비밀 메모를 작성한 사용자다. 이 사용자만 복호화된 memo를 볼 수 있다.
-  user           User    @relation(fields: [userId], references: [id])
+  user    User    @relation(fields: [userId], references: [id])
 
   @@index([productId, createdAt])
   @@index([userId, productId])
+  @@index([userId, deletedAt])
+  @@index([userId, trashExpiresAt])
 }
 
 model Deal {
@@ -455,11 +475,11 @@ model DealCompany {
   updatedAt DateTime @updatedAt
 
   /// 기능 : 딜-회사 연결을 만든 사용자다. 모든 딜 회사 연결은 이 userId로 소유권을 검증한다.
-  user      User    @relation(fields: [userId], references: [id])
+  user    User    @relation(fields: [userId], references: [id])
   /// 기능 : 회사가 연결된 딜이다.
-  deal      Deal    @relation(fields: [dealId], references: [id])
+  deal    Deal    @relation(fields: [dealId], references: [id])
   /// 기능 : 딜에 연결된 회사다.
-  company   Company @relation(fields: [companyId], references: [id])
+  company Company @relation(fields: [companyId], references: [id])
 
   @@unique([dealId, companyId])
   @@index([userId, dealId])
@@ -476,11 +496,11 @@ model DealContact {
   updatedAt DateTime @updatedAt
 
   /// 기능 : 딜-담당자 연결을 만든 사용자다. 모든 딜 담당자 연결은 이 userId로 소유권을 검증한다.
-  user      User    @relation(fields: [userId], references: [id])
+  user    User    @relation(fields: [userId], references: [id])
   /// 기능 : 담당자가 연결된 딜이다.
-  deal      Deal    @relation(fields: [dealId], references: [id])
+  deal    Deal    @relation(fields: [dealId], references: [id])
   /// 기능 : 딜에 연결된 담당자다.
-  contact   Contact @relation(fields: [contactId], references: [id])
+  contact Contact @relation(fields: [contactId], references: [id])
 
   @@unique([dealId, contactId])
   @@index([userId, dealId])
@@ -497,11 +517,11 @@ model DealProduct {
   updatedAt DateTime @updatedAt
 
   /// 기능 : 딜-제품 연결을 만든 사용자다. 모든 딜 제품 연결은 이 userId로 소유권을 검증한다.
-  user      User    @relation(fields: [userId], references: [id])
+  user    User    @relation(fields: [userId], references: [id])
   /// 기능 : 제품이 연결된 딜이다.
-  deal      Deal    @relation(fields: [dealId], references: [id])
+  deal    Deal    @relation(fields: [dealId], references: [id])
   /// 기능 : 딜에 연결된 제품이다.
-  product   Product @relation(fields: [productId], references: [id])
+  product Product @relation(fields: [productId], references: [id])
 
   @@unique([dealId, productId])
   @@index([userId, dealId])
@@ -510,13 +530,16 @@ model DealProduct {
 }
 
 model DealFollowingActionLog {
-  id              String   @id @default(uuid()) @db.Uuid
-  userId          String   @db.Uuid
-  dealId          String   @db.Uuid
+  id              String    @id @default(uuid()) @db.Uuid
+  userId          String    @db.Uuid
+  dealId          String    @db.Uuid
   followingAction String
-  checkComplete   Boolean  @default(false)
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+  checkComplete   Boolean   @default(false)
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  deletedAt       DateTime? @db.Timestamptz(3)
+  deletedByUserId String?   @db.Uuid
+  trashExpiresAt  DateTime? @db.Timestamptz(3)
 
   /// 기능 : 다음 행동 로그를 작성한 사용자다.
   user User @relation(fields: [userId], references: [id])
@@ -526,16 +549,21 @@ model DealFollowingActionLog {
   @@index([dealId, createdAt])
   @@index([userId, dealId])
   @@index([userId, checkComplete])
+  @@index([userId, deletedAt])
+  @@index([userId, trashExpiresAt])
 }
 
 model DealMemoLog {
-  id        String   @id @default(uuid()) @db.Uuid
-  userId    String   @db.Uuid
-  dealId    String   @db.Uuid
-  memoType  String
-  memo      String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id              String    @id @default(uuid()) @db.Uuid
+  userId          String    @db.Uuid
+  dealId          String    @db.Uuid
+  memoType        String
+  memo            String
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  deletedAt       DateTime? @db.Timestamptz(3)
+  deletedByUserId String?   @db.Uuid
+  trashExpiresAt  DateTime? @db.Timestamptz(3)
 
   /// 기능 : 메모를 작성한 사용자다.
   user User @relation(fields: [userId], references: [id])
@@ -544,6 +572,8 @@ model DealMemoLog {
 
   @@index([dealId, createdAt])
   @@index([userId, dealId])
+  @@index([userId, deletedAt])
+  @@index([userId, trashExpiresAt])
 }
 
 model Schedule {
@@ -721,37 +751,47 @@ model CompanyRegion {
 }
 
 model CompanyMemoLog {
-  id        String   @id @default(uuid()) @db.Uuid
-  companyId String   @db.Uuid
-  userId    String   @db.Uuid
-  memoType  String
-  memo      String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id              String    @id @default(uuid()) @db.Uuid
+  companyId       String    @db.Uuid
+  userId          String    @db.Uuid
+  memoType        String
+  memo            String
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  deletedAt       DateTime? @db.Timestamptz(3)
+  deletedByUserId String?   @db.Uuid
+  trashExpiresAt  DateTime? @db.Timestamptz(3)
 
   /// 기능 : 메모가 속한 회사다.
-  company   Company @relation(fields: [companyId], references: [id])
+  company Company @relation(fields: [companyId], references: [id])
   /// 기능 : 메모를 작성한 사용자다.
-  user      User    @relation(fields: [userId], references: [id])
+  user    User    @relation(fields: [userId], references: [id])
 
   @@index([companyId, createdAt])
   @@index([userId, companyId])
+  @@index([userId, deletedAt])
+  @@index([userId, trashExpiresAt])
 }
 
 model CompanyUserPrivateMemoLog {
-  id             String   @id @default(uuid()) @db.Uuid
-  companyId      String   @db.Uuid
-  userId         String   @db.Uuid
-  memoCiphertext String
-  memoKeyVersion String
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
+  id              String    @id @default(uuid()) @db.Uuid
+  companyId       String    @db.Uuid
+  userId          String    @db.Uuid
+  memoCiphertext  String
+  memoKeyVersion  String
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  deletedAt       DateTime? @db.Timestamptz(3)
+  deletedByUserId String?   @db.Uuid
+  trashExpiresAt  DateTime? @db.Timestamptz(3)
 
   /// 기능 : 비밀 메모가 속한 회사다.
-  company        Company @relation(fields: [companyId], references: [id])
+  company Company @relation(fields: [companyId], references: [id])
   /// 기능 : 비밀 메모를 작성한 사용자다. 이 사용자만 복호화된 memo를 볼 수 있다.
-  user           User    @relation(fields: [userId], references: [id])
+  user    User    @relation(fields: [userId], references: [id])
 
   @@index([companyId, createdAt])
   @@index([userId, companyId])
+  @@index([userId, deletedAt])
+  @@index([userId, trashExpiresAt])
 }

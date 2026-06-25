@@ -6,6 +6,8 @@ import {
   createProduct,
   createStatus,
   deleteCategory,
+  deleteMemoLog,
+  deletePrivateMemoLog,
   deleteProduct,
   deleteStatus,
   updateMemoLog,
@@ -18,6 +20,8 @@ import type {
   CreateProductCategoryInput,
   CreateProductInput,
   CreateProductStatusInput,
+  DeleteProductMemoLogInput,
+  DeleteProductPrivateMemoLogInput,
   UpdateProductInput,
 } from "@/features/product/types/product";
 
@@ -142,6 +146,20 @@ export function useUpdateMemoLogMutation(productId: string) {
   });
 }
 
+export function useDeleteMemoLogMutation(productId: string) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (input: Omit<DeleteProductMemoLogInput, "productId">) =>
+      deleteMemoLog({ productId, ...input }),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({
+        queryKey: productQueryKeys.memoLogs(productId),
+      });
+    },
+  });
+}
+
 export function useCreatePrivateMemoLogMutation(productId: string) {
   const queryClient = useQueryClient();
 
@@ -167,6 +185,21 @@ export function useUpdatePrivateMemoLogMutation(productId: string) {
       privateMemoLogId: string;
       memo: string;
     }) => updatePrivateMemoLog(productId, privateMemoLogId, { memo }),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({
+        queryKey: productQueryKeys.privateMemoLogs(productId),
+      });
+    },
+  });
+}
+
+export function useDeletePrivateMemoLogMutation(productId: string) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (
+      input: Omit<DeleteProductPrivateMemoLogInput, "productId">
+    ) => deletePrivateMemoLog({ productId, ...input }),
     onSuccess: () => {
       void queryClient.invalidateQueries({
         queryKey: productQueryKeys.privateMemoLogs(productId),

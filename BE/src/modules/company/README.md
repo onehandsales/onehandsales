@@ -17,9 +17,11 @@
 - `POST /api/companies/:companyId/memo-logs`
 - `GET /api/companies/:companyId/memo-logs`
 - `PATCH /api/companies/:companyId/memo-logs/:memoLogId`
+- `DELETE /api/companies/:companyId/memo-logs/:memoLogId`
 - `POST /api/companies/:companyId/private-memo-logs`
 - `GET /api/companies/:companyId/private-memo-logs`
 - `PATCH /api/companies/:companyId/private-memo-logs/:privateMemoLogId`
+- `DELETE /api/companies/:companyId/private-memo-logs/:privateMemoLogId`
 
 이 모듈은 User Web에서 사용하는 회사, 회사 분야, 회사 지역, 회사 일반 메모 로그, 회사 개인 비밀 메모 로그 API를 담당한다.
 

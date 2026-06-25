@@ -14,6 +14,8 @@ import type {
   CreateCompanyMemoLogInput,
   CreateCompanyPrivateMemoLogInput,
   CreateCompanyRegionInput,
+  DeleteCompanyMemoLogInput,
+  DeleteCompanyPrivateMemoLogInput,
   UpdateCompanyInput,
   UpdateCompanyMemoLogInput,
   UpdateCompanyPrivateMemoLogInput,
@@ -158,6 +160,16 @@ export function updateCompanyMemoLog(input: UpdateCompanyMemoLogInput) {
   );
 }
 
+// 기능 : 회사 일반 메모 로그를 삭제합니다.
+export function deleteCompanyMemoLog(input: DeleteCompanyMemoLogInput) {
+  return apiClient<void>(
+    `/api/companies/${input.companyId}/memo-logs/${input.memoLogId}`,
+    {
+      method: "DELETE",
+    }
+  );
+}
+
 // 기능 : 회사 개인 메모 로그를 커서 기반으로 조회합니다.
 export function listCompanyPrivateMemoLogs(
   companyId: string,
@@ -199,6 +211,18 @@ export function updateCompanyPrivateMemoLog(
       body: compactBody({
         memo: input.memo,
       }),
+    }
+  );
+}
+
+// 기능 : 회사 개인 비밀 메모 로그를 삭제합니다.
+export function deleteCompanyPrivateMemoLog(
+  input: DeleteCompanyPrivateMemoLogInput
+) {
+  return apiClient<void>(
+    `/api/companies/${input.companyId}/private-memo-logs/${input.privateMemoLogId}`,
+    {
+      method: "DELETE",
     }
   );
 }

@@ -14,6 +14,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, type UseFormRegisterReturn } from "react-hook-form";
 import { z } from "zod";
 import { SummaryTaxonomySelect } from "@/components/ui/summary-taxonomy-select";
+import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { Toast } from "@/components/ui/toast";
 import {
   ModalFieldGroup,
@@ -33,6 +34,8 @@ import {
 import {
   useCreateMemoLogMutation,
   useCreatePrivateMemoLogMutation,
+  useDeleteMemoLogMutation,
+  useDeletePrivateMemoLogMutation,
   useDeleteProductMutation,
   useUpdateMemoLogMutation,
   useUpdatePrivateMemoLogMutation,
@@ -49,6 +52,11 @@ import type {
 import { DEAL_STATUS_LABEL, type DealStatus } from "@/features/deal/types/deal";
 import { getApiErrorMessage } from "@/lib/api-client";
 import { formatDate, formatDateTime } from "@/utils/format";
+import {
+  LOG_DELETE_CONFIRM_MESSAGE,
+  LOG_DELETE_SUCCESS_DESCRIPTION,
+  LOG_DELETE_SUCCESS_MESSAGE,
+} from "@/utils/log-delete-feedback";
 
 type ProductDetailScreenProps = {
   readonly productId: string;
@@ -72,6 +80,7 @@ type ProductSummaryEditFormValues = z.infer<typeof productSummaryEditSchema>;
 export function ProductDetailScreen({ productId }: ProductDetailScreenProps) {
   const navigate = useNavigate();
   const [notice, setNotice] = useState<string | null>(null);
+  const [noticeDescription, setNoticeDescription] = useState<string | null>(null);
   const [actionError, setActionError] = useState<string | null>(null);
   const [isEditing, setIsEditing] = useState(false);
 
@@ -105,6 +114,16 @@ export function ProductDetailScreen({ productId }: ProductDetailScreenProps) {
 
   const deals = dealsQuery.data?.items ?? [];
 
+  const showNotice = (message: string, description?: string) => {
+    setNotice(message);
+    setNoticeDescription(description ?? null);
+  };
+
+  const clearNotice = () => {
+    setNotice(null);
+    setNoticeDescription(null);
+  };
+
   const onDeleteProduct = async () => {
     if (!window.confirm(`${product.productName} 제품을 삭제할까요?`)) {
       return;
@@ -129,7 +148,12 @@ export function ProductDetailScreen({ productId }: ProductDetailScreenProps) {
       <div className="md:hidden min-h-screen bg-[#FAFAF8]">
         {notice ? (
           <div className="px-4 pt-3">
-            <Toast message={notice} onClose={() => setNotice(null)} variant="success" />
+            <Toast
+              description={noticeDescription ?? undefined}
+              message={notice}
+              onClose={clearNotice}
+              variant="success"
+            />
           </div>
         ) : null}
         {actionError ? (
@@ -180,7 +204,7 @@ export function ProductDetailScreen({ productId }: ProductDetailScreenProps) {
             onCancelEdit={() => setIsEditing(false)}
             onSaved={() => {
               void productQuery.refetch();
-              setNotice("제품 정보가 저장되었습니다.");
+              showNotice("제품 정보가 저장되었습니다.");
               setIsEditing(false);
             }}
           />
@@ -196,7 +220,7 @@ export function ProductDetailScreen({ productId }: ProductDetailScreenProps) {
             hasNext={Boolean(memoLogsQuery.hasNextPage)}
             isFetchingNext={memoLogsQuery.isFetchingNextPage}
             onFetchMore={() => void memoLogsQuery.fetchNextPage()}
-            onChanged={setNotice}
+            onChanged={showNotice}
           />
           <ProductActivityLogPanel
             productId={productId}
@@ -205,7 +229,7 @@ export function ProductDetailScreen({ productId }: ProductDetailScreenProps) {
             hasNext={Boolean(privateMemoLogsQuery.hasNextPage)}
             isFetchingNext={privateMemoLogsQuery.isFetchingNextPage}
             onFetchMore={() => void privateMemoLogsQuery.fetchNextPage()}
-            onChanged={setNotice}
+            onChanged={showNotice}
           />
         </div>
       </div>
@@ -214,7 +238,12 @@ export function ProductDetailScreen({ productId }: ProductDetailScreenProps) {
       <div className="hidden md:flex h-full flex-col bg-[#FAFAF8]">
         {notice ? (
           <div className="mx-6 mt-3">
-            <Toast message={notice} onClose={() => setNotice(null)} variant="success" />
+            <Toast
+              description={noticeDescription ?? undefined}
+              message={notice}
+              onClose={clearNotice}
+              variant="success"
+            />
           </div>
         ) : null}
         {actionError ? (
@@ -266,7 +295,7 @@ export function ProductDetailScreen({ productId }: ProductDetailScreenProps) {
             onCancelEdit={() => setIsEditing(false)}
             onSaved={() => {
               void productQuery.refetch();
-              setNotice("제품 정보가 저장되었습니다.");
+              showNotice("제품 정보가 저장되었습니다.");
               setIsEditing(false);
             }}
           />
@@ -286,7 +315,7 @@ export function ProductDetailScreen({ productId }: ProductDetailScreenProps) {
               hasNext={Boolean(memoLogsQuery.hasNextPage)}
               isFetchingNext={memoLogsQuery.isFetchingNextPage}
               onFetchMore={() => void memoLogsQuery.fetchNextPage()}
-              onChanged={setNotice}
+              onChanged={showNotice}
             />
             <ProductActivityLogPanel
               productId={productId}
@@ -295,7 +324,7 @@ export function ProductDetailScreen({ productId }: ProductDetailScreenProps) {
               hasNext={Boolean(privateMemoLogsQuery.hasNextPage)}
               isFetchingNext={privateMemoLogsQuery.isFetchingNextPage}
               onFetchMore={() => void privateMemoLogsQuery.fetchNextPage()}
-              onChanged={setNotice}
+              onChanged={showNotice}
             />
           </div>
         </div>
@@ -671,12 +700,15 @@ function ProductMemoPanel({
   readonly hasNext: boolean;
   readonly isFetchingNext: boolean;
   readonly onFetchMore: () => void;
-  readonly onChanged: (notice: string) => void;
+  readonly onChanged: (notice: string, description?: string) => void;
 }) {
   const createMemoMutation = useCreateMemoLogMutation(productId);
   const updateMemoMutation = useUpdateMemoLogMutation(productId);
+  const deleteMemoMutation = useDeleteMemoLogMutation(productId);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [expandedId, setExpandedId] = useState<string | null>(null);
+  const [deletingLog, setDeletingLog] = useState<ProductMemoLog | null>(null);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
   const [isCreateOpen, setIsCreateOpen] = useState(false);
 
   const [createMemoType, setCreateMemoType] = useState("");
@@ -714,6 +746,24 @@ function ProductMemoPanel({
     });
     setEditingId(null);
     onChanged("제품 로그가 수정되었습니다.");
+  };
+
+  const onConfirmDelete = async () => {
+    if (!deletingLog) return;
+    setDeleteError(null);
+    try {
+      await deleteMemoMutation.mutateAsync({ memoLogId: deletingLog.id });
+      if (editingId === deletingLog.id) {
+        setEditingId(null);
+      }
+      if (expandedId === deletingLog.id) {
+        setExpandedId(null);
+      }
+      setDeletingLog(null);
+      onChanged(LOG_DELETE_SUCCESS_MESSAGE, LOG_DELETE_SUCCESS_DESCRIPTION);
+    } catch (error) {
+      setDeleteError(getApiErrorMessage(error));
+    }
   };
 
   const createFormId = "product-log-create-form";
@@ -776,6 +826,20 @@ function ProductMemoPanel({
                     onKeyDown={(e) => { if (e.key === "Enter") { e.stopPropagation(); onStartEdit(log); } }}
                   >
                     <Pencil className="h-3 w-3 text-[#9CA3AF]" />
+                  </div>
+                  <div
+                    aria-label="삭제"
+                    className="invisible ml-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded text-[#DC2626] hover:bg-[#FEE2E2] group-hover:visible"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setDeleteError(null);
+                      setDeletingLog(log);
+                    }}
+                    role="button"
+                    tabIndex={-1}
+                    onKeyDown={(e) => { if (e.key === "Enter") { e.stopPropagation(); setDeleteError(null); setDeletingLog(log); } }}
+                  >
+                    <Trash2 className="h-3 w-3" />
                   </div>
                 </button>
                 {expandedId === log.id ? (
@@ -890,6 +954,21 @@ function ProductMemoPanel({
         ) : null}
       </ModalForm>
     </ModalShell>
+    <ConfirmDialog
+      cancelLabel="아니요"
+      confirmLabel="예"
+      errorMessage={deleteError}
+      isPending={deleteMemoMutation.isPending}
+      open={deletingLog !== null}
+      title={LOG_DELETE_CONFIRM_MESSAGE}
+      onCancel={() => {
+        if (!deleteMemoMutation.isPending) {
+          setDeleteError(null);
+          setDeletingLog(null);
+        }
+      }}
+      onConfirm={() => void onConfirmDelete()}
+    />
     </>
   );
 }
@@ -911,12 +990,15 @@ function ProductActivityLogPanel({
   readonly hasNext: boolean;
   readonly isFetchingNext: boolean;
   readonly onFetchMore: () => void;
-  readonly onChanged: (notice: string) => void;
+  readonly onChanged: (notice: string, description?: string) => void;
 }) {
   const createMutation = useCreatePrivateMemoLogMutation(productId);
   const updateMutation = useUpdatePrivateMemoLogMutation(productId);
+  const deleteMutation = useDeletePrivateMemoLogMutation(productId);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [expandedId, setExpandedId] = useState<string | null>(null);
+  const [deletingLog, setDeletingLog] = useState<ProductPrivateMemoLog | null>(null);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
   const [isCreateOpen, setIsCreateOpen] = useState(false);
 
   const [createMemo, setCreateMemo] = useState("");
@@ -945,6 +1027,24 @@ function ProductActivityLogPanel({
     });
     setEditingId(null);
     onChanged("비밀 메모가 수정되었습니다.");
+  };
+
+  const onConfirmDelete = async () => {
+    if (!deletingLog) return;
+    setDeleteError(null);
+    try {
+      await deleteMutation.mutateAsync({ privateMemoLogId: deletingLog.id });
+      if (editingId === deletingLog.id) {
+        setEditingId(null);
+      }
+      if (expandedId === deletingLog.id) {
+        setExpandedId(null);
+      }
+      setDeletingLog(null);
+      onChanged(LOG_DELETE_SUCCESS_MESSAGE, LOG_DELETE_SUCCESS_DESCRIPTION);
+    } catch (error) {
+      setDeleteError(getApiErrorMessage(error));
+    }
   };
 
   const createFormId = "product-private-memo-create-form";
@@ -1019,6 +1119,20 @@ function ProductActivityLogPanel({
                     onKeyDown={(e) => { if (e.key === "Enter") { e.stopPropagation(); onStartEdit(log); } }}
                   >
                     <Pencil className="h-3 w-3 text-[#9CA3AF]" />
+                  </div>
+                  <div
+                    aria-label="삭제"
+                    className="invisible ml-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded text-[#DC2626] hover:bg-[#FEE2E2] group-hover:visible"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setDeleteError(null);
+                      setDeletingLog(log);
+                    }}
+                    role="button"
+                    tabIndex={-1}
+                    onKeyDown={(e) => { if (e.key === "Enter") { e.stopPropagation(); setDeleteError(null); setDeletingLog(log); } }}
+                  >
+                    <Trash2 className="h-3 w-3" />
                   </div>
                 </button>
                 {expandedId === log.id ? (
@@ -1115,6 +1229,21 @@ function ProductActivityLogPanel({
         ) : null}
       </ModalForm>
     </ModalShell>
+    <ConfirmDialog
+      cancelLabel="아니요"
+      confirmLabel="예"
+      errorMessage={deleteError}
+      isPending={deleteMutation.isPending}
+      open={deletingLog !== null}
+      title={LOG_DELETE_CONFIRM_MESSAGE}
+      onCancel={() => {
+        if (!deleteMutation.isPending) {
+          setDeleteError(null);
+          setDeletingLog(null);
+        }
+      }}
+      onConfirm={() => void onConfirmDelete()}
+    />
     </>
   );
 }

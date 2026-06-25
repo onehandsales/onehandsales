@@ -176,6 +176,22 @@ export class ContactController {
     );
   }
 
+  // API : 담당자 메모, 일반 메모 로그 삭제
+  @Delete(":contactId/memo-logs/:memoLogId")
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async deleteMemoLog(
+    @CurrentUser() currentUser: CurrentUserContext,
+    @Param("contactId", ParseUUIDPipe) contactId: string,
+    @Param("memoLogId", ParseUUIDPipe) memoLogId: string
+  ): Promise<void> {
+    // 1. 담당자 ID, 메모 로그 ID를 application 계층으로 전달한다.
+    await this.contactApplicationService.deleteMemoLog(
+      currentUser,
+      contactId,
+      memoLogId
+    );
+  }
+
   // API : 담당자 비밀 메모, 개인 비밀 메모 로그 생성
   @Post(":contactId/private-memo-logs")
   @HttpCode(HttpStatus.CREATED)
@@ -222,6 +238,22 @@ export class ContactController {
       contactId,
       privateMemoLogId,
       body.memo
+    );
+  }
+
+  // API : 담당자 비밀 메모, 개인 비밀 메모 로그 삭제
+  @Delete(":contactId/private-memo-logs/:privateMemoLogId")
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async deletePrivateMemoLog(
+    @CurrentUser() currentUser: CurrentUserContext,
+    @Param("contactId", ParseUUIDPipe) contactId: string,
+    @Param("privateMemoLogId", ParseUUIDPipe) privateMemoLogId: string
+  ): Promise<void> {
+    // 1. 담당자 ID, 비밀 메모 로그 ID를 application 계층으로 전달한다.
+    await this.contactApplicationService.deletePrivateMemoLog(
+      currentUser,
+      contactId,
+      privateMemoLogId
     );
   }
 }

@@ -220,6 +220,26 @@ export interface UpdateDealMemoLogInput {
   readonly memo?: string;
 }
 
+// 역할 : DeleteDealFollowingActionLogInput 데이터가 계층 사이에서 전달되는 구조를 정의합니다.
+export interface DeleteDealFollowingActionLogInput {
+  readonly userId: string;
+  readonly dealId: string;
+  readonly followingActionLogId: string;
+  readonly deletedAt: Date;
+  readonly deletedByUserId: string;
+  readonly trashExpiresAt: Date;
+}
+
+// 역할 : DeleteDealMemoLogInput 데이터가 계층 사이에서 전달되는 구조를 정의합니다.
+export interface DeleteDealMemoLogInput {
+  readonly userId: string;
+  readonly dealId: string;
+  readonly memoLogId: string;
+  readonly deletedAt: Date;
+  readonly deletedByUserId: string;
+  readonly trashExpiresAt: Date;
+}
+
 // 역할 : DealRepository 저장소가 제공해야 하는 영속성 계약을 정의합니다.
 export interface DealRepository {
   // 기능 : 딜 저장소 작업을 트랜잭션 경계 안에서 실행합니다.
@@ -292,6 +312,10 @@ export interface DealRepository {
   updateFollowingActionLog(
     input: UpdateDealFollowingActionLogInput
   ): Promise<DealFollowingActionLogRecord | null>;
+  // 기능 : 딜 다음 행동 로그를 휴지통 상태로 전환합니다.
+  deleteFollowingActionLog(
+    input: DeleteDealFollowingActionLogInput
+  ): Promise<boolean>;
   // 기능 : 딜 메모 로그를 생성합니다.
   createMemoLog(input: CreateDealMemoLogInput): Promise<DealMemoLogRecord>;
   // 기능 : 딜 메모 로그 목록을 cursor 기준으로 조회합니다.
@@ -303,4 +327,6 @@ export interface DealRepository {
   }): Promise<DealMemoLogRecord[]>;
   // 기능 : 딜 메모 로그를 수정합니다.
   updateMemoLog(input: UpdateDealMemoLogInput): Promise<DealMemoLogRecord | null>;
+  // 기능 : 딜 메모 로그를 휴지통 상태로 전환합니다.
+  deleteMemoLog(input: DeleteDealMemoLogInput): Promise<boolean>;
 }

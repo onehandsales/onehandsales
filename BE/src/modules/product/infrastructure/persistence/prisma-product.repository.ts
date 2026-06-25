@@ -3,6 +3,8 @@ import {
   type CreateProductInput,
   type CreateProductMemoLogInput,
   type CreateProductPrivateMemoLogInput,
+  type DeleteProductMemoLogInput,
+  type DeleteProductPrivateMemoLogInput,
   type ExportProductsInput,
   type ListProductDealsInput,
   type ListProductsInput,
@@ -403,6 +405,7 @@ export class PrismaProductRepository implements ProductRepository {
       where: {
         userId: input.userId,
         productId: input.productId,
+        deletedAt: null,
         ...this.createCursorWhere(input.cursor),
       },
       select: {
@@ -423,10 +426,30 @@ export class PrismaProductRepository implements ProductRepository {
         id: input.memoLogId,
         productId: input.productId,
         userId: input.userId,
+        deletedAt: null,
       },
       data: {
         ...(input.memoType !== undefined ? { memoType: input.memoType } : {}),
         ...(input.memo !== undefined ? { memo: input.memo } : {}),
+      },
+    });
+
+    return result.count > 0;
+  }
+
+  // 기능 : 제품 일반 메모 로그를 휴지통 상태로 전환합니다.
+  async deleteMemoLog(input: DeleteProductMemoLogInput): Promise<boolean> {
+    const result = await this.client.productMemoLog.updateMany({
+      where: {
+        id: input.memoLogId,
+        productId: input.productId,
+        userId: input.userId,
+        deletedAt: null,
+      },
+      data: {
+        deletedAt: input.deletedAt,
+        deletedByUserId: input.deletedByUserId,
+        trashExpiresAt: input.trashExpiresAt,
       },
     });
 
@@ -458,6 +481,7 @@ export class PrismaProductRepository implements ProductRepository {
       where: {
         userId: input.userId,
         productId: input.productId,
+        deletedAt: null,
         ...this.createPrivateMemoCursorWhere(input.cursor),
       },
       select: {
@@ -484,10 +508,32 @@ export class PrismaProductRepository implements ProductRepository {
         id: input.privateMemoLogId,
         userId: input.userId,
         productId: input.productId,
+        deletedAt: null,
       },
       data: {
         memoCiphertext: input.memoCiphertext,
         memoKeyVersion: input.memoKeyVersion,
+      },
+    });
+
+    return result.count > 0;
+  }
+
+  // 기능 : 제품 개인 비밀 메모 로그를 휴지통 상태로 전환합니다.
+  async deletePrivateMemoLog(
+    input: DeleteProductPrivateMemoLogInput
+  ): Promise<boolean> {
+    const result = await this.client.productUserPrivateMemoLog.updateMany({
+      where: {
+        id: input.privateMemoLogId,
+        userId: input.userId,
+        productId: input.productId,
+        deletedAt: null,
+      },
+      data: {
+        deletedAt: input.deletedAt,
+        deletedByUserId: input.deletedByUserId,
+        trashExpiresAt: input.trashExpiresAt,
       },
     });
 

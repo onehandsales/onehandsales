@@ -15,6 +15,8 @@ import {
   type CreateCompanyInput,
   type CreateCompanyMemoLogInput,
   type CreateCompanyPrivateMemoLogInput,
+  type DeleteCompanyMemoLogInput,
+  type DeleteCompanyPrivateMemoLogInput,
   type ExportCompaniesInput,
   type ListCompanyContactsInput,
   type ListCompanyDealsInput,
@@ -425,6 +427,7 @@ export class PrismaCompanyRepository implements CompanyRepository {
     return this.client.companyMemoLog.findMany({
       where: {
         companyId: input.companyId,
+        deletedAt: null,
         ...this.createCursorWhere(input.cursor),
       },
       select: {
@@ -451,10 +454,30 @@ export class PrismaCompanyRepository implements CompanyRepository {
         id: input.memoLogId,
         companyId: input.companyId,
         userId: input.userId,
+        deletedAt: null,
       },
       data: {
         memoType: input.memoType,
         memo: input.memo,
+      },
+    });
+
+    return result.count > 0;
+  }
+
+  // 기능 : 회사 일반 메모 로그를 휴지통 상태로 전환합니다.
+  async deleteMemoLog(input: DeleteCompanyMemoLogInput): Promise<boolean> {
+    const result = await this.client.companyMemoLog.updateMany({
+      where: {
+        id: input.memoLogId,
+        companyId: input.companyId,
+        userId: input.userId,
+        deletedAt: null,
+      },
+      data: {
+        deletedAt: input.deletedAt,
+        deletedByUserId: input.deletedByUserId,
+        trashExpiresAt: input.trashExpiresAt,
       },
     });
 
@@ -486,6 +509,7 @@ export class PrismaCompanyRepository implements CompanyRepository {
       where: {
         userId: input.userId,
         companyId: input.companyId,
+        deletedAt: null,
         ...this.createPrivateMemoCursorWhere(input.cursor),
       },
       select: {
@@ -512,10 +536,32 @@ export class PrismaCompanyRepository implements CompanyRepository {
         id: input.privateMemoLogId,
         userId: input.userId,
         companyId: input.companyId,
+        deletedAt: null,
       },
       data: {
         memoCiphertext: input.memoCiphertext,
         memoKeyVersion: input.memoKeyVersion,
+      },
+    });
+
+    return result.count > 0;
+  }
+
+  // 기능 : 회사 개인 비밀 메모 로그를 휴지통 상태로 전환합니다.
+  async deletePrivateMemoLog(
+    input: DeleteCompanyPrivateMemoLogInput
+  ): Promise<boolean> {
+    const result = await this.client.companyUserPrivateMemoLog.updateMany({
+      where: {
+        id: input.privateMemoLogId,
+        userId: input.userId,
+        companyId: input.companyId,
+        deletedAt: null,
+      },
+      data: {
+        deletedAt: input.deletedAt,
+        deletedByUserId: input.deletedByUserId,
+        trashExpiresAt: input.trashExpiresAt,
       },
     });
 

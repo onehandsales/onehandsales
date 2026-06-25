@@ -8,6 +8,8 @@ import {
   deleteContact,
   deleteContactDepartment,
   deleteContactJobGrade,
+  deleteContactMemoLog,
+  deleteContactPrivateMemoLog,
   exportContactsXlsx,
   updateContact,
   updateContactMemoLog,
@@ -23,6 +25,8 @@ import type {
   CreateContactJobGradeInput,
   CreateContactMemoLogInput,
   CreateContactPrivateMemoLogInput,
+  DeleteContactMemoLogInput,
+  DeleteContactPrivateMemoLogInput,
   UpdateContactInput,
   UpdateContactMemoLogInput,
   UpdateContactPrivateMemoLogInput,
@@ -167,6 +171,21 @@ export function useUpdateContactMemoLogMutation(contactId: string) {
   });
 }
 
+// 기능 : 담당자 일반 메모 로그를 삭제하고 메모 로그 캐시를 갱신합니다.
+export function useDeleteContactMemoLogMutation(contactId: string) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (input: Omit<DeleteContactMemoLogInput, "contactId">) =>
+      deleteContactMemoLog({ contactId, ...input }),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({
+        queryKey: contactQueryKeys.memoLogs(contactId),
+      });
+    },
+  });
+}
+
 // 기능 : 담당자 개인 비밀 메모 로그를 생성한 뒤 개인 메모 로그 캐시를 갱신합니다.
 export function useCreateContactPrivateMemoLogMutation(contactId: string) {
   const queryClient = useQueryClient();
@@ -189,6 +208,22 @@ export function useUpdateContactPrivateMemoLogMutation(contactId: string) {
   return useMutation({
     mutationFn: (input: UpdateContactPrivateMemoLogInput) =>
       updateContactPrivateMemoLog(input),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({
+        queryKey: contactQueryKeys.privateMemoLogs(contactId),
+      });
+    },
+  });
+}
+
+// 기능 : 담당자 개인 비밀 메모 로그를 삭제하고 개인 비밀 메모 로그 캐시를 갱신합니다.
+export function useDeleteContactPrivateMemoLogMutation(contactId: string) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (
+      input: Omit<DeleteContactPrivateMemoLogInput, "contactId">
+    ) => deleteContactPrivateMemoLog({ contactId, ...input }),
     onSuccess: () => {
       void queryClient.invalidateQueries({
         queryKey: contactQueryKeys.privateMemoLogs(contactId),

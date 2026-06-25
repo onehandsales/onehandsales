@@ -150,6 +150,26 @@ export interface CreateProductPrivateMemoLogInput {
   readonly memoKeyVersion: string;
 }
 
+// 역할 : DeleteProductMemoLogInput 데이터가 계층 사이에서 전달되는 구조를 정의합니다.
+export interface DeleteProductMemoLogInput {
+  readonly userId: string;
+  readonly productId: string;
+  readonly memoLogId: string;
+  readonly deletedAt: Date;
+  readonly deletedByUserId: string;
+  readonly trashExpiresAt: Date;
+}
+
+// 역할 : DeleteProductPrivateMemoLogInput 데이터가 계층 사이에서 전달되는 구조를 정의합니다.
+export interface DeleteProductPrivateMemoLogInput {
+  readonly userId: string;
+  readonly productId: string;
+  readonly privateMemoLogId: string;
+  readonly deletedAt: Date;
+  readonly deletedByUserId: string;
+  readonly trashExpiresAt: Date;
+}
+
 // 역할 : ProductRepository 저장소가 제공해야 하는 영속성 계약을 정의합니다.
 export interface ProductRepository {
   // 기능 : 제품 저장소 작업을 트랜잭션 경계 안에서 실행합니다.
@@ -215,6 +235,8 @@ export interface ProductRepository {
   }): Promise<ProductMemoLogRecord[]>;
   // 기능 : 제품 일반 메모 로그의 memoType 또는 memo를 수정합니다.
   updateMemoLog(input: UpdateProductMemoLogInput): Promise<boolean>;
+  // 기능 : 제품 일반 메모 로그를 휴지통 상태로 전환합니다.
+  deleteMemoLog(input: DeleteProductMemoLogInput): Promise<boolean>;
   // 기능 : 제품 개인 비밀 메모 로그를 생성합니다.
   createPrivateMemoLog(input: CreateProductPrivateMemoLogInput): Promise<void>;
   // 기능 : 제품 개인 비밀 메모 로그를 작성자 본인 기준으로 조회합니다.
@@ -232,4 +254,8 @@ export interface ProductRepository {
     readonly memoCiphertext: string;
     readonly memoKeyVersion: string;
   }): Promise<boolean>;
+  // 기능 : 제품 개인 비밀 메모 로그를 휴지통 상태로 전환합니다.
+  deletePrivateMemoLog(
+    input: DeleteProductPrivateMemoLogInput
+  ): Promise<boolean>;
 }

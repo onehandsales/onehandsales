@@ -270,6 +270,11 @@ export type UpdateFollowingActionLogInput = {
   readonly checkComplete?: boolean;
 };
 
+export type DeleteFollowingActionLogInput = {
+  readonly dealId: string;
+  readonly followingActionLogId: string;
+};
+
 // 기능 : 메모 로그 타입
 export type DealMemoLog = {
   readonly id: string;
@@ -296,6 +301,11 @@ export type UpdateMemoLogInput = {
   readonly memoLogId: string;
   readonly memoType?: string;
   readonly memo?: string;
+};
+
+export type DeleteMemoLogInput = {
+  readonly dealId: string;
+  readonly memoLogId: string;
 };
 
 // 기능 : export query 파라미터

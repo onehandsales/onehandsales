@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpCode,
   HttpStatus,
@@ -177,6 +178,22 @@ export class DealController {
     );
   }
 
+  // API : 딜 다음 행동, 로그 삭제
+  @Delete(":dealId/following-action-logs/:followingActionLogId")
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async deleteFollowingActionLog(
+    @CurrentUser() currentUser: CurrentUserContext,
+    @Param("dealId", ParseUUIDPipe) dealId: string,
+    @Param("followingActionLogId", ParseUUIDPipe) followingActionLogId: string
+  ): Promise<void> {
+    // 1. 딜 ID, 다음 행동 로그 ID를 application 계층으로 전달한다.
+    await this.dealApplicationService.deleteFollowingActionLog(
+      currentUser,
+      dealId,
+      followingActionLogId
+    );
+  }
+
   // API : 딜 메모, 로그 목록 조회
   @Get(":dealId/memo-logs")
   listMemoLogs(
@@ -214,6 +231,22 @@ export class DealController {
       dealId,
       memoLogId,
       body
+    );
+  }
+
+  // API : 딜 메모, 로그 삭제
+  @Delete(":dealId/memo-logs/:memoLogId")
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async deleteMemoLog(
+    @CurrentUser() currentUser: CurrentUserContext,
+    @Param("dealId", ParseUUIDPipe) dealId: string,
+    @Param("memoLogId", ParseUUIDPipe) memoLogId: string
+  ): Promise<void> {
+    // 1. 딜 ID, 메모 로그 ID를 application 계층으로 전달한다.
+    await this.dealApplicationService.deleteMemoLog(
+      currentUser,
+      dealId,
+      memoLogId
     );
   }
 }

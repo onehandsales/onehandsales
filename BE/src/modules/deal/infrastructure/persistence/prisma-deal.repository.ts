@@ -19,6 +19,8 @@ import {
   type DealPageRecord,
   type DealProductRecord,
   type DealRepository,
+  type DeleteDealFollowingActionLogInput,
+  type DeleteDealMemoLogInput,
   type ExportDealsInput,
   type ListDealsInput,
   type UpdateDealFollowingActionLogInput,
@@ -493,6 +495,7 @@ export class PrismaDealRepository implements DealRepository {
       where: {
         userId: input.userId,
         dealId: input.dealId,
+        deletedAt: null,
         ...this.createFollowingActionLogCursorWhere(input.cursor),
       },
       select: this.createFollowingActionLogSelect(),
@@ -510,6 +513,7 @@ export class PrismaDealRepository implements DealRepository {
         id: input.followingActionLogId,
         userId: input.userId,
         dealId: input.dealId,
+        deletedAt: null,
       },
       data: {
         ...(input.followingAction !== undefined
@@ -530,9 +534,31 @@ export class PrismaDealRepository implements DealRepository {
         id: input.followingActionLogId,
         userId: input.userId,
         dealId: input.dealId,
+        deletedAt: null,
       },
       select: this.createFollowingActionLogSelect(),
     });
+  }
+
+  // 기능 : 딜 다음 행동 로그를 휴지통 상태로 전환합니다.
+  async deleteFollowingActionLog(
+    input: DeleteDealFollowingActionLogInput
+  ): Promise<boolean> {
+    const result = await this.client.dealFollowingActionLog.updateMany({
+      where: {
+        id: input.followingActionLogId,
+        userId: input.userId,
+        dealId: input.dealId,
+        deletedAt: null,
+      },
+      data: {
+        deletedAt: input.deletedAt,
+        deletedByUserId: input.deletedByUserId,
+        trashExpiresAt: input.trashExpiresAt,
+      },
+    });
+
+    return result.count > 0;
   }
 
   // 기능 : 딜 메모 로그를 생성합니다.
@@ -559,6 +585,7 @@ export class PrismaDealRepository implements DealRepository {
       where: {
         userId: input.userId,
         dealId: input.dealId,
+        deletedAt: null,
         ...this.createMemoLogCursorWhere(input.cursor),
       },
       select: this.createMemoLogSelect(),
@@ -576,6 +603,7 @@ export class PrismaDealRepository implements DealRepository {
         id: input.memoLogId,
         userId: input.userId,
         dealId: input.dealId,
+        deletedAt: null,
       },
       data: {
         ...(input.memoType !== undefined ? { memoType: input.memoType } : {}),
@@ -592,9 +620,29 @@ export class PrismaDealRepository implements DealRepository {
         id: input.memoLogId,
         userId: input.userId,
         dealId: input.dealId,
+        deletedAt: null,
       },
       select: this.createMemoLogSelect(),
     });
+  }
+
+  // 기능 : 딜 메모 로그를 휴지통 상태로 전환합니다.
+  async deleteMemoLog(input: DeleteDealMemoLogInput): Promise<boolean> {
+    const result = await this.client.dealMemoLog.updateMany({
+      where: {
+        id: input.memoLogId,
+        userId: input.userId,
+        dealId: input.dealId,
+        deletedAt: null,
+      },
+      data: {
+        deletedAt: input.deletedAt,
+        deletedByUserId: input.deletedByUserId,
+        trashExpiresAt: input.trashExpiresAt,
+      },
+    });
+
+    return result.count > 0;
   }
 
   // 기능 : 딜 목록과 export에 공통으로 쓰는 Prisma 조회 조건을 생성합니다.
@@ -676,6 +724,9 @@ export class PrismaDealRepository implements DealRepository {
         orderBy: [{ createdAt: "asc" }, { id: "asc" }],
       },
       followingActionLogs: {
+        where: {
+          deletedAt: null,
+        },
         select: this.createFollowingActionLogSelect(),
         orderBy: [{ createdAt: "desc" }, { id: "desc" }],
         take: 1,
@@ -839,6 +890,7 @@ export class PrismaDealRepository implements DealRepository {
           userId,
           dealId: { in: dealIds },
           checkComplete: false,
+          deletedAt: null,
         },
         select: {
           dealId: true,

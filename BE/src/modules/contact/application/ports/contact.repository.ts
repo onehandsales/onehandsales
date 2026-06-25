@@ -155,6 +155,26 @@ export interface CreateContactPrivateMemoLogInput {
   readonly memoKeyVersion: string;
 }
 
+// 역할 : DeleteContactMemoLogInput 데이터가 계층 사이에서 전달되는 구조를 정의합니다.
+export interface DeleteContactMemoLogInput {
+  readonly userId: string;
+  readonly contactId: string;
+  readonly memoLogId: string;
+  readonly deletedAt: Date;
+  readonly deletedByUserId: string;
+  readonly trashExpiresAt: Date;
+}
+
+// 역할 : DeleteContactPrivateMemoLogInput 데이터가 계층 사이에서 전달되는 구조를 정의합니다.
+export interface DeleteContactPrivateMemoLogInput {
+  readonly userId: string;
+  readonly contactId: string;
+  readonly privateMemoLogId: string;
+  readonly deletedAt: Date;
+  readonly deletedByUserId: string;
+  readonly trashExpiresAt: Date;
+}
+
 // 역할 : ContactRepository 저장소가 제공해야 하는 영속성 계약을 정의합니다.
 export interface ContactRepository {
   // 기능 : 담당자 저장소 작업을 트랜잭션 경계 안에서 실행합니다.
@@ -233,6 +253,8 @@ export interface ContactRepository {
   }): Promise<ContactMemoLogRecord[]>;
   // 기능 : 담당자 일반 메모 로그의 memoType 또는 memo를 수정합니다.
   updateMemoLog(input: UpdateContactMemoLogInput): Promise<boolean>;
+  // 기능 : 담당자 일반 메모 로그를 휴지통 상태로 전환합니다.
+  deleteMemoLog(input: DeleteContactMemoLogInput): Promise<boolean>;
   // 기능 : 담당자 개인 비밀 메모 로그를 생성합니다.
   createPrivateMemoLog(input: CreateContactPrivateMemoLogInput): Promise<void>;
   // 기능 : 담당자 개인 비밀 메모 로그를 작성자 본인 기준으로 조회합니다.
@@ -250,4 +272,8 @@ export interface ContactRepository {
     readonly memoCiphertext: string;
     readonly memoKeyVersion: string;
   }): Promise<boolean>;
+  // 기능 : 담당자 개인 비밀 메모 로그를 휴지통 상태로 전환합니다.
+  deletePrivateMemoLog(
+    input: DeleteContactPrivateMemoLogInput
+  ): Promise<boolean>;
 }

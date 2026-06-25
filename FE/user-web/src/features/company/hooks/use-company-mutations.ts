@@ -7,6 +7,8 @@ import {
   createCompanyRegion,
   deleteCompany,
   deleteCompanyField,
+  deleteCompanyMemoLog,
+  deleteCompanyPrivateMemoLog,
   deleteCompanyRegion,
   exportCompaniesXlsx,
   updateCompany,
@@ -24,6 +26,8 @@ import type {
   CreateCompanyMemoLogInput,
   CreateCompanyPrivateMemoLogInput,
   CreateCompanyRegionInput,
+  DeleteCompanyMemoLogInput,
+  DeleteCompanyPrivateMemoLogInput,
   UpdateCompanyInput,
   UpdateCompanyMemoLogInput,
   UpdateCompanyPrivateMemoLogInput,
@@ -163,6 +167,21 @@ export function useUpdateCompanyMemoLogMutation() {
   });
 }
 
+// 기능 : 일반 메모 로그를 삭제하고 일반 메모 캐시를 갱신합니다.
+export function useDeleteCompanyMemoLogMutation() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (input: DeleteCompanyMemoLogInput) =>
+      deleteCompanyMemoLog(input),
+    onSuccess: (_result, input) => {
+      void queryClient.invalidateQueries({
+        queryKey: companyQueryKeys.memoLogs(input.companyId),
+      });
+    },
+  });
+}
+
 // 기능 : 개인 메모 로그를 생성한 뒤 개인 메모 캐시를 갱신합니다.
 export function useCreateCompanyPrivateMemoLogMutation() {
   const queryClient = useQueryClient();
@@ -185,6 +204,21 @@ export function useUpdateCompanyPrivateMemoLogMutation() {
   return useMutation({
     mutationFn: (input: UpdateCompanyPrivateMemoLogInput) =>
       updateCompanyPrivateMemoLog(input),
+    onSuccess: (_result, input) => {
+      void queryClient.invalidateQueries({
+        queryKey: companyQueryKeys.privateMemoLogs(input.companyId),
+      });
+    },
+  });
+}
+
+// 기능 : 개인 비밀 메모 로그를 삭제하고 개인 비밀 메모 캐시를 갱신합니다.
+export function useDeleteCompanyPrivateMemoLogMutation() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (input: DeleteCompanyPrivateMemoLogInput) =>
+      deleteCompanyPrivateMemoLog(input),
     onSuccess: (_result, input) => {
       void queryClient.invalidateQueries({
         queryKey: companyQueryKeys.privateMemoLogs(input.companyId),

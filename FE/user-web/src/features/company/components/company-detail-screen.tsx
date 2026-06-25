@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { Toast } from "@/components/ui/toast";
 import { SummaryTaxonomySelect } from "@/components/ui/summary-taxonomy-select";
 import {
@@ -29,6 +30,8 @@ import {
 } from "@/features/company/hooks/use-company-detail";
 import {
   useDeleteCompanyMutation,
+  useDeleteCompanyMemoLogMutation,
+  useDeleteCompanyPrivateMemoLogMutation,
   useUpdateCompanyMutation,
   useCreateCompanyMemoLogMutation,
   useUpdateCompanyMemoLogMutation,
@@ -67,6 +70,11 @@ import {
 import { PageHeader } from "@/components/layout/page-header";
 import { getApiErrorMessage } from "@/lib/api-client";
 import { formatDate, formatDateTime } from "@/utils/format";
+import {
+  LOG_DELETE_CONFIRM_MESSAGE,
+  LOG_DELETE_SUCCESS_DESCRIPTION,
+  LOG_DELETE_SUCCESS_MESSAGE,
+} from "@/utils/log-delete-feedback";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
@@ -77,6 +85,7 @@ type CompanyDetailScreenProps = {
 export function CompanyDetailScreen({ companyId }: CompanyDetailScreenProps) {
   const navigate = useNavigate();
   const [notice, setNotice] = useState<string | null>(null);
+  const [noticeDescription, setNoticeDescription] = useState<string | null>(null);
   const [actionError, setActionError] = useState<string | null>(null);
   const [isEditing, setIsEditing] = useState(false);
 
@@ -121,6 +130,16 @@ export function CompanyDetailScreen({ companyId }: CompanyDetailScreenProps) {
   const contacts = contactsQuery.data?.items ?? [];
   const deals = dealsQuery.data?.items ?? [];
 
+  const showNotice = (message: string, description?: string) => {
+    setNotice(message);
+    setNoticeDescription(description ?? null);
+  };
+
+  const clearNotice = () => {
+    setNotice(null);
+    setNoticeDescription(null);
+  };
+
   const onDeleteCompany = async () => {
     if (!window.confirm(`${company.companyName} 회사를 삭제할까요?`)) return;
     setActionError(null);
@@ -143,7 +162,12 @@ export function CompanyDetailScreen({ companyId }: CompanyDetailScreenProps) {
       <div className="md:hidden min-h-screen bg-[#FAFAF8]">
         {notice ? (
           <div className="px-4 pt-3">
-            <Toast message={notice} onClose={() => setNotice(null)} variant="success" />
+            <Toast
+              description={noticeDescription ?? undefined}
+              message={notice}
+              onClose={clearNotice}
+              variant="success"
+            />
           </div>
         ) : null}
         {actionError ? (
@@ -194,7 +218,7 @@ export function CompanyDetailScreen({ companyId }: CompanyDetailScreenProps) {
             onCancelEdit={() => setIsEditing(false)}
             onSaved={() => {
               void companyQuery.refetch();
-              setNotice("회사 정보가 저장되었습니다.");
+              showNotice("회사 정보가 저장되었습니다.");
               setIsEditing(false);
             }}
           />
@@ -208,7 +232,7 @@ export function CompanyDetailScreen({ companyId }: CompanyDetailScreenProps) {
             hasNext={Boolean(memoLogsQuery.hasNextPage)}
             isFetchingNext={memoLogsQuery.isFetchingNextPage}
             onFetchMore={() => void memoLogsQuery.fetchNextPage()}
-            onChanged={setNotice}
+            onChanged={showNotice}
           />
         </div>
       </div>
@@ -217,7 +241,12 @@ export function CompanyDetailScreen({ companyId }: CompanyDetailScreenProps) {
       <div className="hidden md:flex h-full flex-col bg-[#FAFAF8]">
         {notice ? (
           <div className="mx-6 mt-3">
-            <Toast message={notice} onClose={() => setNotice(null)} variant="success" />
+            <Toast
+              description={noticeDescription ?? undefined}
+              message={notice}
+              onClose={clearNotice}
+              variant="success"
+            />
           </div>
         ) : null}
         {actionError ? (
@@ -269,7 +298,7 @@ export function CompanyDetailScreen({ companyId }: CompanyDetailScreenProps) {
             onCancelEdit={() => setIsEditing(false)}
             onSaved={() => {
               void companyQuery.refetch();
-              setNotice("회사 정보가 저장되었습니다.");
+              showNotice("회사 정보가 저장되었습니다.");
               setIsEditing(false);
             }}
           />
@@ -289,7 +318,7 @@ export function CompanyDetailScreen({ companyId }: CompanyDetailScreenProps) {
               hasNext={Boolean(memoLogsQuery.hasNextPage)}
               isFetchingNext={memoLogsQuery.isFetchingNextPage}
               onFetchMore={() => void memoLogsQuery.fetchNextPage()}
-              onChanged={setNotice}
+              onChanged={showNotice}
             />
             <ActivityLogPanel
               companyId={companyId}
@@ -298,7 +327,7 @@ export function CompanyDetailScreen({ companyId }: CompanyDetailScreenProps) {
               hasNext={Boolean(privateMemoLogsQuery.hasNextPage)}
               isFetchingNext={privateMemoLogsQuery.isFetchingNextPage}
               onFetchMore={() => void privateMemoLogsQuery.fetchNextPage()}
-              onChanged={setNotice}
+              onChanged={showNotice}
             />
           </div>
         </div>
@@ -665,12 +694,15 @@ function MemoPanel({
   readonly hasNext: boolean;
   readonly isFetchingNext: boolean;
   readonly onFetchMore: () => void;
-  readonly onChanged: (notice: string) => void;
+  readonly onChanged: (notice: string, description?: string) => void;
 }) {
   const createMemoMutation = useCreateCompanyMemoLogMutation();
   const updateMemoMutation = useUpdateCompanyMemoLogMutation();
+  const deleteMemoMutation = useDeleteCompanyMemoLogMutation();
   const [editingId, setEditingId] = useState<string | null>(null);
   const [expandedId, setExpandedId] = useState<string | null>(null);
+  const [deletingLog, setDeletingLog] = useState<CompanyMemoLog | null>(null);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
   const [isCreateOpen, setIsCreateOpen] = useState(false);
 
   const createForm = useForm<CompanyMemoLogFormValues>({
@@ -703,6 +735,27 @@ function MemoPanel({
     setEditingId(null);
     onChanged("회사 로그가 수정되었습니다.");
   });
+
+  const onConfirmDelete = async () => {
+    if (!deletingLog) return;
+    setDeleteError(null);
+    try {
+      await deleteMemoMutation.mutateAsync({
+        companyId,
+        memoLogId: deletingLog.id,
+      });
+      if (editingId === deletingLog.id) {
+        setEditingId(null);
+      }
+      if (expandedId === deletingLog.id) {
+        setExpandedId(null);
+      }
+      setDeletingLog(null);
+      onChanged(LOG_DELETE_SUCCESS_MESSAGE, LOG_DELETE_SUCCESS_DESCRIPTION);
+    } catch (error) {
+      setDeleteError(getApiErrorMessage(error));
+    }
+  };
 
   const createFormId = "company-log-create-form";
   const editFormId = "company-log-edit-form";
@@ -765,6 +818,20 @@ function MemoPanel({
                     onKeyDown={(e) => { if (e.key === "Enter") { e.stopPropagation(); onStartEdit(log); } }}
                   >
                     <Pencil className="h-3 w-3 text-[#9CA3AF]" />
+                  </div>
+                  <div
+                    aria-label="삭제"
+                    className="invisible ml-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded text-[#DC2626] hover:bg-[#FEE2E2] group-hover:visible"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setDeleteError(null);
+                      setDeletingLog(log);
+                    }}
+                    role="button"
+                    tabIndex={-1}
+                    onKeyDown={(e) => { if (e.key === "Enter") { e.stopPropagation(); setDeleteError(null); setDeletingLog(log); } }}
+                  >
+                    <Trash2 className="h-3 w-3" />
                   </div>
                 </button>
                 {/* 본문 — 펼쳐진 경우만 표시 */}
@@ -893,6 +960,21 @@ function MemoPanel({
         ) : null}
       </ModalForm>
     </ModalShell>
+    <ConfirmDialog
+      cancelLabel="아니요"
+      confirmLabel="예"
+      errorMessage={deleteError}
+      isPending={deleteMemoMutation.isPending}
+      open={deletingLog !== null}
+      title={LOG_DELETE_CONFIRM_MESSAGE}
+      onCancel={() => {
+        if (!deleteMemoMutation.isPending) {
+          setDeleteError(null);
+          setDeletingLog(null);
+        }
+      }}
+      onConfirm={() => void onConfirmDelete()}
+    />
     </>
   );
 }
@@ -914,12 +996,15 @@ function ActivityLogPanel({
   readonly hasNext: boolean;
   readonly isFetchingNext: boolean;
   readonly onFetchMore: () => void;
-  readonly onChanged: (notice: string) => void;
+  readonly onChanged: (notice: string, description?: string) => void;
 }) {
   const createMutation = useCreateCompanyPrivateMemoLogMutation();
   const updateMutation = useUpdateCompanyPrivateMemoLogMutation();
+  const deleteMutation = useDeleteCompanyPrivateMemoLogMutation();
   const [editingId, setEditingId] = useState<string | null>(null);
   const [expandedId, setExpandedId] = useState<string | null>(null);
+  const [deletingLog, setDeletingLog] = useState<CompanyPrivateMemoLog | null>(null);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
   const [isCreateOpen, setIsCreateOpen] = useState(false);
 
   const createForm = useForm<CompanyPrivateMemoLogFormValues>({
@@ -954,6 +1039,27 @@ function ActivityLogPanel({
     setEditingId(null);
     onChanged("비밀 메모가 수정되었습니다.");
   });
+
+  const onConfirmDelete = async () => {
+    if (!deletingLog) return;
+    setDeleteError(null);
+    try {
+      await deleteMutation.mutateAsync({
+        companyId,
+        privateMemoLogId: deletingLog.id,
+      });
+      if (editingId === deletingLog.id) {
+        setEditingId(null);
+      }
+      if (expandedId === deletingLog.id) {
+        setExpandedId(null);
+      }
+      setDeletingLog(null);
+      onChanged(LOG_DELETE_SUCCESS_MESSAGE, LOG_DELETE_SUCCESS_DESCRIPTION);
+    } catch (error) {
+      setDeleteError(getApiErrorMessage(error));
+    }
+  };
 
   const createFormId = "company-private-memo-create-form";
   const editFormId = "company-private-memo-edit-form";
@@ -1028,6 +1134,20 @@ function ActivityLogPanel({
                     onKeyDown={(e) => { if (e.key === "Enter") { e.stopPropagation(); onStartEdit(log); } }}
                   >
                     <Pencil className="h-3 w-3 text-[#9CA3AF]" />
+                  </div>
+                  <div
+                    aria-label="삭제"
+                    className="invisible ml-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded text-[#DC2626] hover:bg-[#FEE2E2] group-hover:visible"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setDeleteError(null);
+                      setDeletingLog(log);
+                    }}
+                    role="button"
+                    tabIndex={-1}
+                    onKeyDown={(e) => { if (e.key === "Enter") { e.stopPropagation(); setDeleteError(null); setDeletingLog(log); } }}
+                  >
+                    <Trash2 className="h-3 w-3" />
                   </div>
                 </button>
                 {expandedId === log.id ? (
@@ -1131,6 +1251,21 @@ function ActivityLogPanel({
         ) : null}
       </ModalForm>
     </ModalShell>
+    <ConfirmDialog
+      cancelLabel="아니요"
+      confirmLabel="예"
+      errorMessage={deleteError}
+      isPending={deleteMutation.isPending}
+      open={deletingLog !== null}
+      title={LOG_DELETE_CONFIRM_MESSAGE}
+      onCancel={() => {
+        if (!deleteMutation.isPending) {
+          setDeleteError(null);
+          setDeletingLog(null);
+        }
+      }}
+      onConfirm={() => void onConfirmDelete()}
+    />
     </>
   );
 }

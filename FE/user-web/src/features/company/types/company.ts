@@ -143,6 +143,11 @@ export type UpdateCompanyMemoLogInput = CreateCompanyMemoLogInput & {
   readonly memoLogId: string;
 };
 
+export type DeleteCompanyMemoLogInput = {
+  readonly companyId: string;
+  readonly memoLogId: string;
+};
+
 export type CompanyPrivateMemoLog = {
   readonly id: string;
   readonly memo: string;
@@ -164,3 +169,8 @@ export type UpdateCompanyPrivateMemoLogInput =
   CreateCompanyPrivateMemoLogInput & {
     readonly privateMemoLogId: string;
   };
+
+export type DeleteCompanyPrivateMemoLogInput = {
+  readonly companyId: string;
+  readonly privateMemoLogId: string;
+};

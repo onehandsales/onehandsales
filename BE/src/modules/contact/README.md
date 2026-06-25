@@ -17,9 +17,11 @@
 - `POST /api/contacts/:contactId/memo-logs`
 - `GET /api/contacts/:contactId/memo-logs`
 - `PATCH /api/contacts/:contactId/memo-logs/:memoLogId`
+- `DELETE /api/contacts/:contactId/memo-logs/:memoLogId`
 - `POST /api/contacts/:contactId/private-memo-logs`
 - `GET /api/contacts/:contactId/private-memo-logs`
 - `PATCH /api/contacts/:contactId/private-memo-logs/:privateMemoLogId`
+- `DELETE /api/contacts/:contactId/private-memo-logs/:privateMemoLogId`
 
 이 모듈은 User Web에서 사용하는 담당자 직급, 담당자 부서, 담당자 일반 메모 로그, 담당자 개인 비밀 메모 로그 API를 담당한다.
 

@@ -164,6 +164,16 @@ export type ProductPrivateMemoLogListResponse = {
   readonly hasNext: boolean;
 };
 
+export type DeleteProductMemoLogInput = {
+  readonly productId: string;
+  readonly memoLogId: string;
+};
+
+export type DeleteProductPrivateMemoLogInput = {
+  readonly productId: string;
+  readonly privateMemoLogId: string;
+};
+
 export type ProductDeal = {
   readonly id: string;
   readonly dealName: string;

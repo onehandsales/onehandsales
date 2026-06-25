@@ -40,6 +40,7 @@ import {
   type XlsxRow,
   type XlsxWorkbookWriter,
 } from "@/shared/application/ports/xlsx-workbook.writer";
+import { createTrashRetentionTimestamps } from "@/shared/application/trash/trash-retention";
 import { ValidationDomainError } from "@/shared/domain/errors/common.errors";
 import { AppLogger } from "@/shared/infrastructure/logger/app-logger.service";
 
@@ -641,6 +642,37 @@ export class CompanyApplicationService {
     }
   }
 
+  // 기능 : 현재 사용자의 회사 일반 메모 로그를 휴지통 상태로 전환합니다.
+  async deleteMemoLog(
+    currentUser: CurrentUserContext,
+    companyId: string,
+    memoLogId: string
+  ): Promise<void> {
+    // 1. 메모 대상 회사가 현재 사용자 소유인지 검증한다.
+    await this.assertCompanyExists(currentUser.id, companyId);
+
+    // 2. 일반 메모 로그를 휴지통 보관 정책에 맞춰 삭제 상태로 전환한다.
+    const timestamps = createTrashRetentionTimestamps();
+    const deleted = await this.companyRepository.deleteMemoLog({
+      userId: currentUser.id,
+      companyId,
+      memoLogId,
+      deletedByUserId: currentUser.id,
+      ...timestamps,
+    });
+
+    // 3. 삭제 대상 메모 로그가 없으면 오류로 중단한다.
+    if (!deleted) {
+      throw new CompanyMemoLogNotFoundError();
+    }
+
+    this.logEvent("companyMemoLog.deleted", {
+      userId: currentUser.id,
+      companyId,
+      memoLogId,
+    });
+  }
+
   // 기능 : 현재 사용자의 회사에 암호화된 개인 비밀 메모 로그를 생성합니다.
   async createPrivateMemoLog(
     currentUser: CurrentUserContext,
@@ -713,6 +745,37 @@ export class CompanyApplicationService {
     if (!updated) {
       throw new CompanyPrivateMemoLogNotFoundError();
     }
+  }
+
+  // 기능 : 현재 사용자의 회사 개인 비밀 메모 로그를 휴지통 상태로 전환합니다.
+  async deletePrivateMemoLog(
+    currentUser: CurrentUserContext,
+    companyId: string,
+    privateMemoLogId: string
+  ): Promise<void> {
+    // 1. 비밀 메모 대상 회사가 현재 사용자 소유인지 검증한다.
+    await this.assertCompanyExists(currentUser.id, companyId);
+
+    // 2. 비밀 메모 로그를 휴지통 보관 정책에 맞춰 삭제 상태로 전환한다.
+    const timestamps = createTrashRetentionTimestamps();
+    const deleted = await this.companyRepository.deletePrivateMemoLog({
+      userId: currentUser.id,
+      companyId,
+      privateMemoLogId,
+      deletedByUserId: currentUser.id,
+      ...timestamps,
+    });
+
+    // 3. 삭제 대상 비밀 메모 로그가 없으면 오류로 중단한다.
+    if (!deleted) {
+      throw new CompanyPrivateMemoLogNotFoundError();
+    }
+
+    this.logEvent("companyPrivateMemoLog.deleted", {
+      userId: currentUser.id,
+      companyId,
+      privateMemoLogId,
+    });
   }
 
   // 기능 : 회사 분야들이 현재 사용자의 소유인지 확인합니다.

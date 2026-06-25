@@ -30,7 +30,9 @@ import {
   ModalFormSection,
 } from "@/components/ui/modal-form";
 import { ModalShell } from "@/components/ui/modal-shell";
+import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { Toast } from "@/components/ui/toast";
+import { useToast } from "@/components/ui/use-toast";
 import {
   useDealDetail,
   useDealFollowingActionLogs,
@@ -40,6 +42,8 @@ import {
   useCreateFollowingActionLogMutation,
   useCreateMemoLogMutation,
   useDeleteDealMutation,
+  useDeleteFollowingActionLogMutation,
+  useDeleteMemoLogMutation,
   useUpdateDealMutation,
   useUpdateFollowingActionLogMutation,
   useUpdateMemoLogMutation,
@@ -61,6 +65,11 @@ import {
 import { getApiErrorMessage } from "@/lib/api-client";
 import { cn } from "@/utils/cn";
 import { formatDate, formatDateTime } from "@/utils/format";
+import {
+  LOG_DELETE_CONFIRM_MESSAGE,
+  LOG_DELETE_SUCCESS_DESCRIPTION,
+  LOG_DELETE_SUCCESS_MESSAGE,
+} from "@/utils/log-delete-feedback";
 
 type DealDetailPanelProps = {
   readonly dealId: string;
@@ -875,6 +884,10 @@ function DealFollowingActionsPanel({
   const [editingLog, setEditingLog] = useState<DealFollowingActionLog | null>(null);
   const createMutation = useCreateFollowingActionLogMutation();
   const updateMutation = useUpdateFollowingActionLogMutation();
+  const deleteMutation = useDeleteFollowingActionLogMutation();
+  const [deletingLog, setDeletingLog] = useState<DealFollowingActionLog | null>(null);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
+  const { toast, node: toastNode } = useToast();
   const {
     register: registerCreate,
     handleSubmit: handleSubmitCreate,
@@ -921,8 +934,31 @@ function DealFollowingActionsPanel({
     setEditingLog(null);
   });
 
+  const onConfirmDelete = async () => {
+    if (!deletingLog) return;
+    setDeleteError(null);
+    try {
+      await deleteMutation.mutateAsync({
+        dealId,
+        followingActionLogId: deletingLog.id,
+      });
+      if (editingLog?.id === deletingLog.id) {
+        setEditingLog(null);
+      }
+      setDeletingLog(null);
+      toast({
+        variant: "success",
+        message: LOG_DELETE_SUCCESS_MESSAGE,
+        description: LOG_DELETE_SUCCESS_DESCRIPTION,
+      });
+    } catch (error) {
+      setDeleteError(getApiErrorMessage(error));
+    }
+  };
+
   return (
     <>
+      {toastNode}
       <DealPanelShell
         count={logs.length}
         title="다음 행동"
@@ -948,6 +984,10 @@ function DealFollowingActionsPanel({
                 key={log.id}
                 log={log}
                 onStartEdit={onStartEdit}
+                onRequestDelete={(target) => {
+                  setDeleteError(null);
+                  setDeletingLog(target);
+                }}
               />
             ))}
           </div>
@@ -1046,6 +1086,21 @@ function DealFollowingActionsPanel({
           ) : null}
         </ModalForm>
       </ModalShell>
+      <ConfirmDialog
+        cancelLabel="아니요"
+        confirmLabel="예"
+        errorMessage={deleteError}
+        isPending={deleteMutation.isPending}
+        open={deletingLog !== null}
+        title={LOG_DELETE_CONFIRM_MESSAGE}
+        onCancel={() => {
+          if (!deleteMutation.isPending) {
+            setDeleteError(null);
+            setDeletingLog(null);
+          }
+        }}
+        onConfirm={() => void onConfirmDelete()}
+      />
     </>
   );
 }
@@ -1056,12 +1111,14 @@ function DealFollowingActionRow({
   isLast,
   log,
   onStartEdit,
+  onRequestDelete,
 }: {
   readonly dealId: string;
   readonly isFirst: boolean;
   readonly isLast: boolean;
   readonly log: DealFollowingActionLog;
   readonly onStartEdit: (log: DealFollowingActionLog) => void;
+  readonly onRequestDelete: (log: DealFollowingActionLog) => void;
 }) {
   const updateMutation = useUpdateFollowingActionLogMutation();
 
@@ -1110,6 +1167,14 @@ function DealFollowingActionRow({
         >
           <Pencil className="h-3 w-3 text-[#9CA3AF]" />
         </button>
+        <button
+          aria-label="삭제"
+          className="invisible ml-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded text-[#DC2626] hover:bg-[#FEE2E2] group-hover:visible"
+          onClick={() => onRequestDelete(log)}
+          type="button"
+        >
+          <Trash2 className="h-3 w-3" />
+        </button>
       </div>
     </div>
   );
@@ -1134,6 +1199,10 @@ function DealMemoLogsPanel({
   const [editingLog, setEditingLog] = useState<DealMemoLog | null>(null);
   const createMutation = useCreateMemoLogMutation();
   const updateMutation = useUpdateMemoLogMutation();
+  const deleteMutation = useDeleteMemoLogMutation();
+  const [deletingLog, setDeletingLog] = useState<DealMemoLog | null>(null);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
+  const { toast, node: toastNode } = useToast();
   const {
     register: registerCreate,
     handleSubmit: handleSubmitCreate,
@@ -1182,8 +1251,31 @@ function DealMemoLogsPanel({
     setEditingLog(null);
   });
 
+  const onConfirmDelete = async () => {
+    if (!deletingLog) return;
+    setDeleteError(null);
+    try {
+      await deleteMutation.mutateAsync({
+        dealId,
+        memoLogId: deletingLog.id,
+      });
+      if (editingLog?.id === deletingLog.id) {
+        setEditingLog(null);
+      }
+      setDeletingLog(null);
+      toast({
+        variant: "success",
+        message: LOG_DELETE_SUCCESS_MESSAGE,
+        description: LOG_DELETE_SUCCESS_DESCRIPTION,
+      });
+    } catch (error) {
+      setDeleteError(getApiErrorMessage(error));
+    }
+  };
+
   return (
     <>
+      {toastNode}
       <DealPanelShell
         count={logs.length}
         title="딜 로그"
@@ -1208,6 +1300,10 @@ function DealMemoLogsPanel({
                 key={log.id}
                 log={log}
                 onStartEdit={onStartEdit}
+                onRequestDelete={(target) => {
+                  setDeleteError(null);
+                  setDeletingLog(target);
+                }}
               />
             ))}
           </div>
@@ -1330,6 +1426,21 @@ function DealMemoLogsPanel({
           ) : null}
         </ModalForm>
       </ModalShell>
+      <ConfirmDialog
+        cancelLabel="아니요"
+        confirmLabel="예"
+        errorMessage={deleteError}
+        isPending={deleteMutation.isPending}
+        open={deletingLog !== null}
+        title={LOG_DELETE_CONFIRM_MESSAGE}
+        onCancel={() => {
+          if (!deleteMutation.isPending) {
+            setDeleteError(null);
+            setDeletingLog(null);
+          }
+        }}
+        onConfirm={() => void onConfirmDelete()}
+      />
     </>
   );
 }
@@ -1339,11 +1450,13 @@ function DealMemoLogRow({
   isLast,
   log,
   onStartEdit,
+  onRequestDelete,
 }: {
   readonly isFirst: boolean;
   readonly isLast: boolean;
   readonly log: DealMemoLog;
   readonly onStartEdit: (log: DealMemoLog) => void;
+  readonly onRequestDelete: (log: DealMemoLog) => void;
 }) {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -1372,6 +1485,14 @@ function DealMemoLogRow({
             type="button"
           >
             <Pencil className="h-3 w-3 text-[#9CA3AF]" />
+          </button>
+          <button
+            aria-label="삭제"
+            className="invisible ml-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded text-[#DC2626] hover:bg-[#FEE2E2] group-hover:visible"
+            onClick={() => onRequestDelete(log)}
+            type="button"
+          >
+            <Trash2 className="h-3 w-3" />
           </button>
         </div>
         {isOpen ? (
@@ -1624,6 +1745,10 @@ function FollowingActionLogsSection({
 }) {
   const [isAdding, setIsAdding] = useState(false);
   const createMutation = useCreateFollowingActionLogMutation();
+  const deleteMutation = useDeleteFollowingActionLogMutation();
+  const [deletingLog, setDeletingLog] = useState<DealFollowingActionLog | null>(null);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
+  const { toast, node: toastNode } = useToast();
   const {
     register,
     handleSubmit,
@@ -1640,8 +1765,28 @@ function FollowingActionLogsSection({
     setIsAdding(false);
   });
 
+  const onConfirmDelete = async () => {
+    if (!deletingLog) return;
+    setDeleteError(null);
+    try {
+      await deleteMutation.mutateAsync({
+        dealId,
+        followingActionLogId: deletingLog.id,
+      });
+      setDeletingLog(null);
+      toast({
+        variant: "success",
+        message: LOG_DELETE_SUCCESS_MESSAGE,
+        description: LOG_DELETE_SUCCESS_DESCRIPTION,
+      });
+    } catch (error) {
+      setDeleteError(getApiErrorMessage(error));
+    }
+  };
+
   return (
     <section>
+      {toastNode}
       <div className="mb-2 flex items-center justify-between">
         <h3 className="text-[13px] font-semibold text-[#374151]">
           {tone === "panel" ? "활동 로그" : "활동 로그"}
@@ -1702,7 +1847,15 @@ function FollowingActionLogsSection({
       ) : (
         <div className="space-y-2">
           {logs.map((log) => (
-            <FollowingActionLogItem dealId={dealId} key={log.id} log={log} />
+            <FollowingActionLogItem
+              dealId={dealId}
+              key={log.id}
+              log={log}
+              onRequestDelete={(target) => {
+                setDeleteError(null);
+                setDeletingLog(target);
+              }}
+            />
           ))}
         </div>
       )}
@@ -1717,6 +1870,21 @@ function FollowingActionLogsSection({
           {isFetchingNext ? "불러오는 중" : "더 보기"}
         </button>
       ) : null}
+      <ConfirmDialog
+        cancelLabel="아니요"
+        confirmLabel="예"
+        errorMessage={deleteError}
+        isPending={deleteMutation.isPending}
+        open={deletingLog !== null}
+        title={LOG_DELETE_CONFIRM_MESSAGE}
+        onCancel={() => {
+          if (!deleteMutation.isPending) {
+            setDeleteError(null);
+            setDeletingLog(null);
+          }
+        }}
+        onConfirm={() => void onConfirmDelete()}
+      />
     </section>
   );
 }
@@ -1724,9 +1892,11 @@ function FollowingActionLogsSection({
 function FollowingActionLogItem({
   dealId,
   log,
+  onRequestDelete,
 }: {
   readonly dealId: string;
   readonly log: DealFollowingActionLog;
+  readonly onRequestDelete: (log: DealFollowingActionLog) => void;
 }) {
   const [isEditing, setIsEditing] = useState(false);
   const updateMutation = useUpdateFollowingActionLogMutation();
@@ -1821,6 +1991,14 @@ function FollowingActionLogItem({
         type="button"
       >
         <Pencil className="h-3.5 w-3.5" />
+      </button>
+      <button
+        aria-label="삭제"
+        className="shrink-0 rounded text-[#DC2626] hover:bg-[#FEE2E2]"
+        onClick={() => onRequestDelete(log)}
+        type="button"
+      >
+        <Trash2 className="h-3.5 w-3.5" />
       </button>
     </div>
   );

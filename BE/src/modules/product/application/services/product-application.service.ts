@@ -41,6 +41,7 @@ import {
   type XlsxRow,
   type XlsxWorkbookWriter,
 } from "@/shared/application/ports/xlsx-workbook.writer";
+import { createTrashRetentionTimestamps } from "@/shared/application/trash/trash-retention";
 import { ValidationDomainError } from "@/shared/domain/errors/common.errors";
 import { AppLogger } from "@/shared/infrastructure/logger/app-logger.service";
 
@@ -649,6 +650,37 @@ export class ProductApplicationService {
     });
   }
 
+  // 기능 : 현재 사용자의 제품 일반 메모 로그를 휴지통 상태로 전환합니다.
+  async deleteMemoLog(
+    currentUser: CurrentUserContext,
+    productId: string,
+    memoLogId: string
+  ): Promise<void> {
+    // 1. 메모 대상 제품이 현재 사용자 소유인지 검증한다.
+    await this.assertProductExists(currentUser.id, productId);
+
+    // 2. 일반 메모 로그를 휴지통 보관 정책에 맞춰 삭제 상태로 전환한다.
+    const timestamps = createTrashRetentionTimestamps();
+    const deleted = await this.productRepository.deleteMemoLog({
+      userId: currentUser.id,
+      productId,
+      memoLogId,
+      deletedByUserId: currentUser.id,
+      ...timestamps,
+    });
+
+    // 3. 삭제 대상 메모 로그가 없으면 오류로 중단한다.
+    if (!deleted) {
+      throw new ProductMemoLogNotFoundError();
+    }
+
+    this.logEvent("productMemoLog.deleted", {
+      userId: currentUser.id,
+      productId,
+      memoLogId,
+    });
+  }
+
   // 기능 : 현재 사용자의 제품에 암호화된 개인 비밀 메모 로그를 생성합니다.
   async createPrivateMemoLog(
     currentUser: CurrentUserContext,
@@ -736,6 +768,37 @@ export class ProductApplicationService {
 
     // 5. 비밀 메모 원문과 암호문 없이 수정 이벤트를 기록한다.
     this.logEvent("productPrivateMemoLog.updated", {
+      userId: currentUser.id,
+      productId,
+      privateMemoLogId,
+    });
+  }
+
+  // 기능 : 현재 사용자의 제품 개인 비밀 메모 로그를 휴지통 상태로 전환합니다.
+  async deletePrivateMemoLog(
+    currentUser: CurrentUserContext,
+    productId: string,
+    privateMemoLogId: string
+  ): Promise<void> {
+    // 1. 비밀 메모 대상 제품이 현재 사용자 소유인지 검증한다.
+    await this.assertProductExists(currentUser.id, productId);
+
+    // 2. 비밀 메모 로그를 휴지통 보관 정책에 맞춰 삭제 상태로 전환한다.
+    const timestamps = createTrashRetentionTimestamps();
+    const deleted = await this.productRepository.deletePrivateMemoLog({
+      userId: currentUser.id,
+      productId,
+      privateMemoLogId,
+      deletedByUserId: currentUser.id,
+      ...timestamps,
+    });
+
+    // 3. 삭제 대상 비밀 메모 로그가 없으면 오류로 중단한다.
+    if (!deleted) {
+      throw new ProductPrivateMemoLogNotFoundError();
+    }
+
+    this.logEvent("productPrivateMemoLog.deleted", {
       userId: currentUser.id,
       productId,
       privateMemoLogId,

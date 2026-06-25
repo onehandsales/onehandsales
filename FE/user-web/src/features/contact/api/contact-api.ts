@@ -14,6 +14,8 @@ import type {
   CreateContactJobGradeInput,
   CreateContactMemoLogInput,
   CreateContactPrivateMemoLogInput,
+  DeleteContactMemoLogInput,
+  DeleteContactPrivateMemoLogInput,
   UpdateContactInput,
   UpdateContactMemoLogInput,
   UpdateContactPrivateMemoLogInput,
@@ -159,6 +161,16 @@ export function updateContactMemoLog(input: UpdateContactMemoLogInput) {
   );
 }
 
+// 기능 : 담당자 일반 메모 로그를 삭제합니다.
+export function deleteContactMemoLog(input: DeleteContactMemoLogInput) {
+  return apiClient<void>(
+    `/api/contacts/${input.contactId}/memo-logs/${input.memoLogId}`,
+    {
+      method: "DELETE",
+    }
+  );
+}
+
 // 기능 : 담당자 개인 비밀 메모 로그를 커서 기반으로 조회합니다.
 export function listContactPrivateMemoLogs(contactId: string, cursor?: string) {
   const query = new URLSearchParams();
@@ -197,6 +209,18 @@ export function updateContactPrivateMemoLog(
       body: compactBody({
         memo: input.memo,
       }),
+    }
+  );
+}
+
+// 기능 : 담당자 개인 비밀 메모 로그를 삭제합니다.
+export function deleteContactPrivateMemoLog(
+  input: DeleteContactPrivateMemoLogInput
+) {
+  return apiClient<void>(
+    `/api/contacts/${input.contactId}/private-memo-logs/${input.privateMemoLogId}`,
+    {
+      method: "DELETE",
     }
   );
 }

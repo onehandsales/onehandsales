@@ -117,6 +117,10 @@ export type UpdateContactMemoLogInput = {
   readonly memoType?: string;
   readonly memo?: string;
 };
+export type DeleteContactMemoLogInput = {
+  readonly contactId: string;
+  readonly memoLogId: string;
+};
 
 // 개인 비밀 메모 로그 입력
 export type CreateContactPrivateMemoLogInput = {
@@ -127,6 +131,10 @@ export type UpdateContactPrivateMemoLogInput = {
   readonly contactId: string;
   readonly privateMemoLogId: string;
   readonly memo: string;
+};
+export type DeleteContactPrivateMemoLogInput = {
+  readonly contactId: string;
+  readonly privateMemoLogId: string;
 };
 
 // export 파라미터

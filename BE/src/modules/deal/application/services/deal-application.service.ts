@@ -40,6 +40,7 @@ import {
   type XlsxRow,
   type XlsxWorkbookWriter,
 } from "@/shared/application/ports/xlsx-workbook.writer";
+import { createTrashRetentionTimestamps } from "@/shared/application/trash/trash-retention";
 import { ValidationDomainError } from "@/shared/domain/errors/common.errors";
 import { AppLogger } from "@/shared/infrastructure/logger/app-logger.service";
 
@@ -700,6 +701,34 @@ export class DealApplicationService {
     return this.toFollowingActionLog(updated);
   }
 
+  // 기능 : 현재 사용자의 딜 다음 행동 로그를 휴지통 상태로 전환합니다.
+  async deleteFollowingActionLog(
+    currentUser: CurrentUserContext,
+    dealId: string,
+    followingActionLogId: string
+  ): Promise<void> {
+    await this.assertDealExists(currentUser.id, dealId);
+
+    const timestamps = createTrashRetentionTimestamps();
+    const deleted = await this.dealRepository.deleteFollowingActionLog({
+      userId: currentUser.id,
+      dealId,
+      followingActionLogId,
+      deletedByUserId: currentUser.id,
+      ...timestamps,
+    });
+
+    if (!deleted) {
+      throw new DealFollowingActionLogNotFoundError();
+    }
+
+    this.logEvent("deal.following_action.deleted", {
+      userId: currentUser.id,
+      dealId,
+      followingActionLogId,
+    });
+  }
+
   // 기능 : 현재 사용자의 딜 메모 로그 전체 목록을 조회합니다.
   async listMemoLogs(
     currentUser: CurrentUserContext,
@@ -781,6 +810,34 @@ export class DealApplicationService {
     });
 
     return this.toMemoLog(updated);
+  }
+
+  // 기능 : 현재 사용자의 딜 메모 로그를 휴지통 상태로 전환합니다.
+  async deleteMemoLog(
+    currentUser: CurrentUserContext,
+    dealId: string,
+    memoLogId: string
+  ): Promise<void> {
+    await this.assertDealExists(currentUser.id, dealId);
+
+    const timestamps = createTrashRetentionTimestamps();
+    const deleted = await this.dealRepository.deleteMemoLog({
+      userId: currentUser.id,
+      dealId,
+      memoLogId,
+      deletedByUserId: currentUser.id,
+      ...timestamps,
+    });
+
+    if (!deleted) {
+      throw new DealMemoLogNotFoundError();
+    }
+
+    this.logEvent("deal.memo.deleted", {
+      userId: currentUser.id,
+      dealId,
+      memoLogId,
+    });
   }
 
   // 기능 : 딜이 현재 사용자의 소유인지 확인합니다.

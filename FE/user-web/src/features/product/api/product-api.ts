@@ -10,6 +10,8 @@ import type {
   ProductMemoLogListResponse,
   ProductPrivateMemoLogListResponse,
   ProductStatusListResponse,
+  DeleteProductMemoLogInput,
+  DeleteProductPrivateMemoLogInput,
   UpdateProductInput,
 } from "@/features/product/types/product";
 import { apiClient, apiBlobClient } from "@/lib/api-client";
@@ -131,6 +133,15 @@ export function updateMemoLog(
   });
 }
 
+export function deleteMemoLog(input: DeleteProductMemoLogInput): Promise<void> {
+  return apiClient<void>(
+    `/api/products/${input.productId}/memo-logs/${input.memoLogId}`,
+    {
+      method: "DELETE",
+    }
+  );
+}
+
 export function createPrivateMemoLog(
   productId: string,
   input: { memo: string }
@@ -151,6 +162,17 @@ export function updatePrivateMemoLog(
     {
       method: "PATCH",
       body: input,
+    }
+  );
+}
+
+export function deletePrivateMemoLog(
+  input: DeleteProductPrivateMemoLogInput
+): Promise<void> {
+  return apiClient<void>(
+    `/api/products/${input.productId}/private-memo-logs/${input.privateMemoLogId}`,
+    {
+      method: "DELETE",
     }
   );
 }

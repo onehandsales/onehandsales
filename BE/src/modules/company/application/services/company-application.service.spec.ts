@@ -13,6 +13,8 @@ import {
   type CreateCompanyInput,
   type CreateCompanyMemoLogInput,
   type CreateCompanyPrivateMemoLogInput,
+  type DeleteCompanyMemoLogInput,
+  type DeleteCompanyPrivateMemoLogInput,
   type ExportCompaniesInput,
   type ListCompaniesInput,
   type ListCompanyContactsInput,
@@ -80,6 +82,7 @@ class FakeCompanyRepository implements CompanyRepository {
   async listCompanyContacts(
     _input: ListCompanyContactsInput
   ): Promise<CompanyContactRecord[]> {
+    void _input;
     return [];
   }
 
@@ -87,6 +90,7 @@ class FakeCompanyRepository implements CompanyRepository {
   async listCompanyDeals(
     _input: ListCompanyDealsInput
   ): Promise<CompanyDealRecord[]> {
+    void _input;
     return [];
   }
 
@@ -95,6 +99,8 @@ class FakeCompanyRepository implements CompanyRepository {
     _userId: string,
     _companyId: string
   ): Promise<CompanyRecord | null> {
+    void _userId;
+    void _companyId;
     return null;
   }
 
@@ -103,6 +109,8 @@ class FakeCompanyRepository implements CompanyRepository {
     _userId: string,
     _companyId: string
   ): Promise<{ readonly id: string; readonly userId: string } | null> {
+    void _userId;
+    void _companyId;
     return null;
   }
 
@@ -110,6 +118,7 @@ class FakeCompanyRepository implements CompanyRepository {
   async createCompany(
     _input: CreateCompanyInput
   ): Promise<{ readonly id: string; readonly userId: string }> {
+    void _input;
     return { id: "company-1", userId: CURRENT_USER.id };
   }
 
@@ -119,11 +128,15 @@ class FakeCompanyRepository implements CompanyRepository {
     _companyId: string,
     _input: UpdateCompanyInput
   ): Promise<boolean> {
+    void _userId;
+    void _companyId;
+    void _input;
     return true;
   }
 
   // 기능 : fake 회사 분야 목록을 반환합니다.
   async listFields(_userId: string): Promise<CompanyFieldRecord[]> {
+    void _userId;
     return [];
   }
 
@@ -139,22 +152,33 @@ class FakeCompanyRepository implements CompanyRepository {
 
   // 기능 : fake 회사 분야 중복 여부를 반환합니다.
   async existsFieldByName(_userId: string, _field: string): Promise<boolean> {
+    void _userId;
+    void _field;
     return false;
   }
 
   // 기능 : fake 회사 분야를 생성합니다.
-  async createField(_userId: string, _field: string): Promise<void> {}
+  async createField(_userId: string, _field: string): Promise<void> {
+    void _userId;
+    void _field;
+  }
 
   // 기능 : fake 회사 분야 사용 여부를 반환합니다.
   async isFieldInUse(_userId: string, _fieldId: string): Promise<boolean> {
+    void _userId;
+    void _fieldId;
     return false;
   }
 
   // 기능 : fake 회사 분야를 삭제합니다.
-  async deleteField(_userId: string, _fieldId: string): Promise<void> {}
+  async deleteField(_userId: string, _fieldId: string): Promise<void> {
+    void _userId;
+    void _fieldId;
+  }
 
   // 기능 : fake 회사 지역 목록을 반환합니다.
   async listRegions(_userId: string): Promise<CompanyRegionRecord[]> {
+    void _userId;
     return [];
   }
 
@@ -170,22 +194,34 @@ class FakeCompanyRepository implements CompanyRepository {
 
   // 기능 : fake 회사 지역 중복 여부를 반환합니다.
   async existsRegionByName(_userId: string, _region: string): Promise<boolean> {
+    void _userId;
+    void _region;
     return false;
   }
 
   // 기능 : fake 회사 지역을 생성합니다.
-  async createRegion(_userId: string, _region: string): Promise<void> {}
+  async createRegion(_userId: string, _region: string): Promise<void> {
+    void _userId;
+    void _region;
+  }
 
   // 기능 : fake 회사 지역 사용 여부를 반환합니다.
   async isRegionInUse(_userId: string, _regionId: string): Promise<boolean> {
+    void _userId;
+    void _regionId;
     return false;
   }
 
   // 기능 : fake 회사 지역을 삭제합니다.
-  async deleteRegion(_userId: string, _regionId: string): Promise<void> {}
+  async deleteRegion(_userId: string, _regionId: string): Promise<void> {
+    void _userId;
+    void _regionId;
+  }
 
   // 기능 : fake 회사 메모 로그를 생성합니다.
-  async createMemoLog(_input: CreateCompanyMemoLogInput): Promise<void> {}
+  async createMemoLog(_input: CreateCompanyMemoLogInput): Promise<void> {
+    void _input;
+  }
 
   // 기능 : fake 회사 메모 로그 목록을 반환합니다.
   async listMemoLogs(_input: {
@@ -193,6 +229,7 @@ class FakeCompanyRepository implements CompanyRepository {
     readonly cursor: MemoLogCursor | null;
     readonly take: number;
   }): Promise<CompanyMemoLogRecord[]> {
+    void _input;
     return [];
   }
 
@@ -204,13 +241,22 @@ class FakeCompanyRepository implements CompanyRepository {
     readonly memoType: string;
     readonly memo: string;
   }): Promise<boolean> {
+    void _input;
+    return true;
+  }
+
+  // 기능 : fake 회사 메모 로그 삭제를 처리합니다.
+  async deleteMemoLog(_input: DeleteCompanyMemoLogInput): Promise<boolean> {
+    void _input;
     return true;
   }
 
   // 기능 : fake 회사 개인 비밀 메모 로그를 생성합니다.
   async createPrivateMemoLog(
     _input: CreateCompanyPrivateMemoLogInput
-  ): Promise<void> {}
+  ): Promise<void> {
+    void _input;
+  }
 
   // 기능 : fake 회사 개인 비밀 메모 로그 목록을 반환합니다.
   async listPrivateMemoLogs(_input: {
@@ -219,6 +265,7 @@ class FakeCompanyRepository implements CompanyRepository {
     readonly cursor: MemoLogCursor | null;
     readonly take: number;
   }): Promise<CompanyPrivateMemoLogRecord[]> {
+    void _input;
     return [];
   }
 
@@ -230,6 +277,15 @@ class FakeCompanyRepository implements CompanyRepository {
     readonly memoCiphertext: string;
     readonly memoKeyVersion: string;
   }): Promise<boolean> {
+    void _input;
+    return true;
+  }
+
+  // 기능 : fake 회사 개인 비밀 메모 로그 삭제를 처리합니다.
+  async deletePrivateMemoLog(
+    _input: DeleteCompanyPrivateMemoLogInput
+  ): Promise<boolean> {
+    void _input;
     return true;
   }
 }
@@ -237,7 +293,10 @@ class FakeCompanyRepository implements CompanyRepository {
 // 역할 : SilentLogger 테스트 중 로그 출력을 막는 logger입니다.
 class SilentLogger extends AppLogger {
   // 기능 : 테스트 로그를 무시합니다.
-  override log(_message: string, _context?: string): void {}
+  override log(_message: string, _context?: string): void {
+    void _message;
+    void _context;
+  }
 }
 
 const privateMemoEncryption: PrivateMemoEncryptionPort = {

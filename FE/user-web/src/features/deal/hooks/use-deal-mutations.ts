@@ -5,6 +5,8 @@ import {
   createFollowingActionLog,
   createMemoLog,
   deleteDeal,
+  deleteFollowingActionLog,
+  deleteMemoLog,
   exportDealsXlsx,
   updateDeal,
   updateFollowingActionLog,
@@ -17,6 +19,8 @@ import type {
   CreateFollowingActionLogInput,
   CreateMemoLogInput,
   DealExportParams,
+  DeleteFollowingActionLogInput,
+  DeleteMemoLogInput,
   UpdateDealInput,
   UpdateFollowingActionLogInput,
   UpdateMemoLogInput,
@@ -98,6 +102,21 @@ export function useUpdateFollowingActionLogMutation() {
   });
 }
 
+export function useDeleteFollowingActionLogMutation() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (input: DeleteFollowingActionLogInput) =>
+      deleteFollowingActionLog(input),
+    onSuccess: (_log, input) => {
+      void queryClient.invalidateQueries({ queryKey: dealQueryKeys.lists() });
+      void queryClient.invalidateQueries({
+        queryKey: dealQueryKeys.followingActionLogs(input.dealId),
+      });
+    },
+  });
+}
+
 export function useCreateMemoLogMutation() {
   const queryClient = useQueryClient();
 
@@ -116,6 +135,19 @@ export function useUpdateMemoLogMutation() {
 
   return useMutation({
     mutationFn: (input: UpdateMemoLogInput) => updateMemoLog(input),
+    onSuccess: (_log, input) => {
+      void queryClient.invalidateQueries({
+        queryKey: dealQueryKeys.memoLogs(input.dealId),
+      });
+    },
+  });
+}
+
+export function useDeleteMemoLogMutation() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (input: DeleteMemoLogInput) => deleteMemoLog(input),
     onSuccess: (_log, input) => {
       void queryClient.invalidateQueries({
         queryKey: dealQueryKeys.memoLogs(input.dealId),

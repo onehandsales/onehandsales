@@ -14,6 +14,8 @@ import {
   type CreateContactInput,
   type CreateContactMemoLogInput,
   type CreateContactPrivateMemoLogInput,
+  type DeleteContactMemoLogInput,
+  type DeleteContactPrivateMemoLogInput,
   type ExportContactsInput,
   type ListContactsInput,
   type ListContactDealsInput,
@@ -447,6 +449,7 @@ export class PrismaContactRepository implements ContactRepository {
       where: {
         userId: input.userId,
         contactId: input.contactId,
+        deletedAt: null,
         ...this.createCursorWhere(input.cursor),
       },
       select: {
@@ -467,10 +470,30 @@ export class PrismaContactRepository implements ContactRepository {
         id: input.memoLogId,
         contactId: input.contactId,
         userId: input.userId,
+        deletedAt: null,
       },
       data: {
         ...(input.memoType !== undefined ? { memoType: input.memoType } : {}),
         ...(input.memo !== undefined ? { memo: input.memo } : {}),
+      },
+    });
+
+    return result.count > 0;
+  }
+
+  // 기능 : 담당자 일반 메모 로그를 휴지통 상태로 전환합니다.
+  async deleteMemoLog(input: DeleteContactMemoLogInput): Promise<boolean> {
+    const result = await this.client.contactMemoLog.updateMany({
+      where: {
+        id: input.memoLogId,
+        contactId: input.contactId,
+        userId: input.userId,
+        deletedAt: null,
+      },
+      data: {
+        deletedAt: input.deletedAt,
+        deletedByUserId: input.deletedByUserId,
+        trashExpiresAt: input.trashExpiresAt,
       },
     });
 
@@ -502,6 +525,7 @@ export class PrismaContactRepository implements ContactRepository {
       where: {
         userId: input.userId,
         contactId: input.contactId,
+        deletedAt: null,
         ...this.createPrivateMemoCursorWhere(input.cursor),
       },
       select: {
@@ -528,10 +552,32 @@ export class PrismaContactRepository implements ContactRepository {
         id: input.privateMemoLogId,
         userId: input.userId,
         contactId: input.contactId,
+        deletedAt: null,
       },
       data: {
         memoCiphertext: input.memoCiphertext,
         memoKeyVersion: input.memoKeyVersion,
+      },
+    });
+
+    return result.count > 0;
+  }
+
+  // 기능 : 담당자 개인 비밀 메모 로그를 휴지통 상태로 전환합니다.
+  async deletePrivateMemoLog(
+    input: DeleteContactPrivateMemoLogInput
+  ): Promise<boolean> {
+    const result = await this.client.contactUserPrivateMemoLog.updateMany({
+      where: {
+        id: input.privateMemoLogId,
+        userId: input.userId,
+        contactId: input.contactId,
+        deletedAt: null,
+      },
+      data: {
+        deletedAt: input.deletedAt,
+        deletedByUserId: input.deletedByUserId,
+        trashExpiresAt: input.trashExpiresAt,
       },
     });
 

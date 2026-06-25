@@ -182,6 +182,22 @@ export class CompanyController {
     );
   }
 
+  // API : 회사 메모, 일반 메모 로그 삭제
+  @Delete(":companyId/memo-logs/:memoLogId")
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async deleteMemoLog(
+    @CurrentUser() currentUser: CurrentUserContext,
+    @Param("companyId", ParseUUIDPipe) companyId: string,
+    @Param("memoLogId", ParseUUIDPipe) memoLogId: string
+  ): Promise<void> {
+    // 1. 회사 ID, 메모 로그 ID를 application 계층으로 전달한다.
+    await this.companyApplicationService.deleteMemoLog(
+      currentUser,
+      companyId,
+      memoLogId
+    );
+  }
+
   // API : 회사 비밀 메모, 개인 비밀 메모 로그 생성
   @Post(":companyId/private-memo-logs")
   @HttpCode(HttpStatus.CREATED)
@@ -228,6 +244,22 @@ export class CompanyController {
       companyId,
       privateMemoLogId,
       body.memo
+    );
+  }
+
+  // API : 회사 비밀 메모, 개인 비밀 메모 로그 삭제
+  @Delete(":companyId/private-memo-logs/:privateMemoLogId")
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async deletePrivateMemoLog(
+    @CurrentUser() currentUser: CurrentUserContext,
+    @Param("companyId", ParseUUIDPipe) companyId: string,
+    @Param("privateMemoLogId", ParseUUIDPipe) privateMemoLogId: string
+  ): Promise<void> {
+    // 1. 회사 ID, 비밀 메모 로그 ID를 application 계층으로 전달한다.
+    await this.companyApplicationService.deletePrivateMemoLog(
+      currentUser,
+      companyId,
+      privateMemoLogId
     );
   }
 }

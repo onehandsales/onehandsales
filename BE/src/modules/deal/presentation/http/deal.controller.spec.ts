@@ -49,9 +49,11 @@ type DealServiceFake = Pick<
   | "listFollowingActionLogs"
   | "createFollowingActionLog"
   | "updateFollowingActionLog"
+  | "deleteFollowingActionLog"
   | "listMemoLogs"
   | "createMemoLog"
   | "updateMemoLog"
+  | "deleteMemoLog"
 >;
 
 // 역할 : FakeAuthGuard 테스트 요청에 현재 사용자 컨텍스트를 주입합니다.
@@ -99,6 +101,7 @@ function createDealServiceFake(): jest.Mocked<DealServiceFake> {
     updateFollowingActionLog: jest.fn().mockResolvedValue({
       id: FOLLOWING_ACTION_LOG_ID,
     }),
+    deleteFollowingActionLog: jest.fn().mockResolvedValue(undefined),
     listMemoLogs: jest.fn().mockResolvedValue({
       items: [],
       nextCursor: null,
@@ -106,6 +109,7 @@ function createDealServiceFake(): jest.Mocked<DealServiceFake> {
     }),
     createMemoLog: jest.fn().mockResolvedValue({ id: MEMO_LOG_ID }),
     updateMemoLog: jest.fn().mockResolvedValue({ id: MEMO_LOG_ID }),
+    deleteMemoLog: jest.fn().mockResolvedValue(undefined),
   };
 }
 

@@ -16,6 +16,8 @@ import {
   type DealPageRecord,
   type DealProductRecord,
   type DealRepository,
+  type DeleteDealFollowingActionLogInput,
+  type DeleteDealMemoLogInput,
   type ExportDealsInput,
   type ListDealsInput,
   type UpdateDealFollowingActionLogInput,
@@ -370,6 +372,18 @@ class FakeDealRepository implements DealRepository {
   }
 
   // 기능 : fake 메모 로그를 생성합니다.
+  // 기능 : fake 다음 행동 로그를 삭제 상태로 처리합니다.
+  async deleteFollowingActionLog(
+    input: DeleteDealFollowingActionLogInput
+  ): Promise<boolean> {
+    const beforeCount = this.followingActionLogs.length;
+    this.followingActionLogs = this.followingActionLogs.filter(
+      (item) => item.id !== input.followingActionLogId
+    );
+
+    return this.followingActionLogs.length < beforeCount;
+  }
+
   async createMemoLog(input: CreateDealMemoLogInput): Promise<DealMemoLogRecord> {
     const createdAt = new Date("2026-06-12T10:02:00.000Z");
     const log: DealMemoLogRecord = {
@@ -419,6 +433,14 @@ class FakeDealRepository implements DealRepository {
   }
 
   // 기능 : fake 딜을 조회 조건으로 필터링하고 정렬합니다.
+  // 기능 : fake 메모 로그를 삭제 상태로 처리합니다.
+  async deleteMemoLog(input: DeleteDealMemoLogInput): Promise<boolean> {
+    const beforeCount = this.memoLogs.length;
+    this.memoLogs = this.memoLogs.filter((item) => item.id !== input.memoLogId);
+
+    return this.memoLogs.length < beforeCount;
+  }
+
   private filterDeals(
     input: {
       readonly userId: string;

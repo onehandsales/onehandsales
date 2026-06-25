@@ -4,6 +4,8 @@ import type {
   CreateDealInput,
   CreateFollowingActionLogInput,
   CreateMemoLogInput,
+  DeleteFollowingActionLogInput,
+  DeleteMemoLogInput,
   DealCompanyOptionsResponse,
   DealContactOptionsResponse,
   DealDetail,
@@ -156,6 +158,16 @@ export function updateFollowingActionLog(input: UpdateFollowingActionLogInput) {
   );
 }
 
+// 기능 : 다음 행동 로그를 삭제합니다.
+export function deleteFollowingActionLog(input: DeleteFollowingActionLogInput) {
+  return apiClient<void>(
+    `/api/deals/${input.dealId}/following-action-logs/${input.followingActionLogId}`,
+    {
+      method: "DELETE",
+    }
+  );
+}
+
 // 기능 : 메모 로그 목록을 cursor 방식으로 조회
 export function listMemoLogs(dealId: string, cursor?: string) {
   const query = new URLSearchParams();
@@ -185,5 +197,12 @@ export function updateMemoLog(input: UpdateMemoLogInput) {
   return apiClient<DealMemoLog>(`/api/deals/${dealId}/memo-logs/${memoLogId}`, {
     method: "PATCH",
     body,
+  });
+}
+
+// 기능 : 메모 로그를 삭제합니다.
+export function deleteMemoLog(input: DeleteMemoLogInput) {
+  return apiClient<void>(`/api/deals/${input.dealId}/memo-logs/${input.memoLogId}`, {
+    method: "DELETE",
   });
 }
