@@ -7,7 +7,7 @@ import {
   IdCard,
   Package,
   Settings,
-  // Trash2,
+  Trash2,
   // Upload,
 } from "lucide-react";
 import { NavLink } from "react-router-dom";
@@ -45,7 +45,7 @@ const groups: Array<{
     label: "관리",
     items: [
       // 핵심 기능 UX 유지보수 이후 휴지통 기능을 다시 노출한다.
-      // { label: "휴지통", to: "/trash", icon: Trash2 },
+      { label: "휴지통", to: "/trash", icon: Trash2 },
       { label: "설정", to: "/settings", icon: Settings },
     ],
   },

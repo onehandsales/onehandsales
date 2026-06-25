@@ -2,7 +2,7 @@
 
 ## 1. 목적
 
-주요 사용자 데이터의 삭제 버튼은 DB row를 실제로 삭제하지 않는다. 삭제 API는 일반 화면에서 보이지 않도록 soft delete 상태만 기록하고, 휴지통/복구 API는 후속 작업으로 분리한다.
+주요 사용자 데이터의 삭제 버튼은 DB row를 실제로 삭제하지 않는다. 삭제 API는 일반 화면에서 보이지 않도록 soft delete 상태를 기록하고, 휴지통 API는 복구 가능 기간 안의 삭제 데이터를 목록/상세/복구 대상으로 제공한다.
 
 현재 구현 기준:
 
@@ -58,18 +58,26 @@ soft delete 대상 테이블은 다음 컬럼을 사용한다.
 
 회사/담당자/제품/딜 상세의 연결 목록도 삭제된 연결 대상은 일반 목록에서 제외한다. 단, 딜의 기존 연결 이력은 삭제된 회사/담당자/제품을 완전히 없애지 않고 응답에 `isDeleted: true`를 포함해 UI에서 `(삭제됨)`으로 표시할 수 있다.
 
-## 5. 후속 범위
+## 5. 휴지통 API 구현 범위
+
+현재 구현된 휴지통 API:
+
+- `GET /api/trash`: `deletedAt IS NOT NULL`이고 `trashExpiresAt > now`인 항목만 목록에 보여준다.
+- `GET /api/trash/:targetType/:targetId`: row 클릭 후 상세 모달에서 보여줄 요약, 위치, 삭제일, 남은 기간, 주요 필드, 일반 메모 내용을 반환한다.
+- `POST /api/trash/:targetType/:targetId/restore`: `deletedAt`, `deletedByUserId`, `trashExpiresAt`을 `null`로 되돌린다.
+
+현재 지원 대상:
+
+- 본문 데이터: `Company`, `Contact`, `Product`, `Deal`
+- 로그 데이터: `CompanyMemoLog`, `CompanyUserPrivateMemoLog`, `ContactMemoLog`, `ContactUserPrivateMemoLog`, `ProductMemoLog`, `ProductUserPrivateMemoLog`, `DealMemoLog`, `DealFollowingActionLog`
 
 아직 구현하지 않은 범위:
 
-- `GET /api/trash`
-- `POST /api/trash/:targetType/:targetId/restore`
-- 7일 이내 무료 복구 UI/API
 - 7일 이후 유료 복구 UI/API
-- 휴지통 목록에서 `trashExpiresAt` 이후 항목 숨김 처리
 - 관리자용 삭제/복구 감사 조회
+- 회의록, 일정, 알림, import/export job의 휴지통 처리
 
-후속 휴지통 목록은 `deletedAt IS NOT NULL`이고 `trashExpiresAt > now`인 항목을 기본으로 보여준다. 유료 복구 목록은 별도 정책이 확정되기 전까지 구현하지 않는다.
+일반 휴지통 목록은 `trashExpiresAt` 이후 항목을 보여주지 않는다. 유료 복구 목록은 별도 정책이 확정되기 전까지 구현하지 않는다.
 
 ## 6. 프론트 UX 규칙
 

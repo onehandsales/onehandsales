@@ -187,6 +187,7 @@ export function AppShell() {
     pathname === "/meeting-notes" || /^\/meeting-notes\/[^/]+$/.test(pathname);
   const isSchedulePage =
     pathname === "/schedules" || pathname === "/schedules/week";
+  const isTrashPage = pathname === "/trash";
   const isFixedViewportPage = isHome || isProductDetail;
 
   // 모바일 헤더 숨김 처리: 상세 페이지 및 자체 헤더 보유 페이지
@@ -211,6 +212,7 @@ export function AppShell() {
     isContactListPage ||
     isMeetingNoteListPage ||
     isSchedulePage ||
+    isTrashPage ||
     isProductDetail;
 
   // 현재 페이지 브레드크럼 결정
@@ -226,6 +228,7 @@ export function AppShell() {
       "/deals/new": { label: "딜", icon: BriefcaseBusiness },
       "/schedules": { label: "일정", icon: CalendarDays },
       "/notifications": { label: "알림", icon: Bell },
+      "/trash": { label: "휴지통", icon: Trash2 },
       "/settings": { label: "설정", icon: Settings },
     };
     const meta = pageMetaMap[pathname] ?? { label: "한손에 영업", icon: House };

@@ -7,9 +7,9 @@
 
 ## 현재 BE/TODO 구현 상태
 
-기준일: 2026-06-22
+기준일: 2026-06-25
 
-- Backend 구현 완료: Auth/User, Company, Contact, Product, Deal, Schedule, MeetingNote 수동 기본 도메인, Search, MeetingNote AI/STT draft API와 `TODO/DONE/ADDITIONAL_WORK_PLAN` G01-G12.
+- Backend 구현 완료: Auth/User, Company, Contact, Product, Deal, Schedule, MeetingNote 수동 기본 도메인, Search, Trash, MeetingNote AI/STT draft API와 `TODO/DONE/ADDITIONAL_WORK_PLAN` G01-G12.
 - Auth/User: `/api/auth/providers`, `/api/auth/exchange`, `/api/auth/refresh`, `/api/auth/logout`, `/api/me`, `/admin/api/me`, `/api/users/me/profile`, `/api/users/me/devices`.
 - Company: 목록/상세/생성/수정, 분야/지역 옵션, 일반 메모, 개인 비밀 메모, `contactCount`, `dealCount`, 연결 Contact/Deal 목록, xlsx export.
 - Contact: 목록/상세/생성/수정, 회사 옵션, 직급/부서 옵션, 일반 메모, 개인 비밀 메모, 연결 Deal 목록, xlsx export.
@@ -18,9 +18,10 @@
 - Schedule: 딜 옵션, 목록/상세/생성/수정/삭제, 딜 N:M 연결, 사용자 timezone 기준 local time 변환.
 - MeetingNote: 수동 회의록 목록/상세/생성/수정, 회사/담당자 필터, 회사/담당자/제품/딜 N:N snapshot 연결, 텍스트 AI 초안 생성, STT+AI 초안 생성, 저장 후 딜 추가 연동과 딜 활동 로그 생성.
 - Search: 회사/담당자/제품/딜/일정/회의록 통합검색 API.
-- 현재 Backend 미구현: BusinessCard OCR, 범용 Import/Export job, Notification, Trash, Admin 운영 조회/감사/민감 원문 API, MeetingNote 삭제복구/Admin, 범용 DealActivity table.
+- Trash: 회사/담당자/제품/딜 본문 데이터와 지원 로그의 휴지통 목록, 상세 모달 조회, 7일 이내 복구 API.
+- 현재 Backend 미구현: BusinessCard OCR, 범용 Import/Export job, Notification, Admin 운영 조회/감사/민감 원문 API, MeetingNote 삭제복구/Admin, 범용 DealActivity table, 7일 이후 유료 복구 API.
 - Admin Backend는 현재 `/admin/api/me`만 구현되어 있다.
-- User Web은 `/` 홈 대시보드, Company, Contact, Product, Deal, Schedule, MeetingNote 수동 화면, MeetingNote AI/STT draft UI, 저장 후 딜 연동, Search GlobalSearch의 실제 API 연동이 완료되어 있다. 나머지 미구현 Backend 도메인은 실제 API 연동 전까지 mock/placeholder 경계를 명확히 해야 한다.
+- User Web은 `/` 홈 대시보드, Company, Contact, Product, Deal, Schedule, MeetingNote 수동 화면, MeetingNote AI/STT draft UI, 저장 후 딜 연동, Search GlobalSearch, Trash 목록/상세/복구의 실제 API 연동이 완료되어 있다. 나머지 미구현 Backend 도메인은 실제 API 연동 전까지 mock/placeholder 경계를 명확히 해야 한다.
 
 ## 1. 개발 우선순위
 
@@ -28,10 +29,11 @@
 2. Additional Work G01-G12 Frontend 반영: `dealCount`, 연결 Deal 목록, 연결 Contact 목록, xlsx export
 3. 인증 연동과 사용자 설정 화면
 4. BusinessCard OCR
-5. 범용 Import/Export, Notification, Trash
+5. 범용 Import/Export, Notification
 6. MeetingNote 삭제복구/Admin
-7. 범용 DealActivity table
-8. Admin 운영 조회/감사/민감 원문 API 보강
+7. 7일 이후 유료 복구 정책과 API
+8. 범용 DealActivity table
+9. Admin 운영 조회/감사/민감 원문 API 보강
 
 ## 2. 인증
 
@@ -72,12 +74,12 @@
 - 회사 상세의 연결 Contact 전체 목록
 - 회사 상세의 연결 Deal 전체 목록
 - 현재 필터 기준 xlsx export
+- 삭제와 휴지통 7일 무료 복구
 
 ### 후속 MVP 포함
 
 - 태그
 - 회사 로그의 별도 타입 확장
-- 휴지통 7일 무료 복구
 
 ### 제외
 
@@ -97,13 +99,13 @@
 - 사용자 개인 비밀 메모 로그
 - 담당자 상세의 연결 Deal 전체 목록
 - 현재 필터 기준 xlsx export
+- 삭제와 휴지통 7일 무료 복구
 
 ### 후속 MVP 포함
 
 - 위치 선택 입력
 - 태그
 - 명함 OCR 저장 flow
-- 휴지통 7일 무료 복구
 
 ### 제외
 
@@ -124,13 +126,13 @@
 - 제품 목록 `sort=dealCountDesc|dealCountAsc`
 - 제품 상세의 연결 Deal 전체 목록
 - 현재 필터 기준 xlsx export
+- 삭제와 휴지통 7일 무료 복구
 
 ### 후속 MVP 포함
 
 - 태그
 - 회사/담당자와의 직접 연결
 - 연결 타입
-- 휴지통 7일 무료 복구
 
 ### 제외
 
@@ -158,6 +160,7 @@
 - 다음 행동 입력과 변경 로그
 - 일반 메모 로그
 - 현재 필터 기준 xlsx export
+- 삭제와 휴지통 7일 무료 복구
 
 현재 단계 enum:
 
@@ -174,7 +177,6 @@
 - 가능성: 긍정 / 중립 / 부정
 - 고급 옵션 숫자 퍼센트
 - 태그
-- 휴지통 7일 무료 복구
 - 일정/회의록 연결
 
 ## 7. 딜 활동 로그

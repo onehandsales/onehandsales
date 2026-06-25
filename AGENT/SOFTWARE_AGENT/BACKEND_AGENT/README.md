@@ -58,7 +58,7 @@ BACKEND_AGENT/
 
 ## 6. 현재 완료된 Backend TODO
 
-Snapshot date: 2026-06-22
+Snapshot date: 2026-06-25
 
 - `TODO/DONE/AUTH_FE_INTEGRATION_PLAN/BE-TODO/G01-BE-USER-PROFILE-DEVICES.goal.md`
 - `TODO/DONE/COMPANY_DOMAIN_PLAN/BE-TODO/G01-BE-COMPANY-DOMAIN.goal.md`
@@ -74,13 +74,13 @@ Snapshot date: 2026-06-22
 Current additional backend scope:
 
 - Company/Contact/Product/Deal 본문 삭제 API는 soft delete로 구현되어 있다. 삭제 시 `deletedAt`, `deletedByUserId`, `trashExpiresAt`만 설정하고 실제 row는 삭제하지 않는다.
+- Trash API는 Company/Contact/Product/Deal 본문 데이터와 지원 로그의 목록, 상세, 7일 이내 복구를 제공한다.
 
 ## 7. 현재 주요 미구현 Backend 범위
 
 - BusinessCard OCR
 - generic Import/Export job
 - Notification
-- Trash
 - Admin 운영 조회/감사/민감 원문 API
 - MeetingNote 삭제/복구/Admin API
 - 범용 DealActivity table

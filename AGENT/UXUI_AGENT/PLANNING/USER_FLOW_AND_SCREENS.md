@@ -141,7 +141,7 @@
 | `/more` | 더보기 | 포함 |
 | `/business-cards` | 명함 OCR | 보류 |
 | `/notifications` | 알림 | 보류 |
-| `/trash` | 휴지통 | 보류 |
+| `/trash` | 휴지통 | 포함 |
 | `/search` | 통합검색 결과 | 전용 라우트 없음 |
 
 ## 3. Admin Web 화면 목록
@@ -165,7 +165,7 @@
 
 ## 4. 현재 코드 라우트 상태
 
-> 최종 업데이트: 2026-06-22
+> 최종 업데이트: 2026-06-25
 
 현재 User Web router 기준 실제 구현 경로:
 
@@ -198,7 +198,7 @@
 - `/settings`
 - `/more`
 
-pen 디자인 반영 완료/정리 도메인 (2026-06-22 기준):
+pen 디자인 반영 완료/정리 도메인 (2026-06-25 기준):
 - `/` — Schedule/Deal/MeetingNote API 조합 대시보드 구현 완료
 - `/deals` — pen 기준 테이블+우측패널 구조 완료
 - Sidebar / TopBar — pen 기준 재구성 완료
@@ -206,6 +206,7 @@ pen 디자인 반영 완료/정리 도메인 (2026-06-22 기준):
 - `/companies`, `/contacts`, `/products` — 제품형 조밀 목록 UX로 정렬
 - 회사/담당자/제품 생성 모달 — 입력 검색형 선택, 결과 없음 즉시 추가, 생성 후 자동 선택 기준 반영
 - `/meeting-notes` — 회의록 목록/상세/생성 API, AI/STT draft UI, 저장 후 딜 추가 연동 연결 완료
+- `/trash` — 회의록 목록형 밀도를 따른 휴지통 목록, row 클릭 상세 모달, 모달 내부 복구 액션 반영 완료
 - 상단 통합검색 — Backend `GET /api/search`와 User Web GlobalSearch 연결 완료
 
 현재 의도적으로 보류된 화면:
@@ -240,7 +241,7 @@ pen 디자인 반영 대기 도메인:
 - 기획 목록의 `/imports`, `/exports`는 현재 코드에서 `/import`, `/export`로 구현되어 있다.
 - 기획 목록의 `/search` 전용 라우트는 현재 User Web router에 없다. 통합검색 흐름은 상단 UI에서 `GET /api/search`를 호출하고 결과 선택 시 상세 화면으로 이동하는 방식으로 구현되어 있다.
 - 현재 `/`는 딜 파이프라인이 아니라 홈 대시보드다. 딜 파이프라인은 `/deals`에서 운영한다.
-- Import와 휴지통은 핵심 기능 UX 안정화 전까지 navigation에서 숨김 처리한다.
+- Import는 핵심 기능 UX 안정화 전까지 navigation에서 숨김 처리한다. 휴지통은 관리 섹션에 노출하고, 목록 row 클릭으로 상세/복구 모달을 제공한다.
 - 기획 목록의 Admin 상세 데이터 라우트와 전체 딜/회사/담당자/제품 라우트는 현재 Admin Web router에 없다.
 - Backend에는 현재 Admin Web 운영 조회 API가 `GET /admin/api/me` 외에는 구현되어 있지 않다.
 
@@ -321,7 +322,7 @@ UX/UI 기준 우선순위는 아래와 같다.
 - 담당자
 - 제품
 - 일정
-- 회의록 / 명함 / Import / Export / 휴지통 / 알림 / 검색
+- 회의록 / 휴지통 / 명함 / Import / Export / 알림 / 검색
 
 원칙:
 

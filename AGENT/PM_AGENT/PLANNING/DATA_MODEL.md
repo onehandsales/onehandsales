@@ -356,13 +356,12 @@ User
 - 제품 단건 화면에서 필요한 연결 Deal 전체 목록은 별도 API로 조회한다.
 - 제품 본문 row 삭제는 실제 삭제가 아니라 `deletedAt`, `deletedByUserId`, `trashExpiresAt = deletedAt + 7일` 설정으로 처리한다.
 - 제품 목록/상세/검색/옵션/export와 연결 딜 목록은 `deletedAt IS NULL` 데이터만 대상으로 한다.
+- 제품 본문 row와 제품 일반/비밀 메모 로그는 공통 Trash API에서 7일 이내 목록/상세/복구를 지원한다.
 
 1차 구현 제외:
 
 - Product N:M Company/Contact through ProductConnection
 - Product 1:N ProductLog
-- 제품 본문 row의 복구 API와 휴지통 API
-- 제품 일반 메모/비밀 메모 로그의 `deletedAt`, `deletedByUserId`, `trashExpiresAt`은 구현되어 있다.
 - unitPrice, currency, description, metadata
 
 ## 9. ProductLog

@@ -145,13 +145,14 @@ Admin Web은 사용자 앱과 다르게 데스크톱 전용 운영 콘솔이다.
 - 회의 STT transcript 영구 저장
 - AI/STT provider 호출 이력 테이블
 - Admin 운영 조회 API 전체 보강
-- BusinessCard OCR, 범용 Import/Export job, Notification, Trash 전체 구현
+- BusinessCard OCR, 범용 Import/Export job, Notification 전체 구현
+- 휴지통 7일 이후 유료 복구 정책과 API
 
 ## 10. 현재 구현 관점의 요약
 
-2026-06-22 기준으로 Backend는 Auth/User, Company, Contact, Product, Deal, Schedule, MeetingNote 수동 도메인, Search, MeetingNote AI/STT draft API, 회의록 저장 후 딜 연동 API를 구현한 상태다.
+2026-06-25 기준으로 Backend는 Auth/User, Company, Contact, Product, Deal, Schedule, MeetingNote 수동 도메인, Search, Trash, MeetingNote AI/STT draft API, 회의록 저장 후 딜 연동 API를 구현한 상태다.
 
-User Web은 홈 대시보드, 회사, 담당자, 제품, 딜, 일정, 수동 회의록, 회의록 AI/STT 초안, 회의록 저장 후 딜 연동 화면, 상단/모바일 통합검색이 실제 API와 연결되어 있다.
+User Web은 홈 대시보드, 회사, 담당자, 제품, 딜, 일정, 수동 회의록, 회의록 AI/STT 초안, 회의록 저장 후 딜 연동 화면, 상단/모바일 통합검색, 휴지통 목록/상세/복구가 실제 API와 연결되어 있다.
 
 Admin Backend는 현재 `GET /admin/api/me`만 구현되어 있으므로, Admin Web의 운영 조회 화면은 아직 실제 데이터 연동 완료 상태로 보지 않는다.
 

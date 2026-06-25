@@ -13,6 +13,7 @@ import { MeetingNoteModule } from "./modules/meeting-note/infrastructure/meeting
 import { ProductModule } from "./modules/product/infrastructure/product.module";
 import { ScheduleModule } from "./modules/schedule/infrastructure/schedule.module";
 import { SearchModule } from "./modules/search/infrastructure/search.module";
+import { TrashModule } from "./modules/trash/infrastructure/trash.module";
 import { UserModule } from "./modules/user/infrastructure/user.module";
 import { RequestIdMiddleware } from "./shared/presentation/middleware/request-id.middleware";
 
@@ -33,6 +34,7 @@ import { RequestIdMiddleware } from "./shared/presentation/middleware/request-id
     ScheduleModule,
     MeetingNoteModule,
     SearchModule,
+    TrashModule,
   ],
 })
 export class AppModule implements NestModule {

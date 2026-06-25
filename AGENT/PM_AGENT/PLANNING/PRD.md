@@ -49,10 +49,10 @@
 
 현재 구현 기준:
 
-- 구현 완료: Auth/User, 홈 대시보드, 회사, 담당자, 제품, 딜, 일정, 회의록 직접 작성/저장, 회의록 AI/STT draft UI, 회의록 저장 후 딜 연동/활동 로그 생성, 통합검색 Backend API와 User Web GlobalSearch.
+- 구현 완료: Auth/User, 홈 대시보드, 회사, 담당자, 제품, 딜, 일정, 회의록 직접 작성/저장, 회의록 AI/STT draft UI, 회의록 저장 후 딜 연동/활동 로그 생성, 통합검색 Backend API와 User Web GlobalSearch, 휴지통 목록/상세/7일 이내 복구.
 - 부분 구현: 도메인별 xlsx export는 Company/Contact/Product/Deal에 있다. 범용 Import/Export job은 없다.
-- FE만 존재 또는 mock/placeholder 경계: 명함 OCR, 알림, 휴지통, 범용 Import/Export.
-- Backend 미구현: BusinessCard OCR, Notification, Trash, Admin 운영 조회/감사/민감 원문 API, MeetingNote 삭제복구/Admin API, 범용 DealActivity table.
+- FE만 존재 또는 mock/placeholder 경계: 명함 OCR, 알림, 범용 Import/Export.
+- Backend 미구현: BusinessCard OCR, Notification, Admin 운영 조회/감사/민감 원문 API, MeetingNote 삭제복구/Admin API, 범용 DealActivity table, 7일 이후 유료 복구 API.
 - Admin Backend는 `GET /admin/api/me`만 구현되어 있다.
 
 ## 6. MVP 포함 기능

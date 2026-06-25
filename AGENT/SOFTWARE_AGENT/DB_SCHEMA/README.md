@@ -21,7 +21,7 @@
 
 Snapshot date: 2026-06-25
 
-현재 Backend DB는 `BE/prisma/schema.prisma`와 migration 기준으로 Auth/User, Company, Contact, Product, Deal, Schedule, MeetingNote 도메인을 포함한다. Company/Contact/Product/Deal 본문 row와 각 도메인의 메모, 비밀 메모, 다음 행동 로그에는 7일 휴지통 보관을 위한 soft delete 컬럼이 반영되어 있다.
+현재 Backend DB는 `BE/prisma/schema.prisma`와 migration 기준으로 Auth/User, Company, Contact, Product, Deal, Schedule, MeetingNote 도메인을 포함한다. Company/Contact/Product/Deal 본문 row와 각 도메인의 메모, 비밀 메모, 다음 행동 로그에는 7일 휴지통 보관을 위한 soft delete 컬럼이 반영되어 있다. 별도 `Trash` table은 없고, Trash 목록/상세/복구 API는 기존 row의 `deletedAt`, `deletedByUserId`, `trashExpiresAt`을 기준으로 동작한다.
 
 포함 table/model:
 
@@ -95,7 +95,7 @@ MeetingNote AI/STT draft는 현재 DB table을 추가하지 않는다. `POST /ap
 - `UserSetting`
 - 계정 영구 삭제 예약 column/table
 - DealActivity 통합 영업 활동 table
-- Trash/restore table, 휴지통 목록 API, 복구 API
+- 유료 영구 삭제 복구 예약 column/table
 - Admin 감사/조회 도메인 table
 - MeetingNote AI/STT transcript/raw text/provider call log table
 - BusinessCard OCR 결과 table

@@ -17,12 +17,13 @@ The first screen should make today's sales work visible first, then provide a cl
 
 Target direction: after login, `/` should be a work dashboard and `/deals` should remain the high-density Deal Pipeline Home.
 
-Current implementation note as of 2026-06-22:
+Current implementation note as of 2026-06-25:
 
 - `/` home is an implemented dashboard that combines Schedule, Deal, Deal stage count, and MeetingNote API data.
 - The active deal pipeline experience is served from `/deals`.
 - Keep `/` focused on today/dashboard context and `/deals` focused on comparison, filtering, preview, and mutation.
 - Global Search has Backend `GET /api/search` and User Web GlobalSearch connection with loading, empty, error states implemented.
+- Trash has Backend list/detail/restore APIs and a User Web full-width list with row-click detail modal and modal-only restore action.
 - MeetingNote AI/STT draft Backend APIs and User Web draft UI integration are implemented.
 - Company/contact/product create modals use search-input selection, immediate creation when no result exists, and automatic selection after creation.
 - Deal likelihood (`긍정 / 중립 / 부정` or percent) is not implemented in the current Deal API/FE form. Treat it as future UX scope unless a new backend plan adds it.
@@ -276,7 +277,8 @@ Primary navigation should make these areas easy to reach:
 
 Current visibility rule:
 
-- `Import` and `휴지통` routes/features may remain in code, but they are hidden from the main sidebar until core domain UX is stable.
+- `Import` routes/features may remain in code, but they are hidden from the main sidebar until core domain UX is stable.
+- `휴지통` is exposed in the management section because delete and restore are now active user workflows. It should use a full-width list layout, row-click detail modal, and modal-only restore action.
 - Do not surface deferred features in primary navigation just because a route exists.
 
 Even though the first screen is deal-centered, company/contact/product registration must remain easy because deals require those entities.

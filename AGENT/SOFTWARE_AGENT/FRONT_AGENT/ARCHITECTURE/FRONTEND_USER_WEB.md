@@ -94,6 +94,7 @@
 - MeetingNote: 목록/상세/생성/수정, filter options, AI text draft, STT+AI draft, 저장 후 딜 추가 연동
 - Search: 상단/모바일 GlobalSearch, `GET /api/search`, 결과 `targetPath` 이동
 - 삭제 UX: 회사/담당자/제품/딜 본문과 로그 삭제는 빨간 휴지통 아이콘 클릭 후 중앙 확인 모달을 열고, 성공 시 중앙 성공 모달로 `삭제가 완료되었습니다.`와 7일 복구 안내를 보여준다.
+- Trash: `/trash` 화면에서 `GET /api/trash` 목록, `GET /api/trash/:targetType/:targetId` 상세 모달, `POST /api/trash/:targetType/:targetId/restore` 복구를 연동한다. 목록 row 클릭으로 상세 모달을 열고, 복구는 모달 내부 버튼에서만 수행한다.
 
 Backend는 구현되었지만 Frontend 연결이 남은 항목:
 
@@ -104,7 +105,6 @@ mock/placeholder 경계를 유지해야 하는 항목:
 - BusinessCard OCR
 - generic Import/Export job
 - Notification
-- Trash
 
 ## 6. Search 구현 기준
 
@@ -142,8 +142,8 @@ Backend는 AI 초안 provider와 STT provider를 분리한다. Frontend는 provi
 
 ## 8. Pagination 기준
 
-- Company/Contact/Product/Deal/MeetingNote 목록은 page-number pagination을 사용한다.
-- 기본 page size는 10이다.
+- Company/Contact/Product/Deal/MeetingNote/Trash 목록은 page-number pagination을 사용한다.
+- 기본 page size는 10이고, Trash 목록은 화면 밀도 기준으로 `pageSize=12`를 사용한다.
 - 서버 응답은 `totalCount`, `totalPages`, `page`, `pageSize` 기준으로 처리한다.
 - cursor 기반 `hasNext`는 memo log 같은 infinite loading 영역에서만 사용한다.
 

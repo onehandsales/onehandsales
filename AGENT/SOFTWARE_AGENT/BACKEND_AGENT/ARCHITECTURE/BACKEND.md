@@ -36,7 +36,7 @@ Canonical domain:
 
 ## 3. Current Implementation Snapshot
 
-Snapshot date: 2026-06-22
+Snapshot date: 2026-06-25
 
 Current source of truth:
 
@@ -58,6 +58,7 @@ Currently imported modules in `AppModule`:
 - `schedule`
 - `meeting-note`
 - `search`
+- `trash`
 
 Currently implemented API surface:
 
@@ -69,6 +70,7 @@ Currently implemented API surface:
 - Schedule: deal options, month/week list, detail/create/update/delete, schedule-deal N:M link
 - MeetingNote: filter options, list/detail/create/update, AI text draft, STT+AI draft
 - Search: `GET /api/search`
+- Trash: `GET /api/trash`, `GET /api/trash/:targetType/:targetId`, `POST /api/trash/:targetType/:targetId/restore`
 - Health: `GET /api/health`
 
 Completed Backend TODO plans:
@@ -100,6 +102,9 @@ Current response notes:
 - MeetingNote AI/STT writes no transcript table, provider log table, or raw-text storage in the current scope.
 - `GET /api/search` reads Company, Contact, Product, Deal, Schedule, and MeetingNote data owned by the current user and returns navigation target metadata.
 - `DELETE /api/companies/:companyId`, `DELETE /api/contacts/:contactId`, `DELETE /api/products/:productId`, and `DELETE /api/deals/:dealId` are soft delete APIs. They set `deletedAt`, `deletedByUserId`, and `trashExpiresAt` and return `204 No Content`.
+- `GET /api/trash` aggregates deleted Company, Contact, Product, Deal, and supported memo/action log rows owned by the current user where `deletedAt IS NOT NULL` and `trashExpiresAt > now`.
+- `GET /api/trash/:targetType/:targetId` returns preview details for the trash detail modal. Private memo content is not exposed before restore.
+- `POST /api/trash/:targetType/:targetId/restore` clears `deletedAt`, `deletedByUserId`, and `trashExpiresAt` and returns the restored target metadata.
 
 Current runtime behavior:
 
@@ -112,7 +117,7 @@ Current runtime behavior:
 Current backend gaps:
 
 - Admin Web query APIs such as `/admin/api/dashboard`, `/admin/api/users`, `/admin/api/companies`, `/admin/api/contacts`, `/admin/api/products`, and `/admin/api/deals` are not implemented yet.
-- BusinessCard OCR, generic Import/Export jobs, Notification, Trash, Admin operation query/audit/sensitive raw APIs are not implemented yet.
+- BusinessCard OCR, generic Import/Export jobs, Notification, Admin operation query/audit/sensitive raw APIs are not implemented yet.
 - MeetingNote delete/restore, Admin API, rawText encryption/raw access, and DealActivity auto-log are future scope.
 
 ## 4. Target Module List
@@ -129,6 +134,7 @@ Implemented MVP modules:
 - `schedule`
 - `meeting-note`
 - `search`
+- `trash`
 
 Planned or partially represented modules:
 
@@ -138,7 +144,6 @@ Planned or partially represented modules:
 - `tag`
 - `audit-log`
 - `admin`
-- `trash`
 
 Each business module owns its own four layers:
 
