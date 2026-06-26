@@ -1,14 +1,16 @@
 import {
   AlertCircle,
   CalendarClock,
+  ChevronDown,
   FileText,
   Plus,
   RefreshCw,
   RotateCcw,
   Search,
+  X,
   type LucideIcon,
 } from "lucide-react";
-import { useEffect, useMemo, useState, type FormEvent } from "react";
+import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
 import { Link, useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { PageHeader } from "@/components/layout/page-header";
 import { ListFilterSelect } from "@/components/ui/list-filter-select";
@@ -48,8 +50,8 @@ export function MeetingNoteListScreen() {
   const [page, setPage] = useState(1);
   const [searchText, setSearchText] = useState("");
   const [search, setSearch] = useState("");
-  const [companyId, setCompanyId] = useState("");
-  const [contactId, setContactId] = useState("");
+  const [companyIds, setCompanyIds] = useState<string[]>([]);
+  const [contactIds, setContactIds] = useState<string[]>([]);
   const [sort, setSort] = useState<MeetingNoteSort>("createdAtDesc");
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [notice, setNotice] = useState<string | null>(null);
@@ -57,13 +59,13 @@ export function MeetingNoteListScreen() {
 
   const params = useMemo<MeetingNoteListParams>(
     () => ({
-      companyIds: companyId ? [companyId] : [],
-      contactIds: contactId ? [contactId] : [],
+      companyIds,
+      contactIds,
       page,
       ...(search ? { search } : {}),
       sort,
     }),
-    [companyId, contactId, page, search, sort],
+    [companyIds, contactIds, page, search, sort],
   );
 
   const meetingNotesQuery = useMeetingNoteList(params);
@@ -73,29 +75,44 @@ export function MeetingNoteListScreen() {
     () => meetingNotesQuery.data?.items ?? [],
     [meetingNotesQuery.data?.items],
   );
-  const companyFilterOptions = useMemo(
-    () => [
-      { value: "", label: "회사" },
-      ...(companiesQuery.data?.items ?? []).map((company) => ({
-        value: company.id,
-        label: company.companyName,
-      })),
-    ],
+  const companyOptions = useMemo(
+    () => companiesQuery.data?.items ?? [],
     [companiesQuery.data?.items],
   );
-  const contactFilterOptions = useMemo(
-    () => [
-      { value: "", label: "담당자" },
-      ...(contactsQuery.data?.items ?? []).map((contact) => ({
-        value: contact.id,
-        label: contact.contactUsername,
-      })),
-    ],
-    [contactsQuery.data?.items],
+  const filteredContactOptions = useMemo(() => {
+    const contactOptions = contactsQuery.data?.items ?? [];
+
+    return companyIds.length > 0
+      ? contactOptions.filter((contact) =>
+          contact.companyId ? companyIds.includes(contact.companyId) : false,
+        )
+      : contactOptions;
+  }, [companyIds, contactsQuery.data?.items]);
+  const validContactIdSet = useMemo(
+    () => new Set(filteredContactOptions.map((contact) => contact.id)),
+    [filteredContactOptions],
   );
   const hasFilter = Boolean(
-    search || companyId || contactId || sort !== "createdAtDesc",
+    search ||
+      companyIds.length > 0 ||
+      contactIds.length > 0 ||
+      sort !== "createdAtDesc",
   );
+
+  useEffect(() => {
+    if (contactIds.length === 0) {
+      return;
+    }
+
+    const nextContactIds = contactIds.filter((contactId) =>
+      validContactIdSet.has(contactId),
+    );
+
+    if (nextContactIds.length !== contactIds.length) {
+      setContactIds(nextContactIds);
+      setPage(1);
+    }
+  }, [contactIds, validContactIdSet]);
 
   useEffect(() => {
     const message = readLocationNotice(location.state);
@@ -125,13 +142,13 @@ export function MeetingNoteListScreen() {
     setPage(1);
   };
 
-  const updateCompanyId = (value: string) => {
-    setCompanyId(value);
+  const updateCompanyIds = (ids: string[]) => {
+    setCompanyIds(ids);
     setPage(1);
   };
 
-  const updateContactId = (value: string) => {
-    setContactId(value);
+  const updateContactIds = (ids: string[]) => {
+    setContactIds(ids);
     setPage(1);
   };
 
@@ -143,8 +160,8 @@ export function MeetingNoteListScreen() {
   const clearFilters = () => {
     setSearchText("");
     setSearch("");
-    setCompanyId("");
-    setContactId("");
+    setCompanyIds([]);
+    setContactIds([]);
     setSort("createdAtDesc");
     setPage(1);
   };
@@ -182,21 +199,21 @@ export function MeetingNoteListScreen() {
           label="초기화"
           onClick={clearFilters}
         />
-        <ListFilterSelect<string>
-          active={companyId.length > 0}
-          ariaLabel="회사 필터"
-          className="w-[clamp(112px,12vw,140px)]"
-          onChange={updateCompanyId}
-          options={companyFilterOptions}
-          value={companyId}
+        <MeetingNoteFilterMultiSelect
+          emptyText="조건에 맞는 회사가 없습니다."
+          getLabel={(company) => company.companyName}
+          itemKindLabel="회사"
+          items={companyOptions}
+          selectedIds={companyIds}
+          onSelectedIdsChange={updateCompanyIds}
         />
-        <ListFilterSelect<string>
-          active={contactId.length > 0}
-          ariaLabel="담당자 필터"
-          className="w-[clamp(112px,12vw,140px)]"
-          onChange={updateContactId}
-          options={contactFilterOptions}
-          value={contactId}
+        <MeetingNoteFilterMultiSelect
+          emptyText="조건에 맞는 담당자가 없습니다."
+          getLabel={(contact) => contact.contactUsername}
+          itemKindLabel="담당자"
+          items={filteredContactOptions}
+          selectedIds={contactIds}
+          onSelectedIdsChange={updateContactIds}
         />
         <ListFilterSelect<MeetingNoteSort>
           active={sort !== "createdAtDesc"}
@@ -318,21 +335,23 @@ export function MeetingNoteListScreen() {
           >
             <RotateCcw className="h-3 w-3" />
           </button>
-          <ListFilterSelect<string>
-            active={companyId.length > 0}
-            ariaLabel="회사 필터"
+          <MeetingNoteFilterMultiSelect
             className="w-[112px]"
-            onChange={updateCompanyId}
-            options={companyFilterOptions}
-            value={companyId}
+            emptyText="조건에 맞는 회사가 없습니다."
+            getLabel={(company) => company.companyName}
+            itemKindLabel="회사"
+            items={companyOptions}
+            selectedIds={companyIds}
+            onSelectedIdsChange={updateCompanyIds}
           />
-          <ListFilterSelect<string>
-            active={contactId.length > 0}
-            ariaLabel="담당자 필터"
+          <MeetingNoteFilterMultiSelect
             className="w-[112px]"
-            onChange={updateContactId}
-            options={contactFilterOptions}
-            value={contactId}
+            emptyText="조건에 맞는 담당자가 없습니다."
+            getLabel={(contact) => contact.contactUsername}
+            itemKindLabel="담당자"
+            items={filteredContactOptions}
+            selectedIds={contactIds}
+            onSelectedIdsChange={updateContactIds}
           />
           <ListFilterSelect<MeetingNoteSort>
             active={sort !== "createdAtDesc"}
@@ -451,6 +470,307 @@ function FilterChip({
       {Icon ? <Icon className="h-3.5 w-3.5" /> : null}
     </button>
   );
+}
+
+type MeetingNoteFilterPopoverPosition = {
+  readonly left: number;
+  readonly top: number;
+  readonly width: number;
+};
+
+type MeetingNoteFilterItem = {
+  readonly id: string;
+};
+
+// 기능 : 회의록 목록에서 회사/담당자를 여러 개 선택할 수 있는 검색형 필터입니다.
+function MeetingNoteFilterMultiSelect<TItem extends MeetingNoteFilterItem>({
+  className,
+  emptyText,
+  getLabel,
+  itemKindLabel,
+  items,
+  selectedIds,
+  onSelectedIdsChange,
+}: {
+  readonly className?: string;
+  readonly emptyText: string;
+  readonly getLabel: (item: TItem) => string;
+  readonly itemKindLabel: string;
+  readonly items: readonly TItem[];
+  readonly selectedIds: readonly string[];
+  readonly onSelectedIdsChange: (ids: string[]) => void;
+}) {
+  const [isOpen, setIsOpen] = useState(false);
+  const [filterText, setFilterText] = useState("");
+  const [popoverPosition, setPopoverPosition] =
+    useState<MeetingNoteFilterPopoverPosition | null>(null);
+  const wrapperRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const selectedIdSet = useMemo(() => new Set(selectedIds), [selectedIds]);
+  const selectedItems = useMemo(
+    () => items.filter((item) => selectedIdSet.has(item.id)),
+    [items, selectedIdSet],
+  );
+  const selectedSummary = getSelectedMeetingNoteFilterSummary(
+    selectedItems,
+    getLabel,
+    itemKindLabel,
+  );
+  const normalizedFilterText = normalizeMeetingNoteFilterText(filterText.trim());
+  const filteredItems =
+    normalizedFilterText.length > 0
+      ? items.filter((item) =>
+          normalizeMeetingNoteFilterText(getLabel(item)).includes(
+            normalizedFilterText,
+          ),
+        )
+      : items;
+  const inputValue = isOpen ? filterText : selectedSummary;
+
+  useEffect(() => {
+    if (!isOpen) {
+      setFilterText("");
+    }
+  }, [isOpen]);
+
+  useEffect(() => {
+    if (!isOpen) {
+      return;
+    }
+
+    const updatePopoverPosition = () => {
+      if (!inputRef.current) {
+        return;
+      }
+
+      setPopoverPosition(
+        getMeetingNoteFilterPopoverPosition(inputRef.current),
+      );
+    };
+    const onMouseDown = (event: MouseEvent) => {
+      if (
+        wrapperRef.current &&
+        !wrapperRef.current.contains(event.target as Node)
+      ) {
+        setIsOpen(false);
+        setFilterText("");
+      }
+    };
+
+    updatePopoverPosition();
+    document.addEventListener("mousedown", onMouseDown);
+    window.addEventListener("resize", updatePopoverPosition);
+    window.addEventListener("scroll", updatePopoverPosition, true);
+
+    return () => {
+      document.removeEventListener("mousedown", onMouseDown);
+      window.removeEventListener("resize", updatePopoverPosition);
+      window.removeEventListener("scroll", updatePopoverPosition, true);
+    };
+  }, [isOpen]);
+
+  const openOptions = (nextFilterText: string) => {
+    setFilterText(nextFilterText);
+
+    if (inputRef.current) {
+      setPopoverPosition(
+        getMeetingNoteFilterPopoverPosition(inputRef.current),
+      );
+    }
+
+    setIsOpen(true);
+  };
+
+  const toggleItem = (item: TItem) => {
+    const nextIds = selectedIdSet.has(item.id)
+      ? selectedIds.filter((id) => id !== item.id)
+      : [...selectedIds, item.id];
+
+    setFilterText("");
+    onSelectedIdsChange(nextIds);
+  };
+
+  const clearSelection = () => {
+    setFilterText("");
+    onSelectedIdsChange([]);
+    inputRef.current?.focus();
+    openOptions("");
+  };
+
+  return (
+    <div
+      className={cn("relative w-[clamp(136px,14vw,178px)] shrink-0", className)}
+      ref={wrapperRef}
+    >
+      <div className="relative">
+        {isOpen ? (
+          <Search className="pointer-events-none absolute left-3 top-1/2 h-3 w-3 shrink-0 -translate-y-1/2 text-[#9CA3AF]" />
+        ) : null}
+        <input
+          aria-autocomplete="list"
+          aria-expanded={isOpen}
+          aria-label={`${itemKindLabel} 필터`}
+          autoComplete="off"
+          className={cn(
+            "h-8 w-full min-w-0 border text-[13px] outline-none transition",
+            isOpen
+              ? "rounded-full border-[#4880EE] bg-white pl-8 pr-7 text-[#111827] ring-1 ring-[#4880EE]"
+              : selectedIds.length > 0
+                ? "rounded-full border-[#BFDBFE] bg-[#EFF6FF] pl-3.5 pr-7 font-semibold text-[#1D4ED8]"
+                : "cursor-pointer rounded-full border-[#E2E5EC] bg-transparent pl-3.5 pr-7 text-[#6B7280] hover:border-[#D1D5DB] hover:bg-[#FAFAF8]",
+          )}
+          onChange={(event) => openOptions(event.target.value)}
+          onFocus={() => openOptions("")}
+          onKeyDown={(event) => {
+            if (event.key === "Escape") {
+              setIsOpen(false);
+              setFilterText("");
+              inputRef.current?.blur();
+              return;
+            }
+
+            if (event.key === "Enter") {
+              const firstItem = filteredItems[0];
+              if (!firstItem) {
+                return;
+              }
+
+              event.preventDefault();
+              toggleItem(firstItem);
+            }
+          }}
+          placeholder={`${itemKindLabel} 선택`}
+          ref={inputRef}
+          value={inputValue}
+        />
+        {selectedIds.length > 0 || filterText ? (
+          <button
+            aria-label={`${itemKindLabel} 필터 지우기`}
+            className="absolute right-1 top-1/2 grid h-7 w-7 -translate-y-1/2 place-items-center rounded-full text-[#9CA3AF] transition hover:bg-white hover:text-[#374151]"
+            onClick={clearSelection}
+            type="button"
+          >
+            <X className="h-3.5 w-3.5" />
+          </button>
+        ) : (
+          <ChevronDown
+            className={cn(
+              "pointer-events-none absolute right-2 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-[#9CA3AF] transition-transform",
+              isOpen && "rotate-180",
+            )}
+          />
+        )}
+      </div>
+
+      {isOpen ? (
+        <div
+          className={cn(
+            "fixed z-50 overflow-hidden rounded-md border border-[#E6EAF0] bg-white shadow-lg",
+            !popoverPosition && "invisible",
+          )}
+          style={{
+            left: popoverPosition?.left ?? 0,
+            top: popoverPosition?.top ?? 0,
+            width: popoverPosition?.width ?? 256,
+          }}
+        >
+          <button
+            className={cn(
+              "flex h-9 w-full items-center gap-1.5 px-3 text-left text-[13px] transition hover:bg-[#F9FAFB]",
+              selectedIds.length === 0
+                ? "font-semibold text-[#1D4ED8]"
+                : "font-medium text-[#475569]",
+            )}
+            onClick={() => {
+              setFilterText("");
+              setIsOpen(false);
+              onSelectedIdsChange([]);
+            }}
+            type="button"
+          >
+            <RotateCcw className="h-3.5 w-3.5" />
+            {itemKindLabel} 초기화
+          </button>
+
+          <div className="max-h-[184px] overflow-y-auto border-y border-[#E6EAF0] py-1">
+            {filteredItems.length === 0 ? (
+              <p className="px-3 py-3 text-[12px] text-[#9CA3AF]">
+                {emptyText}
+              </p>
+            ) : (
+              filteredItems.map((item) => {
+                const isSelected = selectedIdSet.has(item.id);
+
+                return (
+                  <button
+                    className={cn(
+                      "flex h-8 w-full min-w-0 items-center gap-2 px-3 text-left text-[13px] transition hover:bg-[#F9FAFB]",
+                      isSelected && "bg-[#EFF6FF] font-semibold text-[#1D4ED8]",
+                    )}
+                    key={item.id}
+                    onClick={() => toggleItem(item)}
+                    type="button"
+                  >
+                    <span
+                      className={cn(
+                        "grid h-3.5 w-3.5 shrink-0 place-items-center rounded-full border",
+                        isSelected ? "border-[#4880EE]" : "border-[#CBD5E1]",
+                      )}
+                    >
+                      {isSelected ? (
+                        <span className="h-1.5 w-1.5 rounded-full bg-[#4880EE]" />
+                      ) : null}
+                    </span>
+                    <span className="min-w-0 flex-1 truncate">
+                      {getLabel(item)}
+                    </span>
+                  </button>
+                );
+              })
+            )}
+          </div>
+        </div>
+      ) : null}
+    </div>
+  );
+}
+
+function getMeetingNoteFilterPopoverPosition(
+  input: HTMLInputElement,
+): MeetingNoteFilterPopoverPosition {
+  const rect = input.getBoundingClientRect();
+  const viewportWidth = window.innerWidth;
+  const margin = 16;
+  const width = 256;
+  const maxLeft = Math.max(margin, viewportWidth - width - margin);
+  const left = Math.min(Math.max(rect.left, margin), maxLeft);
+
+  return {
+    left,
+    top: rect.bottom + 4,
+    width,
+  };
+}
+
+function getSelectedMeetingNoteFilterSummary<TItem extends MeetingNoteFilterItem>(
+  selectedItems: readonly TItem[],
+  getLabel: (item: TItem) => string,
+  itemKindLabel: string,
+) {
+  if (selectedItems.length === 0) {
+    return "";
+  }
+
+  if (selectedItems.length === 1) {
+    const selectedItem = selectedItems[0];
+    return selectedItem ? getLabel(selectedItem) : "";
+  }
+
+  return `${itemKindLabel} ${selectedItems.length}개`;
+}
+
+function normalizeMeetingNoteFilterText(value: string) {
+  return value.trim().toLocaleLowerCase("ko-KR");
 }
 
 // 기능 : 모바일 회의록 목록 카드를 렌더링합니다.

@@ -349,6 +349,29 @@ function createService() {
 }
 
 describe("MeetingNoteApplicationService", () => {
+  it("includes companyId in contact filter options", async () => {
+    const { repository, service } = createService();
+    jest.spyOn(repository, "listFilterContacts").mockResolvedValue([
+      {
+        id: "contact-1",
+        companyId: "company-1",
+        contactUsername: "Kim",
+        createdAt: BASE_DATE,
+      },
+    ]);
+
+    const result = await service.listFilterContacts(CURRENT_USER);
+
+    expect(result.items).toEqual([
+      {
+        id: "contact-1",
+        companyId: "company-1",
+        contactUsername: "Kim",
+        createdAt: BASE_DATE.toISOString(),
+      },
+    ]);
+  });
+
   it("TEXT_AI sourceType 생성 요청은 원문 저장 없이 출처만 보존한다", async () => {
     const { repository, service } = createService();
 

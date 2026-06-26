@@ -48,6 +48,7 @@ export type MeetingNoteFilterCompanyListResponse = {
 
 export type MeetingNoteFilterContactOption = {
   readonly id: string;
+  readonly companyId: string | null;
   readonly contactUsername: string;
   readonly createdAt: string;
 };

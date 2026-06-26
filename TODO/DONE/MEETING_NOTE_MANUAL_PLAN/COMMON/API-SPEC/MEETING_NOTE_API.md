@@ -286,6 +286,7 @@ type MeetingNoteFilterCompanyOptionListResponse = {
 ```ts
 type MeetingNoteFilterContactOptionResponse = {
   id: string;
+  companyId: string | null;
   contactUsername: string;
   createdAt: string;
 };

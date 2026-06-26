@@ -120,6 +120,7 @@ export class PrismaMeetingNoteRepository implements MeetingNoteRepository {
       },
       select: {
         contactId: true,
+        companyId: true,
         contactUsernameSnapshot: true,
         createdAt: true,
       },
@@ -136,6 +137,7 @@ export class PrismaMeetingNoteRepository implements MeetingNoteRepository {
       seen.add(row.contactId);
       items.push({
         id: row.contactId,
+        companyId: row.companyId,
         contactUsername: row.contactUsernameSnapshot,
         createdAt: row.createdAt,
       });

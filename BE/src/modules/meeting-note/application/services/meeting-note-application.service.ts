@@ -162,6 +162,7 @@ export interface MeetingNoteFilterCompanyResponse {
 // 역할 : MeetingNoteFilterContactResponse 연락처 필터 옵션 응답 구조를 정의합니다.
 export interface MeetingNoteFilterContactResponse {
   readonly id: string;
+  readonly companyId: string | null;
   readonly contactUsername: string;
   readonly createdAt: string;
 }
@@ -383,6 +384,7 @@ export class MeetingNoteApplicationService {
     return {
       items: items.map((item) => ({
         id: item.id,
+        companyId: item.companyId,
         contactUsername: item.contactUsername,
         createdAt: item.createdAt.toISOString(),
       })),

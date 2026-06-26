@@ -88,6 +88,7 @@ export interface MeetingNoteFilterCompanyOptionRecord {
 // 역할 : MeetingNoteFilterContactOptionRecord 연락처 필터 옵션 구조를 정의합니다.
 export interface MeetingNoteFilterContactOptionRecord {
   readonly id: string;
+  readonly companyId: string | null;
   readonly contactUsername: string;
   readonly createdAt: Date;
 }
