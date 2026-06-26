@@ -2,6 +2,7 @@ import type { Buffer } from "node:buffer";
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpCode,
   HttpStatus,
@@ -169,6 +170,20 @@ export class MeetingNoteController {
       currentUser,
       meetingNoteId,
       body
+    );
+  }
+
+  // API : 회의록 단건 삭제
+  @Delete(":meetingNoteId")
+  @HttpCode(HttpStatus.NO_CONTENT)
+  deleteMeetingNote(
+    @CurrentUser() currentUser: CurrentUserContext,
+    @Param("meetingNoteId", ParseUUIDPipe) meetingNoteId: string
+  ) {
+    // 1. path param과 현재 사용자 정보를 application 계층으로 전달합니다.
+    return this.meetingNoteApplicationService.deleteMeetingNote(
+      currentUser,
+      meetingNoteId
     );
   }
 

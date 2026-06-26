@@ -637,18 +637,21 @@ model ScheduleDeal {
 }
 
 model MeetingNote {
-  id             String                @id @default(uuid()) @db.Uuid
-  userId         String                @db.Uuid
-  sourceType     MeetingNoteSourceType @default(MANUAL)
-  title          String
-  meetingAt      DateTime              @db.Timestamptz(3)
-  timeZone       String                @default("Asia/Seoul")
-  details        String
-  nextPlan       String?
-  requiredAction String?
-  rawText        String?
-  createdAt      DateTime              @default(now()) @db.Timestamptz(3)
-  updatedAt      DateTime              @updatedAt @db.Timestamptz(3)
+  id              String                @id @default(uuid()) @db.Uuid
+  userId          String                @db.Uuid
+  sourceType      MeetingNoteSourceType @default(MANUAL)
+  title           String
+  meetingAt       DateTime              @db.Timestamptz(3)
+  timeZone        String                @default("Asia/Seoul")
+  details         String
+  nextPlan        String?
+  requiredAction  String?
+  rawText         String?
+  createdAt       DateTime              @default(now()) @db.Timestamptz(3)
+  updatedAt       DateTime              @updatedAt @db.Timestamptz(3)
+  deletedAt       DateTime?             @db.Timestamptz(3)
+  deletedByUserId String?               @db.Uuid
+  trashExpiresAt  DateTime?             @db.Timestamptz(3)
 
   user      User                 @relation(fields: [userId], references: [id])
   companies MeetingNoteCompany[]
@@ -659,6 +662,8 @@ model MeetingNote {
   @@index([userId, meetingAt])
   @@index([userId, title])
   @@index([userId, createdAt])
+  @@index([userId, deletedAt])
+  @@index([userId, trashExpiresAt])
 }
 
 model MeetingNoteCompany {

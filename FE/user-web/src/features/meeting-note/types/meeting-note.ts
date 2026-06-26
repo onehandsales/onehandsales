@@ -60,6 +60,7 @@ export type MeetingNoteFilterContactListResponse = {
 export type MeetingNoteCompany = {
   readonly id: string;
   readonly companyId: string | null;
+  readonly isDeleted: boolean;
   readonly companyNameSnapshot: string;
   readonly companyFieldSnapshot: string | null;
   readonly companyRegionSnapshot: string | null;
@@ -70,6 +71,7 @@ export type MeetingNoteContact = {
   readonly id: string;
   readonly contactId: string | null;
   readonly companyId: string | null;
+  readonly isDeleted: boolean;
   readonly contactUsernameSnapshot: string;
   readonly contactEmailSnapshot: string | null;
   readonly contactMobileSnapshot: string | null;
@@ -82,6 +84,7 @@ export type MeetingNoteContact = {
 export type MeetingNoteProduct = {
   readonly id: string;
   readonly productId: string | null;
+  readonly isDeleted: boolean;
   readonly productNameSnapshot: string;
   readonly productPriceSnapshot: number | null;
   readonly productCategorySnapshot: string | null;
@@ -92,6 +95,7 @@ export type MeetingNoteProduct = {
 export type MeetingNoteDeal = {
   readonly id: string;
   readonly dealId: string;
+  readonly isDeleted: boolean;
   readonly dealNameSnapshot: string;
   readonly dealStatusSnapshot: string;
   readonly dealCostSnapshot: number;

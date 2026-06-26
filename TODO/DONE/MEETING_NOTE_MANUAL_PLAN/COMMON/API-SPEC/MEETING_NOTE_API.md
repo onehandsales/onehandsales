@@ -8,7 +8,7 @@
 - 인증: Backend App access token 필요
 - 권한: 현재 사용자 본인 데이터만 접근 가능
 - Admin API: 이번 범위 제외
-- 삭제 API: 이번 범위 제외
+- 삭제 API: 회의록 본문 row soft delete와 휴지통 복구 지원
 - AI/STT API: 이번 범위 제외
 - audit log: 없음
 
@@ -83,6 +83,7 @@ type MeetingNotePageResponse = {
 type MeetingNoteCompanyDetailResponse = {
   id: string;
   companyId: string | null;
+  isDeleted: boolean;
   company: {
     id: string;
     companyName: string;
@@ -99,6 +100,7 @@ type MeetingNoteContactDetailResponse = {
   id: string;
   contactId: string | null;
   companyId: string | null;
+  isDeleted: boolean;
   contact: {
     id: string;
     contactUsername: string;
@@ -119,6 +121,7 @@ type MeetingNoteContactDetailResponse = {
 type MeetingNoteProductDetailResponse = {
   id: string;
   productId: string | null;
+  isDeleted: boolean;
   product: {
     id: string;
     productName: string;
@@ -136,6 +139,7 @@ type MeetingNoteProductDetailResponse = {
 type MeetingNoteDealDetailResponse = {
   id: string;
   dealId: string;
+  isDeleted: boolean;
   deal: {
     id: string;
     dealName: string;
@@ -161,6 +165,7 @@ type MeetingNoteDealDetailResponse = {
 | `GET` | `/api/meeting-notes/:meetingNoteId` | `GetMeetingNote` | 회의록 단건 상세 조회 |
 | `POST` | `/api/meeting-notes` | `CreateMeetingNote` | 수동 회의록 생성 |
 | `PATCH` | `/api/meeting-notes/:meetingNoteId` | `UpdateMeetingNote` | 회의록 수정 |
+| `DELETE` | `/api/meeting-notes/:meetingNoteId` | `DeleteMeetingNote` | 회의록 휴지통 이동 |
 
 `filter-companies`, `filter-contacts`는 `:meetingNoteId`보다 controller에서 먼저 선언한다.
 
@@ -191,7 +196,7 @@ FE는 `pageSize`를 보내지 않는다. 서버는 `pageSize=10`으로 고정한
 1. AuthGuard로 현재 사용자를 확인한다.
 2. query를 validation하고 `page` 기본값을 1로 정한다.
 3. `companyIds`, `contactIds`가 있으면 현재 사용자 소유 리소스인지 검증한다.
-4. `MeetingNote.userId = currentUser.id`를 기본 조건으로 둔다.
+4. `MeetingNote.userId = currentUser.id`, `MeetingNote.deletedAt IS NULL`을 기본 조건으로 둔다.
 5. `search`가 있으면 `MeetingNote.title`, `details`, `nextPlan`, `requiredAction` 중 하나라도 `contains search`인 OR 조건으로 적용한다.
 6. `companyIds`는 같은 그룹 안에서 OR 조건으로 적용한다.
 7. `contactIds`는 같은 그룹 안에서 OR 조건으로 적용한다.
@@ -487,12 +492,48 @@ type MeetingNoteDetailResponse = {
 - `rawText`
 - 연락처 email/mobile
 
-## 12. 후속 API
+## 12. DELETE /api/meeting-notes/:meetingNoteId
+
+- API 이름: 회의록 휴지통 이동 API
+- API 식별자: `DeleteMeetingNote`
+- Request 이름: `DeleteMeetingNotePath`
+- Response 이름: 없음
+- Transaction: 없음. 단일 `MeetingNote` row의 soft delete 컬럼만 수정한다.
+- Observability: `meeting_note.deleted`, audit log 없음, request id 사용, PII redaction
+
+### Path
+
+| 필드 | 타입 | 필수 | validation | 설명 |
+|---|---|---:|---|---|
+| `meetingNoteId` | string | 예 | UUID | 삭제할 회의록 ID |
+
+### 비즈니스 로직
+
+1. AuthGuard로 현재 사용자를 확인한다.
+2. `MeetingNote.id = meetingNoteId`, `userId = currentUser.id`, `deletedAt IS NULL` 회의록을 조회한다.
+3. 없으면 `MeetingNoteNotFound`를 반환한다.
+4. `deletedAt = now`, `deletedByUserId = currentUser.id`, `trashExpiresAt = now + 7일`을 기록한다.
+5. 회의록 연결 snapshot row는 삭제하지 않는다.
+6. 삭제된 회의록은 일반 목록/상세/검색/필터에서 제외되고, 휴지통 API에서 조회·복구한다.
+
+### Response
+
+- Status: `204 No Content`
+- Body: 없음
+
+### 에러
+
+| 상황 | 에러 | HTTP | FE 처리 | log level |
+|---|---|---:|---|---|
+| 인증 없음 또는 invalid | `Unauthorized` | 401 | 로그인 또는 refresh | warn |
+| path validation 실패 | `ValidationError` | 400 | toast | log |
+| 회의록 없음, 타 사용자 회의록, 이미 삭제된 회의록 | `MeetingNoteNotFound` | 404 | 목록 이동 또는 삭제된 항목 안내 | warn |
+
+## 13. 후속 API
 
 아래 API는 이번 구현에서 만들지 않는다.
 
 - `POST /api/meeting-notes/generate`
 - `POST /api/meeting-notes/transcribe`
 - `POST /api/meeting-notes/:meetingNoteId/link-deal`
-- `DELETE /api/meeting-notes/:meetingNoteId`
 - `POST /api/meeting-notes/:meetingNoteId/restore`

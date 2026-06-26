@@ -607,7 +607,8 @@ User
 - 회사/담당자/제품/딜 연결 row에는 회의록 작성 시점의 snapshot을 저장한다.
 - 저장 후 딜 추가 연동 API는 기존 `MeetingNoteDeal`에 snapshot row를 추가하고 `DealFollowingActionLog`에 회의록 링크/요약 로그를 생성한다.
 - request에서는 `timeZone`, `rawText`, `stageText`, 단일 `dealId`를 받지 않는다.
-- 삭제/복구, Admin 조회, 범용 DealActivity table 전환은 후속 범위다.
+- 회의록 삭제는 `MeetingNote.deletedAt`, `deletedByUserId`, `trashExpiresAt`을 기록하는 soft delete이며, 공통 Trash API에서 복구한다.
+- Admin 조회, 범용 DealActivity table 전환은 후속 범위다.
 
 ## 16. Tag
 

@@ -316,8 +316,10 @@ export class PrismaSearchRepository implements SearchRepository {
   ): Promise<SearchItemRecord[]> {
     const meetingNotes = await this.prismaService.meetingNote.findMany({
       where: {
+        deletedAt: null,
         userId: input.userId,
         OR: [
+          { title: { contains: input.query } },
           { details: { contains: input.query } },
           { nextPlan: { contains: input.query } },
           { requiredAction: { contains: input.query } },

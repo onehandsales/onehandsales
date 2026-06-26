@@ -219,5 +219,5 @@ meetingNoteDeals MeetingNoteDeal[]
 
 - 기존 migration은 수정하지 않는다.
 - 새 migration 이름 후보: `add_meeting_note_domain`
-- FK delete 정책은 기본 Prisma 정책을 따르되, 회의록 삭제 API가 없으므로 이번 구현에서는 cascade 삭제 흐름을 만들지 않는다.
-- 삭제/복구 도입 시 soft delete 또는 cascade 정책을 별도 계획에서 재검토한다.
+- FK delete 정책은 기본 Prisma 정책을 따른다.
+- 회의록 삭제/복구는 이후 `MeetingNote.deletedAt`, `deletedByUserId`, `trashExpiresAt` 기반 soft delete와 공통 Trash API 복구로 구현되었다.

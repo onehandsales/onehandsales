@@ -43,6 +43,7 @@ type MeetingNoteServiceFake = Pick<
   | "createMeetingNote"
   | "linkMeetingNoteDeals"
   | "updateMeetingNote"
+  | "deleteMeetingNote"
 >;
 
 type MeetingNoteAiDraftServiceFake = Pick<
@@ -71,6 +72,7 @@ function createMeetingNoteServiceFake(): jest.Mocked<MeetingNoteServiceFake> {
     createMeetingNote: jest.fn().mockResolvedValue({ id: "meeting-note-1" }),
     linkMeetingNoteDeals: jest.fn().mockResolvedValue({ id: "meeting-note-1" }),
     updateMeetingNote: jest.fn().mockResolvedValue({ id: "meeting-note-1" }),
+    deleteMeetingNote: jest.fn().mockResolvedValue(undefined),
   };
 }
 
@@ -188,6 +190,17 @@ describe("MeetingNoteController", () => {
       CURRENT_USER,
       MEETING_NOTE_ID,
       { deals: [DEAL_ID] }
+    );
+  });
+
+  it("회의록 삭제 요청을 application service로 전달하고 204를 반환한다", async () => {
+    await request(app.getHttpServer())
+      .delete(`/api/meeting-notes/${MEETING_NOTE_ID}`)
+      .expect(204);
+
+    expect(meetingNoteService.deleteMeetingNote).toHaveBeenCalledWith(
+      CURRENT_USER,
+      MEETING_NOTE_ID
     );
   });
 });

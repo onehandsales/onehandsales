@@ -66,6 +66,11 @@ const TARGET_METADATA: readonly TargetMetadata[] = [
     kind: "ENTITY",
   },
   {
+    targetType: "MEETING_NOTE",
+    domain: "MEETING_NOTE",
+    kind: "ENTITY",
+  },
+  {
     targetType: "COMPANY_MEMO_LOG",
     domain: "COMPANY",
     kind: "LOG",
@@ -186,6 +191,8 @@ export class PrismaTrashRepository implements TrashRepository {
         return this.getProductDetail(input);
       case "DEAL":
         return this.getDealDetail(input);
+      case "MEETING_NOTE":
+        return this.getMeetingNoteDetail(input);
       case "COMPANY_MEMO_LOG":
         return this.getCompanyMemoLogDetail(input);
       case "COMPANY_PRIVATE_MEMO_LOG":
@@ -380,6 +387,65 @@ export class PrismaTrashRepository implements TrashRepository {
         this.createField("상태", deal.dealStatus),
         this.createField("예상 종료일", this.formatDateOnly(deal.expectedEndDate)),
       ],
+    });
+  }
+
+  // 기능 : 삭제된 회의록의 상세 모달 데이터를 조회합니다.
+  private async getMeetingNoteDetail(
+    input: GetTrashDetailInput
+  ): Promise<TrashDetail | null> {
+    const meetingNote = await this.client.meetingNote.findFirst({
+      where: this.createDetailWhere(input),
+      select: {
+        id: true,
+        title: true,
+        meetingAt: true,
+        details: true,
+        nextPlan: true,
+        requiredAction: true,
+        deletedAt: true,
+        trashExpiresAt: true,
+        companies: {
+          select: { companyNameSnapshot: true },
+          orderBy: [{ createdAt: "asc" }, { id: "asc" }],
+        },
+        contacts: {
+          select: { contactUsernameSnapshot: true },
+          orderBy: [{ createdAt: "asc" }, { id: "asc" }],
+        },
+      },
+    });
+
+    if (!meetingNote?.deletedAt || !meetingNote.trashExpiresAt) {
+      return null;
+    }
+
+    return this.createTrashDetail({
+      targetType: "MEETING_NOTE",
+      targetId: meetingNote.id,
+      title: meetingNote.title,
+      deletedAt: meetingNote.deletedAt,
+      trashExpiresAt: meetingNote.trashExpiresAt,
+      summary: `${meetingNote.title} 회의록 데이터`,
+      fields: [
+        this.createField("제목", meetingNote.title),
+        this.createField("미팅일", this.formatDateTime(meetingNote.meetingAt)),
+        this.createField(
+          "회사",
+          this.joinLabels(
+            meetingNote.companies.map((company) => company.companyNameSnapshot)
+          )
+        ),
+        this.createField(
+          "담당자",
+          this.joinLabels(
+            meetingNote.contacts.map((contact) => contact.contactUsernameSnapshot)
+          )
+        ),
+        this.createField("다음 계획", meetingNote.nextPlan),
+        this.createField("필요 액션", meetingNote.requiredAction),
+      ],
+      content: meetingNote.details,
     });
   }
 
@@ -781,6 +847,20 @@ export class PrismaTrashRepository implements TrashRepository {
     return value.toISOString().slice(0, 10);
   }
 
+  // 기능 : UTC instant를 휴지통 상세용 날짜·시간 문자열로 변환합니다.
+  private formatDateTime(value: Date) {
+    return value.toISOString().slice(0, 16).replace("T", " ");
+  }
+
+  // 기능 : 여러 스냅샷 이름을 휴지통 상세 한 줄 표시 값으로 합칩니다.
+  private joinLabels(labels: readonly string[]) {
+    const normalizedLabels = labels
+      .map((label) => label.trim())
+      .filter((label) => label.length > 0);
+
+    return normalizedLabels.length > 0 ? normalizedLabels.join(", ") : null;
+  }
+
   // 기능 : 필터 조건에 포함되는 모든 휴지통 대상 목록을 병렬 조회합니다.
   private async collectTrashItems(input: ListTrashInput): Promise<TrashItem[]> {
     const tasks: Promise<TrashItem[]>[] = [];
@@ -799,6 +879,10 @@ export class PrismaTrashRepository implements TrashRepository {
 
     if (this.shouldIncludeTarget(input, "DEAL")) {
       tasks.push(this.listDeletedDeals(input));
+    }
+
+    if (this.shouldIncludeTarget(input, "MEETING_NOTE")) {
+      tasks.push(this.listDeletedMeetingNotes(input));
     }
 
     if (this.shouldIncludeTarget(input, "COMPANY_MEMO_LOG")) {
@@ -933,6 +1017,31 @@ export class PrismaTrashRepository implements TrashRepository {
           title: deal.dealName,
           deletedAt: deal.deletedAt,
           trashExpiresAt: deal.trashExpiresAt,
+        })
+      )
+      .filter(isTrashItem);
+  }
+
+  // 기능 : 삭제된 회의록 row를 휴지통 목록 항목으로 변환해 조회합니다.
+  private async listDeletedMeetingNotes(input: ListTrashInput) {
+    const meetingNotes = await this.client.meetingNote.findMany({
+      where: this.createDeletedWhere(input),
+      select: {
+        id: true,
+        title: true,
+        deletedAt: true,
+        trashExpiresAt: true,
+      },
+    });
+
+    return meetingNotes
+      .map((meetingNote) =>
+        this.createTrashItem({
+          targetType: "MEETING_NOTE",
+          targetId: meetingNote.id,
+          title: meetingNote.title,
+          deletedAt: meetingNote.deletedAt,
+          trashExpiresAt: meetingNote.trashExpiresAt,
         })
       )
       .filter(isTrashItem);
@@ -1391,6 +1500,14 @@ export class PrismaTrashRepository implements TrashRepository {
 
         return result.count > 0;
       }
+      case "MEETING_NOTE": {
+        const result = await this.client.meetingNote.updateMany({
+          where: this.createRestoreWhere(input),
+          data: this.createRestoreData(),
+        });
+
+        return result.count > 0;
+      }
       case "COMPANY_MEMO_LOG": {
         const result = await this.client.companyMemoLog.updateMany({
           where: this.createCompanyLogRestoreWhere(input),
@@ -1465,12 +1582,14 @@ export class PrismaTrashRepository implements TrashRepository {
     return (await this.hasDeletedParent(input)) ? "PARENT_DELETED" : null;
   }
 
+  // 기능 : 복구 대상 로그의 직접 상위 도메인 row 삭제 여부를 확인합니다.
   private async hasDeletedParent(input: RestoreTrashItemInput) {
     switch (input.targetType) {
       case "COMPANY":
       case "CONTACT":
       case "PRODUCT":
       case "DEAL":
+      case "MEETING_NOTE":
         return false;
       case "COMPANY_MEMO_LOG": {
         const memoLog = await this.client.companyMemoLog.findFirst({

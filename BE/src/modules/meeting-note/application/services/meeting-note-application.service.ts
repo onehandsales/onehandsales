@@ -24,6 +24,7 @@ import {
   RelatedProductNotFoundError,
 } from "@/modules/meeting-note/domain/meeting-note.errors";
 import type { CurrentUserContext } from "@/shared/application/context/current-user.context";
+import { createTrashRetentionTimestamps } from "@/shared/application/trash/trash-retention";
 import {
   DEFAULT_USER_TIME_ZONE,
   isValidIanaTimeZone,
@@ -190,6 +191,7 @@ export interface MeetingNoteResponse {
 export interface MeetingNoteCompanyResponse {
   readonly id: string;
   readonly companyId: string | null;
+  readonly isDeleted: boolean;
   readonly companyNameSnapshot: string;
   readonly companyFieldSnapshot: string | null;
   readonly companyRegionSnapshot: string | null;
@@ -201,6 +203,7 @@ export interface MeetingNoteContactResponse {
   readonly id: string;
   readonly contactId: string | null;
   readonly companyId: string | null;
+  readonly isDeleted: boolean;
   readonly contactUsernameSnapshot: string;
   readonly contactEmailSnapshot: string | null;
   readonly contactMobileSnapshot: string | null;
@@ -214,6 +217,7 @@ export interface MeetingNoteContactResponse {
 export interface MeetingNoteProductResponse {
   readonly id: string;
   readonly productId: string | null;
+  readonly isDeleted: boolean;
   readonly productNameSnapshot: string;
   readonly productPriceSnapshot: number | null;
   readonly productCategorySnapshot: string | null;
@@ -225,6 +229,7 @@ export interface MeetingNoteProductResponse {
 export interface MeetingNoteDealResponse {
   readonly id: string;
   readonly dealId: string;
+  readonly isDeleted: boolean;
   readonly dealNameSnapshot: string;
   readonly dealStatusSnapshot: string;
   readonly dealCostSnapshot: number;
@@ -561,6 +566,46 @@ export class MeetingNoteApplicationService {
 
     // 9. 저장소 record를 API 응답 구조로 변환합니다.
     return this.toMeetingNoteResponse(meetingNote);
+  }
+
+  // 기능 : 현재 사용자의 회의록을 휴지통 보관 상태로 변경합니다.
+  async deleteMeetingNote(
+    currentUser: CurrentUserContext,
+    meetingNoteId: string
+  ): Promise<void> {
+    // 1. 현재 사용자 소유 회의록인지 먼저 조회합니다.
+    const existing = await this.meetingNoteRepository.findMeetingNote(
+      currentUser.id,
+      meetingNoteId
+    );
+
+    // 2. 회의록이 없거나 이미 삭제된 상태이면 NotFound로 차단합니다.
+    if (!existing) {
+      throw new MeetingNoteNotFoundError();
+    }
+
+    // 3. 휴지통 보관 시각과 만료 시각을 생성합니다.
+    const timestamps = createTrashRetentionTimestamps();
+
+    // 4. 회의록 row에 soft delete 컬럼만 기록합니다.
+    const deleted = await this.meetingNoteRepository.deleteMeetingNote({
+      userId: currentUser.id,
+      meetingNoteId,
+      deletedAt: timestamps.deletedAt,
+      deletedByUserId: currentUser.id,
+      trashExpiresAt: timestamps.trashExpiresAt,
+    });
+
+    // 5. 동시 변경 등으로 삭제 처리되지 않았으면 NotFound로 응답합니다.
+    if (!deleted) {
+      throw new MeetingNoteNotFoundError();
+    }
+
+    // 6. 회의록 본문 없이 삭제 이벤트만 구조화 로그로 남깁니다.
+    this.logEvent("meeting_note.deleted", {
+      userId: currentUser.id,
+      meetingNoteId,
+    });
   }
 
   // 기능 : 저장된 회의록에 딜을 추가 연결하고 딜 활동 로그를 자동 생성합니다.
@@ -1700,6 +1745,7 @@ export class MeetingNoteApplicationService {
       companies: meetingNote.companies.map((company) => ({
         id: company.id,
         companyId: company.companyId,
+        isDeleted: company.isDeleted,
         companyNameSnapshot: company.companyNameSnapshot,
         companyFieldSnapshot: company.companyFieldSnapshot,
         companyRegionSnapshot: company.companyRegionSnapshot,
@@ -1709,6 +1755,7 @@ export class MeetingNoteApplicationService {
         id: contact.id,
         contactId: contact.contactId,
         companyId: contact.companyId,
+        isDeleted: contact.isDeleted,
         contactUsernameSnapshot: contact.contactUsernameSnapshot,
         contactEmailSnapshot: contact.contactEmailSnapshot,
         contactMobileSnapshot: contact.contactMobileSnapshot,
@@ -1720,6 +1767,7 @@ export class MeetingNoteApplicationService {
       products: meetingNote.products.map((product) => ({
         id: product.id,
         productId: product.productId,
+        isDeleted: product.isDeleted,
         productNameSnapshot: product.productNameSnapshot,
         productPriceSnapshot: product.productPriceSnapshot,
         productCategorySnapshot: product.productCategorySnapshot,
@@ -1729,6 +1777,7 @@ export class MeetingNoteApplicationService {
       deals: meetingNote.deals.map((deal) => ({
         id: deal.id,
         dealId: deal.dealId,
+        isDeleted: deal.isDeleted,
         dealNameSnapshot: deal.dealNameSnapshot,
         dealStatusSnapshot: deal.dealStatusSnapshot,
         dealCostSnapshot: deal.dealCostSnapshot,

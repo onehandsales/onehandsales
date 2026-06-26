@@ -17,6 +17,7 @@ export enum MeetingNoteSort {
 export interface MeetingNoteCompanyRecord {
   readonly id: string;
   readonly companyId: string | null;
+  readonly isDeleted: boolean;
   readonly companyNameSnapshot: string;
   readonly companyFieldSnapshot: string | null;
   readonly companyRegionSnapshot: string | null;
@@ -28,6 +29,7 @@ export interface MeetingNoteContactRecord {
   readonly id: string;
   readonly contactId: string | null;
   readonly companyId: string | null;
+  readonly isDeleted: boolean;
   readonly contactUsernameSnapshot: string;
   readonly contactEmailSnapshot: string | null;
   readonly contactMobileSnapshot: string | null;
@@ -41,6 +43,7 @@ export interface MeetingNoteContactRecord {
 export interface MeetingNoteProductRecord {
   readonly id: string;
   readonly productId: string | null;
+  readonly isDeleted: boolean;
   readonly productNameSnapshot: string;
   readonly productPriceSnapshot: number | null;
   readonly productCategorySnapshot: string | null;
@@ -52,6 +55,7 @@ export interface MeetingNoteProductRecord {
 export interface MeetingNoteDealRecord {
   readonly id: string;
   readonly dealId: string;
+  readonly isDeleted: boolean;
   readonly dealNameSnapshot: string;
   readonly dealStatusSnapshot: string;
   readonly dealCostSnapshot: number;
@@ -175,6 +179,15 @@ export interface UpdateMeetingNoteInput {
   readonly rawText?: string | null;
 }
 
+// 역할 : DeleteMeetingNoteInput 회의록 삭제 상태 기록 값을 정의합니다.
+export interface DeleteMeetingNoteInput {
+  readonly userId: string;
+  readonly meetingNoteId: string;
+  readonly deletedAt: Date;
+  readonly deletedByUserId: string;
+  readonly trashExpiresAt: Date;
+}
+
 // 역할 : SaveMeetingNoteCompanyInput 회의록 회사 관계 저장 값을 정의합니다.
 export interface SaveMeetingNoteCompanyInput {
   readonly companyId: string | null;
@@ -282,6 +295,8 @@ export interface MeetingNoteRepository {
     meetingNoteId: string,
     input: UpdateMeetingNoteInput
   ): Promise<boolean>;
+  // 기능 : 현재 사용자의 회의록을 휴지통 보관 상태로 변경합니다.
+  deleteMeetingNote(input: DeleteMeetingNoteInput): Promise<boolean>;
   // 기능 : 현재 사용자의 회의록 관계 스냅샷 목록을 요청 값으로 교체합니다.
   replaceMeetingNoteRelations(
     input: ReplaceMeetingNoteRelationsInput

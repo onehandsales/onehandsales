@@ -9,10 +9,11 @@ MeetingNote 도메인은 Backend `BE/src/modules/meeting-note`와 Prisma `Meetin
 - 계획: `TODO/DONE/MEETING_NOTE_MANUAL_PLAN`
 - migration: `BE/prisma/migrations/20260615000000_add_meeting_note_domain/migration.sql`
 - migration: `BE/prisma/migrations/20260626010000_add_meeting_note_title/migration.sql`
+- migration: `BE/prisma/migrations/20260626020000_add_meeting_note_soft_delete_columns/migration.sql`
 - Backend module: `BE/src/modules/meeting-note`
 - User Web feature: `FE/user-web/src/features/meeting-note`
 
-현재 범위는 수동 회의록 CRUD, AI/STT 초안 기반 저장, 저장 후 딜 추가 연동이다. AI/STT 초안 API는 DB에 초안 결과를 저장하지 않는다. 저장 후 딜 추가 연동은 기존 `MeetingNoteDeal`과 `DealFollowingActionLog`를 사용하며, 삭제/복구, Admin API, rawText 암호화, 범용 DealActivity table은 후속 범위다.
+현재 범위는 수동 회의록 CRUD, AI/STT 초안 기반 저장, 저장 후 딜 추가 연동, 회의록 본문 row의 7일 휴지통 삭제/복구다. AI/STT 초안 API는 DB에 초안 결과를 저장하지 않는다. 저장 후 딜 추가 연동은 기존 `MeetingNoteDeal`과 `DealFollowingActionLog`를 사용하며, Admin API, rawText 암호화, 범용 DealActivity table은 후속 범위다.
 
 ## 2. 모델 책임
 
@@ -34,12 +35,17 @@ MeetingNote 도메인은 Backend `BE/src/modules/meeting-note`와 Prisma `Meetin
 | `rawText` | `String` | 예 | AI/STT 후속 범위 예약 필드. 현재 API request에서는 받지 않고 저장하지 않음 |
 | `createdAt` | `DateTime @db.Timestamptz(3)` | 아니오 | 생성 시각 |
 | `updatedAt` | `DateTime @db.Timestamptz(3)` | 아니오 | 수정 시각 |
+| `deletedAt` | `DateTime? @db.Timestamptz(3)` | 예 | 삭제 버튼을 누른 UTC 시각. `null`이면 활성 회의록 |
+| `deletedByUserId` | `String? @db.Uuid` | 예 | 삭제를 수행한 `User.id` |
+| `trashExpiresAt` | `DateTime? @db.Timestamptz(3)` | 예 | 7일 무료 복구 가능 기간 종료 시각 |
 
 인덱스:
 
 - `@@index([userId, meetingAt])`: 사용자별 회의 일시 정렬과 기간 조회 확장 대비
 - `@@index([userId, title])`: 사용자별 회의록 제목 검색 대비
 - `@@index([userId, createdAt])`: 사용자별 등록일 정렬
+- `@@index([userId, deletedAt])`: 사용자별 활성/삭제 회의록 분리 조회 기준
+- `@@index([userId, trashExpiresAt])`: 휴지통 만료 조회 기준
 
 ### MeetingNoteCompany
 
@@ -134,6 +140,7 @@ MeetingNote 도메인은 Backend `BE/src/modules/meeting-note`와 Prisma `Meetin
 - 수정은 request에 포함된 연결 배열만 전체 교체한다.
 - `companies`, `contacts`는 생성/수정에서 배열이 포함되면 1개 이상이어야 한다.
 - `products`, `deals`는 빈 배열을 허용하며, 빈 배열은 해당 연결 전체 제거를 의미한다.
+- 삭제 API는 row를 실제 삭제하지 않고 `deletedAt`, `deletedByUserId`, `trashExpiresAt`만 설정한다.
 - `filter-companies`, `filter-contacts` 조회는 MeetingNote 연결 snapshot이 아니라 현재 Company/Contact 기준 옵션을 반환한다.
 
 ## 5. 조회 정책
@@ -142,7 +149,9 @@ MeetingNote 도메인은 Backend `BE/src/modules/meeting-note`와 Prisma `Meetin
 - 목록 `pageSize`는 10개 고정이며 응답의 `pageSize`는 `10`이다.
 - 목록 응답은 `totalCount`, `totalPages`를 포함하고 `hasNext`를 사용하지 않는다.
 - User Web은 목록 조회 때 `page`, `search`, 필터/정렬 query를 보내며 `pageSize` query에 의존하지 않는다.
-- 목록 `search`는 `MeetingNote.title contains search` 조건으로 적용한다.
+- 일반 목록/상세/수정/검색/필터 API는 `MeetingNote.deletedAt IS NULL`만 조회한다.
+- 목록 `search`는 `MeetingNote.title`, `details`, `nextPlan`, `requiredAction` 중 하나라도 `contains search`인 조건으로 적용한다.
+- 회의록 상세 연결 응답은 연결 원본 회사/담당자/제품/딜이 삭제된 경우 `isDeleted: true`를 포함해 User Web에서 `(삭제됨)`으로 표시한다.
 
 ## 6. 시간 정책
 
@@ -164,5 +173,6 @@ MeetingNote 도메인은 Backend `BE/src/modules/meeting-note`와 Prisma `Meetin
 - `POST /api/meeting-notes/stt-draft`
 - `POST /api/meeting-notes`
 - `PATCH /api/meeting-notes/:meetingNoteId`
+- `DELETE /api/meeting-notes/:meetingNoteId`
 
 수동 저장 API 계약은 `TODO/DONE/MEETING_NOTE_MANUAL_PLAN/COMMON/API-SPEC/MEETING_NOTE_API.md`를 기준으로 확인한다. AI/STT 초안 API 계약은 `TODO/DONE/MEETING_NOTE_AI_STT_PLAN/COMMON/API-SPEC/MEETING_NOTE_AI_STT_API.md`를 기준으로 확인한다.

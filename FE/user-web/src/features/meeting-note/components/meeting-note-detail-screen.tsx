@@ -361,7 +361,10 @@ function MeetingNoteLinkedCompaniesTable({
               <MeetingNoteLinkedRow
                 icon={<Building2 className="h-3.5 w-3.5 text-[#4F46E5]" />}
                 iconClassName="bg-[#EEF2FF]"
-                primary={company.companyNameSnapshot}
+                primary={formatDeletedLabel(
+                  company.companyNameSnapshot,
+                  company.isDeleted,
+                )}
                 secondary={secondary}
                 showChevron={hasLink}
               />
@@ -410,7 +413,10 @@ function MeetingNoteLinkedContactsTable({
               <MeetingNoteLinkedRow
                 icon={<UserRound className="h-3.5 w-3.5 text-[#4880EE]" />}
                 iconClassName="bg-[#DBEAFE]"
-                primary={contact.contactUsernameSnapshot}
+                primary={formatDeletedLabel(
+                  contact.contactUsernameSnapshot,
+                  contact.isDeleted,
+                )}
                 secondary={secondary}
                 showChevron={hasLink}
               />
@@ -459,7 +465,10 @@ function MeetingNoteLinkedProductsTable({
               <MeetingNoteLinkedRow
                 icon={<Package className="h-3.5 w-3.5 text-[#15803D]" />}
                 iconClassName="bg-[#F0FDF4]"
-                primary={product.productNameSnapshot}
+                primary={formatDeletedLabel(
+                  product.productNameSnapshot,
+                  product.isDeleted,
+                )}
                 secondary={secondary}
                 showChevron={hasLink}
                 trailing={price}
@@ -502,7 +511,7 @@ function MeetingNoteLinkedDealsTable({
                   <BriefcaseBusiness className="h-3.5 w-3.5 text-[#C2410C]" />
                 }
                 iconClassName="bg-[#FFEDD5]"
-                primary={deal.dealNameSnapshot}
+                primary={formatDeletedLabel(deal.dealNameSnapshot, deal.isDeleted)}
                 secondary={deal.dealStatusSnapshot}
                 trailing={formatDate(deal.dealExpectedEndDateSnapshot)}
               />
@@ -869,7 +878,11 @@ function formatMeetingDate(value: string | null) {
 
 function formatMeetingNoteCompanySummary(detail: MeetingNote) {
   return (
-    detail.companies.map((company) => company.companyNameSnapshot).join(", ") ||
+    detail.companies
+      .map((company) =>
+        formatDeletedLabel(company.companyNameSnapshot, company.isDeleted),
+      )
+      .join(", ") ||
     "-"
   );
 }
@@ -877,13 +890,23 @@ function formatMeetingNoteCompanySummary(detail: MeetingNote) {
 function formatMeetingNoteContactSummary(detail: MeetingNote) {
   return (
     detail.contacts
-      .map((contact) => contact.contactUsernameSnapshot)
+      .map((contact) =>
+        formatDeletedLabel(contact.contactUsernameSnapshot, contact.isDeleted),
+      )
       .join(", ") || "-"
   );
 }
 
 function formatMeetingNoteDealSummary(detail: MeetingNote) {
-  return detail.deals.map((deal) => deal.dealNameSnapshot).join(", ") || "-";
+  return (
+    detail.deals
+      .map((deal) => formatDeletedLabel(deal.dealNameSnapshot, deal.isDeleted))
+      .join(", ") || "-"
+  );
+}
+
+function formatDeletedLabel(label: string, isDeleted: boolean): string {
+  return isDeleted ? `${label} (삭제됨)` : label;
 }
 
 function getMeetingNoteLinkedListClass(count: number) {

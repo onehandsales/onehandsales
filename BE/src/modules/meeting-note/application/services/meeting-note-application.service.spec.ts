@@ -5,6 +5,7 @@ import {
   type ContactSnapshotRecord,
   type CreateMeetingNoteInput,
   type DealSnapshotRecord,
+  type DeleteMeetingNoteInput,
   type LinkMeetingNoteDealsInput,
   type ListMeetingNotesInput,
   type MeetingNoteFilterCompanyOptionRecord,
@@ -16,7 +17,10 @@ import {
   type ReplaceMeetingNoteRelationsInput,
   type UpdateMeetingNoteInput,
 } from "@/modules/meeting-note/application/ports/meeting-note.repository";
-import { RelatedDealNotFoundError } from "@/modules/meeting-note/domain/meeting-note.errors";
+import {
+  MeetingNoteNotFoundError,
+  RelatedDealNotFoundError,
+} from "@/modules/meeting-note/domain/meeting-note.errors";
 import type { CurrentUserContext } from "@/shared/application/context/current-user.context";
 import type { AppLogger } from "@/shared/infrastructure/logger/app-logger.service";
 import { MeetingNoteApplicationService } from "./meeting-note-application.service";
@@ -37,6 +41,8 @@ const BASE_DATE = new Date("2026-06-15T00:00:00.000Z");
 class FakeMeetingNoteRepository implements MeetingNoteRepository {
   transactionCount = 0;
   meetingNotes: MeetingNoteRecord[] = [];
+  deletedMeetingNoteIds = new Set<string>();
+  deletedMeetingNoteInputs: DeleteMeetingNoteInput[] = [];
   dealActivityLogs: Array<{
     readonly dealId: string;
     readonly followingAction: string;
@@ -151,6 +157,10 @@ class FakeMeetingNoteRepository implements MeetingNoteRepository {
     input: ListMeetingNotesInput
   ): Promise<MeetingNoteListRecord> {
     const items = this.meetingNotes.filter((meetingNote) => {
+      if (this.deletedMeetingNoteIds.has(meetingNote.id)) {
+        return false;
+      }
+
       const companyMatched =
         input.companyIds.length === 0 ||
         meetingNote.companies.some((company) =>
@@ -189,6 +199,10 @@ class FakeMeetingNoteRepository implements MeetingNoteRepository {
     meetingNoteId: string
   ): Promise<MeetingNoteRecord | null> {
     if (userId !== CURRENT_USER.id) {
+      return null;
+    }
+
+    if (this.deletedMeetingNoteIds.has(meetingNoteId)) {
       return null;
     }
 
@@ -231,7 +245,7 @@ class FakeMeetingNoteRepository implements MeetingNoteRepository {
       (meetingNote) => meetingNote.id === meetingNoteId && userId === CURRENT_USER.id
     );
 
-    if (index < 0) {
+    if (index < 0 || this.deletedMeetingNoteIds.has(meetingNoteId)) {
       return false;
     }
 
@@ -257,6 +271,25 @@ class FakeMeetingNoteRepository implements MeetingNoteRepository {
     return true;
   }
 
+  // 기능 : fake 회의록을 삭제 상태로 표시합니다.
+  async deleteMeetingNote(input: DeleteMeetingNoteInput): Promise<boolean> {
+    const exists = this.meetingNotes.some(
+      (meetingNote) =>
+        meetingNote.id === input.meetingNoteId &&
+        input.userId === CURRENT_USER.id &&
+        !this.deletedMeetingNoteIds.has(meetingNote.id)
+    );
+
+    if (!exists) {
+      return false;
+    }
+
+    this.deletedMeetingNoteIds.add(input.meetingNoteId);
+    this.deletedMeetingNoteInputs.push(input);
+
+    return true;
+  }
+
   // 기능 : fake 회의록 관계 스냅샷을 요청 값으로 교체합니다.
   async replaceMeetingNoteRelations(
     input: ReplaceMeetingNoteRelationsInput
@@ -266,7 +299,7 @@ class FakeMeetingNoteRepository implements MeetingNoteRepository {
     );
     const existing = this.meetingNotes[index];
 
-    if (!existing) {
+    if (!existing || this.deletedMeetingNoteIds.has(input.meetingNoteId)) {
       return;
     }
 
@@ -277,6 +310,7 @@ class FakeMeetingNoteRepository implements MeetingNoteRepository {
             companies: input.companies.map((company, relationIndex) => ({
               id: `meeting-note-company-${relationIndex + 1}`,
               ...company,
+              isDeleted: false,
               createdAt: BASE_DATE,
             })),
           }
@@ -286,6 +320,7 @@ class FakeMeetingNoteRepository implements MeetingNoteRepository {
             contacts: input.contacts.map((contact, relationIndex) => ({
               id: `meeting-note-contact-${relationIndex + 1}`,
               ...contact,
+              isDeleted: false,
               createdAt: BASE_DATE,
             })),
           }
@@ -295,6 +330,7 @@ class FakeMeetingNoteRepository implements MeetingNoteRepository {
             products: input.products.map((product, relationIndex) => ({
               id: `meeting-note-product-${relationIndex + 1}`,
               ...product,
+              isDeleted: false,
               createdAt: BASE_DATE,
             })),
           }
@@ -304,6 +340,7 @@ class FakeMeetingNoteRepository implements MeetingNoteRepository {
             deals: input.deals.map((deal, relationIndex) => ({
               id: `meeting-note-deal-${relationIndex + 1}`,
               ...deal,
+              isDeleted: false,
               createdAt: BASE_DATE,
             })),
           }
@@ -318,13 +355,14 @@ class FakeMeetingNoteRepository implements MeetingNoteRepository {
     );
     const existing = this.meetingNotes[index];
 
-    if (!existing) {
+    if (!existing || this.deletedMeetingNoteIds.has(input.meetingNoteId)) {
       return;
     }
 
     const appendedDeals = input.deals.map((deal, relationIndex) => ({
       id: `meeting-note-deal-${existing.deals.length + relationIndex + 1}`,
       ...deal,
+      isDeleted: false,
       createdAt: BASE_DATE,
     }));
 
@@ -460,6 +498,38 @@ describe("MeetingNoteApplicationService", () => {
     expect(updated.companies).toHaveLength(1);
     expect(updated.contacts).toHaveLength(1);
     expect(repository.transactionCount).toBe(2);
+  });
+
+  it("회의록 삭제는 soft delete 값을 기록하고 일반 조회에서 숨긴다", async () => {
+    const { repository, service } = createService();
+    const created = await service.createMeetingNote(CURRENT_USER, {
+      title: "삭제 대상 회의록",
+      details: "상세 내용",
+      meetingLocalDateTime: "2026-06-15T09:30",
+      companies: ["company-1"],
+      contacts: ["contact-1"],
+    });
+
+    await service.deleteMeetingNote(CURRENT_USER, created.id);
+
+    expect(repository.deletedMeetingNoteInputs[0]).toMatchObject({
+      userId: CURRENT_USER.id,
+      meetingNoteId: created.id,
+      deletedByUserId: CURRENT_USER.id,
+    });
+    expect(repository.deletedMeetingNoteInputs[0]?.deletedAt).toBeInstanceOf(Date);
+    expect(repository.deletedMeetingNoteInputs[0]?.trashExpiresAt).toBeInstanceOf(
+      Date
+    );
+    await expect(
+      service.getMeetingNote(CURRENT_USER, created.id)
+    ).rejects.toBeInstanceOf(MeetingNoteNotFoundError);
+
+    const result = await service.listMeetingNotes(CURRENT_USER, {
+      page: 1,
+      sort: MeetingNoteSort.CREATED_AT_DESC,
+    });
+    expect(result.items).toEqual([]);
   });
 
   it("저장된 회의록에 신규 딜을 연결하고 딜 활동 로그를 생성한다", async () => {

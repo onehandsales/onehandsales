@@ -21,6 +21,7 @@
 - `DELETE /api/contacts/:contactId`
 - `DELETE /api/products/:productId`
 - `DELETE /api/deals/:dealId`
+- `DELETE /api/meeting-notes/:meetingNoteId`
 
 로그 데이터:
 
@@ -70,14 +71,14 @@ soft delete 대상 테이블은 다음 컬럼을 사용한다.
 
 현재 지원 대상:
 
-- 본문 데이터: `Company`, `Contact`, `Product`, `Deal`
+- 본문 데이터: `Company`, `Contact`, `Product`, `Deal`, `MeetingNote`
 - 로그 데이터: `CompanyMemoLog`, `CompanyUserPrivateMemoLog`, `ContactMemoLog`, `ContactUserPrivateMemoLog`, `ProductMemoLog`, `ProductUserPrivateMemoLog`, `DealMemoLog`, `DealFollowingActionLog`
 
 아직 구현하지 않은 범위:
 
 - 7일 이후 유료 복구 UI/API
 - 관리자용 삭제/복구 감사 조회
-- 회의록, 일정, 알림, import/export job의 휴지통 처리
+- 일정, 알림, import/export job의 휴지통 처리
 
 일반 휴지통 목록은 `trashExpiresAt` 이후 항목을 보여주지 않는다. 유료 복구 목록은 별도 정책이 확정되기 전까지 구현하지 않는다.
 

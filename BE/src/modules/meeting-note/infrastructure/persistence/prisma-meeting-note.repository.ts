@@ -9,6 +9,7 @@ import {
   type ContactSnapshotRecord,
   type CreateMeetingNoteInput,
   type DealSnapshotRecord,
+  type DeleteMeetingNoteInput,
   type LinkMeetingNoteDealsInput,
   type ListMeetingNotesInput,
   type MeetingNoteCompanyRecord,
@@ -34,15 +35,19 @@ type MeetingNotePrismaClient = PrismaService | Prisma.TransactionClient;
 
 const meetingNoteInclude = {
   companies: {
+    include: { company: { select: { deletedAt: true } } },
     orderBy: [{ createdAt: "asc" }, { id: "asc" }],
   },
   contacts: {
+    include: { contact: { select: { deletedAt: true } } },
     orderBy: [{ createdAt: "asc" }, { id: "asc" }],
   },
   products: {
+    include: { product: { select: { deletedAt: true } } },
     orderBy: [{ createdAt: "asc" }, { id: "asc" }],
   },
   deals: {
+    include: { deal: { select: { deletedAt: true } } },
     orderBy: [{ createdAt: "asc" }, { id: "asc" }],
   },
 } satisfies Prisma.MeetingNoteInclude;
@@ -81,6 +86,7 @@ export class PrismaMeetingNoteRepository implements MeetingNoteRepository {
         userId,
         companyId: { not: null },
         company: { deletedAt: null },
+        meetingNote: { deletedAt: null },
       },
       select: {
         companyId: true,
@@ -117,6 +123,7 @@ export class PrismaMeetingNoteRepository implements MeetingNoteRepository {
         userId,
         contactId: { not: null },
         contact: { deletedAt: null },
+        meetingNote: { deletedAt: null },
       },
       select: {
         contactId: true,
@@ -315,6 +322,7 @@ export class PrismaMeetingNoteRepository implements MeetingNoteRepository {
     const meetingNote = await this.client.meetingNote.findFirst({
       where: {
         id: meetingNoteId,
+        deletedAt: null,
         userId,
       },
       include: meetingNoteInclude,
@@ -388,6 +396,7 @@ export class PrismaMeetingNoteRepository implements MeetingNoteRepository {
     const updated = await this.client.meetingNote.updateMany({
       where: {
         id: meetingNoteId,
+        deletedAt: null,
         userId,
       },
       data,
@@ -396,7 +405,24 @@ export class PrismaMeetingNoteRepository implements MeetingNoteRepository {
     return updated.count > 0;
   }
 
-  // 기능 : 요청에 포함된 회의록 관계 스냅샷 목록을 교체합니다.
+  // 기능 : 현재 사용자의 회의록을 휴지통 보관 상태로 변경합니다.
+  async deleteMeetingNote(input: DeleteMeetingNoteInput): Promise<boolean> {
+    const deleted = await this.client.meetingNote.updateMany({
+      where: {
+        id: input.meetingNoteId,
+        deletedAt: null,
+        userId: input.userId,
+      },
+      data: {
+        deletedAt: input.deletedAt,
+        deletedByUserId: input.deletedByUserId,
+        trashExpiresAt: input.trashExpiresAt,
+      },
+    });
+
+    return deleted.count > 0;
+  }
+
   async replaceMeetingNoteRelations(
     input: ReplaceMeetingNoteRelationsInput
   ): Promise<void> {
@@ -446,6 +472,7 @@ export class PrismaMeetingNoteRepository implements MeetingNoteRepository {
     input: ListMeetingNotesInput
   ): Prisma.MeetingNoteWhereInput {
     const where: Prisma.MeetingNoteWhereInput = {
+      deletedAt: null,
       userId: input.userId,
     };
 
@@ -651,6 +678,7 @@ export class PrismaMeetingNoteRepository implements MeetingNoteRepository {
     return {
       id: company.id,
       companyId: company.companyId,
+      isDeleted: Boolean(company.company?.deletedAt),
       companyNameSnapshot: company.companyNameSnapshot,
       companyFieldSnapshot: company.companyFieldSnapshot,
       companyRegionSnapshot: company.companyRegionSnapshot,
@@ -666,6 +694,7 @@ export class PrismaMeetingNoteRepository implements MeetingNoteRepository {
       id: contact.id,
       contactId: contact.contactId,
       companyId: contact.companyId,
+      isDeleted: Boolean(contact.contact?.deletedAt),
       contactUsernameSnapshot: contact.contactUsernameSnapshot,
       contactEmailSnapshot: contact.contactEmailSnapshot,
       contactMobileSnapshot: contact.contactMobileSnapshot,
@@ -683,6 +712,7 @@ export class PrismaMeetingNoteRepository implements MeetingNoteRepository {
     return {
       id: product.id,
       productId: product.productId,
+      isDeleted: Boolean(product.product?.deletedAt),
       productNameSnapshot: product.productNameSnapshot,
       productPriceSnapshot: product.productPriceSnapshot,
       productCategorySnapshot: product.productCategorySnapshot,
@@ -698,6 +728,7 @@ export class PrismaMeetingNoteRepository implements MeetingNoteRepository {
     return {
       id: deal.id,
       dealId: deal.dealId,
+      isDeleted: Boolean(deal.deal.deletedAt),
       dealNameSnapshot: deal.dealNameSnapshot,
       dealStatusSnapshot: deal.dealStatusSnapshot,
       dealCostSnapshot: deal.dealCostSnapshot,

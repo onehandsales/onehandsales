@@ -750,7 +750,10 @@ function MeetingNoteSnapshotPanel({
           emptyText="회사 없음"
           items={meetingNote.companies.map((company) => ({
             id: company.id,
-            primary: company.companyNameSnapshot,
+            primary: formatDeletedLabel(
+              company.companyNameSnapshot,
+              company.isDeleted,
+            ),
             secondary: [company.companyFieldSnapshot, company.companyRegionSnapshot]
               .filter(Boolean)
               .join(" / "),
@@ -761,7 +764,10 @@ function MeetingNoteSnapshotPanel({
           emptyText="담당자 없음"
           items={meetingNote.contacts.map((contact) => ({
             id: contact.id,
-            primary: contact.contactUsernameSnapshot,
+            primary: formatDeletedLabel(
+              contact.contactUsernameSnapshot,
+              contact.isDeleted,
+            ),
             secondary: [contact.companyNameSnapshot, contact.departmentSnapshot, contact.jobGradeSnapshot]
               .filter(Boolean)
               .join(" / "),
@@ -772,7 +778,10 @@ function MeetingNoteSnapshotPanel({
           emptyText="제품 없음"
           items={meetingNote.products.map((product) => ({
             id: product.id,
-            primary: product.productNameSnapshot,
+            primary: formatDeletedLabel(
+              product.productNameSnapshot,
+              product.isDeleted,
+            ),
             secondary: [
               product.productCategorySnapshot,
               product.productStatusSnapshot,
@@ -789,7 +798,7 @@ function MeetingNoteSnapshotPanel({
           emptyText="딜 없음"
           items={meetingNote.deals.map((deal) => ({
             id: deal.id,
-            primary: deal.dealNameSnapshot,
+            primary: formatDeletedLabel(deal.dealNameSnapshot, deal.isDeleted),
             secondary: [deal.dealStatusSnapshot, deal.dealExpectedEndDateSnapshot]
               .filter(Boolean)
               .join(" / "),
@@ -799,6 +808,11 @@ function MeetingNoteSnapshotPanel({
       </div>
     </aside>
   );
+}
+
+// 기능 : 삭제된 연결 원본을 스냅샷 표시명에 함께 표시합니다.
+function formatDeletedLabel(label: string, isDeleted: boolean): string {
+  return isDeleted ? `${label} (삭제됨)` : label;
 }
 
 // 기능 : snapshot 그룹 목록을 렌더링합니다.
