@@ -169,7 +169,13 @@ class FakeMeetingNoteRepository implements MeetingNoteRepository {
           (meetingNote.meetingAt !== null &&
             meetingNote.meetingAt < input.meetingAtTo));
       const searchMatched =
-        !input.search || meetingNote.title.includes(input.search);
+        !input.search ||
+        [
+          meetingNote.title,
+          meetingNote.details,
+          meetingNote.nextPlan ?? "",
+          meetingNote.requiredAction ?? "",
+        ].some((value) => value.includes(input.search ?? ""));
 
       return companyMatched && contactMatched && meetingDateMatched && searchMatched;
     });
@@ -554,5 +560,59 @@ describe("MeetingNoteApplicationService", () => {
     });
 
     expect(result.items.map((item) => item.title)).toEqual(["제품 데모 회의"]);
+  });
+
+  it("searches title, details, nextPlan, and requiredAction with one keyword", async () => {
+    const { service } = createService();
+    await service.createMeetingNote(CURRENT_USER, {
+      title: "renewal title",
+      details: "plain details",
+      meetingLocalDateTime: "2026-06-15T09:30",
+      companies: ["company-1"],
+      contacts: ["contact-1"],
+    });
+    await service.createMeetingNote(CURRENT_USER, {
+      title: "details match",
+      details: "renewal detail",
+      meetingLocalDateTime: "2026-06-16T09:30",
+      companies: ["company-1"],
+      contacts: ["contact-1"],
+    });
+    await service.createMeetingNote(CURRENT_USER, {
+      title: "plan match",
+      details: "plain details",
+      nextPlan: "renewal plan",
+      meetingLocalDateTime: "2026-06-17T09:30",
+      companies: ["company-1"],
+      contacts: ["contact-1"],
+    });
+    await service.createMeetingNote(CURRENT_USER, {
+      title: "action match",
+      details: "plain details",
+      requiredAction: "renewal action",
+      meetingLocalDateTime: "2026-06-18T09:30",
+      companies: ["company-1"],
+      contacts: ["contact-1"],
+    });
+    await service.createMeetingNote(CURRENT_USER, {
+      title: "no match",
+      details: "plain details",
+      meetingLocalDateTime: "2026-06-19T09:30",
+      companies: ["company-1"],
+      contacts: ["contact-1"],
+    });
+
+    const result = await service.listMeetingNotes(CURRENT_USER, {
+      page: 1,
+      search: "renewal",
+      sort: MeetingNoteSort.CREATED_AT_DESC,
+    });
+
+    expect(result.items.map((item) => item.title)).toEqual([
+      "renewal title",
+      "details match",
+      "plan match",
+      "action match",
+    ]);
   });
 });

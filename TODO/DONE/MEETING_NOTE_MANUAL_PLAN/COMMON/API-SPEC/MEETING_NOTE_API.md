@@ -181,7 +181,7 @@ type MeetingNoteDealDetailResponse = {
 | `companyIds` | string[] | 아니오 | UUID 배열 | 반복 query로 전송. 같은 그룹 OR |
 | `contactIds` | string[] | 아니오 | UUID 배열 | 반복 query로 전송. 같은 그룹 OR |
 | `sort` | string | 아니오 | `createdAtDesc`, `meetingAtDesc` | 기본값 `createdAtDesc` |
-| `search` | string | 아니오 | trim, 최대 100자 | 회의록 제목 검색 |
+| `search` | string | 아니오 | trim, 최대 100자 | 회의록 제목, 상세 내용, 향후 계획, 필요 액션 통합 검색 |
 | `meetingDate` | string | 아니오 | `YYYY-MM-DD` | 사용자 timezone 기준 회의일 필터 |
 
 FE는 `pageSize`를 보내지 않는다. 서버는 `pageSize=10`으로 고정한다.
@@ -192,7 +192,7 @@ FE는 `pageSize`를 보내지 않는다. 서버는 `pageSize=10`으로 고정한
 2. query를 validation하고 `page` 기본값을 1로 정한다.
 3. `companyIds`, `contactIds`가 있으면 현재 사용자 소유 리소스인지 검증한다.
 4. `MeetingNote.userId = currentUser.id`를 기본 조건으로 둔다.
-5. `search`가 있으면 `MeetingNote.title contains search` 조건으로 적용한다.
+5. `search`가 있으면 `MeetingNote.title`, `details`, `nextPlan`, `requiredAction` 중 하나라도 `contains search`인 OR 조건으로 적용한다.
 6. `companyIds`는 같은 그룹 안에서 OR 조건으로 적용한다.
 7. `contactIds`는 같은 그룹 안에서 OR 조건으로 적용한다.
 8. 회사 필터와 담당자 필터를 동시에 쓰면 두 그룹은 AND 조건으로 조합한다.

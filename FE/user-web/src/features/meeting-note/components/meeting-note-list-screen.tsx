@@ -189,7 +189,7 @@ export function MeetingNoteListScreen() {
           <input
             className="min-w-0 flex-1 bg-transparent text-[13px] text-[#111827] outline-none placeholder:text-[#9CA3AF]"
             onChange={(event) => setSearchText(event.target.value)}
-            placeholder="회의록 제목 검색"
+            placeholder="회의 관련 검색"
             value={searchText}
           />
         </form>
@@ -320,7 +320,7 @@ export function MeetingNoteListScreen() {
           <input
             className="min-w-0 flex-1 bg-transparent text-[13px] text-[#111827] outline-none placeholder:text-[#9CA3AF]"
             onChange={(event) => setSearchText(event.target.value)}
-            placeholder="회의록 제목 검색"
+            placeholder="회의 관련 검색"
             value={searchText}
           />
         </form>
@@ -806,7 +806,7 @@ function MeetingNoteMobileCard({
             {meetingNote.title}
           </span>
           {relationCount > 1 ? (
-            <span className="inline-flex h-5 shrink-0 items-center rounded-full bg-[#F1F5F9] px-2 text-[11px] font-semibold text-[#475569]">
+            <span className="inline-flex h-5 shrink-0 items-center rounded-full bg-[#F1F5F9] px-2 text-[11px] font-medium text-[#475569]">
               외 {relationCount - 1}
             </span>
           ) : null}
@@ -870,7 +870,7 @@ function MeetingDateCell({ value }: { readonly value: string | null }) {
 
   if (!meetingDate.hasValue) {
     return (
-      <span className="min-w-0 pr-3 text-[13px] font-semibold text-[#111827]">
+      <span className="min-w-0 pr-3 text-[13px] font-medium text-[#111827]">
         {meetingDate.full}
       </span>
     );
@@ -878,32 +878,24 @@ function MeetingDateCell({ value }: { readonly value: string | null }) {
 
   return (
     <span className="min-w-0 pr-3">
-      <span className="block truncate text-[13px] font-semibold text-[#111827]">
-        {meetingDate.compactDate}
-      </span>
-      <span className="mt-0.5 block truncate text-[12px] font-medium text-[#64748B]">
-        {meetingDate.time}
+      <span className="block truncate text-[13px] font-medium text-[#111827]">
+        {meetingDate.compactDate} {meetingDate.time}
       </span>
     </span>
   );
 }
 
-// 기능 : 목록 summary label과 count를 표시합니다.
+// 기능 : 목록 summary label을 표시합니다.
 function SummaryCell({
   summary,
 }: {
-  readonly summary: { readonly label: string; readonly count: number };
+  readonly summary: { readonly label: string };
 }) {
   return (
     <span className="min-w-0 pr-3">
-      <span className="block truncate text-[13px] font-semibold text-[#111827]">
+      <span className="block truncate text-[13px] font-medium text-[#111827]">
         {summary.label || "-"}
       </span>
-      {summary.count > 1 ? (
-        <span className="mt-0.5 block text-[12px] font-medium text-[#64748B]">
-          총 {summary.count}개
-        </span>
-      ) : null}
     </span>
   );
 }
@@ -947,9 +939,6 @@ function MeetingNoteListSkeleton() {
           {Array.from({ length: 4 }, (_, cellIndex) => (
             <div className="min-w-0 pr-3" key={cellIndex}>
               <div className="h-4 w-20 animate-pulse rounded bg-[#F3F4F6]" />
-              {cellIndex === 1 ? (
-                <div className="mt-2 h-3 w-16 animate-pulse rounded bg-[#F3F4F6]" />
-              ) : null}
             </div>
           ))}
         </div>

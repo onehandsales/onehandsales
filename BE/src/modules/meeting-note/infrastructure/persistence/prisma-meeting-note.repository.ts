@@ -450,9 +450,12 @@ export class PrismaMeetingNoteRepository implements MeetingNoteRepository {
     };
 
     if (input.search) {
-      where.title = {
-        contains: input.search,
-      };
+      where.OR = [
+        { title: { contains: input.search } },
+        { details: { contains: input.search } },
+        { nextPlan: { contains: input.search } },
+        { requiredAction: { contains: input.search } },
+      ];
     }
 
     if (input.companyIds.length > 0) {
