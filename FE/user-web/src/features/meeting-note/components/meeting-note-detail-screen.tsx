@@ -48,6 +48,7 @@ const MEETING_NOTE_SOURCE_LABEL = {
   STT_AI: "음성 AI",
   TEXT_AI: "텍스트 AI",
 } satisfies Record<MeetingNoteSourceType, string>;
+const MEETING_NOTE_LINKED_LIST_SCROLL_CLASS = "max-h-[116px] overflow-y-auto";
 
 const meetingNoteDetailEditSchema = z.object({
   details: z.string().trim().min(1, "상세 내용을 입력해주세요.").max(10000),
@@ -349,7 +350,7 @@ function MeetingNoteLinkedCompaniesTable({
       {companies.length === 0 ? (
         <MeetingNoteLinkedEmpty text="연결된 회사가 없습니다." />
       ) : (
-        <div className={companies.length > 2 ? "max-h-[116px] overflow-y-auto" : ""}>
+        <div className={getMeetingNoteLinkedListClass(companies.length)}>
           {companies.map((company) => {
             const hasLink = Boolean(company.companyId);
             const secondary =
@@ -394,7 +395,7 @@ function MeetingNoteLinkedContactsTable({
       {contacts.length === 0 ? (
         <MeetingNoteLinkedEmpty text="연결된 담당자가 없습니다." />
       ) : (
-        <div className={contacts.length > 2 ? "max-h-[116px] overflow-y-auto" : ""}>
+        <div className={getMeetingNoteLinkedListClass(contacts.length)}>
           {contacts.map((contact) => {
             const hasLink = Boolean(contact.contactId);
             const secondary =
@@ -443,7 +444,7 @@ function MeetingNoteLinkedProductsTable({
       {products.length === 0 ? (
         <MeetingNoteLinkedEmpty text="연결된 제품이 없습니다." />
       ) : (
-        <div className={products.length > 2 ? "max-h-[116px] overflow-y-auto" : ""}>
+        <div className={getMeetingNoteLinkedListClass(products.length)}>
           {products.map((product) => {
             const hasLink = Boolean(product.productId);
             const secondary =
@@ -493,7 +494,7 @@ function MeetingNoteLinkedDealsTable({
       {deals.length === 0 ? (
         <MeetingNoteLinkedEmpty text="연결된 딜이 없습니다." />
       ) : (
-        <div className={deals.length > 2 ? "max-h-[116px] overflow-y-auto" : ""}>
+        <div className={getMeetingNoteLinkedListClass(deals.length)}>
           {deals.map((deal) => (
             <Link className="block" key={deal.id} to={`/deals/${deal.dealId}`}>
               <MeetingNoteLinkedRow
@@ -883,6 +884,10 @@ function formatMeetingNoteContactSummary(detail: MeetingNote) {
 
 function formatMeetingNoteDealSummary(detail: MeetingNote) {
   return detail.deals.map((deal) => deal.dealNameSnapshot).join(", ") || "-";
+}
+
+function getMeetingNoteLinkedListClass(count: number) {
+  return count > 2 ? MEETING_NOTE_LINKED_LIST_SCROLL_CLASS : "";
 }
 
 function getMeetingNoteSourceClass(sourceType: MeetingNoteSourceType) {
