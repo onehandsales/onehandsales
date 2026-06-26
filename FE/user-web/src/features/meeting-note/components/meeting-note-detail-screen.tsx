@@ -1,0 +1,897 @@
+import { zodResolver } from "@hookform/resolvers/zod";
+import {
+  BriefcaseBusiness,
+  Building2,
+  ChevronLeft,
+  ChevronRight,
+  FileText,
+  Loader2,
+  Package,
+  Pencil,
+  Save,
+  Trash2,
+  UserRound,
+  X,
+} from "lucide-react";
+import { useEffect, useState, type ReactNode } from "react";
+import { useForm, type UseFormRegisterReturn } from "react-hook-form";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { z } from "zod";
+import { ConfirmDialog } from "@/components/ui/confirm-dialog";
+import { Toast } from "@/components/ui/toast";
+import {
+  useDeleteMeetingNoteMutation,
+  useUpdateMeetingNoteMutation,
+} from "@/features/meeting-note/hooks/use-meeting-note-mutations";
+import { useMeetingNoteDetail } from "@/features/meeting-note/hooks/use-meeting-note-queries";
+import type {
+  MeetingNote,
+  MeetingNoteCompany,
+  MeetingNoteContact,
+  MeetingNoteDeal,
+  MeetingNoteProduct,
+  MeetingNoteSourceType,
+  UpdateMeetingNoteInput,
+} from "@/features/meeting-note/types/meeting-note";
+import { getMeetingDateParts } from "@/features/meeting-note/utils/meeting-note-date";
+import { getApiErrorMessage } from "@/lib/api-client";
+import { cn } from "@/utils/cn";
+import { formatDate, formatDateTime, formatMoney } from "@/utils/format";
+import { readLocationNotice } from "@/utils/location-state";
+
+type MeetingNoteDetailScreenProps = {
+  readonly meetingNoteId: string;
+};
+
+const MEETING_NOTE_SOURCE_LABEL = {
+  MANUAL: "직접 작성",
+  STT_AI: "음성 AI",
+  TEXT_AI: "텍스트 AI",
+} satisfies Record<MeetingNoteSourceType, string>;
+
+const meetingNoteDetailEditSchema = z.object({
+  details: z.string().trim().min(1, "상세 내용을 입력해주세요.").max(10000),
+  meetingLocalDateTime: z.string().trim().min(1, "미팅 일시를 선택해주세요."),
+  nextPlan: z.string().max(2000).optional(),
+  requiredAction: z.string().max(2000).optional(),
+  title: z.string().trim().min(1, "회의록 제목을 입력해주세요.").max(100),
+});
+
+type MeetingNoteDetailEditFormValues = z.infer<
+  typeof meetingNoteDetailEditSchema
+>;
+
+// 기능 : 회의록 단건 상세 페이지를 딜 상세 페이지와 같은 읽기 중심 레이아웃으로 렌더링합니다.
+export function MeetingNoteDetailScreen({
+  meetingNoteId,
+}: MeetingNoteDetailScreenProps) {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const [notice, setNotice] = useState(() => readLocationNotice(location.state));
+  const [actionError, setActionError] = useState<string | null>(null);
+  const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [savedMeetingNote, setSavedMeetingNote] = useState<MeetingNote | null>(
+    null,
+  );
+  const detailQuery = useMeetingNoteDetail(meetingNoteId, Boolean(meetingNoteId));
+  const deleteMutation = useDeleteMeetingNoteMutation();
+  const detail = savedMeetingNote ?? detailQuery.data ?? null;
+
+  useEffect(() => {
+    if (!notice) {
+      return;
+    }
+
+    void navigate(location.pathname, { replace: true, state: null });
+  }, [location.pathname, navigate, notice]);
+
+  const onDeleteMeetingNote = async () => {
+    setActionError(null);
+
+    try {
+      await deleteMutation.mutateAsync(meetingNoteId);
+      setDeleteConfirmOpen(false);
+      void navigate("/meeting-notes", {
+        replace: true,
+        state: { notice: "회의록이 삭제되었습니다." },
+      });
+    } catch (error) {
+      setActionError(getApiErrorMessage(error));
+    }
+  };
+
+  if (!meetingNoteId) {
+    return (
+      <MeetingNoteStateShell>
+        <MeetingNoteDetailError
+          error="회의록 ID를 확인할 수 없습니다."
+          onRetry={() => void navigate("/meeting-notes")}
+        />
+      </MeetingNoteStateShell>
+    );
+  }
+
+  if (detailQuery.isLoading) {
+    return (
+      <MeetingNoteStateShell>
+        <MeetingNoteDetailSkeleton />
+      </MeetingNoteStateShell>
+    );
+  }
+
+  if (detailQuery.isError || !detail) {
+    return (
+      <MeetingNoteStateShell>
+        <MeetingNoteDetailError
+          error={detailQuery.error}
+          onRetry={() => void detailQuery.refetch()}
+        />
+      </MeetingNoteStateShell>
+    );
+  }
+
+  return (
+    <>
+      <div className="min-h-screen bg-[#FAFAF8] md:flex md:h-full md:min-h-0 md:flex-col">
+        {notice ? (
+          <div className="px-4 pt-3 md:px-6">
+            <Toast message={notice} onClose={() => setNotice(null)} variant="success" />
+          </div>
+        ) : null}
+        {actionError ? (
+          <div className="px-4 pt-3 md:px-6">
+            <Toast
+              message={actionError}
+              onClose={() => setActionError(null)}
+              variant="error"
+            />
+          </div>
+        ) : null}
+
+        <MeetingNoteDetailTopBar
+          deletePending={deleteMutation.isPending}
+          isEditing={isEditing}
+          meetingNoteTitle={detail.title}
+          onDelete={() => setDeleteConfirmOpen(true)}
+          onToggleEdit={() => {
+            setActionError(null);
+            setIsEditing((value) => !value);
+          }}
+        />
+
+        <div className="flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto p-4 pb-24 md:p-6">
+          {isEditing ? (
+            <MeetingNoteEditPanel
+              detail={detail}
+              onCancel={() => setIsEditing(false)}
+              onError={(message) => setActionError(message)}
+              onSaved={(updated) => {
+                setSavedMeetingNote(updated);
+                setNotice("회의록이 수정되었습니다.");
+                setIsEditing(false);
+              }}
+            />
+          ) : (
+            <MeetingNoteDetailBody detail={detail} />
+          )}
+        </div>
+      </div>
+
+      <ConfirmDialog
+        cancelLabel="취소"
+        confirmLabel="삭제"
+        errorMessage={actionError}
+        isPending={deleteMutation.isPending}
+        open={deleteConfirmOpen}
+        title="회의록을 삭제할까요?"
+        onCancel={() => {
+          if (!deleteMutation.isPending) {
+            setDeleteConfirmOpen(false);
+            setActionError(null);
+          }
+        }}
+        onConfirm={() => void onDeleteMeetingNote()}
+      />
+    </>
+  );
+}
+
+function MeetingNoteDetailTopBar({
+  deletePending,
+  isEditing,
+  meetingNoteTitle,
+  onDelete,
+  onToggleEdit,
+}: {
+  readonly deletePending: boolean;
+  readonly isEditing: boolean;
+  readonly meetingNoteTitle: string;
+  readonly onDelete: () => void;
+  readonly onToggleEdit: () => void;
+}) {
+  return (
+    <div className="flex h-16 shrink-0 items-center gap-3 bg-transparent px-4 md:px-6">
+      <Link to="/meeting-notes">
+        <ChevronLeft className="h-5 w-5 text-[#9CA3AF]" />
+      </Link>
+      <div className="flex min-w-0 flex-1 items-center gap-1.5 text-[13px]">
+        <FileText className="h-3.5 w-3.5 shrink-0 text-[#9CA3AF]" />
+        <span className="font-medium text-[#6B7280]">회의록</span>
+        <span className="text-[#9CA3AF]">/</span>
+        <span className="truncate font-bold text-[#111827]">
+          {meetingNoteTitle}
+        </span>
+      </div>
+      <button
+        aria-label={isEditing ? "수정 취소" : "수정"}
+        className="flex h-9 w-9 items-center justify-center rounded-lg border border-[#E5E7EB] bg-white text-[#374151] transition-colors hover:bg-[#F9FAFB]"
+        onClick={onToggleEdit}
+        type="button"
+      >
+        {isEditing ? <X className="h-4 w-4" /> : <Pencil className="h-4 w-4" />}
+      </button>
+      <button
+        aria-label="삭제"
+        className="flex h-9 w-9 items-center justify-center rounded-lg border border-[#FEE2E2] bg-white text-[#B91C1C] transition-colors hover:bg-red-50 disabled:opacity-50"
+        disabled={deletePending}
+        onClick={onDelete}
+        type="button"
+      >
+        {deletePending ? (
+          <Loader2 className="h-4 w-4 animate-spin" />
+        ) : (
+          <Trash2 className="h-4 w-4" />
+        )}
+      </button>
+    </div>
+  );
+}
+
+function MeetingNoteDetailBody({ detail }: { readonly detail: MeetingNote }) {
+  return (
+    <>
+      <MeetingNoteSummaryHeader detail={detail} />
+
+      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+        <MeetingNoteLinkedCompaniesTable companies={detail.companies} />
+        <MeetingNoteLinkedContactsTable contacts={detail.contacts} />
+        <MeetingNoteLinkedProductsTable products={detail.products} />
+        <MeetingNoteLinkedDealsTable deals={detail.deals} />
+      </div>
+
+      <div className="grid gap-4 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)]">
+        <MeetingNoteTextPanel title="상세 내용" value={detail.details} />
+        <div className="grid gap-4">
+          <MeetingNoteTextPanel title="다음 계획" value={detail.nextPlan} />
+          <MeetingNoteTextPanel title="필요 액션" value={detail.requiredAction} />
+        </div>
+      </div>
+    </>
+  );
+}
+
+function MeetingNoteSummaryHeader({ detail }: { readonly detail: MeetingNote }) {
+  return (
+    <div className="flex min-h-[74px] flex-wrap items-center gap-3 rounded-xl border border-[#E5E7EB] bg-white px-5 py-4">
+      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#EEF2FF]">
+        <FileText className="h-5 w-5 text-[#4F46E5]" />
+      </div>
+      <span className="min-w-[180px] flex-1 truncate text-[14px] font-extrabold leading-none text-[#111827]">
+        {detail.title}
+      </span>
+      <MeetingNoteSourceBadge sourceType={detail.sourceType} />
+      <div className="hidden h-5 w-px shrink-0 bg-[#E5E7EB] md:block" />
+      <MeetingNoteSummaryChip
+        label="미팅일"
+        value={formatMeetingDate(detail.meetingAt)}
+      />
+      <MeetingNoteSummaryChip
+        label="회사"
+        value={formatMeetingNoteCompanySummary(detail)}
+      />
+      <MeetingNoteSummaryChip
+        label="담당자"
+        value={formatMeetingNoteContactSummary(detail)}
+      />
+      <MeetingNoteSummaryChip
+        label="딜"
+        value={formatMeetingNoteDealSummary(detail)}
+      />
+      <div className="flex-1" />
+      <div className="flex items-center gap-4 text-[12px] text-[#9CA3AF]">
+        <span>등록 {formatDateTime(detail.createdAt, { includeYear: true })}</span>
+        <span>수정 {formatDateTime(detail.updatedAt, { includeYear: true })}</span>
+      </div>
+    </div>
+  );
+}
+
+function MeetingNoteSourceBadge({
+  sourceType,
+}: {
+  readonly sourceType: MeetingNoteSourceType;
+}) {
+  return (
+    <span
+      className={cn(
+        "inline-flex h-6 shrink-0 items-center rounded-full px-2.5 text-[11px] font-semibold",
+        getMeetingNoteSourceClass(sourceType),
+      )}
+    >
+      {MEETING_NOTE_SOURCE_LABEL[sourceType]}
+    </span>
+  );
+}
+
+function MeetingNoteSummaryChip({
+  label,
+  value,
+}: {
+  readonly label: string;
+  readonly value: string;
+}) {
+  return (
+    <div className="flex min-w-0 items-center gap-1.5 text-[13px]">
+      <span className="shrink-0 font-semibold text-[#9CA3AF]">{label}</span>
+      <span className="truncate font-extrabold text-[#111827]">{value}</span>
+    </div>
+  );
+}
+
+function MeetingNoteLinkedCompaniesTable({
+  companies,
+}: {
+  readonly companies: readonly MeetingNoteCompany[];
+}) {
+  return (
+    <MeetingNoteLinkedTableFrame count={companies.length} title="연결 회사">
+      {companies.length === 0 ? (
+        <MeetingNoteLinkedEmpty text="연결된 회사가 없습니다." />
+      ) : (
+        <div className={companies.length > 2 ? "max-h-[116px] overflow-y-auto" : ""}>
+          {companies.map((company) => {
+            const hasLink = Boolean(company.companyId);
+            const secondary =
+              [company.companyFieldSnapshot, company.companyRegionSnapshot]
+                .filter(Boolean)
+                .join(" / ") || "-";
+            const row = (
+              <MeetingNoteLinkedRow
+                icon={<Building2 className="h-3.5 w-3.5 text-[#4F46E5]" />}
+                iconClassName="bg-[#EEF2FF]"
+                primary={company.companyNameSnapshot}
+                secondary={secondary}
+                showChevron={hasLink}
+              />
+            );
+
+            return hasLink && company.companyId ? (
+              <Link
+                className="block"
+                key={company.id}
+                to={`/companies/${company.companyId}`}
+              >
+                {row}
+              </Link>
+            ) : (
+              <div key={company.id}>{row}</div>
+            );
+          })}
+        </div>
+      )}
+    </MeetingNoteLinkedTableFrame>
+  );
+}
+
+function MeetingNoteLinkedContactsTable({
+  contacts,
+}: {
+  readonly contacts: readonly MeetingNoteContact[];
+}) {
+  return (
+    <MeetingNoteLinkedTableFrame count={contacts.length} title="연결 담당자">
+      {contacts.length === 0 ? (
+        <MeetingNoteLinkedEmpty text="연결된 담당자가 없습니다." />
+      ) : (
+        <div className={contacts.length > 2 ? "max-h-[116px] overflow-y-auto" : ""}>
+          {contacts.map((contact) => {
+            const hasLink = Boolean(contact.contactId);
+            const secondary =
+              [
+                contact.companyNameSnapshot,
+                contact.departmentSnapshot,
+                contact.jobGradeSnapshot,
+              ]
+                .filter(Boolean)
+                .join(" / ") || "-";
+            const row = (
+              <MeetingNoteLinkedRow
+                icon={<UserRound className="h-3.5 w-3.5 text-[#4880EE]" />}
+                iconClassName="bg-[#DBEAFE]"
+                primary={contact.contactUsernameSnapshot}
+                secondary={secondary}
+                showChevron={hasLink}
+              />
+            );
+
+            return hasLink && contact.contactId ? (
+              <Link
+                className="block"
+                key={contact.id}
+                to={`/contacts/${contact.contactId}`}
+              >
+                {row}
+              </Link>
+            ) : (
+              <div key={contact.id}>{row}</div>
+            );
+          })}
+        </div>
+      )}
+    </MeetingNoteLinkedTableFrame>
+  );
+}
+
+function MeetingNoteLinkedProductsTable({
+  products,
+}: {
+  readonly products: readonly MeetingNoteProduct[];
+}) {
+  return (
+    <MeetingNoteLinkedTableFrame count={products.length} title="연결 제품">
+      {products.length === 0 ? (
+        <MeetingNoteLinkedEmpty text="연결된 제품이 없습니다." />
+      ) : (
+        <div className={products.length > 2 ? "max-h-[116px] overflow-y-auto" : ""}>
+          {products.map((product) => {
+            const hasLink = Boolean(product.productId);
+            const secondary =
+              [product.productCategorySnapshot, product.productStatusSnapshot]
+                .filter(Boolean)
+                .join(" / ") || "-";
+            const price =
+              product.productPriceSnapshot !== null
+                ? formatMoney(product.productPriceSnapshot, "KRW")
+                : "-";
+            const row = (
+              <MeetingNoteLinkedRow
+                icon={<Package className="h-3.5 w-3.5 text-[#15803D]" />}
+                iconClassName="bg-[#F0FDF4]"
+                primary={product.productNameSnapshot}
+                secondary={secondary}
+                showChevron={hasLink}
+                trailing={price}
+              />
+            );
+
+            return hasLink && product.productId ? (
+              <Link
+                className="block"
+                key={product.id}
+                to={`/products/${product.productId}`}
+              >
+                {row}
+              </Link>
+            ) : (
+              <div key={product.id}>{row}</div>
+            );
+          })}
+        </div>
+      )}
+    </MeetingNoteLinkedTableFrame>
+  );
+}
+
+function MeetingNoteLinkedDealsTable({
+  deals,
+}: {
+  readonly deals: readonly MeetingNoteDeal[];
+}) {
+  return (
+    <MeetingNoteLinkedTableFrame count={deals.length} title="연결 딜">
+      {deals.length === 0 ? (
+        <MeetingNoteLinkedEmpty text="연결된 딜이 없습니다." />
+      ) : (
+        <div className={deals.length > 2 ? "max-h-[116px] overflow-y-auto" : ""}>
+          {deals.map((deal) => (
+            <Link className="block" key={deal.id} to={`/deals/${deal.dealId}`}>
+              <MeetingNoteLinkedRow
+                icon={
+                  <BriefcaseBusiness className="h-3.5 w-3.5 text-[#C2410C]" />
+                }
+                iconClassName="bg-[#FFEDD5]"
+                primary={deal.dealNameSnapshot}
+                secondary={deal.dealStatusSnapshot}
+                trailing={formatDate(deal.dealExpectedEndDateSnapshot)}
+              />
+            </Link>
+          ))}
+        </div>
+      )}
+    </MeetingNoteLinkedTableFrame>
+  );
+}
+
+function MeetingNoteLinkedTableFrame({
+  children,
+  count,
+  title,
+}: {
+  readonly children: ReactNode;
+  readonly count: number;
+  readonly title: string;
+}) {
+  return (
+    <div className="flex flex-col overflow-hidden rounded-xl border border-[#E5E7EB] bg-white">
+      <div className="flex h-[48px] shrink-0 items-center gap-2 border-b border-[#E5E7EB] px-4">
+        <span className="text-[14px] font-extrabold text-[#111827]">{title}</span>
+        <span className="text-[13px] font-semibold text-[#9CA3AF]">{count}</span>
+      </div>
+      {children}
+    </div>
+  );
+}
+
+function MeetingNoteLinkedRow({
+  icon,
+  iconClassName,
+  primary,
+  secondary,
+  showChevron = true,
+  trailing,
+}: {
+  readonly icon: ReactNode;
+  readonly iconClassName: string;
+  readonly primary: string;
+  readonly secondary: string;
+  readonly showChevron?: boolean;
+  readonly trailing?: string;
+}) {
+  return (
+    <div className="flex h-[58px] items-center gap-3 border-b border-[#F3F4F6] bg-white px-4 transition-colors last:border-0 hover:bg-[#F9FAFB]">
+      <div
+        className={cn(
+          "flex h-7 w-7 shrink-0 items-center justify-center rounded-full",
+          iconClassName,
+        )}
+      >
+        {icon}
+      </div>
+      <div className="min-w-0 flex-1">
+        <span
+          className="block truncate text-[13px] font-extrabold text-[#111827]"
+          title={primary}
+        >
+          {primary}
+        </span>
+        <span
+          className="block truncate text-[11px] font-semibold leading-4 text-[#9CA3AF]"
+          title={secondary}
+        >
+          {secondary}
+        </span>
+      </div>
+      {trailing ? (
+        <span className="max-w-[88px] truncate text-right text-[11px] font-semibold text-[#6B7280]">
+          {trailing}
+        </span>
+      ) : null}
+      {showChevron ? (
+        <ChevronRight className="h-4 w-4 shrink-0 text-[#D1D5DB]" />
+      ) : null}
+    </div>
+  );
+}
+
+function MeetingNoteLinkedEmpty({ text }: { readonly text: string }) {
+  return <p className="px-4 py-4 text-[13px] text-[#9CA3AF]">{text}</p>;
+}
+
+function MeetingNoteTextPanel({
+  title,
+  value,
+}: {
+  readonly title: string;
+  readonly value: string | null;
+}) {
+  return (
+    <section className="rounded-xl border border-[#E5E7EB] bg-white p-4">
+      <h2 className="mb-3 text-[14px] font-extrabold text-[#111827]">{title}</h2>
+      <p className="min-h-[88px] whitespace-pre-wrap text-[14px] leading-7 text-[#374151]">
+        {value?.trim() || "-"}
+      </p>
+    </section>
+  );
+}
+
+function MeetingNoteEditPanel({
+  detail,
+  onCancel,
+  onError,
+  onSaved,
+}: {
+  readonly detail: MeetingNote;
+  readonly onCancel: () => void;
+  readonly onError: (message: string | null) => void;
+  readonly onSaved: (meetingNote: MeetingNote) => void;
+}) {
+  const updateMutation = useUpdateMeetingNoteMutation();
+  const {
+    formState: { errors },
+    handleSubmit,
+    register,
+    reset,
+  } = useForm<MeetingNoteDetailEditFormValues>({
+    defaultValues: toMeetingNoteDetailEditFormValues(detail),
+    resolver: zodResolver(meetingNoteDetailEditSchema),
+  });
+
+  useEffect(() => {
+    reset(toMeetingNoteDetailEditFormValues(detail));
+  }, [detail, reset]);
+
+  const onSubmit = handleSubmit(async (values) => {
+    onError(null);
+
+    try {
+      const updated = await updateMutation.mutateAsync(
+        toMeetingNoteDetailUpdateInput(detail.id, values),
+      );
+      reset(toMeetingNoteDetailEditFormValues(updated));
+      onSaved(updated);
+    } catch (error) {
+      onError(getApiErrorMessage(error));
+    }
+  });
+
+  return (
+    <form
+      className="grid gap-4 rounded-xl border border-[#BFDBFE] bg-white p-4"
+      onSubmit={onSubmit}
+    >
+      <div className="grid gap-3 md:grid-cols-[minmax(0,1fr)_240px]">
+        <MeetingNoteEditField
+          errorMessage={errors.title?.message}
+          id="meeting-note-detail-title"
+          label="회의록 제목"
+          register={register("title")}
+        />
+        <MeetingNoteEditField
+          errorMessage={errors.meetingLocalDateTime?.message}
+          id="meeting-note-detail-meeting-at"
+          label="미팅 일시"
+          register={register("meetingLocalDateTime")}
+          type="datetime-local"
+        />
+      </div>
+
+      <MeetingNoteEditTextArea
+        errorMessage={errors.details?.message}
+        id="meeting-note-detail-details"
+        label="상세 내용"
+        register={register("details")}
+        rows={8}
+      />
+
+      <div className="grid gap-3 md:grid-cols-2">
+        <MeetingNoteEditTextArea
+          errorMessage={errors.nextPlan?.message}
+          id="meeting-note-detail-next-plan"
+          label="다음 계획"
+          register={register("nextPlan")}
+          rows={4}
+        />
+        <MeetingNoteEditTextArea
+          errorMessage={errors.requiredAction?.message}
+          id="meeting-note-detail-required-action"
+          label="필요 액션"
+          register={register("requiredAction")}
+          rows={4}
+        />
+      </div>
+
+      <div className="flex justify-end gap-2">
+        <button
+          className="h-9 rounded-lg border border-[#DDE3EE] bg-white px-3 text-[13px] font-semibold text-[#6B7280] transition-colors hover:bg-[#F9FAFB]"
+          disabled={updateMutation.isPending}
+          onClick={onCancel}
+          type="button"
+        >
+          취소
+        </button>
+        <button
+          className="inline-flex h-9 items-center gap-1.5 rounded-lg bg-[#4880EE] px-3 text-[13px] font-semibold text-white transition-colors hover:bg-[#1D4ED8] disabled:opacity-60"
+          disabled={updateMutation.isPending}
+          type="submit"
+        >
+          {updateMutation.isPending ? (
+            <Loader2 className="h-4 w-4 animate-spin" />
+          ) : (
+            <Save className="h-4 w-4" />
+          )}
+          저장
+        </button>
+      </div>
+    </form>
+  );
+}
+
+function MeetingNoteEditField({
+  errorMessage,
+  id,
+  label,
+  register,
+  type = "text",
+}: {
+  readonly errorMessage?: string;
+  readonly id: string;
+  readonly label: string;
+  readonly register: UseFormRegisterReturn;
+  readonly type?: "datetime-local" | "text";
+}) {
+  return (
+    <label className="grid gap-1.5" htmlFor={id}>
+      <span className="text-[12px] font-semibold text-[#6B7280]">{label}</span>
+      <input
+        aria-describedby={errorMessage ? `${id}-message` : undefined}
+        aria-invalid={Boolean(errorMessage)}
+        className="h-10 rounded-lg border border-[#DDE3EE] bg-white px-3 text-[14px] text-[#111827] outline-none transition focus:border-[#4880EE] focus:ring-1 focus:ring-[#4880EE]"
+        id={id}
+        type={type}
+        {...register}
+      />
+      {errorMessage ? (
+        <span className="text-[12px] text-[#B91C1C]" id={`${id}-message`}>
+          {errorMessage}
+        </span>
+      ) : null}
+    </label>
+  );
+}
+
+function MeetingNoteEditTextArea({
+  errorMessage,
+  id,
+  label,
+  register,
+  rows,
+}: {
+  readonly errorMessage?: string;
+  readonly id: string;
+  readonly label: string;
+  readonly register: UseFormRegisterReturn;
+  readonly rows: number;
+}) {
+  return (
+    <label className="grid gap-1.5" htmlFor={id}>
+      <span className="text-[12px] font-semibold text-[#6B7280]">{label}</span>
+      <textarea
+        aria-describedby={errorMessage ? `${id}-message` : undefined}
+        aria-invalid={Boolean(errorMessage)}
+        className="resize-none rounded-lg border border-[#DDE3EE] bg-white px-3 py-2 text-[14px] leading-6 text-[#111827] outline-none transition focus:border-[#4880EE] focus:ring-1 focus:ring-[#4880EE]"
+        id={id}
+        rows={rows}
+        {...register}
+      />
+      {errorMessage ? (
+        <span className="text-[12px] text-[#B91C1C]" id={`${id}-message`}>
+          {errorMessage}
+        </span>
+      ) : null}
+    </label>
+  );
+}
+
+function MeetingNoteStateShell({ children }: { readonly children: ReactNode }) {
+  return (
+    <main className="min-h-[calc(100vh-var(--topbar-height))] bg-[#F9FAFB] px-4 py-6 md:px-6">
+      <div className="mx-auto max-w-7xl">{children}</div>
+    </main>
+  );
+}
+
+function MeetingNoteDetailSkeleton() {
+  return (
+    <div className="grid gap-5">
+      <div className="h-16 animate-pulse rounded-lg bg-white" />
+      <div className="h-24 animate-pulse rounded-lg bg-white" />
+      <div className="grid gap-5 md:grid-cols-4">
+        {Array.from({ length: 4 }, (_, index) => (
+          <div className="h-36 animate-pulse rounded-lg bg-white" key={index} />
+        ))}
+      </div>
+      <div className="h-64 animate-pulse rounded-lg bg-white" />
+    </div>
+  );
+}
+
+function MeetingNoteDetailError({
+  error,
+  onRetry,
+}: {
+  readonly error: unknown;
+  readonly onRetry: () => void;
+}) {
+  return (
+    <div className="flex min-h-[240px] flex-col items-center justify-center gap-3 rounded-lg border border-red-100 bg-white py-8 text-center">
+      <p className="text-sm text-destructive">
+        {typeof error === "string" ? error : getApiErrorMessage(error)}
+      </p>
+      <button
+        className="inline-flex h-9 items-center rounded-md border px-3 text-sm hover:bg-muted"
+        onClick={onRetry}
+        type="button"
+      >
+        다시 시도
+      </button>
+    </div>
+  );
+}
+
+function toMeetingNoteDetailEditFormValues(
+  meetingNote: MeetingNote,
+): MeetingNoteDetailEditFormValues {
+  return {
+    details: meetingNote.details,
+    meetingLocalDateTime: meetingNote.meetingLocalDateTime?.slice(0, 16) ?? "",
+    nextPlan: meetingNote.nextPlan ?? "",
+    requiredAction: meetingNote.requiredAction ?? "",
+    title: meetingNote.title,
+  };
+}
+
+function toMeetingNoteDetailUpdateInput(
+  meetingNoteId: string,
+  values: MeetingNoteDetailEditFormValues,
+): UpdateMeetingNoteInput {
+  return {
+    details: values.details.trim(),
+    meetingLocalDateTime: values.meetingLocalDateTime.trim(),
+    meetingNoteId,
+    nextPlan: toOptionalText(values.nextPlan),
+    requiredAction: toOptionalText(values.requiredAction),
+    sourceType: "MANUAL",
+    title: values.title.trim(),
+  };
+}
+
+function toOptionalText(value: string | undefined) {
+  const trimmed = value?.trim() ?? "";
+
+  return trimmed.length > 0 ? trimmed : undefined;
+}
+
+function formatMeetingDate(value: string | null) {
+  return getMeetingDateParts(value).full;
+}
+
+function formatMeetingNoteCompanySummary(detail: MeetingNote) {
+  return (
+    detail.companies.map((company) => company.companyNameSnapshot).join(", ") ||
+    "-"
+  );
+}
+
+function formatMeetingNoteContactSummary(detail: MeetingNote) {
+  return (
+    detail.contacts
+      .map((contact) => contact.contactUsernameSnapshot)
+      .join(", ") || "-"
+  );
+}
+
+function formatMeetingNoteDealSummary(detail: MeetingNote) {
+  return detail.deals.map((deal) => deal.dealNameSnapshot).join(", ") || "-";
+}
+
+function getMeetingNoteSourceClass(sourceType: MeetingNoteSourceType) {
+  switch (sourceType) {
+    case "MANUAL":
+      return "bg-slate-100 text-slate-700";
+    case "TEXT_AI":
+      return "bg-blue-100 text-blue-700";
+    case "STT_AI":
+      return "bg-violet-100 text-violet-700";
+  }
+}

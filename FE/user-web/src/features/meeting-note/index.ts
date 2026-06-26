@@ -10,6 +10,7 @@ export {
   updateMeetingNote,
 } from "./api/meeting-note-api";
 export { MeetingNoteEditorScreen } from "./components/meeting-note-editor-screen";
+export { MeetingNoteDetailScreen } from "./components/meeting-note-detail-screen";
 export { MeetingNoteListScreen } from "./components/meeting-note-list-screen";
 export type {
   CreateMeetingNoteSttAiDraftInput,
