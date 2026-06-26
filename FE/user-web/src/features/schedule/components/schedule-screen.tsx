@@ -102,9 +102,9 @@ export function ScheduleScreen() {
         <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
           <div className="inline-flex w-fit rounded-md border border-[#E2E5EC] bg-white p-1">
             <button
-              className={`h-7 rounded-md px-3 text-[12px] font-medium ${
+              className={`h-11 rounded-md px-4 text-[13px] font-medium ${
                 viewMode === "month"
-                  ? "bg-[#047857] text-white"
+                    ? "bg-[#4880EE] text-white"
                   : "text-[#374151] hover:bg-[#F5F6F8]"
               }`}
               onClick={() => setViewMode("month")}
@@ -113,9 +113,9 @@ export function ScheduleScreen() {
               월간
             </button>
             <button
-              className={`h-7 rounded-md px-3 text-[12px] font-medium ${
+              className={`h-11 rounded-md px-4 text-[13px] font-medium ${
                 viewMode === "week"
-                  ? "bg-[#047857] text-white"
+                    ? "bg-[#4880EE] text-white"
                   : "text-[#374151] hover:bg-[#F5F6F8]"
               }`}
               onClick={() => setViewMode("week")}
@@ -128,7 +128,7 @@ export function ScheduleScreen() {
           <div className="flex flex-wrap items-center gap-2">
             <button
               aria-label="이전 기간"
-              className="grid h-7 w-7 place-items-center rounded-md border border-[#E2E5EC] bg-white text-[#374151] hover:bg-[#F5F6F8]"
+              className="grid h-11 w-11 place-items-center rounded-md border border-[#E2E5EC] bg-white text-[#374151] hover:bg-[#F5F6F8]"
               onClick={movePrevious}
               type="button"
             >
@@ -139,14 +139,14 @@ export function ScheduleScreen() {
             </div>
             <button
               aria-label="다음 기간"
-              className="grid h-7 w-7 place-items-center rounded-md border border-[#E2E5EC] bg-white text-[#374151] hover:bg-[#F5F6F8]"
+              className="grid h-11 w-11 place-items-center rounded-md border border-[#E2E5EC] bg-white text-[#374151] hover:bg-[#F5F6F8]"
               onClick={moveNext}
               type="button"
             >
               <ChevronRight className="h-4 w-4" />
             </button>
             <button
-              className="inline-flex h-7 items-center gap-1.5 rounded-md border border-[#E2E5EC] bg-white px-2.5 text-[12px] font-medium text-[#374151] hover:bg-[#F5F6F8]"
+              className="inline-flex h-11 items-center gap-1.5 rounded-md border border-[#E2E5EC] bg-white px-4 text-[13px] font-medium text-[#374151] hover:bg-[#F5F6F8]"
               onClick={() => setAnchorDate(new Date())}
               type="button"
             >
@@ -247,9 +247,9 @@ function MonthCalendar({
             >
               <div className="mb-2 flex items-center justify-between gap-2">
                 <button
-                  className={`grid h-7 w-7 place-items-center rounded-md text-sm font-medium ${
+                  className={`grid h-11 w-11 place-items-center rounded-md text-sm font-medium ${
                     isToday(cell)
-                      ? "bg-[#F59E0B] text-white"
+                        ? "bg-[#4880EE] text-white"
                       : "text-[#111827] hover:bg-[#F5F6F8]"
                   }`}
                   onClick={() => onCreate(setHour(cell, 9))}
@@ -259,7 +259,7 @@ function MonthCalendar({
                 </button>
                 <button
                   aria-label={`${formatDateShort(cell)} 일정 생성`}
-                  className="grid h-7 w-7 place-items-center rounded-md text-[#64748B] hover:bg-[#F3F4F6]"
+                  className="grid h-11 w-11 place-items-center rounded-md text-[#64748B] hover:bg-[#F3F4F6]"
                   onClick={() => onCreate(setHour(cell, 9))}
                   type="button"
                 >
@@ -314,9 +314,9 @@ function WeekCalendar({
               key={dateKey}
             >
               <button
-                className={`mb-3 inline-flex h-8 items-center rounded-md px-2 text-sm font-semibold ${
+                className={`mb-3 inline-flex h-11 items-center rounded-md px-3 text-sm font-semibold ${
                   isToday(day)
-                    ? "bg-[#F59E0B] text-white"
+                    ? "bg-[#4880EE] text-white"
                     : "text-[#111827] hover:bg-[#F5F6F8]"
                 }`}
                 onClick={() => onCreate(setHour(day, 9))}
@@ -380,7 +380,7 @@ function SchedulePill({
 
   return (
     <button
-      className={`grid min-h-8 rounded-md border px-2 py-1 text-left transition ${tone.pill}`}
+      className={`grid min-h-11 rounded-md border px-2 py-1.5 text-left transition ${tone.pill}`}
       onClick={onClick}
       type="button"
     >
@@ -436,7 +436,7 @@ function getScheduleTone(scheduleId: string) {
     {
       pill: "border-[#A7F3D0] bg-[#ECFDF5] hover:border-[#34D399] hover:bg-[#D1FAE5]",
       card: "border-[#A7F3D0] hover:bg-[#ECFDF5]",
-      title: "text-[#047857]",
+      title: "text-[#4880EE]",
     },
     {
       pill: "border-[#FDE68A] bg-[#FFFBEB] hover:border-[#FBBF24] hover:bg-[#FEF3C7]",
@@ -449,9 +449,9 @@ function getScheduleTone(scheduleId: string) {
       title: "text-[#BE123C]",
     },
     {
-      pill: "border-[#DDD6FE] bg-[#F5F3FF] hover:border-[#A78BFA] hover:bg-[#EDE9FE]",
-      card: "border-[#DDD6FE] hover:bg-[#F5F3FF]",
-      title: "text-[#6D28D9]",
+      pill: "border-[#BFDBFE] bg-[#EFF6FF] hover:border-[#93C5FD] hover:bg-[#DBEAFE]",
+      card: "border-[#BFDBFE] hover:bg-[#EFF6FF]",
+      title: "text-[#4880EE]",
     },
     {
       pill: "border-[#CBD5E1] bg-[#F8FAFC] hover:border-[#94A3B8] hover:bg-[#F1F5F9]",
@@ -487,7 +487,7 @@ function ScheduleEmptyState({
           새 일정을 만들면 캘린더에서 바로 확인할 수 있습니다.
         </p>
         <button
-          className="mt-5 inline-flex h-7 items-center gap-1.5 rounded-md bg-[#047857] px-3 text-[12px] font-medium text-white hover:bg-[#065F46]"
+            className="mt-5 inline-flex h-11 items-center gap-1.5 rounded-md bg-[#4880EE] px-4 text-[13px] font-medium text-white hover:bg-[#316BE0]"
           onClick={onCreate}
           type="button"
         >
@@ -515,7 +515,7 @@ function ScheduleError({
             {getApiErrorMessage(error)}
           </p>
           <button
-            className="mt-3 inline-flex h-7 items-center gap-1.5 rounded-md border border-[#E2E5EC] bg-white px-2.5 text-[12px] font-medium text-[#374151] hover:bg-[#F5F6F8]"
+            className="mt-3 inline-flex h-11 items-center gap-1.5 rounded-md border border-[#E2E5EC] bg-white px-4 text-[13px] font-medium text-[#374151] hover:bg-[#F5F6F8]"
             onClick={onRetry}
             type="button"
           >

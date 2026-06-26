@@ -120,15 +120,15 @@ export function MorePage() {
         <MenuRow
           label="회사"
           to="/companies"
-          iconBg="#6D28D918"
-          iconColor="#6D28D9"
+          iconBg="#4880EE18"
+          iconColor="#4880EE"
           icon={Building2}
         />
         <MenuRow
           label="담당자"
           to="/contacts"
-          iconBg="#04785718"
-          iconColor="#047857"
+          iconBg="#4880EE18"
+          iconColor="#4880EE"
           icon={Users}
         />
         <MenuRow

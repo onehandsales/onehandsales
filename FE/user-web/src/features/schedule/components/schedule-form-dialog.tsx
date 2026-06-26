@@ -8,8 +8,9 @@ import {
   Trash2,
   X,
 } from "lucide-react";
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useForm, useWatch, type UseFormRegisterReturn } from "react-hook-form";
+import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import {
   useCreateScheduleMutation,
   useDeleteScheduleMutation,
@@ -65,6 +66,7 @@ export function ScheduleFormDialog({
   const createScheduleMutation = useCreateScheduleMutation();
   const updateScheduleMutation = useUpdateScheduleMutation();
   const deleteScheduleMutation = useDeleteScheduleMutation();
+  const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
   const {
     register,
     control,
@@ -139,13 +141,18 @@ export function ScheduleFormDialog({
   });
 
   const onDelete = async () => {
-    if (!schedule || !window.confirm("일정을 삭제할까요?")) {
+    if (!schedule) {
       return;
     }
 
-    await deleteScheduleMutation.mutateAsync(schedule.id);
-    onSaved(`${schedule.scheduleTitle} 일정이 삭제되었습니다.`);
-    onOpenChange(false);
+    try {
+      await deleteScheduleMutation.mutateAsync(schedule.id);
+      setDeleteConfirmOpen(false);
+      onSaved(`${schedule.scheduleTitle} 일정이 삭제되었습니다.`);
+      onOpenChange(false);
+    } catch {
+      // React Query keeps the mutation error for the dialog message.
+    }
   };
 
   const toggleDeal = (dealId: string) => {
@@ -165,30 +172,31 @@ export function ScheduleFormDialog({
   };
 
   return (
-    <div className="fixed inset-0 z-50 grid place-items-center bg-slate-950/35 px-4 py-6">
-      <section
-        aria-modal="true"
-        className="flex max-h-[92vh] w-full max-w-3xl flex-col overflow-hidden rounded-lg border bg-white shadow-xl"
-        role="dialog"
-      >
-        <header className="flex items-start justify-between gap-4 border-b px-5 py-4">
-          <div>
-            <h2 className="text-lg font-semibold">
-              {isEdit ? "일정 수정" : "일정 생성"}
-            </h2>
-            <p className="mt-1 text-sm text-muted-foreground">
-              일정 시간과 연결 딜을 저장합니다.
-            </p>
-          </div>
-          <button
-            aria-label="닫기"
-            className="grid h-9 w-9 shrink-0 place-items-center rounded-md border text-muted-foreground hover:bg-muted"
-            onClick={() => onOpenChange(false)}
-            type="button"
-          >
-            <X className="h-4 w-4" />
-          </button>
-        </header>
+    <>
+      <div className="fixed inset-0 z-50 grid place-items-center bg-slate-950/35 px-4 py-6">
+        <section
+          aria-modal="true"
+          className="flex max-h-[92vh] w-full max-w-3xl flex-col overflow-hidden rounded-lg border bg-white shadow-xl"
+          role="dialog"
+        >
+          <header className="flex items-start justify-between gap-4 border-b px-5 py-4">
+            <div>
+              <h2 className="text-lg font-semibold">
+                {isEdit ? "일정 수정" : "일정 생성"}
+              </h2>
+              <p className="mt-1 text-sm text-muted-foreground">
+                일정 시간과 연결 딜을 저장합니다.
+              </p>
+            </div>
+            <button
+              aria-label="닫기"
+              className="grid h-11 w-11 shrink-0 place-items-center rounded-md border text-muted-foreground hover:bg-muted"
+              onClick={() => onOpenChange(false)}
+              type="button"
+            >
+              <X className="h-4 w-4" />
+            </button>
+          </header>
 
         <form className="overflow-y-auto px-5 py-5" onSubmit={onSubmit}>
           <div className="grid gap-5">
@@ -276,9 +284,9 @@ export function ScheduleFormDialog({
           <footer className="mt-6 flex flex-col-reverse gap-2 border-t pt-4 sm:flex-row sm:items-center sm:justify-between">
             {schedule ? (
               <button
-                className="inline-flex h-10 w-fit items-center gap-2 rounded-md border border-destructive/40 px-4 text-sm font-medium text-destructive hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-60"
+                className="inline-flex h-11 w-fit items-center gap-2 rounded-md border border-destructive/40 px-4 text-sm font-medium text-destructive hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-60"
                 disabled={deleteScheduleMutation.isPending}
-                onClick={() => void onDelete()}
+                onClick={() => setDeleteConfirmOpen(true)}
                 type="button"
               >
                 <Trash2 className="h-4 w-4" />
@@ -289,14 +297,14 @@ export function ScheduleFormDialog({
             )}
             <div className="flex justify-end gap-2">
               <button
-                className="h-10 rounded-md border px-4 text-sm font-medium hover:bg-muted"
+                className="h-11 rounded-md border px-4 text-sm font-medium hover:bg-muted"
                 onClick={() => onOpenChange(false)}
                 type="button"
               >
                 취소
               </button>
               <button
-                className="inline-flex h-10 items-center gap-2 rounded-md bg-primary px-4 text-sm font-medium text-primary-foreground disabled:cursor-not-allowed disabled:opacity-60"
+                className="inline-flex h-11 items-center gap-2 rounded-md bg-primary px-4 text-sm font-medium text-primary-foreground disabled:cursor-not-allowed disabled:opacity-60"
                 disabled={
                   createScheduleMutation.isPending ||
                   updateScheduleMutation.isPending
@@ -309,8 +317,27 @@ export function ScheduleFormDialog({
             </div>
           </footer>
         </form>
-      </section>
-    </div>
+        </section>
+      </div>
+      <ConfirmDialog
+        cancelLabel="취소"
+        confirmLabel="삭제"
+        errorMessage={
+          deleteScheduleMutation.error
+            ? getApiErrorMessage(deleteScheduleMutation.error)
+            : null
+        }
+        isPending={deleteScheduleMutation.isPending}
+        onCancel={() => {
+          if (!deleteScheduleMutation.isPending) {
+            setDeleteConfirmOpen(false);
+          }
+        }}
+        onConfirm={() => void onDelete()}
+        open={deleteConfirmOpen}
+        title={`${schedule?.scheduleTitle ?? "일정"} 일정을 삭제할까요?`}
+      />
+    </>
   );
 }
 

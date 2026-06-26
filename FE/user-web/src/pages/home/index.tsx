@@ -195,7 +195,7 @@ export function HomePage() {
           <SummaryCard
             icon={FileText}
             label="최근 회의록"
-            tone="violet"
+            tone="blue"
             value={`${(meetingNotesQuery.data?.totalCount ?? 0).toLocaleString("ko-KR")}건`}
           />
         </div>
@@ -329,14 +329,13 @@ function SummaryCard({
 }: {
   readonly icon: LucideIcon;
   readonly label: string;
-  readonly tone: "amber" | "blue" | "emerald" | "violet";
+  readonly tone: "amber" | "blue" | "emerald";
   readonly value: string;
 }) {
   const styles = {
     amber: "border-[#FED7AA] bg-[#FFF7ED] text-[#C2410C]",
     blue: "border-[#BFDBFE] bg-[#EFF6FF] text-[#4880EE]",
     emerald: "border-[#BBF7D0] bg-[#F0FDF4] text-[#047857]",
-    violet: "border-[#DDD6FE] bg-[#F5F3FF] text-[#6D28D9]",
   };
 
   return (
@@ -678,7 +677,7 @@ function ActivityItemRow({ activity }: { readonly activity: ActivityItem }) {
       <span
         className={cn(
           "flex h-7 w-7 items-center justify-center rounded-lg",
-          isDeal ? "bg-[#EFF6FF] text-[#4880EE]" : "bg-[#F5F3FF] text-[#6D28D9]"
+          isDeal ? "bg-[#EFF6FF] text-[#4880EE]" : "bg-[#EFF6FF] text-[#4880EE]"
         )}
       >
         {isDeal ? (

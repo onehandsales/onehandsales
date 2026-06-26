@@ -8,10 +8,10 @@ const items: ReadonlyArray<{
   readonly end?: boolean;
   readonly activeColor: string;
 }> = [
-  { label: "홈", to: "/", icon: House, end: true, activeColor: "#5E5CE6" },
-  { label: "딜", to: "/deals", icon: Briefcase, activeColor: "#5E5CE6" },
-  { label: "일정", to: "/schedules", icon: Calendar, activeColor: "#5E5CE6" },
-  { label: "회의록", to: "/meeting-notes", icon: FileText, activeColor: "#5E5CE6" },
+  { label: "홈", to: "/", icon: House, end: true, activeColor: "#4880EE" },
+  { label: "딜", to: "/deals", icon: Briefcase, activeColor: "#4880EE" },
+  { label: "일정", to: "/schedules", icon: Calendar, activeColor: "#4880EE" },
+  { label: "회의록", to: "/meeting-notes", icon: FileText, activeColor: "#4880EE" },
   { label: "더보기", to: "/more", icon: MoreHorizontal, activeColor: "#4880EE" },
 ];
 

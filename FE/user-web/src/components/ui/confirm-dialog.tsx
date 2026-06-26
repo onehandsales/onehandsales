@@ -58,7 +58,7 @@ export function ConfirmDialog({
         ) : null}
         <div className="mt-5 flex justify-center gap-2">
           <button
-            className="h-9 rounded-md border border-[#D1D5DB] px-4 text-sm font-medium text-[#374151] hover:bg-[#F9FAFB]"
+            className="h-11 rounded-md border border-[#D1D5DB] px-4 text-sm font-medium text-[#374151] hover:bg-[#F9FAFB]"
             disabled={isPending}
             onClick={onCancel}
             type="button"
@@ -67,7 +67,7 @@ export function ConfirmDialog({
           </button>
           <button
             className={cn(
-              "h-9 rounded-md bg-[#DC2626] px-4 text-sm font-semibold text-white hover:bg-[#B91C1C]",
+              "h-11 rounded-md bg-[#DC2626] px-4 text-sm font-semibold text-white hover:bg-[#B91C1C]",
               isPending ? "cursor-not-allowed opacity-70" : ""
             )}
             disabled={isPending}

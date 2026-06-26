@@ -1697,7 +1697,7 @@ function NextActionSummary({
               "rounded-full px-2 py-0.5 text-[11px] font-semibold",
               log.checkComplete
                 ? "bg-emerald-100 text-emerald-700"
-                : "bg-[#EEEEFF] text-[#5E5CE6]"
+                : "bg-[#EEF4FF] text-[#4880EE]"
             )}
           >
             {log.checkComplete ? "완료" : "진행 중"}
@@ -1770,7 +1770,7 @@ export function StageProgressSection({ activeStatus }: { readonly activeStatus: 
               className={cn(
                 "inline-flex h-8 items-center rounded-md border px-2.5 text-[12px] font-medium",
                 isActive
-                  ? "border-[#5E5CE6] bg-[#EEEEFF] text-[#5E5CE6]"
+                  ? "border-[#4880EE] bg-[#EEF4FF] text-[#4880EE]"
                   : "border-[#E5EAF0] bg-white text-[#64748B]"
               )}
               key={status}

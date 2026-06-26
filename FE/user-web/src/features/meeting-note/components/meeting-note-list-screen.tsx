@@ -424,7 +424,7 @@ export function MeetingNoteListScreen() {
 
         <button
           aria-label="회의록 추가"
-          className="fixed bottom-24 right-5 flex h-[52px] w-[52px] items-center justify-center rounded-full bg-[#5E5CE6] shadow-[0_4px_16px_rgba(59,130,246,0.27)] transition active:opacity-80"
+          className="fixed bottom-24 right-5 flex h-[52px] w-[52px] items-center justify-center rounded-full bg-[#4880EE] shadow-[0_4px_16px_rgba(59,130,246,0.27)] transition active:opacity-80"
           onClick={() => setIsCreateOpen(true)}
           type="button"
         >

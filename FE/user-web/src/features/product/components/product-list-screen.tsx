@@ -494,7 +494,7 @@ export function ProductListScreen({
         {/* FAB */}
         <button
           aria-label="제품 추가"
-          className="fixed bottom-24 right-5 flex h-[52px] w-[52px] items-center justify-center rounded-full bg-[#5E5CE6] shadow-[0_4px_16px_rgba(59,130,246,0.27)] transition active:opacity-80"
+          className="fixed bottom-24 right-5 flex h-[52px] w-[52px] items-center justify-center rounded-full bg-[#4880EE] shadow-[0_4px_16px_rgba(59,130,246,0.27)] transition active:opacity-80"
           onClick={() => void navigate("/products/new")}
           type="button"
         >
@@ -553,8 +553,8 @@ function ProductMobileCard({
       type="button"
     >
       {/* 아이콘 */}
-      <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#EEEEFF]">
-        <Package className="h-4 w-4 text-[#5E5CE6]" strokeWidth={2} />
+      <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#EEF4FF]">
+        <Package className="h-4 w-4 text-[#4880EE]" strokeWidth={2} />
       </div>
       {/* 내용 */}
       <div className="min-w-0 flex-1">
@@ -663,7 +663,7 @@ function Badge({
   readonly tone: "indigo" | "green" | "rose" | "slate";
 }) {
   const styles: Record<typeof tone, string> = {
-    indigo: "bg-[#EEF2FF] text-[#4338CA]",
+    indigo: "bg-[#EEF4FF] text-[#4880EE]",
     green: "bg-[#ECFDF5] text-[#047857]",
     rose: "bg-[#FEF2F2] text-[#B91C1C]",
     slate: "bg-[#F1F5F9] text-[#475569]",

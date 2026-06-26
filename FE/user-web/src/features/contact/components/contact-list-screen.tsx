@@ -518,8 +518,8 @@ function ContactMobileCard({
       to={`/contacts/${contact.id}`}
     >
       {/* 이니셜 아바타 */}
-      <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#F5F3FF]">
-        <span className="text-[13px] font-bold text-[#6D28D9]">{initial}</span>
+      <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#EEF4FF]">
+        <span className="text-[13px] font-bold text-[#4880EE]">{initial}</span>
       </div>
       {/* 내용 */}
       <div className="min-w-0 flex-1">

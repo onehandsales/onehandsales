@@ -1,4 +1,5 @@
 import { Trash2 } from "lucide-react";
+import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { useEffect, useState } from "react";
 import { ModalShell } from "@/components/ui/modal-shell";
 import { ErrorState } from "@/components/ui/state";
@@ -24,6 +25,10 @@ type ContactTaxonomyManageDialogProps = {
   readonly onCreated?: (kind: "department" | "jobGrade", name: string) => void;
 };
 
+type PendingContactTaxonomyDelete =
+  | { readonly kind: "department"; readonly id: string; readonly name: string }
+  | { readonly kind: "jobGrade"; readonly id: string; readonly name: string };
+
 export function ContactTaxonomyManageDialog({
   open,
   onOpenChange,
@@ -37,6 +42,8 @@ export function ContactTaxonomyManageDialog({
   const deleteJobGradeMutation = useDeleteJobGradeMutation();
   const [departmentName, setDepartmentName] = useState("");
   const [jobGradeName, setJobGradeName] = useState("");
+  const [pendingDelete, setPendingDelete] =
+    useState<PendingContactTaxonomyDelete | null>(null);
 
   const departments = departmentsQuery.data?.items ?? [];
   const jobGrades = jobGradesQuery.data?.items ?? [];
@@ -82,63 +89,107 @@ export function ContactTaxonomyManageDialog({
     setJobGradeName("");
   };
 
-  const deleteDepartment = async (department: ContactDepartment) => {
-    if (!window.confirm(`${department.departmentName} 부서를 삭제할까요?`)) {
+  const isDeletePending =
+    deleteDepartmentMutation.isPending || deleteJobGradeMutation.isPending;
+  const deleteError =
+    pendingDelete?.kind === "department"
+      ? deleteDepartmentMutation.error
+      : pendingDelete?.kind === "jobGrade"
+        ? deleteJobGradeMutation.error
+        : null;
+
+  const confirmDelete = async () => {
+    if (!pendingDelete) {
       return;
     }
 
-    await deleteDepartmentMutation.mutateAsync(department.id);
-    await departmentsQuery.refetch();
-  };
-
-  const deleteJobGrade = async (jobGrade: ContactJobGrade) => {
-    if (!window.confirm(`${jobGrade.jobGradeName} 직급을 삭제할까요?`)) {
-      return;
+    try {
+      if (pendingDelete.kind === "department") {
+        await deleteDepartmentMutation.mutateAsync(pendingDelete.id);
+        await departmentsQuery.refetch();
+      } else {
+        await deleteJobGradeMutation.mutateAsync(pendingDelete.id);
+        await jobGradesQuery.refetch();
+      }
+      setPendingDelete(null);
+    } catch {
+      // React Query keeps the mutation error for the dialog message.
     }
-
-    await deleteJobGradeMutation.mutateAsync(jobGrade.id);
-    await jobGradesQuery.refetch();
   };
 
   return (
-    <ModalShell
-      open={open}
-      size="lg"
-      title="담당자 분류 관리"
-      onOpenChange={onOpenChange}
-    >
-      <div className="grid gap-4 md:grid-cols-2">
-        <TaxonomySection
-          error={createDepartmentMutation.error}
-          items={departments}
-          isPending={createDepartmentMutation.isPending}
-          name={departmentName}
-          onAdd={() => void createDepartment()}
-          onDelete={(item) => void deleteDepartment(item as ContactDepartment)}
-          onNameChange={setDepartmentName}
-          placeholder="예: 영업팀"
-          title="부서"
-          type="department"
-        />
-        <TaxonomySection
-          error={createJobGradeMutation.error}
-          items={jobGrades}
-          isPending={createJobGradeMutation.isPending}
-          name={jobGradeName}
-          onAdd={() => void createJobGrade()}
-          onDelete={(item) => void deleteJobGrade(item as ContactJobGrade)}
-          onNameChange={setJobGradeName}
-          placeholder="예: 과장"
-          title="직급"
-          type="jobGrade"
-        />
-        {actionError ? (
-          <p className="rounded-md border border-destructive/30 bg-red-50 px-3 py-2 text-sm text-destructive md:col-span-2">
-            {getApiErrorMessage(actionError)}
-          </p>
-        ) : null}
-      </div>
-    </ModalShell>
+    <>
+      <ModalShell
+        open={open}
+        size="lg"
+        title="담당자 분류 관리"
+        onOpenChange={onOpenChange}
+      >
+        <div className="grid gap-4 md:grid-cols-2">
+          <TaxonomySection
+            error={createDepartmentMutation.error}
+            items={departments}
+            isPending={createDepartmentMutation.isPending || isDeletePending}
+            name={departmentName}
+            onAdd={() => void createDepartment()}
+            onDelete={(item) => {
+              setPendingDelete({
+                id: item.id,
+                kind: "department",
+                name: (item as ContactDepartment).departmentName,
+              });
+            }}
+            onNameChange={setDepartmentName}
+            placeholder="예: 영업팀"
+            title="부서"
+            type="department"
+          />
+          <TaxonomySection
+            error={createJobGradeMutation.error}
+            items={jobGrades}
+            isPending={createJobGradeMutation.isPending || isDeletePending}
+            name={jobGradeName}
+            onAdd={() => void createJobGrade()}
+            onDelete={(item) => {
+              setPendingDelete({
+                id: item.id,
+                kind: "jobGrade",
+                name: (item as ContactJobGrade).jobGradeName,
+              });
+            }}
+            onNameChange={setJobGradeName}
+            placeholder="예: 과장"
+            title="직급"
+            type="jobGrade"
+          />
+          {actionError ? (
+            <p className="rounded-md border border-destructive/30 bg-red-50 px-3 py-2 text-sm text-destructive md:col-span-2">
+              {getApiErrorMessage(actionError)}
+            </p>
+          ) : null}
+        </div>
+      </ModalShell>
+      <ConfirmDialog
+        cancelLabel="취소"
+        confirmLabel="삭제"
+        errorMessage={deleteError ? getApiErrorMessage(deleteError) : null}
+        isPending={isDeletePending}
+        onCancel={() => {
+          if (!isDeletePending) {
+            setPendingDelete(null);
+          }
+        }}
+        onConfirm={() => void confirmDelete()}
+        open={pendingDelete !== null}
+        title={
+          pendingDelete
+            ? `${pendingDelete.name} ${
+                pendingDelete.kind === "department" ? "부서" : "직급"
+              }을 삭제할까요?`
+            : ""
+        }
+      />
+    </>
   );
 }
 
@@ -182,7 +233,7 @@ function TaxonomySection({
           value={name}
         />
         <button
-          className="inline-flex h-10 shrink-0 items-center gap-1.5 rounded-md bg-[#4880EE] px-3 text-[13px] font-semibold text-white hover:bg-[#1D4ED8] disabled:opacity-60"
+          className="inline-flex h-11 shrink-0 items-center gap-1.5 rounded-md bg-[#4880EE] px-4 text-[13px] font-semibold text-white hover:bg-[#1D4ED8] disabled:opacity-60"
           disabled={isPending || name.trim().length === 0}
           onClick={onAdd}
           type="button"
@@ -211,7 +262,7 @@ function TaxonomySection({
                     ? (item as ContactDepartment).departmentName
                     : (item as ContactJobGrade).jobGradeName
                 } 삭제`}
-                className="grid h-5 w-5 place-items-center rounded-full text-[#9CA3AF] hover:bg-white hover:text-[#EF4444]"
+                className="-my-3 -mr-3 grid h-11 w-11 place-items-center rounded-full text-[#9CA3AF] hover:bg-white hover:text-[#EF4444]"
                 disabled={isPending}
                 onClick={() => onDelete(item)}
                 type="button"

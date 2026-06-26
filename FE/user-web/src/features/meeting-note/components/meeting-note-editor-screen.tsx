@@ -20,6 +20,7 @@ import {
   ModalFormRow,
   ModalFormSection,
 } from "@/components/ui/modal-form";
+import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { useMeetingNoteDealOptions } from "@/features/meeting-note/hooks/use-meeting-note-deal-options";
 import {
   useDeleteMeetingNoteMutation,
@@ -59,6 +60,7 @@ export function MeetingNoteEditorScreen({
     null
   );
   const [initializedKey, setInitializedKey] = useState("");
+  const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
   const {
     register,
     control,
@@ -118,7 +120,7 @@ export function MeetingNoteEditorScreen({
   });
 
   const onDelete = async () => {
-    if (!meetingNoteId || !window.confirm("회의록을 삭제할까요?")) {
+    if (!meetingNoteId) {
       return;
     }
 
@@ -129,7 +131,7 @@ export function MeetingNoteEditorScreen({
         state: { notice: "회의록이 삭제되었습니다." },
       });
     } catch {
-      // actionError가 같은 화면 상단 오류 배너로 표시됩니다.
+      // React Query keeps the mutation error for the dialog and top banner.
     }
   };
 
@@ -226,9 +228,9 @@ export function MeetingNoteEditorScreen({
               {isEdit ? (
                 <button
                   aria-label="회의록 삭제"
-                  className="inline-flex h-9 w-9 items-center justify-center rounded-md border border-red-200 bg-white text-red-600 transition hover:border-red-300 hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-60"
+                  className="inline-flex h-11 w-11 items-center justify-center rounded-md border border-red-200 bg-white text-red-600 transition hover:border-red-300 hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-60"
                   disabled={isDeleting}
-                  onClick={() => void onDelete()}
+                  onClick={() => setDeleteConfirmOpen(true)}
                   type="button"
                 >
                   {isDeleting ? (
@@ -239,7 +241,7 @@ export function MeetingNoteEditorScreen({
                 </button>
               ) : null}
               <button
-                className="inline-flex h-9 w-fit items-center gap-1.5 rounded-md bg-[#4880EE] px-3 text-[13px] font-semibold text-white hover:bg-[#1D4ED8] disabled:cursor-not-allowed disabled:opacity-60"
+                className="inline-flex h-11 w-fit items-center gap-1.5 rounded-md bg-[#4880EE] px-4 text-[13px] font-semibold text-white hover:bg-[#1D4ED8] disabled:cursor-not-allowed disabled:opacity-60"
                 disabled={isSaving}
                 type="button"
                 onClick={() => void onSubmit()}
@@ -420,6 +422,22 @@ export function MeetingNoteEditorScreen({
           <MeetingNoteSnapshotPanel meetingNote={activeMeetingNote} />
         </aside>
       </div>
+      <ConfirmDialog
+        cancelLabel="취소"
+        confirmLabel="삭제"
+        errorMessage={
+          deleteMutation.error ? getApiErrorMessage(deleteMutation.error) : null
+        }
+        isPending={deleteMutation.isPending}
+        onCancel={() => {
+          if (!deleteMutation.isPending) {
+            setDeleteConfirmOpen(false);
+          }
+        }}
+        onConfirm={() => void onDelete()}
+        open={deleteConfirmOpen}
+        title="회의록을 삭제할까요?"
+      />
     </div>
   );
 }
@@ -562,7 +580,7 @@ function MeetingNoteDealLinkCard({
           {selectedOption || search ? (
             <button
               aria-label="딜 연동 선택 지우기"
-              className="absolute right-2 top-1/2 grid h-7 w-7 -translate-y-1/2 place-items-center rounded-md text-[#9CA3AF] hover:bg-[#F3F4F6]"
+              className="absolute right-0 top-1/2 grid h-11 w-11 -translate-y-1/2 place-items-center rounded-md text-[#9CA3AF] hover:bg-[#F3F4F6]"
               disabled={isPending}
               onClick={clear}
               type="button"
@@ -605,7 +623,7 @@ function MeetingNoteDealLinkCard({
         ) : null}
 
         <button
-          className="inline-flex h-9 items-center justify-center gap-1.5 rounded-md bg-[#4880EE] px-3 text-[13px] font-semibold text-white hover:bg-[#1D4ED8] disabled:cursor-not-allowed disabled:opacity-60"
+          className="inline-flex h-11 items-center justify-center gap-1.5 rounded-md bg-[#4880EE] px-4 text-[13px] font-semibold text-white hover:bg-[#1D4ED8] disabled:cursor-not-allowed disabled:opacity-60"
           disabled={isPending}
           onClick={() => void submit()}
           type="button"
@@ -683,7 +701,7 @@ function DealSearchField({
         {selectedId || search ? (
           <button
             aria-label="딜 선택 지우기"
-            className="absolute right-2 top-1/2 grid h-7 w-7 -translate-y-1/2 place-items-center rounded-md text-[#9CA3AF] hover:bg-[#F3F4F6]"
+            className="absolute right-0 top-1/2 grid h-11 w-11 -translate-y-1/2 place-items-center rounded-md text-[#9CA3AF] hover:bg-[#F3F4F6]"
             onClick={onClear}
             type="button"
           >
@@ -934,7 +952,7 @@ function NoticeMessage({
       </span>
       <button
         aria-label="알림 닫기"
-        className="grid h-7 w-7 place-items-center rounded-md hover:bg-emerald-100"
+        className="grid h-11 w-11 place-items-center rounded-md hover:bg-emerald-100"
         onClick={onDismiss}
         type="button"
       >

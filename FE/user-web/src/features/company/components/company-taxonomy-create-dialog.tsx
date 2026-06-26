@@ -106,7 +106,7 @@ export function CompanyTaxonomyCreateDialog({
                 value={section.value}
               />
               <button
-                className="inline-flex h-10 shrink-0 items-center gap-1.5 rounded-md bg-[#4880EE] px-3 text-[13px] font-semibold text-white hover:bg-[#1D4ED8] disabled:opacity-60"
+                  className="inline-flex h-11 shrink-0 items-center gap-1.5 rounded-md bg-[#4880EE] px-4 text-[13px] font-semibold text-white hover:bg-[#1D4ED8] disabled:opacity-60"
                 disabled={
                   section.key === "field"
                     ? createFieldMutation.isPending
@@ -138,7 +138,7 @@ export function CompanyTaxonomyCreateDialog({
                         ? (item as CompanyField).field
                         : (item as CompanyRegion).region
                     } 삭제`}
-                    className="grid h-5 w-5 place-items-center rounded-full text-[#9CA3AF] hover:bg-white hover:text-[#EF4444]"
+                    className="-my-3 -mr-3 grid h-11 w-11 place-items-center rounded-full text-[#9CA3AF] hover:bg-white hover:text-[#EF4444]"
                     disabled={
                       section.key === "field"
                         ? deleteFieldMutation.isPending

@@ -135,7 +135,7 @@ function LandingBackground({
                 <span className="h-[10px] w-[17px] rounded-[3px] bg-[#111827]" />
               </div>
               <div className="flex h-14 items-center gap-3 px-4">
-                <h2 className="text-lg font-bold text-[#5E5CE6]">한손에 영업</h2>
+                <h2 className="text-lg font-bold text-[#4880EE]">한손에 영업</h2>
                 <span className="flex-1" />
                 <ArrowDownToLine className="h-4 w-4 text-[#6B7280]" />
                 <Bell className="h-4 w-4 text-[#6B7280]" />
@@ -155,7 +155,7 @@ function LandingBackground({
                     <span
                       className={
                         index === 0
-                          ? "border-b-2 border-[#5E5CE6] pb-3 font-semibold text-[#5E5CE6]"
+                          ? "border-b-2 border-[#4880EE] pb-3 font-semibold text-[#4880EE]"
                           : "pb-3 text-[#6B7280]"
                       }
                       key={item}
@@ -166,7 +166,7 @@ function LandingBackground({
                 )}
               </div>
               <div className="flex h-10 items-center gap-2 px-4">
-                <span className="rounded-full border border-[#5E5CE6] px-3 py-1.5 text-xs font-semibold text-[#5E5CE6]">
+                <span className="rounded-full border border-[#4880EE] px-3 py-1.5 text-xs font-semibold text-[#4880EE]">
                   다음 행동
                 </span>
                 <span className="rounded-full bg-[#F3F4F6] px-3 py-1.5 text-xs text-[#6B7280]">
@@ -207,7 +207,7 @@ function LandingBackground({
                 />
               </div>
               <button
-                className="absolute bottom-[82px] right-[-78px] grid h-[52px] w-[52px] place-items-center rounded-full bg-[#5E5CE6] text-white shadow-[0_4px_16px_rgba(59,130,246,0.27)]"
+                className="absolute bottom-[82px] right-[-78px] grid h-[52px] w-[52px] place-items-center rounded-full bg-[#4880EE] text-white shadow-[0_4px_16px_rgba(59,130,246,0.27)]"
                 type="button"
               >
                 <Plus className="h-5 w-5" />

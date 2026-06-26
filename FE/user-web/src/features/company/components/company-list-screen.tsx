@@ -587,7 +587,7 @@ function CompanyRow({
       </div>
       <div className="min-w-0">
         <span
-          className="inline-flex h-[22px] max-w-full min-w-0 items-center overflow-hidden rounded-full bg-[#ECFDF5] px-2.5 text-[11px] font-semibold text-[#047857]"
+          className="inline-flex h-[22px] max-w-full min-w-0 items-center overflow-hidden rounded-full bg-[#EFF6FF] px-2.5 text-[11px] font-semibold text-[#4880EE]"
           title={company.companyRegion.region}
         >
           <span className="min-w-0 truncate whitespace-nowrap">
@@ -1106,8 +1106,8 @@ function CompanyMobileCard({
       type="button"
     >
       {/* 이니셜 아바타 */}
-      <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#EEEEFF]">
-        <span className="text-[13px] font-bold text-[#5E5CE6]">{initial}</span>
+      <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#EEF4FF]">
+        <span className="text-[13px] font-bold text-[#4880EE]">{initial}</span>
       </div>
       {/* 내용 */}
       <div className="min-w-0 flex-1">

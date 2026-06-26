@@ -7,7 +7,7 @@ type MobileAppHeaderProps = {
 };
 
 export function MobileAppHeader({
-  logoColor = "#5E5CE6",
+  logoColor = "#4880EE",
   onSearchClick,
 }: MobileAppHeaderProps) {
   const { user } = useAuthSession();
@@ -28,7 +28,7 @@ export function MobileAppHeader({
         <button
           type="button"
           aria-label="통합검색"
-          className="inline-flex items-center justify-center"
+          className="inline-flex h-11 w-11 items-center justify-center rounded-full transition hover:bg-[#F8FAFC]"
           onClick={onSearchClick}
         >
           <Search className="h-5 w-5" style={{ color: "#6B7280" }} />
@@ -38,7 +38,7 @@ export function MobileAppHeader({
         <button
           type="button"
           aria-label="내보내기"
-          className="inline-flex items-center justify-center"
+          className="inline-flex h-11 w-11 items-center justify-center rounded-full transition hover:bg-[#F8FAFC]"
         >
           <Download className="h-5 w-5" style={{ color: "#6B7280" }} />
         </button>
@@ -47,7 +47,7 @@ export function MobileAppHeader({
         <button
           type="button"
           aria-label="알림"
-          className="inline-flex items-center justify-center"
+          className="inline-flex h-11 w-11 items-center justify-center rounded-full transition hover:bg-[#F8FAFC]"
         >
           <Bell className="h-5 w-5" style={{ color: "#6B7280" }} />
         </button>
@@ -55,7 +55,7 @@ export function MobileAppHeader({
         {/* Avatar */}
         <div
           className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-[13px] font-semibold"
-          style={{ backgroundColor: "#1C1A45", color: "#8483EC" }}
+          style={{ backgroundColor: "#EEF4FF", color: "#4880EE" }}
         >
           {initial}
         </div>

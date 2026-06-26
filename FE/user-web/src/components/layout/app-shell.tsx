@@ -23,6 +23,7 @@ import { useDeleteDealMutation } from "@/features/deal/hooks/use-deal-mutations"
 import { useProductDetail } from "@/features/product/hooks/use-product-detail";
 import { useDeleteProductMutation } from "@/features/product/hooks/use-product-mutations";
 import { PageHeader } from "@/components/layout/page-header";
+import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { getApiErrorMessage } from "@/lib/api-client";
 
 const HOME_PATH = "/";
@@ -32,41 +33,59 @@ function DealDetailHeader({ dealId }: { readonly dealId: string }) {
   const navigate = useNavigate();
   const dealQuery = useDealDetail(dealId);
   const deleteDealMutation = useDeleteDealMutation();
+  const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
   const dealName = dealQuery.data?.dealName ?? "...";
 
   const onDelete = async () => {
-    const label = dealQuery.data?.dealName ?? "딜";
-    if (!window.confirm(`${label} 딜을 삭제할까요?`)) {
-      return;
-    }
-
+    setDeleteError(null);
     try {
       await deleteDealMutation.mutateAsync(dealId);
+      setDeleteConfirmOpen(false);
       void navigate("/deals", {
         replace: true,
         state: { notice: "딜이 삭제되었습니다." },
       });
     } catch (error) {
-      window.alert(getApiErrorMessage(error));
+      setDeleteError(getApiErrorMessage(error));
     }
   };
 
   return (
-    <PageHeader
-      breadcrumbs={[
-        { label: "딜", to: "/deals", icon: BriefcaseBusiness },
-        { label: dealName },
-      ]}
-      actions={[
-        {
-          icon: Trash2,
-          tooltip: "삭제",
-          variant: "danger",
-          disabled: deleteDealMutation.isPending,
-          onClick: () => void onDelete(),
-        },
-      ]}
-    />
+    <>
+      <PageHeader
+        breadcrumbs={[
+          { label: "딜", to: "/deals", icon: BriefcaseBusiness },
+          { label: dealName },
+        ]}
+        actions={[
+          {
+            icon: Trash2,
+            tooltip: "삭제",
+            variant: "danger",
+            disabled: deleteDealMutation.isPending,
+            onClick: () => {
+              setDeleteError(null);
+              setDeleteConfirmOpen(true);
+            },
+          },
+        ]}
+      />
+      <ConfirmDialog
+        cancelLabel="취소"
+        confirmLabel="삭제"
+        errorMessage={deleteError}
+        isPending={deleteDealMutation.isPending}
+        onCancel={() => {
+          if (!deleteDealMutation.isPending) {
+            setDeleteConfirmOpen(false);
+          }
+        }}
+        onConfirm={() => void onDelete()}
+        open={deleteConfirmOpen}
+        title={`${dealQuery.data?.dealName ?? "딜"} 딜을 삭제할까요?`}
+      />
+    </>
   );
 }
 
@@ -76,6 +95,8 @@ function ProductDetailHeader({ productId }: { readonly productId: string }) {
   const { search: locationSearch } = useLocation();
   const productQuery = useProductDetail(productId);
   const deleteProductMutation = useDeleteProductMutation();
+  const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
   const productName = productQuery.data?.productName ?? "...";
   const isEditing = new URLSearchParams(locationSearch).get("edit") === "1";
 
@@ -87,43 +108,59 @@ function ProductDetailHeader({ productId }: { readonly productId: string }) {
   };
 
   const onDelete = async () => {
-    const label = productQuery.data?.productName ?? "제품";
-    if (!window.confirm(`${label} 제품을 삭제할까요?`)) {
-      return;
-    }
-
+    setDeleteError(null);
     try {
       await deleteProductMutation.mutateAsync(productId);
+      setDeleteConfirmOpen(false);
       void navigate("/products", {
         replace: true,
         state: { notice: "제품이 삭제되었습니다." },
       });
     } catch (error) {
-      window.alert(getApiErrorMessage(error));
+      setDeleteError(getApiErrorMessage(error));
     }
   };
 
   return (
-    <PageHeader
-      breadcrumbs={[
-        { label: "제품", to: "/products", icon: Package },
-        { label: productName },
-      ]}
-      actions={[
-        {
-          icon: isEditing ? X : Pencil,
-          tooltip: isEditing ? "수정 취소" : "수정",
-          onClick: toggleEdit,
-        },
-        {
-          icon: Trash2,
-          tooltip: "삭제",
-          variant: "danger",
-          disabled: deleteProductMutation.isPending,
-          onClick: () => void onDelete(),
-        },
-      ]}
-    />
+    <>
+      <PageHeader
+        breadcrumbs={[
+          { label: "제품", to: "/products", icon: Package },
+          { label: productName },
+        ]}
+        actions={[
+          {
+            icon: isEditing ? X : Pencil,
+            tooltip: isEditing ? "수정 취소" : "수정",
+            onClick: toggleEdit,
+          },
+          {
+            icon: Trash2,
+            tooltip: "삭제",
+            variant: "danger",
+            disabled: deleteProductMutation.isPending,
+            onClick: () => {
+              setDeleteError(null);
+              setDeleteConfirmOpen(true);
+            },
+          },
+        ]}
+      />
+      <ConfirmDialog
+        cancelLabel="취소"
+        confirmLabel="삭제"
+        errorMessage={deleteError}
+        isPending={deleteProductMutation.isPending}
+        onCancel={() => {
+          if (!deleteProductMutation.isPending) {
+            setDeleteConfirmOpen(false);
+          }
+        }}
+        onConfirm={() => void onDelete()}
+        open={deleteConfirmOpen}
+        title={`${productQuery.data?.productName ?? "제품"} 제품을 삭제할까요?`}
+      />
+    </>
   );
 }
 

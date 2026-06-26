@@ -716,8 +716,8 @@ function MobileDealCard({
       className="block rounded-xl border border-[#E5E7EB] bg-white p-4 shadow-sm transition hover:-translate-y-0.5"
       to={`/deals/${deal.id}`}
     >
-      {/* Row1: 단계 배지 + 가능성 배지 자리 */}
-      <div className="flex items-center justify-between gap-2">
+      {/* Row1: 단계 배지 */}
+      <div className="flex items-center gap-2">
         <span
           className={cn(
             "inline-flex h-[22px] items-center gap-1.5 rounded-full border px-2 text-[11px] font-semibold",
@@ -731,10 +731,6 @@ function MobileDealCard({
             )}
           />
           {deal.dealStatusLabel}
-        </span>
-        {/* 가능성 배지 — 현재 데이터 없으므로 placeholder */}
-        <span className="inline-flex h-[22px] items-center rounded-full bg-[#F3F4F6] px-2 text-[11px] font-semibold text-[#6B7280]">
-          중립
         </span>
       </div>
 
