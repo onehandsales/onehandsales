@@ -3,7 +3,6 @@ import { Building2 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { ManagedTaxonomyDropdown } from "@/components/ui/managed-taxonomy-dropdown";
-import { Button } from "@/components/ui/button";
 import { useCompanyFields, useCompanyRegions } from "@/features/company/hooks/use-company-list";
 import {
   useCreateCompanyFieldMutation,
@@ -28,7 +27,9 @@ import { getApiErrorMessage } from "@/lib/api-client";
 type CompanyEditFormProps = {
   readonly company: CompanyDetail;
   readonly fields: CompanyField[];
+  readonly formId?: string;
   readonly regions: CompanyRegion[];
+  readonly onPendingChange?: (isPending: boolean) => void;
   readonly onSaved: () => void;
 };
 
@@ -36,7 +37,9 @@ type CompanyEditFormProps = {
 export function CompanyEditForm({
   company,
   fields,
+  formId,
   regions,
+  onPendingChange,
   onSaved,
 }: CompanyEditFormProps) {
   const updateCompanyMutation = useUpdateCompanyMutation();
@@ -75,6 +78,10 @@ export function CompanyEditForm({
     setPendingFieldName("");
     setPendingRegionName("");
   }, [company, reset]);
+
+  useEffect(() => {
+    onPendingChange?.(updateCompanyMutation.isPending);
+  }, [onPendingChange, updateCompanyMutation.isPending]);
 
   useEffect(() => {
     if (!pendingFieldName) {
@@ -203,7 +210,11 @@ export function CompanyEditForm({
   };
 
   return (
-    <form className="grid gap-4" onSubmit={(event) => void onSubmit(event)}>
+    <form
+      className="grid gap-3"
+      id={formId}
+      onSubmit={(event) => void onSubmit(event)}
+    >
       <div className="grid gap-2">
         <label className="text-sm font-medium" htmlFor="company-edit-name">
           회사명
@@ -303,16 +314,6 @@ export function CompanyEditForm({
         </p>
       ) : null}
 
-      <div className="flex justify-end">
-        <Button
-          disabled={updateCompanyMutation.isPending}
-          isPending={updateCompanyMutation.isPending}
-          type="submit"
-          variant="primary"
-        >
-          {updateCompanyMutation.isPending ? "저장 중" : "저장"}
-        </Button>
-      </div>
     </form>
   );
 }

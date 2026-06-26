@@ -1,10 +1,8 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Save } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import type { UseFormRegisterReturn } from "react-hook-form";
 import { ManagedTaxonomyDropdown } from "@/components/ui/managed-taxonomy-dropdown";
-import { Button } from "@/components/ui/button";
 import { CompanyCreateDialog } from "@/features/company/components/company-create-dialog";
 import {
   useCompanyFields,
@@ -38,11 +36,18 @@ import { getApiErrorMessage } from "@/lib/api-client";
 
 type ContactEditFormProps = {
   readonly contact: ContactDetail;
+  readonly formId?: string;
+  readonly onPendingChange?: (isPending: boolean) => void;
   readonly onSaved: () => void;
 };
 
 // 기능 : 담당자 기본 정보 수정 폼을 렌더링합니다.
-export function ContactEditForm({ contact, onSaved }: ContactEditFormProps) {
+export function ContactEditForm({
+  contact,
+  formId,
+  onPendingChange,
+  onSaved,
+}: ContactEditFormProps) {
   const updateContactMutation = useUpdateContactMutation();
   const companyOptionsQuery = useCompanyOptions();
   const companyFieldsQuery = useCompanyFields();
@@ -97,6 +102,10 @@ export function ContactEditForm({ contact, onSaved }: ContactEditFormProps) {
     setIsCompanyCreateOpen(false);
     setCompanyCreateName("");
   }, [contact, reset]);
+
+  useEffect(() => {
+    onPendingChange?.(updateContactMutation.isPending);
+  }, [onPendingChange, updateContactMutation.isPending]);
 
   useEffect(() => {
     if (!pendingDepartmentName) {
@@ -240,7 +249,11 @@ export function ContactEditForm({ contact, onSaved }: ContactEditFormProps) {
 
   return (
     <>
-      <form className="grid gap-4" onSubmit={(event) => void onSubmit(event)}>
+      <form
+        className="grid gap-3"
+        id={formId}
+        onSubmit={(event) => void onSubmit(event)}
+      >
         <TextInput
           error={errors.username?.message}
           id="contact-detail-username"
@@ -366,17 +379,6 @@ export function ContactEditForm({ contact, onSaved }: ContactEditFormProps) {
           </p>
         ) : null}
 
-        <div className="flex justify-end">
-          <Button
-            disabled={updateContactMutation.isPending}
-            isPending={updateContactMutation.isPending}
-            type="submit"
-            variant="primary"
-          >
-            <Save className="h-4 w-4" />
-            저장
-          </Button>
-        </div>
       </form>
       <CompanyCreateDialog
         fields={companyFields}

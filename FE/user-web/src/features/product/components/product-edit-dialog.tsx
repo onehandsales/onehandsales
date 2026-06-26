@@ -1,3 +1,6 @@
+import { Save } from "lucide-react";
+import { useState } from "react";
+import { ModalFooterActions } from "@/components/ui/modal-form";
 import { ModalShell } from "@/components/ui/modal-shell";
 import { ProductEditForm } from "@/features/product/components/product-edit-form";
 import type { ProductDetail } from "@/features/product/types/product";
@@ -16,16 +19,33 @@ export function ProductEditDialog({
   onOpenChange,
   onSaved,
 }: ProductEditDialogProps) {
+  const formId = "product-edit-form";
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   return (
     <ModalShell
+      footer={
+        <ModalFooterActions
+          formId={formId}
+          isSubmitting={isSubmitting}
+          pendingLabel="저장 중"
+          submitIcon={<Save className="h-4 w-4" />}
+          submitLabel="저장"
+          onCancel={() => onOpenChange(false)}
+        />
+      }
       open={open}
-      panelClassName="max-h-[82vh] md:max-h-[620px]"
+      bodyClassName="py-4"
+      footerClassName="h-14"
+      panelClassName="max-h-[calc(100vh-2rem)] md:max-h-[680px]"
       size="md"
       title="제품 수정"
       onOpenChange={onOpenChange}
     >
       <ProductEditForm
+        formId={formId}
         product={product}
+        onPendingChange={setIsSubmitting}
         onSaved={() => {
           onSaved();
           onOpenChange(false);

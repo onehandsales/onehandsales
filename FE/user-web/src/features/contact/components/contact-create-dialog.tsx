@@ -246,13 +246,15 @@ export function ContactCreateDialog({
         />
       }
       open={open}
-      panelClassName="max-h-[84vh] md:max-h-[680px]"
+      bodyClassName="py-4"
+      footerClassName="h-14"
+      panelClassName="max-h-[calc(100vh-2rem)] md:max-h-[760px]"
       size="md"
       title="담당자 추가"
       onOpenChange={onOpenChange}
     >
-      <ModalForm id={formId} onSubmit={onSubmit}>
-        <ModalFormSection title="담당자 기본 정보">
+      <ModalForm className="gap-3" id={formId} onSubmit={onSubmit}>
+        <ModalFormSection className="gap-2" title="담당자 기본 정보">
           <ModalFieldGroup
             error={errors.username?.message}
             id="contact-username"
@@ -298,7 +300,7 @@ export function ContactCreateDialog({
           </ModalFormRow>
         </ModalFormSection>
 
-        <ModalFormSection title="소속 정보">
+        <ModalFormSection className="gap-2" title="소속 정보">
           <ContactCompanyField
             companyId={companyId}
             error={errors.companyId?.message}
@@ -383,11 +385,11 @@ export function ContactCreateDialog({
           </ModalFormRow>
         </ModalFormSection>
 
-        <ModalFormSection title="메모(옵션)">
+        <ModalFormSection className="gap-2" title="메모(옵션)">
           <ModalFieldGroup id="contact-memo">
             <textarea
               aria-label="메모"
-              className="min-h-24 resize-y rounded-md border px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-ring"
+              className="h-16 resize-none rounded-md border px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-ring"
               id="contact-memo"
               {...register("contactMemo")}
             />

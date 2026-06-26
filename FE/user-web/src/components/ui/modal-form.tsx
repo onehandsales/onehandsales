@@ -236,6 +236,7 @@ type ModalFooterActionsProps = {
   readonly formId: string;
   readonly submitLabel?: string;
   readonly pendingLabel?: string;
+  readonly submitIcon?: ReactNode;
   readonly isSubmitting?: boolean;
   readonly disabled?: boolean;
   readonly onCancel: () => void;
@@ -247,6 +248,7 @@ export function ModalFooterActions({
   formId,
   submitLabel = "저장",
   pendingLabel = "저장 중",
+  submitIcon,
   isSubmitting = false,
   disabled = false,
   onCancel,
@@ -268,7 +270,7 @@ export function ModalFooterActions({
           onClick={onSubmit}
           type="button"
         >
-          <Plus className="h-4 w-4" />
+          {submitIcon ?? <Plus className="h-4 w-4" />}
           {isSubmitting ? pendingLabel : submitLabel}
         </button>
       ) : (
@@ -278,7 +280,7 @@ export function ModalFooterActions({
           form={formId}
           type="submit"
         >
-          <Plus className="h-4 w-4" />
+          {submitIcon ?? <Plus className="h-4 w-4" />}
           {isSubmitting ? pendingLabel : submitLabel}
         </button>
       )}

@@ -941,13 +941,15 @@ function QuickContactCreateDialog({
           />
         }
         open={open}
-        panelClassName="max-h-[84vh] md:max-h-[660px]"
+        bodyClassName="py-4"
+        footerClassName="h-14"
+        panelClassName="max-h-[calc(100vh-2rem)] md:max-h-[720px]"
         size="md"
         title="담당자 추가"
         onOpenChange={onOpenChange}
       >
-        <ModalForm id={formId} onSubmit={onSubmit}>
-          <ModalFormSection title="담당자 기본 정보">
+        <ModalForm className="gap-3" id={formId} onSubmit={onSubmit}>
+          <ModalFormSection className="gap-2" title="담당자 기본 정보">
             <ModalFormRow columns={2}>
               <ModalFieldGroup
                 error={errors.username?.message}
@@ -1013,7 +1015,7 @@ function QuickContactCreateDialog({
             </ModalFormRow>
           </ModalFormSection>
 
-          <ModalFormSection title="소속 정보">
+          <ModalFormSection className="gap-2" title="소속 정보">
             <ModalFormRow columns={2}>
               <ModalFieldGroup
                 error={errors.contactDepartmentId?.message}
@@ -1111,11 +1113,11 @@ function QuickContactCreateDialog({
             </ModalFormRow>
           </ModalFormSection>
 
-          <ModalFormSection title="메모(옵션)">
+          <ModalFormSection className="gap-2" title="메모(옵션)">
             <ModalFieldGroup id="deal-quick-contact-memo">
               <textarea
                 aria-label="메모"
-                className="min-h-20 resize-y rounded-md border px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-ring"
+                className="h-16 resize-none rounded-md border px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-ring"
                 id="deal-quick-contact-memo"
                 {...register("contactMemo")}
               />

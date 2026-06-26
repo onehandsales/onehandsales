@@ -59,7 +59,7 @@ type MeetingNoteCreateDialogProps = {
   readonly onCreated: (meetingNote: MeetingNote) => void;
 };
 
-type EntitySelectOption = {
+export type EntitySelectOption = {
   readonly id: string;
   readonly label: string;
   readonly description?: string;
@@ -819,7 +819,7 @@ function TextField({
   );
 }
 
-function EntityMultiSelectField({
+export function EntityMultiSelectField({
   id,
   label,
   options,

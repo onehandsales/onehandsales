@@ -3,6 +3,7 @@ import {
   Building2,
   HandCoins,
   IdCard,
+  Save,
 } from "lucide-react";
 import { useEffect, useMemo, useState, type ChangeEvent } from "react";
 import { useForm } from "react-hook-form";
@@ -190,6 +191,7 @@ export function DealEditDialog({
           formId={formId}
           isSubmitting={updateDealMutation.isPending}
           pendingLabel="저장 중"
+          submitIcon={<Save className="h-4 w-4" />}
           submitLabel="저장"
           onCancel={() => onOpenChange(false)}
           onSubmit={() => void onSubmit()}

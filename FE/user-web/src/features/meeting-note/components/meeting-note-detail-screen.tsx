@@ -5,6 +5,7 @@ import {
   ChevronLeft,
   ChevronRight,
   FileText,
+  IdCard,
   Loader2,
   Package,
   Pencil,
@@ -12,13 +13,27 @@ import {
   Trash2,
   UserRound,
 } from "lucide-react";
-import { useEffect, useState, type ReactNode } from "react";
-import { useForm, type UseFormRegisterReturn } from "react-hook-form";
+import { useEffect, useMemo, useState, type ReactNode } from "react";
+import { useForm, useWatch, type UseFormRegisterReturn } from "react-hook-form";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { z } from "zod";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
+import {
+  ModalFooterActions,
+  ModalFormRow,
+} from "@/components/ui/modal-form";
 import { ModalShell } from "@/components/ui/modal-shell";
 import { Toast } from "@/components/ui/toast";
+import {
+  useDealCompanyOptions,
+  useDealContactOptions,
+  useDealProductOptions,
+} from "@/features/deal/hooks/use-deal-entity-options";
+import { useDealList } from "@/features/deal/hooks/use-deal-list";
+import {
+  EntityMultiSelectField,
+  type EntitySelectOption,
+} from "@/features/meeting-note/components/meeting-note-create-dialog";
 import {
   useDeleteMeetingNoteMutation,
   useUpdateMeetingNoteMutation,
@@ -51,6 +66,10 @@ const MEETING_NOTE_SOURCE_LABEL = {
 const MEETING_NOTE_LINKED_LIST_SCROLL_CLASS = "max-h-[116px] overflow-y-auto";
 
 const meetingNoteDetailEditSchema = z.object({
+  companyIds: z.array(z.string()).min(1, "회사를 1개 이상 선택해주세요."),
+  contactIds: z.array(z.string()).min(1, "담당자를 1명 이상 선택해주세요."),
+  dealIds: z.array(z.string()).optional(),
+  productIds: z.array(z.string()).optional(),
   details: z.string().trim().min(1, "상세 내용을 입력해주세요.").max(10000),
   meetingLocalDateTime: z.string().trim().min(1, "미팅 일시를 선택해주세요."),
   nextPlan: z.string().max(2000).optional(),
@@ -259,17 +278,34 @@ function MeetingNoteEditDialog({
   readonly onOpenChange: (open: boolean) => void;
   readonly onSaved: (meetingNote: MeetingNote) => void;
 }) {
+  const formId = "meeting-note-detail-edit-form";
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   return (
     <ModalShell
+      footer={
+        <ModalFooterActions
+          formId={formId}
+          isSubmitting={isSubmitting}
+          pendingLabel="저장 중"
+          submitIcon={<Save className="h-4 w-4" />}
+          submitLabel="저장"
+          onCancel={() => onOpenChange(false)}
+        />
+      }
       open={open}
+      bodyClassName="py-4"
+      footerClassName="h-14"
+      panelClassName="max-h-[86vh] md:max-h-[760px]"
       size="lg"
       title="회의록 수정"
       onOpenChange={onOpenChange}
     >
       <MeetingNoteEditPanel
         detail={detail}
-        onCancel={() => onOpenChange(false)}
+        formId={formId}
         onError={onError}
+        onPendingChange={setIsSubmitting}
         onSaved={onSaved}
       />
     </ModalShell>
@@ -644,29 +680,132 @@ function MeetingNoteTextPanel({
 
 function MeetingNoteEditPanel({
   detail,
-  onCancel,
+  formId,
   onError,
+  onPendingChange,
   onSaved,
 }: {
   readonly detail: MeetingNote;
-  readonly onCancel: () => void;
+  readonly formId?: string;
   readonly onError: (message: string | null) => void;
+  readonly onPendingChange?: (isPending: boolean) => void;
   readonly onSaved: (meetingNote: MeetingNote) => void;
 }) {
   const updateMutation = useUpdateMeetingNoteMutation();
+  const companyOptionsQuery = useDealCompanyOptions();
+  const contactOptionsQuery = useDealContactOptions();
+  const productOptionsQuery = useDealProductOptions();
+  const dealOptionsQuery = useDealList({ page: 1, sort: "createdAtDesc" });
   const {
+    control,
     formState: { errors },
     handleSubmit,
     register,
     reset,
+    setValue,
   } = useForm<MeetingNoteDetailEditFormValues>({
     defaultValues: toMeetingNoteDetailEditFormValues(detail),
     resolver: zodResolver(meetingNoteDetailEditSchema),
   });
+  const companyIds = useWatch({ control, name: "companyIds" }) ?? [];
+  const contactIds = useWatch({ control, name: "contactIds" }) ?? [];
+  const productIds = useWatch({ control, name: "productIds" }) ?? [];
+  const dealIds = useWatch({ control, name: "dealIds" }) ?? [];
+  const companyOptions = useMemo(
+    () =>
+      mergeEntityOptions(
+        (companyOptionsQuery.data ?? []).map((company) => ({
+          id: company.id,
+          label: company.companyName,
+        })),
+        toCompanyEntityOptions(detail.companies),
+      ),
+    [companyOptionsQuery.data, detail.companies],
+  );
+  const allContactOptions = useMemo(
+    () =>
+      mergeEntityOptions<ContactEntitySelectOption>(
+        (contactOptionsQuery.data ?? []).map((contact) => ({
+          companyId: contact.companyId,
+          description: contact.label,
+          id: contact.id,
+          label: contact.username,
+        })),
+        toContactEntityOptions(detail.contacts),
+      ),
+    [contactOptionsQuery.data, detail.contacts],
+  );
+  const productOptions = useMemo(
+    () =>
+      mergeEntityOptions(
+        (productOptionsQuery.data ?? []).map((product) => ({
+          description: [
+            product.productCategory.categoryName,
+            product.productStatus.statusName,
+          ]
+            .filter(Boolean)
+            .join(" / "),
+          id: product.id,
+          label: product.productName,
+        })),
+        toProductEntityOptions(detail.products),
+      ),
+    [productOptionsQuery.data, detail.products],
+  );
+  const dealOptions = useMemo(
+    () =>
+      mergeEntityOptions(
+        (dealOptionsQuery.data?.items ?? []).map((deal) => ({
+          description: [
+            deal.companies.map((company) => company.companyName).join(", "),
+            deal.contacts.map((contact) => contact.username).join(", "),
+          ]
+            .filter(Boolean)
+            .join(" / "),
+          id: deal.id,
+          label: deal.dealName,
+        })),
+        toDealEntityOptions(detail.deals),
+      ),
+    [dealOptionsQuery.data?.items, detail.deals],
+  );
+  const selectedCompanyIdSet = new Set(companyIds);
+  const contactOptions =
+    companyIds.length > 0
+      ? allContactOptions.filter(
+          (contact) =>
+            contact.companyId && selectedCompanyIdSet.has(contact.companyId),
+        )
+      : [];
 
   useEffect(() => {
     reset(toMeetingNoteDetailEditFormValues(detail));
   }, [detail, reset]);
+
+  useEffect(() => {
+    onPendingChange?.(updateMutation.isPending);
+  }, [onPendingChange, updateMutation.isPending]);
+
+  const onCompanyIdsChange = (ids: string[]) => {
+    const nextCompanyIdSet = new Set(ids);
+    const nextContactIds = contactIds.filter((contactId) => {
+      const contact = allContactOptions.find((option) => option.id === contactId);
+
+      if (!contact) {
+        return false;
+      }
+
+      return contact.companyId
+        ? nextCompanyIdSet.has(contact.companyId)
+        : false;
+    });
+
+    setValue("companyIds", ids, { shouldDirty: true, shouldValidate: true });
+    setValue("contactIds", nextContactIds, {
+      shouldDirty: true,
+      shouldValidate: true,
+    });
+  };
 
   const onSubmit = handleSubmit(async (values) => {
     onError(null);
@@ -685,6 +824,7 @@ function MeetingNoteEditPanel({
   return (
     <form
       className="grid gap-4"
+      id={formId}
       onSubmit={onSubmit}
     >
       <div className="grid gap-3 md:grid-cols-[minmax(0,1fr)_240px]">
@@ -702,6 +842,75 @@ function MeetingNoteEditPanel({
           type="datetime-local"
         />
       </div>
+
+      <ModalFormRow className="gap-3" columns={2}>
+        <EntityMultiSelectField
+          emptyText="등록된 회사가 없습니다."
+          errorMessage={errors.companyIds?.message}
+          icon={Building2}
+          id="meeting-note-detail-company-ids"
+          isLoading={companyOptionsQuery.isFetching}
+          label="회사"
+          options={companyOptions}
+          selectedIds={companyIds}
+          onChange={onCompanyIdsChange}
+        />
+        <EntityMultiSelectField
+          emptyText={
+            companyIds.length > 0
+              ? "선택한 회사의 담당자가 없습니다."
+              : "회사를 먼저 선택해주세요."
+          }
+          errorMessage={errors.contactIds?.message}
+          icon={IdCard}
+          id="meeting-note-detail-contact-ids"
+          isLoading={contactOptionsQuery.isFetching}
+          label="담당자"
+          options={contactOptions}
+          selectedIds={contactIds}
+          onChange={(ids) =>
+            setValue("contactIds", ids, {
+              shouldDirty: true,
+              shouldValidate: true,
+            })
+          }
+        />
+      </ModalFormRow>
+
+      <ModalFormRow className="gap-3" columns={2}>
+        <EntityMultiSelectField
+          emptyText="등록된 제품이 없습니다."
+          errorMessage={errors.productIds?.message}
+          icon={Package}
+          id="meeting-note-detail-product-ids"
+          isLoading={productOptionsQuery.isFetching}
+          label="제품(옵션)"
+          options={productOptions}
+          selectedIds={productIds}
+          onChange={(ids) =>
+            setValue("productIds", ids, {
+              shouldDirty: true,
+              shouldValidate: true,
+            })
+          }
+        />
+        <EntityMultiSelectField
+          emptyText="등록된 딜이 없습니다."
+          errorMessage={errors.dealIds?.message}
+          icon={BriefcaseBusiness}
+          id="meeting-note-detail-deal-ids"
+          isLoading={dealOptionsQuery.isFetching}
+          label="딜(옵션)"
+          options={dealOptions}
+          selectedIds={dealIds}
+          onChange={(ids) =>
+            setValue("dealIds", ids, {
+              shouldDirty: true,
+              shouldValidate: true,
+            })
+          }
+        />
+      </ModalFormRow>
 
       <MeetingNoteEditTextArea
         errorMessage={errors.details?.message}
@@ -728,28 +937,6 @@ function MeetingNoteEditPanel({
         />
       </div>
 
-      <div className="flex justify-end gap-2">
-        <button
-          className="h-9 rounded-lg border border-[#DDE3EE] bg-white px-3 text-[13px] font-semibold text-[#6B7280] transition-colors hover:bg-[#F9FAFB]"
-          disabled={updateMutation.isPending}
-          onClick={onCancel}
-          type="button"
-        >
-          취소
-        </button>
-        <button
-          className="inline-flex h-9 items-center gap-1.5 rounded-lg bg-[#4880EE] px-3 text-[13px] font-semibold text-white transition-colors hover:bg-[#1D4ED8] disabled:opacity-60"
-          disabled={updateMutation.isPending}
-          type="submit"
-        >
-          {updateMutation.isPending ? (
-            <Loader2 className="h-4 w-4 animate-spin" />
-          ) : (
-            <Save className="h-4 w-4" />
-          )}
-          저장
-        </button>
-      </div>
     </form>
   );
 }
@@ -870,9 +1057,13 @@ function toMeetingNoteDetailEditFormValues(
   meetingNote: MeetingNote,
 ): MeetingNoteDetailEditFormValues {
   return {
+    companyIds: toActiveCompanyIds(meetingNote.companies),
+    contactIds: toActiveContactIds(meetingNote.contacts),
+    dealIds: toActiveDealIds(meetingNote.deals),
     details: meetingNote.details,
     meetingLocalDateTime: meetingNote.meetingLocalDateTime?.slice(0, 16) ?? "",
     nextPlan: meetingNote.nextPlan ?? "",
+    productIds: toActiveProductIds(meetingNote.products),
     requiredAction: meetingNote.requiredAction ?? "",
     title: meetingNote.title,
   };
@@ -883,14 +1074,144 @@ function toMeetingNoteDetailUpdateInput(
   values: MeetingNoteDetailEditFormValues,
 ): UpdateMeetingNoteInput {
   return {
+    companies: values.companyIds.map((companyId) => ({ companyId })),
+    contacts: values.contactIds.map((contactId) => ({ contactId })),
+    deals: (values.dealIds ?? []).map((dealId) => ({ dealId })),
     details: values.details.trim(),
     meetingLocalDateTime: values.meetingLocalDateTime.trim(),
     meetingNoteId,
     nextPlan: toOptionalText(values.nextPlan),
+    products: (values.productIds ?? []).map((productId) => ({ productId })),
     requiredAction: toOptionalText(values.requiredAction),
     sourceType: "MANUAL",
     title: values.title.trim(),
   };
+}
+
+// 기능 : 삭제되지 않은 회의록 연결 회사 ID만 수정 기본값으로 추출합니다.
+function toActiveCompanyIds(companies: readonly MeetingNoteCompany[]) {
+  return companies
+    .filter((company) => company.companyId && !company.isDeleted)
+    .map((company) => company.companyId as string);
+}
+
+// 기능 : 삭제되지 않은 회의록 연결 담당자 ID만 수정 기본값으로 추출합니다.
+function toActiveContactIds(contacts: readonly MeetingNoteContact[]) {
+  return contacts
+    .filter((contact) => contact.contactId && !contact.isDeleted)
+    .map((contact) => contact.contactId as string);
+}
+
+// 기능 : 삭제되지 않은 회의록 연결 제품 ID만 수정 기본값으로 추출합니다.
+function toActiveProductIds(products: readonly MeetingNoteProduct[]) {
+  return products
+    .filter((product) => product.productId && !product.isDeleted)
+    .map((product) => product.productId as string);
+}
+
+// 기능 : 삭제되지 않은 회의록 연결 딜 ID만 수정 기본값으로 추출합니다.
+function toActiveDealIds(deals: readonly MeetingNoteDeal[]) {
+  return deals
+    .filter((deal) => !deal.isDeleted)
+    .map((deal) => deal.dealId);
+}
+
+type ContactEntitySelectOption = EntitySelectOption & {
+  readonly companyId: string | null;
+};
+
+// 기능 : API 옵션에 현재 회의록의 활성 연결 옵션을 보강합니다.
+function mergeEntityOptions<TOption extends EntitySelectOption>(
+  options: readonly TOption[],
+  currentOptions: readonly TOption[],
+): TOption[] {
+  const optionIds = new Set(options.map((option) => option.id));
+  const missingOptions = currentOptions.filter(
+    (option) => !optionIds.has(option.id),
+  );
+
+  return [...options, ...missingOptions];
+}
+
+// 기능 : 회의록 연결 회사 snapshot을 수정 모달 옵션 형태로 변환합니다.
+function toCompanyEntityOptions(
+  companies: readonly MeetingNoteCompany[],
+): EntitySelectOption[] {
+  return companies
+    .filter((company) => company.companyId && !company.isDeleted)
+    .map((company) => ({
+      description: [
+        company.companyFieldSnapshot,
+        company.companyRegionSnapshot,
+      ]
+        .filter(Boolean)
+        .join(" / "),
+      id: company.companyId as string,
+      label: company.companyNameSnapshot,
+    }));
+}
+
+// 기능 : 회의록 연결 담당자 snapshot을 수정 모달 옵션 형태로 변환합니다.
+function toContactEntityOptions(
+  contacts: readonly MeetingNoteContact[],
+): ContactEntitySelectOption[] {
+  return contacts
+    .filter(
+      (contact) =>
+        contact.contactId && contact.companyId && !contact.isDeleted,
+    )
+    .map((contact) => ({
+      companyId: contact.companyId,
+      description: [
+        contact.companyNameSnapshot,
+        contact.departmentSnapshot,
+        contact.jobGradeSnapshot,
+      ]
+        .filter(Boolean)
+        .join(" / "),
+      id: contact.contactId as string,
+      label: contact.contactUsernameSnapshot,
+    }));
+}
+
+// 기능 : 회의록 연결 제품 snapshot을 수정 모달 옵션 형태로 변환합니다.
+function toProductEntityOptions(
+  products: readonly MeetingNoteProduct[],
+): EntitySelectOption[] {
+  return products
+    .filter((product) => product.productId && !product.isDeleted)
+    .map((product) => ({
+      description: [
+        product.productCategorySnapshot,
+        product.productStatusSnapshot,
+        product.productPriceSnapshot !== null
+          ? formatMoney(product.productPriceSnapshot, "KRW")
+          : null,
+      ]
+        .filter(Boolean)
+        .join(" / "),
+      id: product.productId as string,
+      label: product.productNameSnapshot,
+    }));
+}
+
+// 기능 : 회의록 연결 딜 snapshot을 수정 모달 옵션 형태로 변환합니다.
+function toDealEntityOptions(
+  deals: readonly MeetingNoteDeal[],
+): EntitySelectOption[] {
+  return deals
+    .filter((deal) => !deal.isDeleted)
+    .map((deal) => ({
+      description: [
+        deal.dealStatusSnapshot,
+        formatMoney(deal.dealCostSnapshot, "KRW"),
+        formatDate(deal.dealExpectedEndDateSnapshot),
+      ]
+        .filter(Boolean)
+        .join(" / "),
+      id: deal.dealId,
+      label: deal.dealNameSnapshot,
+    }));
 }
 
 function toOptionalText(value: string | undefined) {

@@ -1,10 +1,8 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Save } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { ManagedTaxonomyDropdown } from "@/components/ui/managed-taxonomy-dropdown";
-import { Button } from "@/components/ui/button";
 import {
   useProductCategories,
   useProductStatuses,
@@ -39,12 +37,19 @@ const schema = z.object({
 type FormValues = z.infer<typeof schema>;
 
 type ProductEditFormProps = {
+  readonly formId?: string;
   readonly product: ProductDetail;
+  readonly onPendingChange?: (isPending: boolean) => void;
   readonly onSaved: () => void;
 };
 
 // 기능 : 제품 상세 기본 정보 수정 폼을 렌더링합니다.
-export function ProductEditForm({ product, onSaved }: ProductEditFormProps) {
+export function ProductEditForm({
+  formId,
+  product,
+  onPendingChange,
+  onSaved,
+}: ProductEditFormProps) {
   const updateProductMutation = useUpdateProductMutation();
   const createCategoryMutation = useCreateCategoryMutation();
   const createStatusMutation = useCreateStatusMutation();
@@ -87,6 +92,10 @@ export function ProductEditForm({ product, onSaved }: ProductEditFormProps) {
     setPendingCategoryName("");
     setPendingStatusName("");
   }, [product, reset]);
+
+  useEffect(() => {
+    onPendingChange?.(updateProductMutation.isPending);
+  }, [onPendingChange, updateProductMutation.isPending]);
 
   useEffect(() => {
     if (!pendingCategoryName) {
@@ -224,7 +233,11 @@ export function ProductEditForm({ product, onSaved }: ProductEditFormProps) {
   };
 
   return (
-    <form className="grid gap-4" onSubmit={(event) => void onSubmit(event)}>
+    <form
+      className="grid gap-3"
+      id={formId}
+      onSubmit={(event) => void onSubmit(event)}
+    >
       <div className="grid gap-2">
         <label className="text-sm font-medium" htmlFor="product-detail-name">
           제품명
@@ -240,7 +253,7 @@ export function ProductEditForm({ product, onSaved }: ProductEditFormProps) {
         ) : null}
       </div>
 
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid gap-3 md:grid-cols-2">
         <div className="grid gap-2">
           <label
             className="text-sm font-medium"
@@ -335,17 +348,6 @@ export function ProductEditForm({ product, onSaved }: ProductEditFormProps) {
         </p>
       ) : null}
 
-      <div className="flex justify-end">
-        <Button
-          disabled={updateProductMutation.isPending}
-          isPending={updateProductMutation.isPending}
-          type="submit"
-          variant="primary"
-        >
-          <Save className="h-4 w-4" />
-          저장
-        </Button>
-      </div>
     </form>
   );
 }
