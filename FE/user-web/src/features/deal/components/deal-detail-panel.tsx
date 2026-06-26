@@ -33,6 +33,7 @@ import { ModalShell } from "@/components/ui/modal-shell";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { Toast } from "@/components/ui/toast";
 import { useToast } from "@/components/ui/use-toast";
+import { DealEditDialog } from "@/features/deal/components/deal-edit-dialog";
 import {
   useDealDetail,
   useDealFollowingActionLogs,
@@ -412,7 +413,7 @@ function DealDetailPageLayout({
   readonly onFetchFollowingLogsNext: () => void;
   readonly onFetchMemoLogsNext: () => void;
 }) {
-  const [isEditing, setIsEditing] = useState(false);
+  const [isEditOpen, setIsEditOpen] = useState(false);
   const companyName = formatDealCompanySummary(detail);
   const contactName = formatDealContactSummary(detail);
   const contactDepartmentName = formatDealContactDepartmentSummary(detail);
@@ -436,9 +437,9 @@ function DealDetailPageLayout({
         <DealDetailTopBar
           deletePending={deletePending}
           dealName={dealName}
-          isEditing={isEditing}
+          isEditing={false}
           onDelete={onDeleteDeal}
-          onToggleEdit={() => setIsEditing((value) => !value)}
+          onToggleEdit={() => setIsEditOpen(true)}
         />
 
         <div className="flex flex-col gap-4 p-4 pb-24">
@@ -448,11 +449,11 @@ function DealDetailPageLayout({
             contactName={contactName}
             dealCost={dealCost}
             detail={detail}
-            isEditing={isEditing}
-            onCancelEdit={() => setIsEditing(false)}
+            isEditing={false}
+            onCancelEdit={() => setIsEditOpen(false)}
             onSaved={() => {
               onDetailSaved();
-              setIsEditing(false);
+              setIsEditOpen(false);
             }}
           />
           <div className="grid gap-4">
@@ -495,9 +496,9 @@ function DealDetailPageLayout({
         <DealDetailTopBar
           deletePending={deletePending}
           dealName={dealName}
-          isEditing={isEditing}
+          isEditing={false}
           onDelete={onDeleteDeal}
-          onToggleEdit={() => setIsEditing((value) => !value)}
+          onToggleEdit={() => setIsEditOpen(true)}
         />
 
         <div className="flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto p-6">
@@ -507,11 +508,11 @@ function DealDetailPageLayout({
             contactName={contactName}
             dealCost={dealCost}
             detail={detail}
-            isEditing={isEditing}
-            onCancelEdit={() => setIsEditing(false)}
+            isEditing={false}
+            onCancelEdit={() => setIsEditOpen(false)}
             onSaved={() => {
               onDetailSaved();
-              setIsEditing(false);
+              setIsEditOpen(false);
             }}
           />
 
@@ -541,6 +542,16 @@ function DealDetailPageLayout({
           </div>
         </div>
       </div>
+
+      <DealEditDialog
+        deal={detail}
+        open={isEditOpen}
+        onOpenChange={setIsEditOpen}
+        onSaved={() => {
+          onDetailSaved();
+          setIsEditOpen(false);
+        }}
+      />
     </>
   );
 }

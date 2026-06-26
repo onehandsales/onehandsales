@@ -1,5 +1,6 @@
 import { Building2, ChevronDown, Plus, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
+import { useDropdownPlacement } from "@/components/ui/use-dropdown-placement";
 import { useCompanyOptions } from "@/features/contact/hooks/use-company-options";
 import { cn } from "@/utils/cn";
 
@@ -28,6 +29,12 @@ export function ContactCompanyField({
   const companyOptionsQuery = useCompanyOptions();
   const [isOpen, setIsOpen] = useState(false);
   const wrapperRef = useRef<HTMLDivElement>(null);
+  const anchorRef = useRef<HTMLDivElement>(null);
+  const placement = useDropdownPlacement({
+    estimatedHeight: 240,
+    isOpen,
+    triggerRef: anchorRef,
+  });
   const allCompanies = companyOptionsQuery.data?.items ?? [];
   const filterText = companyId ? "" : search.trim();
   const filteredCompanies =
@@ -62,7 +69,7 @@ export function ContactCompanyField({
       <label className="text-sm font-medium" htmlFor={id}>
         {label}
       </label>
-      <div className="relative">
+      <div ref={anchorRef} className="relative">
         <Building2 className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
         <input
           aria-describedby={error ? `${id}-error` : undefined}
@@ -104,7 +111,14 @@ export function ContactCompanyField({
         )}
 
         {isOpen ? (
-          <div className="absolute left-0 right-0 top-[calc(100%+4px)] z-50 max-h-44 overflow-y-auto rounded-md border bg-white shadow-lg">
+          <div
+            className={cn(
+              "absolute left-0 right-0 z-50 max-h-44 overflow-y-auto rounded-md border bg-white shadow-lg",
+              placement === "up"
+                ? "bottom-[calc(100%+4px)]"
+                : "top-[calc(100%+4px)]"
+            )}
+          >
             {companyOptionsQuery.isLoading ? (
               <p className="px-3 py-2 text-sm text-muted-foreground">
                 불러오는 중

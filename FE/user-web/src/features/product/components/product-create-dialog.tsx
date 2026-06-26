@@ -256,6 +256,7 @@ export function ProductCreateDialog({
         />
       }
       open={open}
+      panelClassName="max-h-[82vh] md:max-h-[620px]"
       size="md"
       title="제품 추가"
       onOpenChange={onOpenChange}

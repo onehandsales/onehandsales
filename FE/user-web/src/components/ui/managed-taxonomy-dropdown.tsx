@@ -1,5 +1,6 @@
 import { Plus, Search, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
+import { useDropdownPlacement } from "@/components/ui/use-dropdown-placement";
 import { getApiErrorMessage } from "@/lib/api-client";
 import { cn } from "@/utils/cn";
 
@@ -49,6 +50,11 @@ export function ManagedTaxonomyDropdown<TItem extends ManagedTaxonomyItem>({
   const [deleteErrors, setDeleteErrors] = useState<Record<string, string>>({});
   const wrapperRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const placement = useDropdownPlacement({
+    estimatedHeight: 260,
+    isOpen,
+    triggerRef: wrapperRef,
+  });
   const selectedItem = items.find((item) => item.id === selectedId);
   const selectedLabel = selectedItem ? getLabel(selectedItem) : "";
   const query = search.trim();
@@ -201,7 +207,14 @@ export function ManagedTaxonomyDropdown<TItem extends ManagedTaxonomyItem>({
       </div>
 
       {isOpen ? (
-        <div className="absolute left-0 right-0 top-[calc(100%+4px)] z-50 rounded-md border border-[#E6EAF0] bg-white shadow-lg">
+        <div
+          className={cn(
+            "absolute left-0 right-0 z-50 rounded-md border border-[#E6EAF0] bg-white shadow-lg",
+            placement === "up"
+              ? "bottom-[calc(100%+4px)]"
+              : "top-[calc(100%+4px)]"
+          )}
+        >
           <div className="border-b border-[#E6EAF0] px-3 py-2">
             <span className="text-[11px] font-semibold text-[#6B7280]">
               {title} 검색

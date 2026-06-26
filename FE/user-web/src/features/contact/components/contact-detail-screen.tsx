@@ -22,6 +22,7 @@ import {
   ModalFormSection,
 } from "@/components/ui/modal-form";
 import { ModalShell } from "@/components/ui/modal-shell";
+import { ContactEditDialog } from "@/features/contact/components/contact-edit-dialog";
 import {
   useContactDeals,
   useContactDetail,
@@ -88,7 +89,7 @@ export function ContactDetailScreen({ contactId }: ContactDetailScreenProps) {
   const [notice, setNotice] = useState<string | null>(null);
   const [noticeDescription, setNoticeDescription] = useState<string | null>(null);
   const [actionError, setActionError] = useState<string | null>(null);
-  const [isEditing, setIsEditing] = useState(false);
+  const [isEditOpen, setIsEditOpen] = useState(false);
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
 
   const contactQuery = useContactDetail(contactId);
@@ -187,9 +188,9 @@ export function ContactDetailScreen({ contactId }: ContactDetailScreenProps) {
             <span className="font-bold text-[#111827]">{contact.username}</span>
           </div>
           <button
-            aria-label={isEditing ? "수정 취소" : "수정"}
+            aria-label="수정"
             className="flex h-8 w-8 items-center justify-center rounded-lg border border-[#E5E7EB] bg-white text-[#374151] disabled:opacity-50"
-            onClick={() => setIsEditing((value) => !value)}
+            onClick={() => setIsEditOpen(true)}
             type="button"
           >
             <Pencil className="h-4 w-4" />
@@ -208,12 +209,12 @@ export function ContactDetailScreen({ contactId }: ContactDetailScreenProps) {
         <div className="flex flex-col gap-4 p-4 pb-24">
           <ContactSummaryHeader
             contact={contact}
-            isEditing={isEditing}
-            onCancelEdit={() => setIsEditing(false)}
+            isEditing={false}
+            onCancelEdit={() => setIsEditOpen(false)}
             onSaved={() => {
               void contactQuery.refetch();
               showNotice("담당자 정보가 저장되었습니다.");
-              setIsEditing(false);
+              setIsEditOpen(false);
             }}
           />
 
@@ -278,7 +279,7 @@ export function ContactDetailScreen({ contactId }: ContactDetailScreenProps) {
           <button
             aria-label="수정"
             className="flex h-8 w-8 items-center justify-center rounded-lg border border-[#E5E7EB] bg-white text-[#374151] transition-colors hover:bg-[#F9FAFB]"
-            onClick={() => setIsEditing((v) => !v)}
+            onClick={() => setIsEditOpen(true)}
             type="button"
           >
             <Pencil className="h-4 w-4" />
@@ -298,12 +299,12 @@ export function ContactDetailScreen({ contactId }: ContactDetailScreenProps) {
         <div className="flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto p-6">
           <ContactSummaryHeader
             contact={contact}
-            isEditing={isEditing}
-            onCancelEdit={() => setIsEditing(false)}
+            isEditing={false}
+            onCancelEdit={() => setIsEditOpen(false)}
             onSaved={() => {
               void contactQuery.refetch();
               showNotice("담당자 정보가 저장되었습니다.");
-              setIsEditing(false);
+              setIsEditOpen(false);
             }}
           />
 
@@ -350,6 +351,15 @@ export function ContactDetailScreen({ contactId }: ContactDetailScreenProps) {
           }
         }}
         onConfirm={() => void onDeleteContact()}
+      />
+      <ContactEditDialog
+        contact={contact}
+        open={isEditOpen}
+        onOpenChange={setIsEditOpen}
+        onSaved={() => {
+          void contactQuery.refetch();
+          showNotice("담당자 정보가 저장되었습니다.");
+        }}
       />
     </>
   );

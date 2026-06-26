@@ -11,13 +11,13 @@ import {
   Save,
   Trash2,
   UserRound,
-  X,
 } from "lucide-react";
 import { useEffect, useState, type ReactNode } from "react";
 import { useForm, type UseFormRegisterReturn } from "react-hook-form";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { z } from "zod";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
+import { ModalShell } from "@/components/ui/modal-shell";
 import { Toast } from "@/components/ui/toast";
 import {
   useDeleteMeetingNoteMutation,
@@ -71,7 +71,7 @@ export function MeetingNoteDetailScreen({
   const [notice, setNotice] = useState(() => readLocationNotice(location.state));
   const [actionError, setActionError] = useState<string | null>(null);
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
-  const [isEditing, setIsEditing] = useState(false);
+  const [isEditOpen, setIsEditOpen] = useState(false);
   const [savedMeetingNote, setSavedMeetingNote] = useState<MeetingNote | null>(
     null,
   );
@@ -152,32 +152,30 @@ export function MeetingNoteDetailScreen({
 
         <MeetingNoteDetailTopBar
           deletePending={deleteMutation.isPending}
-          isEditing={isEditing}
           meetingNoteTitle={detail.title}
           onDelete={() => setDeleteConfirmOpen(true)}
-          onToggleEdit={() => {
+          onEdit={() => {
             setActionError(null);
-            setIsEditing((value) => !value);
+            setIsEditOpen(true);
           }}
         />
 
         <div className="flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto p-4 pb-24 md:p-6">
-          {isEditing ? (
-            <MeetingNoteEditPanel
-              detail={detail}
-              onCancel={() => setIsEditing(false)}
-              onError={(message) => setActionError(message)}
-              onSaved={(updated) => {
-                setSavedMeetingNote(updated);
-                setNotice("회의록이 수정되었습니다.");
-                setIsEditing(false);
-              }}
-            />
-          ) : (
-            <MeetingNoteDetailBody detail={detail} />
-          )}
+          <MeetingNoteDetailBody detail={detail} />
         </div>
       </div>
+
+      <MeetingNoteEditDialog
+        detail={detail}
+        open={isEditOpen}
+        onError={(message) => setActionError(message)}
+        onOpenChange={setIsEditOpen}
+        onSaved={(updated) => {
+          setSavedMeetingNote(updated);
+          setNotice("회의록이 수정되었습니다.");
+          setIsEditOpen(false);
+        }}
+      />
 
       <ConfirmDialog
         cancelLabel="취소"
@@ -200,16 +198,14 @@ export function MeetingNoteDetailScreen({
 
 function MeetingNoteDetailTopBar({
   deletePending,
-  isEditing,
   meetingNoteTitle,
   onDelete,
-  onToggleEdit,
+  onEdit,
 }: {
   readonly deletePending: boolean;
-  readonly isEditing: boolean;
   readonly meetingNoteTitle: string;
   readonly onDelete: () => void;
-  readonly onToggleEdit: () => void;
+  readonly onEdit: () => void;
 }) {
   return (
     <div className="flex h-16 shrink-0 items-center gap-3 bg-transparent px-4 md:px-6">
@@ -225,12 +221,12 @@ function MeetingNoteDetailTopBar({
         </span>
       </div>
       <button
-        aria-label={isEditing ? "수정 취소" : "수정"}
+        aria-label="수정"
         className="flex h-9 w-9 items-center justify-center rounded-lg border border-[#E5E7EB] bg-white text-[#374151] transition-colors hover:bg-[#F9FAFB]"
-        onClick={onToggleEdit}
+        onClick={onEdit}
         type="button"
       >
-        {isEditing ? <X className="h-4 w-4" /> : <Pencil className="h-4 w-4" />}
+        <Pencil className="h-4 w-4" />
       </button>
       <button
         aria-label="삭제"
@@ -246,6 +242,37 @@ function MeetingNoteDetailTopBar({
         )}
       </button>
     </div>
+  );
+}
+
+// 기능 : 회의록 수정 form을 상세 화면 위 모달로 표시합니다.
+function MeetingNoteEditDialog({
+  detail,
+  open,
+  onError,
+  onOpenChange,
+  onSaved,
+}: {
+  readonly detail: MeetingNote;
+  readonly open: boolean;
+  readonly onError: (message: string | null) => void;
+  readonly onOpenChange: (open: boolean) => void;
+  readonly onSaved: (meetingNote: MeetingNote) => void;
+}) {
+  return (
+    <ModalShell
+      open={open}
+      size="lg"
+      title="회의록 수정"
+      onOpenChange={onOpenChange}
+    >
+      <MeetingNoteEditPanel
+        detail={detail}
+        onCancel={() => onOpenChange(false)}
+        onError={onError}
+        onSaved={onSaved}
+      />
+    </ModalShell>
   );
 }
 
@@ -657,7 +684,7 @@ function MeetingNoteEditPanel({
 
   return (
     <form
-      className="grid gap-4 rounded-xl border border-[#BFDBFE] bg-white p-4"
+      className="grid gap-4"
       onSubmit={onSubmit}
     >
       <div className="grid gap-3 md:grid-cols-[minmax(0,1fr)_240px]">

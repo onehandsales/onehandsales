@@ -25,6 +25,7 @@ import {
 } from "@/components/ui/modal-form";
 import { ModalShell } from "@/components/ui/modal-shell";
 import { ErrorState } from "@/components/ui/state";
+import { useDropdownPlacement } from "@/components/ui/use-dropdown-placement";
 import {
   useCompanyFields,
   useCompanyRegions,
@@ -69,6 +70,11 @@ import {
   type DealProductOption,
   type DealStatus,
 } from "@/features/deal/types/deal";
+import {
+  formatCurrencyInput,
+  normalizeCurrencyInput,
+  normalizeDateInput,
+} from "@/features/deal/utils/deal-form-input";
 import { CompanyTaxonomyCreateDialog } from "@/features/company/components/company-taxonomy-create-dialog";
 import { ProductCreateDialog } from "@/features/product/components/product-create-dialog";
 import { getApiErrorMessage } from "@/lib/api-client";
@@ -286,6 +292,7 @@ export function DealCreateDialog({
           />
         }
         open={open}
+        panelClassName="max-h-[86vh] md:max-h-[760px]"
         size="md"
         title="딜 추가"
         onOpenChange={onOpenChange}
@@ -656,6 +663,7 @@ function QuickCompanyCreateDialog({
           />
         }
         open={open}
+        panelClassName="max-h-[82vh] md:max-h-[560px]"
         size="sm"
         title="회사 추가"
         onOpenChange={onOpenChange}
@@ -933,6 +941,7 @@ function QuickContactCreateDialog({
           />
         }
         open={open}
+        panelClassName="max-h-[84vh] md:max-h-[660px]"
         size="md"
         title="담당자 추가"
         onOpenChange={onOpenChange}
@@ -1170,7 +1179,7 @@ type SearchSelectFieldProps<TItem extends { readonly id: string }> = {
 };
 
 // 기능 : 빈 입력에 검색어를 입력하면 일치하는 옵션을 아래에 표시하고 클릭 선택합니다.
-function SearchSelectField<TItem extends { readonly id: string }>({
+export function SearchSelectField<TItem extends { readonly id: string }>({
   id,
   items,
   search,
@@ -1191,6 +1200,11 @@ function SearchSelectField<TItem extends { readonly id: string }>({
 }: SearchSelectFieldProps<TItem>) {
   const [isOpen, setIsOpen] = useState(false);
   const wrapperRef = useRef<HTMLDivElement>(null);
+  const placement = useDropdownPlacement({
+    estimatedHeight: 220,
+    isOpen,
+    triggerRef: wrapperRef,
+  });
   const query = search.trim();
   const inputValue = selectedId ? selectedLabel : search;
   const filteredItems =
@@ -1264,7 +1278,14 @@ function SearchSelectField<TItem extends { readonly id: string }>({
       )}
 
       {isOpen && !selectedId ? (
-        <div className="absolute left-0 right-0 top-[calc(100%+4px)] z-50 max-h-44 overflow-y-auto rounded-md border bg-white shadow-lg">
+        <div
+          className={cn(
+            "absolute left-0 right-0 z-50 max-h-44 overflow-y-auto rounded-md border bg-white shadow-lg",
+            placement === "up"
+              ? "bottom-[calc(100%+4px)]"
+              : "top-[calc(100%+4px)]"
+          )}
+        >
           {isLoading ? (
             <p className="px-3 py-2 text-sm text-muted-foreground">
               검색 중입니다.
@@ -1319,7 +1340,7 @@ type SelectedOptionChipsProps<TItem extends { readonly id: string }> = {
   readonly onRemove: (id: string) => void;
 };
 
-function SelectedOptionChips<TItem extends { readonly id: string }>({
+export function SelectedOptionChips<TItem extends { readonly id: string }>({
   items,
   getLabel,
   onRemove,
@@ -1351,7 +1372,7 @@ type DealStatusDropdownProps = {
   readonly onChange: (status: DealStatus) => void;
 };
 
-function DealStatusDropdown({
+export function DealStatusDropdown({
   id,
   value,
   onChange,
@@ -1434,7 +1455,7 @@ function DealStatusDropdown({
   );
 }
 
-function ProductMultiSelectDropdown({
+export function ProductMultiSelectDropdown({
   id,
   items,
   search,
@@ -1447,6 +1468,11 @@ function ProductMultiSelectDropdown({
 }: ProductMultiSelectDropdownProps) {
   const [isOpen, setIsOpen] = useState(false);
   const wrapperRef = useRef<HTMLDivElement>(null);
+  const placement = useDropdownPlacement({
+    estimatedHeight: 220,
+    isOpen,
+    triggerRef: wrapperRef,
+  });
   const selectedItems = items.filter((item) => selectedIds.includes(item.id));
   const query = search.trim();
   const filteredItems =
@@ -1539,7 +1565,12 @@ function ProductMultiSelectDropdown({
 
       {isOpen ? (
         <div
-          className="absolute left-0 right-0 top-[calc(100%+4px)] z-50 overflow-hidden rounded-md border bg-white shadow-lg"
+          className={cn(
+            "absolute left-0 right-0 z-50 overflow-hidden rounded-md border bg-white shadow-lg",
+            placement === "up"
+              ? "bottom-[calc(100%+4px)]"
+              : "top-[calc(100%+4px)]"
+          )}
           role="listbox"
         >
           <div className="hidden items-center justify-between border-b px-3 py-2">
@@ -1639,26 +1670,3 @@ function findProductOptionByName(
   return options.find((option) => normalizeText(option.productName) === target);
 }
 
-function normalizeCurrencyInput(value: string) {
-  const digits = value.replace(/\D/g, "");
-  return digits.replace(/^0+(?=\d)/, "");
-}
-
-function formatCurrencyInput(value: string) {
-  const normalized = normalizeCurrencyInput(value);
-  return normalized.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-}
-
-function normalizeDateInput(value: string) {
-  const digits = value.replace(/\D/g, "").slice(0, 8);
-
-  if (digits.length <= 4) {
-    return digits;
-  }
-
-  if (digits.length <= 6) {
-    return `${digits.slice(0, 4)}-${digits.slice(4)}`;
-  }
-
-  return `${digits.slice(0, 4)}-${digits.slice(4, 6)}-${digits.slice(6)}`;
-}

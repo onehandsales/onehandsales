@@ -21,6 +21,7 @@ import {
   ModalFormSection,
 } from "@/components/ui/modal-form";
 import { ModalShell } from "@/components/ui/modal-shell";
+import { CompanyEditDialog } from "@/features/company/components/company-edit-dialog";
 import {
   useCompanyContacts,
   useCompanyDeals,
@@ -87,7 +88,7 @@ export function CompanyDetailScreen({ companyId }: CompanyDetailScreenProps) {
   const [notice, setNotice] = useState<string | null>(null);
   const [noticeDescription, setNoticeDescription] = useState<string | null>(null);
   const [actionError, setActionError] = useState<string | null>(null);
-  const [isEditing, setIsEditing] = useState(false);
+  const [isEditOpen, setIsEditOpen] = useState(false);
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
 
   const companyQuery = useCompanyDetail(companyId);
@@ -192,9 +193,9 @@ export function CompanyDetailScreen({ companyId }: CompanyDetailScreenProps) {
             <span className="font-bold text-[#111827]">{company.companyName}</span>
           </div>
           <button
-            aria-label={isEditing ? "수정 취소" : "수정"}
+            aria-label="수정"
             className="flex h-8 w-8 items-center justify-center rounded-lg border border-[#E5E7EB] bg-white text-[#374151] transition-colors hover:bg-[#F9FAFB]"
-            onClick={() => setIsEditing((value) => !value)}
+            onClick={() => setIsEditOpen(true)}
             type="button"
           >
             <Pencil className="h-4 w-4" />
@@ -216,14 +217,14 @@ export function CompanyDetailScreen({ companyId }: CompanyDetailScreenProps) {
             contactCount={contacts.length}
             dealCount={deals.length}
             fields={fields}
-            isEditing={isEditing}
+            isEditing={false}
             logoLetter={logoLetter}
             regions={regions}
-            onCancelEdit={() => setIsEditing(false)}
+            onCancelEdit={() => setIsEditOpen(false)}
             onSaved={() => {
               void companyQuery.refetch();
               showNotice("회사 정보가 저장되었습니다.");
-              setIsEditing(false);
+              setIsEditOpen(false);
             }}
           />
 
@@ -273,7 +274,7 @@ export function CompanyDetailScreen({ companyId }: CompanyDetailScreenProps) {
           <button
             aria-label="수정"
             className="flex h-8 w-8 items-center justify-center rounded-lg border border-[#E5E7EB] bg-white text-[#374151] transition-colors hover:bg-[#F9FAFB]"
-            onClick={() => setIsEditing((v) => !v)}
+            onClick={() => setIsEditOpen(true)}
             type="button"
           >
             <Pencil className="h-4 w-4" />
@@ -296,14 +297,14 @@ export function CompanyDetailScreen({ companyId }: CompanyDetailScreenProps) {
             contactCount={contacts.length}
             dealCount={deals.length}
             fields={fields}
-            isEditing={isEditing}
+            isEditing={false}
             logoLetter={logoLetter}
             regions={regions}
-            onCancelEdit={() => setIsEditing(false)}
+            onCancelEdit={() => setIsEditOpen(false)}
             onSaved={() => {
               void companyQuery.refetch();
               showNotice("회사 정보가 저장되었습니다.");
-              setIsEditing(false);
+              setIsEditOpen(false);
             }}
           />
 
@@ -350,6 +351,17 @@ export function CompanyDetailScreen({ companyId }: CompanyDetailScreenProps) {
           }
         }}
         onConfirm={() => void onDeleteCompany()}
+      />
+      <CompanyEditDialog
+        company={company}
+        fields={fields}
+        open={isEditOpen}
+        regions={regions}
+        onOpenChange={setIsEditOpen}
+        onSaved={() => {
+          void companyQuery.refetch();
+          showNotice("회사 정보가 저장되었습니다.");
+        }}
       />
     </>
   );

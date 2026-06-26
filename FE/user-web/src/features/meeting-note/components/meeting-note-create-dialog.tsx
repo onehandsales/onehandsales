@@ -26,6 +26,7 @@ import {
 } from "@/components/ui/modal-form";
 import { ModalShell } from "@/components/ui/modal-shell";
 import { ErrorState } from "@/components/ui/state";
+import { useDropdownPlacement } from "@/components/ui/use-dropdown-placement";
 import {
   useDealCompanyOptions,
   useDealContactOptions,
@@ -564,6 +565,11 @@ function MeetingDateTimeField({
 }) {
   const [isOpen, setIsOpen] = useState(false);
   const wrapperRef = useRef<HTMLDivElement>(null);
+  const placement = useDropdownPlacement({
+    estimatedHeight: 340,
+    isOpen,
+    triggerRef: wrapperRef,
+  });
   const groupId = `${id}-field`;
   const parts = parseDateTimeValue(value);
   const [viewYear, setViewYear] = useState(parts.year);
@@ -641,7 +647,14 @@ function MeetingDateTimeField({
         </button>
 
         {isOpen ? (
-          <div className="absolute left-0 top-[calc(100%+4px)] z-50 w-full rounded-md border border-[#E6EAF0] bg-white p-3 shadow-lg">
+          <div
+            className={cn(
+              "absolute left-0 z-50 w-full rounded-md border border-[#E6EAF0] bg-white p-3 shadow-lg",
+              placement === "up"
+                ? "bottom-[calc(100%+4px)]"
+                : "top-[calc(100%+4px)]"
+            )}
+          >
             <div className="flex items-center justify-between">
               <button
                 aria-label="이전 달"
@@ -829,6 +842,11 @@ function EntityMultiSelectField({
 }) {
   const [isOpen, setIsOpen] = useState(false);
   const wrapperRef = useRef<HTMLDivElement>(null);
+  const placement = useDropdownPlacement({
+    estimatedHeight: 220,
+    isOpen,
+    triggerRef: wrapperRef,
+  });
   const selectedIdSet = new Set(selectedIds);
   const selectedOptions = options.filter((option) =>
     selectedIdSet.has(option.id)
@@ -918,7 +936,14 @@ function EntityMultiSelectField({
         </button>
 
         {isOpen ? (
-          <div className="absolute left-0 right-0 top-[calc(100%+4px)] z-50 overflow-hidden rounded-md border border-[#E6EAF0] bg-white shadow-lg">
+          <div
+            className={cn(
+              "absolute left-0 right-0 z-50 overflow-hidden rounded-md border border-[#E6EAF0] bg-white shadow-lg",
+              placement === "up"
+                ? "bottom-[calc(100%+4px)]"
+                : "top-[calc(100%+4px)]"
+            )}
+          >
             <div className="max-h-[176px] overflow-y-auto py-1">
               {isLoading ? (
                 <p className="px-3 py-4 text-center text-[12px] text-[#9CA3AF]">

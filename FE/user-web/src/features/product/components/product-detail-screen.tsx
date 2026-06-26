@@ -23,6 +23,7 @@ import {
   ModalFormSection,
 } from "@/components/ui/modal-form";
 import { ModalShell } from "@/components/ui/modal-shell";
+import { ProductEditDialog } from "@/features/product/components/product-edit-dialog";
 import {
   useProductCategories,
   useProductDeals,
@@ -82,7 +83,7 @@ export function ProductDetailScreen({ productId }: ProductDetailScreenProps) {
   const [notice, setNotice] = useState<string | null>(null);
   const [noticeDescription, setNoticeDescription] = useState<string | null>(null);
   const [actionError, setActionError] = useState<string | null>(null);
-  const [isEditing, setIsEditing] = useState(false);
+  const [isEditOpen, setIsEditOpen] = useState(false);
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
 
   const productQuery = useProductDetail(productId);
@@ -179,9 +180,9 @@ export function ProductDetailScreen({ productId }: ProductDetailScreenProps) {
             <span className="font-bold text-[#111827]">{product.productName}</span>
           </div>
           <button
-            aria-label={isEditing ? "수정 취소" : "수정"}
+            aria-label="수정"
             className="flex h-8 w-8 items-center justify-center rounded-lg border border-[#E5E7EB] bg-white text-[#374151] disabled:opacity-50"
-            onClick={() => setIsEditing((value) => !value)}
+            onClick={() => setIsEditOpen(true)}
             type="button"
           >
             <Pencil className="h-4 w-4" />
@@ -200,13 +201,13 @@ export function ProductDetailScreen({ productId }: ProductDetailScreenProps) {
         <div className="flex flex-col gap-4 p-4 pb-24">
           <ProductSummaryHeader
             dealCount={deals.length}
-            isEditing={isEditing}
+            isEditing={false}
             product={product}
-            onCancelEdit={() => setIsEditing(false)}
+            onCancelEdit={() => setIsEditOpen(false)}
             onSaved={() => {
               void productQuery.refetch();
               showNotice("제품 정보가 저장되었습니다.");
-              setIsEditing(false);
+              setIsEditOpen(false);
             }}
           />
 
@@ -271,7 +272,7 @@ export function ProductDetailScreen({ productId }: ProductDetailScreenProps) {
           <button
             aria-label="수정"
             className="flex h-8 w-8 items-center justify-center rounded-lg border border-[#E5E7EB] bg-white text-[#374151] transition-colors hover:bg-[#F9FAFB]"
-            onClick={() => setIsEditing((v) => !v)}
+            onClick={() => setIsEditOpen(true)}
             type="button"
           >
             <Pencil className="h-4 w-4" />
@@ -291,13 +292,13 @@ export function ProductDetailScreen({ productId }: ProductDetailScreenProps) {
         <div className="flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto p-6">
           <ProductSummaryHeader
             dealCount={deals.length}
-            isEditing={isEditing}
+            isEditing={false}
             product={product}
-            onCancelEdit={() => setIsEditing(false)}
+            onCancelEdit={() => setIsEditOpen(false)}
             onSaved={() => {
               void productQuery.refetch();
               showNotice("제품 정보가 저장되었습니다.");
-              setIsEditing(false);
+              setIsEditOpen(false);
             }}
           />
 
@@ -344,6 +345,15 @@ export function ProductDetailScreen({ productId }: ProductDetailScreenProps) {
           }
         }}
         onConfirm={() => void onDeleteProduct()}
+      />
+      <ProductEditDialog
+        open={isEditOpen}
+        product={product}
+        onOpenChange={setIsEditOpen}
+        onSaved={() => {
+          void productQuery.refetch();
+          showNotice("제품 정보가 저장되었습니다.");
+        }}
       />
     </>
   );

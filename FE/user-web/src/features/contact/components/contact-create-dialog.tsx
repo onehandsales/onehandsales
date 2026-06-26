@@ -246,6 +246,7 @@ export function ContactCreateDialog({
         />
       }
       open={open}
+      panelClassName="max-h-[84vh] md:max-h-[680px]"
       size="md"
       title="담당자 추가"
       onOpenChange={onOpenChange}
