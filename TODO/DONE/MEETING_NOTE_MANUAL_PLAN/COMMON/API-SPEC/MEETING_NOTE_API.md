@@ -62,6 +62,7 @@ type MeetingNoteListSummaryResponse = {
 
 type MeetingNoteListItemResponse = {
   id: string;
+  title: string;
   meetingAt: string | null;
   sourceType: "MANUAL" | "TEXT_AI" | "STT_AI";
   companies: MeetingNoteListSummaryResponse;
@@ -180,6 +181,7 @@ type MeetingNoteDealDetailResponse = {
 | `companyIds` | string[] | 아니오 | UUID 배열 | 반복 query로 전송. 같은 그룹 OR |
 | `contactIds` | string[] | 아니오 | UUID 배열 | 반복 query로 전송. 같은 그룹 OR |
 | `sort` | string | 아니오 | `createdAtDesc`, `meetingAtDesc` | 기본값 `createdAtDesc` |
+| `search` | string | 아니오 | trim, 최대 100자 | 회의록 제목 검색 |
 | `meetingDate` | string | 아니오 | `YYYY-MM-DD` | 사용자 timezone 기준 회의일 필터 |
 
 FE는 `pageSize`를 보내지 않는다. 서버는 `pageSize=10`으로 고정한다.
@@ -190,14 +192,15 @@ FE는 `pageSize`를 보내지 않는다. 서버는 `pageSize=10`으로 고정한
 2. query를 validation하고 `page` 기본값을 1로 정한다.
 3. `companyIds`, `contactIds`가 있으면 현재 사용자 소유 리소스인지 검증한다.
 4. `MeetingNote.userId = currentUser.id`를 기본 조건으로 둔다.
-5. `companyIds`는 같은 그룹 안에서 OR 조건으로 적용한다.
-6. `contactIds`는 같은 그룹 안에서 OR 조건으로 적용한다.
-7. 회사 필터와 담당자 필터를 동시에 쓰면 두 그룹은 AND 조건으로 조합한다.
-8. `meetingDate`가 있으면 사용자 timezone 기준 해당 날짜의 회의 시각 범위로 필터링한다.
-9. `sort=createdAtDesc`이면 `createdAt DESC`, `id DESC`로 정렬한다.
-10. `sort=meetingAtDesc`이면 `meetingAt DESC NULLS LAST`, `createdAt DESC`, `id DESC`로 정렬한다.
-11. `MeetingNote.id` 기준으로 page 대상 id를 먼저 구해 join 중복을 막는다.
-12. page id에 대한 연결 row를 조회해 summary를 만든다.
+5. `search`가 있으면 `MeetingNote.title contains search` 조건으로 적용한다.
+6. `companyIds`는 같은 그룹 안에서 OR 조건으로 적용한다.
+7. `contactIds`는 같은 그룹 안에서 OR 조건으로 적용한다.
+8. 회사 필터와 담당자 필터를 동시에 쓰면 두 그룹은 AND 조건으로 조합한다.
+9. `meetingDate`가 있으면 사용자 timezone 기준 해당 날짜의 회의 시각 범위로 필터링한다.
+10. `sort=createdAtDesc`이면 `createdAt DESC`, `id DESC`로 정렬한다.
+11. `sort=meetingAtDesc`이면 `meetingAt DESC NULLS LAST`, `createdAt DESC`, `id DESC`로 정렬한다.
+12. `MeetingNote.id` 기준으로 page 대상 id를 먼저 구해 join 중복을 막는다.
+13. page id에 대한 연결 row를 조회해 summary를 만든다.
 
 ### Response
 
@@ -208,6 +211,7 @@ FE는 `pageSize`를 보내지 않는다. 서버는 `pageSize=10`으로 고정한
 |---|---|---:|---|
 | `items` | `MeetingNoteListItemResponse[]` | 아니오 | 회의록 목록 |
 | `items[].id` | string | 아니오 | 회의록 ID |
+| `items[].title` | string | 아니오 | 회의록 제목 |
 | `items[].meetingAt` | string | 예 | 회의 일시 UTC ISO string |
 | `items[].sourceType` | string | 아니오 | 현재 구현은 `MANUAL` |
 | `items[].companies.label` | string | 아니오 | 회사 요약 label. 없으면 빈 문자열 |
@@ -315,6 +319,7 @@ type MeetingNoteFilterContactOptionListResponse = {
 type MeetingNoteDetailResponse = {
   id: string;
   sourceType: "MANUAL" | "TEXT_AI" | "STT_AI";
+  title: string;
   meetingAt: string | null;
   meetingLocalDateTime: string | null;
   timeZone: string;
@@ -354,6 +359,7 @@ type MeetingNoteDetailResponse = {
 | 필드 | 타입 | 필수 | validation | 설명 |
 |---|---|---:|---|---|
 | `sourceType` | string | 아니오 | 없으면 `MANUAL`, 있으면 `MANUAL`만 허용 | 생성 방식 |
+| `title` | string | 예 | trim 후 1~100자 | 회의록 제목 |
 | `meetingLocalDateTime` | string | 아니오 | local date-time | 회의 일시 |
 | `details` | string | 예 | trim 후 1자 이상 | 상세 내용 |
 | `nextPlan` | string | 아니오 | trim | 향후 계획 |
@@ -381,16 +387,17 @@ type MeetingNoteDetailResponse = {
 1. AuthGuard로 현재 사용자를 확인한다.
 2. request body를 validation한다.
 3. `sourceType`이 있으면 `MANUAL`인지 확인한다.
-4. `companies`, `contacts`가 각각 1개 이상인지 확인한다.
-5. 현재 사용자의 `User.timeZone`을 조회한다.
-6. `meetingLocalDateTime`이 있으면 `User.timeZone` 기준으로 `meetingAt`을 계산한다.
-7. 연결 대상 FK가 있으면 ownership을 검증한다.
-8. transaction 안에서 `MeetingNote`를 생성한다.
-9. transaction 안에서 회사/담당자/제품/딜 연결 row를 생성한다.
-10. FK가 있는 연결은 현재 엔티티 값을 우선 snapshot으로 저장한다.
-11. FK가 없는 회사/담당자/제품은 request 입력을 snapshot-only 항목으로 저장한다.
-12. `MeetingNoteDeal`은 Deal 현재 값을 snapshot으로 저장한다.
-13. transaction 밖에서 상세 response를 구성한다.
+4. `title`을 trim하고 빈 값과 100자 초과를 차단한다.
+5. `companies`, `contacts`가 각각 1개 이상인지 확인한다.
+6. 현재 사용자의 `User.timeZone`을 조회한다.
+7. `meetingLocalDateTime`이 있으면 `User.timeZone` 기준으로 `meetingAt`을 계산한다.
+8. 연결 대상 FK가 있으면 ownership을 검증한다.
+9. transaction 안에서 `MeetingNote`를 생성한다.
+10. transaction 안에서 회사/담당자/제품/딜 연결 row를 생성한다.
+11. FK가 있는 연결은 현재 엔티티 값을 우선 snapshot으로 저장한다.
+12. FK가 없는 회사/담당자/제품은 request 입력을 snapshot-only 항목으로 저장한다.
+13. `MeetingNoteDeal`은 Deal 현재 값을 snapshot으로 저장한다.
+14. transaction 밖에서 상세 response를 구성한다.
 
 ### Response
 
@@ -426,6 +433,7 @@ type MeetingNoteDetailResponse = {
 
 | 필드 | 타입 | 필수 | validation | 설명 |
 |---|---|---:|---|---|
+| `title` | string | 아니오 | trim 후 1~100자 | 회의록 제목 |
 | `meetingLocalDateTime` | string | 아니오 | local date-time 또는 null | 회의 일시. null이면 비움 |
 | `details` | string | 아니오 | trim 후 1자 이상 | 상세 내용 |
 | `nextPlan` | string | 아니오 | trim 또는 null | 향후 계획 |

@@ -32,6 +32,7 @@ import { ValidationDomainError } from "@/shared/domain/errors/common.errors";
 import { AppLogger } from "@/shared/infrastructure/logger/app-logger.service";
 
 const PAGE_SIZE = 10;
+const MEETING_NOTE_TITLE_MAX_LENGTH = 100;
 const LOCAL_DATE_PATTERN = /^(\d{4})-(\d{2})-(\d{2})$/;
 const LOCAL_DATE_TIME_PATTERN =
   /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})(?::(\d{2})(?:\.(\d{1,3}))?)?$/;
@@ -76,12 +77,14 @@ export interface ListMeetingNotesQueryInput {
   readonly companyIds?: string[];
   readonly contactIds?: string[];
   readonly sort?: MeetingNoteSort;
+  readonly search?: string;
   readonly meetingDate?: string;
 }
 
 // 역할 : CreateMeetingNoteCommand 회의록 생성 command 구조를 정의합니다.
 export interface CreateMeetingNoteCommand {
   readonly sourceType?: MeetingNoteSourceTypeValue;
+  readonly title: string;
   readonly meetingLocalDateTime: string;
   readonly details: string;
   readonly nextPlan?: string | null;
@@ -95,6 +98,7 @@ export interface CreateMeetingNoteCommand {
 // 역할 : UpdateMeetingNoteCommand 회의록 수정 command 구조를 정의합니다.
 export interface UpdateMeetingNoteCommand {
   readonly sourceType?: MeetingNoteSourceTypeValue;
+  readonly title?: string;
   readonly meetingLocalDateTime?: string | null;
   readonly details?: string;
   readonly nextPlan?: string | null;
@@ -122,6 +126,7 @@ export interface MeetingNoteListResponse {
 // 역할 : MeetingNoteListItemResponse 회의록 목록 item 응답 구조를 정의합니다.
 export interface MeetingNoteListItemResponse {
   readonly id: string;
+  readonly title: string;
   readonly meetingAt: string | null;
   readonly sourceType: MeetingNoteSourceTypeValue;
   readonly companies: MeetingNoteListSummaryResponse;
@@ -165,6 +170,7 @@ export interface MeetingNoteFilterContactResponse {
 export interface MeetingNoteResponse {
   readonly id: string;
   readonly sourceType: MeetingNoteSourceTypeValue;
+  readonly title: string;
   readonly meetingAt: string | null;
   readonly meetingLocalDateTime: string | null;
   readonly timeZone: string;
@@ -298,6 +304,11 @@ export class MeetingNoteApplicationService {
     const companyIds = this.normalizeIdArray(query.companyIds ?? [], "companyIds");
     const contactIds = this.normalizeIdArray(query.contactIds ?? [], "contactIds");
     const sort = query.sort ?? MeetingNoteSort.CREATED_AT_DESC;
+    const search = this.normalizeNullableText(
+      query.search,
+      MEETING_NOTE_TITLE_MAX_LENGTH,
+      "search"
+    );
     const timeZone = this.normalizeUserTimeZone(currentUser.timeZone);
     const meetingDateRange = this.parseOptionalMeetingDateRange(
       query.meetingDate,
@@ -312,6 +323,7 @@ export class MeetingNoteApplicationService {
       companyIds,
       contactIds,
       sort,
+      ...(search ? { search } : {}),
       ...(meetingDateRange
         ? {
             meetingAtFrom: meetingDateRange.from,
@@ -423,6 +435,7 @@ export class MeetingNoteApplicationService {
       const created = await repository.createMeetingNote({
         userId: currentUser.id,
         sourceType: normalized.sourceType,
+        title: normalized.title,
         meetingAt: normalized.meetingAt,
         timeZone,
         details: normalized.details,
@@ -619,6 +632,7 @@ export class MeetingNoteApplicationService {
     timeZone: string
   ): {
     readonly sourceType: MeetingNoteSourceTypeValue;
+    readonly title: string;
     readonly meetingAt: Date;
     readonly details: string;
     readonly nextPlan: string | null;
@@ -627,6 +641,11 @@ export class MeetingNoteApplicationService {
   } {
     return {
       sourceType: this.normalizeCreateSourceType(input.sourceType),
+      title: this.normalizeRequiredText(
+        input.title,
+        MEETING_NOTE_TITLE_MAX_LENGTH,
+        "title"
+      ),
       meetingAt: this.parseRequiredMeetingLocalDateTime(
         input.meetingLocalDateTime,
         timeZone
@@ -657,6 +676,7 @@ export class MeetingNoteApplicationService {
   } {
     const fields: {
       sourceType?: MeetingNoteSourceTypeValue;
+      title?: string;
       meetingAt?: Date;
       timeZone?: string;
       details?: string;
@@ -667,6 +687,14 @@ export class MeetingNoteApplicationService {
     if (input.sourceType !== undefined) {
       this.assertManualSourceType(input.sourceType);
       fields.sourceType = MeetingNoteSourceTypeValue.MANUAL;
+    }
+
+    if (input.title !== undefined) {
+      fields.title = this.normalizeRequiredText(
+        input.title,
+        MEETING_NOTE_TITLE_MAX_LENGTH,
+        "title"
+      );
     }
 
     if (input.meetingLocalDateTime !== undefined) {
@@ -727,6 +755,7 @@ export class MeetingNoteApplicationService {
   private hasUpdateFields(input: UpdateMeetingNoteCommand): boolean {
     return (
       input.sourceType !== undefined ||
+      input.title !== undefined ||
       input.meetingLocalDateTime !== undefined ||
       input.details !== undefined ||
       input.nextPlan !== undefined ||
@@ -1618,6 +1647,7 @@ export class MeetingNoteApplicationService {
   ): MeetingNoteListItemResponse {
     return {
       id: meetingNote.id,
+      title: meetingNote.title,
       meetingAt: meetingNote.meetingAt?.toISOString() ?? null,
       sourceType: meetingNote.sourceType,
       companies: this.toSummary(
@@ -1655,6 +1685,7 @@ export class MeetingNoteApplicationService {
     return {
       id: meetingNote.id,
       sourceType: meetingNote.sourceType,
+      title: meetingNote.title,
       meetingAt: meetingNote.meetingAt?.toISOString() ?? null,
       meetingLocalDateTime: this.formatLocalDateTime(
         meetingNote.meetingAt,

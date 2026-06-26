@@ -1,4 +1,9 @@
-import { Inject, Injectable, NotFoundException } from "@nestjs/common";
+import {
+  ConflictException,
+  Inject,
+  Injectable,
+  NotFoundException,
+} from "@nestjs/common";
 import type { CurrentUserContext } from "@/shared/application/context/current-user.context";
 import {
   TRASH_REPOSITORY,
@@ -73,6 +78,13 @@ export class TrashApplicationService {
 
     if (!restored) {
       throw new NotFoundException("Trash item not found");
+    }
+
+    // 3. 상위 도메인 삭제 때문에 차단된 복구는 충돌 응답으로 변환합니다.
+    if ("blockedReason" in restored) {
+      throw new ConflictException(
+        "상위 데이터를 먼저 복구해야 로그를 복구할 수 있습니다."
+      );
     }
 
     return restored;

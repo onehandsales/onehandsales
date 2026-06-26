@@ -105,6 +105,17 @@ export interface TrashRestoreResult {
   readonly restoredAt: Date;
 }
 
+export type TrashRestoreBlockedReason = "PARENT_DELETED";
+
+// 역할 : TrashRestoreBlockedResult 휴지통 복구가 정책상 차단된 이유를 정의합니다.
+export interface TrashRestoreBlockedResult {
+  readonly blockedReason: TrashRestoreBlockedReason;
+}
+
+export type TrashRestoreRepositoryResult =
+  | TrashRestoreResult
+  | TrashRestoreBlockedResult;
+
 export const TRASH_REPOSITORY = Symbol("TRASH_REPOSITORY");
 
 // 역할 : TrashRepository 휴지통 목록, 상세, 복구 저장소 계약을 정의합니다.
@@ -113,5 +124,5 @@ export interface TrashRepository {
   getTrashDetail(input: GetTrashDetailInput): Promise<TrashDetail | null>;
   restoreTrashItem(
     input: RestoreTrashItemInput
-  ): Promise<TrashRestoreResult | null>;
+  ): Promise<TrashRestoreRepositoryResult | null>;
 }

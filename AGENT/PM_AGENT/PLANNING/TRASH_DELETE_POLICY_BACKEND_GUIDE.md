@@ -65,6 +65,8 @@ soft delete 대상 테이블은 다음 컬럼을 사용한다.
 - `GET /api/trash`: `deletedAt IS NOT NULL`이고 `trashExpiresAt > now`인 항목만 목록에 보여준다.
 - `GET /api/trash/:targetType/:targetId`: row 클릭 후 상세 모달에서 보여줄 요약, 위치, 삭제일, 남은 기간, 주요 필드, 일반 메모 내용을 반환한다.
 - `POST /api/trash/:targetType/:targetId/restore`: `deletedAt`, `deletedByUserId`, `trashExpiresAt`을 `null`로 되돌린다.
+  - 로그 대상은 직접 상위 도메인 데이터가 휴지통 상태이면 단독 복구하지 않는다.
+  - 이 경우 `409 Conflict`와 `상위 데이터를 먼저 복구해야 로그를 복구할 수 있습니다.` 메시지를 반환한다.
 
 현재 지원 대상:
 

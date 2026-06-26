@@ -168,8 +168,10 @@ class FakeMeetingNoteRepository implements MeetingNoteRepository {
         (!input.meetingAtTo ||
           (meetingNote.meetingAt !== null &&
             meetingNote.meetingAt < input.meetingAtTo));
+      const searchMatched =
+        !input.search || meetingNote.title.includes(input.search);
 
-      return companyMatched && contactMatched && meetingDateMatched;
+      return companyMatched && contactMatched && meetingDateMatched && searchMatched;
     });
 
     return { items, totalCount: items.length };
@@ -195,6 +197,7 @@ class FakeMeetingNoteRepository implements MeetingNoteRepository {
     this.meetingNotes.push({
       id,
       sourceType: input.sourceType,
+      title: input.title,
       meetingAt: input.meetingAt,
       timeZone: input.timeZone,
       details: input.details,
@@ -235,6 +238,7 @@ class FakeMeetingNoteRepository implements MeetingNoteRepository {
     this.meetingNotes[index] = {
       ...existing,
       ...(input.sourceType !== undefined ? { sourceType: input.sourceType } : {}),
+      ...(input.title !== undefined ? { title: input.title } : {}),
       ...(input.meetingAt !== undefined ? { meetingAt: input.meetingAt } : {}),
       ...(input.timeZone !== undefined ? { timeZone: input.timeZone } : {}),
       ...(input.details !== undefined ? { details: input.details } : {}),
@@ -350,6 +354,7 @@ describe("MeetingNoteApplicationService", () => {
 
     const created = await service.createMeetingNote(CURRENT_USER, {
       sourceType: MeetingNoteSourceTypeValue.TEXT_AI,
+      title: "AI 회의록",
       meetingLocalDateTime: "2026-06-15T09:30",
       details: "details",
       companies: ["company-1"],
@@ -365,6 +370,7 @@ describe("MeetingNoteApplicationService", () => {
     const { repository, service } = createService();
 
     const created = await service.createMeetingNote(CURRENT_USER, {
+      title: "Acme 미팅",
       meetingLocalDateTime: "2026-06-15T09:30",
       details: "상세 내용",
       nextPlan: "다음 계획",
@@ -389,6 +395,7 @@ describe("MeetingNoteApplicationService", () => {
 
     await expect(
       service.createMeetingNote(CURRENT_USER, {
+        title: "존재하지 않는 딜 미팅",
         details: "상세 내용",
         meetingLocalDateTime: "2026-06-15T09:30",
         companies: ["company-1"],
@@ -403,6 +410,7 @@ describe("MeetingNoteApplicationService", () => {
   it("회의록 수정에서 빈 products와 deals 배열은 기존 관계를 제거한다", async () => {
     const { repository, service } = createService();
     const created = await service.createMeetingNote(CURRENT_USER, {
+      title: "수정 대상 회의록",
       details: "상세 내용",
       meetingLocalDateTime: "2026-06-15T09:30",
       companies: ["company-1"],
@@ -435,6 +443,7 @@ describe("MeetingNoteApplicationService", () => {
       expectedEndDate: new Date("2026-07-31T00:00:00.000Z"),
     });
     const created = await service.createMeetingNote(CURRENT_USER, {
+      title: "딜 연결 회의록",
       details: "상세 내용",
       meetingLocalDateTime: "2026-06-15T09:30",
       companies: ["company-1"],
@@ -459,6 +468,7 @@ describe("MeetingNoteApplicationService", () => {
   it("이미 연결된 딜만 요청하면 중복 연결과 활동 로그 생성을 건너뛴다", async () => {
     const { repository, service } = createService();
     const created = await service.createMeetingNote(CURRENT_USER, {
+      title: "중복 딜 회의록",
       details: "상세 내용",
       meetingLocalDateTime: "2026-06-15T09:30",
       companies: ["company-1"],
@@ -478,6 +488,7 @@ describe("MeetingNoteApplicationService", () => {
   it("목록 응답은 관계 배열 대신 label과 count summary를 반환한다", async () => {
     const { service } = createService();
     await service.createMeetingNote(CURRENT_USER, {
+      title: "목록 회의록",
       details: "상세 내용",
       meetingLocalDateTime: "2026-06-15T09:30",
       companies: ["company-1"],
@@ -493,5 +504,32 @@ describe("MeetingNoteApplicationService", () => {
 
     expect(result.items[0]?.companies).toEqual({ label: "Acme", count: 1 });
     expect(result.items[0]?.contacts).toEqual({ label: "Kim", count: 1 });
+    expect(result.items[0]?.title).toBe("목록 회의록");
+  });
+
+  it("목록 검색어는 제목 기준으로 회의록을 필터링한다", async () => {
+    const { service } = createService();
+    await service.createMeetingNote(CURRENT_USER, {
+      title: "분기 전략 회의",
+      details: "상세 내용",
+      meetingLocalDateTime: "2026-06-15T09:30",
+      companies: ["company-1"],
+      contacts: ["contact-1"],
+    });
+    await service.createMeetingNote(CURRENT_USER, {
+      title: "제품 데모 회의",
+      details: "상세 내용",
+      meetingLocalDateTime: "2026-06-16T09:30",
+      companies: ["company-1"],
+      contacts: ["contact-1"],
+    });
+
+    const result = await service.listMeetingNotes(CURRENT_USER, {
+      page: 1,
+      search: "데모",
+      sort: MeetingNoteSort.CREATED_AT_DESC,
+    });
+
+    expect(result.items.map((item) => item.title)).toEqual(["제품 데모 회의"]);
   });
 });

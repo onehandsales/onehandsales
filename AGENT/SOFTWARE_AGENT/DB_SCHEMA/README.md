@@ -70,6 +70,7 @@ Snapshot date: 2026-06-25
 - `BE/prisma/migrations/20260614020000_add_schedule_domain/migration.sql`
 - `BE/prisma/migrations/20260615000000_add_meeting_note_domain/migration.sql`
 - `BE/prisma/migrations/20260617010000_make_meeting_note_meeting_at_required/migration.sql`
+- `BE/prisma/migrations/20260626010000_add_meeting_note_title/migration.sql`
 - `BE/prisma/migrations/20260623010000_add_deal_company_contact_joins/migration.sql`
 - `BE/prisma/migrations/20260625010000_add_log_soft_delete_columns/migration.sql`
 - `BE/prisma/migrations/20260625020000_add_core_entity_soft_delete_columns/migration.sql`

@@ -329,6 +329,7 @@ export class PrismaMeetingNoteRepository implements MeetingNoteRepository {
       data: {
         userId: input.userId,
         sourceType: input.sourceType as PrismaMeetingNoteSourceType,
+        title: input.title,
         meetingAt: input.meetingAt,
         timeZone: input.timeZone,
         details: input.details,
@@ -352,6 +353,10 @@ export class PrismaMeetingNoteRepository implements MeetingNoteRepository {
 
     if (input.sourceType !== undefined) {
       data.sourceType = input.sourceType as PrismaMeetingNoteSourceType;
+    }
+
+    if (input.title !== undefined) {
+      data.title = input.title;
     }
 
     if (input.meetingAt !== undefined) {
@@ -441,6 +446,12 @@ export class PrismaMeetingNoteRepository implements MeetingNoteRepository {
     const where: Prisma.MeetingNoteWhereInput = {
       userId: input.userId,
     };
+
+    if (input.search) {
+      where.title = {
+        contains: input.search,
+      };
+    }
 
     if (input.companyIds.length > 0) {
       where.companies = {
@@ -606,6 +617,7 @@ export class PrismaMeetingNoteRepository implements MeetingNoteRepository {
     return {
       id: meetingNote.id,
       sourceType: meetingNote.sourceType as MeetingNoteSourceTypeValue,
+      title: meetingNote.title,
       meetingAt: meetingNote.meetingAt,
       timeZone: meetingNote.timeZone,
       details: meetingNote.details,

@@ -7,6 +7,7 @@ import type {
 } from "@/features/meeting-note/types/meeting-note";
 
 export const meetingNoteFormSchema = z.object({
+  title: z.string().trim().min(1, "회의록 제목을 입력해주세요.").max(100),
   meetingLocalDateTime: z.string().trim().min(1, "미팅 일시를 선택해주세요."),
   companyName: z.string().trim().min(1, "회사명을 입력해주세요.").max(300),
   companyField: z.string().max(200).optional(),
@@ -38,6 +39,7 @@ export const meetingNoteFormSchema = z.object({
 export type MeetingNoteFormValues = z.infer<typeof meetingNoteFormSchema>;
 
 export const emptyMeetingNoteFormValues: MeetingNoteFormValues = {
+  title: "",
   meetingLocalDateTime: toDateTimeLocalInputValue(new Date()),
   companyName: "",
   companyField: "",
@@ -60,6 +62,7 @@ export const emptyMeetingNoteFormValues: MeetingNoteFormValues = {
 
 // 기능 : 회의록 form 값을 생성 request body로 변환합니다.
 export const meetingNoteCreateFormSchema = z.object({
+  title: z.string().trim().min(1, "회의록 제목을 입력해주세요.").max(100),
   meetingLocalDateTime: z.string().trim().min(1, "미팅 일시를 선택해주세요."),
   companyIds: z.array(z.string()).min(1, "회사를 1개 이상 선택해주세요."),
   contactIds: z.array(z.string()).min(1, "담당자를 1명 이상 선택해주세요."),
@@ -75,6 +78,7 @@ export type MeetingNoteCreateFormValues = z.infer<
 >;
 
 export const emptyMeetingNoteCreateFormValues: MeetingNoteCreateFormValues = {
+  title: "",
   meetingLocalDateTime: toDateTimeLocalInputValue(new Date()),
   companyIds: [],
   contactIds: [],
@@ -91,6 +95,7 @@ export function toCreateMeetingNoteInput(
 ): CreateMeetingNoteInput {
   return {
     sourceType,
+    title: values.title.trim(),
     meetingLocalDateTime: values.meetingLocalDateTime.trim(),
     details: values.details.trim(),
     nextPlan: toOptionalText(values.nextPlan),
@@ -113,6 +118,7 @@ export function toUpdateMeetingNoteInput(
   return {
     meetingNoteId,
     sourceType: "MANUAL",
+    title: values.title.trim(),
     meetingLocalDateTime: values.meetingLocalDateTime.trim(),
     details: values.details.trim(),
     nextPlan: toOptionalText(values.nextPlan),
@@ -153,6 +159,7 @@ export function toMeetingNoteFormValues(
   const deal = meetingNote.deals[0];
 
   return {
+    title: meetingNote.title,
     meetingLocalDateTime:
       meetingNote.meetingLocalDateTime?.slice(0, 16) ??
       emptyMeetingNoteFormValues.meetingLocalDateTime,

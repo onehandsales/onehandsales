@@ -208,6 +208,7 @@ export function TrashScreen() {
 
   const onRestore = async (item: TrashItem) => {
     setNotice(null);
+    restoreMutation.reset();
     await restoreMutation.mutateAsync({
       targetType: item.targetType,
       targetId: item.targetId,
@@ -295,10 +296,10 @@ export function TrashScreen() {
           />
         </div>
       ) : null}
-      {trashQuery.error || restoreMutation.error ? (
+      {trashQuery.error ? (
         <div className="px-5 pt-2">
           <p className="rounded-md border border-red-200 bg-red-50 px-3 py-2 text-[12px] text-red-600">
-            {getApiErrorMessage(trashQuery.error ?? restoreMutation.error)}
+            {getApiErrorMessage(trashQuery.error)}
           </p>
         </div>
       ) : null}
@@ -351,7 +352,10 @@ export function TrashScreen() {
                     <TrashListRow
                       item={item}
                       key={itemKey}
-                      onPreview={() => setSelectedItem(item)}
+                      onPreview={() => {
+                        restoreMutation.reset();
+                        setSelectedItem(item);
+                      }}
                     />
                   );
                 })}
@@ -375,8 +379,10 @@ export function TrashScreen() {
         }
         item={selectedItem}
         open={selectedItem !== null}
+        restoreError={selectedItem ? restoreMutation.error : null}
         onOpenChange={(open) => {
           if (!open) {
+            restoreMutation.reset();
             setSelectedItem(null);
           }
         }}
@@ -515,6 +521,7 @@ type TrashDetailDialogProps = {
   readonly open: boolean;
   readonly item: TrashItem | null;
   readonly isRestorePending: boolean;
+  readonly restoreError: unknown;
   readonly onOpenChange: (open: boolean) => void;
   readonly onRestore: (item: TrashItem) => void;
 };
@@ -523,6 +530,7 @@ function TrashDetailDialog({
   open,
   item,
   isRestorePending,
+  restoreError,
   onOpenChange,
   onRestore,
 }: TrashDetailDialogProps) {
@@ -535,6 +543,9 @@ function TrashDetailDialog({
   const expiresAt = displayItem ? getTrashExpiresAt(displayItem) : null;
   const expired = displayItem ? isExpired(displayItem) : false;
   const remaining = getRemainingState(expiresAt);
+  const restoreErrorMessage = restoreError
+    ? getApiErrorMessage(restoreError)
+    : null;
 
   if (!open || !item) {
     return null;
@@ -573,27 +584,38 @@ function TrashDetailDialog({
       title="휴지통 상세"
       onOpenChange={onOpenChange}
     >
-      {detailQuery.isLoading ? (
-        <div className="flex min-h-[260px] items-center justify-center gap-2 text-[13px] text-[#64748B]">
-          <Loader2 className="h-4 w-4 animate-spin" aria-hidden />
-          내용을 불러오는 중입니다.
-        </div>
-      ) : detailQuery.isError ? (
-        <div className="flex min-h-[260px] flex-col items-center justify-center text-center">
-          <p className="text-[13px] text-red-500">
-            {getApiErrorMessage(detailQuery.error)}
-          </p>
-          <button
-            className="mt-3 inline-flex h-8 items-center rounded-md border border-[#E2E5EC] bg-white px-3 text-[12px] text-[#6B7280]"
-            onClick={() => void detailQuery.refetch()}
-            type="button"
+      <div className="grid gap-4">
+        {restoreErrorMessage ? (
+          <p
+            className="rounded-md border border-red-200 bg-red-50 px-3 py-2 text-[12px] font-medium text-red-600"
+            role="alert"
           >
-            다시 시도
-          </button>
-        </div>
-      ) : detail ? (
-        <TrashDetailContent detail={detail} remaining={remaining} />
-      ) : null}
+            {restoreErrorMessage}
+          </p>
+        ) : null}
+
+        {detailQuery.isLoading ? (
+          <div className="flex min-h-[260px] items-center justify-center gap-2 text-[13px] text-[#64748B]">
+            <Loader2 className="h-4 w-4 animate-spin" aria-hidden />
+            내용을 불러오는 중입니다.
+          </div>
+        ) : detailQuery.isError ? (
+          <div className="flex min-h-[260px] flex-col items-center justify-center text-center">
+            <p className="text-[13px] text-red-500">
+              {getApiErrorMessage(detailQuery.error)}
+            </p>
+            <button
+              className="mt-3 inline-flex h-8 items-center rounded-md border border-[#E2E5EC] bg-white px-3 text-[12px] text-[#6B7280]"
+              onClick={() => void detailQuery.refetch()}
+              type="button"
+            >
+              다시 시도
+            </button>
+          </div>
+        ) : detail ? (
+          <TrashDetailContent detail={detail} remaining={remaining} />
+        ) : null}
+      </div>
     </ModalShell>
   );
 }

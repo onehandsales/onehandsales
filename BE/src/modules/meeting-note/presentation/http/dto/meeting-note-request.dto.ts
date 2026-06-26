@@ -75,6 +75,11 @@ export class ListMeetingNotesQueryDto {
 
   @IsOptional()
   @IsString()
+  @MaxLength(100)
+  search?: string;
+
+  @IsOptional()
+  @IsString()
   @Matches(/^\d{4}-\d{2}-\d{2}$/)
   meetingDate?: string;
 }
@@ -170,6 +175,10 @@ export class CreateMeetingNoteDto {
   sourceType?: MeetingNoteSourceTypeValue;
 
   @IsString()
+  @MaxLength(100)
+  title!: string;
+
+  @IsString()
   meetingLocalDateTime!: string;
 
   @IsString()
@@ -212,7 +221,6 @@ export class LinkMeetingNoteDealsDto {
   deals!: string[];
 }
 
-// 역할 : UpdateMeetingNoteDto 회의록 수정 request body 값을 검증합니다.
 // 역할 : MeetingNoteAiDraftContextDto AI/STT 초안 생성에 사용할 사용자 선택 맥락 request body를 검증합니다.
 export class MeetingNoteAiDraftContextDto {
   @IsString()
@@ -253,10 +261,16 @@ export class CreateMeetingNoteTextAiDraftDto extends MeetingNoteAiDraftContextDt
 // 역할 : CreateMeetingNoteSttAiDraftDto 음성 기반 회의록 STT+AI 초안 생성 request body를 검증합니다.
 export class CreateMeetingNoteSttAiDraftDto extends MeetingNoteAiDraftContextDto {}
 
+// 역할 : UpdateMeetingNoteDto 회의록 수정 request body 값을 검증합니다.
 export class UpdateMeetingNoteDto {
   @IsOptional()
   @IsEnum(MeetingNoteSourceTypeValue)
   sourceType?: MeetingNoteSourceTypeValue;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(100)
+  title?: string;
 
   @IsOptional()
   @IsString()

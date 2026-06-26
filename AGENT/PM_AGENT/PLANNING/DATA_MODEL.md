@@ -584,7 +584,8 @@ User
 - id
 - userId
 - sourceType: MANUAL / TEXT_AI / STT_AI
-- meetingAt nullable
+- title
+- meetingAt
 - timeZone
 - details
 - nextPlan

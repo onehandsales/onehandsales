@@ -68,6 +68,8 @@ const formId = "meeting-note-create-form";
 const maxAudioFileSizeBytes = 25 * 1024 * 1024;
 const textareaClassName =
   "resize-none rounded-md border border-[#E2E5EC] bg-white px-3 py-2 text-sm leading-5 text-[#111827] outline-none focus:border-[#4880EE] focus:ring-2 focus:ring-[#DBEAFE]";
+const inputClassName =
+  "h-10 rounded-md border border-[#E2E5EC] bg-white px-3 text-sm text-[#111827] outline-none focus:border-[#4880EE] focus:ring-2 focus:ring-[#DBEAFE]";
 const actionButtonClassName =
   "inline-flex h-9 items-center justify-center gap-2 rounded-md border border-[#D8E0EA] bg-white px-3 text-[13px] font-semibold text-[#1F2937] transition-colors hover:bg-[#F8FAFC] disabled:cursor-not-allowed disabled:opacity-60";
 const weekdayLabels = ["일", "월", "화", "수", "목", "금", "토"];
@@ -290,6 +292,13 @@ export function MeetingNoteCreateDialog({
     >
       <ModalForm className="gap-3" id={formId} onSubmit={onSubmit}>
         <ModalFormSection className="gap-2" title="기본 정보">
+          <TextField
+            errorMessage={errors.title?.message}
+            id="meeting-create-title"
+            label="회의록 제목"
+            register={register("title")}
+          />
+
           <MeetingDateTimeField
             errorMessage={errors.meetingLocalDateTime?.message}
             id="meeting-create-local-date-time"
@@ -763,6 +772,35 @@ function TextAreaField({
             : register?.onChange
         }
         {...registrationProps}
+      />
+    </ModalFieldGroup>
+  );
+}
+
+function TextField({
+  id,
+  label,
+  register,
+  errorMessage,
+}: {
+  readonly id: string;
+  readonly label: string;
+  readonly register: UseFormRegisterReturn;
+  readonly errorMessage?: string;
+}) {
+  return (
+    <ModalFieldGroup
+      className="gap-1.5"
+      error={errorMessage}
+      id={id}
+      label={label}
+    >
+      <input
+        aria-describedby={errorMessage ? `${id}-message` : undefined}
+        aria-invalid={Boolean(errorMessage)}
+        className={inputClassName}
+        id={id}
+        {...register}
       />
     </ModalFieldGroup>
   );

@@ -10,7 +10,8 @@ import {
   type TrashListResult,
   type TrashLogTypeFilter,
   type TrashRepository,
-  type TrashRestoreResult,
+  type TrashRestoreBlockedReason,
+  type TrashRestoreRepositoryResult,
   type TrashSort,
   type TrashTargetType,
 } from "@/modules/trash/application/ports/trash.repository";
@@ -148,10 +149,22 @@ export class PrismaTrashRepository implements TrashRepository {
   // 기능 : 휴지통 대상 유형에 맞는 row의 삭제 상태를 초기화합니다.
   async restoreTrashItem(
     input: RestoreTrashItemInput
-  ): Promise<TrashRestoreResult | null> {
+  ): Promise<TrashRestoreRepositoryResult | null> {
+    const blockedReason = await this.getRestoreBlockedReason(input);
+
+    if (blockedReason) {
+      return { blockedReason };
+    }
+
     const restored = await this.restoreByTargetType(input);
 
     if (!restored) {
+      const retryBlockedReason = await this.getRestoreBlockedReason(input);
+
+      if (retryBlockedReason) {
+        return { blockedReason: retryBlockedReason };
+      }
+
       return null;
     }
 
@@ -1380,7 +1393,7 @@ export class PrismaTrashRepository implements TrashRepository {
       }
       case "COMPANY_MEMO_LOG": {
         const result = await this.client.companyMemoLog.updateMany({
-          where: this.createRestoreWhere(input),
+          where: this.createCompanyLogRestoreWhere(input),
           data: this.createRestoreData(),
         });
 
@@ -1388,7 +1401,7 @@ export class PrismaTrashRepository implements TrashRepository {
       }
       case "COMPANY_PRIVATE_MEMO_LOG": {
         const result = await this.client.companyUserPrivateMemoLog.updateMany({
-          where: this.createRestoreWhere(input),
+          where: this.createCompanyLogRestoreWhere(input),
           data: this.createRestoreData(),
         });
 
@@ -1396,7 +1409,7 @@ export class PrismaTrashRepository implements TrashRepository {
       }
       case "CONTACT_MEMO_LOG": {
         const result = await this.client.contactMemoLog.updateMany({
-          where: this.createRestoreWhere(input),
+          where: this.createContactLogRestoreWhere(input),
           data: this.createRestoreData(),
         });
 
@@ -1404,7 +1417,7 @@ export class PrismaTrashRepository implements TrashRepository {
       }
       case "CONTACT_PRIVATE_MEMO_LOG": {
         const result = await this.client.contactUserPrivateMemoLog.updateMany({
-          where: this.createRestoreWhere(input),
+          where: this.createContactLogRestoreWhere(input),
           data: this.createRestoreData(),
         });
 
@@ -1412,7 +1425,7 @@ export class PrismaTrashRepository implements TrashRepository {
       }
       case "PRODUCT_MEMO_LOG": {
         const result = await this.client.productMemoLog.updateMany({
-          where: this.createRestoreWhere(input),
+          where: this.createProductLogRestoreWhere(input),
           data: this.createRestoreData(),
         });
 
@@ -1420,7 +1433,7 @@ export class PrismaTrashRepository implements TrashRepository {
       }
       case "PRODUCT_PRIVATE_MEMO_LOG": {
         const result = await this.client.productUserPrivateMemoLog.updateMany({
-          where: this.createRestoreWhere(input),
+          where: this.createProductLogRestoreWhere(input),
           data: this.createRestoreData(),
         });
 
@@ -1428,7 +1441,7 @@ export class PrismaTrashRepository implements TrashRepository {
       }
       case "DEAL_MEMO_LOG": {
         const result = await this.client.dealMemoLog.updateMany({
-          where: this.createRestoreWhere(input),
+          where: this.createDealLogRestoreWhere(input),
           data: this.createRestoreData(),
         });
 
@@ -1436,11 +1449,96 @@ export class PrismaTrashRepository implements TrashRepository {
       }
       case "DEAL_FOLLOWING_ACTION_LOG": {
         const result = await this.client.dealFollowingActionLog.updateMany({
-          where: this.createRestoreWhere(input),
+          where: this.createDealLogRestoreWhere(input),
           data: this.createRestoreData(),
         });
 
         return result.count > 0;
+      }
+    }
+  }
+
+  // 기능 : 로그의 직접 상위 도메인 row가 삭제 상태이면 복구 차단 사유를 반환합니다.
+  private async getRestoreBlockedReason(
+    input: RestoreTrashItemInput
+  ): Promise<TrashRestoreBlockedReason | null> {
+    return (await this.hasDeletedParent(input)) ? "PARENT_DELETED" : null;
+  }
+
+  private async hasDeletedParent(input: RestoreTrashItemInput) {
+    switch (input.targetType) {
+      case "COMPANY":
+      case "CONTACT":
+      case "PRODUCT":
+      case "DEAL":
+        return false;
+      case "COMPANY_MEMO_LOG": {
+        const memoLog = await this.client.companyMemoLog.findFirst({
+          where: this.createCompanyDeletedParentWhere(input),
+          select: { id: true },
+        });
+
+        return memoLog !== null;
+      }
+      case "COMPANY_PRIVATE_MEMO_LOG": {
+        const memoLog =
+          await this.client.companyUserPrivateMemoLog.findFirst({
+            where: this.createCompanyDeletedParentWhere(input),
+            select: { id: true },
+          });
+
+        return memoLog !== null;
+      }
+      case "CONTACT_MEMO_LOG": {
+        const memoLog = await this.client.contactMemoLog.findFirst({
+          where: this.createContactDeletedParentWhere(input),
+          select: { id: true },
+        });
+
+        return memoLog !== null;
+      }
+      case "CONTACT_PRIVATE_MEMO_LOG": {
+        const memoLog =
+          await this.client.contactUserPrivateMemoLog.findFirst({
+            where: this.createContactDeletedParentWhere(input),
+            select: { id: true },
+          });
+
+        return memoLog !== null;
+      }
+      case "PRODUCT_MEMO_LOG": {
+        const memoLog = await this.client.productMemoLog.findFirst({
+          where: this.createProductDeletedParentWhere(input),
+          select: { id: true },
+        });
+
+        return memoLog !== null;
+      }
+      case "PRODUCT_PRIVATE_MEMO_LOG": {
+        const memoLog =
+          await this.client.productUserPrivateMemoLog.findFirst({
+            where: this.createProductDeletedParentWhere(input),
+            select: { id: true },
+          });
+
+        return memoLog !== null;
+      }
+      case "DEAL_MEMO_LOG": {
+        const memoLog = await this.client.dealMemoLog.findFirst({
+          where: this.createDealDeletedParentWhere(input),
+          select: { id: true },
+        });
+
+        return memoLog !== null;
+      }
+      case "DEAL_FOLLOWING_ACTION_LOG": {
+        const actionLog =
+          await this.client.dealFollowingActionLog.findFirst({
+            where: this.createDealDeletedParentWhere(input),
+            select: { id: true },
+          });
+
+        return actionLog !== null;
       }
     }
   }
@@ -1455,6 +1553,79 @@ export class PrismaTrashRepository implements TrashRepository {
       },
       trashExpiresAt: {
         gt: input.now,
+      },
+    };
+  }
+
+  // 기능 : 직접 상위 도메인 row가 활성 상태인 로그 복구 where 조건을 만듭니다.
+  private createCompanyLogRestoreWhere(input: RestoreTrashItemInput) {
+    return {
+      ...this.createRestoreWhere(input),
+      company: this.createActiveParentWhere(input),
+    };
+  }
+
+  private createContactLogRestoreWhere(input: RestoreTrashItemInput) {
+    return {
+      ...this.createRestoreWhere(input),
+      contact: this.createActiveParentWhere(input),
+    };
+  }
+
+  private createProductLogRestoreWhere(input: RestoreTrashItemInput) {
+    return {
+      ...this.createRestoreWhere(input),
+      product: this.createActiveParentWhere(input),
+    };
+  }
+
+  private createDealLogRestoreWhere(input: RestoreTrashItemInput) {
+    return {
+      ...this.createRestoreWhere(input),
+      deal: this.createActiveParentWhere(input),
+    };
+  }
+
+  private createCompanyDeletedParentWhere(input: RestoreTrashItemInput) {
+    return {
+      ...this.createRestoreWhere(input),
+      company: this.createDeletedParentWhere(input),
+    };
+  }
+
+  private createContactDeletedParentWhere(input: RestoreTrashItemInput) {
+    return {
+      ...this.createRestoreWhere(input),
+      contact: this.createDeletedParentWhere(input),
+    };
+  }
+
+  private createProductDeletedParentWhere(input: RestoreTrashItemInput) {
+    return {
+      ...this.createRestoreWhere(input),
+      product: this.createDeletedParentWhere(input),
+    };
+  }
+
+  private createDealDeletedParentWhere(input: RestoreTrashItemInput) {
+    return {
+      ...this.createRestoreWhere(input),
+      deal: this.createDeletedParentWhere(input),
+    };
+  }
+
+  private createActiveParentWhere(input: RestoreTrashItemInput) {
+    return {
+      userId: input.userId,
+      deletedAt: null,
+    };
+  }
+
+  private createDeletedParentWhere(input: RestoreTrashItemInput) {
+    return {
+      userId: input.userId,
+      deletedAt: {
+        not: null,
       },
     };
   }

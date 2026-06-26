@@ -9,6 +9,7 @@ export type MeetingNoteListSummary = {
 
 export type MeetingNoteListItem = {
   readonly id: string;
+  readonly title: string;
   readonly meetingAt: string | null;
   readonly sourceType: MeetingNoteSourceType;
   readonly companies: MeetingNoteListSummary;
@@ -31,6 +32,7 @@ export type MeetingNoteListParams = {
   readonly companyIds?: readonly string[];
   readonly contactIds?: readonly string[];
   readonly sort?: MeetingNoteSort;
+  readonly search?: string;
   readonly meetingDate?: string;
 };
 
@@ -99,6 +101,7 @@ export type MeetingNoteDeal = {
 export type MeetingNote = {
   readonly id: string;
   readonly sourceType: MeetingNoteSourceType;
+  readonly title: string;
   readonly meetingAt: string | null;
   readonly meetingLocalDateTime: string | null;
   readonly timeZone: string;
@@ -145,6 +148,7 @@ export type MeetingNoteDealInput = {
 
 export type CreateMeetingNoteInput = {
   readonly sourceType?: MeetingNoteSourceType;
+  readonly title: string;
   readonly meetingLocalDateTime: string;
   readonly details: string;
   readonly nextPlan?: string | null;
@@ -184,6 +188,7 @@ export type MeetingNoteAiDraftResponse = {
 export type UpdateMeetingNoteInput = {
   readonly meetingNoteId: string;
   readonly sourceType?: "MANUAL";
+  readonly title?: string;
   readonly meetingLocalDateTime?: string | null;
   readonly details?: string;
   readonly nextPlan?: string | null;

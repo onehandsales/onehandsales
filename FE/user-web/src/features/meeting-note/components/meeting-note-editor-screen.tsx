@@ -264,7 +264,13 @@ export function MeetingNoteEditorScreen({
                 className="rounded-lg border border-[#E5E7EB] bg-white p-4"
                 title="기본 정보"
               >
-                <ModalFormRow columns={3} className="gap-3">
+                <ModalFormRow columns={2} className="gap-3">
+                  <TextField
+                    errorMessage={errors.title?.message}
+                    id="meeting-title"
+                    label="회의록 제목"
+                    register={register("title")}
+                  />
                   <TextField
                     errorMessage={errors.meetingLocalDateTime?.message}
                     id="meeting-local-date-time"
@@ -272,6 +278,8 @@ export function MeetingNoteEditorScreen({
                     register={register("meetingLocalDateTime")}
                     type="datetime-local"
                   />
+                </ModalFormRow>
+                <ModalFormRow columns={3} className="gap-3">
                   <TextField
                     errorMessage={errors.companyName?.message}
                     id="meeting-company-name"
@@ -284,14 +292,14 @@ export function MeetingNoteEditorScreen({
                     label="담당자"
                     register={register("contactUsername")}
                   />
-                </ModalFormRow>
-                <ModalFormRow columns={3} className="gap-3">
                   <TextField
                     errorMessage={errors.companyField?.message}
                     id="meeting-company-field"
                     label="업종"
                     register={register("companyField")}
                   />
+                </ModalFormRow>
+                <ModalFormRow columns={3} className="gap-3">
                   <TextField
                     errorMessage={errors.companyRegion?.message}
                     id="meeting-company-region"
@@ -304,14 +312,14 @@ export function MeetingNoteEditorScreen({
                     label="부서"
                     register={register("department")}
                   />
-                </ModalFormRow>
-                <ModalFormRow columns={3} className="gap-3">
                   <TextField
                     errorMessage={errors.jobGrade?.message}
                     id="meeting-contact-job-grade"
                     label="직급"
                     register={register("jobGrade")}
                   />
+                </ModalFormRow>
+                <ModalFormRow columns={2} className="gap-3">
                   <TextField
                     errorMessage={errors.contactEmail?.message}
                     id="meeting-contact-email"

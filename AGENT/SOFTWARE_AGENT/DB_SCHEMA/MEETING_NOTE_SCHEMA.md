@@ -8,6 +8,7 @@ MeetingNote 도메인은 Backend `BE/src/modules/meeting-note`와 Prisma `Meetin
 
 - 계획: `TODO/DONE/MEETING_NOTE_MANUAL_PLAN`
 - migration: `BE/prisma/migrations/20260615000000_add_meeting_note_domain/migration.sql`
+- migration: `BE/prisma/migrations/20260626010000_add_meeting_note_title/migration.sql`
 - Backend module: `BE/src/modules/meeting-note`
 - User Web feature: `FE/user-web/src/features/meeting-note`
 
@@ -17,14 +18,15 @@ MeetingNote 도메인은 Backend `BE/src/modules/meeting-note`와 Prisma `Meetin
 
 ### MeetingNote
 
-사용자 소유 회의록 본문과 회의 시각을 저장한다.
+사용자 소유 회의록 제목, 본문, 회의 시각을 저장한다.
 
 | 필드 | 타입 | nullable | 설명 |
 |---|---|---:|---|
 | `id` | `String @db.Uuid` | 아니오 | 회의록 ID |
 | `userId` | `String @db.Uuid` | 아니오 | 회의록 소유 사용자 ID |
 | `sourceType` | `MeetingNoteSourceType` | 아니오 | 생성 방식. 현재 저장 API는 `MANUAL`, `TEXT_AI`, `STT_AI`를 허용 |
-| `meetingAt` | `DateTime @db.Timestamptz(3)` | 예 | 사용자 local date-time을 timezone 기준으로 변환한 UTC instant |
+| `title` | `String` | 아니오 | 회의록 목록/상세/휴지통 표시용 제목 |
+| `meetingAt` | `DateTime @db.Timestamptz(3)` | 아니오 | 사용자 local date-time을 timezone 기준으로 변환한 UTC instant |
 | `timeZone` | `String` | 아니오 | UTC 변환에 사용한 IANA timezone snapshot |
 | `details` | `String` | 아니오 | 회의 상세 내용 |
 | `nextPlan` | `String` | 예 | 향후 계획 |
@@ -36,6 +38,7 @@ MeetingNote 도메인은 Backend `BE/src/modules/meeting-note`와 Prisma `Meetin
 인덱스:
 
 - `@@index([userId, meetingAt])`: 사용자별 회의 일시 정렬과 기간 조회 확장 대비
+- `@@index([userId, title])`: 사용자별 회의록 제목 검색 대비
 - `@@index([userId, createdAt])`: 사용자별 등록일 정렬
 
 ### MeetingNoteCompany
@@ -138,7 +141,8 @@ MeetingNote 도메인은 Backend `BE/src/modules/meeting-note`와 Prisma `Meetin
 - `GET /api/meeting-notes`는 page-number pagination을 사용한다.
 - 목록 `pageSize`는 10개 고정이며 응답의 `pageSize`는 `10`이다.
 - 목록 응답은 `totalCount`, `totalPages`를 포함하고 `hasNext`를 사용하지 않는다.
-- User Web은 목록 조회 때 `page`와 필터/정렬 query를 보내며 `pageSize` query에 의존하지 않는다.
+- User Web은 목록 조회 때 `page`, `search`, 필터/정렬 query를 보내며 `pageSize` query에 의존하지 않는다.
+- 목록 `search`는 `MeetingNote.title contains search` 조건으로 적용한다.
 
 ## 6. 시간 정책
 
