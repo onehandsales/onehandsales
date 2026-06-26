@@ -370,10 +370,7 @@ export function ProductListScreen({
           <button
             aria-label="초기화"
             className={cn(
-              "inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full border text-[12px] font-medium transition",
-              !hasFilters
-                ? "border-[#C7D7FE] bg-[#EAF2FF] font-bold text-[#1D4ED8]"
-                : "border-[#E5E7EB] bg-[#F3F4F6] text-[#4B5563]",
+              "inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-[#4880EE] bg-[#4880EE] text-[12px] font-bold text-white transition hover:bg-[#4880EE] focus:border-[#4880EE] focus:outline-none focus:ring-1 focus:ring-[#4880EE]",
             )}
             onClick={() => {
               setSearch("");
@@ -686,7 +683,6 @@ function Badge({
 }
 
 function FilterChip({
-  active,
   icon: Icon,
   label,
   onClick,
@@ -700,10 +696,7 @@ function FilterChip({
     <button
       aria-label={label}
       className={cn(
-        "inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-[6px] border text-[13px] transition hover:border-[#93C5FD] focus:border-[#4880EE] focus:outline-none focus:ring-1 focus:ring-[#4880EE]",
-        active
-          ? "border-[#C7D7FE] bg-[#EAF2FF] font-bold text-[#1D4ED8]"
-          : "border-[#E6EAF0] bg-white font-medium text-[#475569] hover:bg-[#F9FAFB]",
+        "inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-[6px] border border-[#4880EE] bg-[#4880EE] text-[13px] font-bold text-white transition hover:bg-[#4880EE] focus:border-[#4880EE] focus:outline-none focus:ring-1 focus:ring-[#4880EE]",
       )}
       onClick={onClick}
       type="button"
