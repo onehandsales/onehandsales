@@ -38,6 +38,7 @@ export function ScheduleScreen() {
   );
   const [initialStartAt, setInitialStartAt] = useState<Date | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
+  const [isTodayPressed, setIsTodayPressed] = useState(false);
   const range = useMemo(
     () =>
       viewMode === "month"
@@ -84,10 +85,16 @@ export function ScheduleScreen() {
     );
   };
 
+  const moveToday = () => {
+    setIsTodayPressed(true);
+    window.setTimeout(() => setIsTodayPressed(false), 180);
+    setAnchorDate(new Date());
+  };
+
   return (
-    <section className="flex min-h-full flex-col bg-[#FAFAF8]">
-      <header className="flex min-h-[var(--topbar-height)] shrink-0 flex-wrap items-center justify-between gap-3 px-5 py-3">
-        <div className="flex min-w-0 flex-wrap items-center gap-x-3 gap-y-1">
+    <section className="flex min-h-dvh flex-col bg-[#FAFAF8]">
+      <header className="flex h-[var(--topbar-height)] shrink-0 items-center justify-between gap-3 px-5">
+        <div className="flex min-w-0 items-center gap-x-3">
           <span className="flex items-center gap-1.5 text-[13px] font-semibold text-[#111827]">
             <CalendarDays
               className="h-[15px] w-[15px] shrink-0 text-[#4880EE]"
@@ -96,15 +103,20 @@ export function ScheduleScreen() {
             일정
           </span>
           <button
-            className="inline-flex h-10 items-center rounded-md border border-[#E2E5EC] bg-white px-4 text-[13px] font-medium text-[#374151] hover:bg-[#F5F6F8]"
-            onClick={() => setAnchorDate(new Date())}
+            className="relative inline-flex h-10 items-center overflow-hidden rounded-md border border-[#E2E5EC] bg-white px-4 text-[13px] font-medium text-[#374151] transition-colors duration-150 hover:bg-[#E9ECEF] active:bg-[#DDE1E8]"
+            onClick={moveToday}
             type="button"
           >
-            오늘
+            <span
+              className={`pointer-events-none absolute inset-0 rounded-md bg-[#DDE1E8] transition-opacity duration-200 ease-out ${
+                isTodayPressed ? "opacity-100" : "opacity-0"
+              }`}
+            />
+            <span className="relative">오늘</span>
           </button>
           <button
             aria-label="이전 기간"
-            className="grid h-10 w-5 place-items-center text-[#374151] hover:text-[#111827]"
+            className="grid h-8 w-8 place-items-center rounded-full text-[#374151] transition-colors duration-150 hover:bg-[#E9ECEF] hover:text-[#111827] active:bg-[#DDE1E8]"
             onClick={movePrevious}
             type="button"
           >
@@ -112,7 +124,7 @@ export function ScheduleScreen() {
           </button>
           <button
             aria-label="다음 기간"
-            className="grid h-10 w-5 place-items-center text-[#374151] hover:text-[#111827]"
+            className="grid h-8 w-8 place-items-center rounded-full text-[#374151] transition-colors duration-150 hover:bg-[#E9ECEF] hover:text-[#111827] active:bg-[#DDE1E8]"
             onClick={moveNext}
             type="button"
           >
@@ -128,7 +140,7 @@ export function ScheduleScreen() {
         </div>
       </header>
 
-      <div className="flex flex-col gap-4 px-5 pb-6 pt-4">
+      <div className="flex min-h-0 flex-1 flex-col gap-4 px-5 pb-3 pt-1">
         {notice ? (
           <p className="rounded-md border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm text-emerald-800">
             {notice}
@@ -143,8 +155,8 @@ export function ScheduleScreen() {
             onRetry={() => void schedulesQuery.refetch()}
           />
         ) : (
-          <div className="grid gap-4">
-            <div className="overflow-x-auto rounded-lg border border-[#E2E5EC] bg-white shadow-sm">
+          <div className="flex min-h-0 flex-1 flex-col gap-4">
+            <div className="flex min-h-0 flex-1 overflow-x-auto rounded-lg border border-[#E2E5EC] bg-white shadow-sm">
               {viewMode === "month" ? (
                 <MonthCalendar
                   anchorDate={anchorDate}
@@ -298,9 +310,9 @@ function MonthCalendar({
   const currentMonth = anchorDate.getMonth();
 
   return (
-    <div className="min-w-[820px]">
+    <div className="flex h-full w-full min-w-[820px] flex-col">
       <CalendarHeader />
-      <div className="grid grid-cols-7">
+      <div className="grid min-h-0 flex-1 auto-rows-fr grid-cols-7">
         {cells.map((cell) => {
           const dateKey = toDateKey(cell);
           const daySchedules = schedulesByDate.get(dateKey) ?? [];
@@ -308,7 +320,7 @@ function MonthCalendar({
 
           return (
             <section
-              className={`min-h-[142px] border-r border-t border-[#E2E5EC] p-2 last:border-r-0 ${
+              className={`min-h-[112px] border-r border-t border-[#E2E5EC] p-2 last:border-r-0 ${
                 isOutsideMonth ? "bg-[#F5F6F8] text-[#9CA3AF]" : "bg-white"
               }`}
               key={dateKey}
@@ -369,9 +381,9 @@ function WeekCalendar({
   );
 
   return (
-    <div className="min-w-[820px]">
+    <div className="flex h-full w-full min-w-[820px] flex-col">
       <CalendarHeader />
-      <div className="grid grid-cols-7">
+      <div className="grid min-h-0 flex-1 auto-rows-fr grid-cols-7">
         {days.map((day) => {
           const dateKey = toDateKey(day);
           const daySchedules = schedulesByDate.get(dateKey) ?? [];
@@ -425,7 +437,9 @@ function CalendarHeader() {
     <div className="grid grid-cols-7 border-b border-[#E2E5EC] bg-[#F5F6F8]">
       {weekDayLabels.map((label) => (
         <div
-          className="px-3 py-2 text-center text-[12px] font-semibold text-[#6B7280]"
+          className={`px-3 py-2 text-center text-[12px] text-[#6B7280] ${
+            label === "토" || label === "일" ? "font-bold" : "font-medium"
+          }`}
           key={label}
         >
           {label}
