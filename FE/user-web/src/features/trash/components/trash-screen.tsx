@@ -348,8 +348,8 @@ export function TrashScreen() {
                 icon={Trash2}
                 title={
                   hasFilter
-                    ? "조건에 맞는 삭제 데이터가 없습니다"
-                    : "휴지통에 삭제된 데이터가 없습니다"
+                    ? "조건에 맞는 데이터가 없습니다"
+                    : "삭제된 데이터가 없습니다"
                 }
               />
             ) : (

@@ -1,13 +1,14 @@
 import {
   AlertCircle,
   CalendarDays,
+  Check,
+  ChevronDown,
   ChevronLeft,
   ChevronRight,
-  // FileText,
   Plus,
   RotateCcw,
 } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { ScheduleFormDialog } from "@/features/schedule/components/schedule-form-dialog";
 import { useScheduleList } from "@/features/schedule/hooks/use-schedule-queries";
 import { getDefaultScheduleTimeZone } from "@/features/schedule/schemas/schedule-schema";
@@ -17,10 +18,16 @@ import type {
 } from "@/features/schedule/types/schedule";
 import { getApiErrorMessage } from "@/lib/api-client";
 import { formatDate, formatDateWithOptions } from "@/utils/format";
-import { PageHeader } from "@/components/layout/page-header";
 
 const screenTimeZone = getDefaultScheduleTimeZone();
 const weekDayLabels = ["월", "화", "수", "목", "금", "토", "일"];
+const viewModeOptions: ReadonlyArray<{
+  readonly value: ScheduleViewMode;
+  readonly label: string;
+}> = [
+  { value: "month", label: "월" },
+  { value: "week", label: "주" },
+];
 
 export function ScheduleScreen() {
   const [viewMode, setViewMode] = useState<ScheduleViewMode>("month");
@@ -51,12 +58,7 @@ export function ScheduleScreen() {
     () => groupSchedulesByDate(schedules, screenTimeZone),
     [schedules],
   );
-  const title =
-    viewMode === "month"
-      ? formatMonthTitle(anchorDate)
-      : `${formatDateShort(range.start)} - ${formatDateShort(
-          addDays(range.end, -1),
-        )}`;
+  const title = formatMonthTitle(anchorDate);
 
   const openCreateDialog = (startAt: Date | null = null) => {
     setSelectedSchedule(null);
@@ -84,78 +86,49 @@ export function ScheduleScreen() {
 
   return (
     <section className="flex min-h-full flex-col bg-[#FAFAF8]">
-      <PageHeader
-        breadcrumbs={[{ label: "일정", icon: CalendarDays }]}
-        actions={[
-          // 주간 보고서 Backend 구현 전까지 노출하지 않는다.
-          // { icon: FileText, tooltip: "주간 보고서", href: "/schedules/week" },
-          {
-            icon: Plus,
-            tooltip: "일정 생성",
-            variant: "primary",
-            onClick: () => openCreateDialog(),
-          },
-        ]}
-      />
-
-      <div className="flex flex-col gap-4 px-5 pb-6">
-        <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
-          <div className="inline-flex w-fit rounded-md border border-[#E2E5EC] bg-white p-1">
-            <button
-              className={`h-11 rounded-md px-4 text-[13px] font-medium ${
-                viewMode === "month"
-                    ? "bg-[#4880EE] text-white"
-                  : "text-[#374151] hover:bg-[#F5F6F8]"
-              }`}
-              onClick={() => setViewMode("month")}
-              type="button"
-            >
-              월간
-            </button>
-            <button
-              className={`h-11 rounded-md px-4 text-[13px] font-medium ${
-                viewMode === "week"
-                    ? "bg-[#4880EE] text-white"
-                  : "text-[#374151] hover:bg-[#F5F6F8]"
-              }`}
-              onClick={() => setViewMode("week")}
-              type="button"
-            >
-              주간
-            </button>
-          </div>
-
-          <div className="flex flex-wrap items-center gap-2">
-            <button
-              aria-label="이전 기간"
-              className="grid h-11 w-11 place-items-center rounded-md border border-[#E2E5EC] bg-white text-[#374151] hover:bg-[#F5F6F8]"
-              onClick={movePrevious}
-              type="button"
-            >
-              <ChevronLeft className="h-4 w-4" />
-            </button>
-            <div className="min-w-[190px] text-center text-[13px] font-semibold text-[#111827]">
-              {title}
-            </div>
-            <button
-              aria-label="다음 기간"
-              className="grid h-11 w-11 place-items-center rounded-md border border-[#E2E5EC] bg-white text-[#374151] hover:bg-[#F5F6F8]"
-              onClick={moveNext}
-              type="button"
-            >
-              <ChevronRight className="h-4 w-4" />
-            </button>
-            <button
-              className="inline-flex h-11 items-center gap-1.5 rounded-md border border-[#E2E5EC] bg-white px-4 text-[13px] font-medium text-[#374151] hover:bg-[#F5F6F8]"
-              onClick={() => setAnchorDate(new Date())}
-              type="button"
-            >
-              <RotateCcw className="h-3.5 w-3.5" />
-              오늘
-            </button>
-          </div>
+      <header className="flex min-h-[var(--topbar-height)] shrink-0 flex-wrap items-center justify-between gap-3 px-5 py-3">
+        <div className="flex min-w-0 flex-wrap items-center gap-x-3 gap-y-1">
+          <span className="flex items-center gap-1.5 text-[13px] font-semibold text-[#111827]">
+            <CalendarDays
+              className="h-[15px] w-[15px] shrink-0 text-[#4880EE]"
+              strokeWidth={1.75}
+            />
+            일정
+          </span>
+          <button
+            className="inline-flex h-10 items-center rounded-md border border-[#E2E5EC] bg-white px-4 text-[13px] font-medium text-[#374151] hover:bg-[#F5F6F8]"
+            onClick={() => setAnchorDate(new Date())}
+            type="button"
+          >
+            오늘
+          </button>
+          <button
+            aria-label="이전 기간"
+            className="grid h-10 w-5 place-items-center text-[#374151] hover:text-[#111827]"
+            onClick={movePrevious}
+            type="button"
+          >
+            <ChevronLeft className="h-4 w-4" />
+          </button>
+          <button
+            aria-label="다음 기간"
+            className="grid h-10 w-5 place-items-center text-[#374151] hover:text-[#111827]"
+            onClick={moveNext}
+            type="button"
+          >
+            <ChevronRight className="h-4 w-4" />
+          </button>
+          <span className="min-w-0 truncate text-[13px] font-normal text-[#111827]">
+            {title}
+          </span>
         </div>
 
+        <div className="flex shrink-0 flex-wrap items-center gap-2">
+          <ScheduleViewModeSelect onChange={setViewMode} value={viewMode} />
+        </div>
+      </header>
+
+      <div className="flex flex-col gap-4 px-5 pb-6 pt-4">
         {notice ? (
           <p className="rounded-md border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm text-emerald-800">
             {notice}
@@ -209,6 +182,101 @@ export function ScheduleScreen() {
         schedule={selectedSchedule}
       />
     </section>
+  );
+}
+
+function ScheduleViewModeSelect({
+  value,
+  onChange,
+}: {
+  readonly value: ScheduleViewMode;
+  readonly onChange: (value: ScheduleViewMode) => void;
+}) {
+  const [isOpen, setIsOpen] = useState(false);
+  const wrapperRef = useRef<HTMLDivElement>(null);
+  const selectedLabel =
+    viewModeOptions.find((option) => option.value === value)?.label ?? "월";
+
+  useEffect(() => {
+    if (!isOpen) {
+      return;
+    }
+
+    const handleMouseDown = (event: MouseEvent) => {
+      if (
+        wrapperRef.current &&
+        !wrapperRef.current.contains(event.target as Node)
+      ) {
+        setIsOpen(false);
+      }
+    };
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setIsOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleMouseDown);
+    document.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      document.removeEventListener("mousedown", handleMouseDown);
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [isOpen]);
+
+  return (
+    <div className="relative" ref={wrapperRef}>
+      <button
+        aria-expanded={isOpen}
+        aria-haspopup="listbox"
+        aria-label="일정 보기 방식"
+        className={`inline-flex h-10 w-[58px] items-center justify-center gap-1.5 rounded-md border bg-white px-2 text-[13px] font-medium text-[#374151] outline-none transition hover:bg-[#F5F6F8] ${
+          isOpen ? "border-[#4880EE] ring-1 ring-[#4880EE]" : "border-[#E2E5EC]"
+        }`}
+        onClick={() => setIsOpen((current) => !current)}
+        type="button"
+      >
+        <span>{selectedLabel}</span>
+        <ChevronDown
+          className={`h-3.5 w-3.5 transition-transform ${
+            isOpen ? "rotate-180 text-[#4880EE]" : "text-[#6B7280]"
+          }`}
+        />
+      </button>
+
+      {isOpen ? (
+        <div
+          className="absolute right-0 top-full z-50 mt-1 w-[58px] overflow-hidden rounded-md border border-[#E2E5EC] bg-white py-1 shadow-lg"
+          role="listbox"
+        >
+          {viewModeOptions.map((option) => {
+            const isSelected = option.value === value;
+
+            return (
+              <button
+                aria-selected={isSelected}
+                className={`flex h-9 w-full items-center justify-between px-3 text-left text-[13px] transition hover:bg-[#F5F6F8] ${
+                  isSelected
+                    ? "bg-[#EFF6FF] font-semibold text-[#1D4ED8]"
+                    : "text-[#374151]"
+                }`}
+                key={option.value}
+                onClick={() => {
+                  onChange(option.value);
+                  setIsOpen(false);
+                }}
+                role="option"
+                type="button"
+              >
+                <span>{option.label}</span>
+                {isSelected ? <Check className="h-3.5 w-3.5" /> : null}
+              </button>
+            );
+          })}
+        </div>
+      ) : null}
+    </div>
   );
 }
 

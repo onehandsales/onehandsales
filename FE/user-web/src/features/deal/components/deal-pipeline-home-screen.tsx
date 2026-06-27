@@ -311,7 +311,7 @@ export function DealPipelineHomeScreen({
             <div className="flex min-w-0 flex-1 flex-col gap-3">
               {/* Controls bar — 한 줄 */}
               <div className="flex shrink-0 items-center gap-1.5 px-0.5 lg:gap-2">
-                <div className="flex h-8 w-[clamp(120px,18vw,220px)] shrink-0 items-center gap-1.5 rounded-md border border-[#E2E5EC] bg-[#FAFAF8] px-3 transition focus-within:border-[#93C5FD] focus-within:bg-white">
+                <div className="flex h-8 w-[clamp(120px,18vw,220px)] shrink-0 items-center gap-1.5 rounded-md border border-[#E2E5EC] bg-[#FAFAF8] px-3 transition focus-within:border-[#4880EE] focus-within:bg-white focus-within:ring-1 focus-within:ring-[#4880EE]">
                   <Search className="h-3 w-3 shrink-0 text-[#9CA3AF]" />
                   <input
                     className="min-w-0 flex-1 bg-transparent text-[13px] text-[#111827] outline-none placeholder:text-[#9CA3AF]"

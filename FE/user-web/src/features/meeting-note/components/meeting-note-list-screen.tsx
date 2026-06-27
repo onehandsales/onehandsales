@@ -17,6 +17,7 @@ import { ListFilterSelect } from "@/components/ui/list-filter-select";
 import { Pagination } from "@/components/ui/pagination";
 import { ListEmptyState } from "@/components/ui/state";
 import { Toast } from "@/components/ui/toast";
+import { useAuthSession } from "@/features/auth";
 import { MeetingNoteCreateDialog } from "@/features/meeting-note/components/meeting-note-create-dialog";
 import {
   useMeetingNoteFilterCompanies,
@@ -28,14 +29,14 @@ import type {
   MeetingNoteListParams,
   MeetingNoteSort,
 } from "@/features/meeting-note/types/meeting-note";
-import { getMeetingDateParts } from "@/features/meeting-note/utils/meeting-note-date";
 import { getApiErrorMessage } from "@/lib/api-client";
 import { cn } from "@/utils/cn";
+import { formatDateWithOptions } from "@/utils/format";
 import { readLocationNotice } from "@/utils/location-state";
 
 const MEETING_NOTE_TABLE_GRID_STYLE = {
   gridTemplateColumns:
-    "minmax(180px,1.45fr) minmax(120px,0.85fr) minmax(112px,0.8fr) minmax(104px,0.75fr)",
+    "minmax(116px,0.82fr) minmax(180px,1.45fr) minmax(128px,0.88fr) minmax(128px,0.88fr) minmax(116px,0.82fr)",
 };
 
 const MEETING_NOTE_SORT_OPTIONS = [
@@ -47,6 +48,7 @@ const MEETING_NOTE_SORT_OPTIONS = [
 export function MeetingNoteListScreen() {
   const navigate = useNavigate();
   const location = useLocation();
+  const { user } = useAuthSession();
   const [page, setPage] = useState(1);
   const [searchText, setSearchText] = useState("");
   const [search, setSearch] = useState("");
@@ -98,6 +100,7 @@ export function MeetingNoteListScreen() {
       contactIds.length > 0 ||
       sort !== "createdAtDesc",
   );
+  const displayTimeZone = user?.timeZone ?? getBrowserTimeZoneFallback();
 
   useEffect(() => {
     if (contactIds.length === 0) {
@@ -241,22 +244,25 @@ export function MeetingNoteListScreen() {
 
       <div className="hidden overflow-x-auto px-5 pb-3 pt-1 md:block">
         <div className="flex min-w-0 flex-col gap-3">
-          <div className="flex w-full min-w-[560px] flex-col overflow-hidden rounded-lg border border-[#E2E5EC] bg-white shadow-sm">
+          <div className="flex w-full min-w-[680px] flex-col overflow-hidden rounded-lg border border-[#E2E5EC] bg-white shadow-sm">
             <div
               className="grid h-11 shrink-0 items-center border-b border-[#E2E5EC] bg-[#F9FAFB] px-3 md:px-4 xl:px-6"
               style={MEETING_NOTE_TABLE_GRID_STYLE}
             >
               <span className="min-w-0 truncate text-[12px] font-semibold text-[#64748B]">
-                제목
+                미팅날짜
               </span>
               <span className="min-w-0 truncate text-[12px] font-semibold text-[#64748B]">
-                미팅일
+                제목
               </span>
               <span className="min-w-0 truncate text-[12px] font-semibold text-[#64748B]">
                 회사
               </span>
               <span className="min-w-0 truncate text-[12px] font-semibold text-[#64748B]">
                 담당자
+              </span>
+              <span className="min-w-0 truncate text-[12px] font-semibold text-[#64748B]">
+                등록일
               </span>
             </div>
 
@@ -283,6 +289,7 @@ export function MeetingNoteListScreen() {
               <div className="min-w-0">
                 {meetingNotes.map((meetingNote) => (
                   <MeetingNoteListRow
+                    displayTimeZone={displayTimeZone}
                     key={meetingNote.id}
                     meetingNote={meetingNote}
                   />
@@ -405,6 +412,7 @@ export function MeetingNoteListScreen() {
           ) : (
             meetingNotes.map((meetingNote) => (
               <MeetingNoteMobileCard
+                displayTimeZone={displayTimeZone}
                 key={meetingNote.id}
                 meetingNote={meetingNote}
               />
@@ -775,14 +783,21 @@ function normalizeMeetingNoteFilterText(value: string) {
 
 // 기능 : 모바일 회의록 목록 카드를 렌더링합니다.
 function MeetingNoteMobileCard({
+  displayTimeZone,
   meetingNote,
 }: {
+  readonly displayTimeZone: string;
   readonly meetingNote: MeetingNoteListItem;
 }) {
-  const meetingDate = getMeetingDateParts(meetingNote.meetingAt);
-  const meetingDateLabel = meetingDate.hasValue
-    ? `${meetingDate.compactDate} ${meetingDate.time}`
-    : meetingDate.full;
+  const meetingDateLabel = formatMeetingNoteListDate(
+    meetingNote.meetingAt,
+    displayTimeZone,
+    true,
+  );
+  const createdAtLabel = formatMeetingNoteListDate(
+    meetingNote.createdAt,
+    displayTimeZone,
+  );
   const relationLabel =
     [meetingNote.companies.label, meetingNote.contacts.label]
       .filter(Boolean)
@@ -801,6 +816,9 @@ function MeetingNoteMobileCard({
         <CalendarClock className="h-4 w-4 text-[#EA580C]" strokeWidth={2} />
       </div>
       <div className="min-w-0 flex-1">
+        <p className="mb-0.5 truncate text-[12px] font-medium text-[#6B7280]">
+          {meetingDateLabel}
+        </p>
         <div className="flex min-w-0 items-center gap-1.5">
           <span className="min-w-0 truncate text-[14px] font-semibold text-[#111827]">
             {meetingNote.title}
@@ -811,11 +829,11 @@ function MeetingNoteMobileCard({
             </span>
           ) : null}
         </div>
-        <p className="mt-0.5 truncate text-[12px] text-[#6B7280]">
-          {meetingDateLabel}
-        </p>
         <p className="mt-0.5 truncate text-[11px] text-[#9CA3AF]">
           {relationLabel}
+        </p>
+        <p className="mt-0.5 truncate text-[11px] text-[#9CA3AF]">
+          등록일 {createdAtLabel}
         </p>
       </div>
     </Link>
@@ -824,8 +842,10 @@ function MeetingNoteMobileCard({
 
 // 기능 : 회의록 목록 row를 클릭 가능한 상세 이동 항목으로 렌더링합니다.
 function MeetingNoteListRow({
+  displayTimeZone,
   meetingNote,
 }: {
+  readonly displayTimeZone: string;
   readonly meetingNote: MeetingNoteListItem;
 }) {
   const navigate = useNavigate();
@@ -847,10 +867,15 @@ function MeetingNoteListRow({
       style={MEETING_NOTE_TABLE_GRID_STYLE}
       tabIndex={0}
     >
+      <DateCell
+        includeTime
+        value={meetingNote.meetingAt}
+        timeZone={displayTimeZone}
+      />
       <TitleCell title={meetingNote.title} />
-      <MeetingDateCell value={meetingNote.meetingAt} />
       <SummaryCell summary={meetingNote.companies} />
       <SummaryCell summary={meetingNote.contacts} />
+      <DateCell value={meetingNote.createdAt} timeZone={displayTimeZone} />
     </div>
   );
 }
@@ -865,22 +890,23 @@ function TitleCell({ title }: { readonly title: string }) {
   );
 }
 
-function MeetingDateCell({ value }: { readonly value: string | null }) {
-  const meetingDate = getMeetingDateParts(value);
-
-  if (!meetingDate.hasValue) {
-    return (
-      <span className="min-w-0 pr-3 text-[13px] font-medium text-[#111827]">
-        {meetingDate.full}
-      </span>
-    );
-  }
+function DateCell({
+  includeTime = false,
+  timeZone,
+  value,
+}: {
+  readonly includeTime?: boolean;
+  readonly timeZone: string;
+  readonly value: string | null;
+}) {
+  const dateLabel = formatMeetingNoteListDate(value, timeZone, includeTime);
 
   return (
-    <span className="min-w-0 pr-3">
-      <span className="block truncate text-[13px] font-medium text-[#111827]">
-        {meetingDate.compactDate} {meetingDate.time}
-      </span>
+    <span
+      className="min-w-0 truncate pr-3 text-[12px] font-medium text-[#64748B]"
+      title={dateLabel}
+    >
+      {dateLabel}
     </span>
   );
 }
@@ -936,7 +962,7 @@ function MeetingNoteListSkeleton() {
           key={rowIndex}
           style={MEETING_NOTE_TABLE_GRID_STYLE}
         >
-          {Array.from({ length: 4 }, (_, cellIndex) => (
+          {Array.from({ length: 5 }, (_, cellIndex) => (
             <div className="min-w-0 pr-3" key={cellIndex}>
               <div className="h-4 w-20 animate-pulse rounded bg-[#F3F4F6]" />
             </div>
@@ -945,4 +971,26 @@ function MeetingNoteListSkeleton() {
       ))}
     </>
   );
+}
+
+function formatMeetingNoteListDate(
+  value: string | null,
+  timeZone: string,
+  includeTime = false,
+) {
+  return formatDateWithOptions(value, {
+    day: "2-digit",
+    ...(includeTime ? { hour: "numeric", hour12: true, minute: "2-digit" } : {}),
+    month: "2-digit",
+    timeZone,
+    year: "numeric",
+  });
+}
+
+function getBrowserTimeZoneFallback() {
+  try {
+    return Intl.DateTimeFormat().resolvedOptions().timeZone || "Asia/Seoul";
+  } catch {
+    return "Asia/Seoul";
+  }
 }
