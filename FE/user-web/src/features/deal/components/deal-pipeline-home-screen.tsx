@@ -507,7 +507,7 @@ export function DealPipelineHomeScreen({
           </span>
           <button
             aria-label="엑셀 다운로드"
-            className="inline-flex h-[26px] w-[26px] shrink-0 items-center justify-center rounded-md bg-[#F3F4F6] text-[#4B5563] disabled:opacity-40"
+            className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-[#F3F4F6] text-[#4B5563] disabled:opacity-40"
             disabled={isExporting}
             onClick={() => void onExport()}
             type="button"
@@ -567,11 +567,11 @@ export function DealPipelineHomeScreen({
 
         {/* FAB */}
         <button
-          className="fixed bottom-24 right-5 z-40 inline-flex h-[52px] w-[52px] items-center justify-center rounded-full bg-[#4880EE] text-white shadow-[0_4px_16px_rgba(59,130,246,0.27)] transition hover:scale-[1.02]"
+          className="fixed bottom-24 right-5 z-40 inline-flex h-8 w-8 items-center justify-center rounded-full bg-[#4880EE] text-white shadow-[0_4px_16px_rgba(59,130,246,0.27)] transition hover:scale-[1.02]"
           onClick={() => void navigate("/deals/new")}
           type="button"
         >
-          <Plus className="h-6 w-6" />
+          <Plus className="h-4 w-4" />
         </button>
       </section>
 

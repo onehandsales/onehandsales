@@ -511,11 +511,11 @@ export function CompanyListScreen({
         {/* FAB */}
         <button
           aria-label="회사 추가"
-          className="fixed bottom-24 right-5 flex h-[52px] w-[52px] items-center justify-center rounded-full bg-[#4880EE] shadow-[0_4px_16px_rgba(59,130,246,0.27)] transition active:opacity-80"
+          className="fixed bottom-24 right-5 flex h-8 w-8 items-center justify-center rounded-full bg-[#4880EE] shadow-[0_4px_16px_rgba(59,130,246,0.27)] transition active:opacity-80"
           onClick={() => void navigate("/companies/new")}
           type="button"
         >
-          <Plus className="h-6 w-6 text-white" strokeWidth={2.5} />
+          <Plus className="h-4 w-4 text-white" strokeWidth={2.5} />
         </button>
       </section>
 
