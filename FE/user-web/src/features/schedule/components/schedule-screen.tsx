@@ -319,7 +319,7 @@ function MonthCalendar({
 
           return (
             <section
-              className={`min-h-[112px] cursor-pointer border-r border-t border-[#E2E5EC] px-2 pb-2 last:border-r-0 ${
+              className={`min-h-[112px] border-r border-t border-[#E2E5EC] px-2 pb-2 last:border-r-0 ${
                 isOutsideMonth ? "bg-[#FAFAFB] text-[#9CA3AF]" : "bg-white"
               }`}
               key={dateKey}
@@ -329,7 +329,7 @@ function MonthCalendar({
                 <span
                   className={`pointer-events-none absolute left-1/2 top-0 grid -translate-x-1/2 place-items-center text-[12px] font-medium ${
                     isToday(cell)
-                      ? "h-6 w-6 rounded-full bg-[#4880EE] p-0 leading-none text-white"
+                      ? "h-[23px] w-[23px] rounded-full bg-[#4880EE] p-0 leading-none text-white"
                       : "h-8 min-w-8 rounded-md px-2 text-[#111827]"
                   }`}
                 >
