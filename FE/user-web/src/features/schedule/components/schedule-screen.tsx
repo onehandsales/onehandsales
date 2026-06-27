@@ -5,7 +5,6 @@ import {
   ChevronDown,
   ChevronLeft,
   ChevronRight,
-  Plus,
   RotateCcw,
 } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -17,7 +16,7 @@ import type {
   ScheduleViewMode,
 } from "@/features/schedule/types/schedule";
 import { getApiErrorMessage } from "@/lib/api-client";
-import { formatDate, formatDateWithOptions } from "@/utils/format";
+import { formatDateWithOptions } from "@/utils/format";
 
 const screenTimeZone = getDefaultScheduleTimeZone();
 const weekDayLabels = ["월", "화", "수", "목", "금", "토", "일"];
@@ -92,7 +91,7 @@ export function ScheduleScreen() {
   };
 
   return (
-    <section className="flex min-h-dvh flex-col bg-[#FAFAF8]">
+    <section className="flex h-dvh min-h-0 flex-col overflow-hidden bg-[#FAFAF8]">
       <header className="flex h-[var(--topbar-height)] shrink-0 items-center justify-between gap-3 px-5">
         <div className="flex min-w-0 items-center gap-x-3">
           <span className="flex items-center gap-1.5 text-[13px] font-semibold text-[#111827]">
@@ -140,7 +139,7 @@ export function ScheduleScreen() {
         </div>
       </header>
 
-      <div className="flex min-h-0 flex-1 flex-col gap-4 px-5 pb-3 pt-1">
+      <div className="flex min-h-0 flex-1 flex-col gap-4 overflow-hidden px-5 pb-3 pt-1">
         {notice ? (
           <p className="rounded-md border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm text-emerald-800">
             {notice}
@@ -155,8 +154,8 @@ export function ScheduleScreen() {
             onRetry={() => void schedulesQuery.refetch()}
           />
         ) : (
-          <div className="flex min-h-0 flex-1 flex-col gap-4">
-            <div className="flex min-h-0 flex-1 overflow-x-auto rounded-lg border border-[#E2E5EC] bg-white shadow-sm">
+          <div className="flex min-h-0 flex-1 flex-col gap-4 overflow-hidden">
+            <div className="flex h-full min-h-0 flex-1 overflow-x-auto rounded-lg border border-[#E2E5EC] bg-white shadow-sm">
               {viewMode === "month" ? (
                 <MonthCalendar
                   anchorDate={anchorDate}
@@ -310,9 +309,9 @@ function MonthCalendar({
   const currentMonth = anchorDate.getMonth();
 
   return (
-    <div className="flex h-full w-full min-w-[820px] flex-col">
+    <div className="flex h-full min-h-0 w-full min-w-[820px] flex-col">
       <CalendarHeader />
-      <div className="grid min-h-0 flex-1 auto-rows-fr grid-cols-7">
+      <div className="grid h-full min-h-0 flex-1 auto-rows-fr grid-cols-7">
         {cells.map((cell) => {
           const dateKey = toDateKey(cell);
           const daySchedules = schedulesByDate.get(dateKey) ?? [];
@@ -320,31 +319,22 @@ function MonthCalendar({
 
           return (
             <section
-              className={`min-h-[112px] border-r border-t border-[#E2E5EC] p-2 last:border-r-0 ${
-                isOutsideMonth ? "bg-[#F5F6F8] text-[#9CA3AF]" : "bg-white"
+              className={`min-h-[112px] cursor-pointer border-r border-t border-[#E2E5EC] px-2 pb-2 last:border-r-0 ${
+                isOutsideMonth ? "bg-[#FAFAFB] text-[#9CA3AF]" : "bg-white"
               }`}
               key={dateKey}
+              onClick={() => onCreate(setHour(cell, 9))}
             >
-              <div className="mb-2 flex items-center justify-between gap-2">
-                <button
-                  className={`grid h-11 w-11 place-items-center rounded-md text-sm font-medium ${
+              <div className="relative h-9">
+                <span
+                  className={`pointer-events-none absolute left-1/2 top-0 grid -translate-x-1/2 place-items-center text-[12px] font-medium ${
                     isToday(cell)
-                        ? "bg-[#4880EE] text-white"
-                      : "text-[#111827] hover:bg-[#F5F6F8]"
+                      ? "h-6 w-6 rounded-full bg-[#4880EE] p-0 leading-none text-white"
+                      : "h-8 min-w-8 rounded-md px-2 text-[#111827]"
                   }`}
-                  onClick={() => onCreate(setHour(cell, 9))}
-                  type="button"
                 >
                   {cell.getDate()}
-                </button>
-                <button
-                  aria-label={`${formatDateShort(cell)} 일정 생성`}
-                  className="grid h-11 w-11 place-items-center rounded-md text-[#64748B] hover:bg-[#F3F4F6]"
-                  onClick={() => onCreate(setHour(cell, 9))}
-                  type="button"
-                >
-                  <Plus className="h-4 w-4" />
-                </button>
+                </span>
               </div>
               <div className="grid gap-1">
                 {daySchedules.slice(0, 4).map((schedule) => (
@@ -381,9 +371,9 @@ function WeekCalendar({
   );
 
   return (
-    <div className="flex h-full w-full min-w-[820px] flex-col">
+    <div className="flex h-full min-h-0 w-full min-w-[820px] flex-col">
       <CalendarHeader />
-      <div className="grid min-h-0 flex-1 auto-rows-fr grid-cols-7">
+      <div className="grid h-full min-h-0 flex-1 auto-rows-fr grid-cols-7">
         {days.map((day) => {
           const dateKey = toDateKey(day);
           const daySchedules = schedulesByDate.get(dateKey) ?? [];
@@ -437,7 +427,7 @@ function CalendarHeader() {
     <div className="grid grid-cols-7 border-b border-[#E2E5EC] bg-[#F5F6F8]">
       {weekDayLabels.map((label) => (
         <div
-          className={`px-3 py-2 text-center text-[12px] text-[#6B7280] ${
+          className={`px-3 py-1 text-center text-[11px] leading-4 text-[#6B7280] ${
             label === "토" || label === "일" ? "font-bold" : "font-medium"
           }`}
           key={label}
@@ -463,7 +453,10 @@ function SchedulePill({
   return (
     <button
       className={`grid min-h-11 rounded-md border px-2 py-1.5 text-left transition ${tone.pill}`}
-      onClick={onClick}
+      onClick={(event) => {
+        event.stopPropagation();
+        onClick();
+      }}
       type="button"
     >
       <span className={`truncate text-xs font-semibold ${tone.title}`}>
@@ -569,11 +562,10 @@ function ScheduleEmptyState({
           새 일정을 만들면 캘린더에서 바로 확인할 수 있습니다.
         </p>
         <button
-            className="mt-5 inline-flex h-11 items-center gap-1.5 rounded-md bg-[#4880EE] px-4 text-[13px] font-medium text-white hover:bg-[#316BE0]"
+          className="mt-5 inline-flex h-11 items-center gap-1.5 rounded-md bg-[#4880EE] px-4 text-[13px] font-medium text-white hover:bg-[#316BE0]"
           onClick={onCreate}
           type="button"
         >
-          <Plus className="h-4 w-4" />
           일정 생성
         </button>
       </div>
@@ -615,7 +607,7 @@ function CalendarSkeleton() {
     <div className="grid gap-3 rounded-lg border bg-white p-4">
       <div className="h-8 w-48 animate-pulse rounded-md bg-muted" />
       <div className="grid grid-cols-7 gap-2">
-        {Array.from({ length: 35 }).map((_, index) => (
+        {Array.from({ length: 42 }).map((_, index) => (
           <div className="h-28 animate-pulse rounded-md bg-muted" key={index} />
         ))}
       </div>
@@ -642,24 +634,9 @@ function getMonthCells(anchorDate: Date) {
     anchorDate.getMonth(),
     1,
   );
-  const monthEnd = new Date(
-    anchorDate.getFullYear(),
-    anchorDate.getMonth() + 1,
-    0,
-  );
   const gridStart = getWeekStart(monthStart);
-  const gridEnd = addDays(getWeekStart(monthEnd), 7);
-  const cells: Date[] = [];
 
-  for (
-    let current = new Date(gridStart);
-    current < gridEnd;
-    current = addDays(current, 1)
-  ) {
-    cells.push(current);
-  }
-
-  return cells;
+  return Array.from({ length: 42 }, (_, index) => addDays(gridStart, index));
 }
 
 function getMonthRange(anchorDate: Date) {
@@ -740,10 +717,6 @@ function formatMonthTitle(date: Date) {
     year: "numeric",
     month: "long",
   });
-}
-
-function formatDateShort(date: Date) {
-  return formatDate(date);
 }
 
 function formatMonthDay(date: Date) {
