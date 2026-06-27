@@ -327,10 +327,10 @@ function MonthCalendar({
             >
               <div className="relative h-9">
                 <span
-                  className={`pointer-events-none absolute left-1/2 top-0 grid -translate-x-1/2 place-items-center text-[12px] font-medium ${
+                  className={`pointer-events-none absolute left-1/2 grid -translate-x-1/2 place-items-center text-[12px] font-medium ${
                     isToday(cell)
-                      ? "h-[23px] w-[23px] rounded-full bg-[#4880EE] p-0 leading-none text-white"
-                      : "h-8 min-w-8 rounded-md px-2 text-[#111827]"
+                      ? "top-[2px] h-[22px] w-[22px] rounded-full bg-[#4880EE] p-0 leading-none text-white"
+                      : "top-0 h-8 min-w-8 rounded-md px-2 text-[#111827]"
                   }`}
                 >
                   {cell.getDate()}
