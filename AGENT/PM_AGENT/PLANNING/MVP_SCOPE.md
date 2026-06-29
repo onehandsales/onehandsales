@@ -305,7 +305,7 @@
 
 ## 11. Admin
 
-관리자 페이지는 후속 단계에서 만든다. 현재 Backend Admin API는 `GET /admin/api/me`만 구현되어 있으며, Admin Web은 login/protected route/mock token 검증과 admin-query placeholder route/component를 갖고 있다. Admin Web의 대시보드/목록/감사/민감 원문 조회 화면은 Backend 운영 조회 API가 구현되기 전까지 실제 데이터 연동 상태가 아니다.
+관리자 페이지는 후속 단계에서 만든다. 현재 Backend Admin API는 `GET /admin/api/me`만 구현되어 있으며, Admin Web은 login/protected route/mock token 검증만 노출한다. Admin Web의 대시보드/목록/감사/민감 원문 조회 화면은 Backend 운영 조회 API가 구현되기 전까지 route를 root로 redirect하고 메뉴에서 숨긴다.
 
 ### 후속 포함
 

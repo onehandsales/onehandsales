@@ -15,7 +15,6 @@ const PAGE_TITLES: Record<string, { title: string }> = {
   "/products/new": { title: "제품" },
   "/schedules": { title: "일정" },
   "/meeting-notes": { title: "회의록" },
-  "/notifications": { title: "알림" },
   "/settings": { title: "설정" },
 };
 
@@ -74,14 +73,6 @@ export function DesktopAppShell({
               Store Manager
             </p>
           </div>
-          {/*<Link
-            aria-label="알림"
-            className="ml-auto inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-sidebar-foreground/60 transition hover:bg-sidebar-accent hover:text-sidebar-foreground"
-            to="/notifications"
-          >
-            <Bell className="h-4 w-4" />
-          </Link>
-          */}
         </div>
       </aside>
 

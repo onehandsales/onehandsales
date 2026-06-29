@@ -1,11 +1,9 @@
 import {
   Building2,
   ChevronRight,
-  CreditCard,
   Package,
   Settings,
   Trash2,
-  Upload,
   Users,
 } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -137,26 +135,6 @@ export function MorePage() {
           iconBg="#B4530918"
           iconColor="#B45309"
           icon={Package}
-          isLast
-        />
-      </div>
-
-      {/* Section: 도구 */}
-      <SectionHeader title="도구" />
-      <div style={{ borderTop: "1px solid #E5E7EB", borderBottom: "1px solid #E5E7EB" }}>
-        <MenuRow
-          label="명함 스캔"
-          to="/contacts/scan"
-          iconBg="#0E749018"
-          iconColor="#0E7490"
-          icon={CreditCard}
-        />
-        <MenuRow
-          label="Import"
-          to="/import"
-          iconBg="#4880EE18"
-          iconColor="#4880EE"
-          icon={Upload}
           isLast
         />
       </div>

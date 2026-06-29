@@ -1,4 +1,4 @@
-import { Bell, Download, Search } from "lucide-react";
+import { Search } from "lucide-react";
 import { useAuthSession } from "@/features/auth";
 
 type MobileAppHeaderProps = {
@@ -32,24 +32,6 @@ export function MobileAppHeader({
           onClick={onSearchClick}
         >
           <Search className="h-5 w-5" style={{ color: "#6B7280" }} />
-        </button>
-
-        {/* Export icon */}
-        <button
-          type="button"
-          aria-label="내보내기"
-          className="inline-flex h-11 w-11 items-center justify-center rounded-full transition hover:bg-[#F8FAFC]"
-        >
-          <Download className="h-5 w-5" style={{ color: "#6B7280" }} />
-        </button>
-
-        {/* Bell icon */}
-        <button
-          type="button"
-          aria-label="알림"
-          className="inline-flex h-11 w-11 items-center justify-center rounded-full transition hover:bg-[#F8FAFC]"
-        >
-          <Bell className="h-5 w-5" style={{ color: "#6B7280" }} />
         </button>
 
         {/* Avatar */}

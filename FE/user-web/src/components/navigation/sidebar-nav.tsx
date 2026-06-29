@@ -8,7 +8,6 @@ import {
   Package,
   Settings,
   Trash2,
-  // Upload,
 } from "lucide-react";
 import { NavLink } from "react-router-dom";
 import { cn } from "@/utils/cn";
@@ -38,7 +37,6 @@ const groups: Array<{
       { label: "일정", to: "/schedules", icon: CalendarDays },
       { label: "회의록", to: "/meeting-notes", icon: FileText },
       // 핵심 기능 UX 유지보수 이후 Import 기능을 다시 노출한다.
-      // { label: "Import", to: "/import", icon: Upload },
     ],
   },
   {

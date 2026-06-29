@@ -37,7 +37,7 @@
 - `/companies/new`
 - `/companies/:companyId`
 - `/contacts`
-- `/contacts/scan`
+- `/contacts/scan` -> `/contacts` redirect. BusinessCard OCR Backend 구현 전까지 숨김
 - `/contacts/:contactId`
 - `/products`
 - `/products/new`
@@ -51,17 +51,17 @@
 - `/meeting-notes`
 - `/meeting-notes/new`
 - `/meeting-notes/:meetingNoteId`
-- `/business-cards`
-- `/notifications`
-- `/import`
-- `/export`
+- `/business-cards` -> `/contacts` redirect. BusinessCard OCR Backend 구현 전까지 숨김
+- `/notifications` -> `/` redirect. Notification Backend 구현 전까지 숨김
+- `/import` -> `/` redirect. Import Backend 구현 전까지 숨김
+- `/export` -> `/` redirect. Generic Export는 현재 정본 흐름이 아니므로 숨김
 - `/trash`
 - `/settings`
 - `/more`
 
 `/meeting-notes/new`는 현재 `/meeting-notes?create=1` 흐름으로 redirect한다.
 `/schedules/week`는 현재 `/schedules`로 redirect한다. 별도 주간 보고서 화면은 후속 범위다.
-`/export` route와 `import-export` feature는 남아 있지만, 현재 Export 정본 흐름은 회사/담당자/제품/딜 각 목록 화면의 엑셀 다운로드다.
+`import-export` feature 코드는 남아 있지만, `/import`와 `/export` route는 Backend 구현 전까지 root로 redirect한다. 현재 Export 정본 흐름은 회사/담당자/제품/딜 각 목록 화면의 엑셀 다운로드다.
 
 ## 4. 현재 Feature 폴더
 
@@ -114,10 +114,10 @@ Backend는 구현되었지만 Frontend 연결이 남은 항목:
 
 mock/placeholder 경계를 유지해야 하는 항목:
 
-- BusinessCard OCR
-- generic Import job
-- `/api/exports` 기반 generic Export job. 현재 Export 정책은 도메인별 xlsx 다운로드이므로 신규 작업에서 generic Export 화면/API를 확장하지 않는다.
-- Notification
+- BusinessCard OCR. FE feature는 있으나 route와 메뉴는 Backend module/API 구현 전까지 숨긴다.
+- generic Import job. FE feature/API client/type/schema는 있으나 route와 메뉴는 Backend module/API 구현 전까지 숨긴다.
+- `/api/exports` 기반 generic Export job. 현재 Export 정책은 도메인별 xlsx 다운로드이므로 route를 숨기고 신규 작업에서 generic Export 화면/API를 확장하지 않는다.
+- Notification. FE feature는 있으나 route와 진입 버튼은 Backend module/API 구현 전까지 숨긴다.
 
 ## 6. Search 구현 기준
 

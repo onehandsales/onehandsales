@@ -210,9 +210,9 @@ pen 디자인 반영 완료/정리 도메인 (2026-06-25 기준):
 - 상단 통합검색 — Backend `GET /api/search`와 User Web GlobalSearch 연결 완료
 
 현재 의도적으로 보류된 화면:
-- `/import` — 라우트와 feature는 남아 있지만 Backend 범용 Import job이 없어 실제 API 연동 완료 상태가 아니다.
-- `/export` — 라우트와 feature는 남아 있지만 현재 export 정본 흐름이 아니다. 회사/담당자/제품/딜 목록의 엑셀 다운로드를 사용한다.
-- `/business-cards`, `/notifications` — FE feature/page는 있으나 Backend 모듈이 없어 후속 범위다.
+- `/import` — FE feature는 남아 있지만 Backend 범용 Import job이 없어 route와 메뉴를 숨기고 `/`로 redirect한다.
+- `/export` — FE feature는 남아 있지만 현재 export 정본 흐름이 아니다. route를 숨기고 `/`로 redirect하며, 회사/담당자/제품/딜 목록의 엑셀 다운로드를 사용한다.
+- `/business-cards`, `/contacts/scan`, `/notifications` — FE feature/page는 있으나 Backend 모듈이 없어 route와 메뉴를 숨기고 구현된 화면으로 redirect한다.
 - MeetingNote AI/STT draft UI — 작성 화면의 기본 흐름은 직접 작성 저장이며, AI/STT는 선택 보조 액션으로 연결되어 있다.
 
 pen 디자인 반영 대기 도메인:

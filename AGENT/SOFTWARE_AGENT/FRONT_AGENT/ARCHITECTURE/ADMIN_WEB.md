@@ -1,6 +1,6 @@
 # Admin Web Frontend Architecture
 
-이 문서는 `FE/admin-web`의 정본 frontend 아키텍처를 정의한다. Admin Web은 후속 단계에서 만들 desktop-first 운영 도구다. 현재는 관리자 권한 확인, route 골격, admin-query placeholder route/component를 유지하며, 실제 운영 페이지 구현은 현재 User Web MVP 범위에 포함하지 않는다.
+이 문서는 `FE/admin-web`의 정본 frontend 아키텍처를 정의한다. Admin Web은 후속 단계에서 만들 desktop-first 운영 도구다. 현재는 관리자 권한 확인과 보호 route만 유지한다. 운영 조회 route는 root로 redirect하고 메뉴에서 숨기며, 실제 운영 페이지 구현은 현재 User Web MVP 범위에 포함하지 않는다.
 
 ## 1. 기술 기준
 
@@ -32,14 +32,7 @@
 
 - `/login`
 - `/`
-- `/users`
-- `/users/:userId`
-- `/organizations`
-- `/subscriptions`
-- `/analytics`
-- `/audit-logs`
-- `/system`
-- `/support`
+- `/users`, `/users/:userId`, `/organizations`, `/subscriptions`, `/analytics`, `/audit-logs`, `/system`, `/support`는 Backend Admin 운영 API 구현 전까지 `/`로 redirect한다.
 
 ## 4. 현재 Feature 폴더
 
@@ -72,7 +65,7 @@
 - 감사 로그 조회 API
 - 민감 원문 조회 API
 
-`src/features/admin-query/api/admin-query-api.ts`는 위 운영 조회 API 계약을 기대한다. Backend 구현 전까지 해당 화면은 mock/placeholder 경계를 명확히 해야 하며, 현재 제품 구현 우선순위에서는 관리자 페이지를 완성 범위로 보지 않는다.
+`src/features/admin-query/api/admin-query-api.ts`는 위 운영 조회 API 계약을 기대한다. Backend 구현 전까지 해당 화면은 route와 메뉴에서 노출하지 않으며, 현재 제품 구현 우선순위에서는 관리자 페이지를 완성 범위로 보지 않는다.
 
 ## 6. Auth 상태
 

@@ -3,7 +3,6 @@ import { BottomTabBar } from "@/components/navigation/bottom-tab-bar";
 import { MobileAppHeader } from "@/components/navigation/mobile-app-header";
 import { SidebarNav } from "@/components/navigation/sidebar-nav";
 import {
-  Bell,
   BriefcaseBusiness,
   CalendarDays,
   House,
@@ -229,7 +228,6 @@ export function AppShell() {
 
   // 모바일 헤더 숨김 처리: 상세 페이지 및 자체 헤더 보유 페이지
   const isMeetingNoteDetail = /^\/meeting-notes\/[^/]+$/.test(pathname);
-  const isContactScan = pathname === "/contacts/scan";
   const isScheduleRoute =
     pathname === "/schedules" || pathname === "/schedules/week";
   const isMobileHeaderHidden =
@@ -237,7 +235,6 @@ export function AppShell() {
     isCompanyDetail ||
     isContactDetail ||
     isProductDetail ||
-    isContactScan ||
     isMeetingNoteDetail ||
     isScheduleRoute;
 
@@ -264,7 +261,6 @@ export function AppShell() {
       "/deals": { label: "딜", icon: BriefcaseBusiness },
       "/deals/new": { label: "딜", icon: BriefcaseBusiness },
       "/schedules": { label: "일정", icon: CalendarDays },
-      "/notifications": { label: "알림", icon: Bell },
       "/trash": { label: "휴지통", icon: Trash2 },
       "/settings": { label: "설정", icon: Settings },
     };
@@ -337,14 +333,6 @@ export function AppShell() {
               </p>
               <p className="text-[11px] text-[#9CA3AF]">Sales Manager</p>
             </div>
-            {/*<Link
-              aria-label="알림"
-              className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-md text-[#9CA3AF] transition hover:bg-[#E5E7EB] hover:text-[#374151]"
-              to="/notifications"
-            >
-              <Bell className="h-4 w-4" />
-            </Link>
-            */}
           </div>
         </aside>
 
