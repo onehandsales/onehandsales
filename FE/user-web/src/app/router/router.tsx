@@ -1,6 +1,7 @@
 import { createBrowserRouter, Navigate } from "react-router-dom";
 import { AppShell } from "@/components/layout/app-shell";
 import { ProtectedRoute } from "@/features/auth";
+import { BusinessCardsPage } from "@/pages/business-cards";
 import { CompanyDetailPage } from "@/pages/companies/detail";
 import { CompaniesPage } from "@/pages/companies";
 import { CompanyNewPage } from "@/pages/companies/new";
@@ -39,7 +40,7 @@ export const router = createBrowserRouter([
       { path: "companies/new", element: <CompanyNewPage /> },
       { path: "companies/:companyId", element: <CompanyDetailPage /> },
       { path: "contacts", element: <ContactsPage /> },
-      { path: "contacts/scan", element: <Navigate replace to="/contacts" /> },
+      { path: "contacts/scan", element: <Navigate replace to="/business-cards" /> },
       { path: "contacts/:contactId", element: <ContactDetailPage /> },
       { path: "products", element: <ProductsPage /> },
       { path: "products/new", element: <ProductNewPage /> },
@@ -58,7 +59,7 @@ export const router = createBrowserRouter([
         element: <Navigate replace to="/meeting-notes?create=1" />,
       },
       { path: "meeting-notes/:meetingNoteId", element: <MeetingNoteDetailPage /> },
-      { path: "business-cards", element: <Navigate replace to="/contacts" /> },
+      { path: "business-cards", element: <BusinessCardsPage /> },
       { path: "notifications", element: <Navigate replace to="/" /> },
       { path: "import", element: <Navigate replace to="/" /> },
       { path: "export", element: <Navigate replace to="/" /> },

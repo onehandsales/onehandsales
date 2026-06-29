@@ -30,6 +30,7 @@ Canonical domain:
 - `Deal`: 딜/영업 건
 - `Schedule`: 일정
 - `MeetingNote`: 회의록
+- `BusinessCardScanLog`: 명함 OCR 요청/확정 저장 로그
 - `Search`: 기존 도메인을 읽는 통합검색
 
 일반적인 `Customer` 도메인은 현재 정본 모델에 없다. 후속 결정 없이 새로 만들지 않는다.
@@ -53,6 +54,7 @@ Currently imported modules in `AppModule`:
 - `user`
 - `company`
 - `contact`
+- `business-card`
 - `product`
 - `deal`
 - `schedule`
@@ -65,6 +67,7 @@ Currently implemented API surface:
 - Auth/User: `/api/auth/providers`, `/api/auth/exchange`, `/api/auth/refresh`, `/api/auth/logout`, `/api/me`, `/admin/api/me`, `/api/users/me/profile`, `/api/users/me/devices`
 - Company: list/detail/create/update/delete, field/region options, memo/private memo logs, linked contacts/deals, xlsx export
 - Contact: list/detail/create/update/delete, company options, department/job grade options, memo/private memo logs, linked deals, xlsx export
+- BusinessCard OCR: `POST /api/business-card-scans`, `GET /api/business-card-scans`, `GET /api/business-card-scans/:scanLogId`, `POST /api/business-card-scans/:scanLogId/confirm`
 - Product: list/detail/create/update/delete, category/status options, memo/private memo logs, linked deals, xlsx export
 - Deal: stage counts, list/detail/create/update/delete, company/contact/product options, following action logs, memo logs, xlsx export
 - Schedule: deal options, month/week list, detail/create/update/delete, schedule-deal N:M link
@@ -99,6 +102,9 @@ Current response notes:
 - `GET /api/meeting-notes` returns summary objects for `companies`, `contacts`, `products`, `deals`, uses fixed `pageSize=10`, and uses `totalPages`.
 - `POST /api/meeting-notes/ai-draft` and `POST /api/meeting-notes/stt-draft` generate draft fields only. They do not create a meeting note row.
 - `POST /api/meeting-notes/:meetingNoteId/deals` adds deal links to a saved meeting note and writes linked deal following-action logs.
+- `POST /api/business-card-scans` accepts an image file as `image`, calls OpenAI OCR, stores `OCR_SUCCESS` or `OCR_FAILED` in `BusinessCardScanLog`, and does not create Company/Contact.
+- `POST /api/business-card-scans/:scanLogId/confirm` requires user-confirmed fields, reuses existing Company/Contact when found, creates missing Company/Contact and taxonomy rows when needed, and updates the scan log to `CONFIRMED`.
+- BusinessCard OCR does not store the uploaded image. The log stores extracted/corrected fields, provider model, token/cost metrics, `costCurrency`, `pendingTimeMs`, and linked company/contact IDs after confirmation.
 - `DELETE /api/meeting-notes/:meetingNoteId` is a soft delete API and the deleted row can be restored through Trash while it remains within retention.
 - MeetingNote AI draft and STT are separated as `MeetingNoteAiDraftProvider` and `MeetingNoteSttProvider`; current adapters are OpenAI.
 - MeetingNote AI/STT writes no transcript table, provider log table, or raw-text storage in the current scope.
@@ -119,7 +125,7 @@ Current runtime behavior:
 Current backend gaps and intentional deferrals:
 
 - Admin pages and Admin Web query APIs such as `/admin/api/dashboard`, `/admin/api/users`, `/admin/api/companies`, `/admin/api/contacts`, `/admin/api/products`, and `/admin/api/deals` are deferred.
-- BusinessCard OCR, generic Import job, Notification, Admin operation query/audit/sensitive raw APIs are not implemented yet.
+- Generic Import job, Notification, Admin operation query/audit/sensitive raw APIs are not implemented yet.
 - Generic ExportJob is intentionally not used for the current export direction. Company, Contact, Product, and Deal each provide their own `GET /api/<domain>/export/xlsx` API.
 - MeetingNote Admin, rawText encryption/raw access, and generic DealActivity table are future scope.
 
@@ -132,6 +138,7 @@ Implemented MVP modules:
 - `user`
 - `company`
 - `contact`
+- `business-card`
 - `product`
 - `deal`
 - `schedule`
@@ -141,7 +148,6 @@ Implemented MVP modules:
 
 Planned or partially represented modules:
 
-- `business-card`
 - `import`
 - `notification`
 - `tag`
@@ -244,6 +250,7 @@ Use a transaction when one use case writes multiple tables, especially:
 
 - deal creation with first following action log
 - meeting note save with snapshot links
+- business card confirmation that can create taxonomy, company, contact, and update scan log
 - sensitive raw access with audit log
 - Admin data mutation with audit log
 - import batch creation
@@ -283,7 +290,7 @@ Database principles:
 - RLS is a last line of defense; backend queries still filter by `userId`.
 - Admin RLS bypass must go through explicit Admin methods.
 
-Search and MeetingNote AI/STT draft do not introduce new database tables in the current implementation.
+Search and MeetingNote AI/STT draft do not introduce new database tables in the current implementation. BusinessCard OCR uses `BusinessCardScanLog` because success/failure/conversion and provider usage metrics must be analyzed.
 
 ## 11. Enum And Lookup Policy
 
@@ -312,8 +319,10 @@ Rules:
 - Domain/application code must not depend on OpenAI SDK directly.
 - Provider-specific prompt/response handling belongs in infrastructure adapters.
 - MeetingNote AI draft and STT must remain separate provider ports.
+- BusinessCard OCR must remain a separate provider port from MeetingNote AI draft/STT.
 - STT provider adapters may be replaced independently of the OpenAI AI draft adapter.
 - MeetingNote AI/STT draft APIs generate editable drafts only. Final save remains `POST /api/meeting-notes`.
+- BusinessCard OCR APIs generate editable company/contact candidate fields only. Final save remains `POST /api/business-card-scans/:scanLogId/confirm`.
 
 ## 13. Migration Rules
 

@@ -1,52 +1,70 @@
 import type {
   BusinessCardConfirmResponse,
-  BusinessCardScanDetail,
-  BusinessCardScanResponse,
+  BusinessCardScanLog,
+  BusinessCardScanLogPage,
   ConfirmBusinessCardScanInput,
+  ListBusinessCardScanLogsParams,
   ScanBusinessCardInput,
 } from "@/features/business-card/types/business-card";
 import { apiClient } from "@/lib/api-client";
 
+export function listBusinessCardScanLogs(params: ListBusinessCardScanLogsParams) {
+  return apiClient<BusinessCardScanLogPage>(
+    `/api/business-card-scans${toQueryString(params)}`
+  );
+}
+
 export function scanBusinessCard(input: ScanBusinessCardInput) {
   const formData = new FormData();
-  formData.append("imageFile", input.imageFile);
+  formData.append("image", input.imageFile);
 
-  if (input.memo?.trim()) {
-    formData.append("memo", input.memo.trim());
-  }
-
-  return apiClient<BusinessCardScanResponse>("/api/business-cards/scan", {
+  return apiClient<BusinessCardScanLog>("/api/business-card-scans", {
     method: "POST",
     body: formData,
   });
 }
 
-export function getBusinessCardScan(scanId: string) {
-  return apiClient<BusinessCardScanDetail>(`/api/business-cards/${scanId}`);
+export function getBusinessCardScanLog(scanLogId: string) {
+  return apiClient<BusinessCardScanLog>(
+    `/api/business-card-scans/${scanLogId}`
+  );
 }
 
 export function confirmBusinessCardScan(input: ConfirmBusinessCardScanInput) {
+  const { scanLogId, ...body } = input;
+
   return apiClient<BusinessCardConfirmResponse>(
-    `/api/business-cards/${input.scanId}/confirm`,
+    `/api/business-card-scans/${scanLogId}/confirm`,
     {
       method: "POST",
-      body: compactBody({
-        companyMode: input.companyMode,
-        companyId: input.companyId,
-        companyName: input.companyName,
-        contactName: input.contactName,
-        department: input.department,
-        position: input.position,
-        phone: input.phone,
-        email: input.email,
-        address: input.address,
-      }),
+      body: compactBody(body),
     }
   );
 }
 
+function toQueryString(params: ListBusinessCardScanLogsParams) {
+  const searchParams = new URLSearchParams();
+
+  if (params.page) {
+    searchParams.set("page", String(params.page));
+  }
+
+  if (params.status) {
+    searchParams.set("status", params.status);
+  }
+
+  const value = searchParams.toString();
+  return value ? `?${value}` : "";
+}
+
 function compactBody(input: Record<string, unknown>) {
   return Object.fromEntries(
-    Object.entries(input).filter(([, value]) => value !== undefined)
+    Object.entries(input).filter(([, value]) => {
+      if (value === undefined || value === null) {
+        return false;
+      }
+
+      return typeof value !== "string" || value.trim().length > 0;
+    })
   );
 }

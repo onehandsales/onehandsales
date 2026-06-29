@@ -272,7 +272,7 @@ Primary navigation should make these areas easy to reach:
 - 제품
 - 일정
 - 회의록
-- 명함 OCR
+- 명함 스캔
 - 설정
 
 Current visibility rule:

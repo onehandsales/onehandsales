@@ -1,11 +1,22 @@
 import { useQuery } from "@tanstack/react-query";
-import { getBusinessCardScan } from "@/features/business-card/api/business-card-api";
+import {
+  getBusinessCardScanLog,
+  listBusinessCardScanLogs,
+} from "@/features/business-card/api/business-card-api";
 import { businessCardQueryKeys } from "@/features/business-card/api/business-card-query-keys";
+import type { ListBusinessCardScanLogsParams } from "@/features/business-card/types/business-card";
 
-export function useBusinessCardScanDetail(scanId: string) {
+export function useBusinessCardScanLogs(params: ListBusinessCardScanLogsParams) {
   return useQuery({
-    enabled: scanId.length > 0,
-    queryKey: businessCardQueryKeys.detail(scanId),
-    queryFn: () => getBusinessCardScan(scanId),
+    queryKey: businessCardQueryKeys.list(params),
+    queryFn: () => listBusinessCardScanLogs(params),
+  });
+}
+
+export function useBusinessCardScanLogDetail(scanLogId: string | null) {
+  return useQuery({
+    enabled: Boolean(scanLogId),
+    queryKey: businessCardQueryKeys.detail(scanLogId ?? ""),
+    queryFn: () => getBusinessCardScanLog(scanLogId ?? ""),
   });
 }

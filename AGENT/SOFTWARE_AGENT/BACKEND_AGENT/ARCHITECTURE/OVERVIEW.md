@@ -49,6 +49,7 @@ Admin API는 AuthGuard와 AdminGuard를 모두 통과해야 한다. User API는 
 - `UserModule`
 - `CompanyModule`
 - `ContactModule`
+- `BusinessCardModule`
 - `ProductModule`
 - `DealModule`
 - `ScheduleModule`
@@ -87,7 +88,8 @@ OpenAI, Google Calendar, email, browser push, file parser 같은 외부 Provider
 
 - MeetingNote text AI draft API 구현. AI 초안 생성은 `MeetingNoteAiDraftProvider` port 뒤에 두고 현재 adapter는 OpenAI다.
 - MeetingNote STT+AI draft API 구현. STT는 `MeetingNoteSttProvider` port로 AI provider와 분리되어 있으며 현재 adapter는 OpenAI transcription이다.
-- BusinessCard OCR과 Import AI mapping은 후속 범위.
+- BusinessCard OCR은 `BusinessCardOcrProvider` port 뒤에 두고 현재 adapter는 OpenAI vision 기반 Responses API다.
+- Import AI mapping은 후속 범위다.
 
 Provider-specific prompt, response parsing, SDK 호출은 infrastructure adapter에서만 처리한다.
 

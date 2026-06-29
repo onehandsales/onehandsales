@@ -56,8 +56,8 @@ Snapshot date: 2026-06-29
 
 User Web:
 
-- 실제 API 연동 완료: Auth/User, Home, Company, Contact, Product, Deal, Schedule, MeetingNote manual CRUD, MeetingNote AI/STT draft, MeetingNote deal link, Search, Trash, Company/Contact/Product/Deal domain xlsx export.
-- mock/placeholder 경계: BusinessCard OCR, generic Import, generic Export route/API, Notification.
+- 실제 API 연동 완료: Auth/User, Home, Company, Contact, BusinessCard OCR, Product, Deal, Schedule, MeetingNote manual CRUD, MeetingNote AI/STT draft, MeetingNote deal link, Search, Trash, Company/Contact/Product/Deal domain xlsx export.
+- mock/placeholder 경계: generic Import, generic Export route/API, Notification.
 
 Admin Web:
 

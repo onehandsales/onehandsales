@@ -1,57 +1,40 @@
 import { z } from "zod";
 import type {
-  BusinessCardCompanyMode,
-  BusinessCardScanDetail,
+  BusinessCardScanLog,
   ConfirmBusinessCardScanInput,
 } from "@/features/business-card/types/business-card";
 
 export const BUSINESS_CARD_MAX_FILE_SIZE_BYTES = 10 * 1024 * 1024;
 const allowedMimeTypes = new Set(["image/jpeg", "image/png", "image/webp"]);
+const mobilePattern = /^010-\d{4}-\d{4}$/;
 
-export const businessCardConfirmSchema = z
-  .object({
-    companyMode: z.enum(["EXISTING", "NEW", "NONE"]),
-    companyId: z.string().optional(),
-    companyName: z.string().max(160).optional(),
-    contactName: z.string().trim().min(1, "담당자 이름을 입력해주세요.").max(120),
-    department: z.string().max(120).optional(),
-    position: z.string().max(120).optional(),
-    phone: z.string().max(80).optional(),
-    email: z.string().max(160).optional(),
-    address: z.string().max(240).optional(),
-  })
-  .superRefine((values, context) => {
-    if (values.companyMode === "EXISTING" && !values.companyId?.trim()) {
-      context.addIssue({
-        code: "custom",
-        message: "기존 회사를 선택해주세요.",
-        path: ["companyId"],
-      });
-    }
-
-    if (values.companyMode === "NEW" && !values.companyName?.trim()) {
-      context.addIssue({
-        code: "custom",
-        message: "새 회사명을 입력해주세요.",
-        path: ["companyName"],
-      });
-    }
-  });
+export const businessCardConfirmSchema = z.object({
+  companyName: z.string().trim().min(1, "회사명을 입력해주세요.").max(160),
+  companyFieldName: z.string().trim().max(120).optional(),
+  companyRegionName: z.string().trim().max(120).optional(),
+  contactName: z.string().trim().min(1, "담당자 이름을 입력해주세요.").max(120),
+  contactMobile: z
+    .string()
+    .trim()
+    .regex(mobilePattern, "010-0000-0000 형식으로 입력해주세요."),
+  contactEmail: z.string().trim().email("이메일 형식이 올바르지 않습니다."),
+  contactDepartmentName: z.string().trim().max(120).optional(),
+  contactJobGradeName: z.string().trim().max(120).optional(),
+});
 
 export type BusinessCardConfirmFormValues = z.infer<
   typeof businessCardConfirmSchema
 >;
 
 export const emptyBusinessCardConfirmFormValues: BusinessCardConfirmFormValues = {
-  companyMode: "NEW",
-  companyId: "",
   companyName: "",
+  companyFieldName: "",
+  companyRegionName: "",
   contactName: "",
-  department: "",
-  position: "",
-  phone: "",
-  email: "",
-  address: "",
+  contactMobile: "",
+  contactEmail: "",
+  contactDepartmentName: "",
+  contactJobGradeName: "",
 };
 
 export function validateBusinessCardImage(file: File | null): string | null {
@@ -71,46 +54,52 @@ export function validateBusinessCardImage(file: File | null): string | null {
 }
 
 export function toConfirmFormValues(
-  detail: BusinessCardScanDetail,
-  companyMode: BusinessCardCompanyMode
+  scanLog: BusinessCardScanLog
 ): BusinessCardConfirmFormValues {
-  const candidate = detail.companyCandidates[0];
-
   return {
-    companyMode,
-    companyId: companyMode === "EXISTING" ? candidate?.id ?? "" : "",
-    companyName: detail.extracted.companyName ?? "",
-    contactName: detail.extracted.contactName ?? "",
-    department: detail.extracted.department ?? "",
-    position: detail.extracted.position ?? "",
-    phone: detail.extracted.phone ?? "",
-    email: detail.extracted.email ?? "",
-    address: detail.extracted.address ?? "",
+    companyName: scanLog.extracted.companyName ?? "",
+    companyFieldName: scanLog.extracted.companyFieldName ?? "",
+    companyRegionName: scanLog.extracted.companyRegionName ?? "",
+    contactName: scanLog.extracted.contactName ?? "",
+    contactMobile: formatMobileNumber(scanLog.extracted.contactMobile ?? ""),
+    contactEmail: scanLog.extracted.contactEmail ?? "",
+    contactDepartmentName: scanLog.extracted.contactDepartmentName ?? "",
+    contactJobGradeName: scanLog.extracted.contactJobGradeName ?? "",
   };
 }
 
 export function toConfirmInput(
-  scanId: string,
+  scanLogId: string,
   values: BusinessCardConfirmFormValues
 ): ConfirmBusinessCardScanInput {
   return {
-    scanId,
-    companyMode: values.companyMode,
-    companyId:
-      values.companyMode === "EXISTING" ? toOptionalText(values.companyId) : undefined,
-    companyName:
-      values.companyMode === "NEW" ? toOptionalText(values.companyName) : undefined,
+    scanLogId,
+    companyName: values.companyName.trim(),
+    companyFieldName: toOptionalText(values.companyFieldName),
+    companyRegionName: toOptionalText(values.companyRegionName),
     contactName: values.contactName.trim(),
-    department: toOptionalText(values.department),
-    position: toOptionalText(values.position),
-    phone: toOptionalText(values.phone),
-    email: toOptionalText(values.email),
-    address: toOptionalText(values.address),
+    contactMobile: formatMobileNumber(values.contactMobile),
+    contactEmail: values.contactEmail.trim(),
+    contactDepartmentName: toOptionalText(values.contactDepartmentName),
+    contactJobGradeName: toOptionalText(values.contactJobGradeName),
   };
+}
+
+export function formatMobileNumber(value: string) {
+  const digits = value.replace(/\D/g, "").slice(0, 11);
+
+  if (digits.length <= 3) {
+    return digits;
+  }
+
+  if (digits.length <= 7) {
+    return `${digits.slice(0, 3)}-${digits.slice(3)}`;
+  }
+
+  return `${digits.slice(0, 3)}-${digits.slice(3, 7)}-${digits.slice(7)}`;
 }
 
 function toOptionalText(value: string | undefined) {
   const trimmed = value?.trim() ?? "";
-
   return trimmed.length > 0 ? trimmed : undefined;
 }

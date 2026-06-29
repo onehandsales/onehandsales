@@ -24,6 +24,7 @@ Admin API는 반드시 Admin guard로 보호한다.
 - `user`: 현재 사용자 profile과 등록 기기 조회/수정
 - `company`: 사용자 소유 회사, 회사 분야/지역, 일반 메모 로그, 개인 비밀 메모 로그, xlsx export
 - `contact`: 사용자 소유 담당자, 회사 옵션, 담당자 부서/직급, 일반 메모 로그, 개인 비밀 메모 로그, xlsx export
+- `business-card`: 명함 이미지 OCR, 성공/실패 로그, 확인/수정 후 회사/담당자 저장
 - `product`: 사용자 소유 제품, 제품 카테고리/상태, 일반 메모 로그, 개인 비밀 메모 로그, xlsx export
 - `deal`: 사용자 소유 딜, 딜-제품 연결, 다음 행동 로그, 메모 로그, xlsx export
 - `schedule`: 사용자 소유 일정, 월간/주간 조회, 일정-딜 연결, hard delete
@@ -95,7 +96,7 @@ pnpm run build
 
 주요 env는 `.env.example`에 있다. local에서 최소 서버만 띄울 때도 `DATABASE_URL`, `DIRECT_URL`, `TEST_DATABASE_URL`, token secret 값은 실제 안전한 값으로 채우는 것을 권장한다.
 
-MeetingNote AI 초안 생성은 `MeetingNoteAiDraftProvider` port와 OpenAI adapter를 사용하며 `OPENAI_API_KEY`, `OPENAI_MEETING_NOTE_DRAFT_MODEL`이 필요하다. MeetingNote STT는 별도 `MeetingNoteSttProvider` port와 OpenAI STT adapter를 사용하며 `OPENAI_MEETING_NOTE_STT_MODEL`로 모델을 지정한다. 추후 STT provider를 바꿀 때는 STT adapter만 교체한다.
+MeetingNote AI 초안 생성은 `MeetingNoteAiDraftProvider` port와 OpenAI adapter를 사용하며 `OPENAI_API_KEY`, `OPENAI_MEETING_NOTE_DRAFT_MODEL`이 필요하다. MeetingNote STT는 별도 `MeetingNoteSttProvider` port와 OpenAI STT adapter를 사용하며 `OPENAI_MEETING_NOTE_STT_MODEL`로 모델을 지정한다. 명함 OCR은 `BusinessCardOcrProvider` port와 OpenAI adapter를 사용하며 `OPENAI_BUSINESS_CARD_OCR_MODEL`로 모델을 지정할 수 있다. 추후 STT/OCR provider를 바꿀 때는 각 adapter만 교체한다.
 
 ## 정본 규칙
 

@@ -58,7 +58,7 @@ BACKEND_AGENT/
 
 ## 6. 현재 완료된 Backend TODO
 
-Snapshot date: 2026-06-25
+Snapshot date: 2026-06-29
 
 - `TODO/DONE/AUTH_FE_INTEGRATION_PLAN/BE-TODO/G01-BE-USER-PROFILE-DEVICES.goal.md`
 - `TODO/DONE/COMPANY_DOMAIN_PLAN/BE-TODO/G01-BE-COMPANY-DOMAIN.goal.md`
@@ -75,10 +75,10 @@ Current additional backend scope:
 
 - Company/Contact/Product/Deal 본문 삭제 API는 soft delete로 구현되어 있다. 삭제 시 `deletedAt`, `deletedByUserId`, `trashExpiresAt`만 설정하고 실제 row는 삭제하지 않는다.
 - Trash API는 Company/Contact/Product/Deal 본문 데이터와 지원 로그의 목록, 상세, 7일 이내 복구를 제공한다.
+- BusinessCard OCR API는 이미지 원본을 저장하지 않고 성공/실패/확정 로그와 provider 사용량을 `BusinessCardScanLog`에 기록한다.
 
 ## 7. 현재 주요 미구현 Backend 범위
 
-- BusinessCard OCR
 - generic Import job
 - Notification
 - Admin 페이지와 운영 조회/감사/민감 원문 API

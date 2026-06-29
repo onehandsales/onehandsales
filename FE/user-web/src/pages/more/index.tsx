@@ -2,6 +2,7 @@ import {
   Building2,
   ChevronRight,
   Package,
+  ScanLine,
   Settings,
   Trash2,
   Users,
@@ -128,6 +129,13 @@ export function MorePage() {
           iconBg="#4880EE18"
           iconColor="#4880EE"
           icon={Users}
+        />
+        <MenuRow
+          label="명함 스캔"
+          to="/business-cards"
+          iconBg="#05966918"
+          iconColor="#059669"
+          icon={ScanLine}
         />
         <MenuRow
           label="제품"

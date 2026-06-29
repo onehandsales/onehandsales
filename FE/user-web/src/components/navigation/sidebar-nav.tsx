@@ -6,6 +6,7 @@ import {
   House,
   IdCard,
   Package,
+  ScanLine,
   Settings,
   Trash2,
 } from "lucide-react";
@@ -36,6 +37,7 @@ const groups: Array<{
     items: [
       { label: "일정", to: "/schedules", icon: CalendarDays },
       { label: "회의록", to: "/meeting-notes", icon: FileText },
+      { label: "명함 스캔", to: "/business-cards", icon: ScanLine },
       // 핵심 기능 UX 유지보수 이후 Import 기능을 다시 노출한다.
     ],
   },

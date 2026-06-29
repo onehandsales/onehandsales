@@ -53,7 +53,7 @@
 
 넷째, 입력 부담을 줄인다.
 
-빠른 등록, 화면별 검색/필터, 통합검색, 회의록 AI/STT 정리, 도메인별 엑셀 다운로드 같은 기능으로 처음 입력하거나 다시 찾는 부담을 줄이는 방향이다. 명함 OCR과 Import AI 매핑은 후속 자동화 범위다.
+빠른 등록, 명함등록 OCR 자동 입력, 화면별 검색/필터, 통합검색, 회의록 AI/STT 정리, 도메인별 엑셀 다운로드 같은 기능으로 처음 입력하거나 다시 찾는 부담을 줄이는 방향이다. Import AI 매핑은 후속 자동화 범위다.
 
 ## 5. 사용자가 경험하는 핵심 루프
 
@@ -125,6 +125,7 @@ Admin Web은 후속 단계에서 만들 데스크톱 전용 운영 콘솔이다.
 - 회의록 STT+AI 초안
 - 회의록 저장 후 딜 연동과 딜 활동 로그 생성
 - 상단 통합검색
+- 명함등록 OCR 자동 입력과 확인/수정 후 저장
 - 회사/담당자/제품/딜 도메인별 Excel export
 - 민감정보 기본 보호 정책
 - 휴지통 목록/상세/7일 이내 복구
@@ -145,15 +146,15 @@ Admin Web은 후속 단계에서 만들 데스크톱 전용 운영 콘솔이다.
 - 회의 STT transcript 영구 저장
 - AI/STT provider 호출 이력 테이블
 - Admin 페이지와 운영 조회 API 전체 구현
-- BusinessCard OCR, 범용 Import job, Notification 전체 구현
+- 범용 Import job, Notification 전체 구현
 - 범용 ExportJob 구현
 - 휴지통 7일 이후 유료 복구 정책과 API
 
 ## 10. 현재 구현 관점의 요약
 
-2026-06-29 기준으로 Backend는 Auth/User, Company, Contact, Product, Deal, Schedule, MeetingNote 수동 도메인, Search, Trash, MeetingNote AI/STT draft API, 회의록 저장 후 딜 연동 API를 구현한 상태다.
+2026-06-29 기준으로 Backend는 Auth/User, Company, Contact, BusinessCard OCR, Product, Deal, Schedule, MeetingNote 수동 도메인, Search, Trash, MeetingNote AI/STT draft API, 회의록 저장 후 딜 연동 API를 구현한 상태다.
 
-User Web은 홈 대시보드, 회사, 담당자, 제품, 딜, 일정, 수동 회의록, 회의록 AI/STT 초안, 회의록 저장 후 딜 연동 화면, 회사/담당자/제품/딜 엑셀 다운로드, 상단/모바일 통합검색, 휴지통 목록/상세/복구가 실제 API와 연결되어 있다.
+User Web은 홈 대시보드, 회사, 담당자, 명함 스캔, 제품, 딜, 일정, 수동 회의록, 회의록 AI/STT 초안, 회의록 저장 후 딜 연동 화면, 회사/담당자/제품/딜 엑셀 다운로드, 상단/모바일 통합검색, 휴지통 목록/상세/복구가 실제 API와 연결되어 있다.
 
 Admin Backend는 현재 `GET /admin/api/me`만 구현되어 있으므로, Admin 페이지와 운영 조회 화면은 후속 구현 범위로 본다.
 

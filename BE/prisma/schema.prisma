@@ -50,6 +50,17 @@ enum MeetingNoteSourceType {
   STT_AI
 }
 
+enum BusinessCardScanStatus {
+  OCR_SUCCESS
+  OCR_FAILED
+  CONFIRMED
+}
+
+enum BusinessCardResolution {
+  EXISTING
+  CREATED
+}
+
 model User {
   id          String     @id @default(uuid()) @db.Uuid
   email       String?
@@ -116,6 +127,7 @@ model User {
   meetingNoteContacts     MeetingNoteContact[]
   meetingNoteProducts     MeetingNoteProduct[]
   meetingNoteDeals        MeetingNoteDeal[]
+  businessCardScanLogs    BusinessCardScanLog[]
 
   @@index([role])
   @@index([status])
@@ -212,6 +224,7 @@ model Company {
   dealCompanies        DealCompany[]
   meetingNoteCompanies MeetingNoteCompany[]
   meetingNoteContacts  MeetingNoteContact[]
+  businessCardScanLogs BusinessCardScanLog[]
 
   @@index([userId, createdAt])
   @@index([userId, companyName])
@@ -251,6 +264,7 @@ model Contact {
   /// 기능 : 담당자가 연결된 딜 매핑 목록이다.
   dealContacts        DealContact[]
   meetingNoteContacts MeetingNoteContact[]
+  businessCardScanLogs BusinessCardScanLog[]
 
   @@index([userId, createdAt])
   @@index([userId, username])
@@ -745,6 +759,47 @@ model MeetingNoteDeal {
   @@unique([meetingNoteId, dealId])
   @@index([userId, meetingNoteId])
   @@index([userId, dealId])
+}
+
+model BusinessCardScanLog {
+  id                    String                 @id @default(uuid()) @db.Uuid
+  userId                String                 @db.Uuid
+  status                BusinessCardScanStatus
+  companyName           String?
+  companyFieldName      String?
+  companyRegionName     String?
+  contactName           String?
+  contactMobile         String?
+  contactEmail          String?
+  contactDepartmentName String?
+  contactJobGradeName   String?
+  companyId             String?                @db.Uuid
+  contactId             String?                @db.Uuid
+  companyResolution     BusinessCardResolution?
+  contactResolution     BusinessCardResolution?
+  aiProvider            String                 @default("OPENAI")
+  aiModel               String
+  promptSnapshot        String                 @db.Text
+  requestToken          Float?
+  responseToken         Float?
+  totalToken            Float?
+  requestCost           Float?
+  responseCost          Float?
+  totalCost             Float?
+  costCurrency          String                 @default("USD")
+  pendingTimeMs         Float?
+  confirmedAt           DateTime?              @db.Timestamptz(3)
+  createdAt             DateTime               @default(now()) @db.Timestamptz(3)
+  updatedAt             DateTime               @updatedAt @db.Timestamptz(3)
+
+  user    User     @relation(fields: [userId], references: [id])
+  company Company? @relation(fields: [companyId], references: [id])
+  contact Contact? @relation(fields: [contactId], references: [id])
+
+  @@index([userId, createdAt])
+  @@index([userId, status, createdAt])
+  @@index([userId, companyId])
+  @@index([userId, contactId])
 }
 
 model CompanyField {

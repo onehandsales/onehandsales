@@ -37,7 +37,7 @@
 - `/companies/new`
 - `/companies/:companyId`
 - `/contacts`
-- `/contacts/scan` -> `/contacts` redirect. BusinessCard OCR Backend 구현 전까지 숨김
+- `/contacts/scan` -> `/business-cards` redirect. 명함 스캔 legacy route
 - `/contacts/:contactId`
 - `/products`
 - `/products/new`
@@ -51,7 +51,7 @@
 - `/meeting-notes`
 - `/meeting-notes/new`
 - `/meeting-notes/:meetingNoteId`
-- `/business-cards` -> `/contacts` redirect. BusinessCard OCR Backend 구현 전까지 숨김
+- `/business-cards`
 - `/notifications` -> `/` redirect. Notification Backend 구현 전까지 숨김
 - `/import` -> `/` redirect. Import Backend 구현 전까지 숨김
 - `/export` -> `/` redirect. Generic Export는 현재 정본 흐름이 아니므로 숨김
@@ -90,6 +90,7 @@
 - Home dashboard: 일정/딜/회의록 조합 조회
 - Company: 목록/상세/생성/수정/삭제, 옵션, 메모, 개인 메모, 연결 Contact/Deal, xlsx export
 - Contact: 목록/상세/생성/수정/삭제, 옵션, 메모, 개인 메모, 연결 Deal, xlsx export
+- BusinessCard OCR: `/business-cards`, `POST/GET /api/business-card-scans`, 명함등록 모달, 확인/수정 후 회사/담당자 저장
 - Product: 목록/상세/생성/수정/삭제, 옵션, 메모, 개인 메모, 연결 Deal, xlsx export
 - Deal: 목록/상세/생성/수정/삭제, stage counts, 옵션, 다음 행동 로그, 메모 로그, xlsx export
 - Schedule: 월/주 목록, 단건 상세, 생성, 수정, 삭제, deal options
@@ -114,7 +115,6 @@ Backend는 구현되었지만 Frontend 연결이 남은 항목:
 
 mock/placeholder 경계를 유지해야 하는 항목:
 
-- BusinessCard OCR. FE feature는 있으나 route와 메뉴는 Backend module/API 구현 전까지 숨긴다.
 - generic Import job. FE feature/API client/type/schema는 있으나 route와 메뉴는 Backend module/API 구현 전까지 숨긴다.
 - `/api/exports` 기반 generic Export job. 현재 Export 정책은 도메인별 xlsx 다운로드이므로 route를 숨기고 신규 작업에서 generic Export 화면/API를 확장하지 않는다.
 - Notification. FE feature는 있으나 route와 진입 버튼은 Backend module/API 구현 전까지 숨긴다.

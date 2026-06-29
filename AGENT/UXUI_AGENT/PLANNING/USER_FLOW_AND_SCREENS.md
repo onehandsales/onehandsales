@@ -23,14 +23,16 @@
 5. 필요 시 상세 페이지에서 추가 정보를 보강한다.
 6. 태그를 생성하고 필요한 엔티티에 붙인다.
 
-### Flow 2. 명함 OCR
+### Flow 2. 명함등록
 
-1. 사용자가 명함 이미지 파일을 업로드한다.
-2. OpenAI OCR이 회사/담당자 정보를 추출한다.
-3. 사용자가 OCR 결과를 확인/수정한다.
-4. 기존 회사 후보를 확인한다.
-5. 기존 회사 연결 / 새 회사 생성 / 회사 없이 저장 중 선택한다.
-6. 담당자를 저장한다.
+1. 사용자가 사이드바 `명함 스캔` 또는 모바일 더보기에서 `/business-cards`로 이동한다.
+2. 명함 스캔 전체 내역을 확인한다.
+3. 우측 상단 `+` 버튼을 눌러 `명함등록` 모달을 연다.
+4. 명함 이미지 파일을 업로드한다.
+5. OpenAI OCR이 회사/담당자 후보 값을 자동 입력한다.
+6. 사용자가 회사명, 회사분야, 회사지역, 담당자명, 휴대폰, 이메일, 부서, 직급을 확인/수정한다.
+7. 저장 시 Backend가 기존 회사/담당자를 재사용하거나 없으면 생성한다.
+8. 성공/실패/확정 로그는 `BusinessCardScanLog`에 남긴다.
 
 ### Flow 3. 딜 관리
 
@@ -122,7 +124,7 @@
 | `/companies/:id` | 회사 상세 | 포함 |
 | `/contacts` | 담당자 목록 | 포함 |
 | `/contacts/:id` | 담당자 상세 | 포함 |
-| `/contacts/scan` | 명함 OCR 업로드 | 포함 |
+| `/contacts/scan` | 명함 스캔 legacy redirect | `/business-cards`로 redirect |
 | `/products` | 제품 목록 | 포함 |
 | `/products/new` | 제품 생성 | 포함 |
 | `/products/:id` | 제품 상세 | 포함 |
@@ -139,7 +141,7 @@
 | `/export` | 범용 Export 작업 | 보류. 현재 export는 각 도메인 목록의 엑셀 다운로드로 처리 |
 | `/settings` | 설정 | 포함 |
 | `/more` | 더보기 | 포함 |
-| `/business-cards` | 명함 OCR | 보류 |
+| `/business-cards` | 명함 스캔 내역/명함등록 | 포함 |
 | `/notifications` | 알림 | 보류 |
 | `/trash` | 휴지통 | 포함 |
 | `/search` | 통합검색 결과 | 전용 라우트 없음 |
@@ -165,7 +167,7 @@
 
 ## 4. 현재 코드 라우트 상태
 
-> 최종 업데이트: 2026-06-25
+> 최종 업데이트: 2026-06-29
 
 현재 User Web router 기준 실제 구현 경로:
 
@@ -212,7 +214,8 @@ pen 디자인 반영 완료/정리 도메인 (2026-06-25 기준):
 현재 의도적으로 보류된 화면:
 - `/import` — FE feature는 남아 있지만 Backend 범용 Import job이 없어 route와 메뉴를 숨기고 `/`로 redirect한다.
 - `/export` — FE feature는 남아 있지만 현재 export 정본 흐름이 아니다. route를 숨기고 `/`로 redirect하며, 회사/담당자/제품/딜 목록의 엑셀 다운로드를 사용한다.
-- `/business-cards`, `/contacts/scan`, `/notifications` — FE feature/page는 있으나 Backend 모듈이 없어 route와 메뉴를 숨기고 구현된 화면으로 redirect한다.
+- `/notifications` — FE feature/page는 있으나 Backend 모듈이 없어 route와 메뉴를 숨기고 구현된 화면으로 redirect한다.
+- `/contacts/scan` — 명함 스캔 legacy route이며 `/business-cards`로 redirect한다.
 - MeetingNote AI/STT draft UI — 작성 화면의 기본 흐름은 직접 작성 저장이며, AI/STT는 선택 보조 액션으로 연결되어 있다.
 
 pen 디자인 반영 대기 도메인:
@@ -221,7 +224,7 @@ pen 디자인 반영 대기 도메인:
 - `/notifications`
 - `/import`
 - `/export`
-- `/business-cards`
+- `/business-cards` — Backend 연동 완료. pen 시각 고도화는 후속.
 - `/contacts/:contactId` (부분 반영)
 - `/companies/:companyId` (부분 반영)
 

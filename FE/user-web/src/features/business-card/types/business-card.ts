@@ -1,92 +1,89 @@
 export type BusinessCardScanStatus =
-  | "UPLOADED"
-  | "OCR_PROCESSING"
-  | "OCR_COMPLETED"
-  | "CONFIRMED"
-  | "FAILED";
+  | "OCR_SUCCESS"
+  | "OCR_FAILED"
+  | "CONFIRMED";
 
-export type BusinessCardCompanyMode = "EXISTING" | "NEW" | "NONE";
+export type BusinessCardResolution = "EXISTING" | "CREATED";
 
-export type ExtractedBusinessCardFields = {
+export type BusinessCardExtractedFields = {
   readonly companyName: string | null;
+  readonly companyFieldName: string | null;
+  readonly companyRegionName: string | null;
   readonly contactName: string | null;
-  readonly department: string | null;
-  readonly position: string | null;
-  readonly phone: string | null;
-  readonly email: string | null;
-  readonly address: string | null;
+  readonly contactMobile: string | null;
+  readonly contactEmail: string | null;
+  readonly contactDepartmentName: string | null;
+  readonly contactJobGradeName: string | null;
 };
 
-export type BusinessCardScanResponse = {
-  readonly scanId: string;
-  readonly status: BusinessCardScanStatus;
-  readonly createdAt: string;
-};
-
-export type BusinessCardCompanyCandidate = {
+export type BusinessCardScanLog = {
   readonly id: string;
-  readonly name: string;
-  readonly industry: string | null;
-  readonly region: string | null;
-};
-
-export type BusinessCardScanDetail = {
-  readonly scanId: string;
   readonly status: BusinessCardScanStatus;
-  readonly extracted: ExtractedBusinessCardFields;
-  readonly companyCandidates: BusinessCardCompanyCandidate[];
-  readonly errorMessage: string | null;
-};
-
-export type BusinessCardCompany = {
-  readonly id: string;
-  readonly name: string;
-  readonly industry: string | null;
-  readonly region: string | null;
-  readonly address: string | null;
-  readonly website: string | null;
-  readonly description: string | null;
+  readonly extracted: BusinessCardExtractedFields;
+  readonly linked: {
+    readonly companyId: string | null;
+    readonly contactId: string | null;
+    readonly companyResolution: BusinessCardResolution | null;
+    readonly contactResolution: BusinessCardResolution | null;
+    readonly confirmedAt: string | null;
+  };
+  readonly ai: {
+    readonly provider: string;
+    readonly model: string;
+  };
+  readonly usage: {
+    readonly requestToken: number | null;
+    readonly responseToken: number | null;
+    readonly totalToken: number | null;
+    readonly requestCost: number | null;
+    readonly responseCost: number | null;
+    readonly totalCost: number | null;
+    readonly costCurrency: string;
+    readonly pendingTimeMs: number | null;
+  };
   readonly createdAt: string;
   readonly updatedAt: string;
-  readonly deletedAt: string | null;
-  readonly permanentDeleteAt: string | null;
 };
 
-export type BusinessCardContact = {
-  readonly id: string;
-  readonly name: string;
-  readonly companyId: string | null;
-  readonly companyName: string | null;
-  readonly department: string | null;
-  readonly position: string | null;
-  readonly phone: string | null;
-  readonly email: string | null;
-  readonly address: string | null;
-  readonly createdAt: string;
-  readonly updatedAt: string;
-  readonly deletedAt: string | null;
-  readonly permanentDeleteAt: string | null;
+export type BusinessCardScanLogPage = {
+  readonly items: BusinessCardScanLog[];
+  readonly page: number;
+  readonly pageSize: number;
+  readonly totalCount: number;
+  readonly totalPages: number;
 };
 
-export type BusinessCardConfirmResponse = {
-  readonly company: BusinessCardCompany | null;
-  readonly contact: BusinessCardContact;
+export type ListBusinessCardScanLogsParams = {
+  readonly page?: number;
+  readonly status?: BusinessCardScanStatus;
 };
 
 export type ScanBusinessCardInput = {
   readonly imageFile: File;
-  readonly memo?: string;
 };
 
 export type ConfirmBusinessCardScanInput = {
-  readonly scanId: string;
-  readonly companyMode: BusinessCardCompanyMode;
-  readonly companyId?: string;
-  readonly companyName?: string;
+  readonly scanLogId: string;
+  readonly companyName: string;
+  readonly companyFieldName?: string;
+  readonly companyRegionName?: string;
   readonly contactName: string;
-  readonly department?: string;
-  readonly position?: string;
-  readonly phone?: string;
-  readonly email?: string;
-  readonly address?: string;
+  readonly contactMobile: string;
+  readonly contactEmail: string;
+  readonly contactDepartmentName?: string;
+  readonly contactJobGradeName?: string;
+};
+
+export type BusinessCardConfirmResponse = {
+  readonly scanLog: BusinessCardScanLog;
+  readonly company: {
+    readonly id: string;
+    readonly companyName: string;
+    readonly resolution: BusinessCardResolution;
+  };
+  readonly contact: {
+    readonly id: string;
+    readonly username: string;
+    readonly resolution: BusinessCardResolution;
+  };
 };

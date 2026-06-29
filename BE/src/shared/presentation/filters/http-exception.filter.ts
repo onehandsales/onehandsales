@@ -80,6 +80,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
       case "DuplicateProductStatus":
       case "ProductCategoryInUse":
       case "ProductStatusInUse":
+      case "BusinessCardScanNotConfirmable":
         return HttpStatus.CONFLICT;
       case "InactiveUser":
       case "OwnershipViolation":

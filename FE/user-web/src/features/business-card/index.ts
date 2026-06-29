@@ -1,19 +1,18 @@
 export {
   confirmBusinessCardScan,
-  getBusinessCardScan,
+  getBusinessCardScanLog,
+  listBusinessCardScanLogs,
   scanBusinessCard,
 } from "./api/business-card-api";
 export { BusinessCardScanScreen } from "./components/business-card-scan-screen";
 export type {
-  BusinessCardCompany,
-  BusinessCardCompanyCandidate,
-  BusinessCardCompanyMode,
   BusinessCardConfirmResponse,
-  BusinessCardContact,
-  BusinessCardScanDetail,
-  BusinessCardScanResponse,
+  BusinessCardExtractedFields,
+  BusinessCardResolution,
+  BusinessCardScanLog,
+  BusinessCardScanLogPage,
   BusinessCardScanStatus,
   ConfirmBusinessCardScanInput,
-  ExtractedBusinessCardFields,
+  ListBusinessCardScanLogsParams,
   ScanBusinessCardInput,
 } from "./types/business-card";

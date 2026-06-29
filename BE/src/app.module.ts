@@ -5,6 +5,7 @@ import {
 } from "@nestjs/common";
 import { ConfigModule } from "@nestjs/config";
 import { AuthModule } from "./modules/auth/infrastructure/auth.module";
+import { BusinessCardModule } from "./modules/business-card/infrastructure/business-card.module";
 import { CompanyModule } from "./modules/company/infrastructure/company.module";
 import { ContactModule } from "./modules/contact/infrastructure/contact.module";
 import { DealModule } from "./modules/deal/infrastructure/deal.module";
@@ -26,6 +27,7 @@ import { RequestIdMiddleware } from "./shared/presentation/middleware/request-id
     }),
     HealthModule,
     AuthModule,
+    BusinessCardModule,
     UserModule,
     CompanyModule,
     ContactModule,

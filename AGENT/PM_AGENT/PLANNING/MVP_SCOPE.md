@@ -9,28 +9,29 @@
 
 기준일: 2026-06-29
 
-- Backend 구현 완료: Auth/User, Company, Contact, Product, Deal, Schedule, MeetingNote 수동 기본 도메인, Search, Trash, MeetingNote AI/STT draft API와 `TODO/DONE/ADDITIONAL_WORK_PLAN` G01-G12.
+- Backend 구현 완료: Auth/User, Company, Contact, BusinessCard OCR, Product, Deal, Schedule, MeetingNote 수동 기본 도메인, Search, Trash, MeetingNote AI/STT draft API와 `TODO/DONE/ADDITIONAL_WORK_PLAN` G01-G12.
 - Auth/User: `/api/auth/providers`, `/api/auth/exchange`, `/api/auth/refresh`, `/api/auth/logout`, `/api/me`, `/admin/api/me`, `/api/users/me/profile`, `/api/users/me/devices`.
 - Company: 목록/상세/생성/수정, 분야/지역 옵션, 일반 메모, 개인 비밀 메모, `contactCount`, `dealCount`, 연결 Contact/Deal 목록, xlsx export.
 - Contact: 목록/상세/생성/수정, 회사 옵션, 직급/부서 옵션, 일반 메모, 개인 비밀 메모, 연결 Deal 목록, xlsx export.
+- BusinessCard OCR: `BusinessCardScanLog`, 이미지 업로드 OCR, 성공/실패 로그 저장, 사용자 확인/수정 후 회사/담당자 확정 저장.
 - Product: 목록/상세/생성/수정, 카테고리/상태 옵션, 일반 메모, 개인 비밀 메모, `dealCount`, `sort=dealCountDesc|dealCountAsc`, 연결 Deal 목록, xlsx export.
 - Deal: 단계별 count, 목록/상세/생성/수정, 회사/담당자/제품 옵션, 제품 N:M 연결, 다음 행동 로그, 일반 메모 로그, xlsx export.
 - Schedule: 딜 옵션, 목록/상세/생성/수정/삭제, 딜 N:M 연결, 사용자 timezone 기준 local time 변환.
 - MeetingNote: 수동 회의록 목록/상세/생성/수정/삭제, 회사/담당자 필터, 회사/담당자/제품/딜 N:N snapshot 연결, 텍스트 AI 초안 생성, STT+AI 초안 생성, 저장 후 딜 추가 연동과 딜 활동 로그 생성, 휴지통 복구.
 - Search: 회사/담당자/제품/딜/일정/회의록 통합검색 API.
 - Trash: 회사/담당자/제품/딜/회의록 본문 데이터와 지원 로그의 휴지통 목록, 상세 모달 조회, 7일 이내 복구 API.
-- 현재 Backend 미구현 또는 후속 범위: BusinessCard OCR, 범용 Import job, Notification, Admin 운영 조회/감사/민감 원문 API, MeetingNote Admin, 범용 DealActivity table, 7일 이후 유료 복구 API.
+- 현재 Backend 미구현 또는 후속 범위: 범용 Import job, Notification, Admin 운영 조회/감사/민감 원문 API, MeetingNote Admin, 범용 DealActivity table, 7일 이후 유료 복구 API.
 - 범용 Export job은 현재 제품 방향에서 사용하지 않는다. Export는 Company/Contact/Product/Deal 각 목록 화면의 xlsx 다운로드 API로 처리한다.
 - Admin Backend는 현재 `/admin/api/me`만 구현되어 있으며, 관리자 페이지와 운영 조회 API는 후속 단계에서 만든다.
-- User Web은 `/` 홈 대시보드, Company, Contact, Product, Deal, Schedule, MeetingNote 수동 화면, MeetingNote AI/STT draft UI, 저장 후 딜 연동, Search GlobalSearch, Trash 목록/상세/복구의 실제 API 연동이 완료되어 있다. 나머지 미구현 Backend 도메인은 실제 API 연동 전까지 mock/placeholder 경계를 명확히 해야 한다.
+- User Web은 `/` 홈 대시보드, Company, Contact, 명함 스캔, Product, Deal, Schedule, MeetingNote 수동 화면, MeetingNote AI/STT draft UI, 저장 후 딜 연동, Search GlobalSearch, Trash 목록/상세/복구의 실제 API 연동이 완료되어 있다. 나머지 미구현 Backend 도메인은 실제 API 연동 전까지 mock/placeholder 경계를 명확히 해야 한다.
 
 ## 1. 개발 우선순위
 
 1. Company/Contact/Product/Deal Backend 구현 완료 범위의 User Web 계약 동기화
 2. Additional Work G01-G12 Frontend 반영: `dealCount`, 연결 Deal 목록, 연결 Contact 목록, xlsx export
 3. 인증 연동과 사용자 설정 화면
-4. BusinessCard OCR
-5. 범용 Import job, Notification
+4. 범용 Import job
+5. Notification
 6. 7일 이후 유료 복구 정책과 API
 7. 범용 DealActivity table
 8. Admin 페이지와 운영 조회/감사/민감 원문 API
@@ -100,12 +101,12 @@
 - 담당자 상세의 연결 Deal 전체 목록
 - 현재 필터 기준 xlsx export
 - 삭제와 휴지통 7일 무료 복구
+- 명함 OCR 확인/수정 후 저장 flow
 
 ### 후속 MVP 포함
 
 - 위치 선택 입력
 - 태그
-- 명함 OCR 저장 flow
 
 ### 제외
 
