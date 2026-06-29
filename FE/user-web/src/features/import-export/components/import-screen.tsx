@@ -8,6 +8,7 @@ import {
   Loader2,
   Package,
   Play,
+  Plus,
   Save,
   Sparkles,
   Upload,
@@ -22,6 +23,8 @@ import {
   useGenerateImportMappingMutation,
   useUpdateImportMappingMutation,
 } from "@/features/import-export/hooks/use-import-export-mutations";
+import { PageHeader } from "@/components/layout/page-header";
+import { ModalShell } from "@/components/ui/modal-shell";
 import { useImportJobDetail } from "@/features/import-export/hooks/use-import-export-queries";
 import {
   createEmptyMapping,
@@ -50,6 +53,8 @@ const targetIcons: Record<ImportTargetType, LucideIcon> = {
 
 export function ImportScreen() {
   const [targetType, setTargetType] = useState<ImportTargetType>("COMPANY");
+  const [targetDraft, setTargetDraft] = useState<ImportTargetType>("COMPANY");
+  const [targetDialogOpen, setTargetDialogOpen] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [fileError, setFileError] = useState<string | null>(null);
   const [importJobId, setImportJobId] = useState("");
@@ -98,6 +103,7 @@ export function ImportScreen() {
 
   const onTargetChange = (nextTargetType: ImportTargetType) => {
     setTargetType(nextTargetType);
+    setTargetDraft(nextTargetType);
     setSelectedFile(null);
     setFileError(null);
     setImportJobId("");
@@ -106,6 +112,16 @@ export function ImportScreen() {
     setResult(null);
     setNotice(null);
     setDraftMapping(createEmptyMapping(nextTargetType));
+  };
+
+  const openTargetDialog = () => {
+    setTargetDraft(targetType);
+    setTargetDialogOpen(true);
+  };
+
+  const onConfirmTarget = () => {
+    onTargetChange(targetDraft);
+    setTargetDialogOpen(false);
   };
 
   const onFileChange = (file: File | null) => {
@@ -187,81 +203,185 @@ export function ImportScreen() {
   };
 
   return (
-    <section className="mx-auto grid max-w-[1500px] gap-5 px-5 py-6">
-      <header className="flex flex-col gap-2 border-b pb-5">
-        <h1 className="text-2xl font-semibold">데이터 가져오기</h1>
-        <p className="text-sm text-muted-foreground">
-          Excel/CSV 파일을 올리고 매핑을 확인한 뒤 데이터를 반영합니다.
-        </p>
-      </header>
-
-      {notice ? (
-        <NoticeMessage message={notice} onDismiss={() => setNotice(null)} />
-      ) : null}
-
-      {actionError ? <ErrorMessage message={getApiErrorMessage(actionError)} /> : null}
-
-      <div className="grid gap-5 xl:grid-cols-[minmax(320px,0.8fr)_minmax(0,1.2fr)]">
-        <section className="grid content-start gap-5 rounded-lg border bg-white p-4">
-          <TargetSelector
-            selectedTargetType={targetType}
-            onSelect={onTargetChange}
-          />
-
-          <FileUploadPanel
-            file={selectedFile}
-            fileError={fileError}
-            isUploading={createMutation.isPending}
-            onFileChange={onFileChange}
-            onUpload={() => void onUpload()}
-          />
-
-          <JobSummary job={currentJob} result={result} />
-        </section>
-
-        <section className="grid content-start gap-5 rounded-lg border bg-white p-4">
-          <MappingPanel
-            canConfirm={canConfirm}
-            canSaveMapping={canSaveMapping}
-            currentJob={currentJob}
-            draftMapping={draftMapping}
-            isConfirming={confirmMutation.isPending}
-            isGenerating={mappingMutation.isPending}
-            isSaving={updateMappingMutation.isPending}
-            onConfirm={() => setConfirmOpen(true)}
-            onGenerateMapping={() => void onGenerateMapping()}
-            onMappingChange={(field, sourceColumn) =>
-              setDraftMapping((current) => ({
-                ...current,
-                [field]: sourceColumn || null,
-              }))
-            }
-            onSaveMapping={() => void onSaveMapping()}
-            sourceColumns={sourceColumns}
-            suggestion={suggestion}
-            targetType={currentTargetType}
-          />
-        </section>
-      </div>
-
-      <PreviewTable
-        rows={currentRows}
-        sourceColumns={sourceColumns}
-        targetType={currentTargetType}
-        useMappedData={hasSavedMapping}
+    <section className="flex min-h-full flex-col bg-[#FAFAF8]">
+      <PageHeader
+        breadcrumbs={[{ label: "데이터 불러오기", icon: Upload }]}
+        actions={[
+          {
+            icon: Plus,
+            tooltip: "불러오기 생성",
+            onClick: openTargetDialog,
+            variant: "primary",
+          },
+        ]}
       />
 
-      {result ? <ResultPanel result={result} /> : null}
+      <div className="mx-auto grid w-full max-w-[1500px] gap-5 px-5 pb-6 pt-1">
+        {notice ? (
+          <NoticeMessage message={notice} onDismiss={() => setNotice(null)} />
+        ) : null}
 
-      {confirmOpen && currentJob ? (
-        <ConfirmDialog
-          isPending={confirmMutation.isPending}
-          job={currentJob}
-          onCancel={() => setConfirmOpen(false)}
-          onConfirm={() => void onConfirm()}
+        {actionError ? <ErrorMessage message={getApiErrorMessage(actionError)} /> : null}
+
+        <div className="grid gap-5 xl:grid-cols-[minmax(320px,0.8fr)_minmax(0,1.2fr)]">
+          <section className="grid content-start gap-5 rounded-lg border bg-white p-4">
+            <SelectedTargetSummary
+              targetType={targetType}
+              onChange={openTargetDialog}
+            />
+
+            <FileUploadPanel
+              file={selectedFile}
+              fileError={fileError}
+              isUploading={createMutation.isPending}
+              onFileChange={onFileChange}
+              onUpload={() => void onUpload()}
+            />
+
+            <JobSummary job={currentJob} result={result} />
+          </section>
+
+          <section className="grid content-start gap-5 rounded-lg border bg-white p-4">
+            <MappingPanel
+              canConfirm={canConfirm}
+              canSaveMapping={canSaveMapping}
+              currentJob={currentJob}
+              draftMapping={draftMapping}
+              isConfirming={confirmMutation.isPending}
+              isGenerating={mappingMutation.isPending}
+              isSaving={updateMappingMutation.isPending}
+              onConfirm={() => setConfirmOpen(true)}
+              onGenerateMapping={() => void onGenerateMapping()}
+              onMappingChange={(field, sourceColumn) =>
+                setDraftMapping((current) => ({
+                  ...current,
+                  [field]: sourceColumn || null,
+                }))
+              }
+              onSaveMapping={() => void onSaveMapping()}
+              sourceColumns={sourceColumns}
+              suggestion={suggestion}
+              targetType={currentTargetType}
+            />
+          </section>
+        </div>
+
+        <PreviewTable
+          rows={currentRows}
+          sourceColumns={sourceColumns}
+          targetType={currentTargetType}
+          useMappedData={hasSavedMapping}
         />
-      ) : null}
+
+        {result ? <ResultPanel result={result} /> : null}
+
+        {confirmOpen && currentJob ? (
+          <ConfirmDialog
+            isPending={confirmMutation.isPending}
+            job={currentJob}
+            onCancel={() => setConfirmOpen(false)}
+            onConfirm={() => void onConfirm()}
+          />
+        ) : null}
+
+        <ImportTargetDialog
+          open={targetDialogOpen}
+          selectedTargetType={targetDraft}
+          onCancel={() => setTargetDialogOpen(false)}
+          onConfirm={onConfirmTarget}
+          onSelect={setTargetDraft}
+        />
+      </div>
     </section>
+  );
+}
+
+function SelectedTargetSummary({
+  targetType,
+  onChange,
+}: {
+  readonly targetType: ImportTargetType;
+  readonly onChange: () => void;
+}) {
+  const selectedTarget = importTargetOptions.find(
+    (option) => option.value === targetType
+  );
+  const Icon = targetIcons[targetType];
+
+  if (!selectedTarget) {
+    return null;
+  }
+
+  return (
+    <div className="flex items-center justify-between gap-3 rounded-md border bg-muted/20 px-3 py-3">
+      <div className="flex min-w-0 items-center gap-3">
+        <div className="grid h-10 w-10 shrink-0 place-items-center rounded-md bg-white text-primary">
+          <Icon className="h-5 w-5" />
+        </div>
+        <div className="min-w-0">
+          <p className="text-xs text-muted-foreground">불러오기 대상</p>
+          <p className="truncate text-sm font-semibold">{selectedTarget.label}</p>
+          <p className="truncate text-xs text-muted-foreground">
+            {selectedTarget.description}
+          </p>
+        </div>
+      </div>
+      <button
+        className="inline-flex h-8 shrink-0 items-center rounded-md border bg-white px-3 text-xs font-medium hover:bg-muted"
+        onClick={onChange}
+        type="button"
+      >
+        변경
+      </button>
+    </div>
+  );
+}
+
+function ImportTargetDialog({
+  open,
+  selectedTargetType,
+  onSelect,
+  onCancel,
+  onConfirm,
+}: {
+  readonly open: boolean;
+  readonly selectedTargetType: ImportTargetType;
+  readonly onSelect: (targetType: ImportTargetType) => void;
+  readonly onCancel: () => void;
+  readonly onConfirm: () => void;
+}) {
+  return (
+    <ModalShell
+      bodyClassName="px-5 py-5"
+      footer={
+        <>
+          <button
+            className="inline-flex h-10 items-center rounded-md border px-4 text-sm font-medium hover:bg-muted"
+            onClick={onCancel}
+            type="button"
+          >
+            취소
+          </button>
+          <button
+            className="inline-flex h-10 items-center rounded-md bg-primary px-4 text-sm font-medium text-primary-foreground hover:bg-primary/90"
+            onClick={onConfirm}
+            type="button"
+          >
+            선택
+          </button>
+        </>
+      }
+      onOpenChange={(nextOpen) => {
+        if (!nextOpen) {
+          onCancel();
+        }
+      }}
+      open={open}
+      size="md"
+      title="불러오기 생성"
+    >
+      <TargetSelector selectedTargetType={selectedTargetType} onSelect={onSelect} />
+    </ModalShell>
   );
 }
 

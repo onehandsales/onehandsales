@@ -8,6 +8,7 @@ import {
   Package,
   Settings,
   Trash2,
+  Upload,
   type LucideIcon,
 } from "lucide-react";
 import { NavLink } from "react-router-dom";
@@ -38,7 +39,7 @@ const groups: Array<{
       { label: "일정", to: "/schedules", icon: CalendarDays },
       { label: "회의록", to: "/meeting-notes", icon: FileText },
       { label: "명함 스캔", to: "/business-cards", icon: Camera },
-      // 핵심 기능 UX 유지보수 이후 Import 기능을 다시 노출한다.
+      { label: "데이터 불러오기", to: "/import", icon: Upload },
     ],
   },
   {

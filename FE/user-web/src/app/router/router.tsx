@@ -11,6 +11,7 @@ import { DealDetailPage } from "@/pages/deals/detail";
 import { DealsPage } from "@/pages/deals";
 import { DealNewPage } from "@/pages/deals/new";
 import { HomePage } from "@/pages/home";
+import { ImportPage } from "@/pages/import";
 import { LoginPage } from "@/pages/login";
 import { MeetingNoteDetailPage } from "@/pages/meeting-notes/detail";
 import { MeetingNotesPage } from "@/pages/meeting-notes";
@@ -61,7 +62,7 @@ export const router = createBrowserRouter([
       { path: "meeting-notes/:meetingNoteId", element: <MeetingNoteDetailPage /> },
       { path: "business-cards", element: <BusinessCardsPage /> },
       { path: "notifications", element: <Navigate replace to="/" /> },
-      { path: "import", element: <Navigate replace to="/" /> },
+      { path: "import", element: <ImportPage /> },
       { path: "export", element: <Navigate replace to="/" /> },
       { path: "trash", element: <TrashPage /> },
       { path: "settings", element: <SettingsPage /> },
