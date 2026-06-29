@@ -45,7 +45,7 @@ const DEFAULT_CONTACT_JOB_GRADE_NAME = "미지정";
 // 역할 : BusinessCardScanQueryInput 명함 스캔 목록 조회 조건을 정의합니다.
 export interface BusinessCardScanQueryInput {
   readonly page?: number;
-  readonly status?: string;
+  readonly status?: string | string[];
 }
 
 // 역할 : UploadedBusinessCardImageFile HTTP 업로드 파일에서 필요한 필드를 정의합니다.
@@ -192,12 +192,12 @@ export class BusinessCardApplicationService {
     query: BusinessCardScanQueryInput
   ): Promise<BusinessCardScanLogPageResponse> {
     const page = query.page ?? 1;
-    const status = this.normalizeOptionalStatus(query.status);
+    const statuses = this.normalizeOptionalStatuses(query.status);
     const result = await this.scanLogRepository.listScanLogs({
       userId: currentUser.id,
       page,
       pageSize: BUSINESS_CARD_SCAN_PAGE_SIZE,
-      ...(status ? { status } : {}),
+      ...(statuses.length > 0 ? { statuses } : {}),
     });
 
     return {
@@ -414,13 +414,25 @@ export class BusinessCardApplicationService {
     return email;
   }
 
-  private normalizeOptionalStatus(
-    value: string | undefined
-  ): BusinessCardScanStatus | undefined {
+  private normalizeOptionalStatuses(
+    value: string | readonly string[] | undefined
+  ): BusinessCardScanStatus[] {
     if (!value) {
-      return undefined;
+      return [];
     }
 
+    const values: readonly string[] = Array.isArray(value) ? value : [value];
+    const statuses = values.flatMap((item) =>
+      item
+        .split(",")
+        .map((status: string) => status.trim())
+        .filter((status: string) => status.length > 0)
+    );
+
+    return [...new Set(statuses.map((status) => this.normalizeStatus(status)))];
+  }
+
+  private normalizeStatus(value: string): BusinessCardScanStatus {
     if (
       value === BusinessCardScanStatusValue.OCR_SUCCESS ||
       value === BusinessCardScanStatusValue.OCR_FAILED ||

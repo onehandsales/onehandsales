@@ -1,11 +1,12 @@
 import {
   Building2,
+  Camera,
   ChevronRight,
   Package,
-  ScanLine,
   Settings,
   Trash2,
   Users,
+  type LucideIcon,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useAuthSession } from "@/features/auth";
@@ -15,7 +16,7 @@ type MenuRowProps = {
   readonly to: string;
   readonly iconBg: string;
   readonly iconColor: string;
-  readonly icon: typeof Building2;
+  readonly icon: LucideIcon;
   readonly isLast?: boolean;
 };
 
@@ -135,7 +136,7 @@ export function MorePage() {
           to="/business-cards"
           iconBg="#05966918"
           iconColor="#059669"
-          icon={ScanLine}
+          icon={Camera}
         />
         <MenuRow
           label="제품"

@@ -98,7 +98,9 @@ export class PrismaBusinessCardScanLogRepository
   ): Promise<BusinessCardScanLogPageRecord> {
     const where: Prisma.BusinessCardScanLogWhereInput = {
       userId: input.userId,
-      ...(input.status ? { status: input.status } : {}),
+      ...(input.statuses && input.statuses.length > 0
+        ? { status: { in: [...input.statuses] } }
+        : {}),
     };
 
     const [items, totalCount] = await Promise.all([

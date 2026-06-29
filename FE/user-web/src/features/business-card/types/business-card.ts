@@ -55,7 +55,7 @@ export type BusinessCardScanLogPage = {
 
 export type ListBusinessCardScanLogsParams = {
   readonly page?: number;
-  readonly status?: BusinessCardScanStatus;
+  readonly status?: readonly BusinessCardScanStatus[];
 };
 
 export type ScanBusinessCardInput = {

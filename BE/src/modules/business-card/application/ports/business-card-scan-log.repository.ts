@@ -86,7 +86,7 @@ export interface ListBusinessCardScanLogsInput {
   readonly userId: string;
   readonly page: number;
   readonly pageSize: number;
-  readonly status?: BusinessCardScanStatusValue;
+  readonly statuses?: readonly BusinessCardScanStatusValue[];
 }
 
 // 역할 : ConfirmBusinessCardScanInput 사용자 보정 후 회사/담당자를 확정 저장하는 입력을 정의합니다.

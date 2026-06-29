@@ -35,6 +35,9 @@ Query:
 
 - `page?: number`
 - `status?: OCR_SUCCESS | OCR_FAILED | CONFIRMED`
+- `status`는 반복 query 또는 comma-separated query로 여러 개 전달할 수 있다.
+  - 예: `?status=OCR_SUCCESS&status=CONFIRMED`
+  - 예: `?status=OCR_SUCCESS,CONFIRMED`
 
 응답:
 

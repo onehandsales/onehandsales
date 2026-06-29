@@ -2,13 +2,13 @@ import {
   BriefcaseBusiness,
   Building2,
   CalendarDays,
+  Camera,
   FileText,
-  House,
   IdCard,
   Package,
-  ScanLine,
   Settings,
   Trash2,
+  type LucideIcon,
 } from "lucide-react";
 import { NavLink } from "react-router-dom";
 import { cn } from "@/utils/cn";
@@ -18,7 +18,7 @@ const groups: Array<{
   readonly items: ReadonlyArray<{
     readonly label: string;
     readonly to: string;
-    readonly icon: typeof House;
+    readonly icon: LucideIcon;
     readonly end?: boolean;
   }>;
 }> = [
@@ -37,7 +37,7 @@ const groups: Array<{
     items: [
       { label: "일정", to: "/schedules", icon: CalendarDays },
       { label: "회의록", to: "/meeting-notes", icon: FileText },
-      { label: "명함 스캔", to: "/business-cards", icon: ScanLine },
+      { label: "명함 스캔", to: "/business-cards", icon: Camera },
       // 핵심 기능 UX 유지보수 이후 Import 기능을 다시 노출한다.
     ],
   },

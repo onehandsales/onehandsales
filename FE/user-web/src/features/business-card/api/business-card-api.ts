@@ -50,7 +50,9 @@ function toQueryString(params: ListBusinessCardScanLogsParams) {
   }
 
   if (params.status) {
-    searchParams.set("status", params.status);
+    params.status.forEach((status) => {
+      searchParams.append("status", status);
+    });
   }
 
   const value = searchParams.toString();

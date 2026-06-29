@@ -1,18 +1,21 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   AlertCircle,
+  Camera,
   CheckCircle2,
+  ChevronDown,
   Eye,
   FileImage,
-  IdCard,
   Loader2,
   Plus,
+  RotateCcw,
   Save,
+  Search,
   Upload,
   UserRound,
   X,
 } from "lucide-react";
-import { useEffect, useMemo, useState, type ChangeEvent } from "react";
+import { useEffect, useMemo, useRef, useState, type ChangeEvent } from "react";
 import { useForm, type UseFormRegisterReturn } from "react-hook-form";
 import { Link } from "react-router-dom";
 import { PageHeader } from "@/components/layout/page-header";
@@ -51,22 +54,21 @@ const TABLE_GRID_STYLE = {
     "minmax(88px,0.7fr) minmax(130px,1fr) minmax(110px,0.8fr) minmax(120px,0.9fr) minmax(150px,1fr) minmax(92px,0.7fr) minmax(104px,0.8fr)",
 };
 
-type StatusFilter = "ALL" | BusinessCardScanStatus;
-
-const STATUS_FILTERS: Array<{
-  readonly value: StatusFilter;
+const STATUS_FILTER_OPTIONS: Array<{
+  readonly id: BusinessCardScanStatus;
   readonly label: string;
 }> = [
-  { value: "ALL", label: "전체" },
-  { value: "OCR_SUCCESS", label: "확인 필요" },
-  { value: "CONFIRMED", label: "저장 완료" },
-  { value: "OCR_FAILED", label: "등록 실패" },
+  { id: "OCR_SUCCESS", label: "확인 필요" },
+  { id: "CONFIRMED", label: "저장 완료" },
+  { id: "OCR_FAILED", label: "등록 실패" },
 ];
 
 export function BusinessCardScanScreen() {
   const { user } = useAuthSession();
   const [page, setPage] = useState(1);
-  const [statusFilter, setStatusFilter] = useState<StatusFilter>("ALL");
+  const [statusFilters, setStatusFilters] = useState<BusinessCardScanStatus[]>(
+    []
+  );
   const [isRegisterOpen, setIsRegisterOpen] = useState(false);
   const [selectedScanLogId, setSelectedScanLogId] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
@@ -74,18 +76,22 @@ export function BusinessCardScanScreen() {
   const listParams = useMemo(
     () => ({
       page,
-      status: statusFilter === "ALL" ? undefined : statusFilter,
+      status: statusFilters.length > 0 ? statusFilters : undefined,
     }),
-    [page, statusFilter]
+    [page, statusFilters]
   );
   const scanLogsQuery = useBusinessCardScanLogs(listParams);
   const detailQuery = useBusinessCardScanLogDetail(selectedScanLogId);
   const pageData = scanLogsQuery.data;
+  const resetStatusFilter = () => {
+    setStatusFilters([]);
+    setPage(1);
+  };
 
   return (
     <section className="flex min-h-full flex-col bg-[#FAFAF8]">
       <PageHeader
-        breadcrumbs={[{ label: "명함 스캔", icon: IdCard }]}
+        breadcrumbs={[{ label: "명함 스캔", icon: Camera }]}
         actions={[
           {
             icon: Plus,
@@ -96,25 +102,23 @@ export function BusinessCardScanScreen() {
         ]}
       />
 
-      <div className="hidden min-h-10 shrink-0 items-center gap-2 overflow-x-auto px-5 py-1 md:flex">
-        {STATUS_FILTERS.map((filter) => (
-          <button
-            className={cn(
-              "inline-flex h-8 shrink-0 items-center rounded-full border px-3 text-[13px] font-semibold transition",
-              statusFilter === filter.value
-                ? "border-[#4880EE] bg-[#EFF6FF] text-[#1D4ED8]"
-                : "border-[#E2E5EC] bg-transparent text-[#6B7280] hover:bg-white"
-            )}
-            key={filter.value}
-            onClick={() => {
-              setStatusFilter(filter.value);
-              setPage(1);
-            }}
-            type="button"
-          >
-            {filter.label}
-          </button>
-        ))}
+      <div className="hidden min-h-10 shrink-0 items-center gap-1.5 overflow-x-auto px-5 py-1 md:flex lg:gap-2">
+        <button
+          aria-label="전체"
+          className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-[6px] border border-[#4880EE] bg-[#4880EE] text-[13px] font-bold text-white transition hover:bg-[#4880EE] focus:border-[#4880EE] focus:outline-none focus:ring-1 focus:ring-[#4880EE]"
+          onClick={resetStatusFilter}
+          type="button"
+        >
+          <RotateCcw className="h-3.5 w-3.5" />
+        </button>
+        <StatusFilterCombobox
+          selectedStatuses={statusFilters}
+          size="desktop"
+          onSelectedStatusesChange={(nextStatuses) => {
+            setStatusFilters(nextStatuses);
+            setPage(1);
+          }}
+        />
         <div className="flex-1" />
         <span className="shrink-0 text-[12px] text-[#9CA3AF]">
           {pageData?.totalCount ?? 0}건
@@ -158,7 +162,7 @@ export function BusinessCardScanScreen() {
               <ListEmptyState
                 actionIcon={Plus}
                 actionLabel="명함등록"
-                icon={IdCard}
+                icon={Camera}
                 onAction={() => setIsRegisterOpen(true)}
                 title="등록된 명함 내역이 없습니다"
               />
@@ -186,24 +190,22 @@ export function BusinessCardScanScreen() {
 
       <section className="flex min-h-0 flex-1 flex-col md:hidden">
         <div className="flex h-10 shrink-0 items-center gap-2 overflow-x-auto border-b border-[#E5E7EB] px-4">
-          {STATUS_FILTERS.map((filter) => (
-            <button
-              className={cn(
-                "inline-flex h-7 shrink-0 items-center rounded-full border px-3 text-[12px] font-semibold",
-                statusFilter === filter.value
-                  ? "border-[#4880EE] bg-[#EFF6FF] text-[#1D4ED8]"
-                  : "border-[#E5E7EB] bg-[#F3F4F6] text-[#4B5563]"
-              )}
-              key={filter.value}
-              onClick={() => {
-                setStatusFilter(filter.value);
-                setPage(1);
-              }}
-              type="button"
-            >
-              {filter.label}
-            </button>
-          ))}
+          <button
+            aria-label="전체"
+            className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-[#4880EE] bg-[#4880EE] text-[12px] font-bold text-white transition hover:bg-[#4880EE] focus:border-[#4880EE] focus:outline-none focus:ring-1 focus:ring-[#4880EE]"
+            onClick={resetStatusFilter}
+            type="button"
+          >
+            <RotateCcw className="h-3 w-3" />
+          </button>
+          <StatusFilterCombobox
+            selectedStatuses={statusFilters}
+            size="mobile"
+            onSelectedStatusesChange={(nextStatuses) => {
+              setStatusFilters(nextStatuses);
+              setPage(1);
+            }}
+          />
         </div>
 
         <div className="bg-white">
@@ -218,7 +220,7 @@ export function BusinessCardScanScreen() {
             <ListEmptyState
               actionIcon={Plus}
               actionLabel="명함등록"
-              icon={IdCard}
+              icon={Camera}
               onAction={() => setIsRegisterOpen(true)}
               title="등록된 명함 내역이 없습니다"
             />
@@ -278,6 +280,312 @@ export function BusinessCardScanScreen() {
   );
 }
 
+type StatusFilterPopoverPosition = {
+  readonly left: number;
+  readonly top: number;
+  readonly width: number;
+};
+
+function StatusFilterCombobox({
+  selectedStatuses,
+  size,
+  onSelectedStatusesChange,
+}: {
+  readonly selectedStatuses: readonly BusinessCardScanStatus[];
+  readonly size: "desktop" | "mobile";
+  readonly onSelectedStatusesChange: (
+    statuses: BusinessCardScanStatus[]
+  ) => void;
+}) {
+  const [isOpen, setIsOpen] = useState(false);
+  const [search, setSearch] = useState("");
+  const [popoverPosition, setPopoverPosition] =
+    useState<StatusFilterPopoverPosition | null>(null);
+  const wrapperRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const selectedStatusSet = useMemo(
+    () => new Set(selectedStatuses),
+    [selectedStatuses]
+  );
+  const selectedSummary = getSelectedStatusFilterSummary(selectedStatuses);
+  const normalizedQuery = normalizeFilterText(search);
+  const filteredStatuses =
+    normalizedQuery.length > 0
+      ? STATUS_FILTER_OPTIONS.filter((item) =>
+          normalizeFilterText(item.label).includes(normalizedQuery)
+        )
+      : STATUS_FILTER_OPTIONS;
+  const isMobile = size === "mobile";
+  const inputValue = isOpen ? search : selectedSummary;
+
+  useEffect(() => {
+    if (!isOpen) {
+      setSearch("");
+      return;
+    }
+
+    const updatePopoverPosition = () => {
+      if (!inputRef.current) {
+        return;
+      }
+
+      setPopoverPosition(
+        getStatusFilterPopoverPosition(inputRef.current, isMobile)
+      );
+    };
+    const onMouseDown = (event: MouseEvent) => {
+      if (
+        wrapperRef.current &&
+        !wrapperRef.current.contains(event.target as Node)
+      ) {
+        setIsOpen(false);
+        setSearch("");
+      }
+    };
+
+    updatePopoverPosition();
+    document.addEventListener("mousedown", onMouseDown);
+    window.addEventListener("resize", updatePopoverPosition);
+    window.addEventListener("scroll", updatePopoverPosition, true);
+
+    return () => {
+      document.removeEventListener("mousedown", onMouseDown);
+      window.removeEventListener("resize", updatePopoverPosition);
+      window.removeEventListener("scroll", updatePopoverPosition, true);
+    };
+  }, [isMobile, isOpen]);
+
+  const openOptions = (nextSearch: string) => {
+    setSearch(nextSearch);
+
+    if (inputRef.current) {
+      setPopoverPosition(
+        getStatusFilterPopoverPosition(inputRef.current, isMobile)
+      );
+    }
+
+    setIsOpen(true);
+  };
+
+  const toggleStatus = (status: BusinessCardScanStatus) => {
+    const nextStatuses = selectedStatusSet.has(status)
+      ? selectedStatuses.filter((item) => item !== status)
+      : [...selectedStatuses, status];
+
+    setSearch("");
+    onSelectedStatusesChange(nextStatuses);
+  };
+
+  const clearSelection = () => {
+    setSearch("");
+    onSelectedStatusesChange([]);
+    inputRef.current?.focus();
+    openOptions("");
+  };
+
+  return (
+    <div
+      className={cn(
+        "relative shrink-0",
+        isMobile ? "w-[120px]" : "w-[clamp(136px,14vw,178px)]"
+      )}
+      ref={wrapperRef}
+    >
+      <div className="relative">
+        {isOpen ? (
+          <Search
+            className={cn(
+              "pointer-events-none absolute top-1/2 shrink-0 -translate-y-1/2 text-[#9CA3AF]",
+              isMobile ? "left-2.5 h-3 w-3" : "left-3 h-3 w-3"
+            )}
+          />
+        ) : null}
+        <input
+          aria-autocomplete="list"
+          aria-expanded={isOpen}
+          aria-label="상태 필터"
+          autoComplete="off"
+          className={cn(
+            "w-full min-w-0 border outline-none transition",
+            isMobile
+              ? "h-7 rounded-full text-[12px]"
+              : "h-8 rounded-full text-[13px]",
+            isOpen
+              ? cn(
+                  "border-[#4880EE] bg-white text-[#111827] ring-1 ring-[#4880EE]",
+                  isMobile ? "pl-7 pr-7" : "pl-8 pr-7"
+                )
+              : selectedStatuses.length > 0
+                ? cn(
+                    "border-[#BFDBFE] bg-[#EFF6FF] font-semibold text-[#1D4ED8]",
+                    isMobile ? "pl-3 pr-7" : "pl-3.5 pr-7"
+                  )
+                : isMobile
+                  ? "border-[#E5E7EB] bg-[#F3F4F6] pl-3 pr-7 text-[#4B5563] hover:border-[#D1D5DB]"
+                  : "cursor-pointer border-[#E2E5EC] bg-transparent pl-3.5 pr-7 text-[#6B7280] hover:border-[#D1D5DB] hover:bg-[#F5F6F8]"
+          )}
+          onChange={(event) => openOptions(event.target.value)}
+          onFocus={() => openOptions("")}
+          onKeyDown={(event) => {
+            if (event.key === "Escape") {
+              setIsOpen(false);
+              setSearch("");
+              inputRef.current?.blur();
+              return;
+            }
+
+            if (event.key === "Enter") {
+              const firstItem = filteredStatuses[0];
+              if (!firstItem) {
+                return;
+              }
+
+              event.preventDefault();
+              toggleStatus(firstItem.id);
+            }
+          }}
+          placeholder="상태 선택"
+          ref={inputRef}
+          value={inputValue}
+        />
+        {selectedStatuses.length > 0 || search ? (
+          <button
+            aria-label="상태 필터 지우기"
+            className={cn(
+              "absolute right-1 top-1/2 grid -translate-y-1/2 place-items-center rounded-full text-[#9CA3AF] transition hover:bg-white hover:text-[#374151]",
+              isMobile ? "h-6 w-6" : "h-7 w-7"
+            )}
+            onClick={clearSelection}
+            type="button"
+          >
+            <X className={isMobile ? "h-3 w-3" : "h-3.5 w-3.5"} />
+          </button>
+        ) : (
+          <ChevronDown
+            className={cn(
+              "pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-[#9CA3AF] transition-transform",
+              isMobile ? "h-3 w-3" : "h-3.5 w-3.5",
+              isOpen && "rotate-180"
+            )}
+          />
+        )}
+      </div>
+
+      {isOpen ? (
+        <div
+          className={cn(
+            "fixed z-50 overflow-hidden rounded-md border border-[#E6EAF0] bg-white shadow-lg",
+            !popoverPosition && "invisible"
+          )}
+          style={{
+            left: popoverPosition?.left ?? 0,
+            top: popoverPosition?.top ?? 0,
+            width: popoverPosition?.width ?? 256,
+          }}
+        >
+          <button
+            className={cn(
+              "flex h-9 w-full items-center gap-1.5 px-3 text-left text-[13px] transition hover:bg-[#F9FAFB]",
+              selectedStatuses.length === 0
+                ? "font-semibold text-[#1D4ED8]"
+                : "font-medium text-[#475569]"
+            )}
+            onClick={() => {
+              setSearch("");
+              setIsOpen(false);
+              onSelectedStatusesChange([]);
+            }}
+            type="button"
+          >
+            <RotateCcw className="h-3.5 w-3.5" />
+            상태 초기화
+          </button>
+
+          <div className="max-h-[184px] overflow-y-auto border-y border-[#E6EAF0] py-1">
+            {filteredStatuses.length === 0 ? (
+              <p className="px-3 py-3 text-[12px] text-[#9CA3AF]">
+                조건에 맞는 상태가 없습니다.
+              </p>
+            ) : (
+              filteredStatuses.map((item) => {
+                const isSelected = selectedStatusSet.has(item.id);
+
+                return (
+                  <button
+                    className={cn(
+                      "flex h-8 w-full min-w-0 items-center gap-2 px-3 text-left text-[13px] transition hover:bg-[#F9FAFB]",
+                      isSelected && "bg-[#EFF6FF] font-semibold text-[#1D4ED8]"
+                    )}
+                    key={item.id}
+                    onClick={() => toggleStatus(item.id)}
+                    type="button"
+                  >
+                    <span
+                      className={cn(
+                        "grid h-3.5 w-3.5 shrink-0 place-items-center rounded-full border",
+                        isSelected ? "border-[#4880EE]" : "border-[#CBD5E1]"
+                      )}
+                    >
+                      {isSelected ? (
+                        <span className="h-1.5 w-1.5 rounded-full bg-[#4880EE]" />
+                      ) : null}
+                    </span>
+                    <span className="min-w-0 flex-1 truncate">
+                      {item.label}
+                    </span>
+                  </button>
+                );
+              })
+            )}
+          </div>
+        </div>
+      ) : null}
+    </div>
+  );
+}
+
+function getStatusFilterPopoverPosition(
+  input: HTMLInputElement,
+  isMobile: boolean
+): StatusFilterPopoverPosition {
+  const rect = input.getBoundingClientRect();
+  const viewportWidth = window.innerWidth;
+  const margin = 16;
+  const width = isMobile
+    ? Math.min(256, Math.max(160, viewportWidth - margin * 2))
+    : 256;
+  const maxLeft = Math.max(margin, viewportWidth - width - margin);
+  const left = Math.min(Math.max(rect.left, margin), maxLeft);
+
+  return {
+    left,
+    top: rect.bottom + 4,
+    width,
+  };
+}
+
+function getSelectedStatusFilterSummary(
+  selectedStatuses: readonly BusinessCardScanStatus[]
+) {
+  if (selectedStatuses.length === 0) {
+    return "";
+  }
+
+  if (selectedStatuses.length === 1) {
+    const selectedStatus = selectedStatuses[0];
+    return (
+      STATUS_FILTER_OPTIONS.find((item) => item.id === selectedStatus)?.label ??
+      ""
+    );
+  }
+
+  return `상태 ${selectedStatuses.length}개`;
+}
+
+function normalizeFilterText(value: string) {
+  return value.trim().toLowerCase();
+}
+
 function BusinessCardRegisterDialog({
   open,
   onOpenChange,
@@ -290,6 +598,7 @@ function BusinessCardRegisterDialog({
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [fileError, setFileError] = useState<string | null>(null);
   const [scanLog, setScanLog] = useState<BusinessCardScanLog | null>(null);
+  const [registrationProgress, setRegistrationProgress] = useState(0);
   const previewUrl = useObjectUrl(selectedFile);
   const scanMutation = useScanBusinessCardMutation();
   const confirmMutation = useConfirmBusinessCardScanMutation();
@@ -304,15 +613,38 @@ function BusinessCardRegisterDialog({
   });
   const actionError = scanMutation.error ?? confirmMutation.error ?? null;
   const isExtracted = scanLog?.status === "OCR_SUCCESS";
+  const isRegistering = scanMutation.isPending;
 
   useEffect(() => {
     if (!open) {
       setSelectedFile(null);
       setFileError(null);
       setScanLog(null);
+      setRegistrationProgress(0);
       reset(emptyBusinessCardConfirmFormValues);
     }
   }, [open, reset]);
+
+  useEffect(() => {
+    if (!isRegistering) {
+      if (!scanLog) {
+        setRegistrationProgress(0);
+      }
+      return;
+    }
+
+    setRegistrationProgress(10);
+    const intervalId = window.setInterval(() => {
+      setRegistrationProgress((currentProgress) => {
+        const nextStep =
+          currentProgress < 55 ? 7 : currentProgress < 80 ? 4 : 1.5;
+
+        return Math.min(currentProgress + nextStep, 92);
+      });
+    }, 420);
+
+    return () => window.clearInterval(intervalId);
+  }, [isRegistering, scanLog]);
 
   useEffect(() => {
     if (scanLog?.status === "OCR_SUCCESS") {
@@ -324,6 +656,7 @@ function BusinessCardRegisterDialog({
     setSelectedFile(file);
     setFileError(validateBusinessCardImage(file));
     setScanLog(null);
+    setRegistrationProgress(0);
     reset(emptyBusinessCardConfirmFormValues);
   };
 
@@ -360,7 +693,8 @@ function BusinessCardRegisterDialog({
       footer={
         <>
           <button
-            className="inline-flex h-9 items-center rounded-md border border-[#E2E5EC] bg-white px-4 text-[13px] font-medium text-[#4B5563] hover:bg-[#F9FAFB]"
+            className="inline-flex h-9 items-center rounded-md border border-[#E2E5EC] bg-white px-4 text-[13px] font-medium text-[#4B5563] hover:bg-[#F9FAFB] disabled:cursor-not-allowed disabled:opacity-60"
+            disabled={isRegistering}
             onClick={() => onOpenChange(false)}
             type="button"
           >
@@ -397,7 +731,13 @@ function BusinessCardRegisterDialog({
           ) : null}
         </>
       }
-      onOpenChange={onOpenChange}
+      onOpenChange={(nextOpen) => {
+        if (isRegistering && !nextOpen) {
+          return;
+        }
+
+        onOpenChange(nextOpen);
+      }}
       open={open}
       panelClassName="rounded-lg"
       size={isExtracted ? "lg" : "md"}
@@ -469,8 +809,8 @@ function BusinessCardRegisterDialog({
         <div className="grid gap-3">
           <label
             className={cn(
-              "grid min-h-[300px] cursor-pointer place-items-center rounded-lg border border-dashed bg-[#F9FAFB] p-4 text-center transition hover:bg-[#F3F4F6]",
-              scanLog && "pointer-events-none opacity-80"
+              "relative grid min-h-[300px] cursor-pointer place-items-center overflow-hidden rounded-lg border border-dashed bg-[#F9FAFB] p-4 text-center transition hover:bg-[#F3F4F6]",
+              (scanLog || isRegistering) && "pointer-events-none opacity-90"
             )}
             htmlFor="business-card-image"
           >
@@ -498,11 +838,34 @@ function BusinessCardRegisterDialog({
             <input
               accept="image/jpeg,image/png,image/webp"
               className="sr-only"
-              disabled={Boolean(scanLog)}
+              disabled={Boolean(scanLog) || isRegistering}
               id="business-card-image"
               onChange={(event) => onFileChange(event.target.files?.[0] ?? null)}
               type="file"
             />
+            {isRegistering ? (
+              <div className="absolute inset-0 grid place-items-center bg-white/82 px-8 backdrop-blur-[2px]">
+                <div className="grid w-full max-w-[320px] gap-3 text-center">
+                  <div className="mx-auto grid h-10 w-10 place-items-center rounded-full bg-[#EFF6FF]">
+                    <Loader2 className="h-5 w-5 animate-spin text-[#4880EE]" />
+                  </div>
+                  <div>
+                    <p className="text-[14px] font-semibold text-[#111827]">
+                      명함등록 중
+                    </p>
+                    <p className="mt-1 text-[12px] text-[#6B7280]">
+                      잠시만 기다려주세요
+                    </p>
+                  </div>
+                  <div className="h-2 overflow-hidden rounded-full bg-[#E5E7EB]">
+                    <div
+                      className="h-full rounded-full bg-[#4880EE] transition-[width] duration-500 ease-out"
+                      style={{ width: `${registrationProgress}%` }}
+                    />
+                  </div>
+                </div>
+              </div>
+            ) : null}
           </label>
 
           {selectedFile ? (
@@ -510,7 +873,7 @@ function BusinessCardRegisterDialog({
               <span className="min-w-0 truncate text-[#4B5563]">
                 {selectedFile.name}
               </span>
-              {!scanLog ? (
+              {!scanLog && !isRegistering ? (
                 <button
                   aria-label="선택한 파일 지우기"
                   className="grid h-7 w-7 shrink-0 place-items-center rounded-md text-[#9CA3AF] hover:bg-[#F3F4F6]"
@@ -688,7 +1051,7 @@ function ScanLogMobileRow({
       type="button"
     >
       <div className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-[#EEF4FF]">
-        <IdCard className="h-4 w-4 text-[#4880EE]" />
+        <Camera className="h-4 w-4 text-[#4880EE]" />
       </div>
       <div className="min-w-0 flex-1">
         <div className="flex min-w-0 items-center gap-2">
