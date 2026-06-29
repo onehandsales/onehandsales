@@ -47,7 +47,7 @@ Health check:
 curl http://localhost:3000/api/health
 ```
 
-현재 Backend는 Auth/User, Company, Contact, Product, Deal, Schedule, MeetingNote, Search 모듈을 구현한다. Admin API는 현재 `GET /admin/api/me`만 구현되어 있다.
+현재 Backend는 Auth/User, Company, Contact, Product, Deal, Schedule, MeetingNote, Search, Trash 모듈을 구현한다. Company/Contact/Product/Deal은 각 도메인별 xlsx export API를 제공한다. Admin API는 현재 `GET /admin/api/me`만 구현되어 있으며 관리자 페이지와 운영 조회 API는 후속 단계에서 만든다.
 
 ### 2. User Web
 
@@ -73,7 +73,7 @@ pnpm run dev
 
 Admin Web URL: `http://localhost:5174`
 
-Admin Web은 현재 local mock admin/user token으로 `/admin/api/me` 보호 라우트를 검증한다. 대시보드, 사용자/도메인 목록, 감사 로그 화면은 Backend Admin query API가 구현되기 전까지 mock/placeholder 경계를 명확히 둔다.
+Admin Web은 현재 local mock admin/user token으로 `/admin/api/me` 보호 라우트를 검증한다. 대시보드, 사용자/도메인 목록, 감사 로그 화면은 관리자 페이지와 Backend Admin query API를 후속 구현하기 전까지 mock/placeholder 경계를 명확히 둔다.
 
 ## Verification
 

@@ -1,4 +1,6 @@
-아래는 2026-06-25 현재 BE 구현 기준 API별 한 줄 설명입니다.
+아래는 2026-06-29 현재 BE 구현 기준 API별 한 줄 설명입니다.
+
+Export는 범용 `/api/exports` job이 아니라 Company/Contact/Product/Deal 각 도메인의 xlsx 다운로드 API로 처리합니다.
 
 **User / Auth**
 | API | 설명 |
@@ -21,6 +23,7 @@
 | `GET /api/companies/{companyId}` | 회사 단건 상세 정보를 조회합니다. |
 | `POST /api/companies` | 새 회사를 생성하고 선택적으로 초기 메모를 남깁니다. |
 | `PATCH /api/companies/{companyId}` | 회사명, 분야, 지역 정보를 수정합니다. |
+| `DELETE /api/companies/{companyId}` | 회사를 휴지통 상태로 전환합니다. |
 | `GET /api/companies/{companyId}/contacts` | 특정 회사에 연결된 연락처 목록을 조회합니다. |
 | `GET /api/companies/{companyId}/deals` | 특정 회사에 연결된 거래 목록을 조회합니다. |
 | `POST /api/companies/{companyId}/memo-logs` | 회사 공개 메모 로그를 생성합니다. |
@@ -47,6 +50,7 @@
 | `GET /api/contacts/{contactId}` | 연락처 단건 상세 정보를 조회합니다. |
 | `POST /api/contacts` | 새 연락처를 생성하고 선택적으로 초기 메모를 남깁니다. |
 | `PATCH /api/contacts/{contactId}` | 연락처 기본 정보와 소속 정보를 수정합니다. |
+| `DELETE /api/contacts/{contactId}` | 연락처를 휴지통 상태로 전환합니다. |
 | `GET /api/contacts/{contactId}/deals` | 특정 연락처에 연결된 거래 목록을 조회합니다. |
 | `POST /api/contacts/{contactId}/memo-logs` | 연락처 공개 메모 로그를 생성합니다. |
 | `GET /api/contacts/{contactId}/memo-logs` | 연락처 공개 메모 로그를 cursor 방식으로 조회합니다. |
@@ -71,6 +75,7 @@
 | `GET /api/products/{productId}` | 제품 단건 상세 정보를 조회합니다. |
 | `POST /api/products` | 새 제품을 생성하고 선택적으로 초기 메모를 남깁니다. |
 | `PATCH /api/products/{productId}` | 제품명, 가격, 카테고리, 상태를 수정합니다. |
+| `DELETE /api/products/{productId}` | 제품을 휴지통 상태로 전환합니다. |
 | `GET /api/products/{productId}/deals` | 특정 제품에 연결된 거래 목록을 조회합니다. |
 | `POST /api/products/{productId}/memo-logs` | 제품 공개 메모 로그를 생성합니다. |
 | `GET /api/products/{productId}/memo-logs` | 제품 공개 메모 로그를 cursor 방식으로 조회합니다. |
@@ -96,6 +101,7 @@
 | `GET /api/deals/{dealId}` | 거래 단건 상세 정보를 조회합니다. |
 | `POST /api/deals` | 새 거래를 생성하고 제품 및 첫 다음 행동을 함께 연결합니다. |
 | `PATCH /api/deals/{dealId}` | 거래 기본 정보, 상태, 제품 연결을 수정합니다. |
+| `DELETE /api/deals/{dealId}` | 거래를 휴지통 상태로 전환합니다. |
 | `GET /api/deals/company-options` | 거래 생성/수정에 사용할 회사 옵션을 조회합니다. |
 | `GET /api/deals/contact-options` | 거래 생성/수정에 사용할 연락처 옵션을 조회합니다. |
 | `GET /api/deals/product-options` | 거래 생성/수정에 사용할 제품 옵션을 조회합니다. |
@@ -133,12 +139,21 @@ Deal relation payload:
 | `POST /api/meeting-notes/ai-draft` | 분리된 AI provider로 사용자가 선택한 회의 맥락과 텍스트 원문 기반 회의록 초안을 생성합니다. |
 | `POST /api/meeting-notes/stt-draft` | 분리된 STT provider로 transcript를 만든 뒤 AI provider로 회의록 초안을 생성합니다. |
 | `POST /api/meeting-notes` | 수동 또는 AI/STT 초안 기반 회의록을 생성하고 회사, 연락처, 제품, 거래 스냅샷을 저장합니다. |
+| `POST /api/meeting-notes/{meetingNoteId}/deals` | 저장된 회의록에 거래를 추가 연결하고 연결된 거래의 다음 행동 로그를 생성합니다. |
 | `PATCH /api/meeting-notes/{meetingNoteId}` | 회의록 본문과 연결 스냅샷 정보를 수정합니다. |
+| `DELETE /api/meeting-notes/{meetingNoteId}` | 회의록을 휴지통 상태로 전환합니다. |
 
 **Search**
 | API | 설명 |
 |---|---|
 | `GET /api/search` | 회사, 담당자, 제품, 거래, 일정, 회의록을 한 번에 검색하고 상세 화면 이동에 필요한 target 정보를 반환합니다. |
+
+**Trash**
+| API | 설명 |
+|---|---|
+| `GET /api/trash` | 휴지통에 있는 회사, 담당자, 제품, 거래, 회의록, 지원 로그 목록을 조회합니다. |
+| `GET /api/trash/{targetType}/{targetId}` | 휴지통 항목의 상세 미리보기 정보를 조회합니다. |
+| `POST /api/trash/{targetType}/{targetId}/restore` | 7일 복구 기간 안의 휴지통 항목을 복구합니다. |
 
 **기타**
 | API | 설명 |

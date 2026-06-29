@@ -54,8 +54,11 @@ Admin API는 AuthGuard와 AdminGuard를 모두 통과해야 한다. User API는 
 - `ScheduleModule`
 - `MeetingNoteModule`
 - `SearchModule`
+- `TrashModule`
 
-Admin API는 현재 `GET /admin/api/me`만 구현되어 있다. Admin Web이 호출하는 대시보드, 사용자 목록, 회사/담당자/제품/딜 조회, 감사 로그, 민감 원문 조회 API는 아직 Backend에 없다.
+Admin API는 현재 `GET /admin/api/me`만 구현되어 있다. 관리자 페이지와 Admin Web이 호출하는 대시보드, 사용자 목록, 회사/담당자/제품/딜 조회, 감사 로그, 민감 원문 조회 API는 후속 범위다.
+
+Company/Contact/Product/Deal xlsx export는 각 도메인 모듈 안에서 처리한다. 범용 `ExportJob` Backend 모듈은 현재 제품 방향에서 사용하지 않는다.
 
 ## 4. 계층 구조
 

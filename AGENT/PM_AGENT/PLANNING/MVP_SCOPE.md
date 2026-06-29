@@ -7,7 +7,7 @@
 
 ## 현재 BE/TODO 구현 상태
 
-기준일: 2026-06-26
+기준일: 2026-06-29
 
 - Backend 구현 완료: Auth/User, Company, Contact, Product, Deal, Schedule, MeetingNote 수동 기본 도메인, Search, Trash, MeetingNote AI/STT draft API와 `TODO/DONE/ADDITIONAL_WORK_PLAN` G01-G12.
 - Auth/User: `/api/auth/providers`, `/api/auth/exchange`, `/api/auth/refresh`, `/api/auth/logout`, `/api/me`, `/admin/api/me`, `/api/users/me/profile`, `/api/users/me/devices`.
@@ -19,8 +19,9 @@
 - MeetingNote: 수동 회의록 목록/상세/생성/수정/삭제, 회사/담당자 필터, 회사/담당자/제품/딜 N:N snapshot 연결, 텍스트 AI 초안 생성, STT+AI 초안 생성, 저장 후 딜 추가 연동과 딜 활동 로그 생성, 휴지통 복구.
 - Search: 회사/담당자/제품/딜/일정/회의록 통합검색 API.
 - Trash: 회사/담당자/제품/딜/회의록 본문 데이터와 지원 로그의 휴지통 목록, 상세 모달 조회, 7일 이내 복구 API.
-- 현재 Backend 미구현: BusinessCard OCR, 범용 Import/Export job, Notification, Admin 운영 조회/감사/민감 원문 API, MeetingNote Admin, 범용 DealActivity table, 7일 이후 유료 복구 API.
-- Admin Backend는 현재 `/admin/api/me`만 구현되어 있다.
+- 현재 Backend 미구현 또는 후속 범위: BusinessCard OCR, 범용 Import job, Notification, Admin 운영 조회/감사/민감 원문 API, MeetingNote Admin, 범용 DealActivity table, 7일 이후 유료 복구 API.
+- 범용 Export job은 현재 제품 방향에서 사용하지 않는다. Export는 Company/Contact/Product/Deal 각 목록 화면의 xlsx 다운로드 API로 처리한다.
+- Admin Backend는 현재 `/admin/api/me`만 구현되어 있으며, 관리자 페이지와 운영 조회 API는 후속 단계에서 만든다.
 - User Web은 `/` 홈 대시보드, Company, Contact, Product, Deal, Schedule, MeetingNote 수동 화면, MeetingNote AI/STT draft UI, 저장 후 딜 연동, Search GlobalSearch, Trash 목록/상세/복구의 실제 API 연동이 완료되어 있다. 나머지 미구현 Backend 도메인은 실제 API 연동 전까지 mock/placeholder 경계를 명확히 해야 한다.
 
 ## 1. 개발 우선순위
@@ -29,11 +30,10 @@
 2. Additional Work G01-G12 Frontend 반영: `dealCount`, 연결 Deal 목록, 연결 Contact 목록, xlsx export
 3. 인증 연동과 사용자 설정 화면
 4. BusinessCard OCR
-5. 범용 Import/Export, Notification
-6. MeetingNote Admin
-7. 7일 이후 유료 복구 정책과 API
-8. 범용 DealActivity table
-9. Admin 운영 조회/감사/민감 원문 API 보강
+5. 범용 Import job, Notification
+6. 7일 이후 유료 복구 정책과 API
+7. 범용 DealActivity table
+8. Admin 페이지와 운영 조회/감사/민감 원문 API
 
 ## 2. 인증
 
@@ -206,7 +206,7 @@
 - 일정 CRUD
 - 딜 N:M 연결
 - 월간 일정 화면
-- 주간 일정 화면
+- `/schedules/week` route는 현재 `/schedules`로 redirect하며, 별도 주간 보고서 화면은 후속 범위
 - 사용자 timezone 기준 local date-time 변환
 
 ### 후속 MVP 포함
@@ -273,9 +273,17 @@
 
 ## 10. Import / Export
 
-현재 범용 Import/Export job Backend는 미구현이다. 다만 Company, Contact, Product, Deal의 도메인별 xlsx export는 구현되어 있다.
+현재 범용 Import job Backend는 미구현이다. Export는 범용 job으로 만들지 않고 Company, Contact, Product, Deal 각 도메인 목록에서 xlsx 다운로드로 처리한다.
 
-### Import 포함
+### 현재 구현된 도메인별 Export
+
+- 회사: `GET /api/companies/export/xlsx`, 정본 액션명 `회사 엑셀 다운로드`
+- 담당자: `GET /api/contacts/export/xlsx`, 정본 액션명 `담당자 엑셀 다운로드`
+- 제품: `GET /api/products/export/xlsx`, 정본 액션명 `제품 엑셀 다운로드`
+- 딜: `GET /api/deals/export/xlsx`, 정본 액션명 `딜 엑셀 다운로드`
+- export 요청은 현재 목록의 검색어/필터/정렬을 반영하고 `page`는 제외한다.
+
+### 후속 Import 후보
 
 - 회사
 - 담당자
@@ -285,28 +293,19 @@
 - AI 컬럼 자동 매핑
 - 사용자 확인/수정 후 확정
 
-### Export 포함
+### 제외 또는 후속
 
-- 회사
-- 담당자
-- 제품
-- 딜
-- 일정
-- 회의록
-- PDF
-- Excel
-
-### 민감 데이터 정책
-
-- 기본 제외
-- 사용자가 명시적으로 포함 선택 가능
-- 포함 시 경고 표시
+- `/api/exports` 기반 범용 Export job
+- `ExportJob` table
+- 일정/회의록 export
+- 주간 일정 보고서 PDF/Excel
+- 민감 데이터 포함 선택 export
 
 ## 11. Admin
 
-현재 Backend Admin API는 `GET /admin/api/me`만 구현되어 있다. Admin Web의 대시보드/목록/감사/민감 원문 조회 화면은 Backend 운영 조회 API가 구현되기 전까지 실제 데이터 연동 상태가 아니다.
+관리자 페이지는 후속 단계에서 만든다. 현재 Backend Admin API는 `GET /admin/api/me`만 구현되어 있으며, Admin Web은 login/protected route/mock token 검증과 admin-query placeholder route/component를 갖고 있다. Admin Web의 대시보드/목록/감사/민감 원문 조회 화면은 Backend 운영 조회 API가 구현되기 전까지 실제 데이터 연동 상태가 아니다.
 
-### MVP 포함
+### 후속 포함
 
 - 사용자 목록/상세
 - 전체 딜 조회
@@ -317,7 +316,7 @@
 - 민감 데이터 기본 마스킹
 - 민감 원문 조회 시 사유 입력 + 감사 로그
 
-### 이후
+### 후속 운영 기능
 
 - 계좌이체 입금 확인
 - 유료 상태/권한 관리

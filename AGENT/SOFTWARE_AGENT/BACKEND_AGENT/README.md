@@ -79,11 +79,13 @@ Current additional backend scope:
 ## 7. 현재 주요 미구현 Backend 범위
 
 - BusinessCard OCR
-- generic Import/Export job
+- generic Import job
 - Notification
-- Admin 운영 조회/감사/민감 원문 API
-- MeetingNote 삭제/복구/Admin API
+- Admin 페이지와 운영 조회/감사/민감 원문 API
+- MeetingNote Admin API
 - 범용 DealActivity table
+
+범용 ExportJob은 현재 제품 방향에서 사용하지 않는다. Company/Contact/Product/Deal xlsx export는 각 도메인 Backend 모듈 안에서 구현되어 있다.
 
 ## 8. 관련 문서
 

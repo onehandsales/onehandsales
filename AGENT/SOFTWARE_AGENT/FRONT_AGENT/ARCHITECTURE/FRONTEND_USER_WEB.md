@@ -60,6 +60,8 @@
 - `/more`
 
 `/meeting-notes/new`는 현재 `/meeting-notes?create=1` 흐름으로 redirect한다.
+`/schedules/week`는 현재 `/schedules`로 redirect한다. 별도 주간 보고서 화면은 후속 범위다.
+`/export` route와 `import-export` feature는 남아 있지만, 현재 Export 정본 흐름은 회사/담당자/제품/딜 각 목록 화면의 엑셀 다운로드다.
 
 ## 4. 현재 Feature 폴더
 
@@ -96,6 +98,16 @@
 - 삭제 UX: 회사/담당자/제품/딜 본문과 로그 삭제는 빨간 휴지통 아이콘 클릭 후 중앙 확인 모달을 열고, 성공 시 중앙 성공 모달로 `삭제가 완료되었습니다.`와 7일 복구 안내를 보여준다.
 - Trash: `/trash` 화면에서 `GET /api/trash` 목록, `GET /api/trash/:targetType/:targetId` 상세 모달, `POST /api/trash/:targetType/:targetId/restore` 복구를 연동한다. 목록 row 클릭으로 상세 모달을 열고, 복구는 모달 내부 버튼에서만 수행한다.
 
+도메인별 export 기준:
+
+- Company: `GET /api/companies/export/xlsx`, 정본 액션명 `회사 엑셀 다운로드`
+- Contact: `GET /api/contacts/export/xlsx`, 정본 액션명 `담당자 엑셀 다운로드`
+- Product: `GET /api/products/export/xlsx`, 정본 액션명 `제품 엑셀 다운로드`
+- Deal: `GET /api/deals/export/xlsx`, 정본 액션명 `딜 엑셀 다운로드`
+
+현재 FE 구현은 각 목록의 `Download` icon action이 공통 tooltip/aria-label `액셀 다운로드`를 사용한다. UI 문구를 정본 액션명과 정확히 맞출 필요가 있으면 FE 라벨 정렬 작업을 별도로 진행한다.
+- export 요청은 현재 목록 검색어/필터/정렬을 반영하고 `page`는 제외한다.
+
 Backend는 구현되었지만 Frontend 연결이 남은 항목:
 
 - 없음
@@ -103,7 +115,8 @@ Backend는 구현되었지만 Frontend 연결이 남은 항목:
 mock/placeholder 경계를 유지해야 하는 항목:
 
 - BusinessCard OCR
-- generic Import/Export job
+- generic Import job
+- `/api/exports` 기반 generic Export job. 현재 Export 정책은 도메인별 xlsx 다운로드이므로 신규 작업에서 generic Export 화면/API를 확장하지 않는다.
 - Notification
 
 ## 6. Search 구현 기준

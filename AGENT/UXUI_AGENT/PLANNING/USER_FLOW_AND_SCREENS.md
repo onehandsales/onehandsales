@@ -130,13 +130,13 @@
 | `/deals/new` | 딜 생성 | 포함 |
 | `/deals/:id` | 딜 상세 | 포함 |
 | `/schedules` | 일정 목록/캘린더 | 포함 |
-| `/schedules/week` | 주간 일정 보고서 | 포함 |
+| `/schedules/week` | 주간 일정 보고서 | 후속. 현재 `/schedules`로 redirect |
 | `/schedules/:scheduleId` | 일정 상세 | 포함 |
 | `/meeting-notes` | 회의록 목록 | 포함 |
 | `/meeting-notes/new` | 회의록 작성 | 포함 |
 | `/meeting-notes/:meetingNoteId` | 회의록 상세 | 포함 |
 | `/import` | Import 작업 | 보류 |
-| `/export` | Export 작업 | 보류 |
+| `/export` | 범용 Export 작업 | 보류. 현재 export는 각 도메인 목록의 엑셀 다운로드로 처리 |
 | `/settings` | 설정 | 포함 |
 | `/more` | 더보기 | 포함 |
 | `/business-cards` | 명함 OCR | 보류 |
@@ -149,18 +149,18 @@
 | 경로 | 화면 | MVP |
 |---|---|---|
 | `/login` | Admin 로그인 | 포함 |
-| `/` | Admin 대시보드 | 포함 |
-| `/users` | 사용자 목록 | 포함 |
-| `/users/:id` | 사용자 상세 | 포함 |
-| `/users/:id/deals` | 사용자별 딜 | 포함 |
-| `/users/:id/companies` | 사용자별 회사 | 포함 |
-| `/users/:id/contacts` | 사용자별 담당자 | 포함 |
-| `/users/:id/products` | 사용자별 제품 | 포함 |
-| `/deals` | 전체 딜 | 포함 |
-| `/companies` | 전체 회사 | 포함 |
-| `/contacts` | 전체 담당자 | 포함 |
-| `/products` | 전체 제품 | 포함 |
-| `/audit-logs` | 감사 로그 | 포함 |
+| `/` | Admin 대시보드 | 후속 |
+| `/users` | 사용자 목록 | 후속 |
+| `/users/:id` | 사용자 상세 | 후속 |
+| `/users/:id/deals` | 사용자별 딜 | 후속 |
+| `/users/:id/companies` | 사용자별 회사 | 후속 |
+| `/users/:id/contacts` | 사용자별 담당자 | 후속 |
+| `/users/:id/products` | 사용자별 제품 | 후속 |
+| `/deals` | 전체 딜 | 후속 |
+| `/companies` | 전체 회사 | 후속 |
+| `/contacts` | 전체 담당자 | 후속 |
+| `/products` | 전체 제품 | 후속 |
+| `/audit-logs` | 감사 로그 | 후속 |
 | `/payments/manual` | 계좌이체 확인 | 이후 |
 
 ## 4. 현재 코드 라우트 상태
@@ -185,7 +185,7 @@
 - `/deals/new`
 - `/deals/:dealId`
 - `/schedules`
-- `/schedules/week`
+- `/schedules/week` (현재 `/schedules`로 redirect)
 - `/schedules/:scheduleId`
 - `/meeting-notes`
 - `/meeting-notes/new`
@@ -210,14 +210,17 @@ pen 디자인 반영 완료/정리 도메인 (2026-06-25 기준):
 - 상단 통합검색 — Backend `GET /api/search`와 User Web GlobalSearch 연결 완료
 
 현재 의도적으로 보류된 화면:
-- `/import`, `/trash` — 라우트와 feature는 남아 있지만 사이드바에서는 숨김 처리
+- `/import` — 라우트와 feature는 남아 있지만 Backend 범용 Import job이 없어 실제 API 연동 완료 상태가 아니다.
+- `/export` — 라우트와 feature는 남아 있지만 현재 export 정본 흐름이 아니다. 회사/담당자/제품/딜 목록의 엑셀 다운로드를 사용한다.
+- `/business-cards`, `/notifications` — FE feature/page는 있으나 Backend 모듈이 없어 후속 범위다.
 - MeetingNote AI/STT draft UI — 작성 화면의 기본 흐름은 직접 작성 저장이며, AI/STT는 선택 보조 액션으로 연결되어 있다.
 
 pen 디자인 반영 대기 도메인:
 - `/products/:productId`
 - `/schedules`, `/schedules/week`
 - `/notifications`
-- `/import`, `/export`
+- `/import`
+- `/export`
 - `/business-cards`
 - `/contacts/:contactId` (부분 반영)
 - `/companies/:companyId` (부분 반영)
@@ -241,9 +244,9 @@ pen 디자인 반영 대기 도메인:
 - 기획 목록의 `/imports`, `/exports`는 현재 코드에서 `/import`, `/export`로 구현되어 있다.
 - 기획 목록의 `/search` 전용 라우트는 현재 User Web router에 없다. 통합검색 흐름은 상단 UI에서 `GET /api/search`를 호출하고 결과 선택 시 상세 화면으로 이동하는 방식으로 구현되어 있다.
 - 현재 `/`는 딜 파이프라인이 아니라 홈 대시보드다. 딜 파이프라인은 `/deals`에서 운영한다.
-- Import는 핵심 기능 UX 안정화 전까지 navigation에서 숨김 처리한다. 휴지통은 관리 섹션에 노출하고, 목록 row 클릭으로 상세/복구 모달을 제공한다.
+- Import와 범용 Export는 핵심 기능 UX 안정화 전까지 navigation에서 숨김 처리한다. 휴지통은 관리 섹션에 노출하고, 목록 row 클릭으로 상세/복구 모달을 제공한다.
 - 기획 목록의 Admin 상세 데이터 라우트와 전체 딜/회사/담당자/제품 라우트는 현재 Admin Web router에 없다.
-- Backend에는 현재 Admin Web 운영 조회 API가 `GET /admin/api/me` 외에는 구현되어 있지 않다.
+- Backend에는 현재 Admin Web 운영 조회 API가 `GET /admin/api/me` 외에는 구현되어 있지 않다. 관리자 페이지는 후속 단계에서 만든다.
 
 라우트명을 변경하거나 신규 화면을 추가할 때는 이 문서와 `AGENT/SOFTWARE_AGENT/FRONT_AGENT/ARCHITECTURE/FRONTEND_USER_WEB.md`, `AGENT/SOFTWARE_AGENT/FRONT_AGENT/ARCHITECTURE/ADMIN_WEB.md`를 함께 갱신한다.
 

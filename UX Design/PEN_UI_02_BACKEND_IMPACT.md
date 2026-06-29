@@ -75,8 +75,9 @@
 | Schedule | 일정 관리/캘린더 | schedule, deal | 중간 | 포함/구현 |
 | Meeting Note | 수동 회의록 관리 | meeting-note, company, contact, product, deal | 낮음/중간 | 포함/구현 |
 | Business Card Scan | 명함 OCR/확정 | business-card, company, contact | 낮음/중간 | FE만 존재/BE 없음 |
-| Import / Export | 데이터 이동 | import-export | 낮음/중간 | FE만 존재/BE 없음. 도메인별 xlsx export는 구현 |
-| Trash | 삭제 자원 복구 | trash | 낮음 | FE만 존재/BE 없음 |
+| Import | 데이터 이동 | import-export | 낮음/중간 | FE만 존재/BE 없음 |
+| Export | 데이터 이동 | company, contact, product, deal | 낮음 | 도메인별 xlsx export 구현. 범용 ExportJob은 비정본 |
+| Trash | 삭제 자원 복구 | trash | 낮음 | 포함/구현 |
 | Global Search | 통합검색 | search | 중간 | 포함/구현 |
 | Notification / More | 보조 기능 | notification, user | 낮음 | FE만 존재/BE 없음 |
 
@@ -238,18 +239,18 @@
 
 필요한 읽기 API:
 - import job detail
-- export job detail
-- export download
+- 범용 export job detail은 현재 비정본
+- 도메인별 export download는 Company/Contact/Product/Deal API로 구현
 
 필요한 쓰기 API:
 - import 생성
 - mapping 생성
 - mapping 수정
 - import confirm
-- export 생성
+- 범용 export 생성은 현재 비정본
 
 메모:
-- job 기반 UI로 가는지 즉시 완료 UX인지 확인 필요
+- Import는 job 기반 UX 검토가 필요하다. Export는 도메인별 xlsx 즉시 다운로드가 정본이다.
 
 ---
 
@@ -376,9 +377,9 @@ pen 기준:
 
 ### Delete / Restore
 
-- 현재 core domain API에서 삭제/복구는 공통 기준이 아니다.
+- Company/Contact/Product/Deal/MeetingNote는 soft delete와 Trash 복구 기준을 사용한다.
 - Schedule은 soft delete 없이 삭제한다.
-- Trash, restore, permanent delete, `deletedAt`, `permanentDeleteAt` 기준은 후속 backend scope에서 별도로 확정한다.
+- Permanent delete와 7일 이후 유료 복구는 후속 backend scope에서 별도로 확정한다.
 
 ### Error
 
@@ -415,10 +416,10 @@ pen 기준:
 
 ### Import / Export
 
-- job 상태 전이
+- Import job 상태 전이
 - mapping 필수 여부
 - confirm 전 검증 규칙
-- download 준비 상태 규칙
+- 범용 ExportJob download 준비 상태 규칙은 현재 비정본
 
 ### Business Card
 
@@ -441,8 +442,8 @@ pen 기준:
 
 - Meeting Note
 - Business Card
-- Import / Export
-- Trash
+- Import
+- 범용 ExportJob
 - Notification 고도화
 - Search 고도화
 

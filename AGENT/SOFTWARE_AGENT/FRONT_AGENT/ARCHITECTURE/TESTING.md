@@ -2,7 +2,7 @@
 
 ## 1. 목적
 
-MVP Frontend 테스트 자동화는 두 앱을 모두 포함한다.
+MVP Frontend 테스트 자동화는 User Web 핵심 업무 흐름을 우선한다. Admin Web은 관리자 페이지 본 구현 전까지 권한 확인 smoke 범위로만 유지한다.
 
 - `FE/user-web`
 - `FE/admin-web`
@@ -20,20 +20,28 @@ User Web E2E는 개인 영업자의 핵심 workflow를 우선한다.
 - contact CRUD
 - product CRUD
 - deal create/update/stage change
-- deal activity log
+- deal following action and memo log
 - schedule CRUD and entity connection
 - meeting note save and deal connection
+- company/contact/product/deal domain xlsx download smoke
+- trash/restore smoke flow
+
+후속 자동화 범위:
+
 - business card OCR upload flow with mocked AI/OCR result
 - Excel/CSV import flow with mocked AI column mapping
-- trash/restore smoke flow
+- generic ExportJob flow is not part of the current product direction
 
 ## 3. Admin Web E2E Scope
 
-Admin Web E2E는 운영 안전성과 전체 데이터 조회 흐름을 우선한다.
+Admin Web E2E는 현재 login, role guard, `/admin/api/me` 기반 보호 라우트 검증만 우선한다. 운영 안전성과 전체 데이터 조회 흐름은 관리자 페이지 본 구현 후 추가한다.
 
-우선순위:
+현재 우선순위:
 
 - admin login and role guard
+
+후속 우선순위:
+
 - user list and user detail
 - global company/contact/product/deal lists
 - per-user company/contact/product/deal view
@@ -62,9 +70,10 @@ CI가 도입되면 다음 위치에서 테스트를 실행한다.
 
 CI timing:
 
-- Pull request: User Web/Admin Web smoke E2E
-- After merge to `main`: User Web/Admin Web full E2E
-- Before deployment: User Web/Admin Web full E2E
+- Pull request: User Web smoke E2E and Admin auth smoke E2E
+- After merge to `main`: User Web full E2E
+- Before deployment: User Web full E2E
+- Admin full E2E is added after Admin pages and Backend operation query APIs are implemented.
 
 ## 6. 관련 문서
 

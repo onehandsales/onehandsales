@@ -33,7 +33,7 @@
 - `/` 홈은 실제 대시보드 화면으로 구현되어 있다.
 - 딜 파이프라인은 `/deals`에서 운영한다.
 - User Web 핵심 도메인은 Auth/User, Home, Company, Contact, Product, Deal, Schedule, MeetingNote, Search까지 실제 Backend API와 연결되어 있다.
-- BusinessCard OCR, 범용 Import/Export, Notification, Trash, Admin 운영 조회 API는 Backend 미구현 상태다.
+- BusinessCard OCR, 범용 Import, Notification, Admin 운영 조회 API는 Backend 미구현 상태다. Trash와 Company/Contact/Product/Deal 도메인별 xlsx export는 현재 구현 완료 상태이며, 범용 ExportJob은 정본 흐름이 아니다.
 - 회사/담당자/제품 생성 모달은 딜 추가 모달처럼 검색 입력형 선택과 결과 없음 즉시 추가를 사용한다.
 - MeetingNote AI/STT 초안 endpoint와 User Web draft UI 연결은 구현 완료 상태다.
 - 실제 구현 판단은 `BE/src/modules`, `BE/prisma/schema.prisma`, `FE/user-web/src/app/router/router.tsx`, `FE/user-web/src/features`를 우선한다.
@@ -89,7 +89,7 @@ pen 구조:
 
 후속:
 - 새 도메인 화면은 현재 shell/navigation 문법을 재사용한다.
-- Import/Trash처럼 숨김 처리된 라우트를 다시 노출할 때는 navigation 문서와 함께 갱신한다.
+- Import처럼 숨김 처리된 라우트를 다시 노출할 때는 navigation 문서와 함께 갱신한다. Trash는 현재 navigation에 노출되는 구현 완료 화면이다.
 
 ### 3. MVP 범위
 
@@ -105,7 +105,7 @@ pen 구조:
 
 이유:
 - pen 범위가 넓기 때문에 완료된 핵심 도메인과 Backend 미구현 도메인을 분리해야 한다.
-- Admin/BusinessCard/Import/Notification/Trash/Search를 핵심 도메인 유지보수와 섞으면 작업 범위가 급격히 커진다.
+- Admin/BusinessCard/Import/Notification을 핵심 도메인 유지보수와 섞으면 작업 범위가 급격히 커진다. Search와 Trash는 현재 구현 완료 기준으로 유지보수한다.
 
 ### 4. 토큰 관리 방식
 
@@ -244,7 +244,7 @@ pen 구조:
 - shell은 병행 추가 후 교체
 - stage는 FE/BE 6단계 계약 유지
 - aggregate는 실제 호출량 확인 후 결정
-- 일정/회의록/Import/Export는 후속 단계로 분리
+- Import와 범용 ExportJob은 후속/비정본 흐름으로 분리. 일정/회의록과 도메인별 xlsx export는 현재 구현 기준을 따른다.
 
 ---
 
@@ -279,7 +279,7 @@ pen 구조:
 
 - stage metadata endpoint 필요 여부
 - Admin 운영 조회 API 범위
-- BusinessCard/Import-Export/Notification/Trash Backend 구현 범위
+- BusinessCard/Import/Notification Backend 구현 범위. Trash는 구현 완료, 범용 ExportJob은 비정본.
 - Search 고도화 범위
 
 이미 결정/처리된 것:

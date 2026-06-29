@@ -277,7 +277,8 @@ Primary navigation should make these areas easy to reach:
 
 Current visibility rule:
 
-- `Import` routes/features may remain in code, but they are hidden from the main sidebar until core domain UX is stable.
+- `Import` and generic `Export` routes/features may remain in code, but they are hidden from the main sidebar until core domain UX is stable.
+- Export for the current product is handled by domain-level actions. Canonical action names are `회사 엑셀 다운로드`, `담당자 엑셀 다운로드`, `제품 엑셀 다운로드`, `딜 엑셀 다운로드`.
 - `휴지통` is exposed in the management section because delete and restore are now active user workflows. It should use a full-width list layout, row-click detail modal, and modal-only restore action.
 - Do not surface deferred features in primary navigation just because a route exists.
 
@@ -669,7 +670,7 @@ Alerts should not overwhelm the user. Show urgent items clearly, but keep normal
 
 ## 18. Admin UI Direction
 
-Admin Web uses the same trust-oriented blue/gray system, but with higher information density than User Web.
+Admin Web is a later-stage operations surface. When it is implemented, it should use the same trust-oriented blue/gray system, but with higher information density than User Web.
 
 Admin UI principles:
 

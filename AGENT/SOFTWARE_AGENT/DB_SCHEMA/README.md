@@ -100,7 +100,8 @@ MeetingNote AI/STT draft는 현재 DB table을 추가하지 않는다. `POST /ap
 - Admin 감사/조회 도메인 table
 - MeetingNote AI/STT transcript/raw text/provider call log table
 - BusinessCard OCR 결과 table
-- generic Import/Export job table
+- generic Import job table
+- generic ExportJob table은 현재 범용 export를 쓰지 않는 정책으로 제외한다. Company/Contact/Product/Deal export는 각 도메인 API가 xlsx 파일을 직접 생성한다.
 - Notification table
 
 ## 6. 관리 규칙

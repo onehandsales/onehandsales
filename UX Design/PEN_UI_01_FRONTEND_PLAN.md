@@ -50,7 +50,7 @@
 
 - 구현됨: Auth/User, Company, Contact, Product, Deal, Schedule, MeetingNote 수동/AI/STT/딜 연동 도메인.
 - Admin API는 `GET /admin/api/me`만 구현되어 있다.
-- 없음: BusinessCard OCR, 범용 Import/Export job, Notification, Trash, Admin 운영 조회/감사/민감 원문 API.
+- 없음/후속: BusinessCard OCR, 범용 Import job, Notification, Admin 운영 조회/감사/민감 원문 API. Trash와 Company/Contact/Product/Deal 도메인별 xlsx export는 현재 구현 완료 상태이며, 범용 ExportJob은 정본 흐름이 아니다.
 - 구현됨: Search 통합검색 API와 User Web GlobalSearch.
 
 ---
@@ -461,4 +461,4 @@ pen 단계: 위와 동일 (완전 일치 달성).
 2. 목록 컨트롤 select/button 공통화 범위 결정
 3. 생성 모달 입력 검색형 inline create의 실제 세션 smoke 확인
 4. Admin 운영 조회 API 또는 Admin Web placeholder 경계 결정
-5. BusinessCard/Import-Export/Notification/Trash Backend 계획 수립
+5. BusinessCard/Import/Notification Backend 계획 수립. 범용 ExportJob은 비정본이며 Trash는 구현 완료 기준으로 유지보수한다.

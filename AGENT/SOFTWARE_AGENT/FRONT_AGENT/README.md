@@ -52,17 +52,17 @@ FRONT_AGENT/
 
 ## 6. 현재 구현 스냅샷
 
-Snapshot date: 2026-06-25
+Snapshot date: 2026-06-29
 
 User Web:
 
-- 실제 API 연동 완료: Auth/User, Home, Company, Contact, Product, Deal, Schedule, MeetingNote manual CRUD, MeetingNote AI/STT draft, MeetingNote deal link, Search, Trash.
-- mock/placeholder 경계: BusinessCard OCR, generic Import/Export, Notification.
+- 실제 API 연동 완료: Auth/User, Home, Company, Contact, Product, Deal, Schedule, MeetingNote manual CRUD, MeetingNote AI/STT draft, MeetingNote deal link, Search, Trash, Company/Contact/Product/Deal domain xlsx export.
+- mock/placeholder 경계: BusinessCard OCR, generic Import, generic Export route/API, Notification.
 
 Admin Web:
 
 - 실제 API 연동 완료: `GET /admin/api/me`.
-- Backend 후속 작업: Admin dashboard/users/domain query/audit/sensitive raw APIs.
+- Backend 후속 작업: Admin pages and Admin dashboard/users/domain query/audit/sensitive raw APIs.
 
 ## 7. 관련 문서
 

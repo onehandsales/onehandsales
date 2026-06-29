@@ -8,7 +8,7 @@
 
 ## 최종 업데이트
 
-- 날짜: 2026-06-22
+- 날짜: 2026-06-29
 - 기준:
   - Backend: `BE/src/modules`, `BE/prisma/schema.prisma`
   - User Web: `FE/user-web/src/features`, `FE/user-web/src/pages`
@@ -29,9 +29,10 @@
 | Schedule | 완료 | 완료 | `/schedules`, `/schedules/week` | 완료 |
 | MeetingNote | 완료 | 완료 | `/meeting-notes` | 완료 |
 | BusinessCard OCR | 현재 BE module 없음 | FE feature/page 존재 | `/business-cards`, `/contacts/scan` | BE 재검토 필요 |
-| Import/Export | 현재 BE module 없음. 도메인별 xlsx export는 Company/Contact/Product/Deal에 구현 | FE feature/page 존재 | `/import`, `/export` | 보류/숨김 |
+| Import | 현재 BE module 없음 | FE feature/page 존재 | `/import` | 보류/숨김 |
+| Export | Company/Contact/Product/Deal 도메인별 xlsx export 구현. 범용 ExportJob 없음 | 도메인별 다운로드 버튼 구현, 범용 `/export` page 존재 | `/companies`, `/contacts`, `/products`, `/deals`, `/export` | 도메인별 완료, 범용 화면 보류 |
 | Notification | 현재 BE module 없음 | FE feature/page 존재 | `/notifications` | BE 재검토 필요 |
-| Trash | 현재 BE module 없음 | FE feature/page 존재 | `/trash` | 보류/숨김 |
+| Trash | 완료 | 완료 | `/trash` | 완료 |
 | Search | 완료 | 완료 | GlobalSearch | 완료 |
 | Tag | 현재 BE module 없음 | FE feature 존재 | 없음 | 후속 계획 필요 |
 
@@ -55,7 +56,7 @@
 
 - `/` 홈은 실제 대시보드 화면이다. Schedule, Deal, Deal stage count, MeetingNote API를 조합해 오늘 일정, 진행 딜, 마감 임박, 최근 회의록, 빠른 실행, 최근 활동을 표시한다.
 - 딜 파이프라인은 `/deals`에서 운영한다.
-- 좌측 사이드바에서 `IMPORT`, `휴지통`은 후순위 기능으로 숨김 처리되어 있다.
+- 좌측 사이드바에서 `IMPORT`와 범용 `Export`는 후순위 기능으로 숨김 처리한다. `휴지통`은 실제 삭제/복구 흐름이 있으므로 관리 섹션에 노출한다.
 - 회사/담당자/제품/딜/회의록 목록 페이지네이션은 `hasNext`가 아니라 `totalPages`, `totalCount` 기준이다.
 - 회사/담당자/제품/딜/회의록 목록은 10개 단위 page-number pagination을 기준으로 한다.
 - `hasNext`는 회사/담당자/제품 상세의 메모 로그처럼 cursor/infinite loading 계약에서만 사용한다.
@@ -70,6 +71,8 @@
 - MeetingNote는 수동 회의록 흐름과 AI/STT draft UI가 User Web에 연결되어 있다. `POST /api/meeting-notes/ai-draft`, `POST /api/meeting-notes/stt-draft`는 작성 화면의 보조 액션으로 사용한다.
 - MeetingNote 작성 UX는 직접 작성 후 저장을 기본 흐름으로 유지한다. AI/STT는 같은 작성 화면에서 `AI로 정리`, `음성으로 작성`으로 field를 채우는 선택 보조 액션이며, 직접 저장 시 AI/STT API를 호출하지 않는다.
 - MeetingNote 상세 화면은 `영업 딜과 연동` 카드에서 딜 검색/선택 후 `POST /api/meeting-notes/:meetingNoteId/deals`를 호출한다. 성공 시 회의록 상세와 해당 딜 상세/활동 로그 cache를 갱신한다.
+- Company/Contact/Product/Deal 목록 export의 정본 액션명은 각각 `회사 엑셀 다운로드`, `담당자 엑셀 다운로드`, `제품 엑셀 다운로드`, `딜 엑셀 다운로드`다. 현재 FE icon action은 공통 tooltip/aria-label `액셀 다운로드`를 쓰며, API는 현재 검색/필터/정렬을 반영한 도메인별 xlsx export를 호출한다.
+- 범용 `/export` 화면과 `/api/exports` 계약은 현재 정본 흐름이 아니며, 신규 구현은 도메인별 xlsx export 기준을 따른다.
 - 회사/담당자/제품/딜/회의록 목록은 조밀한 `Controls Bar + Table Card + Pagination` 문법으로 정렬되어 있다.
 - 공용 `Pagination` 높이는 48px(`h-12`)이고, 딜/회사/담당자/회의록 미리보기 header와 목록 table header는 44px(`h-11`) 기준이다.
 - 회사 목록 정렬 select: `최신순`, `담당자 높은순`, `담당자 낮은순`, `딜 높은순`, `딜 낮은순`.

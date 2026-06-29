@@ -13,8 +13,9 @@
 - `TODO/DONE/PRODUCT_DOMAIN_PLAN` 문서는 작성되어 있다.
 - Product BE는 구현 완료 상태다.
 - `BE/src/modules/product` 모듈과 `BE/prisma/schema.prisma`의 Product 관련 모델이 현재 Backend 기준이다.
-- User Web 제품 페이지는 아직 구현되지 않았다.
+- User Web 제품 페이지는 구현 완료 상태다.
 - 제품 목록 xlsx 내보내기 API는 추가 유지보수 범위에서 구현 완료 상태다.
+- 제품 soft delete와 Trash 복구도 추가 유지보수 범위에서 구현 완료 상태다.
 
 ## 3. 확정 테이블
 
@@ -54,9 +55,7 @@
 다음 항목은 Product 기본 도메인 1차 구현 범위에서 제외한다.
 
 - 관리자 제품 관리 화면
-- 제품 휴지통
-- 제품 soft delete
-- 제품 삭제/복구/영구삭제 API
+- Product 기본 도메인 1차 구현 당시 제외했던 제품 휴지통, soft delete, 삭제/복구 API. 현재 soft delete와 7일 이내 Trash 복구는 추가 유지보수로 구현되어 있으며, 영구삭제 API는 제공하지 않는다.
 - 제품 카테고리 수정 API
 - 제품 상태 수정 API
 - `ProductConnection`
@@ -67,8 +66,8 @@
 - 제품 목록의 최근 수정일 표시
 - 제품 목록의 가격 표시
 - 딜 생성 중 제품 inline creation 연동
-- 범용 Import/Export/OCR 연동
-- ExportJob 기반 비동기 내보내기
+- 범용 Import/OCR 연동
+- ExportJob 기반 비동기 내보내기. 현재 제품 export는 `GET /api/products/export/xlsx` 도메인 API로 처리한다.
 
 ## 6. API 범위
 

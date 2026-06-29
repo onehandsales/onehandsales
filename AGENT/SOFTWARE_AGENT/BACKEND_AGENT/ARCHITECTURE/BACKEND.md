@@ -36,7 +36,7 @@ Canonical domain:
 
 ## 3. Current Implementation Snapshot
 
-Snapshot date: 2026-06-25
+Snapshot date: 2026-06-29
 
 Current source of truth:
 
@@ -68,7 +68,7 @@ Currently implemented API surface:
 - Product: list/detail/create/update/delete, category/status options, memo/private memo logs, linked deals, xlsx export
 - Deal: stage counts, list/detail/create/update/delete, company/contact/product options, following action logs, memo logs, xlsx export
 - Schedule: deal options, month/week list, detail/create/update/delete, schedule-deal N:M link
-- MeetingNote: filter options, list/detail/create/update, AI text draft, STT+AI draft
+- MeetingNote: filter options, list/detail/create/update/delete, AI text draft, STT+AI draft, saved-note deal linking
 - Search: `GET /api/search`
 - Trash: `GET /api/trash`, `GET /api/trash/:targetType/:targetId`, `POST /api/trash/:targetType/:targetId/restore`
 - Health: `GET /api/health`
@@ -93,16 +93,18 @@ Current response notes:
 - `GET /api/companies` supports `sort=createdAtDesc|contactCountDesc|contactCountAsc|dealCountDesc|dealCountAsc`.
 - `GET /api/contacts` supports `sort=createdAtDesc|usernameAsc`.
 - `GET /api/products` returns `items[].dealCount` and supports `sort=createdAtDesc|dealCountDesc|dealCountAsc`.
-- `GET /api/deals/stage-counts` supports `search`, `companyId`, and `contactId` filters.
-- `GET /api/deals` supports `search`, `companyId`, `contactId`, `dealStatus`, and `sort=createdAtDesc|dealCostDesc|dealCostAsc|expectedEndDateAsc`.
+- `GET /api/deals/stage-counts` supports `search`, repeated `companyIds`, and repeated `contactIds` filters.
+- `GET /api/deals` supports `search`, repeated `companyIds`, repeated `contactIds`, `dealStatus`, and `sort=createdAtDesc|dealCostDesc|dealCostAsc|expectedEndDateAsc`.
 - `GET /api/schedules` uses local date range query values plus IANA `timeZone` and returns UTC ISO strings.
 - `GET /api/meeting-notes` returns summary objects for `companies`, `contacts`, `products`, `deals`, uses fixed `pageSize=10`, and uses `totalPages`.
 - `POST /api/meeting-notes/ai-draft` and `POST /api/meeting-notes/stt-draft` generate draft fields only. They do not create a meeting note row.
+- `POST /api/meeting-notes/:meetingNoteId/deals` adds deal links to a saved meeting note and writes linked deal following-action logs.
+- `DELETE /api/meeting-notes/:meetingNoteId` is a soft delete API and the deleted row can be restored through Trash while it remains within retention.
 - MeetingNote AI draft and STT are separated as `MeetingNoteAiDraftProvider` and `MeetingNoteSttProvider`; current adapters are OpenAI.
 - MeetingNote AI/STT writes no transcript table, provider log table, or raw-text storage in the current scope.
 - `GET /api/search` reads Company, Contact, Product, Deal, Schedule, and MeetingNote data owned by the current user and returns navigation target metadata.
 - `DELETE /api/companies/:companyId`, `DELETE /api/contacts/:contactId`, `DELETE /api/products/:productId`, and `DELETE /api/deals/:dealId` are soft delete APIs. They set `deletedAt`, `deletedByUserId`, and `trashExpiresAt` and return `204 No Content`.
-- `GET /api/trash` aggregates deleted Company, Contact, Product, Deal, and supported memo/action log rows owned by the current user where `deletedAt IS NOT NULL` and `trashExpiresAt > now`.
+- `GET /api/trash` aggregates deleted Company, Contact, Product, Deal, MeetingNote, and supported memo/action log rows owned by the current user where `deletedAt IS NOT NULL` and `trashExpiresAt > now`.
 - `GET /api/trash/:targetType/:targetId` returns preview details for the trash detail modal. Private memo content is not exposed before restore.
 - `POST /api/trash/:targetType/:targetId/restore` clears `deletedAt`, `deletedByUserId`, and `trashExpiresAt` and returns the restored target metadata.
 
@@ -114,11 +116,12 @@ Current runtime behavior:
 - CORS origins are derived from `USER_WEB_ORIGIN` and `ADMIN_WEB_ORIGIN`.
 - default port is `3000`.
 
-Current backend gaps:
+Current backend gaps and intentional deferrals:
 
-- Admin Web query APIs such as `/admin/api/dashboard`, `/admin/api/users`, `/admin/api/companies`, `/admin/api/contacts`, `/admin/api/products`, and `/admin/api/deals` are not implemented yet.
-- BusinessCard OCR, generic Import/Export jobs, Notification, Admin operation query/audit/sensitive raw APIs are not implemented yet.
-- MeetingNote delete/restore, Admin API, rawText encryption/raw access, and DealActivity auto-log are future scope.
+- Admin pages and Admin Web query APIs such as `/admin/api/dashboard`, `/admin/api/users`, `/admin/api/companies`, `/admin/api/contacts`, `/admin/api/products`, and `/admin/api/deals` are deferred.
+- BusinessCard OCR, generic Import job, Notification, Admin operation query/audit/sensitive raw APIs are not implemented yet.
+- Generic ExportJob is intentionally not used for the current export direction. Company, Contact, Product, and Deal each provide their own `GET /api/<domain>/export/xlsx` API.
+- MeetingNote Admin, rawText encryption/raw access, and generic DealActivity table are future scope.
 
 ## 4. Target Module List
 
@@ -139,11 +142,13 @@ Implemented MVP modules:
 Planned or partially represented modules:
 
 - `business-card`
-- `import-export`
+- `import`
 - `notification`
 - `tag`
 - `audit-log`
 - `admin`
+
+`export` is not planned as a generic Backend module in the current direction. Domain xlsx export lives inside `company`, `contact`, `product`, and `deal`.
 
 Each business module owns its own four layers:
 
@@ -299,7 +304,7 @@ OpenAI-centered use cases:
 - business card OCR
 - meeting note draft generation
 - meeting note STT transcription
-- Excel/CSV import column mapping
+- Excel/CSV import column mapping, when the future Import feature is implemented
 
 Rules:
 

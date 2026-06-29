@@ -43,17 +43,17 @@
 2. 회사/담당자/제품을 기반으로 딜을 생성한다.
 3. 딜 단계, 금액, 가능성, 활동 로그를 관리한다.
 4. 일정을 딜/회사/담당자와 연결한다.
-5. 월간 기본 일정 화면에서 주간 보기로 전환하거나 주간 일정 보고서를 화면/PDF/Excel로 확인한다.
+5. 일정 화면에서 딜과 연결된 일정을 확인한다. 별도 주간 보고서 화면/PDF/Excel은 후속 범위다.
 6. 회의 내용을 직접 작성해 저장하거나 텍스트/음성 AI 정리로 초안을 만든 뒤 저장한다.
 7. 저장한 회의록을 딜과 연결해 딜 활동 로그를 자동 생성한다.
 
 현재 구현 기준:
 
 - 구현 완료: Auth/User, 홈 대시보드, 회사, 담당자, 제품, 딜, 일정, 회의록 직접 작성/저장, 회의록 AI/STT draft UI, 회의록 저장 후 딜 연동/활동 로그 생성, 회의록 삭제/휴지통 복구, 통합검색 Backend API와 User Web GlobalSearch, 휴지통 목록/상세/7일 이내 복구.
-- 부분 구현: 도메인별 xlsx export는 Company/Contact/Product/Deal에 있다. 범용 Import/Export job은 없다.
-- FE만 존재 또는 mock/placeholder 경계: 명함 OCR, 알림, 범용 Import/Export.
-- Backend 미구현: BusinessCard OCR, Notification, Admin 운영 조회/감사/민감 원문 API, MeetingNote Admin API, 범용 DealActivity table, 7일 이후 유료 복구 API.
-- Admin Backend는 `GET /admin/api/me`만 구현되어 있다.
+- 구현 완료: Company/Contact/Product/Deal 도메인별 xlsx export. 범용 ExportJob은 현재 제품 방향에서 사용하지 않는다.
+- FE만 존재 또는 mock/placeholder 경계: 명함 OCR, 알림, 범용 Import, `/export` route.
+- Backend 미구현 또는 후속 범위: BusinessCard OCR, 범용 Import job, Notification, Admin 페이지/운영 조회/감사/민감 원문 API, MeetingNote Admin API, 범용 DealActivity table, 7일 이후 유료 복구 API.
+- Admin Backend는 `GET /admin/api/me`만 구현되어 있으며 관리자 페이지는 후속 단계에서 만든다.
 
 ## 6. MVP 포함 기능
 
@@ -65,22 +65,15 @@
 - 딜 관리
 - 딜 활동 로그
 - 일정 관리
-- 구글 캘린더 일정 가져오기
 - 월간/주간 일정 화면
-- 주간 일정 보고서 화면/PDF/Excel 출력
-- 알림: 이메일, 브라우저 푸시
 - 회의록 직접 작성/저장
 - 회의록 텍스트 입력 기반 AI 정리
 - 회의록 음성 STT+AI 정리
 - 회의록 딜 연결
-- 명함 이미지 업로드 OCR
-- Excel/CSV Import AI 컬럼 매핑
-- Excel/PDF Export
-- 태그 관리
+- 회사/담당자/제품/딜 엑셀 다운로드
 - Memo 기록
 - 민감정보 저장 경고
 - 휴지통 7일 무료 복구
-- 최소 Admin 웹
 
 ## 7. MVP 제외 기능
 
@@ -88,6 +81,14 @@
 - 모바일 앱
 - STT transcript 영구 저장과 고도화된 브라우저 녹음 UX
 - 구글 캘린더 양방향 동기화
+- 구글 캘린더 일정 가져오기
+- 주간 일정 보고서 화면/PDF/Excel 출력
+- 알림: 이메일, 브라우저 푸시
+- 명함 이미지 업로드 OCR
+- Excel/CSV Import AI 컬럼 매핑
+- 범용 ExportJob과 `/api/exports`
+- 태그 관리
+- Admin 페이지와 운영 조회 API
 - 우리 서비스 일정의 구글 캘린더 내보내기
 - 카카오 알림톡
 - 사용자 커스텀 필드 UI

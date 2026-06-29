@@ -37,7 +37,8 @@
 - `AuditLog`
 - `Notification`
 - `ImportJob`
-- `ExportJob`
+
+범용 `ExportJob` table은 현재 제품 방향에서 제외한다. 회사/담당자/제품/딜 export는 각 도메인 API가 동기 xlsx 파일로 내려준다.
 
 이 문서는 제품 관점의 전체 목표 모델을 설명한다. 실제 구현 여부와 컬럼 상세는 `AGENT/SOFTWARE_AGENT/DB_SCHEMA/README.md`와 각 schema 문서를 우선 확인한다.
 
@@ -74,7 +75,7 @@ User
   │   ├─ MeetingNoteProduct
   │   └─ MeetingNoteDeal
   ├─ Tag
-  └─ ImportJob / ExportJob / AuditLog / Notification
+  └─ ImportJob / AuditLog / Notification
 ```
 
 ## 2. 공통 필드 원칙
@@ -689,6 +690,8 @@ Log는 객관적 사실, 변경, 만남, 소식, 이력 기록이고 Memo는 사
 - resultSummary
 - createdAt
 - completedAt nullable
+
+ImportJob은 후속 범위다. 현재 Backend schema에는 포함되어 있지 않다.
 
 ## 22. Mermaid ERD
 

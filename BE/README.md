@@ -22,14 +22,17 @@ Admin API는 반드시 Admin guard로 보호한다.
 
 - `auth`: 외부 인증 토큰 교환, Backend App token refresh/logout, 현재 사용자 조회, 기기/session 관리
 - `user`: 현재 사용자 profile과 등록 기기 조회/수정
-- `company`: 사용자 소유 회사, 회사 분야/지역, 일반 메모 로그, 개인 비밀 메모 로그
-- `contact`: 사용자 소유 담당자, 회사 옵션, 담당자 부서/직급, 일반 메모 로그, 개인 비밀 메모 로그
-- `product`: 사용자 소유 제품, 제품 카테고리/상태, 일반 메모 로그, 개인 비밀 메모 로그
-- `deal`: 사용자 소유 딜, 딜-제품 연결, 다음 행동 로그, 메모 로그
+- `company`: 사용자 소유 회사, 회사 분야/지역, 일반 메모 로그, 개인 비밀 메모 로그, xlsx export
+- `contact`: 사용자 소유 담당자, 회사 옵션, 담당자 부서/직급, 일반 메모 로그, 개인 비밀 메모 로그, xlsx export
+- `product`: 사용자 소유 제품, 제품 카테고리/상태, 일반 메모 로그, 개인 비밀 메모 로그, xlsx export
+- `deal`: 사용자 소유 딜, 딜-제품 연결, 다음 행동 로그, 메모 로그, xlsx export
 - `schedule`: 사용자 소유 일정, 월간/주간 조회, 일정-딜 연결, hard delete
-- `meeting-note`: 사용자 소유 회의록, 연결 스냅샷, 수동 저장/수정, AI/STT draft 생성
+- `meeting-note`: 사용자 소유 회의록, 연결 스냅샷, 수동 저장/수정/삭제, AI/STT draft 생성, 저장 후 딜 연결
 - `search`: 회사/담당자/제품/딜/일정/회의록 통합검색
+- `trash`: 회사/담당자/제품/딜/회의록과 지원 로그의 휴지통 목록/상세/7일 이내 복구
 - `health`: health check
+
+범용 ExportJob Backend는 현재 사용하지 않는다. Export는 회사/담당자/제품/딜 각 도메인의 `GET /api/*/export/xlsx`로 처리한다.
 
 ## 로컬 실행
 
