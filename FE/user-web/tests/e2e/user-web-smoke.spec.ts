@@ -1,253 +1,331 @@
-import { expect, test, type Page, type Route } from "@playwright/test";
+import {
+  expect,
+  test,
+  type Locator,
+  type Page,
+  type Route,
+} from "@playwright/test";
 
 const COMPANY_NAME = "스모크상사";
 const CONTACT_NAME = "김스모크";
 const PRODUCT_NAME = "MVP 패키지";
 const DEAL_TITLE = "스모크 MVP 딜";
 const SCHEDULE_TITLE = "스모크 미팅 일정";
+const MEETING_TITLE = "스모크 미팅 회의록";
 const MEETING_DETAILS = "MVP 도입 일정과 검토 범위를 합의했다.";
 const MOCK_ACCESS_TOKEN = "Bearer mock-user-web-access-token";
 
-type DealStage = "INITIAL_CONTACT" | "IN_DISCUSSION" | "WON" | "LOST";
-type DealLikelihoodStatus = "POSITIVE" | "NEUTRAL" | "NEGATIVE";
-type NextActionStatus = "NONE" | "SCHEDULED" | "DUE_SOON" | "OVERDUE" | "DONE";
+type DealStatus =
+  | "INITIAL_CONTACT"
+  | "NEEDS_CHECK"
+  | "PROPOSAL_QUOTE"
+  | "NEGOTIATION"
+  | "WON"
+  | "LOST";
+
+const DEAL_STATUS_LABEL: Record<DealStatus, string> = {
+  INITIAL_CONTACT: "초기 접촉",
+  NEEDS_CHECK: "니즈 확인",
+  PROPOSAL_QUOTE: "제안/견적",
+  NEGOTIATION: "협상",
+  WON: "성사",
+  LOST: "실패",
+};
+
+const DEAL_STATUS_LIST: DealStatus[] = [
+  "INITIAL_CONTACT",
+  "NEEDS_CHECK",
+  "PROPOSAL_QUOTE",
+  "NEGOTIATION",
+  "WON",
+  "LOST",
+];
+
+type CompanyField = {
+  readonly id: string;
+  readonly field: string;
+};
+
+type CompanyRegion = {
+  readonly id: string;
+  readonly region: string;
+};
 
 type Company = {
   readonly id: string;
-  readonly name: string;
-  readonly industry: string | null;
-  readonly region: string | null;
-  readonly address: string | null;
-  readonly website: string | null;
-  readonly description: string | null;
-  readonly tags: readonly { readonly id: string; readonly name: string; readonly color: string | null }[];
-  readonly hasMemo: boolean;
-  readonly memoCount: number;
-  readonly latestMemoAt: string | null;
+  readonly companyName: string;
+  readonly companyField: CompanyField;
+  readonly companyRegion: CompanyRegion;
   readonly contactCount: number;
   readonly dealCount: number;
-  readonly productCount: number;
   readonly createdAt: string;
   readonly updatedAt: string;
-  readonly deletedAt: string | null;
-  readonly permanentDeleteAt: string | null;
+};
+
+type ContactDepartment = {
+  readonly id: string;
+  readonly departmentName: string;
+};
+
+type ContactJobGrade = {
+  readonly id: string;
+  readonly jobGradeName: string;
 };
 
 type Contact = {
   readonly id: string;
-  readonly name: string;
-  readonly companyId: string | null;
-  readonly companyName: string | null;
-  readonly department: string | null;
-  readonly position: string | null;
-  readonly phone: string | null;
-  readonly email: string | null;
-  readonly address: string | null;
-  readonly hasMemo: boolean;
-  readonly memoCount: number;
-  readonly latestMemoAt: string | null;
+  readonly company: {
+    readonly id: string;
+    readonly companyName: string;
+  };
+  readonly username: string;
+  readonly mobile: string;
+  readonly email: string;
+  readonly contactDepartment: ContactDepartment;
+  readonly contactJobGrade: ContactJobGrade;
   readonly createdAt: string;
   readonly updatedAt: string;
-  readonly deletedAt: string | null;
-  readonly permanentDeleteAt: string | null;
+};
+
+type ProductCategory = {
+  readonly id: string;
+  readonly categoryName: string;
+};
+
+type ProductStatus = {
+  readonly id: string;
+  readonly statusName: string;
 };
 
 type Product = {
   readonly id: string;
-  readonly name: string;
-  readonly category: string | null;
-  readonly unitPrice: number | null;
-  readonly currency: string;
-  readonly description: string | null;
-  readonly connectionCount: number;
-  readonly hasMemo: boolean;
-  readonly memoCount: number;
-  readonly latestMemoAt: string | null;
+  readonly productName: string;
+  readonly productCategory: ProductCategory;
+  readonly productStatus: ProductStatus;
+  readonly productPrice: number;
+  readonly dealCount: number;
   readonly createdAt: string;
   readonly updatedAt: string;
-  readonly deletedAt: string | null;
-  readonly permanentDeleteAt: string | null;
+};
+
+type DealCompany = {
+  readonly id: string;
+  readonly companyName: string;
+  readonly isDeleted: boolean;
+  readonly companyField: CompanyField;
+  readonly companyRegion: CompanyRegion;
+};
+
+type DealContact = {
+  readonly id: string;
+  readonly username: string;
+  readonly isDeleted: boolean;
+  readonly companyId: string;
+  readonly company: {
+    readonly id: string;
+    readonly companyName: string;
+    readonly isDeleted: boolean;
+  };
+  readonly mobile: string;
+  readonly email: string;
+  readonly contactDepartment: ContactDepartment;
+  readonly contactJobGrade: ContactJobGrade;
+  readonly label: string;
+};
+
+type DealProduct = {
+  readonly id: string;
+  readonly productName: string;
+  readonly isDeleted: boolean;
+  readonly productPrice: number;
+  readonly productCategory: ProductCategory;
+  readonly productStatus: ProductStatus;
+};
+
+type DealFollowingAction = {
+  readonly id: string;
+  readonly followingAction: string;
+  readonly checkComplete: boolean;
+  readonly createdAt: string;
 };
 
 type Deal = {
   readonly id: string;
-  readonly title: string;
-  readonly companyId: string | null;
-  readonly companyName: string | null;
-  readonly contactId: string | null;
-  readonly contactName: string | null;
-  readonly amount: number;
-  readonly currency: string;
-  readonly stage: DealStage;
-  readonly likelihoodStatus: DealLikelihoodStatus;
-  readonly likelihoodPercent: number | null;
-  readonly expectedCloseDate: string | null;
-  readonly nextActionText: string | null;
-  readonly nextActionDueAt: string | null;
-  readonly nextActionStatus: NextActionStatus;
-  readonly hasMemo: boolean;
-  readonly memoCount: number;
-  readonly latestMemoAt: string | null;
+  readonly dealName: string;
+  readonly dealCost: number;
+  readonly dealStatus: DealStatus;
+  readonly dealStatusLabel: string;
+  readonly expectedEndDate: string;
+  readonly companies: DealCompany[];
+  readonly contacts: DealContact[];
+  readonly products: DealProduct[];
+  readonly latestFollowingAction: DealFollowingAction | null;
+  readonly nextFollowingAction: (DealFollowingAction & {
+    readonly remainingCount: number;
+  }) | null;
   readonly createdAt: string;
   readonly updatedAt: string;
-  readonly deletedAt: string | null;
-  readonly permanentDeleteAt: string | null;
-};
-
-type DealActivity = {
-  readonly id: string;
-  readonly dealId: string;
-  readonly typeId: string;
-  readonly typeName: string;
-  readonly occurredAt: string;
-  readonly title: string;
-  readonly content: string | null;
-  readonly isAutoGenerated: boolean;
-  readonly createdAt: string;
-  readonly updatedAt: string;
-  readonly deletedAt: string | null;
-  readonly permanentDeleteAt: string | null;
 };
 
 type Schedule = {
   readonly id: string;
-  readonly title: string;
+  readonly scheduleTitle: string;
   readonly startAt: string;
   readonly endAt: string;
-  readonly allDay: boolean;
+  readonly timeZone: string;
   readonly location: string | null;
   readonly memo: string | null;
-  readonly source: "INTERNAL" | "GOOGLE";
-  readonly dealId: string | null;
-  readonly dealTitle: string | null;
-  readonly companyId: string | null;
-  readonly companyName: string | null;
-  readonly contactId: string | null;
-  readonly contactName: string | null;
-  readonly reminders: readonly ScheduleReminder[];
+  readonly deals: readonly { readonly id: string; readonly dealName: string }[];
   readonly createdAt: string;
   readonly updatedAt: string;
-  readonly deletedAt: string | null;
-  readonly permanentDeleteAt: string | null;
 };
 
-type ScheduleReminder = {
+type MeetingNoteSummary = {
+  readonly label: string;
+  readonly count: number;
+};
+
+type MeetingNoteCompany = {
   readonly id: string;
-  readonly channel: string;
-  readonly remindAt: string;
-  readonly sentAt: string | null;
-  readonly status: "PENDING" | "SENT" | "FAILED" | "READ" | "CANCELED";
+  readonly companyId: string | null;
+  readonly isDeleted: boolean;
+  readonly companyNameSnapshot: string;
+  readonly companyFieldSnapshot: string | null;
+  readonly companyRegionSnapshot: string | null;
   readonly createdAt: string;
-  readonly updatedAt: string;
+};
+
+type MeetingNoteContact = {
+  readonly id: string;
+  readonly contactId: string | null;
+  readonly companyId: string | null;
+  readonly isDeleted: boolean;
+  readonly contactUsernameSnapshot: string;
+  readonly contactEmailSnapshot: string | null;
+  readonly contactMobileSnapshot: string | null;
+  readonly companyNameSnapshot: string | null;
+  readonly departmentSnapshot: string | null;
+  readonly jobGradeSnapshot: string | null;
+  readonly createdAt: string;
+};
+
+type MeetingNoteProduct = {
+  readonly id: string;
+  readonly productId: string | null;
+  readonly isDeleted: boolean;
+  readonly productNameSnapshot: string;
+  readonly productPriceSnapshot: number | null;
+  readonly productCategorySnapshot: string | null;
+  readonly productStatusSnapshot: string | null;
+  readonly createdAt: string;
+};
+
+type MeetingNoteDeal = {
+  readonly id: string;
+  readonly dealId: string;
+  readonly isDeleted: boolean;
+  readonly dealNameSnapshot: string;
+  readonly dealStatusSnapshot: string;
+  readonly dealCostSnapshot: number;
+  readonly dealExpectedEndDateSnapshot: string;
+  readonly createdAt: string;
 };
 
 type MeetingNote = {
   readonly id: string;
-  readonly meetingDate: string | null;
-  readonly companyName: string | null;
-  readonly contactName: string | null;
-  readonly department: string | null;
-  readonly productName: string | null;
-  readonly stageText: string | null;
+  readonly sourceType: "MANUAL" | "TEXT_AI" | "STT_AI";
+  readonly title: string;
+  readonly meetingAt: string | null;
+  readonly meetingLocalDateTime: string | null;
+  readonly timeZone: string;
   readonly details: string;
   readonly nextPlan: string | null;
   readonly requiredAction: string | null;
-  readonly dealId: string | null;
-  readonly dealTitle: string | null;
+  readonly companies: MeetingNoteCompany[];
+  readonly contacts: MeetingNoteContact[];
+  readonly products: MeetingNoteProduct[];
+  readonly deals: MeetingNoteDeal[];
   readonly createdAt: string;
   readonly updatedAt: string;
-  readonly deletedAt: string | null;
-  readonly permanentDeleteAt: string | null;
 };
 
 type CreateCompanyBody = {
-  readonly name?: string;
-  readonly industry?: string;
-  readonly region?: string;
-  readonly initialMemo?: string;
-  readonly tags?: readonly string[];
+  readonly companyName?: string;
+  readonly companyFieldId?: string;
+  readonly companyRegionId?: string;
+  readonly companyMemo?: string;
 };
 
 type CreateContactBody = {
-  readonly name?: string;
-  readonly companyId?: string;
-  readonly department?: string;
-  readonly position?: string;
-  readonly phone?: string;
+  readonly username?: string;
+  readonly mobile?: string;
   readonly email?: string;
-  readonly initialMemo?: string;
+  readonly companyId?: string;
+  readonly contactDepartmentId?: string;
+  readonly contactJobGradeId?: string;
+  readonly contactMemo?: string;
 };
 
 type CreateProductBody = {
-  readonly name?: string;
-  readonly category?: string;
-  readonly unitPrice?: number;
-  readonly currency?: string;
-  readonly description?: string;
-  readonly initialMemo?: string;
+  readonly productName?: string;
+  readonly productPrice?: number;
+  readonly productCategoryId?: string;
+  readonly productStatusId?: string;
+  readonly productMemo?: string;
 };
 
 type CreateDealBody = {
-  readonly title?: string;
-  readonly companyId?: string;
-  readonly contactId?: string;
-  readonly amount?: number;
-  readonly currency?: string;
-  readonly stage?: DealStage;
-  readonly likelihoodStatus?: DealLikelihoodStatus;
-  readonly likelihoodPercent?: number;
-  readonly expectedCloseDate?: string;
-  readonly nextActionText?: string;
-  readonly nextActionDueAt?: string;
+  readonly dealName?: string;
+  readonly dealCost?: number;
+  readonly companyIds?: readonly string[];
+  readonly contactIds?: readonly string[];
   readonly productIds?: readonly string[];
-  readonly initialMemo?: string;
-};
-
-type ChangeDealStageBody = {
-  readonly stage?: DealStage;
+  readonly dealStatus?: DealStatus;
+  readonly followingAction?: string;
+  readonly expectedEndDate?: string;
+  readonly dealMemo?: string;
 };
 
 type CreateScheduleBody = {
-  readonly title?: string;
+  readonly scheduleTitle?: string;
   readonly startAt?: string;
   readonly endAt?: string;
-  readonly allDay?: boolean;
-  readonly location?: string;
-  readonly dealId?: string;
-  readonly companyId?: string;
-  readonly contactId?: string;
-  readonly memo?: string;
-  readonly reminderMinutes?: readonly number[];
+  readonly timeZone?: string;
+  readonly location?: string | null;
+  readonly memo?: string | null;
+  readonly dealIds?: readonly string[];
 };
 
 type CreateMeetingNoteBody = {
-  readonly rawText?: string;
-  readonly meetingDate?: string;
-  readonly companyName?: string;
-  readonly contactName?: string;
-  readonly department?: string;
-  readonly productName?: string;
-  readonly stageText?: string;
+  readonly sourceType?: "MANUAL" | "TEXT_AI" | "STT_AI";
+  readonly title?: string;
+  readonly meetingLocalDateTime?: string;
   readonly details?: string;
-  readonly nextPlan?: string;
-  readonly requiredAction?: string;
+  readonly nextPlan?: string | null;
+  readonly requiredAction?: string | null;
+  readonly companies?: readonly string[];
+  readonly contacts?: readonly string[];
+  readonly products?: readonly string[];
+  readonly deals?: readonly string[];
 };
 
-type LinkMeetingNoteBody = {
-  readonly dealId?: string;
-  readonly activityTitle?: string;
+type LinkMeetingNoteDealsBody = {
+  readonly deals?: readonly string[];
 };
 
 type SmokeStore = {
   companies: Company[];
+  companyFields: CompanyField[];
+  companyRegions: CompanyRegion[];
   contacts: Contact[];
+  contactDepartments: ContactDepartment[];
+  contactJobGrades: ContactJobGrade[];
   products: Product[];
+  productCategories: ProductCategory[];
+  productStatuses: ProductStatus[];
   deals: Deal[];
-  dealProductIds: Map<string, readonly string[]>;
-  dealActivities: DealActivity[];
   schedules: Schedule[];
   meetingNotes: MeetingNote[];
-  meetingNoteRawText: Map<string, string>;
   sequence: number;
 };
 
@@ -255,6 +333,11 @@ type ApiRequestRecord = {
   readonly method: string;
   readonly path: string;
   readonly authorization: string | null;
+};
+
+type MockApiResponse = {
+  readonly body: unknown;
+  readonly status?: number;
 };
 
 test.describe("User Web smoke E2E", () => {
@@ -266,159 +349,157 @@ test.describe("User Web smoke E2E", () => {
     await test.step("로그인 보호 라우트와 mock login", async () => {
       await page.goto("/companies");
       await expect(page).toHaveURL(/\/login$/);
-      await page.getByRole("button", { name: "계속" }).click();
+      await page
+        .getByRole("button", { name: "개발용 mock 세션으로 입장" })
+        .click();
       await expect(page).toHaveURL(/\/companies$/);
       await expect(
-        page.getByRole("heading", { exact: true, name: "회사" })
+        page.getByRole("button", { name: "회사 추가" }).first()
       ).toBeVisible();
     });
 
     await test.step("회사 생성", async () => {
       await page.getByRole("button", { name: "회사 추가" }).first().click();
-      const dialog = getDialog(page, "회사 빠른 등록");
+      const dialog = getDialog(page, "회사 추가");
+
       await expect(dialog).toBeVisible();
       await dialog.getByLabel("회사명").fill(COMPANY_NAME);
-      await dialog.getByLabel("분야").fill("B2C SaaS");
-      await dialog.getByLabel("지역").fill("서울");
-      await dialog.getByLabel("태그").fill("smoke, mvp");
+      await selectManagedOption(dialog, "분야명", "B2C SaaS");
+      await selectManagedOption(dialog, "지역명", "서울");
       await dialog.getByLabel("메모").fill("G34 smoke 회사 fixture");
       await dialog.getByRole("button", { name: "저장" }).click();
+
       await expect(dialog).toBeHidden();
-      await expect(
-        page.getByText(`${COMPANY_NAME} 회사가 추가되었습니다.`)
-      ).toBeVisible();
-      await expect(page.getByRole("link", { name: COMPANY_NAME })).toBeVisible();
+      await expectAndCloseNotice(page, "회사가 추가되었습니다.");
+      await expect(page.getByText(COMPANY_NAME).first()).toBeVisible();
     });
 
     await test.step("담당자 생성", async () => {
       await goToNav(page, "담당자");
       await expect(
-        page.getByRole("heading", { exact: true, name: "담당자" })
+        page.getByRole("button", { name: "담당자 추가" }).first()
       ).toBeVisible();
       await page.getByRole("button", { name: "담당자 추가" }).first().click();
-      const dialog = getDialog(page, "담당자 빠른 등록");
+      const dialog = getDialog(page, "담당자 추가");
+
       await expect(dialog).toBeVisible();
       await dialog.getByLabel("이름").fill(CONTACT_NAME);
-      await dialog.getByLabel("회사").fill(COMPANY_NAME);
-      await dialog.getByRole("button", { name: new RegExp(COMPANY_NAME) }).click();
-      await dialog.getByLabel("부서").fill("구매팀");
-      await dialog.getByLabel("직책").fill("팀장");
-      await dialog.getByLabel("전화번호").fill("010-1234-5678");
+      await dialog.getByLabel("휴대폰번호").fill("010-1234-5678");
       await dialog.getByLabel("이메일").fill("smoke@example.com");
+      await selectSearchOption(dialog, "회사", COMPANY_NAME);
+      await selectManagedOption(dialog, "부서명", "구매팀");
+      await selectManagedOption(dialog, "직급명", "팀장");
       await dialog.getByLabel("메모").fill("G34 smoke 담당자 fixture");
       await dialog.getByRole("button", { name: "저장" }).click();
+
       await expect(dialog).toBeHidden();
-      await expect(
-        page.getByText(`${CONTACT_NAME} 담당자가 추가되었습니다.`)
-      ).toBeVisible();
-      await expect(page.getByRole("link", { name: CONTACT_NAME })).toBeVisible();
+      await expectAndCloseNotice(page, "담당자가 추가되었습니다.");
+      await expect(page.getByText(CONTACT_NAME).first()).toBeVisible();
     });
 
     await test.step("제품 생성", async () => {
       await goToNav(page, "제품");
       await expect(
-        page.getByRole("heading", { exact: true, name: "제품" })
+        page.getByRole("button", { name: "제품 추가" }).first()
       ).toBeVisible();
       await page.getByRole("button", { name: "제품 추가" }).first().click();
-      const dialog = getDialog(page, "제품 빠른 등록");
+      const dialog = getDialog(page, "제품 추가");
+
       await expect(dialog).toBeVisible();
       await dialog.getByLabel("제품명").fill(PRODUCT_NAME);
-      await dialog.getByLabel("분류").fill("Starter");
       await dialog.getByLabel("단가").fill("390000");
-      await dialog.getByLabel("통화").fill("KRW");
-      await dialog.getByLabel("설명").fill("MVP starter smoke 상품");
+      await selectManagedOption(dialog, "카테고리명", "Starter");
+      await selectManagedOption(dialog, "상태명", "판매중");
       await dialog.getByLabel("메모").fill("G34 smoke 제품 fixture");
-      await dialog.getByRole("button", { name: "저장" }).click();
+      await dialog.getByRole("button", { name: "제품 추가" }).click();
+
       await expect(dialog).toBeHidden();
-      await expect(
-        page.getByText(`${PRODUCT_NAME} 제품이 추가되었습니다.`)
-      ).toBeVisible();
-      await expect(page.getByRole("link", { name: PRODUCT_NAME })).toBeVisible();
+      await expectAndCloseNotice(page, "제품이 추가되었습니다.");
+      await expect(page.getByText(PRODUCT_NAME).first()).toBeVisible();
     });
 
     await test.step("딜 생성", async () => {
-      await goToNav(page, "파이프라인");
+      await goToNav(page, "딜");
       await expect(
-        page.getByRole("heading", { name: "딜 파이프라인" })
+        page.getByRole("button", { name: "딜 추가" }).first()
       ).toBeVisible();
       await page.getByRole("button", { name: "딜 추가" }).first().click();
-      const dialog = getDialog(page, "딜 빠른 등록");
+      const dialog = getDialog(page, "딜 추가");
+
       await expect(dialog).toBeVisible();
       await dialog.getByLabel("딜명").fill(DEAL_TITLE);
       await dialog.getByLabel("금액").fill("1200000");
-      await dialog.getByLabel("회사").fill(COMPANY_NAME);
-      await dialog.getByRole("button", { name: new RegExp(COMPANY_NAME) }).first().click();
-      await dialog.getByLabel("담당자").fill(CONTACT_NAME);
-      await dialog.getByRole("button", { name: new RegExp(CONTACT_NAME) }).first().click();
-      await dialog.getByLabel("제품").fill(PRODUCT_NAME);
-      await dialog.getByRole("button", { name: new RegExp(PRODUCT_NAME) }).first().click();
+      await selectSearchOption(dialog, "회사", COMPANY_NAME);
+      await selectSearchOption(dialog, "담당자", CONTACT_NAME);
+      await dialog.getByPlaceholder("제품명 검색").fill(PRODUCT_NAME);
+      await dialog
+        .getByRole("button", { name: new RegExp(PRODUCT_NAME) })
+        .first()
+        .click();
+      await dialog.getByLabel("예상 마감일").fill("2026-07-31");
       await dialog.getByLabel("다음 행동", { exact: true }).fill("도입 제안서 발송");
+      await dialog.getByLabel("메모").fill("G34 smoke 딜 fixture");
       await dialog.getByRole("button", { name: "저장" }).click();
-      await expect(dialog).toBeHidden();
-      await expect(page.getByText(`${DEAL_TITLE} 딜이 추가되었습니다.`)).toBeVisible();
-      await expect(page.getByText(DEAL_TITLE).first()).toBeVisible();
-    });
 
-    await test.step("딜 단계 변경", async () => {
-      await page.getByLabel("딜 단계 변경").first().selectOption("IN_DISCUSSION");
-      await expect(page.getByText(`${DEAL_TITLE} 단계가 변경되었습니다.`)).toBeVisible();
-      await expect(page.getByLabel("딜 단계 변경").first()).toHaveValue(
-        "IN_DISCUSSION"
-      );
+      await expect(dialog).toBeHidden();
+      await expect(page).toHaveURL(/\/deals\/deal-/);
     });
 
     await test.step("일정 생성", async () => {
       await goToNav(page, "일정");
       await expect(
-        page.getByRole("heading", { exact: true, name: "일정" })
+        page.getByRole("button", { name: "일정 생성" }).last()
       ).toBeVisible();
-      await page.getByRole("button", { name: "일정 생성" }).first().click();
-      const dialog = getDialog(page, "일정 생성");
+      await page.getByRole("button", { name: "일정 생성" }).last().click();
+      const dialog = page
+        .getByRole("dialog")
+        .filter({ hasText: "일정 생성" })
+        .first();
+
       await expect(dialog).toBeVisible();
       await dialog.getByLabel("제목").fill(SCHEDULE_TITLE);
+      await dialog.getByLabel("시작일시").fill("2026-07-01T10:00");
+      await dialog.getByLabel("종료일시").fill("2026-07-01T11:00");
       await dialog.getByLabel("장소").fill("온라인");
-      await dialog.getByLabel("딜").fill(DEAL_TITLE);
+      await dialog.getByLabel("연결 딜").fill(DEAL_TITLE);
       await dialog.getByRole("button", { name: new RegExp(DEAL_TITLE) }).click();
       await dialog.getByLabel("메모").fill("G34 smoke 일정 fixture");
       await dialog.getByRole("button", { name: "저장" }).click();
+
       await expect(dialog).toBeHidden();
-      await expect(
-        page.getByText(`${SCHEDULE_TITLE} 일정이 생성되었습니다.`)
-      ).toBeVisible();
+      await expectAndCloseNotice(
+        page,
+        `${SCHEDULE_TITLE} 일정이 생성되었습니다.`
+      );
       await expect(page.getByText(SCHEDULE_TITLE).first()).toBeVisible();
     });
 
     await test.step("회의록 저장과 딜 연결", async () => {
       await goToNav(page, "회의록");
       await expect(
-        page.getByRole("heading", { exact: true, name: "회의록" })
+        page.getByRole("button", { name: "회의록 추가" }).first()
       ).toBeVisible();
-      await page.getByRole("link", { name: "AI 회의록 작성" }).first().click();
-      await expect(
-        page.getByRole("heading", { name: "AI 회의록 작성" })
-      ).toBeVisible();
-      await page
-        .getByPlaceholder("회의 내용을 그대로 붙여넣거나 간단히 메모하세요.")
-        .fill("고객은 MVP 도입을 검토하고 다음 주 제안서를 요청했다.");
-      await page.getByLabel("회사").fill(COMPANY_NAME);
-      await page.getByLabel("담당자").fill(CONTACT_NAME);
-      await page.getByLabel("부서").fill("구매팀");
-      await page.getByLabel("품목").fill(PRODUCT_NAME);
-      await page.getByLabel("진행단계").fill("논의 중");
-      await page.getByLabel("상세내용").fill(MEETING_DETAILS);
-      await page.getByLabel("향후계획").fill("제안서 발송 후 예산 확인");
-      await page.getByLabel("필요액션").fill("제안서와 견적서 준비");
-      await page.getByLabel("연결할 딜").fill(DEAL_TITLE);
-      await page.getByRole("button", { name: new RegExp(DEAL_TITLE) }).click();
-      await page.getByRole("button", { name: "저장" }).click();
-      await expect(page).toHaveURL(/\/meeting-notes\/meeting-note-/);
-      await expect(
-        page.getByText("회의록 저장과 딜 연결이 완료되었습니다.")
-      ).toBeVisible();
-      await expect(page.getByRole("heading", { name: "회의록 상세" })).toBeVisible();
+      await page.getByRole("button", { name: "회의록 추가" }).first().click();
+      const dialog = getDialog(page, "회의록 추가");
+
+      await expect(dialog).toBeVisible();
+      await dialog.getByLabel("회의록 제목").fill(MEETING_TITLE);
+      await selectEntityOption(dialog, "회사", COMPANY_NAME);
+      await selectEntityOption(dialog, "담당자", CONTACT_NAME);
+      await selectEntityOption(dialog, "제품(옵션)", PRODUCT_NAME);
+      await selectEntityOption(dialog, "딜(옵션)", DEAL_TITLE);
+      await dialog.getByLabel("원문 메모").fill("고객은 다음 주 제안서를 요청했다.");
+      await dialog.getByLabel("상세 내용").fill(MEETING_DETAILS);
+      await dialog.getByLabel("다음 계획").fill("제안서 발송 후 예산 확인");
+      await dialog.getByLabel("필요 액션").fill("제안서와 견적서 준비");
+      await dialog.getByRole("button", { name: "회의록 추가" }).click();
+
+      await expect(dialog).toBeHidden();
+      await expectAndCloseNotice(page, "회의록이 추가되었습니다.");
+      await expect(page.getByText(MEETING_TITLE).first()).toBeVisible();
     });
 
-    expect(api.unauthorizedRequests()).toEqual([]);
+    expect(api.protectedRequestsWithoutAuthorization()).toEqual([]);
   });
 });
 
@@ -442,13 +523,17 @@ async function setupUserWebApiMocks(page: Page) {
       authorization: request.headers().authorization ?? null,
     });
 
-    const body = await handleApiRequest(store, route, method, url);
-    await fulfillJson(route, body);
+    const response = await handleApiRequest(store, route, method, url);
+    await fulfillJson(route, response.body, response.status ?? 200);
   });
 
   return {
-    unauthorizedRequests: () =>
-      requests.filter((request) => request.authorization !== MOCK_ACCESS_TOKEN),
+    protectedRequestsWithoutAuthorization: () =>
+      requests.filter(
+        (request) =>
+          !isPublicApiRequest(request) &&
+          request.authorization !== MOCK_ACCESS_TOKEN
+      ),
   };
 }
 
@@ -456,367 +541,428 @@ function isBackendApiRequest(url: URL) {
   return url.pathname.startsWith("/api/");
 }
 
+function isPublicApiRequest(request: ApiRequestRecord) {
+  return request.method === "GET" && request.path === "/api/auth/providers";
+}
+
 async function handleApiRequest(
   store: SmokeStore,
   route: Route,
   method: string,
   url: URL
-) {
+): Promise<MockApiResponse> {
   const path = url.pathname;
 
   if (path === "/api/search" && method === "GET") {
-    return { groups: [] };
+    return json({ groups: [] });
+  }
+
+  if (path === "/api/auth/providers" && method === "GET") {
+    return json({
+      providers: [
+        { provider: "kakao", label: "Kakao", enabled: true },
+        { provider: "naver", label: "Naver", enabled: true },
+        { provider: "google", label: "Google", enabled: true },
+      ],
+    });
+  }
+
+  if (path === "/api/company-fields" && method === "GET") {
+    return json({ items: store.companyFields });
+  }
+
+  if (path === "/api/company-fields" && method === "POST") {
+    const input = await readBody<{ readonly field?: string }>(route);
+    store.companyFields.push({
+      id: nextId(store, "company-field"),
+      field: input.field ?? "신규 분야",
+    });
+    return json(null, 204);
+  }
+
+  if (path === "/api/company-regions" && method === "GET") {
+    return json({ items: store.companyRegions });
+  }
+
+  if (path === "/api/company-regions" && method === "POST") {
+    const input = await readBody<{ readonly region?: string }>(route);
+    store.companyRegions.push({
+      id: nextId(store, "company-region"),
+      region: input.region ?? "신규 지역",
+    });
+    return json(null, 204);
   }
 
   if (path === "/api/companies" && method === "GET") {
-    return paginated(filterCompanies(store.companies, url), url);
+    return json(paginated(filterCompanies(store.companies, url), url));
   }
 
   if (path === "/api/companies" && method === "POST") {
     const input = await readBody<CreateCompanyBody>(route);
-    const company = createCompany(store, input);
-    store.companies.push(company);
-    return company;
+    store.companies.push(createCompany(store, input));
+    return json(null, 204);
+  }
+
+  if (path === "/api/contacts/company-options" && method === "GET") {
+    return json({
+      items: store.companies.map((company) => ({
+        id: company.id,
+        companyName: company.companyName,
+      })),
+    });
+  }
+
+  if (path === "/api/contact-departments" && method === "GET") {
+    return json({ items: store.contactDepartments });
+  }
+
+  if (path === "/api/contact-departments" && method === "POST") {
+    const input = await readBody<{ readonly departmentName?: string }>(route);
+    store.contactDepartments.push({
+      id: nextId(store, "contact-department"),
+      departmentName: input.departmentName ?? "신규 부서",
+    });
+    return json(null, 204);
+  }
+
+  if (path === "/api/contact-job-grades" && method === "GET") {
+    return json({ items: store.contactJobGrades });
+  }
+
+  if (path === "/api/contact-job-grades" && method === "POST") {
+    const input = await readBody<{ readonly jobGradeName?: string }>(route);
+    store.contactJobGrades.push({
+      id: nextId(store, "contact-job-grade"),
+      jobGradeName: input.jobGradeName ?? "신규 직급",
+    });
+    return json(null, 204);
   }
 
   if (path === "/api/contacts" && method === "GET") {
-    return paginated(filterContacts(store.contacts, url), url);
+    return json(paginated(filterContacts(store.contacts, url), url));
   }
 
   if (path === "/api/contacts" && method === "POST") {
     const input = await readBody<CreateContactBody>(route);
-    const contact = createContact(store, input);
-    store.contacts.push(contact);
-    return contact;
+    store.contacts.push(createContact(store, input));
+    store.companies = store.companies.map((company) =>
+      company.id === input.companyId
+        ? { ...company, contactCount: company.contactCount + 1 }
+        : company
+    );
+    return json(null, 204);
+  }
+
+  if (path === "/api/product-categories" && method === "GET") {
+    return json({ items: store.productCategories });
+  }
+
+  if (path === "/api/product-categories" && method === "POST") {
+    const input = await readBody<{ readonly categoryName?: string }>(route);
+    store.productCategories.push({
+      id: nextId(store, "product-category"),
+      categoryName: input.categoryName ?? "신규 카테고리",
+    });
+    return json(null, 204);
+  }
+
+  if (path === "/api/product-statuses" && method === "GET") {
+    return json({ items: store.productStatuses });
+  }
+
+  if (path === "/api/product-statuses" && method === "POST") {
+    const input = await readBody<{ readonly statusName?: string }>(route);
+    store.productStatuses.push({
+      id: nextId(store, "product-status"),
+      statusName: input.statusName ?? "신규 상태",
+    });
+    return json(null, 204);
   }
 
   if (path === "/api/products" && method === "GET") {
-    return paginated(filterProducts(store.products, url), url);
+    return json(paginated(filterProducts(store.products, url), url));
   }
 
   if (path === "/api/products" && method === "POST") {
     const input = await readBody<CreateProductBody>(route);
-    const product = createProduct(store, input);
-    store.products.push(product);
-    return product;
+    store.products.push(createProduct(store, input));
+    return json(null, 204);
+  }
+
+  if (path === "/api/deals/company-options" && method === "GET") {
+    return json({ items: store.companies.map(toDealCompany) });
+  }
+
+  if (path === "/api/deals/contact-options" && method === "GET") {
+    return json({ items: store.contacts.map(toDealContact) });
+  }
+
+  if (path === "/api/deals/product-options" && method === "GET") {
+    return json({ items: store.products.map(toDealProduct) });
+  }
+
+  if (path === "/api/deals/stage-counts" && method === "GET") {
+    return json({ items: toStageCounts(store.deals) });
   }
 
   if (path === "/api/deals" && method === "GET") {
-    const deals = filterDeals(store.deals, url);
-
-    return {
-      ...paginated(deals, url),
-      stageSummary: toStageSummary(store.deals),
-    };
+    return json(paginated(filterDeals(store.deals, url), url));
   }
 
   if (path === "/api/deals" && method === "POST") {
     const input = await readBody<CreateDealBody>(route);
     const deal = createDeal(store, input);
     store.deals.push(deal);
-    store.dealProductIds.set(deal.id, input.productIds ?? []);
-    store.dealActivities.push(createDealActivity(store, deal.id, "딜 생성"));
-    return deal;
-  }
-
-  const dealStageMatch = path.match(/^\/api\/deals\/([^/]+)\/stage$/);
-
-  if (dealStageMatch && method === "PATCH") {
-    const dealId = decodeURIComponent(dealStageMatch[1] ?? "");
-    const input = await readBody<ChangeDealStageBody>(route);
-    const deal = requireDeal(store, dealId);
-    const updated = { ...deal, stage: input.stage ?? deal.stage, updatedAt: now() };
-    replaceDeal(store, updated);
-    store.dealActivities.push(
-      createDealActivity(store, updated.id, `단계 변경: ${formatStage(updated.stage)}`)
-    );
-    return updated;
-  }
-
-  const dealActivitiesMatch = path.match(/^\/api\/deals\/([^/]+)\/activities$/);
-
-  if (dealActivitiesMatch && method === "GET") {
-    const dealId = decodeURIComponent(dealActivitiesMatch[1] ?? "");
-    return paginated(
-      store.dealActivities.filter((activity) => activity.dealId === dealId),
-      url
-    );
+    incrementDealCounts(store, deal);
+    return json(deal);
   }
 
   const dealDetailMatch = path.match(/^\/api\/deals\/([^/]+)$/);
 
   if (dealDetailMatch && method === "GET") {
-    const dealId = decodeURIComponent(dealDetailMatch[1] ?? "");
-    const deal = requireDeal(store, dealId);
+    return json(requireDeal(store, decodeURIComponent(dealDetailMatch[1] ?? "")));
+  }
 
-    return {
-      deal,
-      products: productsForDeal(store, deal.id),
-      activities: store.dealActivities.filter((activity) => activity.dealId === deal.id),
-      memos: [],
-      schedulesSummary: { totalCount: 0, upcomingCount: 0 },
-      meetingNotesSummary: { totalCount: 0, latestMeetingAt: null },
-    };
+  if (path === "/api/schedules/deal-options" && method === "GET") {
+    return json({
+      items: store.deals.map((deal) => ({
+        id: deal.id,
+        dealName: deal.dealName,
+        createdAt: deal.createdAt,
+      })),
+    });
   }
 
   if (path === "/api/schedules" && method === "GET") {
-    return {
-      rangeStart: url.searchParams.get("from") ?? "",
-      rangeEnd: url.searchParams.get("to") ?? "",
-      items: store.schedules,
-    };
+    return json({ items: store.schedules });
   }
 
   if (path === "/api/schedules" && method === "POST") {
     const input = await readBody<CreateScheduleBody>(route);
     const schedule = createSchedule(store, input);
     store.schedules.push(schedule);
-    return schedule;
+    return json(schedule);
   }
 
   const scheduleDetailMatch = path.match(/^\/api\/schedules\/([^/]+)$/);
 
   if (scheduleDetailMatch && method === "GET") {
-    const scheduleId = decodeURIComponent(scheduleDetailMatch[1] ?? "");
-    const schedule = requireSchedule(store, scheduleId);
+    return json(
+      requireSchedule(store, decodeURIComponent(scheduleDetailMatch[1] ?? ""))
+    );
+  }
 
-    return {
-      schedule,
-      deal: schedule.dealId ? { id: schedule.dealId, title: schedule.dealTitle ?? "" } : null,
-      company: schedule.companyId
-        ? { id: schedule.companyId, name: schedule.companyName ?? "" }
-        : null,
-      contact: schedule.contactId
-        ? { id: schedule.contactId, name: schedule.contactName ?? "" }
-        : null,
-      reminders: schedule.reminders,
-    };
+  if (path === "/api/meeting-notes/filter-companies" && method === "GET") {
+    return json({
+      items: store.companies.map((company) => ({
+        id: company.id,
+        companyName: company.companyName,
+        createdAt: company.createdAt,
+      })),
+    });
+  }
+
+  if (path === "/api/meeting-notes/filter-contacts" && method === "GET") {
+    return json({
+      items: store.contacts.map((contact) => ({
+        id: contact.id,
+        companyId: contact.company.id,
+        contactUsername: contact.username,
+        createdAt: contact.createdAt,
+      })),
+    });
   }
 
   if (path === "/api/meeting-notes" && method === "GET") {
-    return paginated(filterMeetingNotes(store.meetingNotes, url), url);
+    return json(paginated(filterMeetingNotes(store.meetingNotes, url), url));
   }
 
   if (path === "/api/meeting-notes" && method === "POST") {
     const input = await readBody<CreateMeetingNoteBody>(route);
     const meetingNote = createMeetingNote(store, input);
     store.meetingNotes.push(meetingNote);
-    store.meetingNoteRawText.set(meetingNote.id, input.rawText ?? "");
-    return meetingNote;
+    return json(meetingNote);
   }
 
-  const meetingNoteLinkMatch = path.match(/^\/api\/meeting-notes\/([^/]+)\/link-deal$/);
+  const meetingNoteDealsMatch = path.match(/^\/api\/meeting-notes\/([^/]+)\/deals$/);
 
-  if (meetingNoteLinkMatch && method === "POST") {
-    const meetingNoteId = decodeURIComponent(meetingNoteLinkMatch[1] ?? "");
-    const input = await readBody<LinkMeetingNoteBody>(route);
+  if (meetingNoteDealsMatch && method === "POST") {
+    const meetingNoteId = decodeURIComponent(meetingNoteDealsMatch[1] ?? "");
+    const input = await readBody<LinkMeetingNoteDealsBody>(route);
     const meetingNote = requireMeetingNote(store, meetingNoteId);
-    const deal = input.dealId ? requireDeal(store, input.dealId) : null;
     const linked = {
       ...meetingNote,
-      dealId: deal?.id ?? null,
-      dealTitle: deal?.title ?? null,
+      deals: (input.deals ?? []).map((dealId) =>
+        toMeetingNoteDeal(requireDeal(store, dealId), meetingNote.id)
+      ),
       updatedAt: now(),
     };
     replaceMeetingNote(store, linked);
-
-    if (deal) {
-      store.dealActivities.push(
-        createDealActivity(store, deal.id, input.activityTitle ?? "회의록 연결")
-      );
-    }
-
-    return linked;
+    return json(linked);
   }
 
   const meetingNoteDetailMatch = path.match(/^\/api\/meeting-notes\/([^/]+)$/);
 
   if (meetingNoteDetailMatch && method === "GET") {
-    const meetingNoteId = decodeURIComponent(meetingNoteDetailMatch[1] ?? "");
-    const meetingNote = requireMeetingNote(store, meetingNoteId);
-
-    return {
-      meetingNote,
-      deal: meetingNote.dealId
-        ? { id: meetingNote.dealId, title: meetingNote.dealTitle ?? "" }
-        : null,
-      rawText: store.meetingNoteRawText.get(meetingNote.id) ?? "",
-    };
+    return json(
+      requireMeetingNote(
+        store,
+        decodeURIComponent(meetingNoteDetailMatch[1] ?? "")
+      )
+    );
   }
 
-  return {
-    error: "MockRouteNotFound",
-    message: `${method} ${path} mock이 없습니다.`,
-  };
+  return json(
+    {
+      error: "MockRouteNotFound",
+      message: `${method} ${path} mock이 없습니다.`,
+    },
+    404
+  );
 }
 
 function createStore(): SmokeStore {
   return {
     companies: [],
+    companyFields: [{ id: "company-field-1", field: "B2C SaaS" }],
+    companyRegions: [{ id: "company-region-1", region: "서울" }],
     contacts: [],
+    contactDepartments: [{ id: "contact-department-1", departmentName: "구매팀" }],
+    contactJobGrades: [{ id: "contact-job-grade-1", jobGradeName: "팀장" }],
     products: [],
+    productCategories: [{ id: "product-category-1", categoryName: "Starter" }],
+    productStatuses: [{ id: "product-status-1", statusName: "판매중" }],
     deals: [],
-    dealProductIds: new Map(),
-    dealActivities: [],
     schedules: [],
     meetingNotes: [],
-    meetingNoteRawText: new Map(),
     sequence: 1,
   };
 }
 
 function createCompany(store: SmokeStore, input: CreateCompanyBody): Company {
-  const id = nextId(store, "company");
   const timestamp = now();
+  const companyField = requireCompanyField(store, input.companyFieldId);
+  const companyRegion = requireCompanyRegion(store, input.companyRegionId);
 
   return {
-    id,
-    name: input.name ?? COMPANY_NAME,
-    industry: input.industry ?? null,
-    region: input.region ?? null,
-    address: null,
-    website: null,
-    description: null,
-    tags: (input.tags ?? []).map((name, index) => ({
-      id: `${id}-tag-${index + 1}`,
-      name,
-      color: null,
-    })),
-    hasMemo: Boolean(input.initialMemo),
-    memoCount: input.initialMemo ? 1 : 0,
-    latestMemoAt: input.initialMemo ? timestamp : null,
+    id: nextId(store, "company"),
+    companyName: input.companyName ?? COMPANY_NAME,
+    companyField,
+    companyRegion,
     contactCount: 0,
     dealCount: 0,
-    productCount: 0,
     createdAt: timestamp,
     updatedAt: timestamp,
-    deletedAt: null,
-    permanentDeleteAt: null,
   };
 }
 
 function createContact(store: SmokeStore, input: CreateContactBody): Contact {
-  const id = nextId(store, "contact");
   const timestamp = now();
-  const company = input.companyId
-    ? store.companies.find((item) => item.id === input.companyId)
-    : null;
+  const company = requireCompany(store, input.companyId);
+  const contactDepartment = requireContactDepartment(
+    store,
+    input.contactDepartmentId
+  );
+  const contactJobGrade = requireContactJobGrade(store, input.contactJobGradeId);
 
   return {
-    id,
-    name: input.name ?? CONTACT_NAME,
-    companyId: company?.id ?? null,
-    companyName: company?.name ?? null,
-    department: input.department ?? null,
-    position: input.position ?? null,
-    phone: input.phone ?? null,
-    email: input.email ?? null,
-    address: null,
-    hasMemo: Boolean(input.initialMemo),
-    memoCount: input.initialMemo ? 1 : 0,
-    latestMemoAt: input.initialMemo ? timestamp : null,
+    id: nextId(store, "contact"),
+    company: {
+      id: company.id,
+      companyName: company.companyName,
+    },
+    username: input.username ?? CONTACT_NAME,
+    mobile: input.mobile ?? "010-1234-5678",
+    email: input.email ?? "smoke@example.com",
+    contactDepartment,
+    contactJobGrade,
     createdAt: timestamp,
     updatedAt: timestamp,
-    deletedAt: null,
-    permanentDeleteAt: null,
   };
 }
 
 function createProduct(store: SmokeStore, input: CreateProductBody): Product {
-  const id = nextId(store, "product");
   const timestamp = now();
+  const productCategory = requireProductCategory(store, input.productCategoryId);
+  const productStatus = requireProductStatus(store, input.productStatusId);
 
   return {
-    id,
-    name: input.name ?? PRODUCT_NAME,
-    category: input.category ?? null,
-    unitPrice: input.unitPrice ?? null,
-    currency: input.currency ?? "KRW",
-    description: input.description ?? null,
-    connectionCount: 0,
-    hasMemo: Boolean(input.initialMemo),
-    memoCount: input.initialMemo ? 1 : 0,
-    latestMemoAt: input.initialMemo ? timestamp : null,
+    id: nextId(store, "product"),
+    productName: input.productName ?? PRODUCT_NAME,
+    productCategory,
+    productStatus,
+    productPrice: Number(input.productPrice ?? 0),
+    dealCount: 0,
     createdAt: timestamp,
     updatedAt: timestamp,
-    deletedAt: null,
-    permanentDeleteAt: null,
   };
 }
 
 function createDeal(store: SmokeStore, input: CreateDealBody): Deal {
-  const id = nextId(store, "deal");
   const timestamp = now();
-  const company = input.companyId
-    ? store.companies.find((item) => item.id === input.companyId)
-    : null;
-  const contact = input.contactId
-    ? store.contacts.find((item) => item.id === input.contactId)
-    : null;
+  const dealStatus = input.dealStatus ?? "INITIAL_CONTACT";
+  const followingAction = input.followingAction?.trim();
 
   return {
-    id,
-    title: input.title ?? DEAL_TITLE,
-    companyId: company?.id ?? null,
-    companyName: company?.name ?? null,
-    contactId: contact?.id ?? null,
-    contactName: contact?.name ?? null,
-    amount: input.amount ?? 0,
-    currency: input.currency ?? "KRW",
-    stage: input.stage ?? "INITIAL_CONTACT",
-    likelihoodStatus: input.likelihoodStatus ?? "NEUTRAL",
-    likelihoodPercent: input.likelihoodPercent ?? null,
-    expectedCloseDate: input.expectedCloseDate ?? null,
-    nextActionText: input.nextActionText ?? null,
-    nextActionDueAt: input.nextActionDueAt ?? null,
-    nextActionStatus: input.nextActionDueAt ? "SCHEDULED" : "NONE",
-    hasMemo: Boolean(input.initialMemo),
-    memoCount: input.initialMemo ? 1 : 0,
-    latestMemoAt: input.initialMemo ? timestamp : null,
+    id: nextId(store, "deal"),
+    dealName: input.dealName ?? DEAL_TITLE,
+    dealCost: Number(input.dealCost ?? 0),
+    dealStatus,
+    dealStatusLabel: DEAL_STATUS_LABEL[dealStatus],
+    expectedEndDate: input.expectedEndDate ?? "2026-07-31",
+    companies: (input.companyIds ?? []).map((companyId) =>
+      toDealCompany(requireCompany(store, companyId))
+    ),
+    contacts: (input.contactIds ?? []).map((contactId) =>
+      toDealContact(requireContact(store, contactId))
+    ),
+    products: (input.productIds ?? []).map((productId) =>
+      toDealProduct(requireProduct(store, productId))
+    ),
+    latestFollowingAction: followingAction
+      ? {
+          id: nextId(store, "following-action"),
+          followingAction,
+          checkComplete: false,
+          createdAt: timestamp,
+        }
+      : null,
+    nextFollowingAction: followingAction
+      ? {
+          id: nextId(store, "next-following-action"),
+          followingAction,
+          checkComplete: false,
+          createdAt: timestamp,
+          remainingCount: 0,
+        }
+      : null,
     createdAt: timestamp,
     updatedAt: timestamp,
-    deletedAt: null,
-    permanentDeleteAt: null,
   };
 }
 
 function createSchedule(store: SmokeStore, input: CreateScheduleBody): Schedule {
-  const id = nextId(store, "schedule");
   const timestamp = now();
-  const deal = input.dealId ? store.deals.find((item) => item.id === input.dealId) : null;
-  const company = input.companyId
-    ? store.companies.find((item) => item.id === input.companyId)
-    : deal?.companyId
-      ? store.companies.find((item) => item.id === deal.companyId)
-      : null;
-  const contact = input.contactId
-    ? store.contacts.find((item) => item.id === input.contactId)
-    : deal?.contactId
-      ? store.contacts.find((item) => item.id === deal.contactId)
-      : null;
-  const startAt = input.startAt ?? timestamp;
-  const endAt = input.endAt ?? new Date(new Date(startAt).getTime() + 60 * 60_000).toISOString();
+  const deals = (input.dealIds ?? []).map((dealId) => {
+    const deal = requireDeal(store, dealId);
+
+    return {
+      id: deal.id,
+      dealName: deal.dealName,
+    };
+  });
 
   return {
-    id,
-    title: input.title ?? SCHEDULE_TITLE,
-    startAt,
-    endAt,
-    allDay: input.allDay ?? false,
+    id: nextId(store, "schedule"),
+    scheduleTitle: input.scheduleTitle ?? SCHEDULE_TITLE,
+    startAt: input.startAt ?? "2026-07-01T10:00",
+    endAt: input.endAt ?? "2026-07-01T11:00",
+    timeZone: input.timeZone ?? "Asia/Seoul",
     location: input.location ?? null,
     memo: input.memo ?? null,
-    source: "INTERNAL",
-    dealId: deal?.id ?? null,
-    dealTitle: deal?.title ?? null,
-    companyId: company?.id ?? null,
-    companyName: company?.name ?? null,
-    contactId: contact?.id ?? null,
-    contactName: contact?.name ?? null,
-    reminders: toReminders(id, startAt, input.reminderMinutes ?? []),
+    deals,
     createdAt: timestamp,
     updatedAt: timestamp,
-    deletedAt: null,
-    permanentDeleteAt: null,
   };
 }
 
@@ -824,152 +970,338 @@ function createMeetingNote(
   store: SmokeStore,
   input: CreateMeetingNoteBody
 ): MeetingNote {
-  const id = nextId(store, "meeting-note");
   const timestamp = now();
+  const id = nextId(store, "meeting-note");
+  const companies = (input.companies ?? []).map((companyId) =>
+    toMeetingNoteCompany(requireCompany(store, companyId), id)
+  );
+  const contacts = (input.contacts ?? []).map((contactId) =>
+    toMeetingNoteContact(requireContact(store, contactId), id)
+  );
+  const products = (input.products ?? []).map((productId) =>
+    toMeetingNoteProduct(requireProduct(store, productId), id)
+  );
+  const deals = (input.deals ?? []).map((dealId) =>
+    toMeetingNoteDeal(requireDeal(store, dealId), id)
+  );
 
   return {
     id,
-    meetingDate: input.meetingDate ?? timestamp,
-    companyName: input.companyName ?? null,
-    contactName: input.contactName ?? null,
-    department: input.department ?? null,
-    productName: input.productName ?? null,
-    stageText: input.stageText ?? null,
+    sourceType: input.sourceType ?? "MANUAL",
+    title: input.title ?? MEETING_TITLE,
+    meetingAt: input.meetingLocalDateTime ?? timestamp,
+    meetingLocalDateTime: input.meetingLocalDateTime ?? timestamp.slice(0, 16),
+    timeZone: "Asia/Seoul",
     details: input.details ?? MEETING_DETAILS,
     nextPlan: input.nextPlan ?? null,
     requiredAction: input.requiredAction ?? null,
-    dealId: null,
-    dealTitle: null,
+    companies,
+    contacts,
+    products,
+    deals,
     createdAt: timestamp,
     updatedAt: timestamp,
-    deletedAt: null,
-    permanentDeleteAt: null,
-  };
-}
-
-function createDealActivity(
-  store: SmokeStore,
-  dealId: string,
-  title: string
-): DealActivity {
-  const timestamp = now();
-
-  return {
-    id: nextId(store, "activity"),
-    dealId,
-    typeId: "activity-type-system",
-    typeName: "시스템",
-    occurredAt: timestamp,
-    title,
-    content: null,
-    isAutoGenerated: true,
-    createdAt: timestamp,
-    updatedAt: timestamp,
-    deletedAt: null,
-    permanentDeleteAt: null,
   };
 }
 
 function filterCompanies(companies: readonly Company[], url: URL) {
-  const search = url.searchParams.get("search");
+  const companyName = url.searchParams.get("companyName");
+  const fieldIds = getSearchParamValues(url, "companyFieldIds");
+  const regionIds = getSearchParamValues(url, "companyRegionIds");
 
-  return companies.filter((company) =>
-    matchesSearch([company.name, company.industry, company.region], search)
+  return companies.filter(
+    (company) =>
+      matchesSearch([company.companyName], companyName) &&
+      matchesAny(company.companyField.id, [
+        url.searchParams.get("companyFieldId"),
+        ...fieldIds,
+      ]) &&
+      matchesAny(company.companyRegion.id, [
+        url.searchParams.get("companyRegionId"),
+        ...regionIds,
+      ])
   );
 }
 
 function filterContacts(contacts: readonly Contact[], url: URL) {
-  const search = url.searchParams.get("search");
-  const companyId = url.searchParams.get("companyId");
+  const username = url.searchParams.get("username");
+  const companyIds = [
+    url.searchParams.get("companyId"),
+    ...getSearchParamValues(url, "companyIds"),
+  ];
 
   return contacts.filter(
     (contact) =>
-      (!companyId || contact.companyId === companyId) &&
-      matchesSearch(
-        [contact.name, contact.companyName, contact.phone, contact.email],
-        search
-      )
+      matchesSearch([contact.username], username) &&
+      matchesAny(contact.company.id, companyIds) &&
+      matchesAny(contact.contactDepartment.id, [
+        url.searchParams.get("contactDepartmentId"),
+      ]) &&
+      matchesAny(contact.contactJobGrade.id, [
+        url.searchParams.get("contactJobGradeId"),
+      ])
   );
 }
 
 function filterProducts(products: readonly Product[], url: URL) {
-  const search = url.searchParams.get("search");
-  const category = url.searchParams.get("category");
+  const productName = url.searchParams.get("productName");
 
   return products.filter(
     (product) =>
-      (!category || product.category === category) &&
-      matchesSearch([product.name, product.category, product.description], search)
+      matchesSearch([product.productName], productName) &&
+      matchesAny(product.productCategory.id, [
+        url.searchParams.get("productCategoryId"),
+        ...getSearchParamValues(url, "productCategoryIds"),
+      ]) &&
+      matchesAny(product.productStatus.id, [
+        url.searchParams.get("productStatusId"),
+        ...getSearchParamValues(url, "productStatusIds"),
+      ])
   );
 }
 
 function filterDeals(deals: readonly Deal[], url: URL) {
   const search = url.searchParams.get("search");
-  const stage = url.searchParams.get("stage");
+  const dealStatus = url.searchParams.get("dealStatus") as DealStatus | null;
+  const companyIds = getSearchParamValues(url, "companyIds");
+  const contactIds = getSearchParamValues(url, "contactIds");
 
   return deals.filter(
     (deal) =>
-      (!stage || deal.stage === stage) &&
-      matchesSearch([deal.title, deal.companyName, deal.contactName], search)
+      matchesSearch(
+        [
+          deal.dealName,
+          ...deal.companies.map((company) => company.companyName),
+          ...deal.contacts.map((contact) => contact.username),
+        ],
+        search
+      ) &&
+      (!dealStatus || deal.dealStatus === dealStatus) &&
+      matchesOneOf(
+        deal.companies.map((company) => company.id),
+        companyIds
+      ) &&
+      matchesOneOf(
+        deal.contacts.map((contact) => contact.id),
+        contactIds
+      )
   );
 }
 
 function filterMeetingNotes(meetingNotes: readonly MeetingNote[], url: URL) {
   const search = url.searchParams.get("search");
-  const dealId = url.searchParams.get("dealId");
+  const companyIds = getSearchParamValues(url, "companyIds");
+  const contactIds = getSearchParamValues(url, "contactIds");
 
   return meetingNotes.filter(
     (meetingNote) =>
-      (!dealId || meetingNote.dealId === dealId) &&
       matchesSearch(
         [
-          meetingNote.companyName,
-          meetingNote.contactName,
-          meetingNote.productName,
+          meetingNote.title,
           meetingNote.details,
+          ...meetingNote.companies.map((company) => company.companyNameSnapshot),
+          ...meetingNote.contacts.map((contact) => contact.contactUsernameSnapshot),
+          ...meetingNote.products.map((product) => product.productNameSnapshot),
+          ...meetingNote.deals.map((deal) => deal.dealNameSnapshot),
         ],
         search
+      ) &&
+      matchesOneOf(
+        meetingNote.companies
+          .map((company) => company.companyId)
+          .filter(isNonNullable),
+        companyIds
+      ) &&
+      matchesOneOf(
+        meetingNote.contacts
+          .map((contact) => contact.contactId)
+          .filter(isNonNullable),
+        contactIds
       )
   );
 }
 
-function productsForDeal(store: SmokeStore, dealId: string) {
-  const productIds = store.dealProductIds.get(dealId) ?? [];
-
-  return store.products.filter((product) => productIds.includes(product.id));
-}
-
-function toStageSummary(deals: readonly Deal[]) {
-  const summary: Record<DealStage, number> = {
-    INITIAL_CONTACT: 0,
-    IN_DISCUSSION: 0,
-    WON: 0,
-    LOST: 0,
+function toDealCompany(company: Company): DealCompany {
+  return {
+    id: company.id,
+    companyName: company.companyName,
+    isDeleted: false,
+    companyField: company.companyField,
+    companyRegion: company.companyRegion,
   };
-
-  for (const deal of deals) {
-    summary[deal.stage] += 1;
-  }
-
-  return summary;
 }
 
-function toReminders(
-  scheduleId: string,
-  startAt: string,
-  minutes: readonly number[]
-): ScheduleReminder[] {
-  const startAtMs = new Date(startAt).getTime();
+function toDealContact(contact: Contact): DealContact {
+  return {
+    id: contact.id,
+    username: contact.username,
+    isDeleted: false,
+    companyId: contact.company.id,
+    company: {
+      id: contact.company.id,
+      companyName: contact.company.companyName,
+      isDeleted: false,
+    },
+    mobile: contact.mobile,
+    email: contact.email,
+    contactDepartment: contact.contactDepartment,
+    contactJobGrade: contact.contactJobGrade,
+    label: `${contact.username} · ${contact.company.companyName}`,
+  };
+}
 
-  return minutes.map((minute) => ({
-    id: `${scheduleId}-reminder-${minute}`,
-    channel: "browser",
-    remindAt: new Date(startAtMs - minute * 60_000).toISOString(),
-    sentAt: null,
-    status: "PENDING",
+function toDealProduct(product: Product): DealProduct {
+  return {
+    id: product.id,
+    productName: product.productName,
+    isDeleted: false,
+    productPrice: product.productPrice,
+    productCategory: product.productCategory,
+    productStatus: product.productStatus,
+  };
+}
+
+function toMeetingNoteCompany(
+  company: Company,
+  meetingNoteId: string
+): MeetingNoteCompany {
+  return {
+    id: `${meetingNoteId}-company-${company.id}`,
+    companyId: company.id,
+    isDeleted: false,
+    companyNameSnapshot: company.companyName,
+    companyFieldSnapshot: company.companyField.field,
+    companyRegionSnapshot: company.companyRegion.region,
     createdAt: now(),
-    updatedAt: now(),
+  };
+}
+
+function toMeetingNoteContact(
+  contact: Contact,
+  meetingNoteId: string
+): MeetingNoteContact {
+  return {
+    id: `${meetingNoteId}-contact-${contact.id}`,
+    contactId: contact.id,
+    companyId: contact.company.id,
+    isDeleted: false,
+    contactUsernameSnapshot: contact.username,
+    contactEmailSnapshot: contact.email,
+    contactMobileSnapshot: contact.mobile,
+    companyNameSnapshot: contact.company.companyName,
+    departmentSnapshot: contact.contactDepartment.departmentName,
+    jobGradeSnapshot: contact.contactJobGrade.jobGradeName,
+    createdAt: now(),
+  };
+}
+
+function toMeetingNoteProduct(
+  product: Product,
+  meetingNoteId: string
+): MeetingNoteProduct {
+  return {
+    id: `${meetingNoteId}-product-${product.id}`,
+    productId: product.id,
+    isDeleted: false,
+    productNameSnapshot: product.productName,
+    productPriceSnapshot: product.productPrice,
+    productCategorySnapshot: product.productCategory.categoryName,
+    productStatusSnapshot: product.productStatus.statusName,
+    createdAt: now(),
+  };
+}
+
+function toMeetingNoteDeal(deal: Deal, meetingNoteId: string): MeetingNoteDeal {
+  return {
+    id: `${meetingNoteId}-deal-${deal.id}`,
+    dealId: deal.id,
+    isDeleted: false,
+    dealNameSnapshot: deal.dealName,
+    dealStatusSnapshot: deal.dealStatusLabel,
+    dealCostSnapshot: deal.dealCost,
+    dealExpectedEndDateSnapshot: deal.expectedEndDate,
+    createdAt: now(),
+  };
+}
+
+function toStageCounts(deals: readonly Deal[]) {
+  return DEAL_STATUS_LIST.map((dealStatus) => ({
+    dealStatus,
+    dealStatusLabel: DEAL_STATUS_LABEL[dealStatus],
+    count: deals.filter((deal) => deal.dealStatus === dealStatus).length,
   }));
+}
+
+function toMeetingNoteSummary(labels: readonly string[]): MeetingNoteSummary {
+  return {
+    label: labels[0] ?? "-",
+    count: labels.length,
+  };
+}
+
+function paginated<TItem>(items: readonly TItem[], url: URL) {
+  const page = Math.max(1, Number(url.searchParams.get("page") ?? "1"));
+  const pageSize = Math.max(1, Number(url.searchParams.get("pageSize") ?? "10"));
+  const totalPages = Math.max(1, Math.ceil(items.length / pageSize));
+  const start = (page - 1) * pageSize;
+  const pagedItems = items.slice(start, start + pageSize).map((item) =>
+    isMeetingNote(item) ? toMeetingNoteListItem(item) : item
+  );
+
+  return {
+    items: pagedItems,
+    page,
+    pageSize,
+    totalCount: items.length,
+    totalPages,
+  };
+}
+
+function toMeetingNoteListItem(meetingNote: MeetingNote) {
+  return {
+    id: meetingNote.id,
+    title: meetingNote.title,
+    meetingAt: meetingNote.meetingAt,
+    sourceType: meetingNote.sourceType,
+    companies: toMeetingNoteSummary(
+      meetingNote.companies.map((company) => company.companyNameSnapshot)
+    ),
+    contacts: toMeetingNoteSummary(
+      meetingNote.contacts.map((contact) => contact.contactUsernameSnapshot)
+    ),
+    products: toMeetingNoteSummary(
+      meetingNote.products.map((product) => product.productNameSnapshot)
+    ),
+    deals: toMeetingNoteSummary(
+      meetingNote.deals.map((deal) => deal.dealNameSnapshot)
+    ),
+    createdAt: meetingNote.createdAt,
+  };
+}
+
+function isMeetingNote(item: unknown): item is MeetingNote {
+  return (
+    typeof item === "object" &&
+    item !== null &&
+    "sourceType" in item &&
+    "meetingLocalDateTime" in item
+  );
+}
+
+function incrementDealCounts(store: SmokeStore, deal: Deal) {
+  const companyIds = new Set(deal.companies.map((company) => company.id));
+  const productIds = new Set(deal.products.map((product) => product.id));
+
+  store.companies = store.companies.map((company) =>
+    companyIds.has(company.id)
+      ? { ...company, dealCount: company.dealCount + 1 }
+      : company
+  );
+  store.products = store.products.map((product) =>
+    productIds.has(product.id)
+      ? { ...product, dealCount: product.dealCount + 1 }
+      : product
+  );
 }
 
 function matchesSearch(
@@ -985,14 +1317,119 @@ function matchesSearch(
   return fields.some((field) => field?.toLowerCase().includes(normalized));
 }
 
-function replaceDeal(store: SmokeStore, deal: Deal) {
-  store.deals = store.deals.map((item) => (item.id === deal.id ? deal : item));
+function matchesAny(value: string, candidates: readonly (string | null)[]) {
+  const filtered = candidates.filter(isNonNullable);
+
+  return filtered.length === 0 || filtered.includes(value);
 }
 
-function replaceMeetingNote(store: SmokeStore, meetingNote: MeetingNote) {
-  store.meetingNotes = store.meetingNotes.map((item) =>
-    item.id === meetingNote.id ? meetingNote : item
+function matchesOneOf(values: readonly string[], candidates: readonly string[]) {
+  return candidates.length === 0 || values.some((value) => candidates.includes(value));
+}
+
+function getSearchParamValues(url: URL, key: string) {
+  return url.searchParams.getAll(key).filter(Boolean);
+}
+
+function requireCompany(store: SmokeStore, companyId: string | undefined) {
+  const company = store.companies.find((item) => item.id === companyId);
+
+  if (!company) {
+    throw new Error(`Company not found: ${companyId ?? "(empty)"}`);
+  }
+
+  return company;
+}
+
+function requireCompanyField(store: SmokeStore, fieldId: string | undefined) {
+  const field = store.companyFields.find((item) => item.id === fieldId);
+
+  if (!field) {
+    throw new Error(`Company field not found: ${fieldId ?? "(empty)"}`);
+  }
+
+  return field;
+}
+
+function requireCompanyRegion(store: SmokeStore, regionId: string | undefined) {
+  const region = store.companyRegions.find((item) => item.id === regionId);
+
+  if (!region) {
+    throw new Error(`Company region not found: ${regionId ?? "(empty)"}`);
+  }
+
+  return region;
+}
+
+function requireContact(store: SmokeStore, contactId: string | undefined) {
+  const contact = store.contacts.find((item) => item.id === contactId);
+
+  if (!contact) {
+    throw new Error(`Contact not found: ${contactId ?? "(empty)"}`);
+  }
+
+  return contact;
+}
+
+function requireContactDepartment(
+  store: SmokeStore,
+  departmentId: string | undefined
+) {
+  const department = store.contactDepartments.find(
+    (item) => item.id === departmentId
   );
+
+  if (!department) {
+    throw new Error(`Contact department not found: ${departmentId ?? "(empty)"}`);
+  }
+
+  return department;
+}
+
+function requireContactJobGrade(
+  store: SmokeStore,
+  jobGradeId: string | undefined
+) {
+  const jobGrade = store.contactJobGrades.find((item) => item.id === jobGradeId);
+
+  if (!jobGrade) {
+    throw new Error(`Contact job grade not found: ${jobGradeId ?? "(empty)"}`);
+  }
+
+  return jobGrade;
+}
+
+function requireProduct(store: SmokeStore, productId: string | undefined) {
+  const product = store.products.find((item) => item.id === productId);
+
+  if (!product) {
+    throw new Error(`Product not found: ${productId ?? "(empty)"}`);
+  }
+
+  return product;
+}
+
+function requireProductCategory(
+  store: SmokeStore,
+  categoryId: string | undefined
+) {
+  const category = store.productCategories.find((item) => item.id === categoryId);
+
+  if (!category) {
+    throw new Error(`Product category not found: ${categoryId ?? "(empty)"}`);
+  }
+
+  return category;
+}
+
+function requireProductStatus(store: SmokeStore, statusId: string | undefined) {
+  const status = store.productStatuses.find((item) => item.id === statusId);
+
+  if (!status) {
+    throw new Error(`Product status not found: ${statusId ?? "(empty)"}`);
+  }
+
+  return status;
 }
 
 function requireDeal(store: SmokeStore, dealId: string) {
@@ -1025,19 +1462,14 @@ function requireMeetingNote(store: SmokeStore, meetingNoteId: string) {
   return meetingNote;
 }
 
-function paginated<TItem>(items: readonly TItem[], url: URL) {
-  const page = Math.max(1, Number(url.searchParams.get("page") ?? "1"));
-  const pageSize = Math.max(1, Number(url.searchParams.get("pageSize") ?? "10"));
-  const start = (page - 1) * pageSize;
-  const pagedItems = items.slice(start, start + pageSize);
+function replaceMeetingNote(store: SmokeStore, meetingNote: MeetingNote) {
+  store.meetingNotes = store.meetingNotes.map((item) =>
+    item.id === meetingNote.id ? meetingNote : item
+  );
+}
 
-  return {
-    items: pagedItems,
-    page,
-    pageSize,
-    totalCount: items.length,
-    hasNext: start + pageSize < items.length,
-  };
+function json(body: unknown, status?: number): MockApiResponse {
+  return { body, status };
 }
 
 async function readBody<TBody>(route: Route): Promise<TBody> {
@@ -1074,21 +1506,65 @@ function now() {
   return "2026-06-07T09:00:00.000Z";
 }
 
-function formatStage(stage: DealStage) {
-  const labels: Record<DealStage, string> = {
-    INITIAL_CONTACT: "초기 접촉",
-    IN_DISCUSSION: "논의 중",
-    WON: "수주",
-    LOST: "실주",
-  };
-
-  return labels[stage];
+function isNonNullable<TValue>(
+  value: TValue | null | undefined
+): value is TValue {
+  return value !== null && value !== undefined;
 }
 
 function getDialog(page: Page, title: string) {
-  return page.locator('[role="dialog"]').filter({ hasText: title });
+  return page.getByRole("dialog", { name: title }).first();
 }
 
 async function goToNav(page: Page, name: string) {
   await page.getByRole("link", { name }).first().click();
+}
+
+async function expectAndCloseNotice(page: Page, message: string) {
+  const noticeText = page.getByText(message).first();
+  const closeButton = page.getByRole("button", { name: "닫기" }).first();
+
+  await expect(noticeText).toBeVisible();
+
+  if (await closeButton.isVisible({ timeout: 500 }).catch(() => false)) {
+    await closeButton.click({ force: true, timeout: 2_000 }).catch(() => undefined);
+    await expect(noticeText).toBeHidden({ timeout: 3_000 }).catch(() => undefined);
+  }
+}
+
+async function selectManagedOption(
+  scope: Locator,
+  inputName: string,
+  optionName: string
+) {
+  await scope.getByLabel(inputName, { exact: true }).fill(optionName);
+  await scope
+    .getByRole("button", { name: optionName, exact: true })
+    .first()
+    .click();
+}
+
+async function selectSearchOption(
+  scope: Locator,
+  label: string,
+  optionName: string
+) {
+  await scope.getByLabel(label, { exact: true }).fill(optionName);
+  await scope
+    .getByRole("button", { name: new RegExp(escapeRegExp(optionName)) })
+    .first()
+    .click();
+}
+
+async function selectEntityOption(
+  dialog: Locator,
+  triggerName: string,
+  optionName: string
+) {
+  await dialog.getByRole("button", { name: triggerName }).click();
+  await dialog.getByLabel(new RegExp(escapeRegExp(optionName))).check();
+}
+
+function escapeRegExp(value: string) {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
