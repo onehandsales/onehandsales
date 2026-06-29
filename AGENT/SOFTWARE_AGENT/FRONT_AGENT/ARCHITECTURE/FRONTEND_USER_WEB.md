@@ -119,6 +119,27 @@ mock/placeholder 경계를 유지해야 하는 항목:
 - `/api/exports` 기반 generic Export job. 현재 Export 정책은 도메인별 xlsx 다운로드이므로 route를 숨기고 신규 작업에서 generic Export 화면/API를 확장하지 않는다.
 - Notification. FE feature는 있으나 route와 진입 버튼은 Backend module/API 구현 전까지 숨긴다.
 
+## 5A. BusinessCard OCR Frontend 기준
+
+명함 스캔 route는 `/business-cards`다. 사이드바와 모바일 더보기 메뉴에서는 `명함 스캔`으로 노출하고, 아이콘은 lucide `Camera`를 사용한다. `/contacts/scan`은 legacy redirect만 유지한다.
+
+목록 UX:
+
+- 등록일 최신순 고정. 별도 정렬 select를 만들지 않는다.
+- 상태 필터는 담당자 목록의 회사 필터와 같은 multi-select combobox 패턴을 사용한다.
+- 상태 필터 안에는 `상태 초기화` 액션을 둔다.
+- 전체 상태로 되돌리는 상단 액션은 회사 목록의 reset icon 버튼 패턴을 따른다.
+
+`명함등록` 모달 UX:
+
+- 최초 상태에서는 이미지 업로드만 보여준다.
+- 사용자가 `명함등록`을 누르면 OCR 요청을 보내고 이미지 영역에 `명함등록 중` 진행 표시를 올린다.
+- 요청 중에는 파일 교체/삭제와 모달 닫기를 막는다.
+- OCR 성공 후에는 추출 결과 확인/수정 폼만 보여준다.
+- 수정 필드는 회사명, 회사분야, 회사지역, 담당자명, 휴대폰, 이메일, 부서, 직급이다.
+- 휴대폰은 Frontend에서 `010-0000-0000` 형태로 포맷한다.
+- 같은 모달에서 재촬영/재시도 흐름은 제공하지 않는다.
+
 ## 6. Search 구현 기준
 
 상단 통합검색은 `features/search`에 둔다.

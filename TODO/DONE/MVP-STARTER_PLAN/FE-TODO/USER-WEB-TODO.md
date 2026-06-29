@@ -316,7 +316,7 @@ src/lib/api-client.ts
 ### 완료 기준
 
 - 담당자는 회사 아래 사람이라는 구조가 UI에서 명확하다.
-- 회사 없이 저장하는 예외도 가능하지만, 후보 연결을 먼저 제안한다.
+- 회사 없이 저장하는 예외는 제공하지 않는다.
 
 ## 8. 제품 Feature
 
@@ -502,18 +502,18 @@ src/lib/api-client.ts
 
 ### 화면
 
-- `/contacts/scan`
+- `/business-cards`
+- `/contacts/scan`은 legacy redirect
 
 ### 작업 목록
 
 - 이미지 업로드
 - 파일 형식/크기 검증
-- OCR 처리 상태
+- `명함등록 중` 진행 표시
 - OCR 결과 확인/수정 form
-- 기존 회사 후보 표시
-- 기존 회사 연결
-- 새 회사 생성
-- 회사 없이 담당자 저장
+- 상태 다중 필터와 `상태 초기화`
+- 확정 저장 시 Backend가 기존 회사/담당자를 재사용하거나 없으면 생성
+- 회사 없는 담당자 저장은 제공하지 않음
 
 ### 완료 기준
 
@@ -623,7 +623,7 @@ src/lib/api-client.ts
 
 ### Full E2E
 
-- 명함 OCR 실제 연동 flow
+- 명함 OCR 실제 연동 flow: 이미지 업로드, 진행 표시, 확인/수정, 확정 저장
 - Import AI 매핑 실제 연동 flow
 - Export flow
 - 휴지통 복구

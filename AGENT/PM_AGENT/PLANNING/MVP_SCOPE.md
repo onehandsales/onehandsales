@@ -13,7 +13,7 @@
 - Auth/User: `/api/auth/providers`, `/api/auth/exchange`, `/api/auth/refresh`, `/api/auth/logout`, `/api/me`, `/admin/api/me`, `/api/users/me/profile`, `/api/users/me/devices`.
 - Company: 목록/상세/생성/수정, 분야/지역 옵션, 일반 메모, 개인 비밀 메모, `contactCount`, `dealCount`, 연결 Contact/Deal 목록, xlsx export.
 - Contact: 목록/상세/생성/수정, 회사 옵션, 직급/부서 옵션, 일반 메모, 개인 비밀 메모, 연결 Deal 목록, xlsx export.
-- BusinessCard OCR: `BusinessCardScanLog`, 이미지 업로드 OCR, 성공/실패 로그 저장, 사용자 확인/수정 후 회사/담당자 확정 저장.
+- BusinessCard OCR: `BusinessCardScanLog`, 이미지 업로드 OCR, OpenAI strict JSON schema 응답, 성공/실패/확정 로그 저장, 등록일 최신순 내역, 상태 다중 필터, 사용자 확인/수정 후 회사/담당자 확정 저장.
 - Product: 목록/상세/생성/수정, 카테고리/상태 옵션, 일반 메모, 개인 비밀 메모, `dealCount`, `sort=dealCountDesc|dealCountAsc`, 연결 Deal 목록, xlsx export.
 - Deal: 단계별 count, 목록/상세/생성/수정, 회사/담당자/제품 옵션, 제품 N:M 연결, 다음 행동 로그, 일반 메모 로그, xlsx export.
 - Schedule: 딜 옵션, 목록/상세/생성/수정/삭제, 딜 N:M 연결, 사용자 timezone 기준 local time 변환.
@@ -101,7 +101,7 @@
 - 담당자 상세의 연결 Deal 전체 목록
 - 현재 필터 기준 xlsx export
 - 삭제와 휴지통 7일 무료 복구
-- 명함 OCR 확인/수정 후 저장 flow
+- 명함 OCR 확인/수정 후 회사/담당자 저장 flow. 확인 필드는 회사명, 회사분야, 회사지역, 담당자명, 휴대폰, 이메일, 부서, 직급이다.
 
 ### 후속 MVP 포함
 
@@ -111,7 +111,7 @@
 ### 제외
 
 - 모바일 카메라 촬영 OCR
-- 자동 회사 확정 저장
+- 사용자 확인 없는 자동 회사/담당자 확정 저장
 
 ## 5. 제품
 

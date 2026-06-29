@@ -48,7 +48,7 @@
 | G13-G16 | Deal User Web | 딜 목록, inline 생성, 상세 패널, home pipeline | `API-SPEC/G06-G12-ENDPOINT-CONTRACT.md`의 Deal 계약 | `Deal`, `Company`, `Contact`, `Product`, `DealActivity`, `PersonalMemo` |
 | G17-G18 | Schedule | 월간 기본 캘린더, 주간 보기 전환, 생성 form, 주간 보고서 | `API-SPEC/G17-G29-WORKFLOW-AUTOMATION-API.md`, `API-SPEC/G17-G29-ENDPOINT-CONTRACT.md` | `Schedule`, `ScheduleReminder`, `ExternalCalendarConnection` |
 | G19-G20 | MeetingNote | 회의록 목록, 생성, AI 결과, 딜 연결 | `API-SPEC/G17-G29-ENDPOINT-CONTRACT.md`의 MeetingNote 계약 | `MeetingNote`, `AiJob`, `DealActivity` |
-| G21-G22 | BusinessCard OCR | 명함 업로드, OCR 결과 확인, 확정 저장 | `API-SPEC/G17-G29-ENDPOINT-CONTRACT.md`의 BusinessCard 계약 | `BusinessCardScan`, `AiJob`, `Company`, `Contact` |
+| G21-G22 | BusinessCard OCR | 명함 업로드, OCR 결과 확인, 확정 저장 | `API-SPEC/G17-G29-ENDPOINT-CONTRACT.md`의 BusinessCard 계약 | `BusinessCardScanLog`, `Company`, `Contact` |
 | G23-G24 | Import | 파일 업로드, 매핑 확인, 실행 결과 | `API-SPEC/G17-G29-ENDPOINT-CONTRACT.md`의 Import 계약 | `ImportJob`, `ImportJobRow`, 대상 도메인 모델 |
 | G25-G26 | Export | Export 생성, 상태, 다운로드 | `API-SPEC/G17-G29-ENDPOINT-CONTRACT.md`의 Export 계약 | `ExportJob`, 대상 도메인 모델 |
 | G27 | Notification | 알림 목록, 읽음 처리, 알림 설정 | `API-SPEC/G17-G29-ENDPOINT-CONTRACT.md`의 Notification 계약 | `Notification`, `UserSetting` |

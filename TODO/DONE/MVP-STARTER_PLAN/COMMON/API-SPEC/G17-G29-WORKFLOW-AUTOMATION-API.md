@@ -125,37 +125,39 @@
 
 | API 이름 | API 식별자 | Method | Path | Request 이름 | Response 이름 | 연결 DB |
 |---|---|---|---|---|---|---|
-| 명함 OCR 요청 API | `ScanBusinessCard` | `POST` | `/api/business-cards/scan` | `ScanBusinessCardRequest` | `BusinessCardScanResponse` | BusinessCardScan, AiJob |
-| OCR 결과 조회 API | `GetBusinessCardScan` | `GET` | `/api/business-cards/:scanId` | `GetBusinessCardScanRequest` | `BusinessCardScanDetailResponse` | BusinessCardScan |
-| OCR 결과 확정 저장 API | `ConfirmBusinessCardScan` | `POST` | `/api/business-cards/:scanId/confirm` | `ConfirmBusinessCardScanRequest` | `BusinessCardConfirmResponse` | Company, Contact, BusinessCardScan |
+| 명함 OCR 요청 API | `ScanBusinessCard` | `POST` | `/api/business-card-scans` | `ScanBusinessCardRequest` | `BusinessCardScanLogResponse` | BusinessCardScanLog |
+| OCR 내역 조회 API | `ListBusinessCardScans` | `GET` | `/api/business-card-scans` | `ListBusinessCardScansRequest` | `BusinessCardScanLogListResponse` | BusinessCardScanLog |
+| OCR 결과 조회 API | `GetBusinessCardScan` | `GET` | `/api/business-card-scans/:scanLogId` | `GetBusinessCardScanRequest` | `BusinessCardScanLogResponse` | BusinessCardScanLog |
+| OCR 결과 확정 저장 API | `ConfirmBusinessCardScan` | `POST` | `/api/business-card-scans/:scanLogId/confirm` | `ConfirmBusinessCardScanRequest` | `BusinessCardConfirmResponse` | Company, Contact, BusinessCardScanLog |
 
 ### BusinessCard request/response
 
 | Request 이름 | 필드 |
 |---|---|
-| `ScanBusinessCardRequest` | `imageFile:file 필수`, `memo?:string` |
-| `ConfirmBusinessCardScanRequest` | `scanId:string path 필수`, `companyMode:EXISTING|NEW|NONE`, `companyId?:string`, `companyName?:string`, `contactName:string 필수`, `department?:string`, `position?:string`, `phone?:string`, `email?:string` |
+| `ScanBusinessCardRequest` | `multipart/form-data image:file 필수` |
+| `ListBusinessCardScansRequest` | `page?:number`, `status?: OCR_SUCCESS | OCR_FAILED | CONFIRMED` 반복 query 또는 comma-separated query |
+| `ConfirmBusinessCardScanRequest` | `scanLogId:string path 필수`, `companyName:string`, `companyFieldName?:string`, `companyRegionName?:string`, `contactName:string`, `contactMobile:string(010-0000-0000)`, `contactEmail:string`, `contactDepartmentName?:string`, `contactJobGradeName?:string` |
 
 | Response 이름 | 주요 필드 |
 |---|---|
-| `BusinessCardScanResponse` | `scanId`, `status`, `createdAt` |
-| `BusinessCardScanDetailResponse` | `scanId`, `status`, `extracted`, `companyCandidates[]`, `errorMessage` |
-| `BusinessCardConfirmResponse` | `company?:CompanyResponse`, `contact:ContactResponse` |
+| `BusinessCardScanLogResponse` | `id`, `status`, OCR/보정 field, provider 사용량, `createdAt`, `updatedAt` |
+| `BusinessCardScanLogListResponse` | `items`, `page`, `pageSize`, `totalCount`, `totalPages` |
+| `BusinessCardConfirmResponse` | 확정된 `scanLog`, `company`, `contact`, resolution |
 
 ### BusinessCard 비즈니스 로직과 DB
 
-1. 이미지 확장자와 용량을 validation한다.
-2. Backend가 `StoragePort`로 명함 이미지를 Supabase Storage에 저장한다.
-3. `BusinessCardScan`에는 이미지 public URL이 아니라 bucket/object key 중심 metadata를 저장한다.
-4. OCR adapter는 port 뒤에서 호출하며 MVP 기능은 실제 OpenAI/OCR provider를 사용한다.
-5. OCR 결과는 자동 저장하지 않는다.
-6. 기존 회사 후보를 보여주고 사용자가 확정해야 Company/Contact가 생성된다.
-7. 회사 없이 담당자 저장도 허용한다.
+1. 이미지 파일을 validation한다.
+2. OCR adapter는 BusinessCard OCR provider port 뒤에서 호출하며 현재 구현은 OpenAI Responses API와 strict JSON schema를 사용한다.
+3. 업로드 이미지는 저장하지 않는다.
+4. 성공/실패와 관계없이 `BusinessCardScanLog`를 생성한다. 실패 상세는 이 테이블이 아니라 애플리케이션 로그에 남긴다.
+5. OCR 결과는 Company/Contact에 자동 저장하지 않는다.
+6. 사용자가 확인/수정한 값으로 확정 저장할 때 기존 회사/담당자를 재사용하거나 새로 만든다.
+7. 회사 없이 담당자 저장은 허용하지 않는다.
 
-- 생성: BusinessCardScan, AiJob, Company, Contact, storage object
-- 조회: BusinessCardScan, Company
-- 수정: BusinessCardScan.status
-- transaction: 확정 저장 시 Company/Contact/BusinessCardScan 상태 변경 transaction 필요
+- 생성: BusinessCardScanLog, Company, Contact
+- 조회: BusinessCardScanLog
+- 수정: BusinessCardScanLog.status, companyId, contactId, resolution
+- transaction: 확정 저장 시 Company/Contact/BusinessCardScanLog 상태 변경 transaction 필요
 - 에러: `InvalidImageFile` 400, `BusinessCardScanNotFound` 404, `BusinessCardAlreadyConfirmed` 409
 
 ## 6. Import/Export API

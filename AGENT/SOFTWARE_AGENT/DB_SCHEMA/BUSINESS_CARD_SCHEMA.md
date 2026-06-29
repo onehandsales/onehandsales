@@ -49,14 +49,21 @@
 인덱스:
 
 - `[userId, createdAt]`: 사용자별 최신 명함 스캔 내역
-- `[userId, status, createdAt]`: 상태 필터
+- `[userId, status, createdAt]`: 상태 필터. FE 상태 다중 필터는 `GET /api/business-card-scans`에 반복 query 또는 comma-separated query로 전달한다.
 - `[userId, companyId]`: 확정 저장 후 회사 기준 분석
 - `[userId, contactId]`: 확정 저장 후 담당자 기준 분석
+
+목록 조회 기준:
+
+- 사용자별 내역은 등록일 최신순으로 보여준다.
+- 별도 정렬 조건은 두지 않는다.
+- status는 `OCR_SUCCESS`, `OCR_FAILED`, `CONFIRMED` 중 여러 값을 동시에 필터링할 수 있다.
 
 저장 흐름:
 
 1. `POST /api/business-card-scans`가 이미지를 OCR provider에 전달한다.
-2. 성공/실패와 관계없이 `BusinessCardScanLog`를 생성한다.
-3. 성공 시 FE는 추출값을 사용자에게 보여주고 확인/수정하게 한다.
-4. `POST /api/business-card-scans/:scanLogId/confirm`이 보정값으로 기존 회사/담당자를 재사용하거나 새로 만든다.
-5. 같은 transaction에서 scan log를 `CONFIRMED`로 업데이트하고 `companyId`, `contactId`, resolution을 기록한다.
+2. OpenAI adapter는 strict JSON schema 응답으로 회사/담당자 후보 값을 받는다.
+3. 성공/실패와 관계없이 `BusinessCardScanLog`를 생성한다.
+4. 성공 시 FE는 추출값을 사용자에게 보여주고 확인/수정하게 한다.
+5. `POST /api/business-card-scans/:scanLogId/confirm`이 보정값으로 기존 회사/담당자를 재사용하거나 새로 만든다.
+6. 같은 transaction에서 scan log를 `CONFIRMED`로 업데이트하고 `companyId`, `contactId`, resolution을 기록한다.

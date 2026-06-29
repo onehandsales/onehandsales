@@ -52,6 +52,7 @@ VITE_SUPABASE_REDIRECT_URL="http://localhost:5173/auth/callback"
 - Home dashboard
 - Company
 - Contact
+- BusinessCard OCR/명함 스캔
 - Product
 - Deal
 - Schedule
@@ -59,14 +60,16 @@ VITE_SUPABASE_REDIRECT_URL="http://localhost:5173/auth/callback"
 - MeetingNote AI/STT draft
 - MeetingNote deal link
 - Search
+- Trash
 - Company/Contact/Product/Deal soft delete UX/API
+- Company/Contact/Product/Deal xlsx export
 
 mock/placeholder 경계:
 
-- BusinessCard OCR
 - generic Import/Export job
 - Notification
-- Trash
+
+BusinessCard OCR/명함 스캔은 `/business-cards`에서 실제 API와 연결된다. 목록은 등록일 최신순 고정이며, 상태 다중 필터와 `상태 초기화`를 제공한다. `명함등록` 모달은 최초에는 이미지 업로드만 보여주고, 요청 중에는 진행 표시를 띄우며, 성공 후 추출 결과 확인/수정 폼을 보여준다.
 
 ## 검증
 

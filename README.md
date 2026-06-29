@@ -47,7 +47,7 @@ Health check:
 curl http://localhost:3000/api/health
 ```
 
-현재 Backend는 Auth/User, Company, Contact, Product, Deal, Schedule, MeetingNote, Search, Trash 모듈을 구현한다. Company/Contact/Product/Deal은 각 도메인별 xlsx export API를 제공한다. Admin API는 현재 `GET /admin/api/me`만 구현되어 있으며 관리자 페이지와 운영 조회 API는 후속 단계에서 만든다.
+현재 Backend는 Auth/User, Company, Contact, BusinessCard OCR, Product, Deal, Schedule, MeetingNote, Search, Trash 모듈을 구현한다. Company/Contact/Product/Deal은 각 도메인별 xlsx export API를 제공한다. Admin API는 현재 `GET /admin/api/me`만 구현되어 있으며 관리자 페이지와 운영 조회 API는 후속 단계에서 만든다.
 
 ### 2. User Web
 
@@ -61,6 +61,8 @@ pnpm run dev
 User Web URL: `http://localhost:5173`
 
 User Web은 Supabase OAuth callback과 Backend token exchange를 사용한다. 개발 편의를 위한 mock login 경로도 남아 있으며, app access token은 storage가 아니라 memory 중심으로 다룬다.
+
+명함 스캔은 `/business-cards`에서 실제 API와 연결되어 있다. 사용자는 이미지를 업로드한 뒤 `명함등록` 진행 표시를 보고, 추출 결과를 확인/수정한 후 회사/담당자로 저장한다.
 
 ### 3. Admin Web
 
@@ -118,13 +120,15 @@ Playwright smoke E2E는 기본적으로 Backend와 외부 Provider를 route mock
 주요 env:
 
 - Supabase Auth/Storage: `SUPABASE_URL`, `SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`, `SUPABASE_JWKS_URL`, `SUPABASE_JWT_ISSUER`
-- OpenAI/OCR/AI mapping: `OPENAI_API_KEY`, `OPENAI_MEETING_NOTE_DRAFT_MODEL`, `OPENAI_MEETING_NOTE_STT_MODEL`, `OPENAI_MODEL_BUSINESS_CARD_OCR`, `OPENAI_MODEL_IMPORT_MAPPING`
+- OpenAI/OCR/AI mapping: `OPENAI_API_KEY`, `OPENAI_MEETING_NOTE_DRAFT_MODEL`, `OPENAI_MEETING_NOTE_STT_MODEL`, `OPENAI_BUSINESS_CARD_OCR_MODEL`, `OPENAI_MODEL_IMPORT_MAPPING`
 - Google Calendar: `GOOGLE_CALENDAR_CLIENT_ID`, `GOOGLE_CALENDAR_CLIENT_SECRET`, `GOOGLE_CALENDAR_REDIRECT_URI`
 - Email: `SMTP_HOST`, `SMTP_PORT`, `SMTP_SECURE`, `SMTP_USER`, `SMTP_PASSWORD`, `SMTP_FROM`
 - Browser push: `VAPID_PUBLIC_KEY`, `VAPID_PRIVATE_KEY`, `VAPID_SUBJECT`
 - Encryption/session: `ENCRYPTION_MASTER_KEY`, `APP_JWT_SECRET`, `APP_REFRESH_TOKEN_SECRET`
 
 MeetingNote AI 초안 생성과 STT는 Backend에서 별도 provider port로 분리되어 있다. AI 초안 생성은 OpenAI를 기본으로 사용하고, STT는 현재 OpenAI adapter를 쓰되 provider 교체 시 STT adapter만 바꾸는 구조다.
+
+BusinessCard OCR도 별도 provider port 뒤에 있으며, 현재 OpenAI Responses API와 strict JSON schema 응답을 사용한다. prompt와 응답 schema는 `BE/src/modules/business-card/infrastructure/providers/openai-business-card-ocr.provider.ts`에 있다.
 
 ## Rules
 
@@ -135,6 +139,3 @@ MeetingNote AI 초안 생성과 STT는 Backend에서 별도 provider port로 분
 - 모바일 앱은 아직 만들지 않는다. MVP 이후 모바일 개발 때 추가한다.
 - `AGENT`는 PM, UX/UI, Software 역할별 정본 문서 공간이다.
 - `archive`는 참고용이며 `AGENT`를 override하지 않는다.
-
-
-실제로 동작하는지 테스트

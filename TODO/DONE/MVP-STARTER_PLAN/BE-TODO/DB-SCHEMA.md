@@ -6,6 +6,12 @@
 
 기준은 Prisma와 PostgreSQL이다. managed business DB는 Supabase Cloud PostgreSQL이고, NestJS Backend가 Prisma로 직접 접속해 application layer에서 transaction을 관리한다. local/integration/E2E test DB는 Docker PostgreSQL을 사용할 수 있다. 실제 구현 시 `BE/prisma/schema.prisma`에 반영하되, migration 적용 후에는 migration 파일을 수정하거나 삭제하지 않는다.
 
+보관 문서 주의:
+
+- 이 문서는 MVP starter 당시의 초안이다. 현재 DB 정본은 `BE/prisma/schema.prisma`와 `AGENT/SOFTWARE_AGENT/DB_SCHEMA` 문서다.
+- BusinessCard OCR은 현재 `BusinessCardScan`/`AiJob`/이미지 storage metadata 모델을 쓰지 않고, `BusinessCardScanLog`에 성공/실패/확정 로그와 provider 사용량을 저장한다.
+- 업로드 이미지는 저장하지 않는다.
+
 ## 2. 설계 원칙
 
 - 기본 PK는 UUID를 사용한다.

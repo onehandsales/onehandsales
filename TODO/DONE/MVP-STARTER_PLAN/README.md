@@ -6,6 +6,8 @@
 
 제품 정본은 `AGENT` 문서에 있고, 이 폴더는 실제 구현자가 Frontend와 Backend 작업을 어떤 순서로 진행해야 하는지 확인하기 위한 작업 문서다.
 
+보관 문서 주의: 이 폴더는 MVP starter 완료 이력이다. 현재 구현 정본은 `AGENT` 문서와 실제 `BE`, `FE` 코드다. 특히 BusinessCard OCR은 현재 `TODO/DONE/BUSINESS_CARD_OCR_PLAN`, `AGENT/SOFTWARE_AGENT/DB_SCHEMA/BUSINESS_CARD_SCHEMA.md`, `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/ARCHITECTURE/BACKEND.md`, `AGENT/SOFTWARE_AGENT/FRONT_AGENT/ARCHITECTURE/FRONTEND_USER_WEB.md`를 우선한다.
+
 ## 2. 폴더 구조
 
 ```text

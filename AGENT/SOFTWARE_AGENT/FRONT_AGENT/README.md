@@ -58,6 +58,7 @@ User Web:
 
 - 실제 API 연동 완료: Auth/User, Home, Company, Contact, BusinessCard OCR, Product, Deal, Schedule, MeetingNote manual CRUD, MeetingNote AI/STT draft, MeetingNote deal link, Search, Trash, Company/Contact/Product/Deal domain xlsx export.
 - mock/placeholder 경계: generic Import, generic Export route/API, Notification.
+- BusinessCard OCR 화면은 `/business-cards`다. 목록은 등록일 최신순 고정, 상태 다중 필터와 `상태 초기화`를 제공하고, `명함등록` 모달은 이미지 업로드 -> 진행 표시 -> 추출 결과 확인/수정 -> 저장 흐름을 사용한다.
 
 Admin Web:
 

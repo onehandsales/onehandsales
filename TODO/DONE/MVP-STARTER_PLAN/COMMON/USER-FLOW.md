@@ -107,28 +107,26 @@
 
 ### 화면 흐름
 
-1. 사용자가 `/contacts/scan` 또는 `/business-cards`에서 명함 이미지를 업로드한다.
+1. 사용자가 `/business-cards`에서 명함 이미지를 업로드한다. `/contacts/scan`은 legacy redirect다.
 2. OCR 처리 중 상태를 확인한다.
-3. AI가 추출한 회사명, 이름, 전화번호, 이메일, 부서, 직급을 확인한다.
-4. 기존 회사 후보가 있으면 선택한다.
-5. 기존 회사 연결, 새 회사 생성, 회사 없이 저장 중 하나를 선택한다.
-6. 담당자를 저장한다.
+3. AI가 추출한 회사명, 회사분야, 회사지역, 이름, 전화번호, 이메일, 부서, 직급을 확인한다.
+4. 사용자가 잘못된 값을 수정한다.
+5. 저장하면 Backend가 기존 회사/담당자를 재사용하거나 없으면 생성한다.
+6. 회사 없는 담당자 저장은 허용하지 않는다.
 
 ### Backend 처리
 
 - 이미지 업로드 파일 검증
-- `StoragePort` 뒤의 Supabase Storage adapter에 이미지 저장. DB에는 bucket/object key 중심의 중립 metadata를 저장한다.
-- OpenAI OCR port 호출
-- OCR 결과 정규화
-- 기존 회사 후보 검색
-- 사용자가 확정한 결과로 `Company`, `Contact`, `BusinessCardScan` 저장
+- OpenAI OCR port 호출. 현재 adapter는 Responses API와 strict JSON schema를 사용한다.
+- 업로드 이미지는 저장하지 않는다.
+- 성공/실패 로그를 `BusinessCardScanLog`에 저장한다.
+- 사용자가 확정한 결과로 `Company`, `Contact`를 재사용하거나 생성하고 `BusinessCardScanLog`를 `CONFIRMED`로 업데이트한다.
 
 ### 주요 데이터
 
-- `BusinessCardScan`
+- `BusinessCardScanLog`
 - `Company`
 - `Contact`
-- `AuditLog`
 
 ### 완료 기준
 

@@ -21,6 +21,7 @@
 처리:
 
 - OpenAI OCR provider 호출
+- OpenAI adapter는 strict JSON schema 응답을 요구함
 - 성공 시 `BusinessCardScanLog.status=OCR_SUCCESS`
 - 실패 시 `BusinessCardScanLog.status=OCR_FAILED`
 - Company/Contact는 생성하지 않음
@@ -30,6 +31,11 @@
 ### GET `/api/business-card-scans`
 
 명함 스캔 내역 조회.
+
+정렬:
+
+- 등록일 최신순 고정
+- 별도 sort query 없음
 
 Query:
 

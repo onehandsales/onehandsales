@@ -3,7 +3,7 @@
 > 제품명: 한손에 영업 / onehand.sales  
 > 상태: MVP 정본 초안  
 > 기준: `AGENT/PM_AGENT/DECISIONS/000_확정_결정.md`
-> 현재 구현 스냅샷: 2026-06-19 `BE`, `FE/user-web`, `FE/admin-web`
+> 현재 구현 스냅샷: 2026-06-29 `BE`, `FE/user-web`, `FE/admin-web`
 
 ---
 
@@ -51,7 +51,7 @@
 
 - 구현 완료: Auth/User, 홈 대시보드, 회사, 담당자, 제품, 딜, 일정, 회의록 직접 작성/저장, 회의록 AI/STT draft UI, 회의록 저장 후 딜 연동/활동 로그 생성, 회의록 삭제/휴지통 복구, 통합검색 Backend API와 User Web GlobalSearch, 휴지통 목록/상세/7일 이내 복구.
 - 구현 완료: Company/Contact/Product/Deal 도메인별 xlsx export. 범용 ExportJob은 현재 제품 방향에서 사용하지 않는다.
-- 구현 완료: 명함 OCR은 `/business-cards` 화면과 `/api/business-card-scans` API로 제공한다.
+- 구현 완료: 명함 OCR은 `/business-cards` 화면과 `/api/business-card-scans` API로 제공한다. 이미지를 업로드하면 `명함등록` 진행 표시 후 추출값을 확인/수정하고, 저장 시 회사/담당자를 재사용하거나 생성한다.
 - FE code는 남아 있으나 화면에서 숨김: 알림, 범용 Import, 범용 `/export` route.
 - Backend 미구현 또는 후속 범위: 범용 Import job, Notification, Admin 페이지/운영 조회/감사/민감 원문 API, MeetingNote Admin API, 범용 DealActivity table, 7일 이후 유료 복구 API.
 - Admin Backend는 `GET /admin/api/me`만 구현되어 있으며 관리자 페이지는 후속 단계에서 만든다.
@@ -71,6 +71,7 @@
 - 회의록 텍스트 입력 기반 AI 정리
 - 회의록 음성 STT+AI 정리
 - 회의록 딜 연결
+- 명함 이미지 업로드 OCR과 확인/수정 후 회사/담당자 저장
 - 회사/담당자/제품/딜 엑셀 다운로드
 - Memo 기록
 - 민감정보 저장 경고
@@ -85,7 +86,6 @@
 - 구글 캘린더 일정 가져오기
 - 주간 일정 보고서 화면/PDF/Excel 출력
 - 알림: 이메일, 브라우저 푸시
-- 명함 이미지 업로드 OCR
 - Excel/CSV Import AI 컬럼 매핑
 - 범용 ExportJob과 `/api/exports`
 - 태그 관리

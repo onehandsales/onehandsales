@@ -88,6 +88,7 @@ Completed Backend TODO plans:
 - `TODO/DONE/ADDITIONAL_WORK_PLAN/BE-TODO/G01-G12`
 - `TODO/DONE/INTEGRATED_SEARCH_PLAN/BE-TODO/G01-BE-INTEGRATED-SEARCH.goal.md`
 - `TODO/DONE/MEETING_NOTE_AI_STT_PLAN/BE-TODO/G01-BE-MEETING-NOTE-AI-STT-DRAFT.goal.md`
+- `TODO/DONE/BUSINESS_CARD_OCR_PLAN`
 
 Current response notes:
 
@@ -103,6 +104,7 @@ Current response notes:
 - `POST /api/meeting-notes/ai-draft` and `POST /api/meeting-notes/stt-draft` generate draft fields only. They do not create a meeting note row.
 - `POST /api/meeting-notes/:meetingNoteId/deals` adds deal links to a saved meeting note and writes linked deal following-action logs.
 - `POST /api/business-card-scans` accepts an image file as `image`, calls OpenAI OCR, stores `OCR_SUCCESS` or `OCR_FAILED` in `BusinessCardScanLog`, and does not create Company/Contact.
+- `GET /api/business-card-scans` supports `page` and repeated or comma-separated `status=OCR_SUCCESS|OCR_FAILED|CONFIRMED` filters. Results are ordered by newest registration first.
 - `POST /api/business-card-scans/:scanLogId/confirm` requires user-confirmed fields, reuses existing Company/Contact when found, creates missing Company/Contact and taxonomy rows when needed, and updates the scan log to `CONFIRMED`.
 - BusinessCard OCR does not store the uploaded image. The log stores extracted/corrected fields, provider model, token/cost metrics, `costCurrency`, `pendingTimeMs`, and linked company/contact IDs after confirmation.
 - `DELETE /api/meeting-notes/:meetingNoteId` is a soft delete API and the deleted row can be restored through Trash while it remains within retention.
@@ -320,6 +322,7 @@ Rules:
 - Provider-specific prompt/response handling belongs in infrastructure adapters.
 - MeetingNote AI draft and STT must remain separate provider ports.
 - BusinessCard OCR must remain a separate provider port from MeetingNote AI draft/STT.
+- BusinessCard OCR OpenAI adapter uses the Responses API with strict JSON schema output. The prompt constant and schema live in `BE/src/modules/business-card/infrastructure/providers/openai-business-card-ocr.provider.ts`.
 - STT provider adapters may be replaced independently of the OpenAI AI draft adapter.
 - MeetingNote AI/STT draft APIs generate editable drafts only. Final save remains `POST /api/meeting-notes`.
 - BusinessCard OCR APIs generate editable company/contact candidate fields only. Final save remains `POST /api/business-card-scans/:scanLogId/confirm`.

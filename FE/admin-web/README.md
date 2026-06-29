@@ -90,10 +90,7 @@ Smoke 범위:
 
 - Admin login
 - non-admin 접근 차단
-- 사용자 목록/상세 조회 화면
-- 전체 딜 목록 조회 화면
-- 민감 데이터 masking 확인
-- 사유 입력 후 원문 조회 UI 확인
-- 감사 로그 UI 확인
+- `/admin/api/me` 보호 라우트 검증
+- Backend 미구현 운영 화면의 route 숨김/redirect 경계 확인
 
 Vercel project root: `FE/admin-web`

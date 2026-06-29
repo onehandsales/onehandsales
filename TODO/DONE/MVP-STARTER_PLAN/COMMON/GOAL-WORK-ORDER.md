@@ -226,7 +226,7 @@ P6. 테스트와 릴리즈 준비
 - `BE/prisma/schema.prisma` 작성
 - User, Company, CompanyLog, Contact, ContactLog, Product, ProductLog, Deal, DealActivity, PersonalMemo 핵심 모델
 - Schedule, MeetingNote, Tag, AuditLog 기본 모델
-- ImportJob, ExportJob, Notification, AiJob 기본 모델
+- ImportJob, ExportJob, Notification 기본 모델. BusinessCard OCR은 현재 `BusinessCardScanLog`를 사용하고 별도 `AiJob`을 두지 않는다.
 - Prisma client 생성
 - 초기 migration 생성
 - system DealActivityType seed
@@ -694,11 +694,11 @@ P6. 테스트와 릴리즈 준비
 
 포함 범위:
 
-- BusinessCardScan model 사용
+- BusinessCardScanLog model 사용
 - 이미지 업로드 검증
 - OCR port
 - 실제 OpenAI/OCR adapter
-- 기존 회사 후보 검색
+- 성공/실패 로그 저장
 - OCR 결과 확정 저장 API
 
 제외 범위:
@@ -720,11 +720,11 @@ P6. 테스트와 릴리즈 준비
 포함 범위:
 
 - 이미지 업로드 UI
-- OCR 처리 상태
+- `명함등록 중` 진행 표시
 - OCR 결과 수정 form
-- 기존 회사 후보 선택
-- 새 회사 생성
-- 회사 없이 담당자 저장
+- 상태 다중 필터와 `상태 초기화`
+- 회사/담당자 재사용 또는 생성 확정 저장
+- 회사 없는 담당자 저장 금지
 
 제외 범위:
 

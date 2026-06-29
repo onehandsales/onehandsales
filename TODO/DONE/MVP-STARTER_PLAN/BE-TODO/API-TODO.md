@@ -457,24 +457,24 @@ BE/
 - 명함 이미지 업로드
 - OCR 처리
 - OCR 결과 확인용 데이터 저장
-- 회사 후보 제안
 - 사용자 확정 후 회사/담당자 저장
-- 명함 이미지는 `StoragePort`로 저장하고 DB에는 bucket/object key 중심 metadata 저장
+- 명함 이미지는 저장하지 않고 성공/실패/확정 로그를 `BusinessCardScanLog`에 저장
 
 ### User API
 
 | Method | Path | 설명 |
 |---|---|---|
-| `POST` | `/api/business-cards/scan` | 명함 OCR 요청 |
-| `GET` | `/api/business-cards/:scanId` | OCR 결과 조회 |
-| `POST` | `/api/business-cards/:scanId/confirm` | OCR 결과 확정 저장 |
+| `POST` | `/api/business-card-scans` | 명함 OCR 요청 |
+| `GET` | `/api/business-card-scans` | 명함 스캔 내역 조회 |
+| `GET` | `/api/business-card-scans/:scanLogId` | OCR 결과 조회 |
+| `POST` | `/api/business-card-scans/:scanLogId/confirm` | OCR 결과 확정 저장 |
 
 ### 완료 기준
 
 - 명함 OCR은 실제 OpenAI/OCR adapter를 통해 동작한다.
 - OCR 결과는 자동 저장되지 않는다.
 - 사용자가 확정해야 회사/담당자 데이터가 생성된다.
-- Supabase Storage SDK는 infrastructure adapter 내부에서만 사용된다.
+- 업로드 이미지는 저장하지 않는다.
 
 ## 13. Import/Export 모듈
 

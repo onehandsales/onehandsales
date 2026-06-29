@@ -280,7 +280,7 @@ APP_REFRESH_TOKEN_SECRET=""
 INITIAL_ADMIN_EMAILS=""
 STORAGE_PROVIDER="supabase"
 SUPABASE_SERVICE_ROLE_KEY=""
-SUPABASE_STORAGE_BUCKET_BUSINESS_CARDS="business-card-images"
+# Current BusinessCard OCR implementation does not store uploaded images.
 SUPABASE_STORAGE_BUCKET_IMPORTS="imports"
 SUPABASE_STORAGE_BUCKET_EXPORTS="exports"
 ENCRYPTION_MASTER_KEY=""
@@ -501,7 +501,7 @@ SUPABASE_JWT_ISSUER="https://xxxx.supabase.co/auth/v1"
 - MVP 1차 파일 저장소는 `Supabase Storage adapter`로 시작한다.
 - Backend는 `StoragePort`를 정의하고, application/domain 계층은 Supabase Storage SDK나 Supabase URL 형식에 직접 의존하지 않는다.
 - 이후 서비스 규모가 커지면 `StoragePort` 구현체를 `AwsS3StorageAdapter`로 교체할 수 있게 만든다.
-- 명함 OCR 이미지, Import 원본 파일, Export 생성 파일은 모두 같은 `StoragePort` 계약을 사용한다.
+- 현재 BusinessCard OCR 구현은 업로드 이미지를 저장하지 않는다. Import 원본 파일과 Export 생성 파일 저장이 필요해질 때는 별도 계획에서 파일 저장 port를 확정한다.
 - FE는 MVP 1차에서 파일을 Backend API로 업로드하고, Backend가 파일 검증 후 Supabase Storage에 저장한다.
 - DB에는 provider 전용 public URL을 정본으로 저장하지 않는다.
 - DB에는 `storageProvider`, `bucket`, `objectKey`, `contentType`, `sizeBytes`, `fileName` 같은 중립 metadata를 저장한다.
@@ -519,12 +519,12 @@ SUPABASE_JWT_ISSUER="https://xxxx.supabase.co/auth/v1"
 
 - Backend shared/infrastructure 계층에 `StoragePort`와 `SupabaseStorageAdapter`를 만든다.
 - 추후 AWS 이전 시 `AwsS3StorageAdapter`를 추가하고 `STORAGE_PROVIDER` 값으로 구현체를 전환한다.
-- `BusinessCardScan`은 이미지의 `bucket`, `objectKey`, `contentType`, `sizeBytes`를 저장한다.
+- BusinessCard OCR은 `BusinessCardScanLog`에 성공/실패/확정 로그와 추출/보정값, provider 사용량을 저장하며 업로드 이미지는 저장하지 않는다.
 - `ImportJob`은 업로드 원본 파일의 `bucket`, `objectKey`, `contentType`, `sizeBytes`, `fileName`을 저장한다.
 - `ExportJob`은 생성된 파일의 `bucket`, `objectKey`, `contentType`, `sizeBytes`, `fileName`, `expiresAt`을 저장한다.
-- `POST /api/business-cards/scan`, `POST /api/imports`, Export 생성 API는 파일 저장 성공 후 DB 상태를 갱신한다.
+- `POST /api/business-card-scans`는 이미지 파일을 OCR provider에 전달하지만 이미지를 저장하지 않는다. `POST /api/imports`, Export 생성 API는 파일 저장 정책 확정 후 DB 상태를 갱신한다.
 - Export 다운로드 API는 DB의 object metadata를 기준으로 `StoragePort`에서 stream 또는 signed URL을 얻어 반환한다.
-- Supabase Storage bucket 예시는 `business-card-images`, `imports`, `exports`로 둔다.
+- Supabase Storage bucket 예시는 현재 Import/Export 후보 기준으로 `imports`, `exports`를 둔다.
 
 ### D16. 민감정보 암호화 적용 범위
 
@@ -615,7 +615,7 @@ SUPABASE_JWT_ISSUER="https://xxxx.supabase.co/auth/v1"
 - `GoogleCalendarPort`의 기본 infrastructure 구현은 실제 Google Calendar API adapter다.
 - `AiMeetingNotePort`, `BusinessCardOcrPort`, `ImportMappingPort`의 기본 infrastructure 구현은 실제 OpenAI adapter다.
 - 각 실제 adapter는 timeout, retry 기준, provider error mapping, request/response logging redaction을 가진다.
-- `AiJob`에는 provider, prompt/input summary, status, error message, token/cost 추적용 metadata를 저장할 수 있게 한다.
+- BusinessCard OCR은 별도 `AiJob` 없이 `BusinessCardScanLog`에 provider model, prompt snapshot, token/cost metric, 처리 시간을 저장한다.
 - User Web은 실제 provider 처리 중 loading, 실패, 재시도, provider 연결 필요 상태를 표시한다.
 - 자동 테스트는 실제 provider를 항상 호출하지 않고 stub/mock adapter를 사용할 수 있다. 단, 별도 provider smoke test는 실제 개발용 credential로 실행할 수 있어야 한다.
 - `.env.example`에는 아래 예시를 포함한다.
@@ -623,7 +623,7 @@ SUPABASE_JWT_ISSUER="https://xxxx.supabase.co/auth/v1"
 ```env
 OPENAI_API_KEY=""
 OPENAI_MODEL_MEETING_NOTE=""
-OPENAI_MODEL_BUSINESS_CARD_OCR=""
+OPENAI_BUSINESS_CARD_OCR_MODEL=""
 OPENAI_MODEL_IMPORT_MAPPING=""
 
 GOOGLE_CALENDAR_CLIENT_ID=""
