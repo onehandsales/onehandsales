@@ -11,6 +11,7 @@ PM 관점에서 사용자의 문제, 제품 가치, 포함/제외 범위, 도메
 - `SERVICE_OVERVIEW.md`: 서비스가 기획상 어떤 제품인지 한 문서로 이해하기 위한 개요
 - `PRD.md`: 제품 정의, 타겟, 핵심 문제, 핵심 가치
 - `MVP_SCOPE.md`: MVP 포함/제외 기능과 개발 우선순위
+- `IMPLEMENTATION_STATUS.md`: 현재 BE/FE 기준 완료, 부분 완료, 후속 기능의 AGENT 정본 현황
 - `DATA_MODEL.md`: 제품 관점의 핵심 도메인 모델
 
 ## 3. 작성 원칙
