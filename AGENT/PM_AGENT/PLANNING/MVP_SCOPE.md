@@ -277,10 +277,12 @@
 
 ### 현재 구현된 도메인별 Export
 
-- 회사: `GET /api/companies/export/xlsx`, 정본 액션명 `회사 엑셀 다운로드`
-- 담당자: `GET /api/contacts/export/xlsx`, 정본 액션명 `담당자 엑셀 다운로드`
-- 제품: `GET /api/products/export/xlsx`, 정본 액션명 `제품 엑셀 다운로드`
-- 딜: `GET /api/deals/export/xlsx`, 정본 액션명 `딜 엑셀 다운로드`
+- 회사: `GET /api/companies/export/xlsx`, User Web 표시 문구 `엑셀 다운로드`
+- 담당자: `GET /api/contacts/export/xlsx`, User Web 표시 문구 `엑셀 다운로드`
+- 제품: `GET /api/products/export/xlsx`, User Web 표시 문구 `엑셀 다운로드`
+- 딜: `GET /api/deals/export/xlsx`, User Web 표시 문구 `엑셀 다운로드`
+
+도메인 구분은 버튼 문구가 아니라 사용자가 보고 있는 목록 화면과 호출 API로 판단한다.
 - export 요청은 현재 목록의 검색어/필터/정렬을 반영하고 `page`는 제외한다.
 
 ### 후속 Import 후보

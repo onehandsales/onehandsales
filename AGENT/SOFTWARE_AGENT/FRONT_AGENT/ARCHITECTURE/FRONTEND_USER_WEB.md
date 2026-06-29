@@ -100,12 +100,12 @@
 
 도메인별 export 기준:
 
-- Company: `GET /api/companies/export/xlsx`, 정본 액션명 `회사 엑셀 다운로드`
-- Contact: `GET /api/contacts/export/xlsx`, 정본 액션명 `담당자 엑셀 다운로드`
-- Product: `GET /api/products/export/xlsx`, 정본 액션명 `제품 엑셀 다운로드`
-- Deal: `GET /api/deals/export/xlsx`, 정본 액션명 `딜 엑셀 다운로드`
+- Company: `GET /api/companies/export/xlsx`, 표시 문구 `엑셀 다운로드`
+- Contact: `GET /api/contacts/export/xlsx`, 표시 문구 `엑셀 다운로드`
+- Product: `GET /api/products/export/xlsx`, 표시 문구 `엑셀 다운로드`
+- Deal: `GET /api/deals/export/xlsx`, 표시 문구 `엑셀 다운로드`
 
-현재 FE 구현은 각 목록의 `Download` icon action이 공통 tooltip/aria-label `액셀 다운로드`를 사용한다. UI 문구를 정본 액션명과 정확히 맞출 필요가 있으면 FE 라벨 정렬 작업을 별도로 진행한다.
+도메인 구분은 버튼 문구가 아니라 사용자가 보고 있는 목록 화면과 호출 API로 판단한다. 각 목록의 `Download` icon action은 공통 tooltip/aria-label `엑셀 다운로드`를 사용한다.
 - export 요청은 현재 목록 검색어/필터/정렬을 반영하고 `page`는 제외한다.
 
 Backend는 구현되었지만 Frontend 연결이 남은 항목:

@@ -208,7 +208,7 @@ export function ProductListScreen({
         actions={[
           {
             icon: Download,
-            tooltip: "액셀 다운로드",
+            tooltip: "엑셀 다운로드",
             onClick: () => void onExport(),
             disabled: isExporting,
           },

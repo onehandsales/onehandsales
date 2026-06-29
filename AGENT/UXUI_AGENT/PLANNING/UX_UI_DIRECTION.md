@@ -278,7 +278,7 @@ Primary navigation should make these areas easy to reach:
 Current visibility rule:
 
 - `Import` and generic `Export` routes/features may remain in code, but they are hidden from the main sidebar until core domain UX is stable.
-- Export for the current product is handled by domain-level actions. Canonical action names are `회사 엑셀 다운로드`, `담당자 엑셀 다운로드`, `제품 엑셀 다운로드`, `딜 엑셀 다운로드`.
+- Export for the current product is handled by domain-level actions. The visible User Web label is the common `엑셀 다운로드`; the current list screen and API determine whether it exports companies, contacts, products, or deals.
 - `휴지통` is exposed in the management section because delete and restore are now active user workflows. It should use a full-width list layout, row-click detail modal, and modal-only restore action.
 - Do not surface deferred features in primary navigation just because a route exists.
 
