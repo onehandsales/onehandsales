@@ -8,6 +8,7 @@ import { AuthModule } from "./modules/auth/infrastructure/auth.module";
 import { BusinessCardModule } from "./modules/business-card/infrastructure/business-card.module";
 import { CompanyModule } from "./modules/company/infrastructure/company.module";
 import { ContactModule } from "./modules/contact/infrastructure/contact.module";
+import { DataImportModule } from "./modules/data-import/infrastructure/data-import.module";
 import { DealModule } from "./modules/deal/infrastructure/deal.module";
 import { HealthModule } from "./modules/health/infrastructure/health.module";
 import { MeetingNoteModule } from "./modules/meeting-note/infrastructure/meeting-note.module";
@@ -31,6 +32,7 @@ import { RequestIdMiddleware } from "./shared/presentation/middleware/request-id
     UserModule,
     CompanyModule,
     ContactModule,
+    DataImportModule,
     ProductModule,
     DealModule,
     ScheduleModule,

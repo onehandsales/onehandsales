@@ -11,6 +11,7 @@ import { DealDetailPage } from "@/pages/deals/detail";
 import { DealsPage } from "@/pages/deals";
 import { DealNewPage } from "@/pages/deals/new";
 import { HomePage } from "@/pages/home";
+import { ImportDetailPage } from "@/pages/import/detail";
 import { ImportPage } from "@/pages/import";
 import { LoginPage } from "@/pages/login";
 import { MeetingNoteDetailPage } from "@/pages/meeting-notes/detail";
@@ -63,6 +64,7 @@ export const router = createBrowserRouter([
       { path: "business-cards", element: <BusinessCardsPage /> },
       { path: "notifications", element: <Navigate replace to="/" /> },
       { path: "import", element: <ImportPage /> },
+      { path: "import/:importUserLogId", element: <ImportDetailPage /> },
       { path: "export", element: <Navigate replace to="/" /> },
       { path: "trash", element: <TrashPage /> },
       { path: "settings", element: <SettingsPage /> },

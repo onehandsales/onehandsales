@@ -7,12 +7,24 @@ export function createXlsxDownloadResponse(
   response: Response,
   file: ExportedXlsxFileResponse
 ): StreamableFile {
+  const asciiFileName = createAsciiDownloadFileName(file.fileName);
+  const encodedFileName = encodeURIComponent(file.fileName);
+
   response.setHeader("Content-Type", file.contentType);
   response.setHeader(
     "Content-Disposition",
-    `attachment; filename="${file.fileName}"`
+    `attachment; filename="${asciiFileName}"; filename*=UTF-8''${encodedFileName}`
   );
   response.setHeader("Content-Length", file.content.length.toString());
 
   return new StreamableFile(file.content);
+}
+
+// 기능 : Content-Disposition filename fallback에 사용할 ASCII 파일명을 생성합니다.
+function createAsciiDownloadFileName(fileName: string): string {
+  const normalized = fileName
+    .replace(/["\\]/g, "_")
+    .replace(/[^\x20-\x7E]/g, "_");
+
+  return normalized.trim() || "download.xlsx";
 }

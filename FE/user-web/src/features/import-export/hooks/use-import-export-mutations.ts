@@ -8,6 +8,7 @@ import {
   updateImportMapping,
 } from "@/features/import-export/api/import-export-api";
 import { importExportQueryKeys } from "@/features/import-export/api/import-export-query-keys";
+import { importUserLogQueryKeys } from "@/features/import-export/api/import-template-query-keys";
 import type {
   ConfirmImportJobInput,
   CreateExportJobInput,
@@ -63,6 +64,9 @@ export function useConfirmImportJobMutation(importJobId: string) {
       void queryClient.invalidateQueries({ queryKey: ["contact"] });
       void queryClient.invalidateQueries({ queryKey: ["product"] });
       void queryClient.invalidateQueries({ queryKey: ["deal"] });
+      void queryClient.invalidateQueries({
+        queryKey: importUserLogQueryKeys.lists(),
+      });
     },
   });
 }

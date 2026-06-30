@@ -1,205 +1,333 @@
 import {
   AlertCircle,
   Building2,
+  ChevronDown,
   CheckCircle2,
-  Columns3,
-  FileSpreadsheet,
+  Download,
   Handshake,
   Loader2,
   Package,
-  Play,
   Plus,
-  Save,
-  Sparkles,
+  RotateCcw,
+  Search,
   Upload,
   UserRound,
+  WandSparkles,
   X,
   type LucideIcon,
 } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import { useNavigate } from "react-router-dom";
+import { PageHeader } from "@/components/layout/page-header";
+import { ModalShell } from "@/components/ui/modal-shell";
+import { Pagination } from "@/components/ui/pagination";
+import { ListEmptyState } from "@/components/ui/state";
+import { useCompanyOptions } from "@/features/contact/hooks/use-company-options";
 import {
   useConfirmImportJobMutation,
   useCreateImportJobMutation,
   useGenerateImportMappingMutation,
   useUpdateImportMappingMutation,
 } from "@/features/import-export/hooks/use-import-export-mutations";
-import { PageHeader } from "@/components/layout/page-header";
-import { ModalShell } from "@/components/ui/modal-shell";
-import { useImportJobDetail } from "@/features/import-export/hooks/use-import-export-queries";
 import {
-  createEmptyMapping,
+  useActiveImportTemplates,
+  useDownloadImportTemplateMutation,
+  useImportUserLogList,
+} from "@/features/import-export/hooks/use-import-template-queries";
+import {
   hasRequiredMapping,
   importTargetFields,
-  importTargetOptions,
   validateImportFile,
+  type ImportTargetField,
 } from "@/features/import-export/schemas/import-export-schema";
 import type {
+  ImportFieldValue,
   ImportJobResponse,
-  ImportJobResultResponse,
-  ImportJobRow,
+  ImportMappedRowData,
   ImportMapping,
-  ImportMappingResponse,
-  ImportRowStatus,
   ImportTargetType,
 } from "@/features/import-export/types/import-export";
-import { getApiErrorMessage } from "@/lib/api-client";
+import type {
+  ImportTemplateItem,
+  ImportTemplateType,
+} from "@/features/import-export/types/import-template";
+import type { ImportUserLogListItem } from "@/features/import-export/types/import-user-log";
+import { getApiErrorMessage, type ApiBlobResponse } from "@/lib/api-client";
+import { cn } from "@/utils/cn";
+import { formatDateWithOptions } from "@/utils/format";
 
-const targetIcons: Record<ImportTargetType, LucideIcon> = {
+const IMPORT_LOG_TABLE_GRID_STYLE = {
+  gridTemplateColumns:
+    "minmax(0,1.05fr) minmax(0,1.5fr) minmax(0,1fr) minmax(0,0.85fr) minmax(0,0.85fr) minmax(0,1.05fr)",
+};
+
+const targetIcons: Record<ImportTemplateType, LucideIcon> = {
   COMPANY: Building2,
   CONTACT: UserRound,
   PRODUCT: Package,
   DEAL: Handshake,
 };
 
+const targetLabels: Record<ImportTemplateType, string> = {
+  COMPANY: "회사",
+  CONTACT: "담당자",
+  PRODUCT: "제품",
+  DEAL: "딜",
+};
+
+const TARGET_FILTER_OPTIONS: Array<{
+  readonly value: "ALL" | ImportTemplateType;
+  readonly label: string;
+}> = [
+  { value: "ALL", label: "전체" },
+  { value: "COMPANY", label: "회사" },
+  { value: "CONTACT", label: "담당자" },
+  { value: "PRODUCT", label: "제품" },
+  { value: "DEAL", label: "딜" },
+];
+type ImportTargetFilterItem = {
+  readonly id: ImportTemplateType;
+  readonly label: string;
+};
+const TARGET_FILTER_ITEMS: readonly ImportTargetFilterItem[] =
+  TARGET_FILTER_OPTIONS.flatMap((option) =>
+    option.value === "ALL" ? [] : [{ id: option.value, label: option.label }]
+  );
+const IMPORT_EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const IMPORT_MOBILE_PATTERN = /^010-\d{4}-\d{4}$/;
+const IMPORT_MOBILE_DIGIT_PATTERN = /^010\d{8}$/;
+
+type EditableImportRow = {
+  readonly rowNumber: number;
+  readonly data: ImportMappedRowData;
+  readonly errorMessage: string | null;
+};
+
 export function ImportScreen() {
-  const [targetType, setTargetType] = useState<ImportTargetType>("COMPANY");
-  const [targetDraft, setTargetDraft] = useState<ImportTargetType>("COMPANY");
-  const [targetDialogOpen, setTargetDialogOpen] = useState(false);
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [fileError, setFileError] = useState<string | null>(null);
-  const [importJobId, setImportJobId] = useState("");
-  const [lastJob, setLastJob] = useState<ImportJobResponse | null>(null);
-  const [draftMapping, setDraftMapping] = useState<ImportMapping>(() =>
-    createEmptyMapping("COMPANY")
-  );
-  const [latestSuggestion, setLatestSuggestion] =
-    useState<ImportMappingResponse | null>(null);
-  const [result, setResult] = useState<ImportJobResultResponse | null>(null);
+  const navigate = useNavigate();
+  const [page, setPage] = useState(1);
+  const [targetTypes, setTargetTypes] = useState<ImportTemplateType[]>([]);
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [selectedTemplateId, setSelectedTemplateId] = useState("");
+  const [companyName, setCompanyName] = useState("");
   const [notice, setNotice] = useState<string | null>(null);
-  const [confirmOpen, setConfirmOpen] = useState(false);
-  const detailQuery = useImportJobDetail(importJobId);
-  const createMutation = useCreateImportJobMutation();
-  const mappingMutation = useGenerateImportMappingMutation();
-  const updateMappingMutation = useUpdateImportMappingMutation();
-  const confirmMutation = useConfirmImportJobMutation(importJobId);
-  const currentJob = chooseLatestJob(detailQuery.data?.job ?? null, lastJob);
-  const currentRows = useMemo(
-    () => currentJob?.previewRows ?? detailQuery.data?.rows ?? [],
-    [currentJob?.previewRows, detailQuery.data?.rows]
+  const [formError, setFormError] = useState<string | null>(null);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [importJob, setImportJob] = useState<ImportJobResponse | null>(null);
+  const [draftMapping, setDraftMapping] = useState<ImportMapping>({});
+  const [editableRows, setEditableRows] = useState<EditableImportRow[]>([]);
+  const templatesQuery = useActiveImportTemplates();
+  const companyOptionsQuery = useCompanyOptions();
+  const downloadMutation = useDownloadImportTemplateMutation();
+  const createImportJobMutation = useCreateImportJobMutation();
+  const generateImportMappingMutation = useGenerateImportMappingMutation();
+  const updateImportMappingMutation = useUpdateImportMappingMutation();
+  const confirmImportJobMutation = useConfirmImportJobMutation(importJob?.id ?? "");
+  const listParams = useMemo(
+    () => ({
+      page,
+      ...(targetTypes.length > 0 ? { targetTypes } : {}),
+    }),
+    [page, targetTypes]
   );
-  const currentTargetType = currentJob?.targetType ?? targetType;
-  const sourceColumns = useMemo(
-    () => collectSourceColumns(currentRows),
-    [currentRows]
+  const logsQuery = useImportUserLogList(listParams);
+  const templates = templatesQuery.data?.items ?? [];
+  const selectedTemplate = useMemo(
+    () =>
+      templates.find((template) => template.id === selectedTemplateId) ??
+      templates[0] ??
+      null,
+    [selectedTemplateId, templates]
   );
+  const logs = logsQuery.data?.items ?? [];
   const actionError =
-    createMutation.error ??
-    mappingMutation.error ??
-    updateMappingMutation.error ??
-    confirmMutation.error ??
-    detailQuery.error ??
+    logsQuery.error ??
+    templatesQuery.error ??
+    downloadMutation.error ??
+    createImportJobMutation.error ??
+    generateImportMappingMutation.error ??
+    updateImportMappingMutation.error ??
+    confirmImportJobMutation.error ??
     null;
-  const suggestion = latestSuggestion ?? currentJob?.aiMapping ?? null;
-  const hasSavedMapping = Boolean(currentJob?.mapping);
-  const hasInvalidRows = (currentJob?.invalidRowCount ?? 0) > 0;
-  const canSaveMapping =
-    Boolean(currentJob) && hasRequiredMapping(currentTargetType, draftMapping);
-  const canConfirm =
-    Boolean(currentJob) &&
-    hasSavedMapping &&
-    !hasInvalidRows &&
-    currentJob?.status !== "COMPLETED" &&
-    !confirmMutation.isPending;
+  const importBusy =
+    createImportJobMutation.isPending ||
+    generateImportMappingMutation.isPending ||
+    updateImportMappingMutation.isPending ||
+    confirmImportJobMutation.isPending;
 
-  const onTargetChange = (nextTargetType: ImportTargetType) => {
-    setTargetType(nextTargetType);
-    setTargetDraft(nextTargetType);
+  const openDialog = () => {
+    setSelectedTemplateId(templates[0]?.id ?? "");
+    setCompanyName("");
+    resetImportWorkflow();
+    setDialogOpen(true);
+  };
+
+  const closeDialog = () => {
+    setDialogOpen(false);
+    resetImportWorkflow();
+  };
+
+  const onTemplateSelect = (template: ImportTemplateItem) => {
+    setSelectedTemplateId(template.id);
+    resetImportWorkflow();
+
+    if (template.templateType !== "CONTACT") {
+      setCompanyName("");
+    }
+  };
+
+  const resetImportWorkflow = () => {
+    setFormError(null);
     setSelectedFile(null);
-    setFileError(null);
-    setImportJobId("");
-    setLastJob(null);
-    setLatestSuggestion(null);
-    setResult(null);
-    setNotice(null);
-    setDraftMapping(createEmptyMapping(nextTargetType));
+    setImportJob(null);
+    setDraftMapping({});
+    setEditableRows([]);
   };
 
-  const openTargetDialog = () => {
-    setTargetDraft(targetType);
-    setTargetDialogOpen(true);
-  };
+  const onDownload = async () => {
+    if (!selectedTemplate) {
+      return;
+    }
 
-  const onConfirmTarget = () => {
-    onTargetChange(targetDraft);
-    setTargetDialogOpen(false);
+    const normalizedCompanyName = companyName.trim();
+
+    if (selectedTemplate.templateType === "CONTACT" && !normalizedCompanyName) {
+      setFormError("담당자 양식에는 회사명이 필요합니다.");
+      return;
+    }
+
+    const file = await downloadMutation.mutateAsync({
+      templateId: selectedTemplate.id,
+      ...(selectedTemplate.templateType === "CONTACT"
+        ? { companyName: normalizedCompanyName }
+        : {}),
+    });
+
+    downloadBlobFile(file, selectedTemplate.templateName);
+    setNotice(`${selectedTemplate.templateName} 다운로드를 시작했습니다.`);
   };
 
   const onFileChange = (file: File | null) => {
-    setSelectedFile(file);
-    setFileError(validateImportFile(file));
-    setImportJobId("");
-    setLastJob(null);
-    setLatestSuggestion(null);
-    setResult(null);
-    setNotice(null);
-    setDraftMapping(createEmptyMapping(targetType));
+    const validationMessage = validateImportFile(file);
+
+    setSelectedFile(validationMessage ? null : file);
+    setImportJob(null);
+    setDraftMapping({});
+    setEditableRows([]);
+    setFormError(validationMessage);
   };
 
-  const onUpload = async () => {
+  const onRunAiMapping = async () => {
+    if (!selectedTemplate || !selectedFile) {
+      setFormError("불러올 파일을 선택해 주세요.");
+      return;
+    }
+
     const validationMessage = validateImportFile(selectedFile);
 
-    if (validationMessage || !selectedFile) {
-      setFileError(validationMessage);
+    if (validationMessage) {
+      setFormError(validationMessage);
       return;
     }
 
-    const job = await createMutation.mutateAsync({
-      targetType,
+    const createdJob = await createImportJobMutation.mutateAsync({
+      targetType: selectedTemplate.templateType,
       file: selectedFile,
     });
+    const mapping = await generateImportMappingMutation.mutateAsync(createdJob.id);
+    const updatedJob = await updateImportMappingMutation.mutateAsync({
+      importJobId: createdJob.id,
+      mapping: mapping.suggestedMapping,
+    });
 
-    setImportJobId(job.id);
-    setLastJob(job);
-    setLatestSuggestion(job.aiMapping ?? null);
-    setDraftMapping(
-      completeMapping(job.targetType, job.mapping ?? job.aiMapping?.suggestedMapping)
-    );
-      setNotice("파일 업로드와 미리보기를 완료했어요.");
+    setFormError(null);
+    setImportJob(updatedJob);
+    setDraftMapping(mapping.suggestedMapping);
+    setEditableRows(toEditableRows(updatedJob));
   };
 
-  const onGenerateMapping = async () => {
-    if (!currentJob) {
+  const onApplyMapping = async () => {
+    if (!selectedTemplate || !importJob) {
       return;
     }
 
-    const generated = await mappingMutation.mutateAsync(currentJob.id);
-    setLatestSuggestion(generated);
-    setDraftMapping(completeMapping(currentTargetType, generated.suggestedMapping));
-      setNotice("AI 매핑 제안을 준비했어요.");
-    void detailQuery.refetch();
-  };
-
-  const onSaveMapping = async () => {
-    if (!currentJob || !canSaveMapping) {
+    if (
+      !hasRequiredMapping(
+        selectedTemplate.templateType as ImportTargetType,
+        draftMapping
+      )
+    ) {
+      setFormError("필수 컬럼 매핑을 모두 선택해 주세요.");
       return;
     }
 
-    const job = await updateMappingMutation.mutateAsync({
-      importJobId: currentJob.id,
+    const updatedJob = await updateImportMappingMutation.mutateAsync({
+      importJobId: importJob.id,
       mapping: draftMapping,
     });
 
-    setLastJob(job);
-    setNotice(
-      job.invalidRowCount > 0
-        ? "오류 행을 수정하면 가져오기를 확정할 수 있어요."
-        : "매핑과 행 검증을 완료했어요."
+    setFormError(null);
+    setImportJob(updatedJob);
+    setEditableRows(toEditableRows(updatedJob));
+  };
+
+  const onEditableCellChange = (
+    rowNumber: number,
+    field: ImportTargetField,
+    value: string
+  ) => {
+    setEditableRows((currentRows) =>
+      currentRows.map((row) =>
+        row.rowNumber === rowNumber
+          ? {
+              ...row,
+              data: {
+                ...row.data,
+                [field.field]: toEditableFieldValue(value, field),
+              },
+              errorMessage: null,
+            }
+          : row
+      )
     );
   };
 
-  const onConfirm = async () => {
-    if (!currentJob || !canConfirm) {
+  const onConfirmImport = async () => {
+    if (!importJob) {
+      setFormError("먼저 업로드와 AI 매핑을 진행해 주세요.");
       return;
     }
 
-    const confirmed = await confirmMutation.mutateAsync({
-      importJobId: currentJob.id,
+    if (!selectedTemplate) {
+      return;
+    }
+
+    const validationMessage = validateEditableRows(
+      selectedTemplate.templateType as ImportTargetType,
+      editableRows
+    );
+
+    if (validationMessage) {
+      setFormError(validationMessage);
+      return;
+    }
+
+    const result = await confirmImportJobMutation.mutateAsync({
+      importJobId: importJob.id,
+      rows: editableRows.map((row) => ({
+        rowNumber: row.rowNumber,
+        data: row.data,
+      })),
     });
 
-    setResult(confirmed);
-    setLastJob(null);
-    setConfirmOpen(false);
-      setNotice("가져오기를 완료했어요.");
+    setNotice(`${targetLabels[importJob.targetType]} ${result.successCount}건을 생성했습니다.`);
+    closeDialog();
+    void logsQuery.refetch();
+  };
+
+  const resetFilters = () => {
+    setTargetTypes([]);
+    setPage(1);
   };
 
   return (
@@ -210,146 +338,682 @@ export function ImportScreen() {
           {
             icon: Plus,
             tooltip: "불러오기 생성",
-            onClick: openTargetDialog,
+            onClick: openDialog,
             variant: "primary",
           },
         ]}
       />
 
-      <div className="mx-auto grid w-full max-w-[1500px] gap-5 px-5 pb-6 pt-1">
-        {notice ? (
-          <NoticeMessage message={notice} onDismiss={() => setNotice(null)} />
-        ) : null}
+      <div className="hidden min-h-10 shrink-0 items-center gap-1.5 overflow-x-auto px-5 py-1 md:flex lg:gap-2">
+        <button
+          aria-label="초기화"
+          className={cn(
+            "inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-md border transition",
+            targetTypes.length === 0
+              ? "border-[#4880EE] bg-[#4880EE] text-white"
+              : "border-[#E2E5EC] bg-transparent text-[#6B7280] hover:bg-white"
+          )}
+          onClick={resetFilters}
+          type="button"
+        >
+          <RotateCcw className="h-3.5 w-3.5" />
+        </button>
+        <ImportTargetFilterCombobox
+          selectedIds={targetTypes}
+          size="desktop"
+          onSelectedIdsChange={(nextTargetTypes) => {
+            setTargetTypes(nextTargetTypes);
+            setPage(1);
+          }}
+        />
+        <div className="flex-1" />
+        <span className="shrink-0 text-[12px] text-[#9CA3AF]">
+          {logsQuery.data?.totalCount ?? 0}건
+        </span>
+      </div>
 
-        {actionError ? <ErrorMessage message={getApiErrorMessage(actionError)} /> : null}
+      <div className="hidden min-w-0 gap-3 overflow-hidden px-5 pb-3 pt-1 md:flex xl:gap-5">
+        <div className="flex min-w-0 flex-1 flex-col gap-3">
+          {notice ? (
+            <NoticeMessage message={notice} onDismiss={() => setNotice(null)} />
+          ) : null}
 
-        <div className="grid gap-5 xl:grid-cols-[minmax(320px,0.8fr)_minmax(0,1.2fr)]">
-          <section className="grid content-start gap-5 rounded-lg border bg-white p-4">
-            <SelectedTargetSummary
-              targetType={targetType}
-              onChange={openTargetDialog}
+          {actionError ? (
+            <ErrorMessage message={getApiErrorMessage(actionError)} />
+          ) : null}
+
+          <div className="flex w-full min-w-0 flex-col overflow-hidden rounded-lg border border-[#E2E5EC] bg-white shadow-sm">
+            <div
+              className="grid h-11 shrink-0 items-center border-b border-[#E6EAF0] bg-[#FAFBFC] px-3 md:px-4 xl:px-6"
+              style={IMPORT_LOG_TABLE_GRID_STYLE}
+            >
+              <ImportTableHeaderCell>대상</ImportTableHeaderCell>
+              <ImportTableHeaderCell>파일명</ImportTableHeaderCell>
+              <ImportTableHeaderCell>컨텍스트</ImportTableHeaderCell>
+              <ImportTableHeaderCell>Row</ImportTableHeaderCell>
+              <ImportTableHeaderCell>버전</ImportTableHeaderCell>
+              <ImportTableHeaderCell>생성일</ImportTableHeaderCell>
+            </div>
+
+            {logsQuery.isLoading ? (
+              <ImportListSkeleton />
+            ) : logsQuery.isError ? (
+              <ImportListError
+                error={logsQuery.error}
+                onRetry={() => void logsQuery.refetch()}
+              />
+            ) : logs.length === 0 ? (
+              <ListEmptyState
+                actionIcon={Plus}
+                actionLabel="불러오기 생성"
+                icon={Upload}
+                onAction={openDialog}
+                title={
+                  targetTypes.length > 0
+                    ? "조건에 맞는 불러오기 내역이 없습니다."
+                    : "아직 확정 완료된 불러오기 내역이 없습니다."
+                }
+              />
+            ) : (
+              <div className="min-w-0">
+                {logs.map((log) => (
+                  <ImportLogRow
+                    key={log.id}
+                    log={log}
+                    onOpen={() => void navigate(`/import/${log.id}`)}
+                  />
+                ))}
+              </div>
+            )}
+          </div>
+
+          {logsQuery.data ? (
+            <Pagination
+              onPageChange={setPage}
+              page={logsQuery.data.page}
+              totalPages={logsQuery.data.totalPages}
             />
+          ) : null}
+        </div>
+      </div>
 
-            <FileUploadPanel
-              file={selectedFile}
-              fileError={fileError}
-              isUploading={createMutation.isPending}
-              onFileChange={onFileChange}
-              onUpload={() => void onUpload()}
-            />
-
-            <JobSummary job={currentJob} result={result} />
-          </section>
-
-          <section className="grid content-start gap-5 rounded-lg border bg-white p-4">
-            <MappingPanel
-              canConfirm={canConfirm}
-              canSaveMapping={canSaveMapping}
-              currentJob={currentJob}
-              draftMapping={draftMapping}
-              isConfirming={confirmMutation.isPending}
-              isGenerating={mappingMutation.isPending}
-              isSaving={updateMappingMutation.isPending}
-              onConfirm={() => setConfirmOpen(true)}
-              onGenerateMapping={() => void onGenerateMapping()}
-              onMappingChange={(field, sourceColumn) =>
-                setDraftMapping((current) => ({
-                  ...current,
-                  [field]: sourceColumn || null,
-                }))
-              }
-              onSaveMapping={() => void onSaveMapping()}
-              sourceColumns={sourceColumns}
-              suggestion={suggestion}
-              targetType={currentTargetType}
-            />
-          </section>
+      <section className="flex min-h-0 flex-1 flex-col md:hidden">
+        <div className="flex h-10 shrink-0 items-center gap-2 overflow-x-auto border-b border-[#E5E7EB] px-4">
+          <button
+            aria-label="초기화"
+            className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-[#4880EE] bg-[#4880EE] text-white"
+            onClick={resetFilters}
+            type="button"
+          >
+            <RotateCcw className="h-3 w-3" />
+          </button>
+          <ImportTargetFilterCombobox
+            selectedIds={targetTypes}
+            size="mobile"
+            onSelectedIdsChange={(nextTargetTypes) => {
+              setTargetTypes(nextTargetTypes);
+              setPage(1);
+            }}
+          />
+          <div className="flex-1" />
+          <span className="shrink-0 text-[11px] text-[#9CA3AF]">
+            {logsQuery.data?.totalCount ?? 0}건
+          </span>
         </div>
 
-        <PreviewTable
-          rows={currentRows}
-          sourceColumns={sourceColumns}
-          targetType={currentTargetType}
-          useMappedData={hasSavedMapping}
-        />
-
-        {result ? <ResultPanel result={result} /> : null}
-
-        {confirmOpen && currentJob ? (
-          <ConfirmDialog
-            isPending={confirmMutation.isPending}
-            job={currentJob}
-            onCancel={() => setConfirmOpen(false)}
-            onConfirm={() => void onConfirm()}
-          />
+        {notice ? (
+          <div className="px-4 pt-2">
+            <NoticeMessage message={notice} onDismiss={() => setNotice(null)} />
+          </div>
         ) : null}
 
-        <ImportTargetDialog
-          open={targetDialogOpen}
-          selectedTargetType={targetDraft}
-          onCancel={() => setTargetDialogOpen(false)}
-          onConfirm={onConfirmTarget}
-          onSelect={setTargetDraft}
-        />
-      </div>
+        <div className="bg-white">
+          {logsQuery.isLoading ? (
+            <ImportMobileSkeleton />
+          ) : logsQuery.isError ? (
+            <ImportListError
+              error={logsQuery.error}
+              onRetry={() => void logsQuery.refetch()}
+            />
+          ) : logs.length === 0 ? (
+            <ListEmptyState
+              actionIcon={Plus}
+              actionLabel="불러오기 생성"
+              icon={Upload}
+              onAction={openDialog}
+              title="불러오기 내역이 없습니다."
+            />
+          ) : (
+            logs.map((log) => (
+              <ImportLogMobileCard
+                key={log.id}
+                log={log}
+                onOpen={() => void navigate(`/import/${log.id}`)}
+              />
+            ))
+          )}
+        </div>
+
+        {logsQuery.data ? (
+          <div className="shrink-0 border-t border-[#E5E7EB] bg-white px-4 py-2">
+            <Pagination
+              onPageChange={setPage}
+              page={logsQuery.data.page}
+              totalPages={logsQuery.data.totalPages}
+            />
+          </div>
+        ) : null}
+
+        <button
+          aria-label="불러오기 생성"
+          className="fixed bottom-24 right-5 flex h-8 w-8 items-center justify-center rounded-full bg-[#4880EE] shadow-[0_4px_16px_rgba(59,130,246,0.27)]"
+          onClick={openDialog}
+          type="button"
+        >
+          <Plus className="h-4 w-4 text-white" strokeWidth={2.5} />
+        </button>
+      </section>
+
+      <ImportTemplateDialog
+        companyName={companyName}
+        companyOptions={companyOptionsQuery.data?.items ?? []}
+        draftMapping={draftMapping}
+        editableRows={editableRows}
+        errorMessage={formError}
+        importBusy={importBusy}
+        importJob={importJob}
+        isDownloading={downloadMutation.isPending}
+        onApplyMapping={() => void onApplyMapping()}
+        onCancel={closeDialog}
+        onCompanyNameChange={(nextCompanyName) => {
+          setCompanyName(nextCompanyName);
+          setFormError(null);
+        }}
+        onConfirmImport={() => void onConfirmImport()}
+        onDownload={() => void onDownload()}
+        onEditableCellChange={onEditableCellChange}
+        onFileChange={onFileChange}
+        onMappingChange={(field, sourceColumn) => {
+          setDraftMapping((currentMapping) => ({
+            ...currentMapping,
+            [field]: sourceColumn,
+          }));
+          setFormError(null);
+        }}
+        onOpenChange={(nextOpen) => {
+          if (!nextOpen) {
+            closeDialog();
+          }
+        }}
+        onRunAiMapping={() => void onRunAiMapping()}
+        onTemplateSelect={onTemplateSelect}
+        open={dialogOpen}
+        selectedFile={selectedFile}
+        selectedTemplate={selectedTemplate}
+        templates={templates}
+      />
     </section>
   );
 }
 
-function SelectedTargetSummary({
-  targetType,
-  onChange,
-}: {
-  readonly targetType: ImportTargetType;
-  readonly onChange: () => void;
-}) {
-  const selectedTarget = importTargetOptions.find(
-    (option) => option.value === targetType
-  );
-  const Icon = targetIcons[targetType];
+type ImportTargetFilterPopoverPosition = {
+  readonly left: number;
+  readonly top: number;
+  readonly width: number;
+};
 
-  if (!selectedTarget) {
-    return null;
-  }
+function ImportTargetFilterCombobox({
+  selectedIds,
+  size,
+  onSelectedIdsChange,
+}: {
+  readonly selectedIds: readonly ImportTemplateType[];
+  readonly size: "desktop" | "mobile";
+  readonly onSelectedIdsChange: (ids: ImportTemplateType[]) => void;
+}) {
+  const [isOpen, setIsOpen] = useState(false);
+  const [search, setSearch] = useState("");
+  const [popoverPosition, setPopoverPosition] =
+    useState<ImportTargetFilterPopoverPosition | null>(null);
+  const wrapperRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const selectedIdSet = useMemo(() => new Set(selectedIds), [selectedIds]);
+  const selectedItems = useMemo(
+    () => TARGET_FILTER_ITEMS.filter((item) => selectedIdSet.has(item.id)),
+    [selectedIdSet]
+  );
+  const selectedSummary = getSelectedImportTargetFilterSummary(selectedItems);
+  const normalizedQuery = normalizeImportFilterText(search.trim());
+  const filteredItems =
+    normalizedQuery.length > 0
+      ? TARGET_FILTER_ITEMS.filter((item) =>
+          normalizeImportFilterText(item.label).includes(normalizedQuery)
+        )
+      : TARGET_FILTER_ITEMS;
+  const isMobile = size === "mobile";
+  const inputValue = isOpen ? search : selectedSummary;
+
+  useEffect(() => {
+    if (!isOpen) {
+      setSearch("");
+    }
+  }, [isOpen]);
+
+  useEffect(() => {
+    if (!isOpen) {
+      return;
+    }
+
+    const updatePopoverPosition = () => {
+      if (!inputRef.current) {
+        return;
+      }
+
+      setPopoverPosition(
+        getImportTargetFilterPopoverPosition(inputRef.current, isMobile)
+      );
+    };
+    const onMouseDown = (event: MouseEvent) => {
+      if (
+        wrapperRef.current &&
+        !wrapperRef.current.contains(event.target as Node)
+      ) {
+        setIsOpen(false);
+        setSearch("");
+      }
+    };
+
+    updatePopoverPosition();
+    document.addEventListener("mousedown", onMouseDown);
+    window.addEventListener("resize", updatePopoverPosition);
+    window.addEventListener("scroll", updatePopoverPosition, true);
+
+    return () => {
+      document.removeEventListener("mousedown", onMouseDown);
+      window.removeEventListener("resize", updatePopoverPosition);
+      window.removeEventListener("scroll", updatePopoverPosition, true);
+    };
+  }, [isMobile, isOpen]);
+
+  const openOptions = (nextSearch: string) => {
+    setSearch(nextSearch);
+
+    if (inputRef.current) {
+      setPopoverPosition(
+        getImportTargetFilterPopoverPosition(inputRef.current, isMobile)
+      );
+    }
+
+    setIsOpen(true);
+  };
+
+  const toggleItem = (item: ImportTargetFilterItem) => {
+    const nextIds = selectedIdSet.has(item.id)
+      ? selectedIds.filter((id) => id !== item.id)
+      : [...selectedIds, item.id];
+
+    setSearch("");
+    onSelectedIdsChange(nextIds);
+  };
+
+  const clearSelection = () => {
+    setSearch("");
+    onSelectedIdsChange([]);
+    inputRef.current?.focus();
+    openOptions("");
+  };
 
   return (
-    <div className="flex items-center justify-between gap-3 rounded-md border bg-muted/20 px-3 py-3">
-      <div className="flex min-w-0 items-center gap-3">
-        <div className="grid h-10 w-10 shrink-0 place-items-center rounded-md bg-white text-primary">
-          <Icon className="h-5 w-5" />
-        </div>
-        <div className="min-w-0">
-          <p className="text-xs text-muted-foreground">불러오기 대상</p>
-          <p className="truncate text-sm font-semibold">{selectedTarget.label}</p>
-          <p className="truncate text-xs text-muted-foreground">
-            {selectedTarget.description}
-          </p>
-        </div>
+    <div
+      ref={wrapperRef}
+      className={cn(
+        "relative shrink-0",
+        isMobile ? "w-[120px]" : "w-[clamp(136px,14vw,178px)]"
+      )}
+    >
+      <div className="relative">
+        {isOpen ? (
+          <Search
+            className={cn(
+              "pointer-events-none absolute top-1/2 shrink-0 -translate-y-1/2 text-[#9CA3AF]",
+              isMobile ? "left-2.5 h-3 w-3" : "left-3 h-3 w-3"
+            )}
+          />
+        ) : null}
+        <input
+          ref={inputRef}
+          aria-autocomplete="list"
+          aria-expanded={isOpen}
+          aria-label="불러오기 대상 필터"
+          autoComplete="off"
+          className={cn(
+            "w-full min-w-0 border outline-none transition",
+            isMobile
+              ? "h-7 rounded-full text-[12px]"
+              : "h-8 rounded-full text-[13px]",
+            isOpen
+              ? cn(
+                  "border-[#4880EE] bg-white text-[#111827] ring-1 ring-[#4880EE]",
+                  isMobile ? "pl-7 pr-7" : "pl-8 pr-7"
+                )
+              : selectedIds.length > 0
+                ? cn(
+                    "border-[#4880EE] bg-[#EEF4FF] font-semibold text-[#1D4ED8]",
+                    isMobile ? "pl-3 pr-7" : "pl-3.5 pr-7"
+                  )
+                : isMobile
+                  ? "border-[#E5E7EB] bg-[#F3F4F6] pl-3 pr-7 text-[#4B5563] hover:border-[#D1D5DB]"
+                  : "cursor-pointer border-[#E2E5EC] bg-transparent pl-3.5 pr-7 text-[#6B7280] hover:border-[#D1D5DB] hover:bg-[#F5F6F8]"
+          )}
+          onChange={(event) => {
+            openOptions(event.target.value);
+          }}
+          onFocus={() => openOptions("")}
+          onKeyDown={(event) => {
+            if (event.key === "Escape") {
+              setIsOpen(false);
+              setSearch("");
+              inputRef.current?.blur();
+              return;
+            }
+
+            if (event.key === "Enter") {
+              const firstItem = filteredItems[0];
+              if (!firstItem) {
+                return;
+              }
+
+              event.preventDefault();
+              toggleItem(firstItem);
+            }
+          }}
+          placeholder="대상 선택"
+          value={inputValue}
+        />
+        {selectedIds.length > 0 || search ? (
+          <button
+            aria-label="불러오기 대상 필터 지우기"
+            className={cn(
+              "absolute right-1 top-1/2 grid -translate-y-1/2 place-items-center rounded-full text-[#9CA3AF] transition hover:bg-white hover:text-[#374151]",
+              isMobile ? "h-6 w-6" : "h-7 w-7"
+            )}
+            onClick={clearSelection}
+            type="button"
+          >
+            <X className={isMobile ? "h-3 w-3" : "h-3.5 w-3.5"} />
+          </button>
+        ) : (
+          <ChevronDown
+            className={cn(
+              "pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-[#9CA3AF] transition-transform",
+              isMobile ? "h-3 w-3" : "h-3.5 w-3.5",
+              isOpen && "rotate-180"
+            )}
+          />
+        )}
       </div>
-      <button
-        className="inline-flex h-8 shrink-0 items-center rounded-md border bg-white px-3 text-xs font-medium hover:bg-muted"
-        onClick={onChange}
-        type="button"
-      >
-        변경
-      </button>
+
+      {isOpen ? (
+        <div
+          className={cn(
+            "fixed z-50 overflow-hidden rounded-md border border-[#E6EAF0] bg-white shadow-lg",
+            !popoverPosition && "invisible"
+          )}
+          style={{
+            left: popoverPosition?.left ?? 0,
+            top: popoverPosition?.top ?? 0,
+            width: popoverPosition?.width ?? 220,
+          }}
+        >
+          <button
+            className={cn(
+              "flex h-9 w-full items-center gap-1.5 px-3 text-left text-[13px] transition hover:bg-[#F9FAFB]",
+              selectedIds.length === 0
+                ? "font-semibold text-[#1D4ED8]"
+                : "font-medium text-[#475569]"
+            )}
+            onClick={() => {
+              setSearch("");
+              setIsOpen(false);
+              onSelectedIdsChange([]);
+            }}
+            type="button"
+          >
+            <RotateCcw className="h-3.5 w-3.5" />
+            대상 초기화
+          </button>
+
+          <div className="max-h-[184px] overflow-y-auto border-t border-[#E6EAF0] py-1">
+            {filteredItems.length === 0 ? (
+              <p className="px-3 py-3 text-[12px] text-[#9CA3AF]">
+                검색 결과가 없습니다.
+              </p>
+            ) : (
+              filteredItems.map((item) => {
+                const Icon = targetIcons[item.id];
+                const isSelected = selectedIdSet.has(item.id);
+
+                return (
+                  <button
+                    className={cn(
+                      "flex h-8 w-full min-w-0 items-center gap-2 px-3 text-left text-[13px] transition hover:bg-[#F9FAFB]",
+                      isSelected && "bg-[#EEF4FF] font-semibold text-[#1D4ED8]"
+                    )}
+                    key={item.id}
+                    onClick={() => toggleItem(item)}
+                    type="button"
+                  >
+                    <span
+                      className={cn(
+                        "grid h-3.5 w-3.5 shrink-0 place-items-center rounded-full border",
+                        isSelected ? "border-[#4880EE]" : "border-[#CBD5E1]"
+                      )}
+                    >
+                      {isSelected ? (
+                        <span className="h-1.5 w-1.5 rounded-full bg-[#4880EE]" />
+                      ) : null}
+                    </span>
+                    <Icon className="h-3.5 w-3.5 shrink-0 text-[#4880EE]" />
+                    <span className="min-w-0 flex-1 truncate">{item.label}</span>
+                  </button>
+                );
+              })
+            )}
+          </div>
+        </div>
+      ) : null}
     </div>
   );
 }
 
-function ImportTargetDialog({
+function getSelectedImportTargetFilterSummary(
+  selectedItems: readonly ImportTargetFilterItem[]
+) {
+  if (selectedItems.length === 0) {
+    return "";
+  }
+
+  if (selectedItems.length === 1) {
+    return selectedItems[0]?.label ?? "";
+  }
+
+  return `대상 ${selectedItems.length}개`;
+}
+
+function normalizeImportFilterText(value: string) {
+  return value.toLowerCase().replace(/\s+/g, "");
+}
+
+function getImportTargetFilterPopoverPosition(
+  input: HTMLInputElement,
+  isMobile: boolean
+): ImportTargetFilterPopoverPosition {
+  const rect = input.getBoundingClientRect();
+  const viewportPadding = 12;
+  const width = Math.max(rect.width, isMobile ? 180 : 220);
+  const left = Math.min(
+    Math.max(rect.left, viewportPadding),
+    window.innerWidth - width - viewportPadding
+  );
+
+  return {
+    left,
+    top: rect.bottom + 6,
+    width,
+  };
+}
+
+function ImportLogRow({
+  log,
+  onOpen,
+}: {
+  readonly log: ImportUserLogListItem;
+  readonly onOpen: () => void;
+}) {
+  const Icon = targetIcons[log.targetType];
+
+  return (
+    <div
+      className="grid h-[66px] cursor-pointer items-center border-b border-[#E8EDF3] px-3 transition-colors last:border-b-0 hover:bg-[#EAF2FF] md:px-4 xl:px-6"
+      onClick={onOpen}
+      onKeyDown={(event) => {
+        if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault();
+          onOpen();
+        }
+      }}
+      role="button"
+      style={IMPORT_LOG_TABLE_GRID_STYLE}
+      tabIndex={0}
+    >
+      <div className="flex min-w-0 items-center gap-2">
+        <Icon className="h-4 w-4 shrink-0 text-[#4880EE]" />
+        <span className="truncate text-[13px] font-semibold text-[#111827]">
+          {targetLabels[log.targetType]}
+        </span>
+      </div>
+      <div className="min-w-0 truncate text-[12px] font-medium text-[#475569]">
+        {log.originalFileName}
+      </div>
+      <div className="min-w-0 truncate text-[12px] font-medium text-[#64748B]">
+        {log.contextLabel ?? "-"}
+      </div>
+      <div className="min-w-0 whitespace-nowrap text-[12px] font-medium text-[#475569]">
+        {log.importedRowCount.toLocaleString("ko-KR")} /{" "}
+        {log.totalRowCount.toLocaleString("ko-KR")}
+      </div>
+      <div className="min-w-0">
+        <Badge>{log.templateVersion}</Badge>
+      </div>
+      <div className="min-w-0 truncate text-[12px] font-medium text-[#64748B]">
+        {formatLogCreatedAt(log.createdAt)}
+      </div>
+    </div>
+  );
+}
+
+function ImportLogMobileCard({
+  log,
+  onOpen,
+}: {
+  readonly log: ImportUserLogListItem;
+  readonly onOpen: () => void;
+}) {
+  const Icon = targetIcons[log.targetType];
+
+  return (
+    <button
+      className="flex w-full items-start gap-3 border-b border-[#E5E7EB] bg-white px-4 py-[14px] text-left transition active:bg-[#F9FAFB] hover:bg-[#EAF2FF]"
+      onClick={onOpen}
+      type="button"
+    >
+      <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#EEF4FF]">
+        <Icon className="h-4 w-4 text-[#4880EE]" strokeWidth={2} />
+      </div>
+      <div className="min-w-0 flex-1">
+        <div className="flex min-w-0 items-center gap-2">
+          <span className="min-w-0 truncate text-[14px] font-semibold text-[#111827]">
+            {log.originalFileName}
+          </span>
+          <Badge>{targetLabels[log.targetType]}</Badge>
+        </div>
+        <div className="mt-1 text-[12px] text-[#6B7280]">
+          Row {log.importedRowCount.toLocaleString("ko-KR")} /{" "}
+          {log.totalRowCount.toLocaleString("ko-KR")}
+        </div>
+        <div className="mt-1 flex items-center justify-between gap-3">
+          <span className="truncate text-[12px] text-[#6B7280]">
+            {log.contextLabel ?? "-"}
+          </span>
+          <span className="shrink-0 text-[11px] text-[#9CA3AF]">
+            {formatLogCreatedAt(log.createdAt)}
+          </span>
+        </div>
+      </div>
+    </button>
+  );
+}
+
+function ImportTemplateDialog({
   open,
-  selectedTargetType,
-  onSelect,
+  templates,
+  selectedTemplate,
+  companyOptions,
+  companyName,
+  selectedFile,
+  importJob,
+  draftMapping,
+  editableRows,
+  errorMessage,
+  isDownloading,
+  importBusy,
+  onTemplateSelect,
+  onCompanyNameChange,
+  onFileChange,
+  onDownload,
+  onRunAiMapping,
+  onMappingChange,
+  onApplyMapping,
+  onEditableCellChange,
+  onConfirmImport,
   onCancel,
-  onConfirm,
+  onOpenChange,
 }: {
   readonly open: boolean;
-  readonly selectedTargetType: ImportTargetType;
-  readonly onSelect: (targetType: ImportTargetType) => void;
+  readonly templates: readonly ImportTemplateItem[];
+  readonly selectedTemplate: ImportTemplateItem | null;
+  readonly companyOptions: readonly {
+    readonly id: string;
+    readonly companyName: string;
+  }[];
+  readonly companyName: string;
+  readonly selectedFile: File | null;
+  readonly importJob: ImportJobResponse | null;
+  readonly draftMapping: ImportMapping;
+  readonly editableRows: readonly EditableImportRow[];
+  readonly errorMessage: string | null;
+  readonly isDownloading: boolean;
+  readonly importBusy: boolean;
+  readonly onTemplateSelect: (template: ImportTemplateItem) => void;
+  readonly onCompanyNameChange: (companyName: string) => void;
+  readonly onFileChange: (file: File | null) => void;
+  readonly onDownload: () => void;
+  readonly onRunAiMapping: () => void;
+  readonly onMappingChange: (field: string, sourceColumn: string | null) => void;
+  readonly onApplyMapping: () => void;
+  readonly onEditableCellChange: (
+    rowNumber: number,
+    field: ImportTargetField,
+    value: string
+  ) => void;
+  readonly onConfirmImport: () => void;
   readonly onCancel: () => void;
-  readonly onConfirm: () => void;
+  readonly onOpenChange: (open: boolean) => void;
 }) {
+  const targetType = selectedTemplate?.templateType as ImportTargetType | undefined;
+  const isActionDisabled =
+    !selectedTemplate || isDownloading || importBusy || selectedTemplate.templateType === "DEAL";
+
   return (
     <ModalShell
       bodyClassName="px-5 py-5"
@@ -357,493 +1021,472 @@ function ImportTargetDialog({
         <>
           <button
             className="inline-flex h-10 items-center rounded-md border px-4 text-sm font-medium hover:bg-muted"
+            disabled={isDownloading || importBusy}
             onClick={onCancel}
             type="button"
           >
-              닫기
+            닫기
           </button>
           <button
-            className="inline-flex h-10 items-center rounded-md bg-primary px-4 text-sm font-medium text-primary-foreground hover:bg-primary/90"
-            onClick={onConfirm}
+            className="inline-flex h-10 items-center gap-2 rounded-md bg-[#4880EE] px-4 text-sm font-medium text-white hover:bg-[#1D4ED8] disabled:cursor-not-allowed disabled:opacity-60"
+            disabled={!selectedTemplate || isDownloading}
+            onClick={onDownload}
             type="button"
           >
-            선택
+            {isDownloading ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : (
+              <Download className="h-4 w-4" />
+            )}
+            양식 다운로드
           </button>
+          {importJob ? (
+            <button
+              className="inline-flex h-10 items-center gap-2 rounded-md bg-[#111827] px-4 text-sm font-medium text-white hover:bg-[#0F172A] disabled:cursor-not-allowed disabled:opacity-60"
+              disabled={isActionDisabled || editableRows.length === 0}
+              onClick={onConfirmImport}
+              type="button"
+            >
+              {importBusy ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                <CheckCircle2 className="h-4 w-4" />
+              )}
+              확정 생성
+            </button>
+          ) : (
+            <button
+              className="inline-flex h-10 items-center gap-2 rounded-md bg-[#111827] px-4 text-sm font-medium text-white hover:bg-[#0F172A] disabled:cursor-not-allowed disabled:opacity-60"
+              disabled={isActionDisabled || !selectedFile}
+              onClick={onRunAiMapping}
+              type="button"
+            >
+              {importBusy ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                <WandSparkles className="h-4 w-4" />
+              )}
+              업로드 및 AI 매핑
+            </button>
+          )}
         </>
       }
-      onOpenChange={(nextOpen) => {
-        if (!nextOpen) {
-          onCancel();
-        }
-      }}
+      onOpenChange={onOpenChange}
       open={open}
-      size="md"
-      title="불러오기 생성"
+      size="xl"
+      title="데이터 불러오기"
     >
-      <TargetSelector selectedTargetType={selectedTargetType} onSelect={onSelect} />
+      <div className="grid gap-5">
+        <div className="grid gap-3 sm:grid-cols-3">
+          {templates.map((template) => (
+            <TemplateSelectButton
+              active={selectedTemplate?.id === template.id}
+              key={template.id}
+              onClick={() => onTemplateSelect(template)}
+              template={template}
+            />
+          ))}
+        </div>
+
+        {selectedTemplate?.templateType === "CONTACT" ? (
+          <ContactCompanyNameField
+            companyName={companyName}
+            companyOptions={companyOptions}
+            onCompanyNameChange={onCompanyNameChange}
+          />
+        ) : null}
+
+        {selectedTemplate ? (
+          <TemplateColumnPreview template={selectedTemplate} />
+        ) : null}
+
+        <ImportFilePanel
+          disabled={isDownloading || importBusy}
+          file={selectedFile}
+          onFileChange={onFileChange}
+        />
+
+        {selectedTemplate?.templateType === "DEAL" ? (
+          <ErrorMessage message="딜 불러오기는 양식 정의 후 지원할 예정입니다." />
+        ) : null}
+
+        {importJob && targetType ? (
+          <>
+            <ImportMappingEditor
+              disabled={importBusy}
+              importJob={importJob}
+              mapping={draftMapping}
+              onApplyMapping={onApplyMapping}
+              onMappingChange={onMappingChange}
+              targetType={targetType}
+            />
+            <ImportEditablePreview
+              disabled={importBusy}
+              onEditableCellChange={onEditableCellChange}
+              rows={editableRows}
+              targetType={targetType}
+            />
+          </>
+        ) : null}
+
+        {errorMessage ? <ErrorMessage message={errorMessage} /> : null}
+      </div>
     </ModalShell>
   );
 }
 
-function TargetSelector({
-  selectedTargetType,
-  onSelect,
+function TemplateSelectButton({
+  template,
+  active,
+  onClick,
 }: {
-  readonly selectedTargetType: ImportTargetType;
-  readonly onSelect: (targetType: ImportTargetType) => void;
+  readonly template: ImportTemplateItem;
+  readonly active: boolean;
+  readonly onClick: () => void;
 }) {
-  return (
-    <div className="grid gap-3">
-      <div>
-        <h2 className="text-base font-semibold">대상 선택</h2>
-        <p className="mt-1 text-sm text-muted-foreground">
-              가져올 데이터 유형을 선택해요.
-        </p>
-      </div>
-      <div className="grid grid-cols-2 gap-2">
-        {importTargetOptions.map((option) => {
-          const Icon = targetIcons[option.value];
-          const active = selectedTargetType === option.value;
+  const Icon = targetIcons[template.templateType];
 
-          return (
-            <button
-              className={`grid min-h-[74px] gap-1 rounded-md border px-3 py-2 text-left ${
-                active
-                  ? "border-primary bg-primary text-primary-foreground"
-                  : "bg-white hover:bg-muted"
-              }`}
-              key={option.value}
-              onClick={() => onSelect(option.value)}
-              type="button"
-            >
-              <span className="inline-flex items-center gap-2 text-sm font-medium">
-                <Icon className="h-4 w-4" />
-                {option.label}
-              </span>
-              <span
-                className={`text-xs ${
-                  active ? "text-primary-foreground/80" : "text-muted-foreground"
-                }`}
-              >
-                {option.description}
-              </span>
-            </button>
-          );
-        })}
+  return (
+    <button
+      className={`grid min-h-[92px] gap-2 rounded-lg border p-3 text-left transition ${
+        active
+          ? "border-[#4880EE] bg-[#EEF4FF] text-[#1D4ED8]"
+          : "border-[#E5E7EB] bg-white text-[#111827] hover:bg-[#F9FAFB]"
+      }`}
+      onClick={onClick}
+      type="button"
+    >
+      <span className="inline-flex items-center gap-2 text-sm font-semibold">
+        <Icon className="h-4 w-4" />
+        {targetLabels[template.templateType]}
+      </span>
+      <span className="text-xs text-[#6B7280]">
+        {template.columns.length}개 컬럼 · {template.templateVersion}
+      </span>
+    </button>
+  );
+}
+
+function ContactCompanyNameField({
+  companyOptions,
+  companyName,
+  onCompanyNameChange,
+}: {
+  readonly companyOptions: readonly {
+    readonly id: string;
+    readonly companyName: string;
+  }[];
+  readonly companyName: string;
+  readonly onCompanyNameChange: (companyName: string) => void;
+}) {
+  const selectedValue = companyOptions.some(
+    (option) => option.companyName === companyName
+  )
+    ? companyName
+    : "";
+
+  return (
+    <div className="grid gap-3 rounded-lg border bg-[#F9FAFB] p-4">
+      <div className="grid gap-2 md:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
+        <label className="grid gap-1.5 text-sm font-medium text-[#374151]">
+          회사 선택
+          <select
+            className="h-10 rounded-md border border-[#D1D5DB] bg-white px-3 text-sm outline-none focus:border-[#4880EE] focus:ring-2 focus:ring-[#4880EE]/20"
+            onChange={(event) => onCompanyNameChange(event.target.value)}
+            value={selectedValue}
+          >
+            <option value="">선택 안 함</option>
+            {companyOptions.map((option) => (
+              <option key={option.id} value={option.companyName}>
+                {option.companyName}
+              </option>
+            ))}
+          </select>
+        </label>
+
+        <label className="grid gap-1.5 text-sm font-medium text-[#374151]">
+          회사 이름
+          <input
+            className="h-10 rounded-md border border-[#D1D5DB] bg-white px-3 text-sm outline-none focus:border-[#4880EE] focus:ring-2 focus:ring-[#4880EE]/20"
+            onChange={(event) => onCompanyNameChange(event.target.value)}
+            placeholder="양식에 넣을 회사명"
+            type="text"
+            value={companyName}
+          />
+        </label>
       </div>
     </div>
   );
 }
 
-function FileUploadPanel({
+function TemplateColumnPreview({
+  template,
+}: {
+  readonly template: ImportTemplateItem;
+}) {
+  return (
+    <div className="overflow-hidden rounded-lg border">
+      <table className="min-w-full border-collapse text-sm">
+        <thead className="bg-[#F3F4F6] text-left text-[#374151]">
+          <tr>
+            <th className="px-3 py-2 font-medium">컬럼</th>
+            <th className="px-3 py-2 font-medium">필수</th>
+            <th className="px-3 py-2 font-medium">타입</th>
+          </tr>
+        </thead>
+        <tbody>
+          {template.columns.map((column) => (
+            <tr className="border-t" key={column.key}>
+              <td className="px-3 py-2 text-[#111827]">{column.label}</td>
+              <td className="px-3 py-2 text-[#4B5563]">
+                {column.required ? "예" : "아니오"}
+              </td>
+              <td className="px-3 py-2 text-[#4B5563]">{column.type}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
+function ImportFilePanel({
   file,
-  fileError,
-  isUploading,
+  disabled,
   onFileChange,
-  onUpload,
 }: {
   readonly file: File | null;
-  readonly fileError: string | null;
-  readonly isUploading: boolean;
+  readonly disabled: boolean;
   readonly onFileChange: (file: File | null) => void;
-  readonly onUpload: () => void;
 }) {
   return (
-    <div className="grid gap-3">
-      <div>
-        <h2 className="text-base font-semibold">파일 업로드</h2>
-        <p className="mt-1 text-sm text-muted-foreground">
-                10MB 이하 CSV, XLS, XLSX 파일을 올릴 수 있어요.
-        </p>
-      </div>
-
-      <label
-        className="grid min-h-[180px] cursor-pointer place-items-center rounded-lg border border-dashed bg-muted/30 p-4 text-center hover:bg-muted/50"
-        htmlFor="import-file"
-      >
-        <div className="grid gap-3">
-          <div className="mx-auto grid h-12 w-12 place-items-center rounded-md bg-white">
-            <FileSpreadsheet className="h-6 w-6 text-muted-foreground" />
-          </div>
-          <div>
-            <p className="text-sm font-medium">가져오기 파일 선택</p>
-            <p className="mt-1 text-xs text-muted-foreground">
-                    파일을 선택하면 미리보기 작업을 만들 수 있어요.
-            </p>
-          </div>
+    <div className="grid gap-3 rounded-lg border border-[#E5E7EB] bg-white p-4">
+      <div className="flex items-center justify-between gap-3">
+        <div className="min-w-0">
+          <h3 className="text-sm font-semibold text-[#111827]">파일 업로드</h3>
+          <p className="mt-1 text-xs text-[#6B7280]">
+            CSV, XLSX 파일을 업로드하면 AI가 컬럼을 자동으로 매핑합니다.
+          </p>
         </div>
+        {file ? (
+          <Badge>{(file.size / 1024).toFixed(1)}KB</Badge>
+        ) : null}
+      </div>
+      <label className="flex min-h-16 cursor-pointer items-center justify-center rounded-lg border border-dashed border-[#CBD5E1] bg-[#F8FAFC] px-4 py-3 text-sm font-medium text-[#475569] transition hover:bg-[#F1F5F9]">
         <input
-          accept=".csv,.xls,.xlsx,text/csv,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+          accept=".csv,.xlsx"
           className="sr-only"
-          id="import-file"
-          onChange={(event) => onFileChange(event.target.files?.[0] ?? null)}
+          disabled={disabled}
+          onChange={(event) => {
+            onFileChange(event.target.files?.[0] ?? null);
+            event.currentTarget.value = "";
+          }}
           type="file"
         />
-      </label>
-
-      {file ? (
-        <div className="flex items-center justify-between gap-3 rounded-md border px-3 py-2 text-sm">
-          <span className="inline-flex min-w-0 items-center gap-2">
-            <FileSpreadsheet className="h-4 w-4 shrink-0 text-muted-foreground" />
-            <span className="truncate">{file.name}</span>
+        <span className="inline-flex min-w-0 items-center gap-2">
+          <Upload className="h-4 w-4 shrink-0 text-[#4880EE]" />
+          <span className="truncate">
+            {file ? file.name : "불러올 파일을 선택하세요"}
           </span>
-          <button
-            aria-label="선택한 파일 지우기"
-            className="grid h-7 w-7 place-items-center rounded-md text-muted-foreground hover:bg-muted"
-            onClick={() => onFileChange(null)}
-            type="button"
-          >
-            <X className="h-4 w-4" />
-          </button>
-        </div>
-      ) : null}
-
-      {fileError ? <p className="text-sm text-destructive">{fileError}</p> : null}
-
-      <button
-        className="inline-flex h-10 items-center justify-center gap-2 rounded-md bg-primary px-4 text-sm font-medium text-primary-foreground disabled:cursor-not-allowed disabled:opacity-60"
-        disabled={isUploading}
-        onClick={onUpload}
-        type="button"
-      >
-        {isUploading ? (
-          <Loader2 className="h-4 w-4 animate-spin" />
-        ) : (
-          <Upload className="h-4 w-4" />
-        )}
-        업로드
-      </button>
+        </span>
+      </label>
     </div>
   );
 }
 
-function JobSummary({
-  job,
-  result,
-}: {
-  readonly job: ImportJobResponse | null;
-  readonly result: ImportJobResultResponse | null;
-}) {
-  if (!job) {
-    return (
-      <div className="rounded-md border bg-muted/30 px-3 py-3 text-sm text-muted-foreground">
-        파일 없음
-      </div>
-    );
-  }
-
-  return (
-    <div className="grid gap-3 rounded-md border bg-muted/20 p-3">
-      <div className="flex items-center justify-between gap-3">
-        <span className="text-sm font-medium">가져오기 작업</span>
-        <StatusBadge status={job.status} />
-      </div>
-      <div className="grid grid-cols-3 gap-2 text-center text-sm">
-        <Metric label="전체" value={job.rowCount} />
-        <Metric label="정상" value={job.validRowCount} />
-        <Metric label="오류" value={job.invalidRowCount} />
-      </div>
-      {result ? (
-        <div className="grid grid-cols-2 gap-2 text-center text-sm">
-          <Metric label="성공" value={result.successCount} />
-          <Metric label="실패" value={result.failedCount} />
-        </div>
-      ) : null}
-    </div>
-  );
-}
-
-function MappingPanel({
-  currentJob,
+function ImportMappingEditor({
+  importJob,
   targetType,
-  sourceColumns,
-  draftMapping,
-  suggestion,
-  canSaveMapping,
-  canConfirm,
-  isGenerating,
-  isSaving,
-  isConfirming,
-  onGenerateMapping,
-  onSaveMapping,
-  onConfirm,
+  mapping,
+  disabled,
   onMappingChange,
+  onApplyMapping,
 }: {
-  readonly currentJob: ImportJobResponse | null;
+  readonly importJob: ImportJobResponse;
   readonly targetType: ImportTargetType;
-  readonly sourceColumns: readonly string[];
-  readonly draftMapping: ImportMapping;
-  readonly suggestion: ImportMappingResponse | null;
-  readonly canSaveMapping: boolean;
-  readonly canConfirm: boolean;
-  readonly isGenerating: boolean;
-  readonly isSaving: boolean;
-  readonly isConfirming: boolean;
-  readonly onGenerateMapping: () => void;
-  readonly onSaveMapping: () => void;
-  readonly onConfirm: () => void;
-  readonly onMappingChange: (field: string, sourceColumn: string) => void;
+  readonly mapping: ImportMapping;
+  readonly disabled: boolean;
+  readonly onMappingChange: (field: string, sourceColumn: string | null) => void;
+  readonly onApplyMapping: () => void;
 }) {
+  const fields = importTargetFields[targetType];
+  const sourceColumns = Object.keys(importJob.previewRows[0]?.rawData ?? {});
+  const confidencePercent = importJob.aiMapping
+    ? Math.round(importJob.aiMapping.confidence * 100)
+    : null;
+
   return (
-    <div className="grid content-start gap-4">
-      <div className="flex items-start justify-between gap-3">
-        <div>
-          <h2 className="text-base font-semibold">컬럼 매핑</h2>
-          <p className="mt-1 text-sm text-muted-foreground">
-                원본 컬럼을 저장 대상 필드에 연결해요.
+    <div className="grid gap-3 rounded-lg border border-[#E5E7EB] bg-white p-4">
+      <div className="flex items-center justify-between gap-3">
+        <div className="min-w-0">
+          <h3 className="text-sm font-semibold text-[#111827]">컬럼 매핑</h3>
+          <p className="mt-1 text-xs text-[#6B7280]">
+            원본 파일 헤더를 생성할 데이터 필드에 연결합니다.
           </p>
         </div>
-        <Columns3 className="h-5 w-5 text-muted-foreground" />
+        {confidencePercent !== null ? (
+          <Badge>AI {confidencePercent}%</Badge>
+        ) : null}
       </div>
 
-      <div className="flex flex-wrap gap-2">
-        <button
-          className="inline-flex h-10 items-center gap-2 rounded-md border px-3 text-sm font-medium disabled:cursor-not-allowed disabled:opacity-60"
-          disabled={!currentJob || isGenerating}
-          onClick={onGenerateMapping}
-          type="button"
-        >
-          {isGenerating ? (
-            <Loader2 className="h-4 w-4 animate-spin" />
-          ) : (
-            <Sparkles className="h-4 w-4" />
-          )}
-          AI 매핑
-        </button>
-        <button
-          className="inline-flex h-10 items-center gap-2 rounded-md bg-primary px-3 text-sm font-medium text-primary-foreground disabled:cursor-not-allowed disabled:opacity-60"
-          disabled={!canSaveMapping || isSaving}
-          onClick={onSaveMapping}
-          type="button"
-        >
-          {isSaving ? (
-            <Loader2 className="h-4 w-4 animate-spin" />
-          ) : (
-            <Save className="h-4 w-4" />
-          )}
-          매핑 저장
-        </button>
-        <button
-          className="inline-flex h-10 items-center gap-2 rounded-md bg-emerald-600 px-3 text-sm font-medium text-white disabled:cursor-not-allowed disabled:opacity-60"
-          disabled={!canConfirm || isConfirming}
-          onClick={onConfirm}
-          type="button"
-        >
-          {isConfirming ? (
-            <Loader2 className="h-4 w-4 animate-spin" />
-          ) : (
-            <Play className="h-4 w-4" />
-          )}
-          가져오기 실행
-        </button>
-      </div>
-
-      {suggestion ? (
-        <div className="rounded-md border border-blue-200 bg-blue-50 px-3 py-2 text-sm text-blue-900">
-          AI 신뢰도 {Math.round(suggestion.confidence * 100)}%
-          {suggestion.unmappedColumns.length > 0
-            ? ` · 미사용 컬럼 ${suggestion.unmappedColumns.length}개`
-            : ""}
-        </div>
-      ) : null}
-
-      {!currentJob ? (
-        <EmptyState
-          icon={FileSpreadsheet}
-          title="매핑 대기"
-                    text="파일을 올리면 원본 컬럼을 선택할 수 있어요."
-        />
-      ) : (
-        <div className="grid gap-3 md:grid-cols-2">
-          {importTargetFields[targetType].map((field) => (
-            <div className="grid gap-2" key={field.field}>
-              <label className="text-sm font-medium" htmlFor={`mapping-${field.field}`}>
-                {field.label}
-                {field.required ? (
-                  <span className="ml-1 text-destructive">*</span>
-                ) : null}
-              </label>
-              <select
-                className="h-10 rounded-md border bg-white px-3 text-sm outline-none focus:ring-2 focus:ring-ring"
-                id={`mapping-${field.field}`}
-                onChange={(event) => onMappingChange(field.field, event.target.value)}
-                value={draftMapping[field.field] ?? ""}
-              >
-                <option value="">매핑 없음</option>
-                {sourceColumns.map((sourceColumn) => (
-                  <option key={sourceColumn} value={sourceColumn}>
-                    {sourceColumn}
-                  </option>
-                ))}
-              </select>
-            </div>
-          ))}
-        </div>
-      )}
-
-      {currentJob?.invalidRowCount ? (
-        <p className="rounded-md border border-destructive/30 bg-red-50 px-3 py-2 text-sm text-destructive">
-                    오류 행을 수정하면 가져오기를 실행할 수 있어요.
-        </p>
-      ) : null}
-    </div>
-  );
-}
-
-function PreviewTable({
-  rows,
-  sourceColumns,
-  targetType,
-  useMappedData,
-}: {
-  readonly rows: readonly ImportJobRow[];
-  readonly sourceColumns: readonly string[];
-  readonly targetType: ImportTargetType;
-  readonly useMappedData: boolean;
-}) {
-  const columns = useMappedData
-    ? importTargetFields[targetType].map((field) => field.field)
-    : sourceColumns;
-
-  return (
-    <section className="grid gap-3 rounded-lg border bg-white p-4">
-      <div className="flex items-center justify-between gap-3">
-        <div>
-          <h2 className="text-base font-semibold">미리보기</h2>
-          <p className="mt-1 text-sm text-muted-foreground">
-                    행별 데이터와 오류 사유를 확인해요.
-          </p>
-        </div>
-        <FileSpreadsheet className="h-5 w-5 text-muted-foreground" />
-      </div>
-
-      {rows.length === 0 ? (
-        <EmptyState
-          icon={FileSpreadsheet}
-          title="미리보기 없음"
-          text="파일을 업로드하면 행이 표시됩니다."
-        />
-      ) : (
-        <div className="overflow-x-auto rounded-md border">
-          <table className="min-w-full border-collapse text-sm">
-            <thead className="bg-muted/50 text-left">
-              <tr>
-                <th className="w-20 px-3 py-2 font-medium">Row</th>
-                <th className="w-32 px-3 py-2 font-medium">상태</th>
-                {columns.map((column) => (
-                  <th className="min-w-36 px-3 py-2 font-medium" key={column}>
-                    {toColumnLabel(targetType, column, useMappedData)}
-                  </th>
-                ))}
-                <th className="min-w-60 px-3 py-2 font-medium">오류</th>
-              </tr>
-            </thead>
-            <tbody>
-              {rows.map((row) => (
-                <tr className="border-t" key={row.id}>
-                  <td className="px-3 py-2 text-muted-foreground">{row.rowNumber}</td>
-                  <td className="px-3 py-2">
-                    <StatusBadge status={row.status} />
-                  </td>
-                  {columns.map((column) => (
-                    <td className="max-w-[220px] px-3 py-2" key={column}>
-                      <span className="block truncate">
-                        {formatCellValue(
-                          useMappedData
-                            ? row.mappedData?.[column] ?? null
-                            : row.rawData[column] ?? ""
-                        )}
-                      </span>
-                    </td>
-                  ))}
-                  <td className="px-3 py-2 text-destructive">
-                    {row.errorMessage ?? "-"}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      )}
-    </section>
-  );
-}
-
-function ResultPanel({ result }: { readonly result: ImportJobResultResponse }) {
-  return (
-    <section className="grid gap-3 rounded-lg border bg-white p-4">
-      <div className="flex items-center justify-between gap-3">
-        <h2 className="text-base font-semibold">실행 결과</h2>
-        <StatusBadge status={result.status} />
-      </div>
       <div className="grid gap-2 md:grid-cols-2">
-        <Metric label="성공 행" value={result.successCount} />
-        <Metric label="실패 행" value={result.failedCount} />
-      </div>
-      {result.errors.length > 0 ? (
-        <div className="grid gap-2">
-          {result.errors.map((error) => (
-            <p
-              className="rounded-md border border-destructive/30 bg-red-50 px-3 py-2 text-sm text-destructive"
-              key={`${error.rowNumber}-${error.message}`}
+        {fields.map((field) => (
+          <label
+            className="grid gap-1.5 text-[13px] font-medium text-[#374151]"
+            key={field.field}
+          >
+            {field.label}
+            <select
+              className="h-9 rounded-md border border-[#D1D5DB] bg-white px-3 text-[13px] outline-none focus:border-[#4880EE] focus:ring-2 focus:ring-[#4880EE]/20 disabled:bg-[#F3F4F6]"
+              disabled={disabled}
+              onChange={(event) =>
+                onMappingChange(
+                  field.field,
+                  event.target.value.length > 0 ? event.target.value : null
+                )
+              }
+              value={mapping[field.field] ?? ""}
             >
-              행 {error.rowNumber ?? "-"} · {error.message}
-            </p>
+              <option value="">선택 안 함</option>
+              {sourceColumns.map((sourceColumn) => (
+                <option key={sourceColumn} value={sourceColumn}>
+                  {sourceColumn}
+                </option>
+              ))}
+            </select>
+          </label>
+        ))}
+      </div>
+
+      {importJob.errors.length > 0 ? (
+        <div className="grid gap-1 rounded-md bg-red-50 px-3 py-2 text-xs text-red-700">
+          {importJob.errors.slice(0, 4).map((error) => (
+            <span key={`${error.rowNumber ?? "mapping"}-${error.message}`}>
+              {error.rowNumber ? `${error.rowNumber}행: ` : ""}
+              {error.message}
+            </span>
           ))}
         </div>
       ) : null}
-    </section>
+
+      <div className="flex items-center justify-between gap-3">
+        <span className="text-xs text-[#6B7280]">
+          유효 {importJob.validRowCount.toLocaleString("ko-KR")}건 / 오류{" "}
+          {importJob.invalidRowCount.toLocaleString("ko-KR")}건
+        </span>
+        <button
+          className="inline-flex h-9 items-center gap-2 rounded-md border border-[#D1D5DB] px-3 text-[13px] font-medium text-[#374151] hover:bg-[#F9FAFB] disabled:cursor-not-allowed disabled:opacity-60"
+          disabled={disabled}
+          onClick={onApplyMapping}
+          type="button"
+        >
+          <RotateCcw className="h-3.5 w-3.5" />
+          매핑 적용
+        </button>
+      </div>
+    </div>
   );
 }
 
-function ConfirmDialog({
-  job,
-  isPending,
-  onCancel,
-  onConfirm,
+function ImportEditablePreview({
+  targetType,
+  rows,
+  disabled,
+  onEditableCellChange,
 }: {
-  readonly job: ImportJobResponse;
-  readonly isPending: boolean;
-  readonly onCancel: () => void;
-  readonly onConfirm: () => void;
+  readonly targetType: ImportTargetType;
+  readonly rows: readonly EditableImportRow[];
+  readonly disabled: boolean;
+  readonly onEditableCellChange: (
+    rowNumber: number,
+    field: ImportTargetField,
+    value: string
+  ) => void;
 }) {
+  const fields = importTargetFields[targetType];
+
   return (
-    <div className="fixed inset-0 z-50 grid place-items-center bg-black/30 px-4">
-      <div
-        aria-modal="true"
-        className="grid w-full max-w-md gap-4 rounded-lg bg-white p-5 shadow-lg"
-        role="dialog"
-      >
-        <div>
-          <h2 className="text-lg font-semibold">가져오기 실행</h2>
-          <p className="mt-2 text-sm text-muted-foreground">
-            {job.rowCount}개 행이 현재 매핑 기준으로 반영됩니다.
+    <div className="grid gap-3 rounded-lg border border-[#E5E7EB] bg-white p-4">
+      <div className="flex items-center justify-between gap-3">
+        <div className="min-w-0">
+          <h3 className="text-sm font-semibold text-[#111827]">미리보기 수정</h3>
+          <p className="mt-1 text-xs text-[#6B7280]">
+            확정 전 최종 값입니다. 이 값으로 실제 데이터가 생성됩니다.
           </p>
         </div>
-        <p className="rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-900">
-                    실행 후 생성한 데이터는 개별 화면에서 관리해 주세요.
-        </p>
-        <div className="flex justify-end gap-2">
-          <button
-            className="inline-flex h-10 items-center rounded-md border px-4 text-sm font-medium"
-            disabled={isPending}
-            onClick={onCancel}
-            type="button"
-          >
-              닫기
-          </button>
-          <button
-            className="inline-flex h-10 items-center gap-2 rounded-md bg-emerald-600 px-4 text-sm font-medium text-white disabled:cursor-not-allowed disabled:opacity-60"
-            disabled={isPending}
-            onClick={onConfirm}
-            type="button"
-          >
-            {isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
-            실행
-          </button>
-        </div>
+        <Badge>{rows.length.toLocaleString("ko-KR")}행</Badge>
+      </div>
+
+      <div className="max-h-[320px] overflow-auto rounded-md border border-[#E5E7EB]">
+        <table className="min-w-full border-collapse text-[13px]">
+          <thead className="sticky top-0 z-10 bg-[#F8FAFC] text-left text-[#475569]">
+            <tr>
+              <th className="w-16 border-b px-3 py-2 font-semibold">행</th>
+              {fields.map((field) => (
+                <th
+                  className="min-w-[160px] border-b px-3 py-2 font-semibold"
+                  key={field.field}
+                >
+                  {field.label}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {rows.map((row) => (
+              <tr className="border-b last:border-b-0" key={row.rowNumber}>
+                <td className="bg-[#FAFBFC] px-3 py-2 text-[#64748B]">
+                  {row.rowNumber}
+                </td>
+                {fields.map((field) => (
+                  <td className="px-2 py-2" key={field.field}>
+                    <input
+                      className="h-8 w-full rounded-md border border-[#D1D5DB] px-2 text-[13px] outline-none focus:border-[#4880EE] focus:ring-2 focus:ring-[#4880EE]/20 disabled:bg-[#F3F4F6]"
+                      disabled={disabled}
+                      onChange={(event) =>
+                        onEditableCellChange(
+                          row.rowNumber,
+                          field,
+                          event.target.value
+                        )
+                      }
+                      type={field.kind === "number" ? "text" : "text"}
+                      value={toInputValue(row.data[field.field])}
+                    />
+                    {row.errorMessage ? (
+                      <span className="mt-1 block truncate text-[11px] text-red-500">
+                        {row.errorMessage}
+                      </span>
+                    ) : null}
+                  </td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
     </div>
+  );
+}
+
+function ImportTableHeaderCell({ children }: { readonly children: string }) {
+  return (
+    <div className="min-w-0 truncate text-[12px] font-semibold text-[#64748B]">
+      {children}
+    </div>
+  );
+}
+
+function Badge({ children }: { readonly children: ReactNode }) {
+  const title = typeof children === "string" ? children : undefined;
+
+  return (
+    <span
+      className="inline-flex h-[22px] max-w-full min-w-0 items-center overflow-hidden rounded-full bg-[#EEF4FF] px-2.5 text-[11px] font-semibold text-[#4880EE]"
+      title={title}
+    >
+      <span className="min-w-0 truncate whitespace-nowrap">{children}</span>
+    </span>
   );
 }
 
@@ -855,14 +1498,14 @@ function NoticeMessage({
   readonly onDismiss: () => void;
 }) {
   return (
-    <div className="flex items-center justify-between gap-4 rounded-md border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm text-emerald-800">
+    <div className="flex items-center justify-between gap-4 rounded-md border border-[#BBF7D0] bg-[#F0FDF4] px-3 py-2 text-sm text-[#166534]">
       <span className="inline-flex items-center gap-2">
         <CheckCircle2 className="h-4 w-4" />
         {message}
       </span>
       <button
         aria-label="알림 닫기"
-        className="grid h-7 w-7 place-items-center rounded-md hover:bg-emerald-100"
+        className="grid h-7 w-7 place-items-center rounded-md hover:bg-[#DCFCE7]"
         onClick={onDismiss}
         type="button"
       >
@@ -874,147 +1517,175 @@ function NoticeMessage({
 
 function ErrorMessage({ message }: { readonly message: string }) {
   return (
-    <div className="inline-flex items-center gap-2 rounded-md border border-destructive/30 bg-red-50 px-3 py-2 text-sm text-destructive">
+    <div className="inline-flex items-center gap-2 rounded-md border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
       <AlertCircle className="h-4 w-4" />
       {message}
     </div>
   );
 }
 
-function EmptyState({
-  icon: Icon,
-  title,
-  text,
+function ImportListError({
+  error,
+  onRetry,
 }: {
-  readonly icon: LucideIcon;
-  readonly title: string;
-  readonly text: string;
+  readonly error: unknown;
+  readonly onRetry: () => void;
 }) {
   return (
-    <div className="grid place-items-center rounded-md border bg-muted/30 px-4 py-10 text-center">
-      <div className="grid max-w-sm gap-2">
-        <Icon className="mx-auto h-5 w-5 text-muted-foreground" />
-        <p className="text-sm font-medium">{title}</p>
-        <p className="text-sm text-muted-foreground">{text}</p>
-      </div>
+    <div className="flex flex-col items-center justify-center px-5 py-14 text-center">
+      <p className="text-[13px] text-red-500">{getApiErrorMessage(error)}</p>
+      <button
+        className="mt-3 inline-flex h-8 items-center rounded-md border border-[#E2E5EC] bg-white px-3 text-[12px] text-[#6B7280]"
+        onClick={onRetry}
+        type="button"
+      >
+        다시 시도
+      </button>
     </div>
   );
 }
 
-function Metric({ label, value }: { readonly label: string; readonly value: number }) {
+function ImportListSkeleton() {
   return (
-    <div className="rounded-md border bg-white px-3 py-2">
-      <p className="text-xs text-muted-foreground">{label}</p>
-      <p className="mt-1 text-lg font-semibold">{value.toLocaleString()}</p>
+    <div>
+      {Array.from({ length: 8 }, (_, index) => (
+        <div
+          className="h-[66px] animate-pulse border-b border-[#E5E7EB] bg-[#F9FAFB]"
+          key={index}
+        />
+      ))}
     </div>
   );
 }
 
-function StatusBadge({ status }: { readonly status: ImportRowStatus | string }) {
-  const tone = getStatusTone(status);
-
+function ImportMobileSkeleton() {
   return (
-    <span
-      className={`inline-flex h-7 items-center rounded-full border px-2.5 text-xs font-medium ${tone}`}
-    >
-      {getStatusLabel(status)}
-    </span>
+    <div>
+      {Array.from({ length: 8 }, (_, index) => (
+        <div
+          className="h-[80px] animate-pulse border-b border-[#E5E7EB] bg-[#F9FAFB]"
+          key={index}
+        />
+      ))}
+    </div>
   );
 }
 
-function getStatusTone(status: string) {
-  if (["COMPLETED", "IMPORTED", "VALID", "MAPPING_READY"].includes(status)) {
-    return "border-emerald-200 bg-emerald-50 text-emerald-800";
-  }
-
-  if (["FAILED", "VALIDATION_FAILED"].includes(status)) {
-    return "border-destructive/30 bg-red-50 text-destructive";
-  }
-
-  if (["PROCESSING", "MAPPING_PENDING"].includes(status)) {
-    return "border-blue-200 bg-blue-50 text-blue-900";
-  }
-
-  return "border-muted bg-muted/40 text-muted-foreground";
-}
-
-function getStatusLabel(status: string) {
-  const labels: Record<string, string> = {
-    UPLOADED: "업로드",
-    PREVIEW_READY: "미리보기",
-    MAPPING_PENDING: "매핑 중",
-    MAPPING_READY: "매핑 완료",
-    VALIDATION_FAILED: "오류",
-    CONFIRMED: "확정",
-    PROCESSING: "실행 중",
-    COMPLETED: "완료",
-    FAILED: "실패",
-    CANCELED: "취소",
-    PENDING: "대기",
-    VALID: "정상",
-    IMPORTED: "반영",
-    SKIPPED: "건너뜀",
-  };
-
-  return labels[status] ?? status;
-}
-
-function collectSourceColumns(rows: readonly ImportJobRow[]) {
-  const columns = new Set<string>();
-
-  rows.forEach((row) => {
-    Object.keys(row.rawData).forEach((column) => columns.add(column));
+function formatLogCreatedAt(createdAt: string) {
+  return formatDateWithOptions(createdAt, {
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    month: "2-digit",
+    year: "2-digit",
   });
-
-  return Array.from(columns);
 }
 
-function completeMapping(
-  targetType: ImportTargetType,
-  mapping: ImportMapping | null | undefined
-): ImportMapping {
-  return {
-    ...createEmptyMapping(targetType),
-    ...(mapping ?? {}),
-  };
+function toEditableRows(job: ImportJobResponse): EditableImportRow[] {
+  const fields = importTargetFields[job.targetType as ImportTargetType];
+
+  return job.previewRows.map((row) => {
+    const data: Record<string, ImportFieldValue> = {};
+
+    for (const field of fields) {
+      data[field.field] = row.mappedData?.[field.field] ?? null;
+    }
+
+    return {
+      rowNumber: row.rowNumber,
+      data,
+      errorMessage: row.errorMessage,
+    };
+  });
 }
 
-function chooseLatestJob(
-  queriedJob: ImportJobResponse | null,
-  localJob: ImportJobResponse | null
-) {
-  if (!queriedJob) {
-    return localJob;
+function toEditableFieldValue(
+  value: string,
+  field: ImportTargetField
+): ImportFieldValue {
+  const normalized = value.trim();
+
+  if (normalized.length === 0) {
+    return null;
   }
 
-  if (!localJob) {
-    return queriedJob;
+  if (field.kind !== "number") {
+    return normalized;
   }
 
-  return Date.parse(localJob.updatedAt) >= Date.parse(queriedJob.updatedAt)
-    ? localJob
-    : queriedJob;
+  const numberValue = Number(normalized.replaceAll(",", ""));
+  return Number.isFinite(numberValue) ? numberValue : normalized;
 }
 
-function toColumnLabel(
-  targetType: ImportTargetType,
-  column: string,
-  useMappedData: boolean
-) {
-  if (!useMappedData) {
-    return column;
-  }
-
-  return (
-    importTargetFields[targetType].find((field) => field.field === column)?.label ??
-    column
-  );
-}
-
-function formatCellValue(value: string | number | null) {
-  if (value === null || value === "") {
-    return "-";
+function toInputValue(value: ImportFieldValue | undefined): string {
+  if (value === null || value === undefined) {
+    return "";
   }
 
   return String(value);
+}
+
+function validateEditableRows(
+  targetType: ImportTargetType,
+  rows: readonly EditableImportRow[]
+): string | null {
+  if (rows.length === 0) {
+    return "확정할 데이터 row가 없습니다.";
+  }
+
+  const fields = importTargetFields[targetType];
+
+  for (const row of rows) {
+    for (const field of fields) {
+      const value = row.data[field.field];
+      const textValue = value === null || value === undefined ? "" : String(value).trim();
+
+      if (field.required && textValue.length === 0) {
+        return `${row.rowNumber}행의 ${field.label} 값을 입력해 주세요.`;
+      }
+
+      if (textValue.length === 0) {
+        continue;
+      }
+
+      if (field.field === "contactEmail" && !IMPORT_EMAIL_PATTERN.test(textValue)) {
+        return `${row.rowNumber}행의 담당자 이메일 형식이 올바르지 않습니다.`;
+      }
+
+      if (field.field === "contactPhone" && !isImportPhoneValue(textValue)) {
+        return `${row.rowNumber}행의 담당자 핸드폰 번호 형식이 올바르지 않습니다.`;
+      }
+
+      if (field.kind === "number" && !isNonNegativeIntegerValue(textValue)) {
+        return `${row.rowNumber}행의 ${field.label}은 0 이상의 정수여야 합니다.`;
+      }
+    }
+  }
+
+  return null;
+}
+
+function isImportPhoneValue(value: string): boolean {
+  if (IMPORT_MOBILE_PATTERN.test(value)) {
+    return true;
+  }
+
+  return IMPORT_MOBILE_DIGIT_PATTERN.test(value.replace(/\D/g, ""));
+}
+
+function isNonNegativeIntegerValue(value: string): boolean {
+  const numberValue = Number(value.replaceAll(",", ""));
+  return Number.isInteger(numberValue) && numberValue >= 0;
+}
+
+function downloadBlobFile(file: ApiBlobResponse, fallbackFileName: string) {
+  const url = URL.createObjectURL(file.blob);
+  const link = document.createElement("a");
+
+  link.href = url;
+  link.download = file.fileName ?? fallbackFileName;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  URL.revokeObjectURL(url);
 }

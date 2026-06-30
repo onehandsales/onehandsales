@@ -61,6 +61,13 @@ enum BusinessCardResolution {
   CREATED
 }
 
+enum ImportTemplateType {
+  COMPANY
+  CONTACT
+  PRODUCT
+  DEAL
+}
+
 model User {
   id          String     @id @default(uuid()) @db.Uuid
   email       String?
@@ -128,6 +135,7 @@ model User {
   meetingNoteProducts     MeetingNoteProduct[]
   meetingNoteDeals        MeetingNoteDeal[]
   businessCardScanLogs    BusinessCardScanLog[]
+  importUserLogs          ImportUserLog[]
 
   @@index([role])
   @@index([status])
@@ -800,6 +808,55 @@ model BusinessCardScanLog {
   @@index([userId, status, createdAt])
   @@index([userId, companyId])
   @@index([userId, contactId])
+}
+
+model ImportTemplate {
+  id              String             @id @default(uuid()) @db.Uuid
+  templateType    ImportTemplateType
+  templateVersion String
+  templateName    String
+  columnsJson     Json
+  sampleRowsJson  Json
+  isActive        Boolean            @default(false)
+  createdAt       DateTime           @default(now()) @db.Timestamptz(3)
+  updatedAt       DateTime           @updatedAt @db.Timestamptz(3)
+
+  @@unique([templateType, templateVersion])
+  @@index([templateType, isActive])
+}
+
+model ImportUserLog {
+  id                  String             @id @default(uuid()) @db.Uuid
+  userId              String             @db.Uuid
+  targetType          ImportTemplateType
+  templateVersion     String
+  templateColumnsJson Json
+  contextLabel        String?
+  contextJson         Json?
+  originalFileName    String
+  fileSizeBytes       Int
+  totalRowCount       Int
+  importedRowCount    Int
+  createdAt           DateTime           @default(now()) @db.Timestamptz(3)
+
+  user User               @relation(fields: [userId], references: [id])
+  rows ImportUserLogRow[]
+
+  @@index([userId, createdAt])
+  @@index([userId, targetType, createdAt])
+}
+
+model ImportUserLogRow {
+  id                String   @id @default(uuid()) @db.Uuid
+  importUserLogId   String   @db.Uuid
+  rowNumber         Int
+  submittedDataJson Json
+  targetLabel       String
+  createdAt         DateTime @default(now()) @db.Timestamptz(3)
+
+  importUserLog ImportUserLog @relation(fields: [importUserLogId], references: [id])
+
+  @@index([importUserLogId, rowNumber])
 }
 
 model CompanyField {

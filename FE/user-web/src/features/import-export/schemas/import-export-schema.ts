@@ -55,28 +55,63 @@ export const importTargetFields: Record<
   readonly ImportTargetField[]
 > = {
   COMPANY: [
-    { field: "name", label: "회사명", required: true, kind: "text" },
-    { field: "industry", label: "업종", required: false, kind: "text" },
-    { field: "region", label: "지역", required: false, kind: "text" },
-    { field: "address", label: "주소", required: false, kind: "text" },
-    { field: "website", label: "웹사이트", required: false, kind: "text" },
-    { field: "description", label: "설명", required: false, kind: "text" },
+    { field: "companyName", label: "회사명", required: true, kind: "text" },
+    {
+      field: "companyFieldName",
+      label: "회사분야",
+      required: true,
+      kind: "text",
+    },
+    {
+      field: "companyRegionName",
+      label: "회사지역",
+      required: true,
+      kind: "text",
+    },
   ],
   CONTACT: [
-    { field: "name", label: "담당자명", required: true, kind: "text" },
-    { field: "companyName", label: "회사명", required: false, kind: "text" },
-    { field: "department", label: "부서", required: false, kind: "text" },
-    { field: "position", label: "직책", required: false, kind: "text" },
-    { field: "phone", label: "전화번호", required: false, kind: "text" },
-    { field: "email", label: "이메일", required: false, kind: "text" },
-    { field: "address", label: "주소", required: false, kind: "text" },
+    { field: "companyName", label: "회사명", required: true, kind: "text" },
+    { field: "contactName", label: "담당자명", required: true, kind: "text" },
+    {
+      field: "contactEmail",
+      label: "담당자 이메일",
+      required: true,
+      kind: "text",
+    },
+    {
+      field: "contactPhone",
+      label: "담당자 핸드폰 번호",
+      required: true,
+      kind: "text",
+    },
+    {
+      field: "contactDepartmentName",
+      label: "담당자 부서",
+      required: true,
+      kind: "text",
+    },
+    {
+      field: "contactJobGradeName",
+      label: "담당자 직급",
+      required: true,
+      kind: "text",
+    },
   ],
   PRODUCT: [
-    { field: "name", label: "제품명", required: true, kind: "text" },
-    { field: "category", label: "카테고리", required: false, kind: "text" },
-    { field: "unitPrice", label: "단가", required: false, kind: "number" },
-    { field: "currency", label: "통화", required: false, kind: "text" },
-    { field: "description", label: "설명", required: false, kind: "text" },
+    { field: "productName", label: "제품명", required: true, kind: "text" },
+    { field: "productPrice", label: "제품단가", required: true, kind: "number" },
+    {
+      field: "productCategoryName",
+      label: "제품 카테고리",
+      required: true,
+      kind: "text",
+    },
+    {
+      field: "productStatusName",
+      label: "제품 상태",
+      required: true,
+      kind: "text",
+    },
   ],
   DEAL: [
     { field: "title", label: "딜명", required: true, kind: "text" },
@@ -105,12 +140,11 @@ export const importTargetFields: Record<
   ],
 };
 
-const allowedExtensions = new Set(["csv", "xls", "xlsx"]);
+const allowedExtensions = new Set(["csv", "xlsx"]);
 const allowedMimeTypes = new Set([
   "text/csv",
   "application/csv",
   "text/plain",
-  "application/vnd.ms-excel",
   "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
   "application/octet-stream",
 ]);
@@ -123,7 +157,7 @@ export function validateImportFile(file: File | null): string | null {
   const extension = file.name.split(".").pop()?.toLowerCase() ?? "";
 
   if (!allowedExtensions.has(extension)) {
-    return "CSV, XLS, XLSX 파일만 올릴 수 있어요.";
+    return "CSV, XLSX 파일만 올릴 수 있어요.";
   }
 
   if (file.type && !allowedMimeTypes.has(file.type)) {

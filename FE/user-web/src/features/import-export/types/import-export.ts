@@ -103,6 +103,10 @@ export type UpdateImportMappingInput = {
 
 export type ConfirmImportJobInput = {
   readonly importJobId: string;
+  readonly rows?: readonly {
+    readonly rowNumber: number;
+    readonly data: ImportMappedRowData;
+  }[];
 };
 
 export type ExportJobResponse = {

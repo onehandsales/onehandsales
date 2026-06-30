@@ -48,7 +48,7 @@ export function confirmImportJob(input: ConfirmImportJobInput) {
     {
       method: "POST",
       body: {
-        confirm: true,
+        rows: input.rows,
       },
     }
   );
