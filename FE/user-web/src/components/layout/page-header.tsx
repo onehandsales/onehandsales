@@ -109,9 +109,9 @@ function TooltipIconButton({ action }: { readonly action: HeaderAction }) {
     <>
       <Icon className="h-[16px] w-[16px]" strokeWidth={2} />
       {/* 툴팁 — 아래 방향 */}
-      <span className="pointer-events-none absolute left-1/2 top-full z-50 mt-2 -translate-x-1/2 whitespace-nowrap rounded-md bg-[#111827] px-2.5 py-1.5 text-[11px] font-medium leading-none text-white opacity-0 shadow-lg transition-opacity duration-100 group-hover:opacity-100 group-focus-visible:opacity-100">
+      <span className="pointer-events-none absolute right-0 top-full z-50 mt-2 whitespace-nowrap rounded-md bg-[#111827] px-2.5 py-1.5 text-[11px] font-medium leading-none text-white opacity-0 shadow-lg transition-opacity duration-100 group-hover:opacity-100 group-focus-visible:opacity-100">
           {/* 위 꼬리 */}
-          <span className="absolute bottom-full left-1/2 -translate-x-1/2 border-4 border-transparent border-b-[#111827]" />
+          <span className="absolute bottom-full right-3 border-4 border-transparent border-b-[#111827]" />
           {action.tooltip}
       </span>
     </>

@@ -52,7 +52,7 @@ const CONTACT_SORT_OPTIONS: Array<{
 
 const CONTACT_TABLE_GRID_STYLE = {
   gridTemplateColumns:
-    "minmax(84px,0.8fr) minmax(96px,0.9fr) minmax(64px,0.6fr) minmax(54px,0.5fr) minmax(76px,0.7fr) minmax(96px,1fr) minmax(82px,0.65fr)",
+    "minmax(0,0.8fr) minmax(0,0.9fr) minmax(0,0.6fr) minmax(0,0.5fr) minmax(0,0.7fr) minmax(0,1fr) minmax(0,0.65fr)",
 };
 
 export function ContactListScreen() {
@@ -276,9 +276,9 @@ export function ContactListScreen() {
       ) : null}
 
       {/* 테이블 (데스크톱) */}
-      <div className="hidden gap-3 overflow-x-auto px-5 pb-3 pt-1 md:flex xl:gap-5">
+      <div className="hidden min-w-0 gap-3 overflow-hidden px-5 pb-3 pt-1 md:flex xl:gap-5">
         <div className="flex min-w-0 flex-1 flex-col gap-3">
-          <div className="flex w-full min-w-[620px] flex-col overflow-hidden rounded-lg border border-[#E2E5EC] bg-white shadow-sm">
+          <div className="flex w-full min-w-0 flex-col overflow-hidden rounded-lg border border-[#E2E5EC] bg-white shadow-sm">
             {/* 테이블 헤더 (데스크톱) */}
             <div
               className="hidden h-11 shrink-0 items-center border-b border-[#E2E5EC] bg-[#F9FAFB] px-3 md:grid md:px-4 xl:px-6"

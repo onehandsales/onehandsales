@@ -36,7 +36,7 @@ import { readLocationNotice } from "@/utils/location-state";
 
 const MEETING_NOTE_TABLE_GRID_STYLE = {
   gridTemplateColumns:
-    "minmax(116px,0.82fr) minmax(180px,1.45fr) minmax(128px,0.88fr) minmax(128px,0.88fr) minmax(116px,0.82fr)",
+    "minmax(0,0.82fr) minmax(0,1.45fr) minmax(0,0.88fr) minmax(0,0.88fr) minmax(0,0.82fr)",
 };
 
 const MEETING_NOTE_SORT_OPTIONS = [
@@ -242,9 +242,9 @@ export function MeetingNoteListScreen() {
         </div>
       ) : null}
 
-      <div className="hidden overflow-x-auto px-5 pb-3 pt-1 md:block">
-        <div className="flex min-w-0 flex-col gap-3">
-          <div className="flex w-full min-w-[680px] flex-col overflow-hidden rounded-lg border border-[#E2E5EC] bg-white shadow-sm">
+      <div className="hidden min-w-0 overflow-hidden px-5 pb-3 pt-1 md:flex">
+        <div className="flex min-w-0 flex-1 flex-col gap-3">
+          <div className="flex w-full min-w-0 flex-col overflow-hidden rounded-lg border border-[#E2E5EC] bg-white shadow-sm">
             <div
               className="grid h-11 shrink-0 items-center border-b border-[#E2E5EC] bg-[#F9FAFB] px-3 md:px-4 xl:px-6"
               style={MEETING_NOTE_TABLE_GRID_STYLE}
