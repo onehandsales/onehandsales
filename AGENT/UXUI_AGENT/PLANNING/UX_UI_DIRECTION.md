@@ -263,6 +263,26 @@ Avoid:
 - oversized consumer-app typography that leaves too few deals visible
 - viewport-based font scaling
 
+## 8A. UX Writing Direction
+
+Product copy follows Toss-like UX writing principles adapted for `한손에 영업 / onehand.sales`.
+
+Rules:
+
+- Use 해요체 for user-facing sentences.
+- Avoid `입니다/습니다/합니다/없습니다/하지 않습니다/수 없습니다/못했습니다/필요합니다/되었습니다`.
+- Prefer active wording such as `저장했어요` over passive wording such as `저장되었습니다`.
+- Prefer positive next-action wording over dead-end negative states.
+- Keep loading, empty, error, validation, toast, and dialog copy short enough to scan quickly.
+- Avoid excessive honorifics such as `~시겠어요?`, `시나요?`, `께`, `계시다`, and `여쭈다`.
+- Keep button labels short and action-based. Dialog left buttons use `닫기`.
+- Menu labels, table headers, filters, and domain labels may stay as concise nouns.
+
+Detailed guide:
+
+- `AGENT/UXUI_AGENT/PLANNING/UX_WRITING_GUIDE.md`
+- `AGENT/UXUI_AGENT/DECISIONS/016_uxui_writing_tone.md`
+
 ## 9. Navigation Priority
 
 Primary navigation should make these areas easy to reach:
@@ -699,6 +719,7 @@ Admin should not try to feel like the User Web. It should feel like an internal 
 ## 12. 관련 문서
 
 - `AGENT/UXUI_AGENT/PLANNING/USER_FLOW_AND_SCREENS.md`
+- `AGENT/UXUI_AGENT/PLANNING/UX_WRITING_GUIDE.md`
 - `AGENT/UXUI_AGENT/DECISIONS/README.md`
 - `AGENT/UXUI_AGENT/UX_REVIEW_CHECKLIST.md`
 - `AGENT/SOFTWARE_AGENT/FRONT_AGENT/ARCHITECTURE/FRONTEND_USER_WEB.md`

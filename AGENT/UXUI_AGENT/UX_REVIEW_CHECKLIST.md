@@ -18,6 +18,17 @@
 - `오프더레코드`, `상품`, `Customer`처럼 정본에서 제외된 표현을 쓰지 않는가?
 - 외부 UX reference를 패턴으로만 참고하고, brand/copy/visual asset/layout을 그대로 복제하지 않았는가?
 
+## 2A. UX 라이팅 체크리스트
+
+- 사용자에게 보이는 문구가 해요체인가?
+- `입니다/습니다/합니다/없습니다/하지 않습니다/수 없습니다/못했습니다/필요합니다/되었습니다` 체가 남아 있지 않은가?
+- 저장, 등록, 삭제, 복구 같은 결과 문구가 `저장되었습니다`가 아니라 `저장했어요`처럼 능동형인가?
+- empty state가 `없습니다`로 끝나지 않고 사용자가 다음에 할 수 있는 행동을 알려주는가?
+- error state가 문제를 짧게 말한 뒤 재시도, 수정, 로그인 같은 다음 행동을 알려주는가?
+- validation message가 짧고 구체적이며 `해주세요`는 `해 주세요`로 띄어 쓰는가?
+- `~시겠어요?`, `시나요?`, `께`, `계시다`, `여쭈다`처럼 과한 경어를 피했는가?
+- 버튼은 짧은 행동형이고, dialog 왼쪽 버튼은 `닫기`로 통일했는가?
+
 ## 3. 딜 화면 체크리스트
 
 - 딜 row/card 정보 순서가 정본 기준을 따르는가?
@@ -57,6 +68,7 @@
 
 - `AGENT/UXUI_AGENT/PLANNING/USER_FLOW_AND_SCREENS.md`
 - `AGENT/UXUI_AGENT/PLANNING/UX_UI_DIRECTION.md`
+- `AGENT/UXUI_AGENT/PLANNING/UX_WRITING_GUIDE.md`
 - `AGENT/UXUI_AGENT/DECISIONS/README.md`
 - `AGENT/SOFTWARE_AGENT/FRONT_AGENT/ENGINEERING_REVIEW_CHECKLIST.md`
 

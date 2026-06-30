@@ -17,6 +17,7 @@
 - `013_uxui_next_action_alert.md`
 - `014_uxui_admin_tone.md`
 - `015_uxui_list_filter_pagination.md`
+- `016_uxui_writing_tone.md`
 
 ## 3. 관련 문서
 
