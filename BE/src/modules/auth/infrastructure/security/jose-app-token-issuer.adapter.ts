@@ -1,6 +1,5 @@
 ﻿import { Injectable } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
-import { jwtVerify, SignJWT } from "jose";
 import {
   type AppAccessTokenPayload,
   type AppTokenIssuer,
@@ -8,9 +7,15 @@ import {
 } from "@/modules/auth/application/ports/app-token.port";
 import { UnauthorizedError } from "@/shared/domain/errors/common.errors";
 
+type JoseModule = typeof import("jose");
+
 type AppJwtPayload = {
   readonly sessionId?: unknown;
 };
+
+const importEsm = new Function("specifier", "return import(specifier)") as (
+  specifier: string
+) => Promise<JoseModule>;
 
 const localMockTokens: Record<string, AppAccessTokenPayload> = {
   "mock-user-web-access-token": {
@@ -30,6 +35,8 @@ const localMockTokens: Record<string, AppAccessTokenPayload> = {
 // 역할 : JoseAppTokenIssuerAdapter 외부 의존성 포트를 실제 기술 어댑터로 구현합니다.
 @Injectable()
 export class JoseAppTokenIssuerAdapter implements AppTokenIssuer {
+  private joseModule: Promise<JoseModule> | null = null;
+
   // 기능 : 앱 JWT 설정을 읽기 위한 설정 서비스를 주입받습니다.
   constructor(private readonly configService: ConfigService) {}
 
@@ -37,6 +44,7 @@ export class JoseAppTokenIssuerAdapter implements AppTokenIssuer {
   async issueAccessToken(
     payload: AppAccessTokenPayload
   ): Promise<IssuedAppAccessToken> {
+    const { SignJWT } = await this.getJose();
     const expiresAt = this.addMinutes(new Date(), this.getAccessTokenTtlMinutes());
     const accessToken = await new SignJWT({ sessionId: payload.sessionId })
       .setProtectedHeader({ alg: "HS256" })
@@ -62,6 +70,7 @@ export class JoseAppTokenIssuerAdapter implements AppTokenIssuer {
     }
 
     try {
+      const { jwtVerify } = await this.getJose();
       const { payload } = await jwtVerify(accessToken, this.getSecret(), {
         issuer: this.getIssuer(),
         audience: this.getAudience(),
@@ -83,6 +92,12 @@ export class JoseAppTokenIssuerAdapter implements AppTokenIssuer {
 
       throw new UnauthorizedError("Invalid app token");
     }
+  }
+
+  // 기능 : CommonJS 빌드에서 ESM-only jose를 안전하게 지연 로드합니다.
+  private getJose(): Promise<JoseModule> {
+    this.joseModule ??= importEsm("jose");
+    return this.joseModule;
   }
 
   // 기능 : local 환경에서 사용할 mock access token payload를 조회합니다.

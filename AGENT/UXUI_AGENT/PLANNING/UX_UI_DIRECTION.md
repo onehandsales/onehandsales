@@ -25,7 +25,7 @@ Current implementation note as of 2026-06-25:
 - Global Search has Backend `GET /api/search` and User Web GlobalSearch connection with loading, empty, error states implemented.
 - Trash has Backend list/detail/restore APIs and a User Web full-width list with row-click detail modal and modal-only restore action.
 - MeetingNote AI/STT draft Backend APIs and User Web draft UI integration are implemented.
-- BusinessCard OCR has Backend `POST/GET /api/business-card-scans` and User Web `/business-cards` integration implemented. The visible feature name is `명함 스캔`, and the modal action is `명함등록`.
+- BusinessCard OCR has Backend `POST/GET /api/business-card-scans` and User Web `/business-cards` integration implemented. The visible feature name is `명함 스캔`, and the modal action is `명함스캔`.
 - Company/contact/product create modals use search-input selection, immediate creation when no result exists, and automatic selection after creation.
 - Deal likelihood (`긍정 / 중립 / 부정` or percent) is not implemented in the current Deal API/FE form. Treat it as future UX scope unless a new backend plan adds it.
 
@@ -326,7 +326,7 @@ Rules:
 - Deal list controls are ordered as deal-name search, `전체`, company select, contact select, and sort select.
 - Deal stage counts should receive the same search/company/contact filters as the current list context.
 - BusinessCard scan list controls use a reset icon for 전체 상태 and a multi-select status filter with internal `상태 초기화`. It does not expose a sort select because registration date descending is fixed.
-- BusinessCard `명함등록` modal is staged: image upload only before OCR, progress overlay during OCR, extracted result form only after OCR success.
+- BusinessCard `명함스캔` modal is staged: image upload only before OCR, progress overlay during OCR, extracted result form only after OCR success.
 - Company/contact/product/deal operational lists should share the dense `Controls Bar + Table Card + Pagination` visual grammar where possible.
 - Shared list size baseline: `Pagination` is 48px high, preview headers and table headers are 44px high.
 

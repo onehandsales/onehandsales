@@ -52,7 +52,7 @@ export class BusinessCardController {
     return this.businessCardApplicationService.listScanLogs(currentUser, query);
   }
 
-  // API : 명함등록. 이미지를 OCR 후보 필드로 변환하고 성공/실패 로그를 남깁니다.
+  // API : 명함스캔. 이미지를 OCR 후보 필드로 변환하고 성공/실패 로그를 남깁니다.
   @Post()
   @HttpCode(HttpStatus.CREATED)
   @UseInterceptors(

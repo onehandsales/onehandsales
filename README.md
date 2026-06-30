@@ -62,7 +62,7 @@ User Web URL: `http://localhost:5173`
 
 User Web은 Supabase OAuth callback과 Backend token exchange를 사용한다. 개발 편의를 위한 mock login 경로도 남아 있으며, app access token은 storage가 아니라 memory 중심으로 다룬다.
 
-명함 스캔은 `/business-cards`에서 실제 API와 연결되어 있다. 사용자는 이미지를 업로드한 뒤 `명함등록` 진행 표시를 보고, 추출 결과를 확인/수정한 후 회사/담당자로 저장한다.
+명함 스캔은 `/business-cards`에서 실제 API와 연결되어 있다. 사용자는 이미지를 업로드한 뒤 `명함스캔` 진행 표시를 보고, 추출 결과를 확인/수정한 후 회사/담당자로 저장한다.
 
 ### 3. Admin Web
 

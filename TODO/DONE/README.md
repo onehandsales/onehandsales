@@ -26,6 +26,6 @@
 - `MEETING_NOTE_MANUAL_PLAN`: MeetingNote 수동 Backend API와 User Web 회의록 목록/상세/생성/수정 화면
 - `INTEGRATED_SEARCH_PLAN`: Backend `GET /api/search`와 User Web GlobalSearch 연결, 일정 상세 이동, loading/empty/error 상태 처리
 - `MEETING_NOTE_AI_STT_PLAN`: MeetingNote AI/STT 초안 Backend API, User Web draft UI, 저장 후 딜 추가 연동
-- `BUSINESS_CARD_OCR_PLAN`: BusinessCard OCR Backend API, `BusinessCardScanLog`, User Web 명함 스캔/명함등록 화면
+- `BUSINESS_CARD_OCR_PLAN`: BusinessCard OCR Backend API, `BusinessCardScanLog`, User Web 명함 스캔/명함스캔 화면
 - `ADDITIONAL_WORK_PLAN`: count, linked list, xlsx export, dealCount, product dealCount sort 추가 유지보수 범위
 - `USER_TIMEZONE_FOUNDATION_PLAN`: User.timeZone DB/API와 User Web timezone 설정 기반

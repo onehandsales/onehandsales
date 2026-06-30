@@ -1,6 +1,6 @@
 ﻿import { Injectable } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
-import { createRemoteJWKSet, jwtVerify, type JWTPayload } from "jose";
+import type { JWTPayload } from "jose";
 import {
   type ExternalAuthProvider,
   type ExternalAuthVerifier,
@@ -8,16 +8,24 @@ import {
 } from "@/shared/application/ports/external-auth-verifier.port";
 import { getRequiredConfig } from "./supabase-env";
 
+type JoseModule = typeof import("jose");
+type RemoteJWKSet = ReturnType<JoseModule["createRemoteJWKSet"]>;
+
 type SupabaseJwtPayload = JWTPayload & {
   email?: string;
   app_metadata?: Record<string, unknown>;
   user_metadata?: Record<string, unknown>;
 };
 
+const importEsm = new Function("specifier", "return import(specifier)") as (
+  specifier: string
+) => Promise<JoseModule>;
+
 // 역할 : SupabaseJwtVerifierAdapter 외부 의존성 포트를 실제 기술 어댑터로 구현합니다.
 @Injectable()
 export class SupabaseJwtVerifierAdapter implements ExternalAuthVerifier {
-  private jwks: ReturnType<typeof createRemoteJWKSet> | null = null;
+  private joseModule: Promise<JoseModule> | null = null;
+  private jwks: RemoteJWKSet | null = null;
 
   // 기능 : Supabase JWT 검증 설정을 읽기 위한 설정 서비스를 주입받습니다.
   constructor(private readonly configService: ConfigService) {}
@@ -44,7 +52,8 @@ export class SupabaseJwtVerifierAdapter implements ExternalAuthVerifier {
     accessToken: string,
     issuer: string
   ): Promise<SupabaseJwtPayload & { sub: string }> {
-    const { payload } = await jwtVerify(accessToken, this.getJwks(), {
+    const [{ jwtVerify }, jwks] = await Promise.all([this.getJose(), this.getJwks()]);
+    const { payload } = await jwtVerify(accessToken, jwks, {
       issuer,
       audience: this.getAudience(),
     });
@@ -57,13 +66,20 @@ export class SupabaseJwtVerifierAdapter implements ExternalAuthVerifier {
   }
 
   // 기능 : Supabase JWKS 원격 키 세트를 지연 생성해 반환합니다.
-  private getJwks() {
+  private async getJwks(): Promise<RemoteJWKSet> {
     if (!this.jwks) {
+      const { createRemoteJWKSet } = await this.getJose();
       const jwksUrl = getRequiredConfig(this.configService, "SUPABASE_JWKS_URL");
       this.jwks = createRemoteJWKSet(new URL(jwksUrl));
     }
 
     return this.jwks;
+  }
+
+  // 기능 : CommonJS 빌드에서 ESM-only jose를 안전하게 지연 로드합니다.
+  private getJose(): Promise<JoseModule> {
+    this.joseModule ??= importEsm("jose");
+    return this.joseModule;
   }
 
   // 기능 : Supabase JWT audience 설정값을 반환합니다.

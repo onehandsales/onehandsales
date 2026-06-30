@@ -16,7 +16,7 @@
 
 ### POST `/api/business-card-scans`
 
-명함등록 요청. `multipart/form-data`의 `image` 파일을 받는다.
+명함스캔 요청. `multipart/form-data`의 `image` 파일을 받는다.
 
 처리:
 

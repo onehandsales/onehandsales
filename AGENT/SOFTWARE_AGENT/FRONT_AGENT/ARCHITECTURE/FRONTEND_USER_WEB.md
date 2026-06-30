@@ -90,7 +90,7 @@
 - Home dashboard: 일정/딜/회의록 조합 조회
 - Company: 목록/상세/생성/수정/삭제, 옵션, 메모, 개인 메모, 연결 Contact/Deal, xlsx export
 - Contact: 목록/상세/생성/수정/삭제, 옵션, 메모, 개인 메모, 연결 Deal, xlsx export
-- BusinessCard OCR: `/business-cards`, `POST/GET /api/business-card-scans`, 명함등록 모달, 확인/수정 후 회사/담당자 저장
+- BusinessCard OCR: `/business-cards`, `POST/GET /api/business-card-scans`, 명함스캔 모달, 확인/수정 후 회사/담당자 저장
 - Product: 목록/상세/생성/수정/삭제, 옵션, 메모, 개인 메모, 연결 Deal, xlsx export
 - Deal: 목록/상세/생성/수정/삭제, stage counts, 옵션, 다음 행동 로그, 메모 로그, xlsx export
 - Schedule: 월/주 목록, 단건 상세, 생성, 수정, 삭제, deal options
@@ -130,10 +130,10 @@ mock/placeholder 경계를 유지해야 하는 항목:
 - 상태 필터 안에는 `상태 초기화` 액션을 둔다.
 - 전체 상태로 되돌리는 상단 액션은 회사 목록의 reset icon 버튼 패턴을 따른다.
 
-`명함등록` 모달 UX:
+`명함스캔` 모달 UX:
 
 - 최초 상태에서는 이미지 업로드만 보여준다.
-- 사용자가 `명함등록`을 누르면 OCR 요청을 보내고 이미지 영역에 `명함등록 중` 진행 표시를 올린다.
+- 사용자가 `명함스캔`을 누르면 OCR 요청을 보내고 이미지 영역에 `명함스캔 중` 진행 표시를 올린다.
 - 요청 중에는 파일 교체/삭제와 모달 닫기를 막는다.
 - OCR 성공 후에는 추출 결과 확인/수정 폼만 보여준다.
 - 수정 필드는 회사명, 회사분야, 회사지역, 담당자명, 휴대폰, 이메일, 부서, 직급이다.

@@ -87,7 +87,7 @@ User Web:
 - 실제 API 연동 완료: Auth/User, Home, Company, Contact, BusinessCard OCR/명함 스캔, Product, Deal, Schedule, MeetingNote 수동 CRUD, MeetingNote AI/STT draft, MeetingNote deal link, Search, Trash, Company/Contact/Product/Deal 도메인별 xlsx export.
 - Backend 구현 전까지 숨기는 기능: 범용 Import job, `/api/exports` 기반 범용 Export route/API, Notification.
 - 현재 Export 정본 흐름은 각 도메인 목록의 엑셀 다운로드다. `FE/user-web/src/features/import-export`의 범용 Export 화면은 현재 Backend 방향이 아니므로 route에서 숨긴다.
-- 명함 스캔은 `/business-cards`에서 이미지 업로드, `명함등록` 진행 표시, 추출 결과 확인/수정, 회사/담당자 저장 흐름으로 동작한다.
+- 명함 스캔은 `/business-cards`에서 이미지 업로드, `명함스캔` 진행 표시, 추출 결과 확인/수정, 회사/담당자 저장 흐름으로 동작한다.
 
 Admin Web:
 

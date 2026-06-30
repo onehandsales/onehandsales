@@ -23,7 +23,7 @@
 | Home | 완료 API 조합 | 완료 | Schedule/Deal/MeetingNote 데이터를 조합한 `/` 대시보드 |
 | Company | 완료 | 완료 | 목록/검색/필터/정렬/page, 생성/상세/수정/삭제, 분야/지역 taxonomy, 메모/개인 메모, Trash 복구, xlsx export |
 | Contact | 완료 | 완료 | 목록/검색/필터/정렬/page, 생성/상세/수정/삭제, 부서 taxonomy, 회사 연결, Trash 복구, xlsx export |
-| BusinessCard OCR | 완료 | 완료 | `BusinessCardScanLog`, `/api/business-card-scans`, OpenAI strict JSON schema OCR, OCR 성공/실패/확정 로그, 상태 다중 필터, `명함등록` 진행 표시, 확인/수정 후 회사/담당자 확정 저장, `/business-cards` 명함 스캔 화면 |
+| BusinessCard OCR | 완료 | 완료 | `BusinessCardScanLog`, `/api/business-card-scans`, OpenAI strict JSON schema OCR, OCR 성공/실패/확정 로그, 상태 다중 필터, `명함스캔` 진행 표시, 확인/수정 후 회사/담당자 확정 저장, `/business-cards` 명함 스캔 화면 |
 | Product | 완료 | 완료 | 목록/검색/필터/정렬/page, 생성/상세/수정/삭제, 카테고리/상태 taxonomy, Trash 복구, xlsx export |
 | Deal | 완료 | 완료 | 파이프라인/목록/상세, 생성/수정/삭제, 6단계 stage, 회사/담당자/제품 연결, stage counts, 활동 로그, Trash 복구, xlsx export |
 | Schedule | 완료 | 완료 | 일정 목록/캘린더, 생성/상세/수정/삭제. Schedule은 Trash 대상이 아니며 hard delete |

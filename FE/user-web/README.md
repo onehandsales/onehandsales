@@ -69,7 +69,7 @@ mock/placeholder 경계:
 - generic Import/Export job
 - Notification
 
-BusinessCard OCR/명함 스캔은 `/business-cards`에서 실제 API와 연결된다. 목록은 등록일 최신순 고정이며, 상태 다중 필터와 `상태 초기화`를 제공한다. `명함등록` 모달은 최초에는 이미지 업로드만 보여주고, 요청 중에는 진행 표시를 띄우며, 성공 후 추출 결과 확인/수정 폼을 보여준다.
+BusinessCard OCR/명함 스캔은 `/business-cards`에서 실제 API와 연결된다. 목록은 등록일 최신순 고정이며, 상태 다중 필터와 `상태 초기화`를 제공한다. `명함스캔` 모달은 최초에는 이미지 업로드만 보여주고, 요청 중에는 진행 표시를 띄우며, 성공 후 추출 결과 확인/수정 폼을 보여준다.
 
 ## 검증
 
