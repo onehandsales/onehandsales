@@ -5,7 +5,6 @@ import {
   Loader2,
   LockKeyhole,
   Package,
-  RefreshCw,
   RotateCcw,
   StickyNote,
   Trash2,
@@ -232,15 +231,17 @@ export function TrashScreen() {
 
       <div className="flex min-h-10 shrink-0 items-center gap-1.5 overflow-x-auto px-5 py-1 md:flex lg:gap-2">
         <button
-          className={
+          aria-label="초기화"
+          className={cn(
+            "inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-[6px] border text-[13px] font-bold transition focus:border-[#4880EE] focus:outline-none focus:ring-1 focus:ring-[#4880EE]",
             hasFilter
-              ? "inline-flex h-8 shrink-0 items-center whitespace-nowrap rounded-[6px] border border-[#E6EAF0] bg-white px-3 text-[13px] font-medium text-[#475569] transition hover:bg-[#F9FAFB]"
-              : "inline-flex h-8 shrink-0 items-center whitespace-nowrap rounded-[6px] border border-[#C7D7FE] bg-[#EAF2FF] px-3 text-[13px] font-bold text-[#1D4ED8] transition"
-          }
+              ? "border-[#4880EE] bg-[#4880EE] text-white hover:bg-[#4880EE]"
+              : "border-[#E2E5EC] bg-transparent text-[#6B7280] hover:bg-white",
+          )}
           onClick={clearFilters}
           type="button"
         >
-          전체
+          <RotateCcw className="h-3.5 w-3.5" />
         </button>
 
         <TrashFilterSelect
@@ -281,19 +282,6 @@ export function TrashScreen() {
             setNotice(null);
           }}
         />
-        <button
-          aria-label="초기화"
-          className={cn(
-            "inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full border text-[12px] font-medium transition hover:border-[#93C5FD] focus:border-[#4880EE] focus:outline-none focus:ring-1 focus:ring-[#4880EE]",
-            hasFilter
-              ? "border-[#4880EE] bg-[#4880EE] font-bold text-white"
-              : "border-[#E5E7EB] bg-[#F3F4F6] text-[#4B5563]",
-          )}
-          onClick={clearFilters}
-          type="button"
-        >
-          <RefreshCw className="h-3 w-3" />
-        </button>
       </div>
 
       {notice ? (

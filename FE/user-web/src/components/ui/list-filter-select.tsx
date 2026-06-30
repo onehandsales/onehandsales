@@ -1,4 +1,4 @@
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, Search, X } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { cn } from "@/utils/cn";
 
@@ -34,14 +34,29 @@ export function ListFilterSelect<TValue extends string>({
   value,
 }: ListFilterSelectProps<TValue>) {
   const [isOpen, setIsOpen] = useState(false);
+  const [search, setSearch] = useState("");
   const [popoverPosition, setPopoverPosition] =
     useState<PopoverPosition | null>(null);
   const wrapperRef = useRef<HTMLDivElement>(null);
-  const buttonRef = useRef<HTMLButtonElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
   const selectedOption = useMemo(
     () => options.find((option) => option.value === value) ?? options[0],
     [options, value],
   );
+  const normalizedQuery = normalizeListFilterText(search.trim());
+  const filteredOptions =
+    normalizedQuery.length > 0
+      ? options.filter((option) =>
+          normalizeListFilterText(option.label).includes(normalizedQuery),
+        )
+      : options;
+  const inputValue = isOpen ? search : selectedOption?.label ?? "";
+
+  useEffect(() => {
+    if (!isOpen) {
+      setSearch("");
+    }
+  }, [isOpen]);
 
   useEffect(() => {
     if (!isOpen) {
@@ -49,11 +64,11 @@ export function ListFilterSelect<TValue extends string>({
     }
 
     const updatePopoverPosition = () => {
-      if (!buttonRef.current) {
+      if (!inputRef.current) {
         return;
       }
 
-      setPopoverPosition(getPopoverPosition(buttonRef.current));
+      setPopoverPosition(getPopoverPosition(inputRef.current));
     };
     const onMouseDown = (event: MouseEvent) => {
       if (
@@ -66,7 +81,7 @@ export function ListFilterSelect<TValue extends string>({
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
         setIsOpen(false);
-        buttonRef.current?.focus();
+        inputRef.current?.focus();
       }
     };
 
@@ -84,34 +99,104 @@ export function ListFilterSelect<TValue extends string>({
     };
   }, [isOpen]);
 
+  const openOptions = (nextSearch: string) => {
+    if (disabled) {
+      return;
+    }
+
+    setSearch(nextSearch);
+
+    if (inputRef.current) {
+      setPopoverPosition(getPopoverPosition(inputRef.current));
+    }
+
+    setIsOpen(true);
+  };
+
+  const selectOption = (nextValue: TValue) => {
+    onChange(nextValue);
+    setSearch("");
+    setIsOpen(false);
+    inputRef.current?.focus();
+  };
+
+  const clearSelection = () => {
+    const defaultOption = options[0];
+
+    if (!defaultOption) {
+      return;
+    }
+
+    onChange(defaultOption.value);
+    setSearch("");
+    inputRef.current?.focus();
+    openOptions("");
+  };
+
   return (
     <div className={cn("relative shrink-0", className)} ref={wrapperRef}>
-      <button
-        aria-expanded={isOpen}
-        aria-haspopup="listbox"
-        aria-label={ariaLabel}
-        className={cn(
-          "inline-flex h-8 w-full min-w-0 items-center justify-between gap-2 rounded-full border pl-3.5 pr-2.5 text-[13px] outline-none transition disabled:cursor-not-allowed disabled:opacity-60",
-          isOpen
-            ? "border-[#4880EE] bg-white text-[#111827] ring-1 ring-[#4880EE]"
-            : active
-              ? "border-[#BFDBFE] bg-[#EFF6FF] font-semibold text-[#1D4ED8]"
-              : "border-[#E2E5EC] bg-transparent text-[#6B7280] hover:border-[#D1D5DB] hover:bg-[#FAFAF8]",
-        )}
-        disabled={disabled}
-        onClick={() => setIsOpen((current) => !current)}
-        ref={buttonRef}
-        type="button"
-      >
-        <span className="min-w-0 truncate">{selectedOption?.label ?? ""}</span>
-        <ChevronDown
+      <div className="relative">
+        {isOpen ? (
+          <Search className="pointer-events-none absolute left-3 top-1/2 h-3 w-3 shrink-0 -translate-y-1/2 text-[#9CA3AF]" />
+        ) : null}
+        <input
+          ref={inputRef}
+          aria-autocomplete="list"
+          aria-expanded={isOpen}
+          aria-haspopup="listbox"
+          aria-label={ariaLabel}
+          autoComplete="off"
           className={cn(
-            "h-3.5 w-3.5 shrink-0 transition-transform",
-            isOpen && "rotate-180",
-            active || isOpen ? "text-[#1D4ED8]" : "text-[#9CA3AF]",
+            "h-8 w-full min-w-0 rounded-full border text-[13px] outline-none transition disabled:cursor-not-allowed disabled:opacity-60",
+            isOpen
+              ? "border-[#4880EE] bg-white pl-8 pr-7 text-[#111827] ring-1 ring-[#4880EE]"
+              : active
+                ? "border-[#BFDBFE] bg-[#EFF6FF] pl-3.5 pr-7 font-semibold text-[#1D4ED8]"
+                : "cursor-pointer border-[#E2E5EC] bg-transparent pl-3.5 pr-7 text-[#6B7280] hover:border-[#D1D5DB] hover:bg-[#F5F6F8]",
           )}
+          disabled={disabled}
+          onChange={(event) => openOptions(event.target.value)}
+          onFocus={() => openOptions("")}
+          onKeyDown={(event) => {
+            if (event.key === "Escape") {
+              setIsOpen(false);
+              setSearch("");
+              inputRef.current?.blur();
+              return;
+            }
+
+            if (event.key === "Enter") {
+              const firstOption = filteredOptions[0];
+
+              if (!firstOption) {
+                return;
+              }
+
+              event.preventDefault();
+              selectOption(firstOption.value);
+            }
+          }}
+          placeholder={ariaLabel}
+          value={inputValue}
         />
-      </button>
+        {active || search ? (
+          <button
+            aria-label={`${ariaLabel} 지우기`}
+            className="absolute right-1 top-1/2 grid h-7 w-7 -translate-y-1/2 place-items-center rounded-full text-[#9CA3AF] transition hover:bg-white hover:text-[#374151]"
+            onClick={clearSelection}
+            type="button"
+          >
+            <X className="h-3.5 w-3.5" />
+          </button>
+        ) : (
+          <ChevronDown
+            className={cn(
+              "pointer-events-none absolute right-2 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-[#9CA3AF] transition-transform",
+              isOpen && "rotate-180",
+            )}
+          />
+        )}
+      </div>
 
       {isOpen ? (
         <div
@@ -127,7 +212,12 @@ export function ListFilterSelect<TValue extends string>({
           }}
         >
           <div className="max-h-[220px] overflow-y-auto py-1">
-            {options.map((option) => {
+            {filteredOptions.length === 0 ? (
+              <p className="px-3 py-3 text-[12px] text-[#9CA3AF]">
+                검색 결과가 없습니다.
+              </p>
+            ) : null}
+            {filteredOptions.map((option) => {
               const isSelected = option.value === value;
 
               return (
@@ -138,11 +228,7 @@ export function ListFilterSelect<TValue extends string>({
                     isSelected && "bg-[#EFF6FF] font-semibold text-[#1D4ED8]",
                   )}
                   key={option.value}
-                  onClick={() => {
-                    onChange(option.value);
-                    setIsOpen(false);
-                    buttonRef.current?.focus();
-                  }}
+                  onClick={() => selectOption(option.value)}
                   role="option"
                   type="button"
                 >
@@ -167,11 +253,11 @@ export function ListFilterSelect<TValue extends string>({
   );
 }
 
-function getPopoverPosition(button: HTMLButtonElement): PopoverPosition {
-  const rect = button.getBoundingClientRect();
+function getPopoverPosition(input: HTMLInputElement): PopoverPosition {
+  const rect = input.getBoundingClientRect();
   const viewportWidth = window.innerWidth;
   const margin = 16;
-  const width = Math.max(rect.width, 184);
+  const width = Math.max(rect.width, 256);
   const maxLeft = Math.max(margin, viewportWidth - width - margin);
   const left = Math.min(Math.max(rect.left, margin), maxLeft);
 
@@ -180,4 +266,8 @@ function getPopoverPosition(button: HTMLButtonElement): PopoverPosition {
     top: rect.bottom + 4,
     width,
   };
+}
+
+function normalizeListFilterText(value: string) {
+  return value.toLowerCase().replace(/\s+/g, "");
 }
