@@ -213,7 +213,7 @@ export function ContactDetailScreen({ contactId }: ContactDetailScreenProps) {
             onCancelEdit={() => setIsEditOpen(false)}
             onSaved={() => {
               void contactQuery.refetch();
-              showNotice("담당자 정보가 저장되었습니다.");
+            showNotice("담당자 정보를 저장했어요.");
               setIsEditOpen(false);
             }}
           />
@@ -303,7 +303,7 @@ export function ContactDetailScreen({ contactId }: ContactDetailScreenProps) {
             onCancelEdit={() => setIsEditOpen(false)}
             onSaved={() => {
               void contactQuery.refetch();
-              showNotice("담당자 정보가 저장되었습니다.");
+              showNotice("담당자 정보를 저장했어요.");
               setIsEditOpen(false);
             }}
           />
@@ -358,7 +358,7 @@ export function ContactDetailScreen({ contactId }: ContactDetailScreenProps) {
         onOpenChange={setIsEditOpen}
         onSaved={() => {
           void contactQuery.refetch();
-          showNotice("담당자 정보가 저장되었습니다.");
+          showNotice("담당자 정보를 저장했어요.");
         }}
       />
     </>
@@ -457,7 +457,7 @@ function ContactSummaryHeader({
 
         <input type="hidden" {...register("companyId")} />
         <SummaryTaxonomySelect
-          emptyText="조건에 맞는 회사가 없습니다."
+          emptyText="조건을 바꾸면 회사를 찾을 수 있어요."
           getLabel={(company) => company.companyName}
           id="contact-summary-edit-company"
           invalid={Boolean(errors.companyId)}
@@ -476,7 +476,7 @@ function ContactSummaryHeader({
 
         <input type="hidden" {...register("contactDepartmentId")} />
         <SummaryTaxonomySelect
-          emptyText="조건에 맞는 부서가 없습니다."
+          emptyText="조건을 바꾸면 부서를 찾을 수 있어요."
           getLabel={(department) => department.departmentName}
           id="contact-summary-edit-department"
           invalid={Boolean(errors.contactDepartmentId)}
@@ -495,7 +495,7 @@ function ContactSummaryHeader({
 
         <input type="hidden" {...register("contactJobGradeId")} />
         <SummaryTaxonomySelect
-          emptyText="조건에 맞는 직급이 없습니다."
+          emptyText="조건을 바꾸면 직급을 찾을 수 있어요."
           getLabel={(jobGrade) => jobGrade.jobGradeName}
           id="contact-summary-edit-job-grade"
           invalid={Boolean(errors.contactJobGradeId)}
@@ -540,7 +540,7 @@ function ContactSummaryHeader({
           onClick={onCancelEdit}
           type="button"
         >
-          취소
+              닫기
         </button>
         <button
           className="h-9 rounded-lg bg-[#4880EE] px-4 text-[13px] font-extrabold text-white transition-colors hover:bg-[#1D4ED8] disabled:cursor-not-allowed disabled:opacity-60"
@@ -635,7 +635,7 @@ function ConnectedDealsTable({
           ))}
         </div>
       ) : deals.length === 0 ? (
-        <p className="px-4 py-4 text-[13px] text-[#9CA3AF]">연결된 딜이 없습니다.</p>
+        <p className="px-4 py-4 text-[13px] text-[#9CA3AF]">딜을 연결하면 여기에서 볼 수 있어요.</p>
       ) : (
         <div className={hasMore ? "max-h-[232px] overflow-y-auto" : ""}>
           {deals.map((deal, idx) => (
@@ -729,7 +729,7 @@ function ContactMemoPanel({
     );
     createForm.reset(emptyContactMemoLogFormValues);
     setIsCreateOpen(false);
-    onChanged("담당자 로그가 추가되었습니다.");
+    onChanged("담당자 로그를 추가했어요.");
   });
 
   const onStartEdit = (log: ContactMemoLog) => {
@@ -743,7 +743,7 @@ function ContactMemoPanel({
       toUpdateContactMemoLogInput(contactId, editingId, values)
     );
     setEditingId(null);
-    onChanged("담당자 로그가 수정되었습니다.");
+    onChanged("담당자 로그를 수정했어요.");
   });
 
   const onConfirmDelete = async () => {
@@ -793,7 +793,7 @@ function ContactMemoPanel({
             ))}
           </div>
         ) : memoLogs.length === 0 ? (
-          <p className="text-[13px] text-[#9CA3AF]">담당자 로그가 없습니다.</p>
+          <p className="text-[13px] text-[#9CA3AF]">담당자 로그를 추가하면 여기에서 볼 수 있어요.</p>
         ) : (
           memoLogs.map((log, index) => (
               <div
@@ -1028,7 +1028,7 @@ function ContactActivityLogPanel({
     );
     createForm.reset(emptyContactPrivateMemoLogFormValues);
     setIsCreateOpen(false);
-    onChanged("비밀 메모가 추가되었습니다.");
+    onChanged("비밀 메모를 추가했어요.");
   });
 
   const onStartEdit = (log: ContactPrivateMemoLog) => {
@@ -1042,7 +1042,7 @@ function ContactActivityLogPanel({
       toUpdateContactPrivateMemoLogInput(contactId, editingId, values)
     );
     setEditingId(null);
-    onChanged("비밀 메모가 수정되었습니다.");
+    onChanged("비밀 메모를 수정했어요.");
   });
 
   const onConfirmDelete = async () => {
@@ -1104,7 +1104,7 @@ function ContactActivityLogPanel({
             ))}
           </div>
         ) : privateMemoLogs.length === 0 ? (
-          <p className="text-[13px] text-[#9CA3AF]">등록된 비밀 메모가 없습니다.</p>
+          <p className="text-[13px] text-[#9CA3AF]">비밀 메모를 추가하면 여기에서 볼 수 있어요.</p>
         ) : (
           privateMemoLogs.map((log, index) => (
               <div

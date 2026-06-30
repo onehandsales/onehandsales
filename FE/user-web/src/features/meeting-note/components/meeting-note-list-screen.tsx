@@ -203,7 +203,7 @@ export function MeetingNoteListScreen() {
           onClick={clearFilters}
         />
         <MeetingNoteFilterMultiSelect
-          emptyText="조건에 맞는 회사가 없습니다."
+              emptyText="조건을 바꾸면 회사를 찾을 수 있어요."
           getLabel={(company) => company.companyName}
           itemKindLabel="회사"
           items={companyOptions}
@@ -211,7 +211,7 @@ export function MeetingNoteListScreen() {
           onSelectedIdsChange={updateCompanyIds}
         />
         <MeetingNoteFilterMultiSelect
-          emptyText="조건에 맞는 담당자가 없습니다."
+              emptyText="조건을 바꾸면 담당자를 찾을 수 있어요."
           getLabel={(contact) => contact.contactUsername}
           itemKindLabel="담당자"
           items={filteredContactOptions}
@@ -281,8 +281,8 @@ export function MeetingNoteListScreen() {
                 onAction={() => setIsCreateOpen(true)}
                 title={
                   hasFilter
-                    ? "조건에 맞는 회의록이 없습니다"
-                    : "등록된 회의록이 없습니다"
+                      ? "조건을 바꾸면 회의록을 찾을 수 있어요"
+                      : "새 회의록을 작성하면 여기에서 볼 수 있어요"
                 }
               />
             ) : (
@@ -344,7 +344,7 @@ export function MeetingNoteListScreen() {
           </button>
           <MeetingNoteFilterMultiSelect
             className="w-[112px]"
-            emptyText="조건에 맞는 회사가 없습니다."
+              emptyText="조건을 바꾸면 회사를 찾을 수 있어요."
             getLabel={(company) => company.companyName}
             itemKindLabel="회사"
             items={companyOptions}
@@ -353,7 +353,7 @@ export function MeetingNoteListScreen() {
           />
           <MeetingNoteFilterMultiSelect
             className="w-[112px]"
-            emptyText="조건에 맞는 담당자가 없습니다."
+              emptyText="조건을 바꾸면 담당자를 찾을 수 있어요."
             getLabel={(contact) => contact.contactUsername}
             itemKindLabel="담당자"
             items={filteredContactOptions}
@@ -405,8 +405,8 @@ export function MeetingNoteListScreen() {
               onAction={() => setIsCreateOpen(true)}
               title={
                 hasFilter
-                  ? "조건에 맞는 회의록이 없습니다"
-                  : "등록된 회의록이 없습니다"
+                    ? "조건을 바꾸면 회의록을 찾을 수 있어요"
+                    : "새 회의록을 작성하면 여기에서 볼 수 있어요"
               }
             />
           ) : (
@@ -443,7 +443,7 @@ export function MeetingNoteListScreen() {
       {isCreateOpen ? (
         <MeetingNoteCreateDialog
           onCreated={() => {
-            setNotice("회의록이 추가되었습니다.");
+        setNotice("회의록을 추가했어요.");
             setPage(1);
             void meetingNotesQuery.refetch();
           }}

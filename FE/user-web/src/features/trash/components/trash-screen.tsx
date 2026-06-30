@@ -221,7 +221,7 @@ export function TrashScreen() {
       targetType: item.targetType,
       targetId: item.targetId,
     });
-    setNotice(`${getDisplayTitle(item)} 복구가 완료되었습니다.`);
+      setNotice(`${getDisplayTitle(item)} 항목을 복구했어요.`);
     setSelectedItem(null);
   };
 
@@ -348,8 +348,8 @@ export function TrashScreen() {
                 icon={Trash2}
                 title={
                   hasFilter
-                    ? "조건에 맞는 데이터가 없습니다"
-                    : "삭제된 데이터가 없습니다"
+                    ? "조건을 바꾸면 데이터를 찾을 수 있어요"
+                    : "삭제한 데이터가 생기면 여기에서 볼 수 있어요"
                 }
               />
             ) : (
@@ -605,7 +605,7 @@ function TrashDetailDialog({
         {detailQuery.isLoading ? (
           <div className="flex min-h-[260px] items-center justify-center gap-2 text-[13px] text-[#64748B]">
             <Loader2 className="h-4 w-4 animate-spin" aria-hidden />
-            내용을 불러오는 중입니다.
+            내용을 불러오고 있어요.
           </div>
         ) : detailQuery.isError ? (
           <div className="flex min-h-[260px] flex-col items-center justify-center text-center">

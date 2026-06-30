@@ -43,7 +43,7 @@ function DealDetailHeader({ dealId }: { readonly dealId: string }) {
       setDeleteConfirmOpen(false);
       void navigate("/deals", {
         replace: true,
-        state: { notice: "딜이 삭제되었습니다." },
+        state: { notice: "딜을 삭제했어요." },
       });
     } catch (error) {
       setDeleteError(getApiErrorMessage(error));
@@ -71,7 +71,7 @@ function DealDetailHeader({ dealId }: { readonly dealId: string }) {
         ]}
       />
       <ConfirmDialog
-        cancelLabel="취소"
+          cancelLabel="닫기"
         confirmLabel="삭제"
         errorMessage={deleteError}
         isPending={deleteDealMutation.isPending}
@@ -113,7 +113,7 @@ function ProductDetailHeader({ productId }: { readonly productId: string }) {
       setDeleteConfirmOpen(false);
       void navigate("/products", {
         replace: true,
-        state: { notice: "제품이 삭제되었습니다." },
+        state: { notice: "제품을 삭제했어요." },
       });
     } catch (error) {
       setDeleteError(getApiErrorMessage(error));
@@ -146,7 +146,7 @@ function ProductDetailHeader({ productId }: { readonly productId: string }) {
         ]}
       />
       <ConfirmDialog
-        cancelLabel="취소"
+          cancelLabel="닫기"
         confirmLabel="삭제"
         errorMessage={deleteError}
         isPending={deleteProductMutation.isPending}

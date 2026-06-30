@@ -350,7 +350,7 @@ export function DealCreateDialog({
               >
                 <div className="grid gap-2">
                   <SearchSelectField
-                    emptyText="검색된 회사가 없습니다."
+                    emptyText="검색어를 바꾸면 회사를 찾을 수 있어요."
                     getLabel={(company) => company.companyName}
                     icon={Building2}
                     id="deal-company"
@@ -394,7 +394,7 @@ export function DealCreateDialog({
               >
                 <div className="grid gap-2">
                   <SearchSelectField
-                    emptyText="검색된 담당자가 없습니다."
+                    emptyText="검색어를 바꾸면 담당자를 찾을 수 있어요."
                     getDescription={(contact) =>
                       contact.contactDepartment.departmentName
                     }
@@ -692,7 +692,7 @@ function QuickCompanyCreateDialog({
                 <input type="hidden" {...register("companyFieldId")} />
                 <SearchSelectField
                   createActionLabel="분야 추가"
-                  emptyText="검색된 분야가 없습니다."
+                  emptyText="검색어를 바꾸면 분야를 찾을 수 있어요."
                   getLabel={(field) => field.field}
                   icon={Tags}
                   id="deal-quick-company-field"
@@ -737,7 +737,7 @@ function QuickCompanyCreateDialog({
                 <input type="hidden" {...register("companyRegionId")} />
                 <SearchSelectField
                   createActionLabel="지역 추가"
-                  emptyText="검색된 지역이 없습니다."
+                  emptyText="검색어를 바꾸면 지역을 찾을 수 있어요."
                   getLabel={(region) => region.region}
                   icon={MapPin}
                   id="deal-quick-company-region"
@@ -1025,7 +1025,7 @@ function QuickContactCreateDialog({
                 <input type="hidden" {...register("contactDepartmentId")} />
                 <SearchSelectField
                   createActionLabel="부서 추가"
-                  emptyText="검색된 부서가 없습니다."
+                  emptyText="검색어를 바꾸면 부서를 찾을 수 있어요."
                   getLabel={(department) => department.departmentName}
                   icon={Users}
                   id="deal-quick-contact-department"
@@ -1072,7 +1072,7 @@ function QuickContactCreateDialog({
                 <input type="hidden" {...register("contactJobGradeId")} />
                 <SearchSelectField
                   createActionLabel="직급 추가"
-                  emptyText="검색된 직급이 없습니다."
+                  emptyText="검색어를 바꾸면 직급을 찾을 수 있어요."
                   getLabel={(jobGrade) => jobGrade.jobGradeName}
                   icon={BadgeCheck}
                   id="deal-quick-contact-job-grade"
@@ -1255,7 +1255,7 @@ export function SearchSelectField<TItem extends { readonly id: string }>({
           setIsOpen(true);
         }}
         onFocus={() => setIsOpen(true)}
-        placeholder={disabled ? "회사를 먼저 선택해주세요" : placeholder}
+        placeholder={disabled ? "회사를 먼저 선택해 주세요" : placeholder}
         value={inputValue}
       />
       {selectedId || search ? (
@@ -1290,7 +1290,7 @@ export function SearchSelectField<TItem extends { readonly id: string }>({
         >
           {isLoading ? (
             <p className="px-3 py-2 text-sm text-muted-foreground">
-              검색 중입니다.
+              검색하고 있어요.
             </p>
           ) : visibleItems.length === 0 ? (
             <div className="grid gap-2 px-3 py-3">
@@ -1587,12 +1587,12 @@ export function ProductMultiSelectDropdown({
           <div className="max-h-44 overflow-y-auto">
             {isLoading ? (
               <p className="px-3 py-4 text-center text-sm text-muted-foreground">
-                제품을 불러오는 중입니다.
+                제품을 불러오고 있어요.
               </p>
             ) : visibleItems.length === 0 ? (
               <div className="grid gap-2 px-3 py-4">
                 <p className="text-center text-sm text-muted-foreground">
-                  검색된 제품이 없습니다.
+                  검색어를 바꾸면 제품을 찾을 수 있어요.
                 </p>
                 {query.length > 0 && onCreate && createActionLabel ? (
                   <button

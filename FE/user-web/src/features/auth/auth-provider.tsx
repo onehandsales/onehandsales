@@ -77,7 +77,7 @@ export function AuthProvider({ children }: { readonly children: ReactNode }) {
         setError(
           nextError instanceof Error
             ? nextError.message
-            : "인증 요청을 처리하지 못했습니다."
+            : "인증 요청을 처리하지 못했어요."
         );
         throw nextError;
       } finally {
@@ -114,7 +114,7 @@ export function AuthProvider({ children }: { readonly children: ReactNode }) {
           setError(
             nextError instanceof Error
               ? nextError.message
-              : "인증 요청을 처리하지 못했습니다."
+              : "인증 요청을 처리하지 못했어요."
           );
           throw nextError;
         } finally {

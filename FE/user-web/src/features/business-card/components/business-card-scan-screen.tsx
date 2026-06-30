@@ -258,7 +258,7 @@ export function BusinessCardScanScreen() {
 
       <BusinessCardRegisterDialog
         onConfirmed={(contactId) => {
-          setNotice("명함이 담당자로 저장되었습니다.");
+          setNotice("명함을 담당자로 저장했어요.");
           setSelectedScanLogId(null);
           if (contactId) {
             window.setTimeout(() => setNotice(null), 4000);
@@ -504,7 +504,7 @@ function StatusFilterCombobox({
           <div className="max-h-[184px] overflow-y-auto border-y border-[#E6EAF0] py-1">
             {filteredStatuses.length === 0 ? (
               <p className="px-3 py-3 text-[12px] text-[#9CA3AF]">
-                조건에 맞는 상태가 없습니다.
+                조건을 바꾸면 상태를 찾을 수 있어요.
               </p>
             ) : (
               filteredStatuses.map((item) => {
@@ -1077,7 +1077,7 @@ function RegisterStatusPanel({ scanLog }: { readonly scanLog: BusinessCardScanLo
   if (scanLog.status === "OCR_FAILED") {
     return (
       <div className="rounded-md border border-red-200 bg-red-50 px-3 py-2 text-[12px] text-red-600">
-        자동 입력에 실패했습니다. 이미지는 저장되지 않았습니다.
+        자동 입력에 실패했어요. 이미지는 저장하지 않았어요.
       </div>
     );
   }

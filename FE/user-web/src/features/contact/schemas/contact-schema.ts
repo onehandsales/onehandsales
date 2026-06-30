@@ -14,19 +14,19 @@ const mobilePattern = /^010-\d{4}-\d{4}$/;
 
 // 담당자 생성 폼 스키마
 export const contactCreateFormSchema = z.object({
-  username: z.string().trim().min(1, "이름을 입력해주세요."),
+  username: z.string().trim().min(1, "이름을 입력해 주세요."),
   mobile: z
     .string()
     .trim()
-    .regex(mobilePattern, "010-0000-0000 형식으로 입력해주세요."),
+    .regex(mobilePattern, "010-0000-0000 형식으로 입력해 주세요."),
   email: z
     .string()
     .trim()
-    .regex(emailPattern, "이메일 형식을 확인해주세요."),
-  companyId: z.string().trim().min(1, "회사를 선택해주세요."),
+    .regex(emailPattern, "이메일 형식을 확인해 주세요."),
+  companyId: z.string().trim().min(1, "회사를 선택해 주세요."),
   companySearch: z.string().trim().optional(),
-  contactDepartmentId: z.string().trim().min(1, "부서를 선택해주세요."),
-  contactJobGradeId: z.string().trim().min(1, "직급을 선택해주세요."),
+  contactDepartmentId: z.string().trim().min(1, "부서를 선택해 주세요."),
+  contactJobGradeId: z.string().trim().min(1, "직급을 선택해 주세요."),
   contactMemo: z.string().trim().optional(),
 });
 
@@ -34,34 +34,34 @@ export type ContactCreateFormValues = z.infer<typeof contactCreateFormSchema>;
 
 // 담당자 수정 폼 스키마
 export const contactEditFormSchema = z.object({
-  username: z.string().trim().min(1, "이름을 입력해주세요."),
+  username: z.string().trim().min(1, "이름을 입력해 주세요."),
   mobile: z
     .string()
     .trim()
-    .regex(mobilePattern, "010-0000-0000 형식으로 입력해주세요."),
+    .regex(mobilePattern, "010-0000-0000 형식으로 입력해 주세요."),
   email: z
     .string()
     .trim()
-    .regex(emailPattern, "이메일 형식을 확인해주세요."),
-  companyId: z.string().trim().min(1, "회사를 선택해주세요."),
+    .regex(emailPattern, "이메일 형식을 확인해 주세요."),
+  companyId: z.string().trim().min(1, "회사를 선택해 주세요."),
   companySearch: z.string().trim().optional(),
-  contactDepartmentId: z.string().trim().min(1, "부서를 선택해주세요."),
-  contactJobGradeId: z.string().trim().min(1, "직급을 선택해주세요."),
+  contactDepartmentId: z.string().trim().min(1, "부서를 선택해 주세요."),
+  contactJobGradeId: z.string().trim().min(1, "직급을 선택해 주세요."),
 });
 
 export type ContactEditFormValues = z.infer<typeof contactEditFormSchema>;
 
 // 메모 로그 폼 스키마
 export const contactMemoLogFormSchema = z.object({
-  memoType: z.string().trim().min(1, "메모 유형을 입력해주세요."),
-  memo: z.string().trim().min(1, "메모를 입력해주세요."),
+  memoType: z.string().trim().min(1, "메모 유형을 입력해 주세요."),
+  memo: z.string().trim().min(1, "메모를 입력해 주세요."),
 });
 
 export type ContactMemoLogFormValues = z.infer<typeof contactMemoLogFormSchema>;
 
 // 개인 메모 로그 폼 스키마
 export const contactPrivateMemoLogFormSchema = z.object({
-  memo: z.string().trim().min(1, "개인 메모를 입력해주세요."),
+  memo: z.string().trim().min(1, "개인 메모를 입력해 주세요."),
 });
 
 export type ContactPrivateMemoLogFormValues = z.infer<

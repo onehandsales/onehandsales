@@ -117,21 +117,21 @@ const allowedMimeTypes = new Set([
 
 export function validateImportFile(file: File | null): string | null {
   if (!file) {
-    return "가져올 Excel 또는 CSV 파일을 선택해주세요.";
+    return "가져올 Excel 또는 CSV 파일을 선택해 주세요.";
   }
 
   const extension = file.name.split(".").pop()?.toLowerCase() ?? "";
 
   if (!allowedExtensions.has(extension)) {
-    return "CSV, XLS, XLSX 파일만 업로드할 수 있습니다.";
+    return "CSV, XLS, XLSX 파일만 올릴 수 있어요.";
   }
 
   if (file.type && !allowedMimeTypes.has(file.type)) {
-    return "지원하지 않는 파일 형식입니다.";
+    return "지원하지 않는 파일 형식이에요.";
   }
 
   if (file.size > IMPORT_MAX_FILE_SIZE_BYTES) {
-    return "파일 용량은 10MB 이하여야 합니다.";
+    return "10MB 이하 파일만 올릴 수 있어요.";
   }
 
   return null;

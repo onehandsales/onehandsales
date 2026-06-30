@@ -64,16 +64,16 @@ type ProductDetailScreenProps = {
 };
 
 const productSummaryEditSchema = z.object({
-  productName: z.string().trim().min(1, "제품명을 입력해주세요."),
+  productName: z.string().trim().min(1, "제품명을 입력해 주세요."),
   productPrice: z
     .string()
     .trim()
     .refine(
       (value) => value.length === 0 || /^\d+$/.test(value),
-      "가격은 0 이상의 정수로 입력해주세요."
+      "가격은 0 이상의 정수로 입력해 주세요."
     ),
-  productCategoryId: z.string().trim().min(1, "카테고리를 선택해주세요."),
-  productStatusId: z.string().trim().min(1, "상태를 선택해주세요."),
+  productCategoryId: z.string().trim().min(1, "카테고리를 선택해 주세요."),
+  productStatusId: z.string().trim().min(1, "상태를 선택해 주세요."),
 });
 
 type ProductSummaryEditFormValues = z.infer<typeof productSummaryEditSchema>;
@@ -206,7 +206,7 @@ export function ProductDetailScreen({ productId }: ProductDetailScreenProps) {
             onCancelEdit={() => setIsEditOpen(false)}
             onSaved={() => {
               void productQuery.refetch();
-              showNotice("제품 정보가 저장되었습니다.");
+              showNotice("제품 정보를 저장했어요.");
               setIsEditOpen(false);
             }}
           />
@@ -297,7 +297,7 @@ export function ProductDetailScreen({ productId }: ProductDetailScreenProps) {
             onCancelEdit={() => setIsEditOpen(false)}
             onSaved={() => {
               void productQuery.refetch();
-              showNotice("제품 정보가 저장되었습니다.");
+              showNotice("제품 정보를 저장했어요.");
               setIsEditOpen(false);
             }}
           />
@@ -352,7 +352,7 @@ export function ProductDetailScreen({ productId }: ProductDetailScreenProps) {
         onOpenChange={setIsEditOpen}
         onSaved={() => {
           void productQuery.refetch();
-          showNotice("제품 정보가 저장되었습니다.");
+          showNotice("제품 정보를 저장했어요.");
         }}
       />
     </>
@@ -447,7 +447,7 @@ function ProductSummaryHeader({
 
         <input type="hidden" {...register("productCategoryId")} />
         <SummaryTaxonomySelect
-          emptyText="조건에 맞는 카테고리가 없습니다."
+          emptyText="조건을 바꾸면 카테고리를 찾을 수 있어요."
           getLabel={(category) => category.categoryName}
           id="product-summary-edit-category"
           invalid={Boolean(errors.productCategoryId)}
@@ -466,7 +466,7 @@ function ProductSummaryHeader({
 
         <input type="hidden" {...register("productStatusId")} />
         <SummaryTaxonomySelect
-          emptyText="조건에 맞는 상태가 없습니다."
+          emptyText="조건을 바꾸면 상태를 찾을 수 있어요."
           getLabel={(status) => status.statusName}
           id="product-summary-edit-status"
           invalid={Boolean(errors.productStatusId)}
@@ -512,7 +512,7 @@ function ProductSummaryHeader({
           onClick={onCancelEdit}
           type="button"
         >
-          취소
+              닫기
         </button>
         <button
           className="h-9 rounded-lg bg-[#4880EE] px-4 text-[13px] font-extrabold text-white transition-colors hover:bg-[#1D4ED8] disabled:cursor-not-allowed disabled:opacity-60"
@@ -652,7 +652,7 @@ function ConnectedDealsTable({
           ))}
         </div>
       ) : deals.length === 0 ? (
-        <p className="px-4 py-4 text-[13px] text-[#9CA3AF]">연결된 딜이 없습니다.</p>
+        <p className="px-4 py-4 text-[13px] text-[#9CA3AF]">딜을 연결하면 여기에서 볼 수 있어요.</p>
       ) : (
         <div className={hasMore ? "max-h-[232px] overflow-y-auto" : ""}>
           {deals.map((deal, idx) => (
@@ -753,7 +753,7 @@ function ProductMemoPanel({
     setCreateMemoType("");
     setCreateMemo("");
     setIsCreateOpen(false);
-    onChanged("제품 로그가 추가되었습니다.");
+    onChanged("제품 로그를 추가했어요.");
   };
 
   const onStartEdit = (log: ProductMemoLog) => {
@@ -771,7 +771,7 @@ function ProductMemoPanel({
       memo: editMemo.trim(),
     });
     setEditingId(null);
-    onChanged("제품 로그가 수정되었습니다.");
+    onChanged("제품 로그를 수정했어요.");
   };
 
   const onConfirmDelete = async () => {
@@ -821,7 +821,7 @@ function ProductMemoPanel({
             ))}
           </div>
         ) : memoLogs.length === 0 ? (
-          <p className="text-[13px] text-[#9CA3AF]">제품 로그가 없습니다.</p>
+          <p className="text-[13px] text-[#9CA3AF]">제품 로그를 추가하면 여기에서 볼 수 있어요.</p>
         ) : (
           memoLogs.map((log, index) => (
               <div
@@ -1036,7 +1036,7 @@ function ProductActivityLogPanel({
     await createMutation.mutateAsync({ memo: createMemo.trim() });
     setCreateMemo("");
     setIsCreateOpen(false);
-    onChanged("비밀 메모가 추가되었습니다.");
+    onChanged("비밀 메모를 추가했어요.");
   };
 
   const onStartEdit = (log: ProductPrivateMemoLog) => {
@@ -1052,7 +1052,7 @@ function ProductActivityLogPanel({
       memo: editMemo.trim(),
     });
     setEditingId(null);
-    onChanged("비밀 메모가 수정되었습니다.");
+    onChanged("비밀 메모를 수정했어요.");
   };
 
   const onConfirmDelete = async () => {
@@ -1114,7 +1114,7 @@ function ProductActivityLogPanel({
             ))}
           </div>
         ) : privateMemoLogs.length === 0 ? (
-          <p className="text-[13px] text-[#9CA3AF]">등록된 비밀 메모가 없습니다.</p>
+          <p className="text-[13px] text-[#9CA3AF]">비밀 메모를 추가하면 여기에서 볼 수 있어요.</p>
         ) : (
           privateMemoLogs.map((log, index) => (
               <div

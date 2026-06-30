@@ -331,7 +331,7 @@ export function DealPipelineHomeScreen({
                   <RotateCcw className="h-3.5 w-3.5" />
                 </button>
                 <DealFilterMultiSelect
-                  emptyText="조건에 맞는 회사가 없습니다."
+                  emptyText="조건을 바꾸면 회사를 찾을 수 있어요."
                   getLabel={(company) => company.companyName}
                   itemKindLabel="회사"
                   items={companyOptionsQuery.data ?? []}
@@ -339,7 +339,7 @@ export function DealPipelineHomeScreen({
                   onSelectedIdsChange={onCompanyIdsChange}
                 />
                 <DealFilterMultiSelect
-                  emptyText="조건에 맞는 담당자가 없습니다."
+                  emptyText="조건을 바꾸면 담당자를 찾을 수 있어요."
                   getLabel={(contact) => contact.label}
                   itemKindLabel="담당자"
                   items={filteredContactOptions}
@@ -389,8 +389,8 @@ export function DealPipelineHomeScreen({
                     onAction={() => setIsCreateOpen(true)}
                     title={
                       hasFilter
-                        ? "조건에 맞는 딜이 없습니다"
-                        : "등록된 딜이 없습니다"
+                        ? "조건을 바꾸면 딜을 찾을 수 있어요"
+                        : "새 딜을 등록하면 여기에서 볼 수 있어요"
                     }
                   />
                 ) : (
@@ -538,7 +538,7 @@ export function DealPipelineHomeScreen({
               icon={BriefcaseBusiness}
               onAction={() => setIsCreateOpen(true)}
               title={
-                hasFilter ? "조건에 맞는 딜이 없습니다" : "등록된 딜이 없습니다"
+                hasFilter ? "조건을 바꾸면 딜을 찾을 수 있어요" : "새 딜을 등록하면 여기에서 볼 수 있어요"
               }
             />
           ) : (
@@ -1227,7 +1227,7 @@ function ErrorState({ onRetry }: { readonly onRetry: () => void }) {
       <div className="flex items-center gap-3 text-red-600">
         <AlertCircle className="h-5 w-5" />
         <h2 className="text-sm font-semibold">
-          딜 목록을 불러오지 못했습니다.
+          딜 목록을 불러오지 못했어요.
         </h2>
       </div>
       <button

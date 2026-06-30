@@ -309,7 +309,7 @@ export function ContactEditForm({
             <ManagedTaxonomyDropdown
               addPlaceholder="부서명"
               createActionLabel="새 부서 생성"
-              emptyText="부서가 없습니다"
+                  emptyText="부서를 추가하면 선택할 수 있어요"
               getLabel={(department) => department.departmentName}
               id="contact-detail-department"
               isCreating={createDepartmentMutation.isPending}
@@ -346,7 +346,7 @@ export function ContactEditForm({
             <ManagedTaxonomyDropdown
               addPlaceholder="직급명"
               createActionLabel="새 직급 생성"
-              emptyText="직급이 없습니다"
+                  emptyText="직급을 추가하면 선택할 수 있어요"
               getLabel={(jobGrade) => jobGrade.jobGradeName}
               id="contact-detail-job-grade"
               isCreating={createJobGradeMutation.isPending}

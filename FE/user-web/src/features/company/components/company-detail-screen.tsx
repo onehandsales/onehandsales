@@ -223,7 +223,7 @@ export function CompanyDetailScreen({ companyId }: CompanyDetailScreenProps) {
             onCancelEdit={() => setIsEditOpen(false)}
             onSaved={() => {
               void companyQuery.refetch();
-              showNotice("회사 정보가 저장되었습니다.");
+            showNotice("회사 정보를 저장했어요.");
               setIsEditOpen(false);
             }}
           />
@@ -303,7 +303,7 @@ export function CompanyDetailScreen({ companyId }: CompanyDetailScreenProps) {
             onCancelEdit={() => setIsEditOpen(false)}
             onSaved={() => {
               void companyQuery.refetch();
-              showNotice("회사 정보가 저장되었습니다.");
+              showNotice("회사 정보를 저장했어요.");
               setIsEditOpen(false);
             }}
           />
@@ -360,7 +360,7 @@ export function CompanyDetailScreen({ companyId }: CompanyDetailScreenProps) {
         onOpenChange={setIsEditOpen}
         onSaved={() => {
           void companyQuery.refetch();
-          showNotice("회사 정보가 저장되었습니다.");
+          showNotice("회사 정보를 저장했어요.");
         }}
       />
     </>
@@ -445,7 +445,7 @@ function CompanySummaryHeader({
 
         <input type="hidden" {...register("companyFieldId")} />
         <SummaryTaxonomySelect
-          emptyText="조건에 맞는 분야가 없습니다."
+          emptyText="조건을 바꾸면 분야를 찾을 수 있어요."
           getLabel={(field) => field.field}
           id="company-summary-edit-field"
           invalid={Boolean(errors.companyFieldId)}
@@ -464,7 +464,7 @@ function CompanySummaryHeader({
 
         <input type="hidden" {...register("companyRegionId")} />
         <SummaryTaxonomySelect
-          emptyText="조건에 맞는 지역이 없습니다."
+          emptyText="조건을 바꾸면 지역을 찾을 수 있어요."
           getLabel={(region) => region.region}
           id="company-summary-edit-region"
           invalid={Boolean(errors.companyRegionId)}
@@ -504,7 +504,7 @@ function CompanySummaryHeader({
           onClick={onCancelEdit}
           type="button"
         >
-          취소
+              닫기
         </button>
         <button
           className="h-9 rounded-lg bg-[#4880EE] px-4 text-[13px] font-extrabold text-white transition-colors hover:bg-[#1D4ED8] disabled:cursor-not-allowed disabled:opacity-60"
@@ -580,7 +580,7 @@ function ConnectedContactsTable({
           ))}
         </div>
       ) : contacts.length === 0 ? (
-        <p className="px-4 py-4 text-[13px] text-[#9CA3AF]">연결된 담당자가 없습니다.</p>
+          <p className="px-4 py-4 text-[13px] text-[#9CA3AF]">담당자를 연결하면 여기에서 볼 수 있어요.</p>
       ) : (
         <div className={hasMore ? "max-h-[232px] overflow-y-auto" : ""}>
           {contacts.map((contact) => {
@@ -658,7 +658,7 @@ function ConnectedDealsTable({
           ))}
         </div>
       ) : deals.length === 0 ? (
-        <p className="px-4 py-4 text-[13px] text-[#9CA3AF]">연결된 딜이 없습니다.</p>
+          <p className="px-4 py-4 text-[13px] text-[#9CA3AF]">딜을 연결하면 여기에서 볼 수 있어요.</p>
       ) : (
         <div className={hasMore ? "max-h-[232px] overflow-y-auto" : ""}>
           {deals.map((deal, idx) => (
@@ -750,7 +750,7 @@ function MemoPanel({
     await createMemoMutation.mutateAsync(toCreateCompanyMemoLogInput(companyId, values));
     createForm.reset(emptyCompanyMemoLogFormValues);
     setIsCreateOpen(false);
-    onChanged("회사 로그가 추가되었습니다.");
+    onChanged("회사 로그를 추가했어요.");
   });
 
   const onStartEdit = (log: CompanyMemoLog) => {
@@ -764,7 +764,7 @@ function MemoPanel({
       toUpdateCompanyMemoLogInput(companyId, editingId, values)
     );
     setEditingId(null);
-    onChanged("회사 로그가 수정되었습니다.");
+    onChanged("회사 로그를 수정했어요.");
   });
 
   const onConfirmDelete = async () => {
@@ -817,7 +817,7 @@ function MemoPanel({
             ))}
           </div>
         ) : memoLogs.length === 0 ? (
-          <p className="text-[13px] text-[#9CA3AF]">회사 로그가 없습니다.</p>
+          <p className="text-[13px] text-[#9CA3AF]">회사 로그를 추가하면 여기에서 볼 수 있어요.</p>
         ) : (
           memoLogs.map((log, index) => (
               <div
@@ -1054,7 +1054,7 @@ function ActivityLogPanel({
     );
     createForm.reset(emptyCompanyPrivateMemoLogFormValues);
     setIsCreateOpen(false);
-    onChanged("비밀 메모가 추가되었습니다.");
+    onChanged("비밀 메모를 추가했어요.");
   });
 
   const onStartEdit = (log: CompanyPrivateMemoLog) => {
@@ -1068,7 +1068,7 @@ function ActivityLogPanel({
       toUpdateCompanyPrivateMemoLogInput(companyId, editingId, values)
     );
     setEditingId(null);
-    onChanged("비밀 메모가 수정되었습니다.");
+    onChanged("비밀 메모를 수정했어요.");
   });
 
   const onConfirmDelete = async () => {
@@ -1133,7 +1133,7 @@ function ActivityLogPanel({
             ))}
           </div>
         ) : privateMemoLogs.length === 0 ? (
-          <p className="text-[13px] text-[#9CA3AF]">등록된 비밀 메모가 없습니다.</p>
+          <p className="text-[13px] text-[#9CA3AF]">비밀 메모를 추가하면 여기에서 볼 수 있어요.</p>
         ) : (
           privateMemoLogs.map((log, index) => (
               <div

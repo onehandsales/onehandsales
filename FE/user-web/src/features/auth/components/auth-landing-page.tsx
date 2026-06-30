@@ -86,7 +86,7 @@ function LandingBackground({
           </h1>
 
           <p className="mt-[26px] whitespace-pre-line text-[15px] leading-[1.6] text-[#6B7280] md:text-[17px]">
-            {"딜 관리, 고객 히스토리, 일정까지\n영업에 필요한 모든 것을 한 앱에서 관리하세요."}
+          {"딜 관리, 고객 히스토리, 일정까지\n영업에 필요한 모든 것을 한 앱에서 관리해요."}
           </p>
 
           <div className="mt-[26px] flex flex-col gap-3 sm:flex-row">
@@ -237,7 +237,7 @@ function LandingBackground({
         ].join(" ")}
       >
         <p className="text-[13px] font-medium text-[#9CA3AF]">
-          이미 500개 이상의 영업팀이 신뢰합니다
+          이미 500개 이상의 영업팀이 선택했어요
         </p>
         <div className="flex gap-3">
           {["삼성전자", "LG전자", "현대자동차", "SK텔레콤"].map((name) => (

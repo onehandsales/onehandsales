@@ -125,12 +125,12 @@ export function ContactCompanyField({
               </p>
             ) : companyOptionsQuery.isError ? (
               <p className="px-3 py-2 text-sm text-muted-foreground">
-                회사 목록을 불러오지 못했습니다.
+          회사 목록을 불러오지 못했어요.
               </p>
             ) : filteredCompanies.length === 0 ? (
               <div className="grid gap-2 px-3 py-3">
                 <p className="text-sm text-muted-foreground">
-                  검색된 회사가 없습니다.
+          검색어를 바꾸면 회사를 찾을 수 있어요.
                 </p>
                 {canCreate && onCreate ? (
                   <button

@@ -555,11 +555,11 @@ function ScheduleEmptyState({
         <CalendarDays className="mx-auto h-8 w-8 text-[#9CA3AF]" />
         <p className="mt-3 text-base font-semibold text-[#111827]">
           {mode === "month"
-            ? "이번 달 일정이 없습니다."
-            : "이번 주 일정이 없습니다."}
+            ? "일정을 만들면 이번 달 계획을 볼 수 있어요."
+            : "일정을 만들면 이번 주 계획을 볼 수 있어요."}
         </p>
         <p className="mt-2 text-sm text-[#6B7280]">
-          새 일정을 만들면 캘린더에서 바로 확인할 수 있습니다.
+          새 일정을 만들면 캘린더에서 바로 확인할 수 있어요.
         </p>
         <button
           className="mt-5 inline-flex h-11 items-center gap-1.5 rounded-md bg-[#4880EE] px-4 text-[13px] font-medium text-white hover:bg-[#316BE0]"

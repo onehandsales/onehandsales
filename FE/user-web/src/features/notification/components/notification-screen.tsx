@@ -114,7 +114,7 @@ export function NotificationScreen() {
 
     const nextSettings = await updateSettingsMutation.mutateAsync(settings);
     setSettingsDraft(nextSettings);
-    setPushNotice("알림 설정을 저장했습니다.");
+    setPushNotice("알림 설정을 저장했어요.");
   };
 
   const onRequestPermission = async () => {
@@ -131,7 +131,7 @@ export function NotificationScreen() {
     setPushNotice(null);
 
     if (!pushSupported || !publicKey) {
-      setPushNotice("브라우저 푸시를 사용할 수 없습니다.");
+      setPushNotice("브라우저 푸시를 사용할 수 없어요.");
       return;
     }
 
@@ -139,7 +139,7 @@ export function NotificationScreen() {
     setPermissionState(permission);
 
     if (permission !== "granted") {
-      setPushNotice("브라우저 푸시 권한이 필요합니다.");
+      setPushNotice("브라우저 푸시 권한을 허용해 주세요.");
       return;
     }
 
@@ -162,7 +162,7 @@ export function NotificationScreen() {
 
     window.localStorage.setItem(PUSH_SUBSCRIPTION_ID_KEY, response.id);
     setStoredSubscriptionId(response.id);
-    setPushNotice("브라우저 푸시 구독을 등록했습니다.");
+    setPushNotice("브라우저 푸시 구독을 등록했어요.");
   };
 
   const onRevokeBrowserPush = async () => {
@@ -185,7 +185,7 @@ export function NotificationScreen() {
 
     window.localStorage.removeItem(PUSH_SUBSCRIPTION_ID_KEY);
     setStoredSubscriptionId("");
-    setPushNotice("브라우저 푸시 구독을 해제했습니다.");
+    setPushNotice("브라우저 푸시 구독을 해제했어요.");
   };
 
   return (
@@ -193,7 +193,7 @@ export function NotificationScreen() {
       <header className="flex flex-col gap-2 border-b pb-5">
         <h1 className="text-2xl font-semibold">알림</h1>
         <p className="text-sm text-muted-foreground">
-          일정, 딜 마감, 다음 행동, 회의록 알림을 확인합니다.
+          일정, 딜 마감, 다음 행동, 회의록 알림을 확인해요.
         </p>
       </header>
 
@@ -335,7 +335,7 @@ function NotificationList({
   if (items.length === 0) {
     return (
       <div className="grid min-h-[260px] place-items-center rounded-lg border border-dashed p-6 text-center text-sm text-muted-foreground">
-        표시할 알림이 없습니다.
+        새 알림이 생기면 여기에서 볼 수 있어요.
       </div>
     );
   }
@@ -497,7 +497,7 @@ function NotificationSettingsPanel({
         <span className="grid gap-1">
           <span className="text-sm font-semibold">이메일 알림</span>
           <span className="text-xs text-muted-foreground">
-            SMTP 발송 대상에 포함합니다.
+                              SMTP 발송 대상에 포함해요.
           </span>
         </span>
       </label>
@@ -517,7 +517,7 @@ function NotificationSettingsPanel({
         <span className="grid gap-1">
           <span className="text-sm font-semibold">브라우저 푸시</span>
           <span className="text-xs text-muted-foreground">
-            등록된 브라우저 구독에 발송합니다.
+                              등록된 브라우저 구독에 발송해요.
           </span>
         </span>
       </label>
@@ -791,7 +791,7 @@ function toBrowserPushSubscriptionInput(subscription: PushSubscription) {
   const auth = json.keys?.auth;
 
   if (!json.endpoint || !p256dh || !auth) {
-    throw new Error("브라우저 푸시 구독 정보를 읽지 못했습니다.");
+    throw new Error("브라우저 푸시 구독 정보를 읽지 못했어요.");
   }
 
   return {

@@ -156,7 +156,7 @@ export function DealDetailPanel({ dealId, variant = "panel" }: DealDetailPanelPr
         onDeleteDeal={() => setDeleteConfirmOpen(true)}
         onDetailSaved={() => {
           void dealQuery.refetch();
-          setNotice("딜 정보가 저장되었습니다.");
+          setNotice("딜 정보를 저장했어요.");
         }}
         onFetchFollowingLogsNext={() => void followingLogsQuery.fetchNextPage()}
         memoLogs={memoLogs}
@@ -633,7 +633,7 @@ function DealSummaryHeader({
             onClick={onCancelEdit}
             type="button"
           >
-            취소
+              닫기
           </button>
         </div>
       </div>
@@ -686,7 +686,7 @@ function DealLinkedCompaniesTable({
   return (
     <DealLinkedTableFrame count={companies.length} title="연결 회사">
       {companies.length === 0 ? (
-        <p className="px-4 py-4 text-[13px] text-[#9CA3AF]">연결된 회사가 없습니다.</p>
+        <p className="px-4 py-4 text-[13px] text-[#9CA3AF]">회사를 연결하면 여기에서 볼 수 있어요.</p>
       ) : (
         <div className={companies.length > 2 ? "max-h-[116px] overflow-y-auto" : ""}>
           {companies.map((company) => {
@@ -733,7 +733,7 @@ function DealLinkedContactsTable({
   return (
     <DealLinkedTableFrame count={contacts.length} title="연결 담당자">
       {contacts.length === 0 ? (
-        <p className="px-4 py-4 text-[13px] text-[#9CA3AF]">연결된 담당자가 없습니다.</p>
+        <p className="px-4 py-4 text-[13px] text-[#9CA3AF]">담당자를 연결하면 여기에서 볼 수 있어요.</p>
       ) : (
         <div className={contacts.length > 2 ? "max-h-[116px] overflow-y-auto" : ""}>
           {contacts.map((contact) => {
@@ -794,7 +794,7 @@ function DealLinkedProductsTable({
   return (
     <DealLinkedTableFrame count={products.length} title="연결 제품">
       {products.length === 0 ? (
-        <p className="px-4 py-4 text-[13px] text-[#9CA3AF]">연결된 제품이 없습니다.</p>
+        <p className="px-4 py-4 text-[13px] text-[#9CA3AF]">제품을 연결하면 여기에서 볼 수 있어요.</p>
       ) : (
         <div className={products.length > 2 ? "max-h-[116px] overflow-y-auto" : ""}>
           {products.map((product) => {
@@ -1020,7 +1020,7 @@ function DealFollowingActionsPanel({
           </div>
         ) : logs.length === 0 ? (
           <p className="py-2 text-[13px] text-[#9CA3AF]">
-            등록된 다음 행동이 없습니다.
+            다음 행동을 등록하면 여기에서 볼 수 있어요.
           </p>
         ) : (
           <div className="flex flex-col">
@@ -1337,7 +1337,7 @@ function DealMemoLogsPanel({
           </div>
         ) : logs.length === 0 ? (
           <p className="py-2 text-[13px] text-[#9CA3AF]">
-            등록된 딜 로그가 없습니다.
+            딜 로그를 추가하면 여기에서 볼 수 있어요.
           </p>
         ) : (
           <div className="flex flex-col">
@@ -1719,7 +1719,7 @@ function NextActionSummary({
         </div>
       ) : (
         <p className="mt-3 rounded-lg bg-[#F9FAFB] p-3 text-[13px] text-[#94A3B8]">
-          등록된 다음 행동이 없습니다.
+          다음 행동을 등록하면 여기에서 볼 수 있어요.
         </p>
       )}
     </section>
@@ -1739,7 +1739,7 @@ function DealProductsSection({
       </h3>
       {products.length === 0 ? (
         <p className="rounded-lg bg-[#F9FAFB] px-3 py-2 text-[12px] text-[#94A3B8]">
-          연결된 제품이 없습니다.
+          제품을 연결하면 여기에서 볼 수 있어요.
         </p>
       ) : (
         <div className="flex flex-wrap gap-1.5">
@@ -1902,7 +1902,7 @@ function FollowingActionLogsSection({
         </div>
       ) : logs.length === 0 ? (
         <p className="rounded-lg bg-[#F9FAFB] px-3 py-2 text-[12px] text-[#94A3B8]">
-          활동 로그가 없습니다.
+          활동 로그를 추가하면 여기에서 볼 수 있어요.
         </p>
       ) : (
         <div className="space-y-2">
@@ -2168,7 +2168,7 @@ export function MemoLogsSection({
         </div>
       ) : logs.length === 0 ? (
         <p className="rounded-lg bg-[#F9FAFB] px-3 py-2 text-[12px] text-[#94A3B8]">
-          메모 로그가 없습니다.
+          메모 로그를 추가하면 여기에서 볼 수 있어요.
         </p>
       ) : (
         <div className="space-y-2">

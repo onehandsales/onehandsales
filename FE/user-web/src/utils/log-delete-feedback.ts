@@ -1,4 +1,4 @@
-export const LOG_DELETE_CONFIRM_MESSAGE = "데이터를 삭제하시겠습니까?";
-export const LOG_DELETE_SUCCESS_MESSAGE = "삭제가 완료되었습니다.";
+export const LOG_DELETE_CONFIRM_MESSAGE = "데이터를 삭제할까요?";
+export const LOG_DELETE_SUCCESS_MESSAGE = "삭제했어요.";
 export const LOG_DELETE_SUCCESS_DESCRIPTION =
-  "7일안으로 휴지통에서 복구가 가능합니다.";
+  "7일 안에는 휴지통에서 복구할 수 있어요.";

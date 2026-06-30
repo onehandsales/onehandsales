@@ -127,8 +127,8 @@ export function ExportScreen() {
     setConfirmOpen(false);
     setNotice(
       job.downloadReady
-        ? "내보내기 파일이 준비되었습니다."
-        : "내보내기 작업을 생성했습니다."
+        ? "내보내기 파일을 준비했어요."
+        : "내보내기 작업을 만들었어요."
     );
   };
 
@@ -151,7 +151,7 @@ export function ExportScreen() {
     });
 
     setDownloadInfo(download);
-    setNotice("다운로드 링크가 준비되었습니다.");
+      setNotice("다운로드 링크를 준비했어요.");
   };
 
   return (
@@ -159,7 +159,7 @@ export function ExportScreen() {
       <header className="flex flex-col gap-2 border-b pb-5">
         <h1 className="text-2xl font-semibold">데이터 내보내기</h1>
         <p className="text-sm text-muted-foreground">
-          대상과 파일 형식을 선택하고 필요한 데이터 파일을 생성합니다.
+          대상과 파일 형식을 선택하고 필요한 데이터 파일을 만들어요.
         </p>
       </header>
 
@@ -244,7 +244,7 @@ function ExportTargetSelector({
       <div>
         <h2 className="text-base font-semibold">내보내기 대상</h2>
         <p className="text-sm text-muted-foreground">
-          생성할 데이터 범위를 선택합니다.
+            생성할 데이터 범위를 선택해요.
         </p>
       </div>
 
@@ -293,7 +293,7 @@ function ExportFormatSelector({
       <div>
         <h2 className="text-base font-semibold">파일 형식</h2>
         <p className="text-sm text-muted-foreground">
-          업무 목적에 맞는 형식을 선택합니다.
+              업무 목적에 맞는 형식을 선택해요.
         </p>
       </div>
 
@@ -342,7 +342,7 @@ function SensitiveDataPanel({
       <div>
         <h2 className="text-base font-semibold">민감정보</h2>
         <p className="text-sm text-muted-foreground">
-          기본값은 연락처와 상세 메모를 제외합니다.
+                  기본값은 연락처와 상세 메모를 제외해요.
         </p>
       </div>
 
@@ -356,7 +356,7 @@ function SensitiveDataPanel({
         <span className="grid gap-1">
           <span className="text-sm font-semibold">민감정보 포함</span>
           <span className="text-xs text-muted-foreground">
-            전화번호, 이메일, 주소, 일정 위치와 메모, 회의 상세 내용을 포함합니다.
+                  전화번호, 이메일, 주소, 일정 위치와 메모, 회의 상세 내용을 포함해요.
           </span>
         </span>
       </label>
@@ -364,7 +364,7 @@ function SensitiveDataPanel({
       {includeSensitiveData ? (
         <div className="flex items-start gap-2 rounded-lg border border-amber-200 bg-amber-50 p-3 text-sm text-amber-800">
           <ShieldAlert className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />
-          <span>생성 전에 민감정보 포함 확인이 필요합니다.</span>
+                  <span>생성 전에 민감정보 포함 여부를 확인해 주세요.</span>
         </div>
       ) : null}
     </div>
@@ -403,7 +403,7 @@ function ExportActionPanel({
       <div>
         <h2 className="text-base font-semibold">작업 생성</h2>
         <p className="text-sm text-muted-foreground">
-          현재 선택한 조건으로 파일을 생성합니다.
+            현재 선택한 조건으로 파일을 만들어요.
         </p>
       </div>
 
@@ -469,14 +469,14 @@ function ExportActionPanel({
           </div>
         ) : (
           <p className="text-sm text-muted-foreground">
-            아직 생성된 내보내기 작업이 없습니다.
+                    내보내기 작업을 만들면 여기에서 볼 수 있어요.
           </p>
         )}
 
         {isPolling ? (
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
             <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
-            작업 상태를 확인하는 중입니다.
+                  작업 상태를 확인하고 있어요.
           </div>
         ) : null}
 
@@ -508,7 +508,7 @@ function DownloadLinkPanel({ downloadInfo }: DownloadLinkPanelProps) {
       <div className="flex items-start gap-2 text-sm text-emerald-800">
         <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />
         <div className="grid gap-1">
-          <span className="font-semibold">다운로드 링크가 생성되었습니다.</span>
+                  <span className="font-semibold">다운로드 링크를 만들었어요.</span>
           <span>
             만료 시간:{" "}
             {formatDateWithOptions(downloadInfo.expiresAt, {
@@ -557,7 +557,7 @@ function SensitiveConfirmDialog({
           <div className="grid gap-1">
             <h2 className="text-lg font-semibold">민감정보 포함 확인</h2>
             <p className="text-sm text-muted-foreground">
-              {targetLabel} 데이터를 {formatLabel} 파일로 생성합니다.
+                  {targetLabel} 데이터를 {formatLabel} 파일로 만들어요.
             </p>
           </div>
           <button
@@ -573,8 +573,8 @@ function SensitiveConfirmDialog({
         <div className="flex items-start gap-3 rounded-lg border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900">
           <AlertTriangle className="mt-0.5 h-5 w-5 shrink-0" aria-hidden="true" />
           <p>
-            이 파일에는 연락처, 위치, 메모 등 민감정보가 포함될 수 있습니다. 외부
-            공유 전 보안 기준을 확인하세요.
+            이 파일에는 연락처, 위치, 메모 등 민감정보가 포함될 수 있어요. 외부
+            공유 전 보안 기준을 확인해 주세요.
           </p>
         </div>
 
@@ -585,7 +585,7 @@ function SensitiveConfirmDialog({
             type="button"
             onClick={onCancel}
           >
-            취소
+            닫기
           </button>
           <button
             className="inline-flex min-h-10 items-center justify-center gap-2 rounded-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground disabled:cursor-not-allowed disabled:opacity-60"

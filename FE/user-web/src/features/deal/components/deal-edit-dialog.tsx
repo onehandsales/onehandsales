@@ -253,7 +253,7 @@ export function DealEditDialog({
               <div className="grid gap-2">
                 <input type="hidden" {...register("companyIds")} />
                 <SearchSelectField
-                  emptyText="검색된 회사가 없습니다."
+                  emptyText="검색어를 바꾸면 회사를 찾을 수 있어요."
                   getLabel={(company) => company.companyName}
                   icon={Building2}
                   id="deal-edit-company"
@@ -294,7 +294,7 @@ export function DealEditDialog({
                 <input type="hidden" {...register("contactIds")} />
                 <SearchSelectField
                   disabled={selectedCompanyIds.length === 0}
-                  emptyText="검색된 담당자가 없습니다."
+                  emptyText="검색어를 바꾸면 담당자를 찾을 수 있어요."
                   getDescription={(contact) =>
                     contact.contactDepartment.departmentName
                   }

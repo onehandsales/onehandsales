@@ -71,7 +71,7 @@ export function CompanyMemoLogSection({
       toCreateCompanyMemoLogInput(companyId, values)
     );
     createForm.reset(emptyCompanyMemoLogFormValues);
-    onChanged("회사 메모가 추가되었습니다.");
+      onChanged("회사 메모를 추가했어요.");
   });
 
   // 기능 : 일반 메모 로그 수정 폼을 엽니다.
@@ -93,13 +93,13 @@ export function CompanyMemoLogSection({
       toUpdateCompanyMemoLogInput(companyId, editingLog.id, values)
     );
     setEditingLog(null);
-    onChanged("회사 메모가 수정되었습니다.");
+      onChanged("회사 메모를 수정했어요.");
   });
 
   return (
     <section className="grid gap-4">
       <SectionTitle
-        description="회사 공유 메모입니다."
+      description="회사 공유 메모예요."
         icon={MessageSquareText}
         title="회사 메모"
       />
@@ -170,7 +170,7 @@ export function CompanyMemoLogSection({
                   onClick={() => setEditingLog(null)}
                   type="button"
                 >
-                  취소
+            닫기
                 </Button>
                 <Button
                   disabled={updateMemoMutation.isPending}
@@ -194,7 +194,7 @@ export function CompanyMemoLogSection({
         ) : null}
 
         <MemoLogList
-          emptyText="등록된 회사 메모가 없습니다."
+        emptyText="회사 메모를 추가하면 여기에서 볼 수 있어요."
           error={error}
           hasNextPage={hasNextPage}
           isFetchingNextPage={isFetchingNextPage}
@@ -258,7 +258,7 @@ export function CompanyPrivateMemoLogSection({
       toCreateCompanyPrivateMemoLogInput(companyId, values)
     );
     createForm.reset(emptyCompanyPrivateMemoLogFormValues);
-    onChanged("비공식 메모가 추가되었습니다.");
+      onChanged("비공식 메모를 추가했어요.");
   });
 
   // 기능 : 비공식 메모 로그 수정 폼을 엽니다.
@@ -279,7 +279,7 @@ export function CompanyPrivateMemoLogSection({
       toUpdateCompanyPrivateMemoLogInput(companyId, editingLog.id, values)
     );
     setEditingLog(null);
-    onChanged("비공식 메모가 수정되었습니다.");
+      onChanged("비공식 메모를 수정했어요.");
   });
 
   return (
@@ -290,7 +290,7 @@ export function CompanyPrivateMemoLogSection({
           <h2 className="text-lg font-semibold">비공식 메모</h2>
         </div>
         <p className="mt-1 text-sm text-muted-foreground">
-          파일로 내보내기 할때 비공식 메모의 내용을 제외 할 수 있습니다.
+          파일로 내보낼 때 비공식 메모 내용을 제외할 수 있어요.
         </p>
       </div>
       <div className="grid gap-4 rounded-lg border bg-white p-4">
@@ -344,7 +344,7 @@ export function CompanyPrivateMemoLogSection({
                   onClick={() => setEditingLog(null)}
                   type="button"
                 >
-                  취소
+            닫기
                 </Button>
                 <Button
                   disabled={updateMemoMutation.isPending}
@@ -361,7 +361,7 @@ export function CompanyPrivateMemoLogSection({
         ) : null}
 
         <MemoLogList
-          emptyText="등록된 비공식 메모가 없습니다."
+        emptyText="비공식 메모를 추가하면 여기에서 볼 수 있어요."
           error={error}
           hasNextPage={hasNextPage}
           isFetchingNextPage={isFetchingNextPage}

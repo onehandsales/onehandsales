@@ -10,21 +10,21 @@ const DEFAULT_TIME_ZONE = "Asia/Seoul";
 
 export const scheduleFormSchema = z
   .object({
-    scheduleTitle: z.string().trim().min(1, "일정 제목을 입력해주세요.").max(100),
-    startAt: z.string().min(1, "시작일시를 입력해주세요."),
-    endAt: z.string().min(1, "종료일시를 입력해주세요."),
-    timeZone: z.string().trim().min(1, "시간대를 선택해주세요."),
+    scheduleTitle: z.string().trim().min(1, "일정 제목을 입력해 주세요.").max(100),
+    startAt: z.string().min(1, "시작일시를 입력해 주세요."),
+    endAt: z.string().min(1, "종료일시를 입력해 주세요."),
+    timeZone: z.string().trim().min(1, "시간대를 선택해 주세요."),
     location: z.string().max(200).optional(),
     memo: z.string().max(2000).optional(),
     dealIds: z.array(z.string()),
     dealSearch: z.string().optional(),
   })
   .refine((values) => toDate(values.startAt) < toDate(values.endAt), {
-    message: "종료일시는 시작일시보다 늦어야 합니다.",
+    message: "종료일시는 시작일시보다 늦게 입력해 주세요.",
     path: ["endAt"],
   })
   .refine((values) => new Set(values.dealIds).size === values.dealIds.length, {
-    message: "같은 딜을 중복 연결할 수 없습니다.",
+    message: "같은 딜은 한 번만 연결할 수 있어요.",
     path: ["dealIds"],
   });
 

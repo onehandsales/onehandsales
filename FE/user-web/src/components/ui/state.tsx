@@ -15,7 +15,7 @@ type LoadingStateProps = {
 
 // 기능 : 도메인 공용 로딩 상태를 렌더링합니다.
 export function LoadingState({
-  title = "불러오는 중입니다.",
+  title = "불러오고 있어요.",
   description,
   variant = "panel",
   className,
@@ -140,7 +140,7 @@ type ErrorStateProps = {
 // 기능 : 도메인 공용 오류 상태를 렌더링합니다.
 export function ErrorState({
   message,
-  title = "요청을 처리하지 못했습니다.",
+  title = "요청을 처리하지 못했어요.",
   onRetry,
   variant = "panel",
   className,

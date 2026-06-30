@@ -64,7 +64,7 @@ export async function apiClient<TResponse>(
     throw new ApiClientError({
       statusCode: 400,
       code: "InvalidUserWebApiPath",
-      message: "사용자 웹에서는 관리자 API를 호출할 수 없습니다.",
+      message: "사용자 웹에서는 관리자 API를 호출할 수 없어요.",
       raw: null,
     });
   }
@@ -97,7 +97,7 @@ export async function apiBlobClient(
     throw new ApiClientError({
       statusCode: 400,
       code: "InvalidUserWebApiPath",
-      message: "사용자 웹에서는 관리자 API를 호출할 수 없습니다.",
+      message: "사용자 웹에서는 관리자 API를 호출할 수 없어요.",
       raw: null,
     });
   }
@@ -125,15 +125,15 @@ export async function apiBlobClient(
 export function getApiErrorMessage(error: unknown): string {
   if (error instanceof ApiClientError) {
     if (error.statusCode === 401) {
-      return "인증이 필요합니다.";
+      return "로그인하면 이용할 수 있어요.";
     }
 
     if (error.statusCode === 410 && error.isDeletedResource) {
-      return "삭제된 항목입니다.";
+      return "삭제된 항목이에요.";
     }
 
     if (error.statusCode === 409 && error.isDeletedResource) {
-      return "삭제된 항목은 복구한 뒤 수정할 수 있습니다.";
+      return "삭제된 항목은 복구한 뒤 수정할 수 있어요.";
     }
 
     const conflictMessage = getConflictErrorMessage(error.code);
@@ -148,19 +148,19 @@ export function getApiErrorMessage(error: unknown): string {
     return error.message;
   }
 
-  return "요청을 처리하지 못했습니다.";
+  return "요청을 처리하지 못했어요. 다시 시도해 주세요.";
 }
 
 function getConflictErrorMessage(code: string) {
   switch (code) {
     case "CompanyInUse":
-      return "연결된 담당자, 딜 또는 회의록이 있어 회사를 삭제할 수 없습니다.";
+      return "연결된 담당자, 딜 또는 회의록을 정리하면 회사를 삭제할 수 있어요.";
     case "ContactInUse":
-      return "연결된 딜 또는 회의록이 있어 담당자를 삭제할 수 없습니다.";
+      return "연결된 딜 또는 회의록을 정리하면 담당자를 삭제할 수 있어요.";
     case "ProductInUse":
-      return "연결된 딜 또는 회의록이 있어 제품을 삭제할 수 없습니다.";
+      return "연결된 딜 또는 회의록을 정리하면 제품을 삭제할 수 있어요.";
     case "DealInUse":
-      return "연결된 일정 또는 회의록이 있어 딜을 삭제할 수 없습니다.";
+      return "연결된 일정 또는 회의록을 정리하면 딜을 삭제할 수 있어요.";
     default:
       return null;
   }

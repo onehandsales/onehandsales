@@ -160,7 +160,7 @@ export function ProductTaxonomyManageDialog({
                   {section.title}
                 </h3>
                 <p className="mt-1 text-[12px] text-[#6B7280]">
-                  목록 필터에서 바로 사용할 항목을 관리합니다.
+        목록 필터에서 바로 사용할 항목을 관리해요.
                 </p>
               </div>
 
@@ -192,7 +192,7 @@ export function ProductTaxonomyManageDialog({
                 {(section.key === "category" ? categories : statuses).length ===
                 0 ? (
                   <span className="text-sm text-muted-foreground">
-                    등록된 항목이 없습니다.
+              항목을 추가하면 여기에서 볼 수 있어요.
                   </span>
                 ) : (
                   (section.key === "category" ? categories : statuses).map(
@@ -272,7 +272,7 @@ export function ProductTaxonomyManageDialog({
         </div>
       </ModalShell>
       <ConfirmDialog
-        cancelLabel="취소"
+        cancelLabel="닫기"
         confirmLabel="삭제"
         errorMessage={deleteError ? getApiErrorMessage(deleteError) : null}
         isPending={isDeletePending}

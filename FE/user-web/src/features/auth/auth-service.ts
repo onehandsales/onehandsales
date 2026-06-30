@@ -33,7 +33,7 @@ export const authService = {
     const supabase = createBrowserSupabaseClient();
 
     if (!supabase) {
-      throw new Error("Supabase 환경 변수가 설정되지 않았습니다.");
+      throw new Error("Supabase 환경 변수를 설정해 주세요.");
     }
 
     const { error } = await supabase.auth.signInWithOAuth({

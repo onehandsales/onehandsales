@@ -66,15 +66,15 @@ const MEETING_NOTE_SOURCE_LABEL = {
 const MEETING_NOTE_LINKED_LIST_SCROLL_CLASS = "max-h-[116px] overflow-y-auto";
 
 const meetingNoteDetailEditSchema = z.object({
-  companyIds: z.array(z.string()).min(1, "회사를 1개 이상 선택해주세요."),
-  contactIds: z.array(z.string()).min(1, "담당자를 1명 이상 선택해주세요."),
+  companyIds: z.array(z.string()).min(1, "회사를 1개 이상 선택해 주세요."),
+  contactIds: z.array(z.string()).min(1, "담당자를 1명 이상 선택해 주세요."),
   dealIds: z.array(z.string()).optional(),
   productIds: z.array(z.string()).optional(),
-  details: z.string().trim().min(1, "상세 내용을 입력해주세요.").max(10000),
-  meetingLocalDateTime: z.string().trim().min(1, "미팅 일시를 선택해주세요."),
+  details: z.string().trim().min(1, "상세 내용을 입력해 주세요.").max(10000),
+  meetingLocalDateTime: z.string().trim().min(1, "미팅 일시를 선택해 주세요."),
   nextPlan: z.string().max(2000).optional(),
   requiredAction: z.string().max(2000).optional(),
-  title: z.string().trim().min(1, "회의록 제목을 입력해주세요.").max(100),
+  title: z.string().trim().min(1, "회의록 제목을 입력해 주세요.").max(100),
 });
 
 type MeetingNoteDetailEditFormValues = z.infer<
@@ -114,7 +114,7 @@ export function MeetingNoteDetailScreen({
       setDeleteConfirmOpen(false);
       void navigate("/meeting-notes", {
         replace: true,
-        state: { notice: "회의록이 삭제되었습니다." },
+      state: { notice: "회의록을 삭제했어요." },
       });
     } catch (error) {
       setActionError(getApiErrorMessage(error));
@@ -125,7 +125,7 @@ export function MeetingNoteDetailScreen({
     return (
       <MeetingNoteStateShell>
         <MeetingNoteDetailError
-          error="회의록 ID를 확인할 수 없습니다."
+      error="회의록 ID를 확인할 수 없어요."
           onRetry={() => void navigate("/meeting-notes")}
         />
       </MeetingNoteStateShell>
@@ -191,13 +191,13 @@ export function MeetingNoteDetailScreen({
         onOpenChange={setIsEditOpen}
         onSaved={(updated) => {
           setSavedMeetingNote(updated);
-          setNotice("회의록이 수정되었습니다.");
+    setNotice("회의록을 수정했어요.");
           setIsEditOpen(false);
         }}
       />
 
       <ConfirmDialog
-        cancelLabel="취소"
+          cancelLabel="닫기"
         confirmLabel="삭제"
         errorMessage={actionError}
         isPending={deleteMutation.isPending}
@@ -411,7 +411,7 @@ function MeetingNoteLinkedCompaniesTable({
   return (
     <MeetingNoteLinkedTableFrame count={companies.length} title="연결 회사">
       {companies.length === 0 ? (
-        <MeetingNoteLinkedEmpty text="연결된 회사가 없습니다." />
+              <MeetingNoteLinkedEmpty text="회사를 연결하면 여기에서 볼 수 있어요." />
       ) : (
         <div className={getMeetingNoteLinkedListClass(companies.length)}>
           {companies.map((company) => {
@@ -459,7 +459,7 @@ function MeetingNoteLinkedContactsTable({
   return (
     <MeetingNoteLinkedTableFrame count={contacts.length} title="연결 담당자">
       {contacts.length === 0 ? (
-        <MeetingNoteLinkedEmpty text="연결된 담당자가 없습니다." />
+              <MeetingNoteLinkedEmpty text="담당자를 연결하면 여기에서 볼 수 있어요." />
       ) : (
         <div className={getMeetingNoteLinkedListClass(contacts.length)}>
           {contacts.map((contact) => {
@@ -511,7 +511,7 @@ function MeetingNoteLinkedProductsTable({
   return (
     <MeetingNoteLinkedTableFrame count={products.length} title="연결 제품">
       {products.length === 0 ? (
-        <MeetingNoteLinkedEmpty text="연결된 제품이 없습니다." />
+              <MeetingNoteLinkedEmpty text="제품을 연결하면 여기에서 볼 수 있어요." />
       ) : (
         <div className={getMeetingNoteLinkedListClass(products.length)}>
           {products.map((product) => {
@@ -564,7 +564,7 @@ function MeetingNoteLinkedDealsTable({
   return (
     <MeetingNoteLinkedTableFrame count={deals.length} title="연결 딜">
       {deals.length === 0 ? (
-        <MeetingNoteLinkedEmpty text="연결된 딜이 없습니다." />
+              <MeetingNoteLinkedEmpty text="딜을 연결하면 여기에서 볼 수 있어요." />
       ) : (
         <div className={getMeetingNoteLinkedListClass(deals.length)}>
           {deals.map((deal) => (
@@ -845,7 +845,7 @@ function MeetingNoteEditPanel({
 
       <ModalFormRow className="gap-3" columns={2}>
         <EntityMultiSelectField
-          emptyText="등록된 회사가 없습니다."
+                    emptyText="새 회사를 등록하면 여기에서 볼 수 있어요."
           errorMessage={errors.companyIds?.message}
           icon={Building2}
           id="meeting-note-detail-company-ids"
@@ -858,8 +858,8 @@ function MeetingNoteEditPanel({
         <EntityMultiSelectField
           emptyText={
             companyIds.length > 0
-              ? "선택한 회사의 담당자가 없습니다."
-              : "회사를 먼저 선택해주세요."
+                      ? "담당자를 연결하면 선택한 회사에서 볼 수 있어요."
+                      : "회사를 먼저 선택해 주세요."
           }
           errorMessage={errors.contactIds?.message}
           icon={IdCard}
@@ -879,7 +879,7 @@ function MeetingNoteEditPanel({
 
       <ModalFormRow className="gap-3" columns={2}>
         <EntityMultiSelectField
-          emptyText="등록된 제품이 없습니다."
+                    emptyText="새 제품을 등록하면 여기에서 볼 수 있어요."
           errorMessage={errors.productIds?.message}
           icon={Package}
           id="meeting-note-detail-product-ids"
@@ -895,7 +895,7 @@ function MeetingNoteEditPanel({
           }
         />
         <EntityMultiSelectField
-          emptyText="등록된 딜이 없습니다."
+                    emptyText="새 딜을 등록하면 여기에서 볼 수 있어요."
           errorMessage={errors.dealIds?.message}
           icon={BriefcaseBusiness}
           id="meeting-note-detail-deal-ids"

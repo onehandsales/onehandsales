@@ -94,7 +94,7 @@ export function CompanyTaxonomyCreateDialog({
                 {section.title}
               </h3>
               <p className="mt-1 text-[12px] text-[#6B7280]">
-                추가하거나 잘못 들어간 항목을 삭제합니다.
+          추가하거나 잘못 들어간 항목을 삭제해요.
               </p>
             </div>
 

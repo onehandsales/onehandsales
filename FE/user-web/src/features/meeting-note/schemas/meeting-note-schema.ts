@@ -7,12 +7,12 @@ import type {
 } from "@/features/meeting-note/types/meeting-note";
 
 export const meetingNoteFormSchema = z.object({
-  title: z.string().trim().min(1, "회의록 제목을 입력해주세요.").max(100),
-  meetingLocalDateTime: z.string().trim().min(1, "미팅 일시를 선택해주세요."),
-  companyName: z.string().trim().min(1, "회사명을 입력해주세요.").max(300),
+  title: z.string().trim().min(1, "회의록 제목을 입력해 주세요.").max(100),
+  meetingLocalDateTime: z.string().trim().min(1, "미팅 일시를 선택해 주세요."),
+  companyName: z.string().trim().min(1, "회사명을 입력해 주세요.").max(300),
   companyField: z.string().max(200).optional(),
   companyRegion: z.string().max(200).optional(),
-  contactUsername: z.string().trim().min(1, "담당자명을 입력해주세요.").max(200),
+  contactUsername: z.string().trim().min(1, "담당자명을 입력해 주세요.").max(200),
   contactEmail: z.string().max(300).optional(),
   contactMobile: z.string().max(100).optional(),
   department: z.string().max(200).optional(),
@@ -24,14 +24,14 @@ export const meetingNoteFormSchema = z.object({
       (value) =>
         value.trim().length === 0 ||
         (Number.isInteger(Number(value)) && Number(value) >= 0),
-      "제품 금액은 0 이상의 정수로 입력해주세요."
+    "제품 금액은 0 이상의 정수로 입력해 주세요."
     )
     .optional(),
   productCategory: z.string().max(200).optional(),
   productStatus: z.string().max(200).optional(),
   dealId: z.string().optional(),
   dealSearch: z.string().optional(),
-  details: z.string().trim().min(1, "상세 내용을 입력해주세요.").max(10000),
+  details: z.string().trim().min(1, "상세 내용을 입력해 주세요.").max(10000),
   nextPlan: z.string().max(2000).optional(),
   requiredAction: z.string().max(2000).optional(),
 });
@@ -62,13 +62,13 @@ export const emptyMeetingNoteFormValues: MeetingNoteFormValues = {
 
 // 기능 : 회의록 form 값을 생성 request body로 변환합니다.
 export const meetingNoteCreateFormSchema = z.object({
-  title: z.string().trim().min(1, "회의록 제목을 입력해주세요.").max(100),
-  meetingLocalDateTime: z.string().trim().min(1, "미팅 일시를 선택해주세요."),
-  companyIds: z.array(z.string()).min(1, "회사를 1개 이상 선택해주세요."),
-  contactIds: z.array(z.string()).min(1, "담당자를 1명 이상 선택해주세요."),
+  title: z.string().trim().min(1, "회의록 제목을 입력해 주세요.").max(100),
+  meetingLocalDateTime: z.string().trim().min(1, "미팅 일시를 선택해 주세요."),
+  companyIds: z.array(z.string()).min(1, "회사를 1개 이상 선택해 주세요."),
+  contactIds: z.array(z.string()).min(1, "담당자를 1명 이상 선택해 주세요."),
   productIds: z.array(z.string()).optional(),
   dealIds: z.array(z.string()).optional(),
-  details: z.string().trim().min(1, "상세 내용을 입력해주세요.").max(10000),
+  details: z.string().trim().min(1, "상세 내용을 입력해 주세요.").max(10000),
   nextPlan: z.string().max(2000).optional(),
   requiredAction: z.string().max(2000).optional(),
 });

@@ -244,7 +244,7 @@ export function CompanyListScreen({
           }}
         />
         <CompanyTaxonomyFilterCombobox
-          emptyText="조건에 맞는 분야가 없습니다."
+              emptyText="조건을 바꾸면 분야를 찾을 수 있어요."
           getLabel={(field) => field.field}
           itemKindLabel="분야"
           items={fields}
@@ -258,7 +258,7 @@ export function CompanyListScreen({
           }}
         />
         <CompanyTaxonomyFilterCombobox
-          emptyText="조건에 맞는 지역이 없습니다."
+              emptyText="조건을 바꾸면 지역을 찾을 수 있어요."
           getLabel={(region) => region.region}
           itemKindLabel="지역"
           items={regions}
@@ -353,8 +353,8 @@ export function CompanyListScreen({
                 onAction={() => setIsCreateOpen(true)}
                 title={
                   hasSearch
-                    ? "조건에 맞는 회사가 없습니다"
-                    : "등록된 회사가 없습니다"
+                      ? "조건을 바꾸면 회사를 찾을 수 있어요"
+                      : "새 회사를 등록하면 여기에서 볼 수 있어요"
                 }
               />
             ) : (
@@ -417,7 +417,7 @@ export function CompanyListScreen({
             <RotateCcw className="h-3 w-3" />
           </button>
           <CompanyTaxonomyFilterCombobox
-            emptyText="조건에 맞는 분야가 없습니다."
+              emptyText="조건을 바꾸면 분야를 찾을 수 있어요."
             getLabel={(field) => field.field}
             itemKindLabel="분야"
             items={fields}
@@ -431,7 +431,7 @@ export function CompanyListScreen({
             }}
           />
           <CompanyTaxonomyFilterCombobox
-            emptyText="조건에 맞는 지역이 없습니다."
+              emptyText="조건을 바꾸면 지역을 찾을 수 있어요."
             getLabel={(region) => region.region}
             itemKindLabel="지역"
             items={regions}
@@ -482,8 +482,8 @@ export function CompanyListScreen({
               onAction={() => setIsCreateOpen(true)}
               title={
                 hasSearch
-                  ? "조건에 맞는 회사가 없습니다"
-                  : "등록된 회사가 없습니다"
+                    ? "조건을 바꾸면 회사를 찾을 수 있어요"
+                    : "새 회사를 등록하면 여기에서 볼 수 있어요"
               }
             />
           ) : (
@@ -521,7 +521,7 @@ export function CompanyListScreen({
 
       <CompanyCreateDialog
         fields={fields}
-        onCreated={() => setNotice("회사가 추가되었습니다.")}
+          onCreated={() => setNotice("회사를 추가했어요.")}
         onOpenChange={(open) => {
           setIsCreateOpen(open);
           if (!open) onCreateDialogClose?.();

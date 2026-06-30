@@ -40,7 +40,7 @@ export function ScheduleWeekReportScreen() {
           </Link>
           <h1 className="mt-2 text-2xl font-semibold">주간 보고서</h1>
           <p className="mt-1 text-sm text-muted-foreground">
-            선택한 주의 영업 일정을 날짜별로 확인합니다.
+            선택한 주의 영업 일정을 날짜별로 확인해요.
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
@@ -97,7 +97,7 @@ export function ScheduleWeekReportScreen() {
               </div>
               {day.schedules.length === 0 ? (
                 <p className="py-5 text-sm text-muted-foreground">
-                  등록된 일정이 없습니다.
+                  일정을 만들면 여기에서 볼 수 있어요.
                 </p>
               ) : (
                 <div className="mt-3 grid gap-2">

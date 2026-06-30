@@ -79,7 +79,7 @@ export function LoginPage() {
     void exchangeCurrentSupabaseSession()
       .then((exchanged) => {
         if (isMounted && exchanged) {
-          setCallbackMessage("외부 인증 토큰을 앱 세션으로 교환했습니다.");
+          setCallbackMessage("외부 인증 토큰을 앱 세션으로 교환했어요.");
           navigate(redirectTo, { replace: true });
         }
       })

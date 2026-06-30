@@ -167,7 +167,7 @@ function SearchResultsBody({
   if (!canSearch) {
     return (
       <div className="px-4 py-8 text-center">
-        <p className="text-[13px] text-[#9CA3AF]">두 글자 이상 입력하면 검색합니다</p>
+        <p className="text-[13px] text-[#9CA3AF]">두 글자 이상 입력하면 검색해요</p>
       </div>
     );
   }
@@ -192,7 +192,7 @@ function SearchResultsBody({
   if (totalCount === 0) {
     return (
       <div className="px-4 py-8 text-center">
-        <p className="text-[13px] font-medium text-[#374151]">검색 결과가 없습니다</p>
+          <p className="text-[13px] font-medium text-[#374151]">검색어를 바꾸면 결과를 찾을 수 있어요</p>
         <p className="mt-1 text-[12px] text-[#9CA3AF]">다른 키워드로 다시 검색해 보세요</p>
       </div>
     );

@@ -247,7 +247,7 @@ export function CompanyEditForm({
           <ManagedTaxonomyDropdown
             addPlaceholder="분야명"
             createActionLabel="새 분야 추가"
-            emptyText="분야가 없습니다"
+                  emptyText="분야를 추가하면 선택할 수 있어요"
             getLabel={(field) => field.field}
             id="company-edit-field"
             isCreating={createFieldMutation.isPending}
@@ -281,7 +281,7 @@ export function CompanyEditForm({
           <ManagedTaxonomyDropdown
             addPlaceholder="지역명"
             createActionLabel="새 지역 추가"
-            emptyText="지역이 없습니다"
+                  emptyText="지역을 추가하면 선택할 수 있어요"
             getLabel={(region) => region.region}
             id="company-edit-region"
             isCreating={createRegionMutation.isPending}

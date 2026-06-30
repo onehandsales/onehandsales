@@ -249,7 +249,7 @@ export function ProductListScreen({
           }}
         />
         <ProductTaxonomyFilterCombobox
-          emptyText="조건에 맞는 카테고리가 없습니다."
+              emptyText="조건을 바꾸면 카테고리를 찾을 수 있어요."
           getLabel={(c) => c.categoryName}
           itemKindLabel="카테고리"
           items={categories}
@@ -263,7 +263,7 @@ export function ProductListScreen({
           }}
         />
         <ProductTaxonomyFilterCombobox
-          emptyText="조건에 맞는 상태가 없습니다."
+              emptyText="조건을 바꾸면 상태를 찾을 수 있어요."
           getLabel={(s) => s.statusName}
           itemKindLabel="상태"
           items={statuses}
@@ -336,8 +336,8 @@ export function ProductListScreen({
                 onAction={() => setIsCreateOpen(true)}
                 title={
                   hasFilters
-                    ? "조건에 맞는 제품이 없습니다"
-                    : "등록된 제품이 없습니다"
+                      ? "조건을 바꾸면 제품을 찾을 수 있어요"
+                      : "새 제품을 등록하면 여기에서 볼 수 있어요"
                 }
               />
             ) : (
@@ -385,7 +385,7 @@ export function ProductListScreen({
             <RotateCcw className="h-3 w-3" />
           </button>
           <ProductTaxonomyFilterCombobox
-            emptyText="조건에 맞는 카테고리가 없습니다."
+              emptyText="조건을 바꾸면 카테고리를 찾을 수 있어요."
             getLabel={(c) => c.categoryName}
             itemKindLabel="카테고리"
             items={categories}
@@ -399,7 +399,7 @@ export function ProductListScreen({
             }}
           />
           <ProductTaxonomyFilterCombobox
-            emptyText="조건에 맞는 상태가 없습니다."
+              emptyText="조건을 바꾸면 상태를 찾을 수 있어요."
             getLabel={(s) => s.statusName}
             itemKindLabel="상태"
             items={statuses}
@@ -465,8 +465,8 @@ export function ProductListScreen({
               onAction={() => setIsCreateOpen(true)}
               title={
                 hasFilters
-                  ? "조건에 맞는 제품이 없습니다"
-                  : "등록된 제품이 없습니다"
+                    ? "조건을 바꾸면 제품을 찾을 수 있어요"
+                    : "새 제품을 등록하면 여기에서 볼 수 있어요"
               }
             />
           ) : (
@@ -504,7 +504,7 @@ export function ProductListScreen({
 
       <ProductCreateDialog
         onCreated={() => {
-          setNotice("제품이 추가되었습니다.");
+        setNotice("제품을 추가했어요.");
           void productsQuery.refetch();
         }}
         onOpenChange={(open) => {

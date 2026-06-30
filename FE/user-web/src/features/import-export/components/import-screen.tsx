@@ -154,7 +154,7 @@ export function ImportScreen() {
     setDraftMapping(
       completeMapping(job.targetType, job.mapping ?? job.aiMapping?.suggestedMapping)
     );
-    setNotice("파일 업로드와 미리보기가 완료되었습니다.");
+      setNotice("파일 업로드와 미리보기를 완료했어요.");
   };
 
   const onGenerateMapping = async () => {
@@ -165,7 +165,7 @@ export function ImportScreen() {
     const generated = await mappingMutation.mutateAsync(currentJob.id);
     setLatestSuggestion(generated);
     setDraftMapping(completeMapping(currentTargetType, generated.suggestedMapping));
-    setNotice("AI 매핑 제안이 준비되었습니다.");
+      setNotice("AI 매핑 제안을 준비했어요.");
     void detailQuery.refetch();
   };
 
@@ -182,8 +182,8 @@ export function ImportScreen() {
     setLastJob(job);
     setNotice(
       job.invalidRowCount > 0
-        ? "매핑은 저장되었지만 오류 행이 있어 확정할 수 없습니다."
-        : "매핑과 행 검증이 완료되었습니다."
+        ? "오류 행을 수정하면 가져오기를 확정할 수 있어요."
+        : "매핑과 행 검증을 완료했어요."
     );
   };
 
@@ -199,7 +199,7 @@ export function ImportScreen() {
     setResult(confirmed);
     setLastJob(null);
     setConfirmOpen(false);
-    setNotice("가져오기 실행이 완료되었습니다.");
+      setNotice("가져오기를 완료했어요.");
   };
 
   return (
@@ -360,7 +360,7 @@ function ImportTargetDialog({
             onClick={onCancel}
             type="button"
           >
-            취소
+              닫기
           </button>
           <button
             className="inline-flex h-10 items-center rounded-md bg-primary px-4 text-sm font-medium text-primary-foreground hover:bg-primary/90"
@@ -397,7 +397,7 @@ function TargetSelector({
       <div>
         <h2 className="text-base font-semibold">대상 선택</h2>
         <p className="mt-1 text-sm text-muted-foreground">
-          가져올 데이터 유형을 선택합니다.
+              가져올 데이터 유형을 선택해요.
         </p>
       </div>
       <div className="grid grid-cols-2 gap-2">
@@ -453,7 +453,7 @@ function FileUploadPanel({
       <div>
         <h2 className="text-base font-semibold">파일 업로드</h2>
         <p className="mt-1 text-sm text-muted-foreground">
-          CSV, XLS, XLSX 형식의 10MB 이하 파일을 지원합니다.
+                10MB 이하 CSV, XLS, XLSX 파일을 올릴 수 있어요.
         </p>
       </div>
 
@@ -468,7 +468,7 @@ function FileUploadPanel({
           <div>
             <p className="text-sm font-medium">가져오기 파일 선택</p>
             <p className="mt-1 text-xs text-muted-foreground">
-                    파일을 선택하면 미리보기 작업을 만들 수 있습니다.
+                    파일을 선택하면 미리보기 작업을 만들 수 있어요.
             </p>
           </div>
         </div>
@@ -590,7 +590,7 @@ function MappingPanel({
         <div>
           <h2 className="text-base font-semibold">컬럼 매핑</h2>
           <p className="mt-1 text-sm text-muted-foreground">
-            원본 컬럼을 저장 대상 필드에 연결합니다.
+                원본 컬럼을 저장 대상 필드에 연결해요.
           </p>
         </div>
         <Columns3 className="h-5 w-5 text-muted-foreground" />
@@ -651,7 +651,7 @@ function MappingPanel({
         <EmptyState
           icon={FileSpreadsheet}
           title="매핑 대기"
-          text="파일을 업로드하면 원본 컬럼을 선택할 수 있습니다."
+                    text="파일을 올리면 원본 컬럼을 선택할 수 있어요."
         />
       ) : (
         <div className="grid gap-3 md:grid-cols-2">
@@ -683,7 +683,7 @@ function MappingPanel({
 
       {currentJob?.invalidRowCount ? (
         <p className="rounded-md border border-destructive/30 bg-red-50 px-3 py-2 text-sm text-destructive">
-          오류 행이 있어 가져오기 실행이 비활성화되었습니다.
+                    오류 행을 수정하면 가져오기를 실행할 수 있어요.
         </p>
       ) : null}
     </div>
@@ -711,7 +711,7 @@ function PreviewTable({
         <div>
           <h2 className="text-base font-semibold">미리보기</h2>
           <p className="mt-1 text-sm text-muted-foreground">
-            행별 데이터와 오류 사유를 확인합니다.
+                    행별 데이터와 오류 사유를 확인해요.
           </p>
         </div>
         <FileSpreadsheet className="h-5 w-5 text-muted-foreground" />
@@ -821,7 +821,7 @@ function ConfirmDialog({
           </p>
         </div>
         <p className="rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-900">
-          실행 후 생성된 데이터는 개별 화면에서 관리해야 합니다.
+                    실행 후 생성한 데이터는 개별 화면에서 관리해 주세요.
         </p>
         <div className="flex justify-end gap-2">
           <button
@@ -830,7 +830,7 @@ function ConfirmDialog({
             onClick={onCancel}
             type="button"
           >
-            취소
+              닫기
           </button>
           <button
             className="inline-flex h-10 items-center gap-2 rounded-md bg-emerald-600 px-4 text-sm font-medium text-white disabled:cursor-not-allowed disabled:opacity-60"

@@ -131,7 +131,7 @@ function ScheduleDetailContent({ schedule }: { readonly schedule: Schedule }) {
         <div className="mt-3 grid gap-2">
           {schedule.deals.length === 0 ? (
             <p className="rounded-md border border-dashed border-[#CBD5E1] px-3 py-3 text-sm text-[#64748B]">
-              연결된 딜이 없습니다.
+              딜을 연결하면 여기에서 볼 수 있어요.
             </p>
           ) : (
             schedule.deals.map((deal) => (

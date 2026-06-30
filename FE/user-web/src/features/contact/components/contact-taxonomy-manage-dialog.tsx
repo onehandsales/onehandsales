@@ -170,7 +170,7 @@ export function ContactTaxonomyManageDialog({
         </div>
       </ModalShell>
       <ConfirmDialog
-        cancelLabel="취소"
+        cancelLabel="닫기"
         confirmLabel="삭제"
         errorMessage={deleteError ? getApiErrorMessage(deleteError) : null}
         isPending={isDeletePending}
@@ -221,7 +221,7 @@ function TaxonomySection({
       <div>
         <h3 className="text-[14px] font-semibold text-[#111827]">{title}</h3>
         <p className="mt-1 text-[12px] text-[#6B7280]">
-          추가하거나 잘못 들어간 항목을 삭제합니다.
+          추가하거나 잘못 들어간 항목을 삭제해요.
         </p>
       </div>
 
@@ -244,7 +244,7 @@ function TaxonomySection({
 
       <div className="flex flex-wrap gap-2">
         {items.length === 0 ? (
-          <span className="text-sm text-muted-foreground">등록된 항목이 없습니다.</span>
+            <span className="text-sm text-muted-foreground">항목을 추가하면 여기에서 볼 수 있어요.</span>
         ) : (
           items.map((item) => (
             <span

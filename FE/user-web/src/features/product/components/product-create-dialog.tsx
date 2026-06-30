@@ -30,16 +30,16 @@ import type {
 import { getApiErrorMessage } from "@/lib/api-client";
 
 const schema = z.object({
-  productName: z.string().trim().min(1, "제품명을 입력해주세요."),
+  productName: z.string().trim().min(1, "제품명을 입력해 주세요."),
   productPrice: z
     .string()
     .trim()
     .refine(
       (v) => v.length === 0 || /^\d+$/.test(v),
-      "단가는 0 이상의 정수로 입력해주세요.",
+    "단가는 0 이상의 정수로 입력해 주세요.",
     ),
-  productCategoryId: z.string().trim().min(1, "카테고리를 선택해주세요."),
-  productStatusId: z.string().trim().min(1, "상태를 선택해주세요."),
+  productCategoryId: z.string().trim().min(1, "카테고리를 선택해 주세요."),
+  productStatusId: z.string().trim().min(1, "상태를 선택해 주세요."),
   productMemo: z.string().trim().optional(),
 });
 
@@ -316,7 +316,7 @@ export function ProductCreateDialog({
               <ManagedTaxonomyDropdown
                 addPlaceholder="카테고리명"
                 createActionLabel="새 제품 생성"
-                emptyText="검색된 카테고리가 없습니다"
+                  emptyText="검색어를 바꾸면 카테고리를 찾을 수 있어요"
                 getLabel={(category) => category.categoryName}
                 id="pc-product-category"
                 isCreating={createCategoryMutation.isPending}
@@ -346,7 +346,7 @@ export function ProductCreateDialog({
               <ManagedTaxonomyDropdown
                 addPlaceholder="상태명"
                 createActionLabel="새 상태 생성"
-                emptyText="검색된 상태가 없습니다"
+                  emptyText="검색어를 바꾸면 상태를 찾을 수 있어요"
                 getLabel={(status) => status.statusName}
                 id="pc-product-status"
                 isCreating={createStatusMutation.isPending}

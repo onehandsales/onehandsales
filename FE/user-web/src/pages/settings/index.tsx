@@ -44,7 +44,7 @@ export function SettingsPage() {
             error={profileQuery.error}
             isLoading={profileQuery.isLoading}
             onRetry={() => void profileQuery.refetch()}
-            onSaved={() => setNotice("개인 정보가 저장되었습니다.")}
+            onSaved={() => setNotice("개인 정보를 저장했어요.")}
             profile={profileQuery.data ?? null}
           />
           <DeviceSection
@@ -108,7 +108,7 @@ function ProfileSection({
         <section className="grid gap-3">
           <SettingsCardHeader
             icon={UserRound}
-            description="개인 표시 정보와 시간대를 설정합니다."
+            description="개인 표시 정보와 시간대를 설정해요."
             title="프로필 설정"
           />
           <div className="rounded-lg border border-[#E2E5EC] bg-white p-5 shadow-sm">
@@ -119,7 +119,7 @@ function ProfileSection({
         <section className="grid gap-3">
           <SettingsCardHeader
             icon={UserRound}
-            description="개인 표시 정보와 시간대를 설정합니다."
+            description="개인 표시 정보와 시간대를 설정해요."
             title="프로필 설정"
           />
           <div className="rounded-lg border border-[#E2E5EC] bg-white p-5 shadow-sm">
@@ -161,7 +161,7 @@ function ProfileSection({
           <section className="grid gap-3">
             <SettingsCardHeader
               icon={ShieldCheck}
-              description="로그인 계정, 권한, 연결 provider와 계정 이력을 확인합니다."
+              description="로그인 계정, 권한, 연결 provider와 계정 이력을 확인해요."
               title="계정 정보"
             />
             <div className="grid gap-5 rounded-lg border border-[#E2E5EC] bg-white p-5 shadow-sm">
@@ -223,7 +223,7 @@ function DeviceSection({
     <section className="grid content-start gap-3">
       <SettingsCardHeader
         icon={Laptop}
-        description="로그인에 등록된 활성 기기만 표시합니다."
+        description="로그인에 등록된 활성 기기만 표시해요."
         title="등록 기기"
       />
       <div className="rounded-lg border border-[#E2E5EC] bg-white p-4 shadow-sm">
@@ -233,7 +233,7 @@ function DeviceSection({
           <InlineError error={error} onRetry={onRetry} />
         ) : devices.length === 0 ? (
           <p className="text-sm text-muted-foreground">
-            등록된 활성 기기가 없습니다.
+            활성 기기가 생기면 여기에서 볼 수 있어요.
           </p>
         ) : (
           <div className="grid gap-3">
@@ -304,7 +304,7 @@ function OAuthAccountList({
       </div>
       {accounts.length === 0 ? (
         <p className="rounded-md border border-[#E2E5EC] bg-[#FAFAF8] px-3 py-3 text-sm text-[#64748B]">
-          연결된 provider가 없습니다.
+          연결된 provider가 생기면 여기에서 볼 수 있어요.
         </p>
       ) : (
         <div className="grid gap-2">

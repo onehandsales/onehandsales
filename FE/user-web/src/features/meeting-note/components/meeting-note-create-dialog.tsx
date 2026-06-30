@@ -192,7 +192,7 @@ export function MeetingNoteCreateDialog({
       companyIds.length === 0 ||
       contactIds.length === 0
     ) {
-      setDraftClientError("미팅일, 회사, 담당자를 먼저 선택해주세요.");
+        setDraftClientError("미팅일, 회사, 담당자를 먼저 선택해 주세요.");
       return null;
     }
 
@@ -209,7 +209,7 @@ export function MeetingNoteCreateDialog({
     const text = rawDraftText.trim();
 
     if (!text) {
-      setDraftClientError("원문 메모를 입력해주세요.");
+      setDraftClientError("원문 메모를 입력해 주세요.");
       return;
     }
 
@@ -236,7 +236,7 @@ export function MeetingNoteCreateDialog({
 
   const onCreateSttAiDraft = async () => {
     if (!audioFile) {
-      setDraftClientError("음성 파일을 선택해주세요.");
+      setDraftClientError("음성 파일을 선택해 주세요.");
       return;
     }
 
@@ -316,7 +316,7 @@ export function MeetingNoteCreateDialog({
 
           <ModalFormRow columns={2} className="gap-3">
             <EntityMultiSelectField
-              emptyText="등록된 회사가 없습니다"
+                  emptyText="새 회사를 등록하면 여기에서 볼 수 있어요"
               errorMessage={errors.companyIds?.message}
               icon={Building2}
               id="meeting-create-company-ids"
@@ -332,7 +332,7 @@ export function MeetingNoteCreateDialog({
               }
             />
             <EntityMultiSelectField
-              emptyText="등록된 담당자가 없습니다"
+                    emptyText="새 담당자를 등록하면 여기에서 볼 수 있어요"
               errorMessage={errors.contactIds?.message}
               icon={IdCard}
               id="meeting-create-contact-ids"
@@ -351,7 +351,7 @@ export function MeetingNoteCreateDialog({
 
           <ModalFormRow columns={2} className="gap-3">
             <EntityMultiSelectField
-              emptyText="등록된 제품이 없습니다"
+                  emptyText="새 제품을 등록하면 여기에서 볼 수 있어요"
               errorMessage={errors.productIds?.message}
               icon={Package}
               id="meeting-create-product-ids"
@@ -367,7 +367,7 @@ export function MeetingNoteCreateDialog({
               }
             />
             <EntityMultiSelectField
-              emptyText="등록된 딜이 없습니다"
+                  emptyText="새 딜을 등록하면 여기에서 볼 수 있어요"
               errorMessage={errors.dealIds?.message}
               icon={BriefcaseBusiness}
               id="meeting-create-deal-ids"
@@ -435,7 +435,7 @@ export function MeetingNoteCreateDialog({
                     selectedFile.size > maxAudioFileSizeBytes
                   ) {
                     setAudioFile(null);
-                    setDraftClientError("음성 파일은 25MB 이하만 선택해주세요.");
+      setDraftClientError("25MB 이하 음성 파일만 선택해 주세요.");
                     return;
                   }
 

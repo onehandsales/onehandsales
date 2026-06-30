@@ -261,7 +261,7 @@ export function ModalFooterActions({
         onClick={onCancel}
         type="button"
       >
-        취소
+        닫기
       </button>
       {onSubmit ? (
         <button

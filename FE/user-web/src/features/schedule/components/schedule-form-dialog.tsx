@@ -129,12 +129,12 @@ export function ScheduleFormDialog({
       const updated = await updateScheduleMutation.mutateAsync(
         toUpdateScheduleInput(schedule.id, values)
       );
-      onSaved(`${updated.scheduleTitle} 일정이 수정되었습니다.`);
+      onSaved(`${updated.scheduleTitle} 일정을 수정했어요.`);
     } else {
       const created = await createScheduleMutation.mutateAsync(
         toCreateScheduleInput(values)
       );
-      onSaved(`${created.scheduleTitle} 일정이 생성되었습니다.`);
+      onSaved(`${created.scheduleTitle} 일정을 만들었어요.`);
     }
 
     onOpenChange(false);
@@ -148,7 +148,7 @@ export function ScheduleFormDialog({
     try {
       await deleteScheduleMutation.mutateAsync(schedule.id);
       setDeleteConfirmOpen(false);
-      onSaved(`${schedule.scheduleTitle} 일정이 삭제되었습니다.`);
+      onSaved(`${schedule.scheduleTitle} 일정을 삭제했어요.`);
       onOpenChange(false);
     } catch {
       // React Query keeps the mutation error for the dialog message.
@@ -185,7 +185,7 @@ export function ScheduleFormDialog({
                 {isEdit ? "일정 수정" : "일정 생성"}
               </h2>
               <p className="mt-1 text-sm text-muted-foreground">
-                일정 시간과 연결 딜을 저장합니다.
+                일정 시간과 연결 딜을 저장해요.
               </p>
             </div>
             <button
@@ -301,7 +301,7 @@ export function ScheduleFormDialog({
                 onClick={() => onOpenChange(false)}
                 type="button"
               >
-                취소
+              닫기
               </button>
               <button
                 className="inline-flex h-11 items-center gap-2 rounded-md bg-primary px-4 text-sm font-medium text-primary-foreground disabled:cursor-not-allowed disabled:opacity-60"
@@ -320,7 +320,7 @@ export function ScheduleFormDialog({
         </section>
       </div>
       <ConfirmDialog
-        cancelLabel="취소"
+        cancelLabel="닫기"
         confirmLabel="삭제"
         errorMessage={
           deleteScheduleMutation.error
@@ -505,11 +505,11 @@ function DealMultiSelect({
       <div className="max-h-48 overflow-y-auto rounded-md border">
         {isLoading ? (
           <p className="px-3 py-4 text-sm text-muted-foreground">
-            딜을 불러오는 중입니다.
+            딜을 불러오고 있어요.
           </p>
         ) : options.length === 0 ? (
           <p className="px-3 py-4 text-sm text-muted-foreground">
-            연결할 딜이 없습니다.
+            딜을 만들면 연결할 수 있어요.
           </p>
         ) : (
           options.map((deal) => {

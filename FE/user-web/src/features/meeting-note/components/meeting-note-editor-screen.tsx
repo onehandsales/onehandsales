@@ -116,7 +116,7 @@ export function MeetingNoteEditorScreen({
     );
     setSavedMeetingNote(updated);
     reset(toMeetingNoteFormValues(updated));
-    setNotice("회의록이 수정되었습니다.");
+      setNotice("회의록을 수정했어요.");
   });
 
   const onDelete = async () => {
@@ -128,7 +128,7 @@ export function MeetingNoteEditorScreen({
       await deleteMutation.mutateAsync(meetingNoteId);
       void navigate("/meeting-notes", {
         replace: true,
-        state: { notice: "회의록이 삭제되었습니다." },
+        state: { notice: "회의록을 삭제했어요." },
       });
     } catch {
       // React Query keeps the mutation error for the dialog and top banner.
@@ -167,7 +167,7 @@ export function MeetingNoteEditorScreen({
     });
     setSavedMeetingNote(updated);
     reset(toMeetingNoteFormValues(updated));
-    setNotice("영업 딜과 연동되었습니다.");
+      setNotice("영업 딜과 연동했어요.");
   };
 
   if (detailQuery.isLoading && isEdit) {
@@ -220,7 +220,7 @@ export function MeetingNoteEditorScreen({
                   {isEdit ? "회의록 상세" : "회의록 작성"}
                 </h1>
                 <p className="mt-1 text-[13px] text-[#6B7280]">
-                  회사와 담당자, 미팅 내용, 다음 행동을 기록합니다.
+              회사와 담당자, 미팅 내용, 다음 행동을 기록해요.
                 </p>
               </div>
             </div>
@@ -423,7 +423,7 @@ export function MeetingNoteEditorScreen({
         </aside>
       </div>
       <ConfirmDialog
-        cancelLabel="취소"
+          cancelLabel="닫기"
         confirmLabel="삭제"
         errorMessage={
           deleteMutation.error ? getApiErrorMessage(deleteMutation.error) : null
@@ -531,7 +531,7 @@ function MeetingNoteDealLinkCard({
 
   const submit = async () => {
     if (!selectedOption) {
-      setClientError("연동할 딜을 선택해주세요.");
+      setClientError("연동할 딜을 선택해 주세요.");
       return;
     }
 
@@ -614,7 +614,7 @@ function MeetingNoteDealLinkCard({
           !selectedOption &&
           !dealOptionsQuery.isFetching ? (
           <p className="rounded-md bg-[#F9FAFB] px-3 py-2 text-[12px] text-[#94A3B8]">
-            연동 가능한 딜이 없습니다.
+            연동할 딜을 만들면 여기에서 볼 수 있어요.
           </p>
         ) : null}
 
@@ -715,7 +715,7 @@ function DealSearchField({
             <p className="px-3 py-2 text-[13px] text-[#9CA3AF]">검색 중</p>
           ) : options.length === 0 ? (
             <p className="px-3 py-2 text-[13px] text-[#9CA3AF]">
-              검색된 딜이 없습니다.
+                  검색어를 바꾸면 딜을 찾을 수 있어요.
             </p>
           ) : (
             options.map((option) => (

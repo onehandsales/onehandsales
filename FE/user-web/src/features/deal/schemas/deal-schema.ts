@@ -15,33 +15,33 @@ const dealCostSchema = z
   .string()
   .trim()
   .transform((value) => value.replace(/,/g, ""))
-  .refine((value) => value.length > 0, "금액을 입력해주세요.")
+  .refine((value) => value.length > 0, "금액을 입력해 주세요.")
   .refine(
     (value) => /^\d+$/.test(value) && Number(value) >= 0,
-    "금액은 0 이상의 정수입니다."
+    "금액은 0 이상의 정수로 입력해 주세요."
   );
 
 const expectedEndDateSchema = z
   .string()
   .trim()
   .transform((value) => normalizeDateText(value))
-  .refine((value) => value.length > 0, "예상 마감일을 입력해주세요.")
+  .refine((value) => value.length > 0, "예상 마감일을 입력해 주세요.")
   .refine(
     (value) => /^\d{4}-\d{2}-\d{2}$/.test(value),
-    "날짜 형식은 YYYY-MM-DD입니다."
+    "날짜는 YYYY-MM-DD 형식으로 입력해 주세요."
   );
 
 // 기능 : 딜 생성 form 스키마
 export const dealCreateFormSchema = z.object({
-  dealName: z.string().trim().min(1, "딜명을 입력해주세요."),
+  dealName: z.string().trim().min(1, "딜명을 입력해 주세요."),
   dealCost: dealCostSchema,
-  companyIds: z.array(z.string()).min(1, "회사를 선택해주세요."),
-  contactIds: z.array(z.string()).min(1, "담당자를 선택해주세요."),
+  companyIds: z.array(z.string()).min(1, "회사를 선택해 주세요."),
+  contactIds: z.array(z.string()).min(1, "담당자를 선택해 주세요."),
   productIds: z
     .array(z.string())
-    .min(1, "제품을 1개 이상 선택해주세요."),
+    .min(1, "제품을 1개 이상 선택해 주세요."),
   dealStatus: dealStatusEnum,
-  followingAction: z.string().trim().min(1, "다음 행동을 입력해주세요."),
+  followingAction: z.string().trim().min(1, "다음 행동을 입력해 주세요."),
   expectedEndDate: expectedEndDateSchema,
   dealMemo: z.string().trim().optional(),
   // UI 전용 search 필드
@@ -54,13 +54,13 @@ export type DealCreateFormValues = z.infer<typeof dealCreateFormSchema>;
 
 // 기능 : 딜 수정 form 스키마
 export const dealUpdateFormSchema = z.object({
-  dealName: z.string().trim().min(1, "딜명을 입력해주세요."),
+  dealName: z.string().trim().min(1, "딜명을 입력해 주세요."),
   dealCost: dealCostSchema,
-  companyIds: z.array(z.string()).min(1, "회사를 선택해주세요."),
-  contactIds: z.array(z.string()).min(1, "담당자를 선택해주세요."),
+  companyIds: z.array(z.string()).min(1, "회사를 선택해 주세요."),
+  contactIds: z.array(z.string()).min(1, "담당자를 선택해 주세요."),
   productIds: z
     .array(z.string())
-    .min(1, "제품을 1개 이상 선택해주세요."),
+    .min(1, "제품을 1개 이상 선택해 주세요."),
   dealStatus: dealStatusEnum,
   expectedEndDate: expectedEndDateSchema,
   // UI 전용 search 필드
@@ -73,7 +73,7 @@ export type DealUpdateFormValues = z.infer<typeof dealUpdateFormSchema>;
 
 // 기능 : 다음 행동 로그 생성 form 스키마
 export const followingActionLogFormSchema = z.object({
-  followingAction: z.string().trim().min(1, "다음 행동을 입력해주세요."),
+  followingAction: z.string().trim().min(1, "다음 행동을 입력해 주세요."),
 });
 
 export type FollowingActionLogFormValues = z.infer<
@@ -82,8 +82,8 @@ export type FollowingActionLogFormValues = z.infer<
 
 // 기능 : 메모 로그 생성/수정 form 스키마
 export const memoLogFormSchema = z.object({
-  memoType: z.string().trim().min(1, "메모 타입을 입력해주세요."),
-  memo: z.string().trim().min(1, "메모 내용을 입력해주세요."),
+  memoType: z.string().trim().min(1, "메모 타입을 입력해 주세요."),
+  memo: z.string().trim().min(1, "메모 내용을 입력해 주세요."),
 });
 
 export type MemoLogFormValues = z.infer<typeof memoLogFormSchema>;

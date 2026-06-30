@@ -210,7 +210,7 @@ export function HomePage() {
             >
               <div className="grid gap-4 lg:grid-cols-2">
                 <TaskPanel
-                  emptyText="오늘 등록된 일정이 없습니다."
+                  emptyText="오늘 일정을 등록하면 여기에서 볼 수 있어요."
                   isLoading={scheduleQuery.isLoading}
                   title="오늘 일정"
                 >
@@ -219,7 +219,7 @@ export function HomePage() {
                   ))}
                 </TaskPanel>
                 <TaskPanel
-                  emptyText="미완료 후속조치가 없습니다."
+                  emptyText="후속조치를 등록하면 여기에서 볼 수 있어요."
                   isLoading={recentDealsQuery.isLoading}
                   title="딜 후속조치"
                 >
@@ -256,7 +256,7 @@ export function HomePage() {
                 title="마감 임박 딜"
               >
                 <ListState
-                  emptyText="마감 임박 딜이 없습니다."
+                  emptyText="마감 임박 딜이 생기면 여기에서 볼 수 있어요."
                   isLoading={deadlineDealsQuery.isLoading}
                 >
                   {activeDeadlineDeals.map((deal) => (
@@ -273,7 +273,7 @@ export function HomePage() {
               title="최근 회의록"
             >
               <ListState
-                emptyText="최근 회의록이 없습니다."
+                emptyText="회의록을 작성하면 최근 기록을 볼 수 있어요."
                 isLoading={meetingNotesQuery.isLoading}
               >
                 {meetingNotes.slice(0, 5).map((meetingNote) => (
@@ -293,7 +293,7 @@ export function HomePage() {
               title="다가오는 일정"
             >
               <ListState
-                emptyText="다가오는 일정이 없습니다."
+                emptyText="일정을 만들면 다가오는 일정을 볼 수 있어요."
                 isLoading={scheduleQuery.isLoading}
               >
                 {upcomingSchedules.map((schedule) => (
@@ -308,7 +308,7 @@ export function HomePage() {
               icon={CheckCircle2}
               title="최근 활동"
             >
-              <ListState emptyText="최근 활동이 없습니다." isLoading={isAnyLoading}>
+              <ListState emptyText="활동이 생기면 최근 기록을 볼 수 있어요." isLoading={isAnyLoading}>
                 {recentActivity.map((activity) => (
                   <ActivityItemRow activity={activity} key={`${activity.type}-${activity.href}`} />
                 ))}

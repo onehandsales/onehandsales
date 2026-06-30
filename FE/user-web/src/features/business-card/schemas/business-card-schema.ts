@@ -9,15 +9,15 @@ const allowedMimeTypes = new Set(["image/jpeg", "image/png", "image/webp"]);
 const mobilePattern = /^010-\d{4}-\d{4}$/;
 
 export const businessCardConfirmSchema = z.object({
-  companyName: z.string().trim().min(1, "회사명을 입력해주세요.").max(160),
+  companyName: z.string().trim().min(1, "회사명을 입력해 주세요.").max(160),
   companyFieldName: z.string().trim().max(120).optional(),
   companyRegionName: z.string().trim().max(120).optional(),
-  contactName: z.string().trim().min(1, "담당자 이름을 입력해주세요.").max(120),
+  contactName: z.string().trim().min(1, "담당자 이름을 입력해 주세요.").max(120),
   contactMobile: z
     .string()
     .trim()
-    .regex(mobilePattern, "010-0000-0000 형식으로 입력해주세요."),
-  contactEmail: z.string().trim().email("이메일 형식이 올바르지 않습니다."),
+    .regex(mobilePattern, "010-0000-0000 형식으로 입력해 주세요."),
+  contactEmail: z.string().trim().email("올바른 이메일 형식으로 입력해 주세요."),
   contactDepartmentName: z.string().trim().max(120).optional(),
   contactJobGradeName: z.string().trim().max(120).optional(),
 });
@@ -39,15 +39,15 @@ export const emptyBusinessCardConfirmFormValues: BusinessCardConfirmFormValues =
 
 export function validateBusinessCardImage(file: File | null): string | null {
   if (!file) {
-    return "명함 이미지 파일을 선택해주세요.";
+    return "명함 이미지 파일을 선택해 주세요.";
   }
 
   if (!allowedMimeTypes.has(file.type)) {
-    return "JPG, PNG, WebP 이미지만 업로드할 수 있습니다.";
+    return "JPG, PNG, WebP 이미지만 올릴 수 있어요.";
   }
 
   if (file.size > BUSINESS_CARD_MAX_FILE_SIZE_BYTES) {
-    return "이미지 용량은 10MB 이하여야 합니다.";
+    return "10MB 이하 이미지만 올릴 수 있어요.";
   }
 
   return null;

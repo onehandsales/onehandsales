@@ -13,7 +13,7 @@ export function ProtectedRoute({ children }: ProtectedRouteProps) {
   if (isInitializing || isPending) {
     return (
       <div className="grid min-h-screen place-items-center bg-background text-sm text-muted-foreground">
-        세션을 확인하는 중입니다.
+        세션을 확인하고 있어요.
       </div>
     );
   }

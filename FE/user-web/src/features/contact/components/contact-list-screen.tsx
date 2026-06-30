@@ -205,7 +205,7 @@ export function ContactListScreen() {
           }}
         />
         <ContactTaxonomyFilterCombobox
-          emptyText="조건에 맞는 회사가 없습니다."
+              emptyText="조건을 바꾸면 회사를 찾을 수 있어요."
           getLabel={(c) => c.companyName}
           itemKindLabel="회사"
           items={companyOptions}
@@ -218,7 +218,7 @@ export function ContactListScreen() {
           }}
         />
         <ContactTaxonomyFilterCombobox
-          emptyText="조건에 맞는 부서가 없습니다."
+              emptyText="조건을 바꾸면 부서를 찾을 수 있어요."
           getLabel={(d) => d.departmentName}
           itemKindLabel="부서"
           items={departments}
@@ -322,8 +322,8 @@ export function ContactListScreen() {
                 onAction={() => setIsCreateOpen(true)}
                 title={
                   hasSearch
-                    ? "조건에 맞는 담당자가 없습니다"
-                    : "등록된 담당자가 없습니다"
+                      ? "조건을 바꾸면 담당자를 찾을 수 있어요"
+                      : "새 담당자를 등록하면 여기에서 볼 수 있어요"
                 }
               />
             ) : (
@@ -386,7 +386,7 @@ export function ContactListScreen() {
             <RotateCcw className="h-3 w-3" />
           </button>
           <ContactTaxonomyFilterCombobox
-            emptyText="조건에 맞는 회사가 없습니다."
+              emptyText="조건을 바꾸면 회사를 찾을 수 있어요."
             getLabel={(c) => c.companyName}
             itemKindLabel="회사"
             items={companyOptions}
@@ -399,7 +399,7 @@ export function ContactListScreen() {
             }}
           />
           <ContactTaxonomyFilterCombobox
-            emptyText="조건에 맞는 부서가 없습니다."
+              emptyText="조건을 바꾸면 부서를 찾을 수 있어요."
             getLabel={(d) => d.departmentName}
             itemKindLabel="부서"
             items={departments}
@@ -450,8 +450,8 @@ export function ContactListScreen() {
               onAction={() => setIsCreateOpen(true)}
               title={
                 hasSearch
-                  ? "조건에 맞는 담당자가 없습니다"
-                  : "등록된 담당자가 없습니다"
+                    ? "조건을 바꾸면 담당자를 찾을 수 있어요"
+                    : "새 담당자를 등록하면 여기에서 볼 수 있어요"
               }
             />
           ) : (
@@ -488,7 +488,7 @@ export function ContactListScreen() {
       </section>
 
       <ContactCreateDialog
-        onCreated={() => setNotice("담당자가 추가되었습니다.")}
+          onCreated={() => setNotice("담당자를 추가했어요.")}
         onOpenChange={setIsCreateOpen}
         open={isCreateOpen}
       />

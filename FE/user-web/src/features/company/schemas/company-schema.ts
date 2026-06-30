@@ -12,37 +12,37 @@ import type {
 } from "@/features/company/types/company";
 
 export const companyCreateFormSchema = z.object({
-  companyName: z.string().trim().min(1, "회사명을 입력해주세요."),
-  companyFieldId: z.string().trim().min(1, "분야를 선택해주세요."),
-  companyRegionId: z.string().trim().min(1, "지역을 선택해주세요."),
+  companyName: z.string().trim().min(1, "회사명을 입력해 주세요."),
+  companyFieldId: z.string().trim().min(1, "분야를 선택해 주세요."),
+  companyRegionId: z.string().trim().min(1, "지역을 선택해 주세요."),
   companyMemo: z.string().trim().optional(),
 });
 
 export type CompanyCreateFormValues = z.infer<typeof companyCreateFormSchema>;
 
 export const companyEditFormSchema = z.object({
-  companyName: z.string().trim().min(1, "회사명을 입력해주세요."),
-  companyFieldId: z.string().trim().min(1, "분야를 선택해주세요."),
-  companyRegionId: z.string().trim().min(1, "지역을 선택해주세요."),
+  companyName: z.string().trim().min(1, "회사명을 입력해 주세요."),
+  companyFieldId: z.string().trim().min(1, "분야를 선택해 주세요."),
+  companyRegionId: z.string().trim().min(1, "지역을 선택해 주세요."),
 });
 
 export type CompanyEditFormValues = z.infer<typeof companyEditFormSchema>;
 
 export const companyTaxonomyFormSchema = z.object({
-  name: z.string().trim().min(1, "이름을 입력해주세요."),
+  name: z.string().trim().min(1, "이름을 입력해 주세요."),
 });
 
 export type CompanyTaxonomyFormValues = z.infer<typeof companyTaxonomyFormSchema>;
 
 export const companyMemoLogFormSchema = z.object({
-  memoType: z.string().trim().min(1, "메모 유형을 입력해주세요."),
-  memo: z.string().trim().min(1, "메모를 입력해주세요."),
+  memoType: z.string().trim().min(1, "메모 유형을 입력해 주세요."),
+  memo: z.string().trim().min(1, "메모를 입력해 주세요."),
 });
 
 export type CompanyMemoLogFormValues = z.infer<typeof companyMemoLogFormSchema>;
 
 export const companyPrivateMemoLogFormSchema = z.object({
-  memo: z.string().trim().min(1, "개인 메모를 입력해주세요."),
+  memo: z.string().trim().min(1, "개인 메모를 입력해 주세요."),
 });
 
 export type CompanyPrivateMemoLogFormValues = z.infer<

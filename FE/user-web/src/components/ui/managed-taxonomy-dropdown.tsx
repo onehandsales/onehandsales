@@ -118,7 +118,7 @@ export function ManagedTaxonomyDropdown<TItem extends ManagedTaxonomyItem>({
 
     if (!name) {
       if (options.promptWhenEmpty) {
-        setAddError("추가할 이름을 입력해주세요.");
+        setAddError("추가할 이름을 입력해 주세요.");
         setIsOpen(true);
         inputRef.current?.focus();
       }
@@ -126,7 +126,7 @@ export function ManagedTaxonomyDropdown<TItem extends ManagedTaxonomyItem>({
     }
 
     if (hasExactMatch) {
-      setAddError("이미 있는 항목입니다.");
+      setAddError("이미 있는 항목이에요.");
       inputRef.current?.focus();
       return;
     }

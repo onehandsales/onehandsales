@@ -79,20 +79,20 @@ export function AuthLoginModal({
       <div className="my-6 h-px bg-[#F1F5F9]" />
 
       <p className="text-center text-[13px] text-[#9CA3AF]">
-        소셜 계정으로 간편하게 시작하세요
+            소셜 계정으로 간편하게 시작해요
       </p>
 
       <div className="mt-6 grid gap-3">
         {isProvidersLoading ? (
           <div className="flex h-[52px] items-center justify-center gap-2 rounded-[10px] border border-[#E5E7EB] bg-[#F9FAFB] text-sm text-[#6B7280]">
             <Loader2 className="h-4 w-4 animate-spin" />
-            provider 목록을 불러오는 중입니다.
+            provider 목록을 불러오고 있어요.
           </div>
         ) : null}
 
         {!isProvidersLoading && enabledProviders.length === 0 ? (
           <div className="rounded-[10px] border border-dashed border-[#E5E7EB] bg-[#F9FAFB] px-4 py-4 text-sm text-[#6B7280]">
-            활성화된 로그인 provider가 없습니다.
+            활성화된 로그인 provider가 없어요.
           </div>
         ) : null}
 
@@ -137,7 +137,7 @@ export function AuthLoginModal({
 
       {providersError ? (
         <p className="mt-4 rounded-[10px] border border-yellow-200 bg-yellow-50 px-3 py-2 text-center text-xs text-yellow-800">
-          provider 목록 API 실패로 기본 버튼을 표시합니다. {providersError}
+          provider 목록을 불러오지 못해 기본 버튼을 보여줘요. {providersError}
         </p>
       ) : null}
 

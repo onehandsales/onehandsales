@@ -221,8 +221,8 @@ function SearchResultsPanel({
     return (
       <PanelShell onClose={onClose}>
         <EmptyPanel
-          title="검색어를 입력하세요"
-          description="두 글자 이상 입력하면 주요 데이터에서 검색합니다."
+        title="검색어를 입력해 주세요"
+        description="두 글자 이상 입력하면 주요 데이터에서 검색해요."
         />
       </PanelShell>
     );
@@ -245,11 +245,11 @@ function SearchResultsPanel({
       {isFetching && groups.length === 0 ? (
         <div className="flex min-h-40 items-center justify-center gap-2 text-sm text-muted-foreground">
           <Loader2 className="h-4 w-4 animate-spin" aria-hidden />
-          <span>검색 중입니다.</span>
+              <span>검색하고 있어요.</span>
         </div>
       ) : totalCount === 0 ? (
         <EmptyPanel
-          title="검색 결과가 없습니다"
+              title="검색어를 바꾸면 결과를 찾을 수 있어요"
           description="다른 키워드로 다시 검색해 보세요."
         />
       ) : (
