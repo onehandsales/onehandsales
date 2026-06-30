@@ -1,4 +1,4 @@
-import { Check, ChevronDown } from "lucide-react";
+import { ChevronDown } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { cn } from "@/utils/cn";
 
@@ -11,6 +11,7 @@ type ListFilterSelectProps<TValue extends string> = {
   readonly active?: boolean;
   readonly ariaLabel: string;
   readonly className?: string;
+  readonly disabled?: boolean;
   readonly onChange: (value: TValue) => void;
   readonly options: readonly ListFilterSelectOption<TValue>[];
   readonly value: TValue;
@@ -27,6 +28,7 @@ export function ListFilterSelect<TValue extends string>({
   active = false,
   ariaLabel,
   className,
+  disabled = false,
   onChange,
   options,
   value,
@@ -89,13 +91,14 @@ export function ListFilterSelect<TValue extends string>({
         aria-haspopup="listbox"
         aria-label={ariaLabel}
         className={cn(
-          "inline-flex h-8 w-full min-w-0 items-center justify-between gap-2 rounded-full border pl-3.5 pr-2.5 text-[13px] outline-none transition",
+          "inline-flex h-8 w-full min-w-0 items-center justify-between gap-2 rounded-full border pl-3.5 pr-2.5 text-[13px] outline-none transition disabled:cursor-not-allowed disabled:opacity-60",
           isOpen
             ? "border-[#4880EE] bg-white text-[#111827] ring-1 ring-[#4880EE]"
             : active
               ? "border-[#BFDBFE] bg-[#EFF6FF] font-semibold text-[#1D4ED8]"
               : "border-[#E2E5EC] bg-transparent text-[#6B7280] hover:border-[#D1D5DB] hover:bg-[#FAFAF8]",
         )}
+        disabled={disabled}
         onClick={() => setIsOpen((current) => !current)}
         ref={buttonRef}
         type="button"
@@ -143,8 +146,17 @@ export function ListFilterSelect<TValue extends string>({
                   role="option"
                   type="button"
                 >
+                  <span
+                    className={cn(
+                      "grid h-3.5 w-3.5 shrink-0 place-items-center rounded-full border",
+                      isSelected ? "border-[#4880EE]" : "border-[#CBD5E1]",
+                    )}
+                  >
+                    {isSelected ? (
+                      <span className="h-1.5 w-1.5 rounded-full bg-[#4880EE]" />
+                    ) : null}
+                  </span>
                   <span className="min-w-0 flex-1 truncate">{option.label}</span>
-                  {isSelected ? <Check className="h-3.5 w-3.5 shrink-0" /> : null}
                 </button>
               );
             })}

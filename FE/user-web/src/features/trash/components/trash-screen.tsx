@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { PageHeader } from "@/components/layout/page-header";
+import { ListFilterSelect } from "@/components/ui/list-filter-select";
 import { ModalShell } from "@/components/ui/modal-shell";
 import { Pagination } from "@/components/ui/pagination";
 import { ListEmptyState } from "@/components/ui/state";
@@ -421,24 +422,15 @@ function TrashFilterSelect<TValue extends string>({
   onChange,
 }: TrashFilterSelectProps<TValue>) {
   return (
-    <select
-      aria-label={ariaLabel}
-      className={cn(
-        "h-8 w-[clamp(112px,12vw,140px)] shrink-0 appearance-none rounded-md border px-3 text-[13px] outline-none transition disabled:cursor-not-allowed disabled:opacity-60",
-        active
-          ? "border-[#BFDBFE] bg-[#EFF6FF] text-[#1D4ED8]"
-          : "border-[#E2E5EC] bg-transparent text-[#6B7280] hover:bg-[#FAFAF8]",
-      )}
+    <ListFilterSelect
+      active={active}
+      ariaLabel={ariaLabel}
+      className="w-[clamp(112px,12vw,140px)]"
       disabled={disabled}
+      onChange={onChange}
+      options={options}
       value={value}
-      onChange={(event) => onChange(event.target.value as TValue)}
-    >
-      {options.map((option) => (
-        <option key={option.value} value={option.value}>
-          {option.label}
-        </option>
-      ))}
-    </select>
+    />
   );
 }
 
