@@ -105,7 +105,12 @@ export function BusinessCardScanScreen() {
       <div className="hidden min-h-10 shrink-0 items-center gap-1.5 overflow-x-auto px-5 py-1 md:flex lg:gap-2">
         <button
           aria-label="전체"
-          className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-[6px] border border-[#4880EE] bg-[#4880EE] text-[13px] font-bold text-white transition hover:bg-[#4880EE] focus:border-[#4880EE] focus:outline-none focus:ring-1 focus:ring-[#4880EE]"
+          className={cn(
+            "inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-[6px] border text-[13px] font-bold transition focus:border-[#4880EE] focus:outline-none focus:ring-1 focus:ring-[#4880EE]",
+            statusFilters.length > 0
+              ? "border-[#4880EE] bg-[#4880EE] text-white hover:bg-[#4880EE]"
+              : "border-[#E2E5EC] bg-transparent text-[#6B7280] hover:bg-white",
+          )}
           onClick={resetStatusFilter}
           type="button"
         >
@@ -192,7 +197,12 @@ export function BusinessCardScanScreen() {
         <div className="flex h-10 shrink-0 items-center gap-2 overflow-x-auto border-b border-[#E5E7EB] px-4">
           <button
             aria-label="전체"
-            className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-[#4880EE] bg-[#4880EE] text-[12px] font-bold text-white transition hover:bg-[#4880EE] focus:border-[#4880EE] focus:outline-none focus:ring-1 focus:ring-[#4880EE]"
+            className={cn(
+              "inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full border text-[12px] font-bold transition focus:border-[#4880EE] focus:outline-none focus:ring-1 focus:ring-[#4880EE]",
+              statusFilters.length > 0
+                ? "border-[#4880EE] bg-[#4880EE] text-white hover:bg-[#4880EE]"
+                : "border-[#E5E7EB] bg-[#F3F4F6] text-[#4B5563] hover:border-[#D1D5DB]",
+            )}
             onClick={resetStatusFilter}
             type="button"
           >

@@ -284,8 +284,8 @@ export function TrashScreen() {
           aria-label="초기화"
           className={cn(
             "inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full border text-[12px] font-medium transition hover:border-[#93C5FD] focus:border-[#4880EE] focus:outline-none focus:ring-1 focus:ring-[#4880EE]",
-            !hasFilter
-              ? "border-[#C7D7FE] bg-[#EAF2FF] font-bold text-[#1D4ED8]"
+            hasFilter
+              ? "border-[#4880EE] bg-[#4880EE] font-bold text-white"
               : "border-[#E5E7EB] bg-[#F3F4F6] text-[#4B5563]",
           )}
           onClick={clearFilters}

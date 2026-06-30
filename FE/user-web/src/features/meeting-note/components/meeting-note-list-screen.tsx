@@ -197,7 +197,7 @@ export function MeetingNoteListScreen() {
           />
         </form>
         <FilterChip
-          active={!hasFilter}
+          active={hasFilter}
           icon={RotateCcw}
           label="초기화"
           onClick={clearFilters}
@@ -335,8 +335,13 @@ export function MeetingNoteListScreen() {
         <div className="flex h-10 shrink-0 items-center gap-2 overflow-x-auto border-b border-[#E5E7EB] px-4">
           <button
             aria-label="초기화"
-            aria-pressed={!hasFilter}
-            className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-[#4880EE] bg-[#4880EE] text-[12px] font-bold text-white transition focus:border-[#4880EE] focus:outline-none focus:ring-1 focus:ring-[#4880EE]"
+            aria-pressed={hasFilter}
+            className={cn(
+              "inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full border text-[12px] font-bold transition focus:border-[#4880EE] focus:outline-none focus:ring-1 focus:ring-[#4880EE]",
+              hasFilter
+                ? "border-[#4880EE] bg-[#4880EE] text-white hover:bg-[#4880EE]"
+                : "border-[#E5E7EB] bg-[#F3F4F6] text-[#4B5563] hover:border-[#D1D5DB]",
+            )}
             onClick={clearFilters}
             type="button"
           >
@@ -471,7 +476,12 @@ function FilterChip({
     <button
       aria-label={label}
       aria-pressed={active}
-      className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-[6px] border border-[#4880EE] bg-[#4880EE] text-[13px] font-bold text-white transition hover:bg-[#4880EE] focus:border-[#4880EE] focus:outline-none focus:ring-1 focus:ring-[#4880EE]"
+      className={cn(
+        "inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-[6px] border text-[13px] font-bold transition focus:border-[#4880EE] focus:outline-none focus:ring-1 focus:ring-[#4880EE]",
+        active
+          ? "border-[#4880EE] bg-[#4880EE] text-white hover:bg-[#4880EE]"
+          : "border-[#E2E5EC] bg-transparent text-[#6B7280] hover:bg-white",
+      )}
       onClick={onClick}
       type="button"
     >
