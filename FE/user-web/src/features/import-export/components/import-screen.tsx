@@ -1,9 +1,11 @@
 import {
   AlertCircle,
+  Bot,
   Building2,
   ChevronDown,
+  ChevronLeft,
   CheckCircle2,
-  Download,
+  FileSpreadsheet,
   Handshake,
   Loader2,
   Package,
@@ -12,7 +14,6 @@ import {
   Search,
   Upload,
   UserRound,
-  WandSparkles,
   X,
   type LucideIcon,
 } from "lucide-react";
@@ -22,11 +23,9 @@ import { PageHeader } from "@/components/layout/page-header";
 import { ModalShell } from "@/components/ui/modal-shell";
 import { Pagination } from "@/components/ui/pagination";
 import { ListEmptyState } from "@/components/ui/state";
-import { useCompanyOptions } from "@/features/contact/hooks/use-company-options";
 import {
   useConfirmImportJobMutation,
   useCreateImportJobMutation,
-  useGenerateImportMappingMutation,
   useUpdateImportMappingMutation,
 } from "@/features/import-export/hooks/use-import-export-mutations";
 import {
@@ -35,7 +34,6 @@ import {
   useImportUserLogList,
 } from "@/features/import-export/hooks/use-import-template-queries";
 import {
-  hasRequiredMapping,
   importTargetFields,
   validateImportFile,
   type ImportTargetField,
@@ -93,9 +91,18 @@ const TARGET_FILTER_ITEMS: readonly ImportTargetFilterItem[] =
   TARGET_FILTER_OPTIONS.flatMap((option) =>
     option.value === "ALL" ? [] : [{ id: option.value, label: option.label }]
   );
+const DIRECT_IMPORT_TARGETS: readonly ImportTemplateType[] = [
+  "COMPANY",
+  "CONTACT",
+  "PRODUCT",
+  "DEAL",
+];
 const IMPORT_EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const IMPORT_MOBILE_PATTERN = /^010-\d{4}-\d{4}$/;
 const IMPORT_MOBILE_DIGIT_PATTERN = /^010\d{8}$/;
+
+type ImportDialogStep = "METHOD" | "DIRECT_TARGET" | "DIRECT_UPLOAD";
+type ImportDialogMode = "DIRECT" | "AI" | null;
 
 type EditableImportRow = {
   readonly rowNumber: number;
@@ -108,19 +115,18 @@ export function ImportScreen() {
   const [page, setPage] = useState(1);
   const [targetTypes, setTargetTypes] = useState<ImportTemplateType[]>([]);
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [dialogStep, setDialogStep] = useState<ImportDialogStep>("METHOD");
+  const [selectedImportMode, setSelectedImportMode] =
+    useState<ImportDialogMode>(null);
   const [selectedTemplateId, setSelectedTemplateId] = useState("");
-  const [companyName, setCompanyName] = useState("");
   const [notice, setNotice] = useState<string | null>(null);
   const [formError, setFormError] = useState<string | null>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [importJob, setImportJob] = useState<ImportJobResponse | null>(null);
-  const [draftMapping, setDraftMapping] = useState<ImportMapping>({});
   const [editableRows, setEditableRows] = useState<EditableImportRow[]>([]);
   const templatesQuery = useActiveImportTemplates();
-  const companyOptionsQuery = useCompanyOptions();
   const downloadMutation = useDownloadImportTemplateMutation();
   const createImportJobMutation = useCreateImportJobMutation();
-  const generateImportMappingMutation = useGenerateImportMappingMutation();
   const updateImportMappingMutation = useUpdateImportMappingMutation();
   const confirmImportJobMutation = useConfirmImportJobMutation(importJob?.id ?? "");
   const listParams = useMemo(
@@ -134,9 +140,7 @@ export function ImportScreen() {
   const templates = templatesQuery.data?.items ?? [];
   const selectedTemplate = useMemo(
     () =>
-      templates.find((template) => template.id === selectedTemplateId) ??
-      templates[0] ??
-      null,
+      templates.find((template) => template.id === selectedTemplateId) ?? null,
     [selectedTemplateId, templates]
   );
   const logs = logsQuery.data?.items ?? [];
@@ -145,66 +149,75 @@ export function ImportScreen() {
     templatesQuery.error ??
     downloadMutation.error ??
     createImportJobMutation.error ??
-    generateImportMappingMutation.error ??
     updateImportMappingMutation.error ??
     confirmImportJobMutation.error ??
     null;
   const importBusy =
     createImportJobMutation.isPending ||
-    generateImportMappingMutation.isPending ||
     updateImportMappingMutation.isPending ||
     confirmImportJobMutation.isPending;
 
   const openDialog = () => {
-    setSelectedTemplateId(templates[0]?.id ?? "");
-    setCompanyName("");
+    setDialogStep("METHOD");
+    setSelectedImportMode(null);
+    setSelectedTemplateId("");
     resetImportWorkflow();
     setDialogOpen(true);
   };
 
   const closeDialog = () => {
     setDialogOpen(false);
+    setDialogStep("METHOD");
+    setSelectedImportMode(null);
+    setSelectedTemplateId("");
     resetImportWorkflow();
-  };
-
-  const onTemplateSelect = (template: ImportTemplateItem) => {
-    setSelectedTemplateId(template.id);
-    resetImportWorkflow();
-
-    if (template.templateType !== "CONTACT") {
-      setCompanyName("");
-    }
   };
 
   const resetImportWorkflow = () => {
     setFormError(null);
     setSelectedFile(null);
     setImportJob(null);
-    setDraftMapping({});
     setEditableRows([]);
   };
 
-  const onDownload = async () => {
-    if (!selectedTemplate) {
-      return;
-    }
-
-    const normalizedCompanyName = companyName.trim();
-
-    if (selectedTemplate.templateType === "CONTACT" && !normalizedCompanyName) {
-      setFormError("담당자 양식에는 회사명이 필요합니다.");
-      return;
-    }
-
+  const downloadTemplate = async (template: ImportTemplateItem) => {
     const file = await downloadMutation.mutateAsync({
-      templateId: selectedTemplate.id,
-      ...(selectedTemplate.templateType === "CONTACT"
-        ? { companyName: normalizedCompanyName }
-        : {}),
+      templateId: template.id,
     });
 
-    downloadBlobFile(file, selectedTemplate.templateName);
-    setNotice(`${selectedTemplate.templateName} 다운로드를 시작했습니다.`);
+    downloadBlobFile(file, template.templateName);
+    setNotice(`${template.templateName} 다운로드를 시작했습니다.`);
+  };
+
+  const onSelectDirectMode = () => {
+    setSelectedImportMode("DIRECT");
+    setDialogStep("DIRECT_TARGET");
+    resetImportWorkflow();
+  };
+
+  const onSelectAiMode = () => {
+    setSelectedImportMode("AI");
+    setFormError(null);
+  };
+
+  const onDirectTargetSelect = async (targetType: ImportTemplateType) => {
+    resetImportWorkflow();
+
+    const template = templates.find((item) => item.templateType === targetType);
+
+    if (!template) {
+      setSelectedTemplateId("");
+      setFormError(`${targetLabels[targetType]} 양식은 아직 준비 중입니다.`);
+      return;
+    }
+
+    setSelectedTemplateId(template.id);
+    try {
+      await downloadTemplate(template);
+      setDialogStep("DIRECT_UPLOAD");
+    } catch (error) {
+      setFormError(getApiErrorMessage(error));
+    }
   };
 
   const onFileChange = (file: File | null) => {
@@ -212,12 +225,11 @@ export function ImportScreen() {
 
     setSelectedFile(validationMessage ? null : file);
     setImportJob(null);
-    setDraftMapping({});
     setEditableRows([]);
     setFormError(validationMessage);
   };
 
-  const onRunAiMapping = async () => {
+  const onRunDirectImport = async () => {
     if (!selectedTemplate || !selectedFile) {
       setFormError("불러올 파일을 선택해 주세요.");
       return;
@@ -234,36 +246,10 @@ export function ImportScreen() {
       targetType: selectedTemplate.templateType,
       file: selectedFile,
     });
-    const mapping = await generateImportMappingMutation.mutateAsync(createdJob.id);
+    const mapping = createDirectTemplateMapping(selectedTemplate);
     const updatedJob = await updateImportMappingMutation.mutateAsync({
       importJobId: createdJob.id,
-      mapping: mapping.suggestedMapping,
-    });
-
-    setFormError(null);
-    setImportJob(updatedJob);
-    setDraftMapping(mapping.suggestedMapping);
-    setEditableRows(toEditableRows(updatedJob));
-  };
-
-  const onApplyMapping = async () => {
-    if (!selectedTemplate || !importJob) {
-      return;
-    }
-
-    if (
-      !hasRequiredMapping(
-        selectedTemplate.templateType as ImportTargetType,
-        draftMapping
-      )
-    ) {
-      setFormError("필수 컬럼 매핑을 모두 선택해 주세요.");
-      return;
-    }
-
-    const updatedJob = await updateImportMappingMutation.mutateAsync({
-      importJobId: importJob.id,
-      mapping: draftMapping,
+      mapping,
     });
 
     setFormError(null);
@@ -294,7 +280,7 @@ export function ImportScreen() {
 
   const onConfirmImport = async () => {
     if (!importJob) {
-      setFormError("먼저 업로드와 AI 매핑을 진행해 주세요.");
+      setFormError("먼저 엑셀 파일을 업로드해 주세요.");
       return;
     }
 
@@ -520,38 +506,33 @@ export function ImportScreen() {
       </section>
 
       <ImportTemplateDialog
-        companyName={companyName}
-        companyOptions={companyOptionsQuery.data?.items ?? []}
-        draftMapping={draftMapping}
+        dialogStep={dialogStep}
         editableRows={editableRows}
         errorMessage={formError}
         importBusy={importBusy}
         importJob={importJob}
         isDownloading={downloadMutation.isPending}
-        onApplyMapping={() => void onApplyMapping()}
+        selectedImportMode={selectedImportMode}
         onCancel={closeDialog}
-        onCompanyNameChange={(nextCompanyName) => {
-          setCompanyName(nextCompanyName);
-          setFormError(null);
-        }}
         onConfirmImport={() => void onConfirmImport()}
-        onDownload={() => void onDownload()}
+        onDirectTargetSelect={(targetType) => void onDirectTargetSelect(targetType)}
         onEditableCellChange={onEditableCellChange}
         onFileChange={onFileChange}
-        onMappingChange={(field, sourceColumn) => {
-          setDraftMapping((currentMapping) => ({
-            ...currentMapping,
-            [field]: sourceColumn,
-          }));
+        onBack={() => {
           setFormError(null);
+          setImportJob(null);
+          setEditableRows([]);
+          setSelectedFile(null);
+          setDialogStep(dialogStep === "DIRECT_UPLOAD" ? "DIRECT_TARGET" : "METHOD");
         }}
         onOpenChange={(nextOpen) => {
           if (!nextOpen) {
             closeDialog();
           }
         }}
-        onRunAiMapping={() => void onRunAiMapping()}
-        onTemplateSelect={onTemplateSelect}
+        onRunDirectImport={() => void onRunDirectImport()}
+        onSelectAiMode={onSelectAiMode}
+        onSelectDirectMode={onSelectDirectMode}
         open={dialogOpen}
         selectedFile={selectedFile}
         selectedTemplate={selectedTemplate}
@@ -961,69 +942,79 @@ function ImportLogMobileCard({
 
 function ImportTemplateDialog({
   open,
+  dialogStep,
+  selectedImportMode,
   templates,
   selectedTemplate,
-  companyOptions,
-  companyName,
   selectedFile,
   importJob,
-  draftMapping,
   editableRows,
   errorMessage,
   isDownloading,
   importBusy,
-  onTemplateSelect,
-  onCompanyNameChange,
   onFileChange,
-  onDownload,
-  onRunAiMapping,
-  onMappingChange,
-  onApplyMapping,
+  onSelectDirectMode,
+  onSelectAiMode,
+  onDirectTargetSelect,
+  onRunDirectImport,
   onEditableCellChange,
   onConfirmImport,
+  onBack,
   onCancel,
   onOpenChange,
 }: {
   readonly open: boolean;
+  readonly dialogStep: ImportDialogStep;
+  readonly selectedImportMode: ImportDialogMode;
   readonly templates: readonly ImportTemplateItem[];
   readonly selectedTemplate: ImportTemplateItem | null;
-  readonly companyOptions: readonly {
-    readonly id: string;
-    readonly companyName: string;
-  }[];
-  readonly companyName: string;
   readonly selectedFile: File | null;
   readonly importJob: ImportJobResponse | null;
-  readonly draftMapping: ImportMapping;
   readonly editableRows: readonly EditableImportRow[];
   readonly errorMessage: string | null;
   readonly isDownloading: boolean;
   readonly importBusy: boolean;
-  readonly onTemplateSelect: (template: ImportTemplateItem) => void;
-  readonly onCompanyNameChange: (companyName: string) => void;
   readonly onFileChange: (file: File | null) => void;
-  readonly onDownload: () => void;
-  readonly onRunAiMapping: () => void;
-  readonly onMappingChange: (field: string, sourceColumn: string | null) => void;
-  readonly onApplyMapping: () => void;
+  readonly onSelectDirectMode: () => void;
+  readonly onSelectAiMode: () => void;
+  readonly onDirectTargetSelect: (targetType: ImportTemplateType) => void;
+  readonly onRunDirectImport: () => void;
   readonly onEditableCellChange: (
     rowNumber: number,
     field: ImportTargetField,
     value: string
   ) => void;
   readonly onConfirmImport: () => void;
+  readonly onBack: () => void;
   readonly onCancel: () => void;
   readonly onOpenChange: (open: boolean) => void;
 }) {
   const targetType = selectedTemplate?.templateType as ImportTargetType | undefined;
   const isActionDisabled =
     !selectedTemplate || isDownloading || importBusy || selectedTemplate.templateType === "DEAL";
+  const title =
+    dialogStep === "METHOD"
+      ? "데이터 불러오기"
+      : dialogStep === "DIRECT_TARGET"
+        ? "직접 불러오기"
+        : "엑셀 업로드";
 
   return (
     <ModalShell
       bodyClassName="px-5 py-5"
       footer={
         <>
+          {dialogStep !== "METHOD" ? (
+            <button
+              className="inline-flex h-10 items-center gap-2 rounded-md border px-4 text-sm font-medium hover:bg-muted"
+              disabled={isDownloading || importBusy}
+              onClick={onBack}
+              type="button"
+            >
+              <ChevronLeft className="h-4 w-4" />
+              이전
+            </button>
+          ) : null}
           <button
             className="inline-flex h-10 items-center rounded-md border px-4 text-sm font-medium hover:bg-muted"
             disabled={isDownloading || importBusy}
@@ -1032,20 +1023,7 @@ function ImportTemplateDialog({
           >
             닫기
           </button>
-          <button
-            className="inline-flex h-10 items-center gap-2 rounded-md bg-[#4880EE] px-4 text-sm font-medium text-white hover:bg-[#1D4ED8] disabled:cursor-not-allowed disabled:opacity-60"
-            disabled={!selectedTemplate || isDownloading}
-            onClick={onDownload}
-            type="button"
-          >
-            {isDownloading ? (
-              <Loader2 className="h-4 w-4 animate-spin" />
-            ) : (
-              <Download className="h-4 w-4" />
-            )}
-            양식 다운로드
-          </button>
-          {importJob ? (
+          {dialogStep === "DIRECT_UPLOAD" && importJob ? (
             <button
               className="inline-flex h-10 items-center gap-2 rounded-md bg-[#111827] px-4 text-sm font-medium text-white hover:bg-[#0F172A] disabled:cursor-not-allowed disabled:opacity-60"
               disabled={isActionDisabled || editableRows.length === 0}
@@ -1059,78 +1037,79 @@ function ImportTemplateDialog({
               )}
               확정 생성
             </button>
-          ) : (
+          ) : null}
+          {dialogStep === "DIRECT_UPLOAD" && !importJob ? (
             <button
               className="inline-flex h-10 items-center gap-2 rounded-md bg-[#111827] px-4 text-sm font-medium text-white hover:bg-[#0F172A] disabled:cursor-not-allowed disabled:opacity-60"
               disabled={isActionDisabled || !selectedFile}
-              onClick={onRunAiMapping}
+              onClick={onRunDirectImport}
               type="button"
             >
               {importBusy ? (
                 <Loader2 className="h-4 w-4 animate-spin" />
               ) : (
-                <WandSparkles className="h-4 w-4" />
+                <Upload className="h-4 w-4" />
               )}
-              업로드 및 AI 매핑
+              업로드
             </button>
-          )}
+          ) : null}
         </>
       }
       onOpenChange={onOpenChange}
       open={open}
-      size="xl"
-      title="데이터 불러오기"
+      size="md"
+      title={title}
     >
       <div className="grid gap-5">
-        <div className="grid gap-3 sm:grid-cols-3">
-          {templates.map((template) => (
-            <TemplateSelectButton
-              active={selectedTemplate?.id === template.id}
-              key={template.id}
-              onClick={() => onTemplateSelect(template)}
-              template={template}
+        {dialogStep === "METHOD" ? (
+          <div className="grid grid-cols-2 gap-3">
+            <ImportMethodButton
+              active={selectedImportMode === "DIRECT"}
+              icon={FileSpreadsheet}
+              label="직접 불러오기"
+              onClick={onSelectDirectMode}
             />
-          ))}
-        </div>
-
-        {selectedTemplate?.templateType === "CONTACT" ? (
-          <ContactCompanyNameField
-            companyName={companyName}
-            companyOptions={companyOptions}
-            onCompanyNameChange={onCompanyNameChange}
-          />
+            <ImportMethodButton
+              active={selectedImportMode === "AI"}
+              icon={Bot}
+              label="AI 불러오기"
+              onClick={onSelectAiMode}
+            />
+          </div>
         ) : null}
 
-        {selectedTemplate ? (
-          <TemplateColumnPreview template={selectedTemplate} />
+        {dialogStep === "DIRECT_TARGET" ? (
+          <div className="grid grid-cols-2 gap-3">
+            {DIRECT_IMPORT_TARGETS.map((target) => (
+              <TemplateSelectButton
+                active={selectedTemplate?.templateType === target}
+                isAvailable={templates.some(
+                  (template) => template.templateType === target
+                )}
+                key={target}
+                onClick={() => onDirectTargetSelect(target)}
+                targetType={target}
+              />
+            ))}
+          </div>
         ) : null}
 
-        <ImportFilePanel
-          disabled={isDownloading || importBusy}
-          file={selectedFile}
-          onFileChange={onFileChange}
-        />
-
-        {selectedTemplate?.templateType === "DEAL" ? (
-          <ErrorMessage message="딜 불러오기는 양식 정의 후 지원할 예정입니다." />
-        ) : null}
-
-        {importJob && targetType ? (
+        {dialogStep === "DIRECT_UPLOAD" ? (
           <>
-            <ImportMappingEditor
-              disabled={importBusy}
-              importJob={importJob}
-              mapping={draftMapping}
-              onApplyMapping={onApplyMapping}
-              onMappingChange={onMappingChange}
-              targetType={targetType}
+            <ImportFilePanel
+              disabled={isDownloading || importBusy}
+              file={selectedFile}
+              mode="DIRECT"
+              onFileChange={onFileChange}
             />
-            <ImportEditablePreview
-              disabled={importBusy}
-              onEditableCellChange={onEditableCellChange}
-              rows={editableRows}
-              targetType={targetType}
-            />
+            {importJob && targetType ? (
+              <ImportEditablePreview
+                disabled={importBusy}
+                onEditableCellChange={onEditableCellChange}
+                rows={editableRows}
+                targetType={targetType}
+              />
+            ) : null}
           </>
         ) : null}
 
@@ -1141,137 +1120,91 @@ function ImportTemplateDialog({
 }
 
 function TemplateSelectButton({
-  template,
+  targetType,
   active,
+  isAvailable,
   onClick,
 }: {
-  readonly template: ImportTemplateItem;
+  readonly targetType: ImportTemplateType;
   readonly active: boolean;
+  readonly isAvailable: boolean;
   readonly onClick: () => void;
 }) {
-  const Icon = targetIcons[template.templateType];
+  const Icon = targetIcons[targetType];
 
   return (
     <button
-      className={`grid min-h-[92px] gap-2 rounded-lg border p-3 text-left transition ${
+      aria-disabled={!isAvailable}
+      className={`grid aspect-[1.55] min-h-[112px] place-items-center gap-2 rounded-lg border p-4 text-center transition ${
         active
           ? "border-[#4880EE] bg-[#EEF4FF] text-[#1D4ED8]"
-          : "border-[#E5E7EB] bg-white text-[#111827] hover:bg-[#F9FAFB]"
+          : isAvailable
+            ? "border-[#E5E7EB] bg-white text-[#111827] hover:bg-[#F9FAFB]"
+            : "border-[#E5E7EB] bg-white text-[#9CA3AF] hover:bg-[#F9FAFB]"
       }`}
       onClick={onClick}
       type="button"
     >
-      <span className="inline-flex items-center gap-2 text-sm font-semibold">
-        <Icon className="h-4 w-4" />
-        {targetLabels[template.templateType]}
-      </span>
-      <span className="text-xs text-[#6B7280]">
-        {template.columns.length}개 컬럼 · {template.templateVersion}
+      <span className="grid place-items-center gap-2">
+        <Icon className="h-7 w-7" />
+        <span className="text-sm font-semibold">{targetLabels[targetType]}</span>
       </span>
     </button>
   );
 }
 
-function ContactCompanyNameField({
-  companyOptions,
-  companyName,
-  onCompanyNameChange,
+function ImportMethodButton({
+  icon: Icon,
+  label,
+  active,
+  onClick,
 }: {
-  readonly companyOptions: readonly {
-    readonly id: string;
-    readonly companyName: string;
-  }[];
-  readonly companyName: string;
-  readonly onCompanyNameChange: (companyName: string) => void;
-}) {
-  const selectedValue = companyOptions.some(
-    (option) => option.companyName === companyName
-  )
-    ? companyName
-    : "";
-
-  return (
-    <div className="grid gap-3 rounded-lg border bg-[#F9FAFB] p-4">
-      <div className="grid gap-2 md:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
-        <label className="grid gap-1.5 text-sm font-medium text-[#374151]">
-          회사 선택
-          <select
-            className="h-10 rounded-md border border-[#D1D5DB] bg-white px-3 text-sm outline-none focus:border-[#4880EE] focus:ring-2 focus:ring-[#4880EE]/20"
-            onChange={(event) => onCompanyNameChange(event.target.value)}
-            value={selectedValue}
-          >
-            <option value="">선택 안 함</option>
-            {companyOptions.map((option) => (
-              <option key={option.id} value={option.companyName}>
-                {option.companyName}
-              </option>
-            ))}
-          </select>
-        </label>
-
-        <label className="grid gap-1.5 text-sm font-medium text-[#374151]">
-          회사 이름
-          <input
-            className="h-10 rounded-md border border-[#D1D5DB] bg-white px-3 text-sm outline-none focus:border-[#4880EE] focus:ring-2 focus:ring-[#4880EE]/20"
-            onChange={(event) => onCompanyNameChange(event.target.value)}
-            placeholder="양식에 넣을 회사명"
-            type="text"
-            value={companyName}
-          />
-        </label>
-      </div>
-    </div>
-  );
-}
-
-function TemplateColumnPreview({
-  template,
-}: {
-  readonly template: ImportTemplateItem;
+  readonly icon: LucideIcon;
+  readonly label: string;
+  readonly active: boolean;
+  readonly onClick: () => void;
 }) {
   return (
-    <div className="overflow-hidden rounded-lg border">
-      <table className="min-w-full border-collapse text-sm">
-        <thead className="bg-[#F3F4F6] text-left text-[#374151]">
-          <tr>
-            <th className="px-3 py-2 font-medium">컬럼</th>
-            <th className="px-3 py-2 font-medium">필수</th>
-            <th className="px-3 py-2 font-medium">타입</th>
-          </tr>
-        </thead>
-        <tbody>
-          {template.columns.map((column) => (
-            <tr className="border-t" key={column.key}>
-              <td className="px-3 py-2 text-[#111827]">{column.label}</td>
-              <td className="px-3 py-2 text-[#4B5563]">
-                {column.required ? "예" : "아니오"}
-              </td>
-              <td className="px-3 py-2 text-[#4B5563]">{column.type}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
+    <button
+      className={cn(
+        "grid aspect-[1.45] min-h-[128px] place-items-center gap-3 rounded-lg border p-5 text-center transition",
+        active
+          ? "border-[#4880EE] bg-[#EEF4FF] text-[#1D4ED8]"
+          : "border-[#E5E7EB] bg-white text-[#111827] hover:bg-[#F9FAFB]"
+      )}
+      onClick={onClick}
+      type="button"
+    >
+      <span className="grid place-items-center gap-3">
+        <Icon className="h-8 w-8" />
+        <span className="text-sm font-semibold">{label}</span>
+      </span>
+    </button>
   );
 }
 
 function ImportFilePanel({
   file,
   disabled,
+  mode,
   onFileChange,
 }: {
   readonly file: File | null;
   readonly disabled: boolean;
+  readonly mode: "DIRECT";
   readonly onFileChange: (file: File | null) => void;
 }) {
+  const description =
+    mode === "DIRECT"
+      ? "다운로드한 양식에 맞춰 작성한 Excel 파일을 업로드하세요."
+      : "";
+
   return (
     <div className="grid gap-3 rounded-lg border border-[#E5E7EB] bg-white p-4">
       <div className="flex items-center justify-between gap-3">
         <div className="min-w-0">
           <h3 className="text-sm font-semibold text-[#111827]">파일 업로드</h3>
-          <p className="mt-1 text-xs text-[#6B7280]">
-            CSV, XLSX 파일을 업로드하면 AI가 컬럼을 자동으로 매핑합니다.
-          </p>
+          <p className="mt-1 text-xs text-[#6B7280]">{description}</p>
         </div>
         {file ? (
           <Badge>{(file.size / 1024).toFixed(1)}KB</Badge>
@@ -1295,100 +1228,6 @@ function ImportFilePanel({
           </span>
         </span>
       </label>
-    </div>
-  );
-}
-
-function ImportMappingEditor({
-  importJob,
-  targetType,
-  mapping,
-  disabled,
-  onMappingChange,
-  onApplyMapping,
-}: {
-  readonly importJob: ImportJobResponse;
-  readonly targetType: ImportTargetType;
-  readonly mapping: ImportMapping;
-  readonly disabled: boolean;
-  readonly onMappingChange: (field: string, sourceColumn: string | null) => void;
-  readonly onApplyMapping: () => void;
-}) {
-  const fields = importTargetFields[targetType];
-  const sourceColumns = Object.keys(importJob.previewRows[0]?.rawData ?? {});
-  const confidencePercent = importJob.aiMapping
-    ? Math.round(importJob.aiMapping.confidence * 100)
-    : null;
-
-  return (
-    <div className="grid gap-3 rounded-lg border border-[#E5E7EB] bg-white p-4">
-      <div className="flex items-center justify-between gap-3">
-        <div className="min-w-0">
-          <h3 className="text-sm font-semibold text-[#111827]">컬럼 매핑</h3>
-          <p className="mt-1 text-xs text-[#6B7280]">
-            원본 파일 헤더를 생성할 데이터 필드에 연결합니다.
-          </p>
-        </div>
-        {confidencePercent !== null ? (
-          <Badge>AI {confidencePercent}%</Badge>
-        ) : null}
-      </div>
-
-      <div className="grid gap-2 md:grid-cols-2">
-        {fields.map((field) => (
-          <label
-            className="grid gap-1.5 text-[13px] font-medium text-[#374151]"
-            key={field.field}
-          >
-            {field.label}
-            <select
-              className="h-9 rounded-md border border-[#D1D5DB] bg-white px-3 text-[13px] outline-none focus:border-[#4880EE] focus:ring-2 focus:ring-[#4880EE]/20 disabled:bg-[#F3F4F6]"
-              disabled={disabled}
-              onChange={(event) =>
-                onMappingChange(
-                  field.field,
-                  event.target.value.length > 0 ? event.target.value : null
-                )
-              }
-              value={mapping[field.field] ?? ""}
-            >
-              <option value="">선택 안 함</option>
-              {sourceColumns.map((sourceColumn) => (
-                <option key={sourceColumn} value={sourceColumn}>
-                  {sourceColumn}
-                </option>
-              ))}
-            </select>
-          </label>
-        ))}
-      </div>
-
-      {importJob.errors.length > 0 ? (
-        <div className="grid gap-1 rounded-md bg-red-50 px-3 py-2 text-xs text-red-700">
-          {importJob.errors.slice(0, 4).map((error) => (
-            <span key={`${error.rowNumber ?? "mapping"}-${error.message}`}>
-              {error.rowNumber ? `${error.rowNumber}행: ` : ""}
-              {error.message}
-            </span>
-          ))}
-        </div>
-      ) : null}
-
-      <div className="flex items-center justify-between gap-3">
-        <span className="text-xs text-[#6B7280]">
-          유효 {importJob.validRowCount.toLocaleString("ko-KR")}건 / 오류{" "}
-          {importJob.invalidRowCount.toLocaleString("ko-KR")}건
-        </span>
-        <button
-          className="inline-flex h-9 items-center gap-2 rounded-md border border-[#D1D5DB] px-3 text-[13px] font-medium text-[#374151] hover:bg-[#F9FAFB] disabled:cursor-not-allowed disabled:opacity-60"
-          disabled={disabled}
-          onClick={onApplyMapping}
-          type="button"
-        >
-          <RotateCcw className="h-3.5 w-3.5" />
-          매핑 적용
-        </button>
-      </div>
     </div>
   );
 }
@@ -1584,6 +1423,12 @@ function formatLogCreatedAt(createdAt: string) {
     month: "2-digit",
     year: "2-digit",
   });
+}
+
+function createDirectTemplateMapping(template: ImportTemplateItem): ImportMapping {
+  return Object.fromEntries(
+    template.columns.map((column) => [column.key, column.label])
+  );
 }
 
 function toEditableRows(job: ImportJobResponse): EditableImportRow[] {

@@ -760,10 +760,11 @@ export class DataImportApplicationService {
       return rows;
     }
 
-    const companyName = this.normalizeRequiredText(
-      input.companyName,
-      "담당자 양식 다운로드에는 회사명이 필요합니다."
-    );
+    const companyName = this.toTextValue(input.companyName).trim();
+
+    if (companyName.length === 0) {
+      return rows;
+    }
 
     if (rows.length === 0) {
       return [{ companyName }];

@@ -642,8 +642,8 @@ function DealSummaryHeader({
 
   return (
     <div className="flex min-h-[74px] flex-wrap items-center gap-3 rounded-xl border border-[#E5E7EB] bg-white px-5 py-4">
-      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#EEF2FF]">
-        <BriefcaseBusiness className="h-5 w-5 text-[#4F46E5]" />
+      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#FEF2F2]">
+        <BriefcaseBusiness className="h-5 w-5 text-[#DC2626]" />
       </div>
       <span className="min-w-[180px] flex-1 truncate text-[14px] font-extrabold leading-none text-[#111827]">
         {detail.dealName}
