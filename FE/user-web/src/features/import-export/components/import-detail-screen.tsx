@@ -20,6 +20,7 @@ import type {
   ImportUserLogDetail,
 } from "@/features/import-export/types/import-user-log";
 import { getApiErrorMessage } from "@/lib/api-client";
+import { cn } from "@/utils/cn";
 import { formatDateWithOptions } from "@/utils/format";
 
 const targetIcons: Record<ImportTemplateType, LucideIcon> = {
@@ -34,6 +35,28 @@ const targetLabels: Record<ImportTemplateType, string> = {
   CONTACT: "담당자",
   PRODUCT: "제품",
   DEAL: "딜",
+};
+
+const targetColorClassNames: Record<
+  ImportTemplateType,
+  { readonly iconBox: string; readonly icon: string }
+> = {
+  COMPANY: {
+    iconBox: "bg-[#EEF2FF]",
+    icon: "text-[#4F46E5]",
+  },
+  CONTACT: {
+    iconBox: "bg-[#DBEAFE]",
+    icon: "text-[#4880EE]",
+  },
+  PRODUCT: {
+    iconBox: "bg-[#F0FDF4]",
+    icon: "text-[#15803D]",
+  },
+  DEAL: {
+    iconBox: "bg-[#FEF2F2]",
+    icon: "text-[#DC2626]",
+  },
 };
 
 type ImportDetailScreenProps = {
@@ -63,6 +86,7 @@ export function ImportDetailScreen({ importUserLogId }: ImportDetailScreenProps)
   }
 
   const TargetIcon = targetIcons[detail.targetType];
+  const targetColorClassName = targetColorClassNames[detail.targetType];
 
   return (
     <section className="flex min-h-dvh flex-col bg-[#FAFAF8]">
@@ -70,10 +94,15 @@ export function ImportDetailScreen({ importUserLogId }: ImportDetailScreenProps)
 
       <div className="flex min-h-0 w-full flex-1 flex-col gap-4 overflow-y-auto px-4 pb-24 pt-0 md:px-6 md:pb-6 md:pt-0">
         <div className="rounded-lg border border-[#E2E5EC] bg-white p-5 shadow-sm">
-          <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
+          <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
             <div className="flex min-w-0 items-start gap-3">
-              <div className="grid h-11 w-11 shrink-0 place-items-center rounded-lg bg-[#EEF4FF] text-[#4880EE]">
-                <TargetIcon className="h-5 w-5" />
+              <div
+                className={cn(
+                  "grid h-11 w-11 shrink-0 place-items-center rounded-lg",
+                  targetColorClassName.iconBox
+                )}
+              >
+                <TargetIcon className={cn("h-5 w-5", targetColorClassName.icon)} />
               </div>
               <div className="min-w-0">
                 <p className="text-sm font-medium text-[#6B7280]">
@@ -87,42 +116,25 @@ export function ImportDetailScreen({ importUserLogId }: ImportDetailScreenProps)
                 </p>
               </div>
             </div>
-            <div className="flex flex-wrap gap-2">
-              <SummaryBadge label="버전" value={detail.templateVersion} />
+            <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:flex lg:flex-wrap lg:justify-end">
+              <SummaryBadge label="대상" value={targetLabels[detail.targetType]} />
               <SummaryBadge
-                label="Row"
-                value={`${detail.importedRowCount.toLocaleString("ko-KR")} / ${detail.totalRowCount.toLocaleString("ko-KR")}`}
+                label="성공한 데이터 수"
+                value={`${detail.importedRowCount.toLocaleString("ko-KR")}건`}
+              />
+              <SummaryBadge
+                label="Import한 데이터 수"
+                value={`${detail.totalRowCount.toLocaleString("ko-KR")}건`}
               />
               <SummaryBadge
                 label="파일 크기"
                 value={formatFileSize(detail.fileSizeBytes)}
               />
+              <SummaryBadge
+                label="등록일"
+                value={formatLogCreatedAt(detail.createdAt)}
+              />
             </div>
-          </div>
-
-          <div className="mt-5 grid gap-5 border-t border-[#E6EAF0] pt-5 lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.4fr)]">
-            <section className="grid content-start gap-3">
-              <h2 className="text-sm font-semibold text-[#111827]">기본 정보</h2>
-              <InfoRow label="대상" value={targetLabels[detail.targetType]} />
-              <InfoRow label="원본 파일명" value={detail.originalFileName} />
-              <InfoRow label="컨텍스트" value={detail.contextLabel ?? "-"} />
-              <InfoRow label="생성일" value={formatLogCreatedAt(detail.createdAt)} />
-            </section>
-
-            <section className="grid content-start gap-3">
-              <h2 className="text-sm font-semibold text-[#111827]">컬럼 snapshot</h2>
-              <div className="flex flex-wrap gap-1.5">
-                {detail.templateColumns.map((column) => (
-                  <span
-                    className="rounded-md bg-[#F3F4F6] px-2 py-1 text-xs text-[#4B5563]"
-                    key={column.key}
-                  >
-                    {column.label}
-                    {column.required ? " *" : ""}
-                  </span>
-                ))}
-              </div>
-            </section>
           </div>
         </div>
 
@@ -237,21 +249,6 @@ function SummaryBadge({
     <div className="rounded-lg border border-[#E2E5EC] bg-[#FAFAF8] px-3 py-2">
       <p className="text-[11px] text-[#9CA3AF]">{label}</p>
       <p className="mt-0.5 text-sm font-semibold text-[#111827]">{value}</p>
-    </div>
-  );
-}
-
-function InfoRow({
-  label,
-  value,
-}: {
-  readonly label: string;
-  readonly value: string;
-}) {
-  return (
-    <div className="grid grid-cols-[92px_minmax(0,1fr)] gap-3 text-sm">
-      <dt className="text-[#6B7280]">{label}</dt>
-      <dd className="min-w-0 truncate font-medium text-[#111827]">{value}</dd>
     </div>
   );
 }
