@@ -250,7 +250,7 @@ export function ContactCreateDialog({
       footerClassName="h-14"
       panelClassName="max-h-[calc(100vh-2rem)] md:max-h-[760px]"
       size="md"
-      title="담당자 추가"
+      title="담당자 생성"
       onOpenChange={onOpenChange}
     >
       <ModalForm className="gap-3" id={formId} onSubmit={onSubmit}>

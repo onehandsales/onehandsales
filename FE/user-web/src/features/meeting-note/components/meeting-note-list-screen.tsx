@@ -2,7 +2,7 @@ import {
   AlertCircle,
   CalendarClock,
   ChevronDown,
-  FileText,
+  NotebookPen,
   Plus,
   RefreshCw,
   RotateCcw,
@@ -172,11 +172,11 @@ export function MeetingNoteListScreen() {
   return (
     <section className="flex min-h-full flex-col bg-[#FAFAF8]">
       <PageHeader
-        breadcrumbs={[{ label: "회의록", icon: FileText }]}
+        breadcrumbs={[{ label: "회의록", icon: NotebookPen }]}
         actions={[
           {
             icon: Plus,
-            tooltip: "회의록 추가",
+            tooltip: "회의록 생성",
             onClick: () => setIsCreateOpen(true),
             variant: "primary",
           },
@@ -276,8 +276,8 @@ export function MeetingNoteListScreen() {
             ) : meetingNotes.length === 0 ? (
               <ListEmptyState
                 actionIcon={Plus}
-                actionLabel="회의록 추가"
-                icon={FileText}
+                actionLabel="회의록 생성"
+                icon={NotebookPen}
                 onAction={() => setIsCreateOpen(true)}
                 title={
                   hasFilter
@@ -405,8 +405,8 @@ export function MeetingNoteListScreen() {
           ) : meetingNotes.length === 0 ? (
             <ListEmptyState
               actionIcon={Plus}
-              actionLabel="회의록 추가"
-              icon={FileText}
+              actionLabel="회의록 생성"
+              icon={NotebookPen}
               onAction={() => setIsCreateOpen(true)}
               title={
                 hasFilter
@@ -436,7 +436,7 @@ export function MeetingNoteListScreen() {
         ) : null}
 
         <button
-          aria-label="회의록 추가"
+          aria-label="회의록 생성"
           className="fixed bottom-24 right-5 flex h-8 w-8 items-center justify-center rounded-full bg-[#4880EE] shadow-[0_4px_16px_rgba(59,130,246,0.27)] transition active:opacity-80"
           onClick={() => setIsCreateOpen(true)}
           type="button"

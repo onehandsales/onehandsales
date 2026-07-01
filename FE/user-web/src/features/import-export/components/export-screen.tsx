@@ -9,6 +9,7 @@ import {
   FileText,
   Handshake,
   Loader2,
+  NotebookPen,
   Package,
   Play,
   ShieldAlert,
@@ -42,7 +43,7 @@ const targetIcons: Record<ExportTargetType, LucideIcon> = {
   PRODUCT: Package,
   DEAL: Handshake,
   SCHEDULE: CalendarDays,
-  MEETING_NOTE: FileText,
+  MEETING_NOTE: NotebookPen,
 };
 
 const formatIcons: Record<ExportFormat, LucideIcon> = {

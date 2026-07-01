@@ -282,13 +282,13 @@ export function MeetingNoteCreateDialog({
           onCancel={() => onOpenChange(false)}
           onSubmit={() => void onSubmit()}
           pendingLabel="추가 중"
-          submitLabel="회의록 추가"
+          submitLabel="회의록 생성"
         />
       }
       open={open}
       bodyClassName="!py-4"
       size="md"
-      title="회의록 추가"
+      title="회의록 생성"
       onOpenChange={onOpenChange}
     >
       <ModalForm className="gap-3" id={formId} onSubmit={onSubmit}>

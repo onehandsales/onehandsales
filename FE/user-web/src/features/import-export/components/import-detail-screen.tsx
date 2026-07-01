@@ -6,11 +6,11 @@ import {
   Handshake,
   Loader2,
   Package,
-  Upload,
   UserRound,
   type LucideIcon,
 } from "lucide-react";
 import { Link } from "react-router-dom";
+import { DataUploadIcon } from "@/components/icons/data-upload-icon";
 import {
   useImportUserLogDetail,
 } from "@/features/import-export/hooks/use-import-template-queries";
@@ -80,7 +80,7 @@ export function ImportDetailScreen({ importUserLogId }: ImportDetailScreenProps)
               </div>
               <div className="min-w-0">
                 <p className="text-sm font-medium text-[#6B7280]">
-                  {targetLabels[detail.targetType]} 불러오기
+                  {targetLabels[detail.targetType]} 업로드
                 </p>
                 <h1 className="mt-1 truncate text-xl font-semibold text-[#111827]">
                   {detail.originalFileName}
@@ -147,7 +147,7 @@ function ImportDetailHeader({
   readonly targetType?: ImportTemplateType;
   readonly title: string;
 }) {
-  const TargetIcon = targetType ? targetIcons[targetType] : Upload;
+  const TargetIcon = targetType ? targetIcons[targetType] : DataUploadIcon;
 
   return (
     <div className="flex h-16 shrink-0 items-center gap-3 bg-transparent px-4 md:px-6">
@@ -159,9 +159,9 @@ function ImportDetailHeader({
         <ChevronLeft className="h-5 w-5" />
       </Link>
       <div className="flex min-w-0 flex-1 items-center gap-1.5 text-[13px]">
-        <Upload className="h-4 w-4 shrink-0 text-[#9CA3AF]" />
+        <DataUploadIcon className="h-4 w-4 shrink-0 text-[#9CA3AF]" />
         <span className="shrink-0 font-medium text-[#6B7280]">
-          데이터 불러오기
+          데이터 업로드
         </span>
         <span className="shrink-0 text-[#9CA3AF]">/</span>
         {targetType ? (
@@ -304,7 +304,7 @@ function ImportDetailError({
       <div className="grid flex-1 place-items-center px-5">
         <div className="grid max-w-md gap-3 rounded-lg border border-red-200 bg-red-50 p-5 text-center text-red-700">
           <AlertCircle className="mx-auto h-6 w-6" />
-          <p className="text-sm font-semibold">불러오기 내역을 불러오지 못했습니다.</p>
+          <p className="text-sm font-semibold">업로드 내역을 불러오지 못했습니다.</p>
           <p className="text-sm">{getApiErrorMessage(error)}</p>
           <button
             className="mx-auto inline-flex h-9 items-center rounded-md border bg-white px-3 text-sm font-medium text-[#374151]"

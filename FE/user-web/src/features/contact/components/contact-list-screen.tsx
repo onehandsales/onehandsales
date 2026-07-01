@@ -170,7 +170,7 @@ export function ContactListScreen() {
           },
           {
             icon: Plus,
-            tooltip: "담당자 추가",
+            tooltip: "담당자 생성",
             onClick: () => setIsCreateOpen(true),
             variant: "primary",
           },
@@ -317,7 +317,7 @@ export function ContactListScreen() {
             ) : !contactList || contactList.items.length === 0 ? (
               <ListEmptyState
                 actionIcon={Plus}
-                actionLabel="담당자 추가"
+                actionLabel="담당자 생성"
                 icon={IdCard}
                 onAction={() => setIsCreateOpen(true)}
                 title={
@@ -448,7 +448,7 @@ export function ContactListScreen() {
           ) : !contactList || contactList.items.length === 0 ? (
             <ListEmptyState
               actionIcon={Plus}
-              actionLabel="담당자 추가"
+              actionLabel="담당자 생성"
               icon={IdCard}
               onAction={() => setIsCreateOpen(true)}
               title={
@@ -481,7 +481,7 @@ export function ContactListScreen() {
 
         {/* FAB */}
         <button
-          aria-label="담당자 추가"
+          aria-label="담당자 생성"
           className="fixed bottom-24 right-5 flex h-8 w-8 items-center justify-center rounded-full bg-[#4880EE] shadow-[0_4px_16px_rgba(59,130,246,0.27)] transition active:opacity-80"
           onClick={() => setIsCreateOpen(true)}
           type="button"

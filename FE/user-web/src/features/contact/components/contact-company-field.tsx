@@ -142,7 +142,7 @@ export function ContactCompanyField({
                     type="button"
                   >
                     <Plus className="h-3.5 w-3.5" />
-                    {filterText} 회사 추가
+                    {filterText} 회사 생성
                   </button>
                 ) : null}
               </div>

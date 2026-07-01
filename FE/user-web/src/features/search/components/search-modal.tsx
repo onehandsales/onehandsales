@@ -1,9 +1,9 @@
 import {
   Building2,
   CalendarDays,
-  FileText,
   Handshake,
   Loader2,
+  NotebookPen,
   Package,
   Search,
   UserRound,
@@ -40,7 +40,7 @@ const targetMeta: Record<
   PRODUCT: { label: "제품", icon: Package },
   DEAL: { label: "딜", icon: Handshake },
   SCHEDULE: { label: "일정", icon: CalendarDays },
-  MEETING_NOTE: { label: "회의록", icon: FileText },
+  MEETING_NOTE: { label: "회의록", icon: NotebookPen },
 };
 
 type SearchModalProps = {

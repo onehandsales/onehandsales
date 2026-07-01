@@ -208,7 +208,7 @@ export function CompanyListScreen({
           },
           {
             icon: Plus,
-            tooltip: "회사 추가",
+            tooltip: "회사 생성",
             onClick: () => void navigate("/companies/new"),
             disabled: fieldsQuery.isLoading || regionsQuery.isLoading,
             variant: "primary",
@@ -348,7 +348,7 @@ export function CompanyListScreen({
             ) : !companyList || companyList.items.length === 0 ? (
               <ListEmptyState
                 actionIcon={Plus}
-                actionLabel="회사 추가"
+                actionLabel="회사 생성"
                 icon={Building2}
                 onAction={() => setIsCreateOpen(true)}
                 title={
@@ -480,7 +480,7 @@ export function CompanyListScreen({
           ) : !companyList || companyList.items.length === 0 ? (
             <ListEmptyState
               actionIcon={Plus}
-              actionLabel="회사 추가"
+              actionLabel="회사 생성"
               icon={Building2}
               onAction={() => setIsCreateOpen(true)}
               title={
@@ -513,7 +513,7 @@ export function CompanyListScreen({
 
         {/* FAB */}
         <button
-          aria-label="회사 추가"
+          aria-label="회사 생성"
           className="fixed bottom-24 right-5 flex h-8 w-8 items-center justify-center rounded-full bg-[#4880EE] shadow-[0_4px_16px_rgba(59,130,246,0.27)] transition active:opacity-80"
           onClick={() => void navigate("/companies/new")}
           type="button"

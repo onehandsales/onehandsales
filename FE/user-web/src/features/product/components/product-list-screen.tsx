@@ -214,7 +214,7 @@ export function ProductListScreen({
           },
           {
             icon: Plus,
-            tooltip: "제품 추가",
+            tooltip: "제품 생성",
             onClick: () => void navigate("/products/new"),
             variant: "primary",
           },
@@ -331,7 +331,7 @@ export function ProductListScreen({
             ) : products.length === 0 ? (
               <ListEmptyState
                 actionIcon={Plus}
-                actionLabel="제품 추가"
+                actionLabel="제품 생성"
                 icon={Package}
                 onAction={() => setIsCreateOpen(true)}
                 title={
@@ -463,7 +463,7 @@ export function ProductListScreen({
           ) : products.length === 0 ? (
             <ListEmptyState
               actionIcon={Plus}
-              actionLabel="제품 추가"
+              actionLabel="제품 생성"
               icon={Package}
               onAction={() => setIsCreateOpen(true)}
               title={
@@ -496,7 +496,7 @@ export function ProductListScreen({
 
         {/* FAB */}
         <button
-          aria-label="제품 추가"
+          aria-label="제품 생성"
           className="fixed bottom-24 right-5 flex h-8 w-8 items-center justify-center rounded-full bg-[#4880EE] shadow-[0_4px_16px_rgba(59,130,246,0.27)] transition active:opacity-80"
           onClick={() => void navigate("/products/new")}
           type="button"

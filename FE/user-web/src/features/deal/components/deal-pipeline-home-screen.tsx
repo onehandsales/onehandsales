@@ -245,7 +245,7 @@ export function DealPipelineHomeScreen({
             },
             {
               icon: Plus,
-              tooltip: "새 딜 추가",
+              tooltip: "딜 생성",
               onClick: () => void navigate("/deals/new"),
               variant: "primary",
             },
@@ -387,7 +387,7 @@ export function DealPipelineHomeScreen({
                 {deals.length === 0 ? (
                   <ListEmptyState
                     actionIcon={Plus}
-                    actionLabel="딜 추가"
+                    actionLabel="딜 생성"
                     icon={BriefcaseBusiness}
                     onAction={() => setIsCreateOpen(true)}
                     title={
@@ -537,7 +537,7 @@ export function DealPipelineHomeScreen({
           ) : deals.length === 0 ? (
             <ListEmptyState
               actionIcon={Plus}
-              actionLabel="딜 추가"
+              actionLabel="딜 생성"
               icon={BriefcaseBusiness}
               onAction={() => setIsCreateOpen(true)}
               title={

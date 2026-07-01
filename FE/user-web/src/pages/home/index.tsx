@@ -7,7 +7,7 @@ import {
   CalendarDays,
   CheckCircle2,
   Clock3,
-  FileText,
+  NotebookPen,
   Plus,
   TrendingUp,
   type LucideIcon,
@@ -48,7 +48,7 @@ const QUICK_ACTIONS: QuickAction[] = [
   {
     description: "미팅 내용과 필요 조치 기록",
     href: "/meeting-notes?create=1",
-    icon: FileText,
+    icon: NotebookPen,
     label: "회의록 작성",
     tone: "emerald",
   },
@@ -63,7 +63,7 @@ const QUICK_ACTIONS: QuickAction[] = [
     description: "회사와 담당자를 빠르게 정리",
     href: "/companies/new",
     icon: Building2,
-    label: "회사 추가",
+    label: "회사 생성",
     tone: "slate",
   },
 ];
@@ -193,7 +193,7 @@ export function HomePage() {
             value={`${dueSoonCount.toLocaleString("ko-KR")}건`}
           />
           <SummaryCard
-            icon={FileText}
+            icon={NotebookPen}
             label="최근 회의록"
             tone="blue"
             value={`${(meetingNotesQuery.data?.totalCount ?? 0).toLocaleString("ko-KR")}건`}
@@ -269,7 +269,7 @@ export function HomePage() {
             <DashboardSection
               actionHref="/meeting-notes"
               actionLabel="회의록"
-              icon={FileText}
+              icon={NotebookPen}
               title="최근 회의록"
             >
               <ListState
@@ -683,7 +683,7 @@ function ActivityItemRow({ activity }: { readonly activity: ActivityItem }) {
         {isDeal ? (
           <BriefcaseBusiness className="h-3.5 w-3.5" />
         ) : (
-          <FileText className="h-3.5 w-3.5" />
+          <NotebookPen className="h-3.5 w-3.5" />
         )}
       </span>
       <span className="min-w-0">

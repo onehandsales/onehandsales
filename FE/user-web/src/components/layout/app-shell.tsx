@@ -274,7 +274,7 @@ export function AppShell() {
         ? [
             {
               icon: Plus,
-              tooltip: "새 딜 추가",
+              tooltip: "딜 생성",
               href: "/deals/new",
               variant: "primary" as const,
             },

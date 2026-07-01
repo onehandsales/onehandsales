@@ -4,9 +4,9 @@ import {
   Building2,
   ChevronLeft,
   ChevronRight,
-  FileText,
   IdCard,
   Loader2,
+  NotebookPen,
   Package,
   Pencil,
   Save,
@@ -232,7 +232,7 @@ function MeetingNoteDetailTopBar({
         <ChevronLeft className="h-5 w-5 text-[#9CA3AF]" />
       </Link>
       <div className="flex min-w-0 flex-1 items-center gap-1.5 text-[13px]">
-        <FileText className="h-3.5 w-3.5 shrink-0 text-[#9CA3AF]" />
+        <NotebookPen className="h-3.5 w-3.5 shrink-0 text-[#9CA3AF]" />
         <span className="font-medium text-[#6B7280]">회의록</span>
         <span className="text-[#9CA3AF]">/</span>
         <span className="truncate font-bold text-[#111827]">
@@ -339,7 +339,7 @@ function MeetingNoteSummaryHeader({ detail }: { readonly detail: MeetingNote }) 
   return (
     <div className="flex min-h-[74px] flex-wrap items-center gap-3 rounded-xl border border-[#E5E7EB] bg-white px-5 py-4">
       <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#EEF2FF]">
-        <FileText className="h-5 w-5 text-[#4F46E5]" />
+        <NotebookPen className="h-5 w-5 text-[#4F46E5]" />
       </div>
       <span className="min-w-[180px] flex-1 truncate text-[14px] font-extrabold leading-none text-[#111827]">
         {detail.title}

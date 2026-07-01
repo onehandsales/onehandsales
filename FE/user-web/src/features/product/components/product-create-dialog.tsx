@@ -250,7 +250,7 @@ export function ProductCreateDialog({
           formId={formId}
           isSubmitting={createProductMutation.isPending}
           pendingLabel="추가 중"
-          submitLabel="제품 추가"
+          submitLabel="제품 생성"
           onCancel={() => onOpenChange(false)}
           onSubmit={() => void onSubmit()}
         />
@@ -258,7 +258,7 @@ export function ProductCreateDialog({
       open={open}
       panelClassName="max-h-[82vh] md:max-h-[620px]"
       size="md"
-      title="제품 추가"
+      title="제품 생성"
       onOpenChange={onOpenChange}
     >
       <ModalForm id={formId} onSubmit={onSubmit}>

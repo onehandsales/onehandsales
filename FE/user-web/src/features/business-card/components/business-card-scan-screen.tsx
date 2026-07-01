@@ -95,7 +95,7 @@ export function BusinessCardScanScreen() {
         actions={[
           {
             icon: Plus,
-            tooltip: "명함스캔",
+            tooltip: "명함 스캔",
             onClick: () => setIsRegisterOpen(true),
             variant: "primary",
           },
@@ -166,7 +166,7 @@ export function BusinessCardScanScreen() {
             ) : !pageData || pageData.items.length === 0 ? (
               <ListEmptyState
                 actionIcon={Plus}
-                actionLabel="명함스캔"
+                actionLabel="명함 스캔"
                 icon={Camera}
                 onAction={() => setIsRegisterOpen(true)}
                 title="데이터가 존재하지 않아요"
@@ -229,7 +229,7 @@ export function BusinessCardScanScreen() {
           ) : !pageData || pageData.items.length === 0 ? (
             <ListEmptyState
               actionIcon={Plus}
-              actionLabel="명함스캔"
+              actionLabel="명함 스캔"
               icon={Camera}
               onAction={() => setIsRegisterOpen(true)}
               title="데이터가 존재하지 않아요"
@@ -257,7 +257,7 @@ export function BusinessCardScanScreen() {
         ) : null}
 
         <button
-          aria-label="명함스캔"
+          aria-label="명함 스캔"
           className="fixed bottom-24 right-5 flex h-[52px] w-[52px] items-center justify-center rounded-full bg-[#4880EE] shadow-[0_4px_16px_rgba(59,130,246,0.27)] transition active:opacity-80"
           onClick={() => setIsRegisterOpen(true)}
           type="button"
@@ -736,7 +736,7 @@ function BusinessCardRegisterDialog({
               ) : (
                 <Upload className="h-4 w-4" />
               )}
-              명함스캔
+              명함 스캔
             </button>
           ) : null}
         </>
@@ -751,7 +751,7 @@ function BusinessCardRegisterDialog({
       open={open}
       panelClassName="rounded-lg"
       size={isExtracted ? "lg" : "md"}
-      title="명함스캔"
+      title="명함 스캔"
     >
       {isExtracted ? (
         <div className="grid gap-4">
@@ -861,7 +861,7 @@ function BusinessCardRegisterDialog({
                   </div>
                   <div>
                     <p className="text-[14px] font-semibold text-[#111827]">
-                      명함스캔 중
+                      명함 스캔 중
                     </p>
                     <p className="mt-1 text-[12px] text-[#6B7280]">
                       잠시만 기다려주세요

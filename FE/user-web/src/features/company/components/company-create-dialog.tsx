@@ -214,7 +214,7 @@ export function CompanyCreateDialog({
       open={open}
       panelClassName="max-h-[82vh] md:max-h-[620px]"
       size="md"
-      title="회사 추가"
+      title="회사 생성"
       onOpenChange={onOpenChange}
     >
       <ModalForm id={formId} onSubmit={onSubmit}>

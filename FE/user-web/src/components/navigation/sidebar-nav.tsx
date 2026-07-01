@@ -3,15 +3,15 @@ import {
   Building2,
   CalendarDays,
   Camera,
-  FileText,
   IdCard,
+  NotebookPen,
   Package,
   Settings,
   Trash2,
-  Upload,
   type LucideIcon,
 } from "lucide-react";
 import { NavLink } from "react-router-dom";
+import { DataUploadIcon } from "@/components/icons/data-upload-icon";
 import { cn } from "@/utils/cn";
 
 const groups: Array<{
@@ -37,9 +37,9 @@ const groups: Array<{
     label: "업무",
     items: [
       { label: "일정", to: "/schedules", icon: CalendarDays },
-      { label: "회의록", to: "/meeting-notes", icon: FileText },
+      { label: "회의록", to: "/meeting-notes", icon: NotebookPen },
       { label: "명함 스캔", to: "/business-cards", icon: Camera },
-      { label: "데이터 불러오기", to: "/import", icon: Upload },
+      { label: "데이터 업로드", to: "/import", icon: DataUploadIcon },
     ],
   },
   {

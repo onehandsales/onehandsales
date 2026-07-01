@@ -20,6 +20,7 @@ import {
 } from "lucide-react";
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { useNavigate } from "react-router-dom";
+import { DataUploadIcon } from "@/components/icons/data-upload-icon";
 import { PageHeader } from "@/components/layout/page-header";
 import { ModalShell } from "@/components/ui/modal-shell";
 import { Pagination } from "@/components/ui/pagination";
@@ -354,11 +355,11 @@ export function ImportScreen() {
   return (
     <section className="flex min-h-full flex-col bg-[#FAFAF8]">
       <PageHeader
-        breadcrumbs={[{ label: "데이터 불러오기", icon: Upload }]}
+        breadcrumbs={[{ label: "데이터 업로드", icon: DataUploadIcon }]}
         actions={[
           {
             icon: Plus,
-            tooltip: "불러오기 생성",
+            tooltip: "데이터 업로드",
             onClick: openDialog,
             variant: "primary",
           },
@@ -426,12 +427,12 @@ export function ImportScreen() {
             ) : logs.length === 0 ? (
               <ListEmptyState
                 actionIcon={Plus}
-                actionLabel="불러오기 생성"
-                icon={Upload}
+                actionLabel="데이터 업로드"
+                icon={DataUploadIcon}
                 onAction={openDialog}
                 title={
                   targetTypes.length > 0
-                    ? "조건에 맞는 불러오기 내역이 없습니다."
+                    ? "조건에 맞는 업로드 내역이 없습니다."
                     : "데이터가 존재하지 않아요"
                 }
               />
@@ -504,10 +505,10 @@ export function ImportScreen() {
           ) : logs.length === 0 ? (
             <ListEmptyState
               actionIcon={Plus}
-              actionLabel="불러오기 생성"
-              icon={Upload}
+              actionLabel="데이터 업로드"
+              icon={DataUploadIcon}
               onAction={openDialog}
-              title="불러오기 내역이 없습니다."
+              title="업로드 내역이 없습니다."
             />
           ) : (
             logs.map((log) => (
@@ -531,7 +532,7 @@ export function ImportScreen() {
         ) : null}
 
         <button
-          aria-label="불러오기 생성"
+          aria-label="데이터 업로드"
           className="fixed bottom-24 right-5 flex h-8 w-8 items-center justify-center rounded-full bg-[#4880EE] shadow-[0_4px_16px_rgba(59,130,246,0.27)]"
           onClick={openDialog}
           type="button"
@@ -703,7 +704,7 @@ function ImportTargetFilterCombobox({
           ref={inputRef}
           aria-autocomplete="list"
           aria-expanded={isOpen}
-          aria-label="불러오기 대상 필터"
+          aria-label="업로드 대상 필터"
           autoComplete="off"
           className={cn(
             "w-full min-w-0 border outline-none transition",
@@ -751,7 +752,7 @@ function ImportTargetFilterCombobox({
         />
         {selectedIds.length > 0 || search ? (
           <button
-            aria-label="불러오기 대상 필터 지우기"
+            aria-label="업로드 대상 필터 지우기"
             className={cn(
               "absolute right-1 top-1/2 grid -translate-y-1/2 place-items-center rounded-full text-[#9CA3AF] transition hover:bg-white hover:text-[#374151]",
               isMobile ? "h-6 w-6" : "h-7 w-7"
@@ -1030,9 +1031,9 @@ function ImportTemplateDialog({
     !hasEmptyPreviewCell;
   const titleLabel =
     dialogStep === "METHOD"
-      ? "데이터 불러오기"
+      ? "데이터 업로드"
       : dialogStep === "DIRECT_TARGET"
-        ? "직접 불러오기"
+        ? "직접 업로드"
         : selectedTemplate
           ? `${targetLabels[selectedTemplate.templateType]} ${importJob ? "미리보기" : "업로드"}`
           : "업로드";
@@ -1139,13 +1140,13 @@ function ImportTemplateDialog({
             <ImportMethodButton
               active={selectedImportMode === "DIRECT"}
               icon={FileSpreadsheet}
-              label="직접 불러오기"
+              label="직접 업로드"
               onClick={onSelectDirectMode}
             />
             <ImportMethodButton
               active={selectedImportMode === "AI"}
               icon={Bot}
-              label="AI 불러오기"
+              label="AI 업로드"
               onClick={onSelectAiMode}
             />
           </div>

@@ -1,4 +1,4 @@
-import { Briefcase, Calendar, FileText, House, MoreHorizontal } from "lucide-react";
+import { Briefcase, Calendar, House, MoreHorizontal, NotebookPen } from "lucide-react";
 import { NavLink } from "react-router-dom";
 
 const items: ReadonlyArray<{
@@ -11,7 +11,7 @@ const items: ReadonlyArray<{
   { label: "홈", to: "/", icon: House, end: true, activeColor: "#4880EE" },
   { label: "딜", to: "/deals", icon: Briefcase, activeColor: "#4880EE" },
   { label: "일정", to: "/schedules", icon: Calendar, activeColor: "#4880EE" },
-  { label: "회의록", to: "/meeting-notes", icon: FileText, activeColor: "#4880EE" },
+  { label: "회의록", to: "/meeting-notes", icon: NotebookPen, activeColor: "#4880EE" },
   { label: "더보기", to: "/more", icon: MoreHorizontal, activeColor: "#4880EE" },
 ];
 

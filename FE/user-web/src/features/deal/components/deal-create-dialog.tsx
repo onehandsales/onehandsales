@@ -294,7 +294,7 @@ export function DealCreateDialog({
         open={open}
         panelClassName="max-h-[86vh] md:max-h-[760px]"
         size="md"
-        title="딜 추가"
+        title="딜 생성"
         onOpenChange={onOpenChange}
       >
         <ModalForm id={formId} onSubmit={onSubmit}>
@@ -354,7 +354,7 @@ export function DealCreateDialog({
                     getLabel={(company) => company.companyName}
                     icon={Building2}
                     id="deal-company"
-                    createActionLabel="회사 추가"
+                    createActionLabel="회사 생성"
                     isLoading={companyOptionsQuery.isLoading}
                     items={companyOptions}
                     placeholder="회사명 검색"
@@ -401,7 +401,7 @@ export function DealCreateDialog({
                     getLabel={(contact) => contact.label}
                     icon={IdCard}
                     id="deal-contact"
-                    createActionLabel="담당자 추가"
+                    createActionLabel="담당자 생성"
                     disabled={selectedCompanyIds.length === 0}
                     isLoading={contactOptionsQuery.isLoading}
                     items={contactOptions}
@@ -442,7 +442,7 @@ export function DealCreateDialog({
             >
               <ProductMultiSelectDropdown
                 id="deal-products"
-                createActionLabel="제품 추가"
+                createActionLabel="제품 생성"
                 isLoading={productOptionsQuery.isLoading}
                 items={productOptions}
                 search={productSearch}
@@ -665,7 +665,7 @@ function QuickCompanyCreateDialog({
         open={open}
         panelClassName="max-h-[82vh] md:max-h-[560px]"
         size="sm"
-        title="회사 추가"
+        title="회사 생성"
         onOpenChange={onOpenChange}
       >
         <ModalForm id={formId} onSubmit={onSubmit}>
@@ -945,7 +945,7 @@ function QuickContactCreateDialog({
         footerClassName="h-14"
         panelClassName="max-h-[calc(100vh-2rem)] md:max-h-[720px]"
         size="md"
-        title="담당자 추가"
+        title="담당자 생성"
         onOpenChange={onOpenChange}
       >
         <ModalForm className="gap-3" id={formId} onSubmit={onSubmit}>
