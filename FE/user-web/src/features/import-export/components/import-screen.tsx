@@ -1,12 +1,12 @@
 import {
   AlertCircle,
   Bot,
+  BriefcaseBusiness,
   Building2,
   ChevronDown,
   ChevronLeft,
   CheckCircle2,
   FileSpreadsheet,
-  Handshake,
   Loader2,
   Package,
   Plus,
@@ -63,7 +63,7 @@ const targetIcons: Record<ImportTemplateType, LucideIcon> = {
   COMPANY: Building2,
   CONTACT: UserRound,
   PRODUCT: Package,
-  DEAL: Handshake,
+  DEAL: BriefcaseBusiness,
 };
 
 const targetLabels: Record<ImportTemplateType, string> = {
@@ -71,6 +71,41 @@ const targetLabels: Record<ImportTemplateType, string> = {
   CONTACT: "담당자",
   PRODUCT: "제품",
   DEAL: "딜",
+};
+
+const targetColorClassNames: Record<
+  ImportTemplateType,
+  {
+    readonly activeCard: string;
+    readonly idleCard: string;
+    readonly iconBox: string;
+    readonly icon: string;
+  }
+> = {
+  COMPANY: {
+    activeCard: "border-[#4F46E5] bg-[#EEF2FF] text-[#4F46E5]",
+    idleCard: "border-[#E5E7EB] bg-white text-[#111827] hover:bg-[#F8FAFF]",
+    iconBox: "bg-[#EEF2FF]",
+    icon: "text-[#4F46E5]",
+  },
+  CONTACT: {
+    activeCard: "border-[#4880EE] bg-[#DBEAFE] text-[#4880EE]",
+    idleCard: "border-[#E5E7EB] bg-white text-[#111827] hover:bg-[#F7FBFF]",
+    iconBox: "bg-[#DBEAFE]",
+    icon: "text-[#4880EE]",
+  },
+  PRODUCT: {
+    activeCard: "border-[#15803D] bg-[#F0FDF4] text-[#15803D]",
+    idleCard: "border-[#E5E7EB] bg-white text-[#111827] hover:bg-[#F8FEFA]",
+    iconBox: "bg-[#F0FDF4]",
+    icon: "text-[#15803D]",
+  },
+  DEAL: {
+    activeCard: "border-[#DC2626] bg-[#FEF2F2] text-[#DC2626]",
+    idleCard: "border-[#E5E7EB] bg-white text-[#111827] hover:bg-[#FFFAFA]",
+    iconBox: "bg-[#FEF2F2]",
+    icon: "text-[#DC2626]",
+  },
 };
 
 const TARGET_FILTER_OPTIONS: Array<{
@@ -186,7 +221,6 @@ export function ImportScreen() {
     });
 
     downloadBlobFile(file, template.templateName);
-    setNotice(`${template.templateName} 다운로드를 시작했습니다.`);
   };
 
   const onSelectDirectMode = () => {
@@ -536,7 +570,6 @@ export function ImportScreen() {
         open={dialogOpen}
         selectedFile={selectedFile}
         selectedTemplate={selectedTemplate}
-        templates={templates}
       />
     </section>
   );
@@ -944,7 +977,6 @@ function ImportTemplateDialog({
   open,
   dialogStep,
   selectedImportMode,
-  templates,
   selectedTemplate,
   selectedFile,
   importJob,
@@ -966,7 +998,6 @@ function ImportTemplateDialog({
   readonly open: boolean;
   readonly dialogStep: ImportDialogStep;
   readonly selectedImportMode: ImportDialogMode;
-  readonly templates: readonly ImportTemplateItem[];
   readonly selectedTemplate: ImportTemplateItem | null;
   readonly selectedFile: File | null;
   readonly importJob: ImportJobResponse | null;
@@ -1083,9 +1114,6 @@ function ImportTemplateDialog({
             {DIRECT_IMPORT_TARGETS.map((target) => (
               <TemplateSelectButton
                 active={selectedTemplate?.templateType === target}
-                isAvailable={templates.some(
-                  (template) => template.templateType === target
-                )}
                 key={target}
                 onClick={() => onDirectTargetSelect(target)}
                 targetType={target}
@@ -1122,32 +1150,34 @@ function ImportTemplateDialog({
 function TemplateSelectButton({
   targetType,
   active,
-  isAvailable,
   onClick,
 }: {
   readonly targetType: ImportTemplateType;
   readonly active: boolean;
-  readonly isAvailable: boolean;
   readonly onClick: () => void;
 }) {
   const Icon = targetIcons[targetType];
+  const colorClassNames = targetColorClassNames[targetType];
 
   return (
     <button
-      aria-disabled={!isAvailable}
-      className={`grid aspect-[1.55] min-h-[112px] place-items-center gap-2 rounded-lg border p-4 text-center transition ${
-        active
-          ? "border-[#4880EE] bg-[#EEF4FF] text-[#1D4ED8]"
-          : isAvailable
-            ? "border-[#E5E7EB] bg-white text-[#111827] hover:bg-[#F9FAFB]"
-            : "border-[#E5E7EB] bg-white text-[#9CA3AF] hover:bg-[#F9FAFB]"
-      }`}
+      className={cn(
+        "grid aspect-[1.55] min-h-[112px] place-items-center gap-2 rounded-lg border p-4 text-center transition",
+        active ? colorClassNames.activeCard : colorClassNames.idleCard
+      )}
       onClick={onClick}
       type="button"
     >
       <span className="grid place-items-center gap-2">
-        <Icon className="h-7 w-7" />
-        <span className="text-sm font-semibold">{targetLabels[targetType]}</span>
+        <span
+          className={cn(
+            "grid h-11 w-11 place-items-center rounded-xl",
+            colorClassNames.iconBox
+          )}
+        >
+          <Icon className={cn("h-6 w-6", colorClassNames.icon)} />
+        </span>
+        <span className="text-sm font-medium">{targetLabels[targetType]}</span>
       </span>
     </button>
   );
@@ -1177,7 +1207,7 @@ function ImportMethodButton({
     >
       <span className="grid place-items-center gap-3">
         <Icon className="h-8 w-8" />
-        <span className="text-sm font-semibold">{label}</span>
+        <span className="text-sm font-medium">{label}</span>
       </span>
     </button>
   );
