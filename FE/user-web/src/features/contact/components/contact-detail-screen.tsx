@@ -206,7 +206,7 @@ export function ContactDetailScreen({ contactId }: ContactDetailScreenProps) {
           </button>
         </div>
 
-        <div className="flex flex-col gap-4 p-4 pb-24">
+        <div className="flex flex-col gap-4 px-4 pb-24 pt-0">
           <ContactSummaryHeader
             contact={contact}
             isEditing={false}
@@ -296,7 +296,7 @@ export function ContactDetailScreen({ contactId }: ContactDetailScreenProps) {
         </div>
 
         {/* Content Area */}
-        <div className="flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto p-6">
+        <div className="flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto px-6 pb-6 pt-0">
           <ContactSummaryHeader
             contact={contact}
             isEditing={false}
@@ -1378,7 +1378,7 @@ function ContactDetailSkeleton() {
           <div className="h-9 w-14 animate-pulse rounded-lg bg-[#F3F4F6]" />
         </div>
       </div>
-      <div className="flex flex-col gap-4 p-6">
+      <div className="flex flex-col gap-4 px-6 pb-6 pt-0">
         <div className="h-[72px] animate-pulse rounded-xl bg-white" />
         <div className="flex gap-4">
           <div className="h-[240px] flex-1 animate-pulse rounded-xl bg-white" />

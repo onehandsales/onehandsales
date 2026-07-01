@@ -442,7 +442,7 @@ function DealDetailPageLayout({
           onToggleEdit={() => setIsEditOpen(true)}
         />
 
-        <div className="flex flex-col gap-4 p-4 pb-24">
+        <div className="flex flex-col gap-4 px-4 pb-24 pt-0">
           <DealSummaryHeader
             companyName={companyName}
             contactDepartmentName={contactDepartmentName}
@@ -501,7 +501,7 @@ function DealDetailPageLayout({
           onToggleEdit={() => setIsEditOpen(true)}
         />
 
-        <div className="flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto p-6">
+        <div className="flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto px-6 pb-6 pt-0">
           <DealSummaryHeader
             companyName={companyName}
             contactDepartmentName={contactDepartmentName}

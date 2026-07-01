@@ -179,7 +179,7 @@ export function MeetingNoteDetailScreen({
           }}
         />
 
-        <div className="flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto p-4 pb-24 md:p-6">
+        <div className="flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto px-4 pb-24 pt-0 md:px-6 md:pb-6 md:pt-0">
           <MeetingNoteDetailBody detail={detail} />
         </div>
       </div>

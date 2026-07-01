@@ -65,13 +65,10 @@ export function ImportDetailScreen({ importUserLogId }: ImportDetailScreenProps)
   const TargetIcon = targetIcons[detail.targetType];
 
   return (
-    <section className="flex min-h-full flex-col bg-[#FAFAF8]">
-      <ImportDetailHeader
-        targetType={detail.targetType}
-        title={detail.originalFileName}
-      />
+    <section className="flex min-h-dvh flex-col bg-[#FAFAF8]">
+      <ImportDetailHeader title={detail.originalFileName} />
 
-      <div className="mx-auto flex w-full max-w-[1500px] flex-1 flex-col gap-4 px-5 pb-6 pt-1">
+      <div className="flex min-h-0 w-full flex-1 flex-col gap-4 overflow-y-auto px-4 pb-24 pt-0 md:px-6 md:pb-6 md:pt-0">
         <div className="rounded-lg border border-[#E2E5EC] bg-white p-5 shadow-sm">
           <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
             <div className="flex min-w-0 items-start gap-3">
@@ -102,11 +99,31 @@ export function ImportDetailScreen({ importUserLogId }: ImportDetailScreenProps)
               />
             </div>
           </div>
-        </div>
 
-        <div className="grid gap-4 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
-          <InfoPanel detail={detail} />
-          <ColumnPanel detail={detail} />
+          <div className="mt-5 grid gap-5 border-t border-[#E6EAF0] pt-5 lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.4fr)]">
+            <section className="grid content-start gap-3">
+              <h2 className="text-sm font-semibold text-[#111827]">기본 정보</h2>
+              <InfoRow label="대상" value={targetLabels[detail.targetType]} />
+              <InfoRow label="원본 파일명" value={detail.originalFileName} />
+              <InfoRow label="컨텍스트" value={detail.contextLabel ?? "-"} />
+              <InfoRow label="생성일" value={formatLogCreatedAt(detail.createdAt)} />
+            </section>
+
+            <section className="grid content-start gap-3">
+              <h2 className="text-sm font-semibold text-[#111827]">컬럼 snapshot</h2>
+              <div className="flex flex-wrap gap-1.5">
+                {detail.templateColumns.map((column) => (
+                  <span
+                    className="rounded-md bg-[#F3F4F6] px-2 py-1 text-xs text-[#4B5563]"
+                    key={column.key}
+                  >
+                    {column.label}
+                    {column.required ? " *" : ""}
+                  </span>
+                ))}
+              </div>
+            </section>
+          </div>
         </div>
 
         <section className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-lg border border-[#E2E5EC] bg-white shadow-sm">
@@ -140,75 +157,23 @@ export function ImportDetailScreen({ importUserLogId }: ImportDetailScreenProps)
   );
 }
 
-function ImportDetailHeader({
-  targetType,
-  title,
-}: {
-  readonly targetType?: ImportTemplateType;
-  readonly title: string;
-}) {
-  const TargetIcon = targetType ? targetIcons[targetType] : DataUploadIcon;
-
+function ImportDetailHeader({ title }: { readonly title: string }) {
   return (
-    <div className="flex h-16 shrink-0 items-center gap-3 bg-transparent px-4 md:px-6">
-      <Link
-        aria-label="목록으로 돌아가기"
-        className="grid h-9 w-9 shrink-0 place-items-center rounded-md text-[#9CA3AF] transition hover:bg-white hover:text-[#111827]"
-        to="/import"
-      >
-        <ChevronLeft className="h-5 w-5" />
+    <div className="flex h-16 shrink-0 items-center gap-3 bg-transparent px-6">
+      <Link aria-label="목록으로 돌아가기" to="/import">
+        <ChevronLeft className="h-5 w-5 text-[#9CA3AF]" />
       </Link>
       <div className="flex min-w-0 flex-1 items-center gap-1.5 text-[13px]">
-        <DataUploadIcon className="h-4 w-4 shrink-0 text-[#9CA3AF]" />
+        <DataUploadIcon className="h-3.5 w-3.5 shrink-0 text-[#9CA3AF]" />
         <span className="shrink-0 font-medium text-[#6B7280]">
           데이터 업로드
         </span>
         <span className="shrink-0 text-[#9CA3AF]">/</span>
-        {targetType ? (
-          <>
-            <TargetIcon className="h-4 w-4 shrink-0 text-[#4880EE]" />
-            <span className="shrink-0 font-medium text-[#6B7280]">
-              {targetLabels[targetType]}
-            </span>
-            <span className="shrink-0 text-[#9CA3AF]">/</span>
-          </>
-        ) : null}
         <span className="min-w-0 truncate font-bold text-[#111827]">
           {title}
         </span>
       </div>
     </div>
-  );
-}
-
-function InfoPanel({ detail }: { readonly detail: ImportUserLogDetail }) {
-  return (
-    <section className="grid gap-3 rounded-lg border border-[#E2E5EC] bg-white p-4 shadow-sm">
-      <h2 className="text-sm font-semibold text-[#111827]">기본 정보</h2>
-      <InfoRow label="대상" value={targetLabels[detail.targetType]} />
-      <InfoRow label="원본 파일명" value={detail.originalFileName} />
-      <InfoRow label="컨텍스트" value={detail.contextLabel ?? "-"} />
-      <InfoRow label="생성일" value={formatLogCreatedAt(detail.createdAt)} />
-    </section>
-  );
-}
-
-function ColumnPanel({ detail }: { readonly detail: ImportUserLogDetail }) {
-  return (
-    <section className="grid gap-3 rounded-lg border border-[#E2E5EC] bg-white p-4 shadow-sm">
-      <h2 className="text-sm font-semibold text-[#111827]">컬럼 snapshot</h2>
-      <div className="flex flex-wrap gap-1.5">
-        {detail.templateColumns.map((column) => (
-          <span
-            className="rounded-md bg-[#F3F4F6] px-2 py-1 text-xs text-[#4B5563]"
-            key={column.key}
-          >
-            {column.label}
-            {column.required ? " *" : ""}
-          </span>
-        ))}
-      </div>
-    </section>
   );
 }
 
@@ -299,7 +264,7 @@ function ImportDetailError({
   readonly onRetry: () => void;
 }) {
   return (
-    <section className="flex min-h-full flex-col bg-[#FAFAF8]">
+    <section className="flex min-h-dvh flex-col bg-[#FAFAF8]">
       <ImportDetailHeader title="상세" />
       <div className="grid flex-1 place-items-center px-5">
         <div className="grid max-w-md gap-3 rounded-lg border border-red-200 bg-red-50 p-5 text-center text-red-700">
@@ -328,14 +293,10 @@ function ImportDetailError({
 
 function ImportDetailSkeleton() {
   return (
-    <section className="flex min-h-full flex-col bg-[#FAFAF8]">
+    <section className="flex min-h-dvh flex-col bg-[#FAFAF8]">
       <ImportDetailHeader title="상세" />
-      <div className="mx-auto grid w-full max-w-[1500px] gap-4 px-5 pb-6 pt-1">
-        <div className="h-32 animate-pulse rounded-lg border bg-white" />
-        <div className="grid gap-4 lg:grid-cols-2">
-          <div className="h-36 animate-pulse rounded-lg border bg-white" />
-          <div className="h-36 animate-pulse rounded-lg border bg-white" />
-        </div>
+      <div className="grid w-full gap-4 px-4 pb-24 pt-0 md:px-6 md:pb-6 md:pt-0">
+        <div className="h-56 animate-pulse rounded-lg border bg-white" />
         <div className="grid min-h-[360px] place-items-center rounded-lg border bg-white text-[#6B7280]">
           <span className="inline-flex items-center gap-2 text-sm">
             <Loader2 className="h-4 w-4 animate-spin" />

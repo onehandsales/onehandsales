@@ -226,6 +226,7 @@ export function AppShell() {
   const isTrashPage = pathname === "/trash";
   const isBusinessCardPage = pathname === "/business-cards";
   const isImportPage = pathname === "/import";
+  const isImportDetailPage = /^\/import\/[^/]+$/.test(pathname);
   const isFixedViewportPage = isHome || isProductDetail;
 
   // 모바일 헤더 숨김 처리: 상세 페이지 및 자체 헤더 보유 페이지
@@ -238,6 +239,7 @@ export function AppShell() {
     isContactDetail ||
     isProductDetail ||
     isMeetingNoteDetail ||
+    isImportDetailPage ||
     isScheduleRoute;
 
   const hideTopBar =
@@ -251,6 +253,7 @@ export function AppShell() {
     isTrashPage ||
     isBusinessCardPage ||
     isImportPage ||
+    isImportDetailPage ||
     isProductDetail;
 
   // 현재 페이지 브레드크럼 결정
