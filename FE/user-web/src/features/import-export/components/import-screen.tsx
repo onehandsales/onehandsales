@@ -18,7 +18,14 @@ import {
   X,
   type LucideIcon,
 } from "lucide-react";
-import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import {
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type DragEvent,
+  type ReactNode,
+} from "react";
 import { useNavigate } from "react-router-dom";
 import { DataUploadIcon } from "@/components/icons/data-upload-icon";
 import { PageHeader } from "@/components/layout/page-header";
@@ -58,7 +65,7 @@ import { formatDateWithOptions } from "@/utils/format";
 
 const IMPORT_LOG_TABLE_GRID_STYLE = {
   gridTemplateColumns:
-    "minmax(0,1.05fr) minmax(0,1.5fr) minmax(0,1fr) minmax(0,0.85fr) minmax(0,0.85fr) minmax(0,1.05fr)",
+    "minmax(0,1fr) minmax(0,0.95fr) minmax(0,1.7fr) minmax(0,1.05fr)",
 };
 
 const targetIcons: Record<ImportTemplateType, LucideIcon> = {
@@ -410,11 +417,9 @@ export function ImportScreen() {
               style={IMPORT_LOG_TABLE_GRID_STYLE}
             >
               <ImportTableHeaderCell>대상</ImportTableHeaderCell>
-              <ImportTableHeaderCell>파일명</ImportTableHeaderCell>
-              <ImportTableHeaderCell>컨텍스트</ImportTableHeaderCell>
-              <ImportTableHeaderCell>Row</ImportTableHeaderCell>
-              <ImportTableHeaderCell>버전</ImportTableHeaderCell>
-              <ImportTableHeaderCell>생성일</ImportTableHeaderCell>
+              <ImportTableHeaderCell>생성된 데이터 수</ImportTableHeaderCell>
+              <ImportTableHeaderCell>등록한 파일명</ImportTableHeaderCell>
+              <ImportTableHeaderCell>등록일</ImportTableHeaderCell>
             </div>
 
             {logsQuery.isLoading ? (
@@ -913,17 +918,10 @@ function ImportLogRow({
         </span>
       </div>
       <div className="min-w-0 truncate text-[12px] font-medium text-[#475569]">
+        {log.importedRowCount.toLocaleString("ko-KR")}건
+      </div>
+      <div className="min-w-0 truncate text-[12px] font-medium text-[#475569]">
         {log.originalFileName}
-      </div>
-      <div className="min-w-0 truncate text-[12px] font-medium text-[#64748B]">
-        {log.contextLabel ?? "-"}
-      </div>
-      <div className="min-w-0 whitespace-nowrap text-[12px] font-medium text-[#475569]">
-        {log.importedRowCount.toLocaleString("ko-KR")} /{" "}
-        {log.totalRowCount.toLocaleString("ko-KR")}
-      </div>
-      <div className="min-w-0">
-        <Badge>{log.templateVersion}</Badge>
       </div>
       <div className="min-w-0 truncate text-[12px] font-medium text-[#64748B]">
         {formatLogCreatedAt(log.createdAt)}
@@ -952,19 +950,15 @@ function ImportLogMobileCard({
       </div>
       <div className="min-w-0 flex-1">
         <div className="flex min-w-0 items-center gap-2">
+          <Badge>{targetLabels[log.targetType]}</Badge>
           <span className="min-w-0 truncate text-[14px] font-semibold text-[#111827]">
             {log.originalFileName}
           </span>
-          <Badge>{targetLabels[log.targetType]}</Badge>
         </div>
         <div className="mt-1 text-[12px] text-[#6B7280]">
-          Row {log.importedRowCount.toLocaleString("ko-KR")} /{" "}
-          {log.totalRowCount.toLocaleString("ko-KR")}
+          생성된 데이터 수 {log.importedRowCount.toLocaleString("ko-KR")}건
         </div>
-        <div className="mt-1 flex items-center justify-between gap-3">
-          <span className="truncate text-[12px] text-[#6B7280]">
-            {log.contextLabel ?? "-"}
-          </span>
+        <div className="mt-1 flex items-center justify-end gap-3">
           <span className="shrink-0 text-[11px] text-[#9CA3AF]">
             {formatLogCreatedAt(log.createdAt)}
           </span>
@@ -1274,6 +1268,63 @@ function ImportFilePanel({
     mode === "DIRECT"
       ? "다운로드된 양식에 맞춰 파일을 업로드해주세요."
       : "";
+  const [isDraggingFile, setIsDraggingFile] = useState(false);
+  const dragDepthRef = useRef(0);
+
+  const handleDragEnter = (event: DragEvent<HTMLLabelElement>) => {
+    event.preventDefault();
+    event.stopPropagation();
+
+    if (disabled) {
+      return;
+    }
+
+    dragDepthRef.current += 1;
+
+    if (Array.from(event.dataTransfer.types).includes("Files")) {
+      setIsDraggingFile(true);
+    }
+  };
+
+  const handleDragOver = (event: DragEvent<HTMLLabelElement>) => {
+    event.preventDefault();
+    event.stopPropagation();
+
+    if (disabled) {
+      return;
+    }
+
+    event.dataTransfer.dropEffect = "copy";
+    setIsDraggingFile(true);
+  };
+
+  const handleDragLeave = (event: DragEvent<HTMLLabelElement>) => {
+    event.preventDefault();
+    event.stopPropagation();
+
+    if (disabled) {
+      return;
+    }
+
+    dragDepthRef.current = Math.max(0, dragDepthRef.current - 1);
+
+    if (dragDepthRef.current === 0) {
+      setIsDraggingFile(false);
+    }
+  };
+
+  const handleDrop = (event: DragEvent<HTMLLabelElement>) => {
+    event.preventDefault();
+    event.stopPropagation();
+    dragDepthRef.current = 0;
+    setIsDraggingFile(false);
+
+    if (disabled) {
+      return;
+    }
+
+    onFileChange(event.dataTransfer.files[0] ?? null);
+  };
 
   return (
     <div className="grid gap-3 rounded-lg border border-[#E5E7EB] bg-white p-4">
@@ -1286,7 +1337,20 @@ function ImportFilePanel({
           <Badge>{(file.size / 1024).toFixed(1)}KB</Badge>
         ) : null}
       </div>
-      <label className="flex min-h-16 cursor-pointer items-center justify-center rounded-lg border border-dashed border-[#CBD5E1] bg-[#F8FAFC] px-4 py-3 text-sm font-medium text-[#475569] transition hover:bg-[#F1F5F9]">
+      <label
+        className={cn(
+          "flex min-h-16 select-none items-center justify-center rounded-lg border border-dashed px-4 py-3 text-sm font-medium transition",
+          disabled
+            ? "cursor-not-allowed border-[#E5E7EB] bg-[#F3F4F6] text-[#9CA3AF]"
+            : isDraggingFile
+              ? "cursor-copy border-[#4880EE] bg-[#EEF4FF] text-[#1D4ED8]"
+              : "cursor-pointer border-[#CBD5E1] bg-[#F8FAFC] text-[#475569] hover:bg-[#F1F5F9]"
+        )}
+        onDragEnter={handleDragEnter}
+        onDragLeave={handleDragLeave}
+        onDragOver={handleDragOver}
+        onDrop={handleDrop}
+      >
         <input
           accept=".csv,.xlsx"
           className="sr-only"
@@ -1299,8 +1363,15 @@ function ImportFilePanel({
         />
         <span className="grid min-w-0 place-items-center gap-2">
           <span className="inline-flex min-w-0 items-center gap-2">
-            <Upload className="h-4 w-4 shrink-0 text-[#4880EE]" />
-            <span className="truncate">{file ? file.name : "파일 선택"}</span>
+            <Upload
+              className={cn(
+                "h-4 w-4 shrink-0",
+                isDraggingFile ? "text-[#1D4ED8]" : "text-[#4880EE]"
+              )}
+            />
+            <span className="truncate">
+              {isDraggingFile ? "파일 놓기" : file ? file.name : "파일 선택"}
+            </span>
           </span>
           <span className="text-[11px] font-normal leading-none text-[#9CA3AF]">
             csv, xlsx 최대 10MB

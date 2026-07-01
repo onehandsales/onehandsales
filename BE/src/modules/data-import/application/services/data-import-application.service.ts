@@ -1,3 +1,4 @@
+import { Buffer } from "node:buffer";
 import { randomUUID } from "node:crypto";
 import { Inject, Injectable } from "@nestjs/common";
 import {
@@ -327,7 +328,11 @@ export class DataImportApplicationService {
       throw new ImportTemplateNotFoundError();
     }
 
-    const parsedFile = await this.importFileParser.parse(input.file);
+    const originalFileName = this.normalizeUploadedFileName(input.file.originalname);
+    const parsedFile = await this.importFileParser.parse({
+      ...input.file,
+      originalname: originalFileName,
+    });
     const now = new Date();
     const job: StoredImportJob = {
       id: randomUUID(),
@@ -335,7 +340,7 @@ export class DataImportApplicationService {
       targetType: template.templateType,
       templateVersion: template.templateVersion,
       templateColumnsJson: template.columnsJson,
-      originalFileName: input.file.originalname,
+      originalFileName,
       fileSizeBytes: input.file.size,
       sourceColumns: parsedFile.sourceColumns,
       status: "PREVIEW_READY",
@@ -467,7 +472,7 @@ export class DataImportApplicationService {
       templateColumnsJson: job.templateColumnsJson,
       contextLabel: context.label,
       contextJson: context.data,
-      originalFileName: job.originalFileName,
+      originalFileName: this.normalizeUploadedFileName(job.originalFileName),
       fileSizeBytes: job.fileSizeBytes,
       rows,
     };
@@ -576,7 +581,7 @@ export class DataImportApplicationService {
       targetType: item.targetType,
       templateVersion: item.templateVersion,
       contextLabel: item.contextLabel,
-      originalFileName: item.originalFileName,
+      originalFileName: this.normalizeUploadedFileName(item.originalFileName),
       fileSizeBytes: item.fileSizeBytes,
       totalRowCount: item.totalRowCount,
       importedRowCount: item.importedRowCount,
@@ -613,6 +618,33 @@ export class DataImportApplicationService {
       createdAt: job.createdAt.toISOString(),
       updatedAt: job.updatedAt.toISOString(),
     };
+  }
+
+  private normalizeUploadedFileName(fileName: string): string {
+    const normalized = fileName.trim();
+
+    if (normalized.length === 0) {
+      return "upload";
+    }
+
+    return this.repairUtf8MojibakeFileName(normalized);
+  }
+
+  private repairUtf8MojibakeFileName(fileName: string): string {
+    if (!/[\u0080-\u00FF]/.test(fileName)) {
+      return fileName;
+    }
+
+    const repaired = Buffer.from(fileName, "latin1").toString("utf8");
+
+    if (repaired.includes("\uFFFD")) {
+      return fileName;
+    }
+
+    const hasHangul = /[가-힣]/.test(fileName);
+    const repairedHasHangul = /[가-힣]/.test(repaired);
+
+    return repairedHasHangul && !hasHangul ? repaired : fileName;
   }
 
   // 기능 : 현재 사용자 소유 임시 job을 조회합니다.
