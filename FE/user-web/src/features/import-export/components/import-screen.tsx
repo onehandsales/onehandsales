@@ -1021,6 +1021,13 @@ function ImportTemplateDialog({
   const targetType = selectedTemplate?.templateType as ImportTargetType | undefined;
   const isActionDisabled =
     !selectedTemplate || isDownloading || importBusy || selectedTemplate.templateType === "DEAL";
+  const hasEmptyPreviewCell =
+    importJob && targetType ? hasEmptyEditableCell(targetType, editableRows) : false;
+  const canUploadPreview =
+    Boolean(importJob) &&
+    !isActionDisabled &&
+    editableRows.length > 0 &&
+    !hasEmptyPreviewCell;
   const titleLabel =
     dialogStep === "METHOD"
       ? "데이터 불러오기"
@@ -1066,8 +1073,13 @@ function ImportTemplateDialog({
           <div className="flex shrink-0 items-center gap-3">
             {dialogStep === "DIRECT_UPLOAD" && importJob ? (
               <button
-                className="inline-flex h-10 items-center gap-2 rounded-md bg-[#4880EE] px-4 text-sm font-medium text-white hover:bg-[#1D4ED8] disabled:cursor-not-allowed disabled:opacity-60"
-                disabled={isActionDisabled || editableRows.length === 0}
+                className={cn(
+                  "inline-flex h-10 items-center gap-2 rounded-md px-4 text-sm font-medium disabled:cursor-not-allowed",
+                  canUploadPreview
+                    ? "bg-[#4880EE] text-white hover:bg-[#1D4ED8]"
+                    : "bg-[#E5E7EB] text-[#9CA3AF]",
+                )}
+                disabled={!canUploadPreview}
                 onClick={onConfirmImport}
                 type="button"
               >
@@ -1353,28 +1365,39 @@ function ImportEditablePreview({
                 <td className="bg-[#FAFBFC] px-3 py-2 text-[#64748B]">
                   {row.rowNumber}
                 </td>
-                {fields.map((field) => (
-                  <td className="px-2 py-2" key={field.field}>
-                    <input
-                      className="h-8 w-full rounded-md border border-[#D1D5DB] px-2 text-[13px] outline-none focus:border-[#4880EE] focus:ring-2 focus:ring-[#4880EE]/20 disabled:bg-[#F3F4F6]"
-                      disabled={disabled}
-                      onChange={(event) =>
-                        onEditableCellChange(
-                          row.rowNumber,
-                          field,
-                          event.target.value
-                        )
-                      }
-                      type={field.kind === "number" ? "text" : "text"}
-                      value={toInputValue(row.data[field.field])}
-                    />
-                    {row.errorMessage ? (
-                      <span className="mt-1 block truncate text-[11px] text-red-500">
-                        {row.errorMessage}
-                      </span>
-                    ) : null}
-                  </td>
-                ))}
+                {fields.map((field) => {
+                  const cellValue = toInputValue(row.data[field.field]);
+                  const isEmptyCell = cellValue.trim().length === 0;
+
+                  return (
+                    <td className="px-2 py-2" key={field.field}>
+                      <input
+                        aria-invalid={isEmptyCell}
+                        className={cn(
+                          "h-8 w-full rounded-md border px-2 text-[13px] outline-none disabled:bg-[#F3F4F6]",
+                          isEmptyCell
+                            ? "border-red-400 bg-red-50 text-red-700 focus:border-red-500 focus:ring-2 focus:ring-red-100"
+                            : "border-[#D1D5DB] focus:border-[#4880EE] focus:ring-2 focus:ring-[#4880EE]/20",
+                        )}
+                        disabled={disabled}
+                        onChange={(event) =>
+                          onEditableCellChange(
+                            row.rowNumber,
+                            field,
+                            event.target.value
+                          )
+                        }
+                        type={field.kind === "number" ? "text" : "text"}
+                        value={cellValue}
+                      />
+                      {row.errorMessage ? (
+                        <span className="mt-1 block truncate text-[11px] text-red-500">
+                          {row.errorMessage}
+                        </span>
+                      ) : null}
+                    </td>
+                  );
+                })}
               </tr>
             ))}
           </tbody>
@@ -1544,6 +1567,17 @@ function toInputValue(value: ImportFieldValue | undefined): string {
   }
 
   return String(value);
+}
+
+function hasEmptyEditableCell(
+  targetType: ImportTargetType,
+  rows: readonly EditableImportRow[]
+): boolean {
+  const fields = importTargetFields[targetType];
+
+  return rows.some((row) =>
+    fields.some((field) => toInputValue(row.data[field.field]).trim().length === 0)
+  );
 }
 
 function validateEditableRows(
