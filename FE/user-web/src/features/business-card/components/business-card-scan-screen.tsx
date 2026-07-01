@@ -837,7 +837,7 @@ function BusinessCardRegisterDialog({
                 </div>
                 <div>
                   <p className="text-[13px] font-semibold text-[#111827]">
-                    명함 이미지 선택
+                    스캔하려는 명함을 업로드해주세요.
                   </p>
                   <p className="mt-1 text-[12px] text-[#6B7280]">
                     JPG, PNG, WebP · 10MB 이하
