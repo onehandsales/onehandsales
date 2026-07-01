@@ -432,7 +432,7 @@ export function ImportScreen() {
                 title={
                   targetTypes.length > 0
                     ? "조건에 맞는 불러오기 내역이 없습니다."
-                    : "아직 확정 완료된 불러오기 내역이 없습니다."
+                    : "데이터가 존재하지 않아요"
                 }
               />
             ) : (

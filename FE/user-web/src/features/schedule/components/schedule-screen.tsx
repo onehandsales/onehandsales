@@ -175,12 +175,6 @@ export function ScheduleScreen() {
               )}
             </div>
 
-            {schedules.length === 0 ? (
-              <ScheduleEmptyState
-                mode={viewMode}
-                onCreate={() => openCreateDialog(range.start)}
-              />
-            ) : null}
           </div>
         )}
       </div>
@@ -540,37 +534,6 @@ function getScheduleTone(scheduleId: string) {
   );
 
   return tones[index % tones.length] ?? tones[0]!;
-}
-
-function ScheduleEmptyState({
-  mode,
-  onCreate,
-}: {
-  readonly mode: ScheduleViewMode;
-  readonly onCreate: () => void;
-}) {
-  return (
-    <div className="grid place-items-center rounded-lg border border-[#E2E5EC] bg-white px-5 py-10 text-center">
-      <div>
-        <CalendarDays className="mx-auto h-8 w-8 text-[#9CA3AF]" />
-        <p className="mt-3 text-base font-semibold text-[#111827]">
-          {mode === "month"
-            ? "일정을 만들면 이번 달 계획을 볼 수 있어요."
-            : "일정을 만들면 이번 주 계획을 볼 수 있어요."}
-        </p>
-        <p className="mt-2 text-sm text-[#6B7280]">
-          새 일정을 만들면 캘린더에서 바로 확인할 수 있어요.
-        </p>
-        <button
-          className="mt-5 inline-flex h-11 items-center gap-1.5 rounded-md bg-[#4880EE] px-4 text-[13px] font-medium text-white hover:bg-[#316BE0]"
-          onClick={onCreate}
-          type="button"
-        >
-          일정 생성
-        </button>
-      </div>
-    </div>
-  );
 }
 
 function ScheduleError({

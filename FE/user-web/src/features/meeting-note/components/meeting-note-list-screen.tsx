@@ -221,7 +221,7 @@ export function MeetingNoteListScreen() {
         <ListFilterSelect<MeetingNoteSort>
           active={sort !== "createdAtDesc"}
           ariaLabel="정렬 조건"
-          className="w-[clamp(108px,11vw,128px)]"
+          className="w-[clamp(136px,14vw,178px)]"
           onChange={updateSort}
           options={MEETING_NOTE_SORT_OPTIONS}
           value={sort}
@@ -282,7 +282,7 @@ export function MeetingNoteListScreen() {
                 title={
                   hasFilter
                       ? "조건을 바꾸면 회의록을 찾을 수 있어요"
-                      : "새 회의록을 작성하면 여기에서 볼 수 있어요"
+                      : "데이터가 존재하지 않아요"
                 }
               />
             ) : (
@@ -368,7 +368,7 @@ export function MeetingNoteListScreen() {
           <ListFilterSelect<MeetingNoteSort>
             active={sort !== "createdAtDesc"}
             ariaLabel="정렬 조건"
-            className="w-[104px]"
+            className="w-[112px]"
             onChange={updateSort}
             options={MEETING_NOTE_SORT_OPTIONS}
             value={sort}
@@ -411,7 +411,7 @@ export function MeetingNoteListScreen() {
               title={
                 hasFilter
                     ? "조건을 바꾸면 회의록을 찾을 수 있어요"
-                    : "새 회의록을 작성하면 여기에서 볼 수 있어요"
+                    : "데이터가 존재하지 않아요"
               }
             />
           ) : (

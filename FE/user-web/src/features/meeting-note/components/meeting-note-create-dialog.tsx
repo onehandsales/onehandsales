@@ -316,7 +316,7 @@ export function MeetingNoteCreateDialog({
 
           <ModalFormRow columns={2} className="gap-3">
             <EntityMultiSelectField
-                  emptyText="새 회사를 등록하면 여기에서 볼 수 있어요"
+                  emptyText="데이터가 존재하지 않아요"
               errorMessage={errors.companyIds?.message}
               icon={Building2}
               id="meeting-create-company-ids"
@@ -332,7 +332,7 @@ export function MeetingNoteCreateDialog({
               }
             />
             <EntityMultiSelectField
-                    emptyText="새 담당자를 등록하면 여기에서 볼 수 있어요"
+                    emptyText="데이터가 존재하지 않아요"
               errorMessage={errors.contactIds?.message}
               icon={IdCard}
               id="meeting-create-contact-ids"
@@ -351,7 +351,7 @@ export function MeetingNoteCreateDialog({
 
           <ModalFormRow columns={2} className="gap-3">
             <EntityMultiSelectField
-                  emptyText="새 제품을 등록하면 여기에서 볼 수 있어요"
+                  emptyText="데이터가 존재하지 않아요"
               errorMessage={errors.productIds?.message}
               icon={Package}
               id="meeting-create-product-ids"
@@ -367,7 +367,7 @@ export function MeetingNoteCreateDialog({
               }
             />
             <EntityMultiSelectField
-                  emptyText="새 딜을 등록하면 여기에서 볼 수 있어요"
+                  emptyText="데이터가 존재하지 않아요"
               errorMessage={errors.dealIds?.message}
               icon={BriefcaseBusiness}
               id="meeting-create-deal-ids"

@@ -169,7 +169,7 @@ export function BusinessCardScanScreen() {
                 actionLabel="명함스캔"
                 icon={Camera}
                 onAction={() => setIsRegisterOpen(true)}
-                title="명함 스캔 내역이 없어요."
+                title="데이터가 존재하지 않아요"
               />
             ) : (
               pageData.items.map((scanLog) => (
@@ -232,7 +232,7 @@ export function BusinessCardScanScreen() {
               actionLabel="명함스캔"
               icon={Camera}
               onAction={() => setIsRegisterOpen(true)}
-              title="명함 스캔 내역이 없어요."
+              title="데이터가 존재하지 않아요"
             />
           ) : (
             pageData.items.map((scanLog) => (

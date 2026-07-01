@@ -845,7 +845,7 @@ function MeetingNoteEditPanel({
 
       <ModalFormRow className="gap-3" columns={2}>
         <EntityMultiSelectField
-                    emptyText="새 회사를 등록하면 여기에서 볼 수 있어요."
+                    emptyText="데이터가 존재하지 않아요"
           errorMessage={errors.companyIds?.message}
           icon={Building2}
           id="meeting-note-detail-company-ids"
@@ -879,7 +879,7 @@ function MeetingNoteEditPanel({
 
       <ModalFormRow className="gap-3" columns={2}>
         <EntityMultiSelectField
-                    emptyText="새 제품을 등록하면 여기에서 볼 수 있어요."
+                    emptyText="데이터가 존재하지 않아요"
           errorMessage={errors.productIds?.message}
           icon={Package}
           id="meeting-note-detail-product-ids"
@@ -895,7 +895,7 @@ function MeetingNoteEditPanel({
           }
         />
         <EntityMultiSelectField
-                    emptyText="새 딜을 등록하면 여기에서 볼 수 있어요."
+                    emptyText="데이터가 존재하지 않아요"
           errorMessage={errors.dealIds?.message}
           icon={BriefcaseBusiness}
           id="meeting-note-detail-deal-ids"

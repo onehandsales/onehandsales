@@ -279,7 +279,7 @@ export function ProductListScreen({
         <ListFilterSelect
           active={sort !== "createdAtDesc"}
           ariaLabel="정렬 조건"
-          className="w-[clamp(112px,11vw,132px)]"
+          className="w-[clamp(136px,14vw,178px)]"
           onChange={(nextSort) => {
             setSort(nextSort);
             setPage(1);
@@ -337,7 +337,7 @@ export function ProductListScreen({
                 title={
                   hasFilters
                       ? "조건을 바꾸면 제품을 찾을 수 있어요"
-                      : "새 제품을 등록하면 여기에서 볼 수 있어요"
+                      : "데이터가 존재하지 않아요"
                 }
               />
             ) : (
@@ -469,7 +469,7 @@ export function ProductListScreen({
               title={
                 hasFilters
                     ? "조건을 바꾸면 제품을 찾을 수 있어요"
-                    : "새 제품을 등록하면 여기에서 볼 수 있어요"
+                    : "데이터가 존재하지 않아요"
               }
             />
           ) : (

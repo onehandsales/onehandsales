@@ -234,7 +234,7 @@ export function ContactListScreen() {
         <ListFilterSelect
           active={sort !== "createdAtDesc"}
           ariaLabel="정렬 조건"
-          className="w-[clamp(104px,10vw,118px)]"
+          className="w-[clamp(136px,14vw,178px)]"
           onChange={(nextSort) => {
             setSort(nextSort);
             setPage(1);
@@ -323,7 +323,7 @@ export function ContactListScreen() {
                 title={
                   hasSearch
                       ? "조건을 바꾸면 담당자를 찾을 수 있어요"
-                      : "새 담당자를 등록하면 여기에서 볼 수 있어요"
+                      : "데이터가 존재하지 않아요"
                 }
               />
             ) : (
@@ -454,7 +454,7 @@ export function ContactListScreen() {
               title={
                 hasSearch
                     ? "조건을 바꾸면 담당자를 찾을 수 있어요"
-                    : "새 담당자를 등록하면 여기에서 볼 수 있어요"
+                    : "데이터가 존재하지 않아요"
               }
             />
           ) : (

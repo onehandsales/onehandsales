@@ -352,7 +352,7 @@ export function DealPipelineHomeScreen({
                 <ListFilterSelect
                   active={sort !== "createdAtDesc"}
                   ariaLabel="정렬 조건"
-                  className="w-[clamp(112px,12vw,144px)]"
+                  className="w-[clamp(136px,14vw,178px)]"
                   onChange={onSortChange}
                   options={SORT_OPTIONS}
                   value={sort}
@@ -393,7 +393,7 @@ export function DealPipelineHomeScreen({
                     title={
                       hasFilter
                         ? "조건을 바꾸면 딜을 찾을 수 있어요"
-                        : "새 딜을 등록하면 여기에서 볼 수 있어요"
+                        : "데이터가 존재하지 않아요"
                     }
                   />
                 ) : (
@@ -541,7 +541,7 @@ export function DealPipelineHomeScreen({
               icon={BriefcaseBusiness}
               onAction={() => setIsCreateOpen(true)}
               title={
-                hasFilter ? "조건을 바꾸면 딜을 찾을 수 있어요" : "새 딜을 등록하면 여기에서 볼 수 있어요"
+                hasFilter ? "조건을 바꾸면 딜을 찾을 수 있어요" : "데이터가 존재하지 않아요"
               }
             />
           ) : (
