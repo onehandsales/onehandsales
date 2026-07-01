@@ -1,9 +1,13 @@
 import {
   AlertCircle,
+  BriefcaseBusiness,
   Building2,
+  CalendarDays,
   ChevronLeft,
+  CheckCircle2,
+  Database,
   FileSpreadsheet,
-  Handshake,
+  HardDrive,
   Loader2,
   Package,
   UserRound,
@@ -27,7 +31,7 @@ const targetIcons: Record<ImportTemplateType, LucideIcon> = {
   COMPANY: Building2,
   CONTACT: UserRound,
   PRODUCT: Package,
-  DEAL: Handshake,
+  DEAL: BriefcaseBusiness,
 };
 
 const targetLabels: Record<ImportTemplateType, string> = {
@@ -95,7 +99,7 @@ export function ImportDetailScreen({ importUserLogId }: ImportDetailScreenProps)
       <div className="flex min-h-0 w-full flex-1 flex-col gap-4 overflow-y-auto px-4 pb-24 pt-0 md:px-6 md:pb-6 md:pt-0">
         <div className="rounded-lg border border-[#E2E5EC] bg-white p-5 shadow-sm">
           <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
-            <div className="flex min-w-0 items-start gap-3">
+            <div className="flex min-w-0 items-center gap-3">
               <div
                 className={cn(
                   "grid h-11 w-11 shrink-0 place-items-center rounded-lg",
@@ -105,35 +109,49 @@ export function ImportDetailScreen({ importUserLogId }: ImportDetailScreenProps)
                 <TargetIcon className={cn("h-5 w-5", targetColorClassName.icon)} />
               </div>
               <div className="min-w-0">
-                <p className="text-sm font-medium text-[#6B7280]">
+                <h1 className="truncate text-xl font-semibold text-[#111827]">
                   {targetLabels[detail.targetType]} 업로드
-                </p>
-                <h1 className="mt-1 truncate text-xl font-semibold text-[#111827]">
-                  {detail.originalFileName}
                 </h1>
-                <p className="mt-1 text-sm text-[#6B7280]">
-                  {formatLogCreatedAt(detail.createdAt)}
-                </p>
               </div>
             </div>
-            <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:flex lg:flex-wrap lg:justify-end">
-              <SummaryBadge label="대상" value={targetLabels[detail.targetType]} />
-              <SummaryBadge
-                label="성공한 데이터 수"
-                value={`${detail.importedRowCount.toLocaleString("ko-KR")}건`}
-              />
-              <SummaryBadge
-                label="Import한 데이터 수"
-                value={`${detail.totalRowCount.toLocaleString("ko-KR")}건`}
-              />
-              <SummaryBadge
-                label="파일 크기"
-                value={formatFileSize(detail.fileSizeBytes)}
-              />
-              <SummaryBadge
-                label="등록일"
-                value={formatLogCreatedAt(detail.createdAt)}
-              />
+            <div className="flex min-w-0 flex-col gap-3 lg:flex-1 lg:flex-row lg:items-start lg:justify-between">
+              <dl className="flex min-w-0 flex-wrap justify-start gap-x-5 gap-y-3">
+                <SummaryFact
+                  icon={CheckCircle2}
+                  iconClassName="text-[#15803D]"
+                  label="성공 개수"
+                  value={`${detail.importedRowCount.toLocaleString("ko-KR")}건`}
+                />
+                <SummaryFact
+                  icon={Database}
+                  iconClassName="text-[#4880EE]"
+                  label="전체 데이터 개수"
+                  value={`${detail.totalRowCount.toLocaleString("ko-KR")}건`}
+                />
+                <SummaryFact
+                  icon={HardDrive}
+                  iconClassName="text-[#64748B]"
+                  label="파일 사이즈"
+                  value={formatFileSize(detail.fileSizeBytes)}
+                />
+              </dl>
+              <dl className="flex min-w-0 flex-wrap justify-start gap-x-5 gap-y-3 lg:justify-end">
+                <SummaryFact
+                  icon={FileSpreadsheet}
+                  iconClassName="text-[#64748B]"
+                  label="등록한 파일 이름"
+                  value={detail.originalFileName}
+                  valueClassName="font-medium text-[#475569]"
+                  wide
+                />
+                <SummaryFact
+                  icon={CalendarDays}
+                  iconClassName="text-[#64748B]"
+                  label="등록일"
+                  value={formatLogCreatedAt(detail.createdAt)}
+                  valueClassName="font-medium text-[#475569]"
+                />
+              </dl>
             </div>
           </div>
         </div>
@@ -141,9 +159,9 @@ export function ImportDetailScreen({ importUserLogId }: ImportDetailScreenProps)
         <section className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-lg border border-[#E2E5EC] bg-white shadow-sm">
           <div className="flex h-12 shrink-0 items-center justify-between gap-3 border-b border-[#E6EAF0] bg-[#FAFBFC] px-4">
             <div className="flex min-w-0 items-center gap-2">
-              <FileSpreadsheet className="h-4 w-4 text-[#4880EE]" />
+              <FileSpreadsheet className="h-4 w-4 text-[#111827]" />
               <h2 className="truncate text-sm font-semibold text-[#111827]">
-                Row snapshot
+                업로드된 데이터
               </h2>
             </div>
             <span className="text-xs text-[#9CA3AF]">
@@ -156,7 +174,7 @@ export function ImportDetailScreen({ importUserLogId }: ImportDetailScreenProps)
               <div>
                 <FileSpreadsheet className="mx-auto h-6 w-6 text-[#9CA3AF]" />
                 <p className="mt-3 text-sm font-semibold text-[#111827]">
-                  저장된 row가 없습니다.
+                  업로드된 데이터가 없습니다.
                 </p>
               </div>
             </div>
@@ -196,7 +214,7 @@ function ImportRowsTable({ detail }: { readonly detail: ImportUserLogDetail }) {
         <thead className="sticky top-0 z-10 bg-[#FAFBFC] text-left">
           <tr className="border-b border-[#E6EAF0]">
             <th className="w-20 whitespace-nowrap px-4 py-3 text-xs font-semibold text-[#64748B]">
-              Row
+              행
             </th>
             <th className="min-w-44 whitespace-nowrap px-4 py-3 text-xs font-semibold text-[#64748B]">
               표시 이름
@@ -238,17 +256,35 @@ function ImportRowsTable({ detail }: { readonly detail: ImportUserLogDetail }) {
   );
 }
 
-function SummaryBadge({
+function SummaryFact({
+  icon: Icon,
+  iconClassName,
   label,
   value,
+  valueClassName,
+  wide = false,
 }: {
+  readonly icon: LucideIcon;
+  readonly iconClassName?: string;
   readonly label: string;
   readonly value: string;
+  readonly valueClassName?: string;
+  readonly wide?: boolean;
 }) {
   return (
-    <div className="rounded-lg border border-[#E2E5EC] bg-[#FAFAF8] px-3 py-2">
-      <p className="text-[11px] text-[#9CA3AF]">{label}</p>
-      <p className="mt-0.5 text-sm font-semibold text-[#111827]">{value}</p>
+    <div className={cn("min-w-[108px] text-left", wide && "lg:max-w-[260px]")}>
+      <dt className="flex items-center gap-1.5 text-[13px] font-medium text-[#9CA3AF]">
+        <Icon className={cn("h-3.5 w-3.5 shrink-0", iconClassName)} />
+        <span className="truncate">{label}</span>
+      </dt>
+      <dd
+        className={cn(
+          "mt-1 min-w-0 truncate text-[11px] font-semibold text-[#111827]",
+          valueClassName
+        )}
+      >
+        {value}
+      </dd>
     </div>
   );
 }
