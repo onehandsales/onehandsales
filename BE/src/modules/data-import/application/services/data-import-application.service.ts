@@ -144,8 +144,16 @@ export interface ConfirmImportJobRowInput {
   readonly data: Readonly<Record<string, unknown>>;
 }
 
+// 역할 : 담당자 불러오기 확정 시 새 회사 보정 값을 정의합니다.
+export interface ConfirmContactCompanyResolutionJobInput {
+  readonly companyName: string;
+  readonly companyFieldName: string;
+  readonly companyRegionName: string;
+}
+
 // 역할 : ConfirmImportJobInput 불러오기 확정 요청 값을 정의합니다.
 export interface ConfirmImportJobInput {
+  readonly contactCompanyResolutions?: readonly ConfirmContactCompanyResolutionJobInput[];
   readonly rows?: readonly ConfirmImportJobRowInput[];
 }
 
@@ -461,20 +469,28 @@ export class DataImportApplicationService {
     const job = await this.getStoredImportJob(currentUser, importJobId);
     const columns = this.normalizeColumns(job.templateColumnsJson);
     const rows = this.normalizeConfirmRows(job, columns, input.rows);
+    const contactCompanyResolutions =
+      job.targetType === "CONTACT"
+        ? this.normalizeContactCompanyResolutions(
+            input.contactCompanyResolutions
+          )
+        : undefined;
 
     this.assertSupportedTargetType(job.targetType);
 
-    const context = this.createImportContext(job.targetType, rows);
     const confirmInput = {
       userId: currentUser.id,
       targetType: job.targetType,
       templateVersion: job.templateVersion,
       templateColumnsJson: job.templateColumnsJson,
-      contextLabel: context.label,
-      contextJson: context.data,
+      contextLabel: null,
+      contextJson: null,
       originalFileName: this.normalizeUploadedFileName(job.originalFileName),
       fileSizeBytes: job.fileSizeBytes,
       rows,
+      ...(contactCompanyResolutions === undefined
+        ? {}
+        : { contactCompanyResolutions }),
     };
 
     switch (job.targetType) {
@@ -983,7 +999,7 @@ export class DataImportApplicationService {
   private normalizeForMatching(value: string): string {
     return value
       .toLowerCase()
-      .replace(/[()\[\]{}_\-\s./\\:：,，]/g, "")
+      .replace(/[()[\]{}_\s./\\:：,，-]/g, "")
       .trim();
   }
 
@@ -1111,6 +1127,49 @@ export class DataImportApplicationService {
         targetLabel: this.getTargetLabel(job.targetType, submittedData),
       };
     });
+  }
+
+  // 기능 : 담당자 불러오기에서 새 회사 생성에 필요한 보정 값을 정규화합니다.
+  private normalizeContactCompanyResolutions(
+    resolutions: readonly ConfirmContactCompanyResolutionJobInput[] | undefined
+  ) {
+    const resolutionMap = new Map<
+      string,
+      {
+        readonly companyName: string;
+        readonly companyFieldName: string;
+        readonly companyRegionName: string;
+      }
+    >();
+
+    for (const resolution of resolutions ?? []) {
+      const companyName = this.normalizeRequiredText(
+        resolution.companyName,
+        "새 회사명이 올바르지 않습니다."
+      );
+      const companyFieldName = this.normalizeRequiredText(
+        resolution.companyFieldName,
+        `${companyName}의 회사 분야를 입력해 주세요.`
+      );
+      const companyRegionName = this.normalizeRequiredText(
+        resolution.companyRegionName,
+        `${companyName}의 회사 지역을 입력해 주세요.`
+      );
+
+      if (resolutionMap.has(companyName)) {
+        throw new ValidationDomainError(
+          "새 회사 정보에 중복된 회사명이 있습니다."
+        );
+      }
+
+      resolutionMap.set(companyName, {
+        companyName,
+        companyFieldName,
+        companyRegionName,
+      });
+    }
+
+    return [...resolutionMap.values()];
   }
 
   // 기능 : 확정 요청 row 데이터를 대상 컬럼 정의에 맞춰 정규화합니다.
@@ -1294,41 +1353,6 @@ export class DataImportApplicationService {
       case "DEAL":
         return this.readSubmittedText(data, "dealName");
     }
-  }
-
-  // 기능 : 불러오기 내역 목록에 보여줄 context snapshot을 생성합니다.
-  private createImportContext(
-    targetType: ImportTemplateType,
-    rows: readonly ConfirmReadyRow[]
-  ): { readonly label: string | null; readonly data: ImportSubmittedData | null } {
-    if (targetType !== "CONTACT") {
-      return { label: null, data: null };
-    }
-
-    const companyNames = [
-      ...new Set(
-        rows
-          .map((row) => this.readSubmittedText(row.submittedData, "companyName"))
-          .filter((companyName) => companyName.length > 0)
-      ),
-    ];
-
-    if (companyNames.length === 0) {
-      return { label: null, data: null };
-    }
-
-    const firstCompanyName = companyNames[0] ?? "";
-
-    return {
-      label:
-        companyNames.length === 1
-          ? firstCompanyName
-          : `${firstCompanyName} 외 ${companyNames.length - 1}개 회사`,
-      data: {
-        companyName: firstCompanyName,
-        companyCount: companyNames.length,
-      },
-    };
   }
 
   // 기능 : 제출 데이터에서 문자열 표시값을 읽습니다.

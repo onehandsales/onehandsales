@@ -112,8 +112,12 @@ export class ImportJobController {
     @Param("importJobId", ParseUUIDPipe) importJobId: string,
     @Body() body: ConfirmImportJobDto
   ) {
-    const input: ConfirmImportJobInput =
-      body.rows === undefined ? {} : { rows: body.rows };
+    const input: ConfirmImportJobInput = {
+      ...(body.contactCompanyResolutions === undefined
+        ? {}
+        : { contactCompanyResolutions: body.contactCompanyResolutions }),
+      ...(body.rows === undefined ? {} : { rows: body.rows }),
+    };
 
     return this.dataImportApplicationService.confirmImportJob(
       currentUser,

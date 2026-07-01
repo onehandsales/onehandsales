@@ -71,6 +71,13 @@ export interface ConfirmImportRowInput {
   readonly targetLabel: string;
 }
 
+// 역할 : 담당자 불러오기 중 새로 생성할 회사의 보정 정보를 정의합니다.
+export interface ConfirmContactCompanyResolutionInput {
+  readonly companyName: string;
+  readonly companyFieldName: string;
+  readonly companyRegionName: string;
+}
+
 // 역할 : ConfirmImportInput 확정 생성과 성공 로그 저장 입력을 정의합니다.
 export interface ConfirmImportInput {
   readonly userId: string;
@@ -82,6 +89,7 @@ export interface ConfirmImportInput {
   readonly originalFileName: string;
   readonly fileSizeBytes: number;
   readonly rows: readonly ConfirmImportRowInput[];
+  readonly contactCompanyResolutions?: readonly ConfirmContactCompanyResolutionInput[];
 }
 
 // 역할 : ImportUserLogRecord 불러오기 로그 상세 레코드를 정의합니다.

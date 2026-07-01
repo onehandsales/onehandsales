@@ -1,5 +1,6 @@
 import { Prisma } from "@prisma/client";
 import type {
+  ConfirmContactCompanyResolutionInput,
   ConfirmImportInput,
   FindImportUserLogInput,
   ImportTemplateRecord,
@@ -9,10 +10,8 @@ import type {
   ImportUserLogRecord,
   ListImportUserLogsInput,
 } from "@/modules/data-import/application/ports/import-template.repository";
+import { ValidationDomainError } from "@/shared/domain/errors/common.errors";
 import { PrismaService } from "@/shared/infrastructure/prisma/prisma.service";
-
-const DEFAULT_COMPANY_FIELD_NAME = "미분류";
-const DEFAULT_COMPANY_REGION_NAME = "미지정";
 
 // 역할 : PrismaImportTemplateRepository 불러오기 양식 조회를 Prisma로 구현합니다.
 export class PrismaImportTemplateRepository implements ImportTemplateRepository {
@@ -212,12 +211,20 @@ export class PrismaImportTemplateRepository implements ImportTemplateRepository 
   async confirmContactImport(input: ConfirmImportInput): Promise<void> {
     await this.prismaService.$transaction(async (client) => {
       const log = await this.createImportUserLog(client, input);
+      const companyResolutionMap = this.createContactCompanyResolutionMap(
+        input.contactCompanyResolutions ?? []
+      );
 
       for (const row of input.rows) {
+        const companyName = this.readRequiredString(
+          row.submittedData,
+          "companyName"
+        );
         const company = await this.findOrCreateCompanyByName(
           client,
           input.userId,
-          this.readRequiredString(row.submittedData, "companyName")
+          companyName,
+          companyResolutionMap.get(companyName)
         );
         const department = await this.upsertContactDepartment(
           client,
@@ -323,10 +330,46 @@ export class PrismaImportTemplateRepository implements ImportTemplateRepository 
     });
   }
 
+  private createContactCompanyResolutionMap(
+    resolutions: readonly ConfirmContactCompanyResolutionInput[]
+  ): ReadonlyMap<string, ConfirmContactCompanyResolutionInput> {
+    const resolutionMap = new Map<string, ConfirmContactCompanyResolutionInput>();
+
+    for (const resolution of resolutions) {
+      const companyName = this.normalizeRequiredResolutionText(
+        resolution.companyName,
+        "새 회사명이 올바르지 않습니다."
+      );
+      const companyFieldName = this.normalizeRequiredResolutionText(
+        resolution.companyFieldName,
+        `${companyName}의 회사 분야를 입력해 주세요.`
+      );
+      const companyRegionName = this.normalizeRequiredResolutionText(
+        resolution.companyRegionName,
+        `${companyName}의 회사 지역을 입력해 주세요.`
+      );
+
+      if (resolutionMap.has(companyName)) {
+        throw new ValidationDomainError(
+          "새 회사 정보에 중복된 회사명이 있습니다."
+        );
+      }
+
+      resolutionMap.set(companyName, {
+        companyName,
+        companyFieldName,
+        companyRegionName,
+      });
+    }
+
+    return resolutionMap;
+  }
+
   private async findOrCreateCompanyByName(
     client: Prisma.TransactionClient,
     userId: string,
-    companyName: string
+    companyName: string,
+    resolution: ConfirmContactCompanyResolutionInput | undefined
   ): Promise<{ readonly id: string; readonly companyName: string }> {
     const existing = await client.company.findFirst({
       where: {
@@ -345,15 +388,21 @@ export class PrismaImportTemplateRepository implements ImportTemplateRepository 
       return existing;
     }
 
+    if (!resolution) {
+      throw new ValidationDomainError(
+        `${companyName}의 회사 분야와 회사 지역을 입력해 주세요.`
+      );
+    }
+
     const field = await this.upsertCompanyField(
       client,
       userId,
-      DEFAULT_COMPANY_FIELD_NAME
+      resolution.companyFieldName
     );
     const region = await this.upsertCompanyRegion(
       client,
       userId,
-      DEFAULT_COMPANY_REGION_NAME
+      resolution.companyRegionName
     );
 
     return client.company.create({
@@ -368,6 +417,16 @@ export class PrismaImportTemplateRepository implements ImportTemplateRepository 
         companyName: true,
       },
     });
+  }
+
+  private normalizeRequiredResolutionText(value: string, message: string): string {
+    const normalized = value.trim();
+
+    if (normalized.length === 0) {
+      throw new ValidationDomainError(message);
+    }
+
+    return normalized;
   }
 
   private async upsertCompanyField(

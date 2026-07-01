@@ -16,17 +16,19 @@ export function useCompanyList(params: CompanyListParams) {
 }
 
 // 기능 : 회사 분야 선택지를 조회합니다.
-export function useCompanyFields() {
+export function useCompanyFields(options?: { readonly enabled?: boolean }) {
   return useQuery({
     queryKey: companyQueryKeys.fields(),
     queryFn: listCompanyFields,
+    enabled: options?.enabled ?? true,
   });
 }
 
 // 기능 : 회사 지역 선택지를 조회합니다.
-export function useCompanyRegions() {
+export function useCompanyRegions(options?: { readonly enabled?: boolean }) {
   return useQuery({
     queryKey: companyQueryKeys.regions(),
     queryFn: listCompanyRegions,
+    enabled: options?.enabled ?? true,
   });
 }

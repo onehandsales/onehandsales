@@ -3,8 +3,10 @@ import {
   IsArray,
   IsIn,
   IsInt,
+  IsNotEmpty,
   IsObject,
   IsOptional,
+  IsString,
   Min,
   ValidateNested,
 } from "class-validator";
@@ -40,8 +42,29 @@ export class ConfirmImportJobRowDto {
   data!: Record<string, unknown>;
 }
 
+// 역할 : 담당자 불러오기 중 새 회사 생성 보정 요청 값을 검증합니다.
+export class ConfirmContactCompanyResolutionDto {
+  @IsString()
+  @IsNotEmpty()
+  companyName!: string;
+
+  @IsString()
+  @IsNotEmpty()
+  companyFieldName!: string;
+
+  @IsString()
+  @IsNotEmpty()
+  companyRegionName!: string;
+}
+
 // 역할 : ConfirmImportJobDto 데이터 불러오기 확정 요청 값을 검증합니다.
 export class ConfirmImportJobDto {
+  @IsOptional()
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => ConfirmContactCompanyResolutionDto)
+  contactCompanyResolutions?: ConfirmContactCompanyResolutionDto[];
+
   @IsOptional()
   @IsArray()
   @ValidateNested({ each: true })

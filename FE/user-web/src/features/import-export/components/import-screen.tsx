@@ -32,6 +32,10 @@ import { PageHeader } from "@/components/layout/page-header";
 import { ModalShell } from "@/components/ui/modal-shell";
 import { Pagination } from "@/components/ui/pagination";
 import { ListEmptyState } from "@/components/ui/state";
+import { useCompanyFields, useCompanyRegions } from "@/features/company/hooks/use-company-list";
+import type { CompanyField, CompanyRegion } from "@/features/company/types/company";
+import { useCompanyOptions } from "@/features/contact/hooks/use-company-options";
+import type { ContactCompanyOption } from "@/features/contact/types/contact";
 import {
   useConfirmImportJobMutation,
   useCreateImportJobMutation,
@@ -154,6 +158,23 @@ type EditableImportRow = {
   readonly errorMessage: string | null;
 };
 
+type ContactCompanyImportSummaryData = {
+  readonly totalCompanyCount: number;
+  readonly matchedCompanyCount: number;
+  readonly newCompanyCount: number;
+  readonly newCompanyNames: readonly string[];
+};
+
+type ContactCompanyResolutionValue = {
+  readonly companyFieldName: string;
+  readonly companyRegionName: string;
+};
+
+type ContactCompanyResolutionField = keyof ContactCompanyResolutionValue;
+type ContactCompanyResolutionState = Readonly<
+  Record<string, ContactCompanyResolutionValue>
+>;
+
 export function ImportScreen() {
   const navigate = useNavigate();
   const [page, setPage] = useState(1);
@@ -168,6 +189,8 @@ export function ImportScreen() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [importJob, setImportJob] = useState<ImportJobResponse | null>(null);
   const [editableRows, setEditableRows] = useState<EditableImportRow[]>([]);
+  const [contactCompanyResolutions, setContactCompanyResolutions] =
+    useState<ContactCompanyResolutionState>({});
   const templatesQuery = useActiveImportTemplates();
   const downloadMutation = useDownloadImportTemplateMutation();
   const createImportJobMutation = useCreateImportJobMutation();
@@ -181,7 +204,10 @@ export function ImportScreen() {
     [page, targetTypes]
   );
   const logsQuery = useImportUserLogList(listParams);
-  const templates = templatesQuery.data?.items ?? [];
+  const templates = useMemo(
+    () => templatesQuery.data?.items ?? [],
+    [templatesQuery.data?.items]
+  );
   const selectedTemplate = useMemo(
     () =>
       templates.find((template) => template.id === selectedTemplateId) ?? null,
@@ -222,6 +248,7 @@ export function ImportScreen() {
     setSelectedFile(null);
     setImportJob(null);
     setEditableRows([]);
+    setContactCompanyResolutions({});
   };
 
   const downloadTemplate = async (template: ImportTemplateItem) => {
@@ -321,6 +348,27 @@ export function ImportScreen() {
     );
   };
 
+  const onContactCompanyResolutionChange = (
+    companyName: string,
+    field: ContactCompanyResolutionField,
+    value: string
+  ) => {
+    setContactCompanyResolutions((currentResolutions) => {
+      const currentResolution = currentResolutions[companyName] ?? {
+        companyFieldName: "",
+        companyRegionName: "",
+      };
+
+      return {
+        ...currentResolutions,
+        [companyName]: {
+          ...currentResolution,
+          [field]: value,
+        },
+      };
+    });
+  };
+
   const onConfirmImport = async () => {
     if (!importJob) {
       setFormError("먼저 엑셀 파일을 업로드해 주세요.");
@@ -343,6 +391,10 @@ export function ImportScreen() {
 
     const result = await confirmImportJobMutation.mutateAsync({
       importJobId: importJob.id,
+      contactCompanyResolutions:
+        selectedTemplate.templateType === "CONTACT"
+          ? toContactCompanyResolutionPayload(contactCompanyResolutions)
+          : undefined,
       rows: editableRows.map((row) => ({
         rowNumber: row.rowNumber,
         data: row.data,
@@ -547,6 +599,7 @@ export function ImportScreen() {
       </section>
 
       <ImportTemplateDialog
+        contactCompanyResolutions={contactCompanyResolutions}
         dialogStep={dialogStep}
         editableRows={editableRows}
         errorMessage={formError}
@@ -554,6 +607,7 @@ export function ImportScreen() {
         importJob={importJob}
         isDownloading={downloadMutation.isPending}
         selectedImportMode={selectedImportMode}
+        onContactCompanyResolutionChange={onContactCompanyResolutionChange}
         onConfirmImport={() => void onConfirmImport()}
         onDirectTargetSelect={(targetType) => void onDirectTargetSelect(targetType)}
         onEditableCellChange={onEditableCellChange}
@@ -563,6 +617,7 @@ export function ImportScreen() {
           setImportJob(null);
           setEditableRows([]);
           setSelectedFile(null);
+          setContactCompanyResolutions({});
           setDialogStep(dialogStep === "DIRECT_UPLOAD" ? "DIRECT_TARGET" : "METHOD");
         }}
         onOpenChange={(nextOpen) => {
@@ -976,6 +1031,7 @@ function ImportTemplateDialog({
   selectedFile,
   importJob,
   editableRows,
+  contactCompanyResolutions,
   errorMessage,
   isDownloading,
   importBusy,
@@ -985,6 +1041,7 @@ function ImportTemplateDialog({
   onDirectTargetSelect,
   onRunDirectImport,
   onEditableCellChange,
+  onContactCompanyResolutionChange,
   onConfirmImport,
   onBack,
   onOpenChange,
@@ -996,6 +1053,7 @@ function ImportTemplateDialog({
   readonly selectedFile: File | null;
   readonly importJob: ImportJobResponse | null;
   readonly editableRows: readonly EditableImportRow[];
+  readonly contactCompanyResolutions: ContactCompanyResolutionState;
   readonly errorMessage: string | null;
   readonly isDownloading: boolean;
   readonly importBusy: boolean;
@@ -1009,20 +1067,51 @@ function ImportTemplateDialog({
     field: ImportTargetField,
     value: string
   ) => void;
+  readonly onContactCompanyResolutionChange: (
+    companyName: string,
+    field: ContactCompanyResolutionField,
+    value: string
+  ) => void;
   readonly onConfirmImport: () => void;
   readonly onBack: () => void;
   readonly onOpenChange: (open: boolean) => void;
 }) {
   const targetType = selectedTemplate?.templateType as ImportTargetType | undefined;
+  const isContactPreview = Boolean(importJob) && targetType === "CONTACT";
+  const companyOptionsQuery = useCompanyOptions({
+    enabled: isContactPreview,
+  });
+  const companyFieldsQuery = useCompanyFields({ enabled: isContactPreview });
+  const companyRegionsQuery = useCompanyRegions({ enabled: isContactPreview });
+  const contactCompanySummary = useMemo(
+    () =>
+      isContactPreview && companyOptionsQuery.data
+        ? createContactCompanyImportSummary(
+            editableRows,
+            companyOptionsQuery.data.items
+          )
+        : null,
+    [companyOptionsQuery.data, editableRows, isContactPreview]
+  );
   const isActionDisabled =
     !selectedTemplate || isDownloading || importBusy || selectedTemplate.templateType === "DEAL";
   const hasEmptyPreviewCell =
     importJob && targetType ? hasEmptyEditableCell(targetType, editableRows) : false;
+  const hasUnresolvedContactCompanies =
+    isContactPreview &&
+    (companyOptionsQuery.isLoading ||
+      companyOptionsQuery.isError ||
+      !contactCompanySummary ||
+      hasIncompleteContactCompanyResolutions(
+        contactCompanySummary,
+        contactCompanyResolutions
+      ));
   const canUploadPreview =
     Boolean(importJob) &&
     !isActionDisabled &&
     editableRows.length > 0 &&
-    !hasEmptyPreviewCell;
+    !hasEmptyPreviewCell &&
+    !hasUnresolvedContactCompanies;
   const titleLabel =
     dialogStep === "METHOD"
       ? "데이터 업로드"
@@ -1171,9 +1260,16 @@ function ImportTemplateDialog({
             ) : null}
             {importJob && targetType ? (
               <ImportEditablePreview
+                companyFields={companyFieldsQuery.data?.items ?? []}
+                companyRegions={companyRegionsQuery.data?.items ?? []}
+                contactCompanyResolutions={contactCompanyResolutions}
+                contactCompanySummary={contactCompanySummary}
                 disabled={importBusy}
                 file={selectedFile}
+                isCompanyOptionsError={companyOptionsQuery.isError}
+                isCompanyOptionsLoading={companyOptionsQuery.isLoading}
                 onEditableCellChange={onEditableCellChange}
+                onContactCompanyResolutionChange={onContactCompanyResolutionChange}
                 rows={editableRows}
                 targetType={targetType}
               />
@@ -1386,16 +1482,34 @@ function ImportEditablePreview({
   targetType,
   rows,
   file,
+  contactCompanySummary,
+  contactCompanyResolutions,
+  companyFields,
+  companyRegions,
+  isCompanyOptionsLoading,
+  isCompanyOptionsError,
   disabled,
   onEditableCellChange,
+  onContactCompanyResolutionChange,
 }: {
   readonly targetType: ImportTargetType;
   readonly rows: readonly EditableImportRow[];
   readonly file: File | null;
+  readonly contactCompanySummary: ContactCompanyImportSummaryData | null;
+  readonly contactCompanyResolutions: ContactCompanyResolutionState;
+  readonly companyFields: readonly CompanyField[];
+  readonly companyRegions: readonly CompanyRegion[];
+  readonly isCompanyOptionsLoading: boolean;
+  readonly isCompanyOptionsError: boolean;
   readonly disabled: boolean;
   readonly onEditableCellChange: (
     rowNumber: number,
     field: ImportTargetField,
+    value: string
+  ) => void;
+  readonly onContactCompanyResolutionChange: (
+    companyName: string,
+    field: ContactCompanyResolutionField,
     value: string
   ) => void;
 }) {
@@ -1415,6 +1529,19 @@ function ImportEditablePreview({
           {file ? <Badge>{(file.size / 1024).toFixed(1)}KB</Badge> : null}
         </div>
       </div>
+
+      {targetType === "CONTACT" ? (
+        <ContactCompanyImportSummary
+          companyFields={companyFields}
+          companyRegions={companyRegions}
+          disabled={disabled}
+          isError={isCompanyOptionsError}
+          isLoading={isCompanyOptionsLoading}
+          onResolutionChange={onContactCompanyResolutionChange}
+          resolutions={contactCompanyResolutions}
+          summary={contactCompanySummary}
+        />
+      ) : null}
 
       <div className="max-h-[320px] overflow-auto rounded-md border border-[#E5E7EB]">
         <table className="min-w-full border-collapse text-[13px]">
@@ -1475,6 +1602,157 @@ function ImportEditablePreview({
           </tbody>
         </table>
       </div>
+    </div>
+  );
+}
+
+function ContactCompanyImportSummary({
+  summary,
+  resolutions,
+  companyFields,
+  companyRegions,
+  isLoading,
+  isError,
+  disabled,
+  onResolutionChange,
+}: {
+  readonly summary: ContactCompanyImportSummaryData | null;
+  readonly resolutions: ContactCompanyResolutionState;
+  readonly companyFields: readonly CompanyField[];
+  readonly companyRegions: readonly CompanyRegion[];
+  readonly isLoading: boolean;
+  readonly isError: boolean;
+  readonly disabled: boolean;
+  readonly onResolutionChange: (
+    companyName: string,
+    field: ContactCompanyResolutionField,
+    value: string
+  ) => void;
+}) {
+  if (isLoading) {
+    return (
+      <div className="rounded-md border border-[#E5E7EB] bg-[#FAFBFC] px-3 py-2 text-[12px] text-[#6B7280]">
+        회사 매칭 정보를 확인하고 있습니다.
+      </div>
+    );
+  }
+
+  if (isError || !summary) {
+    return (
+      <div className="rounded-md border border-[#FDE68A] bg-[#FFFBEB] px-3 py-2 text-[12px] text-[#92400E]">
+        회사 매칭 정보를 확인하지 못했습니다. 잠시 후 다시 시도해 주세요.
+      </div>
+    );
+  }
+
+  if (summary.totalCompanyCount === 0) {
+    return null;
+  }
+
+  return (
+    <div className="grid gap-3 rounded-md border border-[#E5E7EB] bg-[#FAFBFC] px-3 py-3">
+      <div className="flex flex-wrap items-center gap-2">
+        <span className="text-[12px] font-semibold text-[#111827]">
+          회사 연결
+        </span>
+        <span className="rounded-full bg-[#ECFDF5] px-2 py-0.5 text-[11px] font-semibold text-[#15803D]">
+          기존 회사 {summary.matchedCompanyCount.toLocaleString("ko-KR")}개 매칭
+        </span>
+        <span className="rounded-full bg-[#EEF4FF] px-2 py-0.5 text-[11px] font-semibold text-[#4880EE]">
+          새 회사 {summary.newCompanyCount.toLocaleString("ko-KR")}개 생성 예정
+        </span>
+      </div>
+      {summary.newCompanyCount > 0 ? (
+        <>
+          <p className="text-[12px] text-[#6B7280]">
+            새 회사의 분야와 지역을 입력해야 업로드할 수 있어요.
+          </p>
+          <datalist id="contact-import-company-field-options">
+            {companyFields.map((field) => (
+              <option key={field.id} value={field.field} />
+            ))}
+          </datalist>
+          <datalist id="contact-import-company-region-options">
+            {companyRegions.map((region) => (
+              <option key={region.id} value={region.region} />
+            ))}
+          </datalist>
+          <div className="max-h-[180px] overflow-auto rounded-md border border-[#E5E7EB] bg-white">
+            <div className="grid min-w-[620px] grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)_minmax(0,1fr)] border-b bg-[#F8FAFC] text-[12px] font-semibold text-[#475569]">
+              <div className="px-3 py-2">새 회사명</div>
+              <div className="px-3 py-2">회사 분야</div>
+              <div className="px-3 py-2">회사 지역</div>
+            </div>
+            {summary.newCompanyNames.map((companyName) => {
+              const resolution = resolutions[companyName] ?? {
+                companyFieldName: "",
+                companyRegionName: "",
+              };
+              const isFieldEmpty =
+                resolution.companyFieldName.trim().length === 0;
+              const isRegionEmpty =
+                resolution.companyRegionName.trim().length === 0;
+
+              return (
+                <div
+                  className="grid min-w-[620px] grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)_minmax(0,1fr)] border-b last:border-b-0"
+                  key={companyName}
+                >
+                  <div className="min-w-0 px-3 py-2 text-[13px] text-[#111827]">
+                    <span className="block truncate" title={companyName}>
+                      {companyName}
+                    </span>
+                  </div>
+                  <div className="px-2 py-2">
+                    <input
+                      aria-invalid={isFieldEmpty}
+                      className={cn(
+                        "h-8 w-full rounded-md border px-2 text-[13px] outline-none disabled:bg-[#F3F4F6]",
+                        isFieldEmpty
+                          ? "border-red-400 bg-red-50 text-red-700 focus:border-red-500 focus:ring-2 focus:ring-red-100"
+                          : "border-[#D1D5DB] focus:border-[#4880EE] focus:ring-2 focus:ring-[#4880EE]/20"
+                      )}
+                      disabled={disabled}
+                      list="contact-import-company-field-options"
+                      onChange={(event) =>
+                        onResolutionChange(
+                          companyName,
+                          "companyFieldName",
+                          event.target.value
+                        )
+                      }
+                      placeholder="분야 입력"
+                      value={resolution.companyFieldName}
+                    />
+                  </div>
+                  <div className="px-2 py-2">
+                    <input
+                      aria-invalid={isRegionEmpty}
+                      className={cn(
+                        "h-8 w-full rounded-md border px-2 text-[13px] outline-none disabled:bg-[#F3F4F6]",
+                        isRegionEmpty
+                          ? "border-red-400 bg-red-50 text-red-700 focus:border-red-500 focus:ring-2 focus:ring-red-100"
+                          : "border-[#D1D5DB] focus:border-[#4880EE] focus:ring-2 focus:ring-[#4880EE]/20"
+                      )}
+                      disabled={disabled}
+                      list="contact-import-company-region-options"
+                      onChange={(event) =>
+                        onResolutionChange(
+                          companyName,
+                          "companyRegionName",
+                          event.target.value
+                        )
+                      }
+                      placeholder="지역 입력"
+                      value={resolution.companyRegionName}
+                    />
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </>
+      ) : null}
     </div>
   );
 }
@@ -1652,6 +1930,38 @@ function hasEmptyEditableCell(
   );
 }
 
+function hasIncompleteContactCompanyResolutions(
+  summary: ContactCompanyImportSummaryData,
+  resolutions: ContactCompanyResolutionState
+): boolean {
+  return summary.newCompanyNames.some((companyName) => {
+    const resolution = resolutions[companyName];
+
+    return (
+      !resolution ||
+      resolution.companyFieldName.trim().length === 0 ||
+      resolution.companyRegionName.trim().length === 0
+    );
+  });
+}
+
+function toContactCompanyResolutionPayload(
+  resolutions: ContactCompanyResolutionState
+) {
+  return Object.entries(resolutions)
+    .map(([companyName, resolution]) => ({
+      companyName: companyName.trim(),
+      companyFieldName: resolution.companyFieldName.trim(),
+      companyRegionName: resolution.companyRegionName.trim(),
+    }))
+    .filter(
+      (resolution) =>
+        resolution.companyName.length > 0 &&
+        resolution.companyFieldName.length > 0 &&
+        resolution.companyRegionName.length > 0
+    );
+}
+
 function validateEditableRows(
   targetType: ImportTargetType,
   rows: readonly EditableImportRow[]
@@ -1690,6 +2000,37 @@ function validateEditableRows(
   }
 
   return null;
+}
+
+function createContactCompanyImportSummary(
+  rows: readonly EditableImportRow[],
+  companyOptions: readonly ContactCompanyOption[]
+): ContactCompanyImportSummaryData {
+  const existingCompanyNames = new Set(
+    companyOptions
+      .map((company) => company.companyName.trim())
+      .filter((companyName) => companyName.length > 0)
+  );
+  const importedCompanyNames = [
+    ...new Set(
+      rows
+        .map((row) => toInputValue(row.data.companyName).trim())
+        .filter((companyName) => companyName.length > 0)
+    ),
+  ];
+  const matchedCompanyCount = importedCompanyNames.filter((companyName) =>
+    existingCompanyNames.has(companyName)
+  ).length;
+  const newCompanyNames = importedCompanyNames.filter(
+    (companyName) => !existingCompanyNames.has(companyName)
+  );
+
+  return {
+    totalCompanyCount: importedCompanyNames.length,
+    matchedCompanyCount,
+    newCompanyCount: newCompanyNames.length,
+    newCompanyNames,
+  };
 }
 
 function isImportPhoneValue(value: string): boolean {
