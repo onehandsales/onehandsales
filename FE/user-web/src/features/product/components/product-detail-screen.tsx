@@ -1,4 +1,4 @@
-import {
+﻿import {
   BriefcaseBusiness,
   ChevronLeft,
   LockKeyhole,
@@ -631,7 +631,7 @@ function ConnectedDealsTable({
   readonly deals: ProductDeal[];
   readonly isLoading: boolean;
 }) {
-  const SHOW_LIMIT = 4;
+  const SHOW_LIMIT = 2;
   const hasMore = deals.length > SHOW_LIMIT;
 
   return (
@@ -652,7 +652,7 @@ function ConnectedDealsTable({
       ) : deals.length === 0 ? (
         <p className="px-4 py-4 text-[13px] text-[#9CA3AF]">딜을 연결하면 여기에서 볼 수 있어요.</p>
       ) : (
-        <div className={hasMore ? "max-h-[232px] overflow-y-auto" : ""}>
+        <div className={hasMore ? "max-h-[116px] overflow-y-auto" : ""}>
           {deals.map((deal) => (
             <Link
               className="flex h-[58px] items-center gap-3 border-b border-[#F3F4F6] bg-white px-4 hover:bg-[#F9FAFB] transition-colors last:border-0"
