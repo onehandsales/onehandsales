@@ -7,7 +7,7 @@ type ModalShellPlacement = "center" | "top" | "bottom";
 
 type ModalShellProps = {
   readonly open: boolean;
-  readonly title?: string;
+  readonly title?: ReactNode;
   readonly children: ReactNode;
   readonly footer?: ReactNode;
   readonly size?: ModalShellSize;

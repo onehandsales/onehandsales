@@ -1023,73 +1023,108 @@ function ImportTemplateDialog({
   const targetType = selectedTemplate?.templateType as ImportTargetType | undefined;
   const isActionDisabled =
     !selectedTemplate || isDownloading || importBusy || selectedTemplate.templateType === "DEAL";
-  const title =
+  const titleLabel =
     dialogStep === "METHOD"
       ? "데이터 불러오기"
       : dialogStep === "DIRECT_TARGET"
         ? "직접 불러오기"
-        : "엑셀 업로드";
+        : selectedTemplate
+          ? `${targetLabels[selectedTemplate.templateType]} 업로드`
+          : "업로드";
+  const TitleIcon =
+    dialogStep === "DIRECT_TARGET"
+      ? FileSpreadsheet
+      : dialogStep === "DIRECT_UPLOAD" && selectedTemplate
+        ? targetIcons[selectedTemplate.templateType]
+        : null;
+  const titleIconClassNames =
+    dialogStep === "DIRECT_TARGET"
+      ? { box: "bg-transparent", icon: "text-black" }
+      : dialogStep === "DIRECT_UPLOAD" && selectedTemplate
+        ? {
+            box: targetColorClassNames[selectedTemplate.templateType].iconBox,
+            icon: targetColorClassNames[selectedTemplate.templateType].icon,
+          }
+        : null;
 
   return (
     <ModalShell
       bodyClassName="px-5 py-5"
       footer={
-        <>
-          {dialogStep !== "METHOD" ? (
+        <div className="flex w-full items-center justify-between gap-3">
+          <div className="flex min-w-0 items-center">
+            {dialogStep !== "METHOD" ? (
+              <button
+                className="inline-flex h-10 items-center gap-2 rounded-md border px-4 text-sm font-medium hover:bg-muted"
+                disabled={isDownloading || importBusy}
+                onClick={onBack}
+                type="button"
+              >
+                <ChevronLeft className="h-4 w-4" />
+                이전
+              </button>
+            ) : null}
+          </div>
+          <div className="flex shrink-0 items-center gap-3">
             <button
-              className="inline-flex h-10 items-center gap-2 rounded-md border px-4 text-sm font-medium hover:bg-muted"
+              className="inline-flex h-10 items-center rounded-md border px-4 text-sm font-medium hover:bg-muted"
               disabled={isDownloading || importBusy}
-              onClick={onBack}
+              onClick={onCancel}
               type="button"
             >
-              <ChevronLeft className="h-4 w-4" />
-              이전
+              닫기
             </button>
-          ) : null}
-          <button
-            className="inline-flex h-10 items-center rounded-md border px-4 text-sm font-medium hover:bg-muted"
-            disabled={isDownloading || importBusy}
-            onClick={onCancel}
-            type="button"
-          >
-            닫기
-          </button>
-          {dialogStep === "DIRECT_UPLOAD" && importJob ? (
-            <button
-              className="inline-flex h-10 items-center gap-2 rounded-md bg-[#111827] px-4 text-sm font-medium text-white hover:bg-[#0F172A] disabled:cursor-not-allowed disabled:opacity-60"
-              disabled={isActionDisabled || editableRows.length === 0}
-              onClick={onConfirmImport}
-              type="button"
-            >
-              {importBusy ? (
-                <Loader2 className="h-4 w-4 animate-spin" />
-              ) : (
-                <CheckCircle2 className="h-4 w-4" />
-              )}
-              확정 생성
-            </button>
-          ) : null}
-          {dialogStep === "DIRECT_UPLOAD" && !importJob ? (
-            <button
-              className="inline-flex h-10 items-center gap-2 rounded-md bg-[#111827] px-4 text-sm font-medium text-white hover:bg-[#0F172A] disabled:cursor-not-allowed disabled:opacity-60"
-              disabled={isActionDisabled || !selectedFile}
-              onClick={onRunDirectImport}
-              type="button"
-            >
-              {importBusy ? (
-                <Loader2 className="h-4 w-4 animate-spin" />
-              ) : (
-                <Upload className="h-4 w-4" />
-              )}
-              업로드
-            </button>
-          ) : null}
-        </>
+            {dialogStep === "DIRECT_UPLOAD" && importJob ? (
+              <button
+                className="inline-flex h-10 items-center gap-2 rounded-md bg-[#111827] px-4 text-sm font-medium text-white hover:bg-[#0F172A] disabled:cursor-not-allowed disabled:opacity-60"
+                disabled={isActionDisabled || editableRows.length === 0}
+                onClick={onConfirmImport}
+                type="button"
+              >
+                {importBusy ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  <CheckCircle2 className="h-4 w-4" />
+                )}
+                확정 생성
+              </button>
+            ) : null}
+            {dialogStep === "DIRECT_UPLOAD" && !importJob ? (
+              <button
+                className="inline-flex h-10 items-center gap-2 rounded-md bg-[#111827] px-4 text-sm font-medium text-white hover:bg-[#0F172A] disabled:cursor-not-allowed disabled:opacity-60"
+                disabled={isActionDisabled || !selectedFile}
+                onClick={onRunDirectImport}
+                type="button"
+              >
+                {importBusy ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  <Upload className="h-4 w-4" />
+                )}
+                업로드
+              </button>
+            ) : null}
+          </div>
+        </div>
       }
       onOpenChange={onOpenChange}
       open={open}
       size="md"
-      title={title}
+      title={
+        <span className="inline-flex min-w-0 items-center gap-2">
+          {TitleIcon && titleIconClassNames ? (
+            <span
+              className={cn(
+                "grid h-7 w-7 shrink-0 place-items-center rounded-lg",
+                titleIconClassNames.box
+              )}
+            >
+              <TitleIcon className={cn("h-4 w-4", titleIconClassNames.icon)} />
+            </span>
+          ) : null}
+          <span className="min-w-0 truncate">{titleLabel}</span>
+        </span>
+      }
     >
       <div className="grid gap-5">
         {dialogStep === "METHOD" ? (
@@ -1226,7 +1261,7 @@ function ImportFilePanel({
 }) {
   const description =
     mode === "DIRECT"
-      ? "다운로드한 양식에 맞춰 작성한 Excel 파일을 업로드하세요."
+      ? "다운로드된 양식에 맞춰 파일을 업로드해주세요."
       : "";
 
   return (
@@ -1251,10 +1286,13 @@ function ImportFilePanel({
           }}
           type="file"
         />
-        <span className="inline-flex min-w-0 items-center gap-2">
-          <Upload className="h-4 w-4 shrink-0 text-[#4880EE]" />
-          <span className="truncate">
-            {file ? file.name : "불러올 파일을 선택하세요"}
+        <span className="grid min-w-0 place-items-center gap-2">
+          <span className="inline-flex min-w-0 items-center gap-2">
+            <Upload className="h-4 w-4 shrink-0 text-[#4880EE]" />
+            <span className="truncate">{file ? file.name : "파일 선택"}</span>
+          </span>
+          <span className="text-[11px] font-normal leading-none text-[#9CA3AF]">
+            csv, xlsx 최대 10MB
           </span>
         </span>
       </label>
