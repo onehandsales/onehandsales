@@ -47,7 +47,7 @@ Health check:
 curl http://localhost:3000/api/health
 ```
 
-현재 Backend는 Auth/User, Company, Contact, BusinessCard OCR, Product, Deal, Schedule, MeetingNote, Search, Trash 모듈을 구현한다. Company/Contact/Product/Deal은 각 도메인별 xlsx export API를 제공한다. Admin API는 현재 `GET /admin/api/me`만 구현되어 있으며 관리자 페이지와 운영 조회 API는 후속 단계에서 만든다.
+현재 Backend는 Auth/User, Company, Contact, BusinessCard OCR, Product, Deal, Schedule, MeetingNote, Search, Trash, DataImport 모듈을 구현한다. Company/Contact/Product/Deal은 각 도메인별 xlsx export API를 제공한다. DataImport는 회사/담당자/제품 CSV/XLSX 업로드, AI 컬럼 매핑, 사용자 보정, 확정 저장, 성공 내역 조회를 제공하며 딜 불러오기는 아직 지원하지 않는다. Admin API는 현재 `GET /admin/api/me`만 구현되어 있으며 관리자 페이지와 운영 조회 API는 후속 단계에서 만든다.
 
 ### 2. User Web
 
@@ -63,6 +63,8 @@ User Web URL: `http://localhost:5173`
 User Web은 Supabase OAuth callback과 Backend token exchange를 사용한다. 개발 편의를 위한 mock login 경로도 남아 있으며, app access token은 storage가 아니라 memory 중심으로 다룬다.
 
 명함 스캔은 `/business-cards`에서 실제 API와 연결되어 있다. 사용자는 이미지를 업로드한 뒤 `명함스캔` 진행 표시를 보고, 추출 결과를 확인/수정한 후 회사/담당자로 저장한다.
+
+데이터 불러오기는 `/import`에서 실제 API와 연결되어 있다. 사용자는 회사/담당자/제품 양식을 내려받고, CSV/XLSX 파일을 업로드한 뒤 AI 매핑과 row 검증 결과를 확인/수정하고 확정 저장할 수 있다. `/export`의 범용 Export 화면과 `/notifications`는 Backend 구현 전까지 숨긴다.
 
 ### 3. Admin Web
 
@@ -120,7 +122,7 @@ Playwright smoke E2E는 기본적으로 Backend와 외부 Provider를 route mock
 주요 env:
 
 - Supabase Auth/Storage: `SUPABASE_URL`, `SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`, `SUPABASE_JWKS_URL`, `SUPABASE_JWT_ISSUER`
-- OpenAI/OCR/AI mapping: `OPENAI_API_KEY`, `OPENAI_MEETING_NOTE_DRAFT_MODEL`, `OPENAI_MEETING_NOTE_STT_MODEL`, `OPENAI_BUSINESS_CARD_OCR_MODEL`, `OPENAI_MODEL_IMPORT_MAPPING`
+- OpenAI/OCR/AI mapping: `OPENAI_API_KEY`, `OPENAI_MEETING_NOTE_DRAFT_MODEL`, `OPENAI_MEETING_NOTE_STT_MODEL`, `OPENAI_BUSINESS_CARD_OCR_MODEL`, `OPENAI_IMPORT_MAPPING_MODEL`
 - Google Calendar: `GOOGLE_CALENDAR_CLIENT_ID`, `GOOGLE_CALENDAR_CLIENT_SECRET`, `GOOGLE_CALENDAR_REDIRECT_URI`
 - Email: `SMTP_HOST`, `SMTP_PORT`, `SMTP_SECURE`, `SMTP_USER`, `SMTP_PASSWORD`, `SMTP_FROM`
 - Browser push: `VAPID_PUBLIC_KEY`, `VAPID_PRIVATE_KEY`, `VAPID_SUBJECT`
@@ -129,6 +131,8 @@ Playwright smoke E2E는 기본적으로 Backend와 외부 Provider를 route mock
 MeetingNote AI 초안 생성과 STT는 Backend에서 별도 provider port로 분리되어 있다. AI 초안 생성은 OpenAI를 기본으로 사용하고, STT는 현재 OpenAI adapter를 쓰되 provider 교체 시 STT adapter만 바꾸는 구조다.
 
 BusinessCard OCR도 별도 provider port 뒤에 있으며, 현재 OpenAI Responses API와 strict JSON schema 응답을 사용한다. prompt와 응답 schema는 `BE/src/modules/business-card/infrastructure/providers/openai-business-card-ocr.provider.ts`에 있다.
+
+DataImport 컬럼 자동 매핑도 별도 provider port 뒤에 있으며, 현재 OpenAI Responses API를 사용한다. `OPENAI_IMPORT_MAPPING_MODEL`이 비어 있으면 `OPENAI_MEETING_NOTE_DRAFT_MODEL`, 그다음 기본 모델 순서로 fallback한다.
 
 ## Rules
 

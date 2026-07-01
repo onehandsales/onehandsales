@@ -22,6 +22,15 @@ CREATE TYPE "AuthDeviceSlot" AS ENUM ('MOBILE', 'PERSONAL_LAPTOP', 'WORK_LAPTOP'
 -- CreateEnum
 CREATE TYPE "MeetingNoteSourceType" AS ENUM ('MANUAL', 'TEXT_AI', 'STT_AI');
 
+-- CreateEnum
+CREATE TYPE "BusinessCardScanStatus" AS ENUM ('OCR_SUCCESS', 'OCR_FAILED', 'CONFIRMED');
+
+-- CreateEnum
+CREATE TYPE "BusinessCardResolution" AS ENUM ('EXISTING', 'CREATED');
+
+-- CreateEnum
+CREATE TYPE "ImportTemplateType" AS ENUM ('COMPANY', 'CONTACT', 'PRODUCT', 'DEAL');
+
 -- CreateTable
 CREATE TABLE "User" (
     "id" UUID NOT NULL,
@@ -98,6 +107,9 @@ CREATE TABLE "Company" (
     "companyRegionId" UUID NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
+    "deletedAt" TIMESTAMPTZ(3),
+    "deletedByUserId" UUID,
+    "trashExpiresAt" TIMESTAMPTZ(3),
 
     CONSTRAINT "Company_pkey" PRIMARY KEY ("id")
 );
@@ -114,6 +126,9 @@ CREATE TABLE "Contact" (
     "contactDepartmentId" UUID NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
+    "deletedAt" TIMESTAMPTZ(3),
+    "deletedByUserId" UUID,
+    "trashExpiresAt" TIMESTAMPTZ(3),
 
     CONSTRAINT "Contact_pkey" PRIMARY KEY ("id")
 );
@@ -180,6 +195,9 @@ CREATE TABLE "Product" (
     "productStatusId" UUID NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
+    "deletedAt" TIMESTAMPTZ(3),
+    "deletedByUserId" UUID,
+    "trashExpiresAt" TIMESTAMPTZ(3),
 
     CONSTRAINT "Product_pkey" PRIMARY KEY ("id")
 );
@@ -246,6 +264,9 @@ CREATE TABLE "Deal" (
     "expectedEndDate" DATE NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
+    "deletedAt" TIMESTAMPTZ(3),
+    "deletedByUserId" UUID,
+    "trashExpiresAt" TIMESTAMPTZ(3),
 
     CONSTRAINT "Deal_pkey" PRIMARY KEY ("id")
 );
@@ -350,6 +371,7 @@ CREATE TABLE "MeetingNote" (
     "id" UUID NOT NULL,
     "userId" UUID NOT NULL,
     "sourceType" "MeetingNoteSourceType" NOT NULL DEFAULT 'MANUAL',
+    "title" TEXT NOT NULL,
     "meetingAt" TIMESTAMPTZ(3) NOT NULL,
     "timeZone" TEXT NOT NULL DEFAULT 'Asia/Seoul',
     "details" TEXT NOT NULL,
@@ -358,6 +380,9 @@ CREATE TABLE "MeetingNote" (
     "rawText" TEXT,
     "createdAt" TIMESTAMPTZ(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMPTZ(3) NOT NULL,
+    "deletedAt" TIMESTAMPTZ(3),
+    "deletedByUserId" UUID,
+    "trashExpiresAt" TIMESTAMPTZ(3),
 
     CONSTRAINT "MeetingNote_pkey" PRIMARY KEY ("id")
 );
@@ -422,6 +447,86 @@ CREATE TABLE "MeetingNoteDeal" (
     "createdAt" TIMESTAMPTZ(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "MeetingNoteDeal_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "BusinessCardScanLog" (
+    "id" UUID NOT NULL,
+    "userId" UUID NOT NULL,
+    "status" "BusinessCardScanStatus" NOT NULL,
+    "companyName" TEXT,
+    "companyFieldName" TEXT,
+    "companyRegionName" TEXT,
+    "contactName" TEXT,
+    "contactMobile" TEXT,
+    "contactEmail" TEXT,
+    "contactDepartmentName" TEXT,
+    "contactJobGradeName" TEXT,
+    "companyId" UUID,
+    "contactId" UUID,
+    "companyResolution" "BusinessCardResolution",
+    "contactResolution" "BusinessCardResolution",
+    "aiProvider" TEXT NOT NULL DEFAULT 'OPENAI',
+    "aiModel" TEXT NOT NULL,
+    "promptSnapshot" TEXT NOT NULL,
+    "requestToken" DOUBLE PRECISION,
+    "responseToken" DOUBLE PRECISION,
+    "totalToken" DOUBLE PRECISION,
+    "requestCost" DOUBLE PRECISION,
+    "responseCost" DOUBLE PRECISION,
+    "totalCost" DOUBLE PRECISION,
+    "costCurrency" TEXT NOT NULL DEFAULT 'USD',
+    "pendingTimeMs" DOUBLE PRECISION,
+    "confirmedAt" TIMESTAMPTZ(3),
+    "createdAt" TIMESTAMPTZ(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMPTZ(3) NOT NULL,
+
+    CONSTRAINT "BusinessCardScanLog_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "ImportTemplate" (
+    "id" UUID NOT NULL,
+    "templateType" "ImportTemplateType" NOT NULL,
+    "templateVersion" TEXT NOT NULL,
+    "templateName" TEXT NOT NULL,
+    "columnsJson" JSONB NOT NULL,
+    "sampleRowsJson" JSONB NOT NULL,
+    "isActive" BOOLEAN NOT NULL DEFAULT false,
+    "createdAt" TIMESTAMPTZ(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMPTZ(3) NOT NULL,
+
+    CONSTRAINT "ImportTemplate_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "ImportUserLog" (
+    "id" UUID NOT NULL,
+    "userId" UUID NOT NULL,
+    "targetType" "ImportTemplateType" NOT NULL,
+    "templateVersion" TEXT NOT NULL,
+    "templateColumnsJson" JSONB NOT NULL,
+    "contextLabel" TEXT,
+    "contextJson" JSONB,
+    "originalFileName" TEXT NOT NULL,
+    "fileSizeBytes" INTEGER NOT NULL,
+    "totalRowCount" INTEGER NOT NULL,
+    "importedRowCount" INTEGER NOT NULL,
+    "createdAt" TIMESTAMPTZ(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "ImportUserLog_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "ImportUserLogRow" (
+    "id" UUID NOT NULL,
+    "importUserLogId" UUID NOT NULL,
+    "rowNumber" INTEGER NOT NULL,
+    "submittedDataJson" JSONB NOT NULL,
+    "targetLabel" TEXT NOT NULL,
+    "createdAt" TIMESTAMPTZ(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "ImportUserLogRow_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -525,6 +630,12 @@ CREATE INDEX "Company_userId_companyFieldId_idx" ON "Company"("userId", "company
 CREATE INDEX "Company_userId_companyRegionId_idx" ON "Company"("userId", "companyRegionId");
 
 -- CreateIndex
+CREATE INDEX "Company_userId_deletedAt_idx" ON "Company"("userId", "deletedAt");
+
+-- CreateIndex
+CREATE INDEX "Company_userId_trashExpiresAt_idx" ON "Company"("userId", "trashExpiresAt");
+
+-- CreateIndex
 CREATE INDEX "Contact_userId_createdAt_idx" ON "Contact"("userId", "createdAt");
 
 -- CreateIndex
@@ -538,6 +649,12 @@ CREATE INDEX "Contact_userId_contactDepartmentId_idx" ON "Contact"("userId", "co
 
 -- CreateIndex
 CREATE INDEX "Contact_userId_contactJobGradeId_idx" ON "Contact"("userId", "contactJobGradeId");
+
+-- CreateIndex
+CREATE INDEX "Contact_userId_deletedAt_idx" ON "Contact"("userId", "deletedAt");
+
+-- CreateIndex
+CREATE INDEX "Contact_userId_trashExpiresAt_idx" ON "Contact"("userId", "trashExpiresAt");
 
 -- CreateIndex
 CREATE INDEX "ContactJobGrade_userId_idx" ON "ContactJobGrade"("userId");
@@ -586,6 +703,12 @@ CREATE INDEX "Product_userId_productCategoryId_idx" ON "Product"("userId", "prod
 
 -- CreateIndex
 CREATE INDEX "Product_userId_productStatusId_idx" ON "Product"("userId", "productStatusId");
+
+-- CreateIndex
+CREATE INDEX "Product_userId_deletedAt_idx" ON "Product"("userId", "deletedAt");
+
+-- CreateIndex
+CREATE INDEX "Product_userId_trashExpiresAt_idx" ON "Product"("userId", "trashExpiresAt");
 
 -- CreateIndex
 CREATE INDEX "ProductCategory_userId_idx" ON "ProductCategory"("userId");
@@ -637,6 +760,12 @@ CREATE INDEX "Deal_userId_expectedEndDate_idx" ON "Deal"("userId", "expectedEndD
 
 -- CreateIndex
 CREATE INDEX "Deal_userId_dealCost_idx" ON "Deal"("userId", "dealCost");
+
+-- CreateIndex
+CREATE INDEX "Deal_userId_deletedAt_idx" ON "Deal"("userId", "deletedAt");
+
+-- CreateIndex
+CREATE INDEX "Deal_userId_trashExpiresAt_idx" ON "Deal"("userId", "trashExpiresAt");
 
 -- CreateIndex
 CREATE INDEX "DealCompany_userId_dealId_idx" ON "DealCompany"("userId", "dealId");
@@ -720,7 +849,16 @@ CREATE UNIQUE INDEX "ScheduleDeal_scheduleId_dealId_key" ON "ScheduleDeal"("sche
 CREATE INDEX "MeetingNote_userId_meetingAt_idx" ON "MeetingNote"("userId", "meetingAt");
 
 -- CreateIndex
+CREATE INDEX "MeetingNote_userId_title_idx" ON "MeetingNote"("userId", "title");
+
+-- CreateIndex
 CREATE INDEX "MeetingNote_userId_createdAt_idx" ON "MeetingNote"("userId", "createdAt");
+
+-- CreateIndex
+CREATE INDEX "MeetingNote_userId_deletedAt_idx" ON "MeetingNote"("userId", "deletedAt");
+
+-- CreateIndex
+CREATE INDEX "MeetingNote_userId_trashExpiresAt_idx" ON "MeetingNote"("userId", "trashExpiresAt");
 
 -- CreateIndex
 CREATE INDEX "MeetingNoteCompany_userId_meetingNoteId_idx" ON "MeetingNoteCompany"("userId", "meetingNoteId");
@@ -751,6 +889,33 @@ CREATE INDEX "MeetingNoteDeal_userId_dealId_idx" ON "MeetingNoteDeal"("userId", 
 
 -- CreateIndex
 CREATE UNIQUE INDEX "MeetingNoteDeal_meetingNoteId_dealId_key" ON "MeetingNoteDeal"("meetingNoteId", "dealId");
+
+-- CreateIndex
+CREATE INDEX "BusinessCardScanLog_userId_createdAt_idx" ON "BusinessCardScanLog"("userId", "createdAt");
+
+-- CreateIndex
+CREATE INDEX "BusinessCardScanLog_userId_status_createdAt_idx" ON "BusinessCardScanLog"("userId", "status", "createdAt");
+
+-- CreateIndex
+CREATE INDEX "BusinessCardScanLog_userId_companyId_idx" ON "BusinessCardScanLog"("userId", "companyId");
+
+-- CreateIndex
+CREATE INDEX "BusinessCardScanLog_userId_contactId_idx" ON "BusinessCardScanLog"("userId", "contactId");
+
+-- CreateIndex
+CREATE INDEX "ImportTemplate_templateType_isActive_idx" ON "ImportTemplate"("templateType", "isActive");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "ImportTemplate_templateType_templateVersion_key" ON "ImportTemplate"("templateType", "templateVersion");
+
+-- CreateIndex
+CREATE INDEX "ImportUserLog_userId_createdAt_idx" ON "ImportUserLog"("userId", "createdAt");
+
+-- CreateIndex
+CREATE INDEX "ImportUserLog_userId_targetType_createdAt_idx" ON "ImportUserLog"("userId", "targetType", "createdAt");
+
+-- CreateIndex
+CREATE INDEX "ImportUserLogRow_importUserLogId_rowNumber_idx" ON "ImportUserLogRow"("importUserLogId", "rowNumber");
 
 -- CreateIndex
 CREATE INDEX "CompanyField_userId_idx" ON "CompanyField"("userId");
@@ -961,6 +1126,21 @@ ALTER TABLE "MeetingNoteDeal" ADD CONSTRAINT "MeetingNoteDeal_meetingNoteId_fkey
 
 -- AddForeignKey
 ALTER TABLE "MeetingNoteDeal" ADD CONSTRAINT "MeetingNoteDeal_dealId_fkey" FOREIGN KEY ("dealId") REFERENCES "Deal"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "BusinessCardScanLog" ADD CONSTRAINT "BusinessCardScanLog_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "BusinessCardScanLog" ADD CONSTRAINT "BusinessCardScanLog_companyId_fkey" FOREIGN KEY ("companyId") REFERENCES "Company"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "BusinessCardScanLog" ADD CONSTRAINT "BusinessCardScanLog_contactId_fkey" FOREIGN KEY ("contactId") REFERENCES "Contact"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "ImportUserLog" ADD CONSTRAINT "ImportUserLog_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "ImportUserLogRow" ADD CONSTRAINT "ImportUserLogRow_importUserLogId_fkey" FOREIGN KEY ("importUserLogId") REFERENCES "ImportUserLog"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "CompanyField" ADD CONSTRAINT "CompanyField_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

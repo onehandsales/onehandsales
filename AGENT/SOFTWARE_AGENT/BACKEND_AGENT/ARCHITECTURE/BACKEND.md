@@ -37,7 +37,7 @@ Canonical domain:
 
 ## 3. Current Implementation Snapshot
 
-Snapshot date: 2026-06-29
+Snapshot date: 2026-07-01
 
 Current source of truth:
 
@@ -61,6 +61,7 @@ Currently imported modules in `AppModule`:
 - `meeting-note`
 - `search`
 - `trash`
+- `data-import`
 
 Currently implemented API surface:
 
@@ -74,9 +75,10 @@ Currently implemented API surface:
 - MeetingNote: filter options, list/detail/create/update/delete, AI text draft, STT+AI draft, saved-note deal linking
 - Search: `GET /api/search`
 - Trash: `GET /api/trash`, `GET /api/trash/:targetType/:targetId`, `POST /api/trash/:targetType/:targetId/restore`
+- DataImport: active templates, template xlsx download, CSV/XLSX upload, AI mapping, mapping validation, confirm import, import user logs
 - Health: `GET /api/health`
 
-Completed Backend TODO plans:
+Implemented Backend TODO references:
 
 - `TODO/DONE/AUTH_FE_INTEGRATION_PLAN/BE-TODO/G01-BE-USER-PROFILE-DEVICES.goal.md`
 - `TODO/DONE/COMPANY_DOMAIN_PLAN/BE-TODO/G01-BE-COMPANY-DOMAIN.goal.md`
@@ -89,6 +91,7 @@ Completed Backend TODO plans:
 - `TODO/DONE/INTEGRATED_SEARCH_PLAN/BE-TODO/G01-BE-INTEGRATED-SEARCH.goal.md`
 - `TODO/DONE/MEETING_NOTE_AI_STT_PLAN/BE-TODO/G01-BE-MEETING-NOTE-AI-STT-DRAFT.goal.md`
 - `TODO/DONE/BUSINESS_CARD_OCR_PLAN`
+- `TODO/IMPORT_TEMPLATE_PLAN`
 
 Current response notes:
 
@@ -115,6 +118,14 @@ Current response notes:
 - `GET /api/trash` aggregates deleted Company, Contact, Product, Deal, MeetingNote, and supported memo/action log rows owned by the current user where `deletedAt IS NOT NULL` and `trashExpiresAt > now`.
 - `GET /api/trash/:targetType/:targetId` returns preview details for the trash detail modal. Private memo content is not exposed before restore.
 - `POST /api/trash/:targetType/:targetId/restore` clears `deletedAt`, `deletedByUserId`, and `trashExpiresAt` and returns the restored target metadata.
+- `GET /api/import-templates/active` returns active import templates for Company, Contact, and Product.
+- `GET /api/import-templates/:templateId/download` returns an xlsx template. Contact templates may receive `companyName` as context.
+- `POST /api/imports` accepts a CSV/XLSX file as `file`, creates an in-memory import job, and returns preview rows. The file limit is 10 MB.
+- `POST /api/imports/:importJobId/map` calls the import mapping provider and falls back to heuristic mapping if the provider fails.
+- `PATCH /api/imports/:importJobId/mapping` applies the user's mapping and validates mapped rows.
+- `POST /api/imports/:importJobId/confirm` creates Company, Contact, or Product rows and writes `ImportUserLog`/`ImportUserLogRow` snapshots in a database transaction.
+- DataImport supports Company, Contact, and Product. Deal import currently returns a validation error.
+- Temporary DataImport jobs use an in-memory store. Persistent job recovery across server restart is future scope.
 
 Current runtime behavior:
 
@@ -127,7 +138,7 @@ Current runtime behavior:
 Current backend gaps and intentional deferrals:
 
 - Admin pages and Admin Web query APIs such as `/admin/api/dashboard`, `/admin/api/users`, `/admin/api/companies`, `/admin/api/contacts`, `/admin/api/products`, and `/admin/api/deals` are deferred.
-- Generic Import job, Notification, Admin operation query/audit/sensitive raw APIs are not implemented yet.
+- Deal import, persistent ImportJob recovery, Notification, Admin operation query/audit/sensitive raw APIs are not implemented yet.
 - Generic ExportJob is intentionally not used for the current export direction. Company, Contact, Product, and Deal each provide their own `GET /api/<domain>/export/xlsx` API.
 - MeetingNote Admin, rawText encryption/raw access, and generic DealActivity table are future scope.
 
@@ -147,10 +158,10 @@ Implemented MVP modules:
 - `meeting-note`
 - `search`
 - `trash`
+- `data-import`
 
 Planned or partially represented modules:
 
-- `import`
 - `notification`
 - `tag`
 - `audit-log`
@@ -253,6 +264,7 @@ Use a transaction when one use case writes multiple tables, especially:
 - deal creation with first following action log
 - meeting note save with snapshot links
 - business card confirmation that can create taxonomy, company, contact, and update scan log
+- import confirmation that creates domain data and writes import log snapshots
 - sensitive raw access with audit log
 - Admin data mutation with audit log
 - import batch creation
@@ -292,7 +304,7 @@ Database principles:
 - RLS is a last line of defense; backend queries still filter by `userId`.
 - Admin RLS bypass must go through explicit Admin methods.
 
-Search and MeetingNote AI/STT draft do not introduce new database tables in the current implementation. BusinessCard OCR uses `BusinessCardScanLog` because success/failure/conversion and provider usage metrics must be analyzed.
+Search and MeetingNote AI/STT draft do not introduce new database tables in the current implementation. BusinessCard OCR uses `BusinessCardScanLog` because success/failure/conversion and provider usage metrics must be analyzed. DataImport uses `ImportTemplate`, `ImportUserLog`, and `ImportUserLogRow`; pre-confirmation jobs are temporary in-memory records.
 
 ## 11. Enum And Lookup Policy
 
@@ -313,7 +325,7 @@ OpenAI-centered use cases:
 - business card OCR
 - meeting note draft generation
 - meeting note STT transcription
-- Excel/CSV import column mapping, when the future Import feature is implemented
+- Excel/CSV import column mapping for DataImport
 
 Rules:
 
@@ -322,7 +334,9 @@ Rules:
 - Provider-specific prompt/response handling belongs in infrastructure adapters.
 - MeetingNote AI draft and STT must remain separate provider ports.
 - BusinessCard OCR must remain a separate provider port from MeetingNote AI draft/STT.
+- DataImport column mapping must remain a separate provider port from MeetingNote and BusinessCard providers.
 - BusinessCard OCR OpenAI adapter uses the Responses API with strict JSON schema output. The prompt constant and schema live in `BE/src/modules/business-card/infrastructure/providers/openai-business-card-ocr.provider.ts`.
+- DataImport OpenAI adapter uses the Responses API and falls back to heuristic mapping when provider output is unavailable or invalid.
 - STT provider adapters may be replaced independently of the OpenAI AI draft adapter.
 - MeetingNote AI/STT draft APIs generate editable drafts only. Final save remains `POST /api/meeting-notes`.
 - BusinessCard OCR APIs generate editable company/contact candidate fields only. Final save remains `POST /api/business-card-scans/:scanLogId/confirm`.

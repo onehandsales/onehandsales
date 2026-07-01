@@ -60,14 +60,15 @@ Page는 route entry이며 feature public export를 조합한다. API 호출, sch
 
 ## 현재 구현 스냅샷
 
-Snapshot date: 2026-06-29
+Snapshot date: 2026-07-01
 
 User Web:
 
-- routes: `/login`, `/auth/callback`, `/`, `/companies`, `/companies/new`, `/companies/:companyId`, `/contacts`, `/contacts/scan`, `/contacts/:contactId`, `/products`, `/products/new`, `/products/:productId`, `/deals`, `/deals/new`, `/deals/:dealId`, `/schedules`, `/schedules/week`, `/schedules/:scheduleId`, `/meeting-notes`, `/meeting-notes/new`, `/meeting-notes/:meetingNoteId`, `/business-cards`, `/notifications`, `/import`, `/export`, `/trash`, `/settings`, `/more`
-- implemented API integration: Auth/User, Home, Company, Contact, BusinessCard OCR, Product, Deal, Schedule, MeetingNote manual CRUD, MeetingNote AI/STT draft, MeetingNote deal link, Search, Trash, Company/Contact/Product/Deal domain xlsx export
-- mock/placeholder boundary: generic Import, generic Export route/API, Notification
+- routes: `/login`, `/auth/callback`, `/`, `/companies`, `/companies/new`, `/companies/:companyId`, `/contacts`, `/contacts/scan`, `/contacts/:contactId`, `/products`, `/products/new`, `/products/:productId`, `/deals`, `/deals/new`, `/deals/:dealId`, `/schedules`, `/schedules/week`, `/schedules/:scheduleId`, `/meeting-notes`, `/meeting-notes/new`, `/meeting-notes/:meetingNoteId`, `/business-cards`, `/notifications`, `/import`, `/import/:importUserLogId`, `/export`, `/trash`, `/settings`, `/more`
+- implemented API integration: Auth/User, Home, Company, Contact, BusinessCard OCR, Product, Deal, Schedule, MeetingNote manual CRUD, MeetingNote AI/STT draft, MeetingNote deal link, Search, Trash, DataImport, Company/Contact/Product/Deal domain xlsx export
+- mock/placeholder boundary: generic Export route/API, Notification
 - `/business-cards`: 명함 스캔 내역은 등록일 최신순 고정이며, 상태 다중 필터와 `상태 초기화`, `명함스캔` 모달의 이미지 업로드 -> 진행 표시 -> 결과 확인/수정 -> 저장 흐름을 제공한다.
+- `/import`: 회사/담당자/제품 양식 다운로드, CSV/XLSX 업로드, AI 컬럼 매핑, row 수정/검증, 확정 저장, 성공 내역 목록/상세 조회를 제공한다. 딜 불러오기는 Backend에서 차단한다.
 
 Admin Web:
 

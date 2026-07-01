@@ -1,6 +1,6 @@
 # Backend Architecture
 
-`BE` is currently the base NestJS backend plus Auth/User support and the user-facing Company, Contact, and Product domains.
+`BE` is the single NestJS backend for the User API and the limited current Admin API.
 
 Routes:
 
@@ -11,10 +11,23 @@ Active modules:
 
 - `auth`: external auth token exchange, app token refresh/logout, current user lookup, device/session management.
 - `user`: current user profile and registered device lookup.
-- `company`: user-owned company, company field/region, memo log, and encrypted private memo log management.
-- `contact`: user-owned contact, company option, contact department/job grade, memo log, and encrypted private memo log management.
-- `product`: user-owned product, product category/status, memo log, and encrypted private memo log management.
+- `company`: user-owned company, company field/region, memo/private memo logs, linked contacts/deals, soft delete, trash restore, xlsx export.
+- `contact`: user-owned contact, company option, department/job grade, memo/private memo logs, linked deals, soft delete, trash restore, xlsx export.
+- `business-card`: business card image OCR, scan log, extracted candidate confirmation, company/contact creation or reuse.
+- `product`: user-owned product, product category/status, memo/private memo logs, linked deals, soft delete, trash restore, xlsx export.
+- `deal`: user-owned deal, company/contact/product links, stage counts, following action logs, memo logs, soft delete, trash restore, xlsx export.
+- `schedule`: user-owned schedule, month/week list, deal links, hard delete.
+- `meeting-note`: user-owned meeting note, snapshot links, manual CRUD, AI/STT draft, saved-note deal linking, soft delete, trash restore.
+- `search`: integrated search over company, contact, product, deal, schedule, and meeting note data.
+- `trash`: 7-day trash list/detail/restore for supported entities and logs.
+- `data-import`: active templates, template xlsx download, CSV/XLSX upload, AI column mapping, editable preview validation, confirm import, import logs for company/contact/product.
 - `health`: health check endpoint.
+
+Current intentional gaps:
+
+- Admin operation APIs are limited to `GET /admin/api/me`.
+- Generic `/api/exports` and `ExportJob` are not used; exports live in each domain module.
+- Deal import, persistent ImportJob recovery, Notification, Tag, Admin audit/sensitive raw access, and generic DealActivity are future scope.
 
 Layer rules:
 
@@ -23,4 +36,4 @@ Layer rules:
 - `infrastructure`: Prisma repositories and external provider adapters.
 - `presentation`: controllers, DTOs, guards, filters, decorators, and response mapping.
 
-Business modules such as deal, schedule, and related DDL should be added later one module and one migration at a time.
+Business modules should continue to be added one module and one migration at a time, following the same layer boundaries.

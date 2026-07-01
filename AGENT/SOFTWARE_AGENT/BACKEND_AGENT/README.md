@@ -56,9 +56,9 @@ BACKEND_AGENT/
 - 새 API를 구현하기 전 `COMMON/API-SPEC`의 API 계약, transaction, observability 항목을 확인한다.
 - mutation, Admin API, 민감정보, 외부 Provider가 포함되면 audit log와 structured log 필요 여부를 명시한다.
 
-## 6. 현재 완료된 Backend TODO
+## 6. 현재 구현 완료/참조 Backend TODO
 
-Snapshot date: 2026-06-29
+Snapshot date: 2026-07-01
 
 - `TODO/DONE/AUTH_FE_INTEGRATION_PLAN/BE-TODO/G01-BE-USER-PROFILE-DEVICES.goal.md`
 - `TODO/DONE/COMPANY_DOMAIN_PLAN/BE-TODO/G01-BE-COMPANY-DOMAIN.goal.md`
@@ -71,6 +71,7 @@ Snapshot date: 2026-06-29
 - `TODO/DONE/INTEGRATED_SEARCH_PLAN/BE-TODO/G01-BE-INTEGRATED-SEARCH.goal.md`
 - `TODO/DONE/MEETING_NOTE_AI_STT_PLAN/BE-TODO/G01-BE-MEETING-NOTE-AI-STT-DRAFT.goal.md`
 - `TODO/DONE/BUSINESS_CARD_OCR_PLAN`
+- `TODO/IMPORT_TEMPLATE_PLAN`
 
 Current additional backend scope:
 
@@ -78,10 +79,12 @@ Current additional backend scope:
 - Trash API는 Company/Contact/Product/Deal 본문 데이터와 지원 로그의 목록, 상세, 7일 이내 복구를 제공한다.
 - BusinessCard OCR API는 이미지 원본을 저장하지 않고 성공/실패/확정 로그와 provider 사용량을 `BusinessCardScanLog`에 기록한다. `GET /api/business-card-scans`는 반복 query 또는 comma-separated query로 상태 다중 필터를 지원하며, 목록은 등록일 최신순으로 반환한다.
 - BusinessCard OCR OpenAI adapter는 Responses API와 strict JSON schema를 사용한다. prompt와 schema는 `BE/src/modules/business-card/infrastructure/providers/openai-business-card-ocr.provider.ts`에 둔다.
+- DataImport API는 회사/담당자/제품 CSV/XLSX 업로드, AI 컬럼 매핑, 사용자 보정/검증, 확정 저장, 성공 내역 조회를 제공한다.
+- DataImport 확정 전 임시 job은 in-memory store를 사용한다. 확정 성공 시 도메인 row와 `ImportUserLog`/`ImportUserLogRow` snapshot을 같은 transaction에서 저장한다.
 
 ## 7. 현재 주요 미구현 Backend 범위
 
-- generic Import job
+- 딜 불러오기와 persistent ImportJob
 - Notification
 - Admin 페이지와 운영 조회/감사/민감 원문 API
 - MeetingNote Admin API

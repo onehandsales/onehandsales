@@ -31,9 +31,11 @@ Admin API는 반드시 Admin guard로 보호한다.
 - `meeting-note`: 사용자 소유 회의록, 연결 스냅샷, 수동 저장/수정/삭제, AI/STT draft 생성, 저장 후 딜 연결
 - `search`: 회사/담당자/제품/딜/일정/회의록 통합검색
 - `trash`: 회사/담당자/제품/딜/회의록과 지원 로그의 휴지통 목록/상세/7일 이내 복구
+- `data-import`: 회사/담당자/제품 CSV/XLSX 업로드, AI 컬럼 매핑, 사용자 보정/검증, 확정 저장, 성공 내역 조회
 - `health`: health check
 
 범용 ExportJob Backend는 현재 사용하지 않는다. Export는 회사/담당자/제품/딜 각 도메인의 `GET /api/*/export/xlsx`로 처리한다.
+딜 불러오기는 아직 지원하지 않는다. 데이터 불러오기 확정 전 임시 job은 현재 in-memory store를 사용하므로 서버 재시작 후 이어받기는 후속 범위다.
 
 ## 로컬 실행
 
@@ -96,7 +98,7 @@ pnpm run build
 
 주요 env는 `.env.example`에 있다. local에서 최소 서버만 띄울 때도 `DATABASE_URL`, `DIRECT_URL`, `TEST_DATABASE_URL`, token secret 값은 실제 안전한 값으로 채우는 것을 권장한다.
 
-MeetingNote AI 초안 생성은 `MeetingNoteAiDraftProvider` port와 OpenAI adapter를 사용하며 `OPENAI_API_KEY`, `OPENAI_MEETING_NOTE_DRAFT_MODEL`이 필요하다. MeetingNote STT는 별도 `MeetingNoteSttProvider` port와 OpenAI STT adapter를 사용하며 `OPENAI_MEETING_NOTE_STT_MODEL`로 모델을 지정한다. 명함 OCR은 `BusinessCardOcrProvider` port와 OpenAI adapter를 사용하며 `OPENAI_BUSINESS_CARD_OCR_MODEL`로 모델을 지정할 수 있다. 추후 STT/OCR provider를 바꿀 때는 각 adapter만 교체한다.
+MeetingNote AI 초안 생성은 `MeetingNoteAiDraftProvider` port와 OpenAI adapter를 사용하며 `OPENAI_API_KEY`, `OPENAI_MEETING_NOTE_DRAFT_MODEL`이 필요하다. MeetingNote STT는 별도 `MeetingNoteSttProvider` port와 OpenAI STT adapter를 사용하며 `OPENAI_MEETING_NOTE_STT_MODEL`로 모델을 지정한다. 명함 OCR은 `BusinessCardOcrProvider` port와 OpenAI adapter를 사용하며 `OPENAI_BUSINESS_CARD_OCR_MODEL`로 모델을 지정할 수 있다. DataImport AI 컬럼 매핑은 `ImportMappingProvider` port와 OpenAI adapter를 사용하며 `OPENAI_IMPORT_MAPPING_MODEL`로 모델을 지정할 수 있다. 추후 STT/OCR/Import mapping provider를 바꿀 때는 각 adapter만 교체한다.
 
 ## 정본 규칙
 

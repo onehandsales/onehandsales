@@ -197,6 +197,7 @@
 - `/business-cards`
 - `/notifications`
 - `/import`
+- `/import/:importUserLogId`
 - `/export`
 - `/trash`
 - `/settings`
@@ -212,10 +213,10 @@ pen 디자인 반영 완료/정리 도메인 (2026-06-25 기준):
 - `/meeting-notes` — 회의록 목록/상세/생성 API, AI/STT draft UI, 저장 후 딜 추가 연동 연결 완료
 - `/trash` — 회의록 목록형 밀도를 따른 휴지통 목록, row 클릭 상세 모달, 모달 내부 복구 액션 반영 완료
 - `/business-cards` — 명함 스캔 내역, 상태 다중 필터, 카메라 아이콘 내비게이션, `명함스캔` 모달의 이미지 업로드 -> 진행 표시 -> 결과 확인/수정 -> 저장 흐름 구현 완료
+- `/import` — 회사/담당자/제품 양식 다운로드, CSV/XLSX 업로드, AI 컬럼 매핑, row 수정/검증, 확정 저장, 성공 내역 목록/상세 조회 구현 완료
 - 상단 통합검색 — Backend `GET /api/search`와 User Web GlobalSearch 연결 완료
 
 현재 의도적으로 보류된 화면:
-- `/import` — FE feature는 남아 있지만 Backend 범용 Import job이 없어 route와 메뉴를 숨기고 `/`로 redirect한다.
 - `/export` — FE feature는 남아 있지만 현재 export 정본 흐름이 아니다. route를 숨기고 `/`로 redirect하며, 회사/담당자/제품/딜 목록의 엑셀 다운로드를 사용한다.
 - `/notifications` — FE feature/page는 있으나 Backend 모듈이 없어 route와 메뉴를 숨기고 구현된 화면으로 redirect한다.
 - `/contacts/scan` — 명함 스캔 legacy route이며 `/business-cards`로 redirect한다.
@@ -225,7 +226,7 @@ pen 디자인 반영 대기 도메인:
 - `/products/:productId`
 - `/schedules`, `/schedules/week`
 - `/notifications`
-- `/import`
+- `/import` — 딜 불러오기와 확정 전 job 이어받기는 후속.
 - `/export`
 - `/business-cards` — Backend 연동 완료. pen 시각 고도화는 후속.
 - `/contacts/:contactId` (부분 반영)

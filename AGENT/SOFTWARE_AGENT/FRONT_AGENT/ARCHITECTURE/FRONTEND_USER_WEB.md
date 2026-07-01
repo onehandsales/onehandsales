@@ -53,7 +53,8 @@
 - `/meeting-notes/:meetingNoteId`
 - `/business-cards`
 - `/notifications` -> `/` redirect. Notification Backend 구현 전까지 숨김
-- `/import` -> `/` redirect. Import Backend 구현 전까지 숨김
+- `/import`
+- `/import/:importUserLogId`
 - `/export` -> `/` redirect. Generic Export는 현재 정본 흐름이 아니므로 숨김
 - `/trash`
 - `/settings`
@@ -61,7 +62,7 @@
 
 `/meeting-notes/new`는 현재 `/meeting-notes?create=1` 흐름으로 redirect한다.
 `/schedules/week`는 현재 `/schedules`로 redirect한다. 별도 주간 보고서 화면은 후속 범위다.
-`import-export` feature 코드는 남아 있지만, `/import`와 `/export` route는 Backend 구현 전까지 root로 redirect한다. 현재 Export 정본 흐름은 회사/담당자/제품/딜 각 목록 화면의 엑셀 다운로드다.
+`import-export` feature 중 `/import`는 실제 Backend API와 연결되어 있고, `/export` route는 root로 redirect한다. 현재 Export 정본 흐름은 회사/담당자/제품/딜 각 목록 화면의 엑셀 다운로드다.
 
 ## 4. 현재 Feature 폴더
 
@@ -98,6 +99,7 @@
 - Search: 상단/모바일 GlobalSearch, `GET /api/search`, 결과 `targetPath` 이동
 - 삭제 UX: 회사/담당자/제품/딜 본문과 로그 삭제는 빨간 휴지통 아이콘 클릭 후 중앙 확인 모달을 열고, 성공 시 중앙 성공 모달로 `삭제가 완료되었습니다.`와 7일 복구 안내를 보여준다.
 - Trash: `/trash` 화면에서 `GET /api/trash` 목록, `GET /api/trash/:targetType/:targetId` 상세 모달, `POST /api/trash/:targetType/:targetId/restore` 복구를 연동한다. 목록 row 클릭으로 상세 모달을 열고, 복구는 모달 내부 버튼에서만 수행한다.
+- DataImport: `/import` 화면에서 활성 양식 목록/다운로드, CSV/XLSX 업로드, AI 컬럼 매핑, mapping 수정, row 수정/검증, 확정 저장, 성공 내역 목록을 연동한다. `/import/:importUserLogId`는 성공 내역 상세와 row snapshot을 조회한다.
 
 도메인별 export 기준:
 
@@ -115,7 +117,6 @@ Backend는 구현되었지만 Frontend 연결이 남은 항목:
 
 mock/placeholder 경계를 유지해야 하는 항목:
 
-- generic Import job. FE feature/API client/type/schema는 있으나 route와 메뉴는 Backend module/API 구현 전까지 숨긴다.
 - `/api/exports` 기반 generic Export job. 현재 Export 정책은 도메인별 xlsx 다운로드이므로 route를 숨기고 신규 작업에서 generic Export 화면/API를 확장하지 않는다.
 - Notification. FE feature는 있으나 route와 진입 버튼은 Backend module/API 구현 전까지 숨긴다.
 

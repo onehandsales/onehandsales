@@ -15,6 +15,7 @@
 - Deal 기본 도메인: `Deal`, `DealProduct`, `DealFollowingActionLog`, `DealMemoLog`
 - Schedule 기본 도메인: `Schedule`, `ScheduleDeal`
 - MeetingNote 수동 도메인: `MeetingNote`, `MeetingNoteCompany`, `MeetingNoteContact`, `MeetingNoteProduct`, `MeetingNoteDeal`
+- DataImport: `ImportTemplate`, `ImportUserLog`, `ImportUserLogRow`
 
 현재 구현 기준 migration:
 
@@ -26,6 +27,8 @@
 - `BE/prisma/migrations/20260614010000_add_user_timezone/migration.sql`
 - `BE/prisma/migrations/20260614020000_add_schedule_domain/migration.sql`
 - `BE/prisma/migrations/20260615000000_add_meeting_note_domain/migration.sql`
+- `BE/prisma/migrations/20260629010000_add_business_card_scan_log/migration.sql`
+- `BE/prisma/migrations/20260630010000_add_import_templates_and_logs/migration.sql`
 
 아직 DB에 구현되지 않은 계획 범위:
 
@@ -36,7 +39,7 @@
 - `PersonalMemo`
 - `AuditLog`
 - `Notification`
-- `ImportJob`
+- persistent `ImportJob`
 
 범용 `ExportJob` table은 현재 제품 방향에서 제외한다. 회사/담당자/제품/딜 export는 각 도메인 API가 동기 xlsx 파일로 내려준다.
 
@@ -74,8 +77,10 @@ User
   │   ├─ MeetingNoteContact
   │   ├─ MeetingNoteProduct
   │   └─ MeetingNoteDeal
+  ├─ ImportUserLog
+  │   └─ ImportUserLogRow
   ├─ Tag
-  └─ ImportJob / AuditLog / Notification
+  └─ AuditLog / Notification / persistent ImportJob
 ```
 
 ## 2. 공통 필드 원칙
@@ -679,19 +684,36 @@ Log는 객관적 사실, 변경, 만남, 소식, 이력 기록이고 Memo는 사
 - status
 - metadata
 
-## 21. ImportJob
+## 21. DataImport / ImportJob
 
-- id
-- userId
-- targetType
-- fileName
-- status
-- aiMapping
-- resultSummary
-- createdAt
-- completedAt nullable
+현재 구현된 DataImport DB 모델:
 
-ImportJob은 후속 범위다. 현재 Backend schema에는 포함되어 있지 않다.
+- `ImportTemplate`
+- `ImportUserLog`
+- `ImportUserLogRow`
+
+`ImportTemplate` 목적:
+
+- 회사/담당자/제품 불러오기 양식의 컬럼 정의와 샘플 row를 저장한다.
+- 활성 양식만 사용자에게 노출한다.
+- 현재 기본 seed는 `COMPANY`, `PRODUCT`, `CONTACT` v1이다.
+
+`ImportUserLog` 목적:
+
+- 확정 저장에 성공한 불러오기 작업의 header snapshot을 저장한다.
+- `targetType`, `templateVersion`, 확정 당시 `templateColumnsJson`, context, 원본 파일명/크기, 전체 row 수, import row 수를 가진다.
+
+`ImportUserLogRow` 목적:
+
+- 확정 저장된 각 row의 제출 데이터 snapshot과 대상 label을 저장한다.
+- 성공 내역 상세 화면에서 row별 제출값을 조회할 수 있게 한다.
+
+정책:
+
+- 확정 전 임시 job은 현재 DB table이 아니라 in-memory store에 저장한다.
+- 회사/담당자/제품 불러오기는 CSV/XLSX 업로드, AI 컬럼 매핑, 사용자 보정/검증, 확정 저장을 지원한다.
+- 딜 불러오기는 enum에는 존재하지만 현재 API에서 validation error로 차단한다.
+- persistent `ImportJob` table, 서버 재시작 후 이어받기, 딜 불러오기는 후속 범위다.
 
 ## 22. Mermaid ERD
 

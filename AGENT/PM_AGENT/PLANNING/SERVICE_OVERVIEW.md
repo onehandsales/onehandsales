@@ -53,7 +53,7 @@
 
 넷째, 입력 부담을 줄인다.
 
-빠른 등록, 명함스캔 OCR 자동 입력, 화면별 검색/필터, 통합검색, 회의록 AI/STT 정리, 도메인별 엑셀 다운로드 같은 기능으로 처음 입력하거나 다시 찾는 부담을 줄이는 방향이다. 명함스캔은 자동 입력 후 사용자가 확인/수정하고 저장하는 흐름이며, Import AI 매핑은 후속 자동화 범위다.
+빠른 등록, 명함스캔 OCR 자동 입력, 화면별 검색/필터, 통합검색, 회의록 AI/STT 정리, 데이터 불러오기 AI 매핑, 도메인별 엑셀 다운로드 같은 기능으로 처음 입력하거나 다시 찾는 부담을 줄이는 방향이다. 명함스캔은 자동 입력 후 사용자가 확인/수정하고 저장하는 흐름이며, 데이터 불러오기는 회사/담당자/제품 CSV/XLSX 업로드 후 AI 매핑과 사용자 보정을 거쳐 확정 저장하는 흐름이다.
 
 ## 5. 사용자가 경험하는 핵심 루프
 
@@ -146,13 +146,13 @@ Admin Web은 후속 단계에서 만들 데스크톱 전용 운영 콘솔이다.
 - 회의 STT transcript 영구 저장
 - AI/STT provider 호출 이력 테이블
 - Admin 페이지와 운영 조회 API 전체 구현
-- 범용 Import job, Notification 전체 구현
+- 딜 불러오기, 확정 전 ImportJob 영속화, Notification 전체 구현
 - 범용 ExportJob 구현
 - 휴지통 7일 이후 유료 복구 정책과 API
 
 ## 10. 현재 구현 관점의 요약
 
-2026-06-29 기준으로 Backend는 Auth/User, Company, Contact, BusinessCard OCR, Product, Deal, Schedule, MeetingNote 수동 도메인, Search, Trash, MeetingNote AI/STT draft API, 회의록 저장 후 딜 연동 API를 구현한 상태다.
+2026-07-01 기준으로 Backend는 Auth/User, Company, Contact, BusinessCard OCR, Product, Deal, Schedule, MeetingNote 수동 도메인, Search, Trash, DataImport, MeetingNote AI/STT draft API, 회의록 저장 후 딜 연동 API를 구현한 상태다.
 
 User Web은 홈 대시보드, 회사, 담당자, 명함 스캔, 제품, 딜, 일정, 수동 회의록, 회의록 AI/STT 초안, 회의록 저장 후 딜 연동 화면, 회사/담당자/제품/딜 엑셀 다운로드, 상단/모바일 통합검색, 휴지통 목록/상세/복구가 실제 API와 연결되어 있다. 명함 스캔 화면은 등록일 최신순 내역, 상태 다중 필터, 이미지 업로드 기반 명함스캔 모달을 제공한다.
 
