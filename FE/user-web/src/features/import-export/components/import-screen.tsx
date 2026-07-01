@@ -6,6 +6,7 @@ import {
   ChevronDown,
   ChevronLeft,
   CheckCircle2,
+  Eye,
   FileSpreadsheet,
   Loader2,
   Package,
@@ -547,7 +548,6 @@ export function ImportScreen() {
         importJob={importJob}
         isDownloading={downloadMutation.isPending}
         selectedImportMode={selectedImportMode}
-        onCancel={closeDialog}
         onConfirmImport={() => void onConfirmImport()}
         onDirectTargetSelect={(targetType) => void onDirectTargetSelect(targetType)}
         onEditableCellChange={onEditableCellChange}
@@ -992,7 +992,6 @@ function ImportTemplateDialog({
   onEditableCellChange,
   onConfirmImport,
   onBack,
-  onCancel,
   onOpenChange,
 }: {
   readonly open: boolean;
@@ -1017,7 +1016,6 @@ function ImportTemplateDialog({
   ) => void;
   readonly onConfirmImport: () => void;
   readonly onBack: () => void;
-  readonly onCancel: () => void;
   readonly onOpenChange: (open: boolean) => void;
 }) {
   const targetType = selectedTemplate?.templateType as ImportTargetType | undefined;
@@ -1029,7 +1027,7 @@ function ImportTemplateDialog({
       : dialogStep === "DIRECT_TARGET"
         ? "직접 불러오기"
         : selectedTemplate
-          ? `${targetLabels[selectedTemplate.templateType]} 업로드`
+          ? `${targetLabels[selectedTemplate.templateType]} ${importJob ? "미리보기" : "업로드"}`
           : "업로드";
   const TitleIcon =
     dialogStep === "DIRECT_TARGET"
@@ -1066,34 +1064,11 @@ function ImportTemplateDialog({
             ) : null}
           </div>
           <div className="flex shrink-0 items-center gap-3">
-            <button
-              className="inline-flex h-10 items-center rounded-md border px-4 text-sm font-medium hover:bg-muted"
-              disabled={isDownloading || importBusy}
-              onClick={onCancel}
-              type="button"
-            >
-              닫기
-            </button>
             {dialogStep === "DIRECT_UPLOAD" && importJob ? (
               <button
-                className="inline-flex h-10 items-center gap-2 rounded-md bg-[#111827] px-4 text-sm font-medium text-white hover:bg-[#0F172A] disabled:cursor-not-allowed disabled:opacity-60"
+                className="inline-flex h-10 items-center gap-2 rounded-md bg-[#4880EE] px-4 text-sm font-medium text-white hover:bg-[#1D4ED8] disabled:cursor-not-allowed disabled:opacity-60"
                 disabled={isActionDisabled || editableRows.length === 0}
                 onClick={onConfirmImport}
-                type="button"
-              >
-                {importBusy ? (
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                ) : (
-                  <CheckCircle2 className="h-4 w-4" />
-                )}
-                확정 생성
-              </button>
-            ) : null}
-            {dialogStep === "DIRECT_UPLOAD" && !importJob ? (
-              <button
-                className="inline-flex h-10 items-center gap-2 rounded-md bg-[#111827] px-4 text-sm font-medium text-white hover:bg-[#0F172A] disabled:cursor-not-allowed disabled:opacity-60"
-                disabled={isActionDisabled || !selectedFile}
-                onClick={onRunDirectImport}
                 type="button"
               >
                 {importBusy ? (
@@ -1104,12 +1079,32 @@ function ImportTemplateDialog({
                 업로드
               </button>
             ) : null}
+            {dialogStep === "DIRECT_UPLOAD" && !importJob ? (
+              <button
+                className={cn(
+                  "inline-flex h-10 items-center gap-2 rounded-md px-4 text-sm font-medium disabled:cursor-not-allowed",
+                  selectedFile
+                    ? "bg-[#4880EE] text-white hover:bg-[#1D4ED8]"
+                    : "bg-[#E5E7EB] text-[#9CA3AF]",
+                )}
+                disabled={isActionDisabled || !selectedFile}
+                onClick={onRunDirectImport}
+                type="button"
+              >
+                {importBusy ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  <Eye className="h-4 w-4" />
+                )}
+                미리보기
+              </button>
+            ) : null}
           </div>
         </div>
       }
       onOpenChange={onOpenChange}
       open={open}
-      size="md"
+      size={dialogStep === "DIRECT_UPLOAD" && importJob ? "xl" : "md"}
       title={
         <span className="inline-flex min-w-0 items-center gap-2">
           {TitleIcon && titleIconClassNames ? (
@@ -1159,15 +1154,18 @@ function ImportTemplateDialog({
 
         {dialogStep === "DIRECT_UPLOAD" ? (
           <>
-            <ImportFilePanel
-              disabled={isDownloading || importBusy}
-              file={selectedFile}
-              mode="DIRECT"
-              onFileChange={onFileChange}
-            />
+            {!importJob ? (
+              <ImportFilePanel
+                disabled={isDownloading || importBusy}
+                file={selectedFile}
+                mode="DIRECT"
+                onFileChange={onFileChange}
+              />
+            ) : null}
             {importJob && targetType ? (
               <ImportEditablePreview
                 disabled={importBusy}
+                file={selectedFile}
                 onEditableCellChange={onEditableCellChange}
                 rows={editableRows}
                 targetType={targetType}
@@ -1303,11 +1301,13 @@ function ImportFilePanel({
 function ImportEditablePreview({
   targetType,
   rows,
+  file,
   disabled,
   onEditableCellChange,
 }: {
   readonly targetType: ImportTargetType;
   readonly rows: readonly EditableImportRow[];
+  readonly file: File | null;
   readonly disabled: boolean;
   readonly onEditableCellChange: (
     rowNumber: number,
@@ -1321,12 +1321,15 @@ function ImportEditablePreview({
     <div className="grid gap-3 rounded-lg border border-[#E5E7EB] bg-white p-4">
       <div className="flex items-center justify-between gap-3">
         <div className="min-w-0">
-          <h3 className="text-sm font-semibold text-[#111827]">미리보기 수정</h3>
+          <h3 className="text-sm font-semibold text-[#111827]">데이터 검토</h3>
           <p className="mt-1 text-xs text-[#6B7280]">
-            확정 전 최종 값입니다. 이 값으로 실제 데이터가 생성됩니다.
+            최종 데이터를 검토해주세요.
           </p>
         </div>
-        <Badge>{rows.length.toLocaleString("ko-KR")}행</Badge>
+        <div className="flex shrink-0 items-center gap-2">
+          <Badge>{rows.length.toLocaleString("ko-KR")}행</Badge>
+          {file ? <Badge>{(file.size / 1024).toFixed(1)}KB</Badge> : null}
+        </div>
       </div>
 
       <div className="max-h-[320px] overflow-auto rounded-md border border-[#E5E7EB]">
