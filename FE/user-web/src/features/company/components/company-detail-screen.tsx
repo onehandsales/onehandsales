@@ -1,4 +1,5 @@
 import {
+  BriefcaseBusiness,
   Building2,
   ChevronLeft,
   ChevronRight,
@@ -630,8 +631,6 @@ function ConnectedContactsTable({
 
 // ── Connected Deals Table ───────────────────────────────────────────
 
-const DEAL_DOT_COLORS = ["#B45309", "#0369A1", "#4880EE", "#15803D", "#9CA3AF"];
-
 function ConnectedDealsTable({
   deals,
   isLoading,
@@ -661,16 +660,15 @@ function ConnectedDealsTable({
           <p className="px-4 py-4 text-[13px] text-[#9CA3AF]">딜을 연결하면 여기에서 볼 수 있어요.</p>
       ) : (
         <div className={hasMore ? "max-h-[232px] overflow-y-auto" : ""}>
-          {deals.map((deal, idx) => (
+          {deals.map((deal) => (
             <Link
               className="flex h-[58px] items-center gap-3 border-b border-[#F3F4F6] bg-white px-4 hover:bg-[#F9FAFB] transition-colors last:border-0"
               key={deal.id}
               to={`/deals/${deal.id}`}
             >
-              <div
-                className="h-[8px] w-[8px] shrink-0 rounded-full"
-                style={{ backgroundColor: DEAL_DOT_COLORS[idx % DEAL_DOT_COLORS.length] }}
-              />
+              <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#FEF2F2]">
+                <BriefcaseBusiness className="h-3.5 w-3.5 text-[#DC2626]" />
+              </div>
               <span className="min-w-0 flex-1 truncate text-[13px] font-extrabold text-[#111827]">
                 {deal.dealName}
               </span>
