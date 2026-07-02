@@ -8,6 +8,7 @@ import {
   CheckCircle2,
   Eye,
   FileSpreadsheet,
+  GripVertical,
   Loader2,
   Package,
   Plus,
@@ -79,6 +80,7 @@ const IMPORT_LOG_TABLE_GRID_STYLE = {
 
 const IMPORT_PREVIEW_ROW_NUMBER_COLUMN_WIDTH = 25;
 const IMPORT_PREVIEW_COLUMN_MIN_WIDTH = 72;
+const IMPORT_PREVIEW_FIRST_DATA_ROW_NUMBER = 2;
 
 const targetIcons: Record<ImportTemplateType, LucideIcon> = {
   COMPANY: Building2,
@@ -189,6 +191,7 @@ type ImportTaxonomyPopoverPosition = {
   readonly top: number;
   readonly width: number;
 };
+type ImportPreviewDropPosition = "before" | "after";
 
 export function ImportScreen() {
   const navigate = useNavigate();
@@ -285,7 +288,7 @@ export function ImportScreen() {
     setFormError(null);
   };
 
-  const onDirectTargetSelect = async (targetType: ImportTemplateType) => {
+  const onDirectTargetSelect = (targetType: ImportTemplateType) => {
     resetImportWorkflow();
 
     const template = templates.find((item) => item.templateType === targetType);
@@ -297,9 +300,17 @@ export function ImportScreen() {
     }
 
     setSelectedTemplateId(template.id);
+    setDialogStep("DIRECT_UPLOAD");
+  };
+
+  const onDownloadSelectedTemplate = async () => {
+    if (!selectedTemplate) {
+      return;
+    }
+
     try {
-      await downloadTemplate(template);
-      setDialogStep("DIRECT_UPLOAD");
+      setFormError(null);
+      await downloadTemplate(selectedTemplate);
     } catch (error) {
       setFormError(getApiErrorMessage(error));
     }
@@ -359,6 +370,21 @@ export function ImportScreen() {
               errorMessage: null,
             }
           : row
+      )
+    );
+  };
+
+  const onEditableRowsReorder = (
+    sourceRowNumber: number,
+    targetRowNumber: number,
+    dropPosition: ImportPreviewDropPosition
+  ) => {
+    setEditableRows((currentRows) =>
+      reorderEditableRows(
+        currentRows,
+        sourceRowNumber,
+        targetRowNumber,
+        dropPosition
       )
     );
   };
@@ -624,8 +650,10 @@ export function ImportScreen() {
         selectedImportMode={selectedImportMode}
         onContactCompanyResolutionChange={onContactCompanyResolutionChange}
         onConfirmImport={() => void onConfirmImport()}
-        onDirectTargetSelect={(targetType) => void onDirectTargetSelect(targetType)}
+        onDirectTargetSelect={onDirectTargetSelect}
+        onDownloadSelectedTemplate={() => void onDownloadSelectedTemplate()}
         onEditableCellChange={onEditableCellChange}
+        onEditableRowsReorder={onEditableRowsReorder}
         onFileChange={onFileChange}
         onBack={() => {
           setFormError(null);
@@ -1054,8 +1082,10 @@ function ImportTemplateDialog({
   onSelectDirectMode,
   onSelectAiMode,
   onDirectTargetSelect,
+  onDownloadSelectedTemplate,
   onRunDirectImport,
   onEditableCellChange,
+  onEditableRowsReorder,
   onContactCompanyResolutionChange,
   onConfirmImport,
   onBack,
@@ -1076,11 +1106,17 @@ function ImportTemplateDialog({
   readonly onSelectDirectMode: () => void;
   readonly onSelectAiMode: () => void;
   readonly onDirectTargetSelect: (targetType: ImportTemplateType) => void;
+  readonly onDownloadSelectedTemplate: () => void;
   readonly onRunDirectImport: () => void;
   readonly onEditableCellChange: (
     rowNumber: number,
     field: ImportTargetField,
     value: string
+  ) => void;
+  readonly onEditableRowsReorder: (
+    sourceRowNumber: number,
+    targetRowNumber: number,
+    dropPosition: ImportPreviewDropPosition
   ) => void;
   readonly onContactCompanyResolutionChange: (
     companyName: string,
@@ -1269,7 +1305,8 @@ function ImportTemplateDialog({
               <ImportFilePanel
                 disabled={isDownloading || importBusy}
                 file={selectedFile}
-                mode="DIRECT"
+                isDownloading={isDownloading}
+                onDownloadTemplate={onDownloadSelectedTemplate}
                 onFileChange={onFileChange}
               />
             ) : null}
@@ -1284,6 +1321,7 @@ function ImportTemplateDialog({
                 isCompanyOptionsError={companyOptionsQuery.isError}
                 isCompanyOptionsLoading={companyOptionsQuery.isLoading}
                 onEditableCellChange={onEditableCellChange}
+                onEditableRowsReorder={onEditableRowsReorder}
                 onContactCompanyResolutionChange={onContactCompanyResolutionChange}
                 rows={editableRows}
                 targetType={targetType}
@@ -1367,18 +1405,16 @@ function ImportMethodButton({
 function ImportFilePanel({
   file,
   disabled,
-  mode,
+  isDownloading,
+  onDownloadTemplate,
   onFileChange,
 }: {
   readonly file: File | null;
   readonly disabled: boolean;
-  readonly mode: "DIRECT";
+  readonly isDownloading: boolean;
+  readonly onDownloadTemplate: () => void;
   readonly onFileChange: (file: File | null) => void;
 }) {
-  const description =
-    mode === "DIRECT"
-      ? "다운로드된 양식에 맞춰 파일을 업로드해주세요."
-      : "";
   const [isDraggingFile, setIsDraggingFile] = useState(false);
   const dragDepthRef = useRef(0);
 
@@ -1442,7 +1478,17 @@ function ImportFilePanel({
       <div className="flex items-center justify-between gap-3">
         <div className="min-w-0">
           <h3 className="text-sm font-semibold text-[#111827]">파일 업로드</h3>
-          <p className="mt-1 text-xs text-[#6B7280]">{description}</p>
+          <p className="mt-1 text-xs text-[#6B7280]">
+            <button
+              className="font-semibold text-[#4880EE] underline underline-offset-2 disabled:cursor-wait disabled:text-[#93B4F5]"
+              disabled={isDownloading}
+              onClick={onDownloadTemplate}
+              type="button"
+            >
+              데이터 양식
+            </button>
+            에 맞춰 파일을 업로드해주세요.
+          </p>
         </div>
         {file ? (
           <Badge>{(file.size / 1024).toFixed(1)}KB</Badge>
@@ -1505,6 +1551,7 @@ function ImportEditablePreview({
   isCompanyOptionsError,
   disabled,
   onEditableCellChange,
+  onEditableRowsReorder,
   onContactCompanyResolutionChange,
 }: {
   readonly targetType: ImportTargetType;
@@ -1522,6 +1569,11 @@ function ImportEditablePreview({
     field: ImportTargetField,
     value: string
   ) => void;
+  readonly onEditableRowsReorder: (
+    sourceRowNumber: number,
+    targetRowNumber: number,
+    dropPosition: ImportPreviewDropPosition
+  ) => void;
   readonly onContactCompanyResolutionChange: (
     companyName: string,
     field: ContactCompanyResolutionField,
@@ -1530,6 +1582,11 @@ function ImportEditablePreview({
 }) {
   const fields = importTargetFields[targetType];
   const [columnWidths, setColumnWidths] = useState<Record<string, number>>({});
+  const [draggedRowNumber, setDraggedRowNumber] = useState<number | null>(null);
+  const [dropIndicator, setDropIndicator] = useState<{
+    readonly rowNumber: number;
+    readonly position: ImportPreviewDropPosition;
+  } | null>(null);
   const resizeCleanupRef = useRef<(() => void) | null>(null);
   const previewTableRef = useRef<HTMLDivElement | null>(null);
   const previewColumnWidths = fields.map((field) =>
@@ -1544,6 +1601,7 @@ function ImportEditablePreview({
   const newContactCompanyNames = new Set(
     contactCompanySummary?.newCompanyNames ?? []
   );
+  const canReorderRows = !disabled && rows.length > 1;
 
   useEffect(() => {
     resizeCleanupRef.current?.();
@@ -1557,6 +1615,72 @@ function ImportEditablePreview({
       resizeCleanupRef.current = null;
     };
   }, []);
+
+  const resetRowDragState = () => {
+    setDraggedRowNumber(null);
+    setDropIndicator(null);
+  };
+
+  const getRowDropPosition = (
+    event: DragEvent<HTMLDivElement>
+  ): ImportPreviewDropPosition => {
+    const rowRect = event.currentTarget.getBoundingClientRect();
+
+    return event.clientY - rowRect.top < rowRect.height / 2 ? "before" : "after";
+  };
+
+  const onRowDragStart = (
+    rowNumber: number,
+    event: DragEvent<HTMLButtonElement>
+  ) => {
+    if (!canReorderRows) {
+      event.preventDefault();
+      return;
+    }
+
+    resizeCleanupRef.current?.();
+    setDraggedRowNumber(rowNumber);
+    event.dataTransfer.effectAllowed = "move";
+    event.dataTransfer.setData("text/plain", String(rowNumber));
+  };
+
+  const onRowDragOver = (
+    rowNumber: number,
+    event: DragEvent<HTMLDivElement>
+  ) => {
+    if (!canReorderRows || draggedRowNumber === null) {
+      return;
+    }
+
+    event.preventDefault();
+    event.dataTransfer.dropEffect = "move";
+
+    const nextPosition = getRowDropPosition(event);
+    setDropIndicator((currentIndicator) =>
+      currentIndicator?.rowNumber === rowNumber &&
+      currentIndicator.position === nextPosition
+        ? currentIndicator
+        : { rowNumber, position: nextPosition }
+    );
+  };
+
+  const onRowDrop = (
+    rowNumber: number,
+    event: DragEvent<HTMLDivElement>
+  ) => {
+    if (!canReorderRows || draggedRowNumber === null) {
+      resetRowDragState();
+      return;
+    }
+
+    event.preventDefault();
+    onEditableRowsReorder(
+      draggedRowNumber,
+      rowNumber,
+      getRowDropPosition(event)
+    );
+    resetRowDragState();
+  };
 
   const onColumnResizeStart = (
     leftField: ImportTargetField,
@@ -1720,18 +1844,60 @@ function ImportEditablePreview({
             );
           })}
         </div>
-        {rows.map((row) => (
+        {rows.map((row) => {
+          const isDraggingRow = draggedRowNumber === row.rowNumber;
+          const rowDropIndicator =
+            dropIndicator?.rowNumber === row.rowNumber ? dropIndicator : null;
+
+          return (
           <div
-            className="grid border-b last:border-b-0"
+            className={cn(
+              "relative grid border-b last:border-b-0",
+              isDraggingRow && "opacity-45"
+            )}
             key={row.rowNumber}
+            onDragEnd={resetRowDragState}
+            onDragOver={(event) => onRowDragOver(row.rowNumber, event)}
+            onDrop={(event) => onRowDrop(row.rowNumber, event)}
             role="row"
             style={previewGridStyle}
           >
+            {rowDropIndicator ? (
+              <span
+                className={cn(
+                  "pointer-events-none absolute left-0 right-0 z-20 h-0.5 bg-[#4880EE]",
+                  rowDropIndicator.position === "before"
+                    ? "top-0"
+                    : "bottom-[-1px]"
+                )}
+              />
+            ) : null}
             <div
               className="flex h-[30px] w-[25px] items-center justify-center overflow-hidden border-r border-[#CBD5E1] bg-[#FAFBFC] px-0 text-center text-[10px] text-[#64748B]"
               role="cell"
             >
-              {row.rowNumber}
+              <button
+                aria-label={`${row.rowNumber}행 순서 변경`}
+                className={cn(
+                  "group/row-handle relative flex h-full w-full items-center justify-center overflow-hidden text-[10px] transition",
+                  canReorderRows
+                    ? "cursor-grab text-[#64748B] hover:bg-[#EFF6FF] active:cursor-grabbing"
+                    : "cursor-default text-[#94A3B8]"
+                )}
+                disabled={!canReorderRows}
+                draggable={canReorderRows}
+                onDragStart={(event) => onRowDragStart(row.rowNumber, event)}
+                title="행 끌어서 순서 변경"
+                type="button"
+              >
+                <span className="transition group-hover/row-handle:opacity-0">
+                  {row.rowNumber}
+                </span>
+                <GripVertical
+                  aria-hidden="true"
+                  className="absolute h-3.5 w-3.5 text-[#4880EE] opacity-0 transition group-hover/row-handle:opacity-100"
+                />
+              </button>
             </div>
             {fields.map((field) => {
               const cellValue = toInputValue(row.data[field.field]);
@@ -1797,7 +1963,8 @@ function ImportEditablePreview({
               );
             })}
           </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );
@@ -2409,6 +2576,56 @@ function toEditableRows(job: ImportJobResponse): EditableImportRow[] {
       errorMessage: row.errorMessage,
     };
   });
+}
+
+function reorderEditableRows(
+  rows: EditableImportRow[],
+  sourceRowNumber: number,
+  targetRowNumber: number,
+  dropPosition: ImportPreviewDropPosition
+): EditableImportRow[] {
+  const sourceIndex = rows.findIndex((row) => row.rowNumber === sourceRowNumber);
+  const targetIndex = rows.findIndex((row) => row.rowNumber === targetRowNumber);
+
+  if (sourceIndex === -1 || targetIndex === -1 || sourceIndex === targetIndex) {
+    return rows;
+  }
+
+  const sourceRow = rows[sourceIndex];
+
+  if (!sourceRow) {
+    return rows;
+  }
+
+  const rowsWithoutSource = rows.filter((_, index) => index !== sourceIndex);
+  const targetIndexWithoutSource = rowsWithoutSource.findIndex(
+    (row) => row.rowNumber === targetRowNumber
+  );
+
+  if (targetIndexWithoutSource === -1) {
+    return rows;
+  }
+
+  const insertIndex =
+    dropPosition === "before"
+      ? targetIndexWithoutSource
+      : targetIndexWithoutSource + 1;
+  const reorderedRows = [
+    ...rowsWithoutSource.slice(0, insertIndex),
+    sourceRow,
+    ...rowsWithoutSource.slice(insertIndex),
+  ];
+
+  return renumberEditableRows(reorderedRows);
+}
+
+function renumberEditableRows(
+  rows: readonly EditableImportRow[]
+): EditableImportRow[] {
+  return rows.map((row, index) => ({
+    ...row,
+    rowNumber: IMPORT_PREVIEW_FIRST_DATA_ROW_NUMBER + index,
+  }));
 }
 
 function toEditableFieldValue(
