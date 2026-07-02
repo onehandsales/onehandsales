@@ -10,6 +10,7 @@ export type ImportTemplateColumn = {
   readonly required: boolean;
   readonly type: ImportTemplateColumnType;
   readonly description?: string;
+  readonly options?: readonly string[];
 };
 
 export type ImportTemplateSampleRow = Readonly<

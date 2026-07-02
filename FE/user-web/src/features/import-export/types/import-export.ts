@@ -108,6 +108,25 @@ export type ConfirmImportJobInput = {
     readonly companyFieldName: string;
     readonly companyRegionName: string;
   }[];
+  readonly dealCompanyResolutions?: readonly {
+    readonly companyName: string;
+    readonly companyFieldName: string;
+    readonly companyRegionName: string;
+  }[];
+  readonly dealContactResolutions?: readonly {
+    readonly companyName: string;
+    readonly contactName: string;
+    readonly contactEmail: string;
+    readonly contactPhone: string;
+    readonly contactDepartmentName: string;
+    readonly contactJobGradeName: string;
+  }[];
+  readonly dealProductResolutions?: readonly {
+    readonly productName: string;
+    readonly productPrice: number;
+    readonly productCategoryName: string;
+    readonly productStatusName: string;
+  }[];
   readonly rows?: readonly {
     readonly rowNumber: number;
     readonly data: ImportMappedRowData;

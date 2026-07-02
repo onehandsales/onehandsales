@@ -29,17 +29,19 @@ export function useProductDeals(productId: string) {
   });
 }
 
-export function useProductCategories() {
+export function useProductCategories(options?: { readonly enabled?: boolean }) {
   return useQuery({
     queryKey: productQueryKeys.categories(),
     queryFn: () => listCategories(),
+    enabled: options?.enabled ?? true,
   });
 }
 
-export function useProductStatuses() {
+export function useProductStatuses(options?: { readonly enabled?: boolean }) {
   return useQuery({
     queryKey: productQueryKeys.statuses(),
     queryFn: () => listStatuses(),
+    enabled: options?.enabled ?? true,
   });
 }
 

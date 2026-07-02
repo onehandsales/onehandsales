@@ -21,26 +21,29 @@ export type DealEntityOption = {
   readonly subtitle: string;
 };
 
-export function useDealCompanyOptions() {
+export function useDealCompanyOptions(options?: { readonly enabled?: boolean }) {
   return useQuery({
     queryKey: dealQueryKeys.companyOptions(),
     queryFn: () => getDealCompanyOptions(),
+    enabled: options?.enabled ?? true,
     select: (data) => data.items,
   });
 }
 
-export function useDealContactOptions() {
+export function useDealContactOptions(options?: { readonly enabled?: boolean }) {
   return useQuery({
     queryKey: dealQueryKeys.contactOptions(),
     queryFn: () => getDealContactOptions(),
+    enabled: options?.enabled ?? true,
     select: (data) => data.items,
   });
 }
 
-export function useDealProductOptions() {
+export function useDealProductOptions(options?: { readonly enabled?: boolean }) {
   return useQuery({
     queryKey: dealQueryKeys.productOptions(),
     queryFn: () => getDealProductOptions(),
+    enabled: options?.enabled ?? true,
     select: (data) => data.items,
   });
 }

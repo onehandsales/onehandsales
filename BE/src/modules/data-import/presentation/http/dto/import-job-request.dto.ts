@@ -1,6 +1,7 @@
 import { Type } from "class-transformer";
 import {
   IsArray,
+  IsEmail,
   IsIn,
   IsInt,
   IsNotEmpty,
@@ -57,6 +58,55 @@ export class ConfirmContactCompanyResolutionDto {
   companyRegionName!: string;
 }
 
+// 역할 : 딜 불러오기 중 새 회사 생성 보정 요청 값을 검증합니다.
+export class ConfirmDealCompanyResolutionDto extends ConfirmContactCompanyResolutionDto {}
+
+// 역할 : 딜 불러오기 중 새 담당자 생성 보정 요청 값을 검증합니다.
+export class ConfirmDealContactResolutionDto {
+  @IsString()
+  @IsNotEmpty()
+  companyName!: string;
+
+  @IsString()
+  @IsNotEmpty()
+  contactName!: string;
+
+  @IsEmail()
+  contactEmail!: string;
+
+  @IsString()
+  @IsNotEmpty()
+  contactPhone!: string;
+
+  @IsString()
+  @IsNotEmpty()
+  contactDepartmentName!: string;
+
+  @IsString()
+  @IsNotEmpty()
+  contactJobGradeName!: string;
+}
+
+// 역할 : 딜 불러오기 중 새 제품 생성 보정 요청 값을 검증합니다.
+export class ConfirmDealProductResolutionDto {
+  @IsString()
+  @IsNotEmpty()
+  productName!: string;
+
+  @Type(() => Number)
+  @IsInt()
+  @Min(0)
+  productPrice!: number;
+
+  @IsString()
+  @IsNotEmpty()
+  productCategoryName!: string;
+
+  @IsString()
+  @IsNotEmpty()
+  productStatusName!: string;
+}
+
 // 역할 : ConfirmImportJobDto 데이터 불러오기 확정 요청 값을 검증합니다.
 export class ConfirmImportJobDto {
   @IsOptional()
@@ -64,6 +114,24 @@ export class ConfirmImportJobDto {
   @ValidateNested({ each: true })
   @Type(() => ConfirmContactCompanyResolutionDto)
   contactCompanyResolutions?: ConfirmContactCompanyResolutionDto[];
+
+  @IsOptional()
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => ConfirmDealCompanyResolutionDto)
+  dealCompanyResolutions?: ConfirmDealCompanyResolutionDto[];
+
+  @IsOptional()
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => ConfirmDealContactResolutionDto)
+  dealContactResolutions?: ConfirmDealContactResolutionDto[];
+
+  @IsOptional()
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => ConfirmDealProductResolutionDto)
+  dealProductResolutions?: ConfirmDealProductResolutionDto[];
 
   @IsOptional()
   @IsArray()

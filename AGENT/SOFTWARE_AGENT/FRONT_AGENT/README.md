@@ -59,7 +59,7 @@ User Web:
 - 실제 API 연동 완료: Auth/User, Home, Company, Contact, BusinessCard OCR, Product, Deal, Schedule, MeetingNote manual CRUD, MeetingNote AI/STT draft, MeetingNote deal link, Search, Trash, DataImport, Company/Contact/Product/Deal domain xlsx export.
 - mock/placeholder 경계: generic Export route/API, Notification.
 - BusinessCard OCR 화면은 `/business-cards`다. 목록은 등록일 최신순 고정, 상태 다중 필터와 `상태 초기화`를 제공하고, `명함스캔` 모달은 이미지 업로드 -> 진행 표시 -> 추출 결과 확인/수정 -> 저장 흐름을 사용한다.
-- DataImport 화면은 `/import`와 `/import/:importUserLogId`다. 회사/담당자/제품 양식 다운로드, CSV/XLSX 업로드, AI 컬럼 매핑, row 수정/검증, 확정 저장, 성공 내역 조회를 실제 API와 연결한다. 딜 불러오기는 아직 지원하지 않는다.
+- DataImport 화면은 `/import`와 `/import/:importUserLogId`다. 회사/담당자/제품/딜 양식 다운로드, CSV/XLSX 업로드, AI 컬럼 매핑, row 수정/검증, 확정 저장, 성공 내역 조회를 실제 API와 연결한다.
 
 Admin Web:
 

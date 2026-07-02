@@ -31,7 +31,7 @@ PRODUCT
 DEAL
 ```
 
-현재 활성 양식과 확정 저장은 `COMPANY`, `CONTACT`, `PRODUCT`만 지원한다. `DEAL`은 enum에는 있지만 API에서 validation error로 차단한다.
+현재 활성 양식과 확정 저장은 `COMPANY`, `CONTACT`, `PRODUCT`, `DEAL`을 지원한다.
 
 ## 3. ImportTemplate
 

@@ -47,7 +47,7 @@ Health check:
 curl http://localhost:3000/api/health
 ```
 
-현재 Backend는 Auth/User, Company, Contact, BusinessCard OCR, Product, Deal, Schedule, MeetingNote, Search, Trash, DataImport 모듈을 구현한다. Company/Contact/Product/Deal은 각 도메인별 xlsx export API를 제공한다. DataImport는 회사/담당자/제품 CSV/XLSX 업로드, AI 컬럼 매핑, 사용자 보정, 확정 저장, 성공 내역 조회를 제공하며 딜 불러오기는 아직 지원하지 않는다. Admin API는 현재 `GET /admin/api/me`만 구현되어 있으며 관리자 페이지와 운영 조회 API는 후속 단계에서 만든다.
+현재 Backend는 Auth/User, Company, Contact, BusinessCard OCR, Product, Deal, Schedule, MeetingNote, Search, Trash, DataImport 모듈을 구현한다. Company/Contact/Product/Deal은 각 도메인별 xlsx export API를 제공한다. DataImport는 회사/담당자/제품/딜 CSV/XLSX 업로드, AI 컬럼 매핑, 사용자 보정, 확정 저장, 성공 내역 조회를 제공한다. Admin API는 현재 `GET /admin/api/me`만 구현되어 있으며 관리자 페이지와 운영 조회 API는 후속 단계에서 만든다.
 
 ### 2. User Web
 

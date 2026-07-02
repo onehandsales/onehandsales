@@ -40,8 +40,28 @@ import {
 } from "@/features/company/hooks/use-company-mutations";
 import { useCompanyFields, useCompanyRegions } from "@/features/company/hooks/use-company-list";
 import type { CompanyField, CompanyRegion } from "@/features/company/types/company";
+import {
+  useCreateDepartmentMutation,
+  useCreateJobGradeMutation,
+} from "@/features/contact/hooks/use-contact-mutations";
+import {
+  useContactDepartments,
+  useContactJobGrades,
+} from "@/features/contact/hooks/use-contact-list";
 import { useCompanyOptions } from "@/features/contact/hooks/use-company-options";
-import type { ContactCompanyOption } from "@/features/contact/types/contact";
+import type {
+  ContactCompanyOption,
+  ContactDepartment,
+  ContactJobGrade,
+} from "@/features/contact/types/contact";
+import {
+  useDealCompanyOptions,
+  useDealContactOptions,
+  useDealProductOptions,
+  type DealCompanyOption,
+  type DealContactOption,
+  type DealProductOption,
+} from "@/features/deal/hooks/use-deal-entity-options";
 import {
   useConfirmImportJobMutation,
   useCreateImportJobMutation,
@@ -69,6 +89,18 @@ import type {
   ImportTemplateType,
 } from "@/features/import-export/types/import-template";
 import type { ImportUserLogListItem } from "@/features/import-export/types/import-user-log";
+import {
+  useCreateCategoryMutation,
+  useCreateStatusMutation,
+} from "@/features/product/hooks/use-product-mutations";
+import {
+  useProductCategories,
+  useProductStatuses,
+} from "@/features/product/hooks/use-product-detail";
+import type {
+  ProductCategory,
+  ProductStatus,
+} from "@/features/product/types/product";
 import { getApiErrorMessage, type ApiBlobResponse } from "@/lib/api-client";
 import { cn } from "@/utils/cn";
 import { formatDateWithOptions } from "@/utils/format";
@@ -186,6 +218,50 @@ type ContactCompanyResolutionState = Readonly<
   Record<string, ContactCompanyResolutionValue>
 >;
 
+type DealCompanyResolutionValue = ContactCompanyResolutionValue;
+type DealCompanyResolutionField = keyof DealCompanyResolutionValue;
+type DealCompanyResolutionState = Readonly<
+  Record<string, DealCompanyResolutionValue>
+>;
+
+type DealContactResolutionValue = {
+  readonly companyName: string;
+  readonly contactName: string;
+  readonly contactEmail: string;
+  readonly contactPhone: string;
+  readonly contactDepartmentName: string;
+  readonly contactJobGradeName: string;
+};
+type DealContactResolutionField = keyof Omit<
+  DealContactResolutionValue,
+  "companyName" | "contactName"
+>;
+type DealContactResolutionState = Readonly<
+  Record<string, DealContactResolutionValue>
+>;
+
+type DealProductResolutionValue = {
+  readonly productPrice: string;
+  readonly productCategoryName: string;
+  readonly productStatusName: string;
+};
+type DealProductResolutionField = keyof DealProductResolutionValue;
+type DealProductResolutionState = Readonly<
+  Record<string, DealProductResolutionValue>
+>;
+
+type DealImportSummaryData = {
+  readonly newCompanyNames: readonly string[];
+  readonly newContactKeys: readonly string[];
+  readonly newProductNames: readonly string[];
+  readonly contactLabels: Readonly<Record<string, string>>;
+  readonly contactCompanyNames: Readonly<Record<string, string>>;
+  readonly contactNames: Readonly<Record<string, string>>;
+  readonly newCompanyCount: number;
+  readonly newContactCount: number;
+  readonly newProductCount: number;
+};
+
 type ImportTaxonomyPopoverPosition = {
   readonly left: number;
   readonly top: number;
@@ -209,6 +285,12 @@ export function ImportScreen() {
   const [editableRows, setEditableRows] = useState<EditableImportRow[]>([]);
   const [contactCompanyResolutions, setContactCompanyResolutions] =
     useState<ContactCompanyResolutionState>({});
+  const [dealCompanyResolutions, setDealCompanyResolutions] =
+    useState<DealCompanyResolutionState>({});
+  const [dealContactResolutions, setDealContactResolutions] =
+    useState<DealContactResolutionState>({});
+  const [dealProductResolutions, setDealProductResolutions] =
+    useState<DealProductResolutionState>({});
   const templatesQuery = useActiveImportTemplates();
   const downloadMutation = useDownloadImportTemplateMutation();
   const createImportJobMutation = useCreateImportJobMutation();
@@ -267,6 +349,9 @@ export function ImportScreen() {
     setImportJob(null);
     setEditableRows([]);
     setContactCompanyResolutions({});
+    setDealCompanyResolutions({});
+    setDealContactResolutions({});
+    setDealProductResolutions({});
   };
 
   const downloadTemplate = async (template: ImportTemplateItem) => {
@@ -322,6 +407,10 @@ export function ImportScreen() {
     setSelectedFile(validationMessage ? null : file);
     setImportJob(null);
     setEditableRows([]);
+    setContactCompanyResolutions({});
+    setDealCompanyResolutions({});
+    setDealContactResolutions({});
+    setDealProductResolutions({});
     setFormError(validationMessage);
   };
 
@@ -410,6 +499,75 @@ export function ImportScreen() {
     });
   };
 
+  const onDealCompanyResolutionChange = (
+    companyName: string,
+    field: DealCompanyResolutionField,
+    value: string
+  ) => {
+    setDealCompanyResolutions((currentResolutions) => {
+      const currentResolution = currentResolutions[companyName] ?? {
+        companyFieldName: "",
+        companyRegionName: "",
+      };
+
+      return {
+        ...currentResolutions,
+        [companyName]: {
+          ...currentResolution,
+          [field]: value,
+        },
+      };
+    });
+  };
+
+  const onDealContactResolutionChange = (
+    contactKey: string,
+    field: DealContactResolutionField,
+    value: string
+  ) => {
+    setDealContactResolutions((currentResolutions) => {
+      const parsedContact = parseDealContactResolutionKey(contactKey);
+      const currentResolution = currentResolutions[contactKey] ?? {
+        companyName: parsedContact.companyName,
+        contactName: parsedContact.contactName,
+        contactEmail: "",
+        contactPhone: "",
+        contactDepartmentName: "",
+        contactJobGradeName: "",
+      };
+
+      return {
+        ...currentResolutions,
+        [contactKey]: {
+          ...currentResolution,
+          [field]: value,
+        },
+      };
+    });
+  };
+
+  const onDealProductResolutionChange = (
+    productName: string,
+    field: DealProductResolutionField,
+    value: string
+  ) => {
+    setDealProductResolutions((currentResolutions) => {
+      const currentResolution = currentResolutions[productName] ?? {
+        productPrice: "",
+        productCategoryName: "",
+        productStatusName: "",
+      };
+
+      return {
+        ...currentResolutions,
+        [productName]: {
+          ...currentResolution,
+          [field]: value,
+        },
+      };
+    });
+  };
+
   const onConfirmImport = async () => {
     if (!importJob) {
       setFormError("먼저 엑셀 파일을 업로드해 주세요.");
@@ -435,6 +593,18 @@ export function ImportScreen() {
       contactCompanyResolutions:
         selectedTemplate.templateType === "CONTACT"
           ? toContactCompanyResolutionPayload(contactCompanyResolutions)
+          : undefined,
+      dealCompanyResolutions:
+        selectedTemplate.templateType === "DEAL"
+          ? toDealCompanyResolutionPayload(dealCompanyResolutions)
+          : undefined,
+      dealContactResolutions:
+        selectedTemplate.templateType === "DEAL"
+          ? toDealContactResolutionPayload(dealContactResolutions)
+          : undefined,
+      dealProductResolutions:
+        selectedTemplate.templateType === "DEAL"
+          ? toDealProductResolutionPayload(dealProductResolutions)
           : undefined,
       rows: editableRows.map((row) => ({
         rowNumber: row.rowNumber,
@@ -649,6 +819,9 @@ export function ImportScreen() {
 
       <ImportTemplateDialog
         contactCompanyResolutions={contactCompanyResolutions}
+        dealCompanyResolutions={dealCompanyResolutions}
+        dealContactResolutions={dealContactResolutions}
+        dealProductResolutions={dealProductResolutions}
         dialogStep={dialogStep}
         editableRows={editableRows}
         errorMessage={formError}
@@ -658,6 +831,9 @@ export function ImportScreen() {
         selectedImportMode={selectedImportMode}
         onContactCompanyResolutionChange={onContactCompanyResolutionChange}
         onConfirmImport={() => void onConfirmImport()}
+        onDealCompanyResolutionChange={onDealCompanyResolutionChange}
+        onDealContactResolutionChange={onDealContactResolutionChange}
+        onDealProductResolutionChange={onDealProductResolutionChange}
         onDirectTargetSelect={onDirectTargetSelect}
         onDownloadSelectedTemplate={() => void onDownloadSelectedTemplate()}
         onEditableCellChange={onEditableCellChange}
@@ -669,6 +845,9 @@ export function ImportScreen() {
           setEditableRows([]);
           setSelectedFile(null);
           setContactCompanyResolutions({});
+          setDealCompanyResolutions({});
+          setDealContactResolutions({});
+          setDealProductResolutions({});
           setDialogStep(dialogStep === "DIRECT_UPLOAD" ? "DIRECT_TARGET" : "METHOD");
         }}
         onOpenChange={(nextOpen) => {
@@ -1083,6 +1262,9 @@ function ImportTemplateDialog({
   importJob,
   editableRows,
   contactCompanyResolutions,
+  dealCompanyResolutions,
+  dealContactResolutions,
+  dealProductResolutions,
   errorMessage,
   isDownloading,
   importBusy,
@@ -1095,6 +1277,9 @@ function ImportTemplateDialog({
   onEditableCellChange,
   onEditableRowsReorder,
   onContactCompanyResolutionChange,
+  onDealCompanyResolutionChange,
+  onDealContactResolutionChange,
+  onDealProductResolutionChange,
   onConfirmImport,
   onBack,
   onOpenChange,
@@ -1107,6 +1292,9 @@ function ImportTemplateDialog({
   readonly importJob: ImportJobResponse | null;
   readonly editableRows: readonly EditableImportRow[];
   readonly contactCompanyResolutions: ContactCompanyResolutionState;
+  readonly dealCompanyResolutions: DealCompanyResolutionState;
+  readonly dealContactResolutions: DealContactResolutionState;
+  readonly dealProductResolutions: DealProductResolutionState;
   readonly errorMessage: string | null;
   readonly isDownloading: boolean;
   readonly importBusy: boolean;
@@ -1131,17 +1319,58 @@ function ImportTemplateDialog({
     field: ContactCompanyResolutionField,
     value: string
   ) => void;
+  readonly onDealCompanyResolutionChange: (
+    companyName: string,
+    field: DealCompanyResolutionField,
+    value: string
+  ) => void;
+  readonly onDealContactResolutionChange: (
+    contactKey: string,
+    field: DealContactResolutionField,
+    value: string
+  ) => void;
+  readonly onDealProductResolutionChange: (
+    productName: string,
+    field: DealProductResolutionField,
+    value: string
+  ) => void;
   readonly onConfirmImport: () => void;
   readonly onBack: () => void;
   readonly onOpenChange: (open: boolean) => void;
 }) {
   const targetType = selectedTemplate?.templateType as ImportTargetType | undefined;
   const isContactPreview = Boolean(importJob) && targetType === "CONTACT";
+  const isDealPreview = Boolean(importJob) && targetType === "DEAL";
   const companyOptionsQuery = useCompanyOptions({
     enabled: isContactPreview,
   });
-  const companyFieldsQuery = useCompanyFields({ enabled: isContactPreview });
-  const companyRegionsQuery = useCompanyRegions({ enabled: isContactPreview });
+  const dealCompanyOptionsQuery = useDealCompanyOptions({
+    enabled: isDealPreview,
+  });
+  const dealContactOptionsQuery = useDealContactOptions({
+    enabled: isDealPreview,
+  });
+  const dealProductOptionsQuery = useDealProductOptions({
+    enabled: isDealPreview,
+  });
+  const companyFieldsQuery = useCompanyFields({
+    enabled: isContactPreview || isDealPreview,
+  });
+  const companyRegionsQuery = useCompanyRegions({
+    enabled: isContactPreview || isDealPreview,
+  });
+  const contactDepartmentsQuery = useContactDepartments({
+    enabled: isDealPreview,
+  });
+  const contactJobGradesQuery = useContactJobGrades({
+    enabled: isDealPreview,
+  });
+  const productCategoriesQuery = useProductCategories({
+    enabled: isDealPreview,
+  });
+  const productStatusesQuery = useProductStatuses({
+    enabled: isDealPreview,
+  });
   const contactCompanySummary = useMemo(
     () =>
       isContactPreview && companyOptionsQuery.data
@@ -1152,8 +1381,28 @@ function ImportTemplateDialog({
         : null,
     [companyOptionsQuery.data, editableRows, isContactPreview]
   );
-  const isActionDisabled =
-    !selectedTemplate || isDownloading || importBusy || selectedTemplate.templateType === "DEAL";
+  const dealSummary = useMemo(
+    () =>
+      isDealPreview &&
+      dealCompanyOptionsQuery.data &&
+      dealContactOptionsQuery.data &&
+      dealProductOptionsQuery.data
+        ? createDealImportSummary(
+            editableRows,
+            dealCompanyOptionsQuery.data,
+            dealContactOptionsQuery.data,
+            dealProductOptionsQuery.data
+          )
+        : null,
+    [
+      dealCompanyOptionsQuery.data,
+      dealContactOptionsQuery.data,
+      dealProductOptionsQuery.data,
+      editableRows,
+      isDealPreview,
+    ]
+  );
+  const isActionDisabled = !selectedTemplate || isDownloading || importBusy;
   const hasEmptyPreviewCell =
     importJob && targetType ? hasEmptyEditableCell(targetType, editableRows) : false;
   const hasUnresolvedContactCompanies =
@@ -1165,12 +1414,28 @@ function ImportTemplateDialog({
         contactCompanySummary,
         contactCompanyResolutions
       ));
+  const hasUnresolvedDealResources =
+    isDealPreview &&
+    (dealCompanyOptionsQuery.isLoading ||
+      dealContactOptionsQuery.isLoading ||
+      dealProductOptionsQuery.isLoading ||
+      dealCompanyOptionsQuery.isError ||
+      dealContactOptionsQuery.isError ||
+      dealProductOptionsQuery.isError ||
+      !dealSummary ||
+      hasIncompleteDealResourceResolutions(
+        dealSummary,
+        dealCompanyResolutions,
+        dealContactResolutions,
+        dealProductResolutions
+      ));
   const canUploadPreview =
     Boolean(importJob) &&
     !isActionDisabled &&
     editableRows.length > 0 &&
     !hasEmptyPreviewCell &&
-    !hasUnresolvedContactCompanies;
+    !hasUnresolvedContactCompanies &&
+    !hasUnresolvedDealResources;
   const titleLabel =
     dialogStep === "METHOD"
       ? "데이터 업로드"
@@ -1324,13 +1589,34 @@ function ImportTemplateDialog({
                 companyRegions={companyRegionsQuery.data?.items ?? []}
                 contactCompanyResolutions={contactCompanyResolutions}
                 contactCompanySummary={contactCompanySummary}
+                contactDepartments={contactDepartmentsQuery.data?.items ?? []}
+                contactJobGrades={contactJobGradesQuery.data?.items ?? []}
+                dealCompanyResolutions={dealCompanyResolutions}
+                dealContactResolutions={dealContactResolutions}
+                dealProductResolutions={dealProductResolutions}
+                dealSummary={dealSummary}
                 disabled={importBusy}
                 file={selectedFile}
                 isCompanyOptionsError={companyOptionsQuery.isError}
                 isCompanyOptionsLoading={companyOptionsQuery.isLoading}
+                isDealOptionsError={
+                  dealCompanyOptionsQuery.isError ||
+                  dealContactOptionsQuery.isError ||
+                  dealProductOptionsQuery.isError
+                }
+                isDealOptionsLoading={
+                  dealCompanyOptionsQuery.isLoading ||
+                  dealContactOptionsQuery.isLoading ||
+                  dealProductOptionsQuery.isLoading
+                }
                 onEditableCellChange={onEditableCellChange}
                 onEditableRowsReorder={onEditableRowsReorder}
                 onContactCompanyResolutionChange={onContactCompanyResolutionChange}
+                onDealCompanyResolutionChange={onDealCompanyResolutionChange}
+                onDealContactResolutionChange={onDealContactResolutionChange}
+                onDealProductResolutionChange={onDealProductResolutionChange}
+                productCategories={productCategoriesQuery.data?.items ?? []}
+                productStatuses={productStatusesQuery.data?.items ?? []}
                 rows={editableRows}
                 targetType={targetType}
               />
@@ -1553,24 +1839,47 @@ function ImportEditablePreview({
   file,
   contactCompanySummary,
   contactCompanyResolutions,
+  dealSummary,
+  dealCompanyResolutions,
+  dealContactResolutions,
+  dealProductResolutions,
   companyFields,
   companyRegions,
+  contactDepartments,
+  contactJobGrades,
+  productCategories,
+  productStatuses,
   isCompanyOptionsLoading,
   isCompanyOptionsError,
+  isDealOptionsLoading,
+  isDealOptionsError,
   disabled,
   onEditableCellChange,
   onEditableRowsReorder,
   onContactCompanyResolutionChange,
+  onDealCompanyResolutionChange,
+  onDealContactResolutionChange,
+  onDealProductResolutionChange,
 }: {
   readonly targetType: ImportTargetType;
   readonly rows: readonly EditableImportRow[];
   readonly file: File | null;
   readonly contactCompanySummary: ContactCompanyImportSummaryData | null;
   readonly contactCompanyResolutions: ContactCompanyResolutionState;
+  readonly dealSummary: DealImportSummaryData | null;
+  readonly dealCompanyResolutions: DealCompanyResolutionState;
+  readonly dealContactResolutions: DealContactResolutionState;
+  readonly dealProductResolutions: DealProductResolutionState;
   readonly companyFields: readonly CompanyField[];
   readonly companyRegions: readonly CompanyRegion[];
+  readonly contactDepartments: readonly ContactDepartment[];
+  readonly contactJobGrades: readonly ContactJobGrade[];
+  readonly productCategories: readonly ProductCategory[];
+  readonly productStatuses: readonly ProductStatus[];
   readonly isCompanyOptionsLoading: boolean;
   readonly isCompanyOptionsError: boolean;
+  readonly isDealOptionsLoading: boolean;
+  readonly isDealOptionsError: boolean;
   readonly disabled: boolean;
   readonly onEditableCellChange: (
     rowNumber: number,
@@ -1585,6 +1894,21 @@ function ImportEditablePreview({
   readonly onContactCompanyResolutionChange: (
     companyName: string,
     field: ContactCompanyResolutionField,
+    value: string
+  ) => void;
+  readonly onDealCompanyResolutionChange: (
+    companyName: string,
+    field: DealCompanyResolutionField,
+    value: string
+  ) => void;
+  readonly onDealContactResolutionChange: (
+    contactKey: string,
+    field: DealContactResolutionField,
+    value: string
+  ) => void;
+  readonly onDealProductResolutionChange: (
+    productName: string,
+    field: DealProductResolutionField,
     value: string
   ) => void;
 }) {
@@ -1609,6 +1933,9 @@ function ImportEditablePreview({
   const newContactCompanyNames = new Set(
     contactCompanySummary?.newCompanyNames ?? []
   );
+  const newDealCompanyNames = new Set(dealSummary?.newCompanyNames ?? []);
+  const newDealContactKeys = new Set(dealSummary?.newContactKeys ?? []);
+  const newDealProductNames = new Set(dealSummary?.newProductNames ?? []);
   const canReorderRows = !disabled && rows.length > 1;
 
   useEffect(() => {
@@ -1801,6 +2128,27 @@ function ImportEditablePreview({
         />
       ) : null}
 
+      {targetType === "DEAL" ? (
+        <DealResourceImportSummary
+          companyFields={companyFields}
+          companyRegions={companyRegions}
+          contactDepartments={contactDepartments}
+          contactJobGrades={contactJobGrades}
+          dealCompanyResolutions={dealCompanyResolutions}
+          dealContactResolutions={dealContactResolutions}
+          dealProductResolutions={dealProductResolutions}
+          disabled={disabled}
+          isError={isDealOptionsError}
+          isLoading={isDealOptionsLoading}
+          onCompanyResolutionChange={onDealCompanyResolutionChange}
+          onContactResolutionChange={onDealContactResolutionChange}
+          onProductResolutionChange={onDealProductResolutionChange}
+          productCategories={productCategories}
+          productStatuses={productStatuses}
+          summary={dealSummary}
+        />
+      ) : null}
+
       <div
         className="max-h-[320px] overflow-x-hidden overflow-y-auto rounded-md border border-[#E5E7EB] text-[11px]"
         ref={previewTableRef}
@@ -1909,7 +2257,8 @@ function ImportEditablePreview({
             </div>
             {fields.map((field) => {
               const cellValue = toInputValue(row.data[field.field]);
-              const isEmptyCell = cellValue.trim().length === 0;
+              const isEmptyRequiredCell =
+                field.required && cellValue.trim().length === 0;
               const normalizedCompanyName = cellValue.trim();
               const isNewContactCompany =
                 targetType === "CONTACT" &&
@@ -1921,44 +2270,128 @@ function ImportEditablePreview({
                 isContactCompanyResolutionComplete(
                   contactCompanyResolutions[normalizedCompanyName]
                 );
+              const rowCompanyName = toInputValue(row.data.companyName).trim();
+              const rowContactName = toInputValue(row.data.contactName).trim();
+              const rowProductName = toInputValue(row.data.productName).trim();
+              const dealContactKey = createDealContactResolutionKey(
+                rowCompanyName,
+                rowContactName
+              );
+              const isNewDealCompany =
+                targetType === "DEAL" &&
+                field.field === "companyName" &&
+                rowCompanyName.length > 0 &&
+                newDealCompanyNames.has(rowCompanyName);
+              const isNewDealCompanyResolved =
+                isNewDealCompany &&
+                isContactCompanyResolutionComplete(
+                  dealCompanyResolutions[rowCompanyName]
+                );
+              const isNewDealContact =
+                targetType === "DEAL" &&
+                field.field === "contactName" &&
+                rowCompanyName.length > 0 &&
+                rowContactName.length > 0 &&
+                newDealContactKeys.has(dealContactKey);
+              const isNewDealContactResolved =
+                isNewDealContact &&
+                isDealContactResolutionComplete(
+                  dealContactResolutions[dealContactKey]
+                );
+              const isNewDealProduct =
+                targetType === "DEAL" &&
+                field.field === "productName" &&
+                rowProductName.length > 0 &&
+                newDealProductNames.has(rowProductName);
+              const isNewDealProductResolved =
+                isNewDealProduct &&
+                isDealProductResolutionComplete(
+                  dealProductResolutions[rowProductName]
+                );
+              const creationBadge = isNewContactCompany
+                ? {
+                    resolved: isNewContactCompanyResolved,
+                    resolvedLabel: "생성 예정",
+                    unresolvedLabel: "생성 필요",
+                  }
+                : isNewDealCompany || isNewDealContact || isNewDealProduct
+                  ? {
+                      resolved:
+                        isNewDealCompanyResolved ||
+                        isNewDealContactResolved ||
+                        isNewDealProductResolved,
+                      resolvedLabel: "생성 예정",
+                      unresolvedLabel: "생성 필요",
+                    }
+                  : null;
 
               return (
                 <div
                   className={cn(
                     "flex h-[30px] min-w-0 items-center border-r border-[#CBD5E1] px-2 last:border-r-0",
-                    isEmptyCell && "bg-red-50"
+                    isEmptyRequiredCell && "bg-red-50"
                   )}
                   key={field.field}
                   role="cell"
                 >
                   <div className="flex min-w-0 flex-1 items-center gap-1.5">
-                    <input
-                      aria-invalid={isEmptyCell}
-                      className={cn(
-                        "h-full min-w-0 flex-1 appearance-none border-0 bg-transparent px-0 text-[11px] outline-none disabled:bg-transparent",
-                        isEmptyCell ? "text-red-700" : "text-[#111827]"
-                      )}
-                      disabled={disabled}
-                      onChange={(event) =>
-                        onEditableCellChange(
-                          row.rowNumber,
-                          field,
-                          event.target.value
-                        )
-                      }
-                      type={field.kind === "number" ? "text" : "text"}
-                      value={cellValue}
-                    />
-                    {isNewContactCompany ? (
+                    {field.kind === "enum" ? (
+                      <select
+                        aria-invalid={isEmptyRequiredCell}
+                        className={cn(
+                          "h-full min-w-0 flex-1 appearance-none border-0 bg-transparent px-0 text-[11px] outline-none disabled:bg-transparent",
+                          isEmptyRequiredCell ? "text-red-700" : "text-[#111827]"
+                        )}
+                        disabled={disabled}
+                        onChange={(event) =>
+                          onEditableCellChange(
+                            row.rowNumber,
+                            field,
+                            event.target.value
+                          )
+                        }
+                        value={cellValue}
+                      >
+                        <option value="" />
+                        {(field.enumValues ?? []).map((enumValue) => (
+                          <option key={enumValue} value={enumValue}>
+                            {enumValue}
+                          </option>
+                        ))}
+                      </select>
+                    ) : (
+                      <input
+                        aria-invalid={isEmptyRequiredCell}
+                        className={cn(
+                          "h-full min-w-0 flex-1 appearance-none border-0 bg-transparent px-0 text-[11px] outline-none disabled:bg-transparent",
+                          isEmptyRequiredCell
+                            ? "text-red-700"
+                            : "text-[#111827]"
+                        )}
+                        disabled={disabled}
+                        onChange={(event) =>
+                          onEditableCellChange(
+                            row.rowNumber,
+                            field,
+                            event.target.value
+                          )
+                        }
+                        type={field.kind === "number" ? "text" : "text"}
+                        value={cellValue}
+                      />
+                    )}
+                    {creationBadge ? (
                       <span
                         className={cn(
                           "shrink-0 rounded-full px-1.5 py-0.5 text-[10px] font-semibold leading-none",
-                          isNewContactCompanyResolved
+                          creationBadge.resolved
                             ? "bg-[#EFF6FF] text-[#1D4ED8]"
                             : "bg-[#FFF1F2] text-[#F04452]"
                         )}
                       >
-                        {isNewContactCompanyResolved ? "생성 예정" : "생성 필요"}
+                        {creationBadge.resolved
+                          ? creationBadge.resolvedLabel
+                          : creationBadge.unresolvedLabel}
                       </span>
                     ) : null}
                   </div>
@@ -2153,6 +2586,502 @@ function ContactCompanyImportSummary({
           </div>
         </>
       ) : null}
+    </div>
+  );
+}
+
+function DealResourceImportSummary({
+  summary,
+  dealCompanyResolutions,
+  dealContactResolutions,
+  dealProductResolutions,
+  companyFields,
+  companyRegions,
+  contactDepartments,
+  contactJobGrades,
+  productCategories,
+  productStatuses,
+  isLoading,
+  isError,
+  disabled,
+  onCompanyResolutionChange,
+  onContactResolutionChange,
+  onProductResolutionChange,
+}: {
+  readonly summary: DealImportSummaryData | null;
+  readonly dealCompanyResolutions: DealCompanyResolutionState;
+  readonly dealContactResolutions: DealContactResolutionState;
+  readonly dealProductResolutions: DealProductResolutionState;
+  readonly companyFields: readonly CompanyField[];
+  readonly companyRegions: readonly CompanyRegion[];
+  readonly contactDepartments: readonly ContactDepartment[];
+  readonly contactJobGrades: readonly ContactJobGrade[];
+  readonly productCategories: readonly ProductCategory[];
+  readonly productStatuses: readonly ProductStatus[];
+  readonly isLoading: boolean;
+  readonly isError: boolean;
+  readonly disabled: boolean;
+  readonly onCompanyResolutionChange: (
+    companyName: string,
+    field: DealCompanyResolutionField,
+    value: string
+  ) => void;
+  readonly onContactResolutionChange: (
+    contactKey: string,
+    field: DealContactResolutionField,
+    value: string
+  ) => void;
+  readonly onProductResolutionChange: (
+    productName: string,
+    field: DealProductResolutionField,
+    value: string
+  ) => void;
+}) {
+  const [openSections, setOpenSections] = useState({
+    companies: true,
+    contacts: true,
+    products: true,
+  });
+  const createCompanyFieldMutation = useCreateCompanyFieldMutation();
+  const createCompanyRegionMutation = useCreateCompanyRegionMutation();
+  const createDepartmentMutation = useCreateDepartmentMutation();
+  const createJobGradeMutation = useCreateJobGradeMutation();
+  const createCategoryMutation = useCreateCategoryMutation();
+  const createStatusMutation = useCreateStatusMutation();
+
+  if (isLoading) {
+    return (
+      <div className="rounded-md border border-[#E5E7EB] bg-[#FAFBFC] px-3 py-2 text-[12px] text-[#6B7280]">
+        딜 연결 정보를 확인하고 있습니다.
+      </div>
+    );
+  }
+
+  if (isError || !summary) {
+    return (
+      <div className="rounded-md border border-[#FDE68A] bg-[#FFFBEB] px-3 py-2 text-[12px] text-[#92400E]">
+        딜 연결 정보를 확인하지 못했습니다. 잠시 후 다시 시도해 주세요.
+      </div>
+    );
+  }
+
+  const totalMissingCount =
+    summary.newCompanyCount + summary.newContactCount + summary.newProductCount;
+
+  if (totalMissingCount === 0) {
+    return null;
+  }
+
+  const toggleSection = (section: keyof typeof openSections) => {
+    setOpenSections((currentSections) => ({
+      ...currentSections,
+      [section]: !currentSections[section],
+    }));
+  };
+
+  return (
+    <div className="grid gap-2 rounded-md border border-[#E5E7EB] bg-[#FAFBFC] px-3 py-3">
+      <div className="flex flex-wrap items-center gap-2">
+        {summary.newCompanyCount > 0 ? (
+          <span className="rounded-full bg-[#FFF1F2] px-2 py-0.5 text-[11px] font-semibold text-[#F04452]">
+            회사 생성 필요 {summary.newCompanyCount.toLocaleString("ko-KR")}개
+          </span>
+        ) : null}
+        {summary.newContactCount > 0 ? (
+          <span className="rounded-full bg-[#FFF1F2] px-2 py-0.5 text-[11px] font-semibold text-[#F04452]">
+            담당자 생성 필요 {summary.newContactCount.toLocaleString("ko-KR")}개
+          </span>
+        ) : null}
+        {summary.newProductCount > 0 ? (
+          <span className="rounded-full bg-[#FFF1F2] px-2 py-0.5 text-[11px] font-semibold text-[#F04452]">
+            제품 생성 필요 {summary.newProductCount.toLocaleString("ko-KR")}개
+          </span>
+        ) : null}
+      </div>
+
+      {summary.newCompanyCount > 0 ? (
+        <DealResolutionSection
+          count={summary.newCompanyCount}
+          isOpen={openSections.companies}
+          title="회사 생성"
+          onToggle={() => toggleSection("companies")}
+        >
+          <div className="max-h-[170px] overflow-y-auto rounded-md border border-[#E5E7EB] bg-white">
+            <div className="grid h-[30px] grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)_minmax(0,1fr)] border-b bg-[#F8FAFC] text-[11px] font-semibold text-[#475569]">
+              <div className="flex min-w-0 items-center px-3">새 회사명</div>
+              <div className="flex min-w-0 items-center px-2">회사 분야</div>
+              <div className="flex min-w-0 items-center px-2">회사 지역</div>
+            </div>
+            {summary.newCompanyNames.map((companyName) => {
+              const resolution = dealCompanyResolutions[companyName] ?? {
+                companyFieldName: "",
+                companyRegionName: "",
+              };
+
+              return (
+                <div
+                  className="grid h-[30px] grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)_minmax(0,1fr)] border-b last:border-b-0"
+                  key={companyName}
+                >
+                  <div className="flex min-w-0 items-center px-3 text-[11px] text-[#111827]">
+                    <span className="min-w-0 truncate" title={companyName}>
+                      {companyName}
+                    </span>
+                  </div>
+                  <div className="flex min-w-0 items-center px-2">
+                    <ImportTaxonomySelect
+                      disabled={disabled}
+                      emptyText="등록된 회사 분야가 없습니다."
+                      getLabel={(field) => field.field}
+                      invalid={resolution.companyFieldName.trim().length === 0}
+                      isCreating={createCompanyFieldMutation.isPending}
+                      itemKindLabel="분야"
+                      items={companyFields}
+                      placeholder="분야 선택"
+                      selectedLabel={resolution.companyFieldName}
+                      onCreate={async (name) => {
+                        await createCompanyFieldMutation.mutateAsync({
+                          field: name,
+                        });
+                        onCompanyResolutionChange(
+                          companyName,
+                          "companyFieldName",
+                          name
+                        );
+                      }}
+                      onSelect={(label) =>
+                        onCompanyResolutionChange(
+                          companyName,
+                          "companyFieldName",
+                          label
+                        )
+                      }
+                    />
+                  </div>
+                  <div className="flex min-w-0 items-center px-2">
+                    <ImportTaxonomySelect
+                      disabled={disabled}
+                      emptyText="등록된 회사 지역이 없습니다."
+                      getLabel={(region) => region.region}
+                      invalid={resolution.companyRegionName.trim().length === 0}
+                      isCreating={createCompanyRegionMutation.isPending}
+                      itemKindLabel="지역"
+                      items={companyRegions}
+                      placeholder="지역 선택"
+                      selectedLabel={resolution.companyRegionName}
+                      onCreate={async (name) => {
+                        await createCompanyRegionMutation.mutateAsync({
+                          region: name,
+                        });
+                        onCompanyResolutionChange(
+                          companyName,
+                          "companyRegionName",
+                          name
+                        );
+                      }}
+                      onSelect={(label) =>
+                        onCompanyResolutionChange(
+                          companyName,
+                          "companyRegionName",
+                          label
+                        )
+                      }
+                    />
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </DealResolutionSection>
+      ) : null}
+
+      {summary.newContactCount > 0 ? (
+        <DealResolutionSection
+          count={summary.newContactCount}
+          isOpen={openSections.contacts}
+          title="담당자 생성"
+          onToggle={() => toggleSection("contacts")}
+        >
+          <div className="max-h-[190px] overflow-y-auto rounded-md border border-[#E5E7EB] bg-white">
+            <div className="grid h-[30px] grid-cols-[minmax(0,0.95fr)_minmax(0,0.8fr)_minmax(0,1.25fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)] border-b bg-[#F8FAFC] text-[11px] font-semibold text-[#475569]">
+              <div className="flex min-w-0 items-center px-2">회사명</div>
+              <div className="flex min-w-0 items-center px-2">담당자명</div>
+              <div className="flex min-w-0 items-center px-2">이메일</div>
+              <div className="flex min-w-0 items-center px-2">핸드폰 번호</div>
+              <div className="flex min-w-0 items-center px-2">부서</div>
+              <div className="flex min-w-0 items-center px-2">직급</div>
+            </div>
+            {summary.newContactKeys.map((contactKey) => {
+              const resolution = dealContactResolutions[contactKey] ?? {
+                companyName: summary.contactCompanyNames[contactKey] ?? "",
+                contactName: summary.contactNames[contactKey] ?? "",
+                contactEmail: "",
+                contactPhone: "",
+                contactDepartmentName: "",
+                contactJobGradeName: "",
+              };
+
+              return (
+                <div
+                  className="grid h-[30px] grid-cols-[minmax(0,0.95fr)_minmax(0,0.8fr)_minmax(0,1.25fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)] border-b last:border-b-0"
+                  key={contactKey}
+                >
+                  <div className="flex min-w-0 items-center px-2 text-[11px] text-[#111827]">
+                    <span className="truncate" title={resolution.companyName}>
+                      {resolution.companyName}
+                    </span>
+                  </div>
+                  <div className="flex min-w-0 items-center px-2 text-[11px] text-[#111827]">
+                    <span className="truncate" title={resolution.contactName}>
+                      {resolution.contactName}
+                    </span>
+                  </div>
+                  <div className="flex min-w-0 items-center px-2">
+                    <input
+                      className="h-[30px] min-w-0 flex-1 border-0 bg-transparent px-0 text-[11px] text-[#111827] outline-none placeholder:text-[#9CA3AF]"
+                      disabled={disabled}
+                      onChange={(event) =>
+                        onContactResolutionChange(
+                          contactKey,
+                          "contactEmail",
+                          event.target.value
+                        )
+                      }
+                      placeholder="email@example.com"
+                      value={resolution.contactEmail}
+                    />
+                  </div>
+                  <div className="flex min-w-0 items-center px-2">
+                    <input
+                      className="h-[30px] min-w-0 flex-1 border-0 bg-transparent px-0 text-[11px] text-[#111827] outline-none placeholder:text-[#9CA3AF]"
+                      disabled={disabled}
+                      onChange={(event) =>
+                        onContactResolutionChange(
+                          contactKey,
+                          "contactPhone",
+                          event.target.value
+                        )
+                      }
+                      placeholder="010-0000-0000"
+                      value={resolution.contactPhone}
+                    />
+                  </div>
+                  <div className="flex min-w-0 items-center px-2">
+                    <ImportTaxonomySelect
+                      disabled={disabled}
+                      emptyText="등록된 담당자 부서가 없습니다."
+                      getLabel={(department) => department.departmentName}
+                      invalid={
+                        resolution.contactDepartmentName.trim().length === 0
+                      }
+                      isCreating={createDepartmentMutation.isPending}
+                      itemKindLabel="부서"
+                      items={contactDepartments}
+                      placeholder="부서 선택"
+                      selectedLabel={resolution.contactDepartmentName}
+                      onCreate={async (name) => {
+                        await createDepartmentMutation.mutateAsync({
+                          departmentName: name,
+                        });
+                        onContactResolutionChange(
+                          contactKey,
+                          "contactDepartmentName",
+                          name
+                        );
+                      }}
+                      onSelect={(label) =>
+                        onContactResolutionChange(
+                          contactKey,
+                          "contactDepartmentName",
+                          label
+                        )
+                      }
+                    />
+                  </div>
+                  <div className="flex min-w-0 items-center px-2">
+                    <ImportTaxonomySelect
+                      disabled={disabled}
+                      emptyText="등록된 담당자 직급이 없습니다."
+                      getLabel={(jobGrade) => jobGrade.jobGradeName}
+                      invalid={resolution.contactJobGradeName.trim().length === 0}
+                      isCreating={createJobGradeMutation.isPending}
+                      itemKindLabel="직급"
+                      items={contactJobGrades}
+                      placeholder="직급 선택"
+                      selectedLabel={resolution.contactJobGradeName}
+                      onCreate={async (name) => {
+                        await createJobGradeMutation.mutateAsync({
+                          jobGradeName: name,
+                        });
+                        onContactResolutionChange(
+                          contactKey,
+                          "contactJobGradeName",
+                          name
+                        );
+                      }}
+                      onSelect={(label) =>
+                        onContactResolutionChange(
+                          contactKey,
+                          "contactJobGradeName",
+                          label
+                        )
+                      }
+                    />
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </DealResolutionSection>
+      ) : null}
+
+      {summary.newProductCount > 0 ? (
+        <DealResolutionSection
+          count={summary.newProductCount}
+          isOpen={openSections.products}
+          title="제품 생성"
+          onToggle={() => toggleSection("products")}
+        >
+          <div className="max-h-[170px] overflow-y-auto rounded-md border border-[#E5E7EB] bg-white">
+            <div className="grid h-[30px] grid-cols-[minmax(0,1.2fr)_minmax(0,0.8fr)_minmax(0,1fr)_minmax(0,1fr)] border-b bg-[#F8FAFC] text-[11px] font-semibold text-[#475569]">
+              <div className="flex min-w-0 items-center px-3">새 제품명</div>
+              <div className="flex min-w-0 items-center px-2">가격</div>
+              <div className="flex min-w-0 items-center px-2">카테고리</div>
+              <div className="flex min-w-0 items-center px-2">상태</div>
+            </div>
+            {summary.newProductNames.map((productName) => {
+              const resolution = dealProductResolutions[productName] ?? {
+                productPrice: "",
+                productCategoryName: "",
+                productStatusName: "",
+              };
+
+              return (
+                <div
+                  className="grid h-[30px] grid-cols-[minmax(0,1.2fr)_minmax(0,0.8fr)_minmax(0,1fr)_minmax(0,1fr)] border-b last:border-b-0"
+                  key={productName}
+                >
+                  <div className="flex min-w-0 items-center px-3 text-[11px] text-[#111827]">
+                    <span className="truncate" title={productName}>
+                      {productName}
+                    </span>
+                  </div>
+                  <div className="flex min-w-0 items-center px-2">
+                    <input
+                      className="h-[30px] min-w-0 flex-1 border-0 bg-transparent px-0 text-[11px] text-[#111827] outline-none placeholder:text-[#9CA3AF]"
+                      disabled={disabled}
+                      onChange={(event) =>
+                        onProductResolutionChange(
+                          productName,
+                          "productPrice",
+                          event.target.value
+                        )
+                      }
+                      placeholder="0"
+                      value={resolution.productPrice}
+                    />
+                  </div>
+                  <div className="flex min-w-0 items-center px-2">
+                    <ImportTaxonomySelect
+                      disabled={disabled}
+                      emptyText="등록된 제품 카테고리가 없습니다."
+                      getLabel={(category) => category.categoryName}
+                      invalid={resolution.productCategoryName.trim().length === 0}
+                      isCreating={createCategoryMutation.isPending}
+                      itemKindLabel="카테고리"
+                      items={productCategories}
+                      placeholder="카테고리 선택"
+                      selectedLabel={resolution.productCategoryName}
+                      onCreate={async (name) => {
+                        await createCategoryMutation.mutateAsync({
+                          categoryName: name,
+                        });
+                        onProductResolutionChange(
+                          productName,
+                          "productCategoryName",
+                          name
+                        );
+                      }}
+                      onSelect={(label) =>
+                        onProductResolutionChange(
+                          productName,
+                          "productCategoryName",
+                          label
+                        )
+                      }
+                    />
+                  </div>
+                  <div className="flex min-w-0 items-center px-2">
+                    <ImportTaxonomySelect
+                      disabled={disabled}
+                      emptyText="등록된 제품 상태가 없습니다."
+                      getLabel={(status) => status.statusName}
+                      invalid={resolution.productStatusName.trim().length === 0}
+                      isCreating={createStatusMutation.isPending}
+                      itemKindLabel="상태"
+                      items={productStatuses}
+                      placeholder="상태 선택"
+                      selectedLabel={resolution.productStatusName}
+                      onCreate={async (name) => {
+                        await createStatusMutation.mutateAsync({
+                          statusName: name,
+                        });
+                        onProductResolutionChange(
+                          productName,
+                          "productStatusName",
+                          name
+                        );
+                      }}
+                      onSelect={(label) =>
+                        onProductResolutionChange(
+                          productName,
+                          "productStatusName",
+                          label
+                        )
+                      }
+                    />
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </DealResolutionSection>
+      ) : null}
+    </div>
+  );
+}
+
+function DealResolutionSection({
+  title,
+  count,
+  isOpen,
+  children,
+  onToggle,
+}: {
+  readonly title: string;
+  readonly count: number;
+  readonly isOpen: boolean;
+  readonly children: ReactNode;
+  readonly onToggle: () => void;
+}) {
+  return (
+    <div className="overflow-hidden rounded-md border border-[#E5E7EB] bg-white">
+      <button
+        className="flex h-[34px] w-full items-center justify-between gap-2 bg-[#F8FAFC] px-3 text-left text-[12px] font-semibold text-[#111827]"
+        onClick={onToggle}
+        type="button"
+      >
+        <span className="min-w-0 truncate">
+          {title} {count.toLocaleString("ko-KR")}개
+        </span>
+        <ChevronDown
+          className={cn(
+            "h-4 w-4 shrink-0 text-[#64748B] transition",
+            isOpen ? "rotate-180" : "rotate-0"
+          )}
+        />
+      </button>
+      {isOpen ? <div>{children}</div> : null}
     </div>
   );
 }
@@ -2644,7 +3573,10 @@ function hasEmptyEditableCell(
   const fields = importTargetFields[targetType];
 
   return rows.some((row) =>
-    fields.some((field) => toInputValue(row.data[field.field]).trim().length === 0)
+    fields.some(
+      (field) =>
+        field.required && toInputValue(row.data[field.field]).trim().length === 0
+    )
   );
 }
 
@@ -2680,6 +3612,112 @@ function toContactCompanyResolutionPayload(
     );
 }
 
+function createDealContactResolutionKey(
+  companyName: string,
+  contactName: string
+): string {
+  return `${companyName.trim()}\u0000${contactName.trim()}`;
+}
+
+function parseDealContactResolutionKey(contactKey: string): {
+  readonly companyName: string;
+  readonly contactName: string;
+} {
+  const [companyName = "", contactName = ""] = contactKey.split("\u0000");
+
+  return {
+    companyName,
+    contactName,
+  };
+}
+
+function isDealContactResolutionComplete(
+  resolution: DealContactResolutionValue | undefined
+): boolean {
+  if (!resolution) {
+    return false;
+  }
+
+  const contactEmail = resolution.contactEmail.trim();
+  const contactPhone = resolution.contactPhone.trim();
+
+  return (
+    resolution.companyName.trim().length > 0 &&
+    resolution.contactName.trim().length > 0 &&
+    IMPORT_EMAIL_PATTERN.test(contactEmail) &&
+    isImportPhoneValue(contactPhone) &&
+    resolution.contactDepartmentName.trim().length > 0 &&
+    resolution.contactJobGradeName.trim().length > 0
+  );
+}
+
+function isDealProductResolutionComplete(
+  resolution: DealProductResolutionValue | undefined
+): boolean {
+  return Boolean(
+    resolution &&
+      isNonNegativeIntegerValue(resolution.productPrice.trim()) &&
+      resolution.productCategoryName.trim().length > 0 &&
+      resolution.productStatusName.trim().length > 0
+  );
+}
+
+function hasIncompleteDealResourceResolutions(
+  summary: DealImportSummaryData,
+  companyResolutions: DealCompanyResolutionState,
+  contactResolutions: DealContactResolutionState,
+  productResolutions: DealProductResolutionState
+): boolean {
+  return (
+    summary.newCompanyNames.some(
+      (companyName) =>
+        !isContactCompanyResolutionComplete(companyResolutions[companyName])
+    ) ||
+    summary.newContactKeys.some(
+      (contactKey) =>
+        !isDealContactResolutionComplete(contactResolutions[contactKey])
+    ) ||
+    summary.newProductNames.some(
+      (productName) =>
+        !isDealProductResolutionComplete(productResolutions[productName])
+    )
+  );
+}
+
+function toDealCompanyResolutionPayload(
+  resolutions: DealCompanyResolutionState
+) {
+  return toContactCompanyResolutionPayload(resolutions);
+}
+
+function toDealContactResolutionPayload(
+  resolutions: DealContactResolutionState
+) {
+  return Object.values(resolutions)
+    .filter((resolution) => isDealContactResolutionComplete(resolution))
+    .map((resolution) => ({
+      companyName: resolution.companyName.trim(),
+      contactName: resolution.contactName.trim(),
+      contactEmail: resolution.contactEmail.trim(),
+      contactPhone: resolution.contactPhone.trim(),
+      contactDepartmentName: resolution.contactDepartmentName.trim(),
+      contactJobGradeName: resolution.contactJobGradeName.trim(),
+    }));
+}
+
+function toDealProductResolutionPayload(
+  resolutions: DealProductResolutionState
+) {
+  return Object.entries(resolutions)
+    .filter(([, resolution]) => isDealProductResolutionComplete(resolution))
+    .map(([productName, resolution]) => ({
+      productName: productName.trim(),
+      productPrice: Number(resolution.productPrice.trim().replaceAll(",", "")),
+      productCategoryName: resolution.productCategoryName.trim(),
+      productStatusName: resolution.productStatusName.trim(),
+    }));
+}
+
 function validateEditableRows(
   targetType: ImportTargetType,
   rows: readonly EditableImportRow[]
@@ -2713,6 +3751,14 @@ function validateEditableRows(
 
       if (field.kind === "number" && !isNonNegativeIntegerValue(textValue)) {
         return `${row.rowNumber}행의 ${field.label}은 0 이상의 정수여야 합니다.`;
+      }
+
+      if (
+        field.kind === "enum" &&
+        field.enumValues &&
+        !field.enumValues.includes(textValue)
+      ) {
+        return `${row.rowNumber}행의 ${field.label}은 ${field.enumValues.join(", ")} 중 하나여야 합니다.`;
       }
     }
   }
@@ -2772,6 +3818,110 @@ function createContactCompanyImportSummary(
   };
 }
 
+function createDealImportSummary(
+  rows: readonly EditableImportRow[],
+  companyOptions: readonly DealCompanyOption[],
+  contactOptions: readonly DealContactOption[],
+  productOptions: readonly DealProductOption[]
+): DealImportSummaryData {
+  const existingCompanyNames = new Set(
+    companyOptions
+      .map((company) => company.companyName.trim())
+      .filter((companyName) => companyName.length > 0)
+  );
+  const existingContactKeys = new Set(
+    contactOptions
+      .map((contact) =>
+        createDealContactResolutionKey(
+          contact.company.companyName,
+          contact.username
+        )
+      )
+      .filter((contactKey) => contactKey.length > 1)
+  );
+  const existingProductNames = new Set(
+    productOptions
+      .map((product) => product.productName.trim())
+      .filter((productName) => productName.length > 0)
+  );
+  const importedCompanyNames = [
+    ...new Set(
+      rows
+        .map((row) => toInputValue(row.data.companyName).trim())
+        .filter((companyName) => companyName.length > 0)
+    ),
+  ];
+  const importedContactEntries = new Map<
+    string,
+    {
+      readonly companyName: string;
+      readonly contactName: string;
+    }
+  >();
+  const importedProductNames = [
+    ...new Set(
+      rows
+        .map((row) => toInputValue(row.data.productName).trim())
+        .filter((productName) => productName.length > 0)
+    ),
+  ];
+
+  for (const row of rows) {
+    const companyName = toInputValue(row.data.companyName).trim();
+    const contactName = toInputValue(row.data.contactName).trim();
+
+    if (companyName.length === 0 || contactName.length === 0) {
+      continue;
+    }
+
+    const contactKey = createDealContactResolutionKey(companyName, contactName);
+
+    if (!importedContactEntries.has(contactKey)) {
+      importedContactEntries.set(contactKey, {
+        companyName,
+        contactName,
+      });
+    }
+  }
+
+  const newCompanyNames = importedCompanyNames.filter(
+    (companyName) => !existingCompanyNames.has(companyName)
+  );
+  const newContactEntries = [...importedContactEntries.entries()].filter(
+    ([contactKey]) => !existingContactKeys.has(contactKey)
+  );
+  const newProductNames = importedProductNames.filter(
+    (productName) => !existingProductNames.has(productName)
+  );
+
+  return {
+    newCompanyNames,
+    newContactKeys: newContactEntries.map(([contactKey]) => contactKey),
+    newProductNames,
+    contactLabels: Object.fromEntries(
+      newContactEntries.map(([contactKey, contact]) => [
+        contactKey,
+        `${contact.companyName} / ${contact.contactName}`,
+      ])
+    ),
+    contactCompanyNames: Object.fromEntries(
+      newContactEntries.map(([contactKey, contact]) => [
+        contactKey,
+        contact.companyName,
+      ])
+    ),
+    contactNames: Object.fromEntries(
+      newContactEntries.map(([contactKey, contact]) => [
+        contactKey,
+        contact.contactName,
+      ])
+    ),
+    newCompanyCount: newCompanyNames.length,
+    newContactCount: newContactEntries.length,
+    newProductCount: newProductNames.length,
+  };
+}
+
 function isImportPhoneValue(value: string): boolean {
   if (IMPORT_MOBILE_PATTERN.test(value)) {
     return true;
@@ -2781,7 +3931,13 @@ function isImportPhoneValue(value: string): boolean {
 }
 
 function isNonNegativeIntegerValue(value: string): boolean {
-  const numberValue = Number(value.replaceAll(",", ""));
+  const normalized = value.trim();
+
+  if (normalized.length === 0) {
+    return false;
+  }
+
+  const numberValue = Number(normalized.replaceAll(",", ""));
   return Number.isInteger(numberValue) && numberValue >= 0;
 }
 

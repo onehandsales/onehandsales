@@ -16,17 +16,19 @@ export function useContactList(params: ContactListParams) {
 }
 
 // 기능 : 담당자 직급 목록을 조회합니다.
-export function useContactJobGrades() {
+export function useContactJobGrades(options?: { readonly enabled?: boolean }) {
   return useQuery({
     queryKey: contactQueryKeys.jobGrades(),
     queryFn: () => listContactJobGrades(),
+    enabled: options?.enabled ?? true,
   });
 }
 
 // 기능 : 담당자 부서 목록을 조회합니다.
-export function useContactDepartments() {
+export function useContactDepartments(options?: { readonly enabled?: boolean }) {
   return useQuery({
     queryKey: contactQueryKeys.departments(),
     queryFn: () => listContactDepartments(),
+    enabled: options?.enabled ?? true,
   });
 }

@@ -39,6 +39,8 @@ export interface ImportTemplateRepository {
   confirmContactImport(input: ConfirmImportInput): Promise<void>;
   // 기능 : 제품 불러오기 확정 생성과 성공 로그 저장을 같은 트랜잭션으로 처리합니다.
   confirmProductImport(input: ConfirmImportInput): Promise<void>;
+  // 기능 : 딜 불러오기 확정 생성과 성공 로그 저장을 같은 트랜잭션으로 처리합니다.
+  confirmDealImport(input: ConfirmImportInput): Promise<void>;
 }
 
 // 역할 : ImportUserLogListRecord 불러오기 로그 목록 항목을 정의합니다.
@@ -78,6 +80,31 @@ export interface ConfirmContactCompanyResolutionInput {
   readonly companyRegionName: string;
 }
 
+// 역할 : 딜 불러오기 중 새로 생성할 회사의 보정 정보를 정의합니다.
+export interface ConfirmDealCompanyResolutionInput {
+  readonly companyName: string;
+  readonly companyFieldName: string;
+  readonly companyRegionName: string;
+}
+
+// 역할 : 딜 불러오기 중 새로 생성할 담당자의 보정 정보를 정의합니다.
+export interface ConfirmDealContactResolutionInput {
+  readonly companyName: string;
+  readonly contactName: string;
+  readonly contactEmail: string;
+  readonly contactPhone: string;
+  readonly contactDepartmentName: string;
+  readonly contactJobGradeName: string;
+}
+
+// 역할 : 딜 불러오기 중 새로 생성할 제품의 보정 정보를 정의합니다.
+export interface ConfirmDealProductResolutionInput {
+  readonly productName: string;
+  readonly productPrice: number;
+  readonly productCategoryName: string;
+  readonly productStatusName: string;
+}
+
 // 역할 : ConfirmImportInput 확정 생성과 성공 로그 저장 입력을 정의합니다.
 export interface ConfirmImportInput {
   readonly userId: string;
@@ -90,6 +117,9 @@ export interface ConfirmImportInput {
   readonly fileSizeBytes: number;
   readonly rows: readonly ConfirmImportRowInput[];
   readonly contactCompanyResolutions?: readonly ConfirmContactCompanyResolutionInput[];
+  readonly dealCompanyResolutions?: readonly ConfirmDealCompanyResolutionInput[];
+  readonly dealContactResolutions?: readonly ConfirmDealContactResolutionInput[];
+  readonly dealProductResolutions?: readonly ConfirmDealProductResolutionInput[];
 }
 
 // 역할 : ImportUserLogRecord 불러오기 로그 상세 레코드를 정의합니다.

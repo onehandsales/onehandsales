@@ -711,9 +711,9 @@ Log는 객관적 사실, 변경, 만남, 소식, 이력 기록이고 Memo는 사
 정책:
 
 - 확정 전 임시 job은 현재 DB table이 아니라 in-memory store에 저장한다.
-- 회사/담당자/제품 불러오기는 CSV/XLSX 업로드, AI 컬럼 매핑, 사용자 보정/검증, 확정 저장을 지원한다.
-- 딜 불러오기는 enum에는 존재하지만 현재 API에서 validation error로 차단한다.
-- persistent `ImportJob` table, 서버 재시작 후 이어받기, 딜 불러오기는 후속 범위다.
+- 회사/담당자/제품/딜 불러오기는 CSV/XLSX 업로드, AI 컬럼 매핑, 사용자 보정/검증, 확정 저장을 지원한다.
+- 딜 불러오기는 기존 회사/담당자/제품 이름 매칭을 전제로 딜과 연결 row를 같은 transaction에서 생성한다.
+- persistent `ImportJob` table, 서버 재시작 후 이어받기는 후속 범위다.
 
 ## 22. Mermaid ERD
 

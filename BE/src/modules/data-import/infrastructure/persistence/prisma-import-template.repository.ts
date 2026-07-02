@@ -1,6 +1,8 @@
 import { Prisma } from "@prisma/client";
 import type {
   ConfirmContactCompanyResolutionInput,
+  ConfirmDealContactResolutionInput,
+  ConfirmDealProductResolutionInput,
   ConfirmImportInput,
   FindImportUserLogInput,
   ImportTemplateRecord,
@@ -10,8 +12,18 @@ import type {
   ImportUserLogRecord,
   ListImportUserLogsInput,
 } from "@/modules/data-import/application/ports/import-template.repository";
+import {
+  DEAL_STATUS_CODES,
+  DealStatusCode,
+  getDealStatusLabel,
+} from "@/modules/deal/domain/deal-status";
 import { ValidationDomainError } from "@/shared/domain/errors/common.errors";
 import { PrismaService } from "@/shared/infrastructure/prisma/prisma.service";
+
+const DEFAULT_IMPORT_DEAL_STATUS = DealStatusCode.INITIAL_CONTACT;
+const DEAL_STATUS_LABEL_TO_CODE = new Map(
+  DEAL_STATUS_CODES.map((status) => [getDealStatusLabel(status), status])
+);
 
 // 역할 : PrismaImportTemplateRepository 불러오기 양식 조회를 Prisma로 구현합니다.
 export class PrismaImportTemplateRepository implements ImportTemplateRepository {
@@ -289,6 +301,104 @@ export class PrismaImportTemplateRepository implements ImportTemplateRepository 
     });
   }
 
+  async confirmDealImport(input: ConfirmImportInput): Promise<void> {
+    await this.prismaService.$transaction(async (client) => {
+      const log = await this.createImportUserLog(client, input);
+      const companyResolutionMap = this.createContactCompanyResolutionMap(
+        input.dealCompanyResolutions ?? []
+      );
+      const contactResolutionMap = this.createDealContactResolutionMap(
+        input.dealContactResolutions ?? []
+      );
+      const productResolutionMap = this.createDealProductResolutionMap(
+        input.dealProductResolutions ?? []
+      );
+
+      for (const row of input.rows) {
+        const dealName = this.readRequiredString(row.submittedData, "dealName");
+        const dealCost = this.readRequiredNumber(row.submittedData, "dealCost");
+        const dealStatus = this.readDealStatus(row.submittedData, row.rowNumber);
+        const companyName = this.readRequiredString(
+          row.submittedData,
+          "companyName"
+        );
+        const contactName = this.readRequiredString(
+          row.submittedData,
+          "contactName"
+        );
+        const productName = this.readRequiredString(
+          row.submittedData,
+          "productName"
+        );
+        const expectedEndDate = this.readRequiredDateOnly(
+          row.submittedData,
+          "expectedEndDate",
+          row.rowNumber
+        );
+        const company = await this.findOrCreateCompanyByName(
+          client,
+          input.userId,
+          companyName,
+          companyResolutionMap.get(companyName)
+        );
+        const contact = await this.findOrCreateDealContact(
+          client,
+          input.userId,
+          contactName,
+          company.id,
+          company.companyName,
+          contactResolutionMap.get(
+            this.createDealContactResolutionKey(companyName, contactName)
+          ),
+          row.rowNumber
+        );
+        const product = await this.findOrCreateDealProduct(
+          client,
+          input.userId,
+          productName,
+          productResolutionMap.get(productName),
+          row.rowNumber
+        );
+        const deal = await client.deal.create({
+          data: {
+            userId: input.userId,
+            dealName,
+            dealCost,
+            dealStatus,
+            expectedEndDate,
+          },
+          select: {
+            id: true,
+          },
+        });
+
+        await client.dealCompany.create({
+          data: {
+            userId: input.userId,
+            dealId: deal.id,
+            companyId: company.id,
+          },
+        });
+        await client.dealContact.create({
+          data: {
+            userId: input.userId,
+            dealId: deal.id,
+            contactId: contact.id,
+          },
+        });
+        await client.dealProduct.create({
+          data: {
+            userId: input.userId,
+            dealId: deal.id,
+            productId: product.id,
+          },
+        });
+
+        await this.createImportUserLogRow(client, log.id, row);
+      }
+    });
+  }
+
   private async createImportUserLog(
     client: Prisma.TransactionClient,
     input: ConfirmImportInput
@@ -359,6 +469,100 @@ export class PrismaImportTemplateRepository implements ImportTemplateRepository 
         companyName,
         companyFieldName,
         companyRegionName,
+      });
+    }
+
+    return resolutionMap;
+  }
+
+  private createDealContactResolutionMap(
+    resolutions: readonly ConfirmDealContactResolutionInput[]
+  ): ReadonlyMap<string, ConfirmDealContactResolutionInput> {
+    const resolutionMap = new Map<string, ConfirmDealContactResolutionInput>();
+
+    for (const resolution of resolutions) {
+      const companyName = this.normalizeRequiredResolutionText(
+        resolution.companyName,
+        "새 담당자의 회사명이 올바르지 않습니다."
+      );
+      const contactName = this.normalizeRequiredResolutionText(
+        resolution.contactName,
+        `${companyName}의 새 담당자명이 올바르지 않습니다.`
+      );
+      const contactEmail = this.normalizeRequiredResolutionText(
+        resolution.contactEmail,
+        `${companyName} ${contactName} 담당자 이메일을 입력해 주세요.`
+      );
+      const contactPhone = this.normalizeRequiredResolutionText(
+        resolution.contactPhone,
+        `${companyName} ${contactName} 담당자 핸드폰 번호를 입력해 주세요.`
+      );
+      const contactDepartmentName = this.normalizeRequiredResolutionText(
+        resolution.contactDepartmentName,
+        `${companyName} ${contactName} 담당자 부서를 입력해 주세요.`
+      );
+      const contactJobGradeName = this.normalizeRequiredResolutionText(
+        resolution.contactJobGradeName,
+        `${companyName} ${contactName} 담당자 직급을 입력해 주세요.`
+      );
+      const resolutionKey = this.createDealContactResolutionKey(
+        companyName,
+        contactName
+      );
+
+      if (resolutionMap.has(resolutionKey)) {
+        throw new ValidationDomainError(
+          "새 담당자 정보에 중복된 회사명과 담당자명이 있습니다."
+        );
+      }
+
+      resolutionMap.set(resolutionKey, {
+        companyName,
+        contactName,
+        contactEmail,
+        contactPhone,
+        contactDepartmentName,
+        contactJobGradeName,
+      });
+    }
+
+    return resolutionMap;
+  }
+
+  private createDealProductResolutionMap(
+    resolutions: readonly ConfirmDealProductResolutionInput[]
+  ): ReadonlyMap<string, ConfirmDealProductResolutionInput> {
+    const resolutionMap = new Map<string, ConfirmDealProductResolutionInput>();
+
+    for (const resolution of resolutions) {
+      const productName = this.normalizeRequiredResolutionText(
+        resolution.productName,
+        "새 제품명이 올바르지 않습니다."
+      );
+      const productCategoryName = this.normalizeRequiredResolutionText(
+        resolution.productCategoryName,
+        `${productName} 제품 카테고리를 입력해 주세요.`
+      );
+      const productStatusName = this.normalizeRequiredResolutionText(
+        resolution.productStatusName,
+        `${productName} 제품 상태를 입력해 주세요.`
+      );
+
+      if (!Number.isInteger(resolution.productPrice) || resolution.productPrice < 0) {
+        throw new ValidationDomainError(
+          `${productName} 제품 가격은 0 이상의 정수여야 합니다.`
+        );
+      }
+
+      if (resolutionMap.has(productName)) {
+        throw new ValidationDomainError("새 제품 정보에 중복된 제품명이 있습니다.");
+      }
+
+      resolutionMap.set(productName, {
+        productName,
+        productPrice: resolution.productPrice,
+        productCategoryName,
+        productStatusName,
       });
     }
 
@@ -573,6 +777,204 @@ export class PrismaImportTemplateRepository implements ImportTemplateRepository 
     });
   }
 
+  private async findRequiredDealCompany(
+    client: Prisma.TransactionClient,
+    userId: string,
+    companyName: string,
+    rowNumber: number
+  ): Promise<{ readonly id: string; readonly companyName: string }> {
+    const company = await client.company.findFirst({
+      where: {
+        userId,
+        companyName,
+        deletedAt: null,
+      },
+      select: {
+        id: true,
+        companyName: true,
+      },
+      orderBy: [{ createdAt: "asc" }, { id: "asc" }],
+    });
+
+    if (!company) {
+      throw new ValidationDomainError(
+        `${rowNumber}행의 회사명 '${companyName}'을 찾을 수 없습니다.`
+      );
+    }
+
+    return company;
+  }
+
+  private async findOrCreateDealContact(
+    client: Prisma.TransactionClient,
+    userId: string,
+    contactName: string,
+    companyId: string,
+    companyName: string,
+    resolution: ConfirmDealContactResolutionInput | undefined,
+    rowNumber: number
+  ): Promise<{ readonly id: string }> {
+    const contact = await client.contact.findFirst({
+      where: {
+        userId,
+        username: contactName,
+        companyId,
+        deletedAt: null,
+      },
+      select: {
+        id: true,
+      },
+      orderBy: [{ createdAt: "asc" }, { id: "asc" }],
+    });
+
+    if (contact) {
+      return contact;
+    }
+
+    if (!resolution) {
+      throw new ValidationDomainError(
+        `${rowNumber}행의 담당자명 '${contactName}'을 ${companyName} 회사에서 찾을 수 없습니다.`
+      );
+    }
+
+    const department = await this.upsertContactDepartment(
+      client,
+      userId,
+      resolution.contactDepartmentName
+    );
+    const jobGrade = await this.upsertContactJobGrade(
+      client,
+      userId,
+      resolution.contactJobGradeName
+    );
+
+    return client.contact.create({
+      data: {
+        userId,
+        companyId,
+        username: contactName,
+        email: resolution.contactEmail,
+        mobile: resolution.contactPhone,
+        contactDepartmentId: department.id,
+        contactJobGradeId: jobGrade.id,
+      },
+      select: {
+        id: true,
+      },
+    });
+  }
+
+  private async findRequiredDealContact(
+    client: Prisma.TransactionClient,
+    userId: string,
+    contactName: string,
+    companyId: string,
+    companyName: string,
+    rowNumber: number
+  ): Promise<{ readonly id: string }> {
+    const contact = await client.contact.findFirst({
+      where: {
+        userId,
+        username: contactName,
+        companyId,
+        deletedAt: null,
+      },
+      select: {
+        id: true,
+      },
+      orderBy: [{ createdAt: "asc" }, { id: "asc" }],
+    });
+
+    if (!contact) {
+      throw new ValidationDomainError(
+        `${rowNumber}행의 담당자명 '${contactName}'을 ${companyName} 회사에서 찾을 수 없습니다.`
+      );
+    }
+
+    return contact;
+  }
+
+  private async findOrCreateDealProduct(
+    client: Prisma.TransactionClient,
+    userId: string,
+    productName: string,
+    resolution: ConfirmDealProductResolutionInput | undefined,
+    rowNumber: number
+  ): Promise<{ readonly id: string }> {
+    const product = await client.product.findFirst({
+      where: {
+        userId,
+        productName,
+        deletedAt: null,
+      },
+      select: {
+        id: true,
+      },
+      orderBy: [{ createdAt: "asc" }, { id: "asc" }],
+    });
+
+    if (product) {
+      return product;
+    }
+
+    if (!resolution) {
+      throw new ValidationDomainError(
+        `${rowNumber}행의 제품명 '${productName}'을 찾을 수 없습니다.`
+      );
+    }
+
+    const category = await this.upsertProductCategory(
+      client,
+      userId,
+      resolution.productCategoryName
+    );
+    const status = await this.upsertProductStatus(
+      client,
+      userId,
+      resolution.productStatusName
+    );
+
+    return client.product.create({
+      data: {
+        userId,
+        productName,
+        productPrice: resolution.productPrice,
+        productCategoryId: category.id,
+        productStatusId: status.id,
+      },
+      select: {
+        id: true,
+      },
+    });
+  }
+
+  private async findRequiredDealProduct(
+    client: Prisma.TransactionClient,
+    userId: string,
+    productName: string,
+    rowNumber: number
+  ): Promise<{ readonly id: string }> {
+    const product = await client.product.findFirst({
+      where: {
+        userId,
+        productName,
+        deletedAt: null,
+      },
+      select: {
+        id: true,
+      },
+      orderBy: [{ createdAt: "asc" }, { id: "asc" }],
+    });
+
+    if (!product) {
+      throw new ValidationDomainError(
+        `${rowNumber}행의 제품명 '${productName}'을 찾을 수 없습니다.`
+      );
+    }
+
+    return product;
+  }
+
   private readRequiredString(
     data: Readonly<Record<string, string | number | boolean | null>>,
     key: string
@@ -604,6 +1006,99 @@ export class PrismaImportTemplateRepository implements ImportTemplateRepository 
     }
 
     return numberValue;
+  }
+
+  private readRequiredDateOnly(
+    data: Readonly<Record<string, string | number | boolean | null>>,
+    key: string,
+    rowNumber: number
+  ): Date {
+    const textValue = this.readRequiredString(data, key);
+    const normalized =
+      /^\d{4}-\d{2}-\d{2}T/.test(textValue) ? textValue.slice(0, 10) : textValue;
+    const parts = normalized.split("-");
+
+    if (parts.length !== 3) {
+      throw new ValidationDomainError(
+        `${rowNumber}행의 예상 마감일은 YYYY-MM-DD 형식이어야 합니다.`
+      );
+    }
+
+    const year = Number(parts[0]);
+    const month = Number(parts[1]);
+    const day = Number(parts[2]);
+
+    if (!Number.isInteger(year) || !Number.isInteger(month) || !Number.isInteger(day)) {
+      throw new ValidationDomainError(
+        `${rowNumber}행의 예상 마감일은 YYYY-MM-DD 형식이어야 합니다.`
+      );
+    }
+
+    const date = new Date(Date.UTC(year, month - 1, day));
+
+    if (
+      date.getUTCFullYear() !== year ||
+      date.getUTCMonth() !== month - 1 ||
+      date.getUTCDate() !== day
+    ) {
+      throw new ValidationDomainError(
+        `${rowNumber}행의 예상 마감일이 올바르지 않습니다.`
+      );
+    }
+
+    return date;
+  }
+
+  private readDealStatus(
+    data: Readonly<Record<string, string | number | boolean | null>>,
+    rowNumber: number
+  ): DealStatusCode {
+    const statusText = this.readOptionalString(data, "dealStatus");
+
+    if (!statusText) {
+      return DEFAULT_IMPORT_DEAL_STATUS;
+    }
+
+    if (this.isDealStatusCode(statusText)) {
+      return statusText;
+    }
+
+    const statusCode = DEAL_STATUS_LABEL_TO_CODE.get(statusText);
+
+    if (!statusCode) {
+      throw new ValidationDomainError(
+        `${rowNumber}행의 딜 단계는 ${[...DEAL_STATUS_LABEL_TO_CODE.keys()].join(", ")} 중 하나여야 합니다.`
+      );
+    }
+
+    return statusCode;
+  }
+
+  private readOptionalString(
+    data: Readonly<Record<string, string | number | boolean | null>>,
+    key: string
+  ): string | null {
+    const value = data[key];
+    const normalized = typeof value === "number" ? String(value) : value;
+
+    if (typeof normalized !== "string") {
+      return null;
+    }
+
+    const trimmed = normalized.trim();
+
+    return trimmed.length > 0 ? trimmed : null;
+  }
+
+  private isDealStatusCode(value: string): value is DealStatusCode {
+    return DEAL_STATUS_CODES.some((status) => status === value);
+  }
+
+  private createDealContactResolutionKey(
+    companyName: string,
+    contactName: string
+  ): string {
+    return `${companyName}\u0000${contactName}`;
   }
 
   private toJsonValue(value: unknown): Prisma.InputJsonValue {

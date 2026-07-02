@@ -24,11 +24,18 @@ import {
 } from "@/modules/data-import/application/ports/import-mapping.provider";
 import {
   IMPORT_TEMPLATE_REPOSITORY,
+  type ConfirmDealCompanyResolutionInput,
+  type ConfirmDealContactResolutionInput,
+  type ConfirmDealProductResolutionInput,
   type ImportTemplateRecord,
   type ImportTemplateRepository,
   type ImportTemplateType,
   type ImportUserLogListRecord,
 } from "@/modules/data-import/application/ports/import-template.repository";
+import {
+  DEAL_STATUS_CODES,
+  getDealStatusLabel,
+} from "@/modules/deal/domain/deal-status";
 import {
   ImportJobNotFoundError,
   ImportTemplateNotFoundError,
@@ -59,6 +66,9 @@ const IMPORT_USER_LOG_PAGE_SIZE = 10;
 const MOBILE_PATTERN = /^010-\d{4}-\d{4}$/;
 const MOBILE_DIGIT_PATTERN = /^010\d{8}$/;
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const DEAL_STATUS_TEMPLATE_OPTIONS = DEAL_STATUS_CODES.map((status) =>
+  getDealStatusLabel(status)
+);
 
 const FIELD_ALIASES: Readonly<Record<string, readonly string[]>> = {
   companyName: ["회사명", "회사이름", "company", "companyName"],
@@ -68,6 +78,9 @@ const FIELD_ALIASES: Readonly<Record<string, readonly string[]>> = {
   productPrice: ["제품단가", "단가", "가격", "price", "unitPrice"],
   productCategoryName: ["제품카테고리", "카테고리", "category"],
   productStatusName: ["제품상태", "상태", "status"],
+  dealName: ["딜명", "딜이름", "딜 이름", "deal", "dealName"],
+  dealCost: ["딜금액", "딜 금액", "금액", "amount", "dealCost"],
+  expectedEndDate: ["예상마감일", "예상 마감일", "마감일", "expectedEndDate"],
   companyNameForContact: ["회사명", "회사이름", "company", "companyName"],
   contactName: ["담당자명", "담당자이름", "이름", "name"],
   contactEmail: ["담당자이메일", "이메일", "email"],
@@ -94,6 +107,7 @@ export interface ImportTemplateColumn {
   readonly required: boolean;
   readonly type: ImportTemplateColumnType;
   readonly description?: string;
+  readonly options?: readonly string[];
 }
 
 // 역할 : ImportTemplateSampleRow 불러오기 양식 예시 행을 표현합니다.
@@ -151,9 +165,37 @@ export interface ConfirmContactCompanyResolutionJobInput {
   readonly companyRegionName: string;
 }
 
+// 역할 : 딜 불러오기 확정 시 새 회사 보정 값을 정의합니다.
+export interface ConfirmDealCompanyResolutionJobInput {
+  readonly companyName: string;
+  readonly companyFieldName: string;
+  readonly companyRegionName: string;
+}
+
+// 역할 : 딜 불러오기 확정 시 새 담당자 보정 값을 정의합니다.
+export interface ConfirmDealContactResolutionJobInput {
+  readonly companyName: string;
+  readonly contactName: string;
+  readonly contactEmail: string;
+  readonly contactPhone: string;
+  readonly contactDepartmentName: string;
+  readonly contactJobGradeName: string;
+}
+
+// 역할 : 딜 불러오기 확정 시 새 제품 보정 값을 정의합니다.
+export interface ConfirmDealProductResolutionJobInput {
+  readonly productName: string;
+  readonly productPrice: number;
+  readonly productCategoryName: string;
+  readonly productStatusName: string;
+}
+
 // 역할 : ConfirmImportJobInput 불러오기 확정 요청 값을 정의합니다.
 export interface ConfirmImportJobInput {
   readonly contactCompanyResolutions?: readonly ConfirmContactCompanyResolutionJobInput[];
+  readonly dealCompanyResolutions?: readonly ConfirmDealCompanyResolutionJobInput[];
+  readonly dealContactResolutions?: readonly ConfirmDealContactResolutionJobInput[];
+  readonly dealProductResolutions?: readonly ConfirmDealProductResolutionJobInput[];
   readonly rows?: readonly ConfirmImportJobRowInput[];
 }
 
@@ -327,8 +369,6 @@ export class DataImportApplicationService {
     currentUser: CurrentUserContext,
     input: CreateImportJobInput
   ): Promise<ImportJobResponse> {
-    this.assertSupportedTargetType(input.targetType);
-
     const template =
       await this.importTemplateRepository.findActiveTemplateByType(input.targetType);
 
@@ -475,8 +515,18 @@ export class DataImportApplicationService {
             input.contactCompanyResolutions
           )
         : undefined;
-
-    this.assertSupportedTargetType(job.targetType);
+    const dealCompanyResolutions =
+      job.targetType === "DEAL"
+        ? this.normalizeDealCompanyResolutions(input.dealCompanyResolutions)
+        : undefined;
+    const dealContactResolutions =
+      job.targetType === "DEAL"
+        ? this.normalizeDealContactResolutions(input.dealContactResolutions)
+        : undefined;
+    const dealProductResolutions =
+      job.targetType === "DEAL"
+        ? this.normalizeDealProductResolutions(input.dealProductResolutions)
+        : undefined;
 
     const confirmInput = {
       userId: currentUser.id,
@@ -491,6 +541,15 @@ export class DataImportApplicationService {
       ...(contactCompanyResolutions === undefined
         ? {}
         : { contactCompanyResolutions }),
+      ...(dealCompanyResolutions === undefined
+        ? {}
+        : { dealCompanyResolutions }),
+      ...(dealContactResolutions === undefined
+        ? {}
+        : { dealContactResolutions }),
+      ...(dealProductResolutions === undefined
+        ? {}
+        : { dealProductResolutions }),
     };
 
     switch (job.targetType) {
@@ -504,7 +563,8 @@ export class DataImportApplicationService {
         await this.importTemplateRepository.confirmProductImport(confirmInput);
         break;
       case "DEAL":
-        throw new ValidationDomainError("딜 불러오기는 아직 지원하지 않습니다.");
+        await this.importTemplateRepository.confirmDealImport(confirmInput);
+        break;
     }
 
     await this.importJobStore.delete({
@@ -722,6 +782,7 @@ export class DataImportApplicationService {
     const required = value.required;
     const type = getStringField(value, "type");
     const description = getStringField(value, "description");
+    const options = getStringArrayField(value, "options");
 
     if (
       !key ||
@@ -738,6 +799,7 @@ export class DataImportApplicationService {
       required,
       type,
       ...(description ? { description } : {}),
+      ...(options ? { options } : {}),
     };
   }
 
@@ -826,11 +888,25 @@ export class DataImportApplicationService {
 
   // 기능 : 컬럼 정의를 xlsx writer 컬럼 정의로 변환합니다.
   private toXlsxColumn(column: ImportTemplateColumn): XlsxColumnDefinition {
+    const options = this.getColumnOptions(column);
+
     return {
       header: column.label,
       key: column.key,
       width: this.getColumnWidth(column),
       ...(column.type === "number" ? { numFmt: "#,##0" } : {}),
+      ...(options.length > 0
+        ? {
+            listValidation: {
+              values: options,
+              allowBlank: !column.required,
+              promptTitle: `${column.label} 선택`,
+              prompt: `${options.join(", ")} 중 하나를 선택해 주세요.`,
+              errorTitle: `${column.label} 값 확인`,
+              error: `${options.join(", ")} 중 하나만 입력할 수 있습니다.`,
+            },
+          }
+        : {}),
     };
   }
 
@@ -874,13 +950,6 @@ export class DataImportApplicationService {
         ...(query.targetType ? [query.targetType] : []),
       ]),
     ];
-  }
-
-  // 기능 : 대상 필드가 현재 지원되는 불러오기 타입인지 검증합니다.
-  private assertSupportedTargetType(targetType: ImportTemplateType): void {
-    if (targetType === "DEAL") {
-      throw new ValidationDomainError("딜 불러오기는 아직 지원하지 않습니다.");
-    }
   }
 
   // 기능 : 컬럼 정의를 AI 매핑 provider 입력 필드로 변환합니다.
@@ -1172,6 +1241,136 @@ export class DataImportApplicationService {
     return [...resolutionMap.values()];
   }
 
+  // 기능 : 딜 불러오기에서 새 회사 생성에 필요한 보정 값을 정규화합니다.
+  private normalizeDealCompanyResolutions(
+    resolutions: readonly ConfirmDealCompanyResolutionJobInput[] | undefined
+  ): readonly ConfirmDealCompanyResolutionInput[] {
+    const resolutionMap = new Map<string, ConfirmDealCompanyResolutionInput>();
+
+    for (const resolution of resolutions ?? []) {
+      const companyName = this.normalizeRequiredText(
+        resolution.companyName,
+        "새 회사명이 올바르지 않습니다."
+      );
+      const companyFieldName = this.normalizeRequiredText(
+        resolution.companyFieldName,
+        `${companyName}의 회사 분야를 입력해 주세요.`
+      );
+      const companyRegionName = this.normalizeRequiredText(
+        resolution.companyRegionName,
+        `${companyName}의 회사 지역을 입력해 주세요.`
+      );
+
+      if (resolutionMap.has(companyName)) {
+        throw new ValidationDomainError(
+          "새 회사 정보에 중복된 회사명이 있습니다."
+        );
+      }
+
+      resolutionMap.set(companyName, {
+        companyName,
+        companyFieldName,
+        companyRegionName,
+      });
+    }
+
+    return [...resolutionMap.values()];
+  }
+
+  // 기능 : 딜 불러오기에서 새 담당자 생성에 필요한 보정 값을 정규화합니다.
+  private normalizeDealContactResolutions(
+    resolutions: readonly ConfirmDealContactResolutionJobInput[] | undefined
+  ): readonly ConfirmDealContactResolutionInput[] {
+    const resolutionMap = new Map<string, ConfirmDealContactResolutionInput>();
+
+    for (const resolution of resolutions ?? []) {
+      const companyName = this.normalizeRequiredText(
+        resolution.companyName,
+        "새 담당자의 회사명이 올바르지 않습니다."
+      );
+      const contactName = this.normalizeRequiredText(
+        resolution.contactName,
+        `${companyName}의 새 담당자명이 올바르지 않습니다.`
+      );
+      const contactEmail = this.normalizeDealContactEmail(
+        resolution.contactEmail,
+        `${companyName} ${contactName} 담당자 이메일 형식이 올바르지 않습니다.`
+      );
+      const contactPhone = this.normalizeDealContactPhone(
+        resolution.contactPhone,
+        `${companyName} ${contactName} 담당자 핸드폰 번호 형식이 올바르지 않습니다.`
+      );
+      const contactDepartmentName = this.normalizeRequiredText(
+        resolution.contactDepartmentName,
+        `${companyName} ${contactName} 담당자 부서를 입력해 주세요.`
+      );
+      const contactJobGradeName = this.normalizeRequiredText(
+        resolution.contactJobGradeName,
+        `${companyName} ${contactName} 담당자 직급을 입력해 주세요.`
+      );
+      const resolutionKey = this.createDealContactResolutionKey(
+        companyName,
+        contactName
+      );
+
+      if (resolutionMap.has(resolutionKey)) {
+        throw new ValidationDomainError(
+          "새 담당자 정보에 중복된 회사명과 담당자명이 있습니다."
+        );
+      }
+
+      resolutionMap.set(resolutionKey, {
+        companyName,
+        contactName,
+        contactEmail,
+        contactPhone,
+        contactDepartmentName,
+        contactJobGradeName,
+      });
+    }
+
+    return [...resolutionMap.values()];
+  }
+
+  // 기능 : 딜 불러오기에서 새 제품 생성에 필요한 보정 값을 정규화합니다.
+  private normalizeDealProductResolutions(
+    resolutions: readonly ConfirmDealProductResolutionJobInput[] | undefined
+  ): readonly ConfirmDealProductResolutionInput[] {
+    const resolutionMap = new Map<string, ConfirmDealProductResolutionInput>();
+
+    for (const resolution of resolutions ?? []) {
+      const productName = this.normalizeRequiredText(
+        resolution.productName,
+        "새 제품명이 올바르지 않습니다."
+      );
+      const productPrice = this.normalizeDealProductPrice(
+        resolution.productPrice,
+        `${productName} 제품 가격은 0 이상의 정수여야 합니다.`
+      );
+      const productCategoryName = this.normalizeRequiredText(
+        resolution.productCategoryName,
+        `${productName} 제품 카테고리를 입력해 주세요.`
+      );
+      const productStatusName = this.normalizeRequiredText(
+        resolution.productStatusName,
+        `${productName} 제품 상태를 입력해 주세요.`
+      );
+
+      if (resolutionMap.has(productName)) {
+        throw new ValidationDomainError("새 제품 정보에 중복된 제품명이 있습니다.");
+      }
+
+      resolutionMap.set(productName, {
+        productName,
+        productPrice,
+        productCategoryName,
+        productStatusName,
+      });
+    }
+
+    return [...resolutionMap.values()];
+  }
+
   // 기능 : 확정 요청 row 데이터를 대상 컬럼 정의에 맞춰 정규화합니다.
   private normalizeSubmittedRowData(
     data: Readonly<Record<string, unknown>>,
@@ -1218,6 +1417,7 @@ export class DataImportApplicationService {
     column: ImportTemplateColumn
   ): NormalizedFieldValue {
     const normalized = this.toTextValue(value).trim();
+    const options = this.getColumnOptions(column);
 
     if (column.required && normalized.length === 0) {
       return {
@@ -1226,10 +1426,30 @@ export class DataImportApplicationService {
       };
     }
 
+    if (normalized.length > 0 && options.length > 0 && !options.includes(normalized)) {
+      return {
+        value: null,
+        errorMessage: `${column.label}은(는) ${options.join(", ")} 중 하나여야 합니다.`,
+      };
+    }
+
     return {
       value: normalized.length > 0 ? normalized : null,
       errorMessage: null,
     };
+  }
+
+  // 기능 : 컬럼에 적용할 선택 가능한 문자열 목록을 반환합니다.
+  private getColumnOptions(column: ImportTemplateColumn): readonly string[] {
+    if (column.options && column.options.length > 0) {
+      return column.options;
+    }
+
+    if (column.key === "dealStatus") {
+      return DEAL_STATUS_TEMPLATE_OPTIONS;
+    }
+
+    return [];
   }
 
   // 기능 : 숫자 필드 값을 정수로 정규화합니다.
@@ -1377,6 +1597,51 @@ export class DataImportApplicationService {
     return normalized;
   }
 
+  // 기능 : 딜 담당자 보정의 이메일 값을 정규화합니다.
+  private normalizeDealContactEmail(value: string | undefined, message: string): string {
+    const normalized = value?.trim().toLowerCase() ?? "";
+
+    if (!EMAIL_PATTERN.test(normalized)) {
+      throw new ValidationDomainError(message);
+    }
+
+    return normalized;
+  }
+
+  // 기능 : 딜 담당자 보정의 휴대폰 값을 010-0000-0000 형식으로 정규화합니다.
+  private normalizeDealContactPhone(value: string | undefined, message: string): string {
+    const normalized = value?.trim() ?? "";
+
+    if (MOBILE_PATTERN.test(normalized)) {
+      return normalized;
+    }
+
+    const digits = normalized.replace(/\D/g, "");
+
+    if (!MOBILE_DIGIT_PATTERN.test(digits)) {
+      throw new ValidationDomainError(message);
+    }
+
+    return `${digits.slice(0, 3)}-${digits.slice(3, 7)}-${digits.slice(7)}`;
+  }
+
+  // 기능 : 딜 제품 보정의 가격 값을 정규화합니다.
+  private normalizeDealProductPrice(value: number, message: string): number {
+    if (!Number.isInteger(value) || value < 0) {
+      throw new ValidationDomainError(message);
+    }
+
+    return value;
+  }
+
+  // 기능 : 딜 담당자 보정 map key를 생성합니다.
+  private createDealContactResolutionKey(
+    companyName: string,
+    contactName: string
+  ): string {
+    return `${companyName}\u0000${contactName}`;
+  }
+
   // 기능 : JSON 값을 xlsx 셀 값으로 변환합니다.
   private toXlsxCellValue(value: unknown): XlsxCellValue {
     if (value === null || typeof value === "string" || typeof value === "number") {
@@ -1438,4 +1703,22 @@ function getStringField(value: Record<string, unknown>, field: string): string |
   const fieldValue = value[field];
 
   return typeof fieldValue === "string" ? fieldValue : null;
+}
+
+// 기능 : 객체 필드를 문자열 배열로 읽습니다.
+function getStringArrayField(
+  value: Record<string, unknown>,
+  field: string
+): readonly string[] | null {
+  const fieldValue = value[field];
+
+  if (!Array.isArray(fieldValue)) {
+    return null;
+  }
+
+  if (!fieldValue.every((item): item is string => typeof item === "string")) {
+    return null;
+  }
+
+  return fieldValue;
 }
