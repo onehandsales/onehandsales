@@ -33,6 +33,10 @@ import { PageHeader } from "@/components/layout/page-header";
 import { ModalShell } from "@/components/ui/modal-shell";
 import { Pagination } from "@/components/ui/pagination";
 import { ListEmptyState } from "@/components/ui/state";
+import {
+  useCreateCompanyFieldMutation,
+  useCreateCompanyRegionMutation,
+} from "@/features/company/hooks/use-company-mutations";
 import { useCompanyFields, useCompanyRegions } from "@/features/company/hooks/use-company-list";
 import type { CompanyField, CompanyRegion } from "@/features/company/types/company";
 import { useCompanyOptions } from "@/features/contact/hooks/use-company-options";
@@ -178,6 +182,12 @@ type ContactCompanyResolutionField = keyof ContactCompanyResolutionValue;
 type ContactCompanyResolutionState = Readonly<
   Record<string, ContactCompanyResolutionValue>
 >;
+
+type ImportTaxonomyPopoverPosition = {
+  readonly left: number;
+  readonly top: number;
+  readonly width: number;
+};
 
 export function ImportScreen() {
   const navigate = useNavigate();
@@ -1656,7 +1666,7 @@ function ImportEditablePreview({
       ) : null}
 
       <div
-        className="max-h-[320px] overflow-x-hidden overflow-y-auto rounded-md border border-[#E5E7EB] text-[10px]"
+        className="max-h-[320px] overflow-x-hidden overflow-y-auto rounded-md border border-[#E5E7EB] text-[11px]"
         ref={previewTableRef}
         role="table"
       >
@@ -1666,7 +1676,7 @@ function ImportEditablePreview({
           style={previewGridStyle}
         >
           <div
-            className="w-[25px] overflow-hidden border-b border-r border-[#CBD5E1] px-0 py-2 text-center font-semibold"
+              className="flex h-[30px] w-[25px] items-center justify-center overflow-hidden border-b border-r border-[#CBD5E1] px-0 text-center text-[10px] font-semibold"
             role="columnheader"
           >
             행
@@ -1677,7 +1687,7 @@ function ImportEditablePreview({
 
             return (
               <div
-                className="relative min-w-0 select-none border-b border-r border-[#CBD5E1] px-2 py-2 font-semibold last:border-r-0"
+                className="relative flex h-[30px] min-w-0 select-none items-center border-b border-r border-[#CBD5E1] px-2 font-semibold last:border-r-0"
                 key={field.field}
                 role="columnheader"
               >
@@ -1714,7 +1724,7 @@ function ImportEditablePreview({
             style={previewGridStyle}
           >
             <div
-              className="w-[25px] overflow-hidden border-r border-[#CBD5E1] bg-[#FAFBFC] px-0 py-2 text-center text-[#64748B]"
+              className="flex h-[30px] w-[25px] items-center justify-center overflow-hidden border-r border-[#CBD5E1] bg-[#FAFBFC] px-0 text-center text-[10px] text-[#64748B]"
               role="cell"
             >
               {row.rowNumber}
@@ -1726,7 +1736,7 @@ function ImportEditablePreview({
               return (
                 <div
                   className={cn(
-                    "min-w-0 border-r border-[#CBD5E1] px-2 py-2 last:border-r-0",
+                    "flex h-[30px] min-w-0 items-center border-r border-[#CBD5E1] px-2 last:border-r-0",
                     isEmptyCell && "bg-red-50"
                   )}
                   key={field.field}
@@ -1735,7 +1745,7 @@ function ImportEditablePreview({
                   <input
                     aria-invalid={isEmptyCell}
                     className={cn(
-                      "h-6 w-full min-w-0 appearance-none border-0 bg-transparent px-0 text-[10px] outline-none disabled:bg-transparent",
+                      "h-full w-full min-w-0 appearance-none border-0 bg-transparent px-0 text-[11px] outline-none disabled:bg-transparent",
                       isEmptyCell ? "text-red-700" : "text-[#111827]"
                     )}
                     disabled={disabled}
@@ -1750,7 +1760,7 @@ function ImportEditablePreview({
                     value={cellValue}
                   />
                   {row.errorMessage ? (
-                    <span className="mt-1 block truncate text-[10px] text-red-500">
+                    <span className="mt-1 block truncate text-[11px] text-red-500">
                       {row.errorMessage}
                     </span>
                   ) : null}
@@ -1806,6 +1816,9 @@ function ContactCompanyImportSummary({
     value: string
   ) => void;
 }) {
+  const createCompanyFieldMutation = useCreateCompanyFieldMutation();
+  const createCompanyRegionMutation = useCreateCompanyRegionMutation();
+
   if (isLoading) {
     return (
       <div className="rounded-md border border-[#E5E7EB] bg-[#FAFBFC] px-3 py-2 text-[12px] text-[#6B7280]">
@@ -1822,43 +1835,24 @@ function ContactCompanyImportSummary({
     );
   }
 
-  if (summary.totalCompanyCount === 0) {
+  if (summary.totalCompanyCount === 0 || summary.newCompanyCount === 0) {
     return null;
   }
 
   return (
     <div className="grid gap-3 rounded-md border border-[#E5E7EB] bg-[#FAFBFC] px-3 py-3">
       <div className="flex flex-wrap items-center gap-2">
-        <span className="text-[12px] font-semibold text-[#111827]">
-          회사 연결
-        </span>
-        <span className="rounded-full bg-[#ECFDF5] px-2 py-0.5 text-[11px] font-semibold text-[#15803D]">
-          기존 회사 {summary.matchedCompanyCount.toLocaleString("ko-KR")}개 매칭
-        </span>
-        <span className="rounded-full bg-[#EEF4FF] px-2 py-0.5 text-[11px] font-semibold text-[#4880EE]">
-          새 회사 {summary.newCompanyCount.toLocaleString("ko-KR")}개 생성 예정
+        <span className="rounded-full bg-[#FFF1F2] px-2 py-0.5 text-[11px] font-semibold text-[#F04452]">
+          회사 생성 필요 {summary.newCompanyCount.toLocaleString("ko-KR")}개
         </span>
       </div>
       {summary.newCompanyCount > 0 ? (
         <>
-          <p className="text-[12px] text-[#6B7280]">
-            새 회사의 분야와 지역을 입력해야 업로드할 수 있어요.
-          </p>
-          <datalist id="contact-import-company-field-options">
-            {companyFields.map((field) => (
-              <option key={field.id} value={field.field} />
-            ))}
-          </datalist>
-          <datalist id="contact-import-company-region-options">
-            {companyRegions.map((region) => (
-              <option key={region.id} value={region.region} />
-            ))}
-          </datalist>
-          <div className="max-h-[180px] overflow-auto rounded-md border border-[#E5E7EB] bg-white">
-            <div className="grid min-w-[620px] grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)_minmax(0,1fr)] border-b bg-[#F8FAFC] text-[12px] font-semibold text-[#475569]">
-              <div className="px-3 py-2">새 회사명</div>
-              <div className="px-3 py-2">회사 분야</div>
-              <div className="px-3 py-2">회사 지역</div>
+          <div className="max-h-[180px] overflow-y-auto rounded-md border border-[#E5E7EB] bg-white">
+            <div className="grid h-[30px] grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)_minmax(0,1fr)] border-b bg-[#F8FAFC] text-[11px] font-semibold text-[#475569]">
+              <div className="flex min-w-0 items-center px-3">새 회사명</div>
+              <div className="flex min-w-0 items-center px-2">회사 분야</div>
+              <div className="flex min-w-0 items-center px-2">회사 지역</div>
             </div>
             {summary.newCompanyNames.map((companyName) => {
               const resolution = resolutions[companyName] ?? {
@@ -1872,54 +1866,64 @@ function ContactCompanyImportSummary({
 
               return (
                 <div
-                  className="grid min-w-[620px] grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)_minmax(0,1fr)] border-b last:border-b-0"
+                  className="grid h-[30px] grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)_minmax(0,1fr)] border-b last:border-b-0"
                   key={companyName}
                 >
-                  <div className="min-w-0 px-3 py-2 text-[13px] text-[#111827]">
+                  <div className="flex min-w-0 items-center px-3 text-[11px] text-[#111827]">
                     <span className="block truncate" title={companyName}>
                       {companyName}
                     </span>
                   </div>
-                  <div className="px-2 py-2">
-                    <input
-                      aria-invalid={isFieldEmpty}
-                      className={cn(
-                        "h-8 w-full rounded-md border px-2 text-[13px] outline-none disabled:bg-[#F3F4F6]",
-                        isFieldEmpty
-                          ? "border-red-400 bg-red-50 text-red-700 focus:border-red-500 focus:ring-2 focus:ring-red-100"
-                          : "border-[#D1D5DB] focus:border-[#4880EE] focus:ring-2 focus:ring-[#4880EE]/20"
-                      )}
+                  <div className="flex min-w-0 items-center px-2">
+                    <ImportTaxonomySelect
                       disabled={disabled}
-                      list="contact-import-company-field-options"
-                      onChange={(event) =>
+                      emptyText="등록된 회사 분야가 없습니다."
+                      getLabel={(field) => field.field}
+                      invalid={isFieldEmpty}
+                      isCreating={createCompanyFieldMutation.isPending}
+                      itemKindLabel="분야"
+                      items={companyFields}
+                      placeholder="분야 선택"
+                      selectedLabel={resolution.companyFieldName}
+                      onCreate={async (name) => {
+                        await createCompanyFieldMutation.mutateAsync({
+                          field: name,
+                        });
                         onResolutionChange(
                           companyName,
                           "companyFieldName",
-                          event.target.value
-                        )
+                          name
+                        );
+                      }}
+                      onSelect={(label) =>
+                        onResolutionChange(companyName, "companyFieldName", label)
                       }
-                      value={resolution.companyFieldName}
                     />
                   </div>
-                  <div className="px-2 py-2">
-                    <input
-                      aria-invalid={isRegionEmpty}
-                      className={cn(
-                        "h-8 w-full rounded-md border px-2 text-[13px] outline-none disabled:bg-[#F3F4F6]",
-                        isRegionEmpty
-                          ? "border-red-400 bg-red-50 text-red-700 focus:border-red-500 focus:ring-2 focus:ring-red-100"
-                          : "border-[#D1D5DB] focus:border-[#4880EE] focus:ring-2 focus:ring-[#4880EE]/20"
-                      )}
+                  <div className="flex min-w-0 items-center px-2">
+                    <ImportTaxonomySelect
                       disabled={disabled}
-                      list="contact-import-company-region-options"
-                      onChange={(event) =>
+                      emptyText="등록된 회사 지역이 없습니다."
+                      getLabel={(region) => region.region}
+                      invalid={isRegionEmpty}
+                      isCreating={createCompanyRegionMutation.isPending}
+                      itemKindLabel="지역"
+                      items={companyRegions}
+                      placeholder="지역 선택"
+                      selectedLabel={resolution.companyRegionName}
+                      onCreate={async (name) => {
+                        await createCompanyRegionMutation.mutateAsync({
+                          region: name,
+                        });
                         onResolutionChange(
                           companyName,
                           "companyRegionName",
-                          event.target.value
-                        )
+                          name
+                        );
+                      }}
+                      onSelect={(label) =>
+                        onResolutionChange(companyName, "companyRegionName", label)
                       }
-                      value={resolution.companyRegionName}
                     />
                   </div>
                 </div>
@@ -1930,6 +1934,296 @@ function ContactCompanyImportSummary({
       ) : null}
     </div>
   );
+}
+
+function ImportTaxonomySelect<TItem extends { readonly id: string }>({
+  disabled,
+  emptyText,
+  getLabel,
+  invalid,
+  isCreating,
+  itemKindLabel,
+  items,
+  placeholder,
+  selectedLabel,
+  onCreate,
+  onSelect,
+}: {
+  readonly disabled: boolean;
+  readonly emptyText: string;
+  readonly getLabel: (item: TItem) => string;
+  readonly invalid: boolean;
+  readonly isCreating: boolean;
+  readonly itemKindLabel: string;
+  readonly items: readonly TItem[];
+  readonly placeholder: string;
+  readonly selectedLabel: string;
+  readonly onCreate: (name: string) => Promise<void>;
+  readonly onSelect: (label: string) => void;
+}) {
+  const [isOpen, setIsOpen] = useState(false);
+  const [search, setSearch] = useState("");
+  const [createError, setCreateError] = useState<string | null>(null);
+  const [popoverPosition, setPopoverPosition] =
+    useState<ImportTaxonomyPopoverPosition | null>(null);
+  const wrapperRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const query = search.trim();
+  const normalizedQuery = normalizeImportTaxonomyText(query);
+  const normalizedSelectedLabel = normalizeImportTaxonomyText(selectedLabel);
+  const selectedItem = items.find(
+    (item) => normalizeImportTaxonomyText(getLabel(item)) === normalizedSelectedLabel
+  );
+  const selectedDisplayLabel = selectedItem ? getLabel(selectedItem) : selectedLabel;
+  const filteredItems =
+    normalizedQuery.length > 0
+      ? items.filter((item) =>
+          normalizeImportTaxonomyText(getLabel(item)).includes(normalizedQuery)
+        )
+      : items;
+  const hasExactMatch = items.some(
+    (item) => normalizeImportTaxonomyText(getLabel(item)) === normalizedQuery
+  );
+  const canCreate = query.length > 0 && !hasExactMatch;
+  const inputValue = isOpen ? search : selectedDisplayLabel;
+
+  useEffect(() => {
+    if (!isOpen) {
+      setSearch("");
+      return;
+    }
+
+    const updatePopoverPosition = () => {
+      if (!inputRef.current) {
+        return;
+      }
+
+      setPopoverPosition(getImportTaxonomyPopoverPosition(inputRef.current));
+    };
+    const onMouseDown = (event: MouseEvent) => {
+      if (
+        wrapperRef.current &&
+        !wrapperRef.current.contains(event.target as Node)
+      ) {
+        setIsOpen(false);
+        setSearch("");
+        setCreateError(null);
+      }
+    };
+
+    updatePopoverPosition();
+    document.addEventListener("mousedown", onMouseDown);
+    window.addEventListener("resize", updatePopoverPosition);
+    window.addEventListener("scroll", updatePopoverPosition, true);
+
+    return () => {
+      document.removeEventListener("mousedown", onMouseDown);
+      window.removeEventListener("resize", updatePopoverPosition);
+      window.removeEventListener("scroll", updatePopoverPosition, true);
+    };
+  }, [isOpen]);
+
+  const openOptions = (nextSearch: string) => {
+    setSearch(nextSearch);
+    setCreateError(null);
+
+    if (inputRef.current) {
+      setPopoverPosition(getImportTaxonomyPopoverPosition(inputRef.current));
+    }
+
+    setIsOpen(true);
+  };
+
+  const selectItem = (item: TItem) => {
+    const label = getLabel(item);
+
+    onSelect(label);
+    setSearch("");
+    setCreateError(null);
+    setIsOpen(false);
+    inputRef.current?.blur();
+  };
+
+  const createItem = async () => {
+    if (!canCreate || isCreating) {
+      return;
+    }
+
+    try {
+      setCreateError(null);
+      await onCreate(query);
+      setSearch("");
+      setIsOpen(false);
+      inputRef.current?.blur();
+    } catch (error) {
+      setCreateError(getApiErrorMessage(error));
+      inputRef.current?.focus();
+    }
+  };
+
+  return (
+    <div className="relative w-full min-w-0" ref={wrapperRef}>
+      <div className="relative">
+        <Search className="pointer-events-none absolute left-0 top-1/2 h-3 w-3 -translate-y-1/2 text-[#9CA3AF]" />
+        <input
+          ref={inputRef}
+          aria-autocomplete="list"
+          aria-expanded={isOpen}
+          aria-invalid={invalid}
+          aria-label={`${itemKindLabel} 선택`}
+          autoComplete="off"
+          className={cn(
+            "h-[30px] w-full min-w-0 border-0 bg-transparent pl-4 pr-0 text-[11px] text-[#111827] outline-none placeholder:text-[#9CA3AF]",
+            disabled && "cursor-not-allowed opacity-70"
+          )}
+          disabled={disabled}
+          onChange={(event) => {
+            onSelect("");
+            openOptions(event.target.value);
+          }}
+          onFocus={() => openOptions("")}
+          onKeyDown={(event) => {
+            if (event.key === "Escape") {
+              setIsOpen(false);
+              setSearch("");
+              setCreateError(null);
+              inputRef.current?.blur();
+              return;
+            }
+
+            if (event.key === "Enter") {
+              event.preventDefault();
+
+              const firstItem = filteredItems[0];
+              if (firstItem) {
+                selectItem(firstItem);
+                return;
+              }
+
+              void createItem();
+            }
+          }}
+          placeholder={placeholder}
+          value={inputValue}
+        />
+      </div>
+
+      {isOpen ? (
+        <div
+          className={cn(
+            "fixed z-50 overflow-hidden rounded-md border border-[#E6EAF0] bg-white shadow-lg",
+            !popoverPosition && "invisible"
+          )}
+          style={{
+            left: popoverPosition?.left ?? 0,
+            top: popoverPosition?.top ?? 0,
+            width: popoverPosition?.width ?? 220,
+          }}
+        >
+          <button
+            className={cn(
+              "flex h-[30px] w-full items-center gap-1.5 px-3 text-left text-[12px] transition hover:bg-[#F9FAFB]",
+              selectedDisplayLabel
+                ? "font-medium text-[#475569]"
+                : "font-semibold text-[#1D4ED8]"
+            )}
+            onClick={() => {
+              onSelect("");
+              setSearch("");
+              setCreateError(null);
+              setIsOpen(false);
+            }}
+            type="button"
+          >
+            <RotateCcw className="h-3.5 w-3.5" />
+            {itemKindLabel} 초기화
+          </button>
+          <div className="max-h-[160px] overflow-y-auto border-y border-[#E6EAF0] py-1">
+            {filteredItems.length === 0 ? (
+              <p className="px-3 py-3 text-[12px] text-[#9CA3AF]">
+                {emptyText}
+              </p>
+            ) : (
+              filteredItems.map((item) => {
+                const label = getLabel(item);
+                const isSelected =
+                  normalizeImportTaxonomyText(label) === normalizedSelectedLabel;
+
+                return (
+                  <button
+                    className={cn(
+                      "flex h-8 w-full min-w-0 items-center gap-2 px-3 text-left text-[12px] transition hover:bg-[#F9FAFB]",
+                      isSelected && "bg-[#EFF6FF] font-semibold text-[#1D4ED8]"
+                    )}
+                    key={item.id}
+                    onClick={() => selectItem(item)}
+                    type="button"
+                  >
+                    <span
+                      className={cn(
+                        "grid h-3.5 w-3.5 shrink-0 place-items-center rounded-full border",
+                        isSelected ? "border-[#4880EE]" : "border-[#CBD5E1]"
+                      )}
+                    >
+                      {isSelected ? (
+                        <span className="h-1.5 w-1.5 rounded-full bg-[#4880EE]" />
+                      ) : null}
+                    </span>
+                    <span className="min-w-0 flex-1 truncate">{label}</span>
+                  </button>
+                );
+              })
+            )}
+          </div>
+
+          {createError ? (
+            <p className="px-3 py-1 text-[11px] text-[#F04452]">
+              {createError}
+            </p>
+          ) : null}
+
+          <button
+            className="flex h-[30px] w-full items-center gap-1.5 px-3 text-left text-[12px] font-semibold text-[#4880EE] transition hover:bg-[#EFF6FF] disabled:cursor-not-allowed disabled:opacity-50"
+            disabled={isCreating || (query.length > 0 && !canCreate)}
+            onClick={() => {
+              if (!query) {
+                inputRef.current?.focus();
+                openOptions("");
+                return;
+              }
+
+              void createItem();
+            }}
+            type="button"
+          >
+            <Plus className="h-3.5 w-3.5" />
+            {query ? `${query} 추가` : `새 ${itemKindLabel} 추가`}
+          </button>
+        </div>
+      ) : null}
+    </div>
+  );
+}
+
+function getImportTaxonomyPopoverPosition(
+  input: HTMLInputElement
+): ImportTaxonomyPopoverPosition {
+  const rect = input.getBoundingClientRect();
+  const viewportWidth = window.innerWidth;
+  const margin = 16;
+  const width = Math.min(256, Math.max(220, rect.width));
+  const maxLeft = Math.max(margin, viewportWidth - width - margin);
+  const left = Math.min(Math.max(rect.left, margin), maxLeft);
+
+  return {
+    left,
+    top: rect.bottom + 4,
+    width,
+  };
+}
+
+function normalizeImportTaxonomyText(value: string) {
+  return value.trim().toLowerCase();
 }
 
 function ImportTableHeaderCell({ children }: { readonly children: string }) {
