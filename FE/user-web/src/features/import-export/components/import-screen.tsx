@@ -24,7 +24,7 @@ import {
   useRef,
   useState,
   type DragEvent,
-  type PointerEvent as ReactPointerEvent,
+  type MouseEvent as ReactMouseEvent,
   type ReactNode,
 } from "react";
 import { useNavigate } from "react-router-dom";
@@ -75,7 +75,6 @@ const IMPORT_LOG_TABLE_GRID_STYLE = {
 
 const IMPORT_PREVIEW_ROW_NUMBER_COLUMN_WIDTH = 25;
 const IMPORT_PREVIEW_COLUMN_MIN_WIDTH = 72;
-const IMPORT_PREVIEW_COLUMN_MAX_WIDTH = 320;
 
 const targetIcons: Record<ImportTemplateType, LucideIcon> = {
   COMPANY: Building2,
@@ -1521,11 +1520,16 @@ function ImportEditablePreview({
   const fields = importTargetFields[targetType];
   const [columnWidths, setColumnWidths] = useState<Record<string, number>>({});
   const resizeCleanupRef = useRef<(() => void) | null>(null);
-  const fieldColumnWidthTotal = fields.reduce(
-    (totalWidth, field) =>
-      totalWidth + getImportPreviewColumnWidth(field, columnWidths),
-    0
+  const previewTableRef = useRef<HTMLDivElement | null>(null);
+  const previewColumnWidths = fields.map((field) =>
+    getImportPreviewColumnWidth(field, columnWidths)
   );
+  const previewGridTemplateColumns = `${IMPORT_PREVIEW_ROW_NUMBER_COLUMN_WIDTH}px ${previewColumnWidths
+    .map((width) => `minmax(0, ${width}fr)`)
+    .join(" ")}`;
+  const previewGridStyle = {
+    gridTemplateColumns: previewGridTemplateColumns,
+  };
 
   useEffect(() => {
     resizeCleanupRef.current?.();
@@ -1541,44 +1545,71 @@ function ImportEditablePreview({
   }, []);
 
   const onColumnResizeStart = (
-    field: ImportTargetField,
-    event: ReactPointerEvent<HTMLButtonElement>
+    leftField: ImportTargetField,
+    rightField: ImportTargetField,
+    event: ReactMouseEvent<HTMLElement>
   ) => {
     event.preventDefault();
     event.stopPropagation();
     resizeCleanupRef.current?.();
 
     const startX = event.clientX;
-    const startWidth = getImportPreviewColumnWidth(field, columnWidths);
+    const totalColumnWeight = fields.reduce(
+      (totalWeight, field) =>
+        totalWeight + getImportPreviewColumnWidth(field, columnWidths),
+      0
+    );
+    const availableColumnWidth = Math.max(
+      1,
+      (previewTableRef.current?.clientWidth ?? 0) -
+        IMPORT_PREVIEW_ROW_NUMBER_COLUMN_WIDTH
+    );
+    const pixelPerWeight = availableColumnWidth / totalColumnWeight;
+    const startLeftWeight = getImportPreviewColumnWidth(leftField, columnWidths);
+    const startRightWeight = getImportPreviewColumnWidth(rightField, columnWidths);
+    const startLeftWidth = startLeftWeight * pixelPerWeight;
+    const startRightWidth = startRightWeight * pixelPerWeight;
+    const pairWidth = startLeftWidth + startRightWidth;
+    const minColumnWidth = Math.min(
+      IMPORT_PREVIEW_COLUMN_MIN_WIDTH,
+      pairWidth / 2
+    );
     const previousCursor = document.body.style.cursor;
     const previousUserSelect = document.body.style.userSelect;
 
     document.body.style.cursor = "col-resize";
     document.body.style.userSelect = "none";
 
-    function handlePointerMove(moveEvent: PointerEvent) {
+    function handleMouseMove(moveEvent: MouseEvent) {
       moveEvent.preventDefault();
 
-      const nextWidth = clampImportPreviewColumnWidth(
-        startWidth + moveEvent.clientX - startX
+      const nextLeftWidth = Math.min(
+        pairWidth - minColumnWidth,
+        Math.max(minColumnWidth, startLeftWidth + moveEvent.clientX - startX)
       );
+      const nextRightWidth = pairWidth - nextLeftWidth;
+      const nextLeftWeight = nextLeftWidth / pixelPerWeight;
+      const nextRightWeight = nextRightWidth / pixelPerWeight;
 
       setColumnWidths((currentWidths) => {
-        if (currentWidths[field.field] === nextWidth) {
+        if (
+          currentWidths[leftField.field] === nextLeftWeight &&
+          currentWidths[rightField.field] === nextRightWeight
+        ) {
           return currentWidths;
         }
 
         return {
           ...currentWidths,
-          [field.field]: nextWidth,
+          [leftField.field]: nextLeftWeight,
+          [rightField.field]: nextRightWeight,
         };
       });
     }
 
     function cleanupResize() {
-      window.removeEventListener("pointermove", handlePointerMove);
-      window.removeEventListener("pointerup", handlePointerEnd);
-      window.removeEventListener("pointercancel", handlePointerEnd);
+      window.removeEventListener("mousemove", handleMouseMove);
+      window.removeEventListener("mouseup", handleMouseEnd);
       document.body.style.cursor = previousCursor;
       document.body.style.userSelect = previousUserSelect;
 
@@ -1587,13 +1618,12 @@ function ImportEditablePreview({
       }
     }
 
-    function handlePointerEnd() {
+    function handleMouseEnd() {
       cleanupResize();
     }
 
-    window.addEventListener("pointermove", handlePointerMove);
-    window.addEventListener("pointerup", handlePointerEnd);
-    window.addEventListener("pointercancel", handlePointerEnd);
+    window.addEventListener("mousemove", handleMouseMove);
+    window.addEventListener("mouseup", handleMouseEnd);
     resizeCleanupRef.current = cleanupResize;
   };
 
@@ -1625,115 +1655,109 @@ function ImportEditablePreview({
         />
       ) : null}
 
-      <div className="max-h-[320px] overflow-auto rounded-md border border-[#E5E7EB]">
-        <table className="w-full table-fixed border-collapse text-[10px]">
-          <colgroup>
-            <col
-              style={{
-                maxWidth: IMPORT_PREVIEW_ROW_NUMBER_COLUMN_WIDTH,
-                minWidth: IMPORT_PREVIEW_ROW_NUMBER_COLUMN_WIDTH,
-                width: IMPORT_PREVIEW_ROW_NUMBER_COLUMN_WIDTH,
-              }}
-            />
-            {fields.map((field) => {
-              const widthPercent =
-                (getImportPreviewColumnWidth(field, columnWidths) /
-                  fieldColumnWidthTotal) *
-                100;
+      <div
+        className="max-h-[320px] overflow-x-hidden overflow-y-auto rounded-md border border-[#E5E7EB] text-[10px]"
+        ref={previewTableRef}
+        role="table"
+      >
+        <div
+          className="sticky top-0 z-10 grid bg-[#F8FAFC] text-left text-[#475569]"
+          role="row"
+          style={previewGridStyle}
+        >
+          <div
+            className="w-[25px] overflow-hidden border-b border-r border-[#CBD5E1] px-0 py-2 text-center font-semibold"
+            role="columnheader"
+          >
+            행
+          </div>
+          {fields.map((field, fieldIndex) => {
+            const previousField = fields[fieldIndex - 1];
+            const nextField = fields[fieldIndex + 1];
 
-              return (
-                <col
-                  key={field.field}
-                  style={{
-                    width: `calc(${widthPercent}% - ${
-                      (IMPORT_PREVIEW_ROW_NUMBER_COLUMN_WIDTH * widthPercent) / 100
-                    }px)`,
-                  }}
-                />
-              );
-            })}
-          </colgroup>
-          <thead className="sticky top-0 z-10 bg-[#F8FAFC] text-left text-[#475569]">
-            <tr>
-              <th
-                className="w-[25px] overflow-hidden border-b border-r border-[#CBD5E1] px-0 py-2 text-center font-semibold"
-                style={{
-                  maxWidth: IMPORT_PREVIEW_ROW_NUMBER_COLUMN_WIDTH,
-                  minWidth: IMPORT_PREVIEW_ROW_NUMBER_COLUMN_WIDTH,
-                  width: IMPORT_PREVIEW_ROW_NUMBER_COLUMN_WIDTH,
-                }}
+            return (
+              <div
+                className="relative min-w-0 select-none border-b border-r border-[#CBD5E1] px-2 py-2 font-semibold last:border-r-0"
+                key={field.field}
+                role="columnheader"
               >
-                행
-              </th>
-              {fields.map((field) => (
-                <th
-                  className="relative select-none border-b border-r border-[#CBD5E1] px-2 py-2 font-semibold last:border-r-0"
-                  key={field.field}
-                >
-                  <span className="block truncate pr-1">{field.label}</span>
+                <span className="block truncate pr-1">{field.label}</span>
+                {previousField ? (
                   <button
-                    aria-label={`${field.label} 컬럼 너비 조절`}
-                    className="group absolute right-0 top-0 flex h-full w-2 cursor-col-resize touch-none items-center justify-center"
-                    onPointerDown={(event) => onColumnResizeStart(field, event)}
+                    aria-label={`${field.label} 컬럼 왼쪽 경계 조절`}
+                    className="absolute left-0 top-0 z-20 h-full w-3 cursor-col-resize appearance-none border-0 bg-transparent p-0"
+                    onMouseDown={(event) =>
+                      onColumnResizeStart(previousField, field, event)
+                    }
                     type="button"
                   />
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {rows.map((row) => (
-              <tr className="border-b last:border-b-0" key={row.rowNumber}>
-                <td
-                  className="w-[25px] overflow-hidden border-r border-[#CBD5E1] bg-[#FAFBFC] px-0 py-2 text-center text-[#64748B]"
-                  style={{
-                    maxWidth: IMPORT_PREVIEW_ROW_NUMBER_COLUMN_WIDTH,
-                    minWidth: IMPORT_PREVIEW_ROW_NUMBER_COLUMN_WIDTH,
-                    width: IMPORT_PREVIEW_ROW_NUMBER_COLUMN_WIDTH,
-                  }}
-                >
-                  {row.rowNumber}
-                </td>
-                {fields.map((field) => {
-                  const cellValue = toInputValue(row.data[field.field]);
-                  const isEmptyCell = cellValue.trim().length === 0;
+                ) : null}
+                {nextField ? (
+                  <button
+                    aria-label={`${field.label} 컬럼 오른쪽 경계 조절`}
+                    className="absolute right-0 top-0 z-20 h-full w-3 cursor-col-resize appearance-none border-0 bg-transparent p-0"
+                    onMouseDown={(event) =>
+                      onColumnResizeStart(field, nextField, event)
+                    }
+                    type="button"
+                  />
+                ) : null}
+              </div>
+            );
+          })}
+        </div>
+        {rows.map((row) => (
+          <div
+            className="grid border-b last:border-b-0"
+            key={row.rowNumber}
+            role="row"
+            style={previewGridStyle}
+          >
+            <div
+              className="w-[25px] overflow-hidden border-r border-[#CBD5E1] bg-[#FAFBFC] px-0 py-2 text-center text-[#64748B]"
+              role="cell"
+            >
+              {row.rowNumber}
+            </div>
+            {fields.map((field) => {
+              const cellValue = toInputValue(row.data[field.field]);
+              const isEmptyCell = cellValue.trim().length === 0;
 
-                  return (
-                    <td
-                      className="border-r border-[#CBD5E1] px-2 py-2 last:border-r-0"
-                      key={field.field}
-                    >
-                      <input
-                        aria-invalid={isEmptyCell}
-                        className={cn(
-                          "h-8 w-full min-w-0 rounded-md border px-2 text-[10px] outline-none disabled:bg-[#F3F4F6]",
-                          isEmptyCell
-                            ? "border-red-400 bg-red-50 text-red-700 focus:border-red-500 focus:ring-2 focus:ring-red-100"
-                            : "border-[#D1D5DB] focus:border-[#4880EE] focus:ring-2 focus:ring-[#4880EE]/20",
-                        )}
-                        disabled={disabled}
-                        onChange={(event) =>
-                          onEditableCellChange(
-                            row.rowNumber,
-                            field,
-                            event.target.value
-                          )
-                        }
-                        type={field.kind === "number" ? "text" : "text"}
-                        value={cellValue}
-                      />
-                      {row.errorMessage ? (
-                        <span className="mt-1 block truncate text-[10px] text-red-500">
-                          {row.errorMessage}
-                        </span>
-                      ) : null}
-                    </td>
-                  );
-                })}
-              </tr>
-            ))}
-          </tbody>
-        </table>
+              return (
+                <div
+                  className="min-w-0 border-r border-[#CBD5E1] px-2 py-2 last:border-r-0"
+                  key={field.field}
+                  role="cell"
+                >
+                  <input
+                    aria-invalid={isEmptyCell}
+                    className={cn(
+                      "h-8 w-full min-w-0 rounded-md border px-2 text-[10px] outline-none disabled:bg-[#F3F4F6]",
+                      isEmptyCell
+                        ? "border-red-400 bg-red-50 text-red-700 focus:border-red-500 focus:ring-2 focus:ring-red-100"
+                        : "border-[#D1D5DB] focus:border-[#4880EE] focus:ring-2 focus:ring-[#4880EE]/20",
+                    )}
+                    disabled={disabled}
+                    onChange={(event) =>
+                      onEditableCellChange(
+                        row.rowNumber,
+                        field,
+                        event.target.value
+                      )
+                    }
+                    type={field.kind === "number" ? "text" : "text"}
+                    value={cellValue}
+                  />
+                  {row.errorMessage ? (
+                    <span className="mt-1 block truncate text-[10px] text-red-500">
+                      {row.errorMessage}
+                    </span>
+                  ) : null}
+                </div>
+              );
+            })}
+          </div>
+        ))}
       </div>
     </div>
   );
@@ -1756,13 +1780,6 @@ function getImportPreviewColumnWidth(
   columnWidths: Readonly<Record<string, number>>
 ): number {
   return columnWidths[field.field] ?? getDefaultImportPreviewColumnWidth(field);
-}
-
-function clampImportPreviewColumnWidth(width: number): number {
-  return Math.min(
-    IMPORT_PREVIEW_COLUMN_MAX_WIDTH,
-    Math.max(IMPORT_PREVIEW_COLUMN_MIN_WIDTH, Math.round(width))
-  );
 }
 
 function ContactCompanyImportSummary({
