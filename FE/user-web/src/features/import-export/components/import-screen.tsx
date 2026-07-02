@@ -171,6 +171,7 @@ type ContactCompanyImportSummaryData = {
   readonly matchedCompanyCount: number;
   readonly newCompanyCount: number;
   readonly newCompanyNames: readonly string[];
+  readonly newCompanyContactCounts: Readonly<Record<string, number>>;
 };
 
 type ContactCompanyResolutionValue = {
@@ -1540,6 +1541,9 @@ function ImportEditablePreview({
   const previewGridStyle = {
     gridTemplateColumns: previewGridTemplateColumns,
   };
+  const newContactCompanyNames = new Set(
+    contactCompanySummary?.newCompanyNames ?? []
+  );
 
   useEffect(() => {
     resizeCleanupRef.current?.();
@@ -1732,6 +1736,17 @@ function ImportEditablePreview({
             {fields.map((field) => {
               const cellValue = toInputValue(row.data[field.field]);
               const isEmptyCell = cellValue.trim().length === 0;
+              const normalizedCompanyName = cellValue.trim();
+              const isNewContactCompany =
+                targetType === "CONTACT" &&
+                field.field === "companyName" &&
+                normalizedCompanyName.length > 0 &&
+                newContactCompanyNames.has(normalizedCompanyName);
+              const isNewContactCompanyResolved =
+                isNewContactCompany &&
+                isContactCompanyResolutionComplete(
+                  contactCompanyResolutions[normalizedCompanyName]
+                );
 
               return (
                 <div
@@ -1742,23 +1757,37 @@ function ImportEditablePreview({
                   key={field.field}
                   role="cell"
                 >
-                  <input
-                    aria-invalid={isEmptyCell}
-                    className={cn(
-                      "h-full w-full min-w-0 appearance-none border-0 bg-transparent px-0 text-[11px] outline-none disabled:bg-transparent",
-                      isEmptyCell ? "text-red-700" : "text-[#111827]"
-                    )}
-                    disabled={disabled}
-                    onChange={(event) =>
-                      onEditableCellChange(
-                        row.rowNumber,
-                        field,
-                        event.target.value
-                      )
-                    }
-                    type={field.kind === "number" ? "text" : "text"}
-                    value={cellValue}
-                  />
+                  <div className="flex min-w-0 flex-1 items-center gap-1.5">
+                    <input
+                      aria-invalid={isEmptyCell}
+                      className={cn(
+                        "h-full min-w-0 flex-1 appearance-none border-0 bg-transparent px-0 text-[11px] outline-none disabled:bg-transparent",
+                        isEmptyCell ? "text-red-700" : "text-[#111827]"
+                      )}
+                      disabled={disabled}
+                      onChange={(event) =>
+                        onEditableCellChange(
+                          row.rowNumber,
+                          field,
+                          event.target.value
+                        )
+                      }
+                      type={field.kind === "number" ? "text" : "text"}
+                      value={cellValue}
+                    />
+                    {isNewContactCompany ? (
+                      <span
+                        className={cn(
+                          "shrink-0 rounded-full px-1.5 py-0.5 text-[10px] font-semibold leading-none",
+                          isNewContactCompanyResolved
+                            ? "bg-[#EFF6FF] text-[#1D4ED8]"
+                            : "bg-[#FFF1F2] text-[#F04452]"
+                        )}
+                      >
+                        {isNewContactCompanyResolved ? "생성 예정" : "생성 필요"}
+                      </span>
+                    ) : null}
+                  </div>
                   {row.errorMessage ? (
                     <span className="mt-1 block truncate text-[11px] text-red-500">
                       {row.errorMessage}
@@ -1791,6 +1820,16 @@ function getImportPreviewColumnWidth(
   columnWidths: Readonly<Record<string, number>>
 ): number {
   return columnWidths[field.field] ?? getDefaultImportPreviewColumnWidth(field);
+}
+
+function isContactCompanyResolutionComplete(
+  resolution: ContactCompanyResolutionValue | undefined
+): boolean {
+  return Boolean(
+    resolution &&
+      resolution.companyFieldName.trim().length > 0 &&
+      resolution.companyRegionName.trim().length > 0
+  );
 }
 
 function ContactCompanyImportSummary({
@@ -1870,8 +1909,15 @@ function ContactCompanyImportSummary({
                   key={companyName}
                 >
                   <div className="flex min-w-0 items-center px-3 text-[11px] text-[#111827]">
-                    <span className="block truncate" title={companyName}>
+                    <span className="min-w-0 truncate" title={companyName}>
                       {companyName}
+                    </span>
+                    <span className="ml-1.5 shrink-0 text-[10px] font-medium text-[#9CA3AF]">
+                      담당자{" "}
+                      {(
+                        summary.newCompanyContactCounts[companyName] ?? 0
+                      ).toLocaleString("ko-KR")}
+                      명
                     </span>
                   </div>
                   <div className="flex min-w-0 items-center px-2">
@@ -2064,7 +2110,9 @@ function ImportTaxonomySelect<TItem extends { readonly id: string }>({
   return (
     <div className="relative w-full min-w-0" ref={wrapperRef}>
       <div className="relative">
-        <Search className="pointer-events-none absolute left-0 top-1/2 h-3 w-3 -translate-y-1/2 text-[#9CA3AF]" />
+        {isOpen || !selectedDisplayLabel ? (
+          <Search className="pointer-events-none absolute left-0 top-1/2 h-3 w-3 -translate-y-1/2 text-[#9CA3AF]" />
+        ) : null}
         <input
           ref={inputRef}
           aria-autocomplete="list"
@@ -2073,7 +2121,8 @@ function ImportTaxonomySelect<TItem extends { readonly id: string }>({
           aria-label={`${itemKindLabel} 선택`}
           autoComplete="off"
           className={cn(
-            "h-[30px] w-full min-w-0 border-0 bg-transparent pl-4 pr-0 text-[11px] text-[#111827] outline-none placeholder:text-[#9CA3AF]",
+            "h-[30px] w-full min-w-0 border-0 bg-transparent pr-0 text-[11px] text-[#111827] outline-none placeholder:text-[#9CA3AF]",
+            isOpen || !selectedDisplayLabel ? "pl-4" : "pl-0",
             disabled && "cursor-not-allowed opacity-70"
           )}
           disabled={disabled}
@@ -2487,6 +2536,21 @@ function createContactCompanyImportSummary(
         .filter((companyName) => companyName.length > 0)
     ),
   ];
+  const importedCompanyContactCounts = rows.reduce<Record<string, number>>(
+    (counts, row) => {
+      const companyName = toInputValue(row.data.companyName).trim();
+
+      if (companyName.length === 0) {
+        return counts;
+      }
+
+      return {
+        ...counts,
+        [companyName]: (counts[companyName] ?? 0) + 1,
+      };
+    },
+    {}
+  );
   const matchedCompanyCount = importedCompanyNames.filter((companyName) =>
     existingCompanyNames.has(companyName)
   ).length;
@@ -2498,6 +2562,12 @@ function createContactCompanyImportSummary(
     totalCompanyCount: importedCompanyNames.length,
     matchedCompanyCount,
     newCompanyCount: newCompanyNames.length,
+    newCompanyContactCounts: Object.fromEntries(
+      newCompanyNames.map((companyName) => [
+        companyName,
+        importedCompanyContactCounts[companyName] ?? 0,
+      ])
+    ),
     newCompanyNames,
   };
 }
