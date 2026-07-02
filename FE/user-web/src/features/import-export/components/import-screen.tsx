@@ -5,7 +5,6 @@ import {
   Building2,
   ChevronDown,
   ChevronLeft,
-  CheckCircle2,
   Eye,
   FileSpreadsheet,
   GripVertical,
@@ -34,6 +33,7 @@ import { PageHeader } from "@/components/layout/page-header";
 import { ModalShell } from "@/components/ui/modal-shell";
 import { Pagination } from "@/components/ui/pagination";
 import { ListEmptyState } from "@/components/ui/state";
+import { Toast } from "@/components/ui/toast";
 import {
   useCreateCompanyFieldMutation,
   useCreateCompanyRegionMutation,
@@ -430,7 +430,7 @@ export function ImportScreen() {
       return;
     }
 
-    const result = await confirmImportJobMutation.mutateAsync({
+    await confirmImportJobMutation.mutateAsync({
       importJobId: importJob.id,
       contactCompanyResolutions:
         selectedTemplate.templateType === "CONTACT"
@@ -442,7 +442,7 @@ export function ImportScreen() {
       })),
     });
 
-    setNotice(`${targetLabels[importJob.targetType]} ${result.successCount}건을 생성했습니다.`);
+    setNotice("데이터를 업로드했어요.");
     closeDialog();
     void logsQuery.refetch();
   };
@@ -497,7 +497,11 @@ export function ImportScreen() {
       <div className="hidden min-w-0 gap-3 overflow-hidden px-5 pb-3 pt-1 md:flex xl:gap-5">
         <div className="flex min-w-0 flex-1 flex-col gap-3">
           {notice ? (
-            <NoticeMessage message={notice} onDismiss={() => setNotice(null)} />
+            <Toast
+              message={notice}
+              onClose={() => setNotice(null)}
+              variant="success"
+            />
           ) : null}
 
           {actionError ? (
@@ -588,7 +592,11 @@ export function ImportScreen() {
 
         {notice ? (
           <div className="px-4 pt-2">
-            <NoticeMessage message={notice} onDismiss={() => setNotice(null)} />
+            <Toast
+              message={notice}
+              onClose={() => setNotice(null)}
+              variant="success"
+            />
           </div>
         ) : null}
 
@@ -2460,31 +2468,6 @@ function Badge({ children }: { readonly children: ReactNode }) {
     >
       <span className="min-w-0 truncate whitespace-nowrap">{children}</span>
     </span>
-  );
-}
-
-function NoticeMessage({
-  message,
-  onDismiss,
-}: {
-  readonly message: string;
-  readonly onDismiss: () => void;
-}) {
-  return (
-    <div className="flex items-center justify-between gap-4 rounded-md border border-[#BBF7D0] bg-[#F0FDF4] px-3 py-2 text-sm text-[#166534]">
-      <span className="inline-flex items-center gap-2">
-        <CheckCircle2 className="h-4 w-4" />
-        {message}
-      </span>
-      <button
-        aria-label="알림 닫기"
-        className="grid h-7 w-7 place-items-center rounded-md hover:bg-[#DCFCE7]"
-        onClick={onDismiss}
-        type="button"
-      >
-        <X className="h-4 w-4" />
-      </button>
-    </div>
   );
 }
 
