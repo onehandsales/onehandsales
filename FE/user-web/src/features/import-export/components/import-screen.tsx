@@ -24,6 +24,7 @@ import {
   useRef,
   useState,
   type DragEvent,
+  type PointerEvent as ReactPointerEvent,
   type ReactNode,
 } from "react";
 import { useNavigate } from "react-router-dom";
@@ -71,6 +72,10 @@ const IMPORT_LOG_TABLE_GRID_STYLE = {
   gridTemplateColumns:
     "minmax(0,1fr) minmax(0,0.95fr) minmax(0,1.7fr) minmax(0,1.05fr)",
 };
+
+const IMPORT_PREVIEW_ROW_NUMBER_COLUMN_WIDTH = 25;
+const IMPORT_PREVIEW_COLUMN_MIN_WIDTH = 72;
+const IMPORT_PREVIEW_COLUMN_MAX_WIDTH = 320;
 
 const targetIcons: Record<ImportTemplateType, LucideIcon> = {
   COMPANY: Building2,
@@ -1514,6 +1519,83 @@ function ImportEditablePreview({
   ) => void;
 }) {
   const fields = importTargetFields[targetType];
+  const [columnWidths, setColumnWidths] = useState<Record<string, number>>({});
+  const resizeCleanupRef = useRef<(() => void) | null>(null);
+  const fieldColumnWidthTotal = fields.reduce(
+    (totalWidth, field) =>
+      totalWidth + getImportPreviewColumnWidth(field, columnWidths),
+    0
+  );
+
+  useEffect(() => {
+    resizeCleanupRef.current?.();
+    resizeCleanupRef.current = null;
+    setColumnWidths({});
+  }, [targetType]);
+
+  useEffect(() => {
+    return () => {
+      resizeCleanupRef.current?.();
+      resizeCleanupRef.current = null;
+    };
+  }, []);
+
+  const onColumnResizeStart = (
+    field: ImportTargetField,
+    event: ReactPointerEvent<HTMLButtonElement>
+  ) => {
+    event.preventDefault();
+    event.stopPropagation();
+    resizeCleanupRef.current?.();
+
+    const startX = event.clientX;
+    const startWidth = getImportPreviewColumnWidth(field, columnWidths);
+    const previousCursor = document.body.style.cursor;
+    const previousUserSelect = document.body.style.userSelect;
+
+    document.body.style.cursor = "col-resize";
+    document.body.style.userSelect = "none";
+
+    function handlePointerMove(moveEvent: PointerEvent) {
+      moveEvent.preventDefault();
+
+      const nextWidth = clampImportPreviewColumnWidth(
+        startWidth + moveEvent.clientX - startX
+      );
+
+      setColumnWidths((currentWidths) => {
+        if (currentWidths[field.field] === nextWidth) {
+          return currentWidths;
+        }
+
+        return {
+          ...currentWidths,
+          [field.field]: nextWidth,
+        };
+      });
+    }
+
+    function cleanupResize() {
+      window.removeEventListener("pointermove", handlePointerMove);
+      window.removeEventListener("pointerup", handlePointerEnd);
+      window.removeEventListener("pointercancel", handlePointerEnd);
+      document.body.style.cursor = previousCursor;
+      document.body.style.userSelect = previousUserSelect;
+
+      if (resizeCleanupRef.current === cleanupResize) {
+        resizeCleanupRef.current = null;
+      }
+    }
+
+    function handlePointerEnd() {
+      cleanupResize();
+    }
+
+    window.addEventListener("pointermove", handlePointerMove);
+    window.addEventListener("pointerup", handlePointerEnd);
+    window.addEventListener("pointercancel", handlePointerEnd);
+    resizeCleanupRef.current = cleanupResize;
+  };
 
   return (
     <div className="grid gap-3 rounded-lg border border-[#E5E7EB] bg-white p-4">
@@ -1544,16 +1626,57 @@ function ImportEditablePreview({
       ) : null}
 
       <div className="max-h-[320px] overflow-auto rounded-md border border-[#E5E7EB]">
-        <table className="min-w-full border-collapse text-[13px]">
+        <table className="w-full table-fixed border-collapse text-[10px]">
+          <colgroup>
+            <col
+              style={{
+                maxWidth: IMPORT_PREVIEW_ROW_NUMBER_COLUMN_WIDTH,
+                minWidth: IMPORT_PREVIEW_ROW_NUMBER_COLUMN_WIDTH,
+                width: IMPORT_PREVIEW_ROW_NUMBER_COLUMN_WIDTH,
+              }}
+            />
+            {fields.map((field) => {
+              const widthPercent =
+                (getImportPreviewColumnWidth(field, columnWidths) /
+                  fieldColumnWidthTotal) *
+                100;
+
+              return (
+                <col
+                  key={field.field}
+                  style={{
+                    width: `calc(${widthPercent}% - ${
+                      (IMPORT_PREVIEW_ROW_NUMBER_COLUMN_WIDTH * widthPercent) / 100
+                    }px)`,
+                  }}
+                />
+              );
+            })}
+          </colgroup>
           <thead className="sticky top-0 z-10 bg-[#F8FAFC] text-left text-[#475569]">
             <tr>
-              <th className="w-16 border-b px-3 py-2 font-semibold">행</th>
+              <th
+                className="w-[25px] overflow-hidden border-b border-r border-[#CBD5E1] px-0 py-2 text-center font-semibold"
+                style={{
+                  maxWidth: IMPORT_PREVIEW_ROW_NUMBER_COLUMN_WIDTH,
+                  minWidth: IMPORT_PREVIEW_ROW_NUMBER_COLUMN_WIDTH,
+                  width: IMPORT_PREVIEW_ROW_NUMBER_COLUMN_WIDTH,
+                }}
+              >
+                행
+              </th>
               {fields.map((field) => (
                 <th
-                  className="min-w-[160px] border-b px-3 py-2 font-semibold"
+                  className="relative select-none border-b border-r border-[#CBD5E1] px-2 py-2 font-semibold last:border-r-0"
                   key={field.field}
                 >
-                  {field.label}
+                  <span className="block truncate pr-1">{field.label}</span>
+                  <button
+                    aria-label={`${field.label} 컬럼 너비 조절`}
+                    className="group absolute right-0 top-0 flex h-full w-2 cursor-col-resize touch-none items-center justify-center"
+                    onPointerDown={(event) => onColumnResizeStart(field, event)}
+                    type="button"
+                  />
                 </th>
               ))}
             </tr>
@@ -1561,7 +1684,14 @@ function ImportEditablePreview({
           <tbody>
             {rows.map((row) => (
               <tr className="border-b last:border-b-0" key={row.rowNumber}>
-                <td className="bg-[#FAFBFC] px-3 py-2 text-[#64748B]">
+                <td
+                  className="w-[25px] overflow-hidden border-r border-[#CBD5E1] bg-[#FAFBFC] px-0 py-2 text-center text-[#64748B]"
+                  style={{
+                    maxWidth: IMPORT_PREVIEW_ROW_NUMBER_COLUMN_WIDTH,
+                    minWidth: IMPORT_PREVIEW_ROW_NUMBER_COLUMN_WIDTH,
+                    width: IMPORT_PREVIEW_ROW_NUMBER_COLUMN_WIDTH,
+                  }}
+                >
                   {row.rowNumber}
                 </td>
                 {fields.map((field) => {
@@ -1569,11 +1699,14 @@ function ImportEditablePreview({
                   const isEmptyCell = cellValue.trim().length === 0;
 
                   return (
-                    <td className="px-2 py-2" key={field.field}>
+                    <td
+                      className="border-r border-[#CBD5E1] px-2 py-2 last:border-r-0"
+                      key={field.field}
+                    >
                       <input
                         aria-invalid={isEmptyCell}
                         className={cn(
-                          "h-8 w-full rounded-md border px-2 text-[13px] outline-none disabled:bg-[#F3F4F6]",
+                          "h-8 w-full min-w-0 rounded-md border px-2 text-[10px] outline-none disabled:bg-[#F3F4F6]",
                           isEmptyCell
                             ? "border-red-400 bg-red-50 text-red-700 focus:border-red-500 focus:ring-2 focus:ring-red-100"
                             : "border-[#D1D5DB] focus:border-[#4880EE] focus:ring-2 focus:ring-[#4880EE]/20",
@@ -1590,7 +1723,7 @@ function ImportEditablePreview({
                         value={cellValue}
                       />
                       {row.errorMessage ? (
-                        <span className="mt-1 block truncate text-[11px] text-red-500">
+                        <span className="mt-1 block truncate text-[10px] text-red-500">
                           {row.errorMessage}
                         </span>
                       ) : null}
@@ -1603,6 +1736,32 @@ function ImportEditablePreview({
         </table>
       </div>
     </div>
+  );
+}
+
+function getDefaultImportPreviewColumnWidth(field: ImportTargetField): number {
+  if (field.field === "contactEmail") {
+    return 156;
+  }
+
+  if (field.field === "contactPhone") {
+    return 136;
+  }
+
+  return 104;
+}
+
+function getImportPreviewColumnWidth(
+  field: ImportTargetField,
+  columnWidths: Readonly<Record<string, number>>
+): number {
+  return columnWidths[field.field] ?? getDefaultImportPreviewColumnWidth(field);
+}
+
+function clampImportPreviewColumnWidth(width: number): number {
+  return Math.min(
+    IMPORT_PREVIEW_COLUMN_MAX_WIDTH,
+    Math.max(IMPORT_PREVIEW_COLUMN_MIN_WIDTH, Math.round(width))
   );
 }
 
