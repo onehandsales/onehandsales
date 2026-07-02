@@ -1725,17 +1725,18 @@ function ImportEditablePreview({
 
               return (
                 <div
-                  className="min-w-0 border-r border-[#CBD5E1] px-2 py-2 last:border-r-0"
+                  className={cn(
+                    "min-w-0 border-r border-[#CBD5E1] px-2 py-2 last:border-r-0",
+                    isEmptyCell && "bg-red-50"
+                  )}
                   key={field.field}
                   role="cell"
                 >
                   <input
                     aria-invalid={isEmptyCell}
                     className={cn(
-                      "h-8 w-full min-w-0 rounded-md border px-2 text-[10px] outline-none disabled:bg-[#F3F4F6]",
-                      isEmptyCell
-                        ? "border-red-400 bg-red-50 text-red-700 focus:border-red-500 focus:ring-2 focus:ring-red-100"
-                        : "border-[#D1D5DB] focus:border-[#4880EE] focus:ring-2 focus:ring-[#4880EE]/20",
+                      "h-6 w-full min-w-0 appearance-none border-0 bg-transparent px-0 text-[10px] outline-none disabled:bg-transparent",
+                      isEmptyCell ? "text-red-700" : "text-[#111827]"
                     )}
                     disabled={disabled}
                     onChange={(event) =>
@@ -1897,7 +1898,6 @@ function ContactCompanyImportSummary({
                           event.target.value
                         )
                       }
-                      placeholder="분야 입력"
                       value={resolution.companyFieldName}
                     />
                   </div>
@@ -1919,7 +1919,6 @@ function ContactCompanyImportSummary({
                           event.target.value
                         )
                       }
-                      placeholder="지역 입력"
                       value={resolution.companyRegionName}
                     />
                   </div>
