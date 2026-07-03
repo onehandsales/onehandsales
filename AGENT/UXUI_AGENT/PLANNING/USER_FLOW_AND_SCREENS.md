@@ -77,19 +77,19 @@
 
 ### Flow 7. Import
 
-1. 사용자가 Excel/CSV 파일을 업로드한다.
-2. AI가 컬럼을 자동 매핑한다.
-3. 사용자가 매핑 결과를 확인/수정한다.
-4. Import를 확정한다.
-5. 성공/실패/건너뜀 결과를 확인한다.
+1. 사용자가 `/import`에서 회사/담당자/제품/딜 중 불러오기 대상을 선택한다.
+2. 필요한 양식을 내려받거나 기존 CSV/XLSX 파일을 업로드한다.
+3. AI가 컬럼을 자동 매핑한다. provider 실패 시 규칙 기반 매핑으로 보완한다.
+4. 사용자가 매핑 결과와 row 검증 결과를 확인/수정한다.
+5. 담당자 또는 딜 불러오기에서 새 회사/담당자/제품 생성이 필요하면 보정값을 입력한다.
+6. Import를 확정한다.
+7. 성공 내역 목록과 상세 row snapshot을 확인한다.
 
 ### Flow 8. Export
 
-1. 사용자가 Export 대상을 선택한다.
-2. PDF 또는 Excel을 선택한다.
-3. 민감 데이터 포함 여부를 선택한다.
-4. 민감 데이터 포함 시 경고를 확인한다.
-5. 파일을 다운로드한다.
+1. 사용자가 회사/담당자/제품/딜 목록 화면에서 `엑셀 다운로드`를 누른다.
+2. 현재 목록의 검색어, 필터, 정렬 조건을 기준으로 xlsx 파일을 다운로드한다.
+3. 범용 `/export` 화면, PDF, 민감 데이터 포함 export는 현재 정본 흐름이 아니며 후속 결정 전까지 숨긴다.
 
 ### Flow 9. 통합검색
 
@@ -139,12 +139,12 @@
 | `/meeting-notes` | 회의록 목록 | 포함 |
 | `/meeting-notes/new` | 회의록 작성 | 포함 |
 | `/meeting-notes/:meetingNoteId` | 회의록 상세 | 포함 |
-| `/import` | Import 작업 | 보류 |
-| `/export` | 범용 Export 작업 | 보류. 현재 export는 각 도메인 목록의 엑셀 다운로드로 처리 |
+| `/import` | 데이터 업로드/불러오기 | 포함 |
+| `/export` | 범용 Export 작업 | 보류. 현재 `/`로 redirect하며 export는 각 도메인 목록의 엑셀 다운로드로 처리 |
 | `/settings` | 설정 | 포함 |
 | `/more` | 더보기 | 포함 |
 | `/business-cards` | 명함 스캔 내역/명함스캔 | 포함 |
-| `/notifications` | 알림 | 보류 |
+| `/notifications` | 알림 | 보류. 현재 `/`로 redirect |
 | `/trash` | 휴지통 | 포함 |
 | `/search` | 통합검색 결과 | 전용 라우트 없음 |
 
@@ -169,7 +169,7 @@
 
 ## 4. 현재 코드 라우트 상태
 
-> 최종 업데이트: 2026-06-29
+> 최종 업데이트: 2026-07-03
 
 현재 User Web router 기준 실제 구현 경로:
 
@@ -213,7 +213,7 @@ pen 디자인 반영 완료/정리 도메인 (2026-06-25 기준):
 - `/meeting-notes` — 회의록 목록/상세/생성 API, AI/STT draft UI, 저장 후 딜 추가 연동 연결 완료
 - `/trash` — 회의록 목록형 밀도를 따른 휴지통 목록, row 클릭 상세 모달, 모달 내부 복구 액션 반영 완료
 - `/business-cards` — 명함 스캔 내역, 상태 다중 필터, 카메라 아이콘 내비게이션, `명함스캔` 모달의 이미지 업로드 -> 진행 표시 -> 결과 확인/수정 -> 저장 흐름 구현 완료
-- `/import` — 회사/담당자/제품 양식 다운로드, CSV/XLSX 업로드, AI 컬럼 매핑, row 수정/검증, 확정 저장, 성공 내역 목록/상세 조회 구현 완료
+- `/import` — 회사/담당자/제품/딜 양식 다운로드, CSV/XLSX 업로드, AI 컬럼 매핑, row 수정/검증, 확정 저장, 성공 내역 목록/상세 조회 구현 완료. 확정 전 job 이어받기는 후속
 - 상단 통합검색 — Backend `GET /api/search`와 User Web GlobalSearch 연결 완료
 
 현재 의도적으로 보류된 화면:
@@ -226,7 +226,7 @@ pen 디자인 반영 대기 도메인:
 - `/products/:productId`
 - `/schedules`, `/schedules/week`
 - `/notifications`
-- `/import` — 딜 불러오기와 확정 전 job 이어받기는 후속.
+- `/import` — 확정 전 job 이어받기는 후속.
 - `/export`
 - `/business-cards` — Backend 연동 완료. pen 시각 고도화는 후속.
 - `/contacts/:contactId` (부분 반영)
@@ -251,7 +251,7 @@ pen 디자인 반영 대기 도메인:
 - 기획 목록의 `/imports`, `/exports`는 현재 코드에서 `/import`, `/export`로 구현되어 있다.
 - 기획 목록의 `/search` 전용 라우트는 현재 User Web router에 없다. 통합검색 흐름은 상단 UI에서 `GET /api/search`를 호출하고 결과 선택 시 상세 화면으로 이동하는 방식으로 구현되어 있다.
 - 현재 `/`는 딜 파이프라인이 아니라 홈 대시보드다. 딜 파이프라인은 `/deals`에서 운영한다.
-- Import와 범용 Export는 핵심 기능 UX 안정화 전까지 navigation에서 숨김 처리한다. 휴지통은 관리 섹션에 노출하고, 목록 row 클릭으로 상세/복구 모달을 제공한다.
+- `/import`는 현재 사이드바 업무 섹션의 `데이터 업로드`로 노출한다. 범용 `/export`는 현재 정본 흐름이 아니므로 route를 `/`로 redirect하고 navigation에서 숨긴다. 휴지통은 관리 섹션에 노출하고, 목록 row 클릭으로 상세/복구 모달을 제공한다.
 - 기획 목록의 Admin 상세 데이터 라우트와 전체 딜/회사/담당자/제품 라우트는 현재 Admin Web router에 없다.
 - Backend에는 현재 Admin Web 운영 조회 API가 `GET /admin/api/me` 외에는 구현되어 있지 않다. 관리자 페이지는 후속 단계에서 만든다.
 

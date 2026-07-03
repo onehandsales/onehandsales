@@ -19,7 +19,7 @@ User Web 실행:
 
 ```bash
 cd FE/user-web
-cp .env.example .env
+# .env를 로컬/배포 환경에 맞게 작성
 pnpm install
 pnpm run dev
 ```

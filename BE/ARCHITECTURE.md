@@ -20,14 +20,14 @@ Active modules:
 - `meeting-note`: user-owned meeting note, snapshot links, manual CRUD, AI/STT draft, saved-note deal linking, soft delete, trash restore.
 - `search`: integrated search over company, contact, product, deal, schedule, and meeting note data.
 - `trash`: 7-day trash list/detail/restore for supported entities and logs.
-- `data-import`: active templates, template xlsx download, CSV/XLSX upload, AI column mapping, editable preview validation, confirm import, import logs for company/contact/product.
+- `data-import`: active templates, template xlsx download, CSV/XLSX upload, AI column mapping, editable preview validation, confirm import, import logs for company/contact/product/deal.
 - `health`: health check endpoint.
 
 Current intentional gaps:
 
 - Admin operation APIs are limited to `GET /admin/api/me`.
 - Generic `/api/exports` and `ExportJob` are not used; exports live in each domain module.
-- Deal import, persistent ImportJob recovery, Notification, Tag, Admin audit/sensitive raw access, and generic DealActivity are future scope.
+- Persistent ImportJob recovery, Notification, Tag, Admin audit/sensitive raw access, and generic DealActivity are future scope.
 
 Layer rules:
 

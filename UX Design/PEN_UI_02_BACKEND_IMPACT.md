@@ -43,8 +43,8 @@
 
 현재 Backend module:
 
-- 구현됨: `auth`, `user`, `company`, `contact`, `product`, `deal`, `schedule`, `meeting-note`, `search`
-- 없음: `business-card`, 범용 `import-export`, `notification`, `trash`, Admin 운영 조회/감사/민감 원문 API
+- 구현됨: `auth`, `user`, `company`, `contact`, `business-card`, `product`, `deal`, `schedule`, `meeting-note`, `search`, `trash`, `data-import`
+- 없음/후속: `notification`, `tag`, Admin 운영 조회/감사/민감 원문 API, ImportJob 영속화/재개 API, 범용 ExportJob
 
 현재 User Web:
 
@@ -57,7 +57,7 @@
 - MeetingNote 직접 저장은 기존 `POST /api/meeting-notes`의 `MANUAL` sourceType을 사용한다. AI/STT draft endpoint는 저장하지 않고, 최종 저장 시 기존 생성 API에 `TEXT_AI` 또는 `STT_AI` sourceType을 전달한다.
 - 회의록 저장 후 딜 활동기록 자동 생성은 AI/STT draft API 책임이 아니며, `POST /api/meeting-notes/:meetingNoteId/deals`가 담당한다.
 - 현재 구현은 신규 `DealActivity` table 없이 `MeetingNoteDeal` 추가 연결과 `DealFollowingActionLog` 자동 생성을 같은 transaction에서 처리한다.
-- `/business-cards`, `/contacts/scan`, `/notifications`, `/import`, `/export`, `/trash` 라우트/feature는 있으나 해당 Backend module이 없어 완료 기능으로 보지 않는다.
+- `/business-cards`, `/import`, `/trash` 라우트/feature는 Backend와 연결된 완료 기능으로 본다. `/contacts/scan`은 `/business-cards`로 redirect되며, `/notifications`, `/export`는 현재 `/`로 redirect된다.
 
 ---
 
@@ -74,8 +74,8 @@
 | Product List/Detail | 제품 관리 | product | 중간 | 포함/구현 |
 | Schedule | 일정 관리/캘린더 | schedule, deal | 중간 | 포함/구현 |
 | Meeting Note | 수동 회의록 관리 | meeting-note, company, contact, product, deal | 낮음/중간 | 포함/구현 |
-| Business Card Scan | 명함 OCR/확정 | business-card, company, contact | 낮음/중간 | FE만 존재/BE 없음 |
-| Import | 데이터 이동 | import-export | 낮음/중간 | FE만 존재/BE 없음 |
+| Business Card Scan | 명함 OCR/확정 | business-card, company, contact | 낮음/중간 | 포함/구현 |
+| Import | 데이터 이동 | data-import | 낮음/중간 | 회사/담당자/제품/딜 포함/구현. ImportJob 영속화는 후속 |
 | Export | 데이터 이동 | company, contact, product, deal | 낮음 | 도메인별 xlsx export 구현. 범용 ExportJob은 비정본 |
 | Trash | 삭제 자원 복구 | trash | 낮음 | 포함/구현 |
 | Global Search | 통합검색 | search | 중간 | 포함/구현 |
@@ -250,7 +250,7 @@
 - 범용 export 생성은 현재 비정본
 
 메모:
-- Import는 job 기반 UX 검토가 필요하다. Export는 도메인별 xlsx 즉시 다운로드가 정본이다.
+- Import는 회사/담당자/제품/딜 job 기반 UX가 구현되어 있다. 새로고침/세션 만료 후 이어받는 영속화 UX는 후속이며, Export는 도메인별 xlsx 즉시 다운로드가 정본이다.
 
 ---
 
@@ -267,11 +267,11 @@
 
 ### 현재 Backend가 없는 API 후보
 
-- business-card
-- import-export generic job
-- trash
 - notification
 - Admin 운영 조회/감사/민감 원문 API
+- tag
+- ImportJob 영속화/재개 API
+- 범용 ExportJob
 
 ### 재사용 가능성이 높은 기존 로직
 
@@ -416,7 +416,7 @@ pen 기준:
 
 ### Import / Export
 
-- Import job 상태 전이
+- ImportJob 영속화/재개 상태 전이
 - mapping 필수 여부
 - confirm 전 검증 규칙
 - 범용 ExportJob download 준비 상태 규칙은 현재 비정본
@@ -440,11 +440,11 @@ pen 기준:
 
 ### 2차 이후로 미뤄도 되는 것
 
-- Meeting Note
-- Business Card
-- Import
-- 범용 ExportJob
+- Admin 운영 조회/감사/민감 원문 API
 - Notification 고도화
+- Tag
+- ImportJob 영속화/재개
+- 범용 ExportJob
 - Search 고도화
 
 ---

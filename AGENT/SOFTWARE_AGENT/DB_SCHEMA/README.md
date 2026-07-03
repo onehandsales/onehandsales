@@ -21,7 +21,7 @@
 
 ## 3. 현재 DB 범위
 
-Snapshot date: 2026-07-01
+Snapshot date: 2026-07-03
 
 현재 Backend DB는 `BE/prisma/schema.prisma`와 migration 기준으로 Auth/User, Company, Contact, BusinessCard OCR, Product, Deal, Schedule, MeetingNote, DataImport 도메인을 포함한다. Company/Contact/Product/Deal/MeetingNote 본문 row와 각 도메인의 메모, 비밀 메모, 다음 행동 로그에는 7일 휴지통 보관을 위한 soft delete 컬럼이 반영되어 있다. 별도 `Trash` table은 없고, Trash 목록/상세/복구 API는 기존 row의 `deletedAt`, `deletedByUserId`, `trashExpiresAt`을 기준으로 동작한다.
 
@@ -85,6 +85,7 @@ Snapshot date: 2026-07-01
 - `BE/prisma/migrations/20260625020000_add_core_entity_soft_delete_columns/migration.sql`
 - `BE/prisma/migrations/20260629010000_add_business_card_scan_log/migration.sql`
 - `BE/prisma/migrations/20260630010000_add_import_templates_and_logs/migration.sql`
+- `BE/prisma/migrations/20260702010000_add_deal_import_template/migration.sql`
 
 Search는 기존 table을 읽는 기능이므로 별도 table이나 migration이 없다.
 

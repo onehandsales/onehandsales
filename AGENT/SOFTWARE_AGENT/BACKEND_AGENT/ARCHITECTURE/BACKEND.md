@@ -37,7 +37,7 @@ Canonical domain:
 
 ## 3. Current Implementation Snapshot
 
-Snapshot date: 2026-07-01
+Snapshot date: 2026-07-03
 
 Current source of truth:
 
@@ -75,7 +75,7 @@ Currently implemented API surface:
 - MeetingNote: filter options, list/detail/create/update/delete, AI text draft, STT+AI draft, saved-note deal linking
 - Search: `GET /api/search`
 - Trash: `GET /api/trash`, `GET /api/trash/:targetType/:targetId`, `POST /api/trash/:targetType/:targetId/restore`
-- DataImport: active templates, template xlsx download, CSV/XLSX upload, AI mapping, mapping validation, confirm import, import user logs
+- DataImport: active templates, template xlsx download, CSV/XLSX upload for Company/Contact/Product/Deal, AI mapping, mapping validation, confirm import, import user logs
 - Health: `GET /api/health`
 
 Implemented Backend TODO references:
@@ -118,13 +118,13 @@ Current response notes:
 - `GET /api/trash` aggregates deleted Company, Contact, Product, Deal, MeetingNote, and supported memo/action log rows owned by the current user where `deletedAt IS NOT NULL` and `trashExpiresAt > now`.
 - `GET /api/trash/:targetType/:targetId` returns preview details for the trash detail modal. Private memo content is not exposed before restore.
 - `POST /api/trash/:targetType/:targetId/restore` clears `deletedAt`, `deletedByUserId`, and `trashExpiresAt` and returns the restored target metadata.
-- `GET /api/import-templates/active` returns active import templates for Company, Contact, and Product.
+- `GET /api/import-templates/active` returns active import templates for Company, Contact, Product, and Deal.
 - `GET /api/import-templates/:templateId/download` returns an xlsx template. Contact templates may receive `companyName` as context.
 - `POST /api/imports` accepts a CSV/XLSX file as `file`, creates an in-memory import job, and returns preview rows. The file limit is 10 MB.
 - `POST /api/imports/:importJobId/map` calls the import mapping provider and falls back to heuristic mapping if the provider fails.
 - `PATCH /api/imports/:importJobId/mapping` applies the user's mapping and validates mapped rows.
-- `POST /api/imports/:importJobId/confirm` creates Company, Contact, or Product rows and writes `ImportUserLog`/`ImportUserLogRow` snapshots in a database transaction.
-- DataImport supports Company, Contact, and Product. Deal import currently returns a validation error.
+- `POST /api/imports/:importJobId/confirm` creates Company, Contact, Product, or Deal rows and writes `ImportUserLog`/`ImportUserLogRow` snapshots in a database transaction.
+- Deal import creates the deal and `DealCompany`, `DealContact`, `DealProduct` links in one transaction. If referenced company/contact/product values are missing, the confirm request can include resolution arrays for creating them.
 - Temporary DataImport jobs use an in-memory store. Persistent job recovery across server restart is future scope.
 
 Current runtime behavior:
@@ -138,7 +138,7 @@ Current runtime behavior:
 Current backend gaps and intentional deferrals:
 
 - Admin pages and Admin Web query APIs such as `/admin/api/dashboard`, `/admin/api/users`, `/admin/api/companies`, `/admin/api/contacts`, `/admin/api/products`, and `/admin/api/deals` are deferred.
-- Deal import, persistent ImportJob recovery, Notification, Admin operation query/audit/sensitive raw APIs are not implemented yet.
+- Persistent ImportJob recovery, Notification, Admin operation query/audit/sensitive raw APIs are not implemented yet.
 - Generic ExportJob is intentionally not used for the current export direction. Company, Contact, Product, and Deal each provide their own `GET /api/<domain>/export/xlsx` API.
 - MeetingNote Admin, rawText encryption/raw access, and generic DealActivity table are future scope.
 

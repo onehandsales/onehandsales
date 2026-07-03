@@ -4,6 +4,7 @@
 
 - `GET /api/products`
 - `GET /api/products/export/xlsx`
+- `GET /api/products/:productId/deals`
 - `GET /api/product-categories`
 - `POST /api/product-categories`
 - `DELETE /api/product-categories/:categoryId`
@@ -35,4 +36,4 @@
 - 제품 생성 시 초기 메모의 `memoType`은 서버가 `초기 메모`로 저장한다.
 - 제품 삭제는 실제 row 삭제가 아니라 `deletedAt`, `deletedByUserId`, `trashExpiresAt` 설정으로 처리한다.
 - 개인 비밀 메모 평문은 API DTO에서만 `memo`로 다루고, DB에는 `memoCiphertext`, `memoKeyVersion`만 저장한다.
-- API 계약은 `TODO/PRODUCT_DOMAIN_PLAN/COMMON/API-SPEC/PRODUCT_API_DETAIL.md`를 따른다.
+- API 계약은 `TODO/DONE/PRODUCT_DOMAIN_PLAN/COMMON/API-SPEC/PRODUCT_API_DETAIL.md`와 `TODO/DONE/ADDITIONAL_WORK_PLAN/COMMON/API-SPEC/PRODUCT_DEAL_LIST_API.md`를 따른다.

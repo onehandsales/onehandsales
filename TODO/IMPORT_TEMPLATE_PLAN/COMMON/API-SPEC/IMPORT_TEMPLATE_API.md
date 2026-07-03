@@ -52,6 +52,7 @@
 | `COMPANY` | `v1` | 회사이름, 회사분야, 회사지역 |
 | `PRODUCT` | `v1` | 제품이름, 제품단가, 제품 카테고리, 제품 상태 |
 | `CONTACT` | `v1` | 회사, 담당자 이름, 담당자 이메일, 담당자 핸드폰 번호, 담당자 부서, 담당자 직급 |
+| `DEAL` | `v1` | 딜 이름, 딜 금액, 딜 단계, 회사명, 담당자명, 제품명, 예상 마감일 |
 
 ## POST /api/imports
 
@@ -59,7 +60,7 @@ CSV/XLSX 파일을 업로드해 확정 전 임시 import job을 만든다.
 
 ### Request
 - `Content-Type`: `multipart/form-data`
-- `targetType`: `COMPANY`, `CONTACT`, `PRODUCT`. `DEAL`은 현재 지원하지 않는다.
+- `targetType`: `COMPANY`, `CONTACT`, `PRODUCT`, `DEAL`.
 - `file`: CSV/XLSX 파일. 최대 10MB.
 
 ### Response
@@ -114,8 +115,8 @@ CSV/XLSX 파일을 업로드해 확정 전 임시 import job을 만든다.
       "suggestedMapping": {
         "companyName": "회사이름"
       },
-      "confidence": "HIGH",
-      "reason": "헤더 이름이 양식 컬럼과 일치합니다."
+      "confidence": 0.98,
+      "unmappedColumns": []
     },
     "previewRows": [],
     "errors": [],
@@ -139,8 +140,8 @@ CSV/XLSX 파일을 업로드해 확정 전 임시 import job을 만든다.
     "companyField": "회사분야",
     "companyRegion": "회사지역"
   },
-  "confidence": "HIGH",
-  "reason": "파일 헤더가 회사 불러오기 양식과 직접 대응됩니다."
+  "confidence": 0.98,
+  "unmappedColumns": []
 }
 ```
 
@@ -165,13 +166,45 @@ CSV/XLSX 파일을 업로드해 확정 전 임시 import job을 만든다.
 
 ## POST /api/imports/{importJobId}/confirm
 
-사용자가 최종 확인한 row로 회사/담당자/제품 데이터를 생성하고 성공 내역을 저장한다.
+사용자가 최종 확인한 row로 회사/담당자/제품/딜 데이터를 생성하고 성공 내역을 저장한다.
 
 ### Request
 `rows`를 생략하면 현재 job의 검증 완료 row를 사용한다. 사용자가 화면에서 값을 수정한 경우 row 번호와 보정 데이터를 전달한다.
 
 ```json
 {
+  "contactCompanyResolutions": [
+    {
+      "companyName": "원핸드세일즈",
+      "companyFieldName": "IT",
+      "companyRegionName": "서울"
+    }
+  ],
+  "dealCompanyResolutions": [
+    {
+      "companyName": "한빛테크",
+      "companyFieldName": "제조",
+      "companyRegionName": "부산"
+    }
+  ],
+  "dealContactResolutions": [
+    {
+      "companyName": "한빛테크",
+      "contactName": "김도윤",
+      "contactEmail": "doyoon@example.com",
+      "contactPhone": "010-0000-0000",
+      "contactDepartmentName": "영업팀",
+      "contactJobGradeName": "팀장"
+    }
+  ],
+  "dealProductResolutions": [
+    {
+      "productName": "세일즈 파이프라인 Enterprise",
+      "productPrice": 12000000,
+      "productCategoryName": "솔루션",
+      "productStatusName": "판매중"
+    }
+  ],
   "rows": [
     {
       "rowNumber": 2,
@@ -201,7 +234,8 @@ CSV/XLSX 파일을 업로드해 확정 전 임시 import job을 만든다.
 - `COMPANY`는 회사명/분야/지역을 저장한다.
 - `PRODUCT`는 제품명/가격/카테고리/상태를 저장한다.
 - `CONTACT`는 회사명으로 사용자 소유 회사를 찾거나 만들고 담당자를 저장한다.
-- `DEAL`은 현재 validation error로 차단한다.
+- `DEAL`은 딜명, 금액, 단계, 예상 마감일을 저장하고 회사/담당자/제품 이름을 기준으로 `DealCompany`, `DealContact`, `DealProduct` 연결 row를 만든다.
+- `DEAL` 확정 시 기존 회사/담당자/제품이 없으면 `dealCompanyResolutions`, `dealContactResolutions`, `dealProductResolutions`에 담긴 사용자 보정값으로 필요한 데이터를 생성한다.
 
 ## GET /api/import-user-logs
 

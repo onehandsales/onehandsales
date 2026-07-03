@@ -60,7 +60,7 @@ Page는 route entry이며 feature public export를 조합한다. API 호출, sch
 
 ## 현재 구현 스냅샷
 
-Snapshot date: 2026-07-01
+Snapshot date: 2026-07-03
 
 User Web:
 

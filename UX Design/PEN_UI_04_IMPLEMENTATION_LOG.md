@@ -421,14 +421,14 @@
   - `/` 홈은 더 이상 준비중 화면이 아니라 Schedule/Deal/MeetingNote API를 조합한 실제 대시보드 화면임을 반영했다.
   - 딜 목록 정렬 UI는 chip이 아니라 select이며 `최신순`, `금액 높은순`, `금액 낮은 순`, `마감일순`을 제공하도록 정정했다.
   - 담당자 목록 정렬은 `최신순`, `이름순` select 계약으로 정정했다.
-  - BusinessCard OCR, 범용 Import job, Notification, Admin 운영 조회 API는 FE feature/route가 있어도 Backend module이 없음을 다시 명시했다. 당시 Search도 미구현으로 기록했으나, 2026-06-19 로그에서 구현 상태로 재정정했다. 현재 Trash와 Company/Contact/Product/Deal 도메인별 xlsx export는 구현 완료 상태이며, 범용 ExportJob은 비정본이다.
+  - 당시 기준의 부가 기능 미구현 목록을 재검토했다. 이후 2026-07-03 기준 BusinessCard, DataImport, Trash는 구현 완료 상태로 재정정한다. Notification, Admin 운영 조회 API, ImportJob 영속화/재개, 범용 ExportJob은 후속/비정본이다.
 - 결정/반영 내용:
-  - 현재 기준선은 2026-06-16 FE+BE 코드다.
+  - 당시 기준선은 2026-06-16 FE+BE 코드다. 최신 구현 판단은 2026-07-03 FE+BE 기준선 섹션을 우선한다.
   - 과거 2026-06-11~2026-06-15 계획/로그 항목은 역사 기록으로 남기되, 실제 구현 판단은 최신 현재 기준선 섹션을 우선한다.
   - User Web 핵심 도메인은 Auth/User, Home, Company, Contact, Product, Deal, Schedule, MeetingNote까지 실제 API 연동 완료 상태로 본다.
 - 남은 이슈:
   - Admin Web 운영 조회 API는 `/admin/api/me` 외 미구현이다.
-  - BusinessCard OCR, Import job, Notification은 Backend 구현 계획이 필요하다. 범용 ExportJob은 비정본이며, Trash와 도메인별 xlsx export는 현재 구현 완료 상태다.
+  - Notification, Admin 운영 조회 API, ImportJob 영속화/재개는 Backend 구현 계획이 필요하다. 범용 ExportJob은 비정본이며, BusinessCard, DataImport, Trash와 도메인별 xlsx export는 현재 구현 완료 상태다.
 
 ---
 
@@ -630,7 +630,7 @@
 ## 현재 블로커
 
 - 목록 컨트롤 버튼 공통화 미완료
-- Admin 운영 조회 API와 BusinessCard/Import/Notification Backend module 미구현. Trash는 현재 구현 완료 상태다.
+- Admin 운영 조회 API, Notification, Tag, ImportJob 영속화/재개 미구현. BusinessCard, DataImport, Trash는 현재 구현 완료 상태다.
 - 범용 DealActivity table과 activity type 관리 미구현
 
 ---

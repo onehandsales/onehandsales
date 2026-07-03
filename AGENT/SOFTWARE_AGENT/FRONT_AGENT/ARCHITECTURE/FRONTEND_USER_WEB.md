@@ -63,6 +63,7 @@
 `/meeting-notes/new`는 현재 `/meeting-notes?create=1` 흐름으로 redirect한다.
 `/schedules/week`는 현재 `/schedules`로 redirect한다. 별도 주간 보고서 화면은 후속 범위다.
 `import-export` feature 중 `/import`는 실제 Backend API와 연결되어 있고, `/export` route는 root로 redirect한다. 현재 Export 정본 흐름은 회사/담당자/제품/딜 각 목록 화면의 엑셀 다운로드다.
+현재 사이드바는 `/import`를 `데이터 업로드` 메뉴로 노출한다. `/export`와 `/notifications`는 route가 있어도 navigation에서 숨긴다.
 
 ## 4. 현재 Feature 폴더
 
