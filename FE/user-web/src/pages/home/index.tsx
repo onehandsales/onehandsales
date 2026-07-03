@@ -24,7 +24,6 @@ import {
 } from "@/features/deal/types/deal";
 import { useMeetingNoteList } from "@/features/meeting-note/hooks/use-meeting-note-queries";
 import type { MeetingNoteListItem } from "@/features/meeting-note/types/meeting-note";
-import { getMeetingDateParts } from "@/features/meeting-note/utils/meeting-note-date";
 import { useScheduleList } from "@/features/schedule/hooks/use-schedule-queries";
 import type { Schedule } from "@/features/schedule/types/schedule";
 import { cn } from "@/utils/cn";
@@ -548,32 +547,6 @@ function DeadlineDealItem({
   );
 }
 
-function MeetingNoteItem({
-  meetingNote,
-}: {
-  readonly meetingNote: MeetingNoteListItem;
-}) {
-  const meetingDate = getMeetingDateParts(meetingNote.meetingAt, "일시 없음");
-
-  return (
-    <Link
-      className="grid min-w-0 grid-cols-[minmax(0,1fr)_auto] gap-3 px-1 py-2.5 transition hover:bg-[#FAFBFC]"
-      to={`/meeting-notes/${meetingNote.id}`}
-    >
-      <div className="min-w-0">
-        <p className="truncate text-[13px] font-semibold text-[#111827]">
-          {getMeetingNoteTitle(meetingNote)}
-        </p>
-        <p className="mt-0.5 truncate text-[12px] text-[#64748B]">
-          {meetingNote.deals.label || "연결 딜 없음"}
-        </p>
-      </div>
-      <span className="shrink-0 rounded-full bg-[#FFF7ED] px-2.5 py-1 text-[11px] font-bold text-[#C2410C]">
-        {meetingDate.hasValue ? meetingDate.compactDate : meetingDate.full}
-      </span>
-    </Link>
-  );
-}
 
 function QuickActionPanel() {
   return (
