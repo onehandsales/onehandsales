@@ -140,7 +140,7 @@ export function ContactDetailScreen({ contactId }: ContactDetailScreenProps) {
     try {
       await deleteContactMutation.mutateAsync(contact.id);
       setDeleteConfirmOpen(false);
-      void navigate("/contacts", {
+      void navigate("/app/contacts", {
         replace: true,
         state: {
           notice: LOG_DELETE_SUCCESS_MESSAGE,
@@ -178,7 +178,7 @@ export function ContactDetailScreen({ contactId }: ContactDetailScreenProps) {
 
         {/* TopBar */}
         <div className="flex h-16 items-center gap-3 bg-transparent px-6">
-          <Link to="/contacts">
+          <Link to="/app/contacts">
             <ChevronLeft className="h-5 w-5 text-[#9CA3AF]" />
           </Link>
           <div className="flex flex-1 items-center gap-1.5 text-[13px]">
@@ -267,7 +267,7 @@ export function ContactDetailScreen({ contactId }: ContactDetailScreenProps) {
 
         {/* TopBar */}
         <div className="flex h-16 shrink-0 items-center gap-3 bg-transparent px-6">
-          <Link to="/contacts">
+          <Link to="/app/contacts">
             <ChevronLeft className="h-5 w-5 text-[#9CA3AF]" />
           </Link>
           <div className="flex flex-1 items-center gap-1.5 text-[13px]">
@@ -568,7 +568,7 @@ function ContactSummaryHeader({
         <span className="font-semibold text-[#9CA3AF]">회사</span>
         <Link
           className="font-extrabold text-[#111827] hover:text-[#4880EE] hover:underline"
-          to={`/companies/${contact.company.id}`}
+          to={`/app/companies/${contact.company.id}`}
         >
           {contact.company.companyName}
         </Link>
@@ -640,7 +640,7 @@ function ConnectedDealsTable({
             <Link
               className="flex h-[58px] items-center gap-3 border-b border-[#F3F4F6] bg-white px-4 hover:bg-[#F9FAFB] transition-colors last:border-0"
               key={deal.id}
-              to={`/deals/${deal.id}`}
+              to={`/app/deals/${deal.id}`}
             >
               <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#FEF2F2]">
                 <BriefcaseBusiness className="h-3.5 w-3.5 text-[#DC2626]" />

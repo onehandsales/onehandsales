@@ -209,7 +209,7 @@ export function CompanyListScreen({
           {
             icon: Plus,
             tooltip: "회사 생성",
-            onClick: () => void navigate("/companies/new"),
+            onClick: () => void navigate("/app/companies/new"),
             disabled: fieldsQuery.isLoading || regionsQuery.isLoading,
             variant: "primary",
           },
@@ -515,7 +515,7 @@ export function CompanyListScreen({
         <button
           aria-label="회사 생성"
           className="fixed bottom-24 right-5 flex h-8 w-8 items-center justify-center rounded-full bg-[#4880EE] shadow-[0_4px_16px_rgba(59,130,246,0.27)] transition active:opacity-80"
-          onClick={() => void navigate("/companies/new")}
+          onClick={() => void navigate("/app/companies/new")}
           type="button"
         >
           <Plus className="h-4 w-4 text-white" strokeWidth={2.5} />
@@ -562,11 +562,11 @@ function CompanyRow({
   return (
     <div
       className="group grid h-[66px] w-full cursor-pointer items-center border-b border-[#E2E5EC] bg-white px-3 text-left transition-colors last:border-b-0 hover:bg-[#EAF2FF] md:px-4 xl:px-6"
-      onClick={() => void navigate(`/companies/${company.id}`)}
+      onClick={() => void navigate(`/app/companies/${company.id}`)}
       onKeyDown={(e) => {
         if (e.key === "Enter" || e.key === " ") {
           e.preventDefault();
-          void navigate(`/companies/${company.id}`);
+          void navigate(`/app/companies/${company.id}`);
         }
       }}
       role="button"
@@ -1109,7 +1109,7 @@ function CompanyMobileCard({
   return (
     <button
       className="flex w-full items-start gap-3 border-b border-[#E5E7EB] bg-white px-4 py-[14px] text-left transition active:bg-[#F9FAFB]"
-      onClick={() => void navigate(`/companies/${company.id}`)}
+      onClick={() => void navigate(`/app/companies/${company.id}`)}
       type="button"
     >
       {/* 이니셜 아바타 */}

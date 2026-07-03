@@ -1,21 +1,22 @@
-import { Plus } from "lucide-react";
+import { LogOut, Plus } from "lucide-react";
 import type { ReactNode } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useAuthSession } from "@/features/auth";
 import { SidebarNav } from "@/components/navigation/sidebar-nav";
 import { GlobalSearch } from "@/features/search";
 
 const PAGE_TITLES: Record<string, { title: string }> = {
-  "/": { title: "홈" },
-  "/deals": { title: "딜" },
-  "/deals/new": { title: "딜" },
-  "/companies": { title: "회사" },
-  "/companies/new": { title: "회사" },
-  "/contacts": { title: "담당자" },
-  "/products": { title: "제품" },
-  "/products/new": { title: "제품" },
-  "/schedules": { title: "일정" },
-  "/meeting-notes": { title: "회의록" },
-  "/settings": { title: "설정" },
+  "/app": { title: "홈" },
+  "/app/deals": { title: "딜" },
+  "/app/deals/new": { title: "딜" },
+  "/app/companies": { title: "회사" },
+  "/app/companies/new": { title: "회사" },
+  "/app/contacts": { title: "담당자" },
+  "/app/products": { title: "제품" },
+  "/app/products/new": { title: "제품" },
+  "/app/schedules": { title: "일정" },
+  "/app/meeting-notes": { title: "회의록" },
+  "/app/settings": { title: "설정" },
 };
 
 type DesktopAppShellProps = {
@@ -28,7 +29,14 @@ export function DesktopAppShell({
   noPadding = false,
 }: DesktopAppShellProps) {
   const { pathname } = useLocation();
+  const navigate = useNavigate();
+  const { logout } = useAuthSession();
   const page = PAGE_TITLES[pathname] ?? { title: "한손에 영업" };
+
+  const handleLogout = async () => {
+    await logout();
+    navigate("/");
+  };
 
   return (
     <div className="hidden min-h-screen md:flex">
@@ -65,7 +73,7 @@ export function DesktopAppShell({
           <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary/20 text-[12px] font-semibold text-primary">
             강
           </div>
-          <div className="min-w-0">
+          <div className="min-w-0 flex-1">
             <p className="truncate text-[13px] font-medium text-sidebar-foreground">
               강변범
             </p>
@@ -73,6 +81,13 @@ export function DesktopAppShell({
               Store Manager
             </p>
           </div>
+          <button
+            className="shrink-0 rounded-md p-1.5 text-sidebar-foreground/40 transition-colors hover:bg-sidebar-border hover:text-sidebar-foreground"
+            title="로그아웃"
+            onClick={() => void handleLogout()}
+          >
+            <LogOut className="h-4 w-4" strokeWidth={1.75} />
+          </button>
         </div>
       </aside>
 
@@ -89,7 +104,7 @@ export function DesktopAppShell({
             <GlobalSearch />
             <Link
               className="inline-flex h-[34px] items-center gap-1.5 rounded-lg bg-primary px-3 text-[13px] font-semibold text-white transition hover:bg-primary/90"
-              to="/deals/new"
+              to="/app/deals/new"
             >
               <Plus className="h-3.5 w-3.5" strokeWidth={2.5} />새 딜
             </Link>

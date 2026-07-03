@@ -112,7 +112,7 @@ export function MeetingNoteDetailScreen({
     try {
       await deleteMutation.mutateAsync(meetingNoteId);
       setDeleteConfirmOpen(false);
-      void navigate("/meeting-notes", {
+      void navigate("/app/meeting-notes", {
         replace: true,
       state: { notice: "회의록을 삭제했어요." },
       });
@@ -126,7 +126,7 @@ export function MeetingNoteDetailScreen({
       <MeetingNoteStateShell>
         <MeetingNoteDetailError
       error="회의록 ID를 확인할 수 없어요."
-          onRetry={() => void navigate("/meeting-notes")}
+          onRetry={() => void navigate("/app/meeting-notes")}
         />
       </MeetingNoteStateShell>
     );
@@ -228,7 +228,7 @@ function MeetingNoteDetailTopBar({
 }) {
   return (
     <div className="flex h-16 shrink-0 items-center gap-3 bg-transparent px-4 md:px-6">
-      <Link to="/meeting-notes">
+      <Link to="/app/meeting-notes">
         <ChevronLeft className="h-5 w-5 text-[#9CA3AF]" />
       </Link>
       <div className="flex min-w-0 flex-1 items-center gap-1.5 text-[13px]">
@@ -437,7 +437,7 @@ function MeetingNoteLinkedCompaniesTable({
               <Link
                 className="block"
                 key={company.id}
-                to={`/companies/${company.companyId}`}
+                to={`/app/companies/${company.companyId}`}
               >
                 {row}
               </Link>
@@ -489,7 +489,7 @@ function MeetingNoteLinkedContactsTable({
               <Link
                 className="block"
                 key={contact.id}
-                to={`/contacts/${contact.contactId}`}
+                to={`/app/contacts/${contact.contactId}`}
               >
                 {row}
               </Link>
@@ -542,7 +542,7 @@ function MeetingNoteLinkedProductsTable({
               <Link
                 className="block"
                 key={product.id}
-                to={`/products/${product.productId}`}
+                to={`/app/products/${product.productId}`}
               >
                 {row}
               </Link>
@@ -568,7 +568,7 @@ function MeetingNoteLinkedDealsTable({
       ) : (
         <div className={getMeetingNoteLinkedListClass(deals.length)}>
           {deals.map((deal) => (
-            <Link className="block" key={deal.id} to={`/deals/${deal.dealId}`}>
+            <Link className="block" key={deal.id} to={`/app/deals/${deal.dealId}`}>
               <MeetingNoteLinkedRow
                 icon={
                   <BriefcaseBusiness className="h-3.5 w-3.5 text-[#C2410C]" />

@@ -246,7 +246,7 @@ export function DealPipelineHomeScreen({
             {
               icon: Plus,
               tooltip: "딜 생성",
-              onClick: () => void navigate("/deals/new"),
+              onClick: () => void navigate("/app/deals/new"),
               variant: "primary",
             },
           ]}
@@ -403,7 +403,7 @@ export function DealPipelineHomeScreen({
                         deal={deal}
                         displayTimeZone={displayTimeZone}
                         key={deal.id}
-                        onSelect={(dealId) => void navigate(`/deals/${dealId}`)}
+                        onSelect={(dealId) => void navigate(`/app/deals/${dealId}`)}
                       />
                     ))}
                   </div>
@@ -571,7 +571,7 @@ export function DealPipelineHomeScreen({
         {/* FAB */}
         <button
           className="fixed bottom-24 right-5 z-40 inline-flex h-8 w-8 items-center justify-center rounded-full bg-[#4880EE] text-white shadow-[0_4px_16px_rgba(59,130,246,0.27)] transition hover:scale-[1.02]"
-          onClick={() => void navigate("/deals/new")}
+          onClick={() => void navigate("/app/deals/new")}
           type="button"
         >
           <Plus className="h-4 w-4" />
@@ -584,13 +584,13 @@ export function DealPipelineHomeScreen({
           setActiveTab("ALL");
           setPage(1);
           if (initialCreateOpen) {
-            void navigate(`/deals/${deal.id}`, { replace: true });
+            void navigate(`/app/deals/${deal.id}`, { replace: true });
           }
         }}
         onOpenChange={(open) => {
           setIsCreateOpen(open);
           if (!open && initialCreateOpen && !dealCreatedRef.current) {
-            void navigate("/deals", { replace: true });
+            void navigate("/app/deals", { replace: true });
           }
         }}
         open={isCreateOpen}
@@ -717,7 +717,7 @@ function MobileDealCard({
   return (
     <Link
       className="block rounded-xl border border-[#E5E7EB] bg-white p-4 shadow-sm transition hover:-translate-y-0.5"
-      to={`/deals/${deal.id}`}
+      to={`/app/deals/${deal.id}`}
     >
       {/* Row1: 단계 배지 */}
       <div className="flex items-center gap-2">

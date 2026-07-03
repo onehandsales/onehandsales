@@ -5,7 +5,7 @@ export function ImportDetailPage() {
   const { importUserLogId } = useParams();
 
   if (!importUserLogId) {
-    return <Navigate replace to="/import" />;
+    return <Navigate replace to="/app/import" />;
   }
 
   return <ImportDetailScreen importUserLogId={importUserLogId} />;

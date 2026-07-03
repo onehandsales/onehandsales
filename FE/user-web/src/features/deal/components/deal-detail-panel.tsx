@@ -127,7 +127,7 @@ export function DealDetailPanel({ dealId, variant = "panel" }: DealDetailPanelPr
     try {
       await deleteDealMutation.mutateAsync(detail.id);
       setDeleteConfirmOpen(false);
-      void navigate("/deals", {
+      void navigate("/app/deals", {
         replace: true,
         state: {
           notice: LOG_DELETE_SUCCESS_MESSAGE,
@@ -571,7 +571,7 @@ function DealDetailTopBar({
 }) {
   return (
     <div className="flex h-16 shrink-0 items-center gap-3 bg-transparent px-6">
-      <Link to="/deals">
+      <Link to="/app/deals">
         <ChevronLeft className="h-5 w-5 text-[#9CA3AF]" />
       </Link>
       <div className="flex min-w-0 flex-1 items-center gap-1.5 text-[13px]">
@@ -696,7 +696,7 @@ function DealLinkedCompaniesTable({
               <Link
               className="flex h-[58px] items-center gap-3 border-b border-[#F3F4F6] bg-white px-4 transition-colors last:border-0 hover:bg-[#F9FAFB]"
               key={company.id}
-              to={`/companies/${company.id}`}
+              to={`/app/companies/${company.id}`}
             >
               <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#EEF2FF]">
                 <Building2 className="h-3.5 w-3.5 text-[#4F46E5]" />
@@ -747,7 +747,7 @@ function DealLinkedContactsTable({
               <Link
               className="flex h-[58px] items-center gap-3 border-b border-[#F3F4F6] bg-white px-4 transition-colors last:border-0 hover:bg-[#F9FAFB]"
               key={contact.id}
-              to={`/contacts/${contact.id}`}
+              to={`/app/contacts/${contact.id}`}
             >
               <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#DBEAFE]">
                 <UserRound className="h-3.5 w-3.5 text-[#4880EE]" />
@@ -804,7 +804,7 @@ function DealLinkedProductsTable({
               <Link
               className="flex h-[58px] items-center gap-3 border-b border-[#F3F4F6] bg-white px-4 transition-colors last:border-0 hover:bg-[#F9FAFB]"
               key={product.id}
-              to={`/products/${product.id}`}
+              to={`/app/products/${product.id}`}
             >
               <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#F0FDF4]">
                 <Package className="h-3.5 w-3.5 text-[#15803D]" />

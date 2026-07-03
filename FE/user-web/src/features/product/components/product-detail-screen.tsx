@@ -132,7 +132,7 @@ export function ProductDetailScreen({ productId }: ProductDetailScreenProps) {
     try {
       await deleteProductMutation.mutateAsync(product.id);
       setDeleteConfirmOpen(false);
-      void navigate("/products", {
+      void navigate("/app/products", {
         replace: true,
         state: {
           notice: LOG_DELETE_SUCCESS_MESSAGE,
@@ -170,7 +170,7 @@ export function ProductDetailScreen({ productId }: ProductDetailScreenProps) {
 
         {/* TopBar */}
         <div className="flex h-16 items-center gap-3 bg-transparent px-6">
-          <Link to="/products">
+          <Link to="/app/products">
             <ChevronLeft className="h-5 w-5 text-[#9CA3AF]" />
           </Link>
           <div className="flex flex-1 items-center gap-1.5 text-[13px]">
@@ -260,7 +260,7 @@ export function ProductDetailScreen({ productId }: ProductDetailScreenProps) {
 
         {/* TopBar */}
         <div className="flex h-16 shrink-0 items-center gap-3 bg-transparent px-6">
-          <Link to="/products">
+          <Link to="/app/products">
             <ChevronLeft className="h-5 w-5 text-[#9CA3AF]" />
           </Link>
           <div className="flex flex-1 items-center gap-1.5 text-[13px]">
@@ -657,7 +657,7 @@ function ConnectedDealsTable({
             <Link
               className="flex h-[58px] items-center gap-3 border-b border-[#F3F4F6] bg-white px-4 hover:bg-[#F9FAFB] transition-colors last:border-0"
               key={deal.id}
-              to={`/deals/${deal.id}`}
+              to={`/app/deals/${deal.id}`}
             >
               <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#FEF2F2]">
                 <BriefcaseBusiness className="h-3.5 w-3.5 text-[#DC2626]" />

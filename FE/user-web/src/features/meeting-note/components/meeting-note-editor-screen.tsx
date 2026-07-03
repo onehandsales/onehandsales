@@ -126,7 +126,7 @@ export function MeetingNoteEditorScreen({
 
     try {
       await deleteMutation.mutateAsync(meetingNoteId);
-      void navigate("/meeting-notes", {
+      void navigate("/app/meeting-notes", {
         replace: true,
         state: { notice: "회의록을 삭제했어요." },
       });
@@ -179,7 +179,7 @@ export function MeetingNoteEditorScreen({
       <section className="mx-auto grid max-w-[900px] gap-4 px-5 py-6">
         <Link
           className="inline-flex w-fit items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground"
-          to="/meeting-notes"
+          to="/app/meeting-notes"
         >
           <ArrowLeft className="h-4 w-4" />
           회의록 목록
@@ -207,7 +207,7 @@ export function MeetingNoteEditorScreen({
         <main className="flex min-w-0 flex-col gap-3 md:overflow-hidden">
           <Link
             className="inline-flex w-fit items-center gap-2 text-[13px] font-medium text-[#64748B] hover:text-[#374151]"
-            to="/meeting-notes"
+            to="/app/meeting-notes"
           >
             <ArrowLeft className="h-4 w-4" />
             회의록 목록

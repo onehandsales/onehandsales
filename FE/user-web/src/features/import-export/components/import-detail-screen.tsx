@@ -190,7 +190,7 @@ export function ImportDetailScreen({ importUserLogId }: ImportDetailScreenProps)
 function ImportDetailHeader({ title }: { readonly title: string }) {
   return (
     <div className="flex h-16 shrink-0 items-center gap-3 bg-transparent px-6">
-      <Link aria-label="목록으로 돌아가기" to="/import">
+      <Link aria-label="목록으로 돌아가기" to="/app/import">
         <ChevronLeft className="h-5 w-5 text-[#9CA3AF]" />
       </Link>
       <div className="flex min-w-0 flex-1 items-center gap-1.5 text-[13px]">
@@ -313,7 +313,7 @@ function ImportDetailError({
           </button>
           <Link
             className="mx-auto inline-flex h-9 items-center gap-1.5 text-sm font-medium text-[#4880EE]"
-            to="/import"
+            to="/app/import"
           >
             <ChevronLeft className="h-4 w-4" />
             목록으로

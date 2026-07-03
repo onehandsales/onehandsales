@@ -28,11 +28,12 @@ import { TrashPage } from "@/pages/trash";
 import { MorePage } from "@/pages/more";
 
 export const router = createBrowserRouter([
-  { path: "/introduce", element: <IntroducePage /> },
+  { path: "/", element: <LoginPage /> },
   { path: "/login", element: <LoginPage /> },
+  { path: "/introduce", element: <IntroducePage /> },
   { path: "/auth/callback", element: <LoginPage /> },
   {
-    path: "/",
+    path: "/app",
     element: (
       <ProtectedRoute>
         <AppShell />
@@ -44,7 +45,7 @@ export const router = createBrowserRouter([
       { path: "companies/new", element: <CompanyNewPage /> },
       { path: "companies/:companyId", element: <CompanyDetailPage /> },
       { path: "contacts", element: <ContactsPage /> },
-      { path: "contacts/scan", element: <Navigate replace to="/business-cards" /> },
+      { path: "contacts/scan", element: <Navigate replace to="/app/business-cards" /> },
       { path: "contacts/:contactId", element: <ContactDetailPage /> },
       { path: "products", element: <ProductsPage /> },
       { path: "products/new", element: <ProductNewPage /> },
@@ -55,19 +56,19 @@ export const router = createBrowserRouter([
       { path: "schedules", element: <SchedulesPage /> },
       // 주간 보고서 Backend 구현 전까지 라우트를 노출하지 않는다.
       // { path: "schedules/week", element: <ScheduleWeekPage /> },
-      { path: "schedules/week", element: <Navigate replace to="/schedules" /> },
+      { path: "schedules/week", element: <Navigate replace to="/app/schedules" /> },
       { path: "schedules/:scheduleId", element: <ScheduleDetailPage /> },
       { path: "meeting-notes", element: <MeetingNotesPage /> },
       {
         path: "meeting-notes/new",
-        element: <Navigate replace to="/meeting-notes?create=1" />,
+        element: <Navigate replace to="/app/meeting-notes?create=1" />,
       },
       { path: "meeting-notes/:meetingNoteId", element: <MeetingNoteDetailPage /> },
       { path: "business-cards", element: <BusinessCardsPage /> },
-      { path: "notifications", element: <Navigate replace to="/" /> },
+      { path: "notifications", element: <Navigate replace to="/app" /> },
       { path: "import", element: <ImportPage /> },
       { path: "import/:importUserLogId", element: <ImportDetailPage /> },
-      { path: "export", element: <Navigate replace to="/" /> },
+      { path: "export", element: <Navigate replace to="/app" /> },
       { path: "trash", element: <TrashPage /> },
       { path: "settings", element: <SettingsPage /> },
       { path: "more", element: <MorePage /> },

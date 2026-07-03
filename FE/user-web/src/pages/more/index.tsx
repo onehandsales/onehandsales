@@ -84,7 +84,7 @@ export function MorePage() {
     <div className="min-h-screen" style={{ backgroundColor: "#F9FAFB" }}>
       {/* Profile Card */}
       <Link
-        to="/settings"
+        to="/app/settings"
         className="flex items-center gap-3 bg-white px-4 py-4"
         style={{ borderBottom: "1px solid #E5E7EB" }}
       >
@@ -119,28 +119,28 @@ export function MorePage() {
       <div style={{ borderTop: "1px solid #E5E7EB", borderBottom: "1px solid #E5E7EB" }}>
         <MenuRow
           label="회사"
-          to="/companies"
+          to="/app/companies"
           iconBg="#4880EE18"
           iconColor="#4880EE"
           icon={Building2}
         />
         <MenuRow
           label="담당자"
-          to="/contacts"
+          to="/app/contacts"
           iconBg="#4880EE18"
           iconColor="#4880EE"
           icon={Users}
         />
         <MenuRow
           label="명함 스캔"
-          to="/business-cards"
+          to="/app/business-cards"
           iconBg="#05966918"
           iconColor="#059669"
           icon={Camera}
         />
         <MenuRow
           label="제품"
-          to="/products"
+          to="/app/products"
           iconBg="#B4530918"
           iconColor="#B45309"
           icon={Package}
@@ -153,14 +153,14 @@ export function MorePage() {
       <div style={{ borderTop: "1px solid #E5E7EB", borderBottom: "1px solid #E5E7EB" }}>
         <MenuRow
           label="휴지통"
-          to="/trash"
+          to="/app/trash"
           iconBg="#B91C1C18"
           iconColor="#B91C1C"
           icon={Trash2}
         />
         <MenuRow
           label="설정"
-          to="/settings"
+          to="/app/settings"
           iconBg="#6B728018"
           iconColor="#6B7280"
           icon={Settings}
