@@ -40,7 +40,7 @@ export class SupabaseJwtVerifierAdapter implements ExternalAuthVerifier {
 
     return {
       provider,
-      providerAccountId: payload.sub,
+      providerAccountId: this.getProviderAccountId(payload),
       authUserId: payload.sub,
       email,
       name,
@@ -91,12 +91,7 @@ export class SupabaseJwtVerifierAdapter implements ExternalAuthVerifier {
   private getProvider(payload: SupabaseJwtPayload): ExternalAuthProvider {
     const provider = payload.app_metadata?.provider;
 
-    if (
-      provider === "kakao" ||
-      provider === "naver" ||
-      provider === "google" ||
-      provider === "apple"
-    ) {
+    if (provider === "kakao" || provider === "google") {
       return provider;
     }
 
@@ -121,6 +116,19 @@ export class SupabaseJwtVerifierAdapter implements ExternalAuthVerifier {
       this.getString(metadata, "preferred_username");
 
     return name ? name.trim() : null;
+  }
+
+  // 기능 : Supabase user id가 아니라 OAuth provider가 발급한 안정적인 계정 ID를 추출합니다.
+  private getProviderAccountId(payload: SupabaseJwtPayload & { sub: string }): string {
+    const metadata = payload.user_metadata;
+    const providerAccountId =
+      this.getString(metadata, "provider_id") ?? this.getString(metadata, "sub");
+
+    if (providerAccountId && providerAccountId.trim().length > 0) {
+      return providerAccountId.trim();
+    }
+
+    return payload.sub;
   }
 
   // 기능 : metadata에서 지정 키의 문자열 값을 안전하게 읽습니다.

@@ -9,50 +9,85 @@ type AuthLoginModalProps = {
   readonly authError: string | null;
   readonly callbackMessage: string | null;
   readonly enabledProviders: readonly AuthProviderOption[];
+  readonly isLoginLoading: boolean;
   readonly isPending: boolean;
   readonly isProvidersLoading: boolean;
+  readonly pendingProvider: AuthProviderId | null;
   readonly providersError: string | null;
   readonly onClose: () => void;
-  readonly onMockLogin: () => void;
   readonly onProviderLogin: (provider: AuthProviderId) => void;
 };
 
 const providerStyles: Record<AuthProviderId, string> = {
-  kakao: "border-[#FEE500] bg-[#FEE500] text-[#191919]",
-  naver: "border-[#03C75A] bg-[#03C75A] text-white",
-  google: "border-[#E5E7EB] bg-[#3B82F6] text-white",
+  kakao: "border-[#E8D100] bg-[#FEE500] text-[#191919]",
+  google: "border-[#DADCE0] bg-white text-[#3C4043]",
 };
 
 const providerLabels: Record<AuthProviderId, string> = {
-  kakao: "카카오로 계속하기",
-  naver: "네이버로 계속하기",
+  kakao: "Kakao로 계속하기",
   google: "Google로 계속하기",
 };
 
-const logoStyles: Record<AuthProviderId, string> = {
-  kakao: "bg-[#3C1E1E] text-[#FEE500]",
-  naver: "bg-white text-[#03C75A]",
-  google: "border border-[#E5E7EB] bg-white text-[#4285F4]",
+const providerLogos: Record<AuthProviderId, string> = {
+  kakao: "/auth/kakao-logo.svg",
+  google: "/auth/google-logo.svg",
 };
+const providerLogoShellStyles: Record<AuthProviderId, string> = {
+  kakao: "bg-transparent",
+  google: "bg-white",
+};
+const modalBodyClassName = "flex flex-1 flex-col px-8 pb-6 pt-7 max-[460px]:px-6";
+const loadingModalBodyClassName = "flex flex-1 items-center justify-center p-0";
+const modalCloseButtonClassName =
+  "right-3.5 top-3.5 h-[32px] w-[32px] rounded-full border-0 bg-[#F3F4F6] text-[#9CA3AF]";
+const modalPanelClassName =
+  "h-[320px] w-[380px] max-w-[calc(100vw-2rem)] max-h-[calc(100vh-2rem)] rounded-[16px] border-0 shadow-[0_20px_50px_rgba(15,23,42,0.18),0_2px_8px_rgba(15,23,42,0.08)]";
 
 export function AuthLoginModal({
   authError,
   callbackMessage,
   enabledProviders,
+  isLoginLoading,
   isPending,
   isProvidersLoading,
+  pendingProvider,
   providersError,
   onClose,
-  onMockLogin,
   onProviderLogin,
 }: AuthLoginModalProps) {
+  if (isLoginLoading) {
+    return (
+      <ModalShell
+        bodyClassName={loadingModalBodyClassName}
+        closeButtonClassName={modalCloseButtonClassName}
+        closeLabel="로그인 모달 닫기"
+        open
+        panelClassName={modalPanelClassName}
+        placement="bottom"
+        showCloseButton={false}
+        size="sm"
+        onOpenChange={(nextOpen) => {
+          if (!nextOpen) {
+            onClose();
+          }
+        }}
+      >
+        <Loader2
+          aria-label="로그인 중"
+          className="h-7 w-7 animate-spin text-[#4880EE]"
+          role="status"
+        />
+      </ModalShell>
+    );
+  }
+
   return (
     <ModalShell
-      bodyClassName="px-10 pb-9 pt-10 max-[460px]:px-6"
-      closeButtonClassName="right-4 top-3.5 h-[34px] w-[34px] rounded-full border-0 bg-[#F3F4F6] text-[#9CA3AF]"
+      bodyClassName={modalBodyClassName}
+      closeButtonClassName={modalCloseButtonClassName}
       closeLabel="로그인 모달 닫기"
       open
-      panelClassName="max-h-[calc(100vh-2rem)] rounded-[16px] border-0 shadow-[0_24px_64px_rgba(0,0,0,0.19),0_4px_12px_rgba(0,0,0,0.08)]"
+      panelClassName={modalPanelClassName}
       placement="bottom"
       size="sm"
       onOpenChange={(nextOpen) => {
@@ -62,27 +97,27 @@ export function AuthLoginModal({
       }}
     >
       <div className="grid justify-items-center gap-2.5">
-        <div className="flex items-center gap-2.5">
-          <div className="grid h-10 w-10 place-items-center rounded-[10px] bg-[#4880EE]">
-            <span className="text-base font-extrabold text-white">한</span>
+        <div className="flex items-center gap-2">
+          <div className="grid h-9 w-9 place-items-center rounded-[9px] bg-[#4880EE]">
+            <span className="text-[15px] font-extrabold text-white">한</span>
           </div>
           <h2
-            className="text-[22px] font-bold text-[#111827]"
+            className="text-[20px] font-bold text-[#111827]"
             id="login-modal-title"
           >
             한손에 영업
           </h2>
         </div>
-        <p className="text-sm text-[#6B7280]">영업을 더 스마트하게</p>
+        <p className="text-[13px] text-[#6B7280]">영업을 더 스마트하게</p>
       </div>
 
-      <div className="my-6 h-px bg-[#F1F5F9]" />
+      <div className="my-4 h-px bg-[#F1F5F9]" />
 
-      <p className="text-center text-[13px] text-[#9CA3AF]">
-            소셜 계정으로 간편하게 시작해요
+      <p className="mt-1 text-center text-[13px] text-[#9CA3AF]">
+        소셜 계정으로 간편하게 시작하세요
       </p>
 
-      <div className="mt-6 grid gap-3">
+      <div className="mt-3 grid gap-2.5">
         {isProvidersLoading ? (
           <div className="flex h-[52px] items-center justify-center gap-2 rounded-[10px] border border-[#E5E7EB] bg-[#F9FAFB] text-sm text-[#6B7280]">
             <Loader2 className="h-4 w-4 animate-spin" />
@@ -99,7 +134,7 @@ export function AuthLoginModal({
         {enabledProviders.map((provider) => (
           <button
             className={[
-              "flex h-[52px] w-full items-center rounded-[10px] border px-5 text-[15px] font-semibold transition disabled:cursor-not-allowed disabled:opacity-60",
+              "flex h-[50px] w-full items-center rounded-[10px] border px-4 text-[15px] font-normal disabled:cursor-not-allowed disabled:opacity-60",
               providerStyles[provider.provider],
             ].join(" ")}
             disabled={isPending}
@@ -109,21 +144,24 @@ export function AuthLoginModal({
           >
             <span
               className={[
-                "grid h-[26px] w-[26px] shrink-0 place-items-center rounded-md text-sm font-black",
-                logoStyles[provider.provider],
+                "grid h-[30px] w-[30px] shrink-0 place-items-center rounded-md",
+                providerLogoShellStyles[provider.provider],
               ].join(" ")}
             >
-              {provider.provider === "kakao"
-                ? "K"
-                : provider.provider === "naver"
-                  ? "N"
-                  : "G"}
+              <img
+                alt=""
+                aria-hidden="true"
+                className="h-[22px] w-[22px]"
+                src={providerLogos[provider.provider]}
+              />
             </span>
             <span className="flex-1 text-center">
               {providerLabels[provider.provider] ?? `${provider.label}로 계속하기`}
             </span>
             <span className="w-[26px] shrink-0">
-              {isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
+              {isPending && pendingProvider === provider.provider ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : null}
             </span>
           </button>
         ))}
@@ -146,19 +184,6 @@ export function AuthLoginModal({
           {authError}
         </p>
       ) : null}
-
-      <p className="mt-5 whitespace-pre-line text-center text-[11px] leading-[1.6] text-[#9CA3AF]">
-        {"로그인하면 서비스 이용약관 및 개인정보처리방침에\n동의하게 됩니다."}
-      </p>
-
-      <button
-        className="mx-auto mt-2 block text-[11px] font-semibold text-[#94A3B8] underline-offset-4 hover:underline disabled:cursor-not-allowed disabled:opacity-60"
-        disabled={isPending}
-        onClick={onMockLogin}
-        type="button"
-      >
-        개발용 mock 세션으로 입장
-      </button>
     </ModalShell>
   );
 }

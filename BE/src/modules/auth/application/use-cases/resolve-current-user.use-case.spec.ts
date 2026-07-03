@@ -59,6 +59,11 @@ class FakeRepository implements AuthRepository {
     throw new Error("Not implemented in fake repository");
   }
 
+  // 기능 : 현재 테스트에서 사용하지 않는 OAuth 계정 식별자 갱신 호출을 차단합니다.
+  async updateOAuthAccountProviderUserId(): Promise<AuthOAuthAccountRecord> {
+    throw new Error("Not implemented in fake repository");
+  }
+
   // 기능 : 현재 테스트에서 사용하지 않는 사용자 생성 호출을 차단합니다.
   async createUserWithOAuthAccount(): Promise<AuthUserRecord> {
     throw new Error("Not implemented in fake repository");
@@ -101,6 +106,11 @@ class FakeRepository implements AuthRepository {
 
   // 기능 : 현재 테스트에서 사용하지 않는 세션 생성 호출을 차단합니다.
   async createAuthSession(): Promise<AuthSessionRecord> {
+    throw new Error("Not implemented in fake repository");
+  }
+
+  // 기능 : 현재 테스트에서 사용하지 않는 기기 활성 세션 조회 호출을 차단합니다.
+  async findActiveSessionByDevice(): Promise<AuthSessionRecord | null> {
     throw new Error("Not implemented in fake repository");
   }
 
@@ -164,6 +174,7 @@ function createUseCase(
   const session: AuthSessionRecord = {
     id: "session-1",
     userId: "user-1",
+    authDeviceId: "device-1",
     status: sessionStatus,
     refreshTokenHash: "hash",
     expiresAt,

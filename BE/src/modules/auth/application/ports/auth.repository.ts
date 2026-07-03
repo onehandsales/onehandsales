@@ -44,6 +44,7 @@ export interface AuthDeviceRecord {
 export interface AuthSessionRecord {
   readonly id: string;
   readonly userId: string;
+  readonly authDeviceId: string;
   readonly status: "ACTIVE" | "REVOKED" | "EXPIRED";
   readonly refreshTokenHash: string | null;
   readonly expiresAt: Date;
@@ -96,6 +97,12 @@ export interface AuthRepository {
     provider: ExternalAuthProvider,
     providerUserId: string
   ): Promise<AuthOAuthAccountRecord | null>;
+  // 기능 : 기존 OAuth 계정의 provider 사용자 식별자를 최신 안정 식별자로 갱신합니다.
+  updateOAuthAccountProviderUserId(
+    oauthAccountId: string,
+    providerUserId: string,
+    now: Date
+  ): Promise<AuthOAuthAccountRecord>;
   // 기능 : 사용자와 OAuth 계정을 함께 생성합니다.
   createUserWithOAuthAccount(
     input: CreateAuthUserInput,
@@ -124,6 +131,11 @@ export interface AuthRepository {
   revokeActiveSessionsByDevice(authDeviceId: string, now: Date): Promise<void>;
   // 기능 : refresh token 기반 인증 세션을 생성합니다.
   createAuthSession(input: CreateAuthSessionInput): Promise<AuthSessionRecord>;
+  // 기능 : 기기에 연결된 재사용 가능한 활성 세션을 조회합니다.
+  findActiveSessionByDevice(
+    authDeviceId: string,
+    now: Date
+  ): Promise<AuthSessionRecord | null>;
   // 기능 : 세션 ID로 세션과 사용자 컨텍스트를 조회합니다.
   findSessionByIdWithUser(
     sessionId: string
