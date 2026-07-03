@@ -20,4 +20,4 @@ Current modules:
 | `data-import` | Import templates, CSV/XLSX upload, AI mapping, confirm import, import logs for company/contact/product/deal |
 | `health` | Lightweight health endpoint |
 
-Admin operation APIs beyond `GET /admin/api/me`, Notification, persistent ImportJob recovery, Tag, and generic DealActivity remain future scope.
+Admin operation APIs beyond `GET /admin/api/me`, Notification, persistent ImportJob recovery, and generic DealActivity remain future scope.

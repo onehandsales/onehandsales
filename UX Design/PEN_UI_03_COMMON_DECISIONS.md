@@ -33,7 +33,7 @@
 - `/` 홈은 실제 대시보드 화면으로 구현되어 있다.
 - 딜 파이프라인은 `/deals`에서 운영한다.
 - User Web 핵심 도메인은 Auth/User, Home, Company, Contact, BusinessCard, Product, Deal, Schedule, MeetingNote, Search, Trash, DataImport까지 실제 Backend API와 연결되어 있다.
-- Notification, Admin 운영 조회 API, Tag, ImportJob 영속화/재개 API는 Backend 미구현 상태다. Company/Contact/Product/Deal 도메인별 xlsx export는 현재 구현 완료 상태이며, 범용 ExportJob은 정본 흐름이 아니다.
+- Notification, Admin 운영 조회 API, ImportJob 영속화/재개 API는 Backend 미구현 상태다. Company/Contact/Product/Deal 도메인별 xlsx export는 현재 구현 완료 상태이며, 범용 ExportJob은 정본 흐름이 아니다.
 - 회사/담당자/제품 생성 모달은 딜 추가 모달처럼 검색 입력형 선택과 결과 없음 즉시 추가를 사용한다.
 - MeetingNote AI/STT 초안 endpoint와 User Web draft UI 연결은 구현 완료 상태다.
 - 실제 구현 판단은 `BE/src/modules`, `BE/prisma/schema.prisma`, `FE/user-web/src/app/router/router.tsx`, `FE/user-web/src/features`를 우선한다.
@@ -105,7 +105,7 @@ pen 구조:
 
 이유:
 - pen 범위가 넓기 때문에 완료된 핵심 도메인과 Backend 미구현 도메인을 분리해야 한다.
-- Admin/Notification/Tag/ImportJob 영속화를 핵심 도메인 유지보수와 섞으면 작업 범위가 급격히 커진다. Search, BusinessCard, DataImport, Trash는 현재 구현 완료 기준으로 유지보수한다.
+- Admin/Notification/ImportJob 영속화를 핵심 도메인 유지보수와 섞으면 작업 범위가 급격히 커진다. Search, BusinessCard, DataImport, Trash는 현재 구현 완료 기준으로 유지보수한다.
 
 ### 4. 토큰 관리 방식
 

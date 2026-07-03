@@ -1,4 +1,4 @@
-﻿# DB 스키마 TODO
+# DB 스키마 TODO
 
 ## 1. 목적
 
@@ -17,8 +17,6 @@
 - 기본 PK는 UUID를 사용한다.
 - 사용자 소유 데이터는 반드시 `userId`를 가진다.
 - 사용자 또는 Admin이 삭제 API로 지우는 영속 삭제 대상 리소스는 `deletedAt`으로 soft delete한다.
-- `Tag`와 `TagAssignment`는 분류/연결 상태 데이터로 보고 hard delete한다. 대신 생성, 수정, 삭제, 연결, 연결 해제 이력은 `TagLog`에 append-only로 남긴다.
-- `TagLog`는 삭제된 `Tag`와 `TagAssignment` 이후에도 남아야 하므로 `tagId`, `assignmentId`, 대상 스냅샷을 값으로 저장하고 `Tag`/`TagAssignment` FK를 걸지 않는다.
 - soft delete 시 `permanentDeleteAt`을 `deletedAt + 30일`로 기록하고, 30일 경과 후 시스템 자동 작업이 완전 삭제한다.
 - 회원 탈퇴와 Admin 강제 사용자 삭제도 `User.status = DELETED`, `User.deletedAt`, `User.permanentDeleteAt`을 함께 기록하는 계정 soft delete로 처리한다.
 - MVP 1차에서 사용자가 직접 즉시 완전 삭제하는 API와 UI는 제공하지 않는다.
@@ -52,9 +50,6 @@ User
   ├─ ImportJob
   │   └─ ImportJobRow
   ├─ ExportJob
-  ├─ Tag
-  ├─ TagAssignment
-  ├─ TagLog
   ├─ PersonalMemo
   ├─ Notification
   ├─ ExternalCalendarConnection
@@ -133,23 +128,6 @@ enum ProductConnectionType {
 enum ScheduleSource {
   INTERNAL
   GOOGLE
-}
-
-enum TagTargetType {
-  COMPANY
-  CONTACT
-  PRODUCT
-  DEAL
-  SCHEDULE
-  MEETING_NOTE
-}
-
-enum TagLogAction {
-  TAG_CREATED
-  TAG_UPDATED
-  TAG_DELETED
-  TAG_ASSIGNED
-  TAG_UNASSIGNED
 }
 
 enum PersonalMemoTargetType {
@@ -345,9 +323,6 @@ model User {
   scheduleReminders     ScheduleReminder[]
   meetingNotes          MeetingNote[]
   businessCardScans     BusinessCardScan[]
-  tags                  Tag[]
-  tagAssignments        TagAssignment[]
-  tagLogs               TagLog[]
   personalMemos         PersonalMemo[]
   notifications         Notification[]
   browserPushSubscriptions BrowserPushSubscription[]
@@ -825,63 +800,6 @@ model BusinessCardScan {
   @@index([userId, status])
 }
 
-model Tag {
-  id           String          @id @default(uuid()) @db.Uuid
-  userId       String          @db.Uuid
-  name         String
-  color        String?
-  createdAt    DateTime        @default(now())
-  updatedAt    DateTime        @updatedAt
-
-  user         User            @relation(fields: [userId], references: [id])
-  assignments  TagAssignment[]
-
-  @@unique([userId, name])
-  @@index([userId])
-}
-
-model TagAssignment {
-  id          String        @id @default(uuid()) @db.Uuid
-  userId      String        @db.Uuid
-  tagId       String        @db.Uuid
-  targetType  TagTargetType
-  targetId    String        @db.Uuid
-  createdAt   DateTime      @default(now())
-
-  user        User          @relation(fields: [userId], references: [id])
-  tag         Tag           @relation(fields: [tagId], references: [id])
-
-  @@unique([tagId, targetType, targetId])
-  @@index([userId])
-  @@index([targetType, targetId])
-  @@index([userId, targetType, targetId])
-}
-
-model TagLog {
-  id                   String        @id @default(uuid()) @db.Uuid
-  userId               String        @db.Uuid
-  tagId                String        @db.Uuid
-  assignmentId         String?       @db.Uuid
-  action               TagLogAction
-  tagNameSnapshot      String
-  tagColorSnapshot     String?
-  targetType           TagTargetType?
-  targetId             String?       @db.Uuid
-  targetTitleSnapshot  String?
-  metadata             Json?
-  occurredAt           DateTime      @default(now())
-  createdAt            DateTime      @default(now())
-
-  user                 User          @relation(fields: [userId], references: [id])
-
-  @@index([userId])
-  @@index([tagId])
-  @@index([assignmentId])
-  @@index([userId, action])
-  @@index([userId, targetType, targetId])
-  @@index([userId, occurredAt])
-}
-
 model PersonalMemo {
   id                  String                  @id @default(uuid()) @db.Uuid
   userId              String                  @db.Uuid
@@ -1218,9 +1136,6 @@ G00에서 MVP 1차 application-level encryption 대상은 `PersonalMemo.content`
 | `ScheduleReminder` | 일정 알림 예약 | 일정 알림 | 민감 아님 | Schedule 소유권 상속 |
 | `MeetingNote` | 회의록 | 회의록 AI 생성/저장/딜 연결 | 원문 입력값은 암호화, 9개 구조화 항목도 민감 가능 | 딜 없이 저장 가능, 딜 연결 시 활동 로그 |
 | `BusinessCardScan` | 명함 OCR 처리 결과 | 명함 OCR | 이미지 storage metadata, OCR 결과 민감 | 자동 저장 금지, confirm 필요 |
-| `Tag` | 사용자 태그 | 주요 엔티티 태그 | 민감 아님 | userId ownership. 분류 설정 데이터이므로 삭제 시 hard delete하고 `TagLog`에 이력 저장 |
-| `TagAssignment` | 태그 연결 | 태그 필터/표시 | 연결 관계 민감 가능 | targetType/targetId ownership 검증. 장바구니 항목처럼 현재 연결 상태를 표현하므로 연결 해제 시 hard delete하고 `TagLog`에 이력 저장 |
-| `TagLog` | 태그와 태그 연결 변경 이력 | 태그 이력 확인, 장애/CS 확인 | 태그명과 대상 스냅샷은 민감 가능 | append-only. Tag/TagAssignment hard delete 후에도 남아야 하므로 Tag/TagAssignment FK 없음 |
 | `PersonalMemo` | 도메인 Memo 기록 | 회사/담당자/제품/딜별 주관 메모 | 원문 암호화 대상 | Admin 기본 마스킹, 원문 조회 audit 필요 |
 | `Notification` | 알림 데이터와 발송 상태 | 알림 목록/읽음, email/browser push 발송 | target 내용에 따라 민감 가능 | 사용자별 조회, channel/status/scheduledAt 기준 발송 job |
 | `BrowserPushSubscription` | 브라우저 push 구독 정보 | Push 구독 등록/해제, browser push 발송 | endpoint와 key는 민감 가능 | endpoint hash unique, endpoint/key는 암호화 저장, userId/status index |

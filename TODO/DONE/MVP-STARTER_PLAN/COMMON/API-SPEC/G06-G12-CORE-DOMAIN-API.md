@@ -1,4 +1,4 @@
-﻿# G06-G12 핵심 도메인 API 명세
+# G06-G12 핵심 도메인 API 명세
 
 ## 1. 목적
 
@@ -92,9 +92,7 @@ G07, G09, G11, G13-G16의 화면 명세는 `COMMON/GOAL-SPECS`에서 이 API를 
 | Request 이름 | 필드 |
 |---|---|
 | `ListCompaniesRequest` | `page?:number`, `pageSize?:number`, `search?:string`, `includeDeleted?:boolean` |
-| `CreateCompanyRequest` | `name:string 필수`, `industry?:string`, `region?:string`, `address?:string`, `website?:string`, `description?:string`, `initialMemo?:string`, `tags?:string[]` |
 | `GetCompanyRequest` | `companyId:string path 필수` |
-| `UpdateCompanyRequest` | `companyId:string path 필수`, `name?:string`, `industry?:string`, `region?:string`, `address?:string`, `website?:string`, `description?:string`, `tags?:string[]` |
 | `DeleteCompanyRequest` | `companyId:string path 필수` |
 | `RestoreCompanyRequest` | `companyId:string path 필수` |
 | `CreateCompanyLogRequest` | `companyId:string path 필수`, `loggedAt:string 필수`, `title:string 필수`, `content?:string` |
@@ -104,7 +102,6 @@ G07, G09, G11, G13-G16의 화면 명세는 `COMMON/GOAL-SPECS`에서 이 API를 
 
 | Response 이름 | 주요 필드 |
 |---|---|
-| `CompanyResponse` | `id`, `name`, `industry`, `region`, `address`, `website`, `description`, `tags`, `hasMemo`, `memoCount`, `latestMemoAt`, `createdAt`, `updatedAt`, `deletedAt`, `permanentDeleteAt` |
 | `CompanyDetailResponse` | `company:CompanyResponse`, `logs:CompanyLogResponse[]`, `memos:MemoResponse[]`, `contactCount`, `dealCount`, `productCount` |
 | `CompanyListResponse` | `items:CompanyResponse[]`, `page`, `pageSize`, `totalCount`, `hasNext` |
 | `CompanyLogResponse` | `id`, `companyId`, `loggedAt`, `title`, `content`, `createdAt`, `updatedAt` |
@@ -124,11 +121,11 @@ G07, G09, G11, G13-G16의 화면 명세는 `COMMON/GOAL-SPECS`에서 이 API를 
 ### 4.5 Company 연결 DB 스키마
 
 - 생성: Company, CompanyLog, PersonalMemo
-- 조회: Company, CompanyLog, PersonalMemo, TagAssignment
+- 조회: Company, CompanyLog, PersonalMemo
 - 수정: Company, CompanyLog
 - 삭제: Company.deletedAt/permanentDeleteAt, CompanyLog.deletedAt/permanentDeleteAt. 영속 삭제 대상 리소스는 soft delete 후 30일 보관 정책을 따른다.
 - 감사 로그: MVP User API에서는 필수 아님
-- transaction: 회사 생성과 태그 연결을 함께 처리할 때 transaction 필요
+- transaction: initialMemo 저장 시 transaction 필요
 
 ### 4.6 Company 에러 응답
 

@@ -27,7 +27,7 @@ Current intentional gaps:
 
 - Admin operation APIs are limited to `GET /admin/api/me`.
 - Generic `/api/exports` and `ExportJob` are not used; exports live in each domain module.
-- Persistent ImportJob recovery, Notification, Tag, Admin audit/sensitive raw access, and generic DealActivity are future scope.
+- Persistent ImportJob recovery, Notification, Admin audit/sensitive raw access, and generic DealActivity are future scope.
 
 Layer rules:
 

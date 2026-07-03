@@ -44,7 +44,7 @@
 현재 Backend module:
 
 - 구현됨: `auth`, `user`, `company`, `contact`, `business-card`, `product`, `deal`, `schedule`, `meeting-note`, `search`, `trash`, `data-import`
-- 없음/후속: `notification`, `tag`, Admin 운영 조회/감사/민감 원문 API, ImportJob 영속화/재개 API, 범용 ExportJob
+- 없음/후속: `notification`, Admin 운영 조회/감사/민감 원문 API, ImportJob 영속화/재개 API, 범용 ExportJob
 
 현재 User Web:
 
@@ -269,7 +269,6 @@
 
 - notification
 - Admin 운영 조회/감사/민감 원문 API
-- tag
 - ImportJob 영속화/재개 API
 - 범용 ExportJob
 
@@ -442,7 +441,6 @@ pen 기준:
 
 - Admin 운영 조회/감사/민감 원문 API
 - Notification 고도화
-- Tag
 - ImportJob 영속화/재개
 - 범용 ExportJob
 - Search 고도화

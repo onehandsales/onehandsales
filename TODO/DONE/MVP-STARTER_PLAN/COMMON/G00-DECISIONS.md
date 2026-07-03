@@ -1,4 +1,4 @@
-﻿# G00 구현 전 결정 기록
+# G00 구현 전 결정 기록
 
 ## 1. 목적
 
@@ -753,10 +753,6 @@ APP_REFRESH_COOKIE_DOMAIN=""
 구현 영향:
 
 - soft delete 대상 모델은 `deletedAt`과 `permanentDeleteAt`을 함께 가진다.
-- `Tag`와 `TagAssignment`는 soft delete 대상에서 제외한다. 태그 삭제와 태그 연결 해제는 휴지통 이동이 아니라 hard delete로 처리한다.
-- `Tag` 생성/수정/삭제와 `TagAssignment` 연결/해제는 모두 `TagLog`에 append-only로 남긴다.
-- `Tag` 삭제 시 active `TagAssignment`가 있으면 각 연결에 대해 `TagLog(TAG_UNASSIGNED)`를 먼저 남기고, 이어서 `TagLog(TAG_DELETED)`를 남긴 뒤 `TagAssignment`와 `Tag`를 hard delete한다.
-- `TagLog`는 `tagId`, `assignmentId`, 태그명/색상 스냅샷, 대상 type/id/title 스냅샷을 저장하고, hard delete된 `Tag`와 `TagAssignment` 이후에도 남아야 하므로 두 모델에 FK를 걸지 않는다.
 - soft delete 대상의 일반 삭제 API는 `deletedAt`과 `permanentDeleteAt`만 갱신한다.
 - 휴지통 목록은 `permanentDeleteAt`을 반환해 완전 삭제 예정일을 표시한다.
 - 휴지통 복구 API는 `deletedAt`과 `permanentDeleteAt`을 `null`로 되돌린다.

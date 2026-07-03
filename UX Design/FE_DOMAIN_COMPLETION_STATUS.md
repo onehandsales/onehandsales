@@ -34,7 +34,6 @@
 | Notification | 현재 BE module 없음 | FE feature/page 존재 | `/notifications` | BE 재검토 필요 |
 | Trash | 완료 | 완료 | `/trash` | 완료 |
 | Search | 완료 | 완료 | GlobalSearch | 완료 |
-| Tag | 현재 BE module 없음 | FE feature 존재 | 없음 | 후속 계획 필요 |
 
 ## Backend 완료 도메인
 
@@ -121,7 +120,7 @@ Frontend:
 
 ## 다음 작업 판단
 
-1. Backend module이 없는 FE feature는 실제 API 계약과 구현 여부를 먼저 재검토한다. 현재 대표 항목은 Notification, Tag, Admin 운영 조회다.
+1. Backend module이 없는 FE feature는 실제 API 계약과 구현 여부를 먼저 재검토한다. 현재 대표 항목은 Notification, Admin 운영 조회다.
 2. 완료된 계획은 `TODO/DONE/<PLAN_NAME>`에서 참고하되, 후속 요구사항은 새 활성 `TODO/<PLAN_NAME>`으로 작성한다.
 3. Schedule 후속 범위는 별도 계획으로 분리한다.
    - 일정 알림

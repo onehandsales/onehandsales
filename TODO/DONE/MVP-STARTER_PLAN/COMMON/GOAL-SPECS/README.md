@@ -1,4 +1,4 @@
-﻿# Goal 상세 명세 인덱스
+# Goal 상세 명세 인덱스
 
 ## 1. 목적
 
@@ -38,7 +38,7 @@
 | G03 | Admin Web 기반 | `/login`, `/` admin shell, admin 권한 상태 | `API-SPEC/G01-G05-FOUNDATION-AUTH-API.md`, `API-SPEC/G30-G32-ENDPOINT-CONTRACT.md` | `User.role`, `User.status` |
 | G04 | DB 기반 | 화면 영향 없음 | health/auth DB 연결 확인 | `BE-TODO/DB-SCHEMA.md` 전체 1차 반영 |
 | G05 | Supabase Auth/User Backend | Supabase 로그인, Backend App Token 발급/검증, local User/AuthDevice/AuthSession 동기화, 내 정보/설정 화면 상태 | `API-SPEC/G01-G05-FOUNDATION-AUTH-API.md` | `User`, `UserOAuthAccount`, `AuthDevice`, `AuthSession`, `UserSetting` |
-| G06 | Company Backend | 회사 목록/상세/등록 화면이 기대하는 데이터 | `API-SPEC/G06-G12-CORE-DOMAIN-API.md`, `API-SPEC/G06-G12-ENDPOINT-CONTRACT.md` | `Company`, `CompanyLog`, `PersonalMemo`, `TagAssignment` |
+| G06 | Company Backend | 회사 목록/상세/등록 화면이 기대하는 데이터 | `API-SPEC/G06-G12-CORE-DOMAIN-API.md`, `API-SPEC/G06-G12-ENDPOINT-CONTRACT.md` | `Company`, `CompanyLog`, `PersonalMemo` |
 | G07 | Company User Web | 회사 목록, 빠른 등록 modal, 상세 화면 | `API-SPEC/G06-G12-ENDPOINT-CONTRACT.md`의 Company 계약 | `Company`, `CompanyLog`, `PersonalMemo` |
 | G08 | Contact Backend | 담당자 목록/상세/등록 화면이 기대하는 데이터 | `API-SPEC/G06-G12-CORE-DOMAIN-API.md`, `API-SPEC/G06-G12-ENDPOINT-CONTRACT.md` | `Contact`, `ContactLog`, `Company`, `PersonalMemo` |
 | G09 | Contact User Web | 담당자 목록, 빠른 등록 modal, 상세 화면 | `API-SPEC/G06-G12-ENDPOINT-CONTRACT.md`의 Contact 계약 | `Contact`, `ContactLog`, `Company`, `PersonalMemo` |

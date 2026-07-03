@@ -81,7 +81,6 @@
 - `product`
 - `schedule`
 - `search`
-- `tag`
 - `trash`
 
 ## 5. 현재 API 연동 상태

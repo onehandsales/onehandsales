@@ -1,4 +1,4 @@
-﻿# PRD
+# PRD
 
 > 제품명: 한손에 영업 / onehand.sales  
 > 상태: MVP 정본 초안  
@@ -88,7 +88,6 @@
 - 알림: 이메일, 브라우저 푸시
 - 확정 전 ImportJob DB 영속화와 서버 재시작 후 이어받기
 - 범용 ExportJob과 `/api/exports`
-- 태그 관리
 - Admin 페이지와 운영 조회 API
 - 우리 서비스 일정의 구글 캘린더 내보내기
 - 카카오 알림톡

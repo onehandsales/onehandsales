@@ -1,4 +1,4 @@
-﻿# User Web TODO
+# User Web TODO
 
 ## 1. 목적
 
@@ -242,7 +242,6 @@ src/lib/api-client.ts
 - 위치
 - 분야(산업)
 - Memo 기록
-- 태그
 - 회사 로그
 - 연결된 담당자
 - 연결된 제품
@@ -257,7 +256,6 @@ src/lib/api-client.ts
 - 회사 상세 page
 - 회사 수정 form
 - 회사 로그 CRUD
-- 태그 연결
 - 삭제와 휴지통 이동
 - 복구 진입점
 
@@ -290,7 +288,6 @@ src/lib/api-client.ts
 - 위치
 - 전화번호
 - 이메일
-- 태그
 - Log 기록
 - Memo 기록
 - 연결된 제품
@@ -338,7 +335,6 @@ src/lib/api-client.ts
 - 단가
 - Log 기록
 - Memo 기록
-- 태그
 - 연결된 회사
 - 연결된 담당자
 - 연결된 딜
@@ -393,13 +389,11 @@ src/lib/api-client.ts
 - 활동 로그
 - 일정/회의록
 - Memo 기록
-- 태그
 
 ### 작업 목록
 
 - 딜 목록
 - 단계 탭
-- 딜 필터: 단계, 금액, 가능성, 다음 행동, 마감일, 회사/담당자, 태그
 - 딜 빠른 등록 modal
 - 딜 상세에서 활동 로그와 Memo 기록 영역 분리
 - 회사/담당자/제품 검색 combobox

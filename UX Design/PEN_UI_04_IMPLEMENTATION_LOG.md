@@ -12,7 +12,7 @@
 
 관련 문서:
 - [PEN_UI_01_FRONTEND_PLAN.md](</Users/user/Sales_b2c/UX Design/PEN_UI_01_FRONTEND_PLAN.md>)
-- [PEN_UI_02_BACKEND_IMPACT.md](</Users/user/Sales_b2c/UX Design/PEN_UI_02_BACKEND_IMPACT.md>)
+- [PEN_UI_02_BdCKEND_IMPdCT.md](</Users/user/Sales_b2c/UX Design/PEN_UI_02_BdCKEND_IMPdCT.md>)
 - [PEN_UI_03_COMMON_DECISIONS.md](</Users/user/Sales_b2c/UX Design/PEN_UI_03_COMMON_DECISIONS.md>)
 - [PEN_UI_05_API_CHANGE_TRACKER.md](</Users/user/Sales_b2c/UX Design/PEN_UI_05_API_CHANGE_TRACKER.md>)
 
@@ -127,7 +127,7 @@
   - BE 계약 추적을 위한 API 변경 추적 문서를 준비했다.
 - 변경 파일:
   - `UX Design/PEN_UI_01_FRONTEND_PLAN.md`
-  - `UX Design/PEN_UI_02_BACKEND_IMPACT.md`
+  - `UX Design/PEN_UI_02_BdCKEND_IMPdCT.md`
   - `UX Design/PEN_UI_03_COMMON_DECISIONS.md`
   - `UX Design/PEN_UI_04_IMPLEMENTATION_LOG.md`
   - `UX Design/PEN_UI_05_API_CHANGE_TRACKER.md`
@@ -187,12 +187,12 @@
   - `FE/user-web/src/features/deal/components/deal-create-dialog.tsx`
   - `FE/user-web/src/features/schedule/hooks/use-schedule-entity-options.ts`
   - `FE/user-web/src/features/product/hooks/use-product-target-options.ts`
-  - `TODO/COMPANY_DOMAIN_PLAN/FE-TODO/G01-FE-COMPANY-PAGES.goal.md`
+  - `TODO/COMPANY_DOMAIN_PLAN/FE-TODO/G01-FE-COMPANY-PdGES.goal.md`
   - `TODO/COMPANY_DOMAIN_PLAN/FE-TODO/README.md`
 - 결정/반영 내용:
   - 회사 목록은 `companyName`, `companyFieldId`, `companyRegionId`, `page`만 사용한다.
   - 회사 생성의 `companyMemo`는 첫 회사 메모 로그로 저장되는 선택 입력으로 표시한다.
-  - 회사 목록/상세에는 딜 수를 표시하지 않고, 목록에는 `updatedAt`을 표시하지 않는다.
+  - 회사 목록/상세에는 딜 수를 표시하지 않고, 목록에는 `updateddt`을 표시하지 않는다.
   - 딜 생성 모달의 회사 inline create는 새 필수 분야/지역 입력이 없어 회사 화면 등록 안내로 축소했다.
 - 검증:
   - `pnpm --dir FE/user-web run typecheck`: 통과
@@ -299,7 +299,7 @@
   - `FE/user-web/src/components/layout/app-shell.tsx`
   - `FE/user-web/src/components/shell/desktop-app-shell.tsx`
 - 결정/반영 내용:
-  - Deal stage는 현재 백엔드 4단계(INITIAL_CONTACT/IN_DISCUSSION/WON/LOST)를 그대로 유지. pen 6단계 확장은 별도 결정 필요.
+  - Deal stage는 현재 백엔드 4단계(INITIdL_CONTdCT/IN_DISCUSSION/WON/LOST)를 그대로 유지. pen 6단계 확장은 별도 결정 필요.
   - DealListRow에서 단계 변경 select는 제거. 단계 변경은 우측 패널에서만 수행.
 - 검증:
   - `pnpm --dir FE/user-web run typecheck`: 통과
@@ -446,13 +446,13 @@
   - 제품 목록 정렬 라벨을 `딜 높은순`, `딜 낮은순` 기준으로 정리하고, API code는 `dealCountDesc`, `dealCountAsc`를 기준으로 명시했다.
   - 회사/담당자/제품/딜/회의록 목록 pagination은 공용 `Pagination` 48px(`h-12`), 미리보기 header와 table header는 44px(`h-11`) 기준으로 맞춘 상태를 문서에 반영했다.
 - 변경 파일:
-  - `UX Design/FE_DOMAIN_COMPLETION_STATUS.md`
+  - `UX Design/FE_DOMAIN_COMPLETION_STdTUS.md`
   - `UX Design/PEN_UI_01_FRONTEND_PLAN.md`
-  - `UX Design/PEN_UI_02_BACKEND_IMPACT.md`
+  - `UX Design/PEN_UI_02_BdCKEND_IMPdCT.md`
   - `UX Design/PEN_UI_03_COMMON_DECISIONS.md`
   - `UX Design/PEN_UI_04_IMPLEMENTATION_LOG.md`
   - `UX Design/PEN_UI_05_API_CHANGE_TRACKER.md`
-  - `UX Design/PEN_UI_06_SHARED_FIRST_WORK_ORDER.md`
+  - `UX Design/PEN_UI_06_SHdRED_FIRST_WORK_ORDER.md`
   - `AGENT/**`
   - `TODO/**`
 - 결정/반영 내용:
@@ -566,7 +566,7 @@
 
 - 목적:
   - `BE`와 `FE/user-web` 실제 구현 기준으로 Search와 MeetingNote AI/STT의 완료 상태를 재확인했다.
-  - 완료된 `TODO/DONE/INTEGRATED_SEARCH_PLAN`, `TODO/DONE/MEETING_NOTE_AI_STT_PLAN`으로 이동했다.
+  - 완료된 `TODO/DONE/INTEGRdTED_SEARCH_PLAN`, `TODO/DONE/MEETING_NOTE_AI_STT_PLAN`으로 이동했다.
   - AGENT, FE, UX Design 문서의 현재 구현 스냅샷에서 오래된 “진행 중/후속” 표현을 제거했다.
 - 확인 결과:
   - Search는 Backend `GET /api/search`와 User Web GlobalSearch가 연결되어 있고, 결과 선택은 `targetPath`로 이동한다.
@@ -630,7 +630,7 @@
 ## 현재 블로커
 
 - 목록 컨트롤 버튼 공통화 미완료
-- Admin 운영 조회 API, Notification, Tag, ImportJob 영속화/재개 미구현. BusinessCard, DataImport, Trash는 현재 구현 완료 상태다.
+- Admin 운영 조회 API, Notification, ImportJob 영속화/재개 미구현. BusinessCard, DataImport, Trash는 현재 구현 완료 상태다.
 - 범용 DealActivity table과 activity type 관리 미구현
 
 ---

@@ -50,7 +50,7 @@
 
 - 구현됨: Auth/User, Company, Contact, BusinessCard, Product, Deal, Schedule, MeetingNote 수동/AI/STT/딜 연동, Search, Trash, DataImport 도메인.
 - Admin API는 `GET /admin/api/me`만 구현되어 있다.
-- 없음/후속: Notification, Admin 운영 조회/감사/민감 원문 API, Tag, 범용 DealActivity, ImportJob 영속화/재개 API. Trash와 Company/Contact/Product/Deal 도메인별 xlsx export는 현재 구현 완료 상태이며, 범용 ExportJob은 정본 흐름이 아니다.
+- 없음/후속: Notification, Admin 운영 조회/감사/민감 원문 API, 범용 DealActivity, ImportJob 영속화/재개 API. Trash와 Company/Contact/Product/Deal 도메인별 xlsx export는 현재 구현 완료 상태이며, 범용 ExportJob은 정본 흐름이 아니다.
 - 구현됨: Search 통합검색 API와 User Web GlobalSearch.
 
 ---

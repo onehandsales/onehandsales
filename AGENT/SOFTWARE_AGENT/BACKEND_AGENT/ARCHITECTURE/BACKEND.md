@@ -163,7 +163,6 @@ Implemented MVP modules:
 Planned or partially represented modules:
 
 - `notification`
-- `tag`
 - `audit-log`
 - `admin`
 
@@ -316,7 +315,6 @@ Canonical examples:
 
 - Deal stage defaults are code-level enum values for MVP.
 - Company field/region, contact department/job grade, and product category/status are user-editable lookup tables.
-- Tags are user-customizable and belong in tag tables.
 
 ## 12. AI And External Providers
 
