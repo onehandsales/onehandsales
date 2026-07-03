@@ -1,4 +1,4 @@
-﻿# Backend API 구현 TODO
+# Backend API 구현 TODO
 
 ## 1. 목적
 
@@ -194,7 +194,6 @@ BE/
 
 - 회사 CRUD
 - 회사 로그
-- 태그 연결
 - 휴지통 이동과 복구
 
 ### User API
@@ -509,30 +508,7 @@ BE/
 - DB에는 public URL 대신 storage provider, bucket, object key, content type, file size, file name metadata를 저장한다.
 - Export 다운로드는 `StoragePort`에서 stream 또는 signed URL을 받아 반환한다.
 
-## 14. Tag 모듈
-
-### User API
-
-| Method | Path | 설명 |
-|---|---|---|
-| `GET` | `/api/tags` | 태그 목록 |
-| `POST` | `/api/tags` | 태그 생성 |
-| `PATCH` | `/api/tags/:tagId` | 태그 수정 |
-| `DELETE` | `/api/tags/:tagId` | 태그 삭제 |
-| `POST` | `/api/tags/:tagId/assignments` | 태그 연결 |
-| `DELETE` | `/api/tags/:tagId/assignments/:assignmentId` | 태그 연결 해제 |
-| `GET` | `/api/tags/logs` | 태그/태그 연결 로그 목록 |
-
-### 완료 기준
-
-- 주요 엔티티에 태그를 연결할 수 있다.
-- 태그 자체 삭제는 분류 설정 삭제로 보고 `Tag`를 hard delete한다.
-- 태그 삭제 시 해당 태그의 active `TagAssignment`마다 `TagLog(TAG_UNASSIGNED)`를 남기고, `TagLog(TAG_DELETED)`를 남긴 뒤 같은 transaction에서 `TagAssignment`와 `Tag`를 hard delete한다.
-- 태그 생성/수정/삭제와 태그 연결/해제는 모두 `TagLog`에 append-only로 남긴다.
-- 태그와 태그 연결이 hard delete되어도 `TagLog`는 남아야 하므로 태그명/색상/대상 정보 스냅샷을 함께 저장한다.
-- `Tag`와 `TagAssignment`는 휴지통에 넣지 않는다.
-
-## 15. Notification 모듈
+## 14. Notification 모듈
 
 ### 책임
 
@@ -575,7 +551,7 @@ BE/
 - browser push 알림은 Web Push VAPID adapter로 실제 발송된다.
 - 자동 테스트에서는 email/browser push stub adapter를 사용할 수 있다.
 
-## 16. Trash 모듈
+## 15. Trash 모듈
 
 ### User API
 
@@ -593,7 +569,7 @@ BE/
 - 사용자 즉시 완전 삭제는 MVP 1차에서 허용하지 않는다.
 - 완전 삭제 7일 전 알림을 준비할 수 있다.
 
-## 17. Admin 모듈
+## 16. Admin 모듈
 
 ### 책임
 
@@ -619,7 +595,7 @@ BE/
 - Admin API는 User API와 분리된다.
 - 민감 원문 조회는 감사 로그와 같은 transaction에서 처리된다.
 
-## 18. 테스트 TODO
+## 17. 테스트 TODO
 
 ### Unit Test
 
@@ -643,7 +619,7 @@ BE/
 
 - 데이터 유출, 감사 누락, irreversible action에 해당하는 흐름은 테스트가 있다.
 
-## 19. 관련 문서
+## 18. 관련 문서
 
 - `TODO/DONE/MVP-STARTER_PLAN/COMMON/API-SPEC/README.md`
 - `TODO/DONE/MVP-STARTER_PLAN/COMMON/GOAL-WORK-ORDER.md`

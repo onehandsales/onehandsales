@@ -1,4 +1,4 @@
-﻿# MVP Starter Plan
+# MVP Starter Plan
 
 ## 1. 목적
 

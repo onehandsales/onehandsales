@@ -23,7 +23,6 @@ src/
     schedule/
     meeting-note/
     business-card/
-    tag/
     import-export/
     notification/
     trash/

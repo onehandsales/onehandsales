@@ -1,4 +1,4 @@
-아래는 2026-07-01 현재 BE 구현 기준 API별 한 줄 설명입니다.
+아래는 2026-07-03 현재 BE 구현 기준 API별 한 줄 설명입니다.
 
 Export는 범용 `/api/exports` job이 아니라 Company/Contact/Product/Deal 각 도메인의 xlsx 다운로드 API로 처리합니다.
 
@@ -166,13 +166,13 @@ Deal relation payload:
 **DataImport**
 | API | 설명 |
 |---|---|
-| `GET /api/import-templates/active` | 회사/담당자/제품 데이터 불러오기 활성 양식 목록을 조회합니다. |
+| `GET /api/import-templates/active` | 회사/담당자/제품/딜 데이터 불러오기 활성 양식 목록을 조회합니다. |
 | `GET /api/import-templates/{templateId}/download` | 선택한 데이터 불러오기 양식을 xlsx 파일로 다운로드합니다. 담당자 양식은 `companyName` query로 회사 context를 받을 수 있습니다. |
-| `POST /api/imports` | CSV/XLSX 파일을 업로드해 확정 전 임시 import job과 preview row를 생성합니다. 지원 대상은 회사/담당자/제품이며 파일은 최대 10MB입니다. |
+| `POST /api/imports` | CSV/XLSX 파일을 업로드해 확정 전 임시 import job과 preview row를 생성합니다. 지원 대상은 회사/담당자/제품/딜이며 파일은 최대 10MB입니다. |
 | `GET /api/imports/{importJobId}` | 확정 전 임시 import job 상세와 전체 row 상태를 조회합니다. |
 | `POST /api/imports/{importJobId}/map` | AI 컬럼 자동 매핑을 생성합니다. provider 실패 시 규칙 기반 매핑으로 fallback합니다. |
 | `PATCH /api/imports/{importJobId}/mapping` | 사용자가 수정한 컬럼 매핑을 적용하고 row 검증 결과를 반환합니다. |
-| `POST /api/imports/{importJobId}/confirm` | 검증된 row를 회사/담당자/제품 데이터로 확정 저장하고 성공 내역을 남깁니다. |
+| `POST /api/imports/{importJobId}/confirm` | 검증된 row를 회사/담당자/제품/딜 데이터로 확정 저장하고 성공 내역을 남깁니다. |
 | `GET /api/import-user-logs` | 확정 저장된 데이터 불러오기 성공 내역 목록을 조회합니다. |
 | `GET /api/import-user-logs/{importUserLogId}` | 데이터 불러오기 성공 내역 상세와 row snapshot을 조회합니다. |
 

@@ -6,10 +6,10 @@ import {
   ChevronDown,
   HandCoins,
   IdCard,
+  Layers,
   MapPin,
   Package,
   Plus,
-  Tags,
   type LucideIcon,
   Users,
   X,
@@ -694,7 +694,7 @@ function QuickCompanyCreateDialog({
                   createActionLabel="분야 추가"
                   emptyText="검색어를 바꾸면 분야를 찾을 수 있어요."
                   getLabel={(field) => field.field}
-                  icon={Tags}
+                  icon={Layers}
                   id="deal-quick-company-field"
                   isLoading={fieldsQuery.isLoading}
                   items={fields}

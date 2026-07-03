@@ -1,4 +1,4 @@
-﻿# Goal 작업 순서
+# Goal 작업 순서
 
 ## 1. 목적
 
@@ -91,7 +91,7 @@ P6. 테스트와 릴리즈 준비
 - FE token 전달/보관 방식 확정값: FE는 Supabase access token을 token exchange API에만 전달하고, business API에는 Backend가 발급한 App access token을 `Authorization: Bearer` header로 전달한다. App access token은 memory에만 저장하고, refresh token은 httpOnly cookie와 `AuthSession.refreshTokenHash`로 관리한다.
 - FE/BE 배포 도메인 전략 확정값: local/preview는 분리 domain을 허용하고, production은 같은 parent domain 아래 `app`, `admin`, `api` subdomain으로 고정한다.
 - 삭제된 리소스 조회/수정 응답 정책 확정값: 기존 상세 URL 조회는 `410 DeletedResource`, 수정/상태 변경/재삭제 같은 변경 요청은 `409 DeletedResource`
-- soft delete, restore, hard delete, 휴지통 완전 삭제 정책 확정값: 모든 영속 삭제 대상 리소스는 soft delete하고, 30일 휴지통 보관 후 시스템이 자동 완전 삭제하며, MVP 1차에서 사용자 즉시 완전 삭제는 제공하지 않는다. 단, `Tag`와 `TagAssignment`는 분류/연결 상태 데이터이므로 hard delete하고 `TagLog`에 이력을 남긴다.
+- soft delete, restore, hard delete, 휴지통 완전 삭제 정책 확정값: 모든 영속 삭제 대상 리소스는 soft delete하고, 30일 휴지통 보관 후 시스템이 자동 완전 삭제하며, MVP 1차에서 사용자 즉시 완전 삭제는 제공하지 않는다.
 - 도메인별 Memo 기록과 민감정보 저장 위치 확정값: `Company`, `Contact`, `Product`, `Deal`은 Log와 Memo 기록을 각각 가질 수 있다. Log는 객관적 사실/변경/만남/소식 기록이고, Memo는 사용자의 주관적 생각/판단 기록이다. Memo는 각 엔티티의 단일 `memo` 필드가 아니라 `PersonalMemo` 기록 테이블에 암호화 저장한다.
 - 도메인별 Log 구현 단위 확정값: 회사는 `CompanyLog`, 담당자는 `ContactLog`, 제품은 `ProductLog`, 딜은 `DealActivity`를 사용한다. 각 도메인별 사용자 개인 Memo Log는 `PersonalMemo`로 별도 저장하고 상세 화면에서 Log와 Memo 섹션을 분리한다.
 - 일정 기본 조회 기간과 view mode 확정값: `/api/schedules`의 `from`, `to`가 없으면 사용자 timezone 기준 이번 달 1일~말일 범위를 조회한다. User Web `/schedules`는 Google Calendar처럼 월간 캘린더를 기본으로 보여주고 월간/주간 view mode 전환을 제공한다. 주간 보고서/Export는 `/api/schedules/week`와 `/api/schedules/week/export`로 분리한다.
@@ -225,7 +225,7 @@ P6. 테스트와 릴리즈 준비
 
 - `BE/prisma/schema.prisma` 작성
 - User, Company, CompanyLog, Contact, ContactLog, Product, ProductLog, Deal, DealActivity, PersonalMemo 핵심 모델
-- Schedule, MeetingNote, Tag, AuditLog 기본 모델
+- Schedule, MeetingNote, AuditLog 기본 모델
 - ImportJob, ExportJob, Notification 기본 모델. BusinessCard OCR은 현재 `BusinessCardScanLog`를 사용하고 별도 `AiJob`을 두지 않는다.
 - Prisma client 생성
 - 초기 migration 생성

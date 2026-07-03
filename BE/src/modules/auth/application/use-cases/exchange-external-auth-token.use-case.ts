@@ -5,6 +5,7 @@ import {
   type AuthDeviceSlot,
   AUTH_REPOSITORY,
   type AuthRepository,
+  type AuthSessionRecord,
   type AuthUserRecord,
 } from "@/modules/auth/application/ports/auth.repository";
 import {
@@ -96,11 +97,13 @@ export class ExchangeExternalAuthTokenUseCase {
 
       // 6. refresh token 원문을 생성하고 hash만 세션에 저장한다.
       const refreshToken = this.secureTokenService.createToken();
-      const session = await repository.createAuthSession({
+      const refreshTokenHash = this.hashRefreshToken(refreshToken);
+      const sessionExpiresAt = this.addDays(now, this.getSessionTtlDays());
+      const session = await this.createOrRotateSession(repository, {
         userId: user.id,
         authDeviceId: device.id,
-        refreshTokenHash: this.hashRefreshToken(refreshToken),
-        expiresAt: this.addDays(now, this.getSessionTtlDays()),
+        refreshTokenHash,
+        expiresAt: sessionExpiresAt,
         userAgent: command.userAgent,
         ipAddressHash: command.ipAddress
           ? this.secureTokenService.hash(`ip:${command.ipAddress}`)
@@ -141,9 +144,10 @@ export class ExchangeExternalAuthTokenUseCase {
     email: string,
     now: Date
   ): Promise<AuthUserRecord> {
-    const oauthAccount = await repository.findOAuthAccount(
-      verifiedUser.provider,
-      verifiedUser.providerAccountId
+    const oauthAccount = await this.findOrUpgradeOAuthAccount(
+      repository,
+      verifiedUser,
+      now
     );
     const adminRole = this.isInitialAdminEmail(email) ? "ADMIN" : undefined;
 
@@ -172,6 +176,41 @@ export class ExchangeExternalAuthTokenUseCase {
         providerUserId: verifiedUser.providerAccountId,
         providerEmail: email,
       },
+      now
+    );
+  }
+
+  // 기능 : 안정적인 provider 계정 ID로 OAuth 계정을 찾고, 기존 Supabase user id 기반 매핑은 갱신합니다.
+  private async findOrUpgradeOAuthAccount(
+    repository: AuthRepository,
+    verifiedUser: VerifiedExternalUser,
+    now: Date
+  ) {
+    const oauthAccount = await repository.findOAuthAccount(
+      verifiedUser.provider,
+      verifiedUser.providerAccountId
+    );
+
+    if (oauthAccount) {
+      return oauthAccount;
+    }
+
+    if (verifiedUser.authUserId === verifiedUser.providerAccountId) {
+      return null;
+    }
+
+    const legacyOAuthAccount = await repository.findOAuthAccount(
+      verifiedUser.provider,
+      verifiedUser.authUserId
+    );
+
+    if (!legacyOAuthAccount) {
+      return null;
+    }
+
+    return repository.updateOAuthAccountProviderUserId(
+      legacyOAuthAccount.id,
+      verifiedUser.providerAccountId,
       now
     );
   }
@@ -226,6 +265,42 @@ export class ExchangeExternalAuthTokenUseCase {
       label: input.deviceLabel,
       now: input.now,
     });
+  }
+
+  // 기능 : 같은 기기의 활성 세션은 새 row를 만들지 않고 refresh token만 회전합니다.
+  private async createOrRotateSession(
+    repository: AuthRepository,
+    input: {
+      readonly userId: string;
+      readonly authDeviceId: string;
+      readonly refreshTokenHash: string;
+      readonly expiresAt: Date;
+      readonly userAgent: string | null;
+      readonly ipAddressHash: string | null;
+      readonly now: Date;
+    }
+  ): Promise<AuthSessionRecord> {
+    const activeSession = await repository.findActiveSessionByDevice(
+      input.authDeviceId,
+      input.now
+    );
+
+    if (activeSession) {
+      await repository.rotateRefreshToken(
+        activeSession.id,
+        input.refreshTokenHash,
+        input.expiresAt,
+        input.now
+      );
+
+      return {
+        ...activeSession,
+        refreshTokenHash: input.refreshTokenHash,
+        expiresAt: input.expiresAt,
+      };
+    }
+
+    return repository.createAuthSession(input);
   }
 
   // 기능 : 요청 문자열을 인증 기기 슬롯 값으로 검증해 변환합니다.

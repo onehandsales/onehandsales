@@ -1,4 +1,4 @@
-﻿# G17-G29 업무 흐름/자동화 API 명세
+# G17-G29 업무 흐름/자동화 API 명세
 
 ## 1. 목적
 
@@ -253,7 +253,7 @@
 3. browser push 알림은 `BrowserPushPort` 뒤의 실제 Web Push VAPID adapter로 발송한다.
 4. 자동 테스트와 장애 재현에서는 같은 port 뒤에 stub/mock adapter를 주입할 수 있다.
 5. browser push subscription endpoint/key는 민감 가능 데이터이므로 `BrowserPushSubscription`에 endpoint hash와 암호화 ciphertext로 저장한다.
-6. 휴지통은 모든 deletedAt 삭제 대상 모델의 데이터를 모아 보여준다. 회사/담당자/제품/딜/일정/회의록 같은 주요 엔티티를 우선 노출하되, Memo, Log, 제품 연결 리소스도 targetType 필터로 조회와 복구가 가능해야 한다. `Tag`와 `TagAssignment`는 hard delete하므로 휴지통 대상이 아니며 이력은 `TagLog`로 조회한다.
+6. 휴지통은 모든 deletedAt 삭제 대상 모델의 데이터를 모아 보여준다. 회사/담당자/제품/딜/일정/회의록 같은 주요 엔티티를 우선 노출하되, Memo, Log, 제품 연결 리소스도 targetType 필터로 조회와 복구가 가능해야 한다.
 7. 사용자 즉시 완전 삭제는 MVP 1차에서 제공하지 않고 시스템 자동 완전 삭제만 수행한다.
 8. 통합검색은 초기에는 DB `ILIKE` 기반으로 구현한다.
 9. 통합검색 기본 대상은 Company, Contact, Product, Deal, Schedule, MeetingNote다.

@@ -2,10 +2,10 @@
 
 // 역할 : AuthProviderResponse 데이터가 계층 사이에서 전달되는 구조를 정의합니다.
 export interface AuthProviderResponse {
-  readonly provider: "kakao" | "google" | "naver" | "apple";
+  readonly provider: "kakao" | "google";
   readonly label: string;
   readonly enabled: boolean;
-  readonly status: "enabled" | "planned" | "disabled";
+  readonly status: "enabled";
   readonly displayOrder: number;
 }
 
@@ -25,25 +25,11 @@ export class ListAuthProvidersUseCase {
           displayOrder: 1,
         },
         {
-          provider: "naver",
-          label: "네이버",
-          enabled: true,
-          status: "enabled",
-          displayOrder: 2,
-        },
-        {
           provider: "google",
           label: "Google",
           enabled: true,
           status: "enabled",
-          displayOrder: 3,
-        },
-        {
-          provider: "apple",
-          label: "Apple",
-          enabled: false,
-          status: "planned",
-          displayOrder: 4,
+          displayOrder: 2,
         },
       ],
     };

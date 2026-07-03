@@ -22,7 +22,7 @@
 
 ## 0. 현재 구현 기준선
 
-기준일: 2026-06-22
+기준일: 2026-07-03
 
 현재 User Web 구현 상태:
 
@@ -39,18 +39,18 @@
   - 제품 추가: 카테고리/상태 검색, 결과 없음 시 즉시 추가 후 자동 선택
 - 담당자 목록 정렬은 select로 `최신순`, `이름순`을 제공한다.
 - 제품 목록 정렬은 select로 `최신순`, `딜 높은순`, `딜 낮은순`을 제공한다.
-- `/schedules`, `/schedules/week`, `/meeting-notes`는 실제 Backend API와 연결되어 있다.
-- `/business-cards`, `/contacts/scan`, `/notifications`, `/import`, `/export`, `/trash`는 라우트/feature가 있으나 대응 Backend module이 없어 완료 기능으로 보지 않는다.
+- `/schedules`, `/meeting-notes`, `/business-cards`, `/import`, `/trash`는 실제 Backend API와 연결되어 있다. `/schedules/week`와 `/contacts/scan`은 현재 각각 `/schedules`, `/business-cards`로 redirect된다.
+- `/notifications`, `/export`는 라우트가 남아 있으나 현재 `/`로 redirect된다. Notification Backend와 범용 ExportJob은 정본 완료 기능으로 보지 않는다.
 - `GET /api/search` Backend와 User Web `GlobalSearch`가 연결되어 있다. 별도 검색 결과 라우트는 없고 상단/모바일 검색 UI에서 사용한다.
 - MeetingNote AI/STT 초안 endpoint와 User Web 초안 UI 연결은 구현 완료 상태다.
 - MeetingNote 후속 UI는 `/meeting-notes/new`의 직접 작성/저장 흐름을 기본으로 두고 `AI로 정리`, `음성으로 작성`을 선택 보조 액션으로 붙인다. 저장 후 상세 화면에서는 `POST /api/meeting-notes/:meetingNoteId/deals`로 딜 추가 연동과 딜 활동 로그 생성을 처리한다.
-- Sidebar는 `홈`, `딜`, `회사`, `담당자`, `제품`, `일정`, `회의록`, `설정`을 노출한다. Import와 휴지통은 숨김 처리되어 있다.
+- Sidebar는 `홈`, `딜`, `회사`, `담당자`, `제품`, `일정`, `회의록`, `명함 관리`, `데이터 업로드`, `휴지통`, `설정`을 노출한다. 범용 Export와 Notification은 숨김/redirect 상태다.
 
 현재 Backend 구현 상태:
 
-- 구현됨: Auth/User, Company, Contact, Product, Deal, Schedule, MeetingNote 수동/AI/STT/딜 연동 도메인.
+- 구현됨: Auth/User, Company, Contact, BusinessCard, Product, Deal, Schedule, MeetingNote 수동/AI/STT/딜 연동, Search, Trash, DataImport 도메인.
 - Admin API는 `GET /admin/api/me`만 구현되어 있다.
-- 없음/후속: BusinessCard OCR, 범용 Import job, Notification, Admin 운영 조회/감사/민감 원문 API. Trash와 Company/Contact/Product/Deal 도메인별 xlsx export는 현재 구현 완료 상태이며, 범용 ExportJob은 정본 흐름이 아니다.
+- 없음/후속: Notification, Admin 운영 조회/감사/민감 원문 API, 범용 DealActivity, ImportJob 영속화/재개 API. Trash와 Company/Contact/Product/Deal 도메인별 xlsx export는 현재 구현 완료 상태이며, 범용 ExportJob은 정본 흐름이 아니다.
 - 구현됨: Search 통합검색 API와 User Web GlobalSearch.
 
 ---
@@ -461,4 +461,4 @@ pen 단계: 위와 동일 (완전 일치 달성).
 2. 목록 컨트롤 select/button 공통화 범위 결정
 3. 생성 모달 입력 검색형 inline create의 실제 세션 smoke 확인
 4. Admin 운영 조회 API 또는 Admin Web placeholder 경계 결정
-5. BusinessCard/Import/Notification Backend 계획 수립. 범용 ExportJob은 비정본이며 Trash는 구현 완료 기준으로 유지보수한다.
+5. Notification/Admin 운영 API/ImportJob 영속화 계획 수립. BusinessCard, DataImport, Trash는 구현 완료 기준으로 유지보수한다.

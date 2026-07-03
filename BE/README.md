@@ -45,7 +45,7 @@ Admin API는 반드시 Admin guard로 보호한다.
 
 ```bash
 pnpm install
-cp .env.example .env
+# .env를 로컬/배포 환경에 맞게 작성
 pnpm run db:dev:up
 pnpm run prisma:generate
 pnpm run prisma:migrate
@@ -96,7 +96,7 @@ pnpm run build
 
 기본 Backend 테스트는 외부 Provider를 실제 호출하지 않는다. 실제 Supabase Auth 또는 OpenAI MeetingNote draft smoke를 하려면 `.env`에 credential을 채운 뒤 별도 provider smoke로 확인한다.
 
-주요 env는 `.env.example`에 있다. local에서 최소 서버만 띄울 때도 `DATABASE_URL`, `DIRECT_URL`, `TEST_DATABASE_URL`, token secret 값은 실제 안전한 값으로 채우는 것을 권장한다.
+local에서 최소 서버만 띄울 때도 `DATABASE_URL`, `DIRECT_URL`, `TEST_DATABASE_URL`, token secret 값은 실제 안전한 값으로 채우는 것을 권장한다.
 
 MeetingNote AI 초안 생성은 `MeetingNoteAiDraftProvider` port와 OpenAI adapter를 사용하며 `OPENAI_API_KEY`, `OPENAI_MEETING_NOTE_DRAFT_MODEL`이 필요하다. MeetingNote STT는 별도 `MeetingNoteSttProvider` port와 OpenAI STT adapter를 사용하며 `OPENAI_MEETING_NOTE_STT_MODEL`로 모델을 지정한다. 명함 OCR은 `BusinessCardOcrProvider` port와 OpenAI adapter를 사용하며 `OPENAI_BUSINESS_CARD_OCR_MODEL`로 모델을 지정할 수 있다. DataImport AI 컬럼 매핑은 `ImportMappingProvider` port와 OpenAI adapter를 사용하며 `OPENAI_IMPORT_MAPPING_MODEL`로 모델을 지정할 수 있다. 추후 STT/OCR/Import mapping provider를 바꿀 때는 각 adapter만 교체한다.
 

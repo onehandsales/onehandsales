@@ -84,6 +84,28 @@ export class PrismaAuthRepository implements AuthRepository {
       : null;
   }
 
+  // 기능 : 기존 OAuth 계정의 provider 사용자 식별자를 갱신합니다.
+  async updateOAuthAccountProviderUserId(
+    oauthAccountId: string,
+    providerUserId: string,
+    now: Date
+  ): Promise<AuthOAuthAccountRecord> {
+    const account = await this.client.userOAuthAccount.update({
+      where: { id: oauthAccountId },
+      data: {
+        providerUserId,
+        updatedAt: now,
+      },
+    });
+
+    return {
+      id: account.id,
+      userId: account.userId,
+      provider: this.fromPrismaProvider(account.provider),
+      providerUserId: account.providerUserId,
+    };
+  }
+
   // 기능 : 신규 사용자와 OAuth 계정을 하나의 생성 작업으로 저장합니다.
   async createUserWithOAuthAccount(
     input: CreateAuthUserInput,
@@ -255,6 +277,25 @@ export class PrismaAuthRepository implements AuthRepository {
     return this.mapSession(session);
   }
 
+  // 기능 : 기기에 연결된 만료되지 않은 활성 세션을 최신순으로 조회합니다.
+  async findActiveSessionByDevice(
+    authDeviceId: string,
+    now: Date
+  ): Promise<AuthSessionRecord | null> {
+    const session = await this.client.authSession.findFirst({
+      where: {
+        authDeviceId,
+        status: AuthSessionStatus.ACTIVE,
+        expiresAt: {
+          gt: now,
+        },
+      },
+      orderBy: { createdAt: "desc" },
+    });
+
+    return session ? this.mapSession(session) : null;
+  }
+
   // 기능 : 세션 ID로 세션과 현재 사용자 컨텍스트를 함께 조회합니다.
   async findSessionByIdWithUser(
     sessionId: string
@@ -371,6 +412,7 @@ export class PrismaAuthRepository implements AuthRepository {
   private mapSession(session: {
     readonly id: string;
     readonly userId: string;
+    readonly authDeviceId: string;
     readonly status: AuthSessionStatus;
     readonly refreshTokenHash: string | null;
     readonly expiresAt: Date;
@@ -379,6 +421,7 @@ export class PrismaAuthRepository implements AuthRepository {
     return {
       id: session.id,
       userId: session.userId,
+      authDeviceId: session.authDeviceId,
       status: session.status,
       refreshTokenHash: session.refreshTokenHash,
       expiresAt: session.expiresAt,

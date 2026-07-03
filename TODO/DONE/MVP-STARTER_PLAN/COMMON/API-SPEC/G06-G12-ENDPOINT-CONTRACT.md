@@ -1,4 +1,4 @@
-﻿# G06-G12 엔드포인트별 구현 계약
+# G06-G12 엔드포인트별 구현 계약
 
 ## 1. 목적
 
@@ -18,9 +18,6 @@ Frontend는 화면 상태와 API 호출 조건을 이 문서 기준으로 맞추
 - 생성/수정 API는 빈 문자열을 trim한 뒤 validation한다.
 - 다른 사용자 소유 데이터 연결은 `OwnershipViolation` 403으로 처리한다.
 - soft delete 모델은 hard delete하지 않고 `deletedAt`과 `permanentDeleteAt = deletedAt + 30일`을 기록한다.
-- `Tag`와 `TagAssignment`는 분류/연결 상태 데이터이므로 hard delete하고 휴지통에 넣지 않는다.
-- `Tag` 생성/수정/삭제와 `TagAssignment` 연결/해제는 모두 `TagLog`에 append-only로 남긴다. 삭제 후에도 로그가 남아야 하므로 로그에는 태그명/색상/대상 스냅샷을 저장한다.
-- `Tag` 삭제 시 active assignment마다 `TagLog(TAG_UNASSIGNED)`를 남기고, `TagLog(TAG_DELETED)`를 남긴 뒤 `TagAssignment`와 `Tag`를 hard delete한다.
 - `Company`, `Contact`, `Product`, `Deal`의 Log는 객관 기록, Memo는 주관 기록으로 분리한다.
 - Log는 회사 `CompanyLog`, 담당자 `ContactLog`, 제품 `ProductLog`, 딜 `DealActivity`로 도메인별 분리한다.
 - 사용자 개인 Memo Log는 `PersonalMemo`로 저장하되 `targetType`과 `targetId`로 회사/담당자/제품/딜을 분리한다.
@@ -46,9 +43,9 @@ Frontend는 화면 상태와 API 호출 조건을 이 문서 기준으로 맞추
 | API 이름 | API 식별자 | Request 이름/필드 | 비즈니스 로직 흐름 | Response 이름/필드 | 연결 DB/transaction | 주요 에러 |
 |---|---|---|---|---|---|---|
 | 회사 목록 API | `ListCompanies` | `ListCompaniesRequest`: `page`, `pageSize`, `search`, `includeDeleted` | 인증 사용자의 회사만 조회한다. `search`는 회사명, 업종, 지역에 적용한다. 기본은 삭제되지 않은 회사만 반환한다. 최신 수정순으로 정렬한다. | `CompanyListResponse`: `items:CompanyResponse[]`, `page`, `pageSize`, `totalCount`, `hasNext` | `Company` 조회와 count. transaction 없음. | `Unauthorized` 401, `ValidationError` 400 |
-| 회사 생성 API | `CreateCompany` | `CreateCompanyRequest`: `name` 필수, `industry`, `region`, `address`, `website`, `description`, `initialMemo`, `tags` | 회사명을 trim하고 필수값을 검증한다. 같은 사용자 안의 유사 회사명은 후보로만 판단하고 MVP에서는 저장을 막지 않는다. Company를 생성하고 태그가 있으면 연결한다. 태그 연결 시 `TagLog(TAG_ASSIGNED)`를 남긴다. `initialMemo`가 있으면 `PersonalMemo(targetType=COMPANY)`를 암호화 저장한다. | `CompanyResponse`: `id`, `name`, `industry`, `region`, `address`, `website`, `description`, `tags`, `hasMemo`, `memoCount`, `latestMemoAt`, timestamps | `Company` insert, `Tag`, `TagAssignment`, `TagLog`, `PersonalMemo` 선택 insert. 태그 또는 initial Memo 처리 시 transaction 필요. | `ValidationError` 400 |
+| 회사 생성 API | `CreateCompany` | `CreateCompanyRequest`: `name` 필수, `industry`, `region`, `address`, `website`, `description`, `initialMemo` | 회사명을 trim하고 필수값을 검증한다. 같은 사용자 안의 유사 회사명은 후보로만 판단하고 MVP에서는 저장을 막지 않는다. `initialMemo`가 있으면 `PersonalMemo(targetType=COMPANY)`를 암호화 저장한다. | `CompanyResponse`: `id`, `name`, `industry`, `region`, `address`, `website`, `description`, `hasMemo`, `memoCount`, `latestMemoAt`, timestamps | `Company` insert, `PersonalMemo` 선택 insert. initial Memo 처리 시 transaction 필요. | `ValidationError` 400 |
 | 회사 상세 API | `GetCompany` | `GetCompanyRequest`: `companyId` path 필수 | 대상 회사의 소유권을 확인한다. 삭제된 회사면 `410 DeletedResource`를 반환한다. 회사 기본 정보, 회사 로그, Memo 기록, 관련 담당자/딜/제품 수를 조회한다. | `CompanyDetailResponse`: `company`, `logs`, `memos`, `contactCount`, `dealCount`, `productCount` | `Company`, `CompanyLog`, `PersonalMemo`, `Contact`, `Deal`, `ProductConnection` 조회. transaction 없음. | `CompanyNotFound` 404, `OwnershipViolation` 403, `DeletedResource` 410 |
-| 회사 수정 API | `UpdateCompany` | `UpdateCompanyRequest`: `companyId`, 수정 필드 | 소유권과 삭제 여부를 확인한다. 전달된 필드만 갱신한다. 태그를 수정하는 경우 기존 연결과 신규 연결을 재계산한다. 추가된 연결은 `TagAssignment` insert와 `TagLog(TAG_ASSIGNED)`, 제거된 연결은 `TagLog(TAG_UNASSIGNED)` insert 후 `TagAssignment` hard delete로 처리한다. | `CompanyResponse`: 수정된 회사 정보 | `Company` update, `TagAssignment` insert/delete, `TagLog` insert 선택. 태그 수정 시 transaction 필요. | `CompanyNotFound` 404, `DeletedResource` 409, `ValidationError` 400 |
+| 회사 수정 API | `UpdateCompany` | `UpdateCompanyRequest`: `companyId`, 수정 필드 | 소유권과 삭제 여부를 확인한다. 전달된 필드만 갱신한다. | `CompanyResponse`: 수정된 회사 정보 | `Company` update. transaction 없음. | `CompanyNotFound` 404, `DeletedResource` 409, `ValidationError` 400 |
 | 회사 삭제 API | `DeleteCompany` | `DeleteCompanyRequest`: `companyId` path 필수 | 소유권을 확인한다. 이미 삭제된 경우 `409 DeletedResource`를 반환한다. 삭제되지 않은 회사는 `deletedAt`, `permanentDeleteAt`을 기록한다. | `DeleteCompanyResponse`: `id`, `deletedAt`, `permanentDeleteAt` | `Company.deletedAt`, `Company.permanentDeleteAt` update. transaction 없음. | `CompanyNotFound` 404, `OwnershipViolation` 403, `DeletedResource` 409 |
 | 회사 복구 API | `RestoreCompany` | `RestoreCompanyRequest`: `companyId` path 필수 | 소유권을 확인한다. 삭제된 회사의 `deletedAt`, `permanentDeleteAt`을 null로 되돌린다. 삭제되지 않은 회사는 그대로 반환한다. | `CompanyResponse`: 복구된 회사 정보 | `Company.deletedAt`, `Company.permanentDeleteAt` update. transaction 없음. | `CompanyNotFound` 404, `OwnershipViolation` 403 |
 | 회사 로그 목록 API | `ListCompanyLogs` | `ListCompanyLogsRequest`: `companyId`, `page`, `pageSize` | 회사 소유권을 먼저 확인한다. 해당 회사의 로그를 최신 `loggedAt` 기준으로 조회한다. | `CompanyLogListResponse`: `items:CompanyLogResponse[]`, pagination | `Company`, `CompanyLog` 조회. transaction 없음. | `CompanyNotFound` 404, `OwnershipViolation` 403 |

@@ -1,6 +1,6 @@
-﻿# 데이터 모델 / ERD 초안
+# 데이터 모델 / ERD 초안
 
-> MVP는 명확한 영업 도메인 모델을 사용하되, 태그/메모/metadata/custom field로 확장성을 확보한다.
+> MVP는 명확한 영업 도메인 모델을 사용하되, 메모/metadata/custom field로 확장성을 확보한다.
 
 ---
 
@@ -34,8 +34,6 @@
 
 - Product 후속 확장: `ProductLog`, `ProductConnection`
 - `DealActivity`
-- `Tag`
-- `TagAssignment`
 - `PersonalMemo`
 - `AuditLog`
 - `Notification`
@@ -79,7 +77,6 @@ User
   │   └─ MeetingNoteDeal
   ├─ ImportUserLog
   │   └─ ImportUserLogRow
-  ├─ Tag
   └─ AuditLog / Notification / persistent ImportJob
 ```
 
@@ -616,24 +613,7 @@ User
 - 회의록 삭제는 `MeetingNote.deletedAt`, `deletedByUserId`, `trashExpiresAt`을 기록하는 soft delete이며, 공통 Trash API에서 복구한다.
 - Admin 조회, 범용 DealActivity table 전환은 후속 범위다.
 
-## 16. Tag
-
-- id
-- userId
-- name
-- color
-- createdAt
-- updatedAt
-
-## 17. TagAssignment
-
-- id
-- userId
-- tagId
-- targetType: COMPANY / CONTACT / PRODUCT / DEAL / SCHEDULE / MEETING_NOTE
-- targetId
-
-## 18. PersonalMemo
+## 16. PersonalMemo
 
 담당자/제품/딜의 Memo는 각 엔티티의 단일 `memo` 필드가 아니라 Log처럼 여러 건 누적되는 기록형 데이터로 저장한다.
 
@@ -658,7 +638,7 @@ Log는 객관적 사실, 변경, 만남, 소식, 이력 기록이고 Memo는 사
 - updatedAt
 - deletedAt
 
-## 19. AuditLog
+## 17. AuditLog
 
 - id
 - actorUserId
@@ -671,7 +651,7 @@ Log는 객관적 사실, 변경, 만남, 소식, 이력 기록이고 Memo는 사
 
 민감 데이터 원문 조회는 반드시 AuditLog를 남긴다.
 
-## 20. Notification
+## 18. Notification
 
 - id
 - userId
@@ -684,7 +664,7 @@ Log는 객관적 사실, 변경, 만남, 소식, 이력 기록이고 Memo는 사
 - status
 - metadata
 
-## 21. DataImport / ImportJob
+## 19. DataImport / ImportJob
 
 현재 구현된 DataImport DB 모델:
 
@@ -694,7 +674,7 @@ Log는 객관적 사실, 변경, 만남, 소식, 이력 기록이고 Memo는 사
 
 `ImportTemplate` 목적:
 
-- 회사/담당자/제품 불러오기 양식의 컬럼 정의와 샘플 row를 저장한다.
+- 회사/담당자/제품/딜 불러오기 양식의 컬럼 정의와 샘플 row를 저장한다.
 - 활성 양식만 사용자에게 노출한다.
 - 현재 기본 seed는 `COMPANY`, `PRODUCT`, `CONTACT` v1이다.
 
@@ -715,7 +695,7 @@ Log는 객관적 사실, 변경, 만남, 소식, 이력 기록이고 Memo는 사
 - 딜 불러오기는 기존 회사/담당자/제품 이름 매칭을 전제로 딜과 연결 row를 같은 transaction에서 생성한다.
 - persistent `ImportJob` table, 서버 재시작 후 이어받기는 후속 범위다.
 
-## 22. Mermaid ERD
+## 20. Mermaid ERD
 
 ```mermaid
 erDiagram
@@ -729,7 +709,6 @@ erDiagram
   USER ||--o{ DEAL : owns
   USER ||--o{ SCHEDULE : owns
   USER ||--o{ MEETING_NOTE : owns
-  USER ||--o{ TAG : owns
 
   COMPANY ||--o{ CONTACT : has
   COMPANY_FIELD ||--o{ COMPANY : classifies
@@ -747,10 +726,9 @@ erDiagram
   DEAL ||--o{ SCHEDULE : linked
 
   PRODUCT ||--o{ PRODUCT_CONNECTION : connects
-  TAG ||--o{ TAG_ASSIGNMENT : assigned
 ```
 
-## 23. 관련 문서
+## 21. 관련 문서
 
 - `AGENT/SOFTWARE_AGENT/DB_SCHEMA/README.md`
 - `AGENT/SOFTWARE_AGENT/DB_SCHEMA/AUTH_USER_SCHEMA.md`

@@ -94,6 +94,28 @@ class FakeAuthRepository implements AuthRepository {
     );
   }
 
+  // 기능 : fake OAuth 계정의 providerUserId를 안정 식별자로 갱신합니다.
+  async updateOAuthAccountProviderUserId(
+    oauthAccountId: string,
+    providerUserId: string
+  ): Promise<AuthOAuthAccountRecord> {
+    const account = this.oauthAccounts.find((item) => item.id === oauthAccountId);
+
+    if (!account) {
+      throw new Error(`Missing fake OAuth account: ${oauthAccountId}`);
+    }
+
+    const updated: AuthOAuthAccountRecord = {
+      ...account,
+      providerUserId,
+    };
+    this.oauthAccounts = this.oauthAccounts.map((item) =>
+      item.id === oauthAccountId ? updated : item
+    );
+
+    return updated;
+  }
+
   // 기능 : fake 사용자와 OAuth 계정을 생성해 메모리 목록에 저장합니다.
   async createUserWithOAuthAccount(
     input: CreateAuthUserInput
@@ -207,6 +229,7 @@ class FakeAuthRepository implements AuthRepository {
     const session: AuthSessionRecord = {
       id: `session-${this.sessions.length + 1}`,
       userId: input.userId,
+      authDeviceId: input.authDeviceId,
       status: "ACTIVE",
       refreshTokenHash: input.refreshTokenHash,
       expiresAt: input.expiresAt,
@@ -215,6 +238,21 @@ class FakeAuthRepository implements AuthRepository {
     this.sessions.push(session);
 
     return session;
+  }
+
+  // 기능 : fake 세션 목록에서 기기에 연결된 활성 세션을 조회합니다.
+  async findActiveSessionByDevice(
+    authDeviceId: string,
+    now: Date
+  ): Promise<AuthSessionRecord | null> {
+    return (
+      this.sessions.find(
+        (session) =>
+          session.authDeviceId === authDeviceId &&
+          session.status === "ACTIVE" &&
+          session.expiresAt > now
+      ) ?? null
+    );
   }
 
   // 기능 : 현재 테스트에서 사용하지 않는 세션 ID 조회를 null로 처리합니다.
@@ -233,8 +271,22 @@ class FakeAuthRepository implements AuthRepository {
     return null;
   }
 
-  // 기능 : 현재 테스트에서 별도 동작 없이 refresh token 회전 호출을 수용합니다.
-  async rotateRefreshToken(): Promise<void> {}
+  // 기능 : fake 세션의 refresh token과 만료 시각을 갱신합니다.
+  async rotateRefreshToken(
+    sessionId: string,
+    refreshTokenHash: string,
+    expiresAt: Date
+  ): Promise<void> {
+    this.sessions = this.sessions.map((session) =>
+      session.id === sessionId
+        ? {
+            ...session,
+            refreshTokenHash,
+            expiresAt,
+          }
+        : session
+    );
+  }
 
   // 기능 : 현재 테스트에서 별도 동작 없이 세션 폐기 호출을 수용합니다.
   async revokeSession(): Promise<void> {}
@@ -340,18 +392,96 @@ describe("ExchangeExternalAuthTokenUseCase", () => {
     ).rejects.toBeInstanceOf(DeviceSlotAlreadyRegisteredError);
     expect(repository.sessions).toHaveLength(0);
   });
+
+  // 기능 : 같은 기기의 반복 token exchange가 AuthSession row를 늘리지 않는지 검증합니다.
+  it("reuses the active session for repeated exchanges from the same device", async () => {
+    const repository = new FakeAuthRepository();
+    const useCase = createUseCase(repository, {
+      email: "user@example.com",
+      name: "User",
+    });
+    const command = {
+      supabaseAccessToken: "supabase-token",
+      deviceSlot: "personal_laptop",
+      deviceId: "stable-device-id",
+      deviceLabel: "개인 노트북 Chrome",
+      replaceExistingDevice: false,
+      userAgent: "Jest",
+      ipAddress: "127.0.0.1",
+    };
+
+    const first = await useCase.execute(command);
+    const second = await useCase.execute(command);
+
+    expect(first.response.accessToken).toBe("app-access-token");
+    expect(second.response.accessToken).toBe("app-access-token");
+    expect(repository.devices).toHaveLength(1);
+    expect(repository.sessions).toHaveLength(1);
+    expect(repository.sessions[0]?.id).toBe("session-1");
+  });
+
+  // 기능 : 기존 Supabase user id 기반 OAuth 매핑을 provider 계정 ID 기반 매핑으로 승격합니다.
+  it("upgrades a legacy Supabase auth id OAuth mapping to the provider account id", async () => {
+    const repository = new FakeAuthRepository();
+    repository.users.push({
+      id: "user-1",
+      email: "user@example.com",
+      displayName: "User",
+      role: "USER",
+      status: "ACTIVE",
+      timeZone: "Asia/Seoul",
+      deletedAt: null,
+    });
+    repository.oauthAccounts.push({
+      id: "oauth-1",
+      userId: "user-1",
+      provider: "google",
+      providerUserId: "supabase-auth-user-1",
+    });
+    const useCase = createUseCase(
+      repository,
+      {
+        email: "user@example.com",
+        name: "User",
+      },
+      {
+        authUserId: "supabase-auth-user-1",
+        providerAccountId: "google-provider-user-1",
+      }
+    );
+
+    await useCase.execute({
+      supabaseAccessToken: "supabase-token",
+      deviceSlot: "personal_laptop",
+      deviceId: "stable-device-id",
+      deviceLabel: "개인 노트북 Chrome",
+      replaceExistingDevice: false,
+      userAgent: "Jest",
+      ipAddress: "127.0.0.1",
+    });
+
+    expect(repository.users).toHaveLength(1);
+    expect(repository.oauthAccounts).toHaveLength(1);
+    expect(repository.oauthAccounts[0]?.providerUserId).toBe(
+      "google-provider-user-1"
+    );
+  });
 });
 
 // 기능 : ExchangeExternalAuthTokenUseCase 테스트 인스턴스를 생성합니다.
 function createUseCase(
   repository: FakeAuthRepository,
-  user: { readonly email: string; readonly name: string | null }
+  user: { readonly email: string; readonly name: string | null },
+  externalIds: {
+    readonly authUserId?: string;
+    readonly providerAccountId?: string;
+  } = {}
 ): ExchangeExternalAuthTokenUseCase {
   return new ExchangeExternalAuthTokenUseCase(
     new FakeExternalAuthVerifier({
       provider: "google",
-      providerAccountId: "external-user-1",
-      authUserId: "external-user-1",
+      providerAccountId: externalIds.providerAccountId ?? "external-user-1",
+      authUserId: externalIds.authUserId ?? "external-user-1",
       email: user.email,
       name: user.name,
     }),

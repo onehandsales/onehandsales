@@ -22,7 +22,7 @@
 전제 조건: Node.js 24 LTS가 활성화되어 있어야 한다.
 
 ```bash
-cp .env.example .env
+# .env를 로컬/배포 환경에 맞게 작성
 pnpm install
 pnpm run dev
 ```

@@ -1,4 +1,4 @@
-﻿# P4 G21-G29 입력/출력 자동화 상세 명세
+# P4 G21-G29 입력/출력 자동화 상세 명세
 
 ## 1. 목적
 
@@ -264,7 +264,6 @@ G22 명함 OCR 화면이 사용할 API를 제공한다.
 - 모든 deletedAt 삭제 대상 모델
 - 우선 노출: Company, Contact, Product, Deal, Schedule, MeetingNote
 - targetType 필터 지원: CompanyLog, ContactLog, ProductLog, ProductConnection, DealActivity, PersonalMemo
-- 휴지통 제외: Tag, TagAssignment. 태그와 태그 연결은 hard delete하고 `TagLog`로 이력을 남긴다.
 
 ### 화면 구성
 

@@ -1,4 +1,4 @@
-export type AuthProviderId = "kakao" | "naver" | "google";
+export type AuthProviderId = "kakao" | "google";
 
 export type DeviceSlot = "mobile" | "personal_laptop" | "work_laptop";
 

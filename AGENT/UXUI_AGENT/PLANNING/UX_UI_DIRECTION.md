@@ -1,4 +1,4 @@
-﻿# UX/UI Direction
+# UX/UI Direction
 
 ## 1. Product UX Principle
 
@@ -438,7 +438,6 @@ Optional advanced fields:
 
 - numeric probability
 - region
-- tags
 - recent activity count
 
 ## 11. Detail Panel Direction
@@ -577,7 +576,6 @@ Deal list filters:
 - next action status
 - due/expected close date
 - company/contact
-- tag
 
 Mobile:
 

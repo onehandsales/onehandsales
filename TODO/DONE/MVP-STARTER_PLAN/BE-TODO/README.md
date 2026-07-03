@@ -1,4 +1,4 @@
-﻿# BE TODO
+# BE TODO
 
 ## 1. 목적
 
@@ -45,7 +45,6 @@ meeting-note
 business-card
 import-export
 notification
-tag
 audit-log
 admin
 shared

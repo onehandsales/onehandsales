@@ -5,6 +5,7 @@
 - `GET /api/contacts`
 - `GET /api/contacts/export/xlsx`
 - `GET /api/contacts/company-options`
+- `GET /api/contacts/:contactId/deals`
 - `GET /api/contact-job-grades`
 - `POST /api/contact-job-grades`
 - `DELETE /api/contact-job-grades/:jobGradeId`
@@ -35,4 +36,4 @@
 - 담당자 생성 시 `contactMemo`가 있으면 같은 transaction에서 `ContactMemoLog` 첫 데이터로 저장한다.
 - 담당자 삭제는 실제 row 삭제가 아니라 `deletedAt`, `deletedByUserId`, `trashExpiresAt` 설정으로 처리한다.
 - 개인 비밀 메모 평문은 API DTO에서만 `memo`로 다루고, DB에는 `memoCiphertext`, `memoKeyVersion`만 저장한다.
-- API 계약은 `TODO/CONTACT_DOMAIN_PLAN/COMMON/API-SPEC/CONTACT_API_DETAIL.md`를 따른다.
+- API 계약은 `TODO/DONE/CONTACT_DOMAIN_PLAN/COMMON/API-SPEC/CONTACT_API_DETAIL.md`와 `TODO/DONE/ADDITIONAL_WORK_PLAN/COMMON/API-SPEC/CONTACT_DEAL_LIST_API.md`를 따른다.

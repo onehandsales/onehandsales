@@ -52,7 +52,7 @@ FRONT_AGENT/
 
 ## 6. 현재 구현 스냅샷
 
-Snapshot date: 2026-07-01
+Snapshot date: 2026-07-03
 
 User Web:
 
