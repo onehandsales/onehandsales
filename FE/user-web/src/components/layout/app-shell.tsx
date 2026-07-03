@@ -273,7 +273,7 @@ export function AppShell() {
     };
     const meta = pageMetaMap[pathname] ?? { label: "한손에 영업", icon: House };
     const actions =
-      pathname === "/deals" || pathname === "/"
+      pathname === "/deals"
         ? [
             {
               icon: Plus,
