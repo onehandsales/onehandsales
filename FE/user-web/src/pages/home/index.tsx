@@ -201,7 +201,7 @@ export function HomePage() {
         </div>
 
         <div className="grid min-h-0 gap-5 xl:grid-cols-[minmax(0,1.35fr)_minmax(340px,0.65fr)]">
-          <div className="grid gap-5">
+          <div className="grid gap-5 xl:grid-rows-[auto_1fr]">
             <DashboardSection
               actionHref="/schedules"
               actionLabel="일정"
@@ -237,8 +237,8 @@ export function HomePage() {
                 icon={TrendingUp}
                 title="딜 현황"
               >
-                <div className="grid gap-4">
-                  <div className="grid gap-3 rounded-lg border border-[#EEF2F7] bg-[#FAFBFC] p-4 sm:grid-cols-2">
+                <div className="grid gap-3">
+                  <div className="grid gap-3 rounded-lg border border-[#EEF2F7] bg-[#FAFBFC] p-3 sm:grid-cols-2">
                     <MiniMetric label="진행 딜 금액" value={formatWon(pipelineValue)} />
                     <MiniMetric
                       label="최근 목록 기준"
@@ -265,22 +265,6 @@ export function HomePage() {
                 </ListState>
               </DashboardSection>
             </div>
-
-            <DashboardSection
-              actionHref="/meeting-notes"
-              actionLabel="회의록"
-              icon={NotebookPen}
-              title="최근 회의록"
-            >
-              <ListState
-                emptyText="회의록을 작성하면 최근 기록을 볼 수 있어요."
-                isLoading={meetingNotesQuery.isLoading}
-              >
-                {meetingNotes.slice(0, 5).map((meetingNote) => (
-                  <MeetingNoteItem key={meetingNote.id} meetingNote={meetingNote} />
-                ))}
-              </ListState>
-            </DashboardSection>
           </div>
 
           <div className="grid content-start gap-5">
@@ -303,7 +287,7 @@ export function HomePage() {
             </DashboardSection>
 
             <DashboardSection
-              actionHref="/deals"
+              actionHref="/app/deals"
               actionLabel="전체"
               icon={CheckCircle2}
               title="최근 활동"
@@ -496,23 +480,23 @@ function StageBreakdown({
   }
 
   return (
-    <div className="grid gap-3">
+    <div className="grid gap-2">
       {DEAL_STATUS_LIST.map((status) => {
         const count = countMap.get(status) ?? 0;
         const width = `${Math.max(5, (count / maxCount) * 100)}%`;
         const isClosed = status === "WON" || status === "LOST";
 
         return (
-          <div className="grid gap-1.5" key={status}>
+          <div className="grid gap-1" key={status}>
             <div className="flex items-center justify-between gap-3">
-              <span className="text-[12px] font-medium text-[#475569]">
+              <span className="text-[11px] font-medium text-[#475569]">
                 {DEAL_STATUS_LABEL[status]}
               </span>
-              <span className="text-[12px] font-semibold text-[#111827]">
+              <span className="text-[11px] font-semibold text-[#111827]">
                 {count.toLocaleString("ko-KR")}건
               </span>
             </div>
-            <div className="h-2 overflow-hidden rounded-full bg-[#F1F5F9]">
+            <div className="h-1.5 overflow-hidden rounded-full bg-[#F1F5F9]">
               <div
                 className={cn(
                   "h-full rounded-full",

@@ -28,8 +28,9 @@ import { TrashPage } from "@/pages/trash";
 import { MorePage } from "@/pages/more";
 
 export const router = createBrowserRouter([
-  { path: "/", element: <IntroducePage /> },
+  { path: "/", element: <LoginPage /> },
   { path: "/login", element: <LoginPage /> },
+  { path: "/introduce", element: <IntroducePage /> },
   { path: "/auth/callback", element: <LoginPage /> },
   {
     path: "/app",

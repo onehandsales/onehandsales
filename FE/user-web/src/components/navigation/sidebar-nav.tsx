@@ -4,16 +4,13 @@ import {
   CalendarDays,
   Camera,
   IdCard,
-  LogIn,
-  LogOut,
   NotebookPen,
   Package,
   Settings,
   Trash2,
   type LucideIcon,
 } from "lucide-react";
-import { NavLink, useNavigate } from "react-router-dom";
-import { useAuthSession } from "@/features/auth";
+import { NavLink } from "react-router-dom";
 import { DataUploadIcon } from "@/components/icons/data-upload-icon";
 import { cn } from "@/utils/cn";
 
@@ -60,14 +57,6 @@ type SidebarNavProps = {
 };
 
 export function SidebarNav({ className }: SidebarNavProps) {
-  const { isAuthenticated, logout } = useAuthSession();
-  const navigate = useNavigate();
-
-  const handleLogout = async () => {
-    await logout();
-    navigate("/");
-  };
-
   return (
     <nav className={cn("flex flex-col gap-4", className)}>
       {groups.map((group) => (
@@ -109,31 +98,6 @@ export function SidebarNav({ className }: SidebarNavProps) {
           </div>
         </div>
       ))}
-      <div className="mt-auto">
-        {isAuthenticated ? (
-          <button
-            className="group flex h-8 w-full items-center gap-2.5 rounded-md px-2 text-[13px] font-medium text-[#4B5563] transition-colors hover:bg-[#E9EBF0] hover:text-[#111827]"
-            onClick={() => void handleLogout()}
-          >
-            <LogOut
-              className="h-[15px] w-[15px] shrink-0 text-[#9CA3AF] group-hover:text-[#6B7280]"
-              strokeWidth={1.75}
-            />
-            <span>로그아웃</span>
-          </button>
-        ) : (
-          <NavLink
-            className="group flex h-8 items-center gap-2.5 rounded-md px-2 text-[13px] font-medium text-[#4B5563] transition-colors hover:bg-[#E9EBF0] hover:text-[#111827]"
-            to="/"
-          >
-            <LogIn
-              className="h-[15px] w-[15px] shrink-0 text-[#9CA3AF] group-hover:text-[#6B7280]"
-              strokeWidth={1.75}
-            />
-            <span>로그인</span>
-          </NavLink>
-        )}
-      </div>
     </nav>
   );
 }

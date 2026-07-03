@@ -3,7 +3,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { useAuthSession } from "@/features/auth";
 import { authService } from "@/features/auth/auth-service";
 import { AuthLandingPage } from "@/features/auth/components/auth-landing-page";
-import { AuthLoginModal } from "@/features/auth/components/auth-login-modal";
+import { AuthLoginPage } from "@/features/auth/components/auth-login-page";
 import type {
   AuthProviderId,
   AuthProviderOption,
@@ -29,9 +29,8 @@ export function LoginPage() {
   const [providers, setProviders] = useState<AuthProviderOption[]>([]);
   const [providersError, setProvidersError] = useState<string | null>(null);
   const [isProvidersLoading, setIsProvidersLoading] = useState(true);
-  const [callbackMessage, setCallbackMessage] = useState<string | null>(null);
   const [isCallbackLoginLoading, setIsCallbackLoginLoading] = useState(false);
-  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
+  const isLoginRoute = location.pathname === "/login";
   const [pendingProvider, setPendingProvider] = useState<AuthProviderId | null>(
     null
   );
@@ -99,7 +98,6 @@ export function LoginPage() {
         }
 
         if (exchanged) {
-          setCallbackMessage(null);
           await waitForMinimumDuration(
             exchangeState.startedAt,
             minimumLoginLoadingMs
@@ -119,7 +117,6 @@ export function LoginPage() {
         if (isMounted) {
           callbackExchangeRef.current = null;
           setIsCallbackLoginLoading(false);
-          setCallbackMessage(null);
         }
       });
 
@@ -147,25 +144,25 @@ export function LoginPage() {
     });
   };
 
+  if (isLoginRoute || location.pathname === "/auth/callback") {
+    return (
+      <AuthLoginPage
+        authError={authError}
+        enabledProviders={enabledProviders}
+        isLoginLoading={isCallbackLoginLoading}
+        isPending={isPending}
+        isProvidersLoading={isProvidersLoading}
+        pendingProvider={pendingProvider}
+        providersError={providersError}
+        onProviderLogin={onProviderLogin}
+      />
+    );
+  }
+
+  // "/" — 랜딩 페이지
   return (
-    <AuthLandingPage
-      isModalOpen={isLoginModalOpen}
-      onOpenLogin={() => setIsLoginModalOpen(true)}
-    >
-      {isLoginModalOpen ? (
-        <AuthLoginModal
-          authError={authError}
-          callbackMessage={callbackMessage}
-          enabledProviders={enabledProviders}
-          isLoginLoading={isCallbackLoginLoading}
-          isPending={isPending}
-          isProvidersLoading={isProvidersLoading}
-          pendingProvider={pendingProvider}
-          providersError={providersError}
-          onClose={() => setIsLoginModalOpen(false)}
-          onProviderLogin={onProviderLogin}
-        />
-      ) : null}
+    <AuthLandingPage isModalOpen={false} onOpenLogin={() => void navigate("/login")}>
+      {null}
     </AuthLandingPage>
   );
 }
