@@ -6,6 +6,7 @@ import {
   BriefcaseBusiness,
   CalendarDays,
   House,
+  LogOut,
   Package,
   Pencil,
   Plus,
@@ -15,6 +16,7 @@ import {
   X,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useAuthSession } from "@/features/auth";
 import { SearchModal } from "@/features/search";
 import { useEffect, useState } from "react";
 import { useDealDetail } from "@/features/deal/hooks/use-deal-detail";
@@ -25,7 +27,7 @@ import { PageHeader } from "@/components/layout/page-header";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { getApiErrorMessage } from "@/lib/api-client";
 
-const HOME_PATH = "/";
+const HOME_PATH = "/app";
 
 // ── 딜 상세 TopBar ──────────────────────────────────────────
 function DealDetailHeader({ dealId }: { readonly dealId: string }) {
@@ -41,7 +43,7 @@ function DealDetailHeader({ dealId }: { readonly dealId: string }) {
     try {
       await deleteDealMutation.mutateAsync(dealId);
       setDeleteConfirmOpen(false);
-      void navigate("/deals", {
+      void navigate("/app/deals", {
         replace: true,
         state: { notice: "딜을 삭제했어요." },
       });
@@ -54,7 +56,7 @@ function DealDetailHeader({ dealId }: { readonly dealId: string }) {
     <>
       <PageHeader
         breadcrumbs={[
-          { label: "딜", to: "/deals", icon: BriefcaseBusiness },
+          { label: "딜", to: "/app/deals", icon: BriefcaseBusiness },
           { label: dealName },
         ]}
         actions={[
@@ -101,7 +103,7 @@ function ProductDetailHeader({ productId }: { readonly productId: string }) {
 
   const toggleEdit = () => {
     void navigate(
-      isEditing ? `/products/${productId}` : `/products/${productId}?edit=1`,
+      isEditing ? `/app/products/${productId}` : `/app/products/${productId}?edit=1`,
       { replace: true },
     );
   };
@@ -111,7 +113,7 @@ function ProductDetailHeader({ productId }: { readonly productId: string }) {
     try {
       await deleteProductMutation.mutateAsync(productId);
       setDeleteConfirmOpen(false);
-      void navigate("/products", {
+      void navigate("/app/products", {
         replace: true,
         state: { notice: "제품을 삭제했어요." },
       });
@@ -124,7 +126,7 @@ function ProductDetailHeader({ productId }: { readonly productId: string }) {
     <>
       <PageHeader
         breadcrumbs={[
-          { label: "제품", to: "/products", icon: Package },
+          { label: "제품", to: "/app/products", icon: Package },
           { label: productName },
         ]}
         actions={[
@@ -165,8 +167,15 @@ function ProductDetailHeader({ productId }: { readonly productId: string }) {
 
 export function AppShell() {
   const { pathname } = useLocation();
+  const navigate = useNavigate();
+  const { logout } = useAuthSession();
   const [searchOpen, setSearchOpen] = useState(false);
   const isHome = pathname === HOME_PATH;
+
+  const handleLogout = async () => {
+    await logout();
+    void navigate("/");
+  };
 
   // ⌘K / Ctrl+K 단축키로 검색 모달 열기
   useEffect(() => {
@@ -180,29 +189,29 @@ export function AppShell() {
     return () => window.removeEventListener("keydown", onKeyDown);
   }, []);
 
-  // /products/:id 패턴 감지
-  const productDetailMatch = /^\/products\/([^/]+)$/.exec(pathname);
+  // /app/products/:id 패턴 감지
+  const productDetailMatch = /^\/app\/products\/([^/]+)$/.exec(pathname);
   const productDetailId = productDetailMatch
     ? (productDetailMatch[1] ?? "")
     : "";
   const isProductDetail =
     productDetailId.length > 0 && productDetailId !== "new";
 
-  // /deals/:id 패턴 감지
-  const dealDetailMatch = /^\/deals\/([^/]+)$/.exec(pathname);
+  // /app/deals/:id 패턴 감지
+  const dealDetailMatch = /^\/app\/deals\/([^/]+)$/.exec(pathname);
   const dealDetailId = dealDetailMatch ? (dealDetailMatch[1] ?? "") : "";
   const isDealDetail = dealDetailId.length > 0 && dealDetailId !== "new";
 
-  // /companies/:id 패턴 감지
-  const companyDetailMatch = /^\/companies\/([^/]+)$/.exec(pathname);
+  // /app/companies/:id 패턴 감지
+  const companyDetailMatch = /^\/app\/companies\/([^/]+)$/.exec(pathname);
   const companyDetailId = companyDetailMatch
     ? (companyDetailMatch[1] ?? "")
     : "";
   const isCompanyDetail =
     companyDetailId.length > 0 && companyDetailId !== "new";
 
-  // /contacts/:id 패턴 감지
-  const contactDetailMatch = /^\/contacts\/([^/]+)$/.exec(pathname);
+  // /app/contacts/:id 패턴 감지
+  const contactDetailMatch = /^\/app\/contacts\/([^/]+)$/.exec(pathname);
   const contactDetailId = contactDetailMatch
     ? (contactDetailMatch[1] ?? "")
     : "";
@@ -210,29 +219,29 @@ export function AppShell() {
     contactDetailId.length > 0 && contactDetailId !== "scan";
 
   // 자체 헤더를 가진 화면들 — app-shell TopBar 숨김
-  const isDealListPage = pathname === "/deals" || pathname === "/deals/new";
+  const isDealListPage = pathname === "/app/deals" || pathname === "/app/deals/new";
   const isProductListPage =
-    pathname === "/products" || pathname === "/products/new";
+    pathname === "/app/products" || pathname === "/app/products/new";
   const isCompanyListPage =
-    pathname === "/companies" ||
-    pathname === "/companies/new" ||
+    pathname === "/app/companies" ||
+    pathname === "/app/companies/new" ||
     isCompanyDetail ||
     isContactDetail;
-  const isContactListPage = pathname === "/contacts";
+  const isContactListPage = pathname === "/app/contacts";
   const isMeetingNoteListPage =
-    pathname === "/meeting-notes" || /^\/meeting-notes\/[^/]+$/.test(pathname);
+    pathname === "/app/meeting-notes" || /^\/app\/meeting-notes\/[^/]+$/.test(pathname);
   const isSchedulePage =
-    pathname === "/schedules" || pathname === "/schedules/week";
-  const isTrashPage = pathname === "/trash";
-  const isBusinessCardPage = pathname === "/business-cards";
-  const isImportPage = pathname === "/import";
-  const isImportDetailPage = /^\/import\/[^/]+$/.test(pathname);
+    pathname === "/app/schedules" || pathname === "/app/schedules/week";
+  const isTrashPage = pathname === "/app/trash";
+  const isBusinessCardPage = pathname === "/app/business-cards";
+  const isImportPage = pathname === "/app/import";
+  const isImportDetailPage = /^\/app\/import\/[^/]+$/.test(pathname);
   const isFixedViewportPage = isHome || isProductDetail;
 
   // 모바일 헤더 숨김 처리: 상세 페이지 및 자체 헤더 보유 페이지
-  const isMeetingNoteDetail = /^\/meeting-notes\/[^/]+$/.test(pathname);
+  const isMeetingNoteDetail = /^\/app\/meeting-notes\/[^/]+$/.test(pathname);
   const isScheduleRoute =
-    pathname === "/schedules" || pathname === "/schedules/week";
+    pathname === "/app/schedules" || pathname === "/app/schedules/week";
   const isMobileHeaderHidden =
     isDealDetail ||
     isCompanyDetail ||
@@ -264,21 +273,21 @@ export function AppShell() {
 
     type PageMeta = { label: string; icon: typeof House };
     const pageMetaMap: Record<string, PageMeta> = {
-      "/": { label: "홈", icon: House },
-      "/deals": { label: "딜", icon: BriefcaseBusiness },
-      "/deals/new": { label: "딜", icon: BriefcaseBusiness },
-      "/schedules": { label: "일정", icon: CalendarDays },
-      "/trash": { label: "휴지통", icon: Trash2 },
-      "/settings": { label: "설정", icon: Settings },
+      "/app": { label: "홈", icon: House },
+      "/app/deals": { label: "딜", icon: BriefcaseBusiness },
+      "/app/deals/new": { label: "딜", icon: BriefcaseBusiness },
+      "/app/schedules": { label: "일정", icon: CalendarDays },
+      "/app/trash": { label: "휴지통", icon: Trash2 },
+      "/app/settings": { label: "설정", icon: Settings },
     };
     const meta = pageMetaMap[pathname] ?? { label: "한손에 영업", icon: House };
     const actions =
-      pathname === "/deals" || pathname === "/"
+      pathname === "/app/deals" || pathname === "/app"
         ? [
             {
               icon: Plus,
               tooltip: "딜 생성",
-              href: "/deals/new",
+              href: "/app/deals/new",
               variant: "primary" as const,
             },
           ]
@@ -340,6 +349,13 @@ export function AppShell() {
               </p>
               <p className="text-[11px] text-[#9CA3AF]">Sales Manager</p>
             </div>
+            <button
+              className="shrink-0 rounded-md p-1.5 text-[#9CA3AF] transition-colors hover:bg-[#E9EBF0] hover:text-[#374151]"
+              title="로그아웃"
+              onClick={() => void handleLogout()}
+            >
+              <LogOut className="h-4 w-4" strokeWidth={1.75} />
+            </button>
           </div>
         </aside>
 

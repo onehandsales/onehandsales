@@ -23,7 +23,7 @@ export function ProtectedRoute({ children }: ProtectedRouteProps) {
       <Navigate
         replace
         state={{ from: `${location.pathname}${location.search}` }}
-        to="/login"
+        to="/"
       />
     );
   }

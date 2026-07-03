@@ -34,7 +34,7 @@ export function ScheduleWeekReportScreen() {
         <div>
           <Link
             className="text-sm font-medium text-muted-foreground hover:text-primary"
-            to="/schedules"
+            to="/app/schedules"
           >
             일정
           </Link>

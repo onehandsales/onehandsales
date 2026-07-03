@@ -148,7 +148,7 @@ export function CompanyDetailScreen({ companyId }: CompanyDetailScreenProps) {
     try {
       await deleteCompanyMutation.mutateAsync(company.id);
       setDeleteConfirmOpen(false);
-      void navigate("/companies", {
+      void navigate("/app/companies", {
         replace: true,
         state: {
           notice: LOG_DELETE_SUCCESS_MESSAGE,
@@ -184,7 +184,7 @@ export function CompanyDetailScreen({ companyId }: CompanyDetailScreenProps) {
 
         {/* TopBar */}
         <div className="flex h-16 items-center gap-3 bg-transparent px-6">
-          <Link to="/companies">
+          <Link to="/app/companies">
             <ChevronLeft className="h-5 w-5 text-[#9CA3AF]" />
           </Link>
           <div className="flex flex-1 items-center gap-1.5 text-[13px]">
@@ -263,7 +263,7 @@ export function CompanyDetailScreen({ companyId }: CompanyDetailScreenProps) {
 
         {/* TopBar */}
         <div className="flex h-16 shrink-0 items-center gap-3 bg-transparent px-6">
-          <Link to="/companies">
+          <Link to="/app/companies">
             <ChevronLeft className="h-5 w-5 text-[#9CA3AF]" />
           </Link>
           <div className="flex flex-1 items-center gap-1.5 text-[13px]">
@@ -591,7 +591,7 @@ function ConnectedContactsTable({
               <Link
                 className="flex h-[58px] items-center gap-3 border-b border-[#F3F4F6] bg-white px-4 hover:bg-[#F9FAFB] transition-colors last:border-0"
                 key={contact.id}
-                to={`/contacts/${contact.id}`}
+                to={`/app/contacts/${contact.id}`}
               >
                 <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#DBEAFE]">
                   <UserRound className="h-3.5 w-3.5 text-[#4880EE]" />
@@ -664,7 +664,7 @@ function ConnectedDealsTable({
             <Link
               className="flex h-[58px] items-center gap-3 border-b border-[#F3F4F6] bg-white px-4 hover:bg-[#F9FAFB] transition-colors last:border-0"
               key={deal.id}
-              to={`/deals/${deal.id}`}
+              to={`/app/deals/${deal.id}`}
             >
               <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#FEF2F2]">
                 <BriefcaseBusiness className="h-3.5 w-3.5 text-[#DC2626]" />
@@ -1312,7 +1312,7 @@ function CompanyDetailError({
     <div className="flex min-h-full flex-col bg-[#FAFAF8]">
       <PageHeader
         breadcrumbs={[
-          { label: "회사", to: "/companies", icon: Building2 },
+          { label: "회사", to: "/app/companies", icon: Building2 },
           { label: "오류" },
         ]}
       />

@@ -30,27 +30,27 @@ const groups: Array<{
     label: "주요 메뉴",
     items: [
       // { label: "홈", to: "/", icon: House, end: true },
-      { label: "딜", to: "/deals", icon: BriefcaseBusiness },
-      { label: "회사", to: "/companies", icon: Building2 },
-      { label: "담당자", to: "/contacts", icon: IdCard },
-      { label: "제품", to: "/products", icon: Package },
+      { label: "딜", to: "/app/deals", icon: BriefcaseBusiness },
+      { label: "회사", to: "/app/companies", icon: Building2 },
+      { label: "담당자", to: "/app/contacts", icon: IdCard },
+      { label: "제품", to: "/app/products", icon: Package },
     ],
   },
   {
     label: "업무",
     items: [
-      { label: "일정", to: "/schedules", icon: CalendarDays },
-      { label: "회의록", to: "/meeting-notes", icon: NotebookPen },
-      { label: "명함 스캔", to: "/business-cards", icon: Camera },
-      { label: "데이터 업로드", to: "/import", icon: DataUploadIcon },
+      { label: "일정", to: "/app/schedules", icon: CalendarDays },
+      { label: "회의록", to: "/app/meeting-notes", icon: NotebookPen },
+      { label: "명함 스캔", to: "/app/business-cards", icon: Camera },
+      { label: "데이터 업로드", to: "/app/import", icon: DataUploadIcon },
     ],
   },
   {
     label: "관리",
     items: [
       // 핵심 기능 UX 유지보수 이후 휴지통 기능을 다시 노출한다.
-      { label: "휴지통", to: "/trash", icon: Trash2 },
-      { label: "설정", to: "/settings", icon: Settings },
+      { label: "휴지통", to: "/app/trash", icon: Trash2 },
+      { label: "설정", to: "/app/settings", icon: Settings },
     ],
   },
 ];
@@ -65,7 +65,7 @@ export function SidebarNav({ className }: SidebarNavProps) {
 
   const handleLogout = async () => {
     await logout();
-    navigate("/login");
+    navigate("/");
   };
 
   return (
@@ -124,7 +124,7 @@ export function SidebarNav({ className }: SidebarNavProps) {
         ) : (
           <NavLink
             className="group flex h-8 items-center gap-2.5 rounded-md px-2 text-[13px] font-medium text-[#4B5563] transition-colors hover:bg-[#E9EBF0] hover:text-[#111827]"
-            to="/login"
+            to="/"
           >
             <LogIn
               className="h-[15px] w-[15px] shrink-0 text-[#9CA3AF] group-hover:text-[#6B7280]"

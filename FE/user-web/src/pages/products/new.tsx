@@ -8,7 +8,7 @@ export function ProductNewPage() {
     <ProductListScreen
       initialCreateOpen
       onCreateDialogClose={() => {
-        void navigate("/products", { replace: true });
+        void navigate("/app/products", { replace: true });
       }}
     />
   );

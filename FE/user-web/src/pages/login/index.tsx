@@ -31,7 +31,7 @@ export function LoginPage() {
   const [providersError, setProvidersError] = useState<string | null>(null);
   const [isProvidersLoading, setIsProvidersLoading] = useState(true);
   const [callbackMessage, setCallbackMessage] = useState<string | null>(null);
-  const [isLoginModalOpen, setIsLoginModalOpen] = useState(true);
+  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const redirectTo = getRedirectPath(location.state);
   const enabledProviders = useMemo(
     () => providers.filter((provider) => provider.enabled),
@@ -133,7 +133,7 @@ export function LoginPage() {
 
 function getRedirectPath(state: unknown) {
   if (!state || typeof state !== "object" || Array.isArray(state)) {
-    return "/";
+    return "/app";
   }
 
   const from = (state as Record<string, unknown>).from;

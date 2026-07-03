@@ -8,7 +8,7 @@ export function CompanyNewPage() {
     <CompanyListScreen
       initialCreateOpen
       onCreateDialogClose={() => {
-        void navigate("/companies", { replace: true });
+        void navigate("/app/companies", { replace: true });
       }}
     />
   );
