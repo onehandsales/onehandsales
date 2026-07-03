@@ -13,6 +13,7 @@ import { DealNewPage } from "@/pages/deals/new";
 import { HomePage } from "@/pages/home";
 import { ImportDetailPage } from "@/pages/import/detail";
 import { ImportPage } from "@/pages/import";
+import { IntroducePage } from "@/pages/introduce";
 import { LoginPage } from "@/pages/login";
 import { MeetingNoteDetailPage } from "@/pages/meeting-notes/detail";
 import { MeetingNotesPage } from "@/pages/meeting-notes";
@@ -27,6 +28,7 @@ import { TrashPage } from "@/pages/trash";
 import { MorePage } from "@/pages/more";
 
 export const router = createBrowserRouter([
+  { path: "/introduce", element: <IntroducePage /> },
   { path: "/login", element: <LoginPage /> },
   { path: "/auth/callback", element: <LoginPage /> },
   {
