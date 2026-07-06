@@ -427,7 +427,7 @@ test.describe("User Web smoke E2E", () => {
       const dialog = getDialog(page, "딜 추가");
 
       await expect(dialog).toBeVisible();
-      await dialog.getByLabel("딜명").fill(DEAL_TITLE);
+      await dialog.getByLabel("딜이름").fill(DEAL_TITLE);
       await dialog.getByLabel("금액").fill("1200000");
       await selectSearchOption(dialog, "회사", COMPANY_NAME);
       await selectSearchOption(dialog, "담당자", CONTACT_NAME);

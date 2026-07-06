@@ -382,7 +382,7 @@ export class PrismaTrashRepository implements TrashRepository {
       trashExpiresAt: deal.trashExpiresAt,
       summary: `${deal.dealName} 딜 데이터`,
       fields: [
-        this.createField("딜명", deal.dealName),
+        this.createField("딜이름", deal.dealName),
         this.createField("금액", this.formatNumber(deal.dealCost)),
         this.createField("상태", deal.dealStatus),
         this.createField("예상 종료일", this.formatDateOnly(deal.expectedEndDate)),

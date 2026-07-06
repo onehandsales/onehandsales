@@ -33,7 +33,7 @@ const expectedEndDateSchema = z
 
 // 기능 : 딜 생성 form 스키마
 export const dealCreateFormSchema = z.object({
-  dealName: z.string().trim().min(1, "딜명을 입력해 주세요."),
+  dealName: z.string().trim().min(1, "딜이름을 입력해 주세요."),
   dealCost: dealCostSchema,
   companyIds: z.array(z.string()).min(1, "회사를 선택해 주세요."),
   contactIds: z.array(z.string()).min(1, "담당자를 선택해 주세요."),
@@ -54,7 +54,7 @@ export type DealCreateFormValues = z.infer<typeof dealCreateFormSchema>;
 
 // 기능 : 딜 수정 form 스키마
 export const dealUpdateFormSchema = z.object({
-  dealName: z.string().trim().min(1, "딜명을 입력해 주세요."),
+  dealName: z.string().trim().min(1, "딜이름을 입력해 주세요."),
   dealCost: dealCostSchema,
   companyIds: z.array(z.string()).min(1, "회사를 선택해 주세요."),
   contactIds: z.array(z.string()).min(1, "담당자를 선택해 주세요."),

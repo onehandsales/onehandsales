@@ -316,7 +316,7 @@ export function DealPipelineHomeScreen({
                   <input
                     className="min-w-0 flex-1 bg-transparent text-[13px] text-[#111827] outline-none placeholder:text-[#9CA3AF]"
                     onChange={(e) => onSearchChange(e.target.value)}
-                    placeholder="딜명 검색"
+                    placeholder="딜이름 검색"
                     value={search}
                   />
                 </div>
@@ -375,7 +375,7 @@ export function DealPipelineHomeScreen({
                   className="grid h-11 shrink-0 items-center border-b border-[#E2E5EC] bg-[#F9FAFB] px-3 md:px-4 xl:px-6"
                   style={DEAL_TABLE_GRID_STYLE}
                 >
-                  <TableHeaderCell>딜명</TableHeaderCell>
+                  <TableHeaderCell>딜이름</TableHeaderCell>
                   <TableHeaderCell>회사/담당자</TableHeaderCell>
                   <TableHeaderCell>단계</TableHeaderCell>
                   <TableHeaderCell>금액</TableHeaderCell>
@@ -628,7 +628,7 @@ function DealListRow({
       style={DEAL_TABLE_GRID_STYLE}
       tabIndex={0}
     >
-      {/* 딜명 */}
+      {/* 딜이름 */}
       <div className="min-w-0">
         <span className="block truncate text-[13px] font-semibold text-gray-900">
           {deal.dealName}
@@ -737,7 +737,7 @@ function MobileDealCard({
         </span>
       </div>
 
-      {/* Row2: 딜명 */}
+      {/* Row2: 딜이름 */}
       <h2 className="mt-2 truncate text-[15px] font-semibold text-[#111827]">
         {deal.dealName}
       </h2>

@@ -28,7 +28,7 @@
 
 - `/` 홈은 실제 대시보드 화면이다. Schedule, Deal, Deal stage count, MeetingNote API를 조합해 오늘 일정, 진행 딜, 마감 임박, 최근 회의록, 빠른 실행, 최근 활동을 표시한다.
 - `/deals`는 딜 파이프라인 화면이다. 데스크톱은 테이블 + 우측 미리보기 패널, 모바일은 stage tab + 카드 리스트를 사용한다.
-- 딜 목록 control 순서는 `딜명 검색`, `전체`, `회사`, `담당자`, 정렬 select다. `전체`는 검색/회사/담당자/정렬/stage/page를 기본값으로 되돌린다.
+- 딜 목록 control 순서는 `딜이름 검색`, `전체`, `회사`, `담당자`, 정렬 select다. `전체`는 검색/회사/담당자/정렬/stage/page를 기본값으로 되돌린다.
 - 딜 목록 정렬은 select로 제공하며 라벨은 `최신순`, `금액 높은순`, `금액 낮은 순`, `마감일순`이다.
 - 딜 목록과 stage counts는 `search`, `companyId`, `contactId` 필터를 함께 반영한다. 목록/export는 여기에 `dealStatus`, `sort`를 추가로 반영한다.
 - `/companies`, `/contacts`, `/products`, `/meeting-notes`는 조밀한 Controls Bar + Table Card + Pagination 문법을 따른다.

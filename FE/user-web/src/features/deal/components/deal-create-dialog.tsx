@@ -304,7 +304,7 @@ export function DealCreateDialog({
               <ModalFieldGroup
                 error={errors.dealName?.message}
                 id="deal-name"
-                label="딜명"
+                label="딜이름"
               >
                 <input
                   aria-invalid={Boolean(errors.dealName)}

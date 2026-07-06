@@ -343,7 +343,7 @@ G07, G09, G11, G13-G16의 화면 명세는 `COMMON/GOAL-SPECS`에서 이 API를 
 
 | 상황 | 에러 | HTTP |
 |---|---|---|
-| 딜명 누락 | `ValidationError` | 400 |
+| 딜이름 누락 | `ValidationError` | 400 |
 | 금액 누락 또는 음수 | `ValidationError` | 400 |
 | 연결 회사/담당자/제품 없음 | `RelatedEntityNotFound` | 404 |
 | 다른 사용자 소유 데이터 연결 | `OwnershipViolation` | 403 |

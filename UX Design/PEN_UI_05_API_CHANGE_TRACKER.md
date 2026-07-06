@@ -81,7 +81,7 @@
 - 딜 목록 검색은 `dealName`만 대상으로 한다.
 - 딜 목록 정렬 select label은 `최신순`, `금액 높은순`, `금액 낮은 순`, `마감일순`이다.
 - 딜 목록 정렬 code는 `createdAtDesc`, `dealCostDesc`, `dealCostAsc`, `expectedEndDateAsc`다.
-- 딜 목록 control 순서는 `딜명 검색`, `전체`, `회사`, `담당자`, 정렬 select다. `전체`는 검색/회사/담당자/정렬/stage/page를 기본값으로 되돌린다.
+- 딜 목록 control 순서는 `딜이름 검색`, `전체`, `회사`, `담당자`, 정렬 select다. `전체`는 검색/회사/담당자/정렬/stage/page를 기본값으로 되돌린다.
 - 과거 문서의 `IN_DISCUSSION`, `NEEDS_ANALYSIS`, `PROPOSAL`, `hasNext` 기반 딜 목록 계약은 현재 User Web/Backend 기준이 아니다.
 
 ### Page List Pagination 정정

@@ -42,7 +42,7 @@
 - 통합검색은 Backend `GET /api/search`와 User Web `GlobalSearch`가 연결되어 있다.
 - MeetingNote AI/STT 초안 endpoint와 User Web draft UI 연결은 구현 완료 상태다.
 - MeetingNote 저장 후 딜 추가 연동과 딜 활동 로그 생성은 구현 완료 상태다.
-- 딜 목록은 `딜명 검색`, `전체`, `회사`, `담당자`, 정렬 select 순서를 사용하며, 회사/담당자 필터는 stage counts, 목록, export에 반영된다.
+- 딜 목록은 `딜이름 검색`, `전체`, `회사`, `담당자`, 정렬 select 순서를 사용하며, 회사/담당자 필터는 stage counts, 목록, export에 반영된다.
 - BusinessCard, DataImport, Trash는 FE/BE 연결이 완료된 상태다. Notification, Admin 운영 조회 API, ImportJob 영속화/재개는 후속 범위이며, 범용 ExportJob은 비정본이다.
 
 ---

@@ -695,7 +695,7 @@ function DealSearchField({
           className="h-9 w-full rounded-md border bg-white pl-9 pr-10 text-sm text-[#111827] outline-none focus:ring-2 focus:ring-ring"
           id="meeting-deal-search"
           onChange={(event) => onSearchChange(event.target.value)}
-          placeholder="딜명 검색"
+          placeholder="딜이름 검색"
           value={search}
         />
         {selectedId || search ? (

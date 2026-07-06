@@ -413,13 +413,13 @@ Reason:
 Desktop recommended column order:
 
 ```text
-딜명 -> 회사/담당자 -> 단계 -> 금액 -> 가능성 -> 다음 행동 -> 마감일
+딜이름 -> 회사/담당자 -> 단계 -> 금액 -> 가능성 -> 다음 행동 -> 마감일
 ```
 
 Mobile recommended card order:
 
 ```text
-딜명
+딜이름
 회사/담당자
 단계 · 금액 · 가능성
 다음 행동

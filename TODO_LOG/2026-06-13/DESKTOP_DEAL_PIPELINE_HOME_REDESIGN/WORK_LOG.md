@@ -19,7 +19,7 @@ pen 파일 기준 Desktop Deal Pipeline Home 테이블 레이아웃 구현 + Dea
 ### 1차 — Desktop Deal Pipeline Home 재구성
 
 - pen의 Desktop Deal Pipeline Home이 리스트 카드가 아닌 테이블 행 + 우측 상세 패널 구조임을 확인.
-- `DealListRow`를 pen 기준 6컬럼(딜명/회사담당자/단계/금액/다음행동/마감일) 테이블 행으로 전면 재구성.
+- `DealListRow`를 pen 기준 6컬럼(딜이름/회사담당자/단계/금액/다음행동/마감일) 테이블 행으로 전면 재구성.
 - `DealPipelineHomeRedesignScreen`의 Desktop 섹션을 Stage Tabs + 테이블 헤더 + 스크롤 가능한 행 목록 + 380px 우측 패널 구조로 교체.
 - Stage Tabs를 pen 기준 border-bottom 하이라이트 + 단계별 건수 뱃지 형태로 구현.
 - `AppShell`을 `DesktopAppShell`과 통합 — 기존 구 shell의 `Outlet`을 새 shell 구조에서 직접 렌더링.

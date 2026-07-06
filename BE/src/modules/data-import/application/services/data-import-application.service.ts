@@ -78,7 +78,7 @@ const FIELD_ALIASES: Readonly<Record<string, readonly string[]>> = {
   productPrice: ["제품단가", "단가", "가격", "price", "unitPrice"],
   productCategoryName: ["제품카테고리", "카테고리", "category"],
   productStatusName: ["제품상태", "상태", "status"],
-  dealName: ["딜명", "딜이름", "딜 이름", "deal", "dealName"],
+  dealName: ["딜이름", "딜이름", "딜 이름", "deal", "dealName"],
   dealCost: ["딜금액", "딜 금액", "금액", "amount", "dealCost"],
   expectedEndDate: ["예상마감일", "예상 마감일", "마감일", "expectedEndDate"],
   companyNameForContact: ["회사명", "회사이름", "company", "companyName"],

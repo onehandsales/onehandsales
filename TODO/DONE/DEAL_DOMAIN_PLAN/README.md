@@ -10,8 +10,8 @@
 
 - Backend에는 `deal` 모듈, Prisma `Deal`, `DealProduct`, `DealFollowingActionLog`, `DealMemoLog` 모델과 User API가 구현되어 있다.
 - User Web 딜 목록/상세/생성/수정/로그/export 화면은 현재 Backend Deal API와 연결되어 있다.
-- 딜 목록은 10개 단위 page-number pagination, 딜명 검색, 회사/담당자/상태 필터, 정렬 select를 사용한다.
-- 딜 stage counts는 딜명 검색과 회사/담당자 필터를 반영한다.
+- 딜 목록은 10개 단위 page-number pagination, 딜이름 검색, 회사/담당자/상태 필터, 정렬 select를 사용한다.
+- 딜 stage counts는 딜이름 검색과 회사/담당자 필터를 반영한다.
 - 본 계획의 Backend API 계약은 구현 검증을 거쳐 `implemented` 상태로 둔다.
 - FE/BE goal은 모두 완료됐다.
 - 완료 확인일: 2026-06-14

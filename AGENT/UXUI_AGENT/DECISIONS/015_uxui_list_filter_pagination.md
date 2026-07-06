@@ -22,7 +22,7 @@
   - `카테고리 ▾`, `판매 상태 ▾` select
 - 딜 목록
   - stage tab
-  - `딜명 검색`, `전체`, `회사`, `담당자`, sort select
+  - `딜이름 검색`, `전체`, `회사`, `담당자`, sort select
   - 회사/담당자 옵션은 Deal option API를 사용하고, 회사 선택 시 담당자 옵션을 같은 회사 기준으로 좁힌다.
 - 회의록 목록
   - 회사/담당자 filter option API

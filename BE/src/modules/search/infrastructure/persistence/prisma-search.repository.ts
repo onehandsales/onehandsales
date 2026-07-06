@@ -208,7 +208,7 @@ export class PrismaSearchRepository implements SearchRepository {
     return products.map((product) => this.toProductItem(product));
   }
 
-  // 기능 : 딜명, 상태, 연결 회사명, 담당자명으로 딜을 검색합니다.
+  // 기능 : 딜이름, 상태, 연결 회사명, 담당자명으로 딜을 검색합니다.
   private async searchDeals(
     input: SearchRepositoryInput
   ): Promise<SearchItemRecord[]> {
@@ -266,7 +266,7 @@ export class PrismaSearchRepository implements SearchRepository {
     return deals.map((deal) => this.toDealItem(deal));
   }
 
-  // 기능 : 일정 제목, 장소, 메모, 연결 딜명으로 일정을 검색합니다.
+  // 기능 : 일정 제목, 장소, 메모, 연결 딜이름으로 일정을 검색합니다.
   private async searchSchedules(
     input: SearchRepositoryInput
   ): Promise<SearchItemRecord[]> {

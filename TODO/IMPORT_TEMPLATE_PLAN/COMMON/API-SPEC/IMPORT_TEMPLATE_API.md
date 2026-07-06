@@ -234,7 +234,7 @@ CSV/XLSX 파일을 업로드해 확정 전 임시 import job을 만든다.
 - `COMPANY`는 회사명/분야/지역을 저장한다.
 - `PRODUCT`는 제품명/가격/카테고리/상태를 저장한다.
 - `CONTACT`는 회사명으로 사용자 소유 회사를 찾거나 만들고 담당자를 저장한다.
-- `DEAL`은 딜명, 금액, 단계, 예상 마감일을 저장하고 회사/담당자/제품 이름을 기준으로 `DealCompany`, `DealContact`, `DealProduct` 연결 row를 만든다.
+- `DEAL`은 딜이름, 금액, 단계, 예상 마감일을 저장하고 회사/담당자/제품 이름을 기준으로 `DealCompany`, `DealContact`, `DealProduct` 연결 row를 만든다.
 - `DEAL` 확정 시 기존 회사/담당자/제품이 없으면 `dealCompanyResolutions`, `dealContactResolutions`, `dealProductResolutions`에 담긴 사용자 보정값으로 필요한 데이터를 생성한다.
 
 ## GET /api/import-user-logs

@@ -70,7 +70,7 @@
 
 ### 10. app-shell.tsx 업데이트
 
-- `/deals/:dealId` 경로 감지 → `DealDetailTopBar` 컴포넌트 추가 (breadcrumb: 딜 / 딜명)
+- `/deals/:dealId` 경로 감지 → `DealDetailTopBar` 컴포넌트 추가 (breadcrumb: 딜 / 딜이름)
 - `/deals` 경로에서 `flex flex-1 flex-col overflow-hidden` 적용
 
 ### 11. 라우터/페이지 업데이트

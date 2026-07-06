@@ -311,7 +311,7 @@ function DealInlineEditForm({
       onSubmit={(event) => void onSubmit(event)}
     >
       <label className="grid gap-1.5 text-[12px] font-medium text-[#475569]">
-        딜명
+        딜이름
         <input
           className="h-9 rounded-md border border-[#E2E5EC] bg-white px-3 text-[13px] text-[#111827] outline-none focus:border-[#93C5FD]"
           onChange={(event) => setDealName(event.target.value)}

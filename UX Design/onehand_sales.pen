@@ -1320,11 +1320,11 @@
                             {
                               "type": "text",
                               "id": "WDkon",
-                              "name": "TH 딜명",
+                              "name": "TH 딜이름",
                               "fill": "#64748B",
                               "textGrowth": "fixed-width",
                               "width": 175,
-                              "content": "딜명",
+                              "content": "딜이름",
                               "fontFamily": "Inter",
                               "fontSize": 12,
                               "fontWeight": "600"
@@ -4492,7 +4492,7 @@
             {
               "type": "frame",
               "id": "pzLAc",
-              "name": "Field 딜명",
+              "name": "Field 딜이름",
               "width": "fill_container",
               "layout": "vertical",
               "gap": 7,
@@ -4500,16 +4500,16 @@
                 {
                   "type": "frame",
                   "id": "pEcvY",
-                  "name": "Label Row 딜명",
+                  "name": "Label Row 딜이름",
                   "gap": 4,
                   "alignItems": "center",
                   "children": [
                     {
                       "type": "text",
                       "id": "AiwWP",
-                      "name": "Label 딜명",
+                      "name": "Label 딜이름",
                       "fill": "#374151",
-                      "content": "딜명",
+                      "content": "딜이름",
                       "fontFamily": "Inter",
                       "fontSize": 13,
                       "fontWeight": "600"
@@ -4517,7 +4517,7 @@
                     {
                       "type": "text",
                       "id": "Vq4Mb",
-                      "name": "Req 딜명",
+                      "name": "Req 딜이름",
                       "fill": "#B91C1C",
                       "content": "*",
                       "fontFamily": "Inter",
@@ -4529,7 +4529,7 @@
                 {
                   "type": "frame",
                   "id": "P8YcqV",
-                  "name": "Input 딜명",
+                  "name": "Input 딜이름",
                   "width": "fill_container",
                   "height": 40,
                   "fill": "#FFFFFF",
@@ -4545,7 +4545,7 @@
                     {
                       "type": "text",
                       "id": "Srdk4",
-                      "name": "PH 딜명",
+                      "name": "PH 딜이름",
                       "fill": "#9CA3AF",
                       "textGrowth": "fixed-width",
                       "width": "fill_container",

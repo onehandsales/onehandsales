@@ -289,7 +289,7 @@
 - 요약:
   - pen의 Desktop Deal Pipeline Home을 기준으로 딜 목록을 리스트 카드에서 테이블 행 구조로 전환했다.
   - Stage Tabs를 border-bottom 기반 탭으로 교체하고 각 탭에 건수 뱃지를 붙였다.
-  - DealListRow를 pen 기준 6컬럼(딜명/회사담당자/단계/금액/다음행동/마감일) 테이블 행으로 재구성했다.
+  - DealListRow를 pen 기준 6컬럼(딜이름/회사담당자/단계/금액/다음행동/마감일) 테이블 행으로 재구성했다.
   - 우측 상세 패널은 기존 DealDetailPanel을 그대로 재사용하고 "전체 상세 열기" 링크를 패널 하단에 배치했다.
   - AppShell을 DesktopAppShell과 통합해 라우터에서 단일 AppShell로 관리하도록 변경했다.
   - 홈 경로(`/`)에서만 main을 full-height flex로 전환하고 나머지 경로는 기존 px-8 py-8 유지.
@@ -440,7 +440,7 @@
   - backend
   - docs
 - 요약:
-  - 딜 목록 control을 `딜명 검색`, `전체`, `회사`, `담당자`, 정렬 select 순서로 정리했다.
+  - 딜 목록 control을 `딜이름 검색`, `전체`, `회사`, `담당자`, 정렬 select 순서로 정리했다.
   - 딜 목록, stage counts, export가 `search`, `companyId`, `contactId` 필터를 공유하는 현재 API 계약을 문서에 반영했다.
   - 회사/담당자/제품 목록 필터 select의 `+ 추가` 분류 관리 흐름을 현재 기준으로 정정했다.
   - 제품 목록 정렬 라벨을 `딜 높은순`, `딜 낮은순` 기준으로 정리하고, API code는 `dealCountDesc`, `dealCountAsc`를 기준으로 명시했다.

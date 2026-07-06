@@ -49,7 +49,7 @@
 현재 User Web:
 
 - `/` 홈은 Schedule/Deal/MeetingNote API 조합 대시보드로 구현되어 있다.
-- `/deals` 딜 파이프라인은 stage tabs, 딜명 검색, 회사/담당자 select 필터, 정렬 select, page-number pagination, 우측 미리보기 패널을 사용한다.
+- `/deals` 딜 파이프라인은 stage tabs, 딜이름 검색, 회사/담당자 select 필터, 정렬 select, page-number pagination, 우측 미리보기 패널을 사용한다.
 - `/companies`, `/contacts`, `/products`는 조밀한 Controls Bar + Table Card + Pagination 문법을 따른다.
 - `/schedules`, `/schedules/week`, `/meeting-notes`는 실제 Backend API와 연결되어 있다.
 - 통합검색은 `GET /api/search`와 User Web `GlobalSearch`가 연결되어 있다.
@@ -141,7 +141,7 @@
 - 필요 시 inline 제품 연결
 
 입력 검증 포인트:
-- 딜명
+- 딜이름
 - 회사/담당자 연계
 - 금액
 - 딜 단계
