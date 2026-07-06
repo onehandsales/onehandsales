@@ -6,8 +6,6 @@ import {
   IdCard,
   NotebookPen,
   Package,
-  Settings,
-  Trash2,
   type LucideIcon,
 } from "lucide-react";
 import { NavLink } from "react-router-dom";
@@ -40,14 +38,6 @@ const groups: Array<{
       { label: "회의록", to: "/app/meeting-notes", icon: NotebookPen },
       { label: "명함 스캔", to: "/app/business-cards", icon: Camera },
       { label: "데이터 업로드", to: "/app/import", icon: DataUploadIcon },
-    ],
-  },
-  {
-    label: "관리",
-    items: [
-      // 핵심 기능 UX 유지보수 이후 휴지통 기능을 다시 노출한다.
-      { label: "휴지통", to: "/app/trash", icon: Trash2 },
-      { label: "설정", to: "/app/settings", icon: Settings },
     ],
   },
 ];

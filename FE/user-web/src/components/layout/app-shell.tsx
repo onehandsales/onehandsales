@@ -5,6 +5,9 @@ import { SidebarNav } from "@/components/navigation/sidebar-nav";
 import {
   BriefcaseBusiness,
   CalendarDays,
+  ChevronRight,
+  CircleHelp,
+  FileText,
   House,
   LogOut,
   Package,
@@ -12,13 +15,15 @@ import {
   Plus,
   Search,
   Settings,
+  ShieldCheck,
   Trash2,
+  type LucideIcon,
   X,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAuthSession } from "@/features/auth";
 import { SearchModal } from "@/features/search";
-import { useEffect, useState } from "react";
+import { type ReactNode, useEffect, useRef, useState } from "react";
 import { useDealDetail } from "@/features/deal/hooks/use-deal-detail";
 import { useDeleteDealMutation } from "@/features/deal/hooks/use-deal-mutations";
 import { useProductDetail } from "@/features/product/hooks/use-product-detail";
@@ -26,6 +31,7 @@ import { useDeleteProductMutation } from "@/features/product/hooks/use-product-m
 import { PageHeader } from "@/components/layout/page-header";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { getApiErrorMessage } from "@/lib/api-client";
+import { SettingsPage } from "@/pages/settings";
 
 const HOME_PATH = "/app";
 
@@ -168,9 +174,21 @@ function ProductDetailHeader({ productId }: { readonly productId: string }) {
 export function AppShell() {
   const { pathname } = useLocation();
   const navigate = useNavigate();
-  const { logout } = useAuthSession();
+  const { logout, user } = useAuthSession();
   const [searchOpen, setSearchOpen] = useState(false);
+  const [accountMenuOpen, setAccountMenuOpen] = useState(false);
+  const [accountModal, setAccountModal] = useState<
+    "settings" | "terms" | "privacy" | null
+  >(
+    null,
+  );
+  const [logoutConfirmOpen, setLogoutConfirmOpen] = useState(false);
+  const accountMenuRef = useRef<HTMLDivElement | null>(null);
   const isHome = pathname === HOME_PATH;
+  const userName = user?.name ?? user?.email?.split("@")[0] ?? "사용자";
+  const userSubtitle =
+    user?.email ?? (user?.role === "ADMIN" ? "Admin" : "Sales Manager");
+  const userInitial = getUserInitial(userName);
 
   const handleLogout = async () => {
     await logout();
@@ -188,6 +206,40 @@ export function AppShell() {
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
   }, []);
+
+  useEffect(() => {
+    if (!accountMenuOpen) {
+      return;
+    }
+
+    const onMouseDown = (event: MouseEvent) => {
+      if (
+        accountMenuRef.current &&
+        !accountMenuRef.current.contains(event.target as Node)
+      ) {
+        setAccountMenuOpen(false);
+      }
+    };
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setAccountMenuOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", onMouseDown);
+    document.addEventListener("keydown", onKeyDown);
+
+    return () => {
+      document.removeEventListener("mousedown", onMouseDown);
+      document.removeEventListener("keydown", onKeyDown);
+    };
+  }, [accountMenuOpen]);
+
+  useEffect(() => {
+    setAccountMenuOpen(false);
+    setAccountModal(null);
+    setLogoutConfirmOpen(false);
+  }, [pathname]);
 
   // /app/products/:id 패턴 감지
   const productDetailMatch = /^\/app\/products\/([^/]+)$/.exec(pathname);
@@ -339,22 +391,70 @@ export function AppShell() {
           </div>
           <div className="h-px bg-transparent" />
           {/* User profile */}
-          <div className="flex items-center gap-2.5 px-3 py-3">
-            <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#4880EE] text-[11px] font-semibold text-white">
-              김
-            </div>
-            <div className="min-w-0 flex-1">
-              <p className="truncate text-[13px] font-medium text-[#111827]">
-                김영업
-              </p>
-              <p className="text-[11px] text-[#9CA3AF]">Sales Manager</p>
-            </div>
+          <div className="relative px-2 pb-2 pt-1" ref={accountMenuRef}>
+            {accountMenuOpen ? (
+              <div className="absolute bottom-[64px] left-2 right-2">
+                <div
+                  className="overflow-hidden rounded-xl bg-white p-1.5 text-[#111827] shadow-[0_14px_36px_rgba(15,23,42,0.16)]"
+                  role="menu"
+                >
+                  <AccountMenuItem
+                    icon={Trash2}
+                    label="휴지통"
+                    onClick={() => {
+                      setAccountMenuOpen(false);
+                      void navigate("/app/trash");
+                    }}
+                  />
+                  <AccountMenuItem
+                    icon={Settings}
+                    label="설정"
+                    onClick={() => {
+                      setAccountMenuOpen(false);
+                      setAccountModal("settings");
+                    }}
+                  />
+                  <div className="mx-2 my-1.5 h-px bg-[#E9ECF2]" />
+                  <AccountMenuItem
+                    icon={CircleHelp}
+                    label="도움말"
+                    onClick={() => {
+                      setAccountMenuOpen(false);
+                      setAccountModal("terms");
+                    }}
+                  />
+                  <AccountMenuItem
+                    icon={LogOut}
+                    label="로그아웃"
+                    onClick={() => {
+                      setAccountMenuOpen(false);
+                      setLogoutConfirmOpen(true);
+                    }}
+                  />
+                </div>
+              </div>
+            ) : null}
+
             <button
-              className="shrink-0 rounded-md p-1.5 text-[#9CA3AF] transition-colors hover:bg-[#E9EBF0] hover:text-[#374151]"
-              title="로그아웃"
-              onClick={() => void handleLogout()}
+              aria-expanded={accountMenuOpen}
+              aria-haspopup="menu"
+              className="flex h-12 w-full items-center gap-2.5 rounded-xl px-2 text-left transition hover:bg-[#E9EBF0] data-[open=true]:bg-[#EEF4FF]"
+              data-open={accountMenuOpen}
+              onClick={() => setAccountMenuOpen((open) => !open)}
+              type="button"
             >
-              <LogOut className="h-4 w-4" strokeWidth={1.75} />
+              <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#4880EE] text-[11px] font-semibold text-white">
+                {userInitial}
+              </div>
+              <div className="min-w-0 flex-1">
+                <p className="truncate text-[13px] font-medium text-[#111827]">
+                  {userName}
+                </p>
+                <p className="truncate text-[11px] text-[#9CA3AF]">
+                  {userSubtitle}
+                </p>
+              </div>
+              <ChevronRight className="h-4 w-4 shrink-0 text-[#9CA3AF]" />
             </button>
           </div>
         </aside>
@@ -385,6 +485,27 @@ export function AppShell() {
       {/* Search Modal */}
       <SearchModal open={searchOpen} onClose={() => setSearchOpen(false)} />
 
+      {accountModal ? (
+        <AccountModal onClose={() => setAccountModal(null)} title="계정">
+          <AccountModalContent
+            section={accountModal}
+            onSectionChange={setAccountModal}
+          />
+        </AccountModal>
+      ) : null}
+
+      <LogoutConfirmModal
+        onCancel={() => setLogoutConfirmOpen(false)}
+        onConfirm={() => {
+          setLogoutConfirmOpen(false);
+          void handleLogout();
+        }}
+        open={logoutConfirmOpen}
+        userInitial={userInitial}
+        userMeta={user?.email ?? userSubtitle}
+        userName={userName}
+      />
+
       {/* ── Mobile Shell ── */}
       <div className="min-h-dvh md:hidden">
         {!isMobileHeaderHidden ? (
@@ -397,4 +518,289 @@ export function AppShell() {
       </div>
     </div>
   );
+}
+
+function AccountMenuItem({
+  endIcon: EndIcon,
+  icon: Icon,
+  label,
+  onClick,
+}: {
+  readonly endIcon?: LucideIcon;
+  readonly icon: LucideIcon;
+  readonly label: string;
+  readonly onClick: () => void;
+}) {
+  return (
+    <button
+      className="flex h-9 w-full items-center gap-2 rounded-lg px-2 text-left text-[13px] font-medium text-[#374151] transition hover:bg-[#F3F6FB]"
+      onClick={onClick}
+      role="menuitem"
+      type="button"
+    >
+      <Icon className="h-4 w-4 shrink-0 text-[#64748B]" strokeWidth={1.75} />
+      <span className="min-w-0 flex-1 truncate">{label}</span>
+      {EndIcon ? (
+        <EndIcon className="h-4 w-4 shrink-0 text-[#9CA3AF]" strokeWidth={1.75} />
+      ) : null}
+    </button>
+  );
+}
+
+function LogoutConfirmModal({
+  onCancel,
+  onConfirm,
+  open,
+  userInitial,
+  userMeta,
+  userName,
+}: {
+  readonly onCancel: () => void;
+  readonly onConfirm: () => void;
+  readonly open: boolean;
+  readonly userInitial: string;
+  readonly userMeta: string;
+  readonly userName: string;
+}) {
+  useEffect(() => {
+    if (!open) {
+      return;
+    }
+
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        onCancel();
+      }
+    };
+
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [onCancel, open]);
+
+  if (!open) {
+    return null;
+  }
+
+  return (
+    <div
+      className="fixed inset-0 z-[80] flex items-center justify-center bg-black/20 px-4 py-6"
+      onMouseDown={onCancel}
+    >
+      <section
+        aria-modal="true"
+        className="w-full max-w-[360px] rounded-xl bg-white px-6 py-6 shadow-2xl"
+        onMouseDown={(event) => event.stopPropagation()}
+        role="dialog"
+      >
+        <h2 className="text-[22px] font-bold leading-tight text-[#111827]">
+          정말 로그아웃하시겠습니까?
+        </h2>
+
+        <div className="mt-5 flex items-center gap-3 rounded-xl bg-[#F8FAFC] px-4 py-3 shadow-[inset_0_0_0_1px_#E2E8F0]">
+          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#4880EE] text-[12px] font-semibold text-white">
+            {userInitial}
+          </div>
+          <div className="min-w-0 flex-1">
+            <p className="truncate text-[14px] font-semibold text-[#111827]">
+              {userName}
+            </p>
+            <p className="mt-0.5 truncate text-[12px] text-[#64748B]">
+              {userMeta}
+            </p>
+          </div>
+        </div>
+
+        <div className="mt-5 grid gap-2">
+          <button
+            className="h-11 rounded-full bg-[#4880EE] px-4 text-[13px] font-semibold text-white transition hover:bg-[#3268D6]"
+            onClick={onConfirm}
+            type="button"
+          >
+            로그아웃
+          </button>
+          <button
+            className="h-11 rounded-full bg-[#F8FAFC] px-4 text-[13px] font-semibold text-[#374151] shadow-[inset_0_0_0_1px_#E2E8F0] transition hover:bg-[#F1F5F9]"
+            onClick={onCancel}
+            type="button"
+          >
+            취소
+          </button>
+        </div>
+      </section>
+    </div>
+  );
+}
+
+type AccountModalSection = "settings" | "terms" | "privacy";
+
+function AccountModal({
+  children,
+  onClose,
+  title,
+}: {
+  readonly children: ReactNode;
+  readonly onClose: () => void;
+  readonly title: string;
+}) {
+  useEffect(() => {
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        onClose();
+      }
+    };
+
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [onClose]);
+
+  return (
+    <div
+      className="fixed inset-0 z-[70] flex items-center justify-center bg-black/35 px-4 py-6"
+      onMouseDown={onClose}
+    >
+      <section
+        aria-modal="true"
+        className="max-h-full w-full max-w-4xl overflow-hidden rounded-xl bg-white shadow-2xl"
+        onMouseDown={(event) => event.stopPropagation()}
+        role="dialog"
+      >
+        <header className="flex h-14 items-center justify-between gap-3 px-5">
+          <h2 className="truncate text-[15px] font-semibold text-[#111827]">
+            {title}
+          </h2>
+          <button
+            aria-label="닫기"
+            className="grid h-8 w-8 shrink-0 place-items-center rounded-lg text-[#64748B] transition hover:bg-[#F3F6FB] hover:text-[#111827]"
+            onClick={onClose}
+            type="button"
+          >
+            <X className="h-4 w-4" strokeWidth={1.8} />
+          </button>
+        </header>
+        <div className="px-5 pb-5">{children}</div>
+      </section>
+    </div>
+  );
+}
+
+const accountModalItems: Array<{
+  readonly icon: LucideIcon;
+  readonly label: string;
+  readonly section: AccountModalSection;
+}> = [
+  { icon: Settings, label: "설정", section: "settings" },
+  { icon: FileText, label: "이용약관", section: "terms" },
+  { icon: ShieldCheck, label: "개인정보", section: "privacy" },
+];
+
+function AccountModalContent({
+  onSectionChange,
+  section,
+}: {
+  readonly onSectionChange: (section: AccountModalSection) => void;
+  readonly section: AccountModalSection;
+}) {
+  return (
+    <div className="grid h-[min(76vh,720px)] overflow-hidden rounded-lg bg-[#FAFAF8] md:grid-cols-[176px_minmax(0,1fr)]">
+      <aside className="bg-white p-2">
+        <nav className="grid gap-1">
+          {accountModalItems.map((item) => (
+            <AccountModalSidebarItem
+              active={section === item.section}
+              icon={item.icon}
+              key={item.section}
+              label={item.label}
+              onClick={() => onSectionChange(item.section)}
+            />
+          ))}
+        </nav>
+      </aside>
+
+      <div className="min-h-0 overflow-y-auto">
+        {section === "settings" ? (
+          <SettingsPage />
+        ) : (
+          <AccountLegalDocument section={section} />
+        )}
+      </div>
+    </div>
+  );
+}
+
+function AccountModalSidebarItem({
+  active,
+  icon: Icon,
+  label,
+  onClick,
+}: {
+  readonly active: boolean;
+  readonly icon: LucideIcon;
+  readonly label: string;
+  readonly onClick: () => void;
+}) {
+  return (
+    <button
+      className={`flex h-10 items-center gap-2 rounded-lg px-3 text-left text-[13px] font-medium transition ${
+        active
+          ? "bg-[#EAF2FF] text-[#1D4ED8]"
+          : "text-[#64748B] hover:bg-[#F3F6FB] hover:text-[#111827]"
+      }`}
+      onClick={onClick}
+      type="button"
+    >
+      <Icon className="h-4 w-4 shrink-0" strokeWidth={1.8} />
+      <span className="min-w-0 flex-1 truncate">{label}</span>
+    </button>
+  );
+}
+
+function AccountLegalDocument({
+  section,
+}: {
+  readonly section: Exclude<AccountModalSection, "settings">;
+}) {
+  const document =
+    section === "terms"
+      ? {
+          description: "서비스 이용 조건과 계정 사용 기준을 확인하는 문서입니다.",
+          icon: FileText,
+          title: "이용 약관",
+        }
+      : {
+          description: "개인정보 수집, 이용, 보관 기준을 확인하는 문서입니다.",
+          icon: ShieldCheck,
+          title: "개인정보 처리방침",
+        };
+  const Icon = document.icon;
+
+  return (
+    <section className="min-h-full bg-[#FAFAF8] px-5 py-6">
+      <article className="rounded-lg bg-white px-5 py-5 shadow-sm">
+        <div className="flex items-start gap-3">
+          <span className="grid h-10 w-10 shrink-0 place-items-center rounded-lg bg-[#EAF2FF] text-[#1D4ED8]">
+            <Icon className="h-5 w-5" strokeWidth={1.8} />
+          </span>
+          <div className="min-w-0">
+            <h3 className="text-[18px] font-semibold text-[#111827]">
+              {document.title}
+            </h3>
+            <p className="mt-1 text-[13px] leading-5 text-[#64748B]">
+              {document.description}
+            </p>
+          </div>
+        </div>
+        <div className="mt-6 rounded-lg bg-[#F8FAFC] px-4 py-4">
+          <p className="text-[13px] leading-6 text-[#475569]">
+            정식 문서가 확정되면 이 영역에 상세 내용이 반영됩니다.
+          </p>
+        </div>
+      </article>
+    </section>
+  );
+}
+
+function getUserInitial(name: string) {
+  const trimmed = name.trim();
+
+  return trimmed ? trimmed.charAt(0).toUpperCase() : "?";
 }
