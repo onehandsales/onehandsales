@@ -714,7 +714,7 @@ export function ImportScreen() {
                   <ImportLogRow
                     key={log.id}
                     log={log}
-                    onOpen={() => void navigate(`/import/${log.id}`)}
+                    onOpen={() => void navigate(`/app/import/${log.id}`)}
                   />
                 ))}
               </div>
@@ -791,7 +791,7 @@ export function ImportScreen() {
               <ImportLogMobileCard
                 key={log.id}
                 log={log}
-                onOpen={() => void navigate(`/import/${log.id}`)}
+                onOpen={() => void navigate(`/app/import/${log.id}`)}
               />
             ))
           )}

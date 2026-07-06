@@ -957,7 +957,7 @@ function BusinessCardDetailDialog({
             {scanLog.linked.contactId ? (
               <Link
                 className="inline-flex h-8 items-center gap-1.5 rounded-md border border-[#BFDBFE] bg-[#EFF6FF] px-3 text-[12px] font-semibold text-[#1D4ED8]"
-                to={`/contacts/${scanLog.linked.contactId}`}
+                to={`/app/contacts/${scanLog.linked.contactId}`}
               >
                 <UserRound className="h-3.5 w-3.5" />
                 담당자 보기

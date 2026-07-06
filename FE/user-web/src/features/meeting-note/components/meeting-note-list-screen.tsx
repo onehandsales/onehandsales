@@ -820,7 +820,7 @@ function MeetingNoteMobileCard({
   return (
     <Link
       className="flex w-full items-start gap-3 border-b border-[#E5E7EB] bg-white px-4 py-[14px] transition active:bg-[#F9FAFB]"
-      to={`/meeting-notes/${meetingNote.id}`}
+      to={`/app/meeting-notes/${meetingNote.id}`}
     >
       <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#FFF7ED]">
         <CalendarClock className="h-4 w-4 text-[#EA580C]" strokeWidth={2} />

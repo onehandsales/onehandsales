@@ -432,7 +432,7 @@ function FollowUpTaskItem({ deal }: { readonly deal: DealListItem }) {
   return (
     <Link
       className="grid min-w-0 grid-cols-[minmax(0,1fr)_auto] gap-3 px-3 py-3 transition hover:bg-white"
-      to={`/deals/${deal.id}`}
+      to={`/app/deals/${deal.id}`}
     >
       <div className="min-w-0">
         <p className="truncate text-[13px] font-semibold text-[#111827]">
@@ -523,7 +523,7 @@ function DeadlineDealItem({
   return (
     <Link
       className="flex min-w-0 items-center justify-between gap-3 px-1 py-2.5 transition hover:bg-[#FAFBFC]"
-      to={`/deals/${deal.id}`}
+      to={`/app/deals/${deal.id}`}
     >
       <div className="min-w-0">
         <p className="truncate text-[13px] font-semibold text-[#111827]">{deal.dealName}</p>

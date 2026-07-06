@@ -518,7 +518,7 @@ function ContactMobileCard({
   return (
     <Link
       className="flex w-full items-start gap-3 border-b border-[#E5E7EB] bg-white px-4 py-[14px] transition active:bg-[#F9FAFB]"
-      to={`/contacts/${contact.id}`}
+      to={`/app/contacts/${contact.id}`}
     >
       {/* 이니셜 아바타 */}
       <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#EEF4FF]">
@@ -566,11 +566,11 @@ function ContactRow({
   return (
     <div
       className="grid h-[66px] w-full cursor-pointer items-center border-b border-[#E2E5EC] bg-white px-3 text-left transition-colors last:border-b-0 hover:bg-[#EFF6FF] md:px-4 xl:px-6"
-      onClick={() => void navigate(`/contacts/${contact.id}`)}
+      onClick={() => void navigate(`/app/contacts/${contact.id}`)}
       onKeyDown={(e) => {
         if (e.key === "Enter" || e.key === " ") {
           e.preventDefault();
-          void navigate(`/contacts/${contact.id}`);
+          void navigate(`/app/contacts/${contact.id}`);
         }
       }}
       role="button"
@@ -642,7 +642,7 @@ export function ContactCard({
   return (
     <Link
       className="flex items-start justify-between gap-4 bg-white px-6 py-3 hover:bg-[#FAFAF8]"
-      to={`/contacts/${contact.id}`}
+      to={`/app/contacts/${contact.id}`}
     >
       <div className="min-w-0 flex-1">
         <p className="text-[13px] font-medium text-[#111827]">

@@ -138,7 +138,7 @@ function ScheduleDetailContent({ schedule }: { readonly schedule: Schedule }) {
               <Link
                 className="rounded-md border border-[#E2E5EC] px-3 py-2 text-sm font-medium text-[#1D4ED8] hover:bg-[#EFF6FF]"
                 key={deal.id}
-                to={`/deals/${deal.id}`}
+                to={`/app/deals/${deal.id}`}
               >
                 {deal.dealName}
               </Link>

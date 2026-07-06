@@ -27,7 +27,6 @@
 ## 제외 범위
 - 사용자 즉시 완전 삭제 API와 UI
 - 7일 전 실제 알림 발송
-- Tag, TagAssignment 휴지통 노출
 
 ## 작업 로그
 - G28 기준 문서와 Trash endpoint 계약을 확인했다.
@@ -36,7 +35,6 @@
 - Backend `TrashModule`을 추가하고 `AppModule`에 연결했다.
 - `/api/trash` 목록 조회, `POST /api/trash/:targetType/:targetId/restore`, `DELETE /api/trash/:targetType/:targetId/permanent` endpoint를 구현했다.
 - Company, Contact, Product, Deal, Schedule, MeetingNote와 CompanyLog, ContactLog, ProductLog, ProductConnection, DealActivity, PersonalMemo 휴지통 목록/복구를 구현했다.
-- Tag, TagAssignment는 요구사항대로 휴지통 노출에서 제외했다.
 - 사용자 즉시 완전 삭제는 `PermanentDeleteNotAllowed`로 차단하고, exception filter에서 409로 매핑했다.
 - `TrashItemExpired`는 410으로 매핑하고, 복구 시 완전 삭제 예정일 경과 여부를 검사했다.
 - 30일 경과 데이터 purge use case와 repository 기본 구조를 추가했다.

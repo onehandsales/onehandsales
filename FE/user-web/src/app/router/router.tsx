@@ -1,4 +1,9 @@
-import { createBrowserRouter, Navigate } from "react-router-dom";
+import {
+  createBrowserRouter,
+  Navigate,
+  useLocation,
+  useParams,
+} from "react-router-dom";
 import { AppShell } from "@/components/layout/app-shell";
 import { ProtectedRoute } from "@/features/auth";
 import { BusinessCardsPage } from "@/pages/business-cards";
@@ -32,6 +37,70 @@ export const router = createBrowserRouter([
   { path: "/login", element: <LoginPage /> },
   { path: "/introduce", element: <IntroducePage /> },
   { path: "/auth/callback", element: <LoginPage /> },
+  { path: "/companies", element: <LegacyAppRedirect to="/app/companies" /> },
+  {
+    path: "/companies/new",
+    element: <LegacyAppRedirect to="/app/companies/new" />,
+  },
+  {
+    path: "/companies/:companyId",
+    element: (
+      <LegacyAppRedirect paramName="companyId" to="/app/companies" />
+    ),
+  },
+  { path: "/contacts", element: <LegacyAppRedirect to="/app/contacts" /> },
+  { path: "/contacts/scan", element: <Navigate replace to="/app/business-cards" /> },
+  {
+    path: "/contacts/:contactId",
+    element: <LegacyAppRedirect paramName="contactId" to="/app/contacts" />,
+  },
+  { path: "/products", element: <LegacyAppRedirect to="/app/products" /> },
+  {
+    path: "/products/new",
+    element: <LegacyAppRedirect to="/app/products/new" />,
+  },
+  {
+    path: "/products/:productId",
+    element: <LegacyAppRedirect paramName="productId" to="/app/products" />,
+  },
+  { path: "/deals", element: <LegacyAppRedirect to="/app/deals" /> },
+  { path: "/deals/new", element: <LegacyAppRedirect to="/app/deals/new" /> },
+  {
+    path: "/deals/:dealId",
+    element: <LegacyAppRedirect paramName="dealId" to="/app/deals" />,
+  },
+  { path: "/schedules", element: <LegacyAppRedirect to="/app/schedules" /> },
+  { path: "/schedules/week", element: <Navigate replace to="/app/schedules" /> },
+  {
+    path: "/schedules/:scheduleId",
+    element: <LegacyAppRedirect paramName="scheduleId" to="/app/schedules" />,
+  },
+  {
+    path: "/meeting-notes",
+    element: <LegacyAppRedirect to="/app/meeting-notes" />,
+  },
+  {
+    path: "/meeting-notes/new",
+    element: <Navigate replace to="/app/meeting-notes?create=1" />,
+  },
+  {
+    path: "/meeting-notes/:meetingNoteId",
+    element: (
+      <LegacyAppRedirect paramName="meetingNoteId" to="/app/meeting-notes" />
+    ),
+  },
+  {
+    path: "/business-cards",
+    element: <LegacyAppRedirect to="/app/business-cards" />,
+  },
+  { path: "/import", element: <LegacyAppRedirect to="/app/import" /> },
+  {
+    path: "/import/:importUserLogId",
+    element: <LegacyAppRedirect paramName="importUserLogId" to="/app/import" />,
+  },
+  { path: "/trash", element: <LegacyAppRedirect to="/app/trash" /> },
+  { path: "/settings", element: <LegacyAppRedirect to="/app/settings" /> },
+  { path: "/more", element: <LegacyAppRedirect to="/app/more" /> },
   {
     path: "/app",
     element: (
@@ -75,3 +144,18 @@ export const router = createBrowserRouter([
     ],
   },
 ]);
+
+function LegacyAppRedirect({
+  paramName,
+  to,
+}: {
+  readonly paramName?: string;
+  readonly to: string;
+}) {
+  const location = useLocation();
+  const params = useParams();
+  const paramValue = paramName ? params[paramName] : undefined;
+  const targetPath = paramValue ? `${to}/${encodeURIComponent(paramValue)}` : to;
+
+  return <Navigate replace to={`${targetPath}${location.search}`} />;
+}
