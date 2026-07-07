@@ -89,7 +89,7 @@ export function BusinessCardScanScreen() {
   };
 
   return (
-    <section className="flex min-h-full flex-col bg-[#FAFAF8]">
+    <section className="flex min-h-full flex-col bg-white">
       <PageHeader
         breadcrumbs={[{ label: "명함 스캔", icon: Camera }]}
         actions={[
@@ -1256,7 +1256,7 @@ function ListError({
       <AlertCircle className="h-5 w-5 text-red-500" />
       <p className="mt-2 text-[13px] text-red-500">{getApiErrorMessage(error)}</p>
       <button
-        className="mt-3 inline-flex h-8 items-center rounded-md border border-[#E2E5EC] bg-white px-3 text-[12px] text-[#6B7280] hover:bg-[#FAFAF8]"
+        className="mt-3 inline-flex h-8 items-center rounded-md border border-[#E2E5EC] bg-white px-3 text-[12px] text-[#6B7280] hover:bg-white"
         onClick={onRetry}
         type="button"
       >

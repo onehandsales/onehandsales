@@ -16,10 +16,13 @@ type AuthLoginPageProps = {
   readonly isLoginLoading: boolean;
   readonly isPending: boolean;
   readonly isProvidersLoading: boolean;
+  readonly mode: AuthPageMode;
   readonly pendingProvider: AuthProviderId | null;
   readonly providersError: string | null;
   readonly onProviderLogin: (provider: AuthProviderId) => void;
 };
+
+type AuthPageMode = "login" | "signup";
 
 const providerStyles: Record<AuthProviderId, string> = {
   kakao: "border-[#dededa] bg-white text-[#191919] hover:bg-[#f7f7f5]",
@@ -33,15 +36,15 @@ const loginCopy: Record<
   {
     readonly homeAria: string;
     readonly title: string;
-    readonly subtitle: string;
-    readonly providerLead: string;
+    readonly subtitles: Record<AuthPageMode, string>;
+    readonly providerLead: Record<AuthPageMode, string>;
     readonly providers: Record<AuthProviderId, string>;
     readonly loading: string;
     readonly callbackLoading: string;
     readonly noProviders: string;
     readonly providersErrorPrefix: string;
-    readonly signupLead: string;
-    readonly signupAction: string;
+    readonly switchLead: Record<AuthPageMode, string>;
+    readonly switchAction: Record<AuthPageMode, string>;
     readonly termsPrefix: string;
     readonly terms: string;
     readonly termsConnector: string;
@@ -54,8 +57,14 @@ const loginCopy: Record<
   ko: {
     homeAria: "홈으로 이동",
     title: "나만의 AI 워크스페이스",
-    subtitle: "onehand.sales 계정에 로그인",
-    providerLead: "다음으로 계속하기",
+    subtitles: {
+      login: "onehand.sales 계정에 로그인",
+      signup: "onehand.sales 계정 만들기",
+    },
+    providerLead: {
+      login: "다음으로 계속하기",
+      signup: "또는 다음으로 계속하기",
+    },
     providers: {
       kakao: "Kakao",
       google: "Google",
@@ -64,8 +73,14 @@ const loginCopy: Record<
     callbackLoading: "로그인 중입니다.",
     noProviders: "사용할 수 있는 로그인이 없어요.",
     providersErrorPrefix: "로그인 수단을 불러오지 못했어요.",
-    signupLead: "신규 사용자이신가요?",
-    signupAction: "가입하기",
+    switchLead: {
+      login: "신규 사용자이신가요?",
+      signup: "기존 사용자이신가요?",
+    },
+    switchAction: {
+      login: "가입하기",
+      signup: "로그인하기",
+    },
     termsPrefix: "계속 진행하면 ",
     terms: "이용약관",
     termsConnector: " 및 ",
@@ -77,8 +92,14 @@ const loginCopy: Record<
   ja: {
     homeAria: "ホームへ移動",
     title: "自分だけのAIワークスペース",
-    subtitle: "onehand.sales アカウントにログイン",
-    providerLead: "次の方法で続行",
+    subtitles: {
+      login: "onehand.sales アカウントにログイン",
+      signup: "onehand.sales アカウントを作成",
+    },
+    providerLead: {
+      login: "次の方法で続行",
+      signup: "または次の方法で続行",
+    },
     providers: {
       kakao: "Kakao",
       google: "Google",
@@ -87,8 +108,14 @@ const loginCopy: Record<
     callbackLoading: "ログインしています。",
     noProviders: "利用できるログイン方法がありません。",
     providersErrorPrefix: "ログイン方法を読み込めませんでした。",
-    signupLead: "初めてご利用ですか？",
-    signupAction: "登録",
+    switchLead: {
+      login: "初めてご利用ですか？",
+      signup: "既にアカウントをお持ちですか？",
+    },
+    switchAction: {
+      login: "登録",
+      signup: "ログイン",
+    },
     termsPrefix: "続行すると、",
     terms: "利用規約",
     termsConnector: "および",
@@ -100,8 +127,14 @@ const loginCopy: Record<
   zh: {
     homeAria: "前往首页",
     title: "我的 AI 工作空间",
-    subtitle: "登录 onehand.sales 账户",
-    providerLead: "使用以下方式继续",
+    subtitles: {
+      login: "登录 onehand.sales 账户",
+      signup: "创建 onehand.sales 账户",
+    },
+    providerLead: {
+      login: "使用以下方式继续",
+      signup: "或使用以下方式继续",
+    },
     providers: {
       kakao: "Kakao",
       google: "Google",
@@ -110,8 +143,14 @@ const loginCopy: Record<
     callbackLoading: "正在登录。",
     noProviders: "没有可用的登录方式。",
     providersErrorPrefix: "无法加载登录方式。",
-    signupLead: "新用户？",
-    signupAction: "注册",
+    switchLead: {
+      login: "新用户？",
+      signup: "已有账户？",
+    },
+    switchAction: {
+      login: "注册",
+      signup: "登录",
+    },
     termsPrefix: "继续即表示您同意",
     terms: "服务条款",
     termsConnector: "和",
@@ -123,8 +162,14 @@ const loginCopy: Record<
   "en-US": {
     homeAria: "Go home",
     title: "Your AI workspace",
-    subtitle: "Log in to onehand.sales",
-    providerLead: "Continue with",
+    subtitles: {
+      login: "Log in to onehand.sales",
+      signup: "Create your onehand.sales account",
+    },
+    providerLead: {
+      login: "Continue with",
+      signup: "Or continue with",
+    },
     providers: {
       kakao: "Kakao",
       google: "Google",
@@ -133,8 +178,14 @@ const loginCopy: Record<
     callbackLoading: "Signing you in.",
     noProviders: "No sign-in methods are available.",
     providersErrorPrefix: "Could not load sign-in methods.",
-    signupLead: "New here?",
-    signupAction: "Sign up",
+    switchLead: {
+      login: "New here?",
+      signup: "Already have an account?",
+    },
+    switchAction: {
+      login: "Sign up",
+      signup: "Log in",
+    },
     termsPrefix: "By continuing, you agree to the ",
     terms: "Terms of Use",
     termsConnector: " and the ",
@@ -146,8 +197,14 @@ const loginCopy: Record<
   "en-GB": {
     homeAria: "Go home",
     title: "Your AI workspace",
-    subtitle: "Log in to onehand.sales",
-    providerLead: "Continue with",
+    subtitles: {
+      login: "Log in to onehand.sales",
+      signup: "Create your onehand.sales account",
+    },
+    providerLead: {
+      login: "Continue with",
+      signup: "Or continue with",
+    },
     providers: {
       kakao: "Kakao",
       google: "Google",
@@ -156,8 +213,14 @@ const loginCopy: Record<
     callbackLoading: "Signing you in.",
     noProviders: "No sign-in methods are available.",
     providersErrorPrefix: "Could not load sign-in methods.",
-    signupLead: "New here?",
-    signupAction: "Sign up",
+    switchLead: {
+      login: "New here?",
+      signup: "Already have an account?",
+    },
+    switchAction: {
+      login: "Sign up",
+      signup: "Log in",
+    },
     termsPrefix: "By continuing, you agree to the ",
     terms: "Terms of Use",
     termsConnector: " and the ",
@@ -184,12 +247,14 @@ export function AuthLoginPage({
   isLoginLoading,
   isPending,
   isProvidersLoading,
+  mode,
   pendingProvider,
   providersError,
   onProviderLogin,
 }: AuthLoginPageProps) {
   const { language } = usePublicSiteLanguage();
   const copy = loginCopy[language];
+  const switchPath = mode === "login" ? "/signup" : "/login";
   const visibleProviders = providerOrder
     .map((providerId) =>
       enabledProviders.find((provider) => provider.provider === providerId)
@@ -216,7 +281,7 @@ export function AuthLoginPage({
               {copy.title}
             </h1>
             <p className="mt-1 text-[23px] font-bold leading-[1.18] tracking-normal text-[#8f8f8b]">
-              {copy.subtitle}
+              {copy.subtitles[mode]}
             </p>
           </div>
 
@@ -233,7 +298,7 @@ export function AuthLoginPage({
               <div className="flex items-center gap-3">
                 <div className="h-px flex-1 bg-[#e9e9e7]" />
                 <span className="text-[14px] font-medium text-[#8f8f8b]">
-                  {copy.providerLead}
+                  {copy.providerLead[mode]}
                 </span>
                 <div className="h-px flex-1 bg-[#e9e9e7]" />
               </div>
@@ -299,10 +364,13 @@ export function AuthLoginPage({
           ) : null}
 
           <p className="mt-8 text-center text-[15px] font-medium text-[#777770]">
-            {copy.signupLead}{" "}
-            <span className="text-[#4f4f4b] underline decoration-[#c9c9c5] underline-offset-4">
-              {copy.signupAction}
-            </span>
+            {copy.switchLead[mode]}{" "}
+            <Link
+              className="text-[#4f4f4b] underline decoration-[#c9c9c5] underline-offset-4 hover:text-[#191919]"
+              to={switchPath}
+            >
+              {copy.switchAction[mode]}
+            </Link>
           </p>
 
           <p className="mx-auto mt-7 max-w-[300px] text-center text-[12px] font-medium leading-5 text-[#8f8f8b]">

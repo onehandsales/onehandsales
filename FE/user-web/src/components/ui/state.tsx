@@ -111,7 +111,7 @@ export function ListEmptyState({
         className
       )}
     >
-      <div className="flex h-12 w-12 items-center justify-center rounded-xl border border-[#E2E5EC] bg-[#FAFAF8]">
+      <div className="flex h-12 w-12 items-center justify-center rounded-xl border border-[#E2E5EC] bg-white">
         <Icon className="h-5 w-5 text-[#9CA3AF]" strokeWidth={1.5} />
       </div>
       <p className="mt-4 text-[14px] font-semibold text-[#111827]">{title}</p>

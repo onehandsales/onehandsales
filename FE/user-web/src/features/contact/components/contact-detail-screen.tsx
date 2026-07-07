@@ -1,4 +1,4 @@
-﻿import {
+import {
   BriefcaseBusiness,
   ChevronLeft,
   LockKeyhole,
@@ -155,7 +155,7 @@ export function ContactDetailScreen({ contactId }: ContactDetailScreenProps) {
   return (
     <>
       {/* ── Mobile ──────────────────────────────────────────── */}
-      <div className="md:hidden min-h-screen bg-[#FAFAF8]">
+      <div className="md:hidden min-h-screen bg-white">
         {notice ? (
           <div className="px-4 pt-3">
             <Toast
@@ -244,7 +244,7 @@ export function ContactDetailScreen({ contactId }: ContactDetailScreenProps) {
       </div>
 
       {/* ── Desktop ──────────────────────────────────────────── */}
-      <div className="hidden md:flex h-full flex-col bg-[#FAFAF8]">
+      <div className="hidden md:flex h-full flex-col bg-white">
         {notice ? (
           <div className="mx-6 mt-3">
             <Toast
@@ -1347,7 +1347,7 @@ function ContactDetailError({
   readonly onRetry: () => void;
 }) {
   return (
-    <div className="flex min-h-full flex-col bg-[#FAFAF8]">
+    <div className="flex min-h-full flex-col bg-white">
       <div className="mx-auto max-w-xl px-6 py-12">
         <div className="rounded-xl border border-red-100 bg-red-50 p-5">
           <p className="text-[13px] text-red-600">{getApiErrorMessage(error)}</p>
@@ -1366,7 +1366,7 @@ function ContactDetailError({
 
 function ContactDetailSkeleton() {
   return (
-    <div className="min-h-full bg-[#FAFAF8]">
+    <div className="min-h-full bg-white">
       <div className="flex h-16 items-center gap-3 px-6">
         <div className="h-4 w-4 animate-pulse rounded bg-[#F3F4F6]" />
         <div className="h-4 w-48 animate-pulse rounded bg-[#F3F4F6]" />

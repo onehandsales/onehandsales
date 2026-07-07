@@ -93,7 +93,7 @@ export function ImportDetailScreen({ importUserLogId }: ImportDetailScreenProps)
   const targetColorClassName = targetColorClassNames[detail.targetType];
 
   return (
-    <section className="flex min-h-dvh flex-col bg-[#FAFAF8]">
+    <section className="flex min-h-dvh flex-col bg-white">
       <ImportDetailHeader title={detail.originalFileName} />
 
       <div className="flex min-h-0 w-full flex-1 flex-col gap-4 overflow-y-auto px-4 pb-24 pt-0 md:px-6 md:pb-6 md:pt-0">
@@ -297,7 +297,7 @@ function ImportDetailError({
   readonly onRetry: () => void;
 }) {
   return (
-    <section className="flex min-h-dvh flex-col bg-[#FAFAF8]">
+    <section className="flex min-h-dvh flex-col bg-white">
       <ImportDetailHeader title="상세" />
       <div className="grid flex-1 place-items-center px-5">
         <div className="grid max-w-md gap-3 rounded-lg border border-red-200 bg-red-50 p-5 text-center text-red-700">
@@ -326,7 +326,7 @@ function ImportDetailError({
 
 function ImportDetailSkeleton() {
   return (
-    <section className="flex min-h-dvh flex-col bg-[#FAFAF8]">
+    <section className="flex min-h-dvh flex-col bg-white">
       <ImportDetailHeader title="상세" />
       <div className="grid w-full gap-4 px-4 pb-24 pt-0 md:px-6 md:pb-6 md:pt-0">
         <div className="h-56 animate-pulse rounded-lg border bg-white" />

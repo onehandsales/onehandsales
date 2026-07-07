@@ -29,7 +29,7 @@ export function ScheduleDetailScreen({ scheduleId }: ScheduleDetailScreenProps) 
   const schedule = scheduleQuery.data;
 
   return (
-    <section className="flex min-h-full flex-col bg-[#FAFAF8]">
+    <section className="flex min-h-full flex-col bg-white">
       <PageHeader
         breadcrumbs={[
           { label: "일정", to: "/schedules", icon: CalendarDays },
@@ -117,7 +117,7 @@ function ScheduleDetailContent({ schedule }: { readonly schedule: Schedule }) {
         </div>
 
         {schedule.memo ? (
-          <section className="mt-6 rounded-lg border border-[#E2E5EC] bg-[#FAFAF8] p-4">
+          <section className="mt-6 rounded-lg border border-[#E2E5EC] bg-white p-4">
             <h2 className="text-sm font-semibold text-[#111827]">메모</h2>
             <p className="mt-2 whitespace-pre-wrap text-sm leading-6 text-[#374151]">
               {schedule.memo}

@@ -170,7 +170,7 @@ export function MeetingNoteListScreen() {
   };
 
   return (
-    <section className="flex min-h-full flex-col bg-[#FAFAF8]">
+    <section className="flex min-h-full flex-col bg-white">
       <PageHeader
         breadcrumbs={[{ label: "회의록", icon: NotebookPen }]}
         actions={[
@@ -185,7 +185,7 @@ export function MeetingNoteListScreen() {
 
       <div className="hidden min-h-10 shrink-0 items-center gap-1.5 overflow-x-auto px-5 py-1 md:flex lg:gap-2">
         <form
-          className="flex h-8 w-[clamp(150px,20vw,220px)] shrink-0 items-center gap-1.5 rounded-md border border-[#E2E5EC] bg-[#FAFAF8] px-3 transition hover:border-[#93C5FD] hover:bg-white focus-within:border-[#4880EE] focus-within:bg-white focus-within:ring-1 focus-within:ring-[#4880EE]"
+          className="flex h-8 w-[clamp(150px,20vw,220px)] shrink-0 items-center gap-1.5 rounded-md border border-[#E2E5EC] bg-white px-3 transition hover:border-[#93C5FD] hover:bg-white focus-within:border-[#4880EE] focus-within:bg-white focus-within:ring-1 focus-within:ring-[#4880EE]"
           onSubmit={onSearchSubmit}
         >
           <Search className="h-3 w-3 shrink-0 text-[#9CA3AF]" />
@@ -635,7 +635,7 @@ function MeetingNoteFilterMultiSelect<TItem extends MeetingNoteFilterItem>({
               ? "rounded-full border-[#4880EE] bg-white pl-8 pr-7 text-[#111827] ring-1 ring-[#4880EE]"
               : selectedIds.length > 0
                 ? "rounded-full border-[#BFDBFE] bg-[#EFF6FF] pl-3.5 pr-7 font-semibold text-[#1D4ED8]"
-                : "cursor-pointer rounded-full border-[#E2E5EC] bg-transparent pl-3.5 pr-7 text-[#6B7280] hover:border-[#D1D5DB] hover:bg-[#FAFAF8]",
+                : "cursor-pointer rounded-full border-[#E2E5EC] bg-transparent pl-3.5 pr-7 text-[#6B7280] hover:border-[#D1D5DB] hover:bg-white",
           )}
           onChange={(event) => openOptions(event.target.value)}
           onFocus={() => openOptions("")}

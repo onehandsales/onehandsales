@@ -158,7 +158,7 @@ export function ContactListScreen() {
   };
 
   return (
-    <section className="flex min-h-full flex-col bg-[#FAFAF8]">
+    <section className="flex min-h-full flex-col bg-white">
       <PageHeader
         breadcrumbs={[{ label: "담당자", icon: IdCard }]}
         actions={[
@@ -180,7 +180,7 @@ export function ContactListScreen() {
       {/* 검색 + 필터 툴바 (데스크톱) */}
       <div className="hidden min-h-10 shrink-0 items-center gap-1.5 overflow-x-auto px-5 py-1 md:flex lg:gap-2">
         <form
-          className="flex h-8 w-[clamp(150px,20vw,220px)] shrink-0 items-center gap-1.5 rounded-md border border-[#E2E5EC] bg-[#FAFAF8] px-3 transition hover:border-[#93C5FD] hover:bg-white focus-within:border-[#4880EE] focus-within:bg-white focus-within:ring-1 focus-within:ring-[#4880EE]"
+          className="flex h-8 w-[clamp(150px,20vw,220px)] shrink-0 items-center gap-1.5 rounded-md border border-[#E2E5EC] bg-white px-3 transition hover:border-[#93C5FD] hover:bg-white focus-within:border-[#4880EE] focus-within:bg-white focus-within:ring-1 focus-within:ring-[#4880EE]"
           onSubmit={onSearchSubmit}
         >
           <Search className="h-3 w-3 shrink-0 text-[#9CA3AF]" />
@@ -641,7 +641,7 @@ export function ContactCard({
 }) {
   return (
     <Link
-      className="flex items-start justify-between gap-4 bg-white px-6 py-3 hover:bg-[#FAFAF8]"
+      className="flex items-start justify-between gap-4 bg-white px-6 py-3 hover:bg-white"
       to={`/app/contacts/${contact.id}`}
     >
       <div className="min-w-0 flex-1">
@@ -693,7 +693,7 @@ function ContactListError({
     <div className="flex flex-1 flex-col items-center justify-center px-5 py-14 text-center">
       <p className="text-[13px] text-red-500">{getApiErrorMessage(error)}</p>
       <button
-        className="mt-3 inline-flex h-8 items-center rounded-md border border-[#E2E5EC] bg-white px-3 text-[12px] text-[#6B7280] hover:bg-[#FAFAF8]"
+        className="mt-3 inline-flex h-8 items-center rounded-md border border-[#E2E5EC] bg-white px-3 text-[12px] text-[#6B7280] hover:bg-white"
         onClick={onRetry}
         type="button"
       >

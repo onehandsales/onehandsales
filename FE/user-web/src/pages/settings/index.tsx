@@ -33,7 +33,7 @@ export function SettingsPage() {
   const devicesQuery = useMyDevices();
 
   return (
-    <section className="flex min-h-full flex-col bg-[#FAFAF8]">
+    <section className="flex min-h-full flex-col bg-white">
       <div className="mx-auto grid w-full max-w-7xl gap-5 px-5 py-6">
         {notice ? (
           <Toast message={notice} onClose={() => setNotice(null)} variant="success" />
@@ -134,7 +134,7 @@ function ProfileSection({
                 <label className="flex min-w-0 flex-1 items-center gap-3">
                   <span className="shrink-0 text-sm font-medium text-[#374151]">이름</span>
                   <input
-                    className="h-8 min-w-0 flex-1 rounded-md border border-[#E2E5EC] bg-[#FAFAF8] px-3 text-sm outline-none focus:border-[#93C5FD] focus:bg-white"
+                    className="h-8 min-w-0 flex-1 rounded-md border border-[#E2E5EC] bg-white px-3 text-sm outline-none focus:border-[#93C5FD] focus:bg-white"
                     maxLength={80}
                     onChange={(event) => setName(event.target.value)}
                     placeholder="이름 없음"
@@ -303,7 +303,7 @@ function OAuthAccountList({
         <h3 className="text-sm font-semibold text-[#111827]">연결 provider</h3>
       </div>
       {accounts.length === 0 ? (
-        <p className="rounded-md border border-[#E2E5EC] bg-[#FAFAF8] px-3 py-3 text-sm text-[#64748B]">
+        <p className="rounded-md border border-[#E2E5EC] bg-white px-3 py-3 text-sm text-[#64748B]">
           연결된 provider가 생기면 여기에서 볼 수 있어요.
         </p>
       ) : (
@@ -342,7 +342,7 @@ function ReadOnlyField({
   readonly value: string | null | undefined;
 }) {
   return (
-    <div className="rounded-md border border-[#E2E5EC] bg-[#FAFAF8] px-3 py-3">
+    <div className="rounded-md border border-[#E2E5EC] bg-white px-3 py-3">
       <dt className="flex items-center gap-2 text-xs font-medium text-[#64748B]">
         <Icon className="h-3.5 w-3.5" />
         {label}

@@ -153,7 +153,7 @@ export function MeetingNoteDetailScreen({
 
   return (
     <>
-      <div className="min-h-screen bg-[#FAFAF8] md:flex md:h-full md:min-h-0 md:flex-col">
+      <div className="min-h-screen bg-white md:flex md:h-full md:min-h-0 md:flex-col">
         {notice ? (
           <div className="px-4 pt-3 md:px-6">
             <Toast message={notice} onClose={() => setNotice(null)} variant="success" />

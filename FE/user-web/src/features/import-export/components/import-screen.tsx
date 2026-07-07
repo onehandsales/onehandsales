@@ -623,7 +623,7 @@ export function ImportScreen() {
   };
 
   return (
-    <section className="flex min-h-full flex-col bg-[#FAFAF8]">
+    <section className="flex min-h-full flex-col bg-white">
       <PageHeader
         breadcrumbs={[{ label: "데이터 업로드", icon: DataUploadIcon }]}
         actions={[

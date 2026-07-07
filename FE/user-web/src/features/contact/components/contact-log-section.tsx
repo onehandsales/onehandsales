@@ -114,7 +114,7 @@ export function ContactMemoLogSection({
                   : undefined
               }
               aria-invalid={Boolean(createForm.formState.errors.memoType)}
-              className="h-9 flex-1 rounded-md border border-[#E2E5EC] bg-[#FAFAF8] px-3 text-[13px] text-[#111827] outline-none placeholder:text-[#9CA3AF] focus:border-[#93C5FD] focus:bg-white"
+              className="h-9 flex-1 rounded-md border border-[#E2E5EC] bg-white px-3 text-[13px] text-[#111827] outline-none placeholder:text-[#9CA3AF] focus:border-[#93C5FD] focus:bg-white"
               id="contact-memo-type"
               placeholder="메모 제목"
               {...createForm.register("memoType")}
@@ -136,7 +136,7 @@ export function ContactMemoLogSection({
                 : undefined
             }
             aria-invalid={Boolean(createForm.formState.errors.memo)}
-            className="min-h-[80px] resize-y rounded-md border border-[#E2E5EC] bg-[#FAFAF8] px-3 py-2 text-[13px] text-[#111827] outline-none placeholder:text-[#9CA3AF] focus:border-[#93C5FD] focus:bg-white"
+            className="min-h-[80px] resize-y rounded-md border border-[#E2E5EC] bg-white px-3 py-2 text-[13px] text-[#111827] outline-none placeholder:text-[#9CA3AF] focus:border-[#93C5FD] focus:bg-white"
             id="contact-memo"
             placeholder="메모 상세 내용"
             {...createForm.register("memo")}
@@ -302,7 +302,7 @@ export function ContactPrivateMemoLogSection({
                   : undefined
               }
               aria-invalid={Boolean(createForm.formState.errors.memo)}
-              className="min-h-[80px] flex-1 resize-y rounded-md border border-[#E2E5EC] bg-[#FAFAF8] px-3 py-2 text-[13px] text-[#111827] outline-none placeholder:text-[#9CA3AF] focus:border-[#93C5FD] focus:bg-white"
+              className="min-h-[80px] flex-1 resize-y rounded-md border border-[#E2E5EC] bg-white px-3 py-2 text-[13px] text-[#111827] outline-none placeholder:text-[#9CA3AF] focus:border-[#93C5FD] focus:bg-white"
               id="contact-private-memo"
               placeholder="메모 상세 내용"
               {...createForm.register("memo")}

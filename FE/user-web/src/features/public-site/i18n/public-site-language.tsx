@@ -30,6 +30,7 @@ type PublicSiteCopy = {
       readonly product: string;
       readonly pricing: string;
       readonly contact: string;
+      readonly freeCta: string;
       readonly login: string;
     };
     readonly productMenuGroups: readonly ProductMenuItemCopy[][];
@@ -152,6 +153,7 @@ const publicSiteCopy: Record<PublicSiteLanguage, PublicSiteCopy> = {
         product: "제품",
         pricing: "요금제",
         contact: "문의",
+        freeCta: "onehand 무료로 사용하기",
         login: "로그인",
       },
       productMenuGroups: [
@@ -369,6 +371,7 @@ const publicSiteCopy: Record<PublicSiteLanguage, PublicSiteCopy> = {
         product: "製品",
         pricing: "料金",
         contact: "お問い合わせ",
+        freeCta: "onehandを無料で使う",
         login: "ログイン",
       },
       productMenuGroups: [
@@ -481,6 +484,7 @@ const publicSiteCopy: Record<PublicSiteLanguage, PublicSiteCopy> = {
         product: "产品",
         pricing: "价格",
         contact: "咨询",
+        freeCta: "免费使用 onehand",
         login: "登录",
       },
       productMenuGroups: [
@@ -957,6 +961,7 @@ function makeEnglishCopy(copy: {
       product: "Product",
       pricing: copy.pricing,
       contact: copy.contact,
+      freeCta: "Use onehand for free",
       login: "Log in",
     },
     productMenuGroups: [

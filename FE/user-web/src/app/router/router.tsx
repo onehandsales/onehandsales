@@ -36,6 +36,7 @@ import { MorePage } from "@/pages/more";
 export const router = createBrowserRouter([
   { path: "/", element: <LoginPage /> },
   { path: "/login", element: <LoginPage /> },
+  { path: "/signup", element: <LoginPage /> },
   { path: "/pricing", element: <PricingPage /> },
   { path: "/contact", element: <ContactPage /> },
   { path: "/auth/callback", element: <LoginPage /> },

@@ -423,7 +423,7 @@ function DealDetailPageLayout({
 
   return (
     <>
-      <div className="md:hidden min-h-screen bg-[#FAFAF8]">
+      <div className="md:hidden min-h-screen bg-white">
         {notice ? (
           <div className="px-4 pt-3">
             <Toast message={notice} onClose={onClearNotice} variant="success" />
@@ -482,7 +482,7 @@ function DealDetailPageLayout({
         </div>
       </div>
 
-      <div className="hidden md:flex h-full flex-col bg-[#FAFAF8]">
+      <div className="hidden md:flex h-full flex-col bg-white">
         {notice ? (
           <div className="mx-6 mt-3">
             <Toast message={notice} onClose={onClearNotice} variant="success" />

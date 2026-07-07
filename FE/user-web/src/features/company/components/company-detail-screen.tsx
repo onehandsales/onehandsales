@@ -1,4 +1,4 @@
-﻿import {
+import {
   BriefcaseBusiness,
   Building2,
   ChevronLeft,
@@ -165,7 +165,7 @@ export function CompanyDetailScreen({ companyId }: CompanyDetailScreenProps) {
   return (
     <>
       {/* ── Mobile ──────────────────────────────────────────── */}
-      <div className="md:hidden min-h-screen bg-[#FAFAF8]">
+      <div className="md:hidden min-h-screen bg-white">
         {notice ? (
           <div className="px-4 pt-3">
             <Toast
@@ -244,7 +244,7 @@ export function CompanyDetailScreen({ companyId }: CompanyDetailScreenProps) {
       </div>
 
       {/* ── Desktop ──────────────────────────────────────────── */}
-      <div className="hidden md:flex h-full flex-col bg-[#FAFAF8]">
+      <div className="hidden md:flex h-full flex-col bg-white">
         {notice ? (
           <div className="mx-6 mt-3">
             <Toast
@@ -1309,7 +1309,7 @@ function CompanyDetailError({
   readonly onRetry: () => void;
 }) {
   return (
-    <div className="flex min-h-full flex-col bg-[#FAFAF8]">
+    <div className="flex min-h-full flex-col bg-white">
       <PageHeader
         breadcrumbs={[
           { label: "회사", to: "/app/companies", icon: Building2 },
@@ -1334,7 +1334,7 @@ function CompanyDetailError({
 
 function CompanyDetailSkeleton() {
   return (
-    <div className="flex min-h-full flex-col bg-[#FAFAF8]">
+    <div className="flex min-h-full flex-col bg-white">
       {/* TopBar skeleton */}
       <div className="flex h-16 items-center gap-3 border-b border-[#E5E7EB] bg-white px-6">
         <div className="h-4 w-4 animate-pulse rounded bg-[#F3F4F6]" />

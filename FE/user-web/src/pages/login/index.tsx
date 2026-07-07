@@ -31,6 +31,7 @@ export function LoginPage() {
   const [isProvidersLoading, setIsProvidersLoading] = useState(true);
   const [isCallbackLoginLoading, setIsCallbackLoginLoading] = useState(false);
   const isLoginRoute = location.pathname === "/login";
+  const isSignupRoute = location.pathname === "/signup";
   const [pendingProvider, setPendingProvider] = useState<AuthProviderId | null>(
     null
   );
@@ -144,7 +145,7 @@ export function LoginPage() {
     });
   };
 
-  if (isLoginRoute || location.pathname === "/auth/callback") {
+  if (isLoginRoute || isSignupRoute || location.pathname === "/auth/callback") {
     return (
       <AuthLoginPage
         authError={authError}
@@ -152,6 +153,7 @@ export function LoginPage() {
         isLoginLoading={isCallbackLoginLoading}
         isPending={isPending}
         isProvidersLoading={isProvidersLoading}
+        mode={isSignupRoute ? "signup" : "login"}
         pendingProvider={pendingProvider}
         providersError={providersError}
         onProviderLogin={onProviderLogin}

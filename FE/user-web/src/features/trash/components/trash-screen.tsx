@@ -226,7 +226,7 @@ export function TrashScreen() {
   };
 
   return (
-    <section className="flex min-h-full flex-col bg-[#FAFAF8]">
+    <section className="flex min-h-full flex-col bg-white">
       <PageHeader breadcrumbs={[{ label: "휴지통", icon: Trash2 }]} />
 
       <div className="flex min-h-10 shrink-0 items-center gap-1.5 overflow-x-auto px-5 py-1 md:flex lg:gap-2">

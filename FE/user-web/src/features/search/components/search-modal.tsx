@@ -125,7 +125,7 @@ export function SearchModal({ open, onClose }: SearchModalProps) {
               <X className="h-4 w-4" />
             </button>
           ) : (
-            <kbd className="hidden shrink-0 rounded border border-[#E2E5EC] bg-[#FAFAF8] px-1.5 py-0.5 text-[11px] font-medium text-[#9CA3AF] sm:block">
+            <kbd className="hidden shrink-0 rounded border border-[#E2E5EC] bg-white px-1.5 py-0.5 text-[11px] font-medium text-[#9CA3AF] sm:block">
               ESC
             </kbd>
           )}
@@ -234,7 +234,7 @@ function SearchGroupSection({ group, onSelect }: SearchGroupSectionProps) {
           <button
             key={`${group.type}:${item.targetId}`}
             type="button"
-            className="flex w-full flex-col gap-0.5 rounded-md px-2 py-2 text-left transition hover:bg-[#FAFAF8]"
+            className="flex w-full flex-col gap-0.5 rounded-md px-2 py-2 text-left transition hover:bg-white"
             onClick={() => onSelect(group, item)}
           >
             <span className="truncate text-[13px] font-medium text-[#111827]">

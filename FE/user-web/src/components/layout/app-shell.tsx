@@ -463,7 +463,7 @@ export function AppShell() {
         <div className="flex min-w-0 flex-1 flex-col pl-[var(--sidebar-width)]">
           {/* TopBar */}
           {!hideTopBar ? (
-            <div className="sticky top-0 z-20 bg-[#FAFAF8]">
+            <div className="sticky top-0 z-20 bg-white">
               {topBarContent}
             </div>
           ) : null}
@@ -701,7 +701,7 @@ function AccountModalContent({
   readonly section: AccountModalSection;
 }) {
   return (
-    <div className="grid h-[min(76vh,720px)] overflow-hidden rounded-lg bg-[#FAFAF8] md:grid-cols-[176px_minmax(0,1fr)]">
+    <div className="grid h-[min(76vh,720px)] overflow-hidden rounded-lg bg-white md:grid-cols-[176px_minmax(0,1fr)]">
       <aside className="bg-white p-2">
         <nav className="grid gap-1">
           {accountModalItems.map((item) => (
@@ -774,7 +774,7 @@ function AccountLegalDocument({
   const Icon = document.icon;
 
   return (
-    <section className="min-h-full bg-[#FAFAF8] px-5 py-6">
+    <section className="min-h-full bg-white px-5 py-6">
       <article className="rounded-lg bg-white px-5 py-5 shadow-sm">
         <div className="flex items-start gap-3">
           <span className="grid h-10 w-10 shrink-0 place-items-center rounded-lg bg-[#EAF2FF] text-[#1D4ED8]">

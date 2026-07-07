@@ -5,7 +5,7 @@
 @layer base {
   :root {
     /* ── 기본 배경 / 텍스트 ── */
-    --background: 40 13% 98%;        /* #FAFAF8 — 부드러운 따뜻한 흰색 배경 */
+    --background: 0 0% 100%;         /* #FFFFFF — 완전한 흰색 배경 */
     --foreground: 222 24% 12%;       /* #161B27 */
     --muted: 220 16% 94%;            /* #ECEEF2 */
     --muted-foreground: 220 12% 46%; /* #6B7280 */
@@ -30,10 +30,10 @@
     --panel-strong-foreground: 0 0% 100%;
 
     /* ── 사이드바 (배경과 동일 — 보더 없이 메인 콘텐츠만 떠있는 구조) ── */
-    --sidebar: 40 13% 98%;           /* #FAFAF8 — 배경과 동일 */
+    --sidebar: 0 0% 100%;            /* #FFFFFF — 배경과 동일 */
     --sidebar-foreground: 222 20% 22%; /* #2D3341 */
     --sidebar-muted: 220 13% 91%;    /* #E5E7EB */
-    --sidebar-border: 40 13% 98%;    /* 배경과 동일 → 보더 사라짐 */
+    --sidebar-border: 0 0% 100%;     /* 배경과 동일 → 보더 사라짐 */
     --sidebar-accent: 220 83% 61%;   /* #4880EE */
 
     /* ── 칩 / FAB ── */

@@ -170,7 +170,7 @@ export function HomePage() {
     meetingNotesQuery.isLoading;
 
   return (
-    <section className="min-h-0 flex-1 overflow-y-auto bg-[#FAFAF8] px-5 pb-8 pt-2 md:px-8 md:pt-4">
+    <section className="min-h-0 flex-1 overflow-y-auto bg-white px-5 pb-8 pt-2 md:px-8 md:pt-4">
       <div className="mx-auto grid w-full max-w-[1480px] gap-5">
         <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
           <SummaryCard
