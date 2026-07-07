@@ -261,6 +261,18 @@ export function AuthLoginPage({
     )
     .filter((provider): provider is AuthProviderOption => Boolean(provider));
 
+  if (isLoginLoading || isPending) {
+    return (
+      <div className="grid min-h-dvh place-items-center bg-white text-[#191919]">
+        <Loader2
+          aria-label={copy.callbackLoading}
+          className="h-7 w-7 animate-spin text-[#2383e2]"
+          role="status"
+        />
+      </div>
+    );
+  }
+
   return (
     <div className="relative flex min-h-dvh flex-col overflow-hidden bg-white text-[#191919]">
       <main className="flex flex-1 items-center justify-center px-5 py-24">
@@ -285,16 +297,7 @@ export function AuthLoginPage({
             </p>
           </div>
 
-          {isLoginLoading ? (
-            <div className="mt-10 flex h-[168px] flex-col items-center justify-center gap-3 text-[13px] font-semibold text-[#777770]">
-              <Loader2
-                aria-hidden="true"
-                className="h-6 w-6 animate-spin text-[#2383e2]"
-              />
-              {copy.callbackLoading}
-            </div>
-          ) : (
-            <div className="mt-8">
+          <div className="mt-8">
               <div className="flex items-center gap-3">
                 <div className="h-px flex-1 bg-[#e9e9e7]" />
                 <span className="text-[14px] font-medium text-[#8f8f8b]">
@@ -348,8 +351,7 @@ export function AuthLoginPage({
                   </button>
                 ))}
               </div>
-            </div>
-          )}
+          </div>
 
           {providersError && visibleProviders.length === 0 ? (
             <p className="mt-5 rounded-[7px] border border-[#f0d9a5] bg-[#fff8e5] px-3 py-2 text-center text-[12px] font-medium leading-5 text-[#8a5d00]">

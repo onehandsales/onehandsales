@@ -37,6 +37,7 @@ type PublicSiteCopy = {
     readonly productTour: string;
     readonly productApp: string;
     readonly footerColumns: readonly FooterColumnCopy[];
+    readonly cookieSettings: string;
     readonly languageAria: string;
     readonly copyright: string;
   };
@@ -179,13 +180,14 @@ const publicSiteCopy: Record<PublicSiteLanguage, PublicSiteCopy> = {
       productTour: "onehand.sales 1.0 둘러보기",
       productApp: "앱으로 이동",
       footerColumns: [
-        ["회사", "소개", "채용", "블로그", "문의"],
-        ["제품", "딜", "회사", "담당자", "일정"],
-        ["자료", "도움말", "템플릿", "가이드", "변경사항"],
-        ["정책", "개인정보", "약관", "보안", "상태"],
+        ["회사 소개", "onehand 소개", "채용", "보안", "서비스 상태", "이용약관 및 개인정보 보호정책", "개인정보 보호 권한"],
+        ["다운로드", "웹 앱", "모바일 웹", "데스크톱 웹", "브라우저 바로가기"],
+        ["리소스", "도움말 센터", "가격", "블로그", "커뮤니티", "연결", "템플릿", "파트너 프로그램"],
+        ["용도별", "회사", "팀", "개인", "더 살펴보기"],
       ],
+      cookieSettings: "쿠키 설정",
       languageAria: "언어 선택",
-      copyright: "© 2026 onehand.sales",
+      copyright: "© 2026 onehand Labs, Inc.",
     },
     landing: {
       heroTitle: ["영업팀과 고객이", "함께 움직이는 곳"],
@@ -397,13 +399,14 @@ const publicSiteCopy: Record<PublicSiteLanguage, PublicSiteCopy> = {
       productTour: "onehand.sales 1.0 を見る",
       productApp: "アプリへ移動",
       footerColumns: [
-        ["会社", "概要", "採用", "ブログ", "お問い合わせ"],
-        ["製品", "商談", "会社", "担当者", "予定"],
-        ["リソース", "ヘルプ", "テンプレート", "ガイド", "更新情報"],
-        ["ポリシー", "個人情報", "利用規約", "セキュリティ", "ステータス"],
+        ["会社紹介", "onehandについて", "採用", "セキュリティ", "サービス状況", "利用規約とプライバシーポリシー", "プライバシー権限"],
+        ["ダウンロード", "Webアプリ", "モバイルWeb", "デスクトップWeb", "ブラウザショートカット"],
+        ["リソース", "ヘルプセンター", "料金", "ブログ", "コミュニティ", "連携", "テンプレート", "パートナープログラム"],
+        ["用途別", "会社", "チーム", "個人", "もっと見る"],
       ],
+      cookieSettings: "Cookie設定",
       languageAria: "言語を選択",
-      copyright: "© 2026 onehand.sales",
+      copyright: "© 2026 onehand Labs, Inc.",
     },
     landing: {
       heroTitle: ["営業チームと顧客が", "一緒に動く場所"],
@@ -510,13 +513,14 @@ const publicSiteCopy: Record<PublicSiteLanguage, PublicSiteCopy> = {
       productTour: "查看 onehand.sales 1.0",
       productApp: "进入应用",
       footerColumns: [
-        ["公司", "介绍", "招聘", "博客", "咨询"],
-        ["产品", "商机", "公司", "联系人", "日程"],
-        ["资源", "帮助", "模板", "指南", "更新"],
-        ["政策", "隐私", "条款", "安全", "状态"],
+        ["公司介绍", "关于 onehand", "招聘", "安全", "服务状态", "条款与隐私政策", "隐私权限"],
+        ["下载", "Web 应用", "移动网页", "桌面网页", "浏览器快捷方式"],
+        ["资源", "帮助中心", "价格", "博客", "社区", "连接", "模板", "合作伙伴计划"],
+        ["适用对象", "公司", "团队", "个人", "查看更多"],
       ],
+      cookieSettings: "Cookie 设置",
       languageAria: "选择语言",
-      copyright: "© 2026 onehand.sales",
+      copyright: "© 2026 onehand Labs, Inc.",
     },
     landing: {
       heroTitle: ["销售团队与客户", "协同工作的地方"],
@@ -987,13 +991,14 @@ function makeEnglishCopy(copy: {
     productTour: "Explore onehand.sales 1.0",
     productApp: "Go to app",
     footerColumns: [
-      ["Company", "About", "Careers", "Blog", copy.contact],
-      ["Product", "Deals", "Companies", "Contacts", "Calendar"],
-      ["Resources", "Help", "Templates", "Guides", "Updates"],
-      ["Policy", "Privacy", "Terms", "Security", "Status"],
+      ["Company", "About us", "Careers", "Security", "Status", "Terms and privacy", "Privacy rights"],
+      ["Download", "Web app", "Mobile web", "Desktop web", "Browser shortcut"],
+      ["Resources", "Help center", copy.pricing, "Blog", "Community", "Connections", "Templates", "Partner program"],
+      ["onehand for", "Company", "Team", "Personal", "Explore more"],
     ],
+    cookieSettings: "Cookie settings",
     languageAria: "Select language",
-    copyright: "© 2026 onehand.sales",
+    copyright: "© 2026 onehand Labs, Inc.",
   };
 
   return {

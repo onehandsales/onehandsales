@@ -6,10 +6,13 @@ import {
   CalendarDays,
   Check,
   CircleDollarSign,
+  Facebook,
   FileText,
   FolderKanban,
   Handshake,
+  Instagram,
   LayoutDashboard,
+  Linkedin,
   ListChecks,
   Mail,
   MessageSquareText,
@@ -17,6 +20,7 @@ import {
   ShieldCheck,
   Sparkles,
   Users,
+  Youtube,
 } from "lucide-react";
 import { useEffect, useState, type ReactNode } from "react";
 import { PublicSiteHeader } from "@/features/public-site/components/public-site-header";
@@ -174,6 +178,22 @@ const testimonials = [
   },
 ];
 
+const proofPoints = [
+  "1,000+ 영업 기록 정리",
+  "12분 안에 첫 파이프라인 구성",
+  "주간 후속조치 누락 감소",
+  "모바일 웹 최적화",
+  "개인과 작은 팀을 위한 CRM",
+];
+
+const footerSocialLinks = [
+  { label: "Instagram", icon: Instagram },
+  { label: "X", icon: MessageSquareText },
+  { label: "LinkedIn", icon: Linkedin },
+  { label: "Facebook", icon: Facebook },
+  { label: "YouTube", icon: Youtube },
+];
+
 export function AuthLandingPage({
   children,
   isModalOpen,
@@ -195,6 +215,7 @@ export function AuthLandingPage({
           <WorkspaceSection />
           <QuoteSection />
           <TrustedSection />
+          <ProofPointStrip />
           <FinalCta onOpenLogin={onOpenLogin} />
         </div>
         <LandingFooter />
@@ -246,27 +267,10 @@ function LandingScrollStyles() {
           -ms-overflow-style: none;
         }
 
-        html.landing-scrollbar-hidden {
-          scroll-padding-top: 56px;
-          scroll-snap-type: y mandatory;
-        }
-
         .landing-scrollbar-hidden::-webkit-scrollbar {
           display: none;
           width: 0;
           height: 0;
-        }
-
-        .landing-snap-section {
-          min-height: calc(100svh - 56px);
-          scroll-snap-align: start;
-          scroll-snap-stop: always;
-        }
-
-        @supports (height: 100dvh) {
-          .landing-snap-section {
-            min-height: calc(100dvh - 56px);
-          }
         }
       `}
     </style>
@@ -293,7 +297,7 @@ function HeroSection({ onOpenLogin }: { readonly onOpenLogin: () => void }) {
   const { copy } = usePublicSiteLanguage();
 
   return (
-    <section className="landing-snap-section relative flex w-full flex-col justify-center bg-white px-4 py-10 md:px-6 md:py-12">
+    <section className="relative flex min-h-[calc(100svh-56px)] w-full flex-col justify-center bg-white px-4 pb-12 pt-10 md:px-6 md:pb-16 md:pt-14">
       <div className="mx-auto w-full max-w-[1180px] text-center">
         <PersonaRow />
         <h1 className="mx-auto mt-5 max-w-[980px] text-[44px] font-black leading-[0.98] tracking-normal text-[#111111] md:text-[82px]">
@@ -457,7 +461,7 @@ function CustomerStrip() {
   const { copy } = usePublicSiteLanguage();
 
   return (
-    <section className="landing-snap-section flex items-center justify-center border-y border-[#eeeeec] bg-white px-4 py-16 md:px-6">
+    <section className="border-y border-[#eeeeec] bg-white px-4 py-5 md:px-6">
       <div className="mx-auto max-w-[900px] text-center">
         <p className="text-[12px] font-semibold text-[#8a8a85]">
           {copy.landing.customerStrip}
@@ -479,7 +483,7 @@ function WorkMovingSection() {
   const { copy } = usePublicSiteLanguage();
 
   return (
-    <section className="landing-snap-section mx-auto flex max-w-[980px] flex-col justify-center px-4 py-16 md:px-6 md:py-20" id="워크플로우">
+    <section className="mx-auto max-w-[980px] px-4 py-16 md:px-6 md:py-20" id="워크플로우">
       <h2 className="max-w-[640px] text-[34px] font-black leading-[1.05] tracking-normal text-[#111111] md:text-[46px]">
         {copy.landing.sectionWork}
       </h2>
@@ -564,85 +568,53 @@ function StatusUpdateMockup() {
 
 function AssistantsSection() {
   const { copy } = usePublicSiteLanguage();
-  const [primaryCard, ...secondaryCards] = workCards;
 
   return (
-    <>
-      {primaryCard ? (
-        <section className="landing-snap-section mx-auto flex max-w-[980px] flex-col justify-center px-4 py-16 md:px-6 md:py-20" id="제품">
-          <h2 className="max-w-[700px] text-[34px] font-black leading-[1.05] tracking-normal text-[#111111] md:text-[46px]">
-            {copy.landing.sectionAssistants}
-          </h2>
+    <section className="mx-auto max-w-[980px] px-4 pb-16 md:px-6 md:pb-20" id="제품">
+      <h2 className="max-w-[700px] text-[34px] font-black leading-[1.05] tracking-normal text-[#111111] md:text-[46px]">
+        {copy.landing.sectionAssistants}
+      </h2>
 
-          <div className="mt-8">
-            <FeatureShowcaseCard
-              accent={primaryCard.accent}
-              body={primaryCard.body}
-              eyebrow={primaryCard.eyebrow}
-              icon={primaryCard.icon}
-              title={primaryCard.title}
-            />
-          </div>
-        </section>
-      ) : null}
-
-      {secondaryCards.map(({ accent, body, eyebrow, icon: Icon, title }) => (
-        <section
-          className="landing-snap-section mx-auto flex max-w-[980px] flex-col justify-center px-4 py-16 md:px-6 md:py-20"
-          key={title}
-        >
+      <div className="mt-8 grid gap-5 md:grid-cols-2">
+        {workCards.map(({ accent, body, eyebrow, icon: Icon, title }, index) => (
           <FeatureShowcaseCard
             accent={accent}
             body={body}
+            className={index === 0 ? "md:col-span-2" : ""}
             eyebrow={eyebrow}
             icon={Icon}
+            key={title}
             title={title}
           />
-        </section>
-      ))}
-    </>
+        ))}
+      </div>
+    </section>
   );
 }
 
 function WorkspaceSection() {
   const { copy } = usePublicSiteLanguage();
-  const [primaryCard, ...secondaryCards] = workspaceCards;
 
   return (
-    <>
-      {primaryCard ? (
-        <section className="landing-snap-section mx-auto flex max-w-[980px] flex-col justify-center px-4 py-16 md:px-6 md:py-20" id="고객관리">
-          <h2 className="max-w-[720px] text-[34px] font-black leading-[1.05] tracking-normal text-[#111111] md:text-[46px]">
-            {copy.landing.sectionWorkspace}
-          </h2>
+    <section className="mx-auto max-w-[980px] px-4 pb-16 md:px-6 md:pb-20" id="고객관리">
+      <h2 className="max-w-[720px] text-[34px] font-black leading-[1.05] tracking-normal text-[#111111] md:text-[46px]">
+        {copy.landing.sectionWorkspace}
+      </h2>
 
-          <div className="mt-8">
-            <FeatureShowcaseCard
-              accent={primaryCard.accent}
-              body={primaryCard.body}
-              eyebrow={primaryCard.eyebrow}
-              icon={primaryCard.icon}
-              title={primaryCard.title}
-            />
-          </div>
-        </section>
-      ) : null}
-
-      {secondaryCards.map(({ accent, body, eyebrow, icon: Icon, title }) => (
-        <section
-          className="landing-snap-section mx-auto flex max-w-[980px] flex-col justify-center px-4 py-16 md:px-6 md:py-20"
-          key={title}
-        >
+      <div className="mt-8 grid gap-5 md:grid-cols-2">
+        {workspaceCards.map(({ accent, body, eyebrow, icon: Icon, title }, index) => (
           <FeatureShowcaseCard
             accent={accent}
             body={body}
+            className={index === 2 ? "md:col-span-2" : ""}
             eyebrow={eyebrow}
             icon={Icon}
+            key={title}
             title={title}
           />
-        </section>
-      ))}
-    </>
+        ))}
+      </div>
+    </section>
   );
 }
 
@@ -850,7 +822,7 @@ function QuoteSection() {
   const { copy } = usePublicSiteLanguage();
 
   return (
-    <section className="landing-snap-section mx-auto flex max-w-[980px] flex-col justify-center px-4 py-16 text-center md:px-6 md:py-20">
+    <section className="mx-auto max-w-[980px] px-4 pb-16 text-center md:px-6 md:pb-20">
       <p className="font-serif text-[24px] leading-9 text-[#333330]">
         {copy.landing.quote}
       </p>
@@ -863,7 +835,7 @@ function TrustedSection() {
   const { copy } = usePublicSiteLanguage();
 
   return (
-    <section className="landing-snap-section mx-auto flex max-w-[980px] flex-col justify-center px-4 py-16 md:px-6 md:py-20" id="자료">
+    <section className="mx-auto max-w-[980px] px-4 pb-8 md:px-6 md:pb-10" id="자료">
       <h2 className="text-[30px] font-black leading-tight tracking-normal md:text-[42px]">
         {copy.landing.trustedTitle}
       </h2>
@@ -894,11 +866,26 @@ function TrustedSection() {
   );
 }
 
+function ProofPointStrip() {
+  return (
+    <section className="border-y border-[#eeeeec] bg-white/55 px-4 py-3 md:px-6">
+      <div className="mx-auto flex max-w-[1180px] flex-wrap items-center justify-center gap-x-8 gap-y-2 text-[11px] font-semibold text-[#8a8a85]">
+        {proofPoints.map((item) => (
+          <span className="inline-flex items-center gap-2" key={item}>
+            <span className="h-1 w-1 rounded-full bg-[#b8b8b2]" />
+            {item}
+          </span>
+        ))}
+      </div>
+    </section>
+  );
+}
+
 function FinalCta({ onOpenLogin }: { readonly onOpenLogin: () => void }) {
   const { copy } = usePublicSiteLanguage();
 
   return (
-    <section className="landing-snap-section mx-auto flex max-w-[980px] flex-col justify-center px-4 py-16 text-center md:px-6 md:py-20" id="가격">
+    <section className="mx-auto max-w-[980px] px-4 py-24 text-center md:px-6 md:py-28" id="가격">
       <h2 className="text-[30px] font-black tracking-normal md:text-[42px]">
         {copy.landing.finalCta}
       </h2>
@@ -926,16 +913,37 @@ function LandingFooter() {
   const { copy } = usePublicSiteLanguage();
 
   return (
-    <footer className="landing-snap-section flex flex-col justify-center border-t border-[#eeeeec] bg-white px-4 py-14 md:px-6">
-      <div className="mx-auto grid max-w-[980px] gap-10 md:grid-cols-[1.4fr_repeat(4,1fr)]">
-        <div>
+    <footer className="border-t border-[#eeeeec] bg-white px-4 py-14 md:px-6">
+      <div className="mx-auto grid max-w-[980px] gap-10 md:grid-cols-[1.8fr_repeat(4,1fr)]">
+        <div className="min-w-0">
           <div className="flex items-center gap-2">
-            <span className="grid h-6 w-6 place-items-center rounded-[6px] border border-[#111111] bg-white">
-              <BriefcaseBusiness className="h-3.5 w-3.5" />
+            <span className="grid h-8 w-8 place-items-center rounded-[7px] border-2 border-[#111111] bg-white">
+              <BriefcaseBusiness className="h-5 w-5" />
             </span>
-            <span className="text-sm font-black">onehand.sales</span>
+            <span className="text-[24px] font-black leading-none">onehand</span>
           </div>
+
+          <div className="mt-6 flex flex-wrap items-center gap-4 text-[#8a8a85]">
+            {footerSocialLinks.map(({ icon: Icon, label }) => (
+              <a
+                aria-label={label}
+                className="hover:text-[#111111]"
+                href="/"
+                key={label}
+              >
+                <Icon className="h-4 w-4" />
+              </a>
+            ))}
+          </div>
+
           <PublicSiteLanguageSelect />
+
+          <a className="mt-5 block text-[12px] text-[#777770] hover:text-[#111111]" href="/">
+            {copy.common.cookieSettings}
+          </a>
+          <p className="mt-6 text-[11px] text-[#999993]">
+            {copy.common.copyright}
+          </p>
         </div>
 
         {copy.common.footerColumns.map(([title, ...links]) => (
@@ -952,9 +960,6 @@ function LandingFooter() {
             </ul>
           </div>
         ))}
-      </div>
-      <div className="mx-auto mt-10 max-w-[980px] text-[11px] text-[#999993]">
-        {copy.common.copyright}
       </div>
     </footer>
   );

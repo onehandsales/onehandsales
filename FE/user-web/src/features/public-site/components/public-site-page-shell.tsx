@@ -1,4 +1,11 @@
-import { BriefcaseBusiness } from "lucide-react";
+import {
+  BriefcaseBusiness,
+  Facebook,
+  Instagram,
+  Linkedin,
+  MessageSquareText,
+  Youtube,
+} from "lucide-react";
 import { useEffect, useState, type ReactNode } from "react";
 import { PublicSiteHeader } from "@/features/public-site/components/public-site-header";
 import { PublicSiteLanguageSelect } from "@/features/public-site/components/public-site-language-select";
@@ -7,6 +14,14 @@ import { usePublicSiteLanguage } from "@/features/public-site/i18n/public-site-l
 type PublicSitePageShellProps = {
   readonly children: ReactNode;
 };
+
+const footerSocialLinks = [
+  { label: "Instagram", icon: Instagram },
+  { label: "X", icon: MessageSquareText },
+  { label: "LinkedIn", icon: Linkedin },
+  { label: "Facebook", icon: Facebook },
+  { label: "YouTube", icon: Youtube },
+];
 
 export function PublicSitePageShell({ children }: PublicSitePageShellProps) {
   const scrollProgress = usePublicSiteScrollProgress();
@@ -97,15 +112,36 @@ function PublicSiteFooter() {
 
   return (
     <footer className="border-t border-[#eeeeec] bg-white px-4 py-14 md:px-6">
-      <div className="mx-auto grid max-w-[980px] gap-10 md:grid-cols-[1.4fr_repeat(4,1fr)]">
-        <div>
+      <div className="mx-auto grid max-w-[980px] gap-10 md:grid-cols-[1.8fr_repeat(4,1fr)]">
+        <div className="min-w-0">
           <div className="flex items-center gap-2">
-            <span className="grid h-6 w-6 place-items-center rounded-[6px] border border-[#111111] bg-white">
-              <BriefcaseBusiness className="h-3.5 w-3.5" />
+            <span className="grid h-8 w-8 place-items-center rounded-[7px] border-2 border-[#111111] bg-white">
+              <BriefcaseBusiness className="h-5 w-5" />
             </span>
-            <span className="text-sm font-black">onehand.sales</span>
+            <span className="text-[24px] font-black leading-none">onehand</span>
           </div>
+
+          <div className="mt-6 flex flex-wrap items-center gap-4 text-[#8a8a85]">
+            {footerSocialLinks.map(({ icon: Icon, label }) => (
+              <a
+                aria-label={label}
+                className="hover:text-[#111111]"
+                href="/"
+                key={label}
+              >
+                <Icon className="h-4 w-4" />
+              </a>
+            ))}
+          </div>
+
           <PublicSiteLanguageSelect />
+
+          <a className="mt-5 block text-[12px] text-[#777770] hover:text-[#111111]" href="/">
+            {copy.common.cookieSettings}
+          </a>
+          <p className="mt-6 text-[11px] text-[#999993]">
+            {copy.common.copyright}
+          </p>
         </div>
 
         {copy.common.footerColumns.map(([title, ...links]) => (
@@ -122,9 +158,6 @@ function PublicSiteFooter() {
             </ul>
           </div>
         ))}
-      </div>
-      <div className="mx-auto mt-10 max-w-[980px] text-[11px] text-[#999993]">
-        {copy.common.copyright}
       </div>
     </footer>
   );
