@@ -189,14 +189,14 @@ export function AuthLandingPage({
       <div className="pt-14">
         <HeroSection onOpenLogin={onOpenLogin} />
         <CustomerStrip />
-        <section className="w-full bg-[#f7f7f5]">
+        <div className="w-full bg-[#f7f7f5]">
           <WorkMovingSection />
           <AssistantsSection />
           <WorkspaceSection />
           <QuoteSection />
           <TrustedSection />
           <FinalCta onOpenLogin={onOpenLogin} />
-        </section>
+        </div>
         <LandingFooter />
       </div>
       {isModalOpen ? children : null}
@@ -246,10 +246,27 @@ function LandingScrollStyles() {
           -ms-overflow-style: none;
         }
 
+        html.landing-scrollbar-hidden {
+          scroll-padding-top: 56px;
+          scroll-snap-type: y mandatory;
+        }
+
         .landing-scrollbar-hidden::-webkit-scrollbar {
           display: none;
           width: 0;
           height: 0;
+        }
+
+        .landing-snap-section {
+          min-height: calc(100svh - 56px);
+          scroll-snap-align: start;
+          scroll-snap-stop: always;
+        }
+
+        @supports (height: 100dvh) {
+          .landing-snap-section {
+            min-height: calc(100dvh - 56px);
+          }
         }
       `}
     </style>
@@ -276,7 +293,7 @@ function HeroSection({ onOpenLogin }: { readonly onOpenLogin: () => void }) {
   const { copy } = usePublicSiteLanguage();
 
   return (
-    <section className="relative flex min-h-[calc(100svh-56px)] w-full flex-col justify-center bg-white px-4 pb-12 pt-10 md:px-6 md:pb-16 md:pt-14">
+    <section className="landing-snap-section relative flex w-full flex-col justify-center bg-white px-4 py-10 md:px-6 md:py-12">
       <div className="mx-auto w-full max-w-[1180px] text-center">
         <PersonaRow />
         <h1 className="mx-auto mt-5 max-w-[980px] text-[44px] font-black leading-[0.98] tracking-normal text-[#111111] md:text-[82px]">
@@ -440,7 +457,7 @@ function CustomerStrip() {
   const { copy } = usePublicSiteLanguage();
 
   return (
-    <section className="border-y border-[#eeeeec] bg-white px-4 py-5 md:px-6">
+    <section className="landing-snap-section flex items-center justify-center border-y border-[#eeeeec] bg-white px-4 py-16 md:px-6">
       <div className="mx-auto max-w-[900px] text-center">
         <p className="text-[12px] font-semibold text-[#8a8a85]">
           {copy.landing.customerStrip}
@@ -462,7 +479,7 @@ function WorkMovingSection() {
   const { copy } = usePublicSiteLanguage();
 
   return (
-    <section className="mx-auto max-w-[980px] px-4 py-16 md:px-6 md:py-20" id="워크플로우">
+    <section className="landing-snap-section mx-auto flex max-w-[980px] flex-col justify-center px-4 py-16 md:px-6 md:py-20" id="워크플로우">
       <h2 className="max-w-[640px] text-[34px] font-black leading-[1.05] tracking-normal text-[#111111] md:text-[46px]">
         {copy.landing.sectionWork}
       </h2>
@@ -547,53 +564,85 @@ function StatusUpdateMockup() {
 
 function AssistantsSection() {
   const { copy } = usePublicSiteLanguage();
+  const [primaryCard, ...secondaryCards] = workCards;
 
   return (
-    <section className="mx-auto max-w-[980px] px-4 pb-16 md:px-6 md:pb-20" id="제품">
-      <h2 className="max-w-[700px] text-[34px] font-black leading-[1.05] tracking-normal text-[#111111] md:text-[46px]">
-        {copy.landing.sectionAssistants}
-      </h2>
+    <>
+      {primaryCard ? (
+        <section className="landing-snap-section mx-auto flex max-w-[980px] flex-col justify-center px-4 py-16 md:px-6 md:py-20" id="제품">
+          <h2 className="max-w-[700px] text-[34px] font-black leading-[1.05] tracking-normal text-[#111111] md:text-[46px]">
+            {copy.landing.sectionAssistants}
+          </h2>
 
-      <div className="mt-8 grid gap-5 md:grid-cols-2">
-        {workCards.map(({ accent, body, eyebrow, icon: Icon, title }, index) => (
+          <div className="mt-8">
+            <FeatureShowcaseCard
+              accent={primaryCard.accent}
+              body={primaryCard.body}
+              eyebrow={primaryCard.eyebrow}
+              icon={primaryCard.icon}
+              title={primaryCard.title}
+            />
+          </div>
+        </section>
+      ) : null}
+
+      {secondaryCards.map(({ accent, body, eyebrow, icon: Icon, title }) => (
+        <section
+          className="landing-snap-section mx-auto flex max-w-[980px] flex-col justify-center px-4 py-16 md:px-6 md:py-20"
+          key={title}
+        >
           <FeatureShowcaseCard
             accent={accent}
             body={body}
-            className={index === 0 ? "md:col-span-2" : ""}
             eyebrow={eyebrow}
             icon={Icon}
-            key={title}
             title={title}
           />
-        ))}
-      </div>
-    </section>
+        </section>
+      ))}
+    </>
   );
 }
 
 function WorkspaceSection() {
   const { copy } = usePublicSiteLanguage();
+  const [primaryCard, ...secondaryCards] = workspaceCards;
 
   return (
-    <section className="mx-auto max-w-[980px] px-4 pb-16 md:px-6 md:pb-20" id="고객관리">
-      <h2 className="max-w-[720px] text-[34px] font-black leading-[1.05] tracking-normal text-[#111111] md:text-[46px]">
-        {copy.landing.sectionWorkspace}
-      </h2>
+    <>
+      {primaryCard ? (
+        <section className="landing-snap-section mx-auto flex max-w-[980px] flex-col justify-center px-4 py-16 md:px-6 md:py-20" id="고객관리">
+          <h2 className="max-w-[720px] text-[34px] font-black leading-[1.05] tracking-normal text-[#111111] md:text-[46px]">
+            {copy.landing.sectionWorkspace}
+          </h2>
 
-      <div className="mt-8 grid gap-5 md:grid-cols-2">
-        {workspaceCards.map(({ accent, body, eyebrow, icon: Icon, title }, index) => (
+          <div className="mt-8">
+            <FeatureShowcaseCard
+              accent={primaryCard.accent}
+              body={primaryCard.body}
+              eyebrow={primaryCard.eyebrow}
+              icon={primaryCard.icon}
+              title={primaryCard.title}
+            />
+          </div>
+        </section>
+      ) : null}
+
+      {secondaryCards.map(({ accent, body, eyebrow, icon: Icon, title }) => (
+        <section
+          className="landing-snap-section mx-auto flex max-w-[980px] flex-col justify-center px-4 py-16 md:px-6 md:py-20"
+          key={title}
+        >
           <FeatureShowcaseCard
             accent={accent}
             body={body}
-            className={index === 2 ? "md:col-span-2" : ""}
             eyebrow={eyebrow}
             icon={Icon}
-            key={title}
             title={title}
           />
-        ))}
-      </div>
-    </section>
+        </section>
+      ))}
+    </>
   );
 }
 
@@ -801,7 +850,7 @@ function QuoteSection() {
   const { copy } = usePublicSiteLanguage();
 
   return (
-    <section className="mx-auto max-w-[980px] px-4 pb-16 text-center md:px-6 md:pb-20">
+    <section className="landing-snap-section mx-auto flex max-w-[980px] flex-col justify-center px-4 py-16 text-center md:px-6 md:py-20">
       <p className="font-serif text-[24px] leading-9 text-[#333330]">
         {copy.landing.quote}
       </p>
@@ -814,7 +863,7 @@ function TrustedSection() {
   const { copy } = usePublicSiteLanguage();
 
   return (
-    <section className="mx-auto max-w-[980px] px-4 pb-16 md:px-6 md:pb-20" id="자료">
+    <section className="landing-snap-section mx-auto flex max-w-[980px] flex-col justify-center px-4 py-16 md:px-6 md:py-20" id="자료">
       <h2 className="text-[30px] font-black leading-tight tracking-normal md:text-[42px]">
         {copy.landing.trustedTitle}
       </h2>
@@ -849,7 +898,7 @@ function FinalCta({ onOpenLogin }: { readonly onOpenLogin: () => void }) {
   const { copy } = usePublicSiteLanguage();
 
   return (
-    <section className="mx-auto max-w-[980px] px-4 pb-20 pt-10 text-center md:px-6 md:pb-24" id="가격">
+    <section className="landing-snap-section mx-auto flex max-w-[980px] flex-col justify-center px-4 py-16 text-center md:px-6 md:py-20" id="가격">
       <h2 className="text-[30px] font-black tracking-normal md:text-[42px]">
         {copy.landing.finalCta}
       </h2>
@@ -877,7 +926,7 @@ function LandingFooter() {
   const { copy } = usePublicSiteLanguage();
 
   return (
-    <footer className="border-t border-[#eeeeec] bg-white px-4 py-14 md:px-6">
+    <footer className="landing-snap-section flex flex-col justify-center border-t border-[#eeeeec] bg-white px-4 py-14 md:px-6">
       <div className="mx-auto grid max-w-[980px] gap-10 md:grid-cols-[1.4fr_repeat(4,1fr)]">
         <div>
           <div className="flex items-center gap-2">
