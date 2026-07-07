@@ -12,19 +12,20 @@ import { CompaniesPage } from "@/pages/companies";
 import { CompanyNewPage } from "@/pages/companies/new";
 import { ContactDetailPage } from "@/pages/contacts/detail";
 import { ContactsPage } from "@/pages/contacts";
+import { ContactPage } from "@/pages/contact";
 import { DealDetailPage } from "@/pages/deals/detail";
 import { DealsPage } from "@/pages/deals";
 import { DealNewPage } from "@/pages/deals/new";
 import { HomePage } from "@/pages/home";
 import { ImportDetailPage } from "@/pages/import/detail";
 import { ImportPage } from "@/pages/import";
-import { IntroducePage } from "@/pages/introduce";
 import { LoginPage } from "@/pages/login";
 import { MeetingNoteDetailPage } from "@/pages/meeting-notes/detail";
 import { MeetingNotesPage } from "@/pages/meeting-notes";
 import { ProductDetailPage } from "@/pages/products/detail";
 import { ProductsPage } from "@/pages/products";
 import { ProductNewPage } from "@/pages/products/new";
+import { PricingPage } from "@/pages/pricing";
 import { ScheduleDetailPage } from "@/pages/schedules/detail";
 import { SchedulesPage } from "@/pages/schedules";
 // import { ScheduleWeekPage } from "@/pages/schedules/week";
@@ -35,7 +36,8 @@ import { MorePage } from "@/pages/more";
 export const router = createBrowserRouter([
   { path: "/", element: <LoginPage /> },
   { path: "/login", element: <LoginPage /> },
-  { path: "/introduce", element: <IntroducePage /> },
+  { path: "/pricing", element: <PricingPage /> },
+  { path: "/contact", element: <ContactPage /> },
   { path: "/auth/callback", element: <LoginPage /> },
   { path: "/companies", element: <LegacyAppRedirect to="/app/companies" /> },
   {
