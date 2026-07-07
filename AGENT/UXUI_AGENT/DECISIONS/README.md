@@ -18,6 +18,7 @@
 - `014_uxui_admin_tone.md`
 - `015_uxui_list_filter_pagination.md`
 - `016_uxui_writing_tone.md`
+- `017_uxui_notion_reference.md`
 
 ## 3. 관련 문서
 

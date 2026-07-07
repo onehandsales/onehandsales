@@ -55,9 +55,17 @@ Reference file:
 
 This file is reference-only. It is not the implementation source of truth.
 
+Primary UX/UI reference:
+
+- Notion-like workspace UX is now the first UX/UI reference for the whole product.
+- This means sidebar-first navigation, page/record-centered structure, database-like list/table views, property-first detail pages, quiet typography, restrained color, and block/section-based content structure.
+- It does not mean copying Notion's brand, logo, copy, visual assets, or screens one-to-one.
+- It also does not mean turning the product into a free-form document editor. Sales domain fields, validation, ownership, and workflow constraints remain fixed where needed.
+
 External UX references:
 
-- Toss-like hierarchy: simple information hierarchy, clear CTA, readable typography, low visual noise. Do not make the product as sparse as a consumer finance app.
+- Notion: workspace/sidebar/page/database view/detail page grammar. This is the primary reference.
+- Toss-like hierarchy: simple information hierarchy, clear CTA, readable typography, low visual noise. This is now secondary to Notion.
 - Pipedrive: sales pipeline focus, deal stage visibility, next-action sales workflow. Do not copy pure Kanban as the default desktop layout.
 - Attio: record relationships between companies, people, deals, activity timeline, linked record detail structure.
 - Linear: list-first scanning, fast selection, peek/detail panel behavior, efficient command/search feel.
@@ -66,6 +74,12 @@ External UX references:
 
 Reference URLs:
 
+- Notion sidebar navigation: https://www.notion.com/help/navigate-with-the-sidebar
+- Notion database intro: https://www.notion.com/help/intro-to-databases
+- Notion database views: https://www.notion.com/help/guides/using-database-views
+- Notion table view: https://www.notion.com/help/guides/table-view-databases
+- Notion content blocks: https://www.notion.com/help/guides/types-of-content-blocks
+- Notion style/customize: https://www.notion.com/help/customize-and-style-your-content
 - Pipedrive pipeline management: https://www.pipedrive.com/en/features/pipeline-management
 - Attio records: https://attio.com/help/reference/attio-101/attios-data-model/understanding-records
 - Linear Peek: https://linear.app/docs/peek
@@ -74,16 +88,17 @@ Reference URLs:
 Useful directions to keep:
 
 - left sidebar navigation
-- compact top bar with page title and primary actions
-- table/list-first deal management
+- page title area with quiet primary actions
+- database-like table/list-first deal management
 - stage tabs above the deal list
 - filters/search directly above the list
-- right-side detail panel for selected deal
-- detail panel tabs for basic info, activity, memo
+- row/card opens a record detail page or peek/detail panel
+- property-first detail layout with body sections for activity and memo
 - simple buttons with clear icons
 - badges for status and metadata
 - modal forms for quick create
 - practical, work-focused density
+- block/section-like page body organization
 
 Do not copy blindly:
 
@@ -96,6 +111,8 @@ Do not copy blindly:
 - Avoid a UI dominated by beige/cream tones.
 - Keep the UI clean, but make deal data more legible than decorative dashboard cards.
 - Do not copy reference product brand, copy, visual assets, or layout one-to-one.
+- Do not copy Notion's brand, icons, copy, or pixel-level screen layout.
+- Do not make every field free-form just because Notion supports free-form pages.
 
 ## 4. Home Screen Layout Direction
 
