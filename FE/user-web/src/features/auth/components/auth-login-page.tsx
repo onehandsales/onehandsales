@@ -194,7 +194,7 @@ const loginCopy: Record<
     homeAria: "Go home",
     title: "Your AI workspace",
     subtitles: {
-      login: "Log in to Onehand",
+      login: "Sign in to Onehand",
       signup: "Create your Onehand account",
     },
     providerLead: {
@@ -207,15 +207,15 @@ const loginCopy: Record<
     },
     loading: "Loading sign-in options.",
     callbackLoading: "Signing you in.",
-    noProviders: "No sign-in methods are available.",
-    providersErrorPrefix: "Could not load sign-in methods.",
+    noProviders: "No sign-in options are available.",
+    providersErrorPrefix: "Could not load sign-in options.",
     switchLead: {
       login: "New here?",
       signup: "Already have an account?",
     },
     switchAction: {
       login: "Sign up",
-      signup: "Log in",
+      signup: "Sign in",
     },
     termsPrefix: "By continuing, you agree to the ",
     terms: "Terms of Use",

@@ -11,14 +11,6 @@ import { OnehandLogoMark } from "@/components/brand/onehand-logo-mark";
 import { PublicSiteLanguageSelect } from "@/features/public-site/components/public-site-language-select";
 import { usePublicSiteLanguage } from "@/features/public-site/i18n/public-site-language";
 
-type FooterColumn = {
-  readonly title: string;
-  readonly links: readonly {
-    readonly label: string;
-    readonly to: string;
-  }[];
-};
-
 type PublicSiteFooterProps = {
   readonly showTopDivider?: boolean;
 };
@@ -34,37 +26,11 @@ const footerSocialLinks: readonly {
   { label: "YouTube", icon: Youtube },
 ];
 
-const footerColumns: readonly FooterColumn[] = [
-  {
-    title: "Company",
-    links: [
-      { label: "About us", to: "/about" },
-      { label: "Security", to: "/security" },
-      { label: "Terms and privacy", to: "/terms" },
-      { label: "Your privacy rights", to: "/privacy" },
-    ],
-  },
-  {
-    title: "Download",
-    links: [{ label: "iOS & Android", to: "/" }],
-  },
-  {
-    title: "Resources",
-    links: [
-      { label: "Help center", to: "/" },
-      { label: "Pricing", to: "/pricing" },
-      { label: "Blog", to: "/" },
-      { label: "Community", to: "/" },
-    ],
-  },
-  {
-    title: "Onehand for",
-    links: [
-      { label: "Enterprise", to: "/" },
-      { label: "Small business", to: "/" },
-      { label: "Personal", to: "/" },
-    ],
-  },
+const footerColumnRoutes: readonly (readonly string[])[] = [
+  ["/about", "/", "/security", "/", "/terms", "/privacy"],
+  ["/login", "/", "/", "/"],
+  ["/", "/pricing", "/", "/", "/", "/", "/"],
+  ["/", "/", "/", "/"],
 ];
 
 export function PublicSiteFooter({
@@ -87,7 +53,7 @@ export function PublicSiteFooter({
           </Link>
 
           <div
-            aria-label="Onehand social links"
+            aria-label={copy.common.footerSocialAria}
             className="mt-6 flex items-center gap-1.5 text-[#555550]"
           >
             {footerSocialLinks.map(({ icon: Icon, label }) => (
@@ -113,25 +79,30 @@ export function PublicSiteFooter({
           aria-label="Footer"
           className="grid gap-x-10 gap-y-9 sm:grid-cols-2 lg:grid-cols-4"
         >
-          {footerColumns.map((column) => (
-            <div key={column.title}>
-              <h3 className="text-[12px] font-medium text-[#777770]">
-                {column.title}
-              </h3>
-              <ul className="mt-3 grid gap-2.5">
-                {column.links.map((link) => (
-                  <li key={link.label}>
-                    <Link
-                      className="text-[13px] font-medium text-[#111111] underline-offset-2 hover:underline"
-                      to={link.to}
-                    >
-                      {link.label}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
+          {copy.common.footerColumns.map((column, columnIndex) => {
+            const [title, ...links] = column;
+            const routes = footerColumnRoutes[columnIndex] ?? [];
+
+            return (
+              <div key={title}>
+                <h3 className="text-[12px] font-medium text-[#777770]">
+                  {title}
+                </h3>
+                <ul className="mt-3 grid gap-2.5">
+                  {links.map((label, linkIndex) => (
+                    <li key={label}>
+                      <Link
+                        className="text-[13px] font-medium text-[#111111] underline-offset-2 hover:underline"
+                        to={routes[linkIndex] ?? "/"}
+                      >
+                        {label}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            );
+          })}
         </nav>
       </div>
     </footer>

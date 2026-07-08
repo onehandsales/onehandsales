@@ -61,6 +61,10 @@ type LandingCopy = {
   readonly mock: {
     readonly workspaceName: string;
     readonly sidebar: readonly string[];
+    readonly queueLabel: string;
+    readonly sectionLabel: string;
+    readonly shareAction: string;
+    readonly newAction: string;
     readonly boardTitle: string;
     readonly columns: readonly {
       readonly label: string;
@@ -74,6 +78,9 @@ type LandingCopy = {
     readonly description: string;
     readonly tabs: readonly FeatureCopy[];
     readonly previewTitle: string;
+    readonly previewBoardTitle: string;
+    readonly previewTableHeaders: readonly [string, string, string];
+    readonly previewRequester: string;
     readonly previewQuestion: string;
     readonly previewAnswerTitle: string;
     readonly previewAnswer: string;
@@ -84,6 +91,10 @@ type LandingCopy = {
     readonly eyebrow: string;
     readonly title: string;
     readonly description: string;
+    readonly previewTitle: string;
+    readonly previewEyebrow: string;
+    readonly agentLabel: string;
+    readonly metricLabels: readonly [string, string, string];
     readonly views: readonly FeatureCopy[];
     readonly tableHeaders: readonly string[];
     readonly rows: readonly string[][];
@@ -115,6 +126,10 @@ type ExpandedLandingCopy = {
     readonly eyebrow: string;
     readonly title: string;
     readonly description: string;
+    readonly previewSearchQuery: string;
+    readonly previewMeetingTitle: string;
+    readonly previewNotesLabel: string;
+    readonly previewAgentName: string;
     readonly cards: readonly ExpandedFeatureCopy[];
   };
   readonly together: {
@@ -162,31 +177,35 @@ const heroRotatingWords = [
 const expandedLandingCopyByLanguage: Record<PublicSiteLanguage, ExpandedLandingCopy> = {
   ko: {
     assistants: {
-      eyebrow: "On-demand assistants",
+      eyebrow: "온디맨드 어시스턴트",
       title: "필요할 때 바로 묻는 세일즈 어시스턴트.",
       description:
         "검색, 회의록, 보안 답변, 후속 업무를 따로 열지 않아도 같은 워크스페이스 안에서 바로 요청하고 처리합니다.",
+      previewSearchQuery: "이번 분기 고객 요청",
+      previewMeetingTitle: "주간 고객 동기화",
+      previewNotesLabel: "노트",
+      previewAgentName: "Onehand 에이전트",
       cards: [
         {
-          eyebrow: "Sales agent",
+          eyebrow: "세일즈 에이전트",
           title: "해야 할 일을 물으면 Onehand가 초안을 만듭니다.",
           description: "딜 상태와 고객 기록을 읽고 이메일, 다음 액션, 체크리스트를 제안합니다.",
           items: ["후속 이메일 작성", "담당자에게 업무 배정", "거래 위험 신호 표시"],
         },
         {
-          eyebrow: "Enterprise search",
+          eyebrow: "통합 검색",
           title: "고객 맥락을 한 번에 찾습니다.",
           description: "문서, 메모, 일정, CRM 기록을 연결해 필요한 근거를 바로 보여줍니다.",
           items: ["자료 통합 검색", "출처와 함께 답변", "팀 지식 재사용"],
         },
         {
-          eyebrow: "Meeting notes",
+          eyebrow: "회의 노트",
           title: "회의가 끝나면 기록이 완성됩니다.",
           description: "논의 내용, 결정 사항, 다음 액션을 자동으로 정리해 딜 화면에 남깁니다.",
           items: ["핵심 요약", "액션 아이템", "참석자별 후속 업무"],
         },
         {
-          eyebrow: "Revenue review",
+          eyebrow: "매출 리뷰",
           title: "이번 주 움직인 거래를 바로 봅니다.",
           description: "진행률, 응답 지연, 예상 매출 변화를 팀이 같은 기준으로 확인합니다.",
           items: ["주간 매출 요약", "병목 계정 표시", "리더용 리포트"],
@@ -194,25 +213,25 @@ const expandedLandingCopyByLanguage: Record<PublicSiteLanguage, ExpandedLandingC
       ],
     },
     together: {
-      eyebrow: "Bring work together",
+      eyebrow: "업무 통합",
       title: "흩어진 업무를 한 흐름으로 모으세요.",
       description:
         "문서, 지식, 프로젝트, 고객 기록이 분리되지 않도록 Onehand 안에서 같은 구조로 쌓습니다.",
       cards: [
         {
-          eyebrow: "Docs",
+          eyebrow: "문서",
           title: "제안서와 고객 자료를 간단하게 관리합니다.",
           description: "영업 자료를 딜과 연결해 필요한 순간 바로 찾을 수 있습니다.",
           items: ["제안서", "체크리스트", "승인 기록"],
         },
         {
-          eyebrow: "Knowledge base",
+          eyebrow: "지식 베이스",
           title: "팀과 에이전트가 같은 지식을 사용합니다.",
           description: "자주 묻는 질문과 내부 정책을 답변 가능한 지식으로 정리합니다.",
           items: ["보안 답변", "제품 설명", "가격 정책"],
         },
         {
-          eyebrow: "Launch tracker",
+          eyebrow: "출시 트래커",
           title: "출시와 온보딩 진행 상황을 놓치지 않습니다.",
           description: "고객 온보딩, 계약, 교육 일정을 하나의 진행판으로 봅니다.",
           items: ["온보딩", "교육 일정", "완료 기준"],
@@ -248,31 +267,35 @@ const expandedLandingCopyByLanguage: Record<PublicSiteLanguage, ExpandedLandingC
   },
   ja: {
     assistants: {
-      eyebrow: "On-demand assistants",
+      eyebrow: "オンデマンドアシスタント",
       title: "必要な時にすぐ聞ける営業アシスタント。",
       description:
         "検索、議事録、セキュリティ回答、フォローアップを同じワークスペース内で依頼して処理できます。",
+      previewSearchQuery: "今四半期の顧客リクエスト",
+      previewMeetingTitle: "週次顧客同期",
+      previewNotesLabel: "ノート",
+      previewAgentName: "Onehand エージェント",
       cards: [
         {
-          eyebrow: "Sales agent",
+          eyebrow: "セールスエージェント",
           title: "やるべきことを聞くと Onehand が下書きを作ります。",
           description: "商談状況と顧客記録を読み、メール、次のアクション、チェックリストを提案します。",
           items: ["フォローアップ作成", "担当者へ割り当て", "リスク表示"],
         },
         {
-          eyebrow: "Enterprise search",
+          eyebrow: "統合検索",
           title: "顧客文脈を一度に探します。",
           description: "文書、メモ、予定、CRM 記録をつなげ、必要な根拠をすぐ表示します。",
           items: ["統合検索", "出典付き回答", "チーム知識の再利用"],
         },
         {
-          eyebrow: "Meeting notes",
+          eyebrow: "会議ノート",
           title: "会議が終わると記録が整います。",
           description: "議論、決定事項、次のアクションを自動で整理して商談画面に残します。",
           items: ["要約", "アクション項目", "参加者別フォロー"],
         },
         {
-          eyebrow: "Revenue review",
+          eyebrow: "売上レビュー",
           title: "今週動いた商談をすぐ確認します。",
           description: "進捗、返信遅延、売上見込みの変化を同じ基準で確認できます。",
           items: ["週次売上要約", "ボトルネック表示", "リーダーレポート"],
@@ -280,25 +303,25 @@ const expandedLandingCopyByLanguage: Record<PublicSiteLanguage, ExpandedLandingC
       ],
     },
     together: {
-      eyebrow: "Bring work together",
+      eyebrow: "仕事を一つに",
       title: "散らばった仕事を一つの流れにまとめます。",
       description:
         "文書、ナレッジ、プロジェクト、顧客記録を Onehand 内で同じ構造にそろえます。",
       cards: [
         {
-          eyebrow: "Docs",
+          eyebrow: "ドキュメント",
           title: "提案書と顧客資料を簡単に管理します。",
           description: "営業資料を商談に結び付け、必要な時にすぐ見つけられます。",
           items: ["提案書", "チェックリスト", "承認記録"],
         },
         {
-          eyebrow: "Knowledge base",
+          eyebrow: "ナレッジベース",
           title: "チームとエージェントが同じ知識を使います。",
           description: "よくある質問と社内ポリシーを回答できる知識として整理します。",
           items: ["セキュリティ回答", "製品説明", "価格ポリシー"],
         },
         {
-          eyebrow: "Launch tracker",
+          eyebrow: "ローンチトラッカー",
           title: "導入とオンボーディングの進行を逃しません。",
           description: "顧客オンボーディング、契約、研修日程を一つのボードで確認します。",
           items: ["オンボーディング", "研修日程", "完了基準"],
@@ -334,31 +357,35 @@ const expandedLandingCopyByLanguage: Record<PublicSiteLanguage, ExpandedLandingC
   },
   zh: {
     assistants: {
-      eyebrow: "On-demand assistants",
+      eyebrow: "按需助手",
       title: "随时可问的销售助手。",
       description:
         "搜索、会议记录、安全问答和跟进任务都可以在同一个工作区中请求和处理。",
+      previewSearchQuery: "本季度客户请求",
+      previewMeetingTitle: "每周客户同步",
+      previewNotesLabel: "笔记",
+      previewAgentName: "Onehand 代理",
       cards: [
         {
-          eyebrow: "Sales agent",
+          eyebrow: "销售代理",
           title: "提出要做的事，Onehand 会生成草稿。",
           description: "读取交易状态和客户记录，建议邮件、下一步行动和检查清单。",
           items: ["跟进邮件", "分配负责人", "标记交易风险"],
         },
         {
-          eyebrow: "Enterprise search",
+          eyebrow: "统一搜索",
           title: "一次找到完整客户上下文。",
           description: "连接文档、笔记、日程和 CRM 记录，立即显示所需依据。",
           items: ["统一搜索", "带来源回答", "复用团队知识"],
         },
         {
-          eyebrow: "Meeting notes",
+          eyebrow: "会议记录",
           title: "会议结束后记录自动完成。",
           description: "自动整理讨论、决策和下一步行动，并写入交易页面。",
           items: ["核心摘要", "行动项", "按参会者跟进"],
         },
         {
-          eyebrow: "Revenue review",
+          eyebrow: "收入复盘",
           title: "立即查看本周推进的交易。",
           description: "团队用同一标准查看进度、响应延迟和收入预测变化。",
           items: ["每周收入摘要", "瓶颈账户", "管理者报告"],
@@ -366,25 +393,25 @@ const expandedLandingCopyByLanguage: Record<PublicSiteLanguage, ExpandedLandingC
       ],
     },
     together: {
-      eyebrow: "Bring work together",
+      eyebrow: "整合工作",
       title: "把分散的工作汇成一条流程。",
       description:
         "文档、知识、项目和客户记录在 Onehand 中以同一结构沉淀。",
       cards: [
         {
-          eyebrow: "Docs",
+          eyebrow: "文档",
           title: "轻松管理提案和客户资料。",
           description: "把销售资料连接到交易，在需要时快速找到。",
           items: ["提案", "检查清单", "审批记录"],
         },
         {
-          eyebrow: "Knowledge base",
+          eyebrow: "知识库",
           title: "团队和代理使用同一份知识。",
           description: "把常见问题和内部政策整理成可回答的知识。",
           items: ["安全回答", "产品说明", "价格政策"],
         },
         {
-          eyebrow: "Launch tracker",
+          eyebrow: "上线跟踪",
           title: "不错过上线和客户启用进度。",
           description: "在同一看板中查看客户启用、合同和培训日程。",
           items: ["客户启用", "培训日程", "完成标准"],
@@ -424,6 +451,10 @@ const expandedLandingCopyByLanguage: Record<PublicSiteLanguage, ExpandedLandingC
       title: "Ask your on-demand assistants.",
       description:
         "Search, notes, security answers, and follow-up work stay inside the same workspace instead of becoming separate tools.",
+      previewSearchQuery: "customer request this quarter",
+      previewMeetingTitle: "Weekly customer sync",
+      previewNotesLabel: "Notes",
+      previewAgentName: "Onehand agent",
       cards: [
         {
           eyebrow: "Sales agent",
@@ -510,6 +541,10 @@ const expandedLandingCopyByLanguage: Record<PublicSiteLanguage, ExpandedLandingC
       title: "Ask your on-demand assistants.",
       description:
         "Search, notes, security answers, and follow-up work stay inside the same workspace instead of becoming separate tools.",
+      previewSearchQuery: "customer request this quarter",
+      previewMeetingTitle: "Weekly customer sync",
+      previewNotesLabel: "Notes",
+      previewAgentName: "Onehand agent",
       cards: [
         {
           eyebrow: "Sales agent",
@@ -601,15 +636,19 @@ const landingCopyByLanguage: Record<PublicSiteLanguage, LandingCopy> = {
       titleEnd: "거래를 움직입니다.",
       description:
         "고객 대화, 일정, 제안서, 후속 업무를 한 곳에서 정리하고 반복되는 세일즈 운영을 자동화하세요.",
-      primaryCta: "Get Onehand",
+      primaryCta: "Onehand 시작",
       secondaryCta: "데모 요청",
     },
     partnerLabel: "반복 업무를 줄이고 기록을 살리는 팀을 위해",
-    partnerItems: ["CRM", "Email", "Calendar", "Messenger", "Docs", "Sheets"],
+    partnerItems: ["CRM", "이메일", "캘린더", "메신저", "문서", "시트"],
     mock: {
       workspaceName: "Onehand HQ",
-      sidebar: ["Home", "Deals", "Companies", "Tasks", "Meetings"],
-      boardTitle: "Revenue pipeline",
+      sidebar: ["홈", "딜", "회사", "업무", "회의"],
+      queueLabel: "에이전트 대기열",
+      sectionLabel: "워크스페이스",
+      shareAction: "공유",
+      newAction: "새로 만들기",
+      boardTitle: "매출 파이프라인",
       columns: [
         {
           label: "신규",
@@ -634,7 +673,7 @@ const landingCopyByLanguage: Record<PublicSiteLanguage, LandingCopy> = {
       ],
     },
     work: {
-      eyebrow: "Custom Agents",
+      eyebrow: "맞춤 에이전트",
       title: "세일즈가 24시간 끊기지 않게.",
       description:
         "문의가 들어오고 회의가 끝나는 순간마다 에이전트가 기록을 읽고 다음 업무를 만들어 줍니다.",
@@ -660,12 +699,15 @@ const landingCopyByLanguage: Record<PublicSiteLanguage, LandingCopy> = {
           description: "팀의 반복 업무를 에이전트로 구성합니다.",
         },
       ],
-      previewTitle: "Deal desk assistant",
+      previewTitle: "딜 데스크 어시스턴트",
+      previewBoardTitle: "영업 Q&A",
+      previewTableHeaders: ["질문", "담당자", "답변"],
+      previewRequester: "지수",
       previewQuestion: "이번 주 재계약 고객 중 위험 신호가 있는 곳은?",
-      previewAnswerTitle: "Onehand agent",
+      previewAnswerTitle: "Onehand 에이전트",
       previewAnswer:
         "3개 계정에서 응답 지연이 보입니다. 담당자에게 후속 이메일 초안과 미팅 제안을 만들었습니다.",
-      cardsLabel: "Custom Agents가 처리할 수 있는 일",
+      cardsLabel: "맞춤 에이전트가 처리할 수 있는 일",
       cards: [
         "신규 리드 분류",
         "견적 후속 알림",
@@ -675,10 +717,14 @@ const landingCopyByLanguage: Record<PublicSiteLanguage, LandingCopy> = {
       ],
     },
     workspace: {
-      eyebrow: "Connected workspace",
+      eyebrow: "연결된 워크스페이스",
       title: "문서, 고객, 업무가 같은 맥락을 공유합니다.",
       description:
         "영업 활동의 흩어진 단서를 하나의 워크스페이스로 연결해 팀이 같은 화면에서 판단하게 합니다.",
+      previewTitle: "계정",
+      previewEyebrow: "연결된 기록",
+      agentLabel: "에이전트",
+      metricLabels: ["딜", "응답", "업무"],
       views: [
         {
           title: "고객 기록",
@@ -714,7 +760,7 @@ const landingCopyByLanguage: Record<PublicSiteLanguage, LandingCopy> = {
     final: {
       title: "오늘 Onehand를 시작하세요.",
       description: "작게 시작해도 팀의 기록과 자동화 방식은 처음부터 같은 기준으로 쌓입니다.",
-      primaryCta: "Get Onehand",
+      primaryCta: "Onehand 시작",
       secondaryCta: "데모 요청",
     },
     footer: {
@@ -748,15 +794,19 @@ const landingCopyByLanguage: Record<PublicSiteLanguage, LandingCopy> = {
       titleEnd: "商談を前へ進めます。",
       description:
         "顧客との会話、予定、提案書、フォローアップを一か所に集め、反復的な営業業務を自動化します。",
-      primaryCta: "Get Onehand",
+      primaryCta: "Onehandを始める",
       secondaryCta: "デモを依頼",
     },
     partnerLabel: "記録を活かし、反復作業を減らすチームのために",
-    partnerItems: ["CRM", "Email", "Calendar", "Messenger", "Docs", "Sheets"],
+    partnerItems: ["CRM", "メール", "カレンダー", "メッセンジャー", "ドキュメント", "シート"],
     mock: {
       workspaceName: "Onehand HQ",
-      sidebar: ["Home", "Deals", "Companies", "Tasks", "Meetings"],
-      boardTitle: "Revenue pipeline",
+      sidebar: ["ホーム", "商談", "会社", "タスク", "会議"],
+      queueLabel: "エージェントキュー",
+      sectionLabel: "ワークスペース",
+      shareAction: "共有",
+      newAction: "新規",
+      boardTitle: "売上パイプライン",
       columns: [
         {
           label: "新規",
@@ -781,7 +831,7 @@ const landingCopyByLanguage: Record<PublicSiteLanguage, LandingCopy> = {
       ],
     },
     work: {
-      eyebrow: "Custom Agents",
+      eyebrow: "カスタムエージェント",
       title: "営業を 24 時間止めない。",
       description:
         "問い合わせが届いた時も会議が終わった時も、エージェントが記録を読み次の仕事を作ります。",
@@ -807,12 +857,15 @@ const landingCopyByLanguage: Record<PublicSiteLanguage, LandingCopy> = {
           description: "チーム独自の反復業務をエージェント化します。",
         },
       ],
-      previewTitle: "Deal desk assistant",
+      previewTitle: "ディールデスクアシスタント",
+      previewBoardTitle: "営業 Q&A",
+      previewTableHeaders: ["質問", "担当", "回答"],
+      previewRequester: "田中",
       previewQuestion: "今週更新予定の顧客でリスクがあるものは？",
-      previewAnswerTitle: "Onehand agent",
+      previewAnswerTitle: "Onehand エージェント",
       previewAnswer:
         "3 件のアカウントで返信遅延があります。担当者向けにフォローアップメール案と面談候補を作成しました。",
-      cardsLabel: "Custom Agents が処理できること",
+      cardsLabel: "カスタムエージェントが処理できること",
       cards: [
         "新規リードの分類",
         "見積もりフォロー通知",
@@ -822,10 +875,14 @@ const landingCopyByLanguage: Record<PublicSiteLanguage, LandingCopy> = {
       ],
     },
     workspace: {
-      eyebrow: "Connected workspace",
+      eyebrow: "接続されたワークスペース",
       title: "ドキュメント、顧客、タスクが同じ文脈を共有します。",
       description:
         "営業活動に散らばる手がかりを一つのワークスペースにつなぎ、チームが同じ画面で判断できます。",
+      previewTitle: "アカウント",
+      previewEyebrow: "接続された記録",
+      agentLabel: "エージェント",
+      metricLabels: ["商談", "返信", "タスク"],
       views: [
         {
           title: "顧客記録",
@@ -861,7 +918,7 @@ const landingCopyByLanguage: Record<PublicSiteLanguage, LandingCopy> = {
     final: {
       title: "今日から Onehand を始めましょう。",
       description: "小さく始めても、記録と自動化の基準は最初からチーム全体でそろいます。",
-      primaryCta: "Get Onehand",
+      primaryCta: "Onehandを始める",
       secondaryCta: "デモを依頼",
     },
     footer: {
@@ -895,15 +952,19 @@ const landingCopyByLanguage: Record<PublicSiteLanguage, LandingCopy> = {
       titleEnd: "推进每笔交易。",
       description:
         "把客户对话、日程、提案和跟进任务集中到一处，并自动化重复的销售运营。",
-      primaryCta: "Get Onehand",
+      primaryCta: "开始使用 Onehand",
       secondaryCta: "预约演示",
     },
     partnerLabel: "为减少重复工作、激活销售记录的团队而建",
-    partnerItems: ["CRM", "Email", "Calendar", "Messenger", "Docs", "Sheets"],
+    partnerItems: ["CRM", "邮箱", "日历", "消息", "文档", "表格"],
     mock: {
       workspaceName: "Onehand HQ",
-      sidebar: ["Home", "Deals", "Companies", "Tasks", "Meetings"],
-      boardTitle: "Revenue pipeline",
+      sidebar: ["首页", "商机", "公司", "任务", "会议"],
+      queueLabel: "代理队列",
+      sectionLabel: "工作区",
+      shareAction: "共享",
+      newAction: "新建",
+      boardTitle: "收入管道",
       columns: [
         {
           label: "新线索",
@@ -928,7 +989,7 @@ const landingCopyByLanguage: Record<PublicSiteLanguage, LandingCopy> = {
       ],
     },
     work: {
-      eyebrow: "Custom Agents",
+      eyebrow: "自定义代理",
       title: "让销售 24 小时持续推进。",
       description:
         "无论咨询进入还是会议结束，代理都会读取记录并创建下一步任务。",
@@ -954,12 +1015,15 @@ const landingCopyByLanguage: Record<PublicSiteLanguage, LandingCopy> = {
           description: "把团队的重复流程配置成代理。",
         },
       ],
-      previewTitle: "Deal desk assistant",
+      previewTitle: "商机工作台助手",
+      previewBoardTitle: "销售问答",
+      previewTableHeaders: ["问题", "负责人", "答案"],
+      previewRequester: "陈伟",
       previewQuestion: "本周续约客户中有哪些风险信号？",
-      previewAnswerTitle: "Onehand agent",
+      previewAnswerTitle: "Onehand 代理",
       previewAnswer:
         "3 个账户出现响应延迟。我已为负责人生成跟进邮件草稿和会议建议时间。",
-      cardsLabel: "Custom Agents 可以处理",
+      cardsLabel: "自定义代理可以处理",
       cards: [
         "分类新线索",
         "报价跟进提醒",
@@ -969,10 +1033,14 @@ const landingCopyByLanguage: Record<PublicSiteLanguage, LandingCopy> = {
       ],
     },
     workspace: {
-      eyebrow: "Connected workspace",
+      eyebrow: "互联工作区",
       title: "文档、客户和任务共享同一上下文。",
       description:
         "把销售活动中分散的线索连接到一个工作区，让团队在同一画面中判断。",
+      previewTitle: "账户",
+      previewEyebrow: "已连接记录",
+      agentLabel: "代理",
+      metricLabels: ["商机", "回复", "任务"],
       views: [
         {
           title: "客户记录",
@@ -1008,7 +1076,7 @@ const landingCopyByLanguage: Record<PublicSiteLanguage, LandingCopy> = {
     final: {
       title: "今天开始使用 Onehand。",
       description: "即使从小范围开始，团队的记录和自动化标准也能从第一天保持一致。",
-      primaryCta: "Get Onehand",
+      primaryCta: "开始使用 Onehand",
       secondaryCta: "预约演示",
     },
     footer: {
@@ -1050,6 +1118,10 @@ const landingCopyByLanguage: Record<PublicSiteLanguage, LandingCopy> = {
     mock: {
       workspaceName: "Onehand HQ",
       sidebar: ["Home", "Deals", "Companies", "Tasks", "Meetings"],
+      queueLabel: "Agent queue",
+      sectionLabel: "Workspace",
+      shareAction: "Share",
+      newAction: "New",
       boardTitle: "Revenue pipeline",
       columns: [
         {
@@ -1102,6 +1174,9 @@ const landingCopyByLanguage: Record<PublicSiteLanguage, LandingCopy> = {
         },
       ],
       previewTitle: "Deal desk assistant",
+      previewBoardTitle: "Sales Q&A",
+      previewTableHeaders: ["Question", "Owner", "Answer"],
+      previewRequester: "Jason",
       previewQuestion: "Which renewal accounts show risk this week?",
       previewAnswerTitle: "Onehand agent",
       previewAnswer:
@@ -1120,6 +1195,10 @@ const landingCopyByLanguage: Record<PublicSiteLanguage, LandingCopy> = {
       title: "Docs, customers, and tasks share the same context.",
       description:
         "Connect the scattered clues of sales activity into one workspace, so teams can make decisions from the same screen.",
+      previewTitle: "Accounts",
+      previewEyebrow: "Connected records",
+      agentLabel: "Agent",
+      metricLabels: ["Deals", "Replies", "Tasks"],
       views: [
         {
           title: "Customer records",
@@ -1197,6 +1276,10 @@ const landingCopyByLanguage: Record<PublicSiteLanguage, LandingCopy> = {
     mock: {
       workspaceName: "Onehand HQ",
       sidebar: ["Home", "Deals", "Companies", "Tasks", "Meetings"],
+      queueLabel: "Agent queue",
+      sectionLabel: "Workspace",
+      shareAction: "Share",
+      newAction: "New",
       boardTitle: "Revenue pipeline",
       columns: [
         {
@@ -1249,6 +1332,9 @@ const landingCopyByLanguage: Record<PublicSiteLanguage, LandingCopy> = {
         },
       ],
       previewTitle: "Deal desk assistant",
+      previewBoardTitle: "Sales Q&A",
+      previewTableHeaders: ["Question", "Owner", "Answer"],
+      previewRequester: "Oliver",
       previewQuestion: "Which renewal accounts show risk this week?",
       previewAnswerTitle: "Onehand agent",
       previewAnswer:
@@ -1267,6 +1353,10 @@ const landingCopyByLanguage: Record<PublicSiteLanguage, LandingCopy> = {
       title: "Docs, customers, and tasks share the same context.",
       description:
         "Connect the scattered clues of sales activity into one workspace, so teams can make decisions from the same screen.",
+      previewTitle: "Accounts",
+      previewEyebrow: "Connected records",
+      agentLabel: "Agent",
+      metricLabels: ["Deals", "Replies", "Tasks"],
       views: [
         {
           title: "Customer records",
@@ -1692,7 +1782,9 @@ function ProductWorkspaceMock({ copy }: { readonly copy: LandingCopy }) {
             <div className="mt-8 rounded-[8px] border border-[#e4e4df] bg-white p-3">
               <div className="flex items-center gap-2">
                 <Sparkles className="h-4 w-4 text-[#0075DE]" />
-                <span className="text-[12px] font-black">Agent queue</span>
+                <span className="text-[12px] font-black">
+                  {copy.mock.queueLabel}
+                </span>
               </div>
               <div className="mt-3 space-y-2">
                 <span className="block h-2 rounded-full bg-[#e7e7e2]" />
@@ -1711,7 +1803,7 @@ function ProductWorkspaceMock({ copy }: { readonly copy: LandingCopy }) {
                   </span>
                   <div>
                     <p className="text-[12px] font-black uppercase text-[#777770]">
-                      Workspace
+                      {copy.mock.sectionLabel}
                     </p>
                     <h2 className="text-[24px] font-black text-[#222220] sm:text-[30px]">
                       {copy.mock.boardTitle}
@@ -1721,10 +1813,10 @@ function ProductWorkspaceMock({ copy }: { readonly copy: LandingCopy }) {
               </div>
               <div className="flex items-center gap-2">
                 <span className="hidden h-8 items-center rounded-[6px] bg-[#f1f1ef] px-3 text-[12px] font-bold text-[#555550] sm:inline-flex">
-                  Share
+                  {copy.mock.shareAction}
                 </span>
                 <span className="inline-flex h-8 items-center rounded-[6px] bg-[#0075DE] px-3 text-[12px] font-black text-white">
-                  New
+                  {copy.mock.newAction}
                 </span>
               </div>
             </div>
@@ -1892,7 +1984,7 @@ function AutomationPreview({ copy }: { readonly copy: LandingCopy }) {
               {copy.work.previewTitle}
             </p>
             <h3 className="mt-2 text-[34px] font-black leading-none text-[#ddddda] sm:text-[48px]">
-              Office Q&A
+              {copy.work.previewBoardTitle}
             </h3>
           </div>
           <span className="grid h-10 w-10 place-items-center rounded-full bg-[#f7f7f5]">
@@ -1902,9 +1994,9 @@ function AutomationPreview({ copy }: { readonly copy: LandingCopy }) {
 
         <div className="mt-10 grid gap-3 text-[13px] font-bold text-[#b8b8b2]">
           <div className="grid grid-cols-[1fr_0.5fr_0.6fr] gap-3 border-b border-[#eeeeec] pb-3">
-            <span>Question</span>
-            <span>Owner</span>
-            <span>Answer</span>
+            {copy.work.previewTableHeaders.map((header) => (
+              <span key={header}>{header}</span>
+            ))}
           </div>
           {[0, 1, 2, 3, 4].map((row) => (
             <div
@@ -1924,8 +2016,10 @@ function AutomationPreview({ copy }: { readonly copy: LandingCopy }) {
               <Users className="h-6 w-6 text-[#111111]" />
             </span>
             <div>
-              <p className="text-[13px] font-black text-[#777770]">Jason</p>
-                <p className="mt-1 break-keep text-[20px] font-black leading-tight text-[#111111]">
+              <p className="text-[13px] font-black text-[#777770]">
+                {copy.work.previewRequester}
+              </p>
+              <p className="mt-1 break-keep text-[20px] font-black leading-tight text-[#111111]">
                 {copy.work.previewQuestion}
               </p>
             </div>
@@ -1976,7 +2070,12 @@ function AssistantsSection({
 
         <div className="mt-9 grid gap-4 lg:grid-cols-2">
           {copy.cards.map((card, index) => (
-            <AssistantFeatureCard card={card} index={index} key={card.title} />
+            <AssistantFeatureCard
+              card={card}
+              index={index}
+              key={card.title}
+              previewCopy={copy}
+            />
           ))}
         </div>
       </div>
@@ -1987,9 +2086,11 @@ function AssistantsSection({
 function AssistantFeatureCard({
   card,
   index,
+  previewCopy,
 }: {
   readonly card: ExpandedFeatureCopy;
   readonly index: number;
+  readonly previewCopy: ExpandedLandingCopy["assistants"];
 }) {
   const visual = assistantCardVisuals[index] ?? assistantCardVisuals[0]!;
   const Icon = visual.icon;
@@ -2013,7 +2114,12 @@ function AssistantFeatureCard({
         </span>
       </div>
 
-      <AssistantPreview card={card} index={index} visual={visual} />
+      <AssistantPreview
+        card={card}
+        index={index}
+        previewCopy={previewCopy}
+        visual={visual}
+      />
     </article>
   );
 }
@@ -2021,10 +2127,12 @@ function AssistantFeatureCard({
 function AssistantPreview({
   card,
   index,
+  previewCopy,
   visual,
 }: {
   readonly card: ExpandedFeatureCopy;
   readonly index: number;
+  readonly previewCopy: ExpandedLandingCopy["assistants"];
   readonly visual: (typeof assistantCardVisuals)[number];
 }) {
   if (index === 1) {
@@ -2034,7 +2142,7 @@ function AssistantPreview({
           <div className="flex items-center gap-2 rounded-[6px] border border-[#eeeeec] px-3 py-2">
             <Search className="h-4 w-4 text-[#777770]" />
             <span className="text-[13px] font-bold text-[#333330]">
-              customer request this quarter
+              {previewCopy.previewSearchQuery}
             </span>
           </div>
           <div className="mt-4 grid gap-2">
@@ -2058,10 +2166,10 @@ function AssistantPreview({
         <div className="rounded-[8px] border border-[#dededa] bg-white p-4">
           <div className="flex items-center justify-between">
             <span className="text-[13px] font-black text-[#111111]">
-              Weekly customer sync
+              {previewCopy.previewMeetingTitle}
             </span>
             <span className="rounded-full bg-[#e8f3ff] px-2 py-1 text-[11px] font-black text-[#0075DE]">
-              Notes
+              {previewCopy.previewNotesLabel}
             </span>
           </div>
           <div className="mt-4 space-y-3">
@@ -2088,7 +2196,7 @@ function AssistantPreview({
           </span>
           <div>
             <p className="text-[13px] font-black text-[#111111]">
-              Onehand agent
+              {previewCopy.previewAgentName}
             </p>
             <p className="mt-1 text-[13px] font-semibold leading-6 text-[#555550]">
               {card.items[0] ?? card.title}
@@ -2308,7 +2416,7 @@ function WorkspacePreview({ copy }: { readonly copy: LandingCopy }) {
         <span className="h-2.5 w-2.5 rounded-full bg-[#d8d8d3]" />
         <span className="h-2.5 w-2.5 rounded-full bg-[#d8d8d3]" />
         <span className="ml-3 text-[12px] font-black text-[#555550]">
-          Accounts
+          {copy.workspace.previewTitle}
         </span>
       </div>
 
@@ -2317,15 +2425,15 @@ function WorkspacePreview({ copy }: { readonly copy: LandingCopy }) {
           <div className="flex items-center justify-between gap-3">
             <div>
               <p className="text-[12px] font-black uppercase text-[#777770]">
-                Connected records
+                {copy.workspace.previewEyebrow}
               </p>
               <h3 className="mt-1 text-[26px] font-black text-[#111111]">
-                Pipeline desk
+                {copy.mock.boardTitle}
               </h3>
             </div>
             <span className="inline-flex h-9 items-center gap-2 rounded-[6px] bg-[#0075DE] px-3 text-[12px] font-black text-white">
               <Sparkles className="h-4 w-4" />
-              Agent
+              {copy.workspace.agentLabel}
             </span>
           </div>
 
@@ -2361,9 +2469,21 @@ function WorkspacePreview({ copy }: { readonly copy: LandingCopy }) {
           </div>
 
           <div className="mt-5 grid gap-3 sm:grid-cols-3">
-            <MetricPill icon={Handshake} label="Deals" value="+18%" />
-            <MetricPill icon={Mail} label="Replies" value="2.4h" />
-            <MetricPill icon={CheckCircle2} label="Tasks" value="96%" />
+            <MetricPill
+              icon={Handshake}
+              label={copy.workspace.metricLabels[0]}
+              value="+18%"
+            />
+            <MetricPill
+              icon={Mail}
+              label={copy.workspace.metricLabels[1]}
+              value="2.4h"
+            />
+            <MetricPill
+              icon={CheckCircle2}
+              label={copy.workspace.metricLabels[2]}
+              value="96%"
+            />
           </div>
         </div>
 

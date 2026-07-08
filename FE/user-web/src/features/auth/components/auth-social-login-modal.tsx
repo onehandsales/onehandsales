@@ -3,10 +3,15 @@ import { useEffect, useMemo, useState } from "react";
 import { ModalShell } from "@/components/ui/modal-shell";
 import { authService } from "@/features/auth/auth-service";
 import { useAuthSession } from "@/features/auth/auth-context";
+import {
+  authProviderModalCopy,
+  getAuthProviderContinueLabel,
+} from "@/features/auth/components/auth-provider-modal-copy";
 import type {
   AuthProviderId,
   AuthProviderOption,
 } from "@/features/auth/types/auth";
+import { usePublicSiteLanguage } from "@/features/public-site/i18n/public-site-language";
 import { getApiErrorMessage } from "@/lib/api-client";
 
 type AuthSocialLoginModalProps = {
@@ -22,11 +27,6 @@ const fallbackProviders: AuthProviderOption[] = [
 const providerStyles: Record<AuthProviderId, string> = {
   kakao: "border-[#E8D100] bg-[#FEE500] text-[#191919]",
   google: "border-[#DADCE0] bg-white text-[#3C4043]",
-};
-
-const providerLabels: Record<AuthProviderId, string> = {
-  kakao: "Kakao로 계속하기",
-  google: "Google로 계속하기",
 };
 
 const providerLogos: Record<AuthProviderId, string> = {
@@ -49,6 +49,8 @@ export function AuthSocialLoginModal({
     isPending,
     startProviderLogin,
   } = useAuthSession();
+  const { language } = usePublicSiteLanguage();
+  const copy = authProviderModalCopy[language];
   const [providers, setProviders] = useState<AuthProviderOption[]>([]);
   const [providersError, setProvidersError] = useState<string | null>(null);
   const [isProvidersLoading, setIsProvidersLoading] = useState(false);
@@ -117,7 +119,7 @@ export function AuthSocialLoginModal({
     <ModalShell
       bodyClassName="flex flex-1 flex-col px-8 pb-6 pt-7 max-[460px]:px-6"
       closeButtonClassName="right-3.5 top-3.5 h-[32px] w-[32px] rounded-full border-0 bg-[#F3F4F6] text-[#9CA3AF]"
-      closeLabel="로그인 모달 닫기"
+      closeLabel={copy.closeLabel}
       open={open}
       panelClassName="h-[320px] w-[380px] max-w-[calc(100vw-2rem)] max-h-[calc(100vh-2rem)] rounded-[16px] border-0 shadow-[0_20px_50px_rgba(15,23,42,0.18),0_2px_8px_rgba(15,23,42,0.08)]"
       placement="bottom"
@@ -131,31 +133,34 @@ export function AuthSocialLoginModal({
       <div className="grid justify-items-center gap-2.5">
         <div className="flex items-center gap-2">
           <div className="grid h-9 w-9 place-items-center rounded-[9px] bg-[#4880EE]">
-            <span className="text-[15px] font-extrabold text-white">한</span>
+            <span className="text-[15px] font-extrabold text-white">
+              {copy.brandGlyph}
+            </span>
           </div>
           <h2 className="text-[20px] font-bold text-[#111827]">
-            한손에 영업
+            {copy.brandName}
           </h2>
         </div>
-        <p className="text-[13px] text-[#6B7280]">영업을 더 스마트하게</p>
+        <p className="text-[13px] text-[#6B7280]">{copy.tagline}</p>
       </div>
 
       <div className="my-4 h-px bg-[#F1F5F9]" />
 
       <p className="mt-1 text-center text-[13px] text-[#9CA3AF]">
-        소셜 계정으로 간편하게 시작하세요
+        {copy.providerLead}
       </p>
 
       <div className="mt-3 grid gap-2.5">
         {isProvidersLoading ? (
           <div className="flex h-[50px] items-center justify-center rounded-[10px] border border-[#E5E7EB] bg-[#F9FAFB]">
             <Loader2 className="h-4 w-4 animate-spin text-[#4880EE]" />
+            <span className="sr-only">{copy.providerLoading}</span>
           </div>
         ) : null}
 
         {!isProvidersLoading && enabledProviders.length === 0 ? (
           <div className="rounded-[10px] border border-dashed border-[#E5E7EB] bg-[#F9FAFB] px-4 py-4 text-center text-sm text-[#6B7280]">
-            사용할 수 있는 로그인이 없어요.
+            {copy.noProviders}
           </div>
         ) : null}
 
@@ -184,8 +189,11 @@ export function AuthSocialLoginModal({
               />
             </span>
             <span className="flex-1 text-center">
-              {providerLabels[provider.provider] ??
-                `${provider.label}로 계속하기`}
+              {getAuthProviderContinueLabel({
+                language,
+                provider: provider.provider,
+                providerLabel: provider.label,
+              })}
             </span>
             <span className="w-[26px] shrink-0">
               {isPending && pendingProvider === provider.provider ? (
@@ -198,7 +206,7 @@ export function AuthSocialLoginModal({
 
       {providersError ? (
         <p className="mt-4 rounded-[10px] border border-yellow-200 bg-yellow-50 px-3 py-2 text-center text-xs text-yellow-800">
-          {providersError}
+          {copy.providersErrorPrefix} {providersError}
         </p>
       ) : null}
 

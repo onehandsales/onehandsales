@@ -39,6 +39,7 @@ type PublicSiteCopy = {
     readonly footerColumns: readonly FooterColumnCopy[];
     readonly cookieSettings: string;
     readonly languageAria: string;
+    readonly footerSocialAria: string;
     readonly copyright: string;
   };
   readonly landing: {
@@ -154,7 +155,7 @@ const publicSiteCopy: Record<PublicSiteLanguage, PublicSiteCopy> = {
         product: "제품",
         pricing: "요금제",
         contact: "문의",
-        freeCta: "Get Onehand",
+        freeCta: "Onehand 시작",
         login: "로그인",
       },
       productMenuGroups: [
@@ -187,13 +188,14 @@ const publicSiteCopy: Record<PublicSiteLanguage, PublicSiteCopy> = {
       ],
       cookieSettings: "쿠키 설정",
       languageAria: "언어 선택",
+      footerSocialAria: "Onehand 소셜 링크",
       copyright: "© 2026 Onehand Labs, Inc.",
     },
     landing: {
       heroTitle: ["영업팀과 고객이", "함께 움직이는 곳"],
       heroDescription:
         "딜, 담당자, 일정, 회의록을 한 화면에서 연결하고 오늘 해야 할 일을 바로 확인하세요.",
-      primaryCta: "Get Onehand",
+      primaryCta: "Onehand 시작",
       secondaryCta: "흐름 보기",
       customerStrip: "반복 영업 업무가 많은 팀을 위해 설계한 CRM",
       sectionWork: "영업 흐름을 하루 종일 놓치지 마세요.",
@@ -202,7 +204,7 @@ const publicSiteCopy: Record<PublicSiteLanguage, PublicSiteCopy> = {
       quote: "“AI보다 먼저, 영업의 흐름이 정리됩니다.”",
       trustedTitle: "결과로 말하는 영업팀을 위해.",
       finalCta: "지금 시작하세요.",
-      finalPrimary: "Get Onehand",
+      finalPrimary: "Onehand 시작",
     },
     pricing: {
       title: "영업 운영에 필요한 하나의 도구.",
@@ -373,7 +375,7 @@ const publicSiteCopy: Record<PublicSiteLanguage, PublicSiteCopy> = {
         product: "製品",
         pricing: "料金",
         contact: "お問い合わせ",
-        freeCta: "Get Onehand",
+        freeCta: "Onehandを始める",
         login: "ログイン",
       },
       productMenuGroups: [
@@ -406,13 +408,14 @@ const publicSiteCopy: Record<PublicSiteLanguage, PublicSiteCopy> = {
       ],
       cookieSettings: "Cookie設定",
       languageAria: "言語を選択",
+      footerSocialAria: "Onehand ソーシャルリンク",
       copyright: "© 2026 Onehand Labs, Inc.",
     },
     landing: {
       heroTitle: ["営業チームと顧客が", "一緒に動く場所"],
       heroDescription:
         "商談、担当者、予定、議事録を一つの画面でつなぎ、今日やるべきことをすぐ確認できます。",
-      primaryCta: "Get Onehand",
+      primaryCta: "Onehandを始める",
       secondaryCta: "流れを見る",
       customerStrip: "反復営業が多いチームのためのCRM",
       sectionWork: "営業の流れを一日中見失わない。",
@@ -421,7 +424,7 @@ const publicSiteCopy: Record<PublicSiteLanguage, PublicSiteCopy> = {
       quote: "“AIの前に、営業の流れが整います。”",
       trustedTitle: "成果で語る営業チームのために。",
       finalCta: "今すぐ始めましょう。",
-      finalPrimary: "Get Onehand",
+      finalPrimary: "Onehandを始める",
     },
     pricing: makeTranslatedPricing({
       title: "営業運営に必要な一つのツール。",
@@ -487,7 +490,7 @@ const publicSiteCopy: Record<PublicSiteLanguage, PublicSiteCopy> = {
         product: "产品",
         pricing: "价格",
         contact: "咨询",
-        freeCta: "Get Onehand",
+        freeCta: "开始使用 Onehand",
         login: "登录",
       },
       productMenuGroups: [
@@ -520,13 +523,14 @@ const publicSiteCopy: Record<PublicSiteLanguage, PublicSiteCopy> = {
       ],
       cookieSettings: "Cookie 设置",
       languageAria: "选择语言",
+      footerSocialAria: "Onehand 社交链接",
       copyright: "© 2026 Onehand Labs, Inc.",
     },
     landing: {
       heroTitle: ["销售团队与客户", "协同工作的地方"],
       heroDescription:
         "在一个界面连接商机、联系人、日程和会议记录，立即查看今天要完成的工作。",
-      primaryCta: "Get Onehand",
+      primaryCta: "开始使用 Onehand",
       secondaryCta: "查看流程",
       customerStrip: "为重复销售工作较多的团队设计的 CRM",
       sectionWork: "全天掌握销售流程。",
@@ -535,7 +539,7 @@ const publicSiteCopy: Record<PublicSiteLanguage, PublicSiteCopy> = {
       quote: "“在 AI 之前，先把销售流程整理清楚。”",
       trustedTitle: "为用结果说话的销售团队。",
       finalCta: "现在开始。",
-      finalPrimary: "Get Onehand",
+      finalPrimary: "开始使用 Onehand",
     },
     pricing: makeTranslatedPricing({
       title: "运营销售所需的一体化工具。",
@@ -966,7 +970,7 @@ function makeEnglishCopy(copy: {
       pricing: copy.pricing,
       contact: copy.contact,
       freeCta: "Get Onehand",
-      login: "Log in",
+      login: copy.languageRegion === "UK" ? "Sign in" : "Log in",
     },
     productMenuGroups: [
       [
@@ -993,11 +997,21 @@ function makeEnglishCopy(copy: {
     footerColumns: [
       ["Company", "About us", "Careers", "Security", "Status", "Terms and privacy", "Privacy rights"],
       ["Download", "Web app", "Mobile web", "Desktop web", "Browser shortcut"],
-      ["Resources", "Help center", copy.pricing, "Blog", "Community", "Connections", "Templates", "Partner program"],
+      [
+        "Resources",
+        copy.languageRegion === "UK" ? "Help centre" : "Help center",
+        copy.pricing,
+        "Blog",
+        "Community",
+        "Connections",
+        "Templates",
+        "Partner program",
+      ],
       ["Onehand for", "Company", "Team", "Personal", "Explore more"],
     ],
     cookieSettings: "Cookie settings",
     languageAria: "Select language",
+    footerSocialAria: "Onehand social links",
     copyright: "© 2026 Onehand Labs, Inc.",
   };
 
