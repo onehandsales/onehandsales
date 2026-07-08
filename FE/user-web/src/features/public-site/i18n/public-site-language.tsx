@@ -749,7 +749,7 @@ function makeTranslatedPricing(copy: {
     billingMonthly: copy.monthly,
     billingAnnual: copy.annual,
     priceLabels: isChinese
-      ? ["¥0", "¥69", "¥149", ""]
+      ? ["0元", "69元", "149元", ""]
       : isJapanese
         ? ["¥0", "¥1,500", "¥3,200", ""]
         : isGbp

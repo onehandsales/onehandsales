@@ -730,10 +730,10 @@ export function SecurityPage() {
             <p className="text-[13px] font-semibold text-[#777770]">
               {copy.eyebrow}
             </p>
-            <h1 className="mx-auto mt-3 max-w-[760px] break-keep text-[40px] font-black leading-[1.05] tracking-normal md:text-[58px]">
+            <h1 className="mx-auto mt-3 max-w-[760px] text-[40px] font-black leading-[1.05] tracking-normal md:text-[58px]">
               {copy.title}
             </h1>
-            <p className="mx-auto mt-4 max-w-[680px] break-keep text-[15px] leading-7 text-[#555550]">
+            <p className="mx-auto mt-4 max-w-[680px] text-[15px] leading-7 text-[#555550]">
               {copy.description}
             </p>
           </div>
@@ -748,7 +748,7 @@ export function SecurityPage() {
                   key={label}
                 >
                   <Icon className="h-4 w-4 text-[#0075DE]" />
-                  <span className="break-keep text-[12px] font-bold text-[#333330]">
+                  <span className="min-w-0 text-[12px] font-bold text-[#333330]">
                     {label}
                   </span>
                 </div>
@@ -770,10 +770,10 @@ export function SecurityPage() {
 
       <section className="bg-[#f7f7f5] py-16 sm:py-20 lg:py-24">
         <div className="mx-auto w-full max-w-[1320px] px-4 text-center sm:px-6 lg:px-8">
-          <h2 className="break-keep text-[34px] font-black leading-tight md:text-[46px]">
+          <h2 className="text-[34px] font-black leading-tight md:text-[46px]">
             {copy.ctaTitle}
           </h2>
-          <p className="mx-auto mt-4 max-w-[660px] break-keep text-[14px] leading-7 text-[#555550]">
+          <p className="mx-auto mt-4 max-w-[660px] text-[14px] leading-7 text-[#555550]">
             {copy.ctaDescription}
           </p>
           <div className="mt-7 flex flex-wrap items-center justify-center gap-3">
@@ -807,28 +807,28 @@ function SecuritySectionBlock({
   return (
     <section>
       <div className="grid gap-8 md:grid-cols-[0.72fr_1fr] md:items-start">
-        <div>
+        <div className="min-w-0">
           <div className="mb-5 grid h-16 w-16 place-items-center rounded-[8px] bg-[#edf7ff] text-[#0075DE]">
             <Icon className="h-8 w-8" />
           </div>
           <p className="text-[13px] font-semibold text-[#777770]">
             {section.eyebrow}
           </p>
-          <h2 className="mt-2 break-keep text-[30px] font-black leading-tight md:text-[42px]">
+          <h2 className="mt-2 text-[30px] font-black leading-tight md:text-[42px]">
             {section.title}
           </h2>
-          <p className="mt-4 break-keep text-[14px] leading-7 text-[#555550]">
+          <p className="mt-4 text-[14px] leading-7 text-[#555550]">
             {section.description}
           </p>
         </div>
 
-        <div className="grid gap-3">
+        <div className="grid min-w-0 gap-3">
           {section.cards.map((card) => (
             <article className="rounded-[8px] bg-[#f7f7f5] p-5" key={card.title}>
-              <h3 className="break-keep text-[15px] font-black">
+              <h3 className="text-[15px] font-black">
                 {card.title}
               </h3>
-              <p className="mt-2 break-keep text-[13px] leading-6 text-[#555550]">
+              <p className="mt-2 text-[13px] leading-6 text-[#555550]">
                 {card.description}
               </p>
             </article>
