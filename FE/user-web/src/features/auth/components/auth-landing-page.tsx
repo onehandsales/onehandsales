@@ -46,12 +46,15 @@ type FooterColumnCopy = {
   readonly links: readonly string[];
 };
 
+type HeroRotatingItem = {
+  readonly label: string;
+  readonly suffix: string;
+};
+
 type LandingCopy = {
   readonly hero: {
     readonly eyebrow: string;
-    readonly titleStart: string;
-    readonly titlePill: string;
-    readonly titleEnd: string;
+    readonly rotatingItems: readonly [HeroRotatingItem, ...HeroRotatingItem[]];
     readonly description: string;
     readonly primaryCta: string;
     readonly secondaryCta: string;
@@ -151,25 +154,20 @@ type ExpandedLandingCopy = {
   };
 };
 
-const heroRotatingWords = [
+const heroRotatingWordStyles = [
   {
-    label: "Sales",
     className: "bg-[#c9edeb] text-[#0f0f0f]",
   },
   {
-    label: "Mobile",
     className: "bg-[#dbeafe] text-[#1d4ed8]",
   },
   {
-    label: "Onehand",
     className: "bg-[#fee2e2] text-[#b91c1c]",
   },
   {
-    label: "AI",
     className: "bg-[#ede9fe] text-[#6d28d9]",
   },
   {
-    label: "Everything",
     className: "bg-[#fef3c7] text-[#92400e]",
   },
 ] as const;
@@ -630,10 +628,14 @@ const expandedLandingCopyByLanguage: Record<PublicSiteLanguage, ExpandedLandingC
 const landingCopyByLanguage: Record<PublicSiteLanguage, LandingCopy> = {
   ko: {
     hero: {
-      eyebrow: "AI 세일즈 워크스페이스",
-      titleStart: "세일즈 팀과 AI 에이전트가",
-      titlePill: "한 화면에서",
-      titleEnd: "거래를 움직입니다.",
+      eyebrow: "",
+      rotatingItems: [
+        { label: "세일즈", suffix: "는 간단합니다." },
+        { label: "모바일", suffix: "은 간단합니다." },
+        { label: "Onehand", suffix: "는 간단합니다." },
+        { label: "AI", suffix: "는 간단합니다." },
+        { label: "모든 것", suffix: "이 간단합니다." },
+      ],
       description:
         "고객 대화, 일정, 제안서, 후속 업무를 한 곳에서 정리하고 반복되는 세일즈 운영을 자동화하세요.",
       primaryCta: "Onehand 시작",
@@ -788,10 +790,14 @@ const landingCopyByLanguage: Record<PublicSiteLanguage, LandingCopy> = {
   },
   ja: {
     hero: {
-      eyebrow: "AI セールスワークスペース",
-      titleStart: "営業チームと AI エージェントが",
-      titlePill: "同じ画面で",
-      titleEnd: "商談を前へ進めます。",
+      eyebrow: "",
+      rotatingItems: [
+        { label: "営業", suffix: "はシンプルです。" },
+        { label: "モバイル", suffix: "はシンプルです。" },
+        { label: "Onehand", suffix: "はシンプルです。" },
+        { label: "AI", suffix: "はシンプルです。" },
+        { label: "すべて", suffix: "はシンプルです。" },
+      ],
       description:
         "顧客との会話、予定、提案書、フォローアップを一か所に集め、反復的な営業業務を自動化します。",
       primaryCta: "Onehandを始める",
@@ -946,10 +952,14 @@ const landingCopyByLanguage: Record<PublicSiteLanguage, LandingCopy> = {
   },
   zh: {
     hero: {
-      eyebrow: "AI 销售工作区",
-      titleStart: "销售团队和 AI 代理",
-      titlePill: "在同一屏",
-      titleEnd: "推进每笔交易。",
+      eyebrow: "",
+      rotatingItems: [
+        { label: "销售", suffix: "很简单。" },
+        { label: "移动端", suffix: "很简单。" },
+        { label: "Onehand", suffix: "很简单。" },
+        { label: "AI", suffix: "很简单。" },
+        { label: "一切", suffix: "都很简单。" },
+      ],
       description:
         "把客户对话、日程、提案和跟进任务集中到一处，并自动化重复的销售运营。",
       primaryCta: "开始使用 Onehand",
@@ -1105,9 +1115,13 @@ const landingCopyByLanguage: Record<PublicSiteLanguage, LandingCopy> = {
   "en-US": {
     hero: {
       eyebrow: "",
-      titleStart: "Sales",
-      titlePill: "is",
-      titleEnd: "Simple.",
+      rotatingItems: [
+        { label: "Sales", suffix: "is Simple." },
+        { label: "Mobile", suffix: "is Simple." },
+        { label: "Onehand", suffix: "is Simple." },
+        { label: "AI", suffix: "is Simple." },
+        { label: "Everything", suffix: "is Simple." },
+      ],
       description:
         "Organize customer conversations, schedules, proposals, and follow-ups in one place while agents automate repeated sales work.",
       primaryCta: "Get Onehand",
@@ -1263,9 +1277,13 @@ const landingCopyByLanguage: Record<PublicSiteLanguage, LandingCopy> = {
   "en-GB": {
     hero: {
       eyebrow: "",
-      titleStart: "Sales",
-      titlePill: "is",
-      titleEnd: "Simple.",
+      rotatingItems: [
+        { label: "Sales", suffix: "is Simple." },
+        { label: "Mobile", suffix: "is Simple." },
+        { label: "Onehand", suffix: "is Simple." },
+        { label: "AI", suffix: "is Simple." },
+        { label: "Everything", suffix: "is Simple." },
+      ],
       description:
         "Organise customer conversations, schedules, proposals, and follow-ups in one place while agents automate repeated sales work.",
       primaryCta: "Get Onehand",
@@ -1638,28 +1656,26 @@ function LandingScrollProgressBar({
 }
 
 function HeroSection({ copy }: { readonly copy: LandingCopy }) {
-  const shouldUseRotatingHero =
-    copy.hero.titleStart === "Sales" &&
-    copy.hero.titlePill === "is" &&
-    copy.hero.titleEnd === "Simple.";
   const [activeHeroWordIndex, setActiveHeroWordIndex] = useState(0);
-  const activeHeroWord = heroRotatingWords[activeHeroWordIndex] ?? heroRotatingWords[0];
+  const rotatingItemsCount = copy.hero.rotatingItems.length;
+  const activeHeroItem =
+    copy.hero.rotatingItems[activeHeroWordIndex % rotatingItemsCount] ??
+    copy.hero.rotatingItems[0];
+  const activeHeroWordStyle =
+    heroRotatingWordStyles[activeHeroWordIndex % heroRotatingWordStyles.length] ??
+    heroRotatingWordStyles[0];
 
   useEffect(() => {
-    if (!shouldUseRotatingHero) {
-      return;
-    }
-
     const intervalId = window.setInterval(() => {
       setActiveHeroWordIndex((currentIndex) =>
-        (currentIndex + 1) % heroRotatingWords.length
+        (currentIndex + 1) % rotatingItemsCount
       );
     }, 3000);
 
     return () => {
       window.clearInterval(intervalId);
     };
-  }, [shouldUseRotatingHero]);
+  }, [rotatingItemsCount]);
 
   return (
     <section className="flex min-h-[calc(100vh-56px)] flex-col overflow-hidden bg-white">
@@ -1681,36 +1697,27 @@ function HeroSection({ copy }: { readonly copy: LandingCopy }) {
             {copy.hero.eyebrow}
           </p>
         ) : null}
-        <h1 className="mt-4 max-w-[1060px] break-keep text-[44px] font-black leading-[0.98] text-[#0f0f0f] sm:text-[64px] md:text-[78px] lg:text-[94px] xl:text-[96px]">
-          {shouldUseRotatingHero ? (
-            <>
+        <h1 className="mt-4 max-w-[1060px] break-keep text-[44px] font-normal leading-[0.98] text-[#0f0f0f] sm:text-[64px] md:text-[78px] lg:text-[94px] xl:text-[96px]">
+          <span className="inline-flex flex-wrap items-center justify-center gap-x-[0.16em] gap-y-2 align-middle leading-none">
+            <span
+              className={[
+                "landing-hero-word-pill inline-flex items-center gap-[0.14em] rounded-full px-[0.28em] py-[0.11em] leading-none",
+                "font-normal",
+                activeHeroWordStyle.className,
+              ].join(" ")}
+            >
+              <span className="h-[0.13em] w-[0.13em] shrink-0 rounded-full bg-current opacity-85" />
               <span
-                className={[
-                  "landing-hero-word-pill inline-flex items-center gap-[0.14em] rounded-full px-[0.28em] py-[0.11em] align-middle leading-none",
-                  "font-normal",
-                  activeHeroWord.className,
-                ].join(" ")}
+                className="landing-hero-word-enter inline-block text-[0.9em] leading-none"
+                key={activeHeroItem.label}
               >
-                <span className="h-[0.13em] w-[0.13em] shrink-0 rounded-full bg-current opacity-85" />
-                <span
-                  className="landing-hero-word-enter inline-block text-[0.9em] leading-none"
-                  key={activeHeroWord.label}
-                >
-                  {activeHeroWord.label}
-                </span>
-              </span>{" "}
-              is Simple.
-            </>
-          ) : (
-            <>
-              {copy.hero.titleStart}{" "}
-              <span className="inline-flex items-center gap-3 rounded-full bg-[#c9edeb] px-5 py-1 text-[#111111]">
-                <span className="h-4 w-4 rounded-full bg-[#238f8d] sm:h-6 sm:w-6" />
-                {copy.hero.titlePill}
-              </span>{" "}
-              {copy.hero.titleEnd}
-            </>
-          )}
+                {activeHeroItem.label}
+              </span>
+            </span>
+            <span className="inline-block leading-none">
+              {activeHeroItem.suffix}
+            </span>
+          </span>
         </h1>
 
         <p className="mt-6 max-w-[760px] break-keep text-[17px] font-semibold leading-8 text-[#333330] md:text-[20px]">
