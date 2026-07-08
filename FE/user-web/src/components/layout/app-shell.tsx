@@ -8,6 +8,8 @@ import {
   ChevronRight,
   FileText,
   House,
+  Laptop,
+  Loader2,
   LogOut,
   Package,
   Pencil,
@@ -16,6 +18,7 @@ import {
   Settings,
   ShieldCheck,
   Trash2,
+  UserRound,
   type LucideIcon,
   X,
 } from "lucide-react";
@@ -27,10 +30,10 @@ import { useDealDetail } from "@/features/deal/hooks/use-deal-detail";
 import { useDeleteDealMutation } from "@/features/deal/hooks/use-deal-mutations";
 import { useProductDetail } from "@/features/product/hooks/use-product-detail";
 import { useDeleteProductMutation } from "@/features/product/hooks/use-product-mutations";
+import { useMyDevices, useMyProfile } from "@/features/auth/hooks/use-user-settings";
 import { PageHeader } from "@/components/layout/page-header";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { getApiErrorMessage } from "@/lib/api-client";
-import { SettingsPage } from "@/pages/settings";
 
 const HOME_PATH = "/app";
 
@@ -177,7 +180,7 @@ export function AppShell() {
   const [searchOpen, setSearchOpen] = useState(false);
   const [accountMenuOpen, setAccountMenuOpen] = useState(false);
   const [accountModal, setAccountModal] = useState<
-    "settings" | "terms" | "privacy" | null
+    "profile" | "settings" | "terms" | "privacy" | null
   >(
     null,
   );
@@ -379,7 +382,7 @@ export function AppShell() {
               label="설정"
               onClick={() => {
                 setAccountMenuOpen(false);
-                setAccountModal("settings");
+                setAccountModal("profile");
               }}
             />
             <div className="mx-1 my-1.5 h-px bg-[#E9ECF2]" />
@@ -534,8 +537,10 @@ export function AppShell() {
       <SearchModal open={searchOpen} onClose={() => setSearchOpen(false)} />
 
       {accountModal ? (
-        <AccountModal onClose={() => setAccountModal(null)} title="계정">
+        <AccountModal onClose={() => setAccountModal(null)}>
           <AccountModalContent
+            onClose={() => setAccountModal(null)}
+            profileLabel={userName}
             section={accountModal}
             onSectionChange={setAccountModal}
           />
@@ -679,16 +684,14 @@ function LogoutConfirmModal({
   );
 }
 
-type AccountModalSection = "settings" | "terms" | "privacy";
+type AccountModalSection = "profile" | "settings" | "terms" | "privacy";
 
 function AccountModal({
   children,
   onClose,
-  title,
 }: {
   readonly children: ReactNode;
   readonly onClose: () => void;
-  readonly title: string;
 }) {
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
@@ -712,45 +715,37 @@ function AccountModal({
         onMouseDown={(event) => event.stopPropagation()}
         role="dialog"
       >
-        <header className="flex h-14 items-center justify-between gap-3 px-5">
-          <h2 className="truncate text-[15px] font-semibold text-[#111827]">
-            {title}
-          </h2>
-          <button
-            aria-label="닫기"
-            className="grid h-8 w-8 shrink-0 place-items-center rounded-lg text-[#64748B] transition hover:bg-[#F3F6FB] hover:text-[#111827]"
-            onClick={onClose}
-            type="button"
-          >
-            <X className="h-4 w-4" strokeWidth={1.8} />
-          </button>
-        </header>
-        <div className="px-5 pb-5">{children}</div>
+        {children}
       </section>
     </div>
   );
 }
 
-const accountModalItems: Array<{
-  readonly icon: LucideIcon;
-  readonly label: string;
-  readonly section: AccountModalSection;
-}> = [
-  { icon: Settings, label: "설정", section: "settings" },
-  { icon: FileText, label: "이용약관", section: "terms" },
-  { icon: ShieldCheck, label: "개인정보", section: "privacy" },
-];
-
 function AccountModalContent({
+  onClose,
+  profileLabel,
   onSectionChange,
   section,
 }: {
+  readonly onClose: () => void;
+  readonly profileLabel: string;
   readonly onSectionChange: (section: AccountModalSection) => void;
   readonly section: AccountModalSection;
 }) {
+  const accountModalItems: Array<{
+    readonly icon: LucideIcon;
+    readonly label: string;
+    readonly section: AccountModalSection;
+  }> = [
+    { icon: UserRound, label: profileLabel, section: "profile" },
+    { icon: Settings, label: "설정", section: "settings" },
+    { icon: FileText, label: "이용약관", section: "terms" },
+    { icon: ShieldCheck, label: "개인정보", section: "privacy" },
+  ];
+
   return (
-    <div className="grid h-[min(76vh,720px)] overflow-hidden rounded-lg bg-white md:grid-cols-[176px_minmax(0,1fr)]">
-      <aside className="bg-white p-2">
+    <div className="grid h-[min(76vh,720px)] overflow-hidden bg-white md:grid-cols-[176px_minmax(0,1fr)]">
+      <aside className="bg-sidebar p-2 pt-4">
         <nav className="grid gap-1">
           {accountModalItems.map((item) => (
             <AccountModalSidebarItem
@@ -764,12 +759,18 @@ function AccountModalContent({
         </nav>
       </aside>
 
-      <div className="min-h-0 overflow-y-auto">
-        {section === "settings" ? (
-          <SettingsPage />
-        ) : (
-          <AccountLegalDocument section={section} />
-        )}
+      <div className="relative min-h-0 bg-white">
+        <button
+          aria-label="닫기"
+          className="absolute right-4 top-4 z-10 grid h-8 w-8 shrink-0 place-items-center rounded-lg text-[#64748B] transition hover:bg-[#F3F6FB] hover:text-[#111827]"
+          onClick={onClose}
+          type="button"
+        >
+          <X className="h-4 w-4" strokeWidth={1.8} />
+        </button>
+        <div className="h-full min-h-0 overflow-y-auto">
+          <AccountModalSectionContent section={section} />
+        </div>
       </div>
     </div>
   );
@@ -802,49 +803,389 @@ function AccountModalSidebarItem({
   );
 }
 
-function AccountLegalDocument({
+function AccountModalSectionContent({
   section,
 }: {
-  readonly section: Exclude<AccountModalSection, "settings">;
+  readonly section: AccountModalSection;
 }) {
-  const document =
-    section === "terms"
-      ? {
-          description: "서비스 이용 조건과 계정 사용 기준을 확인하는 문서입니다.",
-          icon: FileText,
-          title: "이용 약관",
-        }
-      : {
-          description: "개인정보 수집, 이용, 보관 기준을 확인하는 문서입니다.",
-          icon: ShieldCheck,
-          title: "개인정보 처리방침",
-        };
-  const Icon = document.icon;
+  const profileQuery = useMyProfile();
+  const devicesQuery = useMyDevices();
+
+  if (section === "profile") {
+    return (
+      <ProfileModalContent
+        devices={devicesQuery.data?.devices ?? []}
+        devicesError={devicesQuery.error}
+        isDevicesLoading={devicesQuery.isLoading}
+        isProfileLoading={profileQuery.isLoading}
+        onRetryDevices={() => void devicesQuery.refetch()}
+        onRetryProfile={() => void profileQuery.refetch()}
+        profile={profileQuery.data ?? null}
+        profileError={profileQuery.error}
+      />
+    );
+  }
+
+  const content: Record<
+    Exclude<AccountModalSection, "profile">,
+    {
+      readonly body: string;
+      readonly eyebrow: string;
+      readonly icon: LucideIcon;
+      readonly title: string;
+    }
+  > = {
+    settings: {
+      body: "워크스페이스 표시 방식, 알림, 개인 환경 설정은 이 영역에서 관리합니다. 현재는 기본 설정 구조만 준비되어 있으며 세부 옵션은 서비스 정책에 맞춰 추가됩니다.",
+      eyebrow: "Settings",
+      icon: Settings,
+      title: "설정",
+    },
+    terms: {
+      body: "Onehand 이용 조건, 계정 사용 기준, 서비스 제한 사항을 안내하는 영역입니다. 정식 약관 문서가 확정되면 이곳에 핵심 내용을 요약해 표시합니다.",
+      eyebrow: "Terms",
+      icon: FileText,
+      title: "이용약관",
+    },
+    privacy: {
+      body: "개인정보 수집, 이용, 보관, 삭제 기준을 안내하는 영역입니다. 개인정보 처리방침 문서와 연결되는 핵심 내용을 이곳에서 확인할 수 있게 됩니다.",
+      eyebrow: "Privacy",
+      icon: ShieldCheck,
+      title: "개인정보",
+    },
+  };
+  const selected = content[section];
+  const Icon = selected.icon;
 
   return (
-    <section className="min-h-full bg-white px-5 py-6">
-      <article className="rounded-lg bg-white px-5 py-5 shadow-sm">
-        <div className="flex items-start gap-3">
-          <span className="grid h-10 w-10 shrink-0 place-items-center rounded-lg bg-[#EAF2FF] text-[#1D4ED8]">
-            <Icon className="h-5 w-5" strokeWidth={1.8} />
-          </span>
-          <div className="min-w-0">
-            <h3 className="text-[18px] font-semibold text-[#111827]">
-              {document.title}
-            </h3>
-            <p className="mt-1 text-[13px] leading-5 text-[#64748B]">
-              {document.description}
-            </p>
-          </div>
-        </div>
-        <div className="mt-6 rounded-lg bg-[#F8FAFC] px-4 py-4">
-          <p className="text-[13px] leading-6 text-[#475569]">
-            정식 문서가 확정되면 이 영역에 상세 내용이 반영됩니다.
-          </p>
-        </div>
+    <section className="flex min-h-full items-center justify-center bg-white px-8 py-12">
+      <article className="mx-auto flex w-full max-w-[560px] flex-col items-center text-center">
+        <span className="grid h-12 w-12 place-items-center rounded-xl bg-[#EAF2FF] text-[#1D4ED8]">
+          <Icon className="h-5 w-5" strokeWidth={1.8} />
+        </span>
+        <p className="mt-5 text-[12px] font-semibold uppercase tracking-[0.08em] text-[#9CA3AF]">
+          {selected.eyebrow}
+        </p>
+        <h3 className="mt-2 text-[28px] font-bold leading-tight text-[#111827]">
+          {selected.title}
+        </h3>
+        <p className="mt-4 text-[14px] leading-7 text-[#64748B]">
+          {selected.body}
+        </p>
       </article>
     </section>
   );
+}
+
+type ProfileModalContentProps = {
+  readonly devices: ReadonlyArray<{
+    readonly id: string;
+    readonly slot: string;
+    readonly label: string | null;
+    readonly status: string;
+    readonly lastSeenAt: string | null;
+    readonly createdAt: string;
+    readonly activeSessionCount: number;
+    readonly isCurrentDevice: boolean;
+  }>;
+  readonly devicesError: unknown;
+  readonly isDevicesLoading: boolean;
+  readonly isProfileLoading: boolean;
+  readonly onRetryDevices: () => void;
+  readonly onRetryProfile: () => void;
+  readonly profile: {
+    readonly id: string;
+    readonly email: string | null;
+    readonly name: string | null;
+    readonly role: string;
+    readonly status: string;
+    readonly timeZone: string;
+    readonly lastLoginAt: string | null;
+    readonly createdAt: string;
+    readonly updatedAt: string;
+    readonly oauthAccounts: ReadonlyArray<{
+      readonly id: string;
+      readonly provider: string;
+      readonly providerEmail: string | null;
+      readonly createdAt: string;
+    }>;
+  } | null;
+  readonly profileError: unknown;
+};
+
+function ProfileModalContent({
+  devices,
+  devicesError,
+  isDevicesLoading,
+  isProfileLoading,
+  onRetryDevices,
+  onRetryProfile,
+  profile,
+  profileError,
+}: ProfileModalContentProps) {
+  return (
+    <section className="min-h-full bg-white px-8 py-10 md:px-12">
+      <div className="mx-auto w-full max-w-[800px]">
+        <div>
+          <h3 className="text-[28px] font-bold leading-tight text-[#111827]">
+            프로필
+          </h3>
+          <p className="mt-3 text-[14px] leading-6 text-[#64748B]">
+            프로필, 로그인 정보 및 기기를 관리하세요
+          </p>
+        </div>
+
+        {isProfileLoading ? (
+          <ProfileLoadingState />
+        ) : profileError ? (
+          <ProfileErrorState error={profileError} onRetry={onRetryProfile} />
+        ) : profile ? (
+          <div className="mt-10 grid gap-10">
+            <ProfileSection title="계정">
+              <div className="grid gap-1">
+                <ProfileInfoRow
+                  label="선호하는 이름"
+                  value={profile.name ?? "이름 없음"}
+                />
+                <ProfileInfoRow label="이메일" value={profile.email ?? "이메일 없음"} />
+                <ProfileInfoRow label="시간대" value={profile.timeZone} />
+              </div>
+            </ProfileSection>
+
+            <ProfileSection title="계정 상태">
+              <div className="grid gap-1">
+                <ProfileInfoRow label="권한" value={profile.role} />
+                <ProfileInfoRow label="상태" value={profile.status} />
+                <ProfileInfoRow
+                  label="마지막 로그인"
+                  value={formatAccountModalDateTime(profile.lastLoginAt)}
+                />
+                <ProfileInfoRow
+                  label="프로필 수정일"
+                  value={formatAccountModalDateTime(profile.updatedAt)}
+                />
+              </div>
+            </ProfileSection>
+
+            <ProfileSection title="로그인 계정">
+              {profile.oauthAccounts.length > 0 ? (
+                <div className="grid gap-1">
+                  {profile.oauthAccounts.map((account) => (
+                    <ProfileInfoRow
+                      key={account.id}
+                      label={formatProviderLabel(account.provider)}
+                      value={[
+                        account.providerEmail ?? "이메일 없음",
+                        formatAccountModalDateTime(account.createdAt),
+                      ].join(" · ")}
+                    />
+                  ))}
+                </div>
+              ) : (
+                <ProfileEmptyText>연결된 로그인 계정이 없어요.</ProfileEmptyText>
+              )}
+            </ProfileSection>
+
+            <ProfileSection title="기기">
+              {isDevicesLoading ? (
+                <ProfileInlineLoading />
+              ) : devicesError ? (
+                <div className="rounded-lg bg-[#F8FAFC] px-4 py-3 text-center">
+                  <p className="text-[13px] text-[#64748B]">
+                    {getApiErrorMessage(devicesError)}
+                  </p>
+                  <button
+                    className="mt-2 text-[13px] font-semibold text-[#1D4ED8] hover:underline"
+                    onClick={onRetryDevices}
+                    type="button"
+                  >
+                    다시 시도
+                  </button>
+                </div>
+              ) : devices.length > 0 ? (
+                <ProfileDeviceTable devices={devices} />
+              ) : (
+                <ProfileEmptyText>등록된 기기가 없어요.</ProfileEmptyText>
+              )}
+            </ProfileSection>
+
+            <ProfileSection title="사용자 ID">
+              <div className="py-3">
+                <p className="break-all text-[13px] font-medium text-[#475569]">
+                  {profile.id}
+                </p>
+              </div>
+            </ProfileSection>
+          </div>
+        ) : null}
+      </div>
+    </section>
+  );
+}
+
+function ProfileSection({
+  children,
+  title,
+}: {
+  readonly children: ReactNode;
+  readonly title: string;
+}) {
+  return (
+    <section>
+      <h4 className="text-[15px] font-semibold text-[#111827]">
+        {title}
+      </h4>
+      <div className="mt-4 border-t border-[#E9ECF2] pt-3">{children}</div>
+    </section>
+  );
+}
+
+function ProfileInfoRow({
+  label,
+  value,
+}: {
+  readonly label: string;
+  readonly value: string;
+}) {
+  return (
+    <div className="grid gap-1 py-2 md:grid-cols-[220px_minmax(0,1fr)] md:items-start md:gap-6">
+      <p className="text-[13px] font-medium text-[#111827]">{label}</p>
+      <p className="break-words text-[13px] leading-6 text-[#64748B]">
+        {value}
+      </p>
+    </div>
+  );
+}
+
+function ProfileDeviceTable({
+  devices,
+}: {
+  readonly devices: ProfileModalContentProps["devices"];
+}) {
+  return (
+    <div className="overflow-hidden">
+      <div className="grid grid-cols-[minmax(0,1.4fr)_minmax(120px,0.8fr)] border-b border-[#E9ECF2] px-1 pb-2 text-[12px] text-[#8A8F98]">
+        <span>기기 이름</span>
+        <span>마지막 활동</span>
+      </div>
+      <div>
+        {devices.map((device) => (
+          <ProfileDeviceRow key={device.id} device={device} />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function ProfileDeviceRow({
+  device,
+}: {
+  readonly device: ProfileModalContentProps["devices"][number];
+}) {
+  const label = device.label ?? formatDeviceSlotLabel(device.slot);
+  const lastActive = device.isCurrentDevice
+    ? "지금"
+    : formatAccountModalDateTime(device.lastSeenAt);
+
+  return (
+    <div className="grid grid-cols-[minmax(0,1.4fr)_minmax(120px,0.8fr)] items-center border-b border-[#E9ECF2] px-1 py-3">
+      <div className="flex min-w-0 items-start gap-2.5">
+        <Laptop className="mt-0.5 h-4 w-4 shrink-0 text-[#A1A1AA]" strokeWidth={1.7} />
+        <div className="min-w-0">
+          <p className="truncate text-[13px] font-medium text-[#374151]">
+            {label}
+          </p>
+          {device.isCurrentDevice ? (
+            <p className="mt-0.5 text-[12px] font-medium text-[#0075DE]">
+              이 기기
+            </p>
+          ) : null}
+        </div>
+      </div>
+      <p className="text-[12px] leading-5 text-[#6B7280]">{lastActive}</p>
+    </div>
+  );
+}
+
+function ProfileLoadingState() {
+  return (
+    <div className="mt-16 flex items-center justify-center gap-2 text-[13px] text-[#64748B]">
+      <Loader2 className="h-4 w-4 animate-spin" />
+      프로필을 불러오는 중입니다.
+    </div>
+  );
+}
+
+function ProfileInlineLoading() {
+  return (
+    <div className="flex items-center justify-center gap-2 rounded-lg bg-[#F8FAFC] px-4 py-4 text-[13px] text-[#64748B]">
+      <Loader2 className="h-4 w-4 animate-spin" />
+      기기를 불러오는 중입니다.
+    </div>
+  );
+}
+
+function ProfileErrorState({
+  error,
+  onRetry,
+}: {
+  readonly error: unknown;
+  readonly onRetry: () => void;
+}) {
+  return (
+    <div className="mt-12 rounded-lg bg-[#F8FAFC] px-5 py-6">
+      <p className="text-[13px] leading-6 text-[#64748B]">
+        {getApiErrorMessage(error)}
+      </p>
+      <button
+        className="mt-3 text-[13px] font-semibold text-[#1D4ED8] hover:underline"
+        onClick={onRetry}
+        type="button"
+      >
+        다시 시도
+      </button>
+    </div>
+  );
+}
+
+function ProfileEmptyText({ children }: { readonly children: ReactNode }) {
+  return (
+    <p className="py-4 text-[13px] text-[#64748B]">
+      {children}
+    </p>
+  );
+}
+
+function formatProviderLabel(provider: string) {
+  const normalized = provider.toLowerCase();
+  if (normalized === "google") return "Google";
+  if (normalized === "kakao") return "Kakao";
+  if (normalized === "naver") return "Naver";
+  if (normalized === "apple") return "Apple";
+  return provider;
+}
+
+function formatDeviceSlotLabel(slot: string) {
+  if (slot === "mobile") return "Mobile Device";
+  if (slot === "personal_laptop") return "Personal Device";
+  if (slot === "work_laptop") return "Work Device";
+  return "Device";
+}
+
+function formatAccountModalDateTime(value: string | null) {
+  if (!value) {
+    return "기록 없음";
+  }
+
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) {
+    return value;
+  }
+
+  return new Intl.DateTimeFormat("ko-KR", {
+    dateStyle: "medium",
+    timeStyle: "short",
+  }).format(date);
 }
 
 function getUserInitial(name: string) {
