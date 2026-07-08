@@ -468,17 +468,33 @@ export function AppShell() {
         <aside className="fixed inset-y-0 left-0 z-30 flex w-[var(--sidebar-width)] flex-col bg-sidebar">
           {accountProfile}
           {/* Search button */}
-          <div className="px-2 pb-1">
+          <div className="flex gap-1 px-2 pb-1">
+            <button
+              aria-label="홈"
+              className={`flex h-8 shrink-0 items-center gap-2 rounded-md px-2 text-[13px] transition ${
+                isHome
+                  ? "bg-[#EFF6FF] text-[#4880EE]"
+                  : "text-[#9CA3AF] hover:bg-[#E9EBF0] hover:text-[#374151]"
+              }`}
+              onClick={() => void navigate(HOME_PATH)}
+              type="button"
+            >
+              <House
+                className="h-[15px] w-[15px] shrink-0"
+                strokeWidth={1.75}
+              />
+              <span>홈</span>
+            </button>
             <button
               type="button"
-              className="flex h-8 w-full items-center gap-2 rounded-md px-2 text-[13px] text-[#9CA3AF] transition hover:bg-[#E9EBF0] hover:text-[#374151]"
+              className="flex h-8 min-w-0 flex-1 items-center gap-2 rounded-md px-2 text-[13px] text-[#9CA3AF] transition hover:bg-[#E9EBF0] hover:text-[#374151]"
               onClick={() => setSearchOpen(true)}
             >
               <Search
                 className="h-[15px] w-[15px] shrink-0"
                 strokeWidth={1.75}
               />
-              <span>검색</span>
+              <span>통합검색</span>
               <kbd className="ml-auto hidden rounded border border-[#E2E5EC] bg-[#F0F1F3] px-1 py-0.5 text-[10px] font-medium leading-none sm:block">
                 ⌘K
               </kbd>
