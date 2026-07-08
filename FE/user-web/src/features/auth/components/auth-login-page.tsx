@@ -1,4 +1,4 @@
-import { CircleHelp, Globe2, Loader2 } from "lucide-react";
+import { Globe2, Loader2 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { OnehandLogoMark } from "@/components/brand/onehand-logo-mark";
 import type {
@@ -52,7 +52,6 @@ const loginCopy: Record<
     readonly privacy: string;
     readonly termsSuffix: string;
     readonly languagePrefix: string;
-    readonly helpAria: string;
   }
 > = {
   ko: {
@@ -88,7 +87,6 @@ const loginCopy: Record<
     privacy: "개인정보 처리방침",
     termsSuffix: "에 동의한 것으로 간주됩니다.",
     languagePrefix: "언어:",
-    helpAria: "도움말",
   },
   ja: {
     homeAria: "ホームへ移動",
@@ -123,7 +121,6 @@ const loginCopy: Record<
     privacy: "プライバシーポリシー",
     termsSuffix: "に同意したものとみなされます。",
     languagePrefix: "言語:",
-    helpAria: "ヘルプ",
   },
   zh: {
     homeAria: "前往首页",
@@ -158,7 +155,6 @@ const loginCopy: Record<
     privacy: "隐私政策",
     termsSuffix: "。",
     languagePrefix: "语言:",
-    helpAria: "帮助",
   },
   "en-US": {
     homeAria: "Go home",
@@ -169,7 +165,7 @@ const loginCopy: Record<
     },
     providerLead: {
       login: "Continue with",
-      signup: "Or continue with",
+      signup: "Continue with",
     },
     providers: {
       kakao: "Kakao",
@@ -193,7 +189,6 @@ const loginCopy: Record<
     privacy: "Privacy Policy",
     termsSuffix: ".",
     languagePrefix: "Language:",
-    helpAria: "Help",
   },
   "en-GB": {
     homeAria: "Go home",
@@ -204,7 +199,7 @@ const loginCopy: Record<
     },
     providerLead: {
       login: "Continue with",
-      signup: "Or continue with",
+      signup: "Continue with",
     },
     providers: {
       kakao: "Kakao",
@@ -228,7 +223,6 @@ const loginCopy: Record<
     privacy: "Privacy Policy",
     termsSuffix: ".",
     languagePrefix: "Language:",
-    helpAria: "Help",
   },
 };
 
@@ -378,13 +372,19 @@ export function AuthLoginPage({
 
           <p className="mx-auto mt-7 max-w-[300px] text-center text-[12px] font-medium leading-5 text-[#8f8f8b]">
             {copy.termsPrefix}
-            <span className="underline decoration-[#c9c9c5] underline-offset-3">
+            <Link
+              className="underline decoration-[#c9c9c5] underline-offset-3 hover:text-[#191919]"
+              to="/terms"
+            >
               {copy.terms}
-            </span>
+            </Link>
             {copy.termsConnector}
-            <span className="underline decoration-[#c9c9c5] underline-offset-3">
+            <Link
+              className="underline decoration-[#c9c9c5] underline-offset-3 hover:text-[#191919]"
+              to="/privacy"
+            >
               {copy.privacy}
-            </span>
+            </Link>
             {copy.termsSuffix}
           </p>
         </section>
@@ -394,13 +394,6 @@ export function AuthLoginPage({
         <LoginLanguageSelect copy={copy} language={language} />
       </div>
 
-      <button
-        aria-label={copy.helpAria}
-        className="fixed bottom-5 right-5 grid h-5 w-5 place-items-center text-[#b3b3ae] hover:text-[#777770]"
-        type="button"
-      >
-        <CircleHelp className="h-4 w-4" />
-      </button>
     </div>
   );
 }
