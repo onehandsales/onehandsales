@@ -808,71 +808,326 @@ function AccountModalSectionContent({
 }: {
   readonly section: AccountModalSection;
 }) {
+  if (section === "profile") {
+    return <ProfileModalQueryContent />;
+  }
+
+  if (section === "terms") {
+    return <LegalDocumentModalContent document={termsOfUseModalDocument} />;
+  }
+
+  if (section === "privacy") {
+    return <LegalDocumentModalContent document={privacyPolicyModalDocument} />;
+  }
+
+  return <LegalDocumentModalContent document={settingsModalDocument} />;
+}
+
+function ProfileModalQueryContent() {
   const profileQuery = useMyProfile();
   const devicesQuery = useMyDevices();
 
-  if (section === "profile") {
-    return (
-      <ProfileModalContent
-        devices={devicesQuery.data?.devices ?? []}
-        devicesError={devicesQuery.error}
-        isDevicesLoading={devicesQuery.isLoading}
-        isProfileLoading={profileQuery.isLoading}
-        onRetryDevices={() => void devicesQuery.refetch()}
-        onRetryProfile={() => void profileQuery.refetch()}
-        profile={profileQuery.data ?? null}
-        profileError={profileQuery.error}
-      />
-    );
-  }
-
-  const content: Record<
-    Exclude<AccountModalSection, "profile">,
-    {
-      readonly body: string;
-      readonly eyebrow: string;
-      readonly icon: LucideIcon;
-      readonly title: string;
-    }
-  > = {
-    settings: {
-      body: "워크스페이스 표시 방식, 알림, 개인 환경 설정은 이 영역에서 관리합니다. 현재는 기본 설정 구조만 준비되어 있으며 세부 옵션은 서비스 정책에 맞춰 추가됩니다.",
-      eyebrow: "Settings",
-      icon: Settings,
-      title: "설정",
-    },
-    terms: {
-      body: "Onehand 이용 조건, 계정 사용 기준, 서비스 제한 사항을 안내하는 영역입니다. 정식 약관 문서가 확정되면 이곳에 핵심 내용을 요약해 표시합니다.",
-      eyebrow: "Terms",
-      icon: FileText,
-      title: "이용약관",
-    },
-    privacy: {
-      body: "개인정보 수집, 이용, 보관, 삭제 기준을 안내하는 영역입니다. 개인정보 처리방침 문서와 연결되는 핵심 내용을 이곳에서 확인할 수 있게 됩니다.",
-      eyebrow: "Privacy",
-      icon: ShieldCheck,
-      title: "개인정보",
-    },
-  };
-  const selected = content[section];
-  const Icon = selected.icon;
-
   return (
-    <section className="flex min-h-full items-center justify-center bg-white px-8 py-12">
-      <article className="mx-auto flex w-full max-w-[560px] flex-col items-center text-center">
-        <span className="grid h-12 w-12 place-items-center rounded-xl bg-[#EAF2FF] text-[#1D4ED8]">
-          <Icon className="h-5 w-5" strokeWidth={1.8} />
-        </span>
-        <p className="mt-5 text-[12px] font-semibold uppercase tracking-[0.08em] text-[#9CA3AF]">
-          {selected.eyebrow}
-        </p>
-        <h3 className="mt-2 text-[28px] font-bold leading-tight text-[#111827]">
-          {selected.title}
-        </h3>
-        <p className="mt-4 text-[14px] leading-7 text-[#64748B]">
-          {selected.body}
-        </p>
-      </article>
+    <ProfileModalContent
+      devices={devicesQuery.data?.devices ?? []}
+      devicesError={devicesQuery.error}
+      isDevicesLoading={devicesQuery.isLoading}
+      isProfileLoading={profileQuery.isLoading}
+      onRetryDevices={() => void devicesQuery.refetch()}
+      onRetryProfile={() => void profileQuery.refetch()}
+      profile={profileQuery.data ?? null}
+      profileError={profileQuery.error}
+    />
+  );
+}
+
+type LegalDocumentModalSection = {
+  readonly bullets?: readonly string[];
+  readonly paragraphs?: readonly string[];
+  readonly title: string;
+};
+
+type LegalDocumentModal = {
+  readonly description: string;
+  readonly sections: readonly LegalDocumentModalSection[];
+  readonly title: string;
+};
+
+const settingsModalDocument: LegalDocumentModal = {
+  title: "설정",
+  description: "계정과 워크스페이스 사용 환경을 관리하는 영역입니다.",
+  sections: [
+    {
+      title: "기본 설정",
+      paragraphs: [
+        "워크스페이스 표시 방식, 알림, 개인 환경 설정은 이 영역에서 관리합니다. 현재는 기본 설정 구조만 준비되어 있으며 세부 옵션은 서비스 정책에 맞춰 추가됩니다.",
+      ],
+    },
+  ],
+};
+
+const termsOfUseModalDocument: LegalDocumentModal = {
+  title: "이용약관",
+  description: "Onehand 사용 조건, 계정 기준, 데이터 처리, AI 기능과 결제 정책을 안내합니다.",
+  sections: [
+    {
+      title: "1. Onehand 사용",
+      paragraphs: [
+        "Onehand는 영업팀이 고객 기록, 딜 활동, 업무, 노트, AI 보조 워크플로우를 관리할 수 있도록 제공되는 업무용 워크스페이스입니다.",
+        "사용자는 본인이 제출하는 정보와 계정 자격 증명의 보안을 책임집니다. Onehand는 관련 법률, 본 약관, 이 페이지에서 참조하는 정책에 따라 사용해야 합니다.",
+        "조직을 대신해 Onehand를 사용하는 경우, 사용자는 해당 조직을 대표해 본 약관을 수락할 권한이 있음을 진술합니다.",
+      ],
+    },
+    {
+      title: "2. 계정과 워크스페이스",
+      paragraphs: [
+        "워크스페이스 소유자와 관리자는 초대 사용자, 권한, 결제 설정, 워크스페이스에 제출된 데이터를 관리합니다.",
+        "Onehand는 접근 권한 관리를 돕는 도구를 제공할 수 있으나, 누가 워크스페이스에 접근해야 하는지는 각 고객과 조직의 책임입니다.",
+        "사용자는 정확한 계정 정보를 제공해야 하며, 계정 또는 워크스페이스가 무단으로 접근되었다고 판단되는 경우 Onehand에 알려야 합니다.",
+      ],
+    },
+    {
+      title: "3. 허용 가능한 사용",
+      paragraphs: [
+        "사용자는 Onehand를 법률 위반, 권리 침해, 악성 코드 배포, 무단 접근 시도, 서비스 운영 방해, 처리 권한이 없는 데이터 처리에 사용할 수 없습니다.",
+        "법률상 허용되는 경우를 제외하고, 서비스를 역설계하거나 자동화 접근을 남용하거나 서비스에 피해를 주는 방식으로 플랫폼 콘텐츠를 수집할 수 없습니다.",
+        "Onehand의 기능, 화면, 데이터 또는 워크플로우를 경쟁 제품 개발 목적으로 사용할 수 없습니다.",
+      ],
+    },
+    {
+      title: "4. 고객 데이터와 개인정보",
+      paragraphs: [
+        "고객 데이터는 해당 데이터를 제출한 고객 또는 워크스페이스에 귀속됩니다.",
+        "Onehand는 개인정보 처리방침과 적용 가능한 고객 계약에 따라 서비스를 제공하고, 보호하고, 지원하고, 개선하기 위해 고객 데이터를 처리합니다.",
+        "워크스페이스에 개인정보가 포함되는 경우, 사용자는 해당 정보를 Onehand에 제출하기 위해 필요한 권리와 고지를 갖추어야 합니다.",
+      ],
+    },
+    {
+      title: "5. AI 보조 기능",
+      paragraphs: [
+        "Onehand는 AI 기반 요약, 초안, 검색, 라우팅 등 업무 지원 기능을 포함할 수 있습니다.",
+        "AI 결과물은 유용할 수 있으나 불완전하거나 부정확할 수 있으므로, 고객 약속이나 비즈니스 의사결정에 사용하기 전에 사용자가 검토해야 합니다.",
+        "AI 기능은 승인된 워크스페이스 맥락을 기반으로 사용자를 돕기 위한 기능이며, 사람의 검토, 전문적 판단, 고객별 검증을 대체하지 않습니다.",
+      ],
+    },
+    {
+      title: "6. 구독과 결제",
+      paragraphs: [
+        "유료 플랜, 갱신 주기, 사용량 제한, 세금, 취소 조건은 구매 시점 또는 적용 가능한 주문서에 표시됩니다.",
+        "사용자는 선택한 플랜에 대한 요금 처리를 위해 Onehand와 결제 제공업체가 결제를 처리하는 데 동의합니다.",
+        "별도로 명시되지 않는 한, 구독 요금은 법률상 요구되거나 서면으로 합의된 경우를 제외하고 환불되지 않습니다.",
+      ],
+    },
+    {
+      title: "7. 서비스 가용성과 변경",
+      paragraphs: [
+        "Onehand는 안정적인 서비스를 제공하기 위해 노력하지만, 점검, 업데이트, 보안 작업 또는 통제할 수 없는 사유로 서비스가 일시적으로 중단될 수 있습니다.",
+        "Onehand는 기능을 업데이트하거나 플랜을 수정하거나 서비스 일부를 중단할 수 있습니다. 고객에게 중대한 영향을 주는 변경이 있는 경우 합리적인 범위에서 고지합니다.",
+      ],
+    },
+    {
+      title: "8. 면책과 책임 제한",
+      paragraphs: [
+        "법률이 허용하는 최대 범위에서 Onehand는 있는 그대로, 제공 가능한 상태로 제공됩니다.",
+        "Onehand는 서비스가 항상 중단 없이 작동하거나 오류가 없거나 AI 보조 콘텐츠가 항상 정확하다고 보장하지 않습니다.",
+        "법률이 허용하는 최대 범위에서 Onehand는 간접 손해, 부수적 손해, 특별 손해, 결과적 손해, 징벌적 손해, 이익 손실, 매출 손실, 데이터 손실 또는 사업 기회 손실에 대해 책임지지 않습니다.",
+      ],
+    },
+    {
+      title: "9. 약관 변경과 문의",
+      paragraphs: [
+        "Onehand는 본 약관을 수시로 업데이트할 수 있습니다. 중요한 변경이 있는 경우 관련 법률에서 요구하는 방식으로 고지합니다.",
+        "업데이트 이후 Onehand를 계속 사용하는 경우, 사용자는 변경된 약관을 수락한 것으로 간주됩니다.",
+        "본 약관에 대한 질문은 Onehand 문의 페이지를 통해 전달할 수 있습니다.",
+      ],
+    },
+  ],
+};
+
+const privacyPolicyModalDocument: LegalDocumentModal = {
+  title: "개인정보 처리방침",
+  description: "Onehand가 개인정보를 수집, 이용, 공개, 보관하고 사용자의 권리를 처리하는 방식을 설명합니다.",
+  sections: [
+    {
+      title: "1. 수집하는 정보",
+      paragraphs: [
+        "Onehand는 사용자가 제공하는 정보, 웹사이트 또는 서비스를 사용할 때 자동으로 수집되는 정보, 제3자 또는 조직으로부터 제공되는 정보를 수집할 수 있습니다.",
+      ],
+      bullets: [
+        "계정 생성 정보: 이름, 이메일 주소, 비밀번호, 역할, 회사 정보, 선택적 프로필 사진, 워크스페이스 정보",
+        "문의 및 지원 정보: 이메일 주소, 전화번호, 지원 메시지, 첨부파일, 사용자가 제공하는 기타 정보",
+        "결제 정보: 결제 제공업체를 통해 처리되는 청구 정보와 거래 정보. Onehand는 전체 결제 카드 정보를 서비스에 직접 저장하지 않습니다.",
+        "제품 사용 정보: 브라우저, 운영체제, 기기 식별자, IP 주소, 대략적인 위치, 조회한 페이지, 클릭한 링크, 활동 빈도와 기간",
+        "통합 정보: 사용자가 연결한 캘린더, 연락처, 이메일, 파일, CRM, 커뮤니케이션 도구에서 요청한 기능 제공에 필요한 정보",
+      ],
+    },
+    {
+      title: "2. 정보를 사용하는 방식",
+      paragraphs: [
+        "Onehand는 서비스를 제공하고, 보호하고, 지원하고, 개선하기 위한 업무상 목적과 운영상 목적을 위해 정보를 사용합니다.",
+      ],
+      bullets: [
+        "계정과 워크스페이스 생성, 인증, 관리",
+        "고객 기록, 노트, 업무, 제품, 딜 워크플로우, AI 보조 기능 제공",
+        "구독, 청구서, 결제, 구매 주문 처리",
+        "고객 지원, 보안 문의, 개인정보 요청에 대한 응답",
+        "서비스 메시지, 제품 업데이트, 관리 고지, 지원 커뮤니케이션 발송",
+        "플랫폼 안정성, 보안, 오류 분석, 제품 개선, 부정 사용 방지",
+      ],
+    },
+    {
+      title: "3. 정보 공개",
+      paragraphs: [
+        "Onehand는 서비스 제공과 운영에 필요한 범위에서 아래 범주의 수신자에게 정보를 공개할 수 있습니다.",
+      ],
+      bullets: [
+        "호스팅, 분석, 결제, 고객 지원, 커뮤니케이션, 보안, 사기 방지를 지원하는 서비스 제공업체",
+        "사용자가 요청하거나 승인한 제품, 서비스, 통합 또는 공동 제공을 위한 비즈니스 파트너",
+        "공동 소유 또는 지배 관계에 있는 계열사",
+        "광고와 분석 캠페인 측정을 위한 파트너",
+        "공유 워크스페이스에서 협업하는 다른 사용자와 워크스페이스를 소유하거나 관리하는 조직",
+        "법률 준수, 권리 보호, 정책 집행, 채무 회수, 위법 행위 조사에 필요한 기관 또는 제3자",
+      ],
+    },
+    {
+      title: "4. 국제 데이터 이전",
+      paragraphs: [
+        "Onehand가 처리하는 정보는 사용자가 거주하는 국가와 다른 국가로 이전, 처리, 저장될 수 있습니다.",
+        "국제 이전이 이루어지는 경우 Onehand는 적용 가능한 법률에서 요구하는 계약상 보호 조치 또는 합법적인 이전 장치를 사용하기 위해 노력합니다.",
+      ],
+    },
+    {
+      title: "5. 사용자의 선택권",
+      paragraphs: [
+        "사용자는 특정 정보 이용에 대해 이의를 제기하거나 동의를 철회할 권리를 가질 수 있습니다. 동의 철회는 철회 전에 이루어진 처리에는 영향을 주지 않습니다.",
+      ],
+      bullets: [
+        "마케팅 이메일은 이메일 하단의 수신 거부 안내를 통해 중단할 수 있습니다.",
+        "서비스, 보안, 관리와 관련된 필수 안내는 계정 또는 워크스페이스 운영을 위해 계속 발송될 수 있습니다.",
+        "쿠키와 유사 기술은 브라우저 설정 또는 제공되는 선호도 도구를 통해 관리할 수 있습니다.",
+        "일부 브라우저가 제공하는 Do Not Track 또는 Global Privacy Control 같은 신호는 법률상 요구되는 경우 반영됩니다.",
+      ],
+    },
+    {
+      title: "6. 개인정보 권리",
+      paragraphs: [
+        "거주 지역과 적용 법률에 따라 사용자는 아래 권리를 가질 수 있습니다. Onehand는 법률에 따라 요청을 처리하며, 요청 처리 전에 본인 확인을 요구할 수 있습니다.",
+      ],
+      bullets: [
+        "개인정보 접근 요청과 필요한 경우 이동 가능한 형식으로 제공받을 권리",
+        "부정확하거나 불완전한 정보의 정정 요청",
+        "법적 또는 운영상 예외가 적용되는 경우를 제외한 삭제 요청",
+        "특정 처리의 제한 또는 반대 요청",
+        "일부 맞춤형 광고, 공유 또는 개인정보 판매에 대한 거부권",
+        "개인정보 권리 행사로 차별받지 않을 권리",
+        "법률상 허용되는 경우 대리인을 통한 요청 제출과 답변에 대한 이의 제기",
+      ],
+    },
+    {
+      title: "7. 데이터 보관",
+      paragraphs: [
+        "Onehand는 서비스를 제공하고, 본 방침에서 설명한 목적을 달성하고, 법적 의무를 준수하고, 분쟁을 해결하고, 계약을 집행하고, 보안을 유지하고, 감사를 수행하고, 정당한 사업 목적을 지원하는 데 필요한 기간 동안 정보를 보관합니다.",
+        "워크스페이스 콘텐츠는 워크스페이스 설정, 고객 계약, 백업 관행, 법률상 요구사항에 따라 보관될 수 있습니다.",
+      ],
+    },
+    {
+      title: "8. 정보 보안",
+      paragraphs: [
+        "Onehand는 처리하는 정보의 성격에 적합한 관리적, 기술적, 조직적 보호 조치를 통해 정보를 보호하기 위해 노력합니다.",
+        "어떤 시스템도 완전히 안전할 수는 없습니다. 법률이 허용하는 최대 범위에서 Onehand는 정보가 무단 접근, 공개, 변경, 파기되지 않을 것이라고 보장하지 않습니다.",
+        "통지가 필요한 보안 사고를 알게 되는 경우, Onehand는 관련 법률에 따라 적절한 방식으로 통지합니다.",
+      ],
+    },
+    {
+      title: "9. 제3자 웹사이트와 애플리케이션",
+      paragraphs: [
+        "웹사이트 또는 서비스에는 제3자 웹사이트, 애플리케이션, 통합, 서비스 링크가 포함될 수 있습니다.",
+        "이러한 제3자는 Onehand가 통제하지 않으며, 해당 서비스의 개인정보 처리 관행은 각 제3자의 정책에 따릅니다.",
+      ],
+    },
+    {
+      title: "10. 아동 정보",
+      paragraphs: [
+        "Onehand 서비스는 일반 비즈니스 사용자를 대상으로 하며 아동을 대상으로 하지 않습니다.",
+        "법적으로 유효한 동의 없이 아동의 개인정보를 수집한 사실을 알게 되는 경우, Onehand는 관련 법률에 따라 해당 정보를 삭제하기 위한 합리적인 조치를 취합니다.",
+      ],
+    },
+    {
+      title: "11. 감독기관",
+      paragraphs: [
+        "유럽경제지역 또는 영국 등 관련 관할권에 거주하는 사용자는 Onehand의 정보 처리가 법률을 위반한다고 판단되는 경우 데이터 보호 감독기관에 민원을 제기할 권리를 가질 수 있습니다.",
+      ],
+    },
+    {
+      title: "12. 캘리포니아 거주자를 위한 추가 정보",
+      paragraphs: [
+        "캘리포니아 거주자인 경우, 관련 개인정보 법률은 Onehand가 수집하는 개인정보 범주, 사용 목적, 공개 또는 공유 대상 범주에 대한 추가 정보를 제공하도록 요구할 수 있습니다.",
+      ],
+      bullets: [
+        "식별자는 서비스 제공업체, 계열사, 법률상 수신자, 광고 파트너, 거래 당사자 또는 사용자가 동의한 대상에게 공개될 수 있습니다.",
+        "상업 정보는 서비스 제공업체, 계열사, 법률상 수신자, 거래 당사자 또는 사용자가 동의한 대상에게 공개될 수 있습니다.",
+        "인터넷 또는 전자 네트워크 활동 정보는 서비스 제공업체, 분석 제공업체, 광고 파트너, 법률상 수신자 또는 거래 당사자에게 공개될 수 있습니다.",
+        "일반 위치 정보와 추론 정보는 서비스 제공업체, 분석 제공업체, 광고 파트너 또는 법률상 필요한 대상에게 공개될 수 있습니다.",
+      ],
+    },
+    {
+      title: "13. 데이터 프라이버시 프레임워크",
+      paragraphs: [
+        "고객 계약, 데이터 이전 장치 또는 개인정보 인증이 Onehand 사용에 적용되는 경우, 해당 계약 또는 관련 인증 자료에 명시된 조건이 우선합니다.",
+        "Onehand가 별도로 게시하거나 합의하지 않은 한, 이 방침은 특정 데이터 이전 인증을 주장하지 않습니다. 조직에 국제 이전 보호 조치 정보가 필요한 경우 Onehand에 문의할 수 있습니다.",
+      ],
+    },
+    {
+      title: "14. 개인정보 처리방침 변경",
+      paragraphs: [
+        "Onehand는 본 개인정보 처리방침을 수시로 개정할 수 있습니다. 중요한 변경이 있는 경우 관련 법률에서 요구하는 방식으로 고지합니다.",
+        "업데이트된 개인정보 처리방침이 효력을 발생한 후 웹사이트 또는 서비스를 계속 사용하는 경우, 사용자는 변경된 방침을 인지한 것으로 간주됩니다.",
+      ],
+    },
+  ],
+};
+
+function LegalDocumentModalContent({
+  document,
+}: {
+  readonly document: LegalDocumentModal;
+}) {
+  return (
+    <section className="min-h-full bg-white px-8 py-10 md:px-12">
+      <div className="mx-auto w-full max-w-[800px]">
+        <div>
+          <h3 className="text-[28px] font-bold leading-tight text-[#111827]">
+            {document.title}
+          </h3>
+          <p className="mt-3 text-[14px] leading-6 text-[#64748B]">
+            {document.description}
+          </p>
+        </div>
+
+        <div className="mt-10 grid gap-10">
+          {document.sections.map((section) => (
+            <ProfileSection key={section.title} title={section.title}>
+              <div className="grid gap-3">
+                {section.paragraphs?.map((paragraph) => (
+                  <p
+                    className="text-[13px] leading-6 text-[#475569]"
+                    key={paragraph}
+                  >
+                    {paragraph}
+                  </p>
+                ))}
+                {section.bullets ? (
+                  <ul className="grid list-disc gap-2 pl-5 text-[13px] leading-6 text-[#475569]">
+                    {section.bullets.map((bullet) => (
+                      <li key={bullet}>{bullet}</li>
+                    ))}
+                  </ul>
+                ) : null}
+              </div>
+            </ProfileSection>
+          ))}
+        </div>
+      </div>
     </section>
   );
 }
