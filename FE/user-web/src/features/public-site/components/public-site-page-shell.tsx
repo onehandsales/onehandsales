@@ -1,27 +1,10 @@
-import {
-  BriefcaseBusiness,
-  Facebook,
-  Instagram,
-  Linkedin,
-  MessageSquareText,
-  Youtube,
-} from "lucide-react";
 import { useEffect, useState, type ReactNode } from "react";
+import { PublicSiteFooter } from "@/features/public-site/components/public-site-footer";
 import { PublicSiteHeader } from "@/features/public-site/components/public-site-header";
-import { PublicSiteLanguageSelect } from "@/features/public-site/components/public-site-language-select";
-import { usePublicSiteLanguage } from "@/features/public-site/i18n/public-site-language";
 
 type PublicSitePageShellProps = {
   readonly children: ReactNode;
 };
-
-const footerSocialLinks = [
-  { label: "Instagram", icon: Instagram },
-  { label: "X", icon: MessageSquareText },
-  { label: "LinkedIn", icon: Linkedin },
-  { label: "Facebook", icon: Facebook },
-  { label: "YouTube", icon: Youtube },
-];
 
 export function PublicSitePageShell({ children }: PublicSitePageShellProps) {
   const scrollProgress = usePublicSiteScrollProgress();
@@ -95,70 +78,14 @@ function ScrollProgressBar({ progress }: { readonly progress: number }) {
   return (
     <div
       aria-hidden="true"
-      className="fixed inset-x-0 top-14 z-50 h-[2px] bg-transparent"
+      className="fixed inset-x-0 top-14 z-50 h-px bg-transparent"
     >
       <div
-        className="h-full origin-left bg-[#111111] transition-transform duration-150 ease-out"
+        className="h-full origin-left bg-[#d9d9d4] transition-transform duration-150 ease-out"
         style={{
           transform: `scaleX(${progress})`,
         }}
       />
     </div>
-  );
-}
-
-function PublicSiteFooter() {
-  const { copy } = usePublicSiteLanguage();
-
-  return (
-    <footer className="border-t border-[#eeeeec] bg-white px-4 py-14 md:px-6">
-      <div className="mx-auto grid max-w-[980px] gap-10 md:grid-cols-[1.8fr_repeat(4,1fr)]">
-        <div className="min-w-0">
-          <div className="flex items-center gap-2">
-            <span className="grid h-8 w-8 place-items-center rounded-[7px] border-2 border-[#111111] bg-white">
-              <BriefcaseBusiness className="h-5 w-5" />
-            </span>
-            <span className="text-[24px] font-black leading-none">onehand</span>
-          </div>
-
-          <div className="mt-6 flex flex-wrap items-center gap-4 text-[#8a8a85]">
-            {footerSocialLinks.map(({ icon: Icon, label }) => (
-              <a
-                aria-label={label}
-                className="hover:text-[#111111]"
-                href="/"
-                key={label}
-              >
-                <Icon className="h-4 w-4" />
-              </a>
-            ))}
-          </div>
-
-          <PublicSiteLanguageSelect />
-
-          <a className="mt-5 block text-[12px] text-[#777770] hover:text-[#111111]" href="/">
-            {copy.common.cookieSettings}
-          </a>
-          <p className="mt-6 text-[11px] text-[#999993]">
-            {copy.common.copyright}
-          </p>
-        </div>
-
-        {copy.common.footerColumns.map(([title, ...links]) => (
-          <div key={title}>
-            <h3 className="text-[12px] font-black">{title}</h3>
-            <ul className="mt-3 grid gap-2 text-[12px] text-[#777770]">
-              {links.map((link) => (
-                <li key={link}>
-                  <a className="hover:text-[#111111]" href="/">
-                    {link}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
-        ))}
-      </div>
-    </footer>
   );
 }

@@ -4,29 +4,29 @@ import {
   BriefcaseBusiness,
   Building2,
   CalendarDays,
-  Check,
+  CheckCircle2,
   CircleDollarSign,
-  Facebook,
+  Clock3,
+  Database,
   FileText,
   FolderKanban,
   Handshake,
-  Instagram,
-  LayoutDashboard,
-  Linkedin,
-  ListChecks,
   Mail,
+  MessageCircle,
   MessageSquareText,
   Search,
   ShieldCheck,
   Sparkles,
   Users,
-  Youtube,
 } from "lucide-react";
 import { useEffect, useState, type ReactNode } from "react";
+import { Link } from "react-router-dom";
+import { PublicSiteFooter } from "@/features/public-site/components/public-site-footer";
 import { PublicSiteHeader } from "@/features/public-site/components/public-site-header";
-import { PublicSiteLanguageSelect } from "@/features/public-site/components/public-site-language-select";
-import { publicSiteImages } from "@/features/public-site/constants/public-site-assets";
-import { usePublicSiteLanguage } from "@/features/public-site/i18n/public-site-language";
+import {
+  usePublicSiteLanguage,
+  type PublicSiteLanguage,
+} from "@/features/public-site/i18n/public-site-language";
 
 type AuthLandingPageProps = {
   readonly children?: ReactNode;
@@ -36,162 +36,1384 @@ type AuthLandingPageProps = {
 
 type IconType = typeof BriefcaseBusiness;
 
-const sidebarItems: Array<{
-  readonly label: string;
-  readonly icon: IconType;
-}> = [
-  { label: "오늘", icon: LayoutDashboard },
-  { label: "딜", icon: FolderKanban },
-  { label: "회사", icon: Building2 },
-  { label: "담당자", icon: Users },
-  { label: "일정", icon: CalendarDays },
-  { label: "회의록", icon: FileText },
-];
+type FeatureCopy = {
+  readonly title: string;
+  readonly description: string;
+};
 
-const customerTypes = [
-  "제조 영업",
-  "유통 영업",
-  "프랜차이즈",
-  "B2B 서비스",
-  "교육 상담",
-  "로컬 세일즈",
-];
+type FooterColumnCopy = {
+  readonly title: string;
+  readonly links: readonly string[];
+};
 
-const heroFloatingIcons: Array<{
-  readonly icon: IconType;
-  readonly className: string;
-  readonly label: string;
-}> = [
+type LandingCopy = {
+  readonly hero: {
+    readonly eyebrow: string;
+    readonly titleStart: string;
+    readonly titlePill: string;
+    readonly titleEnd: string;
+    readonly description: string;
+    readonly primaryCta: string;
+    readonly secondaryCta: string;
+  };
+  readonly partnerLabel: string;
+  readonly partnerItems: readonly string[];
+  readonly mock: {
+    readonly workspaceName: string;
+    readonly sidebar: readonly string[];
+    readonly boardTitle: string;
+    readonly columns: readonly {
+      readonly label: string;
+      readonly count: string;
+      readonly cards: readonly string[];
+    }[];
+  };
+  readonly work: {
+    readonly eyebrow: string;
+    readonly title: string;
+    readonly description: string;
+    readonly tabs: readonly FeatureCopy[];
+    readonly previewTitle: string;
+    readonly previewQuestion: string;
+    readonly previewAnswerTitle: string;
+    readonly previewAnswer: string;
+    readonly cardsLabel: string;
+    readonly cards: readonly string[];
+  };
+  readonly workspace: {
+    readonly eyebrow: string;
+    readonly title: string;
+    readonly description: string;
+    readonly views: readonly FeatureCopy[];
+    readonly tableHeaders: readonly string[];
+    readonly rows: readonly string[][];
+    readonly detailTitle: string;
+    readonly detailItems: readonly FeatureCopy[];
+  };
+  readonly final: {
+    readonly title: string;
+    readonly description: string;
+    readonly primaryCta: string;
+    readonly secondaryCta: string;
+  };
+  readonly footer: {
+    readonly tagline: string;
+    readonly socialLabel: string;
+    readonly columns: readonly FooterColumnCopy[];
+  };
+};
+
+type ExpandedFeatureCopy = {
+  readonly eyebrow: string;
+  readonly title: string;
+  readonly description: string;
+  readonly items: readonly string[];
+};
+
+type ExpandedLandingCopy = {
+  readonly assistants: {
+    readonly eyebrow: string;
+    readonly title: string;
+    readonly description: string;
+    readonly cards: readonly ExpandedFeatureCopy[];
+  };
+  readonly together: {
+    readonly eyebrow: string;
+    readonly title: string;
+    readonly description: string;
+    readonly cards: readonly ExpandedFeatureCopy[];
+  };
+  readonly trust: {
+    readonly title: string;
+    readonly description: string;
+    readonly testimonials: readonly {
+      readonly company: string;
+      readonly quote: string;
+      readonly person: string;
+      readonly tone: string;
+    }[];
+    readonly stats: readonly string[];
+  };
+};
+
+const heroRotatingWords = [
   {
-    icon: Mail,
-    label: "메일",
-    className: "left-[13%] top-[28%] border-[#ffd874] bg-[#fff6ce] text-[#ad7a00]",
+    label: "Sales",
+    className: "bg-[#c9edeb] text-[#0f0f0f]",
+  },
+  {
+    label: "Mobile",
+    className: "bg-[#dbeafe] text-[#1d4ed8]",
+  },
+  {
+    label: "Onehand",
+    className: "bg-[#fee2e2] text-[#b91c1c]",
+  },
+  {
+    label: "AI",
+    className: "bg-[#ede9fe] text-[#6d28d9]",
+  },
+  {
+    label: "Everything",
+    className: "bg-[#fef3c7] text-[#92400e]",
+  },
+] as const;
+
+const expandedLandingCopyByLanguage: Record<PublicSiteLanguage, ExpandedLandingCopy> = {
+  ko: {
+    assistants: {
+      eyebrow: "On-demand assistants",
+      title: "필요할 때 바로 묻는 세일즈 어시스턴트.",
+      description:
+        "검색, 회의록, 보안 답변, 후속 업무를 따로 열지 않아도 같은 워크스페이스 안에서 바로 요청하고 처리합니다.",
+      cards: [
+        {
+          eyebrow: "Sales agent",
+          title: "해야 할 일을 물으면 Onehand가 초안을 만듭니다.",
+          description: "딜 상태와 고객 기록을 읽고 이메일, 다음 액션, 체크리스트를 제안합니다.",
+          items: ["후속 이메일 작성", "담당자에게 업무 배정", "거래 위험 신호 표시"],
+        },
+        {
+          eyebrow: "Enterprise search",
+          title: "고객 맥락을 한 번에 찾습니다.",
+          description: "문서, 메모, 일정, CRM 기록을 연결해 필요한 근거를 바로 보여줍니다.",
+          items: ["자료 통합 검색", "출처와 함께 답변", "팀 지식 재사용"],
+        },
+        {
+          eyebrow: "Meeting notes",
+          title: "회의가 끝나면 기록이 완성됩니다.",
+          description: "논의 내용, 결정 사항, 다음 액션을 자동으로 정리해 딜 화면에 남깁니다.",
+          items: ["핵심 요약", "액션 아이템", "참석자별 후속 업무"],
+        },
+        {
+          eyebrow: "Revenue review",
+          title: "이번 주 움직인 거래를 바로 봅니다.",
+          description: "진행률, 응답 지연, 예상 매출 변화를 팀이 같은 기준으로 확인합니다.",
+          items: ["주간 매출 요약", "병목 계정 표시", "리더용 리포트"],
+        },
+      ],
+    },
+    together: {
+      eyebrow: "Bring work together",
+      title: "흩어진 업무를 한 흐름으로 모으세요.",
+      description:
+        "문서, 지식, 프로젝트, 고객 기록이 분리되지 않도록 Onehand 안에서 같은 구조로 쌓습니다.",
+      cards: [
+        {
+          eyebrow: "Docs",
+          title: "제안서와 고객 자료를 간단하게 관리합니다.",
+          description: "영업 자료를 딜과 연결해 필요한 순간 바로 찾을 수 있습니다.",
+          items: ["제안서", "체크리스트", "승인 기록"],
+        },
+        {
+          eyebrow: "Knowledge base",
+          title: "팀과 에이전트가 같은 지식을 사용합니다.",
+          description: "자주 묻는 질문과 내부 정책을 답변 가능한 지식으로 정리합니다.",
+          items: ["보안 답변", "제품 설명", "가격 정책"],
+        },
+        {
+          eyebrow: "Launch tracker",
+          title: "출시와 온보딩 진행 상황을 놓치지 않습니다.",
+          description: "고객 온보딩, 계약, 교육 일정을 하나의 진행판으로 봅니다.",
+          items: ["온보딩", "교육 일정", "완료 기준"],
+        },
+      ],
+    },
+    trust: {
+      title: "거래를 움직이는 팀이 신뢰합니다.",
+      description:
+        "Onehand는 고객 기록을 잃지 않고 반복 업무를 줄이려는 팀을 위해 설계되었습니다.",
+      testimonials: [
+        {
+          company: "Cursor-style sales team",
+          quote: "팀이 같은 딜 맥락을 보고 움직이니 후속 업무가 훨씬 빨라졌습니다.",
+          person: "Revenue Lead",
+          tone: "bg-[#e95a48]",
+        },
+        {
+          company: "Pipeline operations",
+          quote: "회의록과 검색, 업무 배정이 한 화면에 있어 매주 리뷰가 쉬워졌습니다.",
+          person: "Sales Ops",
+          tone: "bg-[#1f79b8]",
+        },
+        {
+          company: "Growth team",
+          quote: "작은 팀도 엔터프라이즈처럼 고객 히스토리를 관리할 수 있습니다.",
+          person: "Founder",
+          tone: "bg-[#d89c25]",
+        },
+      ],
+      stats: ["고객 기록 통합", "반복 업무 자동화", "다국어 팀 지원", "모바일 대응"],
+    },
+  },
+  ja: {
+    assistants: {
+      eyebrow: "On-demand assistants",
+      title: "必要な時にすぐ聞ける営業アシスタント。",
+      description:
+        "検索、議事録、セキュリティ回答、フォローアップを同じワークスペース内で依頼して処理できます。",
+      cards: [
+        {
+          eyebrow: "Sales agent",
+          title: "やるべきことを聞くと Onehand が下書きを作ります。",
+          description: "商談状況と顧客記録を読み、メール、次のアクション、チェックリストを提案します。",
+          items: ["フォローアップ作成", "担当者へ割り当て", "リスク表示"],
+        },
+        {
+          eyebrow: "Enterprise search",
+          title: "顧客文脈を一度に探します。",
+          description: "文書、メモ、予定、CRM 記録をつなげ、必要な根拠をすぐ表示します。",
+          items: ["統合検索", "出典付き回答", "チーム知識の再利用"],
+        },
+        {
+          eyebrow: "Meeting notes",
+          title: "会議が終わると記録が整います。",
+          description: "議論、決定事項、次のアクションを自動で整理して商談画面に残します。",
+          items: ["要約", "アクション項目", "参加者別フォロー"],
+        },
+        {
+          eyebrow: "Revenue review",
+          title: "今週動いた商談をすぐ確認します。",
+          description: "進捗、返信遅延、売上見込みの変化を同じ基準で確認できます。",
+          items: ["週次売上要約", "ボトルネック表示", "リーダーレポート"],
+        },
+      ],
+    },
+    together: {
+      eyebrow: "Bring work together",
+      title: "散らばった仕事を一つの流れにまとめます。",
+      description:
+        "文書、ナレッジ、プロジェクト、顧客記録を Onehand 内で同じ構造にそろえます。",
+      cards: [
+        {
+          eyebrow: "Docs",
+          title: "提案書と顧客資料を簡単に管理します。",
+          description: "営業資料を商談に結び付け、必要な時にすぐ見つけられます。",
+          items: ["提案書", "チェックリスト", "承認記録"],
+        },
+        {
+          eyebrow: "Knowledge base",
+          title: "チームとエージェントが同じ知識を使います。",
+          description: "よくある質問と社内ポリシーを回答できる知識として整理します。",
+          items: ["セキュリティ回答", "製品説明", "価格ポリシー"],
+        },
+        {
+          eyebrow: "Launch tracker",
+          title: "導入とオンボーディングの進行を逃しません。",
+          description: "顧客オンボーディング、契約、研修日程を一つのボードで確認します。",
+          items: ["オンボーディング", "研修日程", "完了基準"],
+        },
+      ],
+    },
+    trust: {
+      title: "商談を動かすチームに信頼されています。",
+      description:
+        "Onehand は顧客記録を失わず、反復作業を減らしたいチームのために設計されています。",
+      testimonials: [
+        {
+          company: "Cursor-style sales team",
+          quote: "同じ商談文脈を見て動けるため、フォローアップが速くなりました。",
+          person: "Revenue Lead",
+          tone: "bg-[#e95a48]",
+        },
+        {
+          company: "Pipeline operations",
+          quote: "議事録、検索、割り当てが一画面にあり、週次レビューが簡単です。",
+          person: "Sales Ops",
+          tone: "bg-[#1f79b8]",
+        },
+        {
+          company: "Growth team",
+          quote: "小さなチームでも顧客履歴をエンタープライズ水準で管理できます。",
+          person: "Founder",
+          tone: "bg-[#d89c25]",
+        },
+      ],
+      stats: ["顧客記録を統合", "反復作業を自動化", "多言語チーム対応", "モバイル対応"],
+    },
+  },
+  zh: {
+    assistants: {
+      eyebrow: "On-demand assistants",
+      title: "随时可问的销售助手。",
+      description:
+        "搜索、会议记录、安全问答和跟进任务都可以在同一个工作区中请求和处理。",
+      cards: [
+        {
+          eyebrow: "Sales agent",
+          title: "提出要做的事，Onehand 会生成草稿。",
+          description: "读取交易状态和客户记录，建议邮件、下一步行动和检查清单。",
+          items: ["跟进邮件", "分配负责人", "标记交易风险"],
+        },
+        {
+          eyebrow: "Enterprise search",
+          title: "一次找到完整客户上下文。",
+          description: "连接文档、笔记、日程和 CRM 记录，立即显示所需依据。",
+          items: ["统一搜索", "带来源回答", "复用团队知识"],
+        },
+        {
+          eyebrow: "Meeting notes",
+          title: "会议结束后记录自动完成。",
+          description: "自动整理讨论、决策和下一步行动，并写入交易页面。",
+          items: ["核心摘要", "行动项", "按参会者跟进"],
+        },
+        {
+          eyebrow: "Revenue review",
+          title: "立即查看本周推进的交易。",
+          description: "团队用同一标准查看进度、响应延迟和收入预测变化。",
+          items: ["每周收入摘要", "瓶颈账户", "管理者报告"],
+        },
+      ],
+    },
+    together: {
+      eyebrow: "Bring work together",
+      title: "把分散的工作汇成一条流程。",
+      description:
+        "文档、知识、项目和客户记录在 Onehand 中以同一结构沉淀。",
+      cards: [
+        {
+          eyebrow: "Docs",
+          title: "轻松管理提案和客户资料。",
+          description: "把销售资料连接到交易，在需要时快速找到。",
+          items: ["提案", "检查清单", "审批记录"],
+        },
+        {
+          eyebrow: "Knowledge base",
+          title: "团队和代理使用同一份知识。",
+          description: "把常见问题和内部政策整理成可回答的知识。",
+          items: ["安全回答", "产品说明", "价格政策"],
+        },
+        {
+          eyebrow: "Launch tracker",
+          title: "不错过上线和客户启用进度。",
+          description: "在同一看板中查看客户启用、合同和培训日程。",
+          items: ["客户启用", "培训日程", "完成标准"],
+        },
+      ],
+    },
+    trust: {
+      title: "受到推动交易的团队信任。",
+      description:
+        "Onehand 为希望保留客户记录并减少重复工作的团队而设计。",
+      testimonials: [
+        {
+          company: "Cursor-style sales team",
+          quote: "团队基于同一交易上下文行动，跟进速度明显提升。",
+          person: "Revenue Lead",
+          tone: "bg-[#e95a48]",
+        },
+        {
+          company: "Pipeline operations",
+          quote: "会议记录、搜索和任务分配在同一屏，每周复盘更轻松。",
+          person: "Sales Ops",
+          tone: "bg-[#1f79b8]",
+        },
+        {
+          company: "Growth team",
+          quote: "小团队也能像企业团队一样管理客户历史。",
+          person: "Founder",
+          tone: "bg-[#d89c25]",
+        },
+      ],
+      stats: ["整合客户记录", "自动化重复任务", "支持多语言团队", "适配移动端"],
+    },
+  },
+  "en-US": {
+    assistants: {
+      eyebrow: "On-demand assistants",
+      title: "Ask your on-demand assistants.",
+      description:
+        "Search, notes, security answers, and follow-up work stay inside the same workspace instead of becoming separate tools.",
+      cards: [
+        {
+          eyebrow: "Sales agent",
+          title: "You ask the tasks. Onehand drafts the work.",
+          description: "Read deal status and customer context to suggest emails, next steps, and checklists.",
+          items: ["Draft follow-ups", "Assign owners", "Flag deal risk"],
+        },
+        {
+          eyebrow: "Enterprise search",
+          title: "One search for every customer signal.",
+          description: "Connect docs, notes, meetings, and CRM records with answers that include context.",
+          items: ["Unified search", "Source-backed answers", "Reusable team knowledge"],
+        },
+        {
+          eyebrow: "Meeting notes",
+          title: "Perfect notes, every time.",
+          description: "Turn discussions, decisions, and next actions into records attached to the deal.",
+          items: ["Executive summary", "Action items", "Owner follow-ups"],
+        },
+        {
+          eyebrow: "Revenue review",
+          title: "See what moved this week.",
+          description: "Review progress, reply delays, and forecast changes from the same operating view.",
+          items: ["Weekly revenue", "Bottleneck accounts", "Leader report"],
+        },
+      ],
+    },
+    together: {
+      eyebrow: "Bring work together",
+      title: "Bring every sales motion together.",
+      description:
+        "Docs, knowledge, projects, and customer records build on the same structure inside Onehand.",
+      cards: [
+        {
+          eyebrow: "Docs",
+          title: "Simple proposals and customer materials.",
+          description: "Attach sales collateral to deals so teams can find the right source instantly.",
+          items: ["Proposals", "Checklists", "Approvals"],
+        },
+        {
+          eyebrow: "Knowledge base",
+          title: "One source of truth for teams and agents.",
+          description: "Turn FAQs and internal policies into knowledge your team can actually use.",
+          items: ["Security answers", "Product notes", "Pricing policy"],
+        },
+        {
+          eyebrow: "Launch tracker",
+          title: "Less tracking. More progress.",
+          description: "Track onboarding, contracts, and training plans from one launch board.",
+          items: ["Onboarding", "Training dates", "Done criteria"],
+        },
+      ],
+    },
+    trust: {
+      title: "Trusted by teams that move deals.",
+      description:
+        "Onehand is built for teams that need customer memory and repeated work to stay under control.",
+      testimonials: [
+        {
+          company: "Cursor-style sales team",
+          quote: "Follow-up got faster once everyone worked from the same deal context.",
+          person: "Revenue Lead",
+          tone: "bg-[#e95a48]",
+        },
+        {
+          company: "Pipeline operations",
+          quote: "Notes, search, and routing in one screen made weekly reviews much easier.",
+          person: "Sales Ops",
+          tone: "bg-[#1f79b8]",
+        },
+        {
+          company: "Growth team",
+          quote: "A small team can manage customer history with enterprise discipline.",
+          person: "Founder",
+          tone: "bg-[#d89c25]",
+        },
+      ],
+      stats: ["Customer memory unified", "Repeated work automated", "Multilingual teams supported", "Responsive on mobile"],
+    },
+  },
+  "en-GB": {
+    assistants: {
+      eyebrow: "On-demand assistants",
+      title: "Ask your on-demand assistants.",
+      description:
+        "Search, notes, security answers, and follow-up work stay inside the same workspace instead of becoming separate tools.",
+      cards: [
+        {
+          eyebrow: "Sales agent",
+          title: "You ask the tasks. Onehand drafts the work.",
+          description: "Read deal status and customer context to suggest emails, next steps, and checklists.",
+          items: ["Draft follow-ups", "Assign owners", "Flag deal risk"],
+        },
+        {
+          eyebrow: "Enterprise search",
+          title: "One search for every customer signal.",
+          description: "Connect docs, notes, meetings, and CRM records with answers that include context.",
+          items: ["Unified search", "Source-backed answers", "Reusable team knowledge"],
+        },
+        {
+          eyebrow: "Meeting notes",
+          title: "Perfect notes, every time.",
+          description: "Turn discussions, decisions, and next actions into records attached to the deal.",
+          items: ["Executive summary", "Action items", "Owner follow-ups"],
+        },
+        {
+          eyebrow: "Revenue review",
+          title: "See what moved this week.",
+          description: "Review progress, reply delays, and forecast changes from the same operating view.",
+          items: ["Weekly revenue", "Bottleneck accounts", "Leader report"],
+        },
+      ],
+    },
+    together: {
+      eyebrow: "Bring work together",
+      title: "Bring every sales motion together.",
+      description:
+        "Docs, knowledge, projects, and customer records build on the same structure inside Onehand.",
+      cards: [
+        {
+          eyebrow: "Docs",
+          title: "Simple proposals and customer materials.",
+          description: "Attach sales collateral to deals so teams can find the right source instantly.",
+          items: ["Proposals", "Checklists", "Approvals"],
+        },
+        {
+          eyebrow: "Knowledge base",
+          title: "One source of truth for teams and agents.",
+          description: "Turn FAQs and internal policies into knowledge your team can actually use.",
+          items: ["Security answers", "Product notes", "Pricing policy"],
+        },
+        {
+          eyebrow: "Launch tracker",
+          title: "Less tracking. More progress.",
+          description: "Track onboarding, contracts, and training plans from one launch board.",
+          items: ["Onboarding", "Training dates", "Done criteria"],
+        },
+      ],
+    },
+    trust: {
+      title: "Trusted by teams that move deals.",
+      description:
+        "Onehand is built for teams that need customer memory and repeated work to stay under control.",
+      testimonials: [
+        {
+          company: "Cursor-style sales team",
+          quote: "Follow-up got faster once everyone worked from the same deal context.",
+          person: "Revenue Lead",
+          tone: "bg-[#e95a48]",
+        },
+        {
+          company: "Pipeline operations",
+          quote: "Notes, search, and routing in one screen made weekly reviews much easier.",
+          person: "Sales Ops",
+          tone: "bg-[#1f79b8]",
+        },
+        {
+          company: "Growth team",
+          quote: "A small team can manage customer history with enterprise discipline.",
+          person: "Founder",
+          tone: "bg-[#d89c25]",
+        },
+      ],
+      stats: ["Customer memory unified", "Repeated work automated", "Multilingual teams supported", "Responsive on mobile"],
+    },
+  },
+};
+
+const landingCopyByLanguage: Record<PublicSiteLanguage, LandingCopy> = {
+  ko: {
+    hero: {
+      eyebrow: "AI 세일즈 워크스페이스",
+      titleStart: "세일즈 팀과 AI 에이전트가",
+      titlePill: "한 화면에서",
+      titleEnd: "거래를 움직입니다.",
+      description:
+        "고객 대화, 일정, 제안서, 후속 업무를 한 곳에서 정리하고 반복되는 세일즈 운영을 자동화하세요.",
+      primaryCta: "Get Onehand",
+      secondaryCta: "데모 요청",
+    },
+    partnerLabel: "반복 업무를 줄이고 기록을 살리는 팀을 위해",
+    partnerItems: ["CRM", "Email", "Calendar", "Messenger", "Docs", "Sheets"],
+    mock: {
+      workspaceName: "Onehand HQ",
+      sidebar: ["Home", "Deals", "Companies", "Tasks", "Meetings"],
+      boardTitle: "Revenue pipeline",
+      columns: [
+        {
+          label: "신규",
+          count: "12",
+          cards: ["리드 우선순위 정리", "인바운드 문의 배정"],
+        },
+        {
+          label: "진행",
+          count: "8",
+          cards: ["견적서 검토", "데모 일정 확정"],
+        },
+        {
+          label: "후속",
+          count: "5",
+          cards: ["회의록 요약", "다음 액션 전송"],
+        },
+        {
+          label: "성사",
+          count: "21",
+          cards: ["계약 체크리스트", "온보딩 준비"],
+        },
+      ],
+    },
+    work: {
+      eyebrow: "Custom Agents",
+      title: "세일즈가 24시간 끊기지 않게.",
+      description:
+        "문의가 들어오고 회의가 끝나는 순간마다 에이전트가 기록을 읽고 다음 업무를 만들어 줍니다.",
+      tabs: [
+        {
+          title: "Q&A 에이전트",
+          description: "영업 자료와 고객 히스토리에서 답을 바로 찾습니다.",
+        },
+        {
+          title: "업무 라우팅",
+          description: "담당자, 마감일, 우선순위를 자동으로 정리합니다.",
+        },
+        {
+          title: "알림 에이전트",
+          description: "놓치기 쉬운 후속 업무를 팀 채널로 보냅니다.",
+        },
+        {
+          title: "보안 검토",
+          description: "민감 정보와 승인 흐름을 분리해 관리합니다.",
+        },
+        {
+          title: "직접 만들기",
+          description: "팀의 반복 업무를 에이전트로 구성합니다.",
+        },
+      ],
+      previewTitle: "Deal desk assistant",
+      previewQuestion: "이번 주 재계약 고객 중 위험 신호가 있는 곳은?",
+      previewAnswerTitle: "Onehand agent",
+      previewAnswer:
+        "3개 계정에서 응답 지연이 보입니다. 담당자에게 후속 이메일 초안과 미팅 제안을 만들었습니다.",
+      cardsLabel: "Custom Agents가 처리할 수 있는 일",
+      cards: [
+        "신규 리드 분류",
+        "견적 후속 알림",
+        "보안 질문 답변",
+        "주간 매출 리포트",
+        "맞춤 에이전트 만들기",
+      ],
+    },
+    workspace: {
+      eyebrow: "Connected workspace",
+      title: "문서, 고객, 업무가 같은 맥락을 공유합니다.",
+      description:
+        "영업 활동의 흩어진 단서를 하나의 워크스페이스로 연결해 팀이 같은 화면에서 판단하게 합니다.",
+      views: [
+        {
+          title: "고객 기록",
+          description: "회사, 담당자, 대화 내역을 한 곳에 모읍니다.",
+        },
+        {
+          title: "딜 진행",
+          description: "단계별 상태와 위험 신호를 바로 확인합니다.",
+        },
+        {
+          title: "회의 노트",
+          description: "논의 내용과 다음 액션을 자동으로 정리합니다.",
+        },
+      ],
+      tableHeaders: ["계정", "상태", "다음 액션"],
+      rows: [
+        ["Acme Korea", "진행", "가격 승인"],
+        ["Blue Retail", "후속", "데모 일정"],
+        ["North Labs", "성사", "온보딩"],
+      ],
+      detailTitle: "Acme Korea",
+      detailItems: [
+        {
+          title: "최근 대화",
+          description: "예산 승인 전에 보안 체크리스트를 요청했습니다.",
+        },
+        {
+          title: "추천 액션",
+          description: "법무 검토 자료와 다음 주 미팅 슬롯을 보내세요.",
+        },
+      ],
+    },
+    final: {
+      title: "오늘 Onehand를 시작하세요.",
+      description: "작게 시작해도 팀의 기록과 자동화 방식은 처음부터 같은 기준으로 쌓입니다.",
+      primaryCta: "Get Onehand",
+      secondaryCta: "데모 요청",
+    },
+    footer: {
+      tagline: "세일즈 팀을 위한 AI 워크스페이스",
+      socialLabel: "Onehand 채널",
+      columns: [
+        {
+          title: "Product",
+          links: ["Workspace", "AI agents", "Pipeline", "Integrations"],
+        },
+        {
+          title: "Company",
+          links: ["About", "Careers", "Security", "Status"],
+        },
+        {
+          title: "Resources",
+          links: ["Help center", "Pricing", "Blog", "Templates"],
+        },
+        {
+          title: "Onehand for",
+          links: ["Enterprise", "Sales teams", "Startups", "Partners"],
+        },
+      ],
+    },
+  },
+  ja: {
+    hero: {
+      eyebrow: "AI セールスワークスペース",
+      titleStart: "営業チームと AI エージェントが",
+      titlePill: "同じ画面で",
+      titleEnd: "商談を前へ進めます。",
+      description:
+        "顧客との会話、予定、提案書、フォローアップを一か所に集め、反復的な営業業務を自動化します。",
+      primaryCta: "Get Onehand",
+      secondaryCta: "デモを依頼",
+    },
+    partnerLabel: "記録を活かし、反復作業を減らすチームのために",
+    partnerItems: ["CRM", "Email", "Calendar", "Messenger", "Docs", "Sheets"],
+    mock: {
+      workspaceName: "Onehand HQ",
+      sidebar: ["Home", "Deals", "Companies", "Tasks", "Meetings"],
+      boardTitle: "Revenue pipeline",
+      columns: [
+        {
+          label: "新規",
+          count: "12",
+          cards: ["リード優先度を整理", "問い合わせを割り当て"],
+        },
+        {
+          label: "進行中",
+          count: "8",
+          cards: ["見積もりを確認", "デモ日程を確定"],
+        },
+        {
+          label: "フォロー",
+          count: "5",
+          cards: ["議事録を要約", "次のアクションを送信"],
+        },
+        {
+          label: "成立",
+          count: "21",
+          cards: ["契約チェックリスト", "オンボーディング準備"],
+        },
+      ],
+    },
+    work: {
+      eyebrow: "Custom Agents",
+      title: "営業を 24 時間止めない。",
+      description:
+        "問い合わせが届いた時も会議が終わった時も、エージェントが記録を読み次の仕事を作ります。",
+      tabs: [
+        {
+          title: "Q&A エージェント",
+          description: "営業資料と顧客履歴から回答をすぐに探します。",
+        },
+        {
+          title: "タスクルーティング",
+          description: "担当者、期限、優先度を自動で整理します。",
+        },
+        {
+          title: "通知エージェント",
+          description: "見落としやすいフォローアップをチームへ送ります。",
+        },
+        {
+          title: "セキュリティ確認",
+          description: "機密情報と承認フローを分けて管理します。",
+        },
+        {
+          title: "自分で作成",
+          description: "チーム独自の反復業務をエージェント化します。",
+        },
+      ],
+      previewTitle: "Deal desk assistant",
+      previewQuestion: "今週更新予定の顧客でリスクがあるものは？",
+      previewAnswerTitle: "Onehand agent",
+      previewAnswer:
+        "3 件のアカウントで返信遅延があります。担当者向けにフォローアップメール案と面談候補を作成しました。",
+      cardsLabel: "Custom Agents が処理できること",
+      cards: [
+        "新規リードの分類",
+        "見積もりフォロー通知",
+        "セキュリティ質問への回答",
+        "週次売上レポート",
+        "カスタムエージェント作成",
+      ],
+    },
+    workspace: {
+      eyebrow: "Connected workspace",
+      title: "ドキュメント、顧客、タスクが同じ文脈を共有します。",
+      description:
+        "営業活動に散らばる手がかりを一つのワークスペースにつなぎ、チームが同じ画面で判断できます。",
+      views: [
+        {
+          title: "顧客記録",
+          description: "会社、担当者、会話履歴を一か所に集めます。",
+        },
+        {
+          title: "商談進行",
+          description: "段階ごとの状態とリスクをすぐ確認します。",
+        },
+        {
+          title: "会議ノート",
+          description: "議論と次のアクションを自動で整理します。",
+        },
+      ],
+      tableHeaders: ["アカウント", "状態", "次のアクション"],
+      rows: [
+        ["Acme Japan", "進行中", "価格承認"],
+        ["Blue Retail", "フォロー", "デモ日程"],
+        ["North Labs", "成立", "オンボーディング"],
+      ],
+      detailTitle: "Acme Japan",
+      detailItems: [
+        {
+          title: "最近の会話",
+          description: "予算承認前にセキュリティチェックリストを依頼しました。",
+        },
+        {
+          title: "おすすめアクション",
+          description: "法務レビュー資料と来週の面談候補を送信します。",
+        },
+      ],
+    },
+    final: {
+      title: "今日から Onehand を始めましょう。",
+      description: "小さく始めても、記録と自動化の基準は最初からチーム全体でそろいます。",
+      primaryCta: "Get Onehand",
+      secondaryCta: "デモを依頼",
+    },
+    footer: {
+      tagline: "営業チームのための AI ワークスペース",
+      socialLabel: "Onehand チャンネル",
+      columns: [
+        {
+          title: "Product",
+          links: ["Workspace", "AI agents", "Pipeline", "Integrations"],
+        },
+        {
+          title: "Company",
+          links: ["About", "Careers", "Security", "Status"],
+        },
+        {
+          title: "Resources",
+          links: ["Help center", "Pricing", "Blog", "Templates"],
+        },
+        {
+          title: "Onehand for",
+          links: ["Enterprise", "Sales teams", "Startups", "Partners"],
+        },
+      ],
+    },
+  },
+  zh: {
+    hero: {
+      eyebrow: "AI 销售工作区",
+      titleStart: "销售团队和 AI 代理",
+      titlePill: "在同一屏",
+      titleEnd: "推进每笔交易。",
+      description:
+        "把客户对话、日程、提案和跟进任务集中到一处，并自动化重复的销售运营。",
+      primaryCta: "Get Onehand",
+      secondaryCta: "预约演示",
+    },
+    partnerLabel: "为减少重复工作、激活销售记录的团队而建",
+    partnerItems: ["CRM", "Email", "Calendar", "Messenger", "Docs", "Sheets"],
+    mock: {
+      workspaceName: "Onehand HQ",
+      sidebar: ["Home", "Deals", "Companies", "Tasks", "Meetings"],
+      boardTitle: "Revenue pipeline",
+      columns: [
+        {
+          label: "新线索",
+          count: "12",
+          cards: ["整理线索优先级", "分配入站咨询"],
+        },
+        {
+          label: "进行中",
+          count: "8",
+          cards: ["审核报价", "确认演示日程"],
+        },
+        {
+          label: "跟进",
+          count: "5",
+          cards: ["总结会议记录", "发送下一步行动"],
+        },
+        {
+          label: "成交",
+          count: "21",
+          cards: ["合同检查清单", "准备客户启用"],
+        },
+      ],
+    },
+    work: {
+      eyebrow: "Custom Agents",
+      title: "让销售 24 小时持续推进。",
+      description:
+        "无论咨询进入还是会议结束，代理都会读取记录并创建下一步任务。",
+      tabs: [
+        {
+          title: "Q&A 代理",
+          description: "从销售资料和客户历史中快速找到答案。",
+        },
+        {
+          title: "任务路由",
+          description: "自动整理负责人、截止日期和优先级。",
+        },
+        {
+          title: "提醒代理",
+          description: "把容易遗漏的跟进任务发送到团队频道。",
+        },
+        {
+          title: "安全审核",
+          description: "分离管理敏感信息和审批流程。",
+        },
+        {
+          title: "自定义创建",
+          description: "把团队的重复流程配置成代理。",
+        },
+      ],
+      previewTitle: "Deal desk assistant",
+      previewQuestion: "本周续约客户中有哪些风险信号？",
+      previewAnswerTitle: "Onehand agent",
+      previewAnswer:
+        "3 个账户出现响应延迟。我已为负责人生成跟进邮件草稿和会议建议时间。",
+      cardsLabel: "Custom Agents 可以处理",
+      cards: [
+        "分类新线索",
+        "报价跟进提醒",
+        "回答安全问题",
+        "每周收入报告",
+        "创建自定义代理",
+      ],
+    },
+    workspace: {
+      eyebrow: "Connected workspace",
+      title: "文档、客户和任务共享同一上下文。",
+      description:
+        "把销售活动中分散的线索连接到一个工作区，让团队在同一画面中判断。",
+      views: [
+        {
+          title: "客户记录",
+          description: "集中公司、联系人和对话历史。",
+        },
+        {
+          title: "交易进度",
+          description: "快速查看每个阶段的状态和风险。",
+        },
+        {
+          title: "会议笔记",
+          description: "自动整理讨论内容和下一步行动。",
+        },
+      ],
+      tableHeaders: ["账户", "状态", "下一步"],
+      rows: [
+        ["Acme China", "进行中", "价格审批"],
+        ["Blue Retail", "跟进", "演示日程"],
+        ["North Labs", "成交", "客户启用"],
+      ],
+      detailTitle: "Acme China",
+      detailItems: [
+        {
+          title: "最近对话",
+          description: "客户在预算批准前请求安全检查清单。",
+        },
+        {
+          title: "建议行动",
+          description: "发送法务审核材料和下周会议时间。",
+        },
+      ],
+    },
+    final: {
+      title: "今天开始使用 Onehand。",
+      description: "即使从小范围开始，团队的记录和自动化标准也能从第一天保持一致。",
+      primaryCta: "Get Onehand",
+      secondaryCta: "预约演示",
+    },
+    footer: {
+      tagline: "面向销售团队的 AI 工作区",
+      socialLabel: "Onehand 频道",
+      columns: [
+        {
+          title: "Product",
+          links: ["Workspace", "AI agents", "Pipeline", "Integrations"],
+        },
+        {
+          title: "Company",
+          links: ["About", "Careers", "Security", "Status"],
+        },
+        {
+          title: "Resources",
+          links: ["Help center", "Pricing", "Blog", "Templates"],
+        },
+        {
+          title: "Onehand for",
+          links: ["Enterprise", "Sales teams", "Startups", "Partners"],
+        },
+      ],
+    },
+  },
+  "en-US": {
+    hero: {
+      eyebrow: "",
+      titleStart: "Sales",
+      titlePill: "is",
+      titleEnd: "Simple.",
+      description:
+        "Organize customer conversations, schedules, proposals, and follow-ups in one place while agents automate repeated sales work.",
+      primaryCta: "Get Onehand",
+      secondaryCta: "Request a demo",
+    },
+    partnerLabel: "Built for teams that turn records into revenue",
+    partnerItems: ["CRM", "Email", "Calendar", "Messenger", "Docs", "Sheets"],
+    mock: {
+      workspaceName: "Onehand HQ",
+      sidebar: ["Home", "Deals", "Companies", "Tasks", "Meetings"],
+      boardTitle: "Revenue pipeline",
+      columns: [
+        {
+          label: "New",
+          count: "12",
+          cards: ["Prioritize inbound leads", "Assign website requests"],
+        },
+        {
+          label: "In progress",
+          count: "8",
+          cards: ["Review quote", "Confirm demo slot"],
+        },
+        {
+          label: "Follow-up",
+          count: "5",
+          cards: ["Summarize call notes", "Send next steps"],
+        },
+        {
+          label: "Closed",
+          count: "21",
+          cards: ["Contract checklist", "Prepare onboarding"],
+        },
+      ],
+    },
+    work: {
+      eyebrow: "Custom Agents",
+      title: "Keep sales moving 24/7.",
+      description:
+        "When a question lands or a meeting ends, agents read the record and create the next piece of work.",
+      tabs: [
+        {
+          title: "Q&A agents",
+          description: "Find answers inside sales collateral and customer history.",
+        },
+        {
+          title: "Task routing",
+          description: "Assign owners, due dates, and priorities automatically.",
+        },
+        {
+          title: "Reminder agents",
+          description: "Send easy-to-miss follow-ups into team channels.",
+        },
+        {
+          title: "Security review",
+          description: "Separate sensitive data and approval workflows.",
+        },
+        {
+          title: "Create your own",
+          description: "Turn your repeated team process into an agent.",
+        },
+      ],
+      previewTitle: "Deal desk assistant",
+      previewQuestion: "Which renewal accounts show risk this week?",
+      previewAnswerTitle: "Onehand agent",
+      previewAnswer:
+        "Three accounts have response delays. I drafted follow-up emails and suggested meeting times for each owner.",
+      cardsLabel: "What Custom Agents can do",
+      cards: [
+        "Triage new leads",
+        "Follow up on quotes",
+        "Answer security questions",
+        "Report weekly revenue",
+        "Create a custom agent",
+      ],
+    },
+    workspace: {
+      eyebrow: "Connected workspace",
+      title: "Docs, customers, and tasks share the same context.",
+      description:
+        "Connect the scattered clues of sales activity into one workspace, so teams can make decisions from the same screen.",
+      views: [
+        {
+          title: "Customer records",
+          description: "Keep companies, contacts, and conversations together.",
+        },
+        {
+          title: "Deal progress",
+          description: "See stage status and risk signals at a glance.",
+        },
+        {
+          title: "Meeting notes",
+          description: "Summarize decisions and next actions automatically.",
+        },
+      ],
+      tableHeaders: ["Account", "Status", "Next action"],
+      rows: [
+        ["Acme North", "In progress", "Price approval"],
+        ["Blue Retail", "Follow-up", "Demo slot"],
+        ["North Labs", "Closed", "Onboarding"],
+      ],
+      detailTitle: "Acme North",
+      detailItems: [
+        {
+          title: "Latest conversation",
+          description: "The buyer requested a security checklist before budget approval.",
+        },
+        {
+          title: "Suggested action",
+          description: "Send the legal review packet and meeting options for next week.",
+        },
+      ],
+    },
+    final: {
+      title: "Get started today.",
+      description: "",
+      primaryCta: "Get Onehand",
+      secondaryCta: "Request a demo",
+    },
+    footer: {
+      tagline: "",
+      socialLabel: "Onehand channels",
+      columns: [
+        {
+          title: "Product",
+          links: ["Workspace", "AI agents", "Pipeline", "Integrations"],
+        },
+        {
+          title: "Company",
+          links: ["About", "Careers", "Security", "Status"],
+        },
+        {
+          title: "Resources",
+          links: ["Help center", "Pricing", "Blog", "Templates"],
+        },
+        {
+          title: "Onehand for",
+          links: ["Enterprise", "Sales teams", "Startups", "Partners"],
+        },
+      ],
+    },
+  },
+  "en-GB": {
+    hero: {
+      eyebrow: "",
+      titleStart: "Sales",
+      titlePill: "is",
+      titleEnd: "Simple.",
+      description:
+        "Organise customer conversations, schedules, proposals, and follow-ups in one place while agents automate repeated sales work.",
+      primaryCta: "Get Onehand",
+      secondaryCta: "Request a demo",
+    },
+    partnerLabel: "Built for teams that turn records into revenue",
+    partnerItems: ["CRM", "Email", "Calendar", "Messenger", "Docs", "Sheets"],
+    mock: {
+      workspaceName: "Onehand HQ",
+      sidebar: ["Home", "Deals", "Companies", "Tasks", "Meetings"],
+      boardTitle: "Revenue pipeline",
+      columns: [
+        {
+          label: "New",
+          count: "12",
+          cards: ["Prioritise inbound leads", "Assign website requests"],
+        },
+        {
+          label: "In progress",
+          count: "8",
+          cards: ["Review quote", "Confirm demo slot"],
+        },
+        {
+          label: "Follow-up",
+          count: "5",
+          cards: ["Summarise call notes", "Send next steps"],
+        },
+        {
+          label: "Closed",
+          count: "21",
+          cards: ["Contract checklist", "Prepare onboarding"],
+        },
+      ],
+    },
+    work: {
+      eyebrow: "Custom Agents",
+      title: "Keep sales moving 24/7.",
+      description:
+        "When a question lands or a meeting ends, agents read the record and create the next piece of work.",
+      tabs: [
+        {
+          title: "Q&A agents",
+          description: "Find answers inside sales collateral and customer history.",
+        },
+        {
+          title: "Task routing",
+          description: "Assign owners, due dates, and priorities automatically.",
+        },
+        {
+          title: "Reminder agents",
+          description: "Send easy-to-miss follow-ups into team channels.",
+        },
+        {
+          title: "Security review",
+          description: "Separate sensitive data and approval workflows.",
+        },
+        {
+          title: "Create your own",
+          description: "Turn your repeated team process into an agent.",
+        },
+      ],
+      previewTitle: "Deal desk assistant",
+      previewQuestion: "Which renewal accounts show risk this week?",
+      previewAnswerTitle: "Onehand agent",
+      previewAnswer:
+        "Three accounts have response delays. I drafted follow-up emails and suggested meeting times for each owner.",
+      cardsLabel: "What Custom Agents can do",
+      cards: [
+        "Triage new leads",
+        "Follow up on quotes",
+        "Answer security questions",
+        "Report weekly revenue",
+        "Create a custom agent",
+      ],
+    },
+    workspace: {
+      eyebrow: "Connected workspace",
+      title: "Docs, customers, and tasks share the same context.",
+      description:
+        "Connect the scattered clues of sales activity into one workspace, so teams can make decisions from the same screen.",
+      views: [
+        {
+          title: "Customer records",
+          description: "Keep companies, contacts, and conversations together.",
+        },
+        {
+          title: "Deal progress",
+          description: "See stage status and risk signals at a glance.",
+        },
+        {
+          title: "Meeting notes",
+          description: "Summarise decisions and next actions automatically.",
+        },
+      ],
+      tableHeaders: ["Account", "Status", "Next action"],
+      rows: [
+        ["Acme North", "In progress", "Price approval"],
+        ["Blue Retail", "Follow-up", "Demo slot"],
+        ["North Labs", "Closed", "Onboarding"],
+      ],
+      detailTitle: "Acme North",
+      detailItems: [
+        {
+          title: "Latest conversation",
+          description: "The buyer requested a security checklist before budget approval.",
+        },
+        {
+          title: "Suggested action",
+          description: "Send the legal review packet and meeting options for next week.",
+        },
+      ],
+    },
+    final: {
+      title: "Get started today.",
+      description: "",
+      primaryCta: "Get Onehand",
+      secondaryCta: "Request a demo",
+    },
+    footer: {
+      tagline: "",
+      socialLabel: "Onehand channels",
+      columns: [
+        {
+          title: "Product",
+          links: ["Workspace", "AI agents", "Pipeline", "Integrations"],
+        },
+        {
+          title: "Company",
+          links: ["About", "Careers", "Security", "Status"],
+        },
+        {
+          title: "Resources",
+          links: ["Help centre", "Pricing", "Blog", "Templates"],
+        },
+        {
+          title: "Onehand for",
+          links: ["Enterprise", "Sales teams", "Startups", "Partners"],
+        },
+      ],
+    },
+  },
+};
+
+const heroPersonas: readonly {
+  readonly icon: IconType;
+  readonly tone: string;
+  readonly label: string;
+}[] = [
+  {
+    icon: Users,
+    tone: "border-[#0075DE] bg-[#e8f3ff] text-[#0075DE]",
+    label: "team",
+  },
+  {
+    icon: BriefcaseBusiness,
+    tone: "border-[#111111] bg-white text-[#111111]",
+    label: "sales",
+  },
+  {
+    icon: MessageSquareText,
+    tone: "border-[#ff5a45] bg-[#ffe9e4] text-[#d83b28]",
+    label: "conversation",
   },
   {
     icon: CalendarDays,
-    label: "일정",
-    className: "right-[15%] top-[31%] border-[#d8c3ff] bg-[#f2eaff] text-[#7c3aed]",
-  },
-  {
-    icon: Handshake,
-    label: "딜",
-    className: "left-[18%] bottom-[29%] border-[#ffb4aa] bg-[#ffebe8] text-[#e04437]",
-  },
-  {
-    icon: Bell,
-    label: "알림",
-    className: "right-[18%] bottom-[28%] border-[#aee6c0] bg-[#e8f8ee] text-[#159447]",
-  },
-  {
-    icon: FileText,
-    label: "회의록",
-    className: "left-[10%] bottom-[10%] border-[#afd8ff] bg-[#eaf5ff] text-[#1874d1]",
+    tone: "border-[#f3b321] bg-[#fff3ce] text-[#9d6a00]",
+    label: "calendar",
   },
   {
     icon: CircleDollarSign,
-    label: "금액",
-    className: "right-[10%] bottom-[11%] border-[#ffc0e4] bg-[#fff0f8] text-[#c0267a]",
+    tone: "border-[#2f9f9a] bg-[#e6f7f6] text-[#0f7f7a]",
+    label: "revenue",
   },
-];
-
-const agentRows = [
-  { icon: Sparkles, title: "다음 행동 추천", text: "미뤄진 연락과 만료 딜을 먼저 정리" },
-  { icon: MessageSquareText, title: "회의록 요약", text: "통화와 미팅 메모를 딜에 연결" },
-  { icon: Bell, title: "팔로업 알림", text: "고객별 약속을 놓치지 않게 표시" },
-  { icon: ShieldCheck, title: "개인 정보 관리", text: "민감 메모와 삭제 이력을 분리" },
-];
-
-const workTabs = [
-  { icon: FileText, title: "제품 피드백", text: "요청 사항 묶기", tone: "bg-[#f7f7f5] text-[#8a5b00]" },
-  { icon: CalendarDays, title: "일정 조율", text: "다음 미팅 잡기", tone: "bg-[#f7f7f5] text-[#0b75bd]" },
-  { icon: Handshake, title: "보류 딜 관리", text: "막힌 이유 확인", tone: "bg-[#f7f7f5] text-[#d6422b]" },
-  { icon: Bell, title: "주간 리포트", text: "놓친 일 모으기", tone: "bg-[#f7f7f5] text-[#0f8f4a]" },
-  { icon: Sparkles, title: "나만의 작업", text: "반복 업무 저장", tone: "bg-[#0d1b49] text-white" },
-];
-
-const workCards = [
   {
-    eyebrow: "영업 메모",
-    title: "작업을 말하면 구조화됩니다.",
     icon: Sparkles,
-    accent: "border-[#ffd467]",
-    body: <AssistantTaskMockup />,
-  },
-  {
-    eyebrow: "통합 검색",
-    title: "모든 기록을 한 번에 찾습니다.",
-    icon: Search,
-    accent: "border-[#ff7469]",
-    body: <SearchMockup />,
-  },
-  {
-    eyebrow: "미팅 노트",
-    title: "회의가 끝나면 다음 행동이 남습니다.",
-    icon: MessageSquareText,
-    accent: "border-[#66b7ff]",
-    body: <MeetingNoteMockup />,
+    tone: "border-[#a96bff] bg-[#f2eaff] text-[#7b37d7]",
+    label: "agent",
   },
 ];
 
-const workspaceCards = [
-  {
-    eyebrow: "문서",
-    title: "제품과 제안 자료를 한 화면에서 봅니다.",
-    icon: FileText,
-    accent: "bg-[#2f9f9a]",
-    body: <DocsMockup />,
-  },
-  {
-    eyebrow: "회사",
-    title: "고객사의 관계와 기회를 연결합니다.",
-    icon: Building2,
-    accent: "bg-[#55aefc]",
-    body: <CompanyMockup />,
-  },
-  {
-    eyebrow: "프로젝트",
-    title: "딜 진행과 출시 준비를 같이 봅니다.",
-    icon: FolderKanban,
-    accent: "bg-[#b78563]",
-    body: <ProjectMockup />,
-  },
+const sidebarIcons: readonly IconType[] = [
+  Search,
+  FolderKanban,
+  Building2,
+  Users,
+  CalendarDays,
 ];
 
-const testimonials = [
-  {
-    name: "영업 리더",
-    quote: "딜, 일정, 회의록이 분리되지 않으니 하루 시작이 빨라졌습니다.",
-    tone: "bg-[#e94f3f]",
-    imageSrc: publicSiteImages.salesConversation,
-  },
-  {
-    name: "고객 상담팀",
-    quote: "담당자 히스토리를 찾는 시간이 줄고 다음 행동이 선명해졌습니다.",
-    tone: "bg-[#1f79b8]",
-    imageSrc: publicSiteImages.whiteboardPlanning,
-  },
-  {
-    name: "개인 사업자",
-    quote: "복잡한 CRM보다 가볍고, 놓친 연락을 바로 확인할 수 있습니다.",
-    tone: "bg-[#d89c25]",
-    imageSrc: publicSiteImages.teamPresentation,
-  },
+const workTabVisuals: readonly {
+  readonly icon: IconType;
+  readonly tone: string;
+}[] = [
+  { icon: MessageCircle, tone: "bg-[#fff0e4] text-[#d9571f]" },
+  { icon: FolderKanban, tone: "bg-[#eee7ff] text-[#7547d8]" },
+  { icon: Bell, tone: "bg-[#e7f4ff] text-[#0075DE]" },
+  { icon: ShieldCheck, tone: "bg-[#e8f7ef] text-[#17824c]" },
+  { icon: Sparkles, tone: "bg-[#07134a] text-white" },
 ];
 
-const proofPoints = [
-  "1,000+ 영업 기록 정리",
-  "12분 안에 첫 파이프라인 구성",
-  "주간 후속조치 누락 감소",
-  "모바일 웹 최적화",
-  "개인과 작은 팀을 위한 CRM",
+const workspaceViewVisuals: readonly {
+  readonly icon: IconType;
+  readonly tone: string;
+}[] = [
+  { icon: Database, tone: "bg-[#e8f3ff] text-[#0075DE]" },
+  { icon: CircleDollarSign, tone: "bg-[#e8f7ef] text-[#16814b]" },
+  { icon: FileText, tone: "bg-[#fff1df] text-[#bb6400]" },
 ];
 
-const footerSocialLinks = [
-  { label: "Instagram", icon: Instagram },
-  { label: "X", icon: MessageSquareText },
-  { label: "LinkedIn", icon: Linkedin },
-  { label: "Facebook", icon: Facebook },
-  { label: "YouTube", icon: Youtube },
+const assistantCardVisuals: readonly {
+  readonly icon: IconType;
+  readonly accent: string;
+  readonly panel: string;
+}[] = [
+  { icon: Sparkles, accent: "text-[#0075DE]", panel: "bg-[#fff6d8]" },
+  { icon: Search, accent: "text-[#e95a48]", panel: "bg-[#ffe9e4]" },
+  { icon: MessageSquareText, accent: "text-[#1f79b8]", panel: "bg-[#e8f3ff]" },
+  { icon: CircleDollarSign, accent: "text-[#16814b]", panel: "bg-[#e8f7ef]" },
+];
+
+const togetherCardVisuals: readonly {
+  readonly icon: IconType;
+  readonly accent: string;
+  readonly panel: string;
+}[] = [
+  { icon: FileText, accent: "text-[#238f8d]", panel: "bg-[#dff3f1]" },
+  { icon: Database, accent: "text-[#0075DE]", panel: "bg-[#e8f3ff]" },
+  { icon: FolderKanban, accent: "text-[#b0744c]", panel: "bg-[#f1d8c5]" },
 ];
 
 export function AuthLandingPage({
@@ -199,29 +1421,27 @@ export function AuthLandingPage({
   isModalOpen,
   onOpenLogin,
 }: AuthLandingPageProps) {
+  const { language } = usePublicSiteLanguage();
   const scrollProgress = useLandingScrollProgress();
+  const copy = landingCopyByLanguage[language];
+  const expandedCopy = expandedLandingCopyByLanguage[language];
 
   return (
-    <main className="landing-scroll-root min-h-screen w-full overflow-x-hidden bg-white text-[#111111]">
+    <div className="min-h-screen bg-[#f7f7f5] text-[#111111]">
       <LandingScrollStyles />
       <PublicSiteHeader onLogin={onOpenLogin} />
-      <ScrollProgressBar progress={scrollProgress} />
-      <div className="pt-14">
-        <HeroSection onOpenLogin={onOpenLogin} />
-        <CustomerStrip />
-        <div className="w-full bg-[#f7f7f5]">
-          <WorkMovingSection />
-          <AssistantsSection />
-          <WorkspaceSection />
-          <QuoteSection />
-          <TrustedSection />
-          <ProofPointStrip />
-          <FinalCta onOpenLogin={onOpenLogin} />
-        </div>
-        <LandingFooter />
-      </div>
+      <LandingScrollProgressBar progress={scrollProgress} />
+      <main className="pt-14">
+        <HeroSection copy={copy} />
+        <WorkSection copy={copy} />
+        <AssistantsSection copy={expandedCopy.assistants} />
+        <TogetherSection copy={expandedCopy.together} />
+        <WorkspaceSection copy={copy} />
+        <TrustSection copy={expandedCopy.trust} />
+        <FinalSection copy={copy} />
+      </main>
       {isModalOpen ? children : null}
-    </main>
+    </div>
   );
 }
 
@@ -272,19 +1492,53 @@ function LandingScrollStyles() {
           width: 0;
           height: 0;
         }
+
+        @keyframes landing-hero-word-enter {
+          from {
+            opacity: 0;
+            transform: scale(0.97);
+            filter: blur(6px);
+          }
+
+          45% {
+            opacity: 0.82;
+            filter: blur(2px);
+          }
+
+          to {
+            opacity: 1;
+            transform: scale(1);
+            filter: blur(0);
+          }
+        }
+
+        .landing-hero-word-pill {
+          transition:
+            background-color 1400ms cubic-bezier(0.16, 1, 0.3, 1),
+            color 1400ms cubic-bezier(0.16, 1, 0.3, 1);
+          will-change: background-color, color;
+        }
+
+        .landing-hero-word-enter {
+          animation: landing-hero-word-enter 720ms cubic-bezier(0.22, 1, 0.36, 1) both;
+        }
       `}
     </style>
   );
 }
 
-function ScrollProgressBar({ progress }: { readonly progress: number }) {
+function LandingScrollProgressBar({
+  progress,
+}: {
+  readonly progress: number;
+}) {
   return (
     <div
       aria-hidden="true"
-      className="fixed inset-x-0 top-14 z-50 h-[2px] bg-transparent"
+      className="fixed inset-x-0 top-14 z-40 h-px bg-transparent"
     >
       <div
-        className="h-full origin-left bg-[#111111] transition-transform duration-150 ease-out"
+        className="h-full origin-left bg-[#d9d9d4] transition-transform duration-150 ease-out"
         style={{
           transform: `scaleX(${progress})`,
         }}
@@ -293,674 +1547,903 @@ function ScrollProgressBar({ progress }: { readonly progress: number }) {
   );
 }
 
-function HeroSection({ onOpenLogin }: { readonly onOpenLogin: () => void }) {
-  const { copy } = usePublicSiteLanguage();
+function HeroSection({ copy }: { readonly copy: LandingCopy }) {
+  const shouldUseRotatingHero =
+    copy.hero.titleStart === "Sales" &&
+    copy.hero.titlePill === "is" &&
+    copy.hero.titleEnd === "Simple.";
+  const [activeHeroWordIndex, setActiveHeroWordIndex] = useState(0);
+  const activeHeroWord = heroRotatingWords[activeHeroWordIndex] ?? heroRotatingWords[0];
+
+  useEffect(() => {
+    if (!shouldUseRotatingHero) {
+      return;
+    }
+
+    const intervalId = window.setInterval(() => {
+      setActiveHeroWordIndex((currentIndex) =>
+        (currentIndex + 1) % heroRotatingWords.length
+      );
+    }, 3000);
+
+    return () => {
+      window.clearInterval(intervalId);
+    };
+  }, [shouldUseRotatingHero]);
 
   return (
-    <section className="relative flex min-h-[calc(100svh-56px)] w-full flex-col justify-center bg-white px-4 pb-12 pt-10 md:px-6 md:pb-16 md:pt-14">
-      <div className="mx-auto w-full max-w-[1180px] text-center">
-        <PersonaRow />
-        <h1 className="mx-auto mt-5 max-w-[980px] text-[44px] font-black leading-[0.98] tracking-normal text-[#111111] md:text-[82px]">
-          {copy.landing.heroTitle[0]}
-          <br />
-          {copy.landing.heroTitle[1]}
+    <section className="flex min-h-[calc(100vh-56px)] flex-col overflow-hidden bg-white">
+      <div className="mx-auto flex w-full max-w-[1320px] flex-1 flex-col items-center px-4 pb-0 pt-14 text-center sm:px-6 md:pt-20 lg:px-8">
+        <div className="flex flex-wrap items-center justify-center gap-2">
+          {heroPersonas.map(({ icon: Icon, label, tone }) => (
+            <span
+              aria-label={label}
+              className={`grid h-12 w-12 place-items-center rounded-full border-[3px] ${tone} sm:h-16 sm:w-16`}
+              key={label}
+            >
+              <Icon className="h-5 w-5 sm:h-7 sm:w-7" />
+            </span>
+          ))}
+        </div>
+
+        {copy.hero.eyebrow ? (
+          <p className="mt-7 text-[12px] font-black uppercase text-[#0075DE]">
+            {copy.hero.eyebrow}
+          </p>
+        ) : null}
+        <h1 className="mt-4 max-w-[1060px] break-keep text-[44px] font-black leading-[0.98] text-[#0f0f0f] sm:text-[64px] md:text-[78px] lg:text-[94px] xl:text-[96px]">
+          {shouldUseRotatingHero ? (
+            <>
+              <span
+                className={[
+                  "landing-hero-word-pill inline-flex items-center gap-[0.14em] rounded-full px-[0.28em] py-[0.11em] align-middle leading-none",
+                  "font-normal",
+                  activeHeroWord.className,
+                ].join(" ")}
+              >
+                <span className="h-[0.13em] w-[0.13em] shrink-0 rounded-full bg-current opacity-85" />
+                <span
+                  className="landing-hero-word-enter inline-block text-[0.9em] leading-none"
+                  key={activeHeroWord.label}
+                >
+                  {activeHeroWord.label}
+                </span>
+              </span>{" "}
+              is Simple.
+            </>
+          ) : (
+            <>
+              {copy.hero.titleStart}{" "}
+              <span className="inline-flex items-center gap-3 rounded-full bg-[#c9edeb] px-5 py-1 text-[#111111]">
+                <span className="h-4 w-4 rounded-full bg-[#238f8d] sm:h-6 sm:w-6" />
+                {copy.hero.titlePill}
+              </span>{" "}
+              {copy.hero.titleEnd}
+            </>
+          )}
         </h1>
-        <p className="mx-auto mt-4 max-w-[620px] text-[15px] leading-7 text-[#5f5f5a] md:text-[17px]">
-          {copy.landing.heroDescription}
+
+        <p className="mt-6 max-w-[760px] break-keep text-[17px] font-semibold leading-8 text-[#333330] md:text-[20px]">
+          {copy.hero.description}
         </p>
-        <div className="mt-5 flex flex-col items-center justify-center gap-2 sm:flex-row">
-          <button
-            className="inline-flex h-9 items-center gap-2 rounded-[6px] bg-[#0077e6] px-4 text-[13px] font-bold text-white hover:bg-[#006bd1]"
-            onClick={onOpenLogin}
-            type="button"
+
+        <div className="mt-7 flex flex-wrap justify-center gap-3">
+          <Link
+            className="inline-flex h-11 items-center gap-2 rounded-[6px] bg-[#0075DE] px-5 text-[15px] font-black text-white hover:bg-[#006AC8]"
+            to="/signup"
           >
-            {copy.landing.primaryCta}
-            <ArrowRight className="h-3.5 w-3.5" />
-          </button>
-          <a
-            className="inline-flex h-9 items-center gap-2 rounded-[6px] bg-[#eef6ff] px-4 text-[13px] font-bold text-[#006bd1] hover:bg-[#e3f0ff]"
-            href="#워크플로우"
+            {copy.hero.primaryCta}
+            <ArrowRight className="h-4 w-4" />
+          </Link>
+          <Link
+            className="inline-flex h-11 items-center gap-2 rounded-[6px] bg-[#e7f2fc] px-5 text-[15px] font-black text-[#005aa8] hover:bg-[#d8ebfb]"
+            to="/contact"
           >
-            {copy.landing.secondaryCta}
-          </a>
+            {copy.hero.secondaryCta}
+          </Link>
+        </div>
+
+        <div className="mt-10 w-full flex-1">
+          <ProductWorkspaceMock copy={copy} />
         </div>
       </div>
 
-      <div className="pointer-events-none absolute inset-0 hidden md:block">
-        {heroFloatingIcons.map(({ className, icon: Icon, label }) => (
-          <span
-            aria-label={label}
-            className={`absolute grid h-10 w-10 place-items-center rounded-full border-2 shadow-sm ${className}`}
-            key={label}
-          >
-            <Icon className="h-5 w-5" />
-          </span>
-        ))}
-      </div>
+      <PartnerStrip copy={copy} />
+    </section>
+  );
+}
 
-      <div className="relative z-10 mx-auto mt-9 w-full max-w-[1120px]">
-        <HeroWorkspacePreview />
+function ProductWorkspaceMock({ copy }: { readonly copy: LandingCopy }) {
+  return (
+    <div className="mx-auto flex h-full min-h-[360px] max-w-[1060px] items-end">
+      <div className="w-full overflow-hidden rounded-t-[8px] border border-[#dededa] bg-white shadow-[0_34px_110px_rgba(15,15,15,0.13)]">
+        <div className="flex h-10 items-center gap-2 border-b border-[#eeeeec] bg-[#fafaf8] px-4">
+          <span className="h-2.5 w-2.5 rounded-full bg-[#d8d8d3]" />
+          <span className="h-2.5 w-2.5 rounded-full bg-[#d8d8d3]" />
+          <span className="h-2.5 w-2.5 rounded-full bg-[#d8d8d3]" />
+          <span className="ml-3 text-[12px] font-black text-[#555550]">
+            {copy.mock.workspaceName}
+          </span>
+        </div>
+
+        <div className="grid min-h-[320px] sm:grid-cols-[170px_1fr] md:grid-cols-[210px_1fr]">
+          <aside className="hidden border-r border-[#eeeeec] bg-[#f7f7f5] p-4 sm:block">
+            <div className="grid gap-1.5">
+              {copy.mock.sidebar.map((item, index) => {
+                const Icon = sidebarIcons[index] ?? Search;
+
+                return (
+                  <span
+                    className={[
+                      "flex h-8 items-center gap-2 rounded-[6px] px-2 text-[12px] font-bold",
+                      index === 0
+                        ? "bg-white text-[#111111] shadow-sm"
+                        : "text-[#62625c]",
+                    ].join(" ")}
+                    key={item}
+                  >
+                    <Icon className="h-3.5 w-3.5" />
+                    {item}
+                  </span>
+                );
+              })}
+            </div>
+
+            <div className="mt-8 rounded-[8px] border border-[#e4e4df] bg-white p-3">
+              <div className="flex items-center gap-2">
+                <Sparkles className="h-4 w-4 text-[#0075DE]" />
+                <span className="text-[12px] font-black">Agent queue</span>
+              </div>
+              <div className="mt-3 space-y-2">
+                <span className="block h-2 rounded-full bg-[#e7e7e2]" />
+                <span className="block h-2 w-3/4 rounded-full bg-[#e7e7e2]" />
+                <span className="block h-2 w-5/6 rounded-full bg-[#e7e7e2]" />
+              </div>
+            </div>
+          </aside>
+
+          <div className="min-w-0 p-4 sm:p-6">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <div>
+                <div className="flex items-center gap-3">
+                  <span className="grid h-12 w-12 place-items-center rounded-full bg-[#eef6ff]">
+                    <BriefcaseBusiness className="h-6 w-6 text-[#0075DE]" />
+                  </span>
+                  <div>
+                    <p className="text-[12px] font-black uppercase text-[#777770]">
+                      Workspace
+                    </p>
+                    <h2 className="text-[24px] font-black text-[#222220] sm:text-[30px]">
+                      {copy.mock.boardTitle}
+                    </h2>
+                  </div>
+                </div>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="hidden h-8 items-center rounded-[6px] bg-[#f1f1ef] px-3 text-[12px] font-bold text-[#555550] sm:inline-flex">
+                  Share
+                </span>
+                <span className="inline-flex h-8 items-center rounded-[6px] bg-[#0075DE] px-3 text-[12px] font-black text-white">
+                  New
+                </span>
+              </div>
+            </div>
+
+            <div className="mt-6 grid gap-3 md:grid-cols-4">
+              {copy.mock.columns.map((column, index) => (
+                <div
+                  className="min-h-[154px] rounded-[8px] border border-[#eeeeec] bg-[#fbfbfa] p-3"
+                  key={column.label}
+                >
+                  <div className="flex items-center justify-between">
+                    <span className="inline-flex items-center gap-1.5 text-[12px] font-black text-[#333330]">
+                      <span
+                        className={[
+                          "h-2.5 w-2.5 rounded-full",
+                          index === 0
+                            ? "bg-[#ad7bd9]"
+                            : index === 1
+                              ? "bg-[#f0b13b]"
+                              : index === 2
+                                ? "bg-[#58a4e8]"
+                                : "bg-[#5cbf86]",
+                        ].join(" ")}
+                      />
+                      {column.label}
+                    </span>
+                    <span className="text-[11px] font-black text-[#777770]">
+                      {column.count}
+                    </span>
+                  </div>
+                  <div className="mt-3 space-y-2">
+                    {column.cards.map((card) => (
+                      <div
+                        className="min-h-[42px] rounded-[6px] border border-[#eeeeec] bg-white p-2 text-left text-[12px] font-bold leading-5 text-[#333330]"
+                        key={card}
+                      >
+                        {card}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function PartnerStrip({ copy }: { readonly copy: LandingCopy }) {
+  return (
+    <div className="border-t border-[#e8e8e4] bg-white">
+      <div className="mx-auto flex min-h-14 w-full max-w-[1320px] flex-col items-center gap-3 px-4 py-4 sm:px-6 md:flex-row md:justify-center lg:px-8">
+        <span className="text-center text-[12px] font-bold uppercase text-[#777770]">
+          {copy.partnerLabel}
+        </span>
+        <span className="hidden text-[#b6b6b0] md:inline">/</span>
+        <div className="flex flex-wrap justify-center gap-x-6 gap-y-2 text-[15px] font-black text-[#444440]">
+          {copy.partnerItems.map((item) => (
+            <span key={item}>{item}</span>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function WorkSection({ copy }: { readonly copy: LandingCopy }) {
+  const defaultVisual = {
+    icon: MessageCircle,
+    tone: "bg-[#fff0e4] text-[#d9571f]",
+  };
+
+  return (
+    <section className="min-h-screen bg-[#f7f7f5] py-16 sm:py-20 lg:py-24">
+      <div className="mx-auto w-full max-w-[1320px] px-4 sm:px-6 lg:px-8">
+        <p className="text-[12px] font-black uppercase text-[#0075DE]">
+          {copy.work.eyebrow}
+        </p>
+        <div className="mt-3 grid gap-5 lg:grid-cols-[0.95fr_1fr] lg:items-end">
+          <h2 className="max-w-[760px] break-keep text-[42px] font-black leading-[1.02] text-[#0f0f0f] sm:text-[58px] lg:text-[54px]">
+            {copy.work.title}
+          </h2>
+          <p className="max-w-[560px] break-keep text-[17px] font-semibold leading-8 text-[#555550] lg:justify-self-end">
+            {copy.work.description}
+          </p>
+        </div>
+
+        <div className="mt-9 grid overflow-hidden rounded-[8px] border border-[#e4e4df] bg-white lg:min-h-[570px] lg:grid-cols-[0.82fr_1.18fr]">
+          <div className="flex flex-col justify-between p-5 sm:p-7">
+            <div>
+              <div className="inline-flex h-10 items-center rounded-full bg-[#111111] px-4 text-[13px] font-black text-white">
+                {copy.work.eyebrow}
+              </div>
+              <h3 className="mt-5 max-w-[420px] text-[24px] font-black leading-tight text-[#111111] sm:text-[30px]">
+                {copy.work.tabs[0]?.title}
+              </h3>
+            </div>
+
+            <div className="mt-10 divide-y divide-[#eeeeec]">
+              {copy.work.tabs.map((tab, index) => {
+                const visual = workTabVisuals[index] ?? defaultVisual;
+                const Icon = visual.icon;
+
+                return (
+                  <div className="flex gap-3 py-4" key={tab.title}>
+                    <span
+                      className={`grid h-10 w-10 shrink-0 place-items-center rounded-full ${visual.tone}`}
+                    >
+                      <Icon className="h-5 w-5" />
+                    </span>
+                    <div>
+                      <h4 className="text-[15px] font-black text-[#111111]">
+                        {tab.title}
+                      </h4>
+                      <p className="mt-1 text-[13px] font-semibold leading-6 text-[#666660]">
+                        {tab.description}
+                      </p>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          <AutomationPreview copy={copy} />
+        </div>
+
+        <div className="mt-8">
+          <p className="text-[13px] font-bold text-[#777770]">
+            {copy.work.cardsLabel}
+          </p>
+          <div className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
+            {copy.work.cards.map((card, index) => (
+              <Link
+                className={[
+                  "group flex min-h-[118px] flex-col justify-between rounded-[8px] border p-5 text-left text-[16px] font-black leading-6",
+                  index === copy.work.cards.length - 1
+                    ? "border-[#07134a] bg-[#07134a] text-white"
+                    : "border-[#dededa] bg-white text-[#111111] hover:border-[#b8d8f4]",
+                ].join(" ")}
+                key={card}
+                to="/contact"
+              >
+                <span>{card}</span>
+                <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+              </Link>
+            ))}
+          </div>
+        </div>
       </div>
     </section>
   );
 }
 
-function PersonaRow() {
-  const people = [
-    { label: "영", tone: "border-[#2f80ed] bg-[#e8f3ff]" },
-    { label: "담", tone: "border-[#222222] bg-white" },
-    { label: "딜", tone: "border-[#f26b3a] bg-[#fff0e8]" },
-    { label: "회", tone: "border-[#222222] bg-white" },
-    { label: "일", tone: "border-[#2f80ed] bg-[#e8f3ff]" },
-    { label: "고", tone: "border-[#222222] bg-white" },
-  ];
-
+function AutomationPreview({ copy }: { readonly copy: LandingCopy }) {
   return (
-    <div className="flex justify-center">
-      <div className="flex items-center -space-x-2">
-        {people.map((person) => (
-          <span
-            className={`grid h-10 w-10 place-items-center rounded-full border-2 text-[12px] font-black ${person.tone}`}
-            key={person.label}
-          >
-            {person.label}
-          </span>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-function HeroWorkspacePreview() {
-  return (
-    <div className="rounded-[8px] border border-[#e9e9e6] bg-white shadow-[0_24px_70px_rgba(0,0,0,0.12)]">
-      <div className="flex h-9 items-center gap-2 border-b border-[#eeeeec] px-4">
-        <span className="h-2.5 w-2.5 rounded-full bg-[#ff6b5f]" />
-        <span className="h-2.5 w-2.5 rounded-full bg-[#ffca4d]" />
-        <span className="h-2.5 w-2.5 rounded-full bg-[#37c16b]" />
-        <span className="ml-3 text-[12px] font-semibold text-[#777770]">영업 HQ</span>
-      </div>
-      <div className="grid min-h-[390px] grid-cols-1 md:grid-cols-[190px_minmax(0,1fr)]">
-        <aside className="hidden border-r border-[#eeeeec] bg-[#fbfbfa] p-4 md:block">
-          <div className="mb-4 flex items-center gap-2">
-            <span className="grid h-7 w-7 place-items-center rounded-[6px] bg-[#111111] text-[11px] font-bold text-white">
-              OS
-            </span>
-            <div>
-              <p className="text-[12px] font-bold">onehand HQ</p>
-              <p className="text-[11px] text-[#8a8a85]">개인 영업 워크스페이스</p>
-            </div>
+    <div className="relative min-h-[520px] overflow-hidden border-t border-[#eeeeec] bg-[#fff1e6] p-5 sm:p-7 lg:border-l lg:border-t-0">
+      <div className="absolute inset-x-0 top-0 h-10 bg-[#ffd8bf]" />
+      <div className="relative mt-5 h-full rounded-[8px] border border-[#eeeeec] bg-white p-5 shadow-[0_24px_90px_rgba(115,67,30,0.16)] sm:p-8">
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="text-[12px] font-black uppercase text-[#c06620]">
+              {copy.work.previewTitle}
+            </p>
+            <h3 className="mt-2 text-[34px] font-black leading-none text-[#ddddda] sm:text-[48px]">
+              Office Q&A
+            </h3>
           </div>
-          {sidebarItems.map(({ icon: Icon, label }) => (
+          <span className="grid h-10 w-10 place-items-center rounded-full bg-[#f7f7f5]">
+            <ArrowRight className="h-5 w-5" />
+          </span>
+        </div>
+
+        <div className="mt-10 grid gap-3 text-[13px] font-bold text-[#b8b8b2]">
+          <div className="grid grid-cols-[1fr_0.5fr_0.6fr] gap-3 border-b border-[#eeeeec] pb-3">
+            <span>Question</span>
+            <span>Owner</span>
+            <span>Answer</span>
+          </div>
+          {[0, 1, 2, 3, 4].map((row) => (
             <div
-              className="mb-1 flex h-8 items-center gap-2 rounded-[6px] px-2 text-[12px] font-medium text-[#4f4f4b] first:bg-[#eeeeec]"
-              key={label}
+              className="grid grid-cols-[1fr_0.5fr_0.6fr] gap-3 border-b border-[#f0f0ed] pb-3 opacity-55"
+              key={row}
             >
-              <Icon className="h-3.5 w-3.5" />
-              {label}
+              <span className="h-3 rounded-full bg-[#ecece8]" />
+              <span className="h-3 rounded-full bg-[#ecece8]" />
+              <span className="h-3 rounded-full bg-[#ecece8]" />
             </div>
           ))}
-        </aside>
+        </div>
 
-        <div className="p-4 md:p-5">
-          <div className="mb-4 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+        <div className="absolute bottom-9 right-5 w-[min(520px,calc(100%-40px))] overflow-hidden rounded-[8px] border border-[#e2e2dc] bg-white shadow-[0_20px_60px_rgba(15,15,15,0.16)] sm:right-10">
+          <div className="flex gap-4 border-b border-[#eeeeec] p-5">
+            <span className="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-[#eeeeec]">
+              <Users className="h-6 w-6 text-[#111111]" />
+            </span>
             <div>
-              <div className="mb-1 flex items-center gap-2 text-[12px] text-[#8a8a85]">
-                <Building2 className="h-3.5 w-3.5" />
-                Sales workspace
-              </div>
-              <h2 className="text-xl font-black text-[#111111] md:text-2xl">이번 주 파이프라인</h2>
-            </div>
-            <div className="flex flex-wrap gap-2 text-[12px]">
-              <span className="rounded-[6px] bg-[#f1f1ef] px-2.5 py-1 font-semibold text-[#555550]">Table</span>
-              <span className="rounded-[6px] bg-[#111111] px-2.5 py-1 font-semibold text-white">Board</span>
-              <span className="rounded-[6px] bg-[#f1f1ef] px-2.5 py-1 font-semibold text-[#555550]">Calendar</span>
+              <p className="text-[13px] font-black text-[#777770]">Jason</p>
+                <p className="mt-1 break-keep text-[20px] font-black leading-tight text-[#111111]">
+                {copy.work.previewQuestion}
+              </p>
             </div>
           </div>
-
-          <div className="grid gap-3 md:grid-cols-4">
-            {[
-              { title: "신규 문의", color: "bg-[#f4f4f2]", deals: ["도입 상담 요청", "가격표 회신", "명함 OCR 확인"] },
-              { title: "제안", color: "bg-[#fff4ca]", deals: ["연간 계약 제안", "기술 검토 미팅", "견적서 수정"] },
-              { title: "협상", color: "bg-[#e8f3ff]", deals: ["최종 금액 협의", "계약 조건 정리", "내부 승인 대기"] },
-              { title: "계약", color: "bg-[#e9f8ef]", deals: ["세금계산서 발행", "온보딩 일정", "첫 미팅 준비"] },
-            ].map((column) => (
-              <div className="min-h-[250px] rounded-[8px] bg-[#fafafa] p-2" key={column.title}>
-                <div className={`mb-2 rounded-[6px] px-2 py-1.5 text-[12px] font-bold ${column.color}`}>
-                  {column.title}
-                </div>
-                <div className="grid gap-2">
-                  {column.deals.map((deal, index) => (
-                    <div className="rounded-[6px] border border-[#eeeeec] bg-white p-2 text-left shadow-sm" key={deal}>
-                      <div className="flex items-center gap-1.5">
-                        <span className="h-2 w-2 rounded-full bg-[#0077e6]" />
-                        <p className="truncate text-[12px] font-bold text-[#232320]">{deal}</p>
-                      </div>
-                      <p className="mt-2 text-[11px] text-[#777770]">
-                        {index + 1}일 후 팔로업
-                      </p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            ))}
+          <div className="flex gap-4 p-5">
+            <span className="grid h-12 w-12 shrink-0 place-items-center rounded-[8px] bg-[#ff8a34] text-white">
+              <MessageCircle className="h-6 w-6" />
+            </span>
+            <div>
+              <p className="text-[18px] font-black text-[#111111]">
+                {copy.work.previewAnswerTitle}
+              </p>
+              <p className="mt-1 break-keep text-[17px] font-bold leading-7 text-[#111111]">
+                {copy.work.previewAnswer}
+              </p>
+            </div>
           </div>
+        </div>
 
-          <div className="mx-auto mt-4 flex max-w-[620px] items-center gap-3 rounded-[8px] border border-[#e6e6e2] bg-white px-3 py-2 shadow-[0_10px_28px_rgba(0,0,0,0.08)]">
-            <Search className="h-4 w-4 text-[#777770]" />
-            <span className="text-[12px] font-semibold text-[#777770]">회사, 담당자, 딜, 회의록을 검색하세요</span>
-            <span className="ml-auto rounded-[5px] bg-[#f1f1ef] px-2 py-1 text-[11px] font-bold text-[#777770]">⌘ K</span>
-          </div>
+        <div className="absolute bottom-4 left-5 flex items-center gap-2 rounded-full bg-white px-3 py-2 shadow-[0_12px_30px_rgba(15,15,15,0.12)]">
+          <Clock3 className="h-4 w-4 text-[#0075DE]" />
+          <span className="text-[12px] font-black text-[#333330]">24/7</span>
         </div>
       </div>
     </div>
   );
 }
 
-function CustomerStrip() {
-  const { copy } = usePublicSiteLanguage();
+function AssistantsSection({
+  copy,
+}: {
+  readonly copy: ExpandedLandingCopy["assistants"];
+}) {
+  return (
+    <section className="bg-white py-16 sm:py-20 lg:py-24">
+      <div className="mx-auto w-full max-w-[1320px] px-4 sm:px-6 lg:px-8">
+        <div className="max-w-[760px]">
+          <p className="text-[12px] font-black uppercase text-[#0075DE]">
+            {copy.eyebrow}
+          </p>
+          <h2 className="mt-3 break-keep text-[40px] font-black leading-[1.05] text-[#0f0f0f] sm:text-[54px]">
+            {copy.title}
+          </h2>
+          <p className="mt-4 break-keep text-[17px] font-semibold leading-8 text-[#555550]">
+            {copy.description}
+          </p>
+        </div>
+
+        <div className="mt-9 grid gap-4 lg:grid-cols-2">
+          {copy.cards.map((card, index) => (
+            <AssistantFeatureCard card={card} index={index} key={card.title} />
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function AssistantFeatureCard({
+  card,
+  index,
+}: {
+  readonly card: ExpandedFeatureCopy;
+  readonly index: number;
+}) {
+  const visual = assistantCardVisuals[index] ?? assistantCardVisuals[0]!;
+  const Icon = visual.icon;
 
   return (
-    <section className="border-y border-[#eeeeec] bg-white px-4 py-5 md:px-6">
-      <div className="mx-auto max-w-[900px] text-center">
-        <p className="text-[12px] font-semibold text-[#8a8a85]">
-          {copy.landing.customerStrip}
-        </p>
-        <div className="mt-3 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-[13px] font-bold text-[#555550]">
-          {customerTypes.map((item) => (
-            <span className="inline-flex items-center gap-2" key={item}>
-              <span className="h-1 w-1 rounded-full bg-[#c8c8c2]" />
+    <article className="overflow-hidden rounded-[8px] border border-[#dededa] bg-white">
+      <div className="flex items-start justify-between gap-4 p-5 sm:p-6">
+        <div>
+          <p className="text-[12px] font-black uppercase text-[#777770]">
+            {card.eyebrow}
+          </p>
+          <h3 className="mt-2 max-w-[420px] break-keep text-[24px] font-black leading-tight text-[#111111]">
+            {card.title}
+          </h3>
+          <p className="mt-3 max-w-[520px] break-keep text-[14px] font-semibold leading-7 text-[#666660]">
+            {card.description}
+          </p>
+        </div>
+        <span className={`grid h-10 w-10 shrink-0 place-items-center rounded-full ${visual.panel}`}>
+          <Icon className={`h-5 w-5 ${visual.accent}`} />
+        </span>
+      </div>
+
+      <AssistantPreview card={card} index={index} visual={visual} />
+    </article>
+  );
+}
+
+function AssistantPreview({
+  card,
+  index,
+  visual,
+}: {
+  readonly card: ExpandedFeatureCopy;
+  readonly index: number;
+  readonly visual: (typeof assistantCardVisuals)[number];
+}) {
+  if (index === 1) {
+    return (
+      <div className={`border-t border-[#eeeeec] p-5 ${visual.panel}`}>
+        <div className="rounded-[8px] border border-[#dededa] bg-white p-4">
+          <div className="flex items-center gap-2 rounded-[6px] border border-[#eeeeec] px-3 py-2">
+            <Search className="h-4 w-4 text-[#777770]" />
+            <span className="text-[13px] font-bold text-[#333330]">
+              customer request this quarter
+            </span>
+          </div>
+          <div className="mt-4 grid gap-2">
+            {card.items.map((item) => (
+              <div className="flex items-center gap-3 rounded-[6px] bg-[#fbfbfa] p-3" key={item}>
+                <span className="h-2.5 w-2.5 rounded-full bg-[#e95a48]" />
+                <span className="text-[12px] font-bold text-[#333330]">
+                  {item}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (index === 2) {
+    return (
+      <div className={`border-t border-[#eeeeec] p-5 ${visual.panel}`}>
+        <div className="rounded-[8px] border border-[#dededa] bg-white p-4">
+          <div className="flex items-center justify-between">
+            <span className="text-[13px] font-black text-[#111111]">
+              Weekly customer sync
+            </span>
+            <span className="rounded-full bg-[#e8f3ff] px-2 py-1 text-[11px] font-black text-[#0075DE]">
+              Notes
+            </span>
+          </div>
+          <div className="mt-4 space-y-3">
+            {card.items.map((item) => (
+              <div className="grid gap-1" key={item}>
+                <span className="text-[12px] font-black text-[#333330]">
+                  {item}
+                </span>
+                <span className="h-2 rounded-full bg-[#e7e7e2]" />
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className={`border-t border-[#eeeeec] p-5 ${visual.panel}`}>
+      <div className="rounded-[8px] border border-[#dededa] bg-white p-4">
+        <div className="flex items-start gap-3">
+          <span className="grid h-10 w-10 shrink-0 place-items-center rounded-[8px] bg-[#0075DE] text-white">
+            <Sparkles className="h-5 w-5" />
+          </span>
+          <div>
+            <p className="text-[13px] font-black text-[#111111]">
+              Onehand agent
+            </p>
+            <p className="mt-1 text-[13px] font-semibold leading-6 text-[#555550]">
+              {card.items[0] ?? card.title}
+            </p>
+          </div>
+        </div>
+        <div className="mt-4 grid gap-2 sm:grid-cols-3">
+          {card.items.map((item) => (
+            <span
+              className="rounded-[6px] border border-[#eeeeec] bg-[#fbfbfa] p-2 text-[12px] font-bold text-[#333330]"
+              key={item}
+            >
               {item}
             </span>
           ))}
         </div>
       </div>
-    </section>
-  );
-}
-
-function WorkMovingSection() {
-  const { copy } = usePublicSiteLanguage();
-
-  return (
-    <section className="mx-auto max-w-[980px] px-4 py-16 md:px-6 md:py-20" id="워크플로우">
-      <h2 className="max-w-[640px] text-[34px] font-black leading-[1.05] tracking-normal text-[#111111] md:text-[46px]">
-        {copy.landing.sectionWork}
-      </h2>
-
-      <div className="mt-8 grid gap-5 md:grid-cols-[330px_minmax(0,1fr)]">
-        <div className="rounded-[8px] bg-white p-5 shadow-sm">
-          <p className="text-[12px] font-bold text-[#777770]">자동 정리</p>
-          <h3 className="mt-2 text-[18px] font-black leading-tight">반복 확인은 시스템이 먼저 알려줍니다.</h3>
-          <button className="mt-3 grid h-7 w-7 place-items-center rounded-full bg-[#111111] text-white" type="button">
-            <ArrowRight className="h-3.5 w-3.5" />
-          </button>
-
-          <div className="mt-9 grid gap-3">
-            {agentRows.map(({ icon: Icon, text, title }) => (
-              <div className="flex items-start gap-3 border-b border-[#eeeeec] pb-3 last:border-0 last:pb-0" key={title}>
-                <span className="grid h-7 w-7 shrink-0 place-items-center rounded-[6px] bg-[#f2f2ef]">
-                  <Icon className="h-4 w-4 text-[#111111]" />
-                </span>
-                <div>
-                  <p className="text-[13px] font-black">{title}</p>
-                  <p className="mt-0.5 text-[12px] leading-5 text-[#777770]">{text}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        <StatusUpdateMockup />
-      </div>
-
-      <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
-        {workTabs.map(({ icon: Icon, text, title, tone }) => (
-          <div className={`min-h-[112px] rounded-[8px] p-4 shadow-sm ${tone}`} key={title}>
-            <Icon className="h-5 w-5" />
-            <p className="mt-4 text-[13px] font-black">{title}</p>
-            <p className="mt-1 text-[12px] opacity-75">{text}</p>
-          </div>
-        ))}
-      </div>
-    </section>
-  );
-}
-
-function StatusUpdateMockup() {
-  const rows = [
-    ["주간 회의", "제안 검토", "박민준"],
-    ["견적 발송", "승인 대기", "김서연"],
-    ["팔로업", "일정 조율", "이현우"],
-    ["계약 협의", "조건 확인", "정하늘"],
-    ["온보딩", "담당 배정", "최지우"],
-  ];
-
-  return (
-    <div className="overflow-hidden rounded-[8px] border border-[#d7eeec] bg-[#bfece7] p-4 shadow-sm">
-      <div className="rounded-[8px] bg-white p-5">
-        <div className="flex items-center justify-between">
-          <h3 className="text-[24px] font-black">출시 상태 업데이트</h3>
-          <span className="rounded-[6px] bg-[#f1f1ef] px-2 py-1 text-[11px] font-bold text-[#777770]">공유됨</span>
-        </div>
-
-        <div className="mt-5 overflow-hidden rounded-[8px] border border-[#eeeeec]">
-          <div className="grid grid-cols-[1.2fr_1fr_0.9fr] bg-[#fafafa] px-3 py-2 text-[11px] font-bold text-[#777770]">
-            <span>업무</span>
-            <span>상태</span>
-            <span>담당자</span>
-          </div>
-          {rows.map(([name, status, owner]) => (
-            <div
-              className="grid grid-cols-[1.2fr_1fr_0.9fr] border-t border-[#eeeeec] px-3 py-2 text-[12px]"
-              key={name}
-            >
-              <span className="truncate font-semibold">{name}</span>
-              <span className="truncate text-[#666661]">{status}</span>
-              <span className="truncate text-[#666661]">{owner}</span>
-            </div>
-          ))}
-        </div>
-      </div>
     </div>
   );
 }
 
-function AssistantsSection() {
-  const { copy } = usePublicSiteLanguage();
-
-  return (
-    <section className="mx-auto max-w-[980px] px-4 pb-16 md:px-6 md:pb-20" id="제품">
-      <h2 className="max-w-[700px] text-[34px] font-black leading-[1.05] tracking-normal text-[#111111] md:text-[46px]">
-        {copy.landing.sectionAssistants}
-      </h2>
-
-      <div className="mt-8 grid gap-5 md:grid-cols-2">
-        {workCards.map(({ accent, body, eyebrow, icon: Icon, title }, index) => (
-          <FeatureShowcaseCard
-            accent={accent}
-            body={body}
-            className={index === 0 ? "md:col-span-2" : ""}
-            eyebrow={eyebrow}
-            icon={Icon}
-            key={title}
-            title={title}
-          />
-        ))}
-      </div>
-    </section>
-  );
-}
-
-function WorkspaceSection() {
-  const { copy } = usePublicSiteLanguage();
-
-  return (
-    <section className="mx-auto max-w-[980px] px-4 pb-16 md:px-6 md:pb-20" id="고객관리">
-      <h2 className="max-w-[720px] text-[34px] font-black leading-[1.05] tracking-normal text-[#111111] md:text-[46px]">
-        {copy.landing.sectionWorkspace}
-      </h2>
-
-      <div className="mt-8 grid gap-5 md:grid-cols-2">
-        {workspaceCards.map(({ accent, body, eyebrow, icon: Icon, title }, index) => (
-          <FeatureShowcaseCard
-            accent={accent}
-            body={body}
-            className={index === 2 ? "md:col-span-2" : ""}
-            eyebrow={eyebrow}
-            icon={Icon}
-            key={title}
-            title={title}
-          />
-        ))}
-      </div>
-    </section>
-  );
-}
-
-function FeatureShowcaseCard({
-  accent,
-  body,
-  className = "",
-  eyebrow,
-  icon: Icon,
-  title,
+function TogetherSection({
+  copy,
 }: {
-  readonly accent: string;
-  readonly body: ReactNode;
-  readonly className?: string;
-  readonly eyebrow: string;
-  readonly icon: IconType;
-  readonly title: string;
+  readonly copy: ExpandedLandingCopy["together"];
 }) {
   return (
-    <article className={`overflow-hidden rounded-[8px] bg-white shadow-sm ${className}`}>
-      <div className="flex min-h-[112px] items-start justify-between gap-6 p-5">
-        <div>
-          <p className="text-[12px] font-bold text-[#777770]">{eyebrow}</p>
-          <h3 className="mt-2 max-w-[420px] text-[18px] font-black leading-tight">{title}</h3>
+    <section className="bg-[#f7f7f5] py-16 sm:py-20 lg:py-24">
+      <div className="mx-auto w-full max-w-[1320px] px-4 sm:px-6 lg:px-8">
+        <div className="max-w-[820px]">
+          <p className="text-[12px] font-black uppercase text-[#0075DE]">
+            {copy.eyebrow}
+          </p>
+          <h2 className="mt-3 break-keep text-[40px] font-black leading-[1.05] text-[#0f0f0f] sm:text-[54px]">
+            {copy.title}
+          </h2>
+          <p className="mt-4 break-keep text-[17px] font-semibold leading-8 text-[#555550]">
+            {copy.description}
+          </p>
         </div>
-        <button className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-[#111111] text-white" type="button">
-          <ArrowRight className="h-3.5 w-3.5" />
-        </button>
+
+        <div className="mt-9 grid gap-4 lg:grid-cols-3">
+          {copy.cards.map((card, index) => (
+            <TogetherCard card={card} index={index} key={card.title} />
+          ))}
+        </div>
       </div>
-      <div className={`border-l-[10px] ${accent}`}>
-        <div className="min-h-[260px] bg-[#fbfbfa] p-4">
-          <div className="mb-3 flex items-center gap-2 text-[12px] font-bold text-[#777770]">
-            <Icon className="h-4 w-4" />
-            onehand.sales
+    </section>
+  );
+}
+
+function TogetherCard({
+  card,
+  index,
+}: {
+  readonly card: ExpandedFeatureCopy;
+  readonly index: number;
+}) {
+  const visual = togetherCardVisuals[index] ?? togetherCardVisuals[0]!;
+  const Icon = visual.icon;
+
+  return (
+    <article className="overflow-hidden rounded-[8px] border border-[#dededa] bg-white">
+      <div className="p-5 sm:p-6">
+        <div className="flex items-center justify-between gap-3">
+          <div>
+            <p className="text-[12px] font-black uppercase text-[#777770]">
+              {card.eyebrow}
+            </p>
+            <h3 className="mt-2 break-keep text-[22px] font-black leading-tight text-[#111111]">
+              {card.title}
+            </h3>
           </div>
-          {body}
+          <span className={`grid h-10 w-10 shrink-0 place-items-center rounded-[8px] ${visual.panel}`}>
+            <Icon className={`h-5 w-5 ${visual.accent}`} />
+          </span>
+        </div>
+        <p className="mt-3 break-keep text-[13px] font-semibold leading-6 text-[#666660]">
+          {card.description}
+        </p>
+      </div>
+
+      <div className={`border-t border-[#eeeeec] p-5 ${visual.panel}`}>
+        <div className="rounded-[8px] border border-[#dededa] bg-white p-4">
+          <div className="mb-4 flex items-center justify-between">
+            <span className="text-[13px] font-black text-[#111111]">
+              {card.eyebrow}
+            </span>
+            <ArrowRight className="h-4 w-4 text-[#777770]" />
+          </div>
+          <div className="grid gap-2">
+            {card.items.map((item, itemIndex) => (
+              <div
+                className="flex min-h-10 items-center justify-between rounded-[6px] border border-[#eeeeec] bg-[#fbfbfa] px-3 text-[12px] font-bold text-[#333330]"
+                key={item}
+              >
+                <span>{item}</span>
+                <span className="text-[#999993]">0{itemIndex + 1}</span>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </article>
   );
 }
 
-function AssistantTaskMockup() {
+function TrustSection({
+  copy,
+}: {
+  readonly copy: ExpandedLandingCopy["trust"];
+}) {
   return (
-    <div className="grid gap-3 md:grid-cols-[240px_minmax(0,1fr)]">
-      <div className="rounded-[8px] border border-[#eeeeec] bg-white p-4">
-        <p className="text-[13px] font-black">오늘 할 일을 정리해줘</p>
-        <div className="mt-4 grid gap-2 text-[12px] text-[#666661]">
-          {["미팅 후속 메일 작성", "계약서 검토 요청", "견적 보류 사유 확인"].map((item) => (
-            <div className="flex items-center gap-2" key={item}>
-              <Check className="h-3.5 w-3.5 text-[#159447]" />
-              <span>{item}</span>
-            </div>
-          ))}
-        </div>
-      </div>
-      <div className="rounded-[8px] border border-[#eeeeec] bg-white p-4">
-        <div className="flex items-center justify-between">
-          <p className="text-[13px] font-black">상태 업데이트</p>
-          <Sparkles className="h-4 w-4 text-[#d89c25]" />
-        </div>
-        <div className="mt-4 grid gap-3">
-          {["김서연 담당자에게 회신 필요", "금요일 전 제안서 수정", "다음 주 온보딩 일정 확정"].map((item) => (
-            <div className="rounded-[6px] bg-[#f7f7f5] px-3 py-2 text-[12px] font-semibold" key={item}>
-              {item}
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function SearchMockup() {
-  return (
-    <div className="rounded-[8px] border border-[#eeeeec] bg-white p-4">
-      <div className="flex h-10 items-center gap-2 rounded-[6px] border border-[#e1e1dd] px-3">
-        <Search className="h-4 w-4 text-[#777770]" />
-        <span className="text-[13px] font-semibold text-[#333330]">지난주 보류된 견적</span>
-      </div>
-      <div className="mt-4 grid gap-3">
-        {["서울 매장 POS 교체", "연간 유지보수 계약", "제품 교육 일정"].map((item, index) => (
-          <div className="rounded-[6px] border border-[#eeeeec] p-3" key={item}>
-            <div className="flex items-center gap-2">
-              <span className="grid h-6 w-6 place-items-center rounded-[6px] bg-[#f1f1ef] text-[11px] font-bold">
-                {index + 1}
-              </span>
-              <p className="text-[13px] font-black">{item}</p>
-            </div>
-            <p className="mt-2 text-[12px] text-[#777770]">딜, 회의록, 담당자 메모에서 관련 기록을 찾았습니다.</p>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-function MeetingNoteMockup() {
-  return (
-    <div className="rounded-[8px] border border-[#eeeeec] bg-white p-4">
-      <div className="flex items-center justify-between border-b border-[#eeeeec] pb-3">
-        <div>
-          <p className="text-[13px] font-black">Joyce & Sam weekly 1:1</p>
-          <p className="mt-1 text-[12px] text-[#777770]">요약 · 액션아이템 · 연결된 딜</p>
-        </div>
-        <span className="rounded-[6px] bg-[#eef6ff] px-2 py-1 text-[11px] font-bold text-[#006bd1]">AI 요약</span>
-      </div>
-      <div className="mt-4 grid gap-2 text-[12px]">
-        {["현재 제안서의 ROI 근거 보강", "기술팀 검토 일정 확정", "다음 미팅 전 보안 문서 전달"].map((item) => (
-          <div className="flex items-start gap-2" key={item}>
-            <ListChecks className="mt-0.5 h-3.5 w-3.5 text-[#159447]" />
-            <span>{item}</span>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-function DocsMockup() {
-  return (
-    <div className="rounded-[8px] border border-[#eeeeec] bg-white p-4">
-      <img
-        alt="화이트보드 앞에서 영업 업무 흐름을 정리하는 모습"
-        className="mb-4 h-32 w-full rounded-[6px] object-cover"
-        decoding="async"
-        loading="eager"
-        referrerPolicy="no-referrer"
-        src={publicSiteImages.whiteboardPlanning}
-      />
-      <h4 className="text-[22px] font-black">상반기 계획</h4>
-      <div className="mt-4 grid gap-3">
-        {["핵심 고객군", "제품별 제안 전략", "분기별 목표"].map((item) => (
-          <div className="rounded-[6px] bg-[#f7f7f5] px-3 py-2 text-[12px] font-semibold" key={item}>
-            {item}
-          </div>
-        ))}
-      </div>
-      <div className="mt-4 h-20 rounded-[6px] bg-[#f0fbfa]" />
-    </div>
-  );
-}
-
-function CompanyMockup() {
-  return (
-    <div className="overflow-hidden rounded-[8px] border border-[#eeeeec] bg-white">
-      <img
-        alt="고객과 함께 노트북 화면을 보며 상담하는 모습"
-        className="h-28 w-full object-cover"
-        decoding="async"
-        loading="eager"
-        referrerPolicy="no-referrer"
-        src={publicSiteImages.salesConversation}
-      />
-      <div className="p-4">
-        <h4 className="text-[22px] font-black">회사 HQ</h4>
-        <p className="mt-2 text-[12px] leading-5 text-[#666661]">
-          회사 정보, 담당자, 진행 중인 딜, 최근 회의록을 한 페이지에서 확인합니다.
-        </p>
-        <div className="mt-4 grid grid-cols-2 gap-2 text-[12px]">
-          {["담당자", "진행 딜", "회의록", "첨부"].map((item) => (
-            <span className="rounded-[6px] bg-[#f7f7f5] px-3 py-2 font-semibold" key={item}>
-              {item}
-            </span>
-          ))}
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function ProjectMockup() {
-  return (
-    <div className="grid gap-3 md:grid-cols-2">
-      <div className="rounded-[8px] border border-[#eeeeec] bg-white p-4">
-        <h4 className="text-[18px] font-black">최종 QA</h4>
-        <div className="mt-4 grid gap-2 text-[12px]">
-          {["계약 조건 확인", "세금계산서 발행", "온보딩 자료 전달"].map((item) => (
-            <label className="flex items-center gap-2" key={item}>
-              <span className="grid h-4 w-4 place-items-center rounded-[4px] border border-[#c8c8c2]">
-                <Check className="h-3 w-3" />
-              </span>
-              {item}
-            </label>
-          ))}
-        </div>
-      </div>
-      <div className="rounded-[8px] border border-[#eeeeec] bg-white p-4">
-        <h4 className="text-[18px] font-black">출시 트래커</h4>
-        <div className="mt-4 grid grid-cols-3 gap-2">
-          {["준비", "진행", "완료"].map((stage) => (
-            <div className="min-h-[96px] rounded-[6px] bg-[#f7f7f5] p-2" key={stage}>
-              <p className="text-[11px] font-bold text-[#777770]">{stage}</p>
-              <div className="mt-2 h-8 rounded-[5px] bg-white" />
-              <div className="mt-2 h-8 rounded-[5px] bg-white" />
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function QuoteSection() {
-  const { copy } = usePublicSiteLanguage();
-
-  return (
-    <section className="mx-auto max-w-[980px] px-4 pb-16 text-center md:px-6 md:pb-20">
-      <p className="text-[24px] leading-9 text-[#333330]">
-        {copy.landing.quote}
-      </p>
-      <p className="mt-2 text-[13px] font-bold text-[#555550]">onehand.sales</p>
-    </section>
-  );
-}
-
-function TrustedSection() {
-  const { copy } = usePublicSiteLanguage();
-
-  return (
-    <section className="mx-auto max-w-[980px] px-4 pb-8 md:px-6 md:pb-10" id="자료">
-      <h2 className="text-[30px] font-black leading-tight tracking-normal md:text-[42px]">
-        {copy.landing.trustedTitle}
-      </h2>
-      <div className="mt-8 grid gap-4 md:grid-cols-3">
-        {testimonials.map((item) => (
-          <article className={`overflow-hidden rounded-[8px] text-white ${item.tone}`} key={item.name}>
-            <div className="relative h-32">
-              <img
-                alt={`${item.name} 업무 장면`}
-                className="h-full w-full object-cover mix-blend-multiply opacity-80"
-                decoding="async"
-                loading="eager"
-                referrerPolicy="no-referrer"
-                src={item.imageSrc}
-              />
-              <div className="absolute left-5 top-5 grid h-12 w-12 place-items-center rounded-full bg-white/20 text-xl font-black">
-                {item.name.slice(0, 1)}
-              </div>
-            </div>
-            <div className="min-h-[150px] p-5">
-              <p className="text-[14px] leading-6">“{item.quote}”</p>
-              <p className="mt-4 text-[12px] font-bold opacity-80">{item.name}</p>
-            </div>
-          </article>
-        ))}
-      </div>
-    </section>
-  );
-}
-
-function ProofPointStrip() {
-  return (
-    <section className="border-y border-[#eeeeec] bg-white/55 px-4 py-3 md:px-6">
-      <div className="mx-auto flex max-w-[1180px] flex-wrap items-center justify-center gap-x-8 gap-y-2 text-[11px] font-semibold text-[#8a8a85]">
-        {proofPoints.map((item) => (
-          <span className="inline-flex items-center gap-2" key={item}>
-            <span className="h-1 w-1 rounded-full bg-[#b8b8b2]" />
-            {item}
-          </span>
-        ))}
-      </div>
-    </section>
-  );
-}
-
-function FinalCta({ onOpenLogin }: { readonly onOpenLogin: () => void }) {
-  const { copy } = usePublicSiteLanguage();
-
-  return (
-    <section className="mx-auto max-w-[980px] px-4 py-24 text-center md:px-6 md:py-28" id="가격">
-      <h2 className="text-[30px] font-black tracking-normal md:text-[42px]">
-        {copy.landing.finalCta}
-      </h2>
-      <div className="mt-4 flex flex-col items-center justify-center gap-2 sm:flex-row">
-        <button
-          className="inline-flex h-9 items-center gap-2 rounded-[6px] bg-[#0077e6] px-4 text-[13px] font-bold text-white hover:bg-[#006bd1]"
-          onClick={onOpenLogin}
-          type="button"
-        >
-          {copy.landing.finalPrimary}
-          <ArrowRight className="h-3.5 w-3.5" />
-        </button>
-        <a
-          className="inline-flex h-9 items-center rounded-[6px] bg-white px-4 text-[13px] font-bold text-[#006bd1] hover:bg-[#f7f7f5]"
-          href="/login"
-        >
-          로그인
-        </a>
-      </div>
-    </section>
-  );
-}
-
-function LandingFooter() {
-  const { copy } = usePublicSiteLanguage();
-
-  return (
-    <footer className="border-t border-[#eeeeec] bg-white px-4 py-14 md:px-6">
-      <div className="mx-auto grid max-w-[980px] gap-10 md:grid-cols-[1.8fr_repeat(4,1fr)]">
-        <div className="min-w-0">
-          <div className="flex items-center gap-2">
-            <span className="grid h-8 w-8 place-items-center rounded-[7px] border-2 border-[#111111] bg-white">
-              <BriefcaseBusiness className="h-5 w-5" />
-            </span>
-            <span className="text-[24px] font-black leading-none">onehand</span>
-          </div>
-
-          <div className="mt-6 flex flex-wrap items-center gap-4 text-[#8a8a85]">
-            {footerSocialLinks.map(({ icon: Icon, label }) => (
-              <a
-                aria-label={label}
-                className="hover:text-[#111111]"
-                href="/"
-                key={label}
-              >
-                <Icon className="h-4 w-4" />
-              </a>
-            ))}
-          </div>
-
-          <PublicSiteLanguageSelect />
-
-          <a className="mt-5 block text-[12px] text-[#777770] hover:text-[#111111]" href="/">
-            {copy.common.cookieSettings}
-          </a>
-          <p className="mt-6 text-[11px] text-[#999993]">
-            {copy.common.copyright}
+    <section className="bg-[#f7f7f5] py-16 sm:py-20 lg:py-24">
+      <div className="mx-auto w-full max-w-[1320px] px-4 sm:px-6 lg:px-8">
+        <div className="max-w-[760px]">
+          <h2 className="break-keep text-[40px] font-black leading-[1.05] text-[#0f0f0f] sm:text-[54px]">
+            {copy.title}
+          </h2>
+          <p className="mt-4 break-keep text-[17px] font-semibold leading-8 text-[#555550]">
+            {copy.description}
           </p>
         </div>
 
-        {copy.common.footerColumns.map(([title, ...links]) => (
-          <div key={title}>
-            <h3 className="text-[12px] font-black">{title}</h3>
-            <ul className="mt-3 grid gap-2 text-[12px] text-[#777770]">
-              {links.map((link) => (
-                <li key={link}>
-                  <a className="hover:text-[#111111]" href="/">
-                    {link}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
-        ))}
+        <div className="mt-9 grid gap-4 lg:grid-cols-3">
+          {copy.testimonials.map((testimonial) => (
+            <article
+              className={`${testimonial.tone} min-h-[320px] rounded-[8px] p-6 text-white`}
+              key={testimonial.company}
+            >
+              <p className="text-[13px] font-black uppercase opacity-80">
+                {testimonial.company}
+              </p>
+              <p className="mt-20 break-keep text-[24px] font-black leading-tight">
+                “{testimonial.quote}”
+              </p>
+              <p className="mt-6 text-[13px] font-bold opacity-85">
+                {testimonial.person}
+              </p>
+            </article>
+          ))}
+        </div>
+
+        <div className="mt-8 flex flex-wrap justify-center gap-x-7 gap-y-3 border-t border-[#e3e3de] pt-5 text-[12px] font-black text-[#666660]">
+          {copy.stats.map((stat) => (
+            <span className="inline-flex items-center gap-2" key={stat}>
+              <CheckCircle2 className="h-4 w-4 text-[#0075DE]" />
+              {stat}
+            </span>
+          ))}
+        </div>
       </div>
-    </footer>
+    </section>
+  );
+}
+
+function WorkspaceSection({ copy }: { readonly copy: LandingCopy }) {
+  const defaultVisual = {
+    icon: Database,
+    tone: "bg-[#e8f3ff] text-[#0075DE]",
+  };
+
+  return (
+    <section className="min-h-screen bg-white py-16 sm:py-20 lg:py-24">
+      <div className="mx-auto grid w-full max-w-[1320px] gap-10 px-4 sm:px-6 lg:grid-cols-[0.9fr_1.1fr] lg:items-center lg:px-8">
+        <div>
+          <p className="text-[12px] font-black uppercase text-[#0075DE]">
+            {copy.workspace.eyebrow}
+          </p>
+          <h2 className="mt-3 max-w-[720px] break-keep text-[40px] font-black leading-[1.05] text-[#0f0f0f] sm:text-[56px] lg:text-[68px]">
+            {copy.workspace.title}
+          </h2>
+          <p className="mt-5 max-w-[620px] break-keep text-[17px] font-semibold leading-8 text-[#555550]">
+            {copy.workspace.description}
+          </p>
+
+          <div className="mt-8 grid gap-3">
+            {copy.workspace.views.map((view, index) => {
+              const visual = workspaceViewVisuals[index] ?? defaultVisual;
+              const Icon = visual.icon;
+
+              return (
+                <div
+                  className="flex gap-4 rounded-[8px] border border-[#eeeeec] bg-[#fbfbfa] p-4"
+                  key={view.title}
+                >
+                  <span
+                    className={`grid h-11 w-11 shrink-0 place-items-center rounded-[8px] ${visual.tone}`}
+                  >
+                    <Icon className="h-5 w-5" />
+                  </span>
+                  <div>
+                    <h3 className="text-[15px] font-black text-[#111111]">
+                      {view.title}
+                    </h3>
+                    <p className="mt-1 text-[13px] font-semibold leading-6 text-[#666660]">
+                      {view.description}
+                    </p>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        <WorkspacePreview copy={copy} />
+      </div>
+    </section>
+  );
+}
+
+function WorkspacePreview({ copy }: { readonly copy: LandingCopy }) {
+  return (
+    <div className="overflow-hidden rounded-[8px] border border-[#dededa] bg-[#f7f7f5] shadow-[0_28px_90px_rgba(15,15,15,0.11)]">
+      <div className="flex h-11 items-center gap-2 border-b border-[#e7e7e2] bg-white px-4">
+        <span className="h-2.5 w-2.5 rounded-full bg-[#d8d8d3]" />
+        <span className="h-2.5 w-2.5 rounded-full bg-[#d8d8d3]" />
+        <span className="h-2.5 w-2.5 rounded-full bg-[#d8d8d3]" />
+        <span className="ml-3 text-[12px] font-black text-[#555550]">
+          Accounts
+        </span>
+      </div>
+
+      <div className="grid min-h-[520px] bg-white lg:grid-cols-[1fr_270px]">
+        <div className="min-w-0 p-5 sm:p-7">
+          <div className="flex items-center justify-between gap-3">
+            <div>
+              <p className="text-[12px] font-black uppercase text-[#777770]">
+                Connected records
+              </p>
+              <h3 className="mt-1 text-[26px] font-black text-[#111111]">
+                Pipeline desk
+              </h3>
+            </div>
+            <span className="inline-flex h-9 items-center gap-2 rounded-[6px] bg-[#0075DE] px-3 text-[12px] font-black text-white">
+              <Sparkles className="h-4 w-4" />
+              Agent
+            </span>
+          </div>
+
+          <div className="mt-6 overflow-hidden rounded-[8px] border border-[#eeeeec]">
+            <div className="grid grid-cols-3 bg-[#f7f7f5] text-[12px] font-black text-[#555550]">
+              {copy.workspace.tableHeaders.map((header) => (
+                <span className="border-r border-[#eeeeec] p-3 last:border-r-0" key={header}>
+                  {header}
+                </span>
+              ))}
+            </div>
+            {copy.workspace.rows.map((row) => (
+              <div
+                className="grid grid-cols-3 border-t border-[#eeeeec] text-[13px] font-bold text-[#333330]"
+                key={row.join("-")}
+              >
+                {row.map((cell, index) => (
+                  <span
+                    className="min-h-[54px] border-r border-[#eeeeec] p-3 last:border-r-0"
+                    key={`${cell}-${index}`}
+                  >
+                    {index === 1 ? (
+                      <span className="inline-flex rounded-full bg-[#e8f3ff] px-2 py-1 text-[11px] font-black text-[#0075DE]">
+                        {cell}
+                      </span>
+                    ) : (
+                      cell
+                    )}
+                  </span>
+                ))}
+              </div>
+            ))}
+          </div>
+
+          <div className="mt-5 grid gap-3 sm:grid-cols-3">
+            <MetricPill icon={Handshake} label="Deals" value="+18%" />
+            <MetricPill icon={Mail} label="Replies" value="2.4h" />
+            <MetricPill icon={CheckCircle2} label="Tasks" value="96%" />
+          </div>
+        </div>
+
+        <aside className="border-t border-[#eeeeec] bg-[#fbfbfa] p-5 lg:border-l lg:border-t-0">
+          <span className="grid h-12 w-12 place-items-center rounded-full bg-[#e8f3ff]">
+            <Building2 className="h-6 w-6 text-[#0075DE]" />
+          </span>
+          <h3 className="mt-4 text-[24px] font-black text-[#111111]">
+            {copy.workspace.detailTitle}
+          </h3>
+          <div className="mt-5 grid gap-3">
+            {copy.workspace.detailItems.map((item) => (
+              <div className="rounded-[8px] border border-[#eeeeec] bg-white p-3" key={item.title}>
+                <p className="text-[13px] font-black text-[#111111]">
+                  {item.title}
+                </p>
+                <p className="mt-1 text-[12px] font-semibold leading-5 text-[#666660]">
+                  {item.description}
+                </p>
+              </div>
+            ))}
+          </div>
+        </aside>
+      </div>
+    </div>
+  );
+}
+
+function MetricPill({
+  icon: Icon,
+  label,
+  value,
+}: {
+  readonly icon: IconType;
+  readonly label: string;
+  readonly value: string;
+}) {
+  return (
+    <div className="rounded-[8px] border border-[#eeeeec] bg-[#fbfbfa] p-3">
+      <div className="flex items-center gap-2">
+        <Icon className="h-4 w-4 text-[#0075DE]" />
+        <span className="text-[12px] font-black text-[#555550]">{label}</span>
+      </div>
+      <p className="mt-3 text-[24px] font-black text-[#111111]">{value}</p>
+    </div>
+  );
+}
+
+function FinalSection({ copy }: { readonly copy: LandingCopy }) {
+  return (
+    <section className="flex min-h-screen flex-col bg-[#f7f7f5]">
+      <div className="flex min-h-[48vh] flex-1 items-center justify-center px-4 py-16 text-center sm:px-6">
+        <div>
+          <h2 className="break-keep text-[38px] font-black leading-tight text-[#0f0f0f] sm:text-[42px]">
+            {copy.final.title}
+          </h2>
+          {copy.final.description ? (
+            <p className="mx-auto mt-4 max-w-[620px] break-keep text-[16px] font-semibold leading-7 text-[#555550]">
+              {copy.final.description}
+            </p>
+          ) : null}
+          <div className="mt-7 flex flex-wrap justify-center gap-3">
+            <Link
+              className="inline-flex h-11 items-center gap-2 rounded-[6px] bg-[#0075DE] px-5 text-[15px] font-black text-white hover:bg-[#006AC8]"
+              to="/signup"
+            >
+              {copy.final.primaryCta}
+              <ArrowRight className="h-4 w-4" />
+            </Link>
+            <Link
+              className="inline-flex h-11 items-center rounded-[6px] bg-white px-5 text-[15px] font-black text-[#005aa8] hover:bg-[#eef6ff]"
+              to="/contact"
+            >
+              {copy.final.secondaryCta}
+            </Link>
+          </div>
+        </div>
+      </div>
+
+      <PublicSiteFooter />
+    </section>
   );
 }

@@ -1,5 +1,6 @@
-import { BriefcaseBusiness, CircleHelp, Globe2, Loader2 } from "lucide-react";
+import { CircleHelp, Globe2, Loader2 } from "lucide-react";
 import { Link } from "react-router-dom";
+import { OnehandLogoMark } from "@/components/brand/onehand-logo-mark";
 import type {
   AuthProviderId,
   AuthProviderOption,
@@ -58,8 +59,8 @@ const loginCopy: Record<
     homeAria: "홈으로 이동",
     title: "나만의 AI 워크스페이스",
     subtitles: {
-      login: "onehand.sales 계정에 로그인",
-      signup: "onehand.sales 계정 만들기",
+      login: "Onehand 계정에 로그인",
+      signup: "Onehand 계정 만들기",
     },
     providerLead: {
       login: "다음으로 계속하기",
@@ -93,8 +94,8 @@ const loginCopy: Record<
     homeAria: "ホームへ移動",
     title: "自分だけのAIワークスペース",
     subtitles: {
-      login: "onehand.sales アカウントにログイン",
-      signup: "onehand.sales アカウントを作成",
+      login: "Onehand アカウントにログイン",
+      signup: "Onehand アカウントを作成",
     },
     providerLead: {
       login: "次の方法で続行",
@@ -128,8 +129,8 @@ const loginCopy: Record<
     homeAria: "前往首页",
     title: "我的 AI 工作空间",
     subtitles: {
-      login: "登录 onehand.sales 账户",
-      signup: "创建 onehand.sales 账户",
+      login: "登录 Onehand 账户",
+      signup: "创建 Onehand 账户",
     },
     providerLead: {
       login: "使用以下方式继续",
@@ -163,8 +164,8 @@ const loginCopy: Record<
     homeAria: "Go home",
     title: "Your AI workspace",
     subtitles: {
-      login: "Log in to onehand.sales",
-      signup: "Create your onehand.sales account",
+      login: "Log in to Onehand",
+      signup: "Create your Onehand account",
     },
     providerLead: {
       login: "Continue with",
@@ -198,8 +199,8 @@ const loginCopy: Record<
     homeAria: "Go home",
     title: "Your AI workspace",
     subtitles: {
-      login: "Log in to onehand.sales",
-      signup: "Create your onehand.sales account",
+      login: "Log in to Onehand",
+      signup: "Create your Onehand account",
     },
     providerLead: {
       login: "Continue with",
@@ -280,10 +281,10 @@ export function AuthLoginPage({
           <div className="grid justify-items-center text-center">
             <Link
               aria-label={copy.homeAria}
-              className="grid h-8 w-8 place-items-center rounded-[7px] border-2 border-[#111111] bg-white"
+              className="grid h-9 w-9 place-items-center text-[#111111]"
               to="/"
             >
-              <BriefcaseBusiness className="h-5 w-5" />
+              <OnehandLogoMark className="h-8 w-8" />
             </Link>
 
             <h1

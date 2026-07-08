@@ -15,6 +15,7 @@ import {
   Sparkles,
 } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
+import { OnehandLogoMark } from "@/components/brand/onehand-logo-mark";
 import { usePublicSiteLanguage } from "@/features/public-site/i18n/public-site-language";
 
 type PublicSiteHeaderProps = {
@@ -92,12 +93,14 @@ export function PublicSiteHeader({ onLogin }: PublicSiteHeaderProps) {
   };
 
   return (
-    <header className="fixed inset-x-0 top-0 z-50 border-b border-[#eeeeec] bg-white/95 backdrop-blur">
+    <header className="fixed inset-x-0 top-0 z-50 bg-white/95 backdrop-blur">
       <div className="flex h-14 w-full items-center justify-between px-4 md:px-5">
-        <Link aria-label={copy.common.logoAria} className="flex items-center" to="/">
-          <span className="grid h-8 w-8 place-items-center rounded-[7px] border-2 border-[#111111] bg-white">
-            <BriefcaseBusiness className="h-5 w-5" />
-          </span>
+        <Link
+          aria-label={copy.common.logoAria}
+          className="flex h-9 w-9 items-center justify-center text-[#111111]"
+          to="/"
+        >
+          <OnehandLogoMark className="h-8 w-8" />
         </Link>
 
         <nav className="absolute left-1/2 hidden -translate-x-1/2 items-center gap-7 text-[13px] font-semibold text-[#4b4b48] md:flex">
