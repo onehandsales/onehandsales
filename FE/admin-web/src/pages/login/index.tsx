@@ -54,7 +54,7 @@ export function LoginPage() {
   return (
     <main className="flex min-h-screen items-center justify-center bg-muted px-5">
       <section className="w-full max-w-sm rounded-lg border bg-white p-6">
-        <p className="text-sm font-semibold text-primary">onehand.sales admin</p>
+        <p className="text-sm font-semibold text-primary">Onehand admin</p>
         <h1 className="mt-3 text-2xl font-semibold">관리자 로그인</h1>
         <p className="mt-2 text-sm text-muted-foreground">
           Backend App access token은 `/admin/api/me`로 관리자 권한을 확인합니다.

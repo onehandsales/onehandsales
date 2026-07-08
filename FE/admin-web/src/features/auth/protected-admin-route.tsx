@@ -54,7 +54,7 @@ function AdminAccessDenied() {
     <main className="grid min-h-screen place-items-center bg-muted px-5 text-center">
       <section className="grid w-full max-w-md gap-4 rounded-lg border bg-white p-6">
         <div>
-          <p className="text-sm font-semibold text-primary">onehand.sales admin</p>
+          <p className="text-sm font-semibold text-primary">Onehand admin</p>
           <h1 className="mt-3 text-2xl font-semibold">
             관리자 권한이 필요합니다
           </h1>

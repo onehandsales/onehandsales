@@ -669,6 +669,7 @@ async function seedLocalDemoSalesData() {
       data: {
         userId,
         sourceType,
+        title: `${company.companyName} meeting note`,
         meetingAt: getDateTime(companyIndex - 10, 9 + (companyIndex % 6)),
         timeZone: "Asia/Seoul",
         details: `${company.companyName} 미팅에서는 ${companySeed.field} 조직의 영업 진행 상황을 개인 담당자 기준으로 남기되, 임원 보고에서는 단계별 딜과 예상 매출을 합산해 보고하는 방향을 논의했다. 담당자 4명, 딜 4건, 상품 4개가 같은 회의록에 연결되어 후속 조치 누락을 줄이는 흐름을 검증했다.`,
