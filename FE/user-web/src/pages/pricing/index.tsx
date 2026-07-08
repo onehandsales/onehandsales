@@ -11,8 +11,8 @@ export function PricingPage() {
 
   return (
     <PublicSitePageShell>
-      <section className="px-4 pb-16 pt-16 md:px-6 md:pb-24 md:pt-20 lg:px-8">
-        <div className="mx-auto max-w-[1320px]">
+      <section className="bg-white pb-16 pt-16 md:pb-24 md:pt-20">
+        <div className="mx-auto w-full max-w-[1320px] px-4 sm:px-6 lg:px-8">
           <div className="text-center">
             <h1 className="text-[38px] font-black leading-[1.05] tracking-normal md:text-[58px]">
               {pricing.title}
@@ -170,8 +170,8 @@ export function PricingPage() {
         </div>
       </section>
 
-      <section className="px-4 pb-16 md:px-6 md:pb-24 lg:px-8">
-        <div className="mx-auto max-w-[1320px]">
+      <section className="bg-white pb-16 md:pb-24">
+        <div className="mx-auto w-full max-w-[1320px] px-4 sm:px-6 lg:px-8">
           <h2 className="text-[34px] font-black md:text-[46px]">{pricing.featuresTitle}</h2>
           <div className="mt-8 overflow-x-auto">
             <table className="w-full min-w-[760px] border-collapse text-left text-[13px]">
@@ -220,8 +220,8 @@ export function PricingPage() {
         </div>
       </section>
 
-      <section className="px-4 pb-20 md:px-6 md:pb-28 lg:px-8">
-        <div className="mx-auto max-w-[1320px]">
+      <section className="bg-white pb-20 md:pb-28">
+        <div className="mx-auto w-full max-w-[1320px] px-4 sm:px-6 lg:px-8">
           <h2 className="text-[34px] font-black md:text-[46px]">{pricing.faqTitle}</h2>
           <div className="mt-8 divide-y divide-[#eeeeec] border-y border-[#eeeeec]">
             {pricing.faqs.map((faq) => (

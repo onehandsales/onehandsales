@@ -1,4 +1,5 @@
 import { ChevronDown } from "lucide-react";
+import { useEffect, useRef } from "react";
 import {
   publicSiteLanguageOptions,
   usePublicSiteLanguage,
@@ -7,6 +8,7 @@ import {
 
 export function PublicSiteLanguageSelect() {
   const { copy, language, setLanguage } = usePublicSiteLanguage();
+  const detailsRef = useRef<HTMLDetailsElement>(null);
   const selectedOption = publicSiteLanguageOptions.find(
     (option) => option.value === language
   );
@@ -15,8 +17,39 @@ export function PublicSiteLanguageSelect() {
     setLanguage(nextLanguage);
   };
 
+  useEffect(() => {
+    const closeLanguageMenu = () => {
+      detailsRef.current?.removeAttribute("open");
+    };
+
+    const onPointerDown = (event: PointerEvent) => {
+      const target = event.target;
+
+      if (
+        target instanceof Node &&
+        !detailsRef.current?.contains(target)
+      ) {
+        closeLanguageMenu();
+      }
+    };
+
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        closeLanguageMenu();
+      }
+    };
+
+    document.addEventListener("pointerdown", onPointerDown);
+    document.addEventListener("keydown", onKeyDown);
+
+    return () => {
+      document.removeEventListener("pointerdown", onPointerDown);
+      document.removeEventListener("keydown", onKeyDown);
+    };
+  }, []);
+
   return (
-    <details className="group relative mt-5 w-fit">
+    <details className="group relative mt-5 w-fit" ref={detailsRef}>
       <summary
         aria-label={copy.common.languageAria}
         className="inline-flex h-8 cursor-pointer list-none items-center gap-2 rounded-[6px] px-3 text-[12px] font-bold [&::-webkit-details-marker]:hidden"
@@ -31,7 +64,7 @@ export function PublicSiteLanguageSelect() {
             className={[
               "block w-full rounded-[6px] px-3 py-2 text-left text-[12px] font-bold",
               option.value === language
-                ? "bg-[#111111] text-white"
+                ? "bg-[#0000000D] text-[#111111]"
                 : "text-[#333330] hover:bg-[#f7f7f5]",
             ].join(" ")}
             data-language-option={option.value}

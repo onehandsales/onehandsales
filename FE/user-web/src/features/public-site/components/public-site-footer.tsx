@@ -38,10 +38,10 @@ const footerColumns: readonly FooterColumn[] = [
   {
     title: "Company",
     links: [
-      { label: "About us", to: "/" },
-      { label: "Security", to: "/" },
-      { label: "Terms and privacy", to: "/" },
-      { label: "Your privacy rights", to: "/" },
+      { label: "About us", to: "/about" },
+      { label: "Security", to: "/security" },
+      { label: "Terms and privacy", to: "/terms" },
+      { label: "Your privacy rights", to: "/privacy" },
     ],
   },
   {
@@ -75,11 +75,11 @@ export function PublicSiteFooter({
   return (
     <footer
       className={[
-        "min-h-[418px] bg-white px-4 py-14 sm:px-6 lg:px-8",
+        "min-h-[418px] bg-white py-14",
         showTopDivider ? "border-t border-[#e3e3de]" : "",
       ].join(" ")}
     >
-      <div className="mx-auto grid w-full max-w-[1320px] gap-12 md:grid-cols-[1fr_2.35fr] lg:gap-16">
+      <div className="mx-auto grid w-full max-w-[1320px] gap-12 px-4 sm:px-6 md:grid-cols-[1fr_2.35fr] lg:gap-16 lg:px-8">
         <div className="flex min-w-0 flex-col items-start">
           <Link className="inline-flex items-center gap-3 text-[#111111]" to="/">
             <OnehandLogoMark className="h-9 w-9" />
@@ -122,7 +122,7 @@ export function PublicSiteFooter({
                 {column.links.map((link) => (
                   <li key={link.label}>
                     <Link
-                      className="text-[13px] font-medium text-[#111111] transition-colors hover:text-[#0075DE]"
+                      className="text-[13px] font-medium text-[#111111] underline-offset-2 hover:underline"
                       to={link.to}
                     >
                       {link.label}

@@ -6,6 +6,7 @@ import {
 } from "react-router-dom";
 import { AppShell } from "@/components/layout/app-shell";
 import { ProtectedRoute } from "@/features/auth";
+import { AboutPage } from "@/pages/about";
 import { BusinessCardsPage } from "@/pages/business-cards";
 import { CompanyDetailPage } from "@/pages/companies/detail";
 import { CompaniesPage } from "@/pages/companies";
@@ -25,13 +26,16 @@ import { MeetingNotesPage } from "@/pages/meeting-notes";
 import { ProductDetailPage } from "@/pages/products/detail";
 import { ProductsPage } from "@/pages/products";
 import { ProductNewPage } from "@/pages/products/new";
+import { PrivacyPage } from "@/pages/privacy";
 import { PricingPage } from "@/pages/pricing";
 import { ScheduleDetailPage } from "@/pages/schedules/detail";
 import { SchedulesPage } from "@/pages/schedules";
+import { SecurityPage } from "@/pages/security";
 // import { ScheduleWeekPage } from "@/pages/schedules/week";
 import { SettingsPage } from "@/pages/settings";
 import { TrashPage } from "@/pages/trash";
 import { MorePage } from "@/pages/more";
+import { TermsPage } from "@/pages/terms";
 
 export const router = createBrowserRouter([
   { path: "/", element: <LoginPage /> },
@@ -39,6 +43,10 @@ export const router = createBrowserRouter([
   { path: "/signup", element: <LoginPage /> },
   { path: "/pricing", element: <PricingPage /> },
   { path: "/contact", element: <ContactPage /> },
+  { path: "/about", element: <AboutPage /> },
+  { path: "/security", element: <SecurityPage /> },
+  { path: "/terms", element: <TermsPage /> },
+  { path: "/privacy", element: <PrivacyPage /> },
   { path: "/auth/callback", element: <LoginPage /> },
   { path: "/companies", element: <LegacyAppRedirect to="/app/companies" /> },
   {

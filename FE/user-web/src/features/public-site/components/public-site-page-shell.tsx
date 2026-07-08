@@ -1,4 +1,5 @@
 import { useEffect, useState, type ReactNode } from "react";
+import { useLocation } from "react-router-dom";
 import { PublicSiteFooter } from "@/features/public-site/components/public-site-footer";
 import { PublicSiteHeader } from "@/features/public-site/components/public-site-header";
 
@@ -7,7 +8,16 @@ type PublicSitePageShellProps = {
 };
 
 export function PublicSitePageShell({ children }: PublicSitePageShellProps) {
+  const location = useLocation();
   const scrollProgress = usePublicSiteScrollProgress();
+
+  useEffect(() => {
+    window.scrollTo({
+      behavior: "smooth",
+      left: 0,
+      top: 0,
+    });
+  }, [location.pathname]);
 
   return (
     <main className="public-site-root min-h-screen w-full overflow-x-hidden bg-white text-[#111111]">
