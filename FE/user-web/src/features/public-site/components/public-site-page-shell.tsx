@@ -16,7 +16,7 @@ export function PublicSitePageShell({ children }: PublicSitePageShellProps) {
       <ScrollProgressBar progress={scrollProgress} />
       <div className="pt-14">
         {children}
-        <PublicSiteFooter />
+        <PublicSiteFooter showTopDivider />
       </div>
     </main>
   );

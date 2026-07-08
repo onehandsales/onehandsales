@@ -19,6 +19,10 @@ type FooterColumn = {
   }[];
 };
 
+type PublicSiteFooterProps = {
+  readonly showTopDivider?: boolean;
+};
+
 const footerSocialLinks: readonly {
   readonly label: string;
   readonly icon: LucideIcon;
@@ -63,11 +67,18 @@ const footerColumns: readonly FooterColumn[] = [
   },
 ];
 
-export function PublicSiteFooter() {
+export function PublicSiteFooter({
+  showTopDivider = false,
+}: PublicSiteFooterProps) {
   const { copy } = usePublicSiteLanguage();
 
   return (
-    <footer className="min-h-[418px] bg-white px-4 py-14 sm:px-6 lg:px-8">
+    <footer
+      className={[
+        "min-h-[418px] bg-white px-4 py-14 sm:px-6 lg:px-8",
+        showTopDivider ? "border-t border-[#e3e3de]" : "",
+      ].join(" ")}
+    >
       <div className="mx-auto grid w-full max-w-[1320px] gap-12 md:grid-cols-[1fr_2.35fr] lg:gap-16">
         <div className="flex min-w-0 flex-col items-start">
           <Link className="inline-flex items-center gap-3 text-[#111111]" to="/">

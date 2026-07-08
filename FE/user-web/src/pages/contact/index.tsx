@@ -15,14 +15,14 @@ export function ContactPage() {
 
   return (
     <PublicSitePageShell>
-      <section className="px-4 pb-16 pt-16 md:px-6 md:pb-24 md:pt-20">
-        <div className="mx-auto grid max-w-[980px] gap-12 lg:grid-cols-[0.9fr_1.1fr]">
+      <section className="px-4 pb-16 pt-16 md:px-6 md:pb-24 md:pt-20 lg:px-8">
+        <div className="mx-auto grid max-w-[1320px] gap-12 lg:grid-cols-[0.95fr_1.05fr]">
           <div>
             <h1 className="break-keep text-[42px] font-black leading-[0.98] tracking-normal md:text-[56px]">
               <span className="block">{contact.title[0]}</span>
               <span className="block">{contact.title[1]}</span>
             </h1>
-            <p className="mt-5 max-w-[430px] text-[18px] leading-8 text-[#333330]">
+            <p className="mt-5 max-w-[560px] text-[18px] leading-8 text-[#333330]">
               {contact.description}
             </p>
 
@@ -37,7 +37,7 @@ export function ContactPage() {
               </div>
             </div>
 
-            <div className="mt-10 max-w-[430px] rounded-[12px] bg-[#f7f7f5] p-8">
+            <div className="mt-10 max-w-[560px] rounded-[12px] bg-[#f7f7f5] p-8">
               <img
                 alt="고객과 노트북으로 영업 자료를 확인하는 모습"
                 className="-mx-2 mb-6 h-40 w-[calc(100%+16px)] rounded-[8px] object-cover"
@@ -60,8 +60,8 @@ export function ContactPage() {
         </div>
       </section>
 
-      <section className="px-4 pb-20 md:px-6 md:pb-28">
-        <div className="mx-auto grid max-w-[980px] gap-6 md:grid-cols-3">
+      <section className="px-4 pb-20 md:px-6 md:pb-28 lg:px-8">
+        <div className="mx-auto grid max-w-[1320px] gap-6 md:grid-cols-3">
           {contact.testimonials.map((item, index) => (
             <article className="overflow-hidden rounded-[12px] bg-[#f7f7f5]" key={item.company}>
               <img

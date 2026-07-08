@@ -11,8 +11,8 @@ export function PricingPage() {
 
   return (
     <PublicSitePageShell>
-      <section className="px-4 pb-16 pt-16 md:px-6 md:pb-24 md:pt-20">
-        <div className="mx-auto max-w-[980px]">
+      <section className="px-4 pb-16 pt-16 md:px-6 md:pb-24 md:pt-20 lg:px-8">
+        <div className="mx-auto max-w-[1320px]">
           <div className="text-center">
             <h1 className="text-[38px] font-black leading-[1.05] tracking-normal md:text-[58px]">
               {pricing.title}
@@ -28,7 +28,7 @@ export function PricingPage() {
                 </span>
               ))}
             </div>
-            <div className="mx-auto mt-8 grid max-w-[720px] gap-3 overflow-hidden rounded-[10px] border border-[#eeeeec] bg-white p-2 shadow-sm md:grid-cols-3">
+            <div className="mx-auto mt-8 grid max-w-[1040px] gap-3 overflow-hidden rounded-[10px] border border-[#eeeeec] bg-white p-2 shadow-sm md:grid-cols-3">
               {[
                 {
                   alt: "고객 상담 장면",
@@ -63,7 +63,7 @@ export function PricingPage() {
             </div>
           </div>
 
-          <div className="mt-10 grid gap-5 lg:grid-cols-[1.1fr_0.9fr]">
+          <div className="mt-10 grid gap-5 lg:grid-cols-[1.35fr_0.65fr]">
             <div className="rounded-[10px] border border-[#eeeeec] bg-white p-4 shadow-sm">
               <div className="mb-4 flex flex-wrap items-center justify-between gap-3 border-b border-[#eeeeec] pb-4">
                 <div className="inline-flex rounded-full bg-[#f1f1ef] p-1 text-[12px] font-bold">
@@ -170,8 +170,8 @@ export function PricingPage() {
         </div>
       </section>
 
-      <section className="px-4 pb-16 md:px-6 md:pb-24">
-        <div className="mx-auto max-w-[980px]">
+      <section className="px-4 pb-16 md:px-6 md:pb-24 lg:px-8">
+        <div className="mx-auto max-w-[1320px]">
           <h2 className="text-[34px] font-black md:text-[46px]">{pricing.featuresTitle}</h2>
           <div className="mt-8 overflow-x-auto">
             <table className="w-full min-w-[760px] border-collapse text-left text-[13px]">
@@ -220,8 +220,8 @@ export function PricingPage() {
         </div>
       </section>
 
-      <section className="px-4 pb-20 md:px-6 md:pb-28">
-        <div className="mx-auto max-w-[980px]">
+      <section className="px-4 pb-20 md:px-6 md:pb-28 lg:px-8">
+        <div className="mx-auto max-w-[1320px]">
           <h2 className="text-[34px] font-black md:text-[46px]">{pricing.faqTitle}</h2>
           <div className="mt-8 divide-y divide-[#eeeeec] border-y border-[#eeeeec]">
             {pricing.faqs.map((faq) => (
