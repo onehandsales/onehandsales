@@ -6,7 +6,6 @@ import {
   BriefcaseBusiness,
   CalendarDays,
   ChevronRight,
-  CircleHelp,
   FileText,
   House,
   LogOut,
@@ -183,11 +182,12 @@ export function AppShell() {
     null,
   );
   const [logoutConfirmOpen, setLogoutConfirmOpen] = useState(false);
+  const [onehandAppOpen, setOnehandAppOpen] = useState(true);
   const accountMenuRef = useRef<HTMLDivElement | null>(null);
   const isHome = pathname === HOME_PATH;
   const userName = user?.name ?? user?.email?.split("@")[0] ?? "사용자";
-  const userSubtitle =
-    user?.email ?? (user?.role === "ADMIN" ? "Admin" : "Sales Manager");
+  const userEmail = user?.email ?? "로그인된 이메일 없음";
+  const accountSubtitle = user?.role === "ADMIN" ? "Admin" : "무료 요금제";
   const userInitial = getUserInitial(userName);
 
   const handleLogout = async () => {
@@ -352,22 +352,121 @@ export function AppShell() {
     );
   })();
 
+  const accountProfile = (
+    <div className="relative px-2 pb-1 pt-2" ref={accountMenuRef}>
+      {accountMenuOpen ? (
+        <div className="absolute left-2 right-2 top-[calc(100%+4px)] z-50">
+          <div
+            className="overflow-hidden rounded-xl bg-white p-2 text-[#111827] shadow-[0_14px_36px_rgba(15,23,42,0.16)]"
+            role="menu"
+          >
+            <div className="flex items-center gap-2.5 px-1 py-1.5">
+              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#F6C445] text-[13px] font-semibold text-white">
+                {userInitial}
+              </div>
+              <div className="min-w-0 flex-1">
+                <p className="truncate text-[13px] font-semibold text-[#111827]">
+                  {userName}
+                </p>
+                <p className="truncate text-[11px] text-[#6B7280]">
+                  {userEmail}
+                </p>
+              </div>
+            </div>
+            <div className="mx-1 my-1.5 h-px bg-[#E9ECF2]" />
+            <AccountMenuItem
+              icon={Settings}
+              label="설정"
+              onClick={() => {
+                setAccountMenuOpen(false);
+                setAccountModal("settings");
+              }}
+            />
+            <div className="mx-1 my-1.5 h-px bg-[#E9ECF2]" />
+            <AccountMenuItem
+              icon={LogOut}
+              label="로그아웃"
+              onClick={() => {
+                setAccountMenuOpen(false);
+                setLogoutConfirmOpen(true);
+              }}
+            />
+          </div>
+        </div>
+      ) : null}
+
+      <button
+        aria-expanded={accountMenuOpen}
+        aria-haspopup="menu"
+        className="flex h-12 w-full items-center gap-2.5 rounded-xl px-2 text-left transition hover:bg-[#E9EBF0] data-[open=true]:bg-[#EEF4FF]"
+        data-open={accountMenuOpen}
+        onClick={() => setAccountMenuOpen((open) => !open)}
+        type="button"
+      >
+        <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#4880EE] text-[11px] font-semibold text-white">
+          {userInitial}
+        </div>
+        <div className="min-w-0 flex-1">
+          <p className="truncate text-[13px] font-medium text-[#111827]">
+            {userName}
+          </p>
+          <p className="truncate text-[11px] text-[#9CA3AF]">
+            {accountSubtitle}
+          </p>
+        </div>
+        <ChevronRight className="h-4 w-4 shrink-0 text-[#9CA3AF]" />
+      </button>
+    </div>
+  );
+
+  const sidebarAppLinks = (
+    <div className="mt-3">
+      <button
+        aria-expanded={onehandAppOpen}
+        className="mb-1 flex h-6 w-full items-center gap-1 rounded-md px-2 text-left text-[11px] font-semibold tracking-[0.02em] text-[#9CA3AF] transition hover:bg-[#E9EBF0] hover:text-[#6B7280]"
+        onClick={() => setOnehandAppOpen((open) => !open)}
+        type="button"
+      >
+        <ChevronRight
+          className={`h-3 w-3 shrink-0 transition-transform ${
+            onehandAppOpen ? "rotate-90" : "rotate-0"
+          }`}
+          strokeWidth={2}
+        />
+        <span>Onehand 앱</span>
+      </button>
+      {onehandAppOpen ? (
+        <div className="flex flex-col gap-px">
+          <button
+            aria-current={isTrashPage ? "page" : undefined}
+            className={`group flex h-8 items-center gap-2.5 rounded-md px-2 text-left text-[13px] font-medium transition-colors ${
+              isTrashPage
+                ? "bg-[#EFF6FF] font-semibold text-[#1D4ED8]"
+                : "text-[#4B5563] hover:bg-[#E9EBF0] hover:text-[#111827]"
+            }`}
+            onClick={() => void navigate("/app/trash")}
+            type="button"
+          >
+            <Trash2
+              className={`h-[15px] w-[15px] shrink-0 ${
+                isTrashPage ? "text-[#4880EE]" : "text-[#9CA3AF] group-hover:text-[#6B7280]"
+              }`}
+              strokeWidth={1.75}
+            />
+            <span>휴지통</span>
+          </button>
+        </div>
+      ) : null}
+    </div>
+  );
+
   return (
     <div className="min-h-dvh bg-background text-foreground">
       {/* ── Desktop Shell ── */}
       <div className="hidden min-h-dvh md:flex">
         {/* Sidebar */}
         <aside className="fixed inset-y-0 left-0 z-30 flex w-[var(--sidebar-width)] flex-col bg-sidebar">
-          {/* Brand */}
-          <div className="flex h-[var(--topbar-height)] shrink-0 items-center gap-2.5 px-4">
-            <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-[#4880EE] text-[12px] font-bold text-white">
-              한
-            </div>
-            <span className="text-[14px] font-semibold text-[#111827]">
-              한손에 영업
-            </span>
-          </div>
-          <div className="h-px bg-transparent" />
+          {accountProfile}
           {/* Search button */}
           <div className="px-2 pb-1">
             <button
@@ -388,74 +487,7 @@ export function AppShell() {
           {/* Nav */}
           <div className="flex-1 overflow-y-auto px-2 py-1">
             <SidebarNav />
-          </div>
-          <div className="h-px bg-transparent" />
-          {/* User profile */}
-          <div className="relative px-2 pb-2 pt-1" ref={accountMenuRef}>
-            {accountMenuOpen ? (
-              <div className="absolute bottom-[64px] left-2 right-2">
-                <div
-                  className="overflow-hidden rounded-xl bg-white p-1.5 text-[#111827] shadow-[0_14px_36px_rgba(15,23,42,0.16)]"
-                  role="menu"
-                >
-                  <AccountMenuItem
-                    icon={Trash2}
-                    label="휴지통"
-                    onClick={() => {
-                      setAccountMenuOpen(false);
-                      void navigate("/app/trash");
-                    }}
-                  />
-                  <AccountMenuItem
-                    icon={Settings}
-                    label="설정"
-                    onClick={() => {
-                      setAccountMenuOpen(false);
-                      setAccountModal("settings");
-                    }}
-                  />
-                  <div className="mx-2 my-1.5 h-px bg-[#E9ECF2]" />
-                  <AccountMenuItem
-                    icon={CircleHelp}
-                    label="도움말"
-                    onClick={() => {
-                      setAccountMenuOpen(false);
-                      setAccountModal("terms");
-                    }}
-                  />
-                  <AccountMenuItem
-                    icon={LogOut}
-                    label="로그아웃"
-                    onClick={() => {
-                      setAccountMenuOpen(false);
-                      setLogoutConfirmOpen(true);
-                    }}
-                  />
-                </div>
-              </div>
-            ) : null}
-
-            <button
-              aria-expanded={accountMenuOpen}
-              aria-haspopup="menu"
-              className="flex h-12 w-full items-center gap-2.5 rounded-xl px-2 text-left transition hover:bg-[#E9EBF0] data-[open=true]:bg-[#EEF4FF]"
-              data-open={accountMenuOpen}
-              onClick={() => setAccountMenuOpen((open) => !open)}
-              type="button"
-            >
-              <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#4880EE] text-[11px] font-semibold text-white">
-                {userInitial}
-              </div>
-              <div className="min-w-0 flex-1">
-                <p className="truncate text-[13px] font-medium text-[#111827]">
-                  {userName}
-                </p>
-                <p className="truncate text-[11px] text-[#9CA3AF]">
-                  {userSubtitle}
-                </p>
-              </div>
-              <ChevronRight className="h-4 w-4 shrink-0 text-[#9CA3AF]" />
-            </button>
+            {sidebarAppLinks}
           </div>
         </aside>
 
@@ -502,7 +534,7 @@ export function AppShell() {
         }}
         open={logoutConfirmOpen}
         userInitial={userInitial}
-        userMeta={user?.email ?? userSubtitle}
+        userMeta={accountSubtitle}
         userName={userName}
       />
 
