@@ -11,4 +11,9 @@ export class UpdateMyProfileDto {
   @IsString()
   @MaxLength(64)
   timeZone?: string;
+
+  @ValidateIf((_, value) => value !== undefined)
+  @IsString()
+  @MaxLength(16)
+  preferredLocale?: string;
 }

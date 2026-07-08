@@ -48,6 +48,9 @@ export class PrismaUserRepository implements UserRepository {
       data: {
         ...(input.name !== undefined ? { displayName: input.name } : {}),
         ...(input.timeZone !== undefined ? { timeZone: input.timeZone } : {}),
+        ...(input.preferredLocale !== undefined
+          ? { preferredLocale: input.preferredLocale }
+          : {}),
       },
     });
 
@@ -107,6 +110,13 @@ export class PrismaUserRepository implements UserRepository {
     readonly role: UserRole;
     readonly status: UserStatus;
     readonly timeZone: string;
+    readonly preferredLocale: string;
+    readonly signupLocale: string | null;
+    readonly signupCountryCode: string | null;
+    readonly signupTimeZone: string | null;
+    readonly lastLoginLocale: string | null;
+    readonly lastLoginCountryCode: string | null;
+    readonly lastLoginTimeZone: string | null;
     readonly lastLoginAt: Date | null;
     readonly createdAt: Date;
     readonly updatedAt: Date;
@@ -124,6 +134,13 @@ export class PrismaUserRepository implements UserRepository {
       role: this.fromPrismaUserRole(user.role),
       status: this.fromPrismaUserStatus(user.status),
       timeZone: user.timeZone,
+      preferredLocale: user.preferredLocale,
+      signupLocale: user.signupLocale,
+      signupCountryCode: user.signupCountryCode,
+      signupTimeZone: user.signupTimeZone,
+      lastLoginLocale: user.lastLoginLocale,
+      lastLoginCountryCode: user.lastLoginCountryCode,
+      lastLoginTimeZone: user.lastLoginTimeZone,
       lastLoginAt: user.lastLoginAt,
       createdAt: user.createdAt,
       updatedAt: user.updatedAt,

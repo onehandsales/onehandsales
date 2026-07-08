@@ -25,12 +25,16 @@ import {
 import { useNavigate } from "react-router-dom";
 import { useAuthSession } from "@/features/auth";
 import { SearchModal } from "@/features/search";
-import { type ReactNode, useEffect, useRef, useState } from "react";
+import { type FormEvent, type ReactNode, useEffect, useRef, useState } from "react";
 import { useDealDetail } from "@/features/deal/hooks/use-deal-detail";
 import { useDeleteDealMutation } from "@/features/deal/hooks/use-deal-mutations";
 import { useProductDetail } from "@/features/product/hooks/use-product-detail";
 import { useDeleteProductMutation } from "@/features/product/hooks/use-product-mutations";
-import { useMyDevices, useMyProfile } from "@/features/auth/hooks/use-user-settings";
+import {
+  useMyDevices,
+  useMyProfile,
+  useUpdateMyProfileMutation,
+} from "@/features/auth/hooks/use-user-settings";
 import { PageHeader } from "@/components/layout/page-header";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { getApiErrorMessage } from "@/lib/api-client";
@@ -820,7 +824,7 @@ function AccountModalSectionContent({
     return <LegalDocumentModalContent document={privacyPolicyModalDocument} />;
   }
 
-  return <LegalDocumentModalContent document={settingsModalDocument} />;
+  return <AccountSettingsModalContent />;
 }
 
 function ProfileModalQueryContent() {
@@ -841,6 +845,168 @@ function ProfileModalQueryContent() {
   );
 }
 
+const accountLocaleOptions = [
+  { value: "ko-KR", label: "한국어" },
+  { value: "en-US", label: "English (US)" },
+  { value: "en-GB", label: "English (UK)" },
+  { value: "ja-JP", label: "日本語" },
+  { value: "zh-CN", label: "中文" },
+] as const;
+
+const accountTimeZoneOptions = [
+  "Asia/Seoul",
+  "Asia/Tokyo",
+  "Asia/Shanghai",
+  "America/New_York",
+  "America/Los_Angeles",
+  "Europe/London",
+  "UTC",
+] as const;
+
+function AccountSettingsModalContent() {
+  const profileQuery = useMyProfile();
+  const updateProfileMutation = useUpdateMyProfileMutation();
+  const profile = profileQuery.data ?? null;
+  const [preferredLocale, setPreferredLocale] = useState("ko-KR");
+  const [timeZone, setTimeZone] = useState("Asia/Seoul");
+  const [formError, setFormError] = useState<string | null>(null);
+  const [saved, setSaved] = useState(false);
+
+  useEffect(() => {
+    if (!profile) {
+      return;
+    }
+
+    setPreferredLocale(profile.preferredLocale);
+    setTimeZone(profile.timeZone);
+  }, [profile]);
+
+  const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setFormError(null);
+    setSaved(false);
+
+    try {
+      await updateProfileMutation.mutateAsync({
+        preferredLocale,
+        timeZone,
+      });
+      setSaved(true);
+    } catch (error) {
+      setFormError(getApiErrorMessage(error));
+    }
+  };
+
+  return (
+    <section className="min-h-full bg-white px-8 py-10 md:px-12">
+      <div className="mx-auto w-full max-w-[800px]">
+        <div>
+          <h3 className="text-[28px] font-bold leading-tight text-[#111827]">
+            설정
+          </h3>
+          <p className="mt-3 text-[14px] leading-6 text-[#64748B]">
+            표시 언어와 시간대를 관리하세요
+          </p>
+        </div>
+
+        {profileQuery.isLoading ? (
+          <ProfileLoadingState />
+        ) : profileQuery.error ? (
+          <ProfileErrorState
+            error={profileQuery.error}
+            onRetry={() => void profileQuery.refetch()}
+          />
+        ) : profile ? (
+          <form className="mt-10 grid gap-10" onSubmit={onSubmit}>
+            <ProfileSection title="지역 설정">
+              <div className="grid gap-4 md:grid-cols-2">
+                <label className="grid gap-1.5">
+                  <span className="text-[13px] font-medium text-[#111827]">
+                    표시 언어
+                  </span>
+                  <select
+                    className="h-9 rounded-md border border-[#E2E5EC] bg-white px-3 text-[13px] text-[#374151] outline-none focus:border-[#93C5FD]"
+                    onChange={(event) => setPreferredLocale(event.target.value)}
+                    value={preferredLocale}
+                  >
+                    {accountLocaleOptions.map((option) => (
+                      <option key={option.value} value={option.value}>
+                        {option.label}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+                <label className="grid gap-1.5">
+                  <span className="text-[13px] font-medium text-[#111827]">
+                    시간대
+                  </span>
+                  <select
+                    className="h-9 rounded-md border border-[#E2E5EC] bg-white px-3 text-[13px] text-[#374151] outline-none focus:border-[#93C5FD]"
+                    onChange={(event) => setTimeZone(event.target.value)}
+                    value={timeZone}
+                  >
+                    {getAccountTimeZoneOptions(timeZone).map((option) => (
+                      <option key={option} value={option}>
+                        {option}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+              </div>
+              <div className="mt-5 flex items-center justify-between gap-3">
+                <div>
+                  {formError ? (
+                    <p className="text-[13px] text-destructive">{formError}</p>
+                  ) : saved ? (
+                    <p className="text-[13px] text-[#0075DE]">저장되었습니다.</p>
+                  ) : null}
+                </div>
+                <button
+                  className="h-9 rounded-md bg-[#0075DE] px-4 text-[13px] font-semibold text-white transition hover:bg-[#0068C8] disabled:cursor-not-allowed disabled:opacity-60"
+                  disabled={updateProfileMutation.isPending}
+                  type="submit"
+                >
+                  저장
+                </button>
+              </div>
+            </ProfileSection>
+
+            <ProfileSection title="로그인 메타데이터">
+              <div className="grid gap-1">
+                <ProfileInfoRow
+                  label="가입 국가"
+                  value={profile.signupCountryCode ?? "기록 없음"}
+                />
+                <ProfileInfoRow
+                  label="가입 시간대"
+                  value={profile.signupTimeZone ?? "기록 없음"}
+                />
+                <ProfileInfoRow
+                  label="마지막 로그인 국가"
+                  value={profile.lastLoginCountryCode ?? "기록 없음"}
+                />
+                <ProfileInfoRow
+                  label="마지막 로그인 시간대"
+                  value={profile.lastLoginTimeZone ?? "기록 없음"}
+                />
+              </div>
+            </ProfileSection>
+          </form>
+        ) : null}
+      </div>
+    </section>
+  );
+}
+
+function getAccountTimeZoneOptions(currentTimeZone: string) {
+  const browserTimeZone =
+    Intl.DateTimeFormat().resolvedOptions().timeZone || "Asia/Seoul";
+
+  return Array.from(
+    new Set([currentTimeZone, browserTimeZone, ...accountTimeZoneOptions])
+  ).filter(Boolean);
+}
+
 type LegalDocumentModalSection = {
   readonly bullets?: readonly string[];
   readonly paragraphs?: readonly string[];
@@ -851,19 +1017,6 @@ type LegalDocumentModal = {
   readonly description: string;
   readonly sections: readonly LegalDocumentModalSection[];
   readonly title: string;
-};
-
-const settingsModalDocument: LegalDocumentModal = {
-  title: "설정",
-  description: "계정과 워크스페이스 사용 환경을 관리하는 영역입니다.",
-  sections: [
-    {
-      title: "기본 설정",
-      paragraphs: [
-        "워크스페이스 표시 방식, 알림, 개인 환경 설정은 이 영역에서 관리합니다. 현재는 기본 설정 구조만 준비되어 있으며 세부 옵션은 서비스 정책에 맞춰 추가됩니다.",
-      ],
-    },
-  ],
 };
 
 const termsOfUseModalDocument: LegalDocumentModal = {
@@ -957,7 +1110,7 @@ const privacyPolicyModalDocument: LegalDocumentModal = {
         "계정 생성 정보: 이름, 이메일 주소, 비밀번호, 역할, 회사 정보, 선택적 프로필 사진, 워크스페이스 정보",
         "문의 및 지원 정보: 이메일 주소, 전화번호, 지원 메시지, 첨부파일, 사용자가 제공하는 기타 정보",
         "결제 정보: 결제 제공업체를 통해 처리되는 청구 정보와 거래 정보. Onehand는 전체 결제 카드 정보를 서비스에 직접 저장하지 않습니다.",
-        "제품 사용 정보: 브라우저, 운영체제, 기기 식별자, IP 주소, 대략적인 위치, 조회한 페이지, 클릭한 링크, 활동 빈도와 기간",
+        "제품 사용 정보: 브라우저, 운영체제, 기기 식별자, IP 주소, 브라우저 언어, 시간대, 네트워크 신호에서 추정한 국가 코드 또는 대략적인 위치, 조회한 페이지, 클릭한 링크, 활동 빈도와 기간",
         "통합 정보: 사용자가 연결한 캘린더, 연락처, 이메일, 파일, CRM, 커뮤니케이션 도구에서 요청한 기능 제공에 필요한 정보",
       ],
     },
@@ -1155,6 +1308,13 @@ type ProfileModalContentProps = {
     readonly role: string;
     readonly status: string;
     readonly timeZone: string;
+    readonly preferredLocale: string;
+    readonly signupLocale: string | null;
+    readonly signupCountryCode: string | null;
+    readonly signupTimeZone: string | null;
+    readonly lastLoginLocale: string | null;
+    readonly lastLoginCountryCode: string | null;
+    readonly lastLoginTimeZone: string | null;
     readonly lastLoginAt: string | null;
     readonly createdAt: string;
     readonly updatedAt: string;
@@ -1203,6 +1363,10 @@ function ProfileModalContent({
                   value={profile.name ?? "이름 없음"}
                 />
                 <ProfileInfoRow label="이메일" value={profile.email ?? "이메일 없음"} />
+                <ProfileInfoRow
+                  label="표시 언어"
+                  value={formatLocaleLabel(profile.preferredLocale)}
+                />
                 <ProfileInfoRow label="시간대" value={profile.timeZone} />
               </div>
             </ProfileSection>
@@ -1218,6 +1382,22 @@ function ProfileModalContent({
                 <ProfileInfoRow
                   label="프로필 수정일"
                   value={formatAccountModalDateTime(profile.updatedAt)}
+                />
+                <ProfileInfoRow
+                  label="가입 국가"
+                  value={profile.signupCountryCode ?? "기록 없음"}
+                />
+                <ProfileInfoRow
+                  label="마지막 로그인 국가"
+                  value={profile.lastLoginCountryCode ?? "기록 없음"}
+                />
+                <ProfileInfoRow
+                  label="가입 시간대"
+                  value={profile.signupTimeZone ?? "기록 없음"}
+                />
+                <ProfileInfoRow
+                  label="마지막 로그인 시간대"
+                  value={profile.lastLoginTimeZone ?? "기록 없음"}
                 />
               </div>
             </ProfileSection>
@@ -1418,6 +1598,15 @@ function formatProviderLabel(provider: string) {
   if (normalized === "naver") return "Naver";
   if (normalized === "apple") return "Apple";
   return provider;
+}
+
+function formatLocaleLabel(locale: string) {
+  if (locale === "ko-KR") return "한국어";
+  if (locale === "en-US") return "English (US)";
+  if (locale === "en-GB") return "English (UK)";
+  if (locale === "ja-JP") return "日本語";
+  if (locale === "zh-CN") return "中文";
+  return locale;
 }
 
 function formatDeviceSlotLabel(slot: string) {

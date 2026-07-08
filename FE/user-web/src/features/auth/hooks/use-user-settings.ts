@@ -37,6 +37,13 @@ export function useUpdateMyProfileMutation() {
         role: profile.role,
         status: profile.status,
         timeZone: profile.timeZone,
+        preferredLocale: profile.preferredLocale,
+        signupLocale: profile.signupLocale,
+        signupCountryCode: profile.signupCountryCode,
+        signupTimeZone: profile.signupTimeZone,
+        lastLoginLocale: profile.lastLoginLocale,
+        lastLoginCountryCode: profile.lastLoginCountryCode,
+        lastLoginTimeZone: profile.lastLoginTimeZone,
       });
       void queryClient.invalidateQueries({ queryKey: authQueryKeys.profile() });
     },

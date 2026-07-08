@@ -75,6 +75,13 @@ model User {
   role        UserRole   @default(USER)
   status      UserStatus @default(ACTIVE)
   timeZone    String     @default("Asia/Seoul")
+  preferredLocale      String  @default("ko-KR")
+  signupLocale         String?
+  signupCountryCode    String?
+  signupTimeZone       String?
+  lastLoginLocale      String?
+  lastLoginCountryCode String?
+  lastLoginTimeZone    String?
   lastLoginAt DateTime?
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt

@@ -54,6 +54,9 @@ export class AuthController {
       deviceId: body.deviceId,
       deviceLabel: body.deviceLabel ?? null,
       replaceExistingDevice: body.replaceExistingDevice ?? false,
+      locale: body.locale ?? null,
+      timeZone: body.timeZone ?? null,
+      countryCode: this.getCountryCode(request),
       userAgent: request.header("User-Agent") ?? null,
       ipAddress: request.ip ?? null,
     });
@@ -122,6 +125,16 @@ export class AuthController {
     }
 
     return token;
+  }
+
+  // 기능 : 배포 프록시가 제공하는 접속 국가 헤더를 읽습니다.
+  private getCountryCode(request: Request): string | null {
+    return (
+      request.header("cf-ipcountry") ??
+      request.header("x-vercel-ip-country") ??
+      request.header("cloudfront-viewer-country") ??
+      null
+    );
   }
 }
 

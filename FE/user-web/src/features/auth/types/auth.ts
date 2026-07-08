@@ -20,6 +20,13 @@ export type AuthUser = {
   readonly role: string;
   readonly status: string;
   readonly timeZone: string;
+  readonly preferredLocale: string;
+  readonly signupLocale: string | null;
+  readonly signupCountryCode: string | null;
+  readonly signupTimeZone: string | null;
+  readonly lastLoginLocale: string | null;
+  readonly lastLoginCountryCode: string | null;
+  readonly lastLoginTimeZone: string | null;
   readonly settings: {
     readonly sensitiveWarningEnabled: boolean;
     readonly defaultReminderMinutes: number;
@@ -48,6 +55,8 @@ export type ExchangeAuthTokenInput = {
   readonly deviceId: string;
   readonly deviceLabel?: string;
   readonly replaceExistingDevice?: boolean;
+  readonly locale?: string;
+  readonly timeZone?: string;
 };
 
 export type UserProfileRole = "USER" | "ADMIN";
@@ -67,6 +76,13 @@ export type UserProfileResponse = {
   readonly role: UserProfileRole | string;
   readonly status: UserProfileStatus | string;
   readonly timeZone: string;
+  readonly preferredLocale: string;
+  readonly signupLocale: string | null;
+  readonly signupCountryCode: string | null;
+  readonly signupTimeZone: string | null;
+  readonly lastLoginLocale: string | null;
+  readonly lastLoginCountryCode: string | null;
+  readonly lastLoginTimeZone: string | null;
   readonly lastLoginAt: string | null;
   readonly createdAt: string;
   readonly updatedAt: string;
@@ -76,6 +92,7 @@ export type UserProfileResponse = {
 export type UpdateUserProfileInput = {
   readonly name?: string | null;
   readonly timeZone?: string;
+  readonly preferredLocale?: string;
 };
 
 export type MyDevice = {

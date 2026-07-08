@@ -28,6 +28,7 @@ import {
   type ExternalAuthVerifier,
   type VerifiedExternalUser,
 } from "@/shared/application/ports/external-auth-verifier.port";
+import { normalizeOptionalIanaTimeZone } from "@/shared/application/time-zone/time-zone";
 import { createAuthTokenResponse, type AuthTokenResponse } from "../auth-response";
 
 // 역할 : ExchangeExternalAuthTokenCommand 데이터가 계층 사이에서 전달되는 구조를 정의합니다.
@@ -37,6 +38,9 @@ export interface ExchangeExternalAuthTokenCommand {
   readonly deviceId: string;
   readonly deviceLabel: string | null;
   readonly replaceExistingDevice: boolean;
+  readonly locale: string | null;
+  readonly timeZone: string | null;
+  readonly countryCode: string | null;
   readonly userAgent: string | null;
   readonly ipAddress: string | null;
 }
@@ -46,6 +50,12 @@ export interface ExchangeExternalAuthTokenResult {
   readonly response: AuthTokenResponse;
   readonly refreshToken: string;
 }
+
+type AuthLoginMetadata = {
+  readonly countryCode: string | null;
+  readonly locale: string;
+  readonly timeZone: string;
+};
 
 // 역할 : ExchangeExternalAuthTokenUseCase 유스케이스의 application orchestration을 담당합니다.
 @Injectable()
@@ -75,6 +85,11 @@ export class ExchangeExternalAuthTokenUseCase {
     // 2. provider 사용자 정보와 기기 입력값을 내부 형식으로 검증/정규화한다.
     const email = this.normalizeEmail(verifiedUser.email);
     const slot = this.parseDeviceSlot(command.deviceSlot);
+    const loginMetadata: AuthLoginMetadata = {
+      countryCode: this.normalizeCountryCode(command.countryCode),
+      locale: this.normalizeLocale(command.locale),
+      timeZone: this.normalizeTimeZone(command.timeZone),
+    };
     this.assertDeviceId(command.deviceId);
 
     // 3. 사용자, 기기, 세션 생성을 하나의 transaction 안에서 처리한다.
@@ -82,7 +97,13 @@ export class ExchangeExternalAuthTokenUseCase {
       const now = new Date();
 
       // 4. provider 계정 기준으로 내부 사용자를 생성하거나 갱신한다.
-      const user = await this.syncUser(repository, verifiedUser, email, now);
+      const user = await this.syncUser(
+        repository,
+        verifiedUser,
+        email,
+        now,
+        loginMetadata
+      );
       this.assertActiveUser(user);
 
       // 5. 기기 slot 충돌, 갱신, 교체 정책을 처리한다.
@@ -142,7 +163,8 @@ export class ExchangeExternalAuthTokenUseCase {
     repository: AuthRepository,
     verifiedUser: VerifiedExternalUser,
     email: string,
-    now: Date
+    now: Date,
+    loginMetadata: AuthLoginMetadata
   ): Promise<AuthUserRecord> {
     const oauthAccount = await this.findOrUpgradeOAuthAccount(
       repository,
@@ -155,6 +177,10 @@ export class ExchangeExternalAuthTokenUseCase {
       const updateInput = {
         userId: oauthAccount.userId,
         email,
+        timeZone: loginMetadata.timeZone,
+        lastLoginLocale: loginMetadata.locale,
+        lastLoginCountryCode: loginMetadata.countryCode,
+        lastLoginTimeZone: loginMetadata.timeZone,
       };
 
       if (adminRole) {
@@ -172,6 +198,14 @@ export class ExchangeExternalAuthTokenUseCase {
         email,
         displayName: verifiedUser.name,
         role: adminRole ?? "USER",
+        timeZone: loginMetadata.timeZone,
+        preferredLocale: loginMetadata.locale,
+        signupLocale: loginMetadata.locale,
+        signupCountryCode: loginMetadata.countryCode,
+        signupTimeZone: loginMetadata.timeZone,
+        lastLoginLocale: loginMetadata.locale,
+        lastLoginCountryCode: loginMetadata.countryCode,
+        lastLoginTimeZone: loginMetadata.timeZone,
         provider: verifiedUser.provider,
         providerUserId: verifiedUser.providerAccountId,
         providerEmail: email,
@@ -334,6 +368,57 @@ export class ExchangeExternalAuthTokenUseCase {
     }
 
     return normalized;
+  }
+
+  // 기능 : 서비스가 지원하는 locale 값으로 정규화합니다.
+  private normalizeLocale(locale: string | null): string {
+    const normalized = locale?.trim().replace("_", "-");
+
+    if (!normalized) {
+      return "ko-KR";
+    }
+
+    if (normalized === "ko" || normalized.toLowerCase() === "ko-kr") {
+      return "ko-KR";
+    }
+
+    if (normalized === "ja" || normalized.toLowerCase() === "ja-jp") {
+      return "ja-JP";
+    }
+
+    if (
+      normalized === "zh" ||
+      normalized.toLowerCase() === "zh-cn" ||
+      normalized.toLowerCase().startsWith("zh-hans")
+    ) {
+      return "zh-CN";
+    }
+
+    if (normalized.toLowerCase() === "en-gb") {
+      return "en-GB";
+    }
+
+    if (normalized === "en" || normalized.toLowerCase().startsWith("en-")) {
+      return "en-US";
+    }
+
+    return "ko-KR";
+  }
+
+  // 기능 : 요청 timeZone을 IANA timezone ID로 정규화하고 없으면 UTC로 대체합니다.
+  private normalizeTimeZone(timeZone: string | null): string {
+    return normalizeOptionalIanaTimeZone(timeZone ?? undefined) ?? "UTC";
+  }
+
+  // 기능 : 프록시가 전달한 접속 국가 코드를 ISO 3166-1 alpha-2 형태로 정규화합니다.
+  private normalizeCountryCode(countryCode: string | null): string | null {
+    const normalized = countryCode?.trim().toUpperCase();
+
+    if (!normalized || normalized.length !== 2) {
+      return null;
+    }
+
+    return /^[A-Z]{2}$/.test(normalized) ? normalized : null;
   }
 
   // 기능 : 사용자 상태가 로그인 가능한 활성 상태인지 검증합니다.

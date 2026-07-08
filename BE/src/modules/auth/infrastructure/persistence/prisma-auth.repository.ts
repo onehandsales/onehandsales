@@ -35,6 +35,13 @@ type UserRow = {
   readonly role: UserRole;
   readonly status: UserStatus;
   readonly timeZone: string;
+  readonly preferredLocale: string;
+  readonly signupLocale: string | null;
+  readonly signupCountryCode: string | null;
+  readonly signupTimeZone: string | null;
+  readonly lastLoginLocale: string | null;
+  readonly lastLoginCountryCode: string | null;
+  readonly lastLoginTimeZone: string | null;
   readonly deletedAt: Date | null;
 };
 
@@ -117,6 +124,14 @@ export class PrismaAuthRepository implements AuthRepository {
         displayName: input.displayName,
         role: input.role === "ADMIN" ? UserRole.ADMIN : UserRole.USER,
         status: UserStatus.ACTIVE,
+        timeZone: input.timeZone,
+        preferredLocale: input.preferredLocale,
+        signupLocale: input.signupLocale,
+        signupCountryCode: input.signupCountryCode,
+        signupTimeZone: input.signupTimeZone,
+        lastLoginLocale: input.lastLoginLocale,
+        lastLoginCountryCode: input.lastLoginCountryCode,
+        lastLoginTimeZone: input.lastLoginTimeZone,
         lastLoginAt: now,
         oauthAccounts: {
           create: {
@@ -138,6 +153,10 @@ export class PrismaAuthRepository implements AuthRepository {
   ): Promise<AuthUserRecord> {
     const data: Prisma.UserUpdateInput = {
       email: input.email,
+      timeZone: input.timeZone,
+      lastLoginLocale: input.lastLoginLocale,
+      lastLoginCountryCode: input.lastLoginCountryCode,
+      lastLoginTimeZone: input.lastLoginTimeZone,
       lastLoginAt: now,
     };
 
@@ -374,6 +393,13 @@ export class PrismaAuthRepository implements AuthRepository {
       role: this.fromPrismaUserRole(user.role),
       status: this.fromPrismaUserStatus(user.status),
       timeZone: user.timeZone,
+      preferredLocale: user.preferredLocale,
+      signupLocale: user.signupLocale,
+      signupCountryCode: user.signupCountryCode,
+      signupTimeZone: user.signupTimeZone,
+      lastLoginLocale: user.lastLoginLocale,
+      lastLoginCountryCode: user.lastLoginCountryCode,
+      lastLoginTimeZone: user.lastLoginTimeZone,
       deletedAt: user.deletedAt,
     };
   }

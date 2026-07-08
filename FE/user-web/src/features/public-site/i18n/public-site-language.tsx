@@ -132,7 +132,7 @@ type PublicSiteCopy = {
   };
 };
 
-const storageKey = "onehand.sales.publicLanguage";
+export const publicSiteLanguageStorageKey = "onehand.sales.publicLanguage";
 
 export const publicSiteLanguageOptions: readonly {
   readonly value: PublicSiteLanguage;
@@ -630,7 +630,7 @@ export function PublicSiteLanguageProvider({
     );
 
     document.documentElement.lang = option?.htmlLang ?? "ko";
-    window.localStorage.setItem(storageKey, language);
+    window.localStorage.setItem(publicSiteLanguageStorageKey, language);
   }, [language]);
 
   const value = useMemo<PublicSiteLanguageContextValue>(
@@ -666,7 +666,7 @@ function getInitialLanguage(): PublicSiteLanguage {
     return "ko";
   }
 
-  const storedLanguage = window.localStorage.getItem(storageKey);
+  const storedLanguage = window.localStorage.getItem(publicSiteLanguageStorageKey);
   if (isPublicSiteLanguage(storedLanguage)) {
     return storedLanguage;
   }

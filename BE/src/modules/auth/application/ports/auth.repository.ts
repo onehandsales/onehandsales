@@ -15,6 +15,13 @@ export interface AuthUserRecord {
   readonly role: AuthUserRole;
   readonly status: AuthUserStatus;
   readonly timeZone: string;
+  readonly preferredLocale: string;
+  readonly signupLocale: string | null;
+  readonly signupCountryCode: string | null;
+  readonly signupTimeZone: string | null;
+  readonly lastLoginLocale: string | null;
+  readonly lastLoginCountryCode: string | null;
+  readonly lastLoginTimeZone: string | null;
   readonly deletedAt: Date | null;
 }
 
@@ -56,6 +63,14 @@ export interface CreateAuthUserInput {
   readonly email: string;
   readonly displayName: string | null;
   readonly role: AuthUserRole;
+  readonly timeZone: string;
+  readonly preferredLocale: string;
+  readonly signupLocale: string;
+  readonly signupCountryCode: string | null;
+  readonly signupTimeZone: string;
+  readonly lastLoginLocale: string;
+  readonly lastLoginCountryCode: string | null;
+  readonly lastLoginTimeZone: string;
   readonly provider: ExternalAuthProvider;
   readonly providerUserId: string;
   readonly providerEmail: string;
@@ -65,6 +80,10 @@ export interface CreateAuthUserInput {
 export interface UpdateUserLoginInput {
   readonly userId: string;
   readonly email: string;
+  readonly timeZone: string;
+  readonly lastLoginLocale: string;
+  readonly lastLoginCountryCode: string | null;
+  readonly lastLoginTimeZone: string;
   readonly role?: AuthUserRole;
 }
 

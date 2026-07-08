@@ -26,6 +26,23 @@ import { getApiErrorMessage } from "@/lib/api-client";
 import { formatDateTime } from "@/utils/format";
 
 const DEFAULT_TIME_ZONE = "Asia/Seoul";
+const localeOptions = [
+  { value: "ko-KR", label: "한국어" },
+  { value: "en-US", label: "English (US)" },
+  { value: "en-GB", label: "English (UK)" },
+  { value: "ja-JP", label: "日本語" },
+  { value: "zh-CN", label: "中文" },
+] as const;
+
+const timeZoneOptions = [
+  "Asia/Seoul",
+  "Asia/Tokyo",
+  "Asia/Shanghai",
+  "America/New_York",
+  "America/Los_Angeles",
+  "Europe/London",
+  "UTC",
+] as const;
 
 export function SettingsPage() {
   const [notice, setNotice] = useState<string | null>(null);
@@ -73,12 +90,16 @@ function ProfileSection({
   readonly onSaved: () => void;
 }) {
   const [name, setName] = useState("");
+  const [preferredLocale, setPreferredLocale] = useState("ko-KR");
+  const [timeZone, setTimeZone] = useState(DEFAULT_TIME_ZONE);
   const [formError, setFormError] = useState<string | null>(null);
   const updateProfileMutation = useUpdateMyProfileMutation();
 
   useEffect(() => {
     setName(profile?.name ?? "");
-  }, [profile?.name]);
+    setPreferredLocale(profile?.preferredLocale ?? "ko-KR");
+    setTimeZone(profile?.timeZone ?? DEFAULT_TIME_ZONE);
+  }, [profile?.name, profile?.preferredLocale, profile?.timeZone]);
 
   const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -95,6 +116,8 @@ function ProfileSection({
     try {
       await updateProfileMutation.mutateAsync({
         name: nextName.length > 0 ? nextName : null,
+        preferredLocale,
+        timeZone,
       });
       onSaved();
     } catch (nextError) {
@@ -129,18 +152,48 @@ function ProfileSection({
       ) : profile ? (
         <>
           <form onSubmit={onSubmit}>
-            <div className="rounded-lg border border-[#E2E5EC] bg-white px-5 py-4 shadow-sm">
-              <div className="flex items-center justify-between gap-4">
-                <label className="flex min-w-0 flex-1 items-center gap-3">
-                  <span className="shrink-0 text-sm font-medium text-[#374151]">이름</span>
+            <div className="grid gap-4 rounded-lg border border-[#E2E5EC] bg-white px-5 py-4 shadow-sm">
+              <div className="grid gap-3 md:grid-cols-3">
+                <label className="grid min-w-0 gap-1.5">
+                  <span className="text-sm font-medium text-[#374151]">이름</span>
                   <input
-                    className="h-8 min-w-0 flex-1 rounded-md border border-[#E2E5EC] bg-white px-3 text-sm outline-none focus:border-[#93C5FD] focus:bg-white"
+                    className="h-9 min-w-0 rounded-md border border-[#E2E5EC] bg-white px-3 text-sm outline-none focus:border-[#93C5FD] focus:bg-white"
                     maxLength={80}
                     onChange={(event) => setName(event.target.value)}
                     placeholder="이름 없음"
                     value={name}
                   />
                 </label>
+                <label className="grid min-w-0 gap-1.5">
+                  <span className="text-sm font-medium text-[#374151]">표시 언어</span>
+                  <select
+                    className="h-9 min-w-0 rounded-md border border-[#E2E5EC] bg-white px-3 text-sm outline-none focus:border-[#93C5FD]"
+                    onChange={(event) => setPreferredLocale(event.target.value)}
+                    value={preferredLocale}
+                  >
+                    {localeOptions.map((option) => (
+                      <option key={option.value} value={option.value}>
+                        {option.label}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+                <label className="grid min-w-0 gap-1.5">
+                  <span className="text-sm font-medium text-[#374151]">시간대</span>
+                  <select
+                    className="h-9 min-w-0 rounded-md border border-[#E2E5EC] bg-white px-3 text-sm outline-none focus:border-[#93C5FD]"
+                    onChange={(event) => setTimeZone(event.target.value)}
+                    value={timeZone}
+                  >
+                    {getTimeZoneOptions(timeZone).map((option) => (
+                      <option key={option} value={option}>
+                        {option}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+              </div>
+              <div className="flex justify-end">
                 <Button
                   disabled={updateProfileMutation.isPending}
                   isPending={updateProfileMutation.isPending}
@@ -194,8 +247,23 @@ function ProfileSection({
                 />
                 <ReadOnlyField
                   icon={Timer}
-                  label="시간대"
-                  value={profile.timeZone ?? DEFAULT_TIME_ZONE}
+                  label="가입 시간대"
+                  value={profile.signupTimeZone ?? "-"}
+                />
+                <ReadOnlyField
+                  icon={Timer}
+                  label="마지막 로그인 시간대"
+                  value={profile.lastLoginTimeZone ?? "-"}
+                />
+                <ReadOnlyField
+                  icon={BadgeCheck}
+                  label="가입 국가"
+                  value={profile.signupCountryCode ?? "-"}
+                />
+                <ReadOnlyField
+                  icon={BadgeCheck}
+                  label="마지막 로그인 국가"
+                  value={profile.lastLoginCountryCode ?? "-"}
                 />
               </dl>
 
@@ -350,6 +418,15 @@ function ReadOnlyField({
       <dd className="mt-1 truncate text-sm font-semibold text-[#111827]">{value || "-"}</dd>
     </div>
   );
+}
+
+function getTimeZoneOptions(currentTimeZone: string) {
+  const browserTimeZone =
+    Intl.DateTimeFormat().resolvedOptions().timeZone || DEFAULT_TIME_ZONE;
+
+  return Array.from(
+    new Set([currentTimeZone, browserTimeZone, ...timeZoneOptions])
+  ).filter(Boolean);
 }
 
 function SettingsCardHeader({

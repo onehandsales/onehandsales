@@ -26,11 +26,17 @@ export class UpdateMyProfileUseCase {
     // 1. 수정 가능한 입력값을 저장 가능한 값으로 정규화한다.
     const normalizedName = this.normalizeName(input.name);
     const normalizedTimeZone = normalizeOptionalIanaTimeZone(input.timeZone);
+    const normalizedPreferredLocale = this.normalizePreferredLocale(
+      input.preferredLocale
+    );
 
     // 2. undefined 값이 optional property로 전달되지 않도록 저장소 입력을 구성한다.
     const updateInput: UpdateUserProfileInput = {
       ...(normalizedName !== undefined ? { name: normalizedName } : {}),
       ...(normalizedTimeZone !== undefined ? { timeZone: normalizedTimeZone } : {}),
+      ...(normalizedPreferredLocale !== undefined
+        ? { preferredLocale: normalizedPreferredLocale }
+        : {}),
     };
 
     // 3. 정규화된 수정 값을 저장소에 반영한다.
@@ -60,5 +66,40 @@ export class UpdateMyProfileUseCase {
 
     const trimmed = name.trim();
     return trimmed.length > 0 ? trimmed : null;
+  }
+
+  // 기능 : 사용자가 선택한 표시 언어를 지원 locale 값으로 정규화합니다.
+  private normalizePreferredLocale(locale: string | undefined): string | undefined {
+    const normalized = locale?.trim().replace("_", "-");
+
+    if (normalized === undefined) {
+      return undefined;
+    }
+
+    if (normalized === "ko" || normalized.toLowerCase() === "ko-kr") {
+      return "ko-KR";
+    }
+
+    if (normalized === "ja" || normalized.toLowerCase() === "ja-jp") {
+      return "ja-JP";
+    }
+
+    if (
+      normalized === "zh" ||
+      normalized.toLowerCase() === "zh-cn" ||
+      normalized.toLowerCase().startsWith("zh-hans")
+    ) {
+      return "zh-CN";
+    }
+
+    if (normalized.toLowerCase() === "en-gb") {
+      return "en-GB";
+    }
+
+    if (normalized === "en" || normalized.toLowerCase().startsWith("en-")) {
+      return "en-US";
+    }
+
+    return "ko-KR";
   }
 }

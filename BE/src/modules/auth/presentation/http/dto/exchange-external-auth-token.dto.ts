@@ -24,5 +24,15 @@ export class ExchangeExternalAuthTokenDto {
   @IsOptional()
   @IsBoolean()
   replaceExistingDevice?: boolean;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(16)
+  locale?: string;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(100)
+  timeZone?: string;
 }
 

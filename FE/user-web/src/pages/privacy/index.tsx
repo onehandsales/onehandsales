@@ -56,7 +56,7 @@ const privacySections: readonly PrivacySection[] = [
       {
         title: "B. Information collected automatically",
         bullets: [
-          "Device and usage data: IP address, browser type, operating system, device identifiers, approximate location derived from IP address, pages viewed, links clicked, and activity frequency or duration.",
+          "Device and usage data: IP address, browser type, operating system, device identifiers, browser language, time zone, country code or approximate location derived from network signals, pages viewed, links clicked, and activity frequency or duration.",
           "Cookies and similar technologies: cookies, local storage, pixel tags, and related technologies that support login, security, preferences, analytics, and marketing where permitted.",
           "Analytics information: aggregated and event-level usage information that helps us understand product performance and improve the Services.",
           "Advertising information: where permitted, information from advertising partners may help us measure campaigns and show relevant information about Onehand.",

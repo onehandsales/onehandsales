@@ -21,7 +21,10 @@ import type {
   VerifiedExternalUser,
 } from "@/shared/application/ports/external-auth-verifier.port";
 import type { CurrentUserContext } from "@/shared/application/context/current-user.context";
-import { ExchangeExternalAuthTokenUseCase } from "./exchange-external-auth-token.use-case";
+import {
+  ExchangeExternalAuthTokenUseCase,
+  type ExchangeExternalAuthTokenCommand,
+} from "./exchange-external-auth-token.use-case";
 
 // 역할 : FakeExternalAuthVerifier 클래스가 맡은 백엔드 책임을 구현합니다.
 class FakeExternalAuthVerifier implements ExternalAuthVerifier {
@@ -126,7 +129,14 @@ class FakeAuthRepository implements AuthRepository {
       displayName: input.displayName,
       role: input.role,
       status: "ACTIVE",
-      timeZone: "Asia/Seoul",
+      timeZone: input.timeZone,
+      preferredLocale: input.preferredLocale,
+      signupLocale: input.signupLocale,
+      signupCountryCode: input.signupCountryCode,
+      signupTimeZone: input.signupTimeZone,
+      lastLoginLocale: input.lastLoginLocale,
+      lastLoginCountryCode: input.lastLoginCountryCode,
+      lastLoginTimeZone: input.lastLoginTimeZone,
       deletedAt: null,
     };
     this.users.push(user);
@@ -147,6 +157,10 @@ class FakeAuthRepository implements AuthRepository {
       ...user,
       email: input.email,
       role: input.role ?? user.role,
+      timeZone: input.timeZone,
+      lastLoginLocale: input.lastLoginLocale,
+      lastLoginCountryCode: input.lastLoginCountryCode,
+      lastLoginTimeZone: input.lastLoginTimeZone,
     };
     // 기능 : 갱신 대상 사용자만 교체한 fake 사용자 목록을 만듭니다.
     this.users = this.users.map((item) => (item.id === user.id ? updated : item));
@@ -316,6 +330,44 @@ class FakeAuthRepository implements AuthRepository {
   }
 }
 
+function makeAuthUser(overrides: Partial<AuthUserRecord> = {}): AuthUserRecord {
+  return {
+    id: "user-1",
+    email: "user@example.com",
+    displayName: "User",
+    role: "USER",
+    status: "ACTIVE",
+    timeZone: "Asia/Seoul",
+    preferredLocale: "ko-KR",
+    signupLocale: "ko-KR",
+    signupCountryCode: "KR",
+    signupTimeZone: "Asia/Seoul",
+    lastLoginLocale: "ko-KR",
+    lastLoginCountryCode: "KR",
+    lastLoginTimeZone: "Asia/Seoul",
+    deletedAt: null,
+    ...overrides,
+  };
+}
+
+function makeExchangeCommand(
+  overrides: Partial<ExchangeExternalAuthTokenCommand> = {}
+): ExchangeExternalAuthTokenCommand {
+  return {
+    supabaseAccessToken: "supabase-token",
+    deviceSlot: "personal_laptop",
+    deviceId: "stable-device-id",
+    deviceLabel: "개인 노트북 Chrome",
+    replaceExistingDevice: false,
+    locale: "ko-KR",
+    timeZone: "Asia/Seoul",
+    countryCode: "KR",
+    userAgent: "Jest",
+    ipAddress: "127.0.0.1",
+    ...overrides,
+  };
+}
+
 // 기능 : ExchangeExternalAuthTokenUseCase의 사용자, 기기, 세션 생성 시나리오를 테스트합니다.
 describe("ExchangeExternalAuthTokenUseCase", () => {
   // 기능 : 초기 관리자 사용자의 첫 로그인 시 생성 흐름을 검증합니다.
@@ -326,15 +378,7 @@ describe("ExchangeExternalAuthTokenUseCase", () => {
       name: "Admin User",
     });
 
-    const result = await useCase.execute({
-      supabaseAccessToken: "supabase-token",
-      deviceSlot: "personal_laptop",
-      deviceId: "stable-device-id",
-      deviceLabel: "개인 노트북 Chrome",
-      replaceExistingDevice: false,
-      userAgent: "Jest",
-      ipAddress: "127.0.0.1",
-    });
+    const result = await useCase.execute(makeExchangeCommand());
 
     expect(result.response.accessToken).toBe("app-access-token");
     expect(result.response.user.role).toBe("ADMIN");
@@ -352,15 +396,12 @@ describe("ExchangeExternalAuthTokenUseCase", () => {
   // 기능 : 동일 슬롯에 다른 활성 기기가 있을 때 교체 옵션 없이는 거부되는지 검증합니다.
   it("rejects a different active device in the same slot without replacement", async () => {
     const repository = new FakeAuthRepository();
-    repository.users.push({
-      id: "user-1",
-      email: "user@example.com",
-      displayName: "User",
-      role: "USER",
-      status: "ACTIVE",
-      timeZone: "Asia/Seoul",
-      deletedAt: null,
-    });
+    repository.users.push(
+      makeAuthUser({
+        email: "user@example.com",
+        displayName: "User",
+      })
+    );
     repository.oauthAccounts.push({
       id: "oauth-1",
       userId: "user-1",
@@ -380,15 +421,12 @@ describe("ExchangeExternalAuthTokenUseCase", () => {
     });
 
     await expect(
-      useCase.execute({
-        supabaseAccessToken: "supabase-token",
-        deviceSlot: "work_laptop",
-        deviceId: "stable-device-id",
-        deviceLabel: "새 회사 노트북",
-        replaceExistingDevice: false,
-        userAgent: "Jest",
-        ipAddress: "127.0.0.1",
-      })
+      useCase.execute(
+        makeExchangeCommand({
+          deviceSlot: "work_laptop",
+          deviceLabel: "새 회사 노트북",
+        })
+      )
     ).rejects.toBeInstanceOf(DeviceSlotAlreadyRegisteredError);
     expect(repository.sessions).toHaveLength(0);
   });
@@ -400,15 +438,7 @@ describe("ExchangeExternalAuthTokenUseCase", () => {
       email: "user@example.com",
       name: "User",
     });
-    const command = {
-      supabaseAccessToken: "supabase-token",
-      deviceSlot: "personal_laptop",
-      deviceId: "stable-device-id",
-      deviceLabel: "개인 노트북 Chrome",
-      replaceExistingDevice: false,
-      userAgent: "Jest",
-      ipAddress: "127.0.0.1",
-    };
+    const command = makeExchangeCommand();
 
     const first = await useCase.execute(command);
     const second = await useCase.execute(command);
@@ -423,15 +453,12 @@ describe("ExchangeExternalAuthTokenUseCase", () => {
   // 기능 : 기존 Supabase user id 기반 OAuth 매핑을 provider 계정 ID 기반 매핑으로 승격합니다.
   it("upgrades a legacy Supabase auth id OAuth mapping to the provider account id", async () => {
     const repository = new FakeAuthRepository();
-    repository.users.push({
-      id: "user-1",
-      email: "user@example.com",
-      displayName: "User",
-      role: "USER",
-      status: "ACTIVE",
-      timeZone: "Asia/Seoul",
-      deletedAt: null,
-    });
+    repository.users.push(
+      makeAuthUser({
+        email: "user@example.com",
+        displayName: "User",
+      })
+    );
     repository.oauthAccounts.push({
       id: "oauth-1",
       userId: "user-1",
@@ -450,15 +477,7 @@ describe("ExchangeExternalAuthTokenUseCase", () => {
       }
     );
 
-    await useCase.execute({
-      supabaseAccessToken: "supabase-token",
-      deviceSlot: "personal_laptop",
-      deviceId: "stable-device-id",
-      deviceLabel: "개인 노트북 Chrome",
-      replaceExistingDevice: false,
-      userAgent: "Jest",
-      ipAddress: "127.0.0.1",
-    });
+    await useCase.execute(makeExchangeCommand());
 
     expect(repository.users).toHaveLength(1);
     expect(repository.oauthAccounts).toHaveLength(1);

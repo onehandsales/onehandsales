@@ -14,6 +14,7 @@ import type {
 import { clearApiAccessToken, setApiAccessToken } from "@/lib/api-client";
 import { env } from "@/lib/env";
 import { createBrowserSupabaseClient } from "@/lib/supabase-client";
+import { publicSiteLanguageStorageKey } from "@/features/public-site/i18n/public-site-language";
 
 const accessTokenStorageKey = "onehand.userWeb.accessToken";
 const accessTokenExpiresAtStorageKey = "onehand.userWeb.accessTokenExpiresAt";
@@ -180,7 +181,9 @@ function getDeviceExchangePayload(): {
   readonly deviceSlot: DeviceSlot;
   readonly deviceId: string;
   readonly deviceLabel: string;
+  readonly locale: string;
   readonly replaceExistingDevice: boolean;
+  readonly timeZone: string;
 } {
   const isMobile = window.matchMedia("(max-width: 767px)").matches;
 
@@ -188,7 +191,9 @@ function getDeviceExchangePayload(): {
     deviceSlot: isMobile ? "mobile" : "personal_laptop",
     deviceId: getOrCreateDeviceId(),
     deviceLabel: isMobile ? "Mobile browser" : "Personal browser",
+    locale: getPreferredLocaleForExchange(),
     replaceExistingDevice: true,
+    timeZone: getBrowserTimeZoneForExchange(),
   };
 }
 
@@ -210,4 +215,21 @@ function getOrCreateDeviceId() {
 
 function toSupabaseProvider(provider: AuthProviderId): Provider {
   return provider as Provider;
+}
+
+function getPreferredLocaleForExchange() {
+  const publicLanguage = window.localStorage.getItem(publicSiteLanguageStorageKey);
+
+  if (publicLanguage === "ko") return "ko-KR";
+  if (publicLanguage === "ja") return "ja-JP";
+  if (publicLanguage === "zh") return "zh-CN";
+  if (publicLanguage === "en-US" || publicLanguage === "en-GB") {
+    return publicLanguage;
+  }
+
+  return window.navigator.language || "ko-KR";
+}
+
+function getBrowserTimeZoneForExchange() {
+  return Intl.DateTimeFormat().resolvedOptions().timeZone || "UTC";
 }
