@@ -19,6 +19,7 @@
 - `015_uxui_list_filter_pagination.md`
 - `016_uxui_writing_tone.md`
 - `017_uxui_notion_reference.md`
+- `018_uxui_multilingual_font_stack.md`
 
 ## 3. 관련 문서
 

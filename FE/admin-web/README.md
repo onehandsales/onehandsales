@@ -11,7 +11,7 @@
 | 언어 | TypeScript |
 | 번들러/개발 서버 | Vite 7 |
 | 라우터 | React Router DOM 7 |
-| 스타일 | Tailwind CSS 3, PostCSS, shadcn/ui, Pretendard Font |
+| 스타일 | Tailwind CSS 3, PostCSS, shadcn/ui, Inter-first multilingual font stack |
 | 아이콘 | lucide-react |
 | 서버 상태 | TanStack Query |
 | 클라이언트 상태 | 필요할 때만 Zustand |

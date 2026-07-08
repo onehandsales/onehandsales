@@ -266,6 +266,12 @@ Meaning:
 
 Direction:
 
+- default UI font stack is Notion-like and multilingual:
+  `Inter`, `Pretendard Variable`, `Pretendard`, `ui-sans-serif`, `system-ui`, `-apple-system`, `BlinkMacSystemFont`, `Segoe UI`, `Apple SD Gothic Neo`, `Noto Sans KR`, `Noto Sans CJK KR`, `PingFang SC`, `Microsoft YaHei`, `Hiragino Sans`, `Hiragino Kaku Gothic ProN`, `Yu Gothic`, `Meiryo`, `Noto Sans SC`, `Noto Sans JP`, `sans-serif`
+- this font direction applies to Korean, Chinese, Japanese, English US, and English UK
+- use `Inter` first for Latin/English UI text
+- keep `Pretendard` as the Korean fallback
+- let Chinese and Japanese text fall back to OS CJK system fonts
 - body/list text: normal readable size
 - table header: smaller but clear
 - important numbers like amount: slightly emphasized
@@ -279,6 +285,7 @@ Avoid:
 - low-contrast gray text for important values
 - oversized consumer-app typography that leaves too few deals visible
 - viewport-based font scaling
+- adding a separate font system per locale without updating `AGENT/UXUI_AGENT/DECISIONS/018_uxui_multilingual_font_stack.md`
 
 ## 8A. UX Writing Direction
 

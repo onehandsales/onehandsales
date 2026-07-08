@@ -965,7 +965,7 @@ function makeEnglishCopy(copy: {
       product: "Product",
       pricing: copy.pricing,
       contact: copy.contact,
-      freeCta: "Use onehand for free",
+      freeCta: "Get Onehand",
       login: "Log in",
     },
     productMenuGroups: [

@@ -823,7 +823,7 @@ function QuoteSection() {
 
   return (
     <section className="mx-auto max-w-[980px] px-4 pb-16 text-center md:px-6 md:pb-20">
-      <p className="font-serif text-[24px] leading-9 text-[#333330]">
+      <p className="text-[24px] leading-9 text-[#333330]">
         {copy.landing.quote}
       </p>
       <p className="mt-2 text-[13px] font-bold text-[#555550]">onehand.sales</p>
