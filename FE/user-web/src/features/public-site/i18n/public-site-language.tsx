@@ -61,19 +61,26 @@ type PublicSiteCopy = {
     readonly description: string;
     readonly tags: readonly string[];
     readonly mediaCaptions: readonly string[];
+    readonly mediaAlts: readonly string[];
     readonly billingMonthly: string;
     readonly billingAnnual: string;
     readonly currency: string;
+    readonly priceLabels: readonly string[];
+    readonly pricePeriod: string;
     readonly recommended: string;
     readonly aiLabel: string;
     readonly aiTitle: string;
     readonly aiDescription: string;
     readonly aiCta: string;
+    readonly aiImageAlt: string;
+    readonly aiAvatarLabels: readonly string[];
     readonly setupTitle: string;
     readonly setupDescription: string;
     readonly featuresTitle: string;
     readonly featureColumn: string;
     readonly faqTitle: string;
+    readonly includedValues: readonly string[];
+    readonly emptyCell: string;
     readonly plans: readonly {
       readonly name: string;
       readonly description: string;
@@ -181,10 +188,10 @@ const publicSiteCopy: Record<PublicSiteLanguage, PublicSiteCopy> = {
       productTour: "Onehand 1.0 둘러보기",
       productApp: "앱으로 이동",
       footerColumns: [
-        ["회사 소개", "Onehand 소개", "채용", "보안", "서비스 상태", "이용약관 및 개인정보 보호정책", "개인정보 보호 권한"],
-        ["다운로드", "웹 앱", "모바일 웹", "데스크톱 웹", "브라우저 바로가기"],
-        ["리소스", "도움말 센터", "가격", "블로그", "커뮤니티", "연결", "템플릿", "파트너 프로그램"],
-        ["용도별", "회사", "팀", "개인", "더 살펴보기"],
+        ["회사 소개", "Onehand 소개", "보안", "약관 및 개인정보", "개인정보 권리"],
+        ["다운로드", "iOS & Android"],
+        ["리소스", "요금제"],
+        ["용도별", "엔터프라이즈", "스몰비즈니스", "개인"],
       ],
       cookieSettings: "쿠키 설정",
       languageAria: "언어 선택",
@@ -212,21 +219,28 @@ const publicSiteCopy: Record<PublicSiteLanguage, PublicSiteCopy> = {
         "개인 영업부터 작은 팀의 파이프라인까지, 필요한 기능을 단계별로 선택하세요.",
       tags: ["딜", "고객", "일정", "회의록", "검색", "AI"],
       mediaCaptions: ["고객 상담", "업무 설계", "팀 운영"],
+      mediaAlts: ["고객 상담 장면", "화이트보드 업무 설계", "팀 발표와 회의"],
       billingMonthly: "월간 결제",
       billingAnnual: "연간 결제 20% 절약",
       currency: "KRW 기준",
+      priceLabels: ["₩0", "₩14,000", "₩30,000", ""],
+      pricePeriod: "/월",
       recommended: "추천",
       aiLabel: "AI 옵션",
       aiTitle: "중요한 업무를 위한 AI 영업 도우미.",
       aiDescription:
         "회의록 요약, 다음 행동 추천, 팔로업 알림을 파이프라인과 연결합니다.",
       aiCta: "AI 기능 알아보기",
+      aiImageAlt: "회의실에서 팀이 영업 계획을 공유하는 모습",
+      aiAvatarLabels: ["딜", "회", "일"],
       setupTitle: "도입 지원 포함",
       setupDescription:
         "데이터 가져오기, 영업 단계 정리, 팀 온보딩을 함께 설계합니다.",
       featuresTitle: "요금제와 기능",
       featureColumn: "기능",
       faqTitle: "자주 묻는 질문",
+      includedValues: ["포함"],
+      emptyCell: "—",
       plans: [
         {
           name: "무료",
@@ -401,10 +415,10 @@ const publicSiteCopy: Record<PublicSiteLanguage, PublicSiteCopy> = {
       productTour: "Onehand 1.0 を見る",
       productApp: "アプリへ移動",
       footerColumns: [
-        ["会社紹介", "Onehandについて", "採用", "セキュリティ", "サービス状況", "利用規約とプライバシーポリシー", "プライバシー権限"],
-        ["ダウンロード", "Webアプリ", "モバイルWeb", "デスクトップWeb", "ブラウザショートカット"],
-        ["リソース", "ヘルプセンター", "料金", "ブログ", "コミュニティ", "連携", "テンプレート", "パートナープログラム"],
-        ["用途別", "会社", "チーム", "個人", "もっと見る"],
+        ["会社紹介", "Onehandについて", "セキュリティ", "規約とプライバシー", "プライバシー権利"],
+        ["ダウンロード", "iOS & Android"],
+        ["リソース", "料金"],
+        ["用途別", "エンタープライズ", "スモールビジネス", "個人"],
       ],
       cookieSettings: "Cookie設定",
       languageAria: "言語を選択",
@@ -516,10 +530,10 @@ const publicSiteCopy: Record<PublicSiteLanguage, PublicSiteCopy> = {
       productTour: "查看 Onehand 1.0",
       productApp: "进入应用",
       footerColumns: [
-        ["公司介绍", "关于 Onehand", "招聘", "安全", "服务状态", "条款与隐私政策", "隐私权限"],
-        ["下载", "Web 应用", "移动网页", "桌面网页", "浏览器快捷方式"],
-        ["资源", "帮助中心", "价格", "博客", "社区", "连接", "模板", "合作伙伴计划"],
-        ["适用对象", "公司", "团队", "个人", "查看更多"],
+        ["公司介绍", "关于 Onehand", "安全", "条款与隐私", "隐私权利"],
+        ["下载", "iOS & Android"],
+        ["资源", "价格"],
+        ["适用对象", "企业", "小型企业", "个人"],
       ],
       cookieSettings: "Cookie 设置",
       languageAria: "选择语言",
@@ -719,73 +733,103 @@ function makeTranslatedPricing(copy: {
   readonly featureColumn: string;
   readonly faqTitle: string;
 }): PublicSiteCopy["pricing"] {
+  const isJapanese = copy.title.includes("営業");
+  const isChinese = copy.title.includes("销售");
+  const isEnglish = !isJapanese && !isChinese;
+  const isGbp = copy.currency.includes("GBP");
+
   return {
     ...copy,
     mediaCaptions: copy.captions,
+    mediaAlts: isChinese
+      ? ["客户咨询场景", "白板工作设计", "团队演示和会议"]
+      : isJapanese
+        ? ["顧客相談の場面", "ホワイトボードでの業務設計", "チーム発表と会議"]
+        : ["Customer call scene", "Whiteboard workflow planning", "Team presentation and meeting"],
     billingMonthly: copy.monthly,
     billingAnnual: copy.annual,
+    priceLabels: isChinese
+      ? ["¥0", "¥69", "¥149", ""]
+      : isJapanese
+        ? ["¥0", "¥1,500", "¥3,200", ""]
+        : isGbp
+          ? ["£0", "£9", "£20", ""]
+          : ["$0", "$10", "$22", ""],
+    pricePeriod: isEnglish ? "/mo" : "/月",
+    aiImageAlt: isChinese
+      ? "团队在会议室分享销售计划"
+      : isJapanese
+        ? "会議室でチームが営業計画を共有する様子"
+        : "Team sharing a sales plan in a meeting room",
+    aiAvatarLabels: isChinese
+      ? ["商机", "会", "任"]
+      : isJapanese
+        ? ["商談", "会", "タ"]
+        : ["Deal", "Meet", "Task"],
+    includedValues: isChinese ? ["包含"] : isJapanese ? ["含む"] : ["Included"],
+    emptyCell: "—",
     plans: [
       {
-        name: copy.title.includes("営業") ? "無料" : copy.title.includes("销售") ? "免费" : "Free",
+        name: isJapanese ? "無料" : isChinese ? "免费" : "Free",
         description:
-          copy.title.includes("営業")
+          isJapanese
             ? "最初の営業記録を整理する個人向け"
-            : copy.title.includes("销售")
+            : isChinese
               ? "适合刚开始整理销售记录的个人"
               : "For individuals getting their sales records in order",
-        cta: copy.title.includes("销售") ? "开始使用" : copy.title.includes("営業") ? "始める" : "Get started",
+        cta: isChinese ? "开始使用" : isJapanese ? "始める" : "Get started",
         features:
-          copy.title.includes("销售")
+          isChinese
             ? ["公司/联系人基础管理", "30 个商机", "日程和会议记录", "移动浏览器支持"]
-            : copy.title.includes("営業")
+            : isJapanese
               ? ["会社/担当者の基本管理", "商談30件", "予定と議事録", "モバイルブラウザ対応"]
               : ["Basic company/contact management", "30 deals", "Calendar and notes", "Mobile browser support"],
       },
       {
-        name: copy.title.includes("営業") ? "プラス" : copy.title.includes("销售") ? "Plus" : "Plus",
+        name: isJapanese ? "プラス" : isChinese ? "Plus" : "Plus",
         description:
-          copy.title.includes("営業")
+          isJapanese
             ? "パイプラインを継続的に管理するユーザー向け"
-            : copy.title.includes("销售")
+            : isChinese
               ? "适合持续管理销售管道的用户"
               : "For people actively managing a sales pipeline",
-        cta: copy.title.includes("销售") ? "免费试用" : copy.title.includes("営業") ? "無料で試す" : "Free trial",
+        cta: isChinese ? "免费试用" : isJapanese ? "無料で試す" : "Free trial",
         features:
-          copy.title.includes("销售")
+          isChinese
             ? ["商机无限", "XLSX 下载", "回收站恢复", "高级筛选和排序"]
-            : copy.title.includes("営業")
+            : isJapanese
               ? ["商談無制限", "XLSXダウンロード", "ゴミ箱復元", "高度なフィルターと並び替え"]
               : ["Unlimited deals", "XLSX export", "Trash restore", "Advanced filters and sorting"],
       },
       {
-        name: copy.title.includes("営業") ? "ビジネス" : copy.title.includes("销售") ? "商务" : "Business",
+        name: isJapanese ? "ビジネス" : isChinese ? "商务" : "Business",
         description:
-          copy.title.includes("営業")
+          isJapanese
             ? "反復営業フローを自動化するチーム向け"
-            : copy.title.includes("销售")
+            : isChinese
               ? "适合自动化重复销售流程的团队"
               : "For teams automating repeat sales workflows",
-        cta: copy.title.includes("销售") ? "开始使用" : copy.title.includes("営業") ? "始める" : "Get started",
+        cta: isChinese ? "开始使用" : isJapanese ? "始める" : "Get started",
         features:
-          copy.title.includes("销售")
+          isChinese
             ? ["AI 会议摘要", "优先级推荐", "团队共享视图", "敏感笔记保护"]
-            : copy.title.includes("営業")
+            : isJapanese
               ? ["AI議事録要約", "優先順位の提案", "チーム共有ビュー", "機密メモ保護"]
               : ["AI meeting summaries", "Priority suggestions", "Shared team views", "Sensitive note protection"],
       },
       {
-        name: copy.title.includes("営業") ? "エンタープライズ" : copy.title.includes("销售") ? "企业" : "Enterprise",
+        name: isJapanese ? "エンタープライズ" : isChinese ? "企业" : "Enterprise",
         description:
-          copy.title.includes("営業")
+          isJapanese
             ? "セキュリティ、権限、運用ポリシーが必要な組織向け"
-            : copy.title.includes("销售")
+            : isChinese
               ? "适合需要安全、权限和运营政策的组织"
               : "For organizations with security, access, and policy needs",
-        cta: copy.title.includes("销售") ? "联系我们" : copy.title.includes("営業") ? "問い合わせる" : "Contact us",
+        cta: isChinese ? "联系我们" : isJapanese ? "問い合わせる" : "Contact us",
         features:
-          copy.title.includes("销售")
+          isChinese
             ? ["专属导入支持", "审计日志", "权限策略", "安全审查支持"]
-            : copy.title.includes("営業")
+            : isJapanese
               ? ["専任導入支援", "監査ログ", "権限ポリシー", "セキュリティレビュー支援"]
               : ["Dedicated onboarding", "Audit logs", "Access policies", "Security review support"],
       },
@@ -995,19 +1039,10 @@ function makeEnglishCopy(copy: {
     productTour: "Explore Onehand 1.0",
     productApp: "Go to app",
     footerColumns: [
-      ["Company", "About us", "Careers", "Security", "Status", "Terms and privacy", "Privacy rights"],
-      ["Download", "Web app", "Mobile web", "Desktop web", "Browser shortcut"],
-      [
-        "Resources",
-        copy.languageRegion === "UK" ? "Help centre" : "Help center",
-        copy.pricing,
-        "Blog",
-        "Community",
-        "Connections",
-        "Templates",
-        "Partner program",
-      ],
-      ["Onehand for", "Company", "Team", "Personal", "Explore more"],
+      ["Company", "About us", "Security", "Terms and privacy", "Your privacy rights"],
+      ["Download", "iOS & Android"],
+      ["Resources", "Pricing"],
+      ["Onehand for", "Enterprise", "Small business", "Personal"],
     ],
     cookieSettings: "Cookie settings",
     languageAria: "Select language",

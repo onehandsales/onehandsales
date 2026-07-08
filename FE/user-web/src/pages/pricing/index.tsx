@@ -7,7 +7,6 @@ import { usePublicSiteLanguage } from "@/features/public-site/i18n/public-site-l
 export function PricingPage() {
   const { copy } = usePublicSiteLanguage();
   const pricing = copy.pricing;
-  const priceLabels = ["₩0", "₩14,000", "₩30,000", pricing.plans[3]?.cta ?? ""];
 
   return (
     <PublicSitePageShell>
@@ -31,17 +30,17 @@ export function PricingPage() {
             <div className="mx-auto mt-8 grid max-w-[1040px] gap-3 overflow-hidden rounded-[10px] border border-[#eeeeec] bg-white p-2 shadow-sm md:grid-cols-3">
               {[
                 {
-                  alt: "고객 상담 장면",
+                  alt: pricing.mediaAlts[0],
                   src: publicSiteImages.salesConversation,
                   title: pricing.mediaCaptions[0],
                 },
                 {
-                  alt: "화이트보드 업무 설계",
+                  alt: pricing.mediaAlts[1],
                   src: publicSiteImages.whiteboardPlanning,
                   title: pricing.mediaCaptions[1],
                 },
                 {
-                  alt: "팀 발표와 회의",
+                  alt: pricing.mediaAlts[2],
                   src: publicSiteImages.teamPresentation,
                   title: pricing.mediaCaptions[2],
                 },
@@ -96,9 +95,11 @@ export function PricingPage() {
                       ) : null}
                     </div>
                     <p className="mt-5 text-[26px] font-black">
-                      {priceLabels[planIndex]}
-                      {priceLabels[planIndex]?.startsWith("₩") ? (
-                        <span className="ml-1 text-[12px] font-bold text-[#777770]">/월</span>
+                      {pricing.priceLabels[planIndex]}
+                      {pricing.priceLabels[planIndex] ? (
+                        <span className="ml-1 text-[12px] font-bold text-[#777770]">
+                          {pricing.pricePeriod}
+                        </span>
                       ) : null}
                     </p>
                     <button
@@ -127,7 +128,7 @@ export function PricingPage() {
 
             <aside className="rounded-[10px] bg-[#eef6ff] p-5">
               <img
-                alt="회의실에서 팀이 영업 계획을 공유하는 모습"
+                alt={pricing.aiImageAlt}
                 className="mb-5 h-44 w-full rounded-[8px] object-cover"
                 decoding="async"
                 loading="eager"
@@ -142,7 +143,7 @@ export function PricingPage() {
                   </h2>
                 </div>
                 <div className="flex -space-x-2">
-                  {["딜", "회", "일"].map((item) => (
+                  {pricing.aiAvatarLabels.map((item) => (
                     <span
                       className="grid h-10 w-10 place-items-center rounded-full border-2 border-white bg-[#111111] text-[11px] font-black text-white"
                       key={item}
@@ -203,10 +204,10 @@ export function PricingPage() {
                             ].join(" ")}
                             key={`${row[0]}-${index}`}
                           >
-                            {["포함", "含む", "包含", "Included"].includes(cell) ? (
+                            {pricing.includedValues.includes(cell) ? (
                               <Check className="mx-auto h-4 w-4 text-[#159447]" />
                             ) : (
-                              cell || "—"
+                              cell || pricing.emptyCell
                             )}
                           </td>
                         ))}
