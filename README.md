@@ -120,6 +120,7 @@ Playwright smoke E2E는 기본적으로 Backend와 외부 Provider를 route mock
 기본 local smoke와 unit test는 OpenAI, OCR, Supabase Auth를 실제 호출하지 않는다. 실제 provider 검증이 필요할 때는 각 앱의 `.env`를 채우고 별도 smoke로 확인한다. Supabase OAuth 실검증은 Google부터 확인하고, Kakao는 Kakao Developers의 카카오 로그인 활성화와 `account_email` 동의항목 설정 후 확인한다.
 
 환경 파일은 각 실행 단위의 `.env` 하나만 사용한다. `.env.example` 또는 `.env.local`은 현재 정본이 아니다. 전체 변수명은 `ENVIRONMENT.md`를 기준으로 확인한다.
+외부 provider 에러 처리와 후속 개선 항목은 `ERROR.md`에 기록한다.
 
 - Backend Auth/DB: `DATABASE_URL`, `DIRECT_URL`, `APP_JWT_SECRET`, `APP_REFRESH_TOKEN_SECRET`, `SUPABASE_JWKS_URL`, `SUPABASE_JWT_ISSUER`
 - Frontend Supabase/Auth: `VITE_API_URL`, `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`, `VITE_SUPABASE_REDIRECT_URL`
