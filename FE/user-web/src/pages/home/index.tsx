@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import { useMemo } from "react";
 import { Link } from "react-router-dom";
+import { useAuthSession } from "@/features/auth";
 import { useDealList, useDealStageCounts } from "@/features/deal/hooks/use-deal-list";
 import {
   DEAL_STATUS_LABEL,
@@ -85,9 +86,13 @@ type ActivityItem = {
 
 // 기능 : CRM 시작 화면을 렌더링합니다.
 export function HomePage() {
-  const timeZone = useMemo(() => getBrowserTimeZoneFallback(), []);
+  const { user } = useAuthSession();
+  const timeZone = user?.timeZone ?? getBrowserTimeZoneFallback();
   const today = useMemo(() => new Date(), []);
-  const todayKey = useMemo(() => toDateKey(today), [today]);
+  const todayKey = useMemo(
+    () => toDateKeyInTimeZone(today.toISOString(), timeZone),
+    [timeZone, today]
+  );
 
   const scheduleQuery = useScheduleList({
     baseDate: todayKey,
@@ -809,10 +814,6 @@ function formatShortDateTime(value: string) {
   });
 }
 
-function toDateKey(date: Date) {
-  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
-}
-
 function toDateKeyInTimeZone(value: string, timeZone: string) {
   const date = new Date(value);
 
@@ -844,9 +845,6 @@ function getBrowserTimeZoneFallback() {
   }
 }
 
-function pad(value: number) {
-  return String(value).padStart(2, "0");
-}
 
 function toArrayLength(children: React.ReactNode) {
   return Array.isArray(children) ? children.filter(Boolean).length : children ? 1 : 0;

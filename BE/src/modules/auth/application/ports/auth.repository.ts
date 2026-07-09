@@ -80,7 +80,6 @@ export interface CreateAuthUserInput {
 export interface UpdateUserLoginInput {
   readonly userId: string;
   readonly email: string;
-  readonly timeZone: string;
   readonly lastLoginLocale: string;
   readonly lastLoginCountryCode: string | null;
   readonly lastLoginTimeZone: string;

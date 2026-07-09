@@ -37,6 +37,7 @@ import type {
 import { getApiErrorMessage } from "@/lib/api-client";
 
 type ScheduleFormDialogProps = {
+  readonly defaultTimeZone: string;
   readonly open: boolean;
   readonly schedule: Schedule | null;
   readonly initialStartAt: Date | null;
@@ -54,6 +55,7 @@ const fixedTimeZoneOptions = [
 ];
 
 export function ScheduleFormDialog({
+  defaultTimeZone,
   open,
   schedule,
   initialStartAt,
@@ -97,8 +99,8 @@ export function ScheduleFormDialog({
     [mergedDealOptions, selectedDealIds]
   );
   const timeZoneOptions = useMemo(
-    () => getTimeZoneOptions(timeZone, schedule?.timeZone),
-    [schedule?.timeZone, timeZone]
+    () => getTimeZoneOptions(timeZone, schedule?.timeZone, defaultTimeZone),
+    [defaultTimeZone, schedule?.timeZone, timeZone]
   );
   const actionError =
     createScheduleMutation.error ??
@@ -117,8 +119,16 @@ export function ScheduleFormDialog({
       return;
     }
 
-    reset(getCreateDefaults(initialStartAt));
-  }, [detailQuery.data, initialStartAt, isEdit, open, reset, schedule]);
+    reset(getCreateDefaults(initialStartAt, defaultTimeZone));
+  }, [
+    defaultTimeZone,
+    detailQuery.data,
+    initialStartAt,
+    isEdit,
+    open,
+    reset,
+    schedule,
+  ]);
 
   if (!open) {
     return null;
@@ -582,8 +592,11 @@ function filterDealOptions(options: ScheduleDealOption[], search: string) {
   );
 }
 
-function getCreateDefaults(initialStartAt: Date | null): ScheduleFormValues {
-  const timeZone = getDefaultScheduleTimeZone();
+function getCreateDefaults(
+  initialStartAt: Date | null,
+  defaultTimeZone: string
+): ScheduleFormValues {
+  const timeZone = defaultTimeZone || getDefaultScheduleTimeZone();
   const startAt = initialStartAt ?? getNextHour();
   const endAt = new Date(startAt.getTime() + 60 * 60 * 1000);
 
@@ -603,10 +616,15 @@ function getNextHour() {
   return date;
 }
 
-function getTimeZoneOptions(currentTimeZone: string, scheduleTimeZone?: string) {
+function getTimeZoneOptions(
+  currentTimeZone: string,
+  scheduleTimeZone: string | undefined,
+  defaultTimeZone: string
+) {
   return [
-    currentTimeZone || getDefaultScheduleTimeZone(),
+    currentTimeZone || defaultTimeZone || getDefaultScheduleTimeZone(),
     scheduleTimeZone ?? "",
+    defaultTimeZone,
     ...fixedTimeZoneOptions,
   ].filter((option, index, options) => option && options.indexOf(option) === index);
 }

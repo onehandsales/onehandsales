@@ -9,6 +9,7 @@ import {
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { PageHeader } from "@/components/layout/page-header";
+import { useAuthSession } from "@/features/auth";
 import { ScheduleFormDialog } from "@/features/schedule/components/schedule-form-dialog";
 import { useScheduleDetail } from "@/features/schedule/hooks/use-schedule-queries";
 import { getDefaultScheduleTimeZone } from "@/features/schedule/schemas/schedule-schema";
@@ -20,9 +21,9 @@ type ScheduleDetailScreenProps = {
   readonly scheduleId: string;
 };
 
-const defaultTimeZone = getDefaultScheduleTimeZone();
-
 export function ScheduleDetailScreen({ scheduleId }: ScheduleDetailScreenProps) {
+  const { user } = useAuthSession();
+  const defaultTimeZone = user?.timeZone ?? getDefaultScheduleTimeZone();
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [notice, setNotice] = useState<string | null>(null);
   const scheduleQuery = useScheduleDetail(scheduleId, scheduleId.length > 0);
@@ -61,11 +62,15 @@ export function ScheduleDetailScreen({ scheduleId }: ScheduleDetailScreenProps) 
             onRetry={() => void scheduleQuery.refetch()}
           />
         ) : (
-          <ScheduleDetailContent schedule={schedule} />
+          <ScheduleDetailContent
+            defaultTimeZone={defaultTimeZone}
+            schedule={schedule}
+          />
         )}
       </div>
 
       <ScheduleFormDialog
+        defaultTimeZone={defaultTimeZone}
         initialStartAt={null}
         onOpenChange={setIsEditOpen}
         onSaved={setNotice}
@@ -76,7 +81,13 @@ export function ScheduleDetailScreen({ scheduleId }: ScheduleDetailScreenProps) 
   );
 }
 
-function ScheduleDetailContent({ schedule }: { readonly schedule: Schedule }) {
+function ScheduleDetailContent({
+  defaultTimeZone,
+  schedule,
+}: {
+  readonly defaultTimeZone: string;
+  readonly schedule: Schedule;
+}) {
   return (
     <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_320px]">
       <article className="rounded-lg border border-[#E2E5EC] bg-white p-5 shadow-sm">
@@ -89,7 +100,7 @@ function ScheduleDetailContent({ schedule }: { readonly schedule: Schedule }) {
               {schedule.scheduleTitle}
             </h1>
             <p className="mt-2 text-sm text-[#64748B]">
-              {formatScheduleDateRange(schedule)}
+              {formatScheduleDateRange(schedule, defaultTimeZone)}
             </p>
           </div>
         </div>
@@ -98,7 +109,7 @@ function ScheduleDetailContent({ schedule }: { readonly schedule: Schedule }) {
           <InfoRow
             icon={Clock3}
             label="시간"
-            value={formatScheduleDateRange(schedule)}
+            value={formatScheduleDateRange(schedule, defaultTimeZone)}
           />
           <InfoRow
             icon={MapPin}
@@ -203,7 +214,7 @@ function ScheduleDetailError({
   );
 }
 
-function formatScheduleDateRange(schedule: Schedule) {
+function formatScheduleDateRange(schedule: Schedule, defaultTimeZone: string) {
   const start = formatDateWithOptions(schedule.startAt, {
     dateStyle: "medium",
     timeStyle: "short",

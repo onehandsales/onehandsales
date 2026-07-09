@@ -177,7 +177,6 @@ export class ExchangeExternalAuthTokenUseCase {
       const updateInput = {
         userId: oauthAccount.userId,
         email,
-        timeZone: loginMetadata.timeZone,
         lastLoginLocale: loginMetadata.locale,
         lastLoginCountryCode: loginMetadata.countryCode,
         lastLoginTimeZone: loginMetadata.timeZone,

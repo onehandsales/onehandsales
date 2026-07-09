@@ -157,7 +157,6 @@ class FakeAuthRepository implements AuthRepository {
       ...user,
       email: input.email,
       role: input.role ?? user.role,
-      timeZone: input.timeZone,
       lastLoginLocale: input.lastLoginLocale,
       lastLoginCountryCode: input.lastLoginCountryCode,
       lastLoginTimeZone: input.lastLoginTimeZone,
@@ -448,6 +447,43 @@ describe("ExchangeExternalAuthTokenUseCase", () => {
     expect(repository.devices).toHaveLength(1);
     expect(repository.sessions).toHaveLength(1);
     expect(repository.sessions[0]?.id).toBe("session-1");
+  });
+
+  // 기능 : 기존 사용자의 명시 설정 시간대는 로그인 환경 메타데이터로 덮어쓰지 않습니다.
+  it("preserves the existing user timezone while updating last login metadata", async () => {
+    const repository = new FakeAuthRepository();
+    repository.users.push(
+      makeAuthUser({
+        email: "user@example.com",
+        displayName: "User",
+        timeZone: "America/New_York",
+        lastLoginTimeZone: "America/New_York",
+      })
+    );
+    repository.oauthAccounts.push({
+      id: "oauth-1",
+      userId: "user-1",
+      provider: "google",
+      providerUserId: "external-user-1",
+    });
+    const useCase = createUseCase(repository, {
+      email: "user@example.com",
+      name: "User",
+    });
+
+    const result = await useCase.execute(
+      makeExchangeCommand({
+        locale: "ko-KR",
+        timeZone: "Asia/Seoul",
+        countryCode: "KR",
+      })
+    );
+
+    expect(result.response.user.timeZone).toBe("America/New_York");
+    expect(result.response.user.lastLoginLocale).toBe("ko-KR");
+    expect(result.response.user.lastLoginCountryCode).toBe("KR");
+    expect(result.response.user.lastLoginTimeZone).toBe("Asia/Seoul");
+    expect(repository.users[0]?.timeZone).toBe("America/New_York");
   });
 
   // 기능 : 기존 Supabase user id 기반 OAuth 매핑을 provider 계정 ID 기반 매핑으로 승격합니다.

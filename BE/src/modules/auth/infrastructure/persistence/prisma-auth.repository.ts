@@ -153,7 +153,6 @@ export class PrismaAuthRepository implements AuthRepository {
   ): Promise<AuthUserRecord> {
     const data: Prisma.UserUpdateInput = {
       email: input.email,
-      timeZone: input.timeZone,
       lastLoginLocale: input.lastLoginLocale,
       lastLoginCountryCode: input.lastLoginCountryCode,
       lastLoginTimeZone: input.lastLoginTimeZone,

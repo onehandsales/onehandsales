@@ -7,15 +7,16 @@ import {
 } from "lucide-react";
 import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
+import { useAuthSession } from "@/features/auth";
 import { useScheduleList } from "@/features/schedule/hooks/use-schedule-queries";
 import { getDefaultScheduleTimeZone } from "@/features/schedule/schemas/schedule-schema";
 import type { Schedule } from "@/features/schedule/types/schedule";
 import { getApiErrorMessage } from "@/lib/api-client";
 import { formatDate, formatDateWithOptions } from "@/utils/format";
 
-const screenTimeZone = getDefaultScheduleTimeZone();
-
 export function ScheduleWeekReportScreen() {
+  const { user } = useAuthSession();
+  const screenTimeZone = user?.timeZone ?? getDefaultScheduleTimeZone();
   const [weekStart, setWeekStart] = useState(() => getWeekStart(new Date()));
   const scheduleListQuery = useScheduleList({
     view: "week",
@@ -24,8 +25,13 @@ export function ScheduleWeekReportScreen() {
   });
   const weekEnd = addDays(weekStart, 6);
   const days = useMemo(
-    () => buildWeekDays(weekStart, scheduleListQuery.data?.items ?? []),
-    [scheduleListQuery.data?.items, weekStart]
+    () =>
+      buildWeekDays(
+        weekStart,
+        scheduleListQuery.data?.items ?? [],
+        screenTimeZone
+      ),
+    [scheduleListQuery.data?.items, screenTimeZone, weekStart]
   );
 
   return (
@@ -186,8 +192,12 @@ function WeekReportSkeleton() {
   );
 }
 
-function buildWeekDays(weekStart: Date, schedules: Schedule[]) {
-  const schedulesByDate = groupSchedulesByDate(schedules);
+function buildWeekDays(
+  weekStart: Date,
+  schedules: Schedule[],
+  timeZone: string
+) {
+  const schedulesByDate = groupSchedulesByDate(schedules, timeZone);
 
   return Array.from({ length: 7 }, (_, index) => {
     const dateObject = addDays(weekStart, index);
@@ -201,11 +211,11 @@ function buildWeekDays(weekStart: Date, schedules: Schedule[]) {
   });
 }
 
-function groupSchedulesByDate(schedules: Schedule[]) {
+function groupSchedulesByDate(schedules: Schedule[], timeZone: string) {
   const grouped = new Map<string, Schedule[]>();
 
   for (const schedule of schedules) {
-    const key = toDateKeyInTimeZone(schedule.startAt, screenTimeZone);
+    const key = toDateKeyInTimeZone(schedule.startAt, timeZone);
     const items = grouped.get(key) ?? [];
     items.push(schedule);
     grouped.set(key, items);

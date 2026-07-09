@@ -8,6 +8,7 @@ import {
   RotateCcw,
 } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
+import { useAuthSession } from "@/features/auth";
 import { ScheduleFormDialog } from "@/features/schedule/components/schedule-form-dialog";
 import { useScheduleList } from "@/features/schedule/hooks/use-schedule-queries";
 import { getDefaultScheduleTimeZone } from "@/features/schedule/schemas/schedule-schema";
@@ -18,7 +19,6 @@ import type {
 import { getApiErrorMessage } from "@/lib/api-client";
 import { formatDateWithOptions } from "@/utils/format";
 
-const screenTimeZone = getDefaultScheduleTimeZone();
 const weekDayLabels = ["월", "화", "수", "목", "금", "토", "일"];
 const viewModeOptions: ReadonlyArray<{
   readonly value: ScheduleViewMode;
@@ -29,6 +29,8 @@ const viewModeOptions: ReadonlyArray<{
 ];
 
 export function ScheduleScreen() {
+  const { user } = useAuthSession();
+  const screenTimeZone = user?.timeZone ?? getDefaultScheduleTimeZone();
   const [viewMode, setViewMode] = useState<ScheduleViewMode>("month");
   const [anchorDate, setAnchorDate] = useState(() => new Date());
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -56,7 +58,7 @@ export function ScheduleScreen() {
   );
   const schedulesByDate = useMemo(
     () => groupSchedulesByDate(schedules, screenTimeZone),
-    [schedules],
+    [schedules, screenTimeZone],
   );
   const title = formatMonthTitle(anchorDate);
 
@@ -180,6 +182,7 @@ export function ScheduleScreen() {
       </div>
 
       <ScheduleFormDialog
+        defaultTimeZone={screenTimeZone}
         initialStartAt={initialStartAt}
         onOpenChange={setIsDialogOpen}
         onSaved={setNotice}
