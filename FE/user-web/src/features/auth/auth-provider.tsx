@@ -19,12 +19,6 @@ export function AuthProvider({ children }: { readonly children: ReactNode }) {
     let isMounted = true;
 
     setApiRefreshHandler(async () => {
-      // mock 세션은 refresh 없이 현재 토큰 그대로 유지
-      const storedToken = window.localStorage.getItem("onehand.userWeb.accessToken");
-      if (storedToken === "mock-user-web-access-token") {
-        return storedToken;
-      }
-
       try {
         const refreshedSession = await authService.refresh();
 
@@ -93,7 +87,6 @@ export function AuthProvider({ children }: { readonly children: ReactNode }) {
       error,
       isAuthenticated: Boolean(session?.accessToken),
       isInitializing,
-      isMockSession: session?.isMock ?? false,
       isPending,
       user: session?.user ?? null,
       clearError: () => setError(null),
@@ -137,9 +130,6 @@ export function AuthProvider({ children }: { readonly children: ReactNode }) {
             },
           };
         });
-      },
-      loginWithMock: async () => {
-        await runAuthAction(async () => authService.loginWithMock());
       },
       logout: async () => {
         await runAuthAction(async () => {

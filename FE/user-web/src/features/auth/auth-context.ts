@@ -6,13 +6,11 @@ export type AuthContextValue = {
   readonly error: string | null;
   readonly isAuthenticated: boolean;
   readonly isInitializing: boolean;
-  readonly isMockSession: boolean;
   readonly isPending: boolean;
   readonly user: AuthUser | null;
   readonly clearError: () => void;
   readonly exchangeCurrentSupabaseSession: () => Promise<boolean>;
   readonly updateAuthUser: (patch: Partial<AuthUser>) => void;
-  readonly loginWithMock: () => Promise<void>;
   readonly logout: () => Promise<void>;
   readonly startProviderLogin: (provider: AuthProviderId) => Promise<void>;
 };

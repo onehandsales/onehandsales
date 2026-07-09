@@ -13,7 +13,9 @@ const DEAL_TITLE = "스모크 MVP 딜";
 const SCHEDULE_TITLE = "스모크 미팅 일정";
 const MEETING_TITLE = "스모크 미팅 회의록";
 const MEETING_DETAILS = "MVP 도입 일정과 검토 범위를 합의했다.";
-const MOCK_ACCESS_TOKEN = "Bearer mock-user-web-access-token";
+const E2E_ACCESS_TOKEN = "e2e-user-web-access-token";
+const E2E_ACCESS_TOKEN_EXPIRES_AT = "2026-12-31T23:59:59.000Z";
+const E2E_AUTHORIZATION = `Bearer ${E2E_ACCESS_TOKEN}`;
 
 type DealStatus =
   | "INITIAL_CONTACT"
@@ -341,26 +343,32 @@ type MockApiResponse = {
 };
 
 test.describe("User Web smoke E2E", () => {
-  test("mock login부터 회의록 저장까지 핵심 업무 흐름이 이어진다", async ({
+  test("로그인 화면부터 회의록 저장까지 핵심 업무 흐름이 이어진다", async ({
     page,
   }) => {
     const api = await setupUserWebApiMocks(page);
 
-    await test.step("로그인 보호 라우트와 mock login", async () => {
-      await page.goto("/companies");
+    await test.step("로그인 보호 라우트와 현재 로그인 화면", async () => {
+      await page.goto("/app/companies");
       await expect(page).toHaveURL(/\/login$/);
-      await page
-        .getByRole("button", { name: "개발용 mock 세션으로 입장" })
-        .click();
-      await expect(page).toHaveURL(/\/companies$/);
       await expect(
-        page.getByRole("button", { name: "회사 추가" }).first()
+        page.getByRole("heading", { name: "Your AI workspace" })
+      ).toBeVisible();
+      await expect(page.getByText("Log in to Onehand")).toBeVisible();
+      await expect(page.getByRole("button", { name: "Kakao" })).toBeVisible();
+      await expect(page.getByRole("button", { name: "Google" })).toBeVisible();
+
+      await seedAuthenticatedSession(page);
+      await page.goto("/app/companies");
+      await expect(page).toHaveURL(/\/app\/companies$/);
+      await expect(
+        page.getByRole("button", { name: "회사 생성" }).first()
       ).toBeVisible();
     });
 
     await test.step("회사 생성", async () => {
-      await page.getByRole("button", { name: "회사 추가" }).first().click();
-      const dialog = getDialog(page, "회사 추가");
+      await page.getByRole("button", { name: "회사 생성" }).first().click();
+      const dialog = getDialog(page, "회사 생성");
 
       await expect(dialog).toBeVisible();
       await dialog.getByLabel("회사명").fill(COMPANY_NAME);
@@ -370,17 +378,17 @@ test.describe("User Web smoke E2E", () => {
       await dialog.getByRole("button", { name: "저장" }).click();
 
       await expect(dialog).toBeHidden();
-      await expectAndCloseNotice(page, "회사가 추가되었습니다.");
+      await expectAndCloseNotice(page, "회사를 추가했어요.");
       await expect(page.getByText(COMPANY_NAME).first()).toBeVisible();
     });
 
     await test.step("담당자 생성", async () => {
       await goToNav(page, "담당자");
       await expect(
-        page.getByRole("button", { name: "담당자 추가" }).first()
+        page.getByRole("button", { name: "담당자 생성" }).first()
       ).toBeVisible();
-      await page.getByRole("button", { name: "담당자 추가" }).first().click();
-      const dialog = getDialog(page, "담당자 추가");
+      await page.getByRole("button", { name: "담당자 생성" }).first().click();
+      const dialog = getDialog(page, "담당자 생성");
 
       await expect(dialog).toBeVisible();
       await dialog.getByLabel("이름").fill(CONTACT_NAME);
@@ -393,17 +401,17 @@ test.describe("User Web smoke E2E", () => {
       await dialog.getByRole("button", { name: "저장" }).click();
 
       await expect(dialog).toBeHidden();
-      await expectAndCloseNotice(page, "담당자가 추가되었습니다.");
+      await expectAndCloseNotice(page, "담당자를 추가했어요.");
       await expect(page.getByText(CONTACT_NAME).first()).toBeVisible();
     });
 
     await test.step("제품 생성", async () => {
       await goToNav(page, "제품");
       await expect(
-        page.getByRole("button", { name: "제품 추가" }).first()
+        page.getByRole("button", { name: "제품 생성" }).first()
       ).toBeVisible();
-      await page.getByRole("button", { name: "제품 추가" }).first().click();
-      const dialog = getDialog(page, "제품 추가");
+      await page.getByRole("button", { name: "제품 생성" }).first().click();
+      const dialog = getDialog(page, "제품 생성");
 
       await expect(dialog).toBeVisible();
       await dialog.getByLabel("제품명").fill(PRODUCT_NAME);
@@ -411,20 +419,20 @@ test.describe("User Web smoke E2E", () => {
       await selectManagedOption(dialog, "카테고리명", "Starter");
       await selectManagedOption(dialog, "상태명", "판매중");
       await dialog.getByLabel("메모").fill("G34 smoke 제품 fixture");
-      await dialog.getByRole("button", { name: "제품 추가" }).click();
+      await dialog.getByRole("button", { name: "제품 생성" }).click();
 
       await expect(dialog).toBeHidden();
-      await expectAndCloseNotice(page, "제품이 추가되었습니다.");
+      await expectAndCloseNotice(page, "제품을 추가했어요.");
       await expect(page.getByText(PRODUCT_NAME).first()).toBeVisible();
     });
 
     await test.step("딜 생성", async () => {
       await goToNav(page, "딜");
       await expect(
-        page.getByRole("button", { name: "딜 추가" }).first()
+        page.getByRole("button", { name: "딜 생성" }).first()
       ).toBeVisible();
-      await page.getByRole("button", { name: "딜 추가" }).first().click();
-      const dialog = getDialog(page, "딜 추가");
+      await page.getByRole("button", { name: "딜 생성" }).first().click();
+      const dialog = getDialog(page, "딜 생성");
 
       await expect(dialog).toBeVisible();
       await dialog.getByLabel("딜이름").fill(DEAL_TITLE);
@@ -442,15 +450,17 @@ test.describe("User Web smoke E2E", () => {
       await dialog.getByRole("button", { name: "저장" }).click();
 
       await expect(dialog).toBeHidden();
-      await expect(page).toHaveURL(/\/deals\/deal-/);
+      await expect(page).toHaveURL(/\/app\/deals\/deal-/);
     });
 
     await test.step("일정 생성", async () => {
       await goToNav(page, "일정");
+      await page.getByRole("button", { name: "일정 보기 방식" }).click();
+      await page.getByRole("option", { name: "주" }).click();
       await expect(
-        page.getByRole("button", { name: "일정 생성" }).last()
+        page.getByRole("button", { name: "일정 생성" }).first()
       ).toBeVisible();
-      await page.getByRole("button", { name: "일정 생성" }).last().click();
+      await page.getByRole("button", { name: "일정 생성" }).first().click();
       const dialog = page
         .getByRole("dialog")
         .filter({ hasText: "일정 생성" })
@@ -469,7 +479,7 @@ test.describe("User Web smoke E2E", () => {
       await expect(dialog).toBeHidden();
       await expectAndCloseNotice(
         page,
-        `${SCHEDULE_TITLE} 일정이 생성되었습니다.`
+        `${SCHEDULE_TITLE} 일정을 만들었어요.`
       );
       await expect(page.getByText(SCHEDULE_TITLE).first()).toBeVisible();
     });
@@ -477,10 +487,10 @@ test.describe("User Web smoke E2E", () => {
     await test.step("회의록 저장과 딜 연결", async () => {
       await goToNav(page, "회의록");
       await expect(
-        page.getByRole("button", { name: "회의록 추가" }).first()
+        page.getByRole("button", { name: "회의록 생성" }).first()
       ).toBeVisible();
-      await page.getByRole("button", { name: "회의록 추가" }).first().click();
-      const dialog = getDialog(page, "회의록 추가");
+      await page.getByRole("button", { name: "회의록 생성" }).first().click();
+      const dialog = getDialog(page, "회의록 생성");
 
       await expect(dialog).toBeVisible();
       await dialog.getByLabel("회의록 제목").fill(MEETING_TITLE);
@@ -492,10 +502,10 @@ test.describe("User Web smoke E2E", () => {
       await dialog.getByLabel("상세 내용").fill(MEETING_DETAILS);
       await dialog.getByLabel("다음 계획").fill("제안서 발송 후 예산 확인");
       await dialog.getByLabel("필요 액션").fill("제안서와 견적서 준비");
-      await dialog.getByRole("button", { name: "회의록 추가" }).click();
+      await dialog.getByRole("button", { name: "회의록 생성" }).click();
 
       await expect(dialog).toBeHidden();
-      await expectAndCloseNotice(page, "회의록이 추가되었습니다.");
+      await expectAndCloseNotice(page, "회의록을 추가했어요.");
       await expect(page.getByText(MEETING_TITLE).first()).toBeVisible();
     });
 
@@ -532,7 +542,7 @@ async function setupUserWebApiMocks(page: Page) {
       requests.filter(
         (request) =>
           !isPublicApiRequest(request) &&
-          request.authorization !== MOCK_ACCESS_TOKEN
+          request.authorization !== E2E_AUTHORIZATION
       ),
   };
 }
@@ -555,6 +565,10 @@ async function handleApiRequest(
 
   if (path === "/api/search" && method === "GET") {
     return json({ groups: [] });
+  }
+
+  if (path === "/api/me" && method === "GET") {
+    return json(createE2EAuthUser());
   }
 
   if (path === "/api/auth/providers" && method === "GET") {
@@ -836,6 +850,47 @@ function createStore(): SmokeStore {
     schedules: [],
     meetingNotes: [],
     sequence: 1,
+  };
+}
+
+async function seedAuthenticatedSession(page: Page) {
+  await page.evaluate(
+    ({ accessToken, accessTokenExpiresAt }) => {
+      window.localStorage.setItem("onehand.userWeb.accessToken", accessToken);
+      window.localStorage.setItem(
+        "onehand.userWeb.accessTokenExpiresAt",
+        accessTokenExpiresAt
+      );
+    },
+    {
+      accessToken: E2E_ACCESS_TOKEN,
+      accessTokenExpiresAt: E2E_ACCESS_TOKEN_EXPIRES_AT,
+    }
+  );
+}
+
+function createE2EAuthUser() {
+  return {
+    id: "user-e2e-1",
+    supabaseUserId: "supabase-e2e-1",
+    name: "E2E User",
+    email: "e2e@example.com",
+    role: "USER",
+    status: "ACTIVE",
+    timeZone: "Asia/Seoul",
+    preferredLocale: "ko-KR",
+    signupLocale: "ko-KR",
+    signupCountryCode: "KR",
+    signupTimeZone: "Asia/Seoul",
+    lastLoginLocale: "ko-KR",
+    lastLoginCountryCode: "KR",
+    lastLoginTimeZone: "Asia/Seoul",
+    settings: {
+      sensitiveWarningEnabled: true,
+      defaultReminderMinutes: 30,
+      emailNotificationEnabled: false,
+      browserPushEnabled: false,
+    },
   };
 }
 

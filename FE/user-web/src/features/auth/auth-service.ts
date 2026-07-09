@@ -18,13 +18,11 @@ import { publicSiteLanguageStorageKey } from "@/features/public-site/i18n/public
 
 const accessTokenStorageKey = "onehand.userWeb.accessToken";
 const accessTokenExpiresAtStorageKey = "onehand.userWeb.accessTokenExpiresAt";
-const mockAccessToken = "mock-user-web-access-token";
 
 export type AuthSessionState = {
   readonly accessToken: string;
   readonly accessTokenExpiresAt: string | null;
   readonly user: AuthTokenResponse["user"] | null;
-  readonly isMock: boolean;
 };
 
 export const authService = {
@@ -78,13 +76,13 @@ export const authService = {
     });
 
     persistSession(response);
-    return toSessionState(response, false);
+    return toSessionState(response);
   },
 
   async refresh() {
     const response = await refreshAppAccessToken();
     persistSession(response);
-    return toSessionState(response, false);
+    return toSessionState(response);
   },
 
   async restoreStoredSession() {
@@ -99,42 +97,17 @@ export const authService = {
 
     setApiAccessToken(accessToken);
 
-    if (accessToken === mockAccessToken) {
-      return {
-        accessToken,
-        accessTokenExpiresAt,
-        user: null,
-        isMock: true,
-      };
-    }
-
     try {
       const user = await getMe();
       return {
         accessToken,
         accessTokenExpiresAt,
         user,
-        isMock: false,
       };
     } catch {
       clearStoredSession();
       return null;
     }
-  },
-
-  loginWithMock() {
-    const session = {
-      accessToken: mockAccessToken,
-      accessTokenExpiresAt: null,
-      user: null,
-      isMock: true,
-    };
-
-    setApiAccessToken(mockAccessToken);
-    window.localStorage.setItem(accessTokenStorageKey, mockAccessToken);
-    window.localStorage.removeItem(accessTokenExpiresAtStorageKey);
-
-    return session;
   },
 
   async logout() {
@@ -165,15 +138,11 @@ function clearStoredSession() {
   window.localStorage.removeItem(accessTokenExpiresAtStorageKey);
 }
 
-function toSessionState(
-  response: AuthTokenResponse,
-  isMock: boolean
-): AuthSessionState {
+function toSessionState(response: AuthTokenResponse): AuthSessionState {
   return {
     accessToken: response.accessToken,
     accessTokenExpiresAt: response.accessTokenExpiresAt,
     user: response.user,
-    isMock,
   };
 }
 
