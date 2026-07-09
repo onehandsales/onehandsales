@@ -116,6 +116,15 @@ export class ImportJobController {
       ...(body.contactCompanyResolutions === undefined
         ? {}
         : { contactCompanyResolutions: body.contactCompanyResolutions }),
+      ...(body.dealCompanyResolutions === undefined
+        ? {}
+        : { dealCompanyResolutions: body.dealCompanyResolutions }),
+      ...(body.dealContactResolutions === undefined
+        ? {}
+        : { dealContactResolutions: body.dealContactResolutions }),
+      ...(body.dealProductResolutions === undefined
+        ? {}
+        : { dealProductResolutions: body.dealProductResolutions }),
       ...(body.rows === undefined ? {} : { rows: body.rows }),
     };
 

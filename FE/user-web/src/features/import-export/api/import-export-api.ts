@@ -49,6 +49,9 @@ export function confirmImportJob(input: ConfirmImportJobInput) {
       method: "POST",
       body: {
         contactCompanyResolutions: input.contactCompanyResolutions,
+        dealCompanyResolutions: input.dealCompanyResolutions,
+        dealContactResolutions: input.dealContactResolutions,
+        dealProductResolutions: input.dealProductResolutions,
         rows: input.rows,
       },
     }

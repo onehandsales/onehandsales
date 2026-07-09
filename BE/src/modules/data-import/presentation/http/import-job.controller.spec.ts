@@ -1,0 +1,179 @@
+import {
+  type CanActivate,
+  type ExecutionContext,
+  type INestApplication,
+  ValidationPipe,
+} from "@nestjs/common";
+import { Test } from "@nestjs/testing";
+import type { Request } from "express";
+import * as request from "supertest";
+import { DataImportApplicationService } from "@/modules/data-import/application/services/data-import-application.service";
+import type { CurrentUserContext } from "@/shared/application/context/current-user.context";
+import { AuthGuard } from "@/shared/presentation/guards/auth.guard";
+import { ImportJobController } from "./import-job.controller";
+
+const CURRENT_USER: CurrentUserContext = {
+  id: "00000000-0000-4000-8000-000000000101",
+  sessionId: "00000000-0000-4000-8000-000000000201",
+  email: "user@example.com",
+  displayName: "User",
+  role: "USER",
+  status: "ACTIVE",
+  timeZone: "Asia/Seoul",
+};
+
+const IMPORT_JOB_ID = "00000000-0000-4000-8000-000000000301";
+
+type RequestWithCurrentUser = Request & {
+  currentUser?: CurrentUserContext;
+};
+
+type DataImportServiceFake = Pick<
+  DataImportApplicationService,
+  "confirmImportJob" | "updateImportMapping"
+>;
+
+class FakeAuthGuard implements CanActivate {
+  canActivate(context: ExecutionContext): boolean {
+    const request = context.switchToHttp().getRequest<RequestWithCurrentUser>();
+    request.currentUser = CURRENT_USER;
+
+    return true;
+  }
+}
+
+function createDataImportServiceFake(): jest.Mocked<DataImportServiceFake> {
+  return {
+    confirmImportJob: jest.fn().mockResolvedValue({
+      id: IMPORT_JOB_ID,
+      status: "COMPLETED",
+      successCount: 1,
+      failedCount: 0,
+      errors: [],
+    }),
+    updateImportMapping: jest.fn().mockResolvedValue({
+      id: IMPORT_JOB_ID,
+      targetType: "DEAL",
+      status: "VALIDATION_FAILED",
+      rowCount: 1,
+      validRowCount: 0,
+      invalidRowCount: 1,
+      mapping: {},
+      aiMapping: null,
+      previewRows: [],
+      errors: [],
+      createdAt: "2026-07-09T00:00:00.000Z",
+      updatedAt: "2026-07-09T00:00:00.000Z",
+    }),
+  };
+}
+
+describe("ImportJobController", () => {
+  let app: INestApplication;
+  let service: jest.Mocked<DataImportServiceFake>;
+
+  beforeEach(async () => {
+    service = createDataImportServiceFake();
+
+    const moduleRef = await Test.createTestingModule({
+      controllers: [ImportJobController],
+      providers: [{ provide: DataImportApplicationService, useValue: service }],
+    })
+      .overrideGuard(AuthGuard)
+      .useClass(FakeAuthGuard)
+      .compile();
+
+    app = moduleRef.createNestApplication();
+    app.useGlobalPipes(
+      new ValidationPipe({
+        whitelist: true,
+        forbidNonWhitelisted: true,
+        transform: true,
+      })
+    );
+    await app.init();
+  });
+
+  afterEach(async () => {
+    await app.close();
+  });
+
+  it("routes mapping updates to the application service", async () => {
+    await request(app.getHttpServer())
+      .patch(`/api/imports/${IMPORT_JOB_ID}/mapping`)
+      .send({
+        mapping: {
+          dealName: "Deal name",
+          dealCost: "Amount",
+          productName: null,
+        },
+      })
+      .expect(200);
+
+    expect(service.updateImportMapping).toHaveBeenCalledWith(
+      CURRENT_USER,
+      IMPORT_JOB_ID,
+      {
+        mapping: {
+          dealName: "Deal name",
+          dealCost: "Amount",
+          productName: null,
+        },
+      }
+    );
+  });
+
+  it("passes deal reference resolutions when confirming a deal import", async () => {
+    const body = {
+      dealCompanyResolutions: [
+        {
+          companyName: "Acme",
+          companyFieldName: "Software",
+          companyRegionName: "Seoul",
+        },
+      ],
+      dealContactResolutions: [
+        {
+          companyName: "Acme",
+          contactName: "Alex Kim",
+          contactEmail: "alex@example.com",
+          contactPhone: "010-1234-5678",
+          contactDepartmentName: "Sales",
+          contactJobGradeName: "Manager",
+        },
+      ],
+      dealProductResolutions: [
+        {
+          productName: "CRM Pro",
+          productPrice: 100000,
+          productCategoryName: "SaaS",
+          productStatusName: "Active",
+        },
+      ],
+      rows: [
+        {
+          rowNumber: 2,
+          data: {
+            dealName: "Enterprise renewal",
+            dealCost: 3000000,
+            companyName: "Acme",
+            contactName: "Alex Kim",
+            productName: "CRM Pro",
+            expectedEndDate: "2026-07-31",
+          },
+        },
+      ],
+    };
+
+    await request(app.getHttpServer())
+      .post(`/api/imports/${IMPORT_JOB_ID}/confirm`)
+      .send(body)
+      .expect(200);
+
+    expect(service.confirmImportJob).toHaveBeenCalledWith(
+      CURRENT_USER,
+      IMPORT_JOB_ID,
+      body
+    );
+  });
+});
