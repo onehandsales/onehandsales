@@ -199,7 +199,7 @@ export function AppShell() {
 
   const handleLogout = async () => {
     await logout();
-    void navigate("/");
+    void navigate("/login");
   };
 
   // ⌘K / Ctrl+K 단축키로 검색 모달 열기
