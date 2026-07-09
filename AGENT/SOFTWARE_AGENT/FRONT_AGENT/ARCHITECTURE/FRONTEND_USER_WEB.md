@@ -129,7 +129,22 @@ mock/placeholder 경계를 유지해야 하는 항목:
 - `/api/exports` 기반 generic Export job. 현재 Export 정책은 도메인별 xlsx 다운로드이므로 route를 숨기고 신규 작업에서 generic Export 화면/API를 확장하지 않는다.
 - Notification. FE feature는 있으나 route와 진입 버튼은 Backend module/API 구현 전까지 숨긴다.
 
-## 5A. BusinessCard OCR Frontend 기준
+## 5A. Auth Runtime Frontend 기준
+
+로그인/회원가입은 Supabase OAuth provider login을 공통으로 사용한다.
+
+- `/login`과 `/signup`은 같은 provider login 흐름이다. 신규 provider 계정이면 가입, 기존 provider 계정이면 로그인으로 처리한다.
+- `/auth/callback`은 Supabase session을 읽고 Backend `POST /api/auth/exchange`로 앱 session을 교환한다.
+- 개발용 mock login flow는 User Web에서 제거되어 있다. E2E와 QA는 현재 로그인 UI의 Kakao/Google provider 버튼을 기준으로 한다.
+- Google OAuth signup/login은 수동 QA 통과 상태다.
+- Kakao OAuth는 Kakao Developers 앱에서 카카오 로그인 활성화와 `account_email` 동의항목 설정이 필요하다. 설정 전에는 Kakao hosted `KOE205` 오류가 발생할 수 있다.
+- 로그아웃은 Backend `/api/auth/logout`, Supabase `signOut`, localStorage app token 삭제 후 `/login`으로 이동한다.
+- app access token은 localStorage와 API client memory에 저장한다. refresh token은 Backend httpOnly cookie로만 다룬다.
+- exchange payload의 device slot은 화면 폭 `767px 이하`면 `mobile`, 그 외는 `personal_laptop`이다. `work_laptop`은 Backend enum에는 있지만 현재 User Web에서는 보내지 않는다.
+- `replaceExistingDevice=true`를 보내므로 같은 slot의 다른 브라우저/기기 로그인은 기존 active device/session을 교체한다.
+- Frontend는 `locale`과 IANA `timeZone`을 exchange payload로 보낸다. 국가는 Frontend가 보내지 않고 Backend proxy geo header에서만 저장한다.
+
+## 5B. BusinessCard OCR Frontend 기준
 
 명함 스캔 route는 `/app/business-cards`다. `/business-cards`와 `/contacts/scan`은 legacy redirect만 유지한다. 사이드바와 모바일 더보기 메뉴에서는 `명함 스캔`으로 노출하고, 아이콘은 lucide `Camera`를 사용한다.
 

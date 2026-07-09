@@ -85,6 +85,14 @@ expectedEndDate DateTime @db.Date
 - Frontend는 일정 생성/수정 요청에서 사용자 입력 local date-time을 `toISOString()`으로 UTC 변환해서 보내지 않는다.
 - 날짜 전용 값은 timezone 변환 없이 `YYYY-MM-DD` 기준으로 표시한다.
 
+## 5A. 로그인 Locale/Timezone/Country Metadata
+
+- User Web은 로그인 exchange 때 사용자 선택/브라우저 기준 `locale`과 브라우저 IANA `timeZone`을 Backend로 보낸다.
+- 신규 사용자는 exchange metadata로 `preferredLocale`, `timeZone`, `signupLocale`, `signupTimeZone`, `lastLoginLocale`, `lastLoginTimeZone`을 초기화한다.
+- 기존 사용자는 로그인 때 `timeZone`을 덮어쓰지 않는다. 사용자의 기본 timezone은 설정값으로 보존하고, 최근 로그인 환경은 `lastLoginTimeZone`에 기록한다.
+- `signupCountryCode`와 `lastLoginCountryCode`는 Frontend가 보내지 않는다. Backend가 배포 프록시 geo header(`cf-ipcountry`, `x-vercel-ip-country`, `cloudfront-viewer-country`)에서 읽는다.
+- 로컬 개발 또는 geo header가 없는 배포 환경에서는 country code가 `null`일 수 있으며, 화면에는 `기록 없음`으로 표시된다.
+
 ## 6. 금지
 
 - `createdAt`, `updatedAt` 같은 시스템 시각을 KST 문자열로 DB에 저장하지 않는다.

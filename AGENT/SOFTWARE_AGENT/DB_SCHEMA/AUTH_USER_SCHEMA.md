@@ -99,6 +99,8 @@ AuthDevice 1 ─ N AuthSession
 | `PERSONAL_LAPTOP` | 개인 노트북 slot |
 | `WORK_LAPTOP` | 회사 노트북 slot |
 
+현재 User Web은 화면 폭 기준으로 `MOBILE`과 `PERSONAL_LAPTOP`만 사용한다. `WORK_LAPTOP`은 Backend enum에는 있지만 현재 User Web payload에서는 보내지 않는다.
+
 ## 5. Table: User
 
 서비스 내부 사용자 기준 테이블이다. 외부 provider 계정과 별개로 권한, 상태, 로그인 시각을 관리한다.
@@ -141,6 +143,13 @@ Indexes:
 - `role`: Admin/User 조회 기준
 - `status`: 활성/비활성 사용자 필터 기준
 - `createdAt`: 가입일 정렬/조회 기준
+
+로그인 메타데이터 정책:
+
+- 신규 사용자 생성 시 `timeZone`, `preferredLocale`, `signupLocale`, `signupCountryCode`, `signupTimeZone`, `lastLoginLocale`, `lastLoginCountryCode`, `lastLoginTimeZone`을 exchange metadata로 초기화한다.
+- 기존 사용자 로그인 시 `email`, `lastLoginLocale`, `lastLoginCountryCode`, `lastLoginTimeZone`, `lastLoginAt`을 갱신한다.
+- 기존 사용자의 `timeZone`은 로그인 시 브라우저 timezone으로 덮어쓰지 않는다. 사용자가 설정한 기본 timezone을 보존하고, 최근 로그인 환경은 `lastLoginTimeZone`에만 남긴다.
+- 국가 코드는 provider 계정 정보가 아니라 Backend가 받은 proxy geo header에서 가져온다. 헤더가 없으면 `signupCountryCode`/`lastLoginCountryCode`는 `null`일 수 있다.
 
 ## 6. Table: UserOAuthAccount
 
@@ -208,6 +217,8 @@ Indexes:
 - 같은 user와 slot에 다른 활성 기기가 있으면 `DeviceSlotAlreadyRegistered`가 발생한다.
 - `replaceExistingDevice=true`면 기존 기기를 `REPLACED` 처리하고 기존 기기의 활성 session을 revoke한 뒤 새 기기를 만든다.
 
+현재 User Web은 exchange 때 `replaceExistingDevice=true`를 보낸다. 따라서 같은 slot의 다른 브라우저/기기 로그인은 사용자에게 충돌 오류를 보여주기보다 기존 slot 기기와 session을 교체한다.
+
 ## 8. Table: AuthSession
 
 Backend refresh session과 access token 검증의 DB 기준이다.
@@ -245,6 +256,8 @@ Indexes:
 - AuthGuard는 JWT만 믿지 않고 `AuthSession`을 조회한다.
 - session이 `ACTIVE`가 아니거나 `revokedAt`이 있거나 `expiresAt`이 지났으면 인증 실패다.
 - refresh 성공 시 refresh token은 rotation되고 `refreshTokenHash`, `expiresAt`, `lastUsedAt`이 갱신된다.
+- 같은 active device에서 다시 로그인하면 기존 active session row를 재사용하고 refresh token만 rotation한다.
+- 로그아웃은 현재 session만 `REVOKED` 처리한다. 같은 사용자의 다른 slot session은 유지된다.
 
 ## 9. 주석 포함 Prisma 기준 구조
 

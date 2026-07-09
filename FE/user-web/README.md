@@ -38,12 +38,17 @@ VITE_SUPABASE_REDIRECT_URL="http://localhost:5173/auth/callback"
 
 ## Auth
 
-`/`는 공개 랜딩/진입 화면이고, `/login`과 `/signup`은 Supabase provider login과 개발용 mock login을 제공한다. 로그인 후 실제 앱은 `/app` 아래에서 동작한다.
+`/`는 공개 랜딩/진입 화면이고, `/login`과 `/signup`은 Supabase provider login을 제공한다. 로그인 후 실제 앱은 `/app` 아래에서 동작한다.
 
 - Supabase OAuth 성공 후 `/auth/callback`으로 돌아온다.
 - callback에서 Supabase access token을 Backend `POST /api/auth/exchange`로 보내 app access token과 refresh cookie를 받는다.
-- local에서 Supabase env가 없거나 provider 연결이 준비되지 않은 경우에는 mock login을 사용할 수 있다.
+- 개발용 mock login flow는 제거되어 있다.
+- Google OAuth signup/login은 QA 통과 상태다.
+- Kakao OAuth는 Kakao Developers 앱의 `account_email` 동의항목 설정 후 QA한다. 설정 전 `KOE205`는 provider 설정 이슈로 본다.
 - 로그인 전 `/app/*` 보호 라우트 접근은 로그인 화면으로 이동한다.
+- 로그아웃 후 `/login`으로 이동한다.
+- 현재 device slot은 화면 폭 기준 `mobile` 또는 `personal_laptop`으로 전송한다. 같은 slot의 다른 브라우저/기기 로그인은 기존 active device/session을 교체한다.
+- 가입 국가/마지막 로그인 국가는 Backend가 proxy geo header를 받을 때만 저장된다.
 
 ## 현재 구현 상태
 
@@ -89,7 +94,7 @@ pnpm run test:e2e
 
 Smoke 범위:
 
-- login/mock login과 보호 라우트
+- 현재 로그인 UI와 보호 라우트
 - 회사 생성
 - 담당자 생성
 - 제품 생성

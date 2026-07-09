@@ -136,12 +136,25 @@ Current runtime behavior:
 - default port is `3000`.
 - User locale/region metadata columns are present on `User`: `preferredLocale`, signup/last-login locale, country code, and timezone metadata.
 
+Auth/session runtime notes:
+
+- Supabase Auth is treated as an external identity provider. Backend application auth starts at `POST /api/auth/exchange`.
+- Signup and login share the same exchange path. New `provider + providerUserId` creates `User` and `UserOAuthAccount`; existing pairs update last-login metadata.
+- Backend requires provider email during exchange. Do not remove Kakao `account_email` without redesigning app identity.
+- App access tokens carry `userId` and `sessionId`; `AuthGuard` checks DB session state instead of trusting JWT alone.
+- Refresh token originals are sent through httpOnly cookie and stored in DB only as hashes.
+- Same active device relogin rotates the existing session refresh token. Different device in the same slot replaces the active device when `replaceExistingDevice=true` and revokes the previous slot sessions.
+- Current User Web uses `mobile` and `personal_laptop` slots only. Backend also supports `work_laptop` for future clients.
+- Country code metadata is read from proxy geo headers only: `cf-ipcountry`, `x-vercel-ip-country`, `cloudfront-viewer-country`.
+
 Current backend gaps and intentional deferrals:
 
 - Admin pages and Admin Web query APIs such as `/admin/api/dashboard`, `/admin/api/users`, `/admin/api/companies`, `/admin/api/contacts`, `/admin/api/products`, and `/admin/api/deals` are deferred.
 - Persistent ImportJob recovery, Notification, Admin operation query/audit/sensitive raw APIs are not implemented yet.
 - Generic ExportJob is intentionally not used for the current export direction. Company, Contact, Product, and Deal each provide their own `GET /api/<domain>/export/xlsx` API.
 - MeetingNote Admin, rawText encryption/raw access, and generic DealActivity table are future scope.
+- Kakao OAuth provider setup is deferred until Kakao Developers account access is available. Expected configuration includes Kakao Login activation and `account_email` consent item.
+- Country code fields may remain null in local/dev environments that do not provide proxy geo headers.
 
 ## 4. Target Module List
 

@@ -29,6 +29,8 @@
 - `BE/prisma/migrations/20260615000000_add_meeting_note_domain/migration.sql`
 - `BE/prisma/migrations/20260629010000_add_business_card_scan_log/migration.sql`
 - `BE/prisma/migrations/20260630010000_add_import_templates_and_logs/migration.sql`
+- `BE/prisma/migrations/20260702010000_add_deal_import_template/migration.sql`
+- `BE/prisma/migrations/20260708010000_add_user_locale_region_metadata/migration.sql`
 
 아직 DB에 구현되지 않은 계획 범위:
 
@@ -99,9 +101,22 @@ User
 - email
 - displayName
 - role: USER / ADMIN
-- authProvider
+- UserOAuthAccount: provider와 providerUserId 기준 외부 계정 연결
+- AuthDevice: 로그인 기기 slot과 stable device hash
+- AuthSession: Backend app refresh session
+- preferredLocale
+- timeZone
+- signupLocale / signupCountryCode / signupTimeZone
+- lastLoginLocale / lastLoginCountryCode / lastLoginTimeZone
 - createdAt
 - updatedAt
+
+현재 인증 정책:
+
+- 신규/기존 사용자 판정은 이메일이 아니라 `provider + providerUserId` 기준이다.
+- User Web은 Supabase OAuth 이후 Backend `/api/auth/exchange`에서 내부 사용자와 앱 세션을 생성한다.
+- 현재 User Web device slot은 `mobile`, `personal_laptop` 두 개를 사용한다. 같은 slot의 다른 기기 로그인은 기존 slot 기기/session을 교체한다.
+- 국가 코드는 provider 계정 정보가 아니라 배포 프록시 geo header에서 가져온다. 해당 header가 없으면 `signupCountryCode`/`lastLoginCountryCode`는 비어 있을 수 있다.
 
 ## 4. Company
 

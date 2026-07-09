@@ -6,6 +6,7 @@ This backend currently uses Supabase only as an external Auth provider.
 
 - PostgreSQL: Backend connects directly through Prisma.
 - Auth: FE signs in with Supabase Auth, then Backend verifies the Supabase access token through `/api/auth/exchange`.
+- Backend owns the app session after exchange. Supabase Auth is not the application session store.
 
 FE must not write directly to Supabase PostgreSQL.
 
@@ -35,6 +36,21 @@ pnpm run prisma:validate
 pnpm run typecheck
 pnpm run build
 ```
+
+## Provider Notes
+
+- Google OAuth signup/login has passed manual QA.
+- Kakao OAuth requires Kakao Developers configuration before QA:
+  - Kakao Login enabled.
+  - Consent item `account_email` configured as optional or required consent.
+  - Supabase Kakao provider keys and callback URL registered.
+- If Kakao shows `KOE205` with `account_email`, the OAuth request is asking for an unconfigured Kakao consent item. Do not remove email from the product flow without redesigning Backend identity, because the current Backend requires provider email during exchange.
+
+## Locale And Country Metadata
+
+- Frontend sends `locale` and IANA `timeZone` during exchange.
+- Backend reads country from proxy geo headers: `cf-ipcountry`, `x-vercel-ip-country`, `cloudfront-viewer-country`.
+- Local development and deployments without those headers store `signupCountryCode`/`lastLoginCountryCode` as `null`.
 
 ## Current Code Links
 

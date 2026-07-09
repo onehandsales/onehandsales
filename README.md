@@ -60,7 +60,7 @@ pnpm run dev
 
 User Web URL: `http://localhost:5173`
 
-User Web의 `/`는 공개 랜딩/진입 화면이고 로그인 후 실제 앱 홈은 `/app`이다. User Web은 Supabase OAuth callback과 Backend token exchange를 사용한다. 개발 편의를 위한 mock login 경로도 남아 있으며, app access token은 storage가 아니라 memory 중심으로 다룬다.
+User Web의 `/`는 공개 랜딩/진입 화면이고 로그인 후 실제 앱 홈은 `/app`이다. User Web은 Supabase OAuth provider login, `/auth/callback`, Backend `POST /api/auth/exchange`, refresh cookie 기반 access token 재발급 흐름을 사용한다. 개발용 mock login 경로는 제거되어 있으며, 현재 노출 provider는 Google과 Kakao다. Google OAuth 가입/로그인과 로그아웃 후 `/login` 이동은 QA 통과 상태다. Kakao는 Kakao Developers 앱의 `account_email` 동의항목 설정이 필요해 계정 접근 가능 시 별도 처리한다.
 
 명함 스캔은 `/app/business-cards`에서 실제 API와 연결되어 있다. 사용자는 이미지를 업로드한 뒤 `명함스캔` 진행 표시를 보고, 추출 결과를 확인/수정한 후 회사/담당자로 저장한다.
 
@@ -117,7 +117,7 @@ Playwright smoke E2E는 기본적으로 Backend와 외부 Provider를 route mock
 
 ## External Providers
 
-기본 local smoke와 unit test는 OpenAI, OCR, Google Calendar, SMTP, Web Push, Supabase Auth/Storage를 실제 호출하지 않는다. 실제 provider 검증이 필요할 때는 각 앱의 `.env`를 채우고 별도 smoke로 확인한다.
+기본 local smoke와 unit test는 OpenAI, OCR, Google Calendar, SMTP, Web Push, Supabase Auth/Storage를 실제 호출하지 않는다. 실제 provider 검증이 필요할 때는 각 앱의 `.env`를 채우고 별도 smoke로 확인한다. Supabase OAuth 실검증은 Google부터 확인하고, Kakao는 Kakao Developers의 카카오 로그인 활성화와 `account_email` 동의항목 설정 후 확인한다.
 
 주요 env:
 
@@ -127,6 +127,8 @@ Playwright smoke E2E는 기본적으로 Backend와 외부 Provider를 route mock
 - Email: `SMTP_HOST`, `SMTP_PORT`, `SMTP_SECURE`, `SMTP_USER`, `SMTP_PASSWORD`, `SMTP_FROM`
 - Browser push: `VAPID_PUBLIC_KEY`, `VAPID_PRIVATE_KEY`, `VAPID_SUBJECT`
 - Encryption/session: `ENCRYPTION_MASTER_KEY`, `APP_JWT_SECRET`, `APP_REFRESH_TOKEN_SECRET`
+
+로그인 국가 메타데이터는 Google/Supabase 계정 정보가 아니라 배포 프록시가 전달하는 `cf-ipcountry`, `x-vercel-ip-country`, `cloudfront-viewer-country` 헤더에서 저장한다. 로컬 또는 해당 헤더가 없는 배포 환경에서는 `signupCountryCode`, `lastLoginCountryCode`가 `null`이며 화면에는 `기록 없음`으로 표시될 수 있다.
 
 MeetingNote AI 초안 생성과 STT는 Backend에서 별도 provider port로 분리되어 있다. AI 초안 생성은 OpenAI를 기본으로 사용하고, STT는 현재 OpenAI adapter를 쓰되 provider 교체 시 STT adapter만 바꾸는 구조다.
 

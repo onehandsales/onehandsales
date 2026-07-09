@@ -82,6 +82,10 @@ Current additional backend scope:
 - DataImport API는 회사/담당자/제품/딜 CSV/XLSX 업로드, AI 컬럼 매핑, 사용자 보정/검증, 확정 저장, 성공 내역 조회를 제공한다.
 - DataImport 확정 전 임시 job은 in-memory store를 사용한다. 확정 성공 시 도메인 row와 `ImportUserLog`/`ImportUserLogRow` snapshot을 같은 transaction에서 저장한다.
 - User에는 기본 timezone과 signup/last-login locale, country code, timezone 메타데이터가 반영되어 있다.
+- Auth runtime은 Supabase OAuth token exchange 이후 Backend app session을 별도로 발급하는 구조다. app access token은 `userId`/`sessionId`를 담고, refresh token 원문은 httpOnly cookie로만 내려가며 DB에는 hash만 저장한다.
+- 신규/기존 사용자 판정은 이메일이 아니라 `provider + providerUserId` 기준이다. provider email은 현재 Backend exchange에서 필수다.
+- 같은 active device 재로그인은 session row를 새로 만들지 않고 refresh token을 회전한다. 같은 slot의 다른 device login은 기존 device/session을 교체한다.
+- 국가 코드 메타데이터는 배포 프록시 geo header가 있을 때만 저장되므로 local/dev에서는 `null`일 수 있다.
 - 딜 import 누락 회사/담당자/제품 보정 배열은 현재 FE API와 HTTP controller 전달 경로 검토가 필요하다.
 
 ## 7. 현재 주요 미구현 Backend 범위

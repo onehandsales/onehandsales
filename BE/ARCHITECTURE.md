@@ -29,6 +29,16 @@ Current intentional gaps:
 - Generic `/api/exports` and `ExportJob` are not used; exports live in each domain module.
 - Persistent ImportJob recovery, Notification, Admin audit/sensitive raw access, and generic DealActivity are future scope.
 - Current HTTP confirm wiring passes contact company resolutions and row overrides. Deal import missing company/contact/product resolution arrays are represented in types/use cases but need FE API and controller forwarding review before being treated as fully wired.
+- Kakao OAuth is exposed as a provider, but Kakao Developers must enable Kakao Login and configure the `account_email` consent item before it can pass provider login. Google OAuth has passed manual QA.
+- Login country metadata depends on proxy geo headers (`cf-ipcountry`, `x-vercel-ip-country`, `cloudfront-viewer-country`). Without those headers, country code fields remain null by design.
+
+Auth/session policy:
+
+- Supabase Auth is only the external provider layer. Backend owns the application user, device, session, refresh token, and authorization checks.
+- Signup and login share the same token exchange path. A new `provider + providerUserId` creates a `User`; an existing pair updates last-login metadata.
+- App access tokens contain `userId` and `sessionId`; `AuthGuard` validates the session against DB state.
+- Refresh tokens are stored as hashes in `AuthSession` and rotate on refresh or same-device relogin.
+- Current User Web sends either `mobile` or `personal_laptop` device slots. The Backend also supports `work_laptop`, but the current User Web does not use it.
 
 Layer rules:
 

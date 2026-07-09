@@ -156,9 +156,9 @@ pnpm prisma:seed
 - [ ] Prisma schema validation 성공
 - [ ] Prisma client generate 성공
 - [ ] migration 성공
-- [ ] seed 성공
-- [ ] seed 후 mock user/admin 계정이 생성됨
-- [ ] seed 후 회사/담당자/제품/딜/일정/회의록 데모 데이터가 보임
+- [ ] 로컬 DB smoke가 필요하면 seed 성공
+- [ ] 실제 Supabase OAuth QA를 할 때는 테스트 사용자/CRM 데이터를 초기화한 깨끗한 DB에서 시작
+- [ ] 기본 import template 4개는 기능용 seed이므로 사용자 테스트 데이터와 별도로 보존 가능
 
 ## 7. 자동 점검 체크리스트
 
@@ -237,16 +237,32 @@ pnpm build
 
 ### 로그인
 
-- [ ] `/` 접근 시 로그인 화면이 보임
+- [ ] `/` 접근 시 공개 랜딩/진입 화면이 보임
 - [ ] `/login` 접근 시 로그인 화면이 보임
 - [ ] 로그인 전 `/app` 보호 라우트 접근 시 로그인으로 이동
-- [ ] mock login 또는 실제 OAuth login이 성공함
+- [ ] 개발용 mock login 버튼이나 mock session 진입점이 노출되지 않음
+- [ ] Google OAuth login/signup이 성공함
 - [ ] 로그인 후 `/app` 홈으로 진입함
 - [ ] 로그인 후 사용자 이름/프로필 정보가 표시됨
+- [ ] 로그인 후 앱 DB에 `User`, `UserOAuthAccount`, `AuthDevice`, `AuthSession`이 생성 또는 갱신됨
 - [ ] 새로고침 후 로그인 상태가 기대한 정책대로 유지됨
 - [ ] 만료된 토큰 상태에서 refresh 또는 재로그인 흐름이 자연스러움
+- [ ] 로그아웃 후 URL이 `/login`으로 이동함
 - [ ] 로그아웃 후 보호 라우트 접근이 차단됨
 - [ ] 로그인 실패 시 빈 화면이나 무한 로딩이 아니라 이해 가능한 에러가 표시됨
+
+### Provider 상태
+
+- [ ] Google OAuth는 실제 provider smoke로 가입/로그인 확인
+- [ ] Kakao OAuth는 Kakao Developers 설정 전까지 `Known limitation`으로 기록
+- [ ] Kakao `KOE205`와 `account_email` 오류는 코드 회귀가 아니라 Kakao Developers 동의항목 설정 이슈로 분류
+
+### 기기/세션 정책
+
+- [ ] 데스크톱 웹 로그인은 `personal_laptop` slot으로 등록됨
+- [ ] 모바일 폭 브라우저 로그인은 `mobile` slot으로 등록됨
+- [ ] 같은 slot의 다른 브라우저/기기 로그인은 기존 active device/session을 교체함
+- [ ] 같은 브라우저 재로그인은 새 session row를 무한히 늘리지 않고 기존 active session을 재사용/회전함
 
 ### 권한/API 보호
 
@@ -708,10 +724,13 @@ pnpm build
 - [ ] 프로필 수정 가능
 - [ ] 수정 후 새로고침해도 유지됨
 - [ ] 내 기기 목록 조회 가능
+- [ ] 가입 locale/timezone과 마지막 로그인 locale/timezone이 표시됨
+- [ ] 가입 국가/마지막 로그인 국가는 geo header가 없는 환경에서 `기록 없음`으로 표시될 수 있음을 기록
 - [ ] `/app/more` 진입 가능
 - [ ] 더보기에서 현재 노출해야 하는 기능만 보임
 - [ ] 알림, generic export, 관리자 기능이 잘못 노출되지 않음
 - [ ] 로그아웃 진입점이 명확함
+- [ ] 로그아웃 후 `/login`으로 이동함
 
 ## 23. API 공통 QA
 
@@ -878,6 +897,9 @@ pnpm build
 - [ ] Admin 운영 화면은 현재 제품 QA 범위에서 제외
 - [ ] 과금/구독 결제는 현재 제품 QA 범위에서 제외
 - [ ] MeetingNote raw text/admin raw access는 미래 범위
+- [ ] Kakao OAuth는 Kakao Developers 계정 접근과 `account_email` 동의항목 설정 전까지 provider 설정 보류
+- [ ] 가입 국가/마지막 로그인 국가는 proxy geo header가 없는 환경에서 `기록 없음`일 수 있음
+- [ ] 현재 User Web은 `mobile`/`personal_laptop` 두 device slot만 사용하며 모바일 여러 대 동시 active session은 보장하지 않음
 
 ## 29. 버그 리포트 템플릿
 

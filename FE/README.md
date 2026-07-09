@@ -74,11 +74,22 @@ E2E 전용 Vite port:
 
 ## Auth 상태
 
-User Web은 Supabase OAuth provider login, `/auth/callback`, Backend `POST /api/auth/exchange`, refresh cookie 기반 access token 재발급 흐름을 사용한다. 개발 편의를 위해 mock login 경로도 유지한다.
+User Web은 Supabase OAuth provider login, `/auth/callback`, Backend `POST /api/auth/exchange`, refresh cookie 기반 access token 재발급 흐름을 사용한다. 개발용 mock login 경로는 제거되어 있으며 로그인 화면은 Kakao/Google provider 버튼을 기준으로 한다.
 
 Admin Web은 현재 local mock admin/user token으로 `/admin/api/me` 보호 라우트를 검증한다.
 
-App access token은 storage에 저장하지 않고 memory 중심으로 둔다. 실제 provider credential 검증은 별도 smoke에서 다룬다.
+User Web app access token은 localStorage와 API client memory에 저장하고, refresh token은 Backend가 httpOnly cookie로 설정한다. 로그아웃은 Backend app session 폐기, Supabase `signOut`, localStorage token 삭제 후 `/login`으로 이동한다. 실제 provider credential 검증은 별도 smoke에서 다룬다.
+
+Provider 현황:
+
+- Google OAuth 가입/로그인: QA 통과.
+- Kakao OAuth: Kakao Developers 앱에서 `account_email` 동의항목 설정이 필요하다. 설정 전에는 Kakao hosted error `KOE205`가 발생할 수 있다.
+
+현재 User Web device slot 정책:
+
+- 화면 폭 `767px 이하`: `mobile`
+- 그 외: `personal_laptop`
+- `replaceExistingDevice=true`로 exchange하므로 같은 slot의 다른 브라우저/기기 로그인은 기존 slot 기기와 활성 session을 교체한다.
 
 ## 현재 구현 상태
 

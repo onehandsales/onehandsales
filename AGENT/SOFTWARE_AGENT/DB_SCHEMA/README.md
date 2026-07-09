@@ -25,6 +25,13 @@ Snapshot date: 2026-07-09
 
 현재 Backend DB는 `BE/prisma/schema.prisma`와 migration 기준으로 Auth/User, Company, Contact, BusinessCard OCR, Product, Deal, Schedule, MeetingNote, DataImport 도메인을 포함한다. `User`에는 기본 timezone과 사용자 locale/region 메타데이터가 포함된다. Company/Contact/Product/Deal/MeetingNote 본문 row와 각 도메인의 메모, 비밀 메모, 다음 행동 로그에는 7일 휴지통 보관을 위한 soft delete 컬럼이 반영되어 있다. 별도 `Trash` table은 없고, Trash 목록/상세/복구 API는 기존 row의 `deletedAt`, `deletedByUserId`, `trashExpiresAt`을 기준으로 동작한다.
 
+Auth/User 기준:
+
+- Supabase OAuth provider 계정은 `UserOAuthAccount`로 내부 `User`와 연결한다.
+- 앱 session은 `AuthSession`이 정본이며, refresh token 원문은 저장하지 않고 hash만 저장한다.
+- 현재 User Web은 `mobile`/`personal_laptop` device slot을 사용한다. 같은 slot의 다른 기기 로그인은 기존 active device/session을 교체한다.
+- `signupCountryCode`/`lastLoginCountryCode`는 proxy geo header가 없으면 `null`일 수 있다.
+
 포함 table/model:
 
 - `User`

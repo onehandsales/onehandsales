@@ -98,6 +98,16 @@ pnpm run build
 
 local에서 최소 서버만 띄울 때도 `DATABASE_URL`, `DIRECT_URL`, `TEST_DATABASE_URL`, token secret 값은 실제 안전한 값으로 채우는 것을 권장한다.
 
+Auth runtime 기준:
+
+- Frontend는 Supabase OAuth로 provider login을 수행하고, Backend `POST /api/auth/exchange`는 Supabase access token을 검증해 내부 `User`, `UserOAuthAccount`, `AuthDevice`, `AuthSession`을 생성/갱신한다.
+- 신규 provider 계정이면 가입, 기존 provider 계정이면 로그인으로 처리한다. 판단 기준은 이메일이 아니라 `provider + providerUserId`다.
+- 앱 refresh token 원문은 httpOnly cookie로만 내려가며 DB에는 hash만 저장한다.
+- 같은 auth device의 재로그인은 새 session row를 만들지 않고 refresh token을 rotation한다.
+- User Web은 현재 `mobile`, `personal_laptop` slot을 사용하고, 같은 slot의 다른 기기가 로그인하면 기존 active device/session을 교체한다.
+- `preferredLocale`과 `timeZone`은 신규 사용자 생성 시 저장된다. 기존 사용자의 `timeZone`은 로그인 때 덮어쓰지 않고 `lastLoginTimeZone`만 갱신한다.
+- `signupCountryCode`, `lastLoginCountryCode`는 `cf-ipcountry`, `x-vercel-ip-country`, `cloudfront-viewer-country` 같은 배포 프록시 헤더가 있을 때만 저장된다. 로컬이나 해당 헤더가 없는 환경에서는 `null`일 수 있다.
+
 MeetingNote AI 초안 생성은 `MeetingNoteAiDraftProvider` port와 OpenAI adapter를 사용하며 `OPENAI_API_KEY`, `OPENAI_MEETING_NOTE_DRAFT_MODEL`이 필요하다. MeetingNote STT는 별도 `MeetingNoteSttProvider` port와 OpenAI STT adapter를 사용하며 `OPENAI_MEETING_NOTE_STT_MODEL`로 모델을 지정한다. 명함 OCR은 `BusinessCardOcrProvider` port와 OpenAI adapter를 사용하며 `OPENAI_BUSINESS_CARD_OCR_MODEL`로 모델을 지정할 수 있다. DataImport AI 컬럼 매핑은 `ImportMappingProvider` port와 OpenAI adapter를 사용하며 `OPENAI_IMPORT_MAPPING_MODEL`로 모델을 지정할 수 있다. 추후 STT/OCR/Import mapping provider를 바꿀 때는 각 adapter만 교체한다.
 
 ## 정본 규칙

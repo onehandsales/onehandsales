@@ -25,6 +25,7 @@
 - 범용 Export job은 현재 제품 방향에서 사용하지 않는다. Export는 Company/Contact/Product/Deal 각 목록 화면의 xlsx 다운로드 API로 처리한다.
 - Admin Backend는 현재 `/admin/api/me`만 구현되어 있으며, 관리자 페이지와 운영 조회 API는 후속 단계에서 만든다.
 - User Web은 공개 진입면(`/`)과 `/app` 홈 대시보드, Company, Contact, 명함 스캔, Product, Deal, Schedule, MeetingNote 수동 화면, MeetingNote AI/STT draft UI, 저장 후 딜 연동, Search GlobalSearch, Trash 목록/상세/복구, DataImport의 실제 API 연동이 완료되어 있다. 나머지 미구현 Backend 도메인은 실제 API 연동 전까지 mock/placeholder 경계를 명확히 해야 한다.
+- 인증 QA 상태: Supabase 테스트 데이터 초기화 완료, Google OAuth 신규 가입/로그인 QA 통과, 로그아웃 후 `/login` 이동 적용 및 배포 확인 완료. Kakao OAuth는 Kakao Developers 계정 접근과 `account_email` 동의항목 설정 전까지 보류한다.
 
 ## 1. 개발 우선순위
 
@@ -49,18 +50,22 @@
 - Admin Web `GET /admin/api/me`
 - 내 프로필 조회/수정
 - 내 등록 기기 목록 조회
+- 앱 세션은 Backend `AuthSession`으로 관리하고 refresh token은 httpOnly cookie로 저장한다.
+- User Web은 현재 `mobile`/`personal_laptop` device slot만 사용한다. 같은 slot의 다른 기기 로그인은 기존 active device/session을 교체한다.
+- 기존 사용자의 기본 `timeZone`은 로그인 때 덮어쓰지 않고 `lastLoginTimeZone`만 갱신한다.
+- 국가 코드는 배포 프록시 geo header가 있을 때만 저장된다. 로컬이나 해당 header가 없는 환경에서는 `기록 없음`이 정상일 수 있다.
 
 ### MVP 포함
 
-- 카카오 로그인
 - 구글 로그인
-- 네이버 로그인
-- 애플 로그인
+- 카카오 로그인. 단, Kakao Developers 앱의 `account_email` 동의항목 설정 후 QA한다.
 - 사용자별 데이터 분리
 
 ### 제외
 
 - 이메일/비밀번호 로그인
+- 네이버 로그인
+- 애플 로그인
 - 결제 기반 권한 자동 처리
 
 ## 3. 회사

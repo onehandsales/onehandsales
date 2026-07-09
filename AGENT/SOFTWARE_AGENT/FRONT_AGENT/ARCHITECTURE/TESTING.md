@@ -32,6 +32,13 @@ User Web E2E는 개인 영업자의 핵심 workflow를 우선한다.
 - Excel/CSV import flow with mocked AI column mapping
 - generic ExportJob flow is not part of the current product direction
 
+Auth E2E 기준:
+
+- 개발용 mock login 버튼은 제거되었으므로 E2E는 현재 로그인 UI의 Kakao/Google provider 버튼 노출과 보호 라우트 redirect를 기준으로 한다.
+- 실제 Google OAuth credential 검증은 자동 E2E 기본 범위가 아니라 별도 수동/provider smoke 범위다.
+- Kakao OAuth는 Kakao Developers `account_email` 동의항목 설정 전까지 실패를 제품 기능 회귀로 보지 않고 provider 설정 이슈로 기록한다.
+- 로그아웃 smoke는 `/login` 이동과 보호 라우트 재접근 차단을 확인한다.
+
 ## 3. Admin Web E2E Scope
 
 Admin Web E2E는 현재 login, role guard, `/admin/api/me` 기반 보호 라우트 검증만 우선한다. 운영 안전성과 전체 데이터 조회 흐름은 관리자 페이지 본 구현 후 추가한다.
