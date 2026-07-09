@@ -86,7 +86,7 @@ Current additional backend scope:
 - 신규/기존 사용자 판정은 이메일이 아니라 `provider + providerUserId` 기준이다. provider email은 현재 Backend exchange에서 필수다.
 - 같은 active device 재로그인은 session row를 새로 만들지 않고 refresh token을 회전한다. 같은 slot의 다른 device login은 기존 device/session을 교체한다.
 - 국가 코드 메타데이터는 배포 프록시 geo header가 있을 때만 저장되므로 local/dev에서는 `null`일 수 있다.
-- 딜 import 누락 회사/담당자/제품 보정 배열은 현재 FE API와 HTTP controller 전달 경로 검토가 필요하다.
+- 딜 import 누락 회사/담당자/제품 보정 배열은 현재 FE API와 HTTP controller/application/repository confirm 경로에 연결되어 있다.
 
 ## 7. 현재 주요 미구현 Backend 범위
 

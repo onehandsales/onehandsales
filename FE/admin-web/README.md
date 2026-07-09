@@ -30,7 +30,7 @@ Admin API는 `/admin/api/*`를 사용한다.
 전제 조건: Node.js 24 LTS가 활성화되어 있어야 한다.
 
 ```bash
-cp .env.example .env
+# .env를 로컬/배포 환경에 맞게 작성
 pnpm install
 pnpm run dev
 ```
@@ -41,8 +41,12 @@ pnpm run dev
 
 ```text
 VITE_API_URL="http://localhost:3000"
+VITE_SUPABASE_URL=""
+VITE_SUPABASE_ANON_KEY=""
 VITE_SUPABASE_REDIRECT_URL="http://localhost:5174/auth/callback"
 ```
+
+환경 파일은 `FE/admin-web/.env` 하나만 사용한다. `.env.example` 또는 `.env.local`은 현재 정본이 아니다. 변수명 목록은 `../../ENVIRONMENT.md`를 기준으로 확인한다.
 
 ## Auth
 

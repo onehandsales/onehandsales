@@ -12,13 +12,14 @@ FE must not write directly to Supabase PostgreSQL.
 
 ## Required Values
 
-Create `BE/.env` from `BE/.env.example` and fill these values:
+Create `BE/.env` directly and fill these values. This repository currently uses a single `.env` file per app; `.env.example` is not the source of truth.
 
 ```env
 DATABASE_URL=""
 DIRECT_URL=""
 SUPABASE_JWKS_URL="https://<project-ref>.supabase.co/auth/v1/.well-known/jwks.json"
 SUPABASE_JWT_ISSUER="https://<project-ref>.supabase.co/auth/v1"
+SUPABASE_JWT_AUDIENCE="authenticated"
 APP_JWT_SECRET=""
 APP_REFRESH_TOKEN_SECRET=""
 INITIAL_ADMIN_EMAILS=""
@@ -27,6 +28,8 @@ INITIAL_ADMIN_EMAILS=""
 Use long random strings for `APP_JWT_SECRET` and `APP_REFRESH_TOKEN_SECRET`.
 
 `INITIAL_ADMIN_EMAILS` is a comma-separated allowlist for the first admin accounts.
+
+See `../ENVIRONMENT.md` for the complete current variable list. Do not copy real values into docs, issues, or logs.
 
 ## Verification
 

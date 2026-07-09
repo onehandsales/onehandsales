@@ -124,7 +124,7 @@ Current response notes:
 - `POST /api/imports/:importJobId/map` calls the import mapping provider and falls back to heuristic mapping if the provider fails.
 - `PATCH /api/imports/:importJobId/mapping` applies the user's mapping and validates mapped rows.
 - `POST /api/imports/:importJobId/confirm` creates Company, Contact, Product, or Deal rows and writes `ImportUserLog`/`ImportUserLogRow` snapshots in a database transaction.
-- Deal import creates the deal and `DealCompany`, `DealContact`, `DealProduct` links in one transaction when referenced company/contact/product values resolve. Current application types/use cases represent resolution arrays for missing references, but the current FE API function and HTTP controller do not forward `dealCompanyResolutions`, `dealContactResolutions`, or `dealProductResolutions`; treat that path as review-needed before release.
+- Deal import creates the deal and `DealCompany`, `DealContact`, `DealProduct` links in one transaction when referenced company/contact/product values resolve. Missing-reference resolution arrays are forwarded as `dealCompanyResolutions`, `dealContactResolutions`, and `dealProductResolutions` through the FE API function, BE DTO, HTTP controller, application service, repository, and controller spec.
 - Temporary DataImport jobs use an in-memory store. Persistent job recovery across server restart is future scope.
 
 Current runtime behavior:

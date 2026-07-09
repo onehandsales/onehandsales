@@ -53,7 +53,7 @@
 - 구현 완료: Company/Contact/Product/Deal 도메인별 xlsx export. 범용 ExportJob은 현재 제품 방향에서 사용하지 않는다.
 - 구현 완료: 명함 OCR은 `/app/business-cards` 화면과 `/api/business-card-scans` API로 제공한다. 이미지를 업로드하면 `명함스캔` 진행 표시 후 추출값을 확인/수정하고, 저장 시 회사/담당자를 재사용하거나 생성한다.
 - FE code는 남아 있으나 화면에서 숨김: 알림, 범용 `/app/export` route.
-- 구현 완료: DataImport는 회사/담당자/제품/딜 양식 다운로드, CSV/XLSX 업로드, AI 컬럼 매핑, 사용자 보정/검증, 확정 저장, 성공 내역 조회를 제공한다. 확정 전 job은 in-memory store를 사용한다. 현재 딜 import 누락 참조 보정 배열은 FE API/controller 전달 경로 검토가 필요하다.
+- 구현 완료: DataImport는 회사/담당자/제품/딜 양식 다운로드, CSV/XLSX 업로드, AI 컬럼 매핑, 사용자 보정/검증, 확정 저장, 성공 내역 조회를 제공한다. 확정 전 job은 in-memory store를 사용한다. 딜 import 누락 회사/담당자/제품 보정 배열은 FE API/controller/application/repository confirm 경로에 연결되어 있다.
 - Backend 미구현 또는 후속 범위: persistent ImportJob, Notification, Admin 페이지/운영 조회/감사/민감 원문 API, MeetingNote Admin API, 범용 DealActivity table, 7일 이후 유료 복구 API.
 - Admin Backend는 `GET /admin/api/me`만 구현되어 있으며 관리자 페이지는 후속 단계에서 만든다.
 

@@ -35,7 +35,7 @@ Admin API는 반드시 Admin guard로 보호한다.
 - `health`: health check
 
 범용 ExportJob Backend는 현재 사용하지 않는다. Export는 회사/담당자/제품/딜 각 도메인의 `GET /api/*/export/xlsx`로 처리한다.
-데이터 불러오기 확정 전 임시 job은 현재 in-memory store를 사용하므로 서버 재시작 후 이어받기는 후속 범위다. 현재 HTTP confirm 경로는 연락처 import의 회사 보정값과 row override를 전달하며, 딜 import의 누락 회사/담당자/제품 보정 배열은 controller/API client 전달 경로 검토가 필요하다.
+데이터 불러오기 확정 전 임시 job은 현재 in-memory store를 사용하므로 서버 재시작 후 이어받기는 후속 범위다. 현재 HTTP confirm 경로는 연락처 import의 회사 보정값, 딜 import의 회사/담당자/제품 보정값, row override를 모두 전달한다.
 
 ## 로컬 실행
 
@@ -56,6 +56,8 @@ pnpm run start:dev
 로컬 URL: `http://localhost:3000`
 
 헬스 체크: `GET /api/health`
+
+환경 파일은 `BE/.env` 하나만 사용한다. `.env.example` 또는 `.env.local`은 현재 정본이 아니다. 변수명 목록은 `../ENVIRONMENT.md`를 기준으로 확인하고, 실제 secret 값은 문서나 로그에 기록하지 않는다.
 
 ## API 호출 예제
 
@@ -96,7 +98,7 @@ pnpm run build
 
 기본 Backend 테스트는 외부 Provider를 실제 호출하지 않는다. 실제 Supabase Auth 또는 OpenAI MeetingNote draft smoke를 하려면 `.env`에 credential을 채운 뒤 별도 provider smoke로 확인한다.
 
-local에서 최소 서버만 띄울 때도 `DATABASE_URL`, `DIRECT_URL`, `TEST_DATABASE_URL`, token secret 값은 실제 안전한 값으로 채우는 것을 권장한다.
+local에서 최소 서버만 띄울 때도 `DATABASE_URL`, `DIRECT_URL`, token secret 값은 실제 안전한 값으로 채우는 것을 권장한다. `TEST_DATABASE_URL`은 테스트 DB를 별도로 검증할 때 사용한다.
 
 Auth runtime 기준:
 

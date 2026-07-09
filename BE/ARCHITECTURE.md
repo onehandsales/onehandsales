@@ -28,7 +28,7 @@ Current intentional gaps:
 - Admin operation APIs are limited to `GET /admin/api/me`.
 - Generic `/api/exports` and `ExportJob` are not used; exports live in each domain module.
 - Persistent ImportJob recovery, Notification, Admin audit/sensitive raw access, and generic DealActivity are future scope.
-- Current HTTP confirm wiring passes contact company resolutions and row overrides. Deal import missing company/contact/product resolution arrays are represented in types/use cases but need FE API and controller forwarding review before being treated as fully wired.
+- Current HTTP confirm wiring passes contact company resolutions, deal company/contact/product resolutions, and row overrides through FE API, DTO, controller, application service, repository, and controller spec.
 - Kakao OAuth is exposed as a provider, but Kakao Developers must enable Kakao Login and configure the `account_email` consent item before it can pass provider login. Google OAuth has passed manual QA.
 - Login country metadata depends on proxy geo headers (`cf-ipcountry`, `x-vercel-ip-country`, `cloudfront-viewer-country`). Without those headers, country code fields remain null by design.
 

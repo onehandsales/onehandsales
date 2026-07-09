@@ -100,7 +100,7 @@ Search는 기존 table을 읽는 기능이므로 별도 table이나 migration이
 
 MeetingNote AI/STT draft는 현재 DB table을 추가하지 않는다. `POST /api/meeting-notes/ai-draft`와 `POST /api/meeting-notes/stt-draft`는 draft만 반환하고, 최종 저장은 기존 `MeetingNote`와 snapshot link table을 사용한다. AI 초안 provider와 STT provider는 application port로 분리되어 있으며, transcript, raw text, provider call log table은 후속 범위다.
 
-DataImport는 `ImportTemplate`, `ImportUserLog`, `ImportUserLogRow`를 사용한다. 확정 전 임시 import job은 현재 in-memory store에 있으며 DB table로 저장하지 않는다. 확정 성공 시에만 도메인 row와 성공 내역 snapshot이 같은 transaction에서 저장된다. 딜 불러오기는 기존 회사/담당자/제품 이름 매칭을 전제로 딜과 연결 row를 같은 transaction에서 생성한다. 누락 회사/담당자/제품 보정 배열은 application type/use case에 표현되어 있으나 현재 FE API와 HTTP controller 전달 경로 검토가 필요하다.
+DataImport는 `ImportTemplate`, `ImportUserLog`, `ImportUserLogRow`를 사용한다. 확정 전 임시 import job은 현재 in-memory store에 있으며 DB table로 저장하지 않는다. 확정 성공 시에만 도메인 row와 성공 내역 snapshot이 같은 transaction에서 저장된다. 딜 불러오기는 기존 회사/담당자/제품 이름 매칭을 전제로 딜과 연결 row를 같은 transaction에서 생성한다. 누락 회사/담당자/제품 보정 배열은 FE API와 HTTP controller/application/repository confirm 경로에 연결되어 있다.
 
 ## 4. 현재 DB 기준 구현 완료/참조 Backend TODO
 

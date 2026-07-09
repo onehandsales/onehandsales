@@ -33,8 +33,12 @@ pnpm run dev
 
 ```text
 VITE_API_URL="http://localhost:3000"
+VITE_SUPABASE_URL=""
+VITE_SUPABASE_ANON_KEY=""
 VITE_SUPABASE_REDIRECT_URL="http://localhost:5173/auth/callback"
 ```
+
+환경 파일은 `FE/user-web/.env` 하나만 사용한다. `.env.example` 또는 `.env.local`은 현재 정본이 아니다. 변수명 목록은 `../../ENVIRONMENT.md`를 기준으로 확인한다.
 
 ## Auth
 
@@ -79,7 +83,7 @@ mock/placeholder 경계:
 
 BusinessCard OCR/명함 스캔은 `/app/business-cards`에서 실제 API와 연결된다. `/business-cards`와 `/contacts/scan`은 legacy redirect다. 목록은 등록일 최신순 고정이며, 상태 다중 필터와 `상태 초기화`를 제공한다. `명함스캔` 모달은 최초에는 이미지 업로드만 보여주고, 요청 중에는 진행 표시를 띄우며, 성공 후 추출 결과 확인/수정 폼을 보여준다.
 
-데이터 불러오기는 `/app/import`와 `/app/import/:importUserLogId`에서 실제 API와 연결된다. `/import`는 legacy redirect다. 회사/담당자/제품/딜 양식 다운로드, CSV/XLSX 업로드, AI 컬럼 매핑, row 수정/검증, 확정 저장, 성공 내역 목록/상세 조회를 제공한다. 현재 코드 기준 딜 import의 누락 회사/담당자/제품 보정값은 UI/type에는 있으나 FE API 함수와 BE controller confirm 전달 경로 검토가 필요하다.
+데이터 불러오기는 `/app/import`와 `/app/import/:importUserLogId`에서 실제 API와 연결된다. `/import`는 legacy redirect다. 회사/담당자/제품/딜 양식 다운로드, CSV/XLSX 업로드, AI 컬럼 매핑, row 수정/검증, 확정 저장, 성공 내역 목록/상세 조회를 제공한다. 현재 코드 기준 딜 import의 누락 회사/담당자/제품 보정값은 FE API 함수가 `dealCompanyResolutions`, `dealContactResolutions`, `dealProductResolutions`로 BE confirm 경로에 전달한다.
 
 ## 검증
 

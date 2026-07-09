@@ -28,7 +28,7 @@ Admin Web 실행:
 
 ```bash
 cd FE/admin-web
-cp .env.example .env
+# .env를 로컬/배포 환경에 맞게 작성
 pnpm install
 pnpm run dev
 ```
@@ -39,6 +39,8 @@ pnpm run dev
 - Admin Web: `http://localhost:5174`
 
 두 frontend 앱은 Vercel에서 별도 프로젝트로 배포한다.
+
+환경 파일은 각 앱의 `.env` 하나만 사용한다. `.env.example` 또는 `.env.local`은 현재 정본이 아니다. `VITE_*` 변수명은 `../ENVIRONMENT.md`를 기준으로 확인한다.
 
 ## 검증
 
@@ -100,6 +102,7 @@ User Web:
 - Backend 구현 전까지 숨기는 기능: `/api/exports` 기반 범용 Export route/API, Notification.
 - 현재 Export 정본 흐름은 각 도메인 목록의 엑셀 다운로드다. `FE/user-web/src/features/import-export`의 범용 Export 화면은 현재 Backend 방향이 아니므로 route에서 숨긴다.
 - 데이터 불러오기는 `/app/import`에서 회사/담당자/제품/딜 양식 다운로드, CSV/XLSX 업로드, AI 컬럼 매핑, row 수정/검증, 확정 저장, 성공 내역 목록/상세 조회를 실제 Backend API와 연결한다.
+- 딜 import의 누락 회사/담당자/제품 보정값은 현재 FE API에서 `dealCompanyResolutions`, `dealContactResolutions`, `dealProductResolutions`로 전달하고, BE confirm 경로에서 처리한다.
 - 명함 스캔은 `/app/business-cards`에서 이미지 업로드, `명함스캔` 진행 표시, 추출 결과 확인/수정, 회사/담당자 저장 흐름으로 동작한다.
 
 Admin Web:

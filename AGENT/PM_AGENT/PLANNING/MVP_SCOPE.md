@@ -20,7 +20,7 @@
 - MeetingNote: 수동 회의록 목록/상세/생성/수정/삭제, 회사/담당자 필터, 회사/담당자/제품/딜 N:N snapshot 연결, 텍스트 AI 초안 생성, STT+AI 초안 생성, 저장 후 딜 추가 연동과 딜 활동 로그 생성, 휴지통 복구.
 - Search: 회사/담당자/제품/딜/일정/회의록 통합검색 API.
 - Trash: 회사/담당자/제품/딜/회의록 본문 데이터와 지원 로그의 휴지통 목록, 상세 모달 조회, 7일 이내 복구 API.
-- DataImport: `ImportTemplate`, 회사/담당자/제품/딜 양식 다운로드, CSV/XLSX 업로드, AI 컬럼 매핑, 사용자 보정/검증, 확정 저장, `ImportUserLog` 목록/상세 조회. 확정 전 임시 job은 in-memory store를 사용한다. 딜 import 누락 참조 보정 배열은 현재 FE API와 BE controller 전달 경로 검토가 필요하다.
+- DataImport: `ImportTemplate`, 회사/담당자/제품/딜 양식 다운로드, CSV/XLSX 업로드, AI 컬럼 매핑, 사용자 보정/검증, 확정 저장, `ImportUserLog` 목록/상세 조회. 확정 전 임시 job은 in-memory store를 사용한다. 딜 import 누락 회사/담당자/제품 보정 배열은 현재 FE API와 BE confirm 경로에 연결되어 있다.
 - 현재 Backend 미구현 또는 후속 범위: persistent ImportJob, Notification, Admin 운영 조회/감사/민감 원문 API, MeetingNote Admin, 범용 DealActivity table, 7일 이후 유료 복구 API.
 - 범용 Export job은 현재 제품 방향에서 사용하지 않는다. Export는 Company/Contact/Product/Deal 각 목록 화면의 xlsx 다운로드 API로 처리한다.
 - Admin Backend는 현재 `/admin/api/me`만 구현되어 있으며, 관리자 페이지와 운영 조회 API는 후속 단계에서 만든다.
@@ -290,7 +290,7 @@
 - 성공 내역 목록/상세: `GET /api/import-user-logs`, `GET /api/import-user-logs/:importUserLogId`
 - 지원 대상: 회사, 담당자, 제품, 딜
 - 확정 전 임시 job은 in-memory store를 사용한다.
-- 딜 import 누락 회사/담당자/제품 보정 배열은 type/use case에는 있으나 현재 FE API 함수와 BE controller confirm 전달 경로 검토가 필요하다.
+- 딜 import 누락 회사/담당자/제품 보정 배열은 FE API 함수, BE DTO, controller confirm, application service, repository 경로에 연결되어 있다.
 
 ### 현재 구현된 도메인별 Export
 

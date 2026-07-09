@@ -172,7 +172,7 @@ Deal relation payload:
 | `GET /api/imports/{importJobId}` | 확정 전 임시 import job 상세와 전체 row 상태를 조회합니다. |
 | `POST /api/imports/{importJobId}/map` | AI 컬럼 자동 매핑을 생성합니다. provider 실패 시 규칙 기반 매핑으로 fallback합니다. |
 | `PATCH /api/imports/{importJobId}/mapping` | 사용자가 수정한 컬럼 매핑을 적용하고 row 검증 결과를 반환합니다. |
-| `POST /api/imports/{importJobId}/confirm` | 검증된 row를 회사/담당자/제품/딜 데이터로 확정 저장하고 성공 내역을 남깁니다. 현재 HTTP 경로는 연락처 회사 보정값과 row override를 전달하며, 딜 누락 참조 보정 배열은 FE API/controller 전달 경로 검토가 필요합니다. |
+| `POST /api/imports/{importJobId}/confirm` | 검증된 row를 회사/담당자/제품/딜 데이터로 확정 저장하고 성공 내역을 남깁니다. 현재 HTTP 경로는 연락처 회사 보정값, 딜 회사/담당자/제품 보정값, row override를 전달합니다. |
 | `GET /api/import-user-logs` | 확정 저장된 데이터 불러오기 성공 내역 목록을 조회합니다. |
 | `GET /api/import-user-logs/{importUserLogId}` | 데이터 불러오기 성공 내역 상세와 row snapshot을 조회합니다. |
 

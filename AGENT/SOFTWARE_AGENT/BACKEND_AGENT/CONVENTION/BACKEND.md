@@ -187,7 +187,9 @@ See `CONVENTION/API_CONTRACT.md` and `CONVENTION/API_SPEC.md`.
 
 ## 8. Environment
 
-All environment variables must be listed in `.env.example`.
+Environment files use one `.env` per runnable app. `.env.example` and `.env.local` are not current source-of-truth files.
+
+All environment variable names and purposes must be listed in `ENVIRONMENT.md`.
 
 Access through ConfigService, not direct `process.env`.
 
@@ -211,9 +213,10 @@ COMPANY_PRIVATE_MEMO_ENCRYPTION_KEY
 COMPANY_PRIVATE_MEMO_ENCRYPTION_KEY_VERSION
 CONTACT_PRIVATE_MEMO_ENCRYPTION_KEY
 CONTACT_PRIVATE_MEMO_ENCRYPTION_KEY_VERSION
+PRODUCT_PRIVATE_MEMO_ENCRYPTION_KEY
+PRODUCT_PRIVATE_MEMO_ENCRYPTION_KEY_VERSION
 ENCRYPTION_MASTER_KEY
 ENCRYPTION_KEY_VERSION
-SUPABASE_URL
 SUPABASE_JWKS_URL
 SUPABASE_JWT_ISSUER
 SUPABASE_JWT_AUDIENCE
@@ -222,9 +225,15 @@ APP_ALLOWED_ORIGINS
 APP_REFRESH_COOKIE_DOMAIN
 USER_WEB_ORIGIN
 ADMIN_WEB_ORIGIN
+OPENAI_API_KEY
+OPENAI_BASE_URL
+OPENAI_MEETING_NOTE_DRAFT_MODEL
+OPENAI_MEETING_NOTE_STT_MODEL
+OPENAI_BUSINESS_CARD_OCR_MODEL
+OPENAI_IMPORT_MAPPING_MODEL
 ```
 
-Do not document or require provider secrets that are not present in `BE/.env.example`. When a new integration is implemented, add the env key to `.env.example` and then update this section.
+Do not document real provider secret values. When a new integration is implemented, add the env key name and purpose to `ENVIRONMENT.md`, then update this section if the key affects Backend conventions.
 
 ## 9. Import Order
 

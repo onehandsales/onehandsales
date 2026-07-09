@@ -708,7 +708,7 @@ Log는 객관적 사실, 변경, 만남, 소식, 이력 기록이고 Memo는 사
 - 확정 전 임시 job은 현재 DB table이 아니라 in-memory store에 저장한다.
 - 회사/담당자/제품/딜 불러오기는 CSV/XLSX 업로드, AI 컬럼 매핑, 사용자 보정/검증, 확정 저장을 지원한다.
 - 딜 불러오기는 기존 회사/담당자/제품 이름 매칭을 전제로 딜과 연결 row를 같은 transaction에서 생성한다.
-- 딜 불러오기 누락 회사/담당자/제품 보정값은 application type/use case와 DTO에는 표현되어 있으나, 현재 FE API 함수와 BE HTTP controller confirm 전달 경로 검토가 필요하다.
+- 딜 불러오기 누락 회사/담당자/제품 보정값은 FE API 함수, BE DTO, HTTP controller confirm, application service, repository 경로에 연결되어 있다.
 - persistent `ImportJob` table, 서버 재시작 후 이어받기는 후속 범위다.
 
 ## 20. Mermaid ERD

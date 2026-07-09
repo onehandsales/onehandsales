@@ -120,9 +120,10 @@ QA 판단 기준은 아래 파일을 우선합니다.
 - [ ] Docker 실행 가능 여부 확인
 - [ ] `BE/.env` 존재 여부 확인
 - [ ] `FE/user-web/.env` 존재 여부 확인
+- [ ] `FE/admin-web/.env` 존재 여부 확인 또는 Admin QA 제외 사유 기록
 - [ ] 실제 `.env` 값은 문서나 이슈에 복사하지 않음
-- [ ] `BE/.env.example`이 없는 점을 환경 문서화 이슈로 기록
-- [ ] `FE/user-web/.env.example`이 없는 점을 환경 문서화 이슈로 기록
+- [ ] `.env.example`, `.env.local`이 아니라 `.env` 단일 파일 정책을 따른다고 기록
+- [ ] 환경 변수명과 용도는 `ENVIRONMENT.md` 기준으로 확인
 
 확인 명령:
 
@@ -168,9 +169,10 @@ pnpm prisma:seed
 - [x] Docker daemon 실행 확인
 - [x] `BE/.env` 존재 확인
 - [x] `FE/user-web/.env` 존재 확인
+- [x] `FE/admin-web/.env` 존재 확인
 - [x] `.env` 실제 값은 문서에 복사하지 않음
-- [x] `BE/.env.example` 없음 확인. 환경 문서화 이슈로 남김
-- [x] `FE/user-web/.env.example` 없음 확인. 환경 문서화 이슈로 남김
+- [x] `.env` 단일 파일 정책 확인. `.env.example`, `.env.local`은 현재 정본이 아님
+- [x] 환경 변수명과 용도는 `ENVIRONMENT.md`에 문서화
 - [x] 로컬 Postgres 컨테이너 `sales_b2c_postgres` healthy 확인
 - [x] `pnpm prisma:validate` 성공
 - [x] BE health check `http://localhost:3000/api/health` 200 확인
