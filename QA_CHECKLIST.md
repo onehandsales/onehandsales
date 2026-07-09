@@ -160,6 +160,30 @@ pnpm prisma:seed
 - [ ] 실제 Supabase OAuth QA를 할 때는 테스트 사용자/CRM 데이터를 초기화한 깨끗한 DB에서 시작
 - [ ] 기본 import template 4개는 기능용 seed이므로 사용자 테스트 데이터와 별도로 보존 가능
 
+### 2026-07-09 QA 전 준비 확인 결과
+
+- [x] Node v24.18.0 확인
+- [x] pnpm 8.14.1 확인
+- [x] Docker 29.5.3 확인
+- [x] Docker daemon 실행 확인
+- [x] `BE/.env` 존재 확인
+- [x] `FE/user-web/.env` 존재 확인
+- [x] `.env` 실제 값은 문서에 복사하지 않음
+- [x] `BE/.env.example` 없음 확인. 환경 문서화 이슈로 남김
+- [x] `FE/user-web/.env.example` 없음 확인. 환경 문서화 이슈로 남김
+- [x] 로컬 Postgres 컨테이너 `sales_b2c_postgres` healthy 확인
+- [x] `pnpm prisma:validate` 성공
+- [x] BE health check `http://localhost:3000/api/health` 200 확인
+- [x] User Web `/` 200 확인
+- [x] User Web `/login` 200 확인
+- [x] DB 연결 대상 확인: `DATABASE_URL`과 `DIRECT_URL` 모두 Supabase pooler의 `postgres` DB를 가리킴. 실제 URL 값은 기록하지 않음
+- [x] DB 데이터 확인: `User` 3, `UserOAuthAccount` 3, `AuthDevice` 4, `AuthSession` 5
+- [x] CRM 업무 데이터 확인: `Company`, `Contact`, `Product`, `Deal`, `Schedule`, `MeetingNote`, `BusinessCardScanLog`, `ImportUserLog` 모두 0건
+- [x] 기능용 seed 데이터 확인: `ImportTemplate` 4건 존재
+- [ ] `pnpm prisma:generate` 미완료. 실행 중인 BE 프로세스가 Prisma query engine DLL을 잡고 있어 `EPERM rename` 발생. BE를 중지한 뒤 재실행 필요
+- [ ] migration 기록 정합성 미완료. 현재 `BE/.env`의 Prisma datasource는 Supabase pooler를 가리키며, `_prisma_migrations`에는 `20260611000000_add_company_domain` 1건만 있고 `finished_at`이 비어 있음. `pnpm exec prisma migrate status`에서도 이후 migration들이 미적용으로 표시됨. 수동 QA 전 데이터 조회는 가능하지만, 배포/DB 운영 전 migration 기록 정리가 필요함
+- [ ] seed 미실행. 실제 Supabase OAuth/CRM QA 데이터와 섞일 수 있어 자동 실행하지 않음
+
 ## 7. 자동 점검 체크리스트
 
 ### BE 자동 점검
@@ -172,12 +196,12 @@ pnpm test
 pnpm build
 ```
 
-- [ ] `pnpm typecheck` 성공
-- [ ] `pnpm lint` 성공
-- [ ] `pnpm test` 성공
-- [ ] `pnpm build` 성공
-- [ ] 실패 시 에러 로그를 저장하고 첫 실패 원인을 기록
-- [ ] 테스트 실패가 현재 제외 범위 때문인지 확인
+- [x] `pnpm typecheck` 성공
+- [x] `pnpm lint` 성공
+- [x] `pnpm test` 성공. 15 suites / 66 tests passed
+- [x] `pnpm build` 성공
+- [x] 실패 없음. 별도 에러 로그 저장 불필요
+- [x] 테스트 실패 없음
 
 ### FE/user-web 자동 점검
 
@@ -189,12 +213,12 @@ pnpm build
 pnpm test:e2e
 ```
 
-- [ ] `pnpm typecheck` 성공
-- [ ] `pnpm lint` 성공
-- [ ] `pnpm build` 성공
-- [ ] `pnpm test:e2e` 성공
-- [ ] E2E 실패 시 스크린샷, trace, 실패 step 기록
-- [ ] E2E가 실제 구현 범위와 맞지 않는지 확인
+- [x] `pnpm typecheck` 성공
+- [x] `pnpm lint` 성공. 기존 Fast Refresh warning 1건 있음: `src/app/router/router.tsx`
+- [x] `pnpm build` 성공. Vite chunk size warning 있음
+- [x] `pnpm test:e2e` 성공. Chromium 1 test passed
+- [x] E2E 실패 없음. 스크린샷/trace 기록 불필요
+- [x] E2E가 현재 로그인 UI와 실제 구현 범위 기준으로 통과함
 
 ### FE/admin-web 선택 점검
 
