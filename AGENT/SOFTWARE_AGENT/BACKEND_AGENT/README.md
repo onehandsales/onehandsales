@@ -58,7 +58,7 @@ BACKEND_AGENT/
 
 ## 6. 현재 구현 완료/참조 Backend TODO
 
-Snapshot date: 2026-07-03
+Snapshot date: 2026-07-09
 
 - `TODO/DONE/AUTH_FE_INTEGRATION_PLAN/BE-TODO/G01-BE-USER-PROFILE-DEVICES.goal.md`
 - `TODO/DONE/COMPANY_DOMAIN_PLAN/BE-TODO/G01-BE-COMPANY-DOMAIN.goal.md`
@@ -71,7 +71,7 @@ Snapshot date: 2026-07-03
 - `TODO/DONE/INTEGRATED_SEARCH_PLAN/BE-TODO/G01-BE-INTEGRATED-SEARCH.goal.md`
 - `TODO/DONE/MEETING_NOTE_AI_STT_PLAN/BE-TODO/G01-BE-MEETING-NOTE-AI-STT-DRAFT.goal.md`
 - `TODO/DONE/BUSINESS_CARD_OCR_PLAN`
-- `TODO/IMPORT_TEMPLATE_PLAN`
+- `TODO/DONE/IMPORT_TEMPLATE_PLAN`
 
 Current additional backend scope:
 
@@ -81,6 +81,8 @@ Current additional backend scope:
 - BusinessCard OCR OpenAI adapter는 Responses API와 strict JSON schema를 사용한다. prompt와 schema는 `BE/src/modules/business-card/infrastructure/providers/openai-business-card-ocr.provider.ts`에 둔다.
 - DataImport API는 회사/담당자/제품/딜 CSV/XLSX 업로드, AI 컬럼 매핑, 사용자 보정/검증, 확정 저장, 성공 내역 조회를 제공한다.
 - DataImport 확정 전 임시 job은 in-memory store를 사용한다. 확정 성공 시 도메인 row와 `ImportUserLog`/`ImportUserLogRow` snapshot을 같은 transaction에서 저장한다.
+- User에는 기본 timezone과 signup/last-login locale, country code, timezone 메타데이터가 반영되어 있다.
+- 딜 import 누락 회사/담당자/제품 보정 배열은 현재 FE API와 HTTP controller 전달 경로 검토가 필요하다.
 
 ## 7. 현재 주요 미구현 Backend 범위
 

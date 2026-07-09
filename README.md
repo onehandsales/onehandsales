@@ -60,11 +60,11 @@ pnpm run dev
 
 User Web URL: `http://localhost:5173`
 
-User Web은 Supabase OAuth callback과 Backend token exchange를 사용한다. 개발 편의를 위한 mock login 경로도 남아 있으며, app access token은 storage가 아니라 memory 중심으로 다룬다.
+User Web의 `/`는 공개 랜딩/진입 화면이고 로그인 후 실제 앱 홈은 `/app`이다. User Web은 Supabase OAuth callback과 Backend token exchange를 사용한다. 개발 편의를 위한 mock login 경로도 남아 있으며, app access token은 storage가 아니라 memory 중심으로 다룬다.
 
-명함 스캔은 `/business-cards`에서 실제 API와 연결되어 있다. 사용자는 이미지를 업로드한 뒤 `명함스캔` 진행 표시를 보고, 추출 결과를 확인/수정한 후 회사/담당자로 저장한다.
+명함 스캔은 `/app/business-cards`에서 실제 API와 연결되어 있다. 사용자는 이미지를 업로드한 뒤 `명함스캔` 진행 표시를 보고, 추출 결과를 확인/수정한 후 회사/담당자로 저장한다.
 
-데이터 불러오기는 `/import`에서 실제 API와 연결되어 있다. 사용자는 회사/담당자/제품/딜 양식을 내려받고, CSV/XLSX 파일을 업로드한 뒤 AI 매핑과 row 검증 결과를 확인/수정하고 확정 저장할 수 있다. `/export`의 범용 Export 화면과 `/notifications`는 Backend 구현 전까지 숨긴다.
+데이터 불러오기는 `/app/import`에서 실제 API와 연결되어 있다. 사용자는 회사/담당자/제품/딜 양식을 내려받고, CSV/XLSX 파일을 업로드한 뒤 AI 매핑과 row 검증 결과를 확인/수정하고 확정 저장할 수 있다. `/app/export`의 범용 Export 화면과 `/app/notifications`는 Backend 구현 전까지 숨긴다.
 
 ### 3. Admin Web
 
@@ -77,7 +77,7 @@ pnpm run dev
 
 Admin Web URL: `http://localhost:5174`
 
-Admin Web은 현재 local mock admin/user token으로 `/admin/api/me` 보호 라우트를 검증한다. 대시보드, 사용자/도메인 목록, 감사 로그 화면은 관리자 페이지와 Backend Admin query API를 후속 구현하기 전까지 mock/placeholder 경계를 명확히 둔다.
+Admin Web은 현재 local mock admin/user token으로 `/admin/api/me` 보호 라우트를 검증한다. 대시보드, 사용자/도메인 목록, 감사 로그 화면은 관리자 페이지와 Backend Admin query API를 후속 구현하기 전까지 root redirect와 mock/placeholder 경계를 명확히 둔다.
 
 ## Verification
 

@@ -37,7 +37,7 @@ Canonical domain:
 
 ## 3. Current Implementation Snapshot
 
-Snapshot date: 2026-07-03
+Snapshot date: 2026-07-09
 
 Current source of truth:
 
@@ -65,7 +65,7 @@ Currently imported modules in `AppModule`:
 
 Currently implemented API surface:
 
-- Auth/User: `/api/auth/providers`, `/api/auth/exchange`, `/api/auth/refresh`, `/api/auth/logout`, `/api/me`, `/admin/api/me`, `/api/users/me/profile`, `/api/users/me/devices`
+- Auth/User: `/api/auth/providers`, `/api/auth/exchange`, `/api/auth/refresh`, `/api/auth/logout`, `/api/me`, `/admin/api/me`, `/api/users/me/profile`, `/api/users/me/devices`, user timezone/locale/region metadata
 - Company: list/detail/create/update/delete, field/region options, memo/private memo logs, linked contacts/deals, xlsx export
 - Contact: list/detail/create/update/delete, company options, department/job grade options, memo/private memo logs, linked deals, xlsx export
 - BusinessCard OCR: `POST /api/business-card-scans`, `GET /api/business-card-scans`, `GET /api/business-card-scans/:scanLogId`, `POST /api/business-card-scans/:scanLogId/confirm`
@@ -91,7 +91,7 @@ Implemented Backend TODO references:
 - `TODO/DONE/INTEGRATED_SEARCH_PLAN/BE-TODO/G01-BE-INTEGRATED-SEARCH.goal.md`
 - `TODO/DONE/MEETING_NOTE_AI_STT_PLAN/BE-TODO/G01-BE-MEETING-NOTE-AI-STT-DRAFT.goal.md`
 - `TODO/DONE/BUSINESS_CARD_OCR_PLAN`
-- `TODO/IMPORT_TEMPLATE_PLAN`
+- `TODO/DONE/IMPORT_TEMPLATE_PLAN`
 
 Current response notes:
 
@@ -124,7 +124,7 @@ Current response notes:
 - `POST /api/imports/:importJobId/map` calls the import mapping provider and falls back to heuristic mapping if the provider fails.
 - `PATCH /api/imports/:importJobId/mapping` applies the user's mapping and validates mapped rows.
 - `POST /api/imports/:importJobId/confirm` creates Company, Contact, Product, or Deal rows and writes `ImportUserLog`/`ImportUserLogRow` snapshots in a database transaction.
-- Deal import creates the deal and `DealCompany`, `DealContact`, `DealProduct` links in one transaction. If referenced company/contact/product values are missing, the confirm request can include resolution arrays for creating them.
+- Deal import creates the deal and `DealCompany`, `DealContact`, `DealProduct` links in one transaction when referenced company/contact/product values resolve. Current application types/use cases represent resolution arrays for missing references, but the current FE API function and HTTP controller do not forward `dealCompanyResolutions`, `dealContactResolutions`, or `dealProductResolutions`; treat that path as review-needed before release.
 - Temporary DataImport jobs use an in-memory store. Persistent job recovery across server restart is future scope.
 
 Current runtime behavior:
@@ -134,6 +134,7 @@ Current runtime behavior:
 - request id middleware applies to all routes.
 - CORS origins are derived from `USER_WEB_ORIGIN` and `ADMIN_WEB_ORIGIN`.
 - default port is `3000`.
+- User locale/region metadata columns are present on `User`: `preferredLocale`, signup/last-login locale, country code, and timezone metadata.
 
 Current backend gaps and intentional deferrals:
 

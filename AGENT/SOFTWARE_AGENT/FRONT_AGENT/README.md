@@ -52,19 +52,19 @@ FRONT_AGENT/
 
 ## 6. 현재 구현 스냅샷
 
-Snapshot date: 2026-07-03
+Snapshot date: 2026-07-09
 
 User Web:
 
-- 실제 API 연동 완료: Auth/User, Home, Company, Contact, BusinessCard OCR, Product, Deal, Schedule, MeetingNote manual CRUD, MeetingNote AI/STT draft, MeetingNote deal link, Search, Trash, DataImport, Company/Contact/Product/Deal domain xlsx export.
+- 실제 API 연동 완료: Public site, Auth/User, Home(`/app`), Company, Contact, BusinessCard OCR, Product, Deal, Schedule, MeetingNote manual CRUD, MeetingNote AI/STT draft, MeetingNote deal link, Search, Trash, DataImport, Company/Contact/Product/Deal domain xlsx export.
 - mock/placeholder 경계: generic Export route/API, Notification.
-- BusinessCard OCR 화면은 `/business-cards`다. 목록은 등록일 최신순 고정, 상태 다중 필터와 `상태 초기화`를 제공하고, `명함스캔` 모달은 이미지 업로드 -> 진행 표시 -> 추출 결과 확인/수정 -> 저장 흐름을 사용한다.
-- DataImport 화면은 `/import`와 `/import/:importUserLogId`다. 회사/담당자/제품/딜 양식 다운로드, CSV/XLSX 업로드, AI 컬럼 매핑, row 수정/검증, 확정 저장, 성공 내역 조회를 실제 API와 연결한다.
+- BusinessCard OCR 화면은 `/app/business-cards`다. 목록은 등록일 최신순 고정, 상태 다중 필터와 `상태 초기화`를 제공하고, `명함스캔` 모달은 이미지 업로드 -> 진행 표시 -> 추출 결과 확인/수정 -> 저장 흐름을 사용한다.
+- DataImport 화면은 `/app/import`와 `/app/import/:importUserLogId`다. 회사/담당자/제품/딜 양식 다운로드, CSV/XLSX 업로드, AI 컬럼 매핑, row 수정/검증, 확정 저장, 성공 내역 조회를 실제 API와 연결한다. 딜 import 누락 참조 보정 배열은 현재 FE API와 BE controller 전달 경로 검토가 필요하다.
 
 Admin Web:
 
 - 실제 API 연동 완료: `GET /admin/api/me`.
-- Backend 후속 작업: Admin pages and Admin dashboard/users/domain query/audit/sensitive raw APIs.
+- Backend 후속 작업: Admin pages and Admin dashboard/users/domain query/audit/sensitive raw APIs. 현재 운영 route는 `/`로 redirect한다.
 
 ## 7. 관련 문서
 

@@ -9,8 +9,8 @@ Routes:
 
 Active modules:
 
-- `auth`: external auth token exchange, app token refresh/logout, current user lookup, device/session management.
-- `user`: current user profile and registered device lookup.
+- `auth`: external auth token exchange, app token refresh/logout, current user lookup, device/session management, login locale/region metadata sync.
+- `user`: current user profile, timezone/locale metadata, and registered device lookup.
 - `company`: user-owned company, company field/region, memo/private memo logs, linked contacts/deals, soft delete, trash restore, xlsx export.
 - `contact`: user-owned contact, company option, department/job grade, memo/private memo logs, linked deals, soft delete, trash restore, xlsx export.
 - `business-card`: business card image OCR, scan log, extracted candidate confirmation, company/contact creation or reuse.
@@ -28,6 +28,7 @@ Current intentional gaps:
 - Admin operation APIs are limited to `GET /admin/api/me`.
 - Generic `/api/exports` and `ExportJob` are not used; exports live in each domain module.
 - Persistent ImportJob recovery, Notification, Admin audit/sensitive raw access, and generic DealActivity are future scope.
+- Current HTTP confirm wiring passes contact company resolutions and row overrides. Deal import missing company/contact/product resolution arrays are represented in types/use cases but need FE API and controller forwarding review before being treated as fully wired.
 
 Layer rules:
 

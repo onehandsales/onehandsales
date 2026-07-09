@@ -90,18 +90,19 @@ TODO/
 
 현재 활성 계획 상태:
 
-- 2026-07-03 기준 활성 계획 폴더: `IMPORT_TEMPLATE_PLAN`, `LOG_SOFT_DELETE_PLAN`
-- `IMPORT_TEMPLATE_PLAN`은 회사/담당자/제품/딜 불러오기 구현이 완료되었고, 확정 전 job 영속화는 후속으로 남아 있다.
-- `LOG_SOFT_DELETE_PLAN`은 구현 완료 상태이나 완료 처리 규칙에 따라 검토/정리 후 `TODO/DONE`으로 이동한다.
+- 2026-07-09 기준 `TODO` 루트에 활성 계획 폴더는 없다.
+- `IMPORT_TEMPLATE_PLAN`은 회사/담당자/제품/딜 불러오기 구현이 완료되어 `TODO/DONE/IMPORT_TEMPLATE_PLAN`에 보관한다. 확정 전 job 영속화는 후속 새 계획으로 다룬다.
+- `LOG_SOFT_DELETE_PLAN`은 구현 완료되어 `TODO/DONE/LOG_SOFT_DELETE_PLAN`에 보관한다.
 - 새 요구사항이나 후속 구현은 `TODO` 바로 아래에 새 계획 폴더를 만든다.
 
 진행 중인 계획:
 
-- `IMPORT_TEMPLATE_PLAN`
-- `LOG_SOFT_DELETE_PLAN`
+- 없음
 
 완료된 계획:
 
+- `IMPORT_TEMPLATE_PLAN`: `TODO/DONE/IMPORT_TEMPLATE_PLAN`
+- `LOG_SOFT_DELETE_PLAN`: `TODO/DONE/LOG_SOFT_DELETE_PLAN`
 - `INTEGRATED_SEARCH_PLAN`: `TODO/DONE/INTEGRATED_SEARCH_PLAN`
 - `MEETING_NOTE_AI_STT_PLAN`: `TODO/DONE/MEETING_NOTE_AI_STT_PLAN`
 - `BUSINESS_CARD_OCR_PLAN`: `TODO/DONE/BUSINESS_CARD_OCR_PLAN`

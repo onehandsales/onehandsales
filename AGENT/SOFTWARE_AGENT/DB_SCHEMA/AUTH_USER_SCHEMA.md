@@ -10,6 +10,8 @@
 
 현재 Auth/User 도메인은 Prisma schema와 migration에 반영되어 있다. 이 문서는 Auth/User 테이블의 역할, 관계, 컬럼 의미를 빠르게 확인하기 위한 구현 설명서로 유지한다.
 
+현재 User locale/region 메타데이터는 `BE/prisma/migrations/20260708010000_add_user_locale_region_metadata/migration.sql` 기준으로 반영되어 있다.
+
 ## 2. 전체 관계
 
 ```text
@@ -109,6 +111,13 @@ AuthDevice 1 ─ N AuthSession
 | `role` | `UserRole` | 아니오 | `USER` | 사용자 권한 |
 | `status` | `UserStatus` | 아니오 | `ACTIVE` | 사용자 상태 |
 | `timeZone` | `String` | 아니오 | `Asia/Seoul` | 사용자 기본 IANA timezone ID. 일정 range 계산 기본값으로 사용한다. |
+| `preferredLocale` | `String` | 아니오 | `ko-KR` | 사용자 기본 UI/content locale. |
+| `signupLocale` | `String` | 예 | 없음 | 최초 가입/token exchange 시점의 locale. |
+| `signupCountryCode` | `String` | 예 | 없음 | 최초 가입/token exchange 시점의 국가 코드. |
+| `signupTimeZone` | `String` | 예 | 없음 | 최초 가입/token exchange 시점의 timezone. |
+| `lastLoginLocale` | `String` | 예 | 없음 | 마지막 로그인/token exchange 시점의 locale. |
+| `lastLoginCountryCode` | `String` | 예 | 없음 | 마지막 로그인/token exchange 시점의 국가 코드. |
+| `lastLoginTimeZone` | `String` | 예 | 없음 | 마지막 로그인/token exchange 시점의 timezone. |
 | `lastLoginAt` | `DateTime` | 예 | 없음 | 마지막 token exchange 성공 시각 |
 | `createdAt` | `DateTime` | 아니오 | `now()` | 생성 시각 |
 | `updatedAt` | `DateTime` | 아니오 | `@updatedAt` | 수정 시각 |
@@ -283,6 +292,13 @@ model User {
   role        UserRole   @default(USER)                    // USER/ADMIN 권한
   status      UserStatus @default(ACTIVE)                  // 계정 상태
   timeZone    String     @default("Asia/Seoul")            // 사용자 기본 IANA timezone
+  preferredLocale      String  @default("ko-KR")           // 사용자 기본 locale
+  signupLocale         String?                             // 최초 가입 시 locale
+  signupCountryCode    String?                             // 최초 가입 시 국가 코드
+  signupTimeZone       String?                             // 최초 가입 시 timezone
+  lastLoginLocale      String?                             // 마지막 로그인 시 locale
+  lastLoginCountryCode String?                             // 마지막 로그인 시 국가 코드
+  lastLoginTimeZone    String?                             // 마지막 로그인 시 timezone
   lastLoginAt DateTime?                                    // 마지막 로그인 시각
   createdAt   DateTime   @default(now())                   // 생성 시각
   updatedAt   DateTime   @updatedAt                        // 수정 시각

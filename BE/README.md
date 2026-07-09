@@ -20,8 +20,8 @@ Admin API는 반드시 Admin guard로 보호한다.
 
 ## 현재 구현 모듈
 
-- `auth`: 외부 인증 토큰 교환, Backend App token refresh/logout, 현재 사용자 조회, 기기/session 관리
-- `user`: 현재 사용자 profile과 등록 기기 조회/수정
+- `auth`: 외부 인증 토큰 교환, Backend App token refresh/logout, 현재 사용자 조회, 기기/session 관리, 로그인 locale/region 메타데이터 동기화
+- `user`: 현재 사용자 profile, 기본 timezone/locale, 등록 기기 조회/수정
 - `company`: 사용자 소유 회사, 회사 분야/지역, 일반 메모 로그, 개인 비밀 메모 로그, xlsx export
 - `contact`: 사용자 소유 담당자, 회사 옵션, 담당자 부서/직급, 일반 메모 로그, 개인 비밀 메모 로그, xlsx export
 - `business-card`: 명함 이미지 OCR, 성공/실패 로그, 확인/수정 후 회사/담당자 저장
@@ -35,7 +35,7 @@ Admin API는 반드시 Admin guard로 보호한다.
 - `health`: health check
 
 범용 ExportJob Backend는 현재 사용하지 않는다. Export는 회사/담당자/제품/딜 각 도메인의 `GET /api/*/export/xlsx`로 처리한다.
-데이터 불러오기 확정 전 임시 job은 현재 in-memory store를 사용하므로 서버 재시작 후 이어받기는 후속 범위다.
+데이터 불러오기 확정 전 임시 job은 현재 in-memory store를 사용하므로 서버 재시작 후 이어받기는 후속 범위다. 현재 HTTP confirm 경로는 연락처 import의 회사 보정값과 row override를 전달하며, 딜 import의 누락 회사/담당자/제품 보정 배열은 controller/API client 전달 경로 검토가 필요하다.
 
 ## 로컬 실행
 

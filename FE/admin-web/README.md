@@ -20,13 +20,8 @@
 
 ## 초기 범위
 
-- 사용자 관리
-- 조직 관리
-- 구독 관리
-- 사용량 분석
-- 감사 로그
-- 시스템 설정
-- 운영 지원
+- 현재 노출 범위: 관리자 로그인, non-admin 접근 차단, `/admin/api/me` 보호 라우트 확인, root placeholder
+- 후속 범위: 사용자 관리, 조직 관리, 구독 관리, 사용량 분석, 감사 로그, 시스템 설정, 운영 지원
 
 Admin API는 `/admin/api/*`를 사용한다.
 
@@ -81,12 +76,11 @@ Backend 미구현 경계:
 pnpm run typecheck
 pnpm run lint
 pnpm run build
-pnpm run test:e2e
 ```
 
-`pnpm run test:e2e`는 Playwright smoke를 실행한다. Backend와 외부 Provider는 route mock으로 대체하며, 테스트용 Vite server는 `http://127.0.0.1:5176`을 사용한다.
+`pnpm run test:e2e` 파일은 남아 있지만, 현재 라우터가 운영 화면을 root로 redirect하는 상태와 달리 과거 dashboard/users/data/audit 화면 기대값을 포함한다. 현재 Admin Web 품질 게이트는 우선 `typecheck`, `lint`, `build`와 관리자 인증 수동 smoke로 본다. E2E를 릴리즈 게이트로 쓰려면 현재 라우터 기준으로 먼저 갱신한다.
 
-Smoke 범위:
+현재 수동 smoke 범위:
 
 - Admin login
 - non-admin 접근 차단

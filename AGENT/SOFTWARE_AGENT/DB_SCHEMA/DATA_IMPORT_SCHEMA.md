@@ -115,7 +115,7 @@ index:
 - 회사 불러오기는 회사명, 회사분야, 회사지역을 저장한다.
 - 제품 불러오기는 제품명, 제품단가, 제품 카테고리, 제품 상태를 저장한다.
 - 담당자 불러오기는 회사명으로 사용자 소유 회사를 찾거나 만들고, 담당자 정보를 저장한다.
-- 딜 불러오기는 회사명, 담당자명, 제품명으로 기존 사용자 소유 데이터를 찾거나 사용자 보정값으로 생성한 뒤 딜과 `DealCompany`, `DealContact`, `DealProduct` 연결 row를 저장한다.
+- 딜 불러오기는 회사명, 담당자명, 제품명으로 기존 사용자 소유 데이터를 찾은 뒤 딜과 `DealCompany`, `DealContact`, `DealProduct` 연결 row를 저장한다. 누락 회사/담당자/제품 보정값 생성 흐름은 application type/use case와 DTO에는 표현되어 있으나, 현재 FE API 함수와 BE HTTP controller confirm 전달 경로 검토가 필요하다.
 - 확정 저장은 도메인 row 생성과 `ImportUserLog`/`ImportUserLogRow` 생성을 같은 transaction에서 처리한다.
 - 검증 실패 row가 있으면 확정 전에 보정해야 한다.
 

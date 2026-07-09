@@ -30,40 +30,48 @@
 
 현재 `FE/user-web/src/app/router/router.tsx` 기준:
 
-- `/login`
-- `/auth/callback`
-- `/`
-- `/companies`
-- `/companies/new`
-- `/companies/:companyId`
-- `/contacts`
-- `/contacts/scan` -> `/business-cards` redirect. 명함 스캔 legacy route
-- `/contacts/:contactId`
-- `/products`
-- `/products/new`
-- `/products/:productId`
-- `/deals`
-- `/deals/new`
-- `/deals/:dealId`
-- `/schedules`
-- `/schedules/week`
-- `/schedules/:scheduleId`
-- `/meeting-notes`
-- `/meeting-notes/new`
-- `/meeting-notes/:meetingNoteId`
-- `/business-cards`
-- `/notifications` -> `/` redirect. Notification Backend 구현 전까지 숨김
-- `/import`
-- `/import/:importUserLogId`
-- `/export` -> `/` redirect. Generic Export는 현재 정본 흐름이 아니므로 숨김
-- `/trash`
-- `/settings`
-- `/more`
+공개/인증 라우트:
 
-`/meeting-notes/new`는 현재 `/meeting-notes?create=1` 흐름으로 redirect한다.
-`/schedules/week`는 현재 `/schedules`로 redirect한다. 별도 주간 보고서 화면은 후속 범위다.
-`import-export` feature 중 `/import`는 실제 Backend API와 연결되어 있고, `/export` route는 root로 redirect한다. 현재 Export 정본 흐름은 회사/담당자/제품/딜 각 목록 화면의 엑셀 다운로드다.
-현재 사이드바는 `/import`를 `데이터 업로드` 메뉴로 노출한다. `/export`와 `/notifications`는 route가 있어도 navigation에서 숨긴다.
+- `/`: 공개 랜딩/진입 화면. 앱 홈이 아니다.
+- `/login`, `/signup`: 로그인/가입 진입 화면
+- `/auth/callback`: Supabase OAuth callback
+- `/pricing`, `/contact`, `/about`, `/security`, `/terms`, `/privacy`: 공개 정보 페이지
+
+legacy redirect 라우트:
+
+- `/companies`, `/companies/new`, `/companies/:companyId` -> `/app/companies...`
+- `/contacts`, `/contacts/:contactId` -> `/app/contacts...`
+- `/contacts/scan` -> `/app/business-cards`
+- `/products`, `/products/new`, `/products/:productId` -> `/app/products...`
+- `/deals`, `/deals/new`, `/deals/:dealId` -> `/app/deals...`
+- `/schedules`, `/schedules/:scheduleId` -> `/app/schedules...`
+- `/schedules/week` -> `/app/schedules`
+- `/meeting-notes`, `/meeting-notes/:meetingNoteId` -> `/app/meeting-notes...`
+- `/meeting-notes/new` -> `/app/meeting-notes?create=1`
+- `/business-cards` -> `/app/business-cards`
+- `/import`, `/import/:importUserLogId` -> `/app/import...`
+- `/trash`, `/settings`, `/more` -> `/app/...`
+
+보호 앱 라우트:
+
+- `/app`: Home dashboard
+- `/app/companies`, `/app/companies/new`, `/app/companies/:companyId`
+- `/app/contacts`, `/app/contacts/:contactId`
+- `/app/contacts/scan` -> `/app/business-cards`
+- `/app/products`, `/app/products/new`, `/app/products/:productId`
+- `/app/deals`, `/app/deals/new`, `/app/deals/:dealId`
+- `/app/schedules`, `/app/schedules/:scheduleId`
+- `/app/schedules/week` -> `/app/schedules`. 별도 주간 보고서 화면은 후속 범위다.
+- `/app/meeting-notes`, `/app/meeting-notes/:meetingNoteId`
+- `/app/meeting-notes/new` -> `/app/meeting-notes?create=1`
+- `/app/business-cards`
+- `/app/import`, `/app/import/:importUserLogId`
+- `/app/trash`, `/app/settings`, `/app/more`
+- `/app/notifications` -> `/app`. Notification Backend 구현 전까지 숨김
+- `/app/export` -> `/app`. Generic Export는 현재 정본 흐름이 아니므로 숨김
+
+`import-export` feature 중 `/app/import`는 실제 Backend API와 연결되어 있고, `/app/export` route는 `/app`으로 redirect한다. 현재 Export 정본 흐름은 회사/담당자/제품/딜 각 목록 화면의 엑셀 다운로드다.
+현재 사이드바는 `/app/import`를 `데이터 업로드` 메뉴로 노출한다. `/app/export`와 `/app/notifications`는 route가 있어도 navigation에서 숨긴다.
 
 ## 4. 현재 Feature 폴더
 
@@ -79,6 +87,7 @@
 - `meeting-note`
 - `notification`
 - `product`
+- `public-site`
 - `schedule`
 - `search`
 - `trash`
@@ -91,15 +100,15 @@
 - Home dashboard: 일정/딜/회의록 조합 조회
 - Company: 목록/상세/생성/수정/삭제, 옵션, 메모, 개인 메모, 연결 Contact/Deal, xlsx export
 - Contact: 목록/상세/생성/수정/삭제, 옵션, 메모, 개인 메모, 연결 Deal, xlsx export
-- BusinessCard OCR: `/business-cards`, `POST/GET /api/business-card-scans`, 명함스캔 모달, 확인/수정 후 회사/담당자 저장
+- BusinessCard OCR: `/app/business-cards`, `POST/GET /api/business-card-scans`, 명함스캔 모달, 확인/수정 후 회사/담당자 저장
 - Product: 목록/상세/생성/수정/삭제, 옵션, 메모, 개인 메모, 연결 Deal, xlsx export
 - Deal: 목록/상세/생성/수정/삭제, stage counts, 옵션, 다음 행동 로그, 메모 로그, xlsx export
 - Schedule: 월/주 목록, 단건 상세, 생성, 수정, 삭제, deal options
 - MeetingNote: 목록/상세/생성/수정, filter options, AI text draft, STT+AI draft, 저장 후 딜 추가 연동
 - Search: 상단/모바일 GlobalSearch, `GET /api/search`, 결과 `targetPath` 이동
 - 삭제 UX: 회사/담당자/제품/딜 본문과 로그 삭제는 빨간 휴지통 아이콘 클릭 후 중앙 확인 모달을 열고, 성공 시 중앙 성공 모달로 `삭제가 완료되었습니다.`와 7일 복구 안내를 보여준다.
-- Trash: `/trash` 화면에서 `GET /api/trash` 목록, `GET /api/trash/:targetType/:targetId` 상세 모달, `POST /api/trash/:targetType/:targetId/restore` 복구를 연동한다. 목록 row 클릭으로 상세 모달을 열고, 복구는 모달 내부 버튼에서만 수행한다.
-- DataImport: `/import` 화면에서 활성 양식 목록/다운로드, CSV/XLSX 업로드, AI 컬럼 매핑, mapping 수정, row 수정/검증, 확정 저장, 성공 내역 목록을 연동한다. `/import/:importUserLogId`는 성공 내역 상세와 row snapshot을 조회한다.
+- Trash: `/app/trash` 화면에서 `GET /api/trash` 목록, `GET /api/trash/:targetType/:targetId` 상세 모달, `POST /api/trash/:targetType/:targetId/restore` 복구를 연동한다. 목록 row 클릭으로 상세 모달을 열고, 복구는 모달 내부 버튼에서만 수행한다.
+- DataImport: `/app/import` 화면에서 활성 양식 목록/다운로드, CSV/XLSX 업로드, AI 컬럼 매핑, mapping 수정, row 수정/검증, 확정 저장, 성공 내역 목록을 연동한다. `/app/import/:importUserLogId`는 성공 내역 상세와 row snapshot을 조회한다.
 
 도메인별 export 기준:
 
@@ -122,7 +131,7 @@ mock/placeholder 경계를 유지해야 하는 항목:
 
 ## 5A. BusinessCard OCR Frontend 기준
 
-명함 스캔 route는 `/business-cards`다. 사이드바와 모바일 더보기 메뉴에서는 `명함 스캔`으로 노출하고, 아이콘은 lucide `Camera`를 사용한다. `/contacts/scan`은 legacy redirect만 유지한다.
+명함 스캔 route는 `/app/business-cards`다. `/business-cards`와 `/contacts/scan`은 legacy redirect만 유지한다. 사이드바와 모바일 더보기 메뉴에서는 `명함 스캔`으로 노출하고, 아이콘은 lucide `Camera`를 사용한다.
 
 목록 UX:
 
@@ -151,7 +160,8 @@ mock/placeholder 경계를 유지해야 하는 항목:
 - item은 상세 화면 이동에 필요한 `targetType`, `targetId`, `targetPath`를 포함한다.
 - 전용 `/search` 라우트는 현재 없다. 상단 검색 UI 안에서 결과를 선택해 상세 화면으로 이동한다.
 - User Web GlobalSearch는 `GET /api/search`와 연결되어 있으며 loading, empty, error 상태를 처리한다.
-- 일정 검색 결과는 `/schedules/:scheduleId` route로 이동하고 일정 상세 화면에서 `GET /api/schedules/{scheduleId}`를 호출한다.
+- 현재 Backend `targetPath`와 FE fallback은 `/companies/:id`, `/deals/:id`, `/schedules/:id` 같은 legacy path를 반환할 수 있다. User Web router가 해당 path를 대응되는 `/app/*` 상세 화면으로 redirect한다.
+- 일정 검색 결과는 legacy `/schedules/:scheduleId` targetPath를 거쳐 `/app/schedules/:scheduleId`로 이동하고, 일정 상세 화면에서 `GET /api/schedules/{scheduleId}`를 호출한다.
 
 ## 7. MeetingNote AI/STT Frontend 기준
 

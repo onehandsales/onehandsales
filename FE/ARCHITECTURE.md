@@ -60,19 +60,22 @@ Page는 route entry이며 feature public export를 조합한다. API 호출, sch
 
 ## 현재 구현 스냅샷
 
-Snapshot date: 2026-07-03
+Snapshot date: 2026-07-09
 
 User Web:
 
-- routes: `/login`, `/auth/callback`, `/`, `/companies`, `/companies/new`, `/companies/:companyId`, `/contacts`, `/contacts/scan`, `/contacts/:contactId`, `/products`, `/products/new`, `/products/:productId`, `/deals`, `/deals/new`, `/deals/:dealId`, `/schedules`, `/schedules/week`, `/schedules/:scheduleId`, `/meeting-notes`, `/meeting-notes/new`, `/meeting-notes/:meetingNoteId`, `/business-cards`, `/notifications`, `/import`, `/import/:importUserLogId`, `/export`, `/trash`, `/settings`, `/more`
+- public/auth routes: `/`, `/login`, `/signup`, `/auth/callback`, `/pricing`, `/contact`, `/about`, `/security`, `/terms`, `/privacy`
+- protected app routes: `/app`, `/app/companies`, `/app/companies/new`, `/app/companies/:companyId`, `/app/contacts`, `/app/contacts/:contactId`, `/app/products`, `/app/products/new`, `/app/products/:productId`, `/app/deals`, `/app/deals/new`, `/app/deals/:dealId`, `/app/schedules`, `/app/schedules/:scheduleId`, `/app/meeting-notes`, `/app/meeting-notes/:meetingNoteId`, `/app/business-cards`, `/app/import`, `/app/import/:importUserLogId`, `/app/trash`, `/app/settings`, `/app/more`
+- legacy redirects: old domain routes such as `/companies`, `/contacts`, `/products`, `/deals`, `/schedules`, `/meeting-notes`, `/business-cards`, `/import`, `/trash`, `/settings`, `/more` redirect to matching `/app/*` routes.
+- hidden/future routes: `/app/notifications` and `/app/export` redirect to `/app`; `/app/schedules/week` redirects to `/app/schedules`.
 - implemented API integration: Auth/User, Home, Company, Contact, BusinessCard OCR, Product, Deal, Schedule, MeetingNote manual CRUD, MeetingNote AI/STT draft, MeetingNote deal link, Search, Trash, DataImport, Company/Contact/Product/Deal domain xlsx export
 - mock/placeholder boundary: generic Export route/API, Notification
-- `/business-cards`: 명함 스캔 내역은 등록일 최신순 고정이며, 상태 다중 필터와 `상태 초기화`, `명함스캔` 모달의 이미지 업로드 -> 진행 표시 -> 결과 확인/수정 -> 저장 흐름을 제공한다.
-- `/import`: 회사/담당자/제품/딜 양식 다운로드, CSV/XLSX 업로드, AI 컬럼 매핑, row 수정/검증, 확정 저장, 성공 내역 목록/상세 조회를 제공한다.
+- `/app/business-cards`: 명함 스캔 내역은 등록일 최신순 고정이며, 상태 다중 필터와 `상태 초기화`, `명함스캔` 모달의 이미지 업로드 -> 진행 표시 -> 결과 확인/수정 -> 저장 흐름을 제공한다.
+- `/app/import`: 회사/담당자/제품/딜 양식 다운로드, CSV/XLSX 업로드, AI 컬럼 매핑, row 수정/검증, 확정 저장, 성공 내역 목록/상세 조회를 제공한다. 딜 import 누락 참조 보정값은 현재 코드에서 FE API와 BE controller 전달 경로 검토가 필요하다.
 
 Admin Web:
 
-- routes: `/login`, `/`, `/users`, `/users/:userId`, `/organizations`, `/subscriptions`, `/analytics`, `/audit-logs`, `/system`, `/support`
+- routes: `/login`, `/`. `/users`, `/users/:userId`, `/organizations`, `/subscriptions`, `/analytics`, `/audit-logs`, `/system`, `/support`는 현재 `/`로 redirect한다.
 - implemented Backend integration: `/admin/api/me`
 - expected but Backend-pending APIs: `/admin/api/dashboard`, `/admin/api/users`, `/admin/api/companies`, `/admin/api/contacts`, `/admin/api/products`, `/admin/api/deals`
 

@@ -2,7 +2,7 @@
 
 ## 1. Product UX Principle
 
-This is a personal sales workflow tool, not a marketing site.
+After login, this is a personal sales workflow tool, not a marketing site. The public `/` entry can introduce the product, but the authenticated `/app/*` experience must stay work-focused.
 
 The UI should help a salesperson answer quickly:
 
@@ -11,21 +11,22 @@ The UI should help a salesperson answer quickly:
 - 다음 행동은 무엇인가?
 - 어떤 회사/담당자/제품 정보가 이 딜과 연결되어 있는가?
 
-The first screen should make today's sales work visible first, then provide a clear path into the deal pipeline.
+The authenticated first screen should make today's sales work visible first, then provide a clear path into the deal pipeline.
 
 ## 2. First Screen
 
-Target direction: after login, `/` should be a work dashboard and `/deals` should remain the high-density Deal Pipeline Home.
+Target direction: `/` is the public entry surface, `/app` is the authenticated work dashboard, and `/app/deals` remains the high-density Deal Pipeline Home.
 
-Current implementation note as of 2026-06-25:
+Current implementation note as of 2026-07-09:
 
-- `/` home is an implemented dashboard that combines Schedule, Deal, Deal stage count, and MeetingNote API data.
-- The active deal pipeline experience is served from `/deals`.
-- Keep `/` focused on today/dashboard context and `/deals` focused on comparison, filtering, preview, and mutation.
+- `/` is a public landing/entry surface.
+- `/app` home is an implemented dashboard that combines Schedule, Deal, Deal stage count, and MeetingNote API data.
+- The active deal pipeline experience is served from `/app/deals`.
+- Keep `/app` focused on today/dashboard context and `/app/deals` focused on comparison, filtering, preview, and mutation.
 - Global Search has Backend `GET /api/search` and User Web GlobalSearch connection with loading, empty, error states implemented.
 - Trash has Backend list/detail/restore APIs and a User Web full-width list with row-click detail modal and modal-only restore action.
 - MeetingNote AI/STT draft Backend APIs and User Web draft UI integration are implemented.
-- BusinessCard OCR has Backend `POST/GET /api/business-card-scans` and User Web `/business-cards` integration implemented. The visible feature name is `명함 스캔`, and the modal action is `명함스캔`.
+- BusinessCard OCR has Backend `POST/GET /api/business-card-scans` and User Web `/app/business-cards` integration implemented. The visible feature name is `명함 스캔`, and the modal action is `명함스캔`.
 - Company/contact/product create modals use search-input selection, immediate creation when no result exists, and automatic selection after creation.
 - Deal likelihood (`긍정 / 중립 / 부정` or percent) is not implemented in the current Deal API/FE form. Treat it as future UX scope unless a new backend plan adds it.
 
@@ -114,9 +115,22 @@ Do not copy blindly:
 - Do not copy Notion's brand, icons, copy, or pixel-level screen layout.
 - Do not make every field free-form just because Notion supports free-form pages.
 
-## 4. Home Screen Layout Direction
+## 4. App Home And Deal Layout Direction
 
-Recommended structure:
+Recommended `/app` home structure:
+
+```text
+Top bar:
+  global search, quick create, current user actions
+
+Main:
+  today's schedule
+  active/near-deadline deals
+  recent meeting notes
+  fast entry points into core workflows
+```
+
+Recommended `/app/deals` structure:
 
 ```text
 Top bar:
@@ -322,7 +336,8 @@ Primary navigation should make these areas easy to reach:
 
 Current visibility rule:
 
-- `Import` and generic `Export` routes/features may remain in code, but they are hidden from the main sidebar until core domain UX is stable.
+- `Import` is exposed as `데이터 업로드` because DataImport is connected to real Backend APIs.
+- Generic `Export` route/features may remain in code, but they are hidden from the main sidebar because current export is domain-level xlsx download.
 - Export for the current product is handled by domain-level actions. The visible User Web label is the common `엑셀 다운로드`; the current list screen and API determine whether it exports companies, contacts, products, or deals.
 - `휴지통` is exposed in the management section because delete and restore are now active user workflows. It should use a full-width list layout, row-click detail modal, and modal-only restore action.
 - `명함 스캔` is exposed in primary navigation with a simple camera icon. The page header should only show `명함 스캔`; do not add a duplicate app name/header label above it.

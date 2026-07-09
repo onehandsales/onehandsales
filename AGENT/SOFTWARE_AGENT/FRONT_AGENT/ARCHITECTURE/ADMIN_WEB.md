@@ -71,6 +71,10 @@
 
 Admin Web은 현재 local mock admin/user token을 사용해 보호 라우트와 non-admin 차단 흐름을 검증한다. Backend는 현재 `/admin/api/me`만 제공한다.
 
+## 6A. 테스트 상태
+
+현재 `FE/admin-web/tests/e2e/admin-web-smoke.spec.ts`는 과거 dashboard/users/data/audit 운영 화면 기대값을 포함한다. 하지만 현재 라우터는 `/users`, `/organizations`, `/subscriptions`, `/analytics`, `/audit-logs`, `/system`, `/support`를 모두 `/`로 redirect한다. 따라서 현재 Admin Web release gate는 우선 `typecheck`, `lint`, `build`, admin/non-admin 수동 smoke이며, Playwright E2E는 현재 라우터 기준으로 갱신한 뒤 gate로 사용한다.
+
 ## 7. 관련 문서
 
 - `AGENT/SOFTWARE_AGENT/FRONT_AGENT/CONVENTION/ADMIN_WEB.md`
