@@ -9,8 +9,10 @@ import type { CurrentUserContext } from "@/shared/application/context/current-us
 
 describe("UpdateMyProfileUseCase", () => {
   it.each([
-    ["zh-CN", "zh-TW"],
+    ["zh", "zh-TW"],
     ["zh_Hant_TW", "zh-TW"],
+    ["zh-Hans", "ko-KR"],
+    ["zh_Hans", "ko-KR"],
     ["en-SG", "en-SG"],
     ["en-AU", "en-AU"],
     ["en-CA", "en-CA"],

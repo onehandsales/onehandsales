@@ -6,7 +6,7 @@
 
 현재 구현 상태:
 
-- 2026-07-09 기준 `/app` 홈은 Schedule/Deal/MeetingNote API 조합 대시보드다.
+- 2026-07-10 기준 `/app` 홈은 Schedule/Deal/MeetingNote API 조합 대시보드다.
 - 홈은 오늘 일정, 진행 딜, 마감 임박, 최근 회의록, 빠른 실행, 최근 활동을 표시한다.
 - 딜 파이프라인 경험은 `/app/deals`에서 운영한다.
 - 딜 목록/상세/생성의 고밀도 작업은 `/app/deals`를 기준으로 유지한다.

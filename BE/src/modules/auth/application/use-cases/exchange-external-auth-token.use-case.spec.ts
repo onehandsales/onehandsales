@@ -394,8 +394,10 @@ describe("ExchangeExternalAuthTokenUseCase", () => {
 
   // 기능 : 로그인 exchange locale을 현재 지원 시장 기준 값으로 정규화합니다.
   it.each([
-    ["zh-CN", "zh-TW"],
+    ["zh", "zh-TW"],
     ["zh_Hant_TW", "zh-TW"],
+    ["zh-Hans", "ko-KR"],
+    ["zh_Hans", "ko-KR"],
     ["en-SG", "en-SG"],
     ["en-AU", "en-AU"],
     ["en-CA", "en-CA"],

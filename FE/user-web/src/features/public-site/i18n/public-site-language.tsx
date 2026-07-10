@@ -764,8 +764,8 @@ function makeTranslatedPricing(copy: {
   readonly faqTitle: string;
 }): PublicSiteCopy["pricing"] {
   const isJapanese = copy.title.includes("営業");
-  const isChinese = copy.title.includes("銷售");
-  const isEnglish = !isJapanese && !isChinese;
+  const isTraditionalChinese = copy.title.includes("銷售");
+  const isEnglish = !isJapanese && !isTraditionalChinese;
   const isGbp = copy.currency.includes("GBP");
   const isSgd = copy.currency.includes("SGD");
   const isAud = copy.currency.includes("AUD");
@@ -774,14 +774,14 @@ function makeTranslatedPricing(copy: {
   return {
     ...copy,
     mediaCaptions: copy.captions,
-    mediaAlts: isChinese
+    mediaAlts: isTraditionalChinese
       ? ["客戶諮詢情境", "白板工作設計", "團隊簡報與會議"]
       : isJapanese
         ? ["顧客相談の場面", "ホワイトボードでの業務設計", "チーム発表と会議"]
         : ["Customer call scene", "Whiteboard workflow planning", "Team presentation and meeting"],
     billingMonthly: copy.monthly,
     billingAnnual: copy.annual,
-    priceLabels: isChinese
+    priceLabels: isTraditionalChinese
       ? ["NT$0", "NT$299", "NT$699", ""]
       : isJapanese
         ? ["¥0", "¥1,500", "¥3,200", ""]
@@ -795,78 +795,78 @@ function makeTranslatedPricing(copy: {
                 ? ["C$0", "C$14", "C$30", ""]
                 : ["$0", "$10", "$22", ""],
     pricePeriod: isEnglish ? "/mo" : "/月",
-    aiImageAlt: isChinese
+    aiImageAlt: isTraditionalChinese
       ? "團隊在會議室分享銷售計畫"
       : isJapanese
         ? "会議室でチームが営業計画を共有する様子"
         : "Team sharing a sales plan in a meeting room",
-    aiAvatarLabels: isChinese
+    aiAvatarLabels: isTraditionalChinese
       ? ["商機", "會", "任"]
       : isJapanese
         ? ["商談", "会", "タ"]
         : ["Deal", "Meet", "Task"],
-    includedValues: isChinese ? ["包含"] : isJapanese ? ["含む"] : ["Included"],
+    includedValues: isTraditionalChinese ? ["包含"] : isJapanese ? ["含む"] : ["Included"],
     emptyCell: "—",
     plans: [
       {
-        name: isJapanese ? "無料" : isChinese ? "免費" : "Free",
+        name: isJapanese ? "無料" : isTraditionalChinese ? "免費" : "Free",
         description:
           isJapanese
             ? "最初の営業記録を整理する個人向け"
-            : isChinese
+            : isTraditionalChinese
               ? "適合剛開始整理銷售紀錄的個人"
               : "For individuals getting their sales records in order",
-        cta: isChinese ? "開始使用" : isJapanese ? "始める" : "Get started",
+        cta: isTraditionalChinese ? "開始使用" : isJapanese ? "始める" : "Get started",
         features:
-          isChinese
+          isTraditionalChinese
             ? ["公司/聯絡人基礎管理", "30 個商機", "行程與會議紀錄", "行動瀏覽器支援"]
             : isJapanese
               ? ["会社/担当者の基本管理", "商談30件", "予定と議事録", "モバイルブラウザ対応"]
               : ["Basic company/contact management", "30 deals", "Calendar and notes", "Mobile browser support"],
       },
       {
-        name: isJapanese ? "プラス" : isChinese ? "Plus" : "Plus",
+        name: isJapanese ? "プラス" : isTraditionalChinese ? "Plus" : "Plus",
         description:
           isJapanese
             ? "パイプラインを継続的に管理するユーザー向け"
-            : isChinese
+            : isTraditionalChinese
               ? "適合持續管理銷售管線的使用者"
               : "For people actively managing a sales pipeline",
-        cta: isChinese ? "免費試用" : isJapanese ? "無料で試す" : "Free trial",
+        cta: isTraditionalChinese ? "免費試用" : isJapanese ? "無料で試す" : "Free trial",
         features:
-          isChinese
+          isTraditionalChinese
             ? ["商機無限制", "XLSX 下載", "垃圾桶還原", "進階篩選與排序"]
             : isJapanese
               ? ["商談無制限", "XLSXダウンロード", "ゴミ箱復元", "高度なフィルターと並び替え"]
               : ["Unlimited deals", "XLSX export", "Trash restore", "Advanced filters and sorting"],
       },
       {
-        name: isJapanese ? "ビジネス" : isChinese ? "商務" : "Business",
+        name: isJapanese ? "ビジネス" : isTraditionalChinese ? "商務" : "Business",
         description:
           isJapanese
             ? "反復営業フローを自動化するチーム向け"
-            : isChinese
+            : isTraditionalChinese
               ? "適合自動化重複銷售流程的團隊"
               : "For teams automating repeat sales workflows",
-        cta: isChinese ? "開始使用" : isJapanese ? "始める" : "Get started",
+        cta: isTraditionalChinese ? "開始使用" : isJapanese ? "始める" : "Get started",
         features:
-          isChinese
+          isTraditionalChinese
             ? ["AI 會議摘要", "優先順序推薦", "團隊共享檢視", "敏感筆記保護"]
             : isJapanese
               ? ["AI議事録要約", "優先順位の提案", "チーム共有ビュー", "機密メモ保護"]
               : ["AI meeting summaries", "Priority suggestions", "Shared team views", "Sensitive note protection"],
       },
       {
-        name: isJapanese ? "エンタープライズ" : isChinese ? "企業" : "Enterprise",
+        name: isJapanese ? "エンタープライズ" : isTraditionalChinese ? "企業" : "Enterprise",
         description:
           isJapanese
             ? "セキュリティ、権限、運用ポリシーが必要な組織向け"
-            : isChinese
+            : isTraditionalChinese
               ? "適合需要安全、權限與營運政策的組織"
               : "For organizations with security, access, and policy needs",
-        cta: isChinese ? "聯繫我們" : isJapanese ? "問い合わせる" : "Contact us",
+        cta: isTraditionalChinese ? "聯繫我們" : isJapanese ? "問い合わせる" : "Contact us",
         features:
-          isChinese
+          isTraditionalChinese
             ? ["專屬導入支援", "稽核記錄", "權限策略", "安全審查支援"]
             : isJapanese
               ? ["専任導入支援", "監査ログ", "権限ポリシー", "セキュリティレビュー支援"]

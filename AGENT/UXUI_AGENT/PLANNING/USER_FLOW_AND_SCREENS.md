@@ -31,7 +31,7 @@
 5. 최초 모달에는 명함 이미지 업로드 영역만 보여준다.
 6. 사용자가 `명함스캔`을 누르면 OpenAI OCR 요청을 보내고 이미지 영역 위에 `명함스캔 중` 진행 표시를 보여준다. 요청 중에는 사진 교체/삭제와 모달 닫기를 막는다.
 7. OCR 성공 후에는 추출 결과 확인/수정 폼만 보여준다.
-8. 사용자가 회사명, 회사분야, 회사지역, 담당자명, 휴대폰, 이메일, 부서, 직급을 확인/수정한다. 휴대폰은 `010-0000-0000` 형태로 입력되게 한다.
+8. 사용자가 회사명, 회사분야, 회사지역, 담당자명, 휴대폰, 이메일, 부서, 직급을 확인/수정한다. 휴대폰은 현재 한국 휴대폰 형식 중심이며, 다국가 전화번호 입력/검증 모델은 후속 검토한다.
 9. 저장 시 Backend가 기존 회사/담당자를 재사용하거나 없으면 생성한다. 회사 없는 담당자 저장은 허용하지 않는다.
 10. 성공/실패/확정 로그는 `BusinessCardScanLog`에 남기고, 업로드 이미지는 저장하지 않는다.
 
@@ -52,9 +52,8 @@
 2. 딜/회사/담당자와 연결한다.
 3. 알림 기본값을 확인하거나 수정한다.
 4. 일정 기본 화면에서 이번 달 월간 캘린더를 확인한다.
-5. 같은 일정 화면에서 주간 보기로 전환한다.
-6. 필요하면 주간 보고서 화면으로 이동한다.
-7. PDF 또는 Excel로 출력한다.
+5. 같은 일정 화면에서 월간/목록 중심으로 확인한다.
+6. 주간 보고서 화면, PDF, Excel 출력은 후속 범위로 둔다.
 
 ### Flow 5. 구글 캘린더 가져오기
 
@@ -117,11 +116,12 @@
 
 | 경로 | 화면 | MVP |
 |---|---|---|
-| `/login` | 로그인 | 포함 |
-| `/signup` | 가입/로그인 진입 | 포함 |
+| `/{locale}/login` | 로그인 | 포함 |
+| `/{locale}/signup` | 가입/로그인 진입 | 포함 |
 | `/auth/callback` | Supabase OAuth callback | 포함 |
-| `/` | 공개 랜딩/진입 화면 | 포함 |
-| `/pricing`, `/contact`, `/about`, `/security`, `/terms`, `/privacy` | 공개 정보 페이지 | 포함 |
+| `/{locale}` | 공개 랜딩/진입 화면 | 포함 |
+| `/{locale}/pricing`, `/{locale}/contact`, `/{locale}/about`, `/{locale}/security`, `/{locale}/terms`, `/{locale}/privacy` | 공개 정보 페이지 | 포함 |
+| `/`, `/login`, `/signup`, `/pricing`, `/contact`, `/about`, `/security`, `/terms`, `/privacy` | legacy public/auth redirect | 선호 locale URL로 redirect |
 | `/app` | 홈 대시보드 | 포함 |
 | `/app/companies` | 회사 목록 | 포함 |
 | `/app/companies/new` | 회사 생성 | 포함 |
@@ -167,11 +167,14 @@
 
 ## 4. 현재 코드 라우트 상태
 
-> 최종 업데이트: 2026-07-09
+> 최종 업데이트: 2026-07-10
 
 현재 User Web router 기준 실제 구현 경로:
 
-- 공개/인증: `/`, `/login`, `/signup`, `/auth/callback`, `/pricing`, `/contact`, `/about`, `/security`, `/terms`, `/privacy`
+- 공개/인증 canonical: `/{locale}`, `/{locale}/login`, `/{locale}/signup`, `/{locale}/pricing`, `/{locale}/contact`, `/{locale}/about`, `/{locale}/security`, `/{locale}/terms`, `/{locale}/privacy`
+- 지원 locale slug: `ko`, `ja`, `zh-tw`, `en-us`, `en-gb`, `en-sg`, `en-au`, `en-ca`
+- legacy public/auth redirect: `/`, `/login`, `/signup`, `/pricing`, `/contact`, `/about`, `/security`, `/terms`, `/privacy`는 선호 locale URL로 이동한다.
+- OAuth callback: `/auth/callback`은 locale prefix 없이 유지한다.
 - legacy redirect: `/companies`, `/contacts`, `/products`, `/deals`, `/schedules`, `/meeting-notes`, `/business-cards`, `/import`, `/trash`, `/settings`, `/more` 및 각 상세/생성 경로는 대응되는 `/app/*`로 이동한다.
 - 보호 앱: `/app`, `/app/companies`, `/app/companies/new`, `/app/companies/:companyId`, `/app/contacts`, `/app/contacts/:contactId`, `/app/products`, `/app/products/new`, `/app/products/:productId`, `/app/deals`, `/app/deals/new`, `/app/deals/:dealId`, `/app/schedules`, `/app/schedules/:scheduleId`, `/app/meeting-notes`, `/app/meeting-notes/:meetingNoteId`, `/app/business-cards`, `/app/import`, `/app/import/:importUserLogId`, `/app/trash`, `/app/settings`, `/app/more`
 - hidden/future redirect: `/app/schedules/week` -> `/app/schedules`, `/app/notifications` -> `/app`, `/app/export` -> `/app`
@@ -186,7 +189,7 @@ pen 디자인 반영 완료/정리 도메인:
 - `/app/meeting-notes` — 회의록 목록/상세/생성 API, AI/STT draft UI, 저장 후 딜 추가 연동 연결 완료
 - `/app/trash` — 회의록 목록형 밀도를 따른 휴지통 목록, row 클릭 상세 모달, 모달 내부 복구 액션 반영 완료
 - `/app/business-cards` — 명함 스캔 내역, 상태 다중 필터, 카메라 아이콘 내비게이션, `명함스캔` 모달의 이미지 업로드 -> 진행 표시 -> 결과 확인/수정 -> 저장 흐름 구현 완료
-- `/app/import` — 회사/담당자/제품/딜 양식 다운로드, CSV/XLSX 업로드, AI 컬럼 매핑, row 수정/검증, 확정 저장, 성공 내역 목록/상세 조회 구현 완료. 확정 전 job 이어받기는 후속이고, 딜 누락 참조 보정값 전달은 현재 FE/BE confirm 경로에 연결되어 있음
+- `/app/import` — 회사/담당자/제품/딜 양식 다운로드, CSV/XLSX 업로드, AI 컬럼 매핑, row 수정/검증, 누락 셀 단위 validation 메시지, 확정 저장, 성공 내역 목록/상세 조회 구현 완료. 확정 전 job 이어받기는 후속이고, 딜 누락 참조 보정값 전달은 현재 FE/BE confirm 경로에 연결되어 있음
 - 상단 통합검색 — Backend `GET /api/search`와 User Web GlobalSearch 연결 완료
 
 현재 의도적으로 보류된 화면:
@@ -199,7 +202,7 @@ pen 디자인 반영 대기 도메인:
 - `/app/products/:productId`
 - `/app/schedules`, `/app/schedules/week`
 - `/app/notifications`
-- `/app/import` — 확정 전 job 이어받기는 후속.
+- `/app/import` — 확정 전 job 이어받기는 후속. 기본 업로드/매핑/검증/확정 저장은 구현 완료.
 - `/app/export`
 - `/app/business-cards` — Backend 연동 완료. pen 시각 고도화는 후속.
 - `/app/contacts/:contactId` (부분 반영)

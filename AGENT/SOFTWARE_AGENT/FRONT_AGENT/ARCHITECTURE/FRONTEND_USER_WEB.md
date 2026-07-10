@@ -32,10 +32,12 @@
 
 공개/인증 라우트:
 
-- `/`: 공개 랜딩/진입 화면. 앱 홈이 아니다.
-- `/login`, `/signup`: 로그인/가입 진입 화면
-- `/auth/callback`: Supabase OAuth callback
-- `/pricing`, `/contact`, `/about`, `/security`, `/terms`, `/privacy`: 공개 정보 페이지
+- `/{locale}`: 공개 랜딩/진입 화면. 앱 홈이 아니다.
+- `/{locale}/login`, `/{locale}/signup`: 로그인/가입 진입 화면
+- `/{locale}/pricing`, `/{locale}/contact`, `/{locale}/about`, `/{locale}/security`, `/{locale}/terms`, `/{locale}/privacy`: 공개 정보 페이지
+- 지원 locale slug: `ko`, `ja`, `zh-tw`, `en-us`, `en-gb`, `en-sg`, `en-au`, `en-ca`
+- legacy `/`, `/login`, `/signup`, `/pricing`, `/contact`, `/about`, `/security`, `/terms`, `/privacy`는 선호 locale URL로 redirect한다.
+- `/auth/callback`: Supabase OAuth callback. locale prefix 없이 유지한다.
 
 legacy redirect 라우트:
 
@@ -108,7 +110,7 @@ legacy redirect 라우트:
 - Search: 상단/모바일 GlobalSearch, `GET /api/search`, 결과 `targetPath` 이동
 - 삭제 UX: 회사/담당자/제품/딜 본문과 로그 삭제는 빨간 휴지통 아이콘 클릭 후 중앙 확인 모달을 열고, 성공 시 중앙 성공 모달로 `삭제가 완료되었습니다.`와 7일 복구 안내를 보여준다.
 - Trash: `/app/trash` 화면에서 `GET /api/trash` 목록, `GET /api/trash/:targetType/:targetId` 상세 모달, `POST /api/trash/:targetType/:targetId/restore` 복구를 연동한다. 목록 row 클릭으로 상세 모달을 열고, 복구는 모달 내부 버튼에서만 수행한다.
-- DataImport: `/app/import` 화면에서 활성 양식 목록/다운로드, CSV/XLSX 업로드, AI 컬럼 매핑, mapping 수정, row 수정/검증, 확정 저장, 성공 내역 목록을 연동한다. `/app/import/:importUserLogId`는 성공 내역 상세와 row snapshot을 조회한다.
+- DataImport: `/app/import` 화면에서 활성 양식 목록/다운로드, CSV/XLSX 업로드, AI 컬럼 매핑, mapping 수정, row 수정/검증, 누락 셀 단위 validation 메시지, 확정 저장, 성공 내역 목록을 연동한다. `/app/import/:importUserLogId`는 성공 내역 상세와 row snapshot을 조회한다.
 
 도메인별 export 기준:
 
@@ -133,16 +135,17 @@ mock/placeholder 경계를 유지해야 하는 항목:
 
 로그인/회원가입은 Supabase OAuth provider login을 공통으로 사용한다.
 
-- `/login`과 `/signup`은 같은 provider login 흐름이다. 신규 provider 계정이면 가입, 기존 provider 계정이면 로그인으로 처리한다.
+- `/{locale}/login`과 `/{locale}/signup`은 같은 provider login 흐름이다. 기존 `/login`과 `/signup`은 선호 locale URL로 redirect한다. 신규 provider 계정이면 가입, 기존 provider 계정이면 로그인으로 처리한다.
 - `/auth/callback`은 Supabase session을 읽고 Backend `POST /api/auth/exchange`로 앱 session을 교환한다.
 - 개발용 mock login flow는 User Web에서 제거되어 있다. E2E와 QA는 현재 로그인 UI의 Kakao/Google provider 버튼을 기준으로 한다.
 - Google OAuth signup/login은 수동 QA 통과 상태다.
 - Kakao OAuth는 Kakao Developers 앱에서 카카오 로그인 활성화와 `account_email` 동의항목 설정이 필요하다. 설정 전에는 Kakao hosted `KOE205` 오류가 발생할 수 있다.
-- 로그아웃은 Backend `/api/auth/logout`, Supabase `signOut`, localStorage app token 삭제 후 `/login`으로 이동한다.
+- 로그아웃은 Backend `/api/auth/logout`, Supabase `signOut`, localStorage app token 삭제 후 선호 locale의 login URL로 이동한다. 예: `/ko/login`, `/en-us/login`.
 - app access token은 localStorage와 API client memory에 저장한다. refresh token은 Backend httpOnly cookie로만 다룬다.
 - exchange payload의 device slot은 화면 폭 `767px 이하`면 `mobile`, 그 외는 `personal_laptop`이다. `work_laptop`은 Backend enum에는 있지만 현재 User Web에서는 보내지 않는다.
 - `replaceExistingDevice=true`를 보내므로 같은 slot의 다른 브라우저/기기 로그인은 기존 active device/session을 교체한다.
 - Frontend는 `locale`과 IANA `timeZone`을 exchange payload로 보낸다. 국가는 Frontend가 보내지 않고 Backend proxy geo header에서만 저장한다.
+- URL locale smoke는 2026-07-10 기준 통과했다.
 
 ## 5B. BusinessCard OCR Frontend 기준
 

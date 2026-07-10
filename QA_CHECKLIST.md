@@ -177,7 +177,7 @@ pnpm prisma:seed
 - [x] `pnpm prisma:validate` 성공
 - [x] BE health check `http://localhost:3000/api/health` 200 확인
 - [x] User Web `/` 200 확인
-- [x] User Web `/login` 200 확인
+- [x] User Web legacy `/login`이 선호 locale login URL로 redirect됨을 확인
 - [x] DB 연결 대상 확인: `DATABASE_URL`과 `DIRECT_URL` 모두 Supabase pooler의 `postgres` DB를 가리킴. 실제 URL 값은 기록하지 않음
 - [x] DB 데이터 확인: `User` 3, `UserOAuthAccount` 3, `AuthDevice` 4, `AuthSession` 5
 - [x] CRM 업무 데이터 확인: `Company`, `Contact`, `Product`, `Deal`, `Schedule`, `MeetingNote`, `BusinessCardScanLog`, `ImportUserLog` 모두 0건
@@ -200,7 +200,7 @@ pnpm build
 
 - [x] `pnpm typecheck` 성공
 - [x] `pnpm lint` 성공
-- [x] `pnpm test` 성공. 15 suites / 66 tests passed
+- [x] `pnpm test` 성공. 17 suites / 82 tests passed
 - [x] `pnpm build` 성공
 - [x] 실패 없음. 별도 에러 로그 저장 불필요
 - [x] 테스트 실패 없음
@@ -283,7 +283,7 @@ pnpm build
 - [x] `/app/*`는 locale prefix 없이 유지되고, 비로그인 접근 시 선호 locale의 login URL로 이동함
 
 - [x] `/` 접근 시 공개 랜딩/진입 화면이 보임
-- [x] `/login` 접근 시 로그인 화면이 보임
+- [x] legacy `/login` 접근 시 선호 locale login URL의 로그인 화면으로 이동함
 - [x] 로그인 전 `/app` 보호 라우트 접근 시 로그인으로 이동
 - [x] 개발용 mock login 버튼이나 mock session 진입점이 노출되지 않음
 - [x] Google OAuth login/signup이 성공함
@@ -292,7 +292,7 @@ pnpm build
 - [ ] 로그인 후 앱 DB에 `User`, `UserOAuthAccount`, `AuthDevice`, `AuthSession`이 생성 또는 갱신됨
 - [x] 새로고침 후 로그인 상태가 기대한 정책대로 유지됨
 - [N/A] 만료된 토큰 상태에서 refresh 또는 재로그인 흐름이 자연스러움. 이번 배포 수동 QA 범위에서 제외
-- [x] 로그아웃 후 URL이 `/login`으로 이동함
+- [x] 로그아웃 후 선호 locale의 login URL로 이동함
 - [x] 로그아웃 후 보호 라우트 접근이 차단됨
 - [N/A] 로그인 실패 시 빈 화면이나 무한 로딩이 아니라 이해 가능한 에러가 표시됨. 이번 배포 수동 QA 범위에서 제외
 
@@ -332,7 +332,7 @@ pnpm build
 
 ### 2026-07-09 배포 사이트 인증/세션 QA 결과
 
-- Google 로그인, `/app` 진입, 새로고침 후 세션 유지, 새 탭 `/app` 세션 유지, 로그아웃 후 `/login` 이동, 로그아웃 후 뒤로가기 보호, 재로그인 후 기존 CRM 데이터 유지, 설정/계정 화면 사용자 정보 표시를 확인했다.
+- Google 로그인, `/app` 진입, 새로고침 후 세션 유지, 새 탭 `/app` 세션 유지, 로그아웃 후 선호 locale login URL 이동, 로그아웃 후 뒤로가기 보호, 재로그인 후 기존 CRM 데이터 유지, 설정/계정 화면 사용자 정보 표시를 확인했다.
 - 가입 국가/마지막 로그인 국가는 `기록 없음`이어도 현재 정책상 정상으로 본다.
 - Kakao, 만료 토큰 강제 테스트, 모바일 여러 대 동시 로그인, Admin API/권한 침투성 테스트는 이번 범위에서 제외한다.
 
@@ -861,7 +861,7 @@ pnpm build
 - [x] 더보기에서 현재 노출해야 하는 기능만 보임
 - [x] 알림, generic export, 관리자 기능이 잘못 노출되지 않음
 - [x] 로그아웃 진입점이 명확함
-- [x] 로그아웃 후 `/login`으로 이동함
+- [x] 로그아웃 후 선호 locale의 login URL로 이동함
 
 ### 2026-07-10 설정/더보기 수동 QA 결과
 
@@ -912,7 +912,7 @@ pnpm build
 ### 2026-07-10 API 공통 QA 결과
 
 - 실제 로컬 BE HTTP smoke로 `GET /api/health` 200, 보호 API 인증 없음 401, 잘못된 토큰 401, 존재하지 않는 route 404를 확인했다.
-- BE 자동 테스트 17 suites / 78 tests passed 기준으로 controller status 계약, validation 400, DTO whitelist, enum/date 검증, pagination/filter 변환, AdminGuard 403, 휴지통 복구 conflict를 확인했다.
+- BE 자동 테스트 17 suites / 82 tests passed 기준으로 controller status 계약, validation 400, DTO whitelist, enum/date 검증, pagination/filter 변환, AdminGuard 403, 휴지통 복구 conflict를 확인했다.
 - 삭제된 리소스 직접 조회와 동시 저장 중복 방지는 별도 인증 세션/DB 상태 조작이 필요해 이번 무인 API smoke 범위에서 제외한다.
 
 ## 24. 보안/개인정보 QA
@@ -1052,6 +1052,7 @@ pnpm build
 - [ ] Kakao OAuth는 Kakao Developers 계정 접근과 `account_email` 동의항목 설정 전까지 provider 설정 보류
 - [ ] 가입 국가/마지막 로그인 국가는 proxy geo header가 없는 환경에서 `기록 없음`일 수 있음
 - [ ] 현재 User Web은 `mobile`/`personal_laptop` 두 device slot만 사용하며 모바일 여러 대 동시 active session은 보장하지 않음
+- [ ] 현재 전화번호 입력/검증은 한국 휴대폰 형식 중심이며, 다국가 전화번호 모델은 후속 검토
 
 ## 29. 버그 리포트 템플릿
 
@@ -1097,15 +1098,25 @@ pnpm build
 
 ## 30. 최종 QA 완료 기준
 
-이번 QA는 아래 조건을 만족하면 1차 완료로 봅니다.
+2026-07-10 기준 1차 기능 QA 완료 조건은 아래와 같이 충족했다.
 
-- [ ] BE `typecheck`, `lint`, `test`, `build` 결과 기록 완료
-- [ ] FE/user-web `typecheck`, `lint`, `build`, `test:e2e` 결과 기록 완료
-- [ ] 핵심 수동 시나리오 1회 이상 완료
-- [ ] 회사/담당자/제품/딜/일정/회의록 CRUD 확인 완료
-- [ ] Import/Export/Search/Trash 확인 완료
+- [x] BE `typecheck`, `lint`, `test`, `build` 결과 기록 완료
+- [x] FE/user-web `typecheck`, `lint`, `build`, `test:e2e` 결과 기록 완료
+- [x] FE/admin-web 선택 점검 `typecheck`, `lint`, `build` 결과 기록 완료
+- [x] 핵심 수동 시나리오 1회 이상 완료
+- [x] 회사/담당자/제품/딜/일정/회의록 CRUD 확인 완료
+- [x] Import/Export/Search/Trash 확인 완료
+- [x] URL locale smoke 확인 완료
+- [x] API/security 기본 smoke 확인 완료
+- [x] 제외 범위와 알려진 한계가 QA 결과에 기록됨
+
+출시 전 추가 품질 QA로 남은 조건은 아래와 같다.
+
+- [ ] UX/UI 공통 QA 완료
 - [ ] 모바일 브라우저 390px/360px 기준 핵심 시나리오 확인 완료
+- [ ] Chrome/Edge 브라우저 QA 완료
+- [ ] 다중 계정 보안 QA 완료
+- [ ] DB/Prisma/migration 운영 정합성 정리
 - [ ] 발견 버그가 심각도별로 정리됨
 - [ ] S0/S1 버그가 없거나 모두 수정됨
 - [ ] S2 버그가 출시/배포 판단에 맞게 정리됨
-- [ ] 제외 범위와 알려진 한계가 QA 결과에 명확히 기록됨

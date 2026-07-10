@@ -7,7 +7,7 @@
 
 ## 현재 BE/TODO 구현 상태
 
-기준일: 2026-07-09
+기준일: 2026-07-10
 
 - Backend 구현 완료: Auth/User, Company, Contact, BusinessCard OCR, Product, Deal, Schedule, MeetingNote 수동 기본 도메인, Search, Trash, DataImport, MeetingNote AI/STT draft API와 `TODO/DONE/ADDITIONAL_WORK_PLAN` G01-G12.
 - Auth/User: `/api/auth/providers`, `/api/auth/exchange`, `/api/auth/refresh`, `/api/auth/logout`, `/api/me`, `/admin/api/me`, `/api/users/me/profile`, `/api/users/me/devices`.
@@ -20,23 +20,27 @@
 - MeetingNote: 수동 회의록 목록/상세/생성/수정/삭제, 회사/담당자 필터, 회사/담당자/제품/딜 N:N snapshot 연결, 텍스트 AI 초안 생성, STT+AI 초안 생성, 저장 후 딜 추가 연동과 딜 활동 로그 생성, 휴지통 복구.
 - Search: 회사/담당자/제품/딜/일정/회의록 통합검색 API.
 - Trash: 회사/담당자/제품/딜/회의록 본문 데이터와 지원 로그의 휴지통 목록, 상세 모달 조회, 7일 이내 복구 API.
-- DataImport: `ImportTemplate`, 회사/담당자/제품/딜 양식 다운로드, CSV/XLSX 업로드, AI 컬럼 매핑, 사용자 보정/검증, 확정 저장, `ImportUserLog` 목록/상세 조회. 확정 전 임시 job은 in-memory store를 사용한다. 딜 import 누락 회사/담당자/제품 보정 배열은 현재 FE API와 BE confirm 경로에 연결되어 있다.
+- DataImport: `ImportTemplate`, 회사/담당자/제품/딜 양식 다운로드, CSV/XLSX 업로드, AI 컬럼 매핑, 사용자 보정/검증, 셀 단위 validation 메시지, 확정 저장, `ImportUserLog` 목록/상세 조회. 확정 전 임시 job은 in-memory store를 사용한다. 딜 import 누락 회사/담당자/제품 보정 배열은 현재 FE API와 BE confirm 경로에 연결되어 있다.
 - 현재 Backend 미구현 또는 후속 범위: persistent ImportJob, Notification, Admin 운영 조회/감사/민감 원문 API, MeetingNote Admin, 범용 DealActivity table, 7일 이후 유료 복구 API.
 - 범용 Export job은 현재 제품 방향에서 사용하지 않는다. Export는 Company/Contact/Product/Deal 각 목록 화면의 xlsx 다운로드 API로 처리한다.
 - Admin Backend는 현재 `/admin/api/me`만 구현되어 있으며, 관리자 페이지와 운영 조회 API는 후속 단계에서 만든다.
-- User Web은 공개 진입면(`/`)과 `/app` 홈 대시보드, Company, Contact, 명함 스캔, Product, Deal, Schedule, MeetingNote 수동 화면, MeetingNote AI/STT draft UI, 저장 후 딜 연동, Search GlobalSearch, Trash 목록/상세/복구, DataImport의 실제 API 연동이 완료되어 있다. 나머지 미구현 Backend 도메인은 실제 API 연동 전까지 mock/placeholder 경계를 명확히 해야 한다.
-- 인증 QA 상태: Supabase 테스트 데이터 초기화 완료, Google OAuth 신규 가입/로그인 QA 통과, 로그아웃 후 `/login` 이동 적용 및 배포 확인 완료. Kakao OAuth는 Kakao Developers 계정 접근과 `account_email` 동의항목 설정 전까지 보류한다.
+- User Web은 URL locale 공개/인증 진입면과 `/app` 홈 대시보드, Company, Contact, 명함 스캔, Product, Deal, Schedule, MeetingNote 수동 화면, MeetingNote AI/STT draft UI, 저장 후 딜 연동, Search GlobalSearch, Trash 목록/상세/복구, DataImport의 실제 API 연동이 완료되어 있다. 나머지 미구현 Backend 도메인은 실제 API 연동 전까지 mock/placeholder 경계를 명확히 해야 한다.
+- 공개/인증 URL locale은 `ko`, `ja`, `zh-tw`, `en-us`, `en-gb`, `en-sg`, `en-au`, `en-ca`를 지원한다. 초기 판매/검토 국가는 한국, 일본, 대만, 미국, 영국, 싱가포르, 호주, 캐나다다. 로그인 이후 `/app` 관리 화면은 한국어 우선으로 운영한다.
+- 인증 QA 상태: Supabase 테스트 데이터 초기화 완료, Google OAuth 신규 가입/로그인 QA 통과, URL locale smoke 통과, 로그아웃 후 선호 locale의 login URL 이동 적용 및 확인 완료. Kakao OAuth는 Kakao Developers 계정 접근과 `account_email` 동의항목 설정 전까지 보류한다.
+- 2026-07-10 기준 핵심 업무 happy path, URL locale smoke, API/security smoke, BE/FE/admin-web 자동 점검은 통과했다. 출시 전 남은 품질 범위는 UX/UI 공통 QA, 모바일 브라우저 QA, Chrome/Edge QA, 다중 계정 보안 QA, DB/운영 환경 정합성 확인이다.
 
 ## 1. 개발 우선순위
 
-1. Company/Contact/Product/Deal Backend 구현 완료 범위의 User Web 계약 동기화
-2. Additional Work G01-G12 Frontend 반영: `dealCount`, 연결 Deal 목록, 연결 Contact 목록, xlsx export
-3. 인증 연동과 사용자 설정 화면
-4. DataImport 후속: 확정 전 job 영속화와 서버 재시작 후 이어받기
-5. Notification
-6. 7일 이후 유료 복구 정책과 API
-7. 범용 DealActivity table
-8. Admin 페이지와 운영 조회/감사/민감 원문 API
+1. UX/UI 공통 QA와 모바일 브라우저 QA
+2. Chrome/Edge 브라우저 QA
+3. 다중 계정 보안 QA
+4. DB/Prisma/migration 운영 정합성 정리
+5. S0/S1/S2 버그 수정
+6. DataImport 후속: 확정 전 job 영속화와 서버 재시작 후 이어받기
+7. Notification
+8. 7일 이후 유료 복구 정책과 API
+9. 범용 DealActivity table
+10. Admin 페이지와 운영 조회/감사/민감 원문 API
 
 ## 2. 인증
 

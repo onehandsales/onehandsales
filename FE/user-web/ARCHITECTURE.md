@@ -94,3 +94,7 @@ src/pages/companies/index.tsx
 - User Web은 화면 폭 `767px 이하`를 `mobile`, 그 외를 `personal_laptop` device slot으로 보낸다. `work_laptop` slot은 Backend에는 있지만 현재 User Web에서 사용하지 않는다.
 - 같은 slot의 다른 브라우저/기기로 로그인하면 기존 slot의 active device/session을 교체한다. 같은 브라우저 재로그인은 기존 session의 refresh token을 회전한다.
 - 로그인 국가 코드는 브라우저가 보내지 않는다. Backend가 `cf-ipcountry`, `x-vercel-ip-country`, `cloudfront-viewer-country` 헤더를 받을 때만 `signupCountryCode`/`lastLoginCountryCode`가 저장된다.
+
+## 6. 현재 검증 상태
+
+2026-07-10 기준 User Web `typecheck`, `lint`, `build`, `test:e2e`, URL locale smoke, 핵심 업무 happy path 수동 QA는 통과했다. DataImport preview validation은 누락된 셀에만 메시지를 표시하는 기준으로 정리되어 있다.

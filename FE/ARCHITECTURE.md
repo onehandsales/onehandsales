@@ -60,7 +60,7 @@ Page는 route entry이며 feature public export를 조합한다. API 호출, sch
 
 ## 현재 구현 스냅샷
 
-Snapshot date: 2026-07-09
+Snapshot date: 2026-07-10
 
 User Web:
 
@@ -74,7 +74,8 @@ User Web:
 - mock/placeholder boundary: generic Export route/API, Notification
 - auth runtime: Supabase OAuth provider login -> `/auth/callback` -> Backend `POST /api/auth/exchange` -> app access token/localStorage + httpOnly refresh cookie. 개발용 mock login은 제거되었고, 로그아웃 후 선호 locale의 login URL로 이동한다. Google OAuth는 QA 통과, Kakao는 Kakao Developers `account_email` 동의항목 설정 후 검증한다.
 - `/app/business-cards`: 명함 스캔 내역은 등록일 최신순 고정이며, 상태 다중 필터와 `상태 초기화`, `명함스캔` 모달의 이미지 업로드 -> 진행 표시 -> 결과 확인/수정 -> 저장 흐름을 제공한다.
-- `/app/import`: 회사/담당자/제품/딜 양식 다운로드, CSV/XLSX 업로드, AI 컬럼 매핑, row 수정/검증, 확정 저장, 성공 내역 목록/상세 조회를 제공한다. 딜 import 누락 회사/담당자/제품 보정값은 FE API에서 `dealCompanyResolutions`, `dealContactResolutions`, `dealProductResolutions`로 BE confirm 경로에 전달한다.
+- `/app/import`: 회사/담당자/제품/딜 양식 다운로드, CSV/XLSX 업로드, AI 컬럼 매핑, row 수정/검증, 누락 셀 단위 validation 메시지, 확정 저장, 성공 내역 목록/상세 조회를 제공한다. 딜 import 누락 회사/담당자/제품 보정값은 FE API에서 `dealCompanyResolutions`, `dealContactResolutions`, `dealProductResolutions`로 BE confirm 경로에 전달한다.
+- 2026-07-10 기준 User Web `typecheck`, `lint`, `build`, `test:e2e`, URL locale smoke, 핵심 업무 happy path 수동 QA가 통과했다.
 
 Admin Web:
 

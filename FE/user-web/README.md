@@ -44,6 +44,8 @@ VITE_SUPABASE_REDIRECT_URL="http://localhost:5173/auth/callback"
 
 Public/auth canonical URLs use locale prefixes: `/ko`, `/ko/login`, `/ko/signup`, `/ko/pricing`, `/ko/contact`, `/ko/about`, `/ko/security`, `/ko/terms`, `/ko/privacy`. The same pattern is supported for `ja`, `zh-tw`, `en-us`, `en-gb`, `en-sg`, `en-au`, and `en-ca`. Existing `/`, `/login`, `/signup`, `/pricing`, `/contact`, `/about`, `/security`, `/terms`, and `/privacy` URLs redirect to the preferred locale URL. 로그인 후 실제 앱은 `/app` 아래에서 동작한다.
 
+초기 판매/검토 국가는 한국, 일본, 대만, 미국, 영국, 싱가포르, 호주, 캐나다다. 로그인 이후 `/app` 관리 화면은 한국어 우선으로 운영한다.
+
 - Supabase OAuth 성공 후 `/auth/callback`으로 돌아온다.
 - callback에서 Supabase access token을 Backend `POST /api/auth/exchange`로 보내 app access token과 refresh cookie를 받는다.
 - 개발용 mock login flow는 제거되어 있다.
@@ -83,7 +85,7 @@ mock/placeholder 경계:
 
 BusinessCard OCR/명함 스캔은 `/app/business-cards`에서 실제 API와 연결된다. `/business-cards`와 `/contacts/scan`은 legacy redirect다. 목록은 등록일 최신순 고정이며, 상태 다중 필터와 `상태 초기화`를 제공한다. `명함스캔` 모달은 최초에는 이미지 업로드만 보여주고, 요청 중에는 진행 표시를 띄우며, 성공 후 추출 결과 확인/수정 폼을 보여준다.
 
-데이터 불러오기는 `/app/import`와 `/app/import/:importUserLogId`에서 실제 API와 연결된다. `/import`는 legacy redirect다. 회사/담당자/제품/딜 양식 다운로드, CSV/XLSX 업로드, AI 컬럼 매핑, row 수정/검증, 확정 저장, 성공 내역 목록/상세 조회를 제공한다. 현재 코드 기준 딜 import의 누락 회사/담당자/제품 보정값은 FE API 함수가 `dealCompanyResolutions`, `dealContactResolutions`, `dealProductResolutions`로 BE confirm 경로에 전달한다.
+데이터 불러오기는 `/app/import`와 `/app/import/:importUserLogId`에서 실제 API와 연결된다. `/import`는 legacy redirect다. 회사/담당자/제품/딜 양식 다운로드, CSV/XLSX 업로드, AI 컬럼 매핑, row 수정/검증, 누락 셀 단위 validation 메시지, 확정 저장, 성공 내역 목록/상세 조회를 제공한다. 현재 코드 기준 딜 import의 누락 회사/담당자/제품 보정값은 FE API 함수가 `dealCompanyResolutions`, `dealContactResolutions`, `dealProductResolutions`로 BE confirm 경로에 전달한다.
 
 ## 검증
 
@@ -95,6 +97,8 @@ pnpm run test:e2e
 ```
 
 `pnpm run test:e2e`는 Playwright smoke를 실행한다. Backend와 외부 Provider는 route mock으로 대체하며, 테스트용 Vite server는 `http://127.0.0.1:5175`를 사용한다.
+
+2026-07-10 기준 `typecheck`, `lint`, `build`, `test:e2e`, URL locale smoke, 핵심 업무 happy path 수동 QA는 통과했다. 남은 출시 전 품질 범위는 UX/UI 공통 QA, 모바일 브라우저 QA, Chrome/Edge QA다.
 
 Smoke 범위:
 

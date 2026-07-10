@@ -1,4 +1,4 @@
-아래는 2026-07-09 현재 BE 구현 기준 API별 한 줄 설명입니다.
+아래는 2026-07-10 현재 BE 구현 기준 API별 한 줄 설명입니다.
 
 Export는 범용 `/api/exports` job이 아니라 Company/Contact/Product/Deal 각 도메인의 xlsx 다운로드 API로 처리합니다.
 
@@ -171,7 +171,7 @@ Deal relation payload:
 | `POST /api/imports` | CSV/XLSX 파일을 업로드해 확정 전 임시 import job과 preview row를 생성합니다. 지원 대상은 회사/담당자/제품/딜이며 파일은 최대 10MB입니다. |
 | `GET /api/imports/{importJobId}` | 확정 전 임시 import job 상세와 전체 row 상태를 조회합니다. |
 | `POST /api/imports/{importJobId}/map` | AI 컬럼 자동 매핑을 생성합니다. provider 실패 시 규칙 기반 매핑으로 fallback합니다. |
-| `PATCH /api/imports/{importJobId}/mapping` | 사용자가 수정한 컬럼 매핑을 적용하고 row 검증 결과를 반환합니다. |
+| `PATCH /api/imports/{importJobId}/mapping` | 사용자가 수정한 컬럼 매핑을 적용하고 row 검증 결과를 반환합니다. 필수값 누락 메시지는 누락된 셀 기준으로 반환/표시합니다. |
 | `POST /api/imports/{importJobId}/confirm` | 검증된 row를 회사/담당자/제품/딜 데이터로 확정 저장하고 성공 내역을 남깁니다. 현재 HTTP 경로는 연락처 회사 보정값, 딜 회사/담당자/제품 보정값, row override를 전달합니다. |
 | `GET /api/import-user-logs` | 확정 저장된 데이터 불러오기 성공 내역 목록을 조회합니다. |
 | `GET /api/import-user-logs/{importUserLogId}` | 데이터 불러오기 성공 내역 상세와 row snapshot을 조회합니다. |

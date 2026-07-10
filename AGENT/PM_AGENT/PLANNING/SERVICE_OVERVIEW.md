@@ -22,6 +22,8 @@
 
 초기 가격 가설은 월 5,900~6,900원 구독이다. MVP에는 결제를 붙이지 않고, MVP 이후 초기 유료 운영은 계좌이체 수동 처리로 시작한다.
 
+초기 판매/검토 국가는 한국, 일본, 대만, 미국, 영국, 싱가포르, 호주, 캐나다로 본다. 공개/인증 화면은 `ko`, `ja`, `zh-tw`, `en-us`, `en-gb`, `en-sg`, `en-au`, `en-ca` URL locale을 지원하고, 로그인 이후 `/app` 관리 화면은 한국어 우선으로 운영한 뒤 나중에 전체 다국어화를 진행한다.
+
 ## 3. 해결하려는 문제
 
 개인 영업자는 실제 업무에서 많은 정보를 여러 곳에 나누어 저장한다.
@@ -99,7 +101,7 @@
 
 ## 7. 화면 방향
 
-`/`는 공개 랜딩/진입 화면이다. 로그인 후 `/app`은 오늘의 업무를 보여주는 홈 대시보드다.
+공개/인증 canonical URL은 locale prefix를 사용한다. 예: `/ko`, `/ko/login`, `/ja/signup`, `/en-us/pricing`. 기존 `/`, `/login`, `/signup`, `/pricing`, `/contact`, `/about`, `/security`, `/terms`, `/privacy`는 선호 locale URL로 redirect한다. 로그인 후 `/app`은 오늘의 업무를 보여주는 홈 대시보드이며, `/app/*`에는 locale prefix를 붙이지 않는다.
 
 홈에서는 오늘 일정, 진행 딜, 마감 임박 딜, 최근 회의록, 빠른 실행을 보여준다. 고밀도 딜 비교와 수정은 `/app/deals`에서 처리한다.
 
@@ -116,6 +118,7 @@ Admin Web은 후속 단계에서 만들 데스크톱 전용 운영 콘솔이다.
 현재 MVP 방향에는 다음이 포함된다.
 
 - 소셜 인증: 구글, 카카오. 카카오는 Kakao Developers `account_email` 동의항목 설정 후 QA한다.
+- 공개/인증 화면 URL locale: `ko`, `ja`, `zh-tw`, `en-us`, `en-gb`, `en-sg`, `en-au`, `en-ca`
 - 회사, 담당자, 제품 관리
 - 딜 관리와 다음 행동/메모 로그
 - 일정 관리와 딜 연결
@@ -154,11 +157,13 @@ Admin Web은 후속 단계에서 만들 데스크톱 전용 운영 콘솔이다.
 
 ## 10. 현재 구현 관점의 요약
 
-2026-07-09 기준으로 Backend는 Auth/User, Company, Contact, BusinessCard OCR, Product, Deal, Schedule, MeetingNote 수동 도메인, Search, Trash, DataImport, MeetingNote AI/STT draft API, 회의록 저장 후 딜 연동 API를 구현한 상태다.
+2026-07-10 기준으로 Backend는 Auth/User, Company, Contact, BusinessCard OCR, Product, Deal, Schedule, MeetingNote 수동 도메인, Search, Trash, DataImport, MeetingNote AI/STT draft API, 회의록 저장 후 딜 연동 API를 구현한 상태다.
 
-User Web은 공개 진입면과 `/app` 홈 대시보드, 회사, 담당자, 명함 스캔, 제품, 딜, 일정, 수동 회의록, 회의록 AI/STT 초안, 회의록 저장 후 딜 연동 화면, 회사/담당자/제품/딜 데이터 불러오기, 회사/담당자/제품/딜 엑셀 다운로드, 상단/모바일 통합검색, 휴지통 목록/상세/복구가 실제 API와 연결되어 있다. 명함 스캔 화면은 등록일 최신순 내역, 상태 다중 필터, 이미지 업로드 기반 명함스캔 모달을 제공한다.
+User Web은 URL locale 기반 공개/인증 진입면과 `/app` 홈 대시보드, 회사, 담당자, 명함 스캔, 제품, 딜, 일정, 수동 회의록, 회의록 AI/STT 초안, 회의록 저장 후 딜 연동 화면, 회사/담당자/제품/딜 데이터 불러오기, 회사/담당자/제품/딜 엑셀 다운로드, 상단/모바일 통합검색, 휴지통 목록/상세/복구가 실제 API와 연결되어 있다. 명함 스캔 화면은 등록일 최신순 내역, 상태 다중 필터, 이미지 업로드 기반 명함스캔 모달을 제공한다. Import preview validation은 누락된 셀에만 메시지를 표시한다.
 
 Admin Backend는 현재 `GET /admin/api/me`만 구현되어 있으므로, Admin 페이지와 운영 조회 화면은 후속 구현 범위로 본다.
+
+2026-07-10 기준 핵심 업무 happy path, URL locale smoke, API/security smoke, BE/FE/admin-web 자동 점검은 통과했다. 출시 전 남은 품질 범위는 UX/UI 공통 QA, 모바일 브라우저 QA, Chrome/Edge QA, 다중 계정 보안 QA, DB/운영 환경 정합성 확인이다.
 
 ## 11. 이 서비스를 이해할 때 중요한 기준
 

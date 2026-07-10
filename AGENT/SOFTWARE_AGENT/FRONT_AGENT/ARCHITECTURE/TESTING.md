@@ -37,7 +37,7 @@ Auth E2E 기준:
 - 개발용 mock login 버튼은 제거되었으므로 E2E는 현재 로그인 UI의 Kakao/Google provider 버튼 노출과 보호 라우트 redirect를 기준으로 한다.
 - 실제 Google OAuth credential 검증은 자동 E2E 기본 범위가 아니라 별도 수동/provider smoke 범위다.
 - Kakao OAuth는 Kakao Developers `account_email` 동의항목 설정 전까지 실패를 제품 기능 회귀로 보지 않고 provider 설정 이슈로 기록한다.
-- 로그아웃 smoke는 `/login` 이동과 보호 라우트 재접근 차단을 확인한다.
+- 로그아웃 smoke는 선호 locale의 login URL 이동과 보호 라우트 재접근 차단을 확인한다. 예: `/ko/login`, `/en-us/login`.
 
 ## 3. Admin Web E2E Scope
 
@@ -81,6 +81,19 @@ CI timing:
 - After merge to `main`: User Web full E2E
 - Before deployment: User Web full E2E
 - Admin full E2E is added after Admin pages and Backend operation query APIs are implemented.
+
+## 5A. 2026-07-10 검증 상태
+
+2026-07-10 기준 Frontend 검증 상태는 다음이다.
+
+- FE/user-web `typecheck`, `lint`, `build`, `test:e2e` 통과.
+- FE/user-web E2E는 핵심 업무 smoke 1건 통과.
+- URL locale smoke 통과: `ko`, `ja`, `zh-tw`, `en-us`, `en-gb`, `en-sg`, `en-au`, `en-ca`.
+- 핵심 업무 happy path 수동 QA 통과: 로그인, 회사, 담당자, 제품, 딜, 일정, 회의록, 명함 OCR, Import, Search, Trash, Domain XLSX Export, 설정/더보기.
+- FE/admin-web 선택 점검 `typecheck`, `lint`, `build` 통과.
+- Admin 운영 화면 E2E는 관리자 페이지 본 구현 전까지 release gate로 보지 않는다.
+
+남은 출시 전 Front QA는 UX/UI 공통 QA, 모바일 브라우저 QA, Chrome/Edge 브라우저 QA다.
 
 ## 6. 관련 문서
 

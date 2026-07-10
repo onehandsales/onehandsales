@@ -4,6 +4,8 @@
 
 루트에는 package manager workspace를 두지 않는다. Frontend와 Backend는 각각 독립적으로 설치, 실행, 검증한다.
 
+2026-07-10 기준 초기 판매/검토 국가는 한국, 일본, 대만, 미국, 영국, 싱가포르, 호주, 캐나다다. 공개/인증 화면은 `ko`, `ja`, `zh-tw`, `en-us`, `en-gb`, `en-sg`, `en-au`, `en-ca` URL locale을 지원하고, 로그인 이후 `/app` 관리 화면은 한국어 우선으로 운영한다.
+
 ## Structure
 
 ```text
@@ -47,7 +49,7 @@ Health check:
 curl http://localhost:3000/api/health
 ```
 
-현재 Backend는 Auth/User, Company, Contact, BusinessCard OCR, Product, Deal, Schedule, MeetingNote, Search, Trash, DataImport 모듈을 구현한다. Company/Contact/Product/Deal은 각 도메인별 xlsx export API를 제공한다. DataImport는 회사/담당자/제품/딜 CSV/XLSX 업로드, AI 컬럼 매핑, 사용자 보정, 확정 저장, 성공 내역 조회를 제공한다. Admin API는 현재 `GET /admin/api/me`만 구현되어 있으며 관리자 페이지와 운영 조회 API는 후속 단계에서 만든다.
+현재 Backend는 Auth/User, Company, Contact, BusinessCard OCR, Product, Deal, Schedule, MeetingNote, Search, Trash, DataImport 모듈을 구현한다. Company/Contact/Product/Deal은 각 도메인별 xlsx export API를 제공한다. DataImport는 회사/담당자/제품/딜 CSV/XLSX 업로드, AI 컬럼 매핑, 사용자 보정, 셀 단위 validation 메시지, 확정 저장, 성공 내역 조회를 제공한다. Admin API는 현재 `GET /admin/api/me`만 구현되어 있으며 관리자 페이지와 운영 조회 API는 후속 단계에서 만든다.
 
 ### 2. User Web
 
@@ -64,7 +66,7 @@ User Web의 공개/인증 canonical URL은 locale prefix를 사용한다. 예: `
 
 명함 스캔은 `/app/business-cards`에서 실제 API와 연결되어 있다. 사용자는 이미지를 업로드한 뒤 `명함스캔` 진행 표시를 보고, 추출 결과를 확인/수정한 후 회사/담당자로 저장한다.
 
-데이터 불러오기는 `/app/import`에서 실제 API와 연결되어 있다. 사용자는 회사/담당자/제품/딜 양식을 내려받고, CSV/XLSX 파일을 업로드한 뒤 AI 매핑과 row 검증 결과를 확인/수정하고 확정 저장할 수 있다. `/app/export`의 범용 Export 화면과 `/app/notifications`는 Backend 구현 전까지 숨긴다.
+데이터 불러오기는 `/app/import`에서 실제 API와 연결되어 있다. 사용자는 회사/담당자/제품/딜 양식을 내려받고, CSV/XLSX 파일을 업로드한 뒤 AI 매핑과 row 검증 결과를 확인/수정하고 확정 저장할 수 있다. 필수값 누락 메시지는 누락된 셀에만 표시한다. `/app/export`의 범용 Export 화면과 `/app/notifications`는 Backend 구현 전까지 숨긴다.
 
 ### 3. Admin Web
 
@@ -114,6 +116,8 @@ pnpm run test:e2e
 ```
 
 Playwright smoke E2E는 기본적으로 Backend와 외부 Provider를 route mock으로 대체한다. User Web E2E는 5175, Admin Web E2E는 5176 포트의 Vite dev server를 테스트용으로 사용한다.
+
+2026-07-10 기준 BE `typecheck`, `lint`, `test`, `build`, FE/user-web `typecheck`, `lint`, `build`, `test:e2e`, FE/admin-web 선택 점검 `typecheck`, `lint`, `build`가 통과했다. 핵심 업무 happy path, URL locale smoke, API/security smoke도 통과했다. 출시 전 남은 품질 범위는 UX/UI 공통 QA, 모바일 브라우저 QA, Chrome/Edge QA, 다중 계정 보안 QA, DB/운영 환경 정합성 확인이다.
 
 ## External Providers
 

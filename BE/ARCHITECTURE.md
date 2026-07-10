@@ -20,7 +20,7 @@ Active modules:
 - `meeting-note`: user-owned meeting note, snapshot links, manual CRUD, AI/STT draft, saved-note deal linking, soft delete, trash restore.
 - `search`: integrated search over company, contact, product, deal, schedule, and meeting note data.
 - `trash`: 7-day trash list/detail/restore for supported entities and logs.
-- `data-import`: active templates, template xlsx download, CSV/XLSX upload, AI column mapping, editable preview validation, confirm import, import logs for company/contact/product/deal.
+- `data-import`: active templates, template xlsx download, CSV/XLSX upload, AI column mapping, editable preview validation with cell-scoped validation messages, confirm import, import logs for company/contact/product/deal.
 - `health`: health check endpoint.
 
 Current intentional gaps:
@@ -31,6 +31,7 @@ Current intentional gaps:
 - Current HTTP confirm wiring passes contact company resolutions, deal company/contact/product resolutions, and row overrides through FE API, DTO, controller, application service, repository, and controller spec.
 - Kakao OAuth is exposed as a provider, but Kakao Developers must enable Kakao Login and configure the `account_email` consent item before it can pass provider login. Google OAuth has passed manual QA.
 - Login country metadata depends on proxy geo headers (`cf-ipcountry`, `x-vercel-ip-country`, `cloudfront-viewer-country`). Without those headers, country code fields remain null by design.
+- 2026-07-10 verification: `typecheck`, `lint`, `test`, and `build` pass. Backend tests are 17 suites / 82 tests passed.
 
 Auth/session policy:
 

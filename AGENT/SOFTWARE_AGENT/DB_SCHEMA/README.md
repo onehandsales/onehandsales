@@ -21,7 +21,7 @@
 
 ## 3. 현재 DB 범위
 
-Snapshot date: 2026-07-09
+Snapshot date: 2026-07-10
 
 현재 Backend DB는 `BE/prisma/schema.prisma`와 migration 기준으로 Auth/User, Company, Contact, BusinessCard OCR, Product, Deal, Schedule, MeetingNote, DataImport 도메인을 포함한다. `User`에는 기본 timezone과 사용자 locale/region 메타데이터가 포함된다. Company/Contact/Product/Deal/MeetingNote 본문 row와 각 도메인의 메모, 비밀 메모, 다음 행동 로그에는 7일 휴지통 보관을 위한 soft delete 컬럼이 반영되어 있다. 별도 `Trash` table은 없고, Trash 목록/상세/복구 API는 기존 row의 `deletedAt`, `deletedByUserId`, `trashExpiresAt`을 기준으로 동작한다.
 
@@ -100,7 +100,9 @@ Search는 기존 table을 읽는 기능이므로 별도 table이나 migration이
 
 MeetingNote AI/STT draft는 현재 DB table을 추가하지 않는다. `POST /api/meeting-notes/ai-draft`와 `POST /api/meeting-notes/stt-draft`는 draft만 반환하고, 최종 저장은 기존 `MeetingNote`와 snapshot link table을 사용한다. AI 초안 provider와 STT provider는 application port로 분리되어 있으며, transcript, raw text, provider call log table은 후속 범위다.
 
-DataImport는 `ImportTemplate`, `ImportUserLog`, `ImportUserLogRow`를 사용한다. 확정 전 임시 import job은 현재 in-memory store에 있으며 DB table로 저장하지 않는다. 확정 성공 시에만 도메인 row와 성공 내역 snapshot이 같은 transaction에서 저장된다. 딜 불러오기는 기존 회사/담당자/제품 이름 매칭을 전제로 딜과 연결 row를 같은 transaction에서 생성한다. 누락 회사/담당자/제품 보정 배열은 FE API와 HTTP controller/application/repository confirm 경로에 연결되어 있다.
+DataImport는 `ImportTemplate`, `ImportUserLog`, `ImportUserLogRow`를 사용한다. 확정 전 임시 import job은 현재 in-memory store에 있으며 DB table로 저장하지 않는다. 확정 성공 시에만 도메인 row와 성공 내역 snapshot이 같은 transaction에서 저장된다. 딜 불러오기는 기존 회사/담당자/제품 이름 매칭을 전제로 딜과 연결 row를 같은 transaction에서 생성한다. 누락 회사/담당자/제품 보정 배열은 FE API와 HTTP controller/application/repository confirm 경로에 연결되어 있다. Import preview validation 메시지는 누락 또는 오류가 있는 셀에만 표시한다.
+
+2026-07-10 기준 Backend `typecheck`, `lint`, `test`, `build`는 통과했고, BE test는 17 suites / 82 tests passed 상태다. 다만 Prisma generate DLL lock 이력, migration 기록 정합성, seed 실행 기준은 운영 배포 전 별도 정리해야 한다.
 
 ## 4. 현재 DB 기준 구현 완료/참조 Backend TODO
 

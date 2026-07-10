@@ -64,3 +64,7 @@ src/pages/users/index.tsx
 ```
 
 페이지는 `@/features/user-management`에서 export한 feature component를 조합한다. feature 내부 파일을 직접 import하지 않는다.
+
+## 4. 현재 검증 상태
+
+2026-07-10 기준 Admin Web `typecheck`, `lint`, `build` 선택 점검은 통과했다. Backend Admin API는 현재 `GET /admin/api/me`만 구현되어 있으므로, 운영 화면 E2E는 관리자 페이지 본 구현 전까지 release gate로 보지 않는다.

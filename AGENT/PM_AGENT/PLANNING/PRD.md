@@ -3,7 +3,7 @@
 > 제품명: 한손에 영업 / onehand.sales  
 > 상태: MVP 정본 초안  
 > 기준: `AGENT/PM_AGENT/DECISIONS/000_확정_결정.md`
-> 현재 구현 스냅샷: 2026-07-09 `BE`, `FE/user-web`, `FE/admin-web`
+> 현재 구현 스냅샷: 2026-07-10 `BE`, `FE/user-web`, `FE/admin-web`
 
 ---
 
@@ -19,6 +19,9 @@
 - 특히 40~50대 비중이 높을 것으로 가정
 - 회사/팀이 도입하는 솔루션이 아니라 영업자 개인이 직접 사용하는 B2C 도구
 - 초기 가격 가설: 월 5,900~6,900원
+- 초기 판매/검토 국가: 한국, 일본, 대만, 미국, 영국, 싱가포르, 호주, 캐나다
+- 공개/인증 URL locale: `ko`, `ja`, `zh-tw`, `en-us`, `en-gb`, `en-sg`, `en-au`, `en-ca`
+- 로그인 이후 `/app` 관리 화면은 한국어 우선으로 운영하고, 전체 앱 다국어화는 후속 범위로 둔다.
 
 ## 3. 핵심 문제
 
@@ -49,17 +52,19 @@
 
 현재 구현 기준:
 
-- 구현 완료: 공개 진입면, Auth/User, `/app` 홈 대시보드, 회사, 담당자, 제품, 딜, 일정, 회의록 직접 작성/저장, 회의록 AI/STT draft UI, 회의록 저장 후 딜 연동/활동 로그 생성, 회의록 삭제/휴지통 복구, 통합검색 Backend API와 User Web GlobalSearch, 휴지통 목록/상세/7일 이내 복구.
+- 구현 완료: URL locale 공개/인증 진입면, Auth/User, `/app` 홈 대시보드, 회사, 담당자, 제품, 딜, 일정, 회의록 직접 작성/저장, 회의록 AI/STT draft UI, 회의록 저장 후 딜 연동/활동 로그 생성, 회의록 삭제/휴지통 복구, 통합검색 Backend API와 User Web GlobalSearch, 휴지통 목록/상세/7일 이내 복구.
 - 구현 완료: Company/Contact/Product/Deal 도메인별 xlsx export. 범용 ExportJob은 현재 제품 방향에서 사용하지 않는다.
 - 구현 완료: 명함 OCR은 `/app/business-cards` 화면과 `/api/business-card-scans` API로 제공한다. 이미지를 업로드하면 `명함스캔` 진행 표시 후 추출값을 확인/수정하고, 저장 시 회사/담당자를 재사용하거나 생성한다.
 - FE code는 남아 있으나 화면에서 숨김: 알림, 범용 `/app/export` route.
-- 구현 완료: DataImport는 회사/담당자/제품/딜 양식 다운로드, CSV/XLSX 업로드, AI 컬럼 매핑, 사용자 보정/검증, 확정 저장, 성공 내역 조회를 제공한다. 확정 전 job은 in-memory store를 사용한다. 딜 import 누락 회사/담당자/제품 보정 배열은 FE API/controller/application/repository confirm 경로에 연결되어 있다.
+- 구현 완료: DataImport는 회사/담당자/제품/딜 양식 다운로드, CSV/XLSX 업로드, AI 컬럼 매핑, 사용자 보정/검증, 셀 단위 validation 메시지, 확정 저장, 성공 내역 조회를 제공한다. 확정 전 job은 in-memory store를 사용한다. 딜 import 누락 회사/담당자/제품 보정 배열은 FE API/controller/application/repository confirm 경로에 연결되어 있다.
 - Backend 미구현 또는 후속 범위: persistent ImportJob, Notification, Admin 페이지/운영 조회/감사/민감 원문 API, MeetingNote Admin API, 범용 DealActivity table, 7일 이후 유료 복구 API.
 - Admin Backend는 `GET /admin/api/me`만 구현되어 있으며 관리자 페이지는 후속 단계에서 만든다.
+- 2026-07-10 기준 핵심 업무 happy path, URL locale smoke, API/security smoke, BE/FE/admin-web 자동 점검은 통과했다. 출시 전 남은 품질 범위는 UX/UI 공통 QA, 모바일 브라우저 QA, Chrome/Edge QA, 다중 계정 보안 QA, DB/운영 환경 정합성 확인이다.
 
 ## 6. MVP 포함 기능
 
 - 소셜 인증: 구글, 카카오. 카카오는 Kakao Developers `account_email` 동의항목 설정 후 QA한다.
+- 공개/인증 화면 URL locale
 - 회사 관리
 - 담당자 관리
 - 제품 관리

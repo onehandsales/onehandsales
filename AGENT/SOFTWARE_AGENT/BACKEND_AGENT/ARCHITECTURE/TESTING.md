@@ -58,6 +58,19 @@ Backend 테스트는 `BE`에서 실행한다.
 
 루트 공용 package script나 workspace는 만들지 않는다.
 
+## 5A. 2026-07-10 검증 상태
+
+2026-07-10 기준 Backend 검증 상태는 다음이다.
+
+- `pnpm typecheck` 통과.
+- `pnpm lint` 통과.
+- `pnpm test` 통과. 17 suites / 82 tests passed.
+- `pnpm build` 통과.
+- 실제 로컬 HTTP smoke로 `GET /api/health` 200, 보호 API 인증 없음 401, 잘못된 token 401, 존재하지 않는 route 404를 확인했다.
+- BE 자동 테스트 기준으로 controller status 계약, validation 400, DTO whitelist, enum/date 검증, pagination/filter 변환, AdminGuard 403, 휴지통 복구 conflict를 확인했다.
+
+남은 Backend/운영 품질 확인은 다중 계정 데이터 격리 QA, 삭제된 리소스 직접 접근 정책 확인, 동시 저장 중복 방지, Prisma generate/migration/seed 운영 정합성 정리다.
+
 ## 6. 관련 문서
 
 - `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/ARCHITECTURE/BACKEND.md`

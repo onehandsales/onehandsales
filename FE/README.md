@@ -35,7 +35,7 @@ pnpm run dev
 
 로컬 포트:
 
-- User Web: `http://localhost:5173` (`/` 공개 진입, `/app` 보호 앱)
+- User Web: `http://localhost:5173` (`/{locale}` 공개 진입, `/app` 보호 앱)
 - Admin Web: `http://localhost:5174`
 
 두 frontend 앱은 Vercel에서 별도 프로젝트로 배포한다.
@@ -76,11 +76,11 @@ E2E 전용 Vite port:
 
 ## Auth 상태
 
-User Web은 Supabase OAuth provider login, `/auth/callback`, Backend `POST /api/auth/exchange`, refresh cookie 기반 access token 재발급 흐름을 사용한다. 개발용 mock login 경로는 제거되어 있으며 로그인 화면은 Kakao/Google provider 버튼을 기준으로 한다.
+User Web은 URL locale 기반 public/auth route, Supabase OAuth provider login, `/auth/callback`, Backend `POST /api/auth/exchange`, refresh cookie 기반 access token 재발급 흐름을 사용한다. 개발용 mock login 경로는 제거되어 있으며 로그인 화면은 Kakao/Google provider 버튼을 기준으로 한다.
 
 Admin Web은 현재 local mock admin/user token으로 `/admin/api/me` 보호 라우트를 검증한다.
 
-User Web app access token은 localStorage와 API client memory에 저장하고, refresh token은 Backend가 httpOnly cookie로 설정한다. 로그아웃은 Backend app session 폐기, Supabase `signOut`, localStorage token 삭제 후 `/login`으로 이동한다. 실제 provider credential 검증은 별도 smoke에서 다룬다.
+User Web app access token은 localStorage와 API client memory에 저장하고, refresh token은 Backend가 httpOnly cookie로 설정한다. 로그아웃은 Backend app session 폐기, Supabase `signOut`, localStorage token 삭제 후 선호 locale의 login URL로 이동한다. 예: `/ko/login`, `/en-us/login`. 실제 provider credential 검증은 별도 smoke에서 다룬다.
 
 Provider 현황:
 
@@ -98,10 +98,10 @@ Provider 현황:
 User Web:
 
 - 실제 API 연동 완료: Auth/User, Home(`/app`), Company, Contact, BusinessCard OCR/명함 스캔, Product, Deal, Schedule, MeetingNote 수동 CRUD, MeetingNote AI/STT draft, MeetingNote deal link, Search, Trash, DataImport, Company/Contact/Product/Deal 도메인별 xlsx export.
-- 공개 페이지: `/`, `/pricing`, `/contact`, `/about`, `/security`, `/terms`, `/privacy`.
+- 공개/인증 페이지: `/{locale}`, `/{locale}/login`, `/{locale}/signup`, `/{locale}/pricing`, `/{locale}/contact`, `/{locale}/about`, `/{locale}/security`, `/{locale}/terms`, `/{locale}/privacy`. 지원 locale은 `ko`, `ja`, `zh-tw`, `en-us`, `en-gb`, `en-sg`, `en-au`, `en-ca`다. 기존 `/`, `/login`, `/signup`, `/pricing`, `/contact`, `/about`, `/security`, `/terms`, `/privacy`는 선호 locale URL로 redirect한다.
 - Backend 구현 전까지 숨기는 기능: `/api/exports` 기반 범용 Export route/API, Notification.
 - 현재 Export 정본 흐름은 각 도메인 목록의 엑셀 다운로드다. `FE/user-web/src/features/import-export`의 범용 Export 화면은 현재 Backend 방향이 아니므로 route에서 숨긴다.
-- 데이터 불러오기는 `/app/import`에서 회사/담당자/제품/딜 양식 다운로드, CSV/XLSX 업로드, AI 컬럼 매핑, row 수정/검증, 확정 저장, 성공 내역 목록/상세 조회를 실제 Backend API와 연결한다.
+- 데이터 불러오기는 `/app/import`에서 회사/담당자/제품/딜 양식 다운로드, CSV/XLSX 업로드, AI 컬럼 매핑, row 수정/검증, 누락 셀 단위 validation 메시지, 확정 저장, 성공 내역 목록/상세 조회를 실제 Backend API와 연결한다.
 - 딜 import의 누락 회사/담당자/제품 보정값은 현재 FE API에서 `dealCompanyResolutions`, `dealContactResolutions`, `dealProductResolutions`로 전달하고, BE confirm 경로에서 처리한다.
 - 명함 스캔은 `/app/business-cards`에서 이미지 업로드, `명함스캔` 진행 표시, 추출 결과 확인/수정, 회사/담당자 저장 흐름으로 동작한다.
 

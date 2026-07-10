@@ -37,7 +37,7 @@ Canonical domain:
 
 ## 3. Current Implementation Snapshot
 
-Snapshot date: 2026-07-09
+Snapshot date: 2026-07-10
 
 Current source of truth:
 
@@ -75,7 +75,7 @@ Currently implemented API surface:
 - MeetingNote: filter options, list/detail/create/update/delete, AI text draft, STT+AI draft, saved-note deal linking
 - Search: `GET /api/search`
 - Trash: `GET /api/trash`, `GET /api/trash/:targetType/:targetId`, `POST /api/trash/:targetType/:targetId/restore`
-- DataImport: active templates, template xlsx download, CSV/XLSX upload for Company/Contact/Product/Deal, AI mapping, mapping validation, confirm import, import user logs
+- DataImport: active templates, template xlsx download, CSV/XLSX upload for Company/Contact/Product/Deal, AI mapping, mapping validation, cell-scoped validation messages, confirm import, import user logs
 - Health: `GET /api/health`
 
 Implemented Backend TODO references:
@@ -122,7 +122,7 @@ Current response notes:
 - `GET /api/import-templates/:templateId/download` returns an xlsx template. Contact templates may receive `companyName` as context.
 - `POST /api/imports` accepts a CSV/XLSX file as `file`, creates an in-memory import job, and returns preview rows. The file limit is 10 MB.
 - `POST /api/imports/:importJobId/map` calls the import mapping provider and falls back to heuristic mapping if the provider fails.
-- `PATCH /api/imports/:importJobId/mapping` applies the user's mapping and validates mapped rows.
+- `PATCH /api/imports/:importJobId/mapping` applies the user's mapping and validates mapped rows. Preview validation messages are scoped to the missing or invalid cell instead of being repeated across unrelated columns.
 - `POST /api/imports/:importJobId/confirm` creates Company, Contact, Product, or Deal rows and writes `ImportUserLog`/`ImportUserLogRow` snapshots in a database transaction.
 - Deal import creates the deal and `DealCompany`, `DealContact`, `DealProduct` links in one transaction when referenced company/contact/product values resolve. Missing-reference resolution arrays are forwarded as `dealCompanyResolutions`, `dealContactResolutions`, and `dealProductResolutions` through the FE API function, BE DTO, HTTP controller, application service, repository, and controller spec.
 - Temporary DataImport jobs use an in-memory store. Persistent job recovery across server restart is future scope.
@@ -146,6 +146,7 @@ Auth/session runtime notes:
 - Same active device relogin rotates the existing session refresh token. Different device in the same slot replaces the active device when `replaceExistingDevice=true` and revokes the previous slot sessions.
 - Current User Web uses `mobile` and `personal_laptop` slots only. Backend also supports `work_laptop` for future clients.
 - Country code metadata is read from proxy geo headers only: `cf-ipcountry`, `x-vercel-ip-country`, `cloudfront-viewer-country`.
+- 2026-07-10 QA status: `typecheck`, `lint`, `test`, and `build` pass. Backend tests are 17 suites / 82 tests passed. HTTP smoke confirmed health 200, unauthenticated protected API 401, invalid token 401, and unknown route 404.
 
 Current backend gaps and intentional deferrals:
 
@@ -155,6 +156,7 @@ Current backend gaps and intentional deferrals:
 - MeetingNote Admin, rawText encryption/raw access, and generic DealActivity table are future scope.
 - Kakao OAuth provider setup is deferred until Kakao Developers account access is available. Expected configuration includes Kakao Login activation and `account_email` consent item.
 - Country code fields may remain null in local/dev environments that do not provide proxy geo headers.
+- Prisma generate/migration/seed operating-state consistency still needs a dedicated release-readiness pass before production DB changes.
 
 ## 4. Target Module List
 

@@ -91,4 +91,6 @@ pnpm run build
 - `/admin/api/me` 보호 라우트 검증
 - Backend 미구현 운영 화면의 route 숨김/redirect 경계 확인
 
+2026-07-10 기준 `typecheck`, `lint`, `build` 선택 점검은 통과했다. Admin 운영 화면 E2E는 현재 라우터 기준으로 갱신하기 전까지 release gate로 보지 않는다.
+
 Vercel project root: `FE/admin-web`

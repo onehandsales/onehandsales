@@ -87,9 +87,7 @@ export class UpdateMyProfileUseCase {
     if (
       normalized === "zh" ||
       normalized.toLowerCase() === "zh-tw" ||
-      normalized.toLowerCase() === "zh-cn" ||
-      normalized.toLowerCase().startsWith("zh-hant") ||
-      normalized.toLowerCase().startsWith("zh-hans")
+      normalized.toLowerCase().startsWith("zh-hant")
     ) {
       return "zh-TW";
     }

@@ -52,16 +52,17 @@ FRONT_AGENT/
 
 ## 6. 현재 구현 스냅샷
 
-Snapshot date: 2026-07-09
+Snapshot date: 2026-07-10
 
 User Web:
 
-- 실제 API 연동 완료: Public site, Auth/User, Home(`/app`), Company, Contact, BusinessCard OCR, Product, Deal, Schedule, MeetingNote manual CRUD, MeetingNote AI/STT draft, MeetingNote deal link, Search, Trash, DataImport, Company/Contact/Product/Deal domain xlsx export.
+- 실제 API 연동 완료: URL locale Public/Auth site, Auth/User, Home(`/app`), Company, Contact, BusinessCard OCR, Product, Deal, Schedule, MeetingNote manual CRUD, MeetingNote AI/STT draft, MeetingNote deal link, Search, Trash, DataImport, Company/Contact/Product/Deal domain xlsx export.
 - mock/placeholder 경계: generic Export route/API, Notification.
-- Auth/User: 개발용 mock login은 제거되었고, Supabase OAuth provider login과 Backend token exchange가 정본이다. Google OAuth signup/login과 로그아웃 후 `/login` 이동은 QA 통과 상태이며, Kakao OAuth는 Kakao Developers `account_email` 동의항목 설정 후 검증한다.
+- Auth/User: 개발용 mock login은 제거되었고, Supabase OAuth provider login과 Backend token exchange가 정본이다. Public/auth canonical URL은 `/{locale}` 계열을 사용하고 기존 `/login` 등은 선호 locale URL로 redirect한다. Google OAuth signup/login과 로그아웃 후 선호 locale login URL 이동은 QA 통과 상태이며, Kakao OAuth는 Kakao Developers `account_email` 동의항목 설정 후 검증한다.
 - Auth device/session: 현재 User Web은 `mobile`/`personal_laptop` slot만 보내며 같은 slot의 다른 기기 로그인은 기존 active device/session을 교체한다.
 - BusinessCard OCR 화면은 `/app/business-cards`다. 목록은 등록일 최신순 고정, 상태 다중 필터와 `상태 초기화`를 제공하고, `명함스캔` 모달은 이미지 업로드 -> 진행 표시 -> 추출 결과 확인/수정 -> 저장 흐름을 사용한다.
-- DataImport 화면은 `/app/import`와 `/app/import/:importUserLogId`다. 회사/담당자/제품/딜 양식 다운로드, CSV/XLSX 업로드, AI 컬럼 매핑, row 수정/검증, 확정 저장, 성공 내역 조회를 실제 API와 연결한다. 딜 import 회사/담당자/제품 보정 배열은 현재 FE API와 BE controller/application/repository confirm 경로에 연결되어 있다.
+- DataImport 화면은 `/app/import`와 `/app/import/:importUserLogId`다. 회사/담당자/제품/딜 양식 다운로드, CSV/XLSX 업로드, AI 컬럼 매핑, row 수정/검증, 누락 셀 단위 validation 메시지, 확정 저장, 성공 내역 조회를 실제 API와 연결한다. 딜 import 회사/담당자/제품 보정 배열은 현재 FE API와 BE controller/application/repository confirm 경로에 연결되어 있다.
+- 2026-07-10 기준 User Web `typecheck`, `lint`, `build`, `test:e2e`, URL locale smoke, 핵심 업무 happy path 수동 QA가 통과했다.
 
 Admin Web:
 

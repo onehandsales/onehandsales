@@ -24,12 +24,15 @@ Segoe UI
 Apple SD Gothic Neo
 Noto Sans KR
 Noto Sans CJK KR
+PingFang TC
 PingFang SC
+Microsoft JhengHei
 Microsoft YaHei
 Hiragino Sans
 Hiragino Kaku Gothic ProN
 Yu Gothic
 Meiryo
+Noto Sans TC
 Noto Sans SC
 Noto Sans JP
 sans-serif
@@ -40,12 +43,15 @@ sans-serif
 이 기준은 다음 모든 사용자 노출 언어에 적용한다.
 
 - 한국어
-- 중국어
 - 일본어
+- 대만 번체 중국어
 - 영어 US
 - 영어 UK
+- 영어 Singapore
+- 영어 Australia
+- 영어 Canada
 
-영어와 라틴 문자는 `Inter`를 우선한다. 한국어는 `Pretendard` 계열을 우선 fallback으로 사용한다. 중국어와 일본어는 OS별 CJK 시스템 폰트로 자연스럽게 fallback되도록 한다.
+영어와 라틴 문자는 `Inter`를 우선한다. 한국어는 `Pretendard` 계열을 우선 fallback으로 사용한다. 대만 번체 중국어와 일본어는 OS별 CJK 시스템 폰트로 자연스럽게 fallback되도록 한다.
 
 ## 구현 기준
 
@@ -58,6 +64,6 @@ sans-serif
 ## 금지
 
 - 한국어만 보고 `Pretendard` 단일 기준으로 새 폰트 정책을 작성하지 않는다.
-- 영어 US/UK, 중국어, 일본어 화면에서 별도 폰트 시스템을 만들지 않는다.
+- 영어권 locale, 대만 번체 중국어, 일본어 화면에서 별도 폰트 시스템을 만들지 않는다.
 - Notion의 브랜드, 로고, 문구, 고유 화면을 복제하지 않는다.
 - viewport width 기준으로 font size를 스케일링하지 않는다.

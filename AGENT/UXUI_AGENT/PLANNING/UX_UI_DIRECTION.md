@@ -17,9 +17,10 @@ The authenticated first screen should make today's sales work visible first, the
 
 Target direction: `/` is the public entry surface, `/app` is the authenticated work dashboard, and `/app/deals` remains the high-density Deal Pipeline Home.
 
-Current implementation note as of 2026-07-09:
+Current implementation note as of 2026-07-10:
 
-- `/` is a public landing/entry surface.
+- Public/auth canonical routes use URL locale prefixes such as `/ko`, `/ko/login`, `/ja/signup`, and `/en-us/pricing`.
+- Legacy `/`, `/login`, `/signup`, `/pricing`, `/contact`, `/about`, `/security`, `/terms`, and `/privacy` redirect to the preferred locale URL.
 - `/app` home is an implemented dashboard that combines Schedule, Deal, Deal stage count, and MeetingNote API data.
 - The active deal pipeline experience is served from `/app/deals`.
 - Keep `/app` focused on today/dashboard context and `/app/deals` focused on comparison, filtering, preview, and mutation.
@@ -27,6 +28,7 @@ Current implementation note as of 2026-07-09:
 - Trash has Backend list/detail/restore APIs and a User Web full-width list with row-click detail modal and modal-only restore action.
 - MeetingNote AI/STT draft Backend APIs and User Web draft UI integration are implemented.
 - BusinessCard OCR has Backend `POST/GET /api/business-card-scans` and User Web `/app/business-cards` integration implemented. The visible feature name is `명함 스캔`, and the modal action is `명함스캔`.
+- DataImport has Company/Contact/Product/Deal upload, AI mapping, row edit/validation, cell-scoped validation messages, confirm save, and import log detail implemented.
 - Company/contact/product create modals use search-input selection, immediate creation when no result exists, and automatic selection after creation.
 - Deal likelihood (`긍정 / 중립 / 부정` or percent) is not implemented in the current Deal API/FE form. Treat it as future UX scope unless a new backend plan adds it.
 
@@ -281,11 +283,11 @@ Meaning:
 Direction:
 
 - default UI font stack is Notion-like and multilingual:
-  `Inter`, `Pretendard Variable`, `Pretendard`, `ui-sans-serif`, `system-ui`, `-apple-system`, `BlinkMacSystemFont`, `Segoe UI`, `Apple SD Gothic Neo`, `Noto Sans KR`, `Noto Sans CJK KR`, `PingFang SC`, `Microsoft YaHei`, `Hiragino Sans`, `Hiragino Kaku Gothic ProN`, `Yu Gothic`, `Meiryo`, `Noto Sans SC`, `Noto Sans JP`, `sans-serif`
-- this font direction applies to Korean, Chinese, Japanese, English US, and English UK
+  `Inter`, `Pretendard Variable`, `Pretendard`, `ui-sans-serif`, `system-ui`, `-apple-system`, `BlinkMacSystemFont`, `Segoe UI`, `Apple SD Gothic Neo`, `Noto Sans KR`, `Noto Sans CJK KR`, `PingFang TC`, `PingFang SC`, `Microsoft JhengHei`, `Microsoft YaHei`, `Hiragino Sans`, `Hiragino Kaku Gothic ProN`, `Yu Gothic`, `Meiryo`, `Noto Sans TC`, `Noto Sans SC`, `Noto Sans JP`, `sans-serif`
+- this font direction applies to Korean, Japanese, Traditional Chinese for Taiwan, and English US/UK/Singapore/Australia/Canada
 - use `Inter` first for Latin/English UI text
 - keep `Pretendard` as the Korean fallback
-- let Chinese and Japanese text fall back to OS CJK system fonts
+- let Traditional Chinese and Japanese text fall back to OS CJK system fonts
 - body/list text: normal readable size
 - table header: smaller but clear
 - important numbers like amount: slightly emphasized

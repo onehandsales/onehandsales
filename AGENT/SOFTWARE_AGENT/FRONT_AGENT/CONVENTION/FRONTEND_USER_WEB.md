@@ -78,9 +78,9 @@
 ## 8. 스타일과 UI
 
 - Tailwind CSS를 기본 스타일링 도구로 사용한다.
-- 기본 UI 폰트는 Notion-like 다국어 스택을 기준으로 한다: `Inter`, `Pretendard Variable`, `Pretendard`, `ui-sans-serif`, `system-ui`, `-apple-system`, `BlinkMacSystemFont`, `Segoe UI`, `Apple SD Gothic Neo`, `Noto Sans KR`, `Noto Sans CJK KR`, `PingFang SC`, `Microsoft YaHei`, `Hiragino Sans`, `Hiragino Kaku Gothic ProN`, `Yu Gothic`, `Meiryo`, `Noto Sans SC`, `Noto Sans JP`, `sans-serif`.
-- 이 폰트 기준은 한국어, 중국어, 일본어, 영어 US, 영어 UK 전체에 적용한다.
-- 영어/라틴 문자는 `Inter`를 우선하고, 한국어는 `Pretendard` 계열 fallback, 중국어/일본어는 OS CJK 시스템 폰트 fallback을 사용한다.
+- 기본 UI 폰트는 Notion-like 다국어 스택을 기준으로 한다: `Inter`, `Pretendard Variable`, `Pretendard`, `ui-sans-serif`, `system-ui`, `-apple-system`, `BlinkMacSystemFont`, `Segoe UI`, `Apple SD Gothic Neo`, `Noto Sans KR`, `Noto Sans CJK KR`, `PingFang TC`, `PingFang SC`, `Microsoft JhengHei`, `Microsoft YaHei`, `Hiragino Sans`, `Hiragino Kaku Gothic ProN`, `Yu Gothic`, `Meiryo`, `Noto Sans TC`, `Noto Sans SC`, `Noto Sans JP`, `sans-serif`.
+- 이 폰트 기준은 한국어, 일본어, 대만 번체 중국어, 영어 US/UK/Singapore/Australia/Canada 전체에 적용한다.
+- 영어/라틴 문자는 `Inter`를 우선하고, 한국어는 `Pretendard` 계열 fallback, 대만 번체 중국어/일본어는 OS CJK 시스템 폰트 fallback을 사용한다.
 - 서비스의 주된 디자인 색상은 `#1F4EF5`, `#4880EE`, `#83B4F9`를 기준으로 한다.
 - 주요 CTA, 선택 상태, 활성 탭, 포커스, 핵심 피드백은 위 blue palette 안에서 먼저 해결하고 임의의 다른 blue/purple 계열을 추가하지 않는다.
 - blue 계열의 채움형 UI는 테두리도 채움색과 동일한 단색으로 맞춘다. 예: `bg-[#1F4EF5] border-[#1F4EF5]`, `bg-[#4880EE] border-[#4880EE]`.

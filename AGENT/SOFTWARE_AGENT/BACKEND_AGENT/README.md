@@ -58,7 +58,7 @@ BACKEND_AGENT/
 
 ## 6. 현재 구현 완료/참조 Backend TODO
 
-Snapshot date: 2026-07-09
+Snapshot date: 2026-07-10
 
 - `TODO/DONE/AUTH_FE_INTEGRATION_PLAN/BE-TODO/G01-BE-USER-PROFILE-DEVICES.goal.md`
 - `TODO/DONE/COMPANY_DOMAIN_PLAN/BE-TODO/G01-BE-COMPANY-DOMAIN.goal.md`
@@ -79,7 +79,7 @@ Current additional backend scope:
 - Trash API는 Company/Contact/Product/Deal 본문 데이터와 지원 로그의 목록, 상세, 7일 이내 복구를 제공한다.
 - BusinessCard OCR API는 이미지 원본을 저장하지 않고 성공/실패/확정 로그와 provider 사용량을 `BusinessCardScanLog`에 기록한다. `GET /api/business-card-scans`는 반복 query 또는 comma-separated query로 상태 다중 필터를 지원하며, 목록은 등록일 최신순으로 반환한다.
 - BusinessCard OCR OpenAI adapter는 Responses API와 strict JSON schema를 사용한다. prompt와 schema는 `BE/src/modules/business-card/infrastructure/providers/openai-business-card-ocr.provider.ts`에 둔다.
-- DataImport API는 회사/담당자/제품/딜 CSV/XLSX 업로드, AI 컬럼 매핑, 사용자 보정/검증, 확정 저장, 성공 내역 조회를 제공한다.
+- DataImport API는 회사/담당자/제품/딜 CSV/XLSX 업로드, AI 컬럼 매핑, 사용자 보정/검증, 셀 단위 validation 메시지, 확정 저장, 성공 내역 조회를 제공한다.
 - DataImport 확정 전 임시 job은 in-memory store를 사용한다. 확정 성공 시 도메인 row와 `ImportUserLog`/`ImportUserLogRow` snapshot을 같은 transaction에서 저장한다.
 - User에는 기본 timezone과 signup/last-login locale, country code, timezone 메타데이터가 반영되어 있다.
 - Auth runtime은 Supabase OAuth token exchange 이후 Backend app session을 별도로 발급하는 구조다. app access token은 `userId`/`sessionId`를 담고, refresh token 원문은 httpOnly cookie로만 내려가며 DB에는 hash만 저장한다.
@@ -87,6 +87,7 @@ Current additional backend scope:
 - 같은 active device 재로그인은 session row를 새로 만들지 않고 refresh token을 회전한다. 같은 slot의 다른 device login은 기존 device/session을 교체한다.
 - 국가 코드 메타데이터는 배포 프록시 geo header가 있을 때만 저장되므로 local/dev에서는 `null`일 수 있다.
 - 딜 import 누락 회사/담당자/제품 보정 배열은 현재 FE API와 HTTP controller/application/repository confirm 경로에 연결되어 있다.
+- 2026-07-10 기준 `typecheck`, `lint`, `test`, `build`가 통과했다. BE test는 17 suites / 82 tests passed.
 
 ## 7. 현재 주요 미구현 Backend 범위
 
