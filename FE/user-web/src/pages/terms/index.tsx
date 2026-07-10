@@ -11,8 +11,9 @@ import {
 import { Link } from "react-router-dom";
 import { PublicSitePageShell } from "@/features/public-site/components/public-site-page-shell";
 import {
+  getPublicSiteCopyLanguage,
   usePublicSiteLanguage,
-  type PublicSiteLanguage,
+  type PublicSiteCopyLanguage,
 } from "@/features/public-site/i18n/public-site-language";
 
 type PolicyLink = {
@@ -89,7 +90,7 @@ function makePolicyLinks(copy: {
   ];
 }
 
-const termsCopyByLanguage: Record<PublicSiteLanguage, TermsCopy> = {
+const termsCopyByLanguage: Record<PublicSiteCopyLanguage, TermsCopy> = {
   ko: {
     eyebrow: "Onehand 정책 센터",
     title: "이용약관과 개인정보.",
@@ -298,7 +299,7 @@ const termsCopyByLanguage: Record<PublicSiteLanguage, TermsCopy> = {
       },
     ],
   },
-  zh: {
+  "zh-TW": {
     eyebrow: "Onehand 政策中心",
     title: "服务条款与隐私。",
     description:
@@ -612,7 +613,7 @@ const termsCopyByLanguage: Record<PublicSiteLanguage, TermsCopy> = {
 
 export function TermsPage() {
   const { language } = usePublicSiteLanguage();
-  const copy = termsCopyByLanguage[language];
+  const copy = termsCopyByLanguage[getPublicSiteCopyLanguage(language)];
 
   return (
     <PublicSitePageShell>

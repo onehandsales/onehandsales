@@ -30,17 +30,24 @@ const localeOptions = [
   { value: "ko-KR", label: "한국어" },
   { value: "en-US", label: "English (US)" },
   { value: "en-GB", label: "English (UK)" },
+  { value: "en-SG", label: "English (Singapore)" },
+  { value: "en-AU", label: "English (Australia)" },
+  { value: "en-CA", label: "English (Canada)" },
   { value: "ja-JP", label: "日本語" },
-  { value: "zh-CN", label: "中文" },
+  { value: "zh-TW", label: "繁體中文" },
 ] as const;
 
 const timeZoneOptions = [
   "Asia/Seoul",
   "Asia/Tokyo",
-  "Asia/Shanghai",
+  "Asia/Taipei",
+  "Asia/Singapore",
   "America/New_York",
   "America/Los_Angeles",
+  "America/Toronto",
+  "America/Vancouver",
   "Europe/London",
+  "Australia/Sydney",
   "UTC",
 ] as const;
 

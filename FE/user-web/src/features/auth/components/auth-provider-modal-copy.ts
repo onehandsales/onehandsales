@@ -1,5 +1,9 @@
 import type { AuthProviderId } from "@/features/auth/types/auth";
-import type { PublicSiteLanguage } from "@/features/public-site/i18n/public-site-language";
+import {
+  getPublicSiteCopyLanguage,
+  type PublicSiteCopyLanguage,
+  type PublicSiteLanguage,
+} from "@/features/public-site/i18n/public-site-language";
 
 export type AuthProviderModalCopy = {
   readonly closeLabel: string;
@@ -15,7 +19,7 @@ export type AuthProviderModalCopy = {
 };
 
 export const authProviderModalCopy: Record<
-  PublicSiteLanguage,
+  PublicSiteCopyLanguage,
   AuthProviderModalCopy
 > = {
   ko: {
@@ -49,7 +53,7 @@ export const authProviderModalCopy: Record<
       google: "Googleで続行",
     },
   },
-  zh: {
+  "zh-TW": {
     closeLabel: "关闭登录弹窗",
     loadingLabel: "正在登录",
     brandGlyph: "O",
@@ -107,7 +111,10 @@ export function getAuthProviderContinueLabel({
   readonly provider: AuthProviderId;
   readonly providerLabel: string;
 }) {
-  const configuredLabel = authProviderModalCopy[language].providerLabels[provider];
+  const configuredLabel =
+    authProviderModalCopy[getPublicSiteCopyLanguage(language)].providerLabels[
+      provider
+    ];
 
   if (configuredLabel) {
     return configuredLabel;
@@ -121,7 +128,7 @@ export function getAuthProviderContinueLabel({
     return `${providerLabel}で続行`;
   }
 
-  if (language === "zh") {
+  if (language === "zh-TW") {
     return `使用 ${providerLabel} 继续`;
   }
 

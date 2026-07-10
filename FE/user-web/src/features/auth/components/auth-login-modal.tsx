@@ -8,7 +8,10 @@ import type {
   AuthProviderId,
   AuthProviderOption,
 } from "@/features/auth/types/auth";
-import { usePublicSiteLanguage } from "@/features/public-site/i18n/public-site-language";
+import {
+  getPublicSiteCopyLanguage,
+  usePublicSiteLanguage,
+} from "@/features/public-site/i18n/public-site-language";
 
 type AuthLoginModalProps = {
   readonly authError: string | null;
@@ -56,7 +59,7 @@ export function AuthLoginModal({
   onProviderLogin,
 }: AuthLoginModalProps) {
   const { language } = usePublicSiteLanguage();
-  const copy = authProviderModalCopy[language];
+  const copy = authProviderModalCopy[getPublicSiteCopyLanguage(language)];
 
   if (isLoginLoading) {
     return (

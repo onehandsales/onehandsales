@@ -191,8 +191,14 @@ function getPreferredLocaleForExchange() {
 
   if (publicLanguage === "ko") return "ko-KR";
   if (publicLanguage === "ja") return "ja-JP";
-  if (publicLanguage === "zh") return "zh-CN";
-  if (publicLanguage === "en-US" || publicLanguage === "en-GB") {
+  if (publicLanguage === "zh" || publicLanguage === "zh-TW") return "zh-TW";
+  if (
+    publicLanguage === "en-US" ||
+    publicLanguage === "en-GB" ||
+    publicLanguage === "en-SG" ||
+    publicLanguage === "en-AU" ||
+    publicLanguage === "en-CA"
+  ) {
     return publicLanguage;
   }
 

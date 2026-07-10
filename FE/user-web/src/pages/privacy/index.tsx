@@ -2,8 +2,9 @@ import { ArrowRight, LockKeyhole } from "lucide-react";
 import { Link } from "react-router-dom";
 import { PublicSitePageShell } from "@/features/public-site/components/public-site-page-shell";
 import {
+  getPublicSiteCopyLanguage,
   usePublicSiteLanguage,
-  type PublicSiteLanguage,
+  type PublicSiteCopyLanguage,
 } from "@/features/public-site/i18n/public-site-language";
 
 type DefinitionCopy = {
@@ -40,7 +41,7 @@ type PrivacyCopy = {
   readonly sections: readonly PrivacySection[];
 };
 
-const privacyCopyByLanguage: Record<PublicSiteLanguage, PrivacyCopy> = {
+const privacyCopyByLanguage: Record<PublicSiteCopyLanguage, PrivacyCopy> = {
   ko: {
     eyebrow: "Onehand 개인정보",
     title: "개인정보 처리방침",
@@ -405,7 +406,7 @@ const privacyCopyByLanguage: Record<PublicSiteLanguage, PrivacyCopy> = {
       },
     ],
   },
-  zh: {
+  "zh-TW": {
     eyebrow: "Onehand 隐私",
     title: "隐私政策",
     intro: [
@@ -958,7 +959,8 @@ const privacyCopyByLanguage: Record<PublicSiteLanguage, PrivacyCopy> = {
 
 export function PrivacyPage() {
   const { language } = usePublicSiteLanguage();
-  const copy = privacyCopyByLanguage[language];
+  const copyLanguage = getPublicSiteCopyLanguage(language);
+  const copy = privacyCopyByLanguage[copyLanguage];
 
   return (
     <PublicSitePageShell>
@@ -994,7 +996,9 @@ export function PrivacyPage() {
                         <strong className="text-[#222220]">
                           {definition.term}
                         </strong>
-                        {language === "en-US" || language === "en-GB" ? " " : ": "}
+                        {copyLanguage === "en-US" || copyLanguage === "en-GB"
+                          ? " "
+                          : ": "}
                         {definition.description}
                       </li>
                     ))}

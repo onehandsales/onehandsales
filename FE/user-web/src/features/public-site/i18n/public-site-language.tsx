@@ -8,7 +8,20 @@ import {
   type ReactNode,
 } from "react";
 
-export type PublicSiteLanguage = "ko" | "ja" | "zh" | "en-US" | "en-GB";
+export type PublicSiteLanguage =
+  | "ko"
+  | "ja"
+  | "zh-TW"
+  | "en-US"
+  | "en-GB"
+  | "en-SG"
+  | "en-AU"
+  | "en-CA";
+
+export type PublicSiteCopyLanguage = Exclude<
+  PublicSiteLanguage,
+  "en-SG" | "en-AU" | "en-CA"
+>;
 
 type PublicSiteLanguageContextValue = {
   readonly language: PublicSiteLanguage;
@@ -149,9 +162,12 @@ export const publicSiteLanguageOptions: readonly {
 }[] = [
   { value: "ko", label: "한국어", htmlLang: "ko" },
   { value: "ja", label: "日本語", htmlLang: "ja" },
-  { value: "zh", label: "中文", htmlLang: "zh-CN" },
+  { value: "zh-TW", label: "繁體中文", htmlLang: "zh-TW" },
   { value: "en-US", label: "English (US)", htmlLang: "en-US" },
   { value: "en-GB", label: "English (UK)", htmlLang: "en-GB" },
+  { value: "en-SG", label: "English (Singapore)", htmlLang: "en-SG" },
+  { value: "en-AU", label: "English (Australia)", htmlLang: "en-AU" },
+  { value: "en-CA", label: "English (Canada)", htmlLang: "en-CA" },
 ];
 
 const publicSiteCopy: Record<PublicSiteLanguage, PublicSiteCopy> = {
@@ -497,7 +513,7 @@ const publicSiteCopy: Record<PublicSiteLanguage, PublicSiteCopy> = {
       supportSuffix: "までメールをお送りください。",
     }),
   },
-  zh: {
+  "zh-TW": {
     common: {
       logoAria: "Onehand 首页",
       nav: {
@@ -562,7 +578,7 @@ const publicSiteCopy: Record<PublicSiteLanguage, PublicSiteCopy> = {
       captions: ["客户咨询", "流程设计", "团队运营"],
       monthly: "月付",
       annual: "年付节省 20%",
-      currency: "CNY 基准",
+      currency: "TWD 參考",
       recommended: "推荐",
       aiLabel: "AI 选项",
       aiTitle: "面向重要工作的 AI 销售助手。",
@@ -597,7 +613,7 @@ const publicSiteCopy: Record<PublicSiteLanguage, PublicSiteCopy> = {
         title: "销售负责人",
         company: "示例有限公司",
         companySize: "请选择",
-        region: "中国",
+        region: "台灣",
         phone: "(010) 1234-5678",
         reason: "请选择",
         detail: "请写下您希望如何使用 Onehand。",
@@ -627,6 +643,33 @@ const publicSiteCopy: Record<PublicSiteLanguage, PublicSiteCopy> = {
     pricing: "Pricing",
     contact: "Contact",
     languageRegion: "UK",
+  }),
+  "en-SG": makeEnglishCopy({
+    organise: "organise",
+    organizing: "organising",
+    title: "One tool for running sales.",
+    contactTitle: "Contact sales",
+    pricing: "Pricing",
+    contact: "Contact",
+    languageRegion: "SG",
+  }),
+  "en-AU": makeEnglishCopy({
+    organise: "organise",
+    organizing: "organising",
+    title: "One tool for running sales.",
+    contactTitle: "Contact sales",
+    pricing: "Pricing",
+    contact: "Contact",
+    languageRegion: "AU",
+  }),
+  "en-CA": makeEnglishCopy({
+    organise: "organize",
+    organizing: "organizing",
+    title: "One tool for running sales.",
+    contactTitle: "Contact sales",
+    pricing: "Pricing",
+    contact: "Contact",
+    languageRegion: "CA",
   }),
 };
 
@@ -679,28 +722,58 @@ export function usePublicSiteLanguage() {
   return context;
 }
 
+export function getPublicSiteCopyLanguage(
+  language: PublicSiteLanguage
+): PublicSiteCopyLanguage {
+  if (language === "en-AU") {
+    return "en-GB";
+  }
+
+  if (language === "en-SG" || language === "en-CA") {
+    return "en-US";
+  }
+
+  return language;
+}
+
 function getInitialLanguage(): PublicSiteLanguage {
   if (typeof window === "undefined") {
     return "ko";
   }
 
   const storedLanguage = window.localStorage.getItem(publicSiteLanguageStorageKey);
+  if (storedLanguage === "zh") {
+    return "zh-TW";
+  }
+
   if (isPublicSiteLanguage(storedLanguage)) {
     return storedLanguage;
   }
 
-  const browserLanguage = window.navigator.language;
+  const browserLanguage = window.navigator.language.toLowerCase();
 
   if (browserLanguage.startsWith("ja")) {
     return "ja";
   }
 
   if (browserLanguage.startsWith("zh")) {
-    return "zh";
+    return "zh-TW";
   }
 
-  if (browserLanguage === "en-GB") {
+  if (browserLanguage === "en-gb") {
     return "en-GB";
+  }
+
+  if (browserLanguage === "en-sg") {
+    return "en-SG";
+  }
+
+  if (browserLanguage === "en-au") {
+    return "en-AU";
+  }
+
+  if (browserLanguage === "en-ca") {
+    return "en-CA";
   }
 
   if (browserLanguage.startsWith("en")) {
@@ -737,6 +810,9 @@ function makeTranslatedPricing(copy: {
   const isChinese = copy.title.includes("销售");
   const isEnglish = !isJapanese && !isChinese;
   const isGbp = copy.currency.includes("GBP");
+  const isSgd = copy.currency.includes("SGD");
+  const isAud = copy.currency.includes("AUD");
+  const isCad = copy.currency.includes("CAD");
 
   return {
     ...copy,
@@ -754,7 +830,13 @@ function makeTranslatedPricing(copy: {
         ? ["¥0", "¥1,500", "¥3,200", ""]
         : isGbp
           ? ["£0", "£9", "£20", ""]
-          : ["$0", "$10", "$22", ""],
+          : isSgd
+            ? ["S$0", "S$14", "S$30", ""]
+            : isAud
+              ? ["A$0", "A$15", "A$33", ""]
+              : isCad
+                ? ["C$0", "C$14", "C$30", ""]
+                : ["$0", "$10", "$22", ""],
     pricePeriod: isEnglish ? "/mo" : "/月",
     aiImageAlt: isChinese
       ? "团队在会议室分享销售计划"
@@ -998,6 +1080,26 @@ function makeTranslatedContact(copy: {
   };
 }
 
+function getEnglishPricingCurrency(
+  languageRegion: "US" | "UK" | "SG" | "AU" | "CA"
+) {
+  if (languageRegion === "UK") return "GBP reference";
+  if (languageRegion === "SG") return "SGD reference";
+  if (languageRegion === "AU") return "AUD reference";
+  if (languageRegion === "CA") return "CAD reference";
+  return "USD reference";
+}
+
+function getEnglishContactRegion(
+  languageRegion: "US" | "UK" | "SG" | "AU" | "CA"
+) {
+  if (languageRegion === "UK") return "United Kingdom";
+  if (languageRegion === "SG") return "Singapore";
+  if (languageRegion === "AU") return "Australia";
+  if (languageRegion === "CA") return "Canada";
+  return "United States";
+}
+
 function makeEnglishCopy(copy: {
   readonly organise: string;
   readonly organizing: string;
@@ -1005,7 +1107,7 @@ function makeEnglishCopy(copy: {
   readonly contactTitle: string;
   readonly pricing: string;
   readonly contact: string;
-  readonly languageRegion: "US" | "UK";
+  readonly languageRegion: "US" | "UK" | "SG" | "AU" | "CA";
 }): PublicSiteCopy {
   const common: PublicSiteCopy["common"] = {
     logoAria: "Onehand home",
@@ -1014,7 +1116,7 @@ function makeEnglishCopy(copy: {
       pricing: copy.pricing,
       contact: copy.contact,
       freeCta: "Get Onehand",
-      login: copy.languageRegion === "UK" ? "Sign in" : "Log in",
+      login: copy.languageRegion === "US" || copy.languageRegion === "CA" ? "Log in" : "Sign in",
     },
     productMenuGroups: [
       [
@@ -1075,7 +1177,7 @@ function makeEnglishCopy(copy: {
       captions: ["Customer call", "Workflow design", "Team operations"],
       monthly: "Monthly billing",
       annual: "Save 20% annually",
-      currency: copy.languageRegion === "UK" ? "GBP reference" : "USD reference",
+      currency: getEnglishPricingCurrency(copy.languageRegion),
       recommended: "Recommended",
       aiLabel: "AI option",
       aiTitle: "AI sales assistant for important work.",
@@ -1113,7 +1215,7 @@ function makeEnglishCopy(copy: {
         title: "Sales lead",
         company: "Example Inc.",
         companySize: "Select an option",
-        region: copy.languageRegion === "UK" ? "United Kingdom" : "United States",
+        region: getEnglishContactRegion(copy.languageRegion),
         phone: "(123) 456-7891",
         reason: "Select an option",
         detail: "Tell us how you want to use Onehand.",

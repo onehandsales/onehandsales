@@ -392,6 +392,32 @@ describe("ExchangeExternalAuthTokenUseCase", () => {
     );
   });
 
+  // 기능 : 로그인 exchange locale을 현재 지원 시장 기준 값으로 정규화합니다.
+  it.each([
+    ["zh-CN", "zh-TW"],
+    ["zh_Hant_TW", "zh-TW"],
+    ["en-SG", "en-SG"],
+    ["en-AU", "en-AU"],
+    ["en-CA", "en-CA"],
+  ])("normalizes login locale %s to %s", async (inputLocale, expectedLocale) => {
+    const repository = new FakeAuthRepository();
+    const useCase = createUseCase(repository, {
+      email: "user@example.com",
+      name: "User",
+    });
+
+    const result = await useCase.execute(
+      makeExchangeCommand({
+        locale: inputLocale,
+      })
+    );
+
+    expect(result.response.user.preferredLocale).toBe(expectedLocale);
+    expect(result.response.user.signupLocale).toBe(expectedLocale);
+    expect(result.response.user.lastLoginLocale).toBe(expectedLocale);
+    expect(repository.users[0]?.preferredLocale).toBe(expectedLocale);
+  });
+
   // 기능 : 동일 슬롯에 다른 활성 기기가 있을 때 교체 옵션 없이는 거부되는지 검증합니다.
   it("rejects a different active device in the same slot without replacement", async () => {
     const repository = new FakeAuthRepository();

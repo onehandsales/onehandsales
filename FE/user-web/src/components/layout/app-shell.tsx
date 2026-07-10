@@ -849,17 +849,24 @@ const accountLocaleOptions = [
   { value: "ko-KR", label: "한국어" },
   { value: "en-US", label: "English (US)" },
   { value: "en-GB", label: "English (UK)" },
+  { value: "en-SG", label: "English (Singapore)" },
+  { value: "en-AU", label: "English (Australia)" },
+  { value: "en-CA", label: "English (Canada)" },
   { value: "ja-JP", label: "日本語" },
-  { value: "zh-CN", label: "中文" },
+  { value: "zh-TW", label: "繁體中文" },
 ] as const;
 
 const accountTimeZoneOptions = [
   "Asia/Seoul",
   "Asia/Tokyo",
-  "Asia/Shanghai",
+  "Asia/Taipei",
+  "Asia/Singapore",
   "America/New_York",
   "America/Los_Angeles",
+  "America/Toronto",
+  "America/Vancouver",
   "Europe/London",
+  "Australia/Sydney",
   "UTC",
 ] as const;
 
@@ -1603,8 +1610,11 @@ function formatLocaleLabel(locale: string) {
   if (locale === "ko-KR") return "한국어";
   if (locale === "en-US") return "English (US)";
   if (locale === "en-GB") return "English (UK)";
+  if (locale === "en-SG") return "English (Singapore)";
+  if (locale === "en-AU") return "English (Australia)";
+  if (locale === "en-CA") return "English (Canada)";
   if (locale === "ja-JP") return "日本語";
-  if (locale === "zh-CN") return "中文";
+  if (locale === "zh-TW") return "繁體中文";
   return locale;
 }
 

@@ -24,8 +24,9 @@ import { Link } from "react-router-dom";
 import { PublicSiteFooter } from "@/features/public-site/components/public-site-footer";
 import { PublicSiteHeader } from "@/features/public-site/components/public-site-header";
 import {
+  getPublicSiteCopyLanguage,
   usePublicSiteLanguage,
-  type PublicSiteLanguage,
+  type PublicSiteCopyLanguage,
 } from "@/features/public-site/i18n/public-site-language";
 
 type AuthLandingPageProps = {
@@ -172,7 +173,10 @@ const heroRotatingWordStyles = [
   },
 ] as const;
 
-const expandedLandingCopyByLanguage: Record<PublicSiteLanguage, ExpandedLandingCopy> = {
+const expandedLandingCopyByLanguage: Record<
+  PublicSiteCopyLanguage,
+  ExpandedLandingCopy
+> = {
   ko: {
     assistants: {
       eyebrow: "온디맨드 어시스턴트",
@@ -353,7 +357,7 @@ const expandedLandingCopyByLanguage: Record<PublicSiteLanguage, ExpandedLandingC
       stats: ["顧客記録を統合", "反復作業を自動化", "多言語チーム対応", "モバイル対応"],
     },
   },
-  zh: {
+  "zh-TW": {
     assistants: {
       eyebrow: "按需助手",
       title: "随时可问的销售助手。",
@@ -625,7 +629,7 @@ const expandedLandingCopyByLanguage: Record<PublicSiteLanguage, ExpandedLandingC
   },
 };
 
-const landingCopyByLanguage: Record<PublicSiteLanguage, LandingCopy> = {
+const landingCopyByLanguage: Record<PublicSiteCopyLanguage, LandingCopy> = {
   ko: {
     hero: {
       eyebrow: "",
@@ -950,7 +954,7 @@ const landingCopyByLanguage: Record<PublicSiteLanguage, LandingCopy> = {
       ],
     },
   },
-  zh: {
+  "zh-TW": {
     hero: {
       eyebrow: "",
       rotatingItems: [
@@ -1067,11 +1071,11 @@ const landingCopyByLanguage: Record<PublicSiteLanguage, LandingCopy> = {
       ],
       tableHeaders: ["账户", "状态", "下一步"],
       rows: [
-        ["Acme China", "进行中", "价格审批"],
+        ["Acme Taiwan", "进行中", "价格审批"],
         ["Blue Retail", "跟进", "演示日程"],
         ["North Labs", "成交", "客户启用"],
       ],
-      detailTitle: "Acme China",
+      detailTitle: "Acme Taiwan",
       detailItems: [
         {
           title: "最近对话",
@@ -1530,9 +1534,10 @@ export function AuthLandingPage({
   onOpenLogin,
 }: AuthLandingPageProps) {
   const { language } = usePublicSiteLanguage();
+  const copyLanguage = getPublicSiteCopyLanguage(language);
   const scrollProgress = useLandingScrollProgress();
-  const copy = landingCopyByLanguage[language];
-  const expandedCopy = expandedLandingCopyByLanguage[language];
+  const copy = landingCopyByLanguage[copyLanguage];
+  const expandedCopy = expandedLandingCopyByLanguage[copyLanguage];
 
   return (
     <div className="min-h-screen bg-[#f7f7f5] text-[#111111]">

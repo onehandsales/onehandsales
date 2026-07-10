@@ -13,8 +13,9 @@ import {
 import { Link } from "react-router-dom";
 import { PublicSitePageShell } from "@/features/public-site/components/public-site-page-shell";
 import {
+  getPublicSiteCopyLanguage,
   usePublicSiteLanguage,
-  type PublicSiteLanguage,
+  type PublicSiteCopyLanguage,
 } from "@/features/public-site/i18n/public-site-language";
 
 type SecurityCard = {
@@ -51,7 +52,7 @@ const sectionIcons: readonly LucideIcon[] = [
 
 const trustIcons: readonly LucideIcon[] = [Database, Globe2, CheckCircle2];
 
-const securityCopyByLanguage: Record<PublicSiteLanguage, SecurityCopy> = {
+const securityCopyByLanguage: Record<PublicSiteCopyLanguage, SecurityCopy> = {
   ko: {
     eyebrow: "Onehand 보안",
     title: "고객 업무를 위한 보안과 개인정보 보호.",
@@ -318,7 +319,7 @@ const securityCopyByLanguage: Record<PublicSiteLanguage, SecurityCopy> = {
     contactCta: "問い合わせる",
     privacyCta: "プライバシーポリシーを読む",
   },
-  zh: {
+  "zh-TW": {
     eyebrow: "Onehand 安全",
     title: "面向客户工作的安全与隐私。",
     description:
@@ -720,7 +721,7 @@ const securityCopyByLanguage: Record<PublicSiteLanguage, SecurityCopy> = {
 
 export function SecurityPage() {
   const { language } = usePublicSiteLanguage();
-  const copy = securityCopyByLanguage[language];
+  const copy = securityCopyByLanguage[getPublicSiteCopyLanguage(language)];
 
   return (
     <PublicSitePageShell>

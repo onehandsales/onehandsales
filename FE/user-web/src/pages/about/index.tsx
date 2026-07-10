@@ -13,8 +13,9 @@ import {
 import { Link } from "react-router-dom";
 import { PublicSitePageShell } from "@/features/public-site/components/public-site-page-shell";
 import {
+  getPublicSiteCopyLanguage,
   usePublicSiteLanguage,
-  type PublicSiteLanguage,
+  type PublicSiteCopyLanguage,
 } from "@/features/public-site/i18n/public-site-language";
 
 type StoryBlockCopy = {
@@ -50,7 +51,7 @@ const storyVisuals: readonly {
   { icon: Clock3, tone: "bg-[#f2eefb] text-[#6f48c9]" },
 ];
 
-const aboutCopyByLanguage: Record<PublicSiteLanguage, AboutCopy> = {
+const aboutCopyByLanguage: Record<PublicSiteCopyLanguage, AboutCopy> = {
   ko: {
     eyebrow: "Onehand 소개",
     title: "고객 업무의 맥락을 더 쉽게 붙잡는 이야기.",
@@ -171,7 +172,7 @@ const aboutCopyByLanguage: Record<PublicSiteLanguage, AboutCopy> = {
     ],
     sceneLabels: ["顧客", "文脈", "アシスタント"],
   },
-  zh: {
+  "zh-TW": {
     eyebrow: "关于 Onehand",
     title: "让客户工作的上下文更容易被掌握。",
     intro: [
@@ -361,7 +362,7 @@ const aboutCopyByLanguage: Record<PublicSiteLanguage, AboutCopy> = {
 
 export function AboutPage() {
   const { language } = usePublicSiteLanguage();
-  const copy = aboutCopyByLanguage[language];
+  const copy = aboutCopyByLanguage[getPublicSiteCopyLanguage(language)];
 
   return (
     <PublicSitePageShell>

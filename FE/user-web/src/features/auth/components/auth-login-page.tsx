@@ -6,8 +6,10 @@ import type {
   AuthProviderOption,
 } from "@/features/auth/types/auth";
 import {
+  getPublicSiteCopyLanguage,
   publicSiteLanguageOptions,
   usePublicSiteLanguage,
+  type PublicSiteCopyLanguage,
   type PublicSiteLanguage,
 } from "@/features/public-site/i18n/public-site-language";
 
@@ -33,7 +35,7 @@ const providerStyles: Record<AuthProviderId, string> = {
 const providerOrder: readonly AuthProviderId[] = ["kakao", "google"];
 
 const loginCopy: Record<
-  PublicSiteLanguage,
+  PublicSiteCopyLanguage,
   {
     readonly homeAria: string;
     readonly title: string;
@@ -122,7 +124,7 @@ const loginCopy: Record<
     termsSuffix: "に同意したものとみなされます。",
     languagePrefix: "言語:",
   },
-  zh: {
+  "zh-TW": {
     homeAria: "前往首页",
     title: "我的 AI 工作空间",
     subtitles: {
@@ -248,7 +250,7 @@ export function AuthLoginPage({
   onProviderLogin,
 }: AuthLoginPageProps) {
   const { language } = usePublicSiteLanguage();
-  const copy = loginCopy[language];
+  const copy = loginCopy[getPublicSiteCopyLanguage(language)];
   const switchPath = mode === "login" ? "/signup" : "/login";
   const visibleProviders = providerOrder
     .map((providerId) =>
@@ -402,7 +404,7 @@ function LoginLanguageSelect({
   copy,
   language,
 }: {
-  readonly copy: (typeof loginCopy)[PublicSiteLanguage];
+  readonly copy: (typeof loginCopy)[PublicSiteCopyLanguage];
   readonly language: PublicSiteLanguage;
 }) {
   const { setLanguage } = usePublicSiteLanguage();

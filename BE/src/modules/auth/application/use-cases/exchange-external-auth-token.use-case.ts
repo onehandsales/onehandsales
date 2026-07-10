@@ -387,14 +387,28 @@ export class ExchangeExternalAuthTokenUseCase {
 
     if (
       normalized === "zh" ||
+      normalized.toLowerCase() === "zh-tw" ||
       normalized.toLowerCase() === "zh-cn" ||
+      normalized.toLowerCase().startsWith("zh-hant") ||
       normalized.toLowerCase().startsWith("zh-hans")
     ) {
-      return "zh-CN";
+      return "zh-TW";
     }
 
     if (normalized.toLowerCase() === "en-gb") {
       return "en-GB";
+    }
+
+    if (normalized.toLowerCase() === "en-sg") {
+      return "en-SG";
+    }
+
+    if (normalized.toLowerCase() === "en-au") {
+      return "en-AU";
+    }
+
+    if (normalized.toLowerCase() === "en-ca") {
+      return "en-CA";
     }
 
     if (normalized === "en" || normalized.toLowerCase().startsWith("en-")) {

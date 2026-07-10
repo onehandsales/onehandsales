@@ -11,7 +11,10 @@ import type {
   AuthProviderId,
   AuthProviderOption,
 } from "@/features/auth/types/auth";
-import { usePublicSiteLanguage } from "@/features/public-site/i18n/public-site-language";
+import {
+  getPublicSiteCopyLanguage,
+  usePublicSiteLanguage,
+} from "@/features/public-site/i18n/public-site-language";
 import { getApiErrorMessage } from "@/lib/api-client";
 
 type AuthSocialLoginModalProps = {
@@ -50,7 +53,7 @@ export function AuthSocialLoginModal({
     startProviderLogin,
   } = useAuthSession();
   const { language } = usePublicSiteLanguage();
-  const copy = authProviderModalCopy[language];
+  const copy = authProviderModalCopy[getPublicSiteCopyLanguage(language)];
   const [providers, setProviders] = useState<AuthProviderOption[]>([]);
   const [providersError, setProvidersError] = useState<string | null>(null);
   const [isProvidersLoading, setIsProvidersLoading] = useState(false);

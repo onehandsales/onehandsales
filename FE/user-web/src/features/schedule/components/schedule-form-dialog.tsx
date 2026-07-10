@@ -47,10 +47,15 @@ type ScheduleFormDialogProps = {
 
 const fixedTimeZoneOptions = [
   "Asia/Seoul",
+  "Asia/Tokyo",
+  "Asia/Taipei",
+  "Asia/Singapore",
   "America/Los_Angeles",
   "America/New_York",
+  "America/Toronto",
+  "America/Vancouver",
   "Europe/London",
-  "Asia/Singapore",
+  "Australia/Sydney",
   "UTC",
 ];
 
