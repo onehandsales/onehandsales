@@ -1,6 +1,7 @@
 import { ArrowRight, LockKeyhole } from "lucide-react";
 import { Link } from "react-router-dom";
 import { PublicSitePageShell } from "@/features/public-site/components/public-site-page-shell";
+import { usePublicSitePath } from "@/features/public-site/i18n/public-site-locale-hooks";
 import {
   getPublicSiteCopyLanguage,
   usePublicSiteLanguage,
@@ -959,6 +960,7 @@ const privacyCopyByLanguage: Record<PublicSiteCopyLanguage, PrivacyCopy> = {
 
 export function PrivacyPage() {
   const { language } = usePublicSiteLanguage();
+  const publicSitePath = usePublicSitePath();
   const copyLanguage = getPublicSiteCopyLanguage(language);
   const copy = privacyCopyByLanguage[copyLanguage];
 
@@ -1038,7 +1040,7 @@ export function PrivacyPage() {
               </p>
               <Link
                 className="mt-4 inline-flex items-center gap-2 text-[13px] font-black text-[#0075DE] underline-offset-2 hover:underline"
-                to="/contact"
+                to={publicSitePath("/contact")}
               >
                 {copy.contactCta}
                 <ArrowRight className="h-4 w-4" />

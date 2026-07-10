@@ -4,6 +4,8 @@ import { useAuthSession } from "@/features/auth";
 import { authService } from "@/features/auth/auth-service";
 import { AuthLandingPage } from "@/features/auth/components/auth-landing-page";
 import { AuthLoginPage } from "@/features/auth/components/auth-login-page";
+import { usePublicSitePath } from "@/features/public-site/i18n/public-site-locale-hooks";
+import { stripPublicSiteLocaleFromPathname } from "@/features/public-site/i18n/public-site-locale-routes";
 import type {
   AuthProviderId,
   AuthProviderOption,
@@ -26,12 +28,15 @@ export function LoginPage() {
   } = useAuthSession();
   const location = useLocation();
   const navigate = useNavigate();
+  const publicSitePath = usePublicSitePath();
   const [providers, setProviders] = useState<AuthProviderOption[]>([]);
   const [providersError, setProvidersError] = useState<string | null>(null);
   const [isProvidersLoading, setIsProvidersLoading] = useState(true);
   const [isCallbackLoginLoading, setIsCallbackLoginLoading] = useState(false);
-  const isLoginRoute = location.pathname === "/login";
-  const isSignupRoute = location.pathname === "/signup";
+  const publicPathname = stripPublicSiteLocaleFromPathname(location.pathname);
+  const isCallbackRoute = location.pathname === "/auth/callback";
+  const isLoginRoute = publicPathname === "/login";
+  const isSignupRoute = publicPathname === "/signup";
   const [pendingProvider, setPendingProvider] = useState<AuthProviderId | null>(
     null
   );
@@ -73,7 +78,7 @@ export function LoginPage() {
   }, []);
 
   useEffect(() => {
-    if (location.pathname !== "/auth/callback") {
+    if (!isCallbackRoute) {
       callbackExchangeRef.current = null;
       setIsCallbackLoginLoading(false);
       return;
@@ -127,7 +132,7 @@ export function LoginPage() {
   }, [
     exchangeCurrentSupabaseSession,
     isInitializing,
-    location.pathname,
+    isCallbackRoute,
     navigate,
     redirectTo,
   ]);
@@ -145,7 +150,7 @@ export function LoginPage() {
     });
   };
 
-  if (isLoginRoute || isSignupRoute || location.pathname === "/auth/callback") {
+  if (isLoginRoute || isSignupRoute || isCallbackRoute) {
     return (
       <AuthLoginPage
         authError={authError}
@@ -163,7 +168,10 @@ export function LoginPage() {
 
   // "/" — 랜딩 페이지
   return (
-    <AuthLandingPage isModalOpen={false} onOpenLogin={() => void navigate("/login")}>
+    <AuthLandingPage
+      isModalOpen={false}
+      onOpenLogin={() => void navigate(publicSitePath("/login"))}
+    >
       {null}
     </AuthLandingPage>
   );

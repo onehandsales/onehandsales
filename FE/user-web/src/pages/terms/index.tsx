@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { PublicSitePageShell } from "@/features/public-site/components/public-site-page-shell";
+import { usePublicSitePath } from "@/features/public-site/i18n/public-site-locale-hooks";
 import {
   getPublicSiteCopyLanguage,
   usePublicSiteLanguage,
@@ -613,6 +614,7 @@ const termsCopyByLanguage: Record<PublicSiteCopyLanguage, TermsCopy> = {
 
 export function TermsPage() {
   const { language } = usePublicSiteLanguage();
+  const publicSitePath = usePublicSitePath();
   const copy = termsCopyByLanguage[getPublicSiteCopyLanguage(language)];
 
   return (
@@ -702,7 +704,7 @@ export function TermsPage() {
                     </p>
                     <Link
                       className="mt-4 inline-flex items-center gap-2 text-[13px] font-black text-[#0075DE] underline-offset-2 hover:underline"
-                      to="/contact"
+                      to={publicSitePath("/contact")}
                     >
                       {copy.reviewCta}
                       <ArrowRight className="h-4 w-4" />
@@ -726,11 +728,12 @@ function PolicyCard({
   readonly openLabel: string;
 }) {
   const Icon = item.icon;
+  const publicSitePath = usePublicSitePath();
 
   return (
     <Link
       className="group rounded-[8px] bg-[#f7f7f5] p-5 transition-colors hover:bg-[#eeeeec]"
-      to={item.to}
+      to={publicSitePath(item.to)}
     >
       <span className="grid h-10 w-10 place-items-center rounded-[8px] bg-white text-[#0075DE]">
         <Icon className="h-5 w-5" />

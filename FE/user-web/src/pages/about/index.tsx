@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { PublicSitePageShell } from "@/features/public-site/components/public-site-page-shell";
+import { usePublicSitePath } from "@/features/public-site/i18n/public-site-locale-hooks";
 import {
   getPublicSiteCopyLanguage,
   usePublicSiteLanguage,
@@ -362,6 +363,7 @@ const aboutCopyByLanguage: Record<PublicSiteCopyLanguage, AboutCopy> = {
 
 export function AboutPage() {
   const { language } = usePublicSiteLanguage();
+  const publicSitePath = usePublicSitePath();
   const copy = aboutCopyByLanguage[getPublicSiteCopyLanguage(language)];
 
   return (
@@ -413,7 +415,7 @@ export function AboutPage() {
                 </p>
                 <Link
                   className="mt-4 inline-flex h-9 items-center gap-2 rounded-[6px] bg-[#0075DE] px-4 text-[13px] font-bold text-white hover:bg-[#006AC8]"
-                  to="/contact"
+                  to={publicSitePath("/contact")}
                 >
                   {copy.joinCta}
                   <ArrowRight className="h-4 w-4" />

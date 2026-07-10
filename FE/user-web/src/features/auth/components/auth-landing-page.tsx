@@ -23,6 +23,7 @@ import { useEffect, useState, type ReactNode } from "react";
 import { Link } from "react-router-dom";
 import { PublicSiteFooter } from "@/features/public-site/components/public-site-footer";
 import { PublicSiteHeader } from "@/features/public-site/components/public-site-header";
+import { usePublicSitePath } from "@/features/public-site/i18n/public-site-locale-hooks";
 import {
   getPublicSiteCopyLanguage,
   usePublicSiteLanguage,
@@ -1661,6 +1662,7 @@ function LandingScrollProgressBar({
 }
 
 function HeroSection({ copy }: { readonly copy: LandingCopy }) {
+  const publicSitePath = usePublicSitePath();
   const [activeHeroWordIndex, setActiveHeroWordIndex] = useState(0);
   const rotatingItemsCount = copy.hero.rotatingItems.length;
   const activeHeroItem =
@@ -1732,14 +1734,14 @@ function HeroSection({ copy }: { readonly copy: LandingCopy }) {
         <div className="mt-7 flex flex-wrap justify-center gap-3">
           <Link
             className="inline-flex h-11 items-center gap-2 rounded-[6px] bg-[#0075DE] px-5 text-[15px] font-black text-white hover:bg-[#006AC8]"
-            to="/signup"
+            to={publicSitePath("/signup")}
           >
             {copy.hero.primaryCta}
             <ArrowRight className="h-4 w-4" />
           </Link>
           <Link
             className="inline-flex h-11 items-center gap-2 rounded-[6px] bg-[#e7f2fc] px-5 text-[15px] font-black text-[#005aa8] hover:bg-[#d8ebfb]"
-            to="/contact"
+            to={publicSitePath("/contact")}
           >
             {copy.hero.secondaryCta}
           </Link>
@@ -1898,6 +1900,7 @@ function PartnerStrip({ copy }: { readonly copy: LandingCopy }) {
 }
 
 function WorkSection({ copy }: { readonly copy: LandingCopy }) {
+  const publicSitePath = usePublicSitePath();
   const defaultVisual = {
     icon: MessageCircle,
     tone: "bg-[#fff0e4] text-[#d9571f]",
@@ -1972,7 +1975,7 @@ function WorkSection({ copy }: { readonly copy: LandingCopy }) {
                     : "border-[#dededa] bg-white text-[#111111] hover:border-[#b8d8f4]",
                 ].join(" ")}
                 key={card}
-                to="/contact"
+                to={publicSitePath("/contact")}
               >
                 <span>{card}</span>
                 <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
@@ -2545,6 +2548,8 @@ function MetricPill({
 }
 
 function FinalSection({ copy }: { readonly copy: LandingCopy }) {
+  const publicSitePath = usePublicSitePath();
+
   return (
     <section className="flex min-h-screen flex-col bg-[#f7f7f5]">
       <div className="flex min-h-[48vh] flex-1 items-center justify-center px-4 py-16 text-center sm:px-6">
@@ -2560,14 +2565,14 @@ function FinalSection({ copy }: { readonly copy: LandingCopy }) {
           <div className="mt-7 flex flex-wrap justify-center gap-3">
             <Link
               className="inline-flex h-11 items-center gap-2 rounded-[6px] bg-[#0075DE] px-5 text-[15px] font-black text-white hover:bg-[#006AC8]"
-              to="/signup"
+              to={publicSitePath("/signup")}
             >
               {copy.final.primaryCta}
               <ArrowRight className="h-4 w-4" />
             </Link>
             <Link
               className="inline-flex h-11 items-center rounded-[6px] bg-white px-5 text-[15px] font-black text-[#005aa8] hover:bg-[#eef6ff]"
-              to="/contact"
+              to={publicSitePath("/contact")}
             >
               {copy.final.secondaryCta}
             </Link>

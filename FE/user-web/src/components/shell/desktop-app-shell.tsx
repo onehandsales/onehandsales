@@ -5,6 +5,10 @@ import { OnehandLogoMark } from "@/components/brand/onehand-logo-mark";
 import { useAuthSession } from "@/features/auth";
 import { SidebarNav } from "@/components/navigation/sidebar-nav";
 import { GlobalSearch } from "@/features/search";
+import {
+  resolvePublicSiteLanguage,
+  toPublicSitePath,
+} from "@/features/public-site/i18n/public-site-locale-routes";
 
 const PAGE_TITLES: Record<string, { title: string }> = {
   "/app": { title: "홈" },
@@ -36,7 +40,7 @@ export function DesktopAppShell({
 
   const handleLogout = async () => {
     await logout();
-    navigate("/login");
+    navigate(toPublicSitePath(resolvePublicSiteLanguage(), "/login"));
   };
 
   return (

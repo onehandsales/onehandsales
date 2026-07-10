@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { OnehandLogoMark } from "@/components/brand/onehand-logo-mark";
+import { usePublicSitePath } from "@/features/public-site/i18n/public-site-locale-hooks";
 import { usePublicSiteLanguage } from "@/features/public-site/i18n/public-site-language";
 
 type PublicSiteHeaderProps = {
@@ -82,6 +83,7 @@ const productMenuIconGroups = [
 export function PublicSiteHeader({ onLogin }: PublicSiteHeaderProps) {
   const navigate = useNavigate();
   const { copy } = usePublicSiteLanguage();
+  const publicSitePath = usePublicSitePath();
 
   const handleLogin = () => {
     if (onLogin) {
@@ -89,7 +91,7 @@ export function PublicSiteHeader({ onLogin }: PublicSiteHeaderProps) {
       return;
     }
 
-    navigate("/login");
+    navigate(publicSitePath("/login"));
   };
 
   return (
@@ -98,7 +100,7 @@ export function PublicSiteHeader({ onLogin }: PublicSiteHeaderProps) {
         <Link
           aria-label={copy.common.logoAria}
           className="flex h-9 w-9 items-center justify-center text-[#111111]"
-          to="/"
+          to={publicSitePath("/")}
         >
           <OnehandLogoMark className="h-8 w-8" />
         </Link>
@@ -125,7 +127,7 @@ export function PublicSiteHeader({ onLogin }: PublicSiteHeaderProps) {
                       <Link
                         className="flex items-start gap-3 rounded-[8px] p-2 hover:bg-[#f7f7f5]"
                         key={itemCopy?.title}
-                        to="/"
+                        to={publicSitePath("/")}
                       >
                         <span className={`grid h-9 w-9 shrink-0 place-items-center rounded-[8px] ${tone}`}>
                           <Icon className="h-5 w-5" />
@@ -148,7 +150,7 @@ export function PublicSiteHeader({ onLogin }: PublicSiteHeaderProps) {
               <div className="mt-5 grid border-t border-[#eeeeec] pt-4 md:grid-cols-2">
                 <Link
                   className="flex items-center gap-3 rounded-[8px] px-2 py-2 text-[13px] font-bold text-[#555550] hover:bg-[#f7f7f5]"
-                  to="/"
+                  to={publicSitePath("/")}
                 >
                   <Sparkles className="h-4 w-4 text-[#777770]" />
                   {copy.common.productTour}
@@ -156,7 +158,7 @@ export function PublicSiteHeader({ onLogin }: PublicSiteHeaderProps) {
                 </Link>
                 <Link
                   className="flex items-center gap-3 rounded-[8px] px-2 py-2 text-[13px] font-bold text-[#555550] hover:bg-[#f7f7f5] md:justify-end"
-                  to="/login"
+                  to={publicSitePath("/login")}
                 >
                   <BriefcaseBusiness className="h-4 w-4 text-[#777770]" />
                   {copy.common.productApp}
@@ -166,10 +168,10 @@ export function PublicSiteHeader({ onLogin }: PublicSiteHeaderProps) {
             </div>
           </div>
 
-          <Link className="hover:text-[#111111]" to="/pricing">
+          <Link className="hover:text-[#111111]" to={publicSitePath("/pricing")}>
             {copy.common.nav.pricing}
           </Link>
-          <Link className="hover:text-[#111111]" to="/contact">
+          <Link className="hover:text-[#111111]" to={publicSitePath("/contact")}>
             {copy.common.nav.contact}
           </Link>
         </nav>
@@ -177,7 +179,7 @@ export function PublicSiteHeader({ onLogin }: PublicSiteHeaderProps) {
         <div className="flex items-center gap-2">
           <Link
             className="hidden h-8 items-center rounded-[6px] bg-[#0075DE] px-3 text-[13px] font-bold text-white hover:bg-[#006AC8] sm:inline-flex"
-            to="/signup"
+            to={publicSitePath("/signup")}
           >
             {copy.common.nav.freeCta}
           </Link>

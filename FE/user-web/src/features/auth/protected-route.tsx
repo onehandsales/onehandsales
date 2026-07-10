@@ -1,6 +1,10 @@
 import { Navigate, useLocation } from "react-router-dom";
 import type { ReactNode } from "react";
 import { useAuthSession } from "@/features/auth/auth-context";
+import {
+  resolvePublicSiteLanguage,
+  toPublicSitePath,
+} from "@/features/public-site/i18n/public-site-locale-routes";
 
 type ProtectedRouteProps = {
   readonly children: ReactNode;
@@ -9,6 +13,7 @@ type ProtectedRouteProps = {
 export function ProtectedRoute({ children }: ProtectedRouteProps) {
   const { isAuthenticated, isInitializing, isPending } = useAuthSession();
   const location = useLocation();
+  const loginPath = toPublicSitePath(resolvePublicSiteLanguage(), "/login");
 
   if (isInitializing || isPending) {
     return (
@@ -23,7 +28,7 @@ export function ProtectedRoute({ children }: ProtectedRouteProps) {
       <Navigate
         replace
         state={{ from: `${location.pathname}${location.search}` }}
-        to="/login"
+        to={loginPath}
       />
     );
   }

@@ -7,6 +7,12 @@ import {
   useState,
   type ReactNode,
 } from "react";
+import {
+  publicSiteLanguageStorageKey,
+  resolvePublicSiteLanguage,
+} from "@/features/public-site/i18n/public-site-locale-routes";
+
+export { publicSiteLanguageStorageKey } from "@/features/public-site/i18n/public-site-locale-routes";
 
 export type PublicSiteLanguage =
   | "ko"
@@ -152,8 +158,6 @@ type PublicSiteCopy = {
     }[];
   };
 };
-
-export const publicSiteLanguageStorageKey = "onehand.sales.publicLanguage";
 
 export const publicSiteLanguageOptions: readonly {
   readonly value: PublicSiteLanguage;
@@ -737,54 +741,7 @@ export function getPublicSiteCopyLanguage(
 }
 
 function getInitialLanguage(): PublicSiteLanguage {
-  if (typeof window === "undefined") {
-    return "ko";
-  }
-
-  const storedLanguage = window.localStorage.getItem(publicSiteLanguageStorageKey);
-  if (storedLanguage === "zh") {
-    return "zh-TW";
-  }
-
-  if (isPublicSiteLanguage(storedLanguage)) {
-    return storedLanguage;
-  }
-
-  const browserLanguage = window.navigator.language.toLowerCase();
-
-  if (browserLanguage.startsWith("ja")) {
-    return "ja";
-  }
-
-  if (browserLanguage.startsWith("zh")) {
-    return "zh-TW";
-  }
-
-  if (browserLanguage === "en-gb") {
-    return "en-GB";
-  }
-
-  if (browserLanguage === "en-sg") {
-    return "en-SG";
-  }
-
-  if (browserLanguage === "en-au") {
-    return "en-AU";
-  }
-
-  if (browserLanguage === "en-ca") {
-    return "en-CA";
-  }
-
-  if (browserLanguage.startsWith("en")) {
-    return "en-US";
-  }
-
-  return "ko";
-}
-
-function isPublicSiteLanguage(value: unknown): value is PublicSiteLanguage {
-  return publicSiteLanguageOptions.some((option) => option.value === value);
+  return resolvePublicSiteLanguage();
 }
 
 function makeTranslatedPricing(copy: {

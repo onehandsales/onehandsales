@@ -24,6 +24,10 @@ import {
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAuthSession } from "@/features/auth";
+import {
+  resolvePublicSiteLanguage,
+  toPublicSitePath,
+} from "@/features/public-site/i18n/public-site-locale-routes";
 import { SearchModal } from "@/features/search";
 import { type FormEvent, type ReactNode, useEffect, useRef, useState } from "react";
 import { useDealDetail } from "@/features/deal/hooks/use-deal-detail";
@@ -199,7 +203,7 @@ export function AppShell() {
 
   const handleLogout = async () => {
     await logout();
-    void navigate("/login");
+    void navigate(toPublicSitePath(resolvePublicSiteLanguage(), "/login"));
   };
 
   // ⌘K / Ctrl+K 단축키로 검색 모달 열기

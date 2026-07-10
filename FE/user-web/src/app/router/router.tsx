@@ -1,11 +1,16 @@
-import {
-  createBrowserRouter,
-  Navigate,
-  useLocation,
-  useParams,
-} from "react-router-dom";
+import { createBrowserRouter, Navigate } from "react-router-dom";
 import { AppShell } from "@/components/layout/app-shell";
+import {
+  LegacyAppRedirect,
+  LegacyPublicSiteRedirect,
+  PublicSiteRoute,
+} from "@/app/router/route-elements";
 import { ProtectedRoute } from "@/features/auth";
+import {
+  publicSiteLocalizedPaths,
+  publicSiteLocaleSlugs,
+  type PublicSiteLocalizedPath,
+} from "@/features/public-site/i18n/public-site-locale-routes";
 import { AboutPage } from "@/pages/about";
 import { BusinessCardsPage } from "@/pages/business-cards";
 import { CompanyDetailPage } from "@/pages/companies/detail";
@@ -37,17 +42,27 @@ import { TrashPage } from "@/pages/trash";
 import { MorePage } from "@/pages/more";
 import { TermsPage } from "@/pages/terms";
 
+const localizedPublicSiteRoutes = publicSiteLocaleSlugs.flatMap((localeSlug) =>
+  publicSiteLocalizedPaths.map((publicPath) => ({
+    path: publicPath === "/" ? `/${localeSlug}` : `/${localeSlug}${publicPath}`,
+    element: (
+      <PublicSiteRoute>{getPublicSiteElement(publicPath)}</PublicSiteRoute>
+    ),
+  }))
+);
+
 export const router = createBrowserRouter([
-  { path: "/", element: <LoginPage /> },
-  { path: "/login", element: <LoginPage /> },
-  { path: "/signup", element: <LoginPage /> },
-  { path: "/pricing", element: <PricingPage /> },
-  { path: "/contact", element: <ContactPage /> },
-  { path: "/about", element: <AboutPage /> },
-  { path: "/security", element: <SecurityPage /> },
-  { path: "/terms", element: <TermsPage /> },
-  { path: "/privacy", element: <PrivacyPage /> },
+  { path: "/", element: <LegacyPublicSiteRedirect to="/" /> },
+  { path: "/login", element: <LegacyPublicSiteRedirect to="/login" /> },
+  { path: "/signup", element: <LegacyPublicSiteRedirect to="/signup" /> },
+  { path: "/pricing", element: <LegacyPublicSiteRedirect to="/pricing" /> },
+  { path: "/contact", element: <LegacyPublicSiteRedirect to="/contact" /> },
+  { path: "/about", element: <LegacyPublicSiteRedirect to="/about" /> },
+  { path: "/security", element: <LegacyPublicSiteRedirect to="/security" /> },
+  { path: "/terms", element: <LegacyPublicSiteRedirect to="/terms" /> },
+  { path: "/privacy", element: <LegacyPublicSiteRedirect to="/privacy" /> },
   { path: "/auth/callback", element: <LoginPage /> },
+  ...localizedPublicSiteRoutes,
   { path: "/companies", element: <LegacyAppRedirect to="/app/companies" /> },
   {
     path: "/companies/new",
@@ -156,17 +171,30 @@ export const router = createBrowserRouter([
   },
 ]);
 
-function LegacyAppRedirect({
-  paramName,
-  to,
-}: {
-  readonly paramName?: string;
-  readonly to: string;
-}) {
-  const location = useLocation();
-  const params = useParams();
-  const paramValue = paramName ? params[paramName] : undefined;
-  const targetPath = paramValue ? `${to}/${encodeURIComponent(paramValue)}` : to;
+function getPublicSiteElement(path: PublicSiteLocalizedPath) {
+  if (path === "/pricing") {
+    return <PricingPage />;
+  }
 
-  return <Navigate replace to={`${targetPath}${location.search}`} />;
+  if (path === "/contact") {
+    return <ContactPage />;
+  }
+
+  if (path === "/about") {
+    return <AboutPage />;
+  }
+
+  if (path === "/security") {
+    return <SecurityPage />;
+  }
+
+  if (path === "/terms") {
+    return <TermsPage />;
+  }
+
+  if (path === "/privacy") {
+    return <PrivacyPage />;
+  }
+
+  return <LoginPage />;
 }

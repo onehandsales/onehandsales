@@ -272,6 +272,11 @@ pnpm build
 
 ### 로그인
 
+- [ ] URL locale smoke: `/ko`, `/ja/login`, `/zh-tw/signup`, `/en-us/pricing`, `/en-gb/contact`, `/en-sg/about`, `/en-au/security`, `/en-ca/privacy`가 public/auth 화면으로 진입함
+- [ ] Compatibility redirect smoke: `/`, `/login`, `/signup`, `/pricing`, `/contact`, `/about`, `/security`, `/terms`, `/privacy`가 선호 locale URL로 redirect됨
+- [ ] OAuth callback smoke: `/auth/callback`은 locale prefix 없이 유지되고 Supabase session exchange를 시도함
+- [ ] `/app/*`는 locale prefix 없이 유지되고, 비로그인 접근 시 선호 locale의 login URL로 이동함
+
 - [x] `/` 접근 시 공개 랜딩/진입 화면이 보임
 - [x] `/login` 접근 시 로그인 화면이 보임
 - [x] 로그인 전 `/app` 보호 라우트 접근 시 로그인으로 이동

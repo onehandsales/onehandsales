@@ -9,6 +9,7 @@ import {
 import { Link } from "react-router-dom";
 import { OnehandLogoMark } from "@/components/brand/onehand-logo-mark";
 import { PublicSiteLanguageSelect } from "@/features/public-site/components/public-site-language-select";
+import { usePublicSitePath } from "@/features/public-site/i18n/public-site-locale-hooks";
 import { usePublicSiteLanguage } from "@/features/public-site/i18n/public-site-language";
 
 type PublicSiteFooterProps = {
@@ -37,6 +38,7 @@ export function PublicSiteFooter({
   showTopDivider = false,
 }: PublicSiteFooterProps) {
   const { copy } = usePublicSiteLanguage();
+  const publicSitePath = usePublicSitePath();
 
   return (
     <footer
@@ -47,7 +49,10 @@ export function PublicSiteFooter({
     >
       <div className="mx-auto grid w-full max-w-[1320px] gap-12 px-4 sm:px-6 md:grid-cols-[1fr_2.35fr] lg:gap-16 lg:px-8">
         <div className="flex min-w-0 flex-col items-start">
-          <Link className="inline-flex items-center gap-3 text-[#111111]" to="/">
+          <Link
+            className="inline-flex items-center gap-3 text-[#111111]"
+            to={publicSitePath("/")}
+          >
             <OnehandLogoMark className="h-9 w-9" />
             <span className="text-[26px] font-black leading-none">Onehand</span>
           </Link>
@@ -93,7 +98,7 @@ export function PublicSiteFooter({
                     <li key={label}>
                       <Link
                         className="text-[13px] font-medium text-[#111111] underline-offset-2 hover:underline"
-                        to={routes[linkIndex] ?? "/"}
+                        to={publicSitePath(routes[linkIndex] ?? "/")}
                       >
                         {label}
                       </Link>

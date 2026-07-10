@@ -60,7 +60,7 @@ pnpm run dev
 
 User Web URL: `http://localhost:5173`
 
-User Web의 `/`는 공개 랜딩/진입 화면이고 로그인 후 실제 앱 홈은 `/app`이다. User Web은 Supabase OAuth provider login, `/auth/callback`, Backend `POST /api/auth/exchange`, refresh cookie 기반 access token 재발급 흐름을 사용한다. 개발용 mock login 경로는 제거되어 있으며, 현재 노출 provider는 Google과 Kakao다. Google OAuth 가입/로그인과 로그아웃 후 `/login` 이동은 QA 통과 상태다. Kakao는 Kakao Developers 앱의 `account_email` 동의항목 설정이 필요해 계정 접근 가능 시 별도 처리한다.
+User Web의 공개/인증 canonical URL은 locale prefix를 사용한다. 예: `/ko`, `/ko/login`, `/ko/pricing`, `/en-us/login`. 기존 `/`, `/login`, `/pricing` 등은 선호 locale URL로 redirect하고, 로그인 후 실제 앱 홈은 `/app`이다. User Web은 Supabase OAuth provider login, 공유 `/auth/callback`, Backend `POST /api/auth/exchange`, refresh cookie 기반 access token 재발급 흐름을 사용한다. 개발용 mock login 경로는 제거되어 있으며, 현재 노출 provider는 Google과 Kakao다. Kakao는 Kakao Developers 앱의 `account_email` 동의항목 설정이 필요해 계정 접근 가능 시 별도 처리한다.
 
 명함 스캔은 `/app/business-cards`에서 실제 API와 연결되어 있다. 사용자는 이미지를 업로드한 뒤 `명함스캔` 진행 표시를 보고, 추출 결과를 확인/수정한 후 회사/담당자로 저장한다.
 

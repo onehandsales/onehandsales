@@ -1,5 +1,6 @@
 import { ChevronDown } from "lucide-react";
 import { useEffect, useRef } from "react";
+import { usePublicSiteLocaleSwitcher } from "@/features/public-site/i18n/public-site-locale-hooks";
 import {
   publicSiteLanguageOptions,
   usePublicSiteLanguage,
@@ -7,14 +8,15 @@ import {
 } from "@/features/public-site/i18n/public-site-language";
 
 export function PublicSiteLanguageSelect() {
-  const { copy, language, setLanguage } = usePublicSiteLanguage();
+  const { copy, language } = usePublicSiteLanguage();
+  const switchLocale = usePublicSiteLocaleSwitcher();
   const detailsRef = useRef<HTMLDetailsElement>(null);
   const selectedOption = publicSiteLanguageOptions.find(
     (option) => option.value === language
   );
 
   const onSelectLanguage = (nextLanguage: PublicSiteLanguage) => {
-    setLanguage(nextLanguage);
+    switchLocale(nextLanguage);
   };
 
   useEffect(() => {

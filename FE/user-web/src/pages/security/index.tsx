@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { PublicSitePageShell } from "@/features/public-site/components/public-site-page-shell";
+import { usePublicSitePath } from "@/features/public-site/i18n/public-site-locale-hooks";
 import {
   getPublicSiteCopyLanguage,
   usePublicSiteLanguage,
@@ -721,6 +722,7 @@ const securityCopyByLanguage: Record<PublicSiteCopyLanguage, SecurityCopy> = {
 
 export function SecurityPage() {
   const { language } = usePublicSiteLanguage();
+  const publicSitePath = usePublicSitePath();
   const copy = securityCopyByLanguage[getPublicSiteCopyLanguage(language)];
 
   return (
@@ -780,14 +782,14 @@ export function SecurityPage() {
           <div className="mt-7 flex flex-wrap items-center justify-center gap-3">
             <Link
               className="inline-flex h-9 items-center gap-2 rounded-[6px] bg-[#0075DE] px-4 text-[13px] font-bold text-white hover:bg-[#006AC8]"
-              to="/contact"
+              to={publicSitePath("/contact")}
             >
               {copy.contactCta}
               <ArrowRight className="h-4 w-4" />
             </Link>
             <Link
               className="inline-flex h-9 items-center rounded-[6px] bg-white px-4 text-[13px] font-bold text-[#0075DE] hover:bg-[#eeeeec]"
-              to="/privacy"
+              to={publicSitePath("/privacy")}
             >
               {copy.privacyCta}
             </Link>

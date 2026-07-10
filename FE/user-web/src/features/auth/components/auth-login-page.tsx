@@ -12,6 +12,10 @@ import {
   type PublicSiteCopyLanguage,
   type PublicSiteLanguage,
 } from "@/features/public-site/i18n/public-site-language";
+import {
+  usePublicSiteLocaleSwitcher,
+  usePublicSitePath,
+} from "@/features/public-site/i18n/public-site-locale-hooks";
 
 type AuthLoginPageProps = {
   readonly authError: string | null;
@@ -250,8 +254,9 @@ export function AuthLoginPage({
   onProviderLogin,
 }: AuthLoginPageProps) {
   const { language } = usePublicSiteLanguage();
+  const publicSitePath = usePublicSitePath();
   const copy = loginCopy[getPublicSiteCopyLanguage(language)];
-  const switchPath = mode === "login" ? "/signup" : "/login";
+  const switchPath = publicSitePath(mode === "login" ? "/signup" : "/login");
   const visibleProviders = providerOrder
     .map((providerId) =>
       enabledProviders.find((provider) => provider.provider === providerId)
@@ -278,7 +283,7 @@ export function AuthLoginPage({
             <Link
               aria-label={copy.homeAria}
               className="grid h-9 w-9 place-items-center text-[#111111]"
-              to="/"
+              to={publicSitePath("/")}
             >
               <OnehandLogoMark className="h-8 w-8" />
             </Link>
@@ -376,14 +381,14 @@ export function AuthLoginPage({
             {copy.termsPrefix}
             <Link
               className="underline decoration-[#c9c9c5] underline-offset-3 hover:text-[#191919]"
-              to="/terms"
+              to={publicSitePath("/terms")}
             >
               {copy.terms}
             </Link>
             {copy.termsConnector}
             <Link
               className="underline decoration-[#c9c9c5] underline-offset-3 hover:text-[#191919]"
-              to="/privacy"
+              to={publicSitePath("/privacy")}
             >
               {copy.privacy}
             </Link>
@@ -407,7 +412,7 @@ function LoginLanguageSelect({
   readonly copy: (typeof loginCopy)[PublicSiteCopyLanguage];
   readonly language: PublicSiteLanguage;
 }) {
-  const { setLanguage } = usePublicSiteLanguage();
+  const switchLocale = usePublicSiteLocaleSwitcher();
   const selectedOption = publicSiteLanguageOptions.find(
     (option) => option.value === language
   );
@@ -436,7 +441,7 @@ function LoginLanguageSelect({
             data-login-language-option={option.value}
             key={option.value}
             onClick={(event) => {
-              setLanguage(option.value);
+              switchLocale(option.value);
               event.currentTarget.closest("details")?.removeAttribute("open");
             }}
             type="button"
