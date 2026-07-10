@@ -197,7 +197,6 @@ type ImportDialogMode = "DIRECT" | "AI" | null;
 type EditableImportRow = {
   readonly rowNumber: number;
   readonly data: ImportMappedRowData;
-  readonly errorMessage: string | null;
 };
 
 type ContactCompanyImportSummaryData = {
@@ -456,7 +455,6 @@ export function ImportScreen() {
                 ...row.data,
                 [field.field]: toEditableFieldValue(value, field),
               },
-              errorMessage: null,
             }
           : row
       )
@@ -2257,8 +2255,11 @@ function ImportEditablePreview({
             </div>
             {fields.map((field) => {
               const cellValue = toInputValue(row.data[field.field]);
-              const isEmptyRequiredCell =
-                field.required && cellValue.trim().length === 0;
+              const cellError = getImportPreviewCellError(
+                field,
+                row.data[field.field]
+              );
+              const isInvalidCell = cellError !== null;
               const normalizedCompanyName = cellValue.trim();
               const isNewContactCompany =
                 targetType === "CONTACT" &&
@@ -2329,7 +2330,7 @@ function ImportEditablePreview({
                 <div
                   className={cn(
                     "flex h-[30px] min-w-0 items-center border-r border-[#CBD5E1] px-2 last:border-r-0",
-                    isEmptyRequiredCell && "bg-red-50"
+                    isInvalidCell && "bg-red-50"
                   )}
                   key={field.field}
                   role="cell"
@@ -2337,10 +2338,10 @@ function ImportEditablePreview({
                   <div className="flex min-w-0 flex-1 items-center gap-1.5">
                     {field.kind === "enum" ? (
                       <select
-                        aria-invalid={isEmptyRequiredCell}
+                        aria-invalid={isInvalidCell}
                         className={cn(
                           "h-full min-w-0 flex-1 appearance-none border-0 bg-transparent px-0 text-[11px] outline-none disabled:bg-transparent",
-                          isEmptyRequiredCell ? "text-red-700" : "text-[#111827]"
+                          isInvalidCell ? "text-red-700" : "text-[#111827]"
                         )}
                         disabled={disabled}
                         onChange={(event) =>
@@ -2361,10 +2362,10 @@ function ImportEditablePreview({
                       </select>
                     ) : (
                       <input
-                        aria-invalid={isEmptyRequiredCell}
+                        aria-invalid={isInvalidCell}
                         className={cn(
                           "h-full min-w-0 flex-1 appearance-none border-0 bg-transparent px-0 text-[11px] outline-none disabled:bg-transparent",
-                          isEmptyRequiredCell
+                          isInvalidCell
                             ? "text-red-700"
                             : "text-[#111827]"
                         )}
@@ -2395,9 +2396,12 @@ function ImportEditablePreview({
                       </span>
                     ) : null}
                   </div>
-                  {row.errorMessage ? (
-                    <span className="mt-1 block truncate text-[11px] text-red-500">
-                      {row.errorMessage}
+                  {cellError ? (
+                    <span
+                      className="mt-1 block truncate text-[11px] text-red-500"
+                      title={cellError}
+                    >
+                      {cellError}
                     </span>
                   ) : null}
                 </div>
@@ -3485,7 +3489,6 @@ function toEditableRows(job: ImportJobResponse): EditableImportRow[] {
     return {
       rowNumber: row.rowNumber,
       data,
-      errorMessage: row.errorMessage,
     };
   });
 }
@@ -3564,6 +3567,63 @@ function toInputValue(value: ImportFieldValue | undefined): string {
   }
 
   return String(value);
+}
+
+function getImportPreviewCellError(
+  field: ImportTargetField,
+  value: ImportFieldValue | undefined
+): string | null {
+  const textValue = toInputValue(value).trim();
+
+  if (field.required && textValue.length === 0) {
+    return formatRequiredImportCellMessage(field.label);
+  }
+
+  if (textValue.length === 0) {
+    return null;
+  }
+
+  if (field.field === "contactEmail" && !IMPORT_EMAIL_PATTERN.test(textValue)) {
+    return "담당자 이메일 형식이 올바르지 않습니다.";
+  }
+
+  if (field.field === "contactPhone" && !isImportPhoneValue(textValue)) {
+    return "담당자 핸드폰 번호 형식이 올바르지 않습니다.";
+  }
+
+  if (field.kind === "number" && !isNonNegativeIntegerValue(textValue)) {
+    return `${field.label}${getKoreanTopicParticle(field.label)} 0 이상의 정수여야 합니다.`;
+  }
+
+  if (
+    field.kind === "enum" &&
+    field.enumValues &&
+    !field.enumValues.includes(textValue)
+  ) {
+    return `${field.label}${getKoreanTopicParticle(field.label)} ${field.enumValues.join(", ")} 중 하나여야 합니다.`;
+  }
+
+  return null;
+}
+
+function formatRequiredImportCellMessage(label: string): string {
+  return `${label}${getKoreanTopicParticle(label)} 필수입니다.`;
+}
+
+function getKoreanTopicParticle(text: string): "은" | "는" {
+  const trimmed = text.trim();
+
+  if (trimmed.length === 0) {
+    return "은";
+  }
+
+  const lastCharCode = trimmed.charCodeAt(trimmed.length - 1);
+
+  if (lastCharCode < 0xac00 || lastCharCode > 0xd7a3) {
+    return "은";
+  }
+
+  return (lastCharCode - 0xac00) % 28 === 0 ? "는" : "은";
 }
 
 function hasEmptyEditableCell(
@@ -3730,35 +3790,10 @@ function validateEditableRows(
 
   for (const row of rows) {
     for (const field of fields) {
-      const value = row.data[field.field];
-      const textValue = value === null || value === undefined ? "" : String(value).trim();
+      const cellError = getImportPreviewCellError(field, row.data[field.field]);
 
-      if (field.required && textValue.length === 0) {
-        return `${row.rowNumber}행의 ${field.label} 값을 입력해 주세요.`;
-      }
-
-      if (textValue.length === 0) {
-        continue;
-      }
-
-      if (field.field === "contactEmail" && !IMPORT_EMAIL_PATTERN.test(textValue)) {
-        return `${row.rowNumber}행의 담당자 이메일 형식이 올바르지 않습니다.`;
-      }
-
-      if (field.field === "contactPhone" && !isImportPhoneValue(textValue)) {
-        return `${row.rowNumber}행의 담당자 핸드폰 번호 형식이 올바르지 않습니다.`;
-      }
-
-      if (field.kind === "number" && !isNonNegativeIntegerValue(textValue)) {
-        return `${row.rowNumber}행의 ${field.label}은 0 이상의 정수여야 합니다.`;
-      }
-
-      if (
-        field.kind === "enum" &&
-        field.enumValues &&
-        !field.enumValues.includes(textValue)
-      ) {
-        return `${row.rowNumber}행의 ${field.label}은 ${field.enumValues.join(", ")} 중 하나여야 합니다.`;
+      if (cellError) {
+        return `${row.rowNumber}행의 ${cellError}`;
       }
     }
   }
