@@ -54,18 +54,18 @@ export const authProviderModalCopy: Record<
     },
   },
   "zh-TW": {
-    closeLabel: "关闭登录弹窗",
-    loadingLabel: "正在登录",
+    closeLabel: "關閉登入視窗",
+    loadingLabel: "正在登入",
     brandGlyph: "O",
     brandName: "Onehand",
-    tagline: "让销售更智能",
-    providerLead: "使用社交账号快速开始",
-    providerLoading: "正在加载登录方式。",
-    noProviders: "没有可用的登录方式。",
-    providersErrorPrefix: "无法加载登录方式，正在显示默认按钮。",
+    tagline: "讓銷售更聰明",
+    providerLead: "使用社群帳號快速開始",
+    providerLoading: "正在載入登入方式。",
+    noProviders: "目前沒有可用的登入方式。",
+    providersErrorPrefix: "無法載入登入方式，正在顯示預設按鈕。",
     providerLabels: {
-      kakao: "使用 Kakao 继续",
-      google: "使用 Google 继续",
+      kakao: "使用 Kakao 繼續",
+      google: "使用 Google 繼續",
     },
   },
   "en-US": {
@@ -129,7 +129,7 @@ export function getAuthProviderContinueLabel({
   }
 
   if (language === "zh-TW") {
-    return `使用 ${providerLabel} 继续`;
+    return `使用 ${providerLabel} 繼續`;
   }
 
   return `Continue with ${providerLabel}`;
