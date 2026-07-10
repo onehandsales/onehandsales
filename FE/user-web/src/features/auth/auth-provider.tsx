@@ -1,4 +1,11 @@
-import { useCallback, useEffect, useMemo, useState, type ReactNode } from "react";
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type ReactNode,
+} from "react";
 import {
   AuthContext,
   type AuthContextValue,
@@ -14,27 +21,34 @@ export function AuthProvider({ children }: { readonly children: ReactNode }) {
   const [isInitializing, setIsInitializing] = useState(true);
   const [isPending, setIsPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const refreshPromiseRef = useRef<Promise<string | null> | null>(null);
 
   useEffect(() => {
     let isMounted = true;
 
-    setApiRefreshHandler(async () => {
-      try {
-        const refreshedSession = await authService.refresh();
+    setApiRefreshHandler(() => {
+      refreshPromiseRef.current ??= authService
+        .refresh()
+        .then((refreshedSession) => {
+          if (isMounted) {
+            setSession(refreshedSession);
+          }
 
-        if (isMounted) {
-          setSession(refreshedSession);
-        }
+          return refreshedSession.accessToken;
+        })
+        .catch(() => {
+          if (isMounted) {
+            setSession(null);
+          }
+          authService.clearSession();
 
-        return refreshedSession.accessToken;
-      } catch {
-        if (isMounted) {
-          setSession(null);
-        }
-        authService.clearSession();
+          return null;
+        })
+        .finally(() => {
+          refreshPromiseRef.current = null;
+        });
 
-        return null;
-      }
+      return refreshPromiseRef.current;
     });
 
     void authService
@@ -52,6 +66,7 @@ export function AuthProvider({ children }: { readonly children: ReactNode }) {
 
     return () => {
       isMounted = false;
+      refreshPromiseRef.current = null;
       setApiRefreshHandler(null);
     };
   }, []);
