@@ -59,8 +59,13 @@ const COMPANY_SORT_OPTIONS: Array<{
 ];
 
 const COMPANY_TABLE_GRID_STYLE = {
-  gridTemplateColumns: "repeat(6, minmax(90px, 1fr))",
+  gridTemplateColumns:
+    "minmax(150px,1.4fr) minmax(100px,1fr) minmax(100px,1fr) minmax(76px,0.6fr) minmax(64px,0.55fr) minmax(98px,0.8fr)",
 };
+const COMPANY_CREATE_PANEL_STORAGE_KEY = "onehand.company.createPanelWidth";
+const COMPANY_CREATE_PANEL_DEFAULT_WIDTH = 520;
+const COMPANY_CREATE_PANEL_MIN_WIDTH = 420;
+const COMPANY_CREATE_PANEL_MAX_RATIO = 0.7;
 
 export function CompanyListScreen({
   initialCreateOpen = false,
@@ -69,6 +74,7 @@ export function CompanyListScreen({
   const navigate = useNavigate();
   const location = useLocation();
   const { user } = useAuthSession();
+  const isDockedViewport = useMediaQuery("(min-width: 1024px)");
   const [companyNameText, setCompanyNameText] = useState("");
   const [companyName, setCompanyName] = useState("");
   const [companyFieldIds, setCompanyFieldIds] = useState<string[]>([]);
@@ -76,6 +82,10 @@ export function CompanyListScreen({
   const [sort, setSort] = useState<CompanySort>("createdAtDesc");
   const [page, setPage] = useState(1);
   const [isCreateOpen, setIsCreateOpen] = useState(false);
+  const [createPanelWidth, setCreatePanelWidth] = useState(
+    getStoredCompanyCreatePanelWidth,
+  );
+  const [isCreatePanelResizing, setIsCreatePanelResizing] = useState(false);
   const [taxonomyDialog, setTaxonomyDialog] = useState<{
     readonly kind: "field" | "region";
   } | null>(null);
@@ -83,6 +93,7 @@ export function CompanyListScreen({
   const [pendingRegionName, setPendingRegionName] = useState("");
   const [notice, setNotice] = useState<string | null>(null);
   const [noticeDescription, setNoticeDescription] = useState<string | null>(null);
+  const desktopWorkspaceRef = useRef<HTMLDivElement>(null);
 
   const listParams = useMemo(
     () => ({
@@ -134,6 +145,7 @@ export function CompanyListScreen({
   );
   const companyList = companiesQuery.data;
   const displayTimeZone = user?.timeZone ?? getBrowserTimeZoneFallback();
+  const isDockedCreateOpen = isCreateOpen && isDockedViewport;
   const hasSearch =
     companyName.length > 0 ||
     companyFieldIds.length > 0 ||
@@ -143,6 +155,65 @@ export function CompanyListScreen({
   useEffect(() => {
     if (initialCreateOpen) setIsCreateOpen(true);
   }, [initialCreateOpen]);
+
+  useEffect(() => {
+    if (typeof window === "undefined") {
+      return;
+    }
+
+    window.localStorage.setItem(
+      COMPANY_CREATE_PANEL_STORAGE_KEY,
+      String(createPanelWidth),
+    );
+  }, [createPanelWidth]);
+
+  useEffect(() => {
+    const clampToWorkspace = () => {
+      setCreatePanelWidth((currentWidth) =>
+        clampCompanyCreatePanelWidth(
+          currentWidth,
+          desktopWorkspaceRef.current?.clientWidth ?? window.innerWidth,
+        ),
+      );
+    };
+
+    clampToWorkspace();
+    window.addEventListener("resize", clampToWorkspace);
+
+    return () => {
+      window.removeEventListener("resize", clampToWorkspace);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!isCreatePanelResizing) {
+      return;
+    }
+
+    const previousCursor = document.body.style.cursor;
+    const previousUserSelect = document.body.style.userSelect;
+    const onMouseMove = (event: MouseEvent) => {
+      setCreatePanelWidth(
+        clampCompanyCreatePanelWidth(
+          window.innerWidth - event.clientX,
+          window.innerWidth,
+        ),
+      );
+    };
+    const onMouseUp = () => setIsCreatePanelResizing(false);
+
+    document.body.style.cursor = "col-resize";
+    document.body.style.userSelect = "none";
+    window.addEventListener("mousemove", onMouseMove);
+    window.addEventListener("mouseup", onMouseUp);
+
+    return () => {
+      document.body.style.cursor = previousCursor;
+      document.body.style.userSelect = previousUserSelect;
+      window.removeEventListener("mousemove", onMouseMove);
+      window.removeEventListener("mouseup", onMouseUp);
+    };
+  }, [isCreatePanelResizing]);
 
   useEffect(() => {
     if (!pendingFieldName) return;
@@ -194,9 +265,20 @@ export function CompanyListScreen({
     const file = await exportCompaniesMutation.mutateAsync(exportFilters);
     downloadBlobFile(file, "companies.xlsx");
   };
+  const onCreateOpenChange = (open: boolean) => {
+    setIsCreateOpen(open);
+
+    if (!open) {
+      onCreateDialogClose?.();
+    }
+  };
+  const onCompanyCreated = () => setNotice("회사를 추가했어요.");
 
   return (
-    <section className="flex min-h-full flex-col bg-white">
+    <section
+      className="flex min-h-full flex-col bg-white"
+      style={isDockedCreateOpen ? { paddingRight: createPanelWidth } : undefined}
+    >
       <PageHeader
         breadcrumbs={[{ label: "회사", icon: Building2 }]}
         actions={[
@@ -209,7 +291,7 @@ export function CompanyListScreen({
           {
             icon: Plus,
             tooltip: "회사 생성",
-            onClick: () => void navigate("/app/companies/new"),
+            onClick: () => setIsCreateOpen(true),
             disabled: fieldsQuery.isLoading || regionsQuery.isLoading,
             variant: "primary",
           },
@@ -311,9 +393,15 @@ export function CompanyListScreen({
       ) : null}
 
       {/* 테이블 (데스크톱) */}
-      <div className="hidden gap-3 overflow-x-auto px-5 pb-3 pt-1 md:flex xl:gap-5">
+      <div
+        ref={desktopWorkspaceRef}
+        className={cn(
+          "hidden min-h-0 flex-1 gap-3 overflow-hidden px-5 pb-3 pt-1 md:flex xl:gap-4",
+          isCreatePanelResizing && "cursor-col-resize select-none",
+        )}
+      >
         <div className="flex min-w-0 flex-1 flex-col gap-3">
-          <div className="flex w-full min-w-[520px] flex-col overflow-hidden rounded-lg border border-[#E2E5EC] bg-white shadow-sm">
+          <div className="flex min-h-0 w-full min-w-0 flex-col overflow-x-auto overflow-y-hidden rounded-lg border border-[#E2E5EC] bg-white shadow-sm">
             <div
               className="grid h-11 shrink-0 items-center border-b border-[#E2E5EC] bg-[#F9FAFB] px-3 md:px-4 xl:px-6"
               style={COMPANY_TABLE_GRID_STYLE}
@@ -378,6 +466,17 @@ export function CompanyListScreen({
             />
           ) : null}
         </div>
+
+        <CompanyCreateDialog
+          fields={fields}
+          mode="docked"
+          onCreated={onCompanyCreated}
+          onOpenChange={onCreateOpenChange}
+          onResizeStart={() => setIsCreatePanelResizing(true)}
+          open={isDockedCreateOpen}
+          regions={regions}
+          width={createPanelWidth}
+        />
       </div>
 
       {/* 모바일 뷰 */}
@@ -515,23 +614,22 @@ export function CompanyListScreen({
         <button
           aria-label="회사 생성"
           className="fixed bottom-24 right-5 flex h-8 w-8 items-center justify-center rounded-full bg-[#4880EE] shadow-[0_4px_16px_rgba(59,130,246,0.27)] transition active:opacity-80"
-          onClick={() => void navigate("/app/companies/new")}
+          onClick={() => setIsCreateOpen(true)}
           type="button"
         >
           <Plus className="h-4 w-4 text-white" strokeWidth={2.5} />
         </button>
       </section>
-
-      <CompanyCreateDialog
-        fields={fields}
-          onCreated={() => setNotice("회사를 추가했어요.")}
-        onOpenChange={(open) => {
-          setIsCreateOpen(open);
-          if (!open) onCreateDialogClose?.();
-        }}
-        open={isCreateOpen}
-        regions={regions}
-      />
+      <div className="lg:hidden">
+        <CompanyCreateDialog
+          fields={fields}
+          mode="overlay"
+          onCreated={onCompanyCreated}
+          onOpenChange={onCreateOpenChange}
+          open={isCreateOpen && !isDockedViewport}
+          regions={regions}
+        />
+      </div>
       <CompanyTaxonomyCreateDialog
         kind={taxonomyDialog?.kind ?? "field"}
         fields={fields}
@@ -1094,6 +1192,69 @@ function normalizeFilterText(value: string) {
 
 function addUniqueId(ids: readonly string[], id: string) {
   return ids.includes(id) ? [...ids] : [...ids, id];
+}
+
+function useMediaQuery(query: string) {
+  const [matches, setMatches] = useState(() => {
+    if (typeof window === "undefined") {
+      return false;
+    }
+
+    return window.matchMedia(query).matches;
+  });
+
+  useEffect(() => {
+    if (typeof window === "undefined") {
+      return;
+    }
+
+    const mediaQueryList = window.matchMedia(query);
+    const onChange = () => setMatches(mediaQueryList.matches);
+
+    onChange();
+    mediaQueryList.addEventListener("change", onChange);
+
+    return () => {
+      mediaQueryList.removeEventListener("change", onChange);
+    };
+  }, [query]);
+
+  return matches;
+}
+
+function getStoredCompanyCreatePanelWidth() {
+  if (typeof window === "undefined") {
+    return COMPANY_CREATE_PANEL_DEFAULT_WIDTH;
+  }
+
+  const storedWidth = Number(
+    window.localStorage.getItem(COMPANY_CREATE_PANEL_STORAGE_KEY),
+  );
+
+  return clampCompanyCreatePanelWidth(storedWidth, window.innerWidth);
+}
+
+function clampCompanyCreatePanelWidth(width: number, workspaceWidth?: number) {
+  const fallbackWidth = Number.isFinite(width)
+    ? width
+    : COMPANY_CREATE_PANEL_DEFAULT_WIDTH;
+  const maxWidth = getCompanyCreatePanelMaxWidth(workspaceWidth);
+
+  return Math.min(
+    Math.max(fallbackWidth, COMPANY_CREATE_PANEL_MIN_WIDTH),
+    maxWidth,
+  );
+}
+
+function getCompanyCreatePanelMaxWidth(workspaceWidth?: number) {
+  if (!workspaceWidth || workspaceWidth <= 0) {
+    return COMPANY_CREATE_PANEL_DEFAULT_WIDTH;
+  }
+
+  return Math.max(
+    COMPANY_CREATE_PANEL_MIN_WIDTH,
+    Math.floor(workspaceWidth * COMPANY_CREATE_PANEL_MAX_RATIO),
+  );
 }
 
 function CompanyMobileCard({
