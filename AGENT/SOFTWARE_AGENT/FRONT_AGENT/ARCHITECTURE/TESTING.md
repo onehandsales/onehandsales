@@ -35,6 +35,7 @@ User Web E2E는 개인 영업자의 핵심 workflow를 우선한다.
 Auth E2E 기준:
 
 - 개발용 mock login 버튼은 제거되었으므로 E2E는 현재 로그인 UI의 Kakao/Google provider 버튼 노출과 보호 라우트 redirect를 기준으로 한다.
+- 자동 E2E는 Google provider 버튼이 현재 로그인 페이지를 유지한 채 OAuth authorize URL을 popup으로 여는지 확인한다.
 - 실제 Google OAuth credential 검증은 자동 E2E 기본 범위가 아니라 별도 수동/provider smoke 범위다.
 - Kakao OAuth는 Kakao Developers `account_email` 동의항목 설정 전까지 실패를 제품 기능 회귀로 보지 않고 provider 설정 이슈로 기록한다.
 - 로그아웃 smoke는 선호 locale의 login URL 이동과 보호 라우트 재접근 차단을 확인한다. 예: `/ko/login`, `/en-us/login`.

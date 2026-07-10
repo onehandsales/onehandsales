@@ -82,6 +82,7 @@
 - Public/auth canonical URL은 `/{locale}`와 `/{locale}/login` 형식을 사용한다.
 - legacy `/`, `/login`, `/pricing` 등은 선호 locale URL로 redirect한다.
 - `/auth/callback`은 locale prefix 없이 유지한다.
+- 로그인/회원가입 provider 버튼은 가능한 경우 browser popup으로 Supabase OAuth authorize URL을 열고, popup이 차단되면 기존 full-page redirect로 fallback한다.
 - `/app/*`는 locale prefix를 붙이지 않는다.
 - 비로그인 `/app/*` 접근은 선호 locale의 login URL로 이동한다.
 
@@ -114,6 +115,7 @@
 - 브라우저 확대 125%
 - 긴 회사명/담당자명/제품명/딜이름
 - 긴 이메일/전화번호/URL
+- 회사 생성 오른쪽 문서형 패널의 resize, 70% max 폭, 목록 컬럼 유지, 가로 스크롤
 - 모달/드롭다운/토스트 위치
 - Tab/Enter/Escape 기본 접근성
 - 에러 메시지와 입력 필드 연결

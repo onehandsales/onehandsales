@@ -42,6 +42,7 @@
 - URL locale smoke 완료: `ko`, `ja`, `zh-tw`, `en-us`, `en-gb`, `en-sg`, `en-au`, `en-ca`.
 - 기존 `/`, `/login`, `/signup`, `/pricing`, `/contact`, `/about`, `/security`, `/terms`, `/privacy`는 선호 locale URL로 redirect한다.
 - `/auth/callback`은 locale prefix 없이 유지한다.
+- 로그인/회원가입 provider 버튼은 가능한 경우 browser popup으로 Supabase OAuth authorize URL을 열고, popup이 차단되면 기존 full-page redirect로 fallback한다.
 - `/app/*`는 locale prefix를 붙이지 않고, 비로그인 접근 시 선호 locale의 login URL로 이동한다.
 - Backend `typecheck`, `lint`, `test`, `build` 통과. BE test는 17 suites / 82 tests passed.
 - FE/user-web `typecheck`, `lint`, `build`, `test:e2e` 통과.

@@ -112,6 +112,15 @@ legacy redirect 라우트:
 - Trash: `/app/trash` 화면에서 `GET /api/trash` 목록, `GET /api/trash/:targetType/:targetId` 상세 모달, `POST /api/trash/:targetType/:targetId/restore` 복구를 연동한다. 목록 row 클릭으로 상세 모달을 열고, 복구는 모달 내부 버튼에서만 수행한다.
 - DataImport: `/app/import` 화면에서 활성 양식 목록/다운로드, CSV/XLSX 업로드, AI 컬럼 매핑, mapping 수정, row 수정/검증, 누락 셀 단위 validation 메시지, 확정 저장, 성공 내역 목록을 연동한다. `/app/import/:importUserLogId`는 성공 내역 상세와 row snapshot을 조회한다.
 
+회사 생성 UX 기준:
+
+- `/app/companies/new`는 full page create form이 아니라 회사 목록을 유지한 채 오른쪽 문서형 생성 패널을 초기 open 상태로 연다.
+- 데스크톱 패널은 viewport 최상단~최하단에 fixed로 붙고, 왼쪽 edge resize handle로 폭을 조절한다.
+- 패널 폭은 최소 `420px`, 최대 화면/작업영역의 `70%`다. 사용자가 조절한 폭은 localStorage key `onehand.company.createPanelWidth`에 저장한다.
+- 패널이 열릴 때 목록 영역은 오른쪽 padding으로 패널 폭만큼 밀리고, 회사 목록 컬럼은 하나도 숨기거나 합치지 않는다. 공간이 부족하면 horizontal scroll을 사용한다.
+- 데스크톱 미만 viewport에서는 overlay panel을 사용해 작은 화면 목록 레이아웃을 깨지 않게 한다.
+- 담당자/제품/딜 생성 UX를 문서형 패널로 확장할 경우 이 기준을 우선 참고한다.
+
 도메인별 export 기준:
 
 - Company: `GET /api/companies/export/xlsx`, 표시 문구 `엑셀 다운로드`
@@ -136,7 +145,9 @@ mock/placeholder 경계를 유지해야 하는 항목:
 로그인/회원가입은 Supabase OAuth provider login을 공통으로 사용한다.
 
 - `/{locale}/login`과 `/{locale}/signup`은 같은 provider login 흐름이다. 기존 `/login`과 `/signup`은 선호 locale URL로 redirect한다. 신규 provider 계정이면 가입, 기존 provider 계정이면 로그인으로 처리한다.
+- 로그인/회원가입 provider 버튼은 가능한 경우 Supabase OAuth URL을 browser popup으로 열고, popup이 차단되면 기존 full-page redirect를 사용한다.
 - `/auth/callback`은 Supabase session을 읽고 Backend `POST /api/auth/exchange`로 앱 session을 교환한다.
+- popup OAuth callback도 같은 `/auth/callback`을 사용하며 app session 저장 후 popup을 닫아 부모 창이 session을 복원한다.
 - 개발용 mock login flow는 User Web에서 제거되어 있다. E2E와 QA는 현재 로그인 UI의 Kakao/Google provider 버튼을 기준으로 한다.
 - Google OAuth signup/login은 수동 QA 통과 상태다.
 - Kakao OAuth는 Kakao Developers 앱에서 카카오 로그인 활성화와 `account_email` 동의항목 설정이 필요하다. 설정 전에는 Kakao hosted `KOE205` 오류가 발생할 수 있다.

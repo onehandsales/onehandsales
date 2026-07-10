@@ -10,6 +10,7 @@ Onehand Sales의 현재 인증은 Supabase OAuth를 외부 identity provider로 
 ## Current Product State
 
 - Google OAuth 신규 가입/로그인 QA는 통과했다.
+- 로그인/회원가입 provider 버튼은 가능한 경우 browser popup으로 Supabase OAuth authorize URL을 열고, popup이 차단되면 기존 full-page redirect로 fallback한다.
 - 공개/인증 canonical URL은 locale prefix를 사용한다. 예: `/ko/login`, `/ja/signup`, `/en-us/pricing`.
 - 기존 `/login`, `/signup` 등 legacy 공개/인증 URL은 선호 locale URL로 redirect한다.
 - 로그아웃 후 이동 경로는 선호 locale의 login URL로 통일한다. 예: `/ko/login`, `/en-us/login`.

@@ -1,7 +1,10 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAuthSession } from "@/features/auth";
-import { authService } from "@/features/auth/auth-service";
+import {
+  authService,
+  isAuthPopupCallbackWindow,
+} from "@/features/auth/auth-service";
 import { AuthLandingPage } from "@/features/auth/components/auth-landing-page";
 import { AuthLoginPage } from "@/features/auth/components/auth-login-page";
 import { usePublicSitePath } from "@/features/public-site/i18n/public-site-locale-hooks";
@@ -22,6 +25,7 @@ export function LoginPage() {
   const {
     error: authError,
     exchangeCurrentSupabaseSession,
+    isAuthenticated,
     isInitializing,
     isPending,
     startProviderLogin,
@@ -35,6 +39,8 @@ export function LoginPage() {
   const [isCallbackLoginLoading, setIsCallbackLoginLoading] = useState(false);
   const publicPathname = stripPublicSiteLocaleFromPathname(location.pathname);
   const isCallbackRoute = location.pathname === "/auth/callback";
+  const isPopupCallbackRoute =
+    isCallbackRoute && isAuthPopupCallbackWindow();
   const isLoginRoute = publicPathname === "/login";
   const isSignupRoute = publicPathname === "/signup";
   const [pendingProvider, setPendingProvider] = useState<AuthProviderId | null>(
@@ -104,6 +110,11 @@ export function LoginPage() {
         }
 
         if (exchanged) {
+          if (isPopupCallbackRoute) {
+            closeAuthPopupCallbackWindow();
+            return;
+          }
+
           await waitForMinimumDuration(
             exchangeState.startedAt,
             minimumLoginLoadingMs
@@ -118,11 +129,19 @@ export function LoginPage() {
         }
 
         setIsCallbackLoginLoading(false);
+
+        if (isPopupCallbackRoute) {
+          closeAuthPopupCallbackWindow();
+        }
       })
       .catch(() => {
         if (isMounted) {
           callbackExchangeRef.current = null;
           setIsCallbackLoginLoading(false);
+
+          if (isPopupCallbackRoute) {
+            closeAuthPopupCallbackWindow();
+          }
         }
       });
 
@@ -133,6 +152,7 @@ export function LoginPage() {
     exchangeCurrentSupabaseSession,
     isInitializing,
     isCallbackRoute,
+    isPopupCallbackRoute,
     navigate,
     redirectTo,
   ]);
@@ -143,9 +163,26 @@ export function LoginPage() {
     }
   }, [isPending]);
 
+  useEffect(() => {
+    if (isCallbackRoute || (!isLoginRoute && !isSignupRoute)) {
+      return;
+    }
+
+    if (isAuthenticated) {
+      navigate(redirectTo, { replace: true });
+    }
+  }, [
+    isAuthenticated,
+    isCallbackRoute,
+    isLoginRoute,
+    isSignupRoute,
+    navigate,
+    redirectTo,
+  ]);
+
   const onProviderLogin = (provider: AuthProviderId) => {
     setPendingProvider(provider);
-    void startProviderLogin(provider).catch(() => {
+    void startProviderLogin(provider, { mode: "popup" }).catch(() => {
       setPendingProvider(null);
     });
   };
@@ -184,6 +221,12 @@ async function waitForMinimumDuration(startedAt: number, minimumMs: number) {
   if (remaining > 0) {
     await new Promise((resolve) => window.setTimeout(resolve, remaining));
   }
+}
+
+function closeAuthPopupCallbackWindow() {
+  window.setTimeout(() => {
+    window.close();
+  }, 100);
 }
 
 function getRedirectPath(state: unknown) {

@@ -286,6 +286,7 @@ pnpm build
 - [x] legacy `/login` 접근 시 선호 locale login URL의 로그인 화면으로 이동함
 - [x] 로그인 전 `/app` 보호 라우트 접근 시 로그인으로 이동
 - [x] 개발용 mock login 버튼이나 mock session 진입점이 노출되지 않음
+- [x] Google provider 버튼 클릭 시 현재 로그인 페이지를 유지한 채 OAuth authorize URL이 browser popup으로 열림
 - [x] Google OAuth login/signup이 성공함
 - [x] 로그인 후 `/app` 홈으로 진입함
 - [x] 로그인 후 사용자 이름/프로필 정보가 표시됨
@@ -373,7 +374,12 @@ pnpm build
 
 ### 생성
 
-- [N/A] 회사 추가 버튼이 명확함. 이번 UX/UI QA 범위에서 제외
+- [x] 회사 추가 버튼이 오른쪽 문서형 생성 패널을 연다
+- [x] `/app/companies/new` 진입 시 회사 목록을 유지하고 생성 패널이 열린다
+- [x] 데스크톱 생성 패널이 화면 최상단~최하단까지 붙어 있다
+- [x] 생성 패널 좌우 resize가 동작한다
+- [x] 생성 패널을 넓혀도 회사 목록 컬럼 개수가 줄어들지 않는다
+- [x] 공간이 부족한 경우 회사 목록은 가로 스크롤로 모든 컬럼을 유지한다
 - [N/A] 필수값 누락 시 저장이 막힘. 이번 기능 QA에서 별도 확인하지 않음
 - [x] 회사명 입력 후 생성 가능
 - [x] 분야 선택 또는 새 분야 생성 가능

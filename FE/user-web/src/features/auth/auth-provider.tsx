@@ -152,9 +152,9 @@ export function AuthProvider({ children }: { readonly children: ReactNode }) {
           return null;
         });
       },
-      startProviderLogin: async (provider) => {
+      startProviderLogin: async (provider, options) => {
         await runAuthAction(async () => {
-          await authService.startProviderLogin(provider);
+          return authService.startProviderLogin(provider, options);
         });
       },
     }),

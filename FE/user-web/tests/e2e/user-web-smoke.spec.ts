@@ -343,6 +343,30 @@ type MockApiResponse = {
 };
 
 test.describe("User Web smoke E2E", () => {
+  test("Google provider login opens OAuth in a popup", async ({ page }) => {
+    await setupUserWebApiMocks(page);
+    await page.context().route("**/auth/v1/authorize**", async (route) => {
+      await route.fulfill({
+        body: "<!doctype html><title>Mock OAuth</title>",
+        contentType: "text/html",
+      });
+    });
+
+    await page.goto("/en-us/login");
+    await expect(page.getByRole("button", { name: "Google" })).toBeVisible();
+
+    const popupPromise = page.waitForEvent("popup");
+    await page.getByRole("button", { name: "Google" }).click();
+    const popup = await popupPromise;
+
+    await expect(popup).toHaveURL(/\/auth\/v1\/authorize/);
+    await expect(popup).toHaveURL(/provider=google/);
+    await expect(popup).toHaveURL(/redirect_to=/);
+    await expect(page).toHaveURL(/\/en-us\/login$/);
+
+    await popup.close();
+  });
+
   test("로그인 화면부터 회의록 저장까지 핵심 업무 흐름이 이어진다", async ({
     page,
   }) => {
@@ -359,7 +383,7 @@ test.describe("User Web smoke E2E", () => {
       await expect(page.getByRole("button", { name: "Google" })).toBeVisible();
 
       await seedAuthenticatedSession(page);
-      await page.goto("/app/companies");
+      await page.goto("/en-us/login");
       await expect(page).toHaveURL(/\/app\/companies$/);
       await expect(
         page.getByRole("button", { name: "회사 생성" }).first()

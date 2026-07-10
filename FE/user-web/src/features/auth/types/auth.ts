@@ -1,5 +1,11 @@
 export type AuthProviderId = "kakao" | "google";
 
+export type AuthProviderLoginMode = "redirect" | "popup";
+
+export type StartProviderLoginOptions = {
+  readonly mode?: AuthProviderLoginMode;
+};
+
 export type DeviceSlot = "mobile" | "personal_laptop" | "work_laptop";
 
 export type AuthProviderOption = {

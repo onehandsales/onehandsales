@@ -26,6 +26,7 @@ API를 수정할 때는 아래 항목을 반드시 함께 갱신한다.
 
 - Supabase client 초기화
 - Kakao, Google provider 로그인 시작
+- 로그인/회원가입 provider 버튼은 가능한 경우 browser popup으로 Supabase OAuth authorize URL을 열고, popup이 차단되면 기존 full-page redirect로 fallback
 - Supabase callback 처리
 - Supabase session에서 access token 확보
 - Backend `POST /api/auth/exchange` 호출

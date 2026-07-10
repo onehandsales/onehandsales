@@ -1,5 +1,9 @@
 import { createContext, useContext } from "react";
-import type { AuthProviderId, AuthUser } from "@/features/auth/types/auth";
+import type {
+  AuthProviderId,
+  AuthUser,
+  StartProviderLoginOptions,
+} from "@/features/auth/types/auth";
 
 export type AuthContextValue = {
   readonly accessTokenExpiresAt: string | null;
@@ -12,7 +16,10 @@ export type AuthContextValue = {
   readonly exchangeCurrentSupabaseSession: () => Promise<boolean>;
   readonly updateAuthUser: (patch: Partial<AuthUser>) => void;
   readonly logout: () => Promise<void>;
-  readonly startProviderLogin: (provider: AuthProviderId) => Promise<void>;
+  readonly startProviderLogin: (
+    provider: AuthProviderId,
+    options?: StartProviderLoginOptions
+  ) => Promise<void>;
 };
 
 export const AuthContext = createContext<AuthContextValue | null>(null);

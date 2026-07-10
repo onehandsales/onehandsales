@@ -17,7 +17,7 @@
 ### Flow 1. 기본 데이터 등록
 
 1. 사용자가 로그인한다.
-2. 빠른 등록 모달로 회사를 등록한다.
+2. 회사 목록에서 오른쪽 문서형 생성 패널로 회사를 등록한다.
 3. 빠른 등록 모달로 담당자를 등록한다.
 4. 빠른 등록 모달로 제품을 등록한다.
 5. 필요 시 상세 페이지에서 추가 정보를 보강한다.
@@ -124,7 +124,7 @@
 | `/`, `/login`, `/signup`, `/pricing`, `/contact`, `/about`, `/security`, `/terms`, `/privacy` | legacy public/auth redirect | 선호 locale URL로 redirect |
 | `/app` | 홈 대시보드 | 포함 |
 | `/app/companies` | 회사 목록 | 포함 |
-| `/app/companies/new` | 회사 생성 | 포함 |
+| `/app/companies/new` | 회사 생성 | 포함. 회사 목록을 유지하고 오른쪽 문서형 생성 패널을 초기 open 상태로 표시 |
 | `/app/companies/:id` | 회사 상세 | 포함 |
 | `/app/contacts` | 담당자 목록 | 포함 |
 | `/app/contacts/:id` | 담당자 상세 | 포함 |

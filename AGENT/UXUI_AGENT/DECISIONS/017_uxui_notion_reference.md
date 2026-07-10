@@ -31,7 +31,8 @@ Notion의 UX/UI는 다음 특징을 가진다.
 - 목록 화면은 Notion database view처럼 필터, 정렬, 검색, view 상태가 화면 상단에 붙는다.
 - 상세 화면은 Notion page처럼 속성 영역과 본문 영역이 분리된다.
 - 상세 본문은 Memo 기록, 활동 로그, 일정, 회의록 연결을 block/section 단위로 읽히게 한다.
-- modal은 빠른 생성이나 확인에만 쓰고, 깊은 편집은 page/detail로 보낸다.
+- 목록 맥락을 유지해야 하는 생성/빠른 편집은 오른쪽 문서형 패널을 우선 검토한다.
+- modal은 삭제 확인, 짧은 보조 입력, 작은 선택 흐름에만 제한적으로 쓰고, 깊은 편집은 page/detail 또는 문서형 패널로 보낸다.
 - 카드와 테이블은 장식 카드가 아니라 database record 표현이어야 한다.
 - 불필요한 marketing hero, 과한 dashboard card, 과한 gradient, 큰 일러스트는 사용하지 않는다.
 
@@ -40,6 +41,7 @@ Notion의 UX/UI는 다음 특징을 가진다.
 - 홈과 딜 화면은 Notion database + CRM record view처럼 구성한다.
 - 딜 목록은 stage tab을 가진 database view로 보고, row/card 클릭 시 detail page 또는 detail panel로 들어간다.
 - 회사/담당자/제품/딜/회의록 상세는 page처럼 구성한다.
+- 회사 생성은 목록을 유지한 채 오른쪽 문서형 패널에서 처리한다. 패널은 데스크톱에서 화면 최상단~최하단에 고정되고 resize가 가능하며, 목록 컬럼은 숨기지 않는다.
 - 연결된 record는 relation처럼 보이게 한다.
 - Memo 기록과 활동 로그는 page body의 section/block처럼 다룬다.
 - 모바일 브라우저에서도 같은 정보 구조를 유지하되, table은 card/list로 전환한다.

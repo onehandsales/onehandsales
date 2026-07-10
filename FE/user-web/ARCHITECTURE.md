@@ -50,18 +50,36 @@ src/features/company/
     company-api.ts
     company-query-keys.ts
   components/
-    company-form.tsx
-    company-list.tsx
-    company-selector.tsx
+    company-create-dialog.tsx
+    company-detail-screen.tsx
+    company-edit-dialog.tsx
+    company-edit-form.tsx
+    company-list-screen.tsx
+    company-log-section.tsx
+    company-taxonomy-create-dialog.tsx
   hooks/
+    use-company-detail.ts
     use-company-list.ts
-    use-company-mutation.ts
+    use-company-mutations.ts
   schemas/
     company-schema.ts
   types/
     company.ts
   index.ts
 ```
+
+## 2A. 회사 생성 패널 기준
+
+회사 생성은 `/app/companies` 목록 위에서 오른쪽 문서형 생성 패널을 여는 방식이 정본이다.
+
+- `/app/companies/new`는 full page form이 아니라 `CompanyListScreen`에 `initialCreateOpen`을 전달한다.
+- 패널을 닫으면 `/app/companies`로 replace navigate한다.
+- 데스크톱 기준 패널은 `fixed inset-y-0 right-0`로 화면 최상단~최하단까지 붙는다.
+- resize handle은 패널 왼쪽 edge에 있고, 폭은 `window.innerWidth - event.clientX`로 계산한다.
+- 패널 폭은 최소 `420px`, 최대 화면/작업영역의 `70%`다.
+- 사용자가 조절한 폭은 `onehand.company.createPanelWidth` localStorage key에 저장한다.
+- 패널이 열려도 회사 목록의 6개 컬럼은 줄이거나 합치지 않는다. 목록 공간이 부족하면 table area에서 horizontal scroll을 사용한다.
+- 데스크톱 미만 viewport에서는 오른쪽 overlay panel로 열어 목록 레이아웃을 깨지 않게 한다.
 
 ## 3. 라우트 페이지 기준
 
@@ -79,14 +97,16 @@ src/pages/companies/index.tsx
 - Supported URL locale slugs: `ko`, `ja`, `zh-tw`, `en-us`, `en-gb`, `en-sg`, `en-au`, `en-ca`.
 - Compatibility redirects: `/`, `/login`, `/signup`, `/pricing`, `/contact`, `/about`, `/security`, `/terms`, `/privacy` redirect to the preferred locale URL.
 - OAuth callback remains shared and unlocalized: `/auth/callback`.
-- 보호 앱: `/app`, `/app/companies`, `/app/contacts`, `/app/products`, `/app/deals`, `/app/schedules`, `/app/meeting-notes`, `/app/business-cards`, `/app/import`, `/app/trash`, `/app/settings`, `/app/more`
+- 보호 앱: `/app`, `/app/companies`, `/app/companies/new`, `/app/companies/:companyId`, `/app/contacts`, `/app/products`, `/app/deals`, `/app/schedules`, `/app/meeting-notes`, `/app/business-cards`, `/app/import`, `/app/trash`, `/app/settings`, `/app/more`
 - legacy redirect: 기존 `/companies`, `/contacts`, `/products`, `/deals`, `/schedules`, `/meeting-notes`, `/business-cards`, `/import`, `/trash`, `/settings`, `/more`는 대응되는 `/app/*`로 이동한다.
 - 숨김/후속: `/app/notifications`와 `/app/export`는 `/app`으로 redirect한다. `/app/schedules/week`는 `/app/schedules`로 redirect한다.
 
 ## 5. 현재 인증 기준
 
 - `/{locale}/login` and `/{locale}/signup` use the same Supabase OAuth provider login flow. Existing `/login` and `/signup` redirect to the preferred locale URL.
+- 로그인/회원가입 provider 버튼은 가능한 경우 Supabase OAuth URL을 browser popup으로 열고, popup이 차단되면 기존 full-page redirect를 사용한다.
 - OAuth callback은 `/auth/callback`에서 Supabase session을 읽고 Backend `POST /api/auth/exchange`로 앱 session을 교환한다.
+- popup OAuth callback도 같은 `/auth/callback`을 사용하며 app session 저장 후 popup을 닫아 부모 창이 session을 복원한다.
 - 개발용 mock login은 User Web에서 제거되어 있다.
 - 현재 로그인 화면 노출 provider는 Kakao와 Google이다. Google 가입/로그인은 QA 통과 상태다.
 - Kakao는 Kakao Developers 앱의 카카오 로그인 활성화와 `account_email` 동의항목 설정이 필요하다. 설정 전에는 Kakao hosted `KOE205` 오류가 발생할 수 있다.

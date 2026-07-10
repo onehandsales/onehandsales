@@ -29,7 +29,8 @@ Current implementation note as of 2026-07-10:
 - MeetingNote AI/STT draft Backend APIs and User Web draft UI integration are implemented.
 - BusinessCard OCR has Backend `POST/GET /api/business-card-scans` and User Web `/app/business-cards` integration implemented. The visible feature name is `명함 스캔`, and the modal action is `명함스캔`.
 - DataImport has Company/Contact/Product/Deal upload, AI mapping, row edit/validation, cell-scoped validation messages, confirm save, and import log detail implemented.
-- Company/contact/product create modals use search-input selection, immediate creation when no result exists, and automatic selection after creation.
+- Company create uses a Notion-like right document panel from the company list. `/app/companies/new` opens the list with the create panel already open instead of rendering a separate full-page form. The desktop panel is full-height, resizable, and capped at 70% of the workspace; the company list keeps all columns and uses horizontal scroll when space is tight.
+- Contact/product create modals use search-input selection, immediate creation when no result exists, and automatic selection after creation.
 - Deal likelihood (`긍정 / 중립 / 부정` or percent) is not implemented in the current Deal API/FE form. Treat it as future UX scope unless a new backend plan adds it.
 
 Primary focus:
@@ -96,10 +97,11 @@ Useful directions to keep:
 - stage tabs above the deal list
 - filters/search directly above the list
 - row/card opens a record detail page or peek/detail panel
+- create from a list can open a right document panel when preserving list context matters
 - property-first detail layout with body sections for activity and memo
 - simple buttons with clear icons
 - badges for status and metadata
-- modal forms for quick create
+- modal forms only for small quick-create, confirmation, or auxiliary selection flows
 - practical, work-focused density
 - block/section-like page body organization
 

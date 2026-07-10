@@ -10,6 +10,7 @@ import type {
   AuthProviderId,
   AuthTokenResponse,
   DeviceSlot,
+  StartProviderLoginOptions,
 } from "@/features/auth/types/auth";
 import { clearApiAccessToken, setApiAccessToken } from "@/lib/api-client";
 import { env } from "@/lib/env";
@@ -18,6 +19,10 @@ import { publicSiteLanguageStorageKey } from "@/features/public-site/i18n/public
 
 const accessTokenStorageKey = "onehand.userWeb.accessToken";
 const accessTokenExpiresAtStorageKey = "onehand.userWeb.accessTokenExpiresAt";
+const authPopupRequestStorageKey = "onehand.userWeb.authPopupRequest";
+const authPopupWindowNamePrefix = "onehand-auth-popup";
+const authPopupPollIntervalMs = 500;
+const authPopupTimeoutMs = 10 * 60 * 1000;
 
 export type AuthSessionState = {
   readonly accessToken: string;
@@ -25,10 +30,27 @@ export type AuthSessionState = {
   readonly user: AuthTokenResponse["user"] | null;
 };
 
+export function isAuthPopupCallbackWindow() {
+  return (
+    window.name.startsWith(authPopupWindowNamePrefix) ||
+    Boolean(window.opener) ||
+    hasActiveAuthPopupRequest()
+  );
+}
+
 export const authService = {
   listProviders: listAuthProviders,
 
-  async startProviderLogin(provider: AuthProviderId) {
+  async startProviderLogin(
+    provider: AuthProviderId,
+    options: StartProviderLoginOptions = {}
+  ) {
+    if (options.mode === "popup") {
+      return startPopupProviderLogin(provider);
+    }
+
+    clearAuthPopupRequest();
+
     const supabase = createBrowserSupabaseClient();
 
     if (!supabase) {
@@ -123,6 +145,59 @@ export const authService = {
   clearSession: clearStoredSession,
 };
 
+async function startPopupProviderLogin(provider: AuthProviderId) {
+  const popup = openAuthPopupWindow();
+
+  if (!popup) {
+    clearAuthPopupRequest();
+    await authService.startProviderLogin(provider);
+    return;
+  }
+
+  markAuthPopupRequest();
+
+  try {
+    const supabase = createBrowserSupabaseClient();
+
+    if (!supabase) {
+      throw new Error("Supabase environment variables are not configured.");
+    }
+
+    const { data, error } = await supabase.auth.signInWithOAuth({
+      provider: toSupabaseProvider(provider),
+      options: {
+        redirectTo: env.supabaseRedirectUrl,
+        skipBrowserRedirect: true,
+      },
+    });
+
+    if (error) {
+      throw error;
+    }
+
+    if (!data.url) {
+      throw new Error("OAuth provider did not return a sign-in URL.");
+    }
+
+    navigatePopupToUrl(popup, data.url);
+    await waitForPopupLoginCompletion(popup);
+
+    const restoredSession = await authService.restoreStoredSession();
+
+    if (!restoredSession) {
+      throw new Error("Sign-in was not completed.");
+    }
+
+    closePopupWindow(popup);
+    clearAuthPopupRequest();
+    return restoredSession;
+  } catch (error) {
+    closePopupWindow(popup);
+    clearAuthPopupRequest();
+    throw error;
+  }
+}
+
 function persistSession(response: AuthTokenResponse) {
   setApiAccessToken(response.accessToken);
   window.localStorage.setItem(accessTokenStorageKey, response.accessToken);
@@ -136,6 +211,141 @@ function clearStoredSession() {
   clearApiAccessToken();
   window.localStorage.removeItem(accessTokenStorageKey);
   window.localStorage.removeItem(accessTokenExpiresAtStorageKey);
+}
+
+function markAuthPopupRequest() {
+  window.localStorage.setItem(authPopupRequestStorageKey, String(Date.now()));
+}
+
+function clearAuthPopupRequest() {
+  window.localStorage.removeItem(authPopupRequestStorageKey);
+}
+
+function hasActiveAuthPopupRequest() {
+  const rawStartedAt = window.localStorage.getItem(authPopupRequestStorageKey);
+
+  if (!rawStartedAt) {
+    return false;
+  }
+
+  const startedAt = Number(rawStartedAt);
+
+  return (
+    Number.isFinite(startedAt) &&
+    startedAt > 0 &&
+    Date.now() - startedAt <= authPopupTimeoutMs
+  );
+}
+
+function openAuthPopupWindow() {
+  const popup = window.open(
+    "about:blank",
+    `${authPopupWindowNamePrefix}-${Date.now()}`,
+    getAuthPopupFeatures()
+  );
+
+  if (!popup) {
+    return null;
+  }
+
+  try {
+    popup.document.title = "Onehand sign-in";
+    popup.focus();
+  } catch {
+    // The popup can become cross-origin as soon as navigation starts.
+  }
+
+  return popup;
+}
+
+function getAuthPopupFeatures() {
+  const width = 480;
+  const height = 720;
+  const left = Math.max(0, window.screenX + (window.outerWidth - width) / 2);
+  const top = Math.max(0, window.screenY + (window.outerHeight - height) / 2);
+
+  return [
+    "popup=yes",
+    "resizable=yes",
+    "scrollbars=yes",
+    "toolbar=no",
+    "menubar=no",
+    "status=no",
+    `width=${width}`,
+    `height=${height}`,
+    `left=${Math.round(left)}`,
+    `top=${Math.round(top)}`,
+  ].join(",");
+}
+
+function navigatePopupToUrl(popup: Window, url: string) {
+  if (popup.closed) {
+    throw new Error("Sign-in popup was closed before authentication started.");
+  }
+
+  popup.location.assign(url);
+  popup.focus();
+}
+
+function waitForPopupLoginCompletion(popup: Window) {
+  return new Promise<void>((resolve, reject) => {
+    let isSettled = false;
+    let pollId: number | null = null;
+    let timeoutId: number | null = null;
+
+    const cleanup = () => {
+      if (pollId !== null) {
+        window.clearInterval(pollId);
+      }
+
+      if (timeoutId !== null) {
+        window.clearTimeout(timeoutId);
+      }
+
+      window.removeEventListener("storage", onStorage);
+    };
+
+    const settle = (callback: () => void) => {
+      if (isSettled) {
+        return;
+      }
+
+      isSettled = true;
+      cleanup();
+      callback();
+    };
+
+    const onStorage = (event: StorageEvent) => {
+      if (event.key === accessTokenStorageKey && event.newValue) {
+        settle(resolve);
+      }
+    };
+
+    pollId = window.setInterval(() => {
+      if (popup.closed) {
+        settle(resolve);
+      }
+    }, authPopupPollIntervalMs);
+
+    timeoutId = window.setTimeout(() => {
+      closePopupWindow(popup);
+      settle(() => {
+        reject(new Error("Sign-in took too long. Please try again."));
+      });
+    }, authPopupTimeoutMs);
+
+    window.addEventListener("storage", onStorage);
+  });
+}
+
+function closePopupWindow(popup: Window) {
+  try {
+    if (!popup.closed) {
+      popup.close();
+    }
+  } catch {
+    // The user may already have closed the popup.
+  }
 }
 
 function toSessionState(response: AuthTokenResponse): AuthSessionState {

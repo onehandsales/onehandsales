@@ -20,6 +20,7 @@
 - `016_uxui_writing_tone.md`
 - `017_uxui_notion_reference.md`
 - `018_uxui_multilingual_font_stack.md`
+- `019_uxui_record_create_panel.md`
 
 ## 3. 관련 문서
 

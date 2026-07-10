@@ -22,6 +22,7 @@ G00에서 Supabase Cloud 사용 범위는 `Auth`, `PostgreSQL`, 파일 저장소
 
 - Supabase Auth는 MVP 1차에서 외부 로그인 Provider 역할만 맡는다.
 - User Web과 Admin Web은 Supabase Auth client로 provider login과 callback 처리를 수행한다.
+- User Web의 로그인/회원가입 provider 버튼은 가능한 경우 browser popup으로 Supabase OAuth authorize URL을 열고, popup이 차단되면 기존 full-page redirect로 fallback한다.
 - FE는 Supabase access token을 Backend의 token exchange API에만 전달한다.
 - Backend는 exchange 단계에서 Supabase token을 검증하고 local `User`, `UserOAuthAccount`, `UserSetting`, `AuthDevice`, `AuthSession`을 생성하거나 갱신한다.
 - Backend는 exchange 성공 시 서비스 자체 `App access token`과 refresh 수단을 발급한다.
