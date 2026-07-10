@@ -241,7 +241,7 @@ Supabase Auth 로그인 완료 후 Supabase token을 Backend App token으로 교
 Cookie:
 
 - `Set-Cookie`: `APP_REFRESH_COOKIE_NAME` 값으로 refresh token을 httpOnly cookie에 설정한다.
-- 속성: `HttpOnly`, `SameSite=Lax`, `Path=/api/auth/refresh`
+- 속성: `HttpOnly`, `SameSite=Lax`, `Path=/api/auth/refresh`, `Max-Age=APP_SESSION_TTL_DAYS`
 - HTTPS 환경에서는 `Secure=true`를 사용한다.
 
 #### 연결된 DB 스키마
@@ -316,6 +316,7 @@ App access token이 만료되었거나 만료 직전일 때 7일 sliding session
 Cookie:
 
 - `Set-Cookie`: rotation된 refresh token을 httpOnly cookie로 다시 설정한다.
+- 속성은 exchange와 동일하게 `HttpOnly`, `SameSite=Lax`, `Path=/api/auth/refresh`, `Max-Age=APP_SESSION_TTL_DAYS`를 사용한다.
 
 ### 4.5 로그아웃 API
 

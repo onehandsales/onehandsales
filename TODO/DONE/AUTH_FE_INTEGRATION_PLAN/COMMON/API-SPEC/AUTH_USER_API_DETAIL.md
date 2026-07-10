@@ -21,6 +21,7 @@
 - 일반 Backend API 인증은 `Authorization: Bearer <backend_app_access_token>`을 사용한다.
 - `POST /api/auth/exchange`만 Supabase access token을 `Authorization` header로 받는다.
 - refresh token은 httpOnly cookie로만 운용하고 response body에 원문을 담지 않는다.
+- refresh cookie 수명은 `APP_SESSION_TTL_DAYS`와 같은 `Max-Age`로 설정한다.
 - FE는 Backend App access token을 memory에만 저장한다.
 - FE는 Supabase access token을 일반 Backend API 인증에 사용하지 않는다.
 - Auth/User DB 기준은 `User`, `UserOAuthAccount`, `AuthDevice`, `AuthSession`이다.
@@ -280,7 +281,7 @@ Auth/User API의 Backend 구현과 검증은 완료됐으며, 계약 상태는 `
 8. refresh token rotation을 수행한다.
 9. `AuthSession.refreshTokenHash`, `lastUsedAt`, `expiresAt`을 갱신한다.
 10. 새 Backend App access token을 발급한다.
-11. 새 refresh token은 httpOnly cookie로 내려주고 response body에는 `refreshToken: null`을 유지한다.
+11. 새 refresh token은 `HttpOnly`, `SameSite=Lax`, `Path=/api/auth/refresh`, `Max-Age=APP_SESSION_TTL_DAYS` cookie로 내려주고 response body에는 `refreshToken: null`을 유지한다.
 
 ### Response
 

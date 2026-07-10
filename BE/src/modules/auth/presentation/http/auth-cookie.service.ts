@@ -17,12 +17,15 @@ export class AuthCookieService {
 
   // 기능 : 응답에 refresh token httpOnly 쿠키를 설정합니다.
   setRefreshToken(response: Response, refreshToken: string): void {
-    response.cookie(this.getCookieName(), refreshToken, this.getCookieOptions());
+    response.cookie(this.getCookieName(), refreshToken, {
+      ...this.getBaseCookieOptions(),
+      maxAge: this.getRefreshCookieMaxAgeMs(),
+    });
   }
 
   // 기능 : 응답에서 refresh token 쿠키를 삭제합니다.
   clearRefreshToken(response: Response): void {
-    response.clearCookie(this.getCookieName(), this.getCookieOptions());
+    response.clearCookie(this.getCookieName(), this.getBaseCookieOptions());
   }
 
   // 기능 : refresh token 쿠키 이름 설정값을 반환합니다.
@@ -34,7 +37,7 @@ export class AuthCookieService {
   }
 
   // 기능 : refresh token 쿠키에 적용할 공통 옵션을 계산합니다.
-  private getCookieOptions(): CookieOptions {
+  private getBaseCookieOptions(): CookieOptions {
     const options: CookieOptions = {
       httpOnly: true,
       sameSite: "lax",
@@ -48,6 +51,20 @@ export class AuthCookieService {
     }
 
     return options;
+  }
+
+  // 기능 : 앱 refresh session 정책과 같은 refresh cookie maxAge를 밀리초로 반환합니다.
+  private getRefreshCookieMaxAgeMs(): number {
+    return this.getSessionTtlDays() * 24 * 60 * 60 * 1000;
+  }
+
+  // 기능 : refresh session 만료 기간 설정값을 일 단위 숫자로 반환합니다.
+  private getSessionTtlDays(): number {
+    const value = Number(
+      this.configService.get<string>("APP_SESSION_TTL_DAYS") ?? "7"
+    );
+
+    return Number.isFinite(value) && value > 0 ? value : 7;
   }
 
   // 기능 : 현재 환경에서 secure 쿠키를 사용할지 판단합니다.
