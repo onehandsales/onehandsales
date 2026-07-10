@@ -575,7 +575,6 @@ async function handleApiRequest(
     return json({
       providers: [
         { provider: "kakao", label: "Kakao", enabled: true },
-        { provider: "naver", label: "Naver", enabled: true },
         { provider: "google", label: "Google", enabled: true },
       ],
     });

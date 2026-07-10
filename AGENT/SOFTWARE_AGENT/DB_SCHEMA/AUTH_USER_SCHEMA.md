@@ -72,7 +72,6 @@ AuthDevice 1 ─ N AuthSession
 |---|---|
 | `KAKAO` | Kakao provider |
 | `GOOGLE` | Google provider |
-| `NAVER` | Naver provider |
 | `APPLE` | Apple provider. 현재 FE 표시상 planned 상태일 수 있다. |
 
 ### AuthSessionStatus
@@ -276,7 +275,6 @@ enum UserStatus {
 enum OAuthProvider {
   KAKAO
   GOOGLE
-  NAVER
   APPLE
 }
 

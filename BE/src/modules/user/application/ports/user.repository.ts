@@ -8,7 +8,7 @@ export type UserDeviceStatus = "ACTIVE" | "REPLACED" | "REVOKED";
 // 역할 : UserOAuthAccountSummary 데이터가 계층 사이에서 전달되는 구조를 정의합니다.
 export interface UserOAuthAccountSummary {
   readonly id: string;
-  readonly provider: "kakao" | "naver" | "google" | "apple";
+  readonly provider: "kakao" | "google" | "apple";
   readonly providerEmail: string | null;
   readonly createdAt: Date;
 }

@@ -389,22 +389,22 @@ SUPABASE_JWT_ISSUER="https://xxxx.supabase.co/auth/v1"
 
 결정:
 
-- MVP 초기 실제 로그인 provider는 `Kakao`, `Naver`, `Google`로 고정한다.
+- MVP 초기 실제 로그인 provider는 `Kakao`, `Google`로 고정한다.
 - `Apple` 로그인은 MVP Web 초기 구현 범위에서 제외하고, iOS 앱을 만들 때 후속으로 구현한다.
-- User Web과 Admin Web의 로그인 provider 목록 API는 `kakao`, `naver`, `google`을 `enabled=true`로 반환한다.
+- User Web과 Admin Web의 로그인 provider 목록 API는 `kakao`, `google`을 `enabled=true`로 반환한다.
 - `apple`은 API 응답에 포함할 수 있지만 `enabled=false`, `status=planned` 또는 동일 의미의 상태로 표시한다.
 
 선택 이유:
 
-- 국내 B2C 사용자 기준으로 Kakao와 Naver는 초기 로그인 접근성에 중요하다.
+- 국내 B2C 사용자 기준으로 Kakao는 초기 로그인 접근성에 중요하다.
 - Google은 개발/테스트와 범용 계정 사용성이 좋아 초기 검증에 필요하다.
 - Apple 로그인은 iOS 앱에서 Apple 정책상 필요해질 수 있지만, Web MVP 초기에는 구현 비용 대비 우선순위가 낮다.
 - Apple을 후속으로 분리해도 Backend App token 구조는 외부 provider adapter 뒤에 있으므로 business API 인증 구조는 바뀌지 않는다.
 
 구현 영향:
 
-- Supabase Auth 개발 project에는 MVP 초기 provider로 Kakao, Naver, Google을 설정한다.
-- `GET /api/auth/providers`는 Kakao, Naver, Google을 활성 provider로 반환한다.
+- Supabase Auth 개발 project에는 MVP 초기 provider로 Kakao, Google을 설정한다.
+- `GET /api/auth/providers`는 Kakao, Google을 활성 provider로 반환한다.
 - Apple 로그인 버튼을 화면에 노출한다면 disabled 또는 준비 중 상태로만 표시한다.
 - Apple 실제 로그인, Apple provider 설정, Apple callback 검증은 iOS 앱 준비 시 별도 goal로 진행한다.
 

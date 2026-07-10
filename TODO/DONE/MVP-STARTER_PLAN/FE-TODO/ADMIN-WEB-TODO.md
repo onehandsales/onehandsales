@@ -119,7 +119,7 @@ adminApiClient
 ### 기능
 
 - Supabase Auth 기반 Admin 로그인
-- Admin 로그인 provider는 MVP 초기에는 Kakao, Naver, Google을 활성화
+- Admin 로그인 provider는 MVP 초기에는 Kakao, Google을 활성화
 - Apple 로그인은 iOS 앱 개발 단계 후속 provider로 두며 Web MVP에서는 disabled 또는 준비 중 상태
 - 로그인 성공 후 `POST /api/auth/exchange` 호출
 - token exchange 전 현재 기기 슬롯 선택 또는 확인: 모바일, 개인 노트북, 회사용 노트북

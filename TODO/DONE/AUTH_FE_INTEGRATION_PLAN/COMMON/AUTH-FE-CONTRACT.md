@@ -25,7 +25,7 @@ API를 수정할 때는 아래 항목을 반드시 함께 갱신한다.
 ## 2. Frontend 책임
 
 - Supabase client 초기화
-- Kakao, Naver, Google provider 로그인 시작
+- Kakao, Google provider 로그인 시작
 - Supabase callback 처리
 - Supabase session에서 access token 확보
 - Backend `POST /api/auth/exchange` 호출
@@ -71,7 +71,7 @@ Frontend 처리:
 
 - `enabled: true`인 provider만 로그인 가능 버튼으로 표시한다.
 - `status: "planned"`는 비활성 버튼 또는 숨김 처리한다.
-- provider 값은 `kakao`, `naver`, `google`, `apple` 중 하나다.
+- provider 값은 `kakao`, `google`, `apple` 중 하나다.
 
 ## 5. Token Exchange
 
@@ -454,7 +454,7 @@ Response:
 | 필드 | 타입 | 설명 |
 |---|---|---|
 | `providers` | `AuthProviderResponse[]` | provider 버튼 구성 목록 |
-| `providers[].provider` | string | `kakao`, `naver`, `google`, `apple` |
+| `providers[].provider` | string | `kakao`, `google`, `apple` |
 | `providers[].label` | string | 화면 표시 이름 |
 | `providers[].enabled` | boolean | 로그인 가능 여부 |
 | `providers[].status` | string | `enabled`, `disabled`, `planned` |

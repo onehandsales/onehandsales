@@ -109,10 +109,10 @@ const companySeeds = [
     ],
   },
   {
-    companyName: "네이버",
-    field: "검색/클라우드/AI",
-    region: "경기 성남 판교",
-    memo: "클라우드와 AI 솔루션 영업에서 고객사별 PoC, 제안서, 계약 일정을 촘촘히 관리하려 한다.",
+    companyName: "더존비즈온",
+    field: "ERP/클라우드/AI",
+    region: "강원 춘천",
+    memo: "ERP와 클라우드 솔루션 영업에서 고객사별 PoC, 제안서, 계약 일정을 촘촘히 관리하려 한다.",
     contacts: [
       ["송민재", "클라우드사업부", "이사"],
       ["조은서", "AI비즈니스팀", "부장"],
@@ -271,7 +271,7 @@ function getEmail(name: string, companyIndex: number): string {
     "lge.example",
     "miraeasset.example",
     "hyundai.example",
-    "naver.example",
+    "douzone.example",
     "kakao.example",
     "coupang.example",
     "toss.example",

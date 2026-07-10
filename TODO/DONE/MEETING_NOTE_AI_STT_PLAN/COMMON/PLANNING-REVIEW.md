@@ -18,13 +18,13 @@
 
 | 등급 | 항목 | 내용 | 조치 |
 |---|---|---|---|
-| Major | Provider 분리 | AI는 OpenAI 고정이지만 STT는 향후 Google/NAVER/AWS로 바뀔 수 있다. | `MeetingNoteAiDraftProvider`와 `MeetingNoteSttProvider`를 분리한다. |
+| Major | Provider 분리 | AI는 OpenAI 고정이지만 STT는 향후 Google/AWS로 바뀔 수 있다. | `MeetingNoteAiDraftProvider`와 `MeetingNoteSttProvider`를 분리한다. |
 | Minor | 파일 크기 | 브라우저 녹음/업로드 파일 크기와 형식 제한이 필요하다. | Backend 25MB 제한과 audio 계열 mime type 검증을 둔다. |
 | Minor | Provider 설정 | 운영 환경에 provider env가 없으면 장애가 명확히 드러나야 한다. | 설정 누락은 503으로 변환한다. |
 
 ## 4. 후속 검토 사항
 
-- Google/NAVER/AWS STT adapter 비교와 품질 테스트
+- Google/AWS STT adapter 비교와 품질 테스트
 - provider 사용량/비용 추적 테이블
 - transcript 영구 저장 여부
 - 브라우저 녹음 UX

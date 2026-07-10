@@ -88,7 +88,7 @@ BE/
 ### 사용자 기능
 
 - Supabase Auth provider 목록 제공
-- MVP 초기 실제 provider는 Kakao, Naver, Google
+- MVP 초기 실제 provider는 Kakao, Google
 - Apple provider는 iOS 앱 단계 후속 구현으로 분리
 - Supabase token을 Backend App token으로 exchange
 - Backend App access token 검증

@@ -83,7 +83,7 @@ User Web과 Admin Web의 mock-only auth를 실제 Supabase Auth + Backend token 
 
 ## 수동 검증 시나리오
 
-1. User Web에서 Google/Kakao/Naver provider 로그인 버튼을 누른다.
+1. User Web에서 Google/Kakao provider 로그인 버튼을 누른다.
 2. Supabase callback 후 Backend exchange가 호출된다.
 3. exchange 응답의 App access token으로 `/api/me`가 성공한다.
 4. 새로고침 후 memory token이 사라져도 `/api/auth/refresh`로 session이 복원된다.

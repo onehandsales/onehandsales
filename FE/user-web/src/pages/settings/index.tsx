@@ -483,7 +483,6 @@ function toProviderLabel(provider: string) {
     apple: "Apple",
     google: "Google",
     kakao: "Kakao",
-    naver: "Naver",
   };
 
   return labels[provider] ?? provider;

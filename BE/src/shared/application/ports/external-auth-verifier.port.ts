@@ -1,6 +1,6 @@
 ﻿export const EXTERNAL_AUTH_VERIFIER = Symbol("EXTERNAL_AUTH_VERIFIER");
 
-export type ExternalAuthProvider = "kakao" | "naver" | "google" | "apple";
+export type ExternalAuthProvider = "kakao" | "google" | "apple";
 
 // 역할 : VerifiedExternalUser 인터페이스가 구현해야 하는 계약을 정의합니다.
 export interface VerifiedExternalUser {

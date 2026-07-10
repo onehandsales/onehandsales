@@ -85,7 +85,6 @@ enum UserStatus {
 enum OAuthProvider {
   KAKAO
   GOOGLE
-  NAVER
   APPLE
 }
 

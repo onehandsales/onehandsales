@@ -76,7 +76,7 @@ Auth/User API의 Backend 구현과 검증은 완료됐으며, 계약 상태는 `
 ### 내부 비즈니스 로직
 
 1. AuthGuard를 적용하지 않는다.
-2. Backend provider registry 또는 설정에서 Kakao, Naver, Google, Apple provider 상태를 읽는다.
+2. Backend provider registry 또는 설정에서 Kakao, Google, Apple provider 상태를 읽는다.
 3. provider별 `enabled`, `status`, `displayOrder` 값을 만든다.
 4. public login 화면에서 필요한 값만 response DTO로 변환한다.
 5. client secret, provider secret, internal config key는 응답에 포함하지 않는다.
@@ -90,7 +90,7 @@ Auth/User API의 Backend 구현과 검증은 완료됐으며, 계약 상태는 `
 | 필드 | 타입 | nullable | 설명 |
 |---|---|---:|---|
 | `providers` | `AuthProviderResponse[]` | 아니오 | provider 버튼 구성 목록 |
-| `providers[].provider` | string | 아니오 | `kakao`, `naver`, `google`, `apple` |
+| `providers[].provider` | string | 아니오 | `kakao`, `google`, `apple` |
 | `providers[].label` | string | 아니오 | 화면 표시 이름 |
 | `providers[].enabled` | boolean | 아니오 | 로그인 가능 여부 |
 | `providers[].status` | string | 아니오 | `enabled`, `disabled`, `planned` |

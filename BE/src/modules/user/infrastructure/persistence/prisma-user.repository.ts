@@ -173,8 +173,6 @@ export class PrismaUserRepository implements UserRepository {
     switch (provider) {
       case OAuthProvider.KAKAO:
         return "kakao";
-      case OAuthProvider.NAVER:
-        return "naver";
       case OAuthProvider.GOOGLE:
         return "google";
       case OAuthProvider.APPLE:

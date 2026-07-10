@@ -12,7 +12,7 @@
 - AI 초안 생성은 OpenAI를 사용하되 `MeetingNoteAiDraftProvider` port 뒤에 둔다.
 - STT는 변경 가능성이 있으므로 `MeetingNoteSttProvider` port로 AI draft provider와 분리한다.
 - 현재 STT 기본 구현은 OpenAI `audio/transcriptions` adapter다.
-- 추후 Google/NAVER/AWS STT로 바꿀 때는 STT adapter만 추가/교체한다.
+- 추후 Google/AWS STT로 바꿀 때는 STT adapter만 추가/교체한다.
 - 초안 생성 API는 DB에 저장하지 않는다.
 - transcript, provider raw response, provider 호출 이력 테이블은 이번 범위에서 만들지 않는다.
 - 최종 저장은 기존 `POST /api/meeting-notes`를 사용한다.
@@ -33,7 +33,7 @@
 
 ## 4. 제외 범위
 
-- Google/NAVER/AWS STT adapter 구현
+- Google/AWS STT adapter 구현
 - AI/STT 로그 DB 테이블
 - transcript 영구 저장
 - provider별 비용 추적

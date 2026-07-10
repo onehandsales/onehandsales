@@ -459,8 +459,6 @@ export class PrismaAuthRepository implements AuthRepository {
     switch (provider) {
       case "kakao":
         return OAuthProvider.KAKAO;
-      case "naver":
-        return OAuthProvider.NAVER;
       case "google":
         return OAuthProvider.GOOGLE;
       case "apple":
@@ -473,8 +471,6 @@ export class PrismaAuthRepository implements AuthRepository {
     switch (provider) {
       case OAuthProvider.KAKAO:
         return "kakao";
-      case OAuthProvider.NAVER:
-        return "naver";
       case OAuthProvider.GOOGLE:
         return "google";
       case OAuthProvider.APPLE:

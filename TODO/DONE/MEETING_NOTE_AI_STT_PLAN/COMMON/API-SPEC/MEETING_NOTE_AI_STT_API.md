@@ -20,7 +20,7 @@ Provider 구조:
 - STT provider token: `MEETING_NOTE_STT_PROVIDER`
 - 현재 STT adapter: `OpenAiMeetingNoteSttProvider`
 - AI 초안 생성은 OpenAI 사용을 기본 정책으로 한다.
-- STT는 향후 Google, NAVER, AWS 등으로 교체될 수 있으므로 AI 초안 provider와 분리한다.
+- STT는 향후 Google, AWS 등으로 교체될 수 있으므로 AI 초안 provider와 분리한다.
 
 ## 2. 공통 정책
 

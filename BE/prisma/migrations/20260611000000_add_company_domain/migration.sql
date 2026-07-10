@@ -8,7 +8,7 @@ CREATE TYPE "UserRole" AS ENUM ('USER', 'ADMIN');
 CREATE TYPE "UserStatus" AS ENUM ('ACTIVE', 'SUSPENDED', 'DELETED');
 
 -- CreateEnum
-CREATE TYPE "OAuthProvider" AS ENUM ('KAKAO', 'GOOGLE', 'NAVER', 'APPLE');
+CREATE TYPE "OAuthProvider" AS ENUM ('KAKAO', 'GOOGLE', 'APPLE');
 
 -- CreateEnum
 CREATE TYPE "AuthSessionStatus" AS ENUM ('ACTIVE', 'REVOKED', 'EXPIRED');

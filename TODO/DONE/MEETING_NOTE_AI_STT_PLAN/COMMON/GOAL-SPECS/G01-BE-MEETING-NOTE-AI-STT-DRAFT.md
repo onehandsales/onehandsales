@@ -14,7 +14,7 @@
 - AI 초안 생성은 `MeetingNoteAiDraftProvider` application port 뒤에 둔다.
 - STT 변환은 `MeetingNoteSttProvider` application port 뒤에 둔다.
 - AI provider 기본 구현은 OpenAI adapter를 사용한다.
-- STT provider 기본 구현은 OpenAI adapter를 사용하되 Google, NAVER, AWS 등으로 교체 가능해야 한다.
+- STT provider 기본 구현은 OpenAI adapter를 사용하되 Google, AWS 등으로 교체 가능해야 한다.
 - 기본 테스트는 provider fake로 검증한다.
 
 ## 완료 기준

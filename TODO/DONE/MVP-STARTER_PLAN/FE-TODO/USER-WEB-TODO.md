@@ -134,7 +134,6 @@ src/lib/api-client.ts
 
 - Supabase Auth 기반 카카오 로그인 버튼
 - Supabase Auth 기반 구글 로그인 버튼
-- Supabase Auth 기반 네이버 로그인 버튼
 - 애플 로그인 버튼은 Web MVP에서는 disabled 또는 준비 중 상태로 표시
 - 애플 로그인 실제 구현은 iOS 앱 개발 단계 후속 작업
 - Supabase Auth callback 처리
