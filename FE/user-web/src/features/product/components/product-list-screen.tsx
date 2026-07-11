@@ -5,6 +5,7 @@ import {
   Plus,
   RotateCcw,
   Search,
+  SlidersHorizontal,
   X,
   type LucideIcon,
 } from "lucide-react";
@@ -14,7 +15,12 @@ import {
   useRef,
   useState,
 } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import {
+  useLocation,
+  useNavigate,
+  useOutletContext,
+} from "react-router-dom";
+import type { AppShellOutletContext } from "@/components/layout/app-shell";
 import { PageHeader } from "@/components/layout/page-header";
 import { CollapsibleDesktopSearch } from "@/components/ui/collapsible-desktop-search";
 import { ListFilterSelect } from "@/components/ui/list-filter-select";
@@ -23,6 +29,9 @@ import { ListEmptyState } from "@/components/ui/state";
 import { Toast } from "@/components/ui/toast";
 import { useAuthSession } from "@/features/auth";
 import { ProductCreateDialog } from "@/features/product/components/product-create-dialog";
+import type {
+  ProductCreateFormValues,
+} from "@/features/product/components/product-create-dialog";
 import { ProductTaxonomyManageDialog } from "@/features/product/components/product-taxonomy-manage-dialog";
 import { exportProductsXlsx } from "@/features/product/api/product-api";
 import {
@@ -56,6 +65,13 @@ const PRODUCT_SORT_OPTIONS: Array<{
 const PRODUCT_TABLE_GRID_STYLE = {
   gridTemplateColumns: "repeat(5, minmax(90px, 1fr))",
 };
+const PRODUCT_CREATE_PANEL_STORAGE_KEY = "onehand.product.createPanelWidth";
+const PRODUCT_CREATE_PANEL_DEFAULT_WIDTH = 520;
+const PRODUCT_CREATE_PANEL_MIN_WIDTH = 420;
+const PRODUCT_CREATE_PANEL_MAX_RATIO = 0.55;
+const PRODUCT_CREATE_PANEL_AUTO_SIDEBAR_RATIO = 0.45;
+const PRODUCT_CREATE_PANEL_TRANSITION_MS = 500;
+const DESKTOP_SEARCH_COMPACT_MAX_WIDTH = 170;
 
 export function ProductListScreen({
   initialCreateOpen = false,
@@ -63,7 +79,10 @@ export function ProductListScreen({
 }: ProductListScreenProps) {
   const navigate = useNavigate();
   const location = useLocation();
+  const outletContext =
+    useOutletContext<AppShellOutletContext | undefined>();
   const { user } = useAuthSession();
+  const isDockedViewport = useMediaQuery("(min-width: 1024px)");
   const [searchText, setSearchText] = useState("");
   const [search, setSearch] = useState("");
   const [searchResetSignal, setSearchResetSignal] = useState(0);
@@ -72,6 +91,14 @@ export function ProductListScreen({
   const [sort, setSort] = useState<ProductSort>("createdAtDesc");
   const [page, setPage] = useState(1);
   const [isCreateOpen, setIsCreateOpen] = useState(false);
+  const [isDockedCreateRendered, setIsDockedCreateRendered] = useState(false);
+  const [createPanelWidth, setCreatePanelWidth] = useState(
+    getStoredProductCreatePanelWidth,
+  );
+  const [isCreatePanelResizing, setIsCreatePanelResizing] = useState(false);
+  const [isCompactFilterOpen, setIsCompactFilterOpen] = useState(false);
+  const [compactFilterPosition, setCompactFilterPosition] =
+    useState<FieldFilterPopoverPosition | null>(null);
   const [taxonomyDialog, setTaxonomyDialog] = useState<{
     readonly kind: "category" | "status";
   } | null>(null);
@@ -80,6 +107,9 @@ export function ProductListScreen({
   const [notice, setNotice] = useState<string | null>(null);
   const [noticeDescription, setNoticeDescription] = useState<string | null>(null);
   const [isExporting, setIsExporting] = useState(false);
+  const compactFilterButtonRef = useRef<HTMLButtonElement>(null);
+  const compactFilterPopoverRef = useRef<HTMLDivElement>(null);
+  const setAutoSidebarCollapsed = outletContext?.setAutoSidebarCollapsed;
 
   const categoriesQuery = useProductCategories();
   const statusesQuery = useProductStatuses();
@@ -96,8 +126,10 @@ export function ProductListScreen({
     () => ({
       page,
       productName: search || undefined,
-      productCategoryIds: categoryFilterIds.length > 0 ? categoryFilterIds : undefined,
-      productStatusIds: statusFilterIds.length > 0 ? statusFilterIds : undefined,
+      productCategoryIds:
+        categoryFilterIds.length > 0 ? categoryFilterIds : undefined,
+      productStatusIds:
+        statusFilterIds.length > 0 ? statusFilterIds : undefined,
       sort,
     }),
     [categoryFilterIds, page, search, sort, statusFilterIds],
@@ -107,6 +139,12 @@ export function ProductListScreen({
   const products = productsQuery.data?.items ?? [];
   const totalCount = productsQuery.data?.totalCount ?? 0;
   const displayTimeZone = user?.timeZone ?? getBrowserTimeZoneFallback();
+  const isDockedCreateOpen = isCreateOpen && isDockedViewport;
+  const isDockedCreateMounted = isDockedCreateOpen || isDockedCreateRendered;
+  const isCompactFilterMode = isDockedCreateMounted;
+  const hasTaxonomyFilters =
+    categoryFilterIds.length > 0 || statusFilterIds.length > 0;
+  const taxonomyFilterCount = categoryFilterIds.length + statusFilterIds.length;
   const hasFilters =
     search.length > 0 ||
     categoryFilterIds.length > 0 ||
@@ -125,10 +163,173 @@ export function ProductListScreen({
   }, [location.pathname, location.state, navigate]);
 
   useEffect(() => {
-    if (initialCreateOpen) {
-      setIsCreateOpen(true);
+    if (!initialCreateOpen) {
+      return;
     }
+
+    setCreatePanelWidth(PRODUCT_CREATE_PANEL_MIN_WIDTH);
+    setIsCreateOpen(true);
   }, [initialCreateOpen]);
+
+  useEffect(() => {
+    if (isDockedCreateOpen) {
+      setIsDockedCreateRendered(true);
+      return;
+    }
+
+    const timerId = window.setTimeout(() => {
+      setIsDockedCreateRendered(false);
+    }, PRODUCT_CREATE_PANEL_TRANSITION_MS);
+
+    return () => window.clearTimeout(timerId);
+  }, [isDockedCreateOpen]);
+
+  useEffect(() => {
+    if (!isCompactFilterMode) {
+      setIsCompactFilterOpen(false);
+    }
+  }, [isCompactFilterMode]);
+
+  useEffect(() => {
+    if (!isCompactFilterOpen) {
+      return;
+    }
+
+    const updateCompactFilterPosition = () => {
+      if (!compactFilterButtonRef.current) {
+        return;
+      }
+
+      setCompactFilterPosition(
+        getCompactFilterPopoverPosition(compactFilterButtonRef.current),
+      );
+    };
+    const onMouseDown = (event: MouseEvent) => {
+      const target = event.target as Node;
+
+      if (
+        compactFilterButtonRef.current?.contains(target) ||
+        compactFilterPopoverRef.current?.contains(target)
+      ) {
+        return;
+      }
+
+      setIsCompactFilterOpen(false);
+    };
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setIsCompactFilterOpen(false);
+        compactFilterButtonRef.current?.focus();
+      }
+    };
+
+    updateCompactFilterPosition();
+    document.addEventListener("mousedown", onMouseDown);
+    document.addEventListener("keydown", onKeyDown);
+    window.addEventListener("resize", updateCompactFilterPosition);
+    window.addEventListener("scroll", updateCompactFilterPosition, true);
+
+    return () => {
+      document.removeEventListener("mousedown", onMouseDown);
+      document.removeEventListener("keydown", onKeyDown);
+      window.removeEventListener("resize", updateCompactFilterPosition);
+      window.removeEventListener("scroll", updateCompactFilterPosition, true);
+    };
+  }, [isCompactFilterOpen]);
+
+  useEffect(() => {
+    if (typeof window === "undefined") {
+      return;
+    }
+
+    window.localStorage.setItem(
+      PRODUCT_CREATE_PANEL_STORAGE_KEY,
+      String(createPanelWidth),
+    );
+  }, [createPanelWidth]);
+
+  useEffect(() => {
+    const clampToViewport = () => {
+      setCreatePanelWidth((currentWidth) =>
+        clampProductCreatePanelWidth(
+          currentWidth,
+          window.innerWidth,
+        ),
+      );
+    };
+
+    clampToViewport();
+    window.addEventListener("resize", clampToViewport);
+
+    return () => {
+      window.removeEventListener("resize", clampToViewport);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!setAutoSidebarCollapsed) {
+      return;
+    }
+
+    return () => {
+      setAutoSidebarCollapsed(false);
+    };
+  }, [setAutoSidebarCollapsed]);
+
+  useEffect(() => {
+    if (!setAutoSidebarCollapsed) {
+      return;
+    }
+
+    const syncAutoSidebar = () => {
+      const viewportWidth =
+        typeof window === "undefined" ? 0 : window.innerWidth;
+      const shouldCollapse =
+        isDockedCreateMounted &&
+        viewportWidth > 0 &&
+        createPanelWidth / viewportWidth >
+          PRODUCT_CREATE_PANEL_AUTO_SIDEBAR_RATIO;
+
+      setAutoSidebarCollapsed(shouldCollapse);
+    };
+
+    syncAutoSidebar();
+    window.addEventListener("resize", syncAutoSidebar);
+
+    return () => {
+      window.removeEventListener("resize", syncAutoSidebar);
+    };
+  }, [createPanelWidth, isDockedCreateMounted, setAutoSidebarCollapsed]);
+
+  useEffect(() => {
+    if (!isCreatePanelResizing) {
+      return;
+    }
+
+    const previousCursor = document.body.style.cursor;
+    const previousUserSelect = document.body.style.userSelect;
+    const onMouseMove = (event: MouseEvent) => {
+      setCreatePanelWidth(
+        clampProductCreatePanelWidth(
+          window.innerWidth - event.clientX,
+          window.innerWidth,
+        ),
+      );
+    };
+    const onMouseUp = () => setIsCreatePanelResizing(false);
+
+    document.body.style.cursor = "col-resize";
+    document.body.style.userSelect = "none";
+    window.addEventListener("mousemove", onMouseMove);
+    window.addEventListener("mouseup", onMouseUp);
+
+    return () => {
+      document.body.style.cursor = previousCursor;
+      document.body.style.userSelect = previousUserSelect;
+      window.removeEventListener("mousemove", onMouseMove);
+      window.removeEventListener("mouseup", onMouseUp);
+    };
+  }, [isCreatePanelResizing]);
 
   useEffect(() => {
     setPage(1);
@@ -186,8 +387,10 @@ export function ProductListScreen({
     try {
       const { blob, fileName } = await exportProductsXlsx({
         productName: search || undefined,
-        productCategoryIds: categoryFilterIds.length > 0 ? categoryFilterIds : undefined,
-        productStatusIds: statusFilterIds.length > 0 ? statusFilterIds : undefined,
+        productCategoryIds:
+          categoryFilterIds.length > 0 ? categoryFilterIds : undefined,
+        productStatusIds:
+          statusFilterIds.length > 0 ? statusFilterIds : undefined,
         sort,
       });
       const url = URL.createObjectURL(blob);
@@ -200,9 +403,36 @@ export function ProductListScreen({
       setIsExporting(false);
     }
   };
+  const onCreateOpenChange = (open: boolean) => {
+    setIsCreateOpen(open);
+
+    if (!open) {
+      onCreateDialogClose?.();
+    }
+  };
+  const openCreatePanel = () => {
+    setCreatePanelWidth(PRODUCT_CREATE_PANEL_MIN_WIDTH);
+    setIsCreateOpen(true);
+  };
+  const onCreateExpand = (values: ProductCreateFormValues) => {
+    void navigate("/app/products/new/full", {
+      state: { productCreateDraft: values },
+    });
+  };
+  const onProductCreated = () => {
+    setNotice("제품을 추가했어요.");
+    void productsQuery.refetch();
+  };
 
   return (
-    <section className="flex min-h-full flex-col bg-white">
+    <section
+      className="flex min-h-full flex-col bg-white transition-[padding-right] duration-[500ms] ease-out"
+      style={
+        isDockedCreateMounted
+          ? { paddingRight: isDockedCreateOpen ? createPanelWidth : 0 }
+          : undefined
+      }
+    >
       <PageHeader
         breadcrumbs={[{ label: "제품", icon: Package }]}
         actions={[
@@ -215,84 +445,186 @@ export function ProductListScreen({
           {
             icon: Plus,
             tooltip: "제품 생성",
-            onClick: () => void navigate("/app/products/new"),
+            onClick: openCreatePanel,
+            hidden: isDockedCreateMounted,
             variant: "primary",
           },
         ]}
       />
 
       {/* 검색 + 필터 툴바 (데스크톱) */}
-      <div className="hidden min-h-10 shrink-0 items-center gap-1.5 overflow-x-auto px-5 py-1 md:flex lg:gap-2">
-        <CollapsibleDesktopSearch
-          appliedValue={search}
-          placeholder="제품명 검색"
-          resetSignal={searchResetSignal}
-          submitLabel="제품 검색 실행"
-          value={searchText}
-          onSubmit={onSearchSubmit}
-          onValueChange={setSearchText}
-        />
-        <FilterChip
-          active={hasFilters}
-          icon={RotateCcw}
-          label="초기화"
-          onClick={() => {
-            setSearch("");
-            setSearchText("");
-            setSearchResetSignal((signal) => signal + 1);
-            setCategoryFilterIds([]);
-            setStatusFilterIds([]);
-            setSort("createdAtDesc");
-            setPage(1);
-          }}
-        />
-        <ProductTaxonomyFilterCombobox
-              emptyText="조건을 바꾸면 카테고리를 찾을 수 있어요."
-          getLabel={(c) => c.categoryName}
-          itemKindLabel="카테고리"
-          items={categories}
-          selectedIds={categoryFilterIds}
-          size="desktop"
-          tone="blue"
-          onCreateClick={() => setTaxonomyDialog({ kind: "category" })}
-          onSelectedIdsChange={(ids) => {
-            setCategoryFilterIds(ids);
-            setPage(1);
-          }}
-        />
-        <ProductTaxonomyFilterCombobox
-              emptyText="조건을 바꾸면 상태를 찾을 수 있어요."
-          getLabel={(s) => s.statusName}
-          itemKindLabel="상태"
-          items={statuses}
-          selectedIds={statusFilterIds}
-          size="desktop"
-          tone="blue"
-          onCreateClick={() => setTaxonomyDialog({ kind: "status" })}
-          onSelectedIdsChange={(ids) => {
-            setStatusFilterIds(ids);
-            setPage(1);
-          }}
-        />
-        <ListFilterSelect
-          active={sort !== "createdAtDesc"}
-          ariaLabel="정렬 조건"
-          className="w-[clamp(136px,14vw,178px)]"
-          onChange={(nextSort) => {
-            setSort(nextSort);
-            setPage(1);
-          }}
-          options={PRODUCT_SORT_OPTIONS}
-          value={sort}
-        />
-        <div className="flex-1" />
-        <span className="shrink-0 text-[12px] text-[#9CA3AF]">
+      <div className="hidden min-h-10 shrink-0 items-center px-5 py-1 md:flex">
+        <div className="flex min-w-0 flex-1 items-center gap-1.5 overflow-x-auto [scrollbar-width:none] lg:gap-2 [&::-webkit-scrollbar]:hidden">
+          <CollapsibleDesktopSearch
+            appliedValue={search}
+            maxExpandedWidth={
+              isCompactFilterMode ? DESKTOP_SEARCH_COMPACT_MAX_WIDTH : undefined
+            }
+            placeholder="제품을 검색하세요!"
+            resetSignal={searchResetSignal}
+            submitLabel="제품 검색 실행"
+            value={searchText}
+            onSubmit={onSearchSubmit}
+            onValueChange={setSearchText}
+          />
+          <FilterChip
+            active={hasFilters}
+            icon={RotateCcw}
+            label="초기화"
+            onClick={() => {
+              setSearch("");
+              setSearchText("");
+              setSearchResetSignal((signal) => signal + 1);
+              setCategoryFilterIds([]);
+              setStatusFilterIds([]);
+              setSort("createdAtDesc");
+              setPage(1);
+            }}
+          />
+          {isCompactFilterMode ? (
+            <button
+              ref={compactFilterButtonRef}
+              aria-expanded={isCompactFilterOpen}
+              aria-label="필터"
+              className={cn(
+                "inline-flex h-8 w-[84px] shrink-0 items-center justify-center gap-1 rounded-md border px-2 text-[13px] font-semibold transition focus:outline-none",
+                hasTaxonomyFilters
+                  ? "border-[#E2E5EC] bg-[#EFF6FF] text-[#1D4ED8] hover:border-[#D1D5DB] hover:bg-[#DBEAFE]"
+                  : "border-[#E2E5EC] bg-white text-[#475569] hover:border-[#D1D5DB] hover:bg-[#F5F6F8]",
+              )}
+              onClick={() => setIsCompactFilterOpen((open) => !open)}
+              type="button"
+            >
+              <SlidersHorizontal className="h-3.5 w-3.5" />
+              <span>필터</span>
+              {hasTaxonomyFilters ? (
+                <span className="grid h-4 min-w-4 place-items-center rounded-full bg-[#4880EE] px-1 text-[10px] font-bold leading-none text-white">
+                  {taxonomyFilterCount}
+                </span>
+              ) : null}
+            </button>
+          ) : (
+            <>
+              <ProductTaxonomyFilterCombobox
+                emptyText="조건을 바꾸면 카테고리를 찾을 수 있어요."
+                getLabel={(c) => c.categoryName}
+                itemKindLabel="카테고리"
+                items={categories}
+                selectedIds={categoryFilterIds}
+                size="desktop"
+                tone="blue"
+                onCreateClick={() => setTaxonomyDialog({ kind: "category" })}
+                onSelectedIdsChange={(ids) => {
+                  setCategoryFilterIds(ids);
+                  setPage(1);
+                }}
+              />
+              <ProductTaxonomyFilterCombobox
+                emptyText="조건을 바꾸면 상태를 찾을 수 있어요."
+                getLabel={(s) => s.statusName}
+                itemKindLabel="상태"
+                items={statuses}
+                selectedIds={statusFilterIds}
+                size="desktop"
+                tone="blue"
+                onCreateClick={() => setTaxonomyDialog({ kind: "status" })}
+                onSelectedIdsChange={(ids) => {
+                  setStatusFilterIds(ids);
+                  setPage(1);
+                }}
+              />
+            </>
+          )}
+          <ListFilterSelect
+            active={sort !== "createdAtDesc"}
+            ariaLabel="정렬 조건"
+            className={
+              isCompactFilterMode
+                ? "w-[104px]"
+                : "w-[clamp(136px,14vw,178px)]"
+            }
+            onChange={(nextSort) => {
+              setSort(nextSort);
+              setPage(1);
+            }}
+            options={PRODUCT_SORT_OPTIONS}
+            value={sort}
+          />
+        </div>
+        <span
+          className={cn(
+            "ml-2 shrink-0 text-[12px]",
+            isCompactFilterMode
+              ? "font-semibold text-[#64748B]"
+              : "text-[#9CA3AF]",
+          )}
+        >
           {isExporting ? "내보내는 중..." : `${totalCount}개`}
         </span>
       </div>
+      {isCompactFilterMode && isCompactFilterOpen ? (
+        <div
+          ref={compactFilterPopoverRef}
+          className={cn(
+            "fixed z-50 rounded-lg border border-[#E6EAF0] bg-white p-3 shadow-lg",
+            !compactFilterPosition && "invisible",
+          )}
+          style={{
+            left: compactFilterPosition?.left ?? 0,
+            top: compactFilterPosition?.top ?? 0,
+            width: compactFilterPosition?.width ?? 320,
+          }}
+        >
+          <div className="grid gap-3">
+            <div className="grid gap-1.5">
+              <p className="text-[12px] font-semibold text-[#64748B]">
+                카테고리
+              </p>
+              <ProductTaxonomyFilterCombobox
+                emptyText="조건을 바꾸면 카테고리를 찾을 수 있어요."
+                getLabel={(c) => c.categoryName}
+                itemKindLabel="카테고리"
+                items={categories}
+                layout="full"
+                selectedIds={categoryFilterIds}
+                size="desktop"
+                tone="blue"
+                onCreateClick={() => setTaxonomyDialog({ kind: "category" })}
+                onSelectedIdsChange={(ids) => {
+                  setCategoryFilterIds(ids);
+                  setPage(1);
+                }}
+              />
+            </div>
+            <div className="grid gap-1.5">
+              <p className="text-[12px] font-semibold text-[#64748B]">상태</p>
+              <ProductTaxonomyFilterCombobox
+                emptyText="조건을 바꾸면 상태를 찾을 수 있어요."
+                getLabel={(s) => s.statusName}
+                itemKindLabel="상태"
+                items={statuses}
+                layout="full"
+                selectedIds={statusFilterIds}
+                size="desktop"
+                tone="blue"
+                onCreateClick={() => setTaxonomyDialog({ kind: "status" })}
+                onSelectedIdsChange={(ids) => {
+                  setStatusFilterIds(ids);
+                  setPage(1);
+                }}
+              />
+            </div>
+          </div>
+        </div>
+      ) : null}
 
       {/* 테이블 (데스크톱) */}
-      <div className="hidden gap-3 overflow-x-auto px-5 pb-3 pt-1 md:flex xl:gap-5">
+      <div
+        className={cn(
+          "hidden min-h-0 flex-1 gap-3 overflow-hidden px-5 pb-3 pt-1 md:flex xl:gap-5",
+          isCreatePanelResizing && "cursor-col-resize select-none",
+        )}
+      >
         <div className="flex min-w-0 flex-1 flex-col gap-3">
           {notice ? (
             <Toast
@@ -331,11 +663,11 @@ export function ProductListScreen({
                 actionIcon={Plus}
                 actionLabel="제품 생성"
                 icon={Package}
-                onAction={() => setIsCreateOpen(true)}
+                onAction={openCreatePanel}
                 title={
                   hasFilters
-                      ? "조건을 바꾸면 제품을 찾을 수 있어요"
-                      : "데이터가 존재하지 않아요"
+                    ? "조건을 바꾸면 제품을 찾을 수 있어요"
+                    : "데이터가 존재하지 않아요"
                 }
               />
             ) : (
@@ -359,6 +691,18 @@ export function ProductListScreen({
             />
           ) : null}
         </div>
+
+        {isDockedCreateMounted ? (
+          <ProductCreateDialog
+            mode="docked"
+            onExpand={onCreateExpand}
+            onCreated={onProductCreated}
+            onOpenChange={onCreateOpenChange}
+            onResizeStart={() => setIsCreatePanelResizing(true)}
+            open={isDockedCreateOpen}
+            width={createPanelWidth}
+          />
+        ) : null}
       </div>
 
       {/* 모바일 뷰 */}
@@ -386,7 +730,7 @@ export function ProductListScreen({
             <RotateCcw className="h-3 w-3" />
           </button>
           <ProductTaxonomyFilterCombobox
-              emptyText="조건을 바꾸면 카테고리를 찾을 수 있어요."
+            emptyText="조건을 바꾸면 카테고리를 찾을 수 있어요."
             getLabel={(c) => c.categoryName}
             itemKindLabel="카테고리"
             items={categories}
@@ -400,7 +744,7 @@ export function ProductListScreen({
             }}
           />
           <ProductTaxonomyFilterCombobox
-              emptyText="조건을 바꾸면 상태를 찾을 수 있어요."
+            emptyText="조건을 바꾸면 상태를 찾을 수 있어요."
             getLabel={(s) => s.statusName}
             itemKindLabel="상태"
             items={statuses}
@@ -463,11 +807,11 @@ export function ProductListScreen({
               actionIcon={Plus}
               actionLabel="제품 생성"
               icon={Package}
-              onAction={() => setIsCreateOpen(true)}
+              onAction={openCreatePanel}
               title={
                 hasFilters
-                    ? "조건을 바꾸면 제품을 찾을 수 있어요"
-                    : "데이터가 존재하지 않아요"
+                  ? "조건을 바꾸면 제품을 찾을 수 있어요"
+                  : "데이터가 존재하지 않아요"
               }
             />
           ) : (
@@ -496,26 +840,22 @@ export function ProductListScreen({
         <button
           aria-label="제품 생성"
           className="fixed bottom-24 right-5 flex h-8 w-8 items-center justify-center rounded-full bg-[#4880EE] shadow-[0_4px_16px_rgba(59,130,246,0.27)] transition active:opacity-80"
-          onClick={() => void navigate("/app/products/new")}
+          onClick={openCreatePanel}
           type="button"
         >
           <Plus className="h-4 w-4 text-white" strokeWidth={2.5} />
         </button>
       </section>
 
-      <ProductCreateDialog
-        onCreated={() => {
-        setNotice("제품을 추가했어요.");
-          void productsQuery.refetch();
-        }}
-        onOpenChange={(open) => {
-          setIsCreateOpen(open);
-          if (!open) {
-            onCreateDialogClose?.();
-          }
-        }}
-        open={isCreateOpen}
-      />
+      <div className="lg:hidden">
+        <ProductCreateDialog
+          mode="overlay"
+          onExpand={onCreateExpand}
+          onCreated={onProductCreated}
+          onOpenChange={onCreateOpenChange}
+          open={isCreateOpen && !isDockedViewport}
+        />
+      </div>
       <ProductTaxonomyManageDialog
         categories={categories}
         kind={taxonomyDialog?.kind ?? "category"}
@@ -732,6 +1072,7 @@ function ProductTaxonomyFilterCombobox<
   getLabel,
   itemKindLabel,
   items,
+  layout = "compact",
   selectedIds,
   size,
   tone,
@@ -742,6 +1083,7 @@ function ProductTaxonomyFilterCombobox<
   readonly getLabel: (item: TItem) => string;
   readonly itemKindLabel: string;
   readonly items: readonly TItem[];
+  readonly layout?: "compact" | "full";
   readonly selectedIds: readonly string[];
   readonly size: "desktop" | "mobile";
   readonly tone: ProductTaxonomyFilterTone;
@@ -849,7 +1191,11 @@ function ProductTaxonomyFilterCombobox<
       ref={wrapperRef}
       className={cn(
         "relative shrink-0",
-        isMobile ? "w-[120px]" : "w-[clamp(136px,14vw,178px)]",
+        layout === "full"
+          ? "w-full"
+          : isMobile
+            ? "w-[120px]"
+            : "w-[clamp(136px,14vw,178px)]",
       )}
     >
       <div className="relative">
@@ -1028,6 +1374,23 @@ function ProductTaxonomyFilterCombobox<
   );
 }
 
+function getCompactFilterPopoverPosition(
+  trigger: HTMLButtonElement,
+): FieldFilterPopoverPosition {
+  const rect = trigger.getBoundingClientRect();
+  const viewportWidth = window.innerWidth;
+  const margin = 16;
+  const width = Math.min(320, Math.max(280, viewportWidth - margin * 2));
+  const maxLeft = Math.max(margin, viewportWidth - width - margin);
+  const left = Math.min(Math.max(rect.left, margin), maxLeft);
+
+  return {
+    left,
+    top: rect.bottom + 6,
+    width,
+  };
+}
+
 function getFieldFilterPopoverPosition(
   input: HTMLInputElement,
   isMobile: boolean,
@@ -1093,6 +1456,69 @@ function getTaxonomyFilterCheckDotClass(tone: ProductTaxonomyFilterTone) {
     case "blue":
       return "bg-[#4880EE]";
   }
+}
+
+function useMediaQuery(query: string) {
+  const [matches, setMatches] = useState(() => {
+    if (typeof window === "undefined") {
+      return false;
+    }
+
+    return window.matchMedia(query).matches;
+  });
+
+  useEffect(() => {
+    if (typeof window === "undefined") {
+      return;
+    }
+
+    const mediaQueryList = window.matchMedia(query);
+    const onChange = () => setMatches(mediaQueryList.matches);
+
+    onChange();
+    mediaQueryList.addEventListener("change", onChange);
+
+    return () => {
+      mediaQueryList.removeEventListener("change", onChange);
+    };
+  }, [query]);
+
+  return matches;
+}
+
+function getStoredProductCreatePanelWidth() {
+  if (typeof window === "undefined") {
+    return PRODUCT_CREATE_PANEL_DEFAULT_WIDTH;
+  }
+
+  const storedWidth = Number(
+    window.localStorage.getItem(PRODUCT_CREATE_PANEL_STORAGE_KEY),
+  );
+
+  return clampProductCreatePanelWidth(storedWidth, window.innerWidth);
+}
+
+function clampProductCreatePanelWidth(width: number, viewportWidth?: number) {
+  const fallbackWidth = Number.isFinite(width)
+    ? width
+    : PRODUCT_CREATE_PANEL_DEFAULT_WIDTH;
+  const maxWidth = getProductCreatePanelMaxWidth(viewportWidth);
+
+  return Math.min(
+    Math.max(fallbackWidth, PRODUCT_CREATE_PANEL_MIN_WIDTH),
+    maxWidth,
+  );
+}
+
+function getProductCreatePanelMaxWidth(viewportWidth?: number) {
+  if (!viewportWidth || viewportWidth <= 0) {
+    return PRODUCT_CREATE_PANEL_DEFAULT_WIDTH;
+  }
+
+  return Math.max(
+    PRODUCT_CREATE_PANEL_MIN_WIDTH,
+    Math.floor(viewportWidth * PRODUCT_CREATE_PANEL_MAX_RATIO),
+  );
 }
 
 function ProductListSkeleton() {

@@ -33,6 +33,7 @@ import { MeetingNoteDetailPage } from "@/pages/meeting-notes/detail";
 import { MeetingNotesPage } from "@/pages/meeting-notes";
 import { ProductDetailPage } from "@/pages/products/detail";
 import { ProductsPage } from "@/pages/products";
+import { ProductNewFullPage } from "@/pages/products/new-full";
 import { ProductNewPage } from "@/pages/products/new";
 import { PrivacyPage } from "@/pages/privacy";
 import { PricingPage } from "@/pages/pricing";
@@ -96,6 +97,10 @@ export const router = createBrowserRouter([
     element: <LegacyAppRedirect paramName="contactId" to="/app/contacts" />,
   },
   { path: "/products", element: <LegacyAppRedirect to="/app/products" /> },
+  {
+    path: "/products/new/full",
+    element: <LegacyAppRedirect to="/app/products/new/full" />,
+  },
   {
     path: "/products/new",
     element: <LegacyAppRedirect to="/app/products/new" />,
@@ -161,6 +166,7 @@ export const router = createBrowserRouter([
       { path: "contacts/new", element: <ContactNewPage /> },
       { path: "contacts/:contactId", element: <ContactDetailPage /> },
       { path: "products", element: <ProductsPage /> },
+      { path: "products/new/full", element: <ProductNewFullPage /> },
       { path: "products/new", element: <ProductNewPage /> },
       { path: "products/:productId", element: <ProductDetailPage /> },
       { path: "deals", element: <DealsPage /> },
