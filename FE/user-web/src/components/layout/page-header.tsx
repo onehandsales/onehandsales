@@ -33,13 +33,29 @@ export function PageHeader({
   actionsPlacement = "end",
   className,
 }: PageHeaderProps) {
-  const visibleActions = actions.filter((action) => !action.hidden);
   const actionsNode =
-    visibleActions.length > 0 ? (
-      <div className="app-page-header-actions flex items-center gap-1.5">
-        {visibleActions.map((action, index) => (
-          <TooltipIconButton key={index} action={action} />
-        ))}
+    actions.length > 0 ? (
+      <div className="app-page-header-actions flex items-center">
+        {actions.map((action, index) => {
+          const hasVisibleActionBefore = actions
+            .slice(0, index)
+            .some((previousAction) => !previousAction.hidden);
+
+          return (
+            <div
+              className={cn(
+                "relative h-8 shrink-0 transition-[width,margin-left] duration-[500ms] ease-out",
+                action.hidden ? "w-0" : "w-8",
+                hasVisibleActionBefore && !action.hidden ? "ml-1.5" : "ml-0"
+              )}
+              key={index}
+            >
+              <div className="absolute right-0 top-0 h-8 w-8">
+                <TooltipIconButton action={action} />
+              </div>
+            </div>
+          );
+        })}
       </div>
     ) : null;
 
@@ -131,10 +147,20 @@ function TooltipIconButton({ action }: { readonly action: HeaderAction }) {
   );
 
   const commonClass = cn(
-    "group relative inline-flex h-8 w-8 items-center justify-center rounded-md shadow-sm transition",
+    "group relative inline-flex h-8 w-8 items-center justify-center rounded-md shadow-sm transition-[background-color,border-color,color,opacity] duration-[500ms]",
     variantClass,
-    action.disabled && "pointer-events-none opacity-40"
+    action.hidden
+      ? "pointer-events-none opacity-0"
+      : action.disabled
+        ? "pointer-events-none opacity-40"
+        : "opacity-100"
   );
+  const hiddenProps = action.hidden
+    ? {
+        "aria-hidden": true,
+        tabIndex: -1,
+      }
+    : {};
 
   if (action.href) {
     return (
@@ -142,6 +168,7 @@ function TooltipIconButton({ action }: { readonly action: HeaderAction }) {
         aria-label={action.tooltip}
         className={commonClass}
         to={action.href}
+        {...hiddenProps}
       >
         {inner}
       </Link>
@@ -152,9 +179,10 @@ function TooltipIconButton({ action }: { readonly action: HeaderAction }) {
     <button
       aria-label={action.tooltip}
       className={commonClass}
-      disabled={action.disabled}
+      disabled={action.disabled || action.hidden}
       type="button"
       onClick={action.onClick}
+      {...hiddenProps}
     >
       {inner}
     </button>

@@ -262,7 +262,7 @@ export function CompanyCreateDialog({
         isPage
           ? "flex min-h-full flex-col bg-white"
           : isDocked
-          ? `fixed inset-y-0 right-0 z-50 flex h-screen shrink-0 flex-col bg-white shadow-[0_18px_48px_rgba(15,23,42,0.16)] transition-[transform,opacity] duration-[400ms] ease-out will-change-transform ${
+          ? `fixed inset-y-0 right-0 z-50 flex h-screen shrink-0 flex-col bg-white shadow-[0_18px_48px_rgba(15,23,42,0.16)] transition-[transform,opacity] duration-[500ms] ease-out will-change-transform ${
               open
                 ? "company-create-panel-enter pointer-events-auto translate-x-0 opacity-100"
                 : "pointer-events-none translate-x-full opacity-0"

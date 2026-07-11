@@ -53,7 +53,7 @@ import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { getApiErrorMessage } from "@/lib/api-client";
 
 const HOME_PATH = "/app";
-const SIDEBAR_COLLAPSE_TRANSITION_MS = 400;
+const SIDEBAR_COLLAPSE_TRANSITION_MS = 500;
 
 export type AppShellOutletContext = {
   readonly setAutoSidebarCollapsed: (collapsed: boolean) => void;
@@ -534,7 +534,7 @@ export function AppShell() {
         {/* Sidebar */}
         <aside
           aria-hidden={isSidebarCollapsed}
-          className={`group/sidebar fixed inset-y-0 left-0 z-30 flex w-[var(--sidebar-width)] flex-col bg-sidebar transition-[transform,opacity] duration-[400ms] ease-out will-change-transform ${
+          className={`group/sidebar fixed inset-y-0 left-0 z-30 flex w-[var(--sidebar-width)] flex-col bg-sidebar transition-[transform,opacity] duration-[500ms] ease-out will-change-transform ${
             isSidebarCollapsed
               ? "pointer-events-none -translate-x-full opacity-0"
               : "translate-x-0 opacity-100"
@@ -582,7 +582,7 @@ export function AppShell() {
         </aside>
         <button
           aria-label="사이드 바 열기"
-          className={`fixed left-3 top-2.5 z-50 inline-flex h-9 w-9 items-center justify-center rounded-md text-black transition-opacity duration-150 hover:bg-[#F3F4F6] ${
+          className={`fixed left-3 top-2.5 z-50 inline-flex h-9 w-9 items-center justify-center rounded-md text-black transition-opacity duration-[500ms] hover:bg-[#F3F4F6] ${
             isSidebarOpenButtonVisible
               ? "pointer-events-auto opacity-100"
               : "pointer-events-none opacity-0"
@@ -599,7 +599,7 @@ export function AppShell() {
 
         {/* Main */}
         <div
-          className={`flex min-w-0 flex-1 flex-col transition-[padding-left] duration-[400ms] ease-out ${
+          className={`flex min-w-0 flex-1 flex-col transition-[padding-left] duration-[500ms] ease-out ${
             isSidebarCollapsed ? "pl-0" : "pl-[var(--sidebar-width)]"
           }`}
         >

@@ -76,7 +76,7 @@
   }
 
   .app-page-header {
-    transition: padding-left 400ms ease-out;
+    transition: padding-left 500ms ease-out;
   }
 
   [data-sidebar-collapsed="true"] .app-page-header {
@@ -96,6 +96,6 @@
   }
 
   .company-create-panel-enter {
-    animation: company-create-panel-enter 400ms ease-out;
+    animation: company-create-panel-enter 500ms ease-out;
   }
 }
