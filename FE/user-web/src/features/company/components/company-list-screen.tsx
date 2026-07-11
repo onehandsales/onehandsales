@@ -588,13 +588,13 @@ export function CompanyListScreen({
             aria-label="필터"
             aria-hidden={!isCompactFilterMode}
             className={cn(
-              "absolute left-0 top-0 inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-md border text-[13px] font-semibold transition focus:outline-none",
+              "absolute left-0 top-0 inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-md border text-[13px] font-semibold transition-[opacity,transform,border-color,background-color,color] duration-200 focus:outline-none",
               hasTaxonomyFilters
                 ? "border-[#E2E5EC] bg-[#EFF6FF] text-[#1D4ED8] hover:border-[#D1D5DB] hover:bg-[#DBEAFE]"
                 : "border-[#E2E5EC] bg-white text-[#475569] hover:border-[#D1D5DB] hover:bg-[#F5F6F8]",
               isCompactFilterMode
-                ? "opacity-100"
-                : "pointer-events-none opacity-0",
+                ? "scale-100 opacity-100"
+                : "pointer-events-none scale-95 opacity-0",
             )}
             onClick={() => setIsCompactFilterOpen((open) => !open)}
             tabIndex={isCompactFilterMode ? 0 : -1}
@@ -609,11 +609,12 @@ export function CompanyListScreen({
           </button>
           <div
             aria-hidden={isCompactFilterMode}
+            inert={isCompactFilterMode ? true : undefined}
             className={cn(
-              "flex shrink-0 items-center gap-1.5 transition-opacity duration-300 lg:gap-2",
+              "flex shrink-0 items-center gap-1.5 transition-[opacity,transform] duration-300 ease-out lg:gap-2",
               isCompactFilterMode
-                ? "pointer-events-none invisible opacity-0"
-                : "visible opacity-100",
+                ? "pointer-events-none -translate-x-1 opacity-0"
+                : "translate-x-0 opacity-100",
             )}
           >
             <CompanyTaxonomyFilterCombobox
