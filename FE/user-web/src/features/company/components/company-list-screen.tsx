@@ -184,7 +184,12 @@ export function CompanyListScreen({
     sort !== "createdAtDesc";
 
   useEffect(() => {
-    if (initialCreateOpen) setIsCreateOpen(true);
+    if (!initialCreateOpen) {
+      return;
+    }
+
+    setCreatePanelWidth(COMPANY_CREATE_PANEL_MIN_WIDTH);
+    setIsCreateOpen(true);
   }, [initialCreateOpen]);
 
   useEffect(() => {
@@ -443,6 +448,10 @@ export function CompanyListScreen({
       onCreateDialogClose?.();
     }
   };
+  const openCreatePanel = () => {
+    setCreatePanelWidth(COMPANY_CREATE_PANEL_MIN_WIDTH);
+    setIsCreateOpen(true);
+  };
   const onCreateExpand = (values: CompanyCreateFormValues) => {
     void navigate("/app/companies/new/full", {
       state: { companyCreateDraft: values },
@@ -471,7 +480,7 @@ export function CompanyListScreen({
           {
             icon: Plus,
             tooltip: "회사 생성",
-            onClick: () => setIsCreateOpen(true),
+            onClick: openCreatePanel,
             disabled: fieldsQuery.isLoading || regionsQuery.isLoading,
             hidden: isDockedCreateMounted,
             variant: "primary",
@@ -764,11 +773,11 @@ export function CompanyListScreen({
                 actionIcon={Plus}
                 actionLabel="회사 생성"
                 icon={Building2}
-                onAction={() => setIsCreateOpen(true)}
+                onAction={openCreatePanel}
                 title={
                   hasSearch
-                      ? "조건을 바꾸면 회사를 찾을 수 있어요"
-                      : "데이터가 존재하지 않아요"
+                    ? "조건을 바꾸면 회사를 찾을 수 있어요"
+                    : "데이터가 존재하지 않아요"
                 }
               />
             ) : (
@@ -913,11 +922,11 @@ export function CompanyListScreen({
               actionIcon={Plus}
               actionLabel="회사 생성"
               icon={Building2}
-              onAction={() => setIsCreateOpen(true)}
+              onAction={openCreatePanel}
               title={
                 hasSearch
-                    ? "조건을 바꾸면 회사를 찾을 수 있어요"
-                    : "데이터가 존재하지 않아요"
+                  ? "조건을 바꾸면 회사를 찾을 수 있어요"
+                  : "데이터가 존재하지 않아요"
               }
             />
           ) : (
@@ -946,7 +955,7 @@ export function CompanyListScreen({
         <button
           aria-label="회사 생성"
           className="fixed bottom-24 right-5 flex h-8 w-8 items-center justify-center rounded-full bg-[#4880EE] shadow-[0_4px_16px_rgba(59,130,246,0.27)] transition active:opacity-80"
-          onClick={() => setIsCreateOpen(true)}
+          onClick={openCreatePanel}
           type="button"
         >
           <Plus className="h-4 w-4 text-white" strokeWidth={2.5} />
