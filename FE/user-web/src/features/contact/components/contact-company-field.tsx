@@ -10,6 +10,11 @@ type ContactCompanyFieldProps = {
   readonly companyId: string;
   readonly search: string;
   readonly error?: string;
+  readonly hideError?: boolean;
+  readonly hideLabel?: boolean;
+  readonly inputClassName?: string;
+  readonly labelClassName?: string;
+  readonly wrapperClassName?: string;
   readonly onCreate?: (companyName: string) => void;
   readonly onCompanyIdChange: (companyId: string) => void;
   readonly onSearchChange: (search: string) => void;
@@ -22,6 +27,11 @@ export function ContactCompanyField({
   companyId,
   search,
   error,
+  hideError = false,
+  hideLabel = false,
+  inputClassName,
+  labelClassName,
+  wrapperClassName,
   onCreate,
   onCompanyIdChange,
   onSearchChange,
@@ -65,18 +75,24 @@ export function ContactCompanyField({
   }, [isOpen]);
 
   return (
-    <div ref={wrapperRef} className="grid gap-2">
-      <label className="text-sm font-medium" htmlFor={id}>
-        {label}
-      </label>
+    <div ref={wrapperRef} className={cn("grid gap-2", wrapperClassName)}>
+      {hideLabel ? null : (
+        <label
+          className={cn("text-sm font-medium", labelClassName)}
+          htmlFor={id}
+        >
+          {label}
+        </label>
+      )}
       <div ref={anchorRef} className="relative">
         <Building2 className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
         <input
-          aria-describedby={error ? `${id}-error` : undefined}
+          aria-describedby={error && !hideError ? `${id}-error` : undefined}
           aria-invalid={Boolean(error)}
           className={cn(
             "h-10 w-full rounded-md border pl-9 pr-10 text-sm outline-none focus:ring-2 focus:ring-ring",
-            isOpen && "ring-2 ring-ring"
+            isOpen && "ring-2 ring-ring",
+            inputClassName,
           )}
           id={id}
           onChange={(event) => {
@@ -169,7 +185,7 @@ export function ContactCompanyField({
         ) : null}
       </div>
 
-      {error ? (
+      {error && !hideError ? (
         <p className="text-xs text-destructive" id={`${id}-error`}>
           {error}
         </p>

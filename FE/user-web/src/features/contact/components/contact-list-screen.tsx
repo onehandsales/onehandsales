@@ -16,11 +16,17 @@ import {
 } from "react";
 import { PageHeader } from "@/components/layout/page-header";
 import { CollapsibleDesktopSearch } from "@/components/ui/collapsible-desktop-search";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import {
+  Link,
+  useLocation,
+  useNavigate,
+  useOutletContext,
+} from "react-router-dom";
 import { ListFilterSelect } from "@/components/ui/list-filter-select";
 import { Pagination } from "@/components/ui/pagination";
 import { ListEmptyState } from "@/components/ui/state";
 import { Toast } from "@/components/ui/toast";
+import type { AppShellOutletContext } from "@/components/layout/app-shell";
 import { useAuthSession } from "@/features/auth";
 import { ContactCreateDialog } from "@/features/contact/components/contact-create-dialog";
 import { ContactTaxonomyManageDialog } from "@/features/contact/components/contact-taxonomy-manage-dialog";
@@ -30,6 +36,9 @@ import {
 } from "@/features/contact/hooks/use-contact-list";
 import { useCompanyOptions } from "@/features/contact/hooks/use-company-options";
 import { useExportContactsMutation } from "@/features/contact/hooks/use-contact-mutations";
+import type {
+  ContactCreateFormValues,
+} from "@/features/contact/schemas/contact-schema";
 import type {
   ContactListItem,
   ContactSort,
@@ -55,10 +64,28 @@ const CONTACT_TABLE_GRID_STYLE = {
     "minmax(0,0.8fr) minmax(0,0.9fr) minmax(0,0.6fr) minmax(0,0.5fr) minmax(0,0.7fr) minmax(0,1fr) minmax(0,0.65fr)",
 };
 
-export function ContactListScreen() {
+type ContactListScreenProps = {
+  readonly initialCreateOpen?: boolean;
+  readonly onCreateDialogClose?: () => void;
+};
+
+const CONTACT_CREATE_PANEL_STORAGE_KEY = "onehand.contact.createPanelWidth";
+const CONTACT_CREATE_PANEL_DEFAULT_WIDTH = 520;
+const CONTACT_CREATE_PANEL_MIN_WIDTH = 420;
+const CONTACT_CREATE_PANEL_MAX_RATIO = 0.55;
+const CONTACT_CREATE_PANEL_AUTO_SIDEBAR_RATIO = 0.45;
+const CONTACT_CREATE_PANEL_TRANSITION_MS = 500;
+
+export function ContactListScreen({
+  initialCreateOpen = false,
+  onCreateDialogClose,
+}: ContactListScreenProps) {
   const navigate = useNavigate();
   const location = useLocation();
+  const outletContext =
+    useOutletContext<AppShellOutletContext | undefined>();
   const { user } = useAuthSession();
+  const isDockedViewport = useMediaQuery("(min-width: 1024px)");
   const [usernameText, setUsernameText] = useState("");
   const [username, setUsername] = useState("");
   const [searchResetSignal, setSearchResetSignal] = useState(0);
@@ -67,11 +94,17 @@ export function ContactListScreen() {
   const [sort, setSort] = useState<ContactSort>("createdAtDesc");
   const [page, setPage] = useState(1);
   const [isCreateOpen, setIsCreateOpen] = useState(false);
+  const [isDockedCreateRendered, setIsDockedCreateRendered] = useState(false);
+  const [createPanelWidth, setCreatePanelWidth] = useState(
+    getStoredContactCreatePanelWidth,
+  );
+  const [isCreatePanelResizing, setIsCreatePanelResizing] = useState(false);
   const [taxonomyOpen, setTaxonomyOpen] = useState(false);
   const [pendingDepartmentName, setPendingDepartmentName] = useState("");
   const [notice, setNotice] = useState<string | null>(null);
   const [noticeDescription, setNoticeDescription] = useState<string | null>(null);
   const [actionError] = useState<string | null>(null);
+  const setAutoSidebarCollapsed = outletContext?.setAutoSidebarCollapsed;
 
   const listParams = useMemo(
     () => ({
@@ -120,11 +153,129 @@ export function ContactListScreen() {
   );
 
   const displayTimeZone = user?.timeZone ?? getBrowserTimeZoneFallback();
+  const isDockedCreateOpen = isCreateOpen && isDockedViewport;
+  const isDockedCreateMounted = isDockedCreateOpen || isDockedCreateRendered;
   const hasSearch =
     username.length > 0 ||
     companyIds.length > 0 ||
     contactDepartmentIds.length > 0 ||
     sort !== "createdAtDesc";
+
+  useEffect(() => {
+    if (!initialCreateOpen) {
+      return;
+    }
+
+    setCreatePanelWidth(CONTACT_CREATE_PANEL_MIN_WIDTH);
+    setIsCreateOpen(true);
+  }, [initialCreateOpen]);
+
+  useEffect(() => {
+    if (isDockedCreateOpen) {
+      setIsDockedCreateRendered(true);
+      return;
+    }
+
+    const timerId = window.setTimeout(() => {
+      setIsDockedCreateRendered(false);
+    }, CONTACT_CREATE_PANEL_TRANSITION_MS);
+
+    return () => window.clearTimeout(timerId);
+  }, [isDockedCreateOpen]);
+
+  useEffect(() => {
+    if (typeof window === "undefined") {
+      return;
+    }
+
+    window.localStorage.setItem(
+      CONTACT_CREATE_PANEL_STORAGE_KEY,
+      String(createPanelWidth),
+    );
+  }, [createPanelWidth]);
+
+  useEffect(() => {
+    const clampToViewport = () => {
+      setCreatePanelWidth((currentWidth) =>
+        clampContactCreatePanelWidth(
+          currentWidth,
+          window.innerWidth,
+        ),
+      );
+    };
+
+    clampToViewport();
+    window.addEventListener("resize", clampToViewport);
+
+    return () => {
+      window.removeEventListener("resize", clampToViewport);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!setAutoSidebarCollapsed) {
+      return;
+    }
+
+    return () => {
+      setAutoSidebarCollapsed(false);
+    };
+  }, [setAutoSidebarCollapsed]);
+
+  useEffect(() => {
+    if (!setAutoSidebarCollapsed) {
+      return;
+    }
+
+    const syncAutoSidebar = () => {
+      const viewportWidth =
+        typeof window === "undefined" ? 0 : window.innerWidth;
+      const shouldCollapse =
+        isDockedCreateMounted &&
+        viewportWidth > 0 &&
+        createPanelWidth / viewportWidth >
+          CONTACT_CREATE_PANEL_AUTO_SIDEBAR_RATIO;
+
+      setAutoSidebarCollapsed(shouldCollapse);
+    };
+
+    syncAutoSidebar();
+    window.addEventListener("resize", syncAutoSidebar);
+
+    return () => {
+      window.removeEventListener("resize", syncAutoSidebar);
+    };
+  }, [createPanelWidth, isDockedCreateMounted, setAutoSidebarCollapsed]);
+
+  useEffect(() => {
+    if (!isCreatePanelResizing) {
+      return;
+    }
+
+    const previousCursor = document.body.style.cursor;
+    const previousUserSelect = document.body.style.userSelect;
+    const onMouseMove = (event: MouseEvent) => {
+      setCreatePanelWidth(
+        clampContactCreatePanelWidth(
+          window.innerWidth - event.clientX,
+          window.innerWidth,
+        ),
+      );
+    };
+    const onMouseUp = () => setIsCreatePanelResizing(false);
+
+    document.body.style.cursor = "col-resize";
+    document.body.style.userSelect = "none";
+    window.addEventListener("mousemove", onMouseMove);
+    window.addEventListener("mouseup", onMouseUp);
+
+    return () => {
+      document.body.style.cursor = previousCursor;
+      document.body.style.userSelect = previousUserSelect;
+      window.removeEventListener("mousemove", onMouseMove);
+      window.removeEventListener("mouseup", onMouseUp);
+    };
+  }, [isCreatePanelResizing]);
 
   useEffect(() => {
     if (!pendingDepartmentName) return;
@@ -156,9 +307,33 @@ export function ContactListScreen() {
     const file = await exportContactsMutation.mutateAsync(exportFilters);
     downloadBlobFile(file, "contacts.xlsx");
   };
+  const onCreateOpenChange = (open: boolean) => {
+    setIsCreateOpen(open);
+
+    if (!open) {
+      onCreateDialogClose?.();
+    }
+  };
+  const openCreatePanel = () => {
+    setCreatePanelWidth(CONTACT_CREATE_PANEL_MIN_WIDTH);
+    setIsCreateOpen(true);
+  };
+  const onCreateExpand = (values: ContactCreateFormValues) => {
+    void navigate("/app/contacts/new/full", {
+      state: { contactCreateDraft: values },
+    });
+  };
+  const onContactCreated = () => setNotice("담당자를 추가했어요.");
 
   return (
-    <section className="flex min-h-full flex-col bg-white">
+    <section
+      className="flex min-h-full flex-col bg-white transition-[padding-right] duration-[500ms] ease-out"
+      style={
+        isDockedCreateMounted
+          ? { paddingRight: isDockedCreateOpen ? createPanelWidth : 0 }
+          : undefined
+      }
+    >
       <PageHeader
         breadcrumbs={[{ label: "담당자", icon: IdCard }]}
         actions={[
@@ -171,7 +346,8 @@ export function ContactListScreen() {
           {
             icon: Plus,
             tooltip: "담당자 생성",
-            onClick: () => setIsCreateOpen(true),
+            onClick: openCreatePanel,
+            hidden: isDockedCreateMounted,
             variant: "primary",
           },
         ]}
@@ -181,7 +357,7 @@ export function ContactListScreen() {
       <div className="hidden min-h-10 shrink-0 items-center gap-1.5 overflow-x-auto px-5 py-1 md:flex lg:gap-2">
         <CollapsibleDesktopSearch
           appliedValue={username}
-          placeholder="담당자명 검색"
+          placeholder="담당자를 검색하세요!"
           resetSignal={searchResetSignal}
           submitLabel="담당자 검색 실행"
           value={usernameText}
@@ -203,7 +379,7 @@ export function ContactListScreen() {
           }}
         />
         <ContactTaxonomyFilterCombobox
-              emptyText="조건을 바꾸면 회사를 찾을 수 있어요."
+          emptyText="조건을 바꾸면 회사를 찾을 수 있어요."
           getLabel={(c) => c.companyName}
           itemKindLabel="회사"
           items={companyOptions}
@@ -216,7 +392,7 @@ export function ContactListScreen() {
           }}
         />
         <ContactTaxonomyFilterCombobox
-              emptyText="조건을 바꾸면 부서를 찾을 수 있어요."
+          emptyText="조건을 바꾸면 부서를 찾을 수 있어요."
           getLabel={(d) => d.departmentName}
           itemKindLabel="부서"
           items={departments}
@@ -274,7 +450,12 @@ export function ContactListScreen() {
       ) : null}
 
       {/* 테이블 (데스크톱) */}
-      <div className="hidden min-w-0 gap-3 overflow-hidden px-5 pb-3 pt-1 md:flex xl:gap-5">
+      <div
+        className={cn(
+          "hidden min-h-0 flex-1 gap-3 overflow-hidden px-5 pb-3 pt-1 md:flex xl:gap-5",
+          isCreatePanelResizing && "cursor-col-resize select-none",
+        )}
+      >
         <div className="flex min-w-0 flex-1 flex-col gap-3">
           <div className="flex w-full min-w-0 flex-col overflow-hidden rounded-lg border border-[#E2E5EC] bg-white shadow-sm">
             {/* 테이블 헤더 (데스크톱) */}
@@ -317,11 +498,11 @@ export function ContactListScreen() {
                 actionIcon={Plus}
                 actionLabel="담당자 생성"
                 icon={IdCard}
-                onAction={() => setIsCreateOpen(true)}
+                onAction={openCreatePanel}
                 title={
                   hasSearch
-                      ? "조건을 바꾸면 담당자를 찾을 수 있어요"
-                      : "데이터가 존재하지 않아요"
+                    ? "조건을 바꾸면 담당자를 찾을 수 있어요"
+                    : "데이터가 존재하지 않아요"
                 }
               />
             ) : (
@@ -345,6 +526,18 @@ export function ContactListScreen() {
             />
           ) : null}
         </div>
+
+        {isDockedCreateMounted ? (
+          <ContactCreateDialog
+            mode="docked"
+            onExpand={onCreateExpand}
+            onCreated={onContactCreated}
+            onOpenChange={onCreateOpenChange}
+            onResizeStart={() => setIsCreatePanelResizing(true)}
+            open={isDockedCreateOpen}
+            width={createPanelWidth}
+          />
+        ) : null}
       </div>
 
       {/* 모바일 뷰 */}
@@ -387,20 +580,20 @@ export function ContactListScreen() {
             <RotateCcw className="h-3 w-3" />
           </button>
           <ContactTaxonomyFilterCombobox
-              emptyText="조건을 바꾸면 회사를 찾을 수 있어요."
+            emptyText="조건을 바꾸면 회사를 찾을 수 있어요."
             getLabel={(c) => c.companyName}
             itemKindLabel="회사"
             items={companyOptions}
             selectedIds={companyIds}
             size="mobile"
             tone="blue"
-              onSelectedIdsChange={(ids) => {
+            onSelectedIdsChange={(ids) => {
               setCompanyIds(ids);
               setPage(1);
             }}
           />
           <ContactTaxonomyFilterCombobox
-              emptyText="조건을 바꾸면 부서를 찾을 수 있어요."
+            emptyText="조건을 바꾸면 부서를 찾을 수 있어요."
             getLabel={(d) => d.departmentName}
             itemKindLabel="부서"
             items={departments}
@@ -448,11 +641,11 @@ export function ContactListScreen() {
               actionIcon={Plus}
               actionLabel="담당자 생성"
               icon={IdCard}
-              onAction={() => setIsCreateOpen(true)}
+              onAction={openCreatePanel}
               title={
                 hasSearch
-                    ? "조건을 바꾸면 담당자를 찾을 수 있어요"
-                    : "데이터가 존재하지 않아요"
+                  ? "조건을 바꾸면 담당자를 찾을 수 있어요"
+                  : "데이터가 존재하지 않아요"
               }
             />
           ) : (
@@ -481,18 +674,22 @@ export function ContactListScreen() {
         <button
           aria-label="담당자 생성"
           className="fixed bottom-24 right-5 flex h-8 w-8 items-center justify-center rounded-full bg-[#4880EE] shadow-[0_4px_16px_rgba(59,130,246,0.27)] transition active:opacity-80"
-          onClick={() => setIsCreateOpen(true)}
+          onClick={openCreatePanel}
           type="button"
         >
           <Plus className="h-4 w-4 text-white" strokeWidth={2.5} />
         </button>
       </section>
 
-      <ContactCreateDialog
-          onCreated={() => setNotice("담당자를 추가했어요.")}
-        onOpenChange={setIsCreateOpen}
-        open={isCreateOpen}
-      />
+      <div className="lg:hidden">
+        <ContactCreateDialog
+          mode="overlay"
+          onExpand={onCreateExpand}
+          onCreated={onContactCreated}
+          onOpenChange={onCreateOpenChange}
+          open={isCreateOpen && !isDockedViewport}
+        />
+      </div>
       <ContactTaxonomyManageDialog
         onCreated={(kind, name) => {
           if (kind === "department") setPendingDepartmentName(name);
@@ -1114,6 +1311,69 @@ function getTaxonomyFilterCheckDotClass(tone: ContactTaxonomyFilterTone) {
 }
 
 // ── Utilities ────────────────────────────────────────────────────────────────
+
+function useMediaQuery(query: string) {
+  const [matches, setMatches] = useState(() => {
+    if (typeof window === "undefined") {
+      return false;
+    }
+
+    return window.matchMedia(query).matches;
+  });
+
+  useEffect(() => {
+    if (typeof window === "undefined") {
+      return;
+    }
+
+    const mediaQueryList = window.matchMedia(query);
+    const onChange = () => setMatches(mediaQueryList.matches);
+
+    onChange();
+    mediaQueryList.addEventListener("change", onChange);
+
+    return () => {
+      mediaQueryList.removeEventListener("change", onChange);
+    };
+  }, [query]);
+
+  return matches;
+}
+
+function getStoredContactCreatePanelWidth() {
+  if (typeof window === "undefined") {
+    return CONTACT_CREATE_PANEL_DEFAULT_WIDTH;
+  }
+
+  const storedWidth = Number(
+    window.localStorage.getItem(CONTACT_CREATE_PANEL_STORAGE_KEY),
+  );
+
+  return clampContactCreatePanelWidth(storedWidth, window.innerWidth);
+}
+
+function clampContactCreatePanelWidth(width: number, viewportWidth?: number) {
+  const fallbackWidth = Number.isFinite(width)
+    ? width
+    : CONTACT_CREATE_PANEL_DEFAULT_WIDTH;
+  const maxWidth = getContactCreatePanelMaxWidth(viewportWidth);
+
+  return Math.min(
+    Math.max(fallbackWidth, CONTACT_CREATE_PANEL_MIN_WIDTH),
+    maxWidth,
+  );
+}
+
+function getContactCreatePanelMaxWidth(viewportWidth?: number) {
+  if (!viewportWidth || viewportWidth <= 0) {
+    return CONTACT_CREATE_PANEL_DEFAULT_WIDTH;
+  }
+
+  return Math.max(
+    CONTACT_CREATE_PANEL_MIN_WIDTH,
+    Math.floor(viewportWidth * CONTACT_CREATE_PANEL_MAX_RATIO),
+  );
+}
 
 function downloadBlobFile(file: ApiBlobResponse, fallbackFileName: string) {
   const url = window.URL.createObjectURL(file.blob);

@@ -318,7 +318,9 @@ export function AppShell() {
     ? (contactDetailMatch[1] ?? "")
     : "";
   const isContactDetail =
-    contactDetailId.length > 0 && contactDetailId !== "scan";
+    contactDetailId.length > 0 &&
+    contactDetailId !== "scan" &&
+    contactDetailId !== "new";
 
   // 자체 헤더를 가진 화면들 — app-shell TopBar 숨김
   const isDealListPage = pathname === "/app/deals" || pathname === "/app/deals/new";
@@ -329,7 +331,8 @@ export function AppShell() {
     pathname === "/app/companies/new" ||
     isCompanyDetail ||
     isContactDetail;
-  const isContactListPage = pathname === "/app/contacts";
+  const isContactListPage =
+    pathname === "/app/contacts" || pathname === "/app/contacts/new";
   const isMeetingNoteListPage =
     pathname === "/app/meeting-notes" || /^\/app\/meeting-notes\/[^/]+$/.test(pathname);
   const isSchedulePage =

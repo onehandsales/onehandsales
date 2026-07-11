@@ -19,6 +19,8 @@ import { CompanyNewFullPage } from "@/pages/companies/new-full";
 import { CompanyNewPage } from "@/pages/companies/new";
 import { ContactDetailPage } from "@/pages/contacts/detail";
 import { ContactsPage } from "@/pages/contacts";
+import { ContactNewFullPage } from "@/pages/contacts/new-full";
+import { ContactNewPage } from "@/pages/contacts/new";
 import { ContactPage } from "@/pages/contact";
 import { DealDetailPage } from "@/pages/deals/detail";
 import { DealsPage } from "@/pages/deals";
@@ -81,6 +83,14 @@ export const router = createBrowserRouter([
   },
   { path: "/contacts", element: <LegacyAppRedirect to="/app/contacts" /> },
   { path: "/contacts/scan", element: <Navigate replace to="/app/business-cards" /> },
+  {
+    path: "/contacts/new/full",
+    element: <LegacyAppRedirect to="/app/contacts/new/full" />,
+  },
+  {
+    path: "/contacts/new",
+    element: <LegacyAppRedirect to="/app/contacts/new" />,
+  },
   {
     path: "/contacts/:contactId",
     element: <LegacyAppRedirect paramName="contactId" to="/app/contacts" />,
@@ -147,6 +157,8 @@ export const router = createBrowserRouter([
       { path: "companies/:companyId", element: <CompanyDetailPage /> },
       { path: "contacts", element: <ContactsPage /> },
       { path: "contacts/scan", element: <Navigate replace to="/app/business-cards" /> },
+      { path: "contacts/new/full", element: <ContactNewFullPage /> },
+      { path: "contacts/new", element: <ContactNewPage /> },
       { path: "contacts/:contactId", element: <ContactDetailPage /> },
       { path: "products", element: <ProductsPage /> },
       { path: "products/new", element: <ProductNewPage /> },
