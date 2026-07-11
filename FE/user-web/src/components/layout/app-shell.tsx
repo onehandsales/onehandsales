@@ -46,6 +46,7 @@ import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { getApiErrorMessage } from "@/lib/api-client";
 
 const HOME_PATH = "/app";
+const SIDEBAR_COLLAPSE_TRANSITION_MS = 400;
 
 // ── 딜 상세 TopBar ──────────────────────────────────────────
 function DealDetailHeader({ dealId }: { readonly dealId: string }) {
@@ -190,6 +191,8 @@ export function AppShell() {
   const [searchOpen, setSearchOpen] = useState(false);
   const [accountMenuOpen, setAccountMenuOpen] = useState(false);
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+  const [isSidebarOpenButtonVisible, setIsSidebarOpenButtonVisible] =
+    useState(false);
   const [accountModal, setAccountModal] = useState<
     "profile" | "settings" | "terms" | "privacy" | null
   >(
@@ -220,6 +223,20 @@ export function AppShell() {
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
   }, []);
+
+  useEffect(() => {
+    setIsSidebarOpenButtonVisible(false);
+
+    if (!isSidebarCollapsed) {
+      return;
+    }
+
+    const timerId = window.setTimeout(() => {
+      setIsSidebarOpenButtonVisible(true);
+    }, SIDEBAR_COLLAPSE_TRANSITION_MS);
+
+    return () => window.clearTimeout(timerId);
+  }, [isSidebarCollapsed]);
 
   useEffect(() => {
     if (!accountMenuOpen) {
@@ -437,11 +454,10 @@ export function AppShell() {
           setAccountMenuOpen(false);
           setIsSidebarCollapsed(true);
         }}
-        title="사이드 바 닫기"
         type="button"
       >
         <ChevronsLeft className="h-4 w-4" strokeWidth={1.9} />
-        <span className="pointer-events-none absolute left-full top-1/2 z-50 ml-2 -translate-y-1/2 whitespace-nowrap rounded-md bg-[#111827] px-2 py-1 text-[11px] font-medium leading-none text-white opacity-0 shadow-lg transition-opacity group-hover/collapse:opacity-100">
+        <span className="pointer-events-none absolute left-1/2 top-full z-50 mt-2 -translate-x-1/2 whitespace-nowrap rounded-md bg-[#111827] px-2 py-1 text-[11px] font-medium leading-none text-white opacity-0 shadow-lg transition-opacity group-hover/collapse:opacity-100">
           사이드 바 닫기
         </span>
       </button>
@@ -497,64 +513,72 @@ export function AppShell() {
         data-sidebar-collapsed={isSidebarCollapsed ? "true" : undefined}
       >
         {/* Sidebar */}
-        {!isSidebarCollapsed ? (
-          <aside className="group/sidebar fixed inset-y-0 left-0 z-30 flex w-[var(--sidebar-width)] flex-col bg-sidebar">
-            {accountProfile}
-            {/* Search button */}
-            <div className="flex gap-1 px-2 pb-1">
-              <button
-                aria-label="홈"
-                className={`flex h-8 shrink-0 items-center gap-2 rounded-md px-2 text-[13px] transition ${
-                  isHome
-                    ? "bg-[#EFF6FF] text-[#4880EE]"
-                    : "text-[#9CA3AF] hover:bg-[#E9EBF0] hover:text-[#374151]"
-                }`}
-                onClick={() => void navigate(HOME_PATH)}
-                type="button"
-              >
-                <House
-                  className="h-[15px] w-[15px] shrink-0"
-                  strokeWidth={1.75}
-                />
-                <span>홈</span>
-              </button>
-              <button
-                type="button"
-                className="flex h-8 min-w-0 flex-1 items-center gap-2 rounded-md px-2 text-[13px] text-[#9CA3AF] transition hover:bg-[#E9EBF0] hover:text-[#374151]"
-                onClick={() => setSearchOpen(true)}
-              >
-                <Search
-                  className="h-[15px] w-[15px] shrink-0"
-                  strokeWidth={1.75}
-                />
-                <span>통합검색</span>
-                <kbd className="ml-auto hidden rounded border border-[#E2E5EC] bg-[#F0F1F3] px-1 py-0.5 text-[10px] font-medium leading-none sm:block">
-                  ⌘K
-                </kbd>
-              </button>
-            </div>
-            {/* Nav */}
-            <div className="flex-1 overflow-y-auto px-2 py-1">
-              <SidebarNav />
-              {sidebarAppLinks}
-            </div>
-          </aside>
-        ) : (
-          <button
-            aria-label="사이드 바 열기"
-            className="fixed left-3 top-2.5 z-50 inline-flex h-9 w-9 items-center justify-center rounded-md text-black transition hover:bg-[#F3F4F6]"
-            onClick={() => setIsSidebarCollapsed(false)}
-            title="사이드 바 열기"
-            type="button"
-          >
-            <Menu className="h-5 w-5" strokeWidth={2} />
-          </button>
-        )}
+        <aside
+          aria-hidden={isSidebarCollapsed}
+          className={`group/sidebar fixed inset-y-0 left-0 z-30 flex w-[var(--sidebar-width)] flex-col bg-sidebar transition-[transform,opacity] duration-[400ms] ease-out will-change-transform ${
+            isSidebarCollapsed
+              ? "pointer-events-none -translate-x-full opacity-0"
+              : "translate-x-0 opacity-100"
+          }`}
+        >
+          {accountProfile}
+          {/* Search button */}
+          <div className="flex gap-1 px-2 pb-1">
+            <button
+              aria-label="홈"
+              className={`flex h-8 shrink-0 items-center gap-2 rounded-md px-2 text-[13px] transition ${
+                isHome
+                  ? "bg-[#EFF6FF] text-[#4880EE]"
+                  : "text-[#9CA3AF] hover:bg-[#E9EBF0] hover:text-[#374151]"
+              }`}
+              onClick={() => void navigate(HOME_PATH)}
+              type="button"
+            >
+              <House
+                className="h-[15px] w-[15px] shrink-0"
+                strokeWidth={1.75}
+              />
+              <span>홈</span>
+            </button>
+            <button
+              type="button"
+              className="flex h-8 min-w-0 flex-1 items-center gap-2 rounded-md px-2 text-[13px] text-[#9CA3AF] transition hover:bg-[#E9EBF0] hover:text-[#374151]"
+              onClick={() => setSearchOpen(true)}
+            >
+              <Search
+                className="h-[15px] w-[15px] shrink-0"
+                strokeWidth={1.75}
+              />
+              <span>통합검색</span>
+              <kbd className="ml-auto hidden rounded border border-[#E2E5EC] bg-[#F0F1F3] px-1 py-0.5 text-[10px] font-medium leading-none sm:block">
+                ⌘K
+              </kbd>
+            </button>
+          </div>
+          {/* Nav */}
+          <div className="flex-1 overflow-y-auto px-2 py-1">
+            <SidebarNav />
+            {sidebarAppLinks}
+          </div>
+        </aside>
+        <button
+          aria-label="사이드 바 열기"
+          className={`fixed left-3 top-2.5 z-50 inline-flex h-9 w-9 items-center justify-center rounded-md text-black transition-opacity duration-150 hover:bg-[#F3F4F6] ${
+            isSidebarOpenButtonVisible
+              ? "pointer-events-auto opacity-100"
+              : "pointer-events-none opacity-0"
+          }`}
+          onClick={() => setIsSidebarCollapsed(false)}
+          title="사이드 바 열기"
+          type="button"
+        >
+          <Menu className="h-5 w-5" strokeWidth={2} />
+        </button>
 
         {/* Main */}
         <div
-          className={`flex min-w-0 flex-1 flex-col ${
-            isSidebarCollapsed ? "" : "pl-[var(--sidebar-width)]"
+          className={`flex min-w-0 flex-1 flex-col transition-[padding-left] duration-[400ms] ease-out ${
+            isSidebarCollapsed ? "pl-0" : "pl-[var(--sidebar-width)]"
           }`}
         >
           {/* TopBar */}

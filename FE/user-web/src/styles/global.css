@@ -75,6 +75,10 @@
     min-height: 100vh;
   }
 
+  .app-page-header {
+    transition: padding-left 400ms ease-out;
+  }
+
   [data-sidebar-collapsed="true"] .app-page-header {
     padding-left: 3.5rem;
   }
