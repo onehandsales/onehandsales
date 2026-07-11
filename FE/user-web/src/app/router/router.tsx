@@ -15,6 +15,7 @@ import { AboutPage } from "@/pages/about";
 import { BusinessCardsPage } from "@/pages/business-cards";
 import { CompanyDetailPage } from "@/pages/companies/detail";
 import { CompaniesPage } from "@/pages/companies";
+import { CompanyNewFullPage } from "@/pages/companies/new-full";
 import { CompanyNewPage } from "@/pages/companies/new";
 import { ContactDetailPage } from "@/pages/contacts/detail";
 import { ContactsPage } from "@/pages/contacts";
@@ -64,6 +65,10 @@ export const router = createBrowserRouter([
   { path: "/auth/callback", element: <LoginPage /> },
   ...localizedPublicSiteRoutes,
   { path: "/companies", element: <LegacyAppRedirect to="/app/companies" /> },
+  {
+    path: "/companies/new/full",
+    element: <LegacyAppRedirect to="/app/companies/new/full" />,
+  },
   {
     path: "/companies/new",
     element: <LegacyAppRedirect to="/app/companies/new" />,
@@ -137,6 +142,7 @@ export const router = createBrowserRouter([
     children: [
       { index: true, element: <HomePage /> },
       { path: "companies", element: <CompaniesPage /> },
+      { path: "companies/new/full", element: <CompanyNewFullPage /> },
       { path: "companies/new", element: <CompanyNewPage /> },
       { path: "companies/:companyId", element: <CompanyDetailPage /> },
       { path: "contacts", element: <ContactsPage /> },

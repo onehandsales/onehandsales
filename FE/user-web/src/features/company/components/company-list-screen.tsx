@@ -31,6 +31,9 @@ import {
 } from "@/features/company/hooks/use-company-list";
 import { useExportCompaniesMutation } from "@/features/company/hooks/use-company-mutations";
 import type {
+  CompanyCreateFormValues,
+} from "@/features/company/schemas/company-schema";
+import type {
   CompanyListItem,
   CompanySort,
 } from "@/features/company/types/company";
@@ -272,6 +275,11 @@ export function CompanyListScreen({
       onCreateDialogClose?.();
     }
   };
+  const onCreateExpand = (values: CompanyCreateFormValues) => {
+    void navigate("/app/companies/new/full", {
+      state: { companyCreateDraft: values },
+    });
+  };
   const onCompanyCreated = () => setNotice("회사를 추가했어요.");
 
   return (
@@ -469,7 +477,10 @@ export function CompanyListScreen({
 
         <CompanyCreateDialog
           fields={fields}
+          isFieldsLoading={fieldsQuery.isLoading}
+          isRegionsLoading={regionsQuery.isLoading}
           mode="docked"
+          onExpand={onCreateExpand}
           onCreated={onCompanyCreated}
           onOpenChange={onCreateOpenChange}
           onResizeStart={() => setIsCreatePanelResizing(true)}
@@ -623,7 +634,10 @@ export function CompanyListScreen({
       <div className="lg:hidden">
         <CompanyCreateDialog
           fields={fields}
+          isFieldsLoading={fieldsQuery.isLoading}
+          isRegionsLoading={regionsQuery.isLoading}
           mode="overlay"
+          onExpand={onCreateExpand}
           onCreated={onCompanyCreated}
           onOpenChange={onCreateOpenChange}
           open={isCreateOpen && !isDockedViewport}

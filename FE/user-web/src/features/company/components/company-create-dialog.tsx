@@ -1,5 +1,12 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Building2, Check, Loader2, X } from "lucide-react";
+import {
+  ArrowLeft,
+  Building2,
+  Check,
+  ChevronsRight,
+  Loader2,
+  Maximize2,
+} from "lucide-react";
 import { useEffect, useState, type ReactNode } from "react";
 import { useForm } from "react-hook-form";
 import { ManagedTaxonomyDropdown } from "@/components/ui/managed-taxonomy-dropdown";
@@ -31,11 +38,15 @@ type CompanyCreateDialogProps = {
   readonly open: boolean;
   readonly fields: CompanyField[];
   readonly initialCompanyName?: string;
-  readonly mode?: "docked" | "overlay";
+  readonly initialValues?: Partial<CompanyCreateFormValues>;
+  readonly isFieldsLoading?: boolean;
+  readonly isRegionsLoading?: boolean;
+  readonly mode?: "docked" | "overlay" | "page";
   readonly width?: number;
   readonly regions: CompanyRegion[];
   readonly onOpenChange: (open: boolean) => void;
   readonly onCreated: (companyName: string) => void;
+  readonly onExpand?: (values: CompanyCreateFormValues) => void;
   readonly onResizeStart?: () => void;
 };
 
@@ -44,11 +55,15 @@ export function CompanyCreateDialog({
   open,
   fields,
   initialCompanyName = "",
+  initialValues,
+  isFieldsLoading = false,
+  isRegionsLoading = false,
   mode = "overlay",
   regions,
   width,
   onOpenChange,
   onCreated,
+  onExpand,
   onResizeStart,
 }: CompanyCreateDialogProps) {
   const createCompanyMutation = useCreateCompanyMutation();
@@ -61,6 +76,7 @@ export function CompanyCreateDialog({
   const {
     register,
     handleSubmit,
+    getValues,
     reset,
     setValue,
     watch,
@@ -79,12 +95,16 @@ export function CompanyCreateDialog({
     if (open) {
       reset({
         ...emptyCompanyCreateFormValues,
-        companyName: initialCompanyName.trim(),
+        ...initialValues,
+        companyName: (initialValues?.companyName ?? initialCompanyName).trim(),
+        companyFieldId: initialValues?.companyFieldId ?? "",
+        companyRegionId: initialValues?.companyRegionId ?? "",
+        companyMemo: initialValues?.companyMemo ?? "",
       });
       setPendingFieldName("");
       setPendingRegionName("");
     }
-  }, [initialCompanyName, open, reset]);
+  }, [initialCompanyName, initialValues, open, reset]);
 
   useEffect(() => {
     if (!open) {
@@ -136,21 +156,23 @@ export function CompanyCreateDialog({
 
   useEffect(() => {
     if (
+      !isFieldsLoading &&
       selectedFieldId &&
       !fields.some((field) => field.id === selectedFieldId)
     ) {
       setValue("companyFieldId", "", { shouldValidate: true });
     }
-  }, [fields, selectedFieldId, setValue]);
+  }, [fields, isFieldsLoading, selectedFieldId, setValue]);
 
   useEffect(() => {
     if (
+      !isRegionsLoading &&
       selectedRegionId &&
       !regions.some((region) => region.id === selectedRegionId)
     ) {
       setValue("companyRegionId", "", { shouldValidate: true });
     }
-  }, [regions, selectedRegionId, setValue]);
+  }, [isRegionsLoading, regions, selectedRegionId, setValue]);
 
   if (!open) {
     return null;
@@ -218,16 +240,20 @@ export function CompanyCreateDialog({
   };
 
   const isDocked = mode === "docked";
+  const isPage = mode === "page";
+  const CloseIcon = isPage ? ArrowLeft : ChevronsRight;
   const panel = (
     <section
-      aria-labelledby="company-create-panel-title"
-      aria-modal={!isDocked}
+      aria-label="회사 생성"
+      aria-modal={isPage ? undefined : !isDocked}
       className={
-        isDocked
+        isPage
+          ? "flex min-h-full flex-col bg-white"
+          : isDocked
           ? "pointer-events-auto fixed inset-y-0 right-0 z-50 flex h-screen shrink-0 flex-col border-l border-[#E5E7EB] bg-white shadow-[0_18px_48px_rgba(15,23,42,0.16)]"
           : "pointer-events-auto relative flex h-full w-full flex-col border-l border-[#E5E7EB] bg-white shadow-[0_18px_48px_rgba(15,23,42,0.16)] sm:max-w-[520px]"
       }
-      role="dialog"
+      role={isPage ? undefined : "dialog"}
       style={isDocked ? { width: width ?? 520 } : undefined}
     >
       {isDocked ? (
@@ -241,28 +267,31 @@ export function CompanyCreateDialog({
           type="button"
         />
       ) : null}
-      <header className="flex h-14 shrink-0 items-center gap-3 border-b border-[#E5E7EB] px-5">
-        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md border border-[#E5E7EB] bg-[#F9FAFB] text-[#64748B]">
-          <Building2 className="h-4 w-4" />
-        </div>
-        <div className="min-w-0 flex-1">
-          <p className="text-[11px] font-medium text-[#94A3B8]">새 항목</p>
-          <h2
-            className="truncate text-[14px] font-semibold text-[#111827]"
-            id="company-create-panel-title"
+      <header className="flex h-10 shrink-0 items-center border-b border-[#E5E7EB] px-1.5">
+        <div className="flex shrink-0 items-center gap-0.5">
+          <button
+            aria-label={isPage ? "회사 목록으로 이동" : "회사 생성 패널 접기"}
+            className="inline-flex h-8 w-8 items-center justify-center rounded-md text-[#8A8F98] transition hover:bg-[#F3F4F6] hover:text-[#374151] disabled:cursor-not-allowed disabled:opacity-50"
+            disabled={createCompanyMutation.isPending}
+            onClick={() => onOpenChange(false)}
+            title={isPage ? "회사 목록으로 이동" : "회사 생성 패널 접기"}
+            type="button"
           >
-            회사 생성
-          </h2>
+            <CloseIcon className="h-4 w-4" />
+          </button>
+          {onExpand && !isPage ? (
+            <button
+              aria-label="전체 생성 페이지로 열기"
+              className="inline-flex h-8 w-8 items-center justify-center rounded-md text-[#8A8F98] transition hover:bg-[#F3F4F6] hover:text-[#374151] disabled:cursor-not-allowed disabled:opacity-50"
+              disabled={createCompanyMutation.isPending}
+              onClick={() => onExpand(getValues())}
+              title="전체 생성 페이지로 열기"
+              type="button"
+            >
+              <Maximize2 className="h-4 w-4" />
+            </button>
+          ) : null}
         </div>
-        <button
-          aria-label="회사 생성 닫기"
-          className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-md text-[#94A3B8] transition hover:bg-[#F3F4F6] hover:text-[#475569] disabled:cursor-not-allowed disabled:opacity-50"
-          disabled={createCompanyMutation.isPending}
-          onClick={() => onOpenChange(false)}
-          type="button"
-        >
-          <X className="h-4 w-4" />
-        </button>
       </header>
 
       <form
@@ -271,7 +300,11 @@ export function CompanyCreateDialog({
         onSubmit={(event) => void onSubmit(event)}
       >
         <div className="min-h-0 flex-1 overflow-y-auto px-5 py-6">
-          <div className="grid gap-6">
+          <div
+            className={
+              isPage ? "mx-auto grid w-full max-w-[920px] gap-6" : "grid gap-6"
+            }
+          >
             <section className="grid gap-2">
               <label
                 className="text-[12px] font-medium text-[#94A3B8]"
@@ -286,9 +319,9 @@ export function CompanyCreateDialog({
                     errors.companyName ? "company-name-error" : undefined
                   }
                   aria-invalid={Boolean(errors.companyName)}
-                  className="h-12 w-full border-0 border-b border-transparent bg-transparent pl-8 pr-1 text-[22px] font-semibold leading-none text-[#111827] outline-none placeholder:text-[#CBD5E1] focus:border-[#CBD5E1]"
+                  className="h-12 w-full border-0 bg-transparent pl-8 pr-1 text-[22px] font-semibold leading-none text-[#111827] outline-none placeholder:text-[#CBD5E1]"
                   id="company-name"
-                  placeholder="제목 없는 회사"
+                  placeholder="회사 이름을 넣어주세요."
                   {...register("companyName")}
                 />
               </div>
@@ -302,7 +335,7 @@ export function CompanyCreateDialog({
               ) : null}
             </section>
 
-            <section className="grid gap-1 border-y border-[#EEF2F7]">
+            <section className="grid gap-3 border-y border-[#EEF2F7] py-3 sm:grid-cols-2">
               <CompanyCreatePanelProperty
                 error={errors.companyFieldId?.message}
                 label="분야"
@@ -388,33 +421,41 @@ export function CompanyCreateDialog({
           </div>
         </div>
 
-        <footer className="flex h-16 shrink-0 items-center justify-end gap-2 border-t border-[#E5E7EB] px-5">
-          <button
-            className="inline-flex h-9 items-center justify-center rounded-md border border-[#E5E7EB] bg-white px-3 text-[13px] font-medium text-[#475569] transition hover:bg-[#F9FAFB] disabled:cursor-not-allowed disabled:opacity-50"
-            disabled={createCompanyMutation.isPending}
-            onClick={() => onOpenChange(false)}
-            type="button"
+        <footer className="flex h-16 shrink-0 items-center border-t border-[#E5E7EB] px-5">
+          <div
+            className={
+              isPage
+                ? "mx-auto flex w-full max-w-[920px] justify-end gap-2"
+                : "flex w-full justify-end gap-2"
+            }
           >
-            닫기
-          </button>
-          <button
-            className="inline-flex h-9 items-center justify-center gap-2 rounded-md bg-[#111827] px-3.5 text-[13px] font-semibold text-white transition hover:bg-[#1F2937] disabled:cursor-not-allowed disabled:opacity-60"
-            disabled={createCompanyMutation.isPending}
-            type="submit"
-          >
-            {createCompanyMutation.isPending ? (
-              <Loader2 className="h-4 w-4 animate-spin" />
-            ) : (
-              <Check className="h-4 w-4" />
-            )}
-            {createCompanyMutation.isPending ? "저장 중" : "저장"}
-          </button>
+            <button
+              className="inline-flex h-9 items-center justify-center rounded-md border border-[#E5E7EB] bg-white px-3 text-[13px] font-medium text-[#475569] transition hover:bg-[#F9FAFB] disabled:cursor-not-allowed disabled:opacity-50"
+              disabled={createCompanyMutation.isPending}
+              onClick={() => onOpenChange(false)}
+              type="button"
+            >
+              {isPage ? "목록으로" : "닫기"}
+            </button>
+            <button
+              className="inline-flex h-9 items-center justify-center gap-2 rounded-md bg-[#4880EE] px-3.5 text-[13px] font-semibold text-white transition hover:bg-[#1D4ED8] disabled:cursor-not-allowed disabled:opacity-60"
+              disabled={createCompanyMutation.isPending}
+              type="submit"
+            >
+              {createCompanyMutation.isPending ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                <Check className="h-4 w-4" />
+              )}
+              {createCompanyMutation.isPending ? "저장 중" : "저장"}
+            </button>
+          </div>
         </footer>
       </form>
     </section>
   );
 
-  if (isDocked) {
+  if (isDocked || isPage) {
     return panel;
   }
 
@@ -437,8 +478,8 @@ function CompanyCreatePanelProperty({
   label,
 }: CompanyCreatePanelPropertyProps) {
   return (
-    <div className="grid gap-2 border-b border-[#EEF2F7] py-3 last:border-b-0 sm:grid-cols-[88px_minmax(0,1fr)] sm:items-start">
-      <div className="pt-2 text-[12px] font-medium text-[#94A3B8]">{label}</div>
+    <div className="grid min-w-0 gap-2">
+      <div className="text-[12px] font-medium text-[#94A3B8]">{label}</div>
       <div className="min-w-0">
         {children}
         <p
