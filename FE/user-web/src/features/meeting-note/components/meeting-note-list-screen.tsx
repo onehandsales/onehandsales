@@ -490,14 +490,7 @@ export function MeetingNoteListScreen() {
             value={sort}
           />
         </div>
-        <span
-          className={cn(
-            "ml-2 shrink-0 text-[12px]",
-            isCompactFilterMode
-              ? "font-semibold text-[#64748B]"
-              : "text-[#9CA3AF]",
-          )}
-        >
+        <span className="ml-2 shrink-0 text-[12px] text-[#9CA3AF]">
           {meetingNotesQuery.data?.totalCount ?? 0}개
         </span>
       </div>

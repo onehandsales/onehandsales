@@ -635,14 +635,7 @@ export function DealPipelineHomeScreen({
                   value={sort}
                 />
                 <div className="flex-1" />
-                <span
-                  className={cn(
-                    "shrink-0 text-[12px]",
-                    isCompactFilterMode
-                      ? "font-semibold text-[#64748B]"
-                      : "text-[#9CA3AF]",
-                  )}
-                >
+                <span className="shrink-0 text-[12px] text-[#9CA3AF]">
                   {dealsQuery.data?.totalCount ?? 0}건
                 </span>
               </div>
