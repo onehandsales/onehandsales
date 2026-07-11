@@ -94,7 +94,7 @@ export function ScheduleScreen() {
 
   return (
     <section className="flex h-dvh min-h-0 flex-col overflow-hidden bg-white">
-      <header className="flex h-[var(--topbar-height)] shrink-0 items-center justify-between gap-3 px-5">
+      <header className="app-page-header flex h-[var(--topbar-height)] shrink-0 items-center justify-between gap-3 px-5">
         <div className="flex min-w-0 items-center gap-x-3">
           <span className="flex items-center gap-1.5 text-[13px] font-semibold text-[#111827]">
             <CalendarDays

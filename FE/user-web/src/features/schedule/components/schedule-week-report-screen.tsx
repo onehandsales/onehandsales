@@ -36,7 +36,7 @@ export function ScheduleWeekReportScreen() {
 
   return (
     <section className="mx-auto grid max-w-6xl gap-5 px-5 py-6">
-      <header className="flex flex-col gap-4 border-b pb-5 md:flex-row md:items-center md:justify-between">
+      <header className="app-page-header flex flex-col gap-4 border-b pb-5 md:flex-row md:items-center md:justify-between">
         <div>
           <Link
             className="text-sm font-medium text-muted-foreground hover:text-primary"
