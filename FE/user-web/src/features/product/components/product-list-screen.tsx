@@ -9,7 +9,6 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import {
-  type FormEvent,
   useEffect,
   useMemo,
   useRef,
@@ -17,6 +16,7 @@ import {
 } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { PageHeader } from "@/components/layout/page-header";
+import { CollapsibleDesktopSearch } from "@/components/ui/collapsible-desktop-search";
 import { ListFilterSelect } from "@/components/ui/list-filter-select";
 import { Pagination } from "@/components/ui/pagination";
 import { ListEmptyState } from "@/components/ui/state";
@@ -66,6 +66,7 @@ export function ProductListScreen({
   const { user } = useAuthSession();
   const [searchText, setSearchText] = useState("");
   const [search, setSearch] = useState("");
+  const [searchResetSignal, setSearchResetSignal] = useState(0);
   const [categoryFilterIds, setCategoryFilterIds] = useState<string[]>([]);
   const [statusFilterIds, setStatusFilterIds] = useState<string[]>([]);
   const [sort, setSort] = useState<ProductSort>("createdAtDesc");
@@ -175,9 +176,8 @@ export function ProductListScreen({
     }
   }, [statusFilterIds, statuses]);
 
-  const onSearchSubmit = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    setSearch(searchText.trim());
+  const onSearchSubmit = (nextSearch: string) => {
+    setSearch(nextSearch);
     setPage(1);
   };
 
@@ -223,18 +223,15 @@ export function ProductListScreen({
 
       {/* 검색 + 필터 툴바 (데스크톱) */}
       <div className="hidden min-h-10 shrink-0 items-center gap-1.5 overflow-x-auto px-5 py-1 md:flex lg:gap-2">
-        <form
-          className="flex h-8 w-[clamp(150px,20vw,220px)] shrink-0 items-center gap-1.5 rounded-md border border-[#E2E5EC] bg-white px-3 transition hover:border-[#93C5FD] hover:bg-white focus-within:border-[#4880EE] focus-within:bg-white focus-within:ring-1 focus-within:ring-[#4880EE]"
+        <CollapsibleDesktopSearch
+          appliedValue={search}
+          placeholder="제품명 검색"
+          resetSignal={searchResetSignal}
+          submitLabel="제품 검색 실행"
+          value={searchText}
           onSubmit={onSearchSubmit}
-        >
-          <Search className="h-3 w-3 shrink-0 text-[#9CA3AF]" />
-          <input
-            className="min-w-0 flex-1 bg-transparent text-[13px] text-[#111827] outline-none placeholder:text-[#9CA3AF]"
-            onChange={(event) => setSearchText(event.target.value)}
-            placeholder="제품명 검색"
-            value={searchText}
-          />
-        </form>
+          onValueChange={setSearchText}
+        />
         <FilterChip
           active={hasFilters}
           icon={RotateCcw}
@@ -242,6 +239,7 @@ export function ProductListScreen({
           onClick={() => {
             setSearch("");
             setSearchText("");
+            setSearchResetSignal((signal) => signal + 1);
             setCategoryFilterIds([]);
             setStatusFilterIds([]);
             setSort("createdAtDesc");
@@ -370,9 +368,9 @@ export function ProductListScreen({
           <button
             aria-label="초기화"
             className={cn(
-              "inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full border text-[12px] font-bold transition focus:border-[#4880EE] focus:outline-none focus:ring-1 focus:ring-[#4880EE]",
+              "inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full border text-[12px] font-bold transition focus:outline-none",
               hasFilters
-                ? "border-[#4880EE] bg-[#4880EE] text-white hover:bg-[#4880EE]"
+                ? "border-transparent bg-[#4880EE] text-white hover:bg-[#4880EE]"
                 : "border-[#E5E7EB] bg-[#F3F4F6] text-[#4B5563] hover:border-[#D1D5DB]",
             )}
             onClick={() => {
@@ -700,10 +698,10 @@ function FilterChip({
     <button
       aria-label={label}
       className={cn(
-        "inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-[6px] border text-[13px] font-bold transition focus:border-[#4880EE] focus:outline-none focus:ring-1 focus:ring-[#4880EE]",
+        "inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-[6px] border text-[13px] font-bold transition focus:outline-none",
         active
-          ? "border-[#4880EE] bg-[#4880EE] text-white hover:bg-[#4880EE]"
-          : "border-[#E2E5EC] bg-transparent text-[#6B7280] hover:bg-white",
+          ? "border-transparent bg-[#4880EE] text-white hover:bg-[#4880EE]"
+          : "border-[#E2E5EC] bg-white text-[#475569] hover:border-[#D1D5DB] hover:bg-[#F5F6F8]",
       )}
       onClick={onClick}
       type="button"
@@ -877,7 +875,7 @@ function ProductTaxonomyFilterCombobox<
               : "h-8 rounded-full text-[13px]",
             isOpen
               ? cn(
-                  "border-[#4880EE] bg-white text-[#111827] ring-1 ring-[#4880EE]",
+                  "border-[#D1D5DB] bg-white text-[#111827]",
                   isMobile ? "pl-7 pr-7" : "pl-8 pr-7",
                 )
               : selectedIds.length > 0
@@ -1072,7 +1070,7 @@ function getSelectedTaxonomyFilterSummary<
 function getTaxonomyFilterInputSelectedClass(tone: ProductTaxonomyFilterTone) {
   switch (tone) {
     case "blue":
-      return "border-[#BFDBFE] bg-[#EFF6FF] font-semibold text-[#1D4ED8]";
+      return "border-[#E2E5EC] bg-[#EFF6FF] font-semibold text-[#1D4ED8]";
   }
 }
 
@@ -1086,7 +1084,7 @@ function getTaxonomyFilterItemSelectedClass(tone: ProductTaxonomyFilterTone) {
 function getTaxonomyFilterCheckBorderClass(tone: ProductTaxonomyFilterTone) {
   switch (tone) {
     case "blue":
-      return "border-[#4880EE]";
+      return "border-[#E2E5EC]";
   }
 }
 

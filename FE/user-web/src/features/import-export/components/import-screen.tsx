@@ -638,10 +638,10 @@ export function ImportScreen() {
         <button
           aria-label="초기화"
           className={cn(
-            "inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-md border transition",
+            "inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-[6px] border text-[13px] font-bold transition focus:outline-none",
             targetTypes.length > 0
-              ? "border-[#4880EE] bg-[#4880EE] text-white"
-              : "border-[#E2E5EC] bg-transparent text-[#6B7280] hover:bg-white"
+              ? "border-transparent bg-[#4880EE] text-white hover:bg-[#4880EE]"
+              : "border-[#E2E5EC] bg-white text-[#475569] hover:border-[#D1D5DB] hover:bg-[#F5F6F8]"
           )}
           onClick={resetFilters}
           type="button"
@@ -734,9 +734,9 @@ export function ImportScreen() {
           <button
             aria-label="초기화"
             className={cn(
-              "inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full border transition",
+              "inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full border text-[12px] font-bold transition focus:outline-none",
               targetTypes.length > 0
-                ? "border-[#4880EE] bg-[#4880EE] text-white hover:bg-[#4880EE]"
+                ? "border-transparent bg-[#4880EE] text-white hover:bg-[#4880EE]"
                 : "border-[#E5E7EB] bg-[#F3F4F6] text-[#4B5563] hover:border-[#D1D5DB]",
             )}
             onClick={resetFilters}
@@ -1001,12 +1001,12 @@ function ImportTargetFilterCombobox({
               : "h-8 rounded-full text-[13px]",
             isOpen
               ? cn(
-                  "border-[#4880EE] bg-white text-[#111827] ring-1 ring-[#4880EE]",
+                  "border-[#D1D5DB] bg-white text-[#111827]",
                   isMobile ? "pl-7 pr-7" : "pl-8 pr-7"
                 )
               : selectedIds.length > 0
                 ? cn(
-                    "border-[#4880EE] bg-[#EEF4FF] font-semibold text-[#1D4ED8]",
+                    "border-[#E2E5EC] bg-[#EEF4FF] font-semibold text-[#1D4ED8]",
                     isMobile ? "pl-3 pr-7" : "pl-3.5 pr-7"
                   )
                 : isMobile
@@ -1114,7 +1114,7 @@ function ImportTargetFilterCombobox({
                     <span
                       className={cn(
                         "grid h-3.5 w-3.5 shrink-0 place-items-center rounded-full border",
-                        isSelected ? "border-[#4880EE]" : "border-[#CBD5E1]"
+                        isSelected ? "border-[#E2E5EC]" : "border-[#CBD5E1]"
                       )}
                     >
                       {isSelected ? (

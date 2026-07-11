@@ -233,10 +233,10 @@ export function TrashScreen() {
         <button
           aria-label="초기화"
           className={cn(
-            "inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-[6px] border text-[13px] font-bold transition focus:border-[#4880EE] focus:outline-none focus:ring-1 focus:ring-[#4880EE]",
+            "inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-[6px] border text-[13px] font-bold transition focus:outline-none",
             hasFilter
-              ? "border-[#4880EE] bg-[#4880EE] text-white hover:bg-[#4880EE]"
-              : "border-[#E2E5EC] bg-transparent text-[#6B7280] hover:bg-white",
+              ? "border-transparent bg-[#4880EE] text-white hover:bg-[#4880EE]"
+              : "border-[#E2E5EC] bg-white text-[#475569] hover:border-[#D1D5DB] hover:bg-[#F5F6F8]",
           )}
           onClick={clearFilters}
           type="button"

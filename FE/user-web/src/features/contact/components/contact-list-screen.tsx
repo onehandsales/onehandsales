@@ -9,13 +9,13 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import {
-  type FormEvent,
   useEffect,
   useMemo,
   useRef,
   useState,
 } from "react";
 import { PageHeader } from "@/components/layout/page-header";
+import { CollapsibleDesktopSearch } from "@/components/ui/collapsible-desktop-search";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { ListFilterSelect } from "@/components/ui/list-filter-select";
 import { Pagination } from "@/components/ui/pagination";
@@ -61,6 +61,7 @@ export function ContactListScreen() {
   const { user } = useAuthSession();
   const [usernameText, setUsernameText] = useState("");
   const [username, setUsername] = useState("");
+  const [searchResetSignal, setSearchResetSignal] = useState(0);
   const [companyIds, setCompanyIds] = useState<string[]>([]);
   const [contactDepartmentIds, setContactDepartmentIds] = useState<string[]>([]);
   const [sort, setSort] = useState<ContactSort>("createdAtDesc");
@@ -146,9 +147,8 @@ export function ContactListScreen() {
     }
   }, [contactDepartmentIds, departments]);
 
-  const onSearchSubmit = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    setUsername(usernameText.trim());
+  const onSearchSubmit = (nextUsername: string) => {
+    setUsername(nextUsername);
     setPage(1);
   };
 
@@ -179,18 +179,15 @@ export function ContactListScreen() {
 
       {/* 검색 + 필터 툴바 (데스크톱) */}
       <div className="hidden min-h-10 shrink-0 items-center gap-1.5 overflow-x-auto px-5 py-1 md:flex lg:gap-2">
-        <form
-          className="flex h-8 w-[clamp(150px,20vw,220px)] shrink-0 items-center gap-1.5 rounded-md border border-[#E2E5EC] bg-white px-3 transition hover:border-[#93C5FD] hover:bg-white focus-within:border-[#4880EE] focus-within:bg-white focus-within:ring-1 focus-within:ring-[#4880EE]"
+        <CollapsibleDesktopSearch
+          appliedValue={username}
+          placeholder="담당자명 검색"
+          resetSignal={searchResetSignal}
+          submitLabel="담당자 검색 실행"
+          value={usernameText}
           onSubmit={onSearchSubmit}
-        >
-          <Search className="h-3 w-3 shrink-0 text-[#9CA3AF]" />
-          <input
-            className="min-w-0 flex-1 bg-transparent text-[13px] text-[#111827] outline-none placeholder:text-[#9CA3AF]"
-            onChange={(e) => setUsernameText(e.target.value)}
-            placeholder="담당자명 검색"
-            value={usernameText}
-          />
-        </form>
+          onValueChange={setUsernameText}
+        />
         <FilterChip
           active={hasSearch}
           icon={RotateCcw}
@@ -198,6 +195,7 @@ export function ContactListScreen() {
           onClick={() => {
             setUsername("");
             setUsernameText("");
+            setSearchResetSignal((signal) => signal + 1);
             setCompanyIds([]);
             setContactDepartmentIds([]);
             setSort("createdAtDesc");
@@ -371,9 +369,9 @@ export function ContactListScreen() {
           <button
             aria-label="초기화"
             className={cn(
-              "inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full border text-[12px] font-bold transition focus:border-[#4880EE] focus:outline-none focus:ring-1 focus:ring-[#4880EE]",
+              "inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full border text-[12px] font-bold transition focus:outline-none",
               hasSearch
-                ? "border-[#4880EE] bg-[#4880EE] text-white hover:bg-[#4880EE]"
+                ? "border-transparent bg-[#4880EE] text-white hover:bg-[#4880EE]"
                 : "border-[#E5E7EB] bg-[#F3F4F6] text-[#4B5563] hover:border-[#D1D5DB]",
             )}
             onClick={() => {
@@ -718,10 +716,10 @@ function FilterChip({
     <button
       aria-label={label}
       className={cn(
-        "inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-[6px] border text-[13px] font-bold transition focus:border-[#4880EE] focus:outline-none focus:ring-1 focus:ring-[#4880EE]",
+        "inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-[6px] border text-[13px] font-bold transition focus:outline-none",
         active
-          ? "border-[#4880EE] bg-[#4880EE] text-white hover:bg-[#4880EE]"
-          : "border-[#E2E5EC] bg-transparent text-[#6B7280] hover:bg-white",
+          ? "border-transparent bg-[#4880EE] text-white hover:bg-[#4880EE]"
+          : "border-[#E2E5EC] bg-white text-[#475569] hover:border-[#D1D5DB] hover:bg-[#F5F6F8]",
       )}
       onClick={onClick}
       type="button"
@@ -896,7 +894,7 @@ function ContactTaxonomyFilterCombobox<
               : "h-8 rounded-full text-[13px]",
             isOpen
               ? cn(
-                  "border-[#4880EE] bg-white text-[#111827] ring-1 ring-[#4880EE]",
+                  "border-[#D1D5DB] bg-white text-[#111827]",
                   isMobile ? "pl-7 pr-7" : "pl-8 pr-7",
                 )
               : selectedIds.length > 0
@@ -1092,9 +1090,9 @@ function getSelectedTaxonomyFilterSummary<
 }
 
 function getTaxonomyFilterInputSelectedClass(tone: ContactTaxonomyFilterTone) {
-  if (tone === "blue") return "border-[#BFDBFE] bg-[#EFF6FF] font-semibold text-[#1D4ED8]";
-  if (tone === "green") return "border-[#BBF7D0] bg-[#F0FDF4] font-semibold text-[#15803D]";
-  return "border-[#FDE68A] bg-[#FFFBEB] font-semibold text-[#B45309]";
+  if (tone === "blue") return "border-[#E2E5EC] bg-[#EFF6FF] font-semibold text-[#1D4ED8]";
+  if (tone === "green") return "border-[#E2E5EC] bg-[#F0FDF4] font-semibold text-[#15803D]";
+  return "border-[#E2E5EC] bg-[#FFFBEB] font-semibold text-[#B45309]";
 }
 
 function getTaxonomyFilterItemSelectedClass(tone: ContactTaxonomyFilterTone) {
@@ -1104,9 +1102,9 @@ function getTaxonomyFilterItemSelectedClass(tone: ContactTaxonomyFilterTone) {
 }
 
 function getTaxonomyFilterCheckBorderClass(tone: ContactTaxonomyFilterTone) {
-  if (tone === "blue") return "border-[#4880EE]";
-  if (tone === "green") return "border-[#15803D]";
-  return "border-[#B45309]";
+  if (tone === "blue") return "border-[#E2E5EC]";
+  if (tone === "green") return "border-[#E2E5EC]";
+  return "border-[#E2E5EC]";
 }
 
 function getTaxonomyFilterCheckDotClass(tone: ContactTaxonomyFilterTone) {

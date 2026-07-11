@@ -13,6 +13,7 @@ import {
 import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
 import { Link, useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { PageHeader } from "@/components/layout/page-header";
+import { CollapsibleDesktopSearch } from "@/components/ui/collapsible-desktop-search";
 import { ListFilterSelect } from "@/components/ui/list-filter-select";
 import { Pagination } from "@/components/ui/pagination";
 import { ListEmptyState } from "@/components/ui/state";
@@ -52,6 +53,7 @@ export function MeetingNoteListScreen() {
   const [page, setPage] = useState(1);
   const [searchText, setSearchText] = useState("");
   const [search, setSearch] = useState("");
+  const [searchResetSignal, setSearchResetSignal] = useState(0);
   const [companyIds, setCompanyIds] = useState<string[]>([]);
   const [contactIds, setContactIds] = useState<string[]>([]);
   const [sort, setSort] = useState<MeetingNoteSort>("createdAtDesc");
@@ -139,10 +141,14 @@ export function MeetingNoteListScreen() {
     setSearchParams(nextSearchParams, { replace: true });
   }, [searchParams, setSearchParams]);
 
+  const applySearch = (nextSearch: string) => {
+    setSearch(nextSearch);
+    setPage(1);
+  };
+
   const onSearchSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    setSearch(searchText.trim());
-    setPage(1);
+    applySearch(searchText.trim());
   };
 
   const updateCompanyIds = (ids: string[]) => {
@@ -163,6 +169,7 @@ export function MeetingNoteListScreen() {
   const clearFilters = () => {
     setSearchText("");
     setSearch("");
+    setSearchResetSignal((signal) => signal + 1);
     setCompanyIds([]);
     setContactIds([]);
     setSort("createdAtDesc");
@@ -184,18 +191,15 @@ export function MeetingNoteListScreen() {
       />
 
       <div className="hidden min-h-10 shrink-0 items-center gap-1.5 overflow-x-auto px-5 py-1 md:flex lg:gap-2">
-        <form
-          className="flex h-8 w-[clamp(150px,20vw,220px)] shrink-0 items-center gap-1.5 rounded-md border border-[#E2E5EC] bg-white px-3 transition hover:border-[#93C5FD] hover:bg-white focus-within:border-[#4880EE] focus-within:bg-white focus-within:ring-1 focus-within:ring-[#4880EE]"
-          onSubmit={onSearchSubmit}
-        >
-          <Search className="h-3 w-3 shrink-0 text-[#9CA3AF]" />
-          <input
-            className="min-w-0 flex-1 bg-transparent text-[13px] text-[#111827] outline-none placeholder:text-[#9CA3AF]"
-            onChange={(event) => setSearchText(event.target.value)}
-            placeholder="회의 관련 검색"
-            value={searchText}
-          />
-        </form>
+        <CollapsibleDesktopSearch
+          appliedValue={search}
+          placeholder="회의 관련 검색"
+          resetSignal={searchResetSignal}
+          submitLabel="회의록 검색 실행"
+          value={searchText}
+          onSubmit={applySearch}
+          onValueChange={setSearchText}
+        />
         <FilterChip
           active={hasFilter}
           icon={RotateCcw}
@@ -337,9 +341,9 @@ export function MeetingNoteListScreen() {
             aria-label="초기화"
             aria-pressed={hasFilter}
             className={cn(
-              "inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full border text-[12px] font-bold transition focus:border-[#4880EE] focus:outline-none focus:ring-1 focus:ring-[#4880EE]",
+              "inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full border text-[12px] font-bold transition focus:outline-none",
               hasFilter
-                ? "border-[#4880EE] bg-[#4880EE] text-white hover:bg-[#4880EE]"
+                ? "border-transparent bg-[#4880EE] text-white hover:bg-[#4880EE]"
                 : "border-[#E5E7EB] bg-[#F3F4F6] text-[#4B5563] hover:border-[#D1D5DB]",
             )}
             onClick={clearFilters}
@@ -477,10 +481,10 @@ function FilterChip({
       aria-label={label}
       aria-pressed={active}
       className={cn(
-        "inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-[6px] border text-[13px] font-bold transition focus:border-[#4880EE] focus:outline-none focus:ring-1 focus:ring-[#4880EE]",
+        "inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-[6px] border text-[13px] font-bold transition focus:outline-none",
         active
-          ? "border-[#4880EE] bg-[#4880EE] text-white hover:bg-[#4880EE]"
-          : "border-[#E2E5EC] bg-transparent text-[#6B7280] hover:bg-white",
+          ? "border-transparent bg-[#4880EE] text-white hover:bg-[#4880EE]"
+          : "border-[#E2E5EC] bg-white text-[#475569] hover:border-[#D1D5DB] hover:bg-[#F5F6F8]",
       )}
       onClick={onClick}
       type="button"
@@ -632,10 +636,10 @@ function MeetingNoteFilterMultiSelect<TItem extends MeetingNoteFilterItem>({
           className={cn(
             "h-8 w-full min-w-0 border text-[13px] outline-none transition",
             isOpen
-              ? "rounded-full border-[#4880EE] bg-white pl-8 pr-7 text-[#111827] ring-1 ring-[#4880EE]"
+              ? "rounded-full border-[#D1D5DB] bg-white pl-8 pr-7 text-[#111827]"
               : selectedIds.length > 0
-                ? "rounded-full border-[#BFDBFE] bg-[#EFF6FF] pl-3.5 pr-7 font-semibold text-[#1D4ED8]"
-                : "cursor-pointer rounded-full border-[#E2E5EC] bg-transparent pl-3.5 pr-7 text-[#6B7280] hover:border-[#D1D5DB] hover:bg-white",
+                ? "rounded-full border-[#E2E5EC] bg-[#EFF6FF] pl-3.5 pr-7 font-semibold text-[#1D4ED8]"
+                : "cursor-pointer rounded-full border-[#E2E5EC] bg-transparent pl-3.5 pr-7 text-[#6B7280] hover:border-[#D1D5DB] hover:bg-[#F5F6F8]",
           )}
           onChange={(event) => openOptions(event.target.value)}
           onFocus={() => openOptions("")}
@@ -732,7 +736,7 @@ function MeetingNoteFilterMultiSelect<TItem extends MeetingNoteFilterItem>({
                     <span
                       className={cn(
                         "grid h-3.5 w-3.5 shrink-0 place-items-center rounded-full border",
-                        isSelected ? "border-[#4880EE]" : "border-[#CBD5E1]",
+                        isSelected ? "border-[#E2E5EC]" : "border-[#CBD5E1]",
                       )}
                     >
                       {isSelected ? (
