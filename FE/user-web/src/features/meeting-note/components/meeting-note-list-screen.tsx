@@ -7,11 +7,19 @@ import {
   RefreshCw,
   RotateCcw,
   Search,
+  SlidersHorizontal,
   X,
   type LucideIcon,
 } from "lucide-react";
 import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
-import { Link, useLocation, useNavigate, useSearchParams } from "react-router-dom";
+import {
+  Link,
+  useLocation,
+  useNavigate,
+  useOutletContext,
+  useSearchParams,
+} from "react-router-dom";
+import type { AppShellOutletContext } from "@/components/layout/app-shell";
 import { PageHeader } from "@/components/layout/page-header";
 import { CollapsibleDesktopSearch } from "@/components/ui/collapsible-desktop-search";
 import { ListFilterSelect } from "@/components/ui/list-filter-select";
@@ -25,6 +33,7 @@ import {
   useMeetingNoteFilterContacts,
   useMeetingNoteList,
 } from "@/features/meeting-note/hooks/use-meeting-note-queries";
+import type { MeetingNoteCreateFormValues } from "@/features/meeting-note/schemas/meeting-note-schema";
 import type {
   MeetingNoteListItem,
   MeetingNoteListParams,
@@ -39,6 +48,14 @@ const MEETING_NOTE_TABLE_GRID_STYLE = {
   gridTemplateColumns:
     "minmax(0,0.82fr) minmax(0,1.45fr) minmax(0,0.88fr) minmax(0,0.88fr) minmax(0,0.82fr)",
 };
+const MEETING_NOTE_CREATE_PANEL_STORAGE_KEY =
+  "onehand.meetingNote.createPanelWidth";
+const MEETING_NOTE_CREATE_PANEL_DEFAULT_WIDTH = 520;
+const MEETING_NOTE_CREATE_PANEL_MIN_WIDTH = 420;
+const MEETING_NOTE_CREATE_PANEL_MAX_RATIO = 0.55;
+const MEETING_NOTE_CREATE_PANEL_AUTO_SIDEBAR_RATIO = 0.45;
+const MEETING_NOTE_CREATE_PANEL_TRANSITION_MS = 500;
+const DESKTOP_SEARCH_COMPACT_MAX_WIDTH = 170;
 
 const MEETING_NOTE_SORT_OPTIONS = [
   { value: "createdAtDesc", label: "최신순" },
@@ -49,7 +66,10 @@ const MEETING_NOTE_SORT_OPTIONS = [
 export function MeetingNoteListScreen() {
   const navigate = useNavigate();
   const location = useLocation();
+  const outletContext =
+    useOutletContext<AppShellOutletContext | undefined>();
   const { user } = useAuthSession();
+  const isDockedViewport = useMediaQuery("(min-width: 1024px)");
   const [page, setPage] = useState(1);
   const [searchText, setSearchText] = useState("");
   const [search, setSearch] = useState("");
@@ -58,8 +78,19 @@ export function MeetingNoteListScreen() {
   const [contactIds, setContactIds] = useState<string[]>([]);
   const [sort, setSort] = useState<MeetingNoteSort>("createdAtDesc");
   const [isCreateOpen, setIsCreateOpen] = useState(false);
+  const [isDockedCreateRendered, setIsDockedCreateRendered] = useState(false);
+  const [createPanelWidth, setCreatePanelWidth] = useState(
+    getStoredMeetingNoteCreatePanelWidth,
+  );
+  const [isCreatePanelResizing, setIsCreatePanelResizing] = useState(false);
+  const [isCompactFilterOpen, setIsCompactFilterOpen] = useState(false);
+  const [compactFilterPosition, setCompactFilterPosition] =
+    useState<MeetingNoteFilterPopoverPosition | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
   const [searchParams, setSearchParams] = useSearchParams();
+  const compactFilterButtonRef = useRef<HTMLButtonElement>(null);
+  const compactFilterPopoverRef = useRef<HTMLDivElement>(null);
+  const setAutoSidebarCollapsed = outletContext?.setAutoSidebarCollapsed;
 
   const params = useMemo<MeetingNoteListParams>(
     () => ({
@@ -103,6 +134,11 @@ export function MeetingNoteListScreen() {
       sort !== "createdAtDesc",
   );
   const displayTimeZone = user?.timeZone ?? getBrowserTimeZoneFallback();
+  const isDockedCreateOpen = isCreateOpen && isDockedViewport;
+  const isDockedCreateMounted = isDockedCreateOpen || isDockedCreateRendered;
+  const isCompactFilterMode = isDockedCreateMounted;
+  const hasEntityFilters = companyIds.length > 0 || contactIds.length > 0;
+  const entityFilterCount = companyIds.length + contactIds.length;
 
   useEffect(() => {
     if (contactIds.length === 0) {
@@ -134,12 +170,172 @@ export function MeetingNoteListScreen() {
       return;
     }
 
+    setCreatePanelWidth(MEETING_NOTE_CREATE_PANEL_MIN_WIDTH);
     setIsCreateOpen(true);
 
     const nextSearchParams = new URLSearchParams(searchParams);
     nextSearchParams.delete("create");
     setSearchParams(nextSearchParams, { replace: true });
   }, [searchParams, setSearchParams]);
+
+  useEffect(() => {
+    if (isDockedCreateOpen) {
+      setIsDockedCreateRendered(true);
+      return;
+    }
+
+    const timerId = window.setTimeout(() => {
+      setIsDockedCreateRendered(false);
+    }, MEETING_NOTE_CREATE_PANEL_TRANSITION_MS);
+
+    return () => window.clearTimeout(timerId);
+  }, [isDockedCreateOpen]);
+
+  useEffect(() => {
+    if (!isCompactFilterMode) {
+      setIsCompactFilterOpen(false);
+    }
+  }, [isCompactFilterMode]);
+
+  useEffect(() => {
+    if (!isCompactFilterOpen) {
+      return;
+    }
+
+    const updateCompactFilterPosition = () => {
+      if (!compactFilterButtonRef.current) {
+        return;
+      }
+
+      setCompactFilterPosition(
+        getCompactMeetingNoteFilterPopoverPosition(
+          compactFilterButtonRef.current,
+        ),
+      );
+    };
+    const onMouseDown = (event: MouseEvent) => {
+      const target = event.target as Node;
+
+      if (
+        compactFilterButtonRef.current?.contains(target) ||
+        compactFilterPopoverRef.current?.contains(target)
+      ) {
+        return;
+      }
+
+      setIsCompactFilterOpen(false);
+    };
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setIsCompactFilterOpen(false);
+        compactFilterButtonRef.current?.focus();
+      }
+    };
+
+    updateCompactFilterPosition();
+    document.addEventListener("mousedown", onMouseDown);
+    document.addEventListener("keydown", onKeyDown);
+    window.addEventListener("resize", updateCompactFilterPosition);
+    window.addEventListener("scroll", updateCompactFilterPosition, true);
+
+    return () => {
+      document.removeEventListener("mousedown", onMouseDown);
+      document.removeEventListener("keydown", onKeyDown);
+      window.removeEventListener("resize", updateCompactFilterPosition);
+      window.removeEventListener("scroll", updateCompactFilterPosition, true);
+    };
+  }, [isCompactFilterOpen]);
+
+  useEffect(() => {
+    if (typeof window === "undefined") {
+      return;
+    }
+
+    window.localStorage.setItem(
+      MEETING_NOTE_CREATE_PANEL_STORAGE_KEY,
+      String(createPanelWidth),
+    );
+  }, [createPanelWidth]);
+
+  useEffect(() => {
+    const clampToViewport = () => {
+      setCreatePanelWidth((currentWidth) =>
+        clampMeetingNoteCreatePanelWidth(currentWidth, window.innerWidth),
+      );
+    };
+
+    clampToViewport();
+    window.addEventListener("resize", clampToViewport);
+
+    return () => {
+      window.removeEventListener("resize", clampToViewport);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!setAutoSidebarCollapsed) {
+      return;
+    }
+
+    return () => {
+      setAutoSidebarCollapsed(false);
+    };
+  }, [setAutoSidebarCollapsed]);
+
+  useEffect(() => {
+    if (!setAutoSidebarCollapsed) {
+      return;
+    }
+
+    const syncAutoSidebar = () => {
+      const viewportWidth =
+        typeof window === "undefined" ? 0 : window.innerWidth;
+      const shouldCollapse =
+        isDockedCreateMounted &&
+        viewportWidth > 0 &&
+        createPanelWidth / viewportWidth >
+          MEETING_NOTE_CREATE_PANEL_AUTO_SIDEBAR_RATIO;
+
+      setAutoSidebarCollapsed(shouldCollapse);
+    };
+
+    syncAutoSidebar();
+    window.addEventListener("resize", syncAutoSidebar);
+
+    return () => {
+      window.removeEventListener("resize", syncAutoSidebar);
+    };
+  }, [createPanelWidth, isDockedCreateMounted, setAutoSidebarCollapsed]);
+
+  useEffect(() => {
+    if (!isCreatePanelResizing) {
+      return;
+    }
+
+    const previousCursor = document.body.style.cursor;
+    const previousUserSelect = document.body.style.userSelect;
+    const onMouseMove = (event: MouseEvent) => {
+      setCreatePanelWidth(
+        clampMeetingNoteCreatePanelWidth(
+          window.innerWidth - event.clientX,
+          window.innerWidth,
+        ),
+      );
+    };
+    const onMouseUp = () => setIsCreatePanelResizing(false);
+
+    document.body.style.cursor = "col-resize";
+    document.body.style.userSelect = "none";
+    window.addEventListener("mousemove", onMouseMove);
+    window.addEventListener("mouseup", onMouseUp);
+
+    return () => {
+      document.body.style.cursor = previousCursor;
+      document.body.style.userSelect = previousUserSelect;
+      window.removeEventListener("mousemove", onMouseMove);
+      window.removeEventListener("mouseup", onMouseUp);
+    };
+  }, [isCreatePanelResizing]);
 
   const applySearch = (nextSearch: string) => {
     setSearch(nextSearch);
@@ -176,65 +372,179 @@ export function MeetingNoteListScreen() {
     setPage(1);
   };
 
+  const onCreateOpenChange = (open: boolean) => {
+    setIsCreateOpen(open);
+  };
+
+  const openCreatePanel = () => {
+    setCreatePanelWidth(MEETING_NOTE_CREATE_PANEL_MIN_WIDTH);
+    setIsCreateOpen(true);
+  };
+
+  const onCreateExpand = (values: MeetingNoteCreateFormValues) => {
+    void navigate("/app/meeting-notes/new/full", {
+      state: { meetingNoteCreateDraft: values },
+    });
+  };
+
+  const onMeetingNoteCreated = () => {
+    setNotice("회의록을 추가했어요.");
+    setPage(1);
+    void meetingNotesQuery.refetch();
+  };
+
   return (
-    <section className="flex min-h-full flex-col bg-white">
+    <section
+      className="flex min-h-full flex-col bg-white transition-[padding-right] duration-[500ms] ease-out"
+      style={
+        isDockedCreateMounted
+          ? { paddingRight: isDockedCreateOpen ? createPanelWidth : 0 }
+          : undefined
+      }
+    >
       <PageHeader
         breadcrumbs={[{ label: "회의록", icon: NotebookPen }]}
         actions={[
           {
             icon: Plus,
             tooltip: "회의록 생성",
-            onClick: () => setIsCreateOpen(true),
+            onClick: openCreatePanel,
+            hidden: isDockedCreateMounted,
             variant: "primary",
           },
         ]}
       />
 
-      <div className="hidden min-h-10 shrink-0 items-center gap-1.5 overflow-x-auto px-5 py-1 md:flex lg:gap-2">
-        <CollapsibleDesktopSearch
-          appliedValue={search}
-          placeholder="회의 관련 검색"
-          resetSignal={searchResetSignal}
-          submitLabel="회의록 검색 실행"
-          value={searchText}
-          onSubmit={applySearch}
-          onValueChange={setSearchText}
-        />
-        <FilterChip
-          active={hasFilter}
-          icon={RotateCcw}
-          label="초기화"
-          onClick={clearFilters}
-        />
-        <MeetingNoteFilterMultiSelect
-              emptyText="조건을 바꾸면 회사를 찾을 수 있어요."
-          getLabel={(company) => company.companyName}
-          itemKindLabel="회사"
-          items={companyOptions}
-          selectedIds={companyIds}
-          onSelectedIdsChange={updateCompanyIds}
-        />
-        <MeetingNoteFilterMultiSelect
-              emptyText="조건을 바꾸면 담당자를 찾을 수 있어요."
-          getLabel={(contact) => contact.contactUsername}
-          itemKindLabel="담당자"
-          items={filteredContactOptions}
-          selectedIds={contactIds}
-          onSelectedIdsChange={updateContactIds}
-        />
-        <ListFilterSelect<MeetingNoteSort>
-          active={sort !== "createdAtDesc"}
-          ariaLabel="정렬 조건"
-          className="w-[clamp(136px,14vw,178px)]"
-          onChange={updateSort}
-          options={MEETING_NOTE_SORT_OPTIONS}
-          value={sort}
-        />
-        <div className="flex-1" />
-        <span className="shrink-0 text-[12px] text-[#9CA3AF]">
+      <div className="hidden min-h-10 shrink-0 items-center px-5 py-1 md:flex">
+        <div className="flex min-w-0 flex-1 items-center gap-1.5 overflow-x-auto [scrollbar-width:none] lg:gap-2 [&::-webkit-scrollbar]:hidden">
+          <CollapsibleDesktopSearch
+            appliedValue={search}
+            maxExpandedWidth={
+              isCompactFilterMode ? DESKTOP_SEARCH_COMPACT_MAX_WIDTH : undefined
+            }
+            placeholder="회의 관련 검색"
+            resetSignal={searchResetSignal}
+            submitLabel="회의록 검색 실행"
+            value={searchText}
+            onSubmit={applySearch}
+            onValueChange={setSearchText}
+          />
+          <FilterChip
+            active={hasFilter}
+            icon={RotateCcw}
+            label="초기화"
+            onClick={clearFilters}
+          />
+          {isCompactFilterMode ? (
+            <button
+              ref={compactFilterButtonRef}
+              aria-expanded={isCompactFilterOpen}
+              aria-label="필터"
+              className={cn(
+                "inline-flex h-8 w-[84px] shrink-0 items-center justify-center gap-1 rounded-md border px-2 text-[13px] font-semibold transition focus:outline-none",
+                hasEntityFilters
+                  ? "border-[#E2E5EC] bg-[#EFF6FF] text-[#1D4ED8] hover:border-[#D1D5DB] hover:bg-[#DBEAFE]"
+                  : "border-[#E2E5EC] bg-white text-[#475569] hover:border-[#D1D5DB] hover:bg-[#F5F6F8]",
+              )}
+              onClick={() => setIsCompactFilterOpen((open) => !open)}
+              type="button"
+            >
+              <SlidersHorizontal className="h-3.5 w-3.5" />
+              <span>필터</span>
+              {hasEntityFilters ? (
+                <span className="grid h-4 min-w-4 place-items-center rounded-full bg-[#4880EE] px-1 text-[10px] font-bold leading-none text-white">
+                  {entityFilterCount}
+                </span>
+              ) : null}
+            </button>
+          ) : (
+            <>
+              <MeetingNoteFilterMultiSelect
+                emptyText="조건을 바꾸면 회사를 찾을 수 있어요."
+                getLabel={(company) => company.companyName}
+                itemKindLabel="회사"
+                items={companyOptions}
+                selectedIds={companyIds}
+                onSelectedIdsChange={updateCompanyIds}
+              />
+              <MeetingNoteFilterMultiSelect
+                emptyText="조건을 바꾸면 담당자를 찾을 수 있어요."
+                getLabel={(contact) => contact.contactUsername}
+                itemKindLabel="담당자"
+                items={filteredContactOptions}
+                selectedIds={contactIds}
+                onSelectedIdsChange={updateContactIds}
+              />
+            </>
+          )}
+          <ListFilterSelect<MeetingNoteSort>
+            active={sort !== "createdAtDesc"}
+            ariaLabel="정렬 조건"
+            className={
+              isCompactFilterMode
+                ? "w-[104px]"
+                : "w-[clamp(136px,14vw,178px)]"
+            }
+            onChange={updateSort}
+            options={MEETING_NOTE_SORT_OPTIONS}
+            value={sort}
+          />
+        </div>
+        <span
+          className={cn(
+            "ml-2 shrink-0 text-[12px]",
+            isCompactFilterMode
+              ? "font-semibold text-[#64748B]"
+              : "text-[#9CA3AF]",
+          )}
+        >
           {meetingNotesQuery.data?.totalCount ?? 0}개
         </span>
       </div>
+
+      {isCompactFilterMode && isCompactFilterOpen ? (
+        <div
+          ref={compactFilterPopoverRef}
+          className={cn(
+            "fixed z-50 rounded-lg border border-[#E6EAF0] bg-white p-3 shadow-lg",
+            !compactFilterPosition && "invisible",
+          )}
+          style={{
+            left: compactFilterPosition?.left ?? 0,
+            top: compactFilterPosition?.top ?? 0,
+            width: compactFilterPosition?.width ?? 320,
+          }}
+        >
+          <div className="grid gap-3">
+            <div className="grid gap-1.5">
+              <p className="text-[12px] font-semibold text-[#64748B]">회사</p>
+              <MeetingNoteFilterMultiSelect
+                emptyText="조건을 바꾸면 회사를 찾을 수 있어요."
+                getLabel={(company) => company.companyName}
+                itemKindLabel="회사"
+                items={companyOptions}
+                layout="full"
+                selectedIds={companyIds}
+                onSelectedIdsChange={updateCompanyIds}
+              />
+            </div>
+            <div className="grid gap-1.5">
+              <p className="text-[12px] font-semibold text-[#64748B]">
+                담당자
+              </p>
+              <MeetingNoteFilterMultiSelect
+                emptyText="조건을 바꾸면 담당자를 찾을 수 있어요."
+                getLabel={(contact) => contact.contactUsername}
+                itemKindLabel="담당자"
+                items={filteredContactOptions}
+                layout="full"
+                selectedIds={contactIds}
+                onSelectedIdsChange={updateContactIds}
+              />
+            </div>
+          </div>
+        </div>
+      ) : null}
 
       {notice ? (
         <div className="hidden px-5 pt-2 md:block">
@@ -246,7 +556,12 @@ export function MeetingNoteListScreen() {
         </div>
       ) : null}
 
-      <div className="hidden min-w-0 overflow-hidden px-5 pb-3 pt-1 md:flex">
+      <div
+        className={cn(
+          "hidden min-w-0 overflow-hidden px-5 pb-3 pt-1 md:flex",
+          isCreatePanelResizing && "cursor-col-resize select-none",
+        )}
+      >
         <div className="flex min-w-0 flex-1 flex-col gap-3">
           <div className="flex w-full min-w-0 flex-col overflow-hidden rounded-lg border border-[#E2E5EC] bg-white shadow-sm">
             <div
@@ -282,11 +597,11 @@ export function MeetingNoteListScreen() {
                 actionIcon={Plus}
                 actionLabel="회의록 생성"
                 icon={NotebookPen}
-                onAction={() => setIsCreateOpen(true)}
+                onAction={openCreatePanel}
                 title={
                   hasFilter
-                      ? "조건을 바꾸면 회의록을 찾을 수 있어요"
-                      : "데이터가 존재하지 않아요"
+                    ? "조건을 바꾸면 회의록을 찾을 수 있어요"
+                    : "데이터가 존재하지 않아요"
                 }
               />
             ) : (
@@ -310,6 +625,18 @@ export function MeetingNoteListScreen() {
             />
           ) : null}
         </div>
+
+        {isDockedCreateMounted ? (
+          <MeetingNoteCreateDialog
+            mode="docked"
+            onCreated={onMeetingNoteCreated}
+            onExpand={onCreateExpand}
+            onOpenChange={onCreateOpenChange}
+            onResizeStart={() => setIsCreatePanelResizing(true)}
+            open={isDockedCreateOpen}
+            width={createPanelWidth}
+          />
+        ) : null}
       </div>
 
       <section className="flex min-h-0 flex-1 flex-col md:hidden">
@@ -353,7 +680,7 @@ export function MeetingNoteListScreen() {
           </button>
           <MeetingNoteFilterMultiSelect
             className="w-[112px]"
-              emptyText="조건을 바꾸면 회사를 찾을 수 있어요."
+            emptyText="조건을 바꾸면 회사를 찾을 수 있어요."
             getLabel={(company) => company.companyName}
             itemKindLabel="회사"
             items={companyOptions}
@@ -362,7 +689,7 @@ export function MeetingNoteListScreen() {
           />
           <MeetingNoteFilterMultiSelect
             className="w-[112px]"
-              emptyText="조건을 바꾸면 담당자를 찾을 수 있어요."
+            emptyText="조건을 바꾸면 담당자를 찾을 수 있어요."
             getLabel={(contact) => contact.contactUsername}
             itemKindLabel="담당자"
             items={filteredContactOptions}
@@ -411,11 +738,11 @@ export function MeetingNoteListScreen() {
               actionIcon={Plus}
               actionLabel="회의록 생성"
               icon={NotebookPen}
-              onAction={() => setIsCreateOpen(true)}
+              onAction={openCreatePanel}
               title={
                 hasFilter
-                    ? "조건을 바꾸면 회의록을 찾을 수 있어요"
-                    : "데이터가 존재하지 않아요"
+                  ? "조건을 바꾸면 회의록을 찾을 수 있어요"
+                  : "데이터가 존재하지 않아요"
               }
             />
           ) : (
@@ -442,24 +769,22 @@ export function MeetingNoteListScreen() {
         <button
           aria-label="회의록 생성"
           className="fixed bottom-24 right-5 flex h-8 w-8 items-center justify-center rounded-full bg-[#4880EE] shadow-[0_4px_16px_rgba(59,130,246,0.27)] transition active:opacity-80"
-          onClick={() => setIsCreateOpen(true)}
+          onClick={openCreatePanel}
           type="button"
         >
           <Plus className="h-4 w-4 text-white" strokeWidth={2.5} />
         </button>
       </section>
 
-      {isCreateOpen ? (
+      <div className="lg:hidden">
         <MeetingNoteCreateDialog
-          onCreated={() => {
-        setNotice("회의록을 추가했어요.");
-            setPage(1);
-            void meetingNotesQuery.refetch();
-          }}
-          onOpenChange={setIsCreateOpen}
-          open={isCreateOpen}
+          mode="overlay"
+          onCreated={onMeetingNoteCreated}
+          onExpand={onCreateExpand}
+          onOpenChange={onCreateOpenChange}
+          open={isCreateOpen && !isDockedViewport}
         />
-      ) : null}
+      </div>
     </section>
   );
 }
@@ -511,6 +836,7 @@ function MeetingNoteFilterMultiSelect<TItem extends MeetingNoteFilterItem>({
   getLabel,
   itemKindLabel,
   items,
+  layout = "compact",
   selectedIds,
   onSelectedIdsChange,
 }: {
@@ -519,6 +845,7 @@ function MeetingNoteFilterMultiSelect<TItem extends MeetingNoteFilterItem>({
   readonly getLabel: (item: TItem) => string;
   readonly itemKindLabel: string;
   readonly items: readonly TItem[];
+  readonly layout?: "compact" | "full";
   readonly selectedIds: readonly string[];
   readonly onSelectedIdsChange: (ids: string[]) => void;
 }) {
@@ -621,7 +948,11 @@ function MeetingNoteFilterMultiSelect<TItem extends MeetingNoteFilterItem>({
 
   return (
     <div
-      className={cn("relative w-[clamp(136px,14vw,178px)] shrink-0", className)}
+      className={cn(
+        "relative shrink-0",
+        layout === "full" ? "w-full" : "w-[clamp(136px,14vw,178px)]",
+        className,
+      )}
       ref={wrapperRef}
     >
       <div className="relative">
@@ -774,6 +1105,23 @@ function getMeetingNoteFilterPopoverPosition(
   };
 }
 
+function getCompactMeetingNoteFilterPopoverPosition(
+  trigger: HTMLButtonElement,
+): MeetingNoteFilterPopoverPosition {
+  const rect = trigger.getBoundingClientRect();
+  const viewportWidth = window.innerWidth;
+  const margin = 16;
+  const width = Math.min(320, Math.max(280, viewportWidth - margin * 2));
+  const maxLeft = Math.max(margin, viewportWidth - width - margin);
+  const left = Math.min(Math.max(rect.left, margin), maxLeft);
+
+  return {
+    left,
+    top: rect.bottom + 6,
+    width,
+  };
+}
+
 function getSelectedMeetingNoteFilterSummary<TItem extends MeetingNoteFilterItem>(
   selectedItems: readonly TItem[],
   getLabel: (item: TItem) => string,
@@ -863,7 +1211,7 @@ function MeetingNoteListRow({
   readonly meetingNote: MeetingNoteListItem;
 }) {
   const navigate = useNavigate();
-  const detailPath = `/meeting-notes/${meetingNote.id}`;
+  const detailPath = `/app/meeting-notes/${meetingNote.id}`;
 
   return (
     <div
@@ -1007,4 +1355,70 @@ function getBrowserTimeZoneFallback() {
   } catch {
     return "Asia/Seoul";
   }
+}
+
+function useMediaQuery(query: string) {
+  const [matches, setMatches] = useState(() => {
+    if (typeof window === "undefined") {
+      return false;
+    }
+
+    return window.matchMedia(query).matches;
+  });
+
+  useEffect(() => {
+    if (typeof window === "undefined") {
+      return;
+    }
+
+    const mediaQueryList = window.matchMedia(query);
+    const onChange = () => setMatches(mediaQueryList.matches);
+
+    onChange();
+    mediaQueryList.addEventListener("change", onChange);
+
+    return () => {
+      mediaQueryList.removeEventListener("change", onChange);
+    };
+  }, [query]);
+
+  return matches;
+}
+
+function getStoredMeetingNoteCreatePanelWidth() {
+  if (typeof window === "undefined") {
+    return MEETING_NOTE_CREATE_PANEL_DEFAULT_WIDTH;
+  }
+
+  const storedWidth = Number(
+    window.localStorage.getItem(MEETING_NOTE_CREATE_PANEL_STORAGE_KEY),
+  );
+
+  return clampMeetingNoteCreatePanelWidth(storedWidth, window.innerWidth);
+}
+
+function clampMeetingNoteCreatePanelWidth(
+  width: number,
+  viewportWidth?: number,
+) {
+  const fallbackWidth = Number.isFinite(width)
+    ? width
+    : MEETING_NOTE_CREATE_PANEL_DEFAULT_WIDTH;
+  const maxWidth = getMeetingNoteCreatePanelMaxWidth(viewportWidth);
+
+  return Math.min(
+    Math.max(fallbackWidth, MEETING_NOTE_CREATE_PANEL_MIN_WIDTH),
+    maxWidth,
+  );
+}
+
+function getMeetingNoteCreatePanelMaxWidth(viewportWidth?: number) {
+  if (!viewportWidth || viewportWidth <= 0) {
+    return MEETING_NOTE_CREATE_PANEL_DEFAULT_WIDTH;
+  }
+
+  return Math.max(
+    MEETING_NOTE_CREATE_PANEL_MIN_WIDTH,
+    Math.floor(viewportWidth * MEETING_NOTE_CREATE_PANEL_MAX_RATIO),
+  );
 }

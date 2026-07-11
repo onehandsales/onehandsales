@@ -32,6 +32,7 @@ import { ImportPage } from "@/pages/import";
 import { LoginPage } from "@/pages/login";
 import { MeetingNoteDetailPage } from "@/pages/meeting-notes/detail";
 import { MeetingNotesPage } from "@/pages/meeting-notes";
+import { MeetingNoteNewFullPage } from "@/pages/meeting-notes/new-full";
 import { ProductDetailPage } from "@/pages/products/detail";
 import { ProductsPage } from "@/pages/products";
 import { ProductNewFullPage } from "@/pages/products/new-full";
@@ -131,6 +132,10 @@ export const router = createBrowserRouter([
     element: <LegacyAppRedirect to="/app/meeting-notes" />,
   },
   {
+    path: "/meeting-notes/new/full",
+    element: <LegacyAppRedirect to="/app/meeting-notes/new/full" />,
+  },
+  {
     path: "/meeting-notes/new",
     element: <Navigate replace to="/app/meeting-notes?create=1" />,
   },
@@ -184,6 +189,7 @@ export const router = createBrowserRouter([
       { path: "schedules/week", element: <Navigate replace to="/app/schedules" /> },
       { path: "schedules/:scheduleId", element: <ScheduleDetailPage /> },
       { path: "meeting-notes", element: <MeetingNotesPage /> },
+      { path: "meeting-notes/new/full", element: <MeetingNoteNewFullPage /> },
       {
         path: "meeting-notes/new",
         element: <Navigate replace to="/app/meeting-notes?create=1" />,

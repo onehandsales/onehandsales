@@ -1,30 +1,28 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
+  ArrowLeft,
   BriefcaseBusiness,
   Building2,
   CalendarClock,
+  Check,
   ChevronDown,
   ChevronLeft,
   ChevronRight,
+  ChevronsRight,
   FileAudio,
   IdCard,
   Loader2,
+  Maximize2,
   Mic,
+  NotebookPen,
   Package,
   Sparkles,
   X,
   type LucideIcon,
 } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { type ReactNode, useEffect, useRef, useState } from "react";
 import { useForm, useWatch, type UseFormRegisterReturn } from "react-hook-form";
-import {
-  ModalFieldGroup,
-  ModalFooterActions,
-  ModalForm,
-  ModalFormRow,
-  ModalFormSection,
-} from "@/components/ui/modal-form";
-import { ModalShell } from "@/components/ui/modal-shell";
+import { ModalFieldGroup } from "@/components/ui/modal-form";
 import { ErrorState } from "@/components/ui/state";
 import { useDropdownPlacement } from "@/components/ui/use-dropdown-placement";
 import {
@@ -55,8 +53,13 @@ import { cn } from "@/utils/cn";
 
 type MeetingNoteCreateDialogProps = {
   readonly open: boolean;
+  readonly initialValues?: Partial<MeetingNoteCreateFormValues>;
+  readonly mode?: "docked" | "overlay" | "page";
+  readonly width?: number;
   readonly onOpenChange: (open: boolean) => void;
   readonly onCreated: (meetingNote: MeetingNote) => void;
+  readonly onExpand?: (values: MeetingNoteCreateFormValues) => void;
+  readonly onResizeStart?: () => void;
 };
 
 export type EntitySelectOption = {
@@ -69,16 +72,19 @@ const formId = "meeting-note-create-form";
 const maxAudioFileSizeBytes = 25 * 1024 * 1024;
 const textareaClassName =
   "resize-none rounded-md border border-[#E2E5EC] bg-white px-3 py-2 text-sm leading-5 text-[#111827] outline-none focus:border-[#4880EE] focus:ring-2 focus:ring-[#DBEAFE]";
-const inputClassName =
-  "h-10 rounded-md border border-[#E2E5EC] bg-white px-3 text-sm text-[#111827] outline-none focus:border-[#4880EE] focus:ring-2 focus:ring-[#DBEAFE]";
 const actionButtonClassName =
   "inline-flex h-9 items-center justify-center gap-2 rounded-md border border-[#D8E0EA] bg-white px-3 text-[13px] font-semibold text-[#1F2937] transition-colors hover:bg-[#F8FAFC] disabled:cursor-not-allowed disabled:opacity-60";
 const weekdayLabels = ["일", "월", "화", "수", "목", "금", "토"];
 
 export function MeetingNoteCreateDialog({
   open,
+  initialValues,
+  mode = "overlay",
+  width,
   onOpenChange,
   onCreated,
+  onExpand,
+  onResizeStart,
 }: MeetingNoteCreateDialogProps) {
   const createMeetingNoteMutation = useCreateMeetingNoteMutation();
   const textAiDraftMutation = useCreateMeetingNoteTextAiDraftMutation();
@@ -97,6 +103,7 @@ export function MeetingNoteCreateDialog({
     register,
     control,
     handleSubmit,
+    getValues,
     reset,
     setValue,
     formState: { errors },
@@ -121,7 +128,14 @@ export function MeetingNoteCreateDialog({
 
   useEffect(() => {
     if (open) {
-      reset(emptyMeetingNoteCreateFormValues);
+      reset({
+        ...emptyMeetingNoteCreateFormValues,
+        ...initialValues,
+        companyIds: initialValues?.companyIds ?? [],
+        contactIds: initialValues?.contactIds ?? [],
+        productIds: initialValues?.productIds ?? [],
+        dealIds: initialValues?.dealIds ?? [],
+      });
       setDraftSourceType("MANUAL");
       setRawDraftText("");
       setAudioFile(null);
@@ -130,9 +144,37 @@ export function MeetingNoteCreateDialog({
       resetTextAiDraftMutation();
       resetSttAiDraftMutation();
     }
-  }, [open, reset, resetSttAiDraftMutation, resetTextAiDraftMutation]);
+  }, [
+    initialValues,
+    open,
+    reset,
+    resetSttAiDraftMutation,
+    resetTextAiDraftMutation,
+  ]);
 
-  if (!open) {
+  useEffect(() => {
+    if (!open) {
+      return;
+    }
+
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape" && !createMeetingNoteMutation.isPending) {
+        onOpenChange(false);
+      }
+    };
+
+    window.addEventListener("keydown", onKeyDown);
+
+    return () => {
+      window.removeEventListener("keydown", onKeyDown);
+    };
+  }, [createMeetingNoteMutation.isPending, onOpenChange, open]);
+
+  const isDocked = mode === "docked";
+  const isPage = mode === "page";
+  const CloseIcon = isPage ? ArrowLeft : ChevronsRight;
+
+  if (!open && !isDocked) {
     return null;
   }
 
@@ -192,7 +234,7 @@ export function MeetingNoteCreateDialog({
       companyIds.length === 0 ||
       contactIds.length === 0
     ) {
-        setDraftClientError("미팅일, 회사, 담당자를 먼저 선택해 주세요.");
+      setDraftClientError("미팅일, 회사, 담당자를 먼저 선택해 주세요.");
       return null;
     }
 
@@ -273,50 +315,125 @@ export function MeetingNoteCreateDialog({
     textAiDraftMutation.isPending || sttAiDraftMutation.isPending;
   const draftApiError = textAiDraftMutation.error ?? sttAiDraftMutation.error;
 
-  return (
-    <ModalShell
-      footer={
-        <ModalFooterActions
-          formId={formId}
-          isSubmitting={createMeetingNoteMutation.isPending}
-          onCancel={() => onOpenChange(false)}
-          onSubmit={() => void onSubmit()}
-          pendingLabel="추가 중"
-          submitLabel="회의록 생성"
-        />
+  const panel = (
+    <section
+      aria-label="회의록 생성"
+      aria-modal={isPage ? undefined : !isDocked}
+      className={
+        isPage
+          ? "flex min-h-full flex-col bg-white"
+          : isDocked
+            ? `fixed inset-y-0 right-0 z-50 flex h-screen shrink-0 flex-col bg-white shadow-[0_18px_48px_rgba(15,23,42,0.16)] transition-[transform,opacity] duration-[500ms] ease-out will-change-transform ${
+                open
+                  ? "meeting-note-create-panel-enter pointer-events-auto translate-x-0 opacity-100"
+                  : "pointer-events-none translate-x-full opacity-0"
+              }`
+            : "pointer-events-auto relative flex h-full w-full flex-col bg-white shadow-[0_18px_48px_rgba(15,23,42,0.16)] sm:max-w-[520px]"
       }
-      open={open}
-      bodyClassName="!py-4"
-      size="md"
-      title="회의록 생성"
-      onOpenChange={onOpenChange}
+      role={isPage ? undefined : "dialog"}
+      style={isDocked ? { width: width ?? 520 } : undefined}
     >
-      <ModalForm className="gap-3" id={formId} onSubmit={onSubmit}>
-        <ModalFormSection className="gap-2" title="기본 정보">
-          <TextField
-            errorMessage={errors.title?.message}
-            id="meeting-create-title"
-            label="회의록 제목"
-            register={register("title")}
-          />
+      {isDocked ? (
+        <button
+          aria-label="회의록 생성 패널 폭 조절"
+          className="absolute -left-1 top-0 z-10 h-full w-2 cursor-col-resize transition hover:bg-[#EFF6FF] focus:bg-[#EFF6FF] focus:outline-none"
+          onMouseDown={(event) => {
+            event.preventDefault();
+            onResizeStart?.();
+          }}
+          type="button"
+        />
+      ) : null}
+      <header className="flex h-10 shrink-0 items-center px-1.5">
+        <div className="flex shrink-0 items-center gap-0.5">
+          <button
+            aria-label={isPage ? "회의록 목록으로 이동" : "회의록 생성 패널 접기"}
+            className="inline-flex h-8 w-8 items-center justify-center rounded-md text-[#8A8F98] transition hover:bg-[#F3F4F6] hover:text-[#374151] disabled:cursor-not-allowed disabled:opacity-50"
+            disabled={createMeetingNoteMutation.isPending}
+            onClick={() => onOpenChange(false)}
+            title={isPage ? "회의록 목록으로 이동" : "회의록 생성 패널 접기"}
+            type="button"
+          >
+            <CloseIcon className="h-4 w-4" />
+          </button>
+          {onExpand && !isPage ? (
+            <button
+              aria-label="전체 생성 페이지로 열기"
+              className="inline-flex h-8 w-8 items-center justify-center rounded-md text-[#8A8F98] transition hover:bg-[#F3F4F6] hover:text-[#374151] disabled:cursor-not-allowed disabled:opacity-50"
+              disabled={createMeetingNoteMutation.isPending}
+              onClick={() => onExpand(getValues())}
+              title="전체 생성 페이지로 열기"
+              type="button"
+            >
+              <Maximize2 className="h-4 w-4" />
+            </button>
+          ) : null}
+        </div>
+      </header>
 
-          <MeetingDateTimeField
-            errorMessage={errors.meetingLocalDateTime?.message}
-            id="meeting-create-local-date-time"
-            label="미팅일"
-            register={register("meetingLocalDateTime")}
-            value={meetingLocalDateTime}
-            onChange={(value) =>
-              setValue("meetingLocalDateTime", value, {
-                shouldDirty: true,
-                shouldValidate: true,
-              })
+      <form
+        className="flex min-h-0 flex-1 flex-col"
+        id={formId}
+        onSubmit={(event) => void onSubmit(event)}
+      >
+        <div className="min-h-0 flex-1 overflow-y-auto px-5 py-6">
+          <div
+            className={
+              isPage
+                ? "mx-auto grid min-h-full w-full max-w-[920px] content-start gap-4"
+                : "grid min-h-full content-start gap-4"
             }
-          />
+          >
+            <section className="grid cursor-auto gap-2">
+              <label
+                className="text-[16px] font-semibold text-[#94A3B8]"
+                htmlFor="meeting-create-title"
+              >
+                회의록 제목
+              </label>
+              <div className="relative">
+                <NotebookPen className="pointer-events-none absolute left-0 top-1/2 h-5 w-5 -translate-y-1/2 text-[#CBD5E1]" />
+                <input
+                  aria-describedby={
+                    errors.title ? "meeting-create-title-error" : undefined
+                  }
+                  aria-invalid={Boolean(errors.title)}
+                  className="h-14 w-full border-0 bg-transparent pl-8 pr-1 text-[32px] font-semibold leading-none text-[#111827] outline-none placeholder:text-[#CBD5E1] placeholder:opacity-100"
+                  id="meeting-create-title"
+                  placeholder="회의록 제목을 넣어주세요."
+                  {...register("title")}
+                />
+              </div>
+              {errors.title ? (
+                <p
+                  className="text-[12px] text-red-500"
+                  id="meeting-create-title-error"
+                >
+                  {errors.title.message}
+                </p>
+              ) : null}
+            </section>
 
-          <ModalFormRow columns={2} className="gap-3">
+            <section className="grid cursor-auto gap-3 sm:grid-cols-2">
+              <MeetingDateTimeField
+                errorMessage={errors.meetingLocalDateTime?.message}
+                id="meeting-create-local-date-time"
+                label="미팅일"
+                register={register("meetingLocalDateTime")}
+                value={meetingLocalDateTime}
+                variant="panel"
+                onChange={(value) =>
+                  setValue("meetingLocalDateTime", value, {
+                    shouldDirty: true,
+                    shouldValidate: true,
+                  })
+                }
+              />
+            </section>
+
+            <section className="grid cursor-auto gap-3 sm:grid-cols-2">
             <EntityMultiSelectField
-                  emptyText="데이터가 존재하지 않아요"
+              emptyText="데이터가 존재하지 않아요"
               errorMessage={errors.companyIds?.message}
               icon={Building2}
               id="meeting-create-company-ids"
@@ -324,6 +441,7 @@ export function MeetingNoteCreateDialog({
               label="회사"
               options={companyOptions}
               selectedIds={companyIds}
+              variant="panel"
               onChange={(ids) =>
                 setValue("companyIds", ids, {
                   shouldDirty: true,
@@ -332,7 +450,7 @@ export function MeetingNoteCreateDialog({
               }
             />
             <EntityMultiSelectField
-                    emptyText="데이터가 존재하지 않아요"
+              emptyText="데이터가 존재하지 않아요"
               errorMessage={errors.contactIds?.message}
               icon={IdCard}
               id="meeting-create-contact-ids"
@@ -340,6 +458,7 @@ export function MeetingNoteCreateDialog({
               label="담당자"
               options={contactOptions}
               selectedIds={contactIds}
+              variant="panel"
               onChange={(ids) =>
                 setValue("contactIds", ids, {
                   shouldDirty: true,
@@ -347,11 +466,11 @@ export function MeetingNoteCreateDialog({
                 })
               }
             />
-          </ModalFormRow>
+            </section>
 
-          <ModalFormRow columns={2} className="gap-3">
+            <section className="grid cursor-auto gap-3 sm:grid-cols-2">
             <EntityMultiSelectField
-                  emptyText="데이터가 존재하지 않아요"
+              emptyText="데이터가 존재하지 않아요"
               errorMessage={errors.productIds?.message}
               icon={Package}
               id="meeting-create-product-ids"
@@ -359,6 +478,7 @@ export function MeetingNoteCreateDialog({
               label="제품(옵션)"
               options={productOptions}
               selectedIds={productIds}
+              variant="panel"
               onChange={(ids) =>
                 setValue("productIds", ids, {
                   shouldDirty: true,
@@ -367,7 +487,7 @@ export function MeetingNoteCreateDialog({
               }
             />
             <EntityMultiSelectField
-                  emptyText="데이터가 존재하지 않아요"
+              emptyText="데이터가 존재하지 않아요"
               errorMessage={errors.dealIds?.message}
               icon={BriefcaseBusiness}
               id="meeting-create-deal-ids"
@@ -375,6 +495,7 @@ export function MeetingNoteCreateDialog({
               label="딜(옵션)"
               options={dealOptions}
               selectedIds={dealIds}
+              variant="panel"
               onChange={(ids) =>
                 setValue("dealIds", ids, {
                   shouldDirty: true,
@@ -382,15 +503,18 @@ export function MeetingNoteCreateDialog({
                 })
               }
             />
-          </ModalFormRow>
-        </ModalFormSection>
+            </section>
 
-        <ModalFormSection className="gap-2" title="AI 정리">
+            <section className="grid cursor-auto gap-3">
+              <div className="text-[16px] font-semibold text-[#94A3B8]">
+                AI 정리
+              </div>
           <TextAreaField
             id="meeting-create-ai-raw-text"
             label="원문 메모"
             rows={2}
             value={rawDraftText}
+            variant="panel"
             onChange={setRawDraftText}
           />
 
@@ -435,7 +559,7 @@ export function MeetingNoteCreateDialog({
                     selectedFile.size > maxAudioFileSizeBytes
                   ) {
                     setAudioFile(null);
-      setDraftClientError("25MB 이하 음성 파일만 선택해 주세요.");
+                    setDraftClientError("25MB 이하 음성 파일만 선택해 주세요.");
                     return;
                   }
 
@@ -486,15 +610,19 @@ export function MeetingNoteCreateDialog({
               </div>
             ) : null}
           </div>
-        </ModalFormSection>
+            </section>
 
-        <ModalFormSection className="gap-2" title="미팅 내용">
+            <section className="grid cursor-auto gap-3">
+              <div className="text-[16px] font-semibold text-[#94A3B8]">
+                미팅 내용
+              </div>
           <TextAreaField
             errorMessage={errors.details?.message}
             id="meeting-create-details"
             label="상세 내용"
             register={register("details")}
             rows={3}
+            variant="panel"
           />
           <TextAreaField
             errorMessage={errors.nextPlan?.message}
@@ -502,6 +630,7 @@ export function MeetingNoteCreateDialog({
             label="다음 계획"
             register={register("nextPlan")}
             rows={1}
+            variant="panel"
           />
           <TextAreaField
             errorMessage={errors.requiredAction?.message}
@@ -509,8 +638,9 @@ export function MeetingNoteCreateDialog({
             label="필요 액션"
             register={register("requiredAction")}
             rows={1}
+            variant="panel"
           />
-        </ModalFormSection>
+            </section>
 
         {draftClientError ? (
           <ErrorState
@@ -543,8 +673,86 @@ export function MeetingNoteCreateDialog({
             variant="inline"
           />
         ) : null}
-      </ModalForm>
-    </ModalShell>
+
+          </div>
+        </div>
+
+        <footer className="flex h-16 shrink-0 items-center px-5">
+          <div
+            className={
+              isPage
+                ? "mx-auto flex w-full max-w-[920px] justify-end gap-2"
+                : "flex w-full justify-end gap-2"
+            }
+          >
+            <button
+              className="inline-flex h-9 items-center justify-center rounded-md border border-[#E5E7EB] bg-white px-3 text-[13px] font-medium text-[#475569] transition hover:bg-[#F9FAFB] disabled:cursor-not-allowed disabled:opacity-50"
+              disabled={createMeetingNoteMutation.isPending}
+              onClick={() => onOpenChange(false)}
+              type="button"
+            >
+              {isPage ? "목록으로" : "닫기"}
+            </button>
+            <button
+              className="inline-flex h-9 items-center justify-center gap-2 rounded-md bg-[#4880EE] px-3.5 text-[13px] font-semibold text-white transition hover:bg-[#1D4ED8] disabled:cursor-not-allowed disabled:opacity-60"
+              disabled={createMeetingNoteMutation.isPending}
+              type="submit"
+            >
+              {createMeetingNoteMutation.isPending ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                <Check className="h-4 w-4" />
+              )}
+              {createMeetingNoteMutation.isPending ? "저장 중" : "저장"}
+            </button>
+          </div>
+        </footer>
+      </form>
+    </section>
+  );
+
+  if (isDocked || isPage) {
+    return panel;
+  }
+
+  return (
+    <div className="pointer-events-none fixed inset-y-0 right-0 z-50 flex w-full justify-end">
+      {panel}
+    </div>
+  );
+}
+
+type MeetingNoteCreateFieldVariant = "modal" | "panel";
+
+type MeetingNoteCreatePanelPropertyProps = {
+  readonly children: ReactNode;
+  readonly error?: string;
+  readonly errorId?: string;
+  readonly label: string;
+};
+
+function MeetingNoteCreatePanelProperty({
+  children,
+  error,
+  errorId,
+  label,
+}: MeetingNoteCreatePanelPropertyProps) {
+  return (
+    <div className="grid min-w-0 gap-2">
+      <div className="text-[16px] font-semibold text-[#94A3B8]">{label}</div>
+      <div className="min-w-0">
+        {children}
+        {error ? (
+          <p
+            className="mt-1 truncate text-[12px] leading-4 text-red-500"
+            id={errorId}
+            title={error}
+          >
+            {error}
+          </p>
+        ) : null}
+      </div>
+    </div>
   );
 }
 
@@ -554,6 +762,7 @@ function MeetingDateTimeField({
   value,
   register,
   errorMessage,
+  variant = "modal",
   onChange,
 }: {
   readonly id: string;
@@ -561,6 +770,7 @@ function MeetingDateTimeField({
   readonly value: string;
   readonly register: UseFormRegisterReturn;
   readonly errorMessage?: string;
+  readonly variant?: MeetingNoteCreateFieldVariant;
   readonly onChange: (value: string) => void;
 }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -571,6 +781,8 @@ function MeetingDateTimeField({
     triggerRef: wrapperRef,
   });
   const groupId = `${id}-field`;
+  const errorId =
+    variant === "panel" ? `${id}-message` : `${groupId}-message`;
   const parts = parseDateTimeValue(value);
   const [viewYear, setViewYear] = useState(parts.year);
   const [viewMonth, setViewMonth] = useState(parts.month);
@@ -613,17 +825,11 @@ function MeetingDateTimeField({
     setViewMonth(nextDate.getMonth() + 1);
   };
 
-  return (
-    <ModalFieldGroup
-      className="gap-1.5"
-      error={errorMessage}
-      id={groupId}
-      label={label}
-    >
+  const field = (
       <div ref={wrapperRef} className="relative">
         <input id={`${id}-value`} type="hidden" {...register} />
         <button
-          aria-describedby={errorMessage ? `${groupId}-message` : undefined}
+          aria-describedby={errorMessage ? errorId : undefined}
           aria-expanded={isOpen}
           aria-invalid={Boolean(errorMessage)}
           className={cn(
@@ -742,6 +948,28 @@ function MeetingDateTimeField({
           </div>
         ) : null}
       </div>
+  );
+
+  if (variant === "panel") {
+    return (
+      <MeetingNoteCreatePanelProperty
+        error={errorMessage}
+        errorId={errorId}
+        label={label}
+      >
+        {field}
+      </MeetingNoteCreatePanelProperty>
+    );
+  }
+
+  return (
+    <ModalFieldGroup
+      className="gap-1.5"
+      error={errorMessage}
+      id={groupId}
+      label={label}
+    >
+      {field}
     </ModalFieldGroup>
   );
 }
@@ -753,6 +981,7 @@ function TextAreaField({
   errorMessage,
   rows,
   value,
+  variant = "modal",
   onChange,
 }: {
   readonly id: string;
@@ -761,19 +990,16 @@ function TextAreaField({
   readonly errorMessage?: string;
   readonly rows: number;
   readonly value?: string;
+  readonly variant?: MeetingNoteCreateFieldVariant;
   readonly onChange?: (value: string) => void;
 }) {
   const registrationProps = register ?? {};
+  const errorId =
+    variant === "panel" ? `${id}-message` : `${id}-message`;
 
-  return (
-    <ModalFieldGroup
-      className="gap-1.5"
-      error={errorMessage}
-      id={id}
-      label={label}
-    >
+  const field = (
       <textarea
-        aria-describedby={errorMessage ? `${id}-message` : undefined}
+        aria-describedby={errorMessage ? errorId : undefined}
         aria-invalid={Boolean(errorMessage)}
         className={textareaClassName}
         id={id}
@@ -786,21 +1012,20 @@ function TextAreaField({
         }
         {...registrationProps}
       />
-    </ModalFieldGroup>
   );
-}
 
-function TextField({
-  id,
-  label,
-  register,
-  errorMessage,
-}: {
-  readonly id: string;
-  readonly label: string;
-  readonly register: UseFormRegisterReturn;
-  readonly errorMessage?: string;
-}) {
+  if (variant === "panel") {
+    return (
+      <MeetingNoteCreatePanelProperty
+        error={errorMessage}
+        errorId={errorId}
+        label={label}
+      >
+        {field}
+      </MeetingNoteCreatePanelProperty>
+    );
+  }
+
   return (
     <ModalFieldGroup
       className="gap-1.5"
@@ -808,13 +1033,7 @@ function TextField({
       id={id}
       label={label}
     >
-      <input
-        aria-describedby={errorMessage ? `${id}-message` : undefined}
-        aria-invalid={Boolean(errorMessage)}
-        className={inputClassName}
-        id={id}
-        {...register}
-      />
+      {field}
     </ModalFieldGroup>
   );
 }
@@ -828,6 +1047,7 @@ export function EntityMultiSelectField({
   errorMessage,
   emptyText,
   icon: Icon,
+  variant = "modal",
   onChange,
 }: {
   readonly id: string;
@@ -838,6 +1058,7 @@ export function EntityMultiSelectField({
   readonly errorMessage?: string;
   readonly emptyText: string;
   readonly icon: LucideIcon;
+  readonly variant?: MeetingNoteCreateFieldVariant;
   readonly onChange: (ids: string[]) => void;
 }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -859,6 +1080,8 @@ export function EntityMultiSelectField({
         ? selectedOptions[0]?.label
         : `${selectedOptions[0]?.label ?? label} 외 ${selectedOptions.length - 1}개`
       : `${label} 선택`;
+  const errorId =
+    variant === "panel" ? `${id}-message` : `${id}-message`;
 
   useEffect(() => {
     if (!isOpen) {
@@ -902,16 +1125,10 @@ export function EntityMultiSelectField({
     onChange([...selectedIds, optionId]);
   };
 
-  return (
-    <ModalFieldGroup
-      className="gap-1.5"
-      error={errorMessage}
-      id={id}
-      label={label}
-    >
+  const field = (
       <div ref={wrapperRef} className="relative">
         <button
-          aria-describedby={errorMessage ? `${id}-message` : undefined}
+          aria-describedby={errorMessage ? errorId : undefined}
           aria-expanded={isOpen}
           aria-invalid={Boolean(errorMessage)}
           className={cn(
@@ -989,6 +1206,28 @@ export function EntityMultiSelectField({
           </div>
         ) : null}
       </div>
+  );
+
+  if (variant === "panel") {
+    return (
+      <MeetingNoteCreatePanelProperty
+        error={errorMessage}
+        errorId={errorId}
+        label={label}
+      >
+        {field}
+      </MeetingNoteCreatePanelProperty>
+    );
+  }
+
+  return (
+    <ModalFieldGroup
+      className="gap-1.5"
+      error={errorMessage}
+      id={id}
+      label={label}
+    >
+      {field}
     </ModalFieldGroup>
   );
 }
