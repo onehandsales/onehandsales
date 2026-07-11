@@ -72,6 +72,9 @@ const PRODUCT_CREATE_PANEL_MAX_RATIO = 0.55;
 const PRODUCT_CREATE_PANEL_AUTO_SIDEBAR_RATIO = 0.45;
 const PRODUCT_CREATE_PANEL_TRANSITION_MS = 500;
 const DESKTOP_SEARCH_COMPACT_MAX_WIDTH = 170;
+const DESKTOP_FILTER_COLLAPSED_WIDTH = 32;
+const DESKTOP_FILTER_EXPANDED_WIDTH =
+  "calc(clamp(136px,14vw,178px) + clamp(136px,14vw,178px) + 0.5rem)";
 
 export function ProductListScreen({
   initialCreateOpen = false,
@@ -141,7 +144,7 @@ export function ProductListScreen({
   const displayTimeZone = user?.timeZone ?? getBrowserTimeZoneFallback();
   const isDockedCreateOpen = isCreateOpen && isDockedViewport;
   const isDockedCreateMounted = isDockedCreateOpen || isDockedCreateRendered;
-  const isCompactFilterMode = isDockedCreateMounted;
+  const isCompactFilterMode = isDockedCreateOpen;
   const hasTaxonomyFilters =
     categoryFilterIds.length > 0 || statusFilterIds.length > 0;
   const taxonomyFilterCount = categoryFilterIds.length + statusFilterIds.length;
@@ -481,18 +484,30 @@ export function ProductListScreen({
               setPage(1);
             }}
           />
-          {isCompactFilterMode ? (
+          <div
+            className="relative flex h-8 shrink-0 items-center overflow-hidden transition-[width] duration-500 ease-out"
+            style={{
+              width: isCompactFilterMode
+                ? DESKTOP_FILTER_COLLAPSED_WIDTH
+                : DESKTOP_FILTER_EXPANDED_WIDTH,
+            }}
+          >
             <button
               ref={compactFilterButtonRef}
               aria-expanded={isCompactFilterOpen}
               aria-label="필터"
+              aria-hidden={!isCompactFilterMode}
               className={cn(
-                "relative inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-md border text-[13px] font-semibold transition focus:outline-none",
+                "absolute left-0 top-0 inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-md border text-[13px] font-semibold transition focus:outline-none",
                 hasTaxonomyFilters
                   ? "border-[#E2E5EC] bg-[#EFF6FF] text-[#1D4ED8] hover:border-[#D1D5DB] hover:bg-[#DBEAFE]"
                   : "border-[#E2E5EC] bg-white text-[#475569] hover:border-[#D1D5DB] hover:bg-[#F5F6F8]",
+                isCompactFilterMode
+                  ? "opacity-100"
+                  : "pointer-events-none opacity-0",
               )}
               onClick={() => setIsCompactFilterOpen((open) => !open)}
+              tabIndex={isCompactFilterMode ? 0 : -1}
               type="button"
             >
               <SlidersHorizontal className="h-3.5 w-3.5" />
@@ -502,8 +517,15 @@ export function ProductListScreen({
                 </span>
               ) : null}
             </button>
-          ) : (
-            <>
+            <div
+              aria-hidden={isCompactFilterMode}
+              className={cn(
+                "flex shrink-0 items-center gap-1.5 transition-opacity duration-300 lg:gap-2",
+                isCompactFilterMode
+                  ? "pointer-events-none invisible opacity-0"
+                  : "visible opacity-100",
+              )}
+            >
               <ProductTaxonomyFilterCombobox
                 emptyText="조건을 바꾸면 카테고리를 찾을 수 있어요."
                 getLabel={(c) => c.categoryName}
@@ -532,8 +554,8 @@ export function ProductListScreen({
                   setPage(1);
                 }}
               />
-            </>
-          )}
+            </div>
+          </div>
           <ListFilterSelect
             active={sort !== "createdAtDesc"}
             ariaLabel="정렬 조건"
