@@ -452,7 +452,7 @@ export function ContactListScreen({
               aria-expanded={isCompactFilterOpen}
               aria-label="필터"
               className={cn(
-                "inline-flex h-8 w-[84px] shrink-0 items-center justify-center gap-1 rounded-md border px-2 text-[13px] font-semibold transition focus:outline-none",
+                "relative inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-md border text-[13px] font-semibold transition focus:outline-none",
                 hasTaxonomyFilters
                   ? "border-[#E2E5EC] bg-[#EFF6FF] text-[#1D4ED8] hover:border-[#D1D5DB] hover:bg-[#DBEAFE]"
                   : "border-[#E2E5EC] bg-white text-[#475569] hover:border-[#D1D5DB] hover:bg-[#F5F6F8]",
@@ -461,9 +461,8 @@ export function ContactListScreen({
               type="button"
             >
               <SlidersHorizontal className="h-3.5 w-3.5" />
-              <span>필터</span>
               {hasTaxonomyFilters ? (
-                <span className="grid h-4 min-w-4 place-items-center rounded-full bg-[#4880EE] px-1 text-[10px] font-bold leading-none text-white">
+                <span className="absolute -right-1 -top-1 grid h-4 min-w-4 place-items-center rounded-full bg-[#4880EE] px-1 text-[10px] font-bold leading-none text-white">
                   {taxonomyFilterCount}
                 </span>
               ) : null}
