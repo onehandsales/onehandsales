@@ -5,6 +5,7 @@ import {
   Plus,
   RotateCcw,
   Search,
+  SlidersHorizontal,
   X,
   type LucideIcon,
 } from "lucide-react";
@@ -75,6 +76,7 @@ const CONTACT_CREATE_PANEL_MIN_WIDTH = 420;
 const CONTACT_CREATE_PANEL_MAX_RATIO = 0.55;
 const CONTACT_CREATE_PANEL_AUTO_SIDEBAR_RATIO = 0.45;
 const CONTACT_CREATE_PANEL_TRANSITION_MS = 500;
+const DESKTOP_SEARCH_COMPACT_MAX_WIDTH = 170;
 
 export function ContactListScreen({
   initialCreateOpen = false,
@@ -99,11 +101,16 @@ export function ContactListScreen({
     getStoredContactCreatePanelWidth,
   );
   const [isCreatePanelResizing, setIsCreatePanelResizing] = useState(false);
+  const [isCompactFilterOpen, setIsCompactFilterOpen] = useState(false);
+  const [compactFilterPosition, setCompactFilterPosition] =
+    useState<FieldFilterPopoverPosition | null>(null);
   const [taxonomyOpen, setTaxonomyOpen] = useState(false);
   const [pendingDepartmentName, setPendingDepartmentName] = useState("");
   const [notice, setNotice] = useState<string | null>(null);
   const [noticeDescription, setNoticeDescription] = useState<string | null>(null);
   const [actionError] = useState<string | null>(null);
+  const compactFilterButtonRef = useRef<HTMLButtonElement>(null);
+  const compactFilterPopoverRef = useRef<HTMLDivElement>(null);
   const setAutoSidebarCollapsed = outletContext?.setAutoSidebarCollapsed;
 
   const listParams = useMemo(
@@ -155,6 +162,10 @@ export function ContactListScreen({
   const displayTimeZone = user?.timeZone ?? getBrowserTimeZoneFallback();
   const isDockedCreateOpen = isCreateOpen && isDockedViewport;
   const isDockedCreateMounted = isDockedCreateOpen || isDockedCreateRendered;
+  const isCompactFilterMode = isDockedCreateMounted;
+  const hasTaxonomyFilters =
+    companyIds.length > 0 || contactDepartmentIds.length > 0;
+  const taxonomyFilterCount = companyIds.length + contactDepartmentIds.length;
   const hasSearch =
     username.length > 0 ||
     companyIds.length > 0 ||
@@ -182,6 +193,59 @@ export function ContactListScreen({
 
     return () => window.clearTimeout(timerId);
   }, [isDockedCreateOpen]);
+
+  useEffect(() => {
+    if (!isCompactFilterMode) {
+      setIsCompactFilterOpen(false);
+    }
+  }, [isCompactFilterMode]);
+
+  useEffect(() => {
+    if (!isCompactFilterOpen) {
+      return;
+    }
+
+    const updateCompactFilterPosition = () => {
+      if (!compactFilterButtonRef.current) {
+        return;
+      }
+
+      setCompactFilterPosition(
+        getCompactFilterPopoverPosition(compactFilterButtonRef.current),
+      );
+    };
+    const onMouseDown = (event: MouseEvent) => {
+      const target = event.target as Node;
+
+      if (
+        compactFilterButtonRef.current?.contains(target) ||
+        compactFilterPopoverRef.current?.contains(target)
+      ) {
+        return;
+      }
+
+      setIsCompactFilterOpen(false);
+    };
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setIsCompactFilterOpen(false);
+        compactFilterButtonRef.current?.focus();
+      }
+    };
+
+    updateCompactFilterPosition();
+    document.addEventListener("mousedown", onMouseDown);
+    document.addEventListener("keydown", onKeyDown);
+    window.addEventListener("resize", updateCompactFilterPosition);
+    window.addEventListener("scroll", updateCompactFilterPosition, true);
+
+    return () => {
+      document.removeEventListener("mousedown", onMouseDown);
+      document.removeEventListener("keydown", onKeyDown);
+      window.removeEventListener("resize", updateCompactFilterPosition);
+      window.removeEventListener("scroll", updateCompactFilterPosition, true);
+    };
+  }, [isCompactFilterOpen]);
 
   useEffect(() => {
     if (typeof window === "undefined") {
@@ -354,73 +418,166 @@ export function ContactListScreen({
       />
 
       {/* 검색 + 필터 툴바 (데스크톱) */}
-      <div className="hidden min-h-10 shrink-0 items-center gap-1.5 overflow-x-auto px-5 py-1 md:flex lg:gap-2">
-        <CollapsibleDesktopSearch
-          appliedValue={username}
-          placeholder="담당자를 검색하세요!"
-          resetSignal={searchResetSignal}
-          submitLabel="담당자 검색 실행"
-          value={usernameText}
-          onSubmit={onSearchSubmit}
-          onValueChange={setUsernameText}
-        />
-        <FilterChip
-          active={hasSearch}
-          icon={RotateCcw}
-          label="초기화"
-          onClick={() => {
-            setUsername("");
-            setUsernameText("");
-            setSearchResetSignal((signal) => signal + 1);
-            setCompanyIds([]);
-            setContactDepartmentIds([]);
-            setSort("createdAtDesc");
-            setPage(1);
-          }}
-        />
-        <ContactTaxonomyFilterCombobox
-          emptyText="조건을 바꾸면 회사를 찾을 수 있어요."
-          getLabel={(c) => c.companyName}
-          itemKindLabel="회사"
-          items={companyOptions}
-          selectedIds={companyIds}
-          size="desktop"
-          tone="blue"
-          onSelectedIdsChange={(ids) => {
-            setCompanyIds(ids);
-            setPage(1);
-          }}
-        />
-        <ContactTaxonomyFilterCombobox
-          emptyText="조건을 바꾸면 부서를 찾을 수 있어요."
-          getLabel={(d) => d.departmentName}
-          itemKindLabel="부서"
-          items={departments}
-          selectedIds={contactDepartmentIds}
-          size="desktop"
-          tone="blue"
-          onCreateClick={() => setTaxonomyOpen(true)}
-          onSelectedIdsChange={(ids) => {
-            setContactDepartmentIds(ids);
-            setPage(1);
-          }}
-        />
-        <ListFilterSelect
-          active={sort !== "createdAtDesc"}
-          ariaLabel="정렬 조건"
-          className="w-[clamp(136px,14vw,178px)]"
-          onChange={(nextSort) => {
-            setSort(nextSort);
-            setPage(1);
-          }}
-          options={CONTACT_SORT_OPTIONS}
-          value={sort}
-        />
-        <div className="flex-1" />
-        <span className="shrink-0 text-[12px] text-[#9CA3AF]">
+      <div className="hidden min-h-10 shrink-0 items-center px-5 py-1 md:flex">
+        <div className="flex min-w-0 flex-1 items-center gap-1.5 overflow-x-auto [scrollbar-width:none] lg:gap-2 [&::-webkit-scrollbar]:hidden">
+          <CollapsibleDesktopSearch
+            appliedValue={username}
+            maxExpandedWidth={
+              isCompactFilterMode ? DESKTOP_SEARCH_COMPACT_MAX_WIDTH : undefined
+            }
+            placeholder="담당자를 검색하세요!"
+            resetSignal={searchResetSignal}
+            submitLabel="담당자 검색 실행"
+            value={usernameText}
+            onSubmit={onSearchSubmit}
+            onValueChange={setUsernameText}
+          />
+          <FilterChip
+            active={hasSearch}
+            icon={RotateCcw}
+            label="초기화"
+            onClick={() => {
+              setUsername("");
+              setUsernameText("");
+              setSearchResetSignal((signal) => signal + 1);
+              setCompanyIds([]);
+              setContactDepartmentIds([]);
+              setSort("createdAtDesc");
+              setPage(1);
+            }}
+          />
+          {isCompactFilterMode ? (
+            <button
+              ref={compactFilterButtonRef}
+              aria-expanded={isCompactFilterOpen}
+              aria-label="필터"
+              className={cn(
+                "inline-flex h-8 w-[84px] shrink-0 items-center justify-center gap-1 rounded-md border px-2 text-[13px] font-semibold transition focus:outline-none",
+                hasTaxonomyFilters
+                  ? "border-[#E2E5EC] bg-[#EFF6FF] text-[#1D4ED8] hover:border-[#D1D5DB] hover:bg-[#DBEAFE]"
+                  : "border-[#E2E5EC] bg-white text-[#475569] hover:border-[#D1D5DB] hover:bg-[#F5F6F8]",
+              )}
+              onClick={() => setIsCompactFilterOpen((open) => !open)}
+              type="button"
+            >
+              <SlidersHorizontal className="h-3.5 w-3.5" />
+              <span>필터</span>
+              {hasTaxonomyFilters ? (
+                <span className="grid h-4 min-w-4 place-items-center rounded-full bg-[#4880EE] px-1 text-[10px] font-bold leading-none text-white">
+                  {taxonomyFilterCount}
+                </span>
+              ) : null}
+            </button>
+          ) : (
+            <>
+              <ContactTaxonomyFilterCombobox
+                emptyText="조건을 바꾸면 회사를 찾을 수 있어요."
+                getLabel={(c) => c.companyName}
+                itemKindLabel="회사"
+                items={companyOptions}
+                selectedIds={companyIds}
+                size="desktop"
+                tone="blue"
+                onSelectedIdsChange={(ids) => {
+                  setCompanyIds(ids);
+                  setPage(1);
+                }}
+              />
+              <ContactTaxonomyFilterCombobox
+                emptyText="조건을 바꾸면 부서를 찾을 수 있어요."
+                getLabel={(d) => d.departmentName}
+                itemKindLabel="부서"
+                items={departments}
+                selectedIds={contactDepartmentIds}
+                size="desktop"
+                tone="blue"
+                onCreateClick={() => setTaxonomyOpen(true)}
+                onSelectedIdsChange={(ids) => {
+                  setContactDepartmentIds(ids);
+                  setPage(1);
+                }}
+              />
+            </>
+          )}
+          <ListFilterSelect
+            active={sort !== "createdAtDesc"}
+            ariaLabel="정렬 조건"
+            className={
+              isCompactFilterMode
+                ? "w-[104px]"
+                : "w-[clamp(136px,14vw,178px)]"
+            }
+            onChange={(nextSort) => {
+              setSort(nextSort);
+              setPage(1);
+            }}
+            options={CONTACT_SORT_OPTIONS}
+            value={sort}
+          />
+        </div>
+        <span
+          className={cn(
+            "ml-2 shrink-0 text-[12px]",
+            isCompactFilterMode
+              ? "font-semibold text-[#64748B]"
+              : "text-[#9CA3AF]",
+          )}
+        >
           {contactList?.totalCount ?? 0}명
         </span>
       </div>
+      {isCompactFilterMode && isCompactFilterOpen ? (
+        <div
+          ref={compactFilterPopoverRef}
+          className={cn(
+            "fixed z-50 rounded-lg border border-[#E6EAF0] bg-white p-3 shadow-lg",
+            !compactFilterPosition && "invisible",
+          )}
+          style={{
+            left: compactFilterPosition?.left ?? 0,
+            top: compactFilterPosition?.top ?? 0,
+            width: compactFilterPosition?.width ?? 320,
+          }}
+        >
+          <div className="grid gap-3">
+            <div className="grid gap-1.5">
+              <p className="text-[12px] font-semibold text-[#64748B]">회사</p>
+              <ContactTaxonomyFilterCombobox
+                emptyText="조건을 바꾸면 회사를 찾을 수 있어요."
+                getLabel={(c) => c.companyName}
+                itemKindLabel="회사"
+                items={companyOptions}
+                layout="full"
+                selectedIds={companyIds}
+                size="desktop"
+                tone="blue"
+                onSelectedIdsChange={(ids) => {
+                  setCompanyIds(ids);
+                  setPage(1);
+                }}
+              />
+            </div>
+            <div className="grid gap-1.5">
+              <p className="text-[12px] font-semibold text-[#64748B]">부서</p>
+              <ContactTaxonomyFilterCombobox
+                emptyText="조건을 바꾸면 부서를 찾을 수 있어요."
+                getLabel={(d) => d.departmentName}
+                itemKindLabel="부서"
+                items={departments}
+                layout="full"
+                selectedIds={contactDepartmentIds}
+                size="desktop"
+                tone="blue"
+                onCreateClick={() => setTaxonomyOpen(true)}
+                onSelectedIdsChange={(ids) => {
+                  setContactDepartmentIds(ids);
+                  setPage(1);
+                }}
+              />
+            </div>
+          </div>
+        </div>
+      ) : null}
 
       {/* 알림 */}
       {notice || exportContactsMutation.error || actionError ? (
@@ -947,6 +1104,7 @@ function ContactTaxonomyFilterCombobox<
   getLabel,
   itemKindLabel,
   items,
+  layout = "compact",
   selectedIds,
   size,
   tone,
@@ -957,6 +1115,7 @@ function ContactTaxonomyFilterCombobox<
   readonly getLabel: (item: TItem) => string;
   readonly itemKindLabel: string;
   readonly items: readonly TItem[];
+  readonly layout?: "compact" | "full";
   readonly selectedIds: readonly string[];
   readonly size: "desktop" | "mobile";
   readonly tone: ContactTaxonomyFilterTone;
@@ -1065,7 +1224,11 @@ function ContactTaxonomyFilterCombobox<
       ref={wrapperRef}
       className={cn(
         "relative shrink-0",
-        isMobile ? "w-[120px]" : "w-[clamp(136px,14vw,178px)]",
+        layout === "full"
+          ? "w-full"
+          : isMobile
+            ? "w-[120px]"
+            : "w-[clamp(136px,14vw,178px)]",
       )}
     >
       <div className="relative">
@@ -1245,6 +1408,23 @@ function ContactTaxonomyFilterCombobox<
       ) : null}
     </div>
   );
+}
+
+function getCompactFilterPopoverPosition(
+  trigger: HTMLButtonElement,
+): FieldFilterPopoverPosition {
+  const rect = trigger.getBoundingClientRect();
+  const viewportWidth = window.innerWidth;
+  const margin = 16;
+  const width = Math.min(320, Math.max(280, viewportWidth - margin * 2));
+  const maxLeft = Math.max(margin, viewportWidth - width - margin);
+  const left = Math.min(Math.max(rect.left, margin), maxLeft);
+
+  return {
+    left,
+    top: rect.bottom + 6,
+    width,
+  };
 }
 
 function getFieldFilterPopoverPosition(

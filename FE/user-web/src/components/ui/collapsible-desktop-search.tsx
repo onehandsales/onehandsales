@@ -9,6 +9,7 @@ import { cn } from "@/utils/cn";
 
 type CollapsibleDesktopSearchProps = {
   readonly appliedValue: string;
+  readonly maxExpandedWidth?: number;
   readonly placeholder: string;
   readonly resetSignal?: number;
   readonly submitLabel: string;
@@ -24,6 +25,7 @@ const DESKTOP_SEARCH_VIEWPORT_RATIO = 0.2;
 
 export function CollapsibleDesktopSearch({
   appliedValue,
+  maxExpandedWidth,
   placeholder,
   resetSignal,
   submitLabel,
@@ -37,6 +39,10 @@ export function CollapsibleDesktopSearch({
   );
   const inputRef = useRef<HTMLInputElement>(null);
   const resetSignalRef = useRef(resetSignal);
+  const displayedExpandedWidth =
+    maxExpandedWidth === undefined
+      ? expandedWidth
+      : Math.min(expandedWidth, maxExpandedWidth);
 
   useEffect(() => {
     if (!isOpen) {
@@ -114,7 +120,7 @@ export function CollapsibleDesktopSearch({
       }}
       onSubmit={onFormSubmit}
       style={{
-        width: isOpen ? expandedWidth : DESKTOP_SEARCH_COLLAPSED_WIDTH,
+        width: isOpen ? displayedExpandedWidth : DESKTOP_SEARCH_COLLAPSED_WIDTH,
       }}
     >
       <button
