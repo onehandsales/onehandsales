@@ -250,8 +250,8 @@ export function CompanyCreateDialog({
         isPage
           ? "flex min-h-full flex-col bg-white"
           : isDocked
-          ? "pointer-events-auto fixed inset-y-0 right-0 z-50 flex h-screen shrink-0 flex-col border-l border-[#E5E7EB] bg-white shadow-[0_18px_48px_rgba(15,23,42,0.16)]"
-          : "pointer-events-auto relative flex h-full w-full flex-col border-l border-[#E5E7EB] bg-white shadow-[0_18px_48px_rgba(15,23,42,0.16)] sm:max-w-[520px]"
+          ? "pointer-events-auto fixed inset-y-0 right-0 z-50 flex h-screen shrink-0 flex-col bg-white shadow-[0_18px_48px_rgba(15,23,42,0.16)]"
+          : "pointer-events-auto relative flex h-full w-full flex-col bg-white shadow-[0_18px_48px_rgba(15,23,42,0.16)] sm:max-w-[520px]"
       }
       role={isPage ? undefined : "dialog"}
       style={isDocked ? { width: width ?? 520 } : undefined}
@@ -259,7 +259,7 @@ export function CompanyCreateDialog({
       {isDocked ? (
         <button
           aria-label="회사 생성 패널 폭 조절"
-          className="absolute -left-1 top-0 z-10 h-full w-2 cursor-col-resize border-x border-transparent transition hover:border-[#BFDBFE] hover:bg-[#EFF6FF] focus:border-[#4880EE] focus:bg-[#EFF6FF] focus:outline-none"
+          className="absolute -left-1 top-0 z-10 h-full w-2 cursor-col-resize transition hover:bg-[#EFF6FF] focus:bg-[#EFF6FF] focus:outline-none"
           onMouseDown={(event) => {
             event.preventDefault();
             onResizeStart?.();
@@ -267,7 +267,7 @@ export function CompanyCreateDialog({
           type="button"
         />
       ) : null}
-      <header className="flex h-10 shrink-0 items-center border-b border-[#E5E7EB] px-1.5">
+      <header className="flex h-10 shrink-0 items-center px-1.5">
         <div className="flex shrink-0 items-center gap-0.5">
           <button
             aria-label={isPage ? "회사 목록으로 이동" : "회사 생성 패널 접기"}
@@ -302,12 +302,12 @@ export function CompanyCreateDialog({
         <div className="min-h-0 flex-1 overflow-y-auto px-5 py-6">
           <div
             className={
-              isPage ? "mx-auto grid w-full max-w-[920px] gap-6" : "grid gap-6"
+              isPage ? "mx-auto grid w-full max-w-[920px] gap-4" : "grid gap-4"
             }
           >
             <section className="grid gap-2">
               <label
-                className="text-[12px] font-medium text-[#94A3B8]"
+                className="text-[16px] font-semibold text-[#94A3B8]"
                 htmlFor="company-name"
               >
                 회사명
@@ -319,7 +319,7 @@ export function CompanyCreateDialog({
                     errors.companyName ? "company-name-error" : undefined
                   }
                   aria-invalid={Boolean(errors.companyName)}
-                  className="h-12 w-full border-0 bg-transparent pl-8 pr-1 text-[22px] font-semibold leading-none text-[#111827] outline-none placeholder:text-[#CBD5E1]"
+                  className="h-10 w-full border-0 bg-transparent pl-8 pr-1 text-[16px] font-semibold leading-none text-[#111827] outline-none placeholder:text-[#CBD5E1]"
                   id="company-name"
                   placeholder="회사 이름을 넣어주세요."
                   {...register("companyName")}
@@ -335,7 +335,7 @@ export function CompanyCreateDialog({
               ) : null}
             </section>
 
-            <section className="grid gap-3 border-y border-[#EEF2F7] py-3 sm:grid-cols-2">
+            <section className="grid gap-3 sm:grid-cols-2">
               <CompanyCreatePanelProperty
                 error={errors.companyFieldId?.message}
                 label="분야"
@@ -397,7 +397,7 @@ export function CompanyCreateDialog({
 
             <section className="grid gap-2">
               <label
-                className="text-[12px] font-medium text-[#94A3B8]"
+                className="text-[16px] font-semibold text-[#94A3B8]"
                 htmlFor="company-memo"
               >
                 메모
@@ -421,7 +421,7 @@ export function CompanyCreateDialog({
           </div>
         </div>
 
-        <footer className="flex h-16 shrink-0 items-center border-t border-[#E5E7EB] px-5">
+        <footer className="flex h-16 shrink-0 items-center px-5">
           <div
             className={
               isPage
@@ -479,15 +479,17 @@ function CompanyCreatePanelProperty({
 }: CompanyCreatePanelPropertyProps) {
   return (
     <div className="grid min-w-0 gap-2">
-      <div className="text-[12px] font-medium text-[#94A3B8]">{label}</div>
+      <div className="text-[16px] font-semibold text-[#94A3B8]">{label}</div>
       <div className="min-w-0">
         {children}
-        <p
-          className="mt-1 h-4 truncate text-[12px] leading-4 text-red-500"
-          title={error}
-        >
-          {error ?? ""}
-        </p>
+        {error ? (
+          <p
+            className="mt-1 truncate text-[12px] leading-4 text-red-500"
+            title={error}
+          >
+            {error}
+          </p>
+        ) : null}
       </div>
     </div>
   );
