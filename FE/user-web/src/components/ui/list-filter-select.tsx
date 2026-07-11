@@ -149,9 +149,9 @@ export function ListFilterSelect<TValue extends string>({
           className={cn(
             "h-8 w-full min-w-0 rounded-full border text-[13px] outline-none transition disabled:cursor-not-allowed disabled:opacity-60",
             isOpen
-              ? "border-[#4880EE] bg-white pl-8 pr-7 text-[#111827] ring-1 ring-[#4880EE]"
+              ? "border-[#D1D5DB] bg-white pl-8 pr-7 text-[#111827]"
               : active
-                ? "border-[#BFDBFE] bg-[#EFF6FF] pl-3.5 pr-7 font-semibold text-[#1D4ED8]"
+                ? "border-[#E2E5EC] bg-[#EFF6FF] pl-3.5 pr-7 font-semibold text-[#1D4ED8]"
                 : "cursor-pointer border-[#E2E5EC] bg-transparent pl-3.5 pr-7 text-[#6B7280] hover:border-[#D1D5DB] hover:bg-[#F5F6F8]",
           )}
           disabled={disabled}
@@ -235,7 +235,7 @@ export function ListFilterSelect<TValue extends string>({
                   <span
                     className={cn(
                       "grid h-3.5 w-3.5 shrink-0 place-items-center rounded-full border",
-                      isSelected ? "border-[#4880EE]" : "border-[#CBD5E1]",
+                      isSelected ? "border-[#E2E5EC]" : "border-[#CBD5E1]",
                     )}
                   >
                     {isSelected ? (

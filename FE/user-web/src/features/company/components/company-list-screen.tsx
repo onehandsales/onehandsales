@@ -5,6 +5,7 @@ import {
   Plus,
   RotateCcw,
   Search,
+  SlidersHorizontal,
   X,
   type LucideIcon,
 } from "lucide-react";
@@ -72,6 +73,11 @@ const COMPANY_CREATE_PANEL_MIN_WIDTH = 420;
 const COMPANY_CREATE_PANEL_MAX_RATIO = 0.55;
 const COMPANY_CREATE_PANEL_AUTO_SIDEBAR_RATIO = 0.45;
 const COMPANY_CREATE_PANEL_TRANSITION_MS = 500;
+const DESKTOP_SEARCH_COLLAPSED_WIDTH = 32;
+const DESKTOP_SEARCH_MIN_WIDTH = 150;
+const DESKTOP_SEARCH_MAX_WIDTH = 220;
+const DESKTOP_SEARCH_COMPACT_MAX_WIDTH = 170;
+const DESKTOP_SEARCH_VIEWPORT_RATIO = 0.2;
 
 export function CompanyListScreen({
   initialCreateOpen = false,
@@ -85,6 +91,10 @@ export function CompanyListScreen({
   const isDockedViewport = useMediaQuery("(min-width: 1024px)");
   const [companyNameText, setCompanyNameText] = useState("");
   const [companyName, setCompanyName] = useState("");
+  const [isDesktopSearchOpen, setIsDesktopSearchOpen] = useState(false);
+  const [desktopSearchExpandedWidth, setDesktopSearchExpandedWidth] = useState(
+    getDesktopSearchExpandedWidth,
+  );
   const [companyFieldIds, setCompanyFieldIds] = useState<string[]>([]);
   const [companyRegionIds, setCompanyRegionIds] = useState<string[]>([]);
   const [sort, setSort] = useState<CompanySort>("createdAtDesc");
@@ -95,6 +105,9 @@ export function CompanyListScreen({
     getStoredCompanyCreatePanelWidth,
   );
   const [isCreatePanelResizing, setIsCreatePanelResizing] = useState(false);
+  const [isCompactFilterOpen, setIsCompactFilterOpen] = useState(false);
+  const [compactFilterPosition, setCompactFilterPosition] =
+    useState<FieldFilterPopoverPosition | null>(null);
   const [taxonomyDialog, setTaxonomyDialog] = useState<{
     readonly kind: "field" | "region";
   } | null>(null);
@@ -102,6 +115,10 @@ export function CompanyListScreen({
   const [pendingRegionName, setPendingRegionName] = useState("");
   const [notice, setNotice] = useState<string | null>(null);
   const [noticeDescription, setNoticeDescription] = useState<string | null>(null);
+  const desktopSearchFormRef = useRef<HTMLFormElement>(null);
+  const desktopSearchInputRef = useRef<HTMLInputElement>(null);
+  const compactFilterButtonRef = useRef<HTMLButtonElement>(null);
+  const compactFilterPopoverRef = useRef<HTMLDivElement>(null);
   const setAutoSidebarCollapsed = outletContext?.setAutoSidebarCollapsed;
 
   const listParams = useMemo(
@@ -156,6 +173,10 @@ export function CompanyListScreen({
   const displayTimeZone = user?.timeZone ?? getBrowserTimeZoneFallback();
   const isDockedCreateOpen = isCreateOpen && isDockedViewport;
   const isDockedCreateMounted = isDockedCreateOpen || isDockedCreateRendered;
+  const isCompactFilterMode = isDockedCreateMounted;
+  const hasTaxonomyFilters =
+    companyFieldIds.length > 0 || companyRegionIds.length > 0;
+  const taxonomyFilterCount = companyFieldIds.length + companyRegionIds.length;
   const hasSearch =
     companyName.length > 0 ||
     companyFieldIds.length > 0 ||
@@ -165,6 +186,37 @@ export function CompanyListScreen({
   useEffect(() => {
     if (initialCreateOpen) setIsCreateOpen(true);
   }, [initialCreateOpen]);
+
+  useEffect(() => {
+    if (!isDesktopSearchOpen) {
+      return;
+    }
+
+    const animationFrameId = window.requestAnimationFrame(() => {
+      desktopSearchInputRef.current?.focus();
+    });
+
+    return () => window.cancelAnimationFrame(animationFrameId);
+  }, [isDesktopSearchOpen]);
+
+  useEffect(() => {
+    if (companyName || companyNameText) {
+      setIsDesktopSearchOpen(true);
+    }
+  }, [companyName, companyNameText]);
+
+  useEffect(() => {
+    const syncDesktopSearchWidth = () => {
+      setDesktopSearchExpandedWidth(getDesktopSearchExpandedWidth());
+    };
+
+    syncDesktopSearchWidth();
+    window.addEventListener("resize", syncDesktopSearchWidth);
+
+    return () => {
+      window.removeEventListener("resize", syncDesktopSearchWidth);
+    };
+  }, []);
 
   useEffect(() => {
     if (isDockedCreateOpen) {
@@ -178,6 +230,59 @@ export function CompanyListScreen({
 
     return () => window.clearTimeout(timerId);
   }, [isDockedCreateOpen]);
+
+  useEffect(() => {
+    if (!isCompactFilterMode) {
+      setIsCompactFilterOpen(false);
+    }
+  }, [isCompactFilterMode]);
+
+  useEffect(() => {
+    if (!isCompactFilterOpen) {
+      return;
+    }
+
+    const updateCompactFilterPosition = () => {
+      if (!compactFilterButtonRef.current) {
+        return;
+      }
+
+      setCompactFilterPosition(
+        getCompactFilterPopoverPosition(compactFilterButtonRef.current),
+      );
+    };
+    const onMouseDown = (event: MouseEvent) => {
+      const target = event.target as Node;
+
+      if (
+        compactFilterButtonRef.current?.contains(target) ||
+        compactFilterPopoverRef.current?.contains(target)
+      ) {
+        return;
+      }
+
+      setIsCompactFilterOpen(false);
+    };
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setIsCompactFilterOpen(false);
+        compactFilterButtonRef.current?.focus();
+      }
+    };
+
+    updateCompactFilterPosition();
+    document.addEventListener("mousedown", onMouseDown);
+    document.addEventListener("keydown", onKeyDown);
+    window.addEventListener("resize", updateCompactFilterPosition);
+    window.addEventListener("scroll", updateCompactFilterPosition, true);
+
+    return () => {
+      document.removeEventListener("mousedown", onMouseDown);
+      document.removeEventListener("keydown", onKeyDown);
+      window.removeEventListener("resize", updateCompactFilterPosition);
+      window.removeEventListener("scroll", updateCompactFilterPosition, true);
+    };
+  }, [isCompactFilterOpen]);
 
   useEffect(() => {
     if (typeof window === "undefined") {
@@ -313,10 +418,18 @@ export function CompanyListScreen({
     }
   }, [companyRegionIds, regions]);
 
+  const submitDesktopSearch = () => {
+    const nextCompanyName = companyNameText.trim();
+
+    setCompanyName(nextCompanyName);
+    if (!nextCompanyName) {
+      setIsDesktopSearchOpen(false);
+    }
+    setPage(1);
+  };
   const onSearchSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    setCompanyName(companyNameText.trim());
-    setPage(1);
+    submitDesktopSearch();
   };
 
   const onExport = async () => {
@@ -367,16 +480,71 @@ export function CompanyListScreen({
       />
 
       {/* 검색 + 필터 툴바 (데스크톱) */}
-      <div className="hidden min-h-10 shrink-0 items-center gap-1.5 overflow-x-auto px-5 py-1 [scrollbar-width:none] md:flex lg:gap-2 [&::-webkit-scrollbar]:hidden">
+      <div className="hidden min-h-10 shrink-0 items-center px-5 py-1 md:flex">
+        <div className="flex min-w-0 flex-1 items-center gap-1.5 overflow-x-auto [scrollbar-width:none] lg:gap-2 [&::-webkit-scrollbar]:hidden">
         <form
-          className="flex h-8 w-[clamp(150px,20vw,220px)] shrink-0 items-center gap-1.5 rounded-md border border-[#E2E5EC] bg-white px-3 transition hover:border-[#93C5FD] hover:bg-white focus-within:border-[#4880EE] focus-within:bg-white focus-within:ring-1 focus-within:ring-[#4880EE]"
+          ref={desktopSearchFormRef}
+          className={cn(
+            "flex h-8 shrink-0 items-center overflow-hidden rounded-[6px] border border-[#E2E5EC] bg-white transition-[width,border-color,background-color,box-shadow,padding] duration-500 ease-out focus-within:bg-white",
+            isDesktopSearchOpen ? "pr-3" : "pr-0",
+            isDesktopSearchOpen
+              ? "hover:border-[#D1D5DB] hover:bg-white"
+              : "hover:border-[#D1D5DB] hover:bg-[#F5F6F8]",
+          )}
+          onBlur={(event) => {
+            const nextTarget = event.relatedTarget;
+
+            if (
+              nextTarget instanceof Node &&
+              event.currentTarget.contains(nextTarget)
+            ) {
+              return;
+            }
+
+            if (!companyNameText.trim() && !companyName) {
+              setIsDesktopSearchOpen(false);
+            }
+          }}
           onSubmit={onSearchSubmit}
+          style={{
+            width: isDesktopSearchOpen
+              ? isCompactFilterMode
+                ? Math.min(
+                    desktopSearchExpandedWidth,
+                    DESKTOP_SEARCH_COMPACT_MAX_WIDTH,
+                  )
+                : desktopSearchExpandedWidth
+              : DESKTOP_SEARCH_COLLAPSED_WIDTH,
+          }}
         >
-          <Search className="h-3 w-3 shrink-0 text-[#9CA3AF]" />
+          <button
+            aria-expanded={isDesktopSearchOpen}
+            aria-label={
+              isDesktopSearchOpen ? "회사 검색 실행" : "회사 검색 열기"
+            }
+            className="grid h-8 w-8 shrink-0 place-items-center text-[#6B7280] transition hover:text-[#475569]"
+            onClick={() => {
+              if (!isDesktopSearchOpen) {
+                setIsDesktopSearchOpen(true);
+                return;
+              }
+
+              submitDesktopSearch();
+            }}
+            type="button"
+          >
+            <Search className="h-3.5 w-3.5" />
+          </button>
           <input
-            className="min-w-0 flex-1 bg-transparent text-[13px] text-[#111827] outline-none placeholder:text-[#9CA3AF]"
+            ref={desktopSearchInputRef}
+            aria-hidden={!isDesktopSearchOpen}
+            className={cn(
+              "min-w-0 flex-1 bg-transparent text-[13px] text-[#111827] outline-none transition-opacity duration-300 placeholder:text-[#9CA3AF]",
+              isDesktopSearchOpen ? "opacity-100" : "opacity-0",
+            )}
             onChange={(e) => setCompanyNameText(e.target.value)}
-            placeholder="회사명 검색"
+            placeholder="회사를 검색하세요!"
+            tabIndex={isDesktopSearchOpen ? 0 : -1}
             value={companyNameText}
           />
         </form>
@@ -387,44 +555,75 @@ export function CompanyListScreen({
           onClick={() => {
             setCompanyName("");
             setCompanyNameText("");
+            setIsDesktopSearchOpen(false);
             setCompanyFieldIds([]);
             setCompanyRegionIds([]);
             setSort("createdAtDesc");
             setPage(1);
           }}
         />
-        <CompanyTaxonomyFilterCombobox
+        {isCompactFilterMode ? (
+          <button
+            ref={compactFilterButtonRef}
+            aria-expanded={isCompactFilterOpen}
+            aria-label="필터"
+            className={cn(
+              "inline-flex h-8 w-[84px] shrink-0 items-center justify-center gap-1 rounded-md border px-2 text-[13px] font-semibold transition focus:outline-none",
+              hasTaxonomyFilters
+                ? "border-[#E2E5EC] bg-[#EFF6FF] text-[#1D4ED8] hover:border-[#D1D5DB] hover:bg-[#DBEAFE]"
+                : "border-[#E2E5EC] bg-white text-[#475569] hover:border-[#D1D5DB] hover:bg-[#F5F6F8]",
+            )}
+            onClick={() => setIsCompactFilterOpen((open) => !open)}
+            type="button"
+          >
+            <SlidersHorizontal className="h-3.5 w-3.5" />
+            <span>필터</span>
+            {hasTaxonomyFilters ? (
+              <span className="grid h-4 min-w-4 place-items-center rounded-full bg-[#4880EE] px-1 text-[10px] font-bold leading-none text-white">
+                {taxonomyFilterCount}
+              </span>
+            ) : null}
+          </button>
+        ) : (
+          <>
+            <CompanyTaxonomyFilterCombobox
               emptyText="조건을 바꾸면 분야를 찾을 수 있어요."
-          getLabel={(field) => field.field}
-          itemKindLabel="분야"
-          items={fields}
-          selectedIds={companyFieldIds}
-          size="desktop"
-          tone="blue"
-          onCreateClick={() => setTaxonomyDialog({ kind: "field" })}
-          onSelectedIdsChange={(ids) => {
-            setCompanyFieldIds(ids);
-            setPage(1);
-          }}
-        />
-        <CompanyTaxonomyFilterCombobox
+              getLabel={(field) => field.field}
+              itemKindLabel="분야"
+              items={fields}
+              selectedIds={companyFieldIds}
+              size="desktop"
+              tone="blue"
+              onCreateClick={() => setTaxonomyDialog({ kind: "field" })}
+              onSelectedIdsChange={(ids) => {
+                setCompanyFieldIds(ids);
+                setPage(1);
+              }}
+            />
+            <CompanyTaxonomyFilterCombobox
               emptyText="조건을 바꾸면 지역을 찾을 수 있어요."
-          getLabel={(region) => region.region}
-          itemKindLabel="지역"
-          items={regions}
-          selectedIds={companyRegionIds}
-          size="desktop"
-          tone="blue"
-          onCreateClick={() => setTaxonomyDialog({ kind: "region" })}
-          onSelectedIdsChange={(ids) => {
-            setCompanyRegionIds(ids);
-            setPage(1);
-          }}
-        />
+              getLabel={(region) => region.region}
+              itemKindLabel="지역"
+              items={regions}
+              selectedIds={companyRegionIds}
+              size="desktop"
+              tone="blue"
+              onCreateClick={() => setTaxonomyDialog({ kind: "region" })}
+              onSelectedIdsChange={(ids) => {
+                setCompanyRegionIds(ids);
+                setPage(1);
+              }}
+            />
+          </>
+        )}
         <ListFilterSelect
           active={sort !== "createdAtDesc"}
           ariaLabel="정렬 조건"
-          className="w-[clamp(136px,14vw,178px)]"
+          className={
+            isCompactFilterMode
+              ? "w-[104px]"
+              : "w-[clamp(136px,14vw,178px)]"
+          }
           onChange={(nextSort) => {
             setSort(nextSort);
             setPage(1);
@@ -432,11 +631,71 @@ export function CompanyListScreen({
           options={COMPANY_SORT_OPTIONS}
           value={sort}
         />
-        <div className="flex-1" />
-        <span className="shrink-0 text-[12px] text-[#9CA3AF]">
+        </div>
+        <span
+          className={cn(
+            "ml-2 shrink-0 text-[12px]",
+            isCompactFilterMode
+              ? "font-semibold text-[#64748B]"
+              : "text-[#9CA3AF]",
+          )}
+        >
           {companyList?.totalCount ?? 0}개
         </span>
       </div>
+      {isCompactFilterMode && isCompactFilterOpen ? (
+        <div
+          ref={compactFilterPopoverRef}
+          className={cn(
+            "fixed z-50 rounded-lg border border-[#E6EAF0] bg-white p-3 shadow-lg",
+            !compactFilterPosition && "invisible",
+          )}
+          style={{
+            left: compactFilterPosition?.left ?? 0,
+            top: compactFilterPosition?.top ?? 0,
+            width: compactFilterPosition?.width ?? 320,
+          }}
+        >
+          <div className="grid gap-3">
+            <div className="grid gap-1.5">
+              <p className="text-[12px] font-semibold text-[#64748B]">분야</p>
+              <CompanyTaxonomyFilterCombobox
+                emptyText="조건을 바꾸면 분야를 찾을 수 있어요."
+                getLabel={(field) => field.field}
+                itemKindLabel="분야"
+                items={fields}
+                layout="full"
+                selectedIds={companyFieldIds}
+                size="desktop"
+                tone="blue"
+                onCreateClick={() => setTaxonomyDialog({ kind: "field" })}
+                onSelectedIdsChange={(ids) => {
+                  setCompanyFieldIds(ids);
+                  setPage(1);
+                }}
+              />
+            </div>
+            <div className="grid gap-1.5">
+              <p className="text-[12px] font-semibold text-[#64748B]">지역</p>
+              <CompanyTaxonomyFilterCombobox
+                emptyText="조건을 바꾸면 지역을 찾을 수 있어요."
+                getLabel={(region) => region.region}
+                itemKindLabel="지역"
+                items={regions}
+                layout="full"
+                selectedIds={companyRegionIds}
+                size="desktop"
+                tone="blue"
+                onCreateClick={() => setTaxonomyDialog({ kind: "region" })}
+                onSelectedIdsChange={(ids) => {
+                  setCompanyRegionIds(ids);
+                  setPage(1);
+                }}
+              />
+            </div>
+          </div>
+        </div>
+      ) : null}
 
       {/* 알림 */}
       {notice || exportCompaniesMutation.error ? (
@@ -573,14 +832,15 @@ export function CompanyListScreen({
           <button
             aria-label="초기화"
             className={cn(
-              "inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full border text-[12px] font-bold transition focus:border-[#4880EE] focus:outline-none focus:ring-1 focus:ring-[#4880EE]",
+              "inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full border text-[12px] font-bold transition focus:outline-none",
               hasSearch
-                ? "border-[#4880EE] bg-[#4880EE] text-white hover:bg-[#4880EE]"
+                ? "border-transparent bg-[#4880EE] text-white hover:bg-[#4880EE]"
                 : "border-[#E5E7EB] bg-[#F3F4F6] text-[#4B5563] hover:border-[#D1D5DB]",
             )}
             onClick={() => {
               setCompanyName("");
               setCompanyNameText("");
+              setIsDesktopSearchOpen(false);
               setCompanyFieldIds([]);
               setCompanyRegionIds([]);
               setSort("createdAtDesc");
@@ -802,10 +1062,10 @@ function FilterChip({
     <button
       aria-label={label}
       className={cn(
-        "inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-[6px] border text-[13px] font-bold transition focus:border-[#4880EE] focus:outline-none focus:ring-1 focus:ring-[#4880EE]",
+        "inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-[6px] border text-[13px] font-bold transition focus:outline-none",
         active
-          ? "border-[#4880EE] bg-[#4880EE] text-white hover:bg-[#4880EE]"
-          : "border-[#E2E5EC] bg-transparent text-[#6B7280] hover:bg-white",
+          ? "border-transparent bg-[#4880EE] text-white hover:bg-[#4880EE]"
+          : "border-[#E2E5EC] bg-white text-[#475569] hover:border-[#D1D5DB] hover:bg-[#F5F6F8]",
       )}
       onClick={onClick}
       type="button"
@@ -834,6 +1094,7 @@ function CompanyTaxonomyFilterCombobox<
   getLabel,
   itemKindLabel,
   items,
+  layout = "toolbar",
   selectedIds,
   size,
   tone,
@@ -844,6 +1105,7 @@ function CompanyTaxonomyFilterCombobox<
   readonly getLabel: (item: TItem) => string;
   readonly itemKindLabel: string;
   readonly items: readonly TItem[];
+  readonly layout?: "full" | "toolbar";
   readonly selectedIds: readonly string[];
   readonly size: "desktop" | "mobile";
   readonly tone: CompanyTaxonomyFilterTone;
@@ -948,7 +1210,11 @@ function CompanyTaxonomyFilterCombobox<
       ref={wrapperRef}
       className={cn(
         "relative shrink-0",
-        isMobile ? "w-[120px]" : "w-[clamp(136px,14vw,178px)]",
+        layout === "full"
+          ? "w-full"
+          : isMobile
+            ? "w-[120px]"
+            : "w-[clamp(136px,14vw,178px)]",
       )}
     >
       <div className="relative">
@@ -974,7 +1240,7 @@ function CompanyTaxonomyFilterCombobox<
               : "h-8 rounded-full text-[13px]",
             isOpen
               ? cn(
-                  "border-[#4880EE] bg-white text-[#111827] ring-1 ring-[#4880EE]",
+                  "border-[#D1D5DB] bg-white text-[#111827]",
                   isMobile ? "pl-7 pr-7" : "pl-8 pr-7",
                 )
               : selectedIds.length > 0
@@ -1137,13 +1403,30 @@ function getFieldFilterPopoverPosition(
   const margin = 16;
   const width = isMobile
     ? Math.min(256, Math.max(160, viewportWidth - margin * 2))
-    : 256;
+    : Math.max(256, Math.round(rect.width));
   const maxLeft = Math.max(margin, viewportWidth - width - margin);
   const left = Math.min(Math.max(rect.left, margin), maxLeft);
 
   return {
     left,
     top: rect.bottom + 4,
+    width,
+  };
+}
+
+function getCompactFilterPopoverPosition(
+  trigger: HTMLButtonElement,
+): FieldFilterPopoverPosition {
+  const rect = trigger.getBoundingClientRect();
+  const viewportWidth = window.innerWidth;
+  const margin = 16;
+  const width = Math.min(320, Math.max(280, viewportWidth - margin * 2));
+  const maxLeft = Math.max(margin, viewportWidth - width - margin);
+  const left = Math.min(Math.max(rect.left, margin), maxLeft);
+
+  return {
+    left,
+    top: rect.bottom + 6,
     width,
   };
 }
@@ -1170,7 +1453,7 @@ function getTaxonomyFilterInputSelectedClass(
 ) {
   switch (tone) {
     case "blue":
-      return "border-[#BFDBFE] bg-[#EFF6FF] font-semibold text-[#1D4ED8]";
+      return "border-[#E2E5EC] bg-[#EFF6FF] font-semibold text-[#1D4ED8]";
   }
 }
 
@@ -1188,7 +1471,7 @@ function getTaxonomyFilterCheckBorderClass(
 ) {
   switch (tone) {
     case "blue":
-      return "border-[#4880EE]";
+      return "border-[#E2E5EC]";
   }
 }
 
@@ -1259,6 +1542,22 @@ function getBrowserTimeZoneFallback() {
   } catch {
     return "Asia/Seoul";
   }
+}
+
+function getDesktopSearchExpandedWidth() {
+  if (typeof window === "undefined") {
+    return DESKTOP_SEARCH_MAX_WIDTH;
+  }
+
+  return Math.round(
+    Math.min(
+      Math.max(
+        window.innerWidth * DESKTOP_SEARCH_VIEWPORT_RATIO,
+        DESKTOP_SEARCH_MIN_WIDTH,
+      ),
+      DESKTOP_SEARCH_MAX_WIDTH,
+    ),
+  );
 }
 
 function normalizeFilterText(value: string) {
