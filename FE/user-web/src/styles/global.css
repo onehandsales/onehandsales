@@ -82,4 +82,20 @@
   [data-sidebar-collapsed="true"] .app-page-header {
     padding-left: 3.5rem;
   }
+
+  @keyframes company-create-panel-enter {
+    from {
+      opacity: 0;
+      transform: translateX(100%);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  .company-create-panel-enter {
+    animation: company-create-panel-enter 400ms ease-out;
+  }
 }

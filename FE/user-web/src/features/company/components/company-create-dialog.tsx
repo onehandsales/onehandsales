@@ -181,10 +181,6 @@ export function CompanyCreateDialog({
     }
   }, [isRegionsLoading, regions, selectedRegionId, setValue]);
 
-  if (!open) {
-    return null;
-  }
-
   // 기능 : 회사 생성 요청을 보내고 성공 시 패널을 닫습니다.
   const onSubmit = handleSubmit(async (values) => {
     await createCompanyMutation.mutateAsync(toCreateCompanyInput(values));
@@ -253,6 +249,11 @@ export function CompanyCreateDialog({
   const isDocked = mode === "docked";
   const isPage = mode === "page";
   const CloseIcon = isPage ? ArrowLeft : ChevronsRight;
+
+  if (!open && !isDocked) {
+    return null;
+  }
+
   const panel = (
     <section
       aria-label="회사 생성"
@@ -261,7 +262,11 @@ export function CompanyCreateDialog({
         isPage
           ? "flex min-h-full flex-col bg-white"
           : isDocked
-          ? "pointer-events-auto fixed inset-y-0 right-0 z-50 flex h-screen shrink-0 flex-col bg-white shadow-[0_18px_48px_rgba(15,23,42,0.16)]"
+          ? `fixed inset-y-0 right-0 z-50 flex h-screen shrink-0 flex-col bg-white shadow-[0_18px_48px_rgba(15,23,42,0.16)] transition-[transform,opacity] duration-[400ms] ease-out will-change-transform ${
+              open
+                ? "company-create-panel-enter pointer-events-auto translate-x-0 opacity-100"
+                : "pointer-events-none translate-x-full opacity-0"
+            }`
           : "pointer-events-auto relative flex h-full w-full flex-col bg-white shadow-[0_18px_48px_rgba(15,23,42,0.16)] sm:max-w-[520px]"
       }
       role={isPage ? undefined : "dialog"}

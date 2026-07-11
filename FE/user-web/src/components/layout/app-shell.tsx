@@ -31,7 +31,14 @@ import {
   toPublicSitePath,
 } from "@/features/public-site/i18n/public-site-locale-routes";
 import { SearchModal } from "@/features/search";
-import { type FormEvent, type ReactNode, useEffect, useRef, useState } from "react";
+import {
+  type FormEvent,
+  type ReactNode,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { useDealDetail } from "@/features/deal/hooks/use-deal-detail";
 import { useDeleteDealMutation } from "@/features/deal/hooks/use-deal-mutations";
 import { useProductDetail } from "@/features/product/hooks/use-product-detail";
@@ -47,6 +54,10 @@ import { getApiErrorMessage } from "@/lib/api-client";
 
 const HOME_PATH = "/app";
 const SIDEBAR_COLLAPSE_TRANSITION_MS = 400;
+
+export type AppShellOutletContext = {
+  readonly setAutoSidebarCollapsed: (collapsed: boolean) => void;
+};
 
 // ── 딜 상세 TopBar ──────────────────────────────────────────
 function DealDetailHeader({ dealId }: { readonly dealId: string }) {
@@ -190,7 +201,9 @@ export function AppShell() {
   const { logout, user } = useAuthSession();
   const [searchOpen, setSearchOpen] = useState(false);
   const [accountMenuOpen, setAccountMenuOpen] = useState(false);
-  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+  const [isSidebarManuallyCollapsed, setIsSidebarManuallyCollapsed] =
+    useState(false);
+  const [isSidebarAutoCollapsed, setIsSidebarAutoCollapsed] = useState(false);
   const [isSidebarOpenButtonVisible, setIsSidebarOpenButtonVisible] =
     useState(false);
   const [accountModal, setAccountModal] = useState<
@@ -206,6 +219,12 @@ export function AppShell() {
   const userEmail = user?.email ?? "로그인된 이메일 없음";
   const accountSubtitle = user?.role === "ADMIN" ? "Admin" : "무료 요금제";
   const userInitial = getUserInitial(userName);
+  const isSidebarCollapsed =
+    isSidebarManuallyCollapsed || isSidebarAutoCollapsed;
+  const outletContext = useMemo<AppShellOutletContext>(
+    () => ({ setAutoSidebarCollapsed: setIsSidebarAutoCollapsed }),
+    [],
+  );
 
   const handleLogout = async () => {
     await logout();
@@ -452,7 +471,7 @@ export function AppShell() {
         onClick={(event) => {
           event.stopPropagation();
           setAccountMenuOpen(false);
-          setIsSidebarCollapsed(true);
+          setIsSidebarManuallyCollapsed(true);
         }}
         type="button"
       >
@@ -568,7 +587,10 @@ export function AppShell() {
               ? "pointer-events-auto opacity-100"
               : "pointer-events-none opacity-0"
           }`}
-          onClick={() => setIsSidebarCollapsed(false)}
+          onClick={() => {
+            setIsSidebarManuallyCollapsed(false);
+            setIsSidebarAutoCollapsed(false);
+          }}
           title="사이드 바 열기"
           type="button"
         >
@@ -597,7 +619,7 @@ export function AppShell() {
                   : "min-h-[calc(100dvh-var(--topbar-height))]"
             }
           >
-            <Outlet />
+            <Outlet context={outletContext} />
           </main>
         </div>
       </div>
@@ -634,7 +656,7 @@ export function AppShell() {
           <MobileAppHeader onSearchClick={() => setSearchOpen(true)} />
         ) : null}
         <main className="pb-24">
-          <Outlet />
+          <Outlet context={outletContext} />
         </main>
         <BottomTabBar />
       </div>

@@ -16,7 +16,7 @@ import {
   useState,
 } from "react";
 import { PageHeader } from "@/components/layout/page-header";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useOutletContext } from "react-router-dom";
 import { ListFilterSelect } from "@/components/ui/list-filter-select";
 import { Pagination } from "@/components/ui/pagination";
 import { ListEmptyState } from "@/components/ui/state";
@@ -44,6 +44,7 @@ import {
   readLocationNotice,
   readLocationNoticeDescription,
 } from "@/utils/location-state";
+import type { AppShellOutletContext } from "@/components/layout/app-shell";
 
 type CompanyListScreenProps = {
   readonly initialCreateOpen?: boolean;
@@ -68,7 +69,9 @@ const COMPANY_TABLE_GRID_STYLE = {
 const COMPANY_CREATE_PANEL_STORAGE_KEY = "onehand.company.createPanelWidth";
 const COMPANY_CREATE_PANEL_DEFAULT_WIDTH = 520;
 const COMPANY_CREATE_PANEL_MIN_WIDTH = 420;
-const COMPANY_CREATE_PANEL_MAX_RATIO = 0.7;
+const COMPANY_CREATE_PANEL_MAX_RATIO = 0.55;
+const COMPANY_CREATE_PANEL_AUTO_SIDEBAR_RATIO = 0.45;
+const COMPANY_CREATE_PANEL_TRANSITION_MS = 400;
 
 export function CompanyListScreen({
   initialCreateOpen = false,
@@ -76,6 +79,8 @@ export function CompanyListScreen({
 }: CompanyListScreenProps) {
   const navigate = useNavigate();
   const location = useLocation();
+  const outletContext =
+    useOutletContext<AppShellOutletContext | undefined>();
   const { user } = useAuthSession();
   const isDockedViewport = useMediaQuery("(min-width: 1024px)");
   const [companyNameText, setCompanyNameText] = useState("");
@@ -85,6 +90,7 @@ export function CompanyListScreen({
   const [sort, setSort] = useState<CompanySort>("createdAtDesc");
   const [page, setPage] = useState(1);
   const [isCreateOpen, setIsCreateOpen] = useState(false);
+  const [isDockedCreateRendered, setIsDockedCreateRendered] = useState(false);
   const [createPanelWidth, setCreatePanelWidth] = useState(
     getStoredCompanyCreatePanelWidth,
   );
@@ -96,7 +102,7 @@ export function CompanyListScreen({
   const [pendingRegionName, setPendingRegionName] = useState("");
   const [notice, setNotice] = useState<string | null>(null);
   const [noticeDescription, setNoticeDescription] = useState<string | null>(null);
-  const desktopWorkspaceRef = useRef<HTMLDivElement>(null);
+  const setAutoSidebarCollapsed = outletContext?.setAutoSidebarCollapsed;
 
   const listParams = useMemo(
     () => ({
@@ -149,6 +155,7 @@ export function CompanyListScreen({
   const companyList = companiesQuery.data;
   const displayTimeZone = user?.timeZone ?? getBrowserTimeZoneFallback();
   const isDockedCreateOpen = isCreateOpen && isDockedViewport;
+  const isDockedCreateMounted = isDockedCreateOpen || isDockedCreateRendered;
   const hasSearch =
     companyName.length > 0 ||
     companyFieldIds.length > 0 ||
@@ -158,6 +165,19 @@ export function CompanyListScreen({
   useEffect(() => {
     if (initialCreateOpen) setIsCreateOpen(true);
   }, [initialCreateOpen]);
+
+  useEffect(() => {
+    if (isDockedCreateOpen) {
+      setIsDockedCreateRendered(true);
+      return;
+    }
+
+    const timerId = window.setTimeout(() => {
+      setIsDockedCreateRendered(false);
+    }, COMPANY_CREATE_PANEL_TRANSITION_MS);
+
+    return () => window.clearTimeout(timerId);
+  }, [isDockedCreateOpen]);
 
   useEffect(() => {
     if (typeof window === "undefined") {
@@ -171,22 +191,57 @@ export function CompanyListScreen({
   }, [createPanelWidth]);
 
   useEffect(() => {
-    const clampToWorkspace = () => {
+    const clampToViewport = () => {
       setCreatePanelWidth((currentWidth) =>
         clampCompanyCreatePanelWidth(
           currentWidth,
-          desktopWorkspaceRef.current?.clientWidth ?? window.innerWidth,
+          window.innerWidth,
         ),
       );
     };
 
-    clampToWorkspace();
-    window.addEventListener("resize", clampToWorkspace);
+    clampToViewport();
+    window.addEventListener("resize", clampToViewport);
 
     return () => {
-      window.removeEventListener("resize", clampToWorkspace);
+      window.removeEventListener("resize", clampToViewport);
     };
   }, []);
+
+  useEffect(() => {
+    if (!setAutoSidebarCollapsed) {
+      return;
+    }
+
+    return () => {
+      setAutoSidebarCollapsed(false);
+    };
+  }, [setAutoSidebarCollapsed]);
+
+  useEffect(() => {
+    if (!setAutoSidebarCollapsed) {
+      return;
+    }
+
+    const syncAutoSidebar = () => {
+      const viewportWidth =
+        typeof window === "undefined" ? 0 : window.innerWidth;
+      const shouldCollapse =
+        isDockedCreateMounted &&
+        viewportWidth > 0 &&
+        createPanelWidth / viewportWidth >
+          COMPANY_CREATE_PANEL_AUTO_SIDEBAR_RATIO;
+
+      setAutoSidebarCollapsed(shouldCollapse);
+    };
+
+    syncAutoSidebar();
+    window.addEventListener("resize", syncAutoSidebar);
+
+    return () => {
+      window.removeEventListener("resize", syncAutoSidebar);
+    };
+  }, [createPanelWidth, isDockedCreateMounted, setAutoSidebarCollapsed]);
 
   useEffect(() => {
     if (!isCreatePanelResizing) {
@@ -284,8 +339,12 @@ export function CompanyListScreen({
 
   return (
     <section
-      className="flex min-h-full flex-col bg-white"
-      style={isDockedCreateOpen ? { paddingRight: createPanelWidth } : undefined}
+      className="flex min-h-full flex-col bg-white transition-[padding-right] duration-[400ms] ease-out"
+      style={
+        isDockedCreateMounted
+          ? { paddingRight: isDockedCreateOpen ? createPanelWidth : 0 }
+          : undefined
+      }
     >
       <PageHeader
         breadcrumbs={[{ label: "회사", icon: Building2 }]}
@@ -301,6 +360,7 @@ export function CompanyListScreen({
             tooltip: "회사 생성",
             onClick: () => setIsCreateOpen(true),
             disabled: fieldsQuery.isLoading || regionsQuery.isLoading,
+            hidden: isDockedCreateMounted,
             variant: "primary",
           },
         ]}
@@ -402,7 +462,6 @@ export function CompanyListScreen({
 
       {/* 테이블 (데스크톱) */}
       <div
-        ref={desktopWorkspaceRef}
         className={cn(
           "hidden min-h-0 flex-1 gap-3 overflow-hidden px-5 pb-3 pt-1 md:flex xl:gap-4",
           isCreatePanelResizing && "cursor-col-resize select-none",
@@ -475,19 +534,21 @@ export function CompanyListScreen({
           ) : null}
         </div>
 
-        <CompanyCreateDialog
-          fields={fields}
-          isFieldsLoading={fieldsQuery.isLoading}
-          isRegionsLoading={regionsQuery.isLoading}
-          mode="docked"
-          onExpand={onCreateExpand}
-          onCreated={onCompanyCreated}
-          onOpenChange={onCreateOpenChange}
-          onResizeStart={() => setIsCreatePanelResizing(true)}
-          open={isDockedCreateOpen}
-          regions={regions}
-          width={createPanelWidth}
-        />
+        {isDockedCreateMounted ? (
+          <CompanyCreateDialog
+            fields={fields}
+            isFieldsLoading={fieldsQuery.isLoading}
+            isRegionsLoading={regionsQuery.isLoading}
+            mode="docked"
+            onExpand={onCreateExpand}
+            onCreated={onCompanyCreated}
+            onOpenChange={onCreateOpenChange}
+            onResizeStart={() => setIsCreatePanelResizing(true)}
+            open={isDockedCreateOpen}
+            regions={regions}
+            width={createPanelWidth}
+          />
+        ) : null}
       </div>
 
       {/* 모바일 뷰 */}
@@ -1248,11 +1309,11 @@ function getStoredCompanyCreatePanelWidth() {
   return clampCompanyCreatePanelWidth(storedWidth, window.innerWidth);
 }
 
-function clampCompanyCreatePanelWidth(width: number, workspaceWidth?: number) {
+function clampCompanyCreatePanelWidth(width: number, viewportWidth?: number) {
   const fallbackWidth = Number.isFinite(width)
     ? width
     : COMPANY_CREATE_PANEL_DEFAULT_WIDTH;
-  const maxWidth = getCompanyCreatePanelMaxWidth(workspaceWidth);
+  const maxWidth = getCompanyCreatePanelMaxWidth(viewportWidth);
 
   return Math.min(
     Math.max(fallbackWidth, COMPANY_CREATE_PANEL_MIN_WIDTH),
@@ -1260,14 +1321,14 @@ function clampCompanyCreatePanelWidth(width: number, workspaceWidth?: number) {
   );
 }
 
-function getCompanyCreatePanelMaxWidth(workspaceWidth?: number) {
-  if (!workspaceWidth || workspaceWidth <= 0) {
+function getCompanyCreatePanelMaxWidth(viewportWidth?: number) {
+  if (!viewportWidth || viewportWidth <= 0) {
     return COMPANY_CREATE_PANEL_DEFAULT_WIDTH;
   }
 
   return Math.max(
     COMPANY_CREATE_PANEL_MIN_WIDTH,
-    Math.floor(workspaceWidth * COMPANY_CREATE_PANEL_MAX_RATIO),
+    Math.floor(viewportWidth * COMPANY_CREATE_PANEL_MAX_RATIO),
   );
 }
 

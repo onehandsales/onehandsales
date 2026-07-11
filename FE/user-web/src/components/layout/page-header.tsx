@@ -16,16 +16,33 @@ export type HeaderAction = {
   readonly onClick?: () => void;
   readonly href?: string;
   readonly disabled?: boolean;
+  readonly hidden?: boolean;
   readonly variant?: "primary" | "default" | "danger";
 };
 
 type PageHeaderProps = {
   readonly breadcrumbs: readonly BreadcrumbItem[];
   readonly actions?: readonly HeaderAction[];
+  readonly actionsPlacement?: "end" | "start";
   readonly className?: string;
 };
 
-export function PageHeader({ breadcrumbs, actions = [], className }: PageHeaderProps) {
+export function PageHeader({
+  breadcrumbs,
+  actions = [],
+  actionsPlacement = "end",
+  className,
+}: PageHeaderProps) {
+  const visibleActions = actions.filter((action) => !action.hidden);
+  const actionsNode =
+    visibleActions.length > 0 ? (
+      <div className="app-page-header-actions flex items-center gap-1.5">
+        {visibleActions.map((action, index) => (
+          <TooltipIconButton key={index} action={action} />
+        ))}
+      </div>
+    ) : null;
+
   return (
     <header
       className={cn(
@@ -77,16 +94,12 @@ export function PageHeader({ breadcrumbs, actions = [], className }: PageHeaderP
         })}
       </nav>
 
+      {actionsPlacement === "start" ? actionsNode : null}
+
       <div className="flex-1" />
 
       {/* 액션 버튼 */}
-      {actions.length > 0 && (
-        <div className="flex items-center gap-1.5">
-          {actions.map((action, index) => (
-            <TooltipIconButton key={index} action={action} />
-          ))}
-        </div>
-      )}
+      {actionsPlacement === "end" ? actionsNode : null}
     </header>
   );
 }
