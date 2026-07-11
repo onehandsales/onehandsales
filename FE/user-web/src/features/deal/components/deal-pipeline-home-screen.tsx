@@ -560,7 +560,7 @@ export function DealPipelineHomeScreen({
                       ? DESKTOP_SEARCH_COMPACT_MAX_WIDTH
                       : undefined
                   }
-                  placeholder="딜이름 검색"
+                  placeholder="딜명을 검색하세요!"
                   resetSignal={searchResetSignal}
                   submitLabel="딜 검색 실행"
                   value={searchText}

@@ -20,7 +20,7 @@ type CollapsibleDesktopSearchProps = {
 
 const DESKTOP_SEARCH_COLLAPSED_WIDTH = 32;
 const DESKTOP_SEARCH_MIN_WIDTH = 150;
-const DESKTOP_SEARCH_MAX_WIDTH = 220;
+const DESKTOP_SEARCH_MAX_WIDTH = 170;
 const DESKTOP_SEARCH_VIEWPORT_RATIO = 0.2;
 
 export function CollapsibleDesktopSearch({

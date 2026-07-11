@@ -422,7 +422,7 @@ export function MeetingNoteListScreen() {
             maxExpandedWidth={
               isCompactFilterMode ? DESKTOP_SEARCH_COMPACT_MAX_WIDTH : undefined
             }
-            placeholder="회의 관련 검색"
+            placeholder="회의록명을 검색하세요!"
             resetSignal={searchResetSignal}
             submitLabel="회의록 검색 실행"
             value={searchText}
