@@ -74,4 +74,8 @@
   #root {
     min-height: 100vh;
   }
+
+  [data-sidebar-collapsed="true"] .app-page-header {
+    padding-left: 3.5rem;
+  }
 }
