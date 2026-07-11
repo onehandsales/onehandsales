@@ -24,6 +24,7 @@ import { ContactNewPage } from "@/pages/contacts/new";
 import { ContactPage } from "@/pages/contact";
 import { DealDetailPage } from "@/pages/deals/detail";
 import { DealsPage } from "@/pages/deals";
+import { DealNewFullPage } from "@/pages/deals/new-full";
 import { DealNewPage } from "@/pages/deals/new";
 import { HomePage } from "@/pages/home";
 import { ImportDetailPage } from "@/pages/import/detail";
@@ -110,6 +111,10 @@ export const router = createBrowserRouter([
     element: <LegacyAppRedirect paramName="productId" to="/app/products" />,
   },
   { path: "/deals", element: <LegacyAppRedirect to="/app/deals" /> },
+  {
+    path: "/deals/new/full",
+    element: <LegacyAppRedirect to="/app/deals/new/full" />,
+  },
   { path: "/deals/new", element: <LegacyAppRedirect to="/app/deals/new" /> },
   {
     path: "/deals/:dealId",
@@ -170,6 +175,7 @@ export const router = createBrowserRouter([
       { path: "products/new", element: <ProductNewPage /> },
       { path: "products/:productId", element: <ProductDetailPage /> },
       { path: "deals", element: <DealsPage /> },
+      { path: "deals/new/full", element: <DealNewFullPage /> },
       { path: "deals/new", element: <DealNewPage /> },
       { path: "deals/:dealId", element: <DealDetailPage /> },
       { path: "schedules", element: <SchedulesPage /> },

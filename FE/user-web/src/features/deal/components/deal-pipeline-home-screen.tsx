@@ -8,10 +8,17 @@ import {
   Plus,
   RotateCcw,
   Search,
+  SlidersHorizontal,
   X,
 } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import {
+  Link,
+  useLocation,
+  useNavigate,
+  useOutletContext,
+} from "react-router-dom";
+import type { AppShellOutletContext } from "@/components/layout/app-shell";
 import { PageHeader } from "@/components/layout/page-header";
 import { CollapsibleDesktopSearch } from "@/components/ui/collapsible-desktop-search";
 import { ListFilterSelect } from "@/components/ui/list-filter-select";
@@ -19,6 +26,7 @@ import { ListEmptyState } from "@/components/ui/state";
 import { Toast } from "@/components/ui/toast";
 import { useAuthSession } from "@/features/auth";
 import { DealCreateDialog } from "@/features/deal/components/deal-create-dialog";
+import type { DealCreateFormValues } from "@/features/deal/schemas/deal-schema";
 import {
   useDealCompanyOptions,
   useDealContactOptions,
@@ -32,6 +40,7 @@ import { getApiErrorMessage } from "@/lib/api-client";
 import {
   DEAL_STATUS_LABEL,
   DEAL_STATUS_LIST,
+  type DealDetail,
   type DealListItem,
   type DealSort,
   type DealStatus,
@@ -66,8 +75,15 @@ const SORT_OPTIONS: Array<{
 
 const DEAL_TABLE_GRID_STYLE = {
   gridTemplateColumns:
-    "minmax(96px,1.05fr) minmax(88px,0.7fr) minmax(58px,0.5fr) minmax(64px,0.5fr) minmax(148px,1.45fr) minmax(70px,0.5fr)",
+    "minmax(0,1.05fr) minmax(0,0.7fr) minmax(0,0.5fr) minmax(0,0.5fr) minmax(0,1.45fr) minmax(0,0.5fr)",
 };
+const DEAL_CREATE_PANEL_STORAGE_KEY = "onehand.deal.createPanelWidth";
+const DEAL_CREATE_PANEL_DEFAULT_WIDTH = 520;
+const DEAL_CREATE_PANEL_MIN_WIDTH = 420;
+const DEAL_CREATE_PANEL_MAX_RATIO = 0.55;
+const DEAL_CREATE_PANEL_AUTO_SIDEBAR_RATIO = 0.45;
+const DEAL_CREATE_PANEL_TRANSITION_MS = 500;
+const DESKTOP_SEARCH_COMPACT_MAX_WIDTH = 170;
 
 type DealPipelineHomeScreenProps = {
   readonly initialCreateOpen?: boolean;
@@ -78,7 +94,10 @@ export function DealPipelineHomeScreen({
 }: DealPipelineHomeScreenProps) {
   const navigate = useNavigate();
   const location = useLocation();
+  const outletContext =
+    useOutletContext<AppShellOutletContext | undefined>();
   const { user } = useAuthSession();
+  const isDockedViewport = useMediaQuery("(min-width: 1024px)");
   const [activeTab, setActiveTab] = useState<StageTab>("ALL");
   const [searchText, setSearchText] = useState("");
   const [search, setSearch] = useState("");
@@ -88,11 +107,22 @@ export function DealPipelineHomeScreen({
   const [sort, setSort] = useState<DealSort>("createdAtDesc");
   const [page, setPage] = useState(1);
   const [isCreateOpen, setIsCreateOpen] = useState(false);
+  const [isDockedCreateRendered, setIsDockedCreateRendered] = useState(false);
+  const [createPanelWidth, setCreatePanelWidth] = useState(
+    getStoredDealCreatePanelWidth,
+  );
+  const [isCreatePanelResizing, setIsCreatePanelResizing] = useState(false);
+  const [isCompactFilterOpen, setIsCompactFilterOpen] = useState(false);
+  const [compactFilterPosition, setCompactFilterPosition] =
+    useState<DealFilterPopoverPosition | null>(null);
   const [isExporting, setIsExporting] = useState(false);
   const [exportError, setExportError] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
   const [noticeDescription, setNoticeDescription] = useState<string | null>(null);
+  const compactFilterButtonRef = useRef<HTMLButtonElement>(null);
+  const compactFilterPopoverRef = useRef<HTMLDivElement>(null);
   const dealCreatedRef = useRef(false);
+  const setAutoSidebarCollapsed = outletContext?.setAutoSidebarCollapsed;
 
   const searchQuery = search.trim() || undefined;
   const companyFilter = companyIds.length > 0 ? companyIds : undefined;
@@ -136,6 +166,11 @@ export function DealPipelineHomeScreen({
       : contactOptions;
   }, [companyIds, contactOptionsQuery.data]);
   const displayTimeZone = user?.timeZone ?? getBrowserTimeZoneFallback();
+  const isDockedCreateOpen = isCreateOpen && isDockedViewport;
+  const isDockedCreateMounted = isDockedCreateOpen || isDockedCreateRendered;
+  const isCompactFilterMode = isDockedCreateMounted;
+  const hasEntityFilters = companyIds.length > 0 || contactIds.length > 0;
+  const entityFilterCount = companyIds.length + contactIds.length;
   const hasFilter =
     activeTab !== "ALL" ||
     search.trim().length > 0 ||
@@ -144,10 +179,170 @@ export function DealPipelineHomeScreen({
     sort !== "createdAtDesc";
 
   useEffect(() => {
-    if (initialCreateOpen) {
-      setIsCreateOpen(true);
+    if (!initialCreateOpen) {
+      return;
     }
+
+    setCreatePanelWidth(DEAL_CREATE_PANEL_MIN_WIDTH);
+    setIsCreateOpen(true);
   }, [initialCreateOpen]);
+
+  useEffect(() => {
+    if (isDockedCreateOpen) {
+      setIsDockedCreateRendered(true);
+      return;
+    }
+
+    const timerId = window.setTimeout(() => {
+      setIsDockedCreateRendered(false);
+    }, DEAL_CREATE_PANEL_TRANSITION_MS);
+
+    return () => window.clearTimeout(timerId);
+  }, [isDockedCreateOpen]);
+
+  useEffect(() => {
+    if (!isCompactFilterMode) {
+      setIsCompactFilterOpen(false);
+    }
+  }, [isCompactFilterMode]);
+
+  useEffect(() => {
+    if (!isCompactFilterOpen) {
+      return;
+    }
+
+    const updateCompactFilterPosition = () => {
+      if (!compactFilterButtonRef.current) {
+        return;
+      }
+
+      setCompactFilterPosition(
+        getCompactDealFilterPopoverPosition(compactFilterButtonRef.current),
+      );
+    };
+    const onMouseDown = (event: MouseEvent) => {
+      const target = event.target as Node;
+
+      if (
+        compactFilterButtonRef.current?.contains(target) ||
+        compactFilterPopoverRef.current?.contains(target)
+      ) {
+        return;
+      }
+
+      setIsCompactFilterOpen(false);
+    };
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setIsCompactFilterOpen(false);
+        compactFilterButtonRef.current?.focus();
+      }
+    };
+
+    updateCompactFilterPosition();
+    document.addEventListener("mousedown", onMouseDown);
+    document.addEventListener("keydown", onKeyDown);
+    window.addEventListener("resize", updateCompactFilterPosition);
+    window.addEventListener("scroll", updateCompactFilterPosition, true);
+
+    return () => {
+      document.removeEventListener("mousedown", onMouseDown);
+      document.removeEventListener("keydown", onKeyDown);
+      window.removeEventListener("resize", updateCompactFilterPosition);
+      window.removeEventListener("scroll", updateCompactFilterPosition, true);
+    };
+  }, [isCompactFilterOpen]);
+
+  useEffect(() => {
+    if (typeof window === "undefined") {
+      return;
+    }
+
+    window.localStorage.setItem(
+      DEAL_CREATE_PANEL_STORAGE_KEY,
+      String(createPanelWidth),
+    );
+  }, [createPanelWidth]);
+
+  useEffect(() => {
+    const clampToViewport = () => {
+      setCreatePanelWidth((currentWidth) =>
+        clampDealCreatePanelWidth(currentWidth, window.innerWidth),
+      );
+    };
+
+    clampToViewport();
+    window.addEventListener("resize", clampToViewport);
+
+    return () => {
+      window.removeEventListener("resize", clampToViewport);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!setAutoSidebarCollapsed) {
+      return;
+    }
+
+    return () => {
+      setAutoSidebarCollapsed(false);
+    };
+  }, [setAutoSidebarCollapsed]);
+
+  useEffect(() => {
+    if (!setAutoSidebarCollapsed) {
+      return;
+    }
+
+    const syncAutoSidebar = () => {
+      const viewportWidth =
+        typeof window === "undefined" ? 0 : window.innerWidth;
+      const shouldCollapse =
+        isDockedCreateMounted &&
+        viewportWidth > 0 &&
+        createPanelWidth / viewportWidth >
+          DEAL_CREATE_PANEL_AUTO_SIDEBAR_RATIO;
+
+      setAutoSidebarCollapsed(shouldCollapse);
+    };
+
+    syncAutoSidebar();
+    window.addEventListener("resize", syncAutoSidebar);
+
+    return () => {
+      window.removeEventListener("resize", syncAutoSidebar);
+    };
+  }, [createPanelWidth, isDockedCreateMounted, setAutoSidebarCollapsed]);
+
+  useEffect(() => {
+    if (!isCreatePanelResizing) {
+      return;
+    }
+
+    const previousCursor = document.body.style.cursor;
+    const previousUserSelect = document.body.style.userSelect;
+    const onMouseMove = (event: MouseEvent) => {
+      setCreatePanelWidth(
+        clampDealCreatePanelWidth(
+          window.innerWidth - event.clientX,
+          window.innerWidth,
+        ),
+      );
+    };
+    const onMouseUp = () => setIsCreatePanelResizing(false);
+
+    document.body.style.cursor = "col-resize";
+    document.body.style.userSelect = "none";
+    window.addEventListener("mousemove", onMouseMove);
+    window.addEventListener("mouseup", onMouseUp);
+
+    return () => {
+      document.body.style.cursor = previousCursor;
+      document.body.style.userSelect = previousUserSelect;
+      window.removeEventListener("mousemove", onMouseMove);
+      window.removeEventListener("mouseup", onMouseUp);
+    };
+  }, [isCreatePanelResizing]);
 
   // 기능 : 회사 필터 변경으로 범위 밖이 된 담당자 필터를 정리합니다.
   useEffect(() => {
@@ -228,6 +423,35 @@ export function DealPipelineHomeScreen({
     }
   };
 
+  const onCreateOpenChange = (open: boolean) => {
+    setIsCreateOpen(open);
+
+    if (!open && initialCreateOpen && !dealCreatedRef.current) {
+      void navigate("/app/deals", { replace: true });
+    }
+  };
+
+  const openCreatePanel = () => {
+    setCreatePanelWidth(DEAL_CREATE_PANEL_MIN_WIDTH);
+    setIsCreateOpen(true);
+  };
+
+  const onCreateExpand = (values: DealCreateFormValues) => {
+    void navigate("/app/deals/new/full", {
+      state: { dealCreateDraft: values },
+    });
+  };
+
+  const onDealCreated = (deal: DealDetail) => {
+    dealCreatedRef.current = true;
+    setActiveTab("ALL");
+    setPage(1);
+
+    if (initialCreateOpen) {
+      void navigate(`/app/deals/${deal.id}`, { replace: true });
+    }
+  };
+
   const getStageCount = (tab: StageTab): number => {
     const counts = stageCountsQuery.data?.items ?? [];
     if (tab === "ALL") return counts.reduce((sum, c) => sum + c.count, 0);
@@ -237,7 +461,14 @@ export function DealPipelineHomeScreen({
   return (
     <>
       {/* ── Desktop ── */}
-      <section className="hidden min-h-full flex-col md:flex">
+      <section
+        className="hidden min-h-full flex-col bg-white transition-[padding-right] duration-[500ms] ease-out md:flex"
+        style={
+          isDockedCreateMounted
+            ? { paddingRight: isDockedCreateOpen ? createPanelWidth : 0 }
+            : undefined
+        }
+      >
         {/* PageHeader */}
         <PageHeader
           breadcrumbs={[{ label: "딜", icon: BriefcaseBusiness }]}
@@ -251,7 +482,8 @@ export function DealPipelineHomeScreen({
             {
               icon: Plus,
               tooltip: "딜 생성",
-              onClick: () => void navigate("/app/deals/new"),
+              onClick: openCreatePanel,
+              hidden: isDockedCreateMounted,
               variant: "primary",
             },
           ]}
@@ -311,13 +543,23 @@ export function DealPipelineHomeScreen({
         </div>
 
         {/* Content */}
-        <div className="flex gap-3 overflow-x-auto px-5 pb-3 pt-3 xl:gap-5">
-            {/* Deal List */}
-            <div className="flex min-w-0 flex-1 flex-col gap-3">
-              {/* Controls bar — 한 줄 */}
-              <div className="flex shrink-0 items-center gap-1.5 px-0.5 lg:gap-2">
+        <div
+          className={cn(
+            "flex min-h-0 gap-3 overflow-hidden px-5 pb-3 pt-3 xl:gap-5",
+            isCreatePanelResizing && "cursor-col-resize select-none",
+          )}
+        >
+          {/* Deal List */}
+          <div className="flex min-w-0 flex-1 flex-col gap-3">
+            {/* Controls bar — 한 줄 */}
+            <div className="flex shrink-0 items-center gap-1.5 overflow-x-auto px-0.5 [scrollbar-width:none] lg:gap-2 [&::-webkit-scrollbar]:hidden">
                 <CollapsibleDesktopSearch
                   appliedValue={search}
+                  maxExpandedWidth={
+                    isCompactFilterMode
+                      ? DESKTOP_SEARCH_COMPACT_MAX_WIDTH
+                      : undefined
+                  }
                   placeholder="딜이름 검색"
                   resetSignal={searchResetSignal}
                   submitLabel="딜 검색 실행"
@@ -338,35 +580,118 @@ export function DealPipelineHomeScreen({
                 >
                   <RotateCcw className="h-3.5 w-3.5" />
                 </button>
-                <DealFilterMultiSelect
-                  emptyText="조건을 바꾸면 회사를 찾을 수 있어요."
-                  getLabel={(company) => company.companyName}
-                  itemKindLabel="회사"
-                  items={companyOptionsQuery.data ?? []}
-                  selectedIds={companyIds}
-                  onSelectedIdsChange={onCompanyIdsChange}
-                />
-                <DealFilterMultiSelect
-                  emptyText="조건을 바꾸면 담당자를 찾을 수 있어요."
-                  getLabel={(contact) => contact.label}
-                  itemKindLabel="담당자"
-                  items={filteredContactOptions}
-                  selectedIds={contactIds}
-                  onSelectedIdsChange={onContactIdsChange}
-                />
+                {isCompactFilterMode ? (
+                  <button
+                    ref={compactFilterButtonRef}
+                    aria-expanded={isCompactFilterOpen}
+                    aria-label="필터"
+                    className={cn(
+                      "inline-flex h-8 w-[84px] shrink-0 items-center justify-center gap-1 rounded-md border px-2 text-[13px] font-semibold transition focus:outline-none",
+                      hasEntityFilters
+                        ? "border-[#E2E5EC] bg-[#EFF6FF] text-[#1D4ED8] hover:border-[#D1D5DB] hover:bg-[#DBEAFE]"
+                        : "border-[#E2E5EC] bg-white text-[#475569] hover:border-[#D1D5DB] hover:bg-[#F5F6F8]",
+                    )}
+                    onClick={() => setIsCompactFilterOpen((open) => !open)}
+                    type="button"
+                  >
+                    <SlidersHorizontal className="h-3.5 w-3.5" />
+                    <span>필터</span>
+                    {hasEntityFilters ? (
+                      <span className="grid h-4 min-w-4 place-items-center rounded-full bg-[#4880EE] px-1 text-[10px] font-bold leading-none text-white">
+                        {entityFilterCount}
+                      </span>
+                    ) : null}
+                  </button>
+                ) : (
+                  <>
+                    <DealFilterMultiSelect
+                      emptyText="조건을 바꾸면 회사를 찾을 수 있어요."
+                      getLabel={(company) => company.companyName}
+                      itemKindLabel="회사"
+                      items={companyOptionsQuery.data ?? []}
+                      selectedIds={companyIds}
+                      onSelectedIdsChange={onCompanyIdsChange}
+                    />
+                    <DealFilterMultiSelect
+                      emptyText="조건을 바꾸면 담당자를 찾을 수 있어요."
+                      getLabel={(contact) => contact.label}
+                      itemKindLabel="담당자"
+                      items={filteredContactOptions}
+                      selectedIds={contactIds}
+                      onSelectedIdsChange={onContactIdsChange}
+                    />
+                  </>
+                )}
                 <ListFilterSelect
                   active={sort !== "createdAtDesc"}
                   ariaLabel="정렬 조건"
-                  className="w-[clamp(136px,14vw,178px)]"
+                  className={
+                    isCompactFilterMode
+                      ? "w-[104px]"
+                      : "w-[clamp(136px,14vw,178px)]"
+                  }
                   onChange={onSortChange}
                   options={SORT_OPTIONS}
                   value={sort}
                 />
                 <div className="flex-1" />
-                <span className="shrink-0 text-[12px] text-[#9CA3AF]">
+                <span
+                  className={cn(
+                    "shrink-0 text-[12px]",
+                    isCompactFilterMode
+                      ? "font-semibold text-[#64748B]"
+                      : "text-[#9CA3AF]",
+                  )}
+                >
                   {dealsQuery.data?.totalCount ?? 0}건
                 </span>
               </div>
+
+              {isCompactFilterMode && isCompactFilterOpen ? (
+                <div
+                  ref={compactFilterPopoverRef}
+                  className={cn(
+                    "fixed z-50 rounded-lg border border-[#E6EAF0] bg-white p-3 shadow-lg",
+                    !compactFilterPosition && "invisible",
+                  )}
+                  style={{
+                    left: compactFilterPosition?.left ?? 0,
+                    top: compactFilterPosition?.top ?? 0,
+                    width: compactFilterPosition?.width ?? 320,
+                  }}
+                >
+                  <div className="grid gap-3">
+                    <div className="grid gap-1.5">
+                      <p className="text-[12px] font-semibold text-[#64748B]">
+                        회사
+                      </p>
+                      <DealFilterMultiSelect
+                        emptyText="조건을 바꾸면 회사를 찾을 수 있어요."
+                        getLabel={(company) => company.companyName}
+                        itemKindLabel="회사"
+                        items={companyOptionsQuery.data ?? []}
+                        layout="full"
+                        selectedIds={companyIds}
+                        onSelectedIdsChange={onCompanyIdsChange}
+                      />
+                    </div>
+                    <div className="grid gap-1.5">
+                      <p className="text-[12px] font-semibold text-[#64748B]">
+                        담당자
+                      </p>
+                      <DealFilterMultiSelect
+                        emptyText="조건을 바꾸면 담당자를 찾을 수 있어요."
+                        getLabel={(contact) => contact.label}
+                        itemKindLabel="담당자"
+                        items={filteredContactOptions}
+                        layout="full"
+                        selectedIds={contactIds}
+                        onSelectedIdsChange={onContactIdsChange}
+                      />
+                    </div>
+                  </div>
+                </div>
+              ) : null}
 
               {dealsQuery.isLoading ? (
                 <DesktopLoadingState />
@@ -374,7 +699,7 @@ export function DealPipelineHomeScreen({
                 <ErrorState onRetry={() => void dealsQuery.refetch()} />
               ) : (
                 <>
-              <div className="flex w-full min-w-[600px] flex-col overflow-hidden rounded-lg border border-[#E2E5EC] bg-white shadow-sm">
+              <div className="flex w-full min-w-0 flex-col overflow-hidden rounded-lg border border-[#E2E5EC] bg-white shadow-sm">
                 {/* Table header */}
                 <div
                   className="grid h-11 shrink-0 items-center border-b border-[#E2E5EC] bg-[#F9FAFB] px-3 md:px-4 xl:px-6"
@@ -394,7 +719,7 @@ export function DealPipelineHomeScreen({
                     actionIcon={Plus}
                     actionLabel="딜 생성"
                     icon={BriefcaseBusiness}
-                    onAction={() => setIsCreateOpen(true)}
+                    onAction={openCreatePanel}
                     title={
                       hasFilter
                         ? "조건을 바꾸면 딜을 찾을 수 있어요"
@@ -425,6 +750,17 @@ export function DealPipelineHomeScreen({
                 </>
               )}
             </div>
+            {isDockedCreateMounted ? (
+              <DealCreateDialog
+                mode="docked"
+                onCreated={onDealCreated}
+                onExpand={onCreateExpand}
+                onOpenChange={onCreateOpenChange}
+                onResizeStart={() => setIsCreatePanelResizing(true)}
+                open={isDockedCreateOpen}
+                width={createPanelWidth}
+              />
+            ) : null}
           </div>
       </section>
 
@@ -544,7 +880,7 @@ export function DealPipelineHomeScreen({
               actionIcon={Plus}
               actionLabel="딜 생성"
               icon={BriefcaseBusiness}
-              onAction={() => setIsCreateOpen(true)}
+              onAction={openCreatePanel}
               title={
                 hasFilter ? "조건을 바꾸면 딜을 찾을 수 있어요" : "데이터가 존재하지 않아요"
               }
@@ -576,30 +912,22 @@ export function DealPipelineHomeScreen({
         {/* FAB */}
         <button
           className="fixed bottom-24 right-5 z-40 inline-flex h-8 w-8 items-center justify-center rounded-full bg-[#4880EE] text-white shadow-[0_4px_16px_rgba(59,130,246,0.27)] transition hover:scale-[1.02]"
-          onClick={() => void navigate("/app/deals/new")}
+          onClick={openCreatePanel}
           type="button"
         >
           <Plus className="h-4 w-4" />
         </button>
       </section>
 
-      <DealCreateDialog
-        onCreated={(deal) => {
-          dealCreatedRef.current = true;
-          setActiveTab("ALL");
-          setPage(1);
-          if (initialCreateOpen) {
-            void navigate(`/app/deals/${deal.id}`, { replace: true });
-          }
-        }}
-        onOpenChange={(open) => {
-          setIsCreateOpen(open);
-          if (!open && initialCreateOpen && !dealCreatedRef.current) {
-            void navigate("/app/deals", { replace: true });
-          }
-        }}
-        open={isCreateOpen}
-      />
+      <div className="lg:hidden">
+        <DealCreateDialog
+          mode="overlay"
+          onCreated={onDealCreated}
+          onExpand={onCreateExpand}
+          onOpenChange={onCreateOpenChange}
+          open={isCreateOpen && !isDockedViewport}
+        />
+      </div>
     </>
   );
 }
@@ -933,6 +1261,7 @@ function DealFilterMultiSelect<TItem extends DealFilterItem>({
   getLabel,
   itemKindLabel,
   items,
+  layout = "compact",
   selectedIds,
   onSelectedIdsChange,
 }: {
@@ -940,6 +1269,7 @@ function DealFilterMultiSelect<TItem extends DealFilterItem>({
   readonly getLabel: (item: TItem) => string;
   readonly itemKindLabel: string;
   readonly items: readonly TItem[];
+  readonly layout?: "compact" | "full";
   readonly selectedIds: readonly string[];
   readonly onSelectedIdsChange: (ids: string[]) => void;
 }) {
@@ -1036,7 +1366,10 @@ function DealFilterMultiSelect<TItem extends DealFilterItem>({
 
   return (
     <div
-      className="relative w-[clamp(136px,14vw,178px)] shrink-0"
+      className={cn(
+        "relative shrink-0",
+        layout === "full" ? "w-full" : "w-[clamp(136px,14vw,178px)]",
+      )}
       ref={wrapperRef}
     >
       <div className="relative">
@@ -1189,6 +1522,23 @@ function getDealFilterPopoverPosition(
   };
 }
 
+function getCompactDealFilterPopoverPosition(
+  trigger: HTMLButtonElement,
+): DealFilterPopoverPosition {
+  const rect = trigger.getBoundingClientRect();
+  const viewportWidth = window.innerWidth;
+  const margin = 16;
+  const width = Math.min(320, Math.max(280, viewportWidth - margin * 2));
+  const maxLeft = Math.max(margin, viewportWidth - width - margin);
+  const left = Math.min(Math.max(rect.left, margin), maxLeft);
+
+  return {
+    left,
+    top: rect.bottom + 6,
+    width,
+  };
+}
+
 function getSelectedDealFilterSummary<TItem extends DealFilterItem>(
   selectedItems: readonly TItem[],
   getLabel: (item: TItem) => string,
@@ -1208,6 +1558,69 @@ function getSelectedDealFilterSummary<TItem extends DealFilterItem>(
 
 function normalizeDealFilterText(value: string) {
   return value.trim().toLocaleLowerCase("ko-KR");
+}
+
+function useMediaQuery(query: string) {
+  const [matches, setMatches] = useState(() => {
+    if (typeof window === "undefined") {
+      return false;
+    }
+
+    return window.matchMedia(query).matches;
+  });
+
+  useEffect(() => {
+    if (typeof window === "undefined") {
+      return;
+    }
+
+    const mediaQueryList = window.matchMedia(query);
+    const onChange = () => setMatches(mediaQueryList.matches);
+
+    onChange();
+    mediaQueryList.addEventListener("change", onChange);
+
+    return () => {
+      mediaQueryList.removeEventListener("change", onChange);
+    };
+  }, [query]);
+
+  return matches;
+}
+
+function getStoredDealCreatePanelWidth() {
+  if (typeof window === "undefined") {
+    return DEAL_CREATE_PANEL_DEFAULT_WIDTH;
+  }
+
+  const storedWidth = Number(
+    window.localStorage.getItem(DEAL_CREATE_PANEL_STORAGE_KEY),
+  );
+
+  return clampDealCreatePanelWidth(storedWidth, window.innerWidth);
+}
+
+function clampDealCreatePanelWidth(width: number, viewportWidth?: number) {
+  const fallbackWidth = Number.isFinite(width)
+    ? width
+    : DEAL_CREATE_PANEL_DEFAULT_WIDTH;
+  const maxWidth = getDealCreatePanelMaxWidth(viewportWidth);
+
+  return Math.min(
+    Math.max(fallbackWidth, DEAL_CREATE_PANEL_MIN_WIDTH),
+    maxWidth,
+  );
+}
+
+function getDealCreatePanelMaxWidth(viewportWidth?: number) {
+  if (!viewportWidth || viewportWidth <= 0) {
+    return DEAL_CREATE_PANEL_DEFAULT_WIDTH;
+  }
+
+  return Math.max(
+    DEAL_CREATE_PANEL_MIN_WIDTH,
+    Math.floor(viewportWidth * DEAL_CREATE_PANEL_MAX_RATIO),
+  );
 }
 
 function TableHeaderCell({
@@ -1251,7 +1664,7 @@ function ErrorState({ onRetry }: { readonly onRetry: () => void }) {
 
 function DesktopLoadingState() {
   return (
-    <div className="flex w-full min-w-[600px] flex-col overflow-hidden rounded-lg border border-[#E2E5EC] bg-white shadow-sm">
+    <div className="flex w-full min-w-0 flex-col overflow-hidden rounded-lg border border-[#E2E5EC] bg-white shadow-sm">
       {Array.from({ length: 6 }).map((_, i) => (
         <div
           className="h-[66px] animate-pulse border-b border-[#E2E5EC] bg-[#F9FAFB] last:border-b-0"

@@ -1,13 +1,18 @@
 // 기능 : 딜 추가 모달 — Backend Deal API 생성 계약 기준
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
+  ArrowLeft,
   Building2,
   BadgeCheck,
+  Check,
   ChevronDown,
+  ChevronsRight,
   HandCoins,
   IdCard,
   Layers,
+  Loader2,
   MapPin,
+  Maximize2,
   Package,
   Plus,
   type LucideIcon,
@@ -82,14 +87,24 @@ import { cn } from "@/utils/cn";
 
 type DealCreateDialogProps = {
   readonly open: boolean;
+  readonly initialValues?: Partial<DealCreateFormValues>;
+  readonly mode?: "docked" | "overlay" | "page";
+  readonly width?: number;
   readonly onOpenChange: (open: boolean) => void;
   readonly onCreated: (deal: DealDetail) => void;
+  readonly onExpand?: (values: DealCreateFormValues) => void;
+  readonly onResizeStart?: () => void;
 };
 
 export function DealCreateDialog({
   open,
+  initialValues,
+  mode = "overlay",
+  width,
   onOpenChange,
   onCreated,
+  onExpand,
+  onResizeStart,
 }: DealCreateDialogProps) {
   const [selectedCompanyIds, setSelectedCompanyIds] = useState<string[]>([]);
   const [selectedContactIds, setSelectedContactIds] = useState<string[]>([]);
@@ -105,6 +120,7 @@ export function DealCreateDialog({
   const {
     register,
     handleSubmit,
+    getValues,
     reset,
     setValue,
     watch,
@@ -123,17 +139,41 @@ export function DealCreateDialog({
 
   useEffect(() => {
     if (open) {
-      reset(emptyDealCreateFormValues);
-      setSelectedCompanyIds([]);
-      setSelectedContactIds([]);
-      setSelectedProductIds([]);
+      const nextValues = {
+        ...emptyDealCreateFormValues,
+        ...initialValues,
+        companyIds: initialValues?.companyIds ?? [],
+        contactIds: initialValues?.contactIds ?? [],
+        productIds: initialValues?.productIds ?? [],
+      };
+
+      reset(nextValues);
+      setSelectedCompanyIds(nextValues.companyIds);
+      setSelectedContactIds(nextValues.contactIds);
+      setSelectedProductIds(nextValues.productIds);
       setIsCompanyCreateOpen(false);
       setIsContactCreateOpen(false);
       setIsProductCreateOpen(false);
     }
-  }, [open, reset]);
+  }, [initialValues, open, reset]);
 
-  if (!open) return null;
+  useEffect(() => {
+    if (!open) {
+      return;
+    }
+
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape" && !createDealMutation.isPending) {
+        onOpenChange(false);
+      }
+    };
+
+    window.addEventListener("keydown", onKeyDown);
+
+    return () => {
+      window.removeEventListener("keydown", onKeyDown);
+    };
+  }, [createDealMutation.isPending, onOpenChange, open]);
 
   const formId = "deal-create-form";
 
@@ -279,25 +319,83 @@ export function DealCreateDialog({
         )
       : [];
   const productOptions = productOptionsQuery.data ?? [];
+  const isDocked = mode === "docked";
+  const isPage = mode === "page";
+  const CloseIcon = isPage ? ArrowLeft : ChevronsRight;
 
-  return (
-    <>
-      <ModalShell
-        footer={
-          <ModalFooterActions
-            formId={formId}
-            isSubmitting={createDealMutation.isPending}
-            onCancel={() => onOpenChange(false)}
-            onSubmit={() => void onSubmit()}
-          />
-        }
-        open={open}
-        panelClassName="max-h-[86vh] md:max-h-[760px]"
-        size="md"
-        title="딜 생성"
-        onOpenChange={onOpenChange}
+  if (!open && !isDocked) {
+    return null;
+  }
+
+  const panel = (
+    <section
+      aria-label="딜 생성"
+      aria-modal={isPage ? undefined : !isDocked}
+      className={
+        isPage
+          ? "flex min-h-full flex-col bg-white"
+          : isDocked
+            ? `fixed inset-y-0 right-0 z-50 flex h-screen shrink-0 flex-col bg-white shadow-[0_18px_48px_rgba(15,23,42,0.16)] transition-[transform,opacity] duration-[500ms] ease-out will-change-transform ${
+                open
+                  ? "deal-create-panel-enter pointer-events-auto translate-x-0 opacity-100"
+                  : "pointer-events-none translate-x-full opacity-0"
+              }`
+            : "pointer-events-auto relative flex h-full w-full flex-col bg-white shadow-[0_18px_48px_rgba(15,23,42,0.16)] sm:max-w-[520px]"
+      }
+      role={isPage ? undefined : "dialog"}
+      style={isDocked ? { width: width ?? 520 } : undefined}
+    >
+      {isDocked ? (
+        <button
+          aria-label="딜 생성 패널 폭 조절"
+          className="absolute -left-1 top-0 z-10 h-full w-2 cursor-col-resize transition hover:bg-[#EFF6FF] focus:bg-[#EFF6FF] focus:outline-none"
+          onMouseDown={(event) => {
+            event.preventDefault();
+            onResizeStart?.();
+          }}
+          type="button"
+        />
+      ) : null}
+      <header className="flex h-10 shrink-0 items-center px-1.5">
+        <div className="flex shrink-0 items-center gap-0.5">
+          <button
+            aria-label={isPage ? "딜 목록으로 이동" : "딜 생성 패널 접기"}
+            className="inline-flex h-8 w-8 items-center justify-center rounded-md text-[#8A8F98] transition hover:bg-[#F3F4F6] hover:text-[#374151] disabled:cursor-not-allowed disabled:opacity-50"
+            disabled={createDealMutation.isPending}
+            onClick={() => onOpenChange(false)}
+            title={isPage ? "딜 목록으로 이동" : "딜 생성 패널 접기"}
+            type="button"
+          >
+            <CloseIcon className="h-4 w-4" />
+          </button>
+          {onExpand && !isPage ? (
+            <button
+              aria-label="전체 생성 페이지로 열기"
+              className="inline-flex h-8 w-8 items-center justify-center rounded-md text-[#8A8F98] transition hover:bg-[#F3F4F6] hover:text-[#374151] disabled:cursor-not-allowed disabled:opacity-50"
+              disabled={createDealMutation.isPending}
+              onClick={() => onExpand(getValues())}
+              title="전체 생성 페이지로 열기"
+              type="button"
+            >
+              <Maximize2 className="h-4 w-4" />
+            </button>
+          ) : null}
+        </div>
+      </header>
+
+      <form
+        className="flex min-h-0 flex-1 flex-col"
+        id={formId}
+        onSubmit={(event) => void onSubmit(event)}
       >
-        <ModalForm id={formId} onSubmit={onSubmit}>
+        <div className="min-h-0 flex-1 overflow-y-auto px-5 py-6">
+          <div
+            className={
+              isPage
+                ? "mx-auto grid w-full max-w-[920px] gap-5"
+                : "grid gap-5"
+            }
+          >
           {/* 딜 기본 정보 */}
           <ModalFormSection title="딜 기본 정보">
             <ModalFormRow columns={2}>
@@ -529,8 +627,52 @@ export function DealCreateDialog({
               variant="inline"
             />
           ) : null}
-        </ModalForm>
-      </ModalShell>
+          </div>
+        </div>
+
+        <footer className="flex h-16 shrink-0 items-center px-5">
+          <div
+            className={
+              isPage
+                ? "mx-auto flex w-full max-w-[920px] justify-end gap-2"
+                : "flex w-full justify-end gap-2"
+            }
+          >
+            <button
+              className="inline-flex h-9 items-center justify-center rounded-md border border-[#E5E7EB] bg-white px-3 text-[13px] font-medium text-[#475569] transition hover:bg-[#F9FAFB] disabled:cursor-not-allowed disabled:opacity-50"
+              disabled={createDealMutation.isPending}
+              onClick={() => onOpenChange(false)}
+              type="button"
+            >
+              {isPage ? "목록으로" : "닫기"}
+            </button>
+            <button
+              className="inline-flex h-9 items-center justify-center gap-2 rounded-md bg-[#4880EE] px-3.5 text-[13px] font-semibold text-white transition hover:bg-[#1D4ED8] disabled:cursor-not-allowed disabled:opacity-60"
+              disabled={createDealMutation.isPending}
+              type="submit"
+            >
+              {createDealMutation.isPending ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                <Check className="h-4 w-4" />
+              )}
+              {createDealMutation.isPending ? "저장 중" : "저장"}
+            </button>
+          </div>
+        </footer>
+      </form>
+    </section>
+  );
+
+  return (
+    <>
+      {isDocked || isPage ? (
+        panel
+      ) : (
+        <div className="pointer-events-none fixed inset-y-0 right-0 z-50 flex w-full justify-end">
+          {panel}
+        </div>
+      )}
 
       <QuickCompanyCreateDialog
         open={isCompanyCreateOpen}
@@ -1671,4 +1813,3 @@ function findProductOptionByName(
   const target = normalizeText(productName);
   return options.find((option) => normalizeText(option.productName) === target);
 }
-

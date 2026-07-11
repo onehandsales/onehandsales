@@ -130,4 +130,20 @@
   .product-create-panel-enter {
     animation: product-create-panel-enter 500ms ease-out;
   }
+
+  @keyframes deal-create-panel-enter {
+    from {
+      opacity: 0;
+      transform: translateX(100%);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  .deal-create-panel-enter {
+    animation: deal-create-panel-enter 500ms ease-out;
+  }
 }

@@ -63,7 +63,7 @@ const PRODUCT_SORT_OPTIONS: Array<{
 ];
 
 const PRODUCT_TABLE_GRID_STYLE = {
-  gridTemplateColumns: "repeat(5, minmax(90px, 1fr))",
+  gridTemplateColumns: "repeat(5, minmax(0, 1fr))",
 };
 const PRODUCT_CREATE_PANEL_STORAGE_KEY = "onehand.product.createPanelWidth";
 const PRODUCT_CREATE_PANEL_DEFAULT_WIDTH = 520;
@@ -644,7 +644,7 @@ export function ProductListScreen({
             </p>
           ) : null}
 
-          <div className="flex w-full min-w-[520px] flex-col overflow-hidden rounded-lg border border-[#E2E5EC] bg-white shadow-sm">
+          <div className="flex w-full min-w-0 flex-col overflow-hidden rounded-lg border border-[#E2E5EC] bg-white shadow-sm">
             <div
               className="grid h-11 shrink-0 items-center border-b border-[#E6EAF0] bg-[#FAFBFC] px-3 md:px-4 xl:px-6"
               style={PRODUCT_TABLE_GRID_STYLE}
