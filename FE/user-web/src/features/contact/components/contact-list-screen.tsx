@@ -1248,11 +1248,15 @@ function ContactTaxonomyFilterCombobox<
       ref={wrapperRef}
       className={cn(
         "relative shrink-0",
-        layout === "full"
-          ? "w-full"
-          : isMobile
-            ? "w-[120px]"
-            : "w-[clamp(136px,14vw,178px)]",
+        isOpen
+          ? layout === "full"
+            ? "w-full"
+            : isMobile
+              ? "w-[120px]"
+              : "w-[clamp(136px,14vw,178px)]"
+          : layout === "full"
+            ? "w-full"
+            : "w-auto",
       )}
     >
       <div className="relative">
@@ -1261,7 +1265,8 @@ function ContactTaxonomyFilterCombobox<
             aria-expanded={false}
             aria-label={`${itemKindLabel} 필터`}
             className={cn(
-              "inline-flex w-full min-w-0 items-center gap-1.5 rounded-md border-0 bg-transparent px-2 font-semibold outline-none transition-[background-color,color,transform,opacity] duration-150 active:scale-[0.97]",
+              "inline-flex min-w-0 items-center gap-1.5 rounded-md border-0 bg-transparent px-2 font-semibold outline-none transition-[background-color,color,transform,opacity] duration-150 active:scale-[0.97]",
+              layout === "full" && "w-full",
               isMobile ? "h-7 text-[12px]" : "h-8 text-[13px]",
               selectedIds.length > 0
                 ? "text-[#1D4ED8] hover:bg-[#EFF6FF]"
@@ -1271,7 +1276,7 @@ function ContactTaxonomyFilterCombobox<
             type="button"
           >
             <Icon className={isMobile ? "h-3 w-3 shrink-0" : "h-3.5 w-3.5 shrink-0"} />
-            <span className="min-w-0 flex-1 truncate text-left">
+            <span className={cn("min-w-0 truncate text-left", layout === "full" && "flex-1")}>
               {itemKindLabel}
             </span>
             <ChevronDown className={isMobile ? "h-3 w-3 shrink-0 text-[#9CA3AF]" : "h-3.5 w-3.5 shrink-0 text-[#9CA3AF]"} />

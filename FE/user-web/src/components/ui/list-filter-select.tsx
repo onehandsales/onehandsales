@@ -127,7 +127,10 @@ export function ListFilterSelect<TValue extends string>({
   };
 
   return (
-    <div className={cn("relative shrink-0", className)} ref={wrapperRef}>
+    <div
+      className={cn("relative shrink-0", isOpen ? className : "w-auto")}
+      ref={wrapperRef}
+    >
       <div className="relative">
         {!isOpen ? (
           <button
@@ -135,7 +138,7 @@ export function ListFilterSelect<TValue extends string>({
             aria-haspopup="listbox"
             aria-label={ariaLabel}
             className={cn(
-              "inline-flex h-8 w-full min-w-0 items-center gap-1.5 rounded-md border-0 bg-transparent px-2 text-[13px] font-semibold outline-none transition-[background-color,color,transform,opacity] duration-150 active:scale-[0.97] disabled:cursor-not-allowed disabled:opacity-60",
+              "inline-flex h-8 min-w-0 items-center gap-1.5 rounded-md border-0 bg-transparent px-2 text-[13px] font-semibold outline-none transition-[background-color,color,transform,opacity] duration-150 active:scale-[0.97] disabled:cursor-not-allowed disabled:opacity-60",
               active
                 ? "text-[#1D4ED8] hover:bg-[#EFF6FF]"
                 : "text-[#5F6368] hover:bg-[#F3F4F6]",
@@ -145,9 +148,7 @@ export function ListFilterSelect<TValue extends string>({
             type="button"
           >
             {Icon ? <Icon className="h-3.5 w-3.5 shrink-0" /> : null}
-            <span className="min-w-0 flex-1 truncate text-left">
-              {displayLabel}
-            </span>
+            <span className="min-w-0 truncate text-left">{displayLabel}</span>
             <ChevronDown className="h-3.5 w-3.5 shrink-0 text-[#9CA3AF]" />
           </button>
         ) : (

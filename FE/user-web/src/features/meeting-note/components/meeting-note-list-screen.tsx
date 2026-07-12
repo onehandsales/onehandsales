@@ -975,8 +975,14 @@ function MeetingNoteFilterMultiSelect<TItem extends MeetingNoteFilterItem>({
     <div
       className={cn(
         "relative shrink-0",
-        layout === "full" ? "w-full" : "w-[clamp(136px,14vw,178px)]",
         className,
+        isOpen
+          ? layout === "full"
+            ? "w-full"
+            : "w-[clamp(136px,14vw,178px)]"
+          : layout === "full"
+            ? "w-full"
+            : "w-auto",
       )}
       ref={wrapperRef}
     >
@@ -986,7 +992,8 @@ function MeetingNoteFilterMultiSelect<TItem extends MeetingNoteFilterItem>({
             aria-expanded={false}
             aria-label={`${itemKindLabel} 필터`}
             className={cn(
-              "inline-flex h-8 w-full min-w-0 items-center gap-1.5 rounded-md border-0 bg-transparent px-2 text-[13px] font-semibold outline-none transition-[background-color,color,transform,opacity] duration-150 active:scale-[0.97]",
+              "inline-flex h-8 min-w-0 items-center gap-1.5 rounded-md border-0 bg-transparent px-2 text-[13px] font-semibold outline-none transition-[background-color,color,transform,opacity] duration-150 active:scale-[0.97]",
+              layout === "full" && "w-full",
               selectedIds.length > 0
                 ? "text-[#1D4ED8] hover:bg-[#EFF6FF]"
                 : "text-[#5F6368] hover:bg-[#F3F4F6]",
@@ -995,7 +1002,12 @@ function MeetingNoteFilterMultiSelect<TItem extends MeetingNoteFilterItem>({
             type="button"
           >
             <Icon className="h-3.5 w-3.5 shrink-0" />
-            <span className="min-w-0 flex-1 truncate text-left">
+            <span
+              className={cn(
+                "min-w-0 truncate text-left",
+                layout === "full" && "flex-1",
+              )}
+            >
               {itemKindLabel}
             </span>
             <ChevronDown className="h-3.5 w-3.5 shrink-0 text-[#9CA3AF]" />
