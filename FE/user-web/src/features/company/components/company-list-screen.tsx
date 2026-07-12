@@ -594,7 +594,7 @@ export function CompanyListScreen({
                 : "border-[#E2E5EC] bg-white text-[#475569] hover:border-[#D1D5DB] hover:bg-[#F5F6F8]",
               isCompactFilterMode
                 ? "scale-100 opacity-100"
-                : "pointer-events-none scale-95 opacity-0",
+                : "!hidden pointer-events-none scale-95 opacity-0",
             )}
             onClick={() => setIsCompactFilterOpen((open) => !open)}
             tabIndex={isCompactFilterMode ? 0 : -1}
@@ -611,10 +611,10 @@ export function CompanyListScreen({
             aria-hidden={isCompactFilterMode}
             inert={isCompactFilterMode ? true : undefined}
             className={cn(
-              "flex shrink-0 items-center gap-1.5 transition-[opacity,transform] duration-300 ease-out lg:gap-2",
+              "flex shrink-0 items-center gap-1.5 transition-opacity duration-300 ease-out lg:gap-2",
               isCompactFilterMode
-                ? "pointer-events-none -translate-x-1 opacity-0"
-                : "translate-x-0 opacity-100",
+                ? "!hidden pointer-events-none opacity-0"
+                : "opacity-100",
             )}
           >
             <CompanyTaxonomyFilterCombobox
