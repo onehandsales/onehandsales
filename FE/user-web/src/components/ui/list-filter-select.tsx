@@ -52,7 +52,7 @@ export function ListFilterSelect<TValue extends string>({
           normalizeListFilterText(option.label).includes(normalizedQuery),
         )
       : options;
-  const inputValue = isOpen ? search : selectedOption?.label ?? "";
+  const displayLabel = selectedOption?.label ?? ariaLabel;
 
   useEffect(() => {
     if (!isOpen) {
@@ -88,12 +88,16 @@ export function ListFilterSelect<TValue extends string>({
     };
 
     updatePopoverPosition();
+    const focusFrame = window.requestAnimationFrame(() => {
+      inputRef.current?.focus();
+    });
     document.addEventListener("mousedown", onMouseDown);
     document.addEventListener("keydown", onKeyDown);
     window.addEventListener("resize", updatePopoverPosition);
     window.addEventListener("scroll", updatePopoverPosition, true);
 
     return () => {
+      window.cancelAnimationFrame(focusFrame);
       document.removeEventListener("mousedown", onMouseDown);
       document.removeEventListener("keydown", onKeyDown);
       window.removeEventListener("resize", updatePopoverPosition);
@@ -122,88 +126,77 @@ export function ListFilterSelect<TValue extends string>({
     inputRef.current?.focus();
   };
 
-  const clearSelection = () => {
-    const defaultOption = options[0];
-
-    if (!defaultOption) {
-      return;
-    }
-
-    onChange(defaultOption.value);
-    setSearch("");
-    inputRef.current?.focus();
-    openOptions("");
-  };
-
   return (
     <div className={cn("relative shrink-0", className)} ref={wrapperRef}>
       <div className="relative">
-        {isOpen ? (
-          <Search className="pointer-events-none absolute left-3 top-1/2 h-3.5 w-3.5 shrink-0 -translate-y-1/2 text-[#6B7280]" />
-        ) : Icon ? (
-          <Icon
-            className={cn(
-              "pointer-events-none absolute left-3 top-1/2 h-3.5 w-3.5 shrink-0 -translate-y-1/2",
-              active ? "text-[#1D4ED8]" : "text-[#5F6368]",
-            )}
-          />
-        ) : null}
-        <input
-          ref={inputRef}
-          aria-autocomplete="list"
-          aria-expanded={isOpen}
-          aria-haspopup="listbox"
-          aria-label={ariaLabel}
-          autoComplete="off"
-          className={cn(
-            "h-8 w-full min-w-0 rounded-md border-0 bg-transparent text-[13px] outline-none transition-[background-color,color,transform,opacity] duration-150 disabled:cursor-not-allowed disabled:opacity-60",
-            isOpen
-              ? "bg-[#F3F4F6] pl-8 pr-7 text-[#111827]"
-              : active
-                ? cn("pr-7 font-semibold text-[#1D4ED8] hover:bg-[#EFF6FF]", Icon ? "pl-8" : "pl-3.5")
-                : cn("cursor-pointer pr-7 text-[#5F6368] hover:bg-[#F3F4F6]", Icon ? "pl-8" : "pl-3.5"),
-          )}
-          disabled={disabled}
-          onChange={(event) => openOptions(event.target.value)}
-          onFocus={() => openOptions("")}
-          onKeyDown={(event) => {
-            if (event.key === "Escape") {
-              setIsOpen(false);
-              setSearch("");
-              inputRef.current?.blur();
-              return;
-            }
-
-            if (event.key === "Enter") {
-              const firstOption = filteredOptions[0];
-
-              if (!firstOption) {
-                return;
-              }
-
-              event.preventDefault();
-              selectOption(firstOption.value);
-            }
-          }}
-          placeholder={ariaLabel}
-          value={inputValue}
-        />
-        {active || search ? (
+        {!isOpen ? (
           <button
-            aria-label={`${ariaLabel} 지우기`}
-            className="absolute right-1 top-1/2 grid h-7 w-7 -translate-y-1/2 place-items-center rounded-full text-[#9CA3AF] transition hover:bg-[#E5E7EB] hover:text-[#374151]"
-            onClick={clearSelection}
+            aria-expanded={false}
+            aria-haspopup="listbox"
+            aria-label={ariaLabel}
+            className={cn(
+              "inline-flex h-8 w-full min-w-0 items-center gap-1.5 rounded-md border-0 bg-transparent px-2 text-[13px] font-semibold outline-none transition-[background-color,color,transform,opacity] duration-150 active:scale-[0.97] disabled:cursor-not-allowed disabled:opacity-60",
+              active
+                ? "text-[#1D4ED8] hover:bg-[#EFF6FF]"
+                : "text-[#5F6368] hover:bg-[#F3F4F6]",
+            )}
+            disabled={disabled}
+            onClick={() => openOptions("")}
             type="button"
           >
-            <X className="h-3.5 w-3.5" />
+            {Icon ? <Icon className="h-3.5 w-3.5 shrink-0" /> : null}
+            <span className="min-w-0 flex-1 truncate text-left">
+              {displayLabel}
+            </span>
+            <ChevronDown className="h-3.5 w-3.5 shrink-0 text-[#9CA3AF]" />
           </button>
         ) : (
-          <ChevronDown
-            className={cn(
-              "pointer-events-none absolute right-2 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-[#9CA3AF] transition-transform",
-              isOpen && "rotate-180",
-            )}
-          />
+          <>
+            <Search className="pointer-events-none absolute left-3 top-1/2 h-3.5 w-3.5 shrink-0 -translate-y-1/2 text-[#6B7280]" />
+            <input
+              ref={inputRef}
+              aria-autocomplete="list"
+              aria-expanded={isOpen}
+              aria-haspopup="listbox"
+              aria-label={ariaLabel}
+              autoComplete="off"
+              className="h-8 w-full min-w-0 rounded-md border-0 bg-[#F3F4F6] pl-8 pr-7 text-[13px] text-[#111827] outline-none transition-[background-color,color,transform,opacity] duration-150 disabled:cursor-not-allowed disabled:opacity-60"
+              disabled={disabled}
+              onChange={(event) => openOptions(event.target.value)}
+              onKeyDown={(event) => {
+                if (event.key === "Escape") {
+                  setIsOpen(false);
+                  setSearch("");
+                  inputRef.current?.blur();
+                  return;
+                }
+
+                if (event.key === "Enter") {
+                  const firstOption = filteredOptions[0];
+
+                  if (!firstOption) {
+                    return;
+                  }
+
+                  event.preventDefault();
+                  selectOption(firstOption.value);
+                }
+              }}
+              placeholder={ariaLabel}
+              value={search}
+            />
+            <button
+              aria-label={`${ariaLabel} 닫기`}
+              className="absolute right-1 top-1/2 grid h-7 w-7 -translate-y-1/2 place-items-center rounded-full text-[#9CA3AF] transition hover:bg-[#E5E7EB] hover:text-[#374151]"
+              onClick={() => {
+                setIsOpen(false);
+                setSearch("");
+              }}
+              type="button"
+            >
+              <X className="h-3.5 w-3.5" />
+            </button>
+          </>
         )}
       </div>
 

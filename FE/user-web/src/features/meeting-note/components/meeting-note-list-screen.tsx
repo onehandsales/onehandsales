@@ -887,15 +887,6 @@ function MeetingNoteFilterMultiSelect<TItem extends MeetingNoteFilterItem>({
   const wrapperRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const selectedIdSet = useMemo(() => new Set(selectedIds), [selectedIds]);
-  const selectedItems = useMemo(
-    () => items.filter((item) => selectedIdSet.has(item.id)),
-    [items, selectedIdSet],
-  );
-  const selectedSummary = getSelectedMeetingNoteFilterSummary(
-    selectedItems,
-    getLabel,
-    itemKindLabel,
-  );
   const normalizedFilterText = normalizeMeetingNoteFilterText(filterText.trim());
   const filteredItems =
     normalizedFilterText.length > 0
@@ -905,7 +896,6 @@ function MeetingNoteFilterMultiSelect<TItem extends MeetingNoteFilterItem>({
           ),
         )
       : items;
-  const inputValue = isOpen ? filterText : selectedSummary;
 
   useEffect(() => {
     if (!isOpen) {
@@ -938,11 +928,15 @@ function MeetingNoteFilterMultiSelect<TItem extends MeetingNoteFilterItem>({
     };
 
     updatePopoverPosition();
+    const focusFrame = window.requestAnimationFrame(() => {
+      inputRef.current?.focus();
+    });
     document.addEventListener("mousedown", onMouseDown);
     window.addEventListener("resize", updatePopoverPosition);
     window.addEventListener("scroll", updatePopoverPosition, true);
 
     return () => {
+      window.cancelAnimationFrame(focusFrame);
       document.removeEventListener("mousedown", onMouseDown);
       window.removeEventListener("resize", updatePopoverPosition);
       window.removeEventListener("scroll", updatePopoverPosition, true);
@@ -987,69 +981,70 @@ function MeetingNoteFilterMultiSelect<TItem extends MeetingNoteFilterItem>({
       ref={wrapperRef}
     >
       <div className="relative">
-        {isOpen ? (
-          <Search className="pointer-events-none absolute left-3 top-1/2 h-3 w-3 shrink-0 -translate-y-1/2 text-[#6B7280]" />
-        ) : (
-          <Icon
-            className={cn(
-              "pointer-events-none absolute left-3 top-1/2 h-3.5 w-3.5 shrink-0 -translate-y-1/2",
-              selectedIds.length > 0 ? "text-[#1D4ED8]" : "text-[#5F6368]",
-            )}
-          />
-        )}
-        <input
-          aria-autocomplete="list"
-          aria-expanded={isOpen}
-          aria-label={`${itemKindLabel} 필터`}
-          autoComplete="off"
-          className={cn(
-            "h-8 w-full min-w-0 rounded-md border-0 bg-transparent text-[13px] outline-none transition-[background-color,color,transform,opacity] duration-150",
-            isOpen
-              ? "bg-[#F3F4F6] pl-8 pr-7 text-[#111827]"
-              : selectedIds.length > 0
-                ? "bg-transparent pl-8 pr-7 font-semibold text-[#1D4ED8] hover:bg-[#EFF6FF]"
-                : "cursor-pointer pl-8 pr-7 text-[#5F6368] hover:bg-[#F3F4F6]",
-          )}
-          onChange={(event) => openOptions(event.target.value)}
-          onFocus={() => openOptions("")}
-          onKeyDown={(event) => {
-            if (event.key === "Escape") {
-              setIsOpen(false);
-              setFilterText("");
-              inputRef.current?.blur();
-              return;
-            }
-
-            if (event.key === "Enter") {
-              const firstItem = filteredItems[0];
-              if (!firstItem) {
-                return;
-              }
-
-              event.preventDefault();
-              toggleItem(firstItem);
-            }
-          }}
-          placeholder={`${itemKindLabel} 선택`}
-          ref={inputRef}
-          value={inputValue}
-        />
-        {selectedIds.length > 0 || filterText ? (
+        {!isOpen ? (
           <button
-            aria-label={`${itemKindLabel} 필터 지우기`}
-            className="absolute right-1 top-1/2 grid h-7 w-7 -translate-y-1/2 place-items-center rounded-full text-[#9CA3AF] transition hover:bg-[#E5E7EB] hover:text-[#374151]"
-            onClick={clearSelection}
+            aria-expanded={false}
+            aria-label={`${itemKindLabel} 필터`}
+            className={cn(
+              "inline-flex h-8 w-full min-w-0 items-center gap-1.5 rounded-md border-0 bg-transparent px-2 text-[13px] font-semibold outline-none transition-[background-color,color,transform,opacity] duration-150 active:scale-[0.97]",
+              selectedIds.length > 0
+                ? "text-[#1D4ED8] hover:bg-[#EFF6FF]"
+                : "text-[#5F6368] hover:bg-[#F3F4F6]",
+            )}
+            onClick={() => openOptions("")}
             type="button"
           >
-            <X className="h-3.5 w-3.5" />
+            <Icon className="h-3.5 w-3.5 shrink-0" />
+            <span className="min-w-0 flex-1 truncate text-left">
+              {itemKindLabel}
+            </span>
+            <ChevronDown className="h-3.5 w-3.5 shrink-0 text-[#9CA3AF]" />
           </button>
         ) : (
-          <ChevronDown
-            className={cn(
-              "pointer-events-none absolute right-2 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-[#9CA3AF] transition-transform",
-              isOpen && "rotate-180",
+          <>
+            <Search className="pointer-events-none absolute left-3 top-1/2 h-3 w-3 shrink-0 -translate-y-1/2 text-[#6B7280]" />
+            <input
+              aria-autocomplete="list"
+              aria-expanded={isOpen}
+              aria-label={`${itemKindLabel} 필터`}
+              autoComplete="off"
+              className="h-8 w-full min-w-0 rounded-md border-0 bg-[#F3F4F6] pl-8 pr-7 text-[13px] text-[#111827] outline-none transition-[background-color,color,transform,opacity] duration-150"
+              onChange={(event) => openOptions(event.target.value)}
+              onKeyDown={(event) => {
+                if (event.key === "Escape") {
+                  setIsOpen(false);
+                  setFilterText("");
+                  inputRef.current?.blur();
+                  return;
+                }
+
+                if (event.key === "Enter") {
+                  const firstItem = filteredItems[0];
+                  if (!firstItem) {
+                    return;
+                  }
+
+                  event.preventDefault();
+                  toggleItem(firstItem);
+                }
+              }}
+              placeholder={`${itemKindLabel} 선택`}
+              ref={inputRef}
+              value={filterText}
+            />
+            {selectedIds.length > 0 || filterText ? (
+              <button
+                aria-label={`${itemKindLabel} 필터 지우기`}
+                className="absolute right-1 top-1/2 grid h-7 w-7 -translate-y-1/2 place-items-center rounded-full text-[#9CA3AF] transition hover:bg-[#E5E7EB] hover:text-[#374151] active:scale-[0.97]"
+                onClick={clearSelection}
+                type="button"
+              >
+                <X className="h-3.5 w-3.5" />
+              </button>
+            ) : (
+              <ChevronDown className="pointer-events-none absolute right-2 top-1/2 h-3.5 w-3.5 -translate-y-1/2 rotate-180 text-[#9CA3AF]" />
             )}
-          />
+          </>
         )}
       </div>
 
@@ -1158,23 +1153,6 @@ function getCompactMeetingNoteFilterPopoverPosition(
     top: rect.bottom + 6,
     width,
   };
-}
-
-function getSelectedMeetingNoteFilterSummary<TItem extends MeetingNoteFilterItem>(
-  selectedItems: readonly TItem[],
-  getLabel: (item: TItem) => string,
-  itemKindLabel: string,
-) {
-  if (selectedItems.length === 0) {
-    return "";
-  }
-
-  if (selectedItems.length === 1) {
-    const selectedItem = selectedItems[0];
-    return selectedItem ? getLabel(selectedItem) : "";
-  }
-
-  return `${itemKindLabel} ${selectedItems.length}개`;
 }
 
 function normalizeMeetingNoteFilterText(value: string) {

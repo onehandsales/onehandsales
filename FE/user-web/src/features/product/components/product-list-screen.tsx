@@ -1128,16 +1128,6 @@ function ProductTaxonomyFilterCombobox<
   const inputRef = useRef<HTMLInputElement>(null);
 
   const selectedIdSet = useMemo(() => new Set(selectedIds), [selectedIds]);
-  const selectedItems = useMemo(
-    () => items.filter((item) => selectedIdSet.has(item.id)),
-    [items, selectedIdSet],
-  );
-  const selectedSummary = getSelectedTaxonomyFilterSummary(
-    selectedItems,
-    getLabel,
-    itemKindLabel,
-  );
-
   const query = search.trim();
   const normalizedQuery = normalizeFilterText(query);
   const filteredItems =
@@ -1147,7 +1137,6 @@ function ProductTaxonomyFilterCombobox<
         )
       : items;
   const isMobile = size === "mobile";
-  const inputValue = isOpen ? search : selectedSummary;
 
   useEffect(() => {
     if (!isOpen) {
@@ -1179,11 +1168,15 @@ function ProductTaxonomyFilterCombobox<
     };
 
     updatePopoverPosition();
+    const focusFrame = window.requestAnimationFrame(() => {
+      inputRef.current?.focus();
+    });
     document.addEventListener("mousedown", onMouseDown);
     window.addEventListener("resize", updatePopoverPosition);
     window.addEventListener("scroll", updatePopoverPosition, true);
 
     return () => {
+      window.cancelAnimationFrame(focusFrame);
       document.removeEventListener("mousedown", onMouseDown);
       window.removeEventListener("resize", updatePopoverPosition);
       window.removeEventListener("scroll", updatePopoverPosition, true);
@@ -1229,93 +1222,90 @@ function ProductTaxonomyFilterCombobox<
       )}
     >
       <div className="relative">
-        {isOpen ? (
-          <Search
-            className={cn(
-              "pointer-events-none absolute top-1/2 shrink-0 -translate-y-1/2 text-[#6B7280]",
-              isMobile ? "left-2.5 h-3 w-3" : "left-3 h-3 w-3",
-            )}
-          />
-        ) : (
-          <Icon
-            className={cn(
-              "pointer-events-none absolute top-1/2 shrink-0 -translate-y-1/2",
-              selectedIds.length > 0 ? "text-[#1D4ED8]" : "text-[#5F6368]",
-              isMobile ? "left-2.5 h-3 w-3" : "left-3 h-3.5 w-3.5",
-            )}
-          />
-        )}
-        <input
-          ref={inputRef}
-          aria-autocomplete="list"
-          aria-expanded={isOpen}
-          aria-label={`${itemKindLabel} 필터`}
-          autoComplete="off"
-          className={cn(
-            "w-full min-w-0 border-0 bg-transparent outline-none transition-[background-color,color,transform,opacity] duration-150",
-            isMobile
-              ? "h-7 rounded-md text-[12px]"
-              : "h-8 rounded-md text-[13px]",
-            isOpen
-              ? cn(
-                  "bg-[#F3F4F6] text-[#111827]",
-                  isMobile ? "pl-7 pr-7" : "pl-8 pr-7",
-                )
-              : selectedIds.length > 0
-                ? cn(
-                    getTaxonomyFilterInputSelectedClass(tone),
-                    "border-0 bg-transparent text-[#1D4ED8] hover:bg-[#EFF6FF]",
-                    isMobile ? "pl-7 pr-7" : "pl-8 pr-7",
-                  )
-                : isMobile
-                  ? "cursor-pointer pl-7 pr-7 text-[#5F6368] hover:bg-[#F3F4F6]"
-                  : "cursor-pointer pl-8 pr-7 text-[#5F6368] hover:bg-[#F3F4F6]",
-          )}
-          onChange={(event) => {
-            openOptions(event.target.value);
-          }}
-          onFocus={() => openOptions("")}
-          onKeyDown={(event) => {
-            if (event.key === "Escape") {
-              setIsOpen(false);
-              setSearch("");
-              inputRef.current?.blur();
-              return;
-            }
-
-            if (event.key === "Enter") {
-              const firstItem = filteredItems[0];
-              if (!firstItem) {
-                return;
-              }
-              event.preventDefault();
-              toggleItem(firstItem);
-            }
-          }}
-          placeholder={`${itemKindLabel} 선택`}
-          value={inputValue}
-        />
-        {/* Right icon: × when selected/searching, ▾ when idle */}
-        {selectedIds.length > 0 || search ? (
+        {!isOpen ? (
           <button
-            aria-label={`${itemKindLabel} 필터 지우기`}
+            aria-expanded={false}
+            aria-label={`${itemKindLabel} 필터`}
             className={cn(
-              "absolute right-1 top-1/2 grid -translate-y-1/2 place-items-center rounded-full text-[#9CA3AF] transition hover:bg-[#E5E7EB] hover:text-[#374151]",
-              isMobile ? "h-6 w-6" : "h-7 w-7",
+              "inline-flex w-full min-w-0 items-center gap-1.5 rounded-md border-0 bg-transparent px-2 font-semibold outline-none transition-[background-color,color,transform,opacity] duration-150 active:scale-[0.97]",
+              isMobile ? "h-7 text-[12px]" : "h-8 text-[13px]",
+              selectedIds.length > 0
+                ? "text-[#1D4ED8] hover:bg-[#EFF6FF]"
+                : "text-[#5F6368] hover:bg-[#F3F4F6]",
             )}
-            onClick={clearSelection}
+            onClick={() => openOptions("")}
             type="button"
           >
-            <X className={isMobile ? "h-3 w-3" : "h-3.5 w-3.5"} />
+            <Icon className={isMobile ? "h-3 w-3 shrink-0" : "h-3.5 w-3.5 shrink-0"} />
+            <span className="min-w-0 flex-1 truncate text-left">
+              {itemKindLabel}
+            </span>
+            <ChevronDown className={isMobile ? "h-3 w-3 shrink-0 text-[#9CA3AF]" : "h-3.5 w-3.5 shrink-0 text-[#9CA3AF]"} />
           </button>
         ) : (
-          <ChevronDown
-            className={cn(
-              "pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-[#9CA3AF] transition-transform",
-              isMobile ? "h-3 w-3" : "h-3.5 w-3.5",
-              isOpen && "rotate-180",
+          <>
+            <Search
+              className={cn(
+                "pointer-events-none absolute top-1/2 shrink-0 -translate-y-1/2 text-[#6B7280]",
+                isMobile ? "left-2.5 h-3 w-3" : "left-3 h-3 w-3",
+              )}
+            />
+            <input
+              ref={inputRef}
+              aria-autocomplete="list"
+              aria-expanded={isOpen}
+              aria-label={`${itemKindLabel} 필터`}
+              autoComplete="off"
+              className={cn(
+                "w-full min-w-0 border-0 bg-[#F3F4F6] text-[#111827] outline-none transition-[background-color,color,transform,opacity] duration-150",
+                isMobile
+                  ? "h-7 rounded-md pl-7 pr-7 text-[12px]"
+                  : "h-8 rounded-md pl-8 pr-7 text-[13px]",
+              )}
+              onChange={(event) => {
+                openOptions(event.target.value);
+              }}
+              onKeyDown={(event) => {
+                if (event.key === "Escape") {
+                  setIsOpen(false);
+                  setSearch("");
+                  inputRef.current?.blur();
+                  return;
+                }
+
+                if (event.key === "Enter") {
+                  const firstItem = filteredItems[0];
+                  if (!firstItem) {
+                    return;
+                  }
+                  event.preventDefault();
+                  toggleItem(firstItem);
+                }
+              }}
+              placeholder={`${itemKindLabel} 선택`}
+              value={search}
+            />
+            {selectedIds.length > 0 || search ? (
+              <button
+                aria-label={`${itemKindLabel} 필터 지우기`}
+                className={cn(
+                  "absolute right-1 top-1/2 grid -translate-y-1/2 place-items-center rounded-full text-[#9CA3AF] transition hover:bg-[#E5E7EB] hover:text-[#374151] active:scale-[0.97]",
+                  isMobile ? "h-6 w-6" : "h-7 w-7",
+                )}
+                onClick={clearSelection}
+                type="button"
+              >
+                <X className={isMobile ? "h-3 w-3" : "h-3.5 w-3.5"} />
+              </button>
+            ) : (
+              <ChevronDown
+                className={cn(
+                  "pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 rotate-180 text-[#9CA3AF]",
+                  isMobile ? "h-3 w-3" : "h-3.5 w-3.5",
+                )}
+              />
             )}
-          />
+          </>
         )}
       </div>
 
@@ -1447,32 +1437,6 @@ function getFieldFilterPopoverPosition(
     top: rect.bottom + 4,
     width,
   };
-}
-
-function getSelectedTaxonomyFilterSummary<
-  TItem extends ProductTaxonomyFilterItem,
->(
-  selectedItems: readonly TItem[],
-  getLabel: (item: TItem) => string,
-  itemKindLabel: string,
-) {
-  if (selectedItems.length === 0) {
-    return "";
-  }
-
-  if (selectedItems.length === 1) {
-    const selectedItem = selectedItems[0];
-    return selectedItem ? getLabel(selectedItem) : "";
-  }
-
-  return `${itemKindLabel} ${selectedItems.length}개`;
-}
-
-function getTaxonomyFilterInputSelectedClass(tone: ProductTaxonomyFilterTone) {
-  switch (tone) {
-    case "blue":
-      return "border-[#E2E5EC] bg-[#EFF6FF] font-semibold text-[#1D4ED8]";
-  }
 }
 
 function getTaxonomyFilterItemSelectedClass(tone: ProductTaxonomyFilterTone) {
