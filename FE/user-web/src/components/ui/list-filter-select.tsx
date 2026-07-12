@@ -28,7 +28,6 @@ type PopoverPosition = {
 export function ListFilterSelect<TValue extends string>({
   active = false,
   ariaLabel,
-  className,
   disabled = false,
   icon: Icon,
   onChange,
@@ -40,6 +39,7 @@ export function ListFilterSelect<TValue extends string>({
   const [popoverPosition, setPopoverPosition] =
     useState<PopoverPosition | null>(null);
   const wrapperRef = useRef<HTMLDivElement>(null);
+  const triggerRef = useRef<HTMLButtonElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const selectedOption = useMemo(
     () => options.find((option) => option.value === value) ?? options[0],
@@ -66,11 +66,11 @@ export function ListFilterSelect<TValue extends string>({
     }
 
     const updatePopoverPosition = () => {
-      if (!inputRef.current) {
+      if (!triggerRef.current) {
         return;
       }
 
-      setPopoverPosition(getPopoverPosition(inputRef.current));
+      setPopoverPosition(getPopoverPosition(triggerRef.current));
     };
     const onMouseDown = (event: MouseEvent) => {
       if (
@@ -83,7 +83,7 @@ export function ListFilterSelect<TValue extends string>({
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
         setIsOpen(false);
-        inputRef.current?.focus();
+        triggerRef.current?.focus();
       }
     };
 
@@ -112,8 +112,8 @@ export function ListFilterSelect<TValue extends string>({
 
     setSearch(nextSearch);
 
-    if (inputRef.current) {
-      setPopoverPosition(getPopoverPosition(inputRef.current));
+    if (triggerRef.current) {
+      setPopoverPosition(getPopoverPosition(triggerRef.current));
     }
 
     setIsOpen(true);
@@ -123,82 +123,38 @@ export function ListFilterSelect<TValue extends string>({
     onChange(nextValue);
     setSearch("");
     setIsOpen(false);
-    inputRef.current?.focus();
+    triggerRef.current?.focus();
   };
 
   return (
-    <div
-      className={cn("relative shrink-0", isOpen ? className : "w-auto")}
-      ref={wrapperRef}
-    >
+    <div className={cn("relative w-auto shrink-0")} ref={wrapperRef}>
       <div className="relative">
-        {!isOpen ? (
-          <button
-            aria-expanded={false}
-            aria-haspopup="listbox"
-            aria-label={ariaLabel}
-            className={cn(
-              "inline-flex h-8 min-w-0 items-center gap-1.5 rounded-md border-0 bg-transparent px-2 text-[13px] font-semibold outline-none transition-[background-color,color,transform,opacity] duration-150 active:scale-[0.97] disabled:cursor-not-allowed disabled:opacity-60",
-              active
+        <button
+          ref={triggerRef}
+          aria-expanded={isOpen}
+          aria-haspopup="listbox"
+          aria-label={ariaLabel}
+          className={cn(
+            "inline-flex h-8 min-w-0 items-center gap-1.5 rounded-md border-0 bg-transparent px-2 text-[13px] font-semibold outline-none transition-[background-color,color,transform,opacity] duration-150 active:scale-[0.97] disabled:cursor-not-allowed disabled:opacity-60",
+            isOpen
+              ? "bg-[#F3F4F6] text-[#374151]"
+              : active
                 ? "text-[#1D4ED8] hover:bg-[#EFF6FF]"
                 : "text-[#5F6368] hover:bg-[#F3F4F6]",
+          )}
+          disabled={disabled}
+          onClick={() => (isOpen ? setIsOpen(false) : openOptions(""))}
+          type="button"
+        >
+          {Icon ? <Icon className="h-3.5 w-3.5 shrink-0" /> : null}
+          <span className="min-w-0 truncate text-left">{displayLabel}</span>
+          <ChevronDown
+            className={cn(
+              "h-3.5 w-3.5 shrink-0 text-[#9CA3AF] transition-transform",
+              isOpen && "rotate-180",
             )}
-            disabled={disabled}
-            onClick={() => openOptions("")}
-            type="button"
-          >
-            {Icon ? <Icon className="h-3.5 w-3.5 shrink-0" /> : null}
-            <span className="min-w-0 truncate text-left">{displayLabel}</span>
-            <ChevronDown className="h-3.5 w-3.5 shrink-0 text-[#9CA3AF]" />
-          </button>
-        ) : (
-          <>
-            <Search className="pointer-events-none absolute left-3 top-1/2 h-3.5 w-3.5 shrink-0 -translate-y-1/2 text-[#6B7280]" />
-            <input
-              ref={inputRef}
-              aria-autocomplete="list"
-              aria-expanded={isOpen}
-              aria-haspopup="listbox"
-              aria-label={ariaLabel}
-              autoComplete="off"
-              className="h-8 w-full min-w-0 rounded-md border-0 bg-[#F3F4F6] pl-8 pr-7 text-[13px] text-[#111827] outline-none transition-[background-color,color,transform,opacity] duration-150 disabled:cursor-not-allowed disabled:opacity-60"
-              disabled={disabled}
-              onChange={(event) => openOptions(event.target.value)}
-              onKeyDown={(event) => {
-                if (event.key === "Escape") {
-                  setIsOpen(false);
-                  setSearch("");
-                  inputRef.current?.blur();
-                  return;
-                }
-
-                if (event.key === "Enter") {
-                  const firstOption = filteredOptions[0];
-
-                  if (!firstOption) {
-                    return;
-                  }
-
-                  event.preventDefault();
-                  selectOption(firstOption.value);
-                }
-              }}
-              placeholder={ariaLabel}
-              value={search}
-            />
-            <button
-              aria-label={`${ariaLabel} 닫기`}
-              className="absolute right-1 top-1/2 grid h-7 w-7 -translate-y-1/2 place-items-center rounded-full text-[#9CA3AF] transition hover:bg-[#E5E7EB] hover:text-[#374151]"
-              onClick={() => {
-                setIsOpen(false);
-                setSearch("");
-              }}
-              type="button"
-            >
-              <X className="h-3.5 w-3.5" />
-            </button>
-          </>
-        )}
+          />
+        </button>
       </div>
 
       {isOpen ? (
@@ -214,6 +170,49 @@ export function ListFilterSelect<TValue extends string>({
             width: popoverPosition?.width ?? 184,
           }}
         >
+          <div className="border-b border-[#E6EAF0] p-2">
+            <div className="relative">
+              <Search className="pointer-events-none absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-[#6B7280]" />
+              <input
+                ref={inputRef}
+                aria-label={`${ariaLabel} 검색`}
+                autoComplete="off"
+                className="h-8 w-full rounded-md border-0 bg-[#F3F4F6] pl-8 pr-7 text-[13px] text-[#111827] outline-none placeholder:text-[#9CA3AF]"
+                onChange={(event) => setSearch(event.target.value)}
+                onKeyDown={(event) => {
+                  if (event.key === "Escape") {
+                    setIsOpen(false);
+                    setSearch("");
+                    triggerRef.current?.focus();
+                    return;
+                  }
+
+                  if (event.key === "Enter") {
+                    const firstOption = filteredOptions[0];
+
+                    if (!firstOption) {
+                      return;
+                    }
+
+                    event.preventDefault();
+                    selectOption(firstOption.value);
+                  }
+                }}
+                placeholder={ariaLabel}
+                value={search}
+              />
+              {search ? (
+                <button
+                  aria-label={`${ariaLabel} 검색어 지우기`}
+                  className="absolute right-1 top-1/2 grid h-7 w-7 -translate-y-1/2 place-items-center rounded-full text-[#9CA3AF] transition hover:bg-[#E5E7EB] hover:text-[#374151]"
+                  onClick={() => setSearch("")}
+                  type="button"
+                >
+                  <X className="h-3.5 w-3.5" />
+                </button>
+              ) : null}
+            </div>
+          </div>
           <div className="max-h-[220px] overflow-y-auto py-1">
             {filteredOptions.length === 0 ? (
               <p className="px-3 py-3 text-[12px] text-[#9CA3AF]">
@@ -256,8 +255,8 @@ export function ListFilterSelect<TValue extends string>({
   );
 }
 
-function getPopoverPosition(input: HTMLInputElement): PopoverPosition {
-  const rect = input.getBoundingClientRect();
+function getPopoverPosition(trigger: HTMLButtonElement): PopoverPosition {
+  const rect = trigger.getBoundingClientRect();
   const viewportWidth = window.innerWidth;
   const margin = 16;
   const width = Math.max(rect.width, 256);

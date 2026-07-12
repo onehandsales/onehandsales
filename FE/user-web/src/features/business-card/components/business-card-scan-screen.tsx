@@ -314,6 +314,7 @@ function StatusFilterCombobox({
   const [popoverPosition, setPopoverPosition] =
     useState<StatusFilterPopoverPosition | null>(null);
   const wrapperRef = useRef<HTMLDivElement>(null);
+  const triggerRef = useRef<HTMLButtonElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const selectedStatusSet = useMemo(
     () => new Set(selectedStatuses),
@@ -335,12 +336,12 @@ function StatusFilterCombobox({
     }
 
     const updatePopoverPosition = () => {
-      if (!inputRef.current) {
+      if (!triggerRef.current) {
         return;
       }
 
       setPopoverPosition(
-        getStatusFilterPopoverPosition(inputRef.current, isMobile)
+        getStatusFilterPopoverPosition(triggerRef.current, isMobile)
       );
     };
     const onMouseDown = (event: MouseEvent) => {
@@ -372,9 +373,9 @@ function StatusFilterCombobox({
   const openOptions = (nextSearch: string) => {
     setSearch(nextSearch);
 
-    if (inputRef.current) {
+    if (triggerRef.current) {
       setPopoverPosition(
-        getStatusFilterPopoverPosition(inputRef.current, isMobile)
+        getStatusFilterPopoverPosition(triggerRef.current, isMobile)
       );
     }
 
@@ -390,115 +391,43 @@ function StatusFilterCombobox({
     onSelectedStatusesChange(nextStatuses);
   };
 
-  const clearSelection = () => {
-    setSearch("");
-    onSelectedStatusesChange([]);
-    inputRef.current?.focus();
-    openOptions("");
-  };
-
   return (
     <div
       className={cn(
         "relative shrink-0",
-        isOpen
-          ? isMobile
-            ? "w-[120px]"
-            : "w-[clamp(136px,14vw,178px)]"
-          : "w-auto"
+        "w-auto"
       )}
       ref={wrapperRef}
     >
       <div className="relative">
-        {!isOpen ? (
-          <button
-            aria-expanded={false}
-            aria-label="상태 필터"
-            className={cn(
-              "inline-flex min-w-0 items-center gap-1.5 rounded-md border-0 bg-transparent px-2 font-semibold outline-none transition-[background-color,color,transform,opacity] duration-150 active:scale-[0.97]",
-              isMobile ? "h-7 text-[12px]" : "h-8 text-[13px]",
-              selectedStatuses.length > 0
+        <button
+          ref={triggerRef}
+          aria-expanded={isOpen}
+          aria-label="상태 필터"
+          className={cn(
+            "inline-flex min-w-0 items-center gap-1.5 rounded-md border-0 bg-transparent px-2 font-semibold outline-none transition-[background-color,color,transform,opacity] duration-150 active:scale-[0.97]",
+            isMobile ? "h-7 text-[12px]" : "h-8 text-[13px]",
+            isOpen
+              ? "bg-[#F3F4F6] text-[#374151]"
+              : selectedStatuses.length > 0
                 ? "text-[#1D4ED8] hover:bg-[#EFF6FF]"
                 : "text-[#5F6368] hover:bg-[#F3F4F6]"
+          )}
+          onClick={() => (isOpen ? setIsOpen(false) : openOptions(""))}
+          type="button"
+        >
+          <CheckCircle2
+            className={isMobile ? "h-3 w-3 shrink-0" : "h-3.5 w-3.5 shrink-0"}
+          />
+          <span className="min-w-0 truncate text-left">상태</span>
+          <ChevronDown
+            className={cn(
+              "shrink-0 text-[#9CA3AF] transition-transform",
+              isMobile ? "h-3 w-3" : "h-3.5 w-3.5",
+              isOpen && "rotate-180"
             )}
-            onClick={() => openOptions("")}
-            type="button"
-          >
-            <CheckCircle2
-              className={isMobile ? "h-3 w-3 shrink-0" : "h-3.5 w-3.5 shrink-0"}
-            />
-            <span className="min-w-0 truncate text-left">상태</span>
-            <ChevronDown
-              className={cn(
-                "shrink-0 text-[#9CA3AF]",
-                isMobile ? "h-3 w-3" : "h-3.5 w-3.5"
-              )}
-            />
-          </button>
-        ) : (
-          <>
-            <Search
-              className={cn(
-                "pointer-events-none absolute top-1/2 shrink-0 -translate-y-1/2 text-[#6B7280]",
-                isMobile ? "left-2.5 h-3 w-3" : "left-3 h-3 w-3"
-              )}
-            />
-            <input
-              ref={inputRef}
-              aria-autocomplete="list"
-              aria-expanded={isOpen}
-              aria-label="상태 필터"
-              autoComplete="off"
-              className={cn(
-                "w-full min-w-0 rounded-md border-0 bg-[#F3F4F6] text-[#111827] outline-none transition-[background-color,color,transform,opacity] duration-150",
-                isMobile
-                  ? "h-7 pl-7 pr-7 text-[12px]"
-                  : "h-8 pl-8 pr-7 text-[13px]"
-              )}
-              onChange={(event) => openOptions(event.target.value)}
-              onKeyDown={(event) => {
-                if (event.key === "Escape") {
-                  setIsOpen(false);
-                  setSearch("");
-                  inputRef.current?.blur();
-                  return;
-                }
-
-                if (event.key === "Enter") {
-                  const firstItem = filteredStatuses[0];
-                  if (!firstItem) {
-                    return;
-                  }
-
-                  event.preventDefault();
-                  toggleStatus(firstItem.id);
-                }
-              }}
-              placeholder="상태 선택"
-              value={search}
-            />
-            {selectedStatuses.length > 0 || search ? (
-              <button
-                aria-label="상태 필터 지우기"
-                className={cn(
-                  "absolute right-1 top-1/2 grid -translate-y-1/2 place-items-center rounded-full text-[#9CA3AF] transition hover:bg-[#E5E7EB] hover:text-[#374151] active:scale-[0.97]",
-                  isMobile ? "h-6 w-6" : "h-7 w-7"
-                )}
-                onClick={clearSelection}
-                type="button"
-              >
-                <X className={isMobile ? "h-3 w-3" : "h-3.5 w-3.5"} />
-              </button>
-            ) : (
-              <ChevronDown
-                className={cn(
-                  "pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 rotate-180 text-[#9CA3AF]",
-                  isMobile ? "h-3 w-3" : "h-3.5 w-3.5"
-                )}
-              />
-            )}
-          </>
-        )}
+          />
+        </button>
       </div>
 
       {isOpen ? (
@@ -513,6 +442,48 @@ function StatusFilterCombobox({
             width: popoverPosition?.width ?? 256,
           }}
         >
+          <div className="border-b border-[#E6EAF0] p-2">
+            <div className="relative">
+              <Search className="pointer-events-none absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-[#6B7280]" />
+              <input
+                ref={inputRef}
+                aria-label="상태 검색"
+                autoComplete="off"
+                className="h-8 w-full rounded-md border-0 bg-[#F3F4F6] pl-8 pr-7 text-[13px] text-[#111827] outline-none placeholder:text-[#9CA3AF]"
+                onChange={(event) => setSearch(event.target.value)}
+                onKeyDown={(event) => {
+                  if (event.key === "Escape") {
+                    setIsOpen(false);
+                    setSearch("");
+                    triggerRef.current?.focus();
+                    return;
+                  }
+
+                  if (event.key === "Enter") {
+                    const firstItem = filteredStatuses[0];
+                    if (!firstItem) {
+                      return;
+                    }
+
+                    event.preventDefault();
+                    toggleStatus(firstItem.id);
+                  }
+                }}
+                placeholder="상태 검색"
+                value={search}
+              />
+              {search ? (
+                <button
+                  aria-label="상태 검색어 지우기"
+                  className="absolute right-1 top-1/2 grid h-7 w-7 -translate-y-1/2 place-items-center rounded-full text-[#9CA3AF] transition hover:bg-[#E5E7EB] hover:text-[#374151]"
+                  onClick={() => setSearch("")}
+                  type="button"
+                >
+                  <X className="h-3.5 w-3.5" />
+                </button>
+              ) : null}
+            </div>
+          </div>
           <button
             className={cn(
               "flex h-9 w-full items-center gap-1.5 px-3 text-left text-[13px] transition hover:bg-[#F9FAFB]",
@@ -575,7 +546,7 @@ function StatusFilterCombobox({
 }
 
 function getStatusFilterPopoverPosition(
-  input: HTMLInputElement,
+  input: HTMLElement,
   isMobile: boolean
 ): StatusFilterPopoverPosition {
   const rect = input.getBoundingClientRect();
