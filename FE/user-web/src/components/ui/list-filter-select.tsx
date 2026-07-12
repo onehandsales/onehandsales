@@ -1,4 +1,4 @@
-import { ChevronDown, Search, X } from "lucide-react";
+import { ChevronDown, Search, X, type LucideIcon } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { cn } from "@/utils/cn";
 
@@ -12,6 +12,7 @@ type ListFilterSelectProps<TValue extends string> = {
   readonly ariaLabel: string;
   readonly className?: string;
   readonly disabled?: boolean;
+  readonly icon?: LucideIcon;
   readonly onChange: (value: TValue) => void;
   readonly options: readonly ListFilterSelectOption<TValue>[];
   readonly value: TValue;
@@ -29,6 +30,7 @@ export function ListFilterSelect<TValue extends string>({
   ariaLabel,
   className,
   disabled = false,
+  icon: Icon,
   onChange,
   options,
   value,
@@ -137,7 +139,14 @@ export function ListFilterSelect<TValue extends string>({
     <div className={cn("relative shrink-0", className)} ref={wrapperRef}>
       <div className="relative">
         {isOpen ? (
-          <Search className="pointer-events-none absolute left-3 top-1/2 h-3 w-3 shrink-0 -translate-y-1/2 text-[#9CA3AF]" />
+          <Search className="pointer-events-none absolute left-3 top-1/2 h-3.5 w-3.5 shrink-0 -translate-y-1/2 text-[#6B7280]" />
+        ) : Icon ? (
+          <Icon
+            className={cn(
+              "pointer-events-none absolute left-3 top-1/2 h-3.5 w-3.5 shrink-0 -translate-y-1/2",
+              active ? "text-[#1D4ED8]" : "text-[#5F6368]",
+            )}
+          />
         ) : null}
         <input
           ref={inputRef}
@@ -147,12 +156,12 @@ export function ListFilterSelect<TValue extends string>({
           aria-label={ariaLabel}
           autoComplete="off"
           className={cn(
-            "h-8 w-full min-w-0 rounded-full border text-[13px] outline-none transition disabled:cursor-not-allowed disabled:opacity-60",
+            "h-8 w-full min-w-0 rounded-md border-0 bg-transparent text-[13px] outline-none transition-[background-color,color,transform,opacity] duration-150 disabled:cursor-not-allowed disabled:opacity-60",
             isOpen
-              ? "border-[#D1D5DB] bg-white pl-8 pr-7 text-[#111827]"
+              ? "bg-[#F3F4F6] pl-8 pr-7 text-[#111827]"
               : active
-                ? "border-[#E2E5EC] bg-[#EFF6FF] pl-3.5 pr-7 font-semibold text-[#1D4ED8]"
-                : "cursor-pointer border-[#E2E5EC] bg-transparent pl-3.5 pr-7 text-[#6B7280] hover:border-[#D1D5DB] hover:bg-[#F5F6F8]",
+                ? cn("pr-7 font-semibold text-[#1D4ED8] hover:bg-[#EFF6FF]", Icon ? "pl-8" : "pl-3.5")
+                : cn("cursor-pointer pr-7 text-[#5F6368] hover:bg-[#F3F4F6]", Icon ? "pl-8" : "pl-3.5"),
           )}
           disabled={disabled}
           onChange={(event) => openOptions(event.target.value)}
@@ -182,7 +191,7 @@ export function ListFilterSelect<TValue extends string>({
         {active || search ? (
           <button
             aria-label={`${ariaLabel} 지우기`}
-            className="absolute right-1 top-1/2 grid h-7 w-7 -translate-y-1/2 place-items-center rounded-full text-[#9CA3AF] transition hover:bg-white hover:text-[#374151]"
+            className="absolute right-1 top-1/2 grid h-7 w-7 -translate-y-1/2 place-items-center rounded-full text-[#9CA3AF] transition hover:bg-[#E5E7EB] hover:text-[#374151]"
             onClick={clearSelection}
             type="button"
           >

@@ -18,7 +18,7 @@ type CollapsibleDesktopSearchProps = {
   readonly onValueChange: (value: string) => void;
 };
 
-const DESKTOP_SEARCH_COLLAPSED_WIDTH = 32;
+const DESKTOP_SEARCH_COLLAPSED_WIDTH = 72;
 const DESKTOP_SEARCH_MIN_WIDTH = 150;
 const DESKTOP_SEARCH_MAX_WIDTH = 170;
 const DESKTOP_SEARCH_VIEWPORT_RATIO = 0.2;
@@ -101,8 +101,8 @@ export function CollapsibleDesktopSearch({
   return (
     <form
       className={cn(
-        "flex h-8 shrink-0 items-center overflow-hidden rounded-[6px] border border-[#E2E5EC] bg-white transition-[width,border-color,background-color,box-shadow,padding] duration-500 ease-out focus-within:bg-white",
-        isOpen ? "pr-3 hover:border-[#D1D5DB] hover:bg-white" : "pr-0 hover:border-[#D1D5DB] hover:bg-[#F5F6F8]",
+        "flex h-8 shrink-0 items-center overflow-hidden rounded-md bg-transparent transition-[width,background-color,padding] duration-500 ease-out focus-within:bg-[#F3F4F6]",
+        isOpen ? "pr-3 hover:bg-[#F3F4F6]" : "pr-0 hover:bg-[#F3F4F6]",
       )}
       onBlur={(event) => {
         const nextTarget = event.relatedTarget;
@@ -126,7 +126,10 @@ export function CollapsibleDesktopSearch({
       <button
         aria-expanded={isOpen}
         aria-label={isOpen ? submitLabel : `${placeholder} 열기`}
-        className="grid h-8 w-8 shrink-0 place-items-center text-[#6B7280] transition hover:text-[#475569]"
+        className={cn(
+          "inline-flex h-8 shrink-0 items-center justify-center gap-1.5 rounded-md px-2 text-[13px] font-semibold text-[#5F6368] transition-[background-color,color,transform] duration-150 hover:text-[#374151] active:scale-[0.97]",
+          isOpen ? "w-8 px-0" : "w-full",
+        )}
         onClick={() => {
           if (!isOpen) {
             setIsOpen(true);
@@ -138,6 +141,7 @@ export function CollapsibleDesktopSearch({
         type="button"
       >
         <Search className="h-3.5 w-3.5" />
+        {isOpen ? null : <span>검색</span>}
       </button>
       <input
         ref={inputRef}

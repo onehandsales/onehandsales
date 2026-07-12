@@ -1,11 +1,14 @@
 import {
+  ArrowUpDown,
   Building2,
   ChevronDown,
   Download,
+  MapPin,
   Plus,
   RotateCcw,
   Search,
   SlidersHorizontal,
+  Tags,
   X,
   type LucideIcon,
 } from "lucide-react";
@@ -73,12 +76,12 @@ const COMPANY_CREATE_PANEL_MIN_WIDTH = 420;
 const COMPANY_CREATE_PANEL_MAX_RATIO = 0.55;
 const COMPANY_CREATE_PANEL_AUTO_SIDEBAR_RATIO = 0.45;
 const COMPANY_CREATE_PANEL_TRANSITION_MS = 500;
-const DESKTOP_SEARCH_COLLAPSED_WIDTH = 32;
+const DESKTOP_SEARCH_COLLAPSED_WIDTH = 72;
 const DESKTOP_SEARCH_MIN_WIDTH = 150;
 const DESKTOP_SEARCH_MAX_WIDTH = 170;
 const DESKTOP_SEARCH_COMPACT_MAX_WIDTH = 170;
 const DESKTOP_SEARCH_VIEWPORT_RATIO = 0.2;
-const DESKTOP_FILTER_COLLAPSED_WIDTH = 32;
+const DESKTOP_FILTER_COLLAPSED_WIDTH = 72;
 const DESKTOP_FILTER_EXPANDED_WIDTH =
   "calc(clamp(136px,14vw,178px) + clamp(136px,14vw,178px) + 0.5rem)";
 
@@ -497,11 +500,11 @@ export function CompanyListScreen({
         <form
           ref={desktopSearchFormRef}
           className={cn(
-            "flex h-8 shrink-0 items-center overflow-hidden rounded-[6px] border border-[#E2E5EC] bg-white transition-[width,border-color,background-color,box-shadow,padding] duration-500 ease-out focus-within:bg-white",
+            "flex h-8 shrink-0 items-center overflow-hidden rounded-md bg-transparent transition-[width,background-color,padding] duration-500 ease-out focus-within:bg-[#F3F4F6]",
             isDesktopSearchOpen ? "pr-3" : "pr-0",
             isDesktopSearchOpen
-              ? "hover:border-[#D1D5DB] hover:bg-white"
-              : "hover:border-[#D1D5DB] hover:bg-[#F5F6F8]",
+              ? "hover:bg-[#F3F4F6]"
+              : "hover:bg-[#F3F4F6]",
           )}
           onBlur={(event) => {
             const nextTarget = event.relatedTarget;
@@ -534,7 +537,10 @@ export function CompanyListScreen({
             aria-label={
               isDesktopSearchOpen ? "회사 검색 실행" : "회사 검색 열기"
             }
-            className="grid h-8 w-8 shrink-0 place-items-center text-[#6B7280] transition hover:text-[#475569]"
+            className={cn(
+              "inline-flex h-8 shrink-0 items-center justify-center gap-1.5 rounded-md px-2 text-[13px] font-semibold text-[#5F6368] transition-[background-color,color,transform] duration-150 hover:text-[#374151] active:scale-[0.97]",
+              isDesktopSearchOpen ? "w-8 px-0" : "w-full",
+            )}
             onClick={() => {
               if (!isDesktopSearchOpen) {
                 setIsDesktopSearchOpen(true);
@@ -546,6 +552,7 @@ export function CompanyListScreen({
             type="button"
           >
             <Search className="h-3.5 w-3.5" />
+            {isDesktopSearchOpen ? null : <span>검색</span>}
           </button>
           <input
             ref={desktopSearchInputRef}
@@ -588,10 +595,10 @@ export function CompanyListScreen({
             aria-label="필터"
             aria-hidden={!isCompactFilterMode}
             className={cn(
-              "absolute left-0 top-0 inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-md border text-[13px] font-semibold transition-[opacity,transform,border-color,background-color,color] duration-200 focus:outline-none",
+              "absolute left-0 top-0 inline-flex h-8 w-[72px] shrink-0 items-center justify-center gap-1.5 rounded-md border-0 bg-transparent px-2 text-[13px] font-semibold transition-[opacity,transform,background-color,color] duration-150 focus:outline-none active:scale-[0.97]",
               hasTaxonomyFilters
-                ? "border-[#E2E5EC] bg-[#EFF6FF] text-[#1D4ED8] hover:border-[#D1D5DB] hover:bg-[#DBEAFE]"
-                : "border-[#E2E5EC] bg-white text-[#475569] hover:border-[#D1D5DB] hover:bg-[#F5F6F8]",
+                ? "text-[#1D4ED8] hover:bg-[#EFF6FF]"
+                : "text-[#5F6368] hover:bg-[#F3F4F6]",
               isCompactFilterMode
                 ? "scale-100 opacity-100"
                 : "!hidden pointer-events-none scale-95 opacity-0",
@@ -601,6 +608,7 @@ export function CompanyListScreen({
             type="button"
           >
             <SlidersHorizontal className="h-3.5 w-3.5" />
+            <span>필터</span>
             {hasTaxonomyFilters ? (
               <span className="absolute -right-1 -top-1 grid h-4 min-w-4 place-items-center rounded-full bg-[#4880EE] px-1 text-[10px] font-bold leading-none text-white">
                 {taxonomyFilterCount}
@@ -620,6 +628,7 @@ export function CompanyListScreen({
             <CompanyTaxonomyFilterCombobox
               emptyText="조건을 바꾸면 분야를 찾을 수 있어요."
               getLabel={(field) => field.field}
+              icon={Tags}
               itemKindLabel="분야"
               items={fields}
               selectedIds={companyFieldIds}
@@ -634,6 +643,7 @@ export function CompanyListScreen({
             <CompanyTaxonomyFilterCombobox
               emptyText="조건을 바꾸면 지역을 찾을 수 있어요."
               getLabel={(region) => region.region}
+              icon={MapPin}
               itemKindLabel="지역"
               items={regions}
               selectedIds={companyRegionIds}
@@ -650,6 +660,7 @@ export function CompanyListScreen({
         <ListFilterSelect
           active={sort !== "createdAtDesc"}
           ariaLabel="정렬 조건"
+          icon={ArrowUpDown}
           className={
             isCompactFilterMode
               ? "w-[104px]"
@@ -686,6 +697,7 @@ export function CompanyListScreen({
               <CompanyTaxonomyFilterCombobox
                 emptyText="조건을 바꾸면 분야를 찾을 수 있어요."
                 getLabel={(field) => field.field}
+                icon={Tags}
                 itemKindLabel="분야"
                 items={fields}
                 layout="full"
@@ -704,6 +716,7 @@ export function CompanyListScreen({
               <CompanyTaxonomyFilterCombobox
                 emptyText="조건을 바꾸면 지역을 찾을 수 있어요."
                 getLabel={(region) => region.region}
+                icon={MapPin}
                 itemKindLabel="지역"
                 items={regions}
                 layout="full"
@@ -856,10 +869,10 @@ export function CompanyListScreen({
           <button
             aria-label="초기화"
             className={cn(
-              "inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full border text-[12px] font-bold transition focus:outline-none",
+              "inline-flex h-7 shrink-0 items-center justify-center gap-1 rounded-md border-0 bg-transparent px-2 text-[12px] font-semibold transition-[background-color,color,transform] duration-150 focus:outline-none active:scale-[0.97]",
               hasSearch
-                ? "border-transparent bg-[#4880EE] text-white hover:bg-[#4880EE]"
-                : "border-[#E5E7EB] bg-[#F3F4F6] text-[#4B5563] hover:border-[#D1D5DB]",
+                ? "text-[#1D4ED8] hover:bg-[#EFF6FF]"
+                : "text-[#5F6368] hover:bg-[#F3F4F6]",
             )}
             onClick={() => {
               setCompanyName("");
@@ -873,10 +886,12 @@ export function CompanyListScreen({
             type="button"
           >
             <RotateCcw className="h-3 w-3" />
+            <span>초기화</span>
           </button>
           <CompanyTaxonomyFilterCombobox
               emptyText="조건을 바꾸면 분야를 찾을 수 있어요."
             getLabel={(field) => field.field}
+            icon={Tags}
             itemKindLabel="분야"
             items={fields}
             selectedIds={companyFieldIds}
@@ -891,6 +906,7 @@ export function CompanyListScreen({
           <CompanyTaxonomyFilterCombobox
               emptyText="조건을 바꾸면 지역을 찾을 수 있어요."
             getLabel={(region) => region.region}
+            icon={MapPin}
             itemKindLabel="지역"
             items={regions}
             selectedIds={companyRegionIds}
@@ -1086,15 +1102,16 @@ function FilterChip({
     <button
       aria-label={label}
       className={cn(
-        "inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-[6px] border text-[13px] font-bold transition focus:outline-none",
+        "inline-flex h-8 shrink-0 items-center justify-center gap-1.5 rounded-md border-0 bg-transparent px-2 text-[13px] font-semibold transition-[background-color,color,transform] duration-150 focus:outline-none active:scale-[0.97]",
         active
-          ? "border-transparent bg-[#4880EE] text-white hover:bg-[#4880EE]"
-          : "border-[#E2E5EC] bg-white text-[#475569] hover:border-[#D1D5DB] hover:bg-[#F5F6F8]",
+          ? "text-[#1D4ED8] hover:bg-[#EFF6FF]"
+          : "text-[#5F6368] hover:bg-[#F3F4F6]",
       )}
       onClick={onClick}
       type="button"
     >
       {Icon ? <Icon className="h-3.5 w-3.5" /> : null}
+      <span>{label}</span>
     </button>
   );
 }
@@ -1116,6 +1133,7 @@ function CompanyTaxonomyFilterCombobox<
 >({
   emptyText,
   getLabel,
+  icon: Icon,
   itemKindLabel,
   items,
   layout = "toolbar",
@@ -1127,6 +1145,7 @@ function CompanyTaxonomyFilterCombobox<
 }: {
   readonly emptyText: string;
   readonly getLabel: (item: TItem) => string;
+  readonly icon: LucideIcon;
   readonly itemKindLabel: string;
   readonly items: readonly TItem[];
   readonly layout?: "full" | "toolbar";
@@ -1242,15 +1261,22 @@ function CompanyTaxonomyFilterCombobox<
       )}
     >
       <div className="relative">
-        {/* Search icon — only visible when open */}
         {isOpen ? (
           <Search
             className={cn(
-              "pointer-events-none absolute top-1/2 shrink-0 -translate-y-1/2 text-[#9CA3AF]",
+              "pointer-events-none absolute top-1/2 shrink-0 -translate-y-1/2 text-[#6B7280]",
               isMobile ? "left-2.5 h-3 w-3" : "left-3 h-3 w-3",
             )}
           />
-        ) : null}
+        ) : (
+          <Icon
+            className={cn(
+              "pointer-events-none absolute top-1/2 shrink-0 -translate-y-1/2",
+              selectedIds.length > 0 ? "text-[#1D4ED8]" : "text-[#5F6368]",
+              isMobile ? "left-2.5 h-3 w-3" : "left-3 h-3.5 w-3.5",
+            )}
+          />
+        )}
         <input
           ref={inputRef}
           aria-autocomplete="list"
@@ -1258,23 +1284,24 @@ function CompanyTaxonomyFilterCombobox<
           aria-label={`${itemKindLabel} 필터`}
           autoComplete="off"
           className={cn(
-            "w-full min-w-0 border outline-none transition",
+            "w-full min-w-0 border-0 bg-transparent outline-none transition-[background-color,color,transform,opacity] duration-150",
             isMobile
-              ? "h-7 rounded-full text-[12px]"
-              : "h-8 rounded-full text-[13px]",
+              ? "h-7 rounded-md text-[12px]"
+              : "h-8 rounded-md text-[13px]",
             isOpen
               ? cn(
-                  "border-[#D1D5DB] bg-white text-[#111827]",
+                  "bg-[#F3F4F6] text-[#111827]",
                   isMobile ? "pl-7 pr-7" : "pl-8 pr-7",
                 )
               : selectedIds.length > 0
                 ? cn(
                     getTaxonomyFilterInputSelectedClass(tone),
-                    isMobile ? "pl-3 pr-7" : "pl-3.5 pr-7",
+                    "border-0 bg-transparent text-[#1D4ED8] hover:bg-[#EFF6FF]",
+                    isMobile ? "pl-7 pr-7" : "pl-8 pr-7",
                   )
                 : isMobile
-                  ? "border-[#E5E7EB] bg-[#F3F4F6] pl-3 pr-7 text-[#4B5563] hover:border-[#D1D5DB]"
-                  : "cursor-pointer border-[#E2E5EC] bg-transparent pl-3.5 pr-7 text-[#6B7280] hover:border-[#D1D5DB] hover:bg-[#F5F6F8]",
+                  ? "cursor-pointer pl-7 pr-7 text-[#5F6368] hover:bg-[#F3F4F6]"
+                  : "cursor-pointer pl-8 pr-7 text-[#5F6368] hover:bg-[#F3F4F6]",
           )}
           onChange={(event) => {
             openOptions(event.target.value);
@@ -1306,7 +1333,7 @@ function CompanyTaxonomyFilterCombobox<
           <button
             aria-label={`${itemKindLabel} 필터 지우기`}
             className={cn(
-              "absolute right-1 top-1/2 grid -translate-y-1/2 place-items-center rounded-full text-[#9CA3AF] transition hover:bg-white hover:text-[#374151]",
+              "absolute right-1 top-1/2 grid -translate-y-1/2 place-items-center rounded-full text-[#9CA3AF] transition hover:bg-[#E5E7EB] hover:text-[#374151]",
               isMobile ? "h-6 w-6" : "h-7 w-7",
             )}
             onClick={clearSelection}

@@ -1,4 +1,5 @@
 import {
+  ArrowUpDown,
   BriefcaseBusiness,
   Building2,
   ClipboardList,
@@ -233,20 +234,22 @@ export function TrashScreen() {
         <button
           aria-label="초기화"
           className={cn(
-            "inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-[6px] border text-[13px] font-bold transition focus:outline-none",
+            "inline-flex h-8 shrink-0 items-center justify-center gap-1.5 rounded-md border-0 bg-transparent px-2 text-[13px] font-semibold transition-[background-color,color,transform] duration-150 focus:outline-none active:scale-[0.97]",
             hasFilter
-              ? "border-transparent bg-[#4880EE] text-white hover:bg-[#4880EE]"
-              : "border-[#E2E5EC] bg-white text-[#475569] hover:border-[#D1D5DB] hover:bg-[#F5F6F8]",
+              ? "text-[#1D4ED8] hover:bg-[#EFF6FF]"
+              : "text-[#5F6368] hover:bg-[#F3F4F6]",
           )}
           onClick={clearFilters}
           type="button"
         >
           <RotateCcw className="h-3.5 w-3.5" />
+          <span>초기화</span>
         </button>
 
         <TrashFilterSelect
           active={itemKind !== "ALL"}
           ariaLabel="데이터 유형 필터"
+          icon={ClipboardList}
           options={itemKindOptions}
           value={itemKind}
           onChange={(value) => onItemKindChange(value as TrashItemKindFilter)}
@@ -254,6 +257,7 @@ export function TrashScreen() {
         <TrashFilterSelect
           active={domain !== "ALL"}
           ariaLabel="도메인 필터"
+          icon={Building2}
           options={domainOptions}
           value={domain}
           onChange={(value) => {
@@ -265,6 +269,7 @@ export function TrashScreen() {
           active={itemKind !== "ENTITY" && logType !== "ALL"}
           ariaLabel="로그 유형 필터"
           disabled={itemKind === "ENTITY"}
+          icon={StickyNote}
           options={logTypeOptions}
           value={logType}
           onChange={(value) => {
@@ -275,6 +280,7 @@ export function TrashScreen() {
         <TrashFilterSelect
           active={sort !== "RECENT"}
           ariaLabel="정렬"
+          icon={ArrowUpDown}
           options={sortOptions}
           value={sort}
           onChange={(value) => {
@@ -393,6 +399,7 @@ type TrashFilterSelectProps<TValue extends string> = {
   readonly active: boolean;
   readonly ariaLabel: string;
   readonly disabled?: boolean;
+  readonly icon: LucideIcon;
   readonly options: readonly {
     readonly value: TValue;
     readonly label: string;
@@ -405,6 +412,7 @@ function TrashFilterSelect<TValue extends string>({
   active,
   ariaLabel,
   disabled = false,
+  icon,
   options,
   value,
   onChange,
@@ -415,6 +423,7 @@ function TrashFilterSelect<TValue extends string>({
       ariaLabel={ariaLabel}
       className="w-[clamp(112px,12vw,140px)]"
       disabled={disabled}
+      icon={icon}
       onChange={onChange}
       options={options}
       value={value}

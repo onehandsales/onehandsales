@@ -1,4 +1,7 @@
 import {
+  ArrowUpDown,
+  BriefcaseBusiness,
+  Building2,
   ChevronDown,
   Download,
   IdCard,
@@ -77,7 +80,7 @@ const CONTACT_CREATE_PANEL_MAX_RATIO = 0.55;
 const CONTACT_CREATE_PANEL_AUTO_SIDEBAR_RATIO = 0.45;
 const CONTACT_CREATE_PANEL_TRANSITION_MS = 500;
 const DESKTOP_SEARCH_COMPACT_MAX_WIDTH = 170;
-const DESKTOP_FILTER_COLLAPSED_WIDTH = 32;
+const DESKTOP_FILTER_COLLAPSED_WIDTH = 72;
 const DESKTOP_FILTER_EXPANDED_WIDTH =
   "calc(clamp(136px,14vw,178px) + clamp(136px,14vw,178px) + 0.5rem)";
 
@@ -463,10 +466,10 @@ export function ContactListScreen({
               aria-label="필터"
               aria-hidden={!isCompactFilterMode}
               className={cn(
-                "absolute left-0 top-0 inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-md border text-[13px] font-semibold transition-[opacity,transform,border-color,background-color,color] duration-200 focus:outline-none",
+                "absolute left-0 top-0 inline-flex h-8 w-[72px] shrink-0 items-center justify-center gap-1.5 rounded-md border-0 bg-transparent px-2 text-[13px] font-semibold transition-[opacity,transform,background-color,color] duration-150 focus:outline-none active:scale-[0.97]",
                 hasTaxonomyFilters
-                  ? "border-[#E2E5EC] bg-[#EFF6FF] text-[#1D4ED8] hover:border-[#D1D5DB] hover:bg-[#DBEAFE]"
-                  : "border-[#E2E5EC] bg-white text-[#475569] hover:border-[#D1D5DB] hover:bg-[#F5F6F8]",
+                  ? "text-[#1D4ED8] hover:bg-[#EFF6FF]"
+                  : "text-[#5F6368] hover:bg-[#F3F4F6]",
                 isCompactFilterMode
                   ? "scale-100 opacity-100"
                   : "!hidden pointer-events-none scale-95 opacity-0",
@@ -476,6 +479,7 @@ export function ContactListScreen({
               type="button"
             >
               <SlidersHorizontal className="h-3.5 w-3.5" />
+              <span>필터</span>
               {hasTaxonomyFilters ? (
                 <span className="absolute -right-1 -top-1 grid h-4 min-w-4 place-items-center rounded-full bg-[#4880EE] px-1 text-[10px] font-bold leading-none text-white">
                   {taxonomyFilterCount}
@@ -495,6 +499,7 @@ export function ContactListScreen({
               <ContactTaxonomyFilterCombobox
                 emptyText="조건을 바꾸면 회사를 찾을 수 있어요."
                 getLabel={(c) => c.companyName}
+                icon={Building2}
                 itemKindLabel="회사"
                 items={companyOptions}
                 selectedIds={companyIds}
@@ -508,6 +513,7 @@ export function ContactListScreen({
               <ContactTaxonomyFilterCombobox
                 emptyText="조건을 바꾸면 부서를 찾을 수 있어요."
                 getLabel={(d) => d.departmentName}
+                icon={BriefcaseBusiness}
                 itemKindLabel="부서"
                 items={departments}
                 selectedIds={contactDepartmentIds}
@@ -524,6 +530,7 @@ export function ContactListScreen({
           <ListFilterSelect
             active={sort !== "createdAtDesc"}
             ariaLabel="정렬 조건"
+            icon={ArrowUpDown}
             className={
               isCompactFilterMode
                 ? "w-[104px]"
@@ -560,6 +567,7 @@ export function ContactListScreen({
               <ContactTaxonomyFilterCombobox
                 emptyText="조건을 바꾸면 회사를 찾을 수 있어요."
                 getLabel={(c) => c.companyName}
+                icon={Building2}
                 itemKindLabel="회사"
                 items={companyOptions}
                 layout="full"
@@ -577,6 +585,7 @@ export function ContactListScreen({
               <ContactTaxonomyFilterCombobox
                 emptyText="조건을 바꾸면 부서를 찾을 수 있어요."
                 getLabel={(d) => d.departmentName}
+                icon={BriefcaseBusiness}
                 itemKindLabel="부서"
                 items={departments}
                 layout="full"
@@ -734,10 +743,10 @@ export function ContactListScreen({
           <button
             aria-label="초기화"
             className={cn(
-              "inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full border text-[12px] font-bold transition focus:outline-none",
+              "inline-flex h-7 shrink-0 items-center justify-center gap-1 rounded-md border-0 bg-transparent px-2 text-[12px] font-semibold transition-[background-color,color,transform] duration-150 focus:outline-none active:scale-[0.97]",
               hasSearch
-                ? "border-transparent bg-[#4880EE] text-white hover:bg-[#4880EE]"
-                : "border-[#E5E7EB] bg-[#F3F4F6] text-[#4B5563] hover:border-[#D1D5DB]",
+                ? "text-[#1D4ED8] hover:bg-[#EFF6FF]"
+                : "text-[#5F6368] hover:bg-[#F3F4F6]",
             )}
             onClick={() => {
               setUsername("");
@@ -750,10 +759,12 @@ export function ContactListScreen({
             type="button"
           >
             <RotateCcw className="h-3 w-3" />
+            <span>초기화</span>
           </button>
           <ContactTaxonomyFilterCombobox
             emptyText="조건을 바꾸면 회사를 찾을 수 있어요."
             getLabel={(c) => c.companyName}
+            icon={Building2}
             itemKindLabel="회사"
             items={companyOptions}
             selectedIds={companyIds}
@@ -767,6 +778,7 @@ export function ContactListScreen({
           <ContactTaxonomyFilterCombobox
             emptyText="조건을 바꾸면 부서를 찾을 수 있어요."
             getLabel={(d) => d.departmentName}
+            icon={BriefcaseBusiness}
             itemKindLabel="부서"
             items={departments}
             selectedIds={contactDepartmentIds}
@@ -1085,15 +1097,16 @@ function FilterChip({
     <button
       aria-label={label}
       className={cn(
-        "inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-[6px] border text-[13px] font-bold transition focus:outline-none",
+        "inline-flex h-8 shrink-0 items-center justify-center gap-1.5 rounded-md border-0 bg-transparent px-2 text-[13px] font-semibold transition-[background-color,color,transform] duration-150 focus:outline-none active:scale-[0.97]",
         active
-          ? "border-transparent bg-[#4880EE] text-white hover:bg-[#4880EE]"
-          : "border-[#E2E5EC] bg-white text-[#475569] hover:border-[#D1D5DB] hover:bg-[#F5F6F8]",
+          ? "text-[#1D4ED8] hover:bg-[#EFF6FF]"
+          : "text-[#5F6368] hover:bg-[#F3F4F6]",
       )}
       onClick={onClick}
       type="button"
     >
       {Icon ? <Icon className="h-3.5 w-3.5" /> : null}
+      <span>{label}</span>
     </button>
   );
 }
@@ -1117,6 +1130,7 @@ function ContactTaxonomyFilterCombobox<
 >({
   emptyText,
   getLabel,
+  icon: Icon,
   itemKindLabel,
   items,
   layout = "compact",
@@ -1128,6 +1142,7 @@ function ContactTaxonomyFilterCombobox<
 }: {
   readonly emptyText: string;
   readonly getLabel: (item: TItem) => string;
+  readonly icon: LucideIcon;
   readonly itemKindLabel: string;
   readonly items: readonly TItem[];
   readonly layout?: "compact" | "full";
@@ -1247,15 +1262,22 @@ function ContactTaxonomyFilterCombobox<
       )}
     >
       <div className="relative">
-        {/* Search icon — only visible when open */}
         {isOpen ? (
           <Search
             className={cn(
-              "pointer-events-none absolute top-1/2 shrink-0 -translate-y-1/2 text-[#9CA3AF]",
+              "pointer-events-none absolute top-1/2 shrink-0 -translate-y-1/2 text-[#6B7280]",
               isMobile ? "left-2.5 h-3 w-3" : "left-3 h-3 w-3",
             )}
           />
-        ) : null}
+        ) : (
+          <Icon
+            className={cn(
+              "pointer-events-none absolute top-1/2 shrink-0 -translate-y-1/2",
+              selectedIds.length > 0 ? "text-[#1D4ED8]" : "text-[#5F6368]",
+              isMobile ? "left-2.5 h-3 w-3" : "left-3 h-3.5 w-3.5",
+            )}
+          />
+        )}
         <input
           ref={inputRef}
           aria-autocomplete="list"
@@ -1263,23 +1285,24 @@ function ContactTaxonomyFilterCombobox<
           aria-label={`${itemKindLabel} 필터`}
           autoComplete="off"
           className={cn(
-            "w-full min-w-0 border outline-none transition",
+            "w-full min-w-0 border-0 bg-transparent outline-none transition-[background-color,color,transform,opacity] duration-150",
             isMobile
-              ? "h-7 rounded-full text-[12px]"
-              : "h-8 rounded-full text-[13px]",
+              ? "h-7 rounded-md text-[12px]"
+              : "h-8 rounded-md text-[13px]",
             isOpen
               ? cn(
-                  "border-[#D1D5DB] bg-white text-[#111827]",
+                  "bg-[#F3F4F6] text-[#111827]",
                   isMobile ? "pl-7 pr-7" : "pl-8 pr-7",
                 )
               : selectedIds.length > 0
                 ? cn(
                     getTaxonomyFilterInputSelectedClass(tone),
-                    isMobile ? "pl-3 pr-7" : "pl-3.5 pr-7",
+                    "border-0 bg-transparent text-[#1D4ED8] hover:bg-[#EFF6FF]",
+                    isMobile ? "pl-7 pr-7" : "pl-8 pr-7",
                   )
                 : isMobile
-                  ? "border-[#E5E7EB] bg-[#F3F4F6] pl-3 pr-7 text-[#4B5563] hover:border-[#D1D5DB]"
-                  : "cursor-pointer border-[#E2E5EC] bg-transparent pl-3.5 pr-7 text-[#6B7280] hover:border-[#D1D5DB] hover:bg-[#F5F6F8]",
+                  ? "cursor-pointer pl-7 pr-7 text-[#5F6368] hover:bg-[#F3F4F6]"
+                  : "cursor-pointer pl-8 pr-7 text-[#5F6368] hover:bg-[#F3F4F6]",
           )}
           onChange={(event) => {
             openOptions(event.target.value);
@@ -1311,7 +1334,7 @@ function ContactTaxonomyFilterCombobox<
           <button
             aria-label={`${itemKindLabel} 필터 지우기`}
             className={cn(
-              "absolute right-1 top-1/2 grid -translate-y-1/2 place-items-center rounded-full text-[#9CA3AF] transition hover:bg-white hover:text-[#374151]",
+              "absolute right-1 top-1/2 grid -translate-y-1/2 place-items-center rounded-full text-[#9CA3AF] transition hover:bg-[#E5E7EB] hover:text-[#374151]",
               isMobile ? "h-6 w-6" : "h-7 w-7",
             )}
             onClick={clearSelection}

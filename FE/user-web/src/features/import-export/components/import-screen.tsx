@@ -638,15 +638,16 @@ export function ImportScreen() {
         <button
           aria-label="초기화"
           className={cn(
-            "inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-[6px] border text-[13px] font-bold transition focus:outline-none",
+            "inline-flex h-8 shrink-0 items-center justify-center gap-1.5 rounded-md border-0 bg-transparent px-2 text-[13px] font-semibold transition-[background-color,color,transform] duration-150 focus:outline-none active:scale-[0.97]",
             targetTypes.length > 0
-              ? "border-transparent bg-[#4880EE] text-white hover:bg-[#4880EE]"
-              : "border-[#E2E5EC] bg-white text-[#475569] hover:border-[#D1D5DB] hover:bg-[#F5F6F8]"
+              ? "text-[#1D4ED8] hover:bg-[#EFF6FF]"
+              : "text-[#5F6368] hover:bg-[#F3F4F6]"
           )}
           onClick={resetFilters}
           type="button"
         >
           <RotateCcw className="h-3.5 w-3.5" />
+          <span>초기화</span>
         </button>
         <ImportTargetFilterCombobox
           selectedIds={targetTypes}
@@ -734,15 +735,16 @@ export function ImportScreen() {
           <button
             aria-label="초기화"
             className={cn(
-              "inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full border text-[12px] font-bold transition focus:outline-none",
+              "inline-flex h-7 shrink-0 items-center justify-center gap-1 rounded-md border-0 bg-transparent px-2 text-[12px] font-semibold transition-[background-color,color,transform] duration-150 focus:outline-none active:scale-[0.97]",
               targetTypes.length > 0
-                ? "border-transparent bg-[#4880EE] text-white hover:bg-[#4880EE]"
-                : "border-[#E5E7EB] bg-[#F3F4F6] text-[#4B5563] hover:border-[#D1D5DB]",
+                ? "text-[#1D4ED8] hover:bg-[#EFF6FF]"
+                : "text-[#5F6368] hover:bg-[#F3F4F6]",
             )}
             onClick={resetFilters}
             type="button"
           >
             <RotateCcw className="h-3 w-3" />
+            <span>초기화</span>
           </button>
           <ImportTargetFilterCombobox
             selectedIds={targetTypes}
@@ -983,11 +985,19 @@ function ImportTargetFilterCombobox({
         {isOpen ? (
           <Search
             className={cn(
-              "pointer-events-none absolute top-1/2 shrink-0 -translate-y-1/2 text-[#9CA3AF]",
+              "pointer-events-none absolute top-1/2 shrink-0 -translate-y-1/2 text-[#6B7280]",
               isMobile ? "left-2.5 h-3 w-3" : "left-3 h-3 w-3"
             )}
           />
-        ) : null}
+        ) : (
+          <Upload
+            className={cn(
+              "pointer-events-none absolute top-1/2 shrink-0 -translate-y-1/2",
+              selectedIds.length > 0 ? "text-[#1D4ED8]" : "text-[#5F6368]",
+              isMobile ? "left-2.5 h-3 w-3" : "left-3 h-3.5 w-3.5"
+            )}
+          />
+        )}
         <input
           ref={inputRef}
           aria-autocomplete="list"
@@ -995,23 +1005,23 @@ function ImportTargetFilterCombobox({
           aria-label="업로드 대상 필터"
           autoComplete="off"
           className={cn(
-            "w-full min-w-0 border outline-none transition",
+            "w-full min-w-0 border-0 bg-transparent outline-none transition-[background-color,color,transform,opacity] duration-150",
             isMobile
-              ? "h-7 rounded-full text-[12px]"
-              : "h-8 rounded-full text-[13px]",
+              ? "h-7 rounded-md text-[12px]"
+              : "h-8 rounded-md text-[13px]",
             isOpen
               ? cn(
-                  "border-[#D1D5DB] bg-white text-[#111827]",
+                  "bg-[#F3F4F6] text-[#111827]",
                   isMobile ? "pl-7 pr-7" : "pl-8 pr-7"
                 )
               : selectedIds.length > 0
                 ? cn(
-                    "border-[#E2E5EC] bg-[#EEF4FF] font-semibold text-[#1D4ED8]",
-                    isMobile ? "pl-3 pr-7" : "pl-3.5 pr-7"
+                    "bg-transparent font-semibold text-[#1D4ED8] hover:bg-[#EFF6FF]",
+                    isMobile ? "pl-7 pr-7" : "pl-8 pr-7"
                   )
                 : isMobile
-                  ? "border-[#E5E7EB] bg-[#F3F4F6] pl-3 pr-7 text-[#4B5563] hover:border-[#D1D5DB]"
-                  : "cursor-pointer border-[#E2E5EC] bg-transparent pl-3.5 pr-7 text-[#6B7280] hover:border-[#D1D5DB] hover:bg-[#F5F6F8]"
+                  ? "cursor-pointer pl-7 pr-7 text-[#5F6368] hover:bg-[#F3F4F6]"
+                  : "cursor-pointer pl-8 pr-7 text-[#5F6368] hover:bg-[#F3F4F6]"
           )}
           onChange={(event) => {
             openOptions(event.target.value);
@@ -1042,7 +1052,7 @@ function ImportTargetFilterCombobox({
           <button
             aria-label="업로드 대상 필터 지우기"
             className={cn(
-              "absolute right-1 top-1/2 grid -translate-y-1/2 place-items-center rounded-full text-[#9CA3AF] transition hover:bg-white hover:text-[#374151]",
+              "absolute right-1 top-1/2 grid -translate-y-1/2 place-items-center rounded-full text-[#9CA3AF] transition hover:bg-[#E5E7EB] hover:text-[#374151]",
               isMobile ? "h-6 w-6" : "h-7 w-7"
             )}
             onClick={clearSelection}

@@ -1,5 +1,7 @@
 import {
   AlertCircle,
+  ArrowUpDown,
+  Building2,
   CalendarClock,
   ChevronDown,
   NotebookPen,
@@ -8,6 +10,7 @@ import {
   RotateCcw,
   Search,
   SlidersHorizontal,
+  UserRound,
   X,
   type LucideIcon,
 } from "lucide-react";
@@ -56,7 +59,7 @@ const MEETING_NOTE_CREATE_PANEL_MAX_RATIO = 0.55;
 const MEETING_NOTE_CREATE_PANEL_AUTO_SIDEBAR_RATIO = 0.45;
 const MEETING_NOTE_CREATE_PANEL_TRANSITION_MS = 500;
 const DESKTOP_SEARCH_COMPACT_MAX_WIDTH = 170;
-const DESKTOP_FILTER_COLLAPSED_WIDTH = 32;
+const DESKTOP_FILTER_COLLAPSED_WIDTH = 72;
 const DESKTOP_FILTER_EXPANDED_WIDTH =
   "calc(clamp(136px,14vw,178px) + clamp(136px,14vw,178px) + 0.5rem)";
 
@@ -452,10 +455,10 @@ export function MeetingNoteListScreen() {
               aria-label="필터"
               aria-hidden={!isCompactFilterMode}
               className={cn(
-                "absolute left-0 top-0 inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-md border text-[13px] font-semibold transition-[opacity,transform,border-color,background-color,color] duration-200 focus:outline-none",
+                "absolute left-0 top-0 inline-flex h-8 w-[72px] shrink-0 items-center justify-center gap-1.5 rounded-md border-0 bg-transparent px-2 text-[13px] font-semibold transition-[opacity,transform,background-color,color] duration-150 focus:outline-none active:scale-[0.97]",
                 hasEntityFilters
-                  ? "border-[#E2E5EC] bg-[#EFF6FF] text-[#1D4ED8] hover:border-[#D1D5DB] hover:bg-[#DBEAFE]"
-                  : "border-[#E2E5EC] bg-white text-[#475569] hover:border-[#D1D5DB] hover:bg-[#F5F6F8]",
+                  ? "text-[#1D4ED8] hover:bg-[#EFF6FF]"
+                  : "text-[#5F6368] hover:bg-[#F3F4F6]",
                 isCompactFilterMode
                   ? "scale-100 opacity-100"
                   : "!hidden pointer-events-none scale-95 opacity-0",
@@ -465,6 +468,7 @@ export function MeetingNoteListScreen() {
               type="button"
             >
               <SlidersHorizontal className="h-3.5 w-3.5" />
+              <span>필터</span>
               {hasEntityFilters ? (
                 <span className="absolute -right-1 -top-1 grid h-4 min-w-4 place-items-center rounded-full bg-[#4880EE] px-1 text-[10px] font-bold leading-none text-white">
                   {entityFilterCount}
@@ -484,6 +488,7 @@ export function MeetingNoteListScreen() {
               <MeetingNoteFilterMultiSelect
                 emptyText="조건을 바꾸면 회사를 찾을 수 있어요."
                 getLabel={(company) => company.companyName}
+                icon={Building2}
                 itemKindLabel="회사"
                 items={companyOptions}
                 selectedIds={companyIds}
@@ -492,6 +497,7 @@ export function MeetingNoteListScreen() {
               <MeetingNoteFilterMultiSelect
                 emptyText="조건을 바꾸면 담당자를 찾을 수 있어요."
                 getLabel={(contact) => contact.contactUsername}
+                icon={UserRound}
                 itemKindLabel="담당자"
                 items={filteredContactOptions}
                 selectedIds={contactIds}
@@ -502,6 +508,7 @@ export function MeetingNoteListScreen() {
           <ListFilterSelect<MeetingNoteSort>
             active={sort !== "createdAtDesc"}
             ariaLabel="정렬 조건"
+            icon={ArrowUpDown}
             className={
               isCompactFilterMode
                 ? "w-[104px]"
@@ -536,6 +543,7 @@ export function MeetingNoteListScreen() {
               <MeetingNoteFilterMultiSelect
                 emptyText="조건을 바꾸면 회사를 찾을 수 있어요."
                 getLabel={(company) => company.companyName}
+                icon={Building2}
                 itemKindLabel="회사"
                 items={companyOptions}
                 layout="full"
@@ -550,6 +558,7 @@ export function MeetingNoteListScreen() {
               <MeetingNoteFilterMultiSelect
                 emptyText="조건을 바꾸면 담당자를 찾을 수 있어요."
                 getLabel={(contact) => contact.contactUsername}
+                icon={UserRound}
                 itemKindLabel="담당자"
                 items={filteredContactOptions}
                 layout="full"
@@ -683,20 +692,22 @@ export function MeetingNoteListScreen() {
             aria-label="초기화"
             aria-pressed={hasFilter}
             className={cn(
-              "inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full border text-[12px] font-bold transition focus:outline-none",
+              "inline-flex h-7 shrink-0 items-center justify-center gap-1 rounded-md border-0 bg-transparent px-2 text-[12px] font-semibold transition-[background-color,color,transform] duration-150 focus:outline-none active:scale-[0.97]",
               hasFilter
-                ? "border-transparent bg-[#4880EE] text-white hover:bg-[#4880EE]"
-                : "border-[#E5E7EB] bg-[#F3F4F6] text-[#4B5563] hover:border-[#D1D5DB]",
+                ? "text-[#1D4ED8] hover:bg-[#EFF6FF]"
+                : "text-[#5F6368] hover:bg-[#F3F4F6]",
             )}
             onClick={clearFilters}
             type="button"
           >
             <RotateCcw className="h-3 w-3" />
+            <span>초기화</span>
           </button>
           <MeetingNoteFilterMultiSelect
             className="w-[112px]"
             emptyText="조건을 바꾸면 회사를 찾을 수 있어요."
             getLabel={(company) => company.companyName}
+            icon={Building2}
             itemKindLabel="회사"
             items={companyOptions}
             selectedIds={companyIds}
@@ -706,6 +717,7 @@ export function MeetingNoteListScreen() {
             className="w-[112px]"
             emptyText="조건을 바꾸면 담당자를 찾을 수 있어요."
             getLabel={(contact) => contact.contactUsername}
+            icon={UserRound}
             itemKindLabel="담당자"
             items={filteredContactOptions}
             selectedIds={contactIds}
@@ -714,6 +726,7 @@ export function MeetingNoteListScreen() {
           <ListFilterSelect<MeetingNoteSort>
             active={sort !== "createdAtDesc"}
             ariaLabel="정렬 조건"
+            icon={ArrowUpDown}
             className="w-[112px]"
             onChange={updateSort}
             options={MEETING_NOTE_SORT_OPTIONS}
@@ -821,15 +834,16 @@ function FilterChip({
       aria-label={label}
       aria-pressed={active}
       className={cn(
-        "inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-[6px] border text-[13px] font-bold transition focus:outline-none",
+        "inline-flex h-8 shrink-0 items-center justify-center gap-1.5 rounded-md border-0 bg-transparent px-2 text-[13px] font-semibold transition-[background-color,color,transform] duration-150 focus:outline-none active:scale-[0.97]",
         active
-          ? "border-transparent bg-[#4880EE] text-white hover:bg-[#4880EE]"
-          : "border-[#E2E5EC] bg-white text-[#475569] hover:border-[#D1D5DB] hover:bg-[#F5F6F8]",
+          ? "text-[#1D4ED8] hover:bg-[#EFF6FF]"
+          : "text-[#5F6368] hover:bg-[#F3F4F6]",
       )}
       onClick={onClick}
       type="button"
     >
       {Icon ? <Icon className="h-3.5 w-3.5" /> : null}
+      <span>{label}</span>
     </button>
   );
 }
@@ -849,6 +863,7 @@ function MeetingNoteFilterMultiSelect<TItem extends MeetingNoteFilterItem>({
   className,
   emptyText,
   getLabel,
+  icon: Icon,
   itemKindLabel,
   items,
   layout = "compact",
@@ -858,6 +873,7 @@ function MeetingNoteFilterMultiSelect<TItem extends MeetingNoteFilterItem>({
   readonly className?: string;
   readonly emptyText: string;
   readonly getLabel: (item: TItem) => string;
+  readonly icon: LucideIcon;
   readonly itemKindLabel: string;
   readonly items: readonly TItem[];
   readonly layout?: "compact" | "full";
@@ -972,20 +988,27 @@ function MeetingNoteFilterMultiSelect<TItem extends MeetingNoteFilterItem>({
     >
       <div className="relative">
         {isOpen ? (
-          <Search className="pointer-events-none absolute left-3 top-1/2 h-3 w-3 shrink-0 -translate-y-1/2 text-[#9CA3AF]" />
-        ) : null}
+          <Search className="pointer-events-none absolute left-3 top-1/2 h-3 w-3 shrink-0 -translate-y-1/2 text-[#6B7280]" />
+        ) : (
+          <Icon
+            className={cn(
+              "pointer-events-none absolute left-3 top-1/2 h-3.5 w-3.5 shrink-0 -translate-y-1/2",
+              selectedIds.length > 0 ? "text-[#1D4ED8]" : "text-[#5F6368]",
+            )}
+          />
+        )}
         <input
           aria-autocomplete="list"
           aria-expanded={isOpen}
           aria-label={`${itemKindLabel} 필터`}
           autoComplete="off"
           className={cn(
-            "h-8 w-full min-w-0 border text-[13px] outline-none transition",
+            "h-8 w-full min-w-0 rounded-md border-0 bg-transparent text-[13px] outline-none transition-[background-color,color,transform,opacity] duration-150",
             isOpen
-              ? "rounded-full border-[#D1D5DB] bg-white pl-8 pr-7 text-[#111827]"
+              ? "bg-[#F3F4F6] pl-8 pr-7 text-[#111827]"
               : selectedIds.length > 0
-                ? "rounded-full border-[#E2E5EC] bg-[#EFF6FF] pl-3.5 pr-7 font-semibold text-[#1D4ED8]"
-                : "cursor-pointer rounded-full border-[#E2E5EC] bg-transparent pl-3.5 pr-7 text-[#6B7280] hover:border-[#D1D5DB] hover:bg-[#F5F6F8]",
+                ? "bg-transparent pl-8 pr-7 font-semibold text-[#1D4ED8] hover:bg-[#EFF6FF]"
+                : "cursor-pointer pl-8 pr-7 text-[#5F6368] hover:bg-[#F3F4F6]",
           )}
           onChange={(event) => openOptions(event.target.value)}
           onFocus={() => openOptions("")}
@@ -1014,7 +1037,7 @@ function MeetingNoteFilterMultiSelect<TItem extends MeetingNoteFilterItem>({
         {selectedIds.length > 0 || filterText ? (
           <button
             aria-label={`${itemKindLabel} 필터 지우기`}
-            className="absolute right-1 top-1/2 grid h-7 w-7 -translate-y-1/2 place-items-center rounded-full text-[#9CA3AF] transition hover:bg-white hover:text-[#374151]"
+            className="absolute right-1 top-1/2 grid h-7 w-7 -translate-y-1/2 place-items-center rounded-full text-[#9CA3AF] transition hover:bg-[#E5E7EB] hover:text-[#374151]"
             onClick={clearSelection}
             type="button"
           >
