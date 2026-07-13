@@ -75,13 +75,13 @@ const CONTACT_SORT_OPTIONS: Array<{
 ];
 
 const CONTACT_TABLE_COLUMNS = [
-  { id: "username", defaultWidth: 180, minWidth: 140, maxWidth: 360 },
-  { id: "company", defaultWidth: 190, minWidth: 150 },
-  { id: "department", defaultWidth: 140, minWidth: 100 },
-  { id: "jobGrade", defaultWidth: 120, minWidth: 90 },
-  { id: "mobile", defaultWidth: 160, minWidth: 130 },
-  { id: "email", defaultWidth: 220, minWidth: 160 },
-  { id: "createdAt", defaultWidth: 130, minWidth: 110 },
+  { id: "username", defaultWidth: 180, minWidth: 145, maxWidth: 360 },
+  { id: "company", defaultWidth: 190, minWidth: 155 },
+  { id: "department", defaultWidth: 140, minWidth: 105 },
+  { id: "jobGrade", defaultWidth: 120, minWidth: 95 },
+  { id: "mobile", defaultWidth: 160, minWidth: 135 },
+  { id: "email", defaultWidth: 220, minWidth: 165 },
+  { id: "createdAt", defaultWidth: 130, minWidth: 115 },
 ] satisfies readonly ResizableTableColumn[];
 const CONTACT_TABLE_COLUMNS_STORAGE_KEY = "onehand.table.contacts.columns";
 

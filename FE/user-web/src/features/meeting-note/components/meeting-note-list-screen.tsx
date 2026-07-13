@@ -57,11 +57,11 @@ import { formatDateWithOptions } from "@/utils/format";
 import { readLocationNotice } from "@/utils/location-state";
 
 const MEETING_NOTE_TABLE_COLUMNS = [
-  { id: "meetingAt", defaultWidth: 160, minWidth: 130, maxWidth: 260 },
-  { id: "title", defaultWidth: 300, minWidth: 180 },
-  { id: "companies", defaultWidth: 190, minWidth: 140 },
-  { id: "contacts", defaultWidth: 190, minWidth: 140 },
-  { id: "createdAt", defaultWidth: 130, minWidth: 110 },
+  { id: "meetingAt", defaultWidth: 160, minWidth: 135, maxWidth: 260 },
+  { id: "title", defaultWidth: 300, minWidth: 185 },
+  { id: "companies", defaultWidth: 190, minWidth: 145 },
+  { id: "contacts", defaultWidth: 190, minWidth: 145 },
+  { id: "createdAt", defaultWidth: 130, minWidth: 115 },
 ] satisfies readonly ResizableTableColumn[];
 const MEETING_NOTE_TABLE_COLUMNS_STORAGE_KEY =
   "onehand.table.meetingNotes.columns";

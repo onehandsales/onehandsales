@@ -65,13 +65,13 @@ import { cn } from "@/utils/cn";
 import { formatDateWithOptions } from "@/utils/format";
 
 const BUSINESS_CARD_SCAN_TABLE_COLUMNS = [
-  { id: "status", defaultWidth: 110, minWidth: 90, maxWidth: 200 },
-  { id: "company", defaultWidth: 170, minWidth: 130 },
-  { id: "contact", defaultWidth: 150, minWidth: 120 },
-  { id: "mobile", defaultWidth: 160, minWidth: 130 },
-  { id: "email", defaultWidth: 220, minWidth: 160 },
-  { id: "model", defaultWidth: 120, minWidth: 90 },
-  { id: "createdAt", defaultWidth: 130, minWidth: 110 },
+  { id: "status", defaultWidth: 110, minWidth: 95, maxWidth: 200 },
+  { id: "company", defaultWidth: 170, minWidth: 135 },
+  { id: "contact", defaultWidth: 150, minWidth: 125 },
+  { id: "mobile", defaultWidth: 160, minWidth: 135 },
+  { id: "email", defaultWidth: 220, minWidth: 165 },
+  { id: "model", defaultWidth: 120, minWidth: 95 },
+  { id: "createdAt", defaultWidth: 130, minWidth: 115 },
 ] satisfies readonly ResizableTableColumn[];
 const BUSINESS_CARD_SCAN_TABLE_COLUMNS_STORAGE_KEY =
   "onehand.table.businessCardScans.columns";

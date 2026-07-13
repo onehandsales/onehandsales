@@ -76,11 +76,11 @@ const PRODUCT_SORT_OPTIONS: Array<{
 ];
 
 const PRODUCT_TABLE_COLUMNS = [
-  { id: "productName", defaultWidth: 240, minWidth: 170, maxWidth: 420 },
-  { id: "category", defaultWidth: 180, minWidth: 130 },
-  { id: "status", defaultWidth: 140, minWidth: 110 },
-  { id: "dealCount", defaultWidth: 110, minWidth: 90 },
-  { id: "createdAt", defaultWidth: 130, minWidth: 110 },
+  { id: "productName", defaultWidth: 240, minWidth: 175, maxWidth: 420 },
+  { id: "category", defaultWidth: 180, minWidth: 135 },
+  { id: "status", defaultWidth: 140, minWidth: 115 },
+  { id: "dealCount", defaultWidth: 110, minWidth: 95 },
+  { id: "createdAt", defaultWidth: 130, minWidth: 115 },
 ] satisfies readonly ResizableTableColumn[];
 const PRODUCT_TABLE_COLUMNS_STORAGE_KEY = "onehand.table.products.columns";
 const PRODUCT_CREATE_PANEL_STORAGE_KEY = "onehand.product.createPanelWidth";

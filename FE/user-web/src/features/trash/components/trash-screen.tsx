@@ -54,11 +54,11 @@ import { formatDateTime } from "@/utils/format";
 const PAGE_SIZE = 12;
 
 const TRASH_TABLE_COLUMNS = [
-  { id: "type", defaultWidth: 150, minWidth: 118, maxWidth: 260 },
-  { id: "title", defaultWidth: 260, minWidth: 180 },
-  { id: "location", defaultWidth: 320, minWidth: 200 },
-  { id: "deletedAt", defaultWidth: 160, minWidth: 130 },
-  { id: "remaining", defaultWidth: 150, minWidth: 120 },
+  { id: "type", defaultWidth: 150, minWidth: 123, maxWidth: 260 },
+  { id: "title", defaultWidth: 260, minWidth: 185 },
+  { id: "location", defaultWidth: 320, minWidth: 205 },
+  { id: "deletedAt", defaultWidth: 160, minWidth: 135 },
+  { id: "remaining", defaultWidth: 150, minWidth: 125 },
 ] satisfies readonly ResizableTableColumn[];
 const TRASH_TABLE_COLUMNS_STORAGE_KEY = "onehand.table.trash.columns";
 

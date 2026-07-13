@@ -79,12 +79,12 @@ const COMPANY_SORT_OPTIONS: Array<{
 ];
 
 const COMPANY_TABLE_COLUMNS = [
-  { id: "companyName", defaultWidth: 220, minWidth: 160, maxWidth: 420 },
-  { id: "field", defaultWidth: 150, minWidth: 110 },
-  { id: "region", defaultWidth: 150, minWidth: 110 },
-  { id: "contactCount", defaultWidth: 120, minWidth: 90 },
-  { id: "dealCount", defaultWidth: 110, minWidth: 90 },
-  { id: "createdAt", defaultWidth: 130, minWidth: 110 },
+  { id: "companyName", defaultWidth: 220, minWidth: 165, maxWidth: 420 },
+  { id: "field", defaultWidth: 150, minWidth: 115 },
+  { id: "region", defaultWidth: 150, minWidth: 115 },
+  { id: "contactCount", defaultWidth: 120, minWidth: 95 },
+  { id: "dealCount", defaultWidth: 110, minWidth: 95 },
+  { id: "createdAt", defaultWidth: 130, minWidth: 115 },
 ] satisfies readonly ResizableTableColumn[];
 const COMPANY_TABLE_COLUMNS_STORAGE_KEY = "onehand.table.companies.columns";
 const COMPANY_CREATE_PANEL_STORAGE_KEY = "onehand.company.createPanelWidth";

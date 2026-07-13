@@ -118,10 +118,10 @@ import { cn } from "@/utils/cn";
 import { formatDateWithOptions } from "@/utils/format";
 
 const IMPORT_LOG_TABLE_COLUMNS = [
-  { id: "targetType", defaultWidth: 160, minWidth: 120, maxWidth: 260 },
-  { id: "importedRowCount", defaultWidth: 150, minWidth: 120 },
-  { id: "originalFileName", defaultWidth: 340, minWidth: 180 },
-  { id: "createdAt", defaultWidth: 160, minWidth: 120 },
+  { id: "targetType", defaultWidth: 160, minWidth: 125, maxWidth: 260 },
+  { id: "importedRowCount", defaultWidth: 150, minWidth: 125 },
+  { id: "originalFileName", defaultWidth: 340, minWidth: 185 },
+  { id: "createdAt", defaultWidth: 160, minWidth: 125 },
 ] satisfies readonly ResizableTableColumn[];
 const IMPORT_LOG_TABLE_COLUMNS_STORAGE_KEY =
   "onehand.table.importLogs.columns";

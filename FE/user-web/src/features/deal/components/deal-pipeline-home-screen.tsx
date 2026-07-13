@@ -90,12 +90,12 @@ const SORT_OPTIONS: Array<{
 ];
 
 const DEAL_TABLE_COLUMNS = [
-  { id: "dealName", defaultWidth: 220, minWidth: 160, maxWidth: 420 },
-  { id: "relation", defaultWidth: 220, minWidth: 180 },
-  { id: "status", defaultWidth: 120, minWidth: 100 },
-  { id: "cost", defaultWidth: 130, minWidth: 110 },
-  { id: "nextAction", defaultWidth: 280, minWidth: 180 },
-  { id: "createdAt", defaultWidth: 130, minWidth: 110 },
+  { id: "dealName", defaultWidth: 220, minWidth: 165, maxWidth: 420 },
+  { id: "relation", defaultWidth: 220, minWidth: 185 },
+  { id: "status", defaultWidth: 120, minWidth: 105 },
+  { id: "cost", defaultWidth: 130, minWidth: 115 },
+  { id: "nextAction", defaultWidth: 280, minWidth: 185 },
+  { id: "createdAt", defaultWidth: 130, minWidth: 115 },
 ] satisfies readonly ResizableTableColumn[];
 const DEAL_TABLE_COLUMNS_STORAGE_KEY = "onehand.table.deals.columns";
 const DEAL_CREATE_PANEL_STORAGE_KEY = "onehand.deal.createPanelWidth";
