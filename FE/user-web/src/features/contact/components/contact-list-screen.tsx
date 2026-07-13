@@ -641,7 +641,7 @@ export function ContactListScreen({
           <div className="flex w-full min-w-0 flex-col overflow-hidden rounded-lg border border-[#E2E5EC] bg-white shadow-sm">
             {/* 테이블 헤더 (데스크톱) */}
             <div
-              className="hidden h-11 shrink-0 items-center border-b border-[#E2E5EC] bg-[#F9FAFB] px-3 md:grid md:px-4 xl:px-6"
+              className="grid h-11 shrink-0 items-center border-b border-[#E2E5EC] bg-[#F9FAFB] px-3 md:px-4 xl:px-6"
               style={CONTACT_TABLE_GRID_STYLE}
             >
               <div className="min-w-0 truncate text-[12px] font-semibold text-[#64748B]">
@@ -1072,7 +1072,7 @@ function ContactListError({
     <div className="flex flex-1 flex-col items-center justify-center px-5 py-14 text-center">
       <p className="text-[13px] text-red-500">{getApiErrorMessage(error)}</p>
       <button
-        className="mt-3 inline-flex h-8 items-center rounded-md border border-[#E2E5EC] bg-white px-3 text-[12px] text-[#6B7280] hover:bg-white"
+        className="mt-3 inline-flex h-8 items-center rounded-md border border-[#E2E5EC] bg-white px-3 text-[12px] text-[#6B7280] hover:bg-[#F5F6F8]"
         onClick={onRetry}
         type="button"
       >

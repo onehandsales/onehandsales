@@ -6,7 +6,6 @@ import {
   ChevronDown,
   NotebookPen,
   Plus,
-  RefreshCw,
   RotateCcw,
   Search,
   SlidersHorizontal,
@@ -1211,7 +1210,7 @@ function MeetingNoteListRow({
   return (
     <div
       className={cn(
-        "grid h-[66px] w-full cursor-pointer items-center border-b border-[#E2E5EC] bg-white px-3 text-left transition-colors last:border-b-0 hover:bg-blue-50/60 md:px-4 xl:px-6",
+        "grid h-[66px] w-full cursor-pointer items-center border-b border-[#E2E5EC] bg-white px-3 text-left transition-colors last:border-b-0 hover:bg-[#EFF6FF] md:px-4 xl:px-6",
       )}
       onClick={() => void navigate(detailPath)}
       onKeyDown={(event) => {
@@ -1292,17 +1291,14 @@ function MeetingNoteListError({
   readonly onRetry: () => void;
 }) {
   return (
-    <div className="flex items-center justify-between gap-4 px-4 py-3">
-      <div className="flex items-center gap-2 text-[13px] text-red-600">
-        <AlertCircle className="h-4 w-4 shrink-0" />
-        <span>{getApiErrorMessage(error)}</span>
-      </div>
+    <div className="flex min-h-[320px] flex-col items-center justify-center px-5 py-12 text-center">
+      <AlertCircle className="h-5 w-5 text-red-500" />
+      <p className="mt-2 text-[13px] text-red-500">{getApiErrorMessage(error)}</p>
       <button
-        className="inline-flex h-8 items-center gap-1.5 rounded-md border border-[#E2E5EC] bg-white px-3 text-[12px] font-medium text-[#374151] hover:bg-[#F5F6F8]"
+        className="mt-3 inline-flex h-8 items-center rounded-md border border-[#E2E5EC] bg-white px-3 text-[12px] text-[#6B7280] hover:bg-[#F5F6F8]"
         onClick={onRetry}
         type="button"
       >
-        <RefreshCw className="h-3.5 w-3.5" />
         다시 시도
       </button>
     </div>
@@ -1315,7 +1311,7 @@ function MeetingNoteListSkeleton() {
     <>
       {Array.from({ length: 6 }, (_, rowIndex) => (
         <div
-          className="grid h-[66px] items-center border-b border-[#E2E5EC] px-3 last:border-b-0 md:px-4 xl:px-6"
+          className="grid h-[66px] items-center border-b border-[#E2E5EC] bg-[#F9FAFB] px-3 last:border-b-0 md:px-4 xl:px-6"
           key={rowIndex}
           style={MEETING_NOTE_TABLE_GRID_STYLE}
         >

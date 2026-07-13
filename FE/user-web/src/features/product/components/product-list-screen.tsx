@@ -670,7 +670,7 @@ export function ProductListScreen({
 
           <div className="flex w-full min-w-0 flex-col overflow-hidden rounded-lg border border-[#E2E5EC] bg-white shadow-sm">
             <div
-              className="grid h-11 shrink-0 items-center border-b border-[#E6EAF0] bg-[#FAFBFC] px-3 md:px-4 xl:px-6"
+              className="grid h-11 shrink-0 items-center border-b border-[#E2E5EC] bg-[#F9FAFB] px-3 md:px-4 xl:px-6"
               style={PRODUCT_TABLE_GRID_STYLE}
             >
               <ProductTableHeaderCell>제품명</ProductTableHeaderCell>
@@ -966,7 +966,7 @@ function ProductRow({
 
   return (
     <div
-      className="grid h-[66px] cursor-pointer items-center border-b border-[#E8EDF3] px-3 transition-colors last:border-b-0 hover:bg-[#EAF2FF] md:px-4 xl:px-6"
+      className="grid h-[66px] w-full cursor-pointer items-center border-b border-[#E2E5EC] bg-white px-3 transition-colors last:border-b-0 hover:bg-[#EFF6FF] md:px-4 xl:px-6"
       onClick={() => void navigate(`/app/products/${product.id}`)}
       onKeyDown={(e) => {
         if (e.key === "Enter" || e.key === " ") {
@@ -1488,7 +1488,7 @@ function ProductListSkeleton() {
     <div className="min-h-0 flex-1 overflow-hidden">
       {Array.from({ length: 6 }, (_, index) => (
         <div
-          className="h-[66px] animate-pulse border-b border-[#E8EDF3] bg-[#FAFBFC]"
+          className="h-[66px] animate-pulse border-b border-[#E2E5EC] bg-[#F9FAFB] last:border-b-0"
           key={index}
         />
       ))}

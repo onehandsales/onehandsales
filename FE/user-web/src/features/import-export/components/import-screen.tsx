@@ -683,7 +683,7 @@ export function ImportScreen() {
 
           <div className="flex w-full min-w-0 flex-col overflow-hidden rounded-lg border border-[#E2E5EC] bg-white shadow-sm">
             <div
-              className="grid h-11 shrink-0 items-center border-b border-[#E6EAF0] bg-[#FAFBFC] px-3 md:px-4 xl:px-6"
+              className="grid h-11 shrink-0 items-center border-b border-[#E2E5EC] bg-[#F9FAFB] px-3 md:px-4 xl:px-6"
               style={IMPORT_LOG_TABLE_GRID_STYLE}
             >
               <ImportTableHeaderCell>대상</ImportTableHeaderCell>
@@ -1131,7 +1131,7 @@ function ImportLogRow({
 
   return (
     <div
-      className="grid h-[66px] cursor-pointer items-center border-b border-[#E8EDF3] px-3 transition-colors last:border-b-0 hover:bg-[#EAF2FF] md:px-4 xl:px-6"
+      className="grid h-[66px] w-full cursor-pointer items-center border-b border-[#E2E5EC] bg-white px-3 transition-colors last:border-b-0 hover:bg-[#EFF6FF] md:px-4 xl:px-6"
       onClick={onOpen}
       onKeyDown={(event) => {
         if (event.key === "Enter" || event.key === " ") {
@@ -3373,7 +3373,7 @@ function ImportListError({
     <div className="flex flex-col items-center justify-center px-5 py-14 text-center">
       <p className="text-[13px] text-red-500">{getApiErrorMessage(error)}</p>
       <button
-        className="mt-3 inline-flex h-8 items-center rounded-md border border-[#E2E5EC] bg-white px-3 text-[12px] text-[#6B7280]"
+        className="mt-3 inline-flex h-8 items-center rounded-md border border-[#E2E5EC] bg-white px-3 text-[12px] text-[#6B7280] hover:bg-[#F5F6F8]"
         onClick={onRetry}
         type="button"
       >
@@ -3388,7 +3388,7 @@ function ImportListSkeleton() {
     <div>
       {Array.from({ length: 8 }, (_, index) => (
         <div
-          className="h-[66px] animate-pulse border-b border-[#E5E7EB] bg-[#F9FAFB]"
+          className="h-[66px] animate-pulse border-b border-[#E2E5EC] bg-[#F9FAFB] last:border-b-0"
           key={index}
         />
       ))}

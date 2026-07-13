@@ -975,7 +975,7 @@ function DealListRow({
 
   return (
     <div
-      className="grid h-[66px] w-full cursor-pointer items-center border-b border-[#E2E5EC] bg-white px-3 py-0 text-left transition-colors last:border-b-0 hover:bg-blue-50/60 md:px-4 xl:px-6"
+      className="grid h-[66px] w-full cursor-pointer items-center border-b border-[#E2E5EC] bg-white px-3 py-0 text-left transition-colors last:border-b-0 hover:bg-[#EFF6FF] md:px-4 xl:px-6"
       onClick={() => onSelect(deal.id)}
       onKeyDown={(event) => {
         if (event.key === "Enter" || event.key === " ") {
@@ -1634,15 +1634,13 @@ function TableHeaderCell({
 
 function ErrorState({ onRetry }: { readonly onRetry: () => void }) {
   return (
-    <div className="rounded-lg border border-red-100 bg-white p-8">
-      <div className="flex items-center gap-3 text-red-600">
-        <AlertCircle className="h-5 w-5" />
-        <h2 className="text-sm font-semibold">
-          딜 목록을 불러오지 못했어요.
-        </h2>
-      </div>
+    <div className="flex min-h-[320px] flex-col items-center justify-center px-5 py-12 text-center">
+      <AlertCircle className="h-5 w-5 text-red-500" />
+      <p className="mt-2 text-[13px] text-red-500">
+        딜 목록을 불러오지 못했어요.
+      </p>
       <button
-        className="mt-4 inline-flex h-9 items-center rounded-full border border-gray-200 px-4 text-sm text-gray-700"
+        className="mt-3 inline-flex h-8 items-center rounded-md border border-[#E2E5EC] bg-white px-3 text-[12px] text-[#6B7280] hover:bg-[#F5F6F8]"
         onClick={onRetry}
         type="button"
       >

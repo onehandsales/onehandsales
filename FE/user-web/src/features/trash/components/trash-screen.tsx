@@ -452,7 +452,7 @@ function TrashListRow({
 
   return (
     <div
-      className="grid h-[66px] w-full cursor-pointer items-center border-b border-[#E2E5EC] bg-white px-3 transition-colors last:border-b-0 hover:bg-blue-50/60 md:px-4 xl:px-6"
+      className="grid h-[66px] w-full cursor-pointer items-center border-b border-[#E2E5EC] bg-white px-3 transition-colors last:border-b-0 hover:bg-[#EFF6FF] md:px-4 xl:px-6"
       style={TRASH_TABLE_GRID_STYLE}
       role="button"
       tabIndex={0}
@@ -741,7 +741,7 @@ function TrashListError({
     <div className="flex min-h-[320px] flex-col items-center justify-center px-5 py-12 text-center">
       <p className="text-[13px] text-red-500">{getApiErrorMessage(error)}</p>
       <button
-        className="mt-3 inline-flex h-8 items-center rounded-md border border-[#E2E5EC] bg-white px-3 text-[12px] text-[#6B7280]"
+        className="mt-3 inline-flex h-8 items-center rounded-md border border-[#E2E5EC] bg-white px-3 text-[12px] text-[#6B7280] hover:bg-[#F5F6F8]"
         onClick={onRetry}
         type="button"
       >
