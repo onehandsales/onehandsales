@@ -1,13 +1,18 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   AlertCircle,
+  Building2,
+  CalendarClock,
   Camera,
   CheckCircle2,
   ChevronDown,
   CircleDot,
+  Cpu,
   Eye,
   FileImage,
   Loader2,
+  Mail,
+  Phone,
   Plus,
   RotateCcw,
   Save,
@@ -20,6 +25,7 @@ import { useForm, type UseFormRegisterReturn } from "react-hook-form";
 import { Link } from "react-router-dom";
 import { FilterPopoverSearchHeader } from "@/components/ui/filter-popover-search-header";
 import { PageHeader } from "@/components/layout/page-header";
+import { ListTableHeaderCell } from "@/components/ui/list-table-header-cell";
 import { ModalShell } from "@/components/ui/modal-shell";
 import { Pagination } from "@/components/ui/pagination";
 import { ListEmptyState } from "@/components/ui/state";
@@ -147,18 +153,18 @@ export function BusinessCardScanScreen() {
 
       <div className="hidden gap-3 overflow-x-auto px-5 pb-3 pt-1 md:flex xl:gap-5">
         <div className="flex min-w-0 flex-1 flex-col gap-3">
-          <div className="flex w-full min-w-[780px] flex-col overflow-hidden rounded-lg border border-[#E2E5EC] bg-white shadow-sm">
+          <div className="flex w-full min-w-[780px] flex-col overflow-hidden rounded-lg border border-[#E5E7EB] bg-white">
             <div
-              className="grid h-11 shrink-0 items-center border-b border-[#E2E5EC] bg-[#F9FAFB] px-3 md:px-4 xl:px-6"
+              className="grid h-11 shrink-0 items-center border-b border-[#E5E7EB] bg-white px-3 md:px-4 xl:px-6"
               style={TABLE_GRID_STYLE}
             >
-              <HeaderCell>상태</HeaderCell>
-              <HeaderCell>회사</HeaderCell>
-              <HeaderCell>담당자</HeaderCell>
-              <HeaderCell>휴대폰</HeaderCell>
-              <HeaderCell>이메일</HeaderCell>
-              <HeaderCell>모델</HeaderCell>
-              <HeaderCell>등록일</HeaderCell>
+              <ListTableHeaderCell icon={CircleDot}>상태</ListTableHeaderCell>
+              <ListTableHeaderCell icon={Building2}>회사</ListTableHeaderCell>
+              <ListTableHeaderCell icon={UserRound}>담당자</ListTableHeaderCell>
+              <ListTableHeaderCell icon={Phone}>휴대폰</ListTableHeaderCell>
+              <ListTableHeaderCell icon={Mail}>이메일</ListTableHeaderCell>
+              <ListTableHeaderCell icon={Cpu}>모델</ListTableHeaderCell>
+              <ListTableHeaderCell icon={CalendarClock}>등록일</ListTableHeaderCell>
             </div>
 
             {scanLogsQuery.isLoading ? (
@@ -979,7 +985,7 @@ function ScanLogRow({
 }) {
   return (
     <button
-      className="grid h-[66px] w-full cursor-pointer items-center border-b border-[#E2E5EC] bg-white px-3 text-left transition-colors last:border-b-0 hover:bg-[#EFF6FF] md:px-4 xl:px-6"
+      className="grid h-[66px] w-full cursor-pointer items-center border-b border-[#E5E7EB] bg-white px-3 text-left transition-colors last:border-b-0 hover:bg-[#F8FAFC] md:px-4 xl:px-6"
       onClick={onOpen}
       style={TABLE_GRID_STYLE}
       type="button"
@@ -1062,7 +1068,7 @@ function StatusBadge({ status }: { readonly status: BusinessCardScanStatus }) {
   return (
     <span
       className={cn(
-        "inline-flex h-6 max-w-full items-center rounded-full border px-2 text-[11px] font-semibold",
+        "inline-flex h-5 max-w-full items-center rounded-full px-2 text-[11px] font-medium",
         style
       )}
     >
@@ -1150,14 +1156,6 @@ function MobileField({
   );
 }
 
-function HeaderCell({ children }: { readonly children: string }) {
-  return (
-    <div className="min-w-0 truncate text-[12px] font-semibold text-[#64748B]">
-      {children}
-    </div>
-  );
-}
-
 function CellText({ value }: { readonly value: string | null }) {
   return (
     <div className="min-w-0 truncate text-[12px] font-medium text-[#475569]">
@@ -1188,7 +1186,7 @@ function ListSkeleton() {
     <div className="overflow-hidden">
       {Array.from({ length: 8 }, (_, index) => (
         <div
-          className="h-[66px] animate-pulse border-b border-[#E2E5EC] bg-[#F9FAFB] last:border-b-0"
+          className="h-[66px] animate-pulse border-b border-[#E5E7EB] bg-[#F8FAFC] last:border-b-0"
           key={index}
         />
       ))}

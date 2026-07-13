@@ -2,14 +2,17 @@ import {
   ArrowUpDown,
   BriefcaseBusiness,
   Building2,
+  CalendarClock,
   ClipboardList,
   FileClock,
   Layers3,
   Loader2,
   LockKeyhole,
+  MapPin,
   Package,
   RotateCcw,
   StickyNote,
+  Timer,
   Trash2,
   UserRound,
   type LucideIcon,
@@ -17,6 +20,7 @@ import {
 import { useEffect, useMemo, useState } from "react";
 import { PageHeader } from "@/components/layout/page-header";
 import { ListFilterSelect } from "@/components/ui/list-filter-select";
+import { ListTableHeaderCell } from "@/components/ui/list-table-header-cell";
 import { ModalShell } from "@/components/ui/modal-shell";
 import { Pagination } from "@/components/ui/pagination";
 import { ListEmptyState } from "@/components/ui/state";
@@ -313,26 +317,16 @@ export function TrashScreen() {
 
       <div className="flex min-h-0 flex-1 gap-3 overflow-x-auto px-5 pb-3 pt-1 xl:gap-5">
         <div className="flex min-w-0 flex-1 flex-col gap-3">
-          <div className="flex w-full min-w-[860px] flex-col overflow-hidden rounded-lg border border-[#E2E5EC] bg-white shadow-sm">
+          <div className="flex w-full min-w-[860px] flex-col overflow-hidden rounded-lg border border-[#E5E7EB] bg-white">
             <div
-              className="grid h-11 shrink-0 items-center border-b border-[#E2E5EC] bg-[#F9FAFB] px-3 md:px-4 xl:px-6"
+              className="grid h-11 shrink-0 items-center border-b border-[#E5E7EB] bg-white px-3 md:px-4 xl:px-6"
               style={TRASH_TABLE_GRID_STYLE}
             >
-              <span className="min-w-0 truncate text-[12px] font-semibold text-[#64748B]">
-                유형
-              </span>
-              <span className="min-w-0 truncate text-[12px] font-semibold text-[#64748B]">
-                제목
-              </span>
-              <span className="min-w-0 truncate text-[12px] font-semibold text-[#64748B]">
-                위치
-              </span>
-              <span className="min-w-0 truncate text-[12px] font-semibold text-[#64748B]">
-                삭제일
-              </span>
-              <span className="min-w-0 truncate text-[12px] font-semibold text-[#64748B]">
-                남은 기간
-              </span>
+              <ListTableHeaderCell icon={ClipboardList}>유형</ListTableHeaderCell>
+              <ListTableHeaderCell icon={StickyNote}>제목</ListTableHeaderCell>
+              <ListTableHeaderCell icon={MapPin}>위치</ListTableHeaderCell>
+              <ListTableHeaderCell icon={CalendarClock}>삭제일</ListTableHeaderCell>
+              <ListTableHeaderCell icon={Timer}>남은 기간</ListTableHeaderCell>
             </div>
 
             {trashQuery.isLoading ? (
@@ -452,7 +446,7 @@ function TrashListRow({
 
   return (
     <div
-      className="grid h-[66px] w-full cursor-pointer items-center border-b border-[#E2E5EC] bg-white px-3 transition-colors last:border-b-0 hover:bg-[#EFF6FF] md:px-4 xl:px-6"
+      className="grid h-[66px] w-full cursor-pointer items-center border-b border-[#E5E7EB] bg-white px-3 transition-colors last:border-b-0 hover:bg-[#F8FAFC] md:px-4 xl:px-6"
       style={TRASH_TABLE_GRID_STYLE}
       role="button"
       tabIndex={0}
@@ -722,7 +716,7 @@ function TrashListSkeleton() {
     <div>
       {Array.from({ length: 9 }, (_, index) => (
         <div
-          className="h-[66px] animate-pulse border-b border-[#E2E5EC] bg-[#F9FAFB] last:border-b-0"
+          className="h-[66px] animate-pulse border-b border-[#E5E7EB] bg-[#F8FAFC] last:border-b-0"
           key={index}
         />
       ))}

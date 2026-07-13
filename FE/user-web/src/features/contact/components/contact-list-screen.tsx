@@ -2,9 +2,12 @@ import {
   ArrowUpDown,
   BriefcaseBusiness,
   Building2,
+  CalendarClock,
   ChevronDown,
   Download,
   IdCard,
+  Mail,
+  Phone,
   Plus,
   RotateCcw,
   SlidersHorizontal,
@@ -26,6 +29,7 @@ import {
   useOutletContext,
 } from "react-router-dom";
 import { ListFilterSelect } from "@/components/ui/list-filter-select";
+import { ListTableHeaderCell } from "@/components/ui/list-table-header-cell";
 import { Pagination } from "@/components/ui/pagination";
 import { ListEmptyState } from "@/components/ui/state";
 import { Toast } from "@/components/ui/toast";
@@ -638,33 +642,19 @@ export function ContactListScreen({
         )}
       >
         <div className="flex min-w-0 flex-1 flex-col gap-3">
-          <div className="flex w-full min-w-0 flex-col overflow-hidden rounded-lg border border-[#E2E5EC] bg-white shadow-sm">
+          <div className="flex w-full min-w-0 flex-col overflow-hidden rounded-lg border border-[#E5E7EB] bg-white">
             {/* 테이블 헤더 (데스크톱) */}
             <div
-              className="grid h-11 shrink-0 items-center border-b border-[#E2E5EC] bg-[#F9FAFB] px-3 md:px-4 xl:px-6"
+              className="grid h-11 shrink-0 items-center border-b border-[#E5E7EB] bg-white px-3 md:px-4 xl:px-6"
               style={CONTACT_TABLE_GRID_STYLE}
             >
-              <div className="min-w-0 truncate text-[12px] font-semibold text-[#64748B]">
-                담당자명
-              </div>
-              <div className="min-w-0 truncate text-[12px] font-semibold text-[#64748B]">
-                회사
-              </div>
-              <div className="min-w-0 truncate text-[12px] font-semibold text-[#64748B]">
-                부서
-              </div>
-              <div className="min-w-0 truncate text-[12px] font-semibold text-[#64748B]">
-                직급
-              </div>
-              <div className="min-w-0 truncate text-[12px] font-semibold text-[#64748B]">
-                핸드폰
-              </div>
-              <div className="min-w-0 truncate text-[12px] font-semibold text-[#64748B]">
-                이메일
-              </div>
-              <div className="min-w-0 truncate whitespace-nowrap text-[12px] font-semibold text-[#64748B]">
-                등록일
-              </div>
+              <ListTableHeaderCell icon={IdCard}>담당자명</ListTableHeaderCell>
+              <ListTableHeaderCell icon={Building2}>회사</ListTableHeaderCell>
+              <ListTableHeaderCell icon={BriefcaseBusiness}>부서</ListTableHeaderCell>
+              <ListTableHeaderCell icon={IdCard}>직급</ListTableHeaderCell>
+              <ListTableHeaderCell icon={Phone}>핸드폰</ListTableHeaderCell>
+              <ListTableHeaderCell icon={Mail}>이메일</ListTableHeaderCell>
+              <ListTableHeaderCell icon={CalendarClock}>등록일</ListTableHeaderCell>
             </div>
 
             {contactsQuery.isLoading ? (
@@ -944,7 +934,7 @@ function ContactRow({
 
   return (
     <div
-      className="grid h-[66px] w-full cursor-pointer items-center border-b border-[#E2E5EC] bg-white px-3 text-left transition-colors last:border-b-0 hover:bg-[#EFF6FF] md:px-4 xl:px-6"
+      className="grid h-[66px] w-full cursor-pointer items-center border-b border-[#E5E7EB] bg-white px-3 text-left transition-colors last:border-b-0 hover:bg-[#F8FAFC] md:px-4 xl:px-6"
       onClick={() => void navigate(`/app/contacts/${contact.id}`)}
       onKeyDown={(e) => {
         if (e.key === "Enter" || e.key === " ") {
@@ -963,7 +953,7 @@ function ContactRow({
       </div>
       <div className="min-w-0">
         <span
-          className="inline-flex h-[22px] max-w-full min-w-0 items-center overflow-hidden rounded-full bg-[#F1F5F9] px-2.5 text-[11px] font-semibold text-[#475569]"
+          className="inline-flex h-5 max-w-full min-w-0 items-center overflow-hidden rounded-full bg-[#F1F5F9] px-2 text-[11px] font-medium text-[#475569]"
           title={contact.company.companyName}
         >
           <span className="min-w-0 truncate whitespace-nowrap">
@@ -981,7 +971,7 @@ function ContactRow({
       </div>
       <div className="min-w-0">
         <span
-          className="inline-flex h-[22px] max-w-full min-w-0 items-center overflow-hidden rounded-full bg-[#FEF3C7] px-2.5 text-[11px] font-semibold text-[#B45309]"
+          className="inline-flex h-5 max-w-full min-w-0 items-center overflow-hidden rounded-full bg-[#FEF3C7] px-2 text-[11px] font-medium text-[#B45309]"
           title={contact.contactJobGrade.jobGradeName}
         >
           <span className="min-w-0 truncate whitespace-nowrap">
@@ -1054,7 +1044,7 @@ function ContactListSkeleton() {
       {Array.from({ length: 10 }, (_, i) => (
         <div
           key={i}
-          className="h-[66px] animate-pulse border-b border-[#E2E5EC] bg-[#F9FAFB] last:border-b-0"
+          className="h-[66px] animate-pulse border-b border-[#E5E7EB] bg-[#F8FAFC] last:border-b-0"
         />
       ))}
     </div>

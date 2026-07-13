@@ -3,11 +3,13 @@ import {
   Bot,
   BriefcaseBusiness,
   Building2,
+  CalendarClock,
   ChevronDown,
   ChevronLeft,
   Eye,
   FileSpreadsheet,
   GripVertical,
+  Hash,
   Layers3,
   Loader2,
   Package,
@@ -31,6 +33,7 @@ import { useNavigate } from "react-router-dom";
 import { DataUploadIcon } from "@/components/icons/data-upload-icon";
 import { FilterPopoverSearchHeader } from "@/components/ui/filter-popover-search-header";
 import { PageHeader } from "@/components/layout/page-header";
+import { ListTableHeaderCell } from "@/components/ui/list-table-header-cell";
 import { ModalShell } from "@/components/ui/modal-shell";
 import { Pagination } from "@/components/ui/pagination";
 import { ListEmptyState } from "@/components/ui/state";
@@ -681,15 +684,15 @@ export function ImportScreen() {
             <ErrorMessage message={getApiErrorMessage(actionError)} />
           ) : null}
 
-          <div className="flex w-full min-w-0 flex-col overflow-hidden rounded-lg border border-[#E2E5EC] bg-white shadow-sm">
+          <div className="flex w-full min-w-0 flex-col overflow-hidden rounded-lg border border-[#E5E7EB] bg-white">
             <div
-              className="grid h-11 shrink-0 items-center border-b border-[#E2E5EC] bg-[#F9FAFB] px-3 md:px-4 xl:px-6"
+              className="grid h-11 shrink-0 items-center border-b border-[#E5E7EB] bg-white px-3 md:px-4 xl:px-6"
               style={IMPORT_LOG_TABLE_GRID_STYLE}
             >
-              <ImportTableHeaderCell>대상</ImportTableHeaderCell>
-              <ImportTableHeaderCell>생성된 데이터 수</ImportTableHeaderCell>
-              <ImportTableHeaderCell>등록한 파일명</ImportTableHeaderCell>
-              <ImportTableHeaderCell>등록일</ImportTableHeaderCell>
+              <ListTableHeaderCell icon={Layers3}>대상</ListTableHeaderCell>
+              <ListTableHeaderCell icon={Hash}>생성된 데이터 수</ListTableHeaderCell>
+              <ListTableHeaderCell icon={FileSpreadsheet}>등록한 파일명</ListTableHeaderCell>
+              <ListTableHeaderCell icon={CalendarClock}>등록일</ListTableHeaderCell>
             </div>
 
             {logsQuery.isLoading ? (
@@ -1131,7 +1134,7 @@ function ImportLogRow({
 
   return (
     <div
-      className="grid h-[66px] w-full cursor-pointer items-center border-b border-[#E2E5EC] bg-white px-3 transition-colors last:border-b-0 hover:bg-[#EFF6FF] md:px-4 xl:px-6"
+      className="grid h-[66px] w-full cursor-pointer items-center border-b border-[#E5E7EB] bg-white px-3 transition-colors last:border-b-0 hover:bg-[#F8FAFC] md:px-4 xl:px-6"
       onClick={onOpen}
       onKeyDown={(event) => {
         if (event.key === "Enter" || event.key === " ") {
@@ -3332,20 +3335,12 @@ function normalizeImportTaxonomyText(value: string) {
   return value.trim().toLowerCase();
 }
 
-function ImportTableHeaderCell({ children }: { readonly children: string }) {
-  return (
-    <div className="min-w-0 truncate text-[12px] font-semibold text-[#64748B]">
-      {children}
-    </div>
-  );
-}
-
 function Badge({ children }: { readonly children: ReactNode }) {
   const title = typeof children === "string" ? children : undefined;
 
   return (
     <span
-      className="inline-flex h-[22px] max-w-full min-w-0 items-center overflow-hidden rounded-full bg-[#EEF4FF] px-2.5 text-[11px] font-semibold text-[#4880EE]"
+      className="inline-flex h-5 max-w-full min-w-0 items-center overflow-hidden rounded-full bg-[#EEF4FF] px-2 text-[11px] font-medium text-[#4880EE]"
       title={title}
     >
       <span className="min-w-0 truncate whitespace-nowrap">{children}</span>
@@ -3388,7 +3383,7 @@ function ImportListSkeleton() {
     <div>
       {Array.from({ length: 8 }, (_, index) => (
         <div
-          className="h-[66px] animate-pulse border-b border-[#E2E5EC] bg-[#F9FAFB] last:border-b-0"
+          className="h-[66px] animate-pulse border-b border-[#E5E7EB] bg-[#F8FAFC] last:border-b-0"
           key={index}
         />
       ))}

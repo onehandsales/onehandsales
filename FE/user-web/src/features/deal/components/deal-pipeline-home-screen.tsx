@@ -2,10 +2,14 @@
 import {
   AlertCircle,
   ArrowUpDown,
+  Banknote,
   BriefcaseBusiness,
   Building2,
+  CalendarClock,
   ChevronDown,
   ChevronUp,
+  CircleDot,
+  ClipboardList,
   Download,
   Plus,
   RotateCcw,
@@ -24,6 +28,7 @@ import type { AppShellOutletContext } from "@/components/layout/app-shell";
 import { FilterPopoverSearchHeader } from "@/components/ui/filter-popover-search-header";
 import { PageHeader } from "@/components/layout/page-header";
 import { CollapsibleDesktopSearch } from "@/components/ui/collapsible-desktop-search";
+import { ListTableHeaderCell } from "@/components/ui/list-table-header-cell";
 import { ListFilterSelect } from "@/components/ui/list-filter-select";
 import { ListEmptyState } from "@/components/ui/state";
 import { Toast } from "@/components/ui/toast";
@@ -725,18 +730,18 @@ export function DealPipelineHomeScreen({
                 <ErrorState onRetry={() => void dealsQuery.refetch()} />
               ) : (
                 <>
-              <div className="flex w-full min-w-0 flex-col overflow-hidden rounded-lg border border-[#E2E5EC] bg-white shadow-sm">
+              <div className="flex w-full min-w-0 flex-col overflow-hidden rounded-lg border border-[#E5E7EB] bg-white">
                 {/* Table header */}
                 <div
-                  className="grid h-11 shrink-0 items-center border-b border-[#E2E5EC] bg-[#F9FAFB] px-3 md:px-4 xl:px-6"
+                  className="grid h-11 shrink-0 items-center border-b border-[#E5E7EB] bg-white px-3 md:px-4 xl:px-6"
                   style={DEAL_TABLE_GRID_STYLE}
                 >
-                  <TableHeaderCell>딜이름</TableHeaderCell>
-                  <TableHeaderCell>회사/담당자</TableHeaderCell>
-                  <TableHeaderCell>단계</TableHeaderCell>
-                  <TableHeaderCell>금액</TableHeaderCell>
-                  <TableHeaderCell>다음 행동</TableHeaderCell>
-                  <TableHeaderCell>등록일</TableHeaderCell>
+                  <ListTableHeaderCell icon={BriefcaseBusiness}>딜이름</ListTableHeaderCell>
+                  <ListTableHeaderCell icon={Building2}>회사/담당자</ListTableHeaderCell>
+                  <ListTableHeaderCell icon={CircleDot}>단계</ListTableHeaderCell>
+                  <ListTableHeaderCell icon={Banknote}>금액</ListTableHeaderCell>
+                  <ListTableHeaderCell icon={ClipboardList}>다음 행동</ListTableHeaderCell>
+                  <ListTableHeaderCell icon={CalendarClock}>등록일</ListTableHeaderCell>
                 </div>
 
                 {/* Rows */}
@@ -975,7 +980,7 @@ function DealListRow({
 
   return (
     <div
-      className="grid h-[66px] w-full cursor-pointer items-center border-b border-[#E2E5EC] bg-white px-3 py-0 text-left transition-colors last:border-b-0 hover:bg-[#EFF6FF] md:px-4 xl:px-6"
+      className="grid h-[66px] w-full cursor-pointer items-center border-b border-[#E5E7EB] bg-white px-3 py-0 text-left transition-colors last:border-b-0 hover:bg-[#F8FAFC] md:px-4 xl:px-6"
       onClick={() => onSelect(deal.id)}
       onKeyDown={(event) => {
         if (event.key === "Enter" || event.key === " ") {
@@ -1014,7 +1019,7 @@ function DealListRow({
       <div className="min-w-0">
         <span
           className={cn(
-            "inline-flex h-6 items-center gap-1.5 rounded-full border px-2 text-[11px] font-semibold",
+            "inline-flex h-5 items-center gap-1.5 rounded-full px-2 text-[11px] font-medium",
             getDealStatusClass(deal.dealStatus),
           )}
         >
@@ -1082,7 +1087,7 @@ function MobileDealCard({
       <div className="flex items-center gap-2">
         <span
           className={cn(
-            "inline-flex h-[22px] items-center gap-1.5 rounded-full border px-2 text-[11px] font-semibold",
+            "inline-flex h-5 items-center gap-1.5 rounded-full px-2 text-[11px] font-medium",
             getDealStatusClass(deal.dealStatus),
           )}
         >
@@ -1613,25 +1618,6 @@ function getDealCreatePanelMaxWidth(viewportWidth?: number) {
   );
 }
 
-function TableHeaderCell({
-  children,
-  align = "left",
-}: {
-  readonly children: string;
-  readonly align?: "left" | "right";
-}) {
-  return (
-    <div
-      className={cn(
-        "min-w-0 truncate text-[12px] font-semibold text-[#64748B]",
-        align === "right" && "text-right",
-      )}
-    >
-      {children}
-    </div>
-  );
-}
-
 function ErrorState({ onRetry }: { readonly onRetry: () => void }) {
   return (
     <div className="flex min-h-[320px] flex-col items-center justify-center px-5 py-12 text-center">
@@ -1652,10 +1638,10 @@ function ErrorState({ onRetry }: { readonly onRetry: () => void }) {
 
 function DesktopLoadingState() {
   return (
-    <div className="flex w-full min-w-0 flex-col overflow-hidden rounded-lg border border-[#E2E5EC] bg-white shadow-sm">
+    <div className="flex w-full min-w-0 flex-col overflow-hidden rounded-lg border border-[#E5E7EB] bg-white">
       {Array.from({ length: 6 }).map((_, i) => (
         <div
-          className="h-[66px] animate-pulse border-b border-[#E2E5EC] bg-[#F9FAFB] last:border-b-0"
+          className="h-[66px] animate-pulse border-b border-[#E5E7EB] bg-[#F8FAFC] last:border-b-0"
           key={i}
         />
       ))}

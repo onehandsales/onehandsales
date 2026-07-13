@@ -1,5 +1,7 @@
 import {
   ArrowUpDown,
+  BriefcaseBusiness,
+  CalendarClock,
   ChevronDown,
   CircleDot,
   Download,
@@ -26,6 +28,7 @@ import { PageHeader } from "@/components/layout/page-header";
 import { CollapsibleDesktopSearch } from "@/components/ui/collapsible-desktop-search";
 import { FilterPopoverSearchHeader } from "@/components/ui/filter-popover-search-header";
 import { ListFilterSelect } from "@/components/ui/list-filter-select";
+import { ListTableHeaderCell } from "@/components/ui/list-table-header-cell";
 import { Pagination } from "@/components/ui/pagination";
 import { ListEmptyState } from "@/components/ui/state";
 import { Toast } from "@/components/ui/toast";
@@ -668,16 +671,16 @@ export function ProductListScreen({
             </p>
           ) : null}
 
-          <div className="flex w-full min-w-0 flex-col overflow-hidden rounded-lg border border-[#E2E5EC] bg-white shadow-sm">
+          <div className="flex w-full min-w-0 flex-col overflow-hidden rounded-lg border border-[#E5E7EB] bg-white">
             <div
-              className="grid h-11 shrink-0 items-center border-b border-[#E2E5EC] bg-[#F9FAFB] px-3 md:px-4 xl:px-6"
+              className="grid h-11 shrink-0 items-center border-b border-[#E5E7EB] bg-white px-3 md:px-4 xl:px-6"
               style={PRODUCT_TABLE_GRID_STYLE}
             >
-              <ProductTableHeaderCell>제품명</ProductTableHeaderCell>
-              <ProductTableHeaderCell>카테고리</ProductTableHeaderCell>
-              <ProductTableHeaderCell>상태</ProductTableHeaderCell>
-              <ProductTableHeaderCell>딜 수</ProductTableHeaderCell>
-              <ProductTableHeaderCell>등록일</ProductTableHeaderCell>
+              <ListTableHeaderCell icon={Package}>제품명</ListTableHeaderCell>
+              <ListTableHeaderCell icon={Tags}>카테고리</ListTableHeaderCell>
+              <ListTableHeaderCell icon={CircleDot}>상태</ListTableHeaderCell>
+              <ListTableHeaderCell icon={BriefcaseBusiness}>딜 수</ListTableHeaderCell>
+              <ListTableHeaderCell icon={CalendarClock}>등록일</ListTableHeaderCell>
             </div>
 
             {productsQuery.isLoading ? (
@@ -966,7 +969,7 @@ function ProductRow({
 
   return (
     <div
-      className="grid h-[66px] w-full cursor-pointer items-center border-b border-[#E2E5EC] bg-white px-3 transition-colors last:border-b-0 hover:bg-[#EFF6FF] md:px-4 xl:px-6"
+      className="grid h-[66px] w-full cursor-pointer items-center border-b border-[#E5E7EB] bg-white px-3 transition-colors last:border-b-0 hover:bg-[#F8FAFC] md:px-4 xl:px-6"
       onClick={() => void navigate(`/app/products/${product.id}`)}
       onKeyDown={(e) => {
         if (e.key === "Enter" || e.key === " ") {
@@ -1004,25 +1007,6 @@ function ProductRow({
   );
 }
 
-function ProductTableHeaderCell({
-  align = "left",
-  children,
-}: {
-  readonly align?: "left" | "right";
-  readonly children: string;
-}) {
-  return (
-    <div
-      className={cn(
-        "min-w-0 truncate text-[12px] font-semibold text-[#64748B]",
-        align === "right" && "text-right",
-      )}
-    >
-      {children}
-    </div>
-  );
-}
-
 function Badge({
   children,
   tone,
@@ -1040,7 +1024,7 @@ function Badge({
   return (
     <span
       className={cn(
-        "inline-flex h-[22px] max-w-full min-w-0 items-center overflow-hidden rounded-full px-2.5 text-[11px] font-semibold",
+        "inline-flex h-5 max-w-full min-w-0 items-center overflow-hidden rounded-full px-2 text-[11px] font-medium",
         styles[tone],
       )}
       title={children}
@@ -1488,7 +1472,7 @@ function ProductListSkeleton() {
     <div className="min-h-0 flex-1 overflow-hidden">
       {Array.from({ length: 6 }, (_, index) => (
         <div
-          className="h-[66px] animate-pulse border-b border-[#E2E5EC] bg-[#F9FAFB] last:border-b-0"
+          className="h-[66px] animate-pulse border-b border-[#E5E7EB] bg-[#F8FAFC] last:border-b-0"
           key={index}
         />
       ))}
