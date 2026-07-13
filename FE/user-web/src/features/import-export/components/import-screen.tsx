@@ -33,7 +33,11 @@ import { useNavigate } from "react-router-dom";
 import { DataUploadIcon } from "@/components/icons/data-upload-icon";
 import { FilterPopoverSearchHeader } from "@/components/ui/filter-popover-search-header";
 import { PageHeader } from "@/components/layout/page-header";
-import { ListTableHeaderCell } from "@/components/ui/list-table-header-cell";
+import {
+  LIST_TABLE_HEADER_ROW_CLASS_NAME,
+  LIST_TABLE_ROW_CLASS_NAME,
+  ListTableHeaderCell,
+} from "@/components/ui/list-table-header-cell";
 import { ModalShell } from "@/components/ui/modal-shell";
 import { Pagination } from "@/components/ui/pagination";
 import { ListEmptyState } from "@/components/ui/state";
@@ -684,9 +688,9 @@ export function ImportScreen() {
             <ErrorMessage message={getApiErrorMessage(actionError)} />
           ) : null}
 
-          <div className="flex w-full min-w-0 flex-col overflow-hidden rounded-lg border border-[#E5E7EB] bg-white">
+          <div className="flex w-full min-w-0 flex-col overflow-hidden bg-white">
             <div
-              className="grid h-11 shrink-0 items-center border-b border-[#E5E7EB] bg-white px-3 md:px-4 xl:px-6"
+              className={LIST_TABLE_HEADER_ROW_CLASS_NAME}
               style={IMPORT_LOG_TABLE_GRID_STYLE}
             >
               <ListTableHeaderCell icon={Layers3}>대상</ListTableHeaderCell>
@@ -1134,7 +1138,7 @@ function ImportLogRow({
 
   return (
     <div
-      className="grid h-[66px] w-full cursor-pointer items-center border-b border-[#E5E7EB] bg-white px-3 transition-colors last:border-b-0 hover:bg-[#F8FAFC] md:px-4 xl:px-6"
+      className={LIST_TABLE_ROW_CLASS_NAME}
       onClick={onOpen}
       onKeyDown={(event) => {
         if (event.key === "Enter" || event.key === " ") {
@@ -1155,8 +1159,10 @@ function ImportLogRow({
       <div className="min-w-0 truncate text-[12px] font-medium text-[#475569]">
         {log.importedRowCount.toLocaleString("ko-KR")}건
       </div>
-      <div className="min-w-0 truncate text-[12px] font-medium text-[#475569]">
-        {log.originalFileName}
+      <div className="min-w-0">
+        <span className="block min-w-0 truncate text-[12px] font-medium text-[#475569]">
+          {log.originalFileName}
+        </span>
       </div>
       <div className="min-w-0 truncate text-[12px] font-medium text-[#64748B]">
         {formatLogCreatedAt(log.createdAt)}

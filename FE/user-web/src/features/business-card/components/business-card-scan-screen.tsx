@@ -25,7 +25,11 @@ import { useForm, type UseFormRegisterReturn } from "react-hook-form";
 import { Link } from "react-router-dom";
 import { FilterPopoverSearchHeader } from "@/components/ui/filter-popover-search-header";
 import { PageHeader } from "@/components/layout/page-header";
-import { ListTableHeaderCell } from "@/components/ui/list-table-header-cell";
+import {
+  LIST_TABLE_HEADER_ROW_CLASS_NAME,
+  LIST_TABLE_ROW_CLASS_NAME,
+  ListTableHeaderCell,
+} from "@/components/ui/list-table-header-cell";
 import { ModalShell } from "@/components/ui/modal-shell";
 import { Pagination } from "@/components/ui/pagination";
 import { ListEmptyState } from "@/components/ui/state";
@@ -153,9 +157,9 @@ export function BusinessCardScanScreen() {
 
       <div className="hidden gap-3 overflow-x-auto px-5 pb-3 pt-1 md:flex xl:gap-5">
         <div className="flex min-w-0 flex-1 flex-col gap-3">
-          <div className="flex w-full min-w-[780px] flex-col overflow-hidden rounded-lg border border-[#E5E7EB] bg-white">
+          <div className="flex w-full min-w-[780px] flex-col overflow-hidden bg-white">
             <div
-              className="grid h-11 shrink-0 items-center border-b border-[#E5E7EB] bg-white px-3 md:px-4 xl:px-6"
+              className={LIST_TABLE_HEADER_ROW_CLASS_NAME}
               style={TABLE_GRID_STYLE}
             >
               <ListTableHeaderCell icon={CircleDot}>상태</ListTableHeaderCell>
@@ -985,7 +989,7 @@ function ScanLogRow({
 }) {
   return (
     <button
-      className="grid h-[66px] w-full cursor-pointer items-center border-b border-[#E5E7EB] bg-white px-3 text-left transition-colors last:border-b-0 hover:bg-[#F8FAFC] md:px-4 xl:px-6"
+      className={LIST_TABLE_ROW_CLASS_NAME}
       onClick={onOpen}
       style={TABLE_GRID_STYLE}
       type="button"
@@ -1158,8 +1162,10 @@ function MobileField({
 
 function CellText({ value }: { readonly value: string | null }) {
   return (
-    <div className="min-w-0 truncate text-[12px] font-medium text-[#475569]">
-      {value ?? "-"}
+    <div className="min-w-0">
+      <span className="block min-w-0 truncate text-[12px] font-medium text-[#475569]">
+        {value ?? "-"}
+      </span>
     </div>
   );
 }

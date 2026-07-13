@@ -8,6 +8,15 @@ type ListTableHeaderCellProps = {
   readonly icon: LucideIcon;
 };
 
+export const LIST_TABLE_HEADER_ROW_CLASS_NAME =
+  "grid h-11 shrink-0 items-stretch border-b border-[#E5E7EB] bg-[#F9FAFB]";
+
+export const LIST_TABLE_ROW_CLASS_NAME =
+  "grid h-[66px] w-full cursor-pointer items-stretch border-b border-[#E5E7EB] bg-white text-left transition-colors hover:bg-[#F8FAFC] focus:outline-none focus-visible:bg-[#F8FAFC] [&>*]:flex [&>*]:h-full [&>*]:min-w-0 [&>*]:items-center [&>*]:border-r [&>*]:border-[#EEF0F3] [&>*]:px-3 [&>*:last-child]:border-r-0 [&>*>*]:min-w-0 md:[&>*]:px-4 xl:[&>*]:px-6";
+
+export const LIST_TABLE_SKELETON_ROW_CLASS_NAME =
+  "grid h-[66px] items-stretch border-b border-[#E5E7EB] bg-[#F8FAFC] [&>*]:flex [&>*]:h-full [&>*]:min-w-0 [&>*]:items-center [&>*]:border-r [&>*]:border-[#EEF0F3] [&>*]:px-3 [&>*:last-child]:border-r-0 [&>*>*]:min-w-0 md:[&>*]:px-4 xl:[&>*]:px-6";
+
 export function ListTableHeaderCell({
   children,
   className,
@@ -16,7 +25,7 @@ export function ListTableHeaderCell({
   return (
     <div
       className={cn(
-        "flex min-w-0 items-center gap-1.5 text-[12px] font-medium text-[#6B7280]",
+        "flex h-full min-w-0 items-center gap-1.5 border-r border-[#EEF0F3] px-3 text-[12px] font-medium text-[#6B7280] last:border-r-0 md:px-4 xl:px-6",
         className,
       )}
     >

@@ -29,7 +29,11 @@ import {
   useOutletContext,
 } from "react-router-dom";
 import { ListFilterSelect } from "@/components/ui/list-filter-select";
-import { ListTableHeaderCell } from "@/components/ui/list-table-header-cell";
+import {
+  LIST_TABLE_HEADER_ROW_CLASS_NAME,
+  LIST_TABLE_ROW_CLASS_NAME,
+  ListTableHeaderCell,
+} from "@/components/ui/list-table-header-cell";
 import { Pagination } from "@/components/ui/pagination";
 import { ListEmptyState } from "@/components/ui/state";
 import { Toast } from "@/components/ui/toast";
@@ -642,10 +646,10 @@ export function ContactListScreen({
         )}
       >
         <div className="flex min-w-0 flex-1 flex-col gap-3">
-          <div className="flex w-full min-w-0 flex-col overflow-hidden rounded-lg border border-[#E5E7EB] bg-white">
+          <div className="flex w-full min-w-0 flex-col overflow-hidden bg-white">
             {/* 테이블 헤더 (데스크톱) */}
             <div
-              className="grid h-11 shrink-0 items-center border-b border-[#E5E7EB] bg-white px-3 md:px-4 xl:px-6"
+              className={LIST_TABLE_HEADER_ROW_CLASS_NAME}
               style={CONTACT_TABLE_GRID_STYLE}
             >
               <ListTableHeaderCell icon={IdCard}>담당자명</ListTableHeaderCell>
@@ -934,7 +938,7 @@ function ContactRow({
 
   return (
     <div
-      className="grid h-[66px] w-full cursor-pointer items-center border-b border-[#E5E7EB] bg-white px-3 text-left transition-colors last:border-b-0 hover:bg-[#F8FAFC] md:px-4 xl:px-6"
+      className={LIST_TABLE_ROW_CLASS_NAME}
       onClick={() => void navigate(`/app/contacts/${contact.id}`)}
       onKeyDown={(e) => {
         if (e.key === "Enter" || e.key === " ") {
@@ -979,17 +983,15 @@ function ContactRow({
           </span>
         </span>
       </div>
-      <div
-        className="min-w-0 truncate text-[12px] font-medium text-[#475569]"
-        title={contact.mobile || "-"}
-      >
-        {contact.mobile || "-"}
+      <div className="min-w-0" title={contact.mobile || "-"}>
+        <span className="block min-w-0 truncate text-[12px] font-medium text-[#475569]">
+          {contact.mobile || "-"}
+        </span>
       </div>
-      <div
-        className="min-w-0 truncate text-[12px] font-medium text-[#475569]"
-        title={contact.email || "-"}
-      >
-        {contact.email || "-"}
+      <div className="min-w-0" title={contact.email || "-"}>
+        <span className="block min-w-0 truncate text-[12px] font-medium text-[#475569]">
+          {contact.email || "-"}
+        </span>
       </div>
       <div
         className="min-w-0 truncate text-[12px] font-medium text-[#64748B]"

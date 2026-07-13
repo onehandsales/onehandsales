@@ -24,7 +24,11 @@ import {
 import { PageHeader } from "@/components/layout/page-header";
 import { useLocation, useNavigate, useOutletContext } from "react-router-dom";
 import { FilterPopoverSearchHeader } from "@/components/ui/filter-popover-search-header";
-import { ListTableHeaderCell } from "@/components/ui/list-table-header-cell";
+import {
+  LIST_TABLE_HEADER_ROW_CLASS_NAME,
+  LIST_TABLE_ROW_CLASS_NAME,
+  ListTableHeaderCell,
+} from "@/components/ui/list-table-header-cell";
 import { ListFilterSelect } from "@/components/ui/list-filter-select";
 import { Pagination } from "@/components/ui/pagination";
 import { ListEmptyState } from "@/components/ui/state";
@@ -767,9 +771,9 @@ export function CompanyListScreen({
         )}
       >
         <div className="flex min-w-0 flex-1 flex-col gap-3">
-          <div className="flex min-h-0 w-full min-w-0 flex-col overflow-x-auto overflow-y-hidden rounded-lg border border-[#E5E7EB] bg-white">
+          <div className="flex min-h-0 w-full min-w-0 flex-col overflow-x-auto overflow-y-hidden bg-white">
             <div
-              className="grid h-11 shrink-0 items-center border-b border-[#E5E7EB] bg-white px-3 md:px-4 xl:px-6"
+              className={LIST_TABLE_HEADER_ROW_CLASS_NAME}
               style={COMPANY_TABLE_GRID_STYLE}
             >
               <ListTableHeaderCell icon={Building2}>회사명</ListTableHeaderCell>
@@ -1025,7 +1029,7 @@ function CompanyRow({
 
   return (
     <div
-      className="group grid h-[66px] w-full cursor-pointer items-center border-b border-[#E5E7EB] bg-white px-3 text-left transition-colors last:border-b-0 hover:bg-[#F8FAFC] md:px-4 xl:px-6"
+      className={cn("group", LIST_TABLE_ROW_CLASS_NAME)}
       onClick={() => void navigate(`/app/companies/${company.id}`)}
       onKeyDown={(e) => {
         if (e.key === "Enter" || e.key === " ") {

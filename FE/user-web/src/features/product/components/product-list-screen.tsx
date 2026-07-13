@@ -28,7 +28,11 @@ import { PageHeader } from "@/components/layout/page-header";
 import { CollapsibleDesktopSearch } from "@/components/ui/collapsible-desktop-search";
 import { FilterPopoverSearchHeader } from "@/components/ui/filter-popover-search-header";
 import { ListFilterSelect } from "@/components/ui/list-filter-select";
-import { ListTableHeaderCell } from "@/components/ui/list-table-header-cell";
+import {
+  LIST_TABLE_HEADER_ROW_CLASS_NAME,
+  LIST_TABLE_ROW_CLASS_NAME,
+  ListTableHeaderCell,
+} from "@/components/ui/list-table-header-cell";
 import { Pagination } from "@/components/ui/pagination";
 import { ListEmptyState } from "@/components/ui/state";
 import { Toast } from "@/components/ui/toast";
@@ -671,9 +675,9 @@ export function ProductListScreen({
             </p>
           ) : null}
 
-          <div className="flex w-full min-w-0 flex-col overflow-hidden rounded-lg border border-[#E5E7EB] bg-white">
+          <div className="flex w-full min-w-0 flex-col overflow-hidden bg-white">
             <div
-              className="grid h-11 shrink-0 items-center border-b border-[#E5E7EB] bg-white px-3 md:px-4 xl:px-6"
+              className={LIST_TABLE_HEADER_ROW_CLASS_NAME}
               style={PRODUCT_TABLE_GRID_STYLE}
             >
               <ListTableHeaderCell icon={Package}>제품명</ListTableHeaderCell>
@@ -969,7 +973,7 @@ function ProductRow({
 
   return (
     <div
-      className="grid h-[66px] w-full cursor-pointer items-center border-b border-[#E5E7EB] bg-white px-3 transition-colors last:border-b-0 hover:bg-[#F8FAFC] md:px-4 xl:px-6"
+      className={LIST_TABLE_ROW_CLASS_NAME}
       onClick={() => void navigate(`/app/products/${product.id}`)}
       onKeyDown={(e) => {
         if (e.key === "Enter" || e.key === " ") {

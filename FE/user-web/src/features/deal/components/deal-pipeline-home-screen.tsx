@@ -28,7 +28,11 @@ import type { AppShellOutletContext } from "@/components/layout/app-shell";
 import { FilterPopoverSearchHeader } from "@/components/ui/filter-popover-search-header";
 import { PageHeader } from "@/components/layout/page-header";
 import { CollapsibleDesktopSearch } from "@/components/ui/collapsible-desktop-search";
-import { ListTableHeaderCell } from "@/components/ui/list-table-header-cell";
+import {
+  LIST_TABLE_HEADER_ROW_CLASS_NAME,
+  LIST_TABLE_ROW_CLASS_NAME,
+  ListTableHeaderCell,
+} from "@/components/ui/list-table-header-cell";
 import { ListFilterSelect } from "@/components/ui/list-filter-select";
 import { ListEmptyState } from "@/components/ui/state";
 import { Toast } from "@/components/ui/toast";
@@ -730,10 +734,10 @@ export function DealPipelineHomeScreen({
                 <ErrorState onRetry={() => void dealsQuery.refetch()} />
               ) : (
                 <>
-              <div className="flex w-full min-w-0 flex-col overflow-hidden rounded-lg border border-[#E5E7EB] bg-white">
+              <div className="flex w-full min-w-0 flex-col overflow-hidden bg-white">
                 {/* Table header */}
                 <div
-                  className="grid h-11 shrink-0 items-center border-b border-[#E5E7EB] bg-white px-3 md:px-4 xl:px-6"
+                  className={LIST_TABLE_HEADER_ROW_CLASS_NAME}
                   style={DEAL_TABLE_GRID_STYLE}
                 >
                   <ListTableHeaderCell icon={BriefcaseBusiness}>딜이름</ListTableHeaderCell>
@@ -980,7 +984,7 @@ function DealListRow({
 
   return (
     <div
-      className="grid h-[66px] w-full cursor-pointer items-center border-b border-[#E5E7EB] bg-white px-3 py-0 text-left transition-colors last:border-b-0 hover:bg-[#F8FAFC] md:px-4 xl:px-6"
+      className={LIST_TABLE_ROW_CLASS_NAME}
       onClick={() => onSelect(deal.id)}
       onKeyDown={(event) => {
         if (event.key === "Enter" || event.key === " ") {
@@ -1638,7 +1642,7 @@ function ErrorState({ onRetry }: { readonly onRetry: () => void }) {
 
 function DesktopLoadingState() {
   return (
-    <div className="flex w-full min-w-0 flex-col overflow-hidden rounded-lg border border-[#E5E7EB] bg-white">
+    <div className="flex w-full min-w-0 flex-col overflow-hidden bg-white">
       {Array.from({ length: 6 }).map((_, i) => (
         <div
           className="h-[66px] animate-pulse border-b border-[#E5E7EB] bg-[#F8FAFC] last:border-b-0"

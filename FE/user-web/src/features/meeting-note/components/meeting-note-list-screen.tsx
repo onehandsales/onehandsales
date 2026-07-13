@@ -25,7 +25,12 @@ import { PageHeader } from "@/components/layout/page-header";
 import { CollapsibleDesktopSearch } from "@/components/ui/collapsible-desktop-search";
 import { FilterPopoverSearchHeader } from "@/components/ui/filter-popover-search-header";
 import { ListFilterSelect } from "@/components/ui/list-filter-select";
-import { ListTableHeaderCell } from "@/components/ui/list-table-header-cell";
+import {
+  LIST_TABLE_HEADER_ROW_CLASS_NAME,
+  LIST_TABLE_ROW_CLASS_NAME,
+  LIST_TABLE_SKELETON_ROW_CLASS_NAME,
+  ListTableHeaderCell,
+} from "@/components/ui/list-table-header-cell";
 import { Pagination } from "@/components/ui/pagination";
 import { ListEmptyState } from "@/components/ui/state";
 import { Toast } from "@/components/ui/toast";
@@ -588,9 +593,9 @@ export function MeetingNoteListScreen() {
         )}
       >
         <div className="flex min-w-0 flex-1 flex-col gap-3">
-          <div className="flex w-full min-w-0 flex-col overflow-hidden rounded-lg border border-[#E5E7EB] bg-white">
+          <div className="flex w-full min-w-0 flex-col overflow-hidden bg-white">
             <div
-              className="grid h-11 shrink-0 items-center border-b border-[#E5E7EB] bg-white px-3 md:px-4 xl:px-6"
+              className={LIST_TABLE_HEADER_ROW_CLASS_NAME}
               style={MEETING_NOTE_TABLE_GRID_STYLE}
             >
               <ListTableHeaderCell icon={CalendarClock}>미팅날짜</ListTableHeaderCell>
@@ -1200,9 +1205,7 @@ function MeetingNoteListRow({
 
   return (
     <div
-      className={cn(
-        "grid h-[66px] w-full cursor-pointer items-center border-b border-[#E5E7EB] bg-white px-3 text-left transition-colors last:border-b-0 hover:bg-[#F8FAFC] md:px-4 xl:px-6",
-      )}
+      className={LIST_TABLE_ROW_CLASS_NAME}
       onClick={() => void navigate(detailPath)}
       onKeyDown={(event) => {
         if (event.key === "Enter" || event.key === " ") {
@@ -1302,12 +1305,12 @@ function MeetingNoteListSkeleton() {
     <>
       {Array.from({ length: 6 }, (_, rowIndex) => (
         <div
-          className="grid h-[66px] items-center border-b border-[#E5E7EB] bg-[#F8FAFC] px-3 last:border-b-0 md:px-4 xl:px-6"
+          className={LIST_TABLE_SKELETON_ROW_CLASS_NAME}
           key={rowIndex}
           style={MEETING_NOTE_TABLE_GRID_STYLE}
         >
           {Array.from({ length: 5 }, (_, cellIndex) => (
-            <div className="min-w-0 pr-3" key={cellIndex}>
+            <div className="min-w-0" key={cellIndex}>
               <div className="h-4 w-20 animate-pulse rounded bg-[#F3F4F6]" />
             </div>
           ))}

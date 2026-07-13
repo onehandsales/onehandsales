@@ -20,7 +20,11 @@ import {
 import { useEffect, useMemo, useState } from "react";
 import { PageHeader } from "@/components/layout/page-header";
 import { ListFilterSelect } from "@/components/ui/list-filter-select";
-import { ListTableHeaderCell } from "@/components/ui/list-table-header-cell";
+import {
+  LIST_TABLE_HEADER_ROW_CLASS_NAME,
+  LIST_TABLE_ROW_CLASS_NAME,
+  ListTableHeaderCell,
+} from "@/components/ui/list-table-header-cell";
 import { ModalShell } from "@/components/ui/modal-shell";
 import { Pagination } from "@/components/ui/pagination";
 import { ListEmptyState } from "@/components/ui/state";
@@ -317,9 +321,9 @@ export function TrashScreen() {
 
       <div className="flex min-h-0 flex-1 gap-3 overflow-x-auto px-5 pb-3 pt-1 xl:gap-5">
         <div className="flex min-w-0 flex-1 flex-col gap-3">
-          <div className="flex w-full min-w-[860px] flex-col overflow-hidden rounded-lg border border-[#E5E7EB] bg-white">
+          <div className="flex w-full min-w-[860px] flex-col overflow-hidden bg-white">
             <div
-              className="grid h-11 shrink-0 items-center border-b border-[#E5E7EB] bg-white px-3 md:px-4 xl:px-6"
+              className={LIST_TABLE_HEADER_ROW_CLASS_NAME}
               style={TRASH_TABLE_GRID_STYLE}
             >
               <ListTableHeaderCell icon={ClipboardList}>유형</ListTableHeaderCell>
@@ -446,7 +450,7 @@ function TrashListRow({
 
   return (
     <div
-      className="grid h-[66px] w-full cursor-pointer items-center border-b border-[#E5E7EB] bg-white px-3 transition-colors last:border-b-0 hover:bg-[#F8FAFC] md:px-4 xl:px-6"
+      className={LIST_TABLE_ROW_CLASS_NAME}
       style={TRASH_TABLE_GRID_STYLE}
       role="button"
       tabIndex={0}
