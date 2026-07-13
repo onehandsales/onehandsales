@@ -1,20 +1,20 @@
 import {
   BriefcaseBusiness,
   Building2,
-  ChevronLeft,
-  ChevronRight,
+  Check,
+  Copy,
   LockKeyhole,
+  MoreHorizontal,
   Plus,
   Pencil,
   ShieldCheck,
   Trash2,
   UserRound,
 } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { Toast } from "@/components/ui/toast";
-import { SummaryTaxonomySelect } from "@/components/ui/summary-taxonomy-select";
 import {
   ModalFieldGroup,
   ModalFooterActions,
@@ -34,7 +34,6 @@ import {
   useDeleteCompanyMutation,
   useDeleteCompanyMemoLogMutation,
   useDeleteCompanyPrivateMemoLogMutation,
-  useUpdateCompanyMutation,
   useCreateCompanyMemoLogMutation,
   useUpdateCompanyMemoLogMutation,
   useCreateCompanyPrivateMemoLogMutation,
@@ -54,18 +53,14 @@ import type {
   CompanyRegion,
 } from "@/features/company/types/company";
 import {
-  companyEditFormSchema,
   toCreateCompanyMemoLogInput,
   toUpdateCompanyMemoLogInput,
   toCreateCompanyPrivateMemoLogInput,
   toUpdateCompanyPrivateMemoLogInput,
-  toCompanyEditFormValues,
-  toUpdateCompanyInput,
   companyMemoLogFormSchema,
   companyPrivateMemoLogFormSchema,
   emptyCompanyMemoLogFormValues,
   emptyCompanyPrivateMemoLogFormValues,
-  type CompanyEditFormValues,
   type CompanyMemoLogFormValues,
   type CompanyPrivateMemoLogFormValues,
 } from "@/features/company/schemas/company-schema";
@@ -84,6 +79,11 @@ type CompanyDetailScreenProps = {
   readonly companyId: string;
 };
 
+const COMPANY_DETAIL_FULL_WIDTH_STORAGE_KEY = "onehand.company.detail.fullWidth";
+const COMPANY_DETAIL_SMALL_TEXT_STORAGE_KEY = "onehand.company.detail.smallText";
+const COMPANY_RELATED_SECTION_CLASS_NAME =
+  "rounded-lg bg-[#F7F6F3] px-4 pb-4";
+
 export function CompanyDetailScreen({ companyId }: CompanyDetailScreenProps) {
   const navigate = useNavigate();
   const [notice, setNotice] = useState<string | null>(null);
@@ -91,6 +91,14 @@ export function CompanyDetailScreen({ companyId }: CompanyDetailScreenProps) {
   const [actionError, setActionError] = useState<string | null>(null);
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
+  const [isPageMenuOpen, setIsPageMenuOpen] = useState(false);
+  const [isFullWidth, setIsFullWidth] = useState(() =>
+    readStoredBoolean(COMPANY_DETAIL_FULL_WIDTH_STORAGE_KEY, false)
+  );
+  const [isSmallText, setIsSmallText] = useState(() =>
+    readStoredBoolean(COMPANY_DETAIL_SMALL_TEXT_STORAGE_KEY, false)
+  );
+  const pageMenuRef = useRef<HTMLDivElement | null>(null);
 
   const companyQuery = useCompanyDetail(companyId);
   const contactsQuery = useCompanyContacts(companyId);
@@ -119,6 +127,45 @@ export function CompanyDetailScreen({ companyId }: CompanyDetailScreenProps) {
   const memoLogs = memoLogsQuery.data?.pages.flatMap((page) => page.items) ?? [];
   const privateMemoLogs = privateMemoLogsQuery.data?.pages.flatMap((page) => page.items) ?? [];
 
+  useEffect(() => {
+    window.localStorage.setItem(
+      COMPANY_DETAIL_FULL_WIDTH_STORAGE_KEY,
+      String(isFullWidth)
+    );
+  }, [isFullWidth]);
+
+  useEffect(() => {
+    window.localStorage.setItem(
+      COMPANY_DETAIL_SMALL_TEXT_STORAGE_KEY,
+      String(isSmallText)
+    );
+  }, [isSmallText]);
+
+  useEffect(() => {
+    if (!isPageMenuOpen) {
+      return;
+    }
+
+    const onPointerDown = (event: PointerEvent) => {
+      if (!pageMenuRef.current?.contains(event.target as Node)) {
+        setIsPageMenuOpen(false);
+      }
+    };
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setIsPageMenuOpen(false);
+      }
+    };
+
+    document.addEventListener("pointerdown", onPointerDown);
+    document.addEventListener("keydown", onKeyDown);
+
+    return () => {
+      document.removeEventListener("pointerdown", onPointerDown);
+      document.removeEventListener("keydown", onKeyDown);
+    };
+  }, [isPageMenuOpen]);
+
   if (companyQuery.isLoading) return <CompanyDetailSkeleton />;
   if (companyQuery.isError) {
     return (
@@ -132,6 +179,10 @@ export function CompanyDetailScreen({ companyId }: CompanyDetailScreenProps) {
 
   const contacts = contactsQuery.data?.items ?? [];
   const deals = dealsQuery.data?.items ?? [];
+  const contentWidthClassName = isFullWidth ? "max-w-none" : "max-w-[678px]";
+  const relatedSectionsClassName = isFullWidth
+    ? "grid gap-y-5 lg:grid-cols-2 lg:gap-x-10"
+    : "grid gap-5";
 
   const showNotice = (message: string, description?: string) => {
     setNotice(message);
@@ -141,6 +192,14 @@ export function CompanyDetailScreen({ companyId }: CompanyDetailScreenProps) {
   const clearNotice = () => {
     setNotice(null);
     setNoticeDescription(null);
+  };
+
+  const onCopyEmail = async (email: string) => {
+    try {
+      await copyTextToClipboard(email);
+    } catch {
+      // Ignore clipboard failures; copying from the inline icon should stay silent.
+    }
   };
 
   const onDeleteCompany = async () => {
@@ -160,169 +219,113 @@ export function CompanyDetailScreen({ companyId }: CompanyDetailScreenProps) {
     }
   };
 
-  const logoLetter = company.companyName.charAt(0);
-
   return (
     <>
-      {/* ── Mobile ──────────────────────────────────────────── */}
-      <div className="md:hidden min-h-screen bg-white">
-        {notice ? (
-          <div className="px-4 pt-3">
-            <Toast
-              description={noticeDescription ?? undefined}
-              message={notice}
-              onClose={clearNotice}
-              variant="success"
-            />
-          </div>
-        ) : null}
-        {actionError ? (
-          <div className="px-4 pt-3">
-            <Toast message={actionError} onClose={() => setActionError(null)} variant="error" />
-          </div>
-        ) : null}
-
-        {/* TopBar */}
-        <div className="flex h-16 items-center gap-3 bg-transparent px-6">
-          <Link to="/app/companies">
-            <ChevronLeft className="h-5 w-5 text-[#9CA3AF]" />
-          </Link>
-          <div className="flex flex-1 items-center gap-1.5 text-[13px]">
+      <div className="flex min-h-full flex-col bg-white">
+        <header className="flex h-11 shrink-0 items-center px-4">
+          <div className="flex min-w-0 flex-1 items-center gap-1.5 text-[13px]">
             <Building2 className="h-3.5 w-3.5 shrink-0 text-[#9CA3AF]" />
-            <span className="font-medium text-[#6B7280]">회사</span>
-            <span className="text-[#9CA3AF]">/</span>
-            <span className="font-bold text-[#111827]">{company.companyName}</span>
+            <Link
+              className="truncate font-semibold text-[#6B7280] transition hover:text-[#111827]"
+              title="회사 목록으로 이동"
+              to="/app/companies"
+            >
+              회사
+            </Link>
+            <span className="text-[#CBD5E1]">/</span>
+            <span className="truncate font-semibold text-[#111827]">
+              {company.companyName}
+            </span>
           </div>
-          <button
-            aria-label="수정"
-            className="flex h-8 w-8 items-center justify-center rounded-lg border border-[#E5E7EB] bg-white text-[#374151] transition-colors hover:bg-[#F9FAFB]"
-            onClick={() => setIsEditOpen(true)}
-            type="button"
+          <div className="flex shrink-0 items-center gap-1.5">
+            <button
+              className="inline-flex h-8 items-center justify-center rounded-md px-2 text-[13px] font-semibold text-[#6B7280] transition hover:bg-[#F3F4F6] hover:text-[#111827]"
+              onClick={() => setIsEditOpen(true)}
+              type="button"
+            >
+              수정
+            </button>
+            <div className="relative" ref={pageMenuRef}>
+              <button
+                aria-expanded={isPageMenuOpen}
+                aria-haspopup="menu"
+                aria-label="회사 페이지 옵션"
+                className="inline-flex h-8 w-8 items-center justify-center rounded-md text-[#6B7280] transition hover:bg-[#F3F4F6] hover:text-[#111827]"
+                onClick={() => setIsPageMenuOpen((open) => !open)}
+                title="회사 페이지 옵션"
+                type="button"
+              >
+                <MoreHorizontal className="h-4 w-4" />
+              </button>
+              {isPageMenuOpen ? (
+                <CompanyPageOptionsMenu
+                  isDeleting={deleteCompanyMutation.isPending}
+                  isFullWidth={isFullWidth}
+                  isSmallText={isSmallText}
+                  onDelete={() => {
+                    setIsPageMenuOpen(false);
+                    setDeleteConfirmOpen(true);
+                  }}
+                  onToggleFullWidth={() =>
+                    setIsFullWidth((current) => !current)
+                  }
+                  onToggleSmallText={() =>
+                    setIsSmallText((current) => !current)
+                  }
+                />
+              ) : null}
+            </div>
+          </div>
+        </header>
+
+        <main className="min-h-0 flex-1 overflow-y-auto px-5 pb-20 pt-14">
+          <div
+            className={`mx-auto grid min-h-full w-full ${contentWidthClassName} content-start gap-5`}
           >
-            <Pencil className="h-4 w-4" />
-          </button>
-          <button
-            aria-label="삭제"
-            className="flex h-8 w-8 items-center justify-center rounded-lg border border-[#FEE2E2] bg-white text-[#B91C1C] transition-colors hover:bg-red-50 disabled:opacity-50"
-            disabled={deleteCompanyMutation.isPending}
-            onClick={() => setDeleteConfirmOpen(true)}
-            type="button"
-          >
-            <Trash2 className="h-4 w-4" />
-          </button>
-        </div>
+            {notice ? (
+              <Toast
+                description={noticeDescription ?? undefined}
+                message={notice}
+                onClose={clearNotice}
+                variant="success"
+              />
+            ) : null}
+            {actionError ? (
+              <Toast
+                message={actionError}
+                onClose={() => setActionError(null)}
+                variant="error"
+              />
+            ) : null}
 
-        <div className="flex flex-col gap-4 px-4 pb-24 pt-0">
-          <CompanySummaryHeader
-            company={company}
-            contactCount={contacts.length}
-            dealCount={deals.length}
-            fields={fields}
-            isEditing={false}
-            logoLetter={logoLetter}
-            regions={regions}
-            onCancelEdit={() => setIsEditOpen(false)}
-            onSaved={() => {
-              void companyQuery.refetch();
-            showNotice("회사 정보를 저장했어요.");
-              setIsEditOpen(false);
-            }}
-          />
-
-          <ConnectedContactsTable contacts={contacts} isLoading={contactsQuery.isLoading} />
-          <ConnectedDealsTable deals={deals} isLoading={dealsQuery.isLoading} />
-          <MemoPanel
-            companyId={companyId}
-            memoLogs={memoLogs}
-            isLoading={memoLogsQuery.isLoading}
-            hasNext={Boolean(memoLogsQuery.hasNextPage)}
-            isFetchingNext={memoLogsQuery.isFetchingNextPage}
-            onFetchMore={() => void memoLogsQuery.fetchNextPage()}
-            onChanged={showNotice}
-          />
-        </div>
-      </div>
-
-      {/* ── Desktop ──────────────────────────────────────────── */}
-      <div className="hidden md:flex h-full flex-col bg-white">
-        {notice ? (
-          <div className="mx-6 mt-3">
-            <Toast
-              description={noticeDescription ?? undefined}
-              message={notice}
-              onClose={clearNotice}
-              variant="success"
+            <CompanySummaryHeader
+              company={company}
+              contactCount={contacts.length}
+              dealCount={deals.length}
+              isSmallText={isSmallText}
             />
-          </div>
-        ) : null}
-        {actionError ? (
-          <div className="mx-6 mt-3">
-            <Toast message={actionError} onClose={() => setActionError(null)} variant="error" />
-          </div>
-        ) : null}
 
-        {/* TopBar */}
-        <div className="flex h-16 shrink-0 items-center gap-3 bg-transparent px-6">
-          <Link to="/app/companies">
-            <ChevronLeft className="h-5 w-5 text-[#9CA3AF]" />
-          </Link>
-          <div className="flex flex-1 items-center gap-1.5 text-[13px]">
-            <Building2 className="h-3.5 w-3.5 shrink-0 text-[#9CA3AF]" />
-            <span className="font-medium text-[#6B7280]">회사</span>
-            <span className="text-[#9CA3AF]">/</span>
-            <span className="font-bold text-[#111827]">{company.companyName}</span>
-          </div>
-          <button
-            aria-label="수정"
-            className="flex h-8 w-8 items-center justify-center rounded-lg border border-[#E5E7EB] bg-white text-[#374151] transition-colors hover:bg-[#F9FAFB]"
-            onClick={() => setIsEditOpen(true)}
-            type="button"
-          >
-            <Pencil className="h-4 w-4" />
-          </button>
-          <button
-            aria-label="삭제"
-            className="flex h-8 w-8 items-center justify-center rounded-lg border border-[#FEE2E2] bg-white text-[#B91C1C] transition-colors hover:bg-red-50 disabled:opacity-50"
-            disabled={deleteCompanyMutation.isPending}
-            onClick={() => setDeleteConfirmOpen(true)}
-            type="button"
-          >
-            <Trash2 className="h-4 w-4" />
-          </button>
-        </div>
+            <div className={relatedSectionsClassName}>
+              <ConnectedContactsTable
+                contacts={contacts}
+                isLoading={contactsQuery.isLoading}
+                isSmallText={isSmallText}
+                onCopyEmail={onCopyEmail}
+              />
+              <ConnectedDealsTable
+                deals={deals}
+                isLoading={dealsQuery.isLoading}
+                isSmallText={isSmallText}
+              />
+            </div>
 
-        {/* Content Area */}
-        <div className="flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto px-6 pb-6 pt-0">
-          <CompanySummaryHeader
-            company={company}
-            contactCount={contacts.length}
-            dealCount={deals.length}
-            fields={fields}
-            isEditing={false}
-            logoLetter={logoLetter}
-            regions={regions}
-            onCancelEdit={() => setIsEditOpen(false)}
-            onSaved={() => {
-              void companyQuery.refetch();
-              showNotice("회사 정보를 저장했어요.");
-              setIsEditOpen(false);
-            }}
-          />
-
-          {/* 1행: 연결담당자 + 연결딜 */}
-          <div className="grid grid-cols-2 gap-4">
-            <ConnectedContactsTable contacts={contacts} isLoading={contactsQuery.isLoading} />
-            <ConnectedDealsTable deals={deals} isLoading={dealsQuery.isLoading} />
-          </div>
-
-          {/* 2행: 회사 로그 + 비밀 메모 */}
-          <div className="grid grid-cols-2 gap-4">
             <MemoPanel
               companyId={companyId}
               memoLogs={memoLogs}
               isLoading={memoLogsQuery.isLoading}
               hasNext={Boolean(memoLogsQuery.hasNextPage)}
               isFetchingNext={memoLogsQuery.isFetchingNextPage}
+              isSmallText={isSmallText}
               onFetchMore={() => void memoLogsQuery.fetchNextPage()}
               onChanged={showNotice}
             />
@@ -332,11 +335,12 @@ export function CompanyDetailScreen({ companyId }: CompanyDetailScreenProps) {
               isLoading={privateMemoLogsQuery.isLoading}
               hasNext={Boolean(privateMemoLogsQuery.hasNextPage)}
               isFetchingNext={privateMemoLogsQuery.isFetchingNextPage}
+              isSmallText={isSmallText}
               onFetchMore={() => void privateMemoLogsQuery.fetchNextPage()}
               onChanged={showNotice}
             />
           </div>
-        </div>
+        </main>
       </div>
       <ConfirmDialog
         cancelLabel="아니요"
@@ -368,188 +372,231 @@ export function CompanyDetailScreen({ companyId }: CompanyDetailScreenProps) {
   );
 }
 
-// ── Company Summary Header ──────────────────────────────────────────
+// ── Company Document Header ─────────────────────────────────────────
 
 function CompanySummaryHeader({
   company,
-  logoLetter,
   contactCount,
   dealCount,
-  fields,
-  regions,
-  isEditing,
-  onCancelEdit,
-  onSaved,
+  isSmallText,
 }: {
   readonly company: CompanyDetail;
-  readonly logoLetter: string;
   readonly contactCount: number;
   readonly dealCount: number;
-  readonly fields: CompanyField[];
-  readonly regions: CompanyRegion[];
-  readonly isEditing: boolean;
-  readonly onCancelEdit: () => void;
-  readonly onSaved: () => void;
+  readonly isSmallText: boolean;
 }) {
-  const updateCompanyMutation = useUpdateCompanyMutation();
-  const {
-    register,
-    handleSubmit,
-    reset,
-    setValue,
-    watch,
-    formState: { errors },
-  } = useForm<CompanyEditFormValues>({
-    resolver: zodResolver(companyEditFormSchema),
-    defaultValues: toCompanyEditFormValues(company),
-  });
-  const selectedFieldId = watch("companyFieldId");
-  const selectedRegionId = watch("companyRegionId");
-
-  useEffect(() => {
-    if (isEditing) {
-      reset(toCompanyEditFormValues(company));
-    }
-  }, [company, isEditing, reset]);
-
-  const onSubmit = handleSubmit(async (values) => {
-    await updateCompanyMutation.mutateAsync(
-      toUpdateCompanyInput(company.id, values)
-    );
-    onSaved();
-  });
-
-  if (isEditing) {
-    return (
-      <form
-        className="flex min-h-[74px] flex-wrap items-center gap-3 rounded-xl border border-[#BFDBFE] bg-white px-5 py-4 shadow-[0_0_0_1px_rgba(72,128,238,0.04)] md:flex-nowrap"
-        onSubmit={onSubmit}
-      >
-        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#EEF2FF]">
-          <span className="text-[16px] font-extrabold text-[#4F46E5]">{logoLetter}</span>
+  return (
+    <section className="grid cursor-auto gap-6">
+      <div className="grid gap-4">
+        <div className="flex h-20 w-20 items-center justify-center rounded-2xl bg-[#F8FAFC] text-[#94A3B8]">
+          <Building2 className="h-11 w-11" />
         </div>
+        <h1
+          className={`min-w-0 break-words font-semibold leading-tight text-[#111827] ${
+            isSmallText ? "text-[34px]" : "text-[42px]"
+          }`}
+        >
+          {company.companyName}
+        </h1>
+      </div>
 
-        <div className="relative min-w-[160px] flex-[1_1_220px] md:max-w-[240px] md:flex-none">
-          <Building2 className="pointer-events-none absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-[#9CA3AF]" />
-          <label className="sr-only" htmlFor="company-summary-edit-name">
-            회사명
-          </label>
-          <input
-            aria-invalid={Boolean(errors.companyName)}
-            className="h-9 w-full rounded-lg border border-[#DDE3EE] bg-white pl-8 pr-3 text-[15px] font-extrabold text-[#111827] outline-none transition-colors focus:border-[#4880EE] focus:ring-1 focus:ring-[#4880EE]"
-            id="company-summary-edit-name"
-            {...register("companyName")}
+      <div className="grid gap-1 py-3">
+        <div className="grid gap-x-6 gap-y-1 sm:grid-cols-2">
+          <CompanyDocumentProperty
+            label="분야"
+            isSmallText={isSmallText}
+            value={company.companyField.field}
+          />
+          <CompanyDocumentProperty
+            label="지역"
+            isSmallText={isSmallText}
+            value={company.companyRegion.region}
+          />
+          <CompanyDocumentProperty
+            isSmallText={isSmallText}
+            label="담당자"
+            value={`${contactCount}명`}
+          />
+          <CompanyDocumentProperty
+            isSmallText={isSmallText}
+            label="딜"
+            value={`${dealCount}건`}
           />
         </div>
+      </div>
+    </section>
+  );
+}
 
-        <div className="hidden h-5 w-px shrink-0 bg-[#E5E7EB] md:block" />
-
-        <input type="hidden" {...register("companyFieldId")} />
-        <SummaryTaxonomySelect
-          emptyText="조건을 바꾸면 분야를 찾을 수 있어요."
-          getLabel={(field) => field.field}
-          id="company-summary-edit-field"
-          invalid={Boolean(errors.companyFieldId)}
-          itemKindLabel="분야"
-          items={fields}
-          selectedId={selectedFieldId}
-          tone="amber"
-          widthClassName="w-[clamp(136px,14vw,178px)]"
-          onSelect={(id) =>
-            setValue("companyFieldId", id, {
-              shouldDirty: true,
-              shouldValidate: true,
-            })
-          }
-        />
-
-        <input type="hidden" {...register("companyRegionId")} />
-        <SummaryTaxonomySelect
-          emptyText="조건을 바꾸면 지역을 찾을 수 있어요."
-          getLabel={(region) => region.region}
-          id="company-summary-edit-region"
-          invalid={Boolean(errors.companyRegionId)}
-          itemKindLabel="지역"
-          items={regions}
-          selectedId={selectedRegionId}
-          tone="green"
-          widthClassName="w-[clamp(150px,16vw,210px)]"
-          onSelect={(id) =>
-            setValue("companyRegionId", id, {
-              shouldDirty: true,
-              shouldValidate: true,
-            })
-          }
-        />
-
-        <div className="hidden h-5 w-px shrink-0 bg-[#E5E7EB] lg:block" />
-        <div className="flex items-center gap-1.5 text-[13px]">
-          <span className="font-semibold text-[#9CA3AF]">담당자</span>
-          <span className="font-extrabold text-[#111827]">{contactCount}명</span>
-        </div>
-        <div className="flex items-center gap-1.5 text-[13px]">
-          <span className="font-semibold text-[#9CA3AF]">딜</span>
-          <span className="font-extrabold text-[#111827]">{dealCount}건</span>
-        </div>
-
-        <div className="flex-1" />
-
-        {updateCompanyMutation.error ? (
-          <span className="basis-full text-[12px] font-semibold text-[#B91C1C] md:basis-auto">
-            {getApiErrorMessage(updateCompanyMutation.error)}
-          </span>
-        ) : null}
-
-        <button
-          className="h-9 rounded-lg border border-[#DDE3EE] bg-white px-3 text-[13px] font-semibold text-[#6B7280] transition-colors hover:bg-[#F9FAFB]"
-          onClick={onCancelEdit}
-          type="button"
-        >
-              닫기
-        </button>
-        <button
-          className="h-9 rounded-lg bg-[#4880EE] px-4 text-[13px] font-extrabold text-white transition-colors hover:bg-[#1D4ED8] disabled:cursor-not-allowed disabled:opacity-60"
-          disabled={updateCompanyMutation.isPending}
-          type="submit"
-        >
-          {updateCompanyMutation.isPending ? "저장 중" : "저장"}
-        </button>
-      </form>
-    );
-  }
-
+function CompanyDocumentProperty({
+  isSmallText,
+  label,
+  value,
+}: {
+  readonly isSmallText: boolean;
+  readonly label: string;
+  readonly value: string;
+}) {
   return (
-    <div className="flex min-h-[74px] items-center gap-4 rounded-xl border border-[#E5E7EB] bg-white px-5 py-4">
-      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#EEF2FF]">
-        <span className="text-[16px] font-extrabold text-[#4F46E5]">{logoLetter}</span>
-      </div>
-      <span className="shrink-0 text-[20px] font-extrabold leading-none text-[#111827]">
-        {company.companyName}
+    <div
+      className={`grid min-h-8 grid-cols-[96px_minmax(0,1fr)] items-center gap-3 ${
+        isSmallText ? "text-[13px]" : "text-[14px]"
+      }`}
+    >
+      <span className="font-semibold text-[#94A3B8]">{label}</span>
+      <span className="min-w-0 break-words font-medium text-[#111827]">
+        {value}
       </span>
-      <div className="h-5 w-px shrink-0 bg-[#E5E7EB]" />
-      <div className="flex items-center gap-1.5 text-[13px]">
-        <span className="font-semibold text-[#9CA3AF]">분야</span>
-        <span className="font-extrabold text-[#111827]">{company.companyField.field}</span>
-      </div>
-      <div className="flex items-center gap-1.5 text-[13px]">
-        <span className="font-semibold text-[#9CA3AF]">지역</span>
-        <span className="font-extrabold text-[#111827]">{company.companyRegion.region}</span>
-      </div>
-      <div className="h-5 w-px shrink-0 bg-[#E5E7EB]" />
-      <div className="flex items-center gap-1.5 text-[13px]">
-        <span className="font-semibold text-[#9CA3AF]">담당자</span>
-        <span className="font-extrabold text-[#111827]">{contactCount}명</span>
-      </div>
-      <div className="flex items-center gap-1.5 text-[13px]">
-        <span className="font-semibold text-[#9CA3AF]">딜</span>
-        <span className="font-extrabold text-[#111827]">{dealCount}건</span>
-      </div>
-      <div className="flex-1" />
-      <div className="flex items-center gap-4 text-[12px] text-[#9CA3AF]">
-        <span>등록 {formatDateTime(company.createdAt, { includeYear: true })}</span>
-        <span>수정 {formatDateTime(company.updatedAt, { includeYear: true })}</span>
-      </div>
     </div>
+  );
+}
+
+function CompanyDocumentSectionHeader({
+  isSmallText,
+  title,
+  count,
+}: {
+  readonly isSmallText: boolean;
+  readonly title: string;
+  readonly count?: number;
+}) {
+  return (
+    <div className="flex min-h-8 items-center gap-2">
+      <h2
+        className={`font-semibold text-[#111827] ${
+          isSmallText ? "text-[14px]" : "text-[15px]"
+        }`}
+      >
+        {title}
+      </h2>
+      {count !== undefined ? (
+        <span className="text-[13px] font-semibold text-[#94A3B8]">
+          {count}
+        </span>
+      ) : null}
+    </div>
+  );
+}
+
+function CompanyEmptyText({
+  children,
+  isSmallText,
+}: {
+  readonly children: string;
+  readonly isSmallText: boolean;
+}) {
+  return (
+    <p
+      className={`py-3 font-medium text-[#94A3B8] ${
+        isSmallText ? "text-[12px]" : "text-[13px]"
+      }`}
+    >
+      {children}
+    </p>
+  );
+}
+
+function CompanyLoadingRows({ count = 3 }: { readonly count?: number }) {
+  return (
+    <div className="grid gap-2">
+      {Array.from({ length: count }).map((_, index) => (
+        <div
+          className="h-10 animate-pulse rounded-md bg-[#F3F4F6]"
+          key={index}
+        />
+      ))}
+    </div>
+  );
+}
+
+function CompanyDocumentSection({
+  children,
+  className = "",
+}: {
+  readonly children: ReactNode;
+  readonly className?: string;
+}) {
+  return (
+    <section className={`grid gap-3 pt-3 ${className}`}>
+      {children}
+    </section>
+  );
+}
+
+function CompanyPageOptionsMenu({
+  isDeleting,
+  isFullWidth,
+  isSmallText,
+  onDelete,
+  onToggleFullWidth,
+  onToggleSmallText,
+}: {
+  readonly isDeleting: boolean;
+  readonly isFullWidth: boolean;
+  readonly isSmallText: boolean;
+  readonly onDelete: () => void;
+  readonly onToggleFullWidth: () => void;
+  readonly onToggleSmallText: () => void;
+}) {
+  return (
+    <div
+      className="absolute right-0 top-9 z-50 w-[220px] rounded-lg border border-[#E5E7EB] bg-white p-1.5 shadow-[0_12px_30px_rgba(15,23,42,0.14)]"
+      role="menu"
+    >
+      <CompanyPageOptionToggle
+        checked={isSmallText}
+        label="작은 텍스트"
+        onClick={onToggleSmallText}
+      />
+      <CompanyPageOptionToggle
+        checked={isFullWidth}
+        label="전체 너비"
+        onClick={onToggleFullWidth}
+      />
+      <button
+        className="flex h-8 w-full items-center gap-2 rounded-md px-2 text-left text-[13px] font-medium text-[#B91C1C] transition hover:bg-[#FEF2F2] disabled:cursor-not-allowed disabled:opacity-50"
+        disabled={isDeleting}
+        onClick={onDelete}
+        role="menuitem"
+        type="button"
+      >
+        <Trash2 className="h-4 w-4" />
+        휴지통으로 이동
+      </button>
+    </div>
+  );
+}
+
+function CompanyPageOptionToggle({
+  checked,
+  label,
+  onClick,
+}: {
+  readonly checked: boolean;
+  readonly label: string;
+  readonly onClick: () => void;
+}) {
+  return (
+    <button
+      className="flex h-8 w-full items-center justify-between rounded-md px-2 text-left text-[13px] font-medium text-[#374151] transition hover:bg-[#F3F4F6]"
+      onClick={onClick}
+      role="menuitemcheckbox"
+      aria-checked={checked}
+      type="button"
+    >
+      <span>{label}</span>
+      <span
+        className={`relative h-5 w-9 rounded-full transition ${
+          checked ? "bg-[#4880EE]" : "bg-[#E5E7EB]"
+        }`}
+      >
+        <span
+          className={`absolute top-0.5 h-4 w-4 rounded-full bg-white shadow transition ${
+            checked ? "left-[18px]" : "left-0.5"
+          }`}
+        />
+      </span>
+    </button>
   );
 }
 
@@ -558,74 +605,149 @@ function CompanySummaryHeader({
 function ConnectedContactsTable({
   contacts,
   isLoading,
+  isSmallText,
+  onCopyEmail,
 }: {
   readonly contacts: CompanyContact[];
   readonly isLoading: boolean;
+  readonly isSmallText: boolean;
+  readonly onCopyEmail: (email: string) => Promise<void>;
 }) {
-  const SHOW_LIMIT = 2;
+  const SHOW_LIMIT = 3;
   const hasMore = contacts.length > SHOW_LIMIT;
+  const [copiedContactId, setCopiedContactId] = useState<string | null>(null);
+  const copiedTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (copiedTimerRef.current) {
+        clearTimeout(copiedTimerRef.current);
+      }
+    };
+  }, []);
+
+  const onClickCopyEmail = (contact: CompanyContact) => {
+    if (copiedTimerRef.current) {
+      clearTimeout(copiedTimerRef.current);
+    }
+
+    setCopiedContactId(contact.id);
+    void onCopyEmail(contact.email);
+
+    copiedTimerRef.current = setTimeout(() => {
+      setCopiedContactId(null);
+      copiedTimerRef.current = null;
+    }, 800);
+  };
 
   return (
-    <div className="flex flex-col rounded-xl border border-[#E5E7EB] bg-white overflow-hidden">
-      {/* Header */}
-      <div className="flex h-[48px] shrink-0 items-center gap-2 border-b border-[#E5E7EB] px-4">
-        <span className="text-[14px] font-extrabold text-[#111827]">연결 담당자</span>
-        <span className="text-[13px] font-semibold text-[#9CA3AF]">{contacts.length}</span>
-        <div className="flex-1" />
-      </div>
-
+    <CompanyDocumentSection className={COMPANY_RELATED_SECTION_CLASS_NAME}>
+      <CompanyDocumentSectionHeader
+        count={contacts.length}
+        isSmallText={isSmallText}
+        title="연결 담당자"
+      />
       {isLoading ? (
-        <div className="flex flex-col">
-          {[1, 2, 3].map((i) => (
-            <div className="h-[58px] animate-pulse border-b border-[#F3F4F6] bg-white/60" key={i} />
-          ))}
-        </div>
+        <CompanyLoadingRows />
       ) : contacts.length === 0 ? (
-          <p className="px-4 py-4 text-[13px] text-[#9CA3AF]">담당자를 연결하면 여기에서 볼 수 있어요.</p>
+        <CompanyEmptyText isSmallText={isSmallText}>
+          담당자를 연결하면 여기에서 볼 수 있어요.
+        </CompanyEmptyText>
       ) : (
-        <div className={hasMore ? "max-h-[116px] overflow-y-auto" : ""}>
+        <div
+          className={
+            hasMore
+              ? "max-h-[168px] overflow-x-hidden overflow-y-auto pr-1"
+              : "overflow-x-hidden"
+          }
+        >
           {contacts.map((contact) => {
             const jobGradeName = contact.contactJobGrade?.jobGradeName;
+            const isEmailCopied = copiedContactId === contact.id;
 
             return (
-              <Link
-                className="flex h-[58px] items-center gap-3 border-b border-[#F3F4F6] bg-white px-4 hover:bg-[#F9FAFB] transition-colors last:border-0"
+              <div
+                className="flex min-h-[56px] min-w-0 items-start gap-2.5 py-2 transition-colors hover:bg-[#F9FAFB]"
                 key={contact.id}
-                to={`/app/contacts/${contact.id}`}
               >
-                <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#DBEAFE]">
+                <Link
+                  aria-label={`${contact.username} 상세 보기`}
+                  className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#DBEAFE]"
+                  to={`/app/contacts/${contact.id}`}
+                >
                   <UserRound className="h-3.5 w-3.5 text-[#4880EE]" />
-                </div>
-                <div className="grid min-w-0 flex-1 grid-cols-[minmax(132px,1fr)_minmax(160px,1.1fr)_120px] items-center gap-3 whitespace-nowrap text-[12px] font-medium text-[#6B7280] max-sm:grid-cols-[minmax(0,1fr)_112px] max-sm:grid-rows-2">
-                  <div className="min-w-0">
+                </Link>
+                <div className="grid min-w-0 flex-1 gap-x-3 gap-y-1 sm:grid-cols-[minmax(120px,0.85fr)_minmax(0,1.15fr)]">
+                  <Link
+                    className="min-w-0"
+                    to={`/app/contacts/${contact.id}`}
+                  >
                     <div className="flex min-w-0 items-center gap-1.5">
-                      <span className="truncate text-[13px] font-extrabold text-[#111827]">
+                      <span
+                        className={`truncate font-extrabold text-[#111827] ${
+                          isSmallText ? "text-[12px]" : "text-[13px]"
+                        }`}
+                      >
                         {contact.username}
                       </span>
                       {jobGradeName ? (
-                        <span className="shrink-0 text-[13px] font-extrabold text-[#111827]">
+                        <span
+                          className={`shrink-0 font-extrabold text-[#111827] ${
+                            isSmallText ? "text-[12px]" : "text-[13px]"
+                          }`}
+                        >
                           {jobGradeName}
                         </span>
                       ) : null}
                     </div>
-                    <span className="mt-0.5 block min-w-0 truncate text-[11px] font-semibold leading-4 text-[#9CA3AF]">
+                    <span className="mt-0.5 block min-w-0 truncate text-[11px] font-semibold leading-4 text-[#94A3B8]">
                       {contact.contactDepartment.departmentName}
                     </span>
+                  </Link>
+                  <div
+                    className={`grid min-w-0 content-start gap-0.5 font-medium leading-4 text-[#6B7280] ${
+                      isSmallText ? "text-[11px]" : "text-[12px]"
+                    }`}
+                  >
+                    <div className="flex min-w-0 items-center gap-1.5">
+                      <button
+                        aria-label={`${contact.email} 복사`}
+                        className={`inline-flex h-5 w-5 shrink-0 items-center justify-center rounded transition duration-150 hover:bg-[#EFF6FF] hover:text-[#4880EE] ${
+                          isEmailCopied
+                            ? "scale-110 text-[#4880EE]"
+                            : "scale-100 text-[#94A3B8]"
+                        }`}
+                        onClick={() => onClickCopyEmail(contact)}
+                        title="이메일 복사"
+                        type="button"
+                      >
+                        {isEmailCopied ? (
+                          <Check className="h-3 w-3" />
+                        ) : (
+                          <Copy className="h-3 w-3" />
+                        )}
+                      </button>
+                      <Link
+                        className="min-w-0 max-w-full truncate"
+                        to={`/app/contacts/${contact.id}`}
+                      >
+                        {contact.email}
+                      </Link>
+                    </div>
+                    <Link
+                      className="min-w-0 max-w-full truncate"
+                      to={`/app/contacts/${contact.id}`}
+                    >
+                      {contact.mobile}
+                    </Link>
                   </div>
-                  <span className="min-w-0 truncate max-sm:col-start-1 max-sm:row-start-2">
-                    {contact.email}
-                  </span>
-                  <span className="min-w-0 truncate text-right text-[#374151] max-sm:col-start-2 max-sm:row-span-2 max-sm:row-start-1">
-                    {contact.mobile}
-                  </span>
                 </div>
-                <ChevronRight className="h-4 w-4 shrink-0 text-[#D1D5DB]" />
-              </Link>
+              </div>
             );
           })}
         </div>
       )}
-    </div>
+    </CompanyDocumentSection>
   );
 }
 
@@ -634,75 +756,89 @@ function ConnectedContactsTable({
 function ConnectedDealsTable({
   deals,
   isLoading,
+  isSmallText,
 }: {
   readonly deals: CompanyDeal[];
   readonly isLoading: boolean;
+  readonly isSmallText: boolean;
 }) {
-  const SHOW_LIMIT = 2;
+  const SHOW_LIMIT = 3;
   const hasMore = deals.length > SHOW_LIMIT;
 
   return (
-    <div className="flex flex-col rounded-xl border border-[#E5E7EB] bg-white overflow-hidden">
-      {/* Header */}
-      <div className="flex h-[48px] shrink-0 items-center gap-2 border-b border-[#E5E7EB] px-4">
-        <span className="text-[14px] font-extrabold text-[#111827]">연결 딜</span>
-        <span className="text-[13px] font-semibold text-[#9CA3AF]">{deals.length}</span>
-        <div className="flex-1" />
-      </div>
-
+    <CompanyDocumentSection className={COMPANY_RELATED_SECTION_CLASS_NAME}>
+      <CompanyDocumentSectionHeader
+        count={deals.length}
+        isSmallText={isSmallText}
+        title="연결 딜"
+      />
       {isLoading ? (
-        <div className="flex flex-col">
-          {[1, 2, 3].map((i) => (
-            <div className="h-[58px] animate-pulse border-b border-[#F3F4F6] bg-white/60" key={i} />
-          ))}
-        </div>
+        <CompanyLoadingRows />
       ) : deals.length === 0 ? (
-          <p className="px-4 py-4 text-[13px] text-[#9CA3AF]">딜을 연결하면 여기에서 볼 수 있어요.</p>
+        <CompanyEmptyText isSmallText={isSmallText}>
+          딜을 연결하면 여기에서 볼 수 있어요.
+        </CompanyEmptyText>
       ) : (
-        <div className={hasMore ? "max-h-[116px] overflow-y-auto" : ""}>
+        <div
+          className={
+            hasMore
+              ? "max-h-[168px] overflow-x-hidden overflow-y-auto pr-1"
+              : "overflow-x-hidden"
+          }
+        >
           {deals.map((deal) => (
             <Link
-              className="flex h-[58px] items-center gap-3 border-b border-[#F3F4F6] bg-white px-4 hover:bg-[#F9FAFB] transition-colors last:border-0"
+              className="flex min-h-[56px] min-w-0 items-start gap-2.5 py-2 transition-colors hover:bg-[#F9FAFB]"
               key={deal.id}
               to={`/app/deals/${deal.id}`}
             >
-              <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#FEF2F2]">
+              <div className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#FEF2F2]">
                 <BriefcaseBusiness className="h-3.5 w-3.5 text-[#DC2626]" />
               </div>
-              <span className="min-w-0 flex-1 truncate text-[13px] font-extrabold text-[#111827]">
-                {deal.dealName}
-              </span>
-              <span className="shrink-0 text-[13px] font-semibold text-[#374151]">
-                ₩{deal.dealCost.toLocaleString("ko-KR")}
-              </span>
-              <span className="ml-3 shrink-0 text-[12px] text-[#9CA3AF]">
-                {formatDate(deal.createdAt, { includeYear: true })}
-              </span>
+              <div className="grid min-w-0 flex-1 gap-x-3 gap-y-1 sm:grid-cols-[minmax(120px,0.85fr)_minmax(0,1.15fr)]">
+                <div className="min-w-0">
+                  <span
+                    className={`block min-w-0 truncate font-extrabold text-[#111827] ${
+                      isSmallText ? "text-[12px]" : "text-[13px]"
+                    }`}
+                  >
+                    {deal.dealName}
+                  </span>
+                  <span
+                    className={`mt-0.5 block min-w-0 truncate font-medium leading-4 text-[#9CA3AF] ${
+                      isSmallText ? "text-[11px]" : "text-[12px]"
+                    }`}
+                  >
+                    {formatDate(deal.createdAt, { includeYear: true })}
+                  </span>
+                </div>
+                <div
+                  className={`grid min-w-0 content-start font-medium leading-4 text-[#6B7280] ${
+                    isSmallText ? "text-[11px]" : "text-[12px]"
+                  }`}
+                >
+                  <span
+                    className={`min-w-0 max-w-full truncate font-semibold text-[#374151] ${
+                      isSmallText ? "text-[12px]" : "text-[13px]"
+                    }`}
+                  >
+                    ₩{deal.dealCost.toLocaleString("ko-KR")}
+                  </span>
+                </div>
+              </div>
             </Link>
           ))}
         </div>
       )}
-    </div>
+    </CompanyDocumentSection>
   );
 }
 
 // ── Memo Panel ──────────────────────────────────────────────────────
 
-function TimelineMarker({
-  isFirst,
-  isLast,
-}: {
-  readonly isFirst: boolean;
-  readonly isLast: boolean;
-}) {
+function TimelineMarker() {
   return (
     <div className="relative flex w-[8px] shrink-0 self-stretch items-start justify-center pt-[16px]">
-      {!isFirst ? (
-        <div className="absolute left-1/2 top-0 h-[20px] w-px -translate-x-1/2 bg-[#DBEAFE]" />
-      ) : null}
-      {!isLast ? (
-        <div className="absolute bottom-0 left-1/2 top-[20px] w-px -translate-x-1/2 bg-[#DBEAFE]" />
-      ) : null}
       <div className="relative h-[8px] w-[8px] rounded-full bg-[#4880EE]" />
     </div>
   );
@@ -714,6 +850,7 @@ function MemoPanel({
   isLoading,
   hasNext,
   isFetchingNext,
+  isSmallText,
   onFetchMore,
   onChanged,
 }: {
@@ -722,6 +859,7 @@ function MemoPanel({
   readonly isLoading: boolean;
   readonly hasNext: boolean;
   readonly isFetchingNext: boolean;
+  readonly isSmallText: boolean;
   readonly onFetchMore: () => void;
   readonly onChanged: (notice: string, description?: string) => void;
 }) {
@@ -791,49 +929,51 @@ function MemoPanel({
 
   return (
     <>
-    <div className="flex h-[420px] flex-col rounded-xl border border-[#E5E7EB] bg-white overflow-hidden">
-      {/* Header */}
-      <div className="flex h-[52px] shrink-0 items-center gap-2.5 border-b border-[#E5E7EB] px-4">
-        <span className="text-[15px] font-extrabold text-[#111827]">회사 로그</span>
+    <CompanyDocumentSection>
+      <div className="flex min-h-8 items-center gap-2">
+        <CompanyDocumentSectionHeader
+          count={memoLogs.length}
+          isSmallText={isSmallText}
+          title="회사 로그"
+        />
         <div className="flex-1" />
         <button
           aria-label="회사 로그 추가"
-          className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#4880EE] text-white transition-colors hover:bg-[#1D4ED8]"
+          className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-md text-[#4880EE] transition-colors hover:bg-[#EFF6FF] hover:text-[#1D4ED8]"
           onClick={() => setIsCreateOpen(true)}
+          title="회사 로그 추가"
           type="button"
         >
           <Plus className="h-3.5 w-3.5" />
         </button>
       </div>
 
-      {/* Memo List */}
-      <div className="flex min-h-0 flex-1 flex-col overflow-y-auto px-4 pb-4 pt-2">
+      <div className="max-h-[420px] overflow-y-auto pr-1">
         {isLoading ? (
-          <div className="flex flex-col gap-2">
-            {[1, 2].map((i) => (
-              <div className="h-16 animate-pulse rounded-lg bg-[#F3F4F6]" key={i} />
-            ))}
-          </div>
+          <CompanyLoadingRows count={2} />
         ) : memoLogs.length === 0 ? (
-          <p className="text-[13px] text-[#9CA3AF]">회사 로그를 추가하면 여기에서 볼 수 있어요.</p>
+          <CompanyEmptyText isSmallText={isSmallText}>
+            회사 로그를 추가하면 여기에서 볼 수 있어요.
+          </CompanyEmptyText>
         ) : (
-          memoLogs.map((log, index) => (
+          memoLogs.map((log) => (
               <div
                 className="group flex gap-3"
                 key={log.id}
               >
                 {/* 제목 행 — 클릭 시 본문 토글 */}
-                <TimelineMarker
-                  isFirst={index === 0}
-                  isLast={index === memoLogs.length - 1}
-                />
+                <TimelineMarker />
                 <div className="min-w-0 flex-1">
                 <button
                   className="flex min-h-[40px] w-full items-center bg-white text-left"
                   onClick={() => setExpandedId(expandedId === log.id ? null : log.id)}
                   type="button"
                 >
-                  <span className="flex-1 truncate text-[13px] font-semibold text-[#111827]">
+                  <span
+                    className={`flex-1 truncate font-semibold text-[#111827] ${
+                      isSmallText ? "text-[12px]" : "text-[13px]"
+                    }`}
+                  >
                     {log.memoType || "제목 없음"}
                   </span>
                   <span className="shrink-0 text-[11px] font-bold text-[#9CA3AF]">
@@ -865,7 +1005,11 @@ function MemoPanel({
                 </button>
                 {/* 본문 — 펼쳐진 경우만 표시 */}
                 {expandedId === log.id ? (
-                  <p className="pb-3 pt-1 text-[13px] font-medium leading-[1.35] text-[#374151] whitespace-pre-wrap">
+                  <p
+                    className={`whitespace-pre-wrap pb-3 pt-1 font-medium leading-[1.35] text-[#374151] ${
+                      isSmallText ? "text-[12px]" : "text-[13px]"
+                    }`}
+                  >
                     {log.memo}
                   </p>
                 ) : null}
@@ -885,7 +1029,7 @@ function MemoPanel({
           </button>
         ) : null}
       </div>
-    </div>
+    </CompanyDocumentSection>
     <ModalShell
       footer={
         <ModalFooterActions
@@ -1016,6 +1160,7 @@ function ActivityLogPanel({
   isLoading,
   hasNext,
   isFetchingNext,
+  isSmallText,
   onFetchMore,
   onChanged,
 }: {
@@ -1024,6 +1169,7 @@ function ActivityLogPanel({
   readonly isLoading: boolean;
   readonly hasNext: boolean;
   readonly isFetchingNext: boolean;
+  readonly isSmallText: boolean;
   readonly onFetchMore: () => void;
   readonly onChanged: (notice: string, description?: string) => void;
 }) {
@@ -1095,10 +1241,13 @@ function ActivityLogPanel({
 
   return (
     <>
-    <div className="flex h-[420px] flex-col rounded-xl border border-[#E5E7EB] bg-white overflow-hidden">
-      {/* Header */}
-      <div className="flex h-[52px] shrink-0 items-center gap-2.5 border-b border-[#E5E7EB] px-4">
-        <span className="text-[15px] font-extrabold text-[#111827]">비밀 메모</span>
+    <CompanyDocumentSection>
+      <div className="flex min-h-8 items-center gap-2">
+        <CompanyDocumentSectionHeader
+          count={privateMemoLogs.length}
+          isSmallText={isSmallText}
+          title="비밀 메모"
+        />
         <div
           aria-label="암호화 보안 메모"
           className="flex items-center gap-1.5"
@@ -1114,42 +1263,41 @@ function ActivityLogPanel({
         <div className="flex-1" />
         <button
           aria-label="비밀 메모 추가"
-          className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#4880EE] text-white transition-colors hover:bg-[#1D4ED8]"
+          className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-md text-[#4880EE] transition-colors hover:bg-[#EFF6FF] hover:text-[#1D4ED8]"
           onClick={() => setIsCreateOpen(true)}
+          title="비밀 메모 추가"
           type="button"
         >
           <Plus className="h-3.5 w-3.5" />
         </button>
       </div>
 
-      {/* Items */}
-      <div className="flex min-h-0 flex-1 flex-col overflow-y-auto px-4 pb-4 pt-2">
+      <div className="max-h-[420px] overflow-y-auto pr-1">
         {isLoading ? (
-          <div className="flex flex-col gap-2">
-            {[1, 2, 3].map((i) => (
-              <div className="h-12 animate-pulse rounded-lg bg-[#F3F4F6]" key={i} />
-            ))}
-          </div>
+          <CompanyLoadingRows />
         ) : privateMemoLogs.length === 0 ? (
-          <p className="text-[13px] text-[#9CA3AF]">비밀 메모를 추가하면 여기에서 볼 수 있어요.</p>
+          <CompanyEmptyText isSmallText={isSmallText}>
+            비밀 메모를 추가하면 여기에서 볼 수 있어요.
+          </CompanyEmptyText>
         ) : (
-          privateMemoLogs.map((log, index) => (
+          privateMemoLogs.map((log) => (
               <div
                 className="group flex gap-3"
                 key={log.id}
               >
                 {/* 1줄 미리보기 행 — 클릭 시 전체 토글 */}
-                <TimelineMarker
-                  isFirst={index === 0}
-                  isLast={index === privateMemoLogs.length - 1}
-                />
+                <TimelineMarker />
                 <div className="min-w-0 flex-1">
                 <button
                   className="flex min-h-[40px] w-full items-center bg-white text-left"
                   onClick={() => setExpandedId(expandedId === log.id ? null : log.id)}
                   type="button"
                 >
-                  <span className="flex-1 truncate text-[12px] font-medium text-[#4B5563]">
+                  <span
+                    className={`flex-1 truncate font-medium text-[#4B5563] ${
+                      isSmallText ? "text-[11px]" : "text-[12px]"
+                    }`}
+                  >
                     {log.memo}
                   </span>
                   <span className="shrink-0 text-[11px] font-semibold text-[#9CA3AF]">
@@ -1180,7 +1328,11 @@ function ActivityLogPanel({
                   </div>
                 </button>
                 {expandedId === log.id ? (
-                  <p className="pb-3 pt-1 text-[12px] font-medium leading-[1.35] text-[#4B5563] whitespace-pre-wrap">
+                  <p
+                    className={`whitespace-pre-wrap pb-3 pt-1 font-medium leading-[1.35] text-[#4B5563] ${
+                      isSmallText ? "text-[11px]" : "text-[12px]"
+                    }`}
+                  >
                     {log.memo}
                   </p>
                 ) : null}
@@ -1200,7 +1352,7 @@ function ActivityLogPanel({
           </button>
         ) : null}
       </div>
-    </div>
+    </CompanyDocumentSection>
     <ModalShell
       footer={
         <ModalFooterActions
@@ -1336,7 +1488,7 @@ function CompanyDetailSkeleton() {
   return (
     <div className="flex min-h-full flex-col bg-white">
       {/* TopBar skeleton */}
-      <div className="flex h-16 items-center gap-3 border-b border-[#E5E7EB] bg-white px-6">
+      <div className="flex h-16 items-center gap-3 bg-white px-6">
         <div className="h-4 w-4 animate-pulse rounded bg-[#F3F4F6]" />
         <div className="h-4 w-48 animate-pulse rounded bg-[#F3F4F6]" />
         <div className="ml-auto flex gap-2">
@@ -1365,4 +1517,51 @@ function mergeCompanyField(fields: CompanyField[], current: CompanyField) {
 
 function mergeCompanyRegion(regions: CompanyRegion[], current: CompanyRegion) {
   return regions.some((r) => r.id === current.id) ? regions : [current, ...regions];
+}
+
+function readStoredBoolean(key: string, fallback: boolean) {
+  if (typeof window === "undefined") {
+    return fallback;
+  }
+
+  const stored = window.localStorage.getItem(key);
+
+  if (stored === "true") {
+    return true;
+  }
+  if (stored === "false") {
+    return false;
+  }
+
+  return fallback;
+}
+
+async function copyTextToClipboard(text: string) {
+  if (typeof navigator !== "undefined" && navigator.clipboard?.writeText) {
+    await navigator.clipboard.writeText(text);
+    return;
+  }
+
+  if (typeof document === "undefined") {
+    throw new Error("Clipboard is not available.");
+  }
+
+  const textarea = document.createElement("textarea");
+  textarea.value = text;
+  textarea.setAttribute("readonly", "");
+  textarea.style.position = "fixed";
+  textarea.style.left = "-9999px";
+  textarea.style.top = "0";
+
+  document.body.appendChild(textarea);
+  textarea.select();
+
+  try {
+    const copied = document.execCommand("copy");
+    if (!copied) {
+      throw new Error("Copy command failed.");
+    }
+  } finally {
+    document.body.removeChild(textarea);
+  }
 }
