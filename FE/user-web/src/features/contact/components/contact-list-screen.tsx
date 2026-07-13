@@ -435,20 +435,6 @@ export function ContactListScreen({
             onSubmit={onSearchSubmit}
             onValueChange={setUsernameText}
           />
-          <FilterChip
-            active={hasSearch}
-            icon={RotateCcw}
-            label="초기화"
-            onClick={() => {
-              setUsername("");
-              setUsernameText("");
-              setSearchResetSignal((signal) => signal + 1);
-              setCompanyIds([]);
-              setContactDepartmentIds([]);
-              setSort("createdAtDesc");
-              setPage(1);
-            }}
-          />
           <div
             className="relative flex h-8 shrink-0 items-center overflow-hidden transition-[width] duration-500 ease-out"
             style={{
@@ -547,6 +533,20 @@ export function ContactListScreen({
         <span className="ml-2 shrink-0 text-[12px] text-[#9CA3AF]">
           {contactList?.totalCount ?? 0}명
         </span>
+        <FilterChip
+          active={hasSearch}
+          icon={RotateCcw}
+          label="초기화"
+          onClick={() => {
+            setUsername("");
+            setUsernameText("");
+            setSearchResetSignal((signal) => signal + 1);
+            setCompanyIds([]);
+            setContactDepartmentIds([]);
+            setSort("createdAtDesc");
+            setPage(1);
+          }}
+        />
       </div>
       {isCompactFilterMode && isCompactFilterOpen ? (
         <div
@@ -740,27 +740,6 @@ export function ContactListScreen({
 
         {/* 모바일 필터 칩 행 */}
         <div className="flex h-10 shrink-0 items-center gap-2 overflow-x-auto border-b border-[#E5E7EB] px-4">
-          <button
-            aria-label="초기화"
-            className={cn(
-              "inline-flex h-7 shrink-0 items-center justify-center gap-1 rounded-md border-0 bg-transparent px-2 text-[12px] font-semibold transition-[background-color,color,transform] duration-150 focus:outline-none active:scale-[0.97]",
-              hasSearch
-                ? "text-[#1D4ED8] hover:bg-[#EFF6FF]"
-                : "text-[#5F6368] hover:bg-[#F3F4F6]",
-            )}
-            onClick={() => {
-              setUsername("");
-              setUsernameText("");
-              setCompanyIds([]);
-              setContactDepartmentIds([]);
-              setSort("createdAtDesc");
-              setPage(1);
-            }}
-            type="button"
-          >
-            <RotateCcw className="h-3 w-3" />
-            <span>초기화</span>
-          </button>
           <ContactTaxonomyFilterCombobox
             emptyText="조건을 바꾸면 회사를 찾을 수 있어요."
             getLabel={(c) => c.companyName}
@@ -794,6 +773,27 @@ export function ContactListScreen({
           <span className="shrink-0 text-[11px] text-[#9CA3AF]">
             {contactList?.totalCount ?? 0}명
           </span>
+          <button
+            aria-label="초기화"
+            className={cn(
+              "inline-flex h-7 shrink-0 items-center justify-center gap-1 rounded-md border-0 bg-transparent px-2 text-[12px] font-semibold transition-[background-color,color,transform] duration-150 focus:outline-none active:scale-[0.97]",
+              hasSearch
+                ? "text-[#1D4ED8] hover:bg-[#EFF6FF]"
+                : "text-[#5F6368] hover:bg-[#F3F4F6]",
+            )}
+            onClick={() => {
+              setUsername("");
+              setUsernameText("");
+              setCompanyIds([]);
+              setContactDepartmentIds([]);
+              setSort("createdAtDesc");
+              setPage(1);
+            }}
+            type="button"
+          >
+            <RotateCcw className="h-3 w-3" />
+            <span>초기화</span>
+          </button>
         </div>
 
         {/* 모바일 카드 목록 */}

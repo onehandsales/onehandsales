@@ -635,33 +635,36 @@ export function ImportScreen() {
         ]}
       />
 
-      <div className="hidden min-h-10 shrink-0 items-center gap-1.5 overflow-x-auto px-5 py-1 md:flex lg:gap-2">
-        <button
-          aria-label="초기화"
-          className={cn(
-            "inline-flex h-8 shrink-0 items-center justify-center gap-1.5 rounded-md border-0 bg-transparent px-2 text-[13px] font-semibold transition-[background-color,color,transform] duration-150 focus:outline-none active:scale-[0.97]",
-            targetTypes.length > 0
-              ? "text-[#1D4ED8] hover:bg-[#EFF6FF]"
-              : "text-[#5F6368] hover:bg-[#F3F4F6]"
-          )}
-          onClick={resetFilters}
-          type="button"
-        >
-          <RotateCcw className="h-3.5 w-3.5" />
-          <span>초기화</span>
-        </button>
-        <ImportTargetFilterCombobox
-          selectedIds={targetTypes}
-          size="desktop"
-          onSelectedIdsChange={(nextTargetTypes) => {
-            setTargetTypes(nextTargetTypes);
-            setPage(1);
-          }}
-        />
-        <div className="flex-1" />
-        <span className="shrink-0 text-[12px] text-[#9CA3AF]">
-          {logsQuery.data?.totalCount ?? 0}건
-        </span>
+      <div className="hidden min-h-10 shrink-0 items-center justify-between gap-3 px-5 py-1 md:flex">
+        <div className="flex min-w-0 items-center gap-1.5 overflow-x-auto lg:gap-2">
+          <ImportTargetFilterCombobox
+            selectedIds={targetTypes}
+            size="desktop"
+            onSelectedIdsChange={(nextTargetTypes) => {
+              setTargetTypes(nextTargetTypes);
+              setPage(1);
+            }}
+          />
+        </div>
+        <div className="flex shrink-0 items-center gap-1.5 lg:gap-2">
+          <span className="shrink-0 text-[12px] text-[#9CA3AF]">
+            {logsQuery.data?.totalCount ?? 0}건
+          </span>
+          <button
+            aria-label="초기화"
+            className={cn(
+              "inline-flex h-8 shrink-0 items-center justify-center gap-1.5 rounded-md border-0 bg-transparent px-2 text-[13px] font-semibold transition-[background-color,color,transform] duration-150 focus:outline-none active:scale-[0.97]",
+              targetTypes.length > 0
+                ? "text-[#1D4ED8] hover:bg-[#EFF6FF]"
+                : "text-[#5F6368] hover:bg-[#F3F4F6]",
+            )}
+            onClick={resetFilters}
+            type="button"
+          >
+            <RotateCcw className="h-3.5 w-3.5" />
+            <span>초기화</span>
+          </button>
+        </div>
       </div>
 
       <div className="hidden min-w-0 gap-3 overflow-hidden px-5 pb-3 pt-1 md:flex xl:gap-5">
@@ -733,6 +736,18 @@ export function ImportScreen() {
 
       <section className="flex min-h-0 flex-1 flex-col md:hidden">
         <div className="flex h-10 shrink-0 items-center gap-2 overflow-x-auto border-b border-[#E5E7EB] px-4">
+          <ImportTargetFilterCombobox
+            selectedIds={targetTypes}
+            size="mobile"
+            onSelectedIdsChange={(nextTargetTypes) => {
+              setTargetTypes(nextTargetTypes);
+              setPage(1);
+          }}
+        />
+          <div className="flex-1" />
+          <span className="shrink-0 text-[11px] text-[#9CA3AF]">
+            {logsQuery.data?.totalCount ?? 0}건
+          </span>
           <button
             aria-label="초기화"
             className={cn(
@@ -747,18 +762,6 @@ export function ImportScreen() {
             <RotateCcw className="h-3 w-3" />
             <span>초기화</span>
           </button>
-          <ImportTargetFilterCombobox
-            selectedIds={targetTypes}
-            size="mobile"
-            onSelectedIdsChange={(nextTargetTypes) => {
-              setTargetTypes(nextTargetTypes);
-              setPage(1);
-            }}
-          />
-          <div className="flex-1" />
-          <span className="shrink-0 text-[11px] text-[#9CA3AF]">
-            {logsQuery.data?.totalCount ?? 0}건
-          </span>
         </div>
 
         {notice ? (

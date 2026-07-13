@@ -571,20 +571,6 @@ export function DealPipelineHomeScreen({
                   onSubmit={onSearchSubmit}
                   onValueChange={setSearchText}
                 />
-                <button
-                  aria-label="초기화"
-                  className={cn(
-                    "inline-flex h-8 shrink-0 items-center justify-center gap-1.5 rounded-md border-0 bg-transparent px-2 text-[13px] font-semibold transition-[background-color,color,transform] duration-150 focus:outline-none active:scale-[0.97]",
-                    hasFilter
-                      ? "text-[#1D4ED8] hover:bg-[#EFF6FF]"
-                      : "text-[#5F6368] hover:bg-[#F3F4F6]",
-                  )}
-                  onClick={clearFilters}
-                  type="button"
-                >
-                  <RotateCcw className="h-3.5 w-3.5" />
-                  <span>초기화</span>
-                </button>
                   <div
                     className="relative flex h-8 shrink-0 items-center overflow-hidden transition-[width] duration-500 ease-out"
                     style={{
@@ -669,6 +655,20 @@ export function DealPipelineHomeScreen({
                 <span className="shrink-0 text-[12px] text-[#9CA3AF]">
                   {dealsQuery.data?.totalCount ?? 0}건
                 </span>
+                <button
+                  aria-label="초기화"
+                  className={cn(
+                    "inline-flex h-8 shrink-0 items-center justify-center gap-1.5 rounded-md border-0 bg-transparent px-2 text-[13px] font-semibold transition-[background-color,color,transform] duration-150 focus:outline-none active:scale-[0.97]",
+                    hasFilter
+                      ? "text-[#1D4ED8] hover:bg-[#EFF6FF]"
+                      : "text-[#5F6368] hover:bg-[#F3F4F6]",
+                  )}
+                  onClick={clearFilters}
+                  type="button"
+                >
+                  <RotateCcw className="h-3.5 w-3.5" />
+                  <span>초기화</span>
+                </button>
               </div>
 
               {isCompactFilterMode && isCompactFilterOpen ? (

@@ -3,6 +3,7 @@ import {
   BriefcaseBusiness,
   Building2,
   ClipboardList,
+  FileClock,
   Layers3,
   Loader2,
   LockKeyhole,
@@ -231,7 +232,52 @@ export function TrashScreen() {
     <section className="flex min-h-full flex-col bg-white">
       <PageHeader breadcrumbs={[{ label: "휴지통", icon: Trash2 }]} />
 
-      <div className="flex min-h-10 shrink-0 items-center gap-1.5 overflow-x-auto px-5 py-1 md:flex lg:gap-2">
+      <div className="flex min-h-10 shrink-0 items-center justify-between gap-3 px-5 py-1">
+        <div className="flex min-w-0 items-center gap-1.5 overflow-x-auto lg:gap-2">
+          <TrashFilterSelect
+            active={itemKind !== "ALL"}
+            ariaLabel="데이터 유형 필터"
+            icon={ClipboardList}
+            options={itemKindOptions}
+            value={itemKind}
+            onChange={(value) => onItemKindChange(value as TrashItemKindFilter)}
+          />
+          <TrashFilterSelect
+            active={domain !== "ALL"}
+            ariaLabel="대상 필터"
+            icon={Layers3}
+            options={domainOptions}
+            value={domain}
+            onChange={(value) => {
+              setDomain(value as TrashDomainFilter);
+              setNotice(null);
+            }}
+          />
+          <TrashFilterSelect
+            active={itemKind !== "ENTITY" && logType !== "ALL"}
+            ariaLabel="로그 유형 필터"
+            disabled={itemKind === "ENTITY"}
+            icon={FileClock}
+            options={logTypeOptions}
+            value={logType}
+            onChange={(value) => {
+              setLogType(value as TrashLogTypeFilter);
+              setNotice(null);
+            }}
+          />
+          <TrashFilterSelect
+            active={sort !== "RECENT"}
+            ariaLabel="정렬"
+            icon={ArrowUpDown}
+            options={sortOptions}
+            searchable={false}
+            value={sort}
+            onChange={(value) => {
+              setSort(value as TrashSort);
+              setNotice(null);
+            }}
+          />
+        </div>
         <button
           aria-label="초기화"
           className={cn(
@@ -246,50 +292,6 @@ export function TrashScreen() {
           <RotateCcw className="h-3.5 w-3.5" />
           <span>초기화</span>
         </button>
-
-        <TrashFilterSelect
-          active={itemKind !== "ALL"}
-          ariaLabel="데이터 유형 필터"
-          icon={ClipboardList}
-          options={itemKindOptions}
-          value={itemKind}
-          onChange={(value) => onItemKindChange(value as TrashItemKindFilter)}
-        />
-        <TrashFilterSelect
-          active={domain !== "ALL"}
-          ariaLabel="대상 필터"
-          icon={Layers3}
-          options={domainOptions}
-          value={domain}
-          onChange={(value) => {
-            setDomain(value as TrashDomainFilter);
-            setNotice(null);
-          }}
-        />
-        <TrashFilterSelect
-          active={itemKind !== "ENTITY" && logType !== "ALL"}
-          ariaLabel="로그 유형 필터"
-          disabled={itemKind === "ENTITY"}
-          icon={StickyNote}
-          options={logTypeOptions}
-          value={logType}
-          onChange={(value) => {
-            setLogType(value as TrashLogTypeFilter);
-            setNotice(null);
-          }}
-        />
-        <TrashFilterSelect
-          active={sort !== "RECENT"}
-          ariaLabel="정렬"
-          icon={ArrowUpDown}
-          options={sortOptions}
-          searchable={false}
-          value={sort}
-          onChange={(value) => {
-            setSort(value as TrashSort);
-            setNotice(null);
-          }}
-        />
       </div>
 
       {notice ? (

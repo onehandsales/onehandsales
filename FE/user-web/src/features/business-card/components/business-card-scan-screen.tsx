@@ -103,33 +103,36 @@ export function BusinessCardScanScreen() {
         ]}
       />
 
-      <div className="hidden min-h-10 shrink-0 items-center gap-1.5 overflow-x-auto px-5 py-1 md:flex lg:gap-2">
-        <button
-          aria-label="전체"
-          className={cn(
-            "inline-flex h-8 shrink-0 items-center justify-center gap-1.5 rounded-md border-0 bg-transparent px-2 text-[13px] font-semibold transition-[background-color,color,transform] duration-150 focus:outline-none active:scale-[0.97]",
-            statusFilters.length > 0
-              ? "text-[#1D4ED8] hover:bg-[#EFF6FF]"
-              : "text-[#5F6368] hover:bg-[#F3F4F6]",
-          )}
-          onClick={resetStatusFilter}
-          type="button"
-        >
-          <RotateCcw className="h-3.5 w-3.5" />
-          <span>전체</span>
-        </button>
-        <StatusFilterCombobox
-          selectedStatuses={statusFilters}
-          size="desktop"
-          onSelectedStatusesChange={(nextStatuses) => {
-            setStatusFilters(nextStatuses);
-            setPage(1);
-          }}
-        />
-        <div className="flex-1" />
-        <span className="shrink-0 text-[12px] text-[#9CA3AF]">
-          {pageData?.totalCount ?? 0}건
-        </span>
+      <div className="hidden min-h-10 shrink-0 items-center justify-between gap-3 px-5 py-1 md:flex">
+        <div className="flex min-w-0 items-center gap-1.5 overflow-x-auto lg:gap-2">
+          <StatusFilterCombobox
+            selectedStatuses={statusFilters}
+            size="desktop"
+            onSelectedStatusesChange={(nextStatuses) => {
+              setStatusFilters(nextStatuses);
+              setPage(1);
+            }}
+          />
+        </div>
+        <div className="flex shrink-0 items-center gap-1.5 lg:gap-2">
+          <span className="shrink-0 text-[12px] text-[#9CA3AF]">
+            {pageData?.totalCount ?? 0}건
+          </span>
+          <button
+            aria-label="초기화"
+            className={cn(
+              "inline-flex h-8 shrink-0 items-center justify-center gap-1.5 rounded-md border-0 bg-transparent px-2 text-[13px] font-semibold transition-[background-color,color,transform] duration-150 focus:outline-none active:scale-[0.97]",
+              statusFilters.length > 0
+                ? "text-[#1D4ED8] hover:bg-[#EFF6FF]"
+                : "text-[#5F6368] hover:bg-[#F3F4F6]",
+            )}
+            onClick={resetStatusFilter}
+            type="button"
+          >
+            <RotateCcw className="h-3.5 w-3.5" />
+            <span>초기화</span>
+          </button>
+        </div>
       </div>
 
       {notice ? (
@@ -197,8 +200,17 @@ export function BusinessCardScanScreen() {
 
       <section className="flex min-h-0 flex-1 flex-col md:hidden">
         <div className="flex h-10 shrink-0 items-center gap-2 overflow-x-auto border-b border-[#E5E7EB] px-4">
+          <StatusFilterCombobox
+            selectedStatuses={statusFilters}
+            size="mobile"
+            onSelectedStatusesChange={(nextStatuses) => {
+              setStatusFilters(nextStatuses);
+              setPage(1);
+          }}
+        />
+          <div className="flex-1" />
           <button
-            aria-label="전체"
+            aria-label="초기화"
             className={cn(
               "inline-flex h-7 shrink-0 items-center justify-center gap-1 rounded-md border-0 bg-transparent px-2 text-[12px] font-semibold transition-[background-color,color,transform] duration-150 focus:outline-none active:scale-[0.97]",
               statusFilters.length > 0
@@ -209,16 +221,8 @@ export function BusinessCardScanScreen() {
             type="button"
           >
             <RotateCcw className="h-3 w-3" />
-            <span>전체</span>
+            <span>초기화</span>
           </button>
-          <StatusFilterCombobox
-            selectedStatuses={statusFilters}
-            size="mobile"
-            onSelectedStatusesChange={(nextStatuses) => {
-              setStatusFilters(nextStatuses);
-              setPage(1);
-            }}
-          />
         </div>
 
         <div className="bg-white">

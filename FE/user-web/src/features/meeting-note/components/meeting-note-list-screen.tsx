@@ -433,12 +433,6 @@ export function MeetingNoteListScreen() {
             onSubmit={applySearch}
             onValueChange={setSearchText}
           />
-          <FilterChip
-            active={hasFilter}
-            icon={RotateCcw}
-            label="초기화"
-            onClick={clearFilters}
-          />
           <div
             className="relative flex h-8 shrink-0 items-center overflow-hidden transition-[width] duration-500 ease-out"
             style={{
@@ -523,6 +517,12 @@ export function MeetingNoteListScreen() {
         <span className="ml-2 shrink-0 text-[12px] text-[#9CA3AF]">
           {meetingNotesQuery.data?.totalCount ?? 0}개
         </span>
+        <FilterChip
+          active={hasFilter}
+          icon={RotateCcw}
+          label="초기화"
+          onClick={clearFilters}
+        />
       </div>
 
       {isCompactFilterMode && isCompactFilterOpen ? (
@@ -689,21 +689,6 @@ export function MeetingNoteListScreen() {
         </form>
 
         <div className="flex h-10 shrink-0 items-center gap-2 overflow-x-auto border-b border-[#E5E7EB] px-4">
-          <button
-            aria-label="초기화"
-            aria-pressed={hasFilter}
-            className={cn(
-              "inline-flex h-7 shrink-0 items-center justify-center gap-1 rounded-md border-0 bg-transparent px-2 text-[12px] font-semibold transition-[background-color,color,transform] duration-150 focus:outline-none active:scale-[0.97]",
-              hasFilter
-                ? "text-[#1D4ED8] hover:bg-[#EFF6FF]"
-                : "text-[#5F6368] hover:bg-[#F3F4F6]",
-            )}
-            onClick={clearFilters}
-            type="button"
-          >
-            <RotateCcw className="h-3 w-3" />
-            <span>초기화</span>
-          </button>
           <MeetingNoteFilterMultiSelect
             className="w-[112px]"
             emptyText="조건을 바꾸면 회사를 찾을 수 있어요."
@@ -738,6 +723,21 @@ export function MeetingNoteListScreen() {
           <span className="shrink-0 text-[11px] text-[#9CA3AF]">
             {meetingNotesQuery.data?.totalCount ?? 0}개
           </span>
+          <button
+            aria-label="초기화"
+            aria-pressed={hasFilter}
+            className={cn(
+              "inline-flex h-7 shrink-0 items-center justify-center gap-1 rounded-md border-0 bg-transparent px-2 text-[12px] font-semibold transition-[background-color,color,transform] duration-150 focus:outline-none active:scale-[0.97]",
+              hasFilter
+                ? "text-[#1D4ED8] hover:bg-[#EFF6FF]"
+                : "text-[#5F6368] hover:bg-[#F3F4F6]",
+            )}
+            onClick={clearFilters}
+            type="button"
+          >
+            <RotateCcw className="h-3 w-3" />
+            <span>초기화</span>
+          </button>
         </div>
 
         <div className="bg-white">
