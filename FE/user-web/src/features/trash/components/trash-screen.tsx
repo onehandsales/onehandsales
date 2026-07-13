@@ -43,16 +43,24 @@ import type {
   TrashSort,
   TrashTargetType,
 } from "@/features/trash/types/trash";
+import {
+  useResizableTableColumns,
+  type ResizableTableColumn,
+} from "@/hooks/use-resizable-table-columns";
 import { getApiErrorMessage } from "@/lib/api-client";
 import { cn } from "@/utils/cn";
 import { formatDateTime } from "@/utils/format";
 
 const PAGE_SIZE = 12;
 
-const TRASH_TABLE_GRID_STYLE = {
-  gridTemplateColumns:
-    "minmax(118px,0.75fr) minmax(220px,1.24fr) minmax(260px,1.48fr) minmax(132px,0.76fr) minmax(132px,0.76fr)",
-};
+const TRASH_TABLE_COLUMNS = [
+  { id: "type", defaultWidth: 150, minWidth: 118, maxWidth: 260 },
+  { id: "title", defaultWidth: 260, minWidth: 180 },
+  { id: "location", defaultWidth: 320, minWidth: 200 },
+  { id: "deletedAt", defaultWidth: 160, minWidth: 130 },
+  { id: "remaining", defaultWidth: 150, minWidth: 120 },
+] satisfies readonly ResizableTableColumn[];
+const TRASH_TABLE_COLUMNS_STORAGE_KEY = "onehand.table.trash.columns";
 
 const itemKindOptions: readonly {
   readonly value: TrashItemKindFilter;
@@ -182,6 +190,11 @@ export function TrashScreen() {
   const [page, setPage] = useState(1);
   const [notice, setNotice] = useState<string | null>(null);
   const [selectedItem, setSelectedItem] = useState<TrashItem | null>(null);
+  const { getHeaderCellResizeProps, tableContainerRef, tableContainerStyle } =
+    useResizableTableColumns({
+      columns: TRASH_TABLE_COLUMNS,
+      storageKey: TRASH_TABLE_COLUMNS_STORAGE_KEY,
+    });
 
   const trashQuery = useTrashList({
     domain,
@@ -319,18 +332,44 @@ export function TrashScreen() {
         </div>
       ) : null}
 
-      <div className="flex min-h-0 flex-1 gap-3 overflow-x-auto px-5 pb-3 pt-1 xl:gap-5">
+      <div className="flex min-h-0 flex-1 gap-3 overflow-x-hidden px-5 pb-3 pt-1 xl:gap-5">
         <div className="flex min-w-0 flex-1 flex-col gap-3">
-          <div className="flex w-full min-w-[860px] flex-col overflow-hidden bg-white">
-            <div
-              className={LIST_TABLE_HEADER_ROW_CLASS_NAME}
-              style={TRASH_TABLE_GRID_STYLE}
-            >
-              <ListTableHeaderCell icon={ClipboardList}>유형</ListTableHeaderCell>
-              <ListTableHeaderCell icon={StickyNote}>제목</ListTableHeaderCell>
-              <ListTableHeaderCell icon={MapPin}>위치</ListTableHeaderCell>
-              <ListTableHeaderCell icon={CalendarClock}>삭제일</ListTableHeaderCell>
-              <ListTableHeaderCell icon={Timer}>남은 기간</ListTableHeaderCell>
+          <div
+            className="flex w-full min-w-0 flex-col overflow-hidden bg-white"
+            ref={tableContainerRef}
+            style={tableContainerStyle}
+          >
+            <div className={LIST_TABLE_HEADER_ROW_CLASS_NAME}>
+              <ListTableHeaderCell
+                icon={ClipboardList}
+                {...getHeaderCellResizeProps("type", 0)}
+              >
+                유형
+              </ListTableHeaderCell>
+              <ListTableHeaderCell
+                icon={StickyNote}
+                {...getHeaderCellResizeProps("title", 1)}
+              >
+                제목
+              </ListTableHeaderCell>
+              <ListTableHeaderCell
+                icon={MapPin}
+                {...getHeaderCellResizeProps("location", 2)}
+              >
+                위치
+              </ListTableHeaderCell>
+              <ListTableHeaderCell
+                icon={CalendarClock}
+                {...getHeaderCellResizeProps("deletedAt", 3)}
+              >
+                삭제일
+              </ListTableHeaderCell>
+              <ListTableHeaderCell
+                icon={Timer}
+                {...getHeaderCellResizeProps("remaining", 4)}
+              >
+                남은 기간
+              </ListTableHeaderCell>
             </div>
 
             {trashQuery.isLoading ? (
@@ -451,7 +490,6 @@ function TrashListRow({
   return (
     <div
       className={LIST_TABLE_ROW_CLASS_NAME}
-      style={TRASH_TABLE_GRID_STYLE}
       role="button"
       tabIndex={0}
       onClick={onPreview}

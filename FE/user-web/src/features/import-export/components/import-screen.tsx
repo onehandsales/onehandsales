@@ -109,14 +109,22 @@ import type {
   ProductCategory,
   ProductStatus,
 } from "@/features/product/types/product";
+import {
+  useResizableTableColumns,
+  type ResizableTableColumn,
+} from "@/hooks/use-resizable-table-columns";
 import { getApiErrorMessage, type ApiBlobResponse } from "@/lib/api-client";
 import { cn } from "@/utils/cn";
 import { formatDateWithOptions } from "@/utils/format";
 
-const IMPORT_LOG_TABLE_GRID_STYLE = {
-  gridTemplateColumns:
-    "minmax(0,1fr) minmax(0,0.95fr) minmax(0,1.7fr) minmax(0,1.05fr)",
-};
+const IMPORT_LOG_TABLE_COLUMNS = [
+  { id: "targetType", defaultWidth: 160, minWidth: 120, maxWidth: 260 },
+  { id: "importedRowCount", defaultWidth: 150, minWidth: 120 },
+  { id: "originalFileName", defaultWidth: 340, minWidth: 180 },
+  { id: "createdAt", defaultWidth: 160, minWidth: 120 },
+] satisfies readonly ResizableTableColumn[];
+const IMPORT_LOG_TABLE_COLUMNS_STORAGE_KEY =
+  "onehand.table.importLogs.columns";
 
 const IMPORT_PREVIEW_ROW_NUMBER_COLUMN_WIDTH = 25;
 const IMPORT_PREVIEW_COLUMN_MIN_WIDTH = 72;
@@ -303,6 +311,11 @@ export function ImportScreen() {
   const createImportJobMutation = useCreateImportJobMutation();
   const updateImportMappingMutation = useUpdateImportMappingMutation();
   const confirmImportJobMutation = useConfirmImportJobMutation(importJob?.id ?? "");
+  const { getHeaderCellResizeProps, tableContainerRef, tableContainerStyle } =
+    useResizableTableColumns({
+      columns: IMPORT_LOG_TABLE_COLUMNS,
+      storageKey: IMPORT_LOG_TABLE_COLUMNS_STORAGE_KEY,
+    });
   const listParams = useMemo(
     () => ({
       page,
@@ -688,15 +701,36 @@ export function ImportScreen() {
             <ErrorMessage message={getApiErrorMessage(actionError)} />
           ) : null}
 
-          <div className="flex w-full min-w-0 flex-col overflow-hidden bg-white">
-            <div
-              className={LIST_TABLE_HEADER_ROW_CLASS_NAME}
-              style={IMPORT_LOG_TABLE_GRID_STYLE}
-            >
-              <ListTableHeaderCell icon={Layers3}>대상</ListTableHeaderCell>
-              <ListTableHeaderCell icon={Hash}>생성된 데이터 수</ListTableHeaderCell>
-              <ListTableHeaderCell icon={FileSpreadsheet}>등록한 파일명</ListTableHeaderCell>
-              <ListTableHeaderCell icon={CalendarClock}>등록일</ListTableHeaderCell>
+          <div
+            className="flex w-full min-w-0 flex-col overflow-x-hidden overflow-y-hidden bg-white"
+            ref={tableContainerRef}
+            style={tableContainerStyle}
+          >
+            <div className={LIST_TABLE_HEADER_ROW_CLASS_NAME}>
+              <ListTableHeaderCell
+                icon={Layers3}
+                {...getHeaderCellResizeProps("targetType", 0)}
+              >
+                대상
+              </ListTableHeaderCell>
+              <ListTableHeaderCell
+                icon={Hash}
+                {...getHeaderCellResizeProps("importedRowCount", 1)}
+              >
+                생성된 데이터 수
+              </ListTableHeaderCell>
+              <ListTableHeaderCell
+                icon={FileSpreadsheet}
+                {...getHeaderCellResizeProps("originalFileName", 2)}
+              >
+                등록한 파일명
+              </ListTableHeaderCell>
+              <ListTableHeaderCell
+                icon={CalendarClock}
+                {...getHeaderCellResizeProps("createdAt", 3)}
+              >
+                등록일
+              </ListTableHeaderCell>
             </div>
 
             {logsQuery.isLoading ? (
@@ -1147,7 +1181,6 @@ function ImportLogRow({
         }
       }}
       role="button"
-      style={IMPORT_LOG_TABLE_GRID_STYLE}
       tabIndex={0}
     >
       <div className="flex min-w-0 items-center gap-2">

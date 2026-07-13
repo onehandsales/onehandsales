@@ -64,6 +64,10 @@ import {
   readLocationNotice,
   readLocationNoticeDescription,
 } from "@/utils/location-state";
+import {
+  useResizableTableColumns,
+  type ResizableTableColumn,
+} from "@/hooks/use-resizable-table-columns";
 
 type StageTab = "ALL" | DealStatus;
 
@@ -85,10 +89,15 @@ const SORT_OPTIONS: Array<{
   { value: "expectedEndDateAsc", label: "마감일순" },
 ];
 
-const DEAL_TABLE_GRID_STYLE = {
-  gridTemplateColumns:
-    "minmax(0,1.05fr) minmax(0,0.7fr) minmax(0,0.5fr) minmax(0,0.5fr) minmax(0,1.45fr) minmax(0,0.5fr)",
-};
+const DEAL_TABLE_COLUMNS = [
+  { id: "dealName", defaultWidth: 220, minWidth: 160, maxWidth: 420 },
+  { id: "relation", defaultWidth: 220, minWidth: 180 },
+  { id: "status", defaultWidth: 120, minWidth: 100 },
+  { id: "cost", defaultWidth: 130, minWidth: 110 },
+  { id: "nextAction", defaultWidth: 280, minWidth: 180 },
+  { id: "createdAt", defaultWidth: 130, minWidth: 110 },
+] satisfies readonly ResizableTableColumn[];
+const DEAL_TABLE_COLUMNS_STORAGE_KEY = "onehand.table.deals.columns";
 const DEAL_CREATE_PANEL_STORAGE_KEY = "onehand.deal.createPanelWidth";
 const DEAL_CREATE_PANEL_DEFAULT_WIDTH = 520;
 const DEAL_CREATE_PANEL_MIN_WIDTH = 420;
@@ -136,6 +145,11 @@ export function DealPipelineHomeScreen({
   const compactFilterPopoverRef = useRef<HTMLDivElement>(null);
   const dealCreatedRef = useRef(false);
   const setAutoSidebarCollapsed = outletContext?.setAutoSidebarCollapsed;
+  const { getHeaderCellResizeProps, tableContainerRef, tableContainerStyle } =
+    useResizableTableColumns({
+      columns: DEAL_TABLE_COLUMNS,
+      storageKey: DEAL_TABLE_COLUMNS_STORAGE_KEY,
+    });
 
   const searchQuery = search.trim() || undefined;
   const companyFilter = companyIds.length > 0 ? companyIds : undefined;
@@ -734,18 +748,49 @@ export function DealPipelineHomeScreen({
                 <ErrorState onRetry={() => void dealsQuery.refetch()} />
               ) : (
                 <>
-              <div className="flex w-full min-w-0 flex-col overflow-hidden bg-white">
+              <div
+                className="flex w-full min-w-0 flex-col overflow-x-hidden overflow-y-hidden bg-white"
+                ref={tableContainerRef}
+                style={tableContainerStyle}
+              >
                 {/* Table header */}
-                <div
-                  className={LIST_TABLE_HEADER_ROW_CLASS_NAME}
-                  style={DEAL_TABLE_GRID_STYLE}
-                >
-                  <ListTableHeaderCell icon={BriefcaseBusiness}>딜이름</ListTableHeaderCell>
-                  <ListTableHeaderCell icon={Building2}>회사/담당자</ListTableHeaderCell>
-                  <ListTableHeaderCell icon={CircleDot}>단계</ListTableHeaderCell>
-                  <ListTableHeaderCell icon={Banknote}>금액</ListTableHeaderCell>
-                  <ListTableHeaderCell icon={ClipboardList}>다음 행동</ListTableHeaderCell>
-                  <ListTableHeaderCell icon={CalendarClock}>등록일</ListTableHeaderCell>
+                <div className={LIST_TABLE_HEADER_ROW_CLASS_NAME}>
+                  <ListTableHeaderCell
+                    icon={BriefcaseBusiness}
+                    {...getHeaderCellResizeProps("dealName", 0)}
+                  >
+                    딜이름
+                  </ListTableHeaderCell>
+                  <ListTableHeaderCell
+                    icon={Building2}
+                    {...getHeaderCellResizeProps("relation", 1)}
+                  >
+                    회사/담당자
+                  </ListTableHeaderCell>
+                  <ListTableHeaderCell
+                    icon={CircleDot}
+                    {...getHeaderCellResizeProps("status", 2)}
+                  >
+                    단계
+                  </ListTableHeaderCell>
+                  <ListTableHeaderCell
+                    icon={Banknote}
+                    {...getHeaderCellResizeProps("cost", 3)}
+                  >
+                    금액
+                  </ListTableHeaderCell>
+                  <ListTableHeaderCell
+                    icon={ClipboardList}
+                    {...getHeaderCellResizeProps("nextAction", 4)}
+                  >
+                    다음 행동
+                  </ListTableHeaderCell>
+                  <ListTableHeaderCell
+                    icon={CalendarClock}
+                    {...getHeaderCellResizeProps("createdAt", 5)}
+                  >
+                    등록일
+                  </ListTableHeaderCell>
                 </div>
 
                 {/* Rows */}
@@ -993,7 +1038,6 @@ function DealListRow({
         }
       }}
       role="button"
-      style={DEAL_TABLE_GRID_STYLE}
       tabIndex={0}
     >
       {/* 딜이름 */}

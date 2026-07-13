@@ -49,6 +49,10 @@ import {
 } from "@/features/product/hooks/use-product-detail";
 import { useProductList } from "@/features/product/hooks/use-product-list";
 import type { Product, ProductSort } from "@/features/product/types/product";
+import {
+  useResizableTableColumns,
+  type ResizableTableColumn,
+} from "@/hooks/use-resizable-table-columns";
 import { getApiErrorMessage } from "@/lib/api-client";
 import { cn } from "@/utils/cn";
 import { formatDateWithOptions } from "@/utils/format";
@@ -71,9 +75,14 @@ const PRODUCT_SORT_OPTIONS: Array<{
   { value: "dealCountAsc", label: "딜 낮은순" },
 ];
 
-const PRODUCT_TABLE_GRID_STYLE = {
-  gridTemplateColumns: "repeat(5, minmax(0, 1fr))",
-};
+const PRODUCT_TABLE_COLUMNS = [
+  { id: "productName", defaultWidth: 240, minWidth: 170, maxWidth: 420 },
+  { id: "category", defaultWidth: 180, minWidth: 130 },
+  { id: "status", defaultWidth: 140, minWidth: 110 },
+  { id: "dealCount", defaultWidth: 110, minWidth: 90 },
+  { id: "createdAt", defaultWidth: 130, minWidth: 110 },
+] satisfies readonly ResizableTableColumn[];
+const PRODUCT_TABLE_COLUMNS_STORAGE_KEY = "onehand.table.products.columns";
 const PRODUCT_CREATE_PANEL_STORAGE_KEY = "onehand.product.createPanelWidth";
 const PRODUCT_CREATE_PANEL_DEFAULT_WIDTH = 520;
 const PRODUCT_CREATE_PANEL_MIN_WIDTH = 420;
@@ -120,6 +129,11 @@ export function ProductListScreen({
   const compactFilterButtonRef = useRef<HTMLButtonElement>(null);
   const compactFilterPopoverRef = useRef<HTMLDivElement>(null);
   const setAutoSidebarCollapsed = outletContext?.setAutoSidebarCollapsed;
+  const { getHeaderCellResizeProps, tableContainerRef, tableContainerStyle } =
+    useResizableTableColumns({
+      columns: PRODUCT_TABLE_COLUMNS,
+      storageKey: PRODUCT_TABLE_COLUMNS_STORAGE_KEY,
+    });
 
   const categoriesQuery = useProductCategories();
   const statusesQuery = useProductStatuses();
@@ -675,16 +689,42 @@ export function ProductListScreen({
             </p>
           ) : null}
 
-          <div className="flex w-full min-w-0 flex-col overflow-hidden bg-white">
-            <div
-              className={LIST_TABLE_HEADER_ROW_CLASS_NAME}
-              style={PRODUCT_TABLE_GRID_STYLE}
-            >
-              <ListTableHeaderCell icon={Package}>제품명</ListTableHeaderCell>
-              <ListTableHeaderCell icon={Tags}>카테고리</ListTableHeaderCell>
-              <ListTableHeaderCell icon={CircleDot}>상태</ListTableHeaderCell>
-              <ListTableHeaderCell icon={BriefcaseBusiness}>딜 수</ListTableHeaderCell>
-              <ListTableHeaderCell icon={CalendarClock}>등록일</ListTableHeaderCell>
+          <div
+            className="flex w-full min-w-0 flex-col overflow-x-hidden overflow-y-hidden bg-white"
+            ref={tableContainerRef}
+            style={tableContainerStyle}
+          >
+            <div className={LIST_TABLE_HEADER_ROW_CLASS_NAME}>
+              <ListTableHeaderCell
+                icon={Package}
+                {...getHeaderCellResizeProps("productName", 0)}
+              >
+                제품명
+              </ListTableHeaderCell>
+              <ListTableHeaderCell
+                icon={Tags}
+                {...getHeaderCellResizeProps("category", 1)}
+              >
+                카테고리
+              </ListTableHeaderCell>
+              <ListTableHeaderCell
+                icon={CircleDot}
+                {...getHeaderCellResizeProps("status", 2)}
+              >
+                상태
+              </ListTableHeaderCell>
+              <ListTableHeaderCell
+                icon={BriefcaseBusiness}
+                {...getHeaderCellResizeProps("dealCount", 3)}
+              >
+                딜 수
+              </ListTableHeaderCell>
+              <ListTableHeaderCell
+                icon={CalendarClock}
+                {...getHeaderCellResizeProps("createdAt", 4)}
+              >
+                등록일
+              </ListTableHeaderCell>
             </div>
 
             {productsQuery.isLoading ? (
@@ -982,7 +1022,6 @@ function ProductRow({
         }
       }}
       role="button"
-      style={PRODUCT_TABLE_GRID_STYLE}
       tabIndex={0}
     >
       <div className="min-w-0">

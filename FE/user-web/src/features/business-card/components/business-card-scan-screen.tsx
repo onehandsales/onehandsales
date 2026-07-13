@@ -56,14 +56,25 @@ import type {
   BusinessCardScanLog,
   BusinessCardScanStatus,
 } from "@/features/business-card/types/business-card";
+import {
+  useResizableTableColumns,
+  type ResizableTableColumn,
+} from "@/hooks/use-resizable-table-columns";
 import { getApiErrorMessage } from "@/lib/api-client";
 import { cn } from "@/utils/cn";
 import { formatDateWithOptions } from "@/utils/format";
 
-const TABLE_GRID_STYLE = {
-  gridTemplateColumns:
-    "minmax(88px,0.7fr) minmax(130px,1fr) minmax(110px,0.8fr) minmax(120px,0.9fr) minmax(150px,1fr) minmax(92px,0.7fr) minmax(104px,0.8fr)",
-};
+const BUSINESS_CARD_SCAN_TABLE_COLUMNS = [
+  { id: "status", defaultWidth: 110, minWidth: 90, maxWidth: 200 },
+  { id: "company", defaultWidth: 170, minWidth: 130 },
+  { id: "contact", defaultWidth: 150, minWidth: 120 },
+  { id: "mobile", defaultWidth: 160, minWidth: 130 },
+  { id: "email", defaultWidth: 220, minWidth: 160 },
+  { id: "model", defaultWidth: 120, minWidth: 90 },
+  { id: "createdAt", defaultWidth: 130, minWidth: 110 },
+] satisfies readonly ResizableTableColumn[];
+const BUSINESS_CARD_SCAN_TABLE_COLUMNS_STORAGE_KEY =
+  "onehand.table.businessCardScans.columns";
 
 const STATUS_FILTER_OPTIONS: Array<{
   readonly id: BusinessCardScanStatus;
@@ -84,6 +95,11 @@ export function BusinessCardScanScreen() {
   const [selectedScanLogId, setSelectedScanLogId] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
   const displayTimeZone = user?.timeZone ?? getBrowserTimeZoneFallback();
+  const { getHeaderCellResizeProps, tableContainerRef, tableContainerStyle } =
+    useResizableTableColumns({
+      columns: BUSINESS_CARD_SCAN_TABLE_COLUMNS,
+      storageKey: BUSINESS_CARD_SCAN_TABLE_COLUMNS_STORAGE_KEY,
+    });
   const listParams = useMemo(
     () => ({
       page,
@@ -155,20 +171,56 @@ export function BusinessCardScanScreen() {
         </div>
       ) : null}
 
-      <div className="hidden gap-3 overflow-x-auto px-5 pb-3 pt-1 md:flex xl:gap-5">
+      <div className="hidden gap-3 overflow-x-hidden px-5 pb-3 pt-1 md:flex xl:gap-5">
         <div className="flex min-w-0 flex-1 flex-col gap-3">
-          <div className="flex w-full min-w-[780px] flex-col overflow-hidden bg-white">
-            <div
-              className={LIST_TABLE_HEADER_ROW_CLASS_NAME}
-              style={TABLE_GRID_STYLE}
-            >
-              <ListTableHeaderCell icon={CircleDot}>상태</ListTableHeaderCell>
-              <ListTableHeaderCell icon={Building2}>회사</ListTableHeaderCell>
-              <ListTableHeaderCell icon={UserRound}>담당자</ListTableHeaderCell>
-              <ListTableHeaderCell icon={Phone}>휴대폰</ListTableHeaderCell>
-              <ListTableHeaderCell icon={Mail}>이메일</ListTableHeaderCell>
-              <ListTableHeaderCell icon={Cpu}>모델</ListTableHeaderCell>
-              <ListTableHeaderCell icon={CalendarClock}>등록일</ListTableHeaderCell>
+          <div
+            className="flex w-full min-w-0 flex-col overflow-hidden bg-white"
+            ref={tableContainerRef}
+            style={tableContainerStyle}
+          >
+            <div className={LIST_TABLE_HEADER_ROW_CLASS_NAME}>
+              <ListTableHeaderCell
+                icon={CircleDot}
+                {...getHeaderCellResizeProps("status", 0)}
+              >
+                상태
+              </ListTableHeaderCell>
+              <ListTableHeaderCell
+                icon={Building2}
+                {...getHeaderCellResizeProps("company", 1)}
+              >
+                회사
+              </ListTableHeaderCell>
+              <ListTableHeaderCell
+                icon={UserRound}
+                {...getHeaderCellResizeProps("contact", 2)}
+              >
+                담당자
+              </ListTableHeaderCell>
+              <ListTableHeaderCell
+                icon={Phone}
+                {...getHeaderCellResizeProps("mobile", 3)}
+              >
+                휴대폰
+              </ListTableHeaderCell>
+              <ListTableHeaderCell
+                icon={Mail}
+                {...getHeaderCellResizeProps("email", 4)}
+              >
+                이메일
+              </ListTableHeaderCell>
+              <ListTableHeaderCell
+                icon={Cpu}
+                {...getHeaderCellResizeProps("model", 5)}
+              >
+                모델
+              </ListTableHeaderCell>
+              <ListTableHeaderCell
+                icon={CalendarClock}
+                {...getHeaderCellResizeProps("createdAt", 6)}
+              >
+                등록일
+              </ListTableHeaderCell>
             </div>
 
             {scanLogsQuery.isLoading ? (
@@ -991,7 +1043,6 @@ function ScanLogRow({
     <button
       className={LIST_TABLE_ROW_CLASS_NAME}
       onClick={onOpen}
-      style={TABLE_GRID_STYLE}
       type="button"
     >
       <div className="min-w-0">

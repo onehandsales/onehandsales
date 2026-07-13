@@ -47,15 +47,24 @@ import type {
   MeetingNoteListParams,
   MeetingNoteSort,
 } from "@/features/meeting-note/types/meeting-note";
+import {
+  useResizableTableColumns,
+  type ResizableTableColumn,
+} from "@/hooks/use-resizable-table-columns";
 import { getApiErrorMessage } from "@/lib/api-client";
 import { cn } from "@/utils/cn";
 import { formatDateWithOptions } from "@/utils/format";
 import { readLocationNotice } from "@/utils/location-state";
 
-const MEETING_NOTE_TABLE_GRID_STYLE = {
-  gridTemplateColumns:
-    "minmax(0,0.82fr) minmax(0,1.45fr) minmax(0,0.88fr) minmax(0,0.88fr) minmax(0,0.82fr)",
-};
+const MEETING_NOTE_TABLE_COLUMNS = [
+  { id: "meetingAt", defaultWidth: 160, minWidth: 130, maxWidth: 260 },
+  { id: "title", defaultWidth: 300, minWidth: 180 },
+  { id: "companies", defaultWidth: 190, minWidth: 140 },
+  { id: "contacts", defaultWidth: 190, minWidth: 140 },
+  { id: "createdAt", defaultWidth: 130, minWidth: 110 },
+] satisfies readonly ResizableTableColumn[];
+const MEETING_NOTE_TABLE_COLUMNS_STORAGE_KEY =
+  "onehand.table.meetingNotes.columns";
 const MEETING_NOTE_CREATE_PANEL_STORAGE_KEY =
   "onehand.meetingNote.createPanelWidth";
 const MEETING_NOTE_CREATE_PANEL_DEFAULT_WIDTH = 520;
@@ -100,6 +109,11 @@ export function MeetingNoteListScreen() {
   const compactFilterButtonRef = useRef<HTMLButtonElement>(null);
   const compactFilterPopoverRef = useRef<HTMLDivElement>(null);
   const setAutoSidebarCollapsed = outletContext?.setAutoSidebarCollapsed;
+  const { getHeaderCellResizeProps, tableContainerRef, tableContainerStyle } =
+    useResizableTableColumns({
+      columns: MEETING_NOTE_TABLE_COLUMNS,
+      storageKey: MEETING_NOTE_TABLE_COLUMNS_STORAGE_KEY,
+    });
 
   const params = useMemo<MeetingNoteListParams>(
     () => ({
@@ -593,16 +607,42 @@ export function MeetingNoteListScreen() {
         )}
       >
         <div className="flex min-w-0 flex-1 flex-col gap-3">
-          <div className="flex w-full min-w-0 flex-col overflow-hidden bg-white">
-            <div
-              className={LIST_TABLE_HEADER_ROW_CLASS_NAME}
-              style={MEETING_NOTE_TABLE_GRID_STYLE}
-            >
-              <ListTableHeaderCell icon={CalendarClock}>미팅날짜</ListTableHeaderCell>
-              <ListTableHeaderCell icon={NotebookPen}>제목</ListTableHeaderCell>
-              <ListTableHeaderCell icon={Building2}>회사</ListTableHeaderCell>
-              <ListTableHeaderCell icon={UserRound}>담당자</ListTableHeaderCell>
-              <ListTableHeaderCell icon={CalendarClock}>등록일</ListTableHeaderCell>
+          <div
+            className="flex w-full min-w-0 flex-col overflow-x-hidden overflow-y-hidden bg-white"
+            ref={tableContainerRef}
+            style={tableContainerStyle}
+          >
+            <div className={LIST_TABLE_HEADER_ROW_CLASS_NAME}>
+              <ListTableHeaderCell
+                icon={CalendarClock}
+                {...getHeaderCellResizeProps("meetingAt", 0)}
+              >
+                미팅날짜
+              </ListTableHeaderCell>
+              <ListTableHeaderCell
+                icon={NotebookPen}
+                {...getHeaderCellResizeProps("title", 1)}
+              >
+                제목
+              </ListTableHeaderCell>
+              <ListTableHeaderCell
+                icon={Building2}
+                {...getHeaderCellResizeProps("companies", 2)}
+              >
+                회사
+              </ListTableHeaderCell>
+              <ListTableHeaderCell
+                icon={UserRound}
+                {...getHeaderCellResizeProps("contacts", 3)}
+              >
+                담당자
+              </ListTableHeaderCell>
+              <ListTableHeaderCell
+                icon={CalendarClock}
+                {...getHeaderCellResizeProps("createdAt", 4)}
+              >
+                등록일
+              </ListTableHeaderCell>
             </div>
 
             {meetingNotesQuery.isLoading ? (
@@ -1214,7 +1254,6 @@ function MeetingNoteListRow({
         }
       }}
       role="button"
-      style={MEETING_NOTE_TABLE_GRID_STYLE}
       tabIndex={0}
     >
       <DateCell
@@ -1307,7 +1346,6 @@ function MeetingNoteListSkeleton() {
         <div
           className={LIST_TABLE_SKELETON_ROW_CLASS_NAME}
           key={rowIndex}
-          style={MEETING_NOTE_TABLE_GRID_STYLE}
         >
           {Array.from({ length: 5 }, (_, cellIndex) => (
             <div className="min-w-0" key={cellIndex}>

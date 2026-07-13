@@ -57,6 +57,10 @@ import {
   readLocationNoticeDescription,
 } from "@/utils/location-state";
 import type { AppShellOutletContext } from "@/components/layout/app-shell";
+import {
+  useResizableTableColumns,
+  type ResizableTableColumn,
+} from "@/hooks/use-resizable-table-columns";
 
 type CompanyListScreenProps = {
   readonly initialCreateOpen?: boolean;
@@ -74,10 +78,15 @@ const COMPANY_SORT_OPTIONS: Array<{
   { value: "dealCountAsc", label: "딜 낮은순" },
 ];
 
-const COMPANY_TABLE_GRID_STYLE = {
-  gridTemplateColumns:
-    "minmax(150px,1.4fr) minmax(100px,1fr) minmax(100px,1fr) minmax(76px,0.6fr) minmax(64px,0.55fr) minmax(98px,0.8fr)",
-};
+const COMPANY_TABLE_COLUMNS = [
+  { id: "companyName", defaultWidth: 220, minWidth: 160, maxWidth: 420 },
+  { id: "field", defaultWidth: 150, minWidth: 110 },
+  { id: "region", defaultWidth: 150, minWidth: 110 },
+  { id: "contactCount", defaultWidth: 120, minWidth: 90 },
+  { id: "dealCount", defaultWidth: 110, minWidth: 90 },
+  { id: "createdAt", defaultWidth: 130, minWidth: 110 },
+] satisfies readonly ResizableTableColumn[];
+const COMPANY_TABLE_COLUMNS_STORAGE_KEY = "onehand.table.companies.columns";
 const COMPANY_CREATE_PANEL_STORAGE_KEY = "onehand.company.createPanelWidth";
 const COMPANY_CREATE_PANEL_DEFAULT_WIDTH = 520;
 const COMPANY_CREATE_PANEL_MIN_WIDTH = 420;
@@ -132,6 +141,11 @@ export function CompanyListScreen({
   const compactFilterButtonRef = useRef<HTMLButtonElement>(null);
   const compactFilterPopoverRef = useRef<HTMLDivElement>(null);
   const setAutoSidebarCollapsed = outletContext?.setAutoSidebarCollapsed;
+  const { getHeaderCellResizeProps, tableContainerRef, tableContainerStyle } =
+    useResizableTableColumns({
+      columns: COMPANY_TABLE_COLUMNS,
+      storageKey: COMPANY_TABLE_COLUMNS_STORAGE_KEY,
+    });
 
   const listParams = useMemo(
     () => ({
@@ -771,17 +785,48 @@ export function CompanyListScreen({
         )}
       >
         <div className="flex min-w-0 flex-1 flex-col gap-3">
-          <div className="flex min-h-0 w-full min-w-0 flex-col overflow-x-auto overflow-y-hidden bg-white">
-            <div
-              className={LIST_TABLE_HEADER_ROW_CLASS_NAME}
-              style={COMPANY_TABLE_GRID_STYLE}
-            >
-              <ListTableHeaderCell icon={Building2}>회사명</ListTableHeaderCell>
-              <ListTableHeaderCell icon={Tags}>분야</ListTableHeaderCell>
-              <ListTableHeaderCell icon={MapPin}>지역</ListTableHeaderCell>
-              <ListTableHeaderCell icon={UsersRound}>담당자 수</ListTableHeaderCell>
-              <ListTableHeaderCell icon={BriefcaseBusiness}>딜 수</ListTableHeaderCell>
-              <ListTableHeaderCell icon={CalendarClock}>등록일</ListTableHeaderCell>
+          <div
+            className="flex min-h-0 w-full min-w-0 flex-col overflow-x-hidden overflow-y-hidden bg-white"
+            ref={tableContainerRef}
+            style={tableContainerStyle}
+          >
+            <div className={LIST_TABLE_HEADER_ROW_CLASS_NAME}>
+                <ListTableHeaderCell
+                  icon={Building2}
+                  {...getHeaderCellResizeProps("companyName", 0)}
+                >
+                  회사명
+                </ListTableHeaderCell>
+                <ListTableHeaderCell
+                  icon={Tags}
+                  {...getHeaderCellResizeProps("field", 1)}
+                >
+                  분야
+                </ListTableHeaderCell>
+                <ListTableHeaderCell
+                  icon={MapPin}
+                  {...getHeaderCellResizeProps("region", 2)}
+                >
+                  지역
+                </ListTableHeaderCell>
+                <ListTableHeaderCell
+                  icon={UsersRound}
+                  {...getHeaderCellResizeProps("contactCount", 3)}
+                >
+                  담당자 수
+                </ListTableHeaderCell>
+                <ListTableHeaderCell
+                  icon={BriefcaseBusiness}
+                  {...getHeaderCellResizeProps("dealCount", 4)}
+                >
+                  딜 수
+                </ListTableHeaderCell>
+                <ListTableHeaderCell
+                  icon={CalendarClock}
+                  {...getHeaderCellResizeProps("createdAt", 5)}
+                >
+                  등록일
+                </ListTableHeaderCell>
             </div>
 
             {companiesQuery.isLoading ? (
@@ -1039,7 +1084,6 @@ function CompanyRow({
       }}
       role="button"
       tabIndex={0}
-      style={COMPANY_TABLE_GRID_STYLE}
     >
       <div className="min-w-0">
         <span className="block truncate text-[13px] font-semibold text-[#111827]">

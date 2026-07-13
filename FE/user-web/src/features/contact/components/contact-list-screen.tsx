@@ -54,6 +54,10 @@ import type {
   ContactListItem,
   ContactSort,
 } from "@/features/contact/types/contact";
+import {
+  useResizableTableColumns,
+  type ResizableTableColumn,
+} from "@/hooks/use-resizable-table-columns";
 import { getApiErrorMessage, type ApiBlobResponse } from "@/lib/api-client";
 import { cn } from "@/utils/cn";
 import { formatDateWithOptions } from "@/utils/format";
@@ -70,10 +74,16 @@ const CONTACT_SORT_OPTIONS: Array<{
   { value: "usernameAsc", label: "이름순" },
 ];
 
-const CONTACT_TABLE_GRID_STYLE = {
-  gridTemplateColumns:
-    "minmax(0,0.8fr) minmax(0,0.9fr) minmax(0,0.6fr) minmax(0,0.5fr) minmax(0,0.7fr) minmax(0,1fr) minmax(0,0.65fr)",
-};
+const CONTACT_TABLE_COLUMNS = [
+  { id: "username", defaultWidth: 180, minWidth: 140, maxWidth: 360 },
+  { id: "company", defaultWidth: 190, minWidth: 150 },
+  { id: "department", defaultWidth: 140, minWidth: 100 },
+  { id: "jobGrade", defaultWidth: 120, minWidth: 90 },
+  { id: "mobile", defaultWidth: 160, minWidth: 130 },
+  { id: "email", defaultWidth: 220, minWidth: 160 },
+  { id: "createdAt", defaultWidth: 130, minWidth: 110 },
+] satisfies readonly ResizableTableColumn[];
+const CONTACT_TABLE_COLUMNS_STORAGE_KEY = "onehand.table.contacts.columns";
 
 type ContactListScreenProps = {
   readonly initialCreateOpen?: boolean;
@@ -123,6 +133,11 @@ export function ContactListScreen({
   const compactFilterButtonRef = useRef<HTMLButtonElement>(null);
   const compactFilterPopoverRef = useRef<HTMLDivElement>(null);
   const setAutoSidebarCollapsed = outletContext?.setAutoSidebarCollapsed;
+  const { getHeaderCellResizeProps, tableContainerRef, tableContainerStyle } =
+    useResizableTableColumns({
+      columns: CONTACT_TABLE_COLUMNS,
+      storageKey: CONTACT_TABLE_COLUMNS_STORAGE_KEY,
+    });
 
   const listParams = useMemo(
     () => ({
@@ -646,19 +661,55 @@ export function ContactListScreen({
         )}
       >
         <div className="flex min-w-0 flex-1 flex-col gap-3">
-          <div className="flex w-full min-w-0 flex-col overflow-hidden bg-white">
+          <div
+            className="flex w-full min-w-0 flex-col overflow-x-hidden overflow-y-hidden bg-white"
+            ref={tableContainerRef}
+            style={tableContainerStyle}
+          >
             {/* 테이블 헤더 (데스크톱) */}
-            <div
-              className={LIST_TABLE_HEADER_ROW_CLASS_NAME}
-              style={CONTACT_TABLE_GRID_STYLE}
-            >
-              <ListTableHeaderCell icon={IdCard}>담당자명</ListTableHeaderCell>
-              <ListTableHeaderCell icon={Building2}>회사</ListTableHeaderCell>
-              <ListTableHeaderCell icon={BriefcaseBusiness}>부서</ListTableHeaderCell>
-              <ListTableHeaderCell icon={IdCard}>직급</ListTableHeaderCell>
-              <ListTableHeaderCell icon={Phone}>핸드폰</ListTableHeaderCell>
-              <ListTableHeaderCell icon={Mail}>이메일</ListTableHeaderCell>
-              <ListTableHeaderCell icon={CalendarClock}>등록일</ListTableHeaderCell>
+            <div className={LIST_TABLE_HEADER_ROW_CLASS_NAME}>
+              <ListTableHeaderCell
+                icon={IdCard}
+                {...getHeaderCellResizeProps("username", 0)}
+              >
+                담당자명
+              </ListTableHeaderCell>
+              <ListTableHeaderCell
+                icon={Building2}
+                {...getHeaderCellResizeProps("company", 1)}
+              >
+                회사
+              </ListTableHeaderCell>
+              <ListTableHeaderCell
+                icon={BriefcaseBusiness}
+                {...getHeaderCellResizeProps("department", 2)}
+              >
+                부서
+              </ListTableHeaderCell>
+              <ListTableHeaderCell
+                icon={IdCard}
+                {...getHeaderCellResizeProps("jobGrade", 3)}
+              >
+                직급
+              </ListTableHeaderCell>
+              <ListTableHeaderCell
+                icon={Phone}
+                {...getHeaderCellResizeProps("mobile", 4)}
+              >
+                핸드폰
+              </ListTableHeaderCell>
+              <ListTableHeaderCell
+                icon={Mail}
+                {...getHeaderCellResizeProps("email", 5)}
+              >
+                이메일
+              </ListTableHeaderCell>
+              <ListTableHeaderCell
+                icon={CalendarClock}
+                {...getHeaderCellResizeProps("createdAt", 6)}
+              >
+                등록일
+              </ListTableHeaderCell>
             </div>
 
             {contactsQuery.isLoading ? (
@@ -947,7 +998,6 @@ function ContactRow({
         }
       }}
       role="button"
-      style={CONTACT_TABLE_GRID_STYLE}
       tabIndex={0}
     >
       <div className="min-w-0">
