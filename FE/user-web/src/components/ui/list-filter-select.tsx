@@ -1,5 +1,6 @@
-import { ChevronDown, Search, X, type LucideIcon } from "lucide-react";
+import { ChevronDown, type LucideIcon } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
+import { FilterPopoverSearchHeader } from "@/components/ui/filter-popover-search-header";
 import { cn } from "@/utils/cn";
 
 export type ListFilterSelectOption<TValue extends string> = {
@@ -15,6 +16,7 @@ type ListFilterSelectProps<TValue extends string> = {
   readonly icon?: LucideIcon;
   readonly onChange: (value: TValue) => void;
   readonly options: readonly ListFilterSelectOption<TValue>[];
+  readonly searchable?: boolean;
   readonly value: TValue;
 };
 
@@ -24,7 +26,7 @@ type PopoverPosition = {
   readonly width: number;
 };
 
-// 기능 : 목록 필터 영역의 커스텀 단일 선택 드롭다운을 렌더링합니다.
+// 기능 : 목록 필터 영역의 단일 선택 드롭다운을 렌더링합니다.
 export function ListFilterSelect<TValue extends string>({
   active = false,
   ariaLabel,
@@ -32,6 +34,7 @@ export function ListFilterSelect<TValue extends string>({
   icon: Icon,
   onChange,
   options,
+  searchable = true,
   value,
 }: ListFilterSelectProps<TValue>) {
   const [isOpen, setIsOpen] = useState(false);
@@ -47,7 +50,7 @@ export function ListFilterSelect<TValue extends string>({
   );
   const normalizedQuery = normalizeListFilterText(search.trim());
   const filteredOptions =
-    normalizedQuery.length > 0
+    searchable && normalizedQuery.length > 0
       ? options.filter((option) =>
           normalizeListFilterText(option.label).includes(normalizedQuery),
         )
@@ -88,22 +91,26 @@ export function ListFilterSelect<TValue extends string>({
     };
 
     updatePopoverPosition();
-    const focusFrame = window.requestAnimationFrame(() => {
-      inputRef.current?.focus();
-    });
+    const focusFrame = searchable
+      ? window.requestAnimationFrame(() => {
+          inputRef.current?.focus();
+        })
+      : null;
     document.addEventListener("mousedown", onMouseDown);
     document.addEventListener("keydown", onKeyDown);
     window.addEventListener("resize", updatePopoverPosition);
     window.addEventListener("scroll", updatePopoverPosition, true);
 
     return () => {
-      window.cancelAnimationFrame(focusFrame);
+      if (focusFrame !== null) {
+        window.cancelAnimationFrame(focusFrame);
+      }
       document.removeEventListener("mousedown", onMouseDown);
       document.removeEventListener("keydown", onKeyDown);
       window.removeEventListener("resize", updatePopoverPosition);
       window.removeEventListener("scroll", updatePopoverPosition, true);
     };
-  }, [isOpen]);
+  }, [isOpen, searchable]);
 
   const openOptions = (nextSearch: string) => {
     if (disabled) {
@@ -124,6 +131,16 @@ export function ListFilterSelect<TValue extends string>({
     setSearch("");
     setIsOpen(false);
     triggerRef.current?.focus();
+  };
+
+  const resetOption = () => {
+    const defaultOption = options[0];
+
+    if (!defaultOption) {
+      return;
+    }
+
+    selectOption(defaultOption.value);
   };
 
   return (
@@ -170,49 +187,38 @@ export function ListFilterSelect<TValue extends string>({
             width: popoverPosition?.width ?? 184,
           }}
         >
-          <div className="border-b border-[#E6EAF0] p-2">
-            <div className="relative">
-              <Search className="pointer-events-none absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-[#6B7280]" />
-              <input
-                ref={inputRef}
-                aria-label={`${ariaLabel} 검색`}
-                autoComplete="off"
-                className="h-8 w-full rounded-md border-0 bg-[#F3F4F6] pl-8 pr-7 text-[13px] text-[#111827] outline-none placeholder:text-[#9CA3AF]"
-                onChange={(event) => setSearch(event.target.value)}
-                onKeyDown={(event) => {
-                  if (event.key === "Escape") {
-                    setIsOpen(false);
-                    setSearch("");
-                    triggerRef.current?.focus();
+          {searchable ? (
+            <FilterPopoverSearchHeader
+              clearSearchLabel={`${ariaLabel} 검색어 지우기`}
+              inputRef={inputRef}
+              onClearSearch={() => setSearch("")}
+              onReset={resetOption}
+              onSearchChange={setSearch}
+              onSearchKeyDown={(event) => {
+                if (event.key === "Escape") {
+                  setIsOpen(false);
+                  setSearch("");
+                  triggerRef.current?.focus();
+                  return;
+                }
+
+                if (event.key === "Enter") {
+                  const firstOption = filteredOptions[0];
+
+                  if (!firstOption) {
                     return;
                   }
 
-                  if (event.key === "Enter") {
-                    const firstOption = filteredOptions[0];
-
-                    if (!firstOption) {
-                      return;
-                    }
-
-                    event.preventDefault();
-                    selectOption(firstOption.value);
-                  }
-                }}
-                placeholder={ariaLabel}
-                value={search}
-              />
-              {search ? (
-                <button
-                  aria-label={`${ariaLabel} 검색어 지우기`}
-                  className="absolute right-1 top-1/2 grid h-7 w-7 -translate-y-1/2 place-items-center rounded-full text-[#9CA3AF] transition hover:bg-[#E5E7EB] hover:text-[#374151]"
-                  onClick={() => setSearch("")}
-                  type="button"
-                >
-                  <X className="h-3.5 w-3.5" />
-                </button>
-              ) : null}
-            </div>
-          </div>
+                  event.preventDefault();
+                  selectOption(firstOption.value);
+                }
+              }}
+              placeholder={ariaLabel}
+              resetLabel={`${ariaLabel} 초기화`}
+              searchLabel={`${ariaLabel} 검색`}
+              searchValue={search}
+            />
+          ) : null}
           <div className="max-h-[220px] overflow-y-auto py-1">
             {filteredOptions.length === 0 ? (
               <p className="px-3 py-3 text-[12px] text-[#9CA3AF]">

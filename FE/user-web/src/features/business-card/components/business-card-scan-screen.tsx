@@ -4,13 +4,13 @@ import {
   Camera,
   CheckCircle2,
   ChevronDown,
+  CircleDot,
   Eye,
   FileImage,
   Loader2,
   Plus,
   RotateCcw,
   Save,
-  Search,
   Upload,
   UserRound,
   X,
@@ -18,6 +18,7 @@ import {
 import { useEffect, useMemo, useRef, useState, type ChangeEvent } from "react";
 import { useForm, type UseFormRegisterReturn } from "react-hook-form";
 import { Link } from "react-router-dom";
+import { FilterPopoverSearchHeader } from "@/components/ui/filter-popover-search-header";
 import { PageHeader } from "@/components/layout/page-header";
 import { ModalShell } from "@/components/ui/modal-shell";
 import { Pagination } from "@/components/ui/pagination";
@@ -416,7 +417,7 @@ function StatusFilterCombobox({
           onClick={() => (isOpen ? setIsOpen(false) : openOptions(""))}
           type="button"
         >
-          <CheckCircle2
+          <CircleDot
             className={isMobile ? "h-3 w-3 shrink-0" : "h-3.5 w-3.5 shrink-0"}
           />
           <span className="min-w-0 truncate text-left">상태</span>
@@ -442,67 +443,41 @@ function StatusFilterCombobox({
             width: popoverPosition?.width ?? 256,
           }}
         >
-          <div className="border-b border-[#E6EAF0] p-2">
-            <div className="relative">
-              <Search className="pointer-events-none absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-[#6B7280]" />
-              <input
-                ref={inputRef}
-                aria-label="상태 검색"
-                autoComplete="off"
-                className="h-8 w-full rounded-md border-0 bg-[#F3F4F6] pl-8 pr-7 text-[13px] text-[#111827] outline-none placeholder:text-[#9CA3AF]"
-                onChange={(event) => setSearch(event.target.value)}
-                onKeyDown={(event) => {
-                  if (event.key === "Escape") {
-                    setIsOpen(false);
-                    setSearch("");
-                    triggerRef.current?.focus();
-                    return;
-                  }
-
-                  if (event.key === "Enter") {
-                    const firstItem = filteredStatuses[0];
-                    if (!firstItem) {
-                      return;
-                    }
-
-                    event.preventDefault();
-                    toggleStatus(firstItem.id);
-                  }
-                }}
-                placeholder="상태 검색"
-                value={search}
-              />
-              {search ? (
-                <button
-                  aria-label="상태 검색어 지우기"
-                  className="absolute right-1 top-1/2 grid h-7 w-7 -translate-y-1/2 place-items-center rounded-full text-[#9CA3AF] transition hover:bg-[#E5E7EB] hover:text-[#374151]"
-                  onClick={() => setSearch("")}
-                  type="button"
-                >
-                  <X className="h-3.5 w-3.5" />
-                </button>
-              ) : null}
-            </div>
-          </div>
-          <button
-            className={cn(
-              "flex h-9 w-full items-center gap-1.5 px-3 text-left text-[13px] transition hover:bg-[#F9FAFB]",
-              selectedStatuses.length === 0
-                ? "font-semibold text-[#1D4ED8]"
-                : "font-medium text-[#475569]"
-            )}
-            onClick={() => {
+          <FilterPopoverSearchHeader
+            clearSearchLabel="상태 검색어 지우기"
+            inputRef={inputRef}
+            onClearSearch={() => setSearch("")}
+            onReset={() => {
               setSearch("");
               setIsOpen(false);
               onSelectedStatusesChange([]);
             }}
-            type="button"
-          >
-            <RotateCcw className="h-3.5 w-3.5" />
-            상태 초기화
-          </button>
+            onSearchChange={setSearch}
+            onSearchKeyDown={(event) => {
+              if (event.key === "Escape") {
+                setIsOpen(false);
+                setSearch("");
+                triggerRef.current?.focus();
+                return;
+              }
 
-          <div className="max-h-[184px] overflow-y-auto border-y border-[#E6EAF0] py-1">
+              if (event.key === "Enter") {
+                const firstItem = filteredStatuses[0];
+                if (!firstItem) {
+                  return;
+                }
+
+                event.preventDefault();
+                toggleStatus(firstItem.id);
+              }
+            }}
+            placeholder="상태 검색"
+            resetLabel="상태 초기화"
+            searchLabel="상태 검색"
+            searchValue={search}
+          />
+
+          <div className="max-h-[184px] overflow-y-auto py-1">
             {filteredStatuses.length === 0 ? (
               <p className="px-3 py-3 text-[12px] text-[#9CA3AF]">
                 조건을 바꾸면 상태를 찾을 수 있어요.

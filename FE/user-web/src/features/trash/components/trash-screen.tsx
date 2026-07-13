@@ -3,6 +3,7 @@ import {
   BriefcaseBusiness,
   Building2,
   ClipboardList,
+  Layers3,
   Loader2,
   LockKeyhole,
   Package,
@@ -57,7 +58,7 @@ const domainOptions: readonly {
   readonly value: TrashDomainFilter;
   readonly label: string;
 }[] = [
-  { value: "ALL", label: "도메인" },
+  { value: "ALL", label: "대상" },
   { value: "COMPANY", label: "회사" },
   { value: "CONTACT", label: "담당자" },
   { value: "PRODUCT", label: "제품" },
@@ -256,8 +257,8 @@ export function TrashScreen() {
         />
         <TrashFilterSelect
           active={domain !== "ALL"}
-          ariaLabel="도메인 필터"
-          icon={Building2}
+          ariaLabel="대상 필터"
+          icon={Layers3}
           options={domainOptions}
           value={domain}
           onChange={(value) => {
@@ -282,6 +283,7 @@ export function TrashScreen() {
           ariaLabel="정렬"
           icon={ArrowUpDown}
           options={sortOptions}
+          searchable={false}
           value={sort}
           onChange={(value) => {
             setSort(value as TrashSort);
@@ -404,6 +406,7 @@ type TrashFilterSelectProps<TValue extends string> = {
     readonly value: TValue;
     readonly label: string;
   }[];
+  readonly searchable?: boolean;
   readonly value: TValue;
   readonly onChange: (value: TValue) => void;
 };
@@ -414,6 +417,7 @@ function TrashFilterSelect<TValue extends string>({
   disabled = false,
   icon,
   options,
+  searchable = true,
   value,
   onChange,
 }: TrashFilterSelectProps<TValue>) {
@@ -426,6 +430,7 @@ function TrashFilterSelect<TValue extends string>({
       icon={icon}
       onChange={onChange}
       options={options}
+      searchable={searchable}
       value={value}
     />
   );

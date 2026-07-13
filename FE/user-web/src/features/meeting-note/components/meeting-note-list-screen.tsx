@@ -11,7 +11,6 @@ import {
   Search,
   SlidersHorizontal,
   UserRound,
-  X,
   type LucideIcon,
 } from "lucide-react";
 import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
@@ -25,6 +24,7 @@ import {
 import type { AppShellOutletContext } from "@/components/layout/app-shell";
 import { PageHeader } from "@/components/layout/page-header";
 import { CollapsibleDesktopSearch } from "@/components/ui/collapsible-desktop-search";
+import { FilterPopoverSearchHeader } from "@/components/ui/filter-popover-search-header";
 import { ListFilterSelect } from "@/components/ui/list-filter-select";
 import { Pagination } from "@/components/ui/pagination";
 import { ListEmptyState } from "@/components/ui/state";
@@ -516,6 +516,7 @@ export function MeetingNoteListScreen() {
             }
             onChange={updateSort}
             options={MEETING_NOTE_SORT_OPTIONS}
+            searchable={false}
             value={sort}
           />
         </div>
@@ -730,6 +731,7 @@ export function MeetingNoteListScreen() {
             className="w-[112px]"
             onChange={updateSort}
             options={MEETING_NOTE_SORT_OPTIONS}
+            searchable={false}
             value={sort}
           />
           <div className="flex-1" />
@@ -1021,67 +1023,41 @@ function MeetingNoteFilterMultiSelect<TItem extends MeetingNoteFilterItem>({
             width: popoverPosition?.width ?? 256,
           }}
         >
-          <div className="border-b border-[#E6EAF0] p-2">
-            <div className="relative">
-              <Search className="pointer-events-none absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-[#6B7280]" />
-              <input
-                ref={inputRef}
-                aria-label={`${itemKindLabel} 검색`}
-                autoComplete="off"
-                className="h-8 w-full rounded-md border-0 bg-[#F3F4F6] pl-8 pr-7 text-[13px] text-[#111827] outline-none placeholder:text-[#9CA3AF]"
-                onChange={(event) => setFilterText(event.target.value)}
-                onKeyDown={(event) => {
-                  if (event.key === "Escape") {
-                    setIsOpen(false);
-                    setFilterText("");
-                    triggerRef.current?.focus();
-                    return;
-                  }
-
-                  if (event.key === "Enter") {
-                    const firstItem = filteredItems[0];
-                    if (!firstItem) {
-                      return;
-                    }
-
-                    event.preventDefault();
-                    toggleItem(firstItem);
-                  }
-                }}
-                placeholder={`${itemKindLabel} 검색`}
-                value={filterText}
-              />
-              {filterText ? (
-                <button
-                  aria-label={`${itemKindLabel} 검색어 지우기`}
-                  className="absolute right-1 top-1/2 grid h-7 w-7 -translate-y-1/2 place-items-center rounded-full text-[#9CA3AF] transition hover:bg-[#E5E7EB] hover:text-[#374151]"
-                  onClick={() => setFilterText("")}
-                  type="button"
-                >
-                  <X className="h-3.5 w-3.5" />
-                </button>
-              ) : null}
-            </div>
-          </div>
-          <button
-            className={cn(
-              "flex h-9 w-full items-center gap-1.5 px-3 text-left text-[13px] transition hover:bg-[#F9FAFB]",
-              selectedIds.length === 0
-                ? "font-semibold text-[#1D4ED8]"
-                : "font-medium text-[#475569]",
-            )}
-            onClick={() => {
+          <FilterPopoverSearchHeader
+            clearSearchLabel={`${itemKindLabel} 검색어 지우기`}
+            inputRef={inputRef}
+            onClearSearch={() => setFilterText("")}
+            onReset={() => {
               setFilterText("");
               setIsOpen(false);
               onSelectedIdsChange([]);
             }}
-            type="button"
-          >
-            <RotateCcw className="h-3.5 w-3.5" />
-            {itemKindLabel} 초기화
-          </button>
+            onSearchChange={setFilterText}
+            onSearchKeyDown={(event) => {
+              if (event.key === "Escape") {
+                setIsOpen(false);
+                setFilterText("");
+                triggerRef.current?.focus();
+                return;
+              }
 
-          <div className="max-h-[184px] overflow-y-auto border-y border-[#E6EAF0] py-1">
+              if (event.key === "Enter") {
+                const firstItem = filteredItems[0];
+                if (!firstItem) {
+                  return;
+                }
+
+                event.preventDefault();
+                toggleItem(firstItem);
+              }
+            }}
+            placeholder={`${itemKindLabel} 검색`}
+            resetLabel={`${itemKindLabel} 초기화`}
+            searchLabel={`${itemKindLabel} 검색`}
+            searchValue={filterText}
+          />
+
+          <div className="max-h-[184px] overflow-y-auto py-1">
             {filteredItems.length === 0 ? (
               <p className="px-3 py-3 text-[12px] text-[#9CA3AF]">
                 {emptyText}
