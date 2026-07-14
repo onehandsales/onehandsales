@@ -42,7 +42,9 @@ Auth E2E 기준:
 
 ## 3. Admin Web E2E Scope
 
-Admin Web E2E는 현재 login, role guard, `/admin/api/me` 기반 보호 라우트 검증만 우선한다. 운영 안전성과 전체 데이터 조회 흐름은 관리자 페이지 본 구현 후 추가한다.
+Admin Web은 현재 `typecheck`, `lint`, `build`와 admin/non-admin 수동 smoke를 우선 release gate로 본다. `FE/admin-web`의 Playwright 파일은 남아 있지만 과거 dashboard/users/data/audit 화면 기대값을 포함하므로, 현재 라우터 기준으로 갱신하기 전까지 release gate로 쓰지 않는다.
+
+E2E를 다시 gate로 올릴 때의 최소 범위는 login, role guard, `/admin/api/me` 기반 보호 라우트 검증이다. 운영 안전성과 전체 데이터 조회 흐름은 관리자 페이지 본 구현 후 추가한다.
 
 현재 우선순위:
 
@@ -74,11 +76,11 @@ Mock 또는 stub 대상:
 CI가 도입되면 다음 위치에서 테스트를 실행한다.
 
 - User Web Playwright: `FE/user-web`
-- Admin Web Playwright: `FE/admin-web`
+- Admin Web Playwright: `FE/admin-web`. 현재 라우터 기준으로 갱신한 뒤 gate로 사용한다.
 
 CI timing:
 
-- Pull request: User Web smoke E2E and Admin auth smoke E2E
+- Pull request: User Web smoke E2E. Admin auth smoke E2E는 현재 라우터 기준 갱신 후 추가한다.
 - After merge to `main`: User Web full E2E
 - Before deployment: User Web full E2E
 - Admin full E2E is added after Admin pages and Backend operation query APIs are implemented.

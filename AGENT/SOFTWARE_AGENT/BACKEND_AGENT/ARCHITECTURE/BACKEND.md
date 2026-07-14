@@ -45,7 +45,7 @@ Current source of truth:
 - root module: `BE/src/app.module.ts`
 - Prisma schema: `BE/prisma/schema.prisma`
 - package scripts: `BE/package.json`
-- API summary: `API_SAMPLE.md`
+- API summary: `AGENT/SOFTWARE_AGENT/COMMON/API_SAMPLE.md`
 
 Currently imported modules in `AppModule`:
 

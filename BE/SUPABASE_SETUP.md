@@ -12,7 +12,7 @@ FE must not write directly to Supabase PostgreSQL.
 
 ## Required Values
 
-Create `BE/.env` directly and fill these values. This repository currently uses a single `.env` file per app; `.env.example` is not the source of truth.
+Create `BE/.env` directly and fill these values. This repository uses `.env` plus `AGENT/SOFTWARE_AGENT/COMMON/ENVIRONMENT.md` as the environment contract; `.env.example` and `.env.local` are not the source of truth. The current Backend bootstrap can read `BE/.env.local` as a local override, but variables that exist only there are not shared contract variables.
 
 ```env
 DATABASE_URL=""
@@ -29,7 +29,7 @@ Use long random strings for `APP_JWT_SECRET` and `APP_REFRESH_TOKEN_SECRET`.
 
 `INITIAL_ADMIN_EMAILS` is a comma-separated allowlist for the first admin accounts.
 
-See `../ENVIRONMENT.md` for the complete current variable list. Do not copy real values into docs, issues, or logs.
+See `../AGENT/SOFTWARE_AGENT/COMMON/ENVIRONMENT.md` for the complete current variable list. Do not copy real values into docs, issues, or logs.
 
 ## Verification
 

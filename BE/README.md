@@ -21,12 +21,12 @@ Admin API는 반드시 Admin guard로 보호한다.
 ## 현재 구현 모듈
 
 - `auth`: 외부 인증 토큰 교환, Backend App token refresh/logout, 현재 사용자 조회, 기기/session 관리, 로그인 locale/region 메타데이터 동기화
-- `user`: 현재 사용자 profile, 기본 timezone/locale, 등록 기기 조회/수정
-- `company`: 사용자 소유 회사, 회사 분야/지역, 일반 메모 로그, 개인 비밀 메모 로그, xlsx export
-- `contact`: 사용자 소유 담당자, 회사 옵션, 담당자 부서/직급, 일반 메모 로그, 개인 비밀 메모 로그, xlsx export
+- `user`: 현재 사용자 profile, 기본 timezone/locale 수정, 등록 기기 조회
+- `company`: 사용자 소유 회사, 회사 분야/지역, 일반 메모 로그, 개인 비밀 메모 로그, 연결 담당자/딜 조회, xlsx export
+- `contact`: 사용자 소유 담당자, 회사 옵션, 담당자 부서/직급, 일반 메모 로그, 개인 비밀 메모 로그, 연결 딜 조회, xlsx export
 - `business-card`: 명함 이미지 OCR, 성공/실패 로그, 확인/수정 후 회사/담당자 저장
-- `product`: 사용자 소유 제품, 제품 카테고리/상태, 일반 메모 로그, 개인 비밀 메모 로그, xlsx export
-- `deal`: 사용자 소유 딜, 딜-제품 연결, 다음 행동 로그, 메모 로그, xlsx export
+- `product`: 사용자 소유 제품, 제품 카테고리/상태, 일반 메모 로그, 개인 비밀 메모 로그, 연결 딜 조회, xlsx export
+- `deal`: 사용자 소유 딜, 회사/담당자/제품 연결, 다음 행동 로그, 메모 로그, xlsx export
 - `schedule`: 사용자 소유 일정, 월간/주간 조회, 일정-딜 연결, hard delete
 - `meeting-note`: 사용자 소유 회의록, 연결 스냅샷, 수동 저장/수정/삭제, AI/STT draft 생성, 저장 후 딜 연결
 - `search`: 회사/담당자/제품/딜/일정/회의록 통합검색
@@ -57,14 +57,14 @@ pnpm run start:dev
 
 헬스 체크: `GET /api/health`
 
-환경 파일은 `BE/.env` 하나만 사용한다. `.env.example` 또는 `.env.local`은 현재 정본이 아니다. 변수명 목록은 `../ENVIRONMENT.md`를 기준으로 확인하고, 실제 secret 값은 문서나 로그에 기록하지 않는다.
+환경 변수 정본은 `BE/.env`와 `../AGENT/SOFTWARE_AGENT/COMMON/ENVIRONMENT.md`다. `.env.example` 또는 `.env.local`은 현재 정본이 아니다. 현재 Backend bootstrap은 로컬 편의를 위해 `BE/.env` 다음 `BE/.env.local`을 읽을 수 있지만, 공유 환경 계약은 공통 환경 문서의 변수명만 기준으로 한다. 실제 secret 값은 문서나 로그에 기록하지 않는다.
 
 ## API 호출 예제
 
 - 회사 도메인: `restdoc/company-domain.http`
 - 담당자 도메인: `restdoc/contact-domain.http`
 - 제품 도메인: `restdoc/product-domain.http`
-- 전체 API 한 줄 설명: `../API_SAMPLE.md`
+- 전체 API 한 줄 설명: `../AGENT/SOFTWARE_AGENT/COMMON/API_SAMPLE.md`
 
 ## DB
 

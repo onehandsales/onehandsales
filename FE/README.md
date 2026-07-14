@@ -40,7 +40,7 @@ pnpm run dev
 
 두 frontend 앱은 Vercel에서 별도 프로젝트로 배포한다.
 
-환경 파일은 각 앱의 `.env` 하나만 사용한다. `.env.example` 또는 `.env.local`은 현재 정본이 아니다. `VITE_*` 변수명은 `../ENVIRONMENT.md`를 기준으로 확인한다.
+환경 변수 정본은 각 앱의 `.env`와 `../AGENT/SOFTWARE_AGENT/COMMON/ENVIRONMENT.md`다. `.env.example` 또는 `.env.local`은 현재 정본이 아니다. `VITE_*` 변수명은 공통 환경 문서를 기준으로 확인한다.
 
 ## 검증
 
@@ -61,18 +61,17 @@ cd FE/admin-web
 pnpm run typecheck
 pnpm run lint
 pnpm run build
-pnpm run test:e2e
 ```
 
 Playwright smoke E2E는 Backend와 외부 Provider를 route mock으로 대체한다.
 
 - User Web E2E: login, company, contact, product, deal, schedule, meeting note core flow
-- Admin Web E2E: admin login, non-admin block, `/admin/api/me` 보호 라우트 smoke
+- Admin Web E2E: 스크립트와 파일은 남아 있지만 과거 dashboard/users/data/audit 기대값을 포함한다. 현재 라우터 기준 갱신 전까지 릴리즈 게이트는 `typecheck`, `lint`, `build`와 admin/non-admin 수동 smoke다.
 
 E2E 전용 Vite port:
 
 - User Web: `http://127.0.0.1:5175`
-- Admin Web: `http://127.0.0.1:5176`
+- Admin Web: `http://127.0.0.1:5176`를 기존 Playwright 설정에서 사용하나, 현재는 라우터 기준 갱신 전까지 gate로 쓰지 않는다.
 
 ## Auth 상태
 
@@ -99,6 +98,7 @@ User Web:
 
 - 실제 API 연동 완료: Auth/User, Home(`/app`), Company, Contact, BusinessCard OCR/명함 스캔, Product, Deal, Schedule, MeetingNote 수동 CRUD, MeetingNote AI/STT draft, MeetingNote deal link, Search, Trash, DataImport, Company/Contact/Product/Deal 도메인별 xlsx export.
 - 공개/인증 페이지: `/{locale}`, `/{locale}/login`, `/{locale}/signup`, `/{locale}/pricing`, `/{locale}/contact`, `/{locale}/about`, `/{locale}/security`, `/{locale}/terms`, `/{locale}/privacy`. 지원 locale은 `ko`, `ja`, `zh-tw`, `en-us`, `en-gb`, `en-sg`, `en-au`, `en-ca`다. 기존 `/`, `/login`, `/signup`, `/pricing`, `/contact`, `/about`, `/security`, `/terms`, `/privacy`는 선호 locale URL로 redirect한다.
+- 보호 앱 route는 `/app/*` 아래에 있으며 회사/담당자/제품/딜 생성은 목록 맥락의 `/new`와 패널 확장용 `/new/full`을 모두 지원한다. 회의록도 `/app/meeting-notes/new/full` page-mode 작성 route를 가지며 `/app/meeting-notes/new`는 `?create=1`로 redirect한다.
 - Backend 구현 전까지 숨기는 기능: `/api/exports` 기반 범용 Export route/API, Notification.
 - 현재 Export 정본 흐름은 각 도메인 목록의 엑셀 다운로드다. `FE/user-web/src/features/import-export`의 범용 Export 화면은 현재 Backend 방향이 아니므로 route에서 숨긴다.
 - 회사 생성 UX는 `/app/companies` 목록 맥락을 유지한 채 오른쪽 문서형 생성 패널을 여는 방식을 사용한다. `/app/companies/new`도 별도 전체 생성 페이지가 아니라 회사 목록을 렌더링하고 생성 패널을 초기 open 상태로 연다. 데스크톱 패널은 화면 최상단~최하단에 고정되고 좌우 resize가 가능하며, 폭은 최소 `420px`, 최대 화면/작업영역의 `70%`다. 목록 컬럼은 줄이지 않고 공간이 부족하면 가로 스크롤로 처리한다.
@@ -109,7 +109,7 @@ User Web:
 Admin Web:
 
 - 실제 Backend 연동 완료: `/admin/api/me`.
-- Backend 미구현/후속 경계: admin pages, dashboard, users, companies, contacts, products, deals, audit logs, sensitive raw access. 현재 운영 route는 root로 redirect한다.
+- Backend 미구현/후속 경계: admin pages, dashboard, users, companies, contacts, products, deals, audit logs, sensitive raw access. `admin-query` feature에는 준비 코드가 있으나 현재 운영 route는 root로 redirect하고 메뉴에서 숨긴다.
 
 ## 정본 규칙
 

@@ -7,6 +7,7 @@
 - `GET /api/company-regions`
 - `GET /api/companies/:companyId`
 - `GET /api/companies/:companyId/contacts`
+- `GET /api/companies/:companyId/deals`
 - `GET /api/companies/export/xlsx`
 - `POST /api/companies`
 - `PATCH /api/companies/:companyId`
@@ -32,6 +33,7 @@
 - 모든 조회와 변경은 현재 사용자 `userId` ownership 기준으로 처리한다.
 - 회사 목록 응답에는 회사별 연결 담당자 수 `contactCount`와 딜 수 `dealCount`를 포함한다.
 - 회사 연결 담당자 목록 응답에는 이름, 휴대폰 번호, 이메일, 부서, 직급을 포함한다.
+- 회사 연결 딜 목록 응답에는 딜명, 상태, 금액, 예상 종료일, 연결 담당자/제품 요약을 포함한다.
 - 회사 export는 검색/다중 필터/정렬 조건을 적용하고 `page` 없이 전체 대상 xlsx를 반환한다.
 - 회사 생성 시 `companyMemo`가 있으면 같은 transaction에서 `CompanyMemoLog` 첫 데이터로 저장한다.
 - 회사 삭제는 실제 row 삭제가 아니라 `deletedAt`, `deletedByUserId`, `trashExpiresAt` 설정으로 처리한다.

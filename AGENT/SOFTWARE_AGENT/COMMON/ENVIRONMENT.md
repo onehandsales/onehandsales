@@ -1,6 +1,6 @@
 # Environment Variables
 
-이 저장소는 환경 파일을 `.env` 하나로 관리한다. `.env.example`, `.env.local`을 정본으로 두지 않는다.
+이 저장소의 환경 변수 정본 문서는 이 파일이며, 실제 secret 값은 각 실행 단위의 `.env`에 둔다. `.env.example`, `.env.local`은 정본이 아니다.
 
 실제 secret 값은 문서, 이슈, 로그에 기록하지 않는다. 아래 목록은 현재 `BE`, `FE/user-web`, `FE/admin-web` 코드가 읽는 변수명과 용도만 정리한 것이다.
 
@@ -10,7 +10,14 @@
 - User Web: `FE/user-web/.env`
 - Admin Web: `FE/admin-web/.env`
 
-각 앱은 자기 디렉터리의 `.env`만 읽는다. 루트 `.env`는 정본이 아니다.
+루트 `.env`는 정본이 아니다.
+
+구현상 로컬 override 파일을 읽을 수 있는 위치:
+
+- Backend bootstrap은 `BE/.env`를 먼저 읽고, `BE/.env.local`이 있으면 이미 OS 환경 변수로 주입된 값은 보존하면서 로컬 override로 읽는다. `ConfigModule`도 `.env.local`, `.env` 경로를 알고 있다.
+- User Web/Admin Web은 Vite `import.meta.env`를 사용하므로 Vite 기본 env 로딩 규칙의 영향을 받는다.
+
+운영/문서 기준 source of truth는 여전히 각 앱의 `.env`와 이 문서다. `.env.local`에만 존재하는 변수는 공유 환경 계약으로 보지 않는다.
 
 ## Backend
 

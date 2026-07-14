@@ -46,7 +46,7 @@ VITE_SUPABASE_ANON_KEY=""
 VITE_SUPABASE_REDIRECT_URL="http://localhost:5174/auth/callback"
 ```
 
-환경 파일은 `FE/admin-web/.env` 하나만 사용한다. `.env.example` 또는 `.env.local`은 현재 정본이 아니다. 변수명 목록은 `../../ENVIRONMENT.md`를 기준으로 확인한다.
+환경 변수 정본은 `FE/admin-web/.env`와 `../../AGENT/SOFTWARE_AGENT/COMMON/ENVIRONMENT.md`다. `.env.example` 또는 `.env.local`은 현재 정본이 아니다. Vite는 로컬 override 파일을 읽을 수 있지만, 공유 환경 계약은 공통 환경 문서의 `VITE_*` 변수명만 기준으로 한다.
 
 ## Auth
 
@@ -62,6 +62,11 @@ Backend는 현재 `GET /admin/api/me`만 구현되어 있다.
 실제 Backend API 연동 완료:
 
 - `GET /admin/api/me`
+
+코드에 존재하지만 현재 노출하지 않는 준비 범위:
+
+- `src/features/admin-query`: dashboard, users, domain data, audit logs, sensitive raw dialog 화면/API/hook/type 준비 코드
+- 현재 `src/app/router/router.tsx`는 `/users`, `/users/:userId`, `/organizations`, `/subscriptions`, `/analytics`, `/audit-logs`, `/system`, `/support`를 모두 `/`로 redirect한다.
 
 Backend 미구현 경계:
 

@@ -103,7 +103,7 @@
 
 - Vite 환경 변수는 `VITE_` prefix를 사용한다.
 - 환경 변수 접근은 `src/lib/env.ts`를 통한다.
-- 환경 파일은 앱 디렉터리의 `.env` 하나만 사용하고, 변수명과 용도는 `ENVIRONMENT.md`에 문서화한다.
+- 환경 변수 정본은 앱 디렉터리의 `.env`와 `AGENT/SOFTWARE_AGENT/COMMON/ENVIRONMENT.md`다. Vite가 로컬 override 파일을 읽을 수 있더라도, 공유 변수명과 용도는 공통 환경 문서에 문서화한다.
 - API base URL, Supabase 공개 키처럼 브라우저에 노출 가능한 값만 FE 환경 변수로 둔다.
 
 ## 10. 접근성

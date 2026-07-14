@@ -38,7 +38,7 @@ VITE_SUPABASE_ANON_KEY=""
 VITE_SUPABASE_REDIRECT_URL="http://localhost:5173/auth/callback"
 ```
 
-환경 파일은 `FE/user-web/.env` 하나만 사용한다. `.env.example` 또는 `.env.local`은 현재 정본이 아니다. 변수명 목록은 `../../ENVIRONMENT.md`를 기준으로 확인한다.
+환경 변수 정본은 `FE/user-web/.env`와 `../../AGENT/SOFTWARE_AGENT/COMMON/ENVIRONMENT.md`다. `.env.example` 또는 `.env.local`은 현재 정본이 아니다. Vite는 로컬 override 파일을 읽을 수 있지만, 공유 환경 계약은 공통 환경 문서의 `VITE_*` 변수명만 기준으로 한다.
 
 ## Auth
 
@@ -88,6 +88,8 @@ mock/placeholder 경계:
 BusinessCard OCR/명함 스캔은 `/app/business-cards`에서 실제 API와 연결된다. `/business-cards`와 `/contacts/scan`은 legacy redirect다. 목록은 등록일 최신순 고정이며, 상태 다중 필터와 `상태 초기화`를 제공한다. `명함스캔` 모달은 최초에는 이미지 업로드만 보여주고, 요청 중에는 진행 표시를 띄우며, 성공 후 추출 결과 확인/수정 폼을 보여준다.
 
 회사 생성은 목록 맥락을 유지하는 오른쪽 문서형 생성 패널을 사용한다. `/app/companies/new`는 별도 전체 생성 페이지가 아니라 `CompanyListScreen`을 열고 생성 패널을 초기 open 상태로 둔다. 데스크톱에서는 패널이 화면 최상단~최하단에 fixed로 붙고 좌우 resize가 가능하다. 폭은 최소 `420px`, 최대 화면/작업영역의 `70%`이며 마지막 폭은 localStorage에 저장한다. 회사 목록은 패널이 열려도 컬럼을 줄이거나 합치지 않고, 공간이 부족하면 가로 스크롤로 모든 컬럼을 유지한다.
+
+패널에서 확대한 생성 전용 route도 있다. `/app/companies/new/full`, `/app/contacts/new/full`, `/app/products/new/full`, `/app/deals/new/full`, `/app/meeting-notes/new/full`은 각 생성 dialog를 `mode="page"`로 렌더링하고, route state의 draft 값을 초기값으로 복원한 뒤 생성 성공 시 목록으로 돌아간다. `/app/contacts/new`, `/app/products/new`, `/app/deals/new`은 목록 위 생성 패널을 초기 open 상태로 여는 route다. `/app/meeting-notes/new`는 `/app/meeting-notes?create=1`로 redirect한다.
 
 데이터 불러오기는 `/app/import`와 `/app/import/:importUserLogId`에서 실제 API와 연결된다. `/import`는 legacy redirect다. 회사/담당자/제품/딜 양식 다운로드, CSV/XLSX 업로드, AI 컬럼 매핑, row 수정/검증, 누락 셀 단위 validation 메시지, 확정 저장, 성공 내역 목록/상세 조회를 제공한다. 현재 코드 기준 딜 import의 누락 회사/담당자/제품 보정값은 FE API 함수가 `dealCompanyResolutions`, `dealContactResolutions`, `dealProductResolutions`로 BE confirm 경로에 전달한다.
 

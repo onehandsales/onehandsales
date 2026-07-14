@@ -42,14 +42,19 @@
 legacy redirect 라우트:
 
 - `/companies`, `/companies/new`, `/companies/:companyId` -> `/app/companies...`
+- `/companies/new/full` -> `/app/companies/new/full`
 - `/contacts`, `/contacts/:contactId` -> `/app/contacts...`
 - `/contacts/scan` -> `/app/business-cards`
+- `/contacts/new`, `/contacts/new/full` -> `/app/contacts...`
 - `/products`, `/products/new`, `/products/:productId` -> `/app/products...`
+- `/products/new/full` -> `/app/products/new/full`
 - `/deals`, `/deals/new`, `/deals/:dealId` -> `/app/deals...`
+- `/deals/new/full` -> `/app/deals/new/full`
 - `/schedules`, `/schedules/:scheduleId` -> `/app/schedules...`
 - `/schedules/week` -> `/app/schedules`
 - `/meeting-notes`, `/meeting-notes/:meetingNoteId` -> `/app/meeting-notes...`
 - `/meeting-notes/new` -> `/app/meeting-notes?create=1`
+- `/meeting-notes/new/full` -> `/app/meeting-notes/new/full`
 - `/business-cards` -> `/app/business-cards`
 - `/import`, `/import/:importUserLogId` -> `/app/import...`
 - `/trash`, `/settings`, `/more` -> `/app/...`
@@ -58,14 +63,19 @@ legacy redirect 라우트:
 
 - `/app`: Home dashboard
 - `/app/companies`, `/app/companies/new`, `/app/companies/:companyId`
+- `/app/companies/new/full`
 - `/app/contacts`, `/app/contacts/:contactId`
+- `/app/contacts/new`, `/app/contacts/new/full`
 - `/app/contacts/scan` -> `/app/business-cards`
 - `/app/products`, `/app/products/new`, `/app/products/:productId`
+- `/app/products/new/full`
 - `/app/deals`, `/app/deals/new`, `/app/deals/:dealId`
+- `/app/deals/new/full`
 - `/app/schedules`, `/app/schedules/:scheduleId`
 - `/app/schedules/week` -> `/app/schedules`. 별도 주간 보고서 화면은 후속 범위다.
 - `/app/meeting-notes`, `/app/meeting-notes/:meetingNoteId`
 - `/app/meeting-notes/new` -> `/app/meeting-notes?create=1`
+- `/app/meeting-notes/new/full`
 - `/app/business-cards`
 - `/app/import`, `/app/import/:importUserLogId`
 - `/app/trash`, `/app/settings`, `/app/more`
@@ -119,7 +129,9 @@ legacy redirect 라우트:
 - 패널 폭은 최소 `420px`, 최대 화면/작업영역의 `70%`다. 사용자가 조절한 폭은 localStorage key `onehand.company.createPanelWidth`에 저장한다.
 - 패널이 열릴 때 목록 영역은 오른쪽 padding으로 패널 폭만큼 밀리고, 회사 목록 컬럼은 하나도 숨기거나 합치지 않는다. 공간이 부족하면 horizontal scroll을 사용한다.
 - 데스크톱 미만 viewport에서는 overlay panel을 사용해 작은 화면 목록 레이아웃을 깨지 않게 한다.
-- 담당자/제품/딜 생성 UX를 문서형 패널로 확장할 경우 이 기준을 우선 참고한다.
+- 담당자/제품/딜 생성 route도 현재 목록 맥락의 `/app/contacts/new`, `/app/products/new`, `/app/deals/new`와 page-mode 확장 route `/app/contacts/new/full`, `/app/products/new/full`, `/app/deals/new/full`을 가진다.
+- page-mode 확장 route는 각 생성 dialog를 `mode="page"`로 렌더링하고 route state의 draft를 초기값으로 복원한다. 생성 성공 또는 닫기 후에는 해당 목록으로 돌아간다.
+- 회의록은 `/app/meeting-notes/new`가 목록의 `?create=1` 흐름으로 redirect하고, `/app/meeting-notes/new/full`이 page-mode 작성 route다.
 
 도메인별 export 기준:
 

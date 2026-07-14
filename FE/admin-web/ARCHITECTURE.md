@@ -1,6 +1,6 @@
 # Admin Web 아키텍처
 
-`FE/admin-web`은 `AGENT/SOFTWARE_AGENT/ARCHITECTURE/ADMIN_WEB.md`의 feature-first 구조를 따른다.
+`FE/admin-web`은 `AGENT/SOFTWARE_AGENT/FRONT_AGENT/ARCHITECTURE/ADMIN_WEB.md`의 feature-first 구조를 따른다.
 
 ## 1. 현재 구조
 
@@ -15,6 +15,7 @@ src/
     layout/
     ui/
   features/
+    admin-query/
     auth/
     user-management/
     organization-management/
@@ -39,31 +40,34 @@ src/
 ## 2. 기능 확장 예시
 
 ```text
-src/features/user-management/
+src/features/admin-query/
   api/
-    admin-user-api.ts
-    admin-user-query-keys.ts
+    admin-query-api.ts
+    admin-query-keys.ts
   components/
-    user-filter-bar.tsx
-    user-table.tsx
-    user-status-dialog.tsx
+    admin-dashboard-screen.tsx
+    admin-users-screen.tsx
+    admin-domain-data-screen.tsx
+    admin-audit-logs-screen.tsx
+    sensitive-raw-dialog.tsx
   hooks/
-    use-admin-user-list.ts
-    use-admin-user-mutation.ts
-  schemas/
-    admin-user-schema.ts
+    use-admin-query.ts
   types/
-    admin-user.ts
+    admin-query.ts
   index.ts
 ```
 
-## 3. 라우트 페이지 기준
+`admin-query`는 후속 Backend 운영 조회 API를 전제로 한 준비 코드다. 현재 router와 메뉴에서는 노출하지 않는다.
 
-```text
-src/pages/users/index.tsx
-```
+## 3. 현재 라우트 기준
 
-페이지는 `@/features/user-management`에서 export한 feature component를 조합한다. feature 내부 파일을 직접 import하지 않는다.
+현재 `FE/admin-web/src/app/router/router.tsx` 기준:
+
+- `/login`
+- `/`
+- `/users`, `/users/:userId`, `/organizations`, `/subscriptions`, `/analytics`, `/audit-logs`, `/system`, `/support`는 모두 `/`로 redirect한다.
+
+실제 Backend API 연동 완료 범위는 `GET /admin/api/me`뿐이다. `admin-query`의 dashboard/users/domain/audit/sensitive raw 화면은 Backend API 구현 전까지 route와 메뉴에서 노출하지 않는다.
 
 ## 4. 현재 검증 상태
 

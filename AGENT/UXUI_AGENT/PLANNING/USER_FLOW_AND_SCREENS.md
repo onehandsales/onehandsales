@@ -125,21 +125,27 @@
 | `/app` | 홈 대시보드 | 포함 |
 | `/app/companies` | 회사 목록 | 포함 |
 | `/app/companies/new` | 회사 생성 | 포함. 회사 목록을 유지하고 오른쪽 문서형 생성 패널을 초기 open 상태로 표시 |
+| `/app/companies/new/full` | 회사 생성 확장 화면 | 포함. 패널에서 확대한 page-mode 생성 route |
 | `/app/companies/:id` | 회사 상세 | 포함 |
 | `/app/contacts` | 담당자 목록 | 포함 |
+| `/app/contacts/new` | 담당자 생성 | 포함. 담당자 목록을 유지하고 생성 패널을 초기 open 상태로 표시 |
+| `/app/contacts/new/full` | 담당자 생성 확장 화면 | 포함. 패널에서 확대한 page-mode 생성 route |
 | `/app/contacts/:id` | 담당자 상세 | 포함 |
 | `/app/contacts/scan` | 명함 스캔 legacy redirect | `/app/business-cards`로 redirect |
 | `/app/products` | 제품 목록 | 포함 |
 | `/app/products/new` | 제품 생성 | 포함 |
+| `/app/products/new/full` | 제품 생성 확장 화면 | 포함. 패널에서 확대한 page-mode 생성 route |
 | `/app/products/:id` | 제품 상세 | 포함 |
 | `/app/deals` | 딜 목록 | 포함 |
 | `/app/deals/new` | 딜 생성 | 포함 |
+| `/app/deals/new/full` | 딜 생성 확장 화면 | 포함. 패널에서 확대한 page-mode 생성 route |
 | `/app/deals/:id` | 딜 상세 | 포함 |
 | `/app/schedules` | 일정 목록/캘린더 | 포함 |
 | `/app/schedules/week` | 주간 일정 보고서 | 후속. 현재 `/app/schedules`로 redirect |
 | `/app/schedules/:scheduleId` | 일정 상세 | 포함 |
 | `/app/meeting-notes` | 회의록 목록 | 포함 |
 | `/app/meeting-notes/new` | 회의록 작성 | `/app/meeting-notes?create=1`로 redirect |
+| `/app/meeting-notes/new/full` | 회의록 작성 확장 화면 | 포함. page-mode 작성 route |
 | `/app/meeting-notes/:meetingNoteId` | 회의록 상세 | 포함 |
 | `/app/import` | 데이터 업로드/불러오기 | 포함 |
 | `/app/import/:importUserLogId` | 데이터 업로드 성공 내역 상세 | 포함 |
@@ -175,8 +181,8 @@
 - 지원 locale slug: `ko`, `ja`, `zh-tw`, `en-us`, `en-gb`, `en-sg`, `en-au`, `en-ca`
 - legacy public/auth redirect: `/`, `/login`, `/signup`, `/pricing`, `/contact`, `/about`, `/security`, `/terms`, `/privacy`는 선호 locale URL로 이동한다.
 - OAuth callback: `/auth/callback`은 locale prefix 없이 유지한다.
-- legacy redirect: `/companies`, `/contacts`, `/products`, `/deals`, `/schedules`, `/meeting-notes`, `/business-cards`, `/import`, `/trash`, `/settings`, `/more` 및 각 상세/생성 경로는 대응되는 `/app/*`로 이동한다.
-- 보호 앱: `/app`, `/app/companies`, `/app/companies/new`, `/app/companies/:companyId`, `/app/contacts`, `/app/contacts/:contactId`, `/app/products`, `/app/products/new`, `/app/products/:productId`, `/app/deals`, `/app/deals/new`, `/app/deals/:dealId`, `/app/schedules`, `/app/schedules/:scheduleId`, `/app/meeting-notes`, `/app/meeting-notes/:meetingNoteId`, `/app/business-cards`, `/app/import`, `/app/import/:importUserLogId`, `/app/trash`, `/app/settings`, `/app/more`
+- legacy redirect: `/companies`, `/contacts`, `/products`, `/deals`, `/schedules`, `/meeting-notes`, `/business-cards`, `/import`, `/trash`, `/settings`, `/more` 및 각 상세/생성/`new/full` 경로는 대응되는 `/app/*`로 이동한다.
+- 보호 앱: `/app`, `/app/companies`, `/app/companies/new`, `/app/companies/new/full`, `/app/companies/:companyId`, `/app/contacts`, `/app/contacts/scan`, `/app/contacts/new`, `/app/contacts/new/full`, `/app/contacts/:contactId`, `/app/products`, `/app/products/new`, `/app/products/new/full`, `/app/products/:productId`, `/app/deals`, `/app/deals/new`, `/app/deals/new/full`, `/app/deals/:dealId`, `/app/schedules`, `/app/schedules/:scheduleId`, `/app/meeting-notes`, `/app/meeting-notes/new`, `/app/meeting-notes/new/full`, `/app/meeting-notes/:meetingNoteId`, `/app/business-cards`, `/app/import`, `/app/import/:importUserLogId`, `/app/trash`, `/app/settings`, `/app/more`
 - hidden/future redirect: `/app/schedules/week` -> `/app/schedules`, `/app/notifications` -> `/app`, `/app/export` -> `/app`
 
 pen 디자인 반영 완료/정리 도메인:
@@ -229,6 +235,7 @@ pen 디자인 반영 대기 도메인:
 - 현재 `/`는 공개 진입면이고 `/app`이 홈 대시보드다. 딜 파이프라인은 `/app/deals`에서 운영한다.
 - `/app/import`는 현재 사이드바 업무 섹션의 `데이터 업로드`로 노출한다. 범용 `/app/export`는 현재 정본 흐름이 아니므로 route를 `/app`으로 redirect하고 navigation에서 숨긴다. 휴지통은 관리 섹션에 노출하고, 목록 row 클릭으로 상세/복구 모달을 제공한다.
 - 기획 목록의 Admin 상세 데이터 라우트와 전체 딜/회사/담당자/제품 라우트는 현재 Admin Web router에 없다. Admin router의 운영 route는 `/`로 redirect한다.
+- Admin Web `admin-query` feature에는 dashboard/users/domain/audit/sensitive raw 준비 화면과 API client가 있지만 현재 router/menu에서 노출하지 않는다.
 - Backend에는 현재 Admin Web 운영 조회 API가 `GET /admin/api/me` 외에는 구현되어 있지 않다. 관리자 페이지는 후속 단계에서 만든다.
 
 라우트명을 변경하거나 신규 화면을 추가할 때는 이 문서와 `AGENT/SOFTWARE_AGENT/FRONT_AGENT/ARCHITECTURE/FRONTEND_USER_WEB.md`, `AGENT/SOFTWARE_AGENT/FRONT_AGENT/ARCHITECTURE/ADMIN_WEB.md`를 함께 갱신한다.

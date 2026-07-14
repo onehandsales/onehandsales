@@ -62,12 +62,14 @@ User Web:
 - Auth device/session: 현재 User Web은 `mobile`/`personal_laptop` slot만 보내며 같은 slot의 다른 기기 로그인은 기존 active device/session을 교체한다.
 - BusinessCard OCR 화면은 `/app/business-cards`다. 목록은 등록일 최신순 고정, 상태 다중 필터와 `상태 초기화`를 제공하고, `명함스캔` 모달은 이미지 업로드 -> 진행 표시 -> 추출 결과 확인/수정 -> 저장 흐름을 사용한다.
 - DataImport 화면은 `/app/import`와 `/app/import/:importUserLogId`다. 회사/담당자/제품/딜 양식 다운로드, CSV/XLSX 업로드, AI 컬럼 매핑, row 수정/검증, 누락 셀 단위 validation 메시지, 확정 저장, 성공 내역 조회를 실제 API와 연결한다. 딜 import 회사/담당자/제품 보정 배열은 현재 FE API와 BE controller/application/repository confirm 경로에 연결되어 있다.
+- 생성 route 기준: 회사/담당자/제품/딜은 목록 맥락의 `/app/<domain>/new`와 page-mode 확장 route `/app/<domain>/new/full`을 함께 가진다. 회의록은 `/app/meeting-notes/new`가 `?create=1`로 redirect하고 `/app/meeting-notes/new/full`이 page-mode 작성 route다.
 - 2026-07-10 기준 User Web `typecheck`, `lint`, `build`, `test:e2e`, URL locale smoke, 핵심 업무 happy path 수동 QA가 통과했다.
 
 Admin Web:
 
 - 실제 API 연동 완료: `GET /admin/api/me`.
-- Backend 후속 작업: Admin pages and Admin dashboard/users/domain query/audit/sensitive raw APIs. 현재 운영 route는 `/`로 redirect한다.
+- 코드에 존재하지만 미노출: `src/features/admin-query`의 dashboard/users/domain/audit/sensitive raw 화면, hook, type, API client 함수.
+- Backend 후속 작업: Admin pages and Admin dashboard/users/domain query/audit/sensitive raw APIs. 현재 운영 route는 `/`로 redirect하고 메뉴에서 숨긴다.
 
 ## 7. 관련 문서
 

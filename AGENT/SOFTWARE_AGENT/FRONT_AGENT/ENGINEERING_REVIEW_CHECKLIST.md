@@ -35,7 +35,7 @@
 ## 4. 테스트 체크리스트
 
 - User Web 핵심 smoke E2E가 있는가?
-- Admin Web auth/role smoke E2E가 있는가?
+- Admin Web auth/role smoke는 현재 라우터 기준 수동 QA로 확인했는가? E2E를 gate로 쓰려면 과거 운영 화면 기대값을 제거하고 현재 router 기준으로 갱신했는가?
 - 외부 Provider는 E2E에서 mock/stub 처리되는가?
 - Admin 페이지 본 구현 범위라면 민감정보 마스킹과 원문 조회 사유 입력 흐름을 Admin Web에서 검증하는가?
 
@@ -43,7 +43,7 @@
 
 - User Web과 Admin Web은 Vercel에서 별도 프로젝트로 배포되는가?
 - production secret이 Frontend `.env`에 들어가지 않는가?
-- 배포 전 User Web 전체 E2E와 Admin auth smoke E2E를 실행할 수 있는가?
+- 배포 전 User Web 전체 E2E와 Admin auth/role 수동 smoke를 실행할 수 있는가? Admin auth smoke E2E는 현재 router 기준으로 갱신한 뒤 gate에 올리는가?
 
 ## 6. 관련 문서
 

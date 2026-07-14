@@ -187,9 +187,9 @@ See `CONVENTION/API_CONTRACT.md` and `CONVENTION/API_SPEC.md`.
 
 ## 8. Environment
 
-Environment files use one `.env` per runnable app. `.env.example` and `.env.local` are not current source-of-truth files.
+Environment source-of-truth is one `.env` per runnable app plus `AGENT/SOFTWARE_AGENT/COMMON/ENVIRONMENT.md`. `.env.example` and `.env.local` are not current source-of-truth files. The current Backend bootstrap can read `BE/.env.local` as a local override, but variables that exist only there are not shared contract variables.
 
-All environment variable names and purposes must be listed in `ENVIRONMENT.md`.
+All environment variable names and purposes must be listed in `AGENT/SOFTWARE_AGENT/COMMON/ENVIRONMENT.md`.
 
 Access through ConfigService, not direct `process.env`.
 
@@ -233,7 +233,7 @@ OPENAI_BUSINESS_CARD_OCR_MODEL
 OPENAI_IMPORT_MAPPING_MODEL
 ```
 
-Do not document real provider secret values. When a new integration is implemented, add the env key name and purpose to `ENVIRONMENT.md`, then update this section if the key affects Backend conventions.
+Do not document real provider secret values. When a new integration is implemented, add the env key name and purpose to `AGENT/SOFTWARE_AGENT/COMMON/ENVIRONMENT.md`, then update this section if the key affects Backend conventions.
 
 ## 9. Import Order
 

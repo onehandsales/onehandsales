@@ -43,7 +43,7 @@ Vercel 기준:
 
 ## 4. Release Gate
 
-Frontend production 배포 전에는 User Web 전체 E2E와 Admin auth smoke E2E를 실행한다. Admin 전체 E2E는 관리자 페이지 본 구현 후 release gate에 추가한다.
+Frontend production 배포 전에는 User Web 전체 E2E와 Admin auth/role 수동 smoke를 실행한다. Admin auth smoke E2E는 현재 router 기준으로 갱신한 뒤 release gate에 추가하고, Admin 전체 E2E는 관리자 페이지 본 구현 후 release gate에 추가한다.
 
 배포 전 전체 E2E가 실패하면 배포하지 않는다.
 

@@ -65,7 +65,7 @@
 - 감사 로그 조회 API
 - 민감 원문 조회 API
 
-`src/features/admin-query/api/admin-query-api.ts`는 위 운영 조회 API 계약을 기대한다. Backend 구현 전까지 해당 화면은 route와 메뉴에서 노출하지 않으며, 현재 제품 구현 우선순위에서는 관리자 페이지를 완성 범위로 보지 않는다.
+`src/features/admin-query/api/admin-query-api.ts`는 위 운영 조회 API 계약을 기대한다. 이 feature에는 dashboard/users/domain/audit/sensitive raw 화면, hook, type, API client 함수가 준비되어 있지만 현재 `src/app/router/router.tsx`가 운영 route를 `/`로 redirect하므로 제품 화면에 노출되지 않는다. Backend 구현 전까지 해당 화면은 route와 메뉴에서 노출하지 않으며, 현재 제품 구현 우선순위에서는 관리자 페이지를 완성 범위로 보지 않는다.
 
 ## 6. Auth 상태
 
