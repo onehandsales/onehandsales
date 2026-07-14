@@ -81,8 +81,7 @@ type CompanyDetailScreenProps = {
 
 const COMPANY_DETAIL_FULL_WIDTH_STORAGE_KEY = "onehand.company.detail.fullWidth";
 const COMPANY_DETAIL_SMALL_TEXT_STORAGE_KEY = "onehand.company.detail.smallText";
-const COMPANY_RELATED_SECTION_CLASS_NAME =
-  "rounded-lg bg-[#FAF9F6] px-4 pb-4";
+const COMPANY_RELATED_BODY_CLASS_NAME = "rounded-lg bg-[#FAF9F6] px-4 py-3";
 
 export function CompanyDetailScreen({ companyId }: CompanyDetailScreenProps) {
   const navigate = useNavigate();
@@ -394,8 +393,8 @@ function CompanySummaryHeader({
           <Building2 className="h-11 w-11" />
         </div>
         <h1
-          className={`min-w-0 break-words font-semibold leading-tight text-[#111827] ${
-            isSmallText ? "text-[34px]" : "text-[42px]"
+          className={`min-w-0 break-words font-semibold leading-[1.25] text-[#111827] ${
+            isSmallText ? "text-[28px]" : "text-[32px]"
           }`}
         >
           {company.companyName}
@@ -465,14 +464,18 @@ function CompanyDocumentSectionHeader({
   return (
     <div className="flex min-h-8 items-center gap-2">
       <h2
-        className={`font-semibold text-[#111827] ${
-          isSmallText ? "text-[14px]" : "text-[15px]"
+        className={`font-semibold leading-[1.25] text-[#111827] ${
+          isSmallText ? "text-[18px]" : "text-[20px]"
         }`}
       >
         {title}
       </h2>
       {count !== undefined ? (
-        <span className="text-[13px] font-semibold text-[#94A3B8]">
+        <span
+          className={`font-semibold leading-[1.25] text-[#94A3B8] ${
+            isSmallText ? "text-[18px]" : "text-[20px]"
+          }`}
+        >
           {count}
         </span>
       ) : null}
@@ -643,112 +646,116 @@ function ConnectedContactsTable({
   };
 
   return (
-    <CompanyDocumentSection className={COMPANY_RELATED_SECTION_CLASS_NAME}>
-      <CompanyDocumentSectionHeader
-        count={contacts.length}
-        isSmallText={isSmallText}
-        title="연결 담당자"
-      />
-      {isLoading ? (
-        <CompanyLoadingRows />
-      ) : contacts.length === 0 ? (
-        <CompanyEmptyText isSmallText={isSmallText}>
-          담당자를 연결하면 여기에서 볼 수 있어요.
-        </CompanyEmptyText>
-      ) : (
-        <div
-          className={
-            hasMore
-              ? "max-h-[168px] overflow-x-hidden overflow-y-auto pr-1"
-              : "overflow-x-hidden"
-          }
-        >
-          {contacts.map((contact) => {
-            const jobGradeName = contact.contactJobGrade?.jobGradeName;
-            const isEmailCopied = copiedContactId === contact.id;
+    <CompanyDocumentSection>
+      <div>
+        <CompanyDocumentSectionHeader
+          count={contacts.length}
+          isSmallText={isSmallText}
+          title="연결된 담당자"
+        />
+      </div>
+      <div className={COMPANY_RELATED_BODY_CLASS_NAME}>
+        {isLoading ? (
+          <CompanyLoadingRows />
+        ) : contacts.length === 0 ? (
+          <CompanyEmptyText isSmallText={isSmallText}>
+            연결된 담당자들을 이곳에서 볼 수 있어요.
+          </CompanyEmptyText>
+        ) : (
+          <div
+            className={
+              hasMore
+                ? "max-h-[168px] overflow-x-hidden overflow-y-auto pr-1"
+                : "overflow-x-hidden"
+            }
+          >
+            {contacts.map((contact) => {
+              const jobGradeName = contact.contactJobGrade?.jobGradeName;
+              const isEmailCopied = copiedContactId === contact.id;
 
-            return (
-              <div
-                className="flex min-h-[56px] min-w-0 items-start gap-2.5 py-2 transition-colors hover:bg-[#F9FAFB]"
-                key={contact.id}
-              >
-                <Link
-                  aria-label={`${contact.username} 상세 보기`}
-                  className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#DBEAFE]"
-                  to={`/app/contacts/${contact.id}`}
+              return (
+                <div
+                  className="flex min-h-[56px] min-w-0 items-start gap-2.5 py-2 transition-colors hover:bg-[#F9FAFB]"
+                  key={contact.id}
                 >
-                  <UserRound className="h-3.5 w-3.5 text-[#4880EE]" />
-                </Link>
-                <div className="grid min-w-0 flex-1 gap-x-3 gap-y-1 sm:grid-cols-[minmax(120px,0.85fr)_minmax(0,1.15fr)]">
                   <Link
-                    className="min-w-0"
+                    aria-label={`${contact.username} 상세 보기`}
+                    className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#DBEAFE]"
                     to={`/app/contacts/${contact.id}`}
                   >
-                    <div className="flex min-w-0 items-center gap-1.5">
-                      <span
-                        className={`truncate font-extrabold text-[#111827] ${
-                          isSmallText ? "text-[12px]" : "text-[13px]"
-                        }`}
-                      >
-                        {contact.username}
-                      </span>
-                      {jobGradeName ? (
+                    <UserRound className="h-3.5 w-3.5 text-[#4880EE]" />
+                  </Link>
+                  <div className="grid min-w-0 flex-1 gap-x-3 gap-y-1 sm:grid-cols-[minmax(120px,0.85fr)_minmax(0,1.15fr)]">
+                    <Link
+                      className="min-w-0"
+                      to={`/app/contacts/${contact.id}`}
+                    >
+                      <div className="flex min-w-0 items-center gap-1.5">
                         <span
-                          className={`shrink-0 font-extrabold text-[#111827] ${
+                          className={`truncate font-extrabold text-[#111827] ${
                             isSmallText ? "text-[12px]" : "text-[13px]"
                           }`}
                         >
-                          {jobGradeName}
+                          {contact.username}
                         </span>
-                      ) : null}
-                    </div>
-                    <span className="mt-0.5 block min-w-0 truncate text-[11px] font-semibold leading-4 text-[#94A3B8]">
-                      {contact.contactDepartment.departmentName}
-                    </span>
-                  </Link>
-                  <div
-                    className={`grid min-w-0 content-start gap-0.5 font-medium leading-4 text-[#6B7280] ${
-                      isSmallText ? "text-[11px]" : "text-[12px]"
-                    }`}
-                  >
-                    <div className="flex min-w-0 items-center gap-1.5">
-                      <button
-                        aria-label={`${contact.email} 복사`}
-                        className={`inline-flex h-5 w-5 shrink-0 items-center justify-center rounded transition duration-150 hover:bg-[#EFF6FF] hover:text-[#4880EE] ${
-                          isEmailCopied
-                            ? "scale-110 text-[#4880EE]"
-                            : "scale-100 text-[#94A3B8]"
-                        }`}
-                        onClick={() => onClickCopyEmail(contact)}
-                        title="이메일 복사"
-                        type="button"
-                      >
-                        {isEmailCopied ? (
-                          <Check className="h-3 w-3" />
-                        ) : (
-                          <Copy className="h-3 w-3" />
-                        )}
-                      </button>
+                        {jobGradeName ? (
+                          <span
+                            className={`shrink-0 font-extrabold text-[#111827] ${
+                              isSmallText ? "text-[12px]" : "text-[13px]"
+                            }`}
+                          >
+                            {jobGradeName}
+                          </span>
+                        ) : null}
+                      </div>
+                      <span className="mt-0.5 block min-w-0 truncate text-[11px] font-semibold leading-4 text-[#94A3B8]">
+                        {contact.contactDepartment.departmentName}
+                      </span>
+                    </Link>
+                    <div
+                      className={`grid min-w-0 content-start gap-0.5 font-medium leading-4 text-[#6B7280] ${
+                        isSmallText ? "text-[11px]" : "text-[12px]"
+                      }`}
+                    >
+                      <div className="flex min-w-0 items-center gap-1.5">
+                        <button
+                          aria-label={`${contact.email} 복사`}
+                          className={`inline-flex h-5 w-5 shrink-0 items-center justify-center rounded transition duration-150 hover:bg-[#EFF6FF] hover:text-[#4880EE] ${
+                            isEmailCopied
+                              ? "scale-110 text-[#4880EE]"
+                              : "scale-100 text-[#94A3B8]"
+                          }`}
+                          onClick={() => onClickCopyEmail(contact)}
+                          title="이메일 복사"
+                          type="button"
+                        >
+                          {isEmailCopied ? (
+                            <Check className="h-3 w-3" />
+                          ) : (
+                            <Copy className="h-3 w-3" />
+                          )}
+                        </button>
+                        <Link
+                          className="min-w-0 max-w-full truncate"
+                          to={`/app/contacts/${contact.id}`}
+                        >
+                          {contact.email}
+                        </Link>
+                      </div>
                       <Link
                         className="min-w-0 max-w-full truncate"
                         to={`/app/contacts/${contact.id}`}
                       >
-                        {contact.email}
+                        {contact.mobile}
                       </Link>
                     </div>
-                    <Link
-                      className="min-w-0 max-w-full truncate"
-                      to={`/app/contacts/${contact.id}`}
-                    >
-                      {contact.mobile}
-                    </Link>
                   </div>
                 </div>
-              </div>
-            );
-          })}
-        </div>
-      )}
+              );
+            })}
+          </div>
+        )}
+      </div>
     </CompanyDocumentSection>
   );
 }
@@ -768,70 +775,74 @@ function ConnectedDealsTable({
   const hasMore = deals.length > SHOW_LIMIT;
 
   return (
-    <CompanyDocumentSection className={COMPANY_RELATED_SECTION_CLASS_NAME}>
-      <CompanyDocumentSectionHeader
-        count={deals.length}
-        isSmallText={isSmallText}
-        title="연결 딜"
-      />
-      {isLoading ? (
-        <CompanyLoadingRows />
-      ) : deals.length === 0 ? (
-        <CompanyEmptyText isSmallText={isSmallText}>
-          딜을 연결하면 여기에서 볼 수 있어요.
-        </CompanyEmptyText>
-      ) : (
-        <div
-          className={
-            hasMore
-              ? "max-h-[168px] overflow-x-hidden overflow-y-auto pr-1"
-              : "overflow-x-hidden"
-          }
-        >
-          {deals.map((deal) => (
-            <Link
-              className="flex min-h-[56px] min-w-0 items-start gap-2.5 py-2 transition-colors hover:bg-[#F9FAFB]"
-              key={deal.id}
-              to={`/app/deals/${deal.id}`}
-            >
-              <div className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#FEF2F2]">
-                <BriefcaseBusiness className="h-3.5 w-3.5 text-[#DC2626]" />
-              </div>
-              <div className="grid min-w-0 flex-1 gap-x-3 gap-y-1 sm:grid-cols-[minmax(120px,0.85fr)_minmax(0,1.15fr)]">
-                <div className="min-w-0">
-                  <span
-                    className={`block min-w-0 truncate font-extrabold text-[#111827] ${
-                      isSmallText ? "text-[12px]" : "text-[13px]"
-                    }`}
-                  >
-                    {deal.dealName}
-                  </span>
-                  <span
-                    className={`mt-0.5 block min-w-0 truncate font-medium leading-4 text-[#9CA3AF] ${
+    <CompanyDocumentSection>
+      <div>
+        <CompanyDocumentSectionHeader
+          count={deals.length}
+          isSmallText={isSmallText}
+          title="연결된 딜"
+        />
+      </div>
+      <div className={COMPANY_RELATED_BODY_CLASS_NAME}>
+        {isLoading ? (
+          <CompanyLoadingRows />
+        ) : deals.length === 0 ? (
+          <CompanyEmptyText isSmallText={isSmallText}>
+            연결된 딜들을 이곳에서 볼 수 있어요.
+          </CompanyEmptyText>
+        ) : (
+          <div
+            className={
+              hasMore
+                ? "max-h-[168px] overflow-x-hidden overflow-y-auto pr-1"
+                : "overflow-x-hidden"
+            }
+          >
+            {deals.map((deal) => (
+              <Link
+                className="flex min-h-[56px] min-w-0 items-start gap-2.5 py-2 transition-colors hover:bg-[#F9FAFB]"
+                key={deal.id}
+                to={`/app/deals/${deal.id}`}
+              >
+                <div className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#FEF2F2]">
+                  <BriefcaseBusiness className="h-3.5 w-3.5 text-[#DC2626]" />
+                </div>
+                <div className="grid min-w-0 flex-1 gap-x-3 gap-y-1 sm:grid-cols-[minmax(120px,0.85fr)_minmax(0,1.15fr)]">
+                  <div className="min-w-0">
+                    <span
+                      className={`block min-w-0 truncate font-extrabold text-[#111827] ${
+                        isSmallText ? "text-[12px]" : "text-[13px]"
+                      }`}
+                    >
+                      {deal.dealName}
+                    </span>
+                    <span
+                      className={`mt-0.5 block min-w-0 truncate font-medium leading-4 text-[#9CA3AF] ${
+                        isSmallText ? "text-[11px]" : "text-[12px]"
+                      }`}
+                    >
+                      {formatDate(deal.createdAt, { includeYear: true })}
+                    </span>
+                  </div>
+                  <div
+                    className={`grid min-w-0 content-start font-medium leading-4 text-[#6B7280] ${
                       isSmallText ? "text-[11px]" : "text-[12px]"
                     }`}
                   >
-                    {formatDate(deal.createdAt, { includeYear: true })}
-                  </span>
+                    <span
+                      className={`min-w-0 max-w-full truncate font-semibold text-[#374151] ${
+                        isSmallText ? "text-[12px]" : "text-[13px]"
+                      }`}
+                    >
+                      ₩{deal.dealCost.toLocaleString("ko-KR")}
+                    </span>
+                  </div>
                 </div>
-                <div
-                  className={`grid min-w-0 content-start font-medium leading-4 text-[#6B7280] ${
-                    isSmallText ? "text-[11px]" : "text-[12px]"
-                  }`}
-                >
-                  <span
-                    className={`min-w-0 max-w-full truncate font-semibold text-[#374151] ${
-                      isSmallText ? "text-[12px]" : "text-[13px]"
-                    }`}
-                  >
-                    ₩{deal.dealCost.toLocaleString("ko-KR")}
-                  </span>
-                </div>
-              </div>
-            </Link>
-          ))}
-        </div>
-      )}
+              </Link>
+            ))}
+          </div>
+        )}
+      </div>
     </CompanyDocumentSection>
   );
 }
@@ -888,7 +899,7 @@ function MemoPanel({
     await createMemoMutation.mutateAsync(toCreateCompanyMemoLogInput(companyId, values));
     createForm.reset(emptyCompanyMemoLogFormValues);
     setIsCreateOpen(false);
-    onChanged("회사 로그를 추가했어요.");
+    onChanged("업무용 메모를 추가했어요.");
   });
 
   const onStartEdit = (log: CompanyMemoLog) => {
@@ -902,7 +913,7 @@ function MemoPanel({
       toUpdateCompanyMemoLogInput(companyId, editingId, values)
     );
     setEditingId(null);
-    onChanged("회사 로그를 수정했어요.");
+    onChanged("업무용 메모를 수정했어요.");
   });
 
   const onConfirmDelete = async () => {
@@ -934,31 +945,31 @@ function MemoPanel({
     <CompanyDocumentSection>
       <div className="flex min-h-8 items-center gap-2">
         <CompanyDocumentSectionHeader
-          count={memoLogs.length}
           isSmallText={isSmallText}
-          title="회사 로그"
+          title="업무용 메모"
         />
         <div className="flex-1" />
         <button
-          aria-label="회사 로그 추가"
+          aria-label="업무용 메모 추가"
           className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-md text-[#4880EE] transition-colors hover:bg-[#EFF6FF] hover:text-[#1D4ED8]"
           onClick={() => setIsCreateOpen(true)}
-          title="회사 로그 추가"
+          title="업무용 메모 추가"
           type="button"
         >
           <Plus className="h-3.5 w-3.5" />
         </button>
       </div>
 
-      <div className="max-h-[420px] overflow-y-auto pr-1">
-        {isLoading ? (
-          <CompanyLoadingRows count={2} />
-        ) : memoLogs.length === 0 ? (
-          <CompanyEmptyText isSmallText={isSmallText}>
-            회사 로그를 추가하면 여기에서 볼 수 있어요.
-          </CompanyEmptyText>
-        ) : (
-          memoLogs.map((log) => (
+      <div className={COMPANY_RELATED_BODY_CLASS_NAME}>
+        <div className="max-h-[420px] overflow-y-auto pr-1">
+          {isLoading ? (
+            <CompanyLoadingRows count={2} />
+          ) : memoLogs.length === 0 ? (
+            <CompanyEmptyText isSmallText={isSmallText}>
+              업무와 관련된 회사의 변경 내용들을 실시간으로 기록해요.
+            </CompanyEmptyText>
+          ) : (
+            memoLogs.map((log) => (
               <div
                 className="group flex gap-3"
                 key={log.id}
@@ -967,7 +978,7 @@ function MemoPanel({
                 <TimelineMarker />
                 <div className="min-w-0 flex-1">
                 <button
-                  className="flex min-h-[40px] w-full items-center bg-white text-left"
+                  className="flex min-h-[40px] w-full items-center text-left"
                   onClick={() => setExpandedId(expandedId === log.id ? null : log.id)}
                   type="button"
                 >
@@ -1018,18 +1029,19 @@ function MemoPanel({
                 </div>
               </div>
             )
-          )
-        )}
-        {hasNext ? (
-          <button
-            className="text-[12px] font-semibold text-[#6B7280] hover:text-[#374151] transition-colors"
-            disabled={isFetchingNext}
-            onClick={onFetchMore}
-            type="button"
-          >
-            {isFetchingNext ? "불러오는 중..." : "더 보기"}
-          </button>
-        ) : null}
+            )
+          )}
+          {hasNext ? (
+            <button
+              className="text-[12px] font-semibold text-[#6B7280] hover:text-[#374151] transition-colors"
+              disabled={isFetchingNext}
+              onClick={onFetchMore}
+              type="button"
+            >
+              {isFetchingNext ? "불러오는 중..." : "더 보기"}
+            </button>
+          ) : null}
+        </div>
       </div>
     </CompanyDocumentSection>
     <ModalShell
@@ -1045,11 +1057,11 @@ function MemoPanel({
       }
       open={isCreateOpen}
       size="md"
-      title="회사 로그 추가"
+      title="업무용 메모 추가"
       onOpenChange={setIsCreateOpen}
     >
       <ModalForm id={createFormId} onSubmit={onSubmitCreate}>
-        <ModalFormSection title="회사 로그">
+        <ModalFormSection title="업무용 메모">
           <ModalFieldGroup
             error={createForm.formState.errors.memoType?.message}
             id="company-log-create-title"
@@ -1058,7 +1070,7 @@ function MemoPanel({
             <input
               className="h-10 w-full rounded-md border px-3 text-sm outline-none focus:ring-2 focus:ring-ring"
               id="company-log-create-title"
-              placeholder="회사 로그 제목"
+              placeholder="업무용 메모 제목"
               {...createForm.register("memoType")}
             />
           </ModalFieldGroup>
@@ -1095,13 +1107,13 @@ function MemoPanel({
       }
       open={editingId !== null}
       size="md"
-      title="회사 로그 수정"
+      title="업무용 메모 수정"
       onOpenChange={(open) => {
         if (!open) setEditingId(null);
       }}
     >
       <ModalForm id={editFormId} onSubmit={onSubmitEdit}>
-        <ModalFormSection title="회사 로그">
+        <ModalFormSection title="업무용 메모">
           <ModalFieldGroup
             error={editForm.formState.errors.memoType?.message}
             id="company-log-edit-title"
@@ -1110,7 +1122,7 @@ function MemoPanel({
             <input
               className="h-10 w-full rounded-md border px-3 text-sm outline-none focus:ring-2 focus:ring-ring"
               id="company-log-edit-title"
-              placeholder="회사 로그 제목"
+              placeholder="업무용 메모 제목"
               {...editForm.register("memoType")}
             />
           </ModalFieldGroup>
@@ -1200,7 +1212,7 @@ function ActivityLogPanel({
     );
     createForm.reset(emptyCompanyPrivateMemoLogFormValues);
     setIsCreateOpen(false);
-    onChanged("비밀 메모를 추가했어요.");
+    onChanged("사적인 비밀 메모를 추가했어요.");
   });
 
   const onStartEdit = (log: CompanyPrivateMemoLog) => {
@@ -1214,7 +1226,7 @@ function ActivityLogPanel({
       toUpdateCompanyPrivateMemoLogInput(companyId, editingId, values)
     );
     setEditingId(null);
-    onChanged("비밀 메모를 수정했어요.");
+    onChanged("사적인 비밀 메모를 수정했어요.");
   });
 
   const onConfirmDelete = async () => {
@@ -1246,9 +1258,8 @@ function ActivityLogPanel({
     <CompanyDocumentSection>
       <div className="flex min-h-8 items-center gap-2">
         <CompanyDocumentSectionHeader
-          count={privateMemoLogs.length}
           isSmallText={isSmallText}
-          title="비밀 메모"
+          title="사적인 비밀 메모"
         />
         <div
           aria-label="암호화 보안 메모"
@@ -1264,25 +1275,26 @@ function ActivityLogPanel({
         </div>
         <div className="flex-1" />
         <button
-          aria-label="비밀 메모 추가"
+          aria-label="사적인 비밀 메모 추가"
           className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-md text-[#4880EE] transition-colors hover:bg-[#EFF6FF] hover:text-[#1D4ED8]"
           onClick={() => setIsCreateOpen(true)}
-          title="비밀 메모 추가"
+          title="사적인 비밀 메모 추가"
           type="button"
         >
           <Plus className="h-3.5 w-3.5" />
         </button>
       </div>
 
-      <div className="max-h-[420px] overflow-y-auto pr-1">
-        {isLoading ? (
-          <CompanyLoadingRows />
-        ) : privateMemoLogs.length === 0 ? (
-          <CompanyEmptyText isSmallText={isSmallText}>
-            비밀 메모를 추가하면 여기에서 볼 수 있어요.
-          </CompanyEmptyText>
-        ) : (
-          privateMemoLogs.map((log) => (
+      <div className={COMPANY_RELATED_BODY_CLASS_NAME}>
+        <div className="max-h-[420px] overflow-y-auto pr-1">
+          {isLoading ? (
+            <CompanyLoadingRows />
+          ) : privateMemoLogs.length === 0 ? (
+            <CompanyEmptyText isSmallText={isSmallText}>
+              사적인 나만의 아이디어와 생각들을 바로바로 기록해요.
+            </CompanyEmptyText>
+          ) : (
+            privateMemoLogs.map((log) => (
               <div
                 className="group flex gap-3"
                 key={log.id}
@@ -1291,7 +1303,7 @@ function ActivityLogPanel({
                 <TimelineMarker />
                 <div className="min-w-0 flex-1">
                 <button
-                  className="flex min-h-[40px] w-full items-center bg-white text-left"
+                  className="flex min-h-[40px] w-full items-center text-left"
                   onClick={() => setExpandedId(expandedId === log.id ? null : log.id)}
                   type="button"
                 >
@@ -1341,18 +1353,19 @@ function ActivityLogPanel({
                 </div>
               </div>
             )
-          )
-        )}
-        {hasNext ? (
-          <button
-            className="text-[12px] font-semibold text-[#6B7280] hover:text-[#374151] transition-colors"
-            disabled={isFetchingNext}
-            onClick={onFetchMore}
-            type="button"
-          >
-            {isFetchingNext ? "불러오는 중..." : "더 보기"}
-          </button>
-        ) : null}
+            )
+          )}
+          {hasNext ? (
+            <button
+              className="text-[12px] font-semibold text-[#6B7280] hover:text-[#374151] transition-colors"
+              disabled={isFetchingNext}
+              onClick={onFetchMore}
+              type="button"
+            >
+              {isFetchingNext ? "불러오는 중..." : "더 보기"}
+            </button>
+          ) : null}
+        </div>
       </div>
     </CompanyDocumentSection>
     <ModalShell
@@ -1368,11 +1381,11 @@ function ActivityLogPanel({
       }
       open={isCreateOpen}
       size="md"
-      title="비밀 메모 추가"
+      title="사적인 비밀 메모 추가"
       onOpenChange={setIsCreateOpen}
     >
       <ModalForm id={createFormId} onSubmit={onSubmitCreate}>
-        <ModalFormSection title="비밀 메모">
+        <ModalFormSection title="사적인 비밀 메모">
           <ModalFieldGroup
             error={createForm.formState.errors.memo?.message}
             id="company-private-memo-create-memo"
@@ -1381,7 +1394,7 @@ function ActivityLogPanel({
             <textarea
               className="min-h-32 resize-y rounded-md border px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-ring"
               id="company-private-memo-create-memo"
-              placeholder="비밀 메모 입력"
+              placeholder="사적인 비밀 메모 입력"
               rows={5}
               {...createForm.register("memo")}
             />
@@ -1406,13 +1419,13 @@ function ActivityLogPanel({
       }
       open={editingId !== null}
       size="md"
-      title="비밀 메모 수정"
+      title="사적인 비밀 메모 수정"
       onOpenChange={(open) => {
         if (!open) setEditingId(null);
       }}
     >
       <ModalForm id={editFormId} onSubmit={onSubmitEdit}>
-        <ModalFormSection title="비밀 메모">
+        <ModalFormSection title="사적인 비밀 메모">
           <ModalFieldGroup
             error={editForm.formState.errors.memo?.message}
             id="company-private-memo-edit-memo"
@@ -1421,7 +1434,7 @@ function ActivityLogPanel({
             <textarea
               className="min-h-32 resize-y rounded-md border px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-ring"
               id="company-private-memo-edit-memo"
-              placeholder="비밀 메모 입력"
+              placeholder="사적인 비밀 메모 입력"
               rows={5}
               {...editForm.register("memo")}
             />
