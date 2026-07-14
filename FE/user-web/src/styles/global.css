@@ -163,3 +163,37 @@
     animation: meeting-note-create-panel-enter 500ms ease-out;
   }
 }
+
+@layer utilities {
+  .notion-scrollbar {
+    scrollbar-color: #c9c6be transparent;
+    scrollbar-width: thin;
+  }
+
+  .notion-scrollbar::-webkit-scrollbar {
+    height: 8px;
+    width: 8px;
+  }
+
+  .notion-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .notion-scrollbar::-webkit-scrollbar-button {
+    display: none;
+    height: 0;
+    width: 0;
+  }
+
+  .notion-scrollbar::-webkit-scrollbar-thumb {
+    background: #d7d4cc;
+    background-clip: content-box;
+    border: 2px solid transparent;
+    border-radius: 9999px;
+  }
+
+  .notion-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: #c9c6be;
+    background-clip: content-box;
+  }
+}

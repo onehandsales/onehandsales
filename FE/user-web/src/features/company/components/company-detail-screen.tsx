@@ -82,6 +82,14 @@ type CompanyDetailScreenProps = {
 const COMPANY_DETAIL_FULL_WIDTH_STORAGE_KEY = "onehand.company.detail.fullWidth";
 const COMPANY_DETAIL_SMALL_TEXT_STORAGE_KEY = "onehand.company.detail.smallText";
 const COMPANY_RELATED_BODY_CLASS_NAME = "rounded-lg bg-[#FAF9F6] px-4 py-3";
+const COMPANY_RELATED_SCROLL_CLASS_NAME =
+  "notion-scrollbar overflow-x-hidden overflow-y-auto pr-1";
+const COMPANY_RELATED_ROW_CLASS_NAME =
+  "-mx-2 grid min-h-[56px] min-w-0 items-center gap-x-3 gap-y-1 rounded-md border-b border-[#E7E3DC] px-2 py-2 transition-colors last:border-b-0 hover:bg-[#F0EEE8] md:grid-cols-3";
+const COMPANY_RELATED_FIRST_CELL_CLASS_NAME = "min-w-0 px-2 text-left";
+const COMPANY_RELATED_CELL_CLASS_NAME = "min-w-0 px-2 text-center";
+const COMPANY_MEMO_ROW_CLASS_NAME =
+  "group -mx-2 flex gap-3 rounded-md border-b border-[#E7E3DC] px-2 py-1.5 transition-colors last:border-b-0 hover:bg-[#F0EEE8]";
 
 export function CompanyDetailScreen({ companyId }: CompanyDetailScreenProps) {
   const navigate = useNavigate();
@@ -401,29 +409,27 @@ function CompanySummaryHeader({
         </h1>
       </div>
 
-      <div className="grid gap-1 py-3">
-        <div className="grid gap-x-6 gap-y-1 sm:grid-cols-2">
-          <CompanyDocumentProperty
-            label="분야"
-            isSmallText={isSmallText}
-            value={company.companyField.field}
-          />
-          <CompanyDocumentProperty
-            label="지역"
-            isSmallText={isSmallText}
-            value={company.companyRegion.region}
-          />
-          <CompanyDocumentProperty
-            isSmallText={isSmallText}
-            label="담당자"
-            value={`${contactCount}명`}
-          />
-          <CompanyDocumentProperty
-            isSmallText={isSmallText}
-            label="딜"
-            value={`${dealCount}건`}
-          />
-        </div>
+      <div className="grid max-w-[460px] gap-0.5 py-2">
+        <CompanyDocumentProperty
+          label="분야"
+          isSmallText={isSmallText}
+          value={company.companyField.field}
+        />
+        <CompanyDocumentProperty
+          label="지역"
+          isSmallText={isSmallText}
+          value={company.companyRegion.region}
+        />
+        <CompanyDocumentProperty
+          isSmallText={isSmallText}
+          label="담당자"
+          value={`${contactCount}명`}
+        />
+        <CompanyDocumentProperty
+          isSmallText={isSmallText}
+          label="딜"
+          value={`${dealCount}건`}
+        />
       </div>
     </section>
   );
@@ -440,11 +446,11 @@ function CompanyDocumentProperty({
 }) {
   return (
     <div
-      className={`grid min-h-8 grid-cols-[96px_minmax(0,1fr)] items-center gap-3 ${
+      className={`grid min-h-8 grid-cols-[88px_minmax(0,1fr)] items-center gap-3 rounded-md px-1.5 transition-colors hover:bg-[#FAF9F6] ${
         isSmallText ? "text-[13px]" : "text-[14px]"
       }`}
     >
-      <span className="font-semibold text-[#94A3B8]">{label}</span>
+      <span className="font-semibold text-[#8B95A5]">{label}</span>
       <span className="min-w-0 break-words font-medium text-[#111827]">
         {value}
       </span>
@@ -665,7 +671,7 @@ function ConnectedContactsTable({
           <div
             className={
               hasMore
-                ? "max-h-[168px] overflow-x-hidden overflow-y-auto pr-1"
+                ? `${COMPANY_RELATED_SCROLL_CLASS_NAME} max-h-[168px]`
                 : "overflow-x-hidden"
             }
           >
@@ -675,22 +681,19 @@ function ConnectedContactsTable({
 
               return (
                 <div
-                  className="flex min-h-[56px] min-w-0 items-start gap-2.5 py-2 transition-colors hover:bg-[#F9FAFB]"
+                  className={COMPANY_RELATED_ROW_CLASS_NAME}
                   key={contact.id}
                 >
                   <Link
                     aria-label={`${contact.username} 상세 보기`}
-                    className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#DBEAFE]"
+                    className={`${COMPANY_RELATED_FIRST_CELL_CLASS_NAME} flex items-center justify-start gap-2.5`}
                     to={`/app/contacts/${contact.id}`}
                   >
-                    <UserRound className="h-3.5 w-3.5 text-[#4880EE]" />
-                  </Link>
-                  <div className="grid min-w-0 flex-1 gap-x-3 gap-y-1 sm:grid-cols-[minmax(120px,0.85fr)_minmax(0,1.15fr)]">
-                    <Link
-                      className="min-w-0"
-                      to={`/app/contacts/${contact.id}`}
-                    >
-                      <div className="flex min-w-0 items-center gap-1.5">
+                    <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#DBEAFE]">
+                      <UserRound className="h-3.5 w-3.5 text-[#4880EE]" />
+                    </span>
+                    <span className="grid min-w-0 text-left">
+                      <span className="flex min-w-0 items-center gap-1.5">
                         <span
                           className={`truncate font-extrabold text-[#111827] ${
                             isSmallText ? "text-[12px]" : "text-[13px]"
@@ -707,49 +710,49 @@ function ConnectedContactsTable({
                             {jobGradeName}
                           </span>
                         ) : null}
-                      </div>
-                      <span className="mt-0.5 block min-w-0 truncate text-[11px] font-semibold leading-4 text-[#94A3B8]">
+                      </span>
+                      <span className="mt-0.5 min-w-0 truncate text-[11px] font-semibold leading-4 text-[#94A3B8]">
                         {contact.contactDepartment.departmentName}
                       </span>
-                    </Link>
+                    </span>
+                  </Link>
                     <div
-                      className={`grid min-w-0 content-start gap-0.5 font-medium leading-4 text-[#6B7280] ${
+                      className={`${COMPANY_RELATED_CELL_CLASS_NAME} flex items-center justify-center gap-1.5 font-medium leading-4 text-[#9CA3AF] ${
                         isSmallText ? "text-[11px]" : "text-[12px]"
                       }`}
                     >
-                      <div className="flex min-w-0 items-center gap-1.5">
-                        <button
-                          aria-label={`${contact.email} 복사`}
-                          className={`inline-flex h-5 w-5 shrink-0 items-center justify-center rounded transition duration-150 hover:bg-[#EFF6FF] hover:text-[#4880EE] ${
-                            isEmailCopied
-                              ? "scale-110 text-[#4880EE]"
-                              : "scale-100 text-[#94A3B8]"
-                          }`}
-                          onClick={() => onClickCopyEmail(contact)}
-                          title="이메일 복사"
-                          type="button"
-                        >
-                          {isEmailCopied ? (
-                            <Check className="h-3 w-3" />
-                          ) : (
-                            <Copy className="h-3 w-3" />
-                          )}
-                        </button>
-                        <Link
-                          className="min-w-0 max-w-full truncate"
-                          to={`/app/contacts/${contact.id}`}
-                        >
-                          {contact.email}
-                        </Link>
-                      </div>
+                      <button
+                        aria-label={`${contact.email} 복사`}
+                        className={`inline-flex h-5 w-5 shrink-0 items-center justify-center rounded transition duration-150 hover:bg-[#EFF6FF] hover:text-[#4880EE] ${
+                          isEmailCopied
+                            ? "scale-110 text-[#4880EE]"
+                            : "scale-100 text-[#94A3B8]"
+                        }`}
+                        onClick={() => onClickCopyEmail(contact)}
+                        title="이메일 복사"
+                        type="button"
+                      >
+                        {isEmailCopied ? (
+                          <Check className="h-3 w-3" />
+                        ) : (
+                          <Copy className="h-3 w-3" />
+                        )}
+                      </button>
                       <Link
                         className="min-w-0 max-w-full truncate"
                         to={`/app/contacts/${contact.id}`}
                       >
-                        {contact.mobile}
+                        {contact.email}
                       </Link>
                     </div>
-                  </div>
+                    <Link
+                      className={`${COMPANY_RELATED_CELL_CLASS_NAME} max-w-full truncate font-medium leading-4 text-[#9CA3AF] ${
+                        isSmallText ? "text-[11px]" : "text-[12px]"
+                      }`}
+                      to={`/app/contacts/${contact.id}`}
+                    >
+                      {contact.mobile}
+                    </Link>
                 </div>
               );
             })}
@@ -794,50 +797,44 @@ function ConnectedDealsTable({
           <div
             className={
               hasMore
-                ? "max-h-[168px] overflow-x-hidden overflow-y-auto pr-1"
+                ? `${COMPANY_RELATED_SCROLL_CLASS_NAME} max-h-[168px]`
                 : "overflow-x-hidden"
             }
           >
             {deals.map((deal) => (
               <Link
-                className="flex min-h-[56px] min-w-0 items-start gap-2.5 py-2 transition-colors hover:bg-[#F9FAFB]"
+                className={COMPANY_RELATED_ROW_CLASS_NAME}
                 key={deal.id}
                 to={`/app/deals/${deal.id}`}
               >
-                <div className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#FEF2F2]">
-                  <BriefcaseBusiness className="h-3.5 w-3.5 text-[#DC2626]" />
-                </div>
-                <div className="grid min-w-0 flex-1 gap-x-3 gap-y-1 sm:grid-cols-[minmax(120px,0.85fr)_minmax(0,1.15fr)]">
-                  <div className="min-w-0">
-                    <span
-                      className={`block min-w-0 truncate font-extrabold text-[#111827] ${
-                        isSmallText ? "text-[12px]" : "text-[13px]"
-                      }`}
-                    >
-                      {deal.dealName}
-                    </span>
-                    <span
-                      className={`mt-0.5 block min-w-0 truncate font-medium leading-4 text-[#9CA3AF] ${
-                        isSmallText ? "text-[11px]" : "text-[12px]"
-                      }`}
-                    >
-                      {formatDate(deal.createdAt, { includeYear: true })}
-                    </span>
-                  </div>
-                  <div
-                    className={`grid min-w-0 content-start font-medium leading-4 text-[#6B7280] ${
+                <span
+                  className={`${COMPANY_RELATED_FIRST_CELL_CLASS_NAME} flex items-center justify-start gap-2.5`}
+                >
+                  <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#FEF2F2]">
+                    <BriefcaseBusiness className="h-3.5 w-3.5 text-[#DC2626]" />
+                  </span>
+                  <span
+                    className={`min-w-0 truncate text-left font-extrabold text-[#111827] ${
+                      isSmallText ? "text-[12px]" : "text-[13px]"
+                    }`}
+                  >
+                    {deal.dealName}
+                  </span>
+                </span>
+                  <span
+                    className={`${COMPANY_RELATED_CELL_CLASS_NAME} max-w-full truncate font-medium leading-4 text-[#9CA3AF] ${
                       isSmallText ? "text-[11px]" : "text-[12px]"
                     }`}
                   >
-                    <span
-                      className={`min-w-0 max-w-full truncate font-semibold text-[#374151] ${
-                        isSmallText ? "text-[12px]" : "text-[13px]"
-                      }`}
-                    >
-                      ₩{deal.dealCost.toLocaleString("ko-KR")}
-                    </span>
-                  </div>
-                </div>
+                    ₩{deal.dealCost.toLocaleString("ko-KR")}
+                  </span>
+                  <span
+                    className={`${COMPANY_RELATED_CELL_CLASS_NAME} truncate font-medium leading-4 text-[#9CA3AF] ${
+                      isSmallText ? "text-[11px]" : "text-[12px]"
+                    }`}
+                  >
+                    {formatDate(deal.createdAt, { includeYear: true })}
+                  </span>
               </Link>
             ))}
           </div>
@@ -961,7 +958,7 @@ function MemoPanel({
       </div>
 
       <div className={COMPANY_RELATED_BODY_CLASS_NAME}>
-        <div className="max-h-[420px] overflow-y-auto pr-1">
+        <div className={`${COMPANY_RELATED_SCROLL_CLASS_NAME} max-h-[420px]`}>
           {isLoading ? (
             <CompanyLoadingRows count={2} />
           ) : memoLogs.length === 0 ? (
@@ -971,7 +968,7 @@ function MemoPanel({
           ) : (
             memoLogs.map((log) => (
               <div
-                className="group flex gap-3"
+                className={COMPANY_MEMO_ROW_CLASS_NAME}
                 key={log.id}
               >
                 {/* 제목 행 — 클릭 시 본문 토글 */}
@@ -1286,7 +1283,7 @@ function ActivityLogPanel({
       </div>
 
       <div className={COMPANY_RELATED_BODY_CLASS_NAME}>
-        <div className="max-h-[420px] overflow-y-auto pr-1">
+        <div className={`${COMPANY_RELATED_SCROLL_CLASS_NAME} max-h-[420px]`}>
           {isLoading ? (
             <CompanyLoadingRows />
           ) : privateMemoLogs.length === 0 ? (
@@ -1296,7 +1293,7 @@ function ActivityLogPanel({
           ) : (
             privateMemoLogs.map((log) => (
               <div
-                className="group flex gap-3"
+                className={COMPANY_MEMO_ROW_CLASS_NAME}
                 key={log.id}
               >
                 {/* 1줄 미리보기 행 — 클릭 시 전체 토글 */}
