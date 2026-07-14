@@ -426,7 +426,7 @@ export function AppShell() {
                 </p>
               </div>
             </div>
-            <div className="mx-1 my-1.5 h-px bg-[#E9ECF2]" />
+            <div className="mx-1 my-1.5 h-px bg-[#F0F2F6]" />
             <AccountMenuItem
               icon={Settings}
               label="설정"
@@ -435,7 +435,7 @@ export function AppShell() {
                 setAccountModal("profile");
               }}
             />
-            <div className="mx-1 my-1.5 h-px bg-[#E9ECF2]" />
+            <div className="mx-1 my-1.5 h-px bg-[#F0F2F6]" />
             <AccountMenuItem
               icon={LogOut}
               label="로그아웃"
@@ -451,7 +451,7 @@ export function AppShell() {
       <button
         aria-expanded={accountMenuOpen}
         aria-haspopup="menu"
-        className="flex h-12 w-full items-center gap-2.5 rounded-xl px-2 pr-10 text-left transition hover:bg-[#E9EBF0] data-[open=true]:bg-[#EEF4FF]"
+        className="flex h-12 w-full items-center gap-2.5 rounded-xl px-2 pr-10 text-left transition hover:bg-[#F1F2F5] data-[open=true]:bg-[#EEF4FF]"
         data-open={accountMenuOpen}
         onClick={() => setAccountMenuOpen((open) => !open)}
         type="button"
@@ -470,7 +470,7 @@ export function AppShell() {
       </button>
       <button
         aria-label="사이드 바 닫기"
-        className="group/collapse pointer-events-none absolute right-3 top-4 inline-flex h-7 w-7 items-center justify-center rounded-md text-[#111827] opacity-0 transition hover:bg-[#E9EBF0] group-hover/sidebar:pointer-events-auto group-hover/sidebar:opacity-100"
+        className="group/collapse pointer-events-none absolute right-3 top-4 inline-flex h-7 w-7 items-center justify-center rounded-md text-[#111827] opacity-0 transition hover:bg-[#F1F2F5] group-hover/sidebar:pointer-events-auto group-hover/sidebar:opacity-100"
         onClick={(event) => {
           event.stopPropagation();
           setAccountMenuOpen(false);
@@ -490,7 +490,7 @@ export function AppShell() {
     <div className="mt-3">
       <button
         aria-expanded={onehandAppOpen}
-        className="mb-1 flex h-6 w-full items-center gap-1 rounded-md px-2 text-left text-[11px] font-semibold tracking-[0.02em] text-[#9CA3AF] transition hover:bg-[#E9EBF0] hover:text-[#6B7280]"
+        className="mb-1 flex h-6 w-full items-center gap-1 rounded-md px-2 text-left text-[11px] font-semibold tracking-[0.02em] text-[#9CA3AF] transition hover:bg-[#F1F2F5] hover:text-[#6B7280]"
         onClick={() => setOnehandAppOpen((open) => !open)}
         type="button"
       >
@@ -509,7 +509,7 @@ export function AppShell() {
             className={`group flex h-8 items-center gap-2.5 rounded-md px-2 text-left text-[13px] font-medium transition-colors ${
               isTrashPage
                 ? "bg-[#EFF6FF] font-semibold text-[#1D4ED8]"
-                : "text-[#4B5563] hover:bg-[#E9EBF0] hover:text-[#111827]"
+                : "text-[#4B5563] hover:bg-[#F1F2F5] hover:text-[#111827]"
             }`}
             onClick={() => void navigate("/app/trash")}
             type="button"
@@ -551,7 +551,7 @@ export function AppShell() {
               className={`flex h-8 shrink-0 items-center gap-2 rounded-md px-2 text-[13px] transition ${
                 isHome
                   ? "bg-[#EFF6FF] text-[#4880EE]"
-                  : "text-[#9CA3AF] hover:bg-[#E9EBF0] hover:text-[#374151]"
+                  : "text-[#9CA3AF] hover:bg-[#F1F2F5] hover:text-[#374151]"
               }`}
               onClick={() => void navigate(HOME_PATH)}
               type="button"
@@ -564,7 +564,7 @@ export function AppShell() {
             </button>
             <button
               type="button"
-              className="flex h-8 min-w-0 flex-1 items-center gap-2 rounded-md px-2 text-[13px] text-[#9CA3AF] transition hover:bg-[#E9EBF0] hover:text-[#374151]"
+              className="flex h-8 min-w-0 flex-1 items-center gap-2 rounded-md px-2 text-[13px] text-[#9CA3AF] transition hover:bg-[#F1F2F5] hover:text-[#374151]"
               onClick={() => setSearchOpen(true)}
             >
               <Search
@@ -572,7 +572,7 @@ export function AppShell() {
                 strokeWidth={1.75}
               />
               <span>통합검색</span>
-              <kbd className="ml-auto hidden rounded border border-[#E2E5EC] bg-[#F0F1F3] px-1 py-0.5 text-[10px] font-medium leading-none sm:block">
+              <kbd className="ml-auto hidden rounded border border-[#ECEEF3] bg-[#F6F7F8] px-1 py-0.5 text-[10px] font-medium leading-none sm:block">
                 ⌘K
               </kbd>
             </button>
@@ -585,7 +585,7 @@ export function AppShell() {
         </aside>
         <button
           aria-label="사이드 바 열기"
-          className={`fixed left-3 top-2.5 z-50 inline-flex h-9 w-9 items-center justify-center rounded-md text-black transition-opacity duration-[500ms] hover:bg-[#F3F4F6] ${
+          className={`fixed left-3 top-2.5 z-50 inline-flex h-9 w-9 items-center justify-center rounded-md text-black transition-opacity duration-[500ms] hover:bg-[#FAFAFB] ${
             isSidebarOpenButtonVisible
               ? "pointer-events-auto opacity-100"
               : "pointer-events-none opacity-0"
@@ -1567,7 +1567,7 @@ function ProfileSection({
       <h4 className="text-[15px] font-semibold text-[#111827]">
         {title}
       </h4>
-      <div className="mt-4 border-t border-[#E9ECF2] pt-3">{children}</div>
+      <div className="mt-4 border-t border-[#F0F2F6] pt-3">{children}</div>
     </section>
   );
 }
@@ -1596,7 +1596,7 @@ function ProfileDeviceTable({
 }) {
   return (
     <div className="overflow-hidden">
-      <div className="grid grid-cols-[minmax(0,1.4fr)_minmax(120px,0.8fr)] border-b border-[#E9ECF2] px-1 pb-2 text-[12px] text-[#8A8F98]">
+      <div className="grid grid-cols-[minmax(0,1.4fr)_minmax(120px,0.8fr)] border-b border-[#F0F2F6] px-1 pb-2 text-[12px] text-[#8A8F98]">
         <span>기기 이름</span>
         <span>마지막 활동</span>
       </div>
@@ -1620,7 +1620,7 @@ function ProfileDeviceRow({
     : formatAccountModalDateTime(device.lastSeenAt);
 
   return (
-    <div className="grid grid-cols-[minmax(0,1.4fr)_minmax(120px,0.8fr)] items-center border-b border-[#E9ECF2] px-1 py-3">
+    <div className="grid grid-cols-[minmax(0,1.4fr)_minmax(120px,0.8fr)] items-center border-b border-[#F0F2F6] px-1 py-3">
       <div className="flex min-w-0 items-start gap-2.5">
         <Laptop className="mt-0.5 h-4 w-4 shrink-0 text-[#A1A1AA]" strokeWidth={1.7} />
         <div className="min-w-0">

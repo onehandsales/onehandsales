@@ -82,7 +82,7 @@ type CompanyDetailScreenProps = {
 const COMPANY_DETAIL_FULL_WIDTH_STORAGE_KEY = "onehand.company.detail.fullWidth";
 const COMPANY_DETAIL_SMALL_TEXT_STORAGE_KEY = "onehand.company.detail.smallText";
 const COMPANY_RELATED_SECTION_CLASS_NAME =
-  "rounded-lg bg-[#F7F6F3] px-4 pb-4";
+  "rounded-lg bg-[#FAF9F6] px-4 pb-4";
 
 export function CompanyDetailScreen({ companyId }: CompanyDetailScreenProps) {
   const navigate = useNavigate();
@@ -179,8 +179,8 @@ export function CompanyDetailScreen({ companyId }: CompanyDetailScreenProps) {
 
   const contacts = contactsQuery.data?.items ?? [];
   const deals = dealsQuery.data?.items ?? [];
-  const contentWidthClassName = isFullWidth ? "max-w-none" : "max-w-[678px]";
-  const relatedSectionsClassName = isFullWidth
+  const contentWidthClassName = isFullWidth ? "max-w-[1444px]" : "max-w-[678px]";
+  const twoColumnSectionsClassName = isFullWidth
     ? "grid gap-y-5 lg:grid-cols-2 lg:gap-x-10"
     : "grid gap-5";
 
@@ -305,7 +305,7 @@ export function CompanyDetailScreen({ companyId }: CompanyDetailScreenProps) {
               isSmallText={isSmallText}
             />
 
-            <div className={relatedSectionsClassName}>
+            <div className={twoColumnSectionsClassName}>
               <ConnectedContactsTable
                 contacts={contacts}
                 isLoading={contactsQuery.isLoading}
@@ -319,26 +319,28 @@ export function CompanyDetailScreen({ companyId }: CompanyDetailScreenProps) {
               />
             </div>
 
-            <MemoPanel
-              companyId={companyId}
-              memoLogs={memoLogs}
-              isLoading={memoLogsQuery.isLoading}
-              hasNext={Boolean(memoLogsQuery.hasNextPage)}
-              isFetchingNext={memoLogsQuery.isFetchingNextPage}
-              isSmallText={isSmallText}
-              onFetchMore={() => void memoLogsQuery.fetchNextPage()}
-              onChanged={showNotice}
-            />
-            <ActivityLogPanel
-              companyId={companyId}
-              privateMemoLogs={privateMemoLogs}
-              isLoading={privateMemoLogsQuery.isLoading}
-              hasNext={Boolean(privateMemoLogsQuery.hasNextPage)}
-              isFetchingNext={privateMemoLogsQuery.isFetchingNextPage}
-              isSmallText={isSmallText}
-              onFetchMore={() => void privateMemoLogsQuery.fetchNextPage()}
-              onChanged={showNotice}
-            />
+            <div className={twoColumnSectionsClassName}>
+              <MemoPanel
+                companyId={companyId}
+                memoLogs={memoLogs}
+                isLoading={memoLogsQuery.isLoading}
+                hasNext={Boolean(memoLogsQuery.hasNextPage)}
+                isFetchingNext={memoLogsQuery.isFetchingNextPage}
+                isSmallText={isSmallText}
+                onFetchMore={() => void memoLogsQuery.fetchNextPage()}
+                onChanged={showNotice}
+              />
+              <ActivityLogPanel
+                companyId={companyId}
+                privateMemoLogs={privateMemoLogs}
+                isLoading={privateMemoLogsQuery.isLoading}
+                hasNext={Boolean(privateMemoLogsQuery.hasNextPage)}
+                isFetchingNext={privateMemoLogsQuery.isFetchingNextPage}
+                isSmallText={isSmallText}
+                onFetchMore={() => void privateMemoLogsQuery.fetchNextPage()}
+                onChanged={showNotice}
+              />
+            </div>
           </div>
         </main>
       </div>

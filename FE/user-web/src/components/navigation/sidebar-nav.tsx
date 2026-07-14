@@ -62,7 +62,7 @@ export function SidebarNav({ className }: SidebarNavProps) {
           <div key={group.label}>
             <button
               aria-expanded={isOpen}
-              className="mb-1 flex h-6 w-full items-center gap-1 rounded-md px-2 text-left text-[11px] font-semibold tracking-[0.02em] text-[#9CA3AF] transition hover:bg-[#E9EBF0] hover:text-[#6B7280]"
+              className="mb-1 flex h-6 w-full items-center gap-1 rounded-md px-2 text-left text-[11px] font-semibold tracking-[0.02em] text-[#9CA3AF] transition hover:bg-[#F1F2F5] hover:text-[#6B7280]"
               onClick={() =>
                 setOpenGroups((current) => ({
                   ...current,
@@ -89,7 +89,7 @@ export function SidebarNav({ className }: SidebarNavProps) {
                         "group flex h-8 items-center gap-2.5 rounded-md px-2 text-[13px] font-medium transition-colors",
                         isActive
                           ? "bg-[#EFF6FF] font-semibold text-[#1D4ED8]"
-                          : "text-[#4B5563] hover:bg-[#E9EBF0] hover:text-[#111827]"
+                          : "text-[#4B5563] hover:bg-[#F1F2F5] hover:text-[#111827]"
                       )
                     }
                     end={item.end}
