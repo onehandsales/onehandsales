@@ -487,9 +487,8 @@ function SettingsSkeleton({ rows }: { readonly rows: number }) {
 
 function toProviderLabel(provider: string) {
   const labels: Record<string, string> = {
-    apple: "Apple",
     google: "Google",
-    kakao: "Kakao",
+    legacy_oauth: "Legacy OAuth",
   };
 
   return labels[provider] ?? provider;

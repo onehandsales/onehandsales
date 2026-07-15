@@ -52,7 +52,8 @@ Public/auth canonical URLs use locale prefixes: `/ko`, `/ko/login`, `/ko/signup`
 - callback에서 Supabase access token을 Backend `POST /api/auth/exchange`로 보내 app access token과 refresh cookie를 받는다.
 - 개발용 mock login flow는 제거되어 있다.
 - Google OAuth signup/login은 QA 통과 상태다.
-- Kakao OAuth는 Kakao Developers 앱의 `account_email` 동의항목 설정 후 QA한다. 설정 전 `KOE205`는 provider 설정 이슈로 본다.
+- Kakao OAuth는 로그인 기능에서 제거되어 있다.
+- Apple login은 iOS 대응 시, LINE login은 일본/대만 확장 시 별도 구현한다.
 - 로그인 전 `/app/*` 보호 라우트 접근은 로그인 화면으로 이동한다.
 - 로그아웃 후 선호 locale의 login URL로 이동한다. 예: `/ko/login`, `/en-us/login`.
 - 현재 device slot은 화면 폭 기준 `mobile` 또는 `personal_laptop`으로 전송한다. 같은 slot의 다른 브라우저/기기 로그인은 기존 active device/session을 교체한다.

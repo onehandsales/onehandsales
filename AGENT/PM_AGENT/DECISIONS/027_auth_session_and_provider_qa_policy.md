@@ -1,7 +1,7 @@
 # 027 Auth Session And Provider QA Policy
 
 Date: 2026-07-09
-Updated: 2026-07-10
+Updated: 2026-07-15
 
 ## Decision
 
@@ -15,8 +15,10 @@ Onehand Sales의 현재 인증은 Supabase OAuth를 외부 identity provider로 
 - 기존 `/login`, `/signup` 등 legacy 공개/인증 URL은 선호 locale URL로 redirect한다.
 - 로그아웃 후 이동 경로는 선호 locale의 login URL로 통일한다. 예: `/ko/login`, `/en-us/login`.
 - 개발용 mock login flow는 User Web에서 제거했다.
-- Kakao OAuth는 UI에는 노출되어 있지만 Kakao Developers 앱 설정 전까지 provider QA를 보류한다.
-- Kakao 설정에는 카카오 로그인 활성화와 `account_email` 동의항목 설정이 필요하다.
+- 현재 노출/허용 provider는 Google 하나다. Backend `/api/auth/providers`와 Supabase JWT exchange는 `google`만 허용한다.
+- Kakao OAuth는 제품 로그인 기능에서 제거했다. Prisma enum의 `KAKAO`는 과거 데이터 호환용 legacy 값으로만 남긴다.
+- Apple login은 iOS 앱 출시 또는 Apple platform 정책 대응이 필요해질 때 별도 구현한다.
+- LINE login은 일본/대만 시장 로컬 provider가 필요해질 때 별도 구현한다.
 
 ## Session Policy
 

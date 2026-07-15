@@ -16,7 +16,6 @@ import type {
 import { getApiErrorMessage } from "@/lib/api-client";
 
 const fallbackProviders: AuthProviderOption[] = [
-  { provider: "kakao", label: "Kakao", enabled: true },
   { provider: "google", label: "Google", enabled: true },
 ];
 const minimumLoginLoadingMs = 1500;

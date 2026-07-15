@@ -249,7 +249,7 @@ pnpm build
 
 ### 2026-07-09 기능 수동 QA 결과
 
-- [x] 로그인: Google 로그인 동작. Kakao 로그인은 Kakao Developers 설정 전까지 보류
+- [x] 로그인: Google 로그인 동작. Kakao 로그인은 제품 로그인 기능에서 제거
 - [x] 회사 생성: 기본 동작 통과
 - [x] 담당자 생성: 기본 동작 통과
 - [x] 제품 생성: 기본 동작 통과
@@ -267,7 +267,7 @@ pnpm build
 ### 2026-07-09 기능 QA 후속 항목
 
 - `BUG-001`: 회의록 생성 시 최초 수동 QA에서 `InternalServerError`로 저장 실패했으나 최신 BE 재시작 후 API 직접 호출과 UI 재시도 모두 성공. 원인 후보는 오래된 `BE/dist/main` 프로세스 사용이다. 상태: Resolved
-- `FOLLOW-UP-001`: Kakao 로그인은 Kakao Developers 카카오 로그인/`account_email` 동의항목 설정 후 재검증
+- `FOLLOW-UP-001`: Apple login은 iOS 대응 시, LINE login은 일본/대만 확장 시 별도 provider QA로 추가
 - `FOLLOW-UP-002`: 일정이 9일~10일처럼 여러 날짜에 걸칠 때 Google Calendar처럼 9일과 10일 양쪽에 표시되어야 함
 - `FOLLOW-UP-003`: 회사/담당자/제품/딜/일정 생성 UXUI 개선 필요. 이번 기능 QA의 실패로 보지는 않음
 
@@ -307,8 +307,8 @@ pnpm build
 ### Provider 상태
 
 - [x] Google OAuth는 실제 provider smoke로 가입/로그인 확인
-- [N/A] Kakao OAuth는 Kakao Developers 설정 전까지 `Known limitation`으로 기록
-- [N/A] Kakao `KOE205`와 `account_email` 오류는 코드 회귀가 아니라 Kakao Developers 동의항목 설정 이슈로 분류
+- [N/A] Kakao OAuth는 로그인 기능에서 제거되어 provider QA 대상이 아님
+- [N/A] Apple/LINE OAuth는 future provider 후보이며 현재 QA 대상이 아님
 
 ### 기기/세션 정책
 
@@ -335,7 +335,7 @@ pnpm build
 
 - Google 로그인, `/app` 진입, 새로고침 후 세션 유지, 새 탭 `/app` 세션 유지, 로그아웃 후 선호 locale login URL 이동, 로그아웃 후 뒤로가기 보호, 재로그인 후 기존 CRM 데이터 유지, 설정/계정 화면 사용자 정보 표시를 확인했다.
 - 가입 국가/마지막 로그인 국가는 `기록 없음`이어도 현재 정책상 정상으로 본다.
-- Kakao, 만료 토큰 강제 테스트, 모바일 여러 대 동시 로그인, Admin API/권한 침투성 테스트는 이번 범위에서 제외한다.
+- Apple/LINE future provider, 만료 토큰 강제 테스트, 모바일 여러 대 동시 로그인, Admin API/권한 침투성 테스트는 이번 범위에서 제외한다.
 
 ## 10. 홈 QA
 
@@ -1055,7 +1055,7 @@ pnpm build
 - [ ] Admin 운영 화면은 현재 제품 QA 범위에서 제외
 - [ ] 과금/구독 결제는 현재 제품 QA 범위에서 제외
 - [ ] MeetingNote raw text/admin raw access는 미래 범위
-- [ ] Kakao OAuth는 Kakao Developers 계정 접근과 `account_email` 동의항목 설정 전까지 provider 설정 보류
+- [ ] Apple login은 iOS 대응 시, LINE login은 일본/대만 확장 시 별도 provider 설정/QA 필요
 - [ ] 가입 국가/마지막 로그인 국가는 proxy geo header가 없는 환경에서 `기록 없음`일 수 있음
 - [ ] 현재 User Web은 `mobile`/`personal_laptop` 두 device slot만 사용하며 모바일 여러 대 동시 active session은 보장하지 않음
 - [ ] 현재 전화번호 입력/검증은 한국 휴대폰 형식 중심이며, 다국가 전화번호 모델은 후속 검토

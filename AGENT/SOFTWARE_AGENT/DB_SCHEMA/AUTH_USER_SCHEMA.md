@@ -70,9 +70,9 @@ AuthDevice 1 ─ N AuthSession
 
 | 값 | 주석 |
 |---|---|
-| `KAKAO` | Kakao provider |
-| `GOOGLE` | Google provider |
-| `APPLE` | Apple provider. 현재 FE 표시상 planned 상태일 수 있다. |
+| `KAKAO` | Legacy value. 현재 로그인 기능에서는 사용하지 않는다. |
+| `GOOGLE` | 현재 활성 로그인 provider |
+| `APPLE` | Future candidate. iOS 대응 시 별도 구현한다. |
 
 ### AuthSessionStatus
 

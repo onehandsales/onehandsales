@@ -32,11 +32,10 @@ type AuthLoginPageProps = {
 type AuthPageMode = "login" | "signup";
 
 const providerStyles: Record<AuthProviderId, string> = {
-  kakao: "border-[#dededa] bg-white text-[#191919] hover:bg-[#f7f7f5]",
   google: "border-[#dededa] bg-white text-[#191919] hover:bg-[#f7f7f5]",
 };
 
-const providerOrder: readonly AuthProviderId[] = ["kakao", "google"];
+const providerOrder: readonly AuthProviderId[] = ["google"];
 
 const loginCopy: Record<
   PublicSiteCopyLanguage,
@@ -72,7 +71,6 @@ const loginCopy: Record<
       signup: "또는 다음으로 계속하기",
     },
     providers: {
-      kakao: "Kakao",
       google: "Google",
     },
     loading: "로그인 수단을 불러오는 중입니다.",
@@ -106,7 +104,6 @@ const loginCopy: Record<
       signup: "または次の方法で続行",
     },
     providers: {
-      kakao: "Kakao",
       google: "Google",
     },
     loading: "ログイン方法を読み込んでいます。",
@@ -140,7 +137,6 @@ const loginCopy: Record<
       signup: "或使用以下方式繼續",
     },
     providers: {
-      kakao: "Kakao",
       google: "Google",
     },
     loading: "正在載入登入方式。",
@@ -174,7 +170,6 @@ const loginCopy: Record<
       signup: "Continue with",
     },
     providers: {
-      kakao: "Kakao",
       google: "Google",
     },
     loading: "Loading sign-in options.",
@@ -208,7 +203,6 @@ const loginCopy: Record<
       signup: "Continue with",
     },
     providers: {
-      kakao: "Kakao",
       google: "Google",
     },
     loading: "Loading sign-in options.",
@@ -233,12 +227,10 @@ const loginCopy: Record<
 };
 
 const providerLogos: Record<AuthProviderId, string> = {
-  kakao: "/auth/kakao-logo.svg",
   google: "/auth/google-logo.svg",
 };
 
 const providerLogoShellStyles: Record<AuthProviderId, string> = {
-  kakao: "bg-transparent",
   google: "bg-white",
 };
 
@@ -308,16 +300,16 @@ export function AuthLoginPage({
                 <div className="h-px flex-1 bg-[#e9e9e7]" />
               </div>
 
-              <div className="mt-8 grid grid-cols-2 gap-3">
+              <div className="mt-8 grid grid-cols-1 gap-3">
                 {isProvidersLoading ? (
-                  <div className="col-span-2 flex h-[74px] items-center justify-center gap-2 rounded-[7px] border border-[#dededa] bg-white text-[13px] font-semibold text-[#777770]">
+                  <div className="flex h-[74px] items-center justify-center gap-2 rounded-[7px] border border-[#dededa] bg-white text-[13px] font-semibold text-[#777770]">
                     <Loader2 className="h-4 w-4 animate-spin text-[#2383e2]" />
                     {copy.loading}
                   </div>
                 ) : null}
 
                 {!isProvidersLoading && visibleProviders.length === 0 ? (
-                  <div className="col-span-2 rounded-[7px] border border-dashed border-[#dededa] bg-white px-4 py-5 text-center text-[13px] font-semibold text-[#777770]">
+                  <div className="rounded-[7px] border border-dashed border-[#dededa] bg-white px-4 py-5 text-center text-[13px] font-semibold text-[#777770]">
                     {copy.noProviders}
                   </div>
                 ) : null}

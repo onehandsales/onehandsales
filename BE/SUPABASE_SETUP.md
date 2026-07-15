@@ -43,11 +43,10 @@ pnpm run build
 ## Provider Notes
 
 - Google OAuth signup/login has passed manual QA.
-- Kakao OAuth requires Kakao Developers configuration before QA:
-  - Kakao Login enabled.
-  - Consent item `account_email` configured as optional or required consent.
-  - Supabase Kakao provider keys and callback URL registered.
-- If Kakao shows `KOE205` with `account_email`, the OAuth request is asking for an unconfigured Kakao consent item. Do not remove email from the product flow without redesigning Backend identity, because the current Backend requires provider email during exchange.
+- Google is the only active Supabase OAuth provider.
+- Kakao OAuth has been removed from runtime exposure and exchange. Existing Prisma `OAuthProvider.KAKAO` values are legacy data only.
+- Apple login is a future candidate for iOS/platform policy needs.
+- LINE login is a future candidate for Japan/Taiwan market expansion.
 
 ## Locale And Country Metadata
 

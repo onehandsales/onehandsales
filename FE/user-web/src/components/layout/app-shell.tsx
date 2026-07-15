@@ -1691,8 +1691,7 @@ function ProfileEmptyText({ children }: { readonly children: ReactNode }) {
 function formatProviderLabel(provider: string) {
   const normalized = provider.toLowerCase();
   if (normalized === "google") return "Google";
-  if (normalized === "kakao") return "Kakao";
-  if (normalized === "apple") return "Apple";
+  if (normalized === "legacy_oauth") return "Legacy OAuth";
   return provider;
 }
 

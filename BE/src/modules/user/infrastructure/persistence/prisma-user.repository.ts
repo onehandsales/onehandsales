@@ -171,12 +171,11 @@ export class PrismaUserRepository implements UserRepository {
     provider: OAuthProvider
   ): UserOAuthAccountSummary["provider"] {
     switch (provider) {
-      case OAuthProvider.KAKAO:
-        return "kakao";
       case OAuthProvider.GOOGLE:
         return "google";
+      case OAuthProvider.KAKAO:
       case OAuthProvider.APPLE:
-        return "apple";
+        return "legacy_oauth";
     }
   }
 

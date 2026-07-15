@@ -26,7 +26,7 @@
 - Admin Backend는 현재 `/admin/api/me`만 구현되어 있으며, 관리자 페이지와 운영 조회 API는 후속 단계에서 만든다.
 - User Web은 URL locale 공개/인증 진입면과 `/app` 홈 대시보드, Company, Contact, 명함 스캔, Product, Deal, Schedule, MeetingNote 수동 화면, MeetingNote AI/STT draft UI, 저장 후 딜 연동, Search GlobalSearch, Trash 목록/상세/복구, DataImport의 실제 API 연동이 완료되어 있다. 나머지 미구현 Backend 도메인은 실제 API 연동 전까지 mock/placeholder 경계를 명확히 해야 한다.
 - 공개/인증 URL locale은 `ko`, `ja`, `zh-tw`, `en-us`, `en-gb`, `en-sg`, `en-au`, `en-ca`를 지원한다. 초기 판매/검토 국가는 한국, 일본, 대만, 미국, 영국, 싱가포르, 호주, 캐나다다. 로그인 이후 `/app` 관리 화면은 한국어 우선으로 운영한다.
-- 인증 QA 상태: Supabase 테스트 데이터 초기화 완료, Google OAuth 신규 가입/로그인 QA 통과, URL locale smoke 통과, 로그인/회원가입 provider 버튼의 browser popup OAuth 시작 E2E 통과, 로그아웃 후 선호 locale의 login URL 이동 적용 및 확인 완료. Kakao OAuth는 Kakao Developers 계정 접근과 `account_email` 동의항목 설정 전까지 보류한다.
+- 인증 QA 상태: Supabase 테스트 데이터 초기화 완료, Google OAuth 신규 가입/로그인 QA 통과, URL locale smoke 통과, 로그인/회원가입 provider 버튼의 browser popup OAuth 시작 E2E 통과, 로그아웃 후 선호 locale의 login URL 이동 적용 및 확인 완료. 현재 활성 provider는 Google만이다.
 - 2026-07-10 기준 핵심 업무 happy path, URL locale smoke, API/security smoke, BE/FE/admin-web 자동 점검은 통과했다. 출시 전 남은 품질 범위는 UX/UI 공통 QA, 모바일 브라우저 QA, Chrome/Edge QA, 다중 계정 보안 QA, DB/운영 환경 정합성 확인이다.
 
 ## 1. 개발 우선순위
@@ -62,13 +62,13 @@
 ### MVP 포함
 
 - 구글 로그인
-- 카카오 로그인. 단, Kakao Developers 앱의 `account_email` 동의항목 설정 후 QA한다.
 - 사용자별 데이터 분리
 
 ### 제외
 
 - 이메일/비밀번호 로그인
 - 애플 로그인
+- 라인 로그인
 - 결제 기반 권한 자동 처리
 
 ## 3. 회사

@@ -183,7 +183,7 @@
 - Admin 운영 화면은 현재 QA 범위에서 제외
 - 알림, 결제, 구독은 현재 제품 범위에서 제외
 - iOS/Android 네이티브 앱은 현재 제품 범위가 아님
-- Kakao OAuth는 Kakao Developers 앱 설정과 `account_email` 동의항목 설정 전까지 provider QA 보류
+- Kakao OAuth는 로그인 기능에서 제거. Apple login은 iOS 대응 시, LINE login은 일본/대만 확장 시 별도 구현/QA
 - 가입 국가/마지막 로그인 국가는 proxy geo header가 없으면 `기록 없음`일 수 있음
 - 현재 전화번호 입력/검증은 한국 휴대폰 형식 중심이며, 다국가 전화번호 모델은 후속 검토
 

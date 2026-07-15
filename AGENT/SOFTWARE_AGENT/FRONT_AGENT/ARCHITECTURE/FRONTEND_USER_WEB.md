@@ -160,9 +160,9 @@ mock/placeholder 경계를 유지해야 하는 항목:
 - 로그인/회원가입 provider 버튼은 가능한 경우 Supabase OAuth URL을 browser popup으로 열고, popup이 차단되면 기존 full-page redirect를 사용한다.
 - `/auth/callback`은 Supabase session을 읽고 Backend `POST /api/auth/exchange`로 앱 session을 교환한다.
 - popup OAuth callback도 같은 `/auth/callback`을 사용하며 app session 저장 후 popup을 닫아 부모 창이 session을 복원한다.
-- 개발용 mock login flow는 User Web에서 제거되어 있다. E2E와 QA는 현재 로그인 UI의 Kakao/Google provider 버튼을 기준으로 한다.
+- 개발용 mock login flow는 User Web에서 제거되어 있다. E2E와 QA는 현재 로그인 UI의 Google provider 버튼을 기준으로 한다.
 - Google OAuth signup/login은 수동 QA 통과 상태다.
-- Kakao OAuth는 Kakao Developers 앱에서 카카오 로그인 활성화와 `account_email` 동의항목 설정이 필요하다. 설정 전에는 Kakao hosted `KOE205` 오류가 발생할 수 있다.
+- Kakao OAuth는 로그인 기능에서 제거되어 있다. Apple login은 iOS 대응 시, LINE login은 일본/대만 확장 시 별도 구현한다.
 - 로그아웃은 Backend `/api/auth/logout`, Supabase `signOut`, localStorage app token 삭제 후 선호 locale의 login URL로 이동한다. 예: `/ko/login`, `/en-us/login`.
 - app access token은 localStorage와 API client memory에 저장한다. refresh token은 Backend httpOnly cookie로만 다룬다.
 - exchange payload의 device slot은 화면 폭 `767px 이하`면 `mobile`, 그 외는 `personal_laptop`이다. `work_laptop`은 Backend enum에는 있지만 현재 User Web에서는 보내지 않는다.

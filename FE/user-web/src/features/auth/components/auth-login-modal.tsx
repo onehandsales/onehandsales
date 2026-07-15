@@ -27,16 +27,13 @@ type AuthLoginModalProps = {
 };
 
 const providerStyles: Record<AuthProviderId, string> = {
-  kakao: "border-[#E8D100] bg-[#FEE500] text-[#191919]",
   google: "border-[#DADCE0] bg-white text-[#3C4043]",
 };
 
 const providerLogos: Record<AuthProviderId, string> = {
-  kakao: "/auth/kakao-logo.svg",
   google: "/auth/google-logo.svg",
 };
 const providerLogoShellStyles: Record<AuthProviderId, string> = {
-  kakao: "bg-transparent",
   google: "bg-white",
 };
 const modalBodyClassName = "flex flex-1 flex-col px-8 pb-6 pt-7 max-[460px]:px-6";

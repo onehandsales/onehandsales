@@ -23,6 +23,7 @@
 - `025_product_domain_basic_scope.md`
 - `026_time_timezone_policy.md`
 - `027_auth_session_and_provider_qa_policy.md`
+- `028_auth_provider_google_only_and_future_local_providers.md`
 
 ## 3. 관련 문서
 

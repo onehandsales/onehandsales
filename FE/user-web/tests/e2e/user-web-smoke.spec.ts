@@ -379,7 +379,6 @@ test.describe("User Web smoke E2E", () => {
         page.getByRole("heading", { name: "Your AI workspace" })
       ).toBeVisible();
       await expect(page.getByText("Log in to Onehand")).toBeVisible();
-      await expect(page.getByRole("button", { name: "Kakao" })).toBeVisible();
       await expect(page.getByRole("button", { name: "Google" })).toBeVisible();
 
       await seedAuthenticatedSession(page);
@@ -598,7 +597,6 @@ async function handleApiRequest(
   if (path === "/api/auth/providers" && method === "GET") {
     return json({
       providers: [
-        { provider: "kakao", label: "Kakao", enabled: true },
         { provider: "google", label: "Google", enabled: true },
       ],
     });

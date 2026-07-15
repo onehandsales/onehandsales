@@ -65,7 +65,7 @@ pnpm run dev
 
 User Web URL: `http://localhost:5173`
 
-User Web의 공개/인증 canonical URL은 locale prefix를 사용한다. 예: `/ko`, `/ko/login`, `/ko/pricing`, `/en-us/login`. 기존 `/`, `/login`, `/pricing` 등은 선호 locale URL로 redirect하고, 로그인 후 실제 앱 홈은 `/app`이다. User Web은 Supabase OAuth provider login, 공유 `/auth/callback`, Backend `POST /api/auth/exchange`, refresh cookie 기반 access token 재발급 흐름을 사용한다. 개발용 mock login 경로는 제거되어 있으며, 현재 노출 provider는 Google과 Kakao다. Kakao는 Kakao Developers 앱의 `account_email` 동의항목 설정이 필요해 계정 접근 가능 시 별도 처리한다.
+User Web의 공개/인증 canonical URL은 locale prefix를 사용한다. 예: `/ko`, `/ko/login`, `/ko/pricing`, `/en-us/login`. 기존 `/`, `/login`, `/pricing` 등은 선호 locale URL로 redirect하고, 로그인 후 실제 앱 홈은 `/app`이다. User Web은 Supabase OAuth provider login, 공유 `/auth/callback`, Backend `POST /api/auth/exchange`, refresh cookie 기반 access token 재발급 흐름을 사용한다. 개발용 mock login 경로는 제거되어 있으며, 현재 노출 provider는 Google 하나다.
 
 명함 스캔은 `/app/business-cards`에서 실제 API와 연결되어 있다. 사용자는 이미지를 업로드한 뒤 `명함스캔` 진행 표시를 보고, 추출 결과를 확인/수정한 후 회사/담당자로 저장한다.
 
@@ -123,7 +123,7 @@ Playwright smoke E2E는 기본적으로 Backend와 외부 Provider를 route mock
 
 ## External Providers
 
-기본 local smoke와 unit test는 OpenAI, OCR, Supabase Auth를 실제 호출하지 않는다. 실제 provider 검증이 필요할 때는 각 앱의 `.env`를 채우고 별도 smoke로 확인한다. Supabase OAuth 실검증은 Google부터 확인하고, Kakao는 Kakao Developers의 카카오 로그인 활성화와 `account_email` 동의항목 설정 후 확인한다.
+기본 local smoke와 unit test는 OpenAI, OCR, Supabase Auth를 실제 호출하지 않는다. 실제 provider 검증이 필요할 때는 각 앱의 `.env`를 채우고 별도 smoke로 확인한다. 현재 Supabase OAuth 실검증 대상은 Google만이다. Apple login은 iOS 앱 출시 또는 Apple platform 정책 대응 시, LINE login은 일본/대만 확장 시 별도 구현/검증한다.
 
 환경 변수 정본은 각 실행 단위의 `.env`와 `AGENT/SOFTWARE_AGENT/COMMON/ENVIRONMENT.md`다. `.env.example` 또는 `.env.local`은 현재 정본이 아니다. Backend와 Vite가 로컬 override 파일을 읽을 수 있더라도, 공유 환경 계약은 공통 환경 문서에 기록된 변수명만 기준으로 한다.
 외부 provider 에러 처리와 후속 개선 항목은 `AGENT/SOFTWARE_AGENT/COMMON/ERROR.md`에 기록한다.

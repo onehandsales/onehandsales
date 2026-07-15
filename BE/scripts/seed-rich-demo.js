@@ -601,12 +601,6 @@ async function seedAuth() {
         providerEmail: "local.user@example.com",
       },
       {
-        userId: USER_ID,
-        provider: OAuthProvider.KAKAO,
-        providerUserId: "local-kakao-user",
-        providerEmail: "local.user@example.com",
-      },
-      {
         userId: ADMIN_ID,
         provider: OAuthProvider.GOOGLE,
         providerUserId: "local-google-admin",

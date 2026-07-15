@@ -23,22 +23,18 @@ type AuthSocialLoginModalProps = {
 };
 
 const fallbackProviders: AuthProviderOption[] = [
-  { provider: "kakao", label: "Kakao", enabled: true },
   { provider: "google", label: "Google", enabled: true },
 ];
 
 const providerStyles: Record<AuthProviderId, string> = {
-  kakao: "border-[#E8D100] bg-[#FEE500] text-[#191919]",
   google: "border-[#DADCE0] bg-white text-[#3C4043]",
 };
 
 const providerLogos: Record<AuthProviderId, string> = {
-  kakao: "/auth/kakao-logo.svg",
   google: "/auth/google-logo.svg",
 };
 
 const providerLogoShellStyles: Record<AuthProviderId, string> = {
-  kakao: "bg-transparent",
   google: "bg-white",
 };
 

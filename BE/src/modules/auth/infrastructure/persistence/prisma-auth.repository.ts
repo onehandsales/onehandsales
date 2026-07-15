@@ -457,24 +457,19 @@ export class PrismaAuthRepository implements AuthRepository {
   // 기능 : 외부 인증 제공자 값을 Prisma OAuth 제공자 enum으로 변환합니다.
   private toPrismaProvider(provider: ExternalAuthProvider): OAuthProvider {
     switch (provider) {
-      case "kakao":
-        return OAuthProvider.KAKAO;
       case "google":
         return OAuthProvider.GOOGLE;
-      case "apple":
-        return OAuthProvider.APPLE;
     }
   }
 
   // 기능 : Prisma OAuth 제공자 enum을 외부 인증 제공자 값으로 변환합니다.
   private fromPrismaProvider(provider: OAuthProvider): ExternalAuthProvider {
     switch (provider) {
-      case OAuthProvider.KAKAO:
-        return "kakao";
       case OAuthProvider.GOOGLE:
         return "google";
+      case OAuthProvider.KAKAO:
       case OAuthProvider.APPLE:
-        return "apple";
+        throw new Error("Inactive OAuth provider cannot be used for auth exchange");
     }
   }
 

@@ -33,7 +33,6 @@ export const authProviderModalCopy: Record<
     noProviders: "사용할 수 있는 로그인이 없어요.",
     providersErrorPrefix: "로그인 수단을 불러오지 못해 기본 버튼을 보여줘요.",
     providerLabels: {
-      kakao: "Kakao로 계속하기",
       google: "Google로 계속하기",
     },
   },
@@ -49,7 +48,6 @@ export const authProviderModalCopy: Record<
     providersErrorPrefix:
       "ログイン方法を読み込めないため、既定のボタンを表示しています。",
     providerLabels: {
-      kakao: "Kakaoで続行",
       google: "Googleで続行",
     },
   },
@@ -64,7 +62,6 @@ export const authProviderModalCopy: Record<
     noProviders: "目前沒有可用的登入方式。",
     providersErrorPrefix: "無法載入登入方式，正在顯示預設按鈕。",
     providerLabels: {
-      kakao: "使用 Kakao 繼續",
       google: "使用 Google 繼續",
     },
   },
@@ -80,7 +77,6 @@ export const authProviderModalCopy: Record<
     providersErrorPrefix:
       "Could not load sign-in methods, so default buttons are shown.",
     providerLabels: {
-      kakao: "Continue with Kakao",
       google: "Continue with Google",
     },
   },
@@ -96,7 +92,6 @@ export const authProviderModalCopy: Record<
     providersErrorPrefix:
       "Could not load sign-in options, so default buttons are shown.",
     providerLabels: {
-      kakao: "Continue with Kakao",
       google: "Continue with Google",
     },
   },

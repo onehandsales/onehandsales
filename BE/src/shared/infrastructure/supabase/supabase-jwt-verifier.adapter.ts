@@ -91,7 +91,7 @@ export class SupabaseJwtVerifierAdapter implements ExternalAuthVerifier {
   private getProvider(payload: SupabaseJwtPayload): ExternalAuthProvider {
     const provider = payload.app_metadata?.provider;
 
-    if (provider === "kakao" || provider === "google") {
+    if (provider === "google") {
       return provider;
     }
 
