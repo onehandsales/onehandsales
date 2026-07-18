@@ -24,6 +24,7 @@
 - `026_time_timezone_policy.md`
 - `027_auth_session_and_provider_qa_policy.md`
 - `028_auth_provider_google_only_and_future_local_providers.md`
+- `029_global_b2c_series_a_priority.md`
 
 ## 3. 관련 문서
 

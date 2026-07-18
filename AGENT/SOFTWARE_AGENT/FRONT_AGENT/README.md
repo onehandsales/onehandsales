@@ -49,6 +49,7 @@ FRONT_AGENT/
 - 서버 상태는 TanStack Query로 관리한다.
 - 폼 검증은 React Hook Form과 Zod를 기준으로 한다.
 - 실제 Backend 미구현 영역은 mock/placeholder 경계를 문서와 코드에서 명확히 둔다.
+- 2026-07-18 PM 전략 기준으로, 지금은 새 기능 화면을 늘리기보다 User Web의 UX/UI 공통 QA와 모바일 브라우저 QA를 먼저 진행한다.
 
 ## 6. 현재 구현 스냅샷
 
@@ -77,3 +78,4 @@ Admin Web:
 - `AGENT/UXUI_AGENT/PLANNING/USER_FLOW_AND_SCREENS.md`
 - `AGENT/UXUI_AGENT/PLANNING/UX_UI_DIRECTION.md`
 - `AGENT/UXUI_AGENT/UX_REVIEW_CHECKLIST.md`
+- `AGENT/PM_AGENT/PLANNING/GLOBAL_B2C_SERIES_A_ROADMAP.md`

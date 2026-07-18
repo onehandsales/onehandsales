@@ -711,7 +711,41 @@ Log는 객관적 사실, 변경, 만남, 소식, 이력 기록이고 Memo는 사
 - 딜 불러오기 누락 회사/담당자/제품 보정값은 FE API 함수, BE DTO, HTTP controller confirm, application service, repository 경로에 연결되어 있다.
 - persistent `ImportJob` table, 서버 재시작 후 이어받기는 후속 범위다.
 
-## 20. Mermaid ERD
+## 20. Global Paid / Growth 후속 데이터 범위
+
+글로벌 B2C 유료 판매와 Series A급 제품/사업으로 가기 위한 아래 데이터 모델은 현재 Prisma schema에 구현되어 있지 않다.
+
+후속 후보:
+
+- `SubscriptionPlan`
+- `UserSubscription`
+- `PaymentTransaction`
+- `Invoice`
+- `Refund`
+- `PaymentProviderEvent`
+- `UsageMeter`
+- `AiUsageLog`
+- `ProductAnalyticsEvent`
+- `UserActivationSnapshot`
+- `RetentionCohortSnapshot`
+- `ChurnSurveyResponse`
+- `PaywallExperiment`
+- `NotificationPreference`
+- `NotificationDelivery`
+- `AdminAuditLog`
+- `SensitiveRawAccessLog`
+
+정책:
+
+- 결제/구독 모델은 글로벌 세금/컴플라이언스 또는 Merchant of Record 전략과 함께 설계한다.
+- 제품 분석 이벤트는 PII를 직접 저장하지 않고, activation, retention, conversion, churn, AI cost/user를 볼 수 있는 최소 이벤트로 시작한다.
+- AI 사용량 로그는 provider prompt/raw response 전문을 저장하지 않는다.
+- Admin audit와 sensitive raw access는 사용자 데이터 변경 또는 민감 원문 조회와 같은 transaction 안에서 기록하는 것을 우선 검토한다.
+- 이 범위는 현재 MVP DB 범위가 아니며, 실제 구현 전 `TODO/{PLAN_NAME}/COMMON/API-SPEC`와 Software DB schema 문서를 먼저 작성한다.
+
+자세한 제품 전략은 `AGENT/PM_AGENT/PLANNING/GLOBAL_B2C_SERIES_A_ROADMAP.md`를 따른다.
+
+## 21. Mermaid ERD
 
 ```mermaid
 erDiagram
@@ -744,10 +778,11 @@ erDiagram
   PRODUCT ||--o{ PRODUCT_CONNECTION : connects
 ```
 
-## 21. 관련 문서
+## 22. 관련 문서
 
 - `AGENT/SOFTWARE_AGENT/DB_SCHEMA/README.md`
 - `AGENT/SOFTWARE_AGENT/DB_SCHEMA/AUTH_USER_SCHEMA.md`
 - `AGENT/SOFTWARE_AGENT/DB_SCHEMA/COMPANY_SCHEMA.md`
 - `AGENT/SOFTWARE_AGENT/DB_SCHEMA/CONTACT_SCHEMA.md`
+- `AGENT/PM_AGENT/PLANNING/GLOBAL_B2C_SERIES_A_ROADMAP.md`
 - `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/ARCHITECTURE/BACKEND.md`

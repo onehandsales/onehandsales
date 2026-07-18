@@ -42,6 +42,26 @@
 9. 범용 DealActivity table
 10. Admin 페이지와 운영 조회/감사/민감 원문 API
 
+### 1A. 지금 UX/UI인가 기능 추가인가
+
+현재는 UX/UI와 출시 전 품질을 먼저 볼 타이밍이다.
+
+판단 기준:
+
+- 핵심 MVP 업무 기능은 이미 Auth/User, Company, Contact, Product, Deal, Schedule, MeetingNote, BusinessCard OCR, Search, Trash, DataImport, Domain export까지 구현되어 있다.
+- 아직 확인하지 않은 위험은 기능 부재보다 실제 사용 품질, 모바일 브라우저 사용성, 다중 계정 데이터 격리, DB/Prisma 운영 정합성에 있다.
+- 따라서 새 기능을 추가하기 전에 `AGENT/SOFTWARE_AGENT/COMMON/QA_CHECKLIST.md` 기준으로 UX/UI 공통 QA와 모바일 브라우저 QA를 먼저 끝낸다.
+- QA에서 발견한 S0/S1/S2는 DataImport 영속화, Notification, Admin, 결제/구독보다 먼저 처리한다.
+
+기능 추가는 아래 조건을 만족한 뒤 시작한다.
+
+1. UX/UI 공통 QA 결과가 기록된다.
+2. 390px/360px 모바일 브라우저 핵심 흐름이 확인된다.
+3. Chrome/Edge 핵심 시나리오가 확인된다.
+4. 다중 계정 보안 QA가 완료된다.
+5. DB/Prisma/migration 운영 정합성이 정리된다.
+6. S0/S1 버그가 없고, S2는 수정 또는 보류 판단이 문서화된다.
+
 ## 2. 인증
 
 ### 현재 Backend 구현
@@ -334,10 +354,39 @@
 - 계좌이체 입금 확인
 - 유료 상태/권한 관리
 
-## 12. 관련 문서
+## 12. 글로벌 B2C 유료 판매와 Series A급 후속 범위
+
+현재 MVP 범위는 개인 영업자의 핵심 업무 루프를 구현하는 데 초점이 있다. 글로벌 B2C 유료 판매와 Series A급 사업화는 MVP 이후 별도 범위로 본다.
+
+글로벌 B2C 유료 판매 전 필요한 후속 범위:
+
+- 무료체험, 월간/연간 구독, AI 사용량 포함/초과 정책
+- 결제 provider 또는 Merchant of Record 연동
+- VAT/GST/판매세, 환불, chargeback, invoice, receipt
+- `/app` 내부 다국어와 국가별 UX writing
+- 다국가 전화번호, 날짜/시간, 통화, 주소/지역 표시
+- Admin 고객 지원, 구독 상태, 결제 이슈, 민감정보 마스킹, 감사 로그
+- 개인정보 처리, 계정 삭제, 데이터 export, 환불/약관/보안 문서
+- activation, retention, paid conversion, churn, ARPU, LTV/CAC, AI cost/user 분석
+
+Series A급 후속 범위:
+
+- Notification/Reminder 기반 리텐션 루프
+- AI next action/follow-up/딜 리스크/주간 영업 리포트
+- 모바일 현장 입력, 명함 촬영, 음성 기록, push reminder
+- 범용 DealActivity timeline
+- Google Calendar 가져오기/내보내기
+- 결제/paywall 실험과 국가별 가격
+- 제품 분석과 unit economics
+- Admin 운영과 보안/감사 신뢰 체계
+
+자세한 정본은 `AGENT/PM_AGENT/PLANNING/GLOBAL_B2C_SERIES_A_ROADMAP.md`를 따른다.
+
+## 13. 관련 문서
 
 - `AGENT/PM_AGENT/PLANNING/PRD.md`
 - `AGENT/PM_AGENT/PLANNING/DATA_MODEL.md`
+- `AGENT/PM_AGENT/PLANNING/GLOBAL_B2C_SERIES_A_ROADMAP.md`
 - `AGENT/UXUI_AGENT/PLANNING/USER_FLOW_AND_SCREENS.md`
 - `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/ARCHITECTURE/BACKEND.md`
 - `AGENT/SOFTWARE_AGENT/FRONT_AGENT/ARCHITECTURE/FRONTEND_USER_WEB.md`

@@ -1,10 +1,13 @@
 # onehand.sales QA 체크리스트
 
 작성일: 2026-07-06
+전략 보강: 2026-07-18 `AGENT/PM_AGENT/PLANNING/GLOBAL_B2C_SERIES_A_ROADMAP.md`
 
 이 문서는 `BE`, `FE`, `AGENT` 문서를 기준으로 만든 QA 체크리스트입니다. QA를 처음 진행하는 사람이 그대로 따라가며 확인할 수 있도록 기능 QA와 UX/UI QA를 함께 정리합니다.
 
 현재 QA 대상 제품은 `Web + 반응형 Web + 모바일 브라우저 Web`입니다. iOS/Android 네이티브 앱은 현재 구현/QA 범위가 아니며, 모바일 QA는 모바일 브라우저에서 현재 Web 제품의 핵심 업무가 사용 가능한지 확인하는 기준으로 진행합니다.
+
+2026-07-18 PM 전략 기준으로, 지금 바로 해야 할 일은 새 기능 추가가 아니라 이 문서 기준의 UX/UI 공통 QA, 모바일 브라우저 QA, Chrome/Edge QA, 다중 계정 보안 QA, DB/Prisma/migration 운영 정합성 확인입니다.
 
 ## 1. QA 목적
 
@@ -76,6 +79,8 @@ QA 판단 기준은 아래 파일을 우선합니다.
 - `AGENT/PM_AGENT/PLANNING/IMPLEMENTATION_STATUS.md`
 - `AGENT/PM_AGENT/PLANNING/MVP_SCOPE.md`
 - `AGENT/PM_AGENT/PLANNING/PRD.md`
+- `AGENT/PM_AGENT/PLANNING/GLOBAL_B2C_SERIES_A_ROADMAP.md`
+- `AGENT/PM_AGENT/DECISIONS/029_global_b2c_series_a_priority.md`
 - `AGENT/UXUI_AGENT/UX_REVIEW_CHECKLIST.md`
 - `AGENT/UXUI_AGENT/PLANNING/USER_FLOW_AND_SCREENS.md`
 - `AGENT/UXUI_AGENT/PLANNING/UX_UI_DIRECTION.md`

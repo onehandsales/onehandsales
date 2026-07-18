@@ -175,11 +175,41 @@ Admin Backend는 현재 `GET /admin/api/me`만 구현되어 있으므로, Admin 
 
 또한 이 서비스의 데이터는 사용자 개인 기준으로 소유된다. User API는 항상 본인 데이터만 다루고, Admin API는 별도 경로와 권한, 민감정보 마스킹, 감사 로그 기준을 따라야 한다.
 
-## 12. 관련 문서
+## 12. 글로벌 B2C 유료 판매와 Series A 방향
+
+현재 제품은 핵심 MVP 업무 루프를 구현하는 단계다. 바로 전 세계 유료 판매로 확장하기 전에는 출시 전 UX/UI 품질, 모바일 브라우저 사용성, 다중 계정 보안, DB/운영 정합성을 먼저 확인한다.
+
+글로벌 B2C 유료 판매가 가능해지려면 제품 기능 외에 다음 계층이 필요하다.
+
+- 결제/구독, 무료체험, 월간/연간 요금제
+- VAT/GST/판매세 또는 Merchant of Record
+- `/app` 내부 다국어
+- 국가별 전화번호, 날짜/시간, 통화, 주소/지역 표시
+- Admin 고객 지원, 구독 상태, 결제 이슈, 민감정보 마스킹, 감사 로그
+- 개인정보, 계정 삭제, 데이터 export, 환불/약관/보안 문서
+- activation, retention, paid conversion, churn, ARPU, LTV/CAC, AI cost/user 분석
+
+Series A급 제품으로 가려면 기능 수를 늘리는 것보다 매일 열 이유와 반복 매출의 질을 만들어야 한다.
+
+Series A급 방향:
+
+- Notification/Reminder 기반 리텐션 루프
+- AI next action, follow-up 문구, 딜 리스크, 주간 영업 리포트
+- 모바일 현장 입력, 명함 촬영, 음성 기록, push reminder
+- 범용 DealActivity timeline
+- Google Calendar 연동
+- 결제/paywall 실험
+- 제품 분석과 unit economics
+- Admin 운영과 보안/감사 신뢰 체계
+
+자세한 기준은 `AGENT/PM_AGENT/PLANNING/GLOBAL_B2C_SERIES_A_ROADMAP.md`를 따른다.
+
+## 13. 관련 문서
 
 - `AGENT/PM_AGENT/PLANNING/PRD.md`
 - `AGENT/PM_AGENT/PLANNING/MVP_SCOPE.md`
 - `AGENT/PM_AGENT/PLANNING/DATA_MODEL.md`
+- `AGENT/PM_AGENT/PLANNING/GLOBAL_B2C_SERIES_A_ROADMAP.md`
 - `AGENT/UXUI_AGENT/PLANNING/USER_FLOW_AND_SCREENS.md`
 - `AGENT/UXUI_AGENT/PLANNING/UX_UI_DIRECTION.md`
 - `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/ARCHITECTURE/BACKEND.md`

@@ -13,6 +13,7 @@ PM 관점에서 사용자의 문제, 제품 가치, 포함/제외 범위, 도메
 - `PRD.md`: 제품 정의, 타겟, 핵심 문제, 핵심 가치
 - `MVP_SCOPE.md`: MVP 포함/제외 기능과 개발 우선순위
 - `IMPLEMENTATION_STATUS.md`: 현재 BE/FE 기준 완료, 부분 완료, 후속 기능의 AGENT 정본 현황
+- `GLOBAL_B2C_SERIES_A_ROADMAP.md`: 미완성 영역, 최종 완성 형태, 글로벌 B2C 유료 판매 조건, Series A급 로드맵
 - `DATA_MODEL.md`: 제품 관점의 핵심 도메인 모델
 
 ## 3. 작성 원칙
@@ -26,5 +27,6 @@ PM 관점에서 사용자의 문제, 제품 가치, 포함/제외 범위, 도메
 
 - `AGENT/PM_AGENT/README.md`
 - `AGENT/PM_AGENT/DECISIONS/000_확정_결정.md`
+- `AGENT/PM_AGENT/DECISIONS/029_global_b2c_series_a_priority.md`
 - `AGENT/UXUI_AGENT/PLANNING/README.md`
 - `AGENT/SOFTWARE_AGENT/DB_SCHEMA/README.md`

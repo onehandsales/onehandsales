@@ -1,8 +1,19 @@
 # Next Feature Priorities
 
 기준일: 2026-07-10
+전략 보강: 2026-07-18 `AGENT/PM_AGENT/PLANNING/GLOBAL_B2C_SERIES_A_ROADMAP.md`
 
 이 문서는 `onehand.sales`의 다음 작업 우선순위를 정리한다. 현재 기준에서는 새 기능 개발보다 출시 전 품질 라운드가 우선이다. 핵심 기능 happy path와 주요 smoke QA는 통과했고, 남은 일은 UX/UI, 모바일 브라우저, 브라우저 호환, 다중 계정 보안, 운영/DB 정합성 확인이다.
+
+2026-07-18 PM 전략 보강 기준으로도 이 판단은 유지한다. 지금은 기능을 추가할 타이밍이 아니라 UX/UI와 출시 전 품질을 먼저 확인할 타이밍이다.
+
+현재 결론:
+
+- UX/UI 공통 QA와 모바일 브라우저 QA를 가장 먼저 한다.
+- 그 다음 Chrome/Edge, 다중 계정 보안, DB/Prisma/migration 정합성을 확인한다.
+- S0/S1/S2가 나오면 기능 추가보다 먼저 수정한다.
+- DataImport Job 영속화, Notification, Admin 운영 API, 결제/구독, Series A급 AI/리텐션 기능은 QA 라운드 이후에 시작한다.
+- 글로벌 B2C 유료 판매와 Series A급 제품 방향은 `AGENT/PM_AGENT/PLANNING/GLOBAL_B2C_SERIES_A_ROADMAP.md`를 따른다.
 
 ## 1. 현재 제품 범위
 
@@ -44,6 +55,9 @@
 - 오프라인 앱 동작
 - 앱스토어/플레이스토어 배포
 - 결제/구독 자동화
+- 글로벌 세금/컴플라이언스 자동화
+- `/app` 내부 전체 다국어화
+- Admin 결제/구독 운영 도구
 
 따라서 모바일 QA는 네이티브 앱 QA가 아니라, 현재 Web 제품이 모바일 브라우저에서도 핵심 업무를 수행할 수 있는지 확인하는 QA다.
 
@@ -202,6 +216,12 @@
 | 9 | 검색/필터 고도화 | 데이터 증가 시 탐색 효율 개선 | 고급 필터/정렬/검색 기준 확정 |
 | 10 | 주간 일정/영업 리포트 | 일정, 딜, 회의록 데이터를 영업 판단으로 연결 | 주간 보고서 화면/export 요구사항 확정 |
 
+기능 추가 판단 기준:
+
+- 위 1~7번이 끝나기 전에는 새 영업 기능을 시작하지 않는다.
+- 글로벌 B2C 유료 판매 기능은 1~7번 이후 결제/구독, 세금/컴플라이언스, Admin 운영, `/app` 다국어를 한 계획으로 묶어 설계한다.
+- Series A급 기능은 Notification/Reminder, AI next action, 주간 영업 리포트, 모바일 현장 사용성, 제품 분석이 함께 움직일 때 의미가 있다.
+
 ## 6. QA 이후 기능 우선순위
 
 아래 항목은 출시 전 품질 라운드와 S0/S1/S2 정리가 끝난 뒤 검토한다.
@@ -232,3 +252,18 @@
 7. S0/S1/S2만 먼저 수정한다.
 
 이 순서가 끝나기 전에는 새 영업 기능을 시작하지 않는다.
+
+특히 지금 질문에 대한 PM 판단은 다음과 같다.
+
+- 지금은 UX/UI를 신경써야 하는 타이밍이다.
+- 기능 추가는 아직 이르다.
+- 이미 구현된 핵심 기능이 유료 사용자가 쓰기에 충분히 안정적이고 읽기 쉬운지 먼저 확인해야 한다.
+- QA 이후 첫 기능은 DataImport Job 영속화와 Notification/Reminder를 우선 후보로 둔다.
+
+## 8. 관련 정본 문서
+
+- `AGENT/PM_AGENT/PLANNING/GLOBAL_B2C_SERIES_A_ROADMAP.md`
+- `AGENT/PM_AGENT/DECISIONS/029_global_b2c_series_a_priority.md`
+- `AGENT/SOFTWARE_AGENT/COMMON/QA_CHECKLIST.md`
+- `AGENT/PM_AGENT/PLANNING/MVP_SCOPE.md`
+- `AGENT/PM_AGENT/PLANNING/IMPLEMENTATION_STATUS.md`

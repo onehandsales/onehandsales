@@ -33,6 +33,16 @@ Current implementation note as of 2026-07-10:
 - Contact/product create modals use search-input selection, immediate creation when no result exists, and automatic selection after creation.
 - Deal likelihood (`긍정 / 중립 / 부정` or percent) is not implemented in the current Deal API/FE form. Treat it as future UX scope unless a new backend plan adds it.
 
+Current priority note as of 2026-07-18:
+
+- 지금은 새 기능을 추가하기보다 UX/UI 공통 QA와 모바일 브라우저 QA를 먼저 진행한다.
+- 핵심 업무 기능은 이미 실제 API와 연결되어 있으므로, 다음 위험은 기능 부재보다 사용 품질이다.
+- 1440px, 1280px, 768px, 390px, 360px, 125% 확대에서 주요 화면이 깨지지 않는지 확인한다.
+- 긴 회사명/담당자명/제품명/딜이름, 긴 이메일/전화번호/URL이 layout을 깨지 않는지 확인한다.
+- loading, empty, error, success, destructive action 상태가 UX writing 기준과 맞는지 확인한다.
+- 이 QA가 끝나기 전에는 Notification, 결제/구독, Admin 운영, Series A급 AI 기능을 화면에 노출하지 않는다.
+- 자세한 제품 우선순위는 `AGENT/PM_AGENT/PLANNING/GLOBAL_B2C_SERIES_A_ROADMAP.md`를 따른다.
+
 Primary focus:
 
 - active deals
