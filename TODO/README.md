@@ -11,6 +11,11 @@
 ```text
 TODO/
   README.md
+  USER_WEB_UXUI_COMMON_QA_PLAN/
+    README.md
+    COMMON/
+    FE-TODO/
+    BE-TODO/
   DONE/
     README.md
     ADDITIONAL_WORK_PLAN/
@@ -90,14 +95,17 @@ TODO/
 
 현재 활성 계획 상태:
 
-- 2026-07-09 기준 `TODO` 루트에 활성 계획 폴더는 없다.
+- 2026-07-18 기준 `TODO/USER_WEB_UXUI_COMMON_QA_PLAN`이 활성 계획이다.
+- 이 계획은 1순위 작업인 User Web UX/UI 공통 QA를 `/goal`로 바로 실행할 수 있게 나눈다.
+- 이 계획의 전역 UX/UI 기준은 `Notion식 작업공간 UX + Attio식 CRM record 관계 UX`다.
+- 모바일 브라우저 390px/360px 전용 QA는 이 계획 범위가 아니며 후속 별도 계획으로 다룬다.
 - `IMPORT_TEMPLATE_PLAN`은 회사/담당자/제품/딜 불러오기 구현이 완료되어 `TODO/DONE/IMPORT_TEMPLATE_PLAN`에 보관한다. 확정 전 job 영속화는 후속 새 계획으로 다룬다.
 - `LOG_SOFT_DELETE_PLAN`은 구현 완료되어 `TODO/DONE/LOG_SOFT_DELETE_PLAN`에 보관한다.
 - 새 요구사항이나 후속 구현은 `TODO` 바로 아래에 새 계획 폴더를 만든다.
 
 진행 중인 계획:
 
-- 없음
+- `USER_WEB_UXUI_COMMON_QA_PLAN`: 1순위 UX/UI 공통 QA. `/app`, `/app/deals`, 주요 도메인 목록/상세/생성, 복잡한 입력 흐름, UX writing, 상태, 접근성 기본을 정리한다.
 
 완료된 계획:
 
@@ -158,8 +166,11 @@ TODO/
 - `AGENT/PM_AGENT/DECISIONS/000_확정_결정.md`
 - `AGENT/PM_AGENT/PLANNING/PRD.md`
 - `AGENT/PM_AGENT/PLANNING/MVP_SCOPE.md`
+- `AGENT/PM_AGENT/PLANNING/GLOBAL_B2C_SERIES_A_ROADMAP.md`
 - `AGENT/PM_AGENT/PLANNING/DATA_MODEL.md`
+- `AGENT/UXUI_AGENT/DECISIONS/020_uxui_notion_attio_reference.md`
 - `AGENT/UXUI_AGENT/PLANNING/USER_FLOW_AND_SCREENS.md`
+- `AGENT/UXUI_AGENT/PLANNING/UX_UI_DIRECTION.md`
 - `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/README.md`
 - `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/CONVENTION/BACKEND.md`
 - `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/CONVENTION/API_CONTRACT.md`
