@@ -17,6 +17,7 @@
 - 일정 생성/수정 form은 사용자 입력 local date-time과 IANA `timeZone`을 함께 보내고, 입력값을 `toISOString()`으로 임의 변환하지 않는가?
 - Backend에서 받은 UTC ISO string은 일정/사용자/조직 timezone으로 변환해 표시하는가?
 - Company 화면/API 작업 시 `companyName`, `companyFieldId`, `companyRegionId`, memo/private memo contract가 Backend와 맞는가?
+- User Web 화면이 `AGENT/UXUI_AGENT/DECISIONS/020_uxui_notion_attio_reference.md`의 Notion + Attio 기준을 따라 workspace/page/database/detail과 CRM record/linked record 맥락을 함께 보여주는가?
 - 모바일에서 딜 파이프라인이 카드형 리스트로 동작하는가?
 - Frontend component/function/hook에 `// 기능 : ...` 주석이 있는가?
 
@@ -50,4 +51,5 @@
 - `AGENT/SOFTWARE_AGENT/FRONT_AGENT/ARCHITECTURE/FRONTEND_USER_WEB.md`
 - `AGENT/SOFTWARE_AGENT/FRONT_AGENT/ARCHITECTURE/ADMIN_WEB.md`
 - `AGENT/SOFTWARE_AGENT/FRONT_AGENT/ARCHITECTURE/DEPLOYMENT.md`
+- `AGENT/UXUI_AGENT/DECISIONS/020_uxui_notion_attio_reference.md`
 - `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/ENGINEERING_REVIEW_CHECKLIST.md`

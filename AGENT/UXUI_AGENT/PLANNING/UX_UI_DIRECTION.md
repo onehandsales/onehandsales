@@ -71,17 +71,20 @@ This file is reference-only. It is not the implementation source of truth.
 
 Primary UX/UI reference:
 
-- Notion-like workspace UX is now the first UX/UI reference for the whole product.
-- This means sidebar-first navigation, page/record-centered structure, database-like list/table views, property-first detail pages, quiet typography, restrained color, and block/section-based content structure.
+- `Notion식 작업공간 UX + Attio식 CRM record 관계 UX` is now the preferred UX/UI reference for the whole product.
+- Notion provides sidebar-first navigation, page-centered structure, database-like list/table views, quiet typography, restrained color, and block/section-based content structure.
+- Attio provides CRM record relationships, linked record detail, property-first record pages, activity timeline, notes/tasks-like work context, and workflow views.
 - It does not mean copying Notion's brand, logo, copy, visual assets, or screens one-to-one.
-- It also does not mean turning the product into a free-form document editor. Sales domain fields, validation, ownership, and workflow constraints remain fixed where needed.
+- It does not mean copying Attio's brand, copy, visual assets, or screens one-to-one.
+- It also does not mean turning the product into a free-form document editor or custom CRM builder. Sales domain fields, validation, ownership, and workflow constraints remain fixed where needed.
+- The detailed decision is `AGENT/UXUI_AGENT/DECISIONS/020_uxui_notion_attio_reference.md`.
 
 External UX references:
 
-- Notion: workspace/sidebar/page/database view/detail page grammar. This is the primary reference.
+- Notion: workspace/sidebar/page/database view/detail page grammar. This is one half of the primary reference.
+- Attio: CRM record relationships between companies, people, deals, activity timeline, linked record detail structure. This is one half of the primary reference.
 - Toss-like hierarchy: simple information hierarchy, clear CTA, readable typography, low visual noise. This is now secondary to Notion.
 - Pipedrive: sales pipeline focus, deal stage visibility, next-action sales workflow. Do not copy pure Kanban as the default desktop layout.
-- Attio: record relationships between companies, people, deals, activity timeline, linked record detail structure.
 - Linear: list-first scanning, fast selection, peek/detail panel behavior, efficient command/search feel.
 - Google Calendar: monthly calendar as the default schedule view with week view switching.
 - Airtable Interface Designer: Admin-style table/filter/detail-panel operational interfaces.
@@ -94,6 +97,8 @@ Reference URLs:
 - Notion table view: https://www.notion.com/help/guides/table-view-databases
 - Notion content blocks: https://www.notion.com/help/guides/types-of-content-blocks
 - Notion style/customize: https://www.notion.com/help/customize-and-style-your-content
+- Attio data model: https://attio.com/help/reference/attio-101/attios-data-model/understanding-attio-data-model
+- Attio objects and lists: https://docs.attio.com/docs/objects-and-lists
 - Pipedrive pipeline management: https://www.pipedrive.com/en/features/pipeline-management
 - Attio records: https://attio.com/help/reference/attio-101/attios-data-model/understanding-records
 - Linear Peek: https://linear.app/docs/peek
@@ -108,7 +113,7 @@ Useful directions to keep:
 - filters/search directly above the list
 - row/card opens a record detail page or peek/detail panel
 - create from a list can open a right document panel when preserving list context matters
-- property-first detail layout with body sections for activity and memo
+- property-first detail layout with linked records, activity-like sections, schedule/meeting note context, and memo
 - simple buttons with clear icons
 - badges for status and metadata
 - modal forms only for small quick-create, confirmation, or auxiliary selection flows
@@ -127,7 +132,9 @@ Do not copy blindly:
 - Keep the UI clean, but make deal data more legible than decorative dashboard cards.
 - Do not copy reference product brand, copy, visual assets, or layout one-to-one.
 - Do not copy Notion's brand, icons, copy, or pixel-level screen layout.
+- Do not copy Attio's brand, copy, visual assets, or pixel-level screen layout.
 - Do not make every field free-form just because Notion supports free-form pages.
+- Do not expose custom object/custom field builder behavior just because Attio supports flexible CRM modeling.
 
 ## 4. App Home And Deal Layout Direction
 

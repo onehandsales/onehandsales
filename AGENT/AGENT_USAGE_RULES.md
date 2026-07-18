@@ -49,6 +49,21 @@
 
 사용자가 단순히 `문서 검토해줘`라고 말하면 기본적으로 `PLANNING_REVIEW_CHECKLIST.md`와 `DOCUMENTATION.md`를 함께 적용한다.
 
+## 3A. 전역 UX/UI reference 확인 규칙
+
+모든 작업자는 작업을 시작할 때 `AGENT/UXUI_AGENT/DECISIONS/020_uxui_notion_attio_reference.md`와 충돌하는 결과가 생기는지 확인한다.
+
+특히 아래 범위가 포함되면 해당 문서를 반드시 먼저 읽고, 관련 UXUI/FRONT_AGENT 문서와 함께 적용한다.
+
+- 화면 설계 또는 Frontend 구현
+- 사용자 노출 문구, route, navigation, sidebar, top bar
+- 목록, 상세, 생성, 수정, 삭제, 복구, 검색, 필터, pagination
+- 회사/담당자/제품/딜/일정/회의록의 linked record와 activity/Memo 기록 흐름
+- API request/response가 화면의 record 관계나 상세 표시 방식에 영향을 주는 작업
+- DB schema 변경이 화면의 record 관계, 상세 속성, activity/Memo 흐름에 영향을 주는 작업
+
+이 기준은 `Notion식 작업공간 UX + Attio식 CRM record 관계 UX`를 제품의 선호 방향으로 고정한다. 단, reference 제품의 brand, copy, visual asset, pixel-level layout은 복제하지 않는다.
+
 ## 4. 활성 TODO 재검토 요청 처리 규칙
 
 사용자가 `TODO를 재검토해줘`, `백엔드 API가 다 구성되어 있는지 봐줘`, `프론트에서 무엇을 작업해야 하는지 정리해줘`처럼 요청하면 AI 작업자는 `TODO/DONE`을 제외한 활성 TODO만 검토 대상으로 본다.
@@ -77,6 +92,7 @@
 ## 6. 관련 문서
 
 - `AGENT/README.md`
+- `AGENT/UXUI_AGENT/DECISIONS/020_uxui_notion_attio_reference.md`
 - `AGENT/PM_AGENT/CONVENTION/DOCUMENTATION.md`
 - `AGENT/PM_AGENT/CONVENTION/PLANNING_REVIEW_CHECKLIST.md`
 - `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/ENGINEERING_REVIEW_CHECKLIST.md`

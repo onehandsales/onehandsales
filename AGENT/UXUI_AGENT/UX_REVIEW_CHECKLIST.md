@@ -6,7 +6,9 @@
 
 `한손에 영업 / onehand.sales`는 개인 영업자의 실무 도구이므로, 화면은 빠른 확인, 빠른 입력, 명확한 다음 행동을 우선해야 한다.
 
-현재 UX/UI 1차 reference는 Notion이다. 모든 화면은 Notion식 작업도구 UX를 기준으로 검토하되, Notion의 브랜드, 문구, 고유 화면, 시각 자산을 그대로 복제하지 않는다.
+현재 UX/UI 1차 reference는 `Notion식 작업공간 UX + Attio식 CRM record 관계 UX`다. 모든 화면은 Notion의 workspace/page/database/detail 문법과 Attio의 CRM record/linked record/activity 문법을 함께 기준으로 검토한다.
+
+단, Notion과 Attio의 브랜드, 문구, 고유 화면, 시각 자산, pixel-level layout은 그대로 복제하지 않는다. 자세한 기준은 `AGENT/UXUI_AGENT/DECISIONS/020_uxui_notion_attio_reference.md`를 따른다.
 
 ## 2. 공통 체크리스트
 
@@ -21,9 +23,11 @@
 - `오프더레코드`, `상품`, `Customer`처럼 정본에서 제외된 표현을 쓰지 않는가?
 - 외부 UX reference를 패턴으로만 참고하고, brand/copy/visual asset/layout을 그대로 복제하지 않았는가?
 - Notion식 sidebar/page/database/detail 구조를 기준으로 화면이 정돈되어 있는가?
+- Attio식 CRM record 관계, linked record, activity/Memo 맥락이 상세 화면에 분명히 드러나는가?
 - row/card가 열 수 있는 record처럼 동작하고, 상세는 page 또는 peek/detail panel처럼 구성되어 있는가?
 - 목록에서 새 record를 생성할 때 목록 맥락을 유지해야 한다면 오른쪽 문서형 패널을 우선 검토했는가?
 - 문서형 생성 패널이 열려도 목록의 비교 컬럼을 숨기거나 합치지 않는가?
+- 화면이 custom CRM builder처럼 과도한 설정 자유도를 노출하지 않고, 고정된 개인 영업 workflow를 빠르게 처리하게 하는가?
 
 ## 2A. UX 라이팅 체크리스트
 
@@ -80,7 +84,7 @@
 - `AGENT/UXUI_AGENT/PLANNING/USER_FLOW_AND_SCREENS.md`
 - `AGENT/UXUI_AGENT/PLANNING/UX_UI_DIRECTION.md`
 - `AGENT/UXUI_AGENT/PLANNING/UX_WRITING_GUIDE.md`
+- `AGENT/UXUI_AGENT/DECISIONS/020_uxui_notion_attio_reference.md`
 - `AGENT/UXUI_AGENT/DECISIONS/README.md`
 - `AGENT/SOFTWARE_AGENT/FRONT_AGENT/ENGINEERING_REVIEW_CHECKLIST.md`
-
 

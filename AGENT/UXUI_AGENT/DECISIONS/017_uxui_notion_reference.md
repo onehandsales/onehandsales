@@ -1,5 +1,7 @@
 ﻿# UX/UI Notion Reference Decision
 
+> 최신 적용 기준: `020_uxui_notion_attio_reference.md`에서 Notion 기준은 Attio식 CRM record 관계 UX와 결합되어 적용된다. 이 문서는 Notion식 작업공간 UX의 세부 기준으로 유지한다.
+
 ## 결정
 
 `onehand.sales`의 User Web과 Admin Web UX/UI는 앞으로 Notion식 작업도구 UX를 1차 기준으로 삼는다.

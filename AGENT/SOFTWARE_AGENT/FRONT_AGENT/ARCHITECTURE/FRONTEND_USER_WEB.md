@@ -25,6 +25,8 @@
 - API client, env parsing, QueryClient 설정은 `lib`에 둔다.
 - 인증 token은 UI component에서 직접 다루지 않고 auth feature와 API client를 통해 접근한다.
 - User Web은 `/admin/api/*`를 호출하지 않는다.
+- 화면 구조와 상호작용은 `AGENT/UXUI_AGENT/DECISIONS/020_uxui_notion_attio_reference.md`의 `Notion식 작업공간 UX + Attio식 CRM record 관계 UX`를 따른다.
+- 회사, 담당자, 제품, 딜, 일정, 회의록 화면은 열 수 있는 record, linked record, property-first detail, activity/Memo 맥락을 우선해서 구성한다.
 
 ## 3. 현재 라우트
 
@@ -237,6 +239,7 @@ Backend는 AI 초안 provider와 STT provider를 분리한다. Frontend는 provi
 
 - `AGENT/SOFTWARE_AGENT/FRONT_AGENT/CONVENTION/FRONTEND_USER_WEB.md`
 - `AGENT/SOFTWARE_AGENT/FRONT_AGENT/ENGINEERING_REVIEW_CHECKLIST.md`
+- `AGENT/UXUI_AGENT/DECISIONS/020_uxui_notion_attio_reference.md`
 - `AGENT/UXUI_AGENT/PLANNING/USER_FLOW_AND_SCREENS.md`
 - `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/CONVENTION/API_SPEC.md`
 - `TODO/DONE/INTEGRATED_SEARCH_PLAN/COMMON/API-SPEC/SEARCH_API.md`

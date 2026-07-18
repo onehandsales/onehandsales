@@ -19,6 +19,7 @@
 - Admin UI 톤
 - 모바일 화면 패턴
 - 외부 UX reference 적용 규칙
+- Notion + Attio 결합 reference 적용 규칙
 - UX/UI 리뷰 체크리스트
 
 ## 3. 폴더 구조
@@ -33,17 +34,19 @@ UXUI_AGENT/
 
 ## 4. 우선 확인 문서
 
-1. `PLANNING/USER_FLOW_AND_SCREENS.md`
-2. `PLANNING/UX_UI_DIRECTION.md`
-3. `DECISIONS/005_uxui_home_screen.md`
-4. `DECISIONS/006_uxui_reference_style.md`
-5. `UX_REVIEW_CHECKLIST.md`
+1. `DECISIONS/020_uxui_notion_attio_reference.md`
+2. `PLANNING/USER_FLOW_AND_SCREENS.md`
+3. `PLANNING/UX_UI_DIRECTION.md`
+4. `DECISIONS/005_uxui_home_screen.md`
+5. `DECISIONS/006_uxui_reference_style.md`
+6. `UX_REVIEW_CHECKLIST.md`
 
 ## 5. 협업 원칙
 
 - 새 기능은 먼저 사용자 의도와 흐름을 정의한다.
 - 화면 작업은 PM의 MVP 범위와 Software의 API/DB 가능성을 함께 확인한다.
 - UI는 장식보다 업무 흐름과 정보 인식 속도를 우선한다.
+- 현재 선호 UX/UI 기준은 `Notion식 작업공간 UX + Attio식 CRM record 관계 UX`다.
 - 모바일과 데스크톱의 기본 패턴이 다를 수 있음을 문서에 명시한다.
 - 외부 UX reference는 패턴만 참고하고 brand, copy, visual asset, layout을 그대로 복제하지 않는다.
 
@@ -51,9 +54,9 @@ UXUI_AGENT/
 
 - `AGENT/README.md`
 - `AGENT/PM_AGENT/README.md`
+- `AGENT/UXUI_AGENT/DECISIONS/020_uxui_notion_attio_reference.md`
 - `AGENT/SOFTWARE_AGENT/FRONT_AGENT/README.md`
 - `AGENT/PM_AGENT/PLANNING/MVP_SCOPE.md`
 - `AGENT/SOFTWARE_AGENT/FRONT_AGENT/ARCHITECTURE/FRONTEND_USER_WEB.md`
 - `TODO/DONE/MVP-STARTER_PLAN/FE-TODO/README.md`
-
 

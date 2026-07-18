@@ -93,6 +93,8 @@
 - 아이콘은 가능한 한 `lucide-react`를 사용한다.
 - 공통 UI 컴포넌트는 `components/ui`에 둔다.
 - 업무 화면은 정보 밀도와 스캔 가능성을 우선한다.
+- 업무 화면은 `AGENT/UXUI_AGENT/DECISIONS/020_uxui_notion_attio_reference.md`의 `Notion식 작업공간 UX + Attio식 CRM record 관계 UX`를 기준으로 구성한다.
+- 목록 row/card는 열 수 있는 record처럼 동작하고, 상세는 property-first detail과 linked record, activity/Memo 맥락을 분명히 보여준다.
 - 페이지 섹션을 불필요한 카드로 감싸지 않는다.
 - 도메인 생성 UX가 목록 맥락을 유지해야 할 때는 중앙 모달보다 오른쪽 문서형 패널을 우선 검토한다.
 - 문서형 생성 패널은 데스크톱에서 viewport 최상단~최하단에 붙이고, 사용자가 좌우 resize할 수 있게 한다.
@@ -126,5 +128,6 @@
 - `AGENT/SOFTWARE_AGENT/FRONT_AGENT/ARCHITECTURE/FRONTEND_USER_WEB.md`
 - `AGENT/SOFTWARE_AGENT/FRONT_AGENT/ENGINEERING_REVIEW_CHECKLIST.md`
 - `AGENT/SOFTWARE_AGENT/FRONT_AGENT/ARCHITECTURE/DEPLOYMENT.md`
+- `AGENT/UXUI_AGENT/DECISIONS/020_uxui_notion_attio_reference.md`
 - `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/CONVENTION/API_SPEC.md`
 - `AGENT/SOFTWARE_AGENT/DB_SCHEMA/TIME_AND_TIMEZONE_POLICY.md`

@@ -43,6 +43,7 @@ FRONT_AGENT/
 ## 5. 작업 원칙
 
 - PM의 MVP 범위와 UXUI_AGENT의 화면 흐름을 먼저 확인한다.
+- 화면, Frontend, 사용자 노출 흐름 작업은 `AGENT/UXUI_AGENT/DECISIONS/020_uxui_notion_attio_reference.md`의 `Notion식 작업공간 UX + Attio식 CRM record 관계 UX`를 먼저 확인한다.
 - User Web과 Admin Web은 별도 앱으로 유지한다.
 - User Web은 `/api/*`만 호출한다.
 - Admin Web은 `/admin/api/*`만 호출한다.
@@ -75,6 +76,7 @@ Admin Web:
 ## 7. 관련 문서
 
 - `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/README.md`
+- `AGENT/UXUI_AGENT/DECISIONS/020_uxui_notion_attio_reference.md`
 - `AGENT/UXUI_AGENT/PLANNING/USER_FLOW_AND_SCREENS.md`
 - `AGENT/UXUI_AGENT/PLANNING/UX_UI_DIRECTION.md`
 - `AGENT/UXUI_AGENT/UX_REVIEW_CHECKLIST.md`
