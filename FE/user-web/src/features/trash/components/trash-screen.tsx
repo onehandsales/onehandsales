@@ -51,7 +51,7 @@ import { getApiErrorMessage } from "@/lib/api-client";
 import { cn } from "@/utils/cn";
 import { formatDateTime } from "@/utils/format";
 
-const PAGE_SIZE = 12;
+const PAGE_SIZE = 15;
 
 const TRASH_TABLE_COLUMNS = [
   { id: "type", defaultWidth: 150, minWidth: 123, maxWidth: 260 },
@@ -61,7 +61,7 @@ const TRASH_TABLE_COLUMNS = [
   { id: "remaining", defaultWidth: 150, minWidth: 125 },
 ] satisfies readonly ResizableTableColumn[];
 const TRASH_TABLE_COLUMNS_STORAGE_KEY = "onehand.table.trash.columns";
-const TRASH_LIST_TABLE_ROW_CLASS_NAME = cn(LIST_TABLE_ROW_CLASS_NAME, "h-14");
+const TRASH_LIST_TABLE_ROW_CLASS_NAME = cn(LIST_TABLE_ROW_CLASS_NAME, "h-12");
 
 const itemKindOptions: readonly {
   readonly value: TrashItemKindFilter;
@@ -888,7 +888,7 @@ function TrashListSkeleton() {
     <div>
       {Array.from({ length: 9 }, (_, index) => (
         <div
-          className="h-14 animate-pulse border-b border-[#E5E7EB] bg-[#F8FAFC] last:border-b-0"
+          className="h-12 animate-pulse border-b border-[#E5E7EB] bg-[#F8FAFC] last:border-b-0"
           key={index}
         />
       ))}

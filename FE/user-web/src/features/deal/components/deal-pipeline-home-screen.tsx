@@ -98,7 +98,7 @@ const DEAL_TABLE_COLUMNS = [
 ] satisfies readonly ResizableTableColumn[];
 const DEAL_TABLE_COLUMNS_STORAGE_KEY = "onehand.table.deals.columns.v2";
 const DEAL_TABLE_ROW_CLASS_NAME =
-  "grid h-14 min-w-full w-max cursor-pointer items-stretch border-b border-[#E5E7EB] bg-white text-left transition-colors hover:bg-[#F8FAFC] focus:outline-none focus-visible:bg-[#F8FAFC] [grid-template-columns:var(--list-table-grid-template)] [&>*]:flex [&>*]:h-full [&>*]:min-w-0 [&>*]:items-center [&>*]:border-r [&>*]:border-[#EEF0F3] [&>*]:px-3 [&>*:last-child]:border-r-0 [&>*>*]:min-w-0 xl:[&>*]:px-4";
+  "grid h-12 min-w-full w-max cursor-pointer items-stretch border-b border-[#E5E7EB] bg-white text-left transition-colors hover:bg-[#F8FAFC] focus:outline-none focus-visible:bg-[#F8FAFC] [grid-template-columns:var(--list-table-grid-template)] [&>*]:flex [&>*]:h-full [&>*]:min-w-0 [&>*]:items-center [&>*]:border-r [&>*]:border-[#EEF0F3] [&>*]:px-3 [&>*:last-child]:border-r-0 [&>*>*]:min-w-0 xl:[&>*]:px-4";
 const DEAL_CREATE_PANEL_STORAGE_KEY = "onehand.deal.createPanelWidth";
 const DEAL_CREATE_PANEL_DEFAULT_WIDTH = 520;
 const DEAL_CREATE_PANEL_MIN_WIDTH = 420;
@@ -1758,7 +1758,7 @@ function DesktopLoadingState() {
     <div className="flex w-full min-w-0 flex-col overflow-hidden bg-white">
       {Array.from({ length: 8 }).map((_, i) => (
         <div
-          className="h-14 animate-pulse border-b border-[#E5E7EB] bg-[#F8FAFC] last:border-b-0"
+          className="h-12 animate-pulse border-b border-[#E5E7EB] bg-[#F8FAFC] last:border-b-0"
           key={i}
         />
       ))}

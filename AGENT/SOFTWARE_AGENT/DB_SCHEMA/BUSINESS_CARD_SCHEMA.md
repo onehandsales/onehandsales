@@ -56,6 +56,7 @@
 목록 조회 기준:
 
 - 사용자별 내역은 등록일 최신순으로 보여준다.
+- `GET /api/business-card-scans`는 15개 단위 page-number pagination이며 `totalCount`, `totalPages`를 반환한다.
 - 별도 정렬 조건은 두지 않는다.
 - status는 `OCR_SUCCESS`, `OCR_FAILED`, `CONFIRMED` 중 여러 값을 동시에 필터링할 수 있다.
 

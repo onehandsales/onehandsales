@@ -62,7 +62,7 @@ const TEMPLATE_TYPE_ORDER: readonly ImportTemplateType[] = [
   "PRODUCT",
   "DEAL",
 ];
-const IMPORT_USER_LOG_PAGE_SIZE = 10;
+const IMPORT_USER_LOG_PAGE_SIZE = 15;
 const MOBILE_PATTERN = /^010-\d{4}-\d{4}$/;
 const MOBILE_DIGIT_PATTERN = /^010\d{8}$/;
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;

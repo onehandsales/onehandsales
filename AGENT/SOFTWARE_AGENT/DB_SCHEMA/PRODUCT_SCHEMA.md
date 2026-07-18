@@ -57,7 +57,7 @@ Product 기본 도메인 1차 구현 범위는 다음 테이블만 포함한다.
 
 목록 API 기준:
 
-- 목록 API는 10개 단위 page-number pagination이며 `totalCount`, `totalPages`를 반환한다.
+- 목록 API는 15개 단위 page-number pagination이며 `totalCount`, `totalPages`를 반환한다.
 - `createdAt DESC`, `id DESC`로 정렬한다.
 - 검색은 `productName`만 대상으로 한다.
 - 필터는 `productCategoryId`, `productStatusId`만 제공한다.

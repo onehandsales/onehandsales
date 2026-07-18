@@ -85,7 +85,7 @@ const PRODUCT_TABLE_COLUMNS = [
 const PRODUCT_TABLE_COLUMNS_STORAGE_KEY = "onehand.table.products.columns";
 const PRODUCT_LIST_TABLE_ROW_CLASS_NAME = cn(
   LIST_TABLE_ROW_CLASS_NAME,
-  "h-14",
+  "h-12",
 );
 const PRODUCT_CREATE_PANEL_STORAGE_KEY = "onehand.product.createPanelWidth";
 const PRODUCT_CREATE_PANEL_DEFAULT_WIDTH = 520;
@@ -1520,7 +1520,7 @@ function ProductListSkeleton() {
     <div className="min-h-0 flex-1 overflow-hidden">
       {Array.from({ length: 6 }, (_, index) => (
         <div
-          className="h-14 animate-pulse border-b border-[#E5E7EB] bg-[#F8FAFC] last:border-b-0"
+          className="h-12 animate-pulse border-b border-[#E5E7EB] bg-[#F8FAFC] last:border-b-0"
           key={index}
         />
       ))}

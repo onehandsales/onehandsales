@@ -103,11 +103,11 @@ Current response notes:
 - `GET /api/deals/stage-counts` supports `search`, repeated `companyIds`, and repeated `contactIds` filters.
 - `GET /api/deals` supports `search`, repeated `companyIds`, repeated `contactIds`, `dealStatus`, and `sort=createdAtDesc|dealCostDesc|dealCostAsc|expectedEndDateAsc`.
 - `GET /api/schedules` uses local date range query values plus IANA `timeZone` and returns UTC ISO strings.
-- `GET /api/meeting-notes` returns summary objects for `companies`, `contacts`, `products`, `deals`, uses fixed `pageSize=10`, and uses `totalPages`.
+- `GET /api/meeting-notes` returns summary objects for `companies`, `contacts`, `products`, `deals`, uses fixed `pageSize=15`, and uses `totalPages`.
 - `POST /api/meeting-notes/ai-draft` and `POST /api/meeting-notes/stt-draft` generate draft fields only. They do not create a meeting note row.
 - `POST /api/meeting-notes/:meetingNoteId/deals` adds deal links to a saved meeting note and writes linked deal following-action logs.
 - `POST /api/business-card-scans` accepts an image file as `image`, calls OpenAI OCR, stores `OCR_SUCCESS` or `OCR_FAILED` in `BusinessCardScanLog`, and does not create Company/Contact.
-- `GET /api/business-card-scans` supports `page` and repeated or comma-separated `status=OCR_SUCCESS|OCR_FAILED|CONFIRMED` filters. Results are ordered by newest registration first.
+- `GET /api/business-card-scans` supports fixed `pageSize=15`, `page`, and repeated or comma-separated `status=OCR_SUCCESS|OCR_FAILED|CONFIRMED` filters. Results are ordered by newest registration first.
 - `POST /api/business-card-scans/:scanLogId/confirm` requires user-confirmed fields, reuses existing Company/Contact when found, creates missing Company/Contact and taxonomy rows when needed, and updates the scan log to `CONFIRMED`.
 - BusinessCard OCR does not store the uploaded image. The log stores extracted/corrected fields, provider model, token/cost metrics, `costCurrency`, `pendingTimeMs`, and linked company/contact IDs after confirmation.
 - `DELETE /api/meeting-notes/:meetingNoteId` is a soft delete API and the deleted row can be restored through Trash while it remains within retention.
@@ -115,7 +115,7 @@ Current response notes:
 - MeetingNote AI/STT writes no transcript table, provider log table, or raw-text storage in the current scope.
 - `GET /api/search` reads Company, Contact, Product, Deal, Schedule, and MeetingNote data owned by the current user and returns navigation target metadata.
 - `DELETE /api/companies/:companyId`, `DELETE /api/contacts/:contactId`, `DELETE /api/products/:productId`, and `DELETE /api/deals/:dealId` are soft delete APIs. They set `deletedAt`, `deletedByUserId`, and `trashExpiresAt` and return `204 No Content`.
-- `GET /api/trash` aggregates deleted Company, Contact, Product, Deal, MeetingNote, and supported memo/action log rows owned by the current user where `deletedAt IS NOT NULL` and `trashExpiresAt > now`.
+- `GET /api/trash` aggregates deleted Company, Contact, Product, Deal, MeetingNote, and supported memo/action log rows owned by the current user where `deletedAt IS NOT NULL` and `trashExpiresAt > now`. Default `pageSize` is 15.
 - `GET /api/trash/:targetType/:targetId` returns preview details for the trash detail modal. Private memo content is not exposed before restore.
 - `POST /api/trash/:targetType/:targetId/restore` clears `deletedAt`, `deletedByUserId`, and `trashExpiresAt` and returns the restored target metadata.
 - `GET /api/import-templates/active` returns active import templates for Company, Contact, Product, and Deal.
@@ -124,6 +124,7 @@ Current response notes:
 - `POST /api/imports/:importJobId/map` calls the import mapping provider and falls back to heuristic mapping if the provider fails.
 - `PATCH /api/imports/:importJobId/mapping` applies the user's mapping and validates mapped rows. Preview validation messages are scoped to the missing or invalid cell instead of being repeated across unrelated columns.
 - `POST /api/imports/:importJobId/confirm` creates Company, Contact, Product, or Deal rows and writes `ImportUserLog`/`ImportUserLogRow` snapshots in a database transaction.
+- `GET /api/import-user-logs` uses fixed `pageSize=15` page-number pagination for successful import history.
 - Deal import creates the deal and `DealCompany`, `DealContact`, `DealProduct` links in one transaction when referenced company/contact/product values resolve. Missing-reference resolution arrays are forwarded as `dealCompanyResolutions`, `dealContactResolutions`, and `dealProductResolutions` through the FE API function, BE DTO, HTTP controller, application service, repository, and controller spec.
 - Temporary DataImport jobs use an in-memory store. Persistent job recovery across server restart is future scope.
 

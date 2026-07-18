@@ -20,7 +20,7 @@ export const trashQueryKeys = {
         query: input.query?.trim() ?? "",
         sort: input.sort ?? "RECENT",
         page: input.page ?? 1,
-        pageSize: input.pageSize ?? 12,
+        pageSize: input.pageSize ?? 15,
       },
     ] as const,
 };

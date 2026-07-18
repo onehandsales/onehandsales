@@ -119,6 +119,10 @@ index:
 - 확정 저장은 도메인 row 생성과 `ImportUserLog`/`ImportUserLogRow` 생성을 같은 transaction에서 처리한다.
 - 검증 실패 row가 있으면 확정 전에 보정해야 한다.
 
+성공 내역 목록 기준:
+
+- `GET /api/import-user-logs`는 15개 단위 page-number pagination이며 `totalCount`, `totalPages`를 반환한다.
+
 ## 7. 관련 API
 
 - `GET /api/import-templates/active`

@@ -230,11 +230,11 @@ Backend는 AI 초안 provider와 STT provider를 분리한다. Frontend는 provi
 
 ## 8. Pagination 기준
 
-- Company/Contact/Product/Deal/MeetingNote/Trash 목록은 page-number pagination을 사용한다.
-- 현재 기본 page size는 대부분 10이고, Trash 목록은 화면 밀도 기준으로 `pageSize=12`를 사용한다.
-- 데스크톱 record list의 목표 UX는 15개 기본 표시가 더 적합할 수 있지만, FE 단독으로 page size 숫자를 바꾸지 않는다.
-- 15개 기본 표시로 전환하려면 Backend 상수, 응답 `pageSize`, API/DB 문서, 관련 테스트 계약을 함께 갱신한다.
-- 모바일 record list는 10개 내외 card/list를 기본으로 유지한다.
+- Company/Contact/Product/Deal/MeetingNote/BusinessCardScan/ImportUserLog/Trash 목록은 page-number pagination을 사용한다.
+- 현재 목록 페이지의 기본 page size는 15개다.
+- page size를 바꿀 때는 FE 단독으로 숫자를 바꾸지 않는다.
+- page size를 변경하려면 Backend 상수, 응답 `pageSize`, API/DB 문서, 관련 테스트 계약을 함께 갱신한다.
+- 모바일 record list도 현재 page size 계약은 15개이며, desktop table 대신 card/list로 표현한다.
 - 서버 응답은 `totalCount`, `totalPages`, `page`, `pageSize` 기준으로 처리한다.
 - cursor 기반 `hasNext`는 memo log 같은 infinite loading 영역에서만 사용한다.
 

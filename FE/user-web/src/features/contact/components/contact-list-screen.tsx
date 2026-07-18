@@ -86,7 +86,7 @@ const CONTACT_TABLE_COLUMNS = [
 const CONTACT_TABLE_COLUMNS_STORAGE_KEY = "onehand.table.contacts.columns";
 const CONTACT_LIST_TABLE_ROW_CLASS_NAME = cn(
   LIST_TABLE_ROW_CLASS_NAME,
-  "h-14",
+  "h-12",
 );
 
 type ContactListScreenProps = {
@@ -1101,7 +1101,7 @@ function ContactListSkeleton() {
       {Array.from({ length: 10 }, (_, i) => (
         <div
           key={i}
-          className="h-14 animate-pulse border-b border-[#E5E7EB] bg-[#F8FAFC] last:border-b-0"
+          className="h-12 animate-pulse border-b border-[#E5E7EB] bg-[#F8FAFC] last:border-b-0"
         />
       ))}
     </div>

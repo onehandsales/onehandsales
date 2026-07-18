@@ -2,7 +2,7 @@
 
 ## 결정
 
-회사, 담당자, 제품, 딜, 회의록의 목록 조회 화면은 page-number pagination을 기준으로 한다.
+회사, 담당자, 제품, 딜, 회의록, 명함스캔, 데이터 업로드 내역, 휴지통의 목록 조회 화면은 page-number pagination을 기준으로 한다.
 
 목록 페이지 필터는 제품 목록의 category/status select처럼 전체 옵션 API를 초회 조회한 뒤 compact select로 제공한다.
 
@@ -26,15 +26,20 @@
   - 회사/담당자 옵션은 Deal option API를 사용하고, 회사 선택 시 담당자 옵션을 같은 회사 기준으로 좁힌다.
 - 회의록 목록
   - 회사/담당자 filter option API
+- 명함스캔 목록
+  - status filter
+- 데이터 업로드 내역 목록
+  - 업로드 대상 filter
+- 휴지통 목록
+  - domain/item kind/log type filter
 
 ## Pagination 규칙
 
 - 목록 페이지는 `totalPages`, `totalCount`를 사용한다.
-- 현재 목록 API는 대체로 10개 단위 page-number pagination을 계약으로 가진다.
-- 데스크톱 record list의 목표 UX는 15개 기본 표시가 더 적합할 수 있다.
-- 15개로 바꾸려면 Backend 도메인 서비스 상수, 응답 `pageSize`, API/DB 문서, 관련 테스트를 함께 갱신한다.
+- 현재 목록 API는 15개 단위 page-number pagination을 계약으로 가진다.
+- page size를 바꾸려면 Backend 도메인 서비스 상수, 응답 `pageSize`, API/DB 문서, 관련 테스트를 함께 갱신한다.
 - FE에서 page size 숫자만 바꾸거나, 응답 `pageSize`와 UI 표시가 어긋나게 만들지 않는다.
-- 모바일 record list는 10개 내외 card/list를 기본으로 유지한다.
+- 모바일 record list도 15개 page 계약을 사용하되 desktop table 대신 card/list로 표현한다.
 - 20개 기본 표시는 현재 row height와 layout에서는 쓰지 않는다. 나중에 고밀도 보기 옵션으로만 검토한다.
 - 공용 `Pagination` 컴포넌트에는 `hasNext`를 전달하지 않는다.
 - 1페이지만 존재하면 pagination은 숨길 수 있다.
@@ -64,7 +69,7 @@
 
 ## Visual Grammar
 
-회사/담당자/제품/딜 목록은 가능한 한 다음 문법을 공유한다.
+주요 목록 화면은 가능한 한 다음 문법을 공유한다.
 
 - compact controls bar
 - select filter
@@ -77,7 +82,7 @@
 
 - 공용 `Pagination`: 48px(`h-12`)
 - 미리보기 header와 table header: 44px(`h-11`)
-- desktop record row: 52~56px 수준을 우선 검토한다.
+- desktop record row: 48px 수준을 우선 검토한다.
 
 목록 화면은 비교와 반복 작업이 중요하므로 큰 hero/page header보다 조밀한 업무 도구형 구성을 우선한다.
 

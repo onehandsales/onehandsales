@@ -146,7 +146,7 @@ MeetingNote 도메인은 Backend `BE/src/modules/meeting-note`와 Prisma `Meetin
 ## 5. 조회 정책
 
 - `GET /api/meeting-notes`는 page-number pagination을 사용한다.
-- 목록 `pageSize`는 10개 고정이며 응답의 `pageSize`는 `10`이다.
+- 목록 `pageSize`는 15개 고정이며 응답의 `pageSize`는 `15`이다.
 - 목록 응답은 `totalCount`, `totalPages`를 포함하고 `hasNext`를 사용하지 않는다.
 - User Web은 목록 조회 때 `page`, `search`, 필터/정렬 query를 보내며 `pageSize` query에 의존하지 않는다.
 - 일반 목록/상세/수정/검색/필터 API는 `MeetingNote.deletedAt IS NULL`만 조회한다.

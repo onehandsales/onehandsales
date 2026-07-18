@@ -76,7 +76,7 @@ const BUSINESS_CARD_SCAN_TABLE_COLUMNS_STORAGE_KEY =
   "onehand.table.businessCardScans.columns";
 const BUSINESS_CARD_SCAN_TABLE_ROW_CLASS_NAME = cn(
   LIST_TABLE_ROW_CLASS_NAME,
-  "h-14",
+  "h-12",
 );
 
 const STATUS_FILTER_OPTIONS: Array<{
@@ -1233,7 +1233,7 @@ function ListSkeleton() {
     <div className="overflow-hidden">
       {Array.from({ length: 8 }, (_, index) => (
         <div
-          className="h-14 animate-pulse border-b border-[#E5E7EB] bg-[#F8FAFC] last:border-b-0"
+          className="h-12 animate-pulse border-b border-[#E5E7EB] bg-[#F8FAFC] last:border-b-0"
           key={index}
         />
       ))}

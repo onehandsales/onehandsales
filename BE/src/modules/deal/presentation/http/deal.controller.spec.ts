@@ -75,7 +75,7 @@ function createDealServiceFake(): jest.Mocked<DealServiceFake> {
     listDeals: jest.fn().mockResolvedValue({
       items: [],
       page: 1,
-      pageSize: 10,
+      pageSize: 15,
       totalCount: 0,
       totalPages: 0,
     }),

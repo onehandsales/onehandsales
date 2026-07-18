@@ -26,9 +26,9 @@
 - Attio식 CRM record 관계, linked record, activity/Memo 맥락이 상세 화면에 분명히 드러나는가?
 - row/card가 열 수 있는 record처럼 동작하고, 상세는 page 또는 peek/detail panel처럼 구성되어 있는가?
 - 기존 목록이 이미 record table 구조라면 새 구조로 갈아엎지 않고, row density와 linked record/업무 판단 정보만 강화했는가?
-- 데스크톱 목록 row가 약 52~56px 수준의 업무용 밀도를 갖고, 10개 고정 + 큰 row + 약한 업무 맥락 조합으로 보이지 않는가?
-- page size를 15개 기본으로 바꾸려는 경우 Backend 상수, 응답 `pageSize`, API/DB 문서, 테스트 계약까지 함께 확인했는가?
-- 모바일에서는 15~20개 desktop table을 억지로 보여주지 않고 10개 내외 card/list로 유지했는가?
+- 데스크톱 목록 row가 약 48px 수준의 업무용 밀도를 갖고, 큰 row + 약한 업무 맥락 조합으로 보이지 않는가?
+- page size를 바꾸려는 경우 Backend 상수, 응답 `pageSize`, API/DB 문서, 테스트 계약까지 함께 확인했는가?
+- 모바일에서는 15개 목록 계약을 card/list로 표현하고, 15~20개 desktop table을 억지로 보여주지 않는가?
 - 최근 활동 또는 다음 행동 summary가 현재 list response에 없으면 FE에서 임의 값처럼 꾸미지 않고 BE/API 후속으로 기록했는가?
 - 목록에서 새 record를 생성할 때 목록 맥락을 유지해야 한다면 오른쪽 문서형 패널을 우선 검토했는가?
 - 문서형 생성 패널이 열려도 목록의 비교 컬럼을 숨기거나 합치지 않는가?

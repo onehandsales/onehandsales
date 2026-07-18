@@ -125,7 +125,7 @@ const IMPORT_LOG_TABLE_COLUMNS = [
 ] satisfies readonly ResizableTableColumn[];
 const IMPORT_LOG_TABLE_COLUMNS_STORAGE_KEY =
   "onehand.table.importLogs.columns";
-const IMPORT_LOG_TABLE_ROW_CLASS_NAME = cn(LIST_TABLE_ROW_CLASS_NAME, "h-14");
+const IMPORT_LOG_TABLE_ROW_CLASS_NAME = cn(LIST_TABLE_ROW_CLASS_NAME, "h-12");
 
 const IMPORT_PREVIEW_ROW_NUMBER_COLUMN_WIDTH = 25;
 const IMPORT_PREVIEW_COLUMN_MIN_WIDTH = 72;
@@ -3428,7 +3428,7 @@ function ImportListSkeleton() {
     <div>
       {Array.from({ length: 8 }, (_, index) => (
         <div
-          className="h-14 animate-pulse border-b border-[#E5E7EB] bg-[#F8FAFC] last:border-b-0"
+          className="h-12 animate-pulse border-b border-[#E5E7EB] bg-[#F8FAFC] last:border-b-0"
           key={index}
         />
       ))}

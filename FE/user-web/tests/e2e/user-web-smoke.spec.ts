@@ -1317,7 +1317,7 @@ function toMeetingNoteSummary(labels: readonly string[]): MeetingNoteSummary {
 
 function paginated<TItem>(items: readonly TItem[], url: URL) {
   const page = Math.max(1, Number(url.searchParams.get("page") ?? "1"));
-  const pageSize = Math.max(1, Number(url.searchParams.get("pageSize") ?? "10"));
+  const pageSize = Math.max(1, Number(url.searchParams.get("pageSize") ?? "15"));
   const totalPages = Math.max(1, Math.ceil(items.length / pageSize));
   const start = (page - 1) * pageSize;
   const pagedItems = items.slice(start, start + pageSize).map((item) =>

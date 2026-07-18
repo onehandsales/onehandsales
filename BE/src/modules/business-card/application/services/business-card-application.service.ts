@@ -26,7 +26,7 @@ import type { CurrentUserContext } from "@/shared/application/context/current-us
 import { ValidationDomainError } from "@/shared/domain/errors/common.errors";
 import { AppLogger } from "@/shared/infrastructure/logger/app-logger.service";
 
-const BUSINESS_CARD_SCAN_PAGE_SIZE = 10;
+const BUSINESS_CARD_SCAN_PAGE_SIZE = 15;
 const MAX_IMAGE_FILE_SIZE_BYTES = 10 * 1024 * 1024;
 const ALLOWED_IMAGE_MIME_TYPES = new Set([
   "image/jpeg",

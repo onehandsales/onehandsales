@@ -97,7 +97,7 @@ Indexes:
 주석:
 
 - 모든 담당자 조회는 `userId` ownership을 먼저 적용한다.
-- 담당자 목록 API는 10개 단위 page-number pagination이며 `totalCount`, `totalPages`를 반환한다.
+- 담당자 목록 API는 15개 단위 page-number pagination이며 `totalCount`, `totalPages`를 반환한다.
 - 담당자 목록 정렬은 기본 `createdAtDesc`와 이름순 `usernameAsc`를 지원한다.
 - `usernameAsc`는 `username ASC`, `createdAt DESC`, `id DESC` 순서로 정렬한다.
 - 담당자 목록 응답은 `updatedAt`을 반환하지 않는다.

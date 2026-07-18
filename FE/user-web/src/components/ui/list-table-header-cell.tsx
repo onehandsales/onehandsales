@@ -16,10 +16,10 @@ export const LIST_TABLE_HEADER_ROW_CLASS_NAME =
   "grid h-11 min-w-full w-max shrink-0 items-stretch border-b border-[#E5E7EB] bg-[#F9FAFB] [grid-template-columns:var(--list-table-grid-template)]";
 
 export const LIST_TABLE_ROW_CLASS_NAME =
-  "grid h-[66px] min-w-full w-max cursor-pointer items-stretch border-b border-[#E5E7EB] bg-white text-left transition-colors hover:bg-[#F8FAFC] focus:outline-none focus-visible:bg-[#F8FAFC] [grid-template-columns:var(--list-table-grid-template)] [&>*]:flex [&>*]:h-full [&>*]:min-w-0 [&>*]:items-center [&>*]:border-r [&>*]:border-[#EEF0F3] [&>*]:px-3 [&>*:last-child]:border-r-0 [&>*>*]:min-w-0 md:[&>*]:px-4 xl:[&>*]:px-6";
+  "grid h-12 min-w-full w-max cursor-pointer items-stretch border-b border-[#E5E7EB] bg-white text-left transition-colors hover:bg-[#F8FAFC] focus:outline-none focus-visible:bg-[#F8FAFC] [grid-template-columns:var(--list-table-grid-template)] [&>*]:flex [&>*]:h-full [&>*]:min-w-0 [&>*]:items-center [&>*]:border-r [&>*]:border-[#EEF0F3] [&>*]:px-3 [&>*:last-child]:border-r-0 [&>*>*]:min-w-0 md:[&>*]:px-4 xl:[&>*]:px-6";
 
 export const LIST_TABLE_SKELETON_ROW_CLASS_NAME =
-  "grid h-[66px] min-w-full w-max items-stretch border-b border-[#E5E7EB] bg-[#F8FAFC] [grid-template-columns:var(--list-table-grid-template)] [&>*]:flex [&>*]:h-full [&>*]:min-w-0 [&>*]:items-center [&>*]:border-r [&>*]:border-[#EEF0F3] [&>*]:px-3 [&>*:last-child]:border-r-0 [&>*>*]:min-w-0 md:[&>*]:px-4 xl:[&>*]:px-6";
+  "grid h-12 min-w-full w-max items-stretch border-b border-[#E5E7EB] bg-[#F8FAFC] [grid-template-columns:var(--list-table-grid-template)] [&>*]:flex [&>*]:h-full [&>*]:min-w-0 [&>*]:items-center [&>*]:border-r [&>*]:border-[#EEF0F3] [&>*]:px-3 [&>*:last-child]:border-r-0 [&>*>*]:min-w-0 md:[&>*]:px-4 xl:[&>*]:px-6";
 
 export function ListTableHeaderCell({
   children,

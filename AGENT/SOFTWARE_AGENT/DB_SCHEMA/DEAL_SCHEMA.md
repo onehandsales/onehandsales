@@ -83,7 +83,7 @@ Deal 기본 도메인 1차 구현 범위는 다음 테이블만 포함한다.
 - 딜 하나는 `ScheduleDeal`을 통해 여러 일정에 연결될 수 있다.
 - 딜 하나는 `MeetingNoteDeal`을 통해 여러 회의록 snapshot에 연결될 수 있다.
 - 딜 생성/수정 시 모든 `contactIds[]`가 선택된 `companyIds[]` 중 하나에 소속되는지 검증한다.
-- 목록 API는 10개 단위 page-number pagination이며 `totalCount`, `totalPages`를 반환한다.
+- 목록 API는 15개 단위 page-number pagination이며 `totalCount`, `totalPages`를 반환한다.
 - 목록 기본 정렬은 `createdAt DESC`다.
 - 목록 정렬은 `createdAtDesc`, `dealCostDesc`, `dealCostAsc`, `expectedEndDateAsc`를 지원한다.
 - User Web 정렬 select label은 각각 `최신순`, `금액 높은순`, `금액 낮은 순`, `마감일순`이다.
