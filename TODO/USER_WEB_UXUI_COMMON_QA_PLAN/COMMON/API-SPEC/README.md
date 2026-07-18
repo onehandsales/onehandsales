@@ -20,3 +20,14 @@
 - 삭제된 리소스 접근 error code가 FE에서 안전하게 처리되지 않는다.
 - OCR/AI/STT/Import mapping provider failure가 사용자에게 내부 provider 정보를 노출한다.
 - API validation error가 field-level UI를 만들 수 없을 정도로 모호하다.
+
+## G03 Deal List Contract Note
+
+- 확인일: 2026-07-18
+- 관련 화면: `/app/deals`
+
+Deal list response의 `expectedEndDate`, `latestFollowingAction`, `nextFollowingAction`, `companies`, `contacts`는 G03의 마감일, 최근 활동, 다음 행동, 회사/담당자 linked record 표현에 충분하다.
+
+Deal list response에는 `products`가 없으므로 목록 row에서 제품 linked record를 직접 보여주는 것은 현재 API 계약 밖이다. 필요하면 별도 Deal list response 확장으로 분리한다.
+
+Desktop page size 15개 기본값은 FE 단독 변경 대상이 아니다. Backend 상수, 응답 `pageSize`, 관련 테스트/API 문서와 함께 변경해야 한다.

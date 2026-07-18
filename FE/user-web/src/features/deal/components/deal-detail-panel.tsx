@@ -423,7 +423,7 @@ function DealDetailPageLayout({
 
   return (
     <>
-      <div className="md:hidden min-h-screen bg-white">
+      <div className="lg:hidden min-h-screen bg-white">
         {notice ? (
           <div className="px-4 pt-3">
             <Toast message={notice} onClose={onClearNotice} variant="success" />
@@ -482,7 +482,7 @@ function DealDetailPageLayout({
         </div>
       </div>
 
-      <div className="hidden md:flex h-full flex-col bg-white">
+      <div className="hidden lg:flex h-full flex-col bg-white">
         {notice ? (
           <div className="mx-6 mt-3">
             <Toast message={notice} onClose={onClearNotice} variant="success" />
@@ -649,7 +649,7 @@ function DealSummaryHeader({
         {detail.dealName}
       </span>
       <StatusBadge status={detail.dealStatus} />
-      <div className="hidden h-5 w-px shrink-0 bg-[#E5E7EB] md:block" />
+      <div className="hidden h-5 w-px shrink-0 bg-[#E5E7EB] lg:block" />
       <DealSummaryChip label="금액" value={`${dealCost.toLocaleString("ko-KR")}원`} />
       <DealSummaryChip label="마감" value={formatDate(detail.expectedEndDate)} />
       <DealSummaryChip label="회사" value={companyName} />
@@ -892,7 +892,7 @@ function DealPanelShell({
   readonly title: string;
 }) {
   return (
-    <section className="flex h-[420px] flex-col overflow-hidden rounded-xl border border-[#E5E7EB] bg-white">
+    <section className="flex min-h-[160px] flex-col overflow-hidden rounded-xl border border-[#E5E7EB] bg-white lg:h-[420px]">
       <div className="flex h-[52px] shrink-0 items-center gap-2.5 border-b border-[#E5E7EB] px-4">
         <span className="text-[15px] font-extrabold text-[#111827]">{title}</span>
         <span className="text-[13px] font-semibold text-[#9CA3AF]">{count}</span>
@@ -906,7 +906,7 @@ function DealPanelShell({
           <Plus className="h-3.5 w-3.5" />
         </button>
       </div>
-      <div className="flex min-h-0 flex-1 flex-col overflow-y-auto px-4 pb-4 pt-2">
+      <div className="flex min-h-0 flex-col overflow-y-auto px-4 pb-4 pt-2 lg:flex-1">
         {children}
       </div>
     </section>
@@ -1582,7 +1582,7 @@ function DealStateShell({
 }) {
   if (variant === "page") {
     return (
-      <main className="min-h-[calc(100vh-var(--topbar-height))] bg-[#F9FAFB] px-4 py-6 md:px-6">
+      <main className="min-h-[calc(100vh-var(--topbar-height))] bg-[#F9FAFB] px-4 py-6 lg:px-6">
         <div className="mx-auto max-w-7xl">{children}</div>
       </main>
     );

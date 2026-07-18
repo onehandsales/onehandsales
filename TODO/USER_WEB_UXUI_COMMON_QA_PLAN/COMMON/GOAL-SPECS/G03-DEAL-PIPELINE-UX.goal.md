@@ -1,6 +1,6 @@
 # G03 Deal Pipeline UX
 
-상태: Ready
+상태: Done
 우선순위: P0
 담당 영역: FE/user-web
 
@@ -97,3 +97,55 @@ pnpm run test:e2e
 - page size 15개가 필요하다고 판단되면 FE 단독 변경 없이 BE/API/test 문서 영향과 후속 처리 방안이 기록된다.
 - 1440px, 1280px, 768px, 125% 확대에서 주요 정보가 겹치지 않는다.
 - 관련 이슈가 `COMMON/ISSUE-LOG.md`에서 정리된다.
+
+## 9. 완료 기록
+
+- 완료일: 2026-07-18
+- 구현 파일:
+  - `FE/user-web/src/features/deal/components/deal-pipeline-home-screen.tsx`
+  - `FE/user-web/src/features/deal/components/deal-detail-panel.tsx`
+- 문서 파일:
+  - `COMMON/ISSUE-LOG.md`
+  - `FE-TODO/USER-WEB-TODO.md`
+  - `BE-TODO/API-TODO.md`
+  - `COMMON/API-SPEC/README.md`
+- 로컬 화면 근거: `/tmp/onehandsales-g03-final/*.png`. Screenshot은 repository에 보관하지 않는다.
+
+### 수정 요약
+
+- 데스크톱 딜 목록 row를 딜 전용 56px record table row로 낮췄다.
+- `등록일` 컬럼을 제거하고 `마감` 컬럼에서 D-day와 날짜를 보여주도록 바꿨다.
+- 다음 행동 아래에 현재 Deal list response의 `latestFollowingAction` 또는 `updatedAt` 기반 최근 활동을 표시했다.
+- 금액과 마감이 1440px, 1280px, 125% proxy 1152px에서 읽히도록 컬럼 폭과 row padding을 조정했다.
+- 768px에서는 desktop table 대신 mobile card list가 보이도록 breakpoint를 `lg` 기준으로 맞췄다.
+- mobile card에도 다음 행동, 최근 활동, D-day, 마감일, 금액을 함께 보이게 했다.
+- table의 `overflow-x-hidden`을 제거해 폭이 부족한 경우 핵심 컬럼이 조용히 잘리지 않게 했다.
+- FAB에 `aria-label`을 추가하고 empty title을 행동 맥락에 맞게 정리했다.
+- 딜 상세의 768px breakpoint를 `lg` 기준으로 맞추고, mobile/tablet 상세에서 로그 패널이 과도한 고정 높이를 만들지 않게 조정했다.
+- 완료 후 리뷰에서 발견한 date-only D-day timezone 오차를 수정했다. `YYYY-MM-DD`를 UTC 파싱하지 않고 local date로 계산한다.
+
+### 검증
+
+- `cd FE/user-web && pnpm run typecheck`
+- `cd FE/user-web && pnpm run lint`
+- `cd FE/user-web && pnpm run build`
+- `git diff --check`
+- `cd FE/user-web && pnpm run test:e2e`는 실행했지만 로컬 Playwright chromium headless shell이 없어 테스트 시작 전 실패했다. 실패 사유: `Executable doesn't exist at .../chromium_headless_shell-1223/...`; 코드 assertion 실패는 발생하지 않았다.
+- Playwright route mock + Google Chrome headless:
+  - `/app/deals`: 1440px, 1280px, 768px, 125% 확대 proxy 1152px
+  - `/app/deals/:dealId`: 1440px, 768px
+  - console error 0건, page error 0건, failed request 0건
+  - document horizontal overflow 0건
+  - desktop row height 56px 확인
+  - 768px에서 desktop row 미노출, mobile card list 노출 확인
+  - `등록일` header 미노출, `마감`, D-day, 금액, 다음 행동, 최근 활동 표시 확인
+- 상세에서 회사/담당자/제품, Memo log, 다음 행동, 삭제 action 표시 확인
+- `TZ=America/Los_Angeles` 기준 `2026-07-18` -> `2026-07-25`가 `D-7`로 계산되는지 확인
+
+### 완료 후 검토
+
+- Notion database-like list 기준으로 조용한 table 밀도와 record entry point를 유지했다.
+- Attio식 linked record 기준에서 목록은 회사/담당자 연결을 보여주고, 상세는 회사/담당자/제품, next action, activity log, Memo log를 property-first로 구분한다.
+- Deal list response에는 `products`가 없으므로 목록에서 제품 linked record를 임의로 만들지 않았다. 제품 목록 노출이 필요하면 Deal list API response 확장으로 분리한다.
+- 15개 page size는 장기 UX 목표로 남기고 FE 단독 변경하지 않았다. 변경하려면 Backend `DEAL_PAGE_SIZE`, 응답 `pageSize`, 테스트/API 문서를 함께 바꾼다.
+- Deal API, DealActivity table, probability, Notification/Reminder, weekly report, custom object builder는 추가하지 않았다.

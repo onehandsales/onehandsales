@@ -41,17 +41,19 @@
 
 ### P0. Deal pipeline
 
-- [ ] 단계 탭/필터/검색/정렬 위치 확인
-- [ ] 딜명/회사/담당자/단계/금액/다음 행동/마감일/현재 응답에서 가능한 최근 활동 비교 가능성 확인
-- [ ] 등록일보다 마감일/다음 행동/현재 응답에서 가능한 최근 활동/연결 record가 우선 보이는지 확인
-- [ ] desktop row height 52~56px 수준 업무용 밀도 검토
-- [ ] page size 15개 필요성은 BE/API/test 계약 영향까지 확인하고 FE 단독 변경 금지
-- [ ] 최근 활동 또는 다음 행동 summary가 현재 API로 부족하면 BE/API 후속으로 기록
-- [ ] 다음 행동 가시성 개선
-- [ ] 딜 row/card가 Attio식 deal record와 linked company/contact/product 맥락을 보여주는지 확인
-- [ ] 상세 패널이 property-first, activity/Memo/일정/회의록 구분 기준을 따르는지 확인
-- [ ] 상세 패널/상세 진입 UX 확인
-- [ ] 긴 딜명과 긴 회사명 overflow 대응
+- [x] 단계 탭/필터/검색/정렬 위치 확인
+- [x] 딜명/회사/담당자/단계/금액/다음 행동/마감일/현재 응답에서 가능한 최근 활동 비교 가능성 확인
+- [x] 등록일보다 마감일/다음 행동/현재 응답에서 가능한 최근 활동/연결 record가 우선 보이는지 확인
+- [x] desktop row height 52~56px 수준 업무용 밀도 검토
+- [x] page size 15개 필요성은 BE/API/test 계약 영향까지 확인하고 FE 단독 변경 금지
+- [x] 최근 활동 또는 다음 행동 summary가 현재 API로 부족하면 BE/API 후속으로 기록
+- [x] 다음 행동 가시성 개선
+- [x] 딜 row/card가 Attio식 deal record와 linked company/contact/product 맥락을 보여주는지 확인
+- [x] 상세 패널이 property-first, activity/Memo/일정/회의록 구분 기준을 따르는지 확인
+- [x] 상세 패널/상세 진입 UX 확인
+- [x] 긴 딜명과 긴 회사명 overflow 대응
+
+G03 완료 기준으로 목록 row/card는 회사/담당자 linked record를 보여주고, 제품 linked record는 기존 상세 화면에서 확인한다. Deal list response에는 `products`가 없으므로 목록 제품 표시가 필요하면 BE/API 후속으로 분리한다.
 
 ### P1. Company/Contact/Product
 
@@ -98,6 +100,12 @@
 - [x] G02 대상 화면 재확인
 - [x] G02 기준 `COMMON/ISSUE-LOG.md` 상태 최신화
 - [x] G02 완료 보고에 검증, 검토 결과, 남은 리스크 기록
+- [x] G03 완료 전 `COMMON/GOAL-WORK-ORDER.md`의 `완료 후 필수 검토 게이트` 수행
+- [x] G03 수정 diff 자체 검토
+- [x] G03 `Notion + Attio Reference Gate` 수행
+- [x] G03 대상 화면 재확인
+- [x] G03 기준 `COMMON/ISSUE-LOG.md` 상태 최신화
+- [x] G03 완료 보고에 검증, 검토 결과, 남은 리스크 기록
 
 ## 4. 검증 명령
 

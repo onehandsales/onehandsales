@@ -30,7 +30,6 @@ import { PageHeader } from "@/components/layout/page-header";
 import { CollapsibleDesktopSearch } from "@/components/ui/collapsible-desktop-search";
 import {
   LIST_TABLE_HEADER_ROW_CLASS_NAME,
-  LIST_TABLE_ROW_CLASS_NAME,
   ListTableHeaderCell,
 } from "@/components/ui/list-table-header-cell";
 import { ListFilterSelect } from "@/components/ui/list-filter-select";
@@ -90,14 +89,16 @@ const SORT_OPTIONS: Array<{
 ];
 
 const DEAL_TABLE_COLUMNS = [
-  { id: "dealName", defaultWidth: 220, minWidth: 165, maxWidth: 420 },
-  { id: "relation", defaultWidth: 220, minWidth: 185 },
-  { id: "status", defaultWidth: 120, minWidth: 105 },
-  { id: "cost", defaultWidth: 130, minWidth: 115 },
-  { id: "nextAction", defaultWidth: 280, minWidth: 185 },
-  { id: "createdAt", defaultWidth: 130, minWidth: 115 },
+  { id: "dealName", defaultWidth: 215, minWidth: 155, maxWidth: 420 },
+  { id: "relation", defaultWidth: 200, minWidth: 150 },
+  { id: "status", defaultWidth: 106, minWidth: 92 },
+  { id: "cost", defaultWidth: 148, minWidth: 134 },
+  { id: "nextAction", defaultWidth: 235, minWidth: 160 },
+  { id: "deadline", defaultWidth: 150, minWidth: 132 },
 ] satisfies readonly ResizableTableColumn[];
-const DEAL_TABLE_COLUMNS_STORAGE_KEY = "onehand.table.deals.columns";
+const DEAL_TABLE_COLUMNS_STORAGE_KEY = "onehand.table.deals.columns.v2";
+const DEAL_TABLE_ROW_CLASS_NAME =
+  "grid h-14 min-w-full w-max cursor-pointer items-stretch border-b border-[#E5E7EB] bg-white text-left transition-colors hover:bg-[#F8FAFC] focus:outline-none focus-visible:bg-[#F8FAFC] [grid-template-columns:var(--list-table-grid-template)] [&>*]:flex [&>*]:h-full [&>*]:min-w-0 [&>*]:items-center [&>*]:border-r [&>*]:border-[#EEF0F3] [&>*]:px-3 [&>*:last-child]:border-r-0 [&>*>*]:min-w-0 xl:[&>*]:px-4";
 const DEAL_CREATE_PANEL_STORAGE_KEY = "onehand.deal.createPanelWidth";
 const DEAL_CREATE_PANEL_DEFAULT_WIDTH = 520;
 const DEAL_CREATE_PANEL_MIN_WIDTH = 420;
@@ -489,7 +490,7 @@ export function DealPipelineHomeScreen({
     <>
       {/* ── Desktop ── */}
       <section
-        className="hidden min-h-full flex-col bg-white transition-[padding-right] duration-[500ms] ease-out md:flex"
+        className="hidden min-h-full flex-col bg-white transition-[padding-right] duration-[500ms] ease-out lg:flex"
         style={
           isDockedCreateMounted
             ? { paddingRight: isDockedCreateOpen ? createPanelWidth : 0 }
@@ -536,7 +537,7 @@ export function DealPipelineHomeScreen({
           </div>
         ) : null}
         {/* Stage Tabs */}
-        <div className="relative flex shrink-0 items-end px-6">
+        <div className="relative flex shrink-0 items-end overflow-x-auto px-6 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
           <div className="absolute bottom-0 left-5 right-5 h-px bg-[#E6EAF0]" />
           {stageTabs.map((tab) => {
             const count = getStageCount(tab.value);
@@ -544,7 +545,7 @@ export function DealPipelineHomeScreen({
             return (
               <button
                 className={cn(
-                  "relative flex h-11 items-center gap-1.5 border-b-2 px-3.5 text-[13px] font-medium transition-colors",
+                  "relative flex h-11 shrink-0 items-center gap-1.5 whitespace-nowrap border-b-2 px-3.5 text-[13px] font-medium transition-colors",
                   isActive
                     ? "border-transparent text-[#4880EE]"
                     : "border-transparent text-[#6B7280] hover:text-[#111827]",
@@ -749,7 +750,7 @@ export function DealPipelineHomeScreen({
               ) : (
                 <>
               <div
-                className="flex w-full min-w-0 flex-col overflow-x-hidden overflow-y-hidden bg-white"
+                className="flex w-full min-w-0 flex-col overflow-x-auto overflow-y-hidden bg-white"
                 ref={tableContainerRef}
                 style={tableContainerStyle}
               >
@@ -787,9 +788,9 @@ export function DealPipelineHomeScreen({
                   </ListTableHeaderCell>
                   <ListTableHeaderCell
                     icon={CalendarClock}
-                    {...getHeaderCellResizeProps("createdAt", 5)}
+                    {...getHeaderCellResizeProps("deadline", 5)}
                   >
-                    등록일
+                    마감
                   </ListTableHeaderCell>
                 </div>
 
@@ -803,7 +804,7 @@ export function DealPipelineHomeScreen({
                     title={
                       hasFilter
                         ? "조건을 바꾸면 딜을 찾을 수 있어요"
-                        : "데이터가 존재하지 않아요"
+                        : "아직 등록된 딜이 없어요"
                     }
                   />
                 ) : (
@@ -845,7 +846,7 @@ export function DealPipelineHomeScreen({
       </section>
 
       {/* ── Mobile ── */}
-      <section className="relative flex flex-col md:hidden">
+      <section className="relative flex flex-col lg:hidden">
         {/* 단계 탭 — 가로 스크롤 */}
         <div className="overflow-x-auto border-b border-[#E6EAF0] bg-white">
           <div className="flex min-w-max gap-0 px-2">
@@ -962,7 +963,9 @@ export function DealPipelineHomeScreen({
               icon={BriefcaseBusiness}
               onAction={openCreatePanel}
               title={
-                hasFilter ? "조건을 바꾸면 딜을 찾을 수 있어요" : "데이터가 존재하지 않아요"
+                hasFilter
+                  ? "조건을 바꾸면 딜을 찾을 수 있어요"
+                  : "아직 등록된 딜이 없어요"
               }
             />
           ) : (
@@ -991,6 +994,7 @@ export function DealPipelineHomeScreen({
 
         {/* FAB */}
         <button
+          aria-label="딜 생성"
           className="fixed bottom-24 right-5 z-40 inline-flex h-8 w-8 items-center justify-center rounded-full bg-[#4880EE] text-white shadow-[0_4px_16px_rgba(59,130,246,0.27)] transition hover:scale-[1.02]"
           onClick={openCreatePanel}
           type="button"
@@ -1026,10 +1030,17 @@ function DealListRow({
   const contactLabel = formatDealContactLabel(deal);
   const companyLabel = formatDealCompanyLabel(deal);
   const nextActionLabel = formatDealNextActionLabel(deal);
+  const recentActivityLabel = formatDealRecentActivityLabel(
+    deal,
+    displayTimeZone,
+  );
+  const deadlineLabel = getDeadlineDDayLabel(deal.expectedEndDate);
+  const deadlineColor = getDeadlineDDayColor(deal.expectedEndDate);
+  const deadlineDateLabel = formatDealDateShort(deal.expectedEndDate);
 
   return (
     <div
-      className={LIST_TABLE_ROW_CLASS_NAME}
+      className={DEAL_TABLE_ROW_CLASS_NAME}
       onClick={() => onSelect(deal.id)}
       onKeyDown={(event) => {
         if (event.key === "Enter" || event.key === " ") {
@@ -1083,8 +1094,11 @@ function DealListRow({
 
       {/* 금액 */}
       <div className="min-w-0">
-        <span className="block truncate text-[12px] text-gray-900">
-          {deal.dealCost.toLocaleString("ko-KR")}원
+        <span
+          className="block truncate text-[12px] text-gray-900"
+          title={`${deal.dealCost.toLocaleString("ko-KR")}원`}
+        >
+          ₩ {deal.dealCost.toLocaleString("ko-KR")}
         </span>
       </div>
 
@@ -1099,12 +1113,28 @@ function DealListRow({
         >
           {nextActionLabel}
         </span>
+        <span
+          className="mt-0.5 block truncate text-[11px] text-[#64748B]"
+          title={recentActivityLabel}
+        >
+          {recentActivityLabel}
+        </span>
       </div>
 
-      {/* 등록일 */}
+      {/* 마감 */}
       <div className="min-w-0">
-        <span className="block truncate text-[11px] font-medium text-[#64748B]">
-          {formatDealCreatedAt(deal.createdAt, displayTimeZone)}
+        <span
+          className="inline-flex h-5 max-w-full items-center rounded-full bg-[#F9FAFB] px-2 text-[11px] font-semibold"
+          style={{ color: deadlineColor }}
+          title={`마감 ${deadlineDateLabel}`}
+        >
+          {deadlineLabel}
+        </span>
+        <span
+          className="mt-0.5 block truncate text-[11px] text-[#64748B]"
+          title={`마감 ${deadlineDateLabel}`}
+        >
+          {deadlineDateLabel}
         </span>
       </div>
     </div>
@@ -1115,6 +1145,7 @@ function DealListRow({
 
 function MobileDealCard({
   deal,
+  displayTimeZone,
 }: {
   readonly deal: DealListItem;
   readonly displayTimeZone: string;
@@ -1125,10 +1156,14 @@ function MobileDealCard({
   const deadlineColor = getDeadlineDDayColor(deal.expectedEndDate);
   const nextAction = deal.nextFollowingAction;
   const nextActionLabel = formatDealNextActionLabel(deal);
+  const recentActivityLabel = formatDealRecentActivityLabel(
+    deal,
+    displayTimeZone,
+  );
 
   return (
     <Link
-      className="block rounded-xl border border-[#E5E7EB] bg-white p-4 shadow-sm transition hover:-translate-y-0.5"
+      className="block rounded-lg border border-[#E5E7EB] bg-white p-3.5 shadow-[0_1px_2px_rgba(15,23,42,0.04)] transition-colors hover:bg-[#F8FAFC]"
       to={`/app/deals/${deal.id}`}
     >
       {/* Row1: 단계 배지 */}
@@ -1168,6 +1203,9 @@ function MobileDealCard({
           <p className="text-[12px] text-[#6B7280]">다음 행동</p>
           <p className="mt-0.5 truncate text-[13px] text-[#1F2937]">
             {nextActionLabel}
+          </p>
+          <p className="mt-1 truncate text-[11px] text-[#64748B]">
+            {recentActivityLabel}
           </p>
         </div>
         {nextAction ? (
@@ -1274,39 +1312,70 @@ function formatDealNextActionLabel(deal: DealListItem) {
   return `${nextAction.followingAction}${remainingLabel}`;
 }
 
-function formatDealCreatedAt(value: string, timeZone: string) {
+function formatDealRecentActivityLabel(deal: DealListItem, timeZone: string) {
+  const latestAction = deal.latestFollowingAction;
+
+  if (latestAction) {
+    const prefix = latestAction.checkComplete ? "최근 완료" : "최근 행동";
+
+    return `${prefix} ${formatDealActivityDate(latestAction.createdAt, timeZone)}`;
+  }
+
+  return `최근 수정 ${formatDealActivityDate(deal.updatedAt, timeZone)}`;
+}
+
+function formatDealActivityDate(value: string, timeZone: string) {
   return formatDateWithOptions(value, {
     day: "2-digit",
+    fallback: "-",
     month: "2-digit",
     timeZone,
-    year: "numeric",
   });
 }
 
 function getDeadlineDDayLabel(value: string): string {
-  if (!value) return "—";
-  const deadline = new Date(value);
-  if (Number.isNaN(deadline.getTime())) return "—";
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  deadline.setHours(0, 0, 0, 0);
-  const days = Math.ceil((deadline.getTime() - today.getTime()) / 86400000);
+  const days = getDeadlineDaysUntil(value);
+  if (days === null) return "—";
   if (days < 0) return `D+${Math.abs(days)}`;
   if (days === 0) return "D-day";
   return `D-${days}`;
 }
 
 function getDeadlineDDayColor(value: string): string {
-  if (!value) return "#9CA3AF";
-  const deadline = new Date(value);
-  if (Number.isNaN(deadline.getTime())) return "#9CA3AF";
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  deadline.setHours(0, 0, 0, 0);
-  const days = Math.ceil((deadline.getTime() - today.getTime()) / 86400000);
+  const days = getDeadlineDaysUntil(value);
+  if (days === null) return "#9CA3AF";
   if (days < 0) return "#B91C1C";
   if (days <= 7) return "#B45309";
   return "#9CA3AF";
+}
+
+function getDeadlineDaysUntil(value: string): number | null {
+  const deadline = parseDateOnlyAsLocalDate(value);
+  if (!deadline) return null;
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  return Math.round((deadline.getTime() - today.getTime()) / 86400000);
+}
+
+function parseDateOnlyAsLocalDate(value: string): Date | null {
+  const [yearPart, monthPart, dayPart] = value.slice(0, 10).split("-");
+  const year = Number(yearPart);
+  const month = Number(monthPart);
+  const day = Number(dayPart);
+
+  if (!year || !month || !day) return null;
+
+  const date = new Date(year, month - 1, day);
+  if (
+    date.getFullYear() !== year ||
+    date.getMonth() !== month - 1 ||
+    date.getDate() !== day
+  ) {
+    return null;
+  }
+
+  return date;
 }
 
 function formatDealDateShort(value: string): string {
@@ -1687,9 +1756,9 @@ function ErrorState({ onRetry }: { readonly onRetry: () => void }) {
 function DesktopLoadingState() {
   return (
     <div className="flex w-full min-w-0 flex-col overflow-hidden bg-white">
-      {Array.from({ length: 6 }).map((_, i) => (
+      {Array.from({ length: 8 }).map((_, i) => (
         <div
-          className="h-[66px] animate-pulse border-b border-[#E5E7EB] bg-[#F8FAFC] last:border-b-0"
+          className="h-14 animate-pulse border-b border-[#E5E7EB] bg-[#F8FAFC] last:border-b-0"
           key={i}
         />
       ))}

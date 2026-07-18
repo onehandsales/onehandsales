@@ -69,6 +69,36 @@
 - 홈의 일정, 딜, 회의록 preview는 Attio식 linked sales record entry point로 연결된다.
 - Notification, 결제/구독, Admin 운영, generic Export는 노출하지 않았다.
 
+## G03 Deal Pipeline UX Summary
+
+- 완료일: 2026-07-18
+- 처리 goal: `G03-DEAL-PIPELINE-UX`
+- 구현 파일: `FE/user-web/src/features/deal/components/deal-pipeline-home-screen.tsx`, `FE/user-web/src/features/deal/components/deal-detail-panel.tsx`
+- 화면 검증: `/tmp/onehandsales-g03-final/*.png` 로컬 screenshot. 이미지 파일은 repository에 보관하지 않는다.
+- 자동 점검 결과: console error 0건, page error 0건, failed request 0건, document horizontal overflow 0건
+- 검증 명령: `pnpm run typecheck`, `pnpm run lint`, `pnpm run build`, `git diff --check`
+- E2E: `pnpm run test:e2e`는 실행했지만 로컬 Playwright chromium headless shell이 없어 테스트 시작 전 실패했다. 코드 assertion 실패는 없었다.
+
+### 처리 요약
+
+- `/app/deals` desktop row를 56px 딜 전용 record table row로 낮췄다.
+- 마지막 컬럼을 `등록일`에서 `마감`으로 바꾸고 D-day와 날짜를 보여주도록 정리했다.
+- 다음 행동 아래에 현재 Deal list response의 `latestFollowingAction` 또는 `updatedAt` 기반 최근 활동을 표시했다.
+- 금액과 마감이 1440px, 1280px, 125% proxy 1152px에서 읽히도록 컬럼 폭과 padding을 조정했다.
+- 768px에서는 desktop table을 숨기고 mobile card list를 유지했다.
+- mobile card에도 다음 행동, 최근 활동, D-day, 마감일, 금액을 함께 표시했다.
+- `overflow-x-hidden`으로 핵심 컬럼이 조용히 잘리는 구조를 제거했다.
+- 딜 상세의 768px breakpoint를 `lg` 기준으로 맞추고, mobile/tablet 상세에서 로그 패널이 과도한 고정 높이를 만들지 않게 조정했다.
+- 완료 후 리뷰에서 date-only D-day timezone 오차를 발견해 `YYYY-MM-DD`를 local date로 계산하도록 수정했다.
+
+### Reference Gate
+
+- Desktop 목록은 Notion database-like table처럼 조용하고 조밀하게 읽힌다.
+- 딜 row/card는 Attio식 deal record entry point처럼 열 수 있고, 회사/담당자 linked record 맥락을 보여준다.
+- 딜 상세는 기존 구조에서 stage, amount, company/contact/product, next action, due date, activity log, Memo log를 property-first로 구분한다.
+- Deal list response에는 `products`가 없으므로 목록에서 제품 linked record를 임의로 만들지 않았다. 필요한 경우 Deal list API response 확장으로 분리한다.
+- 15개 page size는 Backend 상수, 응답 `pageSize`, 테스트/API 문서 계약과 함께 바꿔야 하므로 G03에서 FE 단독 변경하지 않았다.
+
 ## 2026-07-18 UX Reference Update
 
 - 반영일: 2026-07-18
@@ -133,7 +163,7 @@
 | 화면 | 상태 | 근거 | 후속 |
 |---|---|---|---|
 | `/app` | PASS | 1440/1280/768/125%에서 핵심 카드, 오늘 할 일, 딜 현황, 빠른 실행이 깨지지 않음 | UX-005 |
-| `/app/deals` | FAIL | 1440에서도 마감일 대신 등록일이 보이고, 1280/768/125%에서 오른쪽 핵심 컬럼이 잘림 | UX-001 |
+| `/app/deals` | FIXED | G03에서 등록일 컬럼을 마감/D-day로 교체하고 row height, 다음 행동, 최근 활동, 768px card 전환을 정리함 | UX-001 |
 | AppShell/Sidebar/TopBar | FIXED | G02에서 768px tablet은 mobile/tablet shell로 전환하고 desktop sidebar 본문 압박을 제거함 | UX-003 |
 | `/app/companies` | NEEDS CHECK | 768px에서 테이블 헤더/셀 일부가 과하게 축약됨 | UX-006 |
 | `/app/contacts` | NEEDS CHECK | 768px에서 이름, 회사, 부서, 이메일, 등록일이 대부분 축약됨 | UX-006 |
@@ -150,7 +180,7 @@
 
 아래는 이슈 심각도 기준의 처리 우선순위다. 실제 `/goal` 실행 순서는 `COMMON/GOAL-WORK-ORDER.md`를 따른다. G02 완료 이후 다음 실행은 G03이다.
 
-1. G03: `/app/deals` 목록에서 마감일, 다음 행동, 금액, 단계가 1440/1280/768/125%에서 비교되도록 수정한다.
+1. G03: `/app/deals` 목록에서 마감일, 다음 행동, 금액, 단계가 1440/1280/768/125%에서 비교되도록 수정한다. 2026-07-18 G03에서 처리 완료했다.
 2. G05: `/app/schedules` 월간 캘린더의 768px 표시 방식을 수정한다.
 3. G04/G05: UX-006 기준으로 768px 도메인 목록 row/table이 compact/tablet layout 또는 명확한 내부 스크롤을 갖는지 정리한다.
 4. G06: Import, 명함 스캔, 계정 popover, empty/error/validation 문구의 해요체/행동형 기준을 정리한다.
@@ -158,7 +188,7 @@
 
 ## UX-001 `/app/deals`에서 마감일 비교가 불가능하고 1280/768/125%에서 핵심 컬럼이 잘림
 
-- 상태: Open
+- 상태: Fixed
 - 심각도: S2 Major
 - 화면: `/app/deals`
 - Viewport: 1440px, 1280px, 768px, 125% 확대 proxy 1152px
@@ -198,10 +228,17 @@
 - G01 로컬 캡처 `1280-deals.png`: 오른쪽 핵심 컬럼이 잘림.
 - G01 로컬 캡처 `768-deals.png`: 단계 tab label이 세로로 깨지고 테이블 정보가 오른쪽으로 밀림.
 - G01 로컬 캡처 `125zoom-proxy-deals.png`: 다음 행동 이후 핵심 정보가 잘림.
+- G03 Playwright route mock + Google Chrome headless 기준 `/app/deals` 1440px, 1280px, 768px, 125% proxy 1152px에서 console error 0건, page error 0건, failed request 0건, document horizontal overflow 0건을 확인했다.
+- G03 1440px, 1280px, 125% proxy 1152px에서 desktop row height 56px, `마감`, D-day, 날짜, 금액, 다음 행동, 최근 활동 표시를 확인했다.
+- G03 768px에서 desktop table 미노출, mobile card list 노출, D-day/마감일/금액/다음 행동/최근 활동 표시를 확인했다.
+- G03 `/app/deals/:dealId` 1440px/768px에서 회사/담당자/제품, Memo log, 다음 행동, 삭제 action 표시와 document horizontal overflow 0건을 확인했다.
+- G03 완료 후 리뷰에서 `TZ=America/Los_Angeles` 기준 `2026-07-18` -> `2026-07-25`가 `D-7`로 계산되는지 확인했다.
+- `pnpm run typecheck`, `pnpm run lint`, `pnpm run build`, `git diff --check`를 통과했다.
+- `pnpm run test:e2e`는 로컬 Playwright chromium headless shell 누락으로 테스트 시작 전 실패했다. 코드 assertion 실패는 발생하지 않았다.
 
 ### 완료 후 검토
 
-G01은 baseline audit이므로 수정하지 않았다. G03에서 우선 수정해야 한다.
+G03에서 처리했다. Deal list response에는 `products`가 없으므로 목록에서 제품 linked record를 임의로 만들지 않았고, 필요한 경우 별도 Deal list API response 확장으로 분리한다. 15개 page size도 FE 단독 변경하지 않았고 Backend 상수, 응답 `pageSize`, 테스트/API 문서와 함께 변경해야 한다.
 
 ## UX-002 `/app/schedules` 768px에서 월간 캘린더 7일 맥락이 유지되지 않음
 
