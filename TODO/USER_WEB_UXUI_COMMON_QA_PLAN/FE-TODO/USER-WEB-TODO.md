@@ -57,18 +57,20 @@ G03 완료 기준으로 목록 row/card는 회사/담당자 linked record를 보
 
 ### P1. Company/Contact/Product
 
-- [ ] 회사 목록에서 회사명/분야/지역/담당자/진행 딜/다음 행동 또는 현재 응답에서 가능한 최근 활동 확인
-- [ ] 담당자 목록에서 이름/회사/부서·직급/연락처/연결 딜/현재 응답에서 가능한 최근 활동 확인
-- [ ] 제품 목록에서 제품명/카테고리·타입/연결 딜 수/사용 맥락 또는 현재 응답에서 가능한 최근 활동 확인
-- [ ] 등록일이 연결 record/현재 응답에서 가능한 최근 활동/다음 행동 맥락을 밀어내지 않는지 확인
-- [ ] 최근 활동 또는 다음 행동 summary가 현재 API로 부족하면 BE/API 후속으로 기록
-- [ ] desktop row height 52~56px 수준 업무용 밀도 검토
-- [ ] 생성 action과 export action 구분
-- [ ] 회사 생성 오른쪽 문서형 패널 확인
-- [ ] 담당자/제품 생성 modal/panel 확인
-- [ ] 목록 row가 Notion database row처럼 열 수 있는 record로 보이는지 확인
-- [ ] 상세 기본 정보/연결 딜/메모 구분
-- [ ] 삭제/복구 UX 확인
+- [x] 회사 목록에서 회사명/분야/지역/담당자/진행 딜/현재 응답에서 가능한 활동 확인
+- [x] 담당자 목록에서 이름/회사/부서·직급/연락처/현재 응답에서 가능한 활동 확인
+- [x] 제품 목록에서 제품명/카테고리·상태/연결 딜 수/현재 응답에서 가능한 활동 확인
+- [x] 등록일이 연결 record/현재 응답에서 가능한 활동 맥락을 밀어내지 않는지 확인
+- [x] 최근 활동 또는 다음 행동 summary가 현재 API로 부족하면 BE/API 후속으로 기록
+- [x] desktop row height 52~56px 수준 업무용 밀도 검토
+- [x] 생성 action과 export action 구분
+- [x] 회사 생성 오른쪽 문서형 패널 확인
+- [x] 담당자/제품 생성 panel 확인
+- [x] 목록 row가 Notion database row처럼 열 수 있는 record로 보이는지 확인
+- [x] 상세 기본 정보/연결 딜/메모 구분
+- [x] 삭제/복구 UX 확인
+
+G04 완료 기준으로 회사/담당자/제품 desktop row는 56px이고, 768px에서는 card/list를 유지한다. 회사/제품 list response에는 연결 record count가 있지만, 담당자 list response에는 연결 딜 수가 없고 세 도메인 list response에는 실제 최신 활동/다음 행동 summary가 부족하다. FE에서 임의 값을 만들지 않고 `COMMON/API-SPEC/README.md`와 `BE-TODO/API-TODO.md` 후속으로 기록했다.
 
 ### P1. Schedule/MeetingNote/BusinessCard/Import/Trash
 
@@ -106,6 +108,12 @@ G03 완료 기준으로 목록 row/card는 회사/담당자 linked record를 보
 - [x] G03 대상 화면 재확인
 - [x] G03 기준 `COMMON/ISSUE-LOG.md` 상태 최신화
 - [x] G03 완료 보고에 검증, 검토 결과, 남은 리스크 기록
+- [x] G04 완료 전 `COMMON/GOAL-WORK-ORDER.md`의 `완료 후 필수 검토 게이트` 수행
+- [x] G04 수정 diff 자체 검토
+- [x] G04 `Notion + Attio Reference Gate` 수행
+- [x] G04 대상 화면 재확인
+- [x] G04 기준 `COMMON/ISSUE-LOG.md` 상태 최신화
+- [x] G04 완료 보고에 검증, 검토 결과, 남은 리스크 기록
 
 ## 4. 검증 명령
 

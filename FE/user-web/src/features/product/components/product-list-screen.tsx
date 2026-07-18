@@ -1,7 +1,7 @@
 import {
+  Activity,
   ArrowUpDown,
   BriefcaseBusiness,
-  CalendarClock,
   ChevronDown,
   CircleDot,
   Download,
@@ -83,6 +83,10 @@ const PRODUCT_TABLE_COLUMNS = [
   { id: "createdAt", defaultWidth: 130, minWidth: 115 },
 ] satisfies readonly ResizableTableColumn[];
 const PRODUCT_TABLE_COLUMNS_STORAGE_KEY = "onehand.table.products.columns";
+const PRODUCT_LIST_TABLE_ROW_CLASS_NAME = cn(
+  LIST_TABLE_ROW_CLASS_NAME,
+  "h-14",
+);
 const PRODUCT_CREATE_PANEL_STORAGE_KEY = "onehand.product.createPanelWidth";
 const PRODUCT_CREATE_PANEL_DEFAULT_WIDTH = 520;
 const PRODUCT_CREATE_PANEL_MIN_WIDTH = 420;
@@ -131,6 +135,7 @@ export function ProductListScreen({
   const setAutoSidebarCollapsed = outletContext?.setAutoSidebarCollapsed;
   const { getHeaderCellResizeProps, tableContainerRef, tableContainerStyle } =
     useResizableTableColumns({
+      allowHorizontalOverflow: true,
       columns: PRODUCT_TABLE_COLUMNS,
       storageKey: PRODUCT_TABLE_COLUMNS_STORAGE_KEY,
     });
@@ -477,7 +482,7 @@ export function ProductListScreen({
       />
 
       {/* 검색 + 필터 툴바 (데스크톱) */}
-      <div className="hidden min-h-10 shrink-0 items-center px-5 py-1 md:flex">
+      <div className="hidden min-h-10 shrink-0 items-center px-5 py-1 lg:flex">
         <div className="flex min-w-0 flex-1 items-center gap-1.5 overflow-x-auto [scrollbar-width:none] lg:gap-2 [&::-webkit-scrollbar]:hidden">
           <CollapsibleDesktopSearch
             appliedValue={search}
@@ -666,7 +671,7 @@ export function ProductListScreen({
       {/* 테이블 (데스크톱) */}
       <div
         className={cn(
-          "hidden min-h-0 flex-1 gap-3 overflow-hidden px-5 pb-3 pt-1 md:flex xl:gap-5",
+          "hidden min-h-0 flex-1 gap-3 overflow-hidden px-5 pb-3 pt-1 lg:flex xl:gap-5",
           isCreatePanelResizing && "cursor-col-resize select-none",
         )}
       >
@@ -690,7 +695,7 @@ export function ProductListScreen({
           ) : null}
 
           <div
-            className="flex w-full min-w-0 flex-col overflow-x-hidden overflow-y-hidden bg-white"
+            className="flex w-full min-w-0 flex-col overflow-x-auto overflow-y-hidden bg-white"
             ref={tableContainerRef}
             style={tableContainerStyle}
           >
@@ -717,13 +722,13 @@ export function ProductListScreen({
                 icon={BriefcaseBusiness}
                 {...getHeaderCellResizeProps("dealCount", 3)}
               >
-                딜 수
+                연결 딜
               </ListTableHeaderCell>
               <ListTableHeaderCell
-                icon={CalendarClock}
+                icon={Activity}
                 {...getHeaderCellResizeProps("createdAt", 4)}
               >
-                등록일
+                활동
               </ListTableHeaderCell>
             </div>
 
@@ -777,7 +782,7 @@ export function ProductListScreen({
       </div>
 
       {/* 모바일 뷰 */}
-      <section className="flex min-h-0 flex-1 flex-col md:hidden">
+      <section className="flex min-h-0 flex-1 flex-col lg:hidden">
         {/* 모바일 필터 칩 행 */}
         <div className="flex h-10 shrink-0 items-center gap-2 overflow-x-auto border-b border-[#E5E7EB] px-4">
           <ProductTaxonomyFilterCombobox
@@ -988,13 +993,13 @@ function ProductMobileCard({
             {product.productStatus.statusName}
           </Badge>
         </div>
-        {/* Row3: 딜 수 + 등록일 */}
+        {/* Row3: 연결 딜 + 현재 응답에서 가능한 활동 */}
         <div className="mt-1 flex items-center justify-between">
           <span className="text-[12px] text-[#6B7280]">
             딜 {product.dealCount.toLocaleString("ko-KR")}건
           </span>
           <span className="shrink-0 text-[11px] text-[#9CA3AF]">
-            {formatProductCreatedAt(product.createdAt, displayTimeZone)}
+            {formatProductCreatedActivity(product.createdAt, displayTimeZone)}
           </span>
         </div>
       </div>
@@ -1013,7 +1018,7 @@ function ProductRow({
 
   return (
     <div
-      className={LIST_TABLE_ROW_CLASS_NAME}
+      className={PRODUCT_LIST_TABLE_ROW_CLASS_NAME}
       onClick={() => void navigate(`/app/products/${product.id}`)}
       onKeyDown={(e) => {
         if (e.key === "Enter" || e.key === " ") {
@@ -1042,9 +1047,9 @@ function ProductRow({
       </div>
       <div
         className="min-w-0 truncate text-[12px] font-medium text-[#64748B]"
-        title={formatProductCreatedAt(product.createdAt, displayTimeZone)}
+        title={formatProductCreatedActivity(product.createdAt, displayTimeZone)}
       >
-        {formatProductCreatedAt(product.createdAt, displayTimeZone)}
+        {formatProductCreatedActivity(product.createdAt, displayTimeZone)}
       </div>
     </div>
   );
@@ -1515,7 +1520,7 @@ function ProductListSkeleton() {
     <div className="min-h-0 flex-1 overflow-hidden">
       {Array.from({ length: 6 }, (_, index) => (
         <div
-          className="h-[66px] animate-pulse border-b border-[#E5E7EB] bg-[#F8FAFC] last:border-b-0"
+          className="h-14 animate-pulse border-b border-[#E5E7EB] bg-[#F8FAFC] last:border-b-0"
           key={index}
         />
       ))}
@@ -1530,6 +1535,10 @@ function formatProductCreatedAt(value: string, timeZone: string) {
     timeZone,
     year: "numeric",
   });
+}
+
+function formatProductCreatedActivity(value: string, timeZone: string) {
+  return `등록 ${formatProductCreatedAt(value, timeZone)}`;
 }
 
 function getBrowserTimeZoneFallback() {

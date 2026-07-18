@@ -1,6 +1,6 @@
 # G04 Domain List Detail Create UX
 
-상태: Ready
+상태: Done
 우선순위: P1
 담당 영역: FE/user-web
 
@@ -90,3 +90,49 @@ pnpm run test:e2e
 - page size 15개가 필요하다고 판단되면 FE 단독 변경 없이 BE/API/test 문서 영향과 후속 처리 방안이 기록된다.
 - 긴 텍스트 overflow가 주요 화면에서 해결된다.
 - 관련 이슈가 `COMMON/ISSUE-LOG.md`에서 정리된다.
+
+## 9. 완료 기록
+
+- 완료일: 2026-07-18
+- 구현 파일:
+  - `FE/user-web/src/features/company/components/company-list-screen.tsx`
+  - `FE/user-web/src/features/contact/components/contact-list-screen.tsx`
+  - `FE/user-web/src/features/contact/components/contact-detail-screen.tsx`
+  - `FE/user-web/src/features/product/components/product-list-screen.tsx`
+  - `FE/user-web/src/features/product/components/product-detail-screen.tsx`
+  - `FE/user-web/src/hooks/use-resizable-table-columns.ts`
+- 문서 업데이트:
+  - `COMMON/ISSUE-LOG.md`
+  - `COMMON/API-SPEC/README.md`
+  - `BE-TODO/API-TODO.md`
+  - `FE-TODO/USER-WEB-TODO.md`
+
+### 처리 내용
+
+- 회사/담당자/제품 desktop row height를 56px로 낮췄다.
+- 768px에서는 desktop table을 숨기고 card/list를 유지하도록 `lg` breakpoint 기준으로 맞췄다.
+- 회사/담당자/제품 목록의 마지막 컬럼을 `등록일`이 아니라 `활동`으로 정리하고, 현재 list response에서 가능한 `등록 YYYY. MM. DD.` 기록을 표시했다.
+- 회사 목록은 담당자 수와 진행 딜, 제품 목록은 연결 딜 수를 업무 판단 정보로 유지했다.
+- 담당자 목록은 현재 list response에 연결 딜 수와 최신 활동 summary가 없어 FE에서 임의로 만들지 않았다.
+- 회사/담당자/제품 desktop table은 좁은 폭에서 컬럼을 1px 단위로 과도하게 압축하지 않고, 최소 폭 이하에서는 내부 가로 스크롤을 허용한다.
+- 담당자/제품 상세의 768px breakpoint를 mobile/tablet layout으로 맞추고, 긴 담당자명/제품명/회사명/이메일/전화번호 overflow를 보강했다.
+- 삭제 action은 기존처럼 `ConfirmDialog`를 사용하고 `window.confirm`은 쓰지 않는다.
+
+### 검증
+
+- `pnpm run typecheck`: 통과
+- `pnpm run lint`: 통과
+- `pnpm run build`: 통과. 기존 Vite warning `duration-[500ms]` ambiguous, chunk size warning은 남아 있다.
+- `git diff --check`: 통과
+- `pnpm run test:e2e`: 로컬 Playwright chromium headless shell 누락으로 테스트 시작 전 실패. 코드 assertion 실패는 없었다.
+- Playwright route mock + Google Chrome headless 기준 36개 조합을 확인했다.
+  - 대상: `/app/companies`, `/app/contacts`, `/app/products`, `/app/companies/new`, `/app/contacts/new`, `/app/products/new`, `/app/companies/:id`, `/app/contacts/:id`, `/app/products/:id`
+  - Viewport: 1440px, 1280px, 768px, 125% proxy 1152px
+  - 결과: console error 0건, page error 0건, failed request 0건, document horizontal overflow 0건
+  - 캡처: `/tmp/onehandsales-g04-final/*.png`
+
+### 남은 후속
+
+- 회사/담당자/제품 list response에 실제 `updatedAt`, 최신 Memo/활동, 다음 행동 summary가 필요하면 별도 BE/API 계획으로 분리한다.
+- 담당자 list response에 연결 딜 수가 필요하면 별도 BE/API 계획으로 분리한다.
+- page size 15개 기본값은 FE 단독으로 변경하지 않았다. Backend 상수, 응답 `pageSize`, 테스트/API 문서와 함께 바꿔야 한다.

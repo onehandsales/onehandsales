@@ -46,3 +46,19 @@ G03은 Deal API를 변경하지 않고 완료했다.
 다만 Deal list response에는 `products`가 없다. 목록 row에서 제품 linked record까지 1급 정보로 보여야 한다고 판단되면 FE에서 임의로 만들지 말고 Deal list response에 제품 summary를 포함하는 API 변경 계획으로 분리한다.
 
 Desktop page size 15개 기본값은 장기 UX 목표로 남긴다. 현재 page size는 Backend 도메인 서비스 상수, 응답 `pageSize`, 테스트/API 문서 계약과 연결되어 있으므로 FE 단독 변경하지 않는다.
+
+## G04 Domain List 확인 결과
+
+- 상태: Deferred
+- 확인일: 2026-07-18
+- 화면: `/app/companies`, `/app/contacts`, `/app/products`
+
+G04는 Company/Contact/Product API를 변경하지 않고 완료했다.
+
+현재 Company list response에는 담당자 수와 진행 딜 수가 있고, Product list response에는 연결 딜 수가 있어 G04 목록 UX에서 연결 record count를 표현할 수 있다.
+
+현재 Contact list response에는 연결 딜 수가 없다. 담당자 목록에서 연결 딜 수를 1급 정보로 보여야 한다면 `GET /api/contacts` 응답에 `dealCount`를 추가하는 Backend/API 변경 계획으로 분리한다.
+
+세 도메인 list response에는 실제 최신 활동/다음 행동 summary가 없다. 현재 FE는 `createdAt` 기반 `등록` 활동만 표시한다. 회사/담당자/제품 목록에서 실제 최신 Memo, 최신 활동 로그, 다음 행동을 보여야 한다면 각 list response에 `updatedAt`, `latestMemoAt`, `latestActivityAt`, `latestActivitySummary`, `nextActionSummary` 같은 명시 필드를 추가하는 Backend/API 변경 계획으로 분리한다.
+
+Desktop page size 15개 기본값은 장기 UX 목표로 남긴다. 현재 page size는 Backend 도메인 서비스 상수, 응답 `pageSize`, 테스트/API 문서 계약과 연결되어 있으므로 FE 단독 변경하지 않는다.

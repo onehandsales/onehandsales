@@ -147,7 +147,7 @@ export function ProductDetailScreen({ productId }: ProductDetailScreenProps) {
   return (
     <>
       {/* ── Mobile ──────────────────────────────────────────── */}
-      <div className="md:hidden min-h-screen bg-white">
+      <div className="min-h-screen bg-white lg:hidden">
         {notice ? (
           <div className="px-4 pt-3">
             <Toast
@@ -173,11 +173,13 @@ export function ProductDetailScreen({ productId }: ProductDetailScreenProps) {
           <Link to="/app/products">
             <ChevronLeft className="h-5 w-5 text-[#9CA3AF]" />
           </Link>
-          <div className="flex flex-1 items-center gap-1.5 text-[13px]">
+          <div className="flex min-w-0 flex-1 items-center gap-1.5 text-[13px]">
             <Package className="h-3.5 w-3.5 shrink-0 text-[#9CA3AF]" />
-            <span className="font-medium text-[#6B7280]">제품</span>
-            <span className="text-[#9CA3AF]">/</span>
-            <span className="font-bold text-[#111827]">{product.productName}</span>
+            <span className="shrink-0 font-medium text-[#6B7280]">제품</span>
+            <span className="shrink-0 text-[#9CA3AF]">/</span>
+            <span className="min-w-0 truncate font-bold text-[#111827]">
+              {product.productName}
+            </span>
           </div>
           <button
             aria-label="수정"
@@ -237,7 +239,7 @@ export function ProductDetailScreen({ productId }: ProductDetailScreenProps) {
       </div>
 
       {/* ── Desktop ──────────────────────────────────────────── */}
-      <div className="hidden md:flex h-full flex-col bg-white">
+      <div className="hidden h-full flex-col bg-white lg:flex">
         {notice ? (
           <div className="mx-6 mt-3">
             <Toast
@@ -263,11 +265,13 @@ export function ProductDetailScreen({ productId }: ProductDetailScreenProps) {
           <Link to="/app/products">
             <ChevronLeft className="h-5 w-5 text-[#9CA3AF]" />
           </Link>
-          <div className="flex flex-1 items-center gap-1.5 text-[13px]">
+          <div className="flex min-w-0 flex-1 items-center gap-1.5 text-[13px]">
             <Package className="h-3.5 w-3.5 shrink-0 text-[#9CA3AF]" />
-            <span className="font-medium text-[#6B7280]">제품</span>
-            <span className="text-[#9CA3AF]">/</span>
-            <span className="font-bold text-[#111827]">{product.productName}</span>
+            <span className="shrink-0 font-medium text-[#6B7280]">제품</span>
+            <span className="shrink-0 text-[#9CA3AF]">/</span>
+            <span className="min-w-0 truncate font-bold text-[#111827]">
+              {product.productName}
+            </span>
           </div>
           <button
             aria-label="수정"
@@ -530,13 +534,13 @@ function ProductSummaryHeader({
       <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#EEF2FF]">
         <Package className="h-5 w-5 text-[#4338CA]" strokeWidth={2} />
       </div>
-      <span className="shrink-0 text-[20px] font-extrabold leading-none text-[#111827]">
+      <span className="min-w-0 flex-[1_1_280px] break-words text-[20px] font-extrabold leading-tight text-[#111827]">
         {product.productName}
       </span>
       <div className="h-5 w-px shrink-0 bg-[#E5E7EB]" />
-      <div className="flex items-center gap-1.5 text-[13px]">
-        <span className="font-semibold text-[#9CA3AF]">카테고리</span>
-        <span className="font-extrabold text-[#111827]">
+      <div className="flex min-w-0 flex-[1_1_180px] items-center gap-1.5 text-[13px]">
+        <span className="shrink-0 font-semibold text-[#9CA3AF]">카테고리</span>
+        <span className="min-w-0 break-words font-extrabold text-[#111827]">
           {product.productCategory.categoryName}
         </span>
       </div>

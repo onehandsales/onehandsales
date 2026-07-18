@@ -1,8 +1,8 @@
 import {
+  Activity,
   ArrowUpDown,
   BriefcaseBusiness,
   Building2,
-  CalendarClock,
   ChevronDown,
   Download,
   IdCard,
@@ -84,6 +84,10 @@ const CONTACT_TABLE_COLUMNS = [
   { id: "createdAt", defaultWidth: 130, minWidth: 115 },
 ] satisfies readonly ResizableTableColumn[];
 const CONTACT_TABLE_COLUMNS_STORAGE_KEY = "onehand.table.contacts.columns";
+const CONTACT_LIST_TABLE_ROW_CLASS_NAME = cn(
+  LIST_TABLE_ROW_CLASS_NAME,
+  "h-14",
+);
 
 type ContactListScreenProps = {
   readonly initialCreateOpen?: boolean;
@@ -135,6 +139,7 @@ export function ContactListScreen({
   const setAutoSidebarCollapsed = outletContext?.setAutoSidebarCollapsed;
   const { getHeaderCellResizeProps, tableContainerRef, tableContainerStyle } =
     useResizableTableColumns({
+      allowHorizontalOverflow: true,
       columns: CONTACT_TABLE_COLUMNS,
       storageKey: CONTACT_TABLE_COLUMNS_STORAGE_KEY,
     });
@@ -444,7 +449,7 @@ export function ContactListScreen({
       />
 
       {/* 검색 + 필터 툴바 (데스크톱) */}
-      <div className="hidden min-h-10 shrink-0 items-center px-5 py-1 md:flex">
+      <div className="hidden min-h-10 shrink-0 items-center px-5 py-1 lg:flex">
         <div className="flex min-w-0 flex-1 items-center gap-1.5 overflow-x-auto [scrollbar-width:none] lg:gap-2 [&::-webkit-scrollbar]:hidden">
           <CollapsibleDesktopSearch
             appliedValue={username}
@@ -628,7 +633,7 @@ export function ContactListScreen({
 
       {/* 알림 */}
       {notice || exportContactsMutation.error || actionError ? (
-        <div className="hidden px-5 pt-2 md:block">
+        <div className="hidden px-5 pt-2 lg:block">
           {notice ? (
             <Toast
               description={noticeDescription ?? undefined}
@@ -656,13 +661,13 @@ export function ContactListScreen({
       {/* 테이블 (데스크톱) */}
       <div
         className={cn(
-          "hidden min-h-0 flex-1 gap-3 overflow-hidden px-5 pb-3 pt-1 md:flex xl:gap-5",
+          "hidden min-h-0 flex-1 gap-3 overflow-hidden px-5 pb-3 pt-1 lg:flex xl:gap-5",
           isCreatePanelResizing && "cursor-col-resize select-none",
         )}
       >
         <div className="flex min-w-0 flex-1 flex-col gap-3">
           <div
-            className="flex w-full min-w-0 flex-col overflow-x-hidden overflow-y-hidden bg-white"
+            className="flex w-full min-w-0 flex-col overflow-x-auto overflow-y-hidden bg-white"
             ref={tableContainerRef}
             style={tableContainerStyle}
           >
@@ -696,7 +701,7 @@ export function ContactListScreen({
                 icon={Phone}
                 {...getHeaderCellResizeProps("mobile", 4)}
               >
-                핸드폰
+                전화
               </ListTableHeaderCell>
               <ListTableHeaderCell
                 icon={Mail}
@@ -705,10 +710,10 @@ export function ContactListScreen({
                 이메일
               </ListTableHeaderCell>
               <ListTableHeaderCell
-                icon={CalendarClock}
+                icon={Activity}
                 {...getHeaderCellResizeProps("createdAt", 6)}
               >
-                등록일
+                활동
               </ListTableHeaderCell>
             </div>
 
@@ -767,7 +772,7 @@ export function ContactListScreen({
       </div>
 
       {/* 모바일 뷰 */}
-      <section className="flex min-h-0 flex-1 flex-col md:hidden">
+      <section className="flex min-h-0 flex-1 flex-col lg:hidden">
         {/* 모바일 알림 */}
         {notice ? (
           <div className="px-4 pt-2">
@@ -964,13 +969,13 @@ function ContactMobileCard({
           {contact.company.companyName} ·{" "}
           {contact.contactDepartment.departmentName}
         </p>
-        {/* Row3: 연락처 + 등록일 */}
+        {/* Row3: 연락처 + 현재 응답에서 가능한 활동 */}
         <div className="mt-1 flex items-center justify-between">
           <span className="text-[12px] text-[#6B7280]">
             {contact.mobile || contact.email || "-"}
           </span>
           <span className="shrink-0 text-[11px] text-[#9CA3AF]">
-            {formatContactCreatedAt(contact.createdAt, displayTimeZone)}
+            {formatContactCreatedActivity(contact.createdAt, displayTimeZone)}
           </span>
         </div>
       </div>
@@ -989,7 +994,7 @@ function ContactRow({
 
   return (
     <div
-      className={LIST_TABLE_ROW_CLASS_NAME}
+      className={CONTACT_LIST_TABLE_ROW_CLASS_NAME}
       onClick={() => void navigate(`/app/contacts/${contact.id}`)}
       onKeyDown={(e) => {
         if (e.key === "Enter" || e.key === " ") {
@@ -1045,9 +1050,9 @@ function ContactRow({
       </div>
       <div
         className="min-w-0 truncate text-[12px] font-medium text-[#64748B]"
-        title={formatContactCreatedAt(contact.createdAt, displayTimeZone)}
+        title={formatContactCreatedActivity(contact.createdAt, displayTimeZone)}
       >
-        {formatContactCreatedAt(contact.createdAt, displayTimeZone)}
+        {formatContactCreatedActivity(contact.createdAt, displayTimeZone)}
       </div>
     </div>
   );
@@ -1077,7 +1082,7 @@ export function ContactCard({
           <p className="truncate">핸드폰 {contact.mobile || "-"}</p>
           <p className="truncate">이메일 {contact.email || "-"}</p>
           <p>
-            등록일 {formatContactCreatedAt(contact.createdAt, displayTimeZone)}
+            활동 {formatContactCreatedActivity(contact.createdAt, displayTimeZone)}
           </p>
         </div>
       </div>
@@ -1096,7 +1101,7 @@ function ContactListSkeleton() {
       {Array.from({ length: 10 }, (_, i) => (
         <div
           key={i}
-          className="h-[66px] animate-pulse border-b border-[#E5E7EB] bg-[#F8FAFC] last:border-b-0"
+          className="h-14 animate-pulse border-b border-[#E5E7EB] bg-[#F8FAFC] last:border-b-0"
         />
       ))}
     </div>
@@ -1578,6 +1583,10 @@ function formatContactCreatedAt(value: string, timeZone: string) {
     timeZone,
     year: "numeric",
   });
+}
+
+function formatContactCreatedActivity(value: string, timeZone: string) {
+  return `등록 ${formatContactCreatedAt(value, timeZone)}`;
 }
 
 function getBrowserTimeZoneFallback() {

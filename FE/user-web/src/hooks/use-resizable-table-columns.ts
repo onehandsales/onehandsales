@@ -27,11 +27,13 @@ type HeaderCellResizeProps = {
 };
 
 type UseResizableTableColumnsOptions = {
+  readonly allowHorizontalOverflow?: boolean;
   readonly columns: readonly ResizableTableColumn[];
   readonly storageKey: string;
 };
 
 export function useResizableTableColumns({
+  allowHorizontalOverflow = false,
   columns,
   storageKey,
 }: UseResizableTableColumnsOptions) {
@@ -85,8 +87,14 @@ export function useResizableTableColumns({
   }, []);
 
   const displayWidths = useMemo(
-    () => fitWidthsToContainer(widths, columns, containerWidth),
-    [columns, containerWidth, widths],
+    () => {
+      const targetWidth = allowHorizontalOverflow
+        ? Math.max(containerWidth, getMinimumColumnWidthTotal(columns))
+        : containerWidth;
+
+      return fitWidthsToContainer(widths, columns, targetWidth);
+    },
+    [allowHorizontalOverflow, columns, containerWidth, widths],
   );
 
   const gridTemplateColumns = useMemo(
@@ -427,6 +435,10 @@ function getEffectiveMinimumWidths(
 
   const scale = targetWidth / minimumTotalWidth;
   return minimumWidths.map((width) => width * scale);
+}
+
+function getMinimumColumnWidthTotal(columns: readonly ResizableTableColumn[]) {
+  return sum(columns.map((column) => column.minWidth));
 }
 
 function getBoundedPairDelta(

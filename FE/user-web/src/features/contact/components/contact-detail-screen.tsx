@@ -155,7 +155,7 @@ export function ContactDetailScreen({ contactId }: ContactDetailScreenProps) {
   return (
     <>
       {/* ── Mobile ──────────────────────────────────────────── */}
-      <div className="md:hidden min-h-screen bg-white">
+      <div className="min-h-screen bg-white lg:hidden">
         {notice ? (
           <div className="px-4 pt-3">
             <Toast
@@ -181,11 +181,13 @@ export function ContactDetailScreen({ contactId }: ContactDetailScreenProps) {
           <Link to="/app/contacts">
             <ChevronLeft className="h-5 w-5 text-[#9CA3AF]" />
           </Link>
-          <div className="flex flex-1 items-center gap-1.5 text-[13px]">
+          <div className="flex min-w-0 flex-1 items-center gap-1.5 text-[13px]">
             <UserRound className="h-3.5 w-3.5 shrink-0 text-[#9CA3AF]" />
-            <span className="font-medium text-[#6B7280]">담당자</span>
-            <span className="text-[#9CA3AF]">/</span>
-            <span className="font-bold text-[#111827]">{contact.username}</span>
+            <span className="shrink-0 font-medium text-[#6B7280]">담당자</span>
+            <span className="shrink-0 text-[#9CA3AF]">/</span>
+            <span className="min-w-0 truncate font-bold text-[#111827]">
+              {contact.username}
+            </span>
           </div>
           <button
             aria-label="수정"
@@ -244,7 +246,7 @@ export function ContactDetailScreen({ contactId }: ContactDetailScreenProps) {
       </div>
 
       {/* ── Desktop ──────────────────────────────────────────── */}
-      <div className="hidden md:flex h-full flex-col bg-white">
+      <div className="hidden h-full flex-col bg-white lg:flex">
         {notice ? (
           <div className="mx-6 mt-3">
             <Toast
@@ -270,11 +272,13 @@ export function ContactDetailScreen({ contactId }: ContactDetailScreenProps) {
           <Link to="/app/contacts">
             <ChevronLeft className="h-5 w-5 text-[#9CA3AF]" />
           </Link>
-          <div className="flex flex-1 items-center gap-1.5 text-[13px]">
+          <div className="flex min-w-0 flex-1 items-center gap-1.5 text-[13px]">
             <UserRound className="h-3.5 w-3.5 shrink-0 text-[#9CA3AF]" />
-            <span className="font-medium text-[#6B7280]">담당자</span>
-            <span className="text-[#9CA3AF]">/</span>
-            <span className="font-bold text-[#111827]">{contact.username}</span>
+            <span className="shrink-0 font-medium text-[#6B7280]">담당자</span>
+            <span className="shrink-0 text-[#9CA3AF]">/</span>
+            <span className="min-w-0 truncate font-bold text-[#111827]">
+              {contact.username}
+            </span>
           </div>
           <button
             aria-label="수정"
@@ -560,14 +564,14 @@ function ContactSummaryHeader({
           {contact.username.charAt(0)}
         </span>
       </div>
-      <span className="shrink-0 text-[20px] font-extrabold leading-none text-[#111827]">
+      <span className="min-w-0 flex-[1_1_220px] break-words text-[20px] font-extrabold leading-tight text-[#111827]">
         {contact.username}
       </span>
       <div className="h-5 w-px shrink-0 bg-[#E5E7EB]" />
-      <div className="flex items-center gap-1.5 text-[13px]">
-        <span className="font-semibold text-[#9CA3AF]">회사</span>
+      <div className="flex min-w-0 flex-[1_1_220px] items-center gap-1.5 text-[13px]">
+        <span className="shrink-0 font-semibold text-[#9CA3AF]">회사</span>
         <Link
-          className="font-extrabold text-[#111827] hover:text-[#4880EE] hover:underline"
+          className="min-w-0 break-words font-extrabold text-[#111827] hover:text-[#4880EE] hover:underline"
           to={`/app/companies/${contact.company.id}`}
         >
           {contact.company.companyName}
@@ -1278,9 +1282,12 @@ function ContactInfoChip({
   readonly label: string;
 }) {
   return (
-    <span className="inline-flex h-8 items-center gap-2 rounded-lg border border-[#E6EAF0] bg-white px-3 text-[12px] text-[#374151]">
-      <Icon className="h-3.5 w-3.5 text-[#9CA3AF]" />
-      {label}
+    <span
+      className="inline-flex h-8 max-w-full min-w-0 items-center gap-2 rounded-lg border border-[#E6EAF0] bg-white px-3 text-[12px] text-[#374151]"
+      title={label}
+    >
+      <Icon className="h-3.5 w-3.5 shrink-0 text-[#9CA3AF]" />
+      <span className="min-w-0 truncate">{label}</span>
     </span>
   );
 }

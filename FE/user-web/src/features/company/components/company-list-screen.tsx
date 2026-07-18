@@ -1,8 +1,8 @@
 import {
+  Activity,
   ArrowUpDown,
   BriefcaseBusiness,
   Building2,
-  CalendarClock,
   ChevronDown,
   Download,
   MapPin,
@@ -87,6 +87,10 @@ const COMPANY_TABLE_COLUMNS = [
   { id: "createdAt", defaultWidth: 130, minWidth: 115 },
 ] satisfies readonly ResizableTableColumn[];
 const COMPANY_TABLE_COLUMNS_STORAGE_KEY = "onehand.table.companies.columns";
+const COMPANY_LIST_TABLE_ROW_CLASS_NAME = cn(
+  LIST_TABLE_ROW_CLASS_NAME,
+  "h-14",
+);
 const COMPANY_CREATE_PANEL_STORAGE_KEY = "onehand.company.createPanelWidth";
 const COMPANY_CREATE_PANEL_DEFAULT_WIDTH = 520;
 const COMPANY_CREATE_PANEL_MIN_WIDTH = 420;
@@ -143,6 +147,7 @@ export function CompanyListScreen({
   const setAutoSidebarCollapsed = outletContext?.setAutoSidebarCollapsed;
   const { getHeaderCellResizeProps, tableContainerRef, tableContainerStyle } =
     useResizableTableColumns({
+      allowHorizontalOverflow: true,
       columns: COMPANY_TABLE_COLUMNS,
       storageKey: COMPANY_TABLE_COLUMNS_STORAGE_KEY,
     });
@@ -515,7 +520,7 @@ export function CompanyListScreen({
       />
 
       {/* 검색 + 필터 툴바 (데스크톱) */}
-      <div className="hidden min-h-10 shrink-0 items-center px-5 py-1 md:flex">
+      <div className="hidden min-h-10 shrink-0 items-center px-5 py-1 lg:flex">
         <div className="flex min-w-0 flex-1 items-center gap-1.5 overflow-x-auto [scrollbar-width:none] lg:gap-2 [&::-webkit-scrollbar]:hidden">
         <form
           ref={desktopSearchFormRef}
@@ -757,7 +762,7 @@ export function CompanyListScreen({
 
       {/* 알림 */}
       {notice || exportCompaniesMutation.error ? (
-        <div className="hidden px-5 pt-2 md:block">
+        <div className="hidden px-5 pt-2 lg:block">
           {notice ? (
             <Toast
               description={noticeDescription ?? undefined}
@@ -780,13 +785,13 @@ export function CompanyListScreen({
       {/* 테이블 (데스크톱) */}
       <div
         className={cn(
-          "hidden min-h-0 flex-1 gap-3 overflow-hidden px-5 pb-3 pt-1 md:flex xl:gap-4",
+          "hidden min-h-0 flex-1 gap-3 overflow-hidden px-5 pb-3 pt-1 lg:flex xl:gap-4",
           isCreatePanelResizing && "cursor-col-resize select-none",
         )}
       >
         <div className="flex min-w-0 flex-1 flex-col gap-3">
           <div
-            className="flex min-h-0 w-full min-w-0 flex-col overflow-x-hidden overflow-y-hidden bg-white"
+            className="flex min-h-0 w-full min-w-0 flex-col overflow-x-auto overflow-y-hidden bg-white"
             ref={tableContainerRef}
             style={tableContainerStyle}
           >
@@ -813,19 +818,19 @@ export function CompanyListScreen({
                   icon={UsersRound}
                   {...getHeaderCellResizeProps("contactCount", 3)}
                 >
-                  담당자 수
+                  담당자
                 </ListTableHeaderCell>
                 <ListTableHeaderCell
                   icon={BriefcaseBusiness}
                   {...getHeaderCellResizeProps("dealCount", 4)}
                 >
-                  딜 수
+                  진행 딜
                 </ListTableHeaderCell>
                 <ListTableHeaderCell
-                  icon={CalendarClock}
+                  icon={Activity}
                   {...getHeaderCellResizeProps("createdAt", 5)}
                 >
-                  등록일
+                  활동
                 </ListTableHeaderCell>
             </div>
 
@@ -888,7 +893,7 @@ export function CompanyListScreen({
       </div>
 
       {/* 모바일 뷰 */}
-      <section className="flex min-h-0 flex-1 flex-col md:hidden">
+      <section className="flex min-h-0 flex-1 flex-col lg:hidden">
         {/* 모바일 알림 */}
         {notice ? (
           <div className="px-4 pt-2">
@@ -1074,7 +1079,7 @@ function CompanyRow({
 
   return (
     <div
-      className={cn("group", LIST_TABLE_ROW_CLASS_NAME)}
+      className={cn("group", COMPANY_LIST_TABLE_ROW_CLASS_NAME)}
       onClick={() => void navigate(`/app/companies/${company.id}`)}
       onKeyDown={(e) => {
         if (e.key === "Enter" || e.key === " ") {
@@ -1118,9 +1123,9 @@ function CompanyRow({
       </div>
       <div
         className="min-w-0 truncate text-[12px] font-medium text-[#64748B]"
-        title={formatCompanyCreatedAt(company.createdAt, displayTimeZone)}
+        title={formatCompanyCreatedActivity(company.createdAt, displayTimeZone)}
       >
-        {formatCompanyCreatedAt(company.createdAt, displayTimeZone)}
+        {formatCompanyCreatedActivity(company.createdAt, displayTimeZone)}
       </div>
     </div>
   );
@@ -1527,7 +1532,7 @@ function CompanyListSkeleton() {
       {Array.from({ length: 10 }, (_, i) => (
         <div
           key={i}
-          className="h-[66px] animate-pulse border-b border-[#E5E7EB] bg-[#F8FAFC] last:border-b-0"
+          className="h-14 animate-pulse border-b border-[#E5E7EB] bg-[#F8FAFC] last:border-b-0"
         />
       ))}
     </div>
@@ -1552,6 +1557,10 @@ function formatCompanyCreatedAt(value: string, timeZone: string) {
     timeZone,
     year: "numeric",
   });
+}
+
+function formatCompanyCreatedActivity(value: string, timeZone: string) {
+  return `등록 ${formatCompanyCreatedAt(value, timeZone)}`;
 }
 
 function getBrowserTimeZoneFallback() {
@@ -1684,14 +1693,14 @@ function CompanyMobileCard({
         <p className="mt-0.5 text-[12px] text-[#6B7280]">
           {company.companyRegion.region}
         </p>
-        {/* Row3: 담당자·딜 + 등록일 */}
+        {/* Row3: 연결 record + 현재 응답에서 가능한 활동 */}
         <div className="mt-1 flex items-center justify-between">
           <span className="text-[12px] text-[#6B7280]">
             담당자 {company.contactCount.toLocaleString("ko-KR")}명 · 딜{" "}
             {company.dealCount.toLocaleString("ko-KR")}건
           </span>
           <span className="shrink-0 text-[11px] text-[#9CA3AF]">
-            {formatCompanyCreatedAt(company.createdAt, displayTimeZone)}
+            {formatCompanyCreatedActivity(company.createdAt, displayTimeZone)}
           </span>
         </div>
       </div>

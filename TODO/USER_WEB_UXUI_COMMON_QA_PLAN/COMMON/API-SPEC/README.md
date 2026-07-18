@@ -31,3 +31,20 @@ Deal list response의 `expectedEndDate`, `latestFollowingAction`, `nextFollowing
 Deal list response에는 `products`가 없으므로 목록 row에서 제품 linked record를 직접 보여주는 것은 현재 API 계약 밖이다. 필요하면 별도 Deal list response 확장으로 분리한다.
 
 Desktop page size 15개 기본값은 FE 단독 변경 대상이 아니다. Backend 상수, 응답 `pageSize`, 관련 테스트/API 문서와 함께 변경해야 한다.
+
+## G04 Domain List Contract Note
+
+- 확인일: 2026-07-18
+- 관련 화면: `/app/companies`, `/app/contacts`, `/app/products`
+
+G04는 Company/Contact/Product API를 변경하지 않고 완료했다.
+
+현재 Company list response는 `companyName`, `companyField`, `companyRegion`, `contactCount`, `dealCount`, `createdAt`이 있어 회사명, 분야, 지역, 담당자 수, 진행 딜 수, 현재 응답에서 가능한 활동 기록을 표현할 수 있다.
+
+현재 Product list response는 `productName`, `productCategory`, `productStatus`, `dealCount`, `createdAt`이 있어 제품명, 카테고리, 상태, 연결 딜 수, 현재 응답에서 가능한 활동 기록을 표현할 수 있다.
+
+현재 Contact list response는 `username`, `company`, `contactDepartment`, `contactJobGrade`, `mobile`, `email`, `createdAt`이 있어 이름, 회사, 부서/직급, 연락처, 현재 응답에서 가능한 활동 기록을 표현할 수 있다.
+
+다만 Contact list response에는 연결 딜 수가 없고, 세 도메인 list response에는 실제 `updatedAt`, 최신 Memo/활동, 다음 행동 summary가 없다. 목록에서 실제 최신 활동이나 다음 행동을 1급 정보로 보여야 한다고 판단되면 FE에서 임의로 만들지 말고 Company/Contact/Product list response 확장으로 분리한다.
+
+Desktop page size 15개 기본값은 FE 단독 변경 대상이 아니다. Backend 상수, 응답 `pageSize`, 관련 테스트/API 문서와 함께 변경해야 한다.
