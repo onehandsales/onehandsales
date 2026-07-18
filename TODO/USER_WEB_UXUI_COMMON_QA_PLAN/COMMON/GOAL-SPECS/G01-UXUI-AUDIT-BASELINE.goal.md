@@ -114,4 +114,5 @@ pnpm run lint
 - 자동 검토: 실제 Backend API mock 기준 console error 0건, page error 0건, failed request 0건, document-level horizontal overflow 0건을 확인했다.
 - 남은 리스크: UX-001과 UX-002가 S2 후보로 남아 있으며 각각 G03, G05에서 먼저 처리해야 한다.
 - 2026-07-18 UX reference 갱신: G01 완료 후 `Notion식 작업공간 UX + Attio식 CRM record 관계 UX`가 전역 기준으로 고정됐다. G01의 screenshot baseline은 유지하되, G02~G06은 `020_uxui_notion_attio_reference.md`를 추가 기준으로 적용한다.
+- 2026-07-18 record table density 기준 갱신: 목록은 이미 record table 구조로 보고 row density와 linked record/업무 판단 정보 표현을 강화한다. 이 기준은 G03~G05에 적용하며, G01 baseline 전체 재실행은 필요하지 않다.
 - 재실행 판정: G01 전체 재실행은 필요하지 않다. 다만 G02 또는 G03 시작 시 해당 화면만 `Notion + Attio Reference Gate`로 재확인한다.

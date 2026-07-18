@@ -245,6 +245,17 @@ Desktop deal list should show the important comparison fields without horizontal
 - next action
 - due/expected close date
 
+Record list density direction:
+
+- 현재 회사/담당자/제품/딜/회의록 목록은 이미 record table 구조다. 새 구조로 갈아엎기보다 기존 row/table/card를 Notion database + Attio linked record 기준으로 조밀하게 다듬는다.
+- 데스크톱 업무 목록은 10개 고정보다 15개 기본 표시가 장기 목표에 더 가깝다.
+- 다만 page size 변경은 Backend 상수, 응답 `pageSize`, API/DB 문서, 테스트 계약까지 함께 확인해야 한다. FE에서 숫자만 바꾸지 않는다.
+- 현재 우선순위는 page size 숫자 변경보다 row height, 정보 우선순위, 연결 record 표현, 다음 행동/현재 응답에서 가능한 최근 활동 가시성 개선이다.
+- 최근 활동은 현재 API 응답에서 가능한 데이터로만 표현한다. 응답에 없는 활동 summary가 필요하면 새 FE 표현으로 꾸미지 말고 BE/API 후속으로 기록한다.
+- 데스크톱 row height는 약 52~56px 수준을 우선 검토한다. 현재처럼 약 66px 전후로 크면 업무용 table 밀도가 약해질 수 있다.
+- 모바일은 desktop table을 억지로 유지하지 않는다. 10개 내외 card/list를 유지하고, 15~20개 table 기본 노출은 피한다.
+- 20개 기본 표시는 현재 layout에서는 과하다. 나중에 고밀도 보기 옵션으로만 검토한다.
+
 ## 7. Color Direction
 
 Use a Toss-like blue-centered palette.
@@ -373,7 +384,10 @@ Company, contact, product, deal, and meeting-note list pages should use explicit
 Rules:
 
 - Page list UX uses `totalPages` and `totalCount`.
-- Page-number list pages use 10 items per page.
+- Current page-number list APIs commonly use 10 items per page. Treat this as the current Backend/API contract, not the final desktop UX target.
+- Desktop record lists may move toward 15 items per page when the matching Backend constant, response `pageSize`, API/DB documentation, and tests are updated together.
+- Mobile record lists should remain around 10 card/list items by default.
+- Do not change only the FE page size query or only the visual pagination label.
 - Do not use `hasNext` for page-number pagination.
 - `hasNext` is allowed only for cursor/infinite flows such as detail memo logs.
 - Company field and company region list filters behave like Product category/status filters:
@@ -457,11 +471,12 @@ A deal row/card should prioritize:
 
 1. deal title
 2. company/contact
-4. stage
-5. amount
-6. likelihood: `긍정 / 중립 / 부정`
-7. next action
-8. due date or expected close date
+3. stage
+4. amount
+5. likelihood: `긍정 / 중립 / 부정`
+6. next action
+7. due date or expected close date
+8. recent activity when available in the current response
 9. related product
 
 Reason:
@@ -499,6 +514,43 @@ Optional advanced fields:
 - numeric probability
 - region
 - recent activity count
+
+## 10A. Domain Row Information Priority
+
+Company row/card priority:
+
+1. company name
+2. field/industry
+3. region
+4. primary contacts
+5. active deals
+6. next action
+7. recent activity when available
+
+Contact row/card priority:
+
+1. contact name
+2. company
+3. department/job grade
+4. phone/email
+5. linked deals
+6. recent activity when available
+
+Product row/card priority:
+
+1. product name
+2. category/type
+3. linked deal count
+4. current usage context or recent activity when available
+
+Meeting note row/card priority:
+
+1. title or summary
+2. linked company/contact/deal
+3. meeting/written date
+4. next action context
+
+Created date can remain available, but it should not displace sales judgment fields when horizontal space is constrained.
 
 ## 11. Detail Panel Direction
 

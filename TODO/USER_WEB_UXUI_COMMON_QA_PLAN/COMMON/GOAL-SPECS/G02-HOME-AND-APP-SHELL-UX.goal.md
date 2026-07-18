@@ -125,3 +125,4 @@ pnpm run test:e2e
 - 제외 범위 유지: 새 dashboard API, Notification, 결제/구독 entry, Admin Web 변경은 하지 않았다.
 - Notion + Attio Reference Gate: sidebar/page workspace 문법은 desktop에서 유지하고, 768px에서는 table/sidebar 과밀을 피하는 tablet shell로 전환했다. 홈의 일정/딜/회의록 항목은 실제 sales record entry point로 연결된다.
 - 남은 리스크: `/app/deals`의 딜 목록 S2 이슈 UX-001은 G03에서 처리한다. 일정 월간 캘린더 UX-002는 G05에서 처리한다. 도메인별 목록 자체의 compact row/table 세부 검토는 UX-006으로 G04/G05에 넘긴다.
+- 2026-07-18 record table density 기준 갱신: 목록은 이미 record table 구조로 보고 row density와 linked record/업무 판단 정보 표현을 강화한다. 이 기준은 G03~G05에 적용하며, G02 AppShell/home 작업을 다시 열 필요는 없다.

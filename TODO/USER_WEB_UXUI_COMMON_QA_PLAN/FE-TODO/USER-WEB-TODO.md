@@ -17,6 +17,9 @@
 - 화면 UX/UI 기준은 `Notion식 작업공간 UX + Attio식 CRM record 관계 UX`다.
 - Company/Contact/Product/Deal/Schedule/MeetingNote는 custom object가 아니라 고정 sales record로 다룬다.
 - list row/card는 열 수 있는 record처럼 동작하고, detail은 property-first와 linked record 맥락을 보여준다.
+- 현재 목록은 이미 record table 구조에 가깝다. 새 구조로 갈아엎기보다 row density와 연결 record/업무 판단 정보 표현을 강화한다.
+- 데스크톱 목록은 52~56px row height와 15개 기본 표시를 장기 목표로 보되, page size 숫자는 BE/API/test 계약과 함께 바꿀 때만 수정한다.
+- 모바일 목록은 10개 내외 card/list를 유지하고, 15~20개 table을 억지로 노출하지 않는다.
 
 ## 3. 작업 목록
 
@@ -39,7 +42,11 @@
 ### P0. Deal pipeline
 
 - [ ] 단계 탭/필터/검색/정렬 위치 확인
-- [ ] 딜명/회사/담당자/금액/단계/다음 행동/마감일 비교 가능성 확인
+- [ ] 딜명/회사/담당자/단계/금액/다음 행동/마감일/현재 응답에서 가능한 최근 활동 비교 가능성 확인
+- [ ] 등록일보다 마감일/다음 행동/현재 응답에서 가능한 최근 활동/연결 record가 우선 보이는지 확인
+- [ ] desktop row height 52~56px 수준 업무용 밀도 검토
+- [ ] page size 15개 필요성은 BE/API/test 계약 영향까지 확인하고 FE 단독 변경 금지
+- [ ] 최근 활동 또는 다음 행동 summary가 현재 API로 부족하면 BE/API 후속으로 기록
 - [ ] 다음 행동 가시성 개선
 - [ ] 딜 row/card가 Attio식 deal record와 linked company/contact/product 맥락을 보여주는지 확인
 - [ ] 상세 패널이 property-first, activity/Memo/일정/회의록 구분 기준을 따르는지 확인
@@ -48,7 +55,12 @@
 
 ### P1. Company/Contact/Product
 
-- [ ] 목록 핵심 비교 정보 확인
+- [ ] 회사 목록에서 회사명/분야/지역/담당자/진행 딜/다음 행동 또는 현재 응답에서 가능한 최근 활동 확인
+- [ ] 담당자 목록에서 이름/회사/부서·직급/연락처/연결 딜/현재 응답에서 가능한 최근 활동 확인
+- [ ] 제품 목록에서 제품명/카테고리·타입/연결 딜 수/사용 맥락 또는 현재 응답에서 가능한 최근 활동 확인
+- [ ] 등록일이 연결 record/현재 응답에서 가능한 최근 활동/다음 행동 맥락을 밀어내지 않는지 확인
+- [ ] 최근 활동 또는 다음 행동 summary가 현재 API로 부족하면 BE/API 후속으로 기록
+- [ ] desktop row height 52~56px 수준 업무용 밀도 검토
 - [ ] 생성 action과 export action 구분
 - [ ] 회사 생성 오른쪽 문서형 패널 확인
 - [ ] 담당자/제품 생성 modal/panel 확인
@@ -60,6 +72,8 @@
 
 - [ ] 일정 생성/수정 form 확인
 - [ ] 일정/회의록에서 연결 딜/회사/담당자 맥락 확인
+- [ ] 회의록 목록에서 제목/요약/연결 회사·담당자·딜/작성일/다음 행동 맥락 확인
+- [ ] 명함 스캔/Trash 목록이 상태와 연결 record를 조밀하게 보여주는지 확인
 - [ ] 회의록 긴 입력과 AI/STT 보조 action 확인
 - [ ] 명함스캔 upload/progress/success/failure/confirm 상태 확인
 - [ ] Import upload/mapping/validation/confirm 단계 확인

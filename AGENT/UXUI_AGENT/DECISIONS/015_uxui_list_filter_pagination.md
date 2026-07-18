@@ -30,7 +30,12 @@
 ## Pagination 규칙
 
 - 목록 페이지는 `totalPages`, `totalCount`를 사용한다.
-- 목록 페이지는 10개 단위로 페이지를 나눈다.
+- 현재 목록 API는 대체로 10개 단위 page-number pagination을 계약으로 가진다.
+- 데스크톱 record list의 목표 UX는 15개 기본 표시가 더 적합할 수 있다.
+- 15개로 바꾸려면 Backend 도메인 서비스 상수, 응답 `pageSize`, API/DB 문서, 관련 테스트를 함께 갱신한다.
+- FE에서 page size 숫자만 바꾸거나, 응답 `pageSize`와 UI 표시가 어긋나게 만들지 않는다.
+- 모바일 record list는 10개 내외 card/list를 기본으로 유지한다.
+- 20개 기본 표시는 현재 row height와 layout에서는 쓰지 않는다. 나중에 고밀도 보기 옵션으로만 검토한다.
 - 공용 `Pagination` 컴포넌트에는 `hasNext`를 전달하지 않는다.
 - 1페이지만 존재하면 pagination은 숨길 수 있다.
 - `hasNext`는 상세 메모 로그처럼 cursor 기반 incremental loading에서만 사용한다.
@@ -72,6 +77,7 @@
 
 - 공용 `Pagination`: 48px(`h-12`)
 - 미리보기 header와 table header: 44px(`h-11`)
+- desktop record row: 52~56px 수준을 우선 검토한다.
 
 목록 화면은 비교와 반복 작업이 중요하므로 큰 hero/page header보다 조밀한 업무 도구형 구성을 우선한다.
 

@@ -32,6 +32,8 @@ G01에서 발견한 홈/쉘 관련 S0/S1/S2를 우선 처리한다.
 
 딜 단계, 딜 목록, 금액, 다음 행동, 마감일, 상세 패널, 필터/검색/정렬의 정보 구조를 우선한다.
 
+현재 딜 목록은 이미 record table 구조에 가깝다. G03은 새 record table 전환 작업이 아니라, 기존 table/card를 조용하고 조밀한 Notion database + Attio deal record 기준으로 다듬는 작업이다.
+
 ### G04. Domain List/Detail/Create UX
 
 문서: `COMMON/GOAL-SPECS/G04-DOMAIN-LIST-DETAIL-CREATE-UX.goal.md`
@@ -40,6 +42,8 @@ G01에서 발견한 홈/쉘 관련 S0/S1/S2를 우선 처리한다.
 
 딜 생성과 연결되는 기본 데이터 등록 흐름이 끊기지 않게 한다.
 
+회사/담당자/제품 목록도 기존 record table을 유지하되, 등록일보다 연결 record, 진행 딜, 다음 행동, 현재 응답에서 가능한 최근 활동 같은 업무 판단 정보를 우선한다.
+
 ### G05. Complex Flow UX
 
 문서: `COMMON/GOAL-SPECS/G05-COMPLEX-FLOW-UX.goal.md`
@@ -47,6 +51,8 @@ G01에서 발견한 홈/쉘 관련 S0/S1/S2를 우선 처리한다.
 일정, 회의록, 명함 스캔, Import, Trash의 복잡한 상태 UX를 정리한다.
 
 provider failure, validation, long text, table overflow, restore/delete 상태를 집중한다.
+
+회의록/명함/Trash 목록은 단순 등록일 최신순 확인표가 아니라, 연결 record와 상태/다음 행동 맥락이 드러나는 record list로 검토한다.
 
 ### G06. UX Writing, States, Accessibility Closeout
 
@@ -58,8 +64,10 @@ UX writing, loading/empty/error/success 상태, icon-only aria-label/tooltip, fo
 
 - G01은 반드시 먼저 실행한다.
 - G01은 2026-07-18에 완료됐고, 이후 `Notion + Attio` reference를 반영해 baseline 해석만 갱신했다. 화면 코드가 크게 바뀌지 않았다면 G01 전체를 다시 실행하지 않는다.
+- G02는 2026-07-18에 완료됐다. AppShell/home 기준을 다시 열지 말고, 남은 목록형 화면의 record table density 문제는 G03~G05에서 처리한다.
 - G02와 G03은 G01 이후 우선 실행한다.
 - 기본 실행 순서는 G02 -> G03이다. G01의 S2 이슈 심각도만 보면 G03이 더 급하지만, AppShell과 홈 기준이 후속 화면의 공통 문법에 영향을 주므로 계획 순서를 유지한다.
+- G02 완료 이후 다음 실행은 G03이다.
 - G04/G05는 독립적으로 진행할 수 있지만, 공통 컴포넌트 변경이 겹치면 먼저 한쪽을 완료한다.
 - G06은 마지막에 실행한다.
 
@@ -74,6 +82,16 @@ UX writing, loading/empty/error/success 상태, icon-only aria-label/tooltip, fo
 - 상세는 property-first로 읽히고, activity/Memo/일정/회의록 맥락이 구분되는가?
 - 딜과 다음 행동이 필요한 화면에서 1급 정보로 보이는가?
 - reference 제품의 brand, copy, visual asset, pixel-level layout을 그대로 복제하지 않았는가?
+
+## 3B. Record Table Density Gate
+
+G03~G05의 목록형 화면은 아래 기준을 함께 확인한다.
+
+- 기존 목록이 이미 record table 구조라면 새 구조로 갈아엎지 않는다.
+- desktop은 52~56px 수준 row height와 15개 기본 표시를 장기 목표로 보되, page size 숫자는 Backend 상수, 응답 `pageSize`, API/DB 문서, 테스트 계약과 함께 변경할 때만 바꾼다.
+- 모바일은 10개 내외 card/list를 유지하고, 15~20개 desktop table을 억지로 노출하지 않는다.
+- 20개 기본 표시는 이번 UX/UI QA 범위에서 제외한다.
+- 등록일보다 다음 행동, 마감일, 현재 응답에서 가능한 최근 활동, 연결 record, 상태 같은 업무 판단 정보를 우선한다.
 
 ## 4. 완료 후 필수 검토 게이트
 

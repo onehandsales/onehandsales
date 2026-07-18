@@ -56,6 +56,30 @@ Attio는 CRM record와 관계 구조의 1차 기준이다.
 - 생성은 목록 맥락이 중요하면 오른쪽 문서형 패널을 우선한다. 짧은 보조 입력, 삭제 확인, 위험 액션 확인은 modal/dialog를 사용할 수 있다.
 - 모바일에서는 desktop table을 억지로 유지하지 않고 stage tab + card/list로 전환한다.
 
+## 4A. Record Table Density 기준
+
+현재 onehand.sales의 회사, 담당자, 제품, 딜, 회의록 목록은 이미 record table 구조에 가깝다. 따라서 후속 작업은 "record table로 새로 바꾸는 작업"이 아니라, 기존 record table을 더 조용하고 조밀한 Notion database table과 Attio식 CRM linked record 기준으로 다듬는 작업이다.
+
+목록 UX 판단 기준:
+
+- 단순 조회 테이블이 아니라, 영업자가 목록에서 바로 판단하고 행동할 수 있는 record table이어야 한다.
+- 등록일보다 다음 행동, 현재 응답에서 가능한 최근 활동, 연결 record, 상태, 마감일 같은 업무 판단 정보가 우선이다.
+- 최근 활동은 현재 목록 API 응답에 있는 `updatedAt`, 최신/다음 행동, 연결 record 요약 등 가능한 데이터로 먼저 표현한다. 응답이 부족하면 FE에서 새 값을 꾸미지 말고 BE/API 후속으로 기록한다.
+- desktop 목록은 현재 10개 고정 계약보다 15개 기본 표시가 장기적으로 더 적합하다.
+- 다만 page size는 Backend 도메인 서비스 상수, 응답 `pageSize`, API/DB 문서, 테스트 계약과 연결되어 있으므로 FE에서 숫자만 바꾸지 않는다.
+- 현재 작업 우선순위는 page size 숫자 변경보다 row density와 record 관계 표현 개선이다.
+- desktop record row는 현재처럼 약 66px로 크게 보이면 사이드 프로젝트처럼 느껴질 수 있으므로, 52~56px 수준의 업무용 밀도를 우선 검토한다.
+- 모바일은 desktop table을 억지로 15~20개 보여주지 않고 10개 내외 card/list를 유지한다.
+- 20개 기본 표시는 현재 row 높이와 layout에서는 과하다. 나중에 고밀도 보기 옵션으로만 검토한다.
+
+도메인별 목록에서 우선할 정보:
+
+- 딜: 딜명, 회사/담당자, 단계, 금액, 다음 행동, 마감일, 현재 응답에서 가능한 최근 활동
+- 회사: 회사명, 분야, 지역, 담당자, 진행 딜, 다음 행동 또는 현재 응답에서 가능한 최근 활동
+- 담당자: 이름, 회사, 부서/직급, 연락처, 연결 딜, 현재 응답에서 가능한 최근 활동
+- 제품: 제품명, 카테고리/타입, 연결 딜 수, 현재 응답에서 가능한 최근 활동 또는 사용 맥락
+- 회의록: 제목/요약, 연결 회사/담당자/딜, 작성일, 다음 행동 맥락
+
 ## 5. 가져오지 않을 것
 
 - Notion 브랜드, 로고, 고유 문구, 고유 아이콘, pixel-level 화면 복제
@@ -71,11 +95,12 @@ Attio는 CRM record와 관계 구조의 1차 기준이다.
 화면, Frontend, UX/UI, 사용자 노출 문구, route, list/detail, create/edit, search/filter, linked record, meeting note, schedule, deal 흐름이 포함된 작업은 시작 전에 아래 문서를 함께 본다.
 
 1. `AGENT/UXUI_AGENT/DECISIONS/020_uxui_notion_attio_reference.md`
-2. `AGENT/UXUI_AGENT/PLANNING/UX_UI_DIRECTION.md`
-3. `AGENT/UXUI_AGENT/PLANNING/USER_FLOW_AND_SCREENS.md`
-4. `AGENT/UXUI_AGENT/UX_REVIEW_CHECKLIST.md`
-5. `AGENT/SOFTWARE_AGENT/FRONT_AGENT/ARCHITECTURE/FRONTEND_USER_WEB.md`
-6. `AGENT/SOFTWARE_AGENT/FRONT_AGENT/CONVENTION/FRONTEND_USER_WEB.md`
+2. `AGENT/UXUI_AGENT/DECISIONS/015_uxui_list_filter_pagination.md`
+3. `AGENT/UXUI_AGENT/PLANNING/UX_UI_DIRECTION.md`
+4. `AGENT/UXUI_AGENT/PLANNING/USER_FLOW_AND_SCREENS.md`
+5. `AGENT/UXUI_AGENT/UX_REVIEW_CHECKLIST.md`
+6. `AGENT/SOFTWARE_AGENT/FRONT_AGENT/ARCHITECTURE/FRONTEND_USER_WEB.md`
+7. `AGENT/SOFTWARE_AGENT/FRONT_AGENT/CONVENTION/FRONTEND_USER_WEB.md`
 
 Backend/API/DB 작업이 화면 계약이나 record 관계에 영향을 주면 위 문서와 함께 Backend API contract, transaction, DB schema 문서를 확인한다.
 

@@ -25,6 +25,11 @@
 - Notion식 sidebar/page/database/detail 구조를 기준으로 화면이 정돈되어 있는가?
 - Attio식 CRM record 관계, linked record, activity/Memo 맥락이 상세 화면에 분명히 드러나는가?
 - row/card가 열 수 있는 record처럼 동작하고, 상세는 page 또는 peek/detail panel처럼 구성되어 있는가?
+- 기존 목록이 이미 record table 구조라면 새 구조로 갈아엎지 않고, row density와 linked record/업무 판단 정보만 강화했는가?
+- 데스크톱 목록 row가 약 52~56px 수준의 업무용 밀도를 갖고, 10개 고정 + 큰 row + 약한 업무 맥락 조합으로 보이지 않는가?
+- page size를 15개 기본으로 바꾸려는 경우 Backend 상수, 응답 `pageSize`, API/DB 문서, 테스트 계약까지 함께 확인했는가?
+- 모바일에서는 15~20개 desktop table을 억지로 보여주지 않고 10개 내외 card/list로 유지했는가?
+- 최근 활동 또는 다음 행동 summary가 현재 list response에 없으면 FE에서 임의 값처럼 꾸미지 않고 BE/API 후속으로 기록했는가?
 - 목록에서 새 record를 생성할 때 목록 맥락을 유지해야 한다면 오른쪽 문서형 패널을 우선 검토했는가?
 - 문서형 생성 패널이 열려도 목록의 비교 컬럼을 숨기거나 합치지 않는가?
 - 화면이 custom CRM builder처럼 과도한 설정 자유도를 노출하지 않고, 고정된 개인 영업 workflow를 빠르게 처리하게 하는가?
@@ -48,6 +53,7 @@
 - 모바일 기본 UI에 테이블이나 가로 칸반을 사용하지 않았는가?
 - Pipedrive의 pipeline 중심성은 참고하되 desktop 기본을 pure Kanban으로 고정하지 않았는가?
 - 다음 행동이 목록, 상세, 홈에서 1급 정보로 보이는가?
+- 등록일보다 마감일, 다음 행동, 현재 응답에서 가능한 최근 활동, 연결 회사/담당자/제품 맥락이 우선 보이는가?
 - 단계 변경 자동 활동 로그가 현재 범위에 없다면 UX에서 필수 피드백으로 요구하지 않는가?
 
 ## 4. 입력 UX 체크리스트
@@ -87,4 +93,3 @@
 - `AGENT/UXUI_AGENT/DECISIONS/020_uxui_notion_attio_reference.md`
 - `AGENT/UXUI_AGENT/DECISIONS/README.md`
 - `AGENT/SOFTWARE_AGENT/FRONT_AGENT/ENGINEERING_REVIEW_CHECKLIST.md`
-

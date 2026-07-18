@@ -95,6 +95,11 @@
 - 업무 화면은 정보 밀도와 스캔 가능성을 우선한다.
 - 업무 화면은 `AGENT/UXUI_AGENT/DECISIONS/020_uxui_notion_attio_reference.md`의 `Notion식 작업공간 UX + Attio식 CRM record 관계 UX`를 기준으로 구성한다.
 - 목록 row/card는 열 수 있는 record처럼 동작하고, 상세는 property-first detail과 linked record, activity/Memo 맥락을 분명히 보여준다.
+- 기존 목록은 이미 record table 구조에 가까우므로 새 구조로 갈아엎기보다 row density와 연결 record/다음 행동/현재 응답에서 가능한 최근 활동 같은 업무 판단 정보 표현을 개선한다.
+- 최근 활동 또는 다음 행동 summary가 현재 list response에 없으면 FE에서 임의 값처럼 꾸미지 않고 BE/API 후속으로 기록한다.
+- 데스크톱 record row는 52~56px 수준의 업무용 밀도를 우선 검토한다.
+- page size를 15개 기본으로 바꾸려면 FE 숫자만 수정하지 말고 Backend 상수, 응답 `pageSize`, API/DB 문서, 테스트 계약을 함께 확인한다.
+- 모바일 record list는 10개 내외 card/list를 유지하고, 15~20개 desktop table을 억지로 노출하지 않는다.
 - 페이지 섹션을 불필요한 카드로 감싸지 않는다.
 - 도메인 생성 UX가 목록 맥락을 유지해야 할 때는 중앙 모달보다 오른쪽 문서형 패널을 우선 검토한다.
 - 문서형 생성 패널은 데스크톱에서 viewport 최상단~최하단에 붙이고, 사용자가 좌우 resize할 수 있게 한다.
@@ -129,5 +134,6 @@
 - `AGENT/SOFTWARE_AGENT/FRONT_AGENT/ENGINEERING_REVIEW_CHECKLIST.md`
 - `AGENT/SOFTWARE_AGENT/FRONT_AGENT/ARCHITECTURE/DEPLOYMENT.md`
 - `AGENT/UXUI_AGENT/DECISIONS/020_uxui_notion_attio_reference.md`
+- `AGENT/UXUI_AGENT/DECISIONS/015_uxui_list_filter_pagination.md`
 - `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/CONVENTION/API_SPEC.md`
 - `AGENT/SOFTWARE_AGENT/DB_SCHEMA/TIME_AND_TIMEZONE_POLICY.md`
