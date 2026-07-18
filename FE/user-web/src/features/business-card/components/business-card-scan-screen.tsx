@@ -1,13 +1,12 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
+  Activity,
   AlertCircle,
   Building2,
-  CalendarClock,
   Camera,
   CheckCircle2,
   ChevronDown,
   CircleDot,
-  Cpu,
   Eye,
   FileImage,
   Loader2,
@@ -75,6 +74,10 @@ const BUSINESS_CARD_SCAN_TABLE_COLUMNS = [
 ] satisfies readonly ResizableTableColumn[];
 const BUSINESS_CARD_SCAN_TABLE_COLUMNS_STORAGE_KEY =
   "onehand.table.businessCardScans.columns";
+const BUSINESS_CARD_SCAN_TABLE_ROW_CLASS_NAME = cn(
+  LIST_TABLE_ROW_CLASS_NAME,
+  "h-14",
+);
 
 const STATUS_FILTER_OPTIONS: Array<{
   readonly id: BusinessCardScanStatus;
@@ -97,6 +100,7 @@ export function BusinessCardScanScreen() {
   const displayTimeZone = user?.timeZone ?? getBrowserTimeZoneFallback();
   const { getHeaderCellResizeProps, tableContainerRef, tableContainerStyle } =
     useResizableTableColumns({
+      allowHorizontalOverflow: true,
       columns: BUSINESS_CARD_SCAN_TABLE_COLUMNS,
       storageKey: BUSINESS_CARD_SCAN_TABLE_COLUMNS_STORAGE_KEY,
     });
@@ -129,7 +133,7 @@ export function BusinessCardScanScreen() {
         ]}
       />
 
-      <div className="hidden min-h-10 shrink-0 items-center justify-between gap-3 px-5 py-1 md:flex">
+      <div className="hidden min-h-10 shrink-0 items-center justify-between gap-3 px-5 py-1 lg:flex">
         <div className="flex min-w-0 items-center gap-1.5 overflow-x-auto lg:gap-2">
           <StatusFilterCombobox
             selectedStatuses={statusFilters}
@@ -171,10 +175,10 @@ export function BusinessCardScanScreen() {
         </div>
       ) : null}
 
-      <div className="hidden gap-3 overflow-x-hidden px-5 pb-3 pt-1 md:flex xl:gap-5">
+      <div className="hidden gap-3 overflow-hidden px-5 pb-3 pt-1 lg:flex xl:gap-5">
         <div className="flex min-w-0 flex-1 flex-col gap-3">
           <div
-            className="flex w-full min-w-0 flex-col overflow-hidden bg-white"
+            className="flex w-full min-w-0 flex-col overflow-x-auto overflow-y-hidden bg-white"
             ref={tableContainerRef}
             style={tableContainerStyle}
           >
@@ -210,16 +214,16 @@ export function BusinessCardScanScreen() {
                 이메일
               </ListTableHeaderCell>
               <ListTableHeaderCell
-                icon={Cpu}
+                icon={CheckCircle2}
                 {...getHeaderCellResizeProps("model", 5)}
               >
-                모델
+                처리
               </ListTableHeaderCell>
               <ListTableHeaderCell
-                icon={CalendarClock}
+                icon={Activity}
                 {...getHeaderCellResizeProps("createdAt", 6)}
               >
-                등록일
+                활동
               </ListTableHeaderCell>
             </div>
 
@@ -260,7 +264,7 @@ export function BusinessCardScanScreen() {
         </div>
       </div>
 
-      <section className="flex min-h-0 flex-1 flex-col md:hidden">
+      <section className="flex min-h-0 flex-1 flex-col lg:hidden">
         <div className="flex h-10 shrink-0 items-center gap-2 overflow-x-auto border-b border-[#E5E7EB] px-4">
           <StatusFilterCombobox
             selectedStatuses={statusFilters}
@@ -851,7 +855,7 @@ function BusinessCardRegisterDialog({
                 </div>
                 <div>
                   <p className="text-[13px] font-semibold text-[#111827]">
-                    스캔하려는 명함을 업로드해주세요.
+                    스캔하려는 명함을 업로드해 주세요.
                   </p>
                   <p className="mt-1 text-[12px] text-[#6B7280]">
                     JPG, PNG, WebP · 10MB 이하
@@ -878,7 +882,7 @@ function BusinessCardRegisterDialog({
                       명함 스캔 중
                     </p>
                     <p className="mt-1 text-[12px] text-[#6B7280]">
-                      잠시만 기다려주세요
+                      잠시만 기다려 주세요
                     </p>
                   </div>
                   <div className="h-2 overflow-hidden rounded-full bg-[#E5E7EB]">
@@ -1005,24 +1009,10 @@ function BusinessCardDetailDialog({
             />
           </div>
 
-          <div className="grid gap-3 rounded-lg border border-[#E2E5EC] bg-[#F9FAFB] p-4 md:grid-cols-4">
-            <DetailItem label="AI 모델" value={scanLog.ai.model} />
-            <DetailItem
-              label="요청 토큰"
-              value={formatNumber(scanLog.usage.requestToken)}
-            />
-            <DetailItem
-              label="응답 토큰"
-              value={formatNumber(scanLog.usage.responseToken)}
-            />
-            <DetailItem
-              label="소요시간"
-              value={
-                scanLog.usage.pendingTimeMs === null
-                  ? null
-                  : `${Math.round(scanLog.usage.pendingTimeMs)}ms`
-              }
-            />
+          <div className="grid gap-3 rounded-lg border border-[#E2E5EC] bg-[#F9FAFB] p-4 md:grid-cols-3">
+            <DetailItem label="처리 상태" value={getStatusLabel(scanLog.status)} />
+            <DetailItem label="저장 상태" value={getBusinessCardSaveLabel(scanLog)} />
+            <DetailItem label="이미지" value="저장하지 않음" />
           </div>
         </div>
       )}
@@ -1041,7 +1031,7 @@ function ScanLogRow({
 }) {
   return (
     <button
-      className={LIST_TABLE_ROW_CLASS_NAME}
+      className={BUSINESS_CARD_SCAN_TABLE_ROW_CLASS_NAME}
       onClick={onOpen}
       type="button"
     >
@@ -1052,8 +1042,8 @@ function ScanLogRow({
       <CellText value={scanLog.extracted.contactName} />
       <CellText value={scanLog.extracted.contactMobile} />
       <CellText value={scanLog.extracted.contactEmail} />
-      <CellText value={scanLog.ai.model} />
-      <CellText value={formatDate(scanLog.createdAt, displayTimeZone)} />
+      <CellText value={getBusinessCardActionLabel(scanLog)} />
+      <CellText value={`등록 ${formatDate(scanLog.createdAt, displayTimeZone)}`} />
     </button>
   );
 }
@@ -1088,7 +1078,7 @@ function ScanLogMobileRow({
           {scanLog.extracted.contactMobile ?? "-"}
         </p>
         <p className="mt-1 text-[11px] text-[#9CA3AF]">
-          {formatDate(scanLog.createdAt, displayTimeZone)}
+          등록 {formatDate(scanLog.createdAt, displayTimeZone)}
         </p>
       </div>
       <Eye className="mt-1 h-4 w-4 shrink-0 text-[#9CA3AF]" />
@@ -1100,7 +1090,7 @@ function RegisterStatusPanel({ scanLog }: { readonly scanLog: BusinessCardScanLo
   if (scanLog.status === "OCR_FAILED") {
     return (
       <div className="rounded-md border border-red-200 bg-red-50 px-3 py-2 text-[12px] text-red-600">
-        자동 입력에 실패했어요. 이미지는 저장하지 않았어요.
+        자동 입력에 실패했어요. 잠시 후 다시 시도해 주세요. 이미지는 저장하지 않았어요.
       </div>
     );
   }
@@ -1108,7 +1098,7 @@ function RegisterStatusPanel({ scanLog }: { readonly scanLog: BusinessCardScanLo
   return (
     <div className="inline-flex items-center gap-2 rounded-md border border-emerald-200 bg-emerald-50 px-3 py-2 text-[12px] font-medium text-emerald-800">
       <CheckCircle2 className="h-4 w-4" />
-      자동 입력 완료
+      자동 입력을 완료했어요. 이미지는 저장하지 않았어요.
     </div>
   );
 }
@@ -1123,7 +1113,7 @@ function StatusBadge({ status }: { readonly status: BusinessCardScanStatus }) {
   return (
     <span
       className={cn(
-        "inline-flex h-5 max-w-full items-center rounded-full px-2 text-[11px] font-medium",
+        "inline-flex h-5 max-w-full shrink-0 items-center rounded-full px-2 text-[11px] font-medium whitespace-nowrap",
         style
       )}
     >
@@ -1243,7 +1233,7 @@ function ListSkeleton() {
     <div className="overflow-hidden">
       {Array.from({ length: 8 }, (_, index) => (
         <div
-          className="h-[66px] animate-pulse border-b border-[#E5E7EB] bg-[#F8FAFC] last:border-b-0"
+          className="h-14 animate-pulse border-b border-[#E5E7EB] bg-[#F8FAFC] last:border-b-0"
           key={index}
         />
       ))}
@@ -1284,6 +1274,30 @@ function getStatusLabel(status: BusinessCardScanStatus) {
   }
 }
 
+function getBusinessCardActionLabel(scanLog: BusinessCardScanLog) {
+  if (scanLog.status === "CONFIRMED") {
+    return scanLog.linked.contactId ? "담당자 저장" : "저장 완료";
+  }
+
+  if (scanLog.status === "OCR_SUCCESS") {
+    return "확인 후 저장";
+  }
+
+  return "다시 스캔";
+}
+
+function getBusinessCardSaveLabel(scanLog: BusinessCardScanLog) {
+  if (scanLog.status === "CONFIRMED") {
+    return scanLog.linked.confirmedAt ? "담당자로 저장했어요" : "저장 완료";
+  }
+
+  if (scanLog.status === "OCR_SUCCESS") {
+    return "확인하면 담당자로 저장할 수 있어요";
+  }
+
+  return "저장하지 않았어요";
+}
+
 function formatDate(value: string, timeZone: string) {
   return formatDateWithOptions(value, {
     day: "2-digit",
@@ -1291,10 +1305,6 @@ function formatDate(value: string, timeZone: string) {
     timeZone,
     year: "numeric",
   });
-}
-
-function formatNumber(value: number | null) {
-  return value === null ? null : value.toLocaleString("ko-KR");
 }
 
 function getBrowserTimeZoneFallback() {

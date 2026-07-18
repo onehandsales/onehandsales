@@ -87,6 +87,8 @@
 | 5 | `COMMON/GOAL-SPECS/G05-COMPLEX-FLOW-UX.goal.md` | 일정, 회의록, 명함 스캔, Import, Trash의 복잡한 상태 UX를 정리한다. |
 | 6 | `COMMON/GOAL-SPECS/G06-UX-WRITING-STATES-A11Y-CLOSEOUT.goal.md` | UX writing, 상태, 접근성 기본, 최종 검증을 닫는다. |
 
+2026-07-18 기준 G01~G05는 완료됐다. 다음 실행 goal은 G06이다.
+
 ## 6. 완료 기준
 
 이 계획은 아래 조건을 만족하면 완료로 본다.

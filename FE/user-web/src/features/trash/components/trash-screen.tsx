@@ -61,6 +61,7 @@ const TRASH_TABLE_COLUMNS = [
   { id: "remaining", defaultWidth: 150, minWidth: 125 },
 ] satisfies readonly ResizableTableColumn[];
 const TRASH_TABLE_COLUMNS_STORAGE_KEY = "onehand.table.trash.columns";
+const TRASH_LIST_TABLE_ROW_CLASS_NAME = cn(LIST_TABLE_ROW_CLASS_NAME, "h-14");
 
 const itemKindOptions: readonly {
   readonly value: TrashItemKindFilter;
@@ -192,6 +193,7 @@ export function TrashScreen() {
   const [selectedItem, setSelectedItem] = useState<TrashItem | null>(null);
   const { getHeaderCellResizeProps, tableContainerRef, tableContainerStyle } =
     useResizableTableColumns({
+      allowHorizontalOverflow: true,
       columns: TRASH_TABLE_COLUMNS,
       storageKey: TRASH_TABLE_COLUMNS_STORAGE_KEY,
     });
@@ -332,10 +334,10 @@ export function TrashScreen() {
         </div>
       ) : null}
 
-      <div className="flex min-h-0 flex-1 gap-3 overflow-x-hidden px-5 pb-3 pt-1 xl:gap-5">
+      <div className="hidden min-h-0 flex-1 gap-3 overflow-hidden px-5 pb-3 pt-1 lg:flex xl:gap-5">
         <div className="flex min-w-0 flex-1 flex-col gap-3">
           <div
-            className="flex w-full min-w-0 flex-col overflow-hidden bg-white"
+            className="flex w-full min-w-0 flex-col overflow-x-auto overflow-y-hidden bg-white"
             ref={tableContainerRef}
             style={tableContainerStyle}
           >
@@ -417,6 +419,49 @@ export function TrashScreen() {
         </div>
       </div>
 
+      <section className="flex min-h-0 flex-1 flex-col lg:hidden">
+        <div className="bg-white">
+          {trashQuery.isLoading ? (
+            <TrashMobileSkeleton />
+          ) : trashQuery.isError ? (
+            <TrashListError
+              error={trashQuery.error}
+              onRetry={() => void trashQuery.refetch()}
+            />
+          ) : items.length === 0 ? (
+            <ListEmptyState
+              icon={Trash2}
+              title={
+                hasFilter
+                  ? "조건을 바꾸면 데이터를 찾을 수 있어요"
+                  : "삭제한 데이터가 생기면 여기에서 볼 수 있어요"
+              }
+            />
+          ) : (
+            items.map((item) => (
+              <TrashMobileCard
+                item={item}
+                key={getItemKey(item)}
+                onPreview={() => {
+                  restoreMutation.reset();
+                  setSelectedItem(item);
+                }}
+              />
+            ))
+          )}
+        </div>
+
+        {trashList ? (
+          <div className="shrink-0 border-t border-[#E5E7EB] bg-white px-4 py-2">
+            <Pagination
+              page={page}
+              totalPages={Math.max(totalPages, 1)}
+              onPageChange={setPage}
+            />
+          </div>
+        ) : null}
+      </section>
+
       <TrashDetailDialog
         isRestorePending={
           selectedItem ? pendingTargetKey === getItemKey(selectedItem) : false
@@ -489,7 +534,7 @@ function TrashListRow({
 
   return (
     <div
-      className={LIST_TABLE_ROW_CLASS_NAME}
+      className={TRASH_LIST_TABLE_ROW_CLASS_NAME}
       role="button"
       tabIndex={0}
       onClick={onPreview}
@@ -554,6 +599,71 @@ function TrashListRow({
         </p>
       </div>
     </div>
+  );
+}
+
+function TrashMobileCard({
+  item,
+  onPreview,
+}: {
+  readonly item: TrashItem;
+  readonly onPreview: () => void;
+}) {
+  const meta = targetMeta[item.targetType];
+  const Icon = meta.icon;
+  const remaining = getRemainingState(getTrashExpiresAt(item));
+
+  return (
+    <button
+      className="flex w-full items-start gap-3 border-b border-[#E5E7EB] bg-white px-4 py-[14px] text-left transition active:bg-[#F9FAFB]"
+      onClick={onPreview}
+      type="button"
+    >
+      <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-[#EEF4FF] text-[#4880EE]">
+        <Icon className="h-4 w-4" aria-hidden />
+      </span>
+      <span className="min-w-0 flex-1">
+        <span className="flex min-w-0 items-center gap-2">
+          <span className="min-w-0 truncate text-[14px] font-semibold text-[#111827]">
+            {getDisplayTitle(item)}
+          </span>
+          <span
+            className={cn(
+              "inline-flex h-5 shrink-0 items-center rounded-full border px-2 text-[11px] font-semibold whitespace-nowrap",
+              meta.kind === "ENTITY"
+                ? "border-[#D7E3FF] bg-[#F3F7FF] text-[#4880EE]"
+                : "border-[#E5E7EB] bg-[#F8FAFC] text-[#475569]",
+            )}
+          >
+            {meta.label}
+          </span>
+        </span>
+        <span className="mt-0.5 block truncate text-[12px] text-[#6B7280]">
+          {formatLocation(item)}
+        </span>
+        <span className="mt-1 flex min-w-0 items-center justify-between gap-3">
+          <span className="min-w-0 truncate text-[11px] text-[#9CA3AF]">
+            삭제 {formatDateTime(item.deletedAt, { includeYear: true })}
+          </span>
+          <span
+            className={cn(
+              "shrink-0 rounded-full border px-2 py-0.5 text-[11px] font-semibold whitespace-nowrap",
+              remaining.tone === "expired"
+                ? "border-[#FECACA] bg-[#FEF2F2] text-[#DC2626]"
+                : remaining.tone === "urgent"
+                  ? "border-[#FECACA] bg-[#FEF2F2] text-[#DC2626]"
+                  : remaining.tone === "warning"
+                    ? "border-[#FED7AA] bg-[#FFF7ED] text-[#C2410C]"
+                    : remaining.tone === "unknown"
+                      ? "border-[#E5E7EB] bg-[#F8FAFC] text-[#64748B]"
+                      : "border-[#BFDBFE] bg-[#EFF6FF] text-[#1D4ED8]",
+            )}
+          >
+            {remaining.label}
+          </span>
+        </span>
+      </span>
+    </button>
   );
 }
 
@@ -669,6 +779,19 @@ function TrashDetailContent({
 }) {
   const meta = targetMeta[detail.targetType];
   const Icon = meta.icon;
+  const isSensitivePreview = Boolean(meta.isSensitive);
+  const previewSummary = isSensitivePreview
+    ? "비밀 메모 원문은 복구 후 해당 record에서 확인할 수 있어요."
+    : detail.summary;
+  const previewFields = detail.fields.map((field) => ({
+    ...field,
+    value:
+      field.label === "유형"
+        ? meta.label
+        : isSensitivePreview
+          ? "복구 후 확인"
+          : field.value,
+  }));
 
   return (
     <div className="grid gap-5">
@@ -693,7 +816,7 @@ function TrashDetailContent({
             </span>
           </div>
           <p className="mt-1 text-[13px] font-medium text-[#475569]">
-            {detail.summary}
+            {previewSummary}
           </p>
         </div>
       </section>
@@ -710,7 +833,7 @@ function TrashDetailContent({
       <section className="grid gap-3">
         <h4 className="text-[13px] font-bold text-[#111827]">주요 내용</h4>
         <div className="grid gap-2 sm:grid-cols-2">
-          {detail.fields.map((field) => (
+          {previewFields.map((field) => (
             <div
               className="min-w-0 rounded-md border border-[#E5E7EB] bg-white px-3 py-2"
               key={field.label}
@@ -726,7 +849,14 @@ function TrashDetailContent({
         </div>
       </section>
 
-      {detail.content ? (
+      {isSensitivePreview ? (
+        <section className="grid gap-2">
+          <h4 className="text-[13px] font-bold text-[#111827]">내용</h4>
+          <div className="rounded-md border border-[#E5E7EB] bg-white px-3 py-3 text-[13px] leading-6 text-[#475569]">
+            복구 전에는 비밀 메모 원문을 표시하지 않습니다.
+          </div>
+        </section>
+      ) : detail.content ? (
         <section className="grid gap-2">
           <h4 className="text-[13px] font-bold text-[#111827]">내용</h4>
           <div className="max-h-[220px] overflow-y-auto whitespace-pre-wrap rounded-md border border-[#E5E7EB] bg-white px-3 py-3 text-[13px] leading-6 text-[#111827]">
@@ -758,7 +888,20 @@ function TrashListSkeleton() {
     <div>
       {Array.from({ length: 9 }, (_, index) => (
         <div
-          className="h-[66px] animate-pulse border-b border-[#E5E7EB] bg-[#F8FAFC] last:border-b-0"
+          className="h-14 animate-pulse border-b border-[#E5E7EB] bg-[#F8FAFC] last:border-b-0"
+          key={index}
+        />
+      ))}
+    </div>
+  );
+}
+
+function TrashMobileSkeleton() {
+  return (
+    <div>
+      {Array.from({ length: 9 }, (_, index) => (
+        <div
+          className="h-[80px] animate-pulse border-b border-[#E5E7EB] bg-[#F9FAFB]"
           key={index}
         />
       ))}

@@ -306,7 +306,7 @@ function MonthCalendar({
   const currentMonth = anchorDate.getMonth();
 
   return (
-    <div className="flex h-full min-h-0 w-full min-w-[820px] flex-col">
+    <div className="flex h-full min-h-0 w-full min-w-[680px] flex-col lg:min-w-[820px]">
       <CalendarHeader />
       <div className="grid h-full min-h-0 flex-1 auto-rows-fr grid-cols-7">
         {cells.map((cell) => {
@@ -316,7 +316,7 @@ function MonthCalendar({
 
           return (
             <section
-              className={`min-h-[112px] border-r border-t border-[#E2E5EC] px-2 pb-2 last:border-r-0 ${
+              className={`min-h-[92px] border-r border-t border-[#E2E5EC] px-1.5 pb-1.5 last:border-r-0 lg:min-h-[112px] lg:px-2 lg:pb-2 ${
                 isOutsideMonth ? "bg-[#FAFAFB] text-[#9CA3AF]" : "bg-white"
               }`}
               key={dateKey}
@@ -368,7 +368,7 @@ function WeekCalendar({
   );
 
   return (
-    <div className="flex h-full min-h-0 w-full min-w-[820px] flex-col">
+    <div className="flex h-full min-h-0 w-full min-w-[680px] flex-col lg:min-w-[820px]">
       <CalendarHeader />
       <div className="grid h-full min-h-0 flex-1 auto-rows-fr grid-cols-7">
         {days.map((day) => {
@@ -377,11 +377,11 @@ function WeekCalendar({
 
           return (
             <section
-              className="min-h-[460px] border-r border-t border-[#E2E5EC] p-3 last:border-r-0"
+              className="min-h-[420px] border-r border-t border-[#E2E5EC] p-2 last:border-r-0 lg:min-h-[460px] lg:p-3"
               key={dateKey}
             >
               <button
-                className={`mb-3 inline-flex h-11 items-center rounded-md px-3 text-sm font-semibold ${
+                className={`mb-2 inline-flex h-9 items-center rounded-md px-2 text-[12px] font-semibold lg:mb-3 lg:h-11 lg:px-3 lg:text-sm ${
                   isToday(day)
                     ? "bg-[#4880EE] text-white"
                     : "text-[#111827] hover:bg-[#F5F6F8]"
@@ -449,14 +449,14 @@ function SchedulePill({
 
   return (
     <button
-      className={`grid min-h-11 rounded-md border px-2 py-1.5 text-left transition ${tone.pill}`}
+      className={`grid min-h-9 rounded-md border px-1.5 py-1 text-left transition lg:min-h-11 lg:px-2 lg:py-1.5 ${tone.pill}`}
       onClick={(event) => {
         event.stopPropagation();
         onClick();
       }}
       type="button"
     >
-      <span className={`truncate text-xs font-semibold ${tone.title}`}>
+      <span className={`truncate text-[11px] font-semibold lg:text-xs ${tone.title}`}>
         {formatScheduleTime(schedule, timeZone)} {schedule.scheduleTitle}
       </span>
       <span className="truncate text-[11px] text-[#6B7280]">

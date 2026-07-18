@@ -1,6 +1,8 @@
 import {
+  Activity,
   AlertCircle,
   ArrowUpDown,
+  BriefcaseBusiness,
   Building2,
   CalendarClock,
   ChevronDown,
@@ -74,6 +76,14 @@ const MEETING_NOTE_CREATE_PANEL_AUTO_SIDEBAR_RATIO = 0.45;
 const MEETING_NOTE_CREATE_PANEL_TRANSITION_MS = 500;
 const DESKTOP_SEARCH_COMPACT_MAX_WIDTH = 170;
 const DESKTOP_FILTER_COLLAPSED_WIDTH = 72;
+const MEETING_NOTE_LIST_TABLE_ROW_CLASS_NAME = cn(
+  LIST_TABLE_ROW_CLASS_NAME,
+  "h-14",
+);
+const MEETING_NOTE_LIST_TABLE_SKELETON_ROW_CLASS_NAME = cn(
+  LIST_TABLE_SKELETON_ROW_CLASS_NAME,
+  "h-14",
+);
 
 const MEETING_NOTE_SORT_OPTIONS = [
   { value: "createdAtDesc", label: "최신순" },
@@ -111,6 +121,7 @@ export function MeetingNoteListScreen() {
   const setAutoSidebarCollapsed = outletContext?.setAutoSidebarCollapsed;
   const { getHeaderCellResizeProps, tableContainerRef, tableContainerStyle } =
     useResizableTableColumns({
+      allowHorizontalOverflow: true,
       columns: MEETING_NOTE_TABLE_COLUMNS,
       storageKey: MEETING_NOTE_TABLE_COLUMNS_STORAGE_KEY,
     });
@@ -438,7 +449,7 @@ export function MeetingNoteListScreen() {
         ]}
       />
 
-      <div className="hidden min-h-10 shrink-0 items-center px-5 py-1 md:flex">
+      <div className="hidden min-h-10 shrink-0 items-center px-5 py-1 lg:flex">
         <div className="flex min-w-0 flex-1 items-center gap-1.5 overflow-x-auto [scrollbar-width:none] lg:gap-2 [&::-webkit-scrollbar]:hidden">
           <CollapsibleDesktopSearch
             appliedValue={search}
@@ -591,7 +602,7 @@ export function MeetingNoteListScreen() {
       ) : null}
 
       {notice ? (
-        <div className="hidden px-5 pt-2 md:block">
+        <div className="hidden px-5 pt-2 lg:block">
           <Toast
             message={notice}
             onClose={() => setNotice(null)}
@@ -602,13 +613,13 @@ export function MeetingNoteListScreen() {
 
       <div
         className={cn(
-          "hidden min-w-0 overflow-hidden px-5 pb-3 pt-1 md:flex",
+          "hidden min-w-0 overflow-hidden px-5 pb-3 pt-1 lg:flex",
           isCreatePanelResizing && "cursor-col-resize select-none",
         )}
       >
         <div className="flex min-w-0 flex-1 flex-col gap-3">
           <div
-            className="flex w-full min-w-0 flex-col overflow-x-hidden overflow-y-hidden bg-white"
+            className="flex w-full min-w-0 flex-col overflow-x-auto overflow-y-hidden bg-white"
             ref={tableContainerRef}
             style={tableContainerStyle}
           >
@@ -629,19 +640,19 @@ export function MeetingNoteListScreen() {
                 icon={Building2}
                 {...getHeaderCellResizeProps("companies", 2)}
               >
-                회사
+                회사/담당자
               </ListTableHeaderCell>
               <ListTableHeaderCell
-                icon={UserRound}
+                icon={BriefcaseBusiness}
                 {...getHeaderCellResizeProps("contacts", 3)}
               >
-                담당자
+                연결 딜
               </ListTableHeaderCell>
               <ListTableHeaderCell
-                icon={CalendarClock}
+                icon={Activity}
                 {...getHeaderCellResizeProps("createdAt", 4)}
               >
-                등록일
+                활동
               </ListTableHeaderCell>
             </div>
 
@@ -699,7 +710,7 @@ export function MeetingNoteListScreen() {
         ) : null}
       </div>
 
-      <section className="flex min-h-0 flex-1 flex-col md:hidden">
+      <section className="flex min-h-0 flex-1 flex-col lg:hidden">
         {notice ? (
           <div className="px-4 pt-2">
             <Toast
@@ -1191,13 +1202,13 @@ function MeetingNoteMobileCard({
     displayTimeZone,
   );
   const relationLabel =
-    [meetingNote.companies.label, meetingNote.contacts.label]
+    [
+      meetingNote.companies.label,
+      meetingNote.contacts.label,
+      meetingNote.deals.label,
+    ]
       .filter(Boolean)
       .join(" · ") || "-";
-  const relationCount = Math.max(
-    meetingNote.companies.count,
-    meetingNote.contacts.count,
-  );
 
   return (
     <Link
@@ -1215,17 +1226,12 @@ function MeetingNoteMobileCard({
           <span className="min-w-0 truncate text-[14px] font-semibold text-[#111827]">
             {meetingNote.title}
           </span>
-          {relationCount > 1 ? (
-            <span className="inline-flex h-5 shrink-0 items-center rounded-full bg-[#F1F5F9] px-2 text-[11px] font-medium text-[#475569]">
-              외 {relationCount - 1}
-            </span>
-          ) : null}
         </div>
         <p className="mt-0.5 truncate text-[11px] text-[#9CA3AF]">
           {relationLabel}
         </p>
         <p className="mt-0.5 truncate text-[11px] text-[#9CA3AF]">
-          등록일 {createdAtLabel}
+          작성 {createdAtLabel}
         </p>
       </div>
     </Link>
@@ -1245,7 +1251,7 @@ function MeetingNoteListRow({
 
   return (
     <div
-      className={LIST_TABLE_ROW_CLASS_NAME}
+      className={MEETING_NOTE_LIST_TABLE_ROW_CLASS_NAME}
       onClick={() => void navigate(detailPath)}
       onKeyDown={(event) => {
         if (event.key === "Enter" || event.key === " ") {
@@ -1262,9 +1268,12 @@ function MeetingNoteListRow({
         timeZone={displayTimeZone}
       />
       <TitleCell title={meetingNote.title} />
-      <SummaryCell summary={meetingNote.companies} />
-      <SummaryCell summary={meetingNote.contacts} />
-      <DateCell value={meetingNote.createdAt} timeZone={displayTimeZone} />
+      <LinkedRecordCell
+        companies={meetingNote.companies}
+        contacts={meetingNote.contacts}
+      />
+      <SummaryCell summary={meetingNote.deals} />
+      <ActivityCell value={meetingNote.createdAt} timeZone={displayTimeZone} />
     </div>
   );
 }
@@ -1296,6 +1305,46 @@ function DateCell({
       title={dateLabel}
     >
       {dateLabel}
+    </span>
+  );
+}
+
+function ActivityCell({
+  timeZone,
+  value,
+}: {
+  readonly timeZone: string;
+  readonly value: string | null;
+}) {
+  const dateLabel = formatMeetingNoteListDate(value, timeZone);
+  const activityLabel = `작성 ${dateLabel}`;
+
+  return (
+    <span
+      className="min-w-0 truncate pr-3 text-[12px] font-medium text-[#64748B]"
+      title={activityLabel}
+    >
+      {activityLabel}
+    </span>
+  );
+}
+
+function LinkedRecordCell({
+  companies,
+  contacts,
+}: {
+  readonly companies: MeetingNoteListItem["companies"];
+  readonly contacts: MeetingNoteListItem["contacts"];
+}) {
+  const primaryLabel = [companies.label, contacts.label]
+    .filter(Boolean)
+    .join(" · ");
+
+  return (
+    <span className="flex min-w-0 items-center gap-1.5 pr-3">
+      <span className="min-w-0 truncate text-[13px] font-medium text-[#111827]">
+        {primaryLabel || "-"}
+      </span>
     </span>
   );
 }
@@ -1344,7 +1393,7 @@ function MeetingNoteListSkeleton() {
     <>
       {Array.from({ length: 6 }, (_, rowIndex) => (
         <div
-          className={LIST_TABLE_SKELETON_ROW_CLASS_NAME}
+          className={MEETING_NOTE_LIST_TABLE_SKELETON_ROW_CLASS_NAME}
           key={rowIndex}
         >
           {Array.from({ length: 5 }, (_, cellIndex) => (

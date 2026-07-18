@@ -74,14 +74,16 @@ G04 완료 기준으로 회사/담당자/제품 desktop row는 56px이고, 768px
 
 ### P1. Schedule/MeetingNote/BusinessCard/Import/Trash
 
-- [ ] 일정 생성/수정 form 확인
-- [ ] 일정/회의록에서 연결 딜/회사/담당자 맥락 확인
-- [ ] 회의록 목록에서 제목/요약/연결 회사·담당자·딜/작성일/다음 행동 맥락 확인
-- [ ] 명함 스캔/Trash 목록이 상태와 연결 record를 조밀하게 보여주는지 확인
-- [ ] 회의록 긴 입력과 AI/STT 보조 action 확인
-- [ ] 명함스캔 upload/progress/success/failure/confirm 상태 확인
-- [ ] Import upload/mapping/validation/confirm 단계 확인
-- [ ] Trash list/detail/restore 상태 확인
+- [x] 일정 생성/수정 form 확인
+- [x] 일정/회의록에서 연결 딜/회사/담당자 맥락 확인
+- [x] 회의록 목록에서 제목/요약/연결 회사·담당자·딜/작성일/다음 행동 맥락 확인
+- [x] 명함 스캔/Trash 목록이 상태와 연결 record를 조밀하게 보여주는지 확인
+- [x] 회의록 긴 입력과 AI/STT 보조 action 확인
+- [x] 명함스캔 upload/progress/success/failure/confirm 상태 확인
+- [x] Import upload/mapping/validation/confirm 단계 확인
+- [x] Trash list/detail/restore 상태 확인
+
+G05 완료 기준으로 일정 768px month/week grid, 회의록/명함 스캔/Trash desktop 56px row, 768px card/list, Import preview 내부 스크롤과 field-level validation, 명함 provider 내부값 비노출, Trash private memo preview masking을 확인했다. 실제 최신 활동/다음 행동 summary처럼 현재 API에 없는 정보는 FE에서 만들지 않고 API 후속으로 기록한다.
 
 ### P0. Writing/states/a11y closeout
 
@@ -114,6 +116,12 @@ G04 완료 기준으로 회사/담당자/제품 desktop row는 56px이고, 768px
 - [x] G04 대상 화면 재확인
 - [x] G04 기준 `COMMON/ISSUE-LOG.md` 상태 최신화
 - [x] G04 완료 보고에 검증, 검토 결과, 남은 리스크 기록
+- [x] G05 완료 전 `COMMON/GOAL-WORK-ORDER.md`의 `완료 후 필수 검토 게이트` 수행
+- [x] G05 수정 diff 자체 검토
+- [x] G05 `Notion + Attio Reference Gate` 수행
+- [x] G05 대상 화면 재확인
+- [x] G05 기준 `COMMON/ISSUE-LOG.md` 상태 최신화
+- [x] G05 완료 보고에 검증, 검토 결과, 남은 리스크 기록
 
 ## 4. 검증 명령
 

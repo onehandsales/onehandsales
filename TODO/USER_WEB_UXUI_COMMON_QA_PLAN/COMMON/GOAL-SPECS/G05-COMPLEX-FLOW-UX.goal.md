@@ -1,6 +1,6 @@
 # G05 Complex Flow UX
 
-상태: Ready
+상태: Done
 우선순위: P1
 담당 영역: FE/user-web
 
@@ -114,3 +114,34 @@ pnpm run test:e2e
 - 회의록/명함/Trash 등 목록형 화면이 조용하고 조밀한 record list로 보이며, 연결 record와 현재 응답에서 가능한 다음 행동/상태 맥락이 등록일보다 우선된다.
 - provider failure와 validation failure가 내부 정보를 노출하지 않는다.
 - 관련 이슈가 `COMMON/ISSUE-LOG.md`에서 정리된다.
+
+## 8. 완료 기록
+
+- 완료일: 2026-07-18
+- 구현 파일: `FE/user-web/src/features/schedule/components/schedule-screen.tsx`, `FE/user-web/src/features/meeting-note/components/meeting-note-list-screen.tsx`, `FE/user-web/src/features/business-card/components/business-card-scan-screen.tsx`, `FE/user-web/src/features/import-export/components/import-screen.tsx`, `FE/user-web/src/features/trash/components/trash-screen.tsx`
+- 문서 파일: `COMMON/ISSUE-LOG.md`, `COMMON/GOAL-WORK-ORDER.md`, `COMMON/API-SPEC/README.md`, `BE-TODO/API-TODO.md`, `FE-TODO/USER-WEB-TODO.md`
+- 화면 검증: `/tmp/onehandsales-g05-final/*.png` 로컬 screenshot. repository에는 보관하지 않는다.
+- 자동 점검 결과: 28개 route/viewport/detail 조합에서 console error 0건, page error 0건, failed request 0건, document horizontal overflow 0건
+
+### 완료 요약
+
+- `/app/schedules`는 768px에서 month/week grid의 7일 맥락과 연결 딜 pill이 읽히도록 compact density를 적용했다.
+- `/app/meeting-notes`는 desktop 56px row, 회사/담당자 + 연결 딜 우선 table, 768px card/list를 적용했다.
+- `/app/business-cards`는 desktop 56px row, 768px card/list, 상태/저장 action 중심 표시, 이미지 미저장 안내, provider 내부값 비노출을 적용했다.
+- `/app/import`는 desktop 56px row, 768px preview table 내부 스크롤, field-level validation 표시를 보강했다.
+- `/app/trash`는 desktop 56px row, 768px card/list, private memo preview masking, restore modal의 안전한 상세 표시를 적용했다.
+
+### 검증 결과
+
+- `pnpm run typecheck`: 통과
+- `pnpm run lint`: 통과
+- `pnpm run build`: 통과. 기존 Tailwind `duration-[500ms]` ambiguous class 경고와 Vite chunk size 경고는 남아 있지만 build 실패는 아니다.
+- `git diff --check`: 통과
+- `node /tmp/onehandsales-g05-qa.mjs`: 통과, failed 0건, checked 28건
+- `pnpm run test:e2e`: 로컬 Playwright chromium headless shell 누락으로 테스트 시작 전 실패. 코드 assertion 실패는 없었다.
+
+### 완료 후 검토
+
+- G05 제외 범위인 Schedule week report, Notification, ImportJob 영속화, MeetingNote transcript 저장, provider call log table, Trash 7일 이후 복구, FE 단독 page size 변경은 구현하지 않았다.
+- 현재 API 응답에 없는 실제 최신 활동/다음 행동 summary는 FE에서 임의 생성하지 않았다.
+- 15개 page size 기본 전환은 Backend 상수, 응답 `pageSize`, 관련 테스트/API 문서 계약과 함께 변경해야 하므로 G05에서 제외했다.

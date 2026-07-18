@@ -48,3 +48,22 @@ G04는 Company/Contact/Product API를 변경하지 않고 완료했다.
 다만 Contact list response에는 연결 딜 수가 없고, 세 도메인 list response에는 실제 `updatedAt`, 최신 Memo/활동, 다음 행동 summary가 없다. 목록에서 실제 최신 활동이나 다음 행동을 1급 정보로 보여야 한다고 판단되면 FE에서 임의로 만들지 말고 Company/Contact/Product list response 확장으로 분리한다.
 
 Desktop page size 15개 기본값은 FE 단독 변경 대상이 아니다. Backend 상수, 응답 `pageSize`, 관련 테스트/API 문서와 함께 변경해야 한다.
+
+## G05 Complex Flow Contract Note
+
+- 확인일: 2026-07-18
+- 관련 화면: `/app/schedules`, `/app/meeting-notes`, `/app/business-cards`, `/app/import`, `/app/trash`
+
+G05는 Schedule, MeetingNote, BusinessCard OCR, Import, Trash API를 변경하지 않고 완료했다.
+
+현재 Schedule list response의 `deals` summary로 일정 pill에 연결 딜 맥락을 표시할 수 있다. `/app/schedules/week` 신규 구현이나 week report API는 G05 범위가 아니다.
+
+현재 MeetingNote list response의 `companies`, `contacts`, `deals`, `createdAt`으로 회사/담당자/딜 linked record와 작성 활동 맥락을 표시할 수 있다. 실제 다음 행동 summary나 최신 활동 summary가 필요하면 MeetingNote list response 확장으로 분리한다.
+
+BusinessCard scan response에는 `ai`, `usage` 같은 운영/비용 정보가 포함될 수 있지만, G05 User Web은 사용자 상세에서 이를 노출하지 않는다. provider failure가 내부 provider/quota/API key 정보를 노출하지 못하게 하려면 Backend error code/message 계약도 별도로 점검한다.
+
+ImportJob persistence는 G05 제외 범위다. 확정 전 in-memory job 한계가 사용자 혼란을 만들면 별도 Backend/API 계획으로 분리한다.
+
+Trash detail response가 private memo `content` 또는 raw `targetType` field를 내려주더라도 User Web은 복구 전 preview에서 원문과 내부 enum을 숨긴다. 더 강한 보안이 필요하면 Backend detail response에서도 private memo content를 제거하는 계약으로 분리한다.
+
+Desktop page size 15개 기본값은 FE 단독 변경 대상이 아니다. Backend 상수, 응답 `pageSize`, 관련 테스트/API 문서와 함께 변경해야 한다.

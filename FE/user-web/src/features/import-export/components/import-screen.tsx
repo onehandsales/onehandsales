@@ -125,6 +125,7 @@ const IMPORT_LOG_TABLE_COLUMNS = [
 ] satisfies readonly ResizableTableColumn[];
 const IMPORT_LOG_TABLE_COLUMNS_STORAGE_KEY =
   "onehand.table.importLogs.columns";
+const IMPORT_LOG_TABLE_ROW_CLASS_NAME = cn(LIST_TABLE_ROW_CLASS_NAME, "h-14");
 
 const IMPORT_PREVIEW_ROW_NUMBER_COLUMN_WIDTH = 25;
 const IMPORT_PREVIEW_COLUMN_MIN_WIDTH = 72;
@@ -313,6 +314,7 @@ export function ImportScreen() {
   const confirmImportJobMutation = useConfirmImportJobMutation(importJob?.id ?? "");
   const { getHeaderCellResizeProps, tableContainerRef, tableContainerStyle } =
     useResizableTableColumns({
+      allowHorizontalOverflow: true,
       columns: IMPORT_LOG_TABLE_COLUMNS,
       storageKey: IMPORT_LOG_TABLE_COLUMNS_STORAGE_KEY,
     });
@@ -655,7 +657,7 @@ export function ImportScreen() {
         ]}
       />
 
-      <div className="hidden min-h-10 shrink-0 items-center justify-between gap-3 px-5 py-1 md:flex">
+      <div className="hidden min-h-10 shrink-0 items-center justify-between gap-3 px-5 py-1 lg:flex">
         <div className="flex min-w-0 items-center gap-1.5 overflow-x-auto lg:gap-2">
           <ImportTargetFilterCombobox
             selectedIds={targetTypes}
@@ -687,7 +689,7 @@ export function ImportScreen() {
         </div>
       </div>
 
-      <div className="hidden min-w-0 gap-3 overflow-hidden px-5 pb-3 pt-1 md:flex xl:gap-5">
+      <div className="hidden min-w-0 gap-3 overflow-hidden px-5 pb-3 pt-1 lg:flex xl:gap-5">
         <div className="flex min-w-0 flex-1 flex-col gap-3">
           {notice ? (
             <Toast
@@ -702,7 +704,7 @@ export function ImportScreen() {
           ) : null}
 
           <div
-            className="flex w-full min-w-0 flex-col overflow-x-hidden overflow-y-hidden bg-white"
+            className="flex w-full min-w-0 flex-col overflow-x-auto overflow-y-hidden bg-white"
             ref={tableContainerRef}
             style={tableContainerStyle}
           >
@@ -729,7 +731,7 @@ export function ImportScreen() {
                 icon={CalendarClock}
                 {...getHeaderCellResizeProps("createdAt", 3)}
               >
-                등록일
+                업로드일
               </ListTableHeaderCell>
             </div>
 
@@ -748,7 +750,7 @@ export function ImportScreen() {
                 onAction={openDialog}
                 title={
                   targetTypes.length > 0
-                    ? "조건에 맞는 업로드 내역이 없습니다."
+                    ? "조건을 바꾸면 업로드 내역을 찾을 수 있어요"
                     : "데이터가 존재하지 않아요"
                 }
               />
@@ -775,7 +777,7 @@ export function ImportScreen() {
         </div>
       </div>
 
-      <section className="flex min-h-0 flex-1 flex-col md:hidden">
+      <section className="flex min-h-0 flex-1 flex-col lg:hidden">
         <div className="flex h-10 shrink-0 items-center gap-2 overflow-x-auto border-b border-[#E5E7EB] px-4">
           <ImportTargetFilterCombobox
             selectedIds={targetTypes}
@@ -829,7 +831,7 @@ export function ImportScreen() {
               actionLabel="데이터 업로드"
               icon={DataUploadIcon}
               onAction={openDialog}
-              title="업로드 내역이 없습니다."
+              title="파일을 올리면 업로드 내역을 볼 수 있어요"
             />
           ) : (
             logs.map((log) => (
@@ -1098,7 +1100,7 @@ function ImportTargetFilterCombobox({
           <div className="max-h-[184px] overflow-y-auto py-1">
             {filteredItems.length === 0 ? (
               <p className="px-3 py-3 text-[12px] text-[#9CA3AF]">
-                검색 결과가 없습니다.
+                검색어를 바꾸면 결과를 찾을 수 있어요.
               </p>
             ) : (
               filteredItems.map((item) => {
@@ -1172,7 +1174,7 @@ function ImportLogRow({
 
   return (
     <div
-      className={LIST_TABLE_ROW_CLASS_NAME}
+      className={IMPORT_LOG_TABLE_ROW_CLASS_NAME}
       onClick={onOpen}
       onKeyDown={(event) => {
         if (event.key === "Enter" || event.key === " ") {
@@ -1770,7 +1772,7 @@ function ImportFilePanel({
             >
               데이터 양식
             </button>
-            에 맞춰 파일을 업로드해주세요.
+            에 맞춰 파일을 업로드해 주세요.
           </p>
         </div>
         {file ? (
@@ -1916,8 +1918,12 @@ function ImportEditablePreview({
   const previewGridTemplateColumns = `${IMPORT_PREVIEW_ROW_NUMBER_COLUMN_WIDTH}px ${previewColumnWidths
     .map((width) => `minmax(0, ${width}fr)`)
     .join(" ")}`;
+  const previewMinimumWidth =
+    IMPORT_PREVIEW_ROW_NUMBER_COLUMN_WIDTH +
+    previewColumnWidths.reduce((total, width) => total + width, 0);
   const previewGridStyle = {
     gridTemplateColumns: previewGridTemplateColumns,
+    minWidth: previewMinimumWidth,
   };
   const newContactCompanyNames = new Set(
     contactCompanySummary?.newCompanyNames ?? []
@@ -2095,7 +2101,7 @@ function ImportEditablePreview({
         <div className="min-w-0">
           <h3 className="text-sm font-semibold text-[#111827]">데이터 검토</h3>
           <p className="mt-1 text-xs text-[#6B7280]">
-            최종 데이터를 검토해주세요.
+            최종 데이터를 검토해 주세요.
           </p>
         </div>
         <div className="flex shrink-0 items-center gap-2">
@@ -2139,7 +2145,7 @@ function ImportEditablePreview({
       ) : null}
 
       <div
-        className="max-h-[320px] overflow-x-hidden overflow-y-auto rounded-md border border-[#E5E7EB] text-[11px]"
+        className="max-h-[320px] overflow-x-auto overflow-y-auto rounded-md border border-[#E5E7EB] text-[11px]"
         ref={previewTableRef}
         role="table"
       >
@@ -2464,7 +2470,7 @@ function ContactCompanyImportSummary({
   if (isLoading) {
     return (
       <div className="rounded-md border border-[#E5E7EB] bg-[#FAFBFC] px-3 py-2 text-[12px] text-[#6B7280]">
-        회사 매칭 정보를 확인하고 있습니다.
+        회사 매칭 정보를 확인하고 있어요.
       </div>
     );
   }
@@ -2472,7 +2478,7 @@ function ContactCompanyImportSummary({
   if (isError || !summary) {
     return (
       <div className="rounded-md border border-[#FDE68A] bg-[#FFFBEB] px-3 py-2 text-[12px] text-[#92400E]">
-        회사 매칭 정보를 확인하지 못했습니다. 잠시 후 다시 시도해 주세요.
+        회사 매칭 정보를 확인하지 못했어요. 잠시 후 다시 시도해 주세요.
       </div>
     );
   }
@@ -2526,7 +2532,7 @@ function ContactCompanyImportSummary({
                   <div className="flex min-w-0 items-center px-2">
                     <ImportTaxonomySelect
                       disabled={disabled}
-                      emptyText="등록된 회사 분야가 없습니다."
+                      emptyText="회사 분야를 추가하면 선택할 수 있어요."
                       getLabel={(field) => field.field}
                       invalid={isFieldEmpty}
                       isCreating={createCompanyFieldMutation.isPending}
@@ -2552,7 +2558,7 @@ function ContactCompanyImportSummary({
                   <div className="flex min-w-0 items-center px-2">
                     <ImportTaxonomySelect
                       disabled={disabled}
-                      emptyText="등록된 회사 지역이 없습니다."
+                      emptyText="회사 지역을 추가하면 선택할 수 있어요."
                       getLabel={(region) => region.region}
                       invalid={isRegionEmpty}
                       isCreating={createCompanyRegionMutation.isPending}
@@ -2647,7 +2653,7 @@ function DealResourceImportSummary({
   if (isLoading) {
     return (
       <div className="rounded-md border border-[#E5E7EB] bg-[#FAFBFC] px-3 py-2 text-[12px] text-[#6B7280]">
-        딜 연결 정보를 확인하고 있습니다.
+        딜 연결 정보를 확인하고 있어요.
       </div>
     );
   }
@@ -2655,7 +2661,7 @@ function DealResourceImportSummary({
   if (isError || !summary) {
     return (
       <div className="rounded-md border border-[#FDE68A] bg-[#FFFBEB] px-3 py-2 text-[12px] text-[#92400E]">
-        딜 연결 정보를 확인하지 못했습니다. 잠시 후 다시 시도해 주세요.
+        딜 연결 정보를 확인하지 못했어요. 잠시 후 다시 시도해 주세요.
       </div>
     );
   }
@@ -2726,7 +2732,7 @@ function DealResourceImportSummary({
                   <div className="flex min-w-0 items-center px-2">
                     <ImportTaxonomySelect
                       disabled={disabled}
-                      emptyText="등록된 회사 분야가 없습니다."
+                      emptyText="회사 분야를 추가하면 선택할 수 있어요."
                       getLabel={(field) => field.field}
                       invalid={resolution.companyFieldName.trim().length === 0}
                       isCreating={createCompanyFieldMutation.isPending}
@@ -2756,7 +2762,7 @@ function DealResourceImportSummary({
                   <div className="flex min-w-0 items-center px-2">
                     <ImportTaxonomySelect
                       disabled={disabled}
-                      emptyText="등록된 회사 지역이 없습니다."
+                      emptyText="회사 지역을 추가하면 선택할 수 있어요."
                       getLabel={(region) => region.region}
                       invalid={resolution.companyRegionName.trim().length === 0}
                       isCreating={createCompanyRegionMutation.isPending}
@@ -2864,7 +2870,7 @@ function DealResourceImportSummary({
                   <div className="flex min-w-0 items-center px-2">
                     <ImportTaxonomySelect
                       disabled={disabled}
-                      emptyText="등록된 담당자 부서가 없습니다."
+                      emptyText="담당자 부서를 추가하면 선택할 수 있어요."
                       getLabel={(department) => department.departmentName}
                       invalid={
                         resolution.contactDepartmentName.trim().length === 0
@@ -2896,7 +2902,7 @@ function DealResourceImportSummary({
                   <div className="flex min-w-0 items-center px-2">
                     <ImportTaxonomySelect
                       disabled={disabled}
-                      emptyText="등록된 담당자 직급이 없습니다."
+                      emptyText="담당자 직급을 추가하면 선택할 수 있어요."
                       getLabel={(jobGrade) => jobGrade.jobGradeName}
                       invalid={resolution.contactJobGradeName.trim().length === 0}
                       isCreating={createJobGradeMutation.isPending}
@@ -2979,7 +2985,7 @@ function DealResourceImportSummary({
                   <div className="flex min-w-0 items-center px-2">
                     <ImportTaxonomySelect
                       disabled={disabled}
-                      emptyText="등록된 제품 카테고리가 없습니다."
+                      emptyText="제품 카테고리를 추가하면 선택할 수 있어요."
                       getLabel={(category) => category.categoryName}
                       invalid={resolution.productCategoryName.trim().length === 0}
                       isCreating={createCategoryMutation.isPending}
@@ -3009,7 +3015,7 @@ function DealResourceImportSummary({
                   <div className="flex min-w-0 items-center px-2">
                     <ImportTaxonomySelect
                       disabled={disabled}
-                      emptyText="등록된 제품 상태가 없습니다."
+                      emptyText="제품 상태를 추가하면 선택할 수 있어요."
                       getLabel={(status) => status.statusName}
                       invalid={resolution.productStatusName.trim().length === 0}
                       isCreating={createStatusMutation.isPending}
@@ -3422,7 +3428,7 @@ function ImportListSkeleton() {
     <div>
       {Array.from({ length: 8 }, (_, index) => (
         <div
-          className="h-[66px] animate-pulse border-b border-[#E5E7EB] bg-[#F8FAFC] last:border-b-0"
+          className="h-14 animate-pulse border-b border-[#E5E7EB] bg-[#F8FAFC] last:border-b-0"
           key={index}
         />
       ))}
@@ -3766,7 +3772,7 @@ function validateEditableRows(
   rows: readonly EditableImportRow[]
 ): string | null {
   if (rows.length === 0) {
-    return "확정할 데이터 row가 없습니다.";
+    return "확정할 데이터 row가 없어요.";
   }
 
   const fields = importTargetFields[targetType];
