@@ -8,7 +8,7 @@ const items: ReadonlyArray<{
   readonly end?: boolean;
   readonly activeColor: string;
 }> = [
-  { label: "홈", to: "/", icon: House, end: true, activeColor: "#4880EE" },
+  { label: "홈", to: "/app", icon: House, end: true, activeColor: "#4880EE" },
   { label: "딜", to: "/app/deals", icon: Briefcase, activeColor: "#4880EE" },
   { label: "일정", to: "/app/schedules", icon: Calendar, activeColor: "#4880EE" },
   { label: "회의록", to: "/app/meeting-notes", icon: NotebookPen, activeColor: "#4880EE" },
@@ -18,7 +18,7 @@ const items: ReadonlyArray<{
 export function BottomTabBar() {
   return (
     <nav
-      className="fixed inset-x-0 bottom-0 z-30 border-t border-gray-200 bg-white px-1 pb-[max(env(safe-area-inset-bottom),8px)] pt-1 md:hidden"
+      className="fixed inset-x-0 bottom-0 z-30 border-t border-gray-200 bg-white px-1 pb-[max(env(safe-area-inset-bottom),8px)] pt-1 lg:hidden"
       style={{ height: 72 }}
     >
       <ul className="grid grid-cols-5">

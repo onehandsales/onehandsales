@@ -81,91 +81,93 @@ export function MorePage() {
   const initial = name.charAt(0);
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: "#F9FAFB" }}>
-      {/* Profile Card */}
-      <Link
-        to="/app/settings"
-        className="flex items-center gap-3 bg-white px-4 py-4"
-        style={{ borderBottom: "1px solid #E5E7EB" }}
-      >
-        {/* Avatar */}
-        <div
-          className="inline-flex shrink-0 items-center justify-center rounded-full text-[17px] font-bold"
-          style={{
-            width: 48,
-            height: 48,
-            backgroundColor: "#EFF6FF",
-            color: "#4880EE",
-          }}
-        >
-          {initial}
-        </div>
-
-        {/* Name & role */}
-        <div className="flex-1 min-w-0">
-          <p className="text-[15px] font-bold truncate" style={{ color: "#111827" }}>
-            {name}
-          </p>
-          <p className="text-[12px] truncate" style={{ color: "#6B7280" }}>
-            {role}
-          </p>
-        </div>
-
-        <ChevronRight style={{ width: 18, height: 18, color: "#D1D5DB", flexShrink: 0 }} />
-      </Link>
-
-      {/* Section: 영업 관리 */}
-      <SectionHeader title="영업 관리" />
-      <div style={{ borderTop: "1px solid #E5E7EB", borderBottom: "1px solid #E5E7EB" }}>
-        <MenuRow
-          label="회사"
-          to="/app/companies"
-          iconBg="#4880EE18"
-          iconColor="#4880EE"
-          icon={Building2}
-        />
-        <MenuRow
-          label="담당자"
-          to="/app/contacts"
-          iconBg="#4880EE18"
-          iconColor="#4880EE"
-          icon={Users}
-        />
-        <MenuRow
-          label="명함 스캔"
-          to="/app/business-cards"
-          iconBg="#05966918"
-          iconColor="#059669"
-          icon={Camera}
-        />
-        <MenuRow
-          label="제품"
-          to="/app/products"
-          iconBg="#B4530918"
-          iconColor="#B45309"
-          icon={Package}
-          isLast
-        />
-      </div>
-
-      {/* Section: 관리 */}
-      <SectionHeader title="관리" />
-      <div style={{ borderTop: "1px solid #E5E7EB", borderBottom: "1px solid #E5E7EB" }}>
-        <MenuRow
-          label="휴지통"
-          to="/app/trash"
-          iconBg="#B91C1C18"
-          iconColor="#B91C1C"
-          icon={Trash2}
-        />
-        <MenuRow
-          label="설정"
+    <div className="min-h-screen bg-[#F9FAFB] px-0 py-0 lg:px-8 lg:py-8">
+      <div className="mx-auto w-full max-w-[760px] overflow-hidden bg-white lg:rounded-lg lg:border lg:border-[#E5E7EB]">
+        {/* Profile Card */}
+        <Link
           to="/app/settings"
-          iconBg="#6B728018"
-          iconColor="#6B7280"
-          icon={Settings}
-          isLast
-        />
+          className="flex items-center gap-3 bg-white px-4 py-4"
+          style={{ borderBottom: "1px solid #E5E7EB" }}
+        >
+          {/* Avatar */}
+          <div
+            className="inline-flex shrink-0 items-center justify-center rounded-full text-[17px] font-bold"
+            style={{
+              width: 48,
+              height: 48,
+              backgroundColor: "#EFF6FF",
+              color: "#4880EE",
+            }}
+          >
+            {initial}
+          </div>
+
+          {/* Name & role */}
+          <div className="min-w-0 flex-1">
+            <p className="truncate text-[15px] font-bold" style={{ color: "#111827" }}>
+              {name}
+            </p>
+            <p className="truncate text-[12px]" style={{ color: "#6B7280" }}>
+              {role}
+            </p>
+          </div>
+
+          <ChevronRight style={{ width: 18, height: 18, color: "#D1D5DB", flexShrink: 0 }} />
+        </Link>
+
+        {/* Section: 영업 관리 */}
+        <SectionHeader title="영업 관리" />
+        <div style={{ borderTop: "1px solid #E5E7EB", borderBottom: "1px solid #E5E7EB" }}>
+          <MenuRow
+            label="회사"
+            to="/app/companies"
+            iconBg="#4880EE18"
+            iconColor="#4880EE"
+            icon={Building2}
+          />
+          <MenuRow
+            label="담당자"
+            to="/app/contacts"
+            iconBg="#4880EE18"
+            iconColor="#4880EE"
+            icon={Users}
+          />
+          <MenuRow
+            label="명함 스캔"
+            to="/app/business-cards"
+            iconBg="#05966918"
+            iconColor="#059669"
+            icon={Camera}
+          />
+          <MenuRow
+            label="제품"
+            to="/app/products"
+            iconBg="#B4530918"
+            iconColor="#B45309"
+            icon={Package}
+            isLast
+          />
+        </div>
+
+        {/* Section: 관리 */}
+        <SectionHeader title="관리" />
+        <div style={{ borderTop: "1px solid #E5E7EB", borderBottom: "1px solid #E5E7EB" }}>
+          <MenuRow
+            label="휴지통"
+            to="/app/trash"
+            iconBg="#B91C1C18"
+            iconColor="#B91C1C"
+            icon={Trash2}
+          />
+          <MenuRow
+            label="설정"
+            to="/app/settings"
+            iconBg="#6B728018"
+            iconColor="#6B7280"
+            icon={Settings}
+            isLast
+          />
+        </div>
       </div>
 
       {/* Version */}

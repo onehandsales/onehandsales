@@ -14,7 +14,7 @@ export function MobileAppHeader({
   const initial = user?.name ? user.name.charAt(0) : "?";
 
   return (
-    <header className="sticky top-0 z-20 border-b border-gray-200 bg-white md:hidden" style={{ height: 56 }}>
+    <header className="sticky top-0 z-20 border-b border-gray-200 bg-white lg:hidden" style={{ height: 56 }}>
       <div className="flex h-full items-center gap-3 px-4">
         {/* Logo */}
         <span className="text-[17px] font-bold" style={{ color: logoColor }}>

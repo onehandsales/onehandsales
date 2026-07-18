@@ -13,6 +13,7 @@ import {
   Loader2,
   LogOut,
   Menu,
+  MoreHorizontal,
   Package,
   Pencil,
   Plus,
@@ -103,7 +104,7 @@ function DealDetailHeader({ dealId }: { readonly dealId: string }) {
         ]}
       />
       <ConfirmDialog
-          cancelLabel="닫기"
+        cancelLabel="닫기"
         confirmLabel="삭제"
         errorMessage={deleteError}
         isPending={deleteDealMutation.isPending}
@@ -178,7 +179,7 @@ function ProductDetailHeader({ productId }: { readonly productId: string }) {
         ]}
       />
       <ConfirmDialog
-          cancelLabel="닫기"
+        cancelLabel="닫기"
         confirmLabel="삭제"
         errorMessage={deleteError}
         isPending={deleteProductMutation.isPending}
@@ -384,6 +385,7 @@ export function AppShell() {
       "/app/schedules": { label: "일정", icon: CalendarDays },
       "/app/trash": { label: "휴지통", icon: Trash2 },
       "/app/settings": { label: "설정", icon: Settings },
+      "/app/more": { label: "더보기", icon: MoreHorizontal },
     };
     const meta = pageMetaMap[pathname] ?? { label: "한손에 영업", icon: House };
     const actions =
@@ -531,7 +533,7 @@ export function AppShell() {
     <div className="min-h-dvh bg-background text-foreground">
       {/* ── Desktop Shell ── */}
       <div
-        className="hidden min-h-dvh md:flex"
+        className="hidden min-h-dvh lg:flex"
         data-sidebar-collapsed={isSidebarCollapsed ? "true" : undefined}
       >
         {/* Sidebar */}
@@ -654,7 +656,7 @@ export function AppShell() {
       />
 
       {/* ── Mobile Shell ── */}
-      <div className="min-h-dvh md:hidden">
+      <div className="min-h-dvh lg:hidden">
         {!isMobileHeaderHidden ? (
           <MobileAppHeader onSearchClick={() => setSearchOpen(true)} />
         ) : null}

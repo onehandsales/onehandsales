@@ -40,28 +40,28 @@ const ACTIVE_DEAL_STATUSES: DealStatus[] = [
 const QUICK_ACTIONS: QuickAction[] = [
   {
     description: "새 영업 기회를 바로 등록",
-    href: "/deals/new",
+    href: "/app/deals/new",
     icon: BriefcaseBusiness,
     label: "딜 등록",
     tone: "blue",
   },
   {
     description: "미팅 내용과 필요 조치 기록",
-    href: "/meeting-notes?create=1",
+    href: "/app/meeting-notes?create=1",
     icon: NotebookPen,
     label: "회의록 작성",
     tone: "emerald",
   },
   {
     description: "오늘 이후 미팅 일정 확인",
-    href: "/schedules",
+    href: "/app/schedules",
     icon: CalendarDays,
     label: "일정 보기",
     tone: "amber",
   },
   {
     description: "회사와 담당자를 빠르게 정리",
-    href: "/companies/new",
+    href: "/app/companies/new",
     icon: Building2,
     label: "회사 생성",
     tone: "slate",
@@ -205,9 +205,9 @@ export function HomePage() {
         </div>
 
         <div className="grid min-h-0 gap-5 xl:grid-cols-[minmax(0,1.35fr)_minmax(340px,0.65fr)]">
-          <div className="grid gap-5 xl:grid-rows-[auto_1fr]">
+          <div className="grid content-start gap-5">
             <DashboardSection
-              actionHref="/schedules"
+              actionHref="/app/schedules"
               actionLabel="일정"
               icon={CalendarDays}
               title="오늘 할 일"
@@ -236,7 +236,7 @@ export function HomePage() {
 
             <div className="grid gap-5 xl:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)]">
               <DashboardSection
-                actionHref="/deals"
+                actionHref="/app/deals"
                 actionLabel="딜"
                 icon={TrendingUp}
                 title="딜 현황"
@@ -254,7 +254,7 @@ export function HomePage() {
               </DashboardSection>
 
               <DashboardSection
-                actionHref="/deals"
+                actionHref="/app/deals"
                 actionLabel="전체"
                 icon={AlertCircle}
                 title="마감 임박 딜"
@@ -275,7 +275,7 @@ export function HomePage() {
             <QuickActionPanel />
 
             <DashboardSection
-              actionHref="/schedules"
+              actionHref="/app/schedules"
               actionLabel="전체"
               icon={Clock3}
               title="다가오는 일정"
@@ -417,7 +417,10 @@ function ScheduleTaskItem({
   readonly timeZone: string;
 }) {
   return (
-    <div className="grid min-w-0 grid-cols-[72px_minmax(0,1fr)] gap-3 px-3 py-3">
+    <Link
+      className="grid min-w-0 grid-cols-[72px_minmax(0,1fr)] gap-3 px-3 py-3 transition hover:bg-white"
+      to={`/app/schedules/${schedule.id}`}
+    >
       <span className="text-[12px] font-bold text-[#047857]">
         {formatTime(schedule.startAt, timeZone)}
       </span>
@@ -429,7 +432,7 @@ function ScheduleTaskItem({
           {schedule.location || getScheduleDealLabel(schedule)}
         </p>
       </div>
-    </div>
+    </Link>
   );
 }
 
@@ -607,7 +610,10 @@ function UpcomingScheduleItem({
   readonly timeZone: string;
 }) {
   return (
-    <div className="grid min-w-0 grid-cols-[54px_minmax(0,1fr)] gap-3 px-1 py-2.5">
+    <Link
+      className="grid min-w-0 grid-cols-[54px_minmax(0,1fr)] gap-3 px-1 py-2.5 transition hover:bg-[#FAFBFC]"
+      to={`/app/schedules/${schedule.id}`}
+    >
       <div className="rounded-lg bg-[#ECFDF5] px-2 py-1 text-center">
         <p className="text-[11px] font-bold text-[#047857]">
           {formatMonthDay(schedule.startAt, timeZone)}
@@ -624,7 +630,7 @@ function UpcomingScheduleItem({
           {schedule.location || getScheduleDealLabel(schedule)}
         </p>
       </div>
-    </div>
+    </Link>
   );
 }
 
@@ -724,14 +730,14 @@ function buildRecentActivity(
 ) {
   const dealItems: ActivityItem[] = deals.slice(0, 5).map((deal) => ({
     createdAt: deal.createdAt,
-    href: `/deals/${deal.id}`,
+    href: `/app/deals/${deal.id}`,
     meta: `${getDealCompanyLabel(deal)} · ${formatWon(deal.dealCost)}`,
     title: deal.dealName,
     type: "deal",
   }));
   const meetingItems: ActivityItem[] = meetingNotes.slice(0, 5).map((meetingNote) => ({
     createdAt: meetingNote.createdAt,
-    href: `/meeting-notes/${meetingNote.id}`,
+    href: `/app/meeting-notes/${meetingNote.id}`,
     meta: getMeetingNoteSubtitle(meetingNote),
     title: getMeetingNoteTitle(meetingNote),
     type: "meeting",

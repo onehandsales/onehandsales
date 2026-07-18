@@ -28,13 +28,13 @@
 
 ### P0. App shell/home
 
-- [ ] `/app` 홈 정보 우선순위 정리
-- [ ] Sidebar/TopBar/MobileAppHeader/BottomTabBar 기본 상태 확인
-- [ ] workspace/sidebar/page 구조가 Notion식 작업공간 기준을 따르는지 확인
-- [ ] 홈의 딜/일정/회의록 항목이 linked record entry point처럼 동작하는지 확인
-- [ ] 빠른 실행 link가 보호 앱 route로 이어지는지 확인
-- [ ] icon-only action 접근성 확인
-- [ ] 긴 텍스트와 125% 확대 layout 확인
+- [x] `/app` 홈 정보 우선순위 정리
+- [x] Sidebar/TopBar/MobileAppHeader/BottomTabBar 기본 상태 확인
+- [x] workspace/sidebar/page 구조가 Notion식 작업공간 기준을 따르는지 확인
+- [x] 홈의 딜/일정/회의록 항목이 linked record entry point처럼 동작하는지 확인
+- [x] 빠른 실행 link가 보호 앱 route로 이어지는지 확인
+- [x] icon-only action 접근성 확인
+- [x] 긴 텍스트와 125% 확대 layout 확인
 
 ### P0. Deal pipeline
 
@@ -78,12 +78,12 @@
 
 ### P0. Goal closeout review
 
-- [ ] 각 goal 완료 전 `COMMON/GOAL-WORK-ORDER.md`의 `완료 후 필수 검토 게이트` 수행
-- [ ] 수정 diff 자체 검토
-- [ ] `Notion + Attio Reference Gate` 수행
-- [ ] 대상 화면 재확인
-- [ ] `COMMON/ISSUE-LOG.md` 상태 최신화
-- [ ] 완료 보고에 검증, 검토 결과, 남은 리스크 기록
+- [x] G02 완료 전 `COMMON/GOAL-WORK-ORDER.md`의 `완료 후 필수 검토 게이트` 수행
+- [x] G02 수정 diff 자체 검토
+- [x] G02 `Notion + Attio Reference Gate` 수행
+- [x] G02 대상 화면 재확인
+- [x] G02 기준 `COMMON/ISSUE-LOG.md` 상태 최신화
+- [x] G02 완료 보고에 검증, 검토 결과, 남은 리스크 기록
 
 ## 4. 검증 명령
 
