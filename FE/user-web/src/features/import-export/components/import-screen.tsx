@@ -402,7 +402,7 @@ export function ImportScreen() {
 
     if (!template) {
       setSelectedTemplateId("");
-      setFormError(`${targetLabels[targetType]} 양식은 아직 준비 중입니다.`);
+      setFormError(`${targetLabels[targetType]} 양식은 아직 준비 중이에요. 다른 양식을 선택해 주세요.`);
       return;
     }
 
@@ -3573,15 +3573,15 @@ function getImportPreviewCellError(
   }
 
   if (field.field === "contactEmail" && !IMPORT_EMAIL_PATTERN.test(textValue)) {
-    return "담당자 이메일 형식이 올바르지 않습니다.";
+    return "담당자 이메일은 이메일 형식으로 입력해 주세요.";
   }
 
   if (field.field === "contactPhone" && !isImportPhoneValue(textValue)) {
-    return "담당자 핸드폰 번호 형식이 올바르지 않습니다.";
+    return "담당자 핸드폰 번호는 전화번호 형식으로 입력해 주세요.";
   }
 
   if (field.kind === "number" && !isNonNegativeIntegerValue(textValue)) {
-    return `${field.label}${getKoreanTopicParticle(field.label)} 0 이상의 정수여야 합니다.`;
+    return `${field.label}${getKoreanTopicParticle(field.label)} 0 이상의 정수로 입력해 주세요.`;
   }
 
   if (
@@ -3589,14 +3589,14 @@ function getImportPreviewCellError(
     field.enumValues &&
     !field.enumValues.includes(textValue)
   ) {
-    return `${field.label}${getKoreanTopicParticle(field.label)} ${field.enumValues.join(", ")} 중 하나여야 합니다.`;
+    return `${field.label}${getKoreanTopicParticle(field.label)} ${field.enumValues.join(", ")} 중 하나로 입력해 주세요.`;
   }
 
   return null;
 }
 
 function formatRequiredImportCellMessage(label: string): string {
-  return `${label}${getKoreanTopicParticle(label)} 필수입니다.`;
+  return `${label}${getKoreanTopicParticle(label)} 입력해 주세요.`;
 }
 
 function getKoreanTopicParticle(text: string): "은" | "는" {

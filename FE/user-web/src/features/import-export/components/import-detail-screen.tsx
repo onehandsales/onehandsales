@@ -174,7 +174,7 @@ export function ImportDetailScreen({ importUserLogId }: ImportDetailScreenProps)
               <div>
                 <FileSpreadsheet className="mx-auto h-6 w-6 text-[#9CA3AF]" />
                 <p className="mt-3 text-sm font-semibold text-[#111827]">
-                  업로드된 데이터가 없습니다.
+                  업로드한 데이터가 생기면 여기에서 볼 수 있어요.
                 </p>
               </div>
             </div>
@@ -302,7 +302,7 @@ function ImportDetailError({
       <div className="grid flex-1 place-items-center px-5">
         <div className="grid max-w-md gap-3 rounded-lg border border-red-200 bg-red-50 p-5 text-center text-red-700">
           <AlertCircle className="mx-auto h-6 w-6" />
-          <p className="text-sm font-semibold">업로드 내역을 불러오지 못했습니다.</p>
+          <p className="text-sm font-semibold">업로드 내역을 불러오지 못했어요.</p>
           <p className="text-sm">{getApiErrorMessage(error)}</p>
           <button
             className="mx-auto inline-flex h-9 items-center rounded-md border bg-white px-3 text-sm font-medium text-[#374151]"

@@ -853,7 +853,7 @@ function TrashDetailContent({
         <section className="grid gap-2">
           <h4 className="text-[13px] font-bold text-[#111827]">내용</h4>
           <div className="rounded-md border border-[#E5E7EB] bg-white px-3 py-3 text-[13px] leading-6 text-[#475569]">
-            복구 전에는 비밀 메모 원문을 표시하지 않습니다.
+            복구 전에는 비밀 메모 원문을 표시하지 않아요.
           </div>
         </section>
       ) : detail.content ? (

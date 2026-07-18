@@ -222,7 +222,7 @@ export function ListFilterSelect<TValue extends string>({
           <div className="max-h-[220px] overflow-y-auto py-1">
             {filteredOptions.length === 0 ? (
               <p className="px-3 py-3 text-[12px] text-[#9CA3AF]">
-                검색 결과가 없습니다.
+                검색어를 바꾸면 결과를 찾을 수 있어요.
               </p>
             ) : null}
             {filteredOptions.map((option) => {

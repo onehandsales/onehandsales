@@ -1057,7 +1057,7 @@ function AccountSettingsModalContent() {
                   {formError ? (
                     <p className="text-[13px] text-destructive">{formError}</p>
                   ) : saved ? (
-                    <p className="text-[13px] text-[#0075DE]">저장되었습니다.</p>
+                    <p className="text-[13px] text-[#0075DE]">저장했어요.</p>
                   ) : null}
                 </div>
                 <button
@@ -1645,7 +1645,7 @@ function ProfileLoadingState() {
   return (
     <div className="mt-16 flex items-center justify-center gap-2 text-[13px] text-[#64748B]">
       <Loader2 className="h-4 w-4 animate-spin" />
-      프로필을 불러오는 중입니다.
+      프로필을 불러오고 있어요.
     </div>
   );
 }
@@ -1654,7 +1654,7 @@ function ProfileInlineLoading() {
   return (
     <div className="flex items-center justify-center gap-2 rounded-lg bg-[#F8FAFC] px-4 py-4 text-[13px] text-[#64748B]">
       <Loader2 className="h-4 w-4 animate-spin" />
-      기기를 불러오는 중입니다.
+      기기를 불러오고 있어요.
     </div>
   );
 }

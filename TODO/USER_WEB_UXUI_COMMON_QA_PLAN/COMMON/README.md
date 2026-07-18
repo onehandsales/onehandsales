@@ -12,6 +12,7 @@
 
 ## 공통 원칙
 
+- 현재 `G01`부터 `G06`까지 완료됐다.
 - 이번 계획은 FE/user-web UX/UI 공통 QA다.
 - 전역 UX/UI reference는 `Notion식 작업공간 UX + Attio식 CRM record 관계 UX`다.
 - 모든 goal은 `AGENT/UXUI_AGENT/DECISIONS/020_uxui_notion_attio_reference.md`를 먼저 읽고, workspace/page/database/detail과 CRM record/linked record/activity 기준을 함께 적용한다.

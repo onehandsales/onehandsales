@@ -87,14 +87,16 @@ G05 완료 기준으로 일정 768px month/week grid, 회의록/명함 스캔/Tr
 
 ### P0. Writing/states/a11y closeout
 
-- [ ] `습니다`, `되었습니다`, `없습니다`, `필요합니다` 등 사용자 문구 검색
-- [ ] empty/loading/error/success 상태 확인
-- [ ] validation message 확인
-- [ ] delete confirm 확인
-- [ ] icon-only `aria-label` 또는 tooltip 확인
-- [ ] Notion/Attio brand/copy/layout 복제 후보 확인
-- [ ] custom object/custom field builder로 오해되는 노출 문구 확인
-- [ ] 최종 검증 명령 실행
+- [x] `습니다`, `되었습니다`, `없습니다`, `필요합니다` 등 사용자 문구 검색
+- [x] empty/loading/error/success 상태 확인
+- [x] validation message 확인
+- [x] delete confirm 확인
+- [x] icon-only `aria-label` 또는 tooltip 확인
+- [x] Notion/Attio brand/copy/layout 복제 후보 확인
+- [x] custom object/custom field builder로 오해되는 노출 문구 확인
+- [x] 최종 검증 명령 실행
+
+G06 완료 기준으로 계정 설정, 로그인 loading, 공통 filter empty, Import detail/list/validation, Trash private memo 안내 문구를 정리했다. 약관/개인정보 법무 장문과 영어권 public/landing locale copy는 업무 화면 UX writing closeout 범위에서 제외했다.
 
 ### P0. Goal closeout review
 
@@ -122,6 +124,12 @@ G05 완료 기준으로 일정 768px month/week grid, 회의록/명함 스캔/Tr
 - [x] G05 대상 화면 재확인
 - [x] G05 기준 `COMMON/ISSUE-LOG.md` 상태 최신화
 - [x] G05 완료 보고에 검증, 검토 결과, 남은 리스크 기록
+- [x] G06 완료 전 `COMMON/GOAL-WORK-ORDER.md`의 `완료 후 필수 검토 게이트` 수행
+- [x] G06 수정 diff 자체 검토
+- [x] G06 `Notion + Attio Reference Gate` 수행
+- [x] G06 대상 상태 화면 재확인
+- [x] G06 기준 `COMMON/ISSUE-LOG.md` 상태 최신화
+- [x] G06 완료 보고에 검증, 검토 결과, 남은 리스크 기록
 
 ## 4. 검증 명령
 

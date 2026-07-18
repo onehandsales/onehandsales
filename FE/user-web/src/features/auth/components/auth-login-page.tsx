@@ -73,8 +73,8 @@ const loginCopy: Record<
     providers: {
       google: "Google",
     },
-    loading: "로그인 수단을 불러오는 중입니다.",
-    callbackLoading: "로그인 중입니다.",
+    loading: "로그인 수단을 불러오고 있어요.",
+    callbackLoading: "로그인하고 있어요.",
     noProviders: "사용할 수 있는 로그인이 없어요.",
     providersErrorPrefix: "로그인 수단을 불러오지 못했어요.",
     switchLead: {
