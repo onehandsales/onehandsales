@@ -1,6 +1,6 @@
 # G03 Chrome Edge Compat QA
 
-상태: Ready
+상태: Done
 우선순위: P0
 담당 영역: FE/user-web
 
@@ -85,4 +85,3 @@ git diff --check
 - Edge desktop QA 결과가 `QA-RESULTS.md`에 있거나 Edge channel 부재가 `Blocked`로 기록되어 있다.
 - `RQA-003`이 `Fixed` 또는 `Blocked`로 정리되어 있다.
 - 브라우저별 S0/S1/S2 issue가 없거나 G06 선행 수정 대상으로 기록되어 있다.
-

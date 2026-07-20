@@ -34,16 +34,16 @@
 
 ### G03. Chrome/Edge 호환 QA 자동화
 
-- [ ] `browser-compat-qa.spec.ts` 추가
-- [ ] Chrome desktop project 추가
-- [ ] Edge desktop project 추가 또는 Edge 부재 `Blocked` 처리
-- [ ] `test:e2e:browsers` script 추가
-- [ ] reload smoke 확인
-- [ ] back/forward smoke 확인
-- [ ] multi-tab smoke 확인
-- [ ] slow network 또는 API delay loading state 확인
-- [ ] page error/console error 수집
-- [ ] 결과를 `COMMON/QA-RESULTS.md`와 `COMMON/ISSUE-LOG.md`에 기록
+- [x] `browser-compat-qa.spec.ts` 추가
+- [x] Chrome desktop project 추가
+- [x] Edge desktop project 추가 또는 Edge 부재 `Blocked` 처리
+- [x] `test:e2e:browsers` script 추가
+- [x] reload smoke 확인
+- [x] back/forward smoke 확인
+- [x] multi-tab smoke 확인
+- [x] slow network 또는 API delay loading state 확인
+- [x] page error/console error 수집
+- [x] 결과를 `COMMON/QA-RESULTS.md`와 `COMMON/ISSUE-LOG.md`에 기록
 
 ### G04. 보안 smoke
 

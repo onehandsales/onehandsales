@@ -60,12 +60,29 @@
 
 ### G03 Chrome/Edge Compat QA
 
-- 상태: Not started
-- 실행일:
+- 상태: Done
+- 실행일: 2026-07-20
 - 확인 브라우저:
-  - Chrome:
-  - Edge:
-- 결과:
+  - Chrome: 통과, `desktop-chrome`, 로컬 Chrome `150.0.7871.127`
+  - Edge: 통과, `desktop-edge`, 로컬 Edge `150.0.4078.83`
+- 명령:
+  - `cd FE/user-web; pnpm.cmd run typecheck`: 통과
+  - `cd FE/user-web; pnpm.cmd run lint`: 통과
+  - `cd FE/user-web; pnpm.cmd run build`: 통과
+  - `cd FE/user-web; pnpm.cmd run test:e2e`: 통과, 7 passed
+  - `cd FE/user-web; pnpm.cmd run test:e2e:browsers`: 통과, 10 passed
+  - `cd FE/user-web; pnpm.cmd run test:e2e:mobile`: 통과, 12 passed, release config 회귀 확인
+  - `git diff --check`: 통과
+- 자동 확인:
+  - 미인증 보호 route 접근은 `/login`으로 redirect되고, 로그인 진입 smoke는 Chrome/Edge에서 동일하게 통과했다.
+  - 인증 mock session으로 회사/담당자/제품/딜/일정/회의록 생성 smoke가 통과했다.
+  - `/app/deals` reload 후 route 상태와 핵심 데이터가 유지됐다.
+  - 회사 route와 딜 route 사이의 browser back/forward 상태가 유지됐다.
+  - 두 탭이 같은 mock store를 공유한 상태에서 회사명을 수정하고 다른 탭 reload 후 같은 최신 데이터가 보였다.
+  - API delay mock 중 회사 목록 loading skeleton이 노출되고 응답 후 데이터가 정상 표시됐다.
+  - `page.on("console")`, `page.on("pageerror")` 수집 기준에서 예상하지 않은 error는 발생하지 않았다.
+- 결과: Chrome/Edge channel이 모두 사용 가능했고, desktop 1440x1000 브라우저 호환 QA에서 S0/S1/S2 제품 이슈는 발견되지 않았다. 새 QA는 `test:e2e:browsers`로 Chrome/Edge 양쪽에서 실행된다.
+- 비고: `build`, `test:e2e`, `test:e2e:browsers`, `test:e2e:mobile` webServer 출력에 기존 Tailwind `duration-[500ms]` ambiguity 경고와 큰 chunk 경고가 남아 있다. G03 release gate 실패 요인은 아니다.
 - 연결 이슈: `RQA-003`
 
 ### G04 Multi Account Security QA

@@ -65,10 +65,11 @@ UX/UI 공통 QA G02~G06 기록에서 `pnpm run test:e2e`가 로컬 Playwright `c
 
 ### RQA-003 Chrome/Edge 호환 QA 미완료
 
-- 상태: Open
+- 상태: Fixed
 - 심각도: S2 Major
 - 영역: FE/user-web > browser compatibility
 - 발견일: 2026-07-20
+- 처리일: 2026-07-20
 
 #### 내용
 
@@ -77,6 +78,10 @@ UX/UI 공통 QA G02~G06 기록에서 `pnpm run test:e2e`가 로컬 Playwright `c
 #### 기대 결과
 
 Chrome과 Edge에서 핵심 시나리오, reload, history, slow network, multi-tab smoke 결과가 기록된다.
+
+#### 처리 결과
+
+`FE/user-web/playwright.release-qa.config.ts`에 `desktop-chrome`과 `desktop-edge` project를 추가하고, `tests/e2e/browser-compat-qa.spec.ts`와 `test:e2e:browsers` script를 추가했다. 최종 `pnpm.cmd run test:e2e:browsers` 결과는 10 passed이며, Chrome `150.0.7871.127`과 Edge `150.0.4078.83`에서 login/protected route, 회사/담당자/제품/딜/일정/회의록 생성, reload, back/forward, multi-tab refresh, API delay loading state, console/page error 수집 기준이 통과했다. G03 범위의 S0/S1/S2 제품 이슈는 발견되지 않았다.
 
 #### 처리 goal
 
