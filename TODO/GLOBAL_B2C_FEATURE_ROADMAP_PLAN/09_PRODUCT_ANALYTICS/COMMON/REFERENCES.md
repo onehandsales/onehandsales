@@ -1,0 +1,14 @@
+# References
+
+## 전체 참조
+
+- `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/COMMON/REFERENCE-MAP.md`
+- `TODO/USER_WEB_PRODUCTIZATION_GAP_PLAN/COMMON/GLOBAL-B2C-FIRST-SALE-GATE.md`
+
+## 직접 참조
+
+- `AGENT/PM_AGENT/PLANNING/GLOBAL_B2C_SERIES_A_ROADMAP.md`
+- `AGENT/SOFTWARE_AGENT/COMMON/NEXT_FEATURE_PRIORITIES.md`
+- `FE/admin-web/src/app/router/router.tsx`
+- `FE/user-web/src/app/router/router.tsx`
+- `BE/src/app.module.ts`

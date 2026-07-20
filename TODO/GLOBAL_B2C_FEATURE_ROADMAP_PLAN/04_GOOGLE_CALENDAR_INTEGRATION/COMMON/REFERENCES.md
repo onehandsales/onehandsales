@@ -1,0 +1,15 @@
+# References
+
+## 전체 참조
+
+- `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/COMMON/REFERENCE-MAP.md`
+- `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/CONVENTION/OBSERVABILITY.md`
+
+## 직접 참조
+
+- `TODO/DONE/MVP-STARTER_PLAN/COMMON/G00-DECISIONS.md` Google Calendar 결정
+- `TODO/DONE/MVP-STARTER_PLAN/BE-TODO/API-TODO.md` Schedule 모듈
+- `TODO/DONE/MVP-STARTER_PLAN/COMMON/API-SPEC/G17-G29-WORKFLOW-AUTOMATION-API.md`
+- `BE/src/modules/schedule`
+- `FE/user-web/src/features/schedule`
+- `FE/user-web/src/pages/settings`
