@@ -11,7 +11,7 @@
 ```text
 TODO/
   README.md
-  USER_WEB_UXUI_COMMON_QA_PLAN/
+  USER_WEB_RELEASE_QA_FOLLOWUP_PLAN/
     README.md
     COMMON/
     FE-TODO/
@@ -27,6 +27,7 @@ TODO/
     INTEGRATED_SEARCH_PLAN/
     MEETING_NOTE_AI_STT_PLAN/
     BUSINESS_CARD_OCR_PLAN/
+    USER_WEB_UXUI_COMMON_QA_PLAN/
     SCHEDULE_DOMAIN_PLAN/
     MEETING_NOTE_MANUAL_PLAN/
     MVP-STARTER_PLAN/
@@ -95,17 +96,16 @@ TODO/
 
 현재 활성 계획 상태:
 
-- 2026-07-18 기준 `TODO/USER_WEB_UXUI_COMMON_QA_PLAN`이 활성 계획이다.
-- 이 계획은 1순위 작업인 User Web UX/UI 공통 QA를 `/goal`로 바로 실행할 수 있게 나눈다.
-- 이 계획의 전역 UX/UI 기준은 `Notion식 작업공간 UX + Attio식 CRM record 관계 UX`다.
-- 모바일 브라우저 390px/360px 전용 QA는 이 계획 범위가 아니며 후속 별도 계획으로 다룬다.
+- 2026-07-20 기준 `TODO/USER_WEB_RELEASE_QA_FOLLOWUP_PLAN`이 활성 계획이다.
+- 이전 1순위였던 User Web UX/UI 공통 QA는 `TODO/DONE/USER_WEB_UXUI_COMMON_QA_PLAN`에서 `G01~G06` 완료 상태다.
+- 현재 활성 계획은 UX/UI 공통 QA 이후 남은 출시 전 품질 작업인 모바일 브라우저 390px/360px QA, Chrome/Edge QA, 다중 계정 보안 QA, DB/Prisma/migration 운영 정합성, S0/S1/S2 closeout을 `/goal`로 실행할 수 있게 나눈다.
 - `IMPORT_TEMPLATE_PLAN`은 회사/담당자/제품/딜 불러오기 구현이 완료되어 `TODO/DONE/IMPORT_TEMPLATE_PLAN`에 보관한다. 확정 전 job 영속화는 후속 새 계획으로 다룬다.
 - `LOG_SOFT_DELETE_PLAN`은 구현 완료되어 `TODO/DONE/LOG_SOFT_DELETE_PLAN`에 보관한다.
 - 새 요구사항이나 후속 구현은 `TODO` 바로 아래에 새 계획 폴더를 만든다.
 
 진행 중인 계획:
 
-- `USER_WEB_UXUI_COMMON_QA_PLAN`: 1순위 UX/UI 공통 QA. `/app`, `/app/deals`, 주요 도메인 목록/상세/생성, 복잡한 입력 흐름, UX writing, 상태, 접근성 기본을 정리한다.
+- `USER_WEB_RELEASE_QA_FOLLOWUP_PLAN`: UX/UI 공통 QA 이후 출시 전 품질 follow-up. 모바일 브라우저 390px/360px, Chrome/Edge, 다중 계정 보안, DB/Prisma 운영 정합성, S0/S1/S2 closeout을 정리한다.
 
 완료된 계획:
 
@@ -124,6 +124,7 @@ TODO/
 - `PRODUCT_DOMAIN_PLAN`: `TODO/DONE/PRODUCT_DOMAIN_PLAN`
 - `DEAL_DOMAIN_PLAN`: `TODO/DONE/DEAL_DOMAIN_PLAN`
 - `ADDITIONAL_WORK_PLAN`: `TODO/DONE/ADDITIONAL_WORK_PLAN`
+- `USER_WEB_UXUI_COMMON_QA_PLAN`: `TODO/DONE/USER_WEB_UXUI_COMMON_QA_PLAN`
 
 완료된 계획의 구현 결과를 참조해야 할 때는 `TODO/DONE/<PLAN_NAME>`을 본다. 새 작업을 시작할 때는 완료된 계획을 직접 수정하지 않고, 활성 계획 폴더를 새로 만들거나 현재 활성 계획을 실행 가능한 `/goal` 문서로 확장한다.
 
