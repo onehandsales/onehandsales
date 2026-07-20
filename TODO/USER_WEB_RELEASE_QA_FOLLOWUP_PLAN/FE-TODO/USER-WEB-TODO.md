@@ -47,10 +47,10 @@
 
 ### G04. 보안 smoke
 
-- [ ] User Web source에서 `/admin/api/*` 호출 문자열 검색
-- [ ] `src/lib/api-client.ts`의 admin path 차단 확인
-- [ ] 로그아웃 후 보호 화면 재접근 차단 smoke 확인
-- [ ] 다중 계정 보안 BE 테스트 결과와 FE 처리 기준 충돌 여부 확인
+- [x] User Web source에서 `/admin/api/*` 호출 문자열 검색
+- [x] `src/lib/api-client.ts`의 admin path 차단 확인
+- [x] 로그아웃 후 보호 화면 재접근 차단 smoke 확인
+- [x] 다중 계정 보안 BE 테스트 결과와 FE 처리 기준 충돌 여부 확인
 
 ### G06. S0/S1/S2 수정
 

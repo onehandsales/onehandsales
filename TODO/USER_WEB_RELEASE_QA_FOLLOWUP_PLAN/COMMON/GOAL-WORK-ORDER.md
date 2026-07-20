@@ -11,7 +11,7 @@
 | 1 | `G01-QA-ENV-AND-DOC-CLOSEOUT` | Done | UX/UI 공통 QA G01~G06 완료 |
 | 2 | `G02-MOBILE-BROWSER-390-360-QA` | Done | G01 완료 |
 | 3 | `G03-CHROME-EDGE-COMPAT-QA` | Done | G02 완료 |
-| 4 | `G04-MULTI-ACCOUNT-SECURITY-QA` | Ready | G03 완료 |
+| 4 | `G04-MULTI-ACCOUNT-SECURITY-QA` | Done | G03 완료 |
 | 5 | `G05-DB-PRISMA-MIGRATION-OPS-QA` | Ready | G04 완료 |
 | 6 | `G06-S0-S2-BUGFIX-CLOSEOUT` | Ready | G02~G05의 ISSUE-LOG 최신화 |
 | 7 | `G07-DEFERRED-BE-API-BACKLOG-SPLIT` | Ready | G06 완료 |

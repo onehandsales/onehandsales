@@ -87,15 +87,64 @@
 
 ### G04 Multi Account Security QA
 
-- 상태: Not started
-- 실행일:
+- 상태: Done
+- 실행일: 2026-07-20
+- 자동 테스트:
+  - `BE/src/modules/security/ownership-isolation.spec.ts`: Company, Contact, Product, Deal, Schedule, MeetingNote, Search, Trash, AdminGuard ownership isolation 자동 검증
+  - `FE/user-web/tests/e2e/security-boundary-qa.spec.ts`: session 제거 후 보호 route reload/back에서 사용자 데이터 미노출 smoke
 - 확인 범위:
-  - Search:
-  - Trash:
-  - Export:
-  - 직접 API 접근:
-  - Admin API 차단:
-- 결과:
+  - Search: 통과. 사용자 A 기준 `RQA004-B` 검색 결과 group/item 없음.
+  - Trash: 통과. 목록/detail/restore에서 사용자 B 삭제 데이터와 marker 미노출.
+  - Export: 통과. Company/Contact/Product/Deal export workbook input과 fake binary string 모두 `RQA004-B` 미포함.
+  - 직접 API 접근: 통과. Company/Contact/Product/Deal/Schedule/MeetingNote detail/update/delete에서 사용자 B id를 사용자 A로 접근하면 NotFound 계열 error이며 B id/name/title/email 미노출.
+  - Admin API 차단: 통과. `AdminGuard`가 일반 `USER` role을 `ForbiddenException`으로 거부해 HTTP 403 경계를 검증.
+  - User Web `/admin/api/*` 경계: 통과. `rg -n "admin/api" FE/user-web/src` 결과는 `src/lib/api-client.ts` 2건뿐이고, `apiClient`, `apiBlobClient`가 `/admin/api/` path를 `InvalidUserWebApiPath`로 차단.
+  - 로그아웃/back smoke: 통과. session storage 제거 후 `/app/companies` reload와 browser back에서 `/login` 유지, 보호 데이터 미노출.
+- endpoint 기대값 matrix:
+  - Company list: Passed, A list/export response에 `RQA004-B` 미포함
+  - Company detail: Passed, B id detail as A는 `CompanyNotFound`
+  - Company export: Passed, workbook input과 binary string에 B marker 미포함
+  - Company mutation: Passed, B id update/delete as A는 `CompanyNotFound`
+  - Contact list: Passed, A list/export response에 `RQA004-B` 미포함
+  - Contact detail: Passed, B id detail as A는 `ContactNotFound`
+  - Contact export: Passed, workbook input과 binary string에 B marker 미포함
+  - Contact mutation: Passed, B id update/delete as A는 `ContactNotFound`
+  - Product list: Passed, A list/export response에 `RQA004-B` 미포함
+  - Product detail: Passed, B id detail as A는 `ProductNotFound`
+  - Product export: Passed, workbook input과 binary string에 B marker 미포함
+  - Product mutation: Passed, B id update/delete as A는 `ProductNotFound`
+  - Deal list/stage-counts: Passed, A list와 count에 B 데이터 미포함
+  - Deal detail: Passed, B id detail as A는 `DealNotFound`
+  - Deal export: Passed, workbook input과 binary string에 B marker 미포함
+  - Deal mutation: Passed, B id update/delete as A는 `DealNotFound`
+  - Schedule list: Passed, A list에 B 데이터 미포함
+  - Schedule detail: Passed, B id detail as A는 `ScheduleNotFound`
+  - Schedule mutation: Passed, B id update/delete as A는 `ScheduleNotFound`
+  - MeetingNote list: Passed, A list에 B 데이터 미포함
+  - MeetingNote detail: Passed, B id detail as A는 `MeetingNoteNotFound`
+  - MeetingNote mutation: Passed, B id update/delete as A는 `MeetingNoteNotFound`
+  - Search: Passed, `RQA004-B` 검색 as A 결과 없음
+  - Trash list: Passed, A trash list에 B 삭제 데이터 미포함
+  - Trash detail: Passed, B target detail as A는 `NotFoundException`
+  - Trash restore: Passed, B target restore as A는 `NotFoundException`
+  - Admin boundary: Passed, normal USER role은 `ForbiddenException`
+- 조건부 HTTP smoke:
+  - 상태: Blocked
+  - 이유: `BE/.env`의 `DATABASE_URL`이 없어 로컬 dev/test DB 안전 조건을 증명할 수 없다. G04 명세 5D에 따라 실제 HTTP smoke는 실행하지 않고 BE Jest 자동 테스트를 release QA 증거로 남긴다.
+- 명령:
+  - `rg -n "admin/api" FE/user-web/src`: 통과, `src/lib/api-client.ts` 2건만 발견
+  - `rg -n "InvalidUserWebApiPath|apiBlobClient|apiClient" FE/user-web/src/lib/api-client.ts`: 통과
+  - `cd BE; pnpm.cmd run typecheck`: 통과
+  - `cd BE; pnpm.cmd run lint`: 통과
+  - `cd BE; pnpm.cmd run test`: 통과, 19 suites / 98 tests passed
+  - `cd BE; pnpm.cmd run build`: 통과
+  - `cd FE/user-web; pnpm.cmd run typecheck`: 통과
+  - `cd FE/user-web; pnpm.cmd run lint`: 통과
+  - `cd FE/user-web; pnpm.cmd run build`: 통과
+  - `cd FE/user-web; pnpm.cmd run test:e2e`: 통과, 8 passed
+  - `git diff --check`: 통과
+- 결과: 자동화 범위에서 사용자 B 데이터 노출 후보는 발견되지 않았다. `RQA-004`는 Fixed로 닫는다.
+- 비고: FE build와 e2e webServer 출력에 기존 Tailwind `duration-[500ms]` ambiguity 경고와 큰 chunk 경고가 남아 있다. G04 release gate 실패 요인은 아니다.
 - 연결 이슈: `RQA-004`
 
 ### G05 DB/Prisma/Migration Ops QA

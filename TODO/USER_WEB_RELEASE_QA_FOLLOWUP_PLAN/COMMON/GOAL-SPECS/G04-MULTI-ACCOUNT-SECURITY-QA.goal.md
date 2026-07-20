@@ -1,6 +1,6 @@
 # G04 Multi Account Security QA
 
-상태: Ready
+상태: Done
 우선순위: P0
 담당 영역: BE, FE/user-web
 

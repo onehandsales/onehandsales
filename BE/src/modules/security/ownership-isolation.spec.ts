@@ -6,7 +6,6 @@ import {
   type CompanyPageRecord,
   type CompanyRecord,
   type CompanyRepository,
-  CompanyListSort,
 } from "@/modules/company/application/ports/company.repository";
 import type { PrivateMemoEncryptionPort } from "@/modules/company/application/ports/private-memo-encryption.port";
 import { CompanyApplicationService } from "@/modules/company/application/services/company-application.service";
@@ -15,7 +14,6 @@ import {
   type ContactPageRecord,
   type ContactRecord,
   type ContactRepository,
-  ContactListSort,
 } from "@/modules/contact/application/ports/contact.repository";
 import type { ContactPrivateMemoEncryptionPort } from "@/modules/contact/application/ports/contact-private-memo-encryption.port";
 import {
@@ -23,7 +21,6 @@ import {
   type DealListRecord,
   type DealPageRecord,
   type DealRepository,
-  DealListSort,
 } from "@/modules/deal/application/ports/deal.repository";
 import { DealApplicationService } from "@/modules/deal/application/services/deal-application.service";
 import { DealStatusCode } from "@/modules/deal/domain/deal-status";
@@ -40,7 +37,6 @@ import {
   type ProductPageRecord,
   type ProductRecord,
   type ProductRepository,
-  ProductListSort,
 } from "@/modules/product/application/ports/product.repository";
 import type { ProductPrivateMemoEncryptionPort } from "@/modules/product/application/ports/product-private-memo-encryption.port";
 import { ProductApplicationService } from "@/modules/product/application/services/product-application.service";
@@ -62,7 +58,6 @@ import {
   type TrashListResult,
   type TrashRepository,
   type TrashRestoreRepositoryResult,
-  type TrashTargetType,
 } from "@/modules/trash/application/ports/trash.repository";
 import { TrashApplicationService } from "@/modules/trash/application/services/trash-application.service";
 import type { CurrentUserContext } from "@/shared/application/context/current-user.context";
