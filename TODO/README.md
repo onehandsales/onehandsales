@@ -91,7 +91,7 @@ TODO/
 - 요청값은 path param, query, header, body, 필수 여부, validation 기준까지 적는다.
 - 응답값은 success status, response body 유무, DTO 이름, 필드명, 타입, nullable 여부, 예시까지 적는다.
 - 내부 비즈니스 로직은 인증, 권한, ownership, validation 이후 흐름, transaction, 외부 Provider 호출, 자동 생성 데이터, 암호화, 감사 로그, 에러 분기까지 적는다.
-- 구현 순서는 MVP 핵심 루프를 우선한다.
+- 구현 순서는 MVP 핵심 루프를 우선하되, 판매 기준은 MVP가 아니라 Global B2C 유료 판매 가능형으로 본다.
 - 외부 Provider 연동은 처음부터 직접 호출하지 않고, Backend port/interface 뒤에 숨긴다.
 - User Web과 Admin Web은 코드를 공유하지 않는다.
 - 루트에는 `package.json`과 workspace 설정을 만들지 않는다.
@@ -104,7 +104,7 @@ TODO/
 
 - 2026-07-20 기준 `TODO/DONE/USER_WEB_RELEASE_QA_FOLLOWUP_PLAN`은 G01~G07 완료 상태다.
 - 2026-07-20 기준 `TODO/NEXT_BACKEND_API_BACKLOG_PLAN`은 G07에서 생성한 다음 Backend/API backlog 후보 초안이다.
-- 2026-07-20 기준 `TODO/USER_WEB_PRODUCTIZATION_GAP_PLAN`은 최종 서비스 형태와 현재 구현 상태의 차이를 정리하는 제품화 gap 가이드다. `/goal` 실행 계획이 아니다.
+- 2026-07-20 기준 `TODO/USER_WEB_PRODUCTIZATION_GAP_PLAN`은 MVP를 비판매 내부 기준으로 보고, Global B2C를 첫 판매 기준으로 삼아 현재 구현 상태의 제품화 gap을 정리하는 가이드다. `/goal` 실행 계획이 아니다.
 - 이전 1순위였던 User Web UX/UI 공통 QA는 `TODO/DONE/USER_WEB_UXUI_COMMON_QA_PLAN`에서 `G01~G06` 완료 상태다.
 - `USER_WEB_RELEASE_QA_FOLLOWUP_PLAN`은 UX/UI 공통 QA 이후 남은 출시 전 품질 작업인 모바일 브라우저 390px/360px QA, Chrome/Edge QA, 다중 계정 보안 QA, DB/Prisma/migration 운영 정합성, S0/S1/S2 closeout, deferred BE/API backlog split을 완료했다.
 - `IMPORT_TEMPLATE_PLAN`은 회사/담당자/제품/딜 불러오기 구현이 완료되어 `TODO/DONE/IMPORT_TEMPLATE_PLAN`에 보관한다. 확정 전 job 영속화는 후속 새 계획으로 다룬다.
@@ -114,7 +114,7 @@ TODO/
 진행 중인 계획:
 
 - `NEXT_BACKEND_API_BACKLOG_PLAN`: G07에서 생성한 다음 Backend/API backlog 후보 초안. 사용자 선택 전에는 구현 계획 확정본이 아니다.
-- `USER_WEB_PRODUCTIZATION_GAP_PLAN`: 최종 서비스 형태, 현재 구현 기능, 제품화 gap을 판단하는 가이드. `/goal` 실행 계획이 아니다.
+- `USER_WEB_PRODUCTIZATION_GAP_PLAN`: MVP는 비판매 내부 기준, Global B2C는 첫 판매 기준으로 두고 현재 구현 기능과 제품화 gap을 판단하는 가이드. `/goal` 실행 계획이 아니다.
 
 완료된 계획:
 

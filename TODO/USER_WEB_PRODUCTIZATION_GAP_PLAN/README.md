@@ -10,6 +10,8 @@
 
 이 문서는 `/goal` 실행 계획이 아니다. 바로 구현하거나 이슈를 닫기 위한 작업 순서가 아니라, 다음 구현 계획을 만들기 전에 제품 방향, UX/UI 완성도, 기능/운영 gap을 판단하기 위한 기준 문서다.
 
+판매 기준선은 `Global B2C 유료 판매 가능형`이다. `MVP`는 판매용 제품이 아니라, Global B2C 판매 버전을 만들기 전에 핵심 업무 루프가 동작하는지 확인하는 내부 품질/제품화 준비 단계로 본다.
+
 ## 2. 먼저 확인한 범위
 
 - `FE/user-web`: 실제 사용자 앱 라우트, feature, layout, API client 구조
@@ -24,7 +26,9 @@
 
 ## 3. 현재 결론
 
-현재 제품은 핵심 MVP 업무 기능이 상당히 구현되어 있다.
+현재 제품은 핵심 MVP 업무 기능이 상당히 구현되어 있다. 다만 MVP 상태로는 판매하지 않는다.
+
+첫 판매 가능한 제품은 Global B2C 기준을 만족해야 한다. 따라서 다음 판단은 "MVP 기능이 더 있는가"가 아니라, 현재 구현된 핵심 루프가 글로벌 B2C 유료 판매에 필요한 결제, 운영, 신뢰, 현지화, 분석 계층과 어떻게 연결되어야 하는지다.
 
 완료된 핵심 축:
 
@@ -46,13 +50,14 @@
 부족한 핵심 축:
 
 - 제품화 수준의 최종 UX/UI 완성도 판단
-- 글로벌 B2C 유료 판매를 위한 결제/구독, 세금/컴플라이언스, `/app` 다국어, Admin 운영, 제품 분석
+- 첫 판매 기준인 Global B2C 유료 판매를 위한 결제/구독, 세금/컴플라이언스, `/app` 다국어, Admin 운영, 제품 분석
 - Series A급 리텐션/AI/모바일 현장 사용성
 - Notification, ImportJob persistence, Admin 운영 API 같은 후속 기능의 우선순위 확정
 
 ## 4. 문서 구성
 
 - `COMMON/FINAL-SERVICE-SHAPE.md`: 최종 서비스 단계별 기능 정의
+- `COMMON/GLOBAL-B2C-FIRST-SALE-GATE.md`: Global B2C 첫 판매 gate 기준
 - `COMMON/CURRENT-IMPLEMENTED-FUNCTIONS.md`: 현재 구현된 FE/BE 기능 표
 - `COMMON/CURRENT-VS-FINAL-GAP-MATRIX.md`: 최종 형태와 현재 상태의 차이
 - `FE-TODO/USER-WEB-PRODUCTIZATION-GUIDE.md`: User Web 화면/UX 관점 가이드
@@ -62,9 +67,9 @@
 
 새 기능을 구현하기 전에 이 가이드로 먼저 판단한다.
 
-1. 최종 서비스 단계 중 어느 단계에 필요한 기능인지 확인한다.
-2. 현재 구현 상태가 이미 충분한지 확인한다.
-3. UX/UI만 보강하면 되는지, API/DB 계약이 필요한지 분리한다.
+1. `COMMON/GLOBAL-B2C-FIRST-SALE-GATE.md` 기준으로 해당 기능이 Global B2C 첫 판매 gate에 필요한지, Series A 이후 기능인지 구분한다.
+2. MVP 핵심 루프가 이미 구현된 기능인지 확인하되, MVP 완료를 판매 가능으로 해석하지 않는다.
+3. UX/UI만 보강하면 되는지, API/DB/운영/정책 계약이 필요한지 분리한다.
 4. Backend/API가 필요하면 `COMMON/API-SPEC`이 있는 별도 TODO 계획을 만든다.
 5. 실제 구현은 별도 `/goal` 문서로 쪼갠 뒤 진행한다.
 
@@ -84,6 +89,8 @@
 - Contact list dealCount
 
 위 항목은 제품화 우선순위와 UX/UI 방향을 확정한 뒤 별도 계획에서 다룬다.
+
+단, 결제/구독, Admin 운영, 앱 내부 다국어, 제품 분석, 세금/컴플라이언스는 단순 후순위가 아니다. Global B2C 첫 판매 gate에 포함되는 별도 큰 계획으로 분리해서 다룬다.
 
 ## 7. 관련 문서
 
