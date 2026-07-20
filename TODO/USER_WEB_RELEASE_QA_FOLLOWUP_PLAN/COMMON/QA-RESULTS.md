@@ -15,11 +15,18 @@
 
 ### G01 QA Env And Doc Closeout
 
-- 상태: Partially done
-- 실행일:
+- 상태: Done
+- 실행일: 2026-07-20
 - 명령:
-- 결과: 문서 생성 작업 중 `RQA-006` 완료 문서 상태 불일치는 정리했다. Playwright browser 설치와 기본 e2e 재실행은 아직 하지 않았다.
-- 연결 이슈: `RQA-001`, `RQA-006`
+  - `cd FE/user-web; pnpm exec playwright install chromium`: 통과
+  - `cd FE/user-web; pnpm run typecheck`: 통과
+  - `cd FE/user-web; pnpm run lint`: 통과
+  - `cd FE/user-web; pnpm run build`: 통과
+  - `cd FE/user-web; pnpm run test:e2e`: 통과, 2 passed
+  - `git diff --check`: 통과
+- 결과: Playwright Chromium binary 누락은 해소됐다. 기본 e2e 재실행 중 발견된 기존 smoke selector와 접근성 이름 계약 불일치를 수정했고, 최종 `test:e2e`는 Google provider popup smoke와 로그인부터 회의록 저장까지 핵심 업무 흐름 2건 모두 통과했다.
+- 비고: `build`와 `test:e2e` webServer 출력에 기존 Tailwind `duration-[500ms]` ambiguity 경고와 큰 chunk 경고가 남아 있다. G01 release gate 실패 요인은 아니다.
+- 연결 이슈: `RQA-001`, `RQA-006`, `RQA-007`
 
 ### G02 Mobile Browser 390/360 QA
 

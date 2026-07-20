@@ -1001,6 +1001,7 @@ function TextAreaField({
       <textarea
         aria-describedby={errorMessage ? errorId : undefined}
         aria-invalid={Boolean(errorMessage)}
+        aria-label={label}
         className={textareaClassName}
         id={id}
         rows={rows}

@@ -8,7 +8,7 @@
 
 | 순서 | Goal | 상태 | 선행 조건 |
 |---:|---|---|---|
-| 1 | `G01-QA-ENV-AND-DOC-CLOSEOUT` | Ready | UX/UI 공통 QA G01~G06 완료 |
+| 1 | `G01-QA-ENV-AND-DOC-CLOSEOUT` | Done | UX/UI 공통 QA G01~G06 완료 |
 | 2 | `G02-MOBILE-BROWSER-390-360-QA` | Ready | G01 완료 |
 | 3 | `G03-CHROME-EDGE-COMPAT-QA` | Ready | G02 완료 |
 | 4 | `G04-MULTI-ACCOUNT-SECURITY-QA` | Ready | G03 완료 |

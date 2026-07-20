@@ -450,6 +450,7 @@ export function ContactCreateDialog({
                 <div className="relative">
                   <Phone className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                   <input
+                    aria-label="휴대폰번호"
                     aria-describedby={
                       errors.mobile ? "contact-mobile-error" : undefined
                     }
@@ -470,6 +471,7 @@ export function ContactCreateDialog({
                 <div className="relative">
                   <Mail className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                   <input
+                    aria-label="이메일"
                     aria-describedby={
                       errors.email ? "contact-email-error" : undefined
                     }

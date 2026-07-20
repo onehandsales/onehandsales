@@ -87,6 +87,7 @@ export function ContactCompanyField({
       <div ref={anchorRef} className="relative">
         <Building2 className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
         <input
+          aria-label={hideLabel ? label : undefined}
           aria-describedby={error && !hideError ? `${id}-error` : undefined}
           aria-invalid={Boolean(error)}
           className={cn(

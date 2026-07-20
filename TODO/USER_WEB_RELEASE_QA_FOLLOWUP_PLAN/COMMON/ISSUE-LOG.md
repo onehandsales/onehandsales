@@ -16,11 +16,12 @@
 
 ### RQA-001 Playwright 기본 e2e browser binary 누락
 
-- 상태: Open
+- 상태: Fixed
 - 심각도: S2 Major
 - 영역: FE/user-web > e2e
 - 발견일: 2026-07-18
 - 재확인일: 2026-07-20
+- 처리일: 2026-07-20
 
 #### 내용
 
@@ -29,6 +30,10 @@ UX/UI 공통 QA G02~G06 기록에서 `pnpm run test:e2e`가 로컬 Playwright `c
 #### 기대 결과
 
 `FE/user-web`에서 Playwright browser가 설치되어 `pnpm run test:e2e`가 실행된다.
+
+#### 처리 결과
+
+`pnpm exec playwright install chromium`이 정상 종료됐고, 이후 `pnpm run test:e2e`가 browser binary 누락 없이 실행됐다. 기본 smoke에서 드러난 별도 selector/accessibility 계약 불일치는 `RQA-007`로 분리해 수정했고, 최종 e2e는 2건 모두 통과했다.
 
 #### 처리 goal
 
@@ -129,6 +134,31 @@ Prisma validate/generate/migration status 결과와 seed 실행 정책이 안전
 #### 처리 결과
 
 `TODO/DONE/USER_WEB_UXUI_COMMON_QA_PLAN/README.md`의 상태를 `Done`으로 바꾸고, G01~G06 완료와 `TODO/USER_WEB_RELEASE_QA_FOLLOWUP_PLAN` 후속 계획을 연결했다. 관련 문서 링크도 완료 보관 경로인 `TODO/DONE/USER_WEB_UXUI_COMMON_QA_PLAN`으로 정리했다.
+
+#### 처리 goal
+
+- `G01-QA-ENV-AND-DOC-CLOSEOUT`
+
+### RQA-007 기본 smoke e2e selector/accessibility 계약 불일치
+
+- 상태: Fixed
+- 심각도: S2 Major
+- 영역: FE/user-web > e2e, accessibility
+- 발견일: 2026-07-20
+- 처리일: 2026-07-20
+- 환경: Playwright chromium, 1440x1000
+
+#### 내용
+
+Playwright Chromium 설치 후 `pnpm run test:e2e`가 실행 단계까지 진입했으나, 기존 smoke가 현재 UI 계약과 맞지 않아 실패했다. 주요 원인은 성공 알림 helper가 페이지 전체 `닫기` 버튼을 잡는 문제, 담당자/제품/회의록 submit selector의 stale 문구, 딜 생성 후 상세 URL 이동 기대값, 일부 입력의 접근성 이름 누락이었다.
+
+#### 기대 결과
+
+기본 smoke가 현재 User Web UI의 접근 가능한 이름과 실제 navigation 동작을 기준으로 로그인부터 회의록 저장까지 이어진다.
+
+#### 처리 결과
+
+담당자/제품/딜/회의록 생성 패널의 입력 접근성 이름을 보강하고, e2e selector를 현재 UI 계약에 맞췄다. 최종 `pnpm run typecheck`, `pnpm run lint`, `pnpm run build`, `pnpm run test:e2e`가 모두 통과했다.
 
 #### 처리 goal
 

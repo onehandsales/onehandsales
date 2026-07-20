@@ -414,7 +414,7 @@ test.describe("User Web smoke E2E", () => {
       const dialog = getDialog(page, "담당자 생성");
 
       await expect(dialog).toBeVisible();
-      await dialog.getByLabel("이름").fill(CONTACT_NAME);
+      await dialog.getByLabel("담당자명").fill(CONTACT_NAME);
       await dialog.getByLabel("휴대폰번호").fill("010-1234-5678");
       await dialog.getByLabel("이메일").fill("smoke@example.com");
       await selectSearchOption(dialog, "회사", COMPANY_NAME);
@@ -442,7 +442,7 @@ test.describe("User Web smoke E2E", () => {
       await selectManagedOption(dialog, "카테고리명", "Starter");
       await selectManagedOption(dialog, "상태명", "판매중");
       await dialog.getByLabel("메모").fill("G34 smoke 제품 fixture");
-      await dialog.getByRole("button", { name: "제품 생성" }).click();
+      await dialog.getByRole("button", { name: "저장", exact: true }).click();
 
       await expect(dialog).toBeHidden();
       await expectAndCloseNotice(page, "제품을 추가했어요.");
@@ -473,7 +473,8 @@ test.describe("User Web smoke E2E", () => {
       await dialog.getByRole("button", { name: "저장" }).click();
 
       await expect(dialog).toBeHidden();
-      await expect(page).toHaveURL(/\/app\/deals\/deal-/);
+      await expect(page).toHaveURL(/\/app\/deals$/);
+      await expect(page.getByText(DEAL_TITLE).first()).toBeVisible();
     });
 
     await test.step("일정 생성", async () => {
@@ -525,7 +526,7 @@ test.describe("User Web smoke E2E", () => {
       await dialog.getByLabel("상세 내용").fill(MEETING_DETAILS);
       await dialog.getByLabel("다음 계획").fill("제안서 발송 후 예산 확인");
       await dialog.getByLabel("필요 액션").fill("제안서와 견적서 준비");
-      await dialog.getByRole("button", { name: "회의록 생성" }).click();
+      await dialog.getByRole("button", { name: "저장", exact: true }).click();
 
       await expect(dialog).toBeHidden();
       await expectAndCloseNotice(page, "회의록을 추가했어요.");
@@ -1598,13 +1599,20 @@ async function goToNav(page: Page, name: string) {
 
 async function expectAndCloseNotice(page: Page, message: string) {
   const noticeText = page.getByText(message).first();
-  const closeButton = page.getByRole("button", { name: "닫기" }).first();
+  const noticeDialog = page
+    .getByRole("dialog")
+    .filter({ hasText: message })
+    .first();
+  const closeButton = noticeDialog.getByRole("button", {
+    name: "닫기",
+    exact: true,
+  });
 
   await expect(noticeText).toBeVisible();
 
-  if (await closeButton.isVisible({ timeout: 500 }).catch(() => false)) {
-    await closeButton.click({ force: true, timeout: 2_000 }).catch(() => undefined);
-    await expect(noticeText).toBeHidden({ timeout: 3_000 }).catch(() => undefined);
+  if (await noticeDialog.isVisible({ timeout: 500 }).catch(() => false)) {
+    await closeButton.click();
+    await expect(noticeDialog).toBeHidden();
   }
 }
 

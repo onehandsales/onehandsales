@@ -1,6 +1,6 @@
 # G01 QA Env And Doc Closeout
 
-상태: Ready
+상태: Done
 우선순위: P0
 담당 영역: Common, FE/user-web
 
@@ -75,3 +75,31 @@ pnpm run test:e2e
 - G01에서 모바일/브라우저 QA 범위까지 구현하지 않았는지 확인한다.
 - 문서 경로가 실제 존재하는지 `rg --files TODO/USER_WEB_RELEASE_QA_FOLLOWUP_PLAN`으로 확인한다.
 - `COMMON/GOAL-WORK-ORDER.md`의 다음 goal이 G02인지 확인한다.
+
+## 8. 완료 보고
+
+- 완료일: 2026-07-20
+- 코드 변경: `FE/user-web` 생성 패널의 접근성 이름 보강, 기존 smoke e2e selector 보정
+- 문서 변경: `COMMON/QA-RESULTS.md`, `COMMON/ISSUE-LOG.md`, goal 상태 문서, `FE-TODO/USER-WEB-TODO.md`, `TODO_LOG/2026-07-20/G01_QA_ENV_AND_DOC_CLOSEOUT/WORK_LOG.md`
+
+### 처리 요약
+
+- Playwright Chromium 설치 명령을 실행해 browser binary 누락을 해소했다.
+- 기본 e2e가 browser 설치 문제를 지나 실제 smoke 실행 단계에 진입한 뒤, 오래된 selector와 접근성 이름 누락을 수정했다.
+- `RQA-001`은 `Fixed`로 닫았고, e2e smoke 계약 불일치는 `RQA-007`로 기록해 `Fixed` 처리했다.
+- 완료된 UX/UI 공통 QA 문서 상태는 이미 `Done`, G01~G06 완료, follow-up 계획 연결 상태임을 재확인했다.
+
+### 검증
+
+- `cd FE/user-web; pnpm exec playwright install chromium`: 통과
+- `cd FE/user-web; pnpm run typecheck`: 통과
+- `cd FE/user-web; pnpm run lint`: 통과
+- `cd FE/user-web; pnpm run build`: 통과
+- `cd FE/user-web; pnpm run test:e2e`: 통과, 2 passed
+- `git diff --check`: 통과
+
+### 완료 후 검토 결과
+
+- G01 범위에서 모바일 390px/360px QA와 Chrome/Edge 호환 QA는 실행하지 않았다.
+- BE/API/DB 코드는 변경하지 않았다.
+- 다음 goal은 `G02-MOBILE-BROWSER-390-360-QA`다.

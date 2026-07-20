@@ -8,13 +8,13 @@
 
 ### G01. 기본 e2e 환경 복구
 
-- [ ] `FE/user-web` Playwright browser 설치 상태 확인
-- [ ] `pnpm exec playwright install chromium` 실행 또는 `Blocked` 사유 기록
-- [ ] `pnpm run typecheck` 실행
-- [ ] `pnpm run lint` 실행
-- [ ] `pnpm run build` 실행
-- [ ] `pnpm run test:e2e` 실행
-- [ ] 실행 결과를 `COMMON/QA-RESULTS.md`에 기록
+- [x] `FE/user-web` Playwright browser 설치 상태 확인
+- [x] `pnpm exec playwright install chromium` 실행 또는 `Blocked` 사유 기록
+- [x] `pnpm run typecheck` 실행
+- [x] `pnpm run lint` 실행
+- [x] `pnpm run build` 실행
+- [x] `pnpm run test:e2e` 실행
+- [x] 실행 결과를 `COMMON/QA-RESULTS.md`에 기록
 
 ### G02. 모바일 브라우저 QA 자동화
 

@@ -466,6 +466,7 @@ export function DealCreateDialog({
                     <HandCoins className="h-4 w-4 text-[#6B7280]" />
                   </span>
                   <input
+                    aria-label="금액"
                     aria-describedby={
                       errors.dealCost ? "deal-cost-error" : undefined
                     }
@@ -490,6 +491,7 @@ export function DealCreateDialog({
               >
                 <input type="hidden" {...register("expectedEndDate")} />
                 <input
+                  aria-label="예상 마감일"
                   aria-describedby={
                     errors.expectedEndDate ? "deal-end-date-error" : undefined
                   }
@@ -510,6 +512,7 @@ export function DealCreateDialog({
               >
                 <div className="grid gap-2">
                   <SearchSelectField
+                    ariaLabel="회사"
                     createActionLabel="회사 생성"
                     emptyText="검색어를 바꾸면 회사를 찾을 수 있어요."
                     getLabel={(company) => company.companyName}
@@ -553,6 +556,7 @@ export function DealCreateDialog({
               >
                 <div className="grid gap-2">
                   <SearchSelectField
+                    ariaLabel="담당자"
                     createActionLabel="담당자 생성"
                     disabled={selectedCompanyIds.length === 0}
                     emptyText="검색어를 바꾸면 담당자를 찾을 수 있어요."
@@ -640,6 +644,7 @@ export function DealCreateDialog({
                 label="다음 행동"
               >
                 <input
+                  aria-label="다음 행동"
                   aria-invalid={Boolean(errors.followingAction)}
                   className="h-10 w-full rounded-md border border-[#E6EAF0] px-3 text-[13px] outline-none transition-colors focus:border-[#4880EE] focus:ring-1 focus:ring-[#4880EE]"
                   id="deal-following"
@@ -1410,6 +1415,7 @@ type SearchSelectFieldProps<TItem extends { readonly id: string }> = {
   readonly search: string;
   readonly selectedId: string;
   readonly selectedLabel: string;
+  readonly ariaLabel?: string;
   readonly isLoading: boolean;
   readonly disabled?: boolean;
   readonly icon: LucideIcon;
@@ -1432,6 +1438,7 @@ export function SearchSelectField<TItem extends { readonly id: string }>({
   search,
   selectedId,
   selectedLabel,
+  ariaLabel,
   isLoading,
   disabled = false,
   icon: Icon,
@@ -1489,6 +1496,7 @@ export function SearchSelectField<TItem extends { readonly id: string }>({
       <input
         aria-autocomplete="list"
         aria-expanded={isOpen && !selectedId}
+        aria-label={ariaLabel}
         autoComplete="off"
         className={cn(
           "h-10 w-full rounded-md border pl-9 pr-10 text-sm outline-none focus:ring-2 focus:ring-ring disabled:cursor-not-allowed disabled:bg-muted disabled:text-muted-foreground",

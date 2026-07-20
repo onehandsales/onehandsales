@@ -417,6 +417,7 @@ export function ProductCreateDialog({
                     ₩
                   </span>
                   <input
+                    aria-label="단가"
                     aria-describedby={
                       errors.productPrice ? "product-price-error" : undefined
                     }
