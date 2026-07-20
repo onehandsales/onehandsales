@@ -16,6 +16,11 @@ TODO/
     COMMON/
     FE-TODO/
     BE-TODO/
+  USER_WEB_PRODUCTIZATION_GAP_PLAN/
+    README.md
+    COMMON/
+    FE-TODO/
+    BE-TODO/
   DONE/
     README.md
     ADDITIONAL_WORK_PLAN/
@@ -99,6 +104,7 @@ TODO/
 
 - 2026-07-20 기준 `TODO/DONE/USER_WEB_RELEASE_QA_FOLLOWUP_PLAN`은 G01~G07 완료 상태다.
 - 2026-07-20 기준 `TODO/NEXT_BACKEND_API_BACKLOG_PLAN`은 G07에서 생성한 다음 Backend/API backlog 후보 초안이다.
+- 2026-07-20 기준 `TODO/USER_WEB_PRODUCTIZATION_GAP_PLAN`은 최종 서비스 형태와 현재 구현 상태의 차이를 정리하는 제품화 gap 가이드다. `/goal` 실행 계획이 아니다.
 - 이전 1순위였던 User Web UX/UI 공통 QA는 `TODO/DONE/USER_WEB_UXUI_COMMON_QA_PLAN`에서 `G01~G06` 완료 상태다.
 - `USER_WEB_RELEASE_QA_FOLLOWUP_PLAN`은 UX/UI 공통 QA 이후 남은 출시 전 품질 작업인 모바일 브라우저 390px/360px QA, Chrome/Edge QA, 다중 계정 보안 QA, DB/Prisma/migration 운영 정합성, S0/S1/S2 closeout, deferred BE/API backlog split을 완료했다.
 - `IMPORT_TEMPLATE_PLAN`은 회사/담당자/제품/딜 불러오기 구현이 완료되어 `TODO/DONE/IMPORT_TEMPLATE_PLAN`에 보관한다. 확정 전 job 영속화는 후속 새 계획으로 다룬다.
@@ -108,6 +114,7 @@ TODO/
 진행 중인 계획:
 
 - `NEXT_BACKEND_API_BACKLOG_PLAN`: G07에서 생성한 다음 Backend/API backlog 후보 초안. 사용자 선택 전에는 구현 계획 확정본이 아니다.
+- `USER_WEB_PRODUCTIZATION_GAP_PLAN`: 최종 서비스 형태, 현재 구현 기능, 제품화 gap을 판단하는 가이드. `/goal` 실행 계획이 아니다.
 
 완료된 계획:
 
