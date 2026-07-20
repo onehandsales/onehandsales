@@ -117,10 +117,11 @@ Search, Trash, Export, 직접 API 접근에서 다른 사용자 데이터가 섞
 
 ### RQA-005 DB/Prisma/migration 운영 정합성 미완료
 
-- 상태: Open
+- 상태: Blocked
 - 심각도: S1 Critical Risk
 - 영역: BE > DB/Prisma
 - 발견일: 2026-07-20
+- 재확인일: 2026-07-20
 
 #### 내용
 
@@ -129,6 +130,21 @@ Search, Trash, Export, 직접 API 접근에서 다른 사용자 데이터가 섞
 #### 기대 결과
 
 Prisma validate/generate/migration status 결과와 seed 실행 정책이 안전하게 기록된다.
+
+#### 재확인 결과
+
+`BE/.env` 파일은 존재하지만 active key 목록 기준 `DATABASE_URL`, `DIRECT_URL`, `TEST_DATABASE_URL`이 없다. 반면 Prisma CLI `migrate status`는 `.env`에서 cloud Supabase pooler 성격의 datasource를 해석했고 database는 `postgres`로 표시했다. 현재 DB 대상은 로컬 dev/test DB로 증명되지 않으므로 공유/운영성 cloud DB 위험으로 분류한다.
+
+`cd BE; pnpm.cmd prisma:validate`는 통과했다. `cd BE; pnpm.cmd prisma:generate`는 Windows Prisma query engine DLL rename 단계에서 `EPERM`으로 실패했다. 같은 시점에 `pnpm run start:dev`, `nest start --watch`, `node --enable-source-maps BE/dist/main` 프로세스가 확인됐고, 사용자 실행 프로세스로 보아 종료하지 않았다.
+
+`cd BE; pnpm.cmd exec prisma migrate status`는 cloud Supabase pooler datasource 기준 18개 migration 중 17개 미적용을 보고하고 exit code 1로 종료했다. 공유/운영성 DB 가능성이 있으므로 `prisma migrate dev`, `prisma migrate deploy`, `prisma:seed`는 실행하지 않았다.
+
+#### 다음 조치
+
+1. 사용자가 DB 대상이 로컬 dev/test DB인지, 공유 QA DB인지, 운영성 DB인지 명시적으로 확정한다.
+2. 로컬 dev/test DB로 진행하려면 Docker daemon을 켜고 active `BE/.env`에 로컬 `DATABASE_URL`, `DIRECT_URL`을 정리한 뒤 `pnpm db:dev:up`, `pnpm prisma:generate`, `pnpm exec prisma migrate status`를 재실행한다.
+3. cloud DB가 실제 대상이라면 적용할 migration 범위와 실행 방식(`migrate deploy` 등)을 사용자 결정 후 별도 운영 절차로 진행한다.
+4. Prisma generate DLL lock은 BE dev/dist node 프로세스를 사용자가 중지한 뒤 재시도한다.
 
 #### 처리 goal
 

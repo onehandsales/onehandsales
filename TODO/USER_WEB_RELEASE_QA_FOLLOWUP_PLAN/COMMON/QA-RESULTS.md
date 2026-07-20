@@ -150,15 +150,39 @@
 
 ### G05 DB/Prisma/Migration Ops QA
 
-- 상태: Not started
-- 실행일:
+- 상태: Done
+- 실행일: 2026-07-20
+- 환경:
+  - `node -v`: 통과, `v24.18.0`
+  - `pnpm.cmd -v`: 통과, `8.14.1`
+  - `docker --version`: 통과, Docker CLI `29.5.3`
+  - `cd BE; docker compose ps`: 실패, Docker Desktop Linux engine/daemon 미실행
+  - `cd BE; pnpm.cmd db:dev:up`: 실패, Docker daemon 미실행으로 local Postgres 시작 불가
 - 확인 범위:
-  - DB 대상 분류:
-  - Prisma validate:
-  - Prisma generate:
-  - Migration status:
-  - Seed 정책:
-- 결과:
+  - DB 대상 분류: Blocked. `BE/.env` 파일은 존재하지만 active key 목록 기준 `DATABASE_URL`, `DIRECT_URL`, `TEST_DATABASE_URL`이 없다. 다만 Prisma CLI `migrate status`는 `.env`에서 cloud Supabase pooler 성격의 datasource를 해석했고 database는 `postgres`로 표시했다. 따라서 현재 DB 대상은 로컬 dev DB로 볼 수 없고 공유/운영성 cloud DB 위험으로 분류한다.
+  - Prisma validate: Passed. `cd BE; pnpm.cmd prisma:validate` 결과 schema valid.
+  - Prisma generate: Blocked. `cd BE; pnpm.cmd prisma:generate`가 `query_engine-windows.dll.node.tmp*`를 `query_engine-windows.dll.node`로 rename하는 단계에서 `EPERM`으로 실패했다. `Get-CimInstance Win32_Process -Filter "name = 'node.exe'"`에서 `pnpm run start:dev`, `nest start --watch`, `node --enable-source-maps BE/dist/main` 프로세스가 확인됐고 사용자 실행 프로세스로 보아 종료하지 않았다.
+  - Migration status: Failed / Blocked. `cd BE; pnpm.cmd exec prisma migrate status`는 cloud Supabase pooler datasource에 대해 18개 migration 중 17개 미적용을 보고하고 exit code 1로 종료했다. 공유/운영성 DB 가능성이 있으므로 `prisma migrate dev`, `prisma migrate deploy`는 실행하지 않았다.
+  - Seed 정책: Blocked / Not executed. 현재 DB 대상이 로컬 dev/test DB로 증명되지 않았고 migration status가 불일치하므로 `prisma:seed`는 실행하지 않는다.
+  - Prisma generate DLL lock 재현 여부: Reproduced. active BE dev/dist node 프로세스가 있는 상태에서 Windows Prisma query engine DLL rename lock이 재현됐다.
+  - 적용된 migration 파일 수정 여부: Passed. `git status --short BE/prisma` 결과 변경 없음.
+- 명령:
+  - `node -v`: 통과
+  - `pnpm.cmd -v`: 통과
+  - `docker --version`: 통과
+  - `cd BE; docker compose ps`: 실패, Docker daemon 미실행
+  - `cd BE; pnpm.cmd db:dev:up`: 실패, Docker daemon 미실행
+  - `cd BE; pnpm.cmd prisma:validate`: 통과
+  - `cd BE; pnpm.cmd prisma:generate`: 실패, Windows Prisma query engine DLL rename `EPERM`
+  - `Get-CimInstance Win32_Process -Filter "name = 'node.exe'"`: 확인, BE dev/dist node 프로세스 실행 중
+  - `cd BE; pnpm.cmd exec prisma migrate status`: 실패, cloud Supabase pooler datasource에 17개 migration 미적용 보고
+  - `cd BE; pnpm.cmd run typecheck`: 통과
+  - `cd BE; pnpm.cmd run lint`: 통과
+  - `cd BE; pnpm.cmd run test`: 통과, 19 suites / 98 tests passed
+  - `cd BE; pnpm.cmd run build`: 통과
+  - `git status --short BE/prisma`: 통과, 변경 없음
+  - `git diff --check`: 통과
+- 결과: G05 QA는 완료했지만 DB/Prisma 운영 gate는 `RQA-005`로 Blocked다. 로컬 dev/test DB URL을 active `BE/.env` key로 정리하거나 사용자가 cloud DB 대상/마이그레이션 방식을 명시적으로 결정하기 전까지 migrate/seed/generate closeout을 진행하지 않는다.
 - 연결 이슈: `RQA-005`
 
 ### G06 S0/S1/S2 Bugfix Closeout

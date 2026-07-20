@@ -42,3 +42,14 @@ G05는 운영 전 정합성 QA이며, schema나 migration을 새로 추가하는
 - `AGENT/SOFTWARE_AGENT/DB_SCHEMA/TIME_AND_TIMEZONE_POLICY.md`
 - `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/CONVENTION/BACKEND.md`
 
+## 6. G05 확인 결과
+
+- 상태: Done, `RQA-005`는 Blocked
+- 실행일: 2026-07-20
+- Prisma schema 변경: 없음
+- migration 파일 변경: 없음
+- DB 대상: active `BE/.env` key 기준 DB URL 없음. Prisma CLI는 cloud Supabase pooler 성격의 datasource를 해석했으므로 로컬 dev DB로 분류할 수 없음.
+- `prisma:validate`: 통과
+- `prisma:generate`: Windows Prisma query engine DLL rename `EPERM`으로 Blocked
+- `prisma migrate status`: cloud datasource 기준 17개 migration 미적용 보고로 Blocked
+- `prisma:seed`: 로컬 dev/test DB가 증명되지 않아 실행 금지
