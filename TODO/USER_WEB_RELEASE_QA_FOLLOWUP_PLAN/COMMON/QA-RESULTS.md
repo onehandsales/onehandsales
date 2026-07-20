@@ -96,7 +96,7 @@
   - Search: 통과. 사용자 A 기준 `RQA004-B` 검색 결과 group/item 없음.
   - Trash: 통과. 목록/detail/restore에서 사용자 B 삭제 데이터와 marker 미노출.
   - Export: 통과. Company/Contact/Product/Deal export workbook input과 fake binary string 모두 `RQA004-B` 미포함.
-  - 직접 API 접근: 통과. Company/Contact/Product/Deal/Schedule/MeetingNote detail/update/delete에서 사용자 B id를 사용자 A로 접근하면 NotFound 계열 error이며 B id/name/title/email 미노출.
+  - 직접 API 접근: 통과. Company/Contact/Product/Deal/Schedule/MeetingNote detail/update/delete에서 사용자 B id를 사용자 A로 접근하면 NotFound 계열 error이며 B id/name/title/email 미노출. 기존 `HttpExceptionFilter`가 `*NotFound` DomainError를 HTTP 404로 매핑하는 것을 확인했다.
   - Admin API 차단: 통과. `AdminGuard`가 일반 `USER` role을 `ForbiddenException`으로 거부해 HTTP 403 경계를 검증.
   - User Web `/admin/api/*` 경계: 통과. `rg -n "admin/api" FE/user-web/src` 결과는 `src/lib/api-client.ts` 2건뿐이고, `apiClient`, `apiBlobClient`가 `/admin/api/` path를 `InvalidUserWebApiPath`로 차단.
   - 로그아웃/back smoke: 통과. session storage 제거 후 `/app/companies` reload와 browser back에서 `/login` 유지, 보호 데이터 미노출.
@@ -134,6 +134,7 @@
 - 명령:
   - `rg -n "admin/api" FE/user-web/src`: 통과, `src/lib/api-client.ts` 2건만 발견
   - `rg -n "InvalidUserWebApiPath|apiBlobClient|apiClient" FE/user-web/src/lib/api-client.ts`: 통과
+  - `Get-Content BE/src/shared/presentation/filters/http-exception.filter.ts`: 확인, `code.endsWith("NotFound")`는 `HttpStatus.NOT_FOUND`
   - `cd BE; pnpm.cmd run typecheck`: 통과
   - `cd BE; pnpm.cmd run lint`: 통과
   - `cd BE; pnpm.cmd run test`: 통과, 19 suites / 98 tests passed
