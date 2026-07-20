@@ -175,7 +175,7 @@ Prisma validate/generate/migration status 결과와 seed 실행 정책이 안전
 
 #### 처리 결과
 
-`TODO/DONE/USER_WEB_UXUI_COMMON_QA_PLAN/README.md`의 상태를 `Done`으로 바꾸고, G01~G06 완료와 `TODO/USER_WEB_RELEASE_QA_FOLLOWUP_PLAN` 후속 계획을 연결했다. 관련 문서 링크도 완료 보관 경로인 `TODO/DONE/USER_WEB_UXUI_COMMON_QA_PLAN`으로 정리했다.
+`TODO/DONE/USER_WEB_UXUI_COMMON_QA_PLAN/README.md`의 상태를 `Done`으로 바꾸고, G01~G06 완료와 `TODO/DONE/USER_WEB_RELEASE_QA_FOLLOWUP_PLAN` 후속 계획을 연결했다. 관련 문서 링크도 완료 보관 경로인 `TODO/DONE/USER_WEB_UXUI_COMMON_QA_PLAN`으로 정리했다.
 
 #### 처리 goal
 

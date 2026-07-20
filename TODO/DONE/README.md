@@ -28,5 +28,6 @@
 - `MEETING_NOTE_AI_STT_PLAN`: MeetingNote AI/STT 초안 Backend API, User Web draft UI, 저장 후 딜 추가 연동
 - `BUSINESS_CARD_OCR_PLAN`: BusinessCard OCR Backend API, `BusinessCardScanLog`, User Web 명함 스캔/명함스캔 화면
 - `USER_WEB_UXUI_COMMON_QA_PLAN`: User Web UX/UI 공통 QA G01~G06, 1440px/1280px/768px/125% 기준 화면 품질 정리
+- `USER_WEB_RELEASE_QA_FOLLOWUP_PLAN`: User Web 출시 전 follow-up QA G01~G07, 모바일/브라우저/보안/DB/bugfix closeout와 deferred BE/API backlog split
 - `ADDITIONAL_WORK_PLAN`: count, linked list, xlsx export, dealCount, product dealCount sort 추가 유지보수 범위
 - `USER_TIMEZONE_FOUNDATION_PLAN`: User.timeZone DB/API와 User Web timezone 설정 기반

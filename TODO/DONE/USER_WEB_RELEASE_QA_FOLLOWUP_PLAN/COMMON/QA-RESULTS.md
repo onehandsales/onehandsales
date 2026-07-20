@@ -197,7 +197,7 @@
   - `RQA-005`: S1, Blocked, G05에서 DB/Prisma 운영 gate 차단 사유와 해소 조건 기록
   - `RQA-007`: S2, Fixed, G01에서 기본 smoke selector/accessibility 계약 수정 완료
 - 완료 전 grep:
-  - `rg -n "상태: Open|심각도: S0|심각도: S1|심각도: S2" TODO/USER_WEB_RELEASE_QA_FOLLOWUP_PLAN/COMMON/ISSUE-LOG.md`: 실제 이슈 중 Open S0/S1/S2 없음. 검색 결과의 `상태: Open`은 신규 이슈 템플릿이고, 남은 S1 `RQA-005`는 Blocked로 해소 조건과 사용자 결정 필요 여부를 기록했다.
+  - `rg -n "상태: Open|심각도: S0|심각도: S1|심각도: S2" TODO/DONE/USER_WEB_RELEASE_QA_FOLLOWUP_PLAN/COMMON/ISSUE-LOG.md`: 실제 이슈 중 Open S0/S1/S2 없음. 검색 결과의 `상태: Open`은 신규 이슈 템플릿이고, 남은 S1 `RQA-005`는 Blocked로 해소 조건과 사용자 결정 필요 여부를 기록했다.
 - 수정한 이슈:
   - 신규 제품 코드 수정 없음.
   - 신규 API/DB schema 변경 없음.
@@ -255,7 +255,7 @@
   - `rg -n "\| NBA-0" TODO/NEXT_BACKEND_API_BACKLOG_PLAN/COMMON/CANDIDATE-MATRIX.md | wc -l`: 후보 14개 확인. G07 기본 후보 13개와 `RQA-005` 후속 `NBA-014`를 포함한다.
   - `git status --short -- BE/src FE/user-web/src BE/prisma/migrations FE/admin-web/src AGENT`: 출력 없음. FE/BE 기능 구현 파일, Prisma migration, AGENT 문서 변경 없음.
   - `git diff --check`: 통과
-  - `rg -n "[ \t]+$" TODO/NEXT_BACKEND_API_BACKLOG_PLAN TODO/USER_WEB_RELEASE_QA_FOLLOWUP_PLAN/README.md TODO/USER_WEB_RELEASE_QA_FOLLOWUP_PLAN/COMMON TODO/USER_WEB_RELEASE_QA_FOLLOWUP_PLAN/BE-TODO TODO/README.md`: 출력 없음
+  - `rg -n "[ \t]+$" TODO/NEXT_BACKEND_API_BACKLOG_PLAN TODO/DONE/USER_WEB_RELEASE_QA_FOLLOWUP_PLAN/README.md TODO/DONE/USER_WEB_RELEASE_QA_FOLLOWUP_PLAN/COMMON TODO/DONE/USER_WEB_RELEASE_QA_FOLLOWUP_PLAN/BE-TODO TODO/README.md`: 출력 없음
 - 완료 후 검토:
   - G07 goal 문서의 포함/제외 범위를 다시 확인했고, 새 endpoint 구현, response field 구현, Prisma schema/migration 추가, Notification/ImportJob/Admin API 착수는 하지 않았다.
   - `TODO/NEXT_BACKEND_API_BACKLOG_PLAN/COMMON/API-SPEC/README.md`의 후보 API 계약은 `draft` 또는 `N/A` 상태로만 남겼다.

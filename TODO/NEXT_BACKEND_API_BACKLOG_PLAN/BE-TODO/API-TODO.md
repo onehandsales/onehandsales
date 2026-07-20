@@ -12,7 +12,7 @@
 
 ### NBA-014. DB/Prisma migration 운영 gate closeout
 
-- 연결 이슈: `TODO/USER_WEB_RELEASE_QA_FOLLOWUP_PLAN/COMMON/ISSUE-LOG.md`의 `RQA-005`
+- 연결 이슈: `TODO/DONE/USER_WEB_RELEASE_QA_FOLLOWUP_PLAN/COMMON/ISSUE-LOG.md`의 `RQA-005`
 - API 영향: 없음
 - Backend 영향: Prisma generate, migration status, seed 정책, DB target 분류
 - 다음 작업:

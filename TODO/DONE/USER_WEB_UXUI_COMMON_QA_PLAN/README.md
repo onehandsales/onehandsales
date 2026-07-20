@@ -87,7 +87,7 @@
 | 5 | `COMMON/GOAL-SPECS/G05-COMPLEX-FLOW-UX.goal.md` | 일정, 회의록, 명함 스캔, Import, Trash의 복잡한 상태 UX를 정리한다. |
 | 6 | `COMMON/GOAL-SPECS/G06-UX-WRITING-STATES-A11Y-CLOSEOUT.goal.md` | UX writing, 상태, 접근성 기본, 최종 검증을 닫는다. |
 
-2026-07-18 기준 G01~G06은 모두 완료됐다. 모바일 브라우저 390px/360px 전용 QA와 Chrome/Edge 호환 QA는 `TODO/USER_WEB_RELEASE_QA_FOLLOWUP_PLAN`에서 별도 후속 계획으로 다룬다.
+2026-07-18 기준 G01~G06은 모두 완료됐다. 모바일 브라우저 390px/360px 전용 QA와 Chrome/Edge 호환 QA는 `TODO/DONE/USER_WEB_RELEASE_QA_FOLLOWUP_PLAN`에서 별도 후속 계획으로 다룬다.
 
 ## 6. 완료 기준
 
@@ -100,7 +100,7 @@
 - S0/S1/S2 UX/UI 이슈가 수정되거나 명시적으로 보류 판단된다.
 - `FE/user-web` 검증 명령이 통과한다.
 - 주요 화면이 1440px, 1280px, 768px, 125% 확대 기준에서 사용 가능하다.
-- 390px/360px 모바일 전용 이슈는 `TODO/USER_WEB_RELEASE_QA_FOLLOWUP_PLAN`에서 별도 후속 QA로 다룬다.
+- 390px/360px 모바일 전용 이슈는 `TODO/DONE/USER_WEB_RELEASE_QA_FOLLOWUP_PLAN`에서 별도 후속 QA로 다룬다.
 
 ## 7. 검증 명령
 
