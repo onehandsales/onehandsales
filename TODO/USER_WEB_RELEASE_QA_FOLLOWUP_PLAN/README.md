@@ -1,7 +1,8 @@
 # User Web Release QA Follow-up Plan
 
-상태: Ready
+상태: Done
 작성일: 2026-07-20
+완료일: 2026-07-20
 목적: `USER_WEB_UXUI_COMMON_QA_PLAN` 완료 이후 남은 출시 전 품질 작업을 `/goal`로 바로 실행할 수 있게 정리한다.
 
 ## 1. 배경

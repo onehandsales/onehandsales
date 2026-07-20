@@ -34,7 +34,7 @@ G05는 운영 전 정합성 QA이며, schema나 migration을 새로 추가하는
 - Admin 감사/조회 도메인 table
 - 유료 영구 삭제 복구 예약 column/table
 
-위 후보는 G07에서 별도 계획 후보로 분리한다.
+위 후보는 G07에서 `TODO/NEXT_BACKEND_API_BACKLOG_PLAN`으로 분리했다.
 
 ## 5. 관련 문서
 

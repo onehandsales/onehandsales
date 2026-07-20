@@ -38,14 +38,14 @@
 
 | 후보 | 이유 | 이번 계획 처리 |
 |---|---|---|
-| Deal list `products` summary | 딜 목록에서 제품 linked record를 1급 정보로 보여줄 수 없음 | G07에서 별도 계획 후보로 분류 |
-| Contact list `dealCount` | 담당자 목록에서 연결 딜 수를 직접 표시할 수 없음 | G07에서 별도 계획 후보로 분류 |
-| Company/Contact/Product latest summary | 실제 최신 Memo/활동/다음 행동 summary가 없음 | G07에서 별도 계획 후보로 분류 |
-| MeetingNote next/latest summary | 회의록 목록에서 추출 action summary가 없음 | G07에서 별도 계획 후보로 분류 |
-| BusinessCard provider failure contract | 사용자 copy와 운영 log 분리가 더 명확할 수 있음 | G07에서 별도 계획 후보로 분류 |
-| ImportJob persistence/resume API | 확정 전 job이 in-memory라 서버 재시작에 취약함 | G07에서 별도 계획 후보로 분류 |
-| Trash private memo backend restriction | FE는 복구 전 원문을 가리지만 API 응답 제한이 더 강한 보안 경계임 | G07에서 별도 계획 후보로 분류 |
-| Page size 15 contract 정리 | FE 단독 숫자 변경 금지, BE 상수/API/test 문서 동시 변경 필요 | G07에서 별도 계획 후보로 분류 |
+| Deal list `products` summary | 딜 목록에서 제품 linked record를 1급 정보로 보여줄 수 없음 | `TODO/NEXT_BACKEND_API_BACKLOG_PLAN`에서 draft 후보로 관리 |
+| Contact list `dealCount` | 담당자 목록에서 연결 딜 수를 직접 표시할 수 없음 | `TODO/NEXT_BACKEND_API_BACKLOG_PLAN`에서 draft 후보로 관리 |
+| Company/Contact/Product latest summary | 실제 최신 Memo/활동/다음 행동 summary가 없음 | `TODO/NEXT_BACKEND_API_BACKLOG_PLAN`에서 draft 후보로 관리 |
+| MeetingNote next/latest summary | 회의록 목록에서 추출 action summary가 없음 | `TODO/NEXT_BACKEND_API_BACKLOG_PLAN`에서 draft 후보로 관리 |
+| BusinessCard provider failure contract | 사용자 copy와 운영 log 분리가 더 명확할 수 있음 | `TODO/NEXT_BACKEND_API_BACKLOG_PLAN`에서 draft 후보로 관리 |
+| ImportJob persistence/resume API | 확정 전 job이 in-memory라 서버 재시작에 취약함 | `TODO/NEXT_BACKEND_API_BACKLOG_PLAN`에서 draft 후보로 관리 |
+| Trash private memo backend restriction | FE는 복구 전 원문을 가리지만 API 응답 제한이 더 강한 보안 경계임 | `TODO/NEXT_BACKEND_API_BACKLOG_PLAN`에서 draft 후보로 관리 |
+| Page size 15 contract 정리 | FE 단독 숫자 변경 금지, BE 상수/API/test 문서 동시 변경 필요 | `TODO/NEXT_BACKEND_API_BACKLOG_PLAN`에서 draft 후보로 관리 |
 
 ## 5. API 변경이 필요한 경우 작성 기준
 

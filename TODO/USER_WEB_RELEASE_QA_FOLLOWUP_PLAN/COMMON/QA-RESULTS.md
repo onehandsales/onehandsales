@@ -214,12 +214,48 @@
   - `git diff --check`: 통과
 - 남은 리스크:
   - `RQA-005`는 DB migration/seed/generate 운영 gate에 대해 Blocked다. DB 대상 확정과 cloud DB migration 적용 방식은 사용자 결정이 필요하다.
-  - G07에서 이번 범위 밖 BE/API 후보를 별도 계획 후보로 분리해야 한다.
+  - G07에서 이번 범위 밖 BE/API 후보를 `TODO/NEXT_BACKEND_API_BACKLOG_PLAN`으로 분리했다.
   - FE build/e2e webServer 출력의 기존 Tailwind `duration-[500ms]` ambiguity 경고와 큰 chunk 경고는 남아 있으나 G06 release closeout 실패 요인은 아니다.
 
 ### G07 Deferred BE/API Backlog Split
 
-- 상태: Not started
-- 실행일:
+- 상태: Done
+- 실행일: 2026-07-20
+- 산출물:
+  - `TODO/NEXT_BACKEND_API_BACKLOG_PLAN/README.md`
+  - `TODO/NEXT_BACKEND_API_BACKLOG_PLAN/COMMON/CANDIDATE-MATRIX.md`
+  - `TODO/NEXT_BACKEND_API_BACKLOG_PLAN/COMMON/API-SPEC/README.md`
+  - `TODO/NEXT_BACKEND_API_BACKLOG_PLAN/BE-TODO/API-TODO.md`
+  - `TODO/NEXT_BACKEND_API_BACKLOG_PLAN/BE-TODO/DB-SCHEMA.md`
+  - `TODO/NEXT_BACKEND_API_BACKLOG_PLAN/FE-TODO/USER-WEB-TODO.md`
 - 분리한 후보:
+  - `NBA-001`: Deal list `products` summary, release follow-up
+  - `NBA-002`: Contact list `dealCount`, release follow-up
+  - `NBA-003`: Company/Contact/Product latest memo/activity/next action summary, product feature
+  - `NBA-004`: MeetingNote next/latest summary, product feature
+  - `NBA-005`: BusinessCard provider failure code/message contract, release follow-up
+  - `NBA-006`: ImportJob persistence/resume API, product feature
+  - `NBA-007`: Trash private memo backend response restriction, ops/security
+  - `NBA-008`: Page size 15 contract cleanup, release follow-up
+  - `NBA-009`: Schedule week report, product feature
+  - `NBA-010`: Notification, product feature
+  - `NBA-011`: MeetingNote transcript/provider call log table, ops/security
+  - `NBA-012`: Trash 7일 이후 복구 정책, ops/security
+  - `NBA-013`: Admin 운영 UX/API, ops/security
+  - `NBA-014`: DB/Prisma migration 운영 gate closeout, release blocker, `RQA-005` 후속
 - 다음 계획 후보:
+  - `TODO/NEXT_BACKEND_API_BACKLOG_PLAN`
+- 구현 여부:
+  - 새 DB migration 없음
+  - 새 API 구현 없음
+  - FE 기능 구현 없음
+  - 새 API 계약은 `draft` 또는 `후보` 상태로만 기록
+- 검증:
+  - `find TODO/NEXT_BACKEND_API_BACKLOG_PLAN -type f | sort`: 산출물 6개 확인
+  - `rg -n "\| NBA-0" TODO/NEXT_BACKEND_API_BACKLOG_PLAN/COMMON/CANDIDATE-MATRIX.md | wc -l`: 후보 14개 확인. G07 기본 후보 13개와 `RQA-005` 후속 `NBA-014`를 포함한다.
+  - `git status --short -- BE/src FE/user-web/src BE/prisma/migrations FE/admin-web/src AGENT`: 출력 없음. FE/BE 기능 구현 파일, Prisma migration, AGENT 문서 변경 없음.
+  - `git diff --check`: 통과
+  - `rg -n "[ \t]+$" TODO/NEXT_BACKEND_API_BACKLOG_PLAN TODO/USER_WEB_RELEASE_QA_FOLLOWUP_PLAN/README.md TODO/USER_WEB_RELEASE_QA_FOLLOWUP_PLAN/COMMON TODO/USER_WEB_RELEASE_QA_FOLLOWUP_PLAN/BE-TODO TODO/README.md`: 출력 없음
+- 완료 후 검토:
+  - G07 goal 문서의 포함/제외 범위를 다시 확인했고, 새 endpoint 구현, response field 구현, Prisma schema/migration 추가, Notification/ImportJob/Admin API 착수는 하지 않았다.
+  - `TODO/NEXT_BACKEND_API_BACKLOG_PLAN/COMMON/API-SPEC/README.md`의 후보 API 계약은 `draft` 또는 `N/A` 상태로만 남겼다.

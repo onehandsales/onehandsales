@@ -16,6 +16,11 @@ TODO/
     COMMON/
     FE-TODO/
     BE-TODO/
+  NEXT_BACKEND_API_BACKLOG_PLAN/
+    README.md
+    COMMON/
+    FE-TODO/
+    BE-TODO/
   DONE/
     README.md
     ADDITIONAL_WORK_PLAN/
@@ -94,18 +99,20 @@ TODO/
 
 ## 4. 구현 우선순위
 
-현재 활성 계획 상태:
+현재 활성/다음 계획 상태:
 
-- 2026-07-20 기준 `TODO/USER_WEB_RELEASE_QA_FOLLOWUP_PLAN`이 활성 계획이다.
+- 2026-07-20 기준 `TODO/USER_WEB_RELEASE_QA_FOLLOWUP_PLAN`은 G01~G07 완료 상태다.
+- 2026-07-20 기준 `TODO/NEXT_BACKEND_API_BACKLOG_PLAN`은 G07에서 생성한 다음 Backend/API backlog 후보 초안이다.
 - 이전 1순위였던 User Web UX/UI 공통 QA는 `TODO/DONE/USER_WEB_UXUI_COMMON_QA_PLAN`에서 `G01~G06` 완료 상태다.
-- 현재 활성 계획은 UX/UI 공통 QA 이후 남은 출시 전 품질 작업인 모바일 브라우저 390px/360px QA, Chrome/Edge QA, 다중 계정 보안 QA, DB/Prisma/migration 운영 정합성, S0/S1/S2 closeout을 `/goal`로 실행할 수 있게 나눈다.
+- `USER_WEB_RELEASE_QA_FOLLOWUP_PLAN`은 UX/UI 공통 QA 이후 남은 출시 전 품질 작업인 모바일 브라우저 390px/360px QA, Chrome/Edge QA, 다중 계정 보안 QA, DB/Prisma/migration 운영 정합성, S0/S1/S2 closeout, deferred BE/API backlog split을 완료했다.
 - `IMPORT_TEMPLATE_PLAN`은 회사/담당자/제품/딜 불러오기 구현이 완료되어 `TODO/DONE/IMPORT_TEMPLATE_PLAN`에 보관한다. 확정 전 job 영속화는 후속 새 계획으로 다룬다.
 - `LOG_SOFT_DELETE_PLAN`은 구현 완료되어 `TODO/DONE/LOG_SOFT_DELETE_PLAN`에 보관한다.
 - 새 요구사항이나 후속 구현은 `TODO` 바로 아래에 새 계획 폴더를 만든다.
 
 진행 중인 계획:
 
-- `USER_WEB_RELEASE_QA_FOLLOWUP_PLAN`: UX/UI 공통 QA 이후 출시 전 품질 follow-up. 모바일 브라우저 390px/360px, Chrome/Edge, 다중 계정 보안, DB/Prisma 운영 정합성, S0/S1/S2 closeout을 정리한다.
+- `USER_WEB_RELEASE_QA_FOLLOWUP_PLAN`: UX/UI 공통 QA 이후 출시 전 품질 follow-up. G01~G07 완료 상태이며, 완료 보관 전 현재 TODO에 남아 있다.
+- `NEXT_BACKEND_API_BACKLOG_PLAN`: G07에서 생성한 다음 Backend/API backlog 후보 초안. 사용자 선택 전에는 구현 계획 확정본이 아니다.
 
 완료된 계획:
 

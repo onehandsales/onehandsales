@@ -12,4 +12,4 @@
 | 4 | `G04-MULTI-ACCOUNT-SECURITY-QA.goal.md` | Done |
 | 5 | `G05-DB-PRISMA-MIGRATION-OPS-QA.goal.md` | Done |
 | 6 | `G06-S0-S2-BUGFIX-CLOSEOUT.goal.md` | Done |
-| 7 | `G07-DEFERRED-BE-API-BACKLOG-SPLIT.goal.md` | Ready |
+| 7 | `G07-DEFERRED-BE-API-BACKLOG-SPLIT.goal.md` | Done |

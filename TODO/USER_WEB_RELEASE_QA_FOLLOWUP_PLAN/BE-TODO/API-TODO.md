@@ -48,7 +48,7 @@ G04는 기존 API의 ownership isolation을 검증한다. G06에서 S0/S1/S2 수
 
 ## 4. 후속 API 후보
 
-아래 후보는 G07에서 분리한다. 이번 계획에서 구현하지 않는다.
+아래 후보는 G07에서 `TODO/NEXT_BACKEND_API_BACKLOG_PLAN`으로 분리했다. 이번 계획에서 구현하지 않았다.
 
 - Deal list `products` summary
 - Contact list `dealCount`

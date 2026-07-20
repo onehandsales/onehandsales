@@ -1,6 +1,6 @@
 # G07 Deferred BE API Backlog Split
 
-상태: Ready
+상태: Done
 우선순위: P1
 담당 영역: Common, BE
 
