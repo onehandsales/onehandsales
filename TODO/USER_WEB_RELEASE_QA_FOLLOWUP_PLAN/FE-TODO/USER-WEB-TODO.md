@@ -54,10 +54,10 @@
 
 ### G06. S0/S1/S2 수정
 
-- [ ] 모바일/브라우저 QA에서 나온 S0/S1/S2 수정
-- [ ] 수정된 화면의 viewport 재확인
-- [ ] typecheck/lint/build/e2e 재실행
-- [ ] `ISSUE-LOG.md` 상태 갱신
+- [x] 모바일/브라우저 QA에서 나온 Open S0/S1/S2 없음 확인
+- [x] 수정된 화면의 viewport 재확인 필요 없음 확인
+- [x] typecheck/lint/build/e2e 재실행
+- [x] `ISSUE-LOG.md` 상태 갱신
 
 ## 3. 제외 작업
 

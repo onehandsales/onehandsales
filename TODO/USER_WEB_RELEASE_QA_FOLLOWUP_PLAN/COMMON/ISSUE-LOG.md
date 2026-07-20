@@ -146,9 +146,16 @@ Prisma validate/generate/migration status 결과와 seed 실행 정책이 안전
 3. cloud DB가 실제 대상이라면 적용할 migration 범위와 실행 방식(`migrate deploy` 등)을 사용자 결정 후 별도 운영 절차로 진행한다.
 4. Prisma generate DLL lock은 BE dev/dist node 프로세스를 사용자가 중지한 뒤 재시도한다.
 
+#### 출시 판단
+
+- 사용자 결정 필요: 필요. DB 대상과 cloud DB migration 적용 방식은 사용자가 확정해야 한다.
+- 출시 차단 여부: DB migration/seed/generate 운영 gate에는 차단이다. 다만 G02~G04의 User Web 기능 QA, 브라우저 QA, 다중 계정 보안 자동 테스트에서는 제품 코드 S0/S1/S2가 남지 않았으므로 앱 기능 QA 자체의 추가 code fix 대상은 아니다.
+- 해소 조건: 로컬 dev/test DB로 재검증하거나, cloud DB가 실제 배포 대상이면 사용자 승인된 운영 절차로 migration/generate/seed 정책을 확정한다.
+
 #### 처리 goal
 
 - `G05-DB-PRISMA-MIGRATION-OPS-QA`
+- `G06-S0-S2-BUGFIX-CLOSEOUT`
 
 ### RQA-006 완료된 UX/UI QA README 상태 문구 불일치
 

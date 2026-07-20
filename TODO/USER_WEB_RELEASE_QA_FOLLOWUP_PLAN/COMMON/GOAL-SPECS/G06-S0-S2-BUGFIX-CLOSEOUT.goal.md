@@ -1,6 +1,6 @@
 # G06 S0 S1 S2 Bugfix Closeout
 
-상태: Ready
+상태: Done
 우선순위: P0
 담당 영역: FE, BE
 

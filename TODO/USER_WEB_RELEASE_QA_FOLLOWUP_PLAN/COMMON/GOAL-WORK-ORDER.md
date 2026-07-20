@@ -13,7 +13,7 @@
 | 3 | `G03-CHROME-EDGE-COMPAT-QA` | Done | G02 완료 |
 | 4 | `G04-MULTI-ACCOUNT-SECURITY-QA` | Done | G03 완료 |
 | 5 | `G05-DB-PRISMA-MIGRATION-OPS-QA` | Done | G04 완료 |
-| 6 | `G06-S0-S2-BUGFIX-CLOSEOUT` | Ready | G02~G05의 ISSUE-LOG 최신화 |
+| 6 | `G06-S0-S2-BUGFIX-CLOSEOUT` | Done | G02~G05의 ISSUE-LOG 최신화 |
 | 7 | `G07-DEFERRED-BE-API-BACKLOG-SPLIT` | Ready | G06 완료 |
 
 ## 3. G01. QA Env And Doc Closeout

@@ -187,11 +187,35 @@
 
 ### G06 S0/S1/S2 Bugfix Closeout
 
-- 상태: Not started
-- 실행일:
+- 상태: Done
+- 실행일: 2026-07-20
+- closeout 대상:
+  - `RQA-001`: S2, Fixed, G01에서 Playwright 기본 e2e browser binary와 smoke gate 복구 완료
+  - `RQA-002`: S2, Fixed, G02에서 390px/360px 모바일 브라우저 QA 완료
+  - `RQA-003`: S2, Fixed, G03에서 Chrome/Edge 호환 QA 완료
+  - `RQA-004`: S1, Fixed, G04에서 다중 계정 ownership isolation 자동 테스트와 FE security smoke 완료
+  - `RQA-005`: S1, Blocked, G05에서 DB/Prisma 운영 gate 차단 사유와 해소 조건 기록
+  - `RQA-007`: S2, Fixed, G01에서 기본 smoke selector/accessibility 계약 수정 완료
+- 완료 전 grep:
+  - `rg -n "상태: Open|심각도: S0|심각도: S1|심각도: S2" TODO/USER_WEB_RELEASE_QA_FOLLOWUP_PLAN/COMMON/ISSUE-LOG.md`: 실제 이슈 중 Open S0/S1/S2 없음. 검색 결과의 `상태: Open`은 신규 이슈 템플릿이고, 남은 S1 `RQA-005`는 Blocked로 해소 조건과 사용자 결정 필요 여부를 기록했다.
 - 수정한 이슈:
+  - 신규 제품 코드 수정 없음.
+  - 신규 API/DB schema 변경 없음.
+  - `RQA-005` Blocked의 출시 판단, 사용자 결정 필요 여부, 해소 조건을 보강했다.
 - 검증:
+  - `cd FE/user-web; pnpm.cmd run typecheck`: 통과
+  - `cd FE/user-web; pnpm.cmd run lint`: 통과
+  - `cd FE/user-web; pnpm.cmd run build`: 통과
+  - `cd FE/user-web; pnpm.cmd run test:e2e`: 통과, 8 passed
+  - `cd BE; pnpm.cmd run typecheck`: 통과
+  - `cd BE; pnpm.cmd run lint`: 통과
+  - `cd BE; pnpm.cmd run test`: 통과, 19 suites / 98 tests passed
+  - `cd BE; pnpm.cmd run build`: 통과
+  - `git diff --check`: 통과
 - 남은 리스크:
+  - `RQA-005`는 DB migration/seed/generate 운영 gate에 대해 Blocked다. DB 대상 확정과 cloud DB migration 적용 방식은 사용자 결정이 필요하다.
+  - G07에서 이번 범위 밖 BE/API 후보를 별도 계획 후보로 분리해야 한다.
+  - FE build/e2e webServer 출력의 기존 Tailwind `duration-[500ms]` ambiguity 경고와 큰 chunk 경고는 남아 있으나 G06 release closeout 실패 요인은 아니다.
 
 ### G07 Deferred BE/API Backlog Split
 
