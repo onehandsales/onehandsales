@@ -1,6 +1,6 @@
 # G02 Mobile Browser 390/360 QA
 
-상태: Ready
+상태: Done
 우선순위: P0
 담당 영역: FE/user-web
 
@@ -110,4 +110,3 @@ git diff --check
 - `RQA-002`가 `Fixed` 또는 `Blocked`로 정리되어 있다.
 - S0/S1/S2 모바일 이슈가 없거나 G06 선행 수정 대상으로 기록되어 있다.
 - 자동 검증과 수동 확인 결과가 `COMMON/QA-RESULTS.md`에 기록되어 있다.
-

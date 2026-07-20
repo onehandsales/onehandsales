@@ -18,19 +18,19 @@
 
 ### G02. 모바일 브라우저 QA 자동화
 
-- [ ] `playwright.release-qa.config.ts` 추가
-- [ ] 기존 smoke spec의 API mock helper를 `tests/e2e/support`로 분리하거나 중복 없이 재사용
-- [ ] `mobile-browser-qa.spec.ts` 추가
-- [ ] Chrome 390px project 추가
-- [ ] Chrome 360px project 추가
-- [ ] Edge 390px project 추가 또는 Edge 부재 `Blocked` 처리
-- [ ] Edge 360px project 추가 또는 Edge 부재 `Blocked` 처리
-- [ ] `test:e2e:mobile` script 추가
-- [ ] `/app` 홈, mobile header, bottom navigation 확인
-- [ ] 회사/담당자/제품/딜/일정/회의록/명함/Import/Trash route 이동 확인
-- [ ] dialog/dropdown/toast viewport 이탈 여부 확인
-- [ ] page-level horizontal overflow 확인
-- [ ] 결과를 `COMMON/QA-RESULTS.md`와 `COMMON/ISSUE-LOG.md`에 기록
+- [x] `playwright.release-qa.config.ts` 추가
+- [x] 기존 smoke spec의 API mock helper를 `tests/e2e/support`로 분리하거나 중복 없이 재사용
+- [x] `mobile-browser-qa.spec.ts` 추가
+- [x] Chrome 390px project 추가
+- [x] Chrome 360px project 추가
+- [x] Edge 390px project 추가 또는 Edge 부재 `Blocked` 처리
+- [x] Edge 360px project 추가 또는 Edge 부재 `Blocked` 처리
+- [x] `test:e2e:mobile` script 추가
+- [x] `/app` 홈, mobile header, bottom navigation 확인
+- [x] 회사/담당자/제품/딜/일정/회의록/명함/Import/Trash route 이동 확인
+- [x] dialog/dropdown/toast viewport 이탈 여부 확인
+- [x] page-level horizontal overflow 확인
+- [x] 결과를 `COMMON/QA-RESULTS.md`와 `COMMON/ISSUE-LOG.md`에 기록
 
 ### G03. Chrome/Edge 호환 QA 자동화
 

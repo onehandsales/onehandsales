@@ -41,10 +41,11 @@ UX/UI 공통 QA G02~G06 기록에서 `pnpm run test:e2e`가 로컬 Playwright `c
 
 ### RQA-002 모바일 브라우저 390px/360px 전용 QA 미완료
 
-- 상태: Open
+- 상태: Fixed
 - 심각도: S2 Major
 - 영역: FE/user-web > mobile browser QA
 - 발견일: 2026-07-20
+- 처리일: 2026-07-20
 
 #### 내용
 
@@ -53,6 +54,10 @@ UX/UI 공통 QA G02~G06 기록에서 `pnpm run test:e2e`가 로컬 Playwright `c
 #### 기대 결과
 
 390px와 360px에서 User Web 핵심 업무 흐름이 사용 가능하고, 결과가 `QA-RESULTS.md`에 기록된다.
+
+#### 처리 결과
+
+`FE/user-web/playwright.release-qa.config.ts`, `tests/e2e/mobile-browser-qa.spec.ts`, `tests/e2e/support/user-web-api-mocks.ts`를 추가해 Chrome/Edge channel의 390px/360px 모바일 QA를 `pnpm.cmd run test:e2e:mobile`로 실행 가능하게 했다. 최종 실행 결과는 12 passed이며, 보호 route redirect, 주요 `/app` route 순회, mobile header/bottom nav, long text overflow, company create dialog/dropdown/toast/keyboard focus smoke가 통과했다. 기본 `pnpm.cmd run test:e2e`는 모바일 release QA spec을 제외해 기존 smoke 2건만 실행되도록 유지했다.
 
 #### 처리 goal
 

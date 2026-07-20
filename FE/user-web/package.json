@@ -13,7 +13,8 @@
     "preview": "vite preview --host 0.0.0.0 --port 4173",
     "typecheck": "tsc -b --pretty false",
     "lint": "eslint .",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "test:e2e:mobile": "playwright test -c playwright.release-qa.config.ts tests/e2e/mobile-browser-qa.spec.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.0.0",
