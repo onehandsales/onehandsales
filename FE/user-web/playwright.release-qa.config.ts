@@ -1,6 +1,7 @@
 import { defineConfig, devices } from "@playwright/test";
 
 const mobileChrome = devices["Pixel 5"];
+const desktopChrome = devices["Desktop Chrome"];
 
 export default defineConfig({
   testDir: "./tests/e2e",
@@ -24,6 +25,7 @@ export default defineConfig({
   projects: [
     {
       name: "mobile-chrome-390",
+      testMatch: /mobile-browser-qa\.spec\.ts/,
       use: {
         ...mobileChrome,
         browserName: "chromium",
@@ -35,6 +37,7 @@ export default defineConfig({
     },
     {
       name: "mobile-chrome-360",
+      testMatch: /mobile-browser-qa\.spec\.ts/,
       use: {
         ...mobileChrome,
         browserName: "chromium",
@@ -46,6 +49,7 @@ export default defineConfig({
     },
     {
       name: "mobile-edge-390",
+      testMatch: /mobile-browser-qa\.spec\.ts/,
       use: {
         ...mobileChrome,
         browserName: "chromium",
@@ -57,6 +61,7 @@ export default defineConfig({
     },
     {
       name: "mobile-edge-360",
+      testMatch: /mobile-browser-qa\.spec\.ts/,
       use: {
         ...mobileChrome,
         browserName: "chromium",
@@ -64,6 +69,26 @@ export default defineConfig({
         hasTouch: true,
         isMobile: true,
         viewport: { width: 360, height: 740 },
+      },
+    },
+    {
+      name: "desktop-chrome",
+      testMatch: /browser-compat-qa\.spec\.ts/,
+      use: {
+        ...desktopChrome,
+        browserName: "chromium",
+        channel: "chrome",
+        viewport: { width: 1440, height: 1000 },
+      },
+    },
+    {
+      name: "desktop-edge",
+      testMatch: /browser-compat-qa\.spec\.ts/,
+      use: {
+        ...desktopChrome,
+        browserName: "chromium",
+        channel: "msedge",
+        viewport: { width: 1440, height: 1000 },
       },
     },
   ],

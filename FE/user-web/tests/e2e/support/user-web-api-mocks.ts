@@ -30,7 +30,7 @@ type MockApiResponse = {
 
 type MutableRecord = Record<string, unknown>;
 
-type MobileQaStore = {
+export type UserWebApiMockStore = {
   readonly companyField: MutableRecord;
   readonly companyRegion: MutableRecord;
   readonly contactDepartment: MutableRecord;
@@ -50,8 +50,22 @@ type MobileQaStore = {
   readonly counters: Record<string, number>;
 };
 
-export async function setupUserWebApiMocks(page: Page) {
-  const store = createStore();
+type ApiDelayResolver = (request: ApiRequestRecord) => number;
+
+type SetupUserWebApiMockOptions = {
+  readonly delayMs?: number | ApiDelayResolver;
+  readonly store?: UserWebApiMockStore;
+};
+
+export function createUserWebApiMockStore() {
+  return createStore();
+}
+
+export async function setupUserWebApiMocks(
+  page: Page,
+  options: SetupUserWebApiMockOptions = {},
+) {
+  const store = options.store ?? createStore();
   const protectedRequests: ApiRequestRecord[] = [];
 
   await page.route("**/*", async (route) => {
@@ -87,6 +101,7 @@ export async function setupUserWebApiMocks(page: Page) {
       return;
     }
 
+    await delayApiResponse(options.delayMs, { authorization, method, pathname: url.pathname });
     const response = await handleApiRequest(store, route, method, url);
     await fulfill(route, response);
   });
@@ -112,7 +127,7 @@ export async function seedAuthenticatedSession(page: Page) {
 }
 
 async function handleApiRequest(
-  store: MobileQaStore,
+  store: UserWebApiMockStore,
   route: Route,
   method: string,
   url: URL,
@@ -287,6 +302,24 @@ async function handleApiRequest(
   }
 
   const companyDetailMatch = pathname.match(/^\/api\/companies\/([^/]+)$/);
+  if (companyDetailMatch && method === "PATCH") {
+    const company = requireItem(store.companies, companyDetailMatch[1]);
+    const body = await readJsonBody(route);
+
+    if (isRecord(company) && !isApiErrorShape(company)) {
+      const nextName = stringField(body, "companyName");
+
+      if (nextName) {
+        company.companyName = nextName;
+      }
+
+      company.updatedAt = now();
+      updateCompanyReferences(store, String(company.id), nextName);
+    }
+
+    return json(company);
+  }
+
   if (companyDetailMatch && method === "GET") {
     return json(requireItem(store.companies, companyDetailMatch[1]));
   }
@@ -562,7 +595,7 @@ async function handleApiRequest(
   return json({ ok: true });
 }
 
-function createStore(): MobileQaStore {
+function createStore(): UserWebApiMockStore {
   const companyField = { field: "모바일 QA 분야", id: "field-mobile-001" };
   const companyRegion = { id: "region-mobile-001", region: "서울/수도권" };
   const contactDepartment = { departmentName: "영업기획본부", id: "department-mobile-001" };
@@ -656,6 +689,7 @@ function createStore(): MobileQaStore {
       company: 1,
       contact: 1,
       deal: 1,
+      "meeting-note": 1,
       product: 1,
       schedule: 1,
     },
@@ -738,7 +772,7 @@ function createNotificationSettings() {
   };
 }
 
-function createContact(store: MobileQaStore, body: unknown) {
+function createContact(store: UserWebApiMockStore, body: unknown) {
   return {
     company: {
       companyName: MOBILE_LONG_FIXTURE.companyName,
@@ -755,7 +789,7 @@ function createContact(store: MobileQaStore, body: unknown) {
   };
 }
 
-function createProduct(store: MobileQaStore, body: unknown) {
+function createProduct(store: UserWebApiMockStore, body: unknown) {
   return {
     createdAt: now(),
     dealCount: 0,
@@ -768,7 +802,7 @@ function createProduct(store: MobileQaStore, body: unknown) {
   };
 }
 
-function createDeal(store: MobileQaStore, body: unknown) {
+function createDeal(store: UserWebApiMockStore, body: unknown) {
   const company = toDealCompany(store.companies[0]);
   const contact = toDealContactOption(store.contacts[0]);
   const product = toDealProduct(store.products[0]);
@@ -790,7 +824,7 @@ function createDeal(store: MobileQaStore, body: unknown) {
   };
 }
 
-function createSchedule(store: MobileQaStore, body: unknown) {
+function createSchedule(store: UserWebApiMockStore, body: unknown) {
   const deal = store.deals[0];
 
   return {
@@ -807,14 +841,16 @@ function createSchedule(store: MobileQaStore, body: unknown) {
   };
 }
 
-function createMeetingNote(store: MobileQaStore, body: unknown) {
-  return createMeetingNoteFromFixtures(
+function createMeetingNote(store: UserWebApiMockStore, body: unknown) {
+  const meetingNote = createMeetingNoteFromFixtures(
     store.companies[0],
     store.contacts[0],
     store.products[0],
     store.deals[0],
     stringField(body, "title") ?? "RQA002 모바일 생성 회의록",
   );
+  meetingNote.id = nextId(store, "meeting-note");
+  return meetingNote;
 }
 
 function createMeetingNoteFromFixtures(
@@ -1032,7 +1068,7 @@ function createTrashItem() {
   };
 }
 
-function createSearchResponse(store: MobileQaStore) {
+function createSearchResponse(store: UserWebApiMockStore) {
   return {
     groups: [
       {
@@ -1212,6 +1248,72 @@ function requireTrashItem(
   return item;
 }
 
+function isApiErrorShape(value: unknown) {
+  return isRecord(value) && typeof value.statusCode === "number";
+}
+
+function updateCompanyReferences(
+  store: UserWebApiMockStore,
+  companyId: string,
+  companyName: string | null,
+) {
+  if (!companyName) {
+    return;
+  }
+
+  for (const contact of store.contacts) {
+    if (isRecord(contact.company) && contact.company.id === companyId) {
+      contact.company.companyName = companyName;
+    }
+  }
+
+  for (const deal of store.deals) {
+    updateNestedArrayLabel(deal.companies, companyId, "companyName", companyName);
+    updateNestedArrayLabel(deal.contacts, companyId, "company.companyName", companyName);
+  }
+
+  for (const meetingNote of store.meetingNotes) {
+    updateNestedArrayLabel(
+      meetingNote.companies,
+      companyId,
+      "companyNameSnapshot",
+      companyName,
+    );
+  }
+}
+
+function updateNestedArrayLabel(
+  value: unknown,
+  id: string,
+  field: string,
+  label: string,
+) {
+  if (!Array.isArray(value)) {
+    return;
+  }
+
+  for (const item of value) {
+    if (!isRecord(item)) {
+      continue;
+    }
+
+    if (field.includes(".")) {
+      const [parentField, childField] = field.split(".");
+      const nested = parentField ? item[parentField] : null;
+
+      if (isRecord(nested) && nested.id === id && childField) {
+        nested[childField] = label;
+      }
+
+      continue;
+    }
+
+    if (item.id === id || item.companyId === id) {
+      item[field] = label;
+    }
+  }
+}
+
 function hasNestedIdArray(value: unknown, id: string | undefined) {
   return Array.isArray(value) && value.some((item) => nestedId(item) === id);
 }
@@ -1290,6 +1392,22 @@ async function readJsonBody(route: Route) {
   }
 }
 
+async function delayApiResponse(
+  delayMs: number | ApiDelayResolver | undefined,
+  request: ApiRequestRecord,
+) {
+  const resolvedDelayMs =
+    typeof delayMs === "function" ? delayMs(request) : delayMs ?? 0;
+
+  if (resolvedDelayMs <= 0) {
+    return;
+  }
+
+  await new Promise((resolve) => {
+    setTimeout(resolve, resolvedDelayMs);
+  });
+}
+
 function stringField(value: unknown, field: string) {
   if (!isRecord(value)) {
     return null;
@@ -1312,7 +1430,7 @@ function isRecord(value: unknown): value is MutableRecord {
   return typeof value === "object" && value !== null;
 }
 
-function nextId(store: MobileQaStore, prefix: string) {
+function nextId(store: UserWebApiMockStore, prefix: string) {
   store.counters[prefix] = (store.counters[prefix] ?? 0) + 1;
   return `${prefix}-mobile-${String(store.counters[prefix]).padStart(3, "0")}`;
 }
