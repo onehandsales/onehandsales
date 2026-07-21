@@ -12,6 +12,7 @@ import type { ImportUploadedFileStorage } from "@/modules/data-import/applicatio
 import {
   ImportJobAlreadyClosedError,
   ImportJobExpiredError,
+  ImportJobNotFoundError,
   ImportJobNotReadyError,
   ImportConfirmValidationFailedError,
 } from "@/modules/data-import/domain/import-template.errors";
@@ -209,6 +210,22 @@ describe("DataImportApplicationService persistent import job flow", () => {
     });
   });
 
+  it("treats jobs outside the current user ownership as not found", async () => {
+    const fixture = createServiceFixture();
+    fixture.importJobRepository.findJobByIdForUser.mockResolvedValue(null);
+
+    await expect(
+      fixture.service.getImportJob(CURRENT_USER, IMPORT_JOB_ID, {})
+    ).rejects.toBeInstanceOf(ImportJobNotFoundError);
+
+    expect(fixture.importJobRepository.findJobByIdForUser).toHaveBeenCalledWith(
+      expect.objectContaining({
+        userId: CURRENT_USER.id,
+        importJobId: IMPORT_JOB_ID,
+      })
+    );
+  });
+
   it("does not mark the job failed when the transactional confirm lock fails", async () => {
     const fixture = createServiceFixture();
     fixture.importJobRepository.findJobByIdForUser.mockResolvedValue(
@@ -224,6 +241,77 @@ describe("DataImportApplicationService persistent import job flow", () => {
 
     expect(fixture.importJobRepository.updateJobStatusForUser).not.toHaveBeenCalled();
     expect(fixture.importJobRepository.createError).not.toHaveBeenCalled();
+  });
+
+  it("keeps confirm success when uploaded file deletion fails and records a storage warning", async () => {
+    const fixture = createServiceFixture();
+    fixture.importJobRepository.findJobByIdForUser.mockResolvedValue(
+      createImportJobDetail()
+    );
+    fixture.importTemplateRepository.confirmCompanyImport.mockResolvedValue({
+      importUserLogId: IMPORT_USER_LOG_ID,
+      importedRowCount: 1,
+    });
+    fixture.importUploadedFileStorage.delete.mockRejectedValue(
+      new Error("storage delete failed")
+    );
+
+    await expect(
+      fixture.service.confirmImportJob(CURRENT_USER, IMPORT_JOB_ID, {})
+    ).resolves.toEqual({
+      importJobId: IMPORT_JOB_ID,
+      importUserLogId: IMPORT_USER_LOG_ID,
+      status: "CONFIRMED",
+      importedRowCount: 1,
+    });
+
+    expect(fixture.importTemplateRepository.confirmCompanyImport).toHaveBeenCalled();
+    expect(
+      fixture.importJobRepository.updateUploadedFileStatusForUser
+    ).not.toHaveBeenCalledWith(
+      expect.objectContaining({
+        status: "DELETED",
+      })
+    );
+    expect(fixture.importJobRepository.createError).toHaveBeenCalledWith(
+      expect.objectContaining({
+        userId: CURRENT_USER.id,
+        importJobId: IMPORT_JOB_ID,
+        errorType: "STORAGE",
+        errorCode: "STORAGE_DELETE_FAILED",
+        severity: "WARNING",
+        retryable: true,
+      })
+    );
+  });
+
+  it("does not write raw row values to import logs during confirm", async () => {
+    const fixture = createServiceFixture();
+    const rawEmail = "raw-secret@example.com";
+    const rawPhone = "010-1111-2222";
+    fixture.importJobRepository.findJobByIdForUser.mockResolvedValue(
+      createImportJobDetail({
+        rows: [
+          createImportJobRow({
+            rawDataJson: {
+              companyName: "Acme",
+              contactEmail: rawEmail,
+              contactPhone: rawPhone,
+            },
+          }),
+        ],
+      })
+    );
+    fixture.importTemplateRepository.confirmCompanyImport.mockResolvedValue({
+      importUserLogId: IMPORT_USER_LOG_ID,
+      importedRowCount: 1,
+    });
+
+    await fixture.service.confirmImportJob(CURRENT_USER, IMPORT_JOB_ID, {});
+
+    const logs = JSON.stringify(fixture.logger.log.mock.calls);
+    expect(logs).not.toContain(rawEmail);
+    expect(logs).not.toContain(rawPhone);
   });
 
   it("records a redacted ImportJobError when confirm validation fails", async () => {
@@ -413,6 +501,7 @@ function createServiceFixture() {
     importTemplateRepository,
     importJobRepository,
     importUploadedFileStorage,
+    logger,
   };
 }
 

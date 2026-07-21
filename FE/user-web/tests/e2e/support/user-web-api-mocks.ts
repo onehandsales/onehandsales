@@ -541,19 +541,30 @@ async function handleApiRequest(
 
   const importJobMatch = pathname.match(/^\/api\/imports\/([^/]+)$/);
   if (importJobMatch && method === "GET") {
-    return json(requireImportJobDetail(store, importJobMatch[1]));
+    const detail = requireImportJobDetail(store, importJobMatch[1]);
+    return importJobResponse(detail);
   }
 
   const importJobMapMatch = pathname.match(/^\/api\/imports\/([^/]+)\/map$/);
   if (importJobMapMatch && method === "POST") {
     const detail = requireImportJobDetail(store, importJobMapMatch[1]);
-    updateImportJobDetail(detail, { status: "READY_TO_CONFIRM" });
+    const errorResponse = importJobErrorResponse(detail);
+    if (errorResponse) {
+      return errorResponse;
+    }
+    detail.mapping = { companyName: "companyName", email: "email" };
+    updateImportJobDetail(detail, { mappingSource: "AI" });
+    recalculateImportJobSummary(detail);
     return json(detail);
   }
 
   const importJobMappingMatch = pathname.match(/^\/api\/imports\/([^/]+)\/mapping$/);
   if (importJobMappingMatch && method === "PATCH") {
     const detail = requireImportJobDetail(store, importJobMappingMatch[1]);
+    const errorResponse = importJobErrorResponse(detail);
+    if (errorResponse) {
+      return errorResponse;
+    }
     const body = await readJsonBody(route);
     const mapping = nestedRecord(body.mapping);
     detail.mapping = {
@@ -567,6 +578,10 @@ async function handleApiRequest(
   const importJobRowsMatch = pathname.match(/^\/api\/imports\/([^/]+)\/rows$/);
   if (importJobRowsMatch && method === "PATCH") {
     const detail = requireImportJobDetail(store, importJobRowsMatch[1]);
+    const errorResponse = importJobErrorResponse(detail);
+    if (errorResponse) {
+      return errorResponse;
+    }
     const body = await readJsonBody(route);
     const rows = Array.isArray(body.rows) ? body.rows.filter(isRecord) : [];
 
@@ -575,7 +590,15 @@ async function handleApiRequest(
         return row;
       }
 
-      const update = rows.find((item) => item.rowId === row.rowId);
+      const rowId = stringField(row, "rowId") ?? stringField(row, "id");
+      const update =
+        rowId === null
+          ? undefined
+          : rows.find((item) => {
+              const updateRowId =
+                stringField(item, "rowId") ?? stringField(item, "id");
+              return updateRowId === rowId;
+            });
 
       if (!update) {
         return row;
@@ -616,6 +639,10 @@ async function handleApiRequest(
   const importJobValidateMatch = pathname.match(/^\/api\/imports\/([^/]+)\/validate$/);
   if (importJobValidateMatch && method === "POST") {
     const detail = requireImportJobDetail(store, importJobValidateMatch[1]);
+    const errorResponse = importJobErrorResponse(detail);
+    if (errorResponse) {
+      return errorResponse;
+    }
     recalculateImportJobSummary(detail);
     return json(detail);
   }
@@ -623,6 +650,10 @@ async function handleApiRequest(
   const importJobConfirmMatch = pathname.match(/^\/api\/imports\/([^/]+)\/confirm$/);
   if (importJobConfirmMatch && method === "POST") {
     const detail = requireImportJobDetail(store, importJobConfirmMatch[1]);
+    const errorResponse = importJobErrorResponse(detail);
+    if (errorResponse) {
+      return errorResponse;
+    }
     const importUserLogId = "import-user-log-mobile-001";
     updateImportJobDetail(detail, {
       importedRowCount: numberField(nestedRecord(detail.job), "validRowCount") ?? 1,
@@ -641,6 +672,10 @@ async function handleApiRequest(
   const importJobCancelMatch = pathname.match(/^\/api\/imports\/([^/]+)\/cancel$/);
   if (importJobCancelMatch && method === "POST") {
     const detail = requireImportJobDetail(store, importJobCancelMatch[1]);
+    const errorResponse = importJobErrorResponse(detail);
+    if (errorResponse) {
+      return errorResponse;
+    }
     updateImportJobDetail(detail, { status: "CANCELED" });
     return json(null, 204);
   }
@@ -648,6 +683,10 @@ async function handleApiRequest(
   const importJobErrorsMatch = pathname.match(/^\/api\/imports\/([^/]+)\/errors$/);
   if (importJobErrorsMatch && method === "GET") {
     const detail = requireImportJobDetail(store, importJobErrorsMatch[1]);
+    const errorResponse = importJobErrorResponse(detail);
+    if (errorResponse) {
+      return errorResponse;
+    }
     return json({ items: Array.isArray(detail.errors) ? detail.errors : [] });
   }
 
@@ -1195,7 +1234,10 @@ function createImportJobDetail(
   };
 }
 
-function requireImportJobDetail(store: UserWebApiMockStore, id: string | undefined) {
+function requireImportJobDetail(
+  store: UserWebApiMockStore,
+  id: string | undefined,
+): MutableRecord {
   const detail = store.importJobs.find((item) => nestedId(nestedRecord(item.job)) === id);
 
   if (!detail) {
@@ -1209,6 +1251,21 @@ function requireImportJobDetail(store: UserWebApiMockStore, id: string | undefin
   return detail;
 }
 
+function importJobResponse(detail: MutableRecord): MockApiResponse {
+  return importJobErrorResponse(detail) ?? json(detail);
+}
+
+function importJobErrorResponse(detail: MutableRecord): MockApiResponse | null {
+  const statusCode = numberField(detail, "statusCode");
+  const code = stringField(detail, "code");
+
+  if (statusCode === null || code === null) {
+    return null;
+  }
+
+  return json(detail, statusCode);
+}
+
 function updateImportJobDetail(detail: MutableRecord, patch: MutableRecord) {
   const job = nestedRecord(detail.job);
   detail.job = {
@@ -1219,7 +1276,36 @@ function updateImportJobDetail(detail: MutableRecord, patch: MutableRecord) {
 }
 
 function recalculateImportJobSummary(detail: MutableRecord) {
-  const rows = Array.isArray(detail.rows) ? detail.rows.filter(isRecord) : [];
+  const rows = (Array.isArray(detail.rows) ? detail.rows.filter(isRecord) : []).map(
+    (row) => {
+      if (row.status === "EXCLUDED") {
+        return {
+          ...row,
+          errors: [],
+        };
+      }
+
+      const data = nestedRecord(row.data);
+      const companyName = stringField(data, "companyName") ?? "";
+      const errors =
+        companyName.trim().length === 0
+          ? [
+              {
+                code: "InvalidImportField",
+                fieldKey: "companyName",
+                message: "회사명을 입력해 주세요.",
+              },
+            ]
+          : [];
+
+      return {
+        ...row,
+        errors,
+        status: errors.length > 0 ? "INVALID" : "VALID",
+      };
+    },
+  );
+  detail.rows = rows;
   const validRowCount = rows.filter((row) => row.status === "VALID").length;
   const invalidRowCount = rows.filter((row) => row.status === "INVALID").length;
 

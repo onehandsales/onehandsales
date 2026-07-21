@@ -170,6 +170,10 @@ export function ImportReviewScreen({ importJobId }: ImportReviewScreenProps) {
     !hasDirtyRows &&
     !isClosed;
   const primaryLabel = getPrimaryActionLabel(detail.job.status, hasDirtyRows);
+  const primaryActionKind = getPrimaryActionKind(
+    detail.job.status,
+    hasDirtyRows
+  );
 
   const changeMapping = async (fieldKey: string, sourceColumn: string) => {
     if (isClosed || isBusy) {
@@ -235,7 +239,7 @@ export function ImportReviewScreen({ importJobId }: ImportReviewScreenProps) {
       return;
     }
 
-    await updateRowsMutation.mutateAsync({
+    const updatedDetail = await updateRowsMutation.mutateAsync({
       importJobId,
       rows: rows.map((row) => ({
         rowId: row.rowId,
@@ -243,6 +247,8 @@ export function ImportReviewScreen({ importJobId }: ImportReviewScreenProps) {
         excluded: row.excluded,
       })),
     });
+    setDraftRows(toDraftRows(updatedDetail.rows));
+    setDirtyRowIds(new Set());
   };
 
   const runPrimaryAction = async () => {
@@ -357,6 +363,7 @@ export function ImportReviewScreen({ importJobId }: ImportReviewScreenProps) {
             {!isClosed ? (
               <button
                 className="hidden h-9 items-center justify-center rounded-md border border-red-200 bg-white px-3 text-[13px] font-semibold text-red-600 transition hover:bg-red-50 sm:inline-flex"
+                data-testid="import-review-cancel-action"
                 disabled={isBusy}
                 onClick={() => setCancelDialogOpen(true)}
                 type="button"
@@ -367,6 +374,7 @@ export function ImportReviewScreen({ importJobId }: ImportReviewScreenProps) {
             {isClosed ? (
               <button
                 className="inline-flex h-10 flex-1 items-center justify-center rounded-md border border-[#1F4EF5] bg-[#1F4EF5] px-4 text-[13px] font-semibold text-white transition hover:bg-[#173FD0] sm:flex-none"
+                data-testid="import-review-new-file-action"
                 onClick={() => navigate("/app/import")}
                 type="button"
               >
@@ -375,6 +383,7 @@ export function ImportReviewScreen({ importJobId }: ImportReviewScreenProps) {
             ) : (
               <button
                 className="inline-flex h-10 flex-1 items-center justify-center gap-1.5 rounded-md border border-[#1F4EF5] bg-[#1F4EF5] px-4 text-[13px] font-semibold text-white transition hover:bg-[#173FD0] disabled:cursor-not-allowed disabled:opacity-60 sm:flex-none"
+                data-import-action={primaryActionKind}
                 data-testid="import-review-primary-action"
                 disabled={
                   isBusy ||
@@ -1047,6 +1056,25 @@ function getPrimaryActionLabel(status: ImportJobStatus, hasDirtyRows: boolean) {
   }
 
   return "검증하기";
+}
+
+function getPrimaryActionKind(
+  status: ImportJobStatus,
+  hasDirtyRows: boolean
+): "map" | "save" | "confirm" | "validate" {
+  if (status === "UPLOADED") {
+    return "map";
+  }
+
+  if (hasDirtyRows) {
+    return "save";
+  }
+
+  if (status === "READY_TO_CONFIRM") {
+    return "confirm";
+  }
+
+  return "validate";
 }
 
 function getCurrentStep(status: ImportJobStatus) {
