@@ -52,13 +52,13 @@ Backend에서 반드시 DTO 이름을 맞춘다:
 ### 4.1 Upload
 
 1. `AuthGuard`로 현재 사용자를 확인한다.
-2. `targetType`, `templateId`, file을 validation한다.
-3. active `ImportTemplate`을 조회하고 `targetType`과 일치하는지 확인한다.
+2. `targetType`, file을 validation한다.
+3. `targetType` 기준 active `ImportTemplate`을 조회하고 선택된 template id를 `ImportJob.templateId`에 저장한다.
 4. file name, byte size, MIME type, checksum을 계산한다.
 5. 원본 file binary는 storage adapter에 저장한다.
-6. CSV/XLS/XLSX parser로 raw row를 만든다.
+6. CSV/XLS/XLSX parser로 `sourceColumns`와 raw row를 만든다.
 7. `expiresAt = now + 7 days`로 계산한다.
-8. DB transaction에서 `ImportJob`, `ImportUploadedFile`, `ImportJobRow`를 생성한다.
+8. DB transaction에서 `ImportJob.sourceColumnsJson`, `ImportUploadedFile`, `ImportJobRow`를 생성한다.
 9. parse warning이나 초기 validation 오류가 있으면 `ImportJobError`를 redacted 형태로 생성한다.
 10. `ImportJobDetailResponse`를 반환한다.
 
@@ -66,7 +66,7 @@ Backend에서 반드시 DTO 이름을 맞춘다:
 
 1. `importJobId`, `userId`로 job ownership을 확인한다.
 2. job이 active 상태인지 확인한다.
-3. template columns와 file headers를 가져온다.
+3. template columns와 `sourceColumns`를 가져온다.
 4. AI provider 호출은 transaction 밖에서 실행한다.
 5. AI 실패 시 rule-based mapping fallback을 실행한다.
 6. DB transaction에서 `ImportJob.mappingJson`, `mappingSource`, `status`와 row mapped/validation 결과를 저장한다.
@@ -122,6 +122,11 @@ Backend에서 반드시 DTO 이름을 맞춘다:
 - `POST /api/imports/:importJobId/confirm`
 - `POST /api/imports/:importJobId/cancel`
 - `GET /api/imports/:importJobId/errors`
+
+라우트 선언 순서:
+
+- `GET /api/imports/active`는 `GET /api/imports/:importJobId`보다 먼저 선언한다.
+- 그렇지 않으면 `active`가 `importJobId` path param으로 해석되어 UUID validation에서 실패할 수 있다.
 
 ### Application Use Cases
 

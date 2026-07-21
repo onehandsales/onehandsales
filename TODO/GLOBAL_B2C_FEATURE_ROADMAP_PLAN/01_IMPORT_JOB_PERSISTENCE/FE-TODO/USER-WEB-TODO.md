@@ -49,6 +49,12 @@ Route 정책:
 | 취소 | `POST /api/imports/:importJobId/cancel` | `/app/import`로 이동 |
 | 문제 이력 열기 | `GET /api/imports/:importJobId/errors` | 기본 화면이 아니라 보조 panel에서만 표시 |
 
+Upload request 기준:
+
+- User Web은 사용자가 선택한 대상(`COMPANY`, `CONTACT`, `PRODUCT`, `DEAL`)과 file만 `POST /api/imports`에 보낸다.
+- `templateId`는 사용자에게 노출하지 않는다. Backend가 `targetType` 기준 active template을 찾아 `ImportJob.templateId`에 저장한다.
+- 업로드 후 response의 `sourceColumns`와 `templateColumns`를 기준으로 mapping UI를 복구한다.
+
 ## 4. Query Key
 
 기존 query key 네이밍 규칙을 따르되, 아래 단위를 분리한다.

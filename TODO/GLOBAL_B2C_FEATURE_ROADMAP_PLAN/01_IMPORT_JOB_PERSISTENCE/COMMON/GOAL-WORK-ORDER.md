@@ -40,7 +40,7 @@
 cd BE
 pnpm run prisma:validate
 pnpm run prisma:generate
-pnpm run prisma:migrate:dev
+pnpm run prisma:migrate
 pnpm run typecheck
 pnpm run test -- data-import
 ```
@@ -64,7 +64,7 @@ pnpm run test -- data-import
 작업:
 
 1. DTO/request/response 타입을 API spec과 맞춘다.
-2. `GET /api/imports/active`를 추가한다.
+2. `GET /api/imports/active`를 추가한다. controller에서는 `GET /api/imports/:importJobId`보다 먼저 선언한다.
 3. `POST /api/imports` upload flow가 DB에 job/file/row를 생성하게 바꾼다.
 4. `GET /api/imports/:importJobId`가 DB에서 detail을 조회하게 바꾼다.
 5. `POST /api/imports/:importJobId/map`이 mapping과 row validation을 DB에 저장하게 바꾼다.

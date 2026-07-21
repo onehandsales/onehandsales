@@ -116,6 +116,7 @@ model ImportJob {
   targetType          ImportTemplateType
   templateVersion     String
   templateColumnsJson Json
+  sourceColumnsJson   Json
   status              ImportJobStatus        @default(UPLOADED)
   mappingJson         Json                   @default("{}")
   mappingSource       ImportJobMappingSource @default(NONE)
@@ -297,6 +298,7 @@ CREATE TABLE "ImportJob" (
   "targetType" "ImportTemplateType" NOT NULL,
   "templateVersion" TEXT NOT NULL,
   "templateColumnsJson" JSONB NOT NULL,
+  "sourceColumnsJson" JSONB NOT NULL,
   "status" "ImportJobStatus" NOT NULL DEFAULT 'UPLOADED',
   "mappingJson" JSONB NOT NULL DEFAULT '{}',
   "mappingSource" "ImportJobMappingSource" NOT NULL DEFAULT 'NONE',
@@ -348,7 +350,7 @@ CREATE TABLE "ImportJobRow" (
   CONSTRAINT "ImportJobRow_pkey" PRIMARY KEY ("id"),
   CONSTRAINT "ImportJobRow_importJobId_fkey" FOREIGN KEY ("importJobId") REFERENCES "ImportJob"("id") ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT "ImportJobRow_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE,
-  CONSTRAINT "ImportJobRow_rowNumber_check" CHECK ("rowNumber" > 0)
+  CONSTRAINT "ImportJobRow_rowNumber_check" CHECK ("rowNumber" > 1)
 );
 
 CREATE TABLE "ImportJobError" (
@@ -370,7 +372,7 @@ CREATE TABLE "ImportJobError" (
   CONSTRAINT "ImportJobError_importJobId_fkey" FOREIGN KEY ("importJobId") REFERENCES "ImportJob"("id") ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT "ImportJobError_importJobRowId_fkey" FOREIGN KEY ("importJobRowId") REFERENCES "ImportJobRow"("id") ON DELETE SET NULL ON UPDATE CASCADE,
   CONSTRAINT "ImportJobError_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE,
-  CONSTRAINT "ImportJobError_rowNumber_check" CHECK ("rowNumber" IS NULL OR "rowNumber" > 0)
+  CONSTRAINT "ImportJobError_rowNumber_check" CHECK ("rowNumber" IS NULL OR "rowNumber" > 1)
 );
 
 CREATE TABLE "ImportUploadedFile" (
@@ -429,8 +431,9 @@ COMMENT ON COLUMN "ImportJob"."templateId" IS '업로드 당시 사용한 Import
 COMMENT ON COLUMN "ImportJob"."targetType" IS '가져오기 대상. COMPANY, CONTACT, PRODUCT, DEAL 중 하나이다.';
 COMMENT ON COLUMN "ImportJob"."templateVersion" IS '업로드 당시 ImportTemplate version snapshot.';
 COMMENT ON COLUMN "ImportJob"."templateColumnsJson" IS '업로드 당시 template column 정의 snapshot. 이후 template 변경의 영향을 받지 않는다.';
+COMMENT ON COLUMN "ImportJob"."sourceColumnsJson" IS '원본 파일 header 순서 snapshot. 새로고침/서버 재시작 후 매핑 UI 복구와 AI/rule mapping 입력으로 사용한다.';
 COMMENT ON COLUMN "ImportJob"."status" IS '확정 전 작업 상태. UI 단계 복구와 confirm 가능 여부 판단에 사용한다.';
-COMMENT ON COLUMN "ImportJob"."mappingJson" IS '파일 header 또는 column key를 template field key에 연결한 매핑 JSON.';
+COMMENT ON COLUMN "ImportJob"."mappingJson" IS 'template field key를 원본 파일 header/source column에 연결한 매핑 JSON.';
 COMMENT ON COLUMN "ImportJob"."mappingSource" IS '현재 매핑의 출처. NONE, AI, RULE_BASED, USER 중 하나이다.';
 COMMENT ON COLUMN "ImportJob"."contextLabel" IS '담당자/딜처럼 화면에 보여줄 선택 context label.';
 COMMENT ON COLUMN "ImportJob"."contextJson" IS 'confirm 시 필요한 context snapshot. raw PII 또는 provider 원문을 넣지 않는다.';
@@ -455,7 +458,7 @@ COMMENT ON TABLE "ImportJobRow" IS '업로드 파일의 각 row와 매핑/정규
 COMMENT ON COLUMN "ImportJobRow"."id" IS 'ImportJobRow UUID primary key.';
 COMMENT ON COLUMN "ImportJobRow"."importJobId" IS '소속 ImportJob ID.';
 COMMENT ON COLUMN "ImportJobRow"."userId" IS '소유 사용자 ID. row 단위 ownership 필터와 보조 index에 사용한다.';
-COMMENT ON COLUMN "ImportJobRow"."rowNumber" IS '원본 파일 기준 data row 번호. header 다음 첫 data row를 1로 본다.';
+COMMENT ON COLUMN "ImportJobRow"."rowNumber" IS '원본 파일 실제 row 번호. header row는 1, 첫 data row는 2로 본다.';
 COMMENT ON COLUMN "ImportJobRow"."rawDataJson" IS '파일에서 읽은 원본 row 값. API/log에는 원문을 노출하지 않는다.';
 COMMENT ON COLUMN "ImportJobRow"."mappedDataJson" IS 'template field key 기준으로 매핑된 row 값.';
 COMMENT ON COLUMN "ImportJobRow"."normalizedDataJson" IS 'confirm에 사용할 정규화 row 값. 날짜/금액/전화번호 등 normalize 이후 값이다.';
@@ -473,7 +476,7 @@ COMMENT ON COLUMN "ImportJobError"."userId" IS '오류가 속한 사용자 ID. �
 COMMENT ON COLUMN "ImportJobError"."errorType" IS '오류 분류. PARSE, AI_MAPPING, VALIDATION, CONFIRM, STORAGE, SYSTEM 중 하나이다.';
 COMMENT ON COLUMN "ImportJobError"."errorCode" IS 'application/domain error code.';
 COMMENT ON COLUMN "ImportJobError"."severity" IS '오류 심각도. INFO, WARNING, ERROR 중 하나이다.';
-COMMENT ON COLUMN "ImportJobError"."rowNumber" IS 'row 관련 오류일 때 원본 파일 row 번호.';
+COMMENT ON COLUMN "ImportJobError"."rowNumber" IS 'row 관련 오류일 때 원본 파일 실제 row 번호. header row는 1, 첫 data row는 2로 본다.';
 COMMENT ON COLUMN "ImportJobError"."fieldKey" IS 'field 관련 오류일 때 template field key.';
 COMMENT ON COLUMN "ImportJobError"."safeMessage" IS '사용자에게 보여줘도 되는 안전한 오류 메시지.';
 COMMENT ON COLUMN "ImportJobError"."detailJson" IS '지원/디버깅용 redacted detail. raw row, prompt, provider 원문, PII를 넣지 않는다.';
@@ -522,7 +525,7 @@ COMMENT ON COLUMN "ImportUploadedFile"."updatedAt" IS 'metadata row 마지막 �
 ```powershell
 cd BE
 pnpm run prisma:generate
-pnpm run prisma:migrate:dev
+pnpm run prisma:migrate
 pnpm run test -- data-import
 ```
 

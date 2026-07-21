@@ -12,7 +12,7 @@
 
 | 항목 | 확정 내용 |
 |---|---|
-| ImportJob 영속화 | 확정 전 작업 header, 상태, mapping, summary, TTL을 DB에 저장한다. |
+| ImportJob 영속화 | 확정 전 작업의 원본 header snapshot(`sourceColumns`), 상태, mapping, summary, TTL을 DB에 저장한다. |
 | ImportJobRow 영속화 | raw row, mapped row, normalized row, validation errors, row status를 DB에 저장한다. |
 | ImportJobError | import 작업 단위 오류 이력을 redacted 형태로 저장한다. 사용자 cell 오류는 row에도 저장한다. |
 | ImportUploadedFile | 업로드 원본 파일 metadata와 storage key를 저장한다. binary는 DB에 저장하지 않는다. |

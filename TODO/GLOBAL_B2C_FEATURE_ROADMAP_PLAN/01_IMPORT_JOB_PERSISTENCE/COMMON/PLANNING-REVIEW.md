@@ -77,8 +77,14 @@ AGENT 기준:
 | Resolved | `COMMON/API-SPEC` | API-SPEC 폴더 안내 문서가 없었다. | `COMMON/API-SPEC/README.md` 추가 |
 | Resolved | `FE-TODO`, `USER-FLOW`, `API-SPEC` | 기존 성공 이력 route `/app/import/:importUserLogId`와 확정 전 job route `/app/import/:importJobId`가 충돌할 수 있었다. | 확정 전 review route를 `/app/import/review/:importJobId`로 분리 |
 | Resolved | `DB-SCHEMA`, `API-SPEC`, `FE-TODO` | confirmed job 재조회 시 성공 이력 상세 route를 확정적으로 알 수 있는 link가 부족했다. | `ImportJob.importUserLogId` nullable link와 response field 추가 |
+| Resolved | `DB-SCHEMA`, `API-SPEC` | 기존 parser/store는 `sourceColumns`를 핵심 상태로 사용하지만 DB/API 계약에 header snapshot 필드가 빠져 있었다. | `ImportJob.sourceColumnsJson`과 `ImportJobDetailResponse.sourceColumns` 추가 |
+| Resolved | `API-SPEC`, `BE-TODO`, `FE-TODO` | `CreateImportJobRequest.templateId` 필수 계약이 현재 단순 UX와 기존 API 흐름과 충돌했다. | request는 `targetType`과 file만 받고 Backend가 active template을 찾아 `ImportJob.templateId`에 저장하도록 확정 |
+| Resolved | `DB-SCHEMA`, `API-SPEC`, `BE-TODO` | mapping 설명이 일부 문서에서 file header -> template field 방향으로 적혀 있었지만 현재 구현은 template field key -> source column이다. | mapping 방향을 `template field key -> source column`으로 통일 |
+| Resolved | `DB-SCHEMA`, `API-SPEC`, `G01` | `rowNumber`가 문서에서는 첫 data row 1, 실제 parser/DTO에서는 첫 data row 2로 달랐다. | 원본 파일 실제 row 번호 정책으로 통일. header row는 1, 첫 data row는 2 |
+| Resolved | `GOAL-WORK-ORDER`, `G01`, `DB-SCHEMA` | 검증 명령이 실제 `BE/package.json` script와 달랐다. | `pnpm run prisma:migrate`로 수정 |
+| Resolved | `BE-TODO`, `G02` | `GET /api/imports/active`가 동적 `:importJobId` route에 잡힐 수 있었다. | controller 선언 순서를 `active` 먼저로 명시 |
 
-Critical/Major 문제는 없다.
+재검토에서 발견한 Critical/Major 후보는 위와 같이 모두 resolved로 반영했다. 현재 기준으로 구현 착수 전 미해결 Critical/Major 문제는 없다.
 
 ## 4. AGENT 기준 적합성
 

@@ -48,9 +48,11 @@ DB schema:
 
 - `BE-TODO/DB-SCHEMA.md`를 그대로 Prisma schema와 migration 기준으로 사용한다.
 - 원본 파일 binary는 DB에 저장하지 않는다.
+- `ImportJob.sourceColumnsJson`에는 원본 파일 header 순서를 snapshot으로 저장한다.
 - JSON field에는 raw row를 저장할 수 있지만 structured log와 API response에는 원문을 노출하지 않는다.
 - `userId` ownership field는 모든 신규 table에 둔다.
 - `expiresAt`은 UTC instant이고 기본 정책은 생성 후 7일이다.
+- `ImportJobRow.rowNumber`는 원본 파일 실제 row 번호를 사용한다. header row는 1, 첫 data row는 2이다.
 
 Repository:
 
@@ -79,7 +81,7 @@ pnpm run typecheck
 pnpm run test -- data-import
 ```
 
-`pnpm run prisma:migrate:dev`는 DB target이 로컬 dev/test로 확인된 경우에만 실행한다.
+`pnpm run prisma:migrate`는 DB target이 로컬 dev/test로 확인된 경우에만 실행한다.
 
 ## 8. 완료 기준
 

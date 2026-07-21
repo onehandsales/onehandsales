@@ -80,8 +80,9 @@
 | 필드 | 타입 | nullable | 설명 |
 |---|---|---:|---|
 | `job` | `ImportJobSummaryResponse` | no | job 요약 |
-| `templateColumns` | `ImportTemplateColumn[]` | no | 확정 당시 template column snapshot |
-| `mapping` | object | no | 업로드 파일 header -> template field mapping |
+| `templateColumns` | `ImportTemplateColumn[]` | no | 업로드 당시 template column snapshot |
+| `sourceColumns` | `string[]` | no | 원본 파일 header 순서 snapshot |
+| `mapping` | object | no | template field key -> 원본 파일 source column mapping |
 | `rows` | `ImportJobRowResponse[]` | no | preview rows |
 | `errors` | `ImportJobErrorResponse[]` | no | job 단위 최신 오류. UI 기본 화면에서는 숨길 수 있다. |
 
@@ -90,7 +91,7 @@
 | 필드 | 타입 | nullable | 설명 |
 |---|---|---:|---|
 | `rowId` | string | no | ImportJobRow ID |
-| `rowNumber` | number | no | 원본 파일 row 번호 |
+| `rowNumber` | number | no | 원본 파일 실제 row 번호. header row는 1, 첫 data row는 2 |
 | `status` | `ImportJobRowStatus` | no | row 상태 |
 | `data` | object | no | 현재 화면에 보여줄 mapped data |
 | `targetLabel` | string | yes | 생성 대상 대표 label |
@@ -110,7 +111,7 @@
 |---|---|---:|---|
 | `id` | string | no | ImportJobError ID |
 | `rowId` | string | yes | row 오류면 row ID |
-| `rowNumber` | number | yes | row 번호 |
+| `rowNumber` | number | yes | 원본 파일 실제 row 번호. header row는 1, 첫 data row는 2 |
 | `fieldKey` | string | yes | field 오류면 field key |
 | `errorType` | string | no | `PARSE`, `AI_MAPPING`, `VALIDATION`, `CONFIRM`, `STORAGE`, `SYSTEM` |
 | `errorCode` | string | no | 내부 domain/application error code |
@@ -233,21 +234,22 @@ Body:
 | 필드 | 타입 | 필수 | 설명 |
 |---|---|---|---|
 | `targetType` | enum | 필수 | `COMPANY`, `CONTACT`, `PRODUCT`, `DEAL` |
-| `templateId` | string | 필수 | 활성 import template ID |
 | `file` | file | 필수 | CSV/XLS/XLSX. 현재 파일 크기 제한은 기존 구현 제한을 유지한다. |
+
+`templateId`는 사용자가 직접 선택하거나 request로 넘기지 않는다. Backend가 `targetType`의 active import template을 조회하고, 선택된 template id를 `ImportJob.templateId`에 저장한다.
 
 ### 비즈니스 로직 흐름
 
 1. AuthGuard로 현재 사용자를 확인한다.
 2. multipart request를 validation한다.
-3. `templateId`, `targetType`, `isActive = true`인 template을 조회한다.
+3. `targetType`, `isActive = true`인 active template을 조회한다.
 4. 파일명, MIME, byte size, checksum을 계산한다.
 5. 원본 파일을 storage adapter에 저장한다.
-6. 파일을 parsing해 raw row를 만든다.
+6. 파일을 parsing해 `sourceColumns`와 raw row를 만든다.
 7. `expiresAt = now + 7일`으로 계산한다.
-8. transaction 안에서 `ImportJob`, `ImportUploadedFile`, `ImportJobRow`를 생성한다.
+8. transaction 안에서 `ImportJob.sourceColumnsJson`, `ImportUploadedFile`, `ImportJobRow`를 생성한다.
 9. parsing warning 또는 validation 초기 오류가 있으면 `ImportJobError`와 row errors를 저장한다.
-10. 생성된 job summary를 반환한다.
+10. 생성된 `ImportJobDetailResponse`를 반환한다.
 
 ### Response
 
@@ -402,7 +404,7 @@ Body:
 
 1. 현재 사용자와 job ownership을 확인한다.
 2. job status가 mapping 가능한 상태인지 확인한다.
-3. template columns와 file headers를 가져온다.
+3. template columns와 `sourceColumns`를 가져온다.
 4. AI provider를 transaction 밖에서 호출한다.
 5. AI 실패 시 rule-based fallback을 수행한다.
 6. mapping 결과로 rows를 mapped/validated 상태로 변환한다.
@@ -472,7 +474,7 @@ Body:
 
 | 필드 | 타입 | 필수 | 설명 |
 |---|---|---|---|
-| `mapping` | object | 필수 | file header 또는 column key -> template field key mapping |
+| `mapping` | object | 필수 | template field key -> 원본 파일 source column mapping |
 
 ### 비즈니스 로직 흐름
 

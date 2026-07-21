@@ -70,6 +70,8 @@ Controller:
 
 - controller는 request validation과 use case 호출만 담당한다.
 - Prisma 직접 접근을 controller에 두지 않는다.
+- `GET /api/imports/active`는 `GET /api/imports/:importJobId`보다 먼저 선언한다.
+- `POST /api/imports` request는 사용자 단순성을 위해 `targetType`과 file만 받는다. Backend가 active template을 찾아 `ImportJob.templateId`에 저장한다.
 
 Application:
 
