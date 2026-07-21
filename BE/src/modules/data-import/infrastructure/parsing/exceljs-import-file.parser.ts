@@ -5,7 +5,12 @@ import type {
   ParsedImportFile,
   ParsedImportRow,
 } from "@/modules/data-import/application/ports/import-file-parser.port";
+import {
+  ImportFileParseFailedError,
+  UnsupportedImportFileTypeError,
+} from "@/modules/data-import/domain/import-template.errors";
 import { ValidationDomainError } from "@/shared/domain/errors/common.errors";
+import { DomainError } from "@/shared/domain/errors/domain-error";
 
 const MAX_IMPORT_FILE_SIZE_BYTES = 10 * 1024 * 1024;
 const ALLOWED_EXTENSIONS = new Set(["csv", "xlsx"]);
@@ -17,11 +22,19 @@ export class ExceljsImportFileParser implements ImportFileParser {
   async parse(file: ImportUploadedFile): Promise<ParsedImportFile> {
     this.assertFile(file);
 
-    if (this.getExtension(file.originalname) === "csv") {
-      return this.parseCsv(file.buffer.toString("utf8"));
-    }
+    try {
+      if (this.getExtension(file.originalname) === "csv") {
+        return this.parseCsv(file.buffer.toString("utf8"));
+      }
 
-    return this.parseWorkbook(file.buffer);
+      return this.parseWorkbook(file.buffer);
+    } catch (error) {
+      if (error instanceof DomainError) {
+        throw error;
+      }
+
+      throw new ImportFileParseFailedError();
+    }
   }
 
   private assertFile(file: ImportUploadedFile): void {
@@ -36,7 +49,7 @@ export class ExceljsImportFileParser implements ImportFileParser {
     const extension = this.getExtension(file.originalname);
 
     if (!ALLOWED_EXTENSIONS.has(extension)) {
-      throw new ValidationDomainError("CSV, XLSX 파일만 업로드할 수 있습니다.");
+      throw new UnsupportedImportFileTypeError();
     }
   }
 
@@ -50,7 +63,7 @@ export class ExceljsImportFileParser implements ImportFileParser {
     const worksheet = workbook.worksheets[0];
 
     if (!worksheet) {
-      throw new ValidationDomainError("첫 번째 시트를 찾을 수 없습니다.");
+      throw new ImportFileParseFailedError();
     }
 
     const matrix: string[][] = [];
@@ -77,13 +90,13 @@ export class ExceljsImportFileParser implements ImportFileParser {
     const sourceColumns = headerRow.filter((column) => column.length > 0);
 
     if (sourceColumns.length === 0) {
-      throw new ValidationDomainError("헤더 row가 필요합니다.");
+      throw new ImportFileParseFailedError();
     }
 
     const seenColumns = new Set<string>();
     for (const column of sourceColumns) {
       if (seenColumns.has(column)) {
-        throw new ValidationDomainError(`중복된 헤더가 있습니다: ${column}`);
+        throw new ImportFileParseFailedError();
       }
       seenColumns.add(column);
     }
@@ -109,7 +122,7 @@ export class ExceljsImportFileParser implements ImportFileParser {
     });
 
     if (rows.length === 0) {
-      throw new ValidationDomainError("불러올 데이터 row가 없습니다.");
+      throw new ImportFileParseFailedError();
     }
 
     return { sourceColumns, rows };

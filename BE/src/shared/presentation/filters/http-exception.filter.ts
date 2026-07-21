@@ -90,6 +90,8 @@ export class HttpExceptionFilter implements ExceptionFilter {
       case "InvalidRefreshOrigin":
       case "ValidationError":
       case "InvalidImportMapping":
+      case "UnsupportedImportFileType":
+      case "ImportFileParseFailed":
         return HttpStatus.BAD_REQUEST;
       case "ImportJobExpired":
         return HttpStatus.GONE;
@@ -99,6 +101,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
       case "ImportMappingRequired":
         return HttpStatus.CONFLICT;
       case "ImportMappingFailed":
+      case "ImportConfirmValidationFailed":
         return HttpStatus.UNPROCESSABLE_ENTITY;
       case "ImportFileStorageFailed":
       case "MeetingNoteAiDraftProviderUnavailable":

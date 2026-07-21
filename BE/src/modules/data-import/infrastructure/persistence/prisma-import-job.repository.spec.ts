@@ -152,7 +152,7 @@ describe("PrismaImportJobRepository", () => {
         expiresAt: { gt: NOW },
         targetType: "COMPANY",
       },
-      orderBy: [{ updatedAt: "desc" }, { id: "desc" }],
+      orderBy: [{ createdAt: "desc" }, { id: "desc" }],
       take: 3,
     });
   });
@@ -222,6 +222,7 @@ describe("PrismaImportJobRepository", () => {
     const updated = await repository.updateJobStatusForUser({
       userId: "user-1",
       importJobId: "job-1",
+      expectedStatus: "READY_TO_CONFIRM",
       status: "CONFIRMED",
       importedRowCount: 1,
       importUserLogId: "log-1",
@@ -233,6 +234,7 @@ describe("PrismaImportJobRepository", () => {
       where: {
         id: "job-1",
         userId: "user-1",
+        status: "READY_TO_CONFIRM",
       },
       data: {
         status: "CONFIRMED",

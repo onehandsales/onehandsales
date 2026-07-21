@@ -209,6 +209,13 @@ export interface ListActiveImportJobsForUserInput {
   readonly limit?: number;
 }
 
+export interface ListExpiredImportJobsForUserInput {
+  readonly userId: string;
+  readonly now: Date;
+  readonly importJobId?: string;
+  readonly limit?: number;
+}
+
 export interface ExpireImportJobsForUserInput {
   readonly userId: string;
   readonly now: Date;
@@ -218,6 +225,7 @@ export interface ExpireImportJobsForUserInput {
 export interface UpdateImportJobStatusForUserInput
   extends FindImportJobForUserInput {
   readonly status: PersistentImportJobStatus;
+  readonly expectedStatus?: PersistentImportJobStatus;
   readonly mappingJson?: unknown;
   readonly mappingSource?: PersistentImportJobMappingSource;
   readonly validRowCount?: number;
@@ -284,6 +292,9 @@ export interface ImportJobRepository {
   listActiveJobsForUser(
     input: ListActiveImportJobsForUserInput
   ): Promise<ImportJobRecord[]>;
+  listExpiredActiveJobsForUser(
+    input: ListExpiredImportJobsForUserInput
+  ): Promise<ImportJobDetailRecord[]>;
   expireJobsForUser(input: ExpireImportJobsForUserInput): Promise<number>;
   updateJobStatusForUser(
     input: UpdateImportJobStatusForUserInput

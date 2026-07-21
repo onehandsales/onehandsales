@@ -51,6 +51,7 @@ import {
 } from "@/modules/deal/domain/deal-status";
 import {
   ImportConfirmFailedError,
+  ImportConfirmValidationFailedError,
   ImportFileStorageFailedError,
   ImportJobAlreadyClosedError,
   ImportJobAlreadyConfirmedError,
@@ -226,6 +227,7 @@ export interface ConfirmDealProductResolutionJobInput {
 
 // 역할 : ConfirmImportJobInput 불러오기 확정 요청 값을 정의합니다.
 export interface ConfirmImportJobInput {
+  readonly idempotencyKey?: string;
   readonly contactCompanyResolutions?: readonly ConfirmContactCompanyResolutionJobInput[];
   readonly dealCompanyResolutions?: readonly ConfirmDealCompanyResolutionJobInput[];
   readonly dealContactResolutions?: readonly ConfirmDealContactResolutionJobInput[];
@@ -1013,11 +1015,17 @@ export class DataImportApplicationService {
         : { dealProductResolutions }),
     };
 
-    await this.importJobRepository.updateJobStatusForUser({
-      userId: currentUser.id,
-      importJobId,
-      status: "CONFIRMING",
-    });
+    const movedToConfirming =
+      await this.importJobRepository.updateJobStatusForUser({
+        userId: currentUser.id,
+        importJobId,
+        expectedStatus: "READY_TO_CONFIRM",
+        status: "CONFIRMING",
+      });
+
+    if (!movedToConfirming) {
+      throw new ImportJobNotReadyError();
+    }
 
     try {
       const result = await this.confirmDomainImport(job.targetType, confirmInput);
@@ -1038,21 +1046,34 @@ export class DataImportApplicationService {
         importedRowCount: result.importedRowCount,
       };
     } catch (error) {
-      await this.importJobRepository.updateJobStatusForUser({
-        userId: currentUser.id,
-        importJobId,
-        status: "FAILED",
-        failedAt: new Date(),
-        lastErrorCode:
-          error instanceof DomainError ? error.code : "ImportConfirmFailed",
-        lastErrorMessage: "불러오기 확정에 실패했습니다.",
+      const confirmError =
+        error instanceof ValidationDomainError
+          ? new ImportConfirmValidationFailedError()
+          : error instanceof DomainError
+            ? error
+            : new ImportConfirmFailedError();
+
+      await this.importJobRepository.runInTransaction(async (repositories) => {
+        await repositories.updateJobStatusForUser({
+          userId: currentUser.id,
+          importJobId,
+          status: "FAILED",
+          failedAt: new Date(),
+          lastErrorCode: confirmError.code,
+          lastErrorMessage: confirmError.message,
+        });
+        await repositories.createError({
+          userId: currentUser.id,
+          importJobId,
+          errorType: "CONFIRM",
+          errorCode: confirmError.code,
+          severity: "ERROR",
+          safeMessage: confirmError.message,
+          retryable: !(confirmError instanceof ImportConfirmValidationFailedError),
+        });
       });
 
-      if (error instanceof DomainError) {
-        throw error;
-      }
-
-      throw new ImportConfirmFailedError();
+      throw confirmError;
     }
   }
 
@@ -1243,11 +1264,7 @@ export class DataImportApplicationService {
   ): Promise<ImportJobDetailRecord> {
     const now = new Date();
 
-    await this.importJobRepository.expireJobsForUser({
-      userId: currentUser.id,
-      importJobId,
-      now,
-    });
+    await this.expireImportJobsForUser(currentUser.id, now, importJobId);
 
     const job = await this.importJobRepository.findJobByIdForUser({
       userId: currentUser.id,
@@ -1307,23 +1324,83 @@ export class DataImportApplicationService {
     }
   }
 
-  private async expireImportJobsForUser(userId: string, now: Date): Promise<void> {
-    const expiredCount = await this.importJobRepository.expireJobsForUser({
-      userId,
-      now,
+  private async expireImportJobsForUser(
+    userId: string,
+    now: Date,
+    importJobId?: string
+  ): Promise<void> {
+    const expiringJobs =
+      await this.importJobRepository.listExpiredActiveJobsForUser({
+        userId,
+        now,
+        ...(importJobId ? { importJobId } : {}),
+      });
+
+    if (expiringJobs.length === 0) {
+      return;
+    }
+
+    const fileDeleteResults = new Map<string, boolean>();
+
+    for (const job of expiringJobs) {
+      if (!job.uploadedFile || job.uploadedFile.deletedAt) {
+        continue;
+      }
+
+      try {
+        await this.importUploadedFileStorage.delete({
+          storageKey: job.uploadedFile.storageKey,
+        });
+        fileDeleteResults.set(job.id, true);
+      } catch {
+        fileDeleteResults.set(job.id, false);
+      }
+    }
+
+    await this.importJobRepository.runInTransaction(async (repositories) => {
+      for (const job of expiringJobs) {
+        await repositories.updateJobStatusForUser({
+          userId,
+          importJobId: job.id,
+          status: "EXPIRED",
+        });
+
+        const fileDeleted = fileDeleteResults.get(job.id);
+
+        if (fileDeleted === true) {
+          await repositories.updateUploadedFileStatusForUser({
+            userId,
+            importJobId: job.id,
+            status: "EXPIRED",
+            deletedAt: now,
+          });
+        } else if (fileDeleted === false) {
+          await repositories.createError({
+            userId,
+            importJobId: job.id,
+            errorType: "STORAGE",
+            errorCode: "STORAGE_DELETE_FAILED",
+            severity: "WARNING",
+            safeMessage: "원본 파일 삭제에 실패했습니다.",
+            retryable: true,
+          });
+        }
+      }
     });
 
-    if (expiredCount > 0) {
       this.logEvent("importJob.expired", {
         userId,
-        expiredCount,
+        expiredCount: expiringJobs.length,
       });
-    }
   }
 
   private ensureJobMutable(job: ImportJobRecord): void {
     if (job.status === "EXPIRED") {
       throw new ImportJobExpiredError();
+    }
+
+    if (job.status === "CONFIRMING") {
+      throw new ImportJobAlreadyClosedError();
     }
 
     if (this.isTerminalImportJobStatus(job.status)) {

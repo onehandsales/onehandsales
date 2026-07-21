@@ -83,6 +83,18 @@ export class ImportFileStorageFailedError extends DomainError {
   }
 }
 
+export class UnsupportedImportFileTypeError extends DomainError {
+  constructor() {
+    super("UnsupportedImportFileType", "CSV 또는 XLSX 파일을 올려 주세요.");
+  }
+}
+
+export class ImportFileParseFailedError extends DomainError {
+  constructor() {
+    super("ImportFileParseFailed", "파일을 읽지 못했습니다. 형식을 확인해 주세요.");
+  }
+}
+
 export class ImportMappingFailedError extends DomainError {
   constructor() {
     super("ImportMappingFailed", "컬럼 매칭을 생성하지 못했습니다.");
@@ -92,5 +104,14 @@ export class ImportMappingFailedError extends DomainError {
 export class ImportConfirmFailedError extends DomainError {
   constructor() {
     super("ImportConfirmFailed", "불러오기 확정에 실패했습니다.");
+  }
+}
+
+export class ImportConfirmValidationFailedError extends DomainError {
+  constructor() {
+    super(
+      "ImportConfirmValidationFailed",
+      "불러오기 확정 전에 수정이 필요한 row가 있습니다."
+    );
   }
 }

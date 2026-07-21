@@ -463,7 +463,7 @@ export class PrismaImportTemplateRepository implements ImportTemplateRepository 
       return;
     }
 
-    await client.importJobRow.updateMany({
+    const updatedRows = await client.importJobRow.updateMany({
       where: {
         importJobId: input.importJobId,
         userId: input.userId,
@@ -474,10 +474,15 @@ export class PrismaImportTemplateRepository implements ImportTemplateRepository 
       },
     });
 
-    await client.importJob.updateMany({
+    if (updatedRows.count !== input.rows.length) {
+      throw new ValidationDomainError("Import job row state changed during confirm.");
+    }
+
+    const updatedJob = await client.importJob.updateMany({
       where: {
         id: input.importJobId,
         userId: input.userId,
+        status: "CONFIRMING",
       },
       data: {
         status: "CONFIRMED",
@@ -487,6 +492,10 @@ export class PrismaImportTemplateRepository implements ImportTemplateRepository 
         confirmedAt: new Date(),
       },
     });
+
+    if (updatedJob.count !== 1) {
+      throw new ValidationDomainError("Import job state changed during confirm.");
+    }
   }
 
   private async createImportUserLogRow(

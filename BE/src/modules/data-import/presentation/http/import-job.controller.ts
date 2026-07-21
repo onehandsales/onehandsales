@@ -19,7 +19,6 @@ import { FileInterceptor } from "@nestjs/platform-express";
 import type { Response } from "express";
 import {
   DataImportApplicationService,
-  type ConfirmImportJobInput,
 } from "@/modules/data-import/application/services/data-import-application.service";
 import type { ImportUploadedFile } from "@/modules/data-import/application/ports/import-file-parser.port";
 import type { CurrentUserContext } from "@/shared/application/context/current-user.context";
@@ -28,13 +27,13 @@ import { CurrentUser } from "@/shared/presentation/decorators/current-user.decor
 import { AuthGuard } from "@/shared/presentation/guards/auth.guard";
 import {
   CancelImportJobRequest,
-  ConfirmImportJobDto,
-  CreateImportJobDto,
+  ConfirmImportJobRequest,
+  CreateImportJobRequest,
   GetImportJobRequest,
   ListActiveImportJobsRequest,
   ListImportJobErrorsRequest,
   MapImportJobRequest,
-  UpdateImportMappingDto,
+  UpdateImportJobMappingRequest,
   UpdateImportJobRowsRequest,
   ValidateImportJobRequest,
 } from "./dto/import-job-request.dto";
@@ -66,7 +65,7 @@ export class ImportJobController {
   )
   createImportJob(
     @CurrentUser() currentUser: CurrentUserContext,
-    @Body() body: CreateImportJobDto,
+    @Body() body: CreateImportJobRequest,
     @UploadedFile() file: UploadedImportFile | undefined
   ) {
     return this.dataImportApplicationService.createImportJob(currentUser, {
@@ -120,7 +119,7 @@ export class ImportJobController {
   updateImportMapping(
     @CurrentUser() currentUser: CurrentUserContext,
     @Param("importJobId", ParseUUIDPipe) importJobId: string,
-    @Body() body: UpdateImportMappingDto
+    @Body() body: UpdateImportJobMappingRequest
   ) {
     return this.dataImportApplicationService.updateImportMapping(
       currentUser,
@@ -162,28 +161,12 @@ export class ImportJobController {
   confirmImportJob(
     @CurrentUser() currentUser: CurrentUserContext,
     @Param("importJobId", ParseUUIDPipe) importJobId: string,
-    @Body() body: ConfirmImportJobDto
+    @Body() body: ConfirmImportJobRequest
   ) {
-    const input: ConfirmImportJobInput = {
-      ...(body.contactCompanyResolutions === undefined
-        ? {}
-        : { contactCompanyResolutions: body.contactCompanyResolutions }),
-      ...(body.dealCompanyResolutions === undefined
-        ? {}
-        : { dealCompanyResolutions: body.dealCompanyResolutions }),
-      ...(body.dealContactResolutions === undefined
-        ? {}
-        : { dealContactResolutions: body.dealContactResolutions }),
-      ...(body.dealProductResolutions === undefined
-        ? {}
-        : { dealProductResolutions: body.dealProductResolutions }),
-      ...(body.rows === undefined ? {} : { rows: body.rows }),
-    };
-
     return this.dataImportApplicationService.confirmImportJob(
       currentUser,
       importJobId,
-      input
+      body
     );
   }
 

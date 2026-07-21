@@ -19,6 +19,7 @@ import type {
   ImportUploadedFileRecord,
   ImportUploadedFileRepository,
   ListActiveImportJobsForUserInput,
+  ListExpiredImportJobsForUserInput,
   ListImportJobErrorsPageForUserInput,
   ListImportJobRowsForUserInput,
   PersistentImportJobStatus,
@@ -169,11 +170,29 @@ export class PrismaImportJobRepository
         expiresAt: { gt: input.now },
         ...(input.targetType ? { targetType: input.targetType } : {}),
       },
-      orderBy: [{ updatedAt: "desc" }, { id: "desc" }],
+      orderBy: [{ createdAt: "desc" }, { id: "desc" }],
       take: input.limit ?? 5,
     });
 
     return jobs.map((job) => this.mapJob(job));
+  }
+
+  async listExpiredActiveJobsForUser(
+    input: ListExpiredImportJobsForUserInput
+  ): Promise<ImportJobDetailRecord[]> {
+    const jobs = await this.client.importJob.findMany({
+      where: {
+        userId: input.userId,
+        ...(input.importJobId ? { id: input.importJobId } : {}),
+        status: { in: [...ACTIVE_IMPORT_JOB_STATUSES] },
+        expiresAt: { lte: input.now },
+      },
+      include: this.createDetailInclude(),
+      orderBy: [{ expiresAt: "asc" }, { id: "asc" }],
+      take: input.limit ?? 100,
+    });
+
+    return jobs.map((job) => this.mapJobDetail(job));
   }
 
   async updateJobStatusForUser(
@@ -183,6 +202,7 @@ export class PrismaImportJobRepository
       where: {
         id: input.importJobId,
         userId: input.userId,
+        ...(input.expectedStatus ? { status: input.expectedStatus } : {}),
       },
       data: this.createJobStatusUpdateData(input),
     });
