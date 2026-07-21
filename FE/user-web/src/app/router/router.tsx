@@ -29,6 +29,7 @@ import { DealNewPage } from "@/pages/deals/new";
 import { HomePage } from "@/pages/home";
 import { ImportDetailPage } from "@/pages/import/detail";
 import { ImportPage } from "@/pages/import";
+import { ImportReviewPage } from "@/pages/import/review";
 import { LoginPage } from "@/pages/login";
 import { MeetingNoteDetailPage } from "@/pages/meeting-notes/detail";
 import { MeetingNotesPage } from "@/pages/meeting-notes";
@@ -151,6 +152,10 @@ export const router = createBrowserRouter([
   },
   { path: "/import", element: <LegacyAppRedirect to="/app/import" /> },
   {
+    path: "/import/review/:importJobId",
+    element: <LegacyAppRedirect paramName="importJobId" to="/app/import/review" />,
+  },
+  {
     path: "/import/:importUserLogId",
     element: <LegacyAppRedirect paramName="importUserLogId" to="/app/import" />,
   },
@@ -198,6 +203,7 @@ export const router = createBrowserRouter([
       { path: "business-cards", element: <BusinessCardsPage /> },
       { path: "notifications", element: <Navigate replace to="/app" /> },
       { path: "import", element: <ImportPage /> },
+      { path: "import/review/:importJobId", element: <ImportReviewPage /> },
       { path: "import/:importUserLogId", element: <ImportDetailPage /> },
       { path: "export", element: <Navigate replace to="/app" /> },
       { path: "trash", element: <TrashPage /> },

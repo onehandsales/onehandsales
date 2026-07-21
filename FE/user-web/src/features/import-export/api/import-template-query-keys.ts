@@ -6,11 +6,10 @@ export const importTemplateQueryKeys = {
 };
 
 export const importUserLogQueryKeys = {
-  all: ["import-user-log"] as const,
+  all: ["importUserLogs"] as const,
   lists: () => [...importUserLogQueryKeys.all, "list"] as const,
   list: (params: ImportUserLogListParams) =>
     [...importUserLogQueryKeys.lists(), { ...params }] as const,
-  details: () => [...importUserLogQueryKeys.all, "detail"] as const,
   detail: (importUserLogId: string) =>
-    [...importUserLogQueryKeys.details(), importUserLogId] as const,
+    [...importUserLogQueryKeys.all, importUserLogId] as const,
 };

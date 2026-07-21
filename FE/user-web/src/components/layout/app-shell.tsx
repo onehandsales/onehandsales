@@ -341,7 +341,7 @@ export function AppShell() {
   const isTrashPage = pathname === "/app/trash";
   const isBusinessCardPage = pathname === "/app/business-cards";
   const isImportPage = pathname === "/app/import";
-  const isImportDetailPage = /^\/app\/import\/[^/]+$/.test(pathname);
+  const isImportDetailPage = /^\/app\/import\/(?:review\/)?[^/]+$/.test(pathname);
   const isFixedViewportPage = isHome || isProductDetail;
 
   // 모바일 헤더 숨김 처리: 상세 페이지 및 자체 헤더 보유 페이지

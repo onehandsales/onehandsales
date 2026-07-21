@@ -44,6 +44,7 @@ export type UserWebApiMockStore = {
   readonly schedules: MutableRecord[];
   readonly meetingNotes: MutableRecord[];
   readonly businessCardScans: MutableRecord[];
+  readonly importJobs: MutableRecord[];
   readonly importTemplates: MutableRecord[];
   readonly importUserLogs: MutableRecord[];
   readonly trashItems: MutableRecord[];
@@ -517,20 +518,137 @@ async function handleApiRequest(
   }
 
   if (pathname === "/api/imports" && method === "POST") {
-    return json(createImportJob(), 201);
+    const detail = createImportJobDetail(nextId(store, "import-job"), "UPLOADED");
+    store.importJobs.unshift(detail);
+    return json(detail, 201);
+  }
+
+  if (pathname === "/api/imports/active" && method === "GET") {
+    return json({
+      items: store.importJobs
+        .map((detail) => nestedRecord(detail.job))
+        .filter((job) =>
+          [
+            "UPLOADED",
+            "MAPPED",
+            "NEEDS_REVIEW",
+            "READY_TO_CONFIRM",
+            "CONFIRMING",
+          ].includes(stringField(job, "status") ?? "")
+        ),
+    });
   }
 
   const importJobMatch = pathname.match(/^\/api\/imports\/([^/]+)$/);
   if (importJobMatch && method === "GET") {
+    return json(requireImportJobDetail(store, importJobMatch[1]));
+  }
+
+  const importJobMapMatch = pathname.match(/^\/api\/imports\/([^/]+)\/map$/);
+  if (importJobMapMatch && method === "POST") {
+    const detail = requireImportJobDetail(store, importJobMapMatch[1]);
+    updateImportJobDetail(detail, { status: "READY_TO_CONFIRM" });
+    return json(detail);
+  }
+
+  const importJobMappingMatch = pathname.match(/^\/api\/imports\/([^/]+)\/mapping$/);
+  if (importJobMappingMatch && method === "PATCH") {
+    const detail = requireImportJobDetail(store, importJobMappingMatch[1]);
+    const body = await readJsonBody(route);
+    const mapping = nestedRecord(body.mapping);
+    detail.mapping = {
+      companyName: stringField(mapping, "companyName") ?? "companyName",
+      email: stringField(mapping, "email") ?? "email",
+    };
+    updateImportJobDetail(detail, { status: "READY_TO_CONFIRM" });
+    return json(detail);
+  }
+
+  const importJobRowsMatch = pathname.match(/^\/api\/imports\/([^/]+)\/rows$/);
+  if (importJobRowsMatch && method === "PATCH") {
+    const detail = requireImportJobDetail(store, importJobRowsMatch[1]);
+    const body = await readJsonBody(route);
+    const rows = Array.isArray(body.rows) ? body.rows.filter(isRecord) : [];
+
+    detail.rows = (Array.isArray(detail.rows) ? detail.rows : []).map((row) => {
+      if (!isRecord(row)) {
+        return row;
+      }
+
+      const update = rows.find((item) => item.rowId === row.rowId);
+
+      if (!update) {
+        return row;
+      }
+
+      const data = nestedRecord(update.data);
+      const companyName = stringField(data, "companyName") ?? "";
+      const errors =
+        companyName.trim().length === 0
+          ? [
+              {
+                code: "InvalidImportField",
+                fieldKey: "companyName",
+                message: "회사명을 입력해 주세요.",
+              },
+            ]
+          : [];
+
+      return {
+        ...row,
+        data: {
+          companyName,
+          email: stringField(data, "email") ?? MOBILE_LONG_FIXTURE.email,
+        },
+        errors,
+        status:
+          update.excluded === true
+            ? "EXCLUDED"
+            : errors.length > 0
+              ? "INVALID"
+              : "VALID",
+      };
+    });
+    recalculateImportJobSummary(detail);
+    return json(detail);
+  }
+
+  const importJobValidateMatch = pathname.match(/^\/api\/imports\/([^/]+)\/validate$/);
+  if (importJobValidateMatch && method === "POST") {
+    const detail = requireImportJobDetail(store, importJobValidateMatch[1]);
+    recalculateImportJobSummary(detail);
+    return json(detail);
+  }
+
+  const importJobConfirmMatch = pathname.match(/^\/api\/imports\/([^/]+)\/confirm$/);
+  if (importJobConfirmMatch && method === "POST") {
+    const detail = requireImportJobDetail(store, importJobConfirmMatch[1]);
+    const importUserLogId = "import-user-log-mobile-001";
+    updateImportJobDetail(detail, {
+      importedRowCount: numberField(nestedRecord(detail.job), "validRowCount") ?? 1,
+      importUserLogId,
+      status: "CONFIRMED",
+    });
     return json({
-      errors: [],
-      job: createImportJob(importJobMatch[1]),
-      rows: createImportJob().previewRows,
+      importJobId: importJobConfirmMatch[1],
+      importUserLogId,
+      importedRowCount:
+        numberField(nestedRecord(detail.job), "importedRowCount") ?? 1,
+      status: "CONFIRMED",
     });
   }
 
-  if (/^\/api\/imports\/[^/]+\/(map|confirm)$/.test(pathname)) {
-    return json(createImportJob());
+  const importJobCancelMatch = pathname.match(/^\/api\/imports\/([^/]+)\/cancel$/);
+  if (importJobCancelMatch && method === "POST") {
+    const detail = requireImportJobDetail(store, importJobCancelMatch[1]);
+    updateImportJobDetail(detail, { status: "CANCELED" });
+    return json(null, 204);
+  }
+
+  const importJobErrorsMatch = pathname.match(/^\/api\/imports\/([^/]+)\/errors$/);
+  if (importJobErrorsMatch && method === "GET") {
+    const detail = requireImportJobDetail(store, importJobErrorsMatch[1]);
+    return json({ items: Array.isArray(detail.errors) ? detail.errors : [] });
   }
 
   if (pathname === "/api/exports" && method === "POST") {
@@ -689,11 +807,13 @@ function createStore(): UserWebApiMockStore {
       company: 1,
       contact: 1,
       deal: 1,
+      "import-job": 1,
       "meeting-note": 1,
       product: 1,
       schedule: 1,
     },
     deals: [deal],
+    importJobs: [createImportJobDetail()],
     importTemplates: [createImportTemplate()],
     importUserLogs: [createImportUserLog()],
     meetingNotes: [meetingNote],
@@ -1021,37 +1141,93 @@ function createImportUserLog() {
   };
 }
 
-function createImportJob(id = "import-job-mobile-001") {
-  return {
-    aiMapping: null,
-    createdAt: NOW,
-    errors: [],
-    id,
-    invalidRowCount: 0,
-    mapping: { companyName: "companyName", email: "email" },
-    previewRows: [
-      {
-        errorMessage: null,
-        id: "import-job-row-mobile-001",
-        mappedData: {
-          companyName: MOBILE_LONG_FIXTURE.companyName,
-          email: MOBILE_LONG_FIXTURE.email,
-        },
-        rawData: {
-          companyName: MOBILE_LONG_FIXTURE.companyName,
-          email: MOBILE_LONG_FIXTURE.email,
-        },
-        rowNumber: 1,
-        status: "VALID",
-        targetId: "company-mobile-001",
+function createImportJobDetail(
+  id = "import-job-mobile-001",
+  status = "NEEDS_REVIEW",
+) {
+  const rowStatus = status === "UPLOADED" ? "PENDING" : "INVALID";
+  const rowErrors =
+    rowStatus === "INVALID"
+      ? [
+          {
+            code: "InvalidImportField",
+            fieldKey: "companyName",
+            message: "회사명을 입력해 주세요.",
+          },
+        ]
+      : [];
+  const rows = [
+    {
+      data: {
+        companyName: rowStatus === "INVALID" ? "" : MOBILE_LONG_FIXTURE.companyName,
+        email: MOBILE_LONG_FIXTURE.email,
       },
-    ],
-    rowCount: 1,
-    status: "PREVIEW_READY",
-    targetType: "COMPANY",
-    updatedAt: NOW,
-    validRowCount: 1,
+      errors: rowErrors,
+      rowId: "import-job-row-mobile-001",
+      rowNumber: 2,
+      status: rowStatus,
+      targetLabel: rowStatus === "INVALID" ? null : MOBILE_LONG_FIXTURE.companyName,
+    },
+  ];
+
+  return {
+    errors: [],
+    job: {
+      createdAt: NOW,
+      expiresAt: NEXT_WEEK,
+      failedRowCount: 0,
+      id,
+      importedRowCount: 0,
+      importUserLogId: null,
+      invalidRowCount: rowErrors.length > 0 ? 1 : 0,
+      mappingSource: status === "UPLOADED" ? "NONE" : "USER",
+      originalFileName: "rqa002-mobile-browser-long-file-name-390-360.xlsx",
+      status,
+      targetType: "COMPANY",
+      totalRowCount: 1,
+      updatedAt: NOW,
+      validRowCount: rowErrors.length > 0 ? 0 : 1,
+    },
+    mapping: status === "UPLOADED" ? {} : { companyName: "companyName", email: "email" },
+    rows,
+    sourceColumns: ["companyName", "email"],
+    templateColumns: createImportTemplate().columns,
   };
+}
+
+function requireImportJobDetail(store: UserWebApiMockStore, id: string | undefined) {
+  const detail = store.importJobs.find((item) => nestedId(nestedRecord(item.job)) === id);
+
+  if (!detail) {
+    return {
+      code: "ImportJobNotFound",
+      message: "가져오기를 찾지 못했어요.",
+      statusCode: 404,
+    };
+  }
+
+  return detail;
+}
+
+function updateImportJobDetail(detail: MutableRecord, patch: MutableRecord) {
+  const job = nestedRecord(detail.job);
+  detail.job = {
+    ...job,
+    ...patch,
+    updatedAt: now(),
+  };
+}
+
+function recalculateImportJobSummary(detail: MutableRecord) {
+  const rows = Array.isArray(detail.rows) ? detail.rows.filter(isRecord) : [];
+  const validRowCount = rows.filter((row) => row.status === "VALID").length;
+  const invalidRowCount = rows.filter((row) => row.status === "INVALID").length;
+
+  updateImportJobDetail(detail, {
+    invalidRowCount,
+    status: invalidRowCount === 0 && validRowCount > 0 ? "READY_TO_CONFIRM" : "NEEDS_REVIEW",
+    validRowCount,
+  });
 }
 
 function createTrashItem() {

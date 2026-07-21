@@ -1,3 +1,5 @@
+import type { ImportTemplateColumn } from "@/features/import-export/types/import-template";
+
 export type ImportTargetType = "COMPANY" | "CONTACT" | "PRODUCT" | "DEAL";
 export type ExportTargetType =
   | "COMPANY"
@@ -11,15 +13,26 @@ export type ExportFormat = "EXCEL" | "PDF";
 
 export type ImportJobStatus =
   | "UPLOADED"
-  | "PREVIEW_READY"
-  | "MAPPING_PENDING"
-  | "MAPPING_READY"
-  | "VALIDATION_FAILED"
+  | "MAPPED"
+  | "NEEDS_REVIEW"
+  | "READY_TO_CONFIRM"
+  | "CONFIRMING"
   | "CONFIRMED"
-  | "PROCESSING"
-  | "COMPLETED"
   | "FAILED"
-  | "CANCELED";
+  | "CANCELED"
+  | "EXPIRED";
+
+export type ImportJobRowStatus =
+  | "PENDING"
+  | "VALID"
+  | "INVALID"
+  | "EXCLUDED"
+  | "IMPORTED"
+  | "FAILED";
+
+export type ImportRowStatus = ImportJobRowStatus;
+
+export type ImportJobMappingSource = "NONE" | "AI" | "RULE_BASED" | "USER";
 
 export type ExportJobStatus =
   | "PENDING"
@@ -28,67 +41,91 @@ export type ExportJobStatus =
   | "FAILED"
   | "EXPIRED";
 
-export type ImportRowStatus =
-  | "PENDING"
-  | "VALID"
-  | "VALIDATION_FAILED"
-  | "IMPORTED"
-  | "SKIPPED"
-  | "FAILED";
-
-export type ImportFieldValue = string | number | null;
+export type ImportFieldValue = string | number | boolean | null;
 export type ImportMapping = Record<string, string | null>;
-export type ImportRawRowData = Record<string, string>;
 export type ImportMappedRowData = Record<string, ImportFieldValue>;
+export type ImportRawRowData = Record<string, string>;
 
-export type ImportError = {
-  readonly rowNumber: number | null;
+export type ImportCellValidationError = {
+  readonly fieldKey: string;
   readonly message: string;
+  readonly code: string;
 };
 
-export type ImportMappingResponse = {
-  readonly suggestedMapping: ImportMapping;
-  readonly confidence: number;
-  readonly unmappedColumns: string[];
+export type ImportJobErrorResponse = {
+  readonly id: string;
+  readonly rowId: string | null;
+  readonly rowNumber: number | null;
+  readonly fieldKey: string | null;
+  readonly errorType: string;
+  readonly errorCode: string;
+  readonly severity: string;
+  readonly safeMessage: string;
+  readonly retryable: boolean;
+  readonly createdAt: string;
 };
+
+export type ImportError = ImportJobErrorResponse;
 
 export type ImportJobRow = {
-  readonly id: string;
+  readonly rowId: string;
   readonly rowNumber: number;
-  readonly rawData: ImportRawRowData;
-  readonly mappedData: ImportMappedRowData | null;
-  readonly status: ImportRowStatus;
-  readonly errorMessage: string | null;
-  readonly targetId: string | null;
+  readonly status: ImportJobRowStatus;
+  readonly data: ImportMappedRowData;
+  readonly targetLabel: string | null;
+  readonly errors: readonly ImportCellValidationError[];
 };
 
-export type ImportJobResponse = {
+export type ImportJobSummary = {
   readonly id: string;
   readonly targetType: ImportTargetType;
   readonly status: ImportJobStatus;
-  readonly rowCount: number;
+  readonly mappingSource: ImportJobMappingSource;
+  readonly originalFileName: string;
+  readonly totalRowCount: number;
   readonly validRowCount: number;
   readonly invalidRowCount: number;
-  readonly mapping: ImportMapping | null;
-  readonly aiMapping?: ImportMappingResponse | null;
-  readonly previewRows: ImportJobRow[];
-  readonly errors: ImportError[];
+  readonly importedRowCount: number;
+  readonly failedRowCount: number;
+  readonly importUserLogId: string | null;
+  readonly expiresAt: string;
   readonly createdAt: string;
   readonly updatedAt: string;
 };
 
-export type ImportJobDetailResponse = {
-  readonly job: ImportJobResponse;
-  readonly rows: ImportJobRow[];
-  readonly errors: ImportError[];
+export type ImportJobResponse = ImportJobSummary;
+
+export type ActiveImportJobsResponse = {
+  readonly items: ImportJobSummary[];
 };
 
-export type ImportJobResultResponse = {
-  readonly id: string;
-  readonly status: ImportJobStatus;
-  readonly successCount: number;
-  readonly failedCount: number;
-  readonly errors: ImportError[];
+export type ImportJobDetailResponse = {
+  readonly job: ImportJobSummary;
+  readonly templateColumns: ImportTemplateColumn[];
+  readonly sourceColumns: readonly string[];
+  readonly mapping: ImportMapping;
+  readonly rows: ImportJobRow[];
+  readonly errors: readonly ImportJobErrorResponse[];
+};
+
+export type ImportMappingResponse = ImportJobDetailResponse;
+
+export type ConfirmImportJobResponse = {
+  readonly importJobId: string;
+  readonly importUserLogId: string;
+  readonly status: "CONFIRMED";
+  readonly importedRowCount: number;
+};
+
+export type ImportJobResultResponse = ConfirmImportJobResponse;
+
+export type ImportJobErrorsResponse = {
+  readonly items: ImportJobErrorResponse[];
+};
+
+export type ListActiveImportJobsParams = {
+  readonly targetType?: ImportTargetType;
+  readonly limit?: number;
 };
 
 export type CreateImportJobInput = {
@@ -96,41 +133,42 @@ export type CreateImportJobInput = {
   readonly file: File;
 };
 
+export type GetImportJobInput = {
+  readonly importJobId: string;
+  readonly includeErrors?: boolean;
+};
+
+export type GenerateImportMappingInput = {
+  readonly importJobId: string;
+  readonly preferredSource?: "AI" | "RULE_BASED";
+};
+
 export type UpdateImportMappingInput = {
   readonly importJobId: string;
   readonly mapping: ImportMapping;
 };
 
+export type UpdateImportJobRowsInput = {
+  readonly importJobId: string;
+  readonly rows: readonly {
+    readonly rowId: string;
+    readonly data: ImportMappedRowData;
+    readonly excluded?: boolean;
+  }[];
+};
+
 export type ConfirmImportJobInput = {
   readonly importJobId: string;
-  readonly contactCompanyResolutions?: readonly {
-    readonly companyName: string;
-    readonly companyFieldName: string;
-    readonly companyRegionName: string;
-  }[];
-  readonly dealCompanyResolutions?: readonly {
-    readonly companyName: string;
-    readonly companyFieldName: string;
-    readonly companyRegionName: string;
-  }[];
-  readonly dealContactResolutions?: readonly {
-    readonly companyName: string;
-    readonly contactName: string;
-    readonly contactEmail: string;
-    readonly contactPhone: string;
-    readonly contactDepartmentName: string;
-    readonly contactJobGradeName: string;
-  }[];
-  readonly dealProductResolutions?: readonly {
-    readonly productName: string;
-    readonly productPrice: number;
-    readonly productCategoryName: string;
-    readonly productStatusName: string;
-  }[];
-  readonly rows?: readonly {
-    readonly rowNumber: number;
-    readonly data: ImportMappedRowData;
-  }[];
+  readonly idempotencyKey?: string;
+};
+
+export type CancelImportJobInput = {
+  readonly importJobId: string;
+};
+
+export type ListImportJobErrorsInput = {
+  readonly importJobId: string;
+  readonly limit?: number;
 };
 
 export type ExportJobResponse = {
