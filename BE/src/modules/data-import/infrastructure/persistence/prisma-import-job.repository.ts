@@ -30,12 +30,15 @@ import type {
 import { ImportJobNotFoundError } from "@/modules/data-import/domain/import-template.errors";
 import { PrismaService } from "@/shared/infrastructure/prisma/prisma.service";
 
+// 역할 : ImportJobPrismaClient 일반 PrismaService와 transaction client 공통 타입을 정의합니다.
 type ImportJobPrismaClient = PrismaService | Prisma.TransactionClient;
 
+// 역할 : ImportJobScalarRow Prisma job row를 application record 변환 전 구조로 표현합니다.
 type ImportJobScalarRow = Omit<ImportJobRecord, "contextJson"> & {
   readonly contextJson: unknown;
 };
 
+// 역할 : ImportJobRowScalarRow Prisma job row child record 변환 전 구조를 표현합니다.
 type ImportJobRowScalarRow = Omit<
   ImportJobRowRecord,
   "normalizedDataJson"
@@ -43,12 +46,15 @@ type ImportJobRowScalarRow = Omit<
   readonly normalizedDataJson: unknown;
 };
 
+// 역할 : ImportJobErrorScalarRow Prisma job error row 변환 전 구조를 표현합니다.
 type ImportJobErrorScalarRow = Omit<ImportJobErrorRecord, "detailJson"> & {
   readonly detailJson: unknown;
 };
 
+// 역할 : ImportUploadedFileScalarRow Prisma uploaded file row 변환 전 구조를 표현합니다.
 type ImportUploadedFileScalarRow = ImportUploadedFileRecord;
 
+// 역할 : ImportJobDetailRow Prisma include 결과로 얻은 import job 상세 row를 표현합니다.
 type ImportJobDetailRow = ImportJobScalarRow & {
   readonly rows: readonly ImportJobRowScalarRow[];
   readonly errors: readonly ImportJobErrorScalarRow[];
@@ -71,11 +77,13 @@ export class PrismaImportJobRepository
     ImportJobErrorRepository,
     ImportUploadedFileRepository
 {
+  // 기능 : Prisma client와 transaction runner를 주입받습니다.
   constructor(
     private readonly client: ImportJobPrismaClient,
     private readonly transactionRunner: PrismaService | null = null
   ) {}
 
+  // 기능 : import job 관련 DB 작업을 하나의 Prisma transaction으로 실행합니다.
   async runInTransaction<T>(
     work: (repositories: ImportJobRepositoryContext) => Promise<T>
   ): Promise<T> {
@@ -88,6 +96,7 @@ export class PrismaImportJobRepository
     });
   }
 
+  // 기능 : import job과 초기 row/file/error 관계를 생성하고 상세 record로 반환합니다.
   async createJob(input: CreateImportJobInput): Promise<ImportJobDetailRecord> {
     const job = await this.client.importJob.create({
       data: {
@@ -146,6 +155,7 @@ export class PrismaImportJobRepository
     return this.mapJobDetail(job);
   }
 
+  // 기능 : importJobId와 userId로 현재 사용자 소유 job 상세를 조회합니다.
   async findJobByIdForUser(
     input: FindImportJobForUserInput
   ): Promise<ImportJobDetailRecord | null> {
@@ -160,6 +170,7 @@ export class PrismaImportJobRepository
     return job ? this.mapJobDetail(job) : null;
   }
 
+  // 기능 : 현재 사용자 소유의 만료되지 않은 활성 job 목록을 조회합니다.
   async listActiveJobsForUser(
     input: ListActiveImportJobsForUserInput
   ): Promise<ImportJobRecord[]> {
@@ -177,6 +188,7 @@ export class PrismaImportJobRepository
     return jobs.map((job) => this.mapJob(job));
   }
 
+  // 기능 : 현재 사용자 소유의 TTL 만료 대상 활성 job 목록을 조회합니다.
   async listExpiredActiveJobsForUser(
     input: ListExpiredImportJobsForUserInput
   ): Promise<ImportJobDetailRecord[]> {
@@ -195,6 +207,7 @@ export class PrismaImportJobRepository
     return jobs.map((job) => this.mapJobDetail(job));
   }
 
+  // 기능 : 현재 사용자 소유 job 상태를 expectedStatus 조건까지 확인해 변경합니다.
   async updateJobStatusForUser(
     input: UpdateImportJobStatusForUserInput
   ): Promise<boolean> {
@@ -210,6 +223,7 @@ export class PrismaImportJobRepository
     return updated.count > 0;
   }
 
+  // 기능 : 현재 사용자 소유의 TTL 만료 대상 job을 EXPIRED 상태로 일괄 변경합니다.
   async expireJobsForUser(input: ExpireImportJobsForUserInput): Promise<number> {
     const updated = await this.client.importJob.updateMany({
       where: {
@@ -226,6 +240,7 @@ export class PrismaImportJobRepository
     return updated.count;
   }
 
+  // 기능 : 현재 사용자 소유 job에 row 목록을 bulk insert합니다.
   async createRows(input: CreateImportJobRowsInput): Promise<void> {
     if (input.rows.length === 0) {
       return;
@@ -248,6 +263,7 @@ export class PrismaImportJobRepository
     });
   }
 
+  // 기능 : 현재 사용자 소유 job의 row 목록을 row 번호순으로 조회합니다.
   async listRowsForJob(
     input: ListImportJobRowsForUserInput
   ): Promise<ImportJobRowRecord[]> {
@@ -262,6 +278,7 @@ export class PrismaImportJobRepository
     return rows.map((row) => this.mapRow(row));
   }
 
+  // 기능 : 현재 사용자 소유 job의 row 목록을 rowId 단위로 일괄 변경합니다.
   async updateRowsForJob(
     input: UpdateImportJobRowsForUserInput
   ): Promise<boolean> {
@@ -288,6 +305,7 @@ export class PrismaImportJobRepository
     return updatedCount === input.rows.length;
   }
 
+  // 기능 : 현재 사용자 소유 job에 사용자 복구용 오류 이력을 생성합니다.
   async createError(
     input: CreateImportJobErrorForUserInput
   ): Promise<ImportJobErrorRecord> {
@@ -315,6 +333,7 @@ export class PrismaImportJobRepository
     return this.mapError(error);
   }
 
+  // 기능 : 현재 사용자 소유 job의 오류 이력을 최신순으로 조회합니다.
   async listErrorsForJob(
     input: ListImportJobErrorsPageForUserInput
   ): Promise<ImportJobErrorRecord[]> {
@@ -330,6 +349,7 @@ export class PrismaImportJobRepository
     return errors.map((error) => this.mapError(error));
   }
 
+  // 기능 : 현재 사용자 소유 job의 업로드 원본 파일 metadata를 생성합니다.
   async createUploadedFile(
     input: CreateImportUploadedFileForUserInput
   ): Promise<ImportUploadedFileRecord> {
@@ -356,6 +376,7 @@ export class PrismaImportJobRepository
     return this.mapUploadedFile(uploadedFile);
   }
 
+  // 기능 : 현재 사용자 소유 job의 업로드 원본 파일 metadata를 조회합니다.
   async findUploadedFileForJob(
     input: FindImportJobForUserInput
   ): Promise<ImportUploadedFileRecord | null> {
@@ -369,6 +390,7 @@ export class PrismaImportJobRepository
     return uploadedFile ? this.mapUploadedFile(uploadedFile) : null;
   }
 
+  // 기능 : 현재 사용자 소유 job의 업로드 원본 파일 metadata 상태를 변경합니다.
   async updateUploadedFileStatusForUser(
     input: UpdateImportUploadedFileStatusForUserInput
   ): Promise<boolean> {
@@ -386,6 +408,7 @@ export class PrismaImportJobRepository
     return updated.count > 0;
   }
 
+  // 기능 : import job 상세 조회에 공통으로 사용할 Prisma include 구성을 생성합니다.
   private createDetailInclude(): Prisma.ImportJobInclude {
     return {
       rows: {
@@ -398,6 +421,7 @@ export class PrismaImportJobRepository
     };
   }
 
+  // 기능 : job 생성 nested write에 사용할 row create 데이터를 생성합니다.
   private createNestedRowData(
     userId: string,
     row: CreateImportJobRowsInput["rows"][number]
@@ -414,6 +438,7 @@ export class PrismaImportJobRepository
     };
   }
 
+  // 기능 : job 생성 nested write에 사용할 uploaded file create 데이터를 생성합니다.
   private createNestedUploadedFileData(
     userId: string,
     uploadedFile: CreateImportUploadedFileInput
@@ -434,6 +459,7 @@ export class PrismaImportJobRepository
     };
   }
 
+  // 기능 : job 생성 nested write에 사용할 error create 데이터를 생성합니다.
   private createNestedErrorData(
     userId: string,
     error: CreateImportJobErrorInput
@@ -454,6 +480,7 @@ export class PrismaImportJobRepository
     };
   }
 
+  // 기능 : job 상태 변경 input을 Prisma updateMany data로 변환합니다.
   private createJobStatusUpdateData(
     input: UpdateImportJobStatusForUserInput
   ): Prisma.ImportJobUpdateManyMutationInput {
@@ -496,6 +523,7 @@ export class PrismaImportJobRepository
     };
   }
 
+  // 기능 : row 변경 input을 Prisma updateMany data로 변환합니다.
   private createRowUpdateData(
     row: UpdateImportJobRowsForUserInput["rows"][number]
   ): Prisma.ImportJobRowUpdateManyMutationInput {
@@ -514,6 +542,7 @@ export class PrismaImportJobRepository
     };
   }
 
+  // 기능 : importJobId와 userId로 소유 job id만 조회합니다.
   private async findOwnedJobId(
     input: FindImportJobForUserInput
   ): Promise<{ readonly id: string } | null> {
@@ -528,6 +557,7 @@ export class PrismaImportJobRepository
     });
   }
 
+  // 기능 : 현재 사용자 소유 job이 없으면 domain not found 오류를 던집니다.
   private async ensureOwnedJob(input: FindImportJobForUserInput): Promise<void> {
     const job = await this.findOwnedJobId(input);
 
@@ -536,6 +566,7 @@ export class PrismaImportJobRepository
     }
   }
 
+  // 기능 : row-scoped 오류 이력이 현재 사용자 소유 job row만 참조하도록 검증합니다.
   private async ensureOwnedRowReference(
     input: CreateImportJobErrorForUserInput
   ): Promise<void> {
@@ -559,6 +590,7 @@ export class PrismaImportJobRepository
     }
   }
 
+  // 기능 : Prisma job 상세 row를 application detail record로 변환합니다.
   private mapJobDetail(row: ImportJobDetailRow): ImportJobDetailRecord {
     return {
       ...this.mapJob(row),
@@ -570,6 +602,7 @@ export class PrismaImportJobRepository
     };
   }
 
+  // 기능 : Prisma job scalar row를 application job record로 변환합니다.
   private mapJob(row: ImportJobScalarRow): ImportJobRecord {
     return {
       id: row.id,
@@ -603,6 +636,7 @@ export class PrismaImportJobRepository
     };
   }
 
+  // 기능 : Prisma import job row를 application row record로 변환합니다.
   private mapRow(row: ImportJobRowScalarRow): ImportJobRowRecord {
     return {
       id: row.id,
@@ -620,6 +654,7 @@ export class PrismaImportJobRepository
     };
   }
 
+  // 기능 : Prisma import job error row를 application error record로 변환합니다.
   private mapError(row: ImportJobErrorScalarRow): ImportJobErrorRecord {
     return {
       id: row.id,
@@ -638,6 +673,7 @@ export class PrismaImportJobRepository
     };
   }
 
+  // 기능 : Prisma uploaded file row를 application file metadata record로 변환합니다.
   private mapUploadedFile(
     row: ImportUploadedFileScalarRow
   ): ImportUploadedFileRecord {
@@ -661,10 +697,12 @@ export class PrismaImportJobRepository
     };
   }
 
+  // 기능 : unknown JSON 값을 Prisma input JSON 값으로 변환합니다.
   private toInputJson(value: unknown): Prisma.InputJsonValue {
     return value as Prisma.InputJsonValue;
   }
 
+  // 기능 : nullable unknown JSON 값을 Prisma nullable JSON 값으로 변환합니다.
   private toNullableInputJson(
     value: unknown | null | undefined
   ): Prisma.NullableJsonNullValueInput | Prisma.InputJsonValue {

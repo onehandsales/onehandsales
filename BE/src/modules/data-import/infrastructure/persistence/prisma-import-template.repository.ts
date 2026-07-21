@@ -79,7 +79,6 @@ export class PrismaImportTemplateRepository implements ImportTemplateRepository 
     };
   }
 
-  // 기능 : 현재 사용자의 성공한 불러오기 로그 목록과 전체 개수를 조회합니다.
   // 기능 : 대상 유형 기준 활성 불러오기 양식 단건을 조회합니다.
   async findActiveTemplateByType(
     templateType: ImportTemplateType
@@ -109,6 +108,7 @@ export class PrismaImportTemplateRepository implements ImportTemplateRepository 
     };
   }
 
+  // 기능 : 현재 사용자의 성공한 불러오기 로그 목록과 전체 개수를 조회합니다.
   async listUserLogs(
     input: ListImportUserLogsInput
   ): Promise<ImportUserLogPageRecord> {
@@ -184,7 +184,6 @@ export class PrismaImportTemplateRepository implements ImportTemplateRepository 
     };
   }
 
-  // 기능 : 불러오기 로그 목록 조회에 사용할 Prisma where 조건을 생성합니다.
   // 기능 : 회사 불러오기 확정 생성과 성공 로그 저장을 같은 트랜잭션으로 처리합니다.
   async confirmCompanyImport(input: ConfirmImportInput): Promise<ConfirmImportResult> {
     return this.prismaService.$transaction(async (client) => {
@@ -323,6 +322,7 @@ export class PrismaImportTemplateRepository implements ImportTemplateRepository 
     });
   }
 
+  // 기능 : 딜 불러오기 확정 생성과 성공 로그 저장을 같은 트랜잭션으로 처리합니다.
   async confirmDealImport(input: ConfirmImportInput): Promise<ConfirmImportResult> {
     return this.prismaService.$transaction(async (client) => {
       const log = await this.createImportUserLog(client, input);
@@ -428,6 +428,7 @@ export class PrismaImportTemplateRepository implements ImportTemplateRepository 
     });
   }
 
+  // 기능 : import 성공 로그 header를 생성합니다.
   private async createImportUserLog(
     client: Prisma.TransactionClient,
     input: ConfirmImportInput
@@ -454,6 +455,7 @@ export class PrismaImportTemplateRepository implements ImportTemplateRepository 
     });
   }
 
+  // 기능 : persistent import job row와 job 상태를 confirm transaction 안에서 완료 처리합니다.
   private async completePersistentImportJob(
     client: Prisma.TransactionClient,
     input: ConfirmImportInput,
@@ -498,6 +500,7 @@ export class PrismaImportTemplateRepository implements ImportTemplateRepository 
     }
   }
 
+  // 기능 : import 성공 로그 row snapshot을 생성합니다.
   private async createImportUserLogRow(
     client: Prisma.TransactionClient,
     importUserLogId: string,
@@ -513,6 +516,7 @@ export class PrismaImportTemplateRepository implements ImportTemplateRepository 
     });
   }
 
+  // 기능 : 담당자 import에서 새 회사 생성 보정 정보를 회사명 기준 map으로 변환합니다.
   private createContactCompanyResolutionMap(
     resolutions: readonly ConfirmContactCompanyResolutionInput[]
   ): ReadonlyMap<string, ConfirmContactCompanyResolutionInput> {
@@ -548,6 +552,7 @@ export class PrismaImportTemplateRepository implements ImportTemplateRepository 
     return resolutionMap;
   }
 
+  // 기능 : 딜 import에서 새 담당자 생성 보정 정보를 회사명/담당자명 기준 map으로 변환합니다.
   private createDealContactResolutionMap(
     resolutions: readonly ConfirmDealContactResolutionInput[]
   ): ReadonlyMap<string, ConfirmDealContactResolutionInput> {
@@ -602,6 +607,7 @@ export class PrismaImportTemplateRepository implements ImportTemplateRepository 
     return resolutionMap;
   }
 
+  // 기능 : 딜 import에서 새 제품 생성 보정 정보를 제품명 기준 map으로 변환합니다.
   private createDealProductResolutionMap(
     resolutions: readonly ConfirmDealProductResolutionInput[]
   ): ReadonlyMap<string, ConfirmDealProductResolutionInput> {
@@ -642,6 +648,7 @@ export class PrismaImportTemplateRepository implements ImportTemplateRepository 
     return resolutionMap;
   }
 
+  // 기능 : 회사명이 있으면 기존 회사를 찾고 없으면 보정 정보로 새 회사를 생성합니다.
   private async findOrCreateCompanyByName(
     client: Prisma.TransactionClient,
     userId: string,
@@ -696,6 +703,7 @@ export class PrismaImportTemplateRepository implements ImportTemplateRepository 
     });
   }
 
+  // 기능 : 새 entity 보정 입력의 필수 문자열을 trim 후 검증합니다.
   private normalizeRequiredResolutionText(value: string, message: string): string {
     const normalized = value.trim();
 
@@ -706,6 +714,7 @@ export class PrismaImportTemplateRepository implements ImportTemplateRepository 
     return normalized;
   }
 
+  // 기능 : 회사 분야 master 값을 사용자 범위에서 upsert합니다.
   private async upsertCompanyField(
     client: Prisma.TransactionClient,
     userId: string,
@@ -730,6 +739,7 @@ export class PrismaImportTemplateRepository implements ImportTemplateRepository 
     });
   }
 
+  // 기능 : 회사 지역 master 값을 사용자 범위에서 upsert합니다.
   private async upsertCompanyRegion(
     client: Prisma.TransactionClient,
     userId: string,
@@ -754,6 +764,7 @@ export class PrismaImportTemplateRepository implements ImportTemplateRepository 
     });
   }
 
+  // 기능 : 담당자 부서 master 값을 사용자 범위에서 upsert합니다.
   private async upsertContactDepartment(
     client: Prisma.TransactionClient,
     userId: string,
@@ -778,6 +789,7 @@ export class PrismaImportTemplateRepository implements ImportTemplateRepository 
     });
   }
 
+  // 기능 : 담당자 직급 master 값을 사용자 범위에서 upsert합니다.
   private async upsertContactJobGrade(
     client: Prisma.TransactionClient,
     userId: string,
@@ -802,6 +814,7 @@ export class PrismaImportTemplateRepository implements ImportTemplateRepository 
     });
   }
 
+  // 기능 : 제품 카테고리 master 값을 사용자 범위에서 upsert합니다.
   private async upsertProductCategory(
     client: Prisma.TransactionClient,
     userId: string,
@@ -826,6 +839,7 @@ export class PrismaImportTemplateRepository implements ImportTemplateRepository 
     });
   }
 
+  // 기능 : 제품 상태 master 값을 사용자 범위에서 upsert합니다.
   private async upsertProductStatus(
     client: Prisma.TransactionClient,
     userId: string,
@@ -850,6 +864,7 @@ export class PrismaImportTemplateRepository implements ImportTemplateRepository 
     });
   }
 
+  // 기능 : 딜 import에서 반드시 기존 회사가 있어야 하는 경우 회사명을 조회합니다.
   private async findRequiredDealCompany(
     client: Prisma.TransactionClient,
     userId: string,
@@ -878,6 +893,7 @@ export class PrismaImportTemplateRepository implements ImportTemplateRepository 
     return company;
   }
 
+  // 기능 : 딜 import에서 담당자를 찾고 없으면 보정 정보로 새 담당자를 생성합니다.
   private async findOrCreateDealContact(
     client: Prisma.TransactionClient,
     userId: string,
@@ -937,6 +953,7 @@ export class PrismaImportTemplateRepository implements ImportTemplateRepository 
     });
   }
 
+  // 기능 : 딜 import에서 반드시 기존 담당자가 있어야 하는 경우 담당자명을 조회합니다.
   private async findRequiredDealContact(
     client: Prisma.TransactionClient,
     userId: string,
@@ -967,6 +984,7 @@ export class PrismaImportTemplateRepository implements ImportTemplateRepository 
     return contact;
   }
 
+  // 기능 : 딜 import에서 제품을 찾고 없으면 보정 정보로 새 제품을 생성합니다.
   private async findOrCreateDealProduct(
     client: Prisma.TransactionClient,
     userId: string,
@@ -1021,6 +1039,7 @@ export class PrismaImportTemplateRepository implements ImportTemplateRepository 
     });
   }
 
+  // 기능 : 딜 import에서 반드시 기존 제품이 있어야 하는 경우 제품명을 조회합니다.
   private async findRequiredDealProduct(
     client: Prisma.TransactionClient,
     userId: string,
@@ -1048,6 +1067,7 @@ export class PrismaImportTemplateRepository implements ImportTemplateRepository 
     return product;
   }
 
+  // 기능 : submitted data에서 필수 문자열 값을 읽습니다.
   private readRequiredString(
     data: Readonly<Record<string, string | number | boolean | null>>,
     key: string
@@ -1062,6 +1082,7 @@ export class PrismaImportTemplateRepository implements ImportTemplateRepository 
     return normalized.trim();
   }
 
+  // 기능 : submitted data에서 0 이상의 정수 값을 읽습니다.
   private readRequiredNumber(
     data: Readonly<Record<string, string | number | boolean | null>>,
     key: string
@@ -1081,6 +1102,7 @@ export class PrismaImportTemplateRepository implements ImportTemplateRepository 
     return numberValue;
   }
 
+  // 기능 : submitted data에서 YYYY-MM-DD 날짜 값을 UTC date로 읽습니다.
   private readRequiredDateOnly(
     data: Readonly<Record<string, string | number | boolean | null>>,
     key: string,
@@ -1122,6 +1144,7 @@ export class PrismaImportTemplateRepository implements ImportTemplateRepository 
     return date;
   }
 
+  // 기능 : submitted data에서 딜 상태 code 또는 label을 읽고 기본값을 적용합니다.
   private readDealStatus(
     data: Readonly<Record<string, string | number | boolean | null>>,
     rowNumber: number
@@ -1147,6 +1170,7 @@ export class PrismaImportTemplateRepository implements ImportTemplateRepository 
     return statusCode;
   }
 
+  // 기능 : submitted data에서 선택 문자열 값을 trim 후 읽습니다.
   private readOptionalString(
     data: Readonly<Record<string, string | number | boolean | null>>,
     key: string
@@ -1163,10 +1187,12 @@ export class PrismaImportTemplateRepository implements ImportTemplateRepository 
     return trimmed.length > 0 ? trimmed : null;
   }
 
+  // 기능 : 문자열이 지원하는 딜 상태 code인지 확인합니다.
   private isDealStatusCode(value: string): value is DealStatusCode {
     return DEAL_STATUS_CODES.some((status) => status === value);
   }
 
+  // 기능 : 딜 담당자 보정 map key를 생성합니다.
   private createDealContactResolutionKey(
     companyName: string,
     contactName: string
@@ -1174,10 +1200,12 @@ export class PrismaImportTemplateRepository implements ImportTemplateRepository 
     return `${companyName}\u0000${contactName}`;
   }
 
+  // 기능 : unknown JSON 값을 Prisma input JSON 값으로 변환합니다.
   private toJsonValue(value: unknown): Prisma.InputJsonValue {
     return JSON.parse(JSON.stringify(value)) as Prisma.InputJsonValue;
   }
 
+  // 기능 : 불러오기 로그 목록 조회에 사용할 Prisma where 조건을 생성합니다.
   private createImportUserLogWhere(
     input: ListImportUserLogsInput
   ): Prisma.ImportUserLogWhereInput {

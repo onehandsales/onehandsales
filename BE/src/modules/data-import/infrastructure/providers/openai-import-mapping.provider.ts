@@ -9,12 +9,14 @@ import { AppLogger } from "@/shared/infrastructure/logger/app-logger.service";
 const DEFAULT_OPENAI_BASE_URL = "https://api.openai.com/v1";
 const DEFAULT_IMPORT_MAPPING_MODEL = "gpt-4o-mini";
 
+// 역할 : OpenAiConfig import mapping provider 호출에 필요한 OpenAI 설정을 정의합니다.
 interface OpenAiConfig {
   readonly apiKey: string;
   readonly baseUrl: string;
   readonly model: string;
 }
 
+// 역할 : OpenAiImportMappingJson OpenAI structured output 응답 JSON 구조를 정의합니다.
 interface OpenAiImportMappingJson {
   readonly suggestedMapping: Readonly<Record<string, string | null>>;
   readonly confidence: number;
@@ -23,6 +25,7 @@ interface OpenAiImportMappingJson {
 
 // 역할 : OpenAiImportMappingProvider OpenAI structured output으로 불러오기 컬럼 매핑을 제안합니다.
 export class OpenAiImportMappingProvider implements ImportMappingProvider {
+  // 기능 : OpenAI 설정 조회 서비스와 구조화 logger를 주입받습니다.
   constructor(
     private readonly configService: ConfigService,
     private readonly logger: AppLogger
@@ -98,6 +101,7 @@ export class OpenAiImportMappingProvider implements ImportMappingProvider {
     return this.normalizeResponse(responseBody, input);
   }
 
+  // 기능 : 환경 변수에서 OpenAI import mapping 호출 설정을 읽습니다.
   private getConfig(): OpenAiConfig {
     const apiKey = this.configService.get<string>("OPENAI_API_KEY")?.trim();
 
@@ -120,6 +124,7 @@ export class OpenAiImportMappingProvider implements ImportMappingProvider {
     };
   }
 
+  // 기능 : OpenAI API에 JSON 요청을 보내고 실패 시 redacted provider 오류 로그를 남깁니다.
   private async postJson(
     config: OpenAiConfig,
     path: string,
@@ -150,6 +155,7 @@ export class OpenAiImportMappingProvider implements ImportMappingProvider {
     return response.json();
   }
 
+  // 기능 : OpenAI 응답을 import mapping suggestion 계약으로 검증하고 정규화합니다.
   private normalizeResponse(
     responseBody: unknown,
     input: GenerateImportMappingInput
@@ -167,7 +173,6 @@ export class OpenAiImportMappingProvider implements ImportMappingProvider {
     }
 
     const sourceColumnSet = new Set(input.sourceColumns);
-    const targetFieldSet = new Set(input.targetFields.map((field) => field.key));
     const suggestedMapping: Record<string, string | null> = {};
 
     for (const field of input.targetFields) {
@@ -180,12 +185,6 @@ export class OpenAiImportMappingProvider implements ImportMappingProvider {
       sourceColumnSet.has(column)
     );
 
-    for (const key of Object.keys(parsed.suggestedMapping)) {
-      if (!targetFieldSet.has(key)) {
-        continue;
-      }
-    }
-
     return {
       suggestedMapping,
       confidence: Math.max(0, Math.min(1, parsed.confidence)),
@@ -193,6 +192,7 @@ export class OpenAiImportMappingProvider implements ImportMappingProvider {
     };
   }
 
+  // 기능 : Responses API 응답에서 text output을 추출합니다.
   private extractOutputText(value: unknown): string | null {
     if (!this.isRecord(value)) {
       return null;
@@ -230,6 +230,7 @@ export class OpenAiImportMappingProvider implements ImportMappingProvider {
     return parts.length > 0 ? parts.join("\n") : null;
   }
 
+  // 기능 : provider text output을 JSON 값으로 파싱합니다.
   private parseJson(value: string): unknown {
     try {
       return JSON.parse(value);
@@ -238,6 +239,7 @@ export class OpenAiImportMappingProvider implements ImportMappingProvider {
     }
   }
 
+  // 기능 : provider JSON 값이 import mapping schema를 만족하는지 확인합니다.
   private isOpenAiImportMappingJson(
     value: unknown
   ): value is OpenAiImportMappingJson {
@@ -255,10 +257,12 @@ export class OpenAiImportMappingProvider implements ImportMappingProvider {
     );
   }
 
+  // 기능 : unknown 값이 객체 레코드인지 확인합니다.
   private isRecord(value: unknown): value is Record<string, unknown> {
     return typeof value === "object" && value !== null && !Array.isArray(value);
   }
 
+  // 기능 : 객체 field를 문자열로 읽습니다.
   private readStringField(
     value: Record<string, unknown>,
     fieldName: string

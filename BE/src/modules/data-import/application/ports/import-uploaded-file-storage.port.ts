@@ -4,6 +4,7 @@ export const IMPORT_UPLOADED_FILE_STORAGE = Symbol(
   "IMPORT_UPLOADED_FILE_STORAGE"
 );
 
+// 역할 : StoreImportUploadedFileInput 업로드 원본 파일 저장 요청 값을 정의합니다.
 export interface StoreImportUploadedFileInput {
   readonly userId: string;
   readonly importJobId: string;
@@ -11,6 +12,7 @@ export interface StoreImportUploadedFileInput {
   readonly buffer: Buffer;
 }
 
+// 역할 : StoredImportUploadedFileReference DB metadata에 저장할 원본 파일 참조 값을 정의합니다.
 export interface StoredImportUploadedFileReference {
   readonly checksum: string;
   readonly storageProvider: string;
@@ -18,6 +20,7 @@ export interface StoredImportUploadedFileReference {
   readonly storageKey: string;
 }
 
+// 역할 : DeleteImportUploadedFileInput 저장된 원본 파일 삭제 요청 값을 정의합니다.
 export interface DeleteImportUploadedFileInput {
   readonly storageKey: string;
 }

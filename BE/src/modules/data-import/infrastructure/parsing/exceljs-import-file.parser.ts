@@ -14,9 +14,11 @@ import { DomainError } from "@/shared/domain/errors/domain-error";
 
 const MAX_IMPORT_FILE_SIZE_BYTES = 10 * 1024 * 1024;
 const ALLOWED_EXTENSIONS = new Set(["csv", "xlsx"]);
+
+// 역할 : ExceljsWorkbookBuffer ExcelJS workbook load가 받는 buffer 입력 타입을 정의합니다.
 type ExceljsWorkbookBuffer = Parameters<ExcelJS.Workbook["xlsx"]["load"]>[0];
 
-// 역할 : ExceljsImportFileParser CSV/XLS/XLSX 파일을 미리보기 데이터로 파싱합니다.
+// 역할 : ExceljsImportFileParser CSV/XLSX 파일을 미리보기 데이터로 파싱합니다.
 export class ExceljsImportFileParser implements ImportFileParser {
   // 기능 : 업로드 파일 확장자에 맞춰 첫 번째 시트를 원본 row로 변환합니다.
   async parse(file: ImportUploadedFile): Promise<ParsedImportFile> {
@@ -37,6 +39,7 @@ export class ExceljsImportFileParser implements ImportFileParser {
     }
   }
 
+  // 기능 : 업로드 파일 존재 여부, 크기, 확장자를 검증합니다.
   private assertFile(file: ImportUploadedFile): void {
     if (!Buffer.isBuffer(file.buffer) || file.buffer.length === 0) {
       throw new ValidationDomainError("불러오기 파일이 비어 있습니다.");
@@ -53,6 +56,7 @@ export class ExceljsImportFileParser implements ImportFileParser {
     }
   }
 
+  // 기능 : XLSX workbook의 첫 번째 worksheet를 import row matrix로 변환합니다.
   private async parseWorkbook(buffer: Buffer): Promise<ParsedImportFile> {
     const workbook = new ExcelJS.Workbook();
     const workbookBuffer = buffer.buffer.slice(
@@ -75,6 +79,7 @@ export class ExceljsImportFileParser implements ImportFileParser {
     return this.toParsedFile(matrix);
   }
 
+  // 기능 : CSV 문자열을 import row matrix로 변환합니다.
   private parseCsv(content: string): ParsedImportFile {
     const rows = content
       .replace(/^\uFEFF/, "")
@@ -85,6 +90,7 @@ export class ExceljsImportFileParser implements ImportFileParser {
     return this.toParsedFile(rows);
   }
 
+  // 기능 : header matrix를 source column과 raw row 구조로 변환합니다.
   private toParsedFile(matrix: readonly string[][]): ParsedImportFile {
     const headerRow = matrix[0]?.map((cell) => cell.trim()) ?? [];
     const sourceColumns = headerRow.filter((column) => column.length > 0);
@@ -128,6 +134,7 @@ export class ExceljsImportFileParser implements ImportFileParser {
     return { sourceColumns, rows };
   }
 
+  // 기능 : quote escape를 고려해 CSV 한 줄을 cell 문자열 배열로 파싱합니다.
   private parseCsvLine(line: string): string[] {
     const values: string[] = [];
     let current = "";
@@ -161,6 +168,7 @@ export class ExceljsImportFileParser implements ImportFileParser {
     return values;
   }
 
+  // 기능 : ExcelJS cell 값을 import 미리보기용 문자열로 변환합니다.
   private cellToString(value: ExcelJS.CellValue): string {
     if (value === null || value === undefined) {
       return "";
@@ -193,24 +201,28 @@ export class ExceljsImportFileParser implements ImportFileParser {
     return String(value);
   }
 
+  // 기능 : ExcelJS cell 값이 수식 cell인지 확인합니다.
   private isFormulaValue(
     value: ExcelJS.CellValue
   ): value is ExcelJS.CellFormulaValue {
     return typeof value === "object" && value !== null && "formula" in value;
   }
 
+  // 기능 : ExcelJS cell 값이 rich text cell인지 확인합니다.
   private isRichTextValue(
     value: ExcelJS.CellValue
   ): value is ExcelJS.CellRichTextValue {
     return typeof value === "object" && value !== null && "richText" in value;
   }
 
+  // 기능 : ExcelJS cell 값이 hyperlink cell인지 확인합니다.
   private isHyperlinkValue(
     value: ExcelJS.CellValue
   ): value is ExcelJS.CellHyperlinkValue {
     return typeof value === "object" && value !== null && "hyperlink" in value;
   }
 
+  // 기능 : 파일명에서 소문자 확장자를 추출합니다.
   private getExtension(fileName: string): string {
     return fileName.split(".").pop()?.trim().toLowerCase() ?? "";
   }

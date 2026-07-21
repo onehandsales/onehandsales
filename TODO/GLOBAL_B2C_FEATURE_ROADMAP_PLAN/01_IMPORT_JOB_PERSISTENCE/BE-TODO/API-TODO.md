@@ -56,7 +56,7 @@ Backend에서 반드시 DTO 이름을 맞춘다:
 3. `targetType` 기준 active `ImportTemplate`을 조회하고 선택된 template id를 `ImportJob.templateId`에 저장한다.
 4. file name, byte size, MIME type, checksum을 계산한다.
 5. 원본 file binary는 storage adapter에 저장한다.
-6. CSV/XLS/XLSX parser로 `sourceColumns`와 raw row를 만든다.
+6. CSV/XLSX parser로 `sourceColumns`와 raw row를 만든다.
 7. `expiresAt = now + 7 days`로 계산한다.
 8. DB transaction에서 `ImportJob.sourceColumnsJson`, `ImportUploadedFile`, `ImportJobRow`를 생성한다.
 9. parse warning이나 초기 validation 오류가 있으면 `ImportJobError`를 redacted 형태로 생성한다.
@@ -164,7 +164,7 @@ Backend에서 반드시 DTO 이름을 맞춘다:
 
 - Prisma repository adapter
 - local 또는 configured object storage adapter
-- CSV/XLS/XLSX parser adapter
+- CSV/XLSX parser adapter
 - 기존 AI mapping adapter 재사용
 
 ## 6. Transaction 기준

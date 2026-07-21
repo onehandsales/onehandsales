@@ -24,6 +24,6 @@ export interface ParsedImportFile {
 
 // 역할 : ImportFileParser 업로드 파일을 미리보기 row로 파싱하는 계약입니다.
 export interface ImportFileParser {
-  // 기능 : CSV/XLS/XLSX 파일을 헤더와 row 데이터로 파싱합니다.
+  // 기능 : CSV/XLSX 파일을 헤더와 row 데이터로 파싱합니다.
   parse(file: ImportUploadedFile): Promise<ParsedImportFile>;
 }

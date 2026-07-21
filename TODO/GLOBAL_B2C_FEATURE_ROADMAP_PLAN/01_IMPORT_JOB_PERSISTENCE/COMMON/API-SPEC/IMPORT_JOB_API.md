@@ -222,7 +222,7 @@ Query:
 
 ### 목적
 
-사용자가 CSV/XLS/XLSX 파일을 올리면 확정 전 job, uploaded file metadata, parsed rows를 DB에 저장한다.
+사용자가 CSV/XLSX 파일을 올리면 확정 전 job, uploaded file metadata, parsed rows를 DB에 저장한다.
 
 ### Request
 
@@ -234,7 +234,7 @@ Body:
 | 필드 | 타입 | 필수 | 설명 |
 |---|---|---|---|
 | `targetType` | enum | 필수 | `COMPANY`, `CONTACT`, `PRODUCT`, `DEAL` |
-| `file` | file | 필수 | CSV/XLS/XLSX. 현재 파일 크기 제한은 기존 구현 제한을 유지한다. |
+| `file` | file | 필수 | CSV/XLSX. 현재 파일 크기 제한은 기존 구현 제한을 유지한다. |
 
 `templateId`는 사용자가 직접 선택하거나 request로 넘기지 않는다. Backend가 `targetType`의 active import template을 조회하고, 선택된 template id를 `ImportJob.templateId`에 저장한다.
 
@@ -286,7 +286,7 @@ Body:
 |---|---|---:|---|---|
 | 인증 없음 | `Unauthorized` | 401 | 로그인 화면으로 이동 | warn |
 | template 없음 | `ImportTemplateNotFound` | 404 | 양식 목록을 다시 불러온다 | warn |
-| 파일 형식 불가 | `UnsupportedImportFileType` | 400 | `CSV, XLS, XLSX 파일을 올려 주세요.` | warn |
+| 파일 형식 불가 | `UnsupportedImportFileType` | 400 | `CSV 또는 XLSX 파일을 올려 주세요.` | warn |
 | 파일 parsing 실패 | `ImportFileParseFailed` | 400 | `파일을 읽지 못했어요. 형식을 확인하고 다시 올려 주세요.` | warn |
 | storage 실패 | `ImportFileStorageFailed` | 503 | `파일을 저장하지 못했어요. 잠시 후 다시 시도해 주세요.` | error |
 

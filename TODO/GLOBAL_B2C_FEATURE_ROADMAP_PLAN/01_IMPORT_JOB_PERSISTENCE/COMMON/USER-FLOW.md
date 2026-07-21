@@ -23,7 +23,7 @@
    - 담당자
    - 제품
    - 딜
-5. 사용자가 CSV/XLS/XLSX 파일을 올린다.
+5. 사용자가 CSV/XLSX 파일을 올린다.
 6. User Web이 POST /api/imports를 호출한다.
 7. Backend가 파일 metadata, job, row를 저장한다.
 8. Backend가 AI/rule mapping을 실행하거나 User Web이 POST /api/imports/:importJobId/map을 호출한다.

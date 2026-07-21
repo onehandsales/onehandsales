@@ -140,7 +140,10 @@ export type ImportTemplateSampleRow = Readonly<
   Record<string, string | number | null>
 >;
 
+// 역할 : ImportSubmittedDataValue 확정 시 domain repository에 전달할 제출 값 타입을 정의합니다.
 export type ImportSubmittedDataValue = string | number | boolean | null;
+
+// 역할 : ImportSubmittedData 확정 시 row별로 저장할 정규화된 제출 데이터를 정의합니다.
 export type ImportSubmittedData = Readonly<Record<string, ImportSubmittedDataValue>>;
 
 // 역할 : ImportTemplateListResponse 활성 불러오기 양식 목록 응답을 정의합니다.
@@ -177,17 +180,19 @@ export interface UpdateImportMappingInput {
   readonly mapping: ImportMapping;
 }
 
-// 역할 : ConfirmImportJobRowInput 확정 요청 row 값을 정의합니다.
+// 역할 : UpdateImportJobRowInput 사용자가 보정한 확정 전 row 값을 정의합니다.
 export interface UpdateImportJobRowInput {
   readonly rowId: string;
   readonly data: Readonly<Record<string, unknown>>;
   readonly excluded?: boolean;
 }
 
+// 역할 : UpdateImportJobRowsInput 사용자가 보정한 확정 전 row 목록을 정의합니다.
 export interface UpdateImportJobRowsInput {
   readonly rows: readonly UpdateImportJobRowInput[];
 }
 
+// 역할 : ConfirmImportJobRowInput 확정 요청에서 override할 row 제출 값을 정의합니다.
 export interface ConfirmImportJobRowInput {
   readonly rowNumber: number;
   readonly data: Readonly<Record<string, unknown>>;
@@ -235,23 +240,29 @@ export interface ConfirmImportJobInput {
   readonly rows?: readonly ConfirmImportJobRowInput[];
 }
 
+// 역할 : ListActiveImportJobsRequest 활성 import job 목록 조회 조건을 정의합니다.
 export interface ListActiveImportJobsRequest {
   readonly targetType?: ImportTemplateType;
   readonly limit?: number;
 }
 
+// 역할 : GetImportJobRequest import job 상세 조회 조건을 정의합니다.
 export interface GetImportJobRequest {
   readonly includeErrors?: boolean;
 }
 
+// 역할 : MapImportJobRequest import job 컬럼 매핑 생성 조건을 정의합니다.
 export interface MapImportJobRequest {
   readonly preferredSource?: "AI" | "RULE_BASED";
 }
 
+// 역할 : ValidateImportJobRequest 현재 저장된 import job row 재검증 요청을 정의합니다.
 export type ValidateImportJobRequest = object;
 
+// 역할 : CancelImportJobRequest import job 취소 요청을 정의합니다.
 export type CancelImportJobRequest = object;
 
+// 역할 : ListImportJobErrorsRequest import job 오류 이력 조회 조건을 정의합니다.
 export interface ListImportJobErrorsRequest {
   readonly limit?: number;
 }
@@ -291,6 +302,7 @@ export interface ImportJobSummaryResponse {
   readonly updatedAt: string;
 }
 
+// 역할 : ActiveImportJobsResponse 재개 가능한 import job 목록 응답을 정의합니다.
 export interface ActiveImportJobsResponse {
   readonly items: ImportJobSummaryResponse[];
 }
@@ -319,7 +331,10 @@ export interface ImportJobDetailResponse {
   readonly errors: readonly ImportJobErrorResponse[];
 }
 
+// 역할 : CreateImportJobResponse import job 생성 직후 반환되는 상세 응답 alias를 정의합니다.
 export type CreateImportJobResponse = ImportJobDetailResponse;
+
+// 역할 : ImportJobResponse import job 요약 응답 alias를 정의합니다.
 export type ImportJobResponse = ImportJobSummaryResponse;
 
 // 역할 : ConfirmImportJobResponse 불러오기 확정 결과 응답을 정의합니다.
@@ -330,8 +345,10 @@ export interface ConfirmImportJobResponse {
   readonly importedRowCount: number;
 }
 
+// 역할 : ImportJobResultResponse import job 확정 결과 응답 alias를 정의합니다.
 export type ImportJobResultResponse = ConfirmImportJobResponse;
 
+// 역할 : ImportJobErrorsResponse import job 오류 이력 목록 응답을 정의합니다.
 export interface ImportJobErrorsResponse {
   readonly items: ImportJobErrorResponse[];
 }
@@ -381,12 +398,14 @@ export interface ImportUserLogRowResponse {
   readonly createdAt: string;
 }
 
+// 역할 : ConfirmReadyRow 확정 가능한 row의 정규화 결과를 표현합니다.
 interface ConfirmReadyRow {
   readonly rowNumber: number;
   readonly submittedData: ImportSubmittedData;
   readonly targetLabel: string;
 }
 
+// 역할 : NormalizedRowValidation import row 검증 결과와 집계 값을 표현합니다.
 interface NormalizedRowValidation {
   readonly rows: readonly ValidatedImportJobRow[];
   readonly validRowCount: number;
@@ -394,6 +413,7 @@ interface NormalizedRowValidation {
   readonly errors: readonly ImportJobError[];
 }
 
+// 역할 : ValidatedImportJobRow 확정 전 row의 매핑/정규화/검증 상태를 표현합니다.
 interface ValidatedImportJobRow {
   readonly rowId: string;
   readonly rowNumber: number;
@@ -405,8 +425,10 @@ interface ValidatedImportJobRow {
   readonly targetLabel: string | null;
 }
 
+// 역할 : LegacyImportJobRowStatus 기존 ImportUserLog 기반 import row 상태를 표현합니다.
 type LegacyImportJobRowStatus = "PENDING" | "VALID" | "VALIDATION_FAILED";
 
+// 역할 : LegacyStoredImportJobRow 기존 in-memory import row 구조를 표현합니다.
 interface LegacyStoredImportJobRow {
   readonly id: string;
   readonly rowNumber: number;
@@ -416,11 +438,13 @@ interface LegacyStoredImportJobRow {
   readonly errorMessage: string | null;
 }
 
+// 역할 : LegacyStoredImportJob 기존 in-memory import job 구조를 표현합니다.
 interface LegacyStoredImportJob {
   readonly targetType: ImportTemplateType;
   readonly rows: readonly LegacyStoredImportJobRow[];
 }
 
+// 역할 : LegacyNormalizedRowValidation 기존 import row 검증 결과와 집계 값을 표현합니다.
 interface LegacyNormalizedRowValidation {
   readonly rows: readonly LegacyStoredImportJobRow[];
   readonly validRowCount: number;
@@ -428,6 +452,7 @@ interface LegacyNormalizedRowValidation {
   readonly errors: readonly ImportJobError[];
 }
 
+// 역할 : NormalizedFieldValue 단일 field 정규화 값과 검증 오류를 표현합니다.
 interface NormalizedFieldValue {
   readonly value: ImportFieldValue;
   readonly errorMessage: string | null;
@@ -495,16 +520,18 @@ export class DataImportApplicationService {
     };
   }
 
-  // 기능 : 업로드 파일을 파싱해 확정 전 임시 불러오기 job을 생성합니다.
+  // 기능 : 현재 사용자가 재개할 수 있는 활성 import job 목록을 조회합니다.
   async listActiveImportJobs(
     currentUser: CurrentUserContext,
     input: ListActiveImportJobsRequest = {}
   ): Promise<ActiveImportJobsResponse> {
+    // 1. 조회 전에 현재 사용자 소유의 만료된 활성 job을 정리한다.
     const now = new Date();
     const limit = this.normalizeLimit(input.limit, 5, 10);
 
     await this.expireImportJobsForUser(currentUser.id, now);
 
+    // 2. 아직 만료되지 않은 활성 job 목록을 target type과 limit 기준으로 조회한다.
     const jobs = await this.importJobRepository.listActiveJobsForUser({
       userId: currentUser.id,
       now,
@@ -522,10 +549,12 @@ export class DataImportApplicationService {
     };
   }
 
+  // 기능 : 업로드 파일을 파싱해 확정 전 임시 불러오기 job을 생성합니다.
   async createImportJob(
     currentUser: CurrentUserContext,
     input: CreateImportJobInput
   ): Promise<CreateImportJobResponse> {
+    // 1. 대상 타입의 최신 활성 template을 조회한다.
     const template =
       await this.importTemplateRepository.findActiveTemplateByType(input.targetType);
 
@@ -541,6 +570,8 @@ export class DataImportApplicationService {
     });
     const now = new Date();
     const expiresAt = this.createImportJobExpiresAt(now);
+
+    // 2. 원본 파일을 먼저 저장해 새로고침/배포 중에도 job metadata가 참조할 수 있게 한다.
     const storedFile = await this.storeUploadedImportFile(currentUser, {
       importJobId,
       originalFileName,
@@ -548,6 +579,7 @@ export class DataImportApplicationService {
     });
 
     try {
+      // 3. job, parsed row, uploaded file metadata를 하나의 transaction으로 생성한다.
       const job = await this.importJobRepository.runInTransaction((repositories) =>
         repositories.createJob({
           id: importJobId,
@@ -600,6 +632,7 @@ export class DataImportApplicationService {
 
       return this.toImportJobDetailResponse(job, { includeErrors: true });
     } catch (error) {
+      // 4. DB 생성 실패 시 orphan 원본 파일을 best effort로 삭제한다.
       await this.safeDeleteStoredImportFile(storedFile.storageKey);
       throw error;
     }
@@ -611,6 +644,7 @@ export class DataImportApplicationService {
     importJobId: string,
     input: MapImportJobRequest = {}
   ): Promise<ImportJobDetailResponse> {
+    // 1. 수정 가능한 import job과 template/source column을 준비한다.
     const job = await this.getMutableImportJob(currentUser, importJobId);
     const columns = this.normalizeColumns(job.templateColumnsJson);
     const sourceColumns = this.normalizeSourceColumns(job.sourceColumnsJson);
@@ -626,6 +660,7 @@ export class DataImportApplicationService {
 
     if (input.preferredSource !== "RULE_BASED") {
       try {
+        // 2. AI provider로 매핑을 시도하고 실패하면 규칙 기반 fallback을 사용한다.
         suggestion = this.normalizeMappingSuggestion(
           await this.importMappingProvider.generate({
             targetType: job.targetType,
@@ -646,6 +681,7 @@ export class DataImportApplicationService {
       }
     }
 
+    // 3. 제안된 매핑을 모든 row에 적용해 검증 상태와 job 상태를 갱신한다.
     const validation = this.validateRowsWithMapping(
       job.rows,
       columns,
@@ -700,6 +736,7 @@ export class DataImportApplicationService {
     importJobId: string,
     input: UpdateImportMappingInput
   ): Promise<ImportJobDetailResponse> {
+    // 1. 사용자 매핑이 현재 template/source column 범위 안에 있는지 정규화한다.
     const job = await this.getMutableImportJob(currentUser, importJobId);
     const columns = this.normalizeColumns(job.templateColumnsJson);
     const sourceColumns = this.normalizeSourceColumns(job.sourceColumnsJson);
@@ -712,6 +749,7 @@ export class DataImportApplicationService {
     );
     const nextStatus = this.resolveReviewStatus(validation);
 
+    // 2. 매핑, row 검증 결과, job 집계 값을 같은 transaction으로 저장한다.
     await this.importJobRepository.runInTransaction(async (repositories) => {
       await repositories.updateJobStatusForUser({
         userId: currentUser.id,
@@ -745,6 +783,7 @@ export class DataImportApplicationService {
     importJobId: string,
     input: GetImportJobRequest = {}
   ): Promise<ImportJobDetailResponse> {
+    // 1. 현재 사용자 소유 job을 조회하고 TTL 만료를 먼저 반영한다.
     const job = await this.getImportJobDetail(currentUser, importJobId);
 
     this.logEvent("importJob.viewed", {
@@ -758,12 +797,13 @@ export class DataImportApplicationService {
     });
   }
 
-  // 기능 : 사용자가 최종 보정한 row를 실제 도메인 데이터로 생성하고 성공 로그를 저장합니다.
+  // 기능 : 사용자가 보정한 row 값을 저장하고 현재 매핑 기준으로 재검증합니다.
   async updateImportJobRows(
     currentUser: CurrentUserContext,
     importJobId: string,
     input: UpdateImportJobRowsInput
   ): Promise<ImportJobDetailResponse> {
+    // 1. 수정 가능한 job의 row 목록에서 요청 row가 실제 소유 row인지 확인한다.
     const job = await this.getMutableImportJob(currentUser, importJobId);
     const columns = this.normalizeColumns(job.templateColumnsJson);
     const rowMap = new Map(job.rows.map((row) => [row.id, row]));
@@ -788,6 +828,7 @@ export class DataImportApplicationService {
     const summary = this.calculateRowSummary(mergedRows);
     const nextStatus = this.resolveReviewStatus(summary);
 
+    // 2. 보정된 row와 job 집계 값을 같은 transaction으로 저장한다.
     await this.importJobRepository.runInTransaction(async (repositories) => {
       await repositories.updateRowsForJob({
         userId: currentUser.id,
@@ -816,12 +857,15 @@ export class DataImportApplicationService {
     return this.getImportJob(currentUser, importJobId, { includeErrors: true });
   }
 
+  // 기능 : 현재 저장된 mapping과 row data로 import job의 row 검증 상태를 재계산합니다.
   async validateImportJob(
     currentUser: CurrentUserContext,
     importJobId: string,
     _input: ValidateImportJobRequest = {}
   ): Promise<ImportJobDetailResponse> {
     void _input;
+
+    // 1. 수정 가능한 job과 저장된 mapping을 조회하고 필수 매핑 여부를 확인한다.
     const job = await this.getMutableImportJob(currentUser, importJobId);
     const columns = this.normalizeColumns(job.templateColumnsJson);
     const mapping = this.normalizeExistingMapping(job.mappingJson, columns);
@@ -838,6 +882,7 @@ export class DataImportApplicationService {
     );
     const nextStatus = this.resolveReviewStatus(validation);
 
+    // 2. 현재 row data 기준 검증 결과와 job 상태를 같은 transaction으로 저장한다.
     await this.importJobRepository.runInTransaction(async (repositories) => {
       await repositories.updateRowsForJob({
         userId: currentUser.id,
@@ -863,12 +908,15 @@ export class DataImportApplicationService {
     return this.getImportJob(currentUser, importJobId, { includeErrors: true });
   }
 
+  // 기능 : 확정 전 import job을 취소하고 원본 파일을 best effort로 삭제합니다.
   async cancelImportJob(
     currentUser: CurrentUserContext,
     importJobId: string,
     _input: CancelImportJobRequest = {}
   ): Promise<void> {
     void _input;
+
+    // 1. 현재 사용자 소유 job을 조회하고 이미 확정/종료된 상태를 처리한다.
     const job = await this.getImportJobDetail(currentUser, importJobId);
 
     if (job.status === "CONFIRMED") {
@@ -882,6 +930,7 @@ export class DataImportApplicationService {
     const now = new Date();
     let fileDeleted = false;
 
+    // 2. DB transaction 전에 원본 파일 삭제를 먼저 시도한다.
     if (job.uploadedFile && !job.uploadedFile.deletedAt) {
       try {
         await this.importUploadedFileStorage.delete({
@@ -893,6 +942,7 @@ export class DataImportApplicationService {
       }
     }
 
+    // 3. job 취소 상태와 파일 metadata 또는 삭제 실패 오류 이력을 저장한다.
     await this.importJobRepository.runInTransaction(async (repositories) => {
       await repositories.updateJobStatusForUser({
         userId: currentUser.id,
@@ -928,13 +978,16 @@ export class DataImportApplicationService {
     });
   }
 
+  // 기능 : 현재 사용자 소유 import job의 redacted 오류 이력을 조회합니다.
   async listImportJobErrors(
     currentUser: CurrentUserContext,
     importJobId: string,
     input: ListImportJobErrorsRequest = {}
   ): Promise<ImportJobErrorsResponse> {
+    // 1. job 소유권과 TTL 만료 상태를 확인한다.
     await this.getImportJobDetail(currentUser, importJobId);
 
+    // 2. detailJson 없이 사용자에게 보여줄 오류 이력만 조회한다.
     const errors = await this.importJobRepository.listErrorsForJob({
       userId: currentUser.id,
       importJobId,
@@ -952,11 +1005,13 @@ export class DataImportApplicationService {
     };
   }
 
+  // 기능 : 검증이 끝난 import job을 확정해 실제 도메인 데이터와 성공 로그를 생성합니다.
   async confirmImportJob(
     currentUser: CurrentUserContext,
     importJobId: string,
     input: ConfirmImportJobInput
   ): Promise<ConfirmImportJobResponse> {
+    // 1. 현재 사용자 소유 job 상태가 확정 가능한 READY_TO_CONFIRM인지 검증한다.
     const job = await this.getImportJobDetail(currentUser, importJobId);
 
     if (job.status === "CONFIRMED") {
@@ -990,6 +1045,7 @@ export class DataImportApplicationService {
         ? this.normalizeDealProductResolutions(input.dealProductResolutions)
         : undefined;
 
+    // 2. domain repository가 사용할 확정 입력을 row/resolution 기준으로 정규화한다.
     const confirmInput = {
       userId: currentUser.id,
       importJobId,
@@ -1015,6 +1071,7 @@ export class DataImportApplicationService {
         : { dealProductResolutions }),
     };
 
+    // 3. 동시 확정을 막기 위해 READY_TO_CONFIRM 상태일 때만 CONFIRMING으로 전환한다.
     const movedToConfirming =
       await this.importJobRepository.updateJobStatusForUser({
         userId: currentUser.id,
@@ -1028,6 +1085,7 @@ export class DataImportApplicationService {
     }
 
     try {
+      // 4. 실제 domain data 생성, 성공 로그 저장, persistent job 완료 처리를 transaction으로 수행한다.
       const result = await this.confirmDomainImport(job.targetType, confirmInput);
 
       await this.deleteUploadedFileAfterClose(currentUser, importJobId, job);
@@ -1046,6 +1104,7 @@ export class DataImportApplicationService {
         importedRowCount: result.importedRowCount,
       };
     } catch (error) {
+      // 5. 확정 실패 시 사용자 복구용 오류 이력만 남기고 provider/raw detail은 노출하지 않는다.
       const confirmError =
         error instanceof ValidationDomainError
           ? new ImportConfirmValidationFailedError()
@@ -1161,7 +1220,7 @@ export class DataImportApplicationService {
     };
   }
 
-  // 기능 : 임시 job row를 API 응답 row로 변환합니다.
+  // 기능 : 임시 job 상세 record를 API 상세 응답으로 변환합니다.
   private toImportJobDetailResponse(
     job: ImportJobDetailRecord,
     options: { readonly includeErrors: boolean }
@@ -1180,6 +1239,7 @@ export class DataImportApplicationService {
     };
   }
 
+  // 기능 : 임시 job record를 API 요약 응답으로 변환합니다.
   private toImportJobSummaryResponse(
     job: ImportJobRecord
   ): ImportJobSummaryResponse {
@@ -1201,6 +1261,7 @@ export class DataImportApplicationService {
     };
   }
 
+  // 기능 : 임시 job row record를 API row 응답으로 변환합니다.
   private toImportJobRowResponse(row: ImportJobRowRecord): ImportJobRowResponse {
     return {
       rowId: row.id,
@@ -1212,6 +1273,7 @@ export class DataImportApplicationService {
     };
   }
 
+  // 기능 : 임시 job 오류 record를 detailJson 없는 API 오류 응답으로 변환합니다.
   private toImportJobErrorResponse(
     error: ImportJobErrorRecord
   ): ImportJobErrorResponse {
@@ -1229,7 +1291,7 @@ export class DataImportApplicationService {
     };
   }
 
-  // 기능 : 임시 job을 API 응답으로 변환합니다.
+  // 기능 : 업로드/로그 파일명을 API 응답과 storage key에 사용할 표시명으로 정규화합니다.
   private normalizeUploadedFileName(fileName: string): string {
     const normalized = fileName.trim();
 
@@ -1240,6 +1302,7 @@ export class DataImportApplicationService {
     return this.repairUtf8MojibakeFileName(normalized);
   }
 
+  // 기능 : multipart 업로드에서 깨진 UTF-8 파일명을 복구할 수 있으면 복구합니다.
   private repairUtf8MojibakeFileName(fileName: string): string {
     if (!/[\u0080-\u00FF]/.test(fileName)) {
       return fileName;
@@ -1278,6 +1341,7 @@ export class DataImportApplicationService {
     return job;
   }
 
+  // 기능 : 현재 사용자 소유 job을 조회한 뒤 수정 가능한 상태인지 검증합니다.
   private async getMutableImportJob(
     currentUser: CurrentUserContext,
     importJobId: string
@@ -1289,11 +1353,12 @@ export class DataImportApplicationService {
     return job;
   }
 
-  // 기능 : 양식 타입과 버전 기준으로 정렬 순서를 계산합니다.
+  // 기능 : import job의 7일 TTL 만료 시각을 계산합니다.
   private createImportJobExpiresAt(now: Date): Date {
     return new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
   }
 
+  // 기능 : 업로드 원본 파일을 storage port에 저장하고 실패를 domain error로 변환합니다.
   private async storeUploadedImportFile(
     currentUser: CurrentUserContext,
     input: {
@@ -1314,6 +1379,7 @@ export class DataImportApplicationService {
     }
   }
 
+  // 기능 : DB 생성 실패 등 보상 처리에서 원본 파일 삭제를 best effort로 수행합니다.
   private async safeDeleteStoredImportFile(storageKey: string): Promise<void> {
     try {
       await this.importUploadedFileStorage.delete({ storageKey });
@@ -1324,6 +1390,7 @@ export class DataImportApplicationService {
     }
   }
 
+  // 기능 : 현재 사용자 소유의 TTL 만료 import job을 EXPIRED로 닫고 원본 파일 metadata를 정리합니다.
   private async expireImportJobsForUser(
     userId: string,
     now: Date,
@@ -1388,12 +1455,13 @@ export class DataImportApplicationService {
       }
     });
 
-      this.logEvent("importJob.expired", {
-        userId,
-        expiredCount: expiringJobs.length,
-      });
+    this.logEvent("importJob.expired", {
+      userId,
+      expiredCount: expiringJobs.length,
+    });
   }
 
+  // 기능 : import job이 사용자의 수정/매핑/검증 작업을 받을 수 있는 상태인지 확인합니다.
   private ensureJobMutable(job: ImportJobRecord): void {
     if (job.status === "EXPIRED") {
       throw new ImportJobExpiredError();
@@ -1408,10 +1476,12 @@ export class DataImportApplicationService {
     }
   }
 
+  // 기능 : 더 이상 사용자 수정이 불가능한 종료 상태인지 확인합니다.
   private isTerminalImportJobStatus(status: PersistentImportJobStatus): boolean {
     return ["CONFIRMED", "FAILED", "CANCELED", "EXPIRED"].includes(status);
   }
 
+  // 기능 : 목록/이력 조회 limit 값을 기본값과 최대값 범위 안으로 정규화합니다.
   private normalizeLimit(
     value: number | undefined,
     defaultValue: number,
@@ -1424,6 +1494,7 @@ export class DataImportApplicationService {
     return Math.min(Math.max(value as number, 1), maxValue);
   }
 
+  // 기능 : 저장된 source column JSON을 문자열 컬럼 배열로 변환합니다.
   private normalizeSourceColumns(value: unknown): string[] {
     if (!Array.isArray(value)) {
       return [];
@@ -1432,6 +1503,7 @@ export class DataImportApplicationService {
     return value.filter((item): item is string => typeof item === "string");
   }
 
+  // 기능 : 저장된 rawData JSON을 문자열 값만 가진 원본 row 데이터로 변환합니다.
   private normalizeRawData(value: unknown): Readonly<Record<string, string>> {
     if (!isRecord(value)) {
       return {};
@@ -1442,6 +1514,7 @@ export class DataImportApplicationService {
     );
   }
 
+  // 기능 : 저장된 mappedData JSON을 import field 값 map으로 변환합니다.
   private normalizeMappedData(value: unknown): ImportMappedRowData {
     if (!isRecord(value)) {
       return {};
@@ -1455,6 +1528,7 @@ export class DataImportApplicationService {
     );
   }
 
+  // 기능 : 저장된 validationErrors JSON을 cell 검증 오류 응답 배열로 변환합니다.
   private normalizeCellValidationErrors(
     value: unknown
   ): readonly ImportCellValidationError[] {
@@ -1481,6 +1555,7 @@ export class DataImportApplicationService {
       .filter((item): item is ImportCellValidationError => item !== null);
   }
 
+  // 기능 : 저장된 mapping JSON을 현재 template column 기준 mapping으로 변환합니다.
   private normalizeExistingMapping(
     value: unknown,
     columns: readonly ImportTemplateColumn[]
@@ -1496,6 +1571,7 @@ export class DataImportApplicationService {
     return mapping;
   }
 
+  // 기능 : 사용자가 제출한 mapping이 현재 template/source column 범위 안에 있는지 검증합니다.
   private normalizeUserMapping(
     mapping: ImportMapping,
     columns: readonly ImportTemplateColumn[],
@@ -1519,6 +1595,7 @@ export class DataImportApplicationService {
     return this.normalizeMapping(mapping, columns, sourceColumns);
   }
 
+  // 기능 : 필수 template column이 모두 원본 컬럼에 매핑되어 있는지 확인합니다.
   private hasRequiredMapping(
     mapping: ImportMapping,
     columns: readonly ImportTemplateColumn[]
@@ -1526,6 +1603,7 @@ export class DataImportApplicationService {
     return columns.every((column) => !column.required || Boolean(mapping[column.key]));
   }
 
+  // 기능 : row 검증 집계 기준으로 job의 다음 검토 상태를 결정합니다.
   private resolveReviewStatus(input: {
     readonly validRowCount: number;
     readonly invalidRowCount: number;
@@ -1535,6 +1613,7 @@ export class DataImportApplicationService {
       : "READY_TO_CONFIRM";
   }
 
+  // 기능 : 검증된 row를 repository update 입력으로 변환합니다.
   private toRepositoryRowUpdate(row: ValidatedImportJobRow) {
     return {
       rowId: row.rowId,
@@ -1546,6 +1625,7 @@ export class DataImportApplicationService {
     };
   }
 
+  // 기능 : 사용자가 보정하거나 제외한 단일 row를 검증된 row 상태로 변환합니다.
   private validateUserEditedRow(
     row: ImportJobRowRecord,
     columns: readonly ImportTemplateColumn[],
@@ -1577,6 +1657,7 @@ export class DataImportApplicationService {
     });
   }
 
+  // 기능 : repository row record를 application 검증 row 구조로 변환합니다.
   private toValidatedRowFromRecord(row: ImportJobRowRecord): ValidatedImportJobRow {
     return {
       rowId: row.id,
@@ -1590,6 +1671,7 @@ export class DataImportApplicationService {
     };
   }
 
+  // 기능 : 검증된 row 목록에서 유효/무효 row 수를 계산합니다.
   private calculateRowSummary(rows: readonly ValidatedImportJobRow[]): {
     readonly validRowCount: number;
     readonly invalidRowCount: number;
@@ -1600,6 +1682,7 @@ export class DataImportApplicationService {
     };
   }
 
+  // 기능 : 대상 template column 정의에 맞춰 단일 row 값을 정규화하고 cell 오류를 수집합니다.
   private validateMappedDataForRow(input: {
     readonly rowId: string;
     readonly rowNumber: number;
@@ -1645,6 +1728,7 @@ export class DataImportApplicationService {
     };
   }
 
+  // 기능 : 검증된 row 목록을 기존 confirm 검증 결과 구조로 변환합니다.
   private toNormalizedRowValidation(
     rows: readonly ValidatedImportJobRow[]
   ): NormalizedRowValidation {
@@ -1662,6 +1746,7 @@ export class DataImportApplicationService {
     };
   }
 
+  // 기능 : 원본 row와 mapping을 적용해 대상 field별 mapped data를 만듭니다.
   private mapRawRowData(
     row: ImportJobRowRecord,
     mapping: ImportMapping
@@ -1676,6 +1761,7 @@ export class DataImportApplicationService {
     );
   }
 
+  // 기능 : 대상 타입에 맞는 domain import 확정 repository method를 호출합니다.
   private async confirmDomainImport(
     targetType: ImportTemplateType,
     input: ConfirmImportRepositoryInput
@@ -1692,6 +1778,7 @@ export class DataImportApplicationService {
     }
   }
 
+  // 기능 : confirm 이후 저장된 원본 파일을 삭제하고 실패 시 복구용 오류 이력을 남깁니다.
   private async deleteUploadedFileAfterClose(
     currentUser: CurrentUserContext,
     importJobId: string,
@@ -1728,6 +1815,7 @@ export class DataImportApplicationService {
     }
   }
 
+  // 기능 : unknown 값을 import field 값 범위로 변환합니다.
   private toImportFieldValue(value: unknown): ImportFieldValue {
     if (typeof value === "number" && Number.isFinite(value)) {
       return value;
@@ -1740,6 +1828,7 @@ export class DataImportApplicationService {
     return value === null ? null : this.toTextValue(value);
   }
 
+  // 기능 : import job application 이벤트를 구조화된 logger 메시지로 남깁니다.
   private logEvent(event: string, fields: Record<string, unknown>): void {
     this.logger.log(
       JSON.stringify({
@@ -1750,6 +1839,7 @@ export class DataImportApplicationService {
     );
   }
 
+  // 기능 : 양식 타입과 버전 기준으로 정렬 순서를 계산합니다.
   private compareTemplates(
     left: ImportTemplateRecord,
     right: ImportTemplateRecord
@@ -1950,6 +2040,7 @@ export class DataImportApplicationService {
     return Math.max(14, column.label.length + 8);
   }
 
+  // 기능 : 단일/다중 targetType query를 중복 없는 import log filter로 정규화합니다.
   private normalizeImportUserLogTargetTypes(
     query: ImportUserLogListQueryInput
   ): ImportTemplateType[] {
@@ -2156,6 +2247,7 @@ export class DataImportApplicationService {
     return this.toNormalizedRowValidation(validatedRows);
   }
 
+  // 기능 : 현재 저장된 row data를 기준으로 전체 row 검증 상태를 재계산합니다.
   private validateRowsWithCurrentData(
     rows: readonly ImportJobRowRecord[],
     columns: readonly ImportTemplateColumn[],
@@ -2186,6 +2278,7 @@ export class DataImportApplicationService {
     return this.toNormalizedRowValidation(validatedRows);
   }
 
+  // 기능 : persistent import job의 VALID row를 확정 repository 입력 row로 정규화합니다.
   private normalizePersistentConfirmRows(
     job: ImportJobDetailRecord,
     columns: readonly ImportTemplateColumn[],
@@ -2238,6 +2331,7 @@ export class DataImportApplicationService {
     });
   }
 
+  // 기능 : 기존 in-memory import job row를 mapping 기준으로 검증합니다.
   private validateJobRows(
     rows: readonly LegacyStoredImportJobRow[],
     columns: readonly ImportTemplateColumn[],

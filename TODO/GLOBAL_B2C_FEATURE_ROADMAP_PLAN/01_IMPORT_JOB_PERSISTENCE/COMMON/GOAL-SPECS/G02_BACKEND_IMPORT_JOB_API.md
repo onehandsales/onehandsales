@@ -91,7 +91,7 @@ Infrastructure:
 
 - Prisma repository adapter
 - file storage adapter
-- CSV/XLS/XLSX parser adapter
+- CSV/XLSX parser adapter
 - AI mapping provider adapter
 
 ## 7. Transaction 기준
