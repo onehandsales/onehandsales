@@ -36,7 +36,7 @@ const NOW = new Date("2026-07-21T00:00:00.000Z");
 const EXPIRES_AT = new Date("2026-07-28T00:00:00.000Z");
 
 describe("DataImportApplicationService persistent import job flow", () => {
-  it("rejects invalid rows before moving the job to CONFIRMING", async () => {
+  it("rejects invalid rows before delegating confirm", async () => {
     const fixture = createServiceFixture();
     fixture.importJobRepository.findJobByIdForUser.mockResolvedValue(
       createImportJobDetail({
@@ -53,12 +53,93 @@ describe("DataImportApplicationService persistent import job flow", () => {
     expect(fixture.importTemplateRepository.confirmCompanyImport).not.toHaveBeenCalled();
   });
 
-  it("locks confirm by moving only READY_TO_CONFIRM jobs to CONFIRMING", async () => {
+  it("rejects pending rows before delegating confirm", async () => {
+    const fixture = createServiceFixture();
+    fixture.importJobRepository.findJobByIdForUser.mockResolvedValue(
+      createImportJobDetail({
+        rows: [
+          createImportJobRow(),
+          createImportJobRow({
+            id: "row-2",
+            rowNumber: 3,
+            mappedDataJson: {},
+            normalizedDataJson: null,
+            status: "PENDING",
+            targetLabel: null,
+          }),
+        ],
+        status: "READY_TO_CONFIRM",
+      })
+    );
+
+    await expect(
+      fixture.service.confirmImportJob(CURRENT_USER, IMPORT_JOB_ID, {})
+    ).rejects.toBeInstanceOf(ImportJobNotReadyError);
+
+    expect(fixture.importJobRepository.updateJobStatusForUser).not.toHaveBeenCalled();
+    expect(fixture.importTemplateRepository.confirmCompanyImport).not.toHaveBeenCalled();
+  });
+
+  it("keeps a partially edited job in review while untouched rows are pending", async () => {
+    const fixture = createServiceFixture();
+    const pendingJob = createImportJobDetail({
+      status: "UPLOADED",
+      validRowCount: 0,
+      invalidRowCount: 0,
+      rows: [
+        createImportJobRow({
+          status: "PENDING",
+          mappedDataJson: {},
+          normalizedDataJson: null,
+          targetLabel: null,
+        }),
+        createImportJobRow({
+          id: "row-2",
+          rowNumber: 3,
+          rawDataJson: { companyName: "Beta" },
+          mappedDataJson: {},
+          normalizedDataJson: null,
+          status: "PENDING",
+          targetLabel: null,
+        }),
+      ],
+    });
+    fixture.importJobRepository.findJobByIdForUser
+      .mockResolvedValueOnce(pendingJob)
+      .mockResolvedValueOnce(
+        createImportJobDetail({
+          status: "NEEDS_REVIEW",
+          validRowCount: 1,
+          invalidRowCount: 0,
+          rows: pendingJob.rows,
+        })
+      );
+
+    await fixture.service.updateImportJobRows(CURRENT_USER, IMPORT_JOB_ID, {
+      rows: [
+        {
+          rowId: "row-1",
+          data: { companyName: "Acme" },
+        },
+      ],
+    });
+
+    expect(fixture.importJobRepository.updateJobStatusForUser).toHaveBeenCalledWith(
+      expect.objectContaining({
+        userId: CURRENT_USER.id,
+        importJobId: IMPORT_JOB_ID,
+        status: "NEEDS_REVIEW",
+        validRowCount: 1,
+        invalidRowCount: 0,
+      })
+    );
+  });
+
+  it("delegates confirm status locking to the domain repository transaction", async () => {
     const fixture = createServiceFixture();
     fixture.importJobRepository.findJobByIdForUser.mockResolvedValue(
       createImportJobDetail()
     );
-    fixture.importJobRepository.updateJobStatusForUser.mockResolvedValueOnce(true);
     fixture.importTemplateRepository.confirmCompanyImport.mockResolvedValue({
       importUserLogId: IMPORT_USER_LOG_ID,
       importedRowCount: 1,
@@ -67,19 +148,15 @@ describe("DataImportApplicationService persistent import job flow", () => {
     const response = await fixture.service.confirmImportJob(
       CURRENT_USER,
       IMPORT_JOB_ID,
-      {}
+      { idempotencyKey: "confirm-1" }
     );
 
-    expect(fixture.importJobRepository.updateJobStatusForUser).toHaveBeenCalledWith({
-      userId: CURRENT_USER.id,
-      importJobId: IMPORT_JOB_ID,
-      expectedStatus: "READY_TO_CONFIRM",
-      status: "CONFIRMING",
-    });
+    expect(fixture.importJobRepository.updateJobStatusForUser).not.toHaveBeenCalled();
     expect(fixture.importTemplateRepository.confirmCompanyImport).toHaveBeenCalledWith(
       expect.objectContaining({
         userId: CURRENT_USER.id,
         importJobId: IMPORT_JOB_ID,
+        idempotencyKey: "confirm-1",
         rows: [
           expect.objectContaining({
             rowNumber: 2,
@@ -96,18 +173,57 @@ describe("DataImportApplicationService persistent import job flow", () => {
     });
   });
 
-  it("rejects stale concurrent confirm when the status lock fails", async () => {
+  it("returns the previous success response for the same confirm idempotency key", async () => {
+    const fixture = createServiceFixture();
+    fixture.importJobRepository.findJobByIdForUser.mockResolvedValue(
+      createImportJobDetail({
+        status: "CONFIRMED",
+        importedRowCount: 1,
+        importUserLogId: IMPORT_USER_LOG_ID,
+        confirmIdempotencyKey: "confirm-1",
+      })
+    );
+
+    await expect(
+      fixture.service.confirmImportJob(CURRENT_USER, IMPORT_JOB_ID, {
+        idempotencyKey: "confirm-1",
+      })
+    ).resolves.toEqual({
+      importJobId: IMPORT_JOB_ID,
+      importUserLogId: IMPORT_USER_LOG_ID,
+      status: "CONFIRMED",
+      importedRowCount: 1,
+    });
+
+    expect(fixture.importTemplateRepository.confirmCompanyImport).not.toHaveBeenCalled();
+    expect(fixture.importUploadedFileStorage.delete).toHaveBeenCalledWith({
+      storageKey: "user/job/source.xlsx",
+    });
+    expect(
+      fixture.importJobRepository.updateUploadedFileStatusForUser
+    ).toHaveBeenCalledWith({
+      userId: CURRENT_USER.id,
+      importJobId: IMPORT_JOB_ID,
+      status: "DELETED",
+      deletedAt: expect.any(Date),
+    });
+  });
+
+  it("does not mark the job failed when the transactional confirm lock fails", async () => {
     const fixture = createServiceFixture();
     fixture.importJobRepository.findJobByIdForUser.mockResolvedValue(
       createImportJobDetail()
     );
-    fixture.importJobRepository.updateJobStatusForUser.mockResolvedValueOnce(false);
+    fixture.importTemplateRepository.confirmCompanyImport.mockRejectedValue(
+      new ImportJobNotReadyError()
+    );
 
     await expect(
       fixture.service.confirmImportJob(CURRENT_USER, IMPORT_JOB_ID, {})
     ).rejects.toBeInstanceOf(ImportJobNotReadyError);
 
-    expect(fixture.importTemplateRepository.confirmCompanyImport).not.toHaveBeenCalled();
+    expect(fixture.importJobRepository.updateJobStatusForUser).not.toHaveBeenCalled();
+    expect(fixture.importJobRepository.createError).not.toHaveBeenCalled();
   });
 
   it("records a redacted ImportJobError when confirm validation fails", async () => {
@@ -115,7 +231,6 @@ describe("DataImportApplicationService persistent import job flow", () => {
     fixture.importJobRepository.findJobByIdForUser.mockResolvedValue(
       createImportJobDetail()
     );
-    fixture.importJobRepository.updateJobStatusForUser.mockResolvedValueOnce(true);
     fixture.importTemplateRepository.confirmCompanyImport.mockRejectedValue(
       new ValidationDomainError("Acme raw-secret-value is invalid.")
     );
@@ -339,6 +454,7 @@ function createImportJobDetailBase(): ImportJobDetailRecord {
     importedRowCount: 0,
     failedRowCount: 0,
     importUserLogId: null,
+    confirmIdempotencyKey: null,
     expiresAt: EXPIRES_AT,
     confirmedAt: null,
     canceledAt: null,

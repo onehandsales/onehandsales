@@ -8,6 +8,7 @@ import {
   IsObject,
   IsOptional,
   IsString,
+  MaxLength,
   Min,
   ValidateNested,
 } from "class-validator";
@@ -118,5 +119,7 @@ export class ListImportJobErrorsRequest {
 export class ConfirmImportJobRequest {
   @IsOptional()
   @IsString()
+  @IsNotEmpty()
+  @MaxLength(128)
   idempotencyKey?: string;
 }

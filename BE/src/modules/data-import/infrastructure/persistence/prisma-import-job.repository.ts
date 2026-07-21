@@ -68,6 +68,7 @@ const ACTIVE_IMPORT_JOB_STATUSES: readonly PersistentImportJobStatus[] = [
   "READY_TO_CONFIRM",
   "CONFIRMING",
 ];
+const DEFAULT_IMPORT_JOB_DETAIL_ERROR_LIMIT = 50;
 
 // 역할 : ImportJob DB persistence repository 계약을 Prisma 기반으로 구현합니다.
 export class PrismaImportJobRepository
@@ -149,7 +150,7 @@ export class PrismaImportJobRepository
             }
           : {}),
       },
-      include: this.createDetailInclude(),
+      include: this.createDetailInclude({ includeErrors: true }),
     });
 
     return this.mapJobDetail(job);
@@ -164,7 +165,10 @@ export class PrismaImportJobRepository
         id: input.importJobId,
         userId: input.userId,
       },
-      include: this.createDetailInclude(),
+      include: this.createDetailInclude({
+        includeErrors: input.includeErrors === true,
+        ...(input.errorLimit === undefined ? {} : { errorLimit: input.errorLimit }),
+      }),
     });
 
     return job ? this.mapJobDetail(job) : null;
@@ -409,13 +413,24 @@ export class PrismaImportJobRepository
   }
 
   // 기능 : import job 상세 조회에 공통으로 사용할 Prisma include 구성을 생성합니다.
-  private createDetailInclude(): Prisma.ImportJobInclude {
+  private createDetailInclude(
+    options: {
+      readonly includeErrors?: boolean;
+      readonly errorLimit?: number;
+    } = {}
+  ): Prisma.ImportJobInclude {
+    const errorLimit =
+      options.includeErrors === true
+        ? options.errorLimit ?? DEFAULT_IMPORT_JOB_DETAIL_ERROR_LIMIT
+        : 0;
+
     return {
       rows: {
         orderBy: [{ rowNumber: "asc" }, { id: "asc" }],
       },
       errors: {
         orderBy: [{ createdAt: "desc" }, { id: "desc" }],
+        take: errorLimit,
       },
       uploadedFile: true,
     };
@@ -625,6 +640,7 @@ export class PrismaImportJobRepository
       importedRowCount: row.importedRowCount,
       failedRowCount: row.failedRowCount,
       importUserLogId: row.importUserLogId,
+      confirmIdempotencyKey: row.confirmIdempotencyKey,
       expiresAt: row.expiresAt,
       confirmedAt: row.confirmedAt,
       canceledAt: row.canceledAt,

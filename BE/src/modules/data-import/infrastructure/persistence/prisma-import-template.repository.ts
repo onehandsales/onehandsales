@@ -13,6 +13,7 @@ import type {
   ImportUserLogRecord,
   ListImportUserLogsInput,
 } from "@/modules/data-import/application/ports/import-template.repository";
+import { ImportJobNotReadyError } from "@/modules/data-import/domain/import-template.errors";
 import {
   DEAL_STATUS_CODES,
   DealStatusCode,
@@ -187,6 +188,7 @@ export class PrismaImportTemplateRepository implements ImportTemplateRepository 
   // 기능 : 회사 불러오기 확정 생성과 성공 로그 저장을 같은 트랜잭션으로 처리합니다.
   async confirmCompanyImport(input: ConfirmImportInput): Promise<ConfirmImportResult> {
     return this.prismaService.$transaction(async (client) => {
+      await this.movePersistentImportJobToConfirming(client, input);
       const log = await this.createImportUserLog(client, input);
 
       for (const row of input.rows) {
@@ -229,6 +231,7 @@ export class PrismaImportTemplateRepository implements ImportTemplateRepository 
   // 기능 : 담당자 불러오기 확정 생성과 성공 로그 저장을 같은 트랜잭션으로 처리합니다.
   async confirmContactImport(input: ConfirmImportInput): Promise<ConfirmImportResult> {
     return this.prismaService.$transaction(async (client) => {
+      await this.movePersistentImportJobToConfirming(client, input);
       const log = await this.createImportUserLog(client, input);
       const companyResolutionMap = this.createContactCompanyResolutionMap(
         input.contactCompanyResolutions ?? []
@@ -283,6 +286,7 @@ export class PrismaImportTemplateRepository implements ImportTemplateRepository 
   // 기능 : 제품 불러오기 확정 생성과 성공 로그 저장을 같은 트랜잭션으로 처리합니다.
   async confirmProductImport(input: ConfirmImportInput): Promise<ConfirmImportResult> {
     return this.prismaService.$transaction(async (client) => {
+      await this.movePersistentImportJobToConfirming(client, input);
       const log = await this.createImportUserLog(client, input);
 
       for (const row of input.rows) {
@@ -325,6 +329,7 @@ export class PrismaImportTemplateRepository implements ImportTemplateRepository 
   // 기능 : 딜 불러오기 확정 생성과 성공 로그 저장을 같은 트랜잭션으로 처리합니다.
   async confirmDealImport(input: ConfirmImportInput): Promise<ConfirmImportResult> {
     return this.prismaService.$transaction(async (client) => {
+      await this.movePersistentImportJobToConfirming(client, input);
       const log = await this.createImportUserLog(client, input);
       const companyResolutionMap = this.createContactCompanyResolutionMap(
         input.dealCompanyResolutions ?? []
@@ -497,6 +502,34 @@ export class PrismaImportTemplateRepository implements ImportTemplateRepository 
 
     if (updatedJob.count !== 1) {
       throw new ValidationDomainError("Import job state changed during confirm.");
+    }
+  }
+
+  // 기능 : persistent import job을 confirm transaction 내부에서 lock 상태로 전환합니다.
+  private async movePersistentImportJobToConfirming(
+    client: Prisma.TransactionClient,
+    input: ConfirmImportInput
+  ): Promise<void> {
+    if (!input.importJobId) {
+      return;
+    }
+
+    const updatedJob = await client.importJob.updateMany({
+      where: {
+        id: input.importJobId,
+        userId: input.userId,
+        status: "READY_TO_CONFIRM",
+      },
+      data: {
+        status: "CONFIRMING",
+        ...(input.idempotencyKey === undefined
+          ? {}
+          : { confirmIdempotencyKey: input.idempotencyKey }),
+      },
+    });
+
+    if (updatedJob.count !== 1) {
+      throw new ImportJobNotReadyError();
     }
   }
 

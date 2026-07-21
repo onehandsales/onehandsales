@@ -122,6 +122,7 @@ export interface ConfirmImportInput {
   readonly originalFileName: string;
   readonly fileSizeBytes: number;
   readonly rows: readonly ConfirmImportRowInput[];
+  readonly idempotencyKey?: string;
   readonly contactCompanyResolutions?: readonly ConfirmContactCompanyResolutionInput[];
   readonly dealCompanyResolutions?: readonly ConfirmDealCompanyResolutionInput[];
   readonly dealContactResolutions?: readonly ConfirmDealContactResolutionInput[];

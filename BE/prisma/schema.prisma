@@ -118,23 +118,23 @@ enum ImportJobErrorSeverity {
 }
 
 model User {
-  id          String     @id @default(uuid()) @db.Uuid
-  email       String?
-  displayName String?
-  role        UserRole   @default(USER)
-  status      UserStatus @default(ACTIVE)
-  timeZone    String     @default("Asia/Seoul")
-  preferredLocale      String  @default("ko-KR")
+  id                   String     @id @default(uuid()) @db.Uuid
+  email                String?
+  displayName          String?
+  role                 UserRole   @default(USER)
+  status               UserStatus @default(ACTIVE)
+  timeZone             String     @default("Asia/Seoul")
+  preferredLocale      String     @default("ko-KR")
   signupLocale         String?
   signupCountryCode    String?
   signupTimeZone       String?
   lastLoginLocale      String?
   lastLoginCountryCode String?
   lastLoginTimeZone    String?
-  lastLoginAt DateTime?
-  createdAt   DateTime   @default(now())
-  updatedAt   DateTime   @updatedAt
-  deletedAt   DateTime?
+  lastLoginAt          DateTime?
+  createdAt            DateTime   @default(now())
+  updatedAt            DateTime   @updatedAt
+  deletedAt            DateTime?
 
   oauthAccounts           UserOAuthAccount[]
   authDevices             AuthDevice[]
@@ -265,13 +265,13 @@ model AuthSession {
 }
 
 model Company {
-  id              String   @id @default(uuid()) @db.Uuid
-  userId          String   @db.Uuid
+  id              String    @id @default(uuid()) @db.Uuid
+  userId          String    @db.Uuid
   companyName     String
-  companyFieldId  String   @db.Uuid
-  companyRegionId String   @db.Uuid
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+  companyFieldId  String    @db.Uuid
+  companyRegionId String    @db.Uuid
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
   deletedAt       DateTime? @db.Timestamptz(3)
   deletedByUserId String?   @db.Uuid
   trashExpiresAt  DateTime? @db.Timestamptz(3)
@@ -303,35 +303,35 @@ model Company {
 }
 
 model Contact {
-  id                  String   @id @default(uuid()) @db.Uuid
-  userId              String   @db.Uuid
-  companyId           String   @db.Uuid
+  id                  String    @id @default(uuid()) @db.Uuid
+  userId              String    @db.Uuid
+  companyId           String    @db.Uuid
   username            String
   mobile              String
   email               String
-  contactJobGradeId   String   @db.Uuid
-  contactDepartmentId String   @db.Uuid
-  createdAt           DateTime @default(now())
-  updatedAt           DateTime @updatedAt
+  contactJobGradeId   String    @db.Uuid
+  contactDepartmentId String    @db.Uuid
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
   deletedAt           DateTime? @db.Timestamptz(3)
   deletedByUserId     String?   @db.Uuid
   trashExpiresAt      DateTime? @db.Timestamptz(3)
 
   /// 기능 : 담당자를 등록한 사용자다. 모든 담당자 API는 이 userId로 소유권을 검증한다.
-  user                User                        @relation(fields: [userId], references: [id])
+  user                 User                        @relation(fields: [userId], references: [id])
   /// 기능 : 담당자가 소속된 회사다. 담당자는 회사 없이 저장되지 않는다.
-  company             Company                     @relation(fields: [companyId], references: [id])
+  company              Company                     @relation(fields: [companyId], references: [id])
   /// 기능 : 담당자 목록 필터와 상세에 사용되는 담당자 직급이다.
-  contactJobGrade     ContactJobGrade             @relation(fields: [contactJobGradeId], references: [id])
+  contactJobGrade      ContactJobGrade             @relation(fields: [contactJobGradeId], references: [id])
   /// 기능 : 담당자 목록 필터와 상세에 사용되는 담당자 부서다.
-  contactDepartment   ContactDepartment           @relation(fields: [contactDepartmentId], references: [id])
+  contactDepartment    ContactDepartment           @relation(fields: [contactDepartmentId], references: [id])
   /// 기능 : 담당자 일반 메모 로그 목록이다.
-  memoLogs            ContactMemoLog[]
+  memoLogs             ContactMemoLog[]
   /// 기능 : 작성자 본인만 복호화해 볼 수 있는 담당자 개인 비밀 메모 로그 목록이다.
-  privateMemoLogs     ContactUserPrivateMemoLog[]
+  privateMemoLogs      ContactUserPrivateMemoLog[]
   /// 기능 : 담당자가 연결된 딜 매핑 목록이다.
-  dealContacts        DealContact[]
-  meetingNoteContacts MeetingNoteContact[]
+  dealContacts         DealContact[]
+  meetingNoteContacts  MeetingNoteContact[]
   businessCardScanLogs BusinessCardScanLog[]
 
   @@index([userId, createdAt])
@@ -420,14 +420,14 @@ model ContactUserPrivateMemoLog {
 }
 
 model Product {
-  id                String   @id @default(uuid()) @db.Uuid
-  userId            String   @db.Uuid
+  id                String    @id @default(uuid()) @db.Uuid
+  userId            String    @db.Uuid
   productName       String
   productPrice      Int
-  productCategoryId String   @db.Uuid
-  productStatusId   String   @db.Uuid
-  createdAt         DateTime @default(now())
-  updatedAt         DateTime @updatedAt
+  productCategoryId String    @db.Uuid
+  productStatusId   String    @db.Uuid
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
   deletedAt         DateTime? @db.Timestamptz(3)
   deletedByUserId   String?   @db.Uuid
   trashExpiresAt    DateTime? @db.Timestamptz(3)
@@ -531,14 +531,14 @@ model ProductUserPrivateMemoLog {
 }
 
 model Deal {
-  id              String   @id @default(uuid()) @db.Uuid
-  userId          String   @db.Uuid
+  id              String    @id @default(uuid()) @db.Uuid
+  userId          String    @db.Uuid
   dealName        String
   dealCost        Int
   dealStatus      String
-  expectedEndDate DateTime @db.Date
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+  expectedEndDate DateTime  @db.Date
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
   deletedAt       DateTime? @db.Timestamptz(3)
   deletedByUserId String?   @db.Uuid
   trashExpiresAt  DateTime? @db.Timestamptz(3)
@@ -830,8 +830,8 @@ model MeetingNoteDeal {
 }
 
 model BusinessCardScanLog {
-  id                    String                 @id @default(uuid()) @db.Uuid
-  userId                String                 @db.Uuid
+  id                    String                  @id @default(uuid()) @db.Uuid
+  userId                String                  @db.Uuid
   status                BusinessCardScanStatus
   companyName           String?
   companyFieldName      String?
@@ -841,24 +841,24 @@ model BusinessCardScanLog {
   contactEmail          String?
   contactDepartmentName String?
   contactJobGradeName   String?
-  companyId             String?                @db.Uuid
-  contactId             String?                @db.Uuid
+  companyId             String?                 @db.Uuid
+  contactId             String?                 @db.Uuid
   companyResolution     BusinessCardResolution?
   contactResolution     BusinessCardResolution?
-  aiProvider            String                 @default("OPENAI")
+  aiProvider            String                  @default("OPENAI")
   aiModel               String
-  promptSnapshot        String                 @db.Text
+  promptSnapshot        String                  @db.Text
   requestToken          Float?
   responseToken         Float?
   totalToken            Float?
   requestCost           Float?
   responseCost          Float?
   totalCost             Float?
-  costCurrency          String                 @default("USD")
+  costCurrency          String                  @default("USD")
   pendingTimeMs         Float?
-  confirmedAt           DateTime?              @db.Timestamptz(3)
-  createdAt             DateTime               @default(now()) @db.Timestamptz(3)
-  updatedAt             DateTime               @updatedAt @db.Timestamptz(3)
+  confirmedAt           DateTime?               @db.Timestamptz(3)
+  createdAt             DateTime                @default(now()) @db.Timestamptz(3)
+  updatedAt             DateTime                @updatedAt @db.Timestamptz(3)
 
   user    User     @relation(fields: [userId], references: [id])
   company Company? @relation(fields: [companyId], references: [id])
@@ -923,34 +923,35 @@ model ImportUserLogRow {
 }
 
 model ImportJob {
-  id                  String                 @id @default(uuid()) @db.Uuid
-  userId              String                 @db.Uuid
-  templateId          String                 @db.Uuid
-  targetType          ImportTemplateType
-  templateVersion     String
-  templateColumnsJson Json
-  sourceColumnsJson   Json
-  status              ImportJobStatus        @default(UPLOADED)
-  mappingJson         Json                   @default("{}")
-  mappingSource       ImportJobMappingSource @default(NONE)
-  contextLabel        String?
-  contextJson         Json?
-  originalFileName    String
-  fileSizeBytes       Int
-  totalRowCount       Int                    @default(0)
-  validRowCount       Int                    @default(0)
-  invalidRowCount     Int                    @default(0)
-  importedRowCount    Int                    @default(0)
-  failedRowCount      Int                    @default(0)
-  importUserLogId     String?                @unique @db.Uuid
-  expiresAt           DateTime               @db.Timestamptz(3)
-  confirmedAt         DateTime?              @db.Timestamptz(3)
-  canceledAt          DateTime?              @db.Timestamptz(3)
-  failedAt            DateTime?              @db.Timestamptz(3)
-  lastErrorCode       String?
-  lastErrorMessage    String?
-  createdAt           DateTime               @default(now()) @db.Timestamptz(3)
-  updatedAt           DateTime               @default(now()) @updatedAt @db.Timestamptz(3)
+  id                    String                 @id @default(uuid()) @db.Uuid
+  userId                String                 @db.Uuid
+  templateId            String                 @db.Uuid
+  targetType            ImportTemplateType
+  templateVersion       String
+  templateColumnsJson   Json
+  sourceColumnsJson     Json
+  status                ImportJobStatus        @default(UPLOADED)
+  mappingJson           Json                   @default("{}")
+  mappingSource         ImportJobMappingSource @default(NONE)
+  contextLabel          String?
+  contextJson           Json?
+  originalFileName      String
+  fileSizeBytes         Int
+  totalRowCount         Int                    @default(0)
+  validRowCount         Int                    @default(0)
+  invalidRowCount       Int                    @default(0)
+  importedRowCount      Int                    @default(0)
+  failedRowCount        Int                    @default(0)
+  importUserLogId       String?                @unique @db.Uuid
+  confirmIdempotencyKey String?                @db.VarChar(128)
+  expiresAt             DateTime               @db.Timestamptz(3)
+  confirmedAt           DateTime?              @db.Timestamptz(3)
+  canceledAt            DateTime?              @db.Timestamptz(3)
+  failedAt              DateTime?              @db.Timestamptz(3)
+  lastErrorCode         String?
+  lastErrorMessage      String?
+  createdAt             DateTime               @default(now()) @db.Timestamptz(3)
+  updatedAt             DateTime               @default(now()) @updatedAt @db.Timestamptz(3)
 
   user          User                @relation(fields: [userId], references: [id])
   template      ImportTemplate      @relation(fields: [templateId], references: [id])

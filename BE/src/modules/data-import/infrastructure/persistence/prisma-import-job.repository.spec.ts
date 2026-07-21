@@ -38,6 +38,7 @@ type ImportJobFixture = {
   readonly importedRowCount: number;
   readonly failedRowCount: number;
   readonly importUserLogId: string | null;
+  readonly confirmIdempotencyKey: string | null;
   readonly expiresAt: Date;
   readonly confirmedAt: Date | null;
   readonly canceledAt: Date | null;
@@ -118,11 +119,40 @@ describe("PrismaImportJobRepository", () => {
           id: "job-1",
           userId: "user-1",
         },
+        include: expect.objectContaining({
+          errors: expect.objectContaining({
+            take: 0,
+          }),
+        }),
       })
     );
     expect(job?.sourceColumnsJson).toEqual(["companyName"]);
     expect(job?.rows[0]?.rowNumber).toBe(2);
     expect(job?.uploadedFile?.storageKey).toBe("imports/job-1/source.xlsx");
+  });
+
+  it("limits detail errors when explicitly requested", async () => {
+    const client = createMockClient();
+    client.importJob.findFirst.mockResolvedValue(createJobDetailFixture());
+    const repository = createRepository(client);
+
+    await repository.findJobByIdForUser({
+      userId: "user-1",
+      importJobId: "job-1",
+      includeErrors: true,
+      errorLimit: 50,
+    });
+
+    expect(client.importJob.findFirst).toHaveBeenCalledWith(
+      expect.objectContaining({
+        include: expect.objectContaining({
+          errors: expect.objectContaining({
+            orderBy: [{ createdAt: "desc" }, { id: "desc" }],
+            take: 50,
+          }),
+        }),
+      })
+    );
   });
 
   it("lists only active non-expired jobs for the current user", async () => {
@@ -406,6 +436,7 @@ function createJobFixture(): ImportJobFixture {
     importedRowCount: 0,
     failedRowCount: 0,
     importUserLogId: null,
+    confirmIdempotencyKey: null,
     expiresAt: EXPIRES_AT,
     confirmedAt: null,
     canceledAt: null,

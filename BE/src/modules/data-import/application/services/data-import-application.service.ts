@@ -88,6 +88,7 @@ const TEMPLATE_TYPE_ORDER: readonly ImportTemplateType[] = [
   "DEAL",
 ];
 const IMPORT_USER_LOG_PAGE_SIZE = 15;
+const IMPORT_JOB_DETAIL_ERROR_LIMIT = 50;
 const MOBILE_PATTERN = /^010-\d{4}-\d{4}$/;
 const MOBILE_DIGIT_PATTERN = /^010\d{8}$/;
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -410,6 +411,7 @@ interface NormalizedRowValidation {
   readonly rows: readonly ValidatedImportJobRow[];
   readonly validRowCount: number;
   readonly invalidRowCount: number;
+  readonly includedRowCount: number;
   readonly errors: readonly ImportJobError[];
 }
 
@@ -784,7 +786,9 @@ export class DataImportApplicationService {
     input: GetImportJobRequest = {}
   ): Promise<ImportJobDetailResponse> {
     // 1. 현재 사용자 소유 job을 조회하고 TTL 만료를 먼저 반영한다.
-    const job = await this.getImportJobDetail(currentUser, importJobId);
+    const job = await this.getImportJobDetail(currentUser, importJobId, {
+      includeErrors: input.includeErrors === true,
+    });
 
     this.logEvent("importJob.viewed", {
       userId: currentUser.id,
@@ -1012,9 +1016,27 @@ export class DataImportApplicationService {
     input: ConfirmImportJobInput
   ): Promise<ConfirmImportJobResponse> {
     // 1. 현재 사용자 소유 job 상태가 확정 가능한 READY_TO_CONFIRM인지 검증한다.
+    const confirmIdempotencyKey = this.normalizeConfirmIdempotencyKey(
+      input.idempotencyKey
+    );
     const job = await this.getImportJobDetail(currentUser, importJobId);
 
     if (job.status === "CONFIRMED") {
+      if (
+        confirmIdempotencyKey &&
+        job.confirmIdempotencyKey === confirmIdempotencyKey &&
+        job.importUserLogId
+      ) {
+        await this.deleteUploadedFileAfterClose(currentUser, importJobId, job);
+
+        return {
+          importJobId,
+          importUserLogId: job.importUserLogId,
+          status: "CONFIRMED",
+          importedRowCount: job.importedRowCount,
+        };
+      }
+
       throw new ImportJobAlreadyConfirmedError();
     }
 
@@ -1057,6 +1079,9 @@ export class DataImportApplicationService {
       originalFileName: this.normalizeUploadedFileName(job.originalFileName),
       fileSizeBytes: job.fileSizeBytes,
       rows,
+      ...(confirmIdempotencyKey === undefined
+        ? {}
+        : { idempotencyKey: confirmIdempotencyKey }),
       ...(contactCompanyResolutions === undefined
         ? {}
         : { contactCompanyResolutions }),
@@ -1071,21 +1096,8 @@ export class DataImportApplicationService {
         : { dealProductResolutions }),
     };
 
-    // 3. 동시 확정을 막기 위해 READY_TO_CONFIRM 상태일 때만 CONFIRMING으로 전환한다.
-    const movedToConfirming =
-      await this.importJobRepository.updateJobStatusForUser({
-        userId: currentUser.id,
-        importJobId,
-        expectedStatus: "READY_TO_CONFIRM",
-        status: "CONFIRMING",
-      });
-
-    if (!movedToConfirming) {
-      throw new ImportJobNotReadyError();
-    }
-
     try {
-      // 4. 실제 domain data 생성, 성공 로그 저장, persistent job 완료 처리를 transaction으로 수행한다.
+      // 3. 실제 domain data 생성, 성공 로그 저장, persistent job 완료 처리를 transaction으로 수행한다.
       const result = await this.confirmDomainImport(job.targetType, confirmInput);
 
       await this.deleteUploadedFileAfterClose(currentUser, importJobId, job);
@@ -1104,7 +1116,11 @@ export class DataImportApplicationService {
         importedRowCount: result.importedRowCount,
       };
     } catch (error) {
-      // 5. 확정 실패 시 사용자 복구용 오류 이력만 남기고 provider/raw detail은 노출하지 않는다.
+      if (error instanceof ImportJobNotReadyError) {
+        throw error;
+      }
+
+      // 4. 확정 실패 시 사용자 복구용 오류 이력만 남기고 provider/raw detail은 노출하지 않는다.
       const confirmError =
         error instanceof ValidationDomainError
           ? new ImportConfirmValidationFailedError()
@@ -1323,7 +1339,8 @@ export class DataImportApplicationService {
   // 기능 : 현재 사용자 소유 임시 job을 조회합니다.
   private async getImportJobDetail(
     currentUser: CurrentUserContext,
-    importJobId: string
+    importJobId: string,
+    options: { readonly includeErrors?: boolean } = {}
   ): Promise<ImportJobDetailRecord> {
     const now = new Date();
 
@@ -1332,6 +1349,8 @@ export class DataImportApplicationService {
     const job = await this.importJobRepository.findJobByIdForUser({
       userId: currentUser.id,
       importJobId,
+      includeErrors: options.includeErrors === true,
+      errorLimit: IMPORT_JOB_DETAIL_ERROR_LIMIT,
     });
 
     if (!job) {
@@ -1603,14 +1622,32 @@ export class DataImportApplicationService {
     return columns.every((column) => !column.required || Boolean(mapping[column.key]));
   }
 
+  private normalizeConfirmIdempotencyKey(value: string | undefined): string | undefined {
+    if (value === undefined) {
+      return undefined;
+    }
+
+    const normalized = value.trim();
+
+    if (normalized.length === 0 || normalized.length > 128) {
+      throw new ValidationDomainError(
+        "idempotencyKey는 1자 이상 128자 이하로 입력해야 합니다."
+      );
+    }
+
+    return normalized;
+  }
+
   // 기능 : row 검증 집계 기준으로 job의 다음 검토 상태를 결정합니다.
   private resolveReviewStatus(input: {
     readonly validRowCount: number;
     readonly invalidRowCount: number;
+    readonly includedRowCount: number;
   }): PersistentImportJobStatus {
-    return input.invalidRowCount > 0 || input.validRowCount === 0
-      ? "NEEDS_REVIEW"
-      : "READY_TO_CONFIRM";
+    return input.includedRowCount > 0 &&
+      input.validRowCount === input.includedRowCount
+      ? "READY_TO_CONFIRM"
+      : "NEEDS_REVIEW";
   }
 
   // 기능 : 검증된 row를 repository update 입력으로 변환합니다.
@@ -1675,10 +1712,14 @@ export class DataImportApplicationService {
   private calculateRowSummary(rows: readonly ValidatedImportJobRow[]): {
     readonly validRowCount: number;
     readonly invalidRowCount: number;
+    readonly includedRowCount: number;
   } {
+    const includedRows = rows.filter((row) => row.status !== "EXCLUDED");
+
     return {
-      validRowCount: rows.filter((row) => row.status === "VALID").length,
-      invalidRowCount: rows.filter((row) => row.status === "INVALID").length,
+      validRowCount: includedRows.filter((row) => row.status === "VALID").length,
+      invalidRowCount: includedRows.filter((row) => row.status === "INVALID").length,
+      includedRowCount: includedRows.length,
     };
   }
 
@@ -2284,13 +2325,16 @@ export class DataImportApplicationService {
     columns: readonly ImportTemplateColumn[],
     rows: readonly ConfirmImportJobRowInput[] | undefined
   ): readonly ConfirmReadyRow[] {
-    const validRows = job.rows.filter((row) => row.status === "VALID");
+    const includedRows = job.rows.filter((row) => row.status !== "EXCLUDED");
 
-    if (validRows.length === 0 || job.rows.some((row) => row.status === "INVALID")) {
+    if (
+      includedRows.length === 0 ||
+      includedRows.some((row) => row.status !== "VALID")
+    ) {
       throw new ImportJobNotReadyError();
     }
 
-    const rowsByNumber = new Map(validRows.map((row) => [row.rowNumber, row]));
+    const rowsByNumber = new Map(includedRows.map((row) => [row.rowNumber, row]));
     const candidateRows =
       rows && rows.length > 0
         ? rows.map((row) => {
@@ -2305,13 +2349,22 @@ export class DataImportApplicationService {
               data: row.data,
             };
           })
-        : validRows.map((row) => ({
+        : includedRows.map((row) => ({
             rowNumber: row.rowNumber,
             data:
               row.normalizedDataJson ??
               row.mappedDataJson ??
               ({} as Readonly<Record<string, unknown>>),
           }));
+
+    if (
+      rows &&
+      rows.length > 0 &&
+      (rows.length !== includedRows.length ||
+        new Set(rows.map((row) => row.rowNumber)).size !== includedRows.length)
+    ) {
+      throw new ImportJobNotReadyError();
+    }
 
     return candidateRows.map((row) => {
       if (!Number.isInteger(row.rowNumber) || row.rowNumber < 2) {

@@ -76,6 +76,7 @@ export interface ImportJobRecord {
   readonly importedRowCount: number;
   readonly failedRowCount: number;
   readonly importUserLogId: string | null;
+  readonly confirmIdempotencyKey: string | null;
   readonly expiresAt: Date;
   readonly confirmedAt: Date | null;
   readonly canceledAt: Date | null;
@@ -216,6 +217,8 @@ export interface CreateImportJobInput {
 export interface FindImportJobForUserInput {
   readonly userId: string;
   readonly importJobId: string;
+  readonly includeErrors?: boolean;
+  readonly errorLimit?: number;
 }
 
 // 역할 : ListActiveImportJobsForUserInput 재개 가능한 활성 import job 목록 조건을 정의합니다.
