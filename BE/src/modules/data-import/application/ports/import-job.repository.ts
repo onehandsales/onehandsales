@@ -172,6 +172,7 @@ export interface CreateImportJobErrorInput {
 }
 
 export interface CreateImportJobInput {
+  readonly id?: string;
   readonly userId: string;
   readonly templateId: string;
   readonly targetType: ImportTemplateType;
@@ -208,9 +209,19 @@ export interface ListActiveImportJobsForUserInput {
   readonly limit?: number;
 }
 
+export interface ExpireImportJobsForUserInput {
+  readonly userId: string;
+  readonly now: Date;
+  readonly importJobId?: string;
+}
+
 export interface UpdateImportJobStatusForUserInput
   extends FindImportJobForUserInput {
   readonly status: PersistentImportJobStatus;
+  readonly mappingJson?: unknown;
+  readonly mappingSource?: PersistentImportJobMappingSource;
+  readonly validRowCount?: number;
+  readonly invalidRowCount?: number;
   readonly importedRowCount?: number;
   readonly failedRowCount?: number;
   readonly importUserLogId?: string | null;
@@ -227,11 +238,30 @@ export interface CreateImportJobRowsInput extends FindImportJobForUserInput {
   readonly rows: readonly CreateImportJobRowInput[];
 }
 
+export interface UpdateImportJobRowInput {
+  readonly rowId: string;
+  readonly mappedDataJson?: unknown;
+  readonly normalizedDataJson?: unknown | null;
+  readonly status?: PersistentImportJobRowStatus;
+  readonly validationErrorsJson?: unknown;
+  readonly targetLabel?: string | null;
+}
+
+export interface UpdateImportJobRowsForUserInput
+  extends FindImportJobForUserInput {
+  readonly rows: readonly UpdateImportJobRowInput[];
+}
+
 export type ListImportJobErrorsForUserInput = FindImportJobForUserInput;
 
 export interface CreateImportJobErrorForUserInput
   extends FindImportJobForUserInput,
     CreateImportJobErrorInput {}
+
+export interface ListImportJobErrorsPageForUserInput
+  extends FindImportJobForUserInput {
+  readonly limit?: number;
+}
 
 export interface CreateImportUploadedFileForUserInput
   extends FindImportJobForUserInput,
@@ -254,6 +284,7 @@ export interface ImportJobRepository {
   listActiveJobsForUser(
     input: ListActiveImportJobsForUserInput
   ): Promise<ImportJobRecord[]>;
+  expireJobsForUser(input: ExpireImportJobsForUserInput): Promise<number>;
   updateJobStatusForUser(
     input: UpdateImportJobStatusForUserInput
   ): Promise<boolean>;
@@ -262,12 +293,13 @@ export interface ImportJobRepository {
 export interface ImportJobRowRepository {
   createRows(input: CreateImportJobRowsInput): Promise<void>;
   listRowsForJob(input: ListImportJobRowsForUserInput): Promise<ImportJobRowRecord[]>;
+  updateRowsForJob(input: UpdateImportJobRowsForUserInput): Promise<boolean>;
 }
 
 export interface ImportJobErrorRepository {
   createError(input: CreateImportJobErrorForUserInput): Promise<ImportJobErrorRecord>;
   listErrorsForJob(
-    input: ListImportJobErrorsForUserInput
+    input: ListImportJobErrorsPageForUserInput
   ): Promise<ImportJobErrorRecord[]>;
 }
 

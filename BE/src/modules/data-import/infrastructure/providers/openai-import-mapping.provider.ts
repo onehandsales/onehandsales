@@ -3,7 +3,7 @@ import type {
   GenerateImportMappingInput,
   ImportMappingProvider,
 } from "@/modules/data-import/application/ports/import-mapping.provider";
-import type { ImportMappingSuggestion } from "@/modules/data-import/application/ports/import-job.store";
+import type { ImportMappingSuggestion } from "@/modules/data-import/application/ports/import-job.types";
 import { AppLogger } from "@/shared/infrastructure/logger/app-logger.service";
 
 const DEFAULT_OPENAI_BASE_URL = "https://api.openai.com/v1";

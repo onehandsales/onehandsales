@@ -6,6 +6,7 @@ import type {
   CreateImportJobRowsInput,
   CreateImportUploadedFileInput,
   CreateImportUploadedFileForUserInput,
+  ExpireImportJobsForUserInput,
   FindImportJobForUserInput,
   ImportJobDetailRecord,
   ImportJobErrorRecord,
@@ -18,10 +19,11 @@ import type {
   ImportUploadedFileRecord,
   ImportUploadedFileRepository,
   ListActiveImportJobsForUserInput,
-  ListImportJobErrorsForUserInput,
+  ListImportJobErrorsPageForUserInput,
   ListImportJobRowsForUserInput,
   PersistentImportJobStatus,
   UpdateImportJobStatusForUserInput,
+  UpdateImportJobRowsForUserInput,
   UpdateImportUploadedFileStatusForUserInput,
 } from "@/modules/data-import/application/ports/import-job.repository";
 import { ImportJobNotFoundError } from "@/modules/data-import/domain/import-template.errors";
@@ -88,6 +90,7 @@ export class PrismaImportJobRepository
   async createJob(input: CreateImportJobInput): Promise<ImportJobDetailRecord> {
     const job = await this.client.importJob.create({
       data: {
+        ...(input.id ? { id: input.id } : {}),
         user: { connect: { id: input.userId } },
         template: { connect: { id: input.templateId } },
         targetType: input.targetType,
@@ -187,6 +190,22 @@ export class PrismaImportJobRepository
     return updated.count > 0;
   }
 
+  async expireJobsForUser(input: ExpireImportJobsForUserInput): Promise<number> {
+    const updated = await this.client.importJob.updateMany({
+      where: {
+        userId: input.userId,
+        ...(input.importJobId ? { id: input.importJobId } : {}),
+        status: { in: [...ACTIVE_IMPORT_JOB_STATUSES] },
+        expiresAt: { lte: input.now },
+      },
+      data: {
+        status: "EXPIRED",
+      },
+    });
+
+    return updated.count;
+  }
+
   async createRows(input: CreateImportJobRowsInput): Promise<void> {
     if (input.rows.length === 0) {
       return;
@@ -223,6 +242,32 @@ export class PrismaImportJobRepository
     return rows.map((row) => this.mapRow(row));
   }
 
+  async updateRowsForJob(
+    input: UpdateImportJobRowsForUserInput
+  ): Promise<boolean> {
+    if (input.rows.length === 0) {
+      return true;
+    }
+
+    await this.ensureOwnedJob(input);
+
+    let updatedCount = 0;
+
+    for (const row of input.rows) {
+      const updated = await this.client.importJobRow.updateMany({
+        where: {
+          id: row.rowId,
+          importJobId: input.importJobId,
+          userId: input.userId,
+        },
+        data: this.createRowUpdateData(row),
+      });
+      updatedCount += updated.count;
+    }
+
+    return updatedCount === input.rows.length;
+  }
+
   async createError(
     input: CreateImportJobErrorForUserInput
   ): Promise<ImportJobErrorRecord> {
@@ -251,7 +296,7 @@ export class PrismaImportJobRepository
   }
 
   async listErrorsForJob(
-    input: ListImportJobErrorsForUserInput
+    input: ListImportJobErrorsPageForUserInput
   ): Promise<ImportJobErrorRecord[]> {
     const errors = await this.client.importJobError.findMany({
       where: {
@@ -259,6 +304,7 @@ export class PrismaImportJobRepository
         userId: input.userId,
       },
       orderBy: [{ createdAt: "desc" }, { id: "desc" }],
+      take: input.limit ?? 50,
     });
 
     return errors.map((error) => this.mapError(error));
@@ -393,6 +439,18 @@ export class PrismaImportJobRepository
   ): Prisma.ImportJobUpdateManyMutationInput {
     return {
       status: input.status,
+      ...(input.mappingJson !== undefined
+        ? { mappingJson: this.toInputJson(input.mappingJson) }
+        : {}),
+      ...(input.mappingSource !== undefined
+        ? { mappingSource: input.mappingSource }
+        : {}),
+      ...(input.validRowCount !== undefined
+        ? { validRowCount: input.validRowCount }
+        : {}),
+      ...(input.invalidRowCount !== undefined
+        ? { invalidRowCount: input.invalidRowCount }
+        : {}),
       ...(input.importedRowCount !== undefined
         ? { importedRowCount: input.importedRowCount }
         : {}),
@@ -415,6 +473,24 @@ export class PrismaImportJobRepository
       ...(input.lastErrorMessage !== undefined
         ? { lastErrorMessage: input.lastErrorMessage }
         : {}),
+    };
+  }
+
+  private createRowUpdateData(
+    row: UpdateImportJobRowsForUserInput["rows"][number]
+  ): Prisma.ImportJobRowUpdateManyMutationInput {
+    return {
+      ...(row.mappedDataJson !== undefined
+        ? { mappedDataJson: this.toInputJson(row.mappedDataJson) }
+        : {}),
+      ...(row.normalizedDataJson !== undefined
+        ? { normalizedDataJson: this.toNullableInputJson(row.normalizedDataJson) }
+        : {}),
+      ...(row.status !== undefined ? { status: row.status } : {}),
+      ...(row.validationErrorsJson !== undefined
+        ? { validationErrorsJson: this.toInputJson(row.validationErrorsJson) }
+        : {}),
+      ...(row.targetLabel !== undefined ? { targetLabel: row.targetLabel } : {}),
     };
   }
 

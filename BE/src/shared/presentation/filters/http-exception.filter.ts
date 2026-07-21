@@ -89,7 +89,18 @@ export class HttpExceptionFilter implements ExceptionFilter {
       case "InvalidDeviceId":
       case "InvalidRefreshOrigin":
       case "ValidationError":
+      case "InvalidImportMapping":
         return HttpStatus.BAD_REQUEST;
+      case "ImportJobExpired":
+        return HttpStatus.GONE;
+      case "ImportJobAlreadyClosed":
+      case "ImportJobAlreadyConfirmed":
+      case "ImportJobNotReady":
+      case "ImportMappingRequired":
+        return HttpStatus.CONFLICT;
+      case "ImportMappingFailed":
+        return HttpStatus.UNPROCESSABLE_ENTITY;
+      case "ImportFileStorageFailed":
       case "MeetingNoteAiDraftProviderUnavailable":
         return HttpStatus.SERVICE_UNAVAILABLE;
       case "MeetingNoteAiDraftFailed":

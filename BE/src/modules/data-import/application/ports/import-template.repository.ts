@@ -34,13 +34,18 @@ export interface ImportTemplateRepository {
   // 기능 : 현재 사용자의 성공한 불러오기 로그 상세를 조회합니다.
   findUserLog(input: FindImportUserLogInput): Promise<ImportUserLogRecord | null>;
   // 기능 : 회사 불러오기 확정 생성과 성공 로그 저장을 같은 트랜잭션으로 처리합니다.
-  confirmCompanyImport(input: ConfirmImportInput): Promise<void>;
+  confirmCompanyImport(input: ConfirmImportInput): Promise<ConfirmImportResult>;
   // 기능 : 담당자 불러오기 확정 생성과 성공 로그 저장을 같은 트랜잭션으로 처리합니다.
-  confirmContactImport(input: ConfirmImportInput): Promise<void>;
+  confirmContactImport(input: ConfirmImportInput): Promise<ConfirmImportResult>;
   // 기능 : 제품 불러오기 확정 생성과 성공 로그 저장을 같은 트랜잭션으로 처리합니다.
-  confirmProductImport(input: ConfirmImportInput): Promise<void>;
+  confirmProductImport(input: ConfirmImportInput): Promise<ConfirmImportResult>;
   // 기능 : 딜 불러오기 확정 생성과 성공 로그 저장을 같은 트랜잭션으로 처리합니다.
-  confirmDealImport(input: ConfirmImportInput): Promise<void>;
+  confirmDealImport(input: ConfirmImportInput): Promise<ConfirmImportResult>;
+}
+
+export interface ConfirmImportResult {
+  readonly importUserLogId: string;
+  readonly importedRowCount: number;
 }
 
 // 역할 : ImportUserLogListRecord 불러오기 로그 목록 항목을 정의합니다.
@@ -108,6 +113,7 @@ export interface ConfirmDealProductResolutionInput {
 // 역할 : ConfirmImportInput 확정 생성과 성공 로그 저장 입력을 정의합니다.
 export interface ConfirmImportInput {
   readonly userId: string;
+  readonly importJobId?: string;
   readonly targetType: ImportTemplateType;
   readonly templateVersion: string;
   readonly templateColumnsJson: unknown;

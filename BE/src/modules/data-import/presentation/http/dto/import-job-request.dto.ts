@@ -1,6 +1,7 @@
 import { Type } from "class-transformer";
 import {
   IsArray,
+  IsBoolean,
   IsEmail,
   IsIn,
   IsInt,
@@ -21,7 +22,82 @@ const IMPORT_TEMPLATE_TYPE_VALUES: readonly ImportTemplateType[] = [
 ];
 
 // 역할 : CreateImportJobDto 데이터 불러오기 파일 업로드 요청 값을 검증합니다.
-export class CreateImportJobDto {
+export class ListActiveImportJobsRequest {
+  @IsOptional()
+  @IsIn(IMPORT_TEMPLATE_TYPE_VALUES)
+  targetType?: ImportTemplateType;
+
+  @IsOptional()
+  @Type(() => Number)
+  @IsInt()
+  @Min(1)
+  limit?: number;
+}
+
+export class CreateImportJobRequest {
+  @IsIn(IMPORT_TEMPLATE_TYPE_VALUES)
+  targetType!: ImportTemplateType;
+}
+
+export class GetImportJobRequest {
+  @IsOptional()
+  @Type(() => Boolean)
+  @IsBoolean()
+  includeErrors?: boolean;
+}
+
+export class MapImportJobRequest {
+  @IsOptional()
+  @IsIn(["AI", "RULE_BASED"])
+  preferredSource?: "AI" | "RULE_BASED";
+}
+
+export class UpdateImportJobMappingRequest {
+  @IsObject()
+  mapping!: Record<string, string | null>;
+}
+
+export class UpdateImportJobRowRequest {
+  @IsString()
+  @IsNotEmpty()
+  rowId!: string;
+
+  @IsObject()
+  data!: Record<string, unknown>;
+
+  @IsOptional()
+  @IsBoolean()
+  excluded?: boolean;
+}
+
+export class UpdateImportJobRowsRequest {
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => UpdateImportJobRowRequest)
+  rows!: UpdateImportJobRowRequest[];
+}
+
+export class ValidateImportJobRequest {}
+
+export class CancelImportJobRequest {}
+
+export class ListImportJobErrorsRequest {
+  @IsOptional()
+  @Type(() => Number)
+  @IsInt()
+  @Min(1)
+  limit?: number;
+}
+
+export class ConfirmImportJobRequest {
+  @IsOptional()
+  @IsString()
+  idempotencyKey?: string;
+}
+
+export class CreateImportJobDto extends CreateImportJobRequest {}
+
+export class LegacyCreateImportJobDto {
   @IsIn(IMPORT_TEMPLATE_TYPE_VALUES)
   targetType!: ImportTemplateType;
 }
@@ -109,6 +185,10 @@ export class ConfirmDealProductResolutionDto {
 
 // 역할 : ConfirmImportJobDto 데이터 불러오기 확정 요청 값을 검증합니다.
 export class ConfirmImportJobDto {
+  @IsOptional()
+  @IsString()
+  idempotencyKey?: string;
+
   @IsOptional()
   @IsArray()
   @ValidateNested({ each: true })

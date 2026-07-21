@@ -30,7 +30,13 @@ type RequestWithCurrentUser = Request & {
 
 type DataImportServiceFake = Pick<
   DataImportApplicationService,
-  "confirmImportJob" | "updateImportMapping"
+  | "cancelImportJob"
+  | "confirmImportJob"
+  | "listActiveImportJobs"
+  | "listImportJobErrors"
+  | "updateImportJobRows"
+  | "updateImportMapping"
+  | "validateImportJob"
 >;
 
 class FakeAuthGuard implements CanActivate {
@@ -44,26 +50,87 @@ class FakeAuthGuard implements CanActivate {
 
 function createDataImportServiceFake(): jest.Mocked<DataImportServiceFake> {
   return {
+    cancelImportJob: jest.fn().mockResolvedValue(undefined),
     confirmImportJob: jest.fn().mockResolvedValue({
-      id: IMPORT_JOB_ID,
-      status: "COMPLETED",
-      successCount: 1,
-      failedCount: 0,
+      importJobId: IMPORT_JOB_ID,
+      importUserLogId: "00000000-0000-4000-8000-000000000401",
+      status: "CONFIRMED",
+      importedRowCount: 1,
+    }),
+    listActiveImportJobs: jest.fn().mockResolvedValue({
+      items: [],
+    }),
+    listImportJobErrors: jest.fn().mockResolvedValue({
+      items: [],
+    }),
+    updateImportJobRows: jest.fn().mockResolvedValue({
+      job: {
+        id: IMPORT_JOB_ID,
+        targetType: "DEAL",
+        status: "READY_TO_CONFIRM",
+        mappingSource: "USER",
+        originalFileName: "source.xlsx",
+        totalRowCount: 1,
+        validRowCount: 1,
+        invalidRowCount: 0,
+        importedRowCount: 0,
+        failedRowCount: 0,
+        importUserLogId: null,
+        expiresAt: "2026-07-16T00:00:00.000Z",
+        createdAt: "2026-07-09T00:00:00.000Z",
+        updatedAt: "2026-07-09T00:00:00.000Z",
+      },
+      templateColumns: [],
+      sourceColumns: [],
+      mapping: {},
+      rows: [],
+      errors: [],
+    }),
+    validateImportJob: jest.fn().mockResolvedValue({
+      job: {
+        id: IMPORT_JOB_ID,
+        targetType: "DEAL",
+        status: "READY_TO_CONFIRM",
+        mappingSource: "USER",
+        originalFileName: "source.xlsx",
+        totalRowCount: 1,
+        validRowCount: 1,
+        invalidRowCount: 0,
+        importedRowCount: 0,
+        failedRowCount: 0,
+        importUserLogId: null,
+        expiresAt: "2026-07-16T00:00:00.000Z",
+        createdAt: "2026-07-09T00:00:00.000Z",
+        updatedAt: "2026-07-09T00:00:00.000Z",
+      },
+      templateColumns: [],
+      sourceColumns: [],
+      mapping: {},
+      rows: [],
       errors: [],
     }),
     updateImportMapping: jest.fn().mockResolvedValue({
-      id: IMPORT_JOB_ID,
-      targetType: "DEAL",
-      status: "VALIDATION_FAILED",
-      rowCount: 1,
-      validRowCount: 0,
-      invalidRowCount: 1,
+      job: {
+        id: IMPORT_JOB_ID,
+        targetType: "DEAL",
+        status: "NEEDS_REVIEW",
+        mappingSource: "USER",
+        originalFileName: "source.xlsx",
+        totalRowCount: 1,
+        validRowCount: 0,
+        invalidRowCount: 1,
+        importedRowCount: 0,
+        failedRowCount: 0,
+        importUserLogId: null,
+        expiresAt: "2026-07-16T00:00:00.000Z",
+        createdAt: "2026-07-09T00:00:00.000Z",
+        updatedAt: "2026-07-09T00:00:00.000Z",
+      },
+      templateColumns: [],
+      sourceColumns: [],
       mapping: {},
-      aiMapping: null,
-      previewRows: [],
+      rows: [],
       errors: [],
-      createdAt: "2026-07-09T00:00:00.000Z",
-      updatedAt: "2026-07-09T00:00:00.000Z",
     }),
   };
 }
@@ -120,6 +187,54 @@ describe("ImportJobController", () => {
           productName: null,
         },
       }
+    );
+  });
+
+  it("routes active job listing before the importJobId route", async () => {
+    await request(app.getHttpServer())
+      .get("/api/imports/active")
+      .query({ targetType: "DEAL", limit: 3 })
+      .expect(200);
+
+    expect(service.listActiveImportJobs).toHaveBeenCalledWith(CURRENT_USER, {
+      targetType: "DEAL",
+      limit: 3,
+    });
+  });
+
+  it("routes row updates to the application service", async () => {
+    const body = {
+      rows: [
+        {
+          rowId: "00000000-0000-4000-8000-000000000501",
+          data: { dealName: "Enterprise renewal" },
+          excluded: false,
+        },
+      ],
+    };
+
+    await request(app.getHttpServer())
+      .patch(`/api/imports/${IMPORT_JOB_ID}/rows`)
+      .send(body)
+      .expect(200);
+
+    expect(service.updateImportJobRows).toHaveBeenCalledWith(
+      CURRENT_USER,
+      IMPORT_JOB_ID,
+      body
+    );
+  });
+
+  it("returns 204 when canceling an import job", async () => {
+    await request(app.getHttpServer())
+      .post(`/api/imports/${IMPORT_JOB_ID}/cancel`)
+      .send({})
+      .expect(204);
+
+    expect(service.cancelImportJob).toHaveBeenCalledWith(
+      CURRENT_USER,
+      IMPORT_JOB_ID,
+      {}
     );
   });
 

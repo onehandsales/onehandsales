@@ -4,6 +4,7 @@ import type {
   ConfirmDealContactResolutionInput,
   ConfirmDealProductResolutionInput,
   ConfirmImportInput,
+  ConfirmImportResult,
   FindImportUserLogInput,
   ImportTemplateRecord,
   ImportTemplateRepository,
@@ -185,8 +186,8 @@ export class PrismaImportTemplateRepository implements ImportTemplateRepository 
 
   // 기능 : 불러오기 로그 목록 조회에 사용할 Prisma where 조건을 생성합니다.
   // 기능 : 회사 불러오기 확정 생성과 성공 로그 저장을 같은 트랜잭션으로 처리합니다.
-  async confirmCompanyImport(input: ConfirmImportInput): Promise<void> {
-    await this.prismaService.$transaction(async (client) => {
+  async confirmCompanyImport(input: ConfirmImportInput): Promise<ConfirmImportResult> {
+    return this.prismaService.$transaction(async (client) => {
       const log = await this.createImportUserLog(client, input);
 
       for (const row of input.rows) {
@@ -216,12 +217,19 @@ export class PrismaImportTemplateRepository implements ImportTemplateRepository 
 
         await this.createImportUserLogRow(client, log.id, row);
       }
+
+      await this.completePersistentImportJob(client, input, log.id);
+
+      return {
+        importUserLogId: log.id,
+        importedRowCount: input.rows.length,
+      };
     });
   }
 
   // 기능 : 담당자 불러오기 확정 생성과 성공 로그 저장을 같은 트랜잭션으로 처리합니다.
-  async confirmContactImport(input: ConfirmImportInput): Promise<void> {
-    await this.prismaService.$transaction(async (client) => {
+  async confirmContactImport(input: ConfirmImportInput): Promise<ConfirmImportResult> {
+    return this.prismaService.$transaction(async (client) => {
       const log = await this.createImportUserLog(client, input);
       const companyResolutionMap = this.createContactCompanyResolutionMap(
         input.contactCompanyResolutions ?? []
@@ -263,12 +271,19 @@ export class PrismaImportTemplateRepository implements ImportTemplateRepository 
 
         await this.createImportUserLogRow(client, log.id, row);
       }
+
+      await this.completePersistentImportJob(client, input, log.id);
+
+      return {
+        importUserLogId: log.id,
+        importedRowCount: input.rows.length,
+      };
     });
   }
 
   // 기능 : 제품 불러오기 확정 생성과 성공 로그 저장을 같은 트랜잭션으로 처리합니다.
-  async confirmProductImport(input: ConfirmImportInput): Promise<void> {
-    await this.prismaService.$transaction(async (client) => {
+  async confirmProductImport(input: ConfirmImportInput): Promise<ConfirmImportResult> {
+    return this.prismaService.$transaction(async (client) => {
       const log = await this.createImportUserLog(client, input);
 
       for (const row of input.rows) {
@@ -298,11 +313,18 @@ export class PrismaImportTemplateRepository implements ImportTemplateRepository 
 
         await this.createImportUserLogRow(client, log.id, row);
       }
+
+      await this.completePersistentImportJob(client, input, log.id);
+
+      return {
+        importUserLogId: log.id,
+        importedRowCount: input.rows.length,
+      };
     });
   }
 
-  async confirmDealImport(input: ConfirmImportInput): Promise<void> {
-    await this.prismaService.$transaction(async (client) => {
+  async confirmDealImport(input: ConfirmImportInput): Promise<ConfirmImportResult> {
+    return this.prismaService.$transaction(async (client) => {
       const log = await this.createImportUserLog(client, input);
       const companyResolutionMap = this.createContactCompanyResolutionMap(
         input.dealCompanyResolutions ?? []
@@ -396,6 +418,13 @@ export class PrismaImportTemplateRepository implements ImportTemplateRepository 
 
         await this.createImportUserLogRow(client, log.id, row);
       }
+
+      await this.completePersistentImportJob(client, input, log.id);
+
+      return {
+        importUserLogId: log.id,
+        importedRowCount: input.rows.length,
+      };
     });
   }
 
@@ -421,6 +450,41 @@ export class PrismaImportTemplateRepository implements ImportTemplateRepository 
       },
       select: {
         id: true,
+      },
+    });
+  }
+
+  private async completePersistentImportJob(
+    client: Prisma.TransactionClient,
+    input: ConfirmImportInput,
+    importUserLogId: string
+  ): Promise<void> {
+    if (!input.importJobId) {
+      return;
+    }
+
+    await client.importJobRow.updateMany({
+      where: {
+        importJobId: input.importJobId,
+        userId: input.userId,
+        status: "VALID",
+      },
+      data: {
+        status: "IMPORTED",
+      },
+    });
+
+    await client.importJob.updateMany({
+      where: {
+        id: input.importJobId,
+        userId: input.userId,
+      },
+      data: {
+        status: "CONFIRMED",
+        importedRowCount: input.rows.length,
+        failedRowCount: 0,
+        importUserLogId,
+        confirmedAt: new Date(),
       },
     });
   }

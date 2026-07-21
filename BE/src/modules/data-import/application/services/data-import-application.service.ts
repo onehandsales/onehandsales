@@ -7,16 +7,23 @@ import {
   type ImportUploadedFile,
 } from "@/modules/data-import/application/ports/import-file-parser.port";
 import {
-  IMPORT_JOB_STORE,
   type ImportFieldValue,
   type ImportJobError,
-  type ImportJobStore,
   type ImportMappedRowData,
   type ImportMapping,
   type ImportMappingSuggestion,
-  type StoredImportJob,
-  type StoredImportJobRow,
-} from "@/modules/data-import/application/ports/import-job.store";
+} from "@/modules/data-import/application/ports/import-job.types";
+import {
+  IMPORT_JOB_REPOSITORY,
+  type ImportJobDetailRecord,
+  type ImportJobErrorRecord,
+  type ImportJobRecord,
+  type ImportJobRepositoryContext,
+  type ImportJobRowRecord,
+  type PersistentImportJobMappingSource,
+  type PersistentImportJobRowStatus,
+  type PersistentImportJobStatus,
+} from "@/modules/data-import/application/ports/import-job.repository";
 import {
   IMPORT_MAPPING_PROVIDER,
   type ImportMappingProvider,
@@ -31,16 +38,31 @@ import {
   type ImportTemplateRepository,
   type ImportTemplateType,
   type ImportUserLogListRecord,
+  type ConfirmImportInput as ConfirmImportRepositoryInput,
+  type ConfirmImportResult,
 } from "@/modules/data-import/application/ports/import-template.repository";
+import {
+  IMPORT_UPLOADED_FILE_STORAGE,
+  type ImportUploadedFileStorage,
+} from "@/modules/data-import/application/ports/import-uploaded-file-storage.port";
 import {
   DEAL_STATUS_CODES,
   getDealStatusLabel,
 } from "@/modules/deal/domain/deal-status";
 import {
+  ImportConfirmFailedError,
+  ImportFileStorageFailedError,
+  ImportJobAlreadyClosedError,
+  ImportJobAlreadyConfirmedError,
+  ImportJobExpiredError,
   ImportJobNotFoundError,
+  ImportJobNotReadyError,
+  ImportJobRowNotFoundError,
+  ImportMappingRequiredError,
   ImportTemplateNotFoundError,
   ImportTemplateSchemaInvalidError,
   ImportUserLogNotFoundError,
+  InvalidImportMappingError,
 } from "@/modules/data-import/domain/import-template.errors";
 import type { CurrentUserContext } from "@/shared/application/context/current-user.context";
 import {
@@ -55,6 +77,8 @@ import {
   type XlsxWorkbookWriter,
 } from "@/shared/application/ports/xlsx-workbook.writer";
 import { ValidationDomainError } from "@/shared/domain/errors/common.errors";
+import { DomainError } from "@/shared/domain/errors/domain-error";
+import { AppLogger } from "@/shared/infrastructure/logger/app-logger.service";
 
 const TEMPLATE_TYPE_ORDER: readonly ImportTemplateType[] = [
   "COMPANY",
@@ -153,6 +177,16 @@ export interface UpdateImportMappingInput {
 }
 
 // 역할 : ConfirmImportJobRowInput 확정 요청 row 값을 정의합니다.
+export interface UpdateImportJobRowInput {
+  readonly rowId: string;
+  readonly data: Readonly<Record<string, unknown>>;
+  readonly excluded?: boolean;
+}
+
+export interface UpdateImportJobRowsInput {
+  readonly rows: readonly UpdateImportJobRowInput[];
+}
+
 export interface ConfirmImportJobRowInput {
   readonly rowNumber: number;
   readonly data: Readonly<Record<string, unknown>>;
@@ -199,47 +233,105 @@ export interface ConfirmImportJobInput {
   readonly rows?: readonly ConfirmImportJobRowInput[];
 }
 
-// 역할 : ImportJobRowResponse 임시 불러오기 job row 응답을 정의합니다.
-export interface ImportJobRowResponse {
-  readonly id: string;
-  readonly rowNumber: number;
-  readonly rawData: Readonly<Record<string, string>>;
-  readonly mappedData: ImportMappedRowData | null;
-  readonly status: "PENDING" | "VALID" | "VALIDATION_FAILED";
-  readonly errorMessage: string | null;
-  readonly targetId: string | null;
+export interface ListActiveImportJobsRequest {
+  readonly targetType?: ImportTemplateType;
+  readonly limit?: number;
 }
 
-// 역할 : ImportJobResponse 임시 불러오기 job 응답을 정의합니다.
-export interface ImportJobResponse {
+export interface GetImportJobRequest {
+  readonly includeErrors?: boolean;
+}
+
+export interface MapImportJobRequest {
+  readonly preferredSource?: "AI" | "RULE_BASED";
+}
+
+export type ValidateImportJobRequest = object;
+
+export type CancelImportJobRequest = object;
+
+export interface ListImportJobErrorsRequest {
+  readonly limit?: number;
+}
+
+// 역할 : ImportCellValidationError cell 단위 import 검증 오류 응답을 정의합니다.
+export interface ImportCellValidationError {
+  readonly fieldKey: string;
+  readonly message: string;
+  readonly code: string;
+}
+
+// 역할 : ImportJobRowResponse 확정 전 import row 응답을 정의합니다.
+export interface ImportJobRowResponse {
+  readonly rowId: string;
+  readonly rowNumber: number;
+  readonly status: PersistentImportJobRowStatus;
+  readonly data: ImportMappedRowData;
+  readonly targetLabel: string | null;
+  readonly errors: readonly ImportCellValidationError[];
+}
+
+// 역할 : ImportJobSummaryResponse 확정 전 import job 요약 응답을 정의합니다.
+export interface ImportJobSummaryResponse {
   readonly id: string;
   readonly targetType: ImportTemplateType;
-  readonly status: StoredImportJob["status"];
-  readonly rowCount: number;
+  readonly status: PersistentImportJobStatus;
+  readonly mappingSource: PersistentImportJobMappingSource;
+  readonly originalFileName: string;
+  readonly totalRowCount: number;
   readonly validRowCount: number;
   readonly invalidRowCount: number;
-  readonly mapping: ImportMapping | null;
-  readonly aiMapping: ImportMappingSuggestion | null;
-  readonly previewRows: ImportJobRowResponse[];
-  readonly errors: readonly ImportJobError[];
+  readonly importedRowCount: number;
+  readonly failedRowCount: number;
+  readonly importUserLogId: string | null;
+  readonly expiresAt: string;
   readonly createdAt: string;
   readonly updatedAt: string;
 }
 
-// 역할 : ImportJobDetailResponse 임시 불러오기 job 상세 응답을 정의합니다.
-export interface ImportJobDetailResponse {
-  readonly job: ImportJobResponse;
-  readonly rows: ImportJobRowResponse[];
-  readonly errors: readonly ImportJobError[];
+export interface ActiveImportJobsResponse {
+  readonly items: ImportJobSummaryResponse[];
 }
 
-// 역할 : ImportJobResultResponse 불러오기 확정 결과 응답을 정의합니다.
-export interface ImportJobResultResponse {
+// 역할 : ImportJobErrorResponse redacted import 오류 이력 응답을 정의합니다.
+export interface ImportJobErrorResponse {
   readonly id: string;
-  readonly status: "COMPLETED";
-  readonly successCount: number;
-  readonly failedCount: number;
-  readonly errors: readonly ImportJobError[];
+  readonly rowId: string | null;
+  readonly rowNumber: number | null;
+  readonly fieldKey: string | null;
+  readonly errorType: string;
+  readonly errorCode: string;
+  readonly severity: string;
+  readonly safeMessage: string;
+  readonly retryable: boolean;
+  readonly createdAt: string;
+}
+
+// 역할 : ImportJobDetailResponse 확정 전 import job 상세 응답을 정의합니다.
+export interface ImportJobDetailResponse {
+  readonly job: ImportJobSummaryResponse;
+  readonly templateColumns: ImportTemplateColumn[];
+  readonly sourceColumns: readonly string[];
+  readonly mapping: ImportMapping;
+  readonly rows: ImportJobRowResponse[];
+  readonly errors: readonly ImportJobErrorResponse[];
+}
+
+export type CreateImportJobResponse = ImportJobDetailResponse;
+export type ImportJobResponse = ImportJobSummaryResponse;
+
+// 역할 : ConfirmImportJobResponse 불러오기 확정 결과 응답을 정의합니다.
+export interface ConfirmImportJobResponse {
+  readonly importJobId: string;
+  readonly importUserLogId: string;
+  readonly status: "CONFIRMED";
+  readonly importedRowCount: number;
+}
+
+export type ImportJobResultResponse = ConfirmImportJobResponse;
+
+export interface ImportJobErrorsResponse {
+  readonly items: ImportJobErrorResponse[];
 }
 
 // 역할 : ImportUserLogListQueryInput 불러오기 내역 목록 query 조건을 정의합니다.
@@ -294,7 +386,41 @@ interface ConfirmReadyRow {
 }
 
 interface NormalizedRowValidation {
-  readonly rows: readonly StoredImportJobRow[];
+  readonly rows: readonly ValidatedImportJobRow[];
+  readonly validRowCount: number;
+  readonly invalidRowCount: number;
+  readonly errors: readonly ImportJobError[];
+}
+
+interface ValidatedImportJobRow {
+  readonly rowId: string;
+  readonly rowNumber: number;
+  readonly rawData: Readonly<Record<string, string>>;
+  readonly mappedData: ImportMappedRowData;
+  readonly normalizedData: ImportSubmittedData | null;
+  readonly status: PersistentImportJobRowStatus;
+  readonly validationErrors: readonly ImportCellValidationError[];
+  readonly targetLabel: string | null;
+}
+
+type LegacyImportJobRowStatus = "PENDING" | "VALID" | "VALIDATION_FAILED";
+
+interface LegacyStoredImportJobRow {
+  readonly id: string;
+  readonly rowNumber: number;
+  readonly rawData: Readonly<Record<string, string>>;
+  readonly mappedData: ImportMappedRowData | null;
+  readonly status: LegacyImportJobRowStatus;
+  readonly errorMessage: string | null;
+}
+
+interface LegacyStoredImportJob {
+  readonly targetType: ImportTemplateType;
+  readonly rows: readonly LegacyStoredImportJobRow[];
+}
+
+interface LegacyNormalizedRowValidation {
+  readonly rows: readonly LegacyStoredImportJobRow[];
   readonly validRowCount: number;
   readonly invalidRowCount: number;
   readonly errors: readonly ImportJobError[];
@@ -312,14 +438,17 @@ export class DataImportApplicationService {
   constructor(
     @Inject(IMPORT_TEMPLATE_REPOSITORY)
     private readonly importTemplateRepository: ImportTemplateRepository,
-    @Inject(IMPORT_JOB_STORE)
-    private readonly importJobStore: ImportJobStore,
+    @Inject(IMPORT_JOB_REPOSITORY)
+    private readonly importJobRepository: ImportJobRepositoryContext,
     @Inject(IMPORT_FILE_PARSER)
     private readonly importFileParser: ImportFileParser,
+    @Inject(IMPORT_UPLOADED_FILE_STORAGE)
+    private readonly importUploadedFileStorage: ImportUploadedFileStorage,
     @Inject(IMPORT_MAPPING_PROVIDER)
     private readonly importMappingProvider: ImportMappingProvider,
     @Inject(XLSX_WORKBOOK_WRITER)
-    private readonly xlsxWriter: XlsxWorkbookWriter
+    private readonly xlsxWriter: XlsxWorkbookWriter,
+    private readonly logger: AppLogger
   ) {}
 
   // 기능 : 활성화된 데이터 불러오기 양식 목록을 조회합니다.
@@ -365,10 +494,36 @@ export class DataImportApplicationService {
   }
 
   // 기능 : 업로드 파일을 파싱해 확정 전 임시 불러오기 job을 생성합니다.
+  async listActiveImportJobs(
+    currentUser: CurrentUserContext,
+    input: ListActiveImportJobsRequest = {}
+  ): Promise<ActiveImportJobsResponse> {
+    const now = new Date();
+    const limit = this.normalizeLimit(input.limit, 5, 10);
+
+    await this.expireImportJobsForUser(currentUser.id, now);
+
+    const jobs = await this.importJobRepository.listActiveJobsForUser({
+      userId: currentUser.id,
+      now,
+      limit,
+      ...(input.targetType ? { targetType: input.targetType } : {}),
+    });
+
+    this.logEvent("importJob.activeListed", {
+      userId: currentUser.id,
+      count: jobs.length,
+    });
+
+    return {
+      items: jobs.map((job) => this.toImportJobSummaryResponse(job)),
+    };
+  }
+
   async createImportJob(
     currentUser: CurrentUserContext,
     input: CreateImportJobInput
-  ): Promise<ImportJobResponse> {
+  ): Promise<CreateImportJobResponse> {
     const template =
       await this.importTemplateRepository.findActiveTemplateByType(input.targetType);
 
@@ -376,87 +531,165 @@ export class DataImportApplicationService {
       throw new ImportTemplateNotFoundError();
     }
 
+    const importJobId = randomUUID();
     const originalFileName = this.normalizeUploadedFileName(input.file.originalname);
     const parsedFile = await this.importFileParser.parse({
       ...input.file,
       originalname: originalFileName,
     });
     const now = new Date();
-    const job: StoredImportJob = {
-      id: randomUUID(),
-      userId: currentUser.id,
-      targetType: template.templateType,
-      templateVersion: template.templateVersion,
-      templateColumnsJson: template.columnsJson,
+    const expiresAt = this.createImportJobExpiresAt(now);
+    const storedFile = await this.storeUploadedImportFile(currentUser, {
+      importJobId,
       originalFileName,
-      fileSizeBytes: input.file.size,
-      sourceColumns: parsedFile.sourceColumns,
-      status: "PREVIEW_READY",
-      rowCount: parsedFile.rows.length,
-      validRowCount: 0,
-      invalidRowCount: 0,
-      mapping: null,
-      aiMapping: null,
-      rows: parsedFile.rows.map((row) => ({
-        id: randomUUID(),
-        rowNumber: row.rowNumber,
-        rawData: row.rawData,
-        mappedData: null,
-        status: "PENDING",
-        errorMessage: null,
-      })),
-      errors: [],
-      createdAt: now,
-      updatedAt: now,
-    };
+      file: input.file,
+    });
 
-    await this.importJobStore.save({ job });
+    try {
+      const job = await this.importJobRepository.runInTransaction((repositories) =>
+        repositories.createJob({
+          id: importJobId,
+          userId: currentUser.id,
+          templateId: template.id,
+          targetType: template.templateType,
+          templateVersion: template.templateVersion,
+          templateColumnsJson: template.columnsJson,
+          sourceColumnsJson: parsedFile.sourceColumns,
+          status: "UPLOADED",
+          mappingJson: {},
+          mappingSource: "NONE",
+          originalFileName,
+          fileSizeBytes: input.file.size,
+          totalRowCount: parsedFile.rows.length,
+          validRowCount: 0,
+          invalidRowCount: 0,
+          importedRowCount: 0,
+          failedRowCount: 0,
+          expiresAt,
+          rows: parsedFile.rows.map((row) => ({
+            rowNumber: row.rowNumber,
+            rawDataJson: row.rawData,
+            mappedDataJson: {},
+            normalizedDataJson: null,
+            status: "PENDING",
+            validationErrorsJson: [],
+          })),
+          uploadedFile: {
+            originalFileName,
+            mimeType: input.file.mimetype,
+            fileSizeBytes: input.file.size,
+            checksum: storedFile.checksum,
+            storageProvider: storedFile.storageProvider,
+            storageBucket: storedFile.storageBucket,
+            storageKey: storedFile.storageKey,
+            status: "PARSED",
+            uploadedAt: now,
+            expiresAt,
+          },
+        })
+      );
 
-    return this.toImportJobResponse(job);
+      this.logEvent("importJob.created", {
+        userId: currentUser.id,
+        importJobId: job.id,
+        targetType: job.targetType,
+        totalRowCount: job.totalRowCount,
+      });
+
+      return this.toImportJobDetailResponse(job, { includeErrors: true });
+    } catch (error) {
+      await this.safeDeleteStoredImportFile(storedFile.storageKey);
+      throw error;
+    }
   }
 
   // 기능 : 원본 컬럼을 대상 양식 컬럼으로 AI 매핑하고 실패 시 규칙 기반 매핑으로 대체합니다.
   async generateImportMapping(
     currentUser: CurrentUserContext,
-    importJobId: string
-  ): Promise<ImportMappingSuggestion> {
-    const job = await this.getStoredImportJob(currentUser, importJobId);
+    importJobId: string,
+    input: MapImportJobRequest = {}
+  ): Promise<ImportJobDetailResponse> {
+    const job = await this.getMutableImportJob(currentUser, importJobId);
     const columns = this.normalizeColumns(job.templateColumnsJson);
+    const sourceColumns = this.normalizeSourceColumns(job.sourceColumnsJson);
     const fallback = this.createHeuristicMapping(
       columns,
-      job.sourceColumns,
+      sourceColumns,
       job.targetType
     );
 
     let suggestion = fallback;
+    let mappingSource: PersistentImportJobMappingSource = "RULE_BASED";
+    let providerFailed = false;
 
-    try {
-      suggestion = this.normalizeMappingSuggestion(
-        await this.importMappingProvider.generate({
-          targetType: job.targetType,
-          targetFields: columns.map((column) => this.toMappingTargetField(column)),
-          sourceColumns: job.sourceColumns,
-          sampleRows: job.rows.slice(0, 5).map((row) => row.rawData),
-        }),
-        fallback,
-        columns,
-        job.sourceColumns
-      );
-    } catch {
-      suggestion = fallback;
+    if (input.preferredSource !== "RULE_BASED") {
+      try {
+        suggestion = this.normalizeMappingSuggestion(
+          await this.importMappingProvider.generate({
+            targetType: job.targetType,
+            targetFields: columns.map((column) => this.toMappingTargetField(column)),
+            sourceColumns,
+            sampleRows: job.rows
+              .slice(0, 5)
+              .map((row) => this.normalizeRawData(row.rawDataJson)),
+          }),
+          fallback,
+          columns,
+          sourceColumns
+        );
+        mappingSource = "AI";
+      } catch {
+        providerFailed = true;
+        suggestion = fallback;
+      }
     }
 
-    const updatedJob: StoredImportJob = {
-      ...job,
-      mapping: suggestion.suggestedMapping,
-      aiMapping: suggestion,
-      status: "MAPPING_READY",
-      updatedAt: new Date(),
-    };
+    const validation = this.validateRowsWithMapping(
+      job.rows,
+      columns,
+      suggestion.suggestedMapping,
+      job.targetType
+    );
+    const nextStatus = this.resolveReviewStatus(validation);
 
-    await this.importJobStore.update({ job: updatedJob });
+    await this.importJobRepository.runInTransaction(async (repositories) => {
+      await repositories.updateJobStatusForUser({
+        userId: currentUser.id,
+        importJobId,
+        status: nextStatus,
+        mappingJson: suggestion.suggestedMapping,
+        mappingSource,
+        validRowCount: validation.validRowCount,
+        invalidRowCount: validation.invalidRowCount,
+      });
+      await repositories.updateRowsForJob({
+        userId: currentUser.id,
+        importJobId,
+        rows: validation.rows.map((row) => this.toRepositoryRowUpdate(row)),
+      });
 
-    return suggestion;
+      if (providerFailed) {
+        await repositories.createError({
+          userId: currentUser.id,
+          importJobId,
+          errorType: "AI_MAPPING",
+          errorCode: "IMPORT_MAPPING_PROVIDER_FAILED",
+          severity: "WARNING",
+          safeMessage: "AI 컬럼 매칭에 실패해 규칙 기반 매칭을 적용했습니다.",
+          retryable: true,
+        });
+      }
+    });
+
+    this.logEvent("importJob.mapped", {
+      userId: currentUser.id,
+      importJobId,
+      mappingSource,
+      validRowCount: validation.validRowCount,
+      invalidRowCount: validation.invalidRowCount,
+    });
+
+    return this.getImportJob(currentUser, importJobId, { includeErrors: true });
   }
 
   // 기능 : 사용자가 수정한 매핑을 적용해 모든 row의 생성 가능 여부를 검증합니다.
@@ -464,51 +697,278 @@ export class DataImportApplicationService {
     currentUser: CurrentUserContext,
     importJobId: string,
     input: UpdateImportMappingInput
-  ): Promise<ImportJobResponse> {
-    const job = await this.getStoredImportJob(currentUser, importJobId);
+  ): Promise<ImportJobDetailResponse> {
+    const job = await this.getMutableImportJob(currentUser, importJobId);
     const columns = this.normalizeColumns(job.templateColumnsJson);
-    const mapping = this.normalizeMapping(input.mapping, columns, job.sourceColumns);
-    const validation = this.validateJobRows(job.rows, columns, mapping);
-    const updatedJob: StoredImportJob = {
-      ...job,
+    const sourceColumns = this.normalizeSourceColumns(job.sourceColumnsJson);
+    const mapping = this.normalizeUserMapping(input.mapping, columns, sourceColumns);
+    const validation = this.validateRowsWithMapping(
+      job.rows,
+      columns,
       mapping,
-      rows: validation.rows,
+      job.targetType
+    );
+    const nextStatus = this.resolveReviewStatus(validation);
+
+    await this.importJobRepository.runInTransaction(async (repositories) => {
+      await repositories.updateJobStatusForUser({
+        userId: currentUser.id,
+        importJobId,
+        status: nextStatus,
+        mappingJson: mapping,
+        mappingSource: "USER",
+        validRowCount: validation.validRowCount,
+        invalidRowCount: validation.invalidRowCount,
+      });
+      await repositories.updateRowsForJob({
+        userId: currentUser.id,
+        importJobId,
+        rows: validation.rows.map((row) => this.toRepositoryRowUpdate(row)),
+      });
+    });
+
+    this.logEvent("importJob.mappingUpdated", {
+      userId: currentUser.id,
+      importJobId,
       validRowCount: validation.validRowCount,
       invalidRowCount: validation.invalidRowCount,
-      errors: validation.errors,
-      status:
-        validation.invalidRowCount > 0 ? "VALIDATION_FAILED" : "MAPPING_READY",
-      updatedAt: new Date(),
-    };
+    });
 
-    await this.importJobStore.update({ job: updatedJob });
-
-    return this.toImportJobResponse(updatedJob);
+    return this.getImportJob(currentUser, importJobId, { includeErrors: true });
   }
 
   // 기능 : 확정 전 임시 불러오기 job 상세를 조회합니다.
   async getImportJob(
     currentUser: CurrentUserContext,
-    importJobId: string
+    importJobId: string,
+    input: GetImportJobRequest = {}
   ): Promise<ImportJobDetailResponse> {
-    const job = await this.getStoredImportJob(currentUser, importJobId);
+    const job = await this.getImportJobDetail(currentUser, importJobId);
 
-    return {
-      job: this.toImportJobResponse(job),
-      rows: job.rows.map((row) => this.toImportJobRowResponse(row)),
-      errors: job.errors,
-    };
+    this.logEvent("importJob.viewed", {
+      userId: currentUser.id,
+      importJobId,
+      status: job.status,
+    });
+
+    return this.toImportJobDetailResponse(job, {
+      includeErrors: input.includeErrors === true,
+    });
   }
 
   // 기능 : 사용자가 최종 보정한 row를 실제 도메인 데이터로 생성하고 성공 로그를 저장합니다.
+  async updateImportJobRows(
+    currentUser: CurrentUserContext,
+    importJobId: string,
+    input: UpdateImportJobRowsInput
+  ): Promise<ImportJobDetailResponse> {
+    const job = await this.getMutableImportJob(currentUser, importJobId);
+    const columns = this.normalizeColumns(job.templateColumnsJson);
+    const rowMap = new Map(job.rows.map((row) => [row.id, row]));
+    const updatedRows = new Map<string, ValidatedImportJobRow>();
+
+    for (const rowInput of input.rows) {
+      const row = rowMap.get(rowInput.rowId);
+
+      if (!row) {
+        throw new ImportJobRowNotFoundError();
+      }
+
+      updatedRows.set(
+        row.id,
+        this.validateUserEditedRow(row, columns, job.targetType, rowInput)
+      );
+    }
+
+    const mergedRows = job.rows.map((row) =>
+      updatedRows.get(row.id) ?? this.toValidatedRowFromRecord(row)
+    );
+    const summary = this.calculateRowSummary(mergedRows);
+    const nextStatus = this.resolveReviewStatus(summary);
+
+    await this.importJobRepository.runInTransaction(async (repositories) => {
+      await repositories.updateRowsForJob({
+        userId: currentUser.id,
+        importJobId,
+        rows: [...updatedRows.values()].map((row) =>
+          this.toRepositoryRowUpdate(row)
+        ),
+      });
+      await repositories.updateJobStatusForUser({
+        userId: currentUser.id,
+        importJobId,
+        status: nextStatus,
+        validRowCount: summary.validRowCount,
+        invalidRowCount: summary.invalidRowCount,
+      });
+    });
+
+    this.logEvent("importJob.rowsUpdated", {
+      userId: currentUser.id,
+      importJobId,
+      updatedRowCount: input.rows.length,
+      validRowCount: summary.validRowCount,
+      invalidRowCount: summary.invalidRowCount,
+    });
+
+    return this.getImportJob(currentUser, importJobId, { includeErrors: true });
+  }
+
+  async validateImportJob(
+    currentUser: CurrentUserContext,
+    importJobId: string,
+    _input: ValidateImportJobRequest = {}
+  ): Promise<ImportJobDetailResponse> {
+    void _input;
+    const job = await this.getMutableImportJob(currentUser, importJobId);
+    const columns = this.normalizeColumns(job.templateColumnsJson);
+    const mapping = this.normalizeExistingMapping(job.mappingJson, columns);
+
+    if (!this.hasRequiredMapping(mapping, columns)) {
+      throw new ImportMappingRequiredError();
+    }
+
+    const validation = this.validateRowsWithCurrentData(
+      job.rows,
+      columns,
+      mapping,
+      job.targetType
+    );
+    const nextStatus = this.resolveReviewStatus(validation);
+
+    await this.importJobRepository.runInTransaction(async (repositories) => {
+      await repositories.updateRowsForJob({
+        userId: currentUser.id,
+        importJobId,
+        rows: validation.rows.map((row) => this.toRepositoryRowUpdate(row)),
+      });
+      await repositories.updateJobStatusForUser({
+        userId: currentUser.id,
+        importJobId,
+        status: nextStatus,
+        validRowCount: validation.validRowCount,
+        invalidRowCount: validation.invalidRowCount,
+      });
+    });
+
+    this.logEvent("importJob.validated", {
+      userId: currentUser.id,
+      importJobId,
+      validRowCount: validation.validRowCount,
+      invalidRowCount: validation.invalidRowCount,
+    });
+
+    return this.getImportJob(currentUser, importJobId, { includeErrors: true });
+  }
+
+  async cancelImportJob(
+    currentUser: CurrentUserContext,
+    importJobId: string,
+    _input: CancelImportJobRequest = {}
+  ): Promise<void> {
+    void _input;
+    const job = await this.getImportJobDetail(currentUser, importJobId);
+
+    if (job.status === "CONFIRMED") {
+      throw new ImportJobAlreadyConfirmedError();
+    }
+
+    if (this.isTerminalImportJobStatus(job.status)) {
+      return;
+    }
+
+    const now = new Date();
+    let fileDeleted = false;
+
+    if (job.uploadedFile && !job.uploadedFile.deletedAt) {
+      try {
+        await this.importUploadedFileStorage.delete({
+          storageKey: job.uploadedFile.storageKey,
+        });
+        fileDeleted = true;
+      } catch {
+        fileDeleted = false;
+      }
+    }
+
+    await this.importJobRepository.runInTransaction(async (repositories) => {
+      await repositories.updateJobStatusForUser({
+        userId: currentUser.id,
+        importJobId,
+        status: "CANCELED",
+        canceledAt: now,
+      });
+
+      if (fileDeleted) {
+        await repositories.updateUploadedFileStatusForUser({
+          userId: currentUser.id,
+          importJobId,
+          status: "DELETED",
+          deletedAt: now,
+        });
+      } else if (job.uploadedFile && !job.uploadedFile.deletedAt) {
+        await repositories.createError({
+          userId: currentUser.id,
+          importJobId,
+          errorType: "STORAGE",
+          errorCode: "STORAGE_DELETE_FAILED",
+          severity: "WARNING",
+          safeMessage: "원본 파일 삭제에 실패했습니다.",
+          retryable: true,
+        });
+      }
+    });
+
+    this.logEvent("importJob.canceled", {
+      userId: currentUser.id,
+      importJobId,
+      fileDeleted,
+    });
+  }
+
+  async listImportJobErrors(
+    currentUser: CurrentUserContext,
+    importJobId: string,
+    input: ListImportJobErrorsRequest = {}
+  ): Promise<ImportJobErrorsResponse> {
+    await this.getImportJobDetail(currentUser, importJobId);
+
+    const errors = await this.importJobRepository.listErrorsForJob({
+      userId: currentUser.id,
+      importJobId,
+      limit: this.normalizeLimit(input.limit, 50, 100),
+    });
+
+    this.logEvent("importJob.errorsListed", {
+      userId: currentUser.id,
+      importJobId,
+      count: errors.length,
+    });
+
+    return {
+      items: errors.map((error) => this.toImportJobErrorResponse(error)),
+    };
+  }
+
   async confirmImportJob(
     currentUser: CurrentUserContext,
     importJobId: string,
     input: ConfirmImportJobInput
-  ): Promise<ImportJobResultResponse> {
-    const job = await this.getStoredImportJob(currentUser, importJobId);
+  ): Promise<ConfirmImportJobResponse> {
+    const job = await this.getImportJobDetail(currentUser, importJobId);
+
+    if (job.status === "CONFIRMED") {
+      throw new ImportJobAlreadyConfirmedError();
+    }
+
+    this.ensureJobMutable(job);
+
+    if (job.status !== "READY_TO_CONFIRM") {
+      throw new ImportJobNotReadyError();
+    }
+
     const columns = this.normalizeColumns(job.templateColumnsJson);
-    const rows = this.normalizeConfirmRows(job, columns, input.rows);
+    const rows = this.normalizePersistentConfirmRows(job, columns, input.rows);
     const contactCompanyResolutions =
       job.targetType === "CONTACT"
         ? this.normalizeContactCompanyResolutions(
@@ -530,6 +990,7 @@ export class DataImportApplicationService {
 
     const confirmInput = {
       userId: currentUser.id,
+      importJobId,
       targetType: job.targetType,
       templateVersion: job.templateVersion,
       templateColumnsJson: job.templateColumnsJson,
@@ -552,33 +1013,47 @@ export class DataImportApplicationService {
         : { dealProductResolutions }),
     };
 
-    switch (job.targetType) {
-      case "COMPANY":
-        await this.importTemplateRepository.confirmCompanyImport(confirmInput);
-        break;
-      case "CONTACT":
-        await this.importTemplateRepository.confirmContactImport(confirmInput);
-        break;
-      case "PRODUCT":
-        await this.importTemplateRepository.confirmProductImport(confirmInput);
-        break;
-      case "DEAL":
-        await this.importTemplateRepository.confirmDealImport(confirmInput);
-        break;
-    }
-
-    await this.importJobStore.delete({
+    await this.importJobRepository.updateJobStatusForUser({
       userId: currentUser.id,
       importJobId,
+      status: "CONFIRMING",
     });
 
-    return {
-      id: importJobId,
-      status: "COMPLETED",
-      successCount: rows.length,
-      failedCount: 0,
-      errors: [],
-    };
+    try {
+      const result = await this.confirmDomainImport(job.targetType, confirmInput);
+
+      await this.deleteUploadedFileAfterClose(currentUser, importJobId, job);
+
+      this.logEvent("importJob.confirmed", {
+        userId: currentUser.id,
+        importJobId,
+        importUserLogId: result.importUserLogId,
+        importedRowCount: result.importedRowCount,
+      });
+
+      return {
+        importJobId,
+        importUserLogId: result.importUserLogId,
+        status: "CONFIRMED",
+        importedRowCount: result.importedRowCount,
+      };
+    } catch (error) {
+      await this.importJobRepository.updateJobStatusForUser({
+        userId: currentUser.id,
+        importJobId,
+        status: "FAILED",
+        failedAt: new Date(),
+        lastErrorCode:
+          error instanceof DomainError ? error.code : "ImportConfirmFailed",
+        lastErrorMessage: "불러오기 확정에 실패했습니다.",
+      });
+
+      if (error instanceof DomainError) {
+        throw error;
+      }
+
+      throw new ImportConfirmFailedError();
+    }
   }
 
   // 기능 : 현재 사용자의 성공한 데이터 불러오기 내역 목록을 조회합니다.
@@ -666,36 +1141,74 @@ export class DataImportApplicationService {
   }
 
   // 기능 : 임시 job row를 API 응답 row로 변환합니다.
-  private toImportJobRowResponse(row: StoredImportJobRow): ImportJobRowResponse {
+  private toImportJobDetailResponse(
+    job: ImportJobDetailRecord,
+    options: { readonly includeErrors: boolean }
+  ): ImportJobDetailResponse {
+    const columns = this.normalizeColumns(job.templateColumnsJson);
+
     return {
-      id: row.id,
-      rowNumber: row.rowNumber,
-      rawData: row.rawData,
-      mappedData: row.mappedData,
-      status: row.status,
-      errorMessage: row.errorMessage,
-      targetId: null,
+      job: this.toImportJobSummaryResponse(job),
+      templateColumns: columns,
+      sourceColumns: this.normalizeSourceColumns(job.sourceColumnsJson),
+      mapping: this.normalizeExistingMapping(job.mappingJson, columns),
+      rows: job.rows.map((row) => this.toImportJobRowResponse(row)),
+      errors: options.includeErrors
+        ? job.errors.map((error) => this.toImportJobErrorResponse(error))
+        : [],
     };
   }
 
-  // 기능 : 임시 job을 API 응답으로 변환합니다.
-  private toImportJobResponse(job: StoredImportJob): ImportJobResponse {
+  private toImportJobSummaryResponse(
+    job: ImportJobRecord
+  ): ImportJobSummaryResponse {
     return {
       id: job.id,
       targetType: job.targetType,
       status: job.status,
-      rowCount: job.rowCount,
+      mappingSource: job.mappingSource,
+      originalFileName: this.normalizeUploadedFileName(job.originalFileName),
+      totalRowCount: job.totalRowCount,
       validRowCount: job.validRowCount,
       invalidRowCount: job.invalidRowCount,
-      mapping: job.mapping,
-      aiMapping: job.aiMapping,
-      previewRows: job.rows.map((row) => this.toImportJobRowResponse(row)),
-      errors: job.errors,
+      importedRowCount: job.importedRowCount,
+      failedRowCount: job.failedRowCount,
+      importUserLogId: job.importUserLogId,
+      expiresAt: job.expiresAt.toISOString(),
       createdAt: job.createdAt.toISOString(),
       updatedAt: job.updatedAt.toISOString(),
     };
   }
 
+  private toImportJobRowResponse(row: ImportJobRowRecord): ImportJobRowResponse {
+    return {
+      rowId: row.id,
+      rowNumber: row.rowNumber,
+      status: row.status,
+      data: this.normalizeMappedData(row.mappedDataJson),
+      targetLabel: row.targetLabel,
+      errors: this.normalizeCellValidationErrors(row.validationErrorsJson),
+    };
+  }
+
+  private toImportJobErrorResponse(
+    error: ImportJobErrorRecord
+  ): ImportJobErrorResponse {
+    return {
+      id: error.id,
+      rowId: error.importJobRowId,
+      rowNumber: error.rowNumber,
+      fieldKey: error.fieldKey,
+      errorType: error.errorType,
+      errorCode: error.errorCode,
+      severity: error.severity,
+      safeMessage: error.safeMessage,
+      retryable: error.retryable,
+      createdAt: error.createdAt.toISOString(),
+    };
+  }
+
+  // 기능 : 임시 job을 API 응답으로 변환합니다.
   private normalizeUploadedFileName(fileName: string): string {
     const normalized = fileName.trim();
 
@@ -724,11 +1237,19 @@ export class DataImportApplicationService {
   }
 
   // 기능 : 현재 사용자 소유 임시 job을 조회합니다.
-  private async getStoredImportJob(
+  private async getImportJobDetail(
     currentUser: CurrentUserContext,
     importJobId: string
-  ): Promise<StoredImportJob> {
-    const job = await this.importJobStore.findById({
+  ): Promise<ImportJobDetailRecord> {
+    const now = new Date();
+
+    await this.importJobRepository.expireJobsForUser({
+      userId: currentUser.id,
+      importJobId,
+      now,
+    });
+
+    const job = await this.importJobRepository.findJobByIdForUser({
       userId: currentUser.id,
       importJobId,
     });
@@ -740,7 +1261,418 @@ export class DataImportApplicationService {
     return job;
   }
 
+  private async getMutableImportJob(
+    currentUser: CurrentUserContext,
+    importJobId: string
+  ): Promise<ImportJobDetailRecord> {
+    const job = await this.getImportJobDetail(currentUser, importJobId);
+
+    this.ensureJobMutable(job);
+
+    return job;
+  }
+
   // 기능 : 양식 타입과 버전 기준으로 정렬 순서를 계산합니다.
+  private createImportJobExpiresAt(now: Date): Date {
+    return new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
+  }
+
+  private async storeUploadedImportFile(
+    currentUser: CurrentUserContext,
+    input: {
+      readonly importJobId: string;
+      readonly originalFileName: string;
+      readonly file: ImportUploadedFile;
+    }
+  ) {
+    try {
+      return await this.importUploadedFileStorage.store({
+        userId: currentUser.id,
+        importJobId: input.importJobId,
+        originalFileName: input.originalFileName,
+        buffer: input.file.buffer,
+      });
+    } catch {
+      throw new ImportFileStorageFailedError();
+    }
+  }
+
+  private async safeDeleteStoredImportFile(storageKey: string): Promise<void> {
+    try {
+      await this.importUploadedFileStorage.delete({ storageKey });
+    } catch {
+      this.logEvent("importJob.fileDeleteFailed", {
+        storageProvider: "LOCAL",
+      });
+    }
+  }
+
+  private async expireImportJobsForUser(userId: string, now: Date): Promise<void> {
+    const expiredCount = await this.importJobRepository.expireJobsForUser({
+      userId,
+      now,
+    });
+
+    if (expiredCount > 0) {
+      this.logEvent("importJob.expired", {
+        userId,
+        expiredCount,
+      });
+    }
+  }
+
+  private ensureJobMutable(job: ImportJobRecord): void {
+    if (job.status === "EXPIRED") {
+      throw new ImportJobExpiredError();
+    }
+
+    if (this.isTerminalImportJobStatus(job.status)) {
+      throw new ImportJobAlreadyClosedError();
+    }
+  }
+
+  private isTerminalImportJobStatus(status: PersistentImportJobStatus): boolean {
+    return ["CONFIRMED", "FAILED", "CANCELED", "EXPIRED"].includes(status);
+  }
+
+  private normalizeLimit(
+    value: number | undefined,
+    defaultValue: number,
+    maxValue: number
+  ): number {
+    if (!Number.isInteger(value)) {
+      return defaultValue;
+    }
+
+    return Math.min(Math.max(value as number, 1), maxValue);
+  }
+
+  private normalizeSourceColumns(value: unknown): string[] {
+    if (!Array.isArray(value)) {
+      return [];
+    }
+
+    return value.filter((item): item is string => typeof item === "string");
+  }
+
+  private normalizeRawData(value: unknown): Readonly<Record<string, string>> {
+    if (!isRecord(value)) {
+      return {};
+    }
+
+    return Object.fromEntries(
+      Object.entries(value).map(([key, item]) => [key, this.toTextValue(item)])
+    );
+  }
+
+  private normalizeMappedData(value: unknown): ImportMappedRowData {
+    if (!isRecord(value)) {
+      return {};
+    }
+
+    return Object.fromEntries(
+      Object.entries(value).map(([key, item]) => [
+        key,
+        this.toImportFieldValue(item),
+      ])
+    );
+  }
+
+  private normalizeCellValidationErrors(
+    value: unknown
+  ): readonly ImportCellValidationError[] {
+    if (!Array.isArray(value)) {
+      return [];
+    }
+
+    return value
+      .map((item) => {
+        if (!isRecord(item)) {
+          return null;
+        }
+
+        const fieldKey = getStringField(item, "fieldKey");
+        const message = getStringField(item, "message");
+        const code = getStringField(item, "code");
+
+        if (!fieldKey || !message || !code) {
+          return null;
+        }
+
+        return { fieldKey, message, code };
+      })
+      .filter((item): item is ImportCellValidationError => item !== null);
+  }
+
+  private normalizeExistingMapping(
+    value: unknown,
+    columns: readonly ImportTemplateColumn[]
+  ): ImportMapping {
+    const input = isRecord(value) ? value : {};
+    const mapping: Record<string, string | null> = {};
+
+    for (const column of columns) {
+      const item = input[column.key];
+      mapping[column.key] = typeof item === "string" ? item : null;
+    }
+
+    return mapping;
+  }
+
+  private normalizeUserMapping(
+    mapping: ImportMapping,
+    columns: readonly ImportTemplateColumn[],
+    sourceColumns: readonly string[]
+  ): ImportMapping {
+    const columnKeySet = new Set(columns.map((column) => column.key));
+    const sourceColumnSet = new Set(sourceColumns);
+
+    for (const key of Object.keys(mapping)) {
+      if (!columnKeySet.has(key)) {
+        throw new InvalidImportMappingError();
+      }
+    }
+
+    for (const value of Object.values(mapping)) {
+      if (value !== null && !sourceColumnSet.has(value)) {
+        throw new InvalidImportMappingError();
+      }
+    }
+
+    return this.normalizeMapping(mapping, columns, sourceColumns);
+  }
+
+  private hasRequiredMapping(
+    mapping: ImportMapping,
+    columns: readonly ImportTemplateColumn[]
+  ): boolean {
+    return columns.every((column) => !column.required || Boolean(mapping[column.key]));
+  }
+
+  private resolveReviewStatus(input: {
+    readonly validRowCount: number;
+    readonly invalidRowCount: number;
+  }): PersistentImportJobStatus {
+    return input.invalidRowCount > 0 || input.validRowCount === 0
+      ? "NEEDS_REVIEW"
+      : "READY_TO_CONFIRM";
+  }
+
+  private toRepositoryRowUpdate(row: ValidatedImportJobRow) {
+    return {
+      rowId: row.rowId,
+      mappedDataJson: row.mappedData,
+      normalizedDataJson: row.normalizedData,
+      status: row.status,
+      validationErrorsJson: row.validationErrors,
+      targetLabel: row.targetLabel,
+    };
+  }
+
+  private validateUserEditedRow(
+    row: ImportJobRowRecord,
+    columns: readonly ImportTemplateColumn[],
+    targetType: ImportTemplateType,
+    input: UpdateImportJobRowInput
+  ): ValidatedImportJobRow {
+    const rawData = this.normalizeRawData(row.rawDataJson);
+
+    if (input.excluded === true) {
+      return {
+        rowId: row.id,
+        rowNumber: row.rowNumber,
+        rawData,
+        mappedData: this.normalizeMappedData(row.mappedDataJson),
+        normalizedData: null,
+        status: "EXCLUDED",
+        validationErrors: [],
+        targetLabel: null,
+      };
+    }
+
+    return this.validateMappedDataForRow({
+      rowId: row.id,
+      rowNumber: row.rowNumber,
+      rawData,
+      mappedData: this.normalizeMappedData(input.data),
+      columns,
+      targetType,
+    });
+  }
+
+  private toValidatedRowFromRecord(row: ImportJobRowRecord): ValidatedImportJobRow {
+    return {
+      rowId: row.id,
+      rowNumber: row.rowNumber,
+      rawData: this.normalizeRawData(row.rawDataJson),
+      mappedData: this.normalizeMappedData(row.mappedDataJson),
+      normalizedData: this.normalizeOptionalSubmittedData(row.normalizedDataJson),
+      status: row.status,
+      validationErrors: this.normalizeCellValidationErrors(row.validationErrorsJson),
+      targetLabel: row.targetLabel,
+    };
+  }
+
+  private calculateRowSummary(rows: readonly ValidatedImportJobRow[]): {
+    readonly validRowCount: number;
+    readonly invalidRowCount: number;
+  } {
+    return {
+      validRowCount: rows.filter((row) => row.status === "VALID").length,
+      invalidRowCount: rows.filter((row) => row.status === "INVALID").length,
+    };
+  }
+
+  private validateMappedDataForRow(input: {
+    readonly rowId: string;
+    readonly rowNumber: number;
+    readonly rawData: Readonly<Record<string, string>>;
+    readonly mappedData: ImportMappedRowData;
+    readonly columns: readonly ImportTemplateColumn[];
+    readonly targetType: ImportTemplateType;
+  }): ValidatedImportJobRow {
+    const normalizedData: Record<string, ImportSubmittedDataValue> = {};
+    const validationErrors: ImportCellValidationError[] = [];
+
+    for (const column of input.columns) {
+      const result = this.normalizeFieldValue(input.mappedData[column.key], column);
+      normalizedData[column.key] = result.value;
+
+      if (result.errorMessage) {
+        validationErrors.push({
+          fieldKey: column.key,
+          message: result.errorMessage,
+          code: "InvalidImportField",
+        });
+      }
+    }
+
+    const status: PersistentImportJobRowStatus =
+      validationErrors.length > 0 ? "INVALID" : "VALID";
+    const normalized =
+      validationErrors.length > 0
+        ? null
+        : (normalizedData as ImportSubmittedData);
+
+    return {
+      rowId: input.rowId,
+      rowNumber: input.rowNumber,
+      rawData: input.rawData,
+      mappedData: input.mappedData,
+      normalizedData: normalized,
+      status,
+      validationErrors,
+      targetLabel: normalized
+        ? this.getTargetLabel(input.targetType, normalized)
+        : null,
+    };
+  }
+
+  private toNormalizedRowValidation(
+    rows: readonly ValidatedImportJobRow[]
+  ): NormalizedRowValidation {
+    const errors = rows.flatMap((row) =>
+      row.validationErrors.map((error) => ({
+        rowNumber: row.rowNumber,
+        message: error.message,
+      }))
+    );
+
+    return {
+      rows,
+      ...this.calculateRowSummary(rows),
+      errors,
+    };
+  }
+
+  private mapRawRowData(
+    row: ImportJobRowRecord,
+    mapping: ImportMapping
+  ): ImportMappedRowData {
+    const rawData = this.normalizeRawData(row.rawDataJson);
+
+    return Object.fromEntries(
+      Object.entries(mapping).map(([fieldKey, sourceColumn]) => [
+        fieldKey,
+        sourceColumn ? rawData[sourceColumn] ?? "" : "",
+      ])
+    );
+  }
+
+  private async confirmDomainImport(
+    targetType: ImportTemplateType,
+    input: ConfirmImportRepositoryInput
+  ): Promise<ConfirmImportResult> {
+    switch (targetType) {
+      case "COMPANY":
+        return this.importTemplateRepository.confirmCompanyImport(input);
+      case "CONTACT":
+        return this.importTemplateRepository.confirmContactImport(input);
+      case "PRODUCT":
+        return this.importTemplateRepository.confirmProductImport(input);
+      case "DEAL":
+        return this.importTemplateRepository.confirmDealImport(input);
+    }
+  }
+
+  private async deleteUploadedFileAfterClose(
+    currentUser: CurrentUserContext,
+    importJobId: string,
+    job: ImportJobDetailRecord
+  ): Promise<void> {
+    if (!job.uploadedFile || job.uploadedFile.deletedAt) {
+      return;
+    }
+
+    try {
+      await this.importUploadedFileStorage.delete({
+        storageKey: job.uploadedFile.storageKey,
+      });
+      await this.importJobRepository.updateUploadedFileStatusForUser({
+        userId: currentUser.id,
+        importJobId,
+        status: "DELETED",
+        deletedAt: new Date(),
+      });
+    } catch {
+      await this.importJobRepository.createError({
+        userId: currentUser.id,
+        importJobId,
+        errorType: "STORAGE",
+        errorCode: "STORAGE_DELETE_FAILED",
+        severity: "WARNING",
+        safeMessage: "원본 파일 삭제에 실패했습니다.",
+        retryable: true,
+      });
+      this.logEvent("importJob.fileDeleteFailed", {
+        userId: currentUser.id,
+        importJobId,
+      });
+    }
+  }
+
+  private toImportFieldValue(value: unknown): ImportFieldValue {
+    if (typeof value === "number" && Number.isFinite(value)) {
+      return value;
+    }
+
+    if (typeof value === "string") {
+      return value;
+    }
+
+    return value === null ? null : this.toTextValue(value);
+  }
+
+  private logEvent(event: string, fields: Record<string, unknown>): void {
+    this.logger.log(
+      JSON.stringify({
+        event,
+        ...fields,
+      }),
+      "DataImportApplicationService"
+    );
+  }
+
   private compareTemplates(
     left: ImportTemplateRecord,
     right: ImportTemplateRecord
@@ -1093,11 +2025,147 @@ export class DataImportApplicationService {
   }
 
   // 기능 : 매핑 기준으로 모든 job row를 생성 가능한 데이터로 변환하고 오류를 수집합니다.
+  private validateRowsWithMapping(
+    rows: readonly ImportJobRowRecord[],
+    columns: readonly ImportTemplateColumn[],
+    mapping: ImportMapping,
+    targetType: ImportTemplateType
+  ): NormalizedRowValidation {
+    const missingRequiredColumns = columns.filter(
+      (column) => column.required && !mapping[column.key]
+    );
+    const validatedRows = rows.map((row) => {
+      if (row.status === "EXCLUDED") {
+        return this.toValidatedRowFromRecord(row);
+      }
+
+      const rawData = this.normalizeRawData(row.rawDataJson);
+      const mappedData: Record<string, ImportFieldValue> = {};
+
+      for (const column of columns) {
+        const sourceColumn = mapping[column.key];
+        mappedData[column.key] = sourceColumn ? rawData[sourceColumn] ?? "" : "";
+      }
+
+      if (missingRequiredColumns.length > 0) {
+        const validationErrors = missingRequiredColumns.map((column) => ({
+          fieldKey: column.key,
+          message: `${column.label} 컬럼 매칭이 필요합니다.`,
+          code: "RequiredImportMappingMissing",
+        }));
+
+        return {
+          rowId: row.id,
+          rowNumber: row.rowNumber,
+          rawData,
+          mappedData,
+          normalizedData: null,
+          status: "INVALID" as const,
+          validationErrors,
+          targetLabel: null,
+        };
+      }
+
+      return this.validateMappedDataForRow({
+        rowId: row.id,
+        rowNumber: row.rowNumber,
+        rawData,
+        mappedData,
+        columns,
+        targetType,
+      });
+    });
+
+    return this.toNormalizedRowValidation(validatedRows);
+  }
+
+  private validateRowsWithCurrentData(
+    rows: readonly ImportJobRowRecord[],
+    columns: readonly ImportTemplateColumn[],
+    mapping: ImportMapping,
+    targetType: ImportTemplateType
+  ): NormalizedRowValidation {
+    const validatedRows = rows.map((row) => {
+      if (row.status === "EXCLUDED") {
+        return this.toValidatedRowFromRecord(row);
+      }
+
+      const currentData = this.normalizeMappedData(row.mappedDataJson);
+      const mappedData =
+        Object.keys(currentData).length > 0
+          ? currentData
+          : this.mapRawRowData(row, mapping);
+
+      return this.validateMappedDataForRow({
+        rowId: row.id,
+        rowNumber: row.rowNumber,
+        rawData: this.normalizeRawData(row.rawDataJson),
+        mappedData,
+        columns,
+        targetType,
+      });
+    });
+
+    return this.toNormalizedRowValidation(validatedRows);
+  }
+
+  private normalizePersistentConfirmRows(
+    job: ImportJobDetailRecord,
+    columns: readonly ImportTemplateColumn[],
+    rows: readonly ConfirmImportJobRowInput[] | undefined
+  ): readonly ConfirmReadyRow[] {
+    const validRows = job.rows.filter((row) => row.status === "VALID");
+
+    if (validRows.length === 0 || job.rows.some((row) => row.status === "INVALID")) {
+      throw new ImportJobNotReadyError();
+    }
+
+    const rowsByNumber = new Map(validRows.map((row) => [row.rowNumber, row]));
+    const candidateRows =
+      rows && rows.length > 0
+        ? rows.map((row) => {
+            const existing = rowsByNumber.get(row.rowNumber);
+
+            if (!existing) {
+              throw new ImportJobRowNotFoundError();
+            }
+
+            return {
+              rowNumber: row.rowNumber,
+              data: row.data,
+            };
+          })
+        : validRows.map((row) => ({
+            rowNumber: row.rowNumber,
+            data:
+              row.normalizedDataJson ??
+              row.mappedDataJson ??
+              ({} as Readonly<Record<string, unknown>>),
+          }));
+
+    return candidateRows.map((row) => {
+      if (!Number.isInteger(row.rowNumber) || row.rowNumber < 2) {
+        throw new ValidationDomainError("rowNumber가 올바르지 않습니다.");
+      }
+
+      const submittedData = this.normalizeSubmittedRowData(
+        row.data as Readonly<Record<string, unknown>>,
+        columns
+      );
+
+      return {
+        rowNumber: row.rowNumber,
+        submittedData,
+        targetLabel: this.getTargetLabel(job.targetType, submittedData),
+      };
+    });
+  }
+
   private validateJobRows(
-    rows: readonly StoredImportJobRow[],
+    rows: readonly LegacyStoredImportJobRow[],
     columns: readonly ImportTemplateColumn[],
     mapping: ImportMapping
-  ): NormalizedRowValidation {
+  ): LegacyNormalizedRowValidation {
     const mappingErrors = columns
       .filter((column) => column.required && !mapping[column.key])
       .map((column) => ({
@@ -1139,7 +2207,7 @@ export class DataImportApplicationService {
         errors.push({ rowNumber: row.rowNumber, message: errorMessage });
       }
 
-      const status: StoredImportJobRow["status"] =
+      const status: LegacyImportJobRowStatus =
         rowErrors.length > 0 ? "VALIDATION_FAILED" : "VALID";
 
       return {
@@ -1164,7 +2232,7 @@ export class DataImportApplicationService {
 
   // 기능 : 확정 요청 row를 도메인 생성과 로그 저장에 사용할 row로 정규화합니다.
   private normalizeConfirmRows(
-    job: StoredImportJob,
+    job: LegacyStoredImportJob,
     columns: readonly ImportTemplateColumn[],
     rows: readonly ConfirmImportJobRowInput[] | undefined
   ): readonly ConfirmReadyRow[] {
