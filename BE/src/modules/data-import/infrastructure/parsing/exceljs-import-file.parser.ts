@@ -18,6 +18,16 @@ const ALLOWED_EXTENSIONS = new Set(["csv", "xlsx"]);
 // 역할 : ExceljsWorkbookBuffer ExcelJS workbook load가 받는 buffer 입력 타입을 정의합니다.
 type ExceljsWorkbookBuffer = Parameters<ExcelJS.Workbook["xlsx"]["load"]>[0];
 
+interface ParsedMatrixRow {
+  readonly rowNumber: number;
+  readonly cells: readonly string[];
+}
+
+interface SourceColumnPosition {
+  readonly name: string;
+  readonly columnIndex: number;
+}
+
 // 역할 : ExceljsImportFileParser CSV/XLSX 파일을 미리보기 데이터로 파싱합니다.
 export class ExceljsImportFileParser implements ImportFileParser {
   // 기능 : 업로드 파일 확장자에 맞춰 첫 번째 시트를 원본 row로 변환합니다.
@@ -70,10 +80,14 @@ export class ExceljsImportFileParser implements ImportFileParser {
       throw new ImportFileParseFailedError();
     }
 
-    const matrix: string[][] = [];
-    worksheet.eachRow({ includeEmpty: false }, (row) => {
-      const values = Array.isArray(row.values) ? row.values.slice(1) : [];
-      matrix.push(values.map((value) => this.cellToString(value)));
+    const matrix: ParsedMatrixRow[] = [];
+    worksheet.eachRow({ includeEmpty: false }, (row, rowNumber) => {
+      matrix.push({
+        rowNumber,
+        cells: Array.from({ length: row.cellCount }, (_, index) =>
+          this.cellToString(row.getCell(index + 1).value)
+        ),
+      });
     });
 
     return this.toParsedFile(matrix);
@@ -84,16 +98,25 @@ export class ExceljsImportFileParser implements ImportFileParser {
     const rows = content
       .replace(/^\uFEFF/, "")
       .split(/\r?\n/)
-      .filter((line) => line.trim().length > 0)
-      .map((line) => this.parseCsvLine(line));
+      .map((line, index) => ({
+        rowNumber: index + 1,
+        cells: this.parseCsvLine(line),
+      }))
+      .filter((line) => line.cells.some((cell) => cell.trim().length > 0));
 
     return this.toParsedFile(rows);
   }
 
   // 기능 : header matrix를 source column과 raw row 구조로 변환합니다.
-  private toParsedFile(matrix: readonly string[][]): ParsedImportFile {
-    const headerRow = matrix[0]?.map((cell) => cell.trim()) ?? [];
-    const sourceColumns = headerRow.filter((column) => column.length > 0);
+  private toParsedFile(matrix: readonly ParsedMatrixRow[]): ParsedImportFile {
+    const headerRow = matrix[0]?.cells ?? [];
+    const sourceColumnPositions = headerRow
+      .map((cell, columnIndex) => ({
+        name: cell.trim(),
+        columnIndex,
+      }))
+      .filter((column) => column.name.length > 0);
+    const sourceColumns = sourceColumnPositions.map((column) => column.name);
 
     if (sourceColumns.length === 0) {
       throw new ImportFileParseFailedError();
@@ -109,20 +132,15 @@ export class ExceljsImportFileParser implements ImportFileParser {
 
     const rows: ParsedImportRow[] = [];
 
-    matrix.slice(1).forEach((line, index) => {
-      const rawData = Object.fromEntries(
-        sourceColumns.map((column, columnIndex) => [
-          column,
-          line[columnIndex]?.trim() ?? "",
-        ])
-      );
+    matrix.slice(1).forEach((line) => {
+      const rawData = this.toRawData(sourceColumnPositions, line.cells);
 
       if (Object.values(rawData).every((value) => value.length === 0)) {
         return;
       }
 
       rows.push({
-        rowNumber: index + 2,
+        rowNumber: line.rowNumber,
         rawData,
       });
     });
@@ -132,6 +150,19 @@ export class ExceljsImportFileParser implements ImportFileParser {
     }
 
     return { sourceColumns, rows };
+  }
+
+  // 기능 : 빈 header column을 제외하되 원본 column 위치 기준으로 row 값을 읽습니다.
+  private toRawData(
+    sourceColumns: readonly SourceColumnPosition[],
+    cells: readonly string[]
+  ): Readonly<Record<string, string>> {
+    return Object.fromEntries(
+      sourceColumns.map((column) => [
+        column.name,
+        cells[column.columnIndex]?.trim() ?? "",
+      ])
+    );
   }
 
   // 기능 : quote escape를 고려해 CSV 한 줄을 cell 문자열 배열로 파싱합니다.
