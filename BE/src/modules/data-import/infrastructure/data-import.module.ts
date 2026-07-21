@@ -2,6 +2,12 @@ import { Module } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { AuthModule } from "@/modules/auth/infrastructure/auth.module";
 import { IMPORT_FILE_PARSER } from "@/modules/data-import/application/ports/import-file-parser.port";
+import {
+  IMPORT_JOB_ERROR_REPOSITORY,
+  IMPORT_JOB_REPOSITORY,
+  IMPORT_JOB_ROW_REPOSITORY,
+  IMPORT_UPLOADED_FILE_REPOSITORY,
+} from "@/modules/data-import/application/ports/import-job.repository";
 import { IMPORT_JOB_STORE } from "@/modules/data-import/application/ports/import-job.store";
 import { IMPORT_MAPPING_PROVIDER } from "@/modules/data-import/application/ports/import-mapping.provider";
 import { IMPORT_TEMPLATE_REPOSITORY } from "@/modules/data-import/application/ports/import-template.repository";
@@ -16,6 +22,7 @@ import { PrismaInfrastructureModule } from "@/shared/infrastructure/prisma/prism
 import { PrismaService } from "@/shared/infrastructure/prisma/prisma.service";
 import { XlsxInfrastructureModule } from "@/shared/infrastructure/xlsx/xlsx-infrastructure.module";
 import { ExceljsImportFileParser } from "./parsing/exceljs-import-file.parser";
+import { PrismaImportJobRepository } from "./persistence/prisma-import-job.repository";
 import { PrismaImportTemplateRepository } from "./persistence/prisma-import-template.repository";
 import { InMemoryImportJobStore } from "./persistence/in-memory-import-job.store";
 import { OpenAiImportMappingProvider } from "./providers/openai-import-mapping.provider";
@@ -47,6 +54,24 @@ import { OpenAiImportMappingProvider } from "./providers/openai-import-mapping.p
       useFactory: (prismaService: PrismaService) =>
         new PrismaImportTemplateRepository(prismaService),
       inject: [PrismaService],
+    },
+    {
+      provide: IMPORT_JOB_REPOSITORY,
+      useFactory: (prismaService: PrismaService) =>
+        new PrismaImportJobRepository(prismaService, prismaService),
+      inject: [PrismaService],
+    },
+    {
+      provide: IMPORT_JOB_ROW_REPOSITORY,
+      useExisting: IMPORT_JOB_REPOSITORY,
+    },
+    {
+      provide: IMPORT_JOB_ERROR_REPOSITORY,
+      useExisting: IMPORT_JOB_REPOSITORY,
+    },
+    {
+      provide: IMPORT_UPLOADED_FILE_REPOSITORY,
+      useExisting: IMPORT_JOB_REPOSITORY,
     },
   ],
 })

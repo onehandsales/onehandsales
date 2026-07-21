@@ -67,6 +67,56 @@ enum ImportTemplateType {
   DEAL
 }
 
+enum ImportJobStatus {
+  UPLOADED
+  MAPPED
+  NEEDS_REVIEW
+  READY_TO_CONFIRM
+  CONFIRMING
+  CONFIRMED
+  FAILED
+  CANCELED
+  EXPIRED
+}
+
+enum ImportJobRowStatus {
+  PENDING
+  VALID
+  INVALID
+  EXCLUDED
+  IMPORTED
+  FAILED
+}
+
+enum ImportJobMappingSource {
+  NONE
+  AI
+  RULE_BASED
+  USER
+}
+
+enum ImportUploadedFileStatus {
+  STORED
+  PARSED
+  DELETED
+  EXPIRED
+}
+
+enum ImportJobErrorType {
+  PARSE
+  AI_MAPPING
+  VALIDATION
+  CONFIRM
+  STORAGE
+  SYSTEM
+}
+
+enum ImportJobErrorSeverity {
+  INFO
+  WARNING
+  ERROR
+}
+
 model User {
   id          String     @id @default(uuid()) @db.Uuid
   email       String?
@@ -142,6 +192,10 @@ model User {
   meetingNoteDeals        MeetingNoteDeal[]
   businessCardScanLogs    BusinessCardScanLog[]
   importUserLogs          ImportUserLog[]
+  importJobs              ImportJob[]
+  importJobRows           ImportJobRow[]
+  importJobErrors         ImportJobError[]
+  importUploadedFiles     ImportUploadedFile[]
 
   @@index([role])
   @@index([status])
@@ -827,6 +881,8 @@ model ImportTemplate {
   createdAt       DateTime           @default(now()) @db.Timestamptz(3)
   updatedAt       DateTime           @updatedAt @db.Timestamptz(3)
 
+  importJobs ImportJob[]
+
   @@unique([templateType, templateVersion])
   @@index([templateType, isActive])
 }
@@ -845,8 +901,9 @@ model ImportUserLog {
   importedRowCount    Int
   createdAt           DateTime           @default(now()) @db.Timestamptz(3)
 
-  user User               @relation(fields: [userId], references: [id])
-  rows ImportUserLogRow[]
+  user      User               @relation(fields: [userId], references: [id])
+  rows      ImportUserLogRow[]
+  importJob ImportJob?
 
   @@index([userId, createdAt])
   @@index([userId, targetType, createdAt])
@@ -863,6 +920,121 @@ model ImportUserLogRow {
   importUserLog ImportUserLog @relation(fields: [importUserLogId], references: [id])
 
   @@index([importUserLogId, rowNumber])
+}
+
+model ImportJob {
+  id                  String                 @id @default(uuid()) @db.Uuid
+  userId              String                 @db.Uuid
+  templateId          String                 @db.Uuid
+  targetType          ImportTemplateType
+  templateVersion     String
+  templateColumnsJson Json
+  sourceColumnsJson   Json
+  status              ImportJobStatus        @default(UPLOADED)
+  mappingJson         Json                   @default("{}")
+  mappingSource       ImportJobMappingSource @default(NONE)
+  contextLabel        String?
+  contextJson         Json?
+  originalFileName    String
+  fileSizeBytes       Int
+  totalRowCount       Int                    @default(0)
+  validRowCount       Int                    @default(0)
+  invalidRowCount     Int                    @default(0)
+  importedRowCount    Int                    @default(0)
+  failedRowCount      Int                    @default(0)
+  importUserLogId     String?                @unique @db.Uuid
+  expiresAt           DateTime               @db.Timestamptz(3)
+  confirmedAt         DateTime?              @db.Timestamptz(3)
+  canceledAt          DateTime?              @db.Timestamptz(3)
+  failedAt            DateTime?              @db.Timestamptz(3)
+  lastErrorCode       String?
+  lastErrorMessage    String?
+  createdAt           DateTime               @default(now()) @db.Timestamptz(3)
+  updatedAt           DateTime               @default(now()) @updatedAt @db.Timestamptz(3)
+
+  user          User                @relation(fields: [userId], references: [id])
+  template      ImportTemplate      @relation(fields: [templateId], references: [id])
+  importUserLog ImportUserLog?      @relation(fields: [importUserLogId], references: [id], onDelete: SetNull)
+  rows          ImportJobRow[]
+  errors        ImportJobError[]
+  uploadedFile  ImportUploadedFile?
+
+  @@index([userId, status, createdAt])
+  @@index([userId, expiresAt])
+  @@index([userId, targetType, createdAt])
+  @@index([templateId])
+}
+
+model ImportJobRow {
+  id                   String             @id @default(uuid()) @db.Uuid
+  importJobId          String             @db.Uuid
+  userId               String             @db.Uuid
+  rowNumber            Int
+  rawDataJson          Json
+  mappedDataJson       Json               @default("{}")
+  normalizedDataJson   Json?
+  status               ImportJobRowStatus @default(PENDING)
+  validationErrorsJson Json               @default("[]")
+  targetLabel          String?
+  createdAt            DateTime           @default(now()) @db.Timestamptz(3)
+  updatedAt            DateTime           @default(now()) @updatedAt @db.Timestamptz(3)
+
+  importJob ImportJob        @relation(fields: [importJobId], references: [id], onDelete: Cascade)
+  user      User             @relation(fields: [userId], references: [id])
+  errors    ImportJobError[]
+
+  @@unique([importJobId, rowNumber])
+  @@index([importJobId, status])
+  @@index([userId, status])
+}
+
+model ImportJobError {
+  id             String                 @id @default(uuid()) @db.Uuid
+  importJobId    String                 @db.Uuid
+  importJobRowId String?                @db.Uuid
+  userId         String                 @db.Uuid
+  errorType      ImportJobErrorType
+  errorCode      String
+  severity       ImportJobErrorSeverity @default(ERROR)
+  rowNumber      Int?
+  fieldKey       String?
+  safeMessage    String
+  detailJson     Json?
+  retryable      Boolean                @default(false)
+  createdAt      DateTime               @default(now()) @db.Timestamptz(3)
+
+  importJob    ImportJob     @relation(fields: [importJobId], references: [id], onDelete: Cascade)
+  importJobRow ImportJobRow? @relation(fields: [importJobRowId], references: [id], onDelete: SetNull)
+  user         User          @relation(fields: [userId], references: [id])
+
+  @@index([importJobId, createdAt])
+  @@index([userId, createdAt])
+  @@index([importJobRowId])
+}
+
+model ImportUploadedFile {
+  id               String                   @id @default(uuid()) @db.Uuid
+  importJobId      String                   @unique @db.Uuid
+  userId           String                   @db.Uuid
+  originalFileName String
+  mimeType         String
+  fileSizeBytes    Int
+  checksum         String
+  storageProvider  String
+  storageBucket    String?
+  storageKey       String
+  status           ImportUploadedFileStatus @default(STORED)
+  uploadedAt       DateTime                 @default(now()) @db.Timestamptz(3)
+  deletedAt        DateTime?                @db.Timestamptz(3)
+  expiresAt        DateTime                 @db.Timestamptz(3)
+  createdAt        DateTime                 @default(now()) @db.Timestamptz(3)
+  updatedAt        DateTime                 @default(now()) @updatedAt @db.Timestamptz(3)
+
+  importJob ImportJob @relation(fields: [importJobId], references: [id], onDelete: Cascade)
+  user      User      @relation(fields: [userId], references: [id])
+
+  @@index([userId, status, expiresAt])
+  @@index([checksum])
 }
 
 model CompanyField {
