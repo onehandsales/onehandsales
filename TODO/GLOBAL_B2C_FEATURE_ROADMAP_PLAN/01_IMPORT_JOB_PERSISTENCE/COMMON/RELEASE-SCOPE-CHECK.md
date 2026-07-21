@@ -1,4 +1,4 @@
-# Release Scope Check
+﻿# Release Scope Check
 
 상태: Confirmed
 
@@ -37,7 +37,7 @@
 |---|---:|---|
 | Product UX의 Import 흐름 | Yes | `/app/import`의 upload, mapping, row edit, confirm, resume UX를 다룬다. |
 | Data reliability의 import job 유실 방지 | Yes | DB persistence, TTL, cleanup, refresh/server restart 복구를 다룬다. |
-| Trust/policy의 import 데이터 보관 기간 | Partial | 48시간 TTL, confirm/cancel/expire file delete 정책은 포함한다. 전체 개인정보/약관 정책은 별도 계획이다. |
+| Trust/policy의 import 데이터 보관 기간 | Partial | 7일 TTL, confirm/cancel/expire file delete 정책은 포함한다. 전체 개인정보/약관 정책은 별도 계획이다. |
 | Admin/support | No | ImportJobError는 redacted 이력만 남긴다. 운영 Admin 화면/API는 별도 계획이다. |
 | Global UX/localization | No | 01은 한국어 User Web 문구 기준으로 작성한다. `/app` 다국어는 별도 첫 판매 계획이다. |
 | Pricing/plan, Billing | No | 결제/구독/entitlement는 01 범위가 아니다. |
@@ -49,7 +49,7 @@
 
 - 새로고침 후 작업 복구
 - 탭 이동 후 작업 복구
-- 서버 재시작 후 48시간 내 작업 복구
+- 서버 재시작 후 7일 내 작업 복구
 - 배포 중 in-memory job 유실 제거
 - 다른 사용자 job 접근 차단
 - confirm 전 실제 도메인 데이터 미생성

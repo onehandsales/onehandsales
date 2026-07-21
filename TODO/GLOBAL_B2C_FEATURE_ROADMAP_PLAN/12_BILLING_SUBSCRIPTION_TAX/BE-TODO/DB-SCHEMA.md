@@ -17,9 +17,9 @@
 - `BillingCancellationSurvey`
 - `BillingAdminSyncLog`
 
-## 결정 필요
+## 결정 baseline 반영 후 세부 확인
 
-- Stripe 직접 결제 vs Merchant of Record
+- Merchant of Record 우선, Stripe 직접 결제 fallback 여부
 - price id와 내부 plan mapping
 - 구독 상태 enum
 - entitlement snapshot 저장 여부

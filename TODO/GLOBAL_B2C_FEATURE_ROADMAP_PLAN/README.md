@@ -17,6 +17,8 @@
 - Admin 운영과 구독/결제/세금은 마지막 묶음으로 둔다.
 - 01 작업을 시작할 때는 01 폴더 안에 추가 문서를 작성하고 검수/검토한 뒤 진행한다.
 - 01이 끝난 뒤 02로 넘어가는 순차 흐름을 기본으로 한다.
+- 12개 슬롯의 추천 의사결정은 `COMMON/DECISION-LOG.md`를 기본값으로 삼는다.
+- 각 슬롯은 Notion식 작업공간 UX, Attio식 CRM record 관계, 사용 편의성 기준을 유지한다.
 
 ## 3. 12개 기능 슬롯
 
@@ -62,12 +64,13 @@
 ## 5. 착수 규칙
 
 1. 번호 폴더는 현재 `draft slot` 상태다.
-2. 구현 전에 `COMMON/COVERAGE-MATRIX.md`에서 해당 번호에 배정된 하위 기능을 모두 확인한다.
-3. 해당 번호 폴더의 `COMMON/SCOPE.md`를 보강한다.
-4. API/DB가 있으면 `BE-TODO/API-TODO.md`, `BE-TODO/DB-SCHEMA.md`를 `draft`에서 `confirmed` 수준으로 올린다.
-5. FE 작업이 있으면 `FE-TODO/USER-WEB-TODO.md`에 화면, route, 상태, client, 검증 기준을 적는다.
-6. 검수/검토가 끝나면 별도 `/goal` 문서로 쪼개 실행한다.
-7. UX/UI 전체 polish는 01~10의 주요 기능 흐름이 나온 뒤 별도 계획으로 잡는다.
+2. 구현 전에 `COMMON/DECISION-LOG.md`에서 해당 슬롯의 추천 결정을 확인한다.
+3. `COMMON/COVERAGE-MATRIX.md`에서 해당 번호에 배정된 하위 기능을 모두 확인한다.
+4. 해당 번호 폴더의 `COMMON/SCOPE.md`를 보강한다.
+5. API/DB가 있으면 `BE-TODO/API-TODO.md`, `BE-TODO/DB-SCHEMA.md`를 `draft`에서 `confirmed` 수준으로 올린다.
+6. FE 작업이 있으면 `FE-TODO/USER-WEB-TODO.md`에 화면, route, 상태, client, 검증 기준을 적는다.
+7. 검수/검토가 끝나면 별도 `/goal` 문서로 쪼개 실행한다.
+8. UX/UI 전체 polish는 01~10의 주요 기능 흐름이 나온 뒤 별도 계획으로 잡는다.
 
 ## 6. 먼저 읽을 문서
 
@@ -75,8 +78,10 @@
 - `TODO/USER_WEB_PRODUCTIZATION_GAP_PLAN/COMMON/CURRENT-VS-FINAL-GAP-MATRIX.md`
 - `TODO/USER_WEB_PRODUCTIZATION_GAP_PLAN/COMMON/CURRENT-IMPLEMENTED-FUNCTIONS.md`
 - `TODO/NEXT_BACKEND_API_BACKLOG_PLAN/COMMON/CANDIDATE-MATRIX.md`
+- `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/COMMON/DECISION-LOG.md`
 - `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/COMMON/COVERAGE-MATRIX.md`
 - `TODO/DONE/MVP-STARTER_PLAN/README.md`
 - `AGENT/PM_AGENT/PLANNING/GLOBAL_B2C_SERIES_A_ROADMAP.md`
+- `AGENT/UXUI_AGENT/DECISIONS/020_uxui_notion_attio_reference.md`
 - `AGENT/SOFTWARE_AGENT/COMMON/NEXT_FEATURE_PRIORITIES.md`
 - `AGENT/PM_AGENT/CONVENTION/TODO_SOFTWARE_AGENT_REFERENCE.md`

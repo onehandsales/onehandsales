@@ -1,4 +1,4 @@
-# Scope
+﻿# Scope
 
 상태: Confirmed
 
@@ -17,7 +17,7 @@
 | ImportJobError | import 작업 단위 오류 이력을 redacted 형태로 저장한다. 사용자 cell 오류는 row에도 저장한다. |
 | ImportUploadedFile | 업로드 원본 파일 metadata와 storage key를 저장한다. binary는 DB에 저장하지 않는다. |
 | 이어받기 | 사용자가 `/app/import/review/:importJobId` 또는 `/app/import`의 진행 중 작업 카드에서 작업을 재개한다. |
-| TTL | 확정 전 job TTL은 48시간이다. |
+| TTL | 확정 전 job TTL은 7일이다. |
 | cleanup | confirm, cancel, expire 이후 원본 파일은 삭제 대상이 되고 `deletedAt`을 남긴다. terminal job/row/error metadata cleanup은 7일 후 배치 후보로 둔다. |
 | confirm | confirm 성공 시 실제 도메인 row와 기존 `ImportUserLog`, `ImportUserLogRow`를 같은 transaction에서 생성한다. |
 | cancel | 사용자가 진행 중 가져오기를 취소할 수 있다. |
@@ -39,7 +39,7 @@
 
 ## 4. 확정 정책
 
-- 확정 전 job TTL은 `createdAt + 48시간`이다.
+- 확정 전 job TTL은 `createdAt + 7일`이다.
 - `ImportJob.expiresAt`은 UTC instant로 저장하고 API 응답은 ISO 8601 UTC string이다.
 - active status는 `UPLOADED`, `MAPPED`, `NEEDS_REVIEW`, `READY_TO_CONFIRM`, `CONFIRMING`이다.
 - terminal status는 `CONFIRMED`, `FAILED`, `CANCELED`, `EXPIRED`이다.
@@ -53,7 +53,7 @@
 
 - `InMemoryImportJobStore` 의존이 제거되고 DB 기반 repository가 사용된다.
 - 업로드 후 새로고침해도 mapping/preview/validation 상태가 복구된다.
-- 서버 재시작 후에도 48시간 내 job을 조회할 수 있다.
+- 서버 재시작 후에도 7일 내 job을 조회할 수 있다.
 - 다른 사용자의 `importJobId`로 접근하면 존재 여부를 노출하지 않는다.
 - row validation 오류는 cell 단위로 표시할 수 있다.
 - confirm 성공 시 도메인 row와 `ImportUserLog`/`ImportUserLogRow`가 같은 transaction에서 생성된다.

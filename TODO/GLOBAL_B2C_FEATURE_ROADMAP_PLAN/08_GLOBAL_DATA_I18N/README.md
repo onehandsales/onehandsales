@@ -3,6 +3,7 @@
 상태: Draft Slot
 순서: 08
 성격: 기능 구현 전 검토 슬롯
+결정 상태: `COMMON/DECISION-LOG.md` 2026-07-21 추천 결정 반영
 
 ## 1. 목적
 
@@ -18,11 +19,19 @@ Global B2C 첫 판매를 위해 `/app` 내부 다국어, 날짜/시간, 통화, 
 
 ## 3. 착수 전 해야 할 일
 
-1. 첫 판매 국가/locale 우선순위를 확정한다.
+추천 결정:
+
+- 첫 판매 locale은 `ko`와 `en`을 우선으로 제한하고, 이후 `ja`, `zh-tw`를 확장 후보로 둔다.
+- phone은 E.164 기반으로 정리한다.
+- Deal/Product 금액에는 `currencyCode`를 추가한다.
+- `/app` i18n은 public site locale과 분리한다.
+- Apple login은 iOS 전략과 연결하고, LINE login은 일본/대만 확장 시점에 검토한다.
+
+1. 첫 판매 locale은 `ko`, `en`으로 확정하고 `ja`, `zh-tw`는 후속 확장 후보로 둔다.
 2. `/app` i18n 적용 범위를 정한다.
-3. phone/currency/date/address model 변경 여부를 정한다.
+3. phone은 E.164, Deal/Product 금액은 `currencyCode` 추가를 기본값으로 둔다.
 4. 기존 데이터 migration과 표시 fallback을 설계한다.
-5. Apple/LINE login을 실제 판매 국가와 모바일 전략에 맞춰 언제 추가할지 결정한다.
+5. Apple login은 iOS 전략과 연결하고, LINE login은 일본/대만 확장 시점에 검토한다.
 
 ## 4. 참고
 

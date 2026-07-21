@@ -3,6 +3,7 @@
 상태: Draft Slot
 순서: 07
 성격: 기능 구현 전 검토 슬롯
+결정 상태: `COMMON/DECISION-LOG.md` 2026-07-21 추천 결정 반영
 
 ## 1. 목적
 
@@ -19,11 +20,19 @@
 
 ## 3. 착수 전 해야 할 일
 
-1. transcript 저장 여부와 보관 기간을 결정한다.
+추천 결정:
+
+- 회의록 전용 table보다 공통 `AiProviderCallLog`를 우선 검토한다.
+- transcript는 사용자 확인 전 임시 데이터로 다루고, 장기 저장은 명시 정책이 있을 때만 허용한다.
+- provider raw response는 저장 최소화한다.
+- next action과 follow-up은 후보 생성 후 사용자 확인 방식으로 저장한다.
+- Admin 민감 원문 조회는 11 Admin Operation과 분리한다.
+
+1. transcript는 사용자 확인 전 임시 데이터로 다루고, 장기 저장은 명시 정책이 있을 때만 허용한다.
 2. provider input/output 저장 금지/허용 범위를 정한다.
-3. next action 추출을 이 슬롯에 포함할지 결정한다.
+3. next action 추출은 이 슬롯에 포함하되 자동 생성하지 않고 후보로 만든다.
 4. Admin 원문 조회와는 분리한다.
-5. follow-up 초안과 데이터 정리 제안을 05 AI 리포트와 어떻게 나눌지 결정한다.
+5. follow-up 초안과 데이터 정리 제안은 회의록 직후 후보는 07, 주간/cross-record 리포트는 05로 나눈다.
 
 ## 4. 참고
 

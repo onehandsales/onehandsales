@@ -27,12 +27,12 @@
 | 내부 직원 권한 체계 고도화 | 최소 Admin 이후 |
 | 고객 성공 CRM | 별도 운영 도구 후보 |
 
-## 열린 질문
+## 구현 전 세부 확인 질문
 
-- 첫 Admin 사용자는 `INITIAL_ADMIN_EMAILS` 기반으로 충분한가?
-- 운영자가 어떤 민감정보 원문을 볼 수 있어야 하는가?
-- Admin 조회가 가능한 도메인 범위는 어디까지인가?
-- audit log는 모든 조회를 남길지 원문 조회만 남길지?
+- 첫 Admin 사용자는 `INITIAL_ADMIN_EMAILS` 기반 bootstrap으로 시작한다.
+- 운영자가 민감정보 원문을 볼 때는 reason과 append-only audit log가 필요하다.
+- Admin 조회 가능 도메인은 사용자와 핵심 domain data의 read-only 범위로 시작한다.
+- audit log는 raw 조회와 주요 운영 action을 필수 대상으로 둔다.
 - Trash 보관 기간과 purge 시점을 7일/30일 중 무엇으로 볼지?
 - 사용자가 자기 계정과 데이터를 삭제할 수 있어야 하는 범위는?
 - 사용자 데이터 export는 03 ExportJob을 재사용할지 별도 privacy export로 둘지?

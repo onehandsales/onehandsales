@@ -3,6 +3,7 @@
 상태: Draft Slot
 순서: 02
 성격: 기능 구현 전 검토 슬롯
+결정 상태: `COMMON/DECISION-LOG.md` 2026-07-21 추천 결정 반영
 
 ## 1. 목적
 
@@ -16,10 +17,18 @@
 
 ## 3. 착수 전 해야 할 일
 
-1. 첫 판매 제품에 필요한 최소 알림 범위를 정한다.
-2. email/browser push를 모두 할지, in-app notification부터 할지 결정한다.
-3. 설정, unread count, 읽음 처리, delivery worker 범위를 정한다.
-4. 개인정보와 provider failure redaction 기준을 정한다.
+추천 결정:
+
+- 1차는 in-app notification과 browser push를 함께 설계한다.
+- email은 전체 실시간 알림이 아니라 중요 알림과 digest 중심으로 둔다.
+- 기본 reminder는 일정 30분 전, 딜 마감 1일 전, 다음 행동 당일 오전으로 둔다.
+- 설정은 복잡한 automation builder가 아니라 toggle 중심으로 단순하게 둔다.
+
+1. 첫 판매 제품에 필요한 최소 알림 범위는 일정, 딜 마감, 다음 행동 reminder 중심으로 둔다.
+2. in-app notification과 browser push를 1차로 두고, email은 중요 알림/digest로 제한한다.
+3. 기본 lead time은 일정 30분 전, 딜 마감 1일 전, 다음 행동 당일 오전으로 둔다.
+4. 설정, unread count, 읽음 처리, delivery worker 범위를 정한다.
+5. 개인정보와 provider failure redaction 기준을 정한다.
 
 ## 4. 참고
 

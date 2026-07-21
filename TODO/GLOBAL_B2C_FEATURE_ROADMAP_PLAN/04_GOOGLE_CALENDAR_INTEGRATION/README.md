@@ -3,6 +3,7 @@
 상태: Draft Slot
 순서: 04
 성격: 기능 구현 전 검토 슬롯
+결정 상태: `COMMON/DECISION-LOG.md` 2026-07-21 추천 결정 반영
 
 ## 1. 목적
 
@@ -16,9 +17,17 @@
 
 ## 3. 착수 전 해야 할 일
 
+추천 결정:
+
+- Google login OAuth와 Calendar 연결 scope는 분리한다.
+- 1차는 read-only import와 수동 sync다.
+- 양방향 실시간 sync는 제외한다.
+- 가져온 일정은 source badge와 `externalEventId`를 가진다.
+- 연결 해제 시 가져온 일정은 유지하되 source 상태를 남긴다.
+
 1. Google login과 Calendar connection scope를 분리한다.
-2. read-only import인지, 양방향 sync인지 결정한다.
-3. source, externalEventId, sync token, conflict 정책을 정한다.
+2. 1차는 read-only import와 수동 sync로 확정하고, 양방향 실시간 sync는 제외한다.
+3. `source`, `externalEventId`, provider 지원 시 `syncToken`, Google 정본 기준 conflict 정책을 정한다.
 4. provider failure와 token refresh 보관 기준을 정한다.
 
 ## 4. 참고

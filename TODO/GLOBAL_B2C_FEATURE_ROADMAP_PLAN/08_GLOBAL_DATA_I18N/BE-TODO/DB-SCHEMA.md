@@ -15,10 +15,10 @@
 - `OAuthProvider.LINE`
 - Import/Export locale metadata 후보
 
-## 결정 필요
+## 결정 baseline 반영 후 세부 확인
 
 - 기존 `010-0000-0000` 데이터를 어떻게 migration할지
-- phone을 E.164로 저장할지
+- phone E.164 migration 전략
 - currency default를 user country로 둘지
 - locale은 user profile에 둘지 client preference로 둘지
 - Apple/LINE provider account를 기존 `UserOAuthAccount`로 처리할 수 있는지

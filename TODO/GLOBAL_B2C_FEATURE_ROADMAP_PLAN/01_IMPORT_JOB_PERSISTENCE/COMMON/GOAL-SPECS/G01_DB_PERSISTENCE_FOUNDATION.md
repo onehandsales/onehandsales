@@ -1,4 +1,4 @@
-# G01 DB Persistence Foundation
+﻿# G01 DB Persistence Foundation
 
 상태: Confirmed
 
@@ -50,7 +50,7 @@ DB schema:
 - 원본 파일 binary는 DB에 저장하지 않는다.
 - JSON field에는 raw row를 저장할 수 있지만 structured log와 API response에는 원문을 노출하지 않는다.
 - `userId` ownership field는 모든 신규 table에 둔다.
-- `expiresAt`은 UTC instant이고 기본 정책은 생성 후 48시간이다.
+- `expiresAt`은 UTC instant이고 기본 정책은 생성 후 7일이다.
 
 Repository:
 

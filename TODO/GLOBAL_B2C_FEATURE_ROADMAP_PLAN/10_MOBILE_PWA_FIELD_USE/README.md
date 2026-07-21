@@ -3,6 +3,7 @@
 상태: Draft Slot
 순서: 10
 성격: 기능 구현 전 검토 슬롯
+결정 상태: `COMMON/DECISION-LOG.md` 2026-07-21 추천 결정 반영
 
 ## 1. 목적
 
@@ -19,11 +20,20 @@
 
 ## 3. 착수 전 해야 할 일
 
-1. PWA부터 할지, 모바일 Web polish부터 할지 정한다.
-2. 카메라 촬영, 음성 녹음, offline draft 범위를 나눈다.
+추천 결정:
+
+- native app 전에는 PWA와 모바일 웹에 집중한다.
+- 우선 범위는 명함 촬영, 회의 직후 음성 기록, local draft, 권한 거부 fallback이다.
+- offline full sync는 제외한다.
+- browser push는 02 Notification 슬롯과 연결한다.
+- native app 전환은 PWA 사용 지표와 현장 사용 빈도로 판단한다.
+
+1. native app 전에는 PWA와 모바일 Web polish를 우선한다.
+2. 카메라 촬영, 음성 녹음, local draft, 권한 거부 fallback을 1차 범위로 둔다.
 3. browser push는 02 notification과 연결한다.
-4. 네이티브 앱 전환 기준을 별도 판단한다.
-5. 명함 OCR 실패/재시도/촬영 품질 안내와 provider error redaction 기준을 정한다.
+4. 네이티브 앱 전환은 PWA 사용 지표와 현장 사용 빈도로 판단한다.
+5. 음성 파일은 STT/회의록 저장 이후 장기 보관하지 않는 방향을 기본값으로 둔다.
+6. 명함 OCR 실패/재시도/촬영 품질 안내와 provider error redaction 기준을 정한다.
 
 ## 4. 참고
 

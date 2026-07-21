@@ -11,7 +11,7 @@
 - search index 후보
 - deal probability/score field 후보
 
-## 결정 필요
+## 결정 baseline 반영 후 세부 확인
 
 - 기존 `DealFollowingActionLog`, `DealMemoLog`와 통합할지 참조할지
 - 자동 activity backfill 여부

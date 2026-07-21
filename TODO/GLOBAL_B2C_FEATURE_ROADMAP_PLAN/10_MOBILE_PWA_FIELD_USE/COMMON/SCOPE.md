@@ -21,15 +21,15 @@
 |---|---|
 | 완전 오프라인 sync | 범위가 큼 |
 
-## 열린 질문
+## 구현 전 세부 확인 질문
 
-- PWA는 첫 판매 전에 필요한가, Series A 후보인가?
-- offline draft는 어떤 데이터까지 저장할지?
-- 모바일 카메라 촬영은 business card에만 적용할지?
-- 음성 파일을 저장할지, STT 후 폐기할지?
-- OCR 실패는 재촬영, 파일 교체, 나중에 다시 시도 중 어떤 UX를 제공할지?
-- provider failure code를 FE에 어느 수준으로 노출할지?
-- iOS/Android native app 전환 기준은 PWA 지표로 판단할지?
+- native app 전에는 PWA와 모바일 웹에 집중한다.
+- offline draft는 입력 중 데이터 임시 저장에 제한하고 offline full sync는 제외한다.
+- 모바일 카메라 촬영은 business card를 1차 범위로 둔다.
+- 음성 파일은 STT/회의록 저장 이후 장기 보관하지 않는 방향을 기본값으로 둔다.
+- OCR 실패는 재촬영, 파일 교체, 나중에 다시 시도 UX를 제공한다.
+- provider failure code는 사용자 안전 category만 FE에 노출하고 raw error는 운영 로그로 분리한다.
+- iOS/Android native app 전환 기준은 PWA 사용 지표와 현장 사용 빈도로 판단한다.
 
 ## 완료 기준 초안
 

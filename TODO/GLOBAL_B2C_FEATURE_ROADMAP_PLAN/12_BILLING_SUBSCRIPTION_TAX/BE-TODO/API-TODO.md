@@ -20,11 +20,11 @@
 
 ## 계약 보강 필요
 
-- provider 선택
+- Merchant of Record 우선 provider 계약, Stripe 직접 결제 fallback 여부
 - webhook signature 검증
 - idempotency
 - entitlement 계산
-- plan/price/currency mapping
+- 한국/KRW 시작, PRD 월 5,900~6,900원 가격 가설, locale/currency mapping
 - trial, coupon, referral 적용 순서
 - refund/invoice 처리 범위
 - failed payment, grace period, downgrade/cancel 상태 전이

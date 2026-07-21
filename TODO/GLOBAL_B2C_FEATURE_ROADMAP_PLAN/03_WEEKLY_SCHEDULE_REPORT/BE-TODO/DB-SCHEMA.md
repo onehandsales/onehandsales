@@ -8,15 +8,15 @@
 - snapshot 저장이 필요하면 `WeeklyScheduleReportSnapshot` 후보를 검토한다.
 - 파일 job이 필요하면 `ExportJob` 또는 schedule report 전용 job을 검토한다.
 - 범용 export를 넣으면 `ExportJob`, `ExportJobFile`, `ExportJobFilter` 후보를 검토한다.
-- 반복 일정을 넣으면 `ScheduleRecurringRule`, `ScheduleRecurringException` 후보를 검토한다.
+- 반복 일정 정식 모델은 후속으로 두고, `ScheduleRecurringRule`, `ScheduleRecurringException`은 확장 후보로만 남긴다.
 
-## 결정 필요
+## 결정 baseline 반영 후 세부 확인
 
 - 보고서가 실시간 계산인지 snapshot인지
-- PDF/Excel 파일을 DB metadata와 storage에 저장할지
+- Excel 파일 metadata와 storage 저장 방식. PDF는 후속 print/export 범위로 둔다.
 - export job table이 06/12 등 다른 기능과 공유될지
 - 민감 데이터 포함 export를 audit log와 연결할지
-- 반복 일정 instance를 materialize할지, 조회 시 계산할지
+- 반복 일정 정식 모델은 제외하되, 추후 occurrence 확장이 가능하도록 조회 계약을 점검한다.
 
 ## migration 주의
 

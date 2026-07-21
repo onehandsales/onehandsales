@@ -1,4 +1,4 @@
-# Goal Work Order
+﻿# Goal Work Order
 
 상태: Confirmed
 
@@ -89,7 +89,7 @@ pnpm run build
 
 완료 기준:
 
-- 서버 재시작 후에도 48시간 내 job을 조회할 수 있다.
+- 서버 재시작 후에도 7일 내 job을 조회할 수 있다.
 - 다른 사용자의 `importJobId` 접근은 404이다.
 - invalid row가 있으면 confirm이 막힌다.
 - confirm 성공 시 domain row와 success log가 함께 생성된다.

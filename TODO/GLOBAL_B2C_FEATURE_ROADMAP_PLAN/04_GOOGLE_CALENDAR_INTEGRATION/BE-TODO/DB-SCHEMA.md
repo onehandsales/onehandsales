@@ -9,11 +9,11 @@
 - `Schedule.source`
 - `Schedule.externalSourceId`
 
-## 결정 필요
+## 결정 baseline 반영 후 세부 확인
 
 - Google token 암호화 방식
-- calendar id와 sync token 저장 여부
-- 가져온 일정 삭제/수정 정책
+- calendar id와 provider 지원 시 syncToken 저장 방식
+- 가져온 일정 유지/read-only 표시와 source 상태 정책
 - 중복 import 방지 index
 
 ## migration 주의

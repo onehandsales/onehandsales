@@ -1,4 +1,4 @@
-# ImportJob Persistence API
+﻿# ImportJob Persistence API
 
 계약 상태: confirmed
 소비자:
@@ -244,7 +244,7 @@ Body:
 4. 파일명, MIME, byte size, checksum을 계산한다.
 5. 원본 파일을 storage adapter에 저장한다.
 6. 파일을 parsing해 raw row를 만든다.
-7. `expiresAt = now + 48시간`으로 계산한다.
+7. `expiresAt = now + 7일`으로 계산한다.
 8. transaction 안에서 `ImportJob`, `ImportUploadedFile`, `ImportJobRow`를 생성한다.
 9. parsing warning 또는 validation 초기 오류가 있으면 `ImportJobError`와 row errors를 저장한다.
 10. 생성된 job summary를 반환한다.

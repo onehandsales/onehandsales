@@ -3,6 +3,7 @@
 상태: Draft Slot
 순서: 11
 성격: 마지막 운영 묶음 검토 슬롯
+결정 상태: `COMMON/DECISION-LOG.md` 2026-07-21 추천 결정 반영
 
 ## 1. 목적
 
@@ -19,9 +20,17 @@
 
 ## 3. 착수 전 해야 할 일
 
-1. 결제/구독 이전에 필요한 최소 Admin 범위를 정한다.
+추천 결정:
+
+- 최소 Admin부터 시작한다.
+- 사용자와 핵심 domain data는 read-only 조회를 기본으로 한다.
+- 민감정보는 masking하고 raw 조회는 reason 필수와 append-only audit log를 요구한다.
+- 계정 삭제, 데이터 export, provider failure, DB/migration gate는 운영 신뢰 필수 범위로 포함한다.
+- User Web과 Admin Web API/client 경계는 섞지 않는다.
+
+1. 결제/구독 이전에 필요한 최소 Admin 범위는 사용자/핵심 domain read-only와 provider failure 확인으로 둔다.
 2. 민감정보 마스킹과 원문 조회 사유 입력 정책을 정한다.
-3. audit log 범위를 정한다.
+3. raw 조회와 주요 운영 action은 append-only audit log를 남긴다.
 4. User Web과 Admin Web 코드 공유 금지 기준을 유지한다.
 5. Trash/삭제/복구/영구삭제 정책과 계정 삭제/데이터 삭제 범위를 정한다.
 6. DB/Prisma/migration, backup/restore, provider failure 운영 기준을 정한다.

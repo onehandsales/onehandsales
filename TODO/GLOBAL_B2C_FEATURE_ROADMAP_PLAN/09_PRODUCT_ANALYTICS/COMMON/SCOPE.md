@@ -22,13 +22,13 @@
 | Admin analytics full UI | 11 이후 또는 병행 후보 |
 | 광고 attribution | 판매 funnel 이후 |
 
-## 열린 질문
+## 구현 전 세부 확인 질문
 
-- activation event는 무엇인가?
-- analytics provider를 쓸지 자체 DB event log로 시작할지?
-- client event와 server event 중 무엇을 정본으로 볼지?
-- 개인정보 삭제 요청 시 분석 event는 어떻게 처리할지?
-- paywall/trial/coupon/referral 실험은 12 Billing 구현 전 어떤 mock/state로 검증할지?
+- activation 기준은 `첫 딜 생성 + 다음 행동/일정/회의록 중 하나 연결`로 둔다.
+- analytics는 자체 DB event log와 allowlist taxonomy로 시작한다.
+- client event는 UX 행동 보조, server event는 과금/핵심 정본으로 본다.
+- 개인정보 삭제 요청 시 PII 없는 event와 user 연결 해제/삭제 정책을 정한다.
+- paywall/trial/coupon/referral 실험은 12 Billing과 연결되는 mock/state로 검증한다.
 - churn survey는 해지 flow에 둘지 별도 feedback flow로 둘지?
 
 ## 완료 기준 초안

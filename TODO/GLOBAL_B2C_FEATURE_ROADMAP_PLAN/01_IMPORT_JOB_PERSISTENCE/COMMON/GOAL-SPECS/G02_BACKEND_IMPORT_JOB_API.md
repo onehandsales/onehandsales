@@ -1,4 +1,4 @@
-# G02 Backend ImportJob API
+﻿# G02 Backend ImportJob API
 
 상태: Confirmed
 
@@ -160,7 +160,7 @@ pnpm run build
 ## 11. 완료 기준
 
 - 모든 `/api/imports` API가 `COMMON/API-SPEC/IMPORT_JOB_API.md`의 request/response와 일치한다.
-- 서버 재시작 후 48시간 내 job detail 조회가 가능하다.
+- 서버 재시작 후 7일 내 job detail 조회가 가능하다.
 - 다른 사용자의 job id 접근은 404로 처리한다.
 - invalid row가 있으면 confirm이 409로 막힌다.
 - confirm 성공 시 domain row와 `ImportUserLog*`가 같은 transaction에서 생성된다.

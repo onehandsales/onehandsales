@@ -7,12 +7,13 @@
 각 번호 폴더는 아래 순서로 진행한다.
 
 1. `COMMON/REFERENCES.md`의 참조 문서를 다시 읽는다.
-2. `COMMON/SCOPE.md`에서 포함/제외 범위를 확정한다.
-3. `FE-TODO/USER-WEB-TODO.md`에서 화면, route, client, 상태 처리를 확정한다.
-4. `BE-TODO/API-TODO.md`에서 API 계약 초안을 작성한다.
-5. `BE-TODO/DB-SCHEMA.md`에서 DB 변경 여부와 migration 필요성을 확정한다.
-6. 구현 가능하면 별도 `/goal` 문서로 쪼갠다.
-7. 구현 후 검증 결과와 남은 항목을 해당 번호 폴더에 다시 기록한다.
+2. 상위 `COMMON/DECISION-LOG.md`에서 해당 슬롯의 추천 결정을 확인한다.
+3. `COMMON/SCOPE.md`에서 포함/제외 범위를 확정한다.
+4. `FE-TODO/USER-WEB-TODO.md`에서 화면, route, client, 상태 처리를 확정한다.
+5. `BE-TODO/API-TODO.md`에서 API 계약 초안을 작성한다.
+6. `BE-TODO/DB-SCHEMA.md`에서 DB 변경 여부와 migration 필요성을 확정한다.
+7. 구현 가능하면 별도 `/goal` 문서로 쪼갠다.
+8. 구현 후 검증 결과와 남은 항목을 해당 번호 폴더에 다시 기록한다.
 
 ## 2. 구현 전 체크
 
@@ -21,6 +22,7 @@
 | API 계약 | method/path/request/response/error/business logic/transaction/observability가 있어야 한다. |
 | DB 계약 | model/relation/index/retention/rollback/migration 영향이 있어야 한다. |
 | FE 계약 | route, 화면 상태, TanStack Query key, invalidation, empty/error/loading이 있어야 한다. |
+| 제품 결정 | `DECISION-LOG.md`의 추천 결정과 충돌하지 않거나, 변경 이유가 해당 슬롯에 기록되어야 한다. |
 | 보안 | user ownership, 민감정보, provider error redaction을 확인한다. |
 | 검증 | BE test, FE type/lint/build/E2E 또는 수동 QA 범위를 적는다. |
 

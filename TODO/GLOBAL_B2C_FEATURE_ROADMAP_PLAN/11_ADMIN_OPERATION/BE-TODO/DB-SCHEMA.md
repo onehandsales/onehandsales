@@ -13,9 +13,9 @@
 - `DataRetentionPolicy`
 - `BackupRestoreRunLog`
 
-## 결정 필요
+## 결정 baseline 반영 후 세부 확인
 
-- 기존 user role로 충분한지
+- `INITIAL_ADMIN_EMAILS` bootstrap과 기존 user role 확장 방식
 - 민감 원문 조회 log 필수 필드
 - audit log 보관 기간
 - provider failure log와 연결 방식

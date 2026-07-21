@@ -9,7 +9,7 @@
 - `BrowserPushSubscription`
 - `NotificationDeliveryAttempt`
 
-## 결정 필요
+## 결정 baseline 반영 후 세부 확인
 
 - endpoint/p256dh/auth 암호화 방식
 - 알림 보관 기간

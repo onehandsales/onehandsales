@@ -3,6 +3,7 @@
 상태: Draft Slot
 순서: 06
 성격: 기능 구현 전 검토 슬롯
+결정 상태: `COMMON/DECISION-LOG.md` 2026-07-21 추천 결정 반영
 
 ## 1. 목적
 
@@ -18,6 +19,14 @@
 - 검색/필터 고도화와 딜 가능성/확률 고도화는 후속 기능 후보로 남아 있다.
 
 ## 3. 착수 전 해야 할 일
+
+추천 결정:
+
+- `DealActivity`를 별도 모델로 만든다.
+- 단계 변경, 회의록 연결, 일정 연결, 다음 행동을 timeline에 자동 기록한다.
+- 기존 memo/following action log는 즉시 폐기하지 않고 연결 또는 점진 통합한다.
+- private memo는 timeline summary와 목록 summary에서 제외한다.
+- list summary/count는 FE에서 꾸미지 않고 API 계약으로 제공한다.
 
 1. 기존 following action/memo log와 범용 activity의 관계를 정한다.
 2. 자동 생성 activity와 사용자 작성 activity를 구분한다.

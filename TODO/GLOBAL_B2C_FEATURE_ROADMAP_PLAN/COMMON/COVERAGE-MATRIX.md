@@ -19,11 +19,11 @@
 | Notification | Email/browser push | 02 | delivery worker, settings, provider failure |
 | Notification | 일정/딜/다음 행동/회의록 reminder | 02 | retention loop |
 | Schedule | 주간 일정 보고서 | 03 | `/app/schedules/week`, weekStart/timezone |
-| Schedule | 주간 보고서 PDF/Excel | 03 | 1차 형식 결정 필요 |
+| Schedule | 주간 보고서 PDF/Excel | 03 | 화면 보고서 + Excel 1차, PDF 후속 |
 | Schedule | 범용 ExportJob / 비동기 Export | 03 | `/app/export`, `/api/exports`, 대용량 export 기반 |
 | Schedule | 일정/회의록 export | 03 | 기존 domain xlsx 이후 확장 |
-| Schedule | 반복 일정 | 03 | schedule 고도화 하위 기능 |
-| Calendar | Google Calendar connect/import/export | 04 | login OAuth와 Calendar scope 분리 |
+| Schedule | 반복 일정 | 03 | 03에서는 정식 recurring rule 제외, API 확장성 검토 |
+| Calendar | Google Calendar connect/read-only import | 04 | login OAuth와 Calendar scope 분리, export/two-way sync 제외 |
 | Calendar | external calendar sync 실패 처리 | 04, 11 | 사용자-facing은 04, 운영 추적은 11 |
 | AI report | AI 주간 영업 리포트 | 05 | 일정+딜+회의록 기반 |
 | AI report | AI follow-up/next action/딜 리스크 | 05, 07 | 리포트성은 05, 회의록 추출은 07 |
@@ -38,7 +38,7 @@
 | Core record | 다음 행동 완료/미루기/일정 연결 | 06 | following action loop |
 | MeetingNote AI | AI/STT provider call log | 07 | NBA-011 |
 | MeetingNote AI | transcript 보관 정책 | 07 | 민감정보/retention 기준 필요 |
-| MeetingNote AI | 회의록 next action 추출 | 07 | 딜 next action 생성 여부 결정 |
+| MeetingNote AI | 회의록 next action 추출 | 07 | 후보 추출 후 사용자 확인 |
 | MeetingNote AI | 회의록 목록 latest/next summary | 07, 06 | API field는 07, record summary 표시는 06 |
 | Global | `/app` 내부 다국어 | 08 | public/auth locale과 분리 |
 | Global | 다국가 전화번호 | 08 | E.164/국가별 입력 |
@@ -72,7 +72,7 @@
 | Billing | Subscription/entitlement | 12 | plan별 기능/AI 제한 |
 | Billing | Paywall/upgrade flow | 12, 09 | 사용자 제한/전환 UX는 12, funnel 분석은 09 |
 | Billing | AI usage plan/overage | 12, 05, 07, 09 | 제한/과금은 12, 사용량 발생은 05/07, 비용 분석은 09 |
-| Billing | Payment provider/webhook | 12 | Stripe 또는 MoR |
+| Billing | Payment provider/webhook | 12 | Merchant of Record 우선, Stripe 직접 결제 2순위 |
 | Billing | Failed payment recovery | 12, 11 | 결제 실패 복구 UX/API는 12, 운영 대응은 11 |
 | Billing | Tax/invoice/refund/chargeback | 12 | 국가별 판매 정책 |
 | Billing | Coupon/referral | 12, 09 | 결제 적용은 12, 실험/분석은 09 |

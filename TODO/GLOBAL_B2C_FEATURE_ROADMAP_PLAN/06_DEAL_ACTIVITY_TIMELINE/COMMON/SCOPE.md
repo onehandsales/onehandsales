@@ -27,7 +27,7 @@
 | 모든 도메인 공통 activity bus | 1차는 Deal 중심 |
 | AI activity 자동 판단 | 05/07 이후 후보 |
 
-## 열린 질문
+## 구현 전 세부 확인 질문
 
 - 기존 memo/following action log를 그대로 두고 activity가 참조할지?
 - 단계 변경 시 기존 데이터에도 backfill이 필요한가?

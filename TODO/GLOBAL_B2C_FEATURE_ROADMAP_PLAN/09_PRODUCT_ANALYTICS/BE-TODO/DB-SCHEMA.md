@@ -10,10 +10,10 @@
 - `ExperimentAssignment`
 - `ChurnSurveyResponse`
 
-## 결정 필요
+## 결정 baseline 반영 후 세부 확인
 
-- 자체 DB 저장 여부
-- 외부 analytics provider 사용 여부
+- 자체 DB `ProductAnalyticsEvent`로 시작
+- 외부 analytics provider는 후속/보조 여부만 검토
 - userId hashing/anonymization
 - payload JSON 허용 범위
 - retention 기간

@@ -10,9 +10,9 @@
 - `AiFollowUpSuggestion` 후보
 - `AiDataCleanupSuggestion` 후보
 
-## 결정 필요
+## 결정 baseline 반영 후 세부 확인
 
-- 생성 결과 저장 여부
+- 저장형 report version/overwrite 방식
 - provider input/output 저장 여부
 - 원문 데이터 보관 금지 범위
 - 비용 추적 필드

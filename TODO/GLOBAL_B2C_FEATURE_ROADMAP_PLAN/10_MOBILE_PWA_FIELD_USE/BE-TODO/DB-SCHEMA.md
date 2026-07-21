@@ -10,12 +10,12 @@
 - BusinessCard provider failure detail은 11 Provider failure log와 연결한다.
 - native app device/session 확장이 필요하면 AuthDevice 정책과 연결한다.
 
-## 결정 필요
+## 결정 baseline 반영 후 세부 확인
 
-- offline draft를 client-only로 둘지
+- offline draft는 client local draft 우선, server draft 예외 여부
 - server draft 보관 기간
-- 음성 파일 저장 여부
-- PWA push subscription은 02와 공유할지
+- 음성 파일은 STT/회의록 저장 이후 장기 보관하지 않는 기준
+- PWA push subscription은 02 Notification과 공유한다.
 - OCR failure detail을 BusinessCardScanLog에 얼마나 저장할지
 - native app device slot이 필요한지
 

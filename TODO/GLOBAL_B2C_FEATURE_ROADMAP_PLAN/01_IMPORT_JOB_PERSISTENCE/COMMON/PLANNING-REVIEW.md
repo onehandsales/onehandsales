@@ -1,4 +1,4 @@
-# Planning Review
+﻿# Planning Review
 
 상태: Confirmed
 검토일: 2026-07-21
@@ -104,7 +104,7 @@ DB/운영:
 
 - DDL, index, FK, check constraint, table/column comment가 있다.
 - 원본 파일 binary는 DB에 넣지 않는다.
-- TTL 48시간과 confirm/cancel/expire file delete 정책이 있다.
+- TTL 7일과 confirm/cancel/expire file delete 정책이 있다.
 - raw row/provider raw response/PII logging 금지 기준이 있다.
 - 공유/운영성 DB migration은 무단 실행하지 않는 기준이 있다.
 
@@ -116,7 +116,7 @@ DB/운영:
 
 - Import upload/mapping/validation/confirm 중 유실 방지
 - refresh, tab 이동, server restart, deploy 중 resume
-- 48시간 TTL과 cleanup
+- 7일 TTL과 cleanup
 - original file delete tracking
 - cross-user 접근 차단
 - confirm transaction rollback

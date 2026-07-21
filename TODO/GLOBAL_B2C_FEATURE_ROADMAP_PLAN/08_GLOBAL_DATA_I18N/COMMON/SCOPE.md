@@ -24,14 +24,14 @@
 | 마케팅 사이트 전체 rewrite | public/auth locale은 별도 흐름 |
 | 네이티브 앱 locale | 10 이후 후보 |
 
-## 열린 질문
+## 구현 전 세부 확인 질문
 
-- 첫 판매 locale은 `ko`, `en-us`, `ja`, `zh-tw` 중 어디까지인가?
-- 기존 phone 필드를 국제 전화번호 모델로 migration할지?
-- 딜/제품 금액에 currency column을 추가할지?
-- `/app` 번역 리소스 구조를 public-site와 공유할지 분리할지?
-- Apple login은 web에서도 먼저 넣을지, iOS 앱 시점까지 기다릴지?
-- LINE login은 일본/대만 확장 전에 필요한지?
+- 첫 판매 locale은 `ko`, `en`으로 제한하고 `ja`, `zh-tw`는 후속 확장 후보로 둔다.
+- 기존 phone 필드는 E.164 기반 국제 전화번호 모델로 migration하는 방향을 기본값으로 둔다.
+- 딜/제품 금액에는 `currencyCode`를 추가한다.
+- `/app` 번역 리소스 구조는 public-site와 분리한다.
+- Apple login은 iOS 전략과 연결한다.
+- LINE login은 일본/대만 확장 시점에 검토한다.
 - Import/Export template의 header와 validation message를 locale별로 나눌지?
 
 ## 완료 기준 초안
