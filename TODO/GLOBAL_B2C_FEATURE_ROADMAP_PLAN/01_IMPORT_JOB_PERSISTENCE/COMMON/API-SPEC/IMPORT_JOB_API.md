@@ -1,6 +1,7 @@
 ﻿# ImportJob Persistence API
 
 계약 상태: confirmed
+구현 상태: Done (2026-07-21)
 소비자:
 - User Web
 

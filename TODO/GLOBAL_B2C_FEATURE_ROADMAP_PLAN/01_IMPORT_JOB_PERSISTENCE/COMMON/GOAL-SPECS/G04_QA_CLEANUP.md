@@ -1,6 +1,8 @@
 # G04 QA Cleanup
 
-상태: Confirmed
+상태: Done
+완료일: 2026-07-21
+완료 근거: `TODO_LOG/2026-07-21/G04_IMPORT_JOB_PERSISTENCE_QA_CLEANUP/WORK_LOG.md`
 
 ## 1. 목적
 

@@ -1,6 +1,7 @@
 # User Flow
 
 상태: Confirmed
+구현 상태: Done (G03/G04 완료, 2026-07-21)
 
 ## 1. UX 원칙
 

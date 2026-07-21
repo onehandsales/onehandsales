@@ -1,7 +1,15 @@
 # Current Implemented Functions
 
 상태: Draft Guide
-기준: 2026-07-20 현재 코드와 AGENT 구현 상태 문서
+기준: 2026-07-21 현재 코드와 AGENT 구현 상태 문서
+
+## 0. 완료 반영 체크리스트
+
+- [x] DataImport 기본 upload/mapping/confirm/log 흐름
+- [x] DataImport 확정 전 ImportJob DB persistence
+- [x] DataImport 새로고침/탭 이동 resume UX
+- [x] DataImport confirm/cancel/expired/failed 상태 처리
+- [x] DataImport storage delete failure/redaction/ownership QA
 
 ## 1. 구현 완료/부분 완료 표
 
@@ -17,7 +25,7 @@
 | Schedule | deal options, list/detail/create/update/delete, timezone 처리 | `/app/schedules`, detail, form, 월간/목록 | N/A | 기본 완료. week report는 후속 |
 | MeetingNote | list/detail/create/update/delete, AI draft, STT draft, add deal link, trash | 목록, 상세, 작성, AI/STT draft UI, 딜 연동, 삭제/복구 | N/A | 완료 |
 | BusinessCard OCR | `/api/business-card-scans`, scan/confirm/log/status | `/app/business-cards`, 이미지 업로드, 명함스캔, 확인/수정, 저장 | N/A | 완료 |
-| DataImport | import templates, uploads, mapping, confirm, import logs. pre-confirm job은 in-memory | `/app/import`, template download, CSV/XLSX upload, AI mapping, row edit/validation, confirm, log detail | N/A | 기본 완료. persistence는 후속 |
+| DataImport | import templates, uploads, mapping, row edit/validation, confirm, cancel, active job resume, import logs. pre-confirm job은 DB persistence | `/app/import`, `/app/import/review/:importJobId`, template download, CSV/XLSX upload, AI mapping, row edit/validation, resume, confirm, log detail | N/A | 완료. persistence/resume 포함 |
 | Search | `GET /api/search` | GlobalSearch, loading/empty/error, result navigation | N/A | 완료 |
 | Trash | `/api/trash`, detail, restore | `/app/trash`, list/detail modal/restore | N/A | 7일 이내 복구 완료 |
 | Domain export | Company/Contact/Product/Deal xlsx endpoint | 각 목록 `엑셀 다운로드` | N/A | 완료 |
@@ -43,7 +51,7 @@
 | `/app/schedules/week` | `/app/schedules` redirect |
 | `/app/meeting-notes`, `/app/meeting-notes/new`, `/app/meeting-notes/new/full`, `/app/meeting-notes/:meetingNoteId` | 구현 |
 | `/app/business-cards` | 구현 |
-| `/app/import`, `/app/import/:importUserLogId` | 구현 |
+| `/app/import`, `/app/import/review/:importJobId`, `/app/import/:importUserLogId` | 구현 |
 | `/app/trash`, `/app/settings`, `/app/more` | 구현 |
 | `/app/notifications` | `/app` redirect |
 | `/app/export` | `/app` redirect |

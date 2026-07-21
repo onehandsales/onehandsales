@@ -1,6 +1,15 @@
 ﻿# Goal Work Order
 
-상태: Confirmed
+상태: Done
+완료일: 2026-07-21
+
+## 0. 완료 체크리스트
+
+- [x] G01 DB persistence foundation
+- [x] G02 Backend ImportJob API
+- [x] G03 User Web resume UX
+- [x] G04 QA / cleanup
+- [x] 완료 기록: `TODO_LOG/2026-07-21/G04_IMPORT_JOB_PERSISTENCE_QA_CLEANUP/WORK_LOG.md`
 
 ## 1. 원칙
 

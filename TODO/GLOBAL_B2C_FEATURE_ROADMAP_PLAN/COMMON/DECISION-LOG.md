@@ -3,6 +3,11 @@
 상태: Decision Baseline
 기준일: 2026-07-21
 
+## 0. 완료 반영
+
+- [x] 01 ImportJob Persistence: Done (2026-07-21)
+- [x] 완료 기록: `TODO_LOG/2026-07-21/G04_IMPORT_JOB_PERSISTENCE_QA_CLEANUP/WORK_LOG.md`
+
 ## 1. 제품 방향 결정
 
 | 결정 | 내용 |
@@ -29,7 +34,7 @@
 
 | 슬롯 | 결정 상태 | 추천 결정 |
 |---|---|---|
-| 01 ImportJob Persistence | 01 문서에 반영 완료 | `ImportJob`, `ImportJobRow`, `ImportJobError`, `ImportUploadedFile`로 확정 전 작업을 DB에 저장한다. 작업 재개 TTL은 7일로 둔다. 원본 파일 binary는 DB에 저장하지 않고 storage에 두며 장기 보관하지 않는다. confirm/cancel/expire 후 원본 파일 삭제를 추적한다. resume route와 cancel API를 제공한다. |
+| 01 ImportJob Persistence | Done | `ImportJob`, `ImportJobRow`, `ImportJobError`, `ImportUploadedFile`로 확정 전 작업을 DB에 저장한다. 작업 재개 TTL은 7일로 둔다. 원본 파일 binary는 DB에 저장하지 않고 storage에 두며 장기 보관하지 않는다. confirm/cancel/expire 후 원본 파일 삭제를 추적한다. resume route와 cancel API를 제공한다. 구현 및 QA closeout 완료. |
 | 02 Notification Reminder | 결정 baseline | 1차는 in-app notification과 browser push를 함께 설계한다. email은 중요 알림과 digest 중심으로 둔다. 기본값은 일정 30분 전, 딜 마감 1일 전, 다음 행동 당일 오전이다. 설정은 toggle 중심으로 단순하게 둔다. |
 | 03 Weekly Schedule Report | 결정 baseline | 화면 보고서를 우선 구현하고 파일은 Excel을 1차로 둔다. PDF는 print/export 후속으로 둔다. `weekStart`와 `timeZone` 계약을 명확히 한다. 범용 ExportJob은 이 슬롯에서 가벼운 기반을 잡되 대용량 worker는 별도 goal로 분리한다. 반복 일정 정식 모델은 03에서 제외하고 추후 occurrence 확장이 가능하도록 API 계약만 점검한다. |
 | 04 Google Calendar Integration | 결정 baseline | Google login과 Calendar scope를 분리한다. 1차는 read-only import와 수동 sync다. 양방향 실시간 sync는 제외한다. 가져온 일정은 source badge와 `externalEventId`를 가진다. provider가 지원하면 `syncToken`을 저장한다. imported schedule의 정본은 Google event로 보고, local memo/link는 유지한다. 연결 해제 시 가져온 일정은 유지하되 source 상태를 남긴다. |

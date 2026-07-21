@@ -2,6 +2,11 @@
 
 상태: Draft Guide
 
+## 0. 완료 반영
+
+- [x] `/app/import` ImportJob persistence/resume UX 구현 완료
+- [x] `NBA-006` User Web productization gap 종료
+
 ## 1. 목적
 
 이 문서는 `FE/user-web`을 최종 서비스 형태와 비교할 때 보는 화면/UX 기준이다.
@@ -33,7 +38,7 @@
 | `/app/schedules` | 목록/월간/상세 구현 | 일정과 딜이 하루/주 단위 영업 판단으로 연결되는가 | `NBA-009` 후보 |
 | `/app/meeting-notes` | 수동/AI/STT draft/딜 연결 구현 | 회의록에서 다음 행동과 딜 맥락이 충분히 보이는가 | `NBA-004`, `NBA-011` 후보 |
 | `/app/business-cards` | OCR/upload/confirm 구현 | provider 실패, 모바일 촬영, 다국가 연락처가 자연스러운가 | `NBA-005` 후보 |
-| `/app/import` | template/upload/mapping/confirm/log 구현 | 새로고침/탭 이동/배포 중 유실을 어떻게 안내하는가 | `NBA-006` 후보 |
+| `/app/import` | template/upload/mapping/row edit/validation/resume/confirm/cancel/log 구현 | 새로고침/탭 이동/배포 중 유실 복구 구현 완료 | `NBA-006` 완료 |
 | `/app/trash` | list/detail/restore 구현 | private memo preview와 7일 이후 정책이 안전한가 | `NBA-007`, `NBA-012` 후보 |
 | `/app/settings` | profile/devices 구현 | 첫 판매 전 계정/언어/데이터 삭제/구독 상태 UX가 충분한가 | Payment/Admin 계획과 연결 |
 | `/app/more` | 보조 메뉴 구현 | 숨긴 기능이 잘못 노출되지 않는가 | 낮음 |

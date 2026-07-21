@@ -1,16 +1,16 @@
 ﻿# Planning Review
 
-상태: Confirmed
+상태: Done
 검토일: 2026-07-21
 
 ## 1. 결론
 
-- 판정: 통과
-- 이유: `NBA-006 ImportJob persistence/resume API` 범위가 API, DB, BE, FE, UX, QA, goal 상세 명세까지 구현 직전 수준으로 연결되어 있다.
-- 바로 구현 가능 여부: 가능
-- 첫 번째로 실행할 goal: `G01_DB_PERSISTENCE_FOUNDATION`
+- 판정: 완료
+- 이유: `NBA-006 ImportJob persistence/resume API` 범위가 API, DB, BE, FE, UX, QA, goal 상세 명세까지 구현 및 QA closeout 완료 상태로 연결되어 있다.
+- 구현 상태: Done
+- 완료 기록: `TODO_LOG/2026-07-21/G04_IMPORT_JOB_PERSISTENCE_QA_CLEANUP/WORK_LOG.md`
 
-첫 실행 문구:
+완료 전 첫 실행 문구 기록:
 
 ```text
 /goal TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/01_IMPORT_JOB_PERSISTENCE/COMMON/GOAL-SPECS/G01_DB_PERSISTENCE_FOUNDATION.md 기준으로 G01을 구현해줘.
@@ -84,7 +84,7 @@ AGENT 기준:
 | Resolved | `GOAL-WORK-ORDER`, `G01`, `DB-SCHEMA` | 검증 명령이 실제 `BE/package.json` script와 달랐다. | `pnpm run prisma:migrate`로 수정 |
 | Resolved | `BE-TODO`, `G02` | `GET /api/imports/active`가 동적 `:importJobId` route에 잡힐 수 있었다. | controller 선언 순서를 `active` 먼저로 명시 |
 
-재검토에서 발견한 Critical/Major 후보는 위와 같이 모두 resolved로 반영했다. 현재 기준으로 구현 착수 전 미해결 Critical/Major 문제는 없다.
+재검토에서 발견한 Critical/Major 후보는 위와 같이 모두 resolved로 반영했다. 현재 기준으로 완료 표기를 막는 미해결 Critical/Major 문제는 없다.
 
 ## 4. AGENT 기준 적합성
 
@@ -116,7 +116,7 @@ DB/운영:
 
 ## 5. 출시 범위 적합성
 
-01은 `TODO/NEXT_BACKEND_API_BACKLOG_PLAN`의 `NBA-006`만 구현 대상으로 삼는다.
+01은 `TODO/NEXT_BACKEND_API_BACKLOG_PLAN`의 `NBA-006`만 구현 대상으로 삼았고, 해당 범위는 완료했다.
 
 01에 포함된 출시 신뢰 항목:
 
@@ -152,7 +152,7 @@ DB/운영:
 
 ## 8. 사용자의 결정이 필요한 질문
 
-현재 `NBA-006` 구현 착수에는 추가 질문이 필요 없다.
+현재 `NBA-006` 구현 완료 상태에는 추가 질문이 필요 없다.
 
 다만 Global B2C 첫 판매 전체로 넘어갈 때는 아래 질문이 별도 계획에서 필요하다.
 
@@ -162,9 +162,8 @@ DB/운영:
 - 앱 내부 다국어 우선순위
 - Notification 첫 판매 필수 여부
 
-## 9. 구현 가능 여부
+## 9. 완료 여부
 
-- 바로 구현 가능 여부: 가능
-- 구현 전 반드시 수정할 항목: 없음
-- 첫 번째 goal: `COMMON/GOAL-SPECS/G01_DB_PERSISTENCE_FOUNDATION.md`
-- 다음 goal 순서: G01 -> G02 -> G03 -> G04
+- 완료 여부: Done
+- 완료 전 반드시 수정할 항목: 없음
+- 완료 goal 순서: G01 -> G02 -> G03 -> G04

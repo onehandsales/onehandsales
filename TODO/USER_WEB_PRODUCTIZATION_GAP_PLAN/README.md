@@ -4,6 +4,17 @@
 작성일: 2026-07-20
 성격: 제품화 gap 판단 가이드
 
+## 0. 완료 반영 체크리스트
+
+- [x] DataImport 기본 흐름
+- [x] DataImport ImportJob persistence/resume (`NBA-006`)
+- [x] `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/01_IMPORT_JOB_PERSISTENCE` 구현 및 QA closeout
+- [ ] Notification
+- [ ] Admin 운영 API/화면
+- [ ] 결제/구독/세금
+- [ ] `/app` 다국어/글로벌 데이터 모델
+- [ ] 제품 분석
+
 ## 1. 목적
 
 이 폴더는 `한손에 영업 / onehand.sales`의 최종 서비스 형태와 현재 구현 상태 사이의 차이를 정리한다.
@@ -52,7 +63,7 @@
 - 제품화 수준의 최종 UX/UI 완성도 판단
 - 첫 판매 기준인 Global B2C 유료 판매를 위한 결제/구독, 세금/컴플라이언스, `/app` 다국어, Admin 운영, 제품 분석
 - Series A급 리텐션/AI/모바일 현장 사용성
-- Notification, ImportJob persistence, Admin 운영 API 같은 후속 기능의 우선순위 확정
+- Notification, Admin 운영 API 같은 후속 기능의 우선순위 확정
 
 ## 4. 문서 구성
 
@@ -78,7 +89,6 @@
 아래 항목은 이 가이드 작성만으로 바로 구현하지 않는다.
 
 - Notification
-- ImportJob persistence
 - Admin 운영 API/화면
 - 결제/구독
 - 주간 영업 리포트

@@ -3,11 +3,17 @@
 상태: Draft
 작성일: 2026-07-20
 
+## 0. 완료 반영
+
+- [x] `NBA-006 ImportJob persistence/resume API`: implemented in `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/01_IMPORT_JOB_PERSISTENCE`
+
 ## 1. 계약 상태
 
 이 폴더의 모든 API 항목은 `draft` 또는 `후보` 상태다.
 
 G07은 구현 goal이 아니므로 `confirmed`, `implemented` 상태의 새 API 계약을 만들지 않는다. 실제 구현 전에 각 후보는 `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/CONVENTION/API_CONTRACT.md`와 `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/CONVENTION/API_SPEC.md` 기준으로 별도 계약 문서를 가져야 한다.
+
+예외: `NBA-006`은 별도 계획 `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/01_IMPORT_JOB_PERSISTENCE`로 승격되어 2026-07-21 구현 완료됐다. 이 문서에서는 완료 추적용으로만 남긴다.
 
 ## 2. Draft API 후보
 
@@ -18,7 +24,7 @@ G07은 구현 goal이 아니므로 `confirmed`, `implemented` 상태의 새 API 
 | NBA-003 | draft | Company/Contact/Product list summary field 또는 summary endpoint 후보 | User Web | `latestMemoAt`, `latestActivityAt`, `latestActivitySummary`, `nextActionSummary` 후보. private memo 제외 정책 필요. |
 | NBA-004 | draft | `GET /api/meeting-notes` list item response field 추가 | User Web | `latestSummary`, `nextActionSummary` 후보. AI/STT raw text 저장 여부와 분리 필요. |
 | NBA-005 | draft | BusinessCard OCR error/status contract | User Web | 사용자 응답에는 safe `errorCode`, `userMessage`, `retryable`만 두고 provider detail은 운영 log로 분리하는 후보. |
-| NBA-006 | draft | ImportJob persistence/resume API | User Web | `POST /api/import/jobs`, `GET /api/import/jobs/:jobId`, `PATCH /api/import/jobs/:jobId/mapping`, `POST /api/import/jobs/:jobId/confirm` 후보. |
+| NBA-006 | implemented | ImportJob persistence/resume API | User Web | 완료: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/01_IMPORT_JOB_PERSISTENCE/COMMON/API-SPEC/IMPORT_JOB_API.md` 기준 `/api/imports` 계열로 구현. |
 | NBA-007 | draft | Trash detail response 제한 | User Web | private memo 대상은 복구 전 detail response에서 `content` 원문을 내려주지 않는 후보. |
 | NBA-008 | draft | list pagination/page size contract 정리 | User Web | 기본 `pageSize=15` 계약을 FE/BE/test/API 문서에 동시에 맞추는 후보. |
 | NBA-009 | draft | Schedule week report API | User Web | `GET /api/schedules/week-report` 또는 기존 schedules query 확장 후보. timezone 기간 경계 계약 필요. |

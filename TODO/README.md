@@ -120,18 +120,18 @@ TODO/
 - 2026-07-20 기준 `TODO/DONE/USER_WEB_RELEASE_QA_FOLLOWUP_PLAN`은 G01~G07 완료 상태다.
 - 2026-07-20 기준 `TODO/NEXT_BACKEND_API_BACKLOG_PLAN`은 G07에서 생성한 다음 Backend/API backlog 후보 초안이다.
 - 2026-07-20 기준 `TODO/USER_WEB_PRODUCTIZATION_GAP_PLAN`은 MVP를 비판매 내부 기준으로 보고, Global B2C를 첫 판매 기준으로 삼아 현재 구현 상태의 제품화 gap을 정리하는 가이드다. `/goal` 실행 계획이 아니다.
-- 2026-07-20 기준 `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN`은 기능 선구현 방식을 전제로 01~12 기능 슬롯을 미리 나눈 로드맵이다. 각 번호 폴더는 착수 전 검토 슬롯이며 `/goal` 실행 계획이 아니다.
+- 2026-07-20 기준 `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN`은 기능 선구현 방식을 전제로 01~12 기능 슬롯을 미리 나눈 로드맵이다. 2026-07-21 기준 01 `01_IMPORT_JOB_PERSISTENCE`는 Done이며, 02~12는 착수 전 검토 슬롯이다.
 - 이전 1순위였던 User Web UX/UI 공통 QA는 `TODO/DONE/USER_WEB_UXUI_COMMON_QA_PLAN`에서 `G01~G06` 완료 상태다.
 - `USER_WEB_RELEASE_QA_FOLLOWUP_PLAN`은 UX/UI 공통 QA 이후 남은 출시 전 품질 작업인 모바일 브라우저 390px/360px QA, Chrome/Edge QA, 다중 계정 보안 QA, DB/Prisma/migration 운영 정합성, S0/S1/S2 closeout, deferred BE/API backlog split을 완료했다.
-- `IMPORT_TEMPLATE_PLAN`은 회사/담당자/제품/딜 불러오기 구현이 완료되어 `TODO/DONE/IMPORT_TEMPLATE_PLAN`에 보관한다. 확정 전 job 영속화는 후속 새 계획으로 다룬다.
+- `IMPORT_TEMPLATE_PLAN`은 회사/담당자/제품/딜 불러오기 구현이 완료되어 `TODO/DONE/IMPORT_TEMPLATE_PLAN`에 보관한다. 확정 전 job 영속화는 `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/01_IMPORT_JOB_PERSISTENCE`에서 구현 완료했다.
 - `LOG_SOFT_DELETE_PLAN`은 구현 완료되어 `TODO/DONE/LOG_SOFT_DELETE_PLAN`에 보관한다.
 - 새 요구사항이나 후속 구현은 `TODO` 바로 아래에 새 계획 폴더를 만든다.
 
 진행 중인 계획:
 
-- `NEXT_BACKEND_API_BACKLOG_PLAN`: G07에서 생성한 다음 Backend/API backlog 후보 초안. 사용자 선택 전에는 구현 계획 확정본이 아니다.
-- `USER_WEB_PRODUCTIZATION_GAP_PLAN`: MVP는 비판매 내부 기준, Global B2C는 첫 판매 기준으로 두고 현재 구현 기능과 제품화 gap을 판단하는 가이드. `/goal` 실행 계획이 아니다.
-- `GLOBAL_B2C_FEATURE_ROADMAP_PLAN`: ImportJob 영속화부터 Admin/결제까지 01~12 기능 슬롯을 순차 착수하기 위한 로드맵. `COMMON/COVERAGE-MATRIX.md`로 누락 기능을 각 슬롯에 배정하고, 각 슬롯은 추가 문서 작성과 검수 후 별도 `/goal`로 전환한다.
+- `NEXT_BACKEND_API_BACKLOG_PLAN`: G07에서 생성한 다음 Backend/API backlog 후보 초안. `NBA-006`은 완료 반영됐고, 사용자 선택 전에는 나머지 후보의 구현 계획 확정본이 아니다.
+- `USER_WEB_PRODUCTIZATION_GAP_PLAN`: MVP는 비판매 내부 기준, Global B2C는 첫 판매 기준으로 두고 현재 구현 기능과 제품화 gap을 판단하는 가이드. DataImport persistence gap은 완료 반영됐고, 이 문서 자체는 `/goal` 실행 계획이 아니다.
+- `GLOBAL_B2C_FEATURE_ROADMAP_PLAN`: ImportJob 영속화부터 Admin/결제까지 01~12 기능 슬롯을 순차 착수하기 위한 로드맵. 01은 Done으로 남기고, 02~12는 `COMMON/COVERAGE-MATRIX.md` 기준으로 추가 문서 작성과 검수 후 별도 `/goal`로 전환한다.
 
 완료된 계획:
 

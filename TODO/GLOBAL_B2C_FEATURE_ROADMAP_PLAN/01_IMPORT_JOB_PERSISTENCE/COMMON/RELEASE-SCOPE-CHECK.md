@@ -1,6 +1,7 @@
 ﻿# Release Scope Check
 
-상태: Confirmed
+상태: Done
+완료일: 2026-07-21
 
 ## 1. 목적
 
@@ -21,7 +22,7 @@
 | `NBA-003` latest memo/activity/next action summary | No | core record activity 설계가 필요하다. 01에서 FE가 summary를 꾸미지 않는 원칙만 반영한다. |
 | `NBA-004` MeetingNote next/latest summary | No | 회의록 summary/AI 정책 후보이며 01 범위가 아니다. |
 | `NBA-005` BusinessCard provider failure contract | No | OCR provider failure 계약이며 import file/parser 오류와 분리한다. |
-| `NBA-006` ImportJob persistence/resume API | Yes | 01의 직접 대상이다. API, DB, FE, QA 문서로 `confirmed` 승격했다. |
+| `NBA-006` ImportJob persistence/resume API | Yes | 01의 직접 대상이며 구현 및 QA closeout 완료 상태다. |
 | `NBA-007` Trash private memo restriction | No | Trash response 보안 정책이며 01 범위가 아니다. |
 | `NBA-008` Page size 15 contract cleanup | No | 목록 pagination 계약 정리이며 01 범위가 아니다. |
 | `NBA-009` Schedule week report | No | 일정 주간 보고서 후보이며 01 범위가 아니다. |
@@ -73,14 +74,14 @@
 - Trash 7일 이후 복구/영구삭제 정책
 - 범용 ExportJob
 
-## 6. 구현 착수 판정
+## 6. 완료 판정
 
-01은 `NBA-006` 구현 착수에는 충분하다.
+01은 `NBA-006` 구현 및 QA closeout까지 완료했다.
 
-첫 번째 `/goal`은 아래 문서를 기준으로 바로 시작한다.
+완료 goal은 아래 순서로 진행했다.
 
 ```text
-TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/01_IMPORT_JOB_PERSISTENCE/COMMON/GOAL-SPECS/G01_DB_PERSISTENCE_FOUNDATION.md
+G01_DB_PERSISTENCE_FOUNDATION -> G02_BACKEND_IMPORT_JOB_API -> G03_USER_WEB_RESUME_UX -> G04_QA_CLEANUP
 ```
 
 Global B2C 첫 판매 전체 구현은 이 계획 하나로 착수하면 안 된다. 첫 판매 전체는 결제, Admin, 현지화, 분석, 정책을 포함하는 별도 계획 bundle로 나누어야 한다.

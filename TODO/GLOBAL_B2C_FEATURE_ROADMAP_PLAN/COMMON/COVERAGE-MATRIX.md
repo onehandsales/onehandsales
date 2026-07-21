@@ -2,6 +2,11 @@
 
 상태: Draft
 
+## 0. 완료 반영
+
+- [x] 01 `ImportJob 영속화`: Done (2026-07-21)
+- [x] `NBA-006 ImportJob persistence/resume API`: `01_IMPORT_JOB_PERSISTENCE`에서 구현 및 QA closeout 완료
+
 ## 1. 목적
 
 이 문서는 앞으로 만들어야 할 기능이 01~12 슬롯 중 어디에 포함되는지 추적한다.
@@ -12,8 +17,8 @@
 
 | 분류 | 기능 | 포함 슬롯 | 비고 |
 |---|---|---|---|
-| Import/Data | ImportJob 영속화 | 01 | 확정 전 job, preview row, TTL, resume |
-| Import/Data | Import 원본/preview 보관 정책 | 01 | 개인정보와 cleanup 기준 포함 |
+| Import/Data | ImportJob 영속화 | 01 | Done: 확정 전 job, preview row, TTL, resume 구현 완료 |
+| Import/Data | Import 원본/preview 보관 정책 | 01 | Done: 개인정보와 cleanup 기준 포함 |
 | Import/Data | Import/Export 파일 저장 기반 | 01, 03 | Import 파일은 01, Export job/file은 03 |
 | Notification | In-app notification | 02 | 목록, 읽음, unread count |
 | Notification | Email/browser push | 02 | delivery worker, settings, provider failure |

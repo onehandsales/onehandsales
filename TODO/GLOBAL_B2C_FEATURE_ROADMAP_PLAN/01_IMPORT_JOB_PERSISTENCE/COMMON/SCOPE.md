@@ -1,6 +1,18 @@
 ﻿# Scope
 
-상태: Confirmed
+상태: Done
+완료일: 2026-07-21
+
+## 0. 완료 체크리스트
+
+- [x] 확정 전 ImportJob DB 영속화
+- [x] row snapshot, mapping, validation result 저장
+- [x] active job resume API
+- [x] row edit, validate, confirm, cancel API
+- [x] original file metadata/delete tracking
+- [x] redacted ImportJobError 이력
+- [x] User Web 새로고침/탭 이동 resume UX
+- [x] G04 QA closeout
 
 ## 1. 목적
 
@@ -70,7 +82,7 @@
 
 ## 7. 출시 범위 대조
 
-01은 `TODO/NEXT_BACKEND_API_BACKLOG_PLAN`의 `NBA-006` 구현 계획이다.
+01은 `TODO/NEXT_BACKEND_API_BACKLOG_PLAN`의 `NBA-006` 구현 완료 계획이다.
 
 - 포함: Import upload/mapping/validation/confirm 중 유실 방지, DB persistence, TTL, cleanup, resume UX
 - 제외: 결제/구독, Admin 운영, 앱 다국어, 제품 분석, Notification, Schedule week report, Trash 장기 복구 정책

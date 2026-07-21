@@ -2,6 +2,21 @@
 
 상태: Draft
 
+## 0. 완료 현황
+
+- [x] `01_IMPORT_JOB_PERSISTENCE`: Done (2026-07-21)
+- [ ] `02_NOTIFICATION_REMINDER`
+- [ ] `03_WEEKLY_SCHEDULE_REPORT`
+- [ ] `04_GOOGLE_CALENDAR_INTEGRATION`
+- [ ] `05_AI_WEEKLY_SALES_REPORT`
+- [ ] `06_DEAL_ACTIVITY_TIMELINE`
+- [ ] `07_MEETING_NOTE_AI_PROVIDER_LOG`
+- [ ] `08_GLOBAL_DATA_I18N`
+- [ ] `09_PRODUCT_ANALYTICS`
+- [ ] `10_MOBILE_PWA_FIELD_USE`
+- [ ] `11_ADMIN_OPERATION`
+- [ ] `12_BILLING_SUBSCRIPTION_TAX`
+
 ## 1. 로드맵 기준
 
 이 로드맵은 기능을 먼저 만들고, UX/UI 전체 정리는 후반에 한 번에 잡는다는 사용자 결정을 따른다.
@@ -22,7 +37,7 @@
 
 | 단계 | 포함 폴더 | 목적 |
 |---|---|---|
-| 기능 신뢰 기반 | 01 | Import 중 유실 같은 데이터 신뢰 문제 제거 |
+| 기능 신뢰 기반 | 01 | Done: Import 중 유실 같은 데이터 신뢰 문제 제거 |
 | 리텐션/일정 루프 | 02~05 | 알림, 주간 보고서, Calendar, AI 리포트로 반복 사용 이유 만들기 |
 | 영업 기록 고도화 | 06~07 | 딜 활동과 회의록 AI 운영 이력을 실제 영업 판단 데이터로 만들기 |
 | Global B2C 제품화 | 08~09 | 다국가 데이터/앱 다국어와 제품 분석 기반 만들기 |
@@ -31,7 +46,7 @@
 
 ## 3. 기본 순서
 
-1. `01_IMPORT_JOB_PERSISTENCE`
+1. `01_IMPORT_JOB_PERSISTENCE` - Done
 2. `02_NOTIFICATION_REMINDER`
 3. `03_WEEKLY_SCHEDULE_REPORT`
 4. `04_GOOGLE_CALENDAR_INTEGRATION`

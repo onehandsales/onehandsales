@@ -1,6 +1,7 @@
 ﻿# ImportJob Persistence DB Schema
 
 상태: Confirmed
+구현 상태: Done (G01/G04 완료, 2026-07-21)
 기준: `BE/prisma/schema.prisma`, `AGENT/SOFTWARE_AGENT/DB_SCHEMA/DATA_IMPORT_SCHEMA.md`
 
 ## 1. 목적

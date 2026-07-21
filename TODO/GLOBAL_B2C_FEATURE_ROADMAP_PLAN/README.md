@@ -4,6 +4,21 @@
 작성일: 2026-07-20
 성격: 기능 선구현 로드맵 슬롯
 
+## 0. 완료 현황
+
+- [x] 01 `01_IMPORT_JOB_PERSISTENCE`: Done (2026-07-21)
+- [ ] 02 `02_NOTIFICATION_REMINDER`
+- [ ] 03 `03_WEEKLY_SCHEDULE_REPORT`
+- [ ] 04 `04_GOOGLE_CALENDAR_INTEGRATION`
+- [ ] 05 `05_AI_WEEKLY_SALES_REPORT`
+- [ ] 06 `06_DEAL_ACTIVITY_TIMELINE`
+- [ ] 07 `07_MEETING_NOTE_AI_PROVIDER_LOG`
+- [ ] 08 `08_GLOBAL_DATA_I18N`
+- [ ] 09 `09_PRODUCT_ANALYTICS`
+- [ ] 10 `10_MOBILE_PWA_FIELD_USE`
+- [ ] 11 `11_ADMIN_OPERATION`
+- [ ] 12 `12_BILLING_SUBSCRIPTION_TAX`
+
 ## 1. 목적
 
 이 계획은 `한손에 영업 / onehand.sales`가 Global B2C 첫 판매 기준과 Series A급 제품 기능까지 가기 위해 앞으로 만들어야 할 기능을 01~12 순서로 미리 정리한다.
@@ -24,7 +39,7 @@
 
 | 순서 | 폴더 | 기능 묶음 | 현재 성격 |
 |---:|---|---|---|
-| 01 | `01_IMPORT_JOB_PERSISTENCE` | ImportJob 영속화 | Global B2C 전 데이터 신뢰 |
+| 01 | `01_IMPORT_JOB_PERSISTENCE` | ImportJob 영속화 | Done: Global B2C 전 데이터 신뢰 기반 완료 |
 | 02 | `02_NOTIFICATION_REMINDER` | 알림/리마인더 | 리텐션 기본 루프 |
 | 03 | `03_WEEKLY_SCHEDULE_REPORT` | 주간 일정 보고서 | 일정/딜/회의록 연결 보고 |
 | 04 | `04_GOOGLE_CALENDAR_INTEGRATION` | Google Calendar 연동 | 외부 일정 연결 |

@@ -2,6 +2,11 @@
 
 상태: Draft Guide
 
+## 0. 완료 반영
+
+- [x] `NBA-006 ImportJob persistence/resume API`: Done (2026-07-21)
+- [x] Import gap 중 "confirm 전 job in-memory" 항목은 닫힘
+
 ## 1. Gap 분류 기준
 
 | 분류 | 의미 |
@@ -26,7 +31,7 @@
 | 일정 | 월간/목록과 딜 연결이 된다. 주간 보고서가 있다. | CRUD와 월간/목록 구현, week route redirect | 주간 보고서/PDF/Excel 없음 | Feature gap | 후속 |
 | 회의록 | 직접 작성, AI/STT, 딜 활동 연결, 후속 행동 추출이 된다. | 직접/AI/STT draft와 딜 연결 구현 | next/latest summary, provider log, transcript 정책 없음 | Feature/Ops gap | 후속 |
 | 명함 스캔 | 모바일 현장 촬영, OCR, 다국가 연락처 검증까지 자연스럽다. | 이미지 업로드 OCR 구현 | 카메라 UX, 다국가 전화번호, provider failure contract 부족 | Feature/Ops gap | 후속 |
-| Import | 업로드 중단/새로고침/배포에도 이어받는다. | confirm 전 job은 in-memory | persistent ImportJob table/API 없음 | Feature gap | 후속 |
+| Import | 업로드 중단/새로고침/배포에도 이어받는다. | ImportJob DB persistence/resume 구현 완료 | Live Supabase 수동 QA와 장기 운영 cleanup은 운영 확인 단계 | Closed for NBA-006 | 완료 |
 | Search | 빠르고 안전하며 다른 사용자 데이터가 섞이지 않는다. | 구현 및 보안 QA 완료 | 고급 필터/정렬은 후속 | UX/UI productization | 낮음 |
 | Trash | 7일 이내 복구와 만료 후 정책이 명확하다. | 7일 이내 복구 구현 | 7일 이후 정책, private memo backend restriction 후보 | Ops/security gap | 후속 |
 | Export | 도메인별 export와 민감 export 정책이 안전하다. | 도메인별 xlsx 구현 | 민감 export, 대량/비동기 export 정책 없음 | Ops/security gap | 후속 |
@@ -49,7 +54,7 @@
 | MVP를 내부 검증으로만 둘 때 어떤 품질 gate를 통과해야 Global B2C 계획으로 넘어갈지 | 화면 QA와 Backend 운영 gate의 범위가 달라진다. |
 | User Web의 최우선 화면이 `/app` 홈인지 `/app/deals`인지 | UX polish와 API summary 우선순위가 달라진다. |
 | 딜 목록에서 제품/최근 활동/다음 행동을 얼마나 1급 정보로 볼지 | `NBA-001`, `NBA-003`, `NBA-008` 필요성이 달라진다. |
-| ImportJob 유실이 Global B2C 첫 판매 blocker인지 known limitation인지 | `NBA-006` 우선순위가 달라진다. |
+| ImportJob 유실이 Global B2C 첫 판매 blocker인지 known limitation인지 | 완료 처리됨. `NBA-006`은 `01_IMPORT_JOB_PERSISTENCE`에서 구현 및 QA closeout 완료. |
 | Notification이 첫 판매 retention 필수인지, Series A 기능인지 | 리텐션 루프 설계 시점이 달라진다. |
 | Admin 운영을 결제 전에 어느 수준까지 구현할지 | 유료 고객 지원/민감정보 정책 범위가 달라진다. |
 

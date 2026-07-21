@@ -1,6 +1,7 @@
 # API Spec
 
 상태: Confirmed
+구현 상태: Done (G02/G03/G04 완료, 2026-07-21)
 
 ## 1. 목적
 

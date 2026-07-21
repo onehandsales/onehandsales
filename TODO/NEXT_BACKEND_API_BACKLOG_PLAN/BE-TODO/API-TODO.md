@@ -2,6 +2,10 @@
 
 상태: Draft
 
+## 0. 완료 반영
+
+- [x] `NBA-006 ImportJob persistence/resume API`: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/01_IMPORT_JOB_PERSISTENCE`에서 구현 및 QA closeout 완료
+
 ## 1. 목적
 
 이 문서는 G07에서 분리한 Backend/API 후속 후보를 실행 가능한 다음 계획으로 만들기 전의 초안이다.
@@ -39,7 +43,6 @@
 
 - `NBA-003`: Company/Contact/Product latest memo/activity/next action summary
 - `NBA-004`: MeetingNote next/latest summary
-- `NBA-006`: ImportJob persistence/resume API
 - `NBA-009`: Schedule week report
 - `NBA-010`: Notification
 

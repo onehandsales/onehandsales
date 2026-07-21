@@ -1,6 +1,7 @@
 # References
 
 상태: Confirmed
+구현 상태: Done (01 완료 참조 목록, 2026-07-21)
 
 ## 1. 01 내부 문서
 
@@ -60,7 +61,7 @@
 
 - `BE/prisma/schema.prisma`
 - `BE/src/modules/data-import`
-- `BE/src/modules/data-import/infrastructure/persistence/in-memory-import-job.store.ts`
+- `BE/src/modules/data-import/infrastructure/persistence/prisma-import-job.repository.ts`
 - `FE/user-web/src/features/import-export`
 
 ## 6. 기존 완료 문서 참조

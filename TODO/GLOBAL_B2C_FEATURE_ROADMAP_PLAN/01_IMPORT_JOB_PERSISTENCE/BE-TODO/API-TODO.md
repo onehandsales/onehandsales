@@ -1,6 +1,7 @@
 ﻿# Backend API TODO
 
 상태: Confirmed
+구현 상태: Done (G02/G04 완료, 2026-07-21)
 기준 API 계약: `COMMON/API-SPEC/IMPORT_JOB_API.md`
 
 ## 1. 목표

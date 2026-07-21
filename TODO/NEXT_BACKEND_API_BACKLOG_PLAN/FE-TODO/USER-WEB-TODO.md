@@ -2,6 +2,10 @@
 
 상태: Draft
 
+## 0. 완료 반영
+
+- [x] `NBA-006 ImportJob persistence/resume API`: User Web import resume UX와 client state 구현 완료
+
 ## 1. 목적
 
 이 문서는 G07에서 분리한 Backend/API 후보가 `FE/user-web`에 미칠 수 있는 영향을 정리한다.
@@ -23,7 +27,7 @@
 |---|---|---|
 | NBA-003 | 회사/담당자/제품 목록 summary 표시 | private memo와 일반 활동을 구분한다. |
 | NBA-004 | 회의록 목록 summary 표시 | AI/STT raw text나 민감 원문을 목록에 노출하지 않는다. |
-| NBA-006 | Import resume 화면과 client state | 새로고침/탭 이동 복구 UX와 만료 상태가 필요하다. |
+| NBA-006 | Import resume 화면과 client state | 완료: 새로고침/탭 이동 복구 UX, 만료/실패 상태, confirm/cancel 흐름 구현 |
 | NBA-009 | `/app/schedules/week` redirect 해제 또는 새 화면 | timezone 기준 주간 범위와 loading/error state가 필요하다. |
 | NBA-010 | Notification route/sidebar 노출 | Backend API와 권한/설정 계약 전에는 노출하지 않는다. |
 
