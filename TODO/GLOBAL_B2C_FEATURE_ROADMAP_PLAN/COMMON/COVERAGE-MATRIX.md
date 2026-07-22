@@ -40,8 +40,8 @@
 | Schedule | 범용 ExportJob / 비동기 Export | 후속 별도 결정, 11 | 03에서 제외. `/app/export`, `/api/exports`, 대용량 export, 파일 TTL/권한/삭제/audit는 Trust/policy/Admin gate와 함께 결정 |
 | Schedule | 일정/회의록 export | 후속 별도 결정 | 03에서 제외. 기존 domain xlsx 이후 확장 여부를 별도 확정 |
 | Schedule | 반복 일정 | 후속 별도 결정 | 03에서 제외. recurrence rule, exception, DST, 알림 재생성, Calendar 연동 영향 검토 후 별도 확정 |
-| Calendar | Google Calendar connect/read-only import | 04 | login OAuth와 Calendar scope 분리, export/two-way sync 제외 |
-| Calendar | external calendar sync 실패 처리 | 04, 11 | 사용자-facing은 04, 운영 추적은 11 |
+| Calendar | Google Calendar connect/read-only import | 04 | Goal Ready: login OAuth와 Calendar scope 분리, primary 기본 선택+추가 calendar 선택, 10분 freshness 자동 sync+수동 sync, export/two-way sync 제외 |
+| Calendar | external calendar sync 실패 처리 | 04, 11 | Goal Ready: revoked/invalid_grant는 재연결 필요, transient failure는 사용자-facing 실패 표시. 운영 추적은 11 |
 | AI report | AI 주간 영업 리포트 | 05 | 일정+딜+회의록 기반 |
 | AI report | AI follow-up/next action/딜 리스크 | 05, 07 | 리포트성은 05, 회의록 추출은 07 |
 | AI report | AI 데이터 정리 제안 | 05, 07 | Import/명함/회의록 품질 고도화 후보 |
