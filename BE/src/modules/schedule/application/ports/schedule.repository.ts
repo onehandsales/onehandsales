@@ -1,3 +1,5 @@
+import type { NotificationReminderWriteRepository } from "@/modules/notification/application/ports/notification-reminder-writer.port";
+
 export const SCHEDULE_REPOSITORY = Symbol("SCHEDULE_REPOSITORY");
 
 export enum ScheduleViewMode {
@@ -73,7 +75,7 @@ export interface DeleteScheduleDealsInput {
 }
 
 // 역할 : ScheduleRepository 저장소가 제공해야 하는 영속성 계약을 정의합니다.
-export interface ScheduleRepository {
+export interface ScheduleRepository extends NotificationReminderWriteRepository {
   // 기능 : 일정 저장소 작업을 트랜잭션 경계 안에서 실행합니다.
   runInTransaction<T>(
     work: (repository: ScheduleRepository) => Promise<T>

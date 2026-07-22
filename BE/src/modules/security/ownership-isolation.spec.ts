@@ -25,6 +25,12 @@ import {
 import { DealApplicationService } from "@/modules/deal/application/services/deal-application.service";
 import { DealStatusCode } from "@/modules/deal/domain/deal-status";
 import {
+  CancelDealDueReminderUseCase,
+  CancelScheduleNotificationReminderUseCase,
+  ScheduleDealDueReminderUseCase,
+  ScheduleNotificationReminderUseCase,
+} from "@/modules/notification/application/use-cases/notification-reminder-scheduling.use-cases";
+import {
   type MeetingNoteListRecord,
   type MeetingNoteRecord,
   type MeetingNoteRepository,
@@ -151,6 +157,50 @@ class SilentLogger extends AppLogger {
   }
 }
 
+function createScheduleNotificationReminderUseCase(): ScheduleNotificationReminderUseCase {
+  return {
+    execute: jest.fn().mockResolvedValue({
+      scheduled: true,
+      notification: null,
+      canceledCount: 0,
+    }),
+    executeWithRepository: jest.fn().mockResolvedValue({
+      scheduled: true,
+      notification: null,
+      canceledCount: 0,
+    }),
+  } as unknown as ScheduleNotificationReminderUseCase;
+}
+
+function createCancelScheduleNotificationReminderUseCase(): CancelScheduleNotificationReminderUseCase {
+  return {
+    execute: jest.fn().mockResolvedValue(0),
+    executeWithRepository: jest.fn().mockResolvedValue(0),
+  } as unknown as CancelScheduleNotificationReminderUseCase;
+}
+
+function createScheduleDealDueReminderUseCase(): ScheduleDealDueReminderUseCase {
+  return {
+    execute: jest.fn().mockResolvedValue({
+      scheduled: true,
+      notification: null,
+      canceledCount: 0,
+    }),
+    executeWithRepository: jest.fn().mockResolvedValue({
+      scheduled: true,
+      notification: null,
+      canceledCount: 0,
+    }),
+  } as unknown as ScheduleDealDueReminderUseCase;
+}
+
+function createCancelDealDueReminderUseCase(): CancelDealDueReminderUseCase {
+  return {
+    execute: jest.fn().mockResolvedValue(0),
+    executeWithRepository: jest.fn().mockResolvedValue(0),
+  } as unknown as CancelDealDueReminderUseCase;
+}
+
 const privateMemoEncryption: PrivateMemoEncryptionPort &
   ContactPrivateMemoEncryptionPort &
   ProductPrivateMemoEncryptionPort = {
@@ -268,6 +318,8 @@ describe("G04 multi-account ownership isolation", () => {
     const service = new DealApplicationService(
       createDealRepository(),
       writer,
+      createScheduleDealDueReminderUseCase(),
+      createCancelDealDueReminderUseCase(),
       new SilentLogger()
     );
 
@@ -309,6 +361,8 @@ describe("G04 multi-account ownership isolation", () => {
   it("isolates schedule list, detail, update, and delete access", async () => {
     const service = new ScheduleApplicationService(
       createScheduleRepository(),
+      createScheduleNotificationReminderUseCase(),
+      createCancelScheduleNotificationReminderUseCase(),
       new SilentLogger()
     );
 

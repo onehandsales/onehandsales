@@ -27,6 +27,16 @@ import {
 } from "@/modules/deal/application/ports/deal.repository";
 import { RelatedResourceNotFoundError } from "@/modules/deal/domain/deal.errors";
 import { DealStatusCode } from "@/modules/deal/domain/deal-status";
+import {
+  CancelDealDueReminderUseCase,
+  ScheduleDealDueReminderUseCase,
+} from "@/modules/notification/application/use-cases/notification-reminder-scheduling.use-cases";
+import type {
+  CancelPendingNotificationsBySourceInput,
+  NotificationRecord,
+  NotificationSettingsRecord,
+  UpsertReminderNotificationInput,
+} from "@/modules/notification/application/ports/notification.repository";
 import type { CurrentUserContext } from "@/shared/application/context/current-user.context";
 import type {
   XlsxWorkbookWriter,
@@ -143,6 +153,43 @@ class FakeDealRepository implements DealRepository {
   }
 
   // 기능 : fake 딜 상태별 개수를 반환합니다.
+  async findSettingsForUser(): Promise<NotificationSettingsRecord | null> {
+    return null;
+  }
+
+  async cancelPendingNotificationsBySource(
+    _input: CancelPendingNotificationsBySourceInput
+  ): Promise<number> {
+    void _input;
+    return 0;
+  }
+
+  async upsertReminderNotification(
+    input: UpsertReminderNotificationInput
+  ): Promise<NotificationRecord> {
+    return {
+      id: `notification-${this.deals.length + 1}`,
+      userId: input.userId,
+      type: input.type,
+      sourceType: input.sourceType,
+      sourceId: input.sourceId,
+      dedupeKey: input.dedupeKey,
+      targetPath: input.targetPath,
+      title: input.title,
+      body: input.body ?? null,
+      targetLabel: input.targetLabel ?? null,
+      status: "PENDING",
+      scheduledAt: input.scheduledAt,
+      sentAt: null,
+      readAt: null,
+      canceledAt: null,
+      cancelReason: null,
+      metadataJson: input.metadataJson ?? {},
+      createdAt: input.now,
+      updatedAt: input.now,
+    };
+  }
+
   async countDealsByStatus(
     input: CountDealsByStatusInput
   ): Promise<ReadonlyMap<DealStatusCode, number>> {
@@ -645,7 +692,30 @@ function createService(
   repository: FakeDealRepository,
   writer: XlsxWorkbookWriter = new FakeXlsxWorkbookWriter()
 ): DealApplicationService {
-  return new DealApplicationService(repository, writer, new FakeAppLogger());
+  const scheduleDealDueReminder = {
+    execute: jest.fn().mockResolvedValue({
+      scheduled: true,
+      notification: null,
+      canceledCount: 0,
+    }),
+    executeWithRepository: jest.fn().mockResolvedValue({
+      scheduled: true,
+      notification: null,
+      canceledCount: 0,
+    }),
+  } as unknown as ScheduleDealDueReminderUseCase;
+  const cancelDealDueReminder = {
+    execute: jest.fn().mockResolvedValue(0),
+    executeWithRepository: jest.fn().mockResolvedValue(0),
+  } as unknown as CancelDealDueReminderUseCase;
+
+  return new DealApplicationService(
+    repository,
+    writer,
+    scheduleDealDueReminder,
+    cancelDealDueReminder,
+    new FakeAppLogger()
+  );
 }
 
 // 기능 : 기본 딜 생성 command를 반환합니다.

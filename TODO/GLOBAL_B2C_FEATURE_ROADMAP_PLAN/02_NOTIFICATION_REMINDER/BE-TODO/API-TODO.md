@@ -121,29 +121,31 @@ Logging 금지:
 - deal amount
 - authorization header/token
 
-## 7. Env / dependency 후보
+## 7. Env / dependency
 
-Backend dependency 후보:
+Backend dependency:
 
 - `web-push`
 - `nodemailer`
 - `@types/web-push`
 - `@types/nodemailer`
 
-Backend env 후보:
+Backend env:
 
 - `WEB_PUSH_VAPID_PUBLIC_KEY`
 - `WEB_PUSH_VAPID_PRIVATE_KEY`
 - `WEB_PUSH_VAPID_SUBJECT`
 - `SMTP_HOST`
 - `SMTP_PORT`
+- `SMTP_SECURE`
 - `SMTP_USER`
 - `SMTP_PASS`
 - `SMTP_FROM`
 - `NOTIFICATION_PROCESSOR_ENABLED`
 - `NOTIFICATION_PROCESSOR_BATCH_SIZE`
+- `NOTIFICATION_PROCESSOR_INTERVAL_MS`
 
-실제 env 이름은 `AGENT/SOFTWARE_AGENT/COMMON/ENVIRONMENT.md`, `BE/.env.example`와 함께 확정한다.
+실제 env 이름은 `AGENT/SOFTWARE_AGENT/COMMON/ENVIRONMENT.md`와 `BE/.env` 운영값 기준으로 확정한다. 이 repo에서 `.env.example`은 환경 계약 정본이 아니다.
 
 ## 8. 테스트 기준
 

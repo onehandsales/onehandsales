@@ -1,6 +1,8 @@
 # G03 Reminder Generation Delivery
 
-상태: Ready after G02
+상태: Done
+완료일: 2026-07-22
+작업 로그: `TODO_LOG/2026-07-22/G03_REMINDER_GENERATION_DELIVERY/WORK_LOG.md`
 
 ## 1. 목적
 
@@ -10,7 +12,7 @@
 
 - G01 DB foundation 완료
 - G02 Backend Notification API 완료
-- SMTP/Web Push env 이름이 `BE/.env.example`과 환경 문서에 정리되어 있다.
+- SMTP/Web Push env 이름이 `BE/.env` 운영값과 `AGENT/SOFTWARE_AGENT/COMMON/ENVIRONMENT.md` 환경 문서 기준으로 정리되어 있다. 이 repo에서 `.env.example`은 환경 계약 정본이 아니다.
 
 ## 3. 포함 범위
 

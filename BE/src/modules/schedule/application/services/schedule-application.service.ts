@@ -9,6 +9,10 @@ import {
   type UpdateScheduleInput,
 } from "@/modules/schedule/application/ports/schedule.repository";
 import {
+  CancelScheduleNotificationReminderUseCase,
+  ScheduleNotificationReminderUseCase,
+} from "@/modules/notification/application/use-cases/notification-reminder-scheduling.use-cases";
+import {
   RelatedDealNotFoundError,
   ScheduleNotFoundError,
 } from "@/modules/schedule/domain/schedule.errors";
@@ -112,6 +116,8 @@ export class ScheduleApplicationService {
   constructor(
     @Inject(SCHEDULE_REPOSITORY)
     private readonly scheduleRepository: ScheduleRepository,
+    private readonly scheduleNotificationReminder: ScheduleNotificationReminderUseCase,
+    private readonly cancelScheduleNotificationReminder: CancelScheduleNotificationReminderUseCase,
     private readonly logger: AppLogger
   ) {}
 
@@ -232,6 +238,16 @@ export class ScheduleApplicationService {
           dealIds: normalized.dealIds,
         });
       }
+
+      await this.scheduleNotificationReminder.executeWithRepository(
+        {
+          userId: currentUser.id,
+          scheduleId: schedule.id,
+          scheduleTitle: normalized.scheduleTitle,
+          startAt: normalized.startAt,
+        },
+        repository
+      );
     });
 
     // 3. 생성 결과 ID가 없으면 예외 상태로 처리한다.
@@ -285,6 +301,9 @@ export class ScheduleApplicationService {
 
     // 4. 수정 요청 값을 기존 일정 기준으로 검증하고 정규화한다.
     const normalized = this.normalizeUpdateInput(input, existing);
+    const nextScheduleTitle =
+      normalized.scheduleFields.scheduleTitle ?? existing.scheduleTitle;
+    const nextStartAt = normalized.scheduleFields.startAt ?? existing.startAt;
 
     // 5. 일정 기본 정보 수정과 ScheduleDeal diff 반영을 같은 transaction에서 처리한다.
     await this.scheduleRepository.runInTransaction(async (repository) => {
@@ -338,6 +357,16 @@ export class ScheduleApplicationService {
           });
         }
       }
+
+      await this.scheduleNotificationReminder.executeWithRepository(
+        {
+          userId: currentUser.id,
+          scheduleId,
+          scheduleTitle: nextScheduleTitle,
+          startAt: nextStartAt,
+        },
+        repository
+      );
     });
 
     // 6. 수정된 일정을 연결 딜과 함께 다시 조회한다.
@@ -386,6 +415,15 @@ export class ScheduleApplicationService {
       if (!deleted) {
         throw new ScheduleNotFoundError();
       }
+
+      await this.cancelScheduleNotificationReminder.executeWithRepository(
+        {
+          userId: currentUser.id,
+          scheduleId,
+          cancelReason: "SOURCE_DELETED",
+        },
+        repository
+      );
     });
 
     // 5. 일정 삭제 결과를 구조화 로그로 남긴다.

@@ -1,5 +1,12 @@
 import { Prisma } from "@prisma/client";
 import {
+  type CancelPendingNotificationsBySourceInput,
+  type NotificationRecord,
+  type NotificationSettingsRecord,
+  type UpsertReminderNotificationInput,
+} from "@/modules/notification/application/ports/notification.repository";
+import { PrismaNotificationRepository } from "@/modules/notification/infrastructure/persistence/prisma-notification.repository";
+import {
   type CreateScheduleDealsInput,
   type CreateScheduleInput,
   type DeleteScheduleDealsInput,
@@ -57,6 +64,26 @@ export class PrismaScheduleRepository implements ScheduleRepository {
   }
 
   // 기능 : 현재 사용자의 일정 연결용 딜 옵션 전체 목록을 조회합니다.
+  async findSettingsForUser(
+    userId: string
+  ): Promise<NotificationSettingsRecord | null> {
+    return this.createNotificationRepository().findSettingsForUser(userId);
+  }
+
+  async cancelPendingNotificationsBySource(
+    input: CancelPendingNotificationsBySourceInput
+  ): Promise<number> {
+    return this.createNotificationRepository().cancelPendingNotificationsBySource(
+      input
+    );
+  }
+
+  async upsertReminderNotification(
+    input: UpsertReminderNotificationInput
+  ): Promise<NotificationRecord> {
+    return this.createNotificationRepository().upsertReminderNotification(input);
+  }
+
   async listDealOptions(userId: string): Promise<ScheduleDealOptionRecord[]> {
     const deals = await this.client.deal.findMany({
       where: { userId, deletedAt: null },
@@ -254,6 +281,10 @@ export class PrismaScheduleRepository implements ScheduleRepository {
   }
 
   // 기능 : Prisma 일정 row를 application record로 변환합니다.
+  private createNotificationRepository(): PrismaNotificationRepository {
+    return new PrismaNotificationRepository(this.client, null);
+  }
+
   private mapScheduleRecord(schedule: ScheduleRow): ScheduleRecord {
     return {
       id: schedule.id,

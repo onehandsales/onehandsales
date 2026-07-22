@@ -9,14 +9,20 @@ import {
   type FindNotificationForUserInput,
   type ListDueNotificationsInput,
   type ListNotificationsForUserInput,
+  type ListRetryableDeliveryAttemptsInput,
+  type MarkDeliveryAttemptFailedInput,
+  type MarkDeliveryAttemptSentInput,
   type MarkNotificationReadInput,
   type MarkNotificationSentInput,
   type NotificationDeliveryAttemptRecord,
+  type NotificationDeliveryWorkItemRecord,
   type NotificationPageRecord,
   type NotificationRecord,
   type NotificationRepository,
   type NotificationSettingsRecord,
+  type NotificationUserRecord,
   type RevokeBrowserPushSubscriptionForUserInput,
+  type UpsertReminderNotificationInput,
   type UpsertBrowserPushSubscriptionInput,
   type UpsertNotificationSettingsInput,
 } from "@/modules/notification/application/ports/notification.repository";
@@ -33,6 +39,17 @@ type NotificationDeliveryAttemptRow = Omit<
   "detailJson"
 > & {
   readonly detailJson: unknown;
+};
+
+type NotificationUserRow = {
+  readonly id: string;
+  readonly email: string | null;
+  readonly timeZone: string;
+};
+
+type NotificationDeliveryAttemptWorkItemRow = NotificationDeliveryAttemptRow & {
+  readonly notification: NotificationRow;
+  readonly user: NotificationUserRow;
 };
 
 type NotificationSettingsScalarData = {
@@ -111,6 +128,56 @@ export class PrismaNotificationRepository implements NotificationRepository {
         body: input.body ?? null,
         targetLabel: input.targetLabel ?? null,
         scheduledAt: input.scheduledAt,
+        metadataJson: this.toInputJson(input.metadataJson ?? {}),
+      },
+    });
+
+    return this.mapNotification(notification);
+  }
+
+  async upsertReminderNotification(
+    input: UpsertReminderNotificationInput
+  ): Promise<NotificationRecord> {
+    const existing = await this.findNotificationByDedupeKey(
+      input.userId,
+      input.dedupeKey
+    );
+
+    if (!existing) {
+      try {
+        return await this.createNotification(input);
+      } catch (error) {
+        if (!this.isUniqueConstraintError(error)) {
+          throw error;
+        }
+
+        return this.findRequiredNotificationByDedupeKey(
+          input.userId,
+          input.dedupeKey
+        );
+      }
+    }
+
+    if (existing.status === "SENT") {
+      return this.mapNotification(existing);
+    }
+
+    const notification = await this.client.notification.update({
+      where: { id: existing.id },
+      data: {
+        type: input.type,
+        sourceType: input.sourceType,
+        sourceId: input.sourceId,
+        targetPath: input.targetPath,
+        title: input.title,
+        body: input.body ?? null,
+        targetLabel: input.targetLabel ?? null,
+        status: "PENDING",
+        scheduledAt: input.scheduledAt,
+        sentAt: null,
+        readAt: null,
+        canceledAt: null,
+        cancelReason: null,
         metadataJson: this.toInputJson(input.metadataJson ?? {}),
       },
     });
@@ -199,6 +266,9 @@ export class PrismaNotificationRepository implements NotificationRepository {
         sourceType: input.sourceType,
         sourceId: input.sourceId,
         status: "PENDING",
+        ...(input.excludeDedupeKey
+          ? { dedupeKey: { not: input.excludeDedupeKey } }
+          : {}),
       },
       data: {
         status: "CANCELED",
@@ -270,6 +340,123 @@ export class PrismaNotificationRepository implements NotificationRepository {
     });
 
     return this.mapDeliveryAttempt(attempt);
+  }
+
+  async markDeliveryAttemptSent(
+    input: MarkDeliveryAttemptSentInput
+  ): Promise<NotificationDeliveryAttemptRecord | null> {
+    const result = await this.client.notificationDeliveryAttempt.updateMany({
+      where: {
+        id: input.deliveryAttemptId,
+        status: "PENDING",
+      },
+      data: {
+        status: "SENT",
+        provider: input.provider,
+        providerMessageId: input.providerMessageId ?? null,
+        providerStatusCode: input.providerStatusCode ?? null,
+        safeErrorCode: null,
+        safeErrorMessage: null,
+        retryable: false,
+        nextRetryAt: null,
+        sentAt: input.sentAt,
+        failedAt: null,
+      },
+    });
+
+    if (result.count === 0) {
+      return null;
+    }
+
+    return this.findDeliveryAttemptById(input.deliveryAttemptId);
+  }
+
+  async markDeliveryAttemptFailed(
+    input: MarkDeliveryAttemptFailedInput
+  ): Promise<NotificationDeliveryAttemptRecord | null> {
+    const result = await this.client.notificationDeliveryAttempt.updateMany({
+      where: {
+        id: input.deliveryAttemptId,
+        status: "PENDING",
+      },
+      data: {
+        status: "FAILED",
+        provider: input.provider,
+        providerStatusCode: input.providerStatusCode ?? null,
+        safeErrorCode: input.safeErrorCode,
+        safeErrorMessage: input.safeErrorMessage,
+        retryable: input.retryable,
+        nextRetryAt: input.nextRetryAt ?? null,
+        sentAt: null,
+        failedAt: input.failedAt,
+      },
+    });
+
+    if (result.count === 0) {
+      return null;
+    }
+
+    return this.findDeliveryAttemptById(input.deliveryAttemptId);
+  }
+
+  async markDeliveryAttemptRetryConsumed(
+    deliveryAttemptId: string
+  ): Promise<boolean> {
+    const result = await this.client.notificationDeliveryAttempt.updateMany({
+      where: {
+        id: deliveryAttemptId,
+        status: "FAILED",
+        retryable: true,
+      },
+      data: {
+        retryable: false,
+        nextRetryAt: null,
+      },
+    });
+
+    return result.count === 1;
+  }
+
+  async listRetryableDeliveryAttempts(
+    input: ListRetryableDeliveryAttemptsInput
+  ): Promise<NotificationDeliveryWorkItemRecord[]> {
+    const attempts = await this.client.notificationDeliveryAttempt.findMany({
+      where: {
+        status: "FAILED",
+        retryable: true,
+        nextRetryAt: { lte: input.now },
+        attemptNumber: { lt: 3 },
+      },
+      include: {
+        notification: true,
+        user: {
+          select: {
+            id: true,
+            email: true,
+            timeZone: true,
+          },
+        },
+      },
+      orderBy: [{ nextRetryAt: "asc" }, { id: "asc" }],
+      take: input.limit,
+    });
+
+    return attempts.map((attempt) => this.mapDeliveryWorkItem(attempt));
+  }
+
+  async findUserForNotification(
+    userId: string
+  ): Promise<NotificationUserRecord | null> {
+    const user = await this.client.user.findUnique({
+      where: { id: userId },
+      select: {
+        id: true,
+        email: true,
+        timeZone: true,
+      },
+    });
+
+    return user ? this.mapUser(user) : null;
   }
 
   // 기능 : 암호화된 browser push subscription을 생성하거나 갱신합니다.
@@ -395,6 +582,44 @@ export class PrismaNotificationRepository implements NotificationRepository {
   }
 
   // 기능 : 알림 설정 갱신용 scalar data를 구성합니다.
+  private async findNotificationByDedupeKey(
+    userId: string,
+    dedupeKey: string
+  ): Promise<NotificationRow | null> {
+    return this.client.notification.findFirst({
+      where: {
+        userId,
+        dedupeKey,
+      },
+    });
+  }
+
+  private async findRequiredNotificationByDedupeKey(
+    userId: string,
+    dedupeKey: string
+  ): Promise<NotificationRecord> {
+    const notification = await this.findNotificationByDedupeKey(
+      userId,
+      dedupeKey
+    );
+
+    if (!notification) {
+      throw new Error("Notification was not found after unique retry");
+    }
+
+    return this.mapNotification(notification);
+  }
+
+  private async findDeliveryAttemptById(
+    deliveryAttemptId: string
+  ): Promise<NotificationDeliveryAttemptRecord | null> {
+    const attempt = await this.client.notificationDeliveryAttempt.findFirst({
+      where: { id: deliveryAttemptId },
+    });
+
+    return attempt ? this.mapDeliveryAttempt(attempt) : null;
+  }
+
   private createSettingsScalarData(
     input: UpsertNotificationSettingsInput
   ): NotificationSettingsScalarData {
@@ -550,6 +775,24 @@ export class PrismaNotificationRepository implements NotificationRepository {
   }
 
   // 기능 : Prisma push 구독 row를 application record로 변환합니다.
+  private mapDeliveryWorkItem(
+    row: NotificationDeliveryAttemptWorkItemRow
+  ): NotificationDeliveryWorkItemRecord {
+    return {
+      attempt: this.mapDeliveryAttempt(row),
+      notification: this.mapNotification(row.notification),
+      user: this.mapUser(row.user),
+    };
+  }
+
+  private mapUser(row: NotificationUserRow): NotificationUserRecord {
+    return {
+      id: row.id,
+      email: row.email,
+      timeZone: row.timeZone,
+    };
+  }
+
   private mapBrowserPushSubscription(
     row: BrowserPushSubscriptionRecord
   ): BrowserPushSubscriptionRecord {

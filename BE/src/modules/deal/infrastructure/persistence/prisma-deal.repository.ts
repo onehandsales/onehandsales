@@ -1,5 +1,12 @@
 import { Prisma } from "@prisma/client";
 import {
+  type CancelPendingNotificationsBySourceInput,
+  type NotificationRecord,
+  type NotificationSettingsRecord,
+  type UpsertReminderNotificationInput,
+} from "@/modules/notification/application/ports/notification.repository";
+import { PrismaNotificationRepository } from "@/modules/notification/infrastructure/persistence/prisma-notification.repository";
+import {
   DealListSort,
   type CountDealsByStatusInput,
   type CreateDealCompaniesInput,
@@ -145,6 +152,26 @@ export class PrismaDealRepository implements DealRepository {
   }
 
   // 기능 : 현재 사용자의 딜 단계별 개수를 조회합니다.
+  async findSettingsForUser(
+    userId: string
+  ): Promise<NotificationSettingsRecord | null> {
+    return this.createNotificationRepository().findSettingsForUser(userId);
+  }
+
+  async cancelPendingNotificationsBySource(
+    input: CancelPendingNotificationsBySourceInput
+  ): Promise<number> {
+    return this.createNotificationRepository().cancelPendingNotificationsBySource(
+      input
+    );
+  }
+
+  async upsertReminderNotification(
+    input: UpsertReminderNotificationInput
+  ): Promise<NotificationRecord> {
+    return this.createNotificationRepository().upsertReminderNotification(input);
+  }
+
   async countDealsByStatus(
     input: CountDealsByStatusInput
   ): Promise<ReadonlyMap<DealStatusCode, number>> {
@@ -692,6 +719,10 @@ export class PrismaDealRepository implements DealRepository {
   }
 
   // 기능 : 딜 목록과 export에 공통으로 쓰는 Prisma 조회 조건을 생성합니다.
+  private createNotificationRepository(): PrismaNotificationRepository {
+    return new PrismaNotificationRepository(this.client, null);
+  }
+
   private createDealWhere(
     input: Pick<
       ExportDealsInput,

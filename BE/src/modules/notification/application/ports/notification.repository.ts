@@ -92,6 +92,18 @@ export interface BrowserPushSubscriptionRecord {
   readonly updatedAt: Date;
 }
 
+export interface NotificationUserRecord {
+  readonly id: string;
+  readonly email: string | null;
+  readonly timeZone: string;
+}
+
+export interface NotificationDeliveryWorkItemRecord {
+  readonly attempt: NotificationDeliveryAttemptRecord;
+  readonly notification: NotificationRecord;
+  readonly user: NotificationUserRecord;
+}
+
 // 역할 : NotificationPageRecord 알림 목록 page 결과를 전달합니다.
 export interface NotificationPageRecord {
   readonly items: readonly NotificationRecord[];
@@ -148,11 +160,16 @@ export interface CreateNotificationInput {
   readonly metadataJson?: Record<string, unknown>;
 }
 
+export interface UpsertReminderNotificationInput extends CreateNotificationInput {
+  readonly now: Date;
+}
+
 // 역할 : CancelPendingNotificationsBySourceInput 원본 일정/딜 기준 pending 알림 취소 조건을 정의합니다.
 export interface CancelPendingNotificationsBySourceInput {
   readonly userId: string;
   readonly sourceType: NotificationSourceType;
   readonly sourceId: string;
+  readonly excludeDedupeKey?: string;
   readonly cancelReason: string;
   readonly canceledAt: Date;
 }
@@ -193,6 +210,30 @@ export interface CreateNotificationDeliveryAttemptInput {
   readonly sentAt?: Date | null;
   readonly failedAt?: Date | null;
   readonly detailJson?: Record<string, unknown>;
+}
+
+export interface MarkDeliveryAttemptSentInput {
+  readonly deliveryAttemptId: string;
+  readonly sentAt: Date;
+  readonly provider: string;
+  readonly providerMessageId?: string | null;
+  readonly providerStatusCode?: string | null;
+}
+
+export interface MarkDeliveryAttemptFailedInput {
+  readonly deliveryAttemptId: string;
+  readonly failedAt: Date;
+  readonly provider: string;
+  readonly providerStatusCode?: string | null;
+  readonly safeErrorCode: string;
+  readonly safeErrorMessage: string;
+  readonly retryable: boolean;
+  readonly nextRetryAt?: Date | null;
+}
+
+export interface ListRetryableDeliveryAttemptsInput {
+  readonly now: Date;
+  readonly limit: number;
 }
 
 // 역할 : UpsertBrowserPushSubscriptionInput 암호화된 push 구독 upsert 값을 정의합니다.
@@ -237,6 +278,9 @@ export interface NotificationRepository {
   ): Promise<NotificationSettingsRecord>;
   // 기능 : 앱 안 알림 정본 row를 생성합니다.
   createNotification(input: CreateNotificationInput): Promise<NotificationRecord>;
+  upsertReminderNotification(
+    input: UpsertReminderNotificationInput
+  ): Promise<NotificationRecord>;
   // 기능 : 현재 사용자 소유 알림을 ID 기준으로 조회합니다.
   findNotificationByIdForUser(
     input: FindNotificationForUserInput
@@ -265,6 +309,17 @@ export interface NotificationRepository {
   createDeliveryAttempt(
     input: CreateNotificationDeliveryAttemptInput
   ): Promise<NotificationDeliveryAttemptRecord>;
+  markDeliveryAttemptSent(
+    input: MarkDeliveryAttemptSentInput
+  ): Promise<NotificationDeliveryAttemptRecord | null>;
+  markDeliveryAttemptFailed(
+    input: MarkDeliveryAttemptFailedInput
+  ): Promise<NotificationDeliveryAttemptRecord | null>;
+  markDeliveryAttemptRetryConsumed(deliveryAttemptId: string): Promise<boolean>;
+  listRetryableDeliveryAttempts(
+    input: ListRetryableDeliveryAttemptsInput
+  ): Promise<NotificationDeliveryWorkItemRecord[]>;
+  findUserForNotification(userId: string): Promise<NotificationUserRecord | null>;
   // 기능 : 암호화된 browser push subscription을 생성하거나 갱신합니다.
   upsertBrowserPushSubscription(
     input: UpsertBrowserPushSubscriptionInput

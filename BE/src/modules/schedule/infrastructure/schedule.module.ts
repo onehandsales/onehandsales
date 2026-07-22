@@ -1,5 +1,6 @@
 import { Module } from "@nestjs/common";
 import { AuthModule } from "@/modules/auth/infrastructure/auth.module";
+import { NotificationModule } from "@/modules/notification/infrastructure/notification.module";
 import { AppLogger } from "@/shared/infrastructure/logger/app-logger.service";
 import { PrismaInfrastructureModule } from "@/shared/infrastructure/prisma/prisma-infrastructure.module";
 import { PrismaService } from "@/shared/infrastructure/prisma/prisma.service";
@@ -10,7 +11,7 @@ import { PrismaScheduleRepository } from "./persistence/prisma-schedule.reposito
 
 // 역할 : ScheduleModule 모듈의 controller와 provider 의존성을 조립합니다.
 @Module({
-  imports: [AuthModule, PrismaInfrastructureModule],
+  imports: [AuthModule, PrismaInfrastructureModule, NotificationModule],
   controllers: [ScheduleController],
   providers: [
     ScheduleApplicationService,

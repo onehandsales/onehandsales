@@ -7,7 +7,7 @@
 
 - 판정: 구현 착수 가능
 - 이유: 02의 제품 결정, 포함/제외 범위, API 계약, DB schema, FE 작업, goal 순서, QA 체크리스트가 confirmed 수준으로 정리됐다.
-- 구현 상태: G01/G02 Done, G03-G05 Pending
+- 구현 상태: G01/G02/G03 Done, G04-G05 Pending
 
 ## 2. 사용자 결정 반영
 
@@ -51,7 +51,7 @@
 ## 6. 구현 중 주의
 
 - 실제 SMTP/Web Push provider env가 없으면 adapter는 mock/stub으로 테스트하고 provider smoke는 별도 기록한다.
-- `web-push`, `nodemailer` dependency 추가가 필요할 수 있다.
+- `web-push`, `nodemailer` dependency는 G03에서 추가됐다.
 - schedule/deal mutation과 notification 생성/취소를 같은 transaction으로 묶는 구조를 우선 검토한다.
 - User Web 기존 notification API client는 `/api/users/me/settings`를 사용하므로 `/api/notifications/settings`로 정리해야 한다.
 - `notification-sw.js`의 기본 target path는 `/app/notifications` 기준으로 고쳐야 한다.

@@ -25,6 +25,10 @@ import {
   RelatedResourceNotFoundError,
 } from "@/modules/deal/domain/deal.errors";
 import {
+  CancelDealDueReminderUseCase,
+  ScheduleDealDueReminderUseCase,
+} from "@/modules/notification/application/use-cases/notification-reminder-scheduling.use-cases";
+import {
   DEAL_STATUS_CODES,
   DealStatusCode,
   getDealStatusLabel,
@@ -250,6 +254,8 @@ export class DealApplicationService {
     private readonly dealRepository: DealRepository,
     @Inject(XLSX_WORKBOOK_WRITER)
     private readonly xlsxWriter: XlsxWorkbookWriter,
+    private readonly scheduleDealDueReminder: ScheduleDealDueReminderUseCase,
+    private readonly cancelDealDueReminder: CancelDealDueReminderUseCase,
     private readonly logger: AppLogger
   ) {}
 
@@ -458,6 +464,17 @@ export class DealApplicationService {
           memo: dealMemo,
         });
       }
+
+      await this.scheduleDealDueReminder.executeWithRepository(
+        {
+          userId: currentUser.id,
+          dealId: deal.id,
+          dealName,
+          expectedEndDate,
+          userTimeZone: currentUser.timeZone,
+        },
+        repository
+      );
     });
 
     if (!createdDealId) {
@@ -509,6 +526,9 @@ export class DealApplicationService {
       updateInput.contactIds ?? existingDeal.contacts.map((contact) => contact.id);
     const finalProductIds =
       updateInput.productIds ?? existingDeal.products.map((product) => product.id);
+    const finalDealName = updateInput.dealName ?? existingDeal.dealName;
+    const finalExpectedEndDate =
+      updateInput.expectedEndDate ?? existingDeal.expectedEndDate;
 
     let dealUpdated = false;
 
@@ -556,6 +576,17 @@ export class DealApplicationService {
           contactIds,
         });
       }
+
+      await this.scheduleDealDueReminder.executeWithRepository(
+        {
+          userId: currentUser.id,
+          dealId,
+          dealName: finalDealName,
+          expectedEndDate: finalExpectedEndDate,
+          userTimeZone: currentUser.timeZone,
+        },
+        repository
+      );
     });
 
     if (!dealUpdated) {
@@ -591,19 +622,30 @@ export class DealApplicationService {
     // 2. 휴지통 보관 정책에 맞는 삭제 시각과 만료 시각을 계산한다.
     const timestamps = createTrashRetentionTimestamps();
 
-    // 3. 딜 자체만 휴지통 상태로 전환하고 연결/로그 row는 유지한다.
-    const deleted = await this.dealRepository.deleteDeal({
-      userId: currentUser.id,
-      dealId,
-      deletedAt: timestamps.deletedAt,
-      deletedByUserId: currentUser.id,
-      trashExpiresAt: timestamps.trashExpiresAt,
-    });
+    // 3. 딜 자체만 휴지통 상태로 전환하고 reminder 취소를 같은 transaction에서 처리한다.
+    await this.dealRepository.runInTransaction(async (repository) => {
+      const deleted = await repository.deleteDeal({
+        userId: currentUser.id,
+        dealId,
+        deletedAt: timestamps.deletedAt,
+        deletedByUserId: currentUser.id,
+        trashExpiresAt: timestamps.trashExpiresAt,
+      });
 
-    // 4. 삭제 결과가 없으면 딜 없음 오류로 중단한다.
-    if (!deleted) {
-      throw new DealNotFoundError();
-    }
+      // 4. 삭제 결과가 없으면 딜 없음 오류로 중단한다.
+      if (!deleted) {
+        throw new DealNotFoundError();
+      }
+
+      await this.cancelDealDueReminder.executeWithRepository(
+        {
+          userId: currentUser.id,
+          dealId,
+          cancelReason: "SOURCE_DELETED",
+        },
+        repository
+      );
+    });
 
     // 5. 민감한 입력값 없이 딜 삭제 이벤트를 기록한다.
     this.logEvent("deal.deleted", { userId: currentUser.id, dealId });

@@ -11,6 +11,16 @@ import {
   type UpdateScheduleInput,
 } from "@/modules/schedule/application/ports/schedule.repository";
 import { RelatedDealNotFoundError } from "@/modules/schedule/domain/schedule.errors";
+import {
+  CancelScheduleNotificationReminderUseCase,
+  ScheduleNotificationReminderUseCase,
+} from "@/modules/notification/application/use-cases/notification-reminder-scheduling.use-cases";
+import type {
+  CancelPendingNotificationsBySourceInput,
+  NotificationRecord,
+  NotificationSettingsRecord,
+  UpsertReminderNotificationInput,
+} from "@/modules/notification/application/ports/notification.repository";
 import type { CurrentUserContext } from "@/shared/application/context/current-user.context";
 import { ValidationDomainError } from "@/shared/domain/errors/common.errors";
 import type { AppLogger } from "@/shared/infrastructure/logger/app-logger.service";
@@ -57,6 +67,43 @@ class FakeScheduleRepository implements ScheduleRepository {
   }
 
   // 기능 : fake 딜 옵션 전체 목록을 반환합니다.
+  async findSettingsForUser(): Promise<NotificationSettingsRecord | null> {
+    return null;
+  }
+
+  async cancelPendingNotificationsBySource(
+    _input: CancelPendingNotificationsBySourceInput
+  ): Promise<number> {
+    void _input;
+    return 0;
+  }
+
+  async upsertReminderNotification(
+    input: UpsertReminderNotificationInput
+  ): Promise<NotificationRecord> {
+    return {
+      id: `notification-${this.schedules.length + 1}`,
+      userId: input.userId,
+      type: input.type,
+      sourceType: input.sourceType,
+      sourceId: input.sourceId,
+      dedupeKey: input.dedupeKey,
+      targetPath: input.targetPath,
+      title: input.title,
+      body: input.body ?? null,
+      targetLabel: input.targetLabel ?? null,
+      status: "PENDING",
+      scheduledAt: input.scheduledAt,
+      sentAt: null,
+      readAt: null,
+      canceledAt: null,
+      cancelReason: null,
+      metadataJson: input.metadataJson ?? {},
+      createdAt: BASE_DATE,
+      updatedAt: input.now,
+    };
+  }
+
   async listDealOptions(): Promise<ScheduleDealOptionRecord[]> {
     return this.deals;
   }
@@ -213,9 +260,35 @@ function createService() {
   const logger = {
     log: jest.fn(),
   } as unknown as AppLogger;
-  const service = new ScheduleApplicationService(repository, logger);
+  const scheduleNotificationReminder = {
+    execute: jest.fn().mockResolvedValue({
+      scheduled: true,
+      notification: null,
+      canceledCount: 0,
+    }),
+    executeWithRepository: jest.fn().mockResolvedValue({
+      scheduled: true,
+      notification: null,
+      canceledCount: 0,
+    }),
+  } as unknown as ScheduleNotificationReminderUseCase;
+  const cancelScheduleNotificationReminder = {
+    execute: jest.fn().mockResolvedValue(0),
+    executeWithRepository: jest.fn().mockResolvedValue(0),
+  } as unknown as CancelScheduleNotificationReminderUseCase;
+  const service = new ScheduleApplicationService(
+    repository,
+    scheduleNotificationReminder,
+    cancelScheduleNotificationReminder,
+    logger
+  );
 
-  return { repository, service };
+  return {
+    repository,
+    service,
+    scheduleNotificationReminder,
+    cancelScheduleNotificationReminder,
+  };
 }
 
 describe("ScheduleApplicationService", () => {
