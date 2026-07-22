@@ -55,7 +55,7 @@ G01_DB_NOTIFICATION_FOUNDATION
 
 목표:
 
-- `/app/notifications` route를 열고 기존 notification feature를 API 계약에 맞게 고친다.
+- `/app/notifications` route를 열고 UXUI_AGENT 기준에 맞는 알림 UX를 구현한다. 기존 notification feature는 API 계약과 UX 기준에 맞는 경우에만 재사용한다.
 - app shell unread count, 목록, 읽음 처리, 설정, browser push permission UX를 구현한다.
 
 ## 7. G05 QA Review Closeout

@@ -35,7 +35,8 @@
 - [ ] `COMMON/FIRST-SALE-GATE-MAP.md`의 `NBA-014` DB/Prisma 운영 gate를 확인했다.
 - [ ] DB target이 local/dev/test인지 확인하고 기록했다.
 - [ ] 신규 enum/model/relation이 Prisma schema에 있다.
-- [ ] migration에 index, FK, unique, comment가 있다.
+- [ ] migration에 enum type, table, index, FK, unique, check constraint가 있다.
+- [ ] migration에 `COMMENT ON TYPE`, `COMMENT ON TABLE`, `COMMENT ON COLUMN`, `COMMENT ON INDEX`가 있다.
 - [ ] 기존 migration 파일을 수정하지 않고 신규 migration만 추가했다.
 - [ ] `Notification.dedupeKey` 중복 방지 기준이 있다.
 - [ ] `BrowserPushSubscription` endpoint/key는 ciphertext/hash로 저장된다.
@@ -63,6 +64,8 @@
 ## 7. User Web
 
 - [ ] `/app/notifications` redirect가 해제됐다.
+- [ ] 기존 notification page 형태를 그대로 따를 필요가 없다는 기준이 지켜졌다.
+- [ ] 최종 알림 UX가 `AGENT/UXUI_AGENT`의 Notion식 workspace/page/list 문법과 Attio식 linked record 맥락을 따른다.
 - [ ] app shell unread badge가 동작한다.
 - [ ] 알림 목록, 읽음 필터, pagination이 동작한다.
 - [ ] 읽음 처리 후 list/unread count가 갱신된다.
