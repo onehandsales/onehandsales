@@ -6,6 +6,8 @@
 
 - [x] `NBA-006 ImportJob persistence/resume API`: Done (2026-07-21)
 - [x] Import gap 중 "confirm 전 job in-memory" 항목은 닫힘
+- [x] `NBA-010 Notification`: Done (2026-07-22)
+- [x] 일정/딜 reminder 기반 retention loop와 `/app/notifications` UX 구현 완료
 
 ## 1. Gap 분류 기준
 
@@ -35,7 +37,7 @@
 | Search | 빠르고 안전하며 다른 사용자 데이터가 섞이지 않는다. | 구현 및 보안 QA 완료 | 고급 필터/정렬은 후속 | UX/UI productization | 낮음 |
 | Trash | 7일 이내 복구와 만료 후 정책이 명확하다. | 7일 이내 복구 구현 | 7일 이후 정책, private memo backend restriction 후보 | Ops/security gap | 후속 |
 | Export | 도메인별 export와 민감 export 정책이 안전하다. | 도메인별 xlsx 구현 | 민감 export, 대량/비동기 export 정책 없음 | Ops/security gap | 후속 |
-| Notification | 다음 행동/일정/딜 지연 reminder가 온다. | Backend 없음, route 숨김 | 첫 판매 제품에서 리텐션 필수인지, 홈/일정 UX로 대체 가능한지 결정 필요 | First-sale/Series A gap | 첫 판매 전 결정 |
+| Notification | 다음 행동/일정/딜 지연 reminder가 온다. | 일정/딜 reminder, 앱 안 알림, email/browser push delivery attempt, `/app/notifications` 구현 | 실제 SMTP/Web Push provider smoke는 env 준비 후 운영 확인. 회의록 follow-up 알림은 후속 기능 | Closed for NBA-010 | 완료 |
 | Admin 운영 | 사용자/구독/결제/민감정보/감사를 운영한다. | `/admin/api/me`만 구현, 운영 route redirect | Admin API, screen, masking, audit 필요 | First-sale global gap | 첫 판매 전 필요 |
 | 결제/구독 | trial, 월/연 구독, 환불, 영수증, failed payment recovery | 구현 없음 | 결제 provider/MoR, plan, entitlement 필요 | First-sale global gap | 첫 판매 전 필요 |
 | 세금/컴플라이언스 | VAT/GST, 환불, chargeback, 국가별 약관 | 구현 없음 | 글로벌 판매 운영 계층 필요 | First-sale global gap | 첫 판매 전 필요 |
@@ -43,7 +45,7 @@
 | 다국가 데이터 모델 | 전화번호, 통화, 날짜/주소가 국가별로 자연스럽다. | 한국 휴대폰 형식 중심 | 다국가 phone/currency/address model 필요 | First-sale global gap | 첫 판매 전 필요 |
 | 제품 분석 | activation, retention, paid conversion, churn, AI cost를 본다. | 정본 없음 | event taxonomy, analytics pipeline 필요 | First-sale global gap | 첫 판매 전 필요 |
 | AI next action | 딜 리스크, follow-up, 다음 행동을 추천한다. | 회의록 AI/STT draft만 있음 | AI가 핵심 영업 판단으로 확장되지 않음 | Series A gap | 후속 |
-| 모바일 앱/PWA | 현장 입력, 카메라, 음성, push reminder가 자연스럽다. | 모바일 브라우저 Web | 앱/PWA/push는 후속 | Series A gap | 후순위 |
+| 모바일 앱/PWA | 현장 입력, 카메라, 음성, push reminder가 자연스럽다. | 모바일 브라우저 Web과 browser push UX 구현 | native 앱/PWA 패키징, 모바일 카메라/음성 최적화는 후속 | Series A gap | 후순위 |
 
 ## 3. 당장 판단해야 할 질문
 
@@ -55,7 +57,7 @@
 | User Web의 최우선 화면이 `/app` 홈인지 `/app/deals`인지 | UX polish와 API summary 우선순위가 달라진다. |
 | 딜 목록에서 제품/최근 활동/다음 행동을 얼마나 1급 정보로 볼지 | `NBA-001`, `NBA-003`, `NBA-008` 필요성이 달라진다. |
 | ImportJob 유실이 Global B2C 첫 판매 blocker인지 known limitation인지 | 완료 처리됨. `NBA-006`은 `01_IMPORT_JOB_PERSISTENCE`에서 구현 및 QA closeout 완료. |
-| Notification이 첫 판매 retention 필수인지, Series A 기능인지 | 리텐션 루프 설계 시점이 달라진다. |
+| Notification 실제 provider smoke와 회의록 follow-up 알림을 언제 다룰지 | 일정/딜 reminder는 완료됐고, 실제 SMTP/Web Push env 검증과 회의록 follow-up은 운영/후속 범위로 남는다. |
 | Admin 운영을 결제 전에 어느 수준까지 구현할지 | 유료 고객 지원/민감정보 정책 범위가 달라진다. |
 
 ## 4. 권장 다음 큰 방향

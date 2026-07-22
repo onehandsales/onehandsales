@@ -6,6 +6,8 @@
 
 - [x] `/app/import` ImportJob persistence/resume UX 구현 완료
 - [x] `NBA-006` User Web productization gap 종료
+- [x] `/app/notifications` Notification reminder UX 구현 완료
+- [x] `NBA-010` User Web productization gap 종료
 
 ## 1. 목적
 
@@ -42,12 +44,12 @@
 | `/app/trash` | list/detail/restore 구현 | private memo preview와 7일 이후 정책이 안전한가 | `NBA-007`, `NBA-012` 후보 |
 | `/app/settings` | profile/devices 구현 | 첫 판매 전 계정/언어/데이터 삭제/구독 상태 UX가 충분한가 | Payment/Admin 계획과 연결 |
 | `/app/more` | 보조 메뉴 구현 | 숨긴 기능이 잘못 노출되지 않는가 | 낮음 |
-| `/app/notifications` | `/app` redirect | 알림이 Global B2C 첫 판매 retention 필수인지, Series A 기능인지 판단 필요 | `NBA-010` 후보 |
+| `/app/notifications` | list/read/settings/browser push fallback 구현 | 일정/딜 reminder가 사용자가 놓치지 않게 표시되는지 운영 env에서 최종 smoke 필요 | `NBA-010` 완료 |
 | `/app/export` | `/app` redirect | 범용 export가 정말 필요한지 정책 결정 필요 | 낮음 |
 
 ## 4. 지금 바로 FE에서 하지 말 것
 
-- Notification route/sidebar를 Backend 없이 다시 노출하지 않는다.
+- 완료된 Notification 범위를 넘어서는 새 알림 화면은 API/DB 계약 없이 확장하지 않는다.
 - `/app/export` generic export를 다시 노출하지 않는다.
 - page size를 FE 단독으로 바꾸지 않는다.
 - API 응답에 없는 latest activity, next action summary, product summary, dealCount를 임의로 계산해 사실처럼 표시하지 않는다.

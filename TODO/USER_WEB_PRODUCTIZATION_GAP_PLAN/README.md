@@ -9,7 +9,8 @@
 - [x] DataImport 기본 흐름
 - [x] DataImport ImportJob persistence/resume (`NBA-006`)
 - [x] `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/01_IMPORT_JOB_PERSISTENCE` 구현 및 QA closeout
-- [ ] Notification
+- [x] Notification reminder (`NBA-010`)
+- [x] `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/02_NOTIFICATION_REMINDER` 구현 및 QA closeout
 - [ ] Admin 운영 API/화면
 - [ ] 결제/구독/세금
 - [ ] `/app` 다국어/글로벌 데이터 모델
@@ -54,6 +55,7 @@
 - MeetingNote
 - BusinessCard OCR
 - DataImport
+- Notification reminder
 - Search
 - Trash
 - Company/Contact/Product/Deal xlsx export
@@ -62,8 +64,8 @@
 
 - 제품화 수준의 최종 UX/UI 완성도 판단
 - 첫 판매 기준인 Global B2C 유료 판매를 위한 결제/구독, 세금/컴플라이언스, `/app` 다국어, Admin 운영, 제품 분석
-- Series A급 리텐션/AI/모바일 현장 사용성
-- Notification, Admin 운영 API 같은 후속 기능의 우선순위 확정
+- Series A급 고급 리텐션/AI/모바일 현장 사용성
+- Admin 운영 API 같은 후속 기능의 우선순위 확정
 
 ## 4. 문서 구성
 
@@ -88,7 +90,7 @@
 
 아래 항목은 이 가이드 작성만으로 바로 구현하지 않는다.
 
-- Notification
+- Notification 확장: 회의록 follow-up 알림, Admin provider failure UI, 실제 SMTP/Web Push provider smoke
 - Admin 운영 API/화면
 - 결제/구독
 - 주간 영업 리포트
