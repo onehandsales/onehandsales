@@ -7,7 +7,7 @@
 
 - 판정: 구현 착수 가능
 - 이유: 02의 제품 결정, 포함/제외 범위, API 계약, DB schema, FE 작업, goal 순서, QA 체크리스트가 confirmed 수준으로 정리됐다.
-- 구현 상태: G01/G02/G03 Done, G04-G05 Pending
+- 구현 상태: G01/G02/G03/G04 Done, G05 Pending
 
 ## 2. 사용자 결정 반영
 

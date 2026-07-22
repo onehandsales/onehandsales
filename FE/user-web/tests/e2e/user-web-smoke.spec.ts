@@ -603,6 +603,67 @@ async function handleApiRequest(
     });
   }
 
+  if (path === "/api/notifications/unread-count" && method === "GET") {
+    return json({ unreadCount: 1 });
+  }
+
+  if (path === "/api/notifications/settings" && method === "GET") {
+    return json(createNotificationSettings());
+  }
+
+  if (path === "/api/notifications/settings" && method === "PATCH") {
+    return json({ ...createNotificationSettings(), ...(await readBody(route)) });
+  }
+
+  if (path === "/api/notifications/browser-push/public-key" && method === "GET") {
+    return json({ publicKey: "mock-browser-push-public-key" });
+  }
+
+  if (path === "/api/notifications/browser-subscriptions" && method === "POST") {
+    return json({
+      createdAt: now(),
+      deviceLabel: "E2E browser",
+      id: "browser-subscription-e2e-1",
+      revokedAt: null,
+      status: "ACTIVE",
+    }, 201);
+  }
+
+  const browserSubscriptionMatch = path.match(
+    /^\/api\/notifications\/browser-subscriptions\/([^/]+)$/,
+  );
+
+  if (browserSubscriptionMatch && method === "DELETE") {
+    return json({
+      createdAt: now(),
+      deviceLabel: "E2E browser",
+      id: decodeURIComponent(browserSubscriptionMatch[1] ?? ""),
+      revokedAt: now(),
+      status: "REVOKED",
+    });
+  }
+
+  if (path === "/api/notifications" && method === "GET") {
+    return json({
+      items: [createNotificationFixture()],
+      page: Number(url.searchParams.get("page") ?? "1"),
+      pageSize: Number(url.searchParams.get("pageSize") ?? "15"),
+      totalCount: 1,
+      unreadCount: 1,
+    });
+  }
+
+  const notificationReadMatch = path.match(/^\/api\/notifications\/([^/]+)\/read$/);
+
+  if (notificationReadMatch && method === "PATCH") {
+    return json({
+      ...createNotificationFixture(),
+      id: decodeURIComponent(notificationReadMatch[1] ?? ""),
+      readAt: now(),
+      updatedAt: now(),
+    });
+  }
+
   if (path === "/api/company-fields" && method === "GET") {
     return json({ items: store.companyFields });
   }
@@ -913,6 +974,37 @@ function createE2EAuthUser() {
       emailNotificationEnabled: false,
       browserPushEnabled: false,
     },
+  };
+}
+
+function createNotificationSettings() {
+  return {
+    browserPushEnabled: false,
+    dealDueReminderDaysBefore: 1,
+    dealDueReminderEnabled: true,
+    dealDueReminderLocalTime: "09:00",
+    emailNotificationEnabled: true,
+    scheduleReminderEnabled: true,
+    scheduleReminderMinutes: 30,
+  };
+}
+
+function createNotificationFixture() {
+  return {
+    body: `${DEAL_TITLE} 마감일이 가까워요.`,
+    createdAt: now(),
+    id: "notification-e2e-1",
+    readAt: null,
+    scheduledAt: now(),
+    sentAt: now(),
+    sourceId: "deal-e2e-1",
+    sourceType: "DEAL",
+    status: "SENT",
+    targetLabel: DEAL_TITLE,
+    targetPath: "/app/deals/deal-e2e-1",
+    title: "딜 마감 reminder",
+    type: "DEAL_DUE_REMINDER",
+    updatedAt: now(),
   };
 }
 

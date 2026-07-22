@@ -47,6 +47,8 @@ export type UserWebApiMockStore = {
   readonly importJobs: MutableRecord[];
   readonly importTemplates: MutableRecord[];
   readonly importUserLogs: MutableRecord[];
+  readonly notificationSettings: MutableRecord;
+  readonly notifications: MutableRecord[];
   readonly trashItems: MutableRecord[];
   readonly counters: Record<string, number>;
 };
@@ -176,19 +178,78 @@ async function handleApiRequest(
   }
 
   if (pathname === "/api/users/me/settings" && method === "GET") {
-    return json(createNotificationSettings());
+    return json(createUserSettings());
   }
 
-  if (pathname === "/api/notifications/settings") {
-    return json(createNotificationSettings());
+  if (pathname === "/api/notifications/unread-count" && method === "GET") {
+    return json({
+      unreadCount: countUnreadNotifications(store.notifications),
+    });
+  }
+
+  if (pathname === "/api/notifications/settings" && method === "GET") {
+    return json(store.notificationSettings);
+  }
+
+  if (pathname === "/api/notifications/settings" && method === "PATCH") {
+    Object.assign(store.notificationSettings, await readJsonBody(route));
+    return json(store.notificationSettings);
   }
 
   if (pathname === "/api/notifications/browser-push/public-key" && method === "GET") {
     return json({ publicKey: "mock-browser-push-public-key" });
   }
 
+  if (pathname === "/api/notifications/browser-subscriptions" && method === "POST") {
+    store.notificationSettings.browserPushEnabled = true;
+    return json(
+      {
+        createdAt: NOW,
+        deviceLabel: "Mobile browser",
+        id: "browser-subscription-mobile-001",
+        revokedAt: null,
+        status: "ACTIVE",
+      },
+      201,
+    );
+  }
+
+  const browserSubscriptionMatch = pathname.match(
+    /^\/api\/notifications\/browser-subscriptions\/([^/]+)$/,
+  );
+
+  if (browserSubscriptionMatch && method === "DELETE") {
+    store.notificationSettings.browserPushEnabled = false;
+    return json({
+      createdAt: NOW,
+      deviceLabel: "Mobile browser",
+      id: decodeURIComponent(browserSubscriptionMatch[1] ?? ""),
+      revokedAt: now(),
+      status: "REVOKED",
+    });
+  }
+
+  const notificationReadMatch = pathname.match(
+    /^\/api\/notifications\/([^/]+)\/read$/,
+  );
+
+  if (notificationReadMatch && method === "PATCH") {
+    const notificationId = decodeURIComponent(notificationReadMatch[1] ?? "");
+    const notification = store.notifications.find(
+      (item) => item.id === notificationId,
+    );
+
+    if (!notification) {
+      return json({ message: "알림을 찾지 못했어요." }, 404);
+    }
+
+    notification.readAt = notification.readAt ?? now();
+    notification.updatedAt = now();
+    return json(notification);
+  }
+
   if (pathname === "/api/notifications" && method === "GET") {
-    return json({ items: [], page: 1, pageSize: 20, totalCount: 0, unreadCount: 0 });
+    return json(listMockNotifications(store.notifications, url));
   }
 
   if (pathname === "/api/search" && method === "GET") {
@@ -832,6 +893,7 @@ function createStore(): UserWebApiMockStore {
     updatedAt: NOW,
   };
   const meetingNote = createMeetingNoteFromFixtures(company, contact, product, deal);
+  const notifications = createNotificationsFromFixtures(deal, schedule);
 
   return {
     businessCardScans: [createBusinessCardScan()],
@@ -856,6 +918,8 @@ function createStore(): UserWebApiMockStore {
     importTemplates: [createImportTemplate()],
     importUserLogs: [createImportUserLog()],
     meetingNotes: [meetingNote],
+    notificationSettings: createNotificationSettings(),
+    notifications,
     productCategory,
     productStatus,
     products: [product],
@@ -883,7 +947,7 @@ function createAuthUser() {
     name: "모바일QA사용자",
     preferredLocale: "ko-KR",
     role: "USER",
-    settings: createNotificationSettings(),
+    settings: createUserSettings(),
     signupCountryCode: "KR",
     signupLocale: "ko-KR",
     signupTimeZone: "Asia/Seoul",
@@ -922,13 +986,98 @@ function createUserProfile(body: unknown) {
   };
 }
 
-function createNotificationSettings() {
+function createUserSettings() {
   return {
     browserPushEnabled: true,
     defaultReminderMinutes: 30,
     emailNotificationEnabled: true,
     sensitiveWarningEnabled: true,
   };
+}
+
+function createNotificationSettings() {
+  return {
+    browserPushEnabled: false,
+    dealDueReminderDaysBefore: 1,
+    dealDueReminderEnabled: true,
+    dealDueReminderLocalTime: "09:00",
+    emailNotificationEnabled: true,
+    scheduleReminderEnabled: true,
+    scheduleReminderMinutes: 30,
+  };
+}
+
+function createNotificationsFromFixtures(
+  deal: MutableRecord,
+  schedule: MutableRecord,
+) {
+  return [
+    {
+      body: `${String(deal.dealName)} 마감일이 가까워요.`,
+      createdAt: NOW,
+      id: "notification-mobile-deal-001",
+      readAt: null,
+      scheduledAt: NOW,
+      sentAt: NOW,
+      sourceId: String(deal.id),
+      sourceType: "DEAL",
+      status: "SENT",
+      targetLabel: String(deal.dealName),
+      targetPath: `/app/deals/${String(deal.id)}`,
+      title: "딜 마감 reminder",
+      type: "DEAL_DUE_REMINDER",
+      updatedAt: NOW,
+    },
+    {
+      body: `${String(schedule.scheduleTitle)} 일정이 곧 시작돼요.`,
+      createdAt: NOW,
+      id: "notification-mobile-schedule-001",
+      readAt: NOW,
+      scheduledAt: NOW,
+      sentAt: NOW,
+      sourceId: String(schedule.id),
+      sourceType: "SCHEDULE",
+      status: "SENT",
+      targetLabel: String(schedule.scheduleTitle),
+      targetPath: `/app/schedules/${String(schedule.id)}`,
+      title: "일정 시작 reminder",
+      type: "SCHEDULE_START_REMINDER",
+      updatedAt: NOW,
+    },
+  ];
+}
+
+function listMockNotifications(notifications: MutableRecord[], url: URL) {
+  const read = url.searchParams.get("read") ?? "ALL";
+  const page = Math.max(Number(url.searchParams.get("page") ?? "1"), 1);
+  const pageSize = Math.max(Number(url.searchParams.get("pageSize") ?? "15"), 1);
+  const filtered = notifications.filter((notification) => {
+    if (read === "READ") {
+      return notification.readAt !== null;
+    }
+
+    if (read === "UNREAD") {
+      return notification.readAt === null;
+    }
+
+    return true;
+  });
+  const offset = (page - 1) * pageSize;
+
+  return {
+    items: filtered.slice(offset, offset + pageSize),
+    page,
+    pageSize,
+    totalCount: filtered.length,
+    unreadCount: countUnreadNotifications(notifications),
+  };
+}
+
+function countUnreadNotifications(notifications: readonly MutableRecord[]) {
+  return notifications.filter(
+    (notification) =>
+      notification.status === "SENT" && notification.readAt === null,
+  ).length;
 }
 
 function createContact(store: UserWebApiMockStore, body: unknown) {

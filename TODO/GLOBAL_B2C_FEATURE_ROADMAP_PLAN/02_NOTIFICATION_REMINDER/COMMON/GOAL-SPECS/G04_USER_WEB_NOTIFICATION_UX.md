@@ -1,6 +1,6 @@
 # G04 User Web Notification UX
 
-상태: Ready after G02/G03
+상태: Done
 
 ## 1. 목적
 

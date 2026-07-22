@@ -1,18 +1,14 @@
 export type NotificationType =
-  | "SCHEDULE_REMINDER"
-  | "DEAL_DUE_REMINDER"
-  | "NEXT_ACTION_REMINDER"
-  | "MEETING_NOTE_GENERATED"
-  | "TRASH_PERMANENT_DELETE_WARNING";
-
-export type NotificationChannel = "EMAIL" | "BROWSER_PUSH";
+  | "SCHEDULE_START_REMINDER"
+  | "DEAL_DUE_REMINDER";
 
 export type NotificationStatus =
   | "PENDING"
   | "SENT"
   | "FAILED"
-  | "READ"
   | "CANCELED";
+
+export type NotificationSourceType = "SCHEDULE" | "DEAL";
 
 export type NotificationReadFilter = "ALL" | "READ" | "UNREAD";
 
@@ -21,16 +17,16 @@ export type BrowserPushSubscriptionStatus = "ACTIVE" | "REVOKED";
 export type NotificationItem = {
   readonly id: string;
   readonly type: NotificationType;
-  readonly channel: NotificationChannel;
-  readonly targetType: string | null;
-  readonly targetId: string | null;
+  readonly status: NotificationStatus;
+  readonly sourceType: NotificationSourceType;
+  readonly sourceId: string;
+  readonly targetPath: string;
   readonly title: string;
-  readonly content: string | null;
+  readonly body: string | null;
+  readonly targetLabel: string | null;
   readonly scheduledAt: string;
   readonly sentAt: string | null;
   readonly readAt: string | null;
-  readonly status: NotificationStatus;
-  readonly metadata: unknown;
   readonly createdAt: string;
   readonly updatedAt: string;
 };
@@ -43,14 +39,23 @@ export type NotificationListResponse = {
   readonly totalCount: number;
 };
 
+export type NotificationUnreadCountResponse = {
+  readonly unreadCount: number;
+};
+
 export type UserNotificationSetting = {
-  readonly defaultReminderMinutes: number;
+  readonly scheduleReminderEnabled: boolean;
+  readonly dealDueReminderEnabled: boolean;
   readonly emailNotificationEnabled: boolean;
   readonly browserPushEnabled: boolean;
+  readonly scheduleReminderMinutes: number;
+  readonly dealDueReminderDaysBefore: number;
+  readonly dealDueReminderLocalTime: string;
 };
 
 export type UpdateNotificationSettingsInput = {
-  readonly defaultReminderMinutes?: number;
+  readonly scheduleReminderEnabled?: boolean;
+  readonly dealDueReminderEnabled?: boolean;
   readonly emailNotificationEnabled?: boolean;
   readonly browserPushEnabled?: boolean;
 };
@@ -80,5 +85,6 @@ export type CreateBrowserPushSubscriptionInput = {
 export type ListNotificationsInput = {
   readonly page?: number;
   readonly pageSize?: number;
-  readonly status?: NotificationReadFilter;
+  readonly read?: NotificationReadFilter;
+  readonly includeUpcoming?: boolean;
 };

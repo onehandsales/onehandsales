@@ -48,6 +48,7 @@ const MOBILE_ROUTES: ReadonlyArray<{
     hasMobileHeader: true,
   },
   { path: "/app/trash", expectedText: "삭제된", hasMobileHeader: true },
+  { path: "/app/notifications", expectedText: "딜 마감 reminder", hasMobileHeader: true },
   { path: "/app/settings", expectedText: "프로필 설정", hasMobileHeader: true },
   { path: "/app/more", expectedText: "영업 관리", hasMobileHeader: true },
 ];

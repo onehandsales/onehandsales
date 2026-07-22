@@ -1,7 +1,7 @@
 # 02 Notification Reminder
 
 상태: Confirmed Plan
-구현 상태: G01 DB foundation 완료 / G02 Backend API 완료 / G03 reminder generation-delivery 완료 / G04 User Web UX 대기
+구현 상태: G01 DB foundation 완료 / G02 Backend API 완료 / G03 reminder generation-delivery 완료 / G04 User Web UX 완료 / G05 QA closeout 대기
 확정일: 2026-07-22
 순서: 02
 성격: 구현 착수 가능한 `/goal` 계획
@@ -29,8 +29,8 @@
 
 ## 2. 현재 상태
 
-- FE에는 `features/notification`, `pages/notifications`, `public/notification-sw.js`가 남아 있다.
-- `/app/notifications` route는 현재 `/app`으로 redirect된다.
+- FE `features/notification`, `pages/notifications`, `public/notification-sw.js`는 02 API 계약에 맞게 정리됐다.
+- `/app/notifications` route는 노출됐고 app shell unread badge와 연결됐다.
 - Backend G01 DB foundation은 완료됐다. `NotificationModule`, Prisma schema/migration, repository adapter, browser push subscription 암호화 기반이 있다.
 - Backend User API와 G03 일정/딜 reminder 예약, due processor, SMTP/Web Push adapter는 구현됐다.
 - BE package에는 SMTP/Web Push 발송 dependency(`nodemailer`, `web-push`)가 있다.

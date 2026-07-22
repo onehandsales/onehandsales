@@ -5,6 +5,7 @@ import type {
   ListNotificationsInput,
   NotificationItem,
   NotificationListResponse,
+  NotificationUnreadCountResponse,
   UpdateNotificationSettingsInput,
   UserNotificationSetting,
 } from "@/features/notification/types/notification";
@@ -21,8 +22,12 @@ export function listNotifications(input: ListNotificationsInput = {}) {
     searchParams.set("pageSize", String(input.pageSize));
   }
 
-  if (input.status && input.status !== "ALL") {
-    searchParams.set("status", input.status);
+  if (input.read && input.read !== "ALL") {
+    searchParams.set("read", input.read);
+  }
+
+  if (input.includeUpcoming !== undefined) {
+    searchParams.set("includeUpcoming", String(input.includeUpcoming));
   }
 
   const query = searchParams.toString();
@@ -37,13 +42,18 @@ export function markNotificationRead(notificationId: string) {
     `/api/notifications/${notificationId}/read`,
     {
       method: "PATCH",
-      body: {},
     }
   );
 }
 
+export function getNotificationUnreadCount() {
+  return apiClient<NotificationUnreadCountResponse>(
+    "/api/notifications/unread-count"
+  );
+}
+
 export function getNotificationSettings() {
-  return apiClient<UserNotificationSetting>("/api/users/me/settings");
+  return apiClient<UserNotificationSetting>("/api/notifications/settings");
 }
 
 export function updateNotificationSettings(

@@ -6,7 +6,6 @@ import {
   ChevronLeft,
   ChevronRight,
   Loader2,
-  Mail,
   MonitorSmartphone,
   Save,
   Settings,
@@ -14,6 +13,7 @@ import {
   X,
 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
+import { Link } from "react-router-dom";
 import {
   useCreateBrowserPushSubscriptionMutation,
   useMarkNotificationReadMutation,
@@ -28,13 +28,12 @@ import {
 import type {
   NotificationItem,
   NotificationReadFilter,
-  UpdateNotificationSettingsInput,
   UserNotificationSetting,
 } from "@/features/notification/types/notification";
 import { getApiErrorMessage } from "@/lib/api-client";
 import { formatDateWithOptions } from "@/utils/format";
 
-const PAGE_SIZE = 10;
+const PAGE_SIZE = 15;
 const PUSH_SUBSCRIPTION_ID_KEY = "onehand.sales.browserPushSubscriptionId";
 
 const filterOptions: readonly {
@@ -47,10 +46,11 @@ const filterOptions: readonly {
 ];
 
 export function NotificationScreen() {
-  const [status, setStatus] = useState<NotificationReadFilter>("ALL");
+  const [read, setRead] = useState<NotificationReadFilter>("ALL");
+  const [includeUpcoming, setIncludeUpcoming] = useState(false);
   const [page, setPage] = useState(1);
   const [settingsDraft, setSettingsDraft] =
-    useState<UpdateNotificationSettingsInput | null>(null);
+    useState<UserNotificationSetting | null>(null);
   const [permissionState, setPermissionState] =
     useState<NotificationPermission | "unsupported">("unsupported");
   const [pushNotice, setPushNotice] = useState<string | null>(null);
@@ -58,10 +58,12 @@ export function NotificationScreen() {
   const notificationListQuery = useNotificationList({
     page,
     pageSize: PAGE_SIZE,
-    status,
+    read,
+    includeUpcoming,
   });
   const notificationTotalPages = Math.ceil(
-    (notificationListQuery.data?.totalCount ?? 0) / PAGE_SIZE
+    (notificationListQuery.data?.totalCount ?? 0) /
+      (notificationListQuery.data?.pageSize ?? PAGE_SIZE)
   );
   const settingsQuery = useNotificationSettings();
   const publicKeyQuery = useBrowserPushPublicKey();
@@ -73,7 +75,6 @@ export function NotificationScreen() {
   const actionError =
     notificationListQuery.error ??
     settingsQuery.error ??
-    publicKeyQuery.error ??
     markReadMutation.error ??
     updateSettingsMutation.error ??
     createSubscriptionMutation.error ??
@@ -84,7 +85,7 @@ export function NotificationScreen() {
 
   useEffect(() => {
     setPage(1);
-  }, [status]);
+  }, [includeUpcoming, read]);
 
   useEffect(() => {
     if (settingsQuery.data) {
@@ -112,7 +113,12 @@ export function NotificationScreen() {
       return;
     }
 
-    const nextSettings = await updateSettingsMutation.mutateAsync(settings);
+    const nextSettings = await updateSettingsMutation.mutateAsync({
+      scheduleReminderEnabled: settings.scheduleReminderEnabled,
+      dealDueReminderEnabled: settings.dealDueReminderEnabled,
+      emailNotificationEnabled: settings.emailNotificationEnabled,
+      browserPushEnabled: settings.browserPushEnabled,
+    });
     setSettingsDraft(nextSettings);
     setPushNotice("알림 설정을 저장했어요.");
   };
@@ -129,6 +135,11 @@ export function NotificationScreen() {
 
   const onSubscribeBrowserPush = async () => {
     setPushNotice(null);
+
+    if (!settings?.browserPushEnabled) {
+      setPushNotice("브라우저 푸시 설정을 먼저 켜 주세요.");
+      return;
+    }
 
     if (!pushSupported || !publicKey) {
       setPushNotice("브라우저 푸시를 사용할 수 없어요.");
@@ -162,6 +173,9 @@ export function NotificationScreen() {
 
     window.localStorage.setItem(PUSH_SUBSCRIPTION_ID_KEY, response.id);
     setStoredSubscriptionId(response.id);
+    setSettingsDraft((current) =>
+      current ? { ...current, browserPushEnabled: true } : current
+    );
     setPushNotice("브라우저 푸시 구독을 등록했어요.");
   };
 
@@ -185,6 +199,9 @@ export function NotificationScreen() {
 
     window.localStorage.removeItem(PUSH_SUBSCRIPTION_ID_KEY);
     setStoredSubscriptionId("");
+    setSettingsDraft((current) =>
+      current ? { ...current, browserPushEnabled: false } : current
+    );
     setPushNotice("브라우저 푸시 구독을 해제했어요.");
   };
 
@@ -193,7 +210,7 @@ export function NotificationScreen() {
       <header className="flex flex-col gap-2 border-b pb-5">
         <h1 className="text-2xl font-semibold">알림</h1>
         <p className="text-sm text-muted-foreground">
-          일정, 딜 마감, 다음 행동, 회의록 알림을 확인해요.
+          일정 시작과 딜 마감 reminder를 확인하고 관련 기록으로 바로 이동해요.
         </p>
       </header>
 
@@ -206,9 +223,11 @@ export function NotificationScreen() {
       <div className="grid gap-5 xl:grid-cols-[minmax(0,1.15fr)_minmax(340px,0.85fr)]">
         <section className="grid content-start gap-4 rounded-lg border bg-white p-4">
           <NotificationListHeader
-            currentStatus={status}
+            currentRead={read}
+            includeUpcoming={includeUpcoming}
             isFetching={notificationListQuery.isFetching}
-            onStatusChange={setStatus}
+            onIncludeUpcomingChange={setIncludeUpcoming}
+            onReadChange={setRead}
             unreadCount={notificationListQuery.data?.unreadCount ?? 0}
           />
 
@@ -241,9 +260,11 @@ export function NotificationScreen() {
           />
 
           <BrowserPushPanel
+            hasPublicKeyError={publicKeyQuery.isError}
             isPublicKeyReady={publicKey.length > 0}
             isRegistering={createSubscriptionMutation.isPending}
             isRevoking={revokeSubscriptionMutation.isPending}
+            browserPushEnabled={settings?.browserPushEnabled ?? false}
             permissionState={permissionState}
             pushSupported={pushSupported}
             storedSubscriptionId={storedSubscriptionId}
@@ -258,17 +279,21 @@ export function NotificationScreen() {
 }
 
 type NotificationListHeaderProps = {
-  readonly currentStatus: NotificationReadFilter;
+  readonly currentRead: NotificationReadFilter;
+  readonly includeUpcoming: boolean;
   readonly isFetching: boolean;
   readonly unreadCount: number;
-  readonly onStatusChange: (status: NotificationReadFilter) => void;
+  readonly onIncludeUpcomingChange: (includeUpcoming: boolean) => void;
+  readonly onReadChange: (read: NotificationReadFilter) => void;
 };
 
 function NotificationListHeader({
-  currentStatus,
+  currentRead,
+  includeUpcoming,
   isFetching,
   unreadCount,
-  onStatusChange,
+  onIncludeUpcomingChange,
+  onReadChange,
 }: NotificationListHeaderProps) {
   return (
     <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -288,21 +313,34 @@ function NotificationListHeader({
         ) : null}
       </div>
 
-      <div className="grid grid-cols-3 rounded-lg border bg-slate-50 p-1 text-sm">
-        {filterOptions.map((option) => (
-          <button
-            key={option.value}
-            className={`min-h-9 rounded-md px-3 font-semibold ${
-              currentStatus === option.value
-                ? "bg-white text-primary shadow-sm"
-                : "text-muted-foreground hover:text-foreground"
-            }`}
-            type="button"
-            onClick={() => onStatusChange(option.value)}
-          >
-            {option.label}
-          </button>
-        ))}
+      <div className="flex flex-col gap-2 sm:items-end">
+        <div className="grid grid-cols-3 rounded-lg border bg-slate-50 p-1 text-sm">
+          {filterOptions.map((option) => (
+            <button
+              key={option.value}
+              className={`min-h-9 rounded-md px-3 font-semibold ${
+                currentRead === option.value
+                  ? "bg-white text-primary shadow-sm"
+                  : "text-muted-foreground hover:text-foreground"
+              }`}
+              type="button"
+              onClick={() => onReadChange(option.value)}
+            >
+              {option.label}
+            </button>
+          ))}
+        </div>
+        <label className="inline-flex items-center gap-2 text-sm text-muted-foreground">
+          <input
+            checked={includeUpcoming}
+            className="h-4 w-4"
+            type="checkbox"
+            onChange={(event) =>
+              onIncludeUpcomingChange(event.target.checked)
+            }
+          />
+          예정 알림 포함
+        </label>
       </div>
     </div>
   );
@@ -379,29 +417,43 @@ function NotificationRow({
             <h3 className="break-words text-sm font-semibold">
               {notification.title}
             </h3>
-            <ChannelBadge channel={notification.channel} />
+            <TypeBadge type={notification.type} />
+            <SourceBadge sourceType={notification.sourceType} />
             <StatusBadge notification={notification} />
           </div>
-          {notification.content ? (
+          {notification.body ? (
             <p className="mt-1 break-words text-sm text-muted-foreground">
-              {notification.content}
+              {notification.body}
+            </p>
+          ) : null}
+          {notification.targetLabel ? (
+            <p className="mt-1 text-xs font-medium text-slate-500">
+              관련 기록: {notification.targetLabel}
             </p>
           ) : null}
         </div>
 
-        <button
-          className="inline-flex min-h-9 items-center justify-center gap-2 rounded-md border px-3 py-1.5 text-sm font-semibold hover:bg-muted disabled:cursor-not-allowed disabled:opacity-60"
-          disabled={!isUnread || isPending}
-          type="button"
-          onClick={onMarkRead}
-        >
-          {isPending ? (
-            <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
-          ) : (
-            <Check className="h-4 w-4" aria-hidden="true" />
-          )}
-          읽음
-        </button>
+        <div className="flex flex-wrap gap-2 sm:justify-end">
+          <Link
+            className="inline-flex min-h-9 items-center justify-center rounded-md border px-3 py-1.5 text-sm font-semibold hover:bg-muted"
+            to={notification.targetPath}
+          >
+            관련 기록 열기
+          </Link>
+          <button
+            className="inline-flex min-h-9 items-center justify-center gap-2 rounded-md border px-3 py-1.5 text-sm font-semibold hover:bg-muted disabled:cursor-not-allowed disabled:opacity-60"
+            disabled={!isUnread || isPending}
+            type="button"
+            onClick={onMarkRead}
+          >
+            {isPending ? (
+              <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
+            ) : (
+              <Check className="h-4 w-4" aria-hidden="true" />
+            )}
+            읽음
+          </button>
+        </div>
       </div>
 
       <dl className="grid gap-2 text-xs text-muted-foreground sm:grid-cols-3">
@@ -441,8 +493,8 @@ function NotificationRow({
 
 type NotificationSettingsPanelProps = {
   readonly isPending: boolean;
-  readonly settings: UpdateNotificationSettingsInput | null;
-  readonly onChange: (settings: UpdateNotificationSettingsInput) => void;
+  readonly settings: UserNotificationSetting | null;
+  readonly onChange: (settings: UserNotificationSetting) => void;
   readonly onSave: () => void;
 };
 
@@ -453,9 +505,13 @@ function NotificationSettingsPanel({
   onSave,
 }: NotificationSettingsPanelProps) {
   const resolvedSettings: UserNotificationSetting = {
-    defaultReminderMinutes: settings?.defaultReminderMinutes ?? 30,
+    scheduleReminderEnabled: settings?.scheduleReminderEnabled ?? true,
+    dealDueReminderEnabled: settings?.dealDueReminderEnabled ?? true,
     emailNotificationEnabled: settings?.emailNotificationEnabled ?? true,
-    browserPushEnabled: settings?.browserPushEnabled ?? true,
+    browserPushEnabled: settings?.browserPushEnabled ?? false,
+    scheduleReminderMinutes: settings?.scheduleReminderMinutes ?? 30,
+    dealDueReminderDaysBefore: settings?.dealDueReminderDaysBefore ?? 1,
+    dealDueReminderLocalTime: settings?.dealDueReminderLocalTime ?? "09:00",
   };
 
   return (
@@ -465,21 +521,53 @@ function NotificationSettingsPanel({
         <h2 className="text-base font-semibold">알림 설정</h2>
       </div>
 
-      <label className="grid gap-2 text-sm">
-        <span className="font-medium">기본 알림 시간</span>
+      <div className="grid gap-2 rounded-lg border border-slate-200 bg-slate-50 p-3 text-sm">
+        <span className="font-medium">기본 reminder 시간</span>
+        <span className="text-xs text-muted-foreground">
+          일정은 시작 {resolvedSettings.scheduleReminderMinutes}분 전, 딜은 마감{" "}
+          {resolvedSettings.dealDueReminderDaysBefore}일 전{" "}
+          {resolvedSettings.dealDueReminderLocalTime}에 알려줘요.
+        </span>
+      </div>
+
+      <label className="flex items-start gap-3 rounded-lg border border-slate-200 bg-slate-50 p-3">
         <input
-          className="min-h-10 rounded-md border px-3 py-2"
-          max={10080}
-          min={0}
-          type="number"
-          value={resolvedSettings.defaultReminderMinutes}
+          checked={resolvedSettings.scheduleReminderEnabled}
+          className="mt-1 h-4 w-4"
+          type="checkbox"
           onChange={(event) =>
             onChange({
               ...resolvedSettings,
-              defaultReminderMinutes: Number(event.target.value),
+              scheduleReminderEnabled: event.target.checked,
             })
           }
         />
+        <span className="grid gap-1">
+          <span className="text-sm font-semibold">일정 시작 알림</span>
+          <span className="text-xs text-muted-foreground">
+            일정 시작 전에 앱 안 알림을 만들어요.
+          </span>
+        </span>
+      </label>
+
+      <label className="flex items-start gap-3 rounded-lg border border-slate-200 bg-slate-50 p-3">
+        <input
+          checked={resolvedSettings.dealDueReminderEnabled}
+          className="mt-1 h-4 w-4"
+          type="checkbox"
+          onChange={(event) =>
+            onChange({
+              ...resolvedSettings,
+              dealDueReminderEnabled: event.target.checked,
+            })
+          }
+        />
+        <span className="grid gap-1">
+          <span className="text-sm font-semibold">딜 마감 알림</span>
+          <span className="text-xs text-muted-foreground">
+            마감일이 가까운 딜을 업무 reminder로 보여줘요.
+          </span>
+        </span>
       </label>
 
       <label className="flex items-start gap-3 rounded-lg border border-slate-200 bg-slate-50 p-3">
@@ -497,7 +585,7 @@ function NotificationSettingsPanel({
         <span className="grid gap-1">
           <span className="text-sm font-semibold">이메일 알림</span>
           <span className="text-xs text-muted-foreground">
-                              SMTP 발송 대상에 포함해요.
+            이메일 발송 대상에 포함해요.
           </span>
         </span>
       </label>
@@ -517,7 +605,7 @@ function NotificationSettingsPanel({
         <span className="grid gap-1">
           <span className="text-sm font-semibold">브라우저 푸시</span>
           <span className="text-xs text-muted-foreground">
-                              등록된 브라우저 구독에 발송해요.
+            등록된 브라우저 구독에 발송해요.
           </span>
         </span>
       </label>
@@ -540,6 +628,8 @@ function NotificationSettingsPanel({
 }
 
 type BrowserPushPanelProps = {
+  readonly browserPushEnabled: boolean;
+  readonly hasPublicKeyError: boolean;
   readonly isPublicKeyReady: boolean;
   readonly isRegistering: boolean;
   readonly isRevoking: boolean;
@@ -552,6 +642,8 @@ type BrowserPushPanelProps = {
 };
 
 function BrowserPushPanel({
+  browserPushEnabled,
+  hasPublicKeyError,
   isPublicKeyReady,
   isRegistering,
   isRevoking,
@@ -563,7 +655,10 @@ function BrowserPushPanel({
   onSubscribe,
 }: BrowserPushPanelProps) {
   const canSubscribe =
-    pushSupported && isPublicKeyReady && permissionState !== "denied";
+    browserPushEnabled &&
+    pushSupported &&
+    isPublicKeyReady &&
+    permissionState !== "denied";
 
   return (
     <div className="grid gap-4 border-t pt-4">
@@ -586,10 +681,22 @@ function BrowserPushPanel({
         />
       </div>
 
+      {!browserPushEnabled ? (
+        <p className="rounded-lg bg-slate-50 p-3 text-sm text-muted-foreground">
+          브라우저 푸시 설정을 켠 뒤 권한 요청과 구독 등록을 진행해요.
+        </p>
+      ) : null}
+
+      {browserPushEnabled && hasPublicKeyError ? (
+        <p className="rounded-lg bg-amber-50 p-3 text-sm text-amber-800">
+          브라우저 푸시 서버 설정을 가져오지 못했어요.
+        </p>
+      ) : null}
+
       <div className="grid gap-2 sm:grid-cols-2">
         <button
           className="inline-flex min-h-10 items-center justify-center gap-2 rounded-md border px-4 py-2 text-sm font-semibold hover:bg-muted disabled:cursor-not-allowed disabled:opacity-60"
-          disabled={!pushSupported}
+          disabled={!browserPushEnabled || !pushSupported}
           type="button"
           onClick={onRequestPermission}
         >
@@ -688,21 +795,6 @@ function InfoItem({ label, value }: InfoItemProps) {
   );
 }
 
-function ChannelBadge({ channel }: { readonly channel: string }) {
-  const isEmail = channel === "EMAIL";
-
-  return (
-    <span className="inline-flex items-center gap-1 rounded-md border bg-white px-2 py-1 text-xs font-semibold">
-      {isEmail ? (
-        <Mail className="h-3.5 w-3.5" aria-hidden="true" />
-      ) : (
-        <MonitorSmartphone className="h-3.5 w-3.5" aria-hidden="true" />
-      )}
-      {isEmail ? "Email" : "Push"}
-    </span>
-  );
-}
-
 function StatusBadge({
   notification,
 }: {
@@ -721,6 +813,48 @@ function StatusBadge({
       {read ? "읽음" : "안읽음"}
     </span>
   );
+}
+
+function TypeBadge({ type }: { readonly type: NotificationItem["type"] }) {
+  return (
+    <span className="inline-flex items-center rounded-md border bg-white px-2 py-1 text-xs font-semibold text-slate-700">
+      {getNotificationTypeLabel(type)}
+    </span>
+  );
+}
+
+function SourceBadge({
+  sourceType,
+}: {
+  readonly sourceType: NotificationItem["sourceType"];
+}) {
+  return (
+    <span className="inline-flex items-center rounded-md border bg-white px-2 py-1 text-xs font-semibold text-slate-700">
+      {getSourceTypeLabel(sourceType)}
+    </span>
+  );
+}
+
+function getNotificationTypeLabel(type: NotificationItem["type"]) {
+  switch (type) {
+    case "SCHEDULE_START_REMINDER":
+      return "일정 reminder";
+    case "DEAL_DUE_REMINDER":
+      return "딜 마감 reminder";
+    default:
+      return "알림";
+  }
+}
+
+function getSourceTypeLabel(sourceType: NotificationItem["sourceType"]) {
+  switch (sourceType) {
+    case "SCHEDULE":
+      return "일정";
+    case "DEAL":
+      return "딜";
+    default:
+      return "기록";
+  }
 }
 
 type NoticeMessageProps = {

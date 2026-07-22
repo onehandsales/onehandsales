@@ -20,6 +20,9 @@ export function useMarkNotificationReadMutation() {
       void queryClient.invalidateQueries({
         queryKey: notificationQueryKeys.lists(),
       });
+      void queryClient.invalidateQueries({
+        queryKey: notificationQueryKeys.unreadCount(),
+      });
     },
   });
 }
@@ -39,15 +42,29 @@ export function useUpdateNotificationSettingsMutation() {
 }
 
 export function useCreateBrowserPushSubscriptionMutation() {
+  const queryClient = useQueryClient();
+
   return useMutation({
     mutationFn: (input: CreateBrowserPushSubscriptionInput) =>
       createBrowserPushSubscription(input),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({
+        queryKey: notificationQueryKeys.settings(),
+      });
+    },
   });
 }
 
 export function useRevokeBrowserPushSubscriptionMutation() {
+  const queryClient = useQueryClient();
+
   return useMutation({
     mutationFn: (subscriptionId: string) =>
       revokeBrowserPushSubscription(subscriptionId),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({
+        queryKey: notificationQueryKeys.settings(),
+      });
+    },
   });
 }

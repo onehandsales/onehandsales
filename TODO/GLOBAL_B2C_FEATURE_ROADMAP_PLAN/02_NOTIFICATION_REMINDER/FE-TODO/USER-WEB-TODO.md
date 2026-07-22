@@ -1,7 +1,7 @@
 # User Web TODO
 
 상태: Confirmed
-구현 상태: Not Started
+구현 상태: G04 Done
 기준 문서:
 
 - `COMMON/SCOPE.md`
@@ -20,11 +20,11 @@ User Web에서 일정 시작 전과 딜 마감일 알림을 확인하고, 읽음
 
 ## 2. 현재 FE 상태
 
-- `FE/user-web/src/features/notification` 코드가 남아 있다.
-- `FE/user-web/src/pages/notifications/index.tsx`가 있다.
-- `FE/user-web/public/notification-sw.js`가 있다.
-- `FE/user-web/src/app/router/router.tsx`에서 `/app/notifications`는 `/app`으로 redirect된다.
-- 현재 API client는 `/api/users/me/settings`와 `/api/notifications/settings`를 섞어 쓰므로 02 API 계약에 맞춰 정리해야 한다.
+- `FE/user-web/src/features/notification` 코드는 02 API 계약에 맞춰 타입, API client, query key, mutation invalidation을 정리했다.
+- `FE/user-web/src/pages/notifications/index.tsx`는 `/app/notifications` route에서 접근된다.
+- `FE/user-web/public/notification-sw.js`의 기본 click target은 `/app/notifications`로 정리했다.
+- `FE/user-web/src/app/router/router.tsx`에서 `/app/notifications` redirect를 해제했다.
+- API client는 `/api/notifications/settings` 기준으로 정리했다.
 - 기존 notification feature/page는 참고 대상일 뿐 UX source of truth가 아니다. UXUI_AGENT 기준과 충돌하면 새 구조로 재작성하거나 기존 컴포넌트를 폐기할 수 있다.
 
 ## 3. Route

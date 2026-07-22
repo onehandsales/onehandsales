@@ -8,7 +8,7 @@ self.addEventListener("push", (event) => {
   const options = {
     body: payload.body || "",
     data: {
-      targetPath: payload.targetPath || "/notifications",
+      targetPath: payload.targetPath || "/app/notifications",
     },
   };
 
@@ -18,7 +18,7 @@ self.addEventListener("push", (event) => {
 self.addEventListener("notificationclick", (event) => {
   event.notification.close();
 
-  const targetPath = event.notification.data?.targetPath || "/notifications";
+  const targetPath = event.notification.data?.targetPath || "/app/notifications";
   const targetUrl = new URL(targetPath, self.location.origin).href;
 
   event.waitUntil(

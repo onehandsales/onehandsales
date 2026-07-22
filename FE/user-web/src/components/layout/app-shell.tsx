@@ -42,6 +42,7 @@ import {
 } from "react";
 import { useDealDetail } from "@/features/deal/hooks/use-deal-detail";
 import { useDeleteDealMutation } from "@/features/deal/hooks/use-deal-mutations";
+import { NotificationBellButton } from "@/features/notification/components/notification-bell-button";
 import { useProductDetail } from "@/features/product/hooks/use-product-detail";
 import { useDeleteProductMutation } from "@/features/product/hooks/use-product-mutations";
 import {
@@ -339,6 +340,7 @@ export function AppShell() {
   const isSchedulePage =
     pathname === "/app/schedules" || pathname === "/app/schedules/week";
   const isTrashPage = pathname === "/app/trash";
+  const isNotificationPage = pathname === "/app/notifications";
   const isBusinessCardPage = pathname === "/app/business-cards";
   const isImportPage = pathname === "/app/import";
   const isImportDetailPage = /^\/app\/import\/(?:review\/)?[^/]+$/.test(pathname);
@@ -366,6 +368,7 @@ export function AppShell() {
     isMeetingNoteListPage ||
     isSchedulePage ||
     isTrashPage ||
+    isNotificationPage ||
     isBusinessCardPage ||
     isImportPage ||
     isImportDetailPage ||
@@ -578,6 +581,7 @@ export function AppShell() {
                 ⌘K
               </kbd>
             </button>
+            <NotificationBellButton className="h-8 w-8 shrink-0" />
           </div>
           {/* Nav */}
           <div className="flex-1 overflow-y-auto px-2 py-1">
@@ -658,7 +662,10 @@ export function AppShell() {
       {/* ── Mobile Shell ── */}
       <div className="min-h-dvh lg:hidden">
         {!isMobileHeaderHidden ? (
-          <MobileAppHeader onSearchClick={() => setSearchOpen(true)} />
+          <MobileAppHeader
+            onSearchClick={() => setSearchOpen(true)}
+            rightSlot={<NotificationBellButton className="h-11 w-11 rounded-full" />}
+          />
         ) : null}
         <main className="pb-24">
           <Outlet context={outletContext} />

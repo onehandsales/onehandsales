@@ -1,14 +1,17 @@
 import { Search } from "lucide-react";
+import type { ReactNode } from "react";
 import { useAuthSession } from "@/features/auth";
 
 type MobileAppHeaderProps = {
   readonly logoColor?: string;
   readonly onSearchClick?: () => void;
+  readonly rightSlot?: ReactNode;
 };
 
 export function MobileAppHeader({
   logoColor = "#4880EE",
   onSearchClick,
+  rightSlot,
 }: MobileAppHeaderProps) {
   const { user } = useAuthSession();
   const initial = user?.name ? user.name.charAt(0) : "?";
@@ -33,6 +36,8 @@ export function MobileAppHeader({
         >
           <Search className="h-5 w-5" style={{ color: "#6B7280" }} />
         </button>
+
+        {rightSlot}
 
         {/* Avatar */}
         <div
