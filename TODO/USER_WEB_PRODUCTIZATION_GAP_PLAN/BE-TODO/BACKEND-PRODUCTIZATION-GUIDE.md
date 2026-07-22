@@ -6,6 +6,8 @@
 
 - [x] ImportJob persistence/resume backend/API/DB 구현 완료
 - [x] `NBA-006` active backend gap 종료
+- [x] Weekly Schedule Report backend/API 구현 완료
+- [x] `NBA-009` active backend gap 종료
 - [x] Notification reminder backend/API/DB 구현 완료
 - [x] `NBA-010` active backend gap 종료
 
@@ -26,7 +28,7 @@ Backend 판단 기준은 MVP 기능 추가가 아니라 Global B2C 첫 판매 ga
 | Contact | CRUD, taxonomy, linked deals, memo/private memo, xlsx export, trash |
 | Product | CRUD, taxonomy, dealCount/sort, linked deals, memo/private memo, xlsx export, trash |
 | Deal | list/detail/create/update/delete, stage counts, linked company/contact/product, following action, memo, xlsx export, trash |
-| Schedule | CRUD, deal link, timezone local time handling |
+| Schedule | CRUD, deal link, timezone local time handling, weekly report API, weekly xlsx export |
 | MeetingNote | CRUD, AI/STT draft, deal link, trash |
 | BusinessCard | OCR scan log, upload scan, confirm company/contact |
 | DataImport | templates, upload/mapping/row edit/validation/confirm/cancel/logs, DB persistent pre-confirm job |
@@ -47,7 +49,7 @@ Backend 판단 기준은 MVP 기능 추가가 아니라 Global B2C 첫 판매 ga
 | ImportJob persistence | 구현 완료 | ImportJob/Row/Error/UploadedFile, TTL/delete tracking, resume API, redaction/ownership QA 완료 | 완료 |
 | Trash private memo restriction | FE에서 preview를 가림 | Backend response에서 원문 제한할지 정책 결정 | 아직 구현 금지 |
 | Page size 15 cleanup | 현재 계약이 얽혀 있음 | service constant, response, tests, docs 동시 변경 | 아직 구현 금지 |
-| Schedule week report | route redirect | report API/snapshot/timezone 범위 결정 | 아직 구현 금지 |
+| Schedule week report | 구현 완료 | `GET /api/schedules/week`, `GET /api/schedules/week/export/xlsx`, 기존 `User`, `Schedule`, `ScheduleDeal`, `Deal`, `DealCompany`, `DealContact`, `Company`, `Contact`, `DealFollowingActionLog` runtime aggregation, timezone/weekStart/ownership/redaction QA 완료. PDF/범용 ExportJob, 반복 일정, AI 요약은 별도 후속 범위 | 완료 |
 | Notification | 구현 완료 | Notification/UserNotificationSetting/NotificationDeliveryAttempt/BrowserPushSubscription, redaction/ownership/provider failure QA 완료. 실제 SMTP/Web Push provider smoke는 env 준비 후 운영 확인 | 완료 |
 | MeetingNote provider log | raw/provider log table 없음 | transcript retention, audit, privacy policy | 아직 구현 금지 |
 | Admin operation | `/admin/api/me` 외 없음 | masking, raw access reason, audit log, support flow | 첫 판매 전 별도 큰 계획 필요 |
@@ -80,4 +82,4 @@ Backend/API 구현이 필요하면 아래를 먼저 만족해야 한다.
 2. 결제, Admin, 정책/감사, 앱 다국어/다국가 데이터, 제품 분석을 먼저 큰 bundle로 분리한다.
 3. 제품화 UX에서 실제 필요한 API gap인지 확인한다.
 4. 개인정보/보안/운영 정책이 얽힌 후보를 먼저 정책으로 확정한다.
-5. ImportJob과 Notification은 완료됐고, Admin, Payment는 각각 별도 계획으로 분리한다.
+5. ImportJob, Weekly Schedule Report, Notification은 완료됐고, Admin, Payment는 각각 별도 계획으로 분리한다.

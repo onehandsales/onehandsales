@@ -10,6 +10,9 @@
 - [x] DataImport 새로고침/탭 이동 resume UX
 - [x] DataImport confirm/cancel/expired/failed 상태 처리
 - [x] DataImport storage delete failure/redaction/ownership QA
+- [x] Weekly Schedule Report API: `GET /api/schedules/week`
+- [x] Weekly Schedule Report export API: `GET /api/schedules/week/export/xlsx`
+- [x] `/app/schedules/week` 주간 보고서 UX와 Excel 다운로드
 - [x] Notification list/read/settings/browser-push API
 - [x] Notification 일정/딜 reminder 생성과 delivery attempt 처리
 - [x] `/app/notifications`, unread badge, settings, browser push fallback UX
@@ -25,13 +28,13 @@
 | Contact | list/detail/create/update/delete, company/job grade/department, memo/private memo, deals, xlsx export, trash | 목록, 상세, 생성, 수정, 삭제/복구, export | N/A | 완료 |
 | Product | list/detail/create/update/delete, category/status, memo/private memo, dealCount/sort, deals, xlsx export, trash | 목록, 상세, 생성, 수정, 삭제/복구, export | N/A | 완료 |
 | Deal | list, stage counts, detail/create/update/delete, company/contact/product options, following action, memo, xlsx export, trash | pipeline/list/detail/create/update, stage tabs, linked records, next action, memo, export | N/A | 완료 |
-| Schedule | deal options, list/detail/create/update/delete, timezone 처리 | `/app/schedules`, detail, form, 월간/목록 | N/A | 기본 완료. week report는 후속 |
+| Schedule | deal options, list/detail/create/update/delete, 월간/주간 조회, weekly report API, weekly xlsx export, 딜/회사/담당자/다음 행동 요약, timezone 처리 | `/app/schedules`, `/app/schedules/week`, detail, form, 월간/목록, 주간 보고서, Excel 다운로드 | N/A | 완료. 주간 일정 보고서 포함 |
 | MeetingNote | list/detail/create/update/delete, AI draft, STT draft, add deal link, trash | 목록, 상세, 작성, AI/STT draft UI, 딜 연동, 삭제/복구 | N/A | 완료 |
 | BusinessCard OCR | `/api/business-card-scans`, scan/confirm/log/status | `/app/business-cards`, 이미지 업로드, 명함스캔, 확인/수정, 저장 | N/A | 완료 |
 | DataImport | import templates, uploads, mapping, row edit/validation, confirm, cancel, active job resume, import logs. pre-confirm job은 DB persistence | `/app/import`, `/app/import/review/:importJobId`, template download, CSV/XLSX upload, AI mapping, row edit/validation, resume, confirm, log detail | N/A | 완료. persistence/resume 포함 |
 | Search | `GET /api/search` | GlobalSearch, loading/empty/error, result navigation | N/A | 완료 |
 | Trash | `/api/trash`, detail, restore | `/app/trash`, list/detail modal/restore | N/A | 7일 이내 복구 완료 |
-| Domain export | Company/Contact/Product/Deal xlsx endpoint | 각 목록 `엑셀 다운로드` | N/A | 완료 |
+| Domain export | Company/Contact/Product/Deal xlsx endpoint, weekly schedule report xlsx export | 각 목록 `엑셀 다운로드`, `/app/schedules/week` Excel 다운로드 | N/A | 완료 |
 | Notification | notification list/read/settings/browser-push API, 일정/딜 reminder 생성, due processor, email/browser push delivery attempt | `/app/notifications`, unread badge, settings, browser push 권한 granted/denied/unsupported fallback | N/A | 완료. 실제 SMTP/Web Push provider smoke는 env 준비 후 운영 확인 |
 | Generic ExportJob | 없음. 현재 제품 정본 아님 | `/app/export`는 `/app` redirect | N/A | 제외/후속 결정 필요 |
 | Admin operation | `/admin/api/me`만 있음 | N/A | 운영 route는 root redirect | 후속 |
@@ -51,7 +54,7 @@
 | `/app/products`, `/app/products/new`, `/app/products/new/full`, `/app/products/:productId` | 구현 |
 | `/app/deals`, `/app/deals/new`, `/app/deals/new/full`, `/app/deals/:dealId` | 구현 |
 | `/app/schedules`, `/app/schedules/:scheduleId` | 구현 |
-| `/app/schedules/week` | `/app/schedules` redirect |
+| `/app/schedules/week` | 구현 |
 | `/app/meeting-notes`, `/app/meeting-notes/new`, `/app/meeting-notes/new/full`, `/app/meeting-notes/:meetingNoteId` | 구현 |
 | `/app/business-cards` | 구현 |
 | `/app/import`, `/app/import/review/:importJobId`, `/app/import/:importUserLogId` | 구현 |
@@ -78,6 +81,7 @@
 - 개인 영업자 MVP 핵심 루프는 대부분 구현되어 있다.
 - 그러나 이 MVP 상태는 판매 기준이 아니다.
 - 첫 판매 기준은 Global B2C 유료 판매 가능형이며, 현재 제품에는 결제/구독, Admin 운영, 앱 내부 다국어, 세금/컴플라이언스, 제품 분석, 운영 신뢰 계층이 아직 부족하다.
+- 주간 일정 보고서와 Excel export는 구현 완료됐으며, PDF/범용 ExportJob, 반복 일정, AI 요약은 후속 확장 범위다.
 - 일정/딜 reminder 기반 Notification은 구현 완료됐지만, 실제 SMTP/Web Push provider smoke는 env 준비 후 운영 확인 단계에서 실행한다.
 - 제품화 gap은 "API가 없어서 화면을 못 만든다"보다 "현재 핵심 루프를 Global B2C 첫 판매 gate까지 어떤 순서로 끌어올릴지"에 가깝다.
 - 따라서 다음 계획은 MVP 기능 추가 목록이 아니라 Global B2C 첫 판매 기준 대비 gap을 먼저 정리해야 한다.

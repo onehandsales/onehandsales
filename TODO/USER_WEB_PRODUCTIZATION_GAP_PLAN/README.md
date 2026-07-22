@@ -9,6 +9,8 @@
 - [x] DataImport 기본 흐름
 - [x] DataImport ImportJob persistence/resume (`NBA-006`)
 - [x] `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/01_IMPORT_JOB_PERSISTENCE` 구현 및 QA closeout
+- [x] Weekly Schedule Report (`NBA-009`)
+- [x] `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/03_WEEKLY_SCHEDULE_REPORT` 구현 및 QA closeout
 - [x] Notification reminder (`NBA-010`)
 - [x] `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/02_NOTIFICATION_REMINDER` 구현 및 QA closeout
 - [ ] Admin 운영 API/화면
@@ -52,6 +54,7 @@
 - Product
 - Deal
 - Schedule
+- Weekly Schedule Report
 - MeetingNote
 - BusinessCard OCR
 - DataImport
@@ -93,7 +96,7 @@
 - Notification 확장: 회의록 follow-up 알림, Admin provider failure UI, 실제 SMTP/Web Push provider smoke
 - Admin 운영 API/화면
 - 결제/구독
-- 주간 영업 리포트
+- AI 주간 영업 리포트, PDF/범용 ExportJob, 반복 일정 같은 주간 일정 보고서 확장
 - 범용 DealActivity table
 - MeetingNote transcript/provider log table
 - page size 계약 변경

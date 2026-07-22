@@ -7,6 +7,10 @@
 
 - [x] 01 ImportJob Persistence: Done (2026-07-21)
 - [x] 완료 기록: `TODO_LOG/2026-07-21/G04_IMPORT_JOB_PERSISTENCE_QA_CLEANUP/WORK_LOG.md`
+- [x] 02 Notification Reminder: Done (2026-07-22)
+- [x] 완료 기록: `TODO_LOG/2026-07-22/G05_QA_REVIEW_CLOSEOUT/WORK_LOG.md`
+- [x] 03 Weekly Schedule Report: Done (2026-07-22)
+- [x] 완료 기록: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/03_WEEKLY_SCHEDULE_REPORT/COMMON/TODO_LOG.md`
 
 ## 1. 제품 방향 결정
 
@@ -36,8 +40,8 @@
 | 슬롯 | 결정 상태 | 추천 결정 |
 |---|---|---|
 | 01 ImportJob Persistence | Done | `ImportJob`, `ImportJobRow`, `ImportJobError`, `ImportUploadedFile`로 확정 전 작업을 DB에 저장한다. 작업 재개 TTL은 7일로 둔다. 원본 파일 binary는 DB에 저장하지 않고 storage에 두며 장기 보관하지 않는다. confirm/cancel/expire 후 원본 파일 삭제를 추적한다. resume route와 cancel API를 제공한다. 구현 및 QA closeout 완료. |
-| 02 Notification Reminder | 결정 confirmed | 2026-07-22 사용자 결정으로 1차 채널은 앱 안 알림, browser push, email을 모두 포함한다. 1차 알림 대상은 일정 시작 전과 딜 마감일만 포함한다. 일정 알림은 시작 30분 전, 딜 마감 알림은 사용자 timezone 기준 마감일 1일 전 오전 9시에 보낸다. 다음 행동 알림은 딜 데이터 구조 변경 가능성이 있어 06 DealActivity/다음 행동 고도화에서 다시 설계한다. 회의록 후속 알림은 07에서 다시 설계한다. 설정은 toggle 중심으로 단순하게 둔다. |
-| 03 Weekly Schedule Report | Goal Ready | 2026-07-22 사용자 결정으로 03은 주간 보고서 화면과 동기식 Excel 다운로드까지만 구현한다. `NBA-009 Schedule week report`를 confirmed 기능 goal로 승격하며, API는 `GET /api/schedules/week`, `GET /api/schedules/week/export/xlsx`로 확정한다. `weekStart`는 월요일 date-only로 받고, 다일 일정은 겹치는 날짜마다 표시하며, 일정 없는 날도 7일 모두 표시한다. 딜 금액/단계/마감일/회사/담당자/다음 행동은 포함하되 일정 메모 본문은 제외하고 `hasMemo`만 둔다. 새 DB 구조와 migration은 만들지 않으며, DB 관련 구현 또는 문서 변경이 생기면 한글 주석을 반드시 둔다. Backend/DB/Frontend 아키텍처는 `AGENT/SOFTWARE_AGENT`, UX/UI와 사용자 문구는 `AGENT/UXUI_AGENT` 기준을 따른다. 03은 Global B2C retention/Product UX 일부를 강화하지만 첫 판매 gate 전체를 닫지 않는다. 결제/Admin/앱 전체 다국어/통화 모델/제품 분석, 제품 요약, PDF, `/app/export`, 범용 ExportJob, 반복 일정 정식 모델은 이번 03에서 제외하고 별도 사용자 결정/goal로 분리한다. `/goal` 실행 문서는 `03_WEEKLY_SCHEDULE_REPORT/COMMON/GOAL-WORK-ORDER.md`와 `COMMON/GOAL-SPECS/*`에 둔다. |
+| 02 Notification Reminder | Done | 2026-07-22 구현 및 QA closeout 완료. 1차 채널은 앱 안 알림, browser push, email을 모두 포함한다. 1차 알림 대상은 일정 시작 전과 딜 마감일만 포함한다. 일정 알림은 시작 30분 전, 딜 마감 알림은 사용자 timezone 기준 마감일 1일 전 오전 9시에 보낸다. 다음 행동 알림은 딜 데이터 구조 변경 가능성이 있어 06 DealActivity/다음 행동 고도화에서 다시 설계한다. 회의록 후속 알림은 07에서 다시 설계한다. 실제 SMTP/Web Push provider smoke는 env 준비 후 운영 확인 단계로 남긴다. |
+| 03 Weekly Schedule Report | Done | 2026-07-22 구현 및 QA closeout 완료. 03은 주간 보고서 화면과 동기식 Excel 다운로드까지만 구현했다. `NBA-009 Schedule week report`를 confirmed 기능 goal로 승격했고, API는 `GET /api/schedules/week`, `GET /api/schedules/week/export/xlsx`로 확정/구현했다. `weekStart`는 월요일 date-only로 받고, 다일 일정은 겹치는 날짜마다 표시하며, 일정 없는 날도 7일 모두 표시한다. 딜 금액/단계/마감일/회사/담당자/다음 행동은 포함하되 일정 메모 본문은 제외하고 `hasMemo`만 둔다. 새 DB 구조와 migration은 만들지 않았다. 03은 Global B2C retention/Product UX 일부를 강화하지만 첫 판매 gate 전체를 닫지 않는다. 결제/Admin/앱 전체 다국어/통화 모델/제품 분석, 제품 요약, PDF, `/app/export`, 범용 ExportJob, 반복 일정 정식 모델은 별도 사용자 결정/goal로 분리한다. |
 | 04 Google Calendar Integration | 결정 baseline | Google login과 Calendar scope를 분리한다. 1차는 read-only import와 수동 sync다. 양방향 실시간 sync는 제외한다. 가져온 일정은 source badge와 `externalEventId`를 가진다. provider가 지원하면 `syncToken`을 저장한다. imported schedule의 정본은 Google event로 보고, local memo/link는 유지한다. 연결 해제 시 가져온 일정은 유지하되 source 상태를 남긴다. |
 | 05 AI Weekly Sales Report | 결정 baseline | 수동 생성형과 저장형으로 시작한다. 사용자가 `이번 주 리포트 생성`을 누르면 요약, 리스크, 다음 행동, follow-up 초안을 만든다. AI 제안은 자동으로 딜/일정/담당자를 변경하지 않는다. 05는 주간/cross-record 리포트, 07은 회의록 직후 후보 추출로 나눈다. AI 입력은 redaction 후 사용하고 비용 추적을 남긴다. |
 | 06 Deal Activity Timeline | 결정 baseline | Attio식 핵심 기능으로 `DealActivity` 별도 모델을 만든다. 단계 변경, 회의록 연결, 일정 연결, 다음 행동을 timeline에 자동 기록한다. 기존 memo/following action log는 즉시 폐기하지 않고 연결 또는 점진 통합한다. private memo는 timeline summary에서 제외한다. |

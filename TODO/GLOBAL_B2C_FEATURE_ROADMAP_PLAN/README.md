@@ -7,8 +7,8 @@
 ## 0. 완료 현황
 
 - [x] 01 `01_IMPORT_JOB_PERSISTENCE`: Done (2026-07-21)
-- [ ] 02 `02_NOTIFICATION_REMINDER`
-- [ ] 03 `03_WEEKLY_SCHEDULE_REPORT`
+- [x] 02 `02_NOTIFICATION_REMINDER`: Done (2026-07-22)
+- [x] 03 `03_WEEKLY_SCHEDULE_REPORT`: Done (2026-07-22)
 - [ ] 04 `04_GOOGLE_CALENDAR_INTEGRATION`
 - [ ] 05 `05_AI_WEEKLY_SALES_REPORT`
 - [ ] 06 `06_DEAL_ACTIVITY_TIMELINE`
@@ -46,7 +46,7 @@
 - Admin 운영과 구독/결제/세금 상세 구현은 마지막 묶음으로 둔다.
 - 단, `NBA-014` DB/Prisma 운영 gate와 Trust/policy first-sale gate는 11~12까지 미루지 않고 관련 goal마다 선행/병행 확인한다.
 - 01 작업을 시작할 때는 01 폴더 안에 추가 문서를 작성하고 검수/검토한 뒤 진행한다.
-- 01이 끝난 뒤 02로 넘어가는 순차 흐름을 기본으로 한다.
+- 01~03까지는 순차 실행이 완료됐고, 이후에도 다음 미완료 슬롯으로 넘어가는 순차 흐름을 기본으로 한다.
 - 12개 슬롯의 추천 의사결정은 `COMMON/DECISION-LOG.md`를 기본값으로 삼는다.
 - 각 슬롯은 Notion식 작업공간 UX, Attio식 CRM record 관계, 사용 편의성 기준을 유지한다.
 
@@ -55,8 +55,8 @@
 | 순서 | 폴더 | 기능 묶음 | 현재 성격 |
 |---:|---|---|---|
 | 01 | `01_IMPORT_JOB_PERSISTENCE` | ImportJob 영속화 | Done: Global B2C 전 데이터 신뢰 기반 완료 |
-| 02 | `02_NOTIFICATION_REMINDER` | 알림/리마인더 | 리텐션 기본 루프 |
-| 03 | `03_WEEKLY_SCHEDULE_REPORT` | 주간 일정 보고서 | 일정/딜/회의록 연결 보고 |
+| 02 | `02_NOTIFICATION_REMINDER` | 알림/리마인더 | Done: 일정/딜 reminder 기반 retention loop 완료 |
+| 03 | `03_WEEKLY_SCHEDULE_REPORT` | 주간 일정 보고서 | Done: 화면 보고서와 동기식 Excel 다운로드 완료 |
 | 04 | `04_GOOGLE_CALENDAR_INTEGRATION` | Google Calendar 연동 | 외부 일정 연결 |
 | 05 | `05_AI_WEEKLY_SALES_REPORT` | AI 주간 영업 리포트 | AI 영업 판단 기능 |
 | 06 | `06_DEAL_ACTIVITY_TIMELINE` | DealActivity 타임라인 | 딜 활동 통합 |
@@ -94,7 +94,7 @@
 
 ## 5. 착수 규칙
 
-1. 번호 폴더는 현재 `draft slot` 상태다.
+1. 미완료 번호 폴더는 현재 `draft slot` 상태이며, 완료된 번호는 각 폴더의 README와 TODO_LOG를 정본 이력으로 본다.
 2. 구현 전에 `COMMON/DECISION-LOG.md`에서 해당 슬롯의 추천 결정을 확인한다.
 3. `COMMON/COVERAGE-MATRIX.md`에서 해당 번호에 배정된 하위 기능을 모두 확인한다.
 4. `COMMON/FIRST-SALE-GATE-MAP.md`에서 해당 슬롯이 건드리는 first-sale gate가 있는지 확인한다.

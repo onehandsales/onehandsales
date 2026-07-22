@@ -6,6 +6,8 @@
 
 - [x] `/app/import` ImportJob persistence/resume UX 구현 완료
 - [x] `NBA-006` User Web productization gap 종료
+- [x] `/app/schedules/week` Weekly Schedule Report UX와 Excel 다운로드 구현 완료
+- [x] `NBA-009` User Web productization gap 종료
 - [x] `/app/notifications` Notification reminder UX 구현 완료
 - [x] `NBA-010` User Web productization gap 종료
 
@@ -37,7 +39,8 @@
 | `/app/companies` | 목록/상세/생성/메모/export 구현 | 담당자/진행 딜/최근 활동 맥락이 충분한가 | `NBA-003` 후보 |
 | `/app/contacts` | 목록/상세/생성/export 구현 | 연결 딜 수와 회사 맥락이 충분한가 | `NBA-002`, `NBA-003` 후보 |
 | `/app/products` | 목록/상세/생성/export 구현 | 제품이 어느 딜에서 쓰이는지 빠르게 보이는가 | `NBA-003` 후보 |
-| `/app/schedules` | 목록/월간/상세 구현 | 일정과 딜이 하루/주 단위 영업 판단으로 연결되는가 | `NBA-009` 후보 |
+| `/app/schedules` | 목록/월간/상세 구현 | 일정과 딜이 하루/주 단위 영업 판단으로 연결되는가 | 기본 일정 완료 |
+| `/app/schedules/week` | 주간 보고서, 이전/다음/이번 주 이동, Excel 다운로드, loading/empty/error/export error 구현 | 주간 일정 보고서는 구현 완료. PDF/범용 ExportJob, 반복 일정, AI 요약은 별도 후속 확장 | `NBA-009` 완료 |
 | `/app/meeting-notes` | 수동/AI/STT draft/딜 연결 구현 | 회의록에서 다음 행동과 딜 맥락이 충분히 보이는가 | `NBA-004`, `NBA-011` 후보 |
 | `/app/business-cards` | OCR/upload/confirm 구현 | provider 실패, 모바일 촬영, 다국가 연락처가 자연스러운가 | `NBA-005` 후보 |
 | `/app/import` | template/upload/mapping/row edit/validation/resume/confirm/cancel/log 구현 | 새로고침/탭 이동/배포 중 유실 복구 구현 완료 | `NBA-006` 완료 |
@@ -50,6 +53,7 @@
 ## 4. 지금 바로 FE에서 하지 말 것
 
 - 완료된 Notification 범위를 넘어서는 새 알림 화면은 API/DB 계약 없이 확장하지 않는다.
+- 완료된 주간 일정 보고서 범위를 넘어서는 PDF/범용 ExportJob, 반복 일정, AI 요약은 API/DB 계약 없이 확장하지 않는다.
 - `/app/export` generic export를 다시 노출하지 않는다.
 - page size를 FE 단독으로 바꾸지 않는다.
 - API 응답에 없는 latest activity, next action summary, product summary, dealCount를 임의로 계산해 사실처럼 표시하지 않는다.

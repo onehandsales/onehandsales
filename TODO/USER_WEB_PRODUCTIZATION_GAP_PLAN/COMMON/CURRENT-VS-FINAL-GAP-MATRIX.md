@@ -6,6 +6,8 @@
 
 - [x] `NBA-006 ImportJob persistence/resume API`: Done (2026-07-21)
 - [x] Import gap 중 "confirm 전 job in-memory" 항목은 닫힘
+- [x] `NBA-009 Schedule week report`: Done (2026-07-22)
+- [x] `/app/schedules/week`, weekly schedule report API, Excel export 구현 완료
 - [x] `NBA-010 Notification`: Done (2026-07-22)
 - [x] 일정/딜 reminder 기반 retention loop와 `/app/notifications` UX 구현 완료
 
@@ -30,7 +32,7 @@
 | 홈 | 오늘 일정, 진행 딜, 다음 행동, 최근 회의록이 바로 읽힌다. | `/app` dashboard 구현 | 실제 사용자가 하루 업무를 시작하기 충분한지 재점검 필요 | UX/UI productization | 첫 판매 전 점검 |
 | 딜 목록 | 단계, 금액, 회사/담당자/제품, 다음 행동, 마감일이 빠르게 비교된다. | pipeline/list/detail 구현. product summary는 list API에 없음 | 제품 linked record, row density, 다음 행동 강조 gap | UX/API gap | UX 먼저, API는 후속 |
 | 회사/담당자/제품 목록 | linked record, 진행 딜, 최근 활동, 다음 행동 맥락이 보인다. | 기본 목록/count 구현. 일부 summary 없음 | Contact dealCount, latest activity summary 후보 | UX/API gap | UX 먼저, API는 후속 |
-| 일정 | 월간/목록과 딜 연결이 된다. 주간 보고서가 있다. | CRUD와 월간/목록 구현, week route redirect | 주간 보고서/PDF/Excel 없음 | Feature gap | 후속 |
+| 일정 | 월간/목록과 딜 연결이 된다. 주간 보고서가 있다. | CRUD, 월간/목록, `/app/schedules/week`, weekly report API, Excel export 구현 | 주간 일정 보고서 기본 gap은 닫힘. PDF/범용 ExportJob, 반복 일정, AI 요약은 후속 확장 | Closed for NBA-009 | 완료 |
 | 회의록 | 직접 작성, AI/STT, 딜 활동 연결, 후속 행동 추출이 된다. | 직접/AI/STT draft와 딜 연결 구현 | next/latest summary, provider log, transcript 정책 없음 | Feature/Ops gap | 후속 |
 | 명함 스캔 | 모바일 현장 촬영, OCR, 다국가 연락처 검증까지 자연스럽다. | 이미지 업로드 OCR 구현 | 카메라 UX, 다국가 전화번호, provider failure contract 부족 | Feature/Ops gap | 후속 |
 | Import | 업로드 중단/새로고침/배포에도 이어받는다. | ImportJob DB persistence/resume 구현 완료 | Live Supabase 수동 QA와 장기 운영 cleanup은 운영 확인 단계 | Closed for NBA-006 | 완료 |
