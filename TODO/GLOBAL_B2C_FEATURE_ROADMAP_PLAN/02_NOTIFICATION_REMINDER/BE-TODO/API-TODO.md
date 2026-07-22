@@ -1,7 +1,7 @@
 # Backend API TODO
 
 상태: Confirmed
-구현 상태: User API G02 Done / internal scheduling-delivery pending
+구현 상태: User API G02 Done / internal scheduling-delivery G03 Done / QA G05 Done
 기준 API 계약: `COMMON/API-SPEC/NOTIFICATION_API.md`
 
 ## 1. 목표

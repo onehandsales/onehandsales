@@ -659,6 +659,8 @@ function BrowserPushPanel({
     pushSupported &&
     isPublicKeyReady &&
     permissionState !== "denied";
+  const canRequestPermission =
+    browserPushEnabled && pushSupported && permissionState !== "denied";
 
   return (
     <div className="grid gap-4 border-t pt-4">
@@ -693,10 +695,22 @@ function BrowserPushPanel({
         </p>
       ) : null}
 
+      {browserPushEnabled && !pushSupported ? (
+        <p className="rounded-lg bg-amber-50 p-3 text-sm text-amber-800">
+          이 브라우저에서는 푸시 알림을 사용할 수 없어요.
+        </p>
+      ) : null}
+
+      {browserPushEnabled && permissionState === "denied" ? (
+        <p className="rounded-lg bg-amber-50 p-3 text-sm text-amber-800">
+          브라우저 설정에서 알림 권한 차단을 해제한 뒤 다시 등록해 주세요.
+        </p>
+      ) : null}
+
       <div className="grid gap-2 sm:grid-cols-2">
         <button
           className="inline-flex min-h-10 items-center justify-center gap-2 rounded-md border px-4 py-2 text-sm font-semibold hover:bg-muted disabled:cursor-not-allowed disabled:opacity-60"
-          disabled={!browserPushEnabled || !pushSupported}
+          disabled={!canRequestPermission}
           type="button"
           onClick={onRequestPermission}
         >
@@ -892,9 +906,9 @@ function ErrorMessage({ message }: { readonly message: string }) {
 function isBrowserPushSupported() {
   return (
     typeof window !== "undefined" &&
-    "Notification" in window &&
-    "serviceWorker" in navigator &&
-    "PushManager" in window
+    typeof window.Notification !== "undefined" &&
+    typeof navigator.serviceWorker !== "undefined" &&
+    typeof window.PushManager !== "undefined"
   );
 }
 

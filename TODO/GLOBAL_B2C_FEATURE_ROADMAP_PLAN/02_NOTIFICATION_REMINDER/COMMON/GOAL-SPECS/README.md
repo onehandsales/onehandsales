@@ -1,7 +1,7 @@
 # Goal Specs
 
 상태: Confirmed
-구현 상태: G01 Done / G02 Done / G03 Done / G04 Done / G05 Ready
+구현 상태: G01 Done / G02 Done / G03 Done / G04 Done / G05 Done
 
 ## 1. 목적
 
@@ -15,7 +15,7 @@
 | G02 | Done | `G02_BACKEND_NOTIFICATION_API.md` | User API와 notification application service |
 | G03 | Done | `G03_REMINDER_GENERATION_DELIVERY.md` | 일정/딜 reminder 예약, due processor, email/push adapter |
 | G04 | Done | `G04_USER_WEB_NOTIFICATION_UX.md` | `/app/notifications`, unread badge, settings, push UX |
-| G05 | Ready | `G05_QA_REVIEW_CLOSEOUT.md` | 통합 QA와 검토 closeout |
+| G05 | Done | `G05_QA_REVIEW_CLOSEOUT.md` | 통합 QA와 검토 closeout |
 
 ## 3. 실행 규칙
 

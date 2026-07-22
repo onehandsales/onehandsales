@@ -133,6 +133,93 @@ describe("ProcessDueNotificationsUseCase", () => {
     });
   });
 
+  it("records a successful browser push delivery attempt for active subscriptions", async () => {
+    const repository = createRepositoryMock();
+    const emailDelivery = createEmailDeliveryMock();
+    const browserPushDelivery = createBrowserPushDeliveryMock();
+    const encryption = createEncryptionMock();
+    const notification = createNotificationFixture({
+      body: "Renewal deal closes tomorrow.",
+      sourceType: "DEAL",
+      targetPath: "/app/deals/source-1",
+      title: "Deal due reminder",
+      type: "DEAL_DUE_REMINDER",
+    });
+    const pushAttempt = createDeliveryAttemptFixture({
+      id: "attempt-push-success",
+      channel: "BROWSER_PUSH",
+      detailJson: { subscriptionId: "subscription-1" },
+    });
+    const subscription = createBrowserPushSubscriptionFixture();
+    repository.listDueNotifications.mockResolvedValue([notification]);
+    repository.markNotificationSent.mockResolvedValue(true);
+    repository.findSettingsForUser.mockResolvedValue(
+      createSettingsFixture({
+        browserPushEnabled: true,
+        emailNotificationEnabled: false,
+      })
+    );
+    repository.findUserForNotification.mockResolvedValue(createUserFixture());
+    repository.listActiveBrowserPushSubscriptionsForUser.mockResolvedValue([
+      subscription,
+    ]);
+    repository.createDeliveryAttempt.mockResolvedValue(pushAttempt);
+    repository.listRetryableDeliveryAttempts.mockResolvedValue([]);
+    repository.markDeliveryAttemptSent.mockResolvedValue({
+      ...pushAttempt,
+      provider: "web-push",
+      providerStatusCode: "201",
+      sentAt: NOW,
+      status: "SENT",
+    });
+    browserPushDelivery.sendBrowserPush.mockResolvedValue({
+      ok: true,
+      provider: "web-push",
+      providerMessageId: null,
+      providerStatusCode: "201",
+    });
+    const useCase = createProcessUseCase(
+      repository,
+      emailDelivery,
+      browserPushDelivery,
+      encryption
+    );
+
+    const result = await useCase.execute({ now: NOW, limit: 10 });
+
+    expect(repository.createDeliveryAttempt).toHaveBeenCalledWith({
+      notificationId: notification.id,
+      userId: USER_ID,
+      channel: "BROWSER_PUSH",
+      status: "PENDING",
+      attemptNumber: 1,
+      detailJson: { subscriptionId: "subscription-1" },
+    });
+    expect(browserPushDelivery.sendBrowserPush).toHaveBeenCalledWith(
+      expect.objectContaining({
+        body: "Renewal deal closes tomorrow.",
+        endpoint: "https://push.example.test/raw-endpoint",
+        targetPath: "/app/deals/source-1",
+        title: "Deal due reminder",
+      })
+    );
+    expect(repository.markDeliveryAttemptSent).toHaveBeenCalledWith({
+      deliveryAttemptId: "attempt-push-success",
+      provider: "web-push",
+      providerMessageId: null,
+      providerStatusCode: "201",
+      sentAt: NOW,
+    });
+    expect(result).toEqual(
+      expect.objectContaining({
+        deliveryAttemptsCreated: 1,
+        deliveryAttemptsFailed: 0,
+        deliveryAttemptsSent: 1,
+        subscriptionsRevoked: 0,
+      })
+    );
+  });
+
   it("creates a new attempt for retryable delivery failures", async () => {
     const repository = createRepositoryMock();
     const emailDelivery = createEmailDeliveryMock();

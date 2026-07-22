@@ -688,10 +688,14 @@ class FakeAppLogger extends AppLogger {
 }
 
 // 기능 : DealApplicationService 테스트 인스턴스를 생성합니다.
-function createService(
+function createServiceHarness(
   repository: FakeDealRepository,
   writer: XlsxWorkbookWriter = new FakeXlsxWorkbookWriter()
-): DealApplicationService {
+): {
+  readonly service: DealApplicationService;
+  readonly scheduleDealDueReminder: ScheduleDealDueReminderUseCase;
+  readonly cancelDealDueReminder: CancelDealDueReminderUseCase;
+} {
   const scheduleDealDueReminder = {
     execute: jest.fn().mockResolvedValue({
       scheduled: true,
@@ -709,13 +713,26 @@ function createService(
     executeWithRepository: jest.fn().mockResolvedValue(0),
   } as unknown as CancelDealDueReminderUseCase;
 
-  return new DealApplicationService(
+  const service = new DealApplicationService(
     repository,
     writer,
     scheduleDealDueReminder,
     cancelDealDueReminder,
     new FakeAppLogger()
   );
+
+  return {
+    service,
+    scheduleDealDueReminder,
+    cancelDealDueReminder,
+  };
+}
+
+function createService(
+  repository: FakeDealRepository,
+  writer: XlsxWorkbookWriter = new FakeXlsxWorkbookWriter()
+): DealApplicationService {
+  return createServiceHarness(repository, writer).service;
 }
 
 // 기능 : 기본 딜 생성 command를 반환합니다.
@@ -789,6 +806,25 @@ describe("DealApplicationService", () => {
     expect(result.latestFollowingAction?.followingAction).toBe("제안서 발송");
   });
 
+  it("딜 생성 시 마감일 reminder 예약을 같은 transaction에서 요청한다", async () => {
+    const repository = new FakeDealRepository();
+    const { service, scheduleDealDueReminder } = createServiceHarness(repository);
+
+    const result = await service.createDeal(CURRENT_USER, createDealCommand());
+
+    expect(repository.transactionCount).toBe(1);
+    expect(scheduleDealDueReminder.executeWithRepository).toHaveBeenCalledWith(
+      {
+        userId: CURRENT_USER.id,
+        dealId: result.id,
+        dealName: "A회사 신규 도입",
+        expectedEndDate: new Date("2026-01-05T00:00:00.000Z"),
+        userTimeZone: "Asia/Seoul",
+      },
+      repository
+    );
+  });
+
   it("lists the oldest incomplete following action with a remaining count", async () => {
     const repository = new FakeDealRepository();
     const service = createService(repository);
@@ -848,6 +884,46 @@ describe("DealApplicationService", () => {
 
     expect(repository.deals).toHaveLength(0);
     expect(repository.followingActionLogs).toHaveLength(0);
+  });
+
+  it("딜 마감일 수정 시 새 마감일 기준으로 reminder 재예약을 요청한다", async () => {
+    const repository = new FakeDealRepository();
+    const { service, scheduleDealDueReminder } = createServiceHarness(repository);
+    const created = await service.createDeal(CURRENT_USER, createDealCommand());
+    jest.clearAllMocks();
+
+    await service.updateDeal(CURRENT_USER, created.id, {
+      expectedEndDate: "2026-01-10",
+    });
+
+    expect(scheduleDealDueReminder.executeWithRepository).toHaveBeenCalledWith(
+      {
+        userId: CURRENT_USER.id,
+        dealId: created.id,
+        dealName: "A회사 신규 도입",
+        expectedEndDate: new Date("2026-01-10T00:00:00.000Z"),
+        userTimeZone: "Asia/Seoul",
+      },
+      repository
+    );
+  });
+
+  it("딜 삭제 시 pending due reminder 취소를 같은 transaction에서 요청한다", async () => {
+    const repository = new FakeDealRepository();
+    const { service, cancelDealDueReminder } = createServiceHarness(repository);
+    const created = await service.createDeal(CURRENT_USER, createDealCommand());
+    jest.clearAllMocks();
+
+    await service.deleteDeal(CURRENT_USER, created.id);
+
+    expect(cancelDealDueReminder.executeWithRepository).toHaveBeenCalledWith(
+      {
+        userId: CURRENT_USER.id,
+        dealId: created.id,
+        cancelReason: "SOURCE_DELETED",
+      },
+      repository
+    );
   });
 
   // 기능 : 같은 딜에 같은 제품이 중복 연결되지 않도록 검증합니다.

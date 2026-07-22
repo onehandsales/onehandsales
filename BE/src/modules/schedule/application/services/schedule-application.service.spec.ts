@@ -320,6 +320,32 @@ describe("ScheduleApplicationService", () => {
     ).rejects.toBeInstanceOf(RelatedDealNotFoundError);
   });
 
+  it("일정 생성 시 시작 30분 전 reminder 예약을 같은 transaction에서 요청한다", async () => {
+    const { repository, service, scheduleNotificationReminder } = createService();
+
+    const created = await service.createSchedule(CURRENT_USER, {
+      scheduleTitle: " 방문 미팅 ",
+      startAt: "2026-06-14T09:00",
+      endAt: "2026-06-14T10:00",
+      timeZone: "Asia/Seoul",
+      dealIds: ["deal-1"],
+    });
+
+    expect(created.scheduleTitle).toBe("방문 미팅");
+    expect(repository.transactionCount).toBe(1);
+    expect(
+      scheduleNotificationReminder.executeWithRepository
+    ).toHaveBeenCalledWith(
+      {
+        userId: CURRENT_USER.id,
+        scheduleId: created.id,
+        scheduleTitle: "방문 미팅",
+        startAt: new Date("2026-06-14T00:00:00.000Z"),
+      },
+      repository
+    );
+  });
+
   it("일정 수정 시 요청한 최종 dealIds 기준으로 ScheduleDeal을 추가하고 삭제한다", async () => {
     const { repository, service } = createService();
     const created = await service.createSchedule(CURRENT_USER, {
@@ -339,6 +365,62 @@ describe("ScheduleApplicationService", () => {
     expect(updated.deals).toEqual([{ id: "deal-2", dealName: "B 딜" }]);
     expect(repository.scheduleDealIds.get(created.id)).toEqual(["deal-2"]);
     expect(repository.transactionCount).toBe(2);
+  });
+
+  it("일정 시간 수정 시 새 시작 시각 기준으로 reminder 재예약을 요청한다", async () => {
+    const { repository, service, scheduleNotificationReminder } = createService();
+    const created = await service.createSchedule(CURRENT_USER, {
+      scheduleTitle: "방문 미팅",
+      startAt: "2026-06-14T09:00",
+      endAt: "2026-06-14T10:00",
+      timeZone: "Asia/Seoul",
+      dealIds: ["deal-1"],
+    });
+    jest.clearAllMocks();
+
+    await service.updateSchedule(CURRENT_USER, created.id, {
+      startAt: "2026-06-14T11:00",
+      endAt: "2026-06-14T12:00",
+    });
+
+    expect(
+      scheduleNotificationReminder.executeWithRepository
+    ).toHaveBeenCalledWith(
+      {
+        userId: CURRENT_USER.id,
+        scheduleId: created.id,
+        scheduleTitle: "방문 미팅",
+        startAt: new Date("2026-06-14T02:00:00.000Z"),
+      },
+      repository
+    );
+  });
+
+  it("일정 삭제 시 pending reminder 취소를 같은 transaction에서 요청한다", async () => {
+    const { repository, service, cancelScheduleNotificationReminder } =
+      createService();
+    const created = await service.createSchedule(CURRENT_USER, {
+      scheduleTitle: "방문 미팅",
+      startAt: "2026-06-14T09:00",
+      endAt: "2026-06-14T10:00",
+      timeZone: "Asia/Seoul",
+      dealIds: ["deal-1"],
+    });
+    jest.clearAllMocks();
+
+    await service.deleteSchedule(CURRENT_USER, created.id);
+
+    expect(
+      cancelScheduleNotificationReminder.executeWithRepository
+    ).toHaveBeenCalledWith(
+      {
+        userId: CURRENT_USER.id,
+        scheduleId: created.id,
+        cancelReason: "SOURCE_DELETED",
+      },
+      repository
+    );
+    expect(repository.schedules).toHaveLength(0);
   });
 
   it("일정 수정 요청에 수정 가능한 필드가 없으면 ownership 조회 전에 차단한다", async () => {

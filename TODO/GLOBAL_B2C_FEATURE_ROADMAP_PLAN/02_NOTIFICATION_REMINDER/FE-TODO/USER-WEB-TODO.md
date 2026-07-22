@@ -1,7 +1,7 @@
 # User Web TODO
 
 상태: Confirmed
-구현 상태: G04 Done
+구현 상태: G04 Done / G05 QA Done
 기준 문서:
 
 - `COMMON/SCOPE.md`
@@ -155,6 +155,7 @@ E2E:
 - 읽음 처리 후 unread count가 갱신된다.
 - 설정 저장 후 새로고침해도 유지된다.
 - push 미지원 브라우저 mock에서 화면이 깨지지 않는다.
+- G05에서 `notification-reminder-ux.spec.ts`로 읽음 처리, unread badge 감소, 설정 저장 유지, permission denied/unsupported fallback을 검증했다.
 
 검증 명령:
 

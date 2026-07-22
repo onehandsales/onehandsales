@@ -1,7 +1,7 @@
 # Notification Reminder API
 
 계약 상태: confirmed
-구현 상태: User API G02 Done / internal scheduling-delivery pending
+구현 상태: User API G02 Done / internal scheduling-delivery G03 Done / User Web G04 Done / QA G05 Done
 소비자:
 - User Web
 

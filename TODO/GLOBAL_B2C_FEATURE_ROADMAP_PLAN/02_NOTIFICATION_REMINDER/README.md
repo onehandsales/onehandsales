@@ -1,7 +1,7 @@
 # 02 Notification Reminder
 
-상태: Confirmed Plan
-구현 상태: G01 DB foundation 완료 / G02 Backend API 완료 / G03 reminder generation-delivery 완료 / G04 User Web UX 완료 / G05 QA closeout 대기
+상태: Done
+구현 상태: G01 DB foundation 완료 / G02 Backend API 완료 / G03 reminder generation-delivery 완료 / G04 User Web UX 완료 / G05 QA closeout 완료
 확정일: 2026-07-22
 순서: 02
 성격: 구현 착수 가능한 `/goal` 계획
@@ -103,3 +103,9 @@ G01_DB_NOTIFICATION_FOUNDATION
 - `/app/notifications` route가 노출되고, app shell unread count와 읽음 처리가 동작한다.
 - cross-user 접근 차단, provider failure redaction, browser push permission fallback, email 발송 실패 재시도 기준이 검증된다.
 - 구현 완료 후 `COMMON/REVIEW-CHECKLIST.md` 기준으로 검토를 통과한다.
+
+## 7. G05 closeout
+
+- Closeout 날짜: 2026-07-22
+- QA 기록: `TODO_LOG/2026-07-22/G05_QA_REVIEW_CLOSEOUT/WORK_LOG.md`
+- 실제 SMTP/Web Push provider smoke는 `BE/.env`에 provider env가 없어 실행하지 않았다. G05에서는 adapter/stub과 provider failure 강제 테스트 기준으로 검증했다.
