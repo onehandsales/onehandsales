@@ -33,6 +33,11 @@ const MOBILE_ROUTES: ReadonlyArray<{
   },
   { path: "/app/schedules", expectedText: "일정", hasMobileHeader: false },
   {
+    path: "/app/schedules/week?weekStart=2026-07-20",
+    expectedText: "주간 보고서",
+    hasMobileHeader: false,
+  },
+  {
     path: "/app/meeting-notes",
     expectedText: "RQA002 모바일 회의록",
     hasMobileHeader: true,

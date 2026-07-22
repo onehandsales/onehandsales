@@ -44,7 +44,7 @@ import { PricingPage } from "@/pages/pricing";
 import { ScheduleDetailPage } from "@/pages/schedules/detail";
 import { SchedulesPage } from "@/pages/schedules";
 import { SecurityPage } from "@/pages/security";
-// import { ScheduleWeekPage } from "@/pages/schedules/week";
+import { ScheduleWeekPage } from "@/pages/schedules/week";
 import { SettingsPage } from "@/pages/settings";
 import { TrashPage } from "@/pages/trash";
 import { MorePage } from "@/pages/more";
@@ -124,7 +124,10 @@ export const router = createBrowserRouter([
     element: <LegacyAppRedirect paramName="dealId" to="/app/deals" />,
   },
   { path: "/schedules", element: <LegacyAppRedirect to="/app/schedules" /> },
-  { path: "/schedules/week", element: <Navigate replace to="/app/schedules" /> },
+  {
+    path: "/schedules/week",
+    element: <LegacyAppRedirect to="/app/schedules/week" />,
+  },
   {
     path: "/schedules/:scheduleId",
     element: <LegacyAppRedirect paramName="scheduleId" to="/app/schedules" />,
@@ -190,9 +193,7 @@ export const router = createBrowserRouter([
       { path: "deals/new", element: <DealNewPage /> },
       { path: "deals/:dealId", element: <DealDetailPage /> },
       { path: "schedules", element: <SchedulesPage /> },
-      // 주간 보고서 Backend 구현 전까지 라우트를 노출하지 않는다.
-      // { path: "schedules/week", element: <ScheduleWeekPage /> },
-      { path: "schedules/week", element: <Navigate replace to="/app/schedules" /> },
+      { path: "schedules/week", element: <ScheduleWeekPage /> },
       { path: "schedules/:scheduleId", element: <ScheduleDetailPage /> },
       { path: "meeting-notes", element: <MeetingNotesPage /> },
       { path: "meeting-notes/new/full", element: <MeetingNoteNewFullPage /> },

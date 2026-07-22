@@ -493,6 +493,16 @@ async function handleApiRequest(
     return json(schedule, 201);
   }
 
+  if (pathname === "/api/schedules/week" && method === "GET") {
+    return json(createWeeklyScheduleReport(store, url));
+  }
+
+  if (pathname === "/api/schedules/week/export/xlsx" && method === "GET") {
+    return text("weekly schedules xlsx", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", {
+      "content-disposition": 'attachment; filename="weekly_schedules_20260720_090000.xlsx"',
+    });
+  }
+
   const scheduleDetailMatch = pathname.match(/^\/api\/schedules\/([^/]+)$/);
   if (scheduleDetailMatch && method === "GET") {
     return json(requireItem(store.schedules, scheduleDetailMatch[1]));
@@ -1149,6 +1159,158 @@ function createSchedule(store: UserWebApiMockStore, body: unknown) {
   };
 }
 
+const WEEKLY_REPORT_WEEKDAYS = [
+  { weekday: "MONDAY", weekdayLabel: "월" },
+  { weekday: "TUESDAY", weekdayLabel: "화" },
+  { weekday: "WEDNESDAY", weekdayLabel: "수" },
+  { weekday: "THURSDAY", weekdayLabel: "목" },
+  { weekday: "FRIDAY", weekdayLabel: "금" },
+  { weekday: "SATURDAY", weekdayLabel: "토" },
+  { weekday: "SUNDAY", weekdayLabel: "일" },
+] as const;
+
+function createWeeklyScheduleReport(store: UserWebApiMockStore, url: URL) {
+  const weekStart = url.searchParams.get("weekStart") ?? "2026-07-20";
+  const timeZone = url.searchParams.get("timeZone") ?? "Asia/Seoul";
+  const weekEnd = addDateOnlyDays(weekStart, 6);
+  const reportSchedule =
+    weekStart === "2026-07-20" && store.schedules[0]
+      ? createWeeklyReportSchedule(store.schedules[0], store.deals[0])
+      : null;
+  const days = WEEKLY_REPORT_WEEKDAYS.map((weekday, index) => {
+    const date = addDateOnlyDays(weekStart, index);
+    const schedules = index === 0 && reportSchedule ? [reportSchedule] : [];
+    const linkedDealIds = new Set(
+      schedules.flatMap((schedule) => schedule.deals.map((deal) => deal.id)),
+    );
+
+    return {
+      date,
+      linkedDealCount: linkedDealIds.size,
+      scheduleCount: schedules.length,
+      schedules,
+      weekday: weekday.weekday,
+      weekdayLabel: weekday.weekdayLabel,
+    };
+  });
+  const distinctDeals = reportSchedule?.deals ?? [];
+  const totalDealCost = distinctDeals.reduce(
+    (total, deal) => total + deal.dealCost,
+    0,
+  );
+
+  return {
+    days,
+    generatedAt: NOW,
+    rangeEndAt: `${addDateOnlyDays(weekStart, 7)}T00:00:00.000Z`,
+    rangeStartAt: `${weekStart}T00:00:00.000Z`,
+    summary: {
+      dealStatusCounts: distinctDeals.map((deal) => ({
+        count: 1,
+        dealStatus: deal.dealStatus,
+        dealStatusLabel: deal.dealStatusLabel,
+      })),
+      distinctLinkedDealCount: distinctDeals.length,
+      scheduledDayCount: reportSchedule ? 1 : 0,
+      scheduleDealLinkCount: distinctDeals.length,
+      totalDealCost,
+      totalScheduleCount: reportSchedule ? 1 : 0,
+      totalScheduleEntryCount: reportSchedule ? 1 : 0,
+      unlinkedScheduleCount: reportSchedule && distinctDeals.length === 0 ? 1 : 0,
+    },
+    timeZone,
+    weekEnd,
+    weekStart,
+  };
+}
+
+function createWeeklyReportSchedule(
+  schedule: MutableRecord,
+  deal: MutableRecord | undefined,
+) {
+  const reportDeal = deal ? createWeeklyReportDeal(deal) : null;
+
+  return {
+    deals: reportDeal ? [reportDeal] : [],
+    endAt: stringField(schedule, "endAt") ?? "2026-07-20T11:00:00.000Z",
+    hasMemo: Boolean(stringField(schedule, "memo")?.trim()),
+    id: stringField(schedule, "id") ?? "schedule-mobile-001",
+    location: stringField(schedule, "location"),
+    scheduleTitle:
+      stringField(schedule, "scheduleTitle") ??
+      "RQA002 주간 보고서 일정 제목 Chrome Edge 390 360",
+    startAt: stringField(schedule, "startAt") ?? "2026-07-20T10:00:00.000Z",
+    timeZone: stringField(schedule, "timeZone") ?? "Asia/Seoul",
+  };
+}
+
+function createWeeklyReportDeal(deal: MutableRecord) {
+  const dealStatus = stringField(deal, "dealStatus") ?? "INITIAL_CONTACT";
+
+  return {
+    companies: toMutableRecords(deal.companies).map((company) => ({
+      companyName: stringField(company, "companyName") ?? MOBILE_LONG_FIXTURE.companyName,
+      id: stringField(company, "id") ?? "company-mobile-001",
+    })),
+    contacts: toMutableRecords(deal.contacts).map((contact) => {
+      const company = nestedRecord(contact.company);
+
+      return {
+        companyId: stringField(contact, "companyId") ?? stringField(company, "id") ?? "company-mobile-001",
+        companyName: stringField(company, "companyName") ?? MOBILE_LONG_FIXTURE.companyName,
+        id: stringField(contact, "id") ?? "contact-mobile-001",
+        username: stringField(contact, "username") ?? MOBILE_LONG_FIXTURE.contactName,
+      };
+    }),
+    dealCost: numberField(deal, "dealCost") ?? 0,
+    dealName: stringField(deal, "dealName") ?? "RQA002 주간 보고서 딜",
+    dealStatus,
+    dealStatusLabel:
+      stringField(deal, "dealStatusLabel") ??
+      DEAL_STATUS_LABEL[dealStatus as keyof typeof DEAL_STATUS_LABEL] ??
+      dealStatus,
+    expectedEndDate: stringField(deal, "expectedEndDate") ?? "2026-08-31",
+    id: stringField(deal, "id") ?? "deal-mobile-001",
+    nextFollowingAction: createWeeklyReportNextFollowingAction(
+      nestedRecord(deal.nextFollowingAction),
+    ),
+  };
+}
+
+function createWeeklyReportNextFollowingAction(action: MutableRecord) {
+  const followingAction = stringField(action, "followingAction");
+
+  if (!followingAction) {
+    return null;
+  }
+
+  return {
+    checkComplete: Boolean(action.checkComplete),
+    createdAt: stringField(action, "createdAt") ?? NOW,
+    followingAction,
+    id: stringField(action, "id") ?? "following-action-mobile-001",
+    remainingCount: numberField(action, "remainingCount") ?? 0,
+  };
+}
+
+function toMutableRecords(value: unknown) {
+  return Array.isArray(value) ? value.filter(isRecord) : [];
+}
+
+function addDateOnlyDays(dateKey: string, days: number) {
+  const [year, month, day] = dateKey.split("-").map(Number);
+  const date = new Date(year, (month ?? 1) - 1, day ?? 1);
+  date.setDate(date.getDate() + days);
+
+  return `${date.getFullYear()}-${padDatePart(date.getMonth() + 1)}-${padDatePart(
+    date.getDate(),
+  )}`;
+}
+
+function padDatePart(value: number) {
+  return String(value).padStart(2, "0");
+}
+
 function createMeetingNote(store: UserWebApiMockStore, body: unknown) {
   const meetingNote = createMeetingNoteFromFixtures(
     store.companies[0],
@@ -1792,6 +1954,7 @@ function corsHeaders() {
     "access-control-allow-headers": "authorization,content-type",
     "access-control-allow-methods": "GET,POST,PATCH,PUT,DELETE,OPTIONS",
     "access-control-allow-origin": "*",
+    "access-control-expose-headers": "content-disposition",
   };
 }
 

@@ -1,4 +1,7 @@
-import type { ScheduleListParams } from "@/features/schedule/types/schedule";
+import type {
+  ScheduleListParams,
+  WeeklyScheduleReportParams,
+} from "@/features/schedule/types/schedule";
 
 export const scheduleQueryKeys = {
   all: ["schedule"] as const,
@@ -10,6 +13,15 @@ export const scheduleQueryKeys = {
       {
         view: params.view,
         baseDate: params.baseDate,
+        timeZone: params.timeZone ?? "",
+      },
+    ] as const,
+  weeklyReports: () => [...scheduleQueryKeys.all, "weekly-report"] as const,
+  weeklyReport: (params: WeeklyScheduleReportParams) =>
+    [
+      ...scheduleQueryKeys.weeklyReports(),
+      {
+        weekStart: params.weekStart,
         timeZone: params.timeZone ?? "",
       },
     ] as const,
