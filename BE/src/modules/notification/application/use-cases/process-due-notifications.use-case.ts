@@ -31,6 +31,7 @@ const MAX_BATCH_SIZE = 200;
 const MAX_DELIVERY_ATTEMPTS = 3;
 const RETRY_DELAYS_MINUTES = [5, 15, 60] as const;
 
+// 역할 : provider 발송 대상이 되는 delivery attempt와 관련 context를 묶습니다.
 export interface DeliveryWorkItem {
   readonly attempt: NotificationDeliveryAttemptRecord;
   readonly notification: NotificationRecord;
@@ -38,18 +39,21 @@ export interface DeliveryWorkItem {
   readonly subscription?: BrowserPushSubscriptionRecord;
 }
 
+// 역할 : 단일 또는 다중 delivery 처리 결과 count를 정의합니다.
 export interface DeliveryCounters {
   readonly sent: number;
   readonly failed: number;
   readonly subscriptionsRevoked: number;
 }
 
+// 역할 : due notification processor 실행 command를 정의합니다.
 export interface ProcessDueNotificationsCommand {
   readonly now?: Date;
   readonly limit?: number;
   readonly includeRetries?: boolean;
 }
 
+// 역할 : due notification processor 실행 결과 통계를 정의합니다.
 export interface ProcessDueNotificationsResult {
   readonly dueNotifications: number;
   readonly notificationsSent: number;
@@ -61,6 +65,7 @@ export interface ProcessDueNotificationsResult {
 }
 
 @Injectable()
+// 역할 : email/browser push delivery attempt 한 건을 provider로 발송하고 결과를 저장합니다.
 export class SendNotificationDeliveryAttemptUseCase {
   constructor(
     @Inject(NOTIFICATION_REPOSITORY)
@@ -75,6 +80,7 @@ export class SendNotificationDeliveryAttemptUseCase {
   ) {}
 
   async execute(input: DeliveryWorkItem, now: Date): Promise<DeliveryCounters> {
+    // 기능 : channel에 맞는 provider 발송 경로로 분기합니다.
     if (input.attempt.channel === "EMAIL") {
       return this.sendEmail(input, now);
     }
@@ -86,6 +92,7 @@ export class SendNotificationDeliveryAttemptUseCase {
     input: DeliveryWorkItem,
     now: Date
   ): Promise<DeliveryCounters> {
+    // 기능 : email 주소가 없으면 provider 호출 없이 안전한 실패로 저장합니다.
     if (!input.user.email) {
       await this.markFailed(input.attempt, now, {
         ok: false,
@@ -111,6 +118,7 @@ export class SendNotificationDeliveryAttemptUseCase {
     input: DeliveryWorkItem,
     now: Date
   ): Promise<DeliveryCounters> {
+    // 기능 : push subscription 원문은 발송 직전에만 복호화하고 저장하지 않습니다.
     const subscription = await this.resolveBrowserPushSubscription(input);
 
     if (!subscription || subscription.status !== "ACTIVE") {
@@ -162,6 +170,7 @@ export class SendNotificationDeliveryAttemptUseCase {
     now: Date,
     subscriptionId: string | null
   ): Promise<DeliveryCounters> {
+    // 기능 : provider 결과를 안전한 delivery attempt 상태로 변환해 저장합니다.
     if (result.ok) {
       await this.notificationRepository.markDeliveryAttemptSent({
         deliveryAttemptId: attempt.id,
@@ -264,6 +273,7 @@ export class SendNotificationDeliveryAttemptUseCase {
   private decryptSubscription(
     subscription: BrowserPushSubscriptionRecord
   ): BrowserPushSubscriptionPlaintext | null {
+    // 기능 : 복호화 실패는 원문 노출 없이 non-retryable delivery 실패로 처리합니다.
     try {
       return this.browserPushSubscriptionEncryption.decrypt({
         endpointHash: subscription.endpointHash,
@@ -278,6 +288,7 @@ export class SendNotificationDeliveryAttemptUseCase {
   }
 
   private createEmailText(notification: NotificationRecord): string {
+    // 기능 : email 본문은 provider 전달용으로만 만들고 로그나 DB에는 저장하지 않습니다.
     const lines = [
       notification.title,
       notification.body ?? "",
@@ -293,6 +304,7 @@ export class SendNotificationDeliveryAttemptUseCase {
 }
 
 @Injectable()
+// 역할 : due 상태의 app notification을 발송 처리하고 retry 대상 attempt를 재시도합니다.
 export class ProcessDueNotificationsUseCase {
   constructor(
     @Inject(NOTIFICATION_REPOSITORY)
@@ -304,6 +316,7 @@ export class ProcessDueNotificationsUseCase {
   async execute(
     input: ProcessDueNotificationsCommand = {}
   ): Promise<ProcessDueNotificationsResult> {
+    // 기능 : due notification 조회와 provider 발송을 batch 단위로 처리합니다.
     const now = input.now ?? new Date();
     const limit = normalizeBatchSize(input.limit);
     const dueNotifications = await this.notificationRepository.listDueNotifications({
@@ -362,6 +375,7 @@ export class ProcessDueNotificationsUseCase {
     notification: NotificationRecord,
     now: Date
   ): Promise<DeliveryWorkItem[] | null> {
+    // 기능 : notification 상태 변경과 delivery attempt 생성을 같은 DB transaction에서 처리합니다.
     return this.notificationRepository.runInTransaction(async (repository) => {
       const marked = await repository.markNotificationSent({
         notificationId: notification.id,
@@ -430,6 +444,7 @@ export class ProcessDueNotificationsUseCase {
     readonly failed: number;
     readonly subscriptionsRevoked: number;
   }> {
+    // 기능 : retry 가능 attempt를 새 attempt row로 승격한 뒤 provider 발송을 재실행합니다.
     const retryableAttempts =
       await this.notificationRepository.listRetryableDeliveryAttempts(input);
     let created = 0;
@@ -457,6 +472,7 @@ export class ProcessDueNotificationsUseCase {
   private async createRetryWorkItem(
     workItem: NotificationDeliveryWorkItemRecord
   ): Promise<DeliveryWorkItem | null> {
+    // 기능 : 기존 failed attempt를 소비 처리하고 다음 attempt number의 row를 생성합니다.
     return this.notificationRepository.runInTransaction(async (repository) => {
       const consumed = await repository.markDeliveryAttemptRetryConsumed(
         workItem.attempt.id
@@ -487,6 +503,7 @@ export class ProcessDueNotificationsUseCase {
     workItems: readonly DeliveryWorkItem[],
     now: Date
   ): Promise<DeliveryCounters> {
+    // 기능 : DB transaction 밖에서 provider 호출을 순차 실행하고 count를 누적합니다.
     let sent = 0;
     let failed = 0;
     let subscriptionsRevoked = 0;
@@ -506,6 +523,7 @@ export class ProcessDueNotificationsUseCase {
   }
 }
 
+// 기능 : 알림 설정이 없을 때 적용할 delivery channel 기본값을 계산합니다.
 function createEffectiveSettings(
   settings: NotificationSettingsRecord | null
 ): {
@@ -519,6 +537,7 @@ function createEffectiveSettings(
   };
 }
 
+// 기능 : processor batch size를 허용 범위 안의 정수로 정규화합니다.
 function normalizeBatchSize(value: number | undefined): number {
   if (!Number.isInteger(value) || value === undefined || value < 1) {
     return DEFAULT_BATCH_SIZE;
@@ -527,6 +546,7 @@ function normalizeBatchSize(value: number | undefined): number {
   return Math.min(value, MAX_BATCH_SIZE);
 }
 
+// 기능 : attempt number에 맞는 다음 retry 예정 시각을 계산합니다.
 function createNextRetryAt(now: Date, attemptNumber: number): Date | null {
   const delayMinutes = RETRY_DELAYS_MINUTES[attemptNumber - 1];
 

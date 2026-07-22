@@ -14,6 +14,7 @@ type WebPushError = Error & {
 };
 
 @Injectable()
+// 역할 : web-push library와 VAPID 설정으로 browser push 알림을 발송합니다.
 export class VapidBrowserPushDeliveryAdapter
   implements NotificationBrowserPushDeliveryPort
 {
@@ -22,6 +23,7 @@ export class VapidBrowserPushDeliveryAdapter
   async sendBrowserPush(
     input: SendNotificationBrowserPushInput
   ): Promise<NotificationDeliveryProviderResult> {
+    // 기능 : VAPID 설정이 없으면 provider 호출 없이 안전한 실패를 반환합니다.
     const config = this.getConfig();
 
     if (!config.ok) {
@@ -78,6 +80,7 @@ export class VapidBrowserPushDeliveryAdapter
         readonly ok: false;
         readonly failure: NotificationDeliveryProviderResult;
       } {
+    // 기능 : 환경 변수에서 Web Push VAPID public/private key와 subject를 읽습니다.
     const publicKey = this.getTrimmed("WEB_PUSH_VAPID_PUBLIC_KEY");
     const privateKey = this.getTrimmed("WEB_PUSH_VAPID_PRIVATE_KEY");
     const subject = this.getTrimmed("WEB_PUSH_VAPID_SUBJECT");
@@ -104,12 +107,14 @@ export class VapidBrowserPushDeliveryAdapter
   }
 
   private getTrimmed(key: string): string | undefined {
+    // 기능 : 빈 문자열 환경 변수는 설정되지 않은 값으로 취급합니다.
     const value = this.configService.get<string>(key)?.trim();
 
     return value && value.length > 0 ? value : undefined;
   }
 }
 
+// 기능 : web-push 오류를 retry 정책과 안전한 error code로 변환합니다.
 function createFailureResult(
   error: unknown
 ): NotificationDeliveryProviderResult {
@@ -148,6 +153,7 @@ function createFailureResult(
   };
 }
 
+// 기능 : web-push library 오류 객체에서 HTTP status code만 안전하게 추출합니다.
 function getStatusCode(error: unknown): number | null {
   if (
     typeof error === "object" &&

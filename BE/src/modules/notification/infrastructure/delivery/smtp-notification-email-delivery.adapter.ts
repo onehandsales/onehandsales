@@ -11,6 +11,7 @@ import type {
 const PROVIDER = "smtp";
 
 @Injectable()
+// 역할 : nodemailer 기반 SMTP email 알림 발송 adapter입니다.
 export class SmtpNotificationEmailDeliveryAdapter
   implements NotificationEmailDeliveryPort
 {
@@ -19,6 +20,7 @@ export class SmtpNotificationEmailDeliveryAdapter
   async sendEmail(
     input: SendNotificationEmailInput
   ): Promise<NotificationDeliveryProviderResult> {
+    // 기능 : SMTP 설정이 없거나 불완전하면 provider 호출 없이 안전한 실패를 반환합니다.
     const config = this.getConfig();
 
     if (!config.ok) {
@@ -62,6 +64,7 @@ export class SmtpNotificationEmailDeliveryAdapter
         readonly ok: false;
         readonly failure: NotificationDeliveryProviderResult;
       } {
+    // 기능 : 환경 변수에서 SMTP 연결 정보와 선택적 인증 정보를 구성합니다.
     const host = this.getTrimmed("SMTP_HOST");
     const port = parsePort(this.getTrimmed("SMTP_PORT"));
     const from = this.getTrimmed("SMTP_FROM");
@@ -107,12 +110,14 @@ export class SmtpNotificationEmailDeliveryAdapter
   }
 
   private getTrimmed(key: string): string | undefined {
+    // 기능 : 빈 문자열 환경 변수는 설정되지 않은 값으로 취급합니다.
     const value = this.configService.get<string>(key)?.trim();
 
     return value && value.length > 0 ? value : undefined;
   }
 }
 
+// 기능 : SMTP port 환경 변수를 유효한 TCP port로 변환합니다.
 function parsePort(value: string | undefined): number | null {
   if (!value) {
     return null;
@@ -123,6 +128,7 @@ function parsePort(value: string | undefined): number | null {
   return Number.isInteger(port) && port > 0 && port <= 65_535 ? port : null;
 }
 
+// 기능 : boolean 환경 변수 문자열을 기본값이 있는 boolean 값으로 변환합니다.
 function parseBoolean(value: string | undefined, fallback: boolean): boolean {
   if (!value) {
     return fallback;
@@ -131,6 +137,7 @@ function parseBoolean(value: string | undefined, fallback: boolean): boolean {
   return value === "true" || value === "1";
 }
 
+// 기능 : SMTP provider 오류에서 저장 가능한 safe error code만 추출합니다.
 function getSafeSmtpErrorCode(error: unknown): string {
   if (
     typeof error === "object" &&

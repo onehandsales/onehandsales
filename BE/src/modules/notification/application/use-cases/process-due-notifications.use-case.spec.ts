@@ -20,6 +20,7 @@ import {
 const NOW = new Date("2026-07-22T00:00:00.000Z");
 const USER_ID = "00000000-0000-4000-8000-000000000101";
 
+// 기능 : due notification 처리, provider 결과 저장, retry 생성, push 구독 해제를 검증합니다.
 describe("ProcessDueNotificationsUseCase", () => {
   it("marks due notifications sent and records email and browser push delivery results", async () => {
     const repository = createRepositoryMock();
@@ -197,6 +198,7 @@ describe("ProcessDueNotificationsUseCase", () => {
   });
 });
 
+// 기능 : 실제 processor와 delivery attempt use case 조합을 테스트용 의존성으로 생성합니다.
 function createProcessUseCase(
   repository: jest.Mocked<NotificationRepository>,
   emailDelivery: jest.Mocked<NotificationEmailDeliveryPort>,
@@ -218,6 +220,7 @@ function createProcessUseCase(
   );
 }
 
+// 기능 : due processor가 사용하는 알림 저장소 mock을 생성합니다.
 function createRepositoryMock(): jest.Mocked<NotificationRepository> {
   const repository: Partial<jest.Mocked<NotificationRepository>> = {
     findSettingsForUser: jest.fn(),
@@ -251,18 +254,21 @@ function createRepositoryMock(): jest.Mocked<NotificationRepository> {
   return repository as jest.Mocked<NotificationRepository>;
 }
 
+// 기능 : email delivery provider mock을 생성합니다.
 function createEmailDeliveryMock(): jest.Mocked<NotificationEmailDeliveryPort> {
   return {
     sendEmail: jest.fn(),
   };
 }
 
+// 기능 : browser push delivery provider mock을 생성합니다.
 function createBrowserPushDeliveryMock(): jest.Mocked<NotificationBrowserPushDeliveryPort> {
   return {
     sendBrowserPush: jest.fn(),
   };
 }
 
+// 기능 : push subscription 복호화 mock을 생성합니다.
 function createEncryptionMock(): jest.Mocked<BrowserPushSubscriptionEncryptionPort> {
   return {
     encrypt: jest.fn(),
@@ -274,12 +280,14 @@ function createEncryptionMock(): jest.Mocked<BrowserPushSubscriptionEncryptionPo
   };
 }
 
+// 기능 : 테스트 중 구조화 로그 출력을 mock으로 대체합니다.
 function createLogger(): AppLogger {
   return {
     log: jest.fn(),
   } as unknown as AppLogger;
 }
 
+// 기능 : due processor 입력으로 사용할 notification fixture를 생성합니다.
 function createNotificationFixture(
   input: Partial<NotificationRecord> = {}
 ): NotificationRecord {
@@ -307,6 +315,7 @@ function createNotificationFixture(
   };
 }
 
+// 기능 : 알림 설정 fixture를 생성합니다.
 function createSettingsFixture(
   input: Partial<NotificationSettingsRecord> = {}
 ): NotificationSettingsRecord {
@@ -326,6 +335,7 @@ function createSettingsFixture(
   };
 }
 
+// 기능 : 발송 대상 사용자 fixture를 생성합니다.
 function createUserFixture(
   input: Partial<NotificationUserRecord> = {}
 ): NotificationUserRecord {
@@ -337,6 +347,7 @@ function createUserFixture(
   };
 }
 
+// 기능 : email/browser push delivery attempt fixture를 생성합니다.
 function createDeliveryAttemptFixture(
   input: Partial<NotificationDeliveryAttemptRecord> = {}
 ): NotificationDeliveryAttemptRecord {
@@ -363,6 +374,7 @@ function createDeliveryAttemptFixture(
   };
 }
 
+// 기능 : 암호화 저장 상태의 browser push subscription fixture를 생성합니다.
 function createBrowserPushSubscriptionFixture(
   input: Partial<BrowserPushSubscriptionRecord> = {}
 ): BrowserPushSubscriptionRecord {

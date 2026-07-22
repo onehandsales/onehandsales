@@ -11,6 +11,7 @@ import {
 const NOW = new Date("2026-07-22T00:00:00.000Z");
 const USER_ID = "00000000-0000-4000-8000-000000000101";
 
+// 기능 : 일정/딜 reminder 예약 시각, 취소, dedupe key 생성을 검증합니다.
 describe("Notification reminder scheduling use cases", () => {
   it("creates an immediately due schedule reminder when reminder time is past but schedule is still valid", async () => {
     const repository = createRepositoryMock();
@@ -121,6 +122,7 @@ describe("Notification reminder scheduling use cases", () => {
   });
 });
 
+// 기능 : reminder scheduling use case가 요구하는 알림 저장소 mock을 생성합니다.
 function createRepositoryMock(): jest.Mocked<NotificationRepository> {
   const repository: Partial<jest.Mocked<NotificationRepository>> = {
     findSettingsForUser: jest.fn(),
@@ -154,12 +156,14 @@ function createRepositoryMock(): jest.Mocked<NotificationRepository> {
   return repository as jest.Mocked<NotificationRepository>;
 }
 
+// 기능 : 테스트 중 구조화 로그 출력을 mock으로 대체합니다.
 function createLogger(): AppLogger {
   return {
     log: jest.fn(),
   } as unknown as AppLogger;
 }
 
+// 기능 : reminder upsert 결과로 반환할 notification fixture를 생성합니다.
 function createNotificationFixture(
   input: Partial<NotificationRecord> = {}
 ): NotificationRecord {

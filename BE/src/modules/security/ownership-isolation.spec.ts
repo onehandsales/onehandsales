@@ -137,20 +137,20 @@ type OwnedMeetingNoteRecord = MeetingNoteRecord &
     readonly deleted?: boolean;
   };
 
-// Captures workbook rows and the generated binary payload for G04 export checks.
+// 역할 : G04 export 검증을 위해 workbook row와 생성된 binary payload를 기록합니다.
 class RecordingXlsxWriter implements XlsxWorkbookWriter {
   readonly inputs: XlsxWorksheetInput[] = [];
 
-  // Returns row JSON as a fake xlsx binary so tests can inspect the payload.
+  // 기능 : 테스트가 payload를 검사할 수 있도록 row JSON을 fake xlsx binary로 반환합니다.
   async writeWorksheet(input: XlsxWorksheetInput): Promise<Buffer> {
     this.inputs.push(input);
     return Buffer.from(JSON.stringify(input.rows), "utf8");
   }
 }
 
-// Suppresses application logs during the test run.
+// 역할 : 테스트 실행 중 application 로그 출력을 억제합니다.
 class SilentLogger extends AppLogger {
-  // Intentionally ignores log output.
+  // 기능 : 로그 출력을 의도적으로 무시합니다.
   override log(_message: string, _context?: string): void {
     void _message;
     void _context;
@@ -215,7 +215,7 @@ const privateMemoEncryption: PrivateMemoEncryptionPort &
   },
 };
 
-// Covers the core G04 multi-account security QA matrix with automated tests.
+// 기능 : G04 다중 계정 보안 QA 핵심 matrix를 자동 테스트로 검증합니다.
 describe("G04 multi-account ownership isolation", () => {
   it("isolates company list, detail, export, update, and delete access", async () => {
     const writer = new RecordingXlsxWriter();

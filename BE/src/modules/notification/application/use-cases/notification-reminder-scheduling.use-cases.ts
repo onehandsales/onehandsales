@@ -19,12 +19,14 @@ const DEFAULT_DEAL_DUE_REMINDER_LOCAL_TIME = "09:00";
 const MINUTE_IN_MS = 60_000;
 const LOCAL_TIME_PATTERN = /^([01]\d|2[0-3]):([0-5]\d)$/;
 
+// 역할 : reminder 예약/취소 use case의 처리 결과를 정의합니다.
 interface ReminderSchedulingResult {
   readonly scheduled: boolean;
   readonly notification: NotificationRecord | null;
   readonly canceledCount: number;
 }
 
+// 역할 : 일정 시작 reminder 예약 command를 정의합니다.
 export interface ScheduleNotificationReminderCommand {
   readonly userId: string;
   readonly scheduleId: string;
@@ -33,6 +35,7 @@ export interface ScheduleNotificationReminderCommand {
   readonly now?: Date;
 }
 
+// 역할 : 일정 시작 reminder 취소 command를 정의합니다.
 export interface CancelScheduleNotificationReminderCommand {
   readonly userId: string;
   readonly scheduleId: string;
@@ -40,6 +43,7 @@ export interface CancelScheduleNotificationReminderCommand {
   readonly now?: Date;
 }
 
+// 역할 : 딜 마감 reminder 예약 command를 정의합니다.
 export interface ScheduleDealDueReminderCommand {
   readonly userId: string;
   readonly dealId: string;
@@ -49,6 +53,7 @@ export interface ScheduleDealDueReminderCommand {
   readonly now?: Date;
 }
 
+// 역할 : 딜 마감 reminder 취소 command를 정의합니다.
 export interface CancelDealDueReminderCommand {
   readonly userId: string;
   readonly dealId: string;
@@ -56,12 +61,14 @@ export interface CancelDealDueReminderCommand {
   readonly now?: Date;
 }
 
+// 역할 : timezone 계산에서 날짜만 비교할 때 쓰는 calendar date 구조입니다.
 type CalendarDate = {
   readonly year: number;
   readonly month: number;
   readonly day: number;
 };
 
+// 역할 : timezone 변환에 필요한 날짜와 시각 구성 요소를 함께 표현합니다.
 type DateTimeParts = CalendarDate & {
   readonly hour: number;
   readonly minute: number;
@@ -70,6 +77,7 @@ type DateTimeParts = CalendarDate & {
 };
 
 @Injectable()
+// 역할 : 일정 시작 30분 전 기본 reminder를 생성하거나 최신 상태로 갱신합니다.
 export class ScheduleNotificationReminderUseCase {
   constructor(
     @Inject(NOTIFICATION_REPOSITORY)
@@ -80,6 +88,7 @@ export class ScheduleNotificationReminderUseCase {
   async execute(
     input: ScheduleNotificationReminderCommand
   ): Promise<ReminderSchedulingResult> {
+    // 기능 : 단독 실행 시 알림 저장소 자체 transaction 안에서 reminder 쓰기를 처리합니다.
     return this.notificationRepository.runInTransaction((repository) =>
       this.executeWithRepository(input, repository)
     );
@@ -89,6 +98,7 @@ export class ScheduleNotificationReminderUseCase {
     input: ScheduleNotificationReminderCommand,
     repository: NotificationReminderWriteRepository
   ): Promise<ReminderSchedulingResult> {
+    // 기능 : 일정 저장소 transaction 안에서도 같은 reminder 쓰기 로직을 재사용합니다.
     const now = input.now ?? new Date();
     const settings = await repository.findSettingsForUser(input.userId);
     const enabled =
@@ -113,6 +123,7 @@ export class ScheduleNotificationReminderUseCase {
       return { scheduled: false, notification: null, canceledCount };
     }
 
+    // 기능 : reminder 예정 시각이 이미 지났지만 일정은 미래이면 즉시 처리 가능하도록 현재 시각에 예약합니다.
     const reminderMinutes = normalizePositiveInteger(
       settings?.scheduleReminderMinutes,
       DEFAULT_SCHEDULE_REMINDER_MINUTES
@@ -130,6 +141,7 @@ export class ScheduleNotificationReminderUseCase {
       `m${reminderMinutes}`,
     ].join(":");
 
+    // 기능 : 같은 일정의 이전 pending reminder를 취소하고 현재 dedupe key만 유지합니다.
     const canceledCount = await repository.cancelPendingNotificationsBySource({
       userId: input.userId,
       sourceType: "SCHEDULE",
@@ -190,6 +202,7 @@ export class ScheduleNotificationReminderUseCase {
 }
 
 @Injectable()
+// 역할 : 일정 삭제 또는 reminder 비활성화 시 pending 일정 reminder를 취소합니다.
 export class CancelScheduleNotificationReminderUseCase {
   constructor(
     @Inject(NOTIFICATION_REPOSITORY)
@@ -200,6 +213,7 @@ export class CancelScheduleNotificationReminderUseCase {
   async execute(
     input: CancelScheduleNotificationReminderCommand
   ): Promise<number> {
+    // 기능 : 단독 취소 요청을 알림 저장소 transaction 안에서 처리합니다.
     return this.notificationRepository.runInTransaction((repository) =>
       this.executeWithRepository(input, repository)
     );
@@ -209,6 +223,7 @@ export class CancelScheduleNotificationReminderUseCase {
     input: CancelScheduleNotificationReminderCommand,
     repository: NotificationReminderWriteRepository
   ): Promise<number> {
+    // 기능 : 원본 일정 변경 transaction 안에서도 pending reminder 취소를 재사용합니다.
     const canceledAt = input.now ?? new Date();
     const count = await repository.cancelPendingNotificationsBySource({
       userId: input.userId,
@@ -233,6 +248,7 @@ export class CancelScheduleNotificationReminderUseCase {
 }
 
 @Injectable()
+// 역할 : 딜 expectedEndDate 기준 사용자 timezone의 마감 reminder를 생성하거나 갱신합니다.
 export class ScheduleDealDueReminderUseCase {
   constructor(
     @Inject(NOTIFICATION_REPOSITORY)
@@ -243,6 +259,7 @@ export class ScheduleDealDueReminderUseCase {
   async execute(
     input: ScheduleDealDueReminderCommand
   ): Promise<ReminderSchedulingResult> {
+    // 기능 : 단독 실행 시 알림 저장소 자체 transaction 안에서 reminder 쓰기를 처리합니다.
     return this.notificationRepository.runInTransaction((repository) =>
       this.executeWithRepository(input, repository)
     );
@@ -252,6 +269,7 @@ export class ScheduleDealDueReminderUseCase {
     input: ScheduleDealDueReminderCommand,
     repository: NotificationReminderWriteRepository
   ): Promise<ReminderSchedulingResult> {
+    // 기능 : 딜 저장소 transaction 안에서도 같은 reminder 쓰기 로직을 재사용합니다.
     const now = input.now ?? new Date();
     const settings = await repository.findSettingsForUser(input.userId);
     const enabled =
@@ -278,6 +296,7 @@ export class ScheduleDealDueReminderUseCase {
       return { scheduled: false, notification: null, canceledCount };
     }
 
+    // 기능 : 사용자 timezone의 날짜/시각 설정을 UTC scheduledAt으로 변환합니다.
     const daysBefore = normalizeNonNegativeInteger(
       settings?.dealDueReminderDaysBefore,
       DEFAULT_DEAL_DUE_REMINDER_DAYS_BEFORE
@@ -311,6 +330,7 @@ export class ScheduleDealDueReminderUseCase {
       timeZone,
     ].join(":");
 
+    // 기능 : 같은 딜의 이전 pending reminder를 취소하고 현재 dedupe key만 유지합니다.
     const canceledCount = await repository.cancelPendingNotificationsBySource({
       userId: input.userId,
       sourceType: "DEAL",
@@ -373,6 +393,7 @@ export class ScheduleDealDueReminderUseCase {
 }
 
 @Injectable()
+// 역할 : 딜 삭제 또는 reminder 비활성화 시 pending 딜 마감 reminder를 취소합니다.
 export class CancelDealDueReminderUseCase {
   constructor(
     @Inject(NOTIFICATION_REPOSITORY)
@@ -381,6 +402,7 @@ export class CancelDealDueReminderUseCase {
   ) {}
 
   async execute(input: CancelDealDueReminderCommand): Promise<number> {
+    // 기능 : 단독 취소 요청을 알림 저장소 transaction 안에서 처리합니다.
     return this.notificationRepository.runInTransaction((repository) =>
       this.executeWithRepository(input, repository)
     );
@@ -390,6 +412,7 @@ export class CancelDealDueReminderUseCase {
     input: CancelDealDueReminderCommand,
     repository: NotificationReminderWriteRepository
   ): Promise<number> {
+    // 기능 : 원본 딜 변경 transaction 안에서도 pending reminder 취소를 재사용합니다.
     const canceledAt = input.now ?? new Date();
     const count = await repository.cancelPendingNotificationsBySource({
       userId: input.userId,
@@ -413,6 +436,7 @@ export class CancelDealDueReminderUseCase {
   }
 }
 
+// 기능 : 양수 정수 설정만 사용하고 잘못된 값은 기본값으로 대체합니다.
 function normalizePositiveInteger(
   value: number | undefined,
   fallback: number
@@ -422,6 +446,7 @@ function normalizePositiveInteger(
     : fallback;
 }
 
+// 기능 : 0 이상 정수 설정만 사용하고 잘못된 값은 기본값으로 대체합니다.
 function normalizeNonNegativeInteger(
   value: number | undefined,
   fallback: number
@@ -431,14 +456,17 @@ function normalizeNonNegativeInteger(
     : fallback;
 }
 
+// 기능 : HH:mm 형식의 local time만 사용하고 잘못된 값은 기본값으로 대체합니다.
 function normalizeLocalTime(value: string | undefined, fallback: string): string {
   return value && LOCAL_TIME_PATTERN.test(value) ? value : fallback;
 }
 
+// 기능 : 유효한 IANA timezone만 사용하고 잘못된 값은 기본 timezone으로 대체합니다.
 function normalizeTimeZone(timeZone: string): string {
   return isValidIanaTimeZone(timeZone) ? timeZone : DEFAULT_USER_TIME_ZONE;
 }
 
+// 기능 : date-only DB 값을 UTC calendar date로 변환합니다.
 function getDateOnlyParts(value: Date): CalendarDate {
   return {
     year: value.getUTCFullYear(),
@@ -447,6 +475,7 @@ function getDateOnlyParts(value: Date): CalendarDate {
   };
 }
 
+// 기능 : 특정 timezone 기준 현재 local calendar date를 계산합니다.
 function getLocalDate(value: Date, timeZone: string): CalendarDate {
   const parts = getTimeZoneParts(value, timeZone);
 
@@ -457,6 +486,7 @@ function getLocalDate(value: Date, timeZone: string): CalendarDate {
   };
 }
 
+// 기능 : calendar date 두 값을 날짜 단위로 비교합니다.
 function compareCalendarDate(left: CalendarDate, right: CalendarDate): number {
   const leftTime = Date.UTC(left.year, left.month - 1, left.day);
   const rightTime = Date.UTC(right.year, right.month - 1, right.day);
@@ -464,6 +494,7 @@ function compareCalendarDate(left: CalendarDate, right: CalendarDate): number {
   return leftTime - rightTime;
 }
 
+// 기능 : calendar date에 일 단위 offset을 적용합니다.
 function addCalendarDays(date: CalendarDate, days: number): CalendarDate {
   const utcDate = new Date(Date.UTC(date.year, date.month - 1, date.day));
   utcDate.setUTCDate(utcDate.getUTCDate() + days);
@@ -475,6 +506,7 @@ function addCalendarDays(date: CalendarDate, days: number): CalendarDate {
   };
 }
 
+// 기능 : calendar date를 API/metadata에 저장할 YYYY-MM-DD 문자열로 변환합니다.
 function formatDateOnly(date: CalendarDate): string {
   return [
     date.year.toString().padStart(4, "0"),
@@ -483,6 +515,7 @@ function formatDateOnly(date: CalendarDate): string {
   ].join("-");
 }
 
+// 기능 : timezone local date-time을 UTC Date로 변환합니다.
 function zonedTimeToUtc(parts: DateTimeParts, timeZone: string): Date {
   const utcGuess = new Date(
     Date.UTC(
@@ -510,6 +543,7 @@ function zonedTimeToUtc(parts: DateTimeParts, timeZone: string): Date {
   return new Date(utcGuess.getTime() - offset);
 }
 
+// 기능 : Intl formatter로 특정 timezone의 date-time 구성 요소를 추출합니다.
 function getTimeZoneParts(date: Date, timeZone: string): DateTimeParts {
   const formatter = new Intl.DateTimeFormat("en-US", {
     calendar: "iso8601",
