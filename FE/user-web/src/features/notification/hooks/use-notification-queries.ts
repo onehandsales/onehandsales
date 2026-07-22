@@ -35,9 +35,10 @@ export function useNotificationSettings() {
   });
 }
 
-export function useBrowserPushPublicKey() {
+export function useBrowserPushPublicKey(enabled: boolean) {
   return useQuery({
     queryKey: notificationQueryKeys.browserPushPublicKey(),
     queryFn: getBrowserPushPublicKey,
+    enabled,
   });
 }

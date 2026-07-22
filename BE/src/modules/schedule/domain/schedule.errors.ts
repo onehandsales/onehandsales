@@ -15,3 +15,14 @@ export class RelatedDealNotFoundError extends DomainError {
     super("RelatedDealNotFound", "Related deal was not found");
   }
 }
+
+// 역할 : ScheduleWeekReportExportFailedError 도메인 또는 애플리케이션 오류 상태를 표현합니다.
+export class ScheduleWeekReportExportFailedError extends DomainError {
+  // 기능 : 주간 일정 리포트 xlsx 파일 생성 실패 오류를 생성합니다.
+  constructor() {
+    super(
+      "ScheduleWeekReportExportFailed",
+      "Schedule week report export failed"
+    );
+  }
+}

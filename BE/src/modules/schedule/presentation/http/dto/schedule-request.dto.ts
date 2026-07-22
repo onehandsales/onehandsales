@@ -37,6 +37,17 @@ export class GetWeeklyScheduleReportQueryDto {
   timeZone?: string;
 }
 
+// 역할 : 주간 일정 리포트 xlsx export query 값을 검증하기 위한 DTO입니다.
+export class ExportWeeklyScheduleReportXlsxQueryDto {
+  @IsString()
+  @Matches(DATE_ONLY_PATTERN)
+  weekStart!: string;
+
+  @IsOptional()
+  @IsString()
+  timeZone?: string;
+}
+
 // 역할 : CreateScheduleDto HTTP 일정 생성 요청 값을 검증하기 위한 DTO입니다.
 export class CreateScheduleDto {
   @IsString()

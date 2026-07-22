@@ -66,12 +66,15 @@ export function NotificationScreen() {
       (notificationListQuery.data?.pageSize ?? PAGE_SIZE)
   );
   const settingsQuery = useNotificationSettings();
-  const publicKeyQuery = useBrowserPushPublicKey();
+  const settings = settingsDraft ?? settingsQuery.data ?? null;
+  const pushSupported = useMemo(() => isBrowserPushSupported(), []);
+  const publicKeyQuery = useBrowserPushPublicKey(
+    (settings?.browserPushEnabled ?? false) && pushSupported
+  );
   const markReadMutation = useMarkNotificationReadMutation();
   const updateSettingsMutation = useUpdateNotificationSettingsMutation();
   const createSubscriptionMutation = useCreateBrowserPushSubscriptionMutation();
   const revokeSubscriptionMutation = useRevokeBrowserPushSubscriptionMutation();
-  const settings = settingsDraft ?? settingsQuery.data ?? null;
   const actionError =
     notificationListQuery.error ??
     settingsQuery.error ??
@@ -80,7 +83,6 @@ export function NotificationScreen() {
     createSubscriptionMutation.error ??
     revokeSubscriptionMutation.error ??
     null;
-  const pushSupported = useMemo(() => isBrowserPushSupported(), []);
   const publicKey = publicKeyQuery.data?.publicKey ?? "";
 
   useEffect(() => {

@@ -10,14 +10,19 @@ import {
   Patch,
   Post,
   Query,
+  Res,
+  StreamableFile,
   UseGuards,
 } from "@nestjs/common";
+import type { Response } from "express";
 import { ScheduleApplicationService } from "@/modules/schedule/application/services/schedule-application.service";
 import type { CurrentUserContext } from "@/shared/application/context/current-user.context";
 import { CurrentUser } from "@/shared/presentation/decorators/current-user.decorator";
+import { createXlsxDownloadResponse } from "@/shared/presentation/http/download-file-response";
 import { AuthGuard } from "@/shared/presentation/guards/auth.guard";
 import {
   CreateScheduleDto,
+  ExportWeeklyScheduleReportXlsxQueryDto,
   GetWeeklyScheduleReportQueryDto,
   ListSchedulesQueryDto,
   UpdateScheduleDto,
@@ -47,6 +52,24 @@ export class ScheduleController {
   ) {
     // 1. query 조건과 현재 사용자를 application 계층으로 전달한다.
     return this.scheduleApplicationService.listSchedules(currentUser, query);
+  }
+
+  // API : 일정, 주간 보고서 xlsx 다운로드
+  @Get("week/export/xlsx")
+  async exportWeeklyScheduleReportXlsx(
+    @CurrentUser() currentUser: CurrentUserContext,
+    @Query() query: ExportWeeklyScheduleReportXlsxQueryDto,
+    @Res({ passthrough: true }) response: Response
+  ): Promise<StreamableFile> {
+    // 1. query 조건과 현재 사용자를 application 계층으로 전달해 xlsx 파일을 생성합니다.
+    const file =
+      await this.scheduleApplicationService.exportWeeklyScheduleReportXlsx(
+        currentUser,
+        query
+      );
+
+    // 2. 생성된 xlsx 파일 정보를 HTTP 다운로드 응답으로 변환합니다.
+    return createXlsxDownloadResponse(response, file);
   }
 
   // API : 일정, 주간 보고서 조회

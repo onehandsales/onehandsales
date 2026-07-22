@@ -49,6 +49,7 @@ import { ProductApplicationService } from "@/modules/product/application/service
 import {
   type ScheduleRecord,
   type ScheduleRepository,
+  type WeeklyReportScheduleRecord,
   ScheduleViewMode,
 } from "@/modules/schedule/application/ports/schedule.repository";
 import { ScheduleApplicationService } from "@/modules/schedule/application/services/schedule-application.service";
@@ -358,11 +359,13 @@ describe("G04 multi-account ownership isolation", () => {
     );
   });
 
-  it("isolates schedule list, detail, update, and delete access", async () => {
+  it("isolates schedule list, detail, export, update, and delete access", async () => {
+    const writer = new RecordingXlsxWriter();
     const service = new ScheduleApplicationService(
       createScheduleRepository(),
       createScheduleNotificationReminderUseCase(),
       createCancelScheduleNotificationReminderUseCase(),
+      writer,
       new SilentLogger()
     );
 
@@ -370,8 +373,16 @@ describe("G04 multi-account ownership isolation", () => {
       baseDate: "2026-07-20",
       view: ScheduleViewMode.MONTH,
     });
+    const exportFile = await service.exportWeeklyScheduleReportXlsx(
+      CURRENT_USER_A,
+      {
+        weekStart: "2026-07-20",
+      }
+    );
 
     assertNoBMarker(list);
+    assertNoBMarker(writer.inputs);
+    expect(exportFile.content.toString("utf8")).not.toContain(RQA004_B_MARKER);
     await expectDomainNotFound(
       () => service.getSchedule(CURRENT_USER_A, "rqa004-schedule-b"),
       "ScheduleNotFound"
@@ -794,6 +805,37 @@ function createScheduleRepository(): ScheduleRepository {
       return schedules.filter(
         (schedule) => schedule.userId === input.userId && !schedule.deleted
       );
+    },
+    async listSchedulesForWeeklyReport(
+      input
+    ): Promise<WeeklyReportScheduleRecord[]> {
+      return schedules
+        .filter(
+          (schedule) =>
+            schedule.userId === input.userId &&
+            !schedule.deleted &&
+            schedule.startAt < input.rangeEndAt &&
+            schedule.endAt > input.rangeStartAt
+        )
+        .map((schedule) => ({
+          id: schedule.id,
+          scheduleTitle: schedule.scheduleTitle,
+          startAt: schedule.startAt,
+          endAt: schedule.endAt,
+          timeZone: schedule.timeZone,
+          location: schedule.location,
+          memo: schedule.memo,
+          deals: schedule.deals.map((deal) => ({
+            id: deal.id,
+            dealName: deal.dealName,
+            dealCost: 1000,
+            dealStatus: DealStatusCode.INITIAL_CONTACT,
+            expectedEndDate: new Date("2026-07-31T00:00:00.000Z"),
+            companies: [],
+            contacts: [],
+            nextFollowingAction: null,
+          })),
+        }));
     },
     async findSchedule(userId, scheduleId): Promise<ScheduleRecord | null> {
       return (

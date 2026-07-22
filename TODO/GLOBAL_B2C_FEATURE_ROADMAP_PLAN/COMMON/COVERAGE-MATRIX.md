@@ -24,17 +24,18 @@
 | First-sale gate | Trash private memo backend response restriction | 11, 선행 gate | `NBA-007`. FE 숨김이 아니라 Backend response 원문 제한 여부를 독립 확인 |
 | Import/Data | ImportJob 영속화 | 01 | Done: 확정 전 job, preview row, TTL, resume 구현 완료 |
 | Import/Data | Import 원본/preview 보관 정책 | 01 | Done: 개인정보와 cleanup 기준 포함 |
-| Import/Data | Import/Export 파일 저장 기반 | 01, 03 | Import 파일은 01, Export job/file은 03 |
+| Import/Data | Import/Export 파일 저장 기반 | 01, 후속 별도 결정 | Import 파일은 01 완료. Export job/file은 03에서 제외하고 Trust/policy/Admin gate와 함께 별도 결정 |
 | Notification | In-app notification | 02 | Confirmed: 목록, 읽음, unread count |
 | Notification | Email/browser push | 02 | Confirmed: 02 1차 채널에 email/browser push 포함. delivery attempt, settings, provider failure |
 | Notification | 일정/딜 reminder | 02 | Confirmed: 일정 시작 30분 전, 딜 마감 1일 전 오전 9시 |
 | Notification | 다음 행동 reminder | 06 | 02에서 제외. 딜 데이터 구조 변경 가능성이 있어 DealActivity/다음 행동 고도화에서 설계 |
 | Notification | 회의록 후속 reminder | 07 | 02에서 제외. MeetingNote AI/provider log와 follow-up 후보 설계에서 검토 |
-| Schedule | 주간 일정 보고서 | 03 | `/app/schedules/week`, weekStart/timezone |
-| Schedule | 주간 보고서 PDF/Excel | 03 | 화면 보고서 + Excel 1차, PDF 후속 |
-| Schedule | 범용 ExportJob / 비동기 Export | 03 | `/app/export`, `/api/exports`, 대용량 export 기반 |
-| Schedule | 일정/회의록 export | 03 | 기존 domain xlsx 이후 확장 |
-| Schedule | 반복 일정 | 03 | 03에서는 정식 recurring rule 제외, API 확장성 검토 |
+| Schedule | 주간 일정 보고서 | 03 | Goal Ready: `NBA-009` 승격. `/app/schedules/week`, `weekStart`, `timeZone`, 7일 days report. 새 DB/migration 없음 |
+| Schedule | 주간 보고서 Excel | 03 | Goal Ready: `GET /api/schedules/week/export/xlsx` 동기식 다운로드. `AGENT/SOFTWARE_AGENT`, `AGENT/UXUI_AGENT` 기준 |
+| Schedule | 주간 보고서 PDF | 후속 별도 결정 | 03에서 제외. 화면+Excel 안정화 후 print/export 정책으로 별도 확정 |
+| Schedule | 범용 ExportJob / 비동기 Export | 후속 별도 결정, 11 | 03에서 제외. `/app/export`, `/api/exports`, 대용량 export, 파일 TTL/권한/삭제/audit는 Trust/policy/Admin gate와 함께 결정 |
+| Schedule | 일정/회의록 export | 후속 별도 결정 | 03에서 제외. 기존 domain xlsx 이후 확장 여부를 별도 확정 |
+| Schedule | 반복 일정 | 후속 별도 결정 | 03에서 제외. recurrence rule, exception, DST, 알림 재생성, Calendar 연동 영향 검토 후 별도 확정 |
 | Calendar | Google Calendar connect/read-only import | 04 | login OAuth와 Calendar scope 분리, export/two-way sync 제외 |
 | Calendar | external calendar sync 실패 처리 | 04, 11 | 사용자-facing은 04, 운영 추적은 11 |
 | AI report | AI 주간 영업 리포트 | 05 | 일정+딜+회의록 기반 |

@@ -1,3 +1,4 @@
+import { Buffer } from "node:buffer";
 import { Inject, Injectable } from "@nestjs/common";
 import {
   SCHEDULE_REPOSITORY,
@@ -22,8 +23,19 @@ import {
 import {
   RelatedDealNotFoundError,
   ScheduleNotFoundError,
+  ScheduleWeekReportExportFailedError,
 } from "@/modules/schedule/domain/schedule.errors";
+import {
+  createTimestampedXlsxFileName,
+  type ExportedXlsxFileResponse,
+  XLSX_CONTENT_TYPE,
+} from "@/shared/application/export/xlsx-export-file";
 import type { CurrentUserContext } from "@/shared/application/context/current-user.context";
+import {
+  XLSX_WORKBOOK_WRITER,
+  type XlsxRow,
+  type XlsxWorkbookWriter,
+} from "@/shared/application/ports/xlsx-workbook.writer";
 import {
   DEFAULT_USER_TIME_ZONE,
   isValidIanaTimeZone,
@@ -36,6 +48,9 @@ const DATE_ONLY_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
 const LOCAL_DATE_TIME_PATTERN =
   /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})(?::(\d{2})(?:\.(\d{1,3}))?)?$/;
 const OFFSET_DATE_TIME_PATTERN = /(Z|[+-]\d{2}:\d{2})$/;
+const WEEKLY_REPORT_XLSX_SHEET_NAME = "Weekly Schedules";
+const WEEKLY_REPORT_XLSX_FILE_NAME_PREFIX = "weekly_schedules";
+const WEEKLY_REPORT_EMPTY_SCHEDULE_TITLE = "일정 없음";
 const WEEKDAY_CODES = [
   "MONDAY",
   "TUESDAY",
@@ -67,6 +82,12 @@ export interface ListSchedulesQueryInput {
 
 // 역할 : 주간 일정 리포트 조회 request query 값을 정의합니다.
 export interface GetWeeklyScheduleReportQueryInput {
+  readonly weekStart: string;
+  readonly timeZone?: string;
+}
+
+// 역할 : 주간 일정 리포트 xlsx export request query 값을 정의합니다.
+export interface ExportWeeklyScheduleReportXlsxQueryInput {
   readonly weekStart: string;
   readonly timeZone?: string;
 }
@@ -249,6 +270,8 @@ export class ScheduleApplicationService {
     private readonly scheduleRepository: ScheduleRepository,
     private readonly scheduleNotificationReminder: ScheduleNotificationReminderUseCase,
     private readonly cancelScheduleNotificationReminder: CancelScheduleNotificationReminderUseCase,
+    @Inject(XLSX_WORKBOOK_WRITER)
+    private readonly xlsxWriter: XlsxWorkbookWriter,
     private readonly logger: AppLogger
   ) {}
 
@@ -313,32 +336,16 @@ export class ScheduleApplicationService {
     currentUser: CurrentUserContext,
     query: GetWeeklyScheduleReportQueryInput
   ): Promise<WeeklyScheduleReportResponse> {
-    const timeZone = this.normalizeWeeklyReportTimeZone(
-      query.timeZone,
-      currentUser.timeZone
-    );
-    const weekStart = this.parseDateOnly(query.weekStart, "weekStart");
-    this.assertWeekStartIsMonday(weekStart);
-
-    const range = this.createWeeklyReportRange(weekStart, timeZone);
-    const schedules = await this.scheduleRepository.listSchedulesForWeeklyReport(
-      {
-        userId: currentUser.id,
-        rangeStartAt: range.rangeStartAt,
-        rangeEndAt: range.rangeEndAt,
-      }
-    );
-    const response = this.buildWeeklyScheduleReportResponse(
-      schedules,
-      range,
-      timeZone
+    const response = await this.createWeeklyScheduleReport(
+      currentUser,
+      query
     );
 
     this.logEvent("schedule.week_report.viewed", {
       userId: currentUser.id,
       weekStart: response.weekStart,
       weekEnd: response.weekEnd,
-      timeZone,
+      timeZone: response.timeZone,
       scheduleCount: response.summary.totalScheduleCount,
       scheduleEntryCount: response.summary.totalScheduleEntryCount,
       scheduledDayCount: response.summary.scheduledDayCount,
@@ -346,6 +353,34 @@ export class ScheduleApplicationService {
     });
 
     return response;
+  }
+
+  // 기능 : 현재 사용자의 주간 일정 리포트를 xlsx 파일로 생성합니다.
+  async exportWeeklyScheduleReportXlsx(
+    currentUser: CurrentUserContext,
+    query: ExportWeeklyScheduleReportXlsxQueryInput
+  ): Promise<ExportedXlsxFileResponse> {
+    const report = await this.createWeeklyScheduleReport(currentUser, query);
+    const rows = this.toWeeklyReportXlsxRows(report);
+    const content = await this.writeWeeklyReportXlsx(rows);
+
+    this.logEvent("schedule.week_report.exported", {
+      userId: currentUser.id,
+      weekStart: report.weekStart,
+      timeZone: report.timeZone,
+      scheduleCount: report.summary.totalScheduleCount,
+      scheduledDayCount: report.summary.scheduledDayCount,
+      distinctLinkedDealCount: report.summary.distinctLinkedDealCount,
+      rowCount: rows.length,
+    });
+
+    return {
+      fileName: createTimestampedXlsxFileName(
+        WEEKLY_REPORT_XLSX_FILE_NAME_PREFIX
+      ),
+      contentType: XLSX_CONTENT_TYPE,
+      content,
+    };
   }
 
   // 기능 : 현재 사용자의 일정 단건 상세를 조회합니다.
@@ -937,6 +972,30 @@ export class ScheduleApplicationService {
     };
   }
 
+  // 기능 : 주간 일정 리포트 조회와 export가 공유하는 report 데이터를 생성합니다.
+  private async createWeeklyScheduleReport(
+    currentUser: CurrentUserContext,
+    query: GetWeeklyScheduleReportQueryInput
+  ): Promise<WeeklyScheduleReportResponse> {
+    const timeZone = this.normalizeWeeklyReportTimeZone(
+      query.timeZone,
+      currentUser.timeZone
+    );
+    const weekStart = this.parseDateOnly(query.weekStart, "weekStart");
+    this.assertWeekStartIsMonday(weekStart);
+
+    const range = this.createWeeklyReportRange(weekStart, timeZone);
+    const schedules = await this.scheduleRepository.listSchedulesForWeeklyReport(
+      {
+        userId: currentUser.id,
+        rangeStartAt: range.rangeStartAt,
+        rangeEndAt: range.rangeEndAt,
+      }
+    );
+
+    return this.buildWeeklyScheduleReportResponse(schedules, range, timeZone);
+  }
+
   // 기능 : 주간 리포트 조회에 사용할 7일 local 범위와 UTC 조회 범위를 계산합니다.
   private createWeeklyReportRange(
     weekStart: CalendarDate,
@@ -1343,6 +1402,122 @@ export class ScheduleApplicationService {
   // 기능 : 날짜 숫자를 두 자리 문자열로 보정합니다.
   private padDatePart(value: number): string {
     return String(value).padStart(2, "0");
+  }
+
+  // 기능 : 주간 리포트 응답 데이터를 xlsx 행 목록으로 변환합니다.
+  private toWeeklyReportXlsxRows(
+    report: WeeklyScheduleReportResponse
+  ): XlsxRow[] {
+    return report.days.flatMap((day) => {
+      if (day.schedules.length === 0) {
+        return [this.toEmptyWeeklyReportXlsxRow(day)];
+      }
+
+      return day.schedules.map((schedule) =>
+        this.toWeeklyReportScheduleXlsxRow(day, schedule, report.timeZone)
+      );
+    });
+  }
+
+  // 기능 : 일정이 없는 날짜의 xlsx 행을 생성합니다.
+  private toEmptyWeeklyReportXlsxRow(
+    day: WeeklyScheduleReportDayResponse
+  ): XlsxRow {
+    return {
+      date: day.date,
+      weekdayLabel: day.weekdayLabel,
+      timeRange: "",
+      scheduleTitle: WEEKLY_REPORT_EMPTY_SCHEDULE_TITLE,
+      location: "",
+      dealNames: "",
+      dealStatusLabels: "",
+      dealCostTotal: 0,
+      expectedEndDates: "",
+      nextFollowingActions: "",
+    };
+  }
+
+  // 기능 : 일정이 있는 날짜의 xlsx 행을 생성합니다.
+  private toWeeklyReportScheduleXlsxRow(
+    day: WeeklyScheduleReportDayResponse,
+    schedule: WeeklyScheduleReportScheduleResponse,
+    timeZone: string
+  ): XlsxRow {
+    return {
+      date: day.date,
+      weekdayLabel: day.weekdayLabel,
+      timeRange: this.formatWeeklyReportTimeRange(schedule, timeZone),
+      scheduleTitle: schedule.scheduleTitle,
+      location: schedule.location ?? "",
+      dealNames: this.joinWeeklyReportDealTexts(
+        schedule.deals.map((deal) => deal.dealName)
+      ),
+      dealStatusLabels: this.joinWeeklyReportDealTexts(
+        schedule.deals.map((deal) => deal.dealStatusLabel)
+      ),
+      dealCostTotal: schedule.deals.reduce(
+        (total, deal) => total + deal.dealCost,
+        0
+      ),
+      expectedEndDates: this.joinWeeklyReportDealTexts(
+        schedule.deals.map((deal) => deal.expectedEndDate)
+      ),
+      nextFollowingActions: this.joinWeeklyReportDealTexts(
+        schedule.deals.map(
+          (deal) => deal.nextFollowingAction?.followingAction ?? ""
+        )
+      ),
+    };
+  }
+
+  // 기능 : 주간 리포트 xlsx 행의 시간 범위를 요청 timezone 기준 HH:mm 문자열로 변환합니다.
+  private formatWeeklyReportTimeRange(
+    schedule: WeeklyScheduleReportScheduleResponse,
+    timeZone: string
+  ): string {
+    return [
+      this.formatInstantHourMinute(schedule.startAt, timeZone),
+      this.formatInstantHourMinute(schedule.endAt, timeZone),
+    ].join(" - ");
+  }
+
+  // 기능 : UTC ISO instant를 timezone 기준 HH:mm 문자열로 변환합니다.
+  private formatInstantHourMinute(instant: string, timeZone: string): string {
+    const parts = this.getTimeZoneParts(new Date(instant), timeZone);
+
+    return `${this.padDatePart(parts.hour)}:${this.padDatePart(parts.minute)}`;
+  }
+
+  // 기능 : xlsx 한 셀에 표시할 딜 관련 텍스트를 빈 값 제외 comma-separated 문자열로 합칩니다.
+  private joinWeeklyReportDealTexts(values: readonly string[]): string {
+    return values
+      .map((value) => value.trim())
+      .filter((value) => value.length > 0)
+      .join(", ");
+  }
+
+  // 기능 : 주간 리포트 xlsx 행 목록을 xlsx Buffer로 변환합니다.
+  private async writeWeeklyReportXlsx(rows: readonly XlsxRow[]): Promise<Buffer> {
+    try {
+      return await this.xlsxWriter.writeWorksheet({
+        sheetName: WEEKLY_REPORT_XLSX_SHEET_NAME,
+        columns: [
+          { header: "날짜", key: "date", width: 14 },
+          { header: "요일", key: "weekdayLabel", width: 10 },
+          { header: "시간", key: "timeRange", width: 16 },
+          { header: "일정", key: "scheduleTitle", width: 28 },
+          { header: "장소", key: "location", width: 20 },
+          { header: "딜", key: "dealNames", width: 28 },
+          { header: "딜단계", key: "dealStatusLabels", width: 20 },
+          { header: "딜금액합계", key: "dealCostTotal", width: 16 },
+          { header: "딜마감일", key: "expectedEndDates", width: 22 },
+          { header: "다음행동", key: "nextFollowingActions", width: 32 },
+        ],
+        rows,
+      });
+    } catch {
+      throw new ScheduleWeekReportExportFailedError();
+    }
   }
 
   // 기능 : 딜 옵션 레코드를 API 응답으로 변환합니다.

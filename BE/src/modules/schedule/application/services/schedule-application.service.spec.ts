@@ -13,7 +13,10 @@ import {
   type WeeklyReportScheduleRecord,
 } from "@/modules/schedule/application/ports/schedule.repository";
 import { DealStatusCode } from "@/modules/deal/domain/deal-status";
-import { RelatedDealNotFoundError } from "@/modules/schedule/domain/schedule.errors";
+import {
+  RelatedDealNotFoundError,
+  ScheduleWeekReportExportFailedError,
+} from "@/modules/schedule/domain/schedule.errors";
 import {
   CancelScheduleNotificationReminderUseCase,
   ScheduleNotificationReminderUseCase,
@@ -25,6 +28,8 @@ import type {
   UpsertReminderNotificationInput,
 } from "@/modules/notification/application/ports/notification.repository";
 import type { CurrentUserContext } from "@/shared/application/context/current-user.context";
+import { XLSX_CONTENT_TYPE } from "@/shared/application/export/xlsx-export-file";
+import type { XlsxWorkbookWriter } from "@/shared/application/ports/xlsx-workbook.writer";
 import { ValidationDomainError } from "@/shared/domain/errors/common.errors";
 import type { AppLogger } from "@/shared/infrastructure/logger/app-logger.service";
 import { ScheduleApplicationService } from "./schedule-application.service";
@@ -298,10 +303,14 @@ function createService() {
     execute: jest.fn().mockResolvedValue(0),
     executeWithRepository: jest.fn().mockResolvedValue(0),
   } as unknown as CancelScheduleNotificationReminderUseCase;
+  const xlsxWriter = {
+    writeWorksheet: jest.fn().mockResolvedValue(Buffer.from("xlsx-content")),
+  } as unknown as XlsxWorkbookWriter;
   const service = new ScheduleApplicationService(
     repository,
     scheduleNotificationReminder,
     cancelScheduleNotificationReminder,
+    xlsxWriter,
     logger
   );
 
@@ -309,6 +318,7 @@ function createService() {
     repository,
     service,
     logger,
+    xlsxWriter,
     scheduleNotificationReminder,
     cancelScheduleNotificationReminder,
   };
@@ -631,5 +641,156 @@ describe("ScheduleApplicationService", () => {
       expect.stringContaining("internal memo body"),
       expect.any(String)
     );
+  });
+
+  it("weekly report export creates xlsx rows without ids or memo body", async () => {
+    const { logger, repository, service, xlsxWriter } = createService();
+    const weeklySchedule = createWeeklySchedule();
+    repository.weeklySchedules = [
+      {
+        ...weeklySchedule,
+        deals: [
+          ...weeklySchedule.deals,
+          {
+            id: "weekly-deal-2",
+            dealName: "Renewal",
+            dealCost: 80000,
+            dealStatus: DealStatusCode.PROPOSAL_QUOTE,
+            expectedEndDate: new Date("2026-07-05T00:00:00.000Z"),
+            companies: [],
+            contacts: [],
+            nextFollowingAction: null,
+          },
+        ],
+      },
+    ];
+
+    const file = await service.exportWeeklyScheduleReportXlsx(CURRENT_USER, {
+      weekStart: "2026-06-15",
+      timeZone: "Asia/Seoul",
+    });
+
+    const writeWorksheet = xlsxWriter.writeWorksheet as jest.Mock;
+    const worksheetInput = writeWorksheet.mock.calls[0]?.[0];
+
+    expect(file.fileName).toMatch(
+      /^weekly_schedules_\d{8}_\d{6}\.xlsx$/
+    );
+    expect(file.contentType).toBe(XLSX_CONTENT_TYPE);
+    expect(file.content).toEqual(Buffer.from("xlsx-content"));
+    expect(writeWorksheet).toHaveBeenCalledTimes(1);
+    expect(worksheetInput.sheetName).toBe("Weekly Schedules");
+    expect(
+      worksheetInput.columns.map(
+        (column: { header: string }) => column.header
+      )
+    ).toEqual([
+      "날짜",
+      "요일",
+      "시간",
+      "일정",
+      "장소",
+      "딜",
+      "딜단계",
+      "딜금액합계",
+      "딜마감일",
+      "다음행동",
+    ]);
+    expect(worksheetInput.rows).toHaveLength(7);
+    expect(worksheetInput.rows[0]).toMatchObject({
+      date: "2026-06-15",
+      weekdayLabel: "월",
+      timeRange: "09:30 - 10:30",
+      scheduleTitle: "Weekly sync",
+      location: "Seoul",
+      dealNames: "Expansion, Renewal",
+      dealStatusLabels: "협상, 제안/견적",
+      dealCostTotal: 200000,
+      expectedEndDates: "2026-06-30, 2026-07-05",
+      nextFollowingActions: "Send proposal",
+    });
+    expect(worksheetInput.rows[0]).not.toHaveProperty("id");
+    expect(worksheetInput.rows[0]).not.toHaveProperty("memo");
+    expect(worksheetInput.rows[0]).not.toHaveProperty("hasMemo");
+    expect(worksheetInput.rows[1]).toMatchObject({
+      date: "2026-06-16",
+      scheduleTitle: "일정 없음",
+      timeRange: "",
+    });
+    expect(logger.log).toHaveBeenCalledWith(
+      expect.stringContaining('"event":"schedule.week_report.exported"'),
+      "ScheduleApplicationService"
+    );
+    expect(logger.log).not.toHaveBeenCalledWith(
+      expect.stringContaining("Weekly sync"),
+      expect.any(String)
+    );
+    expect(logger.log).not.toHaveBeenCalledWith(
+      expect.stringContaining("Send proposal"),
+      expect.any(String)
+    );
+  });
+
+  it("weekly report export creates seven empty rows when week has no schedules", async () => {
+    const { service, xlsxWriter } = createService();
+
+    await service.exportWeeklyScheduleReportXlsx(CURRENT_USER, {
+      weekStart: "2026-06-15",
+      timeZone: "Asia/Seoul",
+    });
+
+    const writeWorksheet = xlsxWriter.writeWorksheet as jest.Mock;
+    const worksheetInput = writeWorksheet.mock.calls[0]?.[0];
+
+    expect(worksheetInput.rows).toHaveLength(7);
+    expect(
+      worksheetInput.rows.map((row: { date: string }) => row.date)
+    ).toEqual([
+      "2026-06-15",
+      "2026-06-16",
+      "2026-06-17",
+      "2026-06-18",
+      "2026-06-19",
+      "2026-06-20",
+      "2026-06-21",
+    ]);
+    expect(
+      worksheetInput.rows.every(
+        (row: { scheduleTitle: string }) =>
+          row.scheduleTitle === "일정 없음"
+      )
+    ).toBe(true);
+    expect(
+      worksheetInput.rows.every(
+        (row: { dealCostTotal: number }) => row.dealCostTotal === 0
+      )
+    ).toBe(true);
+  });
+
+  it("weekly report export does not create xlsx when validation fails", async () => {
+    const { service, xlsxWriter } = createService();
+
+    await expect(
+      service.exportWeeklyScheduleReportXlsx(CURRENT_USER, {
+        weekStart: "2026-06-16",
+        timeZone: "Asia/Seoul",
+      })
+    ).rejects.toBeInstanceOf(ValidationDomainError);
+    expect(xlsxWriter.writeWorksheet).not.toHaveBeenCalled();
+  });
+
+  it("weekly report export converts writer failures", async () => {
+    const { repository, service, xlsxWriter } = createService();
+    repository.weeklySchedules = [createWeeklySchedule()];
+    (xlsxWriter.writeWorksheet as jest.Mock).mockRejectedValueOnce(
+      new Error("writer failed")
+    );
+
+    await expect(
+      service.exportWeeklyScheduleReportXlsx(CURRENT_USER, {
+        weekStart: "2026-06-15",
+        timeZone: "Asia/Seoul",
+      })
+    ).rejects.toBeInstanceOf(ScheduleWeekReportExportFailedError);
   });
 });

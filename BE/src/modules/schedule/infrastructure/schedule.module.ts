@@ -4,6 +4,7 @@ import { NotificationModule } from "@/modules/notification/infrastructure/notifi
 import { AppLogger } from "@/shared/infrastructure/logger/app-logger.service";
 import { PrismaInfrastructureModule } from "@/shared/infrastructure/prisma/prisma-infrastructure.module";
 import { PrismaService } from "@/shared/infrastructure/prisma/prisma.service";
+import { XlsxInfrastructureModule } from "@/shared/infrastructure/xlsx/xlsx-infrastructure.module";
 import { SCHEDULE_REPOSITORY } from "../application/ports/schedule.repository";
 import { ScheduleApplicationService } from "../application/services/schedule-application.service";
 import { ScheduleController } from "../presentation/http/schedule.controller";
@@ -11,7 +12,12 @@ import { PrismaScheduleRepository } from "./persistence/prisma-schedule.reposito
 
 // 역할 : ScheduleModule 모듈의 controller와 provider 의존성을 조립합니다.
 @Module({
-  imports: [AuthModule, PrismaInfrastructureModule, NotificationModule],
+  imports: [
+    AuthModule,
+    PrismaInfrastructureModule,
+    NotificationModule,
+    XlsxInfrastructureModule,
+  ],
   controllers: [ScheduleController],
   providers: [
     ScheduleApplicationService,
