@@ -1,6 +1,6 @@
 # G04 QA Review Closeout
 
-상태: Ready
+상태: Done
 
 ## 1. 목적
 
@@ -107,3 +107,21 @@ pnpm run test:e2e
 - `NBA-009` 외 다른 NBA 후보가 03 구현에 섞이지 않았다.
 - 구현 결과가 API/DB/FE 문서와 다르면 문서를 갱신한다.
 - QA 결과를 TODO_LOG에 남긴다.
+
+## 8. Closeout 결과
+
+- Backend 검증 명령은 모두 통과했다.
+  - `pnpm.cmd run prisma:validate`
+  - `pnpm.cmd run typecheck`
+  - `pnpm.cmd run lint`
+  - `pnpm.cmd run test -- schedule`
+  - `pnpm.cmd run build`
+- User Web 검증 명령은 모두 통과했다.
+  - `pnpm.cmd run typecheck`
+  - `pnpm.cmd run lint`
+  - `pnpm.cmd run build`
+  - `pnpm.cmd run test:e2e`
+  - `pnpm.cmd run test:e2e:mobile`
+- `COMMON/REVIEW-CHECKLIST.md`를 Closed 상태로 갱신했다.
+- `COMMON/TODO_LOG.md`에 QA 결과와 잔여 리스크를 기록했다.
+- `README.md`, `FE-TODO/USER-WEB-TODO.md`, `BE-TODO/API-TODO.md`, `BE-TODO/DB-SCHEMA.md`, `COMMON/GOAL-SPECS/README.md`, `COMMON/PLANNING-REVIEW.md`를 구현 결과에 맞게 갱신했다.

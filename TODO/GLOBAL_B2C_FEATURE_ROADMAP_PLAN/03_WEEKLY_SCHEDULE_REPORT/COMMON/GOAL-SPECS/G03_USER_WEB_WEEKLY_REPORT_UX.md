@@ -1,6 +1,6 @@
 # G03 User Web Weekly Report UX
 
-상태: Ready
+상태: Done
 
 ## 1. 목적
 

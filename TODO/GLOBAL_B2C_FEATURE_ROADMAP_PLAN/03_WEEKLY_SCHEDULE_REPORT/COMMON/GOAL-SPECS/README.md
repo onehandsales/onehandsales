@@ -1,7 +1,7 @@
 # Goal Specs
 
 상태: Confirmed
-구현 상태: G01 Ready / G02 Ready / G03 Ready / G04 Ready
+구현 상태: G01 Done / G02 Done / G03 Done / G04 Done
 
 ## 1. 목적
 
@@ -11,10 +11,10 @@
 
 | Goal | 상태 | 문서 | 목적 |
 |---|---|---|---|
-| G01 | Ready | `G01_BACKEND_WEEKLY_REPORT_API.md` | `GET /api/schedules/week` 조회 API |
-| G02 | Ready | `G02_BACKEND_WEEKLY_REPORT_XLSX_EXPORT.md` | `GET /api/schedules/week/export/xlsx` Excel 다운로드 API |
-| G03 | Ready | `G03_USER_WEB_WEEKLY_REPORT_UX.md` | `/app/schedules/week` 화면/API 연결 |
-| G04 | Ready | `G04_QA_REVIEW_CLOSEOUT.md` | Backend/User Web 검증과 문서 closeout |
+| G01 | Done | `G01_BACKEND_WEEKLY_REPORT_API.md` | `GET /api/schedules/week` 조회 API |
+| G02 | Done | `G02_BACKEND_WEEKLY_REPORT_XLSX_EXPORT.md` | `GET /api/schedules/week/export/xlsx` Excel 다운로드 API |
+| G03 | Done | `G03_USER_WEB_WEEKLY_REPORT_UX.md` | `/app/schedules/week` 화면/API 연결 |
+| G04 | Done | `G04_QA_REVIEW_CLOSEOUT.md` | Backend/User Web 검증과 문서 closeout |
 
 ## 3. 실행 규칙
 

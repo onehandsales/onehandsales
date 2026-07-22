@@ -1,6 +1,6 @@
 # User Web TODO
 
-상태: confirmed
+상태: completed
 최종 업데이트: 2026-07-22
 정본 계약: `COMMON/API-SPEC/WEEKLY_SCHEDULE_REPORT_API.md`
 아키텍처/UXUI 기준: `COMMON/ARCHITECTURE-GUARDRAILS.md`
@@ -42,7 +42,7 @@ downloadWeeklyScheduleReportXlsx(params: WeeklyScheduleReportParams)
 Query key:
 
 ```ts
-scheduleQueryKeys.weekReport({ weekStart, timeZone })
+scheduleQueryKeys.weeklyReport({ weekStart, timeZone })
 ```
 
 ## 3. 라우트 작업
@@ -136,3 +136,16 @@ Deal summary:
 - 일정 없는 주도 7개 날짜가 표시된다.
 - Excel 다운로드 실패 시 재시도 안내가 있다.
 - 제품 요약, 일정 메모 본문, private memo, meeting note body를 화면/export에 꾸며 넣지 않는다.
+
+## 8. 구현 결과
+
+- `FE/user-web/src/pages/schedules/week/index.tsx`가 `ScheduleWeekReportScreen`을 page entry로 export한다.
+- `FE/user-web/src/app/router/router.tsx`에서 `/app/schedules/week` route가 열렸고 legacy `/schedules/week`는 query를 유지한 채 `/app/schedules/week`로 이동한다.
+- `features/schedule/api/schedule-api.ts`에 `listWeeklyScheduleReport`, `downloadWeeklyScheduleReportXlsx`가 추가됐다.
+- `features/schedule/api/schedule-query-keys.ts`에 `scheduleQueryKeys.weeklyReport({ weekStart, timeZone })`가 추가됐다.
+- `features/schedule/hooks/use-schedule-queries.ts`에 `useWeeklyScheduleReport`가 추가됐다.
+- `/app/schedules` header에 현재 anchor 주차의 주간 보고서 진입 버튼이 추가됐다.
+- `/app/schedules/week` 화면은 URL `weekStart`, 이전 주/다음 주/이번 주 이동, loading/empty/error/export error, Excel 다운로드 disabled 상태를 처리한다.
+- 화면은 일정 row에서 `/app/schedules/:scheduleId`, 딜 summary에서 `/app/deals/:dealId`로 이동한다.
+- `weekStart` date-only 값은 UTC instant로 변환해 API에 보내지 않고, API response UTC instant는 response `timeZone` 기준으로 표시한다.
+- 모바일 390px/360px QA route에 `/app/schedules/week?weekStart=2026-07-20`가 포함됐다.

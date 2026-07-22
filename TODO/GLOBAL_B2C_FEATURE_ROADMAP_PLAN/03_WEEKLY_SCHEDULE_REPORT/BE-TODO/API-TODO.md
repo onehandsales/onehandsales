@@ -1,6 +1,6 @@
 # Backend API TODO
 
-상태: confirmed
+상태: completed
 최종 업데이트: 2026-07-22
 정본 계약: `COMMON/API-SPEC/WEEKLY_SCHEDULE_REPORT_API.md`
 아키텍처/주석 기준: `COMMON/ARCHITECTURE-GUARDRAILS.md`
@@ -151,3 +151,14 @@ listSchedulesForWeeklyReport(
 - xlsx 응답 header와 filename이 기존 domain export와 일관된다.
 - xlsx row에 ID/private memo/meeting note body가 없다.
 - xlsx writer 실패는 안전한 500 error로 변환된다.
+
+## 8. 구현 결과
+
+- `BE/src/modules/schedule/presentation/http/schedule.controller.ts`에 `@Get("week")`, `@Get("week/export/xlsx")`가 추가됐고 `@Get(":scheduleId")`보다 먼저 선언됐다.
+- `BE/src/modules/schedule/presentation/http/dto/schedule-request.dto.ts`에 `GetWeeklyScheduleReportQueryDto`, `ExportWeeklyScheduleReportXlsxQueryDto`가 추가됐다.
+- `BE/src/modules/schedule/application/services/schedule-application.service.ts`에 `getWeeklyScheduleReport`, `exportWeeklyScheduleReportXlsx`와 공유 report builder가 추가됐다.
+- `BE/src/modules/schedule/infrastructure/persistence/prisma-schedule.repository.ts`에 `listSchedulesForWeeklyReport` projection이 추가됐다.
+- `ScheduleModule`은 기존 xlsx infrastructure pattern을 따라 `XlsxInfrastructureModule`을 사용한다.
+- `GET /api/schedules/week`와 `GET /api/schedules/week/export/xlsx`는 모두 AuthGuard가 적용되는 User API다.
+- `weekStart` 월요일 검증, invalid `timeZone` 검증, empty week 7 day 반환, multi-day bucket, deleted deal 제외, distinct deal summary, 다음 행동 대표값, xlsx row redaction 테스트가 추가됐다.
+- G04 검증에서 `pnpm.cmd run prisma:validate`, `pnpm.cmd run typecheck`, `pnpm.cmd run lint`, `pnpm.cmd run test -- schedule`, `pnpm.cmd run build`가 통과했다.

@@ -1,6 +1,6 @@
 # 03 Weekly Schedule Report
 
-상태: Goal Ready
+상태: Goal Complete
 순서: 03
 성격: 기능 구현 착수 가능 슬롯
 최종 업데이트: 2026-07-22
@@ -36,14 +36,14 @@ Global B2C 대조: `COMMON/GLOBAL-B2C-ALIGNMENT-REVIEW.md`
 
 ## 2. 현재 상태
 
-- `/app/schedules`는 월/주 보기와 CRUD가 구현되어 있다.
-- `ScheduleWeekReportScreen` 컴포넌트는 있으나 route export가 막혀 있다.
-- `/app/schedules/week`는 `/app/schedules`로 redirect된다.
-- Backend `GET /api/schedules/week`는 없다.
-- Backend `GET /api/schedules/week/export/xlsx`는 없다.
-- `/app/export`는 `/app`으로 redirect되고, 이번 03에서도 열지 않는다.
-- 범용 `/api/exports`와 `ExportJob` table은 없다.
-- 반복 일정은 아직 없다.
+- G01/G02/G03/G04 구현과 QA closeout이 완료됐다.
+- Backend `GET /api/schedules/week`가 구현되어 `weekStart`, `timeZone`, 7개 `days[]`, linked deal summary를 반환한다.
+- Backend `GET /api/schedules/week/export/xlsx`가 구현되어 같은 보고서를 동기식 Excel 파일로 즉시 반환한다.
+- User Web `/app/schedules/week` route가 열렸고, legacy `/schedules/week`는 `/app/schedules/week`로 이동한다.
+- `/app/schedules`에서 주간 보고서로 진입할 수 있다.
+- `/app/export`는 `/app`으로 redirect되고, 이번 03에서도 열지 않았다.
+- 범용 `/api/exports`, `ExportJob` table, PDF, 반복 일정 정식 모델은 이번 03에 포함하지 않았다.
+- 새 Prisma model/table/column/index/migration은 만들지 않았다.
 
 ## 3. 확정 API
 
@@ -114,3 +114,10 @@ Global B2C 대조: `COMMON/GLOBAL-B2C-ALIGNMENT-REVIEW.md`
 - `BE-TODO/DB-SCHEMA.md`
 - `FE-TODO/USER-WEB-TODO.md`
 - `COMMON/REFERENCES.md`
+
+## 8. QA Closeout
+
+- Backend 검증: `pnpm.cmd run prisma:validate`, `pnpm.cmd run typecheck`, `pnpm.cmd run lint`, `pnpm.cmd run test -- schedule`, `pnpm.cmd run build` 통과.
+- User Web 검증: `pnpm.cmd run typecheck`, `pnpm.cmd run lint`, `pnpm.cmd run build`, `pnpm.cmd run test:e2e` 통과.
+- 모바일 검증: `pnpm.cmd run test:e2e:mobile` 통과. `/app/schedules/week?weekStart=2026-07-20`가 390px/360px Chrome/Edge QA 대상에 포함됐다.
+- QA 결과 기록: `COMMON/TODO_LOG.md`.

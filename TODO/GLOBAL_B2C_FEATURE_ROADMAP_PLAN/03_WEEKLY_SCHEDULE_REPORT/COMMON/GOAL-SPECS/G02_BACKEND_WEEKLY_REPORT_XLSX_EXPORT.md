@@ -1,6 +1,6 @@
 # G02 Backend Weekly Report Xlsx Export
 
-상태: Ready
+상태: Done
 
 ## 1. 목적
 

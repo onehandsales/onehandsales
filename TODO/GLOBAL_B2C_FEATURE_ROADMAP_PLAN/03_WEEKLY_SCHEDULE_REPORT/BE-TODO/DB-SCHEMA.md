@@ -1,6 +1,6 @@
 # DB Schema TODO
 
-상태: confirmed
+상태: completed
 최종 업데이트: 2026-07-22
 정본 계약: `COMMON/API-SPEC/WEEKLY_SCHEDULE_REPORT_API.md`
 아키텍처/DB 기준: `COMMON/ARCHITECTURE-GUARDRAILS.md`
@@ -128,3 +128,12 @@ Next following action:
 - global currency/phone/address normalization table
 
 파일 저장, TTL, 다운로드 재시도, 민감정보 포함 export, PDF, 대용량 export worker는 별도 사용자 결정/goal로 확정되면 별도 DB/API 계약을 만든다.
+
+## 8. 구현 결과
+
+- 이번 03 구현에서 새 데이터베이스, Prisma model, table, column, enum, index, migration은 생성하지 않았다.
+- `BE/prisma/schema.prisma`는 기존 `Schedule`, `ScheduleDeal`, `Deal`, `DealCompany`, `DealContact`, `Company`, `Contact`, `DealFollowingActionLog` 관계와 index를 그대로 사용한다.
+- `BE/src/modules/schedule/infrastructure/persistence/prisma-schedule.repository.ts`의 `listSchedulesForWeeklyReport` projection은 `Schedule.userId`, schedule range overlap, linked `Deal.userId`, `Deal.deletedAt IS NULL`, 미완료/미삭제 following action 조건으로 조회한다.
+- DB 관련 projection/service/controller 구현에는 한글 `// 기능 : ...`, `// API : ...` 주석이 포함되어 있다.
+- `pnpm.cmd run prisma:validate` 통과로 schema 유효성을 확인했다.
+- 별도 DB 구조가 필요한 `ExportJob`, recurring schedule, report snapshot, product analytics, billing/admin/trust policy 항목은 이번 03에 포함하지 않았다.

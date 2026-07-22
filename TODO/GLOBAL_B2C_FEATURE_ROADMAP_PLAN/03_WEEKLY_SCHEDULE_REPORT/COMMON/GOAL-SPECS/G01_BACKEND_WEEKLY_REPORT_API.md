@@ -1,6 +1,6 @@
 # G01 Backend Weekly Report API
 
-상태: Ready
+상태: Done
 
 ## 1. 목적
 
