@@ -18,6 +18,7 @@ Current modules:
 | `search` | Integrated search over company, contact, product, deal, schedule, and meeting note data |
 | `trash` | 7-day trash list/detail/restore for supported entities and logs |
 | `data-import` | Import templates, CSV/XLSX upload, AI mapping, confirm import, import logs for company/contact/product/deal |
+| `notification` | Notification DB foundation, repository adapter, and encrypted browser push subscription storage |
 | `health` | Lightweight health endpoint |
 
-Admin operation APIs beyond `GET /admin/api/me`, Notification, persistent ImportJob recovery, and generic DealActivity remain future scope.
+Admin operation APIs beyond `GET /admin/api/me`, Notification HTTP API/delivery/User Web integration, and generic DealActivity remain future scope.

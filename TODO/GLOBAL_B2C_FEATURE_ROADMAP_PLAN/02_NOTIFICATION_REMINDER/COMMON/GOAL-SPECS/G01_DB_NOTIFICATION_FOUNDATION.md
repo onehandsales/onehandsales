@@ -1,6 +1,8 @@
 # G01 DB Notification Foundation
 
-상태: Ready
+상태: Done
+완료일: 2026-07-22
+완료 기록: `TODO_LOG/2026-07-22/G01_NOTIFICATION_DB_FOUNDATION/WORK_LOG.md`
 
 ## 1. 목적
 

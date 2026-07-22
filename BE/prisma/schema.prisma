@@ -117,6 +117,40 @@ enum ImportJobErrorSeverity {
   ERROR
 }
 
+enum NotificationType {
+  SCHEDULE_START_REMINDER
+  DEAL_DUE_REMINDER
+}
+
+enum NotificationStatus {
+  PENDING
+  SENT
+  FAILED
+  CANCELED
+}
+
+enum NotificationSourceType {
+  SCHEDULE
+  DEAL
+}
+
+enum NotificationDeliveryChannel {
+  EMAIL
+  BROWSER_PUSH
+}
+
+enum NotificationDeliveryStatus {
+  PENDING
+  SENT
+  FAILED
+  CANCELED
+}
+
+enum BrowserPushSubscriptionStatus {
+  ACTIVE
+  REVOKED
+}
+
 model User {
   id                   String     @id @default(uuid()) @db.Uuid
   email                String?
@@ -136,66 +170,74 @@ model User {
   updatedAt            DateTime   @updatedAt
   deletedAt            DateTime?
 
-  oauthAccounts           UserOAuthAccount[]
-  authDevices             AuthDevice[]
-  authSessions            AuthSession[]
+  oauthAccounts            UserOAuthAccount[]
+  authDevices              AuthDevice[]
+  authSessions             AuthSession[]
   /// 기능 : 사용자가 등록한 회사 목록이다.
-  companies               Company[]
+  companies                Company[]
   /// 기능 : 사용자가 만든 회사 분야 옵션 목록이다.
-  companyFields           CompanyField[]
+  companyFields            CompanyField[]
   /// 기능 : 사용자가 만든 회사 지역 옵션 목록이다.
-  companyRegions          CompanyRegion[]
+  companyRegions           CompanyRegion[]
   /// 기능 : 사용자가 작성한 회사 일반 메모 로그 목록이다.
-  companyMemoLogs         CompanyMemoLog[]
+  companyMemoLogs          CompanyMemoLog[]
   /// 기능 : 사용자가 작성한 회사 개인 비밀 메모 로그 목록이다.
-  companyPrivateMemoLogs  CompanyUserPrivateMemoLog[]
+  companyPrivateMemoLogs   CompanyUserPrivateMemoLog[]
   /// 기능 : 사용자가 등록한 담당자 목록이다.
-  contacts                Contact[]
+  contacts                 Contact[]
   /// 기능 : 사용자가 만든 담당자 직급 옵션 목록이다.
-  contactJobGrades        ContactJobGrade[]
+  contactJobGrades         ContactJobGrade[]
   /// 기능 : 사용자가 만든 담당자 부서 옵션 목록이다.
-  contactDepartments      ContactDepartment[]
+  contactDepartments       ContactDepartment[]
   /// 기능 : 사용자가 작성한 담당자 일반 메모 로그 목록이다.
-  contactMemoLogs         ContactMemoLog[]
+  contactMemoLogs          ContactMemoLog[]
   /// 기능 : 사용자가 작성한 담당자 개인 비밀 메모 로그 목록이다.
-  contactPrivateMemoLogs  ContactUserPrivateMemoLog[]
+  contactPrivateMemoLogs   ContactUserPrivateMemoLog[]
   /// 기능 : 사용자가 등록한 제품 목록이다.
-  products                Product[]
+  products                 Product[]
   /// 기능 : 사용자가 만든 제품 카테고리 옵션 목록이다.
-  productCategories       ProductCategory[]
+  productCategories        ProductCategory[]
   /// 기능 : 사용자가 만든 제품 상태 옵션 목록이다.
-  productStatuses         ProductStatus[]
+  productStatuses          ProductStatus[]
   /// 기능 : 사용자가 작성한 제품 일반 메모 로그 목록이다.
-  productMemoLogs         ProductMemoLog[]
+  productMemoLogs          ProductMemoLog[]
   /// 기능 : 사용자가 작성한 제품 개인 비밀 메모 로그 목록이다.
-  productPrivateMemoLogs  ProductUserPrivateMemoLog[]
+  productPrivateMemoLogs   ProductUserPrivateMemoLog[]
   /// 기능 : 사용자가 등록한 딜 목록이다.
-  deals                   Deal[]
+  deals                    Deal[]
   /// 기능 : 사용자가 딜에 연결한 회사 매핑 목록이다.
-  dealCompanies           DealCompany[]
+  dealCompanies            DealCompany[]
   /// 기능 : 사용자가 딜에 연결한 담당자 매핑 목록이다.
-  dealContacts            DealContact[]
+  dealContacts             DealContact[]
   /// 기능 : 사용자가 작성한 딜 다음 행동 로그 목록이다.
-  dealFollowingActionLogs DealFollowingActionLog[]
+  dealFollowingActionLogs  DealFollowingActionLog[]
   /// 기능 : 사용자가 작성한 딜 메모 로그 목록이다.
-  dealMemoLogs            DealMemoLog[]
+  dealMemoLogs             DealMemoLog[]
   /// 기능 : 사용자가 딜에 연결한 제품 매핑 목록이다.
-  dealProducts            DealProduct[]
+  dealProducts             DealProduct[]
   /// 기능 : 사용자가 등록한 일정 목록이다.
-  schedules               Schedule[]
+  schedules                Schedule[]
   /// 기능 : 사용자가 일정에 연결한 딜 매핑 목록이다.
-  scheduleDeals           ScheduleDeal[]
-  meetingNotes            MeetingNote[]
-  meetingNoteCompanies    MeetingNoteCompany[]
-  meetingNoteContacts     MeetingNoteContact[]
-  meetingNoteProducts     MeetingNoteProduct[]
-  meetingNoteDeals        MeetingNoteDeal[]
-  businessCardScanLogs    BusinessCardScanLog[]
-  importUserLogs          ImportUserLog[]
-  importJobs              ImportJob[]
-  importJobRows           ImportJobRow[]
-  importJobErrors         ImportJobError[]
-  importUploadedFiles     ImportUploadedFile[]
+  scheduleDeals            ScheduleDeal[]
+  meetingNotes             MeetingNote[]
+  meetingNoteCompanies     MeetingNoteCompany[]
+  meetingNoteContacts      MeetingNoteContact[]
+  meetingNoteProducts      MeetingNoteProduct[]
+  meetingNoteDeals         MeetingNoteDeal[]
+  businessCardScanLogs     BusinessCardScanLog[]
+  importUserLogs           ImportUserLog[]
+  importJobs               ImportJob[]
+  importJobRows            ImportJobRow[]
+  importJobErrors          ImportJobError[]
+  importUploadedFiles      ImportUploadedFile[]
+  /// 기능 : 사용자의 알림 수신 설정 row입니다. 사용자당 하나만 허용합니다.
+  notificationSetting      UserNotificationSetting?
+  /// 기능 : 사용자에게 예약되거나 발송된 앱 안 알림 목록입니다.
+  notifications            Notification[]
+  /// 기능 : 사용자에게 시도된 email/browser push 발송 이력 목록입니다.
+  notificationDeliveries   NotificationDeliveryAttempt[]
+  /// 기능 : 사용자의 browser push 구독 정보를 암호화해 저장한 목록입니다.
+  browserPushSubscriptions BrowserPushSubscription[]
 
   @@index([role])
   @@index([status])
@@ -1036,6 +1078,109 @@ model ImportUploadedFile {
 
   @@index([userId, status, expiresAt])
   @@index([checksum])
+}
+
+model UserNotificationSetting {
+  id                        String   @id @default(uuid()) @db.Uuid
+  userId                    String   @unique @db.Uuid
+  scheduleReminderEnabled   Boolean  @default(true)
+  dealDueReminderEnabled    Boolean  @default(true)
+  emailNotificationEnabled  Boolean  @default(true)
+  browserPushEnabled        Boolean  @default(false)
+  scheduleReminderMinutes   Int      @default(30)
+  dealDueReminderDaysBefore Int      @default(1)
+  dealDueReminderLocalTime  String   @default("09:00")
+  createdAt                 DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt                 DateTime @default(now()) @updatedAt @db.Timestamptz(3)
+
+  /// 기능 : 현재 알림 설정을 소유한 사용자입니다.
+  user User @relation(fields: [userId], references: [id])
+}
+
+model Notification {
+  id           String                 @id @default(uuid()) @db.Uuid
+  userId       String                 @db.Uuid
+  type         NotificationType
+  sourceType   NotificationSourceType
+  sourceId     String                 @db.Uuid
+  dedupeKey    String
+  targetPath   String
+  title        String
+  body         String?
+  targetLabel  String?
+  status       NotificationStatus     @default(PENDING)
+  scheduledAt  DateTime               @db.Timestamptz(3)
+  sentAt       DateTime?              @db.Timestamptz(3)
+  readAt       DateTime?              @db.Timestamptz(3)
+  canceledAt   DateTime?              @db.Timestamptz(3)
+  cancelReason String?
+  metadataJson Json                   @default("{}")
+  createdAt    DateTime               @default(now()) @db.Timestamptz(3)
+  updatedAt    DateTime               @default(now()) @updatedAt @db.Timestamptz(3)
+
+  /// 기능 : 알림을 소유한 사용자입니다. 모든 조회와 변경은 userId로 제한합니다.
+  user       User                          @relation(fields: [userId], references: [id])
+  /// 기능 : 이 알림을 기반으로 email/browser push 발송을 시도한 이력입니다.
+  deliveries NotificationDeliveryAttempt[]
+
+  @@unique([userId, dedupeKey])
+  @@index([userId, status, scheduledAt])
+  @@index([userId, readAt, scheduledAt])
+  @@index([userId, sourceType, sourceId])
+  @@index([scheduledAt, status])
+}
+
+model NotificationDeliveryAttempt {
+  id                 String                      @id @default(uuid()) @db.Uuid
+  notificationId     String                      @db.Uuid
+  userId             String                      @db.Uuid
+  channel            NotificationDeliveryChannel
+  status             NotificationDeliveryStatus  @default(PENDING)
+  attemptNumber      Int                         @default(1)
+  provider           String?
+  providerMessageId  String?
+  providerStatusCode String?
+  safeErrorCode      String?
+  safeErrorMessage   String?
+  retryable          Boolean                     @default(false)
+  nextRetryAt        DateTime?                   @db.Timestamptz(3)
+  sentAt             DateTime?                   @db.Timestamptz(3)
+  failedAt           DateTime?                   @db.Timestamptz(3)
+  detailJson         Json                        @default("{}")
+  createdAt          DateTime                    @default(now()) @db.Timestamptz(3)
+  updatedAt          DateTime                    @default(now()) @updatedAt @db.Timestamptz(3)
+
+  /// 기능 : 발송 시도의 기준이 되는 알림입니다. 알림 삭제 시 함께 삭제됩니다.
+  notification Notification @relation(fields: [notificationId], references: [id], onDelete: Cascade)
+  /// 기능 : 발송 시도를 소유한 사용자입니다. 운영 조회에서도 userId 필터를 사용합니다.
+  user         User         @relation(fields: [userId], references: [id])
+
+  @@index([notificationId, channel, createdAt])
+  @@index([userId, channel, status, createdAt])
+  @@index([status, nextRetryAt])
+}
+
+model BrowserPushSubscription {
+  id                 String                        @id @default(uuid()) @db.Uuid
+  userId             String                        @db.Uuid
+  endpointHash       String
+  endpointCiphertext String
+  p256dhCiphertext   String
+  authCiphertext     String
+  contentKeyVersion  String
+  status             BrowserPushSubscriptionStatus @default(ACTIVE)
+  userAgent          String?
+  deviceLabel        String?
+  lastSeenAt         DateTime?                     @db.Timestamptz(3)
+  revokedAt          DateTime?                     @db.Timestamptz(3)
+  createdAt          DateTime                      @default(now()) @db.Timestamptz(3)
+  updatedAt          DateTime                      @default(now()) @updatedAt @db.Timestamptz(3)
+
+  /// 기능 : browser push 구독을 소유한 사용자입니다.
+  user User @relation(fields: [userId], references: [id])
+
+  @@unique([endpointHash])
+  @@index([userId, status, createdAt])
 }
 
 model CompanyField {

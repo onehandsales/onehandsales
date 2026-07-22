@@ -1,7 +1,7 @@
 # Goal Specs
 
 상태: Confirmed
-구현 상태: Not Started
+구현 상태: G01 Done / G02 Ready
 
 ## 1. 목적
 
@@ -11,8 +11,8 @@
 
 | Goal | 상태 | 문서 | 목적 |
 |---|---|---|---|
-| G01 | Ready | `G01_DB_NOTIFICATION_FOUNDATION.md` | Prisma schema, migration, repository/encryption 기반 |
-| G02 | Ready after G01 | `G02_BACKEND_NOTIFICATION_API.md` | User API와 notification application service |
+| G01 | Done | `G01_DB_NOTIFICATION_FOUNDATION.md` | Prisma schema, migration, repository/encryption 기반 |
+| G02 | Ready | `G02_BACKEND_NOTIFICATION_API.md` | User API와 notification application service |
 | G03 | Ready after G02 | `G03_REMINDER_GENERATION_DELIVERY.md` | 일정/딜 reminder 예약, due processor, email/push adapter |
 | G04 | Ready after G02/G03 | `G04_USER_WEB_NOTIFICATION_UX.md` | `/app/notifications`, unread badge, settings, push UX |
 | G05 | Ready after G01~G04 | `G05_QA_REVIEW_CLOSEOUT.md` | 통합 QA와 검토 closeout |
