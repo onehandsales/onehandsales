@@ -7,7 +7,14 @@ import {
   type ScheduleRecord,
   type ScheduleRepository,
   type UpdateScheduleInput,
+  type WeeklyReportDealRecord,
+  type WeeklyReportScheduleRecord,
 } from "@/modules/schedule/application/ports/schedule.repository";
+import {
+  DEAL_STATUS_CODES,
+  getDealStatusLabel,
+  type DealStatusCode,
+} from "@/modules/deal/domain/deal-status";
 import {
   CancelScheduleNotificationReminderUseCase,
   ScheduleNotificationReminderUseCase,
@@ -29,12 +36,128 @@ const DATE_ONLY_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
 const LOCAL_DATE_TIME_PATTERN =
   /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})(?::(\d{2})(?:\.(\d{1,3}))?)?$/;
 const OFFSET_DATE_TIME_PATTERN = /(Z|[+-]\d{2}:\d{2})$/;
+const WEEKDAY_CODES = [
+  "MONDAY",
+  "TUESDAY",
+  "WEDNESDAY",
+  "THURSDAY",
+  "FRIDAY",
+  "SATURDAY",
+  "SUNDAY",
+] as const;
+
+type WeekdayCode = (typeof WEEKDAY_CODES)[number];
+
+const WEEKDAY_LABELS: Readonly<Record<WeekdayCode, string>> = {
+  MONDAY: "월",
+  TUESDAY: "화",
+  WEDNESDAY: "수",
+  THURSDAY: "목",
+  FRIDAY: "금",
+  SATURDAY: "토",
+  SUNDAY: "일",
+};
 
 // 역할 : ListSchedulesQueryInput 일정 목록 조회 요청 값을 정의합니다.
 export interface ListSchedulesQueryInput {
   readonly view?: ScheduleViewMode;
   readonly baseDate: string;
   readonly timeZone?: string;
+}
+
+// 역할 : 주간 일정 리포트 조회 request query 값을 정의합니다.
+export interface GetWeeklyScheduleReportQueryInput {
+  readonly weekStart: string;
+  readonly timeZone?: string;
+}
+
+// 역할 : 주간 일정 리포트 API 응답 전체 구조를 정의합니다.
+export interface WeeklyScheduleReportResponse {
+  readonly weekStart: string;
+  readonly weekEnd: string;
+  readonly timeZone: string;
+  readonly rangeStartAt: string;
+  readonly rangeEndAt: string;
+  readonly generatedAt: string;
+  readonly summary: WeeklyScheduleReportSummaryResponse;
+  readonly days: WeeklyScheduleReportDayResponse[];
+}
+
+// 역할 : 주간 일정 리포트 summary 응답 구조를 정의합니다.
+export interface WeeklyScheduleReportSummaryResponse {
+  readonly totalScheduleCount: number;
+  readonly totalScheduleEntryCount: number;
+  readonly scheduledDayCount: number;
+  readonly unlinkedScheduleCount: number;
+  readonly scheduleDealLinkCount: number;
+  readonly distinctLinkedDealCount: number;
+  readonly totalDealCost: number;
+  readonly dealStatusCounts: WeeklyScheduleReportDealStatusCountResponse[];
+}
+
+// 역할 : 주간 일정 리포트 딜 상태별 집계 응답 구조를 정의합니다.
+export interface WeeklyScheduleReportDealStatusCountResponse {
+  readonly dealStatus: DealStatusCode;
+  readonly dealStatusLabel: string;
+  readonly count: number;
+}
+
+// 역할 : 주간 일정 리포트의 하루 단위 bucket 응답 구조를 정의합니다.
+export interface WeeklyScheduleReportDayResponse {
+  readonly date: string;
+  readonly weekday: WeekdayCode;
+  readonly weekdayLabel: string;
+  readonly scheduleCount: number;
+  readonly linkedDealCount: number;
+  readonly schedules: WeeklyScheduleReportScheduleResponse[];
+}
+
+// 역할 : 주간 일정 리포트 일정 항목 응답 구조를 정의합니다.
+export interface WeeklyScheduleReportScheduleResponse {
+  readonly id: string;
+  readonly scheduleTitle: string;
+  readonly startAt: string;
+  readonly endAt: string;
+  readonly timeZone: string;
+  readonly location: string | null;
+  readonly hasMemo: boolean;
+  readonly deals: WeeklyScheduleReportDealResponse[];
+}
+
+// 역할 : 주간 일정 리포트 연결 딜 요약 응답 구조를 정의합니다.
+export interface WeeklyScheduleReportDealResponse {
+  readonly id: string;
+  readonly dealName: string;
+  readonly dealCost: number;
+  readonly dealStatus: DealStatusCode;
+  readonly dealStatusLabel: string;
+  readonly expectedEndDate: string;
+  readonly companies: WeeklyScheduleReportCompanyResponse[];
+  readonly contacts: WeeklyScheduleReportContactResponse[];
+  readonly nextFollowingAction: WeeklyScheduleReportNextFollowingActionResponse | null;
+}
+
+// 역할 : 주간 일정 리포트 연결 회사 요약 응답 구조를 정의합니다.
+export interface WeeklyScheduleReportCompanyResponse {
+  readonly id: string;
+  readonly companyName: string;
+}
+
+// 역할 : 주간 일정 리포트 연결 담당자 요약 응답 구조를 정의합니다.
+export interface WeeklyScheduleReportContactResponse {
+  readonly id: string;
+  readonly username: string;
+  readonly companyId: string;
+  readonly companyName: string;
+}
+
+// 역할 : 주간 일정 리포트 다음 후속 액션 응답 구조를 정의합니다.
+export interface WeeklyScheduleReportNextFollowingActionResponse {
+  readonly id: string;
+  readonly followingAction: string;
+  readonly checkComplete: boolean;
+  readonly createdAt: string;
+  readonly remainingCount: number;
 }
 
 // 역할 : CreateScheduleCommand 일정 생성 요청 값을 정의합니다.
@@ -109,6 +232,14 @@ type DateTimeParts = CalendarDate & {
   readonly millisecond: number;
 };
 
+type WeeklyReportRange = {
+  readonly weekStart: CalendarDate;
+  readonly weekEnd: CalendarDate;
+  readonly days: CalendarDate[];
+  readonly rangeStartAt: Date;
+  readonly rangeEndAt: Date;
+};
+
 // 역할 : ScheduleApplicationService 일정 도메인 application 유스케이스를 제공합니다.
 @Injectable()
 export class ScheduleApplicationService {
@@ -175,6 +306,46 @@ export class ScheduleApplicationService {
     return {
       items: schedules.map((schedule) => this.toScheduleResponse(schedule)),
     };
+  }
+
+  // 기능 : 현재 사용자의 주간 일정 리포트 데이터를 조회합니다.
+  async getWeeklyScheduleReport(
+    currentUser: CurrentUserContext,
+    query: GetWeeklyScheduleReportQueryInput
+  ): Promise<WeeklyScheduleReportResponse> {
+    const timeZone = this.normalizeWeeklyReportTimeZone(
+      query.timeZone,
+      currentUser.timeZone
+    );
+    const weekStart = this.parseDateOnly(query.weekStart, "weekStart");
+    this.assertWeekStartIsMonday(weekStart);
+
+    const range = this.createWeeklyReportRange(weekStart, timeZone);
+    const schedules = await this.scheduleRepository.listSchedulesForWeeklyReport(
+      {
+        userId: currentUser.id,
+        rangeStartAt: range.rangeStartAt,
+        rangeEndAt: range.rangeEndAt,
+      }
+    );
+    const response = this.buildWeeklyScheduleReportResponse(
+      schedules,
+      range,
+      timeZone
+    );
+
+    this.logEvent("schedule.week_report.viewed", {
+      userId: currentUser.id,
+      weekStart: response.weekStart,
+      weekEnd: response.weekEnd,
+      timeZone,
+      scheduleCount: response.summary.totalScheduleCount,
+      scheduleEntryCount: response.summary.totalScheduleEntryCount,
+      scheduledDayCount: response.summary.scheduledDayCount,
+      distinctLinkedDealCount: response.summary.distinctLinkedDealCount,
+    });
+
+    return response;
   }
 
   // 기능 : 현재 사용자의 일정 단건 상세를 조회합니다.
@@ -645,6 +816,28 @@ export class ScheduleApplicationService {
       : DEFAULT_USER_TIME_ZONE;
   }
 
+  // 기능 : 주간 리포트 timezone query를 검증하고 사용자 기본 timezone으로 보정합니다.
+  private normalizeWeeklyReportTimeZone(
+    requestedTimeZone: string | undefined,
+    userTimeZone: string
+  ): string {
+    if (requestedTimeZone !== undefined) {
+      const normalizedRequest = normalizeOptionalIanaTimeZone(requestedTimeZone);
+
+      if (!normalizedRequest) {
+        throw new ValidationDomainError(
+          "timeZone must be a valid IANA timezone ID"
+        );
+      }
+
+      return normalizedRequest;
+    }
+
+    return isValidIanaTimeZone(userTimeZone)
+      ? userTimeZone
+      : DEFAULT_USER_TIME_ZONE;
+  }
+
   // 기능 : 일정 시작/종료 일시 문자열을 UTC instant Date로 변환합니다.
   private parseScheduleDateTime(
     value: string,
@@ -744,10 +937,45 @@ export class ScheduleApplicationService {
     };
   }
 
+  // 기능 : 주간 리포트 조회에 사용할 7일 local 범위와 UTC 조회 범위를 계산합니다.
+  private createWeeklyReportRange(
+    weekStart: CalendarDate,
+    timeZone: string
+  ): WeeklyReportRange {
+    const days = Array.from({ length: 7 }, (_, index) =>
+      this.addCalendarDays(weekStart, index)
+    );
+    const weekEnd = this.addCalendarDays(weekStart, 6);
+    const rangeEnd = this.addCalendarDays(weekStart, 7);
+
+    return {
+      weekStart,
+      weekEnd,
+      days,
+      rangeStartAt: this.zonedTimeToUtc(
+        { ...weekStart, hour: 0, minute: 0, second: 0, millisecond: 0 },
+        timeZone
+      ),
+      rangeEndAt: this.zonedTimeToUtc(
+        { ...rangeEnd, hour: 0, minute: 0, second: 0, millisecond: 0 },
+        timeZone
+      ),
+    };
+  }
+
+  // 기능 : weekStart query가 월요일인지 검증합니다.
+  private assertWeekStartIsMonday(weekStart: CalendarDate): void {
+    const expectedWeekStart = this.getWeekStartDate(weekStart);
+
+    if (!this.isSameCalendarDate(weekStart, expectedWeekStart)) {
+      throw new ValidationDomainError("weekStart must be a Monday");
+    }
+  }
+
   // 기능 : YYYY-MM-DD 문자열을 calendar date로 변환합니다.
-  private parseDateOnly(value: string): CalendarDate {
+  private parseDateOnly(value: string, fieldName = "baseDate"): CalendarDate {
     if (!DATE_ONLY_PATTERN.test(value)) {
-      throw new ValidationDomainError("baseDate must be YYYY-MM-DD");
+      throw new ValidationDomainError(`${fieldName} must be YYYY-MM-DD`);
     }
 
     const [yearText, monthText, dayText] = value.split("-");
@@ -761,7 +989,7 @@ export class ScheduleApplicationService {
       date.getUTCMonth() !== month - 1 ||
       date.getUTCDate() !== day
     ) {
-      throw new ValidationDomainError("baseDate must be a valid date");
+      throw new ValidationDomainError(`${fieldName} must be a valid date`);
     }
 
     return { year, month, day };
@@ -791,6 +1019,15 @@ export class ScheduleApplicationService {
       month: utcDate.getUTCMonth() + 1,
       day: utcDate.getUTCDate(),
     };
+  }
+
+  // 기능 : 두 calendar date가 같은 날짜인지 확인합니다.
+  private isSameCalendarDate(left: CalendarDate, right: CalendarDate): boolean {
+    return (
+      left.year === right.year &&
+      left.month === right.month &&
+      left.day === right.day
+    );
   }
 
   // 기능 : timezone 기준 local date-time을 UTC instant로 변환합니다.
@@ -874,6 +1111,238 @@ export class ScheduleApplicationService {
       date.getUTCMinutes() === parts.minute &&
       date.getUTCSeconds() === parts.second
     );
+  }
+
+  // 기능 : repository projection을 주간 리포트 API 응답으로 조립합니다.
+  private buildWeeklyScheduleReportResponse(
+    schedules: WeeklyReportScheduleRecord[],
+    range: WeeklyReportRange,
+    timeZone: string
+  ): WeeklyScheduleReportResponse {
+    const days = range.days.map((day) =>
+      this.toWeeklyReportDayResponse(day, timeZone, schedules)
+    );
+
+    return {
+      weekStart: this.formatCalendarDate(range.weekStart),
+      weekEnd: this.formatCalendarDate(range.weekEnd),
+      timeZone,
+      rangeStartAt: range.rangeStartAt.toISOString(),
+      rangeEndAt: range.rangeEndAt.toISOString(),
+      generatedAt: new Date().toISOString(),
+      summary: this.toWeeklyReportSummary(schedules, days),
+      days,
+    };
+  }
+
+  // 기능 : 주간 일정과 day bucket을 기준으로 summary 값을 계산합니다.
+  private toWeeklyReportSummary(
+    schedules: WeeklyReportScheduleRecord[],
+    days: readonly WeeklyScheduleReportDayResponse[]
+  ): WeeklyScheduleReportSummaryResponse {
+    const distinctDeals = this.getDistinctWeeklyReportDeals(schedules);
+
+    return {
+      totalScheduleCount: schedules.length,
+      totalScheduleEntryCount: days.reduce(
+        (total, day) => total + day.scheduleCount,
+        0
+      ),
+      scheduledDayCount: days.filter((day) => day.scheduleCount > 0).length,
+      unlinkedScheduleCount: schedules.filter(
+        (schedule) => schedule.deals.length === 0
+      ).length,
+      scheduleDealLinkCount: schedules.reduce(
+        (total, schedule) => total + schedule.deals.length,
+        0
+      ),
+      distinctLinkedDealCount: distinctDeals.length,
+      totalDealCost: distinctDeals.reduce(
+        (total, deal) => total + deal.dealCost,
+        0
+      ),
+      dealStatusCounts: this.toWeeklyReportDealStatusCounts(distinctDeals),
+    };
+  }
+
+  // 기능 : 특정 local date에 겹치는 일정을 하루 bucket 응답으로 변환합니다.
+  private toWeeklyReportDayResponse(
+    day: CalendarDate,
+    timeZone: string,
+    schedules: WeeklyReportScheduleRecord[]
+  ): WeeklyScheduleReportDayResponse {
+    const dayRange = this.createLocalDayRange(day, timeZone);
+    const overlappingSchedules = schedules.filter((schedule) =>
+      this.isInstantRangeOverlapping(
+        schedule.startAt,
+        schedule.endAt,
+        dayRange.startAt,
+        dayRange.endAt
+      )
+    );
+    const linkedDealIds = new Set<string>();
+
+    for (const schedule of overlappingSchedules) {
+      for (const deal of schedule.deals) {
+        linkedDealIds.add(deal.id);
+      }
+    }
+
+    const weekday = this.getWeekdayCode(day);
+
+    return {
+      date: this.formatCalendarDate(day),
+      weekday,
+      weekdayLabel: WEEKDAY_LABELS[weekday],
+      scheduleCount: overlappingSchedules.length,
+      linkedDealCount: linkedDealIds.size,
+      schedules: overlappingSchedules.map((schedule) =>
+        this.toWeeklyReportScheduleResponse(schedule)
+      ),
+    };
+  }
+
+  // 기능 : 주간 리포트 일정 projection을 memo 본문 없이 응답 항목으로 변환합니다.
+  private toWeeklyReportScheduleResponse(
+    schedule: WeeklyReportScheduleRecord
+  ): WeeklyScheduleReportScheduleResponse {
+    return {
+      id: schedule.id,
+      scheduleTitle: schedule.scheduleTitle,
+      startAt: schedule.startAt.toISOString(),
+      endAt: schedule.endAt.toISOString(),
+      timeZone: schedule.timeZone,
+      location: schedule.location,
+      hasMemo: Boolean(schedule.memo?.trim()),
+      deals: schedule.deals.map((deal) => this.toWeeklyReportDealResponse(deal)),
+    };
+  }
+
+  // 기능 : 주간 리포트 연결 딜 projection을 응답 항목으로 변환합니다.
+  private toWeeklyReportDealResponse(
+    deal: WeeklyReportDealRecord
+  ): WeeklyScheduleReportDealResponse {
+    return {
+      id: deal.id,
+      dealName: deal.dealName,
+      dealCost: deal.dealCost,
+      dealStatus: deal.dealStatus,
+      dealStatusLabel: getDealStatusLabel(deal.dealStatus),
+      expectedEndDate: this.formatDateOnlyFromDate(deal.expectedEndDate),
+      companies: deal.companies.map((company) => ({
+        id: company.id,
+        companyName: company.companyName,
+      })),
+      contacts: deal.contacts.map((contact) => ({
+        id: contact.id,
+        username: contact.username,
+        companyId: contact.companyId,
+        companyName: contact.companyName,
+      })),
+      nextFollowingAction: deal.nextFollowingAction
+        ? {
+            id: deal.nextFollowingAction.id,
+            followingAction: deal.nextFollowingAction.followingAction,
+            checkComplete: deal.nextFollowingAction.checkComplete,
+            createdAt: deal.nextFollowingAction.createdAt.toISOString(),
+            remainingCount: deal.nextFollowingAction.remainingCount,
+          }
+        : null,
+    };
+  }
+
+  // 기능 : distinct linked deal 목록을 상태별 count 응답으로 변환합니다.
+  private toWeeklyReportDealStatusCounts(
+    deals: readonly WeeklyReportDealRecord[]
+  ): WeeklyScheduleReportDealStatusCountResponse[] {
+    const counts = new Map<DealStatusCode, number>();
+
+    for (const deal of deals) {
+      counts.set(deal.dealStatus, (counts.get(deal.dealStatus) ?? 0) + 1);
+    }
+
+    return DEAL_STATUS_CODES.map((dealStatus) => ({
+      dealStatus,
+      dealStatusLabel: getDealStatusLabel(dealStatus),
+      count: counts.get(dealStatus) ?? 0,
+    })).filter((item) => item.count > 0);
+  }
+
+  // 기능 : 여러 일정에 중복 연결된 딜을 summary 계산용으로 한 번만 남깁니다.
+  private getDistinctWeeklyReportDeals(
+    schedules: readonly WeeklyReportScheduleRecord[]
+  ): WeeklyReportDealRecord[] {
+    const dealsById = new Map<string, WeeklyReportDealRecord>();
+
+    for (const schedule of schedules) {
+      for (const deal of schedule.deals) {
+        if (!dealsById.has(deal.id)) {
+          dealsById.set(deal.id, deal);
+        }
+      }
+    }
+
+    return [...dealsById.values()];
+  }
+
+  // 기능 : 요청 timezone 기준 하루의 UTC 시작/종료 instant를 계산합니다.
+  private createLocalDayRange(
+    day: CalendarDate,
+    timeZone: string
+  ): { readonly startAt: Date; readonly endAt: Date } {
+    const nextDay = this.addCalendarDays(day, 1);
+
+    return {
+      startAt: this.zonedTimeToUtc(
+        { ...day, hour: 0, minute: 0, second: 0, millisecond: 0 },
+        timeZone
+      ),
+      endAt: this.zonedTimeToUtc(
+        { ...nextDay, hour: 0, minute: 0, second: 0, millisecond: 0 },
+        timeZone
+      ),
+    };
+  }
+
+  // 기능 : 두 UTC instant 범위가 겹치는지 확인합니다.
+  private isInstantRangeOverlapping(
+    startAt: Date,
+    endAt: Date,
+    rangeStartAt: Date,
+    rangeEndAt: Date
+  ): boolean {
+    return (
+      startAt.getTime() < rangeEndAt.getTime() &&
+      endAt.getTime() > rangeStartAt.getTime()
+    );
+  }
+
+  // 기능 : calendar date를 월요일 시작 weekday code로 변환합니다.
+  private getWeekdayCode(date: CalendarDate): WeekdayCode {
+    const utcDate = new Date(Date.UTC(date.year, date.month - 1, date.day));
+    const day = utcDate.getUTCDay();
+    const index = day === 0 ? 6 : day - 1;
+
+    return WEEKDAY_CODES[index] ?? "MONDAY";
+  }
+
+  // 기능 : calendar date를 YYYY-MM-DD 문자열로 변환합니다.
+  private formatCalendarDate(date: CalendarDate): string {
+    return [
+      String(date.year).padStart(4, "0"),
+      this.padDatePart(date.month),
+      this.padDatePart(date.day),
+    ].join("-");
+  }
+
+  // 기능 : DB Date 값을 YYYY-MM-DD 문자열로 변환합니다.
+  private formatDateOnlyFromDate(date: Date): string {
+    return date.toISOString().slice(0, 10);
+  }
+
+  // 기능 : 날짜 숫자를 두 자리 문자열로 보정합니다.
+  private padDatePart(value: number): string {
+    return String(value).padStart(2, "0");
   }
 
   // 기능 : 딜 옵션 레코드를 API 응답으로 변환합니다.

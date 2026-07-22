@@ -3,13 +3,16 @@ import {
   type CreateScheduleDealsInput,
   type CreateScheduleInput,
   type DeleteScheduleDealsInput,
+  type ListSchedulesForWeeklyReportInput,
   type ListSchedulesInput,
   type ScheduleDealOptionRecord,
   type ScheduleDealRecord,
   type ScheduleRecord,
   type ScheduleRepository,
   type UpdateScheduleInput,
+  type WeeklyReportScheduleRecord,
 } from "@/modules/schedule/application/ports/schedule.repository";
+import { DealStatusCode } from "@/modules/deal/domain/deal-status";
 import { RelatedDealNotFoundError } from "@/modules/schedule/domain/schedule.errors";
 import {
   CancelScheduleNotificationReminderUseCase,
@@ -54,9 +57,11 @@ class FakeScheduleRepository implements ScheduleRepository {
   ];
 
   schedules: ScheduleRecord[] = [];
+  weeklySchedules: WeeklyReportScheduleRecord[] = [];
   scheduleDealIds = new Map<string, string[]>();
   transactionCount = 0;
   lastListInput: ListSchedulesInput | null = null;
+  lastWeeklyReportInput: ListSchedulesForWeeklyReportInput | null = null;
 
   // 기능 : fake transaction을 현재 저장소에서 즉시 실행합니다.
   async runInTransaction<T>(
@@ -132,6 +137,23 @@ class FakeScheduleRepository implements ScheduleRepository {
     return this.schedules.filter(
       (schedule) =>
         schedule.startAt < input.rangeEnd && schedule.endAt > input.rangeStart
+    );
+  }
+
+  // 기능 : fake 주간 리포트 projection 목록을 기간 overlap 기준으로 반환합니다.
+  async listSchedulesForWeeklyReport(
+    input: ListSchedulesForWeeklyReportInput
+  ): Promise<WeeklyReportScheduleRecord[]> {
+    this.lastWeeklyReportInput = input;
+
+    if (input.userId !== CURRENT_USER.id) {
+      return [];
+    }
+
+    return this.weeklySchedules.filter(
+      (schedule) =>
+        schedule.startAt < input.rangeEndAt &&
+        schedule.endAt > input.rangeStartAt
     );
   }
 
@@ -286,8 +308,54 @@ function createService() {
   return {
     repository,
     service,
+    logger,
     scheduleNotificationReminder,
     cancelScheduleNotificationReminder,
+  };
+}
+
+function createWeeklySchedule(
+  overrides: Partial<WeeklyReportScheduleRecord> = {}
+): WeeklyReportScheduleRecord {
+  return {
+    id: "weekly-schedule-1",
+    scheduleTitle: "Weekly sync",
+    startAt: new Date("2026-06-15T00:30:00.000Z"),
+    endAt: new Date("2026-06-15T01:30:00.000Z"),
+    timeZone: "Asia/Seoul",
+    location: "Seoul",
+    memo: "internal memo body",
+    deals: [
+      {
+        id: "weekly-deal-1",
+        dealName: "Expansion",
+        dealCost: 120000,
+        dealStatus: DealStatusCode.NEGOTIATION,
+        expectedEndDate: new Date("2026-06-30T00:00:00.000Z"),
+        companies: [
+          {
+            id: "company-1",
+            companyName: "Acme",
+          },
+        ],
+        contacts: [
+          {
+            id: "contact-1",
+            username: "Kim",
+            companyId: "company-1",
+            companyName: "Acme",
+          },
+        ],
+        nextFollowingAction: {
+          id: "action-1",
+          followingAction: "Send proposal",
+          checkComplete: false,
+          createdAt: new Date("2026-06-10T00:00:00.000Z"),
+          remainingCount: 2,
+        },
+      },
+    ],
+    ...overrides,
   };
 }
 
@@ -446,6 +514,122 @@ describe("ScheduleApplicationService", () => {
     );
     expect(repository.lastListInput?.rangeEnd.toISOString()).toBe(
       "2026-06-30T15:00:00.000Z"
+    );
+  });
+
+  it("weekly report query must use Monday weekStart", async () => {
+    const { service } = createService();
+
+    await expect(
+      service.getWeeklyScheduleReport(CURRENT_USER, {
+        weekStart: "2026-06-16",
+        timeZone: "Asia/Seoul",
+      })
+    ).rejects.toBeInstanceOf(ValidationDomainError);
+  });
+
+  it("weekly report query rejects invalid IANA timezone", async () => {
+    const { service } = createService();
+
+    await expect(
+      service.getWeeklyScheduleReport(CURRENT_USER, {
+        weekStart: "2026-06-15",
+        timeZone: "Not/AZone",
+      })
+    ).rejects.toBeInstanceOf(ValidationDomainError);
+  });
+
+  it("weekly report returns seven days even when no schedules exist", async () => {
+    const { repository, service } = createService();
+
+    const report = await service.getWeeklyScheduleReport(CURRENT_USER, {
+      weekStart: "2026-06-15",
+      timeZone: "Asia/Seoul",
+    });
+
+    expect(repository.lastWeeklyReportInput?.rangeStartAt.toISOString()).toBe(
+      "2026-06-14T15:00:00.000Z"
+    );
+    expect(repository.lastWeeklyReportInput?.rangeEndAt.toISOString()).toBe(
+      "2026-06-21T15:00:00.000Z"
+    );
+    expect(report.weekStart).toBe("2026-06-15");
+    expect(report.weekEnd).toBe("2026-06-21");
+    expect(report.rangeStartAt).toBe("2026-06-14T15:00:00.000Z");
+    expect(report.rangeEndAt).toBe("2026-06-21T15:00:00.000Z");
+    expect(report.days).toHaveLength(7);
+    expect(report.summary.totalScheduleCount).toBe(0);
+    expect(report.summary.totalScheduleEntryCount).toBe(0);
+  });
+
+  it("weekly report buckets multi-day schedules and omits memo body", async () => {
+    const { logger, repository, service } = createService();
+    repository.weeklySchedules = [
+      createWeeklySchedule({
+        id: "multi-day-schedule",
+        scheduleTitle: "Overnight",
+        startAt: new Date("2026-06-15T14:00:00.000Z"),
+        endAt: new Date("2026-06-16T02:00:00.000Z"),
+      }),
+      createWeeklySchedule({
+        id: "unlinked-schedule",
+        scheduleTitle: "Focus block",
+        startAt: new Date("2026-06-17T00:00:00.000Z"),
+        endAt: new Date("2026-06-17T01:00:00.000Z"),
+        memo: "   ",
+        deals: [],
+      }),
+    ];
+
+    const report = await service.getWeeklyScheduleReport(CURRENT_USER, {
+      weekStart: "2026-06-15",
+      timeZone: "Asia/Seoul",
+    });
+
+    expect(report.days[0]?.schedules.map((schedule) => schedule.id)).toEqual([
+      "multi-day-schedule",
+    ]);
+    expect(report.days[1]?.schedules.map((schedule) => schedule.id)).toEqual([
+      "multi-day-schedule",
+    ]);
+    expect(report.days[2]?.schedules.map((schedule) => schedule.id)).toEqual([
+      "unlinked-schedule",
+    ]);
+    expect(report.days[0]?.schedules[0]).not.toHaveProperty("memo");
+    expect(report.days[0]?.schedules[0]?.hasMemo).toBe(true);
+    expect(report.days[2]?.schedules[0]?.hasMemo).toBe(false);
+    expect(report.summary).toMatchObject({
+      totalScheduleCount: 2,
+      totalScheduleEntryCount: 3,
+      scheduledDayCount: 3,
+      unlinkedScheduleCount: 1,
+      scheduleDealLinkCount: 1,
+      distinctLinkedDealCount: 1,
+      totalDealCost: 120000,
+    });
+    expect(report.summary.dealStatusCounts).toEqual([
+      {
+        dealStatus: DealStatusCode.NEGOTIATION,
+        dealStatusLabel: expect.any(String),
+        count: 1,
+      },
+    ]);
+    expect(
+      report.days[0]?.schedules[0]?.deals[0]?.nextFollowingAction
+    ).toMatchObject({
+      id: "action-1",
+      followingAction: "Send proposal",
+      checkComplete: false,
+      createdAt: "2026-06-10T00:00:00.000Z",
+      remainingCount: 2,
+    });
+    expect(logger.log).toHaveBeenCalledWith(
+      expect.stringContaining('"event":"schedule.week_report.viewed"'),
+      "ScheduleApplicationService"
+    );
+    expect(logger.log).not.toHaveBeenCalledWith(
+      expect.stringContaining("internal memo body"),
+      expect.any(String)
     );
   });
 });

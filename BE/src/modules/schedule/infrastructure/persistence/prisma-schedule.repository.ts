@@ -10,13 +10,20 @@ import {
   type CreateScheduleDealsInput,
   type CreateScheduleInput,
   type DeleteScheduleDealsInput,
+  type ListSchedulesForWeeklyReportInput,
   type ListSchedulesInput,
   type ScheduleDealOptionRecord,
   type ScheduleDealRecord,
   type ScheduleRecord,
   type ScheduleRepository,
   type UpdateScheduleInput,
+  type WeeklyReportDealRecord,
+  type WeeklyReportScheduleRecord,
 } from "@/modules/schedule/application/ports/schedule.repository";
+import {
+  type DealStatusCode,
+  isDealStatusCode,
+} from "@/modules/deal/domain/deal-status";
 import { PrismaService } from "@/shared/infrastructure/prisma/prisma.service";
 
 type SchedulePrismaClient = PrismaService | Prisma.TransactionClient;
@@ -39,6 +46,57 @@ type ScheduleRow = {
   readonly createdAt: Date;
   readonly updatedAt: Date;
   readonly scheduleDeals: ScheduleDealRow[];
+};
+
+type WeeklyReportFollowingActionLogRow = {
+  readonly id: string;
+  readonly followingAction: string;
+  readonly checkComplete: boolean;
+  readonly createdAt: Date;
+};
+
+type WeeklyReportDealRow = {
+  readonly id: string;
+  readonly dealName: string;
+  readonly dealCost: number;
+  readonly dealStatus: string;
+  readonly expectedEndDate: Date;
+  readonly dealCompanies: {
+    readonly company: {
+      readonly id: string;
+      readonly companyName: string;
+    };
+  }[];
+  readonly dealContacts: {
+    readonly contact: {
+      readonly id: string;
+      readonly username: string;
+      readonly companyId: string;
+      readonly company: {
+        readonly id: string;
+        readonly companyName: string;
+      };
+    };
+  }[];
+  readonly followingActionLogs: WeeklyReportFollowingActionLogRow[];
+  readonly _count: {
+    readonly followingActionLogs: number;
+  };
+};
+
+type WeeklyReportScheduleDealRow = {
+  readonly deal: WeeklyReportDealRow;
+};
+
+type WeeklyReportScheduleRow = {
+  readonly id: string;
+  readonly scheduleTitle: string;
+  readonly startAt: Date;
+  readonly endAt: Date;
+  readonly timeZone: string;
+  readonly location: string | null;
+  readonly memo: string | null;
+  readonly scheduleDeals: WeeklyReportScheduleDealRow[];
 };
 
 // 역할 : PrismaScheduleRepository 저장소 계약을 Prisma 기반 영속성 처리로 구현합니다.
@@ -142,6 +200,26 @@ export class PrismaScheduleRepository implements ScheduleRepository {
     });
 
     return schedules.map((schedule) => this.mapScheduleRecord(schedule));
+  }
+
+  // 기능 : 주간 리포트용 일정 projection을 조회합니다.
+  // DB : Schedule 기간 overlap, 사용자 소유권, 삭제되지 않은 연결 Deal, 미완료/미삭제 후속 액션을 함께 조회합니다.
+  async listSchedulesForWeeklyReport(
+    input: ListSchedulesForWeeklyReportInput
+  ): Promise<WeeklyReportScheduleRecord[]> {
+    const schedules = await this.client.schedule.findMany({
+      where: {
+        userId: input.userId,
+        startAt: { lt: input.rangeEndAt },
+        endAt: { gt: input.rangeStartAt },
+      },
+      select: this.createWeeklyReportScheduleSelect(input.userId),
+      orderBy: [{ startAt: "asc" }, { id: "asc" }],
+    });
+
+    return schedules.map((schedule) =>
+      this.mapWeeklyReportScheduleRecord(schedule)
+    );
   }
 
   // 기능 : 현재 사용자의 일정 단건 상세를 조회합니다.
@@ -280,11 +358,106 @@ export class PrismaScheduleRepository implements ScheduleRepository {
     } satisfies Prisma.ScheduleInclude;
   }
 
-  // 기능 : Prisma 일정 row를 application record로 변환합니다.
+  // 기능 : 주간 리포트 DB projection select 조건을 생성합니다.
+  private createWeeklyReportScheduleSelect(userId: string) {
+    return {
+      id: true,
+      scheduleTitle: true,
+      startAt: true,
+      endAt: true,
+      timeZone: true,
+      location: true,
+      memo: true,
+      scheduleDeals: {
+        where: {
+          userId,
+          deal: {
+            userId,
+            deletedAt: null,
+          },
+        },
+        select: {
+          deal: {
+            select: {
+              id: true,
+              dealName: true,
+              dealCost: true,
+              dealStatus: true,
+              expectedEndDate: true,
+              dealCompanies: {
+                where: {
+                  userId,
+                },
+                select: {
+                  company: {
+                    select: {
+                      id: true,
+                      companyName: true,
+                    },
+                  },
+                },
+                orderBy: [{ createdAt: "asc" }, { id: "asc" }],
+              },
+              dealContacts: {
+                where: {
+                  userId,
+                },
+                select: {
+                  contact: {
+                    select: {
+                      id: true,
+                      username: true,
+                      companyId: true,
+                      company: {
+                        select: {
+                          id: true,
+                          companyName: true,
+                        },
+                      },
+                    },
+                  },
+                },
+                orderBy: [{ createdAt: "asc" }, { id: "asc" }],
+              },
+              followingActionLogs: {
+                where: {
+                  userId,
+                  checkComplete: false,
+                  deletedAt: null,
+                },
+                select: {
+                  id: true,
+                  followingAction: true,
+                  checkComplete: true,
+                  createdAt: true,
+                },
+                orderBy: [{ createdAt: "asc" }, { id: "asc" }],
+                take: 1,
+              },
+              _count: {
+                select: {
+                  followingActionLogs: {
+                    where: {
+                      userId,
+                      checkComplete: false,
+                      deletedAt: null,
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+        orderBy: [{ createdAt: "asc" }, { id: "asc" }],
+      },
+    } satisfies Prisma.ScheduleSelect;
+  }
+
   private createNotificationRepository(): PrismaNotificationRepository {
     return new PrismaNotificationRepository(this.client, null);
   }
 
+  // 기능 : Prisma 일정 row를 application record로 변환합니다.
   private mapScheduleRecord(schedule: ScheduleRow): ScheduleRecord {
     return {
       id: schedule.id,
@@ -301,5 +474,66 @@ export class PrismaScheduleRepository implements ScheduleRepository {
       createdAt: schedule.createdAt,
       updatedAt: schedule.updatedAt,
     };
+  }
+
+  // 기능 : Prisma 주간 리포트 일정 row를 application projection으로 변환합니다.
+  private mapWeeklyReportScheduleRecord(
+    schedule: WeeklyReportScheduleRow
+  ): WeeklyReportScheduleRecord {
+    return {
+      id: schedule.id,
+      scheduleTitle: schedule.scheduleTitle,
+      startAt: schedule.startAt,
+      endAt: schedule.endAt,
+      timeZone: schedule.timeZone,
+      location: schedule.location,
+      memo: schedule.memo,
+      deals: schedule.scheduleDeals.map((scheduleDeal) =>
+        this.mapWeeklyReportDealRecord(scheduleDeal.deal)
+      ),
+    };
+  }
+
+  // 기능 : Prisma 주간 리포트 딜 row에서 다음 미완료 후속 액션 요약을 계산합니다.
+  private mapWeeklyReportDealRecord(
+    deal: WeeklyReportDealRow
+  ): WeeklyReportDealRecord {
+    const nextFollowingAction = deal.followingActionLogs[0] ?? null;
+
+    return {
+      id: deal.id,
+      dealName: deal.dealName,
+      dealCost: deal.dealCost,
+      dealStatus: this.mapDealStatus(deal.dealStatus),
+      expectedEndDate: deal.expectedEndDate,
+      companies: deal.dealCompanies.map((dealCompany) => ({
+        id: dealCompany.company.id,
+        companyName: dealCompany.company.companyName,
+      })),
+      contacts: deal.dealContacts.map((dealContact) => ({
+        id: dealContact.contact.id,
+        username: dealContact.contact.username,
+        companyId: dealContact.contact.companyId,
+        companyName: dealContact.contact.company.companyName,
+      })),
+      nextFollowingAction: nextFollowingAction
+        ? {
+            id: nextFollowingAction.id,
+            followingAction: nextFollowingAction.followingAction,
+            checkComplete: nextFollowingAction.checkComplete,
+            createdAt: nextFollowingAction.createdAt,
+            remainingCount: Math.max(deal._count.followingActionLogs - 1, 0),
+          }
+        : null,
+    };
+  }
+
+  // 기능 : DB 문자열 상태 값을 DealStatusCode로 검증해 변환합니다.
+  private mapDealStatus(status: string): DealStatusCode {
+    if (!isDealStatusCode(status)) {
+      throw new Error(`Invalid deal status in database: ${status}`);
+    }
+
+    return status;
   }
 }

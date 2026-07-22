@@ -18,6 +18,7 @@ import { CurrentUser } from "@/shared/presentation/decorators/current-user.decor
 import { AuthGuard } from "@/shared/presentation/guards/auth.guard";
 import {
   CreateScheduleDto,
+  GetWeeklyScheduleReportQueryDto,
   ListSchedulesQueryDto,
   UpdateScheduleDto,
 } from "./dto/schedule-request.dto";
@@ -46,6 +47,19 @@ export class ScheduleController {
   ) {
     // 1. query 조건과 현재 사용자를 application 계층으로 전달한다.
     return this.scheduleApplicationService.listSchedules(currentUser, query);
+  }
+
+  // API : 일정, 주간 보고서 조회
+  @Get("week")
+  getWeeklyScheduleReport(
+    @CurrentUser() currentUser: CurrentUserContext,
+    @Query() query: GetWeeklyScheduleReportQueryDto
+  ) {
+    // 1. query 조건과 현재 사용자를 application 계층으로 전달합니다.
+    return this.scheduleApplicationService.getWeeklyScheduleReport(
+      currentUser,
+      query
+    );
   }
 
   // API : 일정, 단건 상세 조회

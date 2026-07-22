@@ -1,4 +1,5 @@
 import type { NotificationReminderWriteRepository } from "@/modules/notification/application/ports/notification-reminder-writer.port";
+import type { DealStatusCode } from "@/modules/deal/domain/deal-status";
 
 export const SCHEDULE_REPOSITORY = Symbol("SCHEDULE_REPOSITORY");
 
@@ -32,11 +33,65 @@ export interface ScheduleRecord {
   readonly updatedAt: Date;
 }
 
+// 역할 : 주간 리포트에 필요한 연결 회사 projection 구조를 정의합니다.
+export interface WeeklyReportCompanyRecord {
+  readonly id: string;
+  readonly companyName: string;
+}
+
+// 역할 : 주간 리포트에 필요한 연결 담당자 projection 구조를 정의합니다.
+export interface WeeklyReportContactRecord {
+  readonly id: string;
+  readonly username: string;
+  readonly companyId: string;
+  readonly companyName: string;
+}
+
+// 역할 : 주간 리포트에 표시할 다음 후속 액션 projection 구조를 정의합니다.
+export interface WeeklyReportNextFollowingActionRecord {
+  readonly id: string;
+  readonly followingAction: string;
+  readonly checkComplete: boolean;
+  readonly createdAt: Date;
+  readonly remainingCount: number;
+}
+
+// 역할 : 주간 리포트에 필요한 활성 연결 딜 projection 구조를 정의합니다.
+export interface WeeklyReportDealRecord {
+  readonly id: string;
+  readonly dealName: string;
+  readonly dealCost: number;
+  readonly dealStatus: DealStatusCode;
+  readonly expectedEndDate: Date;
+  readonly companies: WeeklyReportCompanyRecord[];
+  readonly contacts: WeeklyReportContactRecord[];
+  readonly nextFollowingAction: WeeklyReportNextFollowingActionRecord | null;
+}
+
+// 역할 : 주간 리포트에 필요한 일정 projection 구조를 정의합니다.
+export interface WeeklyReportScheduleRecord {
+  readonly id: string;
+  readonly scheduleTitle: string;
+  readonly startAt: Date;
+  readonly endAt: Date;
+  readonly timeZone: string;
+  readonly location: string | null;
+  readonly memo: string | null;
+  readonly deals: WeeklyReportDealRecord[];
+}
+
 // 역할 : ListSchedulesInput 일정 목록 조회 조건을 정의합니다.
 export interface ListSchedulesInput {
   readonly userId: string;
   readonly rangeStart: Date;
   readonly rangeEnd: Date;
+}
+
+// 역할 : 주간 리포트 일정 조회 조건을 정의합니다.
+export interface ListSchedulesForWeeklyReportInput {
+  readonly userId: string;
+  readonly rangeStartAt: Date;
+  readonly rangeEndAt: Date;
 }
 
 // 역할 : CreateScheduleInput 일정 생성 저장 값을 정의합니다.
@@ -86,6 +141,10 @@ export interface ScheduleRepository extends NotificationReminderWriteRepository 
   findDealsByIds(userId: string, dealIds: readonly string[]): Promise<ScheduleDealRecord[]>;
   // 기능 : 현재 사용자의 일정 목록을 조회합니다.
   listSchedules(input: ListSchedulesInput): Promise<ScheduleRecord[]>;
+  // 기능 : 현재 사용자의 주간 리포트용 일정과 활성 연결 딜 projection을 조회합니다.
+  listSchedulesForWeeklyReport(
+    input: ListSchedulesForWeeklyReportInput
+  ): Promise<WeeklyReportScheduleRecord[]>;
   // 기능 : 현재 사용자의 일정 단건 상세를 조회합니다.
   findSchedule(userId: string, scheduleId: string): Promise<ScheduleRecord | null>;
   // 기능 : 현재 사용자의 일정을 생성합니다.
