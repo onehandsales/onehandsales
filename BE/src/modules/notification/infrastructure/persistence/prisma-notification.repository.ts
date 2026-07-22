@@ -140,7 +140,7 @@ export class PrismaNotificationRepository implements NotificationRepository {
     const [items, totalCount] = await Promise.all([
       this.client.notification.findMany({
         where,
-        orderBy: [{ scheduledAt: "desc" }, { id: "desc" }],
+        orderBy: [{ scheduledAt: "desc" }, { createdAt: "desc" }],
         skip: (input.page - 1) * input.pageSize,
         take: input.pageSize,
       }),
@@ -162,6 +162,7 @@ export class PrismaNotificationRepository implements NotificationRepository {
         userId: input.userId,
         status: "SENT",
         readAt: null,
+        scheduledAt: { lte: input.now },
       },
     });
   }
@@ -275,35 +276,61 @@ export class PrismaNotificationRepository implements NotificationRepository {
   async upsertBrowserPushSubscription(
     input: UpsertBrowserPushSubscriptionInput
   ): Promise<BrowserPushSubscriptionRecord> {
-    const subscription = await this.client.browserPushSubscription.upsert({
-      where: { endpointHash: input.endpointHash },
-      update: {
-        userId: input.userId,
-        endpointCiphertext: input.endpointCiphertext,
-        p256dhCiphertext: input.p256dhCiphertext,
-        authCiphertext: input.authCiphertext,
-        contentKeyVersion: input.contentKeyVersion,
-        status: "ACTIVE",
-        userAgent: input.userAgent ?? null,
-        deviceLabel: input.deviceLabel ?? null,
-        lastSeenAt: input.now,
-        revokedAt: null,
-      },
-      create: {
-        ...(input.id ? { id: input.id } : {}),
-        userId: input.userId,
+    const updateData = this.createBrowserPushSubscriptionUpdateData(input);
+    const updated = await this.client.browserPushSubscription.updateMany({
+      where: {
         endpointHash: input.endpointHash,
-        endpointCiphertext: input.endpointCiphertext,
-        p256dhCiphertext: input.p256dhCiphertext,
-        authCiphertext: input.authCiphertext,
-        contentKeyVersion: input.contentKeyVersion,
-        userAgent: input.userAgent ?? null,
-        deviceLabel: input.deviceLabel ?? null,
-        lastSeenAt: input.now,
+        userId: input.userId,
       },
+      data: updateData,
     });
 
-    return this.mapBrowserPushSubscription(subscription);
+    if (updated.count > 0) {
+      return this.findRequiredBrowserPushSubscriptionByEndpointHash(
+        input.endpointHash
+      );
+    }
+
+    try {
+      const subscription = await this.client.browserPushSubscription.create({
+        data: {
+          ...(input.id ? { id: input.id } : {}),
+          userId: input.userId,
+          endpointHash: input.endpointHash,
+          endpointCiphertext: input.endpointCiphertext,
+          p256dhCiphertext: input.p256dhCiphertext,
+          authCiphertext: input.authCiphertext,
+          contentKeyVersion: input.contentKeyVersion,
+          userAgent: input.userAgent ?? null,
+          deviceLabel: input.deviceLabel ?? null,
+          lastSeenAt: input.now,
+        },
+      });
+
+      return this.mapBrowserPushSubscription(subscription);
+    } catch (error) {
+      if (this.isUniqueConstraintError(error)) {
+        const retryUpdated = await this.client.browserPushSubscription.updateMany({
+          where: {
+            endpointHash: input.endpointHash,
+            userId: input.userId,
+          },
+          data: updateData,
+        });
+
+        if (retryUpdated.count > 0) {
+          return this.findRequiredBrowserPushSubscriptionByEndpointHash(
+            input.endpointHash
+          );
+        }
+
+        return this.findRequiredBrowserPushSubscriptionByEndpointHash(
+          input.endpointHash
+        );
+      }
+
+      throw error;
+    }
   }
 
   // 기능 : 현재 사용자 소유 browser push subscription을 조회합니다.
@@ -315,6 +342,17 @@ export class PrismaNotificationRepository implements NotificationRepository {
         id: input.browserSubscriptionId,
         userId: input.userId,
       },
+    });
+
+    return subscription ? this.mapBrowserPushSubscription(subscription) : null;
+  }
+
+  // 기능 : endpoint hash 기준 browser push subscription을 조회합니다.
+  async findBrowserPushSubscriptionByEndpointHash(
+    endpointHash: string
+  ): Promise<BrowserPushSubscriptionRecord | null> {
+    const subscription = await this.client.browserPushSubscription.findUnique({
+      where: { endpointHash },
     });
 
     return subscription ? this.mapBrowserPushSubscription(subscription) : null;
@@ -386,6 +424,46 @@ export class PrismaNotificationRepository implements NotificationRepository {
   }
 
   // 기능 : 알림 목록 조회 조건을 Prisma where로 변환합니다.
+  // 기능 : 같은 사용자의 browser push subscription 재등록 update 값을 구성합니다.
+  private createBrowserPushSubscriptionUpdateData(
+    input: UpsertBrowserPushSubscriptionInput
+  ): Prisma.BrowserPushSubscriptionUpdateManyMutationInput {
+    return {
+      endpointCiphertext: input.endpointCiphertext,
+      p256dhCiphertext: input.p256dhCiphertext,
+      authCiphertext: input.authCiphertext,
+      contentKeyVersion: input.contentKeyVersion,
+      status: "ACTIVE",
+      userAgent: input.userAgent ?? null,
+      deviceLabel: input.deviceLabel ?? null,
+      lastSeenAt: input.now,
+      revokedAt: null,
+    };
+  }
+
+  // 기능 : endpoint hash로 subscription row를 다시 읽고 없으면 인프라 오류로 처리합니다.
+  private async findRequiredBrowserPushSubscriptionByEndpointHash(
+    endpointHash: string
+  ): Promise<BrowserPushSubscriptionRecord> {
+    const subscription = await this.client.browserPushSubscription.findUnique({
+      where: { endpointHash },
+    });
+
+    if (!subscription) {
+      throw new Error("Browser push subscription was not found after upsert");
+    }
+
+    return this.mapBrowserPushSubscription(subscription);
+  }
+
+  // 기능 : Prisma unique constraint 충돌인지 판별합니다.
+  private isUniqueConstraintError(error: unknown): boolean {
+    return (
+      error instanceof Prisma.PrismaClientKnownRequestError &&
+      error.code === "P2002"
+    );
+  }
+
   private createListWhere(
     input: ListNotificationsForUserInput
   ): Prisma.NotificationWhereInput {
@@ -395,6 +473,9 @@ export class PrismaNotificationRepository implements NotificationRepository {
         input.includeUpcoming === true
           ? { in: ["PENDING", "SENT"] }
           : "SENT",
+      ...(input.includeUpcoming === true
+        ? {}
+        : { scheduledAt: { lte: input.now } }),
       ...(input.read === "READ" ? { readAt: { not: null } } : {}),
       ...(input.read === "UNREAD" ? { readAt: null } : {}),
     };

@@ -1,7 +1,7 @@
 # 02 Notification Reminder
 
 상태: Confirmed Plan
-구현 상태: G01 DB foundation 완료 / G02 Backend API 대기
+구현 상태: G01 DB foundation 완료 / G02 Backend API 완료 / G03 reminder generation-delivery 대기
 확정일: 2026-07-22
 순서: 02
 성격: 구현 착수 가능한 `/goal` 계획

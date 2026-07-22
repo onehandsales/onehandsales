@@ -109,6 +109,7 @@ export interface ListNotificationsForUserInput {
   readonly userId: string;
   readonly page: number;
   readonly pageSize: number;
+  readonly now: Date;
   readonly read?: NotificationReadFilter;
   readonly includeUpcoming?: boolean;
 }
@@ -116,6 +117,7 @@ export interface ListNotificationsForUserInput {
 // 역할 : CountUnreadNotificationsForUserInput unread 알림 수 조회 조건을 정의합니다.
 export interface CountUnreadNotificationsForUserInput {
   readonly userId: string;
+  readonly now: Date;
 }
 
 // 역할 : UpsertNotificationSettingsInput 사용자 알림 설정 upsert 값을 정의합니다.
@@ -270,6 +272,10 @@ export interface NotificationRepository {
   // 기능 : 현재 사용자 소유 browser push subscription을 조회합니다.
   findBrowserPushSubscriptionForUser(
     input: FindBrowserPushSubscriptionForUserInput
+  ): Promise<BrowserPushSubscriptionRecord | null>;
+  // 기능 : endpoint hash 기준 browser push subscription을 조회합니다.
+  findBrowserPushSubscriptionByEndpointHash(
+    endpointHash: string
   ): Promise<BrowserPushSubscriptionRecord | null>;
   // 기능 : 현재 사용자 active browser push subscription 목록을 조회합니다.
   listActiveBrowserPushSubscriptionsForUser(

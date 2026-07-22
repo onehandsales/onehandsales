@@ -1,6 +1,8 @@
 # G02 Backend Notification API
 
-상태: Ready after G01
+상태: Done
+완료일: 2026-07-22
+작업 로그: `TODO_LOG/2026-07-22/G02_BACKEND_NOTIFICATION_API/WORK_LOG.md`
 
 ## 1. 목적
 

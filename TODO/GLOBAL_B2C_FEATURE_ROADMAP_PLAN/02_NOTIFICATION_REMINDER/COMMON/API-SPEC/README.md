@@ -1,7 +1,7 @@
 # API Spec
 
 상태: Confirmed
-구현 상태: Not Started
+구현 상태: User API G02 Done / internal scheduling-delivery and User Web pending
 
 ## 1. 목적
 

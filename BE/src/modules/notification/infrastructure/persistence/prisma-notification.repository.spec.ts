@@ -115,6 +115,23 @@ describe("PrismaNotificationRepository", () => {
     expect(notification?.metadataJson).toEqual({ safe: true });
   });
 
+  it("returns already read notifications without updating them again", async () => {
+    const client = createMockClient();
+    client.notification.findFirst.mockResolvedValue(
+      createNotificationFixture({ readAt: NOW, status: "SENT" })
+    );
+    const repository = createRepository(client);
+
+    const notification = await repository.markNotificationReadForUser({
+      userId: "user-1",
+      notificationId: "notification-1",
+      readAt: new Date("2026-07-22T01:00:00.000Z"),
+    });
+
+    expect(client.notification.update).not.toHaveBeenCalled();
+    expect(notification?.readAt).toBe(NOW);
+  });
+
   it("lists only sent user notifications unless upcoming notifications are requested", async () => {
     const client = createMockClient();
     client.notification.findMany.mockResolvedValue([createNotificationFixture()]);
@@ -125,6 +142,7 @@ describe("PrismaNotificationRepository", () => {
       userId: "user-1",
       page: 2,
       pageSize: 15,
+      now: NOW,
       read: "UNREAD",
     });
 
@@ -133,8 +151,9 @@ describe("PrismaNotificationRepository", () => {
         userId: "user-1",
         status: "SENT",
         readAt: null,
+        scheduledAt: { lte: NOW },
       },
-      orderBy: [{ scheduledAt: "desc" }, { id: "desc" }],
+      orderBy: [{ scheduledAt: "desc" }, { createdAt: "desc" }],
       skip: 15,
       take: 15,
     });
@@ -143,6 +162,28 @@ describe("PrismaNotificationRepository", () => {
         userId: "user-1",
         status: "SENT",
         readAt: null,
+        scheduledAt: { lte: NOW },
+      },
+    });
+  });
+
+  it("counts only due sent unread notifications for the current user", async () => {
+    const client = createMockClient();
+    client.notification.count.mockResolvedValue(3);
+    const repository = createRepository(client);
+
+    const count = await repository.countUnreadNotificationsForUser({
+      userId: "user-1",
+      now: NOW,
+    });
+
+    expect(count).toBe(3);
+    expect(client.notification.count).toHaveBeenCalledWith({
+      where: {
+        userId: "user-1",
+        status: "SENT",
+        readAt: null,
+        scheduledAt: { lte: NOW },
       },
     });
   });
@@ -195,7 +236,8 @@ describe("PrismaNotificationRepository", () => {
 
   it("upserts browser push subscription using encrypted fields only", async () => {
     const client = createMockClient();
-    client.browserPushSubscription.upsert.mockResolvedValue(
+    client.browserPushSubscription.updateMany.mockResolvedValue({ count: 0 });
+    client.browserPushSubscription.create.mockResolvedValue(
       createBrowserPushSubscriptionFixture()
     );
     const repository = createRepository(client);
@@ -212,10 +254,12 @@ describe("PrismaNotificationRepository", () => {
       now: NOW,
     });
 
-    expect(client.browserPushSubscription.upsert).toHaveBeenCalledWith({
-      where: { endpointHash: "endpoint-hash" },
-      update: {
+    expect(client.browserPushSubscription.updateMany).toHaveBeenCalledWith({
+      where: {
+        endpointHash: "endpoint-hash",
         userId: "user-1",
+      },
+      data: {
         endpointCiphertext: "endpoint-ciphertext",
         p256dhCiphertext: "p256dh-ciphertext",
         authCiphertext: "auth-ciphertext",
@@ -226,7 +270,9 @@ describe("PrismaNotificationRepository", () => {
         lastSeenAt: NOW,
         revokedAt: null,
       },
-      create: {
+    });
+    expect(client.browserPushSubscription.create).toHaveBeenCalledWith({
+      data: {
         userId: "user-1",
         endpointHash: "endpoint-hash",
         endpointCiphertext: "endpoint-ciphertext",
@@ -239,8 +285,57 @@ describe("PrismaNotificationRepository", () => {
       },
     });
     expect(
-      JSON.stringify(client.browserPushSubscription.upsert.mock.calls)
+      JSON.stringify([
+        client.browserPushSubscription.updateMany.mock.calls,
+        client.browserPushSubscription.create.mock.calls,
+      ])
     ).not.toContain("https://push.example.test");
+  });
+
+  it("reactivates only same-user browser push subscriptions", async () => {
+    const client = createMockClient();
+    client.browserPushSubscription.updateMany.mockResolvedValue({ count: 1 });
+    client.browserPushSubscription.findUnique.mockResolvedValue(
+      createBrowserPushSubscriptionFixture({ status: "ACTIVE", revokedAt: null })
+    );
+    const repository = createRepository(client);
+
+    const subscription = await repository.upsertBrowserPushSubscription({
+      userId: "user-1",
+      endpointHash: "endpoint-hash",
+      endpointCiphertext: "endpoint-ciphertext",
+      p256dhCiphertext: "p256dh-ciphertext",
+      authCiphertext: "auth-ciphertext",
+      contentKeyVersion: "v1",
+      now: NOW,
+    });
+
+    expect(client.browserPushSubscription.updateMany).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: {
+          endpointHash: "endpoint-hash",
+          userId: "user-1",
+        },
+      })
+    );
+    expect(client.browserPushSubscription.create).not.toHaveBeenCalled();
+    expect(subscription.userId).toBe("user-1");
+  });
+
+  it("finds browser push subscription by endpoint hash", async () => {
+    const client = createMockClient();
+    client.browserPushSubscription.findUnique.mockResolvedValue(
+      createBrowserPushSubscriptionFixture()
+    );
+    const repository = createRepository(client);
+
+    const subscription =
+      await repository.findBrowserPushSubscriptionByEndpointHash("endpoint-hash");
+
+    expect(client.browserPushSubscription.findUnique).toHaveBeenCalledWith({
+      where: { endpointHash: "endpoint-hash" },
+    });
+    expect(subscription?.id).toBe("subscription-1");
   });
 
   it("finds and revokes browser push subscription with user ownership", async () => {
@@ -304,7 +399,9 @@ function createMockModel<TRecord>(): MockModel<TRecord> {
   };
 }
 
-function createNotificationFixture(): NotificationFixture {
+function createNotificationFixture(
+  input: Partial<NotificationFixture> = {}
+): NotificationFixture {
   return {
     id: "notification-1",
     userId: "user-1",
@@ -325,6 +422,7 @@ function createNotificationFixture(): NotificationFixture {
     metadataJson: { safe: true },
     createdAt: NOW,
     updatedAt: NOW,
+    ...input,
   };
 }
 

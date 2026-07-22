@@ -1,7 +1,11 @@
 import { Module } from "@nestjs/common";
 import { ConfigModule } from "@nestjs/config";
+import { AuthModule } from "@/modules/auth/infrastructure/auth.module";
+import { NotificationApplicationService } from "@/modules/notification/application/services/notification-application.service";
+import { NotificationController } from "@/modules/notification/presentation/http/notification.controller";
 import { BROWSER_PUSH_SUBSCRIPTION_ENCRYPTION_PORT } from "@/modules/notification/application/ports/browser-push-subscription-encryption.port";
 import { NOTIFICATION_REPOSITORY } from "@/modules/notification/application/ports/notification.repository";
+import { AppLogger } from "@/shared/infrastructure/logger/app-logger.service";
 import { PrismaInfrastructureModule } from "@/shared/infrastructure/prisma/prisma-infrastructure.module";
 import { PrismaService } from "@/shared/infrastructure/prisma/prisma.service";
 import { PrismaNotificationRepository } from "./persistence/prisma-notification.repository";
@@ -9,8 +13,11 @@ import { NodeBrowserPushSubscriptionEncryptionService } from "./security/node-br
 
 // 역할 : NotificationModule 알림 기반 provider 의존성을 조립합니다.
 @Module({
-  imports: [ConfigModule, PrismaInfrastructureModule],
+  imports: [AuthModule, ConfigModule, PrismaInfrastructureModule],
+  controllers: [NotificationController],
   providers: [
+    NotificationApplicationService,
+    AppLogger,
     NodeBrowserPushSubscriptionEncryptionService,
     {
       provide: NOTIFICATION_REPOSITORY,
@@ -24,6 +31,10 @@ import { NodeBrowserPushSubscriptionEncryptionService } from "./security/node-br
       useExisting: NodeBrowserPushSubscriptionEncryptionService,
     },
   ],
-  exports: [NOTIFICATION_REPOSITORY, BROWSER_PUSH_SUBSCRIPTION_ENCRYPTION_PORT],
+  exports: [
+    NotificationApplicationService,
+    NOTIFICATION_REPOSITORY,
+    BROWSER_PUSH_SUBSCRIPTION_ENCRYPTION_PORT,
+  ],
 })
 export class NotificationModule {}
