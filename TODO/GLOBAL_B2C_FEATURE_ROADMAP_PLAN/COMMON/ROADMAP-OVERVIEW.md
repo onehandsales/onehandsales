@@ -23,6 +23,8 @@
 
 단, 기능 먼저 만든다는 것은 화면만 임시로 붙인다는 뜻이 아니다. 각 기능은 Backend/API/DB/FE 상태 관리가 이후 UX/UI 제품화 QA에서 유지보수 가능한 형태로 남아야 한다.
 
+Product UX first-sale gate는 전체 시각 polish와 다르다. 핵심 `/app` 업무 흐름이 첫 판매 가능한 수준인지 확인하는 gate이며, 01~10 기능 closeout 이후 첫 판매 전 별도로 닫는다.
+
 제품 방향은 Notion식 작업공간 UX, Attio식 CRM record 관계 UX, 사용자가 설정 없이 바로 쓰는 편의성을 기준으로 한다.
 
 적용 원칙:
@@ -37,6 +39,7 @@
 
 | 단계 | 포함 폴더 | 목적 |
 |---|---|---|
+| First-sale 선행/횡단 gate | 전체 | `NBA-014`, Product UX, Trust/policy, `NBA-007`은 번호 순서와 별개로 추적 |
 | 기능 신뢰 기반 | 01 | Done: Import 중 유실 같은 데이터 신뢰 문제 제거 |
 | 리텐션/일정 루프 | 02~05 | 알림, 주간 보고서, Calendar, AI 리포트로 반복 사용 이유 만들기 |
 | 영업 기록 고도화 | 06~07 | 딜 활동과 회의록 AI 운영 이력을 실제 영업 판단 데이터로 만들기 |
@@ -59,21 +62,37 @@
 11. `11_ADMIN_OPERATION`
 12. `12_BILLING_SUBSCRIPTION_TAX`
 
-## 4. 순서 변경 원칙
+## 4. 선행/횡단 Gate
+
+아래 항목은 11~12 상세 구현에 연결되더라도 첫 판매 전 gate로 별도 추적한다.
+
+| Gate | 실행 순서 기준 |
+|---|---|
+| `NBA-014` DB/Prisma 운영 gate | 신규 Prisma migration이 있는 goal 착수 전마다 확인한다. 11까지 미루지 않는다. |
+| Product UX first-sale gate | 01~10 주요 기능 closeout 이후, 첫 판매 전 별도 QA checklist로 닫는다. |
+| Trust/policy first-sale gate | 03/11/12에 흩어진 export/delete/retention/billing/policy를 첫 판매 전 하나의 gate로 닫는다. |
+| `NBA-007` Trash private memo response gate | 11 Trash/삭제 정책의 일부지만 private memo 원문 제한은 독립 보안 체크로 둔다. |
+
+상세 기준은 `COMMON/FIRST-SALE-GATE-MAP.md`를 따른다.
+
+## 5. 순서 변경 원칙
 
 - 사용자 결정이 있으면 순서를 바꿀 수 있다.
 - 순서를 바꿀 때는 `COMMON/DECISION-LOG.md`에 이유를 남긴다.
 - 앞 번호 기능의 DB/API가 뒤 번호 기능의 전제가 되면 앞 번호를 먼저 끝낸다.
-- Admin과 결제/구독/세금은 명시적 사용자 결정 전까지 11~12로 유지한다.
+- Admin과 결제/구독/세금 상세 구현은 명시적 사용자 결정 전까지 11~12로 유지한다.
+- 단, `NBA-014` DB/Prisma 운영 gate와 Trust/policy first-sale gate는 11~12 순서를 기다리지 않는다.
 
-## 5. Coverage 원칙
+## 6. Coverage 원칙
 
 - 모든 기능 후보는 `COMMON/COVERAGE-MATRIX.md`에서 01~12 슬롯 중 하나 이상에 배정한다.
 - 검색/필터, ExportJob, Trash 정책, BusinessCard OCR 고도화처럼 독립 번호가 없는 기능도 matrix의 배정 슬롯에서 반드시 검토한다.
 - 한 기능이 제품 화면과 운영 정책에 모두 걸리면 두 슬롯에 나눠 기록한다.
+- first-sale gate 항목은 포함 슬롯과 별개로 `COMMON/FIRST-SALE-GATE-MAP.md`에도 연결한다.
 
-## 6. UX/UI 처리 원칙
+## 7. UX/UI 처리 원칙
 
 - 각 기능은 최소 작동 화면과 상태 처리를 포함한다.
 - 전체 시각 polish, 밀도, 문구, 모바일 polish는 후반 UX/UI 계획으로 따로 묶는다.
+- Product UX first-sale gate는 polish가 아니라 판매 가능한 업무 흐름 검증이다.
 - FE가 API 응답에 없는 summary/count/latest 정보를 사실처럼 꾸미지 않는다.

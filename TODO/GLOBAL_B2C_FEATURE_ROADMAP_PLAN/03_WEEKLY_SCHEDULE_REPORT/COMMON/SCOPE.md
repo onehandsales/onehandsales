@@ -12,6 +12,7 @@
 | route 노출 | `/app/schedules/week` redirect 해제 |
 | AI 리포트 준비 | 05 AI 주간 영업 리포트가 재사용할 데이터 구조 고려 |
 | 범용 ExportJob | `/app/export`, `/api/exports`, job 상태, 다운로드, 민감정보 포함 정책 후보 |
+| Export trust/policy gate | 파일 보관/삭제, 다운로드 권한, 민감정보 포함/제외 정책 |
 | 일정/회의록 export | 기존 회사/담당자/제품/딜 xlsx 이후 일정/회의록 export 확장 |
 | 반복 일정 | 정식 repeat rule은 03에서 제외하고 API 계약 확장성만 검토 |
 
@@ -30,6 +31,7 @@
 - timezone이 바뀌면 기존 보고서 snapshot을 유지할지 실시간 계산할지?
 - 범용 ExportJob은 가벼운 기반만 03에 포함하고 대용량 worker는 별도 `/goal`로 분리한다.
 - 민감 데이터 포함 export는 11 운영/보안 정책과 어떤 순서로 맞출지?
+- export retention, 다운로드 권한, 민감정보 포함/제외는 `COMMON/FIRST-SALE-GATE-MAP.md`의 Trust/policy first-sale gate와 맞춘다.
 - 반복 일정 정식 모델은 03에서 제외하고, 추후 occurrence 확장이 가능하도록 보고서 계약을 점검한다.
 
 ## 완료 기준 초안
@@ -39,4 +41,5 @@
 - 파일 export가 Excel 1차 형식으로 동작한다.
 - 사용자 소유 일정만 포함된다.
 - 범용 ExportJob의 가벼운 기반과 대용량 worker 분리 기준이 문서화되어 있다.
+- export retention, 다운로드 권한, 민감정보 포함/제외 정책이 Trust/policy first-sale gate와 연결되어 있다.
 - 반복 일정 정식 구현 제외와 후속 시점이 문서화되어 있다.

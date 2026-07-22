@@ -12,10 +12,11 @@
 | 원문 조회 사유 | 민감 원문 조회 시 reason과 audit |
 | Provider failure | AI/OCR/Calendar/Push 실패 확인 |
 | Trash/삭제 정책 | 만료, purge, 복구 불가, 유료 복구 후보 |
+| Trash private memo response restriction | `NBA-007`. Trash list/detail/restore 관련 Backend response에서 private memo 원문 제한 |
 | 계정 삭제/데이터 삭제 | 사용자 요청 기반 삭제 정책과 API 후보 |
 | 사용자 데이터 export 정책 | 자기 데이터 export, 민감정보 포함/제외 정책 |
 | 자동 민감정보 감지 | 회의록, 메모, export, Admin 원문 조회와 연결 |
-| DB/Prisma/migration gate | migration status, seed 정책, 배포 DB 정합성 |
+| DB/Prisma/migration gate | `NBA-014`. migration status, seed 정책, 배포 DB 정합성. 신규 migration goal에서는 11 이전에도 선행 체크 |
 | Backup/restore | 데이터 복구, 장애 대응, 운영 절차 |
 | Provider failure log | OpenAI/OCR/STT/Calendar/Push 장애 추적 |
 
@@ -34,6 +35,7 @@
 - Admin 조회 가능 도메인은 사용자와 핵심 domain data의 read-only 범위로 시작한다.
 - audit log는 raw 조회와 주요 운영 action을 필수 대상으로 둔다.
 - Trash 보관 기간과 purge 시점을 7일/30일 중 무엇으로 볼지?
+- Trash list/detail response에서 private memo 원문을 어느 시점까지 제한할지?
 - 사용자가 자기 계정과 데이터를 삭제할 수 있어야 하는 범위는?
 - 사용자 데이터 export는 03 ExportJob을 재사용할지 별도 privacy export로 둘지?
 - DB/Prisma gate는 배포 전 수동 checklist인지 자동 smoke인지?
@@ -46,5 +48,6 @@
 - 원문 조회는 사유와 audit log가 필요하다.
 - User Web이 Admin API를 호출할 수 없다.
 - Trash/삭제/계정 삭제/데이터 export 정책이 문서화된다.
-- DB/Prisma/migration gate와 backup/restore 기준이 문서화된다.
+- Trash private memo backend response restriction 기준과 test 범위가 문서화된다.
+- DB/Prisma/migration gate와 backup/restore 기준이 문서화된다. 단 신규 migration goal의 선행 체크는 11 전에도 수행된다.
 - provider failure log가 사용자 메시지와 분리된다.

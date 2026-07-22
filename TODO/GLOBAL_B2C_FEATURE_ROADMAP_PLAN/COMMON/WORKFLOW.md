@@ -8,12 +8,14 @@
 
 1. `COMMON/REFERENCES.md`의 참조 문서를 다시 읽는다.
 2. 상위 `COMMON/DECISION-LOG.md`에서 해당 슬롯의 추천 결정을 확인한다.
-3. `COMMON/SCOPE.md`에서 포함/제외 범위를 확정한다.
-4. `FE-TODO/USER-WEB-TODO.md`에서 화면, route, client, 상태 처리를 확정한다.
-5. `BE-TODO/API-TODO.md`에서 API 계약 초안을 작성한다.
-6. `BE-TODO/DB-SCHEMA.md`에서 DB 변경 여부와 migration 필요성을 확정한다.
-7. 구현 가능하면 별도 `/goal` 문서로 쪼갠다.
-8. 구현 후 검증 결과와 남은 항목을 해당 번호 폴더에 다시 기록한다.
+3. 상위 `COMMON/FIRST-SALE-GATE-MAP.md`에서 선행/횡단 gate 영향 여부를 확인한다.
+4. `COMMON/SCOPE.md`에서 포함/제외 범위를 확정한다.
+5. `FE-TODO/USER-WEB-TODO.md`에서 화면, route, client, 상태 처리를 확정한다.
+6. `BE-TODO/API-TODO.md`에서 API 계약 초안을 작성한다.
+7. `BE-TODO/DB-SCHEMA.md`에서 DB 변경 여부와 migration 필요성을 확정한다.
+8. 신규 migration이 있으면 `NBA-014` DB/Prisma 운영 gate 체크를 goal spec의 선행 조건에 넣는다.
+9. 구현 가능하면 별도 `/goal` 문서로 쪼갠다.
+10. 구현 후 검증 결과와 남은 항목을 해당 번호 폴더에 다시 기록한다.
 
 ## 2. 구현 전 체크
 
@@ -21,8 +23,11 @@
 |---|---|
 | API 계약 | method/path/request/response/error/business logic/transaction/observability가 있어야 한다. |
 | DB 계약 | model/relation/index/retention/rollback/migration 영향이 있어야 한다. |
+| DB/Prisma gate | 신규 migration, generate, seed, 운영성 DB 영향이 있으면 `NBA-014` 체크가 있어야 한다. |
 | FE 계약 | route, 화면 상태, TanStack Query key, invalidation, empty/error/loading이 있어야 한다. |
 | 제품 결정 | `DECISION-LOG.md`의 추천 결정과 충돌하지 않거나, 변경 이유가 해당 슬롯에 기록되어야 한다. |
+| Product UX first-sale gate | 핵심 `/app` 업무 흐름을 바꾸면 첫 판매 전 제품화 QA 영향이 기록되어야 한다. |
+| Trust/policy first-sale gate | Trash/export/delete/retention/billing/policy를 바꾸면 첫 판매 전 정책 gate 영향이 기록되어야 한다. |
 | 보안 | user ownership, 민감정보, provider error redaction을 확인한다. |
 | 검증 | BE test, FE type/lint/build/E2E 또는 수동 QA 범위를 적는다. |
 
@@ -36,6 +41,7 @@
 - API/DB가 있으면 계약 상태가 최소 `confirmed`다.
 - FE/BE 작업 순서가 독립적으로 실행 가능하다.
 - 외부 provider가 있으면 port/interface, env, 실패 처리, smoke 기준이 있다.
+- first-sale gate 영향이 있으면 goal spec에 `COMMON/FIRST-SALE-GATE-MAP.md` 참조와 선행 체크가 있다.
 - 완료 기준과 검증 명령이 있다.
 
 ## 4. 완료 후 처리

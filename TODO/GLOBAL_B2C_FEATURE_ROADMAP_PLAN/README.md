@@ -2,7 +2,7 @@
 
 상태: Draft Roadmap
 작성일: 2026-07-20
-성격: 기능 선구현 로드맵 슬롯
+성격: 기능 선구현 로드맵 슬롯 + Global B2C first-sale gate 추적
 
 ## 0. 완료 현황
 
@@ -25,11 +25,26 @@
 
 이 문서는 바로 구현하는 `/goal` 문서가 아니다. 각 번호 폴더는 착수 전 검토 슬롯이며, 실제 작업은 해당 번호 폴더 안의 문서를 보강하고 검수한 뒤 별도 `/goal`로 전환한다.
 
+## 1.1 First-sale 선행 Gate
+
+`TODO/NEXT_BACKEND_API_BACKLOG_PLAN`과 `TODO/USER_WEB_PRODUCTIZATION_GAP_PLAN`은 최종 방향의 기준 문서다. 따라서 아래 항목은 01~12 번호 순서와 별개로 Global B2C 첫 판매 전 gate로 추적한다.
+
+| Gate | 기준 | 적용 방식 |
+|---|---|---|
+| DB/Prisma 운영 gate | `NBA-014`, `RQA-005` release blocker | 신규 migration이 있는 goal마다 선행 체크한다. 상세 운영 closeout은 11에서 다루지만 11까지 미루지 않는다. |
+| Product UX first-sale gate | 핵심 `/app` 업무 흐름 제품화 QA | 전체 시각 polish와 분리한다. 회사, 담당자, 제품, 딜, 일정, 회의록, 명함, import, search, trash, export 흐름은 첫 판매 전 필수 검토한다. |
+| Trust/policy first-sale gate | 약관, 개인정보, 보안, 환불, 계정 삭제, 데이터 export/delete, 보관 기간 | 03, 11, 12에 흩어진 구현을 첫 판매 전 하나의 체크리스트로 닫는다. |
+| Trash private memo response gate | `NBA-007` | Trash/삭제 정책 안에 묻지 않고 Backend response에서 private memo 원문 제한 여부를 독립 확인한다. |
+
+상세 기준은 `COMMON/FIRST-SALE-GATE-MAP.md`를 따른다.
+
 ## 2. 사용자 결정
 
 - 기능을 먼저 만든다.
 - UX/UI 전체 polish는 기능이 어느 정도 갖춰진 뒤 한 번에 잡는다.
-- Admin 운영과 구독/결제/세금은 마지막 묶음으로 둔다.
+- 단, Product UX first-sale gate는 polish가 아니다. 핵심 업무 흐름이 첫 판매 가능한 수준인지 기능별 closeout과 별도 gate에서 검토한다.
+- Admin 운영과 구독/결제/세금 상세 구현은 마지막 묶음으로 둔다.
+- 단, `NBA-014` DB/Prisma 운영 gate와 Trust/policy first-sale gate는 11~12까지 미루지 않고 관련 goal마다 선행/병행 확인한다.
 - 01 작업을 시작할 때는 01 폴더 안에 추가 문서를 작성하고 검수/검토한 뒤 진행한다.
 - 01이 끝난 뒤 02로 넘어가는 순차 흐름을 기본으로 한다.
 - 12개 슬롯의 추천 의사결정은 `COMMON/DECISION-LOG.md`를 기본값으로 삼는다.
@@ -49,8 +64,8 @@
 | 08 | `08_GLOBAL_DATA_I18N` | 다국가 데이터 모델과 `/app` 다국어 | Global B2C 제품화 |
 | 09 | `09_PRODUCT_ANALYTICS` | 제품 분석 | 판매 후 판단 기반 |
 | 10 | `10_MOBILE_PWA_FIELD_USE` | 모바일/PWA/현장 사용성 | Series A급 현장성 |
-| 11 | `11_ADMIN_OPERATION` | Admin 운영 | 마지막 운영 묶음 |
-| 12 | `12_BILLING_SUBSCRIPTION_TAX` | 결제/구독/세금 | 마지막 판매 묶음 |
+| 11 | `11_ADMIN_OPERATION` | Admin 운영 | 상세 구현은 마지막 운영 묶음. 단 DB/Prisma gate, Trust/policy, Trash private memo는 first-sale gate로 선행 추적 |
+| 12 | `12_BILLING_SUBSCRIPTION_TAX` | 결제/구독/세금 | 상세 구현은 마지막 판매 묶음. 단 환불/약관/세금 정책은 Trust/policy gate와 연결 |
 
 ## 4. 문서 구성
 
@@ -59,6 +74,7 @@
 - `COMMON/REFERENCE-MAP.md`: 전체 참조 문서와 번호별 연결 문서
 - `COMMON/COVERAGE-MATRIX.md`: 앞으로 만들 모든 기능 후보를 01~12 슬롯에 배정한 표
 - `COMMON/DECISION-LOG.md`: 이 로드맵에서 확정한 결정 기록
+- `COMMON/FIRST-SALE-GATE-MAP.md`: `NBA-014`, Product UX, Trust/policy, `NBA-007`의 first-sale gate 반영 기준
 - `01_*` ~ `12_*`: 각 기능 슬롯별 착수 전 검토 문서
 
 각 번호 폴더는 다음 구조를 가진다.
@@ -81,11 +97,13 @@
 1. 번호 폴더는 현재 `draft slot` 상태다.
 2. 구현 전에 `COMMON/DECISION-LOG.md`에서 해당 슬롯의 추천 결정을 확인한다.
 3. `COMMON/COVERAGE-MATRIX.md`에서 해당 번호에 배정된 하위 기능을 모두 확인한다.
-4. 해당 번호 폴더의 `COMMON/SCOPE.md`를 보강한다.
-5. API/DB가 있으면 `BE-TODO/API-TODO.md`, `BE-TODO/DB-SCHEMA.md`를 `draft`에서 `confirmed` 수준으로 올린다.
-6. FE 작업이 있으면 `FE-TODO/USER-WEB-TODO.md`에 화면, route, 상태, client, 검증 기준을 적는다.
-7. 검수/검토가 끝나면 별도 `/goal` 문서로 쪼개 실행한다.
-8. UX/UI 전체 polish는 01~10의 주요 기능 흐름이 나온 뒤 별도 계획으로 잡는다.
+4. `COMMON/FIRST-SALE-GATE-MAP.md`에서 해당 슬롯이 건드리는 first-sale gate가 있는지 확인한다.
+5. 해당 번호 폴더의 `COMMON/SCOPE.md`를 보강한다.
+6. API/DB가 있으면 `BE-TODO/API-TODO.md`, `BE-TODO/DB-SCHEMA.md`를 `draft`에서 `confirmed` 수준으로 올린다.
+7. 신규 Prisma migration이 있으면 `NBA-014` DB/Prisma 운영 gate 체크를 `/goal` 착수 전 선행 조건으로 둔다.
+8. FE 작업이 있으면 `FE-TODO/USER-WEB-TODO.md`에 화면, route, 상태, client, 검증 기준을 적는다.
+9. 검수/검토가 끝나면 별도 `/goal` 문서로 쪼개 실행한다.
+10. UX/UI 전체 polish는 01~10의 주요 기능 흐름이 나온 뒤 별도 계획으로 잡되, Product UX first-sale gate는 첫 판매 전 별도 closeout으로 닫는다.
 
 ## 6. 먼저 읽을 문서
 
@@ -93,6 +111,7 @@
 - `TODO/USER_WEB_PRODUCTIZATION_GAP_PLAN/COMMON/CURRENT-VS-FINAL-GAP-MATRIX.md`
 - `TODO/USER_WEB_PRODUCTIZATION_GAP_PLAN/COMMON/CURRENT-IMPLEMENTED-FUNCTIONS.md`
 - `TODO/NEXT_BACKEND_API_BACKLOG_PLAN/COMMON/CANDIDATE-MATRIX.md`
+- `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/COMMON/FIRST-SALE-GATE-MAP.md`
 - `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/COMMON/DECISION-LOG.md`
 - `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/COMMON/COVERAGE-MATRIX.md`
 - `TODO/DONE/MVP-STARTER_PLAN/README.md`

@@ -27,6 +27,7 @@ Global B2C 실제 판매를 위해 가격/플랜, trial, paywall, 구독 상태,
 - AI 사용량 limit은 plan에 포함한다.
 - 가격 수치는 PRD의 월 5,900~6,900원 가설을 출발점으로 둔다.
 - failed payment grace period, refund, chargeback, invoice/tax 정책은 11 Admin 운영과 연결한다.
+- 약관, 개인정보, 환불, 세금, invoice, chargeback은 Trust/policy first-sale gate와 연결한다.
 
 1. Merchant of Record를 우선 검토하고 Stripe 직접 결제는 2순위로 둔다.
 2. 가격 수치는 PRD의 월 5,900~6,900원 가설을 출발점으로 두고, provider 수수료/세금 반영 후 12 confirmed 문서에서 확정한다.
@@ -34,9 +35,11 @@ Global B2C 실제 판매를 위해 가격/플랜, trial, paywall, 구독 상태,
 4. paywall/upgrade는 첫 판매 기본 흐름에 포함하고, coupon/referral/churn survey는 09 분석 실험과 연결해 1차 포함 범위를 정한다.
 5. 환불, chargeback, failed payment recovery, invoice/tax 운영 범위를 정한다.
 6. Admin 운영 범위와 연결한다.
+7. 결제/세금/환불 정책이 `COMMON/FIRST-SALE-GATE-MAP.md`의 Trust/policy gate와 충돌하지 않는지 확인한다.
 
 ## 4. 참고
 
 - `COMMON/REFERENCES.md`
+- `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/COMMON/FIRST-SALE-GATE-MAP.md`
 - `TODO/USER_WEB_PRODUCTIZATION_GAP_PLAN/COMMON/GLOBAL-B2C-FIRST-SALE-GATE.md`
 - `AGENT/PM_AGENT/PLANNING/PRD.md`

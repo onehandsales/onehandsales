@@ -26,6 +26,7 @@
 - 파일 출력은 Excel을 먼저 구현하고 PDF는 print/export 후속으로 둔다.
 - `weekStart`와 `timeZone` 계약을 명확히 한다.
 - 범용 ExportJob은 이 슬롯에서 가벼운 기반을 잡되 대용량 worker는 별도 goal로 분리한다.
+- ExportJob, 다운로드, 파일 보관/삭제는 Trust/policy first-sale gate와 연결한다.
 
 1. 주간 보고서와 기존 주간 calendar view의 차이를 확정한다.
 2. weekStart/timezone 계약을 확정한다.
@@ -33,8 +34,10 @@
 4. AI 주간 영업 리포트와의 데이터 연결 가능성을 남긴다.
 5. 범용 ExportJob은 가벼운 기반만 이 슬롯에 포함하고, 대용량 worker는 별도 실행 계획으로 분리한다.
 6. 반복 일정 정식 모델은 이 슬롯에서 제외하고, 추후 occurrence 확장이 가능하도록 API 계약만 점검한다.
+7. export retention, 민감정보 포함/제외, 다운로드 권한, 파일 삭제 정책이 `COMMON/FIRST-SALE-GATE-MAP.md`의 Trust/policy gate와 충돌하지 않는지 확인한다.
 
 ## 4. 참고
 
 - `COMMON/REFERENCES.md`
+- `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/COMMON/FIRST-SALE-GATE-MAP.md`
 - `TODO/NEXT_BACKEND_API_BACKLOG_PLAN/COMMON/CANDIDATE-MATRIX.md` NBA-009

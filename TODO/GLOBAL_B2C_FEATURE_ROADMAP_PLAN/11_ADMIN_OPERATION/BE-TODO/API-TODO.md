@@ -13,6 +13,7 @@
 | `POST` | `/admin/api/*/sensitive/raw` | 민감 원문 조회 후보 |
 | `GET` | `/admin/api/audit-logs` | 감사 로그 조회 |
 | 후보 | `/admin/api/trash/*` | 만료/purge/복구 운영 후보 |
+| 후보 | `/api/trash/*` | `NBA-007` private memo response restriction 반영 후보 |
 | 후보 | `/api/users/me/data-export` | 사용자 자기 데이터 export 요청 |
 | 후보 | `/api/users/me/delete-account` | 계정 삭제 요청 |
 | 후보 | `/admin/api/provider-failures` | provider 실패 조회 |
@@ -29,5 +30,6 @@
 - irreversible delete 확인값
 - account deletion business flow
 - data export privacy contract
+- Trash private memo response redaction contract
 - provider failure log redaction
 - DB/migration/backup observability

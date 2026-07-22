@@ -6,6 +6,7 @@
 
 - [x] 01 `ImportJob 영속화`: Done (2026-07-21)
 - [x] `NBA-006 ImportJob persistence/resume API`: `01_IMPORT_JOB_PERSISTENCE`에서 구현 및 QA closeout 완료
+- [x] First-sale gate 반영: `NBA-014`, Product UX gate, Trust/policy gate, `NBA-007`은 `COMMON/FIRST-SALE-GATE-MAP.md`에 선행/횡단 기준으로 고정
 
 ## 1. 목적
 
@@ -17,12 +18,18 @@
 
 | 분류 | 기능 | 포함 슬롯 | 비고 |
 |---|---|---|---|
+| First-sale gate | DB/Prisma/migration 운영 gate | 선행 gate, 11 | `NBA-014`, `RQA-005` release blocker. 신규 migration goal마다 선행 체크하고 상세 closeout은 11 |
+| First-sale gate | Product UX first-sale QA | 01~10 closeout, 선행 gate | 회사/담당자/제품/딜/일정/회의록/명함/import/search/trash/export 업무 흐름 검토 |
+| First-sale gate | Trust/policy first-sale QA | 03, 11, 12, 선행 gate | 약관, 개인정보, 보안, 환불, 계정 삭제, 데이터 export/delete, retention |
+| First-sale gate | Trash private memo backend response restriction | 11, 선행 gate | `NBA-007`. FE 숨김이 아니라 Backend response 원문 제한 여부를 독립 확인 |
 | Import/Data | ImportJob 영속화 | 01 | Done: 확정 전 job, preview row, TTL, resume 구현 완료 |
 | Import/Data | Import 원본/preview 보관 정책 | 01 | Done: 개인정보와 cleanup 기준 포함 |
 | Import/Data | Import/Export 파일 저장 기반 | 01, 03 | Import 파일은 01, Export job/file은 03 |
-| Notification | In-app notification | 02 | 목록, 읽음, unread count |
-| Notification | Email/browser push | 02 | delivery worker, settings, provider failure |
-| Notification | 일정/딜/다음 행동/회의록 reminder | 02 | retention loop |
+| Notification | In-app notification | 02 | Confirmed: 목록, 읽음, unread count |
+| Notification | Email/browser push | 02 | Confirmed: 02 1차 채널에 email/browser push 포함. delivery attempt, settings, provider failure |
+| Notification | 일정/딜 reminder | 02 | Confirmed: 일정 시작 30분 전, 딜 마감 1일 전 오전 9시 |
+| Notification | 다음 행동 reminder | 06 | 02에서 제외. 딜 데이터 구조 변경 가능성이 있어 DealActivity/다음 행동 고도화에서 설계 |
+| Notification | 회의록 후속 reminder | 07 | 02에서 제외. MeetingNote AI/provider log와 follow-up 후보 설계에서 검토 |
 | Schedule | 주간 일정 보고서 | 03 | `/app/schedules/week`, weekStart/timezone |
 | Schedule | 주간 보고서 PDF/Excel | 03 | 화면 보고서 + Excel 1차, PDF 후속 |
 | Schedule | 범용 ExportJob / 비동기 Export | 03 | `/app/export`, `/api/exports`, 대용량 export 기반 |
@@ -66,11 +73,12 @@
 | Mobile | native push/contact/calendar | 10 | native app 이후 |
 | Ops/Admin | Admin 사용자/도메인 조회 | 11 | 운영 콘솔 |
 | Ops/Admin | 민감정보 마스킹/원문 조회 사유/audit | 11 | Admin 필수 |
-| Ops/Admin | Trash/삭제 정책 고도화 | 11 | 만료, purge, 복구 불가, 유료 복구 후보 |
+| Ops/Admin | Trash/삭제 정책 고도화 | 11 | `NBA-012`. 만료, purge, 복구 불가, 유료 복구 후보 |
+| Ops/Admin | Trash private memo backend response restriction | 11 | `NBA-007`. private memo 원문 미노출은 Trash 정책과 별도 보안 체크 |
 | Ops/Admin | 계정 삭제/데이터 삭제 | 11 | trust/policy/API |
 | Ops/Admin | 사용자 데이터 export 정책 | 11, 03 | 정책은 11, 파일 job은 03 |
 | Ops/Admin | 자동 민감정보 감지 | 11 | export/admin/meeting note와 연결 |
-| Ops/Admin | DB/Prisma/migration 운영 gate | 11 | NBA-014 |
+| Ops/Admin | DB/Prisma/migration 운영 gate | 선행 gate, 11 | `NBA-014`. 11 상세 구현 전에도 migration goal마다 체크 |
 | Ops/Admin | backup/restore/장애 대응 | 11 | 운영 신뢰 |
 | Ops/Admin | Provider failure log | 11 | OpenAI/OCR/STT/Calendar/Push |
 | Billing | Pricing/plan/trial | 12 | 첫 판매 전 결정 |

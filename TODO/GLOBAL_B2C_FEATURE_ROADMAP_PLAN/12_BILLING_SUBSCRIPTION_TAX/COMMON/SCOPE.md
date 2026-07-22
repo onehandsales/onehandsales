@@ -15,6 +15,7 @@
 | Webhook | 결제 상태 동기화 |
 | Failed payment recovery | 결제 실패, 카드 만료, grace period, 기능 제한 전환 |
 | Refund/chargeback | 환불 요청, chargeback 상태, Admin 처리 기준 |
+| Billing trust/policy gate | 약관, 개인정보, 환불, 세금, invoice, chargeback 정책 |
 | Coupon/referral | 첫 판매 이후 growth 실험에 필요한 할인/추천 코드 기반 |
 | Churn survey | cancel 또는 plan downgrade 시 해지 사유 수집 |
 | Billing Admin sync | 11 Admin 운영 화면과 구독/결제 상태를 연결 |
@@ -37,6 +38,7 @@
 - cancel/downgrade 시 churn survey는 09 churn 분석과 연결해 필수/선택 여부를 정한다.
 - 결제 실패 후 grace period와 기능 제한 전환 시점은?
 - refund/chargeback 운영을 Admin에서 어디까지 처리할지?
+- 결제/세금/환불 정책이 `COMMON/FIRST-SALE-GATE-MAP.md`의 Trust/policy first-sale gate와 맞는지?
 
 ## 완료 기준 초안
 
@@ -44,5 +46,6 @@
 - 결제 provider webhook으로 subscription 상태가 동기화된다.
 - entitlement가 API와 FE에 반영된다.
 - 세금/환불/인보이스 정책이 판매 국가와 맞다.
+- 약관, 개인정보, 환불, 세금, invoice, chargeback 정책이 Trust/policy first-sale gate와 연결되어 있다.
 - paywall/upgrade/cancel/churn survey 흐름이 제품 분석 이벤트와 연결된다.
 - coupon/referral/failed payment recovery의 1차 포함 여부가 명확하다.
