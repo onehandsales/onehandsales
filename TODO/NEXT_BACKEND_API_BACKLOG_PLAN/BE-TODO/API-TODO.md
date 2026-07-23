@@ -7,12 +7,13 @@
 - [x] `NBA-006 ImportJob persistence/resume API`: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/01_IMPORT_JOB_PERSISTENCE`에서 구현 및 QA closeout 완료
 - [x] `NBA-009 Schedule week report`: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/03_WEEKLY_SCHEDULE_REPORT`에서 구현 및 QA closeout 완료
 - [x] `NBA-010 Notification`: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/02_NOTIFICATION_REMINDER`에서 구현 및 QA closeout 완료
+- [x] `NBA-015 Google Calendar Integration`: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/04_GOOGLE_CALENDAR_INTEGRATION`에서 구현 및 QA closeout 완료
 
 ## 1. 목적
 
 이 문서는 G07에서 분리한 Backend/API 후속 후보를 실행 가능한 다음 계획으로 만들기 전의 초안이다.
 
-이 문서에서 남은 새 API 후보는 `COMMON/API-SPEC/README.md`에서 `draft` 또는 `후보` 상태로만 관리한다. `NBA-006`, `NBA-009`, `NBA-010`은 별도 계획에서 구현 완료된 이력으로만 남긴다.
+이 문서에서 남은 새 API 후보는 `COMMON/API-SPEC/README.md`에서 `draft` 또는 `후보` 상태로만 관리한다. `NBA-006`, `NBA-009`, `NBA-010`, `NBA-015`는 별도 계획에서 구현 완료된 이력으로만 남긴다.
 
 ## 2. Release blocker 후보
 

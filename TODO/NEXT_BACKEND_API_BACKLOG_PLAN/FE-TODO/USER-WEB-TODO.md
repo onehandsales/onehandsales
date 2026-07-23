@@ -7,12 +7,13 @@
 - [x] `NBA-006 ImportJob persistence/resume API`: User Web import resume UX와 client state 구현 완료
 - [x] `NBA-009 Schedule week report`: `/app/schedules/week` 주간 보고서 UX와 Excel 다운로드 구현 완료
 - [x] `NBA-010 Notification`: `/app/notifications`, unread badge, settings, browser push fallback UX 구현 완료
+- [x] `NBA-015 Google Calendar Integration`: `/app/schedules`, `/app/settings`, `/app/trash` Google Calendar UX 구현 완료
 
 ## 1. 목적
 
 이 문서는 G07에서 분리한 Backend/API 후보가 `FE/user-web`에 미칠 수 있는 영향을 정리한다.
 
-이 문서에서 남은 User Web 후보는 future API contract가 `confirmed`된 뒤 함께 확인할 client/screen 영향만 기록한다. `NBA-006`, `NBA-009`, `NBA-010`은 별도 계획에서 구현 완료된 이력으로만 남긴다.
+이 문서에서 남은 User Web 후보는 future API contract가 `confirmed`된 뒤 함께 확인할 client/screen 영향만 기록한다. `NBA-006`, `NBA-009`, `NBA-010`, `NBA-015`는 별도 계획에서 구현 완료된 이력으로만 남긴다.
 
 ## 2. Release follow-up 영향 후보
 
@@ -32,6 +33,7 @@
 | NBA-006 | Import resume 화면과 client state | 완료: 새로고침/탭 이동 복구 UX, 만료/실패 상태, confirm/cancel 흐름 구현 |
 | NBA-009 | 완료: `/app/schedules/week` route, 주간 보고서 화면, 이전/다음/이번 주 이동, Excel 다운로드, loading/empty/error/export error 처리 | Active FE TODO에서 제외한다. PDF/범용 ExportJob, 반복 일정, AI 요약은 별도 backlog에서 다룬다. |
 | NBA-010 | Notification route/sidebar 노출 | 완료: `/app/notifications`, unread badge, settings, browser push 권한 fallback UX 구현 |
+| NBA-015 | 완료: `/app/schedules` source badge/sync/calendar hidden handling, `/app/settings` Google Calendar 연결/선택/해제, `/app/trash` Schedule restore UX 구현 | Active FE TODO에서 제외한다. Google export/write, realtime webhook/watch, 반복 일정은 별도 backlog에서 다룬다. |
 
 ## 4. Ops/security 영향 후보
 

@@ -1,7 +1,7 @@
 # Current Implemented Functions
 
 상태: Draft Guide
-기준: 2026-07-22 현재 코드와 AGENT 구현 상태 문서
+기준: 2026-07-23 현재 코드와 AGENT 구현 상태 문서
 
 ## 0. 완료 반영 체크리스트
 
@@ -16,6 +16,9 @@
 - [x] Notification list/read/settings/browser-push API
 - [x] Notification 일정/딜 reminder 생성과 delivery attempt 처리
 - [x] `/app/notifications`, unread badge, settings, browser push fallback UX
+- [x] Google Calendar OAuth connect/callback/status/calendar list/selection/sync/disconnect API
+- [x] Google Calendar read-only import, source badge, manual sync, calendar selection UX
+- [x] Schedule soft delete/Trash restore and Google-origin schedule reminder integration
 
 ## 1. 구현 완료/부분 완료 표
 
@@ -28,14 +31,14 @@
 | Contact | list/detail/create/update/delete, company/job grade/department, memo/private memo, deals, xlsx export, trash | 목록, 상세, 생성, 수정, 삭제/복구, export | N/A | 완료 |
 | Product | list/detail/create/update/delete, category/status, memo/private memo, dealCount/sort, deals, xlsx export, trash | 목록, 상세, 생성, 수정, 삭제/복구, export | N/A | 완료 |
 | Deal | list, stage counts, detail/create/update/delete, company/contact/product options, following action, memo, xlsx export, trash | pipeline/list/detail/create/update, stage tabs, linked records, next action, memo, export | N/A | 완료 |
-| Schedule | deal options, list/detail/create/update/delete, 월간/주간 조회, weekly report API, weekly xlsx export, 딜/회사/담당자/다음 행동 요약, timezone 처리 | `/app/schedules`, `/app/schedules/week`, detail, form, 월간/목록, 주간 보고서, Excel 다운로드 | N/A | 완료. 주간 일정 보고서 포함 |
+| Schedule | deal options, list/detail/create/update/delete, 월간/주간 조회, weekly report API, weekly xlsx export, Google Calendar OAuth/read-only import/sync/calendar selection/source metadata, 딜/회사/담당자/다음 행동 요약, timezone 처리 | `/app/schedules`, `/app/schedules/week`, detail, form, 월간/목록, 주간 보고서, Excel 다운로드, Google Calendar status/source badge/manual sync/calendar hidden handling | N/A | 완료. 주간 일정 보고서와 Google Calendar read-only import 포함 |
 | MeetingNote | list/detail/create/update/delete, AI draft, STT draft, add deal link, trash | 목록, 상세, 작성, AI/STT draft UI, 딜 연동, 삭제/복구 | N/A | 완료 |
 | BusinessCard OCR | `/api/business-card-scans`, scan/confirm/log/status | `/app/business-cards`, 이미지 업로드, 명함스캔, 확인/수정, 저장 | N/A | 완료 |
 | DataImport | import templates, uploads, mapping, row edit/validation, confirm, cancel, active job resume, import logs. pre-confirm job은 DB persistence | `/app/import`, `/app/import/review/:importJobId`, template download, CSV/XLSX upload, AI mapping, row edit/validation, resume, confirm, log detail | N/A | 완료. persistence/resume 포함 |
 | Search | `GET /api/search` | GlobalSearch, loading/empty/error, result navigation | N/A | 완료 |
-| Trash | `/api/trash`, detail, restore | `/app/trash`, list/detail modal/restore | N/A | 7일 이내 복구 완료 |
+| Trash | `/api/trash`, detail, restore, Schedule soft delete/restore | `/app/trash`, list/detail modal/restore, Schedule restore | N/A | 7일 이내 복구 완료. Schedule soft delete/restore 포함 |
 | Domain export | Company/Contact/Product/Deal xlsx endpoint, weekly schedule report xlsx export | 각 목록 `엑셀 다운로드`, `/app/schedules/week` Excel 다운로드 | N/A | 완료 |
-| Notification | notification list/read/settings/browser-push API, 일정/딜 reminder 생성, due processor, email/browser push delivery attempt | `/app/notifications`, unread badge, settings, browser push 권한 granted/denied/unsupported fallback | N/A | 완료. 실제 SMTP/Web Push provider smoke는 env 준비 후 운영 확인 |
+| Notification | notification list/read/settings/browser-push API, 일정/딜/Google-origin schedule reminder 생성, due processor, email/browser push delivery attempt | `/app/notifications`, unread badge, settings, browser push 권한 granted/denied/unsupported fallback | N/A | 완료. Google-origin schedule reminder 포함. 실제 SMTP/Web Push provider smoke는 env 준비 후 운영 확인 |
 | Generic ExportJob | 없음. 현재 제품 정본 아님 | `/app/export`는 `/app` redirect | N/A | 제외/후속 결정 필요 |
 | Admin operation | `/admin/api/me`만 있음 | N/A | 운영 route는 root redirect | 후속 |
 | Payment/subscription | 없음 | pricing public page는 있음 | Admin subscription route redirect | 후속 |
@@ -82,6 +85,7 @@
 - 그러나 이 MVP 상태는 판매 기준이 아니다.
 - 첫 판매 기준은 Global B2C 유료 판매 가능형이며, 현재 제품에는 결제/구독, Admin 운영, 앱 내부 다국어, 세금/컴플라이언스, 제품 분석, 운영 신뢰 계층이 아직 부족하다.
 - 주간 일정 보고서와 Excel export는 구현 완료됐으며, PDF/범용 ExportJob, 반복 일정, AI 요약은 후속 확장 범위다.
+- Google Calendar read-only import/sync/calendar selection/source badge/Trash restore는 구현 완료됐다. export/write/realtime webhook/watch/반복 일정/여러 Google 계정 동시 연결은 후속 확장 범위다.
 - 일정/딜 reminder 기반 Notification은 구현 완료됐지만, 실제 SMTP/Web Push provider smoke는 env 준비 후 운영 확인 단계에서 실행한다.
 - 제품화 gap은 "API가 없어서 화면을 못 만든다"보다 "현재 핵심 루프를 Global B2C 첫 판매 gate까지 어떤 순서로 끌어올릴지"에 가깝다.
 - 따라서 다음 계획은 MVP 기능 추가 목록이 아니라 Global B2C 첫 판매 기준 대비 gap을 먼저 정리해야 한다.

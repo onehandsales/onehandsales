@@ -7,10 +7,11 @@
 - [x] `NBA-006 ImportJob persistence/resume API`: ImportJob/ImportJobRow/ImportJobError/ImportUploadedFile DB persistence 구현 완료
 - [x] `NBA-009 Schedule week report`: 새 DB/migration 없이 기존 `User`, `Schedule`, `ScheduleDeal`, `Deal`, `DealCompany`, `DealContact`, `Company`, `Contact`, `DealFollowingActionLog` runtime aggregation으로 구현 완료
 - [x] `NBA-010 Notification`: Notification/UserNotificationSetting/NotificationDeliveryAttempt/BrowserPushSubscription DB persistence 구현 완료
+- [x] `NBA-015 Google Calendar Integration`: ExternalCalendarConnection/ExternalCalendarSource, Schedule Google metadata, soft delete/trash fields, sync lock/status DB persistence 구현 완료
 
 ## 1. 현재 DB 변경 상태
 
-이 계획 후보에서 남은 후보 중 새로 확정된 Prisma schema 변경은 없다. `NBA-006`, `NBA-009`, `NBA-010`은 별도 계획에서 구현 완료된 이력으로만 남긴다.
+이 계획 후보에서 남은 후보 중 새로 확정된 Prisma schema 변경은 없다. `NBA-006`, `NBA-009`, `NBA-010`, `NBA-015`는 별도 계획에서 구현 완료된 이력으로만 남긴다.
 
 실제 source of truth는 `BE/prisma/schema.prisma`와 migration 파일이다. 이 문서는 G07에서 분리된 후보의 DB/migration 가능성만 기록한다.
 

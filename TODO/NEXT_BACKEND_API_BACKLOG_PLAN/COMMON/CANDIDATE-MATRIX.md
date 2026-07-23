@@ -17,12 +17,16 @@
   - 구현 계획: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/02_NOTIFICATION_REMINDER`
   - 완료 기록: `TODO_LOG/2026-07-22/G05_QA_REVIEW_CLOSEOUT/WORK_LOG.md`
   - 현재 의미: active backlog 후보가 아니라 완료 이력으로만 남긴다.
+- [x] `NBA-015 Google Calendar Integration`: Done (2026-07-23)
+  - 구현 계획: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/04_GOOGLE_CALENDAR_INTEGRATION`
+  - 완료 기록: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/04_GOOGLE_CALENDAR_INTEGRATION/TODO_LOG/2026-07-23/G05_QA_REVIEW_CLOSEOUT/WORK_LOG.md`
+  - 현재 의미: active backlog 후보가 아니라 완료 이력으로만 남긴다.
 
 ## 1. 기준
 
 후보 분류는 `release blocker`, `release follow-up`, `product feature`, `ops/security`, `defer` 중 하나만 사용한다.
 
-G07은 구현 goal이 아니므로 완료 이력으로 승격된 `NBA-006`, `NBA-009`, `NBA-010` 외의 후보 API 계약은 `draft` 또는 `후보` 상태로만 남긴다.
+G07은 구현 goal이 아니므로 완료 이력으로 승격된 `NBA-006`, `NBA-009`, `NBA-010`, `NBA-015` 외의 후보 API 계약은 `draft` 또는 `후보` 상태로만 남긴다.
 
 ## 2. 후보 매트릭스
 
@@ -38,6 +42,7 @@ G07은 구현 goal이 아니므로 완료 이력으로 승격된 `NBA-006`, `NBA
 | NBA-008 | Page size 15 contract 정리 | UX/UI QA | release follow-up | Yes | desktop record density와 FE/BE/test 계약을 맞춘다. | list pagination contract 정리 | 없음 | client type, tests, 목록 화면 | pageSize 불일치가 pagination/cache 오류를 만들 수 있다. | Page size 15 contract cleanup | FE 단독 변경 금지이며 Backend 상수, 응답, 테스트, 문서 동시 변경이 필요하다. |
 | NBA-009 | Schedule week report | AGENT 문서, `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/03_WEEKLY_SCHEDULE_REPORT` | product feature | Yes | 완료. 일정과 딜을 주간 영업 판단으로 연결한다. | Done: `GET /api/schedules/week`, `GET /api/schedules/week/export/xlsx` 구현 | Done: 새 DB/migration 없음. 기존 `User`, `Schedule`, `ScheduleDeal`, `Deal`, `DealCompany`, `DealContact`, `Company`, `Contact`, `DealFollowingActionLog` runtime aggregation 사용 | Done: `/app/schedules/week` route, 주간 보고서 화면, Excel 다운로드 구현 | timezone/weekStart, cross-user ownership, private note/raw memo redaction QA 완료 | Done: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/03_WEEKLY_SCHEDULE_REPORT` | 완료. Active backlog에서 제외한다. PDF/범용 ExportJob, 반복 일정, AI 요약은 별도 후속 범위다. |
 | NBA-010 | Notification | AGENT 문서 | product feature | Yes | reminder 기반 retention loop를 만들 수 있다. | Done: notification list/read/settings/browser-push API 구현 | Done: Notification/UserNotificationSetting/NotificationDeliveryAttempt/BrowserPushSubscription schema 및 migration 구현 | Done: `/app/notifications`, unread badge, settings, browser push fallback UX 구현 | provider raw response, push endpoint/key, email 원문 redaction QA 완료. 실제 SMTP/Web Push provider smoke는 env 부재로 운영 확인 단계에서 별도 실행 | Done: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/02_NOTIFICATION_REMINDER` | 완료. Active backlog에서 제외한다. |
+| NBA-015 | Google Calendar Integration | AGENT 문서, `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/04_GOOGLE_CALENDAR_INTEGRATION` | product feature | Yes | 완료. Google Calendar read-only import를 한손 일정/딜/알림/Trash 흐름에 연결한다. | Done: Google OAuth connect/callback/status/calendar list/selection/sync/disconnect, Schedule list/detail/update/delete, Trash restore 계약 확장 구현 | Done: ExternalCalendarConnection/ExternalCalendarSource, Schedule Google metadata, soft delete/trash fields, sync lock/status migration 구현 | Done: `/app/schedules`, `/app/settings`, `/app/trash` Google Calendar UX, source badge, sync, calendar 선택, Schedule restore 구현 | OAuth state, token encryption/redaction, ownership, Schedule soft delete/restore, reminder QA 완료. 실제 Google provider smoke는 env 준비 후 운영 확인 단계에서 별도 실행 | Done: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/04_GOOGLE_CALENDAR_INTEGRATION` | 완료. Active backlog에서 제외한다. Google export/write, realtime webhook/watch, 반복 일정, 여러 Google 계정 동시 연결은 별도 후속 범위다. |
 | NBA-011 | MeetingNote transcript/provider call log table | AGENT 문서 | ops/security | No | AI/STT 품질 추적과 provider 감사가 가능해진다. | Admin/internal API 후보 | table, migration | 없음 또는 Admin future | 원문/오디오/외부 provider 로그 보관과 삭제 정책이 필요하다. | MeetingNote provider audit schema | raw text 저장 정책과 감사/retention 기준이 확정되지 않았다. |
 | NBA-012 | Trash 7일 이후 복구 정책 | AGENT 문서 | ops/security | Yes | 복구 가능 기한 이후 동작과 운영 책임을 명확히 한다. | status contract 또는 purge API 후보 | column/table/job 후보 | trash copy, restore error 처리 | irreversible delete, 유료 복구, 법적 보관 정책 영향이 있다. | Trash retention policy plan | 복구/영구삭제 정책과 운영 절차가 먼저 확정되어야 한다. |
 | NBA-013 | Admin 운영 UX/API | AGENT 문서 | ops/security | No | 고객 지원, 민감정보 마스킹, 감사 로그 기반 운영이 가능해진다. | 새 `/admin/api/*` | audit/admin table 후보 | Admin Web 화면 | 권한, 마스킹, 원문 조회 사유, audit log 리스크가 크다. | Admin operation API plan | Admin 운영 API와 화면은 이번 release QA 범위에서 제외됐다. |

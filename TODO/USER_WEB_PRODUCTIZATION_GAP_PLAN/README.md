@@ -13,6 +13,8 @@
 - [x] `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/03_WEEKLY_SCHEDULE_REPORT` 구현 및 QA closeout
 - [x] Notification reminder (`NBA-010`)
 - [x] `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/02_NOTIFICATION_REMINDER` 구현 및 QA closeout
+- [x] Google Calendar Integration (`NBA-015`)
+- [x] `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/04_GOOGLE_CALENDAR_INTEGRATION` 구현 및 QA closeout
 - [ ] Admin 운영 API/화면
 - [ ] 결제/구독/세금
 - [ ] `/app` 다국어/글로벌 데이터 모델
@@ -55,6 +57,7 @@
 - Deal
 - Schedule
 - Weekly Schedule Report
+- Google Calendar Integration
 - MeetingNote
 - BusinessCard OCR
 - DataImport
@@ -97,6 +100,7 @@
 - Admin 운영 API/화면
 - 결제/구독
 - AI 주간 영업 리포트, PDF/범용 ExportJob, 반복 일정 같은 주간 일정 보고서 확장
+- 완료된 Google Calendar Integration 범위를 넘어서는 Google Calendar export/write, realtime webhook/watch, 반복 일정, 여러 Google 계정 동시 연결
 - 범용 DealActivity table
 - MeetingNote transcript/provider log table
 - page size 계약 변경

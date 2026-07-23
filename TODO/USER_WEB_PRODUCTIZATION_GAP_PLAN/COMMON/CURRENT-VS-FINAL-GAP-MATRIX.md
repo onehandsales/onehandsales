@@ -10,6 +10,8 @@
 - [x] `/app/schedules/week`, weekly schedule report API, Excel export 구현 완료
 - [x] `NBA-010 Notification`: Done (2026-07-22)
 - [x] 일정/딜 reminder 기반 retention loop와 `/app/notifications` UX 구현 완료
+- [x] `NBA-015 Google Calendar Integration`: Done (2026-07-23)
+- [x] Google Calendar read-only import, calendar selection, sync/source badge, Schedule Trash restore 구현 완료
 
 ## 1. Gap 분류 기준
 
@@ -32,14 +34,14 @@
 | 홈 | 오늘 일정, 진행 딜, 다음 행동, 최근 회의록이 바로 읽힌다. | `/app` dashboard 구현 | 실제 사용자가 하루 업무를 시작하기 충분한지 재점검 필요 | UX/UI productization | 첫 판매 전 점검 |
 | 딜 목록 | 단계, 금액, 회사/담당자/제품, 다음 행동, 마감일이 빠르게 비교된다. | pipeline/list/detail 구현. product summary는 list API에 없음 | 제품 linked record, row density, 다음 행동 강조 gap | UX/API gap | UX 먼저, API는 후속 |
 | 회사/담당자/제품 목록 | linked record, 진행 딜, 최근 활동, 다음 행동 맥락이 보인다. | 기본 목록/count 구현. 일부 summary 없음 | Contact dealCount, latest activity summary 후보 | UX/API gap | UX 먼저, API는 후속 |
-| 일정 | 월간/목록과 딜 연결이 된다. 주간 보고서가 있다. | CRUD, 월간/목록, `/app/schedules/week`, weekly report API, Excel export 구현 | 주간 일정 보고서 기본 gap은 닫힘. PDF/범용 ExportJob, 반복 일정, AI 요약은 후속 확장 | Closed for NBA-009 | 완료 |
+| 일정 | 월간/목록과 딜 연결이 된다. 주간 보고서와 외부 캘린더 import가 있다. | CRUD, 월간/목록, `/app/schedules/week`, weekly report API, Excel export, Google Calendar read-only import/sync/calendar selection/source badge 구현 | 주간 일정 보고서와 Google Calendar read-only import gap은 닫힘. Google export/write, realtime webhook/watch, 반복 일정, AI 요약은 후속 확장 | Closed for NBA-009/NBA-015 | 완료 |
 | 회의록 | 직접 작성, AI/STT, 딜 활동 연결, 후속 행동 추출이 된다. | 직접/AI/STT draft와 딜 연결 구현 | next/latest summary, provider log, transcript 정책 없음 | Feature/Ops gap | 후속 |
 | 명함 스캔 | 모바일 현장 촬영, OCR, 다국가 연락처 검증까지 자연스럽다. | 이미지 업로드 OCR 구현 | 카메라 UX, 다국가 전화번호, provider failure contract 부족 | Feature/Ops gap | 후속 |
 | Import | 업로드 중단/새로고침/배포에도 이어받는다. | ImportJob DB persistence/resume 구현 완료 | Live Supabase 수동 QA와 장기 운영 cleanup은 운영 확인 단계 | Closed for NBA-006 | 완료 |
 | Search | 빠르고 안전하며 다른 사용자 데이터가 섞이지 않는다. | 구현 및 보안 QA 완료 | 고급 필터/정렬은 후속 | UX/UI productization | 낮음 |
-| Trash | 7일 이내 복구와 만료 후 정책이 명확하다. | 7일 이내 복구 구현 | 7일 이후 정책, private memo backend restriction 후보 | Ops/security gap | 후속 |
+| Trash | 7일 이내 복구와 만료 후 정책이 명확하다. | 7일 이내 복구와 Schedule soft delete/restore 구현 | 7일 이후 정책, private memo backend restriction 후보 | Ops/security gap | 후속 |
 | Export | 도메인별 export와 민감 export 정책이 안전하다. | 도메인별 xlsx 구현 | 민감 export, 대량/비동기 export 정책 없음 | Ops/security gap | 후속 |
-| Notification | 다음 행동/일정/딜 지연 reminder가 온다. | 일정/딜 reminder, 앱 안 알림, email/browser push delivery attempt, `/app/notifications` 구현 | 실제 SMTP/Web Push provider smoke는 env 준비 후 운영 확인. 회의록 follow-up 알림은 후속 기능 | Closed for NBA-010 | 완료 |
+| Notification | 다음 행동/일정/딜 지연 reminder가 온다. | 일정/딜/Google-origin schedule reminder, 앱 안 알림, email/browser push delivery attempt, `/app/notifications` 구현 | 실제 SMTP/Web Push provider smoke는 env 준비 후 운영 확인. 회의록 follow-up 알림은 후속 기능 | Closed for NBA-010/NBA-015 | 완료 |
 | Admin 운영 | 사용자/구독/결제/민감정보/감사를 운영한다. | `/admin/api/me`만 구현, 운영 route redirect | Admin API, screen, masking, audit 필요 | First-sale global gap | 첫 판매 전 필요 |
 | 결제/구독 | trial, 월/연 구독, 환불, 영수증, failed payment recovery | 구현 없음 | 결제 provider/MoR, plan, entitlement 필요 | First-sale global gap | 첫 판매 전 필요 |
 | 세금/컴플라이언스 | VAT/GST, 환불, chargeback, 국가별 약관 | 구현 없음 | 글로벌 판매 운영 계층 필요 | First-sale global gap | 첫 판매 전 필요 |
@@ -60,6 +62,7 @@
 | 딜 목록에서 제품/최근 활동/다음 행동을 얼마나 1급 정보로 볼지 | `NBA-001`, `NBA-003`, `NBA-008` 필요성이 달라진다. |
 | ImportJob 유실이 Global B2C 첫 판매 blocker인지 known limitation인지 | 완료 처리됨. `NBA-006`은 `01_IMPORT_JOB_PERSISTENCE`에서 구현 및 QA closeout 완료. |
 | Notification 실제 provider smoke와 회의록 follow-up 알림을 언제 다룰지 | 일정/딜 reminder는 완료됐고, 실제 SMTP/Web Push env 검증과 회의록 follow-up은 운영/후속 범위로 남는다. |
+| Google Calendar export/write/realtime webhook/watch/반복 일정/여러 Google 계정 동시 연결을 언제 다룰지 | 현재 read-only import와 한손 Schedule/Trash/Reminder 연결은 완료됐고, 쓰기/실시간/고급 캘린더 범위는 후속 확장으로 남는다. |
 | Admin 운영을 결제 전에 어느 수준까지 구현할지 | 유료 고객 지원/민감정보 정책 범위가 달라진다. |
 
 ## 4. 권장 다음 큰 방향
