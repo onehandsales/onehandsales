@@ -15,6 +15,14 @@ export const scheduleFormSchema = z
     endAt: z.string().min(1, "종료일시를 입력해 주세요."),
     timeZone: z.string().trim().min(1, "시간대를 선택해 주세요."),
     location: z.string().max(200).optional(),
+    meetingUrl: z
+      .string()
+      .trim()
+      .max(2048)
+      .optional()
+      .refine((value) => !value || value.startsWith("https://"), {
+        message: "https://로 시작하는 링크를 입력해 주세요.",
+      }),
     memo: z.string().max(2000).optional(),
     dealIds: z.array(z.string()),
     dealSearch: z.string().optional(),
@@ -36,6 +44,7 @@ export const emptyScheduleFormValues: ScheduleFormValues = {
   endAt: "",
   timeZone: getDefaultScheduleTimeZone(),
   location: "",
+  meetingUrl: "",
   memo: "",
   dealIds: [],
   dealSearch: "",
@@ -54,6 +63,7 @@ export function toCreateScheduleInput(
     endAt: values.endAt,
     timeZone: values.timeZone,
     location: toOptionalText(values.location),
+    meetingUrl: toOptionalText(values.meetingUrl),
     memo: toOptionalText(values.memo),
     dealIds: values.dealIds,
   };
@@ -85,6 +95,7 @@ export function toScheduleFormValues(
     endAt: toDateTimeLocalValue(schedule.endAt, schedule.timeZone),
     timeZone: schedule.timeZone,
     location: schedule.location ?? "",
+    meetingUrl: schedule.meetingUrl ?? "",
     memo: schedule.memo ?? "",
     dealIds: schedule.deals.map((deal) => deal.id),
     dealSearch: "",

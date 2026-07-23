@@ -7,6 +7,7 @@ import {
   ChevronRight,
   Clock3,
   Download,
+  ExternalLink,
   FileText,
   Loader2,
   MapPin,
@@ -29,6 +30,12 @@ import type {
   WeeklyScheduleReportDeal,
   WeeklyScheduleReportSchedule,
 } from "@/features/schedule/types/schedule";
+import {
+  formatScheduleClockRange as formatGoogleScheduleClockRange,
+  getScheduleSourceBadgeClassName,
+  getScheduleSourceBadgeLabel,
+  getUrlDomainLabel,
+} from "@/features/schedule/utils/google-calendar-display";
 import type { ApiBlobResponse } from "@/lib/api-client";
 import { formatDateWithOptions } from "@/utils/format";
 
@@ -449,9 +456,13 @@ function WeeklyReportScheduleRow({
       </div>
 
       <div className="min-w-0">
-        <h3 className="break-words text-sm font-semibold text-[#111827]">
-          {schedule.scheduleTitle}
-        </h3>
+        <div className="flex min-w-0 flex-wrap items-center gap-2">
+          <h3 className="break-words text-sm font-semibold text-[#111827]">
+            {schedule.scheduleTitle}
+          </h3>
+          <ScheduleSourceBadge schedule={schedule} />
+          <MeetingUrlLink meetingUrl={schedule.meetingUrl} />
+        </div>
         <div className="mt-2 flex flex-wrap items-center gap-2 text-[12px] text-[#6B7280]">
           {schedule.location ? (
             <span className="inline-flex min-w-0 items-center gap-1">
@@ -546,6 +557,51 @@ function WeeklyReportDealLink({
         ) : null}
       </div>
     </Link>
+  );
+}
+
+function ScheduleSourceBadge({
+  schedule,
+}: {
+  readonly schedule: Pick<
+    WeeklyScheduleReportSchedule,
+    "sourceType" | "googleCalendar"
+  >;
+}) {
+  const label = getScheduleSourceBadgeLabel(schedule);
+
+  if (!label) {
+    return null;
+  }
+
+  return (
+    <span
+      className={`inline-flex h-5 shrink-0 items-center rounded border px-1.5 text-[11px] font-semibold ${getScheduleSourceBadgeClassName(
+        schedule,
+      )}`}
+    >
+      {label}
+    </span>
+  );
+}
+
+function MeetingUrlLink({ meetingUrl }: { readonly meetingUrl: string | null }) {
+  if (!meetingUrl) {
+    return null;
+  }
+
+  return (
+    <a
+      aria-label={`${getUrlDomainLabel(meetingUrl)} 열기`}
+      className="grid h-7 w-7 shrink-0 place-items-center rounded-md border border-[#D7DCE5] bg-white text-[#475569] transition hover:bg-[#F1F5F9] hover:text-[#111827]"
+      href={meetingUrl}
+      onClick={(event) => event.stopPropagation()}
+      rel="noopener noreferrer"
+      target="_blank"
+      title={getUrlDomainLabel(meetingUrl)}
+    >
+      <ExternalLink className="h-3.5 w-3.5" />
+    </a>
   );
 }
 
@@ -764,27 +820,7 @@ function formatScheduleTimeRange(
   schedule: WeeklyScheduleReportSchedule,
   timeZone?: string
 ) {
-  const activeTimeZone = timeZone ?? schedule.timeZone;
-
-  return `${formatInstantTime(schedule.startAt, activeTimeZone)} - ${formatInstantTime(
-    schedule.endAt,
-    activeTimeZone
-  )}`;
-}
-
-function formatInstantTime(value: string, timeZone?: string) {
-  try {
-    return formatDateWithOptions(value, {
-      ...(timeZone ? { timeZone } : {}),
-      hour: "2-digit",
-      minute: "2-digit",
-    });
-  } catch {
-    return formatDateWithOptions(value, {
-      hour: "2-digit",
-      minute: "2-digit",
-    });
-  }
+  return formatGoogleScheduleClockRange(schedule, timeZone);
 }
 
 function formatDealCost(amount: number) {

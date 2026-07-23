@@ -3,6 +3,7 @@ export type TrashTargetType =
   | "CONTACT"
   | "PRODUCT"
   | "DEAL"
+  | "SCHEDULE"
   | "MEETING_NOTE"
   | "COMPANY_MEMO_LOG"
   | "COMPANY_PRIVATE_MEMO_LOG"
@@ -21,6 +22,7 @@ export type TrashDomainFilter =
   | "CONTACT"
   | "PRODUCT"
   | "DEAL"
+  | "SCHEDULE"
   | "MEETING_NOTE";
 export type TrashLogTypeFilter =
   | "ALL"

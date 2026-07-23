@@ -4,6 +4,7 @@ import { cn } from "@/utils/cn";
 type ConfirmDialogProps = {
   readonly open: boolean;
   readonly title: string;
+  readonly description?: string | null;
   readonly cancelLabel: string;
   readonly confirmLabel: string;
   readonly errorMessage?: string | null;
@@ -15,6 +16,7 @@ type ConfirmDialogProps = {
 export function ConfirmDialog({
   open,
   title,
+  description,
   cancelLabel,
   confirmLabel,
   errorMessage,
@@ -51,6 +53,11 @@ export function ConfirmDialog({
         role="dialog"
       >
         <p className="text-center text-sm font-semibold text-[#111827]">{title}</p>
+        {description ? (
+          <p className="mt-2 text-center text-xs leading-5 text-[#64748B]">
+            {description}
+          </p>
+        ) : null}
         {errorMessage ? (
           <p className="mt-3 text-center text-xs font-medium text-[#B91C1C]">
             {errorMessage}

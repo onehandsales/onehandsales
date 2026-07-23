@@ -17,6 +17,7 @@ import {
   useMyProfile,
   useUpdateMyProfileMutation,
 } from "@/features/auth/hooks/use-user-settings";
+import { GoogleCalendarSettingsSection } from "@/features/schedule/components/google-calendar-settings-section";
 import type {
   MyDevice,
   UserProfileOAuthAccount,
@@ -64,13 +65,16 @@ export function SettingsPage() {
         ) : null}
 
         <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_380px]">
-          <ProfileSection
-            error={profileQuery.error}
-            isLoading={profileQuery.isLoading}
-            onRetry={() => void profileQuery.refetch()}
-            onSaved={() => setNotice("개인 정보를 저장했어요.")}
-            profile={profileQuery.data ?? null}
-          />
+          <div className="grid content-start gap-5">
+            <ProfileSection
+              error={profileQuery.error}
+              isLoading={profileQuery.isLoading}
+              onRetry={() => void profileQuery.refetch()}
+              onSaved={() => setNotice("개인 정보를 저장했어요.")}
+              profile={profileQuery.data ?? null}
+            />
+            <GoogleCalendarSettingsSection onNotice={setNotice} />
+          </div>
           <DeviceSection
             devices={devicesQuery.data?.devices ?? []}
             error={devicesQuery.error}

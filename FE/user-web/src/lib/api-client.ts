@@ -153,6 +153,22 @@ export function getApiErrorMessage(error: unknown): string {
 
 function getConflictErrorMessage(code: string) {
   switch (code) {
+    case "GoogleCalendarConnectionNotFound":
+      return "Google Calendar를 연결해 주세요.";
+    case "GoogleCalendarReconnectRequired":
+      return "Google Calendar를 다시 연결해 주세요.";
+    case "GoogleCalendarSourceSelectionRequired":
+      return "가져올 캘린더를 선택해 주세요.";
+    case "GoogleCalendarOAuthStateInvalid":
+      return "연결을 다시 시작해 주세요.";
+    case "GoogleCalendarProviderUnavailable":
+      return "Google Calendar와 연결하지 못했어요. 잠시 후 다시 시도해 주세요.";
+    case "GoogleCalendarSyncInProgress":
+      return "Google Calendar 동기화가 이미 진행 중이에요.";
+    case "GoogleCalendarTokenEncryptionKeyMissing":
+      return "Google Calendar 연결 설정을 확인해 주세요.";
+    case "ScheduleMeetingUrlInvalid":
+      return "https://로 시작하는 링크를 입력해 주세요.";
     case "CompanyInUse":
       return "연결된 담당자, 딜 또는 회의록을 정리하면 회사를 삭제할 수 있어요.";
     case "ContactInUse":

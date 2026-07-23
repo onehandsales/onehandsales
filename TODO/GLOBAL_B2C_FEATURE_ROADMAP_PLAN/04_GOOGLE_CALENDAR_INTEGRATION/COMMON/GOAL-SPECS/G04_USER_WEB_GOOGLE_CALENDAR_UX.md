@@ -1,6 +1,6 @@
 # G04 User Web Google Calendar UX
 
-상태: Ready
+상태: Done
 
 ## 1. 목적
 

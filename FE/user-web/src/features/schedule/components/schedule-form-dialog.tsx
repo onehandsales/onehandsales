@@ -3,6 +3,7 @@ import {
   CalendarClock,
   Check,
   Globe2,
+  Link2,
   MapPin,
   Search,
   Trash2,
@@ -34,6 +35,10 @@ import type {
   Schedule,
   ScheduleDealOption,
 } from "@/features/schedule/types/schedule";
+import {
+  getScheduleSourceBadgeClassName,
+  getScheduleSourceBadgeLabel,
+} from "@/features/schedule/utils/google-calendar-display";
 import { getApiErrorMessage } from "@/lib/api-client";
 
 type ScheduleFormDialogProps = {
@@ -90,9 +95,10 @@ export function ScheduleFormDialog({
   const dealSearch = useWatch({ control, name: "dealSearch" }) ?? "";
   const timeZone = useWatch({ control, name: "timeZone" }) ?? "";
   const isEdit = Boolean(schedule);
+  const editingSchedule = detailQuery.data ?? schedule;
   const mergedDealOptions = useMergedDealOptions(
     dealOptionsQuery.data?.items ?? [],
-    detailQuery.data ?? schedule
+    editingSchedule
   );
   const selectedDealIds = useMemo(() => new Set(dealIds), [dealIds]);
   const filteredDealOptions = useMemo(
@@ -196,9 +202,12 @@ export function ScheduleFormDialog({
         >
           <header className="flex items-start justify-between gap-4 border-b px-5 py-4">
             <div>
-              <h2 className="text-lg font-semibold">
-                {isEdit ? "일정 수정" : "일정 생성"}
-              </h2>
+              <div className="flex min-w-0 flex-wrap items-center gap-2">
+                <h2 className="text-lg font-semibold">
+                  {isEdit ? "일정 수정" : "일정 생성"}
+                </h2>
+                <ScheduleSourceBadge schedule={editingSchedule} />
+              </div>
               <p className="mt-1 text-sm text-muted-foreground">
                 일정 시간과 연결 딜을 저장해요.
               </p>
@@ -261,6 +270,30 @@ export function ScheduleFormDialog({
                   {...register("location")}
                 />
               </div>
+            </div>
+
+            <div className="grid gap-2">
+              <label className="text-sm font-medium" htmlFor="schedule-meeting-url">
+                미팅 링크
+              </label>
+              <div className="relative">
+                <Link2 className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                <input
+                  aria-describedby={
+                    errors.meetingUrl ? "schedule-meeting-url-error" : undefined
+                  }
+                  aria-invalid={Boolean(errors.meetingUrl)}
+                  className="h-10 w-full rounded-md border pl-9 pr-3 text-sm outline-none focus:ring-2 focus:ring-ring"
+                  id="schedule-meeting-url"
+                  placeholder="https://"
+                  {...register("meetingUrl")}
+                />
+              </div>
+              {errors.meetingUrl ? (
+                <p className="text-xs text-destructive" id="schedule-meeting-url-error">
+                  {errors.meetingUrl.message}
+                </p>
+              ) : null}
             </div>
 
             <DealMultiSelect
@@ -337,6 +370,7 @@ export function ScheduleFormDialog({
       <ConfirmDialog
         cancelLabel="닫기"
         confirmLabel="삭제"
+        description="삭제한 일정은 휴지통으로 이동하며 7일 안에 복구할 수 있어요."
         errorMessage={
           deleteScheduleMutation.error
             ? getApiErrorMessage(deleteScheduleMutation.error)
@@ -350,9 +384,35 @@ export function ScheduleFormDialog({
         }}
         onConfirm={() => void onDelete()}
         open={deleteConfirmOpen}
-        title={`${schedule?.scheduleTitle ?? "일정"} 일정을 삭제할까요?`}
+        title="일정을 삭제할까요?"
       />
     </>
+  );
+}
+
+function ScheduleSourceBadge({
+  schedule,
+}: {
+  readonly schedule: Schedule | null;
+}) {
+  if (!schedule) {
+    return null;
+  }
+
+  const label = getScheduleSourceBadgeLabel(schedule);
+
+  if (!label) {
+    return null;
+  }
+
+  return (
+    <span
+      className={`inline-flex h-6 items-center rounded-md border px-2 text-[11px] font-semibold ${getScheduleSourceBadgeClassName(
+        schedule,
+      )}`}
+    >
+      {label}
+    </span>
   );
 }
 

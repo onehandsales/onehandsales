@@ -42,6 +42,8 @@ export type UserWebApiMockStore = {
   readonly products: MutableRecord[];
   readonly deals: MutableRecord[];
   readonly schedules: MutableRecord[];
+  readonly googleCalendarConnection: MutableRecord;
+  readonly googleCalendars: MutableRecord[];
   readonly meetingNotes: MutableRecord[];
   readonly businessCardScans: MutableRecord[];
   readonly importJobs: MutableRecord[];
@@ -311,6 +313,84 @@ async function handleApiRequest(
     );
   }
 
+  if (pathname === "/api/schedules/google/connect" && method === "POST") {
+    const body = await readJsonBody(route);
+
+    return json({
+      connectUrl:
+        "https://accounts.google.com/o/oauth2/v2/auth?mock=onehand-calendar",
+      expiresAt: NEXT_WEEK,
+      returnTo: stringField(body, "returnTo") ?? "/app/schedules",
+    });
+  }
+
+  if (pathname === "/api/schedules/google/status" && method === "GET") {
+    return json(createGoogleCalendarStatus(store));
+  }
+
+  if (pathname === "/api/schedules/google/calendars" && method === "GET") {
+    return json(createGoogleCalendarList(store));
+  }
+
+  if (pathname === "/api/schedules/google/calendars" && method === "PATCH") {
+    const body = await readJsonBody(route);
+    const selectedIds = stringArrayField(body, "selectedCalendarIds");
+    const selectedSet = new Set(selectedIds);
+
+    for (const calendar of store.googleCalendars) {
+      calendar.status = selectedSet.has(String(calendar.calendarId))
+        ? "SELECTED"
+        : "UNSELECTED";
+    }
+
+    return json(createGoogleCalendarList(store));
+  }
+
+  if (pathname === "/api/schedules/google/sync" && method === "POST") {
+    const body = await readJsonBody(route);
+    store.googleCalendarConnection.lastSyncedAt = now();
+    store.googleCalendarConnection.lastSyncStartedAt = now();
+
+    return json({
+      connectionStatus: store.googleCalendarConnection.status,
+      finishedAt: now(),
+      nextAutoSyncAvailableAt: NEXT_WEEK,
+      rangeEndAt: "2026-10-21T15:00:00.000Z",
+      rangeStartAt: "2026-06-21T15:00:00.000Z",
+      result: {
+        errorCount: 0,
+        googleDeletedCount: 0,
+        hiddenByCalendarSelectionCount: 0,
+        importedCount: 0,
+        localModifiedSkippedCount: 0,
+        reminderCanceledCount: 0,
+        reminderScheduledCount: 1,
+        trashedCount: 0,
+        updatedCount: 1,
+      },
+      selectedCalendarCount: countSelectedGoogleCalendars(store),
+      startedAt: now(),
+      trigger: stringField(body, "trigger") ?? "MANUAL",
+    });
+  }
+
+  if (pathname === "/api/schedules/google/disconnect" && method === "POST") {
+    const body = await readJsonBody(route);
+    const scheduleAction = stringField(body, "scheduleAction") ?? "KEEP";
+    store.googleCalendarConnection.status = "DISCONNECTED";
+    store.googleCalendarConnection.disconnectedAt = now();
+
+    return json({
+      affectedScheduleCount: store.schedules.length,
+      connectionStatus: "DISCONNECTED",
+      disconnectedAt: now(),
+      hiddenScheduleCount: scheduleAction === "HIDE" ? store.schedules.length : 0,
+      keptScheduleCount: scheduleAction === "KEEP" ? store.schedules.length : 0,
+      scheduleAction,
+      trashedScheduleCount: scheduleAction === "TRASH" ? store.schedules.length : 0,
+    });
+  }
+
   if (pathname === "/api/meeting-notes/filter-companies" && method === "GET") {
     return jsonList(
       store.companies.map((company) => ({
@@ -506,6 +586,30 @@ async function handleApiRequest(
   const scheduleDetailMatch = pathname.match(/^\/api\/schedules\/([^/]+)$/);
   if (scheduleDetailMatch && method === "GET") {
     return json(requireItem(store.schedules, scheduleDetailMatch[1]));
+  }
+
+  if (scheduleDetailMatch && method === "PATCH") {
+    const schedule = requireItem(store.schedules, scheduleDetailMatch[1]);
+    const body = await readJsonBody(route);
+
+    if (isRecord(schedule) && !isApiErrorShape(schedule)) {
+      updateScheduleRecord(schedule, body);
+    }
+
+    return json(schedule);
+  }
+
+  if (scheduleDetailMatch && method === "DELETE") {
+    const scheduleIndex = store.schedules.findIndex(
+      (schedule) => String(schedule.id) === scheduleDetailMatch[1],
+    );
+
+    if (scheduleIndex >= 0) {
+      const [schedule] = store.schedules.splice(scheduleIndex, 1);
+      store.trashItems.unshift(createScheduleTrashItem(schedule));
+    }
+
+    return json(null);
   }
 
   if (pathname === "/api/meeting-notes" && method === "GET") {
@@ -892,16 +996,35 @@ function createStore(): UserWebApiMockStore {
   };
   const schedule = {
     createdAt: NOW,
+    deletedAt: null,
     deals: [{ dealName: deal.dealName, id: deal.id }],
     endAt: "2026-07-20T11:00:00.000Z",
+    googleCalendar: {
+      badgeLabel: "Google",
+      calendarId: "primary",
+      calendarName: "mobile-qa@example.test",
+      canEditLocalFields: true,
+      externalDeletedAt: null,
+      externalHtmlLink: "https://calendar.google.com/calendar/event?eid=mock",
+      isHidden: false,
+      lastExternalSyncedAt: NOW,
+      sourceId: "google-calendar-source-primary",
+      syncStatus: "SYNCED",
+    },
     id: "schedule-mobile-001",
+    isAllDay: false,
     location: "서울 강남구 테헤란로 모바일 QA 회의실",
+    meetingUrl: "https://meet.google.com/mock-calendar-e2e",
     memo: `${MOBILE_LONG_FIXTURE.url} 일정 메모`,
     scheduleTitle: "RQA002 모바일 일정 긴 제목 Chrome Edge 390 360",
+    sourceType: "GOOGLE",
     startAt: "2026-07-20T10:00:00.000Z",
     timeZone: "Asia/Seoul",
+    trashExpiresAt: null,
     updatedAt: NOW,
   };
+  const googleCalendarConnection = createGoogleCalendarConnection();
+  const googleCalendars = createGoogleCalendars();
   const meetingNote = createMeetingNoteFromFixtures(company, contact, product, deal);
   const notifications = createNotificationsFromFixtures(deal, schedule);
 
@@ -924,6 +1047,8 @@ function createStore(): UserWebApiMockStore {
       schedule: 1,
     },
     deals: [deal],
+    googleCalendarConnection,
+    googleCalendars,
     importJobs: [createImportJobDetail()],
     importTemplates: [createImportTemplate()],
     importUserLogs: [createImportUserLog()],
@@ -1003,6 +1128,83 @@ function createUserSettings() {
     emailNotificationEnabled: true,
     sensitiveWarningEnabled: true,
   };
+}
+
+function createGoogleCalendarConnection() {
+  return {
+    connectedAt: NOW,
+    disconnectedAt: null,
+    lastSyncErrorCode: null,
+    lastSyncFailedAt: null,
+    lastSyncStartedAt: NOW,
+    lastSyncedAt: NOW,
+    provider: "GOOGLE",
+    providerAccountEmail: "mobile-qa@example.test",
+    reconnectRequiredAt: null,
+    status: "CONNECTED",
+    syncLockExpiresAt: null,
+  };
+}
+
+function createGoogleCalendars() {
+  return [
+    {
+      calendarId: "primary",
+      calendarName: "mobile-qa@example.test",
+      calendarTimeZone: "Asia/Seoul",
+      id: "google-calendar-source-primary",
+      isPrimary: true,
+      isSystemCalendar: false,
+      lastSyncErrorCode: null,
+      lastSyncFailedAt: null,
+      lastSyncedAt: NOW,
+      status: "SELECTED",
+    },
+    {
+      calendarId: "ko.south_korea#holiday@group.v.calendar.google.com",
+      calendarName: "대한민국 공휴일",
+      calendarTimeZone: "Asia/Seoul",
+      id: "google-calendar-source-holiday",
+      isPrimary: false,
+      isSystemCalendar: true,
+      lastSyncErrorCode: null,
+      lastSyncFailedAt: null,
+      lastSyncedAt: null,
+      status: "UNSELECTED",
+    },
+  ];
+}
+
+function createGoogleCalendarStatus(store: UserWebApiMockStore) {
+  const connectionStatus =
+    stringField(store.googleCalendarConnection, "status") ?? "CONNECTED";
+  const connected = connectionStatus !== "DISCONNECTED";
+
+  return {
+    autoSync: {
+      enabled: connectionStatus === "CONNECTED",
+      freshnessMinutes: 10,
+      nextAutoSyncAvailableAt: NEXT_WEEK,
+      shouldSyncOnScheduleEntry: false,
+    },
+    availableCalendarCount: store.googleCalendars.length,
+    connected,
+    connection: connected ? store.googleCalendarConnection : null,
+    selectedCalendarCount: countSelectedGoogleCalendars(store),
+  };
+}
+
+function createGoogleCalendarList(store: UserWebApiMockStore) {
+  return {
+    calendars: store.googleCalendars,
+    connection: store.googleCalendarConnection,
+  };
+}
+
+function countSelectedGoogleCalendars(store: UserWebApiMockStore) {
+  return store.googleCalendars.filter(
+    (calendar) => stringField(calendar, "status") === "SELECTED",
+  ).length;
 }
 
 function createNotificationSettings() {
@@ -1147,15 +1349,86 @@ function createSchedule(store: UserWebApiMockStore, body: unknown) {
 
   return {
     createdAt: now(),
+    deletedAt: null,
     deals: [{ dealName: stringField(deal, "dealName") ?? "RQA002 딜", id: stringField(deal, "id") ?? "deal-mobile-001" }],
     endAt: stringField(body, "endAt") ?? "2026-07-20T11:00:00.000Z",
+    googleCalendar: null,
     id: nextId(store, "schedule"),
+    isAllDay: false,
     location: stringField(body, "location"),
+    meetingUrl: stringField(body, "meetingUrl"),
     memo: stringField(body, "memo"),
     scheduleTitle: stringField(body, "scheduleTitle") ?? "RQA002 모바일 생성 일정",
+    sourceType: "INTERNAL",
     startAt: stringField(body, "startAt") ?? "2026-07-20T10:00:00.000Z",
     timeZone: stringField(body, "timeZone") ?? "Asia/Seoul",
+    trashExpiresAt: null,
     updatedAt: now(),
+  };
+}
+
+function updateScheduleRecord(schedule: MutableRecord, body: unknown) {
+  if (!isRecord(body)) {
+    return;
+  }
+
+  const editableFields = [
+    "scheduleTitle",
+    "startAt",
+    "endAt",
+    "timeZone",
+    "location",
+    "meetingUrl",
+    "memo",
+  ] as const;
+  let changed = false;
+
+  for (const field of editableFields) {
+    if (field in body) {
+      schedule[field] = body[field] ?? null;
+      changed = true;
+    }
+  }
+
+  if (Array.isArray(body.dealIds)) {
+    schedule.deals = body.dealIds.map((dealId) => ({
+      dealName: String(dealId),
+      id: String(dealId),
+    }));
+    changed = true;
+  }
+
+  if ("startAt" in body || "endAt" in body) {
+    schedule.isAllDay = false;
+  }
+
+  if (changed && stringField(schedule, "sourceType") === "GOOGLE") {
+    const googleCalendar = isRecord(schedule.googleCalendar)
+      ? schedule.googleCalendar
+      : null;
+
+    if (googleCalendar) {
+      googleCalendar.badgeLabel = "Google · 로컬 수정";
+      googleCalendar.syncStatus = "LOCAL_MODIFIED";
+    }
+  }
+
+  if (changed) {
+    schedule.updatedAt = now();
+  }
+}
+
+function createScheduleTrashItem(schedule: MutableRecord | undefined) {
+  return {
+    deletedAt: now(),
+    parentId: null,
+    parentTitle: null,
+    parentType: "SCHEDULE",
+    permanentDeleteAt: NEXT_WEEK,
+    targetId: stringField(schedule, "id") ?? "schedule-trash-mobile-001",
+    targetType: "SCHEDULE",
+    title: stringField(schedule, "scheduleTitle") ?? "삭제된 일정",
+    trashExpiresAt: NEXT_WEEK,
   };
 }
 
@@ -1233,12 +1506,18 @@ function createWeeklyReportSchedule(
   return {
     deals: reportDeal ? [reportDeal] : [],
     endAt: stringField(schedule, "endAt") ?? "2026-07-20T11:00:00.000Z",
+    googleCalendar: isRecord(schedule.googleCalendar)
+      ? schedule.googleCalendar
+      : null,
     hasMemo: Boolean(stringField(schedule, "memo")?.trim()),
     id: stringField(schedule, "id") ?? "schedule-mobile-001",
+    isAllDay: Boolean(schedule.isAllDay),
     location: stringField(schedule, "location"),
+    meetingUrl: stringField(schedule, "meetingUrl"),
     scheduleTitle:
       stringField(schedule, "scheduleTitle") ??
       "RQA002 주간 보고서 일정 제목 Chrome Edge 390 360",
+    sourceType: stringField(schedule, "sourceType") ?? "INTERNAL",
     startAt: stringField(schedule, "startAt") ?? "2026-07-20T10:00:00.000Z",
     timeZone: stringField(schedule, "timeZone") ?? "Asia/Seoul",
   };
@@ -1989,6 +2268,14 @@ function stringField(value: unknown, field: string) {
 
   const fieldValue = value[field];
   return typeof fieldValue === "string" ? fieldValue : null;
+}
+
+function stringArrayField(value: unknown, field: string) {
+  if (!isRecord(value) || !Array.isArray(value[field])) {
+    return [];
+  }
+
+  return value[field].filter((item): item is string => typeof item === "string");
 }
 
 function numberField(value: unknown, field: string) {

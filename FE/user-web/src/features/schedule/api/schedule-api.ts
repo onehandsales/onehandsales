@@ -1,11 +1,20 @@
 import type {
   CreateScheduleInput,
+  DisconnectGoogleCalendarInput,
+  DisconnectGoogleCalendarResponse,
+  GoogleCalendarStatusResponse,
+  GoogleCalendarSyncResponse,
+  ListGoogleCalendarsResponse,
   Schedule,
   ScheduleDealOptionListResponse,
   ScheduleDetail,
   ScheduleListParams,
   ScheduleListResponse,
+  StartGoogleCalendarConnectInput,
+  StartGoogleCalendarConnectResponse,
+  SyncGoogleCalendarInput,
   UpdateScheduleInput,
+  UpdateGoogleCalendarSelectionInput,
   WeeklyScheduleReportParams,
   WeeklyScheduleReportResponse,
 } from "@/features/schedule/types/schedule";
@@ -13,6 +22,61 @@ import { apiBlobClient, apiClient } from "@/lib/api-client";
 
 export function listScheduleDealOptions() {
   return apiClient<ScheduleDealOptionListResponse>("/api/schedules/deal-options");
+}
+
+export function startGoogleCalendarConnect(
+  input: StartGoogleCalendarConnectInput
+) {
+  return apiClient<StartGoogleCalendarConnectResponse>(
+    "/api/schedules/google/connect",
+    {
+      method: "POST",
+      body: compactBody(input),
+    }
+  );
+}
+
+export function getGoogleCalendarStatus() {
+  return apiClient<GoogleCalendarStatusResponse>(
+    "/api/schedules/google/status"
+  );
+}
+
+export function listGoogleCalendars() {
+  return apiClient<ListGoogleCalendarsResponse>(
+    "/api/schedules/google/calendars"
+  );
+}
+
+export function updateGoogleCalendarSelection(
+  input: UpdateGoogleCalendarSelectionInput
+) {
+  return apiClient<ListGoogleCalendarsResponse>(
+    "/api/schedules/google/calendars",
+    {
+      method: "PATCH",
+      body: compactBody(input),
+    }
+  );
+}
+
+export function syncGoogleCalendar(input: SyncGoogleCalendarInput = {}) {
+  return apiClient<GoogleCalendarSyncResponse>("/api/schedules/google/sync", {
+    method: "POST",
+    body: compactBody(input),
+  });
+}
+
+export function disconnectGoogleCalendar(
+  input: DisconnectGoogleCalendarInput = {}
+) {
+  return apiClient<DisconnectGoogleCalendarResponse>(
+    "/api/schedules/google/disconnect",
+    {
+      method: "POST",
+      body: compactBody(input),
+    }
+  );
 }
 
 export function listSchedules(params: ScheduleListParams) {
@@ -57,6 +121,7 @@ export function updateSchedule(input: UpdateScheduleInput) {
       endAt: input.endAt,
       timeZone: input.timeZone,
       location: input.location,
+      meetingUrl: input.meetingUrl,
       memo: input.memo,
       dealIds: input.dealIds,
     }),
@@ -76,6 +141,14 @@ function toScheduleListSearchParams(params: ScheduleListParams) {
 
   if (params.timeZone) {
     searchParams.set("timeZone", params.timeZone);
+  }
+
+  if (params.visibility) {
+    searchParams.set("visibility", params.visibility);
+  }
+
+  if (params.sourceType) {
+    searchParams.set("sourceType", params.sourceType);
   }
 
   return searchParams;

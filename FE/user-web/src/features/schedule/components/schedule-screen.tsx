@@ -5,19 +5,45 @@ import {
   ChevronDown,
   ChevronLeft,
   ChevronRight,
+  ExternalLink,
   FileText,
+  Loader2,
+  RefreshCw,
   RotateCcw,
+  Settings2,
 } from "lucide-react";
-import { useEffect, useMemo, useRef, useState } from "react";
-import { Link } from "react-router-dom";
+import {
+  type KeyboardEvent as ReactKeyboardEvent,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
+import { Link, useSearchParams } from "react-router-dom";
 import { useAuthSession } from "@/features/auth";
 import { ScheduleFormDialog } from "@/features/schedule/components/schedule-form-dialog";
-import { useScheduleList } from "@/features/schedule/hooks/use-schedule-queries";
+import {
+  useGoogleCalendarStatus,
+  useScheduleList,
+} from "@/features/schedule/hooks/use-schedule-queries";
+import {
+  useStartGoogleCalendarConnectMutation,
+  useSyncGoogleCalendarMutation,
+} from "@/features/schedule/hooks/use-schedule-mutations";
 import { getDefaultScheduleTimeZone } from "@/features/schedule/schemas/schedule-schema";
 import type {
+  GoogleCalendarStatusResponse,
   Schedule,
+  ScheduleVisibility,
   ScheduleViewMode,
 } from "@/features/schedule/types/schedule";
+import {
+  formatScheduleClockRange,
+  formatScheduleClockText,
+  getScheduleSourceBadgeClassName,
+  getScheduleSourceBadgeLabel,
+  getUrlDomainLabel,
+} from "@/features/schedule/utils/google-calendar-display";
 import { getApiErrorMessage } from "@/lib/api-client";
 import { formatDateWithOptions } from "@/utils/format";
 
@@ -29,11 +55,21 @@ const viewModeOptions: ReadonlyArray<{
   { value: "month", label: "월" },
   { value: "week", label: "주" },
 ];
+const visibilityOptions: ReadonlyArray<{
+  readonly value: ScheduleVisibility;
+  readonly label: string;
+}> = [
+  { value: "ACTIVE", label: "기본 일정" },
+  { value: "HIDDEN_GOOGLE", label: "숨긴 Google 일정" },
+  { value: "ALL", label: "전체" },
+];
 
 export function ScheduleScreen() {
   const { user } = useAuthSession();
+  const [searchParams, setSearchParams] = useSearchParams();
   const screenTimeZone = user?.timeZone ?? getDefaultScheduleTimeZone();
   const [viewMode, setViewMode] = useState<ScheduleViewMode>("month");
+  const [visibility, setVisibility] = useState<ScheduleVisibility>("ACTIVE");
   const [anchorDate, setAnchorDate] = useState(() => new Date());
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [selectedSchedule, setSelectedSchedule] = useState<Schedule | null>(
@@ -41,7 +77,10 @@ export function ScheduleScreen() {
   );
   const [initialStartAt, setInitialStartAt] = useState<Date | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
+  const [googleActionError, setGoogleActionError] = useState<string | null>(null);
+  const [manualSyncCooldownUntil, setManualSyncCooldownUntil] = useState(0);
   const [isTodayPressed, setIsTodayPressed] = useState(false);
+  const autoSyncKeyRef = useRef<string | null>(null);
   const range = useMemo(
     () =>
       viewMode === "month"
@@ -53,7 +92,13 @@ export function ScheduleScreen() {
     view: viewMode,
     baseDate: toDateKey(anchorDate),
     timeZone: screenTimeZone,
+    visibility,
+    sourceType: "ALL",
   });
+  const googleStatusQuery = useGoogleCalendarStatus();
+  const startGoogleCalendarConnectMutation =
+    useStartGoogleCalendarConnectMutation();
+  const syncGoogleCalendarMutation = useSyncGoogleCalendarMutation();
   const schedules = useMemo(
     () => schedulesQuery.data?.items ?? [],
     [schedulesQuery.data?.items],
@@ -67,6 +112,82 @@ export function ScheduleScreen() {
     () => toDateKey(getWeekStart(anchorDate)),
     [anchorDate],
   );
+  const isManualSyncCoolingDown = manualSyncCooldownUntil > Date.now();
+
+  useEffect(() => {
+    const result = searchParams.get("googleCalendar");
+
+    if (!result) {
+      return;
+    }
+
+    const nextSearchParams = new URLSearchParams(searchParams);
+    nextSearchParams.delete("googleCalendar");
+    setSearchParams(nextSearchParams, { replace: true });
+
+    if (result === "connected") {
+      setNotice("Google Calendar가 연결됐어요.");
+      setGoogleActionError(null);
+      void googleStatusQuery.refetch();
+      return;
+    }
+
+    setNotice(null);
+    setGoogleActionError(
+      result === "denied"
+        ? "Google Calendar 연결 권한이 거절됐어요."
+        : "Google Calendar와 연결하지 못했어요. 다시 시도해 주세요.",
+    );
+  }, [googleStatusQuery, searchParams, setSearchParams]);
+
+  useEffect(() => {
+    if (manualSyncCooldownUntil <= Date.now()) {
+      return;
+    }
+
+    const timeoutId = window.setTimeout(
+      () => setManualSyncCooldownUntil(0),
+      manualSyncCooldownUntil - Date.now(),
+    );
+
+    return () => window.clearTimeout(timeoutId);
+  }, [manualSyncCooldownUntil]);
+
+  useEffect(() => {
+    const status = googleStatusQuery.data;
+
+    if (
+      !status?.autoSync.shouldSyncOnScheduleEntry ||
+      syncGoogleCalendarMutation.isPending
+    ) {
+      return;
+    }
+
+    const syncKey = [
+      status.connection?.providerAccountEmail ?? "",
+      status.connection?.lastSyncedAt ?? "",
+      status.connection?.lastSyncStartedAt ?? "",
+      status.connection?.lastSyncFailedAt ?? "",
+      status.autoSync.nextAutoSyncAvailableAt ?? "",
+    ].join("|");
+
+    if (autoSyncKeyRef.current === syncKey) {
+      return;
+    }
+
+    autoSyncKeyRef.current = syncKey;
+    void syncGoogleCalendarMutation
+      .mutateAsync({ trigger: "AUTO" })
+      .then(() => {
+        setGoogleActionError(null);
+        setNotice("마지막 동기화를 방금 갱신했어요.");
+      })
+      .catch(() => {
+        setGoogleActionError(
+          "Google Calendar와 연결하지 못했어요. 다시 시도해 주세요.",
+        );
+      });
+  }, [googleStatusQuery.data, syncGoogleCalendarMutation]);
 
   const openCreateDialog = (startAt: Date | null = null) => {
     setSelectedSchedule(null);
@@ -96,6 +217,38 @@ export function ScheduleScreen() {
     setIsTodayPressed(true);
     window.setTimeout(() => setIsTodayPressed(false), 180);
     setAnchorDate(new Date());
+  };
+
+  const connectGoogleCalendar = async () => {
+    setGoogleActionError(null);
+
+    try {
+      const response = await startGoogleCalendarConnectMutation.mutateAsync({
+        returnTo: "/app/schedules",
+      });
+      window.location.assign(response.connectUrl);
+    } catch (error) {
+      setGoogleActionError(getApiErrorMessage(error));
+    }
+  };
+
+  const syncGoogleCalendar = async () => {
+    if (syncGoogleCalendarMutation.isPending || isManualSyncCoolingDown) {
+      return;
+    }
+
+    setGoogleActionError(null);
+
+    try {
+      await syncGoogleCalendarMutation.mutateAsync({ trigger: "MANUAL" });
+      setNotice("마지막 동기화를 방금 갱신했어요.");
+    } catch {
+      setGoogleActionError(
+        "Google Calendar와 연결하지 못했어요. 다시 시도해 주세요.",
+      );
+    } finally {
+      setManualSyncCooldownUntil(Date.now() + 10_000);
+    }
   };
 
   return (
@@ -160,6 +313,20 @@ export function ScheduleScreen() {
             {notice}
           </p>
         ) : null}
+
+        <GoogleCalendarStatusRow
+          actionError={googleActionError}
+          isConnectPending={startGoogleCalendarConnectMutation.isPending}
+          isSyncCoolingDown={isManualSyncCoolingDown}
+          isSyncPending={syncGoogleCalendarMutation.isPending}
+          onConnect={() => void connectGoogleCalendar()}
+          onSync={() => void syncGoogleCalendar()}
+          status={googleStatusQuery.data}
+          statusError={googleStatusQuery.error}
+          statusLoading={googleStatusQuery.isLoading}
+          visibility={visibility}
+          onVisibilityChange={setVisibility}
+        />
 
         {schedulesQuery.isLoading ? (
           <CalendarSkeleton />
@@ -297,6 +464,145 @@ function ScheduleViewModeSelect({
           })}
         </div>
       ) : null}
+    </div>
+  );
+}
+
+function GoogleCalendarStatusRow({
+  status,
+  statusLoading,
+  statusError,
+  actionError,
+  isConnectPending,
+  isSyncPending,
+  isSyncCoolingDown,
+  visibility,
+  onConnect,
+  onSync,
+  onVisibilityChange,
+}: {
+  readonly status: GoogleCalendarStatusResponse | undefined;
+  readonly statusLoading: boolean;
+  readonly statusError: unknown;
+  readonly actionError: string | null;
+  readonly isConnectPending: boolean;
+  readonly isSyncPending: boolean;
+  readonly isSyncCoolingDown: boolean;
+  readonly visibility: ScheduleVisibility;
+  readonly onConnect: () => void;
+  readonly onSync: () => void;
+  readonly onVisibilityChange: (value: ScheduleVisibility) => void;
+}) {
+  const connection = status?.connection ?? null;
+  const isConnected = Boolean(
+    status?.connected && connection?.status === "CONNECTED",
+  );
+  const requiresReconnect = connection?.status === "RECONNECT_REQUIRED";
+  const accountLabel = connection?.providerAccountEmail ?? "Google Calendar";
+  const statusLabel = statusLoading
+    ? "상태 확인 중"
+    : requiresReconnect
+      ? "재연결 필요"
+      : isConnected
+        ? "연결됨"
+        : "연결 안 됨";
+  const detailLabel = isConnected
+    ? `${status?.selectedCalendarCount ?? 0}/${status?.availableCalendarCount ?? 0}개 선택 · ${
+        connection?.lastSyncedAt
+          ? `마지막 ${formatStatusDateTime(connection.lastSyncedAt)}`
+          : "동기화 전"
+      }`
+    : accountLabel;
+  const syncDisabled = !isConnected || isSyncPending || isSyncCoolingDown;
+
+  return (
+    <div className="grid gap-2 rounded-md border border-[#E2E5EC] bg-[#F8FAFC] px-3 py-2 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center">
+      <div className="flex min-w-0 flex-wrap items-center gap-x-3 gap-y-2">
+        <span
+          className={`inline-flex h-7 shrink-0 items-center gap-1.5 rounded-md border px-2 text-[12px] font-semibold ${
+            isConnected
+              ? "border-[#BBF7D0] bg-[#F0FDF4] text-[#047857]"
+              : requiresReconnect
+                ? "border-[#FDE68A] bg-[#FFFBEB] text-[#92400E]"
+                : "border-[#CBD5E1] bg-white text-[#475569]"
+          }`}
+        >
+          {statusLoading ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : null}
+          {statusLabel}
+        </span>
+        <span className="min-w-0 truncate text-[12px] font-medium text-[#374151]">
+          {statusError ? getApiErrorMessage(statusError) : detailLabel}
+        </span>
+        {actionError ? (
+          <span className="min-w-0 break-words text-[12px] font-medium text-[#B91C1C]">
+            {actionError}
+          </span>
+        ) : null}
+      </div>
+
+      <div className="flex min-w-0 flex-wrap items-center gap-2">
+        <div className="inline-flex h-9 overflow-hidden rounded-md border border-[#D7DCE5] bg-white">
+          {visibilityOptions.map((option) => {
+            const selected = option.value === visibility;
+
+            return (
+              <button
+                aria-pressed={selected}
+                className={`min-w-[76px] px-2 text-[12px] font-medium transition sm:min-w-[96px] ${
+                  selected
+                    ? "bg-[#111827] text-white"
+                    : "text-[#475569] hover:bg-[#F1F5F9]"
+                }`}
+                key={option.value}
+                onClick={() => onVisibilityChange(option.value)}
+                type="button"
+              >
+                {option.label}
+              </button>
+            );
+          })}
+        </div>
+
+        {isConnected ? (
+          <>
+            <button
+              aria-busy={isSyncPending}
+              className="inline-flex h-9 items-center gap-1.5 rounded-md border border-[#D7DCE5] bg-white px-3 text-[12px] font-semibold text-[#374151] transition hover:bg-[#F1F5F9] disabled:cursor-not-allowed disabled:opacity-60"
+              disabled={syncDisabled}
+              onClick={onSync}
+              type="button"
+            >
+              {isSyncPending ? (
+                <Loader2 className="h-3.5 w-3.5 animate-spin" />
+              ) : (
+                <RefreshCw className="h-3.5 w-3.5" />
+              )}
+              동기화
+            </button>
+            <Link
+              className="grid h-9 w-9 place-items-center rounded-md border border-[#D7DCE5] bg-white text-[#475569] transition hover:bg-[#F1F5F9]"
+              title="Google Calendar 설정"
+              to="/app/settings"
+            >
+              <Settings2 className="h-3.5 w-3.5" />
+            </Link>
+          </>
+        ) : (
+          <button
+            className="inline-flex h-9 items-center gap-1.5 rounded-md border border-[#2563EB] bg-[#2563EB] px-3 text-[12px] font-semibold text-white transition hover:bg-[#1D4ED8] disabled:cursor-not-allowed disabled:opacity-60"
+            disabled={isConnectPending || statusLoading}
+            onClick={onConnect}
+            type="button"
+          >
+            {isConnectPending ? (
+              <Loader2 className="h-3.5 w-3.5 animate-spin" />
+            ) : (
+              <ExternalLink className="h-3.5 w-3.5" />
+            )}
+            {requiresReconnect ? "재연결" : "연결"}
+          </button>
+        )}
+      </div>
     </div>
   );
 }
@@ -459,23 +765,47 @@ function SchedulePill({
   readonly onClick: () => void;
 }) {
   const tone = getScheduleTone(schedule.id);
+  const openSchedule = () => onClick();
+  const openScheduleByKeyboard = (
+    event: ReactKeyboardEvent<HTMLDivElement>,
+  ) => {
+    if (event.target !== event.currentTarget) {
+      return;
+    }
+
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      openSchedule();
+    }
+  };
 
   return (
-    <button
-      className={`grid min-h-9 rounded-md border px-1.5 py-1 text-left transition lg:min-h-11 lg:px-2 lg:py-1.5 ${tone.pill}`}
+    <div
+      aria-label={`${schedule.scheduleTitle} 일정 열기`}
+      className={`grid min-h-9 cursor-pointer grid-cols-[minmax(0,1fr)_auto] items-start gap-1 rounded-md border px-1.5 py-1 transition focus:outline-none focus:ring-2 focus:ring-[#93C5FD] lg:min-h-11 lg:px-2 lg:py-1.5 ${tone.pill}`}
       onClick={(event) => {
         event.stopPropagation();
-        onClick();
+        openSchedule();
       }}
-      type="button"
+      onKeyDown={openScheduleByKeyboard}
+      role="button"
+      tabIndex={0}
     >
-      <span className={`truncate text-[11px] font-semibold lg:text-xs ${tone.title}`}>
-        {formatScheduleTime(schedule, timeZone)} {schedule.scheduleTitle}
+      <span className="min-w-0 text-left">
+        <span
+          className={`block truncate text-[11px] font-semibold lg:text-xs ${tone.title}`}
+        >
+          {formatScheduleTime(schedule, timeZone)} {schedule.scheduleTitle}
+        </span>
+        <span className="mt-0.5 flex min-w-0 items-center gap-1">
+          <ScheduleSourceBadge compact schedule={schedule} />
+          <span className="min-w-0 truncate text-[11px] text-[#6B7280]">
+            {formatScheduleContext(schedule)}
+          </span>
+        </span>
       </span>
-      <span className="truncate text-[11px] text-[#6B7280]">
-        {formatScheduleContext(schedule)}
-      </span>
-    </button>
+      <MeetingUrlLink compact meetingUrl={schedule.meetingUrl} />
+    </div>
   );
 }
 
@@ -489,30 +819,104 @@ function ScheduleCard({
   readonly onClick: () => void;
 }) {
   const tone = getScheduleTone(schedule.id);
+  const openSchedule = () => onClick();
+  const openScheduleByKeyboard = (
+    event: ReactKeyboardEvent<HTMLElement>,
+  ) => {
+    if (event.target !== event.currentTarget) {
+      return;
+    }
+
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      openSchedule();
+    }
+  };
 
   return (
-    <button
-      className={`grid gap-2 rounded-lg border bg-white p-3 text-left transition ${tone.card}`}
-      onClick={onClick}
-      type="button"
+    <article
+      aria-label={`${schedule.scheduleTitle} 일정 열기`}
+      className={`grid cursor-pointer gap-2 rounded-lg border bg-white p-3 text-left transition focus:outline-none focus:ring-2 focus:ring-[#93C5FD] ${tone.card}`}
+      onClick={openSchedule}
+      onKeyDown={openScheduleByKeyboard}
+      role="button"
+      tabIndex={0}
     >
-      <div className="min-w-0">
-        <p className={`truncate text-sm font-semibold ${tone.title}`}>
-          {schedule.scheduleTitle}
-        </p>
-        <p className="mt-1 text-xs text-muted-foreground">
-          {formatScheduleTimeRange(schedule, timeZone)}
-        </p>
+      <div className="flex min-w-0 items-start justify-between gap-2">
+        <div className="min-w-0 text-left">
+          <span className={`block truncate text-sm font-semibold ${tone.title}`}>
+            {schedule.scheduleTitle}
+          </span>
+          <span className="mt-1 block text-xs text-muted-foreground">
+            {formatScheduleTimeRange(schedule, timeZone)}
+          </span>
+        </div>
+        <MeetingUrlLink meetingUrl={schedule.meetingUrl} />
       </div>
-      <p className="truncate text-xs text-slate-700">
-        {formatScheduleContext(schedule)}
-      </p>
+      <div className="flex min-w-0 flex-wrap items-center gap-1.5">
+        <ScheduleSourceBadge schedule={schedule} />
+        <span className="min-w-0 truncate text-xs text-slate-700">
+          {formatScheduleContext(schedule)}
+        </span>
+      </div>
       {schedule.location ? (
         <p className="truncate text-xs text-muted-foreground">
           {schedule.location}
         </p>
       ) : null}
-    </button>
+    </article>
+  );
+}
+
+function ScheduleSourceBadge({
+  schedule,
+  compact = false,
+}: {
+  readonly schedule: Pick<Schedule, "sourceType" | "googleCalendar">;
+  readonly compact?: boolean;
+}) {
+  const label = getScheduleSourceBadgeLabel(schedule);
+
+  if (!label) {
+    return null;
+  }
+
+  return (
+    <span
+      className={`inline-flex shrink-0 items-center rounded border font-semibold ${getScheduleSourceBadgeClassName(
+        schedule,
+      )} ${compact ? "h-4 px-1 text-[10px]" : "h-5 px-1.5 text-[11px]"}`}
+    >
+      {label}
+    </span>
+  );
+}
+
+function MeetingUrlLink({
+  meetingUrl,
+  compact = false,
+}: {
+  readonly meetingUrl: string | null;
+  readonly compact?: boolean;
+}) {
+  if (!meetingUrl) {
+    return null;
+  }
+
+  return (
+    <a
+      aria-label={`${getUrlDomainLabel(meetingUrl)} 열기`}
+      className={`grid shrink-0 place-items-center rounded-md border border-[#D7DCE5] bg-white text-[#475569] transition hover:bg-[#F1F5F9] hover:text-[#111827] ${
+        compact ? "h-6 w-6" : "h-8 w-8"
+      }`}
+      href={meetingUrl}
+      onClick={(event) => event.stopPropagation()}
+      rel="noopener noreferrer"
+      target="_blank"
+      title={getUrlDomainLabel(meetingUrl)}
+    >
+      <ExternalLink className={compact ? "h-3 w-3" : "h-3.5 w-3.5"} />
+    </a>
   );
 }
 
@@ -707,28 +1111,26 @@ function formatMonthDay(date: Date) {
 }
 
 function formatScheduleTime(schedule: Schedule, timeZone: string) {
-  return formatDateWithOptions(schedule.startAt, {
-    hour: "2-digit",
-    minute: "2-digit",
-    timeZone,
-  });
+  return formatScheduleClockText(schedule, timeZone);
 }
 
 function formatScheduleTimeRange(schedule: Schedule, timeZone: string) {
-  return `${formatScheduleTime(schedule, timeZone)} - ${formatDateWithOptions(
-    schedule.endAt,
-    {
-      hour: "2-digit",
-      minute: "2-digit",
-      timeZone,
-    },
-  )}`;
+  return formatScheduleClockRange(schedule, timeZone);
 }
 
 function formatScheduleContext(schedule: Schedule) {
   return (
     schedule.deals.map((deal) => deal.dealName).join(" · ") || "연결 딜 없음"
   );
+}
+
+function formatStatusDateTime(value: string) {
+  return formatDateWithOptions(value, {
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
 }
 
 function pad(value: number) {

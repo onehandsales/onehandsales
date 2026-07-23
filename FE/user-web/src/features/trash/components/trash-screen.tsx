@@ -81,6 +81,7 @@ const domainOptions: readonly {
   { value: "CONTACT", label: "담당자" },
   { value: "PRODUCT", label: "제품" },
   { value: "DEAL", label: "딜" },
+  { value: "SCHEDULE", label: "일정" },
   { value: "MEETING_NOTE", label: "회의록" },
 ];
 
@@ -107,6 +108,7 @@ const domainLabels: Record<Exclude<TrashDomainFilter, "ALL">, string> = {
   CONTACT: "담당자",
   PRODUCT: "제품",
   DEAL: "딜",
+  SCHEDULE: "일정",
   MEETING_NOTE: "회의록",
 };
 
@@ -124,6 +126,12 @@ const targetMeta: Record<
   CONTACT: { label: "담당자", icon: UserRound, domain: "CONTACT", kind: "ENTITY" },
   PRODUCT: { label: "제품", icon: Package, domain: "PRODUCT", kind: "ENTITY" },
   DEAL: { label: "딜", icon: BriefcaseBusiness, domain: "DEAL", kind: "ENTITY" },
+  SCHEDULE: {
+    label: "일정",
+    icon: CalendarClock,
+    domain: "SCHEDULE",
+    kind: "ENTITY",
+  },
   MEETING_NOTE: {
     label: "회의록",
     icon: ClipboardList,

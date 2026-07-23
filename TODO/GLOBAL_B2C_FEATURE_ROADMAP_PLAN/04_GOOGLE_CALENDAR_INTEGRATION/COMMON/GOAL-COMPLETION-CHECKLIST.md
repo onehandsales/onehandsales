@@ -25,7 +25,7 @@
 | [x] | G01 Planning API DB Contract | Done | 2026-07-23 | 문서 계약과 현재 코드 사실을 대조하고, G02~G05 착수 blocking 질문이 없음을 확인한다. | G01 `rg ...` 검색, `git diff --check` 통과 | API spec token encryption missing-key 계약 보정 |
 | [x] | G02 Backend DB Google Connection | Done | 2026-07-23 | DB foundation, Schedule soft delete, Trash `SCHEDULE`, connection/status/connect/callback/disconnect API가 spec과 일치한다. | `prisma:validate`, `prisma:migrate --name google_calendar_integration`, `typecheck`, `lint`, `test -- schedule`, `test -- notification`, `test -- trash`, `build` 통과 | 실제 Google provider smoke는 G05에서 실행 여부를 기록한다. |
 | [x] | G03 Backend Calendar List Sync | Done | 2026-07-23 | calendar list/selection/sync, Google event mapping, 기존 Schedule/Weekly API 확장이 spec과 일치한다. | `prisma:validate`, `typecheck`, `lint`, `test -- schedule`, `test -- notification`, `build`, `git diff --check` 통과 | 실제 Google provider smoke는 G05에서 수행 여부를 기록한다. |
-| [ ] | G04 User Web Google Calendar UX | Ready | - | `/app/schedules`, `/app/settings`, detail/week/trash UX가 FE TODO와 API 계약에 맞게 연결된다. | - | desktop/mobile text overlap 확인이 필요하다. |
+| [x] | G04 User Web Google Calendar UX | Done | 2026-07-23 | `/app/schedules`, `/app/settings`, detail/week/trash UX가 FE TODO와 API 계약에 맞게 연결됐다. | `typecheck`, `lint`, `build`, `playwright google-calendar-ux`, `playwright weekly-schedule-report-ux`, `git diff --check` 통과 | Vite dev server `http://localhost:5173` 확인. 실제 Google provider smoke는 G05에서 실행 여부를 기록한다. |
 | [ ] | G05 QA Review Closeout | Ready | - | `COMMON/REVIEW-CHECKLIST.md` critical 항목과 BE/FE 검증 명령이 완료되고 문서 상태가 갱신된다. | - | 실제 Google smoke 실행 여부 또는 미실행 사유를 기록한다. |
 
 ## 4. Goal별 체크 조건
@@ -64,16 +64,16 @@
 
 ### G04 User Web Google Calendar UX
 
-- [ ] schedule API client/type/schema/query key가 확장됐다.
-- [ ] `/app/schedules`에 connection/status/manual sync/hidden filter가 연결됐다.
-- [ ] `/app/settings`에 reconnect/manage calendars/disconnect가 연결됐다.
-- [ ] calendar selection modal이 동작한다.
-- [ ] OAuth redirect result를 시작 화면에서 처리한다.
-- [ ] meeting URL 표시/수정/validation이 동작한다.
-- [ ] source badge 4종 문구가 확정값과 일치한다.
-- [ ] Google-origin all-day schedule이 `종일`로 표시된다.
-- [ ] `/app/trash`에서 `SCHEDULE` 복구가 동작한다.
-- [ ] FE 검증 명령과 desktop/mobile 수동 확인을 실행했다.
+- [x] schedule API client/type/schema/query key가 확장됐다.
+- [x] `/app/schedules`에 connection/status/manual sync/hidden filter가 연결됐다.
+- [x] `/app/settings`에 reconnect/manage calendars/disconnect가 연결됐다.
+- [x] calendar selection modal이 동작한다.
+- [x] OAuth redirect result를 시작 화면에서 처리한다.
+- [x] meeting URL 표시/수정/validation이 동작한다.
+- [x] source badge 4종 문구가 확정값과 일치한다.
+- [x] Google-origin all-day schedule이 `종일`로 표시된다.
+- [x] `/app/trash`에서 `SCHEDULE` 복구가 동작한다.
+- [x] FE 검증 명령과 desktop/mobile 수동 확인을 실행했다.
 
 ### G05 QA Review Closeout
 

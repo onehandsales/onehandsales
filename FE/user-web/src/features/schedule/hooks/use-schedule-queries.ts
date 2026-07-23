@@ -1,6 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
 import {
+  getGoogleCalendarStatus,
   getSchedule,
+  listGoogleCalendars,
   listWeeklyScheduleReport,
   listScheduleDealOptions,
   listSchedules,
@@ -15,6 +17,21 @@ export function useScheduleDealOptions() {
   return useQuery({
     queryKey: scheduleQueryKeys.dealOptions(),
     queryFn: listScheduleDealOptions,
+  });
+}
+
+export function useGoogleCalendarStatus() {
+  return useQuery({
+    queryKey: scheduleQueryKeys.googleStatus(),
+    queryFn: getGoogleCalendarStatus,
+  });
+}
+
+export function useGoogleCalendars(enabled = true) {
+  return useQuery({
+    enabled,
+    queryKey: scheduleQueryKeys.googleCalendars(),
+    queryFn: listGoogleCalendars,
   });
 }
 
