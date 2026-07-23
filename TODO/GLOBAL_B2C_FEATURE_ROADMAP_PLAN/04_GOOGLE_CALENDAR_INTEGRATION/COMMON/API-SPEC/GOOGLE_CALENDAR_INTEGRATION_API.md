@@ -1,7 +1,7 @@
 # Google Calendar Integration API
 
 상태: confirmed
-최종 업데이트: 2026-07-22
+최종 업데이트: 2026-07-23
 소비자: User Web
 호환성: 신규 Google Calendar API + 기존 Schedule/Trash API 확장
 아키텍처/UXUI 기준: `../ARCHITECTURE-GUARDRAILS.md`
@@ -83,6 +83,18 @@
 - invalid `returnTo`는 `/app/schedules`로 fallback한다.
 - OAuth state에는 user id, returnTo, nonce, issuedAt, expiresAt을 넣고 서명한다.
 - state TTL은 10분이다.
+
+### Token encryption
+
+- Google Calendar access token과 refresh token은 암호화 저장한다.
+- token encryption key는 아래 우선순위로 읽는다.
+  1. `GOOGLE_CALENDAR_TOKEN_ENCRYPTION_KEY`
+  2. `ENCRYPTION_MASTER_KEY`
+- token encryption key version은 아래 우선순위로 읽는다.
+  1. `GOOGLE_CALENDAR_TOKEN_ENCRYPTION_KEY_VERSION`
+  2. `ENCRYPTION_KEY_VERSION`
+- 두 encryption key가 모두 없으면 앱 부팅은 허용하되 Google Calendar connect/callback/sync/disconnect API는 500 `GoogleCalendarTokenEncryptionKeyMissing`으로 실패한다.
+- token, authorization code, provider raw response body는 response/log/test snapshot에 남기지 않는다.
 
 ### Sync range
 
@@ -941,6 +953,7 @@ Business logic:
 | provider auth failure | 409 | `GoogleCalendarReconnectRequired` | Google Calendar를 다시 연결해 주세요. |
 | provider transient failure | 502 | `GoogleCalendarProviderUnavailable` | Google Calendar와 연결하지 못했어요. 잠시 후 다시 시도해 주세요. |
 | sync 진행 중 | 409 | `GoogleCalendarSyncInProgress` | Google Calendar 동기화가 이미 진행 중이에요. |
+| token encryption key 없음 | 500 | `GoogleCalendarTokenEncryptionKeyMissing` | Google Calendar 연결 설정을 확인해 주세요. |
 | meeting URL invalid | 400 | `ScheduleMeetingUrlInvalid` | `https://`로 시작하는 링크를 입력해 주세요. |
 | schedule 없음 또는 타 사용자 | 404 | `ScheduleNotFound` | 일정을 찾을 수 없어요. |
 

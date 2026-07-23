@@ -22,7 +22,7 @@
 
 | 완료 | Goal | 상태 | 완료일 | 완료 기준 | 증거 | 비고 |
 |---|---|---|---|---|---|---|
-| [ ] | G01 Planning API DB Contract | Ready | - | 문서 계약과 현재 코드 사실을 대조하고, G02~G05 착수 blocking 질문이 없음을 확인한다. | - | 문서 보정이 있으면 변경 파일을 남긴다. |
+| [x] | G01 Planning API DB Contract | Done | 2026-07-23 | 문서 계약과 현재 코드 사실을 대조하고, G02~G05 착수 blocking 질문이 없음을 확인한다. | G01 `rg ...` 검색, `git diff --check` 통과 | API spec token encryption missing-key 계약 보정 |
 | [ ] | G02 Backend DB Google Connection | Ready | - | DB foundation, Schedule soft delete, Trash `SCHEDULE`, connection/status/connect/callback/disconnect API가 spec과 일치한다. | - | Prisma migration과 BE 검증 결과가 필요하다. |
 | [ ] | G03 Backend Calendar List Sync | Ready | - | calendar list/selection/sync, Google event mapping, 기존 Schedule/Weekly API 확장이 spec과 일치한다. | - | selected calendar only, `LOCAL_MODIFIED`, all-day, reminder 테스트가 필요하다. |
 | [ ] | G04 User Web Google Calendar UX | Ready | - | `/app/schedules`, `/app/settings`, detail/week/trash UX가 FE TODO와 API 계약에 맞게 연결된다. | - | desktop/mobile text overlap 확인이 필요하다. |
@@ -32,12 +32,12 @@
 
 ### G01 Planning API DB Contract
 
-- [ ] `COMMON/SCOPE.md`, `COMMON/API-SPEC/GOOGLE_CALENDAR_INTEGRATION_API.md`, `COMMON/ARCHITECTURE-GUARDRAILS.md`를 재확인했다.
-- [ ] 현재 `Schedule`, `Trash`, `Notification`, User Web schedule/settings 구조를 확인했다.
-- [ ] API path, enum, 상태명, badge 문구, error code 충돌이 없다.
-- [ ] 현재 코드와 충돌하는 부분은 구현해야 할 변경으로 문서에 명시되어 있다.
-- [ ] G02~G05 구현 착수를 막는 질문이 없다.
-- [ ] G01 검증 검색과 `git diff --check`를 실행했다.
+- [x] `COMMON/SCOPE.md`, `COMMON/API-SPEC/GOOGLE_CALENDAR_INTEGRATION_API.md`, `COMMON/ARCHITECTURE-GUARDRAILS.md`를 재확인했다.
+- [x] 현재 `Schedule`, `Trash`, `Notification`, User Web schedule/settings 구조를 확인했다.
+- [x] API path, enum, 상태명, badge 문구, error code 충돌이 없다.
+- [x] 현재 코드와 충돌하는 부분은 구현해야 할 변경으로 문서에 명시되어 있다.
+- [x] G02~G05 구현 착수를 막는 질문이 없다.
+- [x] G01 검증 검색과 `git diff --check`를 실행했다.
 
 ### G02 Backend DB Google Connection
 

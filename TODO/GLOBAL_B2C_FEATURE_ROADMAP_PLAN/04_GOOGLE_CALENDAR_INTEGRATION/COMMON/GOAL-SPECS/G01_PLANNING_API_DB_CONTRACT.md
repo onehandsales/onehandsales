@@ -1,6 +1,7 @@
 # G01 Planning API DB Contract
 
-상태: Ready
+상태: Done
+완료일: 2026-07-23
 
 ## 1. 목적
 
@@ -73,3 +74,18 @@ git diff --check
 - 문서 간 API path, enum, 상태명, badge 문구가 일치한다.
 - 현재 코드와 충돌하는 부분은 "구현해야 할 변경"으로 문서에 명시되어 있다.
 - 필요한 문서 보정이 끝났다.
+
+## 9. 완료 결과
+
+- 선행 문서 `COMMON/SCOPE.md`, `COMMON/API-SPEC/GOOGLE_CALENDAR_INTEGRATION_API.md`, `COMMON/ARCHITECTURE-GUARDRAILS.md`, `COMMON/REVIEW-CHECKLIST.md`, `BE-TODO/*`, `FE-TODO/*`를 재확인했다.
+- 현재 코드 사실을 확인했다.
+  - `BE/prisma/schema.prisma`의 `Schedule`에는 아직 `meetingUrl`, Google source metadata, `deletedAt`, `trashExpiresAt`이 없다.
+  - `ScheduleApplicationService.deleteSchedule`은 현재 `deleteScheduleHard` 경로를 사용한다.
+  - `BE/src/modules/trash`와 `FE/user-web/src/features/trash`의 target/domain type에는 아직 `SCHEDULE`이 없다.
+  - `BE/src/modules/notification`에는 `SCHEDULE_START_REMINDER`가 있다.
+  - `FE/user-web/src/features/schedule`은 `memo`, `dealIds`를 지원하지만 `meetingUrl`, `isAllDay`, `googleCalendar` 타입은 아직 없다.
+  - `FE/user-web/src/pages/settings`는 `/app/settings` entry point로 연결되어 있다.
+- 문서 보정:
+  - `COMMON/API-SPEC/GOOGLE_CALENDAR_INTEGRATION_API.md`에 token encryption key 우선순위와 500 `GoogleCalendarTokenEncryptionKeyMissing` error contract를 추가했다.
+- G02~G05 구현 착수를 막는 blocking 질문은 없다.
+- G01 검증 검색과 `git diff --check`를 실행했다.
