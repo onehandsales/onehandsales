@@ -403,7 +403,7 @@ export class PrismaTrashRepository implements TrashRepository {
     });
   }
 
-  // 기능 : 삭제된 회의록의 상세 모달 데이터를 조회합니다.
+  // 기능 : 삭제된 일정의 상세 모달 데이터를 조회합니다.
   private async getScheduleDetail(
     input: GetTrashDetailInput
   ): Promise<TrashDetail | null> {
@@ -451,23 +451,23 @@ export class PrismaTrashRepository implements TrashRepository {
       title: schedule.scheduleTitle,
       deletedAt: schedule.deletedAt,
       trashExpiresAt: schedule.trashExpiresAt,
-      summary: `${schedule.scheduleTitle} schedule`,
+      summary: `${schedule.scheduleTitle} 일정 데이터`,
       fields: [
         this.createField(
-          "Schedule time",
+          "일정 시간",
           this.formatScheduleDateTimeRange(
             schedule.startAt,
             schedule.endAt,
             schedule.timeZone
           )
         ),
-        this.createField("Location", schedule.location),
+        this.createField("장소", schedule.location),
         this.createField("출처", this.createScheduleSourceLabel(schedule)),
         this.createField(
           "미팅 링크",
           this.formatMeetingUrl(schedule.meetingUrl)
         ),
-        this.createField("Linked deals", schedule._count.scheduleDeals),
+        this.createField("연결 딜", schedule._count.scheduleDeals),
       ],
       content: schedule.memo,
     });
@@ -971,9 +971,9 @@ export class PrismaTrashRepository implements TrashRepository {
         readonly status: string;
       };
     } | null;
-  }) {
+    }) {
     if (schedule.sourceType !== "GOOGLE") {
-      return "Internal";
+      return "한손";
     }
 
     if (schedule.externalSyncStatus === "LOCAL_DELETED") {

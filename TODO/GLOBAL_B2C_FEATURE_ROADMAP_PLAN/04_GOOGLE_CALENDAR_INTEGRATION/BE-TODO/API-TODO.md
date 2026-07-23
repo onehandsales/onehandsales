@@ -1,7 +1,7 @@
 # Backend API TODO
 
-상태: Confirmed
-최종 업데이트: 2026-07-22
+상태: Done
+최종 업데이트: 2026-07-23
 상세 계약: `../COMMON/API-SPEC/GOOGLE_CALENDAR_INTEGRATION_API.md`
 
 ## 1. 신규 Google Calendar API

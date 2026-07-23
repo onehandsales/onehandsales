@@ -1,6 +1,6 @@
 # G05 QA Review Closeout
 
-상태: Ready
+상태: Done
 
 ## 1. 목적
 

@@ -353,7 +353,7 @@ export class PrismaScheduleRepository implements ScheduleRepository {
     });
   }
 
-  // 기능 : 현재 사용자의 일정과 연결 정보를 실제 삭제합니다.
+  // 기능 : 현재 사용자의 일정을 휴지통 복구 가능 상태로 표시합니다.
   async softDeleteSchedule(input: SoftDeleteScheduleInput): Promise<boolean> {
     const deleted = await this.client.schedule.updateMany({
       where: {

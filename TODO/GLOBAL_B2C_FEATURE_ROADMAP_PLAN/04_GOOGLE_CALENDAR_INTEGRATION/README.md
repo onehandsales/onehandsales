@@ -1,23 +1,23 @@
 # 04 Google Calendar Integration
 
-상태: Goal Ready
+상태: Done
 순서: 04
 성격: Google Calendar read-only import + 한손 일정 운영 UX
-결정 상태: 2026-07-22 사용자 결정 반영 완료
+결정 상태: 2026-07-23 G05 QA closeout 완료
 구현 기준: `COMMON/GOAL-WORK-ORDER.md`
 
 ## 1. 목적
 
 사용자가 Google Calendar와 연결해 외부 일정을 한손 일정으로 가져오고, 가져온 일정을 딜/메모/알림과 함께 영업 업무 흐름 안에서 관리할 수 있게 한다.
 
-## 2. 현재 상태
+## 2. 완료 상태
 
-- 일정 CRUD와 월/주 calendar view는 구현되어 있다.
-- 현재 일정 생성/수정은 `memo`, `dealIds`를 지원한다.
-- 현재 일정 삭제는 hard delete다. 04에서 `Schedule`도 휴지통 기반 soft delete로 바꾼다.
-- 현재 `Schedule`에는 Google source, external event id, meeting URL, `deletedAt`, `trashExpiresAt`이 없다.
-- 현재 알림에는 `SCHEDULE_START_REMINDER`가 있고, 일정 생성/수정/삭제 시 reminder 생성/취소 use case가 연결되어 있다.
-- 현재 Google login OAuth와 Calendar 연결 scope는 분리되어야 한다.
+- G01~G05가 완료됐다.
+- Google Calendar read-only import, calendar 선택, sync, source badge, meeting URL, all-day 표시가 구현됐다.
+- 모든 Schedule 삭제는 휴지통 기반 soft delete로 동작하고 `SCHEDULE` Trash list/detail/restore가 연결됐다.
+- Google-origin schedule도 딜/메모/로컬 필드 수정과 한손 `SCHEDULE_START_REMINDER` 대상이다.
+- 자동 테스트와 코드 검증으로 Done 판정을 완료했다.
+- 실제 Google provider smoke는 env 미준비로 미실행했다. G05 work log에 사유를 기록했다.
 
 ## 3. 확정 범위
 

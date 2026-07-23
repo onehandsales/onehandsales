@@ -9,7 +9,7 @@
 - [x] 01 `01_IMPORT_JOB_PERSISTENCE`: Done (2026-07-21)
 - [x] 02 `02_NOTIFICATION_REMINDER`: Done (2026-07-22)
 - [x] 03 `03_WEEKLY_SCHEDULE_REPORT`: Done (2026-07-22)
-- [ ] 04 `04_GOOGLE_CALENDAR_INTEGRATION`: Goal Ready (2026-07-22)
+- [x] 04 `04_GOOGLE_CALENDAR_INTEGRATION`: Done (2026-07-23)
 - [ ] 05 `05_AI_WEEKLY_SALES_REPORT`
 - [ ] 06 `06_DEAL_ACTIVITY_TIMELINE`
 - [ ] 07 `07_MEETING_NOTE_AI_PROVIDER_LOG`
@@ -57,7 +57,7 @@
 | 01 | `01_IMPORT_JOB_PERSISTENCE` | ImportJob 영속화 | Done: Global B2C 전 데이터 신뢰 기반 완료 |
 | 02 | `02_NOTIFICATION_REMINDER` | 알림/리마인더 | Done: 일정/딜 reminder 기반 retention loop 완료 |
 | 03 | `03_WEEKLY_SCHEDULE_REPORT` | 주간 일정 보고서 | Done: 화면 보고서와 동기식 Excel 다운로드 완료 |
-| 04 | `04_GOOGLE_CALENDAR_INTEGRATION` | Google Calendar 연동 | Goal Ready: Google read-only import, calendar 선택, sync, source badge, Schedule soft delete/Trash 계약 확정 |
+| 04 | `04_GOOGLE_CALENDAR_INTEGRATION` | Google Calendar 연동 | Done: Google read-only import, calendar 선택, sync, source badge, Schedule soft delete/Trash 구현 및 QA closeout 완료 |
 | 05 | `05_AI_WEEKLY_SALES_REPORT` | AI 주간 영업 리포트 | AI 영업 판단 기능 |
 | 06 | `06_DEAL_ACTIVITY_TIMELINE` | DealActivity 타임라인 | 딜 활동 통합 |
 | 07 | `07_MEETING_NOTE_AI_PROVIDER_LOG` | 회의록 AI/provider log 고도화 | AI 운영 신뢰 |

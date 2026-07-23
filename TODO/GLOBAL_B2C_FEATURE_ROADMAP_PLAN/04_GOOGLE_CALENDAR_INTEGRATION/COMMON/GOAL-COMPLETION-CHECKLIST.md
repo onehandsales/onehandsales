@@ -1,6 +1,6 @@
 # Goal Completion Checklist
 
-상태: Active
+상태: Done
 최종 업데이트: 2026-07-23
 
 ## 1. 목적
@@ -26,7 +26,7 @@
 | [x] | G02 Backend DB Google Connection | Done | 2026-07-23 | DB foundation, Schedule soft delete, Trash `SCHEDULE`, connection/status/connect/callback/disconnect API가 spec과 일치한다. | `prisma:validate`, `prisma:migrate --name google_calendar_integration`, `typecheck`, `lint`, `test -- schedule`, `test -- notification`, `test -- trash`, `build` 통과 | 실제 Google provider smoke는 G05에서 실행 여부를 기록한다. |
 | [x] | G03 Backend Calendar List Sync | Done | 2026-07-23 | calendar list/selection/sync, Google event mapping, 기존 Schedule/Weekly API 확장이 spec과 일치한다. | `prisma:validate`, `typecheck`, `lint`, `test -- schedule`, `test -- notification`, `build`, `git diff --check` 통과 | 실제 Google provider smoke는 G05에서 수행 여부를 기록한다. |
 | [x] | G04 User Web Google Calendar UX | Done | 2026-07-23 | `/app/schedules`, `/app/settings`, detail/week/trash UX가 FE TODO와 API 계약에 맞게 연결됐다. | `typecheck`, `lint`, `build`, `playwright google-calendar-ux`, `playwright weekly-schedule-report-ux`, `git diff --check` 통과 | Vite dev server `http://localhost:5173` 확인. 실제 Google provider smoke는 G05에서 실행 여부를 기록한다. |
-| [ ] | G05 QA Review Closeout | Ready | - | `COMMON/REVIEW-CHECKLIST.md` critical 항목과 BE/FE 검증 명령이 완료되고 문서 상태가 갱신된다. | - | 실제 Google smoke 실행 여부 또는 미실행 사유를 기록한다. |
+| [x] | G05 QA Review Closeout | Done | 2026-07-23 | `COMMON/REVIEW-CHECKLIST.md` critical 항목과 BE/FE 검증 명령이 완료되고 문서 상태가 갱신된다. | `prisma:validate`, `typecheck`, `lint`, `test -- schedule`, `test -- notification`, `test -- trash`, `test -- ownership`, `build`, FE `typecheck`, `lint`, `build`, Playwright G04/G03 통과 | 실제 Google provider smoke는 env 미준비로 미실행 |
 
 ## 4. Goal별 체크 조건
 
@@ -77,12 +77,12 @@
 
 ### G05 QA Review Closeout
 
-- [ ] Backend QA 항목을 확인했다.
-- [ ] Frontend QA 항목을 확인했다.
-- [ ] Security/Privacy QA 항목을 확인했다.
-- [ ] `COMMON/REVIEW-CHECKLIST.md` 체크 결과를 반영했다.
-- [ ] README, goal spec, planning review, 상위 roadmap 상태를 구현 결과와 맞췄다.
-- [ ] 실제 Google provider smoke 실행 여부와 미실행 사유를 기록했다.
+- [x] Backend QA 항목을 확인했다.
+- [x] Frontend QA 항목을 확인했다.
+- [x] Security/Privacy QA 항목을 확인했다.
+- [x] `COMMON/REVIEW-CHECKLIST.md` 체크 결과를 반영했다.
+- [x] README, goal spec, planning review, 상위 roadmap 상태를 구현 결과와 맞췄다.
+- [x] 실제 Google provider smoke 실행 여부와 미실행 사유를 기록했다.
 
 ## 5. 완료 시 업데이트 예시
 

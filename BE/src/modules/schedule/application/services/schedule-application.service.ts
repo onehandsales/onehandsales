@@ -638,12 +638,12 @@ export class ScheduleApplicationService {
     return this.toScheduleResponse(schedule);
   }
 
-  // 기능 : 현재 사용자의 일정을 연결 row와 함께 실제 삭제합니다.
+  // 기능 : 현재 사용자의 일정을 휴지통으로 이동합니다.
   async deleteSchedule(
     currentUser: CurrentUserContext,
     scheduleId: string
   ): Promise<void> {
-    // 1. ScheduleDeal 삭제와 Schedule hard delete를 같은 transaction에서 처리한다.
+    // 1. Schedule soft delete와 reminder 취소를 같은 transaction에서 처리한다.
     await this.scheduleRepository.runInTransaction(async (repository) => {
       const existing = await repository.findSchedule(currentUser.id, scheduleId);
 
@@ -652,7 +652,7 @@ export class ScheduleApplicationService {
         throw new ScheduleNotFoundError();
       }
 
-      // 3. 현재 사용자 소유 일정과 연결 row를 실제 삭제한다.
+      // 3. 현재 사용자 소유 일정을 soft delete 상태로 변경한다.
       const timestamps = createTrashRetentionTimestamps();
       const deleted = await repository.softDeleteSchedule({
         userId: currentUser.id,
@@ -889,7 +889,7 @@ export class ScheduleApplicationService {
     return normalized;
   }
 
-  // 기능 : 필수 timezone을 저장 가능한 IANA timezone ID로 검증합니다.
+  // 기능 : 미팅 URL을 https URL로 검증하고 저장 값으로 정규화합니다.
   private normalizeMeetingUrl(value: string | null | undefined): string | null {
     if (value === null || value === undefined) {
       return null;
