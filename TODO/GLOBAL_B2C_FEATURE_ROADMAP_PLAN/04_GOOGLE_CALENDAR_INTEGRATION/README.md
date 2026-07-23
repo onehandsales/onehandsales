@@ -80,6 +80,7 @@
 - DB Schema TODO: `BE-TODO/DB-SCHEMA.md`
 - User Web TODO: `FE-TODO/USER-WEB-TODO.md`
 - Goal 실행 순서: `COMMON/GOAL-WORK-ORDER.md`
+- Goal 완료 체크리스트: `COMMON/GOAL-COMPLETION-CHECKLIST.md`
 - Goal 상세 명세: `COMMON/GOAL-SPECS/*`
 - Planning review: `COMMON/PLANNING-REVIEW.md`
 - Review checklist: `COMMON/REVIEW-CHECKLIST.md`

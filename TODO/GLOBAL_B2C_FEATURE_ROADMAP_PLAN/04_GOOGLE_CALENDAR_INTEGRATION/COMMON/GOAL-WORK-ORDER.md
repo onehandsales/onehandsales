@@ -9,6 +9,8 @@
 
 각 `/goal`은 `COMMON/GOAL-SPECS`의 상세 명세 하나만 기준으로 실행한다.
 
+각 `/goal` 완료 시 `COMMON/GOAL-COMPLETION-CHECKLIST.md`에서 해당 goal의 완료 여부, 완료일, 검증 증거, 비고를 갱신한다.
+
 모든 `/goal`은 `COMMON/ARCHITECTURE-GUARDRAILS.md`, `COMMON/SCOPE.md`, `COMMON/API-SPEC/GOOGLE_CALENDAR_INTEGRATION_API.md`를 먼저 읽고 진행한다.
 
 DB migration을 허용한다. Prisma schema와 migration에는 한글 주석 기준을 지킨다.
