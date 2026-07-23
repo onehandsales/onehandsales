@@ -136,7 +136,7 @@ class FakeGoogleCalendarConnectionRepository
   }
 }
 
-function createService() {
+function createService(options: { readonly userWebOrigin?: string | null } = {}) {
   const repository = new FakeGoogleCalendarConnectionRepository();
   const oauthProvider: GoogleCalendarOAuthProvider = {
     createAuthorizationUrl: jest.fn((input) => {
@@ -174,9 +174,19 @@ function createService() {
     log: jest.fn(),
   } as unknown as AppLogger;
   const configService = {
-    get: jest.fn((key: string) =>
-      key === "APP_JWT_SECRET" ? "state-secret" : undefined
-    ),
+    get: jest.fn((key: string) => {
+      if (key === "APP_JWT_SECRET") {
+        return "state-secret";
+      }
+
+      if (key === "USER_WEB_ORIGIN") {
+        return options.userWebOrigin === undefined
+          ? "http://localhost:5173"
+          : options.userWebOrigin;
+      }
+
+      return undefined;
+    }),
   } as unknown as ConfigService;
   const service = new GoogleCalendarConnectionService(
     repository,
@@ -226,7 +236,9 @@ describe("GoogleCalendarConnectionService", () => {
       state,
     });
 
-    expect(result.redirectTo).toBe("/app/schedules?googleCalendar=connected");
+    expect(result.redirectTo).toBe(
+      "http://localhost:5173/app/schedules?googleCalendar=connected"
+    );
     expect(repository.upsertInput).toMatchObject({
       userId: CURRENT_USER.id,
       providerAccountId: "google-sub",
@@ -260,7 +272,9 @@ describe("GoogleCalendarConnectionService", () => {
       state,
     });
 
-    expect(result.redirectTo).toBe("/app/schedules?googleCalendar=connected");
+    expect(result.redirectTo).toBe(
+      "http://localhost:5173/app/schedules?googleCalendar=connected"
+    );
     expect(repository.upsertInput).toMatchObject({
       providerAccountId: "google-sub",
       encryptedAccessToken: "enc:access-token",
@@ -292,8 +306,25 @@ describe("GoogleCalendarConnectionService", () => {
       state,
     });
 
-    expect(result.redirectTo).toBe("/app/schedules?googleCalendar=failed");
+    expect(result.redirectTo).toBe(
+      "http://localhost:5173/app/schedules?googleCalendar=failed"
+    );
     expect(repository.upsertInput).toBeNull();
+  });
+
+  it("fails callback redirect when USER_WEB_ORIGIN is missing", async () => {
+    const { service } = createService({ userWebOrigin: null });
+    const connect = service.startConnect(CURRENT_USER, {
+      returnTo: "/app/schedules",
+    });
+    const state = new URL(connect.connectUrl).searchParams.get("state") ?? "";
+
+    await expect(
+      service.handleCallback({
+        code: "authorization-code",
+        state,
+      })
+    ).rejects.toThrow("USER_WEB_ORIGIN is missing");
   });
 
   it("rethrows callback token encryption key failures for the HTTP filter", async () => {

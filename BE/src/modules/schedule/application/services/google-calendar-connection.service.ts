@@ -478,10 +478,22 @@ export class GoogleCalendarConnectionService {
     returnTo: string,
     status: "connected" | "denied" | "failed"
   ): string {
-    const url = new URL(returnTo, "http://onehand.local");
+    const url = new URL(returnTo, this.getUserWebOrigin());
     url.searchParams.set("googleCalendar", status);
 
-    return `${url.pathname}${url.search}`;
+    return url.toString();
+  }
+
+  private getUserWebOrigin(): string {
+    const origin = this.configService.get<string>("USER_WEB_ORIGIN");
+
+    if (!origin || origin.trim().length === 0) {
+      throw new GoogleCalendarProviderUnavailableError(
+        "USER_WEB_ORIGIN is missing"
+      );
+    }
+
+    return origin.replace(/\/+$/, "");
   }
 
   private getSafeErrorCode(error: unknown): string {
