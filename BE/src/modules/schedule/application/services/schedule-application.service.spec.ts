@@ -574,6 +574,25 @@ describe("ScheduleApplicationService", () => {
     expect(repository.lastListInput?.rangeEnd.toISOString()).toBe(
       "2026-06-30T15:00:00.000Z"
     );
+    expect(repository.lastListInput?.visibility).toBe("ACTIVE");
+    expect(repository.lastListInput?.sourceType).toBe("ALL");
+  });
+
+  it("passes Google visibility and source filters to schedule repository", async () => {
+    const { repository, service } = createService();
+
+    await service.listSchedules(CURRENT_USER, {
+      view: ScheduleViewMode.WEEK,
+      baseDate: "2026-06-14",
+      timeZone: "Asia/Seoul",
+      visibility: "HIDDEN_GOOGLE",
+      sourceType: "GOOGLE",
+    });
+
+    expect(repository.lastListInput).toMatchObject({
+      visibility: "HIDDEN_GOOGLE",
+      sourceType: "GOOGLE",
+    });
   });
 
   it("weekly report query must use Monday weekStart", async () => {
@@ -738,8 +757,8 @@ describe("ScheduleApplicationService", () => {
       "요일",
       "시간",
       "일정",
-      "Source",
-      "Meeting URL",
+      "출처",
+      "미팅 링크",
       "장소",
       "딜",
       "딜단계",

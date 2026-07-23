@@ -1,11 +1,23 @@
-import { IsIn, IsOptional, IsString } from "class-validator";
+import {
+  ArrayNotEmpty,
+  ArrayUnique,
+  IsArray,
+  IsIn,
+  IsOptional,
+  IsString,
+} from "class-validator";
 import type { GoogleCalendarDisconnectScheduleAction } from "@/modules/schedule/application/ports/google-calendar-connection.repository";
+import type { GoogleCalendarSyncTrigger } from "@/modules/schedule/application/ports/google-calendar-sync.repository";
 
 const DISCONNECT_SCHEDULE_ACTIONS = [
   "KEEP",
   "HIDE",
   "TRASH",
 ] as const satisfies readonly GoogleCalendarDisconnectScheduleAction[];
+const GOOGLE_CALENDAR_SYNC_TRIGGERS = [
+  "AUTO",
+  "MANUAL",
+] as const satisfies readonly GoogleCalendarSyncTrigger[];
 
 export class StartGoogleCalendarConnectDto {
   @IsOptional()
@@ -31,4 +43,18 @@ export class DisconnectGoogleCalendarDto {
   @IsOptional()
   @IsIn(DISCONNECT_SCHEDULE_ACTIONS)
   scheduleAction?: GoogleCalendarDisconnectScheduleAction;
+}
+
+export class UpdateGoogleCalendarSelectionDto {
+  @IsArray()
+  @ArrayNotEmpty()
+  @ArrayUnique()
+  @IsString({ each: true })
+  selectedCalendarIds!: string[];
+}
+
+export class SyncGoogleCalendarDto {
+  @IsOptional()
+  @IsIn(GOOGLE_CALENDAR_SYNC_TRIGGERS)
+  trigger?: GoogleCalendarSyncTrigger;
 }

@@ -1,6 +1,6 @@
 # G03 Backend Calendar List Sync
 
-상태: Ready
+상태: Done
 
 ## 1. 목적
 
@@ -190,3 +190,10 @@ pnpm run build
 - Google-origin all-day schedule의 start/end 수정이 `isAllDay=false`, `LOCAL_MODIFIED`로 저장된다.
 - Schedule list/detail/week/export response가 FE 계약과 일치한다.
 - provider auth/transient failure mapping이 테스트됐다.
+
+## 13. 완료 결과
+
+- 완료일: 2026-07-23
+- 구현: Google calendar list/selection/sync provider, service, repository, controller endpoint를 추가했다.
+- 확장: Schedule list `visibility/sourceType`, source badge, weekly xlsx `출처/미팅 링크`, Trash schedule source label을 계약에 맞췄다.
+- 검증: `prisma:validate`, `typecheck`, `lint`, `test -- schedule`, `test -- notification`, `build`, `git diff --check` 통과.

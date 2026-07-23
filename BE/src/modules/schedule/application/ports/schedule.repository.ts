@@ -9,6 +9,8 @@ export enum ScheduleViewMode {
 }
 
 export type ScheduleSourceType = "INTERNAL" | "GOOGLE";
+export type ScheduleSourceTypeFilter = "ALL" | ScheduleSourceType;
+export type ScheduleVisibility = "ACTIVE" | "HIDDEN_GOOGLE" | "ALL";
 export type ScheduleExternalSyncStatus =
   | "SYNCED"
   | "LOCAL_MODIFIED"
@@ -115,6 +117,8 @@ export interface ListSchedulesInput {
   readonly userId: string;
   readonly rangeStart: Date;
   readonly rangeEnd: Date;
+  readonly visibility?: ScheduleVisibility;
+  readonly sourceType?: ScheduleSourceTypeFilter;
 }
 
 // 역할 : 주간 리포트 일정 조회 조건을 정의합니다.

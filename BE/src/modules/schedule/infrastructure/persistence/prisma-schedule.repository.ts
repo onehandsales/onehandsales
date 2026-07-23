@@ -221,12 +221,7 @@ export class PrismaScheduleRepository implements ScheduleRepository {
   // 기능 : 현재 사용자의 일정 목록을 조회합니다.
   async listSchedules(input: ListSchedulesInput): Promise<ScheduleRecord[]> {
     const schedules = await this.client.schedule.findMany({
-      where: {
-        userId: input.userId,
-        startAt: { lt: input.rangeEnd },
-        endAt: { gt: input.rangeStart },
-        ...this.createActiveScheduleVisibilityWhere(),
-      },
+      where: this.createScheduleListWhere(input),
       include: this.createScheduleInclude(),
       orderBy: [{ startAt: "asc" }, { id: "asc" }],
     });
@@ -554,6 +549,48 @@ export class PrismaScheduleRepository implements ScheduleRepository {
     };
   }
 
+  private createScheduleListWhere(
+    input: ListSchedulesInput
+  ): Prisma.ScheduleWhereInput {
+    const filters: Prisma.ScheduleWhereInput[] = [
+      this.createScheduleListVisibilityWhere(input.visibility ?? "ACTIVE"),
+    ];
+
+    if (input.sourceType && input.sourceType !== "ALL") {
+      filters.push({ sourceType: input.sourceType });
+    }
+
+    return {
+      userId: input.userId,
+      startAt: { lt: input.rangeEnd },
+      endAt: { gt: input.rangeStart },
+      AND: filters,
+    };
+  }
+
+  private createScheduleListVisibilityWhere(
+    visibility: NonNullable<ListSchedulesInput["visibility"]>
+  ): Prisma.ScheduleWhereInput {
+    if (visibility === "ALL") {
+      return {
+        deletedAt: null,
+      };
+    }
+
+    if (visibility === "HIDDEN_GOOGLE") {
+      return {
+        deletedAt: null,
+        sourceType: "GOOGLE",
+        OR: [
+          { externalSyncStatus: "GOOGLE_DELETED" },
+          { externalCalendarSource: { is: { status: "UNSELECTED" } } },
+        ],
+      };
+    }
+
+    return this.createActiveScheduleVisibilityWhere();
+  }
+
   private createNotificationRepository(): PrismaNotificationRepository {
     return new PrismaNotificationRepository(this.client, null);
   }
@@ -625,15 +662,15 @@ export class PrismaScheduleRepository implements ScheduleRepository {
     syncStatus: ScheduleExternalSyncStatus | null
   ): string {
     if (syncStatus === "LOCAL_DELETED") {
-      return "Google - local deleted";
+      return "Google · 로컬 삭제";
     }
 
     if (syncStatus === "LOCAL_MODIFIED") {
-      return "Google - local modified";
+      return "Google · 로컬 수정";
     }
 
     if (connectionStatus !== "CONNECTED") {
-      return "Google - disconnected";
+      return "Google · 연결 끊김";
     }
 
     return "Google";

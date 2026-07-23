@@ -2,14 +2,29 @@ import {
   ArrayUnique,
   IsArray,
   IsEnum,
+  IsIn,
   IsOptional,
   IsString,
   IsUUID,
   Matches,
 } from "class-validator";
-import { ScheduleViewMode } from "@/modules/schedule/application/ports/schedule.repository";
+import {
+  ScheduleViewMode,
+  type ScheduleSourceTypeFilter,
+  type ScheduleVisibility,
+} from "@/modules/schedule/application/ports/schedule.repository";
 
 const DATE_ONLY_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
+const SCHEDULE_VISIBILITIES = [
+  "ACTIVE",
+  "HIDDEN_GOOGLE",
+  "ALL",
+] as const satisfies readonly ScheduleVisibility[];
+const SCHEDULE_SOURCE_TYPE_FILTERS = [
+  "ALL",
+  "INTERNAL",
+  "GOOGLE",
+] as const satisfies readonly ScheduleSourceTypeFilter[];
 
 // 역할 : ListSchedulesQueryDto HTTP 일정 목록 query 요청 값을 검증하기 위한 DTO입니다.
 export class ListSchedulesQueryDto {
@@ -24,6 +39,14 @@ export class ListSchedulesQueryDto {
   @IsOptional()
   @IsString()
   timeZone?: string;
+
+  @IsOptional()
+  @IsIn(SCHEDULE_VISIBILITIES)
+  visibility?: ScheduleVisibility;
+
+  @IsOptional()
+  @IsIn(SCHEDULE_SOURCE_TYPE_FILTERS)
+  sourceType?: ScheduleSourceTypeFilter;
 }
 
 // 역할 : 주간 일정 리포트 조회 query 값을 검증하기 위한 DTO입니다.

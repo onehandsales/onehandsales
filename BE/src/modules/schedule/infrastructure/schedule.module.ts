@@ -7,17 +7,22 @@ import { PrismaService } from "@/shared/infrastructure/prisma/prisma.service";
 import { XlsxInfrastructureModule } from "@/shared/infrastructure/xlsx/xlsx-infrastructure.module";
 import { GOOGLE_CALENDAR_CONNECTION_REPOSITORY } from "../application/ports/google-calendar-connection.repository";
 import { GOOGLE_CALENDAR_OAUTH_PROVIDER } from "../application/ports/google-calendar-oauth.provider";
+import { GOOGLE_CALENDAR_READ_PROVIDER } from "../application/ports/google-calendar-read.provider";
+import { GOOGLE_CALENDAR_SYNC_REPOSITORY } from "../application/ports/google-calendar-sync.repository";
 import { GOOGLE_CALENDAR_TOKEN_ENCRYPTION_PORT } from "../application/ports/google-calendar-token-encryption.port";
 import { SCHEDULE_REPOSITORY } from "../application/ports/schedule.repository";
 import { GoogleCalendarConnectionService } from "../application/services/google-calendar-connection.service";
+import { GoogleCalendarSyncService } from "../application/services/google-calendar-sync.service";
 import { ScheduleApplicationService } from "../application/services/schedule-application.service";
 import {
   GoogleCalendarCallbackController,
   GoogleCalendarController,
 } from "../presentation/http/google-calendar.controller";
 import { ScheduleController } from "../presentation/http/schedule.controller";
+import { GoogleCalendarReadProviderAdapter } from "./providers/google-calendar-read.provider";
 import { GoogleCalendarOAuthProviderAdapter } from "./providers/google-calendar-oauth.provider";
 import { PrismaGoogleCalendarConnectionRepository } from "./persistence/prisma-google-calendar-connection.repository";
+import { PrismaGoogleCalendarSyncRepository } from "./persistence/prisma-google-calendar-sync.repository";
 import { PrismaScheduleRepository } from "./persistence/prisma-schedule.repository";
 import { NodeGoogleCalendarTokenEncryptionAdapter } from "./security/node-google-calendar-token-encryption.adapter";
 
@@ -37,7 +42,9 @@ import { NodeGoogleCalendarTokenEncryptionAdapter } from "./security/node-google
   providers: [
     ScheduleApplicationService,
     GoogleCalendarConnectionService,
+    GoogleCalendarSyncService,
     GoogleCalendarOAuthProviderAdapter,
+    GoogleCalendarReadProviderAdapter,
     NodeGoogleCalendarTokenEncryptionAdapter,
     AppLogger,
     {
@@ -57,8 +64,18 @@ import { NodeGoogleCalendarTokenEncryptionAdapter } from "./security/node-google
       inject: [PrismaService],
     },
     {
+      provide: GOOGLE_CALENDAR_SYNC_REPOSITORY,
+      useFactory: (prismaService: PrismaService) =>
+        new PrismaGoogleCalendarSyncRepository(prismaService, prismaService),
+      inject: [PrismaService],
+    },
+    {
       provide: GOOGLE_CALENDAR_OAUTH_PROVIDER,
       useExisting: GoogleCalendarOAuthProviderAdapter,
+    },
+    {
+      provide: GOOGLE_CALENDAR_READ_PROVIDER,
+      useExisting: GoogleCalendarReadProviderAdapter,
     },
     {
       provide: GOOGLE_CALENDAR_TOKEN_ENCRYPTION_PORT,

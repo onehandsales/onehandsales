@@ -36,6 +36,24 @@ export class GoogleCalendarTokenEncryptionKeyMissingError extends DomainError {
   }
 }
 
+export class GoogleCalendarSourceSelectionRequiredError extends DomainError {
+  constructor() {
+    super(
+      "GoogleCalendarSourceSelectionRequired",
+      "Google Calendar source selection is required"
+    );
+  }
+}
+
+export class GoogleCalendarSyncInProgressError extends DomainError {
+  constructor() {
+    super(
+      "GoogleCalendarSyncInProgress",
+      "Google Calendar sync is already in progress"
+    );
+  }
+}
+
 export class GoogleCalendarProviderUnavailableError extends DomainError {
   constructor(message = "Google Calendar provider is unavailable") {
     super("GoogleCalendarProviderUnavailable", message);

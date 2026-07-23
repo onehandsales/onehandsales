@@ -462,9 +462,9 @@ export class PrismaTrashRepository implements TrashRepository {
           )
         ),
         this.createField("Location", schedule.location),
-        this.createField("Source", this.createScheduleSourceLabel(schedule)),
+        this.createField("출처", this.createScheduleSourceLabel(schedule)),
         this.createField(
-          "Meeting URL",
+          "미팅 링크",
           this.formatMeetingUrl(schedule.meetingUrl)
         ),
         this.createField("Linked deals", schedule._count.scheduleDeals),
@@ -977,15 +977,15 @@ export class PrismaTrashRepository implements TrashRepository {
     }
 
     if (schedule.externalSyncStatus === "LOCAL_DELETED") {
-      return "Google - local deleted";
+      return "Google · 로컬 삭제";
     }
 
     if (schedule.externalSyncStatus === "LOCAL_MODIFIED") {
-      return "Google - local modified";
+      return "Google · 로컬 수정";
     }
 
     if (schedule.externalCalendarSource?.connection.status !== "CONNECTED") {
-      return "Google - disconnected";
+      return "Google · 연결 끊김";
     }
 
     return schedule.externalCalendarSource?.calendarName ?? "Google";

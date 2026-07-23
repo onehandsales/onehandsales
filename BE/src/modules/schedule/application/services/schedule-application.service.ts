@@ -7,6 +7,8 @@ import {
   type ScheduleDealRecord,
   type ScheduleRecord,
   type ScheduleRepository,
+  type ScheduleSourceTypeFilter,
+  type ScheduleVisibility,
   type UpdateScheduleInput,
   type WeeklyReportDealRecord,
   type WeeklyReportScheduleRecord,
@@ -83,6 +85,8 @@ export interface ListSchedulesQueryInput {
   readonly view?: ScheduleViewMode;
   readonly baseDate: string;
   readonly timeZone?: string;
+  readonly visibility?: ScheduleVisibility;
+  readonly sourceType?: ScheduleSourceTypeFilter;
 }
 
 // 역할 : 주간 일정 리포트 조회 request query 값을 정의합니다.
@@ -331,6 +335,8 @@ export class ScheduleApplicationService {
   ): Promise<ScheduleListResponse> {
     // 1. 조회 view와 timezone을 API 계약 기준으로 정규화한다.
     const view = query.view ?? ScheduleViewMode.MONTH;
+    const visibility = query.visibility ?? "ACTIVE";
+    const sourceType = query.sourceType ?? "ALL";
     const timeZone = this.normalizeQueryTimeZone(
       query.timeZone,
       currentUser.timeZone
@@ -344,6 +350,8 @@ export class ScheduleApplicationService {
       userId: currentUser.id,
       rangeStart: range.start,
       rangeEnd: range.end,
+      visibility,
+      sourceType,
     });
 
     // 4. 일정 목록 조회 결과를 구조화 로그로 남긴다.
@@ -352,6 +360,8 @@ export class ScheduleApplicationService {
       view,
       timeZone,
       baseDate: query.baseDate,
+      visibility,
+      sourceType,
       count: schedules.length,
     });
 
@@ -1607,8 +1617,8 @@ export class ScheduleApplicationService {
           { header: "요일", key: "weekdayLabel", width: 10 },
           { header: "시간", key: "timeRange", width: 16 },
           { header: "일정", key: "scheduleTitle", width: 28 },
-          { header: "Source", key: "sourceLabel", width: 18 },
-          { header: "Meeting URL", key: "meetingUrl", width: 32 },
+          { header: "출처", key: "sourceLabel", width: 18 },
+          { header: "미팅 링크", key: "meetingUrl", width: 32 },
           { header: "장소", key: "location", width: 20 },
           { header: "딜", key: "dealNames", width: 28 },
           { header: "딜단계", key: "dealStatusLabels", width: 20 },

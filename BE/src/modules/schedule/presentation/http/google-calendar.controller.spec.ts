@@ -1,5 +1,6 @@
 import type { Response } from "express";
 import { GoogleCalendarConnectionService } from "@/modules/schedule/application/services/google-calendar-connection.service";
+import { GoogleCalendarSyncService } from "@/modules/schedule/application/services/google-calendar-sync.service";
 import type { CurrentUserContext } from "@/shared/application/context/current-user.context";
 import {
   GoogleCalendarCallbackController,
@@ -50,10 +51,82 @@ function createService() {
   } as unknown as jest.Mocked<GoogleCalendarConnectionService>;
 }
 
+function createSyncService() {
+  return {
+    listCalendars: jest.fn().mockResolvedValue({
+      connection: {
+        provider: "GOOGLE",
+        status: "CONNECTED",
+        providerAccountEmail: "user@example.com",
+        connectedAt: "2026-07-23T01:00:00.000Z",
+        reconnectRequiredAt: null,
+        disconnectedAt: null,
+        lastSyncedAt: null,
+        lastSyncStartedAt: null,
+        lastSyncFailedAt: null,
+        lastSyncErrorCode: null,
+        syncLockExpiresAt: null,
+      },
+      calendars: [],
+    }),
+    updateCalendarSelection: jest.fn().mockResolvedValue({
+      connection: {
+        provider: "GOOGLE",
+        status: "CONNECTED",
+        providerAccountEmail: "user@example.com",
+        connectedAt: "2026-07-23T01:00:00.000Z",
+        reconnectRequiredAt: null,
+        disconnectedAt: null,
+        lastSyncedAt: null,
+        lastSyncStartedAt: null,
+        lastSyncFailedAt: null,
+        lastSyncErrorCode: null,
+        syncLockExpiresAt: null,
+      },
+      calendars: [
+        {
+          id: "source-1",
+          calendarId: "primary",
+          calendarName: "user@example.com",
+          calendarTimeZone: "Asia/Seoul",
+          isPrimary: true,
+          isSystemCalendar: false,
+          status: "SELECTED",
+          lastSyncedAt: null,
+          lastSyncFailedAt: null,
+          lastSyncErrorCode: null,
+        },
+      ],
+    }),
+    syncCalendars: jest.fn().mockResolvedValue({
+      trigger: "MANUAL",
+      connectionStatus: "CONNECTED",
+      rangeStartAt: "2026-06-22T00:00:00.000Z",
+      rangeEndAt: "2026-10-22T00:00:00.000Z",
+      startedAt: "2026-07-23T01:00:00.000Z",
+      finishedAt: "2026-07-23T01:00:01.000Z",
+      selectedCalendarCount: 1,
+      result: {
+        importedCount: 0,
+        updatedCount: 0,
+        localModifiedSkippedCount: 0,
+        googleDeletedCount: 0,
+        hiddenByCalendarSelectionCount: 0,
+        trashedCount: 0,
+        reminderScheduledCount: 0,
+        reminderCanceledCount: 0,
+        errorCount: 0,
+      },
+      nextAutoSyncAvailableAt: "2026-07-23T01:10:01.000Z",
+    }),
+  } as unknown as jest.Mocked<GoogleCalendarSyncService>;
+}
+
 describe("GoogleCalendarController", () => {
   it("delegates connect requests with the current user", () => {
     const service = createService();
-    const controller = new GoogleCalendarController(service);
+    const syncService = createSyncService();
+    const controller = new GoogleCalendarController(service, syncService);
 
     const response = controller.startConnect(CURRENT_USER, {
       returnTo: "/app/schedules",
@@ -62,6 +135,29 @@ describe("GoogleCalendarController", () => {
     expect(response.returnTo).toBe("/app/schedules");
     expect(service.startConnect).toHaveBeenCalledWith(CURRENT_USER, {
       returnTo: "/app/schedules",
+    });
+  });
+
+  it("delegates calendar list, selection, and sync requests", async () => {
+    const service = createService();
+    const syncService = createSyncService();
+    const controller = new GoogleCalendarController(service, syncService);
+
+    await expect(controller.listCalendars(CURRENT_USER)).resolves.toMatchObject({
+      calendars: [],
+    });
+    await controller.updateCalendarSelection(CURRENT_USER, {
+      selectedCalendarIds: ["primary"],
+    });
+    await controller.syncCalendars(CURRENT_USER, { trigger: "MANUAL" });
+
+    expect(syncService.listCalendars).toHaveBeenCalledWith(CURRENT_USER);
+    expect(syncService.updateCalendarSelection).toHaveBeenCalledWith(
+      CURRENT_USER,
+      { selectedCalendarIds: ["primary"] }
+    );
+    expect(syncService.syncCalendars).toHaveBeenCalledWith(CURRENT_USER, {
+      trigger: "MANUAL",
     });
   });
 

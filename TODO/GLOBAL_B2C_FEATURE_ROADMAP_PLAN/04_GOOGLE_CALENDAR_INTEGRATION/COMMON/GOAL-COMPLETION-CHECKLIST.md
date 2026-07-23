@@ -24,7 +24,7 @@
 |---|---|---|---|---|---|---|
 | [x] | G01 Planning API DB Contract | Done | 2026-07-23 | 문서 계약과 현재 코드 사실을 대조하고, G02~G05 착수 blocking 질문이 없음을 확인한다. | G01 `rg ...` 검색, `git diff --check` 통과 | API spec token encryption missing-key 계약 보정 |
 | [x] | G02 Backend DB Google Connection | Done | 2026-07-23 | DB foundation, Schedule soft delete, Trash `SCHEDULE`, connection/status/connect/callback/disconnect API가 spec과 일치한다. | `prisma:validate`, `prisma:migrate --name google_calendar_integration`, `typecheck`, `lint`, `test -- schedule`, `test -- notification`, `test -- trash`, `build` 통과 | 실제 Google provider smoke는 G05에서 실행 여부를 기록한다. |
-| [ ] | G03 Backend Calendar List Sync | Ready | - | calendar list/selection/sync, Google event mapping, 기존 Schedule/Weekly API 확장이 spec과 일치한다. | - | selected calendar only, `LOCAL_MODIFIED`, all-day, reminder 테스트가 필요하다. |
+| [x] | G03 Backend Calendar List Sync | Done | 2026-07-23 | calendar list/selection/sync, Google event mapping, 기존 Schedule/Weekly API 확장이 spec과 일치한다. | `prisma:validate`, `typecheck`, `lint`, `test -- schedule`, `test -- notification`, `build`, `git diff --check` 통과 | 실제 Google provider smoke는 G05에서 수행 여부를 기록한다. |
 | [ ] | G04 User Web Google Calendar UX | Ready | - | `/app/schedules`, `/app/settings`, detail/week/trash UX가 FE TODO와 API 계약에 맞게 연결된다. | - | desktop/mobile text overlap 확인이 필요하다. |
 | [ ] | G05 QA Review Closeout | Ready | - | `COMMON/REVIEW-CHECKLIST.md` critical 항목과 BE/FE 검증 명령이 완료되고 문서 상태가 갱신된다. | - | 실제 Google smoke 실행 여부 또는 미실행 사유를 기록한다. |
 
@@ -51,16 +51,16 @@
 
 ### G03 Backend Calendar List Sync
 
-- [ ] calendar list/selection API가 primary default selected와 system calendar default unselected 정책을 지킨다.
-- [ ] selected calendar만 sync한다.
-- [ ] full/incremental Events.list parameter가 분리되어 있다.
-- [ ] syncToken 410 fallback이 동작한다.
-- [ ] duplicate import가 방지된다.
-- [ ] `LOCAL_MODIFIED` schedule을 provider sync가 덮어쓰지 않는다.
-- [ ] Google deleted/cancelled schedule이 hidden 상태로 보존된다.
-- [ ] description 최초 import, meeting URL 추출, all-day mapping이 동작한다.
-- [ ] Schedule list/detail/week/export response가 확장됐다.
-- [ ] BE 검증 명령을 실행했다.
+- [x] calendar list/selection API가 primary default selected와 system calendar default unselected 정책을 지킨다.
+- [x] selected calendar만 sync한다.
+- [x] full/incremental Events.list parameter가 분리되어 있다.
+- [x] syncToken 410 fallback이 동작한다.
+- [x] duplicate import가 방지된다.
+- [x] `LOCAL_MODIFIED` schedule을 provider sync가 덮어쓰지 않는다.
+- [x] Google deleted/cancelled schedule이 hidden 상태로 보존된다.
+- [x] description 최초 import, meeting URL 추출, all-day mapping이 동작한다.
+- [x] Schedule list/detail/week/export response가 확장됐다.
+- [x] BE 검증 명령을 실행했다.
 
 ### G04 User Web Google Calendar UX
 
