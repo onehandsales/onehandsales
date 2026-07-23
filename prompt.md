@@ -26,3 +26,9 @@ D:\workspace_repository\onehandsales\TODO\USER_WEB_PRODUCTIZATION_GAP_PLAN
 ```
 백엔드와 프론트 서버 Supabase 연동해서 구동시켜
 ```
+
+# DB Migration Sync 프롬프트
+
+```
+BE/prisma 마이그레이션을 현재 실행 중인 백엔드가 물고 있는 Supabase DB에 migrate deploy로 적용해줘.
+```
