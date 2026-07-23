@@ -13,6 +13,7 @@ export type GoogleCalendarDisconnectScheduleAction = "KEEP" | "HIDE" | "TRASH";
 export interface GoogleCalendarConnectionRecord {
   readonly id: string;
   readonly status: GoogleCalendarConnectionStatus;
+  readonly providerAccountId: string | null;
   readonly providerAccountEmail: string | null;
   readonly connectedAt: Date | null;
   readonly reconnectRequiredAt: Date | null;

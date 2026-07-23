@@ -20,6 +20,7 @@ import {
   GoogleCalendarConnectionNotFoundError,
   GoogleCalendarOAuthStateInvalidError,
   GoogleCalendarProviderUnavailableError,
+  GoogleCalendarTokenEncryptionKeyMissingError,
 } from "@/modules/schedule/domain/google-calendar.errors";
 import { createTrashRetentionTimestamps } from "@/shared/application/trash/trash-retention";
 import type { CurrentUserContext } from "@/shared/application/context/current-user.context";
@@ -190,7 +191,12 @@ export class GoogleCalendarConnectionService {
         state.userId
       );
 
-      if (!tokenResult.refreshToken && !existing?.hasRefreshToken) {
+      const canReuseExistingRefreshToken =
+        !tokenResult.refreshToken &&
+        existing?.hasRefreshToken === true &&
+        existing.providerAccountId === identity.providerAccountId;
+
+      if (!tokenResult.refreshToken && !canReuseExistingRefreshToken) {
         throw new GoogleCalendarProviderUnavailableError(
           "Google Calendar refresh token was missing"
         );
@@ -229,6 +235,14 @@ export class GoogleCalendarConnectionService {
 
       return { redirectTo: this.createRedirectUrl(returnTo, "connected") };
     } catch (error) {
+      if (error instanceof GoogleCalendarTokenEncryptionKeyMissingError) {
+        this.logEvent("schedule.google.connect.failed", {
+          userId: state.userId,
+          errorCode: error.code,
+        });
+        throw error;
+      }
+
       this.logEvent("schedule.google.connect.failed", {
         userId: state.userId,
         errorCode: this.getSafeErrorCode(error),

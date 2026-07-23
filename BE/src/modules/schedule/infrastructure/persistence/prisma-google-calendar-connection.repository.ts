@@ -21,6 +21,7 @@ type GoogleCalendarPrismaClient = PrismaService | Prisma.TransactionClient;
 type GoogleCalendarConnectionRow = {
   readonly id: string;
   readonly status: string;
+  readonly providerAccountId: string | null;
   readonly providerAccountEmail: string | null;
   readonly encryptedRefreshToken: string | null;
   readonly connectedAt: Date | null;
@@ -285,6 +286,7 @@ export class PrismaGoogleCalendarConnectionRepository
     return {
       id: true,
       status: true,
+      providerAccountId: true,
       providerAccountEmail: true,
       encryptedRefreshToken: true,
       connectedAt: true,
@@ -314,6 +316,7 @@ export class PrismaGoogleCalendarConnectionRepository
     return {
       id: connection.id,
       status: connection.status,
+      providerAccountId: connection.providerAccountId,
       providerAccountEmail: connection.providerAccountEmail,
       connectedAt: connection.connectedAt,
       reconnectRequiredAt: connection.reconnectRequiredAt,

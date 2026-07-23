@@ -16,6 +16,7 @@ import type {
 } from "@/modules/schedule/application/ports/google-calendar-connection.repository";
 import type { GoogleCalendarOAuthProvider } from "@/modules/schedule/application/ports/google-calendar-oauth.provider";
 import type { GoogleCalendarTokenEncryptionPort } from "@/modules/schedule/application/ports/google-calendar-token-encryption.port";
+import { GoogleCalendarTokenEncryptionKeyMissingError } from "@/modules/schedule/domain/google-calendar.errors";
 import type { CurrentUserContext } from "@/shared/application/context/current-user.context";
 import type { AppLogger } from "@/shared/infrastructure/logger/app-logger.service";
 import { GoogleCalendarConnectionService } from "./google-calendar-connection.service";
@@ -33,6 +34,7 @@ const CURRENT_USER: CurrentUserContext = {
 const CONNECTED_CONNECTION: GoogleCalendarConnectionRecord = {
   id: "connection-1",
   status: "CONNECTED",
+  providerAccountId: "google-sub",
   providerAccountEmail: "sales@example.com",
   connectedAt: new Date("2026-07-23T01:00:00.000Z"),
   reconnectRequiredAt: null,
@@ -232,6 +234,86 @@ describe("GoogleCalendarConnectionService", () => {
       encryptedAccessToken: "enc:access-token",
       encryptedRefreshToken: "enc:refresh-token",
     });
+  });
+
+  it("reuses an existing refresh token only for the same Google account", async () => {
+    const { oauthProvider, repository, service } = createService();
+    repository.connection = {
+      ...CONNECTED_CONNECTION,
+      hasRefreshToken: true,
+      providerAccountId: "google-sub",
+    };
+    jest.mocked(oauthProvider.exchangeAuthorizationCode).mockResolvedValueOnce({
+      accessToken: "access-token",
+      refreshToken: null,
+      idToken: "id-token",
+      expiresInSeconds: 3600,
+      grantedScopes: [],
+    });
+    const connect = service.startConnect(CURRENT_USER, {
+      returnTo: "/app/schedules",
+    });
+    const state = new URL(connect.connectUrl).searchParams.get("state") ?? "";
+
+    const result = await service.handleCallback({
+      code: "authorization-code",
+      state,
+    });
+
+    expect(result.redirectTo).toBe("/app/schedules?googleCalendar=connected");
+    expect(repository.upsertInput).toMatchObject({
+      providerAccountId: "google-sub",
+      encryptedAccessToken: "enc:access-token",
+    });
+    expect(repository.upsertInput).not.toHaveProperty("encryptedRefreshToken");
+  });
+
+  it("rejects refresh token reuse when the Google account changed", async () => {
+    const { oauthProvider, repository, service } = createService();
+    repository.connection = {
+      ...CONNECTED_CONNECTION,
+      hasRefreshToken: true,
+      providerAccountId: "old-google-sub",
+    };
+    jest.mocked(oauthProvider.exchangeAuthorizationCode).mockResolvedValueOnce({
+      accessToken: "access-token",
+      refreshToken: null,
+      idToken: "id-token",
+      expiresInSeconds: 3600,
+      grantedScopes: [],
+    });
+    const connect = service.startConnect(CURRENT_USER, {
+      returnTo: "/app/schedules",
+    });
+    const state = new URL(connect.connectUrl).searchParams.get("state") ?? "";
+
+    const result = await service.handleCallback({
+      code: "authorization-code",
+      state,
+    });
+
+    expect(result.redirectTo).toBe("/app/schedules?googleCalendar=failed");
+    expect(repository.upsertInput).toBeNull();
+  });
+
+  it("rethrows callback token encryption key failures for the HTTP filter", async () => {
+    const { service, tokenEncryption } = createService();
+    const connect = service.startConnect(CURRENT_USER, {
+      returnTo: "/app/schedules",
+    });
+    const state = new URL(connect.connectUrl).searchParams.get("state") ?? "";
+    jest
+      .mocked(tokenEncryption.assertReady)
+      .mockImplementationOnce(() => {
+        throw new GoogleCalendarTokenEncryptionKeyMissingError();
+      });
+
+    await expect(
+      service.handleCallback({
+        code: "authorization-code",
+        state,
+      })
+    ).rejects.toThrow(GoogleCalendarTokenEncryptionKeyMissingError);
   });
 
   it("disconnects with TRASH and cancels pending reminders for trashed schedules", async () => {
