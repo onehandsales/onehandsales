@@ -151,6 +151,33 @@ enum BrowserPushSubscriptionStatus {
   REVOKED
 }
 
+enum ExternalCalendarProvider {
+  GOOGLE
+}
+
+enum ExternalCalendarConnectionStatus {
+  CONNECTED
+  RECONNECT_REQUIRED
+  DISCONNECTED
+}
+
+enum ExternalCalendarSourceStatus {
+  SELECTED
+  UNSELECTED
+}
+
+enum ScheduleSourceType {
+  INTERNAL
+  GOOGLE
+}
+
+enum ScheduleExternalSyncStatus {
+  SYNCED
+  LOCAL_MODIFIED
+  GOOGLE_DELETED
+  LOCAL_DELETED
+}
+
 model User {
   id                   String     @id @default(uuid()) @db.Uuid
   email                String?
@@ -217,6 +244,8 @@ model User {
   dealProducts             DealProduct[]
   /// 기능 : 사용자가 등록한 일정 목록이다.
   schedules                Schedule[]
+  externalCalendarConnections ExternalCalendarConnection[]
+  externalCalendarSources  ExternalCalendarSource[]
   /// 기능 : 사용자가 일정에 연결한 딜 매핑 목록이다.
   scheduleDeals            ScheduleDeal[]
   meetingNotes             MeetingNote[]
@@ -720,6 +749,65 @@ model DealMemoLog {
   @@index([userId, trashExpiresAt])
 }
 
+model ExternalCalendarConnection {
+  id                   String                           @id @default(uuid()) @db.Uuid
+  userId               String                           @db.Uuid
+  provider             ExternalCalendarProvider
+  providerAccountId    String?
+  providerAccountEmail String?
+  status               ExternalCalendarConnectionStatus @default(CONNECTED)
+  encryptedAccessToken String?
+  encryptedRefreshToken String?
+  tokenExpiresAt       DateTime?                        @db.Timestamptz(3)
+  grantedScopes        String[]                         @default([])
+  connectedAt          DateTime?                        @db.Timestamptz(3)
+  disconnectedAt       DateTime?                        @db.Timestamptz(3)
+  reconnectRequiredAt  DateTime?                        @db.Timestamptz(3)
+  lastSyncedAt         DateTime?                        @db.Timestamptz(3)
+  lastSyncStartedAt    DateTime?                        @db.Timestamptz(3)
+  lastSyncFailedAt     DateTime?                        @db.Timestamptz(3)
+  lastSyncErrorCode    String?
+  syncLockExpiresAt    DateTime?                        @db.Timestamptz(3)
+  createdAt            DateTime                         @default(now()) @db.Timestamptz(3)
+  updatedAt            DateTime                         @default(now()) @updatedAt @db.Timestamptz(3)
+
+  user    User                     @relation(fields: [userId], references: [id])
+  sources ExternalCalendarSource[]
+
+  @@unique([userId, provider])
+  @@index([userId, status])
+  @@index([provider, providerAccountId])
+  @@index([userId, lastSyncedAt])
+  @@index([userId, syncLockExpiresAt])
+}
+
+model ExternalCalendarSource {
+  id                String                       @id @default(uuid()) @db.Uuid
+  userId            String                       @db.Uuid
+  connectionId      String                       @db.Uuid
+  provider          ExternalCalendarProvider
+  calendarId        String
+  calendarName      String
+  calendarTimeZone  String?
+  isPrimary         Boolean                      @default(false)
+  isSystemCalendar  Boolean                      @default(false)
+  status            ExternalCalendarSourceStatus @default(UNSELECTED)
+  syncToken         String?
+  lastSyncedAt      DateTime?                    @db.Timestamptz(3)
+  lastSyncFailedAt  DateTime?                    @db.Timestamptz(3)
+  lastSyncErrorCode String?
+  createdAt         DateTime                     @default(now()) @db.Timestamptz(3)
+  updatedAt         DateTime                     @default(now()) @updatedAt @db.Timestamptz(3)
+
+  user       User                       @relation(fields: [userId], references: [id])
+  connection ExternalCalendarConnection @relation(fields: [connectionId], references: [id], onDelete: Cascade)
+  schedules  Schedule[]
+
+  @@unique([userId, provider, calendarId])
+  @@index([connectionId, status])
+  @@index([userId, status])
+}
+
 model Schedule {
   id            String   @id @default(uuid()) @db.Uuid
   userId        String   @db.Uuid
@@ -728,17 +816,39 @@ model Schedule {
   endAt         DateTime @db.Timestamptz(3)
   timeZone      String   @default("Asia/Seoul")
   location      String?
+  meetingUrl    String?
   memo          String?
+  isAllDay      Boolean                     @default(false)
+  sourceType    ScheduleSourceType          @default(INTERNAL)
+  externalCalendarSourceId String?          @db.Uuid
+  externalEventId          String?
+  externalEventICalUid     String?
+  externalEventEtag        String?
+  externalHtmlLink         String?
+  externalUpdatedAt        DateTime?        @db.Timestamptz(3)
+  lastExternalSyncedAt     DateTime?        @db.Timestamptz(3)
+  externalDeletedAt        DateTime?        @db.Timestamptz(3)
+  externalSyncStatus       ScheduleExternalSyncStatus?
+  deletedAt                DateTime?        @db.Timestamptz(3)
+  deletedByUserId          String?          @db.Uuid
+  trashExpiresAt           DateTime?        @db.Timestamptz(3)
   createdAt     DateTime @default(now()) @db.Timestamptz(3)
   updatedAt     DateTime @updatedAt @db.Timestamptz(3)
 
   /// 기능 : 일정을 등록한 사용자다. 모든 일정 API는 이 userId로 소유권을 검증한다.
   user          User           @relation(fields: [userId], references: [id])
+  externalCalendarSource ExternalCalendarSource? @relation(fields: [externalCalendarSourceId], references: [id], onDelete: SetNull)
   /// 기능 : 일정에 연결된 딜 매핑 목록이다.
   scheduleDeals ScheduleDeal[]
 
+  @@unique([userId, externalCalendarSourceId, externalEventId])
   @@index([userId, startAt])
   @@index([userId, createdAt])
+  @@index([userId, sourceType, startAt])
+  @@index([userId, deletedAt])
+  @@index([userId, trashExpiresAt])
+  @@index([externalCalendarSourceId])
+  @@index([userId, externalSyncStatus])
 }
 
 model ScheduleDeal {

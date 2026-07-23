@@ -12,10 +12,13 @@ import {
   type DeleteScheduleDealsInput,
   type ListSchedulesForWeeklyReportInput,
   type ListSchedulesInput,
+  type ScheduleExternalSyncStatus,
   type ScheduleDealOptionRecord,
   type ScheduleDealRecord,
   type ScheduleRecord,
   type ScheduleRepository,
+  type ScheduleSourceType,
+  type SoftDeleteScheduleInput,
   type UpdateScheduleInput,
   type WeeklyReportDealRecord,
   type WeeklyReportScheduleRecord,
@@ -35,6 +38,16 @@ type ScheduleDealRow = {
   };
 };
 
+type ExternalCalendarSourceRow = {
+  readonly id: string;
+  readonly calendarId: string;
+  readonly calendarName: string;
+  readonly status: string;
+  readonly connection: {
+    readonly status: string;
+  };
+};
+
 type ScheduleRow = {
   readonly id: string;
   readonly scheduleTitle: string;
@@ -42,9 +55,19 @@ type ScheduleRow = {
   readonly endAt: Date;
   readonly timeZone: string;
   readonly location: string | null;
+  readonly meetingUrl: string | null;
   readonly memo: string | null;
+  readonly isAllDay: boolean;
+  readonly sourceType: string;
+  readonly externalHtmlLink: string | null;
+  readonly lastExternalSyncedAt: Date | null;
+  readonly externalDeletedAt: Date | null;
+  readonly externalSyncStatus: string | null;
+  readonly deletedAt: Date | null;
+  readonly trashExpiresAt: Date | null;
   readonly createdAt: Date;
   readonly updatedAt: Date;
+  readonly externalCalendarSource: ExternalCalendarSourceRow | null;
   readonly scheduleDeals: ScheduleDealRow[];
 };
 
@@ -95,7 +118,15 @@ type WeeklyReportScheduleRow = {
   readonly endAt: Date;
   readonly timeZone: string;
   readonly location: string | null;
+  readonly meetingUrl: string | null;
   readonly memo: string | null;
+  readonly isAllDay: boolean;
+  readonly sourceType: string;
+  readonly externalHtmlLink: string | null;
+  readonly lastExternalSyncedAt: Date | null;
+  readonly externalDeletedAt: Date | null;
+  readonly externalSyncStatus: string | null;
+  readonly externalCalendarSource: ExternalCalendarSourceRow | null;
   readonly scheduleDeals: WeeklyReportScheduleDealRow[];
 };
 
@@ -194,6 +225,7 @@ export class PrismaScheduleRepository implements ScheduleRepository {
         userId: input.userId,
         startAt: { lt: input.rangeEnd },
         endAt: { gt: input.rangeStart },
+        ...this.createActiveScheduleVisibilityWhere(),
       },
       include: this.createScheduleInclude(),
       orderBy: [{ startAt: "asc" }, { id: "asc" }],
@@ -212,6 +244,7 @@ export class PrismaScheduleRepository implements ScheduleRepository {
         userId: input.userId,
         startAt: { lt: input.rangeEndAt },
         endAt: { gt: input.rangeStartAt },
+        ...this.createActiveScheduleVisibilityWhere(),
       },
       select: this.createWeeklyReportScheduleSelect(input.userId),
       orderBy: [{ startAt: "asc" }, { id: "asc" }],
@@ -231,6 +264,7 @@ export class PrismaScheduleRepository implements ScheduleRepository {
       where: {
         id: scheduleId,
         userId,
+        deletedAt: null,
       },
       include: this.createScheduleInclude(),
     });
@@ -248,6 +282,7 @@ export class PrismaScheduleRepository implements ScheduleRepository {
         endAt: input.endAt,
         timeZone: input.timeZone,
         location: input.location,
+        meetingUrl: input.meetingUrl,
         memo: input.memo,
       },
       select: {
@@ -266,6 +301,7 @@ export class PrismaScheduleRepository implements ScheduleRepository {
       where: {
         id: scheduleId,
         userId,
+        deletedAt: null,
       },
       data: input,
     });
@@ -323,18 +359,20 @@ export class PrismaScheduleRepository implements ScheduleRepository {
   }
 
   // 기능 : 현재 사용자의 일정과 연결 정보를 실제 삭제합니다.
-  async deleteScheduleHard(userId: string, scheduleId: string): Promise<boolean> {
-    await this.client.scheduleDeal.deleteMany({
+  async softDeleteSchedule(input: SoftDeleteScheduleInput): Promise<boolean> {
+    const deleted = await this.client.schedule.updateMany({
       where: {
-        userId,
-        scheduleId,
+        id: input.scheduleId,
+        userId: input.userId,
+        deletedAt: null,
       },
-    });
-
-    const deleted = await this.client.schedule.deleteMany({
-      where: {
-        id: scheduleId,
-        userId,
+      data: {
+        deletedAt: input.deletedAt,
+        deletedByUserId: input.deletedByUserId,
+        trashExpiresAt: input.trashExpiresAt,
+        ...(input.externalSyncStatus
+          ? { externalSyncStatus: input.externalSyncStatus }
+          : {}),
       },
     });
 
@@ -344,6 +382,19 @@ export class PrismaScheduleRepository implements ScheduleRepository {
   // 기능 : 일정 조회에 필요한 연결 딜 include 조건을 생성합니다.
   private createScheduleInclude() {
     return {
+      externalCalendarSource: {
+        select: {
+          id: true,
+          calendarId: true,
+          calendarName: true,
+          status: true,
+          connection: {
+            select: {
+              status: true,
+            },
+          },
+        },
+      },
       scheduleDeals: {
         select: {
           deal: {
@@ -367,7 +418,27 @@ export class PrismaScheduleRepository implements ScheduleRepository {
       endAt: true,
       timeZone: true,
       location: true,
+      meetingUrl: true,
       memo: true,
+      isAllDay: true,
+      sourceType: true,
+      externalHtmlLink: true,
+      lastExternalSyncedAt: true,
+      externalDeletedAt: true,
+      externalSyncStatus: true,
+      externalCalendarSource: {
+        select: {
+          id: true,
+          calendarId: true,
+          calendarName: true,
+          status: true,
+          connection: {
+            select: {
+              status: true,
+            },
+          },
+        },
+      },
       scheduleDeals: {
         where: {
           userId,
@@ -453,11 +524,121 @@ export class PrismaScheduleRepository implements ScheduleRepository {
     } satisfies Prisma.ScheduleSelect;
   }
 
+  private createActiveScheduleVisibilityWhere(): Prisma.ScheduleWhereInput {
+    return {
+      deletedAt: null,
+      OR: [
+        { sourceType: "INTERNAL" },
+        {
+          sourceType: "GOOGLE",
+          AND: [
+            {
+              OR: [
+                { externalSyncStatus: null },
+                {
+                  externalSyncStatus: {
+                    notIn: ["GOOGLE_DELETED", "LOCAL_DELETED"],
+                  },
+                },
+              ],
+            },
+            {
+              OR: [
+                { externalCalendarSource: { is: null } },
+                { externalCalendarSource: { is: { status: "SELECTED" } } },
+              ],
+            },
+          ],
+        },
+      ],
+    };
+  }
+
   private createNotificationRepository(): PrismaNotificationRepository {
     return new PrismaNotificationRepository(this.client, null);
   }
 
   // 기능 : Prisma 일정 row를 application record로 변환합니다.
+  private mapScheduleSourceType(sourceType: string): ScheduleSourceType {
+    if (sourceType === "INTERNAL" || sourceType === "GOOGLE") {
+      return sourceType;
+    }
+
+    throw new Error(`Invalid schedule source type in database: ${sourceType}`);
+  }
+
+  private mapScheduleExternalSyncStatus(
+    syncStatus: string | null
+  ): ScheduleExternalSyncStatus | null {
+    if (
+      syncStatus === null ||
+      syncStatus === "SYNCED" ||
+      syncStatus === "LOCAL_MODIFIED" ||
+      syncStatus === "GOOGLE_DELETED" ||
+      syncStatus === "LOCAL_DELETED"
+    ) {
+      return syncStatus;
+    }
+
+    throw new Error(
+      `Invalid schedule external sync status in database: ${syncStatus}`
+    );
+  }
+
+  private mapGoogleCalendarRecord(schedule: {
+    readonly sourceType: string;
+    readonly externalSyncStatus: string | null;
+    readonly externalHtmlLink: string | null;
+    readonly lastExternalSyncedAt: Date | null;
+    readonly externalDeletedAt: Date | null;
+    readonly externalCalendarSource: ExternalCalendarSourceRow | null;
+  }) {
+    if (schedule.sourceType !== "GOOGLE" || !schedule.externalCalendarSource) {
+      return null;
+    }
+
+    const syncStatus = this.mapScheduleExternalSyncStatus(
+      schedule.externalSyncStatus
+    );
+    const source = schedule.externalCalendarSource;
+
+    return {
+      sourceId: source.id,
+      calendarId: source.calendarId,
+      calendarName: source.calendarName,
+      syncStatus,
+      badgeLabel: this.createGoogleBadgeLabel(
+        source.connection.status,
+        syncStatus
+      ),
+      externalHtmlLink: schedule.externalHtmlLink,
+      lastExternalSyncedAt: schedule.lastExternalSyncedAt,
+      externalDeletedAt: schedule.externalDeletedAt,
+      isHidden:
+        source.status === "UNSELECTED" || syncStatus === "GOOGLE_DELETED",
+      canEditLocalFields: true,
+    };
+  }
+
+  private createGoogleBadgeLabel(
+    connectionStatus: string,
+    syncStatus: ScheduleExternalSyncStatus | null
+  ): string {
+    if (syncStatus === "LOCAL_DELETED") {
+      return "Google - local deleted";
+    }
+
+    if (syncStatus === "LOCAL_MODIFIED") {
+      return "Google - local modified";
+    }
+
+    if (connectionStatus !== "CONNECTED") {
+      return "Google - disconnected";
+    }
+
+    return "Google";
+  }
+
   private mapScheduleRecord(schedule: ScheduleRow): ScheduleRecord {
     return {
       id: schedule.id,
@@ -466,7 +647,13 @@ export class PrismaScheduleRepository implements ScheduleRepository {
       endAt: schedule.endAt,
       timeZone: schedule.timeZone,
       location: schedule.location,
+      meetingUrl: schedule.meetingUrl,
       memo: schedule.memo,
+      isAllDay: schedule.isAllDay,
+      sourceType: this.mapScheduleSourceType(schedule.sourceType),
+      googleCalendar: this.mapGoogleCalendarRecord(schedule),
+      deletedAt: schedule.deletedAt,
+      trashExpiresAt: schedule.trashExpiresAt,
       deals: schedule.scheduleDeals.map((scheduleDeal) => ({
         id: scheduleDeal.deal.id,
         dealName: scheduleDeal.deal.dealName,
@@ -487,7 +674,11 @@ export class PrismaScheduleRepository implements ScheduleRepository {
       endAt: schedule.endAt,
       timeZone: schedule.timeZone,
       location: schedule.location,
+      meetingUrl: schedule.meetingUrl,
       memo: schedule.memo,
+      isAllDay: schedule.isAllDay,
+      sourceType: this.mapScheduleSourceType(schedule.sourceType),
+      googleCalendar: this.mapGoogleCalendarRecord(schedule),
       deals: schedule.scheduleDeals.map((scheduleDeal) =>
         this.mapWeeklyReportDealRecord(scheduleDeal.deal)
       ),

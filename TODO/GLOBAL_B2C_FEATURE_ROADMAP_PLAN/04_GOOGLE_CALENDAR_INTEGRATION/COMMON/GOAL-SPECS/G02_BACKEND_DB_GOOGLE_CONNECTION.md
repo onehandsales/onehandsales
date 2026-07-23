@@ -1,6 +1,7 @@
 # G02 Backend DB Google Connection
 
-상태: Ready
+상태: Done
+완료일: 2026-07-23
 
 ## 1. 목적
 
@@ -209,3 +210,14 @@ pnpm run build
 - Google connection/status/connect/callback/disconnect API가 spec과 일치한다.
 - token/code/raw provider body가 log/response/test snapshot에 노출되지 않는다.
 - disconnect `KEEP/HIDE/TRASH`가 schedule과 reminder를 올바르게 처리한다.
+
+## 12. 완료 결과
+
+- Prisma enum/model/field와 Google Calendar integration migration을 추가했다.
+- 기존 schedule row는 `sourceType=INTERNAL` 기본값으로 호환되도록 했다.
+- schedule delete는 hard delete 대신 soft delete/Trash 보존으로 전환했다.
+- Trash `SCHEDULE` list/detail/restore와 restore reminder 재계산을 추가했다.
+- Google connect/callback/status/disconnect API와 token encryption/OAuth state 검증 foundation을 구현했다.
+- disconnect `KEEP/HIDE/TRASH` 처리와 `TRASH` 대상 reminder cancel을 구현했다.
+- 검증은 `prisma:validate`, `prisma:migrate --name google_calendar_integration`, `typecheck`, `lint`, `test -- schedule`, `test -- notification`, `test -- trash`, `build`로 확인했다.
+- 실제 Google provider smoke는 G02 제외 범위이며 G05에서 실행 여부 또는 미실행 사유를 기록한다.

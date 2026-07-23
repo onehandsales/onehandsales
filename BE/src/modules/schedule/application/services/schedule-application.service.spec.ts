@@ -9,6 +9,7 @@ import {
   type ScheduleDealRecord,
   type ScheduleRecord,
   type ScheduleRepository,
+  type SoftDeleteScheduleInput,
   type UpdateScheduleInput,
   type WeeklyReportScheduleRecord,
 } from "@/modules/schedule/application/ports/schedule.repository";
@@ -141,7 +142,9 @@ class FakeScheduleRepository implements ScheduleRepository {
 
     return this.schedules.filter(
       (schedule) =>
-        schedule.startAt < input.rangeEnd && schedule.endAt > input.rangeStart
+        schedule.deletedAt === null &&
+        schedule.startAt < input.rangeEnd &&
+        schedule.endAt > input.rangeStart
     );
   }
 
@@ -168,7 +171,10 @@ class FakeScheduleRepository implements ScheduleRepository {
     scheduleId: string
   ): Promise<ScheduleRecord | null> {
     const schedule = this.schedules.find(
-      (item) => item.id === scheduleId && userId === CURRENT_USER.id
+      (item) =>
+        item.id === scheduleId &&
+        userId === CURRENT_USER.id &&
+        item.deletedAt === null
     );
 
     return schedule ? this.attachDeals(schedule) : null;
@@ -184,7 +190,13 @@ class FakeScheduleRepository implements ScheduleRepository {
       endAt: input.endAt,
       timeZone: input.timeZone,
       location: input.location,
+      meetingUrl: input.meetingUrl,
       memo: input.memo,
+      isAllDay: false,
+      sourceType: "INTERNAL",
+      googleCalendar: null,
+      deletedAt: null,
+      trashExpiresAt: null,
       deals: [],
       createdAt: BASE_DATE,
       updatedAt: BASE_DATE,
@@ -200,7 +212,10 @@ class FakeScheduleRepository implements ScheduleRepository {
     input: UpdateScheduleInput
   ): Promise<boolean> {
     const schedule = this.schedules.find(
-      (item) => item.id === scheduleId && userId === CURRENT_USER.id
+      (item) =>
+        item.id === scheduleId &&
+        userId === CURRENT_USER.id &&
+        item.deletedAt === null
     );
 
     if (!schedule) {
@@ -216,7 +231,18 @@ class FakeScheduleRepository implements ScheduleRepository {
       ...(input.endAt !== undefined ? { endAt: input.endAt } : {}),
       ...(input.timeZone !== undefined ? { timeZone: input.timeZone } : {}),
       ...(input.location !== undefined ? { location: input.location } : {}),
+      ...(input.meetingUrl !== undefined ? { meetingUrl: input.meetingUrl } : {}),
       ...(input.memo !== undefined ? { memo: input.memo } : {}),
+      ...(input.isAllDay !== undefined ? { isAllDay: input.isAllDay } : {}),
+      ...(input.externalSyncStatus !== undefined &&
+      schedule.googleCalendar !== null
+        ? {
+            googleCalendar: {
+              ...schedule.googleCalendar,
+              syncStatus: input.externalSyncStatus,
+            },
+          }
+        : {}),
       updatedAt: new Date("2026-06-14T01:00:00.000Z"),
     };
 
@@ -255,16 +281,33 @@ class FakeScheduleRepository implements ScheduleRepository {
   }
 
   // 기능 : fake 일정과 연결 매핑을 실제 삭제합니다.
-  async deleteScheduleHard(userId: string, scheduleId: string): Promise<boolean> {
-    if (userId !== CURRENT_USER.id) {
+  async softDeleteSchedule(input: SoftDeleteScheduleInput): Promise<boolean> {
+    if (input.userId !== CURRENT_USER.id) {
       return false;
     }
 
-    const beforeCount = this.schedules.length;
-    this.schedules = this.schedules.filter((schedule) => schedule.id !== scheduleId);
-    this.scheduleDealIds.delete(scheduleId);
+    let updated = false;
+    this.schedules = this.schedules.map((schedule) => {
+      if (schedule.id !== input.scheduleId || schedule.deletedAt !== null) {
+        return schedule;
+      }
 
-    return this.schedules.length < beforeCount;
+      updated = true;
+      return {
+        ...schedule,
+        deletedAt: input.deletedAt,
+        trashExpiresAt: input.trashExpiresAt,
+        googleCalendar:
+          input.externalSyncStatus && schedule.googleCalendar
+            ? {
+                ...schedule.googleCalendar,
+                syncStatus: input.externalSyncStatus,
+              }
+            : schedule.googleCalendar,
+      };
+    });
+
+    return updated;
   }
 
   // 기능 : 저장된 연결 딜 ID를 일정 record의 딜 요약으로 변환합니다.
@@ -334,7 +377,11 @@ function createWeeklySchedule(
     endAt: new Date("2026-06-15T01:30:00.000Z"),
     timeZone: "Asia/Seoul",
     location: "Seoul",
+    meetingUrl: null,
     memo: "internal memo body",
+    isAllDay: false,
+    sourceType: "INTERNAL",
+    googleCalendar: null,
     deals: [
       {
         id: "weekly-deal-1",
@@ -498,7 +545,9 @@ describe("ScheduleApplicationService", () => {
       },
       repository
     );
-    expect(repository.schedules).toHaveLength(0);
+    expect(repository.schedules).toHaveLength(1);
+    expect(repository.schedules[0]?.deletedAt).toBeInstanceOf(Date);
+    expect(repository.scheduleDealIds.get(created.id)).toEqual(["deal-1"]);
   });
 
   it("일정 수정 요청에 수정 가능한 필드가 없으면 ownership 조회 전에 차단한다", async () => {
@@ -689,6 +738,8 @@ describe("ScheduleApplicationService", () => {
       "요일",
       "시간",
       "일정",
+      "Source",
+      "Meeting URL",
       "장소",
       "딜",
       "딜단계",

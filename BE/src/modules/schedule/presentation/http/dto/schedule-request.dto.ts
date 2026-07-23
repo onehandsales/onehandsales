@@ -68,6 +68,10 @@ export class CreateScheduleDto {
 
   @IsOptional()
   @IsString()
+  meetingUrl?: string | null;
+
+  @IsOptional()
+  @IsString()
   memo?: string | null;
 
   @IsOptional()
@@ -98,6 +102,10 @@ export class UpdateScheduleDto {
   @IsOptional()
   @IsString()
   location?: string | null;
+
+  @IsOptional()
+  @IsString()
+  meetingUrl?: string | null;
 
   @IsOptional()
   @IsString()

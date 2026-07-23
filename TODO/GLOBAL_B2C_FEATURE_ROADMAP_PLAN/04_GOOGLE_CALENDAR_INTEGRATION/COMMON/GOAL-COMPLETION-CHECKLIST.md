@@ -23,7 +23,7 @@
 | 완료 | Goal | 상태 | 완료일 | 완료 기준 | 증거 | 비고 |
 |---|---|---|---|---|---|---|
 | [x] | G01 Planning API DB Contract | Done | 2026-07-23 | 문서 계약과 현재 코드 사실을 대조하고, G02~G05 착수 blocking 질문이 없음을 확인한다. | G01 `rg ...` 검색, `git diff --check` 통과 | API spec token encryption missing-key 계약 보정 |
-| [ ] | G02 Backend DB Google Connection | Ready | - | DB foundation, Schedule soft delete, Trash `SCHEDULE`, connection/status/connect/callback/disconnect API가 spec과 일치한다. | - | Prisma migration과 BE 검증 결과가 필요하다. |
+| [x] | G02 Backend DB Google Connection | Done | 2026-07-23 | DB foundation, Schedule soft delete, Trash `SCHEDULE`, connection/status/connect/callback/disconnect API가 spec과 일치한다. | `prisma:validate`, `prisma:migrate --name google_calendar_integration`, `typecheck`, `lint`, `test -- schedule`, `test -- notification`, `test -- trash`, `build` 통과 | 실제 Google provider smoke는 G05에서 실행 여부를 기록한다. |
 | [ ] | G03 Backend Calendar List Sync | Ready | - | calendar list/selection/sync, Google event mapping, 기존 Schedule/Weekly API 확장이 spec과 일치한다. | - | selected calendar only, `LOCAL_MODIFIED`, all-day, reminder 테스트가 필요하다. |
 | [ ] | G04 User Web Google Calendar UX | Ready | - | `/app/schedules`, `/app/settings`, detail/week/trash UX가 FE TODO와 API 계약에 맞게 연결된다. | - | desktop/mobile text overlap 확인이 필요하다. |
 | [ ] | G05 QA Review Closeout | Ready | - | `COMMON/REVIEW-CHECKLIST.md` critical 항목과 BE/FE 검증 명령이 완료되고 문서 상태가 갱신된다. | - | 실제 Google smoke 실행 여부 또는 미실행 사유를 기록한다. |
@@ -41,13 +41,13 @@
 
 ### G02 Backend DB Google Connection
 
-- [ ] Prisma enum/model/field/migration이 추가됐다.
-- [ ] 기존 Schedule row가 `INTERNAL`로 호환된다.
-- [ ] `DELETE /api/schedules/:scheduleId`가 soft delete로 바뀌었다.
-- [ ] Trash `SCHEDULE` list/detail/restore가 동작한다.
-- [ ] Google connect/callback/status/disconnect API가 spec과 일치한다.
-- [ ] token/code/raw provider body가 log/response/test snapshot에 노출되지 않는다.
-- [ ] BE 검증 명령을 실행했다.
+- [x] Prisma enum/model/field/migration이 추가됐다.
+- [x] 기존 Schedule row가 `INTERNAL`로 호환된다.
+- [x] `DELETE /api/schedules/:scheduleId`가 soft delete로 바뀌었다.
+- [x] Trash `SCHEDULE` list/detail/restore가 동작한다.
+- [x] Google connect/callback/status/disconnect API가 spec과 일치한다.
+- [x] token/code/raw provider body가 log/response/test snapshot에 노출되지 않는다.
+- [x] BE 검증 명령을 실행했다.
 
 ### G03 Backend Calendar List Sync
 

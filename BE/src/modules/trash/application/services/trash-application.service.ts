@@ -3,8 +3,11 @@ import {
   Inject,
   Injectable,
   NotFoundException,
+  Optional,
 } from "@nestjs/common";
+import { ScheduleNotificationReminderUseCase } from "@/modules/notification/application/use-cases/notification-reminder-scheduling.use-cases";
 import type { CurrentUserContext } from "@/shared/application/context/current-user.context";
+import { AppLogger } from "@/shared/infrastructure/logger/app-logger.service";
 import {
   TRASH_REPOSITORY,
   type GetTrashDetailInput,
@@ -22,7 +25,11 @@ export class TrashApplicationService {
   // 기능 : 휴지통 저장소 구현체를 주입받습니다.
   constructor(
     @Inject(TRASH_REPOSITORY)
-    private readonly trashRepository: TrashRepository
+    private readonly trashRepository: TrashRepository,
+    @Optional()
+    private readonly scheduleNotificationReminder?: ScheduleNotificationReminderUseCase,
+    @Optional()
+    private readonly logger?: AppLogger
   ) {}
 
   // 기능 : 현재 사용자의 복구 가능 휴지통 목록을 조회합니다.
@@ -84,6 +91,25 @@ export class TrashApplicationService {
     if ("blockedReason" in restored) {
       throw new ConflictException(
         "상위 데이터를 먼저 복구해야 로그를 복구할 수 있습니다."
+      );
+    }
+
+    if (restored.scheduleReminder && this.scheduleNotificationReminder) {
+      await this.scheduleNotificationReminder.execute({
+        userId: currentUser.id,
+        scheduleId: restored.scheduleReminder.scheduleId,
+        scheduleTitle: restored.scheduleReminder.scheduleTitle,
+        startAt: restored.scheduleReminder.startAt,
+        now: input.now,
+      });
+
+      this.logger?.log(
+        JSON.stringify({
+          event: "schedule.restored",
+          userId: currentUser.id,
+          scheduleId: restored.scheduleReminder.scheduleId,
+        }),
+        "TrashApplicationService"
       );
     }
 

@@ -22,9 +22,11 @@ import {
 } from "@/modules/notification/application/use-cases/notification-reminder-scheduling.use-cases";
 import {
   RelatedDealNotFoundError,
+  ScheduleMeetingUrlInvalidError,
   ScheduleNotFoundError,
   ScheduleWeekReportExportFailedError,
 } from "@/modules/schedule/domain/schedule.errors";
+import { createTrashRetentionTimestamps } from "@/shared/application/trash/trash-retention";
 import {
   createTimestampedXlsxFileName,
   type ExportedXlsxFileResponse,
@@ -62,6 +64,9 @@ const WEEKDAY_CODES = [
 ] as const;
 
 type WeekdayCode = (typeof WEEKDAY_CODES)[number];
+type MutableUpdateScheduleInput = {
+  -readonly [Key in keyof UpdateScheduleInput]: UpdateScheduleInput[Key];
+};
 
 const WEEKDAY_LABELS: Readonly<Record<WeekdayCode, string>> = {
   MONDAY: "월",
@@ -141,6 +146,10 @@ export interface WeeklyScheduleReportScheduleResponse {
   readonly endAt: string;
   readonly timeZone: string;
   readonly location: string | null;
+  readonly meetingUrl: string | null;
+  readonly isAllDay: boolean;
+  readonly sourceType: string;
+  readonly googleCalendar: ScheduleGoogleCalendarResponse | null;
   readonly hasMemo: boolean;
   readonly deals: WeeklyScheduleReportDealResponse[];
 }
@@ -188,6 +197,7 @@ export interface CreateScheduleCommand {
   readonly endAt: string;
   readonly timeZone: string;
   readonly location?: string | null;
+  readonly meetingUrl?: string | null;
   readonly memo?: string | null;
   readonly dealIds?: string[];
 }
@@ -199,6 +209,7 @@ export interface UpdateScheduleCommand {
   readonly endAt?: string;
   readonly timeZone?: string;
   readonly location?: string | null;
+  readonly meetingUrl?: string | null;
   readonly memo?: string | null;
   readonly dealIds?: string[];
 }
@@ -228,10 +239,29 @@ export interface ScheduleResponse {
   readonly endAt: string;
   readonly timeZone: string;
   readonly location: string | null;
+  readonly meetingUrl: string | null;
   readonly memo: string | null;
+  readonly isAllDay: boolean;
+  readonly sourceType: string;
+  readonly googleCalendar: ScheduleGoogleCalendarResponse | null;
+  readonly deletedAt: string | null;
+  readonly trashExpiresAt: string | null;
   readonly deals: ScheduleDealResponse[];
   readonly createdAt: string;
   readonly updatedAt: string;
+}
+
+export interface ScheduleGoogleCalendarResponse {
+  readonly sourceId: string;
+  readonly calendarId: string;
+  readonly calendarName: string;
+  readonly syncStatus: string | null;
+  readonly badgeLabel: string;
+  readonly externalHtmlLink: string | null;
+  readonly lastExternalSyncedAt: string | null;
+  readonly externalDeletedAt: string | null;
+  readonly isHidden: boolean;
+  readonly canEditLocalFields: boolean;
 }
 
 // 역할 : ScheduleDealResponse 일정 응답의 연결 딜 요약을 정의합니다.
@@ -433,6 +463,7 @@ export class ScheduleApplicationService {
         endAt: normalized.endAt,
         timeZone: normalized.timeZone,
         location: normalized.location,
+        meetingUrl: normalized.meetingUrl,
         memo: normalized.memo,
       });
       createdScheduleId = schedule.id;
@@ -612,10 +643,17 @@ export class ScheduleApplicationService {
       }
 
       // 3. 현재 사용자 소유 일정과 연결 row를 실제 삭제한다.
-      const deleted = await repository.deleteScheduleHard(
-        currentUser.id,
-        scheduleId
-      );
+      const timestamps = createTrashRetentionTimestamps();
+      const deleted = await repository.softDeleteSchedule({
+        userId: currentUser.id,
+        scheduleId,
+        deletedAt: timestamps.deletedAt,
+        deletedByUserId: currentUser.id,
+        trashExpiresAt: timestamps.trashExpiresAt,
+        ...(existing.sourceType === "GOOGLE"
+          ? { externalSyncStatus: "LOCAL_DELETED" }
+          : {}),
+      });
 
       // 4. 삭제 대상 row가 없으면 NotFound로 처리한다.
       if (!deleted) {
@@ -647,6 +685,7 @@ export class ScheduleApplicationService {
       input.endAt !== undefined ||
       input.timeZone !== undefined ||
       input.location !== undefined ||
+      input.meetingUrl !== undefined ||
       input.memo !== undefined ||
       input.dealIds !== undefined
     );
@@ -663,6 +702,7 @@ export class ScheduleApplicationService {
     readonly endAt: Date;
     readonly timeZone: string;
     readonly location: string | null;
+    readonly meetingUrl: string | null;
     readonly memo: string | null;
     readonly dealIds: string[];
   } {
@@ -687,6 +727,7 @@ export class ScheduleApplicationService {
       endAt,
       timeZone,
       location: this.normalizeNullableText(input.location, 200, "location"),
+      meetingUrl: this.normalizeMeetingUrl(input.meetingUrl),
       memo: this.normalizeNullableText(input.memo, 2000, "memo"),
       dealIds: this.normalizeDealIds(input.dealIds ?? []),
     };
@@ -715,7 +756,7 @@ export class ScheduleApplicationService {
 
     this.assertValidTimeRange(startAt, endAt);
 
-    const scheduleFields: UpdateScheduleInput = {
+    const scheduleFields: MutableUpdateScheduleInput = {
       ...(input.scheduleTitle !== undefined
         ? {
             scheduleTitle: this.normalizeRequiredText(
@@ -737,10 +778,24 @@ export class ScheduleApplicationService {
             ),
           }
         : {}),
+      ...(input.meetingUrl !== undefined
+        ? { meetingUrl: this.normalizeMeetingUrl(input.meetingUrl) }
+        : {}),
       ...(input.memo !== undefined
         ? { memo: this.normalizeNullableText(input.memo, 2000, "memo") }
         : {}),
     };
+
+    if (
+      existing.sourceType === "GOOGLE" &&
+      (Object.keys(scheduleFields).length > 0 || input.dealIds !== undefined)
+    ) {
+      scheduleFields.externalSyncStatus = "LOCAL_MODIFIED";
+
+      if (input.startAt !== undefined || input.endAt !== undefined) {
+        scheduleFields.isAllDay = false;
+      }
+    }
 
     return {
       scheduleFields,
@@ -825,6 +880,38 @@ export class ScheduleApplicationService {
   }
 
   // 기능 : 필수 timezone을 저장 가능한 IANA timezone ID로 검증합니다.
+  private normalizeMeetingUrl(value: string | null | undefined): string | null {
+    if (value === null || value === undefined) {
+      return null;
+    }
+
+    const normalized = value.trim();
+
+    if (normalized.length === 0) {
+      return null;
+    }
+
+    if (/\s/.test(normalized)) {
+      throw new ScheduleMeetingUrlInvalidError();
+    }
+
+    try {
+      const url = new URL(normalized);
+
+      if (url.protocol !== "https:") {
+        throw new ScheduleMeetingUrlInvalidError();
+      }
+    } catch (error) {
+      if (error instanceof ScheduleMeetingUrlInvalidError) {
+        throw error;
+      }
+
+      throw new ScheduleMeetingUrlInvalidError();
+    }
+
+    return normalized;
+  }
+
   private normalizeRequiredTimeZone(timeZone: string): string {
     const normalized = normalizeOptionalIanaTimeZone(timeZone);
 
@@ -1272,6 +1359,10 @@ export class ScheduleApplicationService {
       endAt: schedule.endAt.toISOString(),
       timeZone: schedule.timeZone,
       location: schedule.location,
+      meetingUrl: schedule.meetingUrl,
+      isAllDay: schedule.isAllDay,
+      sourceType: schedule.sourceType,
+      googleCalendar: this.toGoogleCalendarResponse(schedule.googleCalendar),
       hasMemo: Boolean(schedule.memo?.trim()),
       deals: schedule.deals.map((deal) => this.toWeeklyReportDealResponse(deal)),
     };
@@ -1428,6 +1519,8 @@ export class ScheduleApplicationService {
       weekdayLabel: day.weekdayLabel,
       timeRange: "",
       scheduleTitle: WEEKLY_REPORT_EMPTY_SCHEDULE_TITLE,
+      sourceLabel: "",
+      meetingUrl: "",
       location: "",
       dealNames: "",
       dealStatusLabels: "",
@@ -1448,6 +1541,8 @@ export class ScheduleApplicationService {
       weekdayLabel: day.weekdayLabel,
       timeRange: this.formatWeeklyReportTimeRange(schedule, timeZone),
       scheduleTitle: schedule.scheduleTitle,
+      sourceLabel: this.getScheduleSourceLabel(schedule),
+      meetingUrl: schedule.meetingUrl ?? "",
       location: schedule.location ?? "",
       dealNames: this.joinWeeklyReportDealTexts(
         schedule.deals.map((deal) => deal.dealName)
@@ -1471,6 +1566,12 @@ export class ScheduleApplicationService {
   }
 
   // 기능 : 주간 리포트 xlsx 행의 시간 범위를 요청 timezone 기준 HH:mm 문자열로 변환합니다.
+  private getScheduleSourceLabel(
+    schedule: WeeklyScheduleReportScheduleResponse
+  ): string {
+    return schedule.googleCalendar?.badgeLabel ?? schedule.sourceType;
+  }
+
   private formatWeeklyReportTimeRange(
     schedule: WeeklyScheduleReportScheduleResponse,
     timeZone: string
@@ -1506,6 +1607,8 @@ export class ScheduleApplicationService {
           { header: "요일", key: "weekdayLabel", width: 10 },
           { header: "시간", key: "timeRange", width: 16 },
           { header: "일정", key: "scheduleTitle", width: 28 },
+          { header: "Source", key: "sourceLabel", width: 18 },
+          { header: "Meeting URL", key: "meetingUrl", width: 32 },
           { header: "장소", key: "location", width: 20 },
           { header: "딜", key: "dealNames", width: 28 },
           { header: "딜단계", key: "dealStatusLabels", width: 20 },
@@ -1540,10 +1643,39 @@ export class ScheduleApplicationService {
       endAt: schedule.endAt.toISOString(),
       timeZone: schedule.timeZone,
       location: schedule.location,
+      meetingUrl: schedule.meetingUrl,
       memo: schedule.memo,
+      isAllDay: schedule.isAllDay,
+      sourceType: schedule.sourceType,
+      googleCalendar: this.toGoogleCalendarResponse(schedule.googleCalendar),
+      deletedAt: schedule.deletedAt?.toISOString() ?? null,
+      trashExpiresAt: schedule.trashExpiresAt?.toISOString() ?? null,
       deals: schedule.deals.map((deal) => this.toDealResponse(deal)),
       createdAt: schedule.createdAt.toISOString(),
       updatedAt: schedule.updatedAt.toISOString(),
+    };
+  }
+
+  private toGoogleCalendarResponse(
+    googleCalendar: ScheduleRecord["googleCalendar"]
+  ): ScheduleGoogleCalendarResponse | null {
+    if (!googleCalendar) {
+      return null;
+    }
+
+    return {
+      sourceId: googleCalendar.sourceId,
+      calendarId: googleCalendar.calendarId,
+      calendarName: googleCalendar.calendarName,
+      syncStatus: googleCalendar.syncStatus,
+      badgeLabel: googleCalendar.badgeLabel,
+      externalHtmlLink: googleCalendar.externalHtmlLink,
+      lastExternalSyncedAt:
+        googleCalendar.lastExternalSyncedAt?.toISOString() ?? null,
+      externalDeletedAt:
+        googleCalendar.externalDeletedAt?.toISOString() ?? null,
+      isHidden: googleCalendar.isHidden,
+      canEditLocalFields: googleCalendar.canEditLocalFields,
     };
   }
 

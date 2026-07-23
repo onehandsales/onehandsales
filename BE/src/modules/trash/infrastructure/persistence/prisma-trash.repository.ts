@@ -66,6 +66,11 @@ const TARGET_METADATA: readonly TargetMetadata[] = [
     kind: "ENTITY",
   },
   {
+    targetType: "SCHEDULE",
+    domain: "SCHEDULE",
+    kind: "ENTITY",
+  },
+  {
     targetType: "MEETING_NOTE",
     domain: "MEETING_NOTE",
     kind: "ENTITY",
@@ -173,10 +178,16 @@ export class PrismaTrashRepository implements TrashRepository {
       return null;
     }
 
+    const scheduleReminder =
+      input.targetType === "SCHEDULE"
+        ? await this.findRestoredScheduleReminder(input)
+        : null;
+
     return {
       targetType: input.targetType,
       targetId: input.targetId,
       restoredAt: input.now,
+      ...(scheduleReminder ? { scheduleReminder } : {}),
     };
   }
 
@@ -191,6 +202,8 @@ export class PrismaTrashRepository implements TrashRepository {
         return this.getProductDetail(input);
       case "DEAL":
         return this.getDealDetail(input);
+      case "SCHEDULE":
+        return this.getScheduleDetail(input);
       case "MEETING_NOTE":
         return this.getMeetingNoteDetail(input);
       case "COMPANY_MEMO_LOG":
@@ -391,6 +404,75 @@ export class PrismaTrashRepository implements TrashRepository {
   }
 
   // 기능 : 삭제된 회의록의 상세 모달 데이터를 조회합니다.
+  private async getScheduleDetail(
+    input: GetTrashDetailInput
+  ): Promise<TrashDetail | null> {
+    const schedule = await this.client.schedule.findFirst({
+      where: this.createDetailWhere(input),
+      select: {
+        id: true,
+        scheduleTitle: true,
+        startAt: true,
+        endAt: true,
+        timeZone: true,
+        location: true,
+        meetingUrl: true,
+        memo: true,
+        sourceType: true,
+        externalSyncStatus: true,
+        deletedAt: true,
+        trashExpiresAt: true,
+        externalCalendarSource: {
+          select: {
+            status: true,
+            calendarName: true,
+            connection: {
+              select: {
+                status: true,
+              },
+            },
+          },
+        },
+        _count: {
+          select: {
+            scheduleDeals: true,
+          },
+        },
+      },
+    });
+
+    if (!schedule?.deletedAt || !schedule.trashExpiresAt) {
+      return null;
+    }
+
+    return this.createTrashDetail({
+      targetType: "SCHEDULE",
+      targetId: schedule.id,
+      title: schedule.scheduleTitle,
+      deletedAt: schedule.deletedAt,
+      trashExpiresAt: schedule.trashExpiresAt,
+      summary: `${schedule.scheduleTitle} schedule`,
+      fields: [
+        this.createField(
+          "Schedule time",
+          this.formatScheduleDateTimeRange(
+            schedule.startAt,
+            schedule.endAt,
+            schedule.timeZone
+          )
+        ),
+        this.createField("Location", schedule.location),
+        this.createField("Source", this.createScheduleSourceLabel(schedule)),
+        this.createField(
+          "Meeting URL",
+          this.formatMeetingUrl(schedule.meetingUrl)
+        ),
+        this.createField("Linked deals", schedule._count.scheduleDeals),
+      ],
+      content: schedule.memo,
+    });
+  }
+
   private async getMeetingNoteDetail(
     input: GetTrashDetailInput
   ): Promise<TrashDetail | null> {
@@ -853,6 +935,62 @@ export class PrismaTrashRepository implements TrashRepository {
   }
 
   // 기능 : 여러 스냅샷 이름을 휴지통 상세 한 줄 표시 값으로 합칩니다.
+  private formatScheduleDateTimeRange(
+    startAt: Date,
+    endAt: Date,
+    timeZone: string
+  ) {
+    const formatter = new Intl.DateTimeFormat("ko-KR", {
+      dateStyle: "medium",
+      timeStyle: "short",
+      timeZone,
+    });
+
+    return `${formatter.format(startAt)} - ${formatter.format(endAt)}`;
+  }
+
+  private formatMeetingUrl(value: string | null) {
+    if (!value) {
+      return null;
+    }
+
+    try {
+      return new URL(value).hostname;
+    } catch {
+      return value;
+    }
+  }
+
+  private createScheduleSourceLabel(schedule: {
+    readonly sourceType: string;
+    readonly externalSyncStatus: string | null;
+    readonly externalCalendarSource: {
+      readonly status: string;
+      readonly calendarName: string;
+      readonly connection: {
+        readonly status: string;
+      };
+    } | null;
+  }) {
+    if (schedule.sourceType !== "GOOGLE") {
+      return "Internal";
+    }
+
+    if (schedule.externalSyncStatus === "LOCAL_DELETED") {
+      return "Google - local deleted";
+    }
+
+    if (schedule.externalSyncStatus === "LOCAL_MODIFIED") {
+      return "Google - local modified";
+    }
+
+    if (schedule.externalCalendarSource?.connection.status !== "CONNECTED") {
+      return "Google - disconnected";
+    }
+
+    return schedule.externalCalendarSource?.calendarName ?? "Google";
+  }
+
   private joinLabels(labels: readonly string[]) {
     const normalizedLabels = labels
       .map((label) => label.trim())
@@ -879,6 +1017,10 @@ export class PrismaTrashRepository implements TrashRepository {
 
     if (this.shouldIncludeTarget(input, "DEAL")) {
       tasks.push(this.listDeletedDeals(input));
+    }
+
+    if (this.shouldIncludeTarget(input, "SCHEDULE")) {
+      tasks.push(this.listDeletedSchedules(input));
     }
 
     if (this.shouldIncludeTarget(input, "MEETING_NOTE")) {
@@ -1023,6 +1165,30 @@ export class PrismaTrashRepository implements TrashRepository {
   }
 
   // 기능 : 삭제된 회의록 row를 휴지통 목록 항목으로 변환해 조회합니다.
+  private async listDeletedSchedules(input: ListTrashInput) {
+    const schedules = await this.client.schedule.findMany({
+      where: this.createDeletedWhere(input),
+      select: {
+        id: true,
+        scheduleTitle: true,
+        deletedAt: true,
+        trashExpiresAt: true,
+      },
+    });
+
+    return schedules
+      .map((schedule) =>
+        this.createTrashItem({
+          targetType: "SCHEDULE",
+          targetId: schedule.id,
+          title: schedule.scheduleTitle,
+          deletedAt: schedule.deletedAt,
+          trashExpiresAt: schedule.trashExpiresAt,
+        })
+      )
+      .filter(isTrashItem);
+  }
+
   private async listDeletedMeetingNotes(input: ListTrashInput) {
     const meetingNotes = await this.client.meetingNote.findMany({
       where: this.createDeletedWhere(input),
@@ -1500,6 +1666,8 @@ export class PrismaTrashRepository implements TrashRepository {
 
         return result.count > 0;
       }
+      case "SCHEDULE":
+        return this.restoreSchedule(input);
       case "MEETING_NOTE": {
         const result = await this.client.meetingNote.updateMany({
           where: this.createRestoreWhere(input),
@@ -1583,12 +1751,63 @@ export class PrismaTrashRepository implements TrashRepository {
   }
 
   // 기능 : 복구 대상 로그의 직접 상위 도메인 row 삭제 여부를 확인합니다.
+  private async restoreSchedule(input: RestoreTrashItemInput): Promise<boolean> {
+    const schedule = await this.client.schedule.findFirst({
+      where: this.createRestoreWhere(input),
+      select: {
+        sourceType: true,
+      },
+    });
+
+    if (!schedule) {
+      return false;
+    }
+
+    const result = await this.client.schedule.updateMany({
+      where: this.createRestoreWhere(input),
+      data: {
+        ...this.createRestoreData(),
+        ...(schedule.sourceType === "GOOGLE"
+          ? { externalSyncStatus: "LOCAL_MODIFIED" as const }
+          : {}),
+      },
+    });
+
+    return result.count > 0;
+  }
+
+  private async findRestoredScheduleReminder(input: RestoreTrashItemInput) {
+    const schedule = await this.client.schedule.findFirst({
+      where: {
+        id: input.targetId,
+        userId: input.userId,
+        deletedAt: null,
+      },
+      select: {
+        id: true,
+        scheduleTitle: true,
+        startAt: true,
+      },
+    });
+
+    if (!schedule) {
+      return null;
+    }
+
+    return {
+      scheduleId: schedule.id,
+      scheduleTitle: schedule.scheduleTitle,
+      startAt: schedule.startAt,
+    };
+  }
+
   private async hasDeletedParent(input: RestoreTrashItemInput) {
     switch (input.targetType) {
       case "COMPANY":
       case "CONTACT":
       case "PRODUCT":
       case "DEAL":
+      case "SCHEDULE":
       case "MEETING_NOTE":
         return false;
       case "COMPANY_MEMO_LOG": {

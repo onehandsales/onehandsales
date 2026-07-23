@@ -8,6 +8,13 @@ export enum ScheduleViewMode {
   WEEK = "week",
 }
 
+export type ScheduleSourceType = "INTERNAL" | "GOOGLE";
+export type ScheduleExternalSyncStatus =
+  | "SYNCED"
+  | "LOCAL_MODIFIED"
+  | "GOOGLE_DELETED"
+  | "LOCAL_DELETED";
+
 // 역할 : ScheduleDealRecord 데이터가 계층 사이에서 전달되는 구조를 정의합니다.
 export interface ScheduleDealRecord {
   readonly id: string;
@@ -20,6 +27,19 @@ export interface ScheduleDealOptionRecord extends ScheduleDealRecord {
 }
 
 // 역할 : ScheduleRecord 데이터가 계층 사이에서 전달되는 구조를 정의합니다.
+export interface ScheduleGoogleCalendarRecord {
+  readonly sourceId: string;
+  readonly calendarId: string;
+  readonly calendarName: string;
+  readonly syncStatus: ScheduleExternalSyncStatus | null;
+  readonly badgeLabel: string;
+  readonly externalHtmlLink: string | null;
+  readonly lastExternalSyncedAt: Date | null;
+  readonly externalDeletedAt: Date | null;
+  readonly isHidden: boolean;
+  readonly canEditLocalFields: boolean;
+}
+
 export interface ScheduleRecord {
   readonly id: string;
   readonly scheduleTitle: string;
@@ -27,7 +47,13 @@ export interface ScheduleRecord {
   readonly endAt: Date;
   readonly timeZone: string;
   readonly location: string | null;
+  readonly meetingUrl: string | null;
   readonly memo: string | null;
+  readonly isAllDay: boolean;
+  readonly sourceType: ScheduleSourceType;
+  readonly googleCalendar: ScheduleGoogleCalendarRecord | null;
+  readonly deletedAt: Date | null;
+  readonly trashExpiresAt: Date | null;
   readonly deals: ScheduleDealRecord[];
   readonly createdAt: Date;
   readonly updatedAt: Date;
@@ -76,7 +102,11 @@ export interface WeeklyReportScheduleRecord {
   readonly endAt: Date;
   readonly timeZone: string;
   readonly location: string | null;
+  readonly meetingUrl: string | null;
   readonly memo: string | null;
+  readonly isAllDay: boolean;
+  readonly sourceType: ScheduleSourceType;
+  readonly googleCalendar: ScheduleGoogleCalendarRecord | null;
   readonly deals: WeeklyReportDealRecord[];
 }
 
@@ -102,6 +132,7 @@ export interface CreateScheduleInput {
   readonly endAt: Date;
   readonly timeZone: string;
   readonly location: string | null;
+  readonly meetingUrl: string | null;
   readonly memo: string | null;
 }
 
@@ -112,7 +143,19 @@ export interface UpdateScheduleInput {
   readonly endAt?: Date;
   readonly timeZone?: string;
   readonly location?: string | null;
+  readonly meetingUrl?: string | null;
   readonly memo?: string | null;
+  readonly isAllDay?: boolean;
+  readonly externalSyncStatus?: ScheduleExternalSyncStatus;
+}
+
+export interface SoftDeleteScheduleInput {
+  readonly userId: string;
+  readonly scheduleId: string;
+  readonly deletedAt: Date;
+  readonly deletedByUserId: string;
+  readonly trashExpiresAt: Date;
+  readonly externalSyncStatus?: ScheduleExternalSyncStatus;
 }
 
 // 역할 : CreateScheduleDealsInput 일정-딜 연결 생성 값을 정의합니다.
@@ -162,5 +205,5 @@ export interface ScheduleRepository extends NotificationReminderWriteRepository 
   // 기능 : 일정에서 딜 연결 목록을 삭제합니다.
   deleteScheduleDeals(input: DeleteScheduleDealsInput): Promise<void>;
   // 기능 : 현재 사용자의 일정과 연결 정보를 실제 삭제합니다.
-  deleteScheduleHard(userId: string, scheduleId: string): Promise<boolean>;
+  softDeleteSchedule(input: SoftDeleteScheduleInput): Promise<boolean>;
 }

@@ -3,6 +3,7 @@ export type TrashTargetType =
   | "CONTACT"
   | "PRODUCT"
   | "DEAL"
+  | "SCHEDULE"
   | "MEETING_NOTE"
   | "COMPANY_MEMO_LOG"
   | "COMPANY_PRIVATE_MEMO_LOG"
@@ -20,6 +21,7 @@ export type TrashDomainFilter =
   | "CONTACT"
   | "PRODUCT"
   | "DEAL"
+  | "SCHEDULE"
   | "MEETING_NOTE";
 export type TrashLogTypeFilter =
   | "ALL"
@@ -105,6 +107,13 @@ export interface TrashRestoreResult {
   readonly targetType: TrashTargetType;
   readonly targetId: string;
   readonly restoredAt: Date;
+  readonly scheduleReminder?: RestoredScheduleReminder | null;
+}
+
+export interface RestoredScheduleReminder {
+  readonly scheduleId: string;
+  readonly scheduleTitle: string;
+  readonly startAt: Date;
 }
 
 export type TrashRestoreBlockedReason = "PARENT_DELETED";

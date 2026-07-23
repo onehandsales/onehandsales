@@ -13,6 +13,7 @@ export const TRASH_TARGET_TYPES = [
   "CONTACT",
   "PRODUCT",
   "DEAL",
+  "SCHEDULE",
   "MEETING_NOTE",
   "COMPANY_MEMO_LOG",
   "COMPANY_PRIVATE_MEMO_LOG",
@@ -41,6 +42,7 @@ const TRASH_DOMAIN_FILTERS = [
   "CONTACT",
   "PRODUCT",
   "DEAL",
+  "SCHEDULE",
   "MEETING_NOTE",
 ] as const satisfies readonly TrashDomainFilter[];
 

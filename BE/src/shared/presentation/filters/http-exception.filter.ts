@@ -93,6 +93,9 @@ export class HttpExceptionFilter implements ExceptionFilter {
       case "InvalidImportMapping":
       case "UnsupportedImportFileType":
       case "ImportFileParseFailed":
+      case "GoogleCalendarOAuthStateInvalid":
+      case "GoogleCalendarSourceSelectionRequired":
+      case "ScheduleMeetingUrlInvalid":
         return HttpStatus.BAD_REQUEST;
       case "ImportJobExpired":
         return HttpStatus.GONE;
@@ -100,6 +103,8 @@ export class HttpExceptionFilter implements ExceptionFilter {
       case "ImportJobAlreadyConfirmed":
       case "ImportJobNotReady":
       case "ImportMappingRequired":
+      case "GoogleCalendarReconnectRequired":
+      case "GoogleCalendarSyncInProgress":
         return HttpStatus.CONFLICT;
       case "ImportMappingFailed":
       case "ImportConfirmValidationFailed":
@@ -108,6 +113,8 @@ export class HttpExceptionFilter implements ExceptionFilter {
       case "BrowserPushNotConfigured":
       case "MeetingNoteAiDraftProviderUnavailable":
         return HttpStatus.SERVICE_UNAVAILABLE;
+      case "GoogleCalendarProviderUnavailable":
+        return HttpStatus.BAD_GATEWAY;
       case "MeetingNoteAiDraftFailed":
         return HttpStatus.BAD_GATEWAY;
       default:

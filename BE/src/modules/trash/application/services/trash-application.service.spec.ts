@@ -1,6 +1,8 @@
 import { ConflictException, NotFoundException } from "@nestjs/common";
+import type { ScheduleNotificationReminderUseCase } from "@/modules/notification/application/use-cases/notification-reminder-scheduling.use-cases";
 import type { TrashRepository } from "@/modules/trash/application/ports/trash.repository";
 import type { CurrentUserContext } from "@/shared/application/context/current-user.context";
+import type { AppLogger } from "@/shared/infrastructure/logger/app-logger.service";
 import { TrashApplicationService } from "./trash-application.service";
 
 const CURRENT_USER: CurrentUserContext = {
@@ -92,5 +94,51 @@ describe("TrashApplicationService", () => {
     await expect(
       service.restoreTrashItem(CURRENT_USER, "COMPANY", TARGET_ID)
     ).rejects.toBeInstanceOf(NotFoundException);
+  });
+
+  it("recalculates a schedule reminder after restoring a schedule", async () => {
+    const repository = createRepository();
+    const scheduleNotificationReminder = {
+      execute: jest.fn().mockResolvedValue({
+        scheduled: true,
+        notification: null,
+        canceledCount: 0,
+      }),
+    } as unknown as ScheduleNotificationReminderUseCase;
+    const logger = {
+      log: jest.fn(),
+    } as unknown as AppLogger;
+    const service = new TrashApplicationService(
+      repository,
+      scheduleNotificationReminder,
+      logger
+    );
+    const restoredAt = new Date("2026-06-26T00:00:00.000Z");
+    const startAt = new Date("2026-07-01T01:00:00.000Z");
+
+    repository.restoreTrashItem.mockResolvedValue({
+      targetType: "SCHEDULE",
+      targetId: TARGET_ID,
+      restoredAt,
+      scheduleReminder: {
+        scheduleId: TARGET_ID,
+        scheduleTitle: "Restored schedule",
+        startAt,
+      },
+    });
+
+    await service.restoreTrashItem(CURRENT_USER, "SCHEDULE", TARGET_ID);
+
+    expect(scheduleNotificationReminder.execute).toHaveBeenCalledWith({
+      userId: CURRENT_USER.id,
+      scheduleId: TARGET_ID,
+      scheduleTitle: "Restored schedule",
+      startAt,
+      now: expect.any(Date),
+    });
+    expect(logger.log).toHaveBeenCalledWith(
+      expect.stringContaining("schedule.restored"),
+      "TrashApplicationService"
+    );
   });
 });

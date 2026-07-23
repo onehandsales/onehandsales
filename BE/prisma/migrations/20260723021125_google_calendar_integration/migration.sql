@@ -1,0 +1,2 @@
+-- RenameIndex
+ALTER INDEX "NotificationDeliveryAttempt_notificationId_channel_createdAt_id" RENAME TO "NotificationDeliveryAttempt_notificationId_channel_createdA_idx";

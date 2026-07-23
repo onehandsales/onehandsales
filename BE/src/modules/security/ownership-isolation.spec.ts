@@ -824,7 +824,11 @@ function createScheduleRepository(): ScheduleRepository {
           endAt: schedule.endAt,
           timeZone: schedule.timeZone,
           location: schedule.location,
+          meetingUrl: schedule.meetingUrl,
           memo: schedule.memo,
+          isAllDay: schedule.isAllDay,
+          sourceType: schedule.sourceType,
+          googleCalendar: schedule.googleCalendar,
           deals: schedule.deals.map((deal) => ({
             id: deal.id,
             dealName: deal.dealName,
@@ -855,11 +859,11 @@ function createScheduleRepository(): ScheduleRepository {
           !schedule.deleted
       );
     },
-    async deleteScheduleHard(userId, scheduleId): Promise<boolean> {
+    async softDeleteSchedule(input): Promise<boolean> {
       const index = schedules.findIndex(
         (schedule) =>
-          schedule.id === scheduleId &&
-          schedule.userId === userId &&
+          schedule.id === input.scheduleId &&
+          schedule.userId === input.userId &&
           !schedule.deleted
       );
 
@@ -873,7 +877,12 @@ function createScheduleRepository(): ScheduleRepository {
         return false;
       }
 
-      schedules[index] = { ...schedule, deleted: true };
+      schedules[index] = {
+        ...schedule,
+        deleted: true,
+        deletedAt: input.deletedAt,
+        trashExpiresAt: input.trashExpiresAt,
+      };
       return true;
     },
   };
@@ -1216,7 +1225,13 @@ function createScheduleRecord(
     endAt: new Date("2026-07-20T02:00:00.000Z"),
     timeZone: "Asia/Seoul",
     location: `${marker} Location`,
+    meetingUrl: null,
     memo: `${marker} Memo`,
+    isAllDay: false,
+    sourceType: "INTERNAL",
+    googleCalendar: null,
+    deletedAt: null,
+    trashExpiresAt: null,
     deals: [{ id: `${userId}-deal`, dealName: `${marker} Deal` }],
     createdAt: CREATED_AT,
     updatedAt: UPDATED_AT,
