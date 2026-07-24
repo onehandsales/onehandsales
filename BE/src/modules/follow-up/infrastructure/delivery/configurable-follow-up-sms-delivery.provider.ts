@@ -35,15 +35,26 @@ export class ConfigurableFollowUpSmsDeliveryProvider
   }
 
   sendSms(input: FollowUpSmsSendInput): Promise<FollowUpProviderDeliveryResult> {
+    if (this.canUseTestProvider()) {
+      return Promise.resolve({
+        ok: true,
+        provider: input.provider ?? "test-sms",
+        providerMessageId: `test-sms-${input.idempotencyKey}`,
+        providerStatusCode: "202",
+        detailJson: {
+          providerStatusReason: "TEST_PROVIDER",
+        },
+      });
+    }
+
     return Promise.resolve({
       ok: false,
       provider: input.provider ?? "test-sms",
-      safeErrorCode: "FollowUpSendNotImplemented",
-      safeErrorMessage:
-        "Follow-up SMS sending is implemented in the send backend goal.",
+      safeErrorCode: "FollowUpProviderUnavailable",
+      safeErrorMessage: "Follow-up SMS provider is not configured.",
       retryable: false,
       detailJson: {
-        providerStatusReason: "G07_REQUIRED",
+        providerStatusReason: "PROVIDER_NOT_CONFIGURED",
       },
     });
   }

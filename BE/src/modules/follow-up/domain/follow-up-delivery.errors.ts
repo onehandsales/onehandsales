@@ -80,3 +80,78 @@ export class SmsSenderVerificationExpiredError extends DomainError {
     );
   }
 }
+
+export class FollowUpDraftSourceInvalidError extends DomainError {
+  constructor(message = "Follow-up draft source is invalid.") {
+    super("FollowUpDraftSourceInvalid", message);
+  }
+}
+
+export class FollowUpConsentNoticeRequiredError extends DomainError {
+  constructor() {
+    super(
+      "FollowUpConsentNoticeRequired",
+      "Acknowledge the follow-up consent notice before sending."
+    );
+  }
+}
+
+export class FollowUpEmailReconnectRequiredError extends DomainError {
+  constructor() {
+    super(
+      "FollowUpEmailReconnectRequired",
+      "Reconnect the email account before sending follow-up messages."
+    );
+  }
+}
+
+export class FollowUpSmsSenderNotVerifiedError extends DomainError {
+  constructor() {
+    super(
+      "FollowUpSmsSenderNotVerified",
+      "Verify the SMS sender number before sending follow-up messages."
+    );
+  }
+}
+
+export class FollowUpInvalidRecipientError extends DomainError {
+  constructor(message = "Follow-up recipient is invalid.") {
+    super("FollowUpInvalidRecipient", message);
+  }
+}
+
+export class FollowUpMessageAlreadySentError extends DomainError {
+  constructor() {
+    super(
+      "FollowUpMessageAlreadySent",
+      "Follow-up message has already been sent."
+    );
+  }
+}
+
+export class FollowUpSmsBodyTooLongError extends DomainError {
+  constructor() {
+    super("FollowUpSmsBodyTooLong", "Follow-up SMS body is too long.");
+  }
+}
+
+export class FollowUpMessageNotFoundError extends DomainError {
+  constructor() {
+    super("FollowUpMessageNotFound", "Follow-up message was not found.");
+  }
+}
+
+export class FollowUpMessageNotSendableError extends DomainError {
+  constructor(message = "Follow-up message cannot be sent.") {
+    super("FollowUpMessageNotSendable", message);
+  }
+}
+
+export class FollowUpMessageNotRetryableError extends DomainError {
+  constructor() {
+    super(
+      "FollowUpMessageNotRetryable",
+      "Follow-up message is not retryable."
+    );
+  }
+}

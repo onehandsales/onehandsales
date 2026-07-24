@@ -96,6 +96,9 @@ export class HttpExceptionFilter implements ExceptionFilter {
       case "ImportFileParseFailed":
       case "GoogleCalendarOAuthStateInvalid":
       case "FollowUpEmailOAuthStateInvalid":
+      case "FollowUpDraftSourceInvalid":
+      case "FollowUpInvalidRecipient":
+      case "FollowUpSmsBodyTooLong":
       case "SmsSenderVerificationCodeInvalid":
       case "GoogleCalendarSourceSelectionRequired":
       case "ScheduleMeetingUrlInvalid":
@@ -109,6 +112,12 @@ export class HttpExceptionFilter implements ExceptionFilter {
       case "ImportMappingRequired":
       case "GoogleCalendarReconnectRequired":
       case "GoogleCalendarSyncInProgress":
+      case "FollowUpConsentNoticeRequired":
+      case "FollowUpEmailReconnectRequired":
+      case "FollowUpSmsSenderNotVerified":
+      case "FollowUpMessageAlreadySent":
+      case "FollowUpMessageNotSendable":
+      case "FollowUpMessageNotRetryable":
         return HttpStatus.CONFLICT;
       case "ImportMappingFailed":
       case "ImportConfirmValidationFailed":

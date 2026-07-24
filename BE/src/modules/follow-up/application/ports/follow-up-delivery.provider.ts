@@ -17,7 +17,7 @@ export type FollowUpProviderOperation =
   | "SMS_VERIFY_SEND"
   | "SMS_SEND";
 
-export interface FollowUpProviderSafeDetail {
+export interface FollowUpProviderSafeDetail extends Record<string, unknown> {
   providerRequestId?: string;
   retryAfterSeconds?: number;
   providerRegion?: string;

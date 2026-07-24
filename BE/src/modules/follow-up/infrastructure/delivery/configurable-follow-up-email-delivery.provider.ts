@@ -152,15 +152,26 @@ export class ConfigurableFollowUpEmailDeliveryProvider
   sendEmail(
     input: FollowUpEmailSendInput
   ): Promise<FollowUpProviderDeliveryResult> {
+    if (this.allowTestProvider()) {
+      return Promise.resolve({
+        ok: true,
+        provider: input.provider.toLowerCase(),
+        providerMessageId: `test-email-${input.idempotencyKey}`,
+        providerStatusCode: "202",
+        detailJson: {
+          providerStatusReason: "TEST_PROVIDER",
+        },
+      });
+    }
+
     return Promise.resolve({
       ok: false,
       provider: input.provider.toLowerCase(),
-      safeErrorCode: "FollowUpSendNotImplemented",
-      safeErrorMessage:
-        "Follow-up email sending is implemented in the send backend goal.",
+      safeErrorCode: "FollowUpProviderUnavailable",
+      safeErrorMessage: "Follow-up email sending provider is not configured.",
       retryable: false,
       detailJson: {
-        providerStatusReason: "G07_REQUIRED",
+        providerStatusReason: "PROVIDER_NOT_CONFIGURED",
       },
     });
   }
