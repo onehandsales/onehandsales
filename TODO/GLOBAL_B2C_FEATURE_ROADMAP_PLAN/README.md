@@ -23,6 +23,10 @@
 
 이 계획은 `한손에 영업 / onehand.sales`가 Global B2C 첫 판매 기준과 Series A급 제품 기능까지 가기 위해 앞으로 만들어야 할 기능을 01~12 순서로 미리 정리한다.
 
+이 로드맵은 `TODO/NEXT_BACKEND_API_BACKLOG_PLAN`의 Backend/API/DB 후보와 `TODO/USER_WEB_PRODUCTIZATION_GAP_PLAN`의 현재 구현 대비 최종 서비스 gap을 입력으로 삼아 만든 상위 기능 슬롯이다. 두 입력 문서의 후보를 기능 목표로 재배치하고, 실제 구현은 각 번호 폴더에서 확정한 뒤 진행한다.
+
+따라서 이 문서의 1차 목적은 UX/UI 전체 polish가 아니라 Global B2C를 위해 필요한 기능 묶음을 빠짐없이 만들고 추적하는 것이다. UX/UI 전체 정리는 기능 흐름이 충분히 갖춰진 뒤 별도 계획에서 잡는다.
+
 이 문서는 바로 구현하는 `/goal` 문서가 아니다. 각 번호 폴더는 착수 전 검토 슬롯이며, 실제 작업은 해당 번호 폴더 안의 문서를 보강하고 검수한 뒤 별도 `/goal`로 전환한다.
 
 ## 1.1 First-sale 선행 Gate

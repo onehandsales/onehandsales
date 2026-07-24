@@ -10,11 +10,15 @@
 - [x] `NBA-010 Notification`: `02_NOTIFICATION_REMINDER`에서 구현 및 QA closeout 완료
 - [x] 03 `Weekly Schedule Report`: Done (2026-07-22)
 - [x] `NBA-009 Schedule week report`: `03_WEEKLY_SCHEDULE_REPORT`에서 구현 및 QA closeout 완료
+- [x] 04 `Google Calendar Integration`: Done (2026-07-23)
+- [x] `NBA-015 Google Calendar Integration`: `04_GOOGLE_CALENDAR_INTEGRATION`에서 구현 및 QA closeout 완료
 - [x] First-sale gate 반영: `NBA-014`, Product UX gate, Trust/policy gate, `NBA-007`은 `COMMON/FIRST-SALE-GATE-MAP.md`에 선행/횡단 기준으로 고정
 
 ## 1. 목적
 
 이 문서는 앞으로 만들어야 할 기능이 01~12 슬롯 중 어디에 포함되는지 추적한다.
+
+입력은 `TODO/NEXT_BACKEND_API_BACKLOG_PLAN`의 Backend/API/DB 후보와 `TODO/USER_WEB_PRODUCTIZATION_GAP_PLAN`의 제품화 gap이다. 이 matrix는 두 입력 문서를 기능 슬롯으로 배정하는 표이며, UX/UI 전체 polish 작업 목록이 아니다.
 
 12개 폴더는 상위 작업 단위다. 특정 기능이 별도 번호 폴더로 존재하지 않더라도 이 matrix에 슬롯이 배정되어 있으면 해당 번호 착수 시 반드시 검토한다.
 
@@ -40,8 +44,8 @@
 | Schedule | 범용 ExportJob / 비동기 Export | 후속 별도 결정, 11 | 03에서 제외. `/app/export`, `/api/exports`, 대용량 export, 파일 TTL/권한/삭제/audit는 Trust/policy/Admin gate와 함께 결정 |
 | Schedule | 일정/회의록 export | 후속 별도 결정 | 03에서 제외. 기존 domain xlsx 이후 확장 여부를 별도 확정 |
 | Schedule | 반복 일정 | 후속 별도 결정 | 03에서 제외. recurrence rule, exception, DST, 알림 재생성, Calendar 연동 영향 검토 후 별도 확정 |
-| Calendar | Google Calendar connect/read-only import | 04 | Goal Ready: login OAuth와 Calendar scope 분리, primary 기본 선택+추가 calendar 선택, 10분 freshness 자동 sync+수동 sync, export/two-way sync 제외 |
-| Calendar | external calendar sync 실패 처리 | 04, 11 | Goal Ready: revoked/invalid_grant는 재연결 필요, transient failure는 사용자-facing 실패 표시. 운영 추적은 11 |
+| Calendar | Google Calendar connect/read-only import | 04 | Done: `NBA-015` 구현 완료. login OAuth와 Calendar scope 분리, primary 기본 선택+추가 calendar 선택, 10분 freshness 자동 sync+수동 sync, source badge, meeting URL, all-day 표시, Schedule soft delete/Trash restore 구현. Google export/write, 양방향 sync, webhook, 반복 일정 정식 모델은 제외 |
+| Calendar | external calendar sync 실패 처리 | 04, 11 | 04 Done: revoked/invalid_grant는 재연결 필요, transient failure는 사용자-facing 실패 표시까지 구현. Admin provider failure log와 운영 추적은 11에서 다룬다 |
 | AI report | AI 주간 영업 리포트 | 05 | 일정+딜+회의록 기반 |
 | AI report | AI follow-up/next action/딜 리스크 | 05, 07 | 리포트성은 05, 회의록 추출은 07 |
 | AI report | AI 데이터 정리 제안 | 05, 07 | Import/명함/회의록 품질 고도화 후보 |

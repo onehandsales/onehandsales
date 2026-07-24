@@ -21,6 +21,8 @@
 
 이 로드맵은 기능을 먼저 만들고, UX/UI 전체 정리는 후반에 한 번에 잡는다는 사용자 결정을 따른다.
 
+`TODO/NEXT_BACKEND_API_BACKLOG_PLAN`은 Backend/API/DB 후보를 제공하고, `TODO/USER_WEB_PRODUCTIZATION_GAP_PLAN`은 현재 구현 대비 Global B2C 첫 판매/최종 서비스 gap을 제공한다. 이 로드맵은 두 입력 문서를 01~12 기능 슬롯으로 변환한 실행 준비용 상위 계획이다.
+
 단, 기능 먼저 만든다는 것은 화면만 임시로 붙인다는 뜻이 아니다. 각 기능은 Backend/API/DB/FE 상태 관리가 이후 UX/UI 제품화 QA에서 유지보수 가능한 형태로 남아야 한다.
 
 Product UX first-sale gate는 전체 시각 polish와 다르다. 핵심 `/app` 업무 흐름이 첫 판매 가능한 수준인지 확인하는 gate이며, 01~10 기능 closeout 이후 첫 판매 전 별도로 닫는다.

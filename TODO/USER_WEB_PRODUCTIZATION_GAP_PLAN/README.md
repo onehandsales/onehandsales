@@ -24,6 +24,8 @@
 
 이 폴더는 `한손에 영업 / onehand.sales`의 최종 서비스 형태와 현재 구현 상태 사이의 차이를 정리한다.
 
+이 문서는 `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN`의 입력 문서다. 여기서 드러난 Global B2C gap 중 기능으로 먼저 만들어야 하는 항목은 Global roadmap의 01~12 슬롯으로 승격하고, UX/UI 전체 polish는 기능 흐름이 충분히 갖춰진 뒤 별도 계획에서 잡는다.
+
 이 문서는 `/goal` 실행 계획이 아니다. 바로 구현하거나 이슈를 닫기 위한 작업 순서가 아니라, 다음 구현 계획을 만들기 전에 제품 방향, UX/UI 완성도, 기능/운영 gap을 판단하기 위한 기준 문서다.
 
 판매 기준선은 `Global B2C 유료 판매 가능형`이다. `MVP`는 판매용 제품이 아니라, Global B2C 판매 버전을 만들기 전에 핵심 업무 루프가 동작하는지 확인하는 내부 품질/제품화 준비 단계로 본다.
@@ -72,6 +74,25 @@
 - 첫 판매 기준인 Global B2C 유료 판매를 위한 결제/구독, 세금/컴플라이언스, `/app` 다국어, Admin 운영, 제품 분석
 - Series A급 고급 리텐션/AI/모바일 현장 사용성
 - Admin 운영 API 같은 후속 기능의 우선순위 확정
+
+## 3.1 `NBA-015` 반영 기준
+
+`TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/04_GOOGLE_CALENDAR_INTEGRATION`은 2026-07-23 G05 QA closeout 기준으로 Done이다. 이 제품화 갭 문서에서는 Google Calendar read-only import를 미구현 gap으로 보지 않는다.
+
+완료로 반영할 User Web/제품 흐름:
+
+- `/app/schedules`에서 Google 연결 CTA, 연결 상태, 선택 calendar 요약, 자동/수동 sync, source badge, 숨긴 Google 일정 filter 제공
+- `/app/settings`에서 Google Calendar 연결, 재연결, calendar 선택 관리, 연결 해제 action 제공
+- `/app/schedules/:scheduleId`에서 Google-origin schedule의 meeting URL, `종일`, source badge, 로컬 수정 상태, 딜/메모 수정 지원
+- `/app/schedules/week`에서 Google-origin active schedule과 meeting URL/source badge 표시
+- `/app/trash`에서 `SCHEDULE` 휴지통 항목과 복구 지원
+- Google-origin schedule도 일정 reminder와 연결되어 retention 흐름에 포함
+
+남은 제품화 gap으로 분리할 범위:
+
+- 실제 Google provider smoke는 env 준비 후 운영 확인 단계에서 실행한다.
+- Google export/write, realtime webhook/watch, 반복 일정 정식 모델, 여러 Google 계정 동시 연결은 새 계획 없이는 확장하지 않는다.
+- 첫 판매 전 핵심 gap은 여전히 결제/구독/세금, Admin 운영, `/app` 다국어/다국가 데이터, 제품 분석, 정책/신뢰/DB 운영 gate다.
 
 ## 4. 문서 구성
 
