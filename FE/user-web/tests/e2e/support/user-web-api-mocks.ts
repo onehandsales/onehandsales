@@ -45,6 +45,7 @@ export type UserWebApiMockStore = {
   readonly googleCalendarConnection: MutableRecord;
   readonly googleCalendars: MutableRecord[];
   readonly meetingNotes: MutableRecord[];
+  readonly aiWeeklyReports: MutableRecord[];
   readonly businessCardScans: MutableRecord[];
   readonly importJobs: MutableRecord[];
   readonly importTemplates: MutableRecord[];
@@ -562,6 +563,42 @@ async function handleApiRequest(
     return jsonConnection([]);
   }
 
+  if (pathname === "/api/sales-reports/weekly" && method === "GET") {
+    return json(createAiWeeklyReportWeek(store, url));
+  }
+
+  if (pathname === "/api/sales-reports/weekly" && method === "POST") {
+    return createAiWeeklyReportGeneration(store, await readJsonBody(route));
+  }
+
+  const aiWeeklyReportSnapshotMatch = pathname.match(
+    /^\/api\/sales-reports\/weekly\/([^/]+)\/snapshot-summary$/,
+  );
+
+  if (aiWeeklyReportSnapshotMatch && method === "GET") {
+    const report = requireAiWeeklyReport(store, aiWeeklyReportSnapshotMatch[1]);
+
+    if (isApiErrorShape(report)) {
+      return json(report, numberField(report, "statusCode") ?? 404);
+    }
+
+    return json(createAiWeeklyReportSnapshotSummary(report));
+  }
+
+  const aiWeeklyReportDetailMatch = pathname.match(
+    /^\/api\/sales-reports\/weekly\/([^/]+)$/,
+  );
+
+  if (aiWeeklyReportDetailMatch && method === "GET") {
+    const report = requireAiWeeklyReport(store, aiWeeklyReportDetailMatch[1]);
+
+    if (isApiErrorShape(report)) {
+      return json(report, numberField(report, "statusCode") ?? 404);
+    }
+
+    return json(toAiWeeklyReportDetail(report));
+  }
+
   if (pathname === "/api/schedules" && method === "GET") {
     return jsonList(store.schedules);
   }
@@ -1026,9 +1063,11 @@ function createStore(): UserWebApiMockStore {
   const googleCalendarConnection = createGoogleCalendarConnection();
   const googleCalendars = createGoogleCalendars();
   const meetingNote = createMeetingNoteFromFixtures(company, contact, product, deal);
+  const aiWeeklyReports = createAiWeeklyReportFixtures(schedule, deal, meetingNote);
   const notifications = createNotificationsFromFixtures(deal, schedule);
 
   return {
+    aiWeeklyReports,
     businessCardScans: [createBusinessCardScan()],
     companyField,
     companyRegion,
@@ -1042,6 +1081,7 @@ function createStore(): UserWebApiMockStore {
       contact: 1,
       deal: 1,
       "import-job": 1,
+      "ai-weekly-report": 2,
       "meeting-note": 1,
       product: 1,
       schedule: 1,
@@ -1570,6 +1610,507 @@ function createWeeklyReportNextFollowingAction(action: MutableRecord) {
     id: stringField(action, "id") ?? "following-action-mobile-001",
     remainingCount: numberField(action, "remainingCount") ?? 0,
   };
+}
+
+function createAiWeeklyReportFixtures(
+  schedule: MutableRecord,
+  deal: MutableRecord,
+  meetingNote: MutableRecord,
+) {
+  const weekStart = "2026-07-20";
+  const weekEnd = "2026-07-26";
+  const timeZone = "Asia/Seoul";
+  const locale = "ko-KR";
+  const inputSnapshotJson = createAiWeeklyInputSnapshot({
+    deal,
+    locale,
+    meetingNote,
+    schedule,
+    timeZone,
+    weekEnd,
+    weekStart,
+  });
+  const dataCoverageJson = {
+    dealCount: 1,
+    linkedDealCount: 1,
+    meetingNoteCount: 1,
+    missingSignals: [],
+    scheduleCount: 1,
+  };
+
+  return [
+    {
+      dataCoverageJson,
+      failedAt: NOW,
+      generatedAt: null,
+      id: "00000000-0000-4000-8000-000000000001",
+      inputSnapshotJson,
+      locale,
+      outputJson: null,
+      requestedAt: NOW,
+      safeErrorCode: "AI_WEEKLY_REPORT_PROVIDER_UNAVAILABLE",
+      safeErrorMessage: "AI 리포트를 만들지 못했어요. 다시 시도해 주세요.",
+      status: "FAILED",
+      timeZone,
+      version: 1,
+      weekEnd,
+      weekStart,
+    },
+    {
+      dataCoverageJson,
+      failedAt: null,
+      generatedAt: NOW,
+      id: "00000000-0000-4000-8000-000000000002",
+      inputSnapshotJson,
+      locale,
+      outputJson: createAiWeeklyReportSections(deal, meetingNote),
+      requestedAt: NOW,
+      safeErrorCode: null,
+      safeErrorMessage: null,
+      status: "READY",
+      timeZone,
+      version: 2,
+      weekEnd,
+      weekStart,
+    },
+  ];
+}
+
+function createAiWeeklyReportWeek(store: UserWebApiMockStore, url: URL) {
+  const weekStart = url.searchParams.get("weekStart") ?? "2026-07-20";
+  const timeZone = url.searchParams.get("timeZone") ?? "Asia/Seoul";
+  const includeFailed = url.searchParams.get("includeFailed") !== "false";
+  const weekEnd = addDateOnlyDays(weekStart, 6);
+  const matchingReports = store.aiWeeklyReports
+    .filter(
+      (report) =>
+        stringField(report, "weekStart") === weekStart &&
+        stringField(report, "timeZone") === timeZone,
+    )
+    .sort(compareAiWeeklyReportVersionDesc);
+  const failedVersions = matchingReports.filter(
+    (report) => stringField(report, "status") === "FAILED",
+  );
+  const versions = includeFailed
+    ? matchingReports
+    : matchingReports.filter((report) => stringField(report, "status") !== "FAILED");
+
+  return {
+    failedVersionCount: failedVersions.length,
+    failedVersions: failedVersions.map(toAiWeeklyReportSummary),
+    generatingReport:
+      matchingReports
+        .filter((report) => stringField(report, "status") === "GENERATING")
+        .map(toAiWeeklyReportSummary)[0] ?? null,
+    latestSuccessfulReport:
+      matchingReports
+        .filter((report) => stringField(report, "status") === "READY")
+        .map(toAiWeeklyReportSummary)[0] ?? null,
+    timeZone,
+    versions: versions.map(toAiWeeklyReportSummary),
+    weekEnd,
+    weekStart,
+  };
+}
+
+function createAiWeeklyReportGeneration(
+  store: UserWebApiMockStore,
+  body: unknown,
+): MockApiResponse {
+  const weekStart = stringField(body, "weekStart") ?? "2026-07-20";
+  const timeZone = stringField(body, "timeZone") ?? "Asia/Seoul";
+  const locale = stringField(body, "locale") ?? "ko-KR";
+  const existingGeneratingReport = store.aiWeeklyReports.find(
+    (report) =>
+      stringField(report, "weekStart") === weekStart &&
+      stringField(report, "timeZone") === timeZone &&
+      stringField(report, "status") === "GENERATING",
+  );
+
+  if (existingGeneratingReport) {
+    return json(
+      {
+        code: "AiWeeklySalesReportAlreadyGenerating",
+        message: "AI weekly report generation is already running.",
+        statusCode: 409,
+      },
+      409,
+    );
+  }
+
+  const weekEnd = addDateOnlyDays(weekStart, 6);
+  const version =
+    store.aiWeeklyReports
+      .filter(
+        (report) =>
+          stringField(report, "weekStart") === weekStart &&
+          stringField(report, "timeZone") === timeZone,
+      )
+      .reduce(
+        (maxVersion, report) =>
+          Math.max(maxVersion, numberField(report, "version") ?? 0),
+        0,
+      ) + 1;
+  const schedule = store.schedules[0];
+  const deal = store.deals[0];
+  const meetingNote = store.meetingNotes[0];
+  const report = {
+    dataCoverageJson: {
+      dealCount: deal ? 1 : 0,
+      linkedDealCount: deal ? 1 : 0,
+      meetingNoteCount: meetingNote ? 1 : 0,
+      missingSignals: [],
+      scheduleCount: schedule ? 1 : 0,
+    },
+    failedAt: null,
+    generatedAt: null,
+    id: nextAiWeeklyReportUuid(store),
+    inputSnapshotJson: createAiWeeklyInputSnapshot({
+      deal,
+      locale,
+      meetingNote,
+      schedule,
+      timeZone,
+      weekEnd,
+      weekStart,
+    }),
+    locale,
+    outputJson: null,
+    requestedAt: now(),
+    safeErrorCode: null,
+    safeErrorMessage: null,
+    status: "GENERATING",
+    timeZone,
+    version,
+    weekEnd,
+    weekStart,
+  };
+
+  store.aiWeeklyReports.unshift(report);
+
+  return json(
+    {
+      job: {
+        id: `ai-weekly-report-job-${report.id}`,
+        status: "PENDING",
+      },
+      report: toAiWeeklyReportSummary(report),
+    },
+    202,
+  );
+}
+
+function toAiWeeklyReportDetail(report: MutableRecord) {
+  return {
+    ...toAiWeeklyReportSummary(report),
+    dataCoverage: nestedRecord(report.dataCoverageJson),
+    safeErrorCode: stringField(report, "safeErrorCode"),
+    safeErrorMessage: stringField(report, "safeErrorMessage"),
+    sections:
+      stringField(report, "status") === "READY"
+        ? nestedRecord(report.outputJson)
+        : null,
+  };
+}
+
+function createAiWeeklyReportSnapshotSummary(report: MutableRecord) {
+  const snapshot = nestedRecord(report.inputSnapshotJson);
+  const schedules = toMutableRecords(snapshot.schedules);
+  const deals = toMutableRecords(snapshot.deals);
+  const meetingNotes = toMutableRecords(snapshot.meetingNotes);
+  const counts = nestedRecord(snapshot.counts);
+
+  return {
+    capturedAt: stringField(snapshot, "capturedAt"),
+    counts: {
+      deals: numberField(counts, "deals") ?? deals.length,
+      linkedDeals: numberField(counts, "linkedDeals") ?? 0,
+      meetingNotes: numberField(counts, "meetingNotes") ?? meetingNotes.length,
+      schedules: numberField(counts, "schedules") ?? schedules.length,
+    },
+    excluded: stringArrayField(snapshot, "excluded"),
+    records: {
+      deals: deals.map((deal) => ({
+        companyCount: toMutableRecords(deal.companies).length,
+        contactCount: toMutableRecords(deal.contacts).length,
+        dealCost: numberField(deal, "dealCost") ?? 0,
+        dealName: stringField(deal, "dealName"),
+        dealStatus: stringField(deal, "dealStatus"),
+        expectedEndDate: stringField(deal, "expectedEndDate"),
+        id: stringField(deal, "id"),
+        nextActionCount: toMutableRecords(deal.nextFollowingActions).length,
+      })),
+      meetingNotes: meetingNotes.map((meetingNote) => ({
+        hasDetails: Boolean(stringField(meetingNote, "details")),
+        hasNextPlan: Boolean(stringField(meetingNote, "nextPlan")),
+        hasRequiredAction: Boolean(stringField(meetingNote, "requiredAction")),
+        id: stringField(meetingNote, "id"),
+        linkedDealCount: toMutableRecords(meetingNote.deals).length,
+        meetingAt: stringField(meetingNote, "meetingAt"),
+        sourceType: stringField(meetingNote, "sourceType"),
+        title: stringField(meetingNote, "title"),
+      })),
+      schedules: schedules.map((schedule) => ({
+        dealCount: toMutableRecords(schedule.deals).length,
+        endAt: stringField(schedule, "endAt"),
+        hasMemo: schedule.hasMemo === true,
+        id: stringField(schedule, "id"),
+        scheduleTitle: stringField(schedule, "scheduleTitle"),
+        sourceType: stringField(schedule, "sourceType"),
+        startAt: stringField(schedule, "startAt"),
+      })),
+    },
+    reportId: stringField(report, "id") ?? "00000000-0000-4000-8000-000000000002",
+    snapshotSchemaVersion:
+      stringField(snapshot, "schemaVersion") ?? "ai-weekly-sales-report-input-v1",
+  };
+}
+
+function toAiWeeklyReportSummary(report: MutableRecord) {
+  return {
+    failedAt: stringField(report, "failedAt"),
+    generatedAt: stringField(report, "generatedAt"),
+    id: stringField(report, "id") ?? "00000000-0000-4000-8000-000000000002",
+    locale: stringField(report, "locale") ?? "ko-KR",
+    requestedAt: stringField(report, "requestedAt") ?? NOW,
+    safeErrorCode: stringField(report, "safeErrorCode"),
+    safeErrorMessage: stringField(report, "safeErrorMessage"),
+    status: stringField(report, "status") ?? "READY",
+    timeZone: stringField(report, "timeZone") ?? "Asia/Seoul",
+    version: numberField(report, "version") ?? 1,
+    weekEnd: stringField(report, "weekEnd") ?? "2026-07-26",
+    weekStart: stringField(report, "weekStart") ?? "2026-07-20",
+  };
+}
+
+function createAiWeeklyReportSections(
+  deal: MutableRecord,
+  meetingNote: MutableRecord,
+) {
+  const dealId = stringField(deal, "id") ?? "deal-mobile-001";
+  const dealName = stringField(deal, "dealName") ?? "Mock deal";
+  const meetingNoteId = stringField(meetingNote, "id") ?? "meeting-note-mobile-001";
+  const meetingNoteTitle = stringField(meetingNote, "title") ?? "Mock meeting note";
+
+  return {
+    dataCleanupSuggestions: [
+      {
+        body: "일정, 딜, 회의록이 모두 연결되어 있는지 확인하면 다음 리포트 품질이 좋아집니다.",
+        key: "cleanup-review-links",
+        priority: "LOW",
+        reason: "주간 리포트의 입력 데이터 품질 확인용 제안입니다.",
+        targetId: null,
+        targetLabel: null,
+        targetPath: null,
+        targetType: null,
+        title: "연결 데이터 점검",
+      },
+    ],
+    dataCoverage: {
+      dealCount: 1,
+      linkedDealCount: 1,
+      meetingNoteCount: 1,
+      missingSignals: [],
+      scheduleCount: 1,
+    },
+    executiveSummary: {
+      concerns: [],
+      headline: "이번 주 영업 활동과 후속 액션이 연결되어 있습니다.",
+      narrative:
+        "일정, 딜, 회의록을 함께 검토했고 다음 주 확인할 액션을 하나로 정리했습니다.",
+      wins: ["고객 일정과 딜이 연결되어 있습니다.", "회의록이 후속 연락 맥락을 제공합니다."],
+    },
+    followUpDrafts: [
+      {
+        body: "미팅에서 논의한 다음 단계를 정리해 공유하고, 필요한 자료를 이어서 전달하겠습니다.",
+        key: `follow-up-${meetingNoteId}`,
+        payload: {
+          emailDraft:
+            "미팅에서 논의한 다음 단계를 정리해 공유하고, 필요한 자료를 이어서 전달하겠습니다.",
+          smsDraft: "미팅 후속 내용을 정리해 전달드리겠습니다.",
+        },
+        priority: "MEDIUM",
+        reason: "회의록에 후속 진행 맥락이 포함되어 있습니다.",
+        targetId: meetingNoteId,
+        targetLabel: meetingNoteTitle,
+        targetPath: `/meeting-notes/${meetingNoteId}`,
+        targetType: "MEETING_NOTE",
+        title: "후속 연락 초안",
+      },
+    ],
+    nextWeekActions: [
+      {
+        body: `${dealName}의 다음 확인 일정을 잡고 진행 상태를 업데이트하세요.`,
+        key: `next-week-${dealId}`,
+        priority: "MEDIUM",
+        reason: "활성 딜이 주간 스냅샷에 포함되어 있습니다.",
+        targetId: dealId,
+        targetLabel: dealName,
+        targetPath: `/deals/${dealId}`,
+        targetType: "DEAL",
+        title: "다음 단계 확인",
+      },
+    ],
+    pipelineSummary: {
+      narrative: "검토 대상 딜의 금액과 상태를 기준으로 다음 주 액션을 정리했습니다.",
+      statusCounts: [{ count: 1, status: stringField(deal, "dealStatus") ?? "INITIAL_CONTACT" }],
+      totalDealCost: numberField(deal, "dealCost") ?? 0,
+    },
+    riskSignals: [
+      {
+        body: `${dealName}의 일정 이후 응답 지연 여부를 확인하세요.`,
+        key: `risk-${dealId}`,
+        priority: "HIGH",
+        reason: "고객 접점 이후 후속 확인 시점이 중요합니다.",
+        targetId: dealId,
+        targetLabel: dealName,
+        targetPath: `/deals/${dealId}`,
+        targetType: "DEAL",
+        title: "후속 타이밍 확인",
+      },
+    ],
+  };
+}
+
+function createAiWeeklyInputSnapshot({
+  deal,
+  locale,
+  meetingNote,
+  schedule,
+  timeZone,
+  weekEnd,
+  weekStart,
+}: {
+  readonly deal: MutableRecord | undefined;
+  readonly locale: string;
+  readonly meetingNote: MutableRecord | undefined;
+  readonly schedule: MutableRecord | undefined;
+  readonly timeZone: string;
+  readonly weekEnd: string;
+  readonly weekStart: string;
+}) {
+  const schedules = schedule
+    ? [
+        {
+          deals: toMutableRecords(schedule.deals).map((item) => ({
+            id: stringField(item, "id"),
+          })),
+          endAt: stringField(schedule, "endAt"),
+          hasMemo: Boolean(stringField(schedule, "memo")),
+          id: stringField(schedule, "id"),
+          scheduleTitle: stringField(schedule, "scheduleTitle"),
+          sourceType: stringField(schedule, "sourceType"),
+          startAt: stringField(schedule, "startAt"),
+        },
+      ]
+    : [];
+  const deals = deal
+    ? [
+        {
+          companies: toMutableRecords(deal.companies),
+          contacts: toMutableRecords(deal.contacts),
+          dealCost: numberField(deal, "dealCost") ?? 0,
+          dealName: stringField(deal, "dealName"),
+          dealStatus: stringField(deal, "dealStatus"),
+          expectedEndDate: stringField(deal, "expectedEndDate"),
+          id: stringField(deal, "id"),
+          nextFollowingActions: nestedRecord(deal.nextFollowingAction).id
+            ? [nestedRecord(deal.nextFollowingAction)]
+            : [],
+        },
+      ]
+    : [];
+  const meetingNotes = meetingNote
+    ? [
+        {
+          deals: toMutableRecords(meetingNote.deals),
+          details: stringField(meetingNote, "details"),
+          id: stringField(meetingNote, "id"),
+          meetingAt: stringField(meetingNote, "meetingAt"),
+          nextPlan: stringField(meetingNote, "nextPlan"),
+          requiredAction: stringField(meetingNote, "requiredAction"),
+          sourceType: stringField(meetingNote, "sourceType"),
+          title: stringField(meetingNote, "title"),
+        },
+      ]
+    : [];
+
+  return {
+    capturedAt: NOW,
+    counts: {
+      deals: deals.length,
+      linkedDeals: deals.length,
+      meetingNotes: meetingNotes.length,
+      schedules: schedules.length,
+    },
+    deals,
+    excluded: [],
+    locale,
+    meetingNotes,
+    rangeEndAt: `${addDateOnlyDays(weekEnd, 1)}T00:00:00.000Z`,
+    rangeStartAt: `${weekStart}T00:00:00.000Z`,
+    schedules,
+    schemaVersion: "ai-weekly-sales-report-input-v1",
+    timeZone,
+    weekEnd,
+    weekStart,
+  };
+}
+
+function requireAiWeeklyReport(
+  store: UserWebApiMockStore,
+  reportId: string | undefined,
+) {
+  const report = store.aiWeeklyReports.find(
+    (candidate) => stringField(candidate, "id") === reportId,
+  );
+
+  if (!report) {
+    return {
+      code: "AiWeeklySalesReportNotFound",
+      message: "AI weekly report not found",
+      statusCode: 404,
+    };
+  }
+
+  return report;
+}
+
+function compareAiWeeklyReportVersionDesc(
+  first: MutableRecord,
+  second: MutableRecord,
+) {
+  const firstVersion = numberField(first, "version") ?? 0;
+  const secondVersion = numberField(second, "version") ?? 0;
+
+  if (firstVersion !== secondVersion) {
+    return secondVersion - firstVersion;
+  }
+
+  return (
+    getAiWeeklyReportTime(second) -
+    getAiWeeklyReportTime(first)
+  );
+}
+
+function getAiWeeklyReportTime(report: MutableRecord) {
+  const value =
+    stringField(report, "generatedAt") ??
+    stringField(report, "failedAt") ??
+    stringField(report, "requestedAt") ??
+    NOW;
+  const time = new Date(value).getTime();
+
+  return Number.isFinite(time) ? time : 0;
+}
+
+function nextAiWeeklyReportUuid(store: UserWebApiMockStore) {
+  store.counters["ai-weekly-report"] =
+    (store.counters["ai-weekly-report"] ?? 0) + 1;
+
+  return `00000000-0000-4000-8000-${String(
+    store.counters["ai-weekly-report"],
+  ).padStart(12, "0")}`;
 }
 
 function toMutableRecords(value: unknown) {
@@ -2230,7 +2771,7 @@ async function fulfillJson(
 
 function corsHeaders() {
   return {
-    "access-control-allow-headers": "authorization,content-type",
+    "access-control-allow-headers": "authorization,content-type,idempotency-key",
     "access-control-allow-methods": "GET,POST,PATCH,PUT,DELETE,OPTIONS",
     "access-control-allow-origin": "*",
     "access-control-expose-headers": "content-disposition",

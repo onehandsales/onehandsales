@@ -22,6 +22,7 @@ import {
   useState,
 } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import { AiWeeklyReportSection } from "@/features/ai-weekly-report";
 import { useAuthSession } from "@/features/auth";
 import { downloadWeeklyScheduleReportXlsx } from "@/features/schedule/api/schedule-api";
 import { useWeeklyScheduleReport } from "@/features/schedule/hooks/use-schedule-queries";
@@ -220,6 +221,12 @@ export function ScheduleWeekReportScreen() {
           <WeeklyReportError onRetry={() => void reportQuery.refetch()} />
         ) : report ? (
           <WeeklyReportContent
+            aiReportSection={
+              <AiWeeklyReportSection
+                timeZone={reportTimeZone}
+                weekStart={weekStart}
+              />
+            }
             onScheduleOpen={(scheduleId) => navigate(`/app/schedules/${scheduleId}`)}
             reportDays={report.days}
             reportTimeZone={reportTimeZone}
@@ -239,12 +246,14 @@ export function ScheduleWeekReportScreen() {
 }
 
 function WeeklyReportContent({
+  aiReportSection,
   reportDays,
   reportTimeZone,
   summary,
   totalScheduleCount,
   onScheduleOpen,
 }: {
+  readonly aiReportSection: ReactNode;
   readonly reportDays: WeeklyScheduleReportDay[];
   readonly reportTimeZone?: string;
   readonly summary: ReactNode;
@@ -254,6 +263,7 @@ function WeeklyReportContent({
   return (
     <div className="mx-auto grid max-w-7xl gap-4">
       {summary}
+      {aiReportSection}
 
       {totalScheduleCount === 0 ? (
         <div className="rounded-md border border-dashed border-[#CBD5E1] bg-[#F8FAFC] px-4 py-5 text-sm font-medium text-[#475569]">
