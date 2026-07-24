@@ -1245,7 +1245,7 @@ model ExternalEmailConnection {
   providerAccountId     String?
   providerAccountEmail  String
   status                ExternalEmailConnectionStatus @default(CONNECTED)
-  encryptedAccessToken  String
+  encryptedAccessToken  String?
   encryptedRefreshToken String?
   tokenExpiresAt        DateTime?                     @db.Timestamptz(3)
   grantedScopes         String[]                      @default([])

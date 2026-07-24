@@ -95,10 +95,13 @@ export class HttpExceptionFilter implements ExceptionFilter {
       case "UnsupportedImportFileType":
       case "ImportFileParseFailed":
       case "GoogleCalendarOAuthStateInvalid":
+      case "FollowUpEmailOAuthStateInvalid":
+      case "SmsSenderVerificationCodeInvalid":
       case "GoogleCalendarSourceSelectionRequired":
       case "ScheduleMeetingUrlInvalid":
         return HttpStatus.BAD_REQUEST;
       case "ImportJobExpired":
+      case "SmsSenderVerificationExpired":
         return HttpStatus.GONE;
       case "ImportJobAlreadyClosed":
       case "ImportJobAlreadyConfirmed":
@@ -114,9 +117,12 @@ export class HttpExceptionFilter implements ExceptionFilter {
       case "BrowserPushNotConfigured":
       case "MeetingNoteAiDraftProviderUnavailable":
       case "AiWeeklySalesReportProviderUnavailable":
+      case "FollowUpProviderUnavailable":
+      case "FollowUpDeliverySecretEncryptionKeyMissing":
         return HttpStatus.SERVICE_UNAVAILABLE;
       case "GoogleCalendarProviderUnavailable":
       case "AiWeeklySalesReportProviderFailed":
+      case "FollowUpProviderRequestFailed":
         return HttpStatus.BAD_GATEWAY;
       case "MeetingNoteAiDraftFailed":
         return HttpStatus.BAD_GATEWAY;
