@@ -82,5 +82,6 @@ import { NodeGoogleCalendarTokenEncryptionAdapter } from "./security/node-google
       useExisting: NodeGoogleCalendarTokenEncryptionAdapter,
     },
   ],
+  exports: [ScheduleApplicationService, SCHEDULE_REPOSITORY],
 })
 export class ScheduleModule {}

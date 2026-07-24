@@ -82,6 +82,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
       case "ProductCategoryInUse":
       case "ProductStatusInUse":
       case "BusinessCardScanNotConfirmable":
+      case "AiWeeklySalesReportAlreadyGenerating":
         return HttpStatus.CONFLICT;
       case "InactiveUser":
       case "OwnershipViolation":
@@ -112,8 +113,10 @@ export class HttpExceptionFilter implements ExceptionFilter {
       case "ImportFileStorageFailed":
       case "BrowserPushNotConfigured":
       case "MeetingNoteAiDraftProviderUnavailable":
+      case "AiWeeklySalesReportProviderUnavailable":
         return HttpStatus.SERVICE_UNAVAILABLE;
       case "GoogleCalendarProviderUnavailable":
+      case "AiWeeklySalesReportProviderFailed":
         return HttpStatus.BAD_GATEWAY;
       case "MeetingNoteAiDraftFailed":
         return HttpStatus.BAD_GATEWAY;
