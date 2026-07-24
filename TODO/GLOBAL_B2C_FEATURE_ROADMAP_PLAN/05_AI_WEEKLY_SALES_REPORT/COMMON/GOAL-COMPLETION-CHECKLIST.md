@@ -22,14 +22,14 @@
 
 | 완료 | Goal | 상태 | 완료일 | 완료 기준 | 증거 | 비고 |
 |---|---|---|---|---|---|---|
-| [x] | G01 Planning API DB Contract | Done | 2026-07-24 | 문서 계약과 현재 코드 사실을 대조하고, G02~G09 착수 blocking 질문이 없음을 확인한다. | `G01_PLANNING_API_DB_CONTRACT.md`, `WORK_LOG.md`, `rg ...`, `git diff --check` | blocking 질문 없음 |
+| [x] | G01 Planning API DB Contract | Done | 2026-07-24 | 문서 계약과 현재 코드 사실을 대조하고, G02~G09 착수 blocking 질문이 없음을 확인한다. | `G01_PLANNING_API_DB_CONTRACT.md`, `WORK_LOG.md`, `rg ...`, `git diff --check`, 2026-07-24 후속 상태 보정 | blocking 질문 없음 |
 | [x] | G02 AI Report DB Prisma | Done | 2026-07-24 | 05-A DB foundation, migration, Prisma model이 spec과 일치한다. | `BE/prisma/schema.prisma`, `20260724010000_ai_weekly_report_db`, `prisma:validate`, `prisma:generate`, `typecheck`, `jest`, `build` | BE dev/runtime 프로세스 DLL lock 해소 후 generate 통과 |
-| [x] | G03 AI Report Backend | Done | 2026-07-24 | 생성/조회 API, async job, AI provider log가 spec과 일치한다. | `BE/src/modules/sales-report`, `pnpm run test -- sales-report` 통과: 3 suites / 10 tests | 구현/검토 완료 |
-| [x] | G04 AI Report User Web | Done | 2026-07-24 | `/app/schedules/week` AI report UX가 FE TODO와 API 계약에 맞게 연결된다. | `TODO_LOG/2026-07-24/G04_AI_REPORT_USER_WEB/WORK_LOG.md`, FE `typecheck`, `lint`, `build`, weekly schedule E2E 통과 | 구현/검토 완료 |
-| [x] | G05 Follow-up DB Provider Ports | Done | 2026-07-24 | 05-B DB foundation과 provider port/redaction mapper가 준비된다. | `TODO_LOG/2026-07-24/G05_FOLLOW_UP_DB_PROVIDER_PORTS/WORK_LOG.md`, `20260724020000_add_follow_up_delivery_foundation`, follow-up test 2 suites / 14 tests 통과 | 구현/검토 완료 |
-| [x] | G06 Follow-up Settings Backend | Done | 2026-07-24 | OAuth, SMS sender verification, consent notice API가 spec과 일치한다. | `TODO_LOG/2026-07-24/G06_FOLLOW_UP_SETTINGS_BACKEND/WORK_LOG.md`, follow-up test 4 suites / 20 tests 통과 | 구현/검토 완료 |
-| [x] | G07 Follow-up Draft Send Backend | Done | 2026-07-24 | draft, update, send, retry, list/detail API가 spec과 일치한다. | `TODO_LOG/2026-07-24/G07_FOLLOW_UP_DRAFT_SEND_BACKEND/WORK_LOG.md`, follow-up test 6 suites / 29 tests 통과 | 구현/검토 완료 |
-| [x] | G08 Follow-up User Web | Done | 2026-07-24 | settings, compose, send, retry, timeline UX가 FE TODO와 API 계약에 맞게 연결된다. | `TODO_LOG/2026-07-24/G08_FOLLOW_UP_USER_WEB/WORK_LOG.md`, FE `typecheck`, `lint`, `build`, BE focused test, `/admin/api` 검색 통과 | 구현/검토 완료 |
+| [x] | G03 AI Report Backend | Done | 2026-07-24 | 생성/조회 API, async job, AI provider log가 spec과 일치한다. | `BE/src/modules/sales-report`, 2026-07-24 `pnpm run prisma:validate`, `typecheck`, `lint`, `test -- sales-report` 3 suites / 10 tests, `build` 통과 | 구현/검토 완료 |
+| [x] | G04 AI Report User Web | Done | 2026-07-24 | `/app/schedules/week` AI report UX가 FE TODO와 API 계약에 맞게 연결된다. | `FE/user-web/src/features/ai-weekly-report`, 2026-07-24 FE `typecheck`, `lint`, `build`, Chrome mobile E2E 6 tests 통과 | 구현/검토 완료 |
+| [x] | G05 Follow-up DB Provider Ports | Done | 2026-07-24 | 05-B DB foundation과 provider port/redaction mapper가 준비된다. | `20260724020000_add_follow_up_delivery_foundation`, 2026-07-24 BE `prisma:validate`, `typecheck`, `lint`, `test -- follow-up` 6 suites / 29 tests, `build` 통과 | 구현/검토 완료 |
+| [x] | G06 Follow-up Settings Backend | Done | 2026-07-24 | OAuth, SMS sender verification, consent notice API가 spec과 일치한다. | `/api/follow-up-delivery/*`, 2026-07-24 `test -- follow-up` 6 suites / 29 tests 통과 | 구현/검토 완료 |
+| [x] | G07 Follow-up Draft Send Backend | Done | 2026-07-24 | draft, update, send, retry, list/detail API가 spec과 일치한다. | `/api/follow-up-messages/*`, 2026-07-24 `test -- follow-up` 6 suites / 29 tests 통과 | 구현/검토 완료 |
+| [x] | G08 Follow-up User Web | Done | 2026-07-24 | settings, compose, send, retry, timeline UX가 FE TODO와 API 계약에 맞게 연결된다. | `FE/user-web/src/features/follow-up-delivery`, `/app/settings`, `/admin/api` 검색 no match, FE `typecheck`, `lint`, `build`, Chrome mobile E2E 6 tests 통과 | Edge mobile project는 local `msedge` 미설치로 미실행 |
 | [ ] | G09 QA Review Closeout | Ready |  | `COMMON/REVIEW-CHECKLIST.md` critical 항목과 BE/FE 검증 명령이 완료된다. |  |  |
 
 ## 4. Goal별 체크 조건
@@ -114,6 +114,14 @@
 - [ ] `COMMON/REVIEW-CHECKLIST.md` 체크 결과를 반영했다.
 - [ ] README, goal spec, planning review, 상위 roadmap 상태를 구현 결과와 맞췄다.
 - [ ] 실제 provider smoke 실행 여부와 미실행 사유를 기록했다.
+
+## 4.1 2026-07-24 후속 재검토 메모
+
+- BE: `pnpm run prisma:validate`, `pnpm run typecheck`, `pnpm run lint`, `pnpm run test -- sales-report`, `pnpm run test -- follow-up`, `pnpm run build` 통과.
+- FE: `pnpm run typecheck`, `pnpm run lint`, `pnpm run build` 통과.
+- Mobile: `pnpm exec playwright test -c playwright.release-qa.config.ts tests/e2e/mobile-browser-qa.spec.ts --project=mobile-chrome-390 --project=mobile-chrome-360` 6 tests 통과.
+- `pnpm run test:e2e:mobile` 전체 명령은 `msedge`가 `/Applications/Microsoft Edge.app`에 없어 Edge project 6 tests가 환경 실패했다.
+- `/admin/api` 검색은 AI weekly report/follow-up/settings/deal/contact 연결 범위에서 no match다.
 
 ## 5. 완료 시 업데이트 예시
 

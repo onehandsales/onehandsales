@@ -22,6 +22,10 @@
 - 05 신규 AI report/follow-up table, API, FE section은 아직 구현되어 있지 않으며 G02~G08의 구현 대상이다.
 - User Web `apiClient`는 `/admin/api/*` 호출을 차단하므로 05는 User API `/api/*`만 사용한다.
 
+## 후속 상태 보정
+
+- 2026-07-24 후속 구현 대조 기준으로 G02~G08이 완료되어, 현재 코드는 05 AI weekly report/follow-up table, API, User Web section을 포함한다.
+
 ## 문서 보정
 
 - AI weekly report date 필드명을 `weekStart`로 통일했다.

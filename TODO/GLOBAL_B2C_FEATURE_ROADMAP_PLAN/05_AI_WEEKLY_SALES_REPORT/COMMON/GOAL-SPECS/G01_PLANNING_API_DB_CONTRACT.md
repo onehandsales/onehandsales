@@ -86,7 +86,8 @@ git diff --check
 - Backend에는 03 주간 일정 보고서 `GET /api/schedules/week`, `GET /api/schedules/week/export/xlsx`가 이미 구현되어 있다.
 - User Web에는 `/app/schedules/week` route와 `ScheduleWeekReportScreen`이 이미 구현되어 있다.
 - 현재 Schedule, MeetingNote, Deal, Contact 구조는 05 AI input snapshot의 source로 사용할 수 있다.
-- 05-A `AiWeeklySalesReport`, `AiWeeklySalesReportSuggestion`, `AiJob`, `AiProviderCallLog`와 05-B follow-up table/API는 아직 구현되어 있지 않으며 G02~G08 범위다.
+- G01 검토 시점에는 05-A `AiWeeklySalesReport`, `AiWeeklySalesReportSuggestion`, `AiJob`, `AiProviderCallLog`와 05-B follow-up table/API가 아직 구현되어 있지 않았고 G02~G08 범위로 분리했다.
+- 2026-07-24 후속 대조 기준으로 G02~G08 구현과 검토가 완료되어, 현재 코드는 05-A AI weekly report table/API/User Web과 05-B follow-up table/API/User Web을 포함한다.
 - `AGENT/SOFTWARE_AGENT/FRONT_AGENT/ARCHITECTURE/FRONTEND_USER_WEB.md`에는 `/app/schedules/week` redirect로 남은 stale 설명이 있으나, 실제 코드와 03 완료 문서 기준으로는 `/app/schedules/week`가 구현 완료 상태다.
 - User Web API client는 `/admin/api/*` 호출을 차단하므로 05도 User API `/api/*`로만 연결한다.
 

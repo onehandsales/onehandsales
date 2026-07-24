@@ -1,5 +1,6 @@
 import { Module } from "@nestjs/common";
 import { ConfigModule } from "@nestjs/config";
+import { AuthModule } from "@/modules/auth/infrastructure/auth.module";
 import {
   FOLLOW_UP_EMAIL_DELIVERY_PROVIDER,
   FOLLOW_UP_SMS_DELIVERY_PROVIDER,
@@ -27,7 +28,7 @@ import { PrismaInfrastructureModule } from "@/shared/infrastructure/prisma/prism
 import { PrismaService } from "@/shared/infrastructure/prisma/prisma.service";
 
 @Module({
-  imports: [ConfigModule, PrismaInfrastructureModule],
+  imports: [AuthModule, ConfigModule, PrismaInfrastructureModule],
   controllers: [
     FollowUpDeliverySettingsController,
     FollowUpEmailConnectionCallbackController,

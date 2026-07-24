@@ -84,12 +84,12 @@
 
 | Goal | 결과 | 증거 |
 |---|---|---|
-| G03 AI Report Backend | 완료 | `BE/src/modules/sales-report`, `POST/GET /api/sales-reports/weekly`, async processor, provider log 구현. `pnpm run test -- sales-report` 통과: 3 suites / 10 tests |
-| G04 AI Report User Web | 완료 | `FE/user-web/src/features/ai-weekly-report`, `/app/schedules/week` AI report section 구현. G04 work log의 FE typecheck/lint/build/E2E 통과 기록 |
-| G05 Follow-up DB Provider Ports | 완료 | `20260724020000_add_follow_up_delivery_foundation`, follow-up provider port/encryption/safe error mapper 구현. G05 work log 검증 통과 기록 |
-| G06 Follow-up Settings Backend | 완료 | `/api/follow-up-delivery/*` settings/OAuth/SMS/consent API 구현. G06 work log 검증 통과 기록 |
-| G07 Follow-up Draft Send Backend | 완료 | `/api/follow-up-messages/*` draft/update/send/retry/list/detail API 구현. G07 work log 검증 통과 기록 |
-| G08 Follow-up User Web | 완료 | `FE/user-web/src/features/follow-up-delivery`, `/app/settings`, AI report compose, timeline UI 구현. G08 work log 검증 통과 기록 |
+| G03 AI Report Backend | 완료 | `BE/src/modules/sales-report`, `POST/GET /api/sales-reports/weekly`, async processor, provider log 구현. 2026-07-24 `prisma:validate`, BE `typecheck`, `lint`, `test -- sales-report` 3 suites / 10 tests, `build` 통과 |
+| G04 AI Report User Web | 완료 | `FE/user-web/src/features/ai-weekly-report`, `/app/schedules/week` AI report section 구현. 2026-07-24 FE `typecheck`, `lint`, `build`, Chrome mobile E2E 6 tests 통과 |
+| G05 Follow-up DB Provider Ports | 완료 | `20260724020000_add_follow_up_delivery_foundation`, follow-up provider port/encryption/safe error mapper 구현. 2026-07-24 BE `prisma:validate`, `typecheck`, `lint`, `test -- follow-up` 6 suites / 29 tests, `build` 통과 |
+| G06 Follow-up Settings Backend | 완료 | `/api/follow-up-delivery/*` settings/OAuth/SMS/consent API 구현. 2026-07-24 `test -- follow-up` 6 suites / 29 tests 통과 |
+| G07 Follow-up Draft Send Backend | 완료 | `/api/follow-up-messages/*` draft/update/send/retry/list/detail API 구현. 2026-07-24 `test -- follow-up` 6 suites / 29 tests 통과 |
+| G08 Follow-up User Web | 완료 | `FE/user-web/src/features/follow-up-delivery`, `/app/settings`, AI report compose, timeline UI 구현. `/admin/api` 검색 no match. 전체 mobile E2E의 Edge project는 local `msedge` 미설치로 환경 실패, Chrome mobile E2E 6 tests 통과 |
 
 ## 4. 핵심 설계 판단
 
