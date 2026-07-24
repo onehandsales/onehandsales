@@ -1,3 +1,4 @@
+import { useQueryClient } from "@tanstack/react-query";
 import {
   AlertCircle,
   CalendarDays,
@@ -14,6 +15,7 @@ import {
 } from "lucide-react";
 import {
   type KeyboardEvent as ReactKeyboardEvent,
+  useCallback,
   useEffect,
   useMemo,
   useRef,
@@ -21,6 +23,8 @@ import {
 } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { useAuthSession } from "@/features/auth";
+import { syncGoogleCalendar as syncGoogleCalendarApi } from "@/features/schedule/api/schedule-api";
+import { scheduleQueryKeys } from "@/features/schedule/api/schedule-query-keys";
 import { ScheduleFormDialog } from "@/features/schedule/components/schedule-form-dialog";
 import {
   useGoogleCalendarStatus,
@@ -44,8 +48,10 @@ import {
   getScheduleSourceBadgeLabel,
   getUrlDomainLabel,
 } from "@/features/schedule/utils/google-calendar-display";
-import { getApiErrorMessage } from "@/lib/api-client";
+import { ApiClientError, getApiErrorMessage } from "@/lib/api-client";
 import { formatDateWithOptions } from "@/utils/format";
+
+const GOOGLE_CALENDAR_SYNC_PROGRESS_REFRESH_DELAY_MS = 1_500;
 
 const weekDayLabels = ["월", "화", "수", "목", "금", "토", "일"];
 const viewModeOptions: ReadonlyArray<{
@@ -66,6 +72,7 @@ const visibilityOptions: ReadonlyArray<{
 
 export function ScheduleScreen() {
   const { user } = useAuthSession();
+  const queryClient = useQueryClient();
   const [searchParams, setSearchParams] = useSearchParams();
   const screenTimeZone = user?.timeZone ?? getDefaultScheduleTimeZone();
   const [viewMode, setViewMode] = useState<ScheduleViewMode>("month");
@@ -81,6 +88,7 @@ export function ScheduleScreen() {
   const [manualSyncCooldownUntil, setManualSyncCooldownUntil] = useState(0);
   const [isTodayPressed, setIsTodayPressed] = useState(false);
   const autoSyncKeyRef = useRef<string | null>(null);
+  const autoSyncInFlightRef = useRef(false);
   const range = useMemo(
     () =>
       viewMode === "month"
@@ -113,6 +121,22 @@ export function ScheduleScreen() {
     [anchorDate],
   );
   const isManualSyncCoolingDown = manualSyncCooldownUntil > Date.now();
+  const refreshGoogleCalendarScheduleView = useCallback(() => {
+    void queryClient.invalidateQueries({ queryKey: scheduleQueryKeys.google() });
+    void queryClient.invalidateQueries({ queryKey: scheduleQueryKeys.lists() });
+    void queryClient.invalidateQueries({
+      queryKey: scheduleQueryKeys.weeklyReports(),
+    });
+    void queryClient.invalidateQueries({
+      queryKey: scheduleQueryKeys.details(),
+    });
+  }, [queryClient]);
+  const refreshGoogleCalendarScheduleViewSoon = useCallback(() => {
+    window.setTimeout(
+      refreshGoogleCalendarScheduleView,
+      GOOGLE_CALENDAR_SYNC_PROGRESS_REFRESH_DELAY_MS,
+    );
+  }, [refreshGoogleCalendarScheduleView]);
 
   useEffect(() => {
     const result = searchParams.get("googleCalendar");
@@ -126,9 +150,9 @@ export function ScheduleScreen() {
     setSearchParams(nextSearchParams, { replace: true });
 
     if (result === "connected") {
-      setNotice("Google Calendar가 연결됐어요.");
+      setNotice(null);
       setGoogleActionError(null);
-      void googleStatusQuery.refetch();
+      refreshGoogleCalendarScheduleView();
       return;
     }
 
@@ -138,7 +162,7 @@ export function ScheduleScreen() {
         ? "Google Calendar 연결 권한이 거절됐어요."
         : "Google Calendar와 연결하지 못했어요. 다시 시도해 주세요.",
     );
-  }, [googleStatusQuery, searchParams, setSearchParams]);
+  }, [refreshGoogleCalendarScheduleView, searchParams, setSearchParams]);
 
   useEffect(() => {
     if (manualSyncCooldownUntil <= Date.now()) {
@@ -158,6 +182,7 @@ export function ScheduleScreen() {
 
     if (
       !status?.autoSync.shouldSyncOnScheduleEntry ||
+      autoSyncInFlightRef.current ||
       syncGoogleCalendarMutation.isPending
     ) {
       return;
@@ -176,16 +201,32 @@ export function ScheduleScreen() {
     }
 
     autoSyncKeyRef.current = syncKey;
-    void syncGoogleCalendarMutation
-      .mutateAsync({ trigger: "AUTO" })
+    autoSyncInFlightRef.current = true;
+    void syncGoogleCalendarApi({ trigger: "AUTO" })
       .then(() => {
         setGoogleActionError(null);
-        setNotice("마지막 동기화를 방금 갱신했어요.");
+        refreshGoogleCalendarScheduleView();
+        setNotice(null);
       })
       .catch((error) => {
+        if (isGoogleCalendarSyncInProgressError(error)) {
+          setGoogleActionError(null);
+          setNotice("Google Calendar 동기화 중이에요. 곧 반영할게요.");
+          refreshGoogleCalendarScheduleViewSoon();
+          return;
+        }
+
         setGoogleActionError(getApiErrorMessage(error));
+      })
+      .finally(() => {
+        autoSyncInFlightRef.current = false;
       });
-  }, [googleStatusQuery.data, syncGoogleCalendarMutation]);
+  }, [
+    googleStatusQuery.data,
+    refreshGoogleCalendarScheduleView,
+    refreshGoogleCalendarScheduleViewSoon,
+    syncGoogleCalendarMutation.isPending,
+  ]);
 
   const openCreateDialog = (startAt: Date | null = null) => {
     setSelectedSchedule(null);
@@ -239,8 +280,16 @@ export function ScheduleScreen() {
 
     try {
       await syncGoogleCalendarMutation.mutateAsync({ trigger: "MANUAL" });
-      setNotice("마지막 동기화를 방금 갱신했어요.");
+      refreshGoogleCalendarScheduleView();
+      setNotice(null);
     } catch (error) {
+      if (isGoogleCalendarSyncInProgressError(error)) {
+        setGoogleActionError(null);
+        setNotice("Google Calendar 동기화 중이에요. 곧 반영할게요.");
+        refreshGoogleCalendarScheduleViewSoon();
+        return;
+      }
+
       setGoogleActionError(getApiErrorMessage(error));
     } finally {
       setManualSyncCooldownUntil(Date.now() + 10_000);
@@ -1127,6 +1176,13 @@ function formatStatusDateTime(value: string) {
     hour: "2-digit",
     minute: "2-digit",
   });
+}
+
+function isGoogleCalendarSyncInProgressError(error: unknown) {
+  return (
+    error instanceof ApiClientError &&
+    error.code === "GoogleCalendarSyncInProgress"
+  );
 }
 
 function pad(value: number) {
