@@ -1,27 +1,36 @@
-# User Web TODO
+# 05 User Web TODO
 
-상태: Draft
+상태: Ready
 
-## 화면 후보
+## 1. Source of truth
 
-- `/app/schedules/week`
-- AI 리포트 panel 또는 별도 tab
+User Web 구현자는 아래 문서를 따른다.
 
-## 작업 후보
+- AI report User Web TODO: `FE-TODO/AI_WEEKLY_REPORT_USER-WEB-TODO.md`
+- Follow-up delivery User Web TODO: `FE-TODO/FOLLOW_UP_DELIVERY_USER-WEB-TODO.md`
+- AI report user flow: `COMMON/AI_WEEKLY_REPORT_USER-FLOW.md`
+- Follow-up user flow: `COMMON/FOLLOW_UP_DELIVERY_USER-FLOW.md`
+- UX/UI guardrails: `COMMON/ARCHITECTURE-GUARDRAILS.md`
+- Goal specs: `COMMON/GOAL-SPECS/*`
 
-- AI 리포트 생성 버튼
-- 생성 중 상태
-- 실패/재시도 상태
-- 리스크/다음 행동 structured cards
-- follow-up draft card와 복사/수정 진입점
-- 데이터 정리 제안 list와 적용/무시 진입점
-- 제안된 next action을 일정/딜로 연결하는 후보 UX
-- 리포트 업데이트 시각 표시
-- 민감정보 안내 문구
+## 2. 구현 순서
 
-## 검증 후보
+1. G04 AI report User Web
+2. G08 Follow-up User Web
+3. G09 Frontend QA closeout
 
-- 일정/딜/회의록이 없는 주의 empty state가 명확하다.
-- AI 실패 시 기존 주간 보고서 기능은 깨지지 않는다.
-- 긴 리포트가 모바일에서 읽힌다.
-- AI 제안은 사용자 확인 전 실제 딜/일정/회의록을 변경하지 않는다.
+## 3. 화면 원칙
+
+- 05-A는 `/app/schedules/week` 안에 AI report section으로 붙인다.
+- 05-B provider 연결은 `/app/settings`에서 관리한다.
+- 05-B compose는 AI report follow-up suggestion에서 진입한다.
+- 발송 이력은 AI report와 딜/담당자/회의록/일정 timeline 양쪽에서 표시한다.
+- 모바일은 table 대신 card/list를 쓴다.
+- 사용자 문구는 해요체를 쓴다.
+
+## 4. 기존 기능 보호
+
+- 기존 주간 일정 보고서 조회를 깨지 않는다.
+- 기존 Excel 다운로드를 깨지 않는다.
+- 05-B 구현 전에는 실제 발송 버튼을 사용자에게 노출하지 않는다.
+- User Web은 `/admin/api/*`를 호출하지 않는다.

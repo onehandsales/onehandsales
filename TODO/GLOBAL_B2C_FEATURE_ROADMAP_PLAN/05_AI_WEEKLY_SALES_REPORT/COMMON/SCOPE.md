@@ -1,40 +1,47 @@
-# Scope
+# 05 Scope
 
-상태: Draft
+상태: Confirmed split scope
+최종 업데이트: 2026-07-24
 
-## 포함 후보
+## 1. 포함 범위
 
-| 항목 | 내용 |
+05는 `05-A AI Weekly Report`와 `05-B Follow-up Delivery`로 나눈다.
+
+| 범위 | 포함 |
 |---|---|
-| 주간 요약 | 일정, 딜, 회의록을 주간 단위로 요약 |
-| 리스크 | 지연 딜, 마감 임박, 다음 행동 없음, 회의록 누락 후보 |
-| 다음 액션 | 다음 주 우선 처리 항목 제안 |
-| Follow-up draft | 미팅/딜 맥락 기반 후속 연락 문구 후보 |
-| 데이터 정리 제안 | 중복/누락/불명확한 회사, 담당자, 딜, 회의록 정보 보강 후보 |
-| AI provider | OpenAI adapter 또는 AI port 기반 생성 |
-| 비용/로그 | AI 요청 비용과 실패 추적 |
+| `05-A` | 저장형 AI 주간 리포트, 비동기 job, version, 실패 이력, 입력 snapshot, 리스크/다음 행동/follow-up/data cleanup 제안 |
+| `05-B` | Gmail/Microsoft 365 연결, 국제 SMS 발신번호 인증, follow-up compose, 즉시 발송, 발송 이력, timeline |
 
-## 제외 후보
+## 2. 05-A 완료 기준
 
-| 항목 | 이유 |
-|---|---|
-| 완전 자동 영업 전략 | 1차는 리포트 보조로 제한 |
-| 팀/관리자 리포트 | 개인 영업자 B2C 우선 |
-| 결제 plan별 AI 제한 | 12에서 다룬다. |
+- 선택한 주의 AI 리포트를 수동 생성할 수 있다.
+- 리포트는 version으로 저장된다.
+- 실패 version도 저장된다.
+- 같은 user/week에 생성 중 job 중복이 차단된다.
+- 회의록 본문 전체를 포함한 input snapshot이 저장된다.
+- 사용자는 snapshot 요약만 볼 수 있다.
+- 리스크, 다음 행동, follow-up 초안, 데이터 정리 제안이 구조화되어 표시된다.
+- AI 제안은 실제 record를 자동 변경하지 않는다.
 
-## 구현 전 세부 확인 질문
+## 3. 05-B 완료 기준
 
-- AI 리포트는 저장형으로 시작한다.
-- 리포트 생성 주기는 사용자가 누르는 수동 생성형으로 시작한다.
-- 어떤 데이터가 provider에 전달되면 안 되는가?
-- 사용자가 리포트를 수정/다운로드할 수 있어야 하는가?
-- follow-up draft와 데이터 정리 제안은 05 주간/cross-record 리포트와 07 회의록 직후 후보 추출로 나눈다.
-- 제안된 next action은 사용자 확인 전에는 실제 딜/일정 데이터로 반영하지 않는다.
+- 사용자는 `/app/settings`에서 Gmail과 Microsoft 365를 연결할 수 있다.
+- 사용자는 `/app/settings`에서 국제 SMS 발신번호를 인증할 수 있다.
+- AI 리포트 follow-up 제안에서 이메일 또는 문자 compose로 이동할 수 있다.
+- 사용자는 수신자, 제목, 본문을 확인/수정한 뒤 즉시 발송할 수 있다.
+- 발송 이력은 본문 전체를 영구 보관한다.
+- 사용자는 발송 이력을 삭제할 수 없다.
+- 발송 이력은 AI 리포트와 딜/담당자 timeline 양쪽에서 볼 수 있다.
+- provider 실패는 safe error와 재시도로 처리된다.
 
-## 완료 기준 초안
+## 4. 제외 범위
 
-- 선택한 주의 AI 영업 요약을 생성할 수 있다.
-- 리스크/다음 행동이 구조화되어 표시된다.
-- follow-up/데이터 정리 제안은 사용자가 확인하기 전까지 실제 데이터를 변경하지 않는다.
-- provider 실패가 안전하게 표시된다.
-- AI 요청 로그와 비용 추적 기준이 있다.
+- 결제 plan별 AI 제한
+- 예약 발송
+- campaign/bulk marketing 발송
+- SMTP 직접 설정
+- Admin 민감 원문 조회
+- PDF/generic ExportJob
+- Google Calendar write/webhook
+- 자동 Deal/Schedule/MeetingNote mutation
+- 계정 삭제/법적 삭제 요청 정책

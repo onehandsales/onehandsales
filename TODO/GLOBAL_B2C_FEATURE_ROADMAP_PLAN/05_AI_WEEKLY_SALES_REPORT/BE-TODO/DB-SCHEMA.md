@@ -1,27 +1,40 @@
-# DB Schema TODO
+# 05 DB Schema TODO
 
-상태: Draft
+상태: Ready
 
-## 모델 후보
+## 1. Source of truth
 
-- `AiWeeklySalesReport`
-- `AiProviderCallLog`
-- `AiJob`
-- `AiFollowUpSuggestion` 후보
-- `AiDataCleanupSuggestion` 후보
+DB schema와 SQL 초안은 아래 문서가 정본이다.
 
-## 결정 baseline 반영 후 세부 확인
+- AI report DB SQL: `BE-TODO/AI_WEEKLY_REPORT_DB-SCHEMA.md`
+- Follow-up delivery DB SQL: `BE-TODO/FOLLOW_UP_DELIVERY_DB-SCHEMA.md`
 
-- 저장형 report version/overwrite 방식
-- provider input/output 저장 여부
-- 원문 데이터 보관 금지 범위
-- 비용 추적 필드
-- user/week unique 기준
-- follow-up/data cleanup suggestion 저장 여부와 만료 기준
-- 사용자가 적용/무시한 제안의 audit 범위
+## 2. Migration 순서
 
-## migration 주의
+1. G02 05-A migration
+   - `AiWeeklySalesReport`
+   - `AiWeeklySalesReportSuggestion`
+   - `AiJob`
+   - `AiProviderCallLog`
+2. G05 05-B migration
+   - `ExternalEmailConnection`
+   - `ExternalEmailOAuthState`
+   - `SmsSenderNumber`
+   - `FollowUpConsentNotice`
+   - `FollowUpMessage`
+   - `FollowUpMessageTarget`
+   - `FollowUpDeliveryAttempt`
 
-- AI 결과와 provider log는 민감정보가 될 수 있다.
-- 삭제 요청과 보관 기간 정책이 필요하다.
-- AI 제안은 추천 근거와 적용 결과를 분리해 저장해야 한다.
+## 3. 공통 DB 정책
+
+- 신규 enum/table/index/FK에는 migration SQL과 주석을 둔다.
+- Prisma schema에는 한글 `/// 기능 : ...` 주석을 둔다.
+- 05-B migration은 05-A table 존재를 전제로 한다.
+- provider token과 phone 원문은 암호화 저장한다.
+- OAuth state, SMS verification code 원문은 저장하지 않는다.
+- AI prompt와 provider raw response는 저장하지 않는다.
+- report version과 follow-up 발송 로그는 사용자 삭제/숨김 기능을 제공하지 않는다.
+
+## 4. 운영 gate
+
+새 migration은 shared/cloud DB에 적용하기 전에 DB/Prisma migration 운영 gate를 확인한다.
