@@ -182,10 +182,8 @@ export function ScheduleScreen() {
         setGoogleActionError(null);
         setNotice("마지막 동기화를 방금 갱신했어요.");
       })
-      .catch(() => {
-        setGoogleActionError(
-          "Google Calendar와 연결하지 못했어요. 다시 시도해 주세요.",
-        );
+      .catch((error) => {
+        setGoogleActionError(getApiErrorMessage(error));
       });
   }, [googleStatusQuery.data, syncGoogleCalendarMutation]);
 
@@ -242,10 +240,8 @@ export function ScheduleScreen() {
     try {
       await syncGoogleCalendarMutation.mutateAsync({ trigger: "MANUAL" });
       setNotice("마지막 동기화를 방금 갱신했어요.");
-    } catch {
-      setGoogleActionError(
-        "Google Calendar와 연결하지 못했어요. 다시 시도해 주세요.",
-      );
+    } catch (error) {
+      setGoogleActionError(getApiErrorMessage(error));
     } finally {
       setManualSyncCooldownUntil(Date.now() + 10_000);
     }

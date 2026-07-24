@@ -86,6 +86,7 @@ class FakeGoogleCalendarSyncRepository implements GoogleCalendarSyncRepository {
   syncSucceededCount = 0;
   syncFailedErrorCode: string | null = null;
   sourceSyncFailedErrorCode: string | null = null;
+  private nextSourceSequence = 2;
 
   async runInTransaction<T>(
     work: (repository: GoogleCalendarSyncRepository) => Promise<T>
@@ -158,11 +159,21 @@ class FakeGoogleCalendarSyncRepository implements GoogleCalendarSyncRepository {
   }
 
   async upsertCalendarSources(input: {
-    readonly sources: readonly { readonly calendarId: string }[];
+    readonly sources: readonly {
+      readonly calendarId: string;
+      readonly calendarName: string;
+      readonly calendarTimeZone: string | null;
+      readonly isPrimary: boolean;
+      readonly isSystemCalendar: boolean;
+    }[];
   }): Promise<readonly GoogleCalendarSourceRecord[]> {
     const currentCalendarIds = new Set(
       input.sources.map((source) => source.calendarId)
     );
+    const existingByCalendarId = new Map(
+      this.sources.map((source) => [source.calendarId, source])
+    );
+
     this.sources = this.sources.map((source): GoogleCalendarSourceRecord =>
       currentCalendarIds.has(source.calendarId)
         ? source
@@ -173,9 +184,47 @@ class FakeGoogleCalendarSyncRepository implements GoogleCalendarSyncRepository {
           }
     );
 
-    return this.sources.filter((source) =>
-      currentCalendarIds.has(source.calendarId)
-    );
+    for (const source of input.sources) {
+      const existing = existingByCalendarId.get(source.calendarId);
+
+      if (existing) {
+        this.sources = this.sources.map((current) =>
+          current.calendarId === source.calendarId
+            ? {
+                ...current,
+                calendarName: source.calendarName,
+                calendarTimeZone: source.calendarTimeZone,
+                isPrimary: source.isPrimary,
+                isSystemCalendar: source.isSystemCalendar,
+              }
+            : current
+        );
+        continue;
+      }
+
+      this.sources.push({
+        id: `source-${this.nextSourceSequence++}`,
+        calendarId: source.calendarId,
+        calendarName: source.calendarName,
+        calendarTimeZone: source.calendarTimeZone,
+        isPrimary: source.isPrimary,
+        isSystemCalendar: source.isSystemCalendar,
+        status:
+          source.isPrimary && !source.isSystemCalendar ? "SELECTED" : "UNSELECTED",
+        syncToken: null,
+        lastSyncedAt: null,
+        lastSyncFailedAt: null,
+        lastSyncErrorCode: null,
+      });
+    }
+
+    return input.sources
+      .map((source) =>
+        this.sources.find((current) => current.calendarId === source.calendarId)
+      )
+      .filter((source): source is GoogleCalendarSourceRecord =>
+        source !== undefined
+      );
   }
 
   async listCalendarSources(): Promise<readonly GoogleCalendarSourceRecord[]> {
@@ -563,13 +612,36 @@ describe("GoogleCalendarSyncService", () => {
     expect(repository.syncFailedErrorCode).toBe("GOOGLE_EVENTS_UNAVAILABLE");
   });
 
-  it("requires at least one selected calendar source before sync", async () => {
-    const { repository, service } = createService([]);
+  it("refreshes provider calendars before requiring selected sources on first sync", async () => {
+    const { listEventsPage, repository, service } = createService([]);
     repository.sources = [];
+
+    const response = await service.syncCalendars(CURRENT_USER, {
+      trigger: "MANUAL",
+    });
+
+    expect(response.selectedCalendarCount).toBe(1);
+    expect(repository.sources).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          calendarId: "primary",
+          isPrimary: true,
+          status: "SELECTED",
+        }),
+      ])
+    );
+    expect(listEventsPage.mock.calls[0]?.[0].calendarId).toBe("primary");
+    expect(repository.syncStartedCount).toBe(1);
+  });
+
+  it("requires a selected source after refresh when the user has none selected", async () => {
+    const { listEventsPage, repository, service } = createService([]);
+    repository.sources = [{ ...SELECTED_SOURCE, status: "UNSELECTED" }];
 
     await expect(
       service.syncCalendars(CURRENT_USER, { trigger: "MANUAL" })
     ).rejects.toBeInstanceOf(GoogleCalendarSourceSelectionRequiredError);
+    expect(listEventsPage).not.toHaveBeenCalled();
     expect(repository.syncStartedCount).toBe(0);
   });
 });

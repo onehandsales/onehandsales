@@ -289,14 +289,6 @@ export class GoogleCalendarSyncService {
     const trigger = input.trigger ?? "MANUAL";
     const startedAt = new Date();
     const connection = await this.getConnectedConnection(currentUser.id);
-    let selectedSources = await this.syncRepository.listSelectedSources({
-      userId: currentUser.id,
-      connectionId: connection.id,
-    });
-
-    if (selectedSources.length === 0) {
-      throw new GoogleCalendarSourceSelectionRequiredError();
-    }
 
     if (
       connection.syncLockExpiresAt &&
@@ -307,8 +299,16 @@ export class GoogleCalendarSyncService {
 
     const timeZone = this.resolveUserTimeZone(currentUser.timeZone);
     const range = this.createSyncRange(startedAt, timeZone);
+    let selectedSources = await this.syncRepository.listSelectedSources({
+      userId: currentUser.id,
+      connectionId: connection.id,
+    });
 
-    if (trigger === "AUTO" && this.isAutoSyncFresh(connection, startedAt)) {
+    if (
+      selectedSources.length > 0 &&
+      trigger === "AUTO" &&
+      this.isAutoSyncFresh(connection, startedAt)
+    ) {
       return this.createEmptySyncResponse({
         trigger,
         startedAt,
