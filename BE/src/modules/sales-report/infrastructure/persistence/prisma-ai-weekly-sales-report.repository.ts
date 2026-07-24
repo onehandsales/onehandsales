@@ -14,6 +14,7 @@ import type {
   AiJobRecord,
   AiProviderCallLogRecord,
   AiWeeklySalesReportRecord,
+  AiWeeklySalesReportSuggestionRecord,
   AiWeeklySalesReportRepository,
   AiWeeklySnapshotCompanyRecord,
   AiWeeklySnapshotContactRecord,
@@ -49,6 +50,8 @@ const meetingNoteSnapshotInclude = {
 } satisfies Prisma.MeetingNoteInclude;
 
 type AiWeeklySalesReportRow = Prisma.AiWeeklySalesReportGetPayload<object>;
+type AiWeeklySalesReportSuggestionRow =
+  Prisma.AiWeeklySalesReportSuggestionGetPayload<object>;
 type AiJobRow = Prisma.AiJobGetPayload<object>;
 type AiProviderCallLogRow = Prisma.AiProviderCallLogGetPayload<object>;
 type MeetingNoteSnapshotRow = Prisma.MeetingNoteGetPayload<{
@@ -248,6 +251,21 @@ export class PrismaAiWeeklySalesReportRepository
     });
 
     return report ? this.mapReport(report) : null;
+  }
+
+  async listSuggestionsForReport(input: {
+    readonly userId: string;
+    readonly reportId: string;
+  }): Promise<AiWeeklySalesReportSuggestionRecord[]> {
+    const suggestions = await this.client.aiWeeklySalesReportSuggestion.findMany({
+      where: {
+        reportId: input.reportId,
+        userId: input.userId,
+      },
+      orderBy: [{ createdAt: "asc" }, { id: "asc" }],
+    });
+
+    return suggestions.map((suggestion) => this.mapSuggestion(suggestion));
   }
 
   async listMeetingNotesForSnapshot(input: {
@@ -736,6 +754,27 @@ export class PrismaAiWeeklySalesReportRepository
       failedAt: row.failedAt,
       createdAt: row.createdAt,
       updatedAt: row.updatedAt,
+    };
+  }
+
+  private mapSuggestion(
+    row: AiWeeklySalesReportSuggestionRow
+  ): AiWeeklySalesReportSuggestionRecord {
+    return {
+      id: row.id,
+      userId: row.userId,
+      reportId: row.reportId,
+      type: row.type,
+      suggestionKey: row.suggestionKey,
+      priority: row.priority,
+      title: row.title,
+      body: row.body,
+      reason: row.reason,
+      targetType: row.targetType,
+      targetId: row.targetId,
+      targetPath: row.targetPath,
+      targetLabel: row.targetLabel,
+      payloadJson: this.toRecordJson(row.payloadJson),
     };
   }
 

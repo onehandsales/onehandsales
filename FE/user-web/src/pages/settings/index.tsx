@@ -17,6 +17,7 @@ import {
   useMyProfile,
   useUpdateMyProfileMutation,
 } from "@/features/auth/hooks/use-user-settings";
+import { FollowUpDeliverySettingsSection } from "@/features/follow-up-delivery";
 import { GoogleCalendarSettingsSection } from "@/features/schedule/components/google-calendar-settings-section";
 import type {
   MyDevice,
@@ -74,6 +75,7 @@ export function SettingsPage() {
               profile={profileQuery.data ?? null}
             />
             <GoogleCalendarSettingsSection onNotice={setNotice} />
+            <FollowUpDeliverySettingsSection onNotice={setNotice} />
           </div>
           <DeviceSection
             devices={devicesQuery.data?.devices ?? []}

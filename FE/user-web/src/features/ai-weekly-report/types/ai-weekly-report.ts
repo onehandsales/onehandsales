@@ -71,6 +71,9 @@ export type AiWeeklyReportDataCoverage = {
 };
 
 export type AiWeeklyReportSuggestion = {
+  readonly id?: string | null;
+  readonly sourceSuggestionId?: string | null;
+  readonly suggestionKey?: string | null;
   readonly key: string;
   readonly priority: AiWeeklyReportPriority;
   readonly title: string;

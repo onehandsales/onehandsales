@@ -259,6 +259,23 @@ export interface CreateAiWeeklySalesReportSuggestionInput {
   readonly payloadJson: Record<string, unknown>;
 }
 
+export interface AiWeeklySalesReportSuggestionRecord {
+  readonly id: string;
+  readonly userId: string;
+  readonly reportId: string;
+  readonly type: AiWeeklySalesReportSuggestionTypeValue;
+  readonly suggestionKey: string;
+  readonly priority: AiSuggestionPriorityValue;
+  readonly title: string;
+  readonly body: string;
+  readonly reason: string | null;
+  readonly targetType: string | null;
+  readonly targetId: string | null;
+  readonly targetPath: string | null;
+  readonly targetLabel: string | null;
+  readonly payloadJson: Record<string, unknown>;
+}
+
 export interface WeeklyReportJobWorkItem {
   readonly job: AiJobRecord;
   readonly report: AiWeeklySalesReportRecord;
@@ -292,6 +309,10 @@ export interface AiWeeklySalesReportRepository {
     userId: string,
     reportId: string
   ): Promise<AiWeeklySalesReportRecord | null>;
+  listSuggestionsForReport(input: {
+    readonly userId: string;
+    readonly reportId: string;
+  }): Promise<AiWeeklySalesReportSuggestionRecord[]>;
   listMeetingNotesForSnapshot(input: {
     readonly userId: string;
     readonly rangeStartAt: Date;

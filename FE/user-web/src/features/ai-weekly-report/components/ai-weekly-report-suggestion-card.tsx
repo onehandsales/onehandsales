@@ -1,4 +1,5 @@
 import { ExternalLink } from "lucide-react";
+import type { ReactNode } from "react";
 import { Link } from "react-router-dom";
 import type { AiWeeklyReportSuggestion } from "@/features/ai-weekly-report/types/ai-weekly-report";
 import { cn } from "@/utils/cn";
@@ -9,9 +10,11 @@ type AiWeeklyReportSuggestionCardProps = {
   readonly suggestion: AiWeeklyReportSuggestion;
   readonly tone: SuggestionTone;
   readonly actionLabel?: string;
+  readonly actions?: ReactNode;
 };
 
 export function AiWeeklyReportSuggestionCard({
+  actions,
   actionLabel = "관련 기록 열기",
   suggestion,
   tone,
@@ -65,6 +68,11 @@ export function AiWeeklyReportSuggestionCard({
         <p className="break-words border-t border-[#E2E5EC] pt-2 text-[12px] leading-5 text-[#64748B]">
           근거: {suggestion.reason}
         </p>
+      ) : null}
+      {actions ? (
+        <div className="flex flex-wrap justify-end gap-2 border-t border-[#E2E5EC] pt-2">
+          {actions}
+        </div>
       ) : null}
     </article>
   );

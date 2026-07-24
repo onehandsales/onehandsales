@@ -34,6 +34,7 @@ import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { Toast } from "@/components/ui/toast";
 import { useToast } from "@/components/ui/use-toast";
 import { DealEditDialog } from "@/features/deal/components/deal-edit-dialog";
+import { FollowUpTimelinePanel } from "@/features/follow-up-delivery";
 import {
   useDealDetail,
   useDealFollowingActionLogs,
@@ -477,6 +478,11 @@ function DealDetailPageLayout({
                 logs={followingLogs}
                 onFetchNext={onFetchFollowingLogsNext}
               />
+              <FollowUpTimelinePanel
+                targetId={detail.id}
+                targetType="DEAL"
+                title="딜 후속 연락 이력"
+              />
             </div>
           </div>
         </div>
@@ -540,6 +546,12 @@ function DealDetailPageLayout({
               onFetchNext={onFetchFollowingLogsNext}
             />
           </div>
+
+          <FollowUpTimelinePanel
+            targetId={detail.id}
+            targetType="DEAL"
+            title="딜 후속 연락 이력"
+          />
         </div>
       </div>
 

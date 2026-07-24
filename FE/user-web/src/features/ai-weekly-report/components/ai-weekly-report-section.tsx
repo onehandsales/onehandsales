@@ -8,6 +8,7 @@ import {
   ClipboardList,
   Database,
   Loader2,
+  Mail,
   MessageSquareText,
   RefreshCw,
   ShieldAlert,
@@ -18,6 +19,11 @@ import { type ReactNode, useEffect, useMemo, useState } from "react";
 import { AiWeeklyReportVersionList } from "@/features/ai-weekly-report/components/ai-weekly-report-version-list";
 import { AiWeeklyReportSuggestionCard } from "@/features/ai-weekly-report/components/ai-weekly-report-suggestion-card";
 import { useCreateAiWeeklyReportMutation } from "@/features/ai-weekly-report/hooks/use-ai-weekly-report-mutations";
+import {
+  FollowUpComposeDialog,
+  FollowUpTimelinePanel,
+  type FollowUpDeliveryChannel,
+} from "@/features/follow-up-delivery";
 import {
   useAiWeeklyReportDetail,
   useAiWeeklyReportSnapshotSummary,
@@ -307,6 +313,10 @@ function AiReportReady({
 }) {
   const sections = detail.sections ?? {};
   const coverage = sections.dataCoverage ?? detail.dataCoverage;
+  const [composeState, setComposeState] = useState<{
+    readonly channel: FollowUpDeliveryChannel;
+    readonly suggestion: AiWeeklyReportSuggestion;
+  } | null>(null);
 
   return (
     <div className="grid gap-4">
@@ -339,8 +349,24 @@ function AiReportReady({
         emptyLabel="후속 연락 초안이 아직 없습니다."
         icon={<MessageSquareText className="h-4 w-4" />}
         items={sections.followUpDrafts ?? []}
+        renderActions={(suggestion) => (
+          <FollowUpSuggestionActions
+            onCompose={(channel) =>
+              setComposeState({
+                channel,
+                suggestion,
+              })
+            }
+            suggestion={suggestion}
+          />
+        )}
         title="후속 연락 초안"
         tone="follow-up"
+      />
+
+      <FollowUpTimelinePanel
+        sourceReportId={detail.id}
+        title="AI 리포트 후속 연락 이력"
       />
 
       <SuggestionSection
@@ -358,6 +384,18 @@ function AiReportReady({
         isOpen={snapshotOpen}
         onToggle={onToggleSnapshot}
         reportId={detail.id}
+      />
+
+      <FollowUpComposeDialog
+        initialChannel={composeState?.channel ?? "EMAIL"}
+        onOpenChange={(open) => {
+          if (!open) {
+            setComposeState(null);
+          }
+        }}
+        open={composeState !== null}
+        reportId={detail.id}
+        suggestion={composeState?.suggestion ?? null}
       />
     </div>
   );
@@ -476,6 +514,7 @@ function SuggestionSection({
   emptyLabel,
   icon,
   items,
+  renderActions,
   title,
   tone,
 }: {
@@ -483,6 +522,7 @@ function SuggestionSection({
   readonly emptyLabel: string;
   readonly icon: ReactNode;
   readonly items: readonly AiWeeklyReportSuggestion[];
+  readonly renderActions?: (suggestion: AiWeeklyReportSuggestion) => ReactNode;
   readonly title: string;
   readonly tone: "cleanup" | "follow-up" | "next-action" | "risk";
 }) {
@@ -503,7 +543,8 @@ function SuggestionSection({
           {items.map((item) => (
             <AiWeeklyReportSuggestionCard
               actionLabel={actionLabel}
-              key={item.key}
+              actions={renderActions?.(item)}
+              key={item.sourceSuggestionId ?? item.id ?? item.key}
               suggestion={item}
               tone={tone}
             />
@@ -515,6 +556,41 @@ function SuggestionSection({
         </p>
       )}
     </section>
+  );
+}
+
+function FollowUpSuggestionActions({
+  onCompose,
+  suggestion,
+}: {
+  readonly onCompose: (channel: FollowUpDeliveryChannel) => void;
+  readonly suggestion: AiWeeklyReportSuggestion;
+}) {
+  const canCompose = Boolean(suggestion.sourceSuggestionId ?? suggestion.id);
+
+  return (
+    <>
+      <button
+        className="inline-flex h-8 items-center gap-1.5 rounded-md border border-[#D7DCE5] bg-white px-2.5 text-[12px] font-semibold text-[#374151] transition hover:border-[#93C5FD] hover:bg-[#F8FAFC] hover:text-[#1D4ED8] disabled:cursor-not-allowed disabled:opacity-50"
+        disabled={!canCompose}
+        onClick={() => onCompose("EMAIL")}
+        title={canCompose ? "이메일 초안 만들기" : "리포트를 다시 생성해 주세요"}
+        type="button"
+      >
+        <Mail className="h-3.5 w-3.5" />
+        이메일
+      </button>
+      <button
+        className="inline-flex h-8 items-center gap-1.5 rounded-md border border-[#D7DCE5] bg-white px-2.5 text-[12px] font-semibold text-[#374151] transition hover:border-[#93C5FD] hover:bg-[#F8FAFC] hover:text-[#1D4ED8] disabled:cursor-not-allowed disabled:opacity-50"
+        disabled={!canCompose}
+        onClick={() => onCompose("SMS")}
+        title={canCompose ? "문자 초안 만들기" : "리포트를 다시 생성해 주세요"}
+        type="button"
+      >
+        <MessageSquareText className="h-3.5 w-3.5" />
+        문자
+      </button>
+    </>
   );
 }
 

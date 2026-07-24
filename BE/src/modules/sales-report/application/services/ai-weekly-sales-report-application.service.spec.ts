@@ -14,6 +14,7 @@ const USER_ID = "7d0b03d4-93fb-47d1-85ad-7f39c15eb4da";
 const REPORT_ID = "9d1b57bf-6746-4b2f-9084-0327e03d9e8a";
 const JOB_ID = "fa8e6d9e-820e-43be-907e-c69f4115227f";
 const DEAL_ID = "8d7603da-33d2-4c88-8f7d-2daafddfbc13";
+const SUGGESTION_ID = "1d74e42d-b412-4a53-9fa1-76a5f837ae9e";
 
 const CURRENT_USER: CurrentUserContext = {
   id: USER_ID,
@@ -152,6 +153,60 @@ describe("AiWeeklySalesReportApplicationService", () => {
     expect(summary.records.meetingNotes[0]).not.toHaveProperty("details");
     expect(summary.excluded).toContain("providerRawResponses");
   });
+
+  it("attaches stored suggestion ids to ready report detail sections", async () => {
+    const repository = createRepository({
+      findReportById: jest.fn().mockResolvedValue(
+        createReport({
+          status: "READY",
+          outputJson: {
+            followUpDrafts: [
+              {
+                key: "follow-up-note-1",
+                priority: "MEDIUM",
+                title: "Follow up",
+                body: "Send the next step.",
+              },
+            ],
+          },
+        })
+      ),
+      listSuggestionsForReport: jest.fn().mockResolvedValue([
+        {
+          id: SUGGESTION_ID,
+          userId: USER_ID,
+          reportId: REPORT_ID,
+          type: "FOLLOW_UP",
+          suggestionKey: "follow_up-follow-up-note-1",
+          priority: "MEDIUM",
+          title: "Follow up",
+          body: "Send the next step.",
+          reason: null,
+          targetType: "MEETING_NOTE",
+          targetId: null,
+          targetPath: null,
+          targetLabel: null,
+          payloadJson: {},
+        },
+      ]),
+    });
+    const service = new AiWeeklySalesReportApplicationService(
+      repository,
+      createScheduleRepository(),
+      createLogger()
+    );
+
+    const detail = await service.getDetail(CURRENT_USER, REPORT_ID);
+    const sections = detail.sections as {
+      readonly followUpDrafts?: readonly Record<string, unknown>[];
+    };
+
+    expect(sections.followUpDrafts?.[0]).toMatchObject({
+      id: SUGGESTION_ID,
+      sourceSuggestionId: SUGGESTION_ID,
+      suggestionKey: "follow_up-follow-up-note-1",
+    });
+  });
 });
 
 function createRepository(
@@ -171,6 +226,7 @@ function createRepository(
     }),
     listReportsForWeek: jest.fn().mockResolvedValue([]),
     findReportById: jest.fn().mockResolvedValue(createReport()),
+    listSuggestionsForReport: jest.fn().mockResolvedValue([]),
     listMeetingNotesForSnapshot: jest.fn().mockResolvedValue([
       {
         id: "note-1",

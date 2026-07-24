@@ -11,6 +11,8 @@ import {
   type AiJobRecord,
   type AiWeeklySalesReportRecord,
   type AiWeeklySalesReportRepository,
+  type AiWeeklySalesReportSuggestionRecord,
+  type AiWeeklySalesReportSuggestionTypeValue,
   type AiWeeklySnapshotDealRecord,
   type AiWeeklySnapshotMeetingNoteRecord,
 } from "@/modules/sales-report/application/ports/ai-weekly-sales-report.repository";
@@ -36,6 +38,15 @@ const MAX_SNAPSHOT_MEETING_NOTES = 100;
 const MAX_IDEMPOTENCY_KEY_LENGTH = 128;
 const UUID_PATTERN =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+const SUGGESTION_SECTIONS = [
+  { key: "riskSignals", type: "RISK" },
+  { key: "nextWeekActions", type: "NEXT_ACTION" },
+  { key: "followUpDrafts", type: "FOLLOW_UP" },
+  { key: "dataCleanupSuggestions", type: "DATA_CLEANUP" },
+] as const satisfies readonly {
+  readonly key: string;
+  readonly type: AiWeeklySalesReportSuggestionTypeValue;
+}[];
 
 interface CalendarDate {
   readonly year: number;
@@ -290,7 +301,10 @@ export class AiWeeklySalesReportApplicationService {
       ...this.toReportSummary(report),
       safeErrorCode: report.safeErrorCode,
       safeErrorMessage: report.safeErrorMessage,
-      sections: report.status === "READY" ? report.outputJson : null,
+      sections:
+        report.status === "READY"
+          ? await this.createDetailSections(report)
+          : null,
       dataCoverage: this.extractDataCoverage(report),
     };
   }
@@ -567,6 +581,89 @@ export class AiWeeklySalesReportApplicationService {
         status: job.status,
       },
     };
+  }
+
+  private async createDetailSections(
+    report: AiWeeklySalesReportRecord
+  ): Promise<Record<string, unknown> | null> {
+    if (!report.outputJson) {
+      return null;
+    }
+
+    const suggestions =
+      await this.salesReportRepository.listSuggestionsForReport({
+        userId: report.userId,
+        reportId: report.id,
+      });
+
+    if (suggestions.length === 0) {
+      return report.outputJson;
+    }
+
+    return this.attachSuggestionIds(report.outputJson, suggestions);
+  }
+
+  private attachSuggestionIds(
+    sections: Record<string, unknown>,
+    suggestions: readonly AiWeeklySalesReportSuggestionRecord[]
+  ): Record<string, unknown> {
+    const nextSections: Record<string, unknown> = { ...sections };
+    const suggestionsByKey = new Map(
+      suggestions.map((suggestion) => [suggestion.suggestionKey, suggestion])
+    );
+
+    for (const section of SUGGESTION_SECTIONS) {
+      const items = this.getObjectArray(sections, section.key);
+
+      if (items.length === 0) {
+        continue;
+      }
+
+      const sectionSuggestions = suggestions.filter(
+        (suggestion) => suggestion.type === section.type
+      );
+
+      nextSections[section.key] = items.map((item, index) => {
+        const itemKey = this.getString(item, "key") ?? String(index + 1);
+        const expectedSuggestionKey = this.createSuggestionKey(
+          section.type,
+          itemKey,
+          index
+        );
+        const suggestion =
+          suggestionsByKey.get(expectedSuggestionKey) ??
+          sectionSuggestions[index] ??
+          null;
+
+        if (!suggestion) {
+          return item;
+        }
+
+        return {
+          ...item,
+          id: suggestion.id,
+          sourceSuggestionId: suggestion.id,
+          suggestionKey: suggestion.suggestionKey,
+        };
+      });
+    }
+
+    return nextSections;
+  }
+
+  private createSuggestionKey(
+    type: AiWeeklySalesReportSuggestionTypeValue,
+    key: string,
+    index: number
+  ): string {
+    const normalizedKey = key
+      .trim()
+      .toLowerCase()
+      .replace(/[^a-z0-9_-]+/g, "-")
+      .replace(/^-+|-+$/g, "")
+      .slice(0, 80);
+
+    return `${type.toLowerCase()}-${normalizedKey || index + 1}`;
   }
 
   private toReportSummary(
