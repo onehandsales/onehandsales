@@ -1,13 +1,13 @@
 # Planning Review
 
-상태: G01-G08 Done / Ready for G09
+상태: G01-G09 Done / QA Closed
 검토일: 2026-07-24
 
 ## 1. 결론
 
-- 판정: G01~G08 구현/검토 완료, G09 QA Review Closeout 착수 가능
-- 이유: 05의 제품 결정, 포함/제외 범위, API 계약, DB schema, FE 작업, goal 순서, 아키텍처/UXUI guardrail, QA 체크리스트 기준으로 G01~G08 구현과 검토가 완료되어 있다.
-- 구현 상태: AI weekly report와 follow-up delivery의 Backend/DB/User Web 구현은 완료됐고, 남은 범위는 G09 QA closeout과 최종 문서 정합성 점검이다.
+- 판정: G01~G09 구현/검토 완료, 05 AI Weekly Sales Report QA closeout 종료
+- 이유: 05의 제품 결정, 포함/제외 범위, API 계약, DB schema, FE 작업, goal 순서, 아키텍처/UXUI guardrail, QA 체크리스트 기준으로 Backend/DB/User Web 구현과 closeout 검증이 완료되어 있다.
+- 구현 상태: AI weekly report와 follow-up delivery의 Backend/DB/User Web 구현, regression 명령, ownership/privacy/provider failure/mobile QA 문서화가 완료됐다.
 
 ## 2. 사용자 결정 반영
 
@@ -89,7 +89,8 @@
 | G05 Follow-up DB Provider Ports | 완료 | `20260724020000_add_follow_up_delivery_foundation`, follow-up provider port/encryption/safe error mapper 구현. 2026-07-24 BE `prisma:validate`, `typecheck`, `lint`, `test -- follow-up` 6 suites / 29 tests, `build` 통과 |
 | G06 Follow-up Settings Backend | 완료 | `/api/follow-up-delivery/*` settings/OAuth/SMS/consent API 구현. 2026-07-24 `test -- follow-up` 6 suites / 29 tests 통과 |
 | G07 Follow-up Draft Send Backend | 완료 | `/api/follow-up-messages/*` draft/update/send/retry/list/detail API 구현. 2026-07-24 `test -- follow-up` 6 suites / 29 tests 통과 |
-| G08 Follow-up User Web | 완료 | `FE/user-web/src/features/follow-up-delivery`, `/app/settings`, AI report compose, timeline UI 구현. `/admin/api` 검색 no match. 전체 mobile E2E의 Edge project는 local `msedge` 미설치로 환경 실패, Chrome mobile E2E 6 tests 통과 |
+| G08 Follow-up User Web | 완료 | `FE/user-web/src/features/follow-up-delivery`, `/app/settings`, AI report compose, timeline UI 구현. `/admin/api` 검색 no match. FE 검증과 Chrome mobile E2E 통과 |
+| G09 QA Review Closeout | 완료 | `COMMON/REVIEW-CHECKLIST.md` closed. BE `prisma:validate`, `typecheck`, `lint`, `test`, `build` 통과. FE `typecheck`, `lint`, `build`, `test:e2e:mobile` 통과. 실제 provider smoke 미실행 사유와 runbook/release note 기록 |
 
 ## 4. 핵심 설계 판단
 
@@ -111,19 +112,19 @@
 
 없음.
 
-## 6. G09 주의
+## 6. G09 Closeout 결과
 
-- OAuth callback route는 Bearer token 대신 `ExternalEmailOAuthState`로 user를 식별한다.
-- provider 호출은 DB transaction 밖에서 수행한다.
-- AI prompt, snapshot 원문, provider raw response, token, SMS code, email/SMS body는 structured log에 남기지 않는다.
-- 05-B migration은 05-A table이 생성된 뒤 적용된 상태로 본다.
-- `GENERATING` report 중복 생성과 send/retry 중복 발송 방지가 유지되는지 regression으로 확인한다.
-- 모바일 360px/390px에서 AI section, compose, timeline이 겹치지 않는지 G09에서 재확인한다.
-- 실제 provider env가 없으면 provider adapter test double로 자동 테스트를 닫고 G09에서 smoke 미실행 사유를 기록한다.
+- OAuth callback route는 Bearer token 대신 `ExternalEmailOAuthState`로 user를 식별하는 구조로 확인했다.
+- provider 호출은 DB transaction 밖에서 수행되는 구조로 확인했다.
+- AI prompt, snapshot 원문, provider raw response, token, SMS code, email/SMS body는 structured log에 남기지 않는 구조와 테스트를 확인했다.
+- 05-B migration은 05-A table 생성 뒤 적용되는 순서로 확인했다.
+- `GENERATING` report 중복 생성과 send/retry 중복 발송 방지는 regression과 code review로 확인했다.
+- 모바일 360px/390px QA는 `pnpm run test:e2e:mobile` 6 tests 통과로 닫았다.
+- 실제 provider smoke는 follow-up 전용 provider env와 callback URL 미확정으로 완료 처리하지 않았고, 미실행 사유를 work log/runbook에 기록했다.
 
 ## 7. 사용자의 추가 결정이 필요한 질문
 
-현재 G09 QA closeout 착수를 막는 질문은 없다.
+현재 05 완료를 막는 질문은 없다.
 
 05 범위 밖에서 별도 goal로 확정할 항목:
 
@@ -134,8 +135,8 @@
 - 계정 삭제/법적 삭제 요청 시 영구 로그 처리 정책
 - provider별 운영 credential 검수와 국가별 SMS 제한 정책
 
-## 8. 남은 실행 문구
+## 8. 완료 기록
 
-```text
-/goal TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/05_AI_WEEKLY_SALES_REPORT/COMMON/GOAL-SPECS/G09_QA_REVIEW_CLOSEOUT.md 기준으로 G09를 구현해줘.
-```
+- Goal completion checklist: `COMMON/GOAL-COMPLETION-CHECKLIST.md`
+- QA checklist: `COMMON/REVIEW-CHECKLIST.md`
+- G09 work log: `TODO_LOG/2026-07-24/G09_QA_REVIEW_CLOSEOUT/WORK_LOG.md`

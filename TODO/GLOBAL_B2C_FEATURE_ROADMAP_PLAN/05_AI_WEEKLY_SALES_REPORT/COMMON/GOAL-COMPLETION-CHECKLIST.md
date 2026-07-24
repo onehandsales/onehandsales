@@ -1,6 +1,6 @@
 # Goal Completion Checklist
 
-상태: G01-G08 Done / G09 Ready
+상태: G01-G09 Done
 최종 업데이트: 2026-07-24
 
 ## 1. 목적
@@ -29,8 +29,8 @@
 | [x] | G05 Follow-up DB Provider Ports | Done | 2026-07-24 | 05-B DB foundation과 provider port/redaction mapper가 준비된다. | `20260724020000_add_follow_up_delivery_foundation`, 2026-07-24 BE `prisma:validate`, `typecheck`, `lint`, `test -- follow-up` 6 suites / 29 tests, `build` 통과 | 구현/검토 완료 |
 | [x] | G06 Follow-up Settings Backend | Done | 2026-07-24 | OAuth, SMS sender verification, consent notice API가 spec과 일치한다. | `/api/follow-up-delivery/*`, 2026-07-24 `test -- follow-up` 6 suites / 29 tests 통과 | 구현/검토 완료 |
 | [x] | G07 Follow-up Draft Send Backend | Done | 2026-07-24 | draft, update, send, retry, list/detail API가 spec과 일치한다. | `/api/follow-up-messages/*`, 2026-07-24 `test -- follow-up` 6 suites / 29 tests 통과 | 구현/검토 완료 |
-| [x] | G08 Follow-up User Web | Done | 2026-07-24 | settings, compose, send, retry, timeline UX가 FE TODO와 API 계약에 맞게 연결된다. | `FE/user-web/src/features/follow-up-delivery`, `/app/settings`, `/admin/api` 검색 no match, FE `typecheck`, `lint`, `build`, Chrome mobile E2E 6 tests 통과 | Edge mobile project는 local `msedge` 미설치로 미실행 |
-| [ ] | G09 QA Review Closeout | Ready |  | `COMMON/REVIEW-CHECKLIST.md` critical 항목과 BE/FE 검증 명령이 완료된다. |  |  |
+| [x] | G08 Follow-up User Web | Done | 2026-07-24 | settings, compose, send, retry, timeline UX가 FE TODO와 API 계약에 맞게 연결된다. | `FE/user-web/src/features/follow-up-delivery`, `/app/settings`, `/admin/api` 검색 no match, FE `typecheck`, `lint`, `build`, Chrome mobile E2E 6 tests 통과 | 구현/검토 완료 |
+| [x] | G09 QA Review Closeout | Done | 2026-07-24 | `COMMON/REVIEW-CHECKLIST.md` critical 항목과 BE/FE 검증 명령이 완료된다. | `REVIEW-CHECKLIST.md`, `TODO_LOG/2026-07-24/G09_QA_REVIEW_CLOSEOUT/WORK_LOG.md`, BE full commands, FE full commands, mobile E2E 6 tests 통과 | 실제 provider smoke는 env/callback 미확정으로 미실행 사유 기록 |
 
 ## 4. Goal별 체크 조건
 
@@ -108,20 +108,20 @@
 
 ### G09 QA Review Closeout
 
-- [ ] Backend QA 항목을 확인했다.
-- [ ] Frontend QA 항목을 확인했다.
-- [ ] Security/Privacy QA 항목을 확인했다.
-- [ ] `COMMON/REVIEW-CHECKLIST.md` 체크 결과를 반영했다.
-- [ ] README, goal spec, planning review, 상위 roadmap 상태를 구현 결과와 맞췄다.
-- [ ] 실제 provider smoke 실행 여부와 미실행 사유를 기록했다.
+- [x] Backend QA 항목을 확인했다.
+- [x] Frontend QA 항목을 확인했다.
+- [x] Security/Privacy QA 항목을 확인했다.
+- [x] `COMMON/REVIEW-CHECKLIST.md` 체크 결과를 반영했다.
+- [x] README, goal spec, planning review, 상위 roadmap 상태를 구현 결과와 맞췄다.
+- [x] 실제 provider smoke 실행 여부와 미실행 사유를 기록했다.
 
 ## 4.1 2026-07-24 후속 재검토 메모
 
-- BE: `pnpm run prisma:validate`, `pnpm run typecheck`, `pnpm run lint`, `pnpm run test -- sales-report`, `pnpm run test -- follow-up`, `pnpm run build` 통과.
+- BE: `pnpm run prisma:validate`, `pnpm run typecheck`, `pnpm run lint`, `pnpm run test`, `pnpm run build` 통과.
 - FE: `pnpm run typecheck`, `pnpm run lint`, `pnpm run build` 통과.
-- Mobile: `pnpm exec playwright test -c playwright.release-qa.config.ts tests/e2e/mobile-browser-qa.spec.ts --project=mobile-chrome-390 --project=mobile-chrome-360` 6 tests 통과.
-- `pnpm run test:e2e:mobile` 전체 명령은 `msedge`가 `/Applications/Microsoft Edge.app`에 없어 Edge project 6 tests가 환경 실패했다.
+- Mobile: `pnpm run test:e2e:mobile` 6 tests 통과. 현재 머신에는 Microsoft Edge가 없어 Edge project는 config에서 자동 제외되며, Edge 설치 환경이나 `PLAYWRIGHT_INCLUDE_EDGE=1`에서는 Edge project를 포함한다.
 - `/admin/api` 검색은 AI weekly report/follow-up/settings/deal/contact 연결 범위에서 no match다.
+- 실제 Gmail/Microsoft/SMS provider smoke는 follow-up 전용 credential과 provider console callback URL 미확정으로 완료 처리하지 않았고, 미실행 사유를 G09 work log/runbook에 기록했다.
 
 ## 5. 완료 시 업데이트 예시
 

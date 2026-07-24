@@ -10,7 +10,7 @@
 - [x] 02 `02_NOTIFICATION_REMINDER`: Done (2026-07-22)
 - [x] 03 `03_WEEKLY_SCHEDULE_REPORT`: Done (2026-07-22)
 - [x] 04 `04_GOOGLE_CALENDAR_INTEGRATION`: Done (2026-07-23)
-- [ ] 05 `05_AI_WEEKLY_SALES_REPORT`
+- [x] 05 `05_AI_WEEKLY_SALES_REPORT`: Done (2026-07-24)
 - [ ] 06 `06_DEAL_ACTIVITY_TIMELINE`
 - [ ] 07 `07_MEETING_NOTE_AI_PROVIDER_LOG`
 - [ ] 08 `08_GLOBAL_DATA_I18N`
@@ -50,7 +50,7 @@
 - Admin 운영과 구독/결제/세금 상세 구현은 마지막 묶음으로 둔다.
 - 단, `NBA-014` DB/Prisma 운영 gate와 Trust/policy first-sale gate는 11~12까지 미루지 않고 관련 goal마다 선행/병행 확인한다.
 - 01 작업을 시작할 때는 01 폴더 안에 추가 문서를 작성하고 검수/검토한 뒤 진행한다.
-- 01~03까지는 순차 실행이 완료됐고, 이후에도 다음 미완료 슬롯으로 넘어가는 순차 흐름을 기본으로 한다.
+- 01~05까지는 순차 실행이 완료됐고, 이후에도 다음 미완료 슬롯으로 넘어가는 순차 흐름을 기본으로 한다.
 - 12개 슬롯의 추천 의사결정은 `COMMON/DECISION-LOG.md`를 기본값으로 삼는다.
 - 각 슬롯은 Notion식 작업공간 UX, Attio식 CRM record 관계, 사용 편의성 기준을 유지한다.
 
@@ -62,7 +62,7 @@
 | 02 | `02_NOTIFICATION_REMINDER` | 알림/리마인더 | Done: 일정/딜 reminder 기반 retention loop 완료 |
 | 03 | `03_WEEKLY_SCHEDULE_REPORT` | 주간 일정 보고서 | Done: 화면 보고서와 동기식 Excel 다운로드 완료 |
 | 04 | `04_GOOGLE_CALENDAR_INTEGRATION` | Google Calendar 연동 | Done: Google read-only import, calendar 선택, sync, source badge, Schedule soft delete/Trash 구현 및 QA closeout 완료 |
-| 05 | `05_AI_WEEKLY_SALES_REPORT` | AI 주간 영업 리포트 | AI 영업 판단 기능 |
+| 05 | `05_AI_WEEKLY_SALES_REPORT` | AI 주간 영업 리포트 | Done: 저장형 AI weekly report와 follow-up delivery 구현 및 QA closeout 완료 |
 | 06 | `06_DEAL_ACTIVITY_TIMELINE` | DealActivity 타임라인 | 딜 활동 통합 |
 | 07 | `07_MEETING_NOTE_AI_PROVIDER_LOG` | 회의록 AI/provider log 고도화 | AI 운영 신뢰 |
 | 08 | `08_GLOBAL_DATA_I18N` | 다국가 데이터 모델과 `/app` 다국어 | Global B2C 제품화 |

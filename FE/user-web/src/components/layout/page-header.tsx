@@ -44,7 +44,7 @@ export function PageHeader({
           return (
             <div
               className={cn(
-                "relative h-8 shrink-0 transition-[width,margin-left] duration-[500ms] ease-out",
+                "relative h-8 shrink-0 transition-[width,margin-left] duration-500 ease-out",
                 action.hidden ? "w-0" : "w-8",
                 hasVisibleActionBefore && !action.hidden ? "ml-1.5" : "ml-0"
               )}
@@ -147,7 +147,7 @@ function TooltipIconButton({ action }: { readonly action: HeaderAction }) {
   );
 
   const commonClass = cn(
-    "group relative inline-flex h-8 w-8 items-center justify-center rounded-md shadow-sm transition-[background-color,border-color,color,opacity] duration-[500ms]",
+    "group relative inline-flex h-8 w-8 items-center justify-center rounded-md shadow-sm transition-[background-color,border-color,color,opacity] duration-500",
     variantClass,
     action.hidden
       ? "pointer-events-none opacity-0"

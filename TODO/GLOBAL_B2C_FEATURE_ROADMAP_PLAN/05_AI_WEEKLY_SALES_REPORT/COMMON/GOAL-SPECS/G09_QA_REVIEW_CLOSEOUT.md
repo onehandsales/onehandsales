@@ -1,7 +1,7 @@
 # G09 QA Review Closeout
 
-상태: Ready
-완료일:
+상태: Done
+완료일: 2026-07-24
 
 ## 1. 목적
 
@@ -75,3 +75,13 @@ pnpm run test:e2e:mobile
 ## 8. 작업 로그 경로
 
 - `TODO_LOG/<date>/G09_QA_REVIEW_CLOSEOUT/WORK_LOG.md`
+
+## 9. 완료 결과
+
+- `COMMON/REVIEW-CHECKLIST.md` critical 항목을 모두 닫았다.
+- BE 필수 명령 `pnpm run prisma:validate`, `pnpm run typecheck`, `pnpm run lint`, `pnpm run test`, `pnpm run build`가 통과했다.
+- FE 필수 명령 `pnpm run typecheck`, `pnpm run lint`, `pnpm run build`, `pnpm run test:e2e:mobile`이 통과했다.
+- `pnpm run test:e2e:mobile`은 현재 머신에 Microsoft Edge가 없으면 Chrome 390px/360px project만 실행하고, Edge가 있거나 `PLAYWRIGHT_INCLUDE_EDGE=1`이면 Edge project를 포함하도록 보정했다.
+- 실제 Gmail/Microsoft/SMS provider smoke는 follow-up 전용 credential과 provider console callback URL 미확정으로 완료 처리하지 않았고, 미실행 사유를 work log와 runbook에 기록했다.
+- Release note draft와 operations runbook draft를 `TODO_LOG/2026-07-24/G09_QA_REVIEW_CLOSEOUT`에 추가했다.
+- README, planning review, goal completion checklist, 상위 roadmap 상태를 G01-G09 Done 기준으로 맞췄다.

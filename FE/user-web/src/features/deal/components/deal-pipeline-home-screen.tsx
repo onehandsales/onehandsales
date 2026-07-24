@@ -490,7 +490,7 @@ export function DealPipelineHomeScreen({
     <>
       {/* ── Desktop ── */}
       <section
-        className="hidden min-h-full flex-col bg-white transition-[padding-right] duration-[500ms] ease-out lg:flex"
+        className="hidden min-h-full flex-col bg-white transition-[padding-right] duration-500 ease-out lg:flex"
         style={
           isDockedCreateMounted
             ? { paddingRight: isDockedCreateOpen ? createPanelWidth : 0 }

@@ -1,9 +1,9 @@
 # 05 AI Weekly Sales Report
 
-상태: G01-G08 Done / G09 Ready
+상태: G01-G09 Done
 순서: 05
 성격: 저장형 AI 주간 영업 리포트 + follow-up email/SMS 실행
-결정 상태: 2026-07-24 G01~G08 구현/검토 완료
+결정 상태: 2026-07-24 G01~G09 구현/검토 완료
 구현 기준: `COMMON/GOAL-WORK-ORDER.md`
 
 ## 1. 목적
@@ -20,8 +20,8 @@
 - 모든 신규 API의 request/response 이름과 business logic, transaction, observability 기준을 문서에 두었다.
 - 신규 DB SQL 초안에는 enum/table/index/FK와 `COMMENT ON` 주석을 포함했다.
 - UXUI 기준은 `AGENT/UXUI_AGENT`, software 기준은 `AGENT/SOFTWARE_AGENT`를 따른다.
-- G01~G08 구현과 검토가 완료됐다.
-- 남은 작업은 G09 QA Review Closeout과 최종 문서 정합성 점검이다.
+- G01~G09 구현과 QA Review Closeout이 완료됐다.
+- 실제 Gmail/Microsoft/SMS provider smoke는 운영 credential/callback URL 미확정으로 완료 처리하지 않았고, 미실행 사유와 운영 설정 기준은 G09 work log/runbook에 기록했다.
 
 ## 3. 확정 범위
 
@@ -108,8 +108,10 @@
 - Planning review: `COMMON/PLANNING-REVIEW.md`
 - Review checklist: `COMMON/REVIEW-CHECKLIST.md`
 
-## 6. 남은 실행 문구
+## 6. 완료 기록
 
-```text
-/goal TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/05_AI_WEEKLY_SALES_REPORT/COMMON/GOAL-SPECS/G09_QA_REVIEW_CLOSEOUT.md 기준으로 G09를 구현해줘.
-```
+- Goal 완료 체크리스트: `COMMON/GOAL-COMPLETION-CHECKLIST.md`
+- QA checklist: `COMMON/REVIEW-CHECKLIST.md`
+- G09 work log: `TODO_LOG/2026-07-24/G09_QA_REVIEW_CLOSEOUT/WORK_LOG.md`
+- Release note draft: `TODO_LOG/2026-07-24/G09_QA_REVIEW_CLOSEOUT/RELEASE_NOTE_DRAFT.md`
+- Operations runbook draft: `TODO_LOG/2026-07-24/G09_QA_REVIEW_CLOSEOUT/OPERATIONS_RUNBOOK_DRAFT.md`

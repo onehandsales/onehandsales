@@ -8,7 +8,7 @@
 - [x] `02_NOTIFICATION_REMINDER`: Done (2026-07-22)
 - [x] `03_WEEKLY_SCHEDULE_REPORT`: Done (2026-07-22), 새 DB/migration 없음
 - [x] `04_GOOGLE_CALENDAR_INTEGRATION`: Done (2026-07-23), DB migration/QA closeout 완료
-- [ ] `05_AI_WEEKLY_SALES_REPORT`
+- [x] `05_AI_WEEKLY_SALES_REPORT`: Done (2026-07-24), AI weekly report/follow-up delivery 구현 및 QA closeout 완료
 - [ ] `06_DEAL_ACTIVITY_TIMELINE`
 - [ ] `07_MEETING_NOTE_AI_PROVIDER_LOG`
 - [ ] `08_GLOBAL_DATA_I18N`
@@ -44,7 +44,7 @@ Product UX first-sale gate는 전체 시각 polish와 다르다. 핵심 `/app` �
 |---|---|---|
 | First-sale 선행/횡단 gate | 전체 | `NBA-014`, Product UX, Trust/policy, `NBA-007`은 번호 순서와 별개로 추적 |
 | 기능 신뢰 기반 | 01 | Done: Import 중 유실 같은 데이터 신뢰 문제 제거 |
-| 리텐션/일정 루프 | 02~05 | 02 알림, 03 주간 일정 보고서, 04 Google Calendar 연동은 완료. AI 리포트로 반복 사용 이유를 이어 만든다. |
+| 리텐션/일정 루프 | 02~05 | Done: 02 알림, 03 주간 일정 보고서, 04 Google Calendar 연동, 05 AI weekly report/follow-up delivery 완료 |
 | 영업 기록 고도화 | 06~07 | 딜 활동과 회의록 AI 운영 이력을 실제 영업 판단 데이터로 만들기 |
 | Global B2C 제품화 | 08~09 | 다국가 데이터/앱 다국어와 제품 분석 기반 만들기 |
 | Series A 확장성 | 10 | 모바일/PWA/현장 사용성 후보 정리 |
@@ -56,7 +56,7 @@ Product UX first-sale gate는 전체 시각 polish와 다르다. 핵심 `/app` �
 2. `02_NOTIFICATION_REMINDER` - Done
 3. `03_WEEKLY_SCHEDULE_REPORT` - Done
 4. `04_GOOGLE_CALENDAR_INTEGRATION` - Done
-5. `05_AI_WEEKLY_SALES_REPORT`
+5. `05_AI_WEEKLY_SALES_REPORT` - Done
 6. `06_DEAL_ACTIVITY_TIMELINE`
 7. `07_MEETING_NOTE_AI_PROVIDER_LOG`
 8. `08_GLOBAL_DATA_I18N`

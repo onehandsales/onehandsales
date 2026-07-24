@@ -422,7 +422,7 @@ export function ContactListScreen({
 
   return (
     <section
-      className="flex min-h-full flex-col bg-white transition-[padding-right] duration-[500ms] ease-out"
+      className="flex min-h-full flex-col bg-white transition-[padding-right] duration-500 ease-out"
       style={
         isDockedCreateMounted
           ? { paddingRight: isDockedCreateOpen ? createPanelWidth : 0 }
