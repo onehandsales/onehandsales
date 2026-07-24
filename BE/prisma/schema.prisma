@@ -218,6 +218,50 @@ enum AiProviderCallStatus {
   CANCELED
 }
 
+enum ExternalEmailProvider {
+  GOOGLE
+  MICROSOFT
+}
+
+enum ExternalEmailConnectionStatus {
+  CONNECTED
+  RECONNECT_REQUIRED
+  DISCONNECTED
+}
+
+enum SmsSenderNumberStatus {
+  PENDING_VERIFICATION
+  VERIFIED
+  REVOKED
+}
+
+enum FollowUpDeliveryChannel {
+  EMAIL
+  SMS
+}
+
+enum FollowUpMessageStatus {
+  DRAFT
+  SENDING
+  SENT
+  FAILED
+}
+
+enum FollowUpTargetType {
+  AI_WEEKLY_REPORT
+  DEAL
+  CONTACT
+  MEETING_NOTE
+  SCHEDULE
+}
+
+enum FollowUpDeliveryAttemptStatus {
+  PENDING
+  SENT
+  FAILED
+  CANCELED
+}
+
 model User {
   id                   String     @id @default(uuid()) @db.Uuid
   email                String?
@@ -315,6 +359,20 @@ model User {
   aiJobs                      AiJob[]
   /// 기능 : 사용자의 AI provider 호출 이력 목록입니다.
   aiProviderCallLogs          AiProviderCallLog[]
+  /// Feature: external email account connections used for follow-up delivery.
+  externalEmailConnections    ExternalEmailConnection[]
+  /// Feature: short-lived OAuth state rows for follow-up email connections.
+  externalEmailOAuthStates    ExternalEmailOAuthState[]
+  /// Feature: verified sender phone numbers used for follow-up SMS delivery.
+  smsSenderNumbers            SmsSenderNumber[]
+  /// Feature: channel consent acknowledgements for user-initiated follow-up delivery.
+  followUpConsentNotices      FollowUpConsentNotice[]
+  /// Feature: AI/user follow-up draft and delivery history.
+  followUpMessages            FollowUpMessage[]
+  /// Feature: follow-up message target links for timeline/history.
+  followUpMessageTargets      FollowUpMessageTarget[]
+  /// Feature: provider send attempt logs for follow-up messages.
+  followUpDeliveryAttempts    FollowUpDeliveryAttempt[]
 
   @@index([role])
   @@index([status])
@@ -452,6 +510,7 @@ model Contact {
   dealContacts         DealContact[]
   meetingNoteContacts  MeetingNoteContact[]
   businessCardScanLogs BusinessCardScanLog[]
+  followUpMessages     FollowUpMessage[]
 
   @@index([userId, createdAt])
   @@index([userId, username])
@@ -1064,6 +1123,8 @@ model AiWeeklySalesReport {
   suggestions      AiWeeklySalesReportSuggestion[]
   /// 기능 : 이 report version과 연결된 provider 호출 이력입니다. prompt/raw response는 저장하지 않습니다.
   providerCallLogs AiProviderCallLog[]
+  /// Feature: follow-up messages drafted or sent from this report.
+  followUpMessages FollowUpMessage[]
 
   @@unique([userId, weekStart, timeZone, version])
   @@index([userId, weekStart, timeZone, status])
@@ -1093,7 +1154,9 @@ model AiWeeklySalesReportSuggestion {
   /// 기능 : 제안을 생성한 AI 리포트 version입니다. report 삭제 시 함께 삭제됩니다.
   report AiWeeklySalesReport @relation(fields: [reportId], references: [id], onDelete: Cascade)
   /// 기능 : 제안을 소유한 사용자입니다. report와 같은 userId를 가집니다.
-  user   User                @relation(fields: [userId], references: [id])
+  user             User              @relation(fields: [userId], references: [id])
+  /// Feature: follow-up messages drafted from this report suggestion.
+  followUpMessages FollowUpMessage[]
 
   @@unique([reportId, suggestionKey])
   @@index([userId, reportId, type])
@@ -1172,6 +1235,205 @@ model AiProviderCallLog {
   @@index([reportId, createdAt])
   @@index([jobId, createdAt])
   @@index([status, createdAt])
+}
+
+/// Feature: external email account connection for user-confirmed follow-up email delivery.
+model ExternalEmailConnection {
+  id                    String                        @id @default(uuid()) @db.Uuid
+  userId                String                        @db.Uuid
+  provider              ExternalEmailProvider
+  providerAccountId     String?
+  providerAccountEmail  String
+  status                ExternalEmailConnectionStatus @default(CONNECTED)
+  encryptedAccessToken  String
+  encryptedRefreshToken String?
+  tokenExpiresAt        DateTime?                     @db.Timestamptz(3)
+  grantedScopes         String[]                      @default([])
+  connectedAt           DateTime                      @default(now()) @db.Timestamptz(3)
+  disconnectedAt        DateTime?                     @db.Timestamptz(3)
+  reconnectRequiredAt   DateTime?                     @db.Timestamptz(3)
+  lastSentAt            DateTime?                     @db.Timestamptz(3)
+  lastSendSafeErrorCode String?
+  createdAt             DateTime                      @default(now()) @db.Timestamptz(3)
+  updatedAt             DateTime                      @default(now()) @updatedAt @db.Timestamptz(3)
+
+  /// Feature: connection owner. All reads and writes must be scoped by userId.
+  user             User              @relation(fields: [userId], references: [id], onDelete: Restrict)
+  /// Feature: follow-up email messages that used this connection.
+  followUpMessages FollowUpMessage[]
+
+  @@unique([userId, provider])
+  @@index([userId, status])
+}
+
+/// Feature: short-lived OAuth state used to bind external email callback to the authenticated user.
+model ExternalEmailOAuthState {
+  id          String                @id @default(uuid()) @db.Uuid
+  userId      String                @db.Uuid
+  provider    ExternalEmailProvider
+  stateHash   String
+  redirectUri String
+  expiresAt   DateTime              @db.Timestamptz(3)
+  consumedAt  DateTime?             @db.Timestamptz(3)
+  createdAt   DateTime              @default(now()) @db.Timestamptz(3)
+  updatedAt   DateTime              @default(now()) @updatedAt @db.Timestamptz(3)
+
+  /// Feature: OAuth state owner. Raw state is never persisted.
+  user User @relation(fields: [userId], references: [id], onDelete: Restrict)
+
+  @@unique([stateHash])
+  @@index([userId, provider, expiresAt])
+}
+
+/// Feature: verified SMS sender number. Raw E.164 number is stored only as encrypted ciphertext.
+model SmsSenderNumber {
+  id                    String                @id @default(uuid()) @db.Uuid
+  userId                String                @db.Uuid
+  phoneE164Hash         String
+  phoneE164Ciphertext   String
+  phoneE164Masked       String
+  status                SmsSenderNumberStatus @default(PENDING_VERIFICATION)
+  provider              String?
+  providerSenderId      String?
+  verificationCodeHash  String?
+  verificationExpiresAt DateTime?             @db.Timestamptz(3)
+  verifiedAt            DateTime?             @db.Timestamptz(3)
+  revokedAt             DateTime?             @db.Timestamptz(3)
+  lastSentAt            DateTime?             @db.Timestamptz(3)
+  lastSendSafeErrorCode String?
+  createdAt             DateTime              @default(now()) @db.Timestamptz(3)
+  updatedAt             DateTime              @default(now()) @updatedAt @db.Timestamptz(3)
+
+  /// Feature: sender owner. Phone uniqueness is checked by HMAC hash per user.
+  user             User              @relation(fields: [userId], references: [id], onDelete: Restrict)
+  /// Feature: follow-up SMS messages that used this sender number.
+  followUpMessages FollowUpMessage[]
+
+  @@unique([userId, phoneE164Hash])
+  @@index([userId, status, createdAt])
+}
+
+/// Feature: records that a user acknowledged the legal/consent notice for a channel.
+model FollowUpConsentNotice {
+  id             String                  @id @default(uuid()) @db.Uuid
+  userId         String                  @db.Uuid
+  channel        FollowUpDeliveryChannel
+  acknowledgedAt DateTime                @default(now()) @db.Timestamptz(3)
+  createdAt      DateTime                @default(now()) @db.Timestamptz(3)
+  updatedAt      DateTime                @default(now()) @updatedAt @db.Timestamptz(3)
+
+  /// Feature: consent owner. One latest acknowledgement row is kept per channel.
+  user User @relation(fields: [userId], references: [id], onDelete: Restrict)
+
+  @@unique([userId, channel])
+}
+
+/// Feature: follow-up draft and delivery history generated from AI report suggestions or user edits.
+model FollowUpMessage {
+  id                       String                  @id @default(uuid()) @db.Uuid
+  userId                   String                  @db.Uuid
+  sourceReportId           String?                 @db.Uuid
+  sourceSuggestionId       String?                 @db.Uuid
+  channel                  FollowUpDeliveryChannel
+  status                   FollowUpMessageStatus   @default(DRAFT)
+  languageTag              String
+  emailConnectionId        String?                 @db.Uuid
+  smsSenderNumberId        String?                 @db.Uuid
+  senderDisplayName        String?
+  senderEmail              String?
+  senderPhoneE164Masked    String?
+  recipientContactId       String?                 @db.Uuid
+  recipientName            String
+  recipientEmail           String?
+  recipientPhoneE164Masked String?
+  subject                  String?
+  body                     String                  @db.Text
+  bodyPreview              String
+  provider                 String?
+  providerMessageId        String?
+  safeErrorCode            String?
+  safeErrorMessage         String?
+  retryable                Boolean                 @default(false)
+  retryCount               Int                     @default(0)
+  sentAt                   DateTime?               @db.Timestamptz(3)
+  failedAt                 DateTime?               @db.Timestamptz(3)
+  createdAt                DateTime                @default(now()) @db.Timestamptz(3)
+  updatedAt                DateTime                @default(now()) @updatedAt @db.Timestamptz(3)
+
+  /// Feature: message owner. All history queries must include userId.
+  user             User                           @relation(fields: [userId], references: [id], onDelete: Restrict)
+  /// Feature: source AI report. History remains if a report version is removed.
+  sourceReport     AiWeeklySalesReport?          @relation(fields: [sourceReportId], references: [id], onDelete: SetNull)
+  /// Feature: source AI follow-up suggestion. History remains if a suggestion is removed.
+  sourceSuggestion AiWeeklySalesReportSuggestion? @relation(fields: [sourceSuggestionId], references: [id], onDelete: SetNull)
+  /// Feature: email account used by an email follow-up.
+  emailConnection  ExternalEmailConnection?       @relation(fields: [emailConnectionId], references: [id], onDelete: SetNull)
+  /// Feature: sender number used by an SMS follow-up.
+  smsSenderNumber  SmsSenderNumber?               @relation(fields: [smsSenderNumberId], references: [id], onDelete: SetNull)
+  /// Feature: CRM contact recipient. History remains if contact is removed.
+  recipientContact Contact?                       @relation(fields: [recipientContactId], references: [id], onDelete: SetNull)
+  /// Feature: timeline target links related to this follow-up.
+  targets          FollowUpMessageTarget[]
+  /// Feature: provider delivery attempts for this follow-up.
+  deliveryAttempts FollowUpDeliveryAttempt[]
+
+  @@index([userId, channel, status, createdAt])
+  @@index([userId, sourceReportId, createdAt])
+  @@index([recipientContactId, createdAt])
+}
+
+/// Feature: stable target references used to show follow-up history on report/deal/contact timelines.
+model FollowUpMessageTarget {
+  id          String             @id @default(uuid()) @db.Uuid
+  userId      String             @db.Uuid
+  messageId   String             @db.Uuid
+  targetType  FollowUpTargetType
+  targetId    String             @db.Uuid
+  targetPath  String
+  targetLabel String?
+  createdAt   DateTime           @default(now()) @db.Timestamptz(3)
+
+  /// Feature: target owner. Duplicates are scoped by message and concrete target.
+  user    User            @relation(fields: [userId], references: [id], onDelete: Restrict)
+  /// Feature: parent follow-up message. Message deletion removes only child target rows.
+  message FollowUpMessage @relation(fields: [messageId], references: [id], onDelete: Cascade)
+
+  @@unique([messageId, targetType, targetId])
+  @@index([userId, targetType, targetId, createdAt])
+}
+
+/// Feature: provider attempt log for follow-up email/SMS delivery with safe, redacted metadata only.
+model FollowUpDeliveryAttempt {
+  id                  String                        @id @default(uuid()) @db.Uuid
+  userId              String                        @db.Uuid
+  messageId           String                        @db.Uuid
+  channel             FollowUpDeliveryChannel
+  status              FollowUpDeliveryAttemptStatus @default(PENDING)
+  attemptNumber       Int                           @default(1)
+  provider            String?
+  providerMessageId   String?
+  providerStatusCode  String?
+  safeErrorCode       String?
+  safeErrorMessage    String?
+  retryable           Boolean                       @default(false)
+  nextRetryAt         DateTime?                     @db.Timestamptz(3)
+  latencyMs           Int?
+  estimatedCostAmount Decimal?                      @db.Decimal(12, 6)
+  costCurrency        String                        @default("USD")
+  sentAt              DateTime?                     @db.Timestamptz(3)
+  failedAt            DateTime?                     @db.Timestamptz(3)
+  detailJson          Json                          @default("{}")
+  createdAt           DateTime                      @default(now()) @db.Timestamptz(3)
+  updatedAt           DateTime                      @default(now()) @updatedAt @db.Timestamptz(3)
+
+  /// Feature: attempt owner. Operational/admin queries must include userId.
+  user    User            @relation(fields: [userId], references: [id], onDelete: Restrict)
+  /// Feature: parent follow-up message. Message deletion removes only child attempt rows.
+  message FollowUpMessage @relation(fields: [messageId], references: [id], onDelete: Cascade)
+
+  @@index([messageId, createdAt])
+  @@index([userId, channel, status, createdAt])
+  @@index([status, nextRetryAt])
 }
 
 model BusinessCardScanLog {

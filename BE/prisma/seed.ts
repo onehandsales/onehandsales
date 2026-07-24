@@ -351,6 +351,13 @@ async function seedLocalMockAuth() {
 
 async function resetLocalDemoDomainData(userId: string) {
   await prisma.$transaction([
+    prisma.followUpDeliveryAttempt.deleteMany({ where: { userId } }),
+    prisma.followUpMessageTarget.deleteMany({ where: { userId } }),
+    prisma.followUpMessage.deleteMany({ where: { userId } }),
+    prisma.followUpConsentNotice.deleteMany({ where: { userId } }),
+    prisma.smsSenderNumber.deleteMany({ where: { userId } }),
+    prisma.externalEmailOAuthState.deleteMany({ where: { userId } }),
+    prisma.externalEmailConnection.deleteMany({ where: { userId } }),
     prisma.meetingNoteDeal.deleteMany({ where: { userId } }),
     prisma.meetingNoteProduct.deleteMany({ where: { userId } }),
     prisma.meetingNoteContact.deleteMany({ where: { userId } }),
