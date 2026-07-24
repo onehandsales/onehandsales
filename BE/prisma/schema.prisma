@@ -178,6 +178,46 @@ enum ScheduleExternalSyncStatus {
   LOCAL_DELETED
 }
 
+enum AiWeeklySalesReportStatus {
+  GENERATING
+  READY
+  FAILED
+}
+
+enum AiWeeklySalesReportSuggestionType {
+  RISK
+  NEXT_ACTION
+  FOLLOW_UP
+  DATA_CLEANUP
+}
+
+enum AiSuggestionPriority {
+  LOW
+  MEDIUM
+  HIGH
+}
+
+enum AiJobStatus {
+  PENDING
+  RUNNING
+  SUCCEEDED
+  FAILED
+  CANCELED
+}
+
+enum AiProviderOperation {
+  WEEKLY_SALES_REPORT
+  FOLLOW_UP_EMAIL_DRAFT
+  FOLLOW_UP_SMS_DRAFT
+}
+
+enum AiProviderCallStatus {
+  PENDING
+  SUCCEEDED
+  FAILED
+  CANCELED
+}
+
 model User {
   id                   String     @id @default(uuid()) @db.Uuid
   email                String?
@@ -197,76 +237,84 @@ model User {
   updatedAt            DateTime   @updatedAt
   deletedAt            DateTime?
 
-  oauthAccounts            UserOAuthAccount[]
-  authDevices              AuthDevice[]
-  authSessions             AuthSession[]
+  oauthAccounts               UserOAuthAccount[]
+  authDevices                 AuthDevice[]
+  authSessions                AuthSession[]
   /// 기능 : 사용자가 등록한 회사 목록이다.
-  companies                Company[]
+  companies                   Company[]
   /// 기능 : 사용자가 만든 회사 분야 옵션 목록이다.
-  companyFields            CompanyField[]
+  companyFields               CompanyField[]
   /// 기능 : 사용자가 만든 회사 지역 옵션 목록이다.
-  companyRegions           CompanyRegion[]
+  companyRegions              CompanyRegion[]
   /// 기능 : 사용자가 작성한 회사 일반 메모 로그 목록이다.
-  companyMemoLogs          CompanyMemoLog[]
+  companyMemoLogs             CompanyMemoLog[]
   /// 기능 : 사용자가 작성한 회사 개인 비밀 메모 로그 목록이다.
-  companyPrivateMemoLogs   CompanyUserPrivateMemoLog[]
+  companyPrivateMemoLogs      CompanyUserPrivateMemoLog[]
   /// 기능 : 사용자가 등록한 담당자 목록이다.
-  contacts                 Contact[]
+  contacts                    Contact[]
   /// 기능 : 사용자가 만든 담당자 직급 옵션 목록이다.
-  contactJobGrades         ContactJobGrade[]
+  contactJobGrades            ContactJobGrade[]
   /// 기능 : 사용자가 만든 담당자 부서 옵션 목록이다.
-  contactDepartments       ContactDepartment[]
+  contactDepartments          ContactDepartment[]
   /// 기능 : 사용자가 작성한 담당자 일반 메모 로그 목록이다.
-  contactMemoLogs          ContactMemoLog[]
+  contactMemoLogs             ContactMemoLog[]
   /// 기능 : 사용자가 작성한 담당자 개인 비밀 메모 로그 목록이다.
-  contactPrivateMemoLogs   ContactUserPrivateMemoLog[]
+  contactPrivateMemoLogs      ContactUserPrivateMemoLog[]
   /// 기능 : 사용자가 등록한 제품 목록이다.
-  products                 Product[]
+  products                    Product[]
   /// 기능 : 사용자가 만든 제품 카테고리 옵션 목록이다.
-  productCategories        ProductCategory[]
+  productCategories           ProductCategory[]
   /// 기능 : 사용자가 만든 제품 상태 옵션 목록이다.
-  productStatuses          ProductStatus[]
+  productStatuses             ProductStatus[]
   /// 기능 : 사용자가 작성한 제품 일반 메모 로그 목록이다.
-  productMemoLogs          ProductMemoLog[]
+  productMemoLogs             ProductMemoLog[]
   /// 기능 : 사용자가 작성한 제품 개인 비밀 메모 로그 목록이다.
-  productPrivateMemoLogs   ProductUserPrivateMemoLog[]
+  productPrivateMemoLogs      ProductUserPrivateMemoLog[]
   /// 기능 : 사용자가 등록한 딜 목록이다.
-  deals                    Deal[]
+  deals                       Deal[]
   /// 기능 : 사용자가 딜에 연결한 회사 매핑 목록이다.
-  dealCompanies            DealCompany[]
+  dealCompanies               DealCompany[]
   /// 기능 : 사용자가 딜에 연결한 담당자 매핑 목록이다.
-  dealContacts             DealContact[]
+  dealContacts                DealContact[]
   /// 기능 : 사용자가 작성한 딜 다음 행동 로그 목록이다.
-  dealFollowingActionLogs  DealFollowingActionLog[]
+  dealFollowingActionLogs     DealFollowingActionLog[]
   /// 기능 : 사용자가 작성한 딜 메모 로그 목록이다.
-  dealMemoLogs             DealMemoLog[]
+  dealMemoLogs                DealMemoLog[]
   /// 기능 : 사용자가 딜에 연결한 제품 매핑 목록이다.
-  dealProducts             DealProduct[]
+  dealProducts                DealProduct[]
   /// 기능 : 사용자가 등록한 일정 목록이다.
-  schedules                Schedule[]
+  schedules                   Schedule[]
   externalCalendarConnections ExternalCalendarConnection[]
-  externalCalendarSources  ExternalCalendarSource[]
+  externalCalendarSources     ExternalCalendarSource[]
   /// 기능 : 사용자가 일정에 연결한 딜 매핑 목록이다.
-  scheduleDeals            ScheduleDeal[]
-  meetingNotes             MeetingNote[]
-  meetingNoteCompanies     MeetingNoteCompany[]
-  meetingNoteContacts      MeetingNoteContact[]
-  meetingNoteProducts      MeetingNoteProduct[]
-  meetingNoteDeals         MeetingNoteDeal[]
-  businessCardScanLogs     BusinessCardScanLog[]
-  importUserLogs           ImportUserLog[]
-  importJobs               ImportJob[]
-  importJobRows            ImportJobRow[]
-  importJobErrors          ImportJobError[]
-  importUploadedFiles      ImportUploadedFile[]
+  scheduleDeals               ScheduleDeal[]
+  meetingNotes                MeetingNote[]
+  meetingNoteCompanies        MeetingNoteCompany[]
+  meetingNoteContacts         MeetingNoteContact[]
+  meetingNoteProducts         MeetingNoteProduct[]
+  meetingNoteDeals            MeetingNoteDeal[]
+  businessCardScanLogs        BusinessCardScanLog[]
+  importUserLogs              ImportUserLog[]
+  importJobs                  ImportJob[]
+  importJobRows               ImportJobRow[]
+  importJobErrors             ImportJobError[]
+  importUploadedFiles         ImportUploadedFile[]
   /// 기능 : 사용자의 알림 수신 설정 row입니다. 사용자당 하나만 허용합니다.
-  notificationSetting      UserNotificationSetting?
+  notificationSetting         UserNotificationSetting?
   /// 기능 : 사용자에게 예약되거나 발송된 앱 안 알림 목록입니다.
-  notifications            Notification[]
+  notifications               Notification[]
   /// 기능 : 사용자에게 시도된 email/browser push 발송 이력 목록입니다.
-  notificationDeliveries   NotificationDeliveryAttempt[]
+  notificationDeliveries      NotificationDeliveryAttempt[]
   /// 기능 : 사용자의 browser push 구독 정보를 암호화해 저장한 목록입니다.
-  browserPushSubscriptions BrowserPushSubscription[]
+  browserPushSubscriptions    BrowserPushSubscription[]
+  /// 기능 : 사용자의 주간 AI 영업 리포트 version 목록입니다.
+  aiWeeklySalesReports        AiWeeklySalesReport[]
+  /// 기능 : 사용자의 주간 AI 리포트 제안 목록입니다.
+  aiWeeklyReportSuggestions   AiWeeklySalesReportSuggestion[]
+  /// 기능 : 사용자의 AI 비동기 작업 목록입니다.
+  aiJobs                      AiJob[]
+  /// 기능 : 사용자의 AI provider 호출 이력 목록입니다.
+  aiProviderCallLogs          AiProviderCallLog[]
 
   @@index([role])
   @@index([status])
@@ -750,26 +798,26 @@ model DealMemoLog {
 }
 
 model ExternalCalendarConnection {
-  id                   String                           @id @default(uuid()) @db.Uuid
-  userId               String                           @db.Uuid
-  provider             ExternalCalendarProvider
-  providerAccountId    String?
-  providerAccountEmail String?
-  status               ExternalCalendarConnectionStatus @default(CONNECTED)
-  encryptedAccessToken String?
+  id                    String                           @id @default(uuid()) @db.Uuid
+  userId                String                           @db.Uuid
+  provider              ExternalCalendarProvider
+  providerAccountId     String?
+  providerAccountEmail  String?
+  status                ExternalCalendarConnectionStatus @default(CONNECTED)
+  encryptedAccessToken  String?
   encryptedRefreshToken String?
-  tokenExpiresAt       DateTime?                        @db.Timestamptz(3)
-  grantedScopes        String[]                         @default([])
-  connectedAt          DateTime?                        @db.Timestamptz(3)
-  disconnectedAt       DateTime?                        @db.Timestamptz(3)
-  reconnectRequiredAt  DateTime?                        @db.Timestamptz(3)
-  lastSyncedAt         DateTime?                        @db.Timestamptz(3)
-  lastSyncStartedAt    DateTime?                        @db.Timestamptz(3)
-  lastSyncFailedAt     DateTime?                        @db.Timestamptz(3)
-  lastSyncErrorCode    String?
-  syncLockExpiresAt    DateTime?                        @db.Timestamptz(3)
-  createdAt            DateTime                         @default(now()) @db.Timestamptz(3)
-  updatedAt            DateTime                         @default(now()) @updatedAt @db.Timestamptz(3)
+  tokenExpiresAt        DateTime?                        @db.Timestamptz(3)
+  grantedScopes         String[]                         @default([])
+  connectedAt           DateTime?                        @db.Timestamptz(3)
+  disconnectedAt        DateTime?                        @db.Timestamptz(3)
+  reconnectRequiredAt   DateTime?                        @db.Timestamptz(3)
+  lastSyncedAt          DateTime?                        @db.Timestamptz(3)
+  lastSyncStartedAt     DateTime?                        @db.Timestamptz(3)
+  lastSyncFailedAt      DateTime?                        @db.Timestamptz(3)
+  lastSyncErrorCode     String?
+  syncLockExpiresAt     DateTime?                        @db.Timestamptz(3)
+  createdAt             DateTime                         @default(now()) @db.Timestamptz(3)
+  updatedAt             DateTime                         @default(now()) @updatedAt @db.Timestamptz(3)
 
   user    User                     @relation(fields: [userId], references: [id])
   sources ExternalCalendarSource[]
@@ -809,37 +857,37 @@ model ExternalCalendarSource {
 }
 
 model Schedule {
-  id            String   @id @default(uuid()) @db.Uuid
-  userId        String   @db.Uuid
-  scheduleTitle String
-  startAt       DateTime @db.Timestamptz(3)
-  endAt         DateTime @db.Timestamptz(3)
-  timeZone      String   @default("Asia/Seoul")
-  location      String?
-  meetingUrl    String?
-  memo          String?
-  isAllDay      Boolean                     @default(false)
-  sourceType    ScheduleSourceType          @default(INTERNAL)
-  externalCalendarSourceId String?          @db.Uuid
+  id                       String                      @id @default(uuid()) @db.Uuid
+  userId                   String                      @db.Uuid
+  scheduleTitle            String
+  startAt                  DateTime                    @db.Timestamptz(3)
+  endAt                    DateTime                    @db.Timestamptz(3)
+  timeZone                 String                      @default("Asia/Seoul")
+  location                 String?
+  meetingUrl               String?
+  memo                     String?
+  isAllDay                 Boolean                     @default(false)
+  sourceType               ScheduleSourceType          @default(INTERNAL)
+  externalCalendarSourceId String?                     @db.Uuid
   externalEventId          String?
   externalEventICalUid     String?
   externalEventEtag        String?
   externalHtmlLink         String?
-  externalUpdatedAt        DateTime?        @db.Timestamptz(3)
-  lastExternalSyncedAt     DateTime?        @db.Timestamptz(3)
-  externalDeletedAt        DateTime?        @db.Timestamptz(3)
+  externalUpdatedAt        DateTime?                   @db.Timestamptz(3)
+  lastExternalSyncedAt     DateTime?                   @db.Timestamptz(3)
+  externalDeletedAt        DateTime?                   @db.Timestamptz(3)
   externalSyncStatus       ScheduleExternalSyncStatus?
-  deletedAt                DateTime?        @db.Timestamptz(3)
-  deletedByUserId          String?          @db.Uuid
-  trashExpiresAt           DateTime?        @db.Timestamptz(3)
-  createdAt     DateTime @default(now()) @db.Timestamptz(3)
-  updatedAt     DateTime @updatedAt @db.Timestamptz(3)
+  deletedAt                DateTime?                   @db.Timestamptz(3)
+  deletedByUserId          String?                     @db.Uuid
+  trashExpiresAt           DateTime?                   @db.Timestamptz(3)
+  createdAt                DateTime                    @default(now()) @db.Timestamptz(3)
+  updatedAt                DateTime                    @updatedAt @db.Timestamptz(3)
 
   /// 기능 : 일정을 등록한 사용자다. 모든 일정 API는 이 userId로 소유권을 검증한다.
-  user          User           @relation(fields: [userId], references: [id])
+  user                   User                    @relation(fields: [userId], references: [id])
   externalCalendarSource ExternalCalendarSource? @relation(fields: [externalCalendarSourceId], references: [id], onDelete: SetNull)
   /// 기능 : 일정에 연결된 딜 매핑 목록이다.
-  scheduleDeals ScheduleDeal[]
+  scheduleDeals          ScheduleDeal[]
 
   @@unique([userId, externalCalendarSourceId, externalEventId])
   @@index([userId, startAt])
@@ -979,6 +1027,151 @@ model MeetingNoteDeal {
   @@unique([meetingNoteId, dealId])
   @@index([userId, meetingNoteId])
   @@index([userId, dealId])
+}
+
+/// 기능 : 사용자가 생성한 주간 AI 영업 리포트 version 정본입니다.
+model AiWeeklySalesReport {
+  id                String                    @id @default(uuid()) @db.Uuid
+  userId            String                    @db.Uuid
+  weekStart         DateTime                  @db.Date
+  weekEnd           DateTime                  @db.Date
+  timeZone          String
+  locale            String
+  version           Int
+  status            AiWeeklySalesReportStatus @default(GENERATING)
+  provider          String?
+  model             String?
+  /// 기능 : AI가 참고한 전체 input snapshot입니다. 일반 response에 원문 전체를 반환하지 않습니다.
+  inputSnapshotJson Json                      @default("{}")
+  /// 기능 : snapshot count, input hash, schema version 등 원문 없는 metadata입니다.
+  inputMetadataJson Json                      @default("{}")
+  /// 기능 : strict JSON schema를 통과한 AI 리포트 결과입니다.
+  outputJson        Json?
+  /// 기능 : AI가 참고한 source 수와 누락 신호 요약입니다.
+  dataCoverageJson  Json                      @default("{}")
+  safeErrorCode     String?
+  safeErrorMessage  String?
+  requestedAt       DateTime                  @default(now()) @db.Timestamptz(3)
+  startedAt         DateTime?                 @db.Timestamptz(3)
+  generatedAt       DateTime?                 @db.Timestamptz(3)
+  failedAt          DateTime?                 @db.Timestamptz(3)
+  createdAt         DateTime                  @default(now()) @db.Timestamptz(3)
+  updatedAt         DateTime                  @default(now()) @updatedAt @db.Timestamptz(3)
+
+  /// 기능 : 리포트를 소유한 사용자입니다. 모든 조회와 변경은 userId로 제한합니다.
+  user             User                            @relation(fields: [userId], references: [id])
+  /// 기능 : 이 report version에서 생성된 구조화 제안 목록입니다.
+  suggestions      AiWeeklySalesReportSuggestion[]
+  /// 기능 : 이 report version과 연결된 provider 호출 이력입니다. prompt/raw response는 저장하지 않습니다.
+  providerCallLogs AiProviderCallLog[]
+
+  @@unique([userId, weekStart, timeZone, version])
+  @@index([userId, weekStart, timeZone, status])
+  @@index([userId, weekStart, timeZone, version(sort: Desc)])
+}
+
+/// 기능 : 주간 AI 리포트 section에 표시할 구조화 제안입니다.
+model AiWeeklySalesReportSuggestion {
+  id            String                            @id @default(uuid()) @db.Uuid
+  reportId      String                            @db.Uuid
+  userId        String                            @db.Uuid
+  type          AiWeeklySalesReportSuggestionType
+  suggestionKey String
+  priority      AiSuggestionPriority              @default(MEDIUM)
+  title         String
+  body          String
+  reason        String?
+  targetType    String?
+  targetId      String?                           @db.Uuid
+  targetPath    String?
+  targetLabel   String?
+  /// 기능 : follow-up 초안, cleanup 세부 정보 등 section별 구조화 payload입니다. provider raw response 전체를 넣지 않습니다.
+  payloadJson   Json                              @default("{}")
+  createdAt     DateTime                          @default(now()) @db.Timestamptz(3)
+  updatedAt     DateTime                          @default(now()) @updatedAt @db.Timestamptz(3)
+
+  /// 기능 : 제안을 생성한 AI 리포트 version입니다. report 삭제 시 함께 삭제됩니다.
+  report AiWeeklySalesReport @relation(fields: [reportId], references: [id], onDelete: Cascade)
+  /// 기능 : 제안을 소유한 사용자입니다. report와 같은 userId를 가집니다.
+  user   User                @relation(fields: [userId], references: [id])
+
+  @@unique([reportId, suggestionKey])
+  @@index([userId, reportId, type])
+  @@index([userId, targetType, targetId])
+}
+
+/// 기능 : AI 비동기 작업 상태를 추적합니다.
+model AiJob {
+  id               String              @id @default(uuid()) @db.Uuid
+  userId           String              @db.Uuid
+  operation        AiProviderOperation
+  status           AiJobStatus         @default(PENDING)
+  targetType       String
+  targetId         String              @db.Uuid
+  idempotencyKey   String?
+  attemptCount     Int                 @default(0)
+  maxAttemptCount  Int                 @default(1)
+  safeErrorCode    String?
+  safeErrorMessage String?
+  requestedAt      DateTime            @default(now()) @db.Timestamptz(3)
+  startedAt        DateTime?           @db.Timestamptz(3)
+  completedAt      DateTime?           @db.Timestamptz(3)
+  failedAt         DateTime?           @db.Timestamptz(3)
+  /// 기능 : job 처리 metadata입니다. provider raw response나 prompt는 저장하지 않습니다.
+  metadataJson     Json                @default("{}")
+  createdAt        DateTime            @default(now()) @db.Timestamptz(3)
+  updatedAt        DateTime            @default(now()) @updatedAt @db.Timestamptz(3)
+
+  /// 기능 : job을 소유한 사용자입니다.
+  user             User                @relation(fields: [userId], references: [id])
+  /// 기능 : 이 job과 연결된 provider 호출 이력입니다.
+  providerCallLogs AiProviderCallLog[]
+
+  @@index([status, operation, createdAt])
+  @@index([userId, operation, status, createdAt])
+  @@index([userId, targetType, targetId])
+}
+
+/// 기능 : AI provider 호출 비용, latency, 실패 상태를 기록합니다.
+model AiProviderCallLog {
+  id                  String               @id @default(uuid()) @db.Uuid
+  userId              String               @db.Uuid
+  operation           AiProviderOperation
+  status              AiProviderCallStatus @default(PENDING)
+  reportId            String?              @db.Uuid
+  jobId               String?              @db.Uuid
+  provider            String
+  model               String
+  requestId           String?
+  latencyMs           Int?
+  inputTokenCount     Int?
+  outputTokenCount    Int?
+  totalTokenCount     Int?
+  estimatedCostAmount Decimal?             @db.Decimal(12, 6)
+  costCurrency        String               @default("USD")
+  safeErrorCode       String?
+  safeErrorMessage    String?
+  retryable           Boolean              @default(false)
+  retryCount          Int                  @default(0)
+  startedAt           DateTime             @default(now()) @db.Timestamptz(3)
+  completedAt         DateTime?            @db.Timestamptz(3)
+  failedAt            DateTime?            @db.Timestamptz(3)
+  /// 기능 : redacted provider metadata입니다. prompt, raw response, API key, quota detail은 저장하지 않습니다.
+  metadataJson        Json                 @default("{}")
+  createdAt           DateTime             @default(now()) @db.Timestamptz(3)
+  updatedAt           DateTime             @default(now()) @updatedAt @db.Timestamptz(3)
+
+  /// 기능 : provider 호출을 발생시킨 사용자입니다.
+  user   User                 @relation(fields: [userId], references: [id])
+  /// 기능 : 관련 AI 주간 리포트입니다. report 삭제 시 이력은 남기고 연결만 해제합니다.
+  report AiWeeklySalesReport? @relation(fields: [reportId], references: [id], onDelete: SetNull)
+  /// 기능 : 관련 AI job입니다. job 삭제 시 이력은 남기고 연결만 해제합니다.
+  job    AiJob?               @relation(fields: [jobId], references: [id], onDelete: SetNull)
+
+  @@index([userId, operation, createdAt])
+  @@index([reportId, createdAt])
+  @@index([jobId, createdAt])
+  @@index([status, createdAt])
 }
 
 model BusinessCardScanLog {

@@ -1,7 +1,7 @@
 # G02 AI Report DB Prisma
 
-상태: Ready
-완료일:
+상태: Done
+완료일: 2026-07-24
 
 ## 1. 목적
 
@@ -84,4 +84,34 @@ pnpm run prisma:generate
 
 ## 9. 작업 로그 경로
 
-- `TODO_LOG/<date>/G02_AI_REPORT_DB_PRISMA/WORK_LOG.md`
+- `TODO_LOG/2026-07-24/G02_AI_REPORT_DB_PRISMA/WORK_LOG.md`
+
+## 10. 완료 결과
+
+### 구현 파일
+
+- `BE/prisma/schema.prisma`
+- `BE/prisma/migrations/20260724010000_ai_weekly_report_db/migration.sql`
+
+### 구현 내용
+
+- `AiWeeklySalesReportStatus`, `AiWeeklySalesReportSuggestionType`, `AiSuggestionPriority`, `AiJobStatus`, `AiProviderOperation`, `AiProviderCallStatus` enum을 추가했다.
+- `AiWeeklySalesReport`, `AiWeeklySalesReportSuggestion`, `AiJob`, `AiProviderCallLog` model을 추가했다.
+- `User` model에 AI weekly report, suggestion, job, provider call log relation을 추가했다.
+- `userId + weekStart + timeZone + version` unique index를 추가했다.
+- `status = 'GENERATING'` partial unique index를 migration SQL에 추가했다.
+- prompt/raw response 저장 금지 조건을 schema 주석과 SQL `COMMENT ON`에 반영했다.
+
+### 검증 결과
+
+- `pnpm.cmd exec prisma format` 통과
+- `pnpm.cmd run prisma:validate` 통과
+- `pnpm.cmd run prisma:generate` 통과
+- `pnpm.cmd run typecheck` 통과
+- `pnpm.cmd exec jest --runInBand` 통과: 39 suites / 228 tests
+- `pnpm.cmd run build` 통과
+
+### 비고
+
+- 최초 `prisma:generate`는 실행 중인 BE dev/runtime 프로세스가 Prisma engine DLL을 잠그고 있어 `EPERM rename`으로 실패했다.
+- BE 관련 Node 프로세스만 중지한 뒤 `prisma:generate`를 재실행해 통과했다.

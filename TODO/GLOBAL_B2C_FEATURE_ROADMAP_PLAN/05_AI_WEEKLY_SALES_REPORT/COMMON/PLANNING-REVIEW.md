@@ -1,13 +1,13 @@
 # Planning Review
 
-상태: G01 Done / Ready for G02
+상태: G02 Done / Ready for G03
 검토일: 2026-07-24
 
 ## 1. 결론
 
 - 판정: 구현 착수 가능
 - 이유: 05의 제품 결정, 포함/제외 범위, API 계약, DB schema, FE 작업, goal 순서, 아키텍처/UXUI guardrail, QA 체크리스트가 구현 가능한 형태로 정리되어 있다.
-- 구현 상태: G01 문서 계약 검토 완료. 코드 구현은 G02부터 순차 진행한다.
+- 구현 상태: G02 AI Report DB Prisma 완료. Backend API 구현은 G03부터 진행한다.
 
 ## 2. 사용자 결정 반영
 
@@ -69,6 +69,16 @@
 - 05 신규 AI report/follow-up API와 table은 현재 코드에 없으며, G02~G08에서 구현해야 하는 변경으로 문서화되어 있다.
 - `weekStart`, `timeZone`, error code, observability event, DB unique/index 기준의 문서 충돌을 G01에서 보정했다.
 - G02~G09 구현 착수를 막는 blocking 질문은 없다.
+
+### G02 구현 결과
+
+- `BE/prisma/schema.prisma`에 05-A AI weekly report enum/model/relation을 추가했다.
+- `BE/prisma/migrations/20260724010000_ai_weekly_report_db/migration.sql`을 추가했다.
+- `AiWeeklySalesReport`는 `userId`, `weekStart`, `timeZone`, `version`, `status`, full input snapshot, metadata, output, safe error, UTC timestamp를 저장한다.
+- `AiWeeklySalesReportSuggestion`은 report section별 risk/action/follow-up/cleanup suggestion을 저장한다.
+- `AiJob`과 `AiProviderCallLog`는 async job, provider status, latency, token/cost, safe error를 추적한다.
+- provider prompt/raw response는 저장하지 않는 조건을 schema 주석과 migration `COMMENT ON`에 반영했다.
+- `prisma:validate`, `prisma:generate`, backend `typecheck`, 전체 Jest, `build`가 통과했다.
 
 ## 4. 핵심 설계 판단
 

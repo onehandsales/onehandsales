@@ -23,7 +23,7 @@
 | 완료 | Goal | 상태 | 완료일 | 완료 기준 | 증거 | 비고 |
 |---|---|---|---|---|---|---|
 | [x] | G01 Planning API DB Contract | Done | 2026-07-24 | 문서 계약과 현재 코드 사실을 대조하고, G02~G09 착수 blocking 질문이 없음을 확인한다. | `G01_PLANNING_API_DB_CONTRACT.md`, `WORK_LOG.md`, `rg ...`, `git diff --check` | blocking 질문 없음 |
-| [ ] | G02 AI Report DB Prisma | Ready |  | 05-A DB foundation, migration, Prisma model이 spec과 일치한다. |  |  |
+| [x] | G02 AI Report DB Prisma | Done | 2026-07-24 | 05-A DB foundation, migration, Prisma model이 spec과 일치한다. | `BE/prisma/schema.prisma`, `20260724010000_ai_weekly_report_db`, `prisma:validate`, `prisma:generate`, `typecheck`, `jest`, `build` | BE dev/runtime 프로세스 DLL lock 해소 후 generate 통과 |
 | [ ] | G03 AI Report Backend | Ready |  | 생성/조회 API, async job, AI provider log가 spec과 일치한다. |  |  |
 | [ ] | G04 AI Report User Web | Ready |  | `/app/schedules/week` AI report UX가 FE TODO와 API 계약에 맞게 연결된다. |  |  |
 | [ ] | G05 Follow-up DB Provider Ports | Ready |  | 05-B DB foundation과 provider port/redaction mapper가 준비된다. |  |  |
@@ -44,13 +44,13 @@
 
 ### G02 AI Report DB Prisma
 
-- [ ] Prisma enum/model/migration이 추가됐다.
-- [ ] `AiWeeklySalesReport` version/failed version 저장이 가능하다.
-- [ ] `AiWeeklySalesReportSuggestion`이 section별 suggestion을 저장한다.
-- [ ] `AiJob`이 async generation job을 추적한다.
-- [ ] `AiProviderCallLog`가 비용/latency/safe error를 저장한다.
-- [ ] prompt/raw response가 DB/log에 저장되지 않는다.
-- [ ] BE Prisma 검증 명령을 실행했다.
+- [x] Prisma enum/model/migration이 추가됐다.
+- [x] `AiWeeklySalesReport` version/failed version 저장이 가능하다.
+- [x] `AiWeeklySalesReportSuggestion`이 section별 suggestion을 저장한다.
+- [x] `AiJob`이 async generation job을 추적한다.
+- [x] `AiProviderCallLog`가 비용/latency/safe error를 저장한다.
+- [x] prompt/raw response가 DB/log에 저장되지 않는다.
+- [x] BE Prisma 검증 명령을 실행했다.
 
 ### G03 AI Report Backend
 
@@ -118,5 +118,5 @@
 ## 5. 완료 시 업데이트 예시
 
 ```markdown
-| [x] | G02 AI Report DB Prisma | Done | YYYY-MM-DD | ... | `pnpm run prisma:validate`, `pnpm run test -- ...` 통과 | ... |
+| [x] | G03 AI Report Backend | Done | YYYY-MM-DD | ... | `pnpm run typecheck`, `pnpm run test -- ...`, `pnpm run build` 통과 | ... |
 ```
