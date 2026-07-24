@@ -1,6 +1,6 @@
 # 05-A User Web TODO
 
-상태: Implementation-ready draft
+상태: Implemented
 
 ## 1. 위치
 

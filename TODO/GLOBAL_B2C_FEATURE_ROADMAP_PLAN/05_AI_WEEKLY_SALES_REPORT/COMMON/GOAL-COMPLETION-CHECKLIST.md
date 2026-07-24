@@ -1,6 +1,6 @@
 # Goal Completion Checklist
 
-상태: In Progress
+상태: G01-G08 Done / G09 Ready
 최종 업데이트: 2026-07-24
 
 ## 1. 목적
@@ -24,12 +24,12 @@
 |---|---|---|---|---|---|---|
 | [x] | G01 Planning API DB Contract | Done | 2026-07-24 | 문서 계약과 현재 코드 사실을 대조하고, G02~G09 착수 blocking 질문이 없음을 확인한다. | `G01_PLANNING_API_DB_CONTRACT.md`, `WORK_LOG.md`, `rg ...`, `git diff --check` | blocking 질문 없음 |
 | [x] | G02 AI Report DB Prisma | Done | 2026-07-24 | 05-A DB foundation, migration, Prisma model이 spec과 일치한다. | `BE/prisma/schema.prisma`, `20260724010000_ai_weekly_report_db`, `prisma:validate`, `prisma:generate`, `typecheck`, `jest`, `build` | BE dev/runtime 프로세스 DLL lock 해소 후 generate 통과 |
-| [ ] | G03 AI Report Backend | Ready |  | 생성/조회 API, async job, AI provider log가 spec과 일치한다. |  |  |
-| [ ] | G04 AI Report User Web | Ready |  | `/app/schedules/week` AI report UX가 FE TODO와 API 계약에 맞게 연결된다. |  |  |
-| [ ] | G05 Follow-up DB Provider Ports | Ready |  | 05-B DB foundation과 provider port/redaction mapper가 준비된다. |  |  |
-| [ ] | G06 Follow-up Settings Backend | Ready |  | OAuth, SMS sender verification, consent notice API가 spec과 일치한다. |  |  |
-| [ ] | G07 Follow-up Draft Send Backend | Ready |  | draft, update, send, retry, list/detail API가 spec과 일치한다. |  |  |
-| [ ] | G08 Follow-up User Web | Ready |  | settings, compose, send, retry, timeline UX가 FE TODO와 API 계약에 맞게 연결된다. |  |  |
+| [x] | G03 AI Report Backend | Done | 2026-07-24 | 생성/조회 API, async job, AI provider log가 spec과 일치한다. | `BE/src/modules/sales-report`, `pnpm run test -- sales-report` 통과: 3 suites / 10 tests | 구현/검토 완료 |
+| [x] | G04 AI Report User Web | Done | 2026-07-24 | `/app/schedules/week` AI report UX가 FE TODO와 API 계약에 맞게 연결된다. | `TODO_LOG/2026-07-24/G04_AI_REPORT_USER_WEB/WORK_LOG.md`, FE `typecheck`, `lint`, `build`, weekly schedule E2E 통과 | 구현/검토 완료 |
+| [x] | G05 Follow-up DB Provider Ports | Done | 2026-07-24 | 05-B DB foundation과 provider port/redaction mapper가 준비된다. | `TODO_LOG/2026-07-24/G05_FOLLOW_UP_DB_PROVIDER_PORTS/WORK_LOG.md`, `20260724020000_add_follow_up_delivery_foundation`, follow-up test 2 suites / 14 tests 통과 | 구현/검토 완료 |
+| [x] | G06 Follow-up Settings Backend | Done | 2026-07-24 | OAuth, SMS sender verification, consent notice API가 spec과 일치한다. | `TODO_LOG/2026-07-24/G06_FOLLOW_UP_SETTINGS_BACKEND/WORK_LOG.md`, follow-up test 4 suites / 20 tests 통과 | 구현/검토 완료 |
+| [x] | G07 Follow-up Draft Send Backend | Done | 2026-07-24 | draft, update, send, retry, list/detail API가 spec과 일치한다. | `TODO_LOG/2026-07-24/G07_FOLLOW_UP_DRAFT_SEND_BACKEND/WORK_LOG.md`, follow-up test 6 suites / 29 tests 통과 | 구현/검토 완료 |
+| [x] | G08 Follow-up User Web | Done | 2026-07-24 | settings, compose, send, retry, timeline UX가 FE TODO와 API 계약에 맞게 연결된다. | `TODO_LOG/2026-07-24/G08_FOLLOW_UP_USER_WEB/WORK_LOG.md`, FE `typecheck`, `lint`, `build`, BE focused test, `/admin/api` 검색 통과 | 구현/검토 완료 |
 | [ ] | G09 QA Review Closeout | Ready |  | `COMMON/REVIEW-CHECKLIST.md` critical 항목과 BE/FE 검증 명령이 완료된다. |  |  |
 
 ## 4. Goal별 체크 조건
@@ -54,57 +54,57 @@
 
 ### G03 AI Report Backend
 
-- [ ] `POST /api/sales-reports/weekly`가 생성 job을 만든다.
-- [ ] `GET /api/sales-reports/weekly`가 최신 성공/생성 중/실패 version 목록을 반환한다.
-- [ ] `GET /api/sales-reports/weekly/:reportId`가 상세 section을 반환한다.
-- [ ] `GET /api/sales-reports/weekly/:reportId/snapshot-summary`가 원문 없는 snapshot summary를 반환한다.
-- [ ] 생성 중복 방지와 실패 version 저장이 동작한다.
-- [ ] BE 검증 명령을 실행했다.
+- [x] `POST /api/sales-reports/weekly`가 생성 job을 만든다.
+- [x] `GET /api/sales-reports/weekly`가 최신 성공/생성 중/실패 version 목록을 반환한다.
+- [x] `GET /api/sales-reports/weekly/:reportId`가 상세 section을 반환한다.
+- [x] `GET /api/sales-reports/weekly/:reportId/snapshot-summary`가 원문 없는 snapshot summary를 반환한다.
+- [x] 생성 중복 방지와 실패 version 저장이 동작한다.
+- [x] BE 검증 명령을 실행했다.
 
 ### G04 AI Report User Web
 
-- [ ] `/app/schedules/week` 기존 기능을 깨지 않고 AI section을 추가했다.
-- [ ] empty/generating/success/failed state가 있다.
-- [ ] version 목록과 실패 이력 접힘 표시가 있다.
-- [ ] snapshot summary는 원문을 노출하지 않는다.
-- [ ] 모바일 card/list layout을 확인했다.
-- [ ] FE 검증 명령을 실행했다.
+- [x] `/app/schedules/week` 기존 기능을 깨지 않고 AI section을 추가했다.
+- [x] empty/generating/success/failed state가 있다.
+- [x] version 목록과 실패 이력 접힘 표시가 있다.
+- [x] snapshot summary는 원문을 노출하지 않는다.
+- [x] 모바일 card/list layout을 확인했다.
+- [x] FE 검증 명령을 실행했다.
 
 ### G05 Follow-up DB Provider Ports
 
-- [ ] 05-B Prisma enum/model/migration이 추가됐다.
-- [ ] `ExternalEmailOAuthState`가 state 재사용을 막는다.
-- [ ] token/phone 원문 암호화와 hash/masking이 분리됐다.
-- [ ] provider port와 safe error mapper가 있다.
-- [ ] body/raw response/token structured log redaction test가 있다.
-- [ ] BE Prisma 검증 명령을 실행했다.
+- [x] 05-B Prisma enum/model/migration이 추가됐다.
+- [x] `ExternalEmailOAuthState`가 state 재사용을 막는다.
+- [x] token/phone 원문 암호화와 hash/masking이 분리됐다.
+- [x] provider port와 safe error mapper가 있다.
+- [x] body/raw response/token structured log redaction test가 있다.
+- [x] BE Prisma 검증 명령을 실행했다.
 
 ### G06 Follow-up Settings Backend
 
-- [ ] settings 조회 API가 masking된 연결 상태를 반환한다.
-- [ ] Gmail/Microsoft connect/callback/disconnect가 동작한다.
-- [ ] callback은 state로 user ownership을 검증한다.
-- [ ] SMS sender request/verify/revoke가 동작한다.
-- [ ] first-send consent notice upsert가 동작한다.
-- [ ] BE 검증 명령을 실행했다.
+- [x] settings 조회 API가 masking된 연결 상태를 반환한다.
+- [x] Gmail/Microsoft connect/callback/disconnect가 동작한다.
+- [x] callback은 state로 user ownership을 검증한다.
+- [x] SMS sender request/verify/revoke가 동작한다.
+- [x] first-send consent notice upsert가 동작한다.
+- [x] BE 검증 명령을 실행했다.
 
 ### G07 Follow-up Draft Send Backend
 
-- [ ] `FOLLOW_UP` suggestion에서 draft를 만든다.
-- [ ] recipient/channel/language validation이 동작한다.
-- [ ] 사용자가 수정한 subject/body를 저장한다.
-- [ ] send/retry 중복 발송이 방지된다.
-- [ ] delivery attempt와 timeline target이 저장된다.
-- [ ] BE 검증 명령을 실행했다.
+- [x] `FOLLOW_UP` suggestion에서 draft를 만든다.
+- [x] recipient/channel/language validation이 동작한다.
+- [x] 사용자가 수정한 subject/body를 저장한다.
+- [x] send/retry 중복 발송이 방지된다.
+- [x] delivery attempt와 timeline target이 저장된다.
+- [x] BE 검증 명령을 실행했다.
 
 ### G08 Follow-up User Web
 
-- [ ] `/app/settings` provider 연결 UI가 있다.
-- [ ] AI report follow-up suggestion에서 compose로 진입한다.
-- [ ] email/SMS compose 수정과 즉시 발송이 동작한다.
-- [ ] 실패 safe error와 retry UI가 있다.
-- [ ] AI report와 record timeline에 발송 이력이 표시된다.
-- [ ] FE 검증 명령과 mobile 확인을 실행했다.
+- [x] `/app/settings` provider 연결 UI가 있다.
+- [x] AI report follow-up suggestion에서 compose로 진입한다.
+- [x] email/SMS compose 수정과 즉시 발송이 동작한다.
+- [x] 실패 safe error와 retry UI가 있다.
+- [x] AI report와 record timeline에 발송 이력이 표시된다.
+- [x] FE 검증 명령과 mobile 확인을 실행했다.
 
 ### G09 QA Review Closeout
 

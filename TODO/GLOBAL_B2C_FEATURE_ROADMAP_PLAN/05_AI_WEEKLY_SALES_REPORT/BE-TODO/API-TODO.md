@@ -1,6 +1,6 @@
 # 05 Backend API TODO
 
-상태: Ready
+상태: G03/G06/G07 Done
 
 ## 1. Source of truth
 

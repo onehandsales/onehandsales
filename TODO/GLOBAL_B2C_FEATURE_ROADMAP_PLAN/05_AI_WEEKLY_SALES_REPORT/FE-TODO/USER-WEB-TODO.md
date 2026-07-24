@@ -1,6 +1,6 @@
 # 05 User Web TODO
 
-상태: Ready
+상태: G04/G08 Done
 
 ## 1. Source of truth
 

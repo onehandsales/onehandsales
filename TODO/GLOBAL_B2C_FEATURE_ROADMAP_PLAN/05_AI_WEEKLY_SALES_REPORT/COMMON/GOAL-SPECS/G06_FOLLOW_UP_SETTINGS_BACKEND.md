@@ -1,7 +1,7 @@
 # G06 Follow-up Settings Backend
 
-상태: Ready
-완료일:
+상태: Done
+완료일: 2026-07-24
 
 ## 1. 목적
 

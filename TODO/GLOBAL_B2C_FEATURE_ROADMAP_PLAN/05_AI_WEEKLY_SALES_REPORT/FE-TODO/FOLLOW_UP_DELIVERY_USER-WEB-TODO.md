@@ -1,6 +1,6 @@
 # 05-B User Web TODO
 
-상태: Implementation-ready draft
+상태: Implemented
 
 ## 1. 신규 feature 후보
 

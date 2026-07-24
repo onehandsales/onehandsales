@@ -1,6 +1,6 @@
 # Goal Work Order
 
-상태: Confirmed
+상태: G01-G08 Done / G09 Ready
 확정일: 2026-07-24
 
 ## 1. 원칙
@@ -108,8 +108,8 @@ G01_PLANNING_API_DB_CONTRACT
 
 - Backend/User Web 검증, migration, ownership, redaction, provider failure, mobile QA를 점검한다.
 
-## 12. 첫 실행 문구
+## 12. 남은 실행 문구
 
 ```text
-/goal TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/05_AI_WEEKLY_SALES_REPORT/COMMON/GOAL-SPECS/G01_PLANNING_API_DB_CONTRACT.md 기준으로 G01을 구현해줘.
+/goal TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/05_AI_WEEKLY_SALES_REPORT/COMMON/GOAL-SPECS/G09_QA_REVIEW_CLOSEOUT.md 기준으로 G09를 구현해줘.
 ```

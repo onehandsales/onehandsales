@@ -1,6 +1,6 @@
 # 05-B DB Schema And SQL
 
-상태: Implementation-ready draft
+상태: Implemented
 
 ## 1. 생성 대상
 
