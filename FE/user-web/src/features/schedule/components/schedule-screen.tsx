@@ -32,7 +32,6 @@ import {
 } from "@/features/schedule/hooks/use-schedule-queries";
 import {
   useStartGoogleCalendarConnectMutation,
-  useSyncGoogleCalendarMutation,
 } from "@/features/schedule/hooks/use-schedule-mutations";
 import { getDefaultScheduleTimeZone } from "@/features/schedule/schemas/schedule-schema";
 import type {
@@ -85,6 +84,7 @@ export function ScheduleScreen() {
   const [initialStartAt, setInitialStartAt] = useState<Date | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
   const [googleActionError, setGoogleActionError] = useState<string | null>(null);
+  const [manualSyncPending, setManualSyncPending] = useState(false);
   const [manualSyncCooldownUntil, setManualSyncCooldownUntil] = useState(0);
   const [isTodayPressed, setIsTodayPressed] = useState(false);
   const autoSyncKeyRef = useRef<string | null>(null);
@@ -106,7 +106,6 @@ export function ScheduleScreen() {
   const googleStatusQuery = useGoogleCalendarStatus();
   const startGoogleCalendarConnectMutation =
     useStartGoogleCalendarConnectMutation();
-  const syncGoogleCalendarMutation = useSyncGoogleCalendarMutation();
   const schedules = useMemo(
     () => schedulesQuery.data?.items ?? [],
     [schedulesQuery.data?.items],
@@ -183,7 +182,7 @@ export function ScheduleScreen() {
     if (
       !status?.autoSync.shouldSyncOnScheduleEntry ||
       autoSyncInFlightRef.current ||
-      syncGoogleCalendarMutation.isPending
+      manualSyncPending
     ) {
       return;
     }
@@ -223,9 +222,9 @@ export function ScheduleScreen() {
       });
   }, [
     googleStatusQuery.data,
+    manualSyncPending,
     refreshGoogleCalendarScheduleView,
     refreshGoogleCalendarScheduleViewSoon,
-    syncGoogleCalendarMutation.isPending,
   ]);
 
   const openCreateDialog = (startAt: Date | null = null) => {
@@ -272,14 +271,15 @@ export function ScheduleScreen() {
   };
 
   const syncGoogleCalendar = async () => {
-    if (syncGoogleCalendarMutation.isPending || isManualSyncCoolingDown) {
+    if (manualSyncPending || isManualSyncCoolingDown) {
       return;
     }
 
     setGoogleActionError(null);
+    setManualSyncPending(true);
 
     try {
-      await syncGoogleCalendarMutation.mutateAsync({ trigger: "MANUAL" });
+      await syncGoogleCalendarApi({ trigger: "MANUAL" });
       refreshGoogleCalendarScheduleView();
       setNotice(null);
     } catch (error) {
@@ -292,6 +292,7 @@ export function ScheduleScreen() {
 
       setGoogleActionError(getApiErrorMessage(error));
     } finally {
+      setManualSyncPending(false);
       setManualSyncCooldownUntil(Date.now() + 10_000);
     }
   };
@@ -363,7 +364,7 @@ export function ScheduleScreen() {
           actionError={googleActionError}
           isConnectPending={startGoogleCalendarConnectMutation.isPending}
           isSyncCoolingDown={isManualSyncCoolingDown}
-          isSyncPending={syncGoogleCalendarMutation.isPending}
+          isSyncPending={manualSyncPending}
           onConnect={() => void connectGoogleCalendar()}
           onSync={() => void syncGoogleCalendar()}
           status={googleStatusQuery.data}
