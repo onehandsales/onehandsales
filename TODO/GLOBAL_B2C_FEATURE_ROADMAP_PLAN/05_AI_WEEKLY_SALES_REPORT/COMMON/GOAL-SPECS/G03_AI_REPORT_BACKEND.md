@@ -47,7 +47,7 @@ AI weekly report 생성 요청 API, 조회 API, async job 처리, AI provider po
 
 ## 6. Business Logic
 
-- `weekStartDate`는 월요일 date-only로 검증한다.
+- `weekStart`는 월요일 date-only로 검증한다.
 - `timeZone`은 IANA timezone으로 검증한다.
 - report language는 사용자 app language를 따른다.
 - AI 입력에는 주간 일정, 딜, 회의록 본문 전체, 다음 행동, 데이터 품질 context를 포함한다.
@@ -59,13 +59,14 @@ AI weekly report 생성 요청 API, 조회 API, async job 처리, AI provider po
 
 ## 7. Error/Observability
 
-- `AiWeeklyReportAlreadyGenerating`
-- `AiWeeklyReportWeekStartInvalid`
-- `AiWeeklyReportNotFound`
-- `AiWeeklyReportGenerationFailed`
-- `aiWeeklyReport.generationRequested`
-- `aiWeeklyReport.generationSucceeded`
-- `aiWeeklyReport.generationFailed`
+- `ValidationError`
+- `AiWeeklySalesReportAlreadyGenerating`
+- `AiWeeklySalesReportNotFound`
+- provider safe error code. 예: `AI_PROVIDER_TIMEOUT`
+- `ai.weeklyReport.generationRequested`
+- `ai.weeklyReport.jobStarted`
+- `ai.weeklyReport.generated`
+- `ai.weeklyReport.failed`
 - prompt, snapshot 원문, 회의록 본문, provider raw response logging 금지
 
 ## 8. 검증 명령

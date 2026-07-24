@@ -51,15 +51,15 @@ AI weekly report의 저장형 version, suggestion, async job, AI provider call l
   - `AiJob`
   - `AiProviderCallLog`
 - indexes:
-  - user/week/version unique
-  - user/week `GENERATING` partial unique
+  - user/week/timeZone/version unique
+  - user/week/timeZone `GENERATING` partial unique
   - report/suggestion 조회 index
   - job processor 조회 index
   - provider call 운영 조회 index
 
 ## 6. 구현 체크
 
-- `AiWeeklySalesReport`는 `userId`, `weekStartDate`, `timeZone`, `version`, `status`를 가진다.
+- `AiWeeklySalesReport`는 `userId`, `weekStart`, `timeZone`, `version`, `status`를 가진다.
 - 성공 version과 실패 version을 모두 저장할 수 있다.
 - `inputSnapshotJson`은 전체 AI 입력 snapshot 저장 용도다.
 - `inputMetadataJson`은 count/hash/schema version 등 원문 없는 요약 metadata다.

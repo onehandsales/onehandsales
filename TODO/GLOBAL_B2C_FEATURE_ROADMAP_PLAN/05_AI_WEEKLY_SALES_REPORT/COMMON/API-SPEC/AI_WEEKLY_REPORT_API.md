@@ -65,10 +65,10 @@ Body:
 
 1. current user를 확인한다.
 2. `weekStart`, `timeZone`, `locale`을 검증한다.
-3. 같은 `userId + weekStart`에 `GENERATING` report가 있는지 확인한다.
+3. 같은 `userId + weekStart + timeZone`에 `GENERATING` report가 있는지 확인한다.
 4. 생성 중 report가 있으면 새 row를 만들지 않고 `AiWeeklySalesReportAlreadyGenerating`을 반환한다.
 5. 03 weekly schedule report builder와 meeting note/deal repository로 input snapshot을 만든다.
-6. 같은 `userId + weekStart`의 최대 version에 1을 더한다.
+6. 같은 `userId + weekStart + timeZone`의 최대 version에 1을 더한다.
 7. transaction 안에서 `AiWeeklySalesReport`, `AiJob`을 생성한다.
 8. response에는 snapshot 원문을 넣지 않고 report/job 요약만 반환한다.
 

@@ -34,7 +34,7 @@
 ## 5. QA 체크
 
 - 다른 userId의 report/message/connection/sender를 조회하거나 변경할 수 없다.
-- `weekStartDate`, `timeZone`, UTC timestamp 정책이 지켜진다.
+- `weekStart`, `timeZone`, UTC timestamp 정책이 지켜진다.
 - AI report 생성 실패가 실패 version으로 저장되고 사용자 삭제 기능이 없다.
 - full input snapshot은 user response에 전체 노출되지 않는다.
 - AI prompt 원문과 provider raw response가 structured log에 없다.

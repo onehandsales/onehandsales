@@ -191,19 +191,19 @@ CREATE TABLE "AiProviderCallLog" (
 );
 
 -- CreateIndex
-CREATE UNIQUE INDEX "AiWeeklySalesReport_userId_weekStart_version_key"
-  ON "AiWeeklySalesReport"("userId", "weekStart", "version");
+CREATE UNIQUE INDEX "AiWeeklySalesReport_userId_weekStart_timeZone_version_key"
+  ON "AiWeeklySalesReport"("userId", "weekStart", "timeZone", "version");
 
--- 같은 사용자와 같은 주에 생성 중인 AI report는 하나만 허용한다.
+-- 같은 사용자와 같은 주/timeZone에 생성 중인 AI report는 하나만 허용한다.
 CREATE UNIQUE INDEX "AiWeeklySalesReport_active_generation_key"
-  ON "AiWeeklySalesReport"("userId", "weekStart")
+  ON "AiWeeklySalesReport"("userId", "weekStart", "timeZone")
   WHERE "status" = 'GENERATING';
 
-CREATE INDEX "AiWeeklySalesReport_userId_weekStart_status_idx"
-  ON "AiWeeklySalesReport"("userId", "weekStart", "status");
+CREATE INDEX "AiWeeklySalesReport_userId_weekStart_timeZone_status_idx"
+  ON "AiWeeklySalesReport"("userId", "weekStart", "timeZone", "status");
 
-CREATE INDEX "AiWeeklySalesReport_userId_weekStart_version_idx"
-  ON "AiWeeklySalesReport"("userId", "weekStart", "version" DESC);
+CREATE INDEX "AiWeeklySalesReport_userId_weekStart_timeZone_version_idx"
+  ON "AiWeeklySalesReport"("userId", "weekStart", "timeZone", "version" DESC);
 
 CREATE UNIQUE INDEX "AiWeeklySalesReportSuggestion_reportId_suggestionKey_key"
   ON "AiWeeklySalesReportSuggestion"("reportId", "suggestionKey");
@@ -280,7 +280,7 @@ COMMENT ON COLUMN "AiWeeklySalesReport"."weekStart" IS '리포트 대상 주 시
 COMMENT ON COLUMN "AiWeeklySalesReport"."weekEnd" IS '리포트 대상 주 종료일. weekStart + 6일 date-only다.';
 COMMENT ON COLUMN "AiWeeklySalesReport"."timeZone" IS '리포트 주간 범위와 화면 표시 기준 IANA timezone ID.';
 COMMENT ON COLUMN "AiWeeklySalesReport"."locale" IS 'AI 리포트 생성 언어. 사용자 앱 언어 기준으로 저장한다.';
-COMMENT ON COLUMN "AiWeeklySalesReport"."version" IS '같은 사용자와 같은 weekStart 안의 version 번호. 재생성 시 증가한다.';
+COMMENT ON COLUMN "AiWeeklySalesReport"."version" IS '같은 사용자와 같은 weekStart/timeZone 안의 version 번호. 재생성 시 증가한다.';
 COMMENT ON COLUMN "AiWeeklySalesReport"."status" IS '리포트 version 상태. 실패 version도 삭제하지 않는다.';
 COMMENT ON COLUMN "AiWeeklySalesReport"."provider" IS 'AI provider 이름. 예: openai.';
 COMMENT ON COLUMN "AiWeeklySalesReport"."model" IS 'AI 리포트 생성에 사용한 모델 이름.';
@@ -366,10 +366,10 @@ COMMENT ON COLUMN "AiProviderCallLog"."createdAt" IS 'row 생성 시각. UTC ins
 COMMENT ON COLUMN "AiProviderCallLog"."updatedAt" IS 'row 마지막 수정 시각. UTC instant.';
 
 -- Comments: indexes
-COMMENT ON INDEX "AiWeeklySalesReport_userId_weekStart_version_key" IS '같은 사용자와 같은 주 안에서 version 번호 중복을 막는다.';
-COMMENT ON INDEX "AiWeeklySalesReport_active_generation_key" IS '같은 사용자와 같은 주의 GENERATING report 중복 생성을 막는다.';
-COMMENT ON INDEX "AiWeeklySalesReport_userId_weekStart_status_idx" IS '주간 리포트 최신 성공/생성 중/실패 이력 조회에 사용한다.';
-COMMENT ON INDEX "AiWeeklySalesReport_userId_weekStart_version_idx" IS '주간 리포트 version 목록 최신순 조회에 사용한다.';
+COMMENT ON INDEX "AiWeeklySalesReport_userId_weekStart_timeZone_version_key" IS '같은 사용자와 같은 주/timeZone 안에서 version 번호 중복을 막는다.';
+COMMENT ON INDEX "AiWeeklySalesReport_active_generation_key" IS '같은 사용자와 같은 주/timeZone의 GENERATING report 중복 생성을 막는다.';
+COMMENT ON INDEX "AiWeeklySalesReport_userId_weekStart_timeZone_status_idx" IS '주간 리포트 최신 성공/생성 중/실패 이력 조회에 사용한다.';
+COMMENT ON INDEX "AiWeeklySalesReport_userId_weekStart_timeZone_version_idx" IS '주간 리포트 version 목록 최신순 조회에 사용한다.';
 COMMENT ON INDEX "AiWeeklySalesReportSuggestion_reportId_suggestionKey_key" IS '같은 report 안에서 같은 AI suggestion key가 중복 저장되지 않게 한다.';
 COMMENT ON INDEX "AiWeeklySalesReportSuggestion_userId_reportId_type_idx" IS '리포트 상세 section별 suggestion 조회에 사용한다.';
 COMMENT ON INDEX "AiWeeklySalesReportSuggestion_userId_target_idx" IS '특정 record와 연결된 AI 제안을 찾는 데 사용한다.';

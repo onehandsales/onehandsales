@@ -17,11 +17,11 @@
 1. AuthGuard로 current user를 확인한다.
 2. request body의 `weekStart`, `timeZone`, `locale`을 검증한다.
 3. `weekStart`는 요청 `timeZone` 기준 월요일이어야 한다.
-4. 같은 `userId + weekStart`에 `GENERATING` report가 있으면 새 report/job을 만들지 않고 `AiWeeklySalesReportAlreadyGenerating`으로 응답한다.
+4. 같은 `userId + weekStart + timeZone`에 `GENERATING` report가 있으면 새 report/job을 만들지 않고 `AiWeeklySalesReportAlreadyGenerating`으로 응답한다.
 5. 03 주간 일정 보고서 builder와 회의록/딜 조회를 사용해 input snapshot을 만든다.
 6. snapshot에는 회의록 `details`, `nextPlan`, `requiredAction` 전체를 포함한다.
 7. snapshot에는 private memo, provider raw response, internal error/log, API key, token, 삭제된 record, 다른 사용자 record를 포함하지 않는다.
-8. 같은 `userId + weekStart`의 최대 version을 조회해 `version + 1`을 계산한다.
+8. 같은 `userId + weekStart + timeZone`의 최대 version을 조회해 `version + 1`을 계산한다.
 9. transaction 안에서 `AiWeeklySalesReport(status=GENERATING)`, `AiJob(status=PENDING)`을 생성한다.
 10. transaction 밖에서 worker가 job을 처리한다.
 11. API는 `202 Accepted`와 생성된 report/job 요약을 반환한다.

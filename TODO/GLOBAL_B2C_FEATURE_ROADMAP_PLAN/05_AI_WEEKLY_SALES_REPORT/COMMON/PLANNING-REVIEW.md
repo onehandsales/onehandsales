@@ -1,13 +1,13 @@
 # Planning Review
 
-상태: Ready
+상태: G01 Done / Ready for G02
 검토일: 2026-07-24
 
 ## 1. 결론
 
 - 판정: 구현 착수 가능
 - 이유: 05의 제품 결정, 포함/제외 범위, API 계약, DB schema, FE 작업, goal 순서, 아키텍처/UXUI guardrail, QA 체크리스트가 구현 가능한 형태로 정리되어 있다.
-- 구현 상태: 문서 planning 완료. 코드 구현은 G02부터 순차 진행한다.
+- 구현 상태: G01 문서 계약 검토 완료. 코드 구현은 G02부터 순차 진행한다.
 
 ## 2. 사용자 결정 반영
 
@@ -60,6 +60,15 @@
 - `FE-TODO/USER-WEB-TODO.md`
 - `FE-TODO/AI_WEEKLY_REPORT_USER-WEB-TODO.md`
 - `FE-TODO/FOLLOW_UP_DELIVERY_USER-WEB-TODO.md`
+
+### G01 현재 코드 대조 결과
+
+- BE에는 `GET /api/schedules/week`, `GET /api/schedules/week/export/xlsx`가 이미 구현되어 있으므로 05에서 다시 만들지 않는다.
+- FE에는 `/app/schedules/week` route와 `ScheduleWeekReportScreen`이 이미 구현되어 있으므로 05-A는 해당 화면에 AI report section을 추가한다.
+- `AGENT/SOFTWARE_AGENT/FRONT_AGENT/ARCHITECTURE/FRONTEND_USER_WEB.md`의 `/app/schedules/week` redirect 설명은 stale 상태로 판단하고, 실제 코드와 03 완료 문서를 기준으로 삼는다.
+- 05 신규 AI report/follow-up API와 table은 현재 코드에 없으며, G02~G08에서 구현해야 하는 변경으로 문서화되어 있다.
+- `weekStart`, `timeZone`, error code, observability event, DB unique/index 기준의 문서 충돌을 G01에서 보정했다.
+- G02~G09 구현 착수를 막는 blocking 질문은 없다.
 
 ## 4. 핵심 설계 판단
 

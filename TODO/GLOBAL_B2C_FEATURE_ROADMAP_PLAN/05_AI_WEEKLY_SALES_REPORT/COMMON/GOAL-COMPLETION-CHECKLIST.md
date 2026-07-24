@@ -1,6 +1,6 @@
 # Goal Completion Checklist
 
-상태: Ready
+상태: In Progress
 최종 업데이트: 2026-07-24
 
 ## 1. 목적
@@ -22,7 +22,7 @@
 
 | 완료 | Goal | 상태 | 완료일 | 완료 기준 | 증거 | 비고 |
 |---|---|---|---|---|---|---|
-| [ ] | G01 Planning API DB Contract | Ready |  | 문서 계약과 현재 코드 사실을 대조하고, G02~G09 착수 blocking 질문이 없음을 확인한다. |  |  |
+| [x] | G01 Planning API DB Contract | Done | 2026-07-24 | 문서 계약과 현재 코드 사실을 대조하고, G02~G09 착수 blocking 질문이 없음을 확인한다. | `G01_PLANNING_API_DB_CONTRACT.md`, `WORK_LOG.md`, `rg ...`, `git diff --check` | blocking 질문 없음 |
 | [ ] | G02 AI Report DB Prisma | Ready |  | 05-A DB foundation, migration, Prisma model이 spec과 일치한다. |  |  |
 | [ ] | G03 AI Report Backend | Ready |  | 생성/조회 API, async job, AI provider log가 spec과 일치한다. |  |  |
 | [ ] | G04 AI Report User Web | Ready |  | `/app/schedules/week` AI report UX가 FE TODO와 API 계약에 맞게 연결된다. |  |  |
@@ -36,11 +36,11 @@
 
 ### G01 Planning API DB Contract
 
-- [ ] `COMMON/SCOPE.md`, `COMMON/API-SPEC/*`, `COMMON/ARCHITECTURE-GUARDRAILS.md`를 재확인했다.
-- [ ] 현재 Schedule/MeetingNote/Deal/Contact/User Web week 화면 구조를 확인했다.
-- [ ] API path, enum, 상태명, error code 충돌이 없다.
-- [ ] 현재 코드와 충돌하는 부분은 구현해야 할 변경으로 문서에 명시되어 있다.
-- [ ] G02~G09 구현 착수를 막는 질문이 없다.
+- [x] `COMMON/SCOPE.md`, `COMMON/API-SPEC/*`, `COMMON/ARCHITECTURE-GUARDRAILS.md`를 재확인했다.
+- [x] 현재 Schedule/MeetingNote/Deal/Contact/User Web week 화면 구조를 확인했다.
+- [x] API path, enum, 상태명, error code 충돌이 없다.
+- [x] 현재 코드와 충돌하는 부분은 구현해야 할 변경으로 문서에 명시되어 있다.
+- [x] G02~G09 구현 착수를 막는 질문이 없다.
 
 ### G02 AI Report DB Prisma
 
@@ -118,5 +118,5 @@
 ## 5. 완료 시 업데이트 예시
 
 ```markdown
-| [x] | G01 Planning API DB Contract | Done | 2026-07-24 | ... | `rg ...`, `git diff --check` 통과 | blocking 질문 없음 |
+| [x] | G02 AI Report DB Prisma | Done | YYYY-MM-DD | ... | `pnpm run prisma:validate`, `pnpm run test -- ...` 통과 | ... |
 ```

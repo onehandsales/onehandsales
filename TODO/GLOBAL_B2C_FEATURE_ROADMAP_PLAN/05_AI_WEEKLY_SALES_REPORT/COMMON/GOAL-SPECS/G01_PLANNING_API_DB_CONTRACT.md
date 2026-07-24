@@ -1,7 +1,7 @@
 # G01 Planning API DB Contract
 
-상태: Ready
-완료일:
+상태: Done
+완료일: 2026-07-24
 
 ## 1. 목적
 
@@ -71,3 +71,37 @@ git diff --check
 ## 9. 작업 로그 경로
 
 - `TODO_LOG/2026-07-24/G01_PLANNING_API_DB_CONTRACT/WORK_LOG.md`
+
+## 10. 완료 결과
+
+### 참조한 기준 문서
+
+- `AGENT/UXUI_AGENT/README.md`
+- `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/ARCHITECTURE/BACKEND.md`
+- `AGENT/SOFTWARE_AGENT/FRONT_AGENT/ARCHITECTURE/FRONTEND_USER_WEB.md`
+- `AGENT/SOFTWARE_AGENT/DB_SCHEMA/TIME_AND_TIMEZONE_POLICY.md`
+
+### 현재 코드 대조 결과
+
+- Backend에는 03 주간 일정 보고서 `GET /api/schedules/week`, `GET /api/schedules/week/export/xlsx`가 이미 구현되어 있다.
+- User Web에는 `/app/schedules/week` route와 `ScheduleWeekReportScreen`이 이미 구현되어 있다.
+- 현재 Schedule, MeetingNote, Deal, Contact 구조는 05 AI input snapshot의 source로 사용할 수 있다.
+- 05-A `AiWeeklySalesReport`, `AiWeeklySalesReportSuggestion`, `AiJob`, `AiProviderCallLog`와 05-B follow-up table/API는 아직 구현되어 있지 않으며 G02~G08 범위다.
+- `AGENT/SOFTWARE_AGENT/FRONT_AGENT/ARCHITECTURE/FRONTEND_USER_WEB.md`에는 `/app/schedules/week` redirect로 남은 stale 설명이 있으나, 실제 코드와 03 완료 문서 기준으로는 `/app/schedules/week`가 구현 완료 상태다.
+- User Web API client는 `/admin/api/*` 호출을 차단하므로 05도 User API `/api/*`로만 연결한다.
+
+### 문서 보정 결과
+
+- AI weekly report 필드명을 `weekStart`로 통일했다.
+- 동일 주 생성/버전 기준을 `userId + weekStart + timeZone`으로 통일했다.
+- G03 backend goal의 error code와 observability event 이름을 API spec과 business logic 문서에 맞췄다.
+
+### 검증 결과
+
+- G01 지정 `rg` 검색으로 request/response, SQL, `COMMENT ON`, OAuth state, `GENERATING`, `FollowUpMessage` 문서 증거를 확인했다.
+- stale 명칭 검색에서 legacy date/error/event 명칭 잔존 항목이 없음을 확인했다.
+- `git diff --check`는 whitespace error 없이 통과했다. Windows line-ending 경고만 출력됐다.
+
+### Blocking 질문
+
+- G02~G09 구현 착수를 막는 미해결 질문은 없다.
