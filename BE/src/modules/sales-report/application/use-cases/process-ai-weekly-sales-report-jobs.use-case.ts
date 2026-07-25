@@ -13,7 +13,7 @@ import {
   type AiWeeklySalesReportSuggestionTypeValue,
   type CreateAiWeeklySalesReportSuggestionInput,
 } from "@/modules/sales-report/application/ports/ai-weekly-sales-report.repository";
-import { normalizeSuggestionTargetId } from "@/modules/sales-report/application/services/ai-weekly-sales-report-application.service";
+import { normalizeSuggestionTargetId } from "@/modules/sales-report/application/services/ai-weekly-sales-report-suggestion-target";
 import { AppLogger } from "@/shared/infrastructure/logger/app-logger.service";
 
 const DEFAULT_BATCH_SIZE = 10;

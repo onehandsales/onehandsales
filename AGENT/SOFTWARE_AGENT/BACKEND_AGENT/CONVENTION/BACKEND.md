@@ -231,6 +231,8 @@ OPENAI_MEETING_NOTE_DRAFT_MODEL
 OPENAI_MEETING_NOTE_STT_MODEL
 OPENAI_BUSINESS_CARD_OCR_MODEL
 OPENAI_IMPORT_MAPPING_MODEL
+OPENAI_AI_WEEKLY_SALES_REPORT_MODEL
+AI_WEEKLY_REPORT_PROVIDER
 ```
 
 Do not document real provider secret values. When a new integration is implemented, add the env key name and purpose to `AGENT/SOFTWARE_AGENT/COMMON/ENVIRONMENT.md`, then update this section if the key affects Backend conventions.

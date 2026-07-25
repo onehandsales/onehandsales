@@ -28,12 +28,15 @@ Backend key names to confirm:
 - `FOLLOW_UP_MICROSOFT_CLIENT_ID`
 - `FOLLOW_UP_MICROSOFT_CLIENT_SECRET`
 - `FOLLOW_UP_MICROSOFT_TENANT_ID` if the tenant is not `common`
+- `OPENAI_API_KEY`
+- `OPENAI_AI_WEEKLY_SALES_REPORT_MODEL` if the default model should be overridden
 - production SMS provider credential keys after the real SMS adapter is selected
 
 Fallbacks:
 
 - `ENCRYPTION_MASTER_KEY` can satisfy the follow-up encryption key in local/dev.
 - `ENCRYPTION_KEY_VERSION` can satisfy the follow-up encryption key version in local/dev.
+- AI weekly report uses the OpenAI provider by default. Set `AI_WEEKLY_REPORT_PROVIDER=deterministic` only for local deterministic smoke data.
 - Non-production SMS delivery uses the test provider; production returns a safe provider-unavailable result until a real adapter is configured.
 
 ## 4. OAuth Callback URLs

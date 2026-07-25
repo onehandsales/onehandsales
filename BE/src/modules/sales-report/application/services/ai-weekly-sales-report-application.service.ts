@@ -1,5 +1,5 @@
 import { createHash } from "node:crypto";
-import { Inject, Injectable } from "@nestjs/common";
+import { Inject, Injectable, Optional } from "@nestjs/common";
 import {
   SCHEDULE_REPOSITORY,
   type ScheduleRepository,
@@ -20,6 +20,7 @@ import {
   AiWeeklySalesReportAlreadyGeneratingError,
   AiWeeklySalesReportNotFoundError,
 } from "@/modules/sales-report/domain/ai-weekly-sales-report.errors";
+import { ProcessAiWeeklySalesReportJobsUseCase } from "@/modules/sales-report/application/use-cases/process-ai-weekly-sales-report-jobs.use-case";
 import type { CurrentUserContext } from "@/shared/application/context/current-user.context";
 import {
   DEFAULT_USER_TIME_ZONE,
@@ -36,8 +37,6 @@ const MAX_SNAPSHOT_SCHEDULES = 200;
 const MAX_SNAPSHOT_DEALS = 200;
 const MAX_SNAPSHOT_MEETING_NOTES = 100;
 const MAX_IDEMPOTENCY_KEY_LENGTH = 128;
-const UUID_PATTERN =
-  /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 const SUGGESTION_SECTIONS = [
   { key: "riskSignals", type: "RISK" },
   { key: "nextWeekActions", type: "NEXT_ACTION" },
@@ -140,7 +139,9 @@ export class AiWeeklySalesReportApplicationService {
     private readonly salesReportRepository: AiWeeklySalesReportRepository,
     @Inject(SCHEDULE_REPOSITORY)
     private readonly scheduleRepository: ScheduleRepository,
-    private readonly logger: AppLogger
+    private readonly logger: AppLogger,
+    @Optional()
+    private readonly processJobs?: ProcessAiWeeklySalesReportJobsUseCase
   ) {}
 
   async requestGeneration(
@@ -180,6 +181,8 @@ export class AiWeeklySalesReportApplicationService {
           timeZone,
           locale,
         });
+
+        this.dispatchGenerationJob(existing.job);
 
         return this.toGenerationResponse(existing.report, existing.job);
       }
@@ -231,6 +234,7 @@ export class AiWeeklySalesReportApplicationService {
       locale,
       version: result.report.version,
     });
+    this.dispatchGenerationJob(result.job);
 
     return this.toGenerationResponse(result.report, result.job);
   }
@@ -1041,8 +1045,24 @@ export class AiWeeklySalesReportApplicationService {
       this.constructor.name
     );
   }
+
+  private dispatchGenerationJob(job: AiJobRecord): void {
+    if (job.status !== "PENDING" || !this.processJobs) {
+      return;
+    }
+
+    void this.processJobs.processJob(job.id).catch((error: unknown) => {
+      this.logger.error(
+        JSON.stringify({
+          event: "ai.weeklyReport.dispatchFailed",
+          jobId: job.id,
+          safeErrorCode: "AI_WEEKLY_REPORT_DISPATCH_FAILED",
+        }),
+        error instanceof Error ? error.message : undefined,
+        this.constructor.name
+      );
+    });
+  }
 }
 
-export function normalizeSuggestionTargetId(targetId: string | null): string | null {
-  return targetId && UUID_PATTERN.test(targetId) ? targetId : null;
-}
+export { normalizeSuggestionTargetId } from "./ai-weekly-sales-report-suggestion-target";

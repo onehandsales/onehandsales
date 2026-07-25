@@ -6,6 +6,7 @@ import {
   type CreateGeneratingReportInput,
 } from "@/modules/sales-report/application/ports/ai-weekly-sales-report.repository";
 import { AiWeeklySalesReportAlreadyGeneratingError } from "@/modules/sales-report/domain/ai-weekly-sales-report.errors";
+import type { ProcessAiWeeklySalesReportJobsUseCase } from "@/modules/sales-report/application/use-cases/process-ai-weekly-sales-report-jobs.use-case";
 import type { CurrentUserContext } from "@/shared/application/context/current-user.context";
 import type { AppLogger } from "@/shared/infrastructure/logger/app-logger.service";
 import { AiWeeklySalesReportApplicationService } from "./ai-weekly-sales-report-application.service";
@@ -47,10 +48,12 @@ describe("AiWeeklySalesReportApplicationService", () => {
         };
       }),
     });
+    const processJobs = createProcessJobs();
     const service = new AiWeeklySalesReportApplicationService(
       repository,
       createScheduleRepository(),
-      createLogger()
+      createLogger(),
+      processJobs
     );
 
     const response = await service.requestGeneration(
@@ -65,6 +68,7 @@ describe("AiWeeklySalesReportApplicationService", () => {
     expect(response.report.status).toBe("GENERATING");
     expect(response.report.locale).toBe("en-US");
     expect(response.job.status).toBe("PENDING");
+    expect(processJobs.processJob).toHaveBeenCalledWith(JOB_ID);
     expect(createdInputs).toHaveLength(1);
     expect(createdInputs[0]?.idempotencyKey).toBe("idem-123");
     expect(createdInputs[0]?.inputMetadataJson).toHaveProperty("inputHash");
@@ -369,4 +373,10 @@ function createLogger(): AppLogger {
     verbose: jest.fn(),
     write: jest.fn(),
   } as unknown as AppLogger;
+}
+
+function createProcessJobs(): ProcessAiWeeklySalesReportJobsUseCase {
+  return {
+    processJob: jest.fn().mockResolvedValue("generated"),
+  } as unknown as ProcessAiWeeklySalesReportJobsUseCase;
 }

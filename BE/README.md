@@ -112,7 +112,7 @@ Auth runtime 기준:
 - `preferredLocale`과 `timeZone`은 신규 사용자 생성 시 저장된다. 기존 사용자의 `timeZone`은 로그인 때 덮어쓰지 않고 `lastLoginTimeZone`만 갱신한다.
 - `signupCountryCode`, `lastLoginCountryCode`는 `cf-ipcountry`, `x-vercel-ip-country`, `cloudfront-viewer-country` 같은 배포 프록시 헤더가 있을 때만 저장된다. 로컬이나 해당 헤더가 없는 환경에서는 `null`일 수 있다.
 
-MeetingNote AI 초안 생성은 `MeetingNoteAiDraftProvider` port와 OpenAI adapter를 사용하며 `OPENAI_API_KEY`, `OPENAI_MEETING_NOTE_DRAFT_MODEL`이 필요하다. MeetingNote STT는 별도 `MeetingNoteSttProvider` port와 OpenAI STT adapter를 사용하며 `OPENAI_MEETING_NOTE_STT_MODEL`로 모델을 지정한다. 명함 OCR은 `BusinessCardOcrProvider` port와 OpenAI adapter를 사용하며 `OPENAI_BUSINESS_CARD_OCR_MODEL`로 모델을 지정할 수 있다. DataImport AI 컬럼 매핑은 `ImportMappingProvider` port와 OpenAI adapter를 사용하며 `OPENAI_IMPORT_MAPPING_MODEL`로 모델을 지정할 수 있다. 추후 STT/OCR/Import mapping provider를 바꿀 때는 각 adapter만 교체한다.
+MeetingNote AI 초안 생성은 `MeetingNoteAiDraftProvider` port와 OpenAI adapter를 사용하며 `OPENAI_API_KEY`, `OPENAI_MEETING_NOTE_DRAFT_MODEL`이 필요하다. MeetingNote STT는 별도 `MeetingNoteSttProvider` port와 OpenAI STT adapter를 사용하며 `OPENAI_MEETING_NOTE_STT_MODEL`로 모델을 지정한다. 명함 OCR은 `BusinessCardOcrProvider` port와 OpenAI adapter를 사용하며 `OPENAI_BUSINESS_CARD_OCR_MODEL`로 모델을 지정할 수 있다. DataImport AI 컬럼 매핑은 `ImportMappingProvider` port와 OpenAI adapter를 사용하며 `OPENAI_IMPORT_MAPPING_MODEL`로 모델을 지정할 수 있다. AI 주간 영업 리포트는 기본적으로 OpenAI adapter를 사용하며 `OPENAI_AI_WEEKLY_SALES_REPORT_MODEL`로 모델을 지정할 수 있고, 로컬 검증에서 deterministic 결과가 필요할 때만 `AI_WEEKLY_REPORT_PROVIDER=deterministic`으로 전환한다. 추후 STT/OCR/Import mapping/AI weekly report provider를 바꿀 때는 각 adapter만 교체한다.
 
 ## 정본 규칙
 

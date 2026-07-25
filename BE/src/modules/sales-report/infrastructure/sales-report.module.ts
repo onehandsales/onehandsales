@@ -1,5 +1,5 @@
 import { Module } from "@nestjs/common";
-import { ConfigModule } from "@nestjs/config";
+import { ConfigModule, ConfigService } from "@nestjs/config";
 import { AuthModule } from "@/modules/auth/infrastructure/auth.module";
 import { ScheduleModule } from "@/modules/schedule/infrastructure/schedule.module";
 import { AI_WEEKLY_SALES_REPORT_PROVIDER } from "@/modules/sales-report/application/ports/ai-weekly-sales-report.provider";
@@ -13,6 +13,7 @@ import { PrismaService } from "@/shared/infrastructure/prisma/prisma.service";
 import { PrismaAiWeeklySalesReportRepository } from "./persistence/prisma-ai-weekly-sales-report.repository";
 import { AiWeeklySalesReportProcessorRunner } from "./processor/ai-weekly-sales-report-processor.runner";
 import { DeterministicAiWeeklySalesReportProvider } from "./providers/deterministic-ai-weekly-sales-report.provider";
+import { OpenAiWeeklySalesReportProvider } from "./providers/openai-ai-weekly-sales-report.provider";
 
 @Module({
   imports: [AuthModule, ConfigModule, PrismaInfrastructureModule, ScheduleModule],
@@ -22,6 +23,7 @@ import { DeterministicAiWeeklySalesReportProvider } from "./providers/determinis
     ProcessAiWeeklySalesReportJobsUseCase,
     AiWeeklySalesReportProcessorRunner,
     DeterministicAiWeeklySalesReportProvider,
+    OpenAiWeeklySalesReportProvider,
     AppLogger,
     {
       provide: AI_WEEKLY_SALES_REPORT_REPOSITORY,
@@ -31,7 +33,25 @@ import { DeterministicAiWeeklySalesReportProvider } from "./providers/determinis
     },
     {
       provide: AI_WEEKLY_SALES_REPORT_PROVIDER,
-      useExisting: DeterministicAiWeeklySalesReportProvider,
+      useFactory: (
+        configService: ConfigService,
+        openAiProvider: OpenAiWeeklySalesReportProvider,
+        deterministicProvider: DeterministicAiWeeklySalesReportProvider
+      ) => {
+        const provider = configService
+          .get<string>("AI_WEEKLY_REPORT_PROVIDER")
+          ?.trim()
+          .toLowerCase();
+
+        return provider === "deterministic"
+          ? deterministicProvider
+          : openAiProvider;
+      },
+      inject: [
+        ConfigService,
+        OpenAiWeeklySalesReportProvider,
+        DeterministicAiWeeklySalesReportProvider,
+      ],
     },
   ],
   exports: [

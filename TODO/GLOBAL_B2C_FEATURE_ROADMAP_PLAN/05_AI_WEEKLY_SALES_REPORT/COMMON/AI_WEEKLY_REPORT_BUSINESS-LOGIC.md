@@ -31,7 +31,7 @@
 1. processor가 `AiJob(status=PENDING)`을 가져온다.
 2. transaction 안에서 job을 `RUNNING`, report를 `GENERATING`으로 확인/갱신한다.
 3. transaction 밖에서 `AiProviderCallLog(status=PENDING)`을 만든 뒤 OpenAI provider port를 호출한다.
-4. provider 요청은 strict JSON schema와 `store: false`를 사용한다.
+4. provider 요청은 strict JSON schema와 `store: true`를 사용해 OpenAI Dashboard Logs에서 요청/응답을 확인할 수 있게 한다.
 5. provider 응답이 schema에 맞으면 transaction 안에서 report를 `READY`로 갱신하고 suggestion row를 생성한다.
 6. provider 실패, timeout, schema mismatch가 발생하면 transaction 안에서 report를 `FAILED`, job을 `FAILED`, provider call log를 `FAILED`로 갱신한다.
 7. 실패 version도 삭제하지 않는다.

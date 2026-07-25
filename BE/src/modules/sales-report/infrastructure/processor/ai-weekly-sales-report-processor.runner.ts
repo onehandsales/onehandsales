@@ -31,6 +31,7 @@ export class AiWeeklySalesReportProcessorRunner
     this.timer = setInterval(() => {
       void this.tick();
     }, intervalMs);
+    void this.tick();
   }
 
   onModuleDestroy(): void {
