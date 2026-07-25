@@ -89,9 +89,15 @@ export class PrismaContactRepository implements ContactRepository {
       }),
       this.client.contact.count({ where }),
     ]);
+    const dealCounts = await this.countActiveDealsByContactIds(
+      input.userId,
+      items.map((contact) => contact.id)
+    );
 
     return {
-      items: items.map((contact) => this.mapContact(contact)),
+      items: items.map((contact) =>
+        this.mapContact(contact, dealCounts.get(contact.id) ?? 0)
+      ),
       totalCount,
     };
   }
@@ -110,7 +116,14 @@ export class PrismaContactRepository implements ContactRepository {
       orderBy: this.createContactOrderBy(input.sort),
     });
 
-    return items.map((contact) => this.mapContact(contact));
+    const dealCounts = await this.countActiveDealsByContactIds(
+      input.userId,
+      items.map((contact) => contact.id)
+    );
+
+    return items.map((contact) =>
+      this.mapContact(contact, dealCounts.get(contact.id) ?? 0)
+    );
   }
 
   // 기능 : 현재 사용자의 담당자에 연결된 딜 전체 목록을 조회합니다.
@@ -156,7 +169,15 @@ export class PrismaContactRepository implements ContactRepository {
       },
     });
 
-    return contact ? this.mapContact(contact) : null;
+    if (!contact) {
+      return null;
+    }
+
+    const dealCounts = await this.countActiveDealsByContactIds(userId, [
+      contact.id,
+    ]);
+
+    return this.mapContact(contact, dealCounts.get(contact.id) ?? 0);
   }
 
   // 기능 : 현재 사용자의 담당자 존재 여부만 조회합니다.
@@ -697,8 +718,46 @@ export class PrismaContactRepository implements ContactRepository {
     return [{ createdAt: "desc" }, { id: "desc" }];
   }
 
+  // 기능 : 현재 page 담당자 ID 기준으로 활성 딜 연결 수를 집계합니다.
+  private async countActiveDealsByContactIds(
+    userId: string,
+    contactIds: string[]
+  ): Promise<Map<string, number>> {
+    if (contactIds.length === 0) {
+      return new Map();
+    }
+
+    const counts = await this.client.dealContact.groupBy({
+      by: ["contactId"],
+      where: {
+        userId,
+        contactId: {
+          in: contactIds,
+        },
+        contact: {
+          userId,
+          deletedAt: null,
+        },
+        deal: {
+          userId,
+          deletedAt: null,
+        },
+      },
+      _count: {
+        _all: true,
+      },
+    });
+
+    return new Map(
+      counts.map((item) => [item.contactId, item._count._all] as const)
+    );
+  }
+
   // 기능 : Prisma 담당자 행을 application 레코드로 변환합니다.
-  private mapContact(contact: ContactWithRelations): ContactRecord {
+  private mapContact(
+    contact: ContactWithRelations,
+    dealCount: number
+  ): ContactRecord {
     return {
       id: contact.id,
       company: {
@@ -716,6 +775,7 @@ export class PrismaContactRepository implements ContactRepository {
         id: contact.contactJobGrade.id,
         jobGradeName: contact.contactJobGrade.jobGradeName,
       },
+      dealCount,
       createdAt: contact.createdAt,
       updatedAt: contact.updatedAt,
     };

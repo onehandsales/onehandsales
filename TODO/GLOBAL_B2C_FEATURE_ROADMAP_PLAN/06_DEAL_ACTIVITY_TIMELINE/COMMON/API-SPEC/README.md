@@ -22,7 +22,8 @@
 
 ## 2. 계약 상태
 
-두 API 문서는 구현 가능한 `confirmed` 상태다.
+`DEAL_ACTIVITY_API.md`는 구현 가능한 `confirmed` 계약으로 유지한다.
+`DEAL_RECORD_SUMMARY_API.md`는 G05 기준 Backend 구현이 완료되어 `implemented` 상태다. User Web 표시는 G06 범위다.
 
 G01에서는 현재 코드와 문서 계약을 다시 대조하고, 충돌이 있으면 구현 전에 이 API 문서를 갱신한다. G01 완료 뒤 G02부터 코드 구현에 들어간다.
 

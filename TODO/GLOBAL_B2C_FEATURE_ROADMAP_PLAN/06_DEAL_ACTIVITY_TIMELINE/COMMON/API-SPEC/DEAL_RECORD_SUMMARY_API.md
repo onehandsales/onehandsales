@@ -1,7 +1,8 @@
 # Deal Record Summary API
 
-계약 상태: confirmed
+계약 상태: implemented
 확정일: 2026-07-25
+Backend 구현일: 2026-07-26
 소비자: User Web
 호환성: 기존 list response field 추가. 기존 필드는 제거하지 않는다.
 

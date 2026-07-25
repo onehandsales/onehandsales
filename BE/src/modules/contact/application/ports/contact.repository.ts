@@ -33,6 +33,7 @@ export interface ContactRecord {
   readonly email: string;
   readonly contactDepartment: ContactDepartmentRecord;
   readonly contactJobGrade: ContactJobGradeRecord;
+  readonly dealCount: number;
   readonly createdAt: Date;
   readonly updatedAt: Date;
 }

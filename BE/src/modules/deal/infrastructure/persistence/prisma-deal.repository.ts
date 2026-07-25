@@ -19,12 +19,14 @@ import {
   type DealContactRecord,
   type DealDetailRecord,
   type DealFollowingActionLogRecord,
+  type DealLatestActivitySummaryRecord,
   type DealListRecord,
   type DealLogCursor,
   type DealMemoLogRecord,
   type DealNextFollowingActionRecord,
   type DealPageRecord,
   type DealProductRecord,
+  type DealProductSummaryRecord,
   type DealRepository,
   type DeleteDealFollowingActionLogInput,
   type DeleteDealInput,
@@ -139,6 +141,29 @@ type DealDetailRow = DealListRow & {
   }>;
 };
 
+type DealProductSummaryRow = {
+  readonly id: string;
+  readonly productName: string;
+  readonly deletedAt: Date | null;
+  readonly productCategory: {
+    readonly id: string;
+    readonly categoryName: string;
+  } | null;
+  readonly productStatus: {
+    readonly id: string;
+    readonly statusName: string;
+  } | null;
+};
+
+type DealLatestActivitySummaryRow = {
+  readonly id: string;
+  readonly dealId: string;
+  readonly activityType: DealLatestActivitySummaryRecord["activityType"];
+  readonly title: string;
+  readonly summary: string | null;
+  readonly occurredAt: Date;
+};
+
 // 역할 : PrismaDealRepository 저장소 계약을 Prisma 기반 영속성 처리로 구현합니다.
 export class PrismaDealRepository implements DealRepository {
   // 기능 : Prisma 클라이언트와 선택적 트랜잭션 실행기를 주입받습니다.
@@ -219,16 +244,21 @@ export class PrismaDealRepository implements DealRepository {
       this.client.deal.count({ where }),
     ]);
 
-    const nextFollowingActions = await this.findNextFollowingActions(
-      input.userId,
-      items.map((deal) => deal.id)
-    );
+    const dealIds = items.map((deal) => deal.id);
+    const [nextFollowingActions, productsByDealId, latestActivitiesByDealId] =
+      await Promise.all([
+        this.findNextFollowingActions(input.userId, dealIds),
+        this.findProductSummariesByDealIds(input.userId, dealIds),
+        this.findLatestActivitiesByDealIds(input.userId, dealIds),
+      ]);
 
     return {
       items: items.map((deal) =>
         this.mapDealListRecord(
           deal,
-          nextFollowingActions.get(deal.id) ?? null
+          nextFollowingActions.get(deal.id) ?? null,
+          productsByDealId.get(deal.id) ?? [],
+          latestActivitiesByDealId.get(deal.id) ?? null
         )
       ),
       totalCount,
@@ -249,7 +279,12 @@ export class PrismaDealRepository implements DealRepository {
     );
 
     return items.map((deal) =>
-      this.mapDealListRecord(deal, nextFollowingActions.get(deal.id) ?? null)
+      this.mapDealListRecord(
+        deal,
+        nextFollowingActions.get(deal.id) ?? null,
+        [],
+        null
+      )
     );
   }
 
@@ -957,6 +992,27 @@ export class PrismaDealRepository implements DealRepository {
     } satisfies Prisma.ProductSelect;
   }
 
+  // 기능 : 딜 목록 제품 summary 조회에 필요한 select 조건을 생성합니다.
+  private createProductSummarySelect() {
+    return {
+      id: true,
+      productName: true,
+      deletedAt: true,
+      productCategory: {
+        select: {
+          id: true,
+          categoryName: true,
+        },
+      },
+      productStatus: {
+        select: {
+          id: true,
+          statusName: true,
+        },
+      },
+    } satisfies Prisma.ProductSelect;
+  }
+
   private createFollowingActionLogSelect() {
     return {
       id: true,
@@ -1081,10 +1137,104 @@ export class PrismaDealRepository implements DealRepository {
     return result;
   }
 
+  // 기능 : 현재 page 딜 ID 기준으로 제품 summary를 딜별로 묶어 조회합니다.
+  private async findProductSummariesByDealIds(
+    userId: string,
+    dealIds: string[]
+  ): Promise<Map<string, DealProductSummaryRecord[]>> {
+    if (dealIds.length === 0) {
+      return new Map();
+    }
+
+    const rows = await this.client.dealProduct.findMany({
+      where: {
+        userId,
+        dealId: {
+          in: dealIds,
+        },
+        deal: {
+          userId,
+          deletedAt: null,
+        },
+        product: {
+          userId,
+        },
+      },
+      select: {
+        dealId: true,
+        product: {
+          select: this.createProductSummarySelect(),
+        },
+      },
+      orderBy: [{ dealId: "asc" }, { createdAt: "asc" }, { id: "asc" }],
+    });
+
+    const result = new Map<string, DealProductSummaryRecord[]>();
+
+    for (const row of rows) {
+      const products = result.get(row.dealId) ?? [];
+      products.push(this.mapProductSummary(row.product));
+      result.set(row.dealId, products);
+    }
+
+    return result;
+  }
+
+  // 기능 : 현재 page 딜 ID 기준으로 최신 activity summary를 딜별로 하나씩 조회합니다.
+  private async findLatestActivitiesByDealIds(
+    userId: string,
+    dealIds: string[]
+  ): Promise<Map<string, DealLatestActivitySummaryRecord>> {
+    if (dealIds.length === 0) {
+      return new Map();
+    }
+
+    const activities: DealLatestActivitySummaryRow[] =
+      await this.client.dealActivity.findMany({
+        where: {
+          userId,
+          dealId: {
+            in: dealIds,
+          },
+          deal: {
+            userId,
+            deletedAt: null,
+          },
+        },
+        select: {
+          id: true,
+          dealId: true,
+          activityType: true,
+          title: true,
+          summary: true,
+          occurredAt: true,
+        },
+        orderBy: [{ dealId: "asc" }, { occurredAt: "desc" }, { id: "desc" }],
+      });
+
+    const result = new Map<string, DealLatestActivitySummaryRecord>();
+
+    for (const activity of activities) {
+      if (!result.has(activity.dealId)) {
+        result.set(activity.dealId, {
+          id: activity.id,
+          activityType: activity.activityType,
+          title: activity.title,
+          summary: activity.summary,
+          occurredAt: activity.occurredAt,
+        });
+      }
+    }
+
+    return result;
+  }
+
   // 기능 : Prisma 딜 목록 행을 application 레코드로 변환합니다.
   private mapDealListRecord(
     deal: DealListRow,
-    nextFollowingAction: DealNextFollowingActionRecord | null = null
+    nextFollowingAction: DealNextFollowingActionRecord | null = null,
+    products: DealProductSummaryRecord[] = [],
+    latestActivity: DealLatestActivitySummaryRecord | null = null
   ): DealListRecord {
     return {
       id: deal.id,
@@ -1098,6 +1248,8 @@ export class PrismaDealRepository implements DealRepository {
       contacts: deal.dealContacts.map((dealContact) =>
         this.mapContact(dealContact.contact)
       ),
+      products,
+      latestActivity,
       latestFollowingAction: deal.followingActionLogs[0] ?? null,
       nextFollowingAction,
       createdAt: deal.createdAt,
@@ -1175,6 +1327,29 @@ export class PrismaDealRepository implements DealRepository {
         id: product.productStatus.id,
         statusName: product.productStatus.statusName,
       },
+    };
+  }
+
+  // 기능 : Prisma 제품 행을 딜 목록 summary 레코드로 변환합니다.
+  private mapProductSummary(
+    product: DealProductSummaryRow
+  ): DealProductSummaryRecord {
+    return {
+      id: product.id,
+      productName: product.productName,
+      isDeleted: Boolean(product.deletedAt),
+      productCategory: product.productCategory
+        ? {
+            id: product.productCategory.id,
+            categoryName: product.productCategory.categoryName,
+          }
+        : null,
+      productStatus: product.productStatus
+        ? {
+            id: product.productStatus.id,
+            statusName: product.productStatus.statusName,
+          }
+        : null,
     };
   }
 

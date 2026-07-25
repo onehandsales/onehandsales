@@ -126,6 +126,7 @@ export interface ContactListItemResponse {
     readonly id: string;
     readonly jobGradeName: string;
   };
+  readonly dealCount: number;
   readonly createdAt: string;
 }
 
@@ -1152,6 +1153,7 @@ export class ContactApplicationService {
       email: contact.email,
       contactDepartment: contact.contactDepartment,
       contactJobGrade: contact.contactJobGrade,
+      dealCount: contact.dealCount,
       createdAt: contact.createdAt.toISOString(),
     };
   }

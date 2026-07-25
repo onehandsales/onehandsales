@@ -7,11 +7,13 @@ import {
   type DealContactRecord,
   type DealDetailRecord,
   type DealFollowingActionLogRecord,
+  type DealLatestActivitySummaryRecord,
   type DealListRecord,
   type DealLogCursor,
   type DealMemoLogRecord,
   type DealNextFollowingActionRecord,
   type DealProductRecord,
+  type DealProductSummaryRecord,
   type DealRepository,
   type UpdateDealFollowingActionLogInput,
   type UpdateDealInput,
@@ -175,6 +177,8 @@ export interface DealListItemResponse {
   readonly expectedEndDate: string;
   readonly companies: DealCompanyRecord[];
   readonly contacts: DealContactResponse[];
+  readonly products: DealProductSummaryResponse[];
+  readonly latestActivity: DealLatestActivitySummaryResponse | null;
   readonly latestFollowingAction: DealLatestFollowingActionResponse | null;
   readonly nextFollowingAction: DealNextFollowingActionResponse | null;
   readonly createdAt: string;
@@ -182,8 +186,33 @@ export interface DealListItemResponse {
 }
 
 // 역할 : DealDetailResponse 데이터가 계층 사이에서 전달되는 구조를 정의합니다.
-export interface DealDetailResponse extends DealListItemResponse {
+export interface DealDetailResponse
+  extends Omit<DealListItemResponse, "products" | "latestActivity"> {
   readonly products: DealProductRecord[];
+}
+
+// 역할 : DealProductSummaryResponse 딜 목록 제품 요약 응답 구조를 정의합니다.
+export interface DealProductSummaryResponse {
+  readonly id: string;
+  readonly productName: string;
+  readonly isDeleted: boolean;
+  readonly productCategory: {
+    readonly id: string;
+    readonly categoryName: string;
+  } | null;
+  readonly productStatus: {
+    readonly id: string;
+    readonly statusName: string;
+  } | null;
+}
+
+// 역할 : DealLatestActivitySummaryResponse 딜 목록 최신 활동 요약 응답 구조를 정의합니다.
+export interface DealLatestActivitySummaryResponse {
+  readonly id: string;
+  readonly activityType: DealActivityTypeCode;
+  readonly title: string;
+  readonly summary: string | null;
+  readonly occurredAt: string;
 }
 
 // 역할 : DealContactResponse 데이터가 계층 사이에서 전달되는 구조를 정의합니다.
@@ -419,6 +448,13 @@ export class DealApplicationService {
       companyFilterCount: companyIds.length,
       contactFilterCount: contactIds.length,
       hasDealStatus: Boolean(query.dealStatus),
+      productSummaryCount: result.items.reduce(
+        (total, deal) => total + deal.products.length,
+        0
+      ),
+      latestActivityCount: result.items.filter(
+        (deal) => deal.latestActivity !== null
+      ).length,
     });
 
     return {
@@ -1797,6 +1833,12 @@ export class DealApplicationService {
       expectedEndDate: this.toDateOnlyString(deal.expectedEndDate),
       companies: deal.companies,
       contacts: deal.contacts.map((contact) => this.toDealContactResponse(contact)),
+      products: deal.products.map((product) =>
+        this.toDealProductSummary(product)
+      ),
+      latestActivity: deal.latestActivity
+        ? this.toLatestActivitySummary(deal.latestActivity)
+        : null,
       latestFollowingAction: deal.latestFollowingAction
         ? this.toLatestFollowingAction(deal.latestFollowingAction)
         : null,
@@ -1808,10 +1850,45 @@ export class DealApplicationService {
     };
   }
 
+  // 기능 : 딜 목록 제품 summary 레코드를 API 응답 객체로 변환합니다.
+  private toDealProductSummary(
+    product: DealProductSummaryRecord
+  ): DealProductSummaryResponse {
+    return {
+      id: product.id,
+      productName: product.productName,
+      isDeleted: product.isDeleted,
+      productCategory: product.productCategory,
+      productStatus: product.productStatus,
+    };
+  }
+
+  // 기능 : 딜 목록 최신 activity 레코드를 body 없이 안전한 summary 응답으로 변환합니다.
+  private toLatestActivitySummary(
+    activity: DealLatestActivitySummaryRecord
+  ): DealLatestActivitySummaryResponse {
+    return {
+      id: activity.id,
+      activityType: activity.activityType,
+      title: activity.title,
+      summary: activity.summary,
+      occurredAt: activity.occurredAt.toISOString(),
+    };
+  }
+
   // 기능 : 딜 레코드를 상세 응답으로 변환합니다.
   private toDealDetail(deal: DealDetailRecord): DealDetailResponse {
+    const {
+      products: _summaryProducts,
+      latestActivity: _latestActivity,
+      ...listItem
+    } = this.toDealListItem(deal);
+
+    void _summaryProducts;
+    void _latestActivity;
+
     return {
-      ...this.toDealListItem(deal),
+      ...listItem,
       products: deal.products,
     };
   }

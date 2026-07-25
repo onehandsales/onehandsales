@@ -65,8 +65,8 @@ MeetingNote의 legacy `DealFollowingActionLog`는 1차 호환성 때문에 유�
 
 | API | 변경 | 상태 |
 |---|---|---|
-| `GET /api/deals` | `products`, `latestActivity` field 추가 | confirmed |
-| `GET /api/contacts` | `dealCount` field 추가 | confirmed |
+| `GET /api/deals` | `products`, `latestActivity` field 추가 | implemented |
+| `GET /api/contacts` | `dealCount` field 추가 | implemented |
 
 ### Backend 작업
 
@@ -75,6 +75,13 @@ MeetingNote의 legacy `DealFollowingActionLog`는 1차 호환성 때문에 유�
 3. Contact list page 대상 ID 기준 dealCount aggregation을 추가한다.
 4. page size 15 계약을 확인한다.
 5. ownership/soft delete test를 작성한다.
+
+G05 구현 기록:
+
+- Deal list는 현재 page deal IDs 기준으로 `DealProduct` products summary와 `DealActivity` latest activity summary를 aggregation한다.
+- Contact list는 현재 page contact IDs 기준으로 active deal count를 aggregation한다.
+- products/latest activity/dealCount aggregation은 현재 사용자 ownership 조건과 soft-deleted deal 제외 조건을 포함한다.
+- page size 15는 Backend service 응답과 test에서 확인했다.
 
 ## 5. 금지
 

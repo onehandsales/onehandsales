@@ -1,6 +1,6 @@
 # Goal Completion Checklist
 
-상태: G04 Completed / G05 Ready
+상태: G05 Completed / G06 Ready
 최종 업데이트: 2026-07-26
 
 ## 1. 목적
@@ -17,7 +17,7 @@
 | [x] | G02 Deal Activity DB Prisma | Completed | 2026-07-26 | Prisma schema/migration/model/index 구현 | `BE/prisma/schema.prisma`, `20260726010000_add_deal_activity`, `pnpm run prisma:validate`, `pnpm run prisma:generate`, `pnpm run typecheck`, `pnpm run lint`, `pnpm run test -- deal`, `pnpm run build` | 원격 Supabase target 확인. migrate/seed 미실행 |
 | [x] | G03 Deal Activity Backend | Completed | 2026-07-26 | timeline API와 자동/수동 activity Backend 구현 | `G03_DEAL_ACTIVITY_BACKEND.md`, `pnpm run typecheck`, `pnpm run lint`, `pnpm run test -- deal`, `pnpm run test -- follow-up`, `pnpm run test -- schedule`, `pnpm run test -- meeting-note`, `pnpm run build` | G04 착수 가능 |
 | [x] | G04 Deal Activity User Web | Completed | 2026-07-26 | 딜 상세 timeline UX 구현 | `G04_DEAL_ACTIVITY_USER_WEB.md`, `pnpm run typecheck`, `pnpm run lint`, `pnpm run build`, `pnpm exec playwright test tests/e2e/deal-activity-timeline.spec.ts`, `pnpm run test:e2e` | G05 착수 가능 |
-| [ ] | G05 Deal Record Summary Backend | Ready |  | Deal/Contact list summary Backend 구현 |  |  |
+| [x] | G05 Deal Record Summary Backend | Completed | 2026-07-26 | Deal/Contact list summary Backend 구현 | `G05_DEAL_RECORD_SUMMARY_BACKEND.md`, `pnpm run typecheck`, `pnpm run lint`, `pnpm run test -- deal`, `pnpm run test -- contact`, `pnpm run test -- ownership-isolation`, `pnpm run build` | G06 착수 가능 |
 | [ ] | G06 Deal Record Summary User Web | Ready |  | 목록 summary User Web 구현 |  |  |
 | [ ] | G07 QA Review Closeout | Ready |  | REVIEW-CHECKLIST 통과와 문서 closeout |  |  |
 
@@ -101,11 +101,19 @@ G04 증거:
 
 ### G05
 
-- [ ] `GET /api/deals` item에 products summary가 있다.
-- [ ] `GET /api/deals` item에 latestActivity가 있다.
-- [ ] `GET /api/contacts` item에 dealCount가 있다.
-- [ ] ownership/soft delete aggregation test가 있다.
-- [ ] page size 15 계약이 Backend/API/test에서 일치한다.
+- [x] `GET /api/deals` item에 products summary가 있다.
+- [x] `GET /api/deals` item에 latestActivity가 있다.
+- [x] `GET /api/contacts` item에 dealCount가 있다.
+- [x] ownership/soft delete aggregation test가 있다.
+- [x] page size 15 계약이 Backend/API/test에서 일치한다.
+
+G05 증거:
+
+- Deal Backend 구현: `BE/src/modules/deal/application/ports/deal.repository.ts`, `BE/src/modules/deal/application/services/deal-application.service.ts`, `BE/src/modules/deal/infrastructure/persistence/prisma-deal.repository.ts`
+- Contact Backend 구현: `BE/src/modules/contact/application/ports/contact.repository.ts`, `BE/src/modules/contact/application/services/contact-application.service.ts`, `BE/src/modules/contact/infrastructure/persistence/prisma-contact.repository.ts`
+- Aggregation test: `BE/src/modules/deal/infrastructure/persistence/prisma-deal.repository.spec.ts`, `BE/src/modules/contact/infrastructure/persistence/prisma-contact.repository.spec.ts`
+- Page size 15 test: `BE/src/modules/deal/application/services/deal-application.service.spec.ts`, `BE/src/modules/contact/application/services/contact-application.service.spec.ts`
+- Backend 검증 통과: `pnpm run typecheck`, `pnpm run lint`, `pnpm run test -- deal`, `pnpm run test -- contact`, `pnpm run test -- ownership-isolation`, `pnpm run build`
 
 ### G06
 

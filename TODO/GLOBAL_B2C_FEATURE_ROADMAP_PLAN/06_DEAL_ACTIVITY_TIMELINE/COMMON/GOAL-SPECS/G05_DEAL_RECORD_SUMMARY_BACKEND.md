@@ -1,7 +1,8 @@
 # G05 Deal Record Summary Backend
 
-상태: Ready
+상태: Completed
 목표: 목록 summary Backend 구현
+완료일: 2026-07-26
 
 ## 1. 목적
 
@@ -49,9 +50,35 @@ pnpm run test -- contact
 pnpm run build
 ```
 
+추가 검증:
+
+```powershell
+cd BE
+pnpm run test -- ownership-isolation
+```
+
 ## 7. 완료 기준
 
 - API spec과 response DTO가 일치한다.
 - 기존 FE가 깨지지 않는다.
 - aggregation ownership test가 있다.
 - page size 15 계약이 확인됐다.
+
+## 8. 완료 기록
+
+- `GET /api/deals` item에 `products` summary와 `latestActivity` summary를 추가했다.
+- `GET /api/contacts` item에 현재 사용자 소유 active deal 기준 `dealCount`를 추가했다.
+- 딜/담당자 목록 모두 Backend service page size 15 응답 계약을 테스트로 확인했다.
+- products/latest activity/dealCount aggregation은 현재 page ID 기준으로 조회하며 ownership과 soft-deleted deal 제외 조건을 포함한다.
+- latest activity summary는 `body`, `metadataJson`, `linkedRecordsJson` 없이 안전한 `title`, `summary`, `occurredAt`만 응답한다.
+
+검증 통과:
+
+```powershell
+cd BE
+pnpm run typecheck
+pnpm run lint
+pnpm run test -- deal
+pnpm run test -- contact
+pnpm run build
+```

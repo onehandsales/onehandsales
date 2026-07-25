@@ -1116,6 +1116,7 @@ function createContactRecord(
       id: `${userId}-job-grade`,
       jobGradeName: `${marker} JobGrade`,
     },
+    dealCount: 1,
     createdAt: CREATED_AT,
     updatedAt: UPDATED_AT,
   };
@@ -1205,6 +1206,7 @@ function createDealRecord(
         },
       },
     ],
+    latestActivity: null,
     latestFollowingAction: null,
     nextFollowingAction: null,
     createdAt: CREATED_AT,

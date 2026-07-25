@@ -3,6 +3,7 @@ import type { DealStatusCode } from "@/modules/deal/domain/deal-status";
 import type {
   CreateDealActivityInput,
   DealActivityRecord,
+  DealActivityTypeCode,
   FindDealActivityByIdInput,
   FindDealActivityBySourceInput,
   ListDealActivitiesForDealInput,
@@ -77,6 +78,30 @@ export interface DealProductRecord {
   };
 }
 
+// 역할 : DealProductSummaryRecord 딜 목록에 표시할 제품 요약 구조를 정의합니다.
+export interface DealProductSummaryRecord {
+  readonly id: string;
+  readonly productName: string;
+  readonly isDeleted: boolean;
+  readonly productCategory: {
+    readonly id: string;
+    readonly categoryName: string;
+  } | null;
+  readonly productStatus: {
+    readonly id: string;
+    readonly statusName: string;
+  } | null;
+}
+
+// 역할 : DealLatestActivitySummaryRecord 딜 목록에 표시할 최신 활동 요약 구조를 정의합니다.
+export interface DealLatestActivitySummaryRecord {
+  readonly id: string;
+  readonly activityType: DealActivityTypeCode;
+  readonly title: string;
+  readonly summary: string | null;
+  readonly occurredAt: Date;
+}
+
 // 역할 : DealFollowingActionLogRecord 데이터가 계층 사이에서 전달되는 구조를 정의합니다.
 export interface DealFollowingActionLogRecord {
   readonly id: string;
@@ -115,6 +140,8 @@ export interface DealListRecord {
   readonly expectedEndDate: Date;
   readonly companies: DealCompanyRecord[];
   readonly contacts: DealContactRecord[];
+  readonly products: DealProductSummaryRecord[];
+  readonly latestActivity: DealLatestActivitySummaryRecord | null;
   readonly latestFollowingAction: DealFollowingActionLogRecord | null;
   readonly nextFollowingAction: DealNextFollowingActionRecord | null;
   readonly createdAt: Date;

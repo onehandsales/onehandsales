@@ -19,6 +19,7 @@ import {
   type DealContactRecord,
   type DealDetailRecord,
   type DealFollowingActionLogRecord,
+  type DealLatestActivitySummaryRecord,
   type DealListRecord,
   type DealLogCursor,
   type DealMemoLogRecord,
@@ -714,6 +715,10 @@ class FakeDealRepository implements DealRepository {
       expectedEndDate: deal.expectedEndDate,
       companies: deal.companyIds.map((companyId) => this.getCompany(companyId)),
       contacts: deal.contactIds.map((contactId) => this.getContact(contactId)),
+      products: (this.dealProductIds.get(deal.id) ?? []).map((productId) =>
+        this.getProduct(productId)
+      ),
+      latestActivity: this.getLatestActivitySummary(deal),
       latestFollowingAction: sortedLogs[0] ?? null,
       nextFollowingAction: nextLog
         ? { log: nextLog, remainingCount: openLogs.length - 1 }
@@ -764,6 +769,27 @@ class FakeDealRepository implements DealRepository {
     }
 
     return product;
+  }
+
+  // 기능 : fake 딜의 최신 활동 summary를 body 없이 반환합니다.
+  private getLatestActivitySummary(
+    deal: StoredDeal
+  ): DealLatestActivitySummaryRecord | null {
+    const activity = this.sortActivities(
+      this.dealActivities.filter(
+        (item) => item.userId === deal.userId && item.dealId === deal.id
+      )
+    )[0];
+
+    return activity
+      ? {
+          id: activity.id,
+          activityType: activity.activityType,
+          title: activity.title,
+          summary: activity.summary,
+          occurredAt: activity.occurredAt,
+        }
+      : null;
   }
 
   // 기능 : fake 로그를 최신순으로 정렬합니다.
@@ -981,6 +1007,50 @@ describe("DealApplicationService", () => {
     expect(result.products[0]?.productStatus.statusName).toBe("판매중");
     expect(result.products[0]?.productPrice).toBe(1200000);
     expect(result.latestFollowingAction?.followingAction).toBe("제안서 발송");
+  });
+
+  it("lists deals with product summaries, latest activity summary, and page size 15", async () => {
+    const repository = new FakeDealRepository();
+    const service = createService(repository);
+    const createdDeal = await service.createDeal(CURRENT_USER, createDealCommand());
+    await service.createManualDealActivity(CURRENT_USER, createdDeal.id, {
+      activityType: "CALL",
+      title: "도입 일정 확인 통화",
+      body: "목록 summary에는 포함하지 않을 본문",
+    });
+
+    const result = await service.listDeals(CURRENT_USER, {});
+    const item = result.items[0];
+
+    if (!item) {
+      throw new Error("Missing listed deal");
+    }
+
+    expect(result.pageSize).toBe(15);
+    expect(item.products).toEqual([
+      {
+        id: "product-1",
+        productName: "프리미엄 상품",
+        isDeleted: false,
+        productCategory: { id: "category-1", categoryName: "보안" },
+        productStatus: { id: "status-1", statusName: "판매중" },
+      },
+      {
+        id: "product-2",
+        productName: "추가 상품",
+        isDeleted: false,
+        productCategory: { id: "category-2", categoryName: "연동" },
+        productStatus: { id: "status-2", statusName: "검토중" },
+      },
+    ]);
+    expect(item.products[0]).not.toHaveProperty("productPrice");
+    expect(item.latestActivity).toMatchObject({
+      activityType: "CALL",
+      title: "도입 일정 확인 통화",
+      summary: null,
+      occurredAt: expect.any(String),
+    });
+    expect(item.latestActivity).not.toHaveProperty("body");
   });
 
   it("lists, creates, and updates manual deal activities with opaque cursor", async () => {
