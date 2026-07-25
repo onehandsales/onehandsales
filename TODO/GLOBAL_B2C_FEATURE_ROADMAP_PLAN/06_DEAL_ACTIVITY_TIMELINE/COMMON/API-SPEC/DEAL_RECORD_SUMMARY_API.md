@@ -7,7 +7,9 @@
 
 ## 1. 목적
 
-`NEXT_BACKEND_API_BACKLOG_PLAN`의 `NBA-001`, `NBA-002`, `NBA-008`과 06의 latest activity summary 후보를 DealActivity 정본 위에 반영한다.
+`NEXT_BACKEND_API_BACKLOG_PLAN`의 `NBA-001`, `NBA-002`, `NBA-008`과 `NBA-003` 중 Deal latest activity subset을 DealActivity 정본 위에 반영한다.
+
+원본 `NBA-003`의 Company/Contact/Product latest summary, latest memo summary, next action summary, generic summary endpoint는 06 범위가 아니다. 이 제외 기준은 `COMMON/SOURCE-PLAN-COVERAGE.md`를 따른다.
 
 G05/G06에서 구현하며, G02~G04의 DealActivity timeline 구현이 선행된다.
 

@@ -7,6 +7,8 @@
 
 `COMMON/API-SPEC/DEAL_RECORD_SUMMARY_API.md` 기준으로 딜/담당자 목록 summary를 Backend에 반영한다.
 
+상위 backlog 기준으로는 `NBA-001`, `NBA-002`, `NBA-008`, `NBA-003`의 Deal latest activity subset만 구현한다.
+
 ## 2. 선행 조건
 
 - G04 완료
@@ -22,6 +24,9 @@
 ## 4. 제외 범위
 
 - 회사/제품 latest activity summary
+- Contact latest activity summary
+- latest memo summary
+- next action summary 신규 계산
 - 고급 검색/필터
 - 딜 가능성/확률
 - generic summary endpoint

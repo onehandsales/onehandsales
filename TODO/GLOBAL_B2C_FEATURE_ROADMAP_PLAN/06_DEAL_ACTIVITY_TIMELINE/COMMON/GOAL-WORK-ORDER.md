@@ -13,6 +13,7 @@
 - `COMMON/DECISION-LOG.md`
 - `COMMON/BUSINESS-LOGIC.md`
 - `COMMON/USER-FLOW.md`
+- `COMMON/SOURCE-PLAN-COVERAGE.md`
 - `COMMON/ARCHITECTURE-GUARDRAILS.md`
 - `COMMON/API-SPEC/README.md`
 - `COMMON/API-SPEC/DEAL_ACTIVITY_API.md`
@@ -42,6 +43,7 @@ G01_PLANNING_API_DB_CONTRACT
 목표:
 
 - 현재 코드와 06 문서 계약을 대조한다.
+- 상위 입력 계획의 포함/제외 범위가 `SOURCE-PLAN-COVERAGE.md`와 일치하는지 확인한다.
 - API/DB/FE 계약 충돌을 구현 전에 보정한다.
 - G02~G07 구현 착수 blocking 질문이 없음을 확인한다.
 

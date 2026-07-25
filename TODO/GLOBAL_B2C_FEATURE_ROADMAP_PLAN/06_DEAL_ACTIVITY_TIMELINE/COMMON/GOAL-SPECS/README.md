@@ -24,6 +24,7 @@ G07_QA_REVIEW_CLOSEOUT
 ## 3. 공통 완료 기준
 
 - AGENT UXUI/SOFTWARE 기준을 먼저 읽는다.
+- 상위 계획 반영 범위는 `COMMON/SOURCE-PLAN-COVERAGE.md`와 일치한다.
 - 비즈니스 로직은 `COMMON/BUSINESS-LOGIC.md`와 일치한다.
 - API가 있으면 `COMMON/API-SPEC`과 일치한다.
 - DB 변경이 있으면 `BE-TODO/DB-SCHEMA.md`와 일치한다.

@@ -10,6 +10,10 @@
 - [ ] 자동 activity 수정/삭제가 노출되지 않았다.
 - [ ] 메모 activity 통합이 정책 없이 섞이지 않았다.
 - [ ] 목록 summary는 G05/G06 범위로 분리됐다.
+- [ ] `NEXT_BACKEND_API_BACKLOG_PLAN` 반영 범위가 `SOURCE-PLAN-COVERAGE.md`와 일치한다.
+- [ ] `USER_WEB_PRODUCTIZATION_GAP_PLAN` 반영 범위가 `SOURCE-PLAN-COVERAGE.md`와 일치한다.
+- [ ] `NBA-003`은 Deal latest activity subset만 포함되고 나머지 record summary가 섞이지 않았다.
+- [ ] Admin 운영, 결제/구독/세금, 앱 내부 다국어, 다국가 데이터 모델, 제품 분석이 06에 섞이지 않았다.
 - [ ] 고급 검색/필터, 딜 확률/score, AI activity 판단이 섞이지 않았다.
 - [ ] `COMMON/BUSINESS-LOGIC.md`의 불변 조건과 구현이 일치한다.
 

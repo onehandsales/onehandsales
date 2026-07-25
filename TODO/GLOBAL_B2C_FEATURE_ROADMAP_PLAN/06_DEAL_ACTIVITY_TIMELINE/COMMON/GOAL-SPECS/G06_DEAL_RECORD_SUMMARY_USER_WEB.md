@@ -7,6 +7,8 @@
 
 G05 Backend summary를 User Web 목록에 반영한다.
 
+FE는 `COMMON/SOURCE-PLAN-COVERAGE.md` 기준으로 06에 승격된 summary만 표시한다.
+
 ## 2. 선행 조건
 
 - G05 완료
@@ -23,6 +25,9 @@ G05 Backend summary를 User Web 목록에 반영한다.
 ## 4. 제외 범위
 
 - 회사/제품 latest activity summary
+- Contact latest activity summary
+- latest memo summary
+- next action summary 신규 표시
 - 고급 필터 UI
 - page size 변경
 - 목록 전체 redesign

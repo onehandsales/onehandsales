@@ -25,6 +25,8 @@
 
 06은 전체 목표를 지금 문서화하되, 구현은 `/goal` 단위로 나눠 순차 진행한다.
 
+상위 입력 계획 반영 범위는 `COMMON/SOURCE-PLAN-COVERAGE.md`를 정본으로 본다. 06은 `NEXT_BACKEND_API_BACKLOG_PLAN`의 `NBA-001`, `NBA-002`, `NBA-008`, `NBA-014`와 `NBA-003` 중 Deal latest activity subset을 포함한다. `USER_WEB_PRODUCTIZATION_GAP_PLAN`의 first-sale global bundle인 Admin 운영, 결제/구독/세금, 앱 내부 다국어, 다국가 데이터 모델, 제품 분석은 06에서 구현하지 않고 별도 큰 계획으로 분리한다.
+
 1. `DealActivity` DB 정본 모델을 만든다.
 2. 딜 상세에서 `GET /api/deals/:dealId/activities`로 timeline을 조회한다.
 3. 핵심 딜 진행 activity를 자동 기록한다.
@@ -77,7 +79,10 @@
 - AI activity 자동 판단
 - MeetingNote transcript/provider log
 - Admin 감사/민감정보 원문 조회
-- 결제, 구독, 앱 내부 다국어, 제품 분석
+- Admin 운영 화면/API
+- 결제, 구독, 세금/컴플라이언스
+- 앱 내부 다국어, 다국가 phone/currency/address 모델
+- 제품 분석
 
 ## 7. 구현 실행 순서
 
@@ -111,6 +116,7 @@ G01_PLANNING_API_DB_CONTRACT
     SCOPE.md
     BUSINESS-LOGIC.md
     USER-FLOW.md
+    SOURCE-PLAN-COVERAGE.md
     REFERENCES.md
     ARCHITECTURE-GUARDRAILS.md
     API-SPEC/
@@ -156,6 +162,7 @@ G01_PLANNING_API_DB_CONTRACT
 - `COMMON/SCOPE.md`
 - `COMMON/DECISION-LOG.md`
 - `COMMON/BUSINESS-LOGIC.md`
+- `COMMON/SOURCE-PLAN-COVERAGE.md`
 - `COMMON/API-SPEC/DEAL_ACTIVITY_API.md`
 - `COMMON/API-SPEC/DEAL_RECORD_SUMMARY_API.md`
 - `COMMON/ARCHITECTURE-GUARDRAILS.md`

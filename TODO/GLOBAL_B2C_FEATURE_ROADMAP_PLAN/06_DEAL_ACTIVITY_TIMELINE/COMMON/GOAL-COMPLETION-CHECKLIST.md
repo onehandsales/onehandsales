@@ -27,6 +27,7 @@
 
 - [ ] 현재 BE deal/follow-up/schedule/meeting-note 구현을 확인했다.
 - [ ] 현재 FE deal detail/list 구현을 확인했다.
+- [ ] `COMMON/SOURCE-PLAN-COVERAGE.md` 기준으로 상위 입력 계획의 포함/제외 범위를 확인했다.
 - [ ] `COMMON/BUSINESS-LOGIC.md`와 현재 mutation 흐름을 대조했다.
 - [ ] API path와 기존 route 충돌이 없다.
 - [ ] activity writer provider 배치가 module cycle을 만들지 않는다.

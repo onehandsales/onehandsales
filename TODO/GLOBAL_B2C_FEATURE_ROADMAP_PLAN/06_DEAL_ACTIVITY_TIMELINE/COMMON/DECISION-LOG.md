@@ -24,6 +24,8 @@
 | 자동 activity 수정/삭제 | 제외한다. | 시스템 이력 정합성을 지킨다. |
 | 메모 timeline 통합 | 후속으로 둔다. | private memo와 민감정보 노출 정책을 먼저 확정해야 한다. |
 | 목록 summary | DealActivity 정본 뒤 G05/G06에서 구현한다. | API 정본 없이 FE에서 꾸미면 Global B2C 품질 기준에 맞지 않는다. |
+| 상위 backlog 승격 | `NBA-001`, `NBA-002`, `NBA-008`, `NBA-014`와 `NBA-003`의 Deal latest activity subset만 06으로 승격한다. | 원본 가이드의 "바로 구현 금지" 상태를 06의 confirmed 계약과 `/goal` 순서로 해소한다. |
+| first-sale global bundle | Admin 운영, 결제/구독/세금, 앱 내부 다국어, 다국가 데이터 모델, 제품 분석은 06에서 구현하지 않는다. | DealActivity와 record summary의 구현 범위를 넘는 별도 큰 계획이다. |
 
 ## 3. Goal 분할 결정
 
@@ -43,4 +45,3 @@
 - Controller method는 `// API : ...`, 내부 함수는 `// 기능 : ...`, class/interface는 `// 역할 : ...` 형태를 따른다.
 - 복잡한 application orchestration에는 필요한 경우 번호가 있는 한글 주석을 둔다.
 - UI 표시 문구는 `AGENT/UXUI_AGENT/PLANNING/UX_WRITING_GUIDE.md`의 톤을 따른다.
-

@@ -49,6 +49,8 @@
 | 메모 보류 | 메모는 민감정보 가능성이 있어 activity 통합을 후속으로 둔다. |
 | Summary 후속 | Deal list products/latest activity, Contact dealCount는 G05/G06에서 구현한다. |
 | Page size | 15개 page 계약을 유지하고 FE 단독 변경을 금지한다. |
+| 상위 계획 반영 | `NBA-001`, `NBA-002`, `NBA-008`, `NBA-014`, `NBA-003` Deal subset과 Productization Gap의 Notion/Attio, Deal-first, Data honesty 기준이 반영됐다. |
+| 상위 계획 제외 | Admin 운영, 결제/구독/세금, 앱 내부 다국어, 다국가 데이터 모델, 제품 분석, Company/Contact/Product latest summary는 06에서 구현하지 않는다. |
 
 ## 5. 미해결 Critical/Major
 

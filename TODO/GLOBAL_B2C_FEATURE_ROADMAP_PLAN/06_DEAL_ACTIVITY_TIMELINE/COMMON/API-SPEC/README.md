@@ -12,6 +12,14 @@
 | `DEAL_ACTIVITY_API.md` | DealActivity timeline 조회, 수동 생성/수정, 자동 생성 기준 | G03/G04 |
 | `DEAL_RECORD_SUMMARY_API.md` | 딜 목록 products/latest activity, 담당자 dealCount, page size 15 계약 | G05/G06 |
 
+상위 backlog 대응:
+
+- `NBA-001`: Deal list `products` 포함
+- `NBA-002`: Contact list `dealCount` 포함
+- `NBA-003`: Deal list `latestActivity` subset만 포함
+- `NBA-008`: page size 15 cleanup 포함
+- `NBA-014`: DB/Prisma migration gate 포함
+
 ## 2. 계약 상태
 
 두 API 문서는 구현 가능한 `confirmed` 상태다.

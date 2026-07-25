@@ -9,6 +9,8 @@
 
 ## 2. 포함 범위
 
+상위 입력 계획 기준의 포함/제외 매핑은 `COMMON/SOURCE-PLAN-COVERAGE.md`를 따른다.
+
 | 항목 | 확정 내용 |
 |---|---|
 | DealActivity 정본 | 딜 activity를 별도 model로 저장한다. |
@@ -22,6 +24,8 @@
 | Deal latest activity summary | `GET /api/deals` item에 최신 activity summary 후보를 추가한다. |
 | Contact dealCount | `GET /api/contacts` item에 active deal count를 추가한다. |
 | Page size 15 cleanup | 목록 API/FE/test 문서의 15개 page 계약을 함께 정리한다. |
+| NBA-003 Deal subset | `NBA-003` 중 Deal list `latestActivity`만 06 범위로 승격한다. |
+| NBA-014 gate | 신규 migration 전 DB/Prisma 운영 gate를 확인한다. |
 | 보안 | user ownership, soft delete 제외, private memo와 provider raw redaction을 지킨다. |
 | UX | Notion식 detail page와 Attio식 CRM activity timeline 기준을 따른다. |
 
@@ -38,6 +42,8 @@
 | 딜 가능성/확률 score | 1차 timeline과 별개로 후속 제품 결정이 필요하다. |
 | AI activity 자동 판단 | 05/07 이후 AI 정책과 연결한다. |
 | Admin raw activity audit | 11 Admin Operation에서 다룬다. |
+| first-sale global bundle | Admin 운영, 결제/구독/세금, 앱 내부 다국어, 다국가 데이터 모델, 제품 분석은 별도 큰 계획으로 분리한다. |
+| Company/Contact/Product latest summary | `NBA-003`의 나머지 record summary는 privacy/summary 정책 확정 뒤 후속으로 둔다. |
 
 ## 4. Activity Type
 
