@@ -1,6 +1,6 @@
 # G02 Deal Activity DB Prisma
 
-상태: Ready
+상태: Completed
 목표: DealActivity DB foundation 구현
 
 ## 1. 목적
@@ -89,3 +89,23 @@ pnpm run test -- deal
 - 기존 migration 파일을 수정하지 않았다.
 - `DealActivity` repository contract가 준비됐다.
 - DB target/migrate 실행 여부가 work log 또는 checklist에 기록됐다.
+
+## 9. 완료 기록
+
+- 완료일: 2026-07-26
+- 신규 migration: `BE/prisma/migrations/20260726010000_add_deal_activity/migration.sql`
+- Prisma schema 추가: `DealActivityType`, `DealActivitySourceType`, `DealActivity`, `User.dealActivities`, `Deal.activities`
+- repository contract/helper/test 추가:
+  - `BE/src/modules/deal/application/ports/deal-activity.repository.ts`
+  - `BE/src/modules/deal/infrastructure/persistence/prisma-deal-activity.repository.ts`
+  - `BE/src/modules/deal/infrastructure/persistence/prisma-deal-activity.repository.spec.ts`
+- index 결정: timeline 조회 index는 Prisma schema와 migration SQL에 `occurredAt DESC, id DESC`를 명시해 `ORDER BY occurredAt DESC, id DESC`를 직접 만족하게 했다.
+- DB target: `DATABASE_URL`/`DIRECT_URL` host는 `aws-1-ap-northeast-2.pooler.supabase.com`, database는 `postgres`다.
+- DB 실행 기록: 원격 Supabase target이므로 `prisma migrate dev`, `prisma migrate deploy`, `prisma seed`는 실행하지 않았다.
+- 검증 통과:
+  - `pnpm run prisma:validate`
+  - `pnpm run prisma:generate`
+  - `pnpm run typecheck`
+  - `pnpm run lint`
+  - `pnpm run test -- deal`
+  - `pnpm run build`

@@ -1,6 +1,6 @@
 # Planning Review
 
-상태: G01 Completed / Ready for G02
+상태: G02 Completed / Ready for G03
 검토일: 2026-07-25
 
 ## 1. 결론
@@ -105,5 +105,15 @@
 ## 9. 다음 실행 권장 문구
 
 ```text
-/goal TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/06_DEAL_ACTIVITY_TIMELINE/COMMON/GOAL-SPECS/G02_DEAL_ACTIVITY_DB_PRISMA.md 기준으로 G02를 구현해줘.
+/goal TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/06_DEAL_ACTIVITY_TIMELINE/COMMON/GOAL-SPECS/G03_DEAL_ACTIVITY_BACKEND.md 기준으로 G03을 구현해줘.
 ```
+
+## 10. G02 완료 기록
+
+- 완료일: 2026-07-26
+- `BE/prisma/schema.prisma`에 `DealActivityType`, `DealActivitySourceType`, `DealActivity`, `User.dealActivities`, `Deal.activities`를 추가했다.
+- 신규 migration `BE/prisma/migrations/20260726010000_add_deal_activity/migration.sql`만 추가했고 기존 migration 파일은 수정하지 않았다.
+- timeline 조회 index는 `occurredAt DESC, id DESC` 정렬을 직접 만족하도록 Prisma schema와 migration SQL에 desc index를 명시했다.
+- `DealActivityRepository` port와 `PrismaDealActivityRepository` helper/test를 추가했다.
+- `NBA-014` 확인 결과 DB target은 원격 Supabase다. `prisma migrate dev`, `prisma migrate deploy`, `prisma seed`는 실행하지 않았다.
+- 검증: `pnpm run prisma:validate`, `pnpm run prisma:generate`, `pnpm run typecheck`, `pnpm run lint`, `pnpm run test -- deal`, `pnpm run build` 통과.

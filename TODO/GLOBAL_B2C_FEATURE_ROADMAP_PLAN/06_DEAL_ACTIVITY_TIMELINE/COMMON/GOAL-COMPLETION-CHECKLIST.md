@@ -1,7 +1,7 @@
 # Goal Completion Checklist
 
-상태: G01 Completed / G02 Ready
-최종 업데이트: 2026-07-25
+상태: G02 Completed / G03 Ready
+최종 업데이트: 2026-07-26
 
 ## 1. 목적
 
@@ -14,8 +14,8 @@
 | 완료 | Goal | 상태 | 완료일 | 완료 기준 | 증거 | 비고 |
 |---|---|---|---|---|---|---|
 | [x] | G01 Planning API DB Contract | Completed | 2026-07-25 | 현재 코드와 계약 대조, blocking 질문 없음 | `PLANNING-REVIEW.md`, `pnpm run prisma:validate` | G02 착수 가능 |
-| [ ] | G02 Deal Activity DB Prisma | Ready |  | Prisma schema/migration/model/index 구현 |  | 신규 migration. NBA-014 선행 |
-| [ ] | G03 Deal Activity Backend | Ready |  | timeline API와 자동/수동 activity Backend 구현 |  |  |
+| [x] | G02 Deal Activity DB Prisma | Completed | 2026-07-26 | Prisma schema/migration/model/index 구현 | `BE/prisma/schema.prisma`, `20260726010000_add_deal_activity`, `pnpm run prisma:validate`, `pnpm run prisma:generate`, `pnpm run typecheck`, `pnpm run lint`, `pnpm run test -- deal`, `pnpm run build` | 원격 Supabase target 확인. migrate/seed 미실행 |
+| [ ] | G03 Deal Activity Backend | Ready |  | timeline API와 자동/수동 activity Backend 구현 |  | G02 완료 |
 | [ ] | G04 Deal Activity User Web | Ready |  | 딜 상세 timeline UX 구현 |  |  |
 | [ ] | G05 Deal Record Summary Backend | Ready |  | Deal/Contact list summary Backend 구현 |  |  |
 | [ ] | G06 Deal Record Summary User Web | Ready |  | 목록 summary User Web 구현 |  |  |
@@ -47,14 +47,22 @@ G01 증거:
 
 ### G02
 
-- [ ] `DealActivityType`, `DealActivitySourceType` enum이 있다.
-- [ ] `DealActivity` model이 있다.
-- [ ] `Deal` relation이 추가됐다.
-- [ ] migration SQL에 index/FK/주석 또는 `COMMENT ON`이 있다.
-- [ ] migration SQL에 table/column/index 의도 주석 또는 `COMMENT ON`이 있다.
-- [ ] 기존 migration 파일을 수정하지 않았다.
-- [ ] 공유/운영성 DB에 무단 migrate/seed를 실행하지 않았다.
-- [ ] `pnpm run prisma:validate`가 통과했다.
+- [x] `DealActivityType`, `DealActivitySourceType` enum이 있다.
+- [x] `DealActivity` model이 있다.
+- [x] `Deal` relation이 추가됐다.
+- [x] migration SQL에 index/FK/주석 또는 `COMMENT ON`이 있다.
+- [x] migration SQL에 table/column/index 의도 주석 또는 `COMMENT ON`이 있다.
+- [x] 기존 migration 파일을 수정하지 않았다.
+- [x] 공유/운영성 DB에 무단 migrate/seed를 실행하지 않았다.
+- [x] `pnpm run prisma:validate`가 통과했다.
+
+G02 증거:
+
+- 신규 migration: `BE/prisma/migrations/20260726010000_add_deal_activity/migration.sql`
+- Prisma schema: `DealActivityType`, `DealActivitySourceType`, `DealActivity`, `User.dealActivities`, `Deal.activities`
+- repository contract/helper/test: `deal-activity.repository.ts`, `prisma-deal-activity.repository.ts`, `prisma-deal-activity.repository.spec.ts`
+- DB target 확인: `DATABASE_URL`/`DIRECT_URL` host는 `aws-1-ap-northeast-2.pooler.supabase.com`, database는 `postgres`다. 원격 Supabase target이므로 `prisma migrate dev`, `prisma migrate deploy`, `prisma seed`는 실행하지 않았다.
+- 검증 통과: `pnpm run prisma:validate`, `pnpm run prisma:generate`, `pnpm run typecheck`, `pnpm run lint`, `pnpm run test -- deal`, `pnpm run build`
 
 ### G03
 
