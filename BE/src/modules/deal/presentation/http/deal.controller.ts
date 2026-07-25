@@ -24,13 +24,16 @@ import {
   CreateDealDto,
   CreateDealFollowingActionLogDto,
   CreateDealMemoLogDto,
+  CreateManualDealActivityDto,
   CursorQueryDto,
+  DealActivityListQueryDto,
   DealStageCountsQueryDto,
   ExportDealsQueryDto,
   ListDealsQueryDto,
   UpdateDealDto,
   UpdateDealFollowingActionLogDto,
   UpdateDealMemoLogDto,
+  UpdateManualDealActivityDto,
 } from "./dto/deal-request.dto";
 
 // 역할 : DealController HTTP API 요청을 받아 application 계층으로 위임합니다.
@@ -96,6 +99,54 @@ export class DealController {
   listProductOptions(@CurrentUser() currentUser: CurrentUserContext) {
     // 1. 현재 사용자의 제품 옵션 목록 조회를 application 계층으로 위임한다.
     return this.dealApplicationService.listProductOptions(currentUser);
+  }
+
+  // API : 딜 활동, timeline 목록 조회
+  @Get(":dealId/activities")
+  listDealActivities(
+    @CurrentUser() currentUser: CurrentUserContext,
+    @Param("dealId", ParseUUIDPipe) dealId: string,
+    @Query() query: DealActivityListQueryDto
+  ) {
+    // 1. 딜 ID와 cursor query를 application 계층으로 전달한다.
+    return this.dealApplicationService.listDealActivities(
+      currentUser,
+      dealId,
+      query
+    );
+  }
+
+  // API : 딜 활동, 수동 activity 생성
+  @Post(":dealId/activities")
+  @HttpCode(HttpStatus.CREATED)
+  createManualDealActivity(
+    @CurrentUser() currentUser: CurrentUserContext,
+    @Param("dealId", ParseUUIDPipe) dealId: string,
+    @Body() body: CreateManualDealActivityDto
+  ) {
+    // 1. 딜 ID와 수동 activity 생성 요청을 application 계층으로 전달한다.
+    return this.dealApplicationService.createManualDealActivity(
+      currentUser,
+      dealId,
+      body
+    );
+  }
+
+  // API : 딜 활동, 수동 activity 수정
+  @Patch(":dealId/activities/:activityId")
+  updateManualDealActivity(
+    @CurrentUser() currentUser: CurrentUserContext,
+    @Param("dealId", ParseUUIDPipe) dealId: string,
+    @Param("activityId", ParseUUIDPipe) activityId: string,
+    @Body() body: UpdateManualDealActivityDto
+  ) {
+    // 1. 딜 ID, activity ID, 수정 본문을 application 계층으로 전달한다.
+    return this.dealApplicationService.updateManualDealActivity(
+      currentUser,
+      dealId,
+      activityId,
+      body
+    );
   }
 
   // API : 딜, 딜 단건 상세 조회

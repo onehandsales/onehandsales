@@ -1,6 +1,6 @@
 # G03 Deal Activity Backend
 
-상태: Ready
+상태: Completed
 목표: DealActivity API와 자동 생성 Backend 구현
 
 ## 1. 목적
@@ -84,3 +84,23 @@ pnpm run build
 - linked record `targetPath`가 `/app/*` User Web route로 정규화된다.
 - follow-up 재시도 이력은 delivery attempt 단위로 중복 없이 기록된다.
 - redaction test가 있다.
+
+## 9. 완료 기록
+
+- 완료일: 2026-07-26
+- 구현:
+  - Deal Activity 목록/수동 생성/수동 수정 API
+  - 딜 생성/단계 변경/다음 행동 생성/완료 변경 자동 activity
+  - 일정 연결/해제 자동 activity
+  - 회의록 연결/해제 자동 activity
+  - follow-up 발송 성공/실패 자동 activity
+  - cursor, ownership, manual type validation, 자동 activity 수정 차단
+  - linkedRecords `/app/*` 정규화와 redaction 기준
+- 검증:
+  - `pnpm run typecheck`
+  - `pnpm run lint`
+  - `pnpm run test -- deal`
+  - `pnpm run test -- follow-up`
+  - `pnpm run test -- schedule`
+  - `pnpm run test -- meeting-note`
+  - `pnpm run build`

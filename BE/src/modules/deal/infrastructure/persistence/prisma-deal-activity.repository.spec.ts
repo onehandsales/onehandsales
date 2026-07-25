@@ -128,12 +128,14 @@ describe("PrismaDealActivityRepository", () => {
         id: ACTIVITY_ID,
       },
       take: 21,
+      type: "FOLLOW_UP_SENT",
     });
 
     expect(client.dealActivity.findMany).toHaveBeenCalledWith({
       where: {
         userId: USER_ID,
         dealId: DEAL_ID,
+        activityType: "FOLLOW_UP_SENT",
         deal: {
           deletedAt: null,
         },
@@ -159,6 +161,34 @@ describe("PrismaDealActivityRepository", () => {
     });
   });
 
+  it("finds a deal activity by ownership key before editable checks", async () => {
+    const client = createMockClient();
+    client.dealActivity.findFirst.mockResolvedValue(createActivityRow());
+    const repository = new PrismaDealActivityRepository(
+      client as unknown as PrismaService
+    );
+
+    await repository.findActivityByIdForDeal({
+      userId: USER_ID,
+      dealId: DEAL_ID,
+      activityId: ACTIVITY_ID,
+    });
+
+    expect(client.dealActivity.findFirst).toHaveBeenCalledWith({
+      where: {
+        id: ACTIVITY_ID,
+        userId: USER_ID,
+        dealId: DEAL_ID,
+        deal: {
+          deletedAt: null,
+        },
+      },
+      select: expect.objectContaining({
+        id: true,
+      }),
+    });
+  });
+
   it("updates only user-created activities", async () => {
     const client = createMockClient();
     client.dealActivity.updateMany.mockResolvedValue({ count: 1 });
@@ -173,6 +203,7 @@ describe("PrismaDealActivityRepository", () => {
       userId: USER_ID,
       dealId: DEAL_ID,
       activityId: ACTIVITY_ID,
+      activityType: "MEETING",
       title: "통화 완료",
       linkedRecordsJson: null,
     });
@@ -185,6 +216,7 @@ describe("PrismaDealActivityRepository", () => {
         sourceType: "USER",
       },
       data: {
+        activityType: "MEETING",
         title: "통화 완료",
         linkedRecordsJson: Prisma.JsonNull,
       },

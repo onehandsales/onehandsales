@@ -30,16 +30,26 @@ import {
   type DeleteDealInput,
   type DeleteDealMemoLogInput,
   type ExportDealsInput,
+  type FindDealFollowingActionLogInput,
   type ListDealsInput,
   type UpdateDealFollowingActionLogInput,
   type UpdateDealInput,
   type UpdateDealMemoLogInput,
 } from "@/modules/deal/application/ports/deal.repository";
+import type {
+  CreateDealActivityInput,
+  DealActivityRecord,
+  FindDealActivityByIdInput,
+  FindDealActivityBySourceInput,
+  ListDealActivitiesForDealInput,
+  UpdateUserDealActivityInput,
+} from "@/modules/deal/application/ports/deal-activity.repository";
 import {
   type DealStatusCode,
   isDealStatusCode,
 } from "@/modules/deal/domain/deal-status";
 import { PrismaService } from "@/shared/infrastructure/prisma/prisma.service";
+import { PrismaDealActivityRepository } from "./prisma-deal-activity.repository";
 
 type DealPrismaClient = PrismaService | Prisma.TransactionClient;
 
@@ -577,6 +587,21 @@ export class PrismaDealRepository implements DealRepository {
     });
   }
 
+  // 기능 : 딜 다음 행동 로그 단건을 조회합니다.
+  async findFollowingActionLog(
+    input: FindDealFollowingActionLogInput
+  ): Promise<DealFollowingActionLogRecord | null> {
+    return this.client.dealFollowingActionLog.findFirst({
+      where: {
+        id: input.followingActionLogId,
+        userId: input.userId,
+        dealId: input.dealId,
+        deletedAt: null,
+      },
+      select: this.createFollowingActionLogSelect(),
+    });
+  }
+
   // 기능 : 딜 다음 행동 로그를 수정합니다.
   async updateFollowingActionLog(
     input: UpdateDealFollowingActionLogInput
@@ -718,9 +743,49 @@ export class PrismaDealRepository implements DealRepository {
     return result.count > 0;
   }
 
+  // 기능 : 딜 활동 행 생성을 activity 저장소로 위임합니다.
+  async createActivity(
+    input: CreateDealActivityInput
+  ): Promise<DealActivityRecord> {
+    return this.createDealActivityRepository().createActivity(input);
+  }
+
+  // 기능 : 자동 활동 원본 기준 조회를 activity 저장소로 위임합니다.
+  async findActivityBySource(
+    input: FindDealActivityBySourceInput
+  ): Promise<DealActivityRecord | null> {
+    return this.createDealActivityRepository().findActivityBySource(input);
+  }
+
+  // 기능 : 딜 활동 단건 조회를 activity 저장소로 위임합니다.
+  async findActivityByIdForDeal(
+    input: FindDealActivityByIdInput
+  ): Promise<DealActivityRecord | null> {
+    return this.createDealActivityRepository().findActivityByIdForDeal(input);
+  }
+
+  // 기능 : 딜 활동 목록 조회를 activity 저장소로 위임합니다.
+  async listActivitiesForDeal(
+    input: ListDealActivitiesForDealInput
+  ): Promise<DealActivityRecord[]> {
+    return this.createDealActivityRepository().listActivitiesForDeal(input);
+  }
+
+  // 기능 : 수동 딜 활동 수정을 activity 저장소로 위임합니다.
+  async updateUserActivity(
+    input: UpdateUserDealActivityInput
+  ): Promise<DealActivityRecord | null> {
+    return this.createDealActivityRepository().updateUserActivity(input);
+  }
+
   // 기능 : 딜 목록과 export에 공통으로 쓰는 Prisma 조회 조건을 생성합니다.
   private createNotificationRepository(): PrismaNotificationRepository {
     return new PrismaNotificationRepository(this.client, null);
+  }
+
+  // 기능 : 현재 client 범위에서 딜 활동 저장소를 생성합니다.
+  private createDealActivityRepository(): PrismaDealActivityRepository {
+    return new PrismaDealActivityRepository(this.client, null);
   }
 
   private createDealWhere(

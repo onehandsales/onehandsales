@@ -7,6 +7,13 @@ import {
 } from "@/modules/notification/application/ports/notification.repository";
 import { PrismaNotificationRepository } from "@/modules/notification/infrastructure/persistence/prisma-notification.repository";
 import {
+  createDealActivityIfAbsent,
+  createDealActivityLinkedRecord,
+  createDealLinkedRecord,
+  createSafeActivitySummary,
+} from "@/modules/deal/application/services/deal-activity-helper";
+import { PrismaDealActivityRepository } from "@/modules/deal/infrastructure/persistence/prisma-deal-activity.repository";
+import {
   type CreateScheduleDealsInput,
   type CreateScheduleInput,
   type DeleteScheduleDealsInput,
@@ -35,6 +42,24 @@ type ScheduleDealRow = {
   readonly deal: {
     readonly id: string;
     readonly dealName: string;
+  };
+};
+
+type ScheduleActivityContext = {
+  readonly id: string;
+  readonly scheduleTitle: string;
+  readonly startAt: Date;
+};
+
+type ScheduleDealActivityRow = {
+  readonly id: string;
+  readonly dealId: string;
+  readonly deal: {
+    readonly id: string;
+    readonly dealName: string;
+  };
+  readonly schedule: ScheduleActivityContext & {
+    readonly deletedAt: Date | null;
   };
 };
 
@@ -325,17 +350,38 @@ export class PrismaScheduleRepository implements ScheduleRepository {
 
   // 기능 : 일정에 딜 목록을 연결합니다.
   async createScheduleDeals(input: CreateScheduleDealsInput): Promise<void> {
-    await Promise.all(
-      input.dealIds.map((dealId) =>
-        this.client.scheduleDeal.create({
-          data: {
-            userId: input.userId,
-            scheduleId: input.scheduleId,
-            dealId,
-          },
-        })
-      )
-    );
+    const [schedule, dealMap] = await Promise.all([
+      this.findScheduleActivityContext(input.userId, input.scheduleId),
+      this.findDealActivityLabelMap(input.userId, input.dealIds),
+    ]);
+
+    for (const dealId of input.dealIds) {
+      const scheduleDeal = await this.client.scheduleDeal.create({
+        data: {
+          userId: input.userId,
+          scheduleId: input.scheduleId,
+          dealId,
+        },
+        select: {
+          id: true,
+        },
+      });
+
+      const deal = dealMap.get(dealId);
+
+      if (schedule && deal) {
+        await this.createScheduleActivity({
+          userId: input.userId,
+          dealId,
+          dealName: deal.dealName,
+          schedule,
+          sourceId: scheduleDeal.id,
+          activityType: "SCHEDULE_LINKED",
+          title: "일정을 연결했어요.",
+          occurredAt: new Date(),
+        });
+      }
+    }
   }
 
   // 기능 : 일정에서 딜 연결 목록을 삭제합니다.
@@ -344,6 +390,8 @@ export class PrismaScheduleRepository implements ScheduleRepository {
       return;
     }
 
+    const scheduleDeals = await this.findScheduleDealActivityRows(input);
+
     await this.client.scheduleDeal.deleteMany({
       where: {
         userId: input.userId,
@@ -351,6 +399,23 @@ export class PrismaScheduleRepository implements ScheduleRepository {
         dealId: { in: [...input.dealIds] },
       },
     });
+
+    for (const scheduleDeal of scheduleDeals) {
+      if (scheduleDeal.schedule.deletedAt) {
+        continue;
+      }
+
+      await this.createScheduleActivity({
+        userId: input.userId,
+        dealId: scheduleDeal.dealId,
+        dealName: scheduleDeal.deal.dealName,
+        schedule: scheduleDeal.schedule,
+        sourceId: scheduleDeal.id,
+        activityType: "SCHEDULE_UNLINKED",
+        title: "일정 연결을 해제했어요.",
+        occurredAt: new Date(),
+      });
+    }
   }
 
   // 기능 : 현재 사용자의 일정을 휴지통 복구 가능 상태로 표시합니다.
@@ -593,6 +658,127 @@ export class PrismaScheduleRepository implements ScheduleRepository {
 
   private createNotificationRepository(): PrismaNotificationRepository {
     return new PrismaNotificationRepository(this.client, null);
+  }
+
+  // 기능 : 현재 client 범위에서 딜 활동 저장소를 생성합니다.
+  private createDealActivityRepository(): PrismaDealActivityRepository {
+    return new PrismaDealActivityRepository(this.client, null);
+  }
+
+  // 기능 : 일정 activity summary에 필요한 일정 snapshot을 조회합니다.
+  private async findScheduleActivityContext(
+    userId: string,
+    scheduleId: string
+  ): Promise<ScheduleActivityContext | null> {
+    const schedule = await this.client.schedule.findFirst({
+      where: {
+        id: scheduleId,
+        userId,
+        deletedAt: null,
+      },
+      select: {
+        id: true,
+        scheduleTitle: true,
+        startAt: true,
+      },
+    });
+
+    return schedule;
+  }
+
+  // 기능 : activity에 표시할 딜 label map을 조회합니다.
+  private async findDealActivityLabelMap(
+    userId: string,
+    dealIds: readonly string[]
+  ): Promise<Map<string, { readonly id: string; readonly dealName: string }>> {
+    if (dealIds.length === 0) {
+      return new Map();
+    }
+
+    const deals = await this.client.deal.findMany({
+      where: {
+        id: { in: [...dealIds] },
+        userId,
+        deletedAt: null,
+      },
+      select: {
+        id: true,
+        dealName: true,
+      },
+    });
+
+    return new Map(deals.map((deal) => [deal.id, deal]));
+  }
+
+  // 기능 : 삭제 전 ScheduleDeal activity 생성에 필요한 snapshot을 조회합니다.
+  private async findScheduleDealActivityRows(
+    input: DeleteScheduleDealsInput
+  ): Promise<ScheduleDealActivityRow[]> {
+    return this.client.scheduleDeal.findMany({
+      where: {
+        userId: input.userId,
+        scheduleId: input.scheduleId,
+        dealId: { in: [...input.dealIds] },
+      },
+      select: {
+        id: true,
+        dealId: true,
+        deal: {
+          select: {
+            id: true,
+            dealName: true,
+          },
+        },
+        schedule: {
+          select: {
+            id: true,
+            scheduleTitle: true,
+            startAt: true,
+            deletedAt: true,
+          },
+        },
+      },
+    });
+  }
+
+  // 기능 : 일정-딜 연결 변경 activity를 안전한 summary와 링크로 생성합니다.
+  private async createScheduleActivity(input: {
+    readonly userId: string;
+    readonly dealId: string;
+    readonly dealName: string;
+    readonly schedule: ScheduleActivityContext;
+    readonly sourceId: string;
+    readonly activityType: "SCHEDULE_LINKED" | "SCHEDULE_UNLINKED";
+    readonly title: string;
+    readonly occurredAt: Date;
+  }): Promise<void> {
+    await createDealActivityIfAbsent(this.createDealActivityRepository(), {
+      userId: input.userId,
+      dealId: input.dealId,
+      activityType: input.activityType,
+      sourceType: "SCHEDULE",
+      sourceId: input.sourceId,
+      title: input.title,
+      summary: createSafeActivitySummary(
+        `${input.schedule.scheduleTitle} ${input.schedule.startAt.toISOString()}`
+      ),
+      body: null,
+      occurredAt: input.occurredAt,
+      linkedRecordsJson: [
+        createDealLinkedRecord(input.dealId, input.dealName),
+        createDealActivityLinkedRecord({
+          targetType: "SCHEDULE",
+          targetId: input.schedule.id,
+          targetPath: `/schedules/${input.schedule.id}`,
+          targetLabel: input.schedule.scheduleTitle,
+        }),
+      ],
+      metadataJson: {
+        scheduleId: input.schedule.id,
+        scheduleTitle: input.schedule.scheduleTitle,
+        startAt: input.schedule.startAt.toISOString(),
+      },
+    });
   }
 
   // 기능 : Prisma 일정 row를 application record로 변환합니다.

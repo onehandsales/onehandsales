@@ -1,4 +1,13 @@
 import {
+  type CreateDealActivityInput,
+  type DealActivityCursor,
+  type DealActivityRecord,
+  type FindDealActivityByIdInput,
+  type FindDealActivityBySourceInput,
+  type ListDealActivitiesForDealInput,
+  type UpdateUserDealActivityInput,
+} from "@/modules/deal/application/ports/deal-activity.repository";
+import {
   DealListSort,
   type CountDealsByStatusInput,
   type CreateDealCompaniesInput,
@@ -20,12 +29,16 @@ import {
   type DeleteDealInput,
   type DeleteDealMemoLogInput,
   type ExportDealsInput,
+  type FindDealFollowingActionLogInput,
   type ListDealsInput,
   type UpdateDealFollowingActionLogInput,
   type UpdateDealInput,
   type UpdateDealMemoLogInput,
 } from "@/modules/deal/application/ports/deal.repository";
-import { RelatedResourceNotFoundError } from "@/modules/deal/domain/deal.errors";
+import {
+  DealActivityNotEditableError,
+  RelatedResourceNotFoundError,
+} from "@/modules/deal/domain/deal.errors";
 import { DealStatusCode } from "@/modules/deal/domain/deal-status";
 import {
   CancelDealDueReminderUseCase,
@@ -142,6 +155,7 @@ class FakeDealRepository implements DealRepository {
   dealProductIds = new Map<string, string[]>();
   followingActionLogs: DealFollowingActionLogRecord[] = [];
   memoLogs: DealMemoLogRecord[] = [];
+  dealActivities: DealActivityRecord[] = [];
   transactionCount = 0;
 
   // 기능 : fake transaction을 현재 저장소에서 즉시 실행합니다.
@@ -402,6 +416,17 @@ class FakeDealRepository implements DealRepository {
     );
   }
 
+  // 기능 : fake 다음 행동 로그 단건을 반환합니다.
+  async findFollowingActionLog(
+    input: FindDealFollowingActionLogInput
+  ): Promise<DealFollowingActionLogRecord | null> {
+    return (
+      this.followingActionLogs.find(
+        (item) => item.id === input.followingActionLogId
+      ) ?? null
+    );
+  }
+
   // 기능 : fake 다음 행동 로그를 수정합니다.
   async updateFollowingActionLog(
     input: UpdateDealFollowingActionLogInput
@@ -499,6 +524,118 @@ class FakeDealRepository implements DealRepository {
     this.memoLogs = this.memoLogs.filter((item) => item.id !== input.memoLogId);
 
     return this.memoLogs.length < beforeCount;
+  }
+
+  // 기능 : fake 딜 활동을 생성합니다.
+  async createActivity(input: CreateDealActivityInput): Promise<DealActivityRecord> {
+    const createdAt = input.occurredAt;
+    const activity: DealActivityRecord = {
+      id: `activity-${this.dealActivities.length + 1}`,
+      userId: input.userId,
+      dealId: input.dealId,
+      activityType: input.activityType,
+      sourceType: input.sourceType,
+      sourceId: input.sourceId ?? null,
+      title: input.title,
+      summary: input.summary ?? null,
+      body: input.body ?? null,
+      occurredAt: input.occurredAt,
+      linkedRecordsJson: input.linkedRecordsJson ?? null,
+      metadataJson: input.metadataJson ?? null,
+      createdAt,
+      updatedAt: createdAt,
+    };
+
+    this.dealActivities.push(activity);
+
+    return activity;
+  }
+
+  // 기능 : fake 딜 활동을 source 기준으로 조회합니다.
+  async findActivityBySource(
+    input: FindDealActivityBySourceInput
+  ): Promise<DealActivityRecord | null> {
+    return (
+      this.dealActivities.find(
+        (activity) =>
+          activity.userId === input.userId &&
+          activity.dealId === input.dealId &&
+          activity.activityType === input.activityType &&
+          activity.sourceType === input.sourceType &&
+          activity.sourceId === input.sourceId
+      ) ?? null
+    );
+  }
+
+  // 기능 : fake 딜 활동 단건을 조회합니다.
+  async findActivityByIdForDeal(
+    input: FindDealActivityByIdInput
+  ): Promise<DealActivityRecord | null> {
+    return (
+      this.dealActivities.find(
+        (activity) =>
+          activity.id === input.activityId &&
+          activity.userId === input.userId &&
+          activity.dealId === input.dealId
+      ) ?? null
+    );
+  }
+
+  // 기능 : fake 딜 활동 목록을 최신순 cursor 조건으로 반환합니다.
+  async listActivitiesForDeal(
+    input: ListDealActivitiesForDealInput
+  ): Promise<DealActivityRecord[]> {
+    const records = this.dealActivities.filter(
+      (activity) =>
+        activity.userId === input.userId &&
+        activity.dealId === input.dealId &&
+        (!input.type || activity.activityType === input.type)
+    );
+
+    return this.applyActivityCursor(
+      this.sortActivities(records),
+      input.cursor
+    ).slice(0, input.take);
+  }
+
+  // 기능 : fake 수동 딜 활동만 수정합니다.
+  async updateUserActivity(
+    input: UpdateUserDealActivityInput
+  ): Promise<DealActivityRecord | null> {
+    const activity = this.dealActivities.find(
+      (item) =>
+        item.id === input.activityId &&
+        item.userId === input.userId &&
+        item.dealId === input.dealId &&
+        item.sourceType === "USER"
+    );
+
+    if (!activity) {
+      return null;
+    }
+
+    const updated: DealActivityRecord = {
+      ...activity,
+      ...(input.activityType !== undefined
+        ? { activityType: input.activityType }
+        : {}),
+      ...(input.title !== undefined ? { title: input.title } : {}),
+      ...(input.summary !== undefined ? { summary: input.summary } : {}),
+      ...(input.body !== undefined ? { body: input.body } : {}),
+      ...(input.occurredAt !== undefined ? { occurredAt: input.occurredAt } : {}),
+      ...(input.linkedRecordsJson !== undefined
+        ? { linkedRecordsJson: input.linkedRecordsJson }
+        : {}),
+      ...(input.metadataJson !== undefined
+        ? { metadataJson: input.metadataJson }
+        : {}),
+      updatedAt: new Date("2026-06-12T11:00:00.000Z"),
+    };
+    this.dealActivities = this.dealActivities.map((item) =>
+      item.id === activity.id ? updated : item
+    );
+
+    return updated;
   }
 
   private filterDeals(
@@ -668,6 +805,35 @@ class FakeDealRepository implements DealRepository {
       );
     });
   }
+
+  // 기능 : fake activity 목록을 최신순으로 정렬합니다.
+  private sortActivities(records: DealActivityRecord[]): DealActivityRecord[] {
+    return [...records].sort((left, right) => {
+      const timeDiff = right.occurredAt.getTime() - left.occurredAt.getTime();
+      return timeDiff !== 0 ? timeDiff : right.id.localeCompare(left.id);
+    });
+  }
+
+  // 기능 : fake activity 목록에 cursor 이후 조건을 적용합니다.
+  private applyActivityCursor(
+    records: DealActivityRecord[],
+    cursor: DealActivityCursor | null
+  ): DealActivityRecord[] {
+    if (!cursor) {
+      return records;
+    }
+
+    return records.filter((record) => {
+      if (record.occurredAt.getTime() < cursor.occurredAt.getTime()) {
+        return true;
+      }
+
+      return (
+        record.occurredAt.getTime() === cursor.occurredAt.getTime() &&
+        record.id < cursor.id
+      );
+    });
+  }
 }
 
 // 역할 : FakeXlsxWorkbookWriter 테스트용 xlsx writer를 구현합니다.
@@ -683,8 +849,12 @@ class FakeXlsxWorkbookWriter implements XlsxWorkbookWriter {
 
 // 역할 : FakeAppLogger 테스트 로그 출력을 막는 logger입니다.
 class FakeAppLogger extends AppLogger {
-  // 기능 : 테스트에서 정보 로그를 무시합니다.
-  override log(): void {}
+  readonly messages: string[] = [];
+
+  // 기능 : 테스트에서 정보 로그를 수집합니다.
+  override log(message: string): void {
+    this.messages.push(message);
+  }
 }
 
 // 기능 : DealApplicationService 테스트 인스턴스를 생성합니다.
@@ -695,6 +865,7 @@ function createServiceHarness(
   readonly service: DealApplicationService;
   readonly scheduleDealDueReminder: ScheduleDealDueReminderUseCase;
   readonly cancelDealDueReminder: CancelDealDueReminderUseCase;
+  readonly logger: FakeAppLogger;
 } {
   const scheduleDealDueReminder = {
     execute: jest.fn().mockResolvedValue({
@@ -713,18 +884,20 @@ function createServiceHarness(
     executeWithRepository: jest.fn().mockResolvedValue(0),
   } as unknown as CancelDealDueReminderUseCase;
 
+  const logger = new FakeAppLogger();
   const service = new DealApplicationService(
     repository,
     writer,
     scheduleDealDueReminder,
     cancelDealDueReminder,
-    new FakeAppLogger()
+    logger
   );
 
   return {
     service,
     scheduleDealDueReminder,
     cancelDealDueReminder,
+    logger,
   };
 }
 
@@ -770,6 +943,10 @@ describe("DealApplicationService", () => {
     expect(repository.transactionCount).toBe(1);
     expect(repository.deals).toHaveLength(1);
     expect(repository.followingActionLogs).toHaveLength(1);
+    expect(repository.dealActivities.map((activity) => activity.activityType)).toEqual([
+      "DEAL_CREATED",
+      "NEXT_ACTION_CREATED",
+    ]);
     expect(repository.deals[0]?.expectedEndDate.toISOString()).toBe(
       "2026-01-05T00:00:00.000Z"
     );
@@ -804,6 +981,146 @@ describe("DealApplicationService", () => {
     expect(result.products[0]?.productStatus.statusName).toBe("판매중");
     expect(result.products[0]?.productPrice).toBe(1200000);
     expect(result.latestFollowingAction?.followingAction).toBe("제안서 발송");
+  });
+
+  it("lists, creates, and updates manual deal activities with opaque cursor", async () => {
+    const repository = new FakeDealRepository();
+    const service = createService(repository);
+    const createdDeal = await service.createDeal(CURRENT_USER, createDealCommand());
+
+    const manual = await service.createManualDealActivity(
+      CURRENT_USER,
+      createdDeal.id,
+      {
+        activityType: "CALL",
+        title: " 도입 일정 확인 통화 ",
+        body: " 내부 검토 후 회신 ",
+        occurredAt: "2026-06-12T12:00:00.000Z",
+      }
+    );
+
+    expect(manual).toMatchObject({
+      activityType: "CALL",
+      sourceType: "USER",
+      title: "도입 일정 확인 통화",
+      body: "내부 검토 후 회신",
+      isEditable: true,
+    });
+    expect(manual.linkedRecords[0]?.targetPath).toBe(`/app/deals/${createdDeal.id}`);
+
+    const updated = await service.updateManualDealActivity(
+      CURRENT_USER,
+      createdDeal.id,
+      manual.id,
+      {
+        activityType: "MEETING",
+        title: "범위 재확인 미팅",
+        body: "",
+      }
+    );
+
+    expect(updated.activityType).toBe("MEETING");
+    expect(updated.body).toBeNull();
+
+    repository.dealActivities = [
+      ...repository.dealActivities,
+      ...Array.from({ length: 10 }, (_, index): DealActivityRecord => {
+        const order = index + 1;
+        const occurredAt = new Date(
+          `2026-06-12T12:${order.toString().padStart(2, "0")}:00.000Z`
+        );
+
+        return {
+          id: `manual-page-${order.toString().padStart(2, "0")}`,
+          userId: CURRENT_USER.id,
+          dealId: createdDeal.id,
+          activityType: "NOTE",
+          sourceType: "USER",
+          sourceId: null,
+          title: `활동 ${order}`,
+          summary: null,
+          body: null,
+          occurredAt,
+          linkedRecordsJson: null,
+          metadataJson: null,
+          createdAt: occurredAt,
+          updatedAt: occurredAt,
+        };
+      }),
+    ];
+
+    const firstPage = await service.listDealActivities(
+      CURRENT_USER,
+      createdDeal.id,
+      { type: "NOTE" }
+    );
+
+    expect(firstPage.items).toHaveLength(10);
+    expect(firstPage.items[0]?.title).toBe("활동 10");
+    expect(firstPage.hasNext).toBe(false);
+  });
+
+  it("does not write manual activity title or body to structured logs", async () => {
+    const repository = new FakeDealRepository();
+    const { service, logger } = createServiceHarness(repository);
+    const createdDeal = await service.createDeal(CURRENT_USER, createDealCommand());
+
+    await service.createManualDealActivity(CURRENT_USER, createdDeal.id, {
+      activityType: "NOTE",
+      title: "민감 제목",
+      body: "민감 본문",
+      occurredAt: "2026-06-12T12:00:00.000Z",
+    });
+
+    const serializedLogs = logger.messages.join("\n");
+
+    expect(serializedLogs).toContain("deal.activity.manual_created");
+    expect(serializedLogs).not.toContain("민감 제목");
+    expect(serializedLogs).not.toContain("민감 본문");
+  });
+
+  it("blocks automatic deal activity updates", async () => {
+    const repository = new FakeDealRepository();
+    const service = createService(repository);
+    const createdDeal = await service.createDeal(CURRENT_USER, createDealCommand());
+    const automatic = repository.dealActivities.find(
+      (activity) => activity.activityType === "DEAL_CREATED"
+    );
+
+    if (!automatic) {
+      throw new Error("Missing automatic activity");
+    }
+
+    await expect(
+      service.updateManualDealActivity(CURRENT_USER, createdDeal.id, automatic.id, {
+        title: "수정 시도",
+      })
+    ).rejects.toBeInstanceOf(DealActivityNotEditableError);
+  });
+
+  it("creates a next action completion activity only when completion changes", async () => {
+    const repository = new FakeDealRepository();
+    const service = createService(repository);
+    const createdDeal = await service.createDeal(CURRENT_USER, createDealCommand());
+    const log = repository.followingActionLogs[0];
+
+    if (!log) {
+      throw new Error("Missing following action log");
+    }
+
+    await service.updateFollowingActionLog(CURRENT_USER, createdDeal.id, log.id, {
+      checkComplete: true,
+    });
+    await service.updateFollowingActionLog(CURRENT_USER, createdDeal.id, log.id, {
+      checkComplete: true,
+    });
+
+    expect(
+      repository.dealActivities.filter(
+        (activity) =>
+          activity.activityType === "NEXT_ACTION_COMPLETION_CHANGED"
+      )
+    ).toHaveLength(1);
   });
 
   it("딜 생성 시 마감일 reminder 예약을 같은 transaction에서 요청한다", async () => {

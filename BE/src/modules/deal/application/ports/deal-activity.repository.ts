@@ -1,21 +1,36 @@
 export const DEAL_ACTIVITY_REPOSITORY = Symbol("DEAL_ACTIVITY_REPOSITORY");
 
+export const DEAL_ACTIVITY_TYPES = [
+  "DEAL_CREATED",
+  "STAGE_CHANGED",
+  "NEXT_ACTION_CREATED",
+  "NEXT_ACTION_COMPLETION_CHANGED",
+  "SCHEDULE_LINKED",
+  "SCHEDULE_UNLINKED",
+  "MEETING_NOTE_LINKED",
+  "MEETING_NOTE_UNLINKED",
+  "FOLLOW_UP_SENT",
+  "FOLLOW_UP_FAILED",
+  "CALL",
+  "MEETING",
+  "EMAIL",
+  "VISIT",
+  "NOTE",
+] as const;
+
+export const MANUAL_DEAL_ACTIVITY_TYPES = [
+  "CALL",
+  "MEETING",
+  "EMAIL",
+  "VISIT",
+  "NOTE",
+] as const;
+
 export type DealActivityTypeCode =
-  | "DEAL_CREATED"
-  | "STAGE_CHANGED"
-  | "NEXT_ACTION_CREATED"
-  | "NEXT_ACTION_COMPLETION_CHANGED"
-  | "SCHEDULE_LINKED"
-  | "SCHEDULE_UNLINKED"
-  | "MEETING_NOTE_LINKED"
-  | "MEETING_NOTE_UNLINKED"
-  | "FOLLOW_UP_SENT"
-  | "FOLLOW_UP_FAILED"
-  | "CALL"
-  | "MEETING"
-  | "EMAIL"
-  | "VISIT"
-  | "NOTE";
+  (typeof DEAL_ACTIVITY_TYPES)[number];
+
+export type ManualDealActivityTypeCode =
+  (typeof MANUAL_DEAL_ACTIVITY_TYPES)[number];
 
 export type DealActivitySourceTypeCode =
   | "SYSTEM"
@@ -73,12 +88,20 @@ export interface FindDealActivityBySourceInput {
   readonly sourceId: string;
 }
 
+// 역할 : FindDealActivityByIdInput 데이터가 계층 사이에서 전달되는 단건 조회 기준을 정의합니다.
+export interface FindDealActivityByIdInput {
+  readonly userId: string;
+  readonly dealId: string;
+  readonly activityId: string;
+}
+
 // 역할 : ListDealActivitiesForDealInput 데이터가 계층 사이에서 전달되는 목록 조회 기준을 정의합니다.
 export interface ListDealActivitiesForDealInput {
   readonly userId: string;
   readonly dealId: string;
   readonly cursor: DealActivityCursor | null;
   readonly take: number;
+  readonly type?: DealActivityTypeCode;
 }
 
 // 역할 : UpdateUserDealActivityInput 데이터가 계층 사이에서 전달되는 수동 활동 수정 값을 정의합니다.
@@ -86,6 +109,7 @@ export interface UpdateUserDealActivityInput {
   readonly userId: string;
   readonly dealId: string;
   readonly activityId: string;
+  readonly activityType?: DealActivityTypeCode;
   readonly title?: string;
   readonly summary?: string | null;
   readonly body?: string | null;
@@ -105,6 +129,10 @@ export interface DealActivityRepository {
   // 기능 : 자동 활동 원본 기준으로 기존 딜 활동을 조회합니다.
   findActivityBySource(
     input: FindDealActivityBySourceInput
+  ): Promise<DealActivityRecord | null>;
+  // 기능 : 현재 사용자의 딜 활동 단건을 조회합니다.
+  findActivityByIdForDeal(
+    input: FindDealActivityByIdInput
   ): Promise<DealActivityRecord | null>;
   // 기능 : 현재 사용자의 딜 활동 목록을 최신순 커서 기준으로 조회합니다.
   listActivitiesForDeal(

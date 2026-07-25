@@ -30,6 +30,7 @@ const CONTACT_ID = "00000000-0000-4000-8000-000000000003";
 const PRODUCT_ID = "00000000-0000-4000-8000-000000000004";
 const FOLLOWING_ACTION_LOG_ID = "00000000-0000-4000-8000-000000000005";
 const MEMO_LOG_ID = "00000000-0000-4000-8000-000000000006";
+const ACTIVITY_ID = "00000000-0000-4000-8000-000000000007";
 
 type RequestWithCurrentUser = Request & {
   currentUser?: CurrentUserContext;
@@ -47,6 +48,9 @@ type DealServiceFake = Pick<
   | "createDeal"
   | "updateDeal"
   | "deleteDeal"
+  | "listDealActivities"
+  | "createManualDealActivity"
+  | "updateManualDealActivity"
   | "listFollowingActionLogs"
   | "createFollowingActionLog"
   | "updateFollowingActionLog"
@@ -92,6 +96,13 @@ function createDealServiceFake(): jest.Mocked<DealServiceFake> {
     createDeal: jest.fn().mockResolvedValue({ id: DEAL_ID }),
     updateDeal: jest.fn().mockResolvedValue({ id: DEAL_ID }),
     deleteDeal: jest.fn().mockResolvedValue(undefined),
+    listDealActivities: jest.fn().mockResolvedValue({
+      items: [],
+      nextCursor: null,
+      hasNext: false,
+    }),
+    createManualDealActivity: jest.fn().mockResolvedValue({ id: ACTIVITY_ID }),
+    updateManualDealActivity: jest.fn().mockResolvedValue({ id: ACTIVITY_ID }),
     listFollowingActionLogs: jest.fn().mockResolvedValue({
       items: [],
       nextCursor: null,
@@ -221,7 +232,27 @@ describe("DealController", () => {
   });
 
   // 기능 : 다음 행동 로그와 메모 로그 route가 계약 body를 application 계층으로 전달하는지 검증합니다.
-  it("routes following action and memo log requests", async () => {
+  it("routes activity, following action, and memo log requests", async () => {
+    await request(app.getHttpServer())
+      .get(`/api/deals/${DEAL_ID}/activities?cursor=next-activity&type=CALL`)
+      .expect(200);
+    await request(app.getHttpServer())
+      .post(`/api/deals/${DEAL_ID}/activities`)
+      .send({
+        activityType: "CALL",
+        title: "도입 일정 확인 통화",
+        body: "내부 검토 후 회신",
+        occurredAt: "2026-07-25T04:30:00.000Z",
+      })
+      .expect(201);
+    await request(app.getHttpServer())
+      .patch(`/api/deals/${DEAL_ID}/activities/${ACTIVITY_ID}`)
+      .send({
+        activityType: "MEETING",
+        title: "도입 범위 재확인 미팅",
+        body: null,
+      })
+      .expect(200);
     await request(app.getHttpServer())
       .get(`/api/deals/${DEAL_ID}/following-action-logs?cursor=next-following`)
       .expect(200);
@@ -247,6 +278,30 @@ describe("DealController", () => {
       .send({ memoType: "중요", memo: "최종 견적 전달" })
       .expect(200);
 
+    expect(service.listDealActivities).toHaveBeenCalledWith(CURRENT_USER, DEAL_ID, {
+      cursor: "next-activity",
+      type: "CALL",
+    });
+    expect(service.createManualDealActivity).toHaveBeenCalledWith(
+      CURRENT_USER,
+      DEAL_ID,
+      {
+        activityType: "CALL",
+        title: "도입 일정 확인 통화",
+        body: "내부 검토 후 회신",
+        occurredAt: "2026-07-25T04:30:00.000Z",
+      }
+    );
+    expect(service.updateManualDealActivity).toHaveBeenCalledWith(
+      CURRENT_USER,
+      DEAL_ID,
+      ACTIVITY_ID,
+      {
+        activityType: "MEETING",
+        title: "도입 범위 재확인 미팅",
+        body: null,
+      }
+    );
     expect(service.listFollowingActionLogs).toHaveBeenCalledWith(
       CURRENT_USER,
       DEAL_ID,
@@ -305,6 +360,14 @@ describe("DealController", () => {
         dealStatus: DealStatusCode.INITIAL_CONTACT,
         followingAction: "제안서 발송",
         expectedEndDate: "2026-01-05T00:00:00.000Z",
+      })
+      .expect(400);
+
+    await request(app.getHttpServer())
+      .post(`/api/deals/${DEAL_ID}/activities`)
+      .send({
+        activityType: "DEAL_CREATED",
+        title: "자동 타입 시도",
       })
       .expect(400);
   });

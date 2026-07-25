@@ -6,6 +6,7 @@ import type {
   DealActivityRepository,
   DealActivitySourceTypeCode,
   DealActivityTypeCode,
+  FindDealActivityByIdInput,
   FindDealActivityBySourceInput,
   ListDealActivitiesForDealInput,
   UpdateUserDealActivityInput,
@@ -103,6 +104,25 @@ export class PrismaDealActivityRepository implements DealActivityRepository {
     return activity ? this.mapDealActivity(activity) : null;
   }
 
+  // 기능 : 현재 사용자의 딜 활동 단건을 조회합니다.
+  async findActivityByIdForDeal(
+    input: FindDealActivityByIdInput
+  ): Promise<DealActivityRecord | null> {
+    const activity = await this.client.dealActivity.findFirst({
+      where: {
+        id: input.activityId,
+        userId: input.userId,
+        dealId: input.dealId,
+        deal: {
+          deletedAt: null,
+        },
+      },
+      select: this.createDealActivitySelect(),
+    });
+
+    return activity ? this.mapDealActivity(activity) : null;
+  }
+
   // 기능 : 현재 사용자의 딜 활동 목록을 최신순 커서 기준으로 조회합니다.
   async listActivitiesForDeal(
     input: ListDealActivitiesForDealInput
@@ -114,6 +134,7 @@ export class PrismaDealActivityRepository implements DealActivityRepository {
         deal: {
           deletedAt: null,
         },
+        ...(input.type ? { activityType: input.type } : {}),
         ...this.createTimelineCursorWhere(input.cursor),
       },
       select: this.createDealActivitySelect(),
@@ -136,6 +157,9 @@ export class PrismaDealActivityRepository implements DealActivityRepository {
         sourceType: "USER",
       },
       data: {
+        ...(input.activityType !== undefined
+          ? { activityType: input.activityType }
+          : {}),
         ...(input.title !== undefined ? { title: input.title } : {}),
         ...(input.summary !== undefined ? { summary: input.summary } : {}),
         ...(input.body !== undefined ? { body: input.body } : {}),

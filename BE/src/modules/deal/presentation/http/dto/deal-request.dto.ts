@@ -5,12 +5,22 @@ import {
   IsEnum,
   IsInt,
   IsArray,
+  IsIn,
+  IsISO8601,
   IsOptional,
   IsString,
   IsUUID,
   Matches,
+  MaxLength,
   Min,
+  ValidateIf,
 } from "class-validator";
+import {
+  DEAL_ACTIVITY_TYPES,
+  MANUAL_DEAL_ACTIVITY_TYPES,
+  type DealActivityTypeCode,
+  type ManualDealActivityTypeCode,
+} from "@/modules/deal/application/ports/deal-activity.repository";
 import { DealListSort } from "@/modules/deal/application/ports/deal.repository";
 import { DealStatusCode } from "@/modules/deal/domain/deal-status";
 
@@ -109,6 +119,13 @@ export class CursorQueryDto {
   cursor?: string;
 }
 
+// 역할 : DealActivityListQueryDto HTTP activity 목록 query 요청 값을 검증하기 위한 DTO입니다.
+export class DealActivityListQueryDto extends CursorQueryDto {
+  @IsOptional()
+  @IsIn(DEAL_ACTIVITY_TYPES)
+  type?: DealActivityTypeCode;
+}
+
 // 역할 : CreateDealDto HTTP 딜 생성 요청 값을 검증하기 위한 DTO입니다.
 export class CreateDealDto {
   @IsString()
@@ -187,6 +204,48 @@ export class UpdateDealDto {
   @IsOptional()
   @IsEnum(DealStatusCode)
   dealStatus?: DealStatusCode;
+}
+
+// 역할 : CreateManualDealActivityDto HTTP 수동 activity 생성 요청 값을 검증하기 위한 DTO입니다.
+export class CreateManualDealActivityDto {
+  @IsIn(MANUAL_DEAL_ACTIVITY_TYPES)
+  activityType!: ManualDealActivityTypeCode;
+
+  @IsString()
+  @MaxLength(120)
+  title!: string;
+
+  @IsOptional()
+  @ValidateIf((_, value) => value !== null)
+  @IsString()
+  @MaxLength(2000)
+  body?: string | null;
+
+  @IsOptional()
+  @IsISO8601({ strict: true })
+  occurredAt?: string;
+}
+
+// 역할 : UpdateManualDealActivityDto HTTP 수동 activity 수정 요청 값을 검증하기 위한 DTO입니다.
+export class UpdateManualDealActivityDto {
+  @IsOptional()
+  @IsIn(MANUAL_DEAL_ACTIVITY_TYPES)
+  activityType?: ManualDealActivityTypeCode;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(120)
+  title?: string;
+
+  @IsOptional()
+  @ValidateIf((_, value) => value !== null)
+  @IsString()
+  @MaxLength(2000)
+  body?: string | null;
+
+  @IsOptional()
+  @IsISO8601({ strict: true })
+  occurredAt?: string;
 }
 
 // 역할 : CreateDealFollowingActionLogDto HTTP 다음 행동 로그 생성 요청 값을 검증하기 위한 DTO입니다.

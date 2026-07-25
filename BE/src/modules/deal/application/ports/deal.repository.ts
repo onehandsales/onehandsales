@@ -1,5 +1,13 @@
 import type { NotificationReminderWriteRepository } from "@/modules/notification/application/ports/notification-reminder-writer.port";
 import type { DealStatusCode } from "@/modules/deal/domain/deal-status";
+import type {
+  CreateDealActivityInput,
+  DealActivityRecord,
+  FindDealActivityByIdInput,
+  FindDealActivityBySourceInput,
+  ListDealActivitiesForDealInput,
+  UpdateUserDealActivityInput,
+} from "./deal-activity.repository";
 
 export const DEAL_REPOSITORY = Symbol("DEAL_REPOSITORY");
 
@@ -217,6 +225,13 @@ export interface UpdateDealFollowingActionLogInput {
   readonly checkComplete?: boolean;
 }
 
+// 역할 : FindDealFollowingActionLogInput 다음 행동 로그 단건 조회 기준을 정의합니다.
+export interface FindDealFollowingActionLogInput {
+  readonly userId: string;
+  readonly dealId: string;
+  readonly followingActionLogId: string;
+}
+
 // 역할 : CreateDealMemoLogInput 데이터가 계층 사이에서 전달되는 구조를 정의합니다.
 export interface CreateDealMemoLogInput {
   readonly userId: string;
@@ -324,6 +339,10 @@ export interface DealRepository extends NotificationReminderWriteRepository {
     readonly cursor: DealLogCursor | null;
     readonly take: number;
   }): Promise<DealFollowingActionLogRecord[]>;
+  // 기능 : 딜 다음 행동 로그 단건을 조회합니다.
+  findFollowingActionLog(
+    input: FindDealFollowingActionLogInput
+  ): Promise<DealFollowingActionLogRecord | null>;
   // 기능 : 딜 다음 행동 로그를 수정합니다.
   updateFollowingActionLog(
     input: UpdateDealFollowingActionLogInput
@@ -345,4 +364,22 @@ export interface DealRepository extends NotificationReminderWriteRepository {
   updateMemoLog(input: UpdateDealMemoLogInput): Promise<DealMemoLogRecord | null>;
   // 기능 : 딜 메모 로그를 휴지통 상태로 전환합니다.
   deleteMemoLog(input: DeleteDealMemoLogInput): Promise<boolean>;
+  // 기능 : 딜 활동 행을 생성합니다.
+  createActivity(input: CreateDealActivityInput): Promise<DealActivityRecord>;
+  // 기능 : 자동 활동 원본 기준으로 기존 딜 활동을 조회합니다.
+  findActivityBySource(
+    input: FindDealActivityBySourceInput
+  ): Promise<DealActivityRecord | null>;
+  // 기능 : 현재 사용자의 딜 활동 단건을 조회합니다.
+  findActivityByIdForDeal(
+    input: FindDealActivityByIdInput
+  ): Promise<DealActivityRecord | null>;
+  // 기능 : 현재 사용자의 딜 활동 목록을 최신순 커서 기준으로 조회합니다.
+  listActivitiesForDeal(
+    input: ListDealActivitiesForDealInput
+  ): Promise<DealActivityRecord[]>;
+  // 기능 : 현재 사용자가 직접 작성한 딜 활동만 수정합니다.
+  updateUserActivity(
+    input: UpdateUserDealActivityInput
+  ): Promise<DealActivityRecord | null>;
 }

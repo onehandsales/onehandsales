@@ -18,6 +18,28 @@ import {
   type UpdateDealMemoLogInput,
 } from "@/modules/deal/application/ports/deal.repository";
 import {
+  DEAL_ACTIVITY_TYPES,
+  MANUAL_DEAL_ACTIVITY_TYPES,
+  type CreateDealActivityInput,
+  type DealActivityCursor,
+  type DealActivityRecord,
+  type DealActivitySourceTypeCode,
+  type DealActivityTypeCode,
+  type ManualDealActivityTypeCode,
+} from "@/modules/deal/application/ports/deal-activity.repository";
+import {
+  createDealActivityIfAbsent,
+  createDealActivityLinkedRecord,
+  createDealLinkedRecord,
+  createSafeActivitySummary,
+  DEAL_ACTIVITY_LINKED_RECORD_TARGET_TYPES,
+  normalizeDealActivityTargetPath,
+  type DealActivityLinkedRecordTargetType,
+  type DealActivityLinkedRecordValue,
+} from "@/modules/deal/application/services/deal-activity-helper";
+import {
+  DealActivityNotEditableError,
+  DealActivityNotFoundError,
   DealExportFailedError,
   DealFollowingActionLogNotFoundError,
   DealMemoLogNotFoundError,
@@ -50,8 +72,19 @@ import { AppLogger } from "@/shared/infrastructure/logger/app-logger.service";
 
 const DEAL_PAGE_SIZE = 15;
 const DEAL_LOG_PAGE_SIZE = 10;
+const DEAL_ACTIVITY_PAGE_SIZE = 10;
+const DEAL_ACTIVITY_TITLE_MAX_LENGTH = 120;
+const DEAL_ACTIVITY_BODY_MAX_LENGTH = 2000;
+const DEAL_ACTIVITY_FUTURE_TOLERANCE_MS = 5 * 60 * 1000;
 const XLSX_DATE_NUM_FORMAT = "yyyy-mm-dd hh:mm:ss";
 const INITIAL_DEAL_MEMO_TYPE = "초기 메모";
+const DEAL_ACTIVITY_TYPE_SET = new Set<DealActivityTypeCode>(DEAL_ACTIVITY_TYPES);
+const MANUAL_DEAL_ACTIVITY_TYPE_SET = new Set<DealActivityTypeCode>(
+  MANUAL_DEAL_ACTIVITY_TYPES
+);
+const DEAL_ACTIVITY_LINKED_RECORD_TARGET_TYPE_SET = new Set<string>(
+  DEAL_ACTIVITY_LINKED_RECORD_TARGET_TYPES
+);
 
 // 역할 : DealListQueryInput 데이터가 계층 사이에서 전달되는 구조를 정의합니다.
 export interface DealListQueryInput {
@@ -245,6 +278,73 @@ export interface DealMemoLogResponse extends DealMemoLogListItemResponse {
   readonly updatedAt: string;
 }
 
+// 역할 : DealActivityListQueryInput 딜 활동 목록 query 조건을 정의합니다.
+export interface DealActivityListQueryInput extends CursorQueryInput {
+  readonly type?: DealActivityTypeCode;
+}
+
+// 역할 : CreateManualDealActivityCommand 수동 딜 활동 생성 입력을 정의합니다.
+export interface CreateManualDealActivityCommand {
+  readonly activityType: ManualDealActivityTypeCode;
+  readonly title: string;
+  readonly body?: string | null;
+  readonly occurredAt?: string;
+}
+
+// 역할 : UpdateManualDealActivityCommand 수동 딜 활동 수정 입력을 정의합니다.
+export interface UpdateManualDealActivityCommand {
+  readonly activityType?: ManualDealActivityTypeCode;
+  readonly title?: string;
+  readonly body?: string | null;
+  readonly occurredAt?: string;
+}
+
+// 역할 : DealActivityLinkedRecordResponse 딜 활동 연결 record 응답 구조를 정의합니다.
+export interface DealActivityLinkedRecordResponse {
+  readonly targetType: DealActivityLinkedRecordTargetType;
+  readonly targetId: string;
+  readonly targetPath: string;
+  readonly targetLabel: string | null;
+}
+
+// 역할 : DealActivityResponse 딜 활동 단건 응답 구조를 정의합니다.
+export interface DealActivityResponse {
+  readonly id: string;
+  readonly dealId: string;
+  readonly activityType: DealActivityTypeCode;
+  readonly sourceType: DealActivitySourceTypeCode;
+  readonly sourceId: string | null;
+  readonly title: string;
+  readonly summary: string | null;
+  readonly body: string | null;
+  readonly occurredAt: string;
+  readonly isEditable: boolean;
+  readonly linkedRecords: DealActivityLinkedRecordResponse[];
+  readonly createdAt: string;
+  readonly updatedAt: string;
+}
+
+// 역할 : DealActivityListResponse 딜 활동 cursor 목록 응답 구조를 정의합니다.
+export interface DealActivityListResponse {
+  readonly items: DealActivityResponse[];
+  readonly nextCursor: string | null;
+  readonly hasNext: boolean;
+}
+
+type NormalizedManualDealActivityCreateInput = {
+  readonly activityType: ManualDealActivityTypeCode;
+  readonly title: string;
+  readonly body: string | null;
+  readonly occurredAt: Date;
+};
+
+type NormalizedManualDealActivityUpdateInput = {
+  readonly activityType?: ManualDealActivityTypeCode;
+  readonly title?: string;
+  readonly body?: string | null;
+  readonly occurredAt?: Date;
+};
+
 // 역할 : DealApplicationService 딜 도메인 application 유스케이스를 제공합니다.
 @Injectable()
 export class DealApplicationService {
@@ -384,6 +484,133 @@ export class DealApplicationService {
     return this.toDealDetail(deal);
   }
 
+  // 기능 : 현재 사용자의 딜 활동 timeline을 cursor 기준으로 조회합니다.
+  async listDealActivities(
+    currentUser: CurrentUserContext,
+    dealId: string,
+    query: DealActivityListQueryInput
+  ): Promise<DealActivityListResponse> {
+    await this.assertDealExists(currentUser.id, dealId);
+
+    const type = this.normalizeOptionalDealActivityType(query.type);
+    const activities = await this.dealRepository.listActivitiesForDeal({
+      userId: currentUser.id,
+      dealId,
+      cursor: this.parseActivityCursor(query.cursor),
+      take: DEAL_ACTIVITY_PAGE_SIZE + 1,
+      ...(type ? { type } : {}),
+    });
+
+    this.logEvent("deal.activity.listed", {
+      userId: currentUser.id,
+      dealId,
+      hasCursor: Boolean(query.cursor),
+      type: type ?? null,
+      count: Math.min(activities.length, DEAL_ACTIVITY_PAGE_SIZE),
+    });
+
+    return this.toDealActivityConnection(activities);
+  }
+
+  // 기능 : 현재 사용자의 딜에 수동 활동을 생성합니다.
+  async createManualDealActivity(
+    currentUser: CurrentUserContext,
+    dealId: string,
+    input: CreateManualDealActivityCommand
+  ): Promise<DealActivityResponse> {
+    const normalized = this.normalizeCreateManualDealActivityInput(input);
+
+    const activity = await this.dealRepository.runInTransaction(
+      async (repository) => {
+        const deal = await repository.findDeal(currentUser.id, dealId);
+
+        if (!deal) {
+          throw new DealNotFoundError();
+        }
+
+        return repository.createActivity({
+          userId: currentUser.id,
+          dealId,
+          activityType: normalized.activityType,
+          sourceType: "USER",
+          sourceId: null,
+          title: normalized.title,
+          summary: null,
+          body: normalized.body,
+          occurredAt: normalized.occurredAt,
+          linkedRecordsJson: [createDealLinkedRecord(deal.id, deal.dealName)],
+          metadataJson: null,
+        });
+      }
+    );
+
+    this.logEvent("deal.activity.manual_created", {
+      userId: currentUser.id,
+      dealId,
+      activityId: activity.id,
+      activityType: activity.activityType,
+    });
+
+    return this.toDealActivityResponse(activity);
+  }
+
+  // 기능 : 현재 사용자의 수동 딜 활동만 수정합니다.
+  async updateManualDealActivity(
+    currentUser: CurrentUserContext,
+    dealId: string,
+    activityId: string,
+    input: UpdateManualDealActivityCommand
+  ): Promise<DealActivityResponse> {
+    const normalized = this.normalizeUpdateManualDealActivityInput(input);
+
+    const activity = await this.dealRepository.runInTransaction(
+      async (repository) => {
+        const deal = await repository.findDeal(currentUser.id, dealId);
+
+        if (!deal) {
+          throw new DealActivityNotFoundError();
+        }
+
+        const existing = await repository.findActivityByIdForDeal({
+          userId: currentUser.id,
+          dealId,
+          activityId,
+        });
+
+        if (!existing) {
+          throw new DealActivityNotFoundError();
+        }
+
+        if (existing.sourceType !== "USER") {
+          throw new DealActivityNotEditableError();
+        }
+
+        const updated = await repository.updateUserActivity({
+          userId: currentUser.id,
+          dealId,
+          activityId,
+          ...normalized,
+          linkedRecordsJson: [createDealLinkedRecord(deal.id, deal.dealName)],
+        });
+
+        if (!updated) {
+          throw new DealActivityNotFoundError();
+        }
+
+        return updated;
+      }
+    );
+
+    this.logEvent("deal.activity.manual_updated", {
+      userId: currentUser.id,
+      dealId,
+      activityId: activity.id,
+      activityType: activity.activityType,
+    });
+
+    return this.toDealActivityResponse(activity);
+  }
+
   // 기능 : 딜을 생성하고 첫 다음 행동 로그를 같은 transaction에서 생성합니다.
   async createDeal(
     currentUser: CurrentUserContext,
@@ -413,6 +640,7 @@ export class DealApplicationService {
     const expectedEndDate = this.parseDateOnly(input.expectedEndDate);
 
     let createdDealId: string | null = null;
+    let autoActivityCount = 0;
 
     await this.dealRepository.runInTransaction(async (repository) => {
       await this.assertRelatedResourcesExist(
@@ -432,6 +660,22 @@ export class DealApplicationService {
       });
       createdDealId = deal.id;
 
+      autoActivityCount += await this.createAutomaticDealActivity(repository, {
+        userId: currentUser.id,
+        dealId: deal.id,
+        activityType: "DEAL_CREATED",
+        sourceType: "SYSTEM",
+        sourceId: deal.id,
+        title: "딜을 만들었어요.",
+        summary: createSafeActivitySummary(dealName),
+        body: null,
+        occurredAt: new Date(),
+        linkedRecordsJson: [createDealLinkedRecord(deal.id, dealName)],
+        metadataJson: {
+          dealId: deal.id,
+        },
+      });
+
       await repository.createDealCompanies({
         userId: currentUser.id,
         dealId: deal.id,
@@ -450,10 +694,26 @@ export class DealApplicationService {
         productIds,
       });
 
-      await repository.createFollowingActionLog({
+      const followingActionLog = await repository.createFollowingActionLog({
         userId: currentUser.id,
         dealId: deal.id,
         followingAction,
+      });
+
+      autoActivityCount += await this.createAutomaticDealActivity(repository, {
+        userId: currentUser.id,
+        dealId: deal.id,
+        activityType: "NEXT_ACTION_CREATED",
+        sourceType: "NEXT_ACTION",
+        sourceId: followingActionLog.id,
+        title: "다음 행동을 추가했어요.",
+        summary: createSafeActivitySummary(followingAction),
+        body: null,
+        occurredAt: followingActionLog.createdAt,
+        linkedRecordsJson: [createDealLinkedRecord(deal.id, dealName)],
+        metadataJson: {
+          followingActionLogId: followingActionLog.id,
+        },
       });
 
       if (dealMemo) {
@@ -498,6 +758,11 @@ export class DealApplicationService {
       productIds,
       dealStatus: input.dealStatus,
     });
+    this.logAutomaticActivityCreated(
+      currentUser.id,
+      createdDealId,
+      autoActivityCount
+    );
 
     return this.toDealDetail(createdDeal);
   }
@@ -529,8 +794,12 @@ export class DealApplicationService {
     const finalDealName = updateInput.dealName ?? existingDeal.dealName;
     const finalExpectedEndDate =
       updateInput.expectedEndDate ?? existingDeal.expectedEndDate;
+    const stageChanged =
+      updateInput.dealStatus !== undefined &&
+      updateInput.dealStatus !== existingDeal.dealStatus;
 
     let dealUpdated = false;
+    let autoActivityCount = 0;
 
     await this.dealRepository.runInTransaction(async (repository) => {
       await this.assertRelatedResourcesExist(
@@ -587,6 +856,31 @@ export class DealApplicationService {
         },
         repository
       );
+
+      if (dealUpdated && stageChanged && updateInput.dealStatus) {
+        const fromStatusLabel = getDealStatusLabel(existingDeal.dealStatus);
+        const toStatusLabel = getDealStatusLabel(updateInput.dealStatus);
+
+        await repository.createActivity({
+          userId: currentUser.id,
+          dealId,
+          activityType: "STAGE_CHANGED",
+          sourceType: "SYSTEM",
+          sourceId: dealId,
+          title: "단계가 바뀌었어요.",
+          summary: `${fromStatusLabel} -> ${toStatusLabel}`,
+          body: null,
+          occurredAt: new Date(),
+          linkedRecordsJson: [createDealLinkedRecord(dealId, finalDealName)],
+          metadataJson: {
+            fromStatus: existingDeal.dealStatus,
+            fromStatusLabel,
+            toStatus: updateInput.dealStatus,
+            toStatusLabel,
+          },
+        });
+        autoActivityCount += 1;
+      }
     });
 
     if (!dealUpdated) {
@@ -607,6 +901,7 @@ export class DealApplicationService {
       contactIds: updateInput.contactIds ?? null,
       productIds: updateInput.productIds ?? null,
     });
+    this.logAutomaticActivityCreated(currentUser.id, dealId, autoActivityCount);
 
     return this.toDealDetail(deal);
   }
@@ -723,15 +1018,42 @@ export class DealApplicationService {
     dealId: string,
     input: { readonly followingAction: string }
   ): Promise<DealFollowingActionLogResponse> {
-    await this.assertDealExists(currentUser.id, dealId);
+    const followingAction = this.normalizeRequiredText(
+      input.followingAction,
+      "followingAction is required"
+    );
+    let autoActivityCount = 0;
 
-    const log = await this.dealRepository.createFollowingActionLog({
-      userId: currentUser.id,
-      dealId,
-      followingAction: this.normalizeRequiredText(
-        input.followingAction,
-        "followingAction is required"
-      ),
+    const log = await this.dealRepository.runInTransaction(async (repository) => {
+      const deal = await repository.findDeal(currentUser.id, dealId);
+
+      if (!deal) {
+        throw new DealNotFoundError();
+      }
+
+      const created = await repository.createFollowingActionLog({
+        userId: currentUser.id,
+        dealId,
+        followingAction,
+      });
+
+      autoActivityCount += await this.createAutomaticDealActivity(repository, {
+        userId: currentUser.id,
+        dealId,
+        activityType: "NEXT_ACTION_CREATED",
+        sourceType: "NEXT_ACTION",
+        sourceId: created.id,
+        title: "다음 행동을 추가했어요.",
+        summary: createSafeActivitySummary(followingAction),
+        body: null,
+        occurredAt: created.createdAt,
+        linkedRecordsJson: [createDealLinkedRecord(deal.id, deal.dealName)],
+        metadataJson: {
+          followingActionLogId: created.id,
+        },
+      });
+
+      return created;
     });
 
     this.logEvent("deal.following_action.created", {
@@ -739,6 +1061,7 @@ export class DealApplicationService {
       dealId,
       followingActionLogId: log.id,
     });
+    this.logAutomaticActivityCreated(currentUser.id, dealId, autoActivityCount);
 
     return this.toFollowingActionLog(log);
   }
@@ -750,26 +1073,70 @@ export class DealApplicationService {
     followingActionLogId: string,
     input: { readonly followingAction?: string; readonly checkComplete?: boolean }
   ): Promise<DealFollowingActionLogResponse> {
-    await this.assertDealExists(currentUser.id, dealId);
-
     const updateInput = this.normalizeFollowingActionUpdateInput(
       currentUser.id,
       dealId,
       followingActionLogId,
       input
     );
+    let autoActivityCount = 0;
 
-    const updated = await this.dealRepository.updateFollowingActionLog(updateInput);
+    const updated = await this.dealRepository.runInTransaction(
+      async (repository) => {
+        const deal = await repository.findDeal(currentUser.id, dealId);
 
-    if (!updated) {
-      throw new DealFollowingActionLogNotFoundError();
-    }
+        if (!deal) {
+          throw new DealNotFoundError();
+        }
+
+        const existing = await repository.findFollowingActionLog({
+          userId: currentUser.id,
+          dealId,
+          followingActionLogId,
+        });
+
+        if (!existing) {
+          throw new DealFollowingActionLogNotFoundError();
+        }
+
+        const updatedLog = await repository.updateFollowingActionLog(updateInput);
+
+        if (!updatedLog) {
+          throw new DealFollowingActionLogNotFoundError();
+        }
+
+        if (
+          input.checkComplete !== undefined &&
+          existing.checkComplete !== updatedLog.checkComplete
+        ) {
+          autoActivityCount += await this.createAutomaticDealActivity(repository, {
+            userId: currentUser.id,
+            dealId,
+            activityType: "NEXT_ACTION_COMPLETION_CHANGED",
+            sourceType: "NEXT_ACTION",
+            sourceId: updatedLog.id,
+            title: "다음 행동 상태가 바뀌었어요.",
+            summary: updatedLog.checkComplete ? "완료됨" : "미완료",
+            body: null,
+            occurredAt: updatedLog.updatedAt,
+            linkedRecordsJson: [createDealLinkedRecord(deal.id, deal.dealName)],
+            metadataJson: {
+              followingActionLogId: updatedLog.id,
+              completed: updatedLog.checkComplete,
+            },
+          });
+        }
+
+        return updatedLog;
+      }
+    );
 
     this.logEvent("deal.following_action.updated", {
       userId: currentUser.id,
       dealId,
       followingActionLogId,
     });
+    this.logAutomaticActivityCreated(currentUser.id, dealId, autoActivityCount);
 
     return this.toFollowingActionLog(updated);
   }
@@ -954,6 +1321,200 @@ export class DealApplicationService {
     ) {
       throw new RelatedResourceNotFoundError();
     }
+  }
+
+  // 기능 : 자동 activity를 source 기준으로 중복 확인 후 생성합니다.
+  private async createAutomaticDealActivity(
+    repository: Pick<DealRepository, "findActivityBySource" | "createActivity">,
+    input: CreateDealActivityInput & { readonly sourceId: string }
+  ): Promise<number> {
+    const activity = await createDealActivityIfAbsent(repository, input);
+    return activity ? 1 : 0;
+  }
+
+  // 기능 : 자동 activity 생성 결과를 민감정보 없이 로그로 남깁니다.
+  private logAutomaticActivityCreated(
+    userId: string,
+    dealId: string,
+    count: number
+  ): void {
+    if (count === 0) {
+      return;
+    }
+
+    this.logEvent("deal.activity.auto_created", {
+      userId,
+      dealId,
+      count,
+    });
+  }
+
+  // 기능 : 수동 activity 생성 입력을 저장 가능한 값으로 정규화합니다.
+  private normalizeCreateManualDealActivityInput(
+    input: CreateManualDealActivityCommand
+  ): NormalizedManualDealActivityCreateInput {
+    return {
+      activityType: this.normalizeManualDealActivityType(input.activityType),
+      title: this.normalizeActivityTitle(input.title),
+      body: this.normalizeActivityBody(input.body),
+      occurredAt: this.normalizeActivityOccurredAt(input.occurredAt),
+    };
+  }
+
+  // 기능 : 수동 activity 수정 입력을 저장 가능한 값으로 정규화합니다.
+  private normalizeUpdateManualDealActivityInput(
+    input: UpdateManualDealActivityCommand
+  ): NormalizedManualDealActivityUpdateInput {
+    const normalized: NormalizedManualDealActivityUpdateInput = {
+      ...(input.activityType !== undefined
+        ? {
+            activityType: this.normalizeManualDealActivityType(
+              input.activityType
+            ),
+          }
+        : {}),
+      ...(input.title !== undefined
+        ? { title: this.normalizeActivityTitle(input.title) }
+        : {}),
+      ...(input.body !== undefined
+        ? { body: this.normalizeActivityBody(input.body) }
+        : {}),
+      ...(input.occurredAt !== undefined
+        ? { occurredAt: this.normalizeActivityOccurredAt(input.occurredAt) }
+        : {}),
+    };
+
+    if (
+      normalized.activityType === undefined &&
+      normalized.title === undefined &&
+      normalized.body === undefined &&
+      normalized.occurredAt === undefined
+    ) {
+      throw new ValidationDomainError("At least one activity field is required");
+    }
+
+    return normalized;
+  }
+
+  // 기능 : 목록 type filter가 지원 activity type인지 검증합니다.
+  private normalizeOptionalDealActivityType(
+    value: DealActivityTypeCode | undefined
+  ): DealActivityTypeCode | undefined {
+    if (value === undefined) {
+      return undefined;
+    }
+
+    if (!DEAL_ACTIVITY_TYPE_SET.has(value)) {
+      throw new ValidationDomainError("activity type is invalid");
+    }
+
+    return value;
+  }
+
+  // 기능 : 수동 activity type만 허용합니다.
+  private normalizeManualDealActivityType(
+    value: DealActivityTypeCode
+  ): ManualDealActivityTypeCode {
+    if (!MANUAL_DEAL_ACTIVITY_TYPE_SET.has(value)) {
+      throw new ValidationDomainError("activityType must be a manual type");
+    }
+
+    return value as ManualDealActivityTypeCode;
+  }
+
+  // 기능 : activity title을 trim하고 길이를 검증합니다.
+  private normalizeActivityTitle(value: string): string {
+    const normalized = this.normalizeRequiredText(value, "title is required");
+
+    if (normalized.length > DEAL_ACTIVITY_TITLE_MAX_LENGTH) {
+      throw new ValidationDomainError("title is too long");
+    }
+
+    return normalized;
+  }
+
+  // 기능 : activity body를 trim하고 빈 문자열은 null로 저장합니다.
+  private normalizeActivityBody(value: string | null | undefined): string | null {
+    const normalized = this.normalizeOptionalText(value) ?? null;
+
+    if (normalized && normalized.length > DEAL_ACTIVITY_BODY_MAX_LENGTH) {
+      throw new ValidationDomainError("body is too long");
+    }
+
+    return normalized;
+  }
+
+  // 기능 : activity 발생 시각을 검증하고 없으면 서버 현재 시각을 사용합니다.
+  private normalizeActivityOccurredAt(value: string | undefined): Date {
+    const occurredAt = value ? new Date(value) : new Date();
+
+    if (Number.isNaN(occurredAt.getTime())) {
+      throw new ValidationDomainError("occurredAt must be a valid date-time");
+    }
+
+    if (
+      occurredAt.getTime() >
+      Date.now() + DEAL_ACTIVITY_FUTURE_TOLERANCE_MS
+    ) {
+      throw new ValidationDomainError("occurredAt is too far in the future");
+    }
+
+    return occurredAt;
+  }
+
+  // 기능 : 서버가 발급한 activity cursor 문자열을 조회 조건으로 복원합니다.
+  private parseActivityCursor(
+    cursor: string | undefined
+  ): DealActivityCursor | null {
+    if (!cursor) {
+      return null;
+    }
+
+    try {
+      const raw = JSON.parse(Buffer.from(cursor, "base64url").toString("utf8"));
+
+      if (!this.isActivityCursorPayload(raw)) {
+        throw new Error("Invalid activity cursor payload");
+      }
+
+      const occurredAt = new Date(raw.occurredAt);
+
+      if (Number.isNaN(occurredAt.getTime())) {
+        throw new Error("Invalid activity cursor date");
+      }
+
+      return {
+        occurredAt,
+        id: raw.id,
+      };
+    } catch {
+      throw new ValidationDomainError("Cursor is invalid");
+    }
+  }
+
+  // 기능 : activity cursor payload가 필요한 필드를 가진 객체인지 확인합니다.
+  private isActivityCursorPayload(
+    value: unknown
+  ): value is { readonly occurredAt: string; readonly id: string } {
+    return (
+      typeof value === "object" &&
+      value !== null &&
+      "occurredAt" in value &&
+      "id" in value &&
+      typeof value.occurredAt === "string" &&
+      typeof value.id === "string"
+    );
+  }
+
+  // 기능 : 응답용 activity 다음 페이지 cursor 문자열을 생성합니다.
+  private createActivityCursor(record: DealActivityRecord): string {
+    return Buffer.from(
+      JSON.stringify({
+        occurredAt: record.occurredAt.toISOString(),
+        id: record.id,
+      }),
+      "utf8"
+    ).toString("base64url");
   }
 
   // 기능 : 필수 텍스트 입력을 trim하고 비어 있으면 validation 오류를 던집니다.
@@ -1294,6 +1855,101 @@ export class DealApplicationService {
       ...this.toLatestFollowingAction(nextAction.log),
       remainingCount: nextAction.remainingCount,
     };
+  }
+
+  // 기능 : 딜 활동 레코드를 API 응답 객체로 변환합니다.
+  private toDealActivityResponse(
+    activity: DealActivityRecord
+  ): DealActivityResponse {
+    return {
+      id: activity.id,
+      dealId: activity.dealId,
+      activityType: activity.activityType,
+      sourceType: activity.sourceType,
+      sourceId: activity.sourceId,
+      title: activity.title,
+      summary: activity.summary,
+      body: activity.body,
+      occurredAt: activity.occurredAt.toISOString(),
+      isEditable: activity.sourceType === "USER",
+      linkedRecords: this.toDealActivityLinkedRecords(
+        activity.linkedRecordsJson
+      ),
+      createdAt: activity.createdAt.toISOString(),
+      updatedAt: activity.updatedAt.toISOString(),
+    };
+  }
+
+  // 기능 : 딜 활동 목록을 cursor connection 응답으로 변환합니다.
+  private toDealActivityConnection(
+    records: DealActivityRecord[]
+  ): DealActivityListResponse {
+    const items = records.slice(0, DEAL_ACTIVITY_PAGE_SIZE);
+    const hasNext = records.length > DEAL_ACTIVITY_PAGE_SIZE;
+    const lastItem = items[items.length - 1] ?? null;
+
+    return {
+      items: items.map((record) => this.toDealActivityResponse(record)),
+      nextCursor: hasNext && lastItem ? this.createActivityCursor(lastItem) : null,
+      hasNext,
+    };
+  }
+
+  // 기능 : 저장된 linkedRecordsJson을 안전한 API 응답 구조로 정규화합니다.
+  private toDealActivityLinkedRecords(
+    value: unknown | null
+  ): DealActivityLinkedRecordResponse[] {
+    if (!Array.isArray(value)) {
+      return [];
+    }
+
+    const records: DealActivityLinkedRecordResponse[] = [];
+
+    for (const item of value) {
+      const record = this.toDealActivityLinkedRecord(item);
+
+      if (record) {
+        records.push(record);
+      }
+    }
+
+    return records;
+  }
+
+  // 기능 : 단일 linked record JSON 값을 검증하고 User Web route로 정규화합니다.
+  private toDealActivityLinkedRecord(
+    value: unknown
+  ): DealActivityLinkedRecordResponse | null {
+    if (typeof value !== "object" || value === null) {
+      return null;
+    }
+
+    const record = value as Partial<DealActivityLinkedRecordValue>;
+
+    if (
+      typeof record.targetType !== "string" ||
+      !DEAL_ACTIVITY_LINKED_RECORD_TARGET_TYPE_SET.has(record.targetType) ||
+      typeof record.targetId !== "string" ||
+      record.targetId.trim().length === 0 ||
+      typeof record.targetPath !== "string" ||
+      record.targetPath.trim().length === 0
+    ) {
+      return null;
+    }
+
+    const targetPath = normalizeDealActivityTargetPath(record.targetPath);
+
+    if (!targetPath.startsWith("/app/")) {
+      return null;
+    }
+
+    return createDealActivityLinkedRecord({
+      targetType: record.targetType as DealActivityLinkedRecordTargetType,
+      targetId: record.targetId,
+      targetPath,
+      targetLabel:
+        typeof record.targetLabel === "string" ? record.targetLabel : null,
+    });
   }
 
   // 기능 : 다음 행동 로그를 목록 응답 객체로 변환합니다.

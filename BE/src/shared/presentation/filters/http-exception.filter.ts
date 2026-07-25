@@ -83,6 +83,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
       case "ProductStatusInUse":
       case "BusinessCardScanNotConfirmable":
       case "AiWeeklySalesReportAlreadyGenerating":
+      case "DealActivityNotEditable":
         return HttpStatus.CONFLICT;
       case "InactiveUser":
       case "OwnershipViolation":

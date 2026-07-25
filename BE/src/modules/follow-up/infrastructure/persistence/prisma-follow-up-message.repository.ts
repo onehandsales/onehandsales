@@ -30,6 +30,12 @@ import type {
   MarkFollowUpDeliverySucceededInput,
   UpdateFollowUpMessageDraftInput,
 } from "@/modules/follow-up/application/ports/follow-up-message.repository";
+import {
+  createDealActivityIfAbsent,
+  createDealActivityLinkedRecord,
+  createSafeActivitySummary,
+} from "@/modules/deal/application/services/deal-activity-helper";
+import { PrismaDealActivityRepository } from "@/modules/deal/infrastructure/persistence/prisma-deal-activity.repository";
 import { PrismaService } from "@/shared/infrastructure/prisma/prisma.service";
 
 type FollowUpPrismaClient = PrismaService | Prisma.TransactionClient;
@@ -480,6 +486,19 @@ export class PrismaFollowUpMessageRepository
     }
 
     await this.markSenderSuccess(message, input.sentAt);
+    await this.createFollowUpDealActivities({
+      message,
+      attemptId: input.attemptId,
+      activityType: "FOLLOW_UP_SENT",
+      title:
+        message.channel === "EMAIL"
+          ? "이메일 follow-up을 보냈어요."
+          : "문자 follow-up을 보냈어요.",
+      summary: createSafeActivitySummary(`${message.recipientName}에게 발송됨`),
+      occurredAt: input.sentAt,
+      safeErrorCode: null,
+      safeErrorMessage: null,
+    });
 
     return message;
   }
@@ -546,6 +565,21 @@ export class PrismaFollowUpMessageRepository
     }
 
     await this.markSenderFailure(message, input.safeErrorCode);
+    await this.createFollowUpDealActivities({
+      message,
+      attemptId: input.attemptId,
+      activityType: "FOLLOW_UP_FAILED",
+      title:
+        message.channel === "EMAIL"
+          ? "이메일 follow-up을 보내지 못했어요."
+          : "문자 follow-up을 보내지 못했어요.",
+      summary:
+        createSafeActivitySummary(input.safeErrorMessage) ??
+        "일시적인 전송 실패",
+      occurredAt: input.failedAt,
+      safeErrorCode: input.safeErrorCode,
+      safeErrorMessage: input.safeErrorMessage,
+    });
 
     return message;
   }
@@ -789,6 +823,58 @@ export class PrismaFollowUpMessageRepository
         orderBy: [{ attemptNumber: "asc" }, { createdAt: "asc" }],
       },
     } satisfies Prisma.FollowUpMessageInclude;
+  }
+
+  // 기능 : 현재 client 범위에서 딜 활동 저장소를 생성합니다.
+  private createDealActivityRepository(): PrismaDealActivityRepository {
+    return new PrismaDealActivityRepository(this.client, null);
+  }
+
+  // 기능 : follow-up 전송 결과를 DEAL target별 딜 활동으로 기록합니다.
+  private async createFollowUpDealActivities(input: {
+    readonly message: FollowUpMessageDetailRecord;
+    readonly attemptId: string;
+    readonly activityType: "FOLLOW_UP_SENT" | "FOLLOW_UP_FAILED";
+    readonly title: string;
+    readonly summary: string | null;
+    readonly occurredAt: Date;
+    readonly safeErrorCode: string | null;
+    readonly safeErrorMessage: string | null;
+  }): Promise<void> {
+    const activityRepository = this.createDealActivityRepository();
+    const dealTargets = input.message.targets.filter(
+      (target) => target.targetType === "DEAL"
+    );
+
+    for (const target of dealTargets) {
+      await createDealActivityIfAbsent(activityRepository, {
+        userId: input.message.userId,
+        dealId: target.targetId,
+        activityType: input.activityType,
+        sourceType: "FOLLOW_UP",
+        sourceId: input.attemptId,
+        title: input.title,
+        summary: input.summary,
+        body: null,
+        occurredAt: input.occurredAt,
+        linkedRecordsJson: [
+          createDealActivityLinkedRecord({
+            targetType: "DEAL",
+            targetId: target.targetId,
+            targetPath: target.targetPath,
+            targetLabel: target.targetLabel,
+          }),
+        ],
+        metadataJson: {
+          messageId: input.message.id,
+          deliveryAttemptId: input.attemptId,
+          channel: input.message.channel,
+          recipientName: input.message.recipientName,
+          safeErrorCode: input.safeErrorCode,
+          safeErrorMessage: input.safeErrorMessage,
+        },
+      });
+    }
   }
 
   private createEmailConnectionSelect() {

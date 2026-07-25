@@ -29,9 +29,31 @@ import {
   type SaveMeetingNoteProductInput,
   type UpdateMeetingNoteInput,
 } from "@/modules/meeting-note/application/ports/meeting-note.repository";
+import {
+  createDealActivityIfAbsent,
+  createDealActivityLinkedRecord,
+  createDealLinkedRecord,
+  createSafeActivitySummary,
+} from "@/modules/deal/application/services/deal-activity-helper";
+import { PrismaDealActivityRepository } from "@/modules/deal/infrastructure/persistence/prisma-deal-activity.repository";
 import { PrismaService } from "@/shared/infrastructure/prisma/prisma.service";
 
 type MeetingNotePrismaClient = PrismaService | Prisma.TransactionClient;
+
+type MeetingNoteActivityContext = {
+  readonly id: string;
+  readonly title: string;
+  readonly meetingAt: Date | null;
+};
+
+type MeetingNoteDealActivityRow = {
+  readonly id: string;
+  readonly dealId: string;
+  readonly dealNameSnapshot: string;
+  readonly meetingNote: MeetingNoteActivityContext & {
+    readonly deletedAt: Date | null;
+  };
+};
 
 const meetingNoteInclude = {
   companies: {
@@ -445,8 +467,13 @@ export class PrismaMeetingNoteRepository implements MeetingNoteRepository {
 
   // 기능 : 회의록에 딜 스냅샷을 추가하고 연결된 딜 활동 로그를 생성합니다.
   async linkMeetingNoteDeals(input: LinkMeetingNoteDealsInput): Promise<void> {
+    const meetingNote = await this.findMeetingNoteActivityContext(
+      input.userId,
+      input.meetingNoteId
+    );
+
     for (const deal of input.deals) {
-      await this.client.meetingNoteDeal.create({
+      const created = await this.client.meetingNoteDeal.create({
         data: {
           userId: input.userId,
           meetingNoteId: input.meetingNoteId,
@@ -456,6 +483,9 @@ export class PrismaMeetingNoteRepository implements MeetingNoteRepository {
           dealCostSnapshot: deal.dealCostSnapshot,
           dealExpectedEndDateSnapshot: deal.dealExpectedEndDateSnapshot,
         },
+        select: {
+          id: true,
+        },
       });
       await this.client.dealFollowingActionLog.create({
         data: {
@@ -464,6 +494,19 @@ export class PrismaMeetingNoteRepository implements MeetingNoteRepository {
           followingAction: input.activityLogText,
         },
       });
+
+      if (meetingNote) {
+        await this.createMeetingNoteDealActivity({
+          userId: input.userId,
+          dealId: deal.dealId,
+          dealName: deal.dealNameSnapshot,
+          meetingNote,
+          sourceId: created.id,
+          activityType: "MEETING_NOTE_LINKED",
+          title: "회의록을 연결했어요.",
+          occurredAt: new Date(),
+        });
+      }
     }
   }
 
@@ -619,27 +662,168 @@ export class PrismaMeetingNoteRepository implements MeetingNoteRepository {
     input: ReplaceMeetingNoteRelationsInput,
     deals: readonly SaveMeetingNoteDealInput[]
   ): Promise<void> {
+    const [existingRows, meetingNote] = await Promise.all([
+      this.findMeetingNoteDealActivityRows(input.userId, input.meetingNoteId),
+      this.findMeetingNoteActivityContext(input.userId, input.meetingNoteId),
+    ]);
+    const existingDealIdSet = new Set(existingRows.map((deal) => deal.dealId));
+    const requestedDealIdSet = new Set(deals.map((deal) => deal.dealId));
+    const rowsToUnlink = existingRows.filter(
+      (deal) => !requestedDealIdSet.has(deal.dealId)
+    );
+    const dealsToLink = deals.filter(
+      (deal) => !existingDealIdSet.has(deal.dealId)
+    );
+
     await this.client.meetingNoteDeal.deleteMany({
       where: {
         userId: input.userId,
         meetingNoteId: input.meetingNoteId,
       },
     });
-    await Promise.all(
-      deals.map((deal) =>
-        this.client.meetingNoteDeal.create({
-          data: {
-            userId: input.userId,
-            meetingNoteId: input.meetingNoteId,
-            dealId: deal.dealId,
-            dealNameSnapshot: deal.dealNameSnapshot,
-            dealStatusSnapshot: deal.dealStatusSnapshot,
-            dealCostSnapshot: deal.dealCostSnapshot,
-            dealExpectedEndDateSnapshot: deal.dealExpectedEndDateSnapshot,
+
+    for (const deal of deals) {
+      const created = await this.client.meetingNoteDeal.create({
+        data: {
+          userId: input.userId,
+          meetingNoteId: input.meetingNoteId,
+          dealId: deal.dealId,
+          dealNameSnapshot: deal.dealNameSnapshot,
+          dealStatusSnapshot: deal.dealStatusSnapshot,
+          dealCostSnapshot: deal.dealCostSnapshot,
+          dealExpectedEndDateSnapshot: deal.dealExpectedEndDateSnapshot,
+        },
+        select: {
+          id: true,
+        },
+      });
+
+      if (meetingNote && dealsToLink.some((item) => item.dealId === deal.dealId)) {
+        await this.createMeetingNoteDealActivity({
+          userId: input.userId,
+          dealId: deal.dealId,
+          dealName: deal.dealNameSnapshot,
+          meetingNote,
+          sourceId: created.id,
+          activityType: "MEETING_NOTE_LINKED",
+          title: "회의록을 연결했어요.",
+          occurredAt: new Date(),
+        });
+      }
+    }
+
+    if (meetingNote) {
+      for (const row of rowsToUnlink) {
+        if (row.meetingNote.deletedAt) {
+          continue;
+        }
+
+        await this.createMeetingNoteDealActivity({
+          userId: input.userId,
+          dealId: row.dealId,
+          dealName: row.dealNameSnapshot,
+          meetingNote,
+          sourceId: row.id,
+          activityType: "MEETING_NOTE_UNLINKED",
+          title: "회의록 연결을 해제했어요.",
+          occurredAt: new Date(),
+        });
+      }
+    }
+  }
+
+  // 기능 : 현재 client 범위에서 딜 활동 저장소를 생성합니다.
+  private createDealActivityRepository(): PrismaDealActivityRepository {
+    return new PrismaDealActivityRepository(this.client, null);
+  }
+
+  // 기능 : 회의록 activity summary에 필요한 회의록 snapshot을 조회합니다.
+  private async findMeetingNoteActivityContext(
+    userId: string,
+    meetingNoteId: string
+  ): Promise<MeetingNoteActivityContext | null> {
+    const meetingNote = await this.client.meetingNote.findFirst({
+      where: {
+        id: meetingNoteId,
+        userId,
+        deletedAt: null,
+      },
+      select: {
+        id: true,
+        title: true,
+        meetingAt: true,
+      },
+    });
+
+    return meetingNote;
+  }
+
+  // 기능 : relation 교체 전 기존 MeetingNoteDeal snapshot을 조회합니다.
+  private async findMeetingNoteDealActivityRows(
+    userId: string,
+    meetingNoteId: string
+  ): Promise<MeetingNoteDealActivityRow[]> {
+    return this.client.meetingNoteDeal.findMany({
+      where: {
+        userId,
+        meetingNoteId,
+      },
+      select: {
+        id: true,
+        dealId: true,
+        dealNameSnapshot: true,
+        meetingNote: {
+          select: {
+            id: true,
+            title: true,
+            meetingAt: true,
+            deletedAt: true,
           },
-        })
-      )
-    );
+        },
+      },
+    });
+  }
+
+  // 기능 : 회의록-딜 연결 변경 activity를 안전한 summary와 링크로 생성합니다.
+  private async createMeetingNoteDealActivity(input: {
+    readonly userId: string;
+    readonly dealId: string;
+    readonly dealName: string;
+    readonly meetingNote: MeetingNoteActivityContext;
+    readonly sourceId: string;
+    readonly activityType: "MEETING_NOTE_LINKED" | "MEETING_NOTE_UNLINKED";
+    readonly title: string;
+    readonly occurredAt: Date;
+  }): Promise<void> {
+    await createDealActivityIfAbsent(this.createDealActivityRepository(), {
+      userId: input.userId,
+      dealId: input.dealId,
+      activityType: input.activityType,
+      sourceType: "MEETING_NOTE",
+      sourceId: input.sourceId,
+      title: input.title,
+      summary: createSafeActivitySummary(
+        input.meetingNote.meetingAt
+          ? `${input.meetingNote.title} ${input.meetingNote.meetingAt.toISOString()}`
+          : input.meetingNote.title
+      ),
+      body: null,
+      occurredAt: input.occurredAt,
+      linkedRecordsJson: [
+        createDealLinkedRecord(input.dealId, input.dealName),
+        createDealActivityLinkedRecord({
+          targetType: "MEETING_NOTE",
+          targetId: input.meetingNote.id,
+          targetPath: `/meeting-notes/${input.meetingNote.id}`,
+          targetLabel: input.meetingNote.title,
+        }),
+      ],
+      metadataJson: {
+        meetingNoteId: input.meetingNote.id,
+        meetingNoteTitle: input.meetingNote.title,
+        meetingAt: input.meetingNote.meetingAt?.toISOString() ?? null,
+      },
+    });
   }
 
   // 기능 : Prisma 회의록 row를 application record로 변환합니다.
