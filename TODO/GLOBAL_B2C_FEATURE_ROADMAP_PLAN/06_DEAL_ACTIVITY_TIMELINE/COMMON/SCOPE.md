@@ -1,49 +1,99 @@
 # Scope
 
-상태: Draft
+상태: Confirmed
+확정일: 2026-07-25
 
-## 포함 후보
+## 1. 목적
 
-| 항목 | 내용 |
+06은 딜 중심 활동 정본을 만든다. 사용자는 딜 상세에서 단계 변화, 다음 행동, 일정, 회의록, follow-up, 수동 영업 활동을 시간순으로 읽고 다음 행동을 판단할 수 있어야 한다.
+
+## 2. 포함 범위
+
+| 항목 | 확정 내용 |
 |---|---|
-| Timeline 조회 | 딜 상세에서 활동을 시간순으로 조회 |
-| 자동 activity | 단계 변경, 회의록 연결, 일정 연결 후보 |
-| 수동 activity | 사용자가 직접 활동 기록 추가 |
-| Activity type | call, meeting, email, stage change 등 |
-| Summary | 목록/홈에 최신 activity를 보여줄 수 있는 기반 |
-| Deal list products summary | 딜 목록에서 연결 제품을 빠르게 비교 |
-| Contact dealCount | 담당자 목록에서 연결 딜 수 표시 |
-| latest activity/next action summary | 회사/담당자/제품/딜/회의록 목록 summary |
-| 검색/필터 고도화 | 고급 필터, 정렬, 최근 항목, 진행 중 딜 우선 |
-| page size/pagination 계약 | FE/BE/test page size와 pagination contract 정리 |
-| 딜 가능성/확률 | 긍정/중립/부정 이후 확률/예상 매출 후보 |
-| 다음 행동 고도화 | 완료, 미루기, 일정 생성, follow-up 연결 |
+| DealActivity 정본 | 딜 activity를 별도 model로 저장한다. |
+| Timeline 조회 | `GET /api/deals/:dealId/activities`로 딜 상세 timeline을 cursor pagination 조회한다. |
+| 자동 activity | 딜 생성, 단계 변경, 다음 행동 생성/완료, 일정 연결/해제, 회의록 연결/해제, follow-up 발송 성공/실패 |
+| 수동 activity | 통화, 미팅, 이메일, 방문, 기타를 사용자가 직접 남긴다. |
+| 수동 activity 수정 | 수동 activity의 제목/본문/발생 시각/type을 수정할 수 있다. |
+| 자동 activity 보호 | 자동 activity는 사용자 수정/삭제를 허용하지 않는다. |
+| Follow-up 연결 | follow-up 본문 전체가 아니라 채널, 수신자, 상태, 발송 시각, 안전한 요약만 timeline에 표시한다. |
+| Deal list products summary | `GET /api/deals` item에 연결 제품 summary를 추가한다. |
+| Deal latest activity summary | `GET /api/deals` item에 최신 activity summary 후보를 추가한다. |
+| Contact dealCount | `GET /api/contacts` item에 active deal count를 추가한다. |
+| Page size 15 cleanup | 목록 API/FE/test 문서의 15개 page 계약을 함께 정리한다. |
+| 보안 | user ownership, soft delete 제외, private memo와 provider raw redaction을 지킨다. |
+| UX | Notion식 detail page와 Attio식 CRM activity timeline 기준을 따른다. |
 
-## 제외 후보
+## 3. 1차 구현 제외
 
 | 항목 | 이유 |
 |---|---|
-| 팀 협업 댓글 | 개인 영업자 B2C 우선 |
-| 모든 도메인 공통 activity bus | 1차는 Deal 중심 |
-| AI activity 자동 판단 | 05/07 이후 후보 |
+| 수동 activity 삭제 | 삭제/복구/retention/audit 정책과 연결되므로 후속으로 분리한다. |
+| 자동 activity 수정/삭제 | 시스템 이력 정합성을 지킨다. |
+| 메모 activity 통합 | 일반 메모와 private memo의 노출 정책을 먼저 확정해야 한다. |
+| activity trash/restore | 11 Admin/Trust/policy와 연결해 후속으로 결정한다. |
+| 모든 도메인 공통 activity bus | 1차는 Deal 중심으로 제한한다. |
+| 고급 검색/필터 전체 개편 | timeline 정본 뒤 별도 goal로 확장한다. |
+| 딜 가능성/확률 score | 1차 timeline과 별개로 후속 제품 결정이 필요하다. |
+| AI activity 자동 판단 | 05/07 이후 AI 정책과 연결한다. |
+| Admin raw activity audit | 11 Admin Operation에서 다룬다. |
 
-## 구현 전 세부 확인 질문
+## 4. Activity Type
 
-- 기존 memo/following action log를 그대로 두고 activity가 참조할지?
-- 단계 변경 시 기존 데이터에도 backfill이 필요한가?
-- activity 원문에 민감정보가 들어갈 때 마스킹 기준은?
-- 삭제/복구 시 activity도 휴지통에 들어가야 하는가?
-- products summary, dealCount, latest summary를 list response field로 둘지 summary endpoint로 둘지?
-- 고급 검색/필터를 도메인별 API에 넣을지 통합검색에 넣을지?
-- page size 15 계약을 전체 목록에 일괄 적용할지?
-- 딜 가능성/확률은 기존 가능성 필드를 확장할지 새 score 모델로 둘지?
+1차 enum 후보:
 
-## 완료 기준 초안
+| Type | 의미 | source |
+|---|---|---|
+| `DEAL_CREATED` | 딜 생성 | 자동 |
+| `STAGE_CHANGED` | 딜 단계 변경 | 자동 |
+| `NEXT_ACTION_CREATED` | 다음 행동 생성 | 자동 |
+| `NEXT_ACTION_COMPLETION_CHANGED` | 다음 행동 완료/미완료 변경 | 자동 |
+| `SCHEDULE_LINKED` | 일정 연결 | 자동 |
+| `SCHEDULE_UNLINKED` | 일정 연결 해제 | 자동 |
+| `MEETING_NOTE_LINKED` | 회의록 연결 | 자동 |
+| `MEETING_NOTE_UNLINKED` | 회의록 연결 해제 | 자동 |
+| `FOLLOW_UP_SENT` | follow-up email/SMS 발송 성공 | 자동 |
+| `FOLLOW_UP_FAILED` | follow-up email/SMS 발송 실패 | 자동 |
+| `CALL` | 수동 통화 기록 | 수동 |
+| `MEETING` | 수동 미팅 기록 | 수동 |
+| `EMAIL` | 수동 이메일 기록 | 수동 |
+| `VISIT` | 수동 방문 기록 | 수동 |
+| `NOTE` | 수동 기타 기록 | 수동 |
+
+## 5. Source 정책
+
+| Source | 설명 |
+|---|---|
+| `SYSTEM` | 딜 생성, 단계 변경 같은 Backend 자동 기록 |
+| `USER` | 사용자가 직접 만든 수동 activity |
+| `FOLLOW_UP` | FollowUpMessage 발송 상태 기반 기록 |
+| `SCHEDULE` | ScheduleDeal 연결 기반 기록 |
+| `MEETING_NOTE` | MeetingNoteDeal 연결 기반 기록 |
+| `NEXT_ACTION` | DealFollowingActionLog 기반 기록 |
+
+## 6. 민감정보와 노출 제한
+
+- private memo 원문은 activity summary에 포함하지 않는다.
+- follow-up 본문 전체는 timeline 목록에 노출하지 않는다.
+- provider raw response, token, API key, quota detail은 저장/응답/log에 노출하지 않는다.
+- 회의록 details/rawText 전문은 timeline summary에 넣지 않는다.
+- activity title/body에는 사용자가 민감정보를 적을 수 있으므로 structured log에 원문을 남기지 않는다.
+- 목록 summary에는 짧은 safe summary만 내려준다.
+
+## 7. 삭제/복구 정책
+
+- 1차에서 수동 activity 삭제 API는 만들지 않는다.
+- `DealActivity` 자체는 soft delete field를 1차 schema에 포함하지 않는다.
+- 삭제 정책이 필요하면 11 Admin/Trust/policy gate와 연결해 후속으로 추가한다.
+
+## 8. 완료 기준
 
 - 딜 상세에서 timeline을 볼 수 있다.
-- 단계 변경 또는 회의록 연결 activity가 자동 생성된다.
-- 사용자 소유 딜 activity만 조회된다.
-- summary가 private memo를 노출하지 않는다.
-- 목록 summary/count는 user ownership과 soft delete 제외 기준을 지킨다.
-- 검색/필터/pagination 계약이 FE/BE/test에서 일치한다.
-- 딜 가능성/확률 고도화 범위가 확정되어 있다.
+- 핵심 자동 activity가 transaction과 함께 생성된다.
+- 수동 activity를 만들고 수정할 수 있다.
+- 자동 activity는 수정할 수 없다.
+- 다른 사용자의 딜 activity에 접근할 수 없다.
+- 삭제된 딜, 삭제된 source, private memo, provider raw detail이 timeline response에 섞이지 않는다.
+- 딜 목록 products/latest activity와 담당자 dealCount는 API 응답 기준으로 표시된다.
+- page size 15 계약이 Backend/FE/test에서 일치한다.
