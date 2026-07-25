@@ -96,14 +96,24 @@
 
 - source row가 있는 자동 activity는 같은 mutation 재시도에서 같은 `dealId + activityType + sourceType + sourceId` 조합이 중복 생성되지 않게 application layer에서 확인한다.
 - `STAGE_CHANGED`처럼 같은 `sourceId=deal.id`로 여러 번 발생할 수 있는 activity는 DB unique 제약을 1차에서 두지 않는다.
-- G01에서 실제 mutation idempotency 패턴이 있으면 그 기준을 우선한다.
+- G01 대조 결과 별도 mutation idempotency key 패턴은 확인되지 않았다. source row가 있는 자동 activity는 application layer에서 기존 row를 확인한 뒤 생성한다.
 - `DealApplicationService.createDeal`은 현재 초기 `DealFollowingActionLog`를 같은 transaction에서 생성한다. 1차 기준은 딜 생성 transaction 안에서 `DEAL_CREATED`와 초기 다음 행동의 `NEXT_ACTION_CREATED`를 모두 생성하는 것이다.
 - 회의록 relation update처럼 기존 연결을 delete 후 recreate하는 구현은 삭제 전에 연결 diff를 계산해 link/unlink activity를 만든다.
 - follow-up activity는 `FollowUpMessageTarget.targetType=DEAL`인 target별로 만들며, 다른 target만 가진 message는 딜 timeline에 기록하지 않는다.
 - follow-up 발송 성공/실패 activity의 `sourceId`는 message id가 아니라 확정된 `FollowUpDeliveryAttempt.id`로 둔다. `FollowUpMessage.id`는 `metadataJson.messageId`에 넣어 재시도 실패/성공 시도별 이력을 구분한다.
 - 기존 회의록 연결 mutation이 `DealFollowingActionLog`에 남기는 proxy 로그 문구를 `DealActivity` summary로 재사용하지 않는다. 06 activity는 `MeetingNoteDeal` snapshot과 회의록 title/meetingAt 기준 safe summary로 별도 생성한다.
-- G01에서 회의록 연결 시 legacy `DealFollowingActionLog` 생성을 유지할지, 중단할지, UI에서 중복 노출만 막을지 결정한다.
+- G01 결정: 회의록 연결 시 legacy `DealFollowingActionLog` 생성은 1차 호환성 때문에 유지하되, UI에서는 새 `DealActivity`와 중복 primary activity처럼 보이지 않게 배치한다.
 - source record 자체의 soft delete는 1차에서 별도 `*_DELETED` activity를 만들지 않는다. 관계 row가 실제로 제거되거나 replace diff에서 빠진 경우에만 `SCHEDULE_UNLINKED`, `MEETING_NOTE_UNLINKED`를 만든다.
+
+G01 현재 코드 적용 기준:
+
+- 기존 `createFollowingActionLog`, `updateFollowingActionLog`는 transaction으로 감싸져 있지 않다. G03에서 해당 mutation과 activity 생성을 같은 transaction으로 묶는다.
+- 딜 단계 변경은 기존 딜 조회 결과와 요청 `dealStatus`를 비교해 실제 변경이 있을 때만 `STAGE_CHANGED`를 만든다.
+- Schedule 생성/수정은 이미 transaction이 있고 수정 시 dealId diff가 있다. G03에서는 생성된 `ScheduleDeal.id`와 삭제 직전 `ScheduleDeal.id`를 transaction 안에서 확보할 repository 계약을 추가한다.
+- Schedule soft delete는 relation row를 제거하지 않으므로 1차에서 `SCHEDULE_UNLINKED`를 만들지 않는다.
+- MeetingNote 생성/수정의 relation replace는 현재 delete 후 recreate 방식이다. G03에서는 replace 호출 전에 기존 `MeetingNoteDeal` 목록을 조회해 old/new diff를 계산하고, 변경된 deal만 link/unlink activity로 기록한다.
+- 별도 `linkMeetingNoteDeals`는 현재 legacy `DealFollowingActionLog` proxy 로그를 만든다. G03에서는 이 legacy 생성을 1차 호환성 때문에 유지하되, `DealActivity` summary는 meeting note snapshot으로 별도 생성한다.
+- Follow-up 발송은 provider 호출 뒤 `markDeliverySucceeded` 또는 `markDeliveryFailed` transaction에서 activity를 만든다. `FollowUpDeliveryAttempt.id`를 `sourceId`로 쓰고 `FollowUpMessage.id`는 metadata에만 둔다.
 
 Transaction 기준:
 

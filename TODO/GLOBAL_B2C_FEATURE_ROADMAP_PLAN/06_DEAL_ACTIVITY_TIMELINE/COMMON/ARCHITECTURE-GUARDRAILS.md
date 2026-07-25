@@ -48,7 +48,16 @@ G03에서 schedule/meeting-note/follow-up mutation에 activity 생성을 연결�
 - schedule/meeting-note/follow-up의 기존 `runInTransaction` 안에서 같은 transaction client로 activity를 쓴다.
 - 다른 feature module이 `DealApplicationService`를 직접 호출해 activity를 만들지 않는다.
 - Nest module import로 해결하기보다 application port와 infrastructure adapter를 명시적으로 주입한다.
-- G01에서 실제 provider 배치안을 확정하고, G03 구현 전 `ARCHITECTURE-GUARDRAILS.md`와 goal spec이 충돌하지 않게 갱신한다.
+- G01에서 확정한 아래 1차 배치안을 G03 구현 기준으로 사용한다.
+
+G01 현재 코드 대조 후 확정한 1차 배치:
+
+- `BE/src/modules/deal/application/ports/deal-activity.repository.ts`에 `DealActivity` write/read repository port를 둔다.
+- `BE/src/modules/deal/infrastructure/persistence/prisma-deal-activity.repository.ts`는 `PrismaService | Prisma.TransactionClient`를 받을 수 있게 만든다.
+- Deal/Schedule/MeetingNote/Follow-up의 Prisma repository 메서드는 현재 보유한 `PrismaService | Prisma.TransactionClient`로 `PrismaDealActivityRepository` helper를 생성해 activity를 쓴다.
+- schedule/meeting-note/follow-up module이 `DealModule`이나 `DealApplicationService`를 import하지 않는다.
+- MeetingNoteModule은 현재 repository를 export하지 않으므로, G03에서 Nest module export/import에 의존하는 설계는 피한다.
+- helper import로 단방향 TypeScript dependency가 생기더라도 Nest module cycle은 만들지 않는다. 이 경우 activity writer는 다른 feature service를 호출하지 않는다.
 
 ## 3. Transaction 기준
 
@@ -74,8 +83,9 @@ G02에서 신규 Prisma model과 migration을 허용한다.
 - `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/COMMON/FIRST-SALE-GATE-MAP.md`의 `NBA-014` DB/Prisma 운영 gate를 선행 확인한다.
 - 기존 migration 파일을 수정하지 않는다.
 - 공유/운영성 DB에 사용자 결정 없이 migrate/seed를 실행하지 않는다.
-- Prisma schema model/field/relation/index에는 한글 `/// 기능 : ...` 주석을 둔다.
-- migration SQL에는 table/column/index 의도를 `COMMENT ON` 또는 한글 SQL 주석으로 남긴다.
+- Prisma schema model/field/relation/index에는 한국어 문장으로 `/// 기능 : ...` 주석을 둔다.
+- migration SQL에는 table/column/index 의도를 한국어 문장의 `COMMENT ON` 또는 한글 SQL 주석으로 남긴다.
+- enum/model/field/API path 같은 고유 식별자는 영문 그대로 둔다. 단 주석 문장은 한국어로 작성한다.
 
 ## 5. 주석 규칙
 
@@ -86,7 +96,7 @@ Backend 코드를 작성할 때 한글 주석을 반드시 둔다.
 - internal method/function: `// 기능 : ...`
 - application orchestration: 필요한 경우 `// 1. ...`, `// 2. ...` 단계 주석
 
-주석은 이름 번역이 아니라 역할, transaction, ownership, redaction 의도를 설명해야 한다.
+주석은 이름 번역이 아니라 역할, 트랜잭션, 소유권, 비식별 처리 의도를 한국어 문장으로 설명해야 한다. enum/model/field/API path 같은 고유 식별자는 영문 그대로 둔다.
 
 ## 6. Logging/Redaction
 

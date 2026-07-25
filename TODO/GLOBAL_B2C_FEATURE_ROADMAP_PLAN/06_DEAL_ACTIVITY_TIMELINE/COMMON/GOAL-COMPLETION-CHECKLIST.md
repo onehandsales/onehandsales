@@ -1,6 +1,6 @@
 # Goal Completion Checklist
 
-상태: Ready
+상태: G01 Completed / G02 Ready
 최종 업데이트: 2026-07-25
 
 ## 1. 목적
@@ -13,7 +13,7 @@
 
 | 완료 | Goal | 상태 | 완료일 | 완료 기준 | 증거 | 비고 |
 |---|---|---|---|---|---|---|
-| [ ] | G01 Planning API DB Contract | Ready |  | 현재 코드와 계약 대조, blocking 질문 없음 |  |  |
+| [x] | G01 Planning API DB Contract | Completed | 2026-07-25 | 현재 코드와 계약 대조, blocking 질문 없음 | `PLANNING-REVIEW.md`, `pnpm run prisma:validate` | G02 착수 가능 |
 | [ ] | G02 Deal Activity DB Prisma | Ready |  | Prisma schema/migration/model/index 구현 |  | 신규 migration. NBA-014 선행 |
 | [ ] | G03 Deal Activity Backend | Ready |  | timeline API와 자동/수동 activity Backend 구현 |  |  |
 | [ ] | G04 Deal Activity User Web | Ready |  | 딜 상세 timeline UX 구현 |  |  |
@@ -25,25 +25,32 @@
 
 ### G01
 
-- [ ] 현재 BE deal/follow-up/schedule/meeting-note 구현을 확인했다.
-- [ ] 현재 FE deal detail/list 구현을 확인했다.
-- [ ] `COMMON/SOURCE-PLAN-COVERAGE.md` 기준으로 상위 입력 계획의 포함/제외 범위를 확인했다.
-- [ ] `COMMON/BUSINESS-LOGIC.md`와 현재 mutation 흐름을 대조했다.
-- [ ] API path와 기존 route 충돌이 없다.
-- [ ] activity writer provider 배치가 module cycle을 만들지 않는다.
-- [ ] 회의록 연결 legacy `DealFollowingActionLog`와 새 `DealActivity` 중복 노출 처리 기준이 정해졌다.
-- [ ] 딜 생성 시 초기 `DealFollowingActionLog`가 `NEXT_ACTION_CREATED`로 함께 기록되는 기준을 확인했다.
-- [ ] follow-up sourceId 기준이 `FollowUpDeliveryAttempt.id`로 확정됐다.
-- [ ] `DealActivity` schema 후보와 현재 Prisma 관계 충돌이 없다.
-- [ ] API request/response 예시와 실제 DTO 네이밍 충돌이 없다.
-- [ ] G02~G07 착수 blocking 질문이 없다.
+- [x] 현재 BE deal/follow-up/schedule/meeting-note 구현을 확인했다.
+- [x] 현재 FE deal detail/list 구현을 확인했다.
+- [x] `COMMON/SOURCE-PLAN-COVERAGE.md` 기준으로 상위 입력 계획의 포함/제외 범위를 확인했다.
+- [x] `COMMON/BUSINESS-LOGIC.md`와 현재 mutation 흐름을 대조했다.
+- [x] API path와 기존 route 충돌이 없다.
+- [x] activity writer provider 배치가 module cycle을 만들지 않는다.
+- [x] 회의록 연결 legacy `DealFollowingActionLog`와 새 `DealActivity` 중복 노출 처리 기준이 정해졌다.
+- [x] 딜 생성 시 초기 `DealFollowingActionLog`가 `NEXT_ACTION_CREATED`로 함께 기록되는 기준을 확인했다.
+- [x] follow-up sourceId 기준이 `FollowUpDeliveryAttempt.id`로 확정됐다.
+- [x] `DealActivity` schema 후보와 현재 Prisma 관계 충돌이 없다.
+- [x] API request/response 예시와 실제 DTO 네이밍 충돌이 없다.
+- [x] G02~G07 착수 blocking 질문이 없다.
+
+G01 증거:
+
+- `COMMON/PLANNING-REVIEW.md`에 현재 코드 대조 결과를 기록했다.
+- `COMMON/BUSINESS-LOGIC.md`, `COMMON/ARCHITECTURE-GUARDRAILS.md`, `BE-TODO/API-TODO.md`, `FE-TODO/USER-WEB-TODO.md`에 보정 사항을 반영했다.
+- G01은 소스 코드 구현 goal이 아니므로 신규 코드 주석은 없다. G02/G03 구현 시 한글 주석 규칙을 적용한다.
+- `cd BE && pnpm run prisma:validate`가 통과했다.
 
 ### G02
 
 - [ ] `DealActivityType`, `DealActivitySourceType` enum이 있다.
 - [ ] `DealActivity` model이 있다.
 - [ ] `Deal` relation이 추가됐다.
-- [ ] migration SQL에 index/FK/comment가 있다.
+- [ ] migration SQL에 index/FK/주석 또는 `COMMENT ON`이 있다.
 - [ ] migration SQL에 table/column/index 의도 주석 또는 `COMMENT ON`이 있다.
 - [ ] 기존 migration 파일을 수정하지 않았다.
 - [ ] 공유/운영성 DB에 무단 migrate/seed를 실행하지 않았다.

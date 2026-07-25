@@ -23,6 +23,7 @@
 - Deal detail panel/page
 - 현재 구현의 host는 `FE/user-web/src/features/deal/components/deal-detail-panel.tsx`다.
 - `deal-activity-section.tsx`는 현재 "새 API에서는 DealDetailPanel로 통합" 상태인 unused placeholder이므로 정본 host로 되살리지 않는다.
+- 기존 상세에는 다음 행동/메모/follow-up 이력이 이미 따로 보인다. G04에서는 새 `딜 활동` timeline을 primary activity 흐름으로 추가하되, 같은 이력이 중복된 primary activity처럼 보이지 않게 배치한다.
 
 ### 작업
 
@@ -63,6 +64,8 @@
 
 - `/app/deals`
 - `/app/contacts`
+- 현재 `/app/deals` 목록 구현 host는 `FE/user-web/src/features/deal/components/deal-pipeline-home-screen.tsx`다. `deal-list-screen.tsx`는 wrapper다.
+- 현재 `/app/contacts` 목록 구현 host는 `FE/user-web/src/features/contact/components/contact-list-screen.tsx`다.
 
 ### 작업
 

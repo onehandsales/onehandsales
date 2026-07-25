@@ -1,6 +1,6 @@
 # G01 Planning API DB Contract
 
-상태: Ready
+상태: Completed
 목표: 06 구현 전 계약 검토와 blocking 해소
 
 ## 1. 목적
@@ -58,3 +58,16 @@ rg "following-action|memo-logs|scheduleDeals|meetingNoteDeals|follow-up" BE/src/
 - G02~G07 구현 착수 blocking 질문이 없다.
 - 계약 보정이 필요한 문서가 갱신됐다.
 - `COMMON/GOAL-COMPLETION-CHECKLIST.md`의 G01 항목이 갱신됐다.
+
+## 7. 완료 기록
+
+- 완료일: 2026-07-25
+- 검토 결과: G02~G07 착수 blocking 질문 없음
+- 필수 검증: `cd BE && pnpm run prisma:validate` 통과
+- 보정 문서:
+  - `COMMON/PLANNING-REVIEW.md`
+  - `COMMON/BUSINESS-LOGIC.md`
+  - `COMMON/ARCHITECTURE-GUARDRAILS.md`
+  - `BE-TODO/API-TODO.md`
+  - `FE-TODO/USER-WEB-TODO.md`
+  - `COMMON/GOAL-COMPLETION-CHECKLIST.md`

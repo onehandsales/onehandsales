@@ -32,6 +32,16 @@
 7. 딜 생성/단계 변경/다음 행동/일정/회의록/follow-up mutation에 연결한다.
 8. ownership/redaction/transaction test를 작성한다.
 
+G01 현재 코드 대조 후 구현 메모:
+
+- `DealController`에는 새 activity route가 없고 기존 `following-action-logs`, `memo-logs` route와 충돌하지 않는다.
+- `DealApplicationService.createDeal`은 이미 초기 `DealFollowingActionLog`를 같은 transaction에서 만들므로, G03에서 `DEAL_CREATED`와 초기 `NEXT_ACTION_CREATED`를 같은 transaction에 추가한다.
+- 단독 다음 행동 생성/수정은 현재 transaction으로 감싸져 있지 않으므로 G03에서 transaction 처리로 바꾼다.
+- Schedule repository는 현재 `ScheduleDeal.id`를 반환하지 않는다. G03에서 생성된/삭제 직전 relation row id와 schedule snapshot을 확보할 port를 추가한다.
+- MeetingNote repository의 `replaceDeals`는 delete 후 recreate다. G03에서 replace 전에 기존 `MeetingNoteDeal`을 조회해 diff를 계산하고, legacy `DealFollowingActionLog` proxy 문구를 activity summary로 재사용하지 않는다.
+- Follow-up 성공/실패 activity는 `markDeliverySucceeded`/`markDeliveryFailed` transaction 안에서 생성한다. `sourceId`는 `FollowUpDeliveryAttempt.id`다.
+- activity writer는 `DealApplicationService`를 다른 module에서 호출하지 않고, transaction client를 받는 `PrismaDealActivityRepository` helper 방식으로 연결한다.
+
 ## 3. 자동 activity trigger
 
 | Trigger | Activity type | 연결 위치 후보 |
@@ -48,6 +58,8 @@
 | follow-up 발송 실패 | `FOLLOW_UP_FAILED` | FollowUp delivery attempt failed 중 `DEAL` target. sourceId는 `FollowUpDeliveryAttempt.id` |
 
 `DealApplicationService.createDeal`이 초기 `DealFollowingActionLog`를 만들기 때문에, 딜 생성 transaction에서는 `DEAL_CREATED`와 초기 `NEXT_ACTION_CREATED`가 모두 생성되는 기준으로 구현한다.
+Schedule/MeetingNote 연결 activity는 sourceId로 relation row id를 사용하므로, deleteMany 호출 전 삭제 대상 row의 id와 snapshot을 확보한다.
+MeetingNote의 legacy `DealFollowingActionLog`는 1차 호환성 때문에 유지하되, `DealActivity` 정본과 summary 생성 기준은 별도로 둔다.
 
 ## 4. G05 Record Summary API
 

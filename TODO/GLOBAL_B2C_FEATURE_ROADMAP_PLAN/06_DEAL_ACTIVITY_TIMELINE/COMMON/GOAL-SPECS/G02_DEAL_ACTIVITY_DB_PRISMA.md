@@ -60,18 +60,18 @@ Index 후보:
 
 ## 6. 주석 기준
 
-Prisma schema에는 한글 주석을 둔다.
+Prisma schema에는 한국어 문장으로 주석을 둔다. enum/model/field 같은 고유 식별자는 영문 그대로 둔다.
 
 예:
 
 ```prisma
-/// 기능 : 딜 상세 timeline에 표시할 활동 정본입니다. private memo와 provider raw detail은 저장하지 않습니다.
+/// 기능 : 딜 상세 활동 내역에 표시할 활동 정본입니다. 비공개 메모와 외부 제공자 원문 세부 정보는 저장하지 않습니다.
 model DealActivity {
   ...
 }
 ```
 
-Migration SQL에는 table/column/index 의도를 한글 주석 또는 COMMENT로 남긴다. `BE-TODO/DB-SCHEMA.md`의 DDL 예시를 기준으로 하되, 실제 Prisma migration 생성 결과와 이름이 다르면 생성 결과에 맞춘다.
+Migration SQL에는 table/column/index 의도를 한국어 문장의 한글 주석 또는 COMMENT로 남긴다. `BE-TODO/DB-SCHEMA.md`의 DDL 예시를 기준으로 하되, 실제 Prisma migration 생성 결과와 이름이 다르면 생성 결과에 맞춘다.
 
 ## 7. 검증
 

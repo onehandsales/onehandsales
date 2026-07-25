@@ -41,7 +41,7 @@
 ## 3. 신규 model 후보
 
 ```prisma
-/// 기능 : 딜 상세 timeline에 표시할 활동 정본입니다. private memo와 provider raw detail은 저장하지 않습니다.
+/// 기능 : 딜 상세 활동 내역에 표시할 활동 정본입니다. 비공개 메모와 외부 제공자 원문 세부 정보는 저장하지 않습니다.
 model DealActivity {
   id                String                 @id @default(uuid()) @db.Uuid
   userId            String                 @db.Uuid
@@ -58,7 +58,7 @@ model DealActivity {
   createdAt         DateTime               @default(now()) @db.Timestamptz(3)
   updatedAt         DateTime               @updatedAt @db.Timestamptz(3)
 
-  /// 기능 : 활동을 소유한 사용자입니다. 모든 activity 조회와 변경은 이 userId로 제한합니다.
+  /// 기능 : 활동을 소유한 사용자입니다. 모든 활동 조회와 변경은 이 userId로 제한합니다.
   user User @relation(fields: [userId], references: [id])
   /// 기능 : 활동이 속한 딜입니다.
   deal Deal @relation(fields: [dealId], references: [id])
@@ -73,10 +73,10 @@ model DealActivity {
 
 ## 4. Migration SQL DDL 예시
 
-아래 SQL은 G02 migration 작성 시 기준으로 삼을 예시다. 실제 Prisma migration 생성 결과와 constraint/index 이름이 다르면 G02에서 생성 결과에 맞춰 보정하되, table/column/index 의도를 설명하는 한글 주석 또는 `COMMENT ON`은 반드시 남긴다.
+아래 SQL은 G02 migration 작성 시 기준으로 삼을 예시다. 실제 Prisma migration 생성 결과와 constraint/index 이름이 다르면 G02에서 생성 결과에 맞춰 보정하되, table/column/index 의도를 설명하는 한국어 문장의 한글 주석 또는 `COMMENT ON`은 반드시 남긴다.
 
 ```sql
--- 기능 : 딜 activity 유형을 고정 enum으로 관리해 timeline 표시와 자동 생성 분기를 안정화합니다.
+-- 기능 : 딜 활동 유형을 고정 enum으로 관리해 활동 내역 표시와 자동 생성 분기를 안정화합니다.
 CREATE TYPE "DealActivityType" AS ENUM (
   'DEAL_CREATED',
   'STAGE_CHANGED',
@@ -95,7 +95,7 @@ CREATE TYPE "DealActivityType" AS ENUM (
   'NOTE'
 );
 
--- 기능 : activity가 시스템/사용자/연결 도메인 중 어디에서 생성됐는지 구분합니다.
+-- 기능 : 활동이 시스템, 사용자, 연결 도메인 중 어디에서 생성됐는지 구분합니다.
 CREATE TYPE "DealActivitySourceType" AS ENUM (
   'SYSTEM',
   'USER',
@@ -105,10 +105,10 @@ CREATE TYPE "DealActivitySourceType" AS ENUM (
   'FOLLOW_UP'
 );
 
-COMMENT ON TYPE "DealActivityType" IS '딜 timeline에 표시할 activity 종류. 수동 activity와 자동 activity를 함께 표현한다.';
-COMMENT ON TYPE "DealActivitySourceType" IS 'activity 생성 출처. 수정 가능 여부와 linked record 해석에 사용한다.';
+COMMENT ON TYPE "DealActivityType" IS '딜 활동 내역에 표시할 활동 종류. 수동 활동과 자동 활동을 함께 표현한다.';
+COMMENT ON TYPE "DealActivitySourceType" IS '활동 생성 출처. 수정 가능 여부와 연결 레코드 해석에 사용한다.';
 
--- 기능 : 딜 상세 timeline의 정본 row입니다. private memo와 provider raw detail은 저장하지 않습니다.
+-- 기능 : 딜 상세 활동 내역의 정본 행입니다. 비공개 메모와 외부 제공자 원문 세부 정보는 저장하지 않습니다.
 CREATE TABLE "DealActivity" (
   "id" UUID NOT NULL,
   "userId" UUID NOT NULL,
@@ -128,41 +128,41 @@ CREATE TABLE "DealActivity" (
   CONSTRAINT "DealActivity_pkey" PRIMARY KEY ("id")
 );
 
-COMMENT ON TABLE "DealActivity" IS '딜 상세에서 시간순으로 보여줄 activity 정본. 민감 원문과 provider raw response는 저장하지 않는다.';
-COMMENT ON COLUMN "DealActivity"."userId" IS 'activity 소유 사용자. 모든 조회/생성/수정에서 ownership 조건으로 사용한다.';
-COMMENT ON COLUMN "DealActivity"."dealId" IS 'activity가 속한 딜. 삭제된 딜의 activity는 일반 User Web에 노출하지 않는다.';
-COMMENT ON COLUMN "DealActivity"."activityType" IS 'timeline 표시 type과 비즈니스 분기 기준.';
+COMMENT ON TABLE "DealActivity" IS '딜 상세에서 시간순으로 보여줄 활동 정본. 민감 원문과 외부 제공자 원문 응답은 저장하지 않는다.';
+COMMENT ON COLUMN "DealActivity"."userId" IS '활동 소유 사용자. 모든 조회, 생성, 수정에서 소유권 조건으로 사용한다.';
+COMMENT ON COLUMN "DealActivity"."dealId" IS '활동이 속한 딜. 삭제된 딜의 활동은 일반 User Web에 노출하지 않는다.';
+COMMENT ON COLUMN "DealActivity"."activityType" IS '활동 내역 표시 유형과 비즈니스 분기 기준.';
 COMMENT ON COLUMN "DealActivity"."sourceType" IS 'SYSTEM/USER/NEXT_ACTION/SCHEDULE/MEETING_NOTE/FOLLOW_UP 출처 구분.';
-COMMENT ON COLUMN "DealActivity"."sourceId" IS '원본 event/source record ID. 단계 변경은 dealId, 연결 해제는 삭제 직전 연결 row id, follow-up 발송 성공/실패는 FollowUpDeliveryAttempt.id를 저장한다.';
-COMMENT ON COLUMN "DealActivity"."title" IS 'timeline 제목. structured log에 원문을 남기지 않는다.';
-COMMENT ON COLUMN "DealActivity"."summary" IS '안전한 짧은 요약. private memo, follow-up body 전체, provider raw detail을 넣지 않는다.';
-COMMENT ON COLUMN "DealActivity"."body" IS '수동 activity 본문. 사용자가 민감정보를 적을 수 있으므로 log와 목록 summary에 원문을 남기지 않는다.';
-COMMENT ON COLUMN "DealActivity"."occurredAt" IS 'activity 발생 시각. timeline 정렬 cursor의 1차 기준이다.';
-COMMENT ON COLUMN "DealActivity"."linkedRecordsJson" IS 'User Web 이동에 필요한 targetType, targetId, targetPath, targetLabel만 담는 안전한 linked record 배열. 삭제되거나 접근 불가한 source는 response 변환 시 제외한다.';
-COMMENT ON COLUMN "DealActivity"."metadataJson" IS '자동 activity 생성에 필요한 allowlist 기반 redacted metadata. provider raw response, token, API key, quota detail을 넣지 않는다.';
+COMMENT ON COLUMN "DealActivity"."sourceId" IS '원본 사건 또는 원본 레코드 ID. 단계 변경은 dealId, 연결 해제는 삭제 직전 연결 행 ID, follow-up 발송 성공/실패는 FollowUpDeliveryAttempt.id를 저장한다.';
+COMMENT ON COLUMN "DealActivity"."title" IS '활동 내역 제목. 구조화 로그에 원문을 남기지 않는다.';
+COMMENT ON COLUMN "DealActivity"."summary" IS '안전한 짧은 요약. 비공개 메모, follow-up 본문 전체, 외부 제공자 원문 세부 정보를 넣지 않는다.';
+COMMENT ON COLUMN "DealActivity"."body" IS '수동 활동 본문. 사용자가 민감정보를 적을 수 있으므로 로그와 목록 요약에 원문을 남기지 않는다.';
+COMMENT ON COLUMN "DealActivity"."occurredAt" IS '활동 발생 시각. 활동 내역 정렬 커서의 1차 기준이다.';
+COMMENT ON COLUMN "DealActivity"."linkedRecordsJson" IS 'User Web 이동에 필요한 targetType, targetId, targetPath, targetLabel만 담는 안전한 연결 레코드 배열. 삭제되거나 접근 불가한 원본은 response 변환 시 제외한다.';
+COMMENT ON COLUMN "DealActivity"."metadataJson" IS '자동 활동 생성에 필요한 허용 목록 기반 비식별 메타데이터. 외부 제공자 원문 응답, token, API key, quota detail을 넣지 않는다.';
 
--- 기능 : 딜 상세 timeline을 최신순 cursor pagination으로 조회합니다.
+-- 기능 : 딜 상세 활동 내역을 최신순 커서 페이지네이션으로 조회합니다.
 CREATE INDEX "DealActivity_userId_dealId_occurredAt_id_idx"
   ON "DealActivity"("userId", "dealId", "occurredAt", "id");
 
--- 기능 : 사용자 단위 activity type 필터와 운영 확인에 사용합니다.
+-- 기능 : 사용자 단위 활동 유형 필터와 운영 확인에 사용합니다.
 CREATE INDEX "DealActivity_userId_activityType_occurredAt_idx"
   ON "DealActivity"("userId", "activityType", "occurredAt");
 
--- 기능 : 자동 activity의 원본 record 추적과 중복 생성 방지 확인에 사용합니다.
+-- 기능 : 자동 활동의 원본 레코드 추적과 중복 생성 방지 확인에 사용합니다.
 CREATE INDEX "DealActivity_userId_sourceType_sourceId_idx"
   ON "DealActivity"("userId", "sourceType", "sourceId");
 
-COMMENT ON INDEX "DealActivity_userId_dealId_occurredAt_id_idx" IS '딜 상세 timeline 최신순 조회와 cursor pagination용 index.';
-COMMENT ON INDEX "DealActivity_userId_activityType_occurredAt_idx" IS 'activity type filter 조회용 index.';
-COMMENT ON INDEX "DealActivity_userId_sourceType_sourceId_idx" IS 'event/source record 기반 자동 activity 추적과 중복 생성 확인용 index.';
+COMMENT ON INDEX "DealActivity_userId_dealId_occurredAt_id_idx" IS '딜 상세 활동 내역 최신순 조회와 커서 페이지네이션용 색인.';
+COMMENT ON INDEX "DealActivity_userId_activityType_occurredAt_idx" IS '활동 유형 필터 조회용 색인.';
+COMMENT ON INDEX "DealActivity_userId_sourceType_sourceId_idx" IS '사건 또는 원본 레코드 기반 자동 활동 추적과 중복 생성 확인용 색인.';
 
--- 기능 : activity는 사용자 소유권 기준을 유지합니다.
+-- 기능 : 활동은 사용자 소유권 기준을 유지합니다.
 ALTER TABLE "DealActivity"
   ADD CONSTRAINT "DealActivity_userId_fkey"
   FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
--- 기능 : activity는 딜 삭제와 독립적으로 남기되, 일반 조회에서는 active 딜만 노출합니다.
+-- 기능 : 활동은 딜 삭제와 독립적으로 남기되, 일반 조회에서는 활성 딜만 노출합니다.
 ALTER TABLE "DealActivity"
   ADD CONSTRAINT "DealActivity_dealId_fkey"
   FOREIGN KEY ("dealId") REFERENCES "Deal"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -173,14 +173,14 @@ ALTER TABLE "DealActivity"
 `Deal`에 relation 추가:
 
 ```prisma
-/// 기능 : 딜 상세 timeline에 표시할 활동 목록입니다.
+/// 기능 : 딜 상세 활동 내역에 표시할 활동 목록입니다.
 activities DealActivity[]
 ```
 
 `User`에 relation 추가:
 
 ```prisma
-/// 기능 : 사용자가 만든 딜 activity 목록입니다. 모든 조회와 변경은 이 userId로 제한합니다.
+/// 기능 : 사용자가 만든 딜 활동 목록입니다. 모든 조회와 변경은 이 userId로 제한합니다.
 dealActivities DealActivity[]
 ```
 
