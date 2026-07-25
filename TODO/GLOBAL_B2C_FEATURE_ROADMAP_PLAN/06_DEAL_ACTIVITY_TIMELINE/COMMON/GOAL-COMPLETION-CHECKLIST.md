@@ -1,6 +1,6 @@
 # Goal Completion Checklist
 
-상태: G02 Completed / G03 Ready
+상태: G04 Completed / G05 Ready
 최종 업데이트: 2026-07-26
 
 ## 1. 목적
@@ -15,8 +15,8 @@
 |---|---|---|---|---|---|---|
 | [x] | G01 Planning API DB Contract | Completed | 2026-07-25 | 현재 코드와 계약 대조, blocking 질문 없음 | `PLANNING-REVIEW.md`, `pnpm run prisma:validate` | G02 착수 가능 |
 | [x] | G02 Deal Activity DB Prisma | Completed | 2026-07-26 | Prisma schema/migration/model/index 구현 | `BE/prisma/schema.prisma`, `20260726010000_add_deal_activity`, `pnpm run prisma:validate`, `pnpm run prisma:generate`, `pnpm run typecheck`, `pnpm run lint`, `pnpm run test -- deal`, `pnpm run build` | 원격 Supabase target 확인. migrate/seed 미실행 |
-| [ ] | G03 Deal Activity Backend | Ready |  | timeline API와 자동/수동 activity Backend 구현 |  | G02 완료 |
-| [ ] | G04 Deal Activity User Web | Ready |  | 딜 상세 timeline UX 구현 |  |  |
+| [x] | G03 Deal Activity Backend | Completed | 2026-07-26 | timeline API와 자동/수동 activity Backend 구현 | `G03_DEAL_ACTIVITY_BACKEND.md`, `pnpm run typecheck`, `pnpm run lint`, `pnpm run test -- deal`, `pnpm run test -- follow-up`, `pnpm run test -- schedule`, `pnpm run test -- meeting-note`, `pnpm run build` | G04 착수 가능 |
+| [x] | G04 Deal Activity User Web | Completed | 2026-07-26 | 딜 상세 timeline UX 구현 | `G04_DEAL_ACTIVITY_USER_WEB.md`, `pnpm run typecheck`, `pnpm run lint`, `pnpm run build`, `pnpm exec playwright test tests/e2e/deal-activity-timeline.spec.ts`, `pnpm run test:e2e` | G05 착수 가능 |
 | [ ] | G05 Deal Record Summary Backend | Ready |  | Deal/Contact list summary Backend 구현 |  |  |
 | [ ] | G06 Deal Record Summary User Web | Ready |  | 목록 summary User Web 구현 |  |  |
 | [ ] | G07 QA Review Closeout | Ready |  | REVIEW-CHECKLIST 통과와 문서 closeout |  |  |
@@ -66,26 +66,38 @@ G02 증거:
 
 ### G03
 
-- [ ] `GET /api/deals/:dealId/activities`가 구현됐다.
-- [ ] `POST /api/deals/:dealId/activities`가 구현됐다.
-- [ ] `PATCH /api/deals/:dealId/activities/:activityId`가 구현됐다.
-- [ ] 자동 activity 생성 지점이 transaction과 연결됐다.
-- [ ] 회의록 연결 변경은 delete/recreate 전 diff 기준으로 activity가 생성됐다.
-- [ ] 회의록 연결 legacy `DealFollowingActionLog` 문구를 activity summary로 재사용하지 않는다.
-- [ ] follow-up activity는 `DEAL` target message만 딜 timeline에 기록한다.
-- [ ] follow-up 발송 성공/실패 activity가 delivery attempt 단위로 기록됐다.
-- [ ] 자동 activity는 수정할 수 없다.
-- [ ] private memo/provider raw/follow-up body 전체가 response/log에 노출되지 않는다.
+- [x] `GET /api/deals/:dealId/activities`가 구현됐다.
+- [x] `POST /api/deals/:dealId/activities`가 구현됐다.
+- [x] `PATCH /api/deals/:dealId/activities/:activityId`가 구현됐다.
+- [x] 자동 activity 생성 지점이 transaction과 연결됐다.
+- [x] 회의록 연결 변경은 delete/recreate 전 diff 기준으로 activity가 생성됐다.
+- [x] 회의록 연결 legacy `DealFollowingActionLog` 문구를 activity summary로 재사용하지 않는다.
+- [x] follow-up activity는 `DEAL` target message만 딜 timeline에 기록한다.
+- [x] follow-up 발송 성공/실패 activity가 delivery attempt 단위로 기록됐다.
+- [x] 자동 activity는 수정할 수 없다.
+- [x] private memo/provider raw/follow-up body 전체가 response/log에 노출되지 않는다.
+
+G03 증거:
+
+- 구현 명세: `COMMON/GOAL-SPECS/G03_DEAL_ACTIVITY_BACKEND.md`
+- Backend 검증 통과: `pnpm run typecheck`, `pnpm run lint`, `pnpm run test -- deal`, `pnpm run test -- follow-up`, `pnpm run test -- schedule`, `pnpm run test -- meeting-note`, `pnpm run build`
 
 ### G04
 
-- [ ] 딜 상세에 timeline section이 있다.
-- [ ] 수동 activity 생성 form이 있다.
-- [ ] 수동 activity 수정 UX가 있다.
-- [ ] loading/empty/error/success 상태가 있다.
-- [ ] cursor는 FE에서 파싱하지 않고 API 응답의 `nextCursor`를 그대로 전달한다.
-- [ ] `DealDetailPanel` 안에서 새 timeline이 통합됐고 기존 placeholder component를 정본 host로 쓰지 않았다.
-- [ ] 모바일 390px/360px에서 timeline이 깨지지 않는다.
+- [x] 딜 상세에 timeline section이 있다.
+- [x] 수동 activity 생성 form이 있다.
+- [x] 수동 activity 수정 UX가 있다.
+- [x] loading/empty/error/success 상태가 있다.
+- [x] cursor는 FE에서 파싱하지 않고 API 응답의 `nextCursor`를 그대로 전달한다.
+- [x] `DealDetailPanel` 안에서 새 timeline이 통합됐고 기존 placeholder component를 정본 host로 쓰지 않았다.
+- [x] 모바일 390px/360px에서 timeline이 깨지지 않는다.
+
+G04 증거:
+
+- 구현 파일: `FE/user-web/src/features/deal/components/deal-activity-timeline-section.tsx`, `FE/user-web/src/features/deal/components/deal-detail-panel.tsx`
+- API/query/form: `deal-api.ts`, `deal-query-keys.ts`, `use-deal-detail.ts`, `use-deal-mutations.ts`, `deal-schema.ts`, `deal.ts`
+- E2E: `FE/user-web/tests/e2e/deal-activity-timeline.spec.ts`
+- User Web 검증 통과: `pnpm run typecheck`, `pnpm run lint`, `pnpm run build`, `pnpm exec playwright test tests/e2e/deal-activity-timeline.spec.ts`, `pnpm run test:e2e`
 
 ### G05
 

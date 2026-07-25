@@ -33,6 +33,7 @@ import { ModalShell } from "@/components/ui/modal-shell";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { Toast } from "@/components/ui/toast";
 import { useToast } from "@/components/ui/use-toast";
+import { DealActivityTimelineSection } from "@/features/deal/components/deal-activity-timeline-section";
 import { DealEditDialog } from "@/features/deal/components/deal-edit-dialog";
 import { FollowUpTimelinePanel } from "@/features/follow-up-delivery";
 import {
@@ -263,6 +264,13 @@ function DealDetailSidePanel({
 
           <PanelDivider />
 
+          <DealActivityTimelineSection
+            className="max-h-[420px] min-h-[280px]"
+            dealId={detail.id}
+          />
+
+          <PanelDivider />
+
           <FollowingActionLogsSection
             dealId={detail.id}
             hasNext={followingLogsHasNext}
@@ -461,6 +469,7 @@ function DealDetailPageLayout({
             <DealLinkedCompaniesTable companies={detail.companies} />
             <DealLinkedContactsTable contacts={detail.contacts} />
             <DealLinkedProductsTable products={products} />
+            <DealActivityTimelineSection dealId={detail.id} />
             <div className="grid gap-4">
               <DealMemoLogsPanel
                 dealId={detail.id}
@@ -527,6 +536,8 @@ function DealDetailPageLayout({
             <DealLinkedContactsTable contacts={detail.contacts} />
             <DealLinkedProductsTable products={products} />
           </div>
+
+          <DealActivityTimelineSection dealId={detail.id} />
 
           <div className="grid grid-cols-2 gap-4">
             <DealMemoLogsPanel

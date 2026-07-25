@@ -41,6 +41,7 @@ export type UserWebApiMockStore = {
   readonly contacts: MutableRecord[];
   readonly products: MutableRecord[];
   readonly deals: MutableRecord[];
+  readonly dealActivities: MutableRecord[];
   readonly schedules: MutableRecord[];
   readonly googleCalendarConnection: MutableRecord;
   readonly googleCalendars: MutableRecord[];
@@ -545,6 +546,41 @@ async function handleApiRequest(
   const dealDetailMatch = pathname.match(/^\/api\/deals\/([^/]+)$/);
   if (dealDetailMatch && method === "GET") {
     return json(requireItem(store.deals, dealDetailMatch[1]));
+  }
+
+  const dealActivitiesMatch = pathname.match(/^\/api\/deals\/([^/]+)\/activities$/);
+  if (dealActivitiesMatch && method === "GET") {
+    return jsonConnection(
+      listDealActivities(
+        store,
+        decodeURIComponent(dealActivitiesMatch[1] ?? ""),
+        url,
+      ),
+    );
+  }
+
+  if (dealActivitiesMatch && method === "POST") {
+    const activity = createManualDealActivity(
+      store,
+      decodeURIComponent(dealActivitiesMatch[1] ?? ""),
+      await readJsonBody(route),
+    );
+
+    return json(activity, 201);
+  }
+
+  const dealActivityDetailMatch = pathname.match(
+    /^\/api\/deals\/([^/]+)\/activities\/([^/]+)$/,
+  );
+  if (dealActivityDetailMatch && method === "PATCH") {
+    const activity = updateManualDealActivity(
+      store,
+      decodeURIComponent(dealActivityDetailMatch[1] ?? ""),
+      decodeURIComponent(dealActivityDetailMatch[2] ?? ""),
+      await readJsonBody(route),
+    );
+
+    return json(activity);
   }
 
   if (/^\/api\/deals\/[^/]+\/following-action-logs$/.test(pathname)) {
@@ -1065,6 +1101,7 @@ function createStore(): UserWebApiMockStore {
   const meetingNote = createMeetingNoteFromFixtures(company, contact, product, deal);
   const aiWeeklyReports = createAiWeeklyReportFixtures(schedule, deal, meetingNote);
   const notifications = createNotificationsFromFixtures(deal, schedule);
+  const dealActivities = createDealActivityFixtures(deal, schedule, meetingNote);
 
   return {
     aiWeeklyReports,
@@ -1085,7 +1122,9 @@ function createStore(): UserWebApiMockStore {
       "meeting-note": 1,
       product: 1,
       schedule: 1,
+      "deal-activity": 3,
     },
+    dealActivities,
     deals: [deal],
     googleCalendarConnection,
     googleCalendars,
@@ -1297,6 +1336,182 @@ function createNotificationsFromFixtures(
       updatedAt: NOW,
     },
   ];
+}
+
+function createDealActivityFixtures(
+  deal: MutableRecord,
+  schedule: MutableRecord,
+  meetingNote: MutableRecord,
+) {
+  return [
+    {
+      activityType: "MEETING_NOTE_LINKED",
+      body: null,
+      createdAt: NOW,
+      dealId: String(deal.id),
+      id: "deal-activity-mobile-003",
+      isEditable: false,
+      linkedRecords: [toDealLinkedRecord(deal), toMeetingNoteLinkedRecord(meetingNote)],
+      occurredAt: "2026-07-20T09:20:00.000Z",
+      sourceId: String(meetingNote.id),
+      sourceType: "MEETING_NOTE",
+      summary: stringField(meetingNote, "title"),
+      title: "회의록을 연결했어요.",
+      updatedAt: NOW,
+    },
+    {
+      activityType: "SCHEDULE_LINKED",
+      body: null,
+      createdAt: NOW,
+      dealId: String(deal.id),
+      id: "deal-activity-mobile-002",
+      isEditable: false,
+      linkedRecords: [toDealLinkedRecord(deal), toScheduleLinkedRecord(schedule)],
+      occurredAt: "2026-07-20T09:10:00.000Z",
+      sourceId: String(schedule.id),
+      sourceType: "SCHEDULE",
+      summary: stringField(schedule, "scheduleTitle"),
+      title: "일정을 연결했어요.",
+      updatedAt: NOW,
+    },
+    {
+      activityType: "DEAL_CREATED",
+      body: null,
+      createdAt: NOW,
+      dealId: String(deal.id),
+      id: "deal-activity-mobile-001",
+      isEditable: false,
+      linkedRecords: [toDealLinkedRecord(deal)],
+      occurredAt: "2026-07-20T09:00:00.000Z",
+      sourceId: String(deal.id),
+      sourceType: "SYSTEM",
+      summary: stringField(deal, "dealName"),
+      title: "딜을 만들었어요.",
+      updatedAt: NOW,
+    },
+  ];
+}
+
+function listDealActivities(
+  store: UserWebApiMockStore,
+  dealId: string,
+  url: URL,
+) {
+  const activityType = url.searchParams.get("type");
+
+  return store.dealActivities
+    .filter((activity) => stringField(activity, "dealId") === dealId)
+    .filter(
+      (activity) =>
+        !activityType || stringField(activity, "activityType") === activityType,
+    )
+    .sort(compareDealActivityDesc);
+}
+
+function createManualDealActivity(
+  store: UserWebApiMockStore,
+  dealId: string,
+  body: unknown,
+) {
+  const deal = requireItem(store.deals, dealId);
+  const timestamp = now();
+  const activity = {
+    activityType: stringField(body, "activityType") ?? "NOTE",
+    body: stringField(body, "body"),
+    createdAt: timestamp,
+    dealId,
+    id: nextId(store, "deal-activity"),
+    isEditable: true,
+    linkedRecords: isApiErrorShape(deal) ? [] : [toDealLinkedRecord(deal)],
+    occurredAt: stringField(body, "occurredAt") ?? timestamp,
+    sourceId: null,
+    sourceType: "USER",
+    summary: null,
+    title: stringField(body, "title") ?? "수동 활동",
+    updatedAt: timestamp,
+  };
+
+  store.dealActivities.unshift(activity);
+  return activity;
+}
+
+function updateManualDealActivity(
+  store: UserWebApiMockStore,
+  dealId: string,
+  activityId: string,
+  body: unknown,
+) {
+  const activity = store.dealActivities.find(
+    (item) =>
+      stringField(item, "dealId") === dealId &&
+      stringField(item, "id") === activityId,
+  );
+
+  if (!activity) {
+    return {
+      code: "NotFound",
+      message: "Not found",
+      statusCode: 404,
+    };
+  }
+
+  const nextActivity = {
+    ...activity,
+    activityType: stringField(body, "activityType") ?? activity.activityType,
+    body: isRecord(body) && "body" in body ? stringField(body, "body") : activity.body,
+    occurredAt: stringField(body, "occurredAt") ?? activity.occurredAt,
+    title: stringField(body, "title") ?? activity.title,
+    updatedAt: now(),
+  };
+
+  const activityIndex = store.dealActivities.findIndex(
+    (item) => stringField(item, "id") === activityId,
+  );
+
+  if (activityIndex >= 0) {
+    store.dealActivities[activityIndex] = nextActivity;
+  }
+
+  return nextActivity;
+}
+
+function toDealLinkedRecord(deal: MutableRecord) {
+  return {
+    targetId: String(deal.id),
+    targetLabel: stringField(deal, "dealName"),
+    targetPath: `/app/deals/${String(deal.id)}`,
+    targetType: "DEAL",
+  };
+}
+
+function toScheduleLinkedRecord(schedule: MutableRecord) {
+  return {
+    targetId: String(schedule.id),
+    targetLabel: stringField(schedule, "scheduleTitle"),
+    targetPath: `/app/schedules/${String(schedule.id)}`,
+    targetType: "SCHEDULE",
+  };
+}
+
+function toMeetingNoteLinkedRecord(meetingNote: MutableRecord) {
+  return {
+    targetId: String(meetingNote.id),
+    targetLabel: stringField(meetingNote, "title"),
+    targetPath: `/app/meeting-notes/${String(meetingNote.id)}`,
+    targetType: "MEETING_NOTE",
+  };
+}
+
+function compareDealActivityDesc(left: MutableRecord, right: MutableRecord) {
+  const leftTime = Date.parse(stringField(left, "occurredAt") ?? "");
+  const rightTime = Date.parse(stringField(right, "occurredAt") ?? "");
+  const timeDiff = rightTime - leftTime;
+
+  if (timeDiff !== 0) {
+    return timeDiff;
+  }
+
+  return String(right.id).localeCompare(String(left.id));
 }
 
 function listMockNotifications(notifications: MutableRecord[], url: URL) {

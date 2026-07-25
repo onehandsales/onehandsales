@@ -3,6 +3,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   createDeal,
   createFollowingActionLog,
+  createManualDealActivity,
   createMemoLog,
   deleteDeal,
   deleteFollowingActionLog,
@@ -10,6 +11,7 @@ import {
   exportDealsXlsx,
   updateDeal,
   updateFollowingActionLog,
+  updateManualDealActivity,
   updateMemoLog,
 } from "@/features/deal/api/deal-api";
 import { companyQueryKeys } from "@/features/company/api/company-query-keys";
@@ -21,12 +23,14 @@ import { scheduleQueryKeys } from "@/features/schedule/api/schedule-query-keys";
 import type {
   CreateDealInput,
   CreateFollowingActionLogInput,
+  CreateManualDealActivityInput,
   CreateMemoLogInput,
   DealExportParams,
   DeleteFollowingActionLogInput,
   DeleteMemoLogInput,
   UpdateDealInput,
   UpdateFollowingActionLogInput,
+  UpdateManualDealActivityInput,
   UpdateMemoLogInput,
 } from "@/features/deal/types/deal";
 
@@ -75,6 +79,36 @@ export function useDeleteDealMutation() {
       void queryClient.invalidateQueries({ queryKey: meetingNoteQueryKeys.details() });
       void queryClient.invalidateQueries({
         queryKey: scheduleQueryKeys.dealOptions(),
+      });
+    },
+  });
+}
+
+export function useCreateManualDealActivityMutation() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (input: CreateManualDealActivityInput) =>
+      createManualDealActivity(input),
+    onSuccess: (_activity, input) => {
+      // 수동 activity 저장 후 딜 상세 timeline cursor cache를 갱신합니다.
+      void queryClient.invalidateQueries({
+        queryKey: dealQueryKeys.activities(input.dealId),
+      });
+    },
+  });
+}
+
+export function useUpdateManualDealActivityMutation() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (input: UpdateManualDealActivityInput) =>
+      updateManualDealActivity(input),
+    onSuccess: (_activity, input) => {
+      // 수동 activity 수정 후 현재 딜의 모든 activity filter cache를 갱신합니다.
+      void queryClient.invalidateQueries({
+        queryKey: dealQueryKeys.activities(input.dealId),
       });
     },
   });

@@ -1,6 +1,6 @@
 # G04 Deal Activity User Web
 
-상태: Ready
+상태: Completed
 목표: 딜 상세 activity timeline UX 구현
 
 ## 1. 목적
@@ -70,3 +70,21 @@ pnpm run test:e2e
 - API 응답 없는 summary를 FE가 만들지 않는다.
 - 기존 다음 행동/메모/follow-up 패널과 새 timeline이 중복된 primary activity처럼 보이지 않는다.
 - 모바일에서 텍스트와 버튼이 겹치지 않는다.
+
+## 9. 완료 기록
+
+- 완료일: 2026-07-26
+- 구현:
+  - Deal Activity type/API client/query key/infinite query hook
+  - 수동 activity 생성/수정 mutation과 `deal.activities(dealId)` cache 갱신
+  - `DealDetailPanel` 내부 `딜 활동` primary timeline 통합
+  - 수동 activity form dialog, loading/empty/error/success 상태
+  - 자동 activity 수정 action 차단과 수동 activity 본문 노출 제한
+  - linked record `/app/*` path 정규화 helper
+  - 390px/360px mobile overflow Playwright smoke
+- 검증:
+  - `pnpm run typecheck`
+  - `pnpm run lint`
+  - `pnpm run build`
+  - `pnpm exec playwright test tests/e2e/deal-activity-timeline.spec.ts`
+  - `pnpm run test:e2e`

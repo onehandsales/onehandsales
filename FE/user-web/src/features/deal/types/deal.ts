@@ -27,6 +27,112 @@ export const DEAL_STATUS_LIST: DealStatus[] = [
   "LOST",
 ];
 
+export type DealActivityType =
+  | "DEAL_CREATED"
+  | "STAGE_CHANGED"
+  | "NEXT_ACTION_CREATED"
+  | "NEXT_ACTION_COMPLETION_CHANGED"
+  | "SCHEDULE_LINKED"
+  | "SCHEDULE_UNLINKED"
+  | "MEETING_NOTE_LINKED"
+  | "MEETING_NOTE_UNLINKED"
+  | "FOLLOW_UP_SENT"
+  | "FOLLOW_UP_FAILED"
+  | "CALL"
+  | "MEETING"
+  | "EMAIL"
+  | "VISIT"
+  | "NOTE";
+
+export type DealActivitySourceType =
+  | "SYSTEM"
+  | "USER"
+  | "NEXT_ACTION"
+  | "SCHEDULE"
+  | "MEETING_NOTE"
+  | "FOLLOW_UP";
+
+export type DealActivityLinkedRecordTargetType =
+  | "DEAL"
+  | "SCHEDULE"
+  | "MEETING_NOTE"
+  | "CONTACT"
+  | "COMPANY"
+  | "PRODUCT"
+  | "FOLLOW_UP_MESSAGE";
+
+export type DealActivityLinkedRecord = {
+  readonly targetType: DealActivityLinkedRecordTargetType;
+  readonly targetId: string;
+  readonly targetPath: string;
+  readonly targetLabel: string | null;
+};
+
+export type DealActivity = {
+  readonly id: string;
+  readonly dealId: string;
+  readonly activityType: DealActivityType;
+  readonly sourceType: DealActivitySourceType;
+  readonly sourceId: string | null;
+  readonly title: string;
+  readonly summary: string | null;
+  readonly body: string | null;
+  readonly occurredAt: string;
+  readonly isEditable: boolean;
+  readonly linkedRecords: DealActivityLinkedRecord[];
+  readonly createdAt: string;
+  readonly updatedAt: string;
+};
+
+export type DealActivityListResponse = {
+  readonly items: DealActivity[];
+  readonly nextCursor: string | null;
+  readonly hasNext: boolean;
+};
+
+export const MANUAL_DEAL_ACTIVITY_TYPES = [
+  "CALL",
+  "MEETING",
+  "EMAIL",
+  "VISIT",
+  "NOTE",
+] as const;
+
+export type ManualDealActivityType = (typeof MANUAL_DEAL_ACTIVITY_TYPES)[number];
+
+export const MANUAL_DEAL_ACTIVITY_TYPE_LABEL: Record<
+  ManualDealActivityType,
+  string
+> = {
+  CALL: "통화",
+  MEETING: "미팅",
+  EMAIL: "이메일",
+  VISIT: "방문",
+  NOTE: "기타",
+};
+
+export type ListDealActivitiesParams = {
+  readonly cursor?: string;
+  readonly type?: DealActivityType;
+};
+
+export type CreateManualDealActivityInput = {
+  readonly dealId: string;
+  readonly activityType: ManualDealActivityType;
+  readonly title: string;
+  readonly body?: string | null;
+  readonly occurredAt?: string;
+};
+
+export type UpdateManualDealActivityInput = {
+  readonly dealId: string;
+  readonly activityId: string;
+  readonly activityType?: ManualDealActivityType;
+  readonly title?: string;
+  readonly body?: string | null;
+  readonly occurredAt?: string;
+};
+
 // 기능 : 목록 item의 중첩 객체 타입
 export type DealCompany = {
   readonly id: string;

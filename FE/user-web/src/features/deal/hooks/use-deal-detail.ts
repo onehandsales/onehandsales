@@ -2,16 +2,35 @@
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import {
   getDeal,
+  listDealActivities,
   listFollowingActionLogs,
   listMemoLogs,
 } from "@/features/deal/api/deal-api";
 import { dealQueryKeys } from "@/features/deal/api/deal-query-keys";
+import type { DealActivityType } from "@/features/deal/types/deal";
 
 export function useDealDetail(dealId: string) {
   return useQuery({
     enabled: dealId.length > 0,
     queryKey: dealQueryKeys.detail(dealId),
     queryFn: () => getDeal(dealId),
+  });
+}
+
+export function useDealActivities(
+  dealId: string,
+  activityType?: DealActivityType
+) {
+  return useInfiniteQuery({
+    enabled: dealId.length > 0,
+    queryKey: dealQueryKeys.activityList(dealId, activityType),
+    queryFn: ({ pageParam }) =>
+      listDealActivities(dealId, {
+        cursor: pageParam ?? undefined,
+        type: activityType,
+      }),
+    initialPageParam: null as string | null,
+    getNextPageParam: (lastPage) => lastPage.nextCursor,
   });
 }
 

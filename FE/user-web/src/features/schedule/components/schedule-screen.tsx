@@ -149,7 +149,7 @@ export function ScheduleScreen() {
     setSearchParams(nextSearchParams, { replace: true });
 
     if (result === "connected") {
-      setNotice(null);
+      setNotice("Google Calendar가 연결됐어요.");
       setGoogleActionError(null);
       refreshGoogleCalendarScheduleView();
       return;

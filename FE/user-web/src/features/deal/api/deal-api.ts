@@ -4,8 +4,11 @@ import type {
   CreateDealInput,
   CreateFollowingActionLogInput,
   CreateMemoLogInput,
+  CreateManualDealActivityInput,
   DeleteFollowingActionLogInput,
   DeleteMemoLogInput,
+  DealActivity,
+  DealActivityListResponse,
   DealCompanyOptionsResponse,
   DealContactOptionsResponse,
   DealDetail,
@@ -17,10 +20,12 @@ import type {
   DealMemoLog,
   DealMemoLogsResponse,
   DealProductOptionsResponse,
+  ListDealActivitiesParams,
   DealStageCountParams,
   DealStageCountsResponse,
   UpdateDealInput,
   UpdateFollowingActionLogInput,
+  UpdateManualDealActivityInput,
   UpdateMemoLogInput,
 } from "@/features/deal/types/deal";
 
@@ -67,6 +72,51 @@ export function listDeals(params: DealListParams) {
 // 기능 : 딜 단건 상세 조회
 export function getDeal(dealId: string) {
   return apiClient<DealDetail>(`/api/deals/${dealId}`);
+}
+
+// 기능 : 딜 활동 timeline을 cursor 방식으로 조회합니다.
+export function listDealActivities(
+  dealId: string,
+  params: ListDealActivitiesParams = {}
+) {
+  const query = new URLSearchParams();
+
+  if (params.cursor) {
+    query.set("cursor", params.cursor);
+  }
+
+  if (params.type) {
+    query.set("type", params.type);
+  }
+
+  const suffix = query.toString();
+
+  return apiClient<DealActivityListResponse>(
+    `/api/deals/${dealId}/activities${suffix ? `?${suffix}` : ""}`
+  );
+}
+
+// 기능 : 사용자가 직접 남기는 딜 활동을 생성합니다.
+export function createManualDealActivity(input: CreateManualDealActivityInput) {
+  const { dealId, ...body } = input;
+
+  return apiClient<DealActivity>(`/api/deals/${dealId}/activities`, {
+    method: "POST",
+    body,
+  });
+}
+
+// 기능 : 사용자가 직접 남긴 딜 활동만 수정합니다.
+export function updateManualDealActivity(input: UpdateManualDealActivityInput) {
+  const { dealId, activityId, ...body } = input;
+
+  return apiClient<DealActivity>(
+    `/api/deals/${dealId}/activities/${activityId}`,
+    {
+      method: "PATCH",
+      body,
+    }
+  );
 }
 
 // 기능 : 딜 생성

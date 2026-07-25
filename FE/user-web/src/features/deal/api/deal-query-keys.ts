@@ -1,5 +1,6 @@
 // 기능 : Deal 도메인 TanStack Query key 팩토리
 import type {
+  DealActivityType,
   DealListParams,
   DealStageCountParams,
 } from "@/features/deal/types/deal";
@@ -37,6 +38,12 @@ export const dealQueryKeys = {
   // 상세
   details: () => [...dealQueryKeys.all, "detail"] as const,
   detail: (dealId: string) => [...dealQueryKeys.details(), dealId] as const,
+
+  // 딜 활동 timeline
+  activities: (dealId: string) =>
+    [...dealQueryKeys.detail(dealId), "activities"] as const,
+  activityList: (dealId: string, type?: DealActivityType) =>
+    [...dealQueryKeys.activities(dealId), { type: type ?? "" }] as const,
 
   // 옵션
   companyOptions: () => [...dealQueryKeys.all, "company-options"] as const,

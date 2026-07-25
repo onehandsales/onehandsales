@@ -2,6 +2,13 @@ export { DealPipelineHomeScreen } from "./components/deal-pipeline-home-screen";
 export { DealDetailPanel } from "./components/deal-detail-panel";
 export type {
   CreateDealInput,
+  CreateManualDealActivityInput,
+  DealActivity,
+  DealActivityLinkedRecord,
+  DealActivityLinkedRecordTargetType,
+  DealActivityListResponse,
+  DealActivitySourceType,
+  DealActivityType,
   DealCompanyOption,
   DealContactOption,
   DealDetail,
@@ -17,5 +24,7 @@ export type {
   DealStageCount,
   DealStageCountParams,
   DealStatus,
+  ManualDealActivityType,
   UpdateDealInput,
+  UpdateManualDealActivityInput,
 } from "./types/deal";

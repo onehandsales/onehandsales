@@ -2,13 +2,24 @@
 import { z } from "zod";
 import {
   DEAL_STATUS_LIST,
+  MANUAL_DEAL_ACTIVITY_TYPES,
   type CreateDealInput,
   type DealStatus,
+  type ManualDealActivityType,
+  type CreateManualDealActivityInput,
+  type UpdateManualDealActivityInput,
   type UpdateDealInput,
 } from "@/features/deal/types/deal";
 
 const dealStatusEnum = z.enum(
   DEAL_STATUS_LIST as [DealStatus, ...DealStatus[]]
+);
+
+const manualDealActivityTypeEnum = z.enum(
+  MANUAL_DEAL_ACTIVITY_TYPES as unknown as [
+    ManualDealActivityType,
+    ...ManualDealActivityType[],
+  ]
 );
 
 const dealCostSchema = z
@@ -88,6 +99,34 @@ export const memoLogFormSchema = z.object({
 
 export type MemoLogFormValues = z.infer<typeof memoLogFormSchema>;
 
+// 기능 : 수동 딜 활동 생성/수정 form 스키마
+export const manualDealActivityFormSchema = z.object({
+  activityType: manualDealActivityTypeEnum,
+  title: z
+    .string()
+    .trim()
+    .min(1, "제목을 입력해 주세요.")
+    .max(120, "제목은 120자 이하로 입력해 주세요."),
+  body: z
+    .string()
+    .trim()
+    .max(2000, "내용은 2000자 이하로 입력해 주세요.")
+    .optional(),
+  occurredAt: z
+    .string()
+    .trim()
+    .min(1, "발생 시각을 입력해 주세요.")
+    .refine(isValidLocalDateTime, "발생 시각을 확인해 주세요.")
+    .refine(
+      (value) => new Date(value).getTime() <= Date.now(),
+      "발생 시각은 현재보다 미래로 설정할 수 없어요."
+    ),
+});
+
+export type ManualDealActivityFormValues = z.infer<
+  typeof manualDealActivityFormSchema
+>;
+
 // 기능 : form 값 → CreateDealInput 변환
 export function toCreateDealInput(values: DealCreateFormValues): CreateDealInput {
   return {
@@ -120,6 +159,36 @@ export function toUpdateDealInput(
   };
 }
 
+// 기능 : 수동 activity form 값 → 생성 request body 변환
+export function toCreateManualDealActivityInput(
+  dealId: string,
+  values: ManualDealActivityFormValues
+): CreateManualDealActivityInput {
+  return {
+    dealId,
+    activityType: values.activityType,
+    title: values.title.trim(),
+    body: normalizeOptionalText(values.body),
+    occurredAt: toUtcInstant(values.occurredAt),
+  };
+}
+
+// 기능 : 수동 activity form 값 → 수정 request body 변환
+export function toUpdateManualDealActivityInput(
+  dealId: string,
+  activityId: string,
+  values: ManualDealActivityFormValues
+): UpdateManualDealActivityInput {
+  return {
+    dealId,
+    activityId,
+    activityType: values.activityType,
+    title: values.title.trim(),
+    body: normalizeOptionalText(values.body),
+    occurredAt: toUtcInstant(values.occurredAt),
+  };
+}
+
 export const emptyDealCreateFormValues: DealCreateFormValues = {
   dealName: "",
   dealCost: "",
@@ -135,6 +204,28 @@ export const emptyDealCreateFormValues: DealCreateFormValues = {
   productSearch: "",
 };
 
+// 기능 : 수동 activity form의 기본값을 현재 시각 기준으로 만듭니다.
+export function createEmptyManualDealActivityFormValues(): ManualDealActivityFormValues {
+  return {
+    activityType: "NOTE",
+    title: "",
+    body: "",
+    occurredAt: toLocalDateTimeInputValue(),
+  };
+}
+
+// 기능 : UTC instant를 datetime-local input 값으로 변환합니다.
+export function toLocalDateTimeInputValue(value?: string | null) {
+  const date = value ? new Date(value) : new Date();
+
+  if (Number.isNaN(date.getTime())) {
+    return "";
+  }
+
+  const local = new Date(date.getTime() - date.getTimezoneOffset() * 60_000);
+  return local.toISOString().slice(0, 16);
+}
+
 function normalizeDateText(value: string) {
   const digits = value.replace(/\D/g, "").slice(0, 8);
 
@@ -143,4 +234,17 @@ function normalizeDateText(value: string) {
   }
 
   return value;
+}
+
+function isValidLocalDateTime(value: string) {
+  return !Number.isNaN(new Date(value).getTime());
+}
+
+function toUtcInstant(value: string) {
+  return new Date(value).toISOString();
+}
+
+function normalizeOptionalText(value: string | undefined) {
+  const trimmed = value?.trim() ?? "";
+  return trimmed.length > 0 ? trimmed : null;
 }

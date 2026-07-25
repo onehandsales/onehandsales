@@ -23,6 +23,7 @@ import type {
 import { getApiErrorMessage } from "@/lib/api-client";
 import { cn } from "@/utils/cn";
 import { formatDateTime } from "@/utils/format";
+import { normalizeInternalAppPath } from "@/utils/target-path";
 
 type FollowUpTimelinePanelProps = {
   readonly sourceReportId?: string;
@@ -218,7 +219,7 @@ function TargetLinks({
         <Link
           className="rounded border border-[#D7DCE5] bg-white px-2 py-1 text-[11px] font-semibold text-[#475569] transition hover:border-[#93C5FD] hover:text-[#1D4ED8]"
           key={`${target.targetType}-${target.targetId}`}
-          to={normalizeTargetPath(target.targetPath)}
+          to={normalizeInternalAppPath(target.targetPath)}
         >
           {target.targetLabel ?? toTargetTypeLabel(target.targetType)}
         </Link>
@@ -349,16 +350,4 @@ function toTargetTypeLabel(targetType: FollowUpTargetType) {
   } as const;
 
   return labels[targetType];
-}
-
-function normalizeTargetPath(path: string) {
-  if (path.startsWith("/app/")) {
-    return path;
-  }
-
-  if (path.startsWith("/")) {
-    return `/app${path}`;
-  }
-
-  return "/app";
 }
