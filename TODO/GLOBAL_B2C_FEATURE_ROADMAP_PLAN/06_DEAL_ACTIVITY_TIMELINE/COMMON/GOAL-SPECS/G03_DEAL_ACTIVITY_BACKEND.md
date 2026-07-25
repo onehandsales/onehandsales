@@ -23,8 +23,11 @@
 - 회의록 연결/해제 activity
 - follow-up 발송 성공/실패 activity
 - `COMMON/BUSINESS-LOGIC.md`의 ownership, transaction, redaction, safe summary 규칙 반영
+- 딜 생성 transaction의 `DEAL_CREATED`와 초기 `NEXT_ACTION_CREATED` 동시 생성 기준 반영
 - 회의록 relation delete/recreate 구현의 삭제 전 diff 계산
 - follow-up `DEAL` target message만 딜 activity로 기록
+- follow-up 발송 성공/실패 activity의 sourceId는 `FollowUpDeliveryAttempt.id`로 기록
+- module cycle 없이 transaction client를 공유하는 activity writer 배치
 - unit/controller/application/repository test
 
 ## 4. 제외 범위
@@ -79,4 +82,5 @@ pnpm run build
 - 자동 activity 수정 시도는 안전한 error로 막힌다.
 - timeline cursor가 opaque string으로 동작한다.
 - linked record `targetPath`가 `/app/*` User Web route로 정규화된다.
+- follow-up 재시도 이력은 delivery attempt 단위로 중복 없이 기록된다.
 - redaction test가 있다.

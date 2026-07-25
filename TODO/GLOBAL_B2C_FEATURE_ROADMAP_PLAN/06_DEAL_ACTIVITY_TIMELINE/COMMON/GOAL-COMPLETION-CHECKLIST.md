@@ -29,6 +29,10 @@
 - [ ] 현재 FE deal detail/list 구현을 확인했다.
 - [ ] `COMMON/BUSINESS-LOGIC.md`와 현재 mutation 흐름을 대조했다.
 - [ ] API path와 기존 route 충돌이 없다.
+- [ ] activity writer provider 배치가 module cycle을 만들지 않는다.
+- [ ] 회의록 연결 legacy `DealFollowingActionLog`와 새 `DealActivity` 중복 노출 처리 기준이 정해졌다.
+- [ ] 딜 생성 시 초기 `DealFollowingActionLog`가 `NEXT_ACTION_CREATED`로 함께 기록되는 기준을 확인했다.
+- [ ] follow-up sourceId 기준이 `FollowUpDeliveryAttempt.id`로 확정됐다.
 - [ ] `DealActivity` schema 후보와 현재 Prisma 관계 충돌이 없다.
 - [ ] API request/response 예시와 실제 DTO 네이밍 충돌이 없다.
 - [ ] G02~G07 착수 blocking 질문이 없다.
@@ -51,7 +55,9 @@
 - [ ] `PATCH /api/deals/:dealId/activities/:activityId`가 구현됐다.
 - [ ] 자동 activity 생성 지점이 transaction과 연결됐다.
 - [ ] 회의록 연결 변경은 delete/recreate 전 diff 기준으로 activity가 생성됐다.
+- [ ] 회의록 연결 legacy `DealFollowingActionLog` 문구를 activity summary로 재사용하지 않는다.
 - [ ] follow-up activity는 `DEAL` target message만 딜 timeline에 기록한다.
+- [ ] follow-up 발송 성공/실패 activity가 delivery attempt 단위로 기록됐다.
 - [ ] 자동 activity는 수정할 수 없다.
 - [ ] private memo/provider raw/follow-up body 전체가 response/log에 노출되지 않는다.
 
@@ -62,6 +68,7 @@
 - [ ] 수동 activity 수정 UX가 있다.
 - [ ] loading/empty/error/success 상태가 있다.
 - [ ] cursor는 FE에서 파싱하지 않고 API 응답의 `nextCursor`를 그대로 전달한다.
+- [ ] `DealDetailPanel` 안에서 새 timeline이 통합됐고 기존 placeholder component를 정본 host로 쓰지 않았다.
 - [ ] 모바일 390px/360px에서 timeline이 깨지지 않는다.
 
 ### G05

@@ -20,6 +20,7 @@
 - private memo, provider raw response, follow-up body 전체, meeting note raw text 전문은 timeline summary에 포함하지 않는다.
 - 수동 activity `body`는 딜 상세 timeline response에는 포함할 수 있지만 structured log와 목록 summary에는 포함하지 않는다.
 - API 응답에 없는 latest activity, products summary, dealCount를 FE에서 임의로 만들지 않는다.
+- 원본 source record가 삭제되어도 activity row는 정본 이력으로 남긴다. 단 삭제된 source의 linked record link와 원문 detail은 response에 포함하지 않는다.
 
 ## 3. Timeline 조회 로직
 
@@ -29,10 +30,13 @@
 4. `DealActivity`를 `userId`, `dealId` 조건으로 조회한다.
 5. 정렬은 `occurredAt desc, id desc`를 사용한다.
 6. cursor는 `occurredAt`과 `id`를 함께 담되, FE가 파싱하지 않는 opaque string으로 발급한다.
-7. page size는 기존 딜 cursor log UX와 맞춰 10개로 둔다.
-8. DB row를 그대로 반환하지 않고 response DTO로 변환한다.
-9. 수동 activity의 `body`는 현재 사용자 딜 상세 response에만 포함한다.
-10. `linkedRecordsJson`은 User Web route와 label만 포함한 안전한 값으로 내려준다.
+7. cursor는 같은 filter 조건 안에서만 유효하다. `type` filter가 바뀌면 첫 페이지부터 조회한다.
+8. page size는 기존 딜 cursor log UX와 맞춰 10개로 둔다.
+9. DB row를 그대로 반환하지 않고 response DTO로 변환한다.
+10. 수동 activity의 `body`는 현재 사용자 딜 상세 response에만 포함한다.
+11. `linkedRecordsJson`이 null이면 response의 `linkedRecords`는 빈 배열로 내려준다.
+12. 삭제된 source record, 타 사용자 source record, 접근 불가 source record는 `linkedRecords`에서 제외한다.
+13. `linkedRecordsJson`은 User Web route와 label만 포함한 안전한 값으로 내려준다.
 
 ## 4. 수동 Activity 생성 로직
 
@@ -49,7 +53,7 @@
 1. 현재 사용자의 active 딜인지 확인한다.
 2. `activityType`이 수동 type인지 검증한다.
 3. `title`은 trim 후 1~120자로 검증한다.
-4. `body`는 trim 후 없거나 2000자 이하로 검증한다.
+4. `body`는 trim 후 없거나 2000자 이하로 검증한다. trim 후 빈 문자열이면 null로 저장한다.
 5. `occurredAt`이 없으면 서버 현재 시각을 사용한다.
 6. `occurredAt`은 과거 입력을 허용하되 서버 현재 시각보다 5분 이상 미래면 거부한다.
 7. transaction 안에서 `DealActivity`를 생성한다.
@@ -85,16 +89,21 @@
 | 일정 연결 해제 | `SCHEDULE_UNLINKED` | `SCHEDULE` | 삭제 직전 `ScheduleDeal.id` | 연결 해제 사실만 기록 |
 | 회의록 연결 | `MEETING_NOTE_LINKED` | `MEETING_NOTE` | `MeetingNoteDeal.id` | 회의록 제목과 회의 시각 summary |
 | 회의록 연결 해제 | `MEETING_NOTE_UNLINKED` | `MEETING_NOTE` | 삭제 직전 `MeetingNoteDeal.id` | 연결 해제 사실만 기록 |
-| follow-up 발송 성공 | `FOLLOW_UP_SENT` | `FOLLOW_UP` | `FollowUpMessage.id` | `DEAL` target을 가진 메시지만 channel, 수신자, 발송 시각 저장 |
-| follow-up 발송 실패 | `FOLLOW_UP_FAILED` | `FOLLOW_UP` | `FollowUpMessage.id` | `DEAL` target을 가진 메시지만 channel, safe error 저장 |
+| follow-up 발송 성공 | `FOLLOW_UP_SENT` | `FOLLOW_UP` | `FollowUpDeliveryAttempt.id` | `DEAL` target을 가진 메시지만 channel, 수신자, 발송 시각 저장 |
+| follow-up 발송 실패 | `FOLLOW_UP_FAILED` | `FOLLOW_UP` | `FollowUpDeliveryAttempt.id` | `DEAL` target을 가진 메시지만 channel, safe error 저장 |
 
 중복 기준:
 
-- source row가 있는 자동 activity는 같은 mutation 재시도에서 같은 type/source row가 중복 생성되지 않게 application layer에서 확인한다.
+- source row가 있는 자동 activity는 같은 mutation 재시도에서 같은 `dealId + activityType + sourceType + sourceId` 조합이 중복 생성되지 않게 application layer에서 확인한다.
 - `STAGE_CHANGED`처럼 같은 `sourceId=deal.id`로 여러 번 발생할 수 있는 activity는 DB unique 제약을 1차에서 두지 않는다.
 - G01에서 실제 mutation idempotency 패턴이 있으면 그 기준을 우선한다.
+- `DealApplicationService.createDeal`은 현재 초기 `DealFollowingActionLog`를 같은 transaction에서 생성한다. 1차 기준은 딜 생성 transaction 안에서 `DEAL_CREATED`와 초기 다음 행동의 `NEXT_ACTION_CREATED`를 모두 생성하는 것이다.
 - 회의록 relation update처럼 기존 연결을 delete 후 recreate하는 구현은 삭제 전에 연결 diff를 계산해 link/unlink activity를 만든다.
 - follow-up activity는 `FollowUpMessageTarget.targetType=DEAL`인 target별로 만들며, 다른 target만 가진 message는 딜 timeline에 기록하지 않는다.
+- follow-up 발송 성공/실패 activity의 `sourceId`는 message id가 아니라 확정된 `FollowUpDeliveryAttempt.id`로 둔다. `FollowUpMessage.id`는 `metadataJson.messageId`에 넣어 재시도 실패/성공 시도별 이력을 구분한다.
+- 기존 회의록 연결 mutation이 `DealFollowingActionLog`에 남기는 proxy 로그 문구를 `DealActivity` summary로 재사용하지 않는다. 06 activity는 `MeetingNoteDeal` snapshot과 회의록 title/meetingAt 기준 safe summary로 별도 생성한다.
+- G01에서 회의록 연결 시 legacy `DealFollowingActionLog` 생성을 유지할지, 중단할지, UI에서 중복 노출만 막을지 결정한다.
+- source record 자체의 soft delete는 1차에서 별도 `*_DELETED` activity를 만들지 않는다. 관계 row가 실제로 제거되거나 replace diff에서 빠진 경우에만 `SCHEDULE_UNLINKED`, `MEETING_NOTE_UNLINKED`를 만든다.
 
 Transaction 기준:
 
@@ -145,6 +154,27 @@ Timeline title/summary는 사용자가 빠르게 이해할 수 있는 짧은 문
 타 사용자 record나 삭제된 source record는 linkedRecords에 포함하지 않는다.
 
 저장된 source `targetPath`가 `/contacts/{id}`처럼 `/app` prefix 없이 들어온 경우에도 timeline response의 `targetPath`는 User Web route인 `/app/contacts/{id}` 형태로 정규화한다.
+
+## 8.1 Metadata JSON 허용 기준
+
+`metadataJson`은 자동 activity를 해석하는 데 필요한 redacted 구조만 저장한다. 원문 전문이나 provider raw object를 그대로 넣지 않는다.
+
+| Activity type | 허용 metadata 예 |
+|---|---|
+| `STAGE_CHANGED` | `fromStatus`, `fromStatusLabel`, `toStatus`, `toStatusLabel` |
+| `NEXT_ACTION_COMPLETION_CHANGED` | `completed` |
+| `SCHEDULE_LINKED`, `SCHEDULE_UNLINKED` | `scheduleId`, `scheduleTitle`, `startAt` |
+| `MEETING_NOTE_LINKED`, `MEETING_NOTE_UNLINKED` | `meetingNoteId`, `meetingNoteTitle`, `meetingAt` |
+| `FOLLOW_UP_SENT`, `FOLLOW_UP_FAILED` | `messageId`, `deliveryAttemptId`, `channel`, `recipientName`, `safeErrorCode`, `safeErrorMessage` |
+
+금지 metadata:
+
+- follow-up body 전체
+- meeting note details/rawText
+- private memo
+- provider raw response
+- token, API key, quota detail
+- contact email/phone 원문
 
 ## 9. 목록 Summary 로직
 

@@ -44,8 +44,10 @@
 | 일정 연결 해제 | `SCHEDULE_UNLINKED` | Schedule deal unlink/replace mutation |
 | 회의록 연결 | `MEETING_NOTE_LINKED` | MeetingNote deal link mutation |
 | 회의록 연결 해제 | `MEETING_NOTE_UNLINKED` | MeetingNote deal unlink/replace mutation. delete/recreate 전 diff 필요 |
-| follow-up 발송 성공 | `FOLLOW_UP_SENT` | FollowUpMessage send success 중 `DEAL` target |
-| follow-up 발송 실패 | `FOLLOW_UP_FAILED` | FollowUpMessage send failed 중 `DEAL` target |
+| follow-up 발송 성공 | `FOLLOW_UP_SENT` | FollowUp delivery attempt success 중 `DEAL` target. sourceId는 `FollowUpDeliveryAttempt.id` |
+| follow-up 발송 실패 | `FOLLOW_UP_FAILED` | FollowUp delivery attempt failed 중 `DEAL` target. sourceId는 `FollowUpDeliveryAttempt.id` |
+
+`DealApplicationService.createDeal`이 초기 `DealFollowingActionLog`를 만들기 때문에, 딜 생성 transaction에서는 `DEAL_CREATED`와 초기 `NEXT_ACTION_CREATED`가 모두 생성되는 기준으로 구현한다.
 
 ## 4. G05 Record Summary API
 
@@ -69,3 +71,4 @@
 - Admin API를 만들지 않는다.
 - FE가 쓸 summary를 Backend 계약 없이 임의 response로 추가하지 않는다.
 - private memo/provider raw/follow-up body 전체를 일반 User API response에 추가하지 않는다.
+- 회의록 연결 시 기존 `DealFollowingActionLog` proxy 문구를 activity summary로 재사용하지 않는다.

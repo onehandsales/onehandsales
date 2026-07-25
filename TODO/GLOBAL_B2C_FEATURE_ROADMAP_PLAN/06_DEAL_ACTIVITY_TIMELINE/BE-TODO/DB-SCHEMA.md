@@ -133,13 +133,13 @@ COMMENT ON COLUMN "DealActivity"."userId" IS 'activity 소유 사용자. 모든 
 COMMENT ON COLUMN "DealActivity"."dealId" IS 'activity가 속한 딜. 삭제된 딜의 activity는 일반 User Web에 노출하지 않는다.';
 COMMENT ON COLUMN "DealActivity"."activityType" IS 'timeline 표시 type과 비즈니스 분기 기준.';
 COMMENT ON COLUMN "DealActivity"."sourceType" IS 'SYSTEM/USER/NEXT_ACTION/SCHEDULE/MEETING_NOTE/FOLLOW_UP 출처 구분.';
-COMMENT ON COLUMN "DealActivity"."sourceId" IS '원본 record ID. 단계 변경은 dealId, 연결 해제는 삭제 직전 연결 row id를 저장하는 기준을 G01에서 확인한다.';
+COMMENT ON COLUMN "DealActivity"."sourceId" IS '원본 event/source record ID. 단계 변경은 dealId, 연결 해제는 삭제 직전 연결 row id, follow-up 발송 성공/실패는 FollowUpDeliveryAttempt.id를 저장한다.';
 COMMENT ON COLUMN "DealActivity"."title" IS 'timeline 제목. structured log에 원문을 남기지 않는다.';
 COMMENT ON COLUMN "DealActivity"."summary" IS '안전한 짧은 요약. private memo, follow-up body 전체, provider raw detail을 넣지 않는다.';
 COMMENT ON COLUMN "DealActivity"."body" IS '수동 activity 본문. 사용자가 민감정보를 적을 수 있으므로 log와 목록 summary에 원문을 남기지 않는다.';
 COMMENT ON COLUMN "DealActivity"."occurredAt" IS 'activity 발생 시각. timeline 정렬 cursor의 1차 기준이다.';
-COMMENT ON COLUMN "DealActivity"."linkedRecordsJson" IS 'User Web 이동에 필요한 targetType, targetId, targetPath, targetLabel만 담는 안전한 linked record 배열.';
-COMMENT ON COLUMN "DealActivity"."metadataJson" IS '자동 activity 생성에 필요한 redacted metadata. provider raw response, token, API key, quota detail을 넣지 않는다.';
+COMMENT ON COLUMN "DealActivity"."linkedRecordsJson" IS 'User Web 이동에 필요한 targetType, targetId, targetPath, targetLabel만 담는 안전한 linked record 배열. 삭제되거나 접근 불가한 source는 response 변환 시 제외한다.';
+COMMENT ON COLUMN "DealActivity"."metadataJson" IS '자동 activity 생성에 필요한 allowlist 기반 redacted metadata. provider raw response, token, API key, quota detail을 넣지 않는다.';
 
 -- 기능 : 딜 상세 timeline을 최신순 cursor pagination으로 조회합니다.
 CREATE INDEX "DealActivity_userId_dealId_occurredAt_id_idx"
@@ -155,7 +155,7 @@ CREATE INDEX "DealActivity_userId_sourceType_sourceId_idx"
 
 COMMENT ON INDEX "DealActivity_userId_dealId_occurredAt_id_idx" IS '딜 상세 timeline 최신순 조회와 cursor pagination용 index.';
 COMMENT ON INDEX "DealActivity_userId_activityType_occurredAt_idx" IS 'activity type filter 조회용 index.';
-COMMENT ON INDEX "DealActivity_userId_sourceType_sourceId_idx" IS 'source record 기반 자동 activity 추적용 index.';
+COMMENT ON INDEX "DealActivity_userId_sourceType_sourceId_idx" IS 'event/source record 기반 자동 activity 추적과 중복 생성 확인용 index.';
 
 -- 기능 : activity는 사용자 소유권 기준을 유지합니다.
 ALTER TABLE "DealActivity"
@@ -192,6 +192,7 @@ dealActivities DealActivity[]
 - 공유/운영성 DB에 무단 migrate/seed를 실행하지 않는다.
 - table/column/index에 COMMENT 또는 한글 SQL 주석을 남긴다.
 - `body`는 민감정보가 포함될 수 있으므로 structured log에 남기지 않는 기준을 함께 구현한다.
+- timeline 조회 index는 `occurredAt desc, id desc` 정렬을 만족해야 한다. PostgreSQL btree 역방향 scan 또는 Prisma desc index 지원 여부를 G02에서 확인하고 실제 migration SQL 주석에 남긴다.
 
 ## 7. 삭제 정책
 

@@ -72,6 +72,7 @@ G01_PLANNING_API_DB_CONTRACT
 
 - 딜 상세에 `딜 활동` timeline을 구현한다.
 - 수동 activity 생성/수정 UX를 구현한다.
+- 현재 FE host인 `DealDetailPanel` 안에 통합한다.
 - 기존 다음 행동/메모/follow-up 섹션과 충돌하지 않게 점진 통합한다.
 
 ## 7. G05 Deal Record Summary Backend

@@ -55,7 +55,7 @@ FOLLOW_UP
 | `dealId` | string | 딜 ID |
 | `activityType` | DealActivityType | activity 유형 |
 | `sourceType` | DealActivitySourceType | 생성 출처 |
-| `sourceId` | string \| null | 원본 record ID |
+| `sourceId` | string \| null | 원본 event/source record ID. follow-up 발송 성공/실패는 `FollowUpDeliveryAttempt.id` |
 | `title` | string | timeline 제목 |
 | `summary` | string \| null | 안전한 짧은 요약 |
 | `body` | string \| null | 수동 activity 본문. 자동 activity는 null을 기본으로 한다. 목록 summary에는 포함하지 않는다. |
@@ -97,6 +97,7 @@ Paging:
 - `take` 기준: 11개 조회 후 10개 반환
 - cursor payload 기준: `occurredAt`, `id`
 - cursor 문자열은 서버가 발급하고 FE는 그대로 다시 전달한다.
+- cursor는 같은 filter 조건 안에서만 유효하다. `type` filter가 바뀌면 FE는 cursor를 버리고 첫 페이지부터 다시 조회한다.
 
 Request 예시:
 
@@ -111,8 +112,10 @@ Authorization: Bearer <access-token>
 2. `dealId`가 현재 사용자 소유 active 딜인지 확인한다.
 3. cursor가 있으면 cursor를 `occurredAt`, `id` 기준으로 해석한다.
 4. `DealActivity`를 `occurredAt desc, id desc`로 page size + 1개 조회한다.
-5. deleted source, 다른 사용자 source, private memo 원문, provider raw detail은 포함하지 않는다.
-6. response DTO로 변환한다.
+5. source record가 삭제됐거나 접근 불가이면 activity row는 반환하되 해당 linked record/detail은 포함하지 않는다.
+6. private memo 원문, provider raw detail, follow-up body 전체는 포함하지 않는다.
+7. `linkedRecordsJson`이 null이면 `linkedRecords=[]`로 변환한다.
+8. response DTO로 변환한다.
 
 ### Response
 
@@ -161,7 +164,7 @@ Response 예시:
 ### 연결된 DB 스키마
 
 - 조회: `Deal`, `DealActivity`
-- 참조: source type에 따라 `Schedule`, `MeetingNote`, `FollowUpMessage`, `DealFollowingActionLog`
+- 참조: source type에 따라 `Schedule`, `MeetingNote`, `FollowUpMessage`, `FollowUpDeliveryAttempt`, `DealFollowingActionLog`
 
 ### Transaction
 
@@ -214,7 +217,7 @@ Body:
 |---|---|---:|---|
 | `activityType` | `CALL` \| `MEETING` \| `EMAIL` \| `VISIT` \| `NOTE` | 필수 | 수동 activity type |
 | `title` | string | 필수 | trim 후 1~120자 |
-| `body` | string \| null | 선택 | trim 후 0~2000자. 원문 logging 금지 |
+| `body` | string \| null | 선택 | trim 후 0~2000자. 빈 문자열은 null 저장. 원문 logging 금지 |
 | `occurredAt` | string | 선택 | ISO 8601 UTC instant. 없으면 now. 서버 현재 시각보다 5분 이상 미래면 거부 |
 
 Request body 예시:
@@ -331,7 +334,7 @@ Body:
 |---|---|---:|---|
 | `activityType` | `CALL` \| `MEETING` \| `EMAIL` \| `VISIT` \| `NOTE` | 선택 | 수동 type만 허용 |
 | `title` | string | 선택 | trim 후 1~120자 |
-| `body` | string \| null | 선택 | null이면 본문 비움 |
+| `body` | string \| null | 선택 | null 또는 trim 후 빈 문자열이면 본문 비움 |
 | `occurredAt` | string | 선택 | ISO 8601 UTC instant. 서버 현재 시각보다 5분 이상 미래면 거부 |
 
 Request body 예시:
@@ -433,8 +436,11 @@ Response 예시:
 | 일정 연결 해제 | `SCHEDULE_UNLINKED` | ScheduleDeal 변경 transaction |
 | 회의록 연결 | `MEETING_NOTE_LINKED` | MeetingNoteDeal 변경 transaction |
 | 회의록 연결 해제 | `MEETING_NOTE_UNLINKED` | MeetingNoteDeal 변경 transaction. delete/recreate 구현이면 삭제 전 diff 계산 |
-| follow-up 발송 성공 | `FOLLOW_UP_SENT` | FollowUpMessage 상태 변경 transaction. `DEAL` target이 있는 메시지만 |
-| follow-up 발송 실패 | `FOLLOW_UP_FAILED` | FollowUpMessage 상태 변경 transaction. `DEAL` target이 있는 메시지만 |
+| follow-up 발송 성공 | `FOLLOW_UP_SENT` | FollowUpMessage/FollowUpDeliveryAttempt 상태 변경 transaction. `DEAL` target이 있는 메시지만. sourceId는 `FollowUpDeliveryAttempt.id` |
+| follow-up 발송 실패 | `FOLLOW_UP_FAILED` | FollowUpMessage/FollowUpDeliveryAttempt 상태 변경 transaction. `DEAL` target이 있는 메시지만. sourceId는 `FollowUpDeliveryAttempt.id` |
 
 자동 생성 시 title/summary는 Backend에서 안전한 문구로 만든다. source 원문 전문을 그대로 복사하지 않는다.
+딜 생성 API가 초기 `DealFollowingActionLog`를 함께 만들면 `DEAL_CREATED`와 `NEXT_ACTION_CREATED`를 같은 transaction에서 모두 생성한다.
+follow-up은 `FollowUpMessage.id`를 `metadataJson.messageId`에 남기고, 전송 시도별 이력은 `FollowUpDeliveryAttempt.id`를 `sourceId`로 구분한다.
 기존 mutation이 이미 `DealFollowingActionLog`를 만들고 있으면 G01에서 중복 노출 여부를 확인하고, 06의 정본은 `DealActivity`로 둔다.
+회의록 연결에서 기존 `DealFollowingActionLog.followingAction` 문구를 activity summary로 재사용하지 않는다.

@@ -38,6 +38,18 @@ Software:
 - User API는 `/api/*`만 사용한다.
 - Admin API는 만들지 않는다.
 
+## 2.1 Module Dependency 기준
+
+G03에서 schedule/meeting-note/follow-up mutation에 activity 생성을 연결할 때 `DealModule`을 무리하게 import해 순환 의존성을 만들지 않는다.
+
+권장 기준:
+
+- `DealActivity` write port는 transaction client를 받을 수 있는 repository/helper 형태로 둔다.
+- schedule/meeting-note/follow-up의 기존 `runInTransaction` 안에서 같은 transaction client로 activity를 쓴다.
+- 다른 feature module이 `DealApplicationService`를 직접 호출해 activity를 만들지 않는다.
+- Nest module import로 해결하기보다 application port와 infrastructure adapter를 명시적으로 주입한다.
+- G01에서 실제 provider 배치안을 확정하고, G03 구현 전 `ARCHITECTURE-GUARDRAILS.md`와 goal spec이 충돌하지 않게 갱신한다.
+
 ## 3. Transaction 기준
 
 Transaction이 필요한 흐름:
@@ -59,7 +71,7 @@ G02에서 신규 Prisma model과 migration을 허용한다.
 
 필수:
 
-- `COMMON/FIRST-SALE-GATE-MAP.md`의 `NBA-014` DB/Prisma 운영 gate를 선행 확인한다.
+- `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/COMMON/FIRST-SALE-GATE-MAP.md`의 `NBA-014` DB/Prisma 운영 gate를 선행 확인한다.
 - 기존 migration 파일을 수정하지 않는다.
 - 공유/운영성 DB에 사용자 결정 없이 migrate/seed를 실행하지 않는다.
 - Prisma schema model/field/relation/index에는 한글 `/// 기능 : ...` 주석을 둔다.

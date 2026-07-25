@@ -59,6 +59,8 @@
 - 신규 migration이 있으므로 G02에서 `NBA-014` DB/Prisma 운영 gate를 확인한다.
 - `DealActivity` title/body 원문은 structured log에 남기지 않는다.
 - follow-up 본문 전체는 timeline 목록에 넣지 않는다.
+- follow-up 발송 성공/실패는 `FollowUpDeliveryAttempt.id`를 sourceId로 사용하고 messageId는 metadata에 둔다.
+- 딜 생성 시 초기 다음 행동 row가 함께 생성되므로 `DEAL_CREATED`와 초기 `NEXT_ACTION_CREATED`를 같은 transaction에서 처리한다.
 - private memo, meeting note raw text, provider raw response를 summary에 넣지 않는다.
 - schedule/meeting-note/follow-up 모듈에 activity writer를 연결할 때 module dependency cycle을 피한다.
 - 기존 following-action/memo API를 즉시 제거하지 않는다.

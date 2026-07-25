@@ -10,7 +10,7 @@
 ## 2. 선행 조건
 
 - G01 완료
-- `COMMON/FIRST-SALE-GATE-MAP.md`의 `NBA-014` DB/Prisma 운영 gate 확인
+- `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/COMMON/FIRST-SALE-GATE-MAP.md`의 `NBA-014` DB/Prisma 운영 gate 확인
 - 공유/운영성 DB에 무단 migrate/seed 실행 금지
 
 ## 3. 포함 범위
@@ -55,6 +55,8 @@ Index 후보:
 - `[userId, dealId, occurredAt, id]`
 - `[userId, activityType, occurredAt]`
 - `[userId, sourceType, sourceId]`
+
+`[userId, dealId, occurredAt, id]` index는 timeline의 `occurredAt desc, id desc` 정렬을 만족해야 한다. PostgreSQL btree 역방향 scan으로 충분한지, Prisma schema에서 desc index를 명시할지 G02에서 확인한다.
 
 ## 6. 주석 기준
 

@@ -21,13 +21,14 @@
 - activity item component
 - 수동 activity form/dialog
 - loading/empty/error/success 상태
+- `DealDetailPanel` 내부 통합
 - mobile 390px/360px layout
 
 ## 4. 제외 범위
 
 - 수동 activity 삭제 UI
 - 목록 summary UI
-- 메모 섹션 제거
+- 기존 메모/다음 행동/follow-up 섹션 즉시 제거
 - follow-up 상세 본문 timeline 직접 노출
 
 ## 5. UX 기준
@@ -46,6 +47,8 @@
 - Types: `features/deal/types/deal.ts`
 - Components: `features/deal/components`
 - Schema: `features/deal/schemas/deal-schema.ts`
+- 화면 host: `features/deal/components/deal-detail-panel.tsx`
+- `deal-activity-section.tsx`는 현재 unused placeholder이므로, 새 timeline을 만들 때 해당 파일을 정본 host처럼 단독 사용하지 않는다.
 
 ## 7. 검증
 
@@ -65,4 +68,5 @@ pnpm run test:e2e
 - 수동 activity 생성/수정이 동작한다.
 - mutation 후 timeline이 갱신된다.
 - API 응답 없는 summary를 FE가 만들지 않는다.
+- 기존 다음 행동/메모/follow-up 패널과 새 timeline이 중복된 primary activity처럼 보이지 않는다.
 - 모바일에서 텍스트와 버튼이 겹치지 않는다.

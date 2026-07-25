@@ -21,6 +21,8 @@
 
 - `/app/deals/:dealId`
 - Deal detail panel/page
+- 현재 구현의 host는 `FE/user-web/src/features/deal/components/deal-detail-panel.tsx`다.
+- `deal-activity-section.tsx`는 현재 "새 API에서는 DealDetailPanel로 통합" 상태인 unused placeholder이므로 정본 host로 되살리지 않는다.
 
 ### 작업
 
@@ -30,9 +32,12 @@
 - `useDealActivities` hook 추가
 - manual create/update mutation 추가
 - `DealActivityTimelineSection` component 추가
+- 새 component는 `DealDetailPanel` 내부에 배치한다.
 - `DealActivityItem` component 추가
 - `DealActivityFormDialog` 또는 panel 추가
 - loading/empty/error/success state 추가
+- linked record path는 기존 follow-up timeline의 `normalizeTargetPath` 패턴을 재사용하거나 공통 helper로 분리
+- `type` filter가 바뀌면 이전 `nextCursor`를 재사용하지 않고 첫 페이지부터 조회
 
 ### UX
 
@@ -50,6 +55,7 @@
 - 수동 activity 삭제 UI를 만들지 않는다.
 - follow-up 본문 전체를 timeline item에 바로 노출하지 않는다.
 - API 응답에 없는 summary를 FE에서 만들지 않는다.
+- 기존 다음 행동/메모/follow-up 패널과 새 `딜 활동` timeline이 같은 이력을 중복된 primary activity처럼 보이게 배치하지 않는다.
 
 ## 3. G06 Deal Record Summary User Web
 

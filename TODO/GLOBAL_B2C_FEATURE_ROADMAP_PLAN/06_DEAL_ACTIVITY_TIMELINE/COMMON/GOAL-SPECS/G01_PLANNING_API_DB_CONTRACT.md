@@ -28,10 +28,16 @@ G01은 코드 구현이 아니라 구현 전 확인 goal이다. 현재 BE/FE 코
 2. `COMMON/BUSINESS-LOGIC.md`의 불변 조건이 현재 코드 구조와 충돌하지 않는지 확인한다.
 3. 기존 route와 새 route 충돌을 확인한다.
 4. 자동 activity trigger가 실제 코드 어디에 연결될지 목록화한다.
-5. `DealActivity` schema 후보와 기존 model relation 충돌을 확인한다.
-6. API request/response 예시와 실제 DTO 네이밍 충돌을 확인한다.
-7. G02에서 필요한 migration 선행 조건과 `NBA-014` gate를 확인한다.
-8. blocking 질문이 있으면 `PLANNING-REVIEW.md`에 남긴다.
+5. 회의록 연결 mutation의 legacy `DealFollowingActionLog` 생성과 새 `DealActivity`가 중복 노출되지 않는 처리 기준을 정한다.
+6. schedule/meeting-note/follow-up에서 activity writer를 호출할 provider 배치가 module cycle을 만들지 않는지 확인한다.
+7. `DealActivity` schema 후보와 기존 model relation 충돌을 확인한다.
+8. API request/response 예시와 실제 DTO 네이밍 충돌을 확인한다.
+9. G02에서 필요한 migration 선행 조건과 `NBA-014` gate를 확인한다.
+10. `DealApplicationService.createDeal`의 초기 `DealFollowingActionLog` 생성이 `DEAL_CREATED`와 `NEXT_ACTION_CREATED`를 모두 만들도록 계약과 충돌하지 않는지 확인한다.
+11. follow-up 발송 성공/실패 sourceId가 `FollowUpDeliveryAttempt.id`이고 `FollowUpMessage.id`는 metadata로만 쓰이는지 확인한다.
+12. source soft delete가 별도 deleted activity를 만들지 않고 link omission만 수행한다는 1차 기준이 구현자에게 명확한지 확인한다.
+13. FE host가 `DealDetailPanel`이고 기존 `deal-activity-section.tsx` placeholder를 정본 host로 되살리지 않는지 확인한다.
+14. blocking 질문이 있으면 `PLANNING-REVIEW.md`에 남긴다.
 
 ## 5. 검증
 

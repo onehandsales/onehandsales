@@ -22,6 +22,8 @@
 5. 각 item은 type icon, 제목, 짧은 설명, 발생 시각, 연결 record link를 가진다.
 6. 더 많은 이력은 `더 보기` 또는 cursor pagination으로 불러온다.
 
+G04 1차에서는 기존 다음 행동/메모/follow-up 패널을 갑자기 삭제하지 않는다. 단 새 `딜 활동` timeline이 딜 상세의 primary activity 흐름이며, 기존 패널과 같은 이력을 중복 primary activity처럼 보이게 배치하지 않는다.
+
 Empty 문구:
 
 ```text
