@@ -16,7 +16,7 @@
 | [x] | G01 Planning API DB Contract | Completed | 2026-07-26 | 현재 코드와 계약 대조, blocking 질문 없음 | `PLANNING-REVIEW.md`, `pnpm run prisma:validate` | G02 착수 가능 |
 | [x] | G02 AI Provider Log DB Prisma | Completed | 2026-07-26 | Prisma enum/field/index/migration 구현 | `BE/prisma/schema.prisma`, `20260726020000_add_meeting_note_ai_provider_log_target`, `pnpm run prisma:validate`, `pnpm run prisma:generate`, `pnpm run typecheck` | 원격 DB target이라 migrate/seed 미실행 |
 | [x] | G03 Meeting Note AI Log Backend | Completed | 2026-07-26 | ai-draft/stt-draft provider log와 safe failure 구현 | `pnpm run typecheck`, `pnpm run lint`, `pnpm run test -- meeting-note`, `pnpm run build` | G04 착수 가능 |
-| [ ] | G04 Meeting Note Next Action Follow Up Backend | Ready | - | next action/follow-up draft API 구현 | Backend test/typecheck/lint/build | 후보만 반환 |
+| [x] | G04 Meeting Note Next Action Follow Up Backend | Completed | 2026-07-26 | next action/follow-up draft API 구현 | `pnpm run typecheck`, `pnpm run lint`, `pnpm run test -- meeting-note`, `pnpm run test -- deal`, `pnpm run build` | 후보만 반환 |
 | [ ] | G05 Meeting Note AI User Web | Ready | - | 생성/상세 AI UX 구현 | User Web typecheck/lint/build/E2E 또는 QA | Notion/Attio 기준 |
 | [ ] | G06 QA Review Closeout | Ready | - | REVIEW-CHECKLIST 통과와 문서 closeout | `REVIEW-CHECKLIST.md` | 07 closeout |
 
@@ -57,14 +57,14 @@
 
 ### G04
 
-- [ ] `POST /api/meeting-notes/:meetingNoteId/next-actions/draft`가 구현됐다.
-- [ ] `POST /api/meeting-notes/:meetingNoteId/follow-up-draft`가 구현됐다.
-- [ ] 다른 사용자 회의록/딜/담당자 접근이 차단된다.
-- [ ] 다음 행동 후보가 자동 저장되지 않는다.
-- [ ] follow-up draft가 DB에 저장되지 않는다.
-- [ ] follow-up 자동 발송이 실행되지 않는다.
-- [ ] provider log가 성공/실패 모두 저장된다.
-- [ ] redaction test가 있다.
+- [x] `POST /api/meeting-notes/:meetingNoteId/next-actions/draft`가 구현됐다.
+- [x] `POST /api/meeting-notes/:meetingNoteId/follow-up-draft`가 구현됐다.
+- [x] 다른 사용자 회의록/딜/담당자 접근이 차단된다.
+- [x] 다음 행동 후보가 자동 저장되지 않는다.
+- [x] follow-up draft가 DB에 저장되지 않는다.
+- [x] follow-up 자동 발송이 실행되지 않는다.
+- [x] provider log가 성공/실패 모두 저장된다.
+- [x] redaction test가 있다.
 
 ### G05
 
@@ -96,4 +96,5 @@
 - 2026-07-26: G01 코드/API/DB/FE 계약 대조 완료. `cd BE && pnpm run prisma:validate` 통과. 로컬 Node `v22.21.1`로 engine warning이 있었지만 Prisma schema validation은 성공했다.
 - 2026-07-26: G02 Prisma schema와 신규 migration 작성 완료. `cd BE && pnpm run prisma:validate`, `pnpm run prisma:generate`, `pnpm run typecheck` 통과. DB target이 Supabase host라 `migrate dev`, `migrate deploy`, `seed`는 실행하지 않았다.
 - 2026-07-26: G03 Meeting Note AI/STT provider call log와 safe failure 구현 완료. `cd BE && pnpm run typecheck`, `pnpm run lint`, `pnpm run test -- meeting-note`, `pnpm run build` 통과.
-- 아직 G04~G06 코드 구현은 실행하지 않았다.
+- 2026-07-26: G04 Meeting Note next action/follow-up draft Backend 구현 완료. `cd BE && pnpm run typecheck`, `pnpm run lint`, `pnpm run test -- meeting-note`, `pnpm run test -- deal`, `pnpm run build` 통과.
+- 아직 G05~G06 코드 구현은 실행하지 않았다.

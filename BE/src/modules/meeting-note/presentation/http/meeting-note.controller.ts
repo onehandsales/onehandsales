@@ -17,6 +17,7 @@ import {
 } from "@nestjs/common";
 import { FileInterceptor } from "@nestjs/platform-express";
 import type { MeetingNoteDraftAudioFile } from "@/modules/meeting-note/application/ports/meeting-note-stt.provider";
+import { MeetingNoteAiActionDraftApplicationService } from "@/modules/meeting-note/application/services/meeting-note-ai-action-draft-application.service";
 import { MeetingNoteAiDraftApplicationService } from "@/modules/meeting-note/application/services/meeting-note-ai-draft-application.service";
 import { MeetingNoteApplicationService } from "@/modules/meeting-note/application/services/meeting-note-application.service";
 import type { CurrentUserContext } from "@/shared/application/context/current-user.context";
@@ -24,6 +25,8 @@ import { CurrentUser } from "@/shared/presentation/decorators/current-user.decor
 import { AuthGuard } from "@/shared/presentation/guards/auth.guard";
 import {
   CreateMeetingNoteDto,
+  CreateMeetingNoteFollowUpDraftDto,
+  CreateMeetingNoteNextActionDraftDto,
   CreateMeetingNoteSttAiDraftDto,
   CreateMeetingNoteTextAiDraftDto,
   LinkMeetingNoteDealsDto,
@@ -45,10 +48,11 @@ interface UploadedMeetingNoteAudioFile {
 @UseGuards(AuthGuard)
 @Controller("api/meeting-notes")
 export class MeetingNoteController {
-  // 기능 : 회의록 수동 저장 서비스와 AI/STT 초안 생성 서비스를 주입받습니다.
+  // 기능 : 회의록 수동 저장, AI/STT 초안, AI 후속 작업 서비스를 주입받습니다.
   constructor(
     private readonly meetingNoteApplicationService: MeetingNoteApplicationService,
-    private readonly meetingNoteAiDraftApplicationService: MeetingNoteAiDraftApplicationService
+    private readonly meetingNoteAiDraftApplicationService: MeetingNoteAiDraftApplicationService,
+    private readonly meetingNoteAiActionDraftApplicationService: MeetingNoteAiActionDraftApplicationService
   ) {}
 
   // API : 회의록 회사 필터 옵션 목록 조회
@@ -112,6 +116,38 @@ export class MeetingNoteController {
         ...body,
         audioFile: this.toDraftAudioFile(audioFile),
       }
+    );
+  }
+
+  // API : 회의록 AI 후속 작업, 다음 행동 후보 생성
+  @Post(":meetingNoteId/next-actions/draft")
+  @HttpCode(HttpStatus.OK)
+  createNextActionDraft(
+    @CurrentUser() currentUser: CurrentUserContext,
+    @Param("meetingNoteId", ParseUUIDPipe) meetingNoteId: string,
+    @Body() body: CreateMeetingNoteNextActionDraftDto
+  ) {
+    // 1. 회의록 ID와 후보 생성 조건을 application 계층으로 전달합니다.
+    return this.meetingNoteAiActionDraftApplicationService.createNextActionDraft(
+      currentUser,
+      meetingNoteId,
+      body
+    );
+  }
+
+  // API : 회의록 AI 후속 작업, follow-up 문안 생성
+  @Post(":meetingNoteId/follow-up-draft")
+  @HttpCode(HttpStatus.OK)
+  createFollowUpDraft(
+    @CurrentUser() currentUser: CurrentUserContext,
+    @Param("meetingNoteId", ParseUUIDPipe) meetingNoteId: string,
+    @Body() body: CreateMeetingNoteFollowUpDraftDto
+  ) {
+    // 1. 회의록 ID와 follow-up 문안 생성 조건을 application 계층으로 전달합니다.
+    return this.meetingNoteAiActionDraftApplicationService.createFollowUpDraft(
+      currentUser,
+      meetingNoteId,
+      body
     );
   }
 

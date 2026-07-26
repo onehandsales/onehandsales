@@ -5,7 +5,13 @@ export const MEETING_NOTE_AI_PROVIDER_CALL_LOG_REPOSITORY = Symbol(
 export type MeetingNoteAiProviderCallOperationValue =
   | "MEETING_NOTE_TEXT_DRAFT"
   | "MEETING_NOTE_STT_TRANSCRIPTION"
-  | "MEETING_NOTE_STT_DRAFT";
+  | "MEETING_NOTE_STT_DRAFT"
+  | "MEETING_NOTE_NEXT_ACTION_DRAFT"
+  | "MEETING_NOTE_FOLLOW_UP_DRAFT";
+
+export type MeetingNoteAiProviderCallTargetTypeValue =
+  | "MEETING_NOTE_DRAFT"
+  | "MEETING_NOTE";
 
 export type MeetingNoteAiProviderCallStatusValue =
   | "PENDING"
@@ -38,7 +44,7 @@ export interface MeetingNoteAiProviderCallLogRecord {
 export interface CreateMeetingNoteAiProviderCallLogInput {
   readonly userId: string;
   readonly operation: MeetingNoteAiProviderCallOperationValue;
-  readonly targetType: "MEETING_NOTE_DRAFT";
+  readonly targetType: MeetingNoteAiProviderCallTargetTypeValue;
   readonly targetId: string | null;
   readonly provider: string;
   readonly model: string;

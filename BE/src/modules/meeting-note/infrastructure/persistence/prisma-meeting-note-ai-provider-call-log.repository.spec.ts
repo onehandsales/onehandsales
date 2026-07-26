@@ -7,6 +7,7 @@ import { PrismaMeetingNoteAiProviderCallLogRepository } from "./prisma-meeting-n
 
 const USER_ID = "00000000-0000-4000-8000-000000000101";
 const LOG_ID = "00000000-0000-4000-8000-000000000201";
+const MEETING_NOTE_ID = "00000000-0000-4000-8000-000000000301";
 const STARTED_AT = new Date("2026-07-26T01:00:00.000Z");
 const FINISHED_AT = new Date("2026-07-26T01:00:01.234Z");
 
@@ -69,6 +70,45 @@ describe("PrismaMeetingNoteAiProviderCallLogRepository", () => {
     expect(serializedInput).not.toContain("회의 원문");
     expect(serializedInput).not.toContain("kim@example.com");
     expect(serializedInput).not.toContain("raw provider response");
+  });
+
+  it("저장된 회의록 대상 AI 후속 작업 log를 MEETING_NOTE target으로 생성한다", async () => {
+    const client = createMockClient();
+    client.aiProviderCallLog.create.mockResolvedValue({ id: LOG_ID });
+    const repository = new PrismaMeetingNoteAiProviderCallLogRepository(
+      client as unknown as PrismaService
+    );
+
+    await repository.createProviderCallLog({
+      userId: USER_ID,
+      operation: "MEETING_NOTE_NEXT_ACTION_DRAFT",
+      targetType: "MEETING_NOTE",
+      targetId: MEETING_NOTE_ID,
+      provider: "openai",
+      model: "gpt-test",
+      startedAt: STARTED_AT,
+      metadataJson: {
+        source: "detail-ai-panel",
+        hasDealContext: true,
+        detailsLength: 30,
+      },
+    });
+
+    expect(client.aiProviderCallLog.create).toHaveBeenCalledWith({
+      data: expect.objectContaining({
+        userId: USER_ID,
+        operation: PrismaAiProviderOperation.MEETING_NOTE_NEXT_ACTION_DRAFT,
+        status: PrismaAiProviderCallStatus.PENDING,
+        targetType: "MEETING_NOTE",
+        targetId: MEETING_NOTE_ID,
+        metadataJson: {
+          source: "detail-ai-panel",
+          hasDealContext: true,
+          detailsLength: 30,
+        },
+      }),
+      select: { id: true },
+    });
   });
 
   it("성공 log에는 provider request id와 usage metadata만 갱신한다", async () => {

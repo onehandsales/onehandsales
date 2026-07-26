@@ -8,6 +8,12 @@ import {
 import { Test } from "@nestjs/testing";
 import type { Request } from "express";
 import * as request from "supertest";
+import {
+  MeetingNoteFollowUpChannelValue,
+  MeetingNoteFollowUpToneValue,
+  MeetingNoteNextActionConfidenceValue,
+} from "@/modules/meeting-note/application/ports/meeting-note-ai-action-draft.provider";
+import { MeetingNoteAiActionDraftApplicationService } from "@/modules/meeting-note/application/services/meeting-note-ai-action-draft-application.service";
 import { MeetingNoteAiDraftApplicationService } from "@/modules/meeting-note/application/services/meeting-note-ai-draft-application.service";
 import { MeetingNoteApplicationService } from "@/modules/meeting-note/application/services/meeting-note-application.service";
 import { MeetingNoteSourceTypeValue } from "@/modules/meeting-note/application/ports/meeting-note.repository";
@@ -56,6 +62,11 @@ type MeetingNoteAiDraftServiceFake = Pick<
   "createTextAiDraft" | "createSttAiDraft"
 >;
 
+type MeetingNoteAiActionDraftServiceFake = Pick<
+  MeetingNoteAiActionDraftApplicationService,
+  "createNextActionDraft" | "createFollowUpDraft"
+>;
+
 // 역할 : FakeAuthGuard 회의록 controller 테스트 요청에 현재 사용자 context를 주입합니다.
 class FakeAuthGuard implements CanActivate {
   // 기능 : 테스트 HTTP 요청을 인증된 사용자 요청으로 처리합니다.
@@ -101,14 +112,45 @@ function createAiDraftServiceFake(): jest.Mocked<MeetingNoteAiDraftServiceFake> 
   };
 }
 
+// 기능 : 회의록 AI 후속 작업 controller 의존성 fake를 생성합니다.
+function createAiActionDraftServiceFake(): jest.Mocked<MeetingNoteAiActionDraftServiceFake> {
+  return {
+    createNextActionDraft: jest.fn().mockResolvedValue({
+      items: [
+        {
+          clientSuggestionId: "na_01",
+          title: "가격표 보내기",
+          memo: "고객이 가격 자료를 요청했어요.",
+          recommendedDueDate: "2026-06-17",
+          dealId: DEAL_ID,
+          confidence: MeetingNoteNextActionConfidenceValue.HIGH,
+          reason: "회의록의 요청 사항에서 확인됐어요.",
+        },
+      ],
+    }),
+    createFollowUpDraft: jest.fn().mockResolvedValue({
+      channel: MeetingNoteFollowUpChannelValue.EMAIL,
+      subject: "오늘 미팅 내용 정리드립니다",
+      body: "오늘 논의한 내용을 정리드립니다.",
+      suggestedRecipient: {
+        contactId: CONTACT_ID,
+        displayName: "Kim",
+      },
+      copyableText: "오늘 논의한 내용을 정리드립니다.",
+    }),
+  };
+}
+
 describe("MeetingNoteController", () => {
   let app: INestApplication;
   let meetingNoteService: jest.Mocked<MeetingNoteServiceFake>;
   let aiDraftService: jest.Mocked<MeetingNoteAiDraftServiceFake>;
+  let aiActionDraftService: jest.Mocked<MeetingNoteAiActionDraftServiceFake>;
 
   beforeEach(async () => {
     meetingNoteService = createMeetingNoteServiceFake();
     aiDraftService = createAiDraftServiceFake();
+    aiActionDraftService = createAiActionDraftServiceFake();
 
     const moduleRef = await Test.createTestingModule({
       controllers: [MeetingNoteController],
@@ -117,6 +159,10 @@ describe("MeetingNoteController", () => {
         {
           provide: MeetingNoteAiDraftApplicationService,
           useValue: aiDraftService,
+        },
+        {
+          provide: MeetingNoteAiActionDraftApplicationService,
+          useValue: aiActionDraftService,
         },
       ],
     })
@@ -207,6 +253,45 @@ describe("MeetingNoteController", () => {
           size: 5,
         }),
       })
+    );
+  });
+
+  it("회의록 다음 행동 후보 생성 요청을 application service로 전달한다", async () => {
+    const body = {
+      dealId: DEAL_ID,
+      maxCandidates: 3,
+    };
+
+    await request(app.getHttpServer())
+      .post(`/api/meeting-notes/${MEETING_NOTE_ID}/next-actions/draft`)
+      .send(body)
+      .expect(200);
+
+    expect(aiActionDraftService.createNextActionDraft).toHaveBeenCalledWith(
+      CURRENT_USER,
+      MEETING_NOTE_ID,
+      body
+    );
+  });
+
+  it("회의록 follow-up 문안 생성 요청을 application service로 전달한다", async () => {
+    const body = {
+      channel: MeetingNoteFollowUpChannelValue.EMAIL,
+      recipientContactId: CONTACT_ID,
+      dealId: DEAL_ID,
+      tone: MeetingNoteFollowUpToneValue.POLITE,
+      language: "ko",
+    };
+
+    await request(app.getHttpServer())
+      .post(`/api/meeting-notes/${MEETING_NOTE_ID}/follow-up-draft`)
+      .send(body)
+      .expect(200);
+
+    expect(aiActionDraftService.createFollowUpDraft).toHaveBeenCalledWith(
+      CURRENT_USER,
+      MEETING_NOTE_ID,
+      body
     );
   });
 

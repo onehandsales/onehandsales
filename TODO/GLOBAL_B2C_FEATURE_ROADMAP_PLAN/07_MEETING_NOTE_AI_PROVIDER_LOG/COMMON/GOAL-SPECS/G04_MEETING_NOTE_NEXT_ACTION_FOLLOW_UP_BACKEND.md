@@ -1,11 +1,24 @@
 # G04 Meeting Note Next Action Follow Up Backend
 
-상태: Ready
+상태: Completed
 목표: 회의록 기반 다음 행동 후보와 follow-up draft Backend 구현
+완료일: 2026-07-26
 
 ## 1. 목적
 
 저장된 회의록에서 다음 행동 후보와 고객 follow-up 문안을 생성한다. AI 결과는 사용자 확인 전까지 DB를 변경하지 않는다.
+
+## 1.1 완료 결과
+
+- `POST /api/meeting-notes/:meetingNoteId/next-actions/draft`를 추가했다.
+- `POST /api/meeting-notes/:meetingNoteId/follow-up-draft`를 추가했다.
+- `MeetingNoteAiActionDraftApplicationService`가 회의록 소유권/soft delete와 연결 딜/담당자 검증을 담당한다.
+- 다음 행동 후보는 최대 3개로 정규화하고 `clientSuggestionId`, `title`, `memo`, `recommendedDueDate`, `dealId`, `confidence`, `reason`만 반환한다.
+- follow-up 문안은 EMAIL/SMS별 `subject`, `body`, `copyableText`, `suggestedRecipient`만 반환한다.
+- 다음 행동 자동 저장, follow-up draft DB 저장, 이메일/SMS 자동 발송은 구현하지 않았다.
+- `MEETING_NOTE_NEXT_ACTION_DRAFT`, `MEETING_NOTE_FOLLOW_UP_DRAFT` provider call log 성공/실패 기록을 구현했다.
+- provider log metadata에는 길이/count/boolean/channel/language만 저장하고 회의록 본문, follow-up body, prompt 전문, provider raw, 연락처 이메일/전화번호를 저장하지 않도록 테스트했다.
+- `pnpm run typecheck`, `pnpm run lint`, `pnpm run test -- meeting-note`, `pnpm run test -- deal`, `pnpm run build`를 통과했다.
 
 ## 2. 선행 조건
 
@@ -76,9 +89,9 @@ pnpm run build
 
 ## 9. 완료 기준
 
-- 두 신규 API가 구현됐다.
-- 후보/초안만 반환하고 DB 저장/발송이 없다.
-- provider log가 성공/실패 모두 저장된다.
-- raw/follow-up body/prompt redaction test가 있다.
-- 코드 작업 시 한글 주석이 추가됐다.
-- `COMMON/GOAL-COMPLETION-CHECKLIST.md`의 G04 항목이 갱신됐다.
+- [x] 두 신규 API가 구현됐다.
+- [x] 후보/초안만 반환하고 DB 저장/발송이 없다.
+- [x] provider log가 성공/실패 모두 저장된다.
+- [x] raw/follow-up body/prompt redaction test가 있다.
+- [x] 코드 작업 시 한글 주석이 추가됐다.
+- [x] `COMMON/GOAL-COMPLETION-CHECKLIST.md`의 G04 항목이 갱신됐다.

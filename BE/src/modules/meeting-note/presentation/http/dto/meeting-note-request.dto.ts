@@ -5,6 +5,7 @@ import {
   IsEnum,
   IsInt,
   Matches,
+  Max,
   MaxLength,
   IsOptional,
   IsString,
@@ -16,6 +17,10 @@ import {
   MeetingNoteSort,
   MeetingNoteSourceTypeValue,
 } from "@/modules/meeting-note/application/ports/meeting-note.repository";
+import {
+  MeetingNoteFollowUpChannelValue,
+  MeetingNoteFollowUpToneValue,
+} from "@/modules/meeting-note/application/ports/meeting-note-ai-action-draft.provider";
 
 // 기능 : 반복 query string과 단일 query string 값을 배열로 정규화합니다.
 function toOptionalArray({ value }: TransformFnParams): string[] | undefined {
@@ -260,6 +265,43 @@ export class CreateMeetingNoteTextAiDraftDto extends MeetingNoteAiDraftContextDt
 
 // 역할 : CreateMeetingNoteSttAiDraftDto 음성 기반 회의록 STT+AI 초안 생성 request body를 검증합니다.
 export class CreateMeetingNoteSttAiDraftDto extends MeetingNoteAiDraftContextDto {}
+
+// 역할 : CreateMeetingNoteNextActionDraftDto 회의록 기반 다음 행동 후보 생성 request body를 검증합니다.
+export class CreateMeetingNoteNextActionDraftDto {
+  @IsOptional()
+  @IsUUID()
+  dealId?: string | null;
+
+  @IsOptional()
+  @Type(() => Number)
+  @IsInt()
+  @Min(1)
+  @Max(3)
+  maxCandidates?: number | null;
+}
+
+// 역할 : CreateMeetingNoteFollowUpDraftDto 회의록 기반 follow-up 문안 생성 request body를 검증합니다.
+export class CreateMeetingNoteFollowUpDraftDto {
+  @IsEnum(MeetingNoteFollowUpChannelValue)
+  channel!: MeetingNoteFollowUpChannelValue;
+
+  @IsOptional()
+  @IsUUID()
+  recipientContactId?: string | null;
+
+  @IsOptional()
+  @IsUUID()
+  dealId?: string | null;
+
+  @IsOptional()
+  @IsEnum(MeetingNoteFollowUpToneValue)
+  tone?: MeetingNoteFollowUpToneValue | null;
+
+  @IsOptional()
+  @IsString()
+  @Matches(/^[a-z]{2}(?:[-_][a-zA-Z]{2})?$/)
+  language?: string | null;
+}
 
 // 역할 : UpdateMeetingNoteDto 회의록 수정 request body 값을 검증합니다.
 export class UpdateMeetingNoteDto {
