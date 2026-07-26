@@ -14,7 +14,7 @@
 | 완료 | Goal | 상태 | 완료일 | 완료 기준 | 증거 | 비고 |
 |---|---|---|---|---|---|---|
 | [x] | G01 Planning API DB Contract | Completed | 2026-07-26 | 현재 코드와 계약 대조, blocking 질문 없음 | `PLANNING-REVIEW.md`, `pnpm run prisma:validate` | G02 착수 가능 |
-| [ ] | G02 AI Provider Log DB Prisma | Ready | - | Prisma enum/field/index/migration 구현 | `BE/prisma/schema.prisma`, migration, `pnpm run prisma:validate` | 원격 DB migrate 주의 |
+| [x] | G02 AI Provider Log DB Prisma | Completed | 2026-07-26 | Prisma enum/field/index/migration 구현 | `BE/prisma/schema.prisma`, `20260726020000_add_meeting_note_ai_provider_log_target`, `pnpm run prisma:validate`, `pnpm run prisma:generate`, `pnpm run typecheck` | 원격 DB target이라 migrate/seed 미실행 |
 | [ ] | G03 Meeting Note AI Log Backend | Ready | - | ai-draft/stt-draft provider log와 safe failure 구현 | Backend test/typecheck/lint/build | G04 착수 가능 |
 | [ ] | G04 Meeting Note Next Action Follow Up Backend | Ready | - | next action/follow-up draft API 구현 | Backend test/typecheck/lint/build | 후보만 반환 |
 | [ ] | G05 Meeting Note AI User Web | Ready | - | 생성/상세 AI UX 구현 | User Web typecheck/lint/build/E2E 또는 QA | Notion/Attio 기준 |
@@ -34,16 +34,16 @@
 
 ### G02
 
-- [ ] `AiProviderOperation`에 meeting-note operation이 추가됐다.
-- [ ] `AiProviderCallLog.targetType`이 추가됐다.
-- [ ] `AiProviderCallLog.targetId`가 추가됐다.
-- [ ] `[userId, targetType, targetId, createdAt]` index가 추가됐다.
-- [ ] `MeetingNoteTranscript`, `MeetingNoteFollowUpDraft`, `MeetingNoteProviderCallLog` 같은 별도 table이 추가되지 않았다.
-- [ ] Prisma schema에 한글 `/// 기능 : ...` 주석이 있다.
-- [ ] migration SQL에 의도 주석 또는 COMMENT가 있다.
-- [ ] 기존 migration 파일을 수정하지 않았다.
-- [ ] 공유/운영성 DB에 무단 migrate/seed를 실행하지 않았다.
-- [ ] `pnpm run prisma:validate`가 통과했다.
+- [x] `AiProviderOperation`에 meeting-note operation이 추가됐다.
+- [x] `AiProviderCallLog.targetType`이 추가됐다.
+- [x] `AiProviderCallLog.targetId`가 추가됐다.
+- [x] `[userId, targetType, targetId, createdAt]` index가 추가됐다.
+- [x] `MeetingNoteTranscript`, `MeetingNoteFollowUpDraft`, `MeetingNoteProviderCallLog` 같은 별도 table이 추가되지 않았다.
+- [x] Prisma schema에 한글 `/// 기능 : ...` 주석이 있다.
+- [x] migration SQL에 의도 주석 또는 COMMENT가 있다.
+- [x] 기존 migration 파일을 수정하지 않았다.
+- [x] 공유/운영성 DB에 무단 migrate/seed를 실행하지 않았다.
+- [x] `pnpm run prisma:validate`가 통과했다.
 
 ### G03
 
@@ -94,4 +94,5 @@
 
 - 2026-07-26: 구현 착수 가능 문서 작성.
 - 2026-07-26: G01 코드/API/DB/FE 계약 대조 완료. `cd BE && pnpm run prisma:validate` 통과. 로컬 Node `v22.21.1`로 engine warning이 있었지만 Prisma schema validation은 성공했다.
-- 아직 G02~G06 코드 구현은 실행하지 않았다.
+- 2026-07-26: G02 Prisma schema와 신규 migration 작성 완료. `cd BE && pnpm run prisma:validate`, `pnpm run prisma:generate`, `pnpm run typecheck` 통과. DB target이 Supabase host라 `migrate dev`, `migrate deploy`, `seed`는 실행하지 않았다.
+- 아직 G03~G06 코드 구현은 실행하지 않았다.

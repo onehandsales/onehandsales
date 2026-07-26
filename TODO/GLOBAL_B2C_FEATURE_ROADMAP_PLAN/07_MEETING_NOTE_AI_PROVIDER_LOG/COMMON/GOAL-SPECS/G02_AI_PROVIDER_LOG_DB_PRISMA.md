@@ -1,11 +1,21 @@
 # G02 AI Provider Log DB Prisma
 
-상태: Ready
+상태: Completed
 목표: Meeting Note AI provider log를 위한 Prisma schema와 migration 구현
+완료일: 2026-07-26
 
 ## 1. 목적
 
 공통 `AiProviderCallLog`를 확장해 Meeting Note AI/STT/next action/follow-up draft 호출을 추적할 수 있게 한다.
+
+## 1.1 완료 결과
+
+- `BE/prisma/schema.prisma`의 `AiProviderOperation`에 MeetingNote operation 5개를 추가했다.
+- `AiProviderCallLog`에 optional `targetType`, `targetId` field와 `[userId, targetType, targetId, createdAt]` index를 추가했다.
+- 신규 migration `BE/prisma/migrations/20260726020000_add_meeting_note_ai_provider_log_target/migration.sql`을 추가했다.
+- schema와 migration에 한글 주석 또는 `COMMENT ON`을 남겼다.
+- `.env`의 DB target은 Supabase host로 확인되어 공유/운영성 DB 가능성이 있으므로 `migrate dev`, `migrate deploy`, `seed`는 실행하지 않았다.
+- `pnpm run prisma:validate`, `pnpm run prisma:generate`, `pnpm run typecheck`를 통과했다. 로컬 Node는 `v22.21.1`이라 engine warning이 있었지만 명령은 성공했다.
 
 ## 2. 선행 조건
 
@@ -72,8 +82,8 @@ pnpm run typecheck
 
 ## 8. 완료 기준
 
-- Prisma schema가 `BE-TODO/DB-SCHEMA.md`와 일치한다.
-- Migration SQL이 schema 변경과 일치한다.
-- raw text/transcript/follow-up draft 저장 table이 없다.
-- `pnpm run prisma:validate`가 통과한다.
-- `COMMON/GOAL-COMPLETION-CHECKLIST.md`의 G02 항목이 갱신됐다.
+- [x] Prisma schema가 `BE-TODO/DB-SCHEMA.md`와 일치한다.
+- [x] Migration SQL이 schema 변경과 일치한다.
+- [x] raw text/transcript/follow-up draft 저장 table이 없다.
+- [x] `pnpm run prisma:validate`가 통과한다.
+- [x] `COMMON/GOAL-COMPLETION-CHECKLIST.md`의 G02 항목이 갱신됐다.

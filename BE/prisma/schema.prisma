@@ -209,6 +209,16 @@ enum AiProviderOperation {
   WEEKLY_SALES_REPORT
   FOLLOW_UP_EMAIL_DRAFT
   FOLLOW_UP_SMS_DRAFT
+  /// 기능 : 회의 원문 텍스트를 회의록 초안으로 변환하는 provider 호출입니다.
+  MEETING_NOTE_TEXT_DRAFT
+  /// 기능 : 회의 음성 파일을 transcript로 변환하는 STT provider 호출입니다.
+  MEETING_NOTE_STT_TRANSCRIPTION
+  /// 기능 : STT transcript를 회의록 초안으로 변환하는 provider 호출입니다.
+  MEETING_NOTE_STT_DRAFT
+  /// 기능 : 저장된 회의록에서 다음 행동 후보를 생성하는 provider 호출입니다.
+  MEETING_NOTE_NEXT_ACTION_DRAFT
+  /// 기능 : 저장된 회의록에서 follow-up 문안 초안을 생성하는 provider 호출입니다.
+  MEETING_NOTE_FOLLOW_UP_DRAFT
 }
 
 enum AiProviderCallStatus {
@@ -1280,6 +1290,10 @@ model AiProviderCallLog {
   status              AiProviderCallStatus @default(PENDING)
   reportId            String?              @db.Uuid
   jobId               String?              @db.Uuid
+  /// 기능 : provider 호출이 특정 기능 record에서 발생했을 때 대상 타입을 기록합니다. 저장 전 초안은 MEETING_NOTE_DRAFT를 사용합니다.
+  targetType          String?
+  /// 기능 : provider 호출이 특정 기능 record에서 발생했을 때 대상 record ID를 기록합니다. 저장 전 초안처럼 대상 ID가 없으면 null입니다.
+  targetId            String?              @db.Uuid
   provider            String
   model               String
   requestId           String?
@@ -1309,6 +1323,7 @@ model AiProviderCallLog {
   job    AiJob?               @relation(fields: [jobId], references: [id], onDelete: SetNull)
 
   @@index([userId, operation, createdAt])
+  @@index([userId, targetType, targetId, createdAt])
   @@index([reportId, createdAt])
   @@index([jobId, createdAt])
   @@index([status, createdAt])
