@@ -14,10 +14,12 @@
 - [x] `NBA-003 Deal latest activity subset`: `DealActivity` 정본 model/migration 기반으로 구현 완료
 - [x] `NBA-008 Page size 15 contract cleanup`: 새 DB/migration 없이 API/FE/test 계약 확인 완료
 - [x] `NBA-014` 06 범위 DB/Prisma migration 운영 gate closeout 완료
+- [x] `NBA-004 MeetingNote detail next action/follow-up draft subset`: 새 action/follow-up 저장 table 없이 구현 완료
+- [x] `NBA-011 MeetingNote provider log subset`: `AiProviderOperation` meeting-note 값과 `AiProviderCallLog.targetType/targetId/index` 구현 완료
 
 ## 1. 현재 DB 변경 상태
 
-이 계획 후보에서 남은 후보 중 새로 확정된 Prisma schema 변경은 없다. `NBA-001`, `NBA-002`, `NBA-003` Deal subset, `NBA-006`, `NBA-008`, `NBA-009`, `NBA-010`, `NBA-014`, `NBA-015`는 별도 계획에서 구현 완료된 이력으로만 남긴다.
+이 계획 후보에서 남은 active 후보 중 새로 확정된 Prisma schema 변경은 없다. `NBA-001`, `NBA-002`, `NBA-003` Deal subset, `NBA-004` MeetingNote detail subset, `NBA-006`, `NBA-008`, `NBA-009`, `NBA-010`, `NBA-011` provider log subset, `NBA-014`, `NBA-015`는 별도 계획에서 구현 완료된 이력으로만 남긴다.
 
 실제 source of truth는 `BE/prisma/schema.prisma`와 migration 파일이다. 이 문서는 G07에서 분리된 후보의 DB/migration 가능성만 기록한다.
 
@@ -26,6 +28,12 @@
 - `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/06_DEAL_ACTIVITY_TIMELINE`
 - `BE/prisma/migrations/20260726010000_add_deal_activity/migration.sql`
 - `BE/prisma/schema.prisma`의 `DealActivityType`, `DealActivitySourceType`, `DealActivity`
+
+07 완료 이력의 DB source of truth:
+
+- `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/07_MEETING_NOTE_AI_PROVIDER_LOG`
+- `BE/prisma/migrations/20260726020000_add_meeting_note_ai_provider_log_target/migration.sql`
+- `BE/prisma/schema.prisma`의 `AiProviderOperation` meeting-note 값과 `AiProviderCallLog.targetType`, `AiProviderCallLog.targetId`
 
 ## 2. 새 migration이 필요 없을 가능성이 높은 후보
 
@@ -39,8 +47,8 @@
 | 후보 ID | 후보 | DB 영향 후보 |
 |---|---|---|
 | NBA-003 잔여 | Company/Contact/Product latest memo/activity/next action summary | Deal list `latestActivity`는 `DealActivity`로 완료됐다. 나머지 record summary는 별도 summary/index 설계 후보가 생길 수 있다. |
-| NBA-004 | MeetingNote next/latest summary | action summary를 저장하면 column/table 후보가 생긴다. |
-| NBA-011 | MeetingNote transcript/provider call log table | transcript/raw text/provider call log table과 retention column 후보가 필요하다. |
+| NBA-004 | MeetingNote 목록 next/latest summary | 상세 next action/follow-up draft는 새 저장 table 없이 07에서 완료됐다. 목록 summary를 저장하면 column/table 후보가 생긴다. |
+| NBA-011 잔여 | MeetingNote Admin provider audit/retention | 공통 provider call log target 확장은 07에서 완료됐다. Admin 조회 audit, raw access reason, retention/cleanup 정책에 따라 추가 table/column 후보가 생길 수 있다. |
 | NBA-012 | Trash 7일 이후 복구 정책 | purge job 기록, 복구 예약, 유료 복구 정책에 따라 column/table 후보가 생길 수 있다. |
 | NBA-013 | Admin 운영 UX/API | admin audit log, raw access reason, support action log table 후보가 필요할 수 있다. |
 

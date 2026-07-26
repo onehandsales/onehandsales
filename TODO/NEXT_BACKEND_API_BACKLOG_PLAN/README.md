@@ -16,12 +16,15 @@
 - [x] `NBA-003 Deal latest activity subset`: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/06_DEAL_ACTIVITY_TIMELINE`에서 부분 구현 및 QA closeout 완료
 - [x] `NBA-008 Page size 15 contract cleanup`: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/06_DEAL_ACTIVITY_TIMELINE`에서 FE/BE/test/API 계약 확인 완료
 - [x] `NBA-014` 06 범위 DB/Prisma migration 운영 gate closeout
+- [x] `NBA-004 MeetingNote detail next action/follow-up draft subset`: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/07_MEETING_NOTE_AI_PROVIDER_LOG`에서 구현 및 QA closeout 완료
+- [x] `NBA-011 MeetingNote AI/STT provider log subset`: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/07_MEETING_NOTE_AI_PROVIDER_LOG`에서 공통 `AiProviderCallLog` 확장으로 구현 및 QA closeout 완료
 - [x] Backend/API/DB/User Web 영향 반영 완료
 - [x] 완료 기록: `TODO_LOG/2026-07-21/G04_IMPORT_JOB_PERSISTENCE_QA_CLEANUP/WORK_LOG.md`
 - [x] 완료 기록: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/03_WEEKLY_SCHEDULE_REPORT/COMMON/TODO_LOG.md`
 - [x] 완료 기록: `TODO_LOG/2026-07-22/G05_QA_REVIEW_CLOSEOUT/WORK_LOG.md`
 - [x] 완료 기록: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/04_GOOGLE_CALENDAR_INTEGRATION/TODO_LOG/2026-07-23/G05_QA_REVIEW_CLOSEOUT/WORK_LOG.md`
 - [x] 완료 기록: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/06_DEAL_ACTIVITY_TIMELINE/COMMON/GOAL-SPECS/G07_QA_REVIEW_CLOSEOUT.md`
+- [x] 완료 기록: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/07_MEETING_NOTE_AI_PROVIDER_LOG/COMMON/GOAL-SPECS/G06_QA_REVIEW_CLOSEOUT.md`
 - [ ] 나머지 NBA 후보 계약 확정 및 구현 여부 판단
 
 ## 1. 목적
@@ -36,14 +39,15 @@ G07의 산출물이므로 이 문서는 구현 계획 확정본이 아니다. �
 
 - BusinessCard provider failure contract는 남은 release follow-up 후보다.
 - `NBA-003` 중 Deal list `latestActivity`는 06에서 구현 완료됐고, Company/Contact/Product latest summary와 generic summary endpoint는 product feature 후보로 남긴다.
-- MeetingNote summary는 product feature 후보다.
-- `NBA-014`는 06 범위에서 DB target, migration/seed 금지, Prisma 검증 gate를 닫았다. 실제 운영 DB 적용 절차, backup/restore, provider log 같은 data reliability 운영 기준은 별도 첫 판매 gate에서 다룬다.
+- MeetingNote 상세 next action/follow-up draft와 AI/STT provider call log는 07에서 구현 완료됐다. MeetingNote 목록 latest/next summary는 product feature 후보로 남긴다.
+- `NBA-014`는 06 범위에서 DB target, migration/seed 금지, Prisma 검증 gate를 닫았다. 실제 운영 DB 적용 절차, backup/restore, 장애 대응, Admin raw audit 같은 data reliability 운영 기준은 별도 첫 판매 gate에서 다룬다.
 - `NBA-006 ImportJob persistence/resume API`는 2026-07-21 기준 구현 및 QA closeout이 완료되어 active backlog 후보에서 제외한다.
 - `NBA-009 Schedule week report`는 2026-07-22 기준 구현 및 QA closeout이 완료되어 active backlog 후보에서 제외한다.
 - `NBA-010 Notification`은 2026-07-22 기준 구현 및 QA closeout이 완료되어 active backlog 후보에서 제외한다.
 - `NBA-015 Google Calendar Integration`은 2026-07-23 기준 구현 및 QA closeout이 완료되어 active backlog 후보에서 제외한다.
 - `NBA-001`, `NBA-002`, `NBA-008`, `NBA-003`의 Deal latest activity subset은 2026-07-26 기준 `06_DEAL_ACTIVITY_TIMELINE`에서 구현 및 QA closeout이 완료되어 active backlog 후보에서 제외한다.
-- Trash private memo backend restriction, MeetingNote transcript/provider log, Trash 7일 이후 복구 정책, Admin 운영 UX/API는 ops/security 후보다.
+- `NBA-004` MeetingNote detail next action/follow-up draft subset과 `NBA-011` MeetingNote provider log subset은 2026-07-26 기준 `07_MEETING_NOTE_AI_PROVIDER_LOG`에서 구현 및 QA closeout이 완료되어 active backlog 후보에서 제외한다.
+- Trash private memo backend restriction, MeetingNote 목록 summary, MeetingNote Admin provider audit/retention, Trash 7일 이후 복구 정책, Admin 운영 UX/API는 남은 후보다.
 
 ## 2.1 `NBA-015` 반영 기준
 
@@ -83,10 +87,32 @@ G07의 산출물이므로 이 문서는 구현 계획 확정본이 아니다. �
 남은 백로그로 분리할 범위:
 
 - `NBA-003` 중 Company/Contact/Product latest activity, latest memo, next action summary
-- MeetingNote next/latest summary와 provider/transcript log
+- MeetingNote 목록 latest/next summary
+- MeetingNote Admin provider audit, retention/cleanup, raw access policy
 - BusinessCard provider failure contract
 - Trash private memo response restriction과 7일 이후 복구/영구삭제 정책
 - Admin 운영 API/UX와 data reliability 운영 절차
+
+## 2.3 `NBA-004` MeetingNote detail subset, `NBA-011` provider log subset 반영 기준
+
+`TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/07_MEETING_NOTE_AI_PROVIDER_LOG`는 2026-07-26 G06 QA closeout 기준으로 Completed다. 이 백로그에서는 아래 항목을 active 후보가 아니라 완료 이력으로만 유지한다.
+
+완료로 반영할 Backend/API/DB/User Web 영향:
+
+- 기존 `POST /api/meeting-notes/ai-draft`, `POST /api/meeting-notes/stt-draft`에 provider call log와 safe failure 계약 반영
+- 신규 `POST /api/meeting-notes/:meetingNoteId/next-actions/draft`, `POST /api/meeting-notes/:meetingNoteId/follow-up-draft` 구현
+- `AiProviderOperation`에 meeting-note text draft, STT transcription, STT draft, next action draft, follow-up draft operation 추가
+- `AiProviderCallLog`에 `targetType`, `targetId`, target 조회 index 추가
+- provider raw request/response, prompt 전문, 회의 원문, STT transcript 전문, follow-up body 전문을 log에 저장하지 않는 redaction 기준 확인
+- User Web 생성 모달 AI/STT loading/error/success, STT transcript 임시 확인, 회의록 상세 AI 후속 작업 section, next action 후보 편집 저장, follow-up draft 수정/복사 구현
+- Backend/User Web typecheck/lint/build/test/e2e 검증 통과
+
+남은 백로그로 분리할 범위:
+
+- `GET /api/meeting-notes` 목록 latest/next summary response field
+- Admin/internal provider audit 조회 API, raw access reason, retention/cleanup policy
+- 별도 transcript/raw provider response 저장 table
+- AI 후보 자동 저장, follow-up 자동 발송, 회의록 follow-up 알림
 
 ## 3. 우선순위 분류 기준
 
@@ -115,7 +141,7 @@ G07의 산출물이므로 이 문서는 구현 계획 확정본이 아니다. �
 - Prisma schema 또는 migration 추가
 - seed 수정 또는 운영/공유 DB migration 실행
 - Admin API 구현
-- 완료된 Notification/Weekly Schedule Report/Google Calendar Integration/Deal Activity Timeline 범위를 넘어서는 새 알림 endpoint, Admin provider failure UI, PDF/범용 ExportJob, 반복 일정, AI 요약, Google Calendar export/write/realtime webhook, 범용 activity bus 구현
+- 완료된 Notification/Weekly Schedule Report/Google Calendar Integration/Deal Activity Timeline/MeetingNote AI Provider Log 범위를 넘어서는 새 알림 endpoint, Admin provider failure UI, PDF/범용 ExportJob, 반복 일정, AI 요약, Google Calendar export/write/realtime webhook, 범용 activity bus, MeetingNote 자동 저장/자동 발송 구현
 - User Web에서 `/admin/api/*` 호출 추가
 - FE 단독 page size 변경
 

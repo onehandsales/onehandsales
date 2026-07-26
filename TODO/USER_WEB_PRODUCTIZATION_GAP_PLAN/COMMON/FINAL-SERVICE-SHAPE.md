@@ -17,7 +17,7 @@ MVP는 판매 버전이 아니다. 이 단계의 목적은 개인 영업자의 �
 
 | 영역 | 최종적으로 필요한 상태 |
 |---|---|
-| 핵심 업무 | 회사, 담당자, 제품, 딜, 일정, 주간 일정 보고서, Google Calendar read-only import, 회의록, 명함 OCR, Import, Search, Trash, Export를 한 사람의 영업 루프로 사용할 수 있다. |
+| 핵심 업무 | 회사, 담당자, 제품, 딜, 일정, 주간 일정 보고서, Google Calendar read-only import, 회의록, 회의록 AI 후속 작업, 명함 OCR, Import, Search, Trash, Export를 한 사람의 영업 루프로 사용할 수 있다. |
 | UX/UI | Notion식 workspace/page/database/detail 문법과 Attio식 CRM linked record 맥락이 살아 있다. |
 | 홈 | 오늘 일정, 진행 딜, 다음 행동, 최근 회의록이 바로 읽힌다. |
 | 딜 | 단계, 금액, 회사/담당자/제품, 다음 행동, 마감일, 최신 활동이 목록에서 빠르게 비교된다. Deal list products/latest activity와 Contact dealCount는 06에서 구현 완료됐다. |
@@ -48,8 +48,8 @@ MVP는 판매 버전이 아니다. 이 단계의 목적은 개인 영업자의 �
 
 | 영역 | 최종적으로 필요한 상태 |
 |---|---|
-| 리텐션 | 다음 행동, 일정, 회의록 follow-up, 딜 지연, AI/고급 주간 리포트가 사용자를 다시 부른다. 기본 주간 일정 보고서와 Google Calendar read-only import는 구현 완료 상태로 본다. |
-| AI 핵심 가치 | 회의록 요약을 넘어 딜 리스크, 다음 행동, follow-up 문구, 영업 리포트를 제안한다. |
+| 리텐션 | 다음 행동, 일정, 회의록 follow-up, 딜 지연, AI/고급 주간 리포트가 사용자를 다시 부른다. 기본 주간 일정 보고서, Google Calendar read-only import, 회의록 follow-up draft는 구현 완료 상태로 본다. follow-up 알림/자동 발송은 후속 정책 범위다. |
+| AI 핵심 가치 | 회의록 요약을 넘어 딜 리스크, 다음 행동, follow-up 문구, 영업 리포트를 제안한다. 회의록 상세 next action/follow-up draft는 07에서 구현 완료됐고, 딜 리스크와 고급 리포트는 후속이다. |
 | 모바일 현장성 | 모바일 브라우저 또는 앱에서 명함 촬영, 음성 기록, 빠른 입력, push reminder가 자연스럽다. |
 | Deal timeline | 일정, Google Calendar에서 가져온 일정, 회의록, follow-up, 다음 행동, 단계 변경이 하나의 영업 활동 흐름으로 연결된다. 기본 `DealActivity` timeline은 06에서 구현 완료됐고, 메모 통합과 범용 activity bus는 후속 정책 결정 범위다. |
 | 성장 실험 | trial, annual plan, AI plan, paywall, coupon/referral, churn survey를 운영한다. |

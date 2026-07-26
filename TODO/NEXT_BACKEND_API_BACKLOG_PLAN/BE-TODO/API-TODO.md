@@ -14,12 +14,14 @@
 - [x] `NBA-003 Deal latest activity subset`: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/06_DEAL_ACTIVITY_TIMELINE`에서 부분 구현 및 QA closeout 완료
 - [x] `NBA-008 Page size 15 contract cleanup`: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/06_DEAL_ACTIVITY_TIMELINE`에서 확인 완료
 - [x] `NBA-014` 06 범위 DB/Prisma migration 운영 gate closeout 완료
+- [x] `NBA-004 MeetingNote detail next action/follow-up draft subset`: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/07_MEETING_NOTE_AI_PROVIDER_LOG`에서 구현 및 QA closeout 완료
+- [x] `NBA-011 MeetingNote provider log subset`: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/07_MEETING_NOTE_AI_PROVIDER_LOG`에서 공통 `AiProviderCallLog` 확장으로 구현 및 QA closeout 완료
 
 ## 1. 목적
 
 이 문서는 G07에서 분리한 Backend/API 후속 후보를 실행 가능한 다음 계획으로 만들기 전의 초안이다.
 
-이 문서에서 남은 새 API 후보는 `COMMON/API-SPEC/README.md`에서 `draft` 또는 `후보` 상태로만 관리한다. `NBA-001`, `NBA-002`, `NBA-003` Deal subset, `NBA-006`, `NBA-008`, `NBA-009`, `NBA-010`, `NBA-014`, `NBA-015`는 별도 계획에서 구현 완료된 이력으로만 남긴다.
+이 문서에서 남은 active 새 API 후보는 `COMMON/API-SPEC/README.md`에서 `draft` 또는 `후보` 상태로만 관리한다. `NBA-001`, `NBA-002`, `NBA-003` Deal subset, `NBA-004` MeetingNote detail subset, `NBA-006`, `NBA-008`, `NBA-009`, `NBA-010`, `NBA-011` provider log subset, `NBA-014`, `NBA-015`는 별도 계획에서 구현 완료된 이력으로만 남긴다.
 
 ## 2. 06에서 닫힌 release blocker
 
@@ -34,7 +36,23 @@
   - 공유/운영성 DB에 무단 migrate/seed를 실행하지 않았다.
   - G07에서 `prisma:validate`, Backend typecheck/lint/test/build를 통과했다.
 - 06 밖으로 남는 범위:
-  - 실제 운영 DB 적용 절차, backup/restore, provider log, 장애 대응 기준은 Global B2C data reliability gate에서 별도 결정한다.
+  - 실제 운영 DB 적용 절차, backup/restore, Admin raw audit, 장애 대응 기준은 Global B2C data reliability gate에서 별도 결정한다.
+
+## 2.1 07에서 닫힌 MeetingNote API/provider log subset
+
+- 연결 이슈: `NBA-004` MeetingNote detail next action/follow-up draft subset, `NBA-011` MeetingNote provider log subset
+- API 영향:
+  - 기존 `POST /api/meeting-notes/ai-draft`, `POST /api/meeting-notes/stt-draft` provider call log와 safe failure 계약 보강
+  - 신규 `POST /api/meeting-notes/:meetingNoteId/next-actions/draft`, `POST /api/meeting-notes/:meetingNoteId/follow-up-draft` 구현
+- Backend 영향:
+  - provider 호출은 DB transaction 밖에서 수행
+  - provider log는 공통 `AiProviderCallLog`에 원문 없이 비용/latency/실패 상태 중심으로 기록
+  - AI 후보는 자동 저장하지 않고 follow-up draft는 자동 발송하지 않음
+- 07 밖으로 남는 범위:
+  - `GET /api/meeting-notes` 목록 latest/next summary
+  - Admin/internal provider audit 조회, raw access reason, retention/cleanup policy
+  - 별도 transcript/raw provider response 저장 table
+  - 회의록 follow-up 알림 또는 자동 발송
 
 ## 3. Release follow-up API 후보
 
@@ -58,7 +76,7 @@
 ## 4. Product feature API 후보
 
 - `NBA-003`: Company/Contact/Product latest memo/activity/next action summary. Deal list `latestActivity` subset은 06에서 완료
-- `NBA-004`: MeetingNote next/latest summary
+- `NBA-004`: MeetingNote 목록 next/latest summary. 상세 next action/follow-up draft subset은 07에서 완료
 
 공통 다음 작업:
 
@@ -70,7 +88,7 @@
 ## 5. Ops/security API 후보
 
 - `NBA-007`: Trash private memo backend response restriction
-- `NBA-011`: MeetingNote transcript/provider call log table
+- `NBA-011`: MeetingNote Admin/internal provider audit, retention/cleanup policy. 공통 provider call log subset은 07에서 완료
 - `NBA-012`: Trash 7일 이후 복구 정책
 - `NBA-013`: Admin 운영 UX/API
 

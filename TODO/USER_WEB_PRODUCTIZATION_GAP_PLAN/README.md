@@ -18,6 +18,8 @@
 - [x] `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/04_GOOGLE_CALENDAR_INTEGRATION` 구현 및 QA closeout
 - [x] Deal Activity Timeline (`NBA-001`, `NBA-002`, `NBA-003` Deal subset, `NBA-008`, `NBA-014` 06 범위)
 - [x] `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/06_DEAL_ACTIVITY_TIMELINE` 구현 및 QA closeout
+- [x] MeetingNote AI Provider Log (`NBA-004` detail subset, `NBA-011` provider log subset)
+- [x] `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/07_MEETING_NOTE_AI_PROVIDER_LOG` 구현 및 QA closeout
 - [ ] Admin 운영 API/화면
 - [ ] 결제/구독/세금
 - [ ] `/app` 다국어/글로벌 데이터 모델
@@ -65,6 +67,7 @@
 - Weekly Schedule Report
 - Google Calendar Integration
 - MeetingNote
+- MeetingNote AI 후속 작업 draft
 - BusinessCard OCR
 - DataImport
 - Notification reminder
@@ -116,8 +119,29 @@
 - Company/Contact/Product latest activity, latest memo, next action summary
 - 일반 메모와 private memo의 activity 통합 정책
 - 수동 activity 삭제, retention, audit 정책
-- MeetingNote transcript/provider log와 AI/STT raw text 보관 정책
+- MeetingNote 목록 latest/next summary
+- MeetingNote Admin provider audit, retention/cleanup, raw access policy
 - 첫 판매 전 핵심 gap인 결제/구독/세금, Admin 운영, `/app` 다국어/다국가 데이터, 제품 분석, backup/restore와 운영 DB 적용 절차
+
+## 3.3 `07_MEETING_NOTE_AI_PROVIDER_LOG` 반영 기준
+
+`TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/07_MEETING_NOTE_AI_PROVIDER_LOG`는 2026-07-26 G06 QA closeout 기준으로 Completed다. 이 제품화 갭 문서에서는 아래 범위를 더 이상 미구현 gap으로 보지 않는다.
+
+완료로 반영할 User Web/제품 흐름:
+
+- `/app/meeting-notes` 생성 모달에서 AI/STT draft loading/error/success와 안전한 retry 흐름을 제공한다.
+- STT transcript는 생성 모달의 임시 확인 영역에만 표시되고 저장 request body에는 포함되지 않는다.
+- `/app/meeting-notes/:meetingNoteId`에서 `AI 후속 작업` section으로 다음 행동 후보를 만들고, 수정 후 기존 다음 행동 API로 저장할 수 있다.
+- 회의록 상세에서 이메일/SMS follow-up draft를 생성하고, 사용자가 수정/복사할 수 있다.
+- AI 후보는 자동 저장하지 않고 follow-up draft는 자동 발송하지 않는다.
+- Backend provider log는 공통 `AiProviderCallLog`에 원문 없이 기록되고 User Web은 `/admin/api/*`를 호출하지 않는다.
+
+남은 제품화 gap으로 분리할 범위:
+
+- 회의록 목록 latest/next summary
+- 회의록 follow-up 자동 발송 또는 알림
+- Admin/internal provider audit 조회, raw access reason, retention/cleanup policy
+- 별도 transcript/raw provider response 저장 table
 
 ## 4. 문서 구성
 
@@ -147,7 +171,7 @@
 - 결제/구독
 - AI 주간 영업 리포트, PDF/범용 ExportJob, 반복 일정 같은 주간 일정 보고서 확장
 - 완료된 Google Calendar Integration 범위를 넘어서는 Google Calendar export/write, realtime webhook/watch, 반복 일정, 여러 Google 계정 동시 연결
-- MeetingNote transcript/provider log table
+- 완료된 MeetingNote AI Provider Log 범위를 넘어서는 회의록 목록 summary, 자동 follow-up 발송/알림, Admin provider audit 조회, 별도 transcript/raw provider response table
 - 완료된 Deal Activity Timeline 범위를 넘어서는 범용 activity bus, Company/Contact/Product latest summary, activity deletion/retention/audit 정책
 
 위 항목은 제품화 우선순위와 UX/UI 방향을 확정한 뒤 별도 계획에서 다룬다.

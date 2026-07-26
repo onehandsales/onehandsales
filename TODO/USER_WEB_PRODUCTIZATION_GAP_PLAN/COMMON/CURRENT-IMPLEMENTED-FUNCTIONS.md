@@ -23,6 +23,9 @@
 - [x] Deal list products/latest activity summary
 - [x] Contact list dealCount
 - [x] page size 15 Backend/API/User Web/test 계약 확인
+- [x] MeetingNote AI/STT provider call log와 safe failure
+- [x] MeetingNote next action/follow-up draft API
+- [x] `/app/meeting-notes/:meetingNoteId` AI 후속 작업 UX
 
 ## 1. 구현 완료/부분 완료 표
 
@@ -36,7 +39,7 @@
 | Product | list/detail/create/update/delete, category/status, memo/private memo, dealCount/sort, deals, xlsx export, trash | 목록, 상세, 생성, 수정, 삭제/복구, export | N/A | 완료 |
 | Deal | list, stage counts, detail/create/update/delete, company/contact/product options, following action, memo, xlsx export, trash, `DealActivity` timeline API, products/latest activity summary | pipeline/list/detail/create/update, stage tabs, linked records, next action, memo, 딜 활동 timeline, products/latest activity summary, export | N/A | 완료 |
 | Schedule | deal options, list/detail/create/update/delete, 월간/주간 조회, weekly report API, weekly xlsx export, Google Calendar OAuth/read-only import/sync/calendar selection/source metadata, 딜/회사/담당자/다음 행동 요약, timezone 처리 | `/app/schedules`, `/app/schedules/week`, detail, form, 월간/목록, 주간 보고서, Excel 다운로드, Google Calendar status/source badge/manual sync/calendar hidden handling | N/A | 완료. 주간 일정 보고서와 Google Calendar read-only import 포함 |
-| MeetingNote | list/detail/create/update/delete, AI draft, STT draft, add deal link, trash | 목록, 상세, 작성, AI/STT draft UI, 딜 연동, 삭제/복구 | N/A | 완료 |
+| MeetingNote | list/detail/create/update/delete, AI draft, STT draft, provider call log, next action draft, follow-up draft, add deal link, trash | 목록, 상세, 작성, AI/STT draft UI, AI 후속 작업, 다음 행동 후보 편집 저장, follow-up draft 수정/복사, 딜 연동, 삭제/복구 | N/A | 완료. 목록 summary, 자동 발송/알림, Admin audit는 후속 |
 | BusinessCard OCR | `/api/business-card-scans`, scan/confirm/log/status | `/app/business-cards`, 이미지 업로드, 명함스캔, 확인/수정, 저장 | N/A | 완료 |
 | DataImport | import templates, uploads, mapping, row edit/validation, confirm, cancel, active job resume, import logs. pre-confirm job은 DB persistence | `/app/import`, `/app/import/review/:importJobId`, template download, CSV/XLSX upload, AI mapping, row edit/validation, resume, confirm, log detail | N/A | 완료. persistence/resume 포함 |
 | Search | `GET /api/search` | GlobalSearch, loading/empty/error, result navigation | N/A | 완료 |
@@ -92,5 +95,6 @@
 - Google Calendar read-only import/sync/calendar selection/source badge/Trash restore는 구현 완료됐다. export/write/realtime webhook/watch/반복 일정/여러 Google 계정 동시 연결은 후속 확장 범위다.
 - 일정/딜 reminder 기반 Notification은 구현 완료됐지만, 실제 SMTP/Web Push provider smoke는 env 준비 후 운영 확인 단계에서 실행한다.
 - DealActivity timeline, Deal list products/latest activity, Contact dealCount, page size 15 계약은 구현 및 QA closeout 완료됐다. Company/Contact/Product latest summary, activity deletion/retention/audit 정책은 후속 범위다.
+- MeetingNote AI/STT provider log, 회의록 상세 next action/follow-up draft, User Web AI 후속 작업 UX는 구현 및 QA closeout 완료됐다. 회의록 목록 summary, 자동 발송/알림, Admin provider audit/retention은 후속 범위다.
 - 제품화 gap은 "API가 없어서 화면을 못 만든다"보다 "현재 핵심 루프를 Global B2C 첫 판매 gate까지 어떤 순서로 끌어올릴지"에 가깝다.
 - 따라서 다음 계획은 MVP 기능 추가 목록이 아니라 Global B2C 첫 판매 기준 대비 gap을 먼저 정리해야 한다.
