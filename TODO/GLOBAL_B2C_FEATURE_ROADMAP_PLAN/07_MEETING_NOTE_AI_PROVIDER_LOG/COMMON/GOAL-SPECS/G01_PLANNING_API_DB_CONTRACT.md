@@ -1,11 +1,20 @@
 # G01 Planning API DB Contract
 
-상태: Ready
+상태: Completed
 목표: 07 구현 전 계약 검토와 blocking 해소
+완료일: 2026-07-26
 
 ## 1. 목적
 
 G01은 코드 구현이 아니라 구현 전 확인 goal이다. 현재 BE/FE/Prisma 코드와 07 문서 계약을 대조해 G02~G06이 바로 실행 가능한지 확인한다.
+
+## 1.1 완료 결과
+
+- 현재 BE/FE/Prisma 코드와 07 문서 계약을 대조했다.
+- G02~G06 구현 착수를 막는 blocking 질문은 없다.
+- API request/response, DB 변경 방향, User Web UX 범위는 현재 코드 구조와 충돌하지 않는다.
+- 검토 결과는 `COMMON/PLANNING-REVIEW.md`에 기록했다.
+- 완료 체크는 `COMMON/GOAL-COMPLETION-CHECKLIST.md`에 반영했다.
 
 ## 2. 포함 범위
 
@@ -52,11 +61,11 @@ rg "ai-draft|stt-draft|AiProviderCallLog|AiProviderOperation|following-action-lo
 
 ## 6. 완료 기준
 
-- G02~G06 구현 착수 blocking 질문이 없다.
-- 계약 보정이 필요한 문서가 갱신됐다.
-- `COMMON/SOURCE-PLAN-COVERAGE.md`가 `NEXT_BACKEND_API_BACKLOG_PLAN`과 `USER_WEB_PRODUCTIZATION_GAP_PLAN`의 포함/제외/후속 범위를 모두 설명한다.
-- `COMMON/PLANNING-REVIEW.md`에 현재 코드 대조 결과가 기록됐다.
-- `COMMON/GOAL-COMPLETION-CHECKLIST.md`의 G01 항목이 갱신됐다.
+- [x] G02~G06 구현 착수 blocking 질문이 없다.
+- [x] 계약 보정이 필요한 문서가 갱신됐다.
+- [x] `COMMON/SOURCE-PLAN-COVERAGE.md`가 `NEXT_BACKEND_API_BACKLOG_PLAN`과 `USER_WEB_PRODUCTIZATION_GAP_PLAN`의 포함/제외/후속 범위를 모두 설명한다.
+- [x] `COMMON/PLANNING-REVIEW.md`에 현재 코드 대조 결과가 기록됐다.
+- [x] `COMMON/GOAL-COMPLETION-CHECKLIST.md`의 G01 항목이 갱신됐다.
 
 ## 7. 주석 기준
 

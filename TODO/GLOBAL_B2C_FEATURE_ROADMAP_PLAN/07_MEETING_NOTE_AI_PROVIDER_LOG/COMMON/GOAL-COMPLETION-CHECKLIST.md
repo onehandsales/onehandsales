@@ -1,6 +1,6 @@
 # Goal Completion Checklist
 
-상태: Ready
+상태: In Progress
 최종 업데이트: 2026-07-26
 
 ## 1. 목적
@@ -13,7 +13,7 @@
 
 | 완료 | Goal | 상태 | 완료일 | 완료 기준 | 증거 | 비고 |
 |---|---|---|---|---|---|---|
-| [ ] | G01 Planning API DB Contract | Ready | - | 현재 코드와 계약 대조, blocking 질문 없음 | `PLANNING-REVIEW.md` | G02 착수 gate |
+| [x] | G01 Planning API DB Contract | Completed | 2026-07-26 | 현재 코드와 계약 대조, blocking 질문 없음 | `PLANNING-REVIEW.md`, `pnpm run prisma:validate` | G02 착수 가능 |
 | [ ] | G02 AI Provider Log DB Prisma | Ready | - | Prisma enum/field/index/migration 구현 | `BE/prisma/schema.prisma`, migration, `pnpm run prisma:validate` | 원격 DB migrate 주의 |
 | [ ] | G03 Meeting Note AI Log Backend | Ready | - | ai-draft/stt-draft provider log와 safe failure 구현 | Backend test/typecheck/lint/build | G04 착수 가능 |
 | [ ] | G04 Meeting Note Next Action Follow Up Backend | Ready | - | next action/follow-up draft API 구현 | Backend test/typecheck/lint/build | 후보만 반환 |
@@ -24,13 +24,13 @@
 
 ### G01
 
-- [ ] 현재 `BE/prisma/schema.prisma`의 `AiProviderOperation`, `AiProviderCallLog`, `MeetingNote`를 확인했다.
-- [ ] 현재 `BE/src/modules/meeting-note`의 AI/STT provider 흐름을 확인했다.
-- [ ] 현재 `FE/user-web/src/features/meeting-note`의 생성 모달과 상세 화면을 확인했다.
-- [ ] 기존 다음 행동 저장 API `POST /api/deals/:dealId/following-action-logs`와 07 next action draft 흐름이 충돌하지 않는다.
-- [ ] `COMMON/API-SPEC/*` request/response가 실제 DTO 네이밍과 충돌하지 않는다.
-- [ ] transcript/raw/prompt/follow-up body 저장 금지 기준이 명확하다.
-- [ ] G02~G06 착수 blocking 질문이 없다.
+- [x] 현재 `BE/prisma/schema.prisma`의 `AiProviderOperation`, `AiProviderCallLog`, `MeetingNote`를 확인했다.
+- [x] 현재 `BE/src/modules/meeting-note`의 AI/STT provider 흐름을 확인했다.
+- [x] 현재 `FE/user-web/src/features/meeting-note`의 생성 모달과 상세 화면을 확인했다.
+- [x] 기존 다음 행동 저장 API `POST /api/deals/:dealId/following-action-logs`와 07 next action draft 흐름이 충돌하지 않는다.
+- [x] `COMMON/API-SPEC/*` request/response가 실제 DTO 네이밍과 충돌하지 않는다.
+- [x] transcript/raw/prompt/follow-up body 저장 금지 기준이 명확하다.
+- [x] G02~G06 착수 blocking 질문이 없다.
 
 ### G02
 
@@ -93,4 +93,5 @@
 ## 4. 현재 기록
 
 - 2026-07-26: 구현 착수 가능 문서 작성.
-- 아직 코드 구현/검증은 실행하지 않았다.
+- 2026-07-26: G01 코드/API/DB/FE 계약 대조 완료. `cd BE && pnpm run prisma:validate` 통과. 로컬 Node `v22.21.1`로 engine warning이 있었지만 Prisma schema validation은 성공했다.
+- 아직 G02~G06 코드 구현은 실행하지 않았다.

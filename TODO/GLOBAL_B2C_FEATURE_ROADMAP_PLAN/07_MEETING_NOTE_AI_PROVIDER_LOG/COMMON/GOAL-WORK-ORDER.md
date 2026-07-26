@@ -101,5 +101,6 @@ G01_PLANNING_API_DB_CONTRACT
 ## 9. 현재 상태
 
 ```text
-G01~G06 구현 대기. 07 구현 착수 가능 문서 준비 완료.
+G01 완료. G02_AI_PROVIDER_LOG_DB_PRISMA 착수 가능.
+G03~G06은 이전 goal 완료 후 순서대로 진행한다.
 ```
