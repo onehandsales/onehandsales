@@ -1,7 +1,8 @@
 # Meeting Note Next Action Follow Up API
 
-상태: Confirmed
+상태: Implemented
 확정일: 2026-07-26
+구현 확인일: 2026-07-26
 
 ## 1. 목적
 
@@ -277,10 +278,18 @@ MEETING_NOTE_FOLLOW_UP_DRAFT
 - `FE/user-web/src/features/deal/api/deal-api.ts`
 - `FE/user-web/src/features/deal/hooks/use-deal-mutations.ts`
 
-UX 규칙:
+## 13. UX 규칙
 
 - 회의록 상세 안에 Notion식 문서 편집 흐름을 유지한다.
 - AI 결과는 Attio식 linked record 맥락으로 보여준다.
 - 다음 행동 후보는 확인/수정 후 저장한다.
 - Follow-up draft는 확인/수정/복사 중심으로 제공한다.
 - 자동 저장, 자동 발송, Admin 운영 화면은 07에 넣지 않는다.
+
+## 14. G06 구현 확인
+
+- Backend `POST /api/meeting-notes/:meetingNoteId/next-actions/draft`, `POST /api/meeting-notes/:meetingNoteId/follow-up-draft` 구현과 test가 통과했다.
+- User Web 회의록 상세 `AI 후속 작업` section에서 다음 행동 후보를 편집 후 기존 following-action API로 저장한다.
+- User Web 회의록 상세에서 follow-up 초안을 이메일/SMS 채널별로 생성하고 수정/복사할 수 있다.
+- next action draft와 follow-up draft는 자동 저장/자동 발송하지 않는다.
+- `pnpm run test -- meeting-note`, `pnpm run test -- deal`, User Web `pnpm run test:e2e`, `pnpm run test:e2e:mobile`이 통과했다.

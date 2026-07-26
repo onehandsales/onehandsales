@@ -1,7 +1,8 @@
 # DB Schema TODO
 
-상태: Confirmed
+상태: Completed
 확정일: 2026-07-26
+완료일: 2026-07-26
 
 ## 1. 목적
 
@@ -13,7 +14,7 @@
 
 ### 2.1 `AiProviderOperation` enum 추가
 
-추가 후보:
+구현 완료:
 
 ```prisma
 enum AiProviderOperation {
@@ -30,7 +31,7 @@ enum AiProviderOperation {
 
 ### 2.2 `AiProviderCallLog` target 연결 필드 추가
 
-추가 후보:
+구현 완료:
 
 ```prisma
 model AiProviderCallLog {
@@ -128,3 +129,12 @@ ALTER TABLE "AiProviderCallLog" ADD COLUMN "targetId" UUID;
 - 공유/운영성 DB에 무단 `prisma migrate dev`, `prisma migrate deploy`, seed 실행
 - 실제 DB URL/secret 문서 기록
 - API 계약 없이 table/column 추가
+
+## 7. G06 검증 결과
+
+- `BE/prisma/schema.prisma`에 `MEETING_NOTE_TEXT_DRAFT`, `MEETING_NOTE_STT_TRANSCRIPTION`, `MEETING_NOTE_STT_DRAFT`, `MEETING_NOTE_NEXT_ACTION_DRAFT`, `MEETING_NOTE_FOLLOW_UP_DRAFT`가 있다.
+- `BE/prisma/schema.prisma`에 `AiProviderCallLog.targetType`, `AiProviderCallLog.targetId`, `[userId, targetType, targetId, createdAt]` index가 있다.
+- 신규 migration `20260726020000_add_meeting_note_ai_provider_log_target`에 enum value, target field, index, COMMENT가 있다.
+- transcript/follow-up draft/raw provider response 전용 table은 만들지 않았다.
+- `cd BE && pnpm run prisma:validate`가 통과했다.
+- 공유/운영성 DB에 `prisma migrate dev`, `prisma migrate deploy`, seed를 실행하지 않았다.

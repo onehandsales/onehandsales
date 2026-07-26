@@ -101,5 +101,5 @@ G01_PLANNING_API_DB_CONTRACT
 ## 9. 현재 상태
 
 ```text
-G01, G02, G03, G04, G05 완료. G06_QA_REVIEW_CLOSEOUT 착수 가능.
+G01, G02, G03, G04, G05, G06 완료. 07 closeout 완료.
 ```

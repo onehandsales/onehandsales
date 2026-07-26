@@ -98,6 +98,7 @@ pnpm run test:e2e:mobile
 - `pnpm run typecheck` 통과
 - `pnpm run lint` 통과
 - `pnpm run build` 통과
+- `pnpm run test:e2e` 통과
 - `pnpm run test:e2e:mobile` 통과
 - `rg -n "/admin/api" FE/user-web/src` 확인 결과 API client 차단 로직 외 호출 없음
 - `git diff --check` 통과
@@ -105,4 +106,4 @@ pnpm run test:e2e:mobile
 비고:
 
 - `pnpm run build`에서 Vite chunk size warning이 표시됐지만 build 실패는 아니다.
-- 전체 `pnpm run test:e2e`는 G06 closeout에서 Backend/User Web 전체 검증과 함께 실행한다.
+- `pnpm run test:e2e` 최초 실행은 Playwright 관리 Chromium 누락으로 실패했고, `pnpm exec playwright install chromium` 후 27개 테스트가 통과했다.

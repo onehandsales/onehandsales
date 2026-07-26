@@ -1,7 +1,8 @@
 # API Spec
 
-상태: Confirmed
+상태: Implemented
 확정일: 2026-07-26
+구현 확인일: 2026-07-26
 
 ## 1. 목적
 
@@ -14,9 +15,16 @@
 
 ## 2. 계약 상태
 
-두 문서는 구현 착수 가능한 `confirmed` 상태다.
+두 문서는 G06 closeout 기준 `implemented` 상태다.
 
-구현 후 G06 closeout에서 `implemented`로 갱신한다.
+구현 확인 근거:
+
+- `POST /api/meeting-notes/ai-draft`
+- `POST /api/meeting-notes/stt-draft`
+- `POST /api/meeting-notes/:meetingNoteId/next-actions/draft`
+- `POST /api/meeting-notes/:meetingNoteId/follow-up-draft`
+- User Web API client와 mutation hook
+- Backend/User Web 검증 명령 통과
 
 ## 3. 공통 규칙
 

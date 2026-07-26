@@ -1,7 +1,8 @@
 # Backend API TODO
 
-상태: Confirmed
+상태: Completed
 확정일: 2026-07-26
+완료일: 2026-07-26
 
 ## 1. 목적
 
@@ -13,10 +14,10 @@ Backend 구현은 반드시 `AGENT/SOFTWARE_AGENT` 기준을 따른다. 특히 A
 
 | Method | Path | 상태 | 목적 |
 |---|---|---|---|
-| `POST` | `/api/meeting-notes/ai-draft` | 기존 API 보강 | 텍스트 AI 초안 provider call log와 safe failure 계약을 추가한다. |
-| `POST` | `/api/meeting-notes/stt-draft` | 기존 API 보강 | STT provider call log와 transcript 기반 AI draft provider call log를 추가한다. |
-| `POST` | `/api/meeting-notes/:meetingNoteId/next-actions/draft` | 신규 API | 저장된 회의록 기반 next action 후보를 생성한다. |
-| `POST` | `/api/meeting-notes/:meetingNoteId/follow-up-draft` | 신규 API | 저장된 회의록 기반 follow-up 초안을 생성한다. |
+| `POST` | `/api/meeting-notes/ai-draft` | 구현 완료 | 텍스트 AI 초안 provider call log와 safe failure 계약을 추가했다. |
+| `POST` | `/api/meeting-notes/stt-draft` | 구현 완료 | STT provider call log와 transcript 기반 AI draft provider call log를 추가했다. |
+| `POST` | `/api/meeting-notes/:meetingNoteId/next-actions/draft` | 구현 완료 | 저장된 회의록 기반 next action 후보를 생성한다. |
+| `POST` | `/api/meeting-notes/:meetingNoteId/follow-up-draft` | 구현 완료 | 저장된 회의록 기반 follow-up 초안을 생성한다. |
 
 상세 계약은 아래 문서를 따른다.
 
@@ -70,3 +71,16 @@ Backend 구현은 반드시 `AGENT/SOFTWARE_AGENT` 기준을 따른다. 특히 A
 - follow-up 초안을 자동 발송하지 않는다.
 - AI 후보를 사용자 확인 없이 딜/일정/회의록에 저장하지 않는다.
 - 공유/운영성 DB에 무단 migrate/seed를 실행하지 않는다.
+
+## 7. G06 검증 결과
+
+- `cd BE && pnpm run prisma:validate` 통과
+- `cd BE && pnpm run typecheck` 통과
+- `cd BE && pnpm run lint` 통과
+- `cd BE && pnpm run test -- meeting-note` 통과
+- `cd BE && pnpm run test -- deal` 통과
+- `cd BE && pnpm run build` 통과
+
+비고:
+
+- meeting-note Jest 실행에서 worker teardown warning이 표시됐지만 test suite/test 실패는 없었다.

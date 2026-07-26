@@ -1,6 +1,6 @@
 # Goal Completion Checklist
 
-상태: In Progress
+상태: Completed
 최종 업데이트: 2026-07-26
 
 ## 1. 목적
@@ -17,8 +17,8 @@
 | [x] | G02 AI Provider Log DB Prisma | Completed | 2026-07-26 | Prisma enum/field/index/migration 구현 | `BE/prisma/schema.prisma`, `20260726020000_add_meeting_note_ai_provider_log_target`, `pnpm run prisma:validate`, `pnpm run prisma:generate`, `pnpm run typecheck` | 원격 DB target이라 migrate/seed 미실행 |
 | [x] | G03 Meeting Note AI Log Backend | Completed | 2026-07-26 | ai-draft/stt-draft provider log와 safe failure 구현 | `pnpm run typecheck`, `pnpm run lint`, `pnpm run test -- meeting-note`, `pnpm run build` | G04 착수 가능 |
 | [x] | G04 Meeting Note Next Action Follow Up Backend | Completed | 2026-07-26 | next action/follow-up draft API 구현 | `pnpm run typecheck`, `pnpm run lint`, `pnpm run test -- meeting-note`, `pnpm run test -- deal`, `pnpm run build` | 후보만 반환 |
-| [x] | G05 Meeting Note AI User Web | Completed | 2026-07-26 | 생성/상세 AI UX 구현 | `pnpm run typecheck`, `pnpm run lint`, `pnpm run build`, `pnpm run test:e2e:mobile`, `git diff --check` | G06 착수 가능 |
-| [ ] | G06 QA Review Closeout | Ready | - | REVIEW-CHECKLIST 통과와 문서 closeout | `REVIEW-CHECKLIST.md` | 07 closeout |
+| [x] | G05 Meeting Note AI User Web | Completed | 2026-07-26 | 생성/상세 AI UX 구현 | `pnpm run typecheck`, `pnpm run lint`, `pnpm run build`, `pnpm run test:e2e:mobile`, `git diff --check` | G06 완료 |
+| [x] | G06 QA Review Closeout | Completed | 2026-07-26 | REVIEW-CHECKLIST 통과와 문서 closeout | `REVIEW-CHECKLIST.md`, Backend/User Web 검증 command | 07 closeout 완료 |
 
 ## 3. Goal별 체크 조건
 
@@ -79,16 +79,16 @@
 
 ### G06
 
-- [ ] Backend `pnpm run prisma:validate` 통과
-- [ ] Backend `pnpm run typecheck` 통과
-- [ ] Backend `pnpm run lint` 통과
-- [ ] Backend 관련 test 통과
-- [ ] Backend `pnpm run build` 통과
-- [ ] User Web `pnpm run typecheck` 통과
-- [ ] User Web `pnpm run lint` 통과
-- [ ] User Web `pnpm run build` 통과
-- [ ] E2E 또는 수동 QA 결과 기록
-- [ ] README, API-SPEC, BE-TODO, FE-TODO가 구현 결과와 일치한다.
+- [x] Backend `pnpm run prisma:validate` 통과
+- [x] Backend `pnpm run typecheck` 통과
+- [x] Backend `pnpm run lint` 통과
+- [x] Backend 관련 test 통과
+- [x] Backend `pnpm run build` 통과
+- [x] User Web `pnpm run typecheck` 통과
+- [x] User Web `pnpm run lint` 통과
+- [x] User Web `pnpm run build` 통과
+- [x] E2E 또는 수동 QA 결과 기록
+- [x] README, API-SPEC, BE-TODO, FE-TODO가 구현 결과와 일치한다.
 
 ## 4. 현재 기록
 
@@ -98,4 +98,4 @@
 - 2026-07-26: G03 Meeting Note AI/STT provider call log와 safe failure 구현 완료. `cd BE && pnpm run typecheck`, `pnpm run lint`, `pnpm run test -- meeting-note`, `pnpm run build` 통과.
 - 2026-07-26: G04 Meeting Note next action/follow-up draft Backend 구현 완료. `cd BE && pnpm run typecheck`, `pnpm run lint`, `pnpm run test -- meeting-note`, `pnpm run test -- deal`, `pnpm run build` 통과.
 - 2026-07-26: G05 Meeting Note AI User Web 구현 완료. `cd FE/user-web && pnpm run typecheck`, `pnpm run lint`, `pnpm run build`, `pnpm run test:e2e:mobile` 통과. `rg -n "/admin/api" FE/user-web/src` 확인 결과 API client 차단 로직 외 호출 없음. `git diff --check` 통과.
-- 아직 G06 closeout은 실행하지 않았다.
+- 2026-07-26: G06 QA Review Closeout 완료. Backend `pnpm run prisma:validate`, `pnpm run typecheck`, `pnpm run lint`, `pnpm run test -- meeting-note`, `pnpm run test -- deal`, `pnpm run build` 통과. User Web `pnpm run typecheck`, `pnpm run lint`, `pnpm run build`, `pnpm run test:e2e`, `pnpm run test:e2e:mobile` 통과. `pnpm run test:e2e` 최초 실행은 Playwright 관리 Chromium 누락으로 실패했으나 `pnpm exec playwright install chromium` 후 27개 테스트가 통과했다. `COMMON/REVIEW-CHECKLIST.md`와 closeout 문서를 갱신했다.

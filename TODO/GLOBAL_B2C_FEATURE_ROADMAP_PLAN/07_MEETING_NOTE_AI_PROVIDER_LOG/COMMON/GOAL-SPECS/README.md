@@ -1,7 +1,8 @@
 # Goal Specs
 
-상태: Ready
+상태: Completed
 확정일: 2026-07-26
+완료일: 2026-07-26
 
 ## 1. 목적
 
@@ -17,6 +18,8 @@
 | G04 | `G04_MEETING_NOTE_NEXT_ACTION_FOLLOW_UP_BACKEND.md` | 다음 행동/follow-up draft Backend |
 | G05 | `G05_MEETING_NOTE_AI_USER_WEB.md` | 회의록 AI User Web UX |
 | G06 | `G06_QA_REVIEW_CLOSEOUT.md` | QA/review/문서 closeout |
+
+G01~G06은 2026-07-26 기준 모두 완료됐다.
 
 ## 3. 공통 필수 조건
 

@@ -1,7 +1,8 @@
 # Meeting Note AI Draft Log API
 
-상태: Confirmed
+상태: Implemented
 확정일: 2026-07-26
+구현 확인일: 2026-07-26
 
 ## 1. 목적
 
@@ -263,3 +264,10 @@ FE 규칙:
 - 저장 API body에 transcript를 넣지 않는다.
 - 오류 UI는 안전 메시지, 다시 시도, 직접 작성 유지 흐름을 제공한다.
 - User Web에서 `/admin/api/*`를 호출하지 않는다.
+
+## 13. G06 구현 확인
+
+- Backend `POST /api/meeting-notes/ai-draft`, `POST /api/meeting-notes/stt-draft` provider log와 safe failure test가 통과했다.
+- User Web 생성 모달은 AI/STT 실패 시 안전 메시지와 retryable 다시 시도를 제공한다.
+- STT transcript는 생성 모달의 임시 확인 영역에만 표시되고 저장 request body에는 포함되지 않는다.
+- `pnpm run test -- meeting-note`, User Web `pnpm run typecheck`, `pnpm run lint`, `pnpm run build`, `pnpm run test:e2e`, `pnpm run test:e2e:mobile`이 통과했다.
