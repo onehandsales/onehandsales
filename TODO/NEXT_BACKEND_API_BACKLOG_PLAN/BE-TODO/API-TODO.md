@@ -1,6 +1,7 @@
 # API TODO
 
 상태: Draft
+최종 업데이트: 2026-07-26
 
 ## 0. 완료 반영
 
@@ -8,34 +9,46 @@
 - [x] `NBA-009 Schedule week report`: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/03_WEEKLY_SCHEDULE_REPORT`에서 구현 및 QA closeout 완료
 - [x] `NBA-010 Notification`: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/02_NOTIFICATION_REMINDER`에서 구현 및 QA closeout 완료
 - [x] `NBA-015 Google Calendar Integration`: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/04_GOOGLE_CALENDAR_INTEGRATION`에서 구현 및 QA closeout 완료
+- [x] `NBA-001 Deal list products summary`: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/06_DEAL_ACTIVITY_TIMELINE`에서 구현 및 QA closeout 완료
+- [x] `NBA-002 Contact list dealCount`: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/06_DEAL_ACTIVITY_TIMELINE`에서 구현 및 QA closeout 완료
+- [x] `NBA-003 Deal latest activity subset`: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/06_DEAL_ACTIVITY_TIMELINE`에서 부분 구현 및 QA closeout 완료
+- [x] `NBA-008 Page size 15 contract cleanup`: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/06_DEAL_ACTIVITY_TIMELINE`에서 확인 완료
+- [x] `NBA-014` 06 범위 DB/Prisma migration 운영 gate closeout 완료
 
 ## 1. 목적
 
 이 문서는 G07에서 분리한 Backend/API 후속 후보를 실행 가능한 다음 계획으로 만들기 전의 초안이다.
 
-이 문서에서 남은 새 API 후보는 `COMMON/API-SPEC/README.md`에서 `draft` 또는 `후보` 상태로만 관리한다. `NBA-006`, `NBA-009`, `NBA-010`, `NBA-015`는 별도 계획에서 구현 완료된 이력으로만 남긴다.
+이 문서에서 남은 새 API 후보는 `COMMON/API-SPEC/README.md`에서 `draft` 또는 `후보` 상태로만 관리한다. `NBA-001`, `NBA-002`, `NBA-003` Deal subset, `NBA-006`, `NBA-008`, `NBA-009`, `NBA-010`, `NBA-014`, `NBA-015`는 별도 계획에서 구현 완료된 이력으로만 남긴다.
 
-## 2. Release blocker 후보
+## 2. 06에서 닫힌 release blocker
 
 ### NBA-014. DB/Prisma migration 운영 gate closeout
 
 - 연결 이슈: `TODO/DONE/USER_WEB_RELEASE_QA_FOLLOWUP_PLAN/COMMON/ISSUE-LOG.md`의 `RQA-005`
 - API 영향: 없음
 - Backend 영향: Prisma generate, migration status, seed 정책, DB target 분류
-- 다음 작업:
-  - active `BE/.env` 기준 DB URL을 로컬 dev/test, 공유 QA, 운영성 중 하나로 확정한다.
-  - cloud DB 대상이면 migration/seed 자동 실행을 금지하고 별도 운영 절차를 확정한다.
-  - Windows Prisma query engine DLL `EPERM` lock 재현 원인을 실행 중 프로세스와 분리해 정리한다.
-  - migrate status의 17개 미적용 보고를 운영 리스크로 닫거나 적용 절차를 확정한다.
+- 06 반영 결과:
+  - G02에서 active DB target이 원격 Supabase임을 확인했다.
+  - 기존 migration 파일은 수정하지 않았다.
+  - 공유/운영성 DB에 무단 migrate/seed를 실행하지 않았다.
+  - G07에서 `prisma:validate`, Backend typecheck/lint/test/build를 통과했다.
+- 06 밖으로 남는 범위:
+  - 실제 운영 DB 적용 절차, backup/restore, provider log, 장애 대응 기준은 Global B2C data reliability gate에서 별도 결정한다.
 
 ## 3. Release follow-up API 후보
 
+06 완료로 active 후보에서 제외:
+
 - `NBA-001`: Deal list `products` summary
 - `NBA-002`: Contact list `dealCount`
-- `NBA-005`: BusinessCard provider failure code/message contract
 - `NBA-008`: Page size 15 contract cleanup
 
-공통 다음 작업:
+남은 release follow-up 후보:
+
+- `NBA-005`: BusinessCard provider failure code/message contract
+
+남은 release follow-up 공통 다음 작업:
 
 - API 계약을 `confirmed`로 승격할 별도 goal을 만든다.
 - request/response DTO 이름, success status, error response, FE/BE 처리 기준을 적는다.
@@ -44,7 +57,7 @@
 
 ## 4. Product feature API 후보
 
-- `NBA-003`: Company/Contact/Product latest memo/activity/next action summary
+- `NBA-003`: Company/Contact/Product latest memo/activity/next action summary. Deal list `latestActivity` subset은 06에서 완료
 - `NBA-004`: MeetingNote next/latest summary
 
 공통 다음 작업:

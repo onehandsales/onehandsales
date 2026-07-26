@@ -1,6 +1,7 @@
 # Final Service Shape
 
 상태: Draft Guide
+최종 업데이트: 2026-07-26
 
 ## 1. 최종 서비스는 3단계로 보되 판매 기준은 Global B2C다
 
@@ -19,9 +20,9 @@ MVP는 판매 버전이 아니다. 이 단계의 목적은 개인 영업자의 �
 | 핵심 업무 | 회사, 담당자, 제품, 딜, 일정, 주간 일정 보고서, Google Calendar read-only import, 회의록, 명함 OCR, Import, Search, Trash, Export를 한 사람의 영업 루프로 사용할 수 있다. |
 | UX/UI | Notion식 workspace/page/database/detail 문법과 Attio식 CRM linked record 맥락이 살아 있다. |
 | 홈 | 오늘 일정, 진행 딜, 다음 행동, 최근 회의록이 바로 읽힌다. |
-| 딜 | 단계, 금액, 회사/담당자/제품, 다음 행동, 마감일이 목록에서 빠르게 비교된다. |
+| 딜 | 단계, 금액, 회사/담당자/제품, 다음 행동, 마감일, 최신 활동이 목록에서 빠르게 비교된다. Deal list products/latest activity와 Contact dealCount는 06에서 구현 완료됐다. |
 | 목록 | desktop은 업무용 record table 밀도, mobile은 card/list로 핵심 정보를 잃지 않는다. |
-| 상세 | 속성, linked record, 메모, 일정/회의록, 활동 맥락이 분명하다. |
+| 상세 | 속성, linked record, 메모, 일정/회의록, 활동 맥락이 분명하다. 딜 상세 `DealActivity` timeline은 06에서 구현 완료됐다. |
 | 모바일 브라우저 | 390px/360px에서 핵심 생성/수정/조회/복구/업로드 흐름이 깨지지 않는다. |
 | 브라우저 | Chrome/Edge에서 reload, history, multi-tab, slow network 상태가 안정적이다. |
 | 보안 | 다른 사용자 데이터가 Search, Trash, Export, 직접 API 접근에서 섞이지 않는다. |
@@ -50,7 +51,7 @@ MVP는 판매 버전이 아니다. 이 단계의 목적은 개인 영업자의 �
 | 리텐션 | 다음 행동, 일정, 회의록 follow-up, 딜 지연, AI/고급 주간 리포트가 사용자를 다시 부른다. 기본 주간 일정 보고서와 Google Calendar read-only import는 구현 완료 상태로 본다. |
 | AI 핵심 가치 | 회의록 요약을 넘어 딜 리스크, 다음 행동, follow-up 문구, 영업 리포트를 제안한다. |
 | 모바일 현장성 | 모바일 브라우저 또는 앱에서 명함 촬영, 음성 기록, 빠른 입력, push reminder가 자연스럽다. |
-| Deal timeline | 일정, Google Calendar에서 가져온 일정, 회의록, 메모, 다음 행동, 단계 변경이 하나의 영업 활동 흐름으로 연결된다. |
+| Deal timeline | 일정, Google Calendar에서 가져온 일정, 회의록, follow-up, 다음 행동, 단계 변경이 하나의 영업 활동 흐름으로 연결된다. 기본 `DealActivity` timeline은 06에서 구현 완료됐고, 메모 통합과 범용 activity bus는 후속 정책 결정 범위다. |
 | 성장 실험 | trial, annual plan, AI plan, paywall, coupon/referral, churn survey를 운영한다. |
 | 운영 신뢰 | Admin, 감사 로그, 민감정보 원문 조회 사유, 장애/provider 상태 기록이 유료 고객을 감당한다. |
 

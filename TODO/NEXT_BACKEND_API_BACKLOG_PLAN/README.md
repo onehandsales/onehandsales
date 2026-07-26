@@ -2,6 +2,7 @@
 
 상태: Draft
 작성일: 2026-07-20
+최종 업데이트: 2026-07-26
 출처: `TODO/DONE/USER_WEB_RELEASE_QA_FOLLOWUP_PLAN` G07
 
 ## 0. 완료 반영 체크리스트
@@ -10,12 +11,17 @@
 - [x] `NBA-009 Schedule week report`: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/03_WEEKLY_SCHEDULE_REPORT`에서 구현 및 QA closeout 완료
 - [x] `NBA-010 Notification`: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/02_NOTIFICATION_REMINDER`에서 구현 및 QA closeout 완료
 - [x] `NBA-015 Google Calendar Integration`: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/04_GOOGLE_CALENDAR_INTEGRATION`에서 구현 및 QA closeout 완료
+- [x] `NBA-001 Deal list products summary`: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/06_DEAL_ACTIVITY_TIMELINE`에서 구현 및 QA closeout 완료
+- [x] `NBA-002 Contact list dealCount`: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/06_DEAL_ACTIVITY_TIMELINE`에서 구현 및 QA closeout 완료
+- [x] `NBA-003 Deal latest activity subset`: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/06_DEAL_ACTIVITY_TIMELINE`에서 부분 구현 및 QA closeout 완료
+- [x] `NBA-008 Page size 15 contract cleanup`: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/06_DEAL_ACTIVITY_TIMELINE`에서 FE/BE/test/API 계약 확인 완료
+- [x] `NBA-014` 06 범위 DB/Prisma migration 운영 gate closeout
 - [x] Backend/API/DB/User Web 영향 반영 완료
 - [x] 완료 기록: `TODO_LOG/2026-07-21/G04_IMPORT_JOB_PERSISTENCE_QA_CLEANUP/WORK_LOG.md`
 - [x] 완료 기록: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/03_WEEKLY_SCHEDULE_REPORT/COMMON/TODO_LOG.md`
 - [x] 완료 기록: `TODO_LOG/2026-07-22/G05_QA_REVIEW_CLOSEOUT/WORK_LOG.md`
 - [x] 완료 기록: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/04_GOOGLE_CALENDAR_INTEGRATION/TODO_LOG/2026-07-23/G05_QA_REVIEW_CLOSEOUT/WORK_LOG.md`
-- [ ] `NBA-014` DB/Prisma migration 운영 gate closeout
+- [x] 완료 기록: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/06_DEAL_ACTIVITY_TIMELINE/COMMON/GOAL-SPECS/G07_QA_REVIEW_CLOSEOUT.md`
 - [ ] 나머지 NBA 후보 계약 확정 및 구현 여부 판단
 
 ## 1. 목적
@@ -28,13 +34,15 @@ G07의 산출물이므로 이 문서는 구현 계획 확정본이 아니다. �
 
 ## 2. 현재 결론
 
-- `RQA-005` DB/Prisma migration 운영 gate는 QA에서 S1 Blocked로 확인된 release blocker 후보다.
-- Deal list `products`, Contact list `dealCount`, BusinessCard provider failure contract, page size 15 정리는 release follow-up 후보다.
-- latest activity/next action summary, MeetingNote summary는 product feature 후보다.
+- BusinessCard provider failure contract는 남은 release follow-up 후보다.
+- `NBA-003` 중 Deal list `latestActivity`는 06에서 구현 완료됐고, Company/Contact/Product latest summary와 generic summary endpoint는 product feature 후보로 남긴다.
+- MeetingNote summary는 product feature 후보다.
+- `NBA-014`는 06 범위에서 DB target, migration/seed 금지, Prisma 검증 gate를 닫았다. 실제 운영 DB 적용 절차, backup/restore, provider log 같은 data reliability 운영 기준은 별도 첫 판매 gate에서 다룬다.
 - `NBA-006 ImportJob persistence/resume API`는 2026-07-21 기준 구현 및 QA closeout이 완료되어 active backlog 후보에서 제외한다.
 - `NBA-009 Schedule week report`는 2026-07-22 기준 구현 및 QA closeout이 완료되어 active backlog 후보에서 제외한다.
 - `NBA-010 Notification`은 2026-07-22 기준 구현 및 QA closeout이 완료되어 active backlog 후보에서 제외한다.
 - `NBA-015 Google Calendar Integration`은 2026-07-23 기준 구현 및 QA closeout이 완료되어 active backlog 후보에서 제외한다.
+- `NBA-001`, `NBA-002`, `NBA-008`, `NBA-003`의 Deal latest activity subset은 2026-07-26 기준 `06_DEAL_ACTIVITY_TIMELINE`에서 구현 및 QA closeout이 완료되어 active backlog 후보에서 제외한다.
 - Trash private memo backend restriction, MeetingNote transcript/provider log, Trash 7일 이후 복구 정책, Admin 운영 UX/API는 ops/security 후보다.
 
 ## 2.1 `NBA-015` 반영 기준
@@ -56,6 +64,29 @@ G07의 산출물이므로 이 문서는 구현 계획 확정본이 아니다. �
 - 실제 Google provider smoke는 env 미준비로 미실행했으며 운영 확인 단계에서 별도로 본다.
 - Google export/write, realtime webhook/watch, 반복 일정 정식 모델, 여러 Google 계정 동시 연결, Google 외 provider는 04 완료 범위가 아니다.
 - Admin provider failure UI/log는 `NBA-013` 또는 별도 Admin/ops 계획에서 다룬다.
+
+## 2.2 `NBA-001`, `NBA-002`, `NBA-003` Deal subset, `NBA-008`, `NBA-014` 반영 기준
+
+`TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/06_DEAL_ACTIVITY_TIMELINE`은 2026-07-26 G07 QA closeout 기준으로 Completed다. 이 백로그에서는 아래 항목을 active 후보가 아니라 완료 이력으로만 유지한다.
+
+완료로 반영할 Backend/API/DB/User Web 영향:
+
+- `DealActivity` Prisma model, migration, repository, timeline API 구현
+- `GET /api/deals/:dealId/activities`, `POST /api/deals/:dealId/activities`, `PATCH /api/deals/:dealId/activities/:activityId` 구현
+- 딜 생성, 단계 변경, 다음 행동, 일정, 회의록, follow-up 발송 성공/실패 activity transaction 연결
+- `GET /api/deals` item에 `products`, `latestActivity` field 추가
+- `GET /api/contacts` item에 `dealCount` field 추가
+- page size 15 계약을 Backend/API/User Web/test 기준으로 확인
+- User Web 딜 상세 activity timeline, 딜 목록 products/latest activity, 담당자 목록 dealCount 표시
+- DB target과 migrate/seed 금지 기준 확인. 공유/운영성 DB에 무단 migrate/seed를 실행하지 않음
+
+남은 백로그로 분리할 범위:
+
+- `NBA-003` 중 Company/Contact/Product latest activity, latest memo, next action summary
+- MeetingNote next/latest summary와 provider/transcript log
+- BusinessCard provider failure contract
+- Trash private memo response restriction과 7일 이후 복구/영구삭제 정책
+- Admin 운영 API/UX와 data reliability 운영 절차
 
 ## 3. 우선순위 분류 기준
 
@@ -84,7 +115,7 @@ G07의 산출물이므로 이 문서는 구현 계획 확정본이 아니다. �
 - Prisma schema 또는 migration 추가
 - seed 수정 또는 운영/공유 DB migration 실행
 - Admin API 구현
-- 완료된 Notification/Weekly Schedule Report/Google Calendar Integration 범위를 넘어서는 새 알림 endpoint, Admin provider failure UI, PDF/범용 ExportJob, 반복 일정, AI 요약, Google Calendar export/write/realtime webhook 구현
+- 완료된 Notification/Weekly Schedule Report/Google Calendar Integration/Deal Activity Timeline 범위를 넘어서는 새 알림 endpoint, Admin provider failure UI, PDF/범용 ExportJob, 반복 일정, AI 요약, Google Calendar export/write/realtime webhook, 범용 activity bus 구현
 - User Web에서 `/admin/api/*` 호출 추가
 - FE 단독 page size 변경
 

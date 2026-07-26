@@ -1,7 +1,7 @@
 # Current Implemented Functions
 
 상태: Draft Guide
-기준: 2026-07-23 현재 코드와 AGENT 구현 상태 문서
+기준: 2026-07-26 현재 코드와 AGENT 구현 상태 문서
 
 ## 0. 완료 반영 체크리스트
 
@@ -19,6 +19,10 @@
 - [x] Google Calendar OAuth connect/callback/status/calendar list/selection/sync/disconnect API
 - [x] Google Calendar read-only import, source badge, manual sync, calendar selection UX
 - [x] Schedule soft delete/Trash restore and Google-origin schedule reminder integration
+- [x] DealActivity DB/API와 딜 상세 activity timeline
+- [x] Deal list products/latest activity summary
+- [x] Contact list dealCount
+- [x] page size 15 Backend/API/User Web/test 계약 확인
 
 ## 1. 구현 완료/부분 완료 표
 
@@ -28,9 +32,9 @@
 | Public/auth locale | Backend 직접 없음 | `/{locale}`, `/{locale}/login`, signup/pricing/contact/about/security/terms/privacy, legacy redirect | N/A | 완료 |
 | Home | Schedule/Deal/MeetingNote API 조합 | `/app` dashboard | N/A | 완료 |
 | Company | list/detail/create/update/delete, field/region, memo/private memo, contacts/deals, xlsx export, trash | 목록, 상세, 생성 패널, 수정, 삭제/복구, export | N/A | 완료 |
-| Contact | list/detail/create/update/delete, company/job grade/department, memo/private memo, deals, xlsx export, trash | 목록, 상세, 생성, 수정, 삭제/복구, export | N/A | 완료 |
+| Contact | list/detail/create/update/delete, company/job grade/department, memo/private memo, deals, dealCount, xlsx export, trash | 목록, 상세, 생성, 수정, 삭제/복구, dealCount, export | N/A | 완료 |
 | Product | list/detail/create/update/delete, category/status, memo/private memo, dealCount/sort, deals, xlsx export, trash | 목록, 상세, 생성, 수정, 삭제/복구, export | N/A | 완료 |
-| Deal | list, stage counts, detail/create/update/delete, company/contact/product options, following action, memo, xlsx export, trash | pipeline/list/detail/create/update, stage tabs, linked records, next action, memo, export | N/A | 완료 |
+| Deal | list, stage counts, detail/create/update/delete, company/contact/product options, following action, memo, xlsx export, trash, `DealActivity` timeline API, products/latest activity summary | pipeline/list/detail/create/update, stage tabs, linked records, next action, memo, 딜 활동 timeline, products/latest activity summary, export | N/A | 완료 |
 | Schedule | deal options, list/detail/create/update/delete, 월간/주간 조회, weekly report API, weekly xlsx export, Google Calendar OAuth/read-only import/sync/calendar selection/source metadata, 딜/회사/담당자/다음 행동 요약, timezone 처리 | `/app/schedules`, `/app/schedules/week`, detail, form, 월간/목록, 주간 보고서, Excel 다운로드, Google Calendar status/source badge/manual sync/calendar hidden handling | N/A | 완료. 주간 일정 보고서와 Google Calendar read-only import 포함 |
 | MeetingNote | list/detail/create/update/delete, AI draft, STT draft, add deal link, trash | 목록, 상세, 작성, AI/STT draft UI, 딜 연동, 삭제/복구 | N/A | 완료 |
 | BusinessCard OCR | `/api/business-card-scans`, scan/confirm/log/status | `/app/business-cards`, 이미지 업로드, 명함스캔, 확인/수정, 저장 | N/A | 완료 |
@@ -87,5 +91,6 @@
 - 주간 일정 보고서와 Excel export는 구현 완료됐으며, PDF/범용 ExportJob, 반복 일정, AI 요약은 후속 확장 범위다.
 - Google Calendar read-only import/sync/calendar selection/source badge/Trash restore는 구현 완료됐다. export/write/realtime webhook/watch/반복 일정/여러 Google 계정 동시 연결은 후속 확장 범위다.
 - 일정/딜 reminder 기반 Notification은 구현 완료됐지만, 실제 SMTP/Web Push provider smoke는 env 준비 후 운영 확인 단계에서 실행한다.
+- DealActivity timeline, Deal list products/latest activity, Contact dealCount, page size 15 계약은 구현 및 QA closeout 완료됐다. Company/Contact/Product latest summary, activity deletion/retention/audit 정책은 후속 범위다.
 - 제품화 gap은 "API가 없어서 화면을 못 만든다"보다 "현재 핵심 루프를 Global B2C 첫 판매 gate까지 어떤 순서로 끌어올릴지"에 가깝다.
 - 따라서 다음 계획은 MVP 기능 추가 목록이 아니라 Global B2C 첫 판매 기준 대비 gap을 먼저 정리해야 한다.

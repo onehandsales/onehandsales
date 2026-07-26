@@ -1,6 +1,7 @@
 # Backend Productization Guide
 
 상태: Draft Guide
+최종 업데이트: 2026-07-26
 
 ## 0. 완료 반영
 
@@ -12,6 +13,8 @@
 - [x] `NBA-010` active backend gap 종료
 - [x] Google Calendar Integration backend/API/DB 구현 완료
 - [x] `NBA-015` active backend gap 종료
+- [x] Deal Activity Timeline backend/API/DB 구현 완료
+- [x] `NBA-001`, `NBA-002`, `NBA-003` Deal subset, `NBA-008`, `NBA-014` 06 범위 active backend gap 종료
 
 ## 1. 목적
 
@@ -27,9 +30,9 @@ Backend 판단 기준은 MVP 기능 추가가 아니라 Global B2C 첫 판매 ga
 |---|---|
 | Auth/User | auth providers, exchange, refresh, logout, `/api/me`, `/admin/api/me`, profile, devices |
 | Company | CRUD, taxonomy, memo/private memo, linked contacts/deals, xlsx export, trash |
-| Contact | CRUD, taxonomy, linked deals, memo/private memo, xlsx export, trash |
+| Contact | CRUD, taxonomy, linked deals, dealCount, memo/private memo, xlsx export, trash |
 | Product | CRUD, taxonomy, dealCount/sort, linked deals, memo/private memo, xlsx export, trash |
-| Deal | list/detail/create/update/delete, stage counts, linked company/contact/product, following action, memo, xlsx export, trash |
+| Deal | list/detail/create/update/delete, stage counts, linked company/contact/product, following action, memo, xlsx export, trash, `DealActivity` timeline, products/latest activity summary |
 | Schedule | CRUD, deal link, timezone local time handling, weekly report API, weekly xlsx export, Google Calendar connect/import/sync/calendar selection/source metadata/local edit/soft delete |
 | MeetingNote | CRUD, AI/STT draft, deal link, trash |
 | BusinessCard | OCR scan log, upload scan, confirm company/contact |
@@ -43,14 +46,14 @@ Backend 판단 기준은 MVP 기능 추가가 아니라 Global B2C 첫 판매 ga
 
 | 후보 영역 | 현재 상태 | Backend에서 필요한 판단 | 바로 구현 여부 |
 |---|---|---|---|
-| DB/Prisma ops | `RQA-005` Blocked 이력 | DB target, migration status, seed/generate 정책 | 첫 판매 전 gate 필요 |
-| Deal products summary | list response에 product summary 없음 | 목록 UX에서 진짜 필요한지, ownership aggregation 기준 | 아직 구현 금지 |
-| Contact dealCount | contact list response에 dealCount 없음 | count 기준, soft delete 제외, user ownership 기준 | 아직 구현 금지 |
-| Latest activity summary | 도메인별 summary 없음 | memo/private memo/activity 의미와 개인정보 제외 기준 | 아직 구현 금지 |
+| DB/Prisma ops | 06 범위 DB target/migrate/seed gate 확인 완료 | 실제 운영 DB 적용 절차, backup/restore, 장애 대응 기준 | 첫 판매 전 data reliability gate 필요 |
+| Deal products summary | 구현 완료 | `GET /api/deals` products summary, ownership aggregation QA 완료 | 완료 |
+| Contact dealCount | 구현 완료 | `GET /api/contacts` dealCount, soft delete 제외/user ownership QA 완료 | 완료 |
+| Latest activity summary | Deal list `latestActivity` 구현 완료. Company/Contact/Product summary 없음 | 잔여 summary의 memo/private memo/activity 의미와 개인정보 제외 기준 | Deal subset 완료, 잔여는 후속 |
 | BusinessCard provider failure | OCR 실패 UX는 있으나 error contract 정교화 후보 | user message와 provider log 분리 | 아직 구현 금지 |
 | ImportJob persistence | 구현 완료 | ImportJob/Row/Error/UploadedFile, TTL/delete tracking, resume API, redaction/ownership QA 완료 | 완료 |
 | Trash private memo restriction | FE에서 preview를 가림 | Backend response에서 원문 제한할지 정책 결정 | 아직 구현 금지 |
-| Page size 15 cleanup | 현재 계약이 얽혀 있음 | service constant, response, tests, docs 동시 변경 | 아직 구현 금지 |
+| Page size 15 cleanup | 구현 완료 | service response, API 문서, Backend/User Web test 기준 확인 | 완료 |
 | Schedule week report | 구현 완료 | `GET /api/schedules/week`, `GET /api/schedules/week/export/xlsx`, 기존 `User`, `Schedule`, `ScheduleDeal`, `Deal`, `DealCompany`, `DealContact`, `Company`, `Contact`, `DealFollowingActionLog` runtime aggregation, timezone/weekStart/ownership/redaction QA 완료. PDF/범용 ExportJob, 반복 일정, AI 요약은 별도 후속 범위 | 완료 |
 | Notification | 구현 완료 | Notification/UserNotificationSetting/NotificationDeliveryAttempt/BrowserPushSubscription, redaction/ownership/provider failure QA 완료. 실제 SMTP/Web Push provider smoke는 env 준비 후 운영 확인 | 완료 |
 | Google Calendar Integration | 구현 완료 | Google OAuth connect/callback/status/calendar list/selection/sync/disconnect, token encryption/redaction, Schedule Google metadata, soft delete/Trash restore, reminder QA 완료. 실제 Google provider smoke는 env 준비 후 운영 확인. export/write/realtime webhook/watch/반복 일정/여러 Google 계정 동시 연결은 별도 후속 범위 | 완료 |
@@ -85,4 +88,4 @@ Backend/API 구현이 필요하면 아래를 먼저 만족해야 한다.
 2. 결제, Admin, 정책/감사, 앱 다국어/다국가 데이터, 제품 분석을 먼저 큰 bundle로 분리한다.
 3. 제품화 UX에서 실제 필요한 API gap인지 확인한다.
 4. 개인정보/보안/운영 정책이 얽힌 후보를 먼저 정책으로 확정한다.
-5. ImportJob, Weekly Schedule Report, Notification, Google Calendar Integration은 완료됐고, Admin, Payment는 각각 별도 계획으로 분리한다.
+5. ImportJob, Weekly Schedule Report, Notification, Google Calendar Integration, Deal Activity Timeline은 완료됐고, Admin, Payment는 각각 별도 계획으로 분리한다.

@@ -1,14 +1,15 @@
 # Planning Review
 
-상태: G02 Completed / Ready for G03
+상태: Completed
 검토일: 2026-07-25
+최종 업데이트: 2026-07-26
 
 ## 1. 결론
 
-- 판정: G01 완료, G02 착수 가능
+- 판정: G01~G07 완료, 06 closeout 완료
 - 이유: 현재 BE/FE 코드와 06 문서 계약을 대조했고, G02~G07 구현을 막는 blocking 질문은 없다.
-- 검증: `cd BE && pnpm run prisma:validate` 통과 (2026-07-25)
-- 주의: G02는 신규 Prisma migration을 만들기 전에 `COMMON/FIRST-SALE-GATE-MAP.md`의 `NBA-014` DB/Prisma 운영 gate를 다시 확인해야 한다.
+- 최종 검증: Backend `prisma:validate`, `typecheck`, `lint`, `test`, `build` 통과. User Web `typecheck`, `lint`, `build`, `test:e2e`, `test:e2e:mobile` 통과.
+- Closeout: `COMMON/REVIEW-CHECKLIST.md`와 `COMMON/GOAL-COMPLETION-CHECKLIST.md` 기준 완료. `TODO/NEXT_BACKEND_API_BACKLOG_PLAN`, `TODO/USER_WEB_PRODUCTIZATION_GAP_PLAN`에 06 반영 이력을 갱신했다.
 
 ## 2. 사용자 결정 반영
 
@@ -53,7 +54,9 @@
 | 상위 계획 반영 | `NBA-001`, `NBA-002`, `NBA-008`, `NBA-014`, `NBA-003` Deal subset과 Productization Gap의 Notion/Attio, Deal-first, Data honesty 기준이 반영됐다. |
 | 상위 계획 제외 | Admin 운영, 결제/구독/세금, 앱 내부 다국어, 다국가 데이터 모델, 제품 분석, Company/Contact/Product latest summary는 06에서 구현하지 않는다. |
 
-## 5. G01 현재 코드 대조 결과
+## 5. G01 당시 코드 대조 결과
+
+아래 표는 2026-07-25 G01 planning review 시점의 스냅샷이다. 최종 구현 결과는 `COMMON/GOAL-COMPLETION-CHECKLIST.md`와 G02~G07 goal spec을 정본으로 본다.
 
 | 영역 | 확인 결과 | G02~G07 적용 기준 |
 |---|---|---|
@@ -76,7 +79,7 @@
 
 없음. G01에서 현재 코드와 실제 route/repository 구조를 확인했으며, G02~G07 착수를 막는 Critical/Major 질문은 없다.
 
-## 7. 구현 중 주의
+## 7. 구현 시 적용한 주의 기준
 
 - 신규 migration이 있으므로 G02에서 `NBA-014` DB/Prisma 운영 gate를 확인한다.
 - G01은 문서/계약 검토 goal이라 신규 소스 코드와 코드 주석을 작성하지 않았다. G02/G03부터 추가되는 Prisma/Backend 주석은 한국어 문장으로 작성하고, 고유 식별자만 영문으로 둔다.
@@ -91,9 +94,9 @@
 - MeetingNote의 legacy `DealFollowingActionLog` proxy 문구는 새 `DealActivity` summary로 재사용하지 않는다.
 - G04에서는 기존 다음 행동/메모/follow-up 섹션을 갑자기 제거하지 않되, 새 `딜 활동`과 같은 이력이 중복 primary activity처럼 보이지 않게 배치한다.
 
-## 8. 사용자 추가 결정이 필요한 질문
+## 8. 후속 결정 후보
 
-현재 G02 착수를 막는 질문은 없다.
+06 closeout을 막는 질문은 없다.
 
 후속 결정 후보:
 
@@ -102,10 +105,10 @@
 - 회사/제품 latest activity summary를 G06 이후 포함할지
 - 고급 검색/필터와 딜 확률/score를 별도 goal로 언제 다룰지
 
-## 9. 다음 실행 권장 문구
+## 9. 현재 상태
 
 ```text
-/goal TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/06_DEAL_ACTIVITY_TIMELINE/COMMON/GOAL-SPECS/G03_DEAL_ACTIVITY_BACKEND.md 기준으로 G03을 구현해줘.
+G01~G07 완료. 06 Deal Activity Timeline closeout 완료.
 ```
 
 ## 10. G02 완료 기록

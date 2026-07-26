@@ -2,6 +2,7 @@
 
 상태: Draft Guide
 작성일: 2026-07-20
+최종 업데이트: 2026-07-26
 성격: 제품화 gap 판단 가이드
 
 ## 0. 완료 반영 체크리스트
@@ -15,6 +16,8 @@
 - [x] `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/02_NOTIFICATION_REMINDER` 구현 및 QA closeout
 - [x] Google Calendar Integration (`NBA-015`)
 - [x] `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/04_GOOGLE_CALENDAR_INTEGRATION` 구현 및 QA closeout
+- [x] Deal Activity Timeline (`NBA-001`, `NBA-002`, `NBA-003` Deal subset, `NBA-008`, `NBA-014` 06 범위)
+- [x] `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/06_DEAL_ACTIVITY_TIMELINE` 구현 및 QA closeout
 - [ ] Admin 운영 API/화면
 - [ ] 결제/구독/세금
 - [ ] `/app` 다국어/글로벌 데이터 모델
@@ -57,6 +60,7 @@
 - Contact
 - Product
 - Deal
+- Deal Activity Timeline
 - Schedule
 - Weekly Schedule Report
 - Google Calendar Integration
@@ -94,6 +98,27 @@
 - Google export/write, realtime webhook/watch, 반복 일정 정식 모델, 여러 Google 계정 동시 연결은 새 계획 없이는 확장하지 않는다.
 - 첫 판매 전 핵심 gap은 여전히 결제/구독/세금, Admin 운영, `/app` 다국어/다국가 데이터, 제품 분석, 정책/신뢰/DB 운영 gate다.
 
+## 3.2 `06_DEAL_ACTIVITY_TIMELINE` 반영 기준
+
+`TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/06_DEAL_ACTIVITY_TIMELINE`은 2026-07-26 G07 QA closeout 기준으로 Completed다. 이 제품화 갭 문서에서는 아래 범위를 더 이상 미구현 gap으로 보지 않는다.
+
+완료로 반영할 User Web/제품 흐름:
+
+- `/app/deals/:dealId`에서 `딜 활동` timeline으로 딜 생성, 단계 변경, 다음 행동, 일정, 회의록, follow-up, 수동 활동 흐름을 읽을 수 있다.
+- 수동 활동 생성/수정 UX와 loading/empty/error/success 상태가 있다.
+- `/app/deals` 목록에서 연결 제품 summary와 최신 활동 summary를 API 응답 기준으로 표시한다.
+- `/app/contacts` 목록에서 `dealCount`를 API 응답 기준으로 표시한다.
+- page size 15 계약을 Backend/API/User Web/test 기준으로 확인했다.
+- User Web은 API 응답에 없는 latest activity, products summary, dealCount를 임의 생성하지 않는다.
+
+남은 제품화 gap으로 분리할 범위:
+
+- Company/Contact/Product latest activity, latest memo, next action summary
+- 일반 메모와 private memo의 activity 통합 정책
+- 수동 activity 삭제, retention, audit 정책
+- MeetingNote transcript/provider log와 AI/STT raw text 보관 정책
+- 첫 판매 전 핵심 gap인 결제/구독/세금, Admin 운영, `/app` 다국어/다국가 데이터, 제품 분석, backup/restore와 운영 DB 적용 절차
+
 ## 4. 문서 구성
 
 - `COMMON/FINAL-SERVICE-SHAPE.md`: 최종 서비스 단계별 기능 정의
@@ -122,11 +147,8 @@
 - 결제/구독
 - AI 주간 영업 리포트, PDF/범용 ExportJob, 반복 일정 같은 주간 일정 보고서 확장
 - 완료된 Google Calendar Integration 범위를 넘어서는 Google Calendar export/write, realtime webhook/watch, 반복 일정, 여러 Google 계정 동시 연결
-- 범용 DealActivity table
 - MeetingNote transcript/provider log table
-- page size 계약 변경
-- Deal list products summary
-- Contact list dealCount
+- 완료된 Deal Activity Timeline 범위를 넘어서는 범용 activity bus, Company/Contact/Product latest summary, activity deletion/retention/audit 정책
 
 위 항목은 제품화 우선순위와 UX/UI 방향을 확정한 뒤 별도 계획에서 다룬다.
 

@@ -1,6 +1,7 @@
 # User Web Productization Guide
 
 상태: Draft Guide
+최종 업데이트: 2026-07-26
 
 ## 0. 완료 반영
 
@@ -12,6 +13,10 @@
 - [x] `NBA-010` User Web productization gap 종료
 - [x] `/app/schedules`/`/app/settings`/`/app/trash` Google Calendar UX 구현 완료
 - [x] `NBA-015` User Web productization gap 종료
+- [x] `/app/deals/:dealId` 딜 활동 timeline 구현 완료
+- [x] `/app/deals` products/latest activity summary 구현 완료
+- [x] `/app/contacts` dealCount 구현 완료
+- [x] `NBA-001`, `NBA-002`, `NBA-003` Deal subset, `NBA-008` User Web productization gap 종료
 
 ## 1. 목적
 
@@ -37,9 +42,9 @@
 |---|---|---|---|
 | Public/auth | locale 진입면 구현 | Global B2C 첫 판매용 가치 제안, 가격/플랜, trial 기준이 충분한가 | 중간 |
 | `/app` | home dashboard 구현 | 오늘 해야 할 일과 진행 딜이 바로 읽히는가 | 중간 |
-| `/app/deals` | pipeline/list/detail 구현 | 딜 비교, 다음 행동, 연결 회사/담당자/제품 맥락이 충분한가 | `NBA-001`, `NBA-008` 후보 |
+| `/app/deals` | pipeline/list/detail, 딜 상세 activity timeline, 목록 제품 summary, 최신 활동 summary 구현 | 딜 비교, 다음 행동, 연결 회사/담당자/제품 맥락이 충분한가 | `NBA-001`, `NBA-003` Deal subset, `NBA-008` 완료. 다음 행동 강조와 UX polish는 후속 |
 | `/app/companies` | 목록/상세/생성/메모/export 구현 | 담당자/진행 딜/최근 활동 맥락이 충분한가 | `NBA-003` 후보 |
-| `/app/contacts` | 목록/상세/생성/export 구현 | 연결 딜 수와 회사 맥락이 충분한가 | `NBA-002`, `NBA-003` 후보 |
+| `/app/contacts` | 목록/상세/생성/export, dealCount 표시 구현 | 연결 딜 수와 회사 맥락이 충분한가 | `NBA-002` 완료. `NBA-003` latest summary는 후속 후보 |
 | `/app/products` | 목록/상세/생성/export 구현 | 제품이 어느 딜에서 쓰이는지 빠르게 보이는가 | `NBA-003` 후보 |
 | `/app/schedules` | 목록/월간/상세, Google Calendar status/source badge/manual sync/calendar hidden handling 구현 | 일정과 딜, Google에서 가져온 일정이 하루/주 단위 영업 판단으로 연결되는가 | 기본 일정 및 `NBA-015` 완료 |
 | `/app/schedules/week` | 주간 보고서, 이전/다음/이번 주 이동, Excel 다운로드, loading/empty/error/export error 구현 | 주간 일정 보고서는 구현 완료. PDF/범용 ExportJob, 반복 일정, AI 요약은 별도 후속 확장 | `NBA-009` 완료 |
@@ -57,9 +62,10 @@
 - 완료된 Notification 범위를 넘어서는 새 알림 화면은 API/DB 계약 없이 확장하지 않는다.
 - 완료된 주간 일정 보고서 범위를 넘어서는 PDF/범용 ExportJob, 반복 일정, AI 요약은 API/DB 계약 없이 확장하지 않는다.
 - 완료된 Google Calendar Integration 범위를 넘어서는 Google Calendar export/write, realtime webhook/watch, 반복 일정, 여러 Google 계정 동시 연결은 API/DB 계약 없이 확장하지 않는다.
+- 완료된 Deal Activity Timeline 범위를 넘어서는 범용 activity bus, Company/Contact/Product latest summary, activity deletion/retention/audit 정책은 API/DB/정책 계약 없이 확장하지 않는다.
 - `/app/export` generic export를 다시 노출하지 않는다.
 - page size를 FE 단독으로 바꾸지 않는다.
-- API 응답에 없는 latest activity, next action summary, product summary, dealCount를 임의로 계산해 사실처럼 표시하지 않는다.
+- API 응답에 없는 latest activity, next action summary, product summary, dealCount를 임의로 계산해 사실처럼 표시하지 않는다. Deal list products/latest activity와 Contact dealCount는 06 API 응답 기준으로만 표시한다.
 - Admin Web 운영 화면을 User Web feature와 섞지 않는다.
 
 ## 5. FE 변경이 필요하다고 판단되면
