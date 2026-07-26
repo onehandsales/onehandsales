@@ -15,6 +15,7 @@ import { AppLogger } from "@/shared/infrastructure/logger/app-logger.service";
 const DEFAULT_OPENAI_BASE_URL = "https://api.openai.com/v1";
 const DEFAULT_STT_MODEL = "gpt-4o-mini-transcribe";
 const OPENAI_PROVIDER = "openai";
+const COST_CURRENCY = "USD";
 
 // 역할 : OpenAiSttConfig OpenAI STT provider 호출에 필요한 설정 값을 정의합니다.
 interface OpenAiSttConfig {
@@ -29,6 +30,14 @@ export class OpenAiMeetingNoteSttProvider implements MeetingNoteSttProvider {
     private readonly configService: ConfigService,
     private readonly logger: AppLogger
   ) {}
+
+  // 기능 : provider call log에 기록할 OpenAI STT 식별 정보를 반환합니다.
+  getMetadata() {
+    return {
+      provider: OPENAI_PROVIDER,
+      model: this.getSttModel(),
+    };
+  }
 
   // 기능 : 음성 파일을 OpenAI audio transcription API로 transcript 텍스트로 변환합니다.
   async transcribe(
@@ -58,9 +67,13 @@ export class OpenAiMeetingNoteSttProvider implements MeetingNoteSttProvider {
         response.status,
         response.statusText
       );
-      throw new MeetingNoteAiDraftFailedError("OpenAI transcription failed");
+      throw new MeetingNoteAiDraftFailedError(
+        "OpenAI transcription failed",
+        response.status >= 500 || response.status === 429
+      );
     }
 
+    const requestId = this.extractHeaderRequestId(response);
     const responseBody = await this.readJsonResponse(
       response,
       "OpenAI transcription response was not JSON"
@@ -78,7 +91,17 @@ export class OpenAiMeetingNoteSttProvider implements MeetingNoteSttProvider {
       throw new MeetingNoteAiDraftFailedError("OpenAI transcript was empty");
     }
 
-    return { transcript: transcript.trim() };
+    return {
+      transcript: transcript.trim(),
+      providerCall: {
+        requestId,
+        inputTokenCount: null,
+        outputTokenCount: null,
+        totalTokenCount: null,
+        estimatedCostAmount: null,
+        costCurrency: COST_CURRENCY,
+      },
+    };
   }
 
   // 기능 : OpenAI STT API 호출에 필요한 환경변수를 ConfigService에서 읽고 검증합니다.
@@ -87,15 +110,19 @@ export class OpenAiMeetingNoteSttProvider implements MeetingNoteSttProvider {
     const baseUrl =
       this.configService.get<string>("OPENAI_BASE_URL")?.trim() ||
       DEFAULT_OPENAI_BASE_URL;
-    const sttModel =
-      this.configService.get<string>("OPENAI_MEETING_NOTE_STT_MODEL")?.trim() ||
-      DEFAULT_STT_MODEL;
-
     return {
       apiKey,
       baseUrl: baseUrl.replace(/\/+$/, ""),
-      sttModel,
+      sttModel: this.getSttModel(),
     };
+  }
+
+  // 기능 : STT model 설정이 없으면 기본 transcription model을 반환합니다.
+  private getSttModel(): string {
+    return (
+      this.configService.get<string>("OPENAI_MEETING_NOTE_STT_MODEL")?.trim() ||
+      DEFAULT_STT_MODEL
+    );
   }
 
   // 기능 : 필수 provider 환경변수가 비어 있으면 설정 오류로 변환합니다.
@@ -145,6 +172,14 @@ export class OpenAiMeetingNoteSttProvider implements MeetingNoteSttProvider {
     const fieldValue = value[fieldName];
 
     return typeof fieldValue === "string" ? fieldValue : null;
+  }
+
+  // 기능 : OpenAI response header의 request id를 읽습니다.
+  private extractHeaderRequestId(response: Response): string | null {
+    return (
+      response.headers.get("x-request-id") ??
+      response.headers.get("openai-request-id")
+    );
   }
 
   // 기능 : 음성 원문 없이 provider 실패 추적에 필요한 안전한 context만 남깁니다.

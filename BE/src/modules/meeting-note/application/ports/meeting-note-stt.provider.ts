@@ -1,4 +1,8 @@
 import type { Buffer } from "node:buffer";
+import type {
+  MeetingNoteAiProviderCallMetadata,
+  MeetingNoteAiProviderInfo,
+} from "./meeting-note-ai-provider-call-log.repository";
 
 export const MEETING_NOTE_STT_PROVIDER = Symbol("MEETING_NOTE_STT_PROVIDER");
 
@@ -18,10 +22,14 @@ export interface TranscribeMeetingNoteAudioInput {
 // 역할 : MeetingNoteTranscription STT provider가 반환하는 transcript 계약을 정의합니다.
 export interface MeetingNoteTranscription {
   readonly transcript: string;
+  readonly providerCall: MeetingNoteAiProviderCallMetadata;
 }
 
 // 역할 : MeetingNoteSttProvider 회의록 STT 생성을 외부 provider 뒤로 숨기는 application port입니다.
 export interface MeetingNoteSttProvider {
+  // 기능 : provider 호출 로그를 만들 때 사용할 provider 식별 정보를 반환합니다.
+  getMetadata(): MeetingNoteAiProviderInfo;
+
   // 기능 : 음성 파일을 transcript 텍스트로 변환합니다.
   transcribe(
     input: TranscribeMeetingNoteAudioInput

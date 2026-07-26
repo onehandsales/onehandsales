@@ -101,6 +101,6 @@ G01_PLANNING_API_DB_CONTRACT
 ## 9. 현재 상태
 
 ```text
-G01, G02 완료. G03_MEETING_NOTE_AI_LOG_BACKEND 착수 가능.
-G04~G06은 이전 goal 완료 후 순서대로 진행한다.
+G01, G02, G03 완료. G04_MEETING_NOTE_NEXT_ACTION_FOLLOW_UP_BACKEND 착수 가능.
+G05~G06은 이전 goal 완료 후 순서대로 진행한다.
 ```

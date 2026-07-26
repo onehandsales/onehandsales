@@ -11,8 +11,13 @@ import * as request from "supertest";
 import { MeetingNoteAiDraftApplicationService } from "@/modules/meeting-note/application/services/meeting-note-ai-draft-application.service";
 import { MeetingNoteApplicationService } from "@/modules/meeting-note/application/services/meeting-note-application.service";
 import { MeetingNoteSourceTypeValue } from "@/modules/meeting-note/application/ports/meeting-note.repository";
+import {
+  MEETING_NOTE_AI_DRAFT_FAILED_SAFE_MESSAGE,
+  MeetingNoteAiDraftFailedError,
+} from "@/modules/meeting-note/domain/meeting-note.errors";
 import type { CurrentUserContext } from "@/shared/application/context/current-user.context";
 import { AuthGuard } from "@/shared/presentation/guards/auth.guard";
+import { HttpExceptionFilter } from "@/shared/presentation/filters/http-exception.filter";
 import { MeetingNoteController } from "./meeting-note.controller";
 
 const CURRENT_USER: CurrentUserContext = {
@@ -127,6 +132,7 @@ describe("MeetingNoteController", () => {
         transform: true,
       })
     );
+    app.useGlobalFilters(new HttpExceptionFilter());
     await app.init();
   });
 
@@ -151,6 +157,30 @@ describe("MeetingNoteController", () => {
       CURRENT_USER,
       body
     );
+  });
+
+  it("AI provider 실패 응답에는 safe message와 retryable만 노출한다", async () => {
+    aiDraftService.createTextAiDraft.mockRejectedValueOnce(
+      new MeetingNoteAiDraftFailedError("provider raw quota secret", true)
+    );
+
+    const response = await request(app.getHttpServer())
+      .post("/api/meeting-notes/ai-draft")
+      .send({
+        text: "회의 원문",
+        meetingLocalDateTime: "2026-06-15T09:30",
+        companies: [COMPANY_ID],
+        contacts: [CONTACT_ID],
+      })
+      .expect(502);
+
+    expect(response.body).toEqual({
+      statusCode: 502,
+      error: "MeetingNoteAiDraftFailed",
+      message: MEETING_NOTE_AI_DRAFT_FAILED_SAFE_MESSAGE,
+      retryable: true,
+    });
+    expect(JSON.stringify(response.body)).not.toContain("provider raw quota secret");
   });
 
   it("multipart 음성 STT+AI 초안 생성 요청을 application service로 전달한다", async () => {

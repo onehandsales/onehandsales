@@ -1,11 +1,22 @@
 # G03 Meeting Note AI Log Backend
 
-상태: Ready
+상태: Completed
 목표: 기존 Meeting Note AI/STT draft API에 provider log와 safe failure 구현
+완료일: 2026-07-26
 
 ## 1. 목적
 
 `POST /api/meeting-notes/ai-draft`, `POST /api/meeting-notes/stt-draft`가 사용자에게는 저장 가능한 초안만 반환하고, 운영에는 redacted provider call log를 남기게 한다.
+
+## 1.1 완료 결과
+
+- `MeetingNoteAiProviderCallLogRepository` port와 Prisma adapter를 추가해 `AiProviderCallLog`에 PENDING/SUCCEEDED/FAILED 상태를 기록한다.
+- `POST /api/meeting-notes/ai-draft`는 `MEETING_NOTE_TEXT_DRAFT` operation으로 provider call log를 남긴다.
+- `POST /api/meeting-notes/stt-draft`는 `MEETING_NOTE_STT_TRANSCRIPTION`, `MEETING_NOTE_STT_DRAFT` 두 operation을 각각 기록한다.
+- OpenAI AI draft/STT provider가 request id와 token metadata를 가능한 범위에서 반환하도록 보강했다.
+- provider 실패 메시지는 사용자에게 안전한 한국어 문구와 `retryable`만 노출되도록 전역 filter를 보강했다.
+- log metadata에는 text 원문, transcript 전문, prompt 전문, provider raw response, 담당자 이메일/전화번호 전문을 저장하지 않도록 테스트했다.
+- `pnpm run typecheck`, `pnpm run lint`, `pnpm run test -- meeting-note`, `pnpm run build`를 통과했다.
 
 ## 2. 선행 조건
 
@@ -84,10 +95,10 @@ rg "rawText|transcript|prompt|safeError|AiProviderCallLog" BE/src/modules/meetin
 
 ## 9. 완료 기준
 
-- API response가 `COMMON/API-SPEC/MEETING_NOTE_AI_DRAFT_LOG_API.md`와 일치한다.
-- AI/STT provider 성공 log가 저장된다.
-- AI/STT provider 실패 log가 저장된다.
-- safe failure UX에 필요한 정보가 응답된다.
-- redaction test가 있다.
-- 코드 작업 시 한글 주석이 추가됐다.
-- `COMMON/GOAL-COMPLETION-CHECKLIST.md`의 G03 항목이 갱신됐다.
+- [x] API response가 `COMMON/API-SPEC/MEETING_NOTE_AI_DRAFT_LOG_API.md`와 일치한다.
+- [x] AI/STT provider 성공 log가 저장된다.
+- [x] AI/STT provider 실패 log가 저장된다.
+- [x] safe failure UX에 필요한 정보가 응답된다.
+- [x] redaction test가 있다.
+- [x] 코드 작업 시 한글 주석이 추가됐다.
+- [x] `COMMON/GOAL-COMPLETION-CHECKLIST.md`의 G03 항목이 갱신됐다.

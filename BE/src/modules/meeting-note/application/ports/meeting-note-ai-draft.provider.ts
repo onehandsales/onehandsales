@@ -1,3 +1,8 @@
+import type {
+  MeetingNoteAiProviderCallMetadata,
+  MeetingNoteAiProviderInfo,
+} from "./meeting-note-ai-provider-call-log.repository";
+
 export const MEETING_NOTE_AI_DRAFT_PROVIDER = Symbol(
   "MEETING_NOTE_AI_DRAFT_PROVIDER"
 );
@@ -56,6 +61,12 @@ export interface MeetingNoteDraftContent {
   readonly requiredAction: string | null;
 }
 
+// 역할 : MeetingNoteAiDraftProviderResult AI 초안과 provider 호출 metadata를 함께 반환합니다.
+export interface MeetingNoteAiDraftProviderResult {
+  readonly draft: MeetingNoteDraftContent;
+  readonly providerCall: MeetingNoteAiProviderCallMetadata;
+}
+
 // 역할 : CreateMeetingNoteTextDraftInput 텍스트 기반 AI 초안 생성 provider 입력 계약을 정의합니다.
 export interface CreateMeetingNoteTextDraftInput {
   readonly rawText: string;
@@ -64,8 +75,11 @@ export interface CreateMeetingNoteTextDraftInput {
 
 // 역할 : MeetingNoteAiDraftProvider 회의록 AI 초안 생성을 외부 provider 뒤로 숨기는 application port입니다.
 export interface MeetingNoteAiDraftProvider {
+  // 기능 : provider 호출 로그를 만들 때 사용할 provider 식별 정보를 반환합니다.
+  getMetadata(): MeetingNoteAiProviderInfo;
+
   // 기능 : 회의 원문 텍스트를 회의록 본문 초안으로 변환합니다.
   createTextDraft(
     input: CreateMeetingNoteTextDraftInput
-  ): Promise<MeetingNoteDraftContent>;
+  ): Promise<MeetingNoteAiDraftProviderResult>;
 }

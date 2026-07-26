@@ -2,6 +2,9 @@ import { Buffer } from "node:buffer";
 import {
   type MeetingNoteAiDraftProvider,
 } from "@/modules/meeting-note/application/ports/meeting-note-ai-draft.provider";
+import type {
+  MeetingNoteAiProviderCallLogRepository,
+} from "@/modules/meeting-note/application/ports/meeting-note-ai-provider-call-log.repository";
 import {
   type MeetingNoteDraftAudioFile,
   type MeetingNoteSttProvider,
@@ -14,7 +17,11 @@ import {
   type MeetingNoteRepository,
   type ProductSnapshotRecord,
 } from "@/modules/meeting-note/application/ports/meeting-note.repository";
-import { RelatedCompanyNotFoundError } from "@/modules/meeting-note/domain/meeting-note.errors";
+import {
+  MEETING_NOTE_AI_DRAFT_FAILED_SAFE_MESSAGE,
+  MeetingNoteAiDraftFailedError,
+  RelatedCompanyNotFoundError,
+} from "@/modules/meeting-note/domain/meeting-note.errors";
 import type { CurrentUserContext } from "@/shared/application/context/current-user.context";
 import { MeetingNoteAiDraftApplicationService } from "./meeting-note-ai-draft-application.service";
 
@@ -75,6 +82,7 @@ interface FakeMeetingNoteDraftFixture {
   readonly repository: jest.Mocked<DraftRepositoryFake>;
   readonly aiDraftProvider: jest.Mocked<MeetingNoteAiDraftProvider>;
   readonly sttProvider: jest.Mocked<MeetingNoteSttProvider>;
+  readonly providerCallLogRepository: jest.Mocked<MeetingNoteAiProviderCallLogRepository>;
   readonly service: MeetingNoteAiDraftApplicationService;
 }
 
@@ -87,32 +95,77 @@ function createFixture(): FakeMeetingNoteDraftFixture {
     findDealsByIds: jest.fn().mockResolvedValue([DEAL]),
   };
   const aiDraftProvider: jest.Mocked<MeetingNoteAiDraftProvider> = {
+    getMetadata: jest.fn().mockReturnValue({
+      provider: "openai",
+      model: "gpt-test",
+    }),
     createTextDraft: jest.fn().mockResolvedValue({
-      details: "회의 내용 초안",
-      nextPlan: "다음 계획 초안",
-      requiredAction: "필요 행동 초안",
+      draft: {
+        details: "회의 내용 초안",
+        nextPlan: "다음 계획 초안",
+        requiredAction: "필요 행동 초안",
+      },
+      providerCall: {
+        requestId: "resp-1",
+        inputTokenCount: 10,
+        outputTokenCount: 5,
+        totalTokenCount: 15,
+        estimatedCostAmount: null,
+        costCurrency: "USD",
+      },
     }),
   };
   const sttProvider: jest.Mocked<MeetingNoteSttProvider> = {
+    getMetadata: jest.fn().mockReturnValue({
+      provider: "openai",
+      model: "gpt-4o-mini-transcribe",
+    }),
     transcribe: jest.fn().mockResolvedValue({
       transcript: "녹취 transcript",
+      providerCall: {
+        requestId: "stt-1",
+        inputTokenCount: null,
+        outputTokenCount: null,
+        totalTokenCount: null,
+        estimatedCostAmount: null,
+        costCurrency: "USD",
+      },
     }),
   };
+  const providerCallLogRepository: jest.Mocked<MeetingNoteAiProviderCallLogRepository> =
+    {
+      createProviderCallLog: jest
+        .fn()
+        .mockResolvedValueOnce({ id: "provider-log-1" })
+        .mockResolvedValueOnce({ id: "provider-log-2" })
+        .mockResolvedValueOnce({ id: "provider-log-3" }),
+      markProviderCallSucceeded: jest.fn().mockResolvedValue(undefined),
+      markProviderCallFailed: jest.fn().mockResolvedValue(undefined),
+    };
   const service = new MeetingNoteAiDraftApplicationService(
     repository as unknown as MeetingNoteRepository,
     aiDraftProvider,
-    sttProvider
+    sttProvider,
+    providerCallLogRepository
   );
 
-  return { repository, aiDraftProvider, sttProvider, service };
+  return {
+    repository,
+    aiDraftProvider,
+    sttProvider,
+    providerCallLogRepository,
+    service,
+  };
 }
 
 describe("MeetingNoteAiDraftApplicationService", () => {
   it("사용자가 선택한 맥락을 검증하고 텍스트 AI 초안만 반환한다", async () => {
-    const { aiDraftProvider, service } = createFixture();
+    const { aiDraftProvider, providerCallLogRepository, service } =
+      createFixture();
+    const rawText = "가격 조건과 다음 미팅을 논의했다.";
 
     const result = await service.createTextAiDraft(CURRENT_USER, {
-      text: "가격 조건과 다음 미팅을 논의했다.",
+      text: rawText,
       meetingLocalDateTime: "2026-06-15T09:30",
       companies: ["company-1"],
       contacts: ["contact-1"],
@@ -139,10 +192,48 @@ describe("MeetingNoteAiDraftApplicationService", () => {
         }),
       })
     );
+    expect(providerCallLogRepository.createProviderCallLog).toHaveBeenCalledWith(
+      expect.objectContaining({
+        userId: CURRENT_USER.id,
+        operation: "MEETING_NOTE_TEXT_DRAFT",
+        targetType: "MEETING_NOTE_DRAFT",
+        targetId: null,
+        provider: "openai",
+        model: "gpt-test",
+        metadataJson: expect.objectContaining({
+          inputKind: "text",
+          textLength: rawText.length,
+          contextCounts: {
+            companies: 1,
+            contacts: 1,
+            products: 1,
+            deals: 1,
+          },
+        }),
+      })
+    );
+    expect(providerCallLogRepository.markProviderCallSucceeded).toHaveBeenCalledWith(
+      expect.objectContaining({
+        userId: CURRENT_USER.id,
+        providerCallLogId: "provider-log-1",
+        requestId: "resp-1",
+        inputTokenCount: 10,
+        outputTokenCount: 5,
+        totalTokenCount: 15,
+        costCurrency: "USD",
+      })
+    );
+
+    const metadataJson =
+      providerCallLogRepository.createProviderCallLog.mock.calls[0]?.[0]
+        .metadataJson;
+    expect(JSON.stringify(metadataJson)).not.toContain(rawText);
+    expect(JSON.stringify(metadataJson)).not.toContain("kim@example.com");
   });
 
   it("음성 파일은 STT provider transcript와 AI draft provider 초안으로 변환해 반환한다", async () => {
-    const { aiDraftProvider, sttProvider, service } = createFixture();
+    const { aiDraftProvider, providerCallLogRepository, sttProvider, service } =
+      createFixture();
     const audioFile: MeetingNoteDraftAudioFile = {
       buffer: Buffer.from("audio"),
       fileName: "meeting.webm",
@@ -173,10 +264,55 @@ describe("MeetingNoteAiDraftApplicationService", () => {
         }),
       })
     );
+    expect(providerCallLogRepository.createProviderCallLog).toHaveBeenCalledTimes(
+      2
+    );
+    expect(providerCallLogRepository.createProviderCallLog).toHaveBeenNthCalledWith(
+      1,
+      expect.objectContaining({
+        operation: "MEETING_NOTE_STT_TRANSCRIPTION",
+        provider: "openai",
+        model: "gpt-4o-mini-transcribe",
+        metadataJson: expect.objectContaining({
+          inputKind: "audio",
+          audio: {
+            mimeType: "audio/webm",
+            sizeBucket: "0mb_1mb",
+          },
+        }),
+      })
+    );
+    expect(providerCallLogRepository.createProviderCallLog).toHaveBeenNthCalledWith(
+      2,
+      expect.objectContaining({
+        operation: "MEETING_NOTE_STT_DRAFT",
+        provider: "openai",
+        model: "gpt-test",
+        metadataJson: expect.objectContaining({
+          inputKind: "stt_transcript",
+          transcriptLength: "녹취 transcript".length,
+        }),
+      })
+    );
+    expect(providerCallLogRepository.markProviderCallSucceeded).toHaveBeenCalledTimes(
+      2
+    );
+
+    const serializedLogInputs = JSON.stringify(
+      providerCallLogRepository.createProviderCallLog.mock.calls
+    );
+    expect(serializedLogInputs).not.toContain("녹취 transcript");
+    expect(serializedLogInputs).not.toContain("kim@example.com");
   });
 
   it("선택한 회사가 현재 사용자 소유가 아니면 provider를 호출하지 않는다", async () => {
-    const { repository, aiDraftProvider, sttProvider, service } = createFixture();
+    const {
+      repository,
+      aiDraftProvider,
+      providerCallLogRepository,
+      sttProvider,
+      service,
+    } = createFixture();
     repository.findCompaniesByIds.mockResolvedValueOnce([]);
 
     await expect(
@@ -189,5 +325,86 @@ describe("MeetingNoteAiDraftApplicationService", () => {
     ).rejects.toBeInstanceOf(RelatedCompanyNotFoundError);
     expect(aiDraftProvider.createTextDraft).not.toHaveBeenCalled();
     expect(sttProvider.transcribe).not.toHaveBeenCalled();
+    expect(providerCallLogRepository.createProviderCallLog).not.toHaveBeenCalled();
+  });
+
+  it("텍스트 AI provider 실패를 safe error로 반환하고 실패 log에 원문을 남기지 않는다", async () => {
+    const { aiDraftProvider, providerCallLogRepository, service } =
+      createFixture();
+    const rawText = "고객이 보안자료와 가격표를 요청했다.";
+    aiDraftProvider.createTextDraft.mockRejectedValueOnce(
+      new MeetingNoteAiDraftFailedError(
+        "provider quota secret raw response",
+        true
+      )
+    );
+
+    await expect(
+      service.createTextAiDraft(CURRENT_USER, {
+        text: rawText,
+        meetingLocalDateTime: "2026-06-15T09:30",
+        companies: ["company-1"],
+        contacts: ["contact-1"],
+      })
+    ).rejects.toMatchObject({
+      code: "MeetingNoteAiDraftFailed",
+      message: MEETING_NOTE_AI_DRAFT_FAILED_SAFE_MESSAGE,
+    });
+    expect(providerCallLogRepository.markProviderCallFailed).toHaveBeenCalledWith(
+      expect.objectContaining({
+        providerCallLogId: "provider-log-1",
+        safeErrorCode: "MeetingNoteAiDraftFailed",
+        safeErrorMessage: MEETING_NOTE_AI_DRAFT_FAILED_SAFE_MESSAGE,
+        retryable: true,
+      })
+    );
+
+    const serializedLogInputs = JSON.stringify([
+      providerCallLogRepository.createProviderCallLog.mock.calls,
+      providerCallLogRepository.markProviderCallFailed.mock.calls,
+    ]);
+    expect(serializedLogInputs).not.toContain(rawText);
+    expect(serializedLogInputs).not.toContain("provider quota secret raw response");
+  });
+
+  it("STT provider 실패 시 STT 실패 log만 남기고 AI draft provider를 호출하지 않는다", async () => {
+    const { aiDraftProvider, providerCallLogRepository, sttProvider, service } =
+      createFixture();
+    sttProvider.transcribe.mockRejectedValueOnce(
+      new MeetingNoteAiDraftFailedError("provider timeout", true)
+    );
+
+    await expect(
+      service.createSttAiDraft(CURRENT_USER, {
+        audioFile: {
+          buffer: Buffer.from("audio"),
+          fileName: "meeting.webm",
+          mimeType: "audio/webm",
+          size: 5,
+        },
+        meetingLocalDateTime: "2026-06-15T09:30",
+        companies: ["company-1"],
+        contacts: ["contact-1"],
+      })
+    ).rejects.toMatchObject({
+      code: "MeetingNoteAiDraftFailed",
+      message: MEETING_NOTE_AI_DRAFT_FAILED_SAFE_MESSAGE,
+    });
+    expect(providerCallLogRepository.createProviderCallLog).toHaveBeenCalledTimes(
+      1
+    );
+    expect(providerCallLogRepository.createProviderCallLog).toHaveBeenCalledWith(
+      expect.objectContaining({
+        operation: "MEETING_NOTE_STT_TRANSCRIPTION",
+      })
+    );
+    expect(providerCallLogRepository.markProviderCallFailed).toHaveBeenCalledWith(
+      expect.objectContaining({
+        providerCallLogId: "provider-log-1",
+        safeErrorCode: "MeetingNoteAiDraftFailed",
+        retryable: true,
+      })
+    );
+    expect(aiDraftProvider.createTextDraft).not.toHaveBeenCalled();
   });
 });

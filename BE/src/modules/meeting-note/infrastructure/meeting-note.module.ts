@@ -5,11 +5,13 @@ import { AppLogger } from "@/shared/infrastructure/logger/app-logger.service";
 import { PrismaInfrastructureModule } from "@/shared/infrastructure/prisma/prisma-infrastructure.module";
 import { PrismaService } from "@/shared/infrastructure/prisma/prisma.service";
 import { MEETING_NOTE_AI_DRAFT_PROVIDER } from "../application/ports/meeting-note-ai-draft.provider";
+import { MEETING_NOTE_AI_PROVIDER_CALL_LOG_REPOSITORY } from "../application/ports/meeting-note-ai-provider-call-log.repository";
 import { MEETING_NOTE_STT_PROVIDER } from "../application/ports/meeting-note-stt.provider";
 import { MEETING_NOTE_REPOSITORY } from "../application/ports/meeting-note.repository";
 import { MeetingNoteAiDraftApplicationService } from "../application/services/meeting-note-ai-draft-application.service";
 import { MeetingNoteApplicationService } from "../application/services/meeting-note-application.service";
 import { MeetingNoteController } from "../presentation/http/meeting-note.controller";
+import { PrismaMeetingNoteAiProviderCallLogRepository } from "./persistence/prisma-meeting-note-ai-provider-call-log.repository";
 import { PrismaMeetingNoteRepository } from "./persistence/prisma-meeting-note.repository";
 import { OpenAiMeetingNoteAiDraftProvider } from "./providers/openai-meeting-note-ai-draft.provider";
 import { OpenAiMeetingNoteSttProvider } from "./providers/openai-meeting-note-stt.provider";
@@ -27,6 +29,13 @@ import { OpenAiMeetingNoteSttProvider } from "./providers/openai-meeting-note-st
       // 기능 : Prisma 서비스로 회의록 저장소 구현체를 생성합니다.
       useFactory: (prismaService: PrismaService) =>
         new PrismaMeetingNoteRepository(prismaService, prismaService),
+      inject: [PrismaService],
+    },
+    {
+      provide: MEETING_NOTE_AI_PROVIDER_CALL_LOG_REPOSITORY,
+      // 기능 : Prisma 서비스로 회의록 AI provider call log 저장소를 생성합니다.
+      useFactory: (prismaService: PrismaService) =>
+        new PrismaMeetingNoteAiProviderCallLogRepository(prismaService),
       inject: [PrismaService],
     },
     {

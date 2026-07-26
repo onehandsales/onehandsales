@@ -29,11 +29,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
 
     if (exception instanceof DomainError) {
       const status = this.getDomainErrorStatus(exception.code);
-      response.status(status).json({
-        statusCode: status,
-        error: exception.code,
-        message: exception.message,
-      });
+      response.status(status).json(this.createDomainErrorBody(status, exception));
       return;
     }
 
@@ -51,6 +47,27 @@ export class HttpExceptionFilter implements ExceptionFilter {
       statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
       error: "InternalServerError",
     });
+  }
+
+  // 기능 : 도메인 오류 응답 body에 사용자에게 허용된 안전한 detail만 포함합니다.
+  private createDomainErrorBody(status: HttpStatus, exception: DomainError) {
+    return {
+      statusCode: status,
+      error: exception.code,
+      message: exception.message,
+      ...this.pickSafeDetails(exception.details),
+    };
+  }
+
+  // 기능 : retryable처럼 사용자 재시도 판단에 필요한 안전한 detail만 선별합니다.
+  private pickSafeDetails(details: Record<string, unknown> | null) {
+    if (typeof details?.["retryable"] !== "boolean") {
+      return {};
+    }
+
+    return {
+      retryable: details["retryable"],
+    };
   }
 
   // 기능 : 도메인 오류 코드에 맞는 HTTP 상태 코드를 결정합니다.

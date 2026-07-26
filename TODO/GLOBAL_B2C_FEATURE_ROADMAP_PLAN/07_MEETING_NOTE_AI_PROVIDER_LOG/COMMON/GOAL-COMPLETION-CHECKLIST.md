@@ -15,7 +15,7 @@
 |---|---|---|---|---|---|---|
 | [x] | G01 Planning API DB Contract | Completed | 2026-07-26 | 현재 코드와 계약 대조, blocking 질문 없음 | `PLANNING-REVIEW.md`, `pnpm run prisma:validate` | G02 착수 가능 |
 | [x] | G02 AI Provider Log DB Prisma | Completed | 2026-07-26 | Prisma enum/field/index/migration 구현 | `BE/prisma/schema.prisma`, `20260726020000_add_meeting_note_ai_provider_log_target`, `pnpm run prisma:validate`, `pnpm run prisma:generate`, `pnpm run typecheck` | 원격 DB target이라 migrate/seed 미실행 |
-| [ ] | G03 Meeting Note AI Log Backend | Ready | - | ai-draft/stt-draft provider log와 safe failure 구현 | Backend test/typecheck/lint/build | G04 착수 가능 |
+| [x] | G03 Meeting Note AI Log Backend | Completed | 2026-07-26 | ai-draft/stt-draft provider log와 safe failure 구현 | `pnpm run typecheck`, `pnpm run lint`, `pnpm run test -- meeting-note`, `pnpm run build` | G04 착수 가능 |
 | [ ] | G04 Meeting Note Next Action Follow Up Backend | Ready | - | next action/follow-up draft API 구현 | Backend test/typecheck/lint/build | 후보만 반환 |
 | [ ] | G05 Meeting Note AI User Web | Ready | - | 생성/상세 AI UX 구현 | User Web typecheck/lint/build/E2E 또는 QA | Notion/Attio 기준 |
 | [ ] | G06 QA Review Closeout | Ready | - | REVIEW-CHECKLIST 통과와 문서 closeout | `REVIEW-CHECKLIST.md` | 07 closeout |
@@ -47,13 +47,13 @@
 
 ### G03
 
-- [ ] `POST /api/meeting-notes/ai-draft` 성공/실패 provider call log가 저장된다.
-- [ ] `POST /api/meeting-notes/stt-draft` STT provider call log가 저장된다.
-- [ ] `POST /api/meeting-notes/stt-draft` AI draft provider call log가 저장된다.
-- [ ] text 원문, transcript 전문, prompt 전문, provider raw response가 DB/log에 남지 않는다.
-- [ ] safe failure message가 사용자에게 노출된다.
-- [ ] FE가 retry 가능 여부를 판단할 수 있다.
-- [ ] provider unavailable/failed/parse failed test가 있다.
+- [x] `POST /api/meeting-notes/ai-draft` 성공/실패 provider call log가 저장된다.
+- [x] `POST /api/meeting-notes/stt-draft` STT provider call log가 저장된다.
+- [x] `POST /api/meeting-notes/stt-draft` AI draft provider call log가 저장된다.
+- [x] text 원문, transcript 전문, prompt 전문, provider raw response가 DB/log에 남지 않는다.
+- [x] safe failure message가 사용자에게 노출된다.
+- [x] FE가 retry 가능 여부를 판단할 수 있다.
+- [x] provider unavailable/failed/parse failed test가 있다.
 
 ### G04
 
@@ -95,4 +95,5 @@
 - 2026-07-26: 구현 착수 가능 문서 작성.
 - 2026-07-26: G01 코드/API/DB/FE 계약 대조 완료. `cd BE && pnpm run prisma:validate` 통과. 로컬 Node `v22.21.1`로 engine warning이 있었지만 Prisma schema validation은 성공했다.
 - 2026-07-26: G02 Prisma schema와 신규 migration 작성 완료. `cd BE && pnpm run prisma:validate`, `pnpm run prisma:generate`, `pnpm run typecheck` 통과. DB target이 Supabase host라 `migrate dev`, `migrate deploy`, `seed`는 실행하지 않았다.
-- 아직 G03~G06 코드 구현은 실행하지 않았다.
+- 2026-07-26: G03 Meeting Note AI/STT provider call log와 safe failure 구현 완료. `cd BE && pnpm run typecheck`, `pnpm run lint`, `pnpm run test -- meeting-note`, `pnpm run build` 통과.
+- 아직 G04~G06 코드 구현은 실행하지 않았다.

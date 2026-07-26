@@ -12,6 +12,13 @@ import {
   type MeetingNoteSttProvider,
 } from "@/modules/meeting-note/application/ports/meeting-note-stt.provider";
 import {
+  MEETING_NOTE_AI_PROVIDER_CALL_LOG_REPOSITORY,
+  type MeetingNoteAiProviderCallLogRepository,
+  type MeetingNoteAiProviderCallMetadata,
+  type MeetingNoteAiProviderCallOperationValue,
+  type MeetingNoteAiProviderInfo,
+} from "@/modules/meeting-note/application/ports/meeting-note-ai-provider-call-log.repository";
+import {
   MEETING_NOTE_REPOSITORY,
   MeetingNoteSourceTypeValue,
   type CompanySnapshotRecord,
@@ -22,6 +29,7 @@ import {
 } from "@/modules/meeting-note/application/ports/meeting-note.repository";
 import {
   MeetingNoteAiDraftFailedError,
+  MeetingNoteAiDraftProviderUnavailableError,
   RelatedCompanyNotFoundError,
   RelatedContactNotFoundError,
   RelatedDealNotFoundError,
@@ -34,6 +42,7 @@ const LOCAL_DATE_TIME_PATTERN =
   /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})(?::(\d{2})(?:\.(\d{1,3}))?)?$/;
 const MAX_TEXT_LENGTH = 60000;
 const MAX_AUDIO_FILE_SIZE_BYTES = 25 * 1024 * 1024;
+const MEETING_NOTE_DRAFT_TARGET_TYPE = "MEETING_NOTE_DRAFT";
 const ALLOWED_AUDIO_MIME_TYPES = new Set([
   "audio/aac",
   "audio/flac",
@@ -92,14 +101,16 @@ export interface MeetingNoteAiDraftResponse {
 // 역할 : MeetingNoteAiDraftApplicationService 회의록 AI/STT 초안 생성 use case를 조율합니다.
 @Injectable()
 export class MeetingNoteAiDraftApplicationService {
-  // 기능 : 회의록 저장소와 AI draft provider port를 주입받습니다.
+  // 기능 : 회의록 저장소, provider port, provider call log 저장소를 주입받습니다.
   constructor(
     @Inject(MEETING_NOTE_REPOSITORY)
     private readonly meetingNoteRepository: MeetingNoteRepository,
     @Inject(MEETING_NOTE_AI_DRAFT_PROVIDER)
     private readonly aiDraftProvider: MeetingNoteAiDraftProvider,
     @Inject(MEETING_NOTE_STT_PROVIDER)
-    private readonly sttProvider: MeetingNoteSttProvider
+    private readonly sttProvider: MeetingNoteSttProvider,
+    @Inject(MEETING_NOTE_AI_PROVIDER_CALL_LOG_REPOSITORY)
+    private readonly providerCallLogRepository: MeetingNoteAiProviderCallLogRepository
   ) {}
 
   // 기능 : 회의 원문 텍스트와 선택 맥락을 검증한 뒤 AI 초안 필드만 반환합니다.
@@ -111,17 +122,24 @@ export class MeetingNoteAiDraftApplicationService {
     const rawText = this.normalizeRequiredText(input.text, "text");
     const context = await this.buildContext(currentUser.id, input);
 
-    // 2. 외부 provider port를 호출해 저장 없는 회의록 본문 초안을 생성합니다.
-    const draft = await this.aiDraftProvider.createTextDraft({
-      rawText,
-      context,
-    });
+    // 2. 외부 provider 호출을 원문 없는 provider call log로 감싸서 실행합니다.
+    const draftResult = await this.executeLoggedProviderCall(
+      currentUser.id,
+      "MEETING_NOTE_TEXT_DRAFT",
+      this.aiDraftProvider.getMetadata(),
+      this.createTextDraftMetadata(rawText, context),
+      () =>
+        this.aiDraftProvider.createTextDraft({
+          rawText,
+          context,
+        })
+    );
 
     // 3. FE가 기존 회의록 생성 form에 채울 수 있는 응답으로 변환합니다.
     return {
       sourceType: MeetingNoteSourceTypeValue.TEXT_AI,
       transcript: null,
-      ...this.normalizeGeneratedDraft(draft),
+      ...this.normalizeGeneratedDraft(draftResult.draft),
     };
   }
 
@@ -134,27 +152,211 @@ export class MeetingNoteAiDraftApplicationService {
     const audioFile = this.normalizeAudioFile(input.audioFile);
     const context = await this.buildContext(currentUser.id, input);
 
-    // 2. STT provider port를 호출해 음성 파일을 transcript로 변환합니다.
-    const { transcript } = await this.sttProvider.transcribe({
-      audioFile,
-    });
-    const normalizedTranscript = this.normalizeGeneratedRequiredText(
-      transcript,
-      "transcript"
-    );
+    // 2. STT provider 호출을 음성/원문 없는 provider call log로 감싸서 실행합니다.
+    const transcription = await this.executeLoggedProviderCall(
+      currentUser.id,
+      "MEETING_NOTE_STT_TRANSCRIPTION",
+      this.sttProvider.getMetadata(),
+      this.createSttMetadata(audioFile, context),
+      async () => {
+        const result = await this.sttProvider.transcribe({
+          audioFile,
+        });
 
-    // 3. AI draft provider port를 호출해 transcript 기반의 저장 없는 회의록 본문 초안을 생성합니다.
-    const draft = await this.aiDraftProvider.createTextDraft({
-      rawText: normalizedTranscript,
-      context,
-    });
+        return {
+          transcript: this.normalizeGeneratedRequiredText(
+            result.transcript,
+            "transcript"
+          ),
+          providerCall: result.providerCall,
+        };
+      }
+    );
+    const normalizedTranscript = transcription.transcript;
+
+    // 3. transcript 기반 AI draft 호출도 transcript 원문 없는 별도 log로 기록합니다.
+    const draftResult = await this.executeLoggedProviderCall(
+      currentUser.id,
+      "MEETING_NOTE_STT_DRAFT",
+      this.aiDraftProvider.getMetadata(),
+      this.createTranscriptDraftMetadata(normalizedTranscript, context),
+      () =>
+        this.aiDraftProvider.createTextDraft({
+          rawText: normalizedTranscript,
+          context,
+        })
+    );
 
     // 4. FE가 transcript 확인과 초안 적용을 함께 처리할 수 있는 응답으로 변환합니다.
     return {
       sourceType: MeetingNoteSourceTypeValue.STT_AI,
       transcript: normalizedTranscript,
-      ...this.normalizeGeneratedDraft(draft),
+      ...this.normalizeGeneratedDraft(draftResult.draft),
     };
+  }
+
+  // 기능 : provider 호출을 PENDING/SUCCEEDED/FAILED 로그로 감싸고 safe failure로 변환합니다.
+  private async executeLoggedProviderCall<
+    T extends { readonly providerCall: MeetingNoteAiProviderCallMetadata },
+  >(
+    userId: string,
+    operation: MeetingNoteAiProviderCallOperationValue,
+    providerInfo: MeetingNoteAiProviderInfo,
+    metadataJson: Record<string, unknown>,
+    work: () => Promise<T>
+  ): Promise<T> {
+    const startedAt = new Date();
+    const callLog = await this.providerCallLogRepository.createProviderCallLog({
+      userId,
+      operation,
+      targetType: MEETING_NOTE_DRAFT_TARGET_TYPE,
+      targetId: null,
+      provider: providerInfo.provider,
+      model: providerInfo.model,
+      startedAt,
+      metadataJson,
+    });
+
+    try {
+      const result = await work();
+      const completedAt = new Date();
+
+      await this.providerCallLogRepository.markProviderCallSucceeded({
+        userId,
+        providerCallLogId: callLog.id,
+        completedAt,
+        latencyMs: this.calculateLatencyMs(startedAt, completedAt),
+        ...result.providerCall,
+      });
+
+      return result;
+    } catch (error) {
+      const failedAt = new Date();
+      const safeFailure = this.toSafeProviderFailure(error);
+
+      await this.providerCallLogRepository.markProviderCallFailed({
+        userId,
+        providerCallLogId: callLog.id,
+        failedAt,
+        latencyMs: this.calculateLatencyMs(startedAt, failedAt),
+        safeErrorCode: safeFailure.error.code,
+        safeErrorMessage: safeFailure.error.message,
+        retryable: safeFailure.retryable,
+      });
+
+      throw safeFailure.error;
+    }
+  }
+
+  // 기능 : provider 오류를 사용자 응답과 DB log에 안전한 오류로 정규화합니다.
+  private toSafeProviderFailure(error: unknown): {
+    readonly error:
+      | MeetingNoteAiDraftFailedError
+      | MeetingNoteAiDraftProviderUnavailableError;
+    readonly retryable: boolean;
+  } {
+    if (error instanceof MeetingNoteAiDraftProviderUnavailableError) {
+      return {
+        error,
+        retryable: false,
+      };
+    }
+
+    if (error instanceof MeetingNoteAiDraftFailedError) {
+      return {
+        error,
+        retryable: this.readRetryable(error),
+      };
+    }
+
+    const fallbackError = new MeetingNoteAiDraftFailedError();
+
+    return {
+      error: fallbackError,
+      retryable: false,
+    };
+  }
+
+  // 기능 : 도메인 오류 detail에서 retryable 여부만 안전하게 읽습니다.
+  private readRetryable(error: MeetingNoteAiDraftFailedError): boolean {
+    return typeof error.details?.["retryable"] === "boolean"
+      ? error.details["retryable"]
+      : false;
+  }
+
+  // 기능 : provider 호출 latency를 ms 단위의 0 이상 정수로 계산합니다.
+  private calculateLatencyMs(startedAt: Date, finishedAt: Date): number {
+    return Math.max(finishedAt.getTime() - startedAt.getTime(), 0);
+  }
+
+  // 기능 : text draft log metadata를 원문 없이 길이와 선택 맥락 count만으로 구성합니다.
+  private createTextDraftMetadata(
+    rawText: string,
+    context: MeetingNoteDraftContext
+  ): Record<string, unknown> {
+    return {
+      feature: "meeting-note",
+      source: "create-dialog",
+      inputKind: "text",
+      textLength: rawText.length,
+      contextCounts: this.createContextCounts(context),
+    };
+  }
+
+  // 기능 : STT log metadata를 음성 원문 없이 mime type과 크기 구간만으로 구성합니다.
+  private createSttMetadata(
+    audioFile: MeetingNoteDraftAudioFile,
+    context: MeetingNoteDraftContext
+  ): Record<string, unknown> {
+    return {
+      feature: "meeting-note",
+      source: "create-dialog",
+      inputKind: "audio",
+      audio: {
+        mimeType: audioFile.mimeType,
+        sizeBucket: this.toAudioSizeBucket(audioFile.size),
+      },
+      contextCounts: this.createContextCounts(context),
+    };
+  }
+
+  // 기능 : STT transcript 기반 AI draft log metadata를 transcript 원문 없이 구성합니다.
+  private createTranscriptDraftMetadata(
+    transcript: string,
+    context: MeetingNoteDraftContext
+  ): Record<string, unknown> {
+    return {
+      feature: "meeting-note",
+      source: "create-dialog",
+      inputKind: "stt_transcript",
+      transcriptLength: transcript.length,
+      contextCounts: this.createContextCounts(context),
+    };
+  }
+
+  // 기능 : provider metadata에 원문이 섞이지 않도록 선택 맥락의 개수만 반환합니다.
+  private createContextCounts(context: MeetingNoteDraftContext) {
+    return {
+      companies: context.companies.length,
+      contacts: context.contacts.length,
+      products: context.products.length,
+      deals: context.deals.length,
+    };
+  }
+
+  // 기능 : 음성 파일 크기를 원문 없는 운영 metadata 구간으로 변환합니다.
+  private toAudioSizeBucket(size: number): string {
+    const mb = 1024 * 1024;
+
+    if (size <= mb) {
+      return "0mb_1mb";
+    }
+
+    if (size <= 10 * mb) {
+      return "1mb_10mb";
+    }
+
+    return "10mb_25mb";
   }
 
   // 기능 : 사용자 선택 ID 목록을 소유권 검증된 prompt 맥락으로 변환합니다.
