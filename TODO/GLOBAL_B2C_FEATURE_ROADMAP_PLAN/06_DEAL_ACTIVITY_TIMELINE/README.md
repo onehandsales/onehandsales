@@ -1,6 +1,6 @@
 # 06 Deal Activity Timeline
 
-상태: G06 Completed / G07 Ready
+상태: Completed
 확정일: 2026-07-25
 최종 업데이트: 2026-07-26
 순서: 06
@@ -101,10 +101,10 @@ G01_PLANNING_API_DB_CONTRACT
 
 각 `/goal`은 `COMMON/GOAL-SPECS`의 상세 명세 하나만 기준으로 실행한다.
 
-G06 완료 후 현재 다음 실행 문구:
+G07 완료 후 상태:
 
 ```text
-/goal TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/06_DEAL_ACTIVITY_TIMELINE/COMMON/GOAL-SPECS/G07_QA_REVIEW_CLOSEOUT.md 기준으로 G07을 진행해줘.
+06 Deal Activity Timeline은 G01~G07 완료 상태다. 후속 기능은 별도 계획에서 결정한다.
 ```
 
 ## 8. 문서 구조

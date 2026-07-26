@@ -1,6 +1,6 @@
 # User Web TODO
 
-상태: G06 Completed
+상태: Completed
 확정일: 2026-07-25
 최종 업데이트: 2026-07-26
 

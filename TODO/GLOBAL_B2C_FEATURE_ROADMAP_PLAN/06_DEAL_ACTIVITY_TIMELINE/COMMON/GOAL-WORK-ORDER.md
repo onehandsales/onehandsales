@@ -105,8 +105,8 @@ G01_PLANNING_API_DB_CONTRACT
 - Backend/User Web 검증, ownership, redaction, transaction, mobile QA를 점검한다.
 - `COMMON/REVIEW-CHECKLIST.md` 기준으로 closeout한다.
 
-## 10. 현재 다음 실행 문구
+## 10. 현재 상태
 
 ```text
-/goal TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/06_DEAL_ACTIVITY_TIMELINE/COMMON/GOAL-SPECS/G07_QA_REVIEW_CLOSEOUT.md 기준으로 G07을 진행해줘.
+G01~G07 완료. 06 Deal Activity Timeline closeout 완료.
 ```

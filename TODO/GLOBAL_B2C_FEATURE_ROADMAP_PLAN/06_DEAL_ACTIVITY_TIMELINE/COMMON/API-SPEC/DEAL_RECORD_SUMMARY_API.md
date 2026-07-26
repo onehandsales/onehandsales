@@ -19,7 +19,7 @@ G05/G06에서 구현하며, G02~G04의 DealActivity timeline 구현이 선행된
 
 - API 이름: 딜 목록 summary 확장 API
 - API 식별자: ListDealsWithRecordSummary
-- 계약 상태: confirmed
+- 계약 상태: implemented
 - Method: GET
 - Path: `/api/deals`
 - 인증: AuthGuard
@@ -126,7 +126,7 @@ Response item 예시:
 
 - API 이름: 담당자 목록 dealCount 확장 API
 - API 식별자: ListContactsWithDealCount
-- 계약 상태: confirmed
+- 계약 상태: implemented
 - Method: GET
 - Path: `/api/contacts`
 - 인증: AuthGuard

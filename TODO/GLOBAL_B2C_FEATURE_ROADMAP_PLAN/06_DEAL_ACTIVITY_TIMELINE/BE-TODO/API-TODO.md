@@ -1,7 +1,8 @@
 # Backend API TODO
 
-상태: Confirmed
+상태: Implemented
 확정일: 2026-07-25
+구현일: 2026-07-26
 
 ## 1. 목적
 
@@ -17,9 +18,9 @@
 
 | Method | Path | 목적 | 상태 |
 |---|---|---|---|
-| `GET` | `/api/deals/:dealId/activities` | timeline 조회 | confirmed |
-| `POST` | `/api/deals/:dealId/activities` | 수동 activity 생성 | confirmed |
-| `PATCH` | `/api/deals/:dealId/activities/:activityId` | 수동 activity 수정 | confirmed |
+| `GET` | `/api/deals/:dealId/activities` | timeline 조회 | implemented |
+| `POST` | `/api/deals/:dealId/activities` | 수동 activity 생성 | implemented |
+| `PATCH` | `/api/deals/:dealId/activities/:activityId` | 수동 activity 수정 | implemented |
 
 ### Backend 작업
 
@@ -32,7 +33,7 @@
 7. 딜 생성/단계 변경/다음 행동/일정/회의록/follow-up mutation에 연결한다.
 8. ownership/redaction/transaction test를 작성한다.
 
-G01 현재 코드 대조 후 구현 메모:
+G01 현재 코드 대조 후 구현 전 메모:
 
 - `DealController`에는 새 activity route가 없고 기존 `following-action-logs`, `memo-logs` route와 충돌하지 않는다.
 - `DealApplicationService.createDeal`은 이미 초기 `DealFollowingActionLog`를 같은 transaction에서 만들므로, G03에서 `DEAL_CREATED`와 초기 `NEXT_ACTION_CREATED`를 같은 transaction에 추가한다.
@@ -41,6 +42,13 @@ G01 현재 코드 대조 후 구현 메모:
 - MeetingNote repository의 `replaceDeals`는 delete 후 recreate다. G03에서 replace 전에 기존 `MeetingNoteDeal`을 조회해 diff를 계산하고, legacy `DealFollowingActionLog` proxy 문구를 activity summary로 재사용하지 않는다.
 - Follow-up 성공/실패 activity는 `markDeliverySucceeded`/`markDeliveryFailed` transaction 안에서 생성한다. `sourceId`는 `FollowUpDeliveryAttempt.id`다.
 - activity writer는 `DealApplicationService`를 다른 module에서 호출하지 않고, transaction client를 받는 `PrismaDealActivityRepository` helper 방식으로 연결한다.
+
+G03 구현 기록:
+
+- `DealController`에 딜 활동 목록 조회, 수동 활동 생성, 수동 활동 수정 route를 추가했다.
+- `DealApplicationService`와 `PrismaDealActivityRepository`에 timeline 조회, opaque cursor, 수동 activity 생성/수정, 자동 activity writer를 구현했다.
+- 딜 생성/단계 변경/다음 행동/일정/회의록/follow-up activity 생성 경로를 transaction 기준에 맞췄다.
+- 자동 activity 수정은 차단하고, ownership/redaction/transaction test를 추가했다.
 
 ## 3. 자동 activity trigger
 

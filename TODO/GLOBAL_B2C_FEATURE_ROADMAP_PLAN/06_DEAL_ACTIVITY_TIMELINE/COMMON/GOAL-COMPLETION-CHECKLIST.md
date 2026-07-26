@@ -1,6 +1,6 @@
 # Goal Completion Checklist
 
-상태: G06 Completed / G07 Ready
+상태: Completed
 최종 업데이트: 2026-07-26
 
 ## 1. 목적
@@ -19,7 +19,7 @@
 | [x] | G04 Deal Activity User Web | Completed | 2026-07-26 | 딜 상세 timeline UX 구현 | `G04_DEAL_ACTIVITY_USER_WEB.md`, `pnpm run typecheck`, `pnpm run lint`, `pnpm run build`, `pnpm exec playwright test tests/e2e/deal-activity-timeline.spec.ts`, `pnpm run test:e2e` | G05 착수 가능 |
 | [x] | G05 Deal Record Summary Backend | Completed | 2026-07-26 | Deal/Contact list summary Backend 구현 | `G05_DEAL_RECORD_SUMMARY_BACKEND.md`, `pnpm run typecheck`, `pnpm run lint`, `pnpm run test -- deal`, `pnpm run test -- contact`, `pnpm run test -- ownership-isolation`, `pnpm run build` | G06 착수 가능 |
 | [x] | G06 Deal Record Summary User Web | Completed | 2026-07-26 | 목록 summary User Web 구현 | `G06_DEAL_RECORD_SUMMARY_USER_WEB.md`, `pnpm run typecheck`, `pnpm run lint`, `pnpm run build`, `pnpm exec playwright test tests/e2e/deal-record-summary.spec.ts`, `pnpm run test:e2e` | G07 착수 가능 |
-| [ ] | G07 QA Review Closeout | Ready |  | REVIEW-CHECKLIST 통과와 문서 closeout |  |  |
+| [x] | G07 QA Review Closeout | Completed | 2026-07-26 | REVIEW-CHECKLIST 통과와 문서 closeout | `G07_QA_REVIEW_CLOSEOUT.md`, `REVIEW-CHECKLIST.md`, Backend/User Web 전체 검증 | 06 closeout 완료 |
 
 ## 3. Goal별 체크 조건
 
@@ -132,7 +132,17 @@ G06 증거:
 
 ### G07
 
-- [ ] Backend `typecheck`, `lint`, 관련 `test`, `build`를 실행했다.
-- [ ] User Web `typecheck`, `lint`, `build`, 필요한 E2E/수동 QA를 실행했다.
-- [ ] `COMMON/REVIEW-CHECKLIST.md`를 갱신했다.
-- [ ] README, API-SPEC, BE-TODO, FE-TODO가 구현 결과와 일치한다.
+- [x] Backend `typecheck`, `lint`, 관련 `test`, `build`를 실행했다.
+- [x] User Web `typecheck`, `lint`, `build`, 필요한 E2E/수동 QA를 실행했다.
+- [x] `COMMON/REVIEW-CHECKLIST.md`를 갱신했다.
+- [x] README, API-SPEC, BE-TODO, FE-TODO가 구현 결과와 일치한다.
+
+G07 증거:
+
+- Backend 검증 통과: `pnpm run prisma:validate`, `pnpm run typecheck`, `pnpm run lint`, `pnpm run test`, `pnpm run build`
+- Backend test 결과: 56개 test suite, 288개 test 통과
+- User Web 검증 통과: `pnpm run typecheck`, `pnpm run lint`, `pnpm run build`, `pnpm run test:e2e`, `pnpm run test:e2e:mobile`
+- User Web E2E 결과: desktop 27개, mobile 6개 통과
+- `COMMON/REVIEW-CHECKLIST.md`, `README.md`, `COMMON/GOAL-SPECS/G07_QA_REVIEW_CLOSEOUT.md`에 closeout 결과를 반영했다.
+- S0/S1 blocker 없음
+- 미실행 검증 없음

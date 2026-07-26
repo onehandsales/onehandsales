@@ -1,7 +1,8 @@
 # API Spec
 
-상태: Confirmed
+상태: Implemented
 확정일: 2026-07-25
+구현일: 2026-07-26
 
 ## 1. 목적
 
@@ -22,10 +23,10 @@
 
 ## 2. 계약 상태
 
-`DEAL_ACTIVITY_API.md`는 구현 가능한 `confirmed` 계약으로 유지한다.
+`DEAL_ACTIVITY_API.md`는 G03 Backend와 G04 User Web 구현이 완료되어 `implemented` 상태다.
 `DEAL_RECORD_SUMMARY_API.md`는 G05 Backend와 G06 User Web 구현이 완료되어 `implemented` 상태다.
 
-G01에서는 현재 코드와 문서 계약을 다시 대조하고, 충돌이 있으면 구현 전에 이 API 문서를 갱신한다. G01 완료 뒤 G02부터 코드 구현에 들어간다.
+G07 closeout에서 API spec과 구현 결과가 일치함을 확인했다.
 
 ## 3. 공통 규칙
 

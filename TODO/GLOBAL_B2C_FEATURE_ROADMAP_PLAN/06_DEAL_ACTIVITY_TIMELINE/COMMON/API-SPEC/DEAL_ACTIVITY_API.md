@@ -1,7 +1,9 @@
 # Deal Activity API
 
-계약 상태: confirmed
+계약 상태: implemented
 확정일: 2026-07-25
+Backend 구현일: 2026-07-26
+User Web 구현일: 2026-07-26
 소비자: User Web
 호환성: 신규 API. 기존 Deal API와 following-action/memo API는 즉시 제거하지 않는다.
 
@@ -69,7 +71,7 @@ FOLLOW_UP
 
 - API 이름: 딜 활동 목록 조회 API
 - API 식별자: ListDealActivities
-- 계약 상태: confirmed
+- 계약 상태: implemented
 - Method: GET
 - Path: `/api/deals/:dealId/activities`
 - 인증: AuthGuard
@@ -196,7 +198,7 @@ Response 예시:
 
 - API 이름: 수동 딜 활동 생성 API
 - API 식별자: CreateManualDealActivity
-- 계약 상태: confirmed
+- 계약 상태: implemented
 - Method: POST
 - Path: `/api/deals/:dealId/activities`
 - 인증: AuthGuard
@@ -312,7 +314,7 @@ Response 예시:
 
 - API 이름: 수동 딜 활동 수정 API
 - API 식별자: UpdateManualDealActivity
-- 계약 상태: confirmed
+- 계약 상태: implemented
 - Method: PATCH
 - Path: `/api/deals/:dealId/activities/:activityId`
 - 인증: AuthGuard
