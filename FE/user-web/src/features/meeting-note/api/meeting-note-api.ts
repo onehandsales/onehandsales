@@ -1,14 +1,18 @@
 import type {
+  CreateMeetingNoteFollowUpDraftInput,
   CreateMeetingNoteInput,
+  CreateMeetingNoteNextActionDraftInput,
   CreateMeetingNoteSttAiDraftInput,
   CreateMeetingNoteTextAiDraftInput,
   MeetingNote,
   MeetingNoteAiDraftResponse,
+  MeetingNoteFollowUpDraftResponse,
   MeetingNoteFilterCompanyListResponse,
   MeetingNoteFilterContactListResponse,
   LinkMeetingNoteDealsInput,
   MeetingNoteListParams,
   MeetingNoteListResponse,
+  MeetingNoteNextActionDraftResponse,
   UpdateMeetingNoteInput,
 } from "@/features/meeting-note/types/meeting-note";
 import { apiClient } from "@/lib/api-client";
@@ -75,6 +79,36 @@ export function createMeetingNoteSttAiDraft(
     method: "POST",
     body: formData,
   });
+}
+
+// 기능 : 저장된 회의록으로 다음 행동 후보를 생성하되 DB 저장은 하지 않습니다.
+export function createMeetingNoteNextActionDraft(
+  input: CreateMeetingNoteNextActionDraftInput
+) {
+  const { meetingNoteId, ...body } = input;
+
+  return apiClient<MeetingNoteNextActionDraftResponse>(
+    `/api/meeting-notes/${meetingNoteId}/next-actions/draft`,
+    {
+      method: "POST",
+      body: compactBody(body),
+    }
+  );
+}
+
+// 기능 : 저장된 회의록으로 follow-up 문안 초안을 생성하되 DB 저장은 하지 않습니다.
+export function createMeetingNoteFollowUpDraft(
+  input: CreateMeetingNoteFollowUpDraftInput
+) {
+  const { meetingNoteId, ...body } = input;
+
+  return apiClient<MeetingNoteFollowUpDraftResponse>(
+    `/api/meeting-notes/${meetingNoteId}/follow-up-draft`,
+    {
+      method: "POST",
+      body: compactBody(body),
+    }
+  );
 }
 
 // 기능 : 회의록을 수정합니다.

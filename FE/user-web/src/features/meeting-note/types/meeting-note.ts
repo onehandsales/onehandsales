@@ -190,6 +190,54 @@ export type MeetingNoteAiDraftResponse = {
   readonly requiredAction: string | null;
 };
 
+export type MeetingNoteNextActionDraftConfidence = "LOW" | "MEDIUM" | "HIGH";
+
+export type CreateMeetingNoteNextActionDraftInput = {
+  readonly meetingNoteId: string;
+  readonly dealId?: string;
+  readonly maxCandidates?: number;
+};
+
+export type MeetingNoteNextActionDraftItem = {
+  readonly clientSuggestionId: string;
+  readonly title: string;
+  readonly memo: string | null;
+  readonly recommendedDueDate: string | null;
+  readonly dealId: string | null;
+  readonly confidence: MeetingNoteNextActionDraftConfidence;
+  readonly reason: string | null;
+};
+
+export type MeetingNoteNextActionDraftResponse = {
+  readonly items: MeetingNoteNextActionDraftItem[];
+};
+
+export type MeetingNoteFollowUpDraftChannel = "EMAIL" | "SMS";
+
+export type MeetingNoteFollowUpDraftTone = "POLITE" | "FRIENDLY" | "FORMAL";
+
+export type CreateMeetingNoteFollowUpDraftInput = {
+  readonly meetingNoteId: string;
+  readonly channel: MeetingNoteFollowUpDraftChannel;
+  readonly recipientContactId?: string;
+  readonly dealId?: string;
+  readonly tone?: MeetingNoteFollowUpDraftTone;
+  readonly language?: string;
+};
+
+export type MeetingNoteFollowUpDraftSuggestedRecipient = {
+  readonly contactId: string;
+  readonly displayName: string;
+};
+
+export type MeetingNoteFollowUpDraftResponse = {
+  readonly channel: MeetingNoteFollowUpDraftChannel;
+  readonly subject: string | null;
+  readonly body: string;
+  readonly suggestedRecipient: MeetingNoteFollowUpDraftSuggestedRecipient | null;
+  readonly copyableText: string;
+};
+
 export type UpdateMeetingNoteInput = {
   readonly meetingNoteId: string;
   readonly sourceType?: "MANUAL";

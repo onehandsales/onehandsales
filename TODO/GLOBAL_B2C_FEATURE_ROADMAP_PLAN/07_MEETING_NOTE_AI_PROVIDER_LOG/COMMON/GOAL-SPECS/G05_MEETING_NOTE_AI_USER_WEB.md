@@ -1,6 +1,6 @@
 # G05 Meeting Note AI User Web
 
-상태: Ready
+상태: Completed
 목표: 회의록 AI 초안, 다음 행동 후보, follow-up draft UX 구현
 
 ## 1. 목적
@@ -83,3 +83,37 @@ pnpm run test:e2e:mobile
 - User Web이 `/admin/api/*`를 호출하지 않는다.
 - 코드 작업 시 한글 주석이 추가됐다.
 - `COMMON/GOAL-COMPLETION-CHECKLIST.md`의 G05 항목이 갱신됐다.
+
+## 10. 구현 결과
+
+- `meeting-note-api.ts`, `meeting-note.ts`, `use-meeting-note-mutations.ts`에 next action draft/follow-up draft API 계약을 추가했다.
+- 생성 모달 AI/STT 실패 UX에 safe message와 retryable 기반 다시 시도 버튼을 추가했다.
+- STT transcript는 생성 모달의 접을 수 있는 `임시 확인` 영역에만 표시한다.
+- 저장 request는 기존 `toCreateMeetingNoteInput` whitelist를 유지해 transcript를 포함하지 않는다.
+- 회의록 상세에 `AI 후속 작업` section을 추가했다.
+- 다음 행동 후보는 편집 후 기존 `POST /api/deals/:dealId/following-action-logs` 흐름으로 저장한다.
+- Follow-up 초안은 이메일/SMS 채널과 어조를 선택해 생성하고, subject/body를 수정한 뒤 복사할 수 있다.
+- 모바일 QA에 회의록 상세 route를 추가해 390px/360px overflow 검증에 포함했다.
+
+## 11. 검증 결과
+
+```powershell
+cd FE/user-web
+pnpm run typecheck
+pnpm run lint
+pnpm run build
+pnpm run test:e2e:mobile
+```
+
+결과:
+
+- `pnpm run typecheck` 통과
+- `pnpm run lint` 통과
+- `pnpm run build` 통과
+- `pnpm run test:e2e:mobile` 통과
+- `rg -n "/admin/api" FE/user-web/src` 확인 결과 API client 차단 로직 외 호출 없음
+- `git diff --check` 통과
+
+비고:
+
+- `pnpm run build`에서 Vite chunk size warning이 표시됐지만 build 실패는 아니다.

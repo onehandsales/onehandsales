@@ -30,6 +30,7 @@ import {
   useDealProductOptions,
 } from "@/features/deal/hooks/use-deal-entity-options";
 import { useDealList } from "@/features/deal/hooks/use-deal-list";
+import { MeetingNoteAiFollowUpSection } from "@/features/meeting-note/components/meeting-note-ai-follow-up-section";
 import {
   EntityMultiSelectField,
   type EntitySelectOption,
@@ -331,6 +332,8 @@ function MeetingNoteDetailBody({ detail }: { readonly detail: MeetingNote }) {
           <MeetingNoteTextPanel title="필요 액션" value={detail.requiredAction} />
         </div>
       </div>
+
+      <MeetingNoteAiFollowUpSection detail={detail} />
     </>
   );
 }

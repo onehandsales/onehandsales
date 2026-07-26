@@ -151,6 +151,19 @@ export function getApiErrorMessage(error: unknown): string {
   return "요청을 처리하지 못했어요. 다시 시도해 주세요.";
 }
 
+// 기능 : Backend safe failure 응답의 retryable 값을 사용자 재시도 버튼 노출 기준으로 변환합니다.
+export function isApiErrorRetryable(error: unknown): boolean {
+  if (!(error instanceof ApiClientError)) {
+    return false;
+  }
+
+  return (
+    getBooleanField(error.raw, "retryable") ??
+    getBooleanField(getNestedError(error.raw), "retryable") ??
+    false
+  );
+}
+
 function getConflictErrorMessage(code: string) {
   switch (code) {
     case "GoogleCalendarConnectionNotFound":
@@ -343,6 +356,16 @@ function getStringField(value: unknown, field: string): string | null {
   }
 
   return null;
+}
+
+function getBooleanField(value: unknown, field: string): boolean | null {
+  if (!isRecord(value)) {
+    return null;
+  }
+
+  const fieldValue = value[field];
+
+  return typeof fieldValue === "boolean" ? fieldValue : null;
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {

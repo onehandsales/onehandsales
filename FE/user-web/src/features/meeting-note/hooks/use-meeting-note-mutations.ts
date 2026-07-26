@@ -1,6 +1,8 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   createMeetingNote,
+  createMeetingNoteFollowUpDraft,
+  createMeetingNoteNextActionDraft,
   createMeetingNoteSttAiDraft,
   createMeetingNoteTextAiDraft,
   deleteMeetingNote,
@@ -10,7 +12,9 @@ import {
 import { dealQueryKeys } from "@/features/deal/api/deal-query-keys";
 import { meetingNoteQueryKeys } from "@/features/meeting-note/api/meeting-note-query-keys";
 import type {
+  CreateMeetingNoteFollowUpDraftInput,
   CreateMeetingNoteInput,
+  CreateMeetingNoteNextActionDraftInput,
   CreateMeetingNoteSttAiDraftInput,
   CreateMeetingNoteTextAiDraftInput,
   LinkMeetingNoteDealsInput,
@@ -42,6 +46,22 @@ export function useCreateMeetingNoteSttAiDraftMutation() {
   return useMutation({
     mutationFn: (input: CreateMeetingNoteSttAiDraftInput) =>
       createMeetingNoteSttAiDraft(input),
+  });
+}
+
+// 기능 : 저장된 회의록의 다음 행동 후보 생성 mutation을 제공합니다.
+export function useCreateMeetingNoteNextActionDraftMutation() {
+  return useMutation({
+    mutationFn: (input: CreateMeetingNoteNextActionDraftInput) =>
+      createMeetingNoteNextActionDraft(input),
+  });
+}
+
+// 기능 : 저장된 회의록의 follow-up 초안 생성 mutation을 제공합니다.
+export function useCreateMeetingNoteFollowUpDraftMutation() {
+  return useMutation({
+    mutationFn: (input: CreateMeetingNoteFollowUpDraftInput) =>
+      createMeetingNoteFollowUpDraft(input),
   });
 }
 

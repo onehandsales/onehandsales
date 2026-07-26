@@ -17,7 +17,7 @@
 | [x] | G02 AI Provider Log DB Prisma | Completed | 2026-07-26 | Prisma enum/field/index/migration 구현 | `BE/prisma/schema.prisma`, `20260726020000_add_meeting_note_ai_provider_log_target`, `pnpm run prisma:validate`, `pnpm run prisma:generate`, `pnpm run typecheck` | 원격 DB target이라 migrate/seed 미실행 |
 | [x] | G03 Meeting Note AI Log Backend | Completed | 2026-07-26 | ai-draft/stt-draft provider log와 safe failure 구현 | `pnpm run typecheck`, `pnpm run lint`, `pnpm run test -- meeting-note`, `pnpm run build` | G04 착수 가능 |
 | [x] | G04 Meeting Note Next Action Follow Up Backend | Completed | 2026-07-26 | next action/follow-up draft API 구현 | `pnpm run typecheck`, `pnpm run lint`, `pnpm run test -- meeting-note`, `pnpm run test -- deal`, `pnpm run build` | 후보만 반환 |
-| [ ] | G05 Meeting Note AI User Web | Ready | - | 생성/상세 AI UX 구현 | User Web typecheck/lint/build/E2E 또는 QA | Notion/Attio 기준 |
+| [x] | G05 Meeting Note AI User Web | Completed | 2026-07-26 | 생성/상세 AI UX 구현 | `pnpm run typecheck`, `pnpm run lint`, `pnpm run build`, `pnpm run test:e2e:mobile`, `git diff --check` | G06 착수 가능 |
 | [ ] | G06 QA Review Closeout | Ready | - | REVIEW-CHECKLIST 통과와 문서 closeout | `REVIEW-CHECKLIST.md` | 07 closeout |
 
 ## 3. Goal별 체크 조건
@@ -68,14 +68,14 @@
 
 ### G05
 
-- [ ] 회의록 생성 모달에서 STT transcript가 임시 표시만 된다.
-- [ ] 저장 API body에 transcript가 들어가지 않는다.
-- [ ] AI/STT 실패 시 직접 작성 흐름이 유지된다.
-- [ ] 회의록 상세에 AI 후속 작업 section이 있다.
-- [ ] 다음 행동 후보를 확인/수정 후 기존 following-action API로 저장할 수 있다.
-- [ ] follow-up draft를 확인/수정/복사할 수 있다.
-- [ ] User Web이 `/admin/api/*`를 호출하지 않는다.
-- [ ] 모바일 390px/360px에서 버튼/텍스트가 겹치지 않는다.
+- [x] 회의록 생성 모달에서 STT transcript가 임시 표시만 된다.
+- [x] 저장 API body에 transcript가 들어가지 않는다.
+- [x] AI/STT 실패 시 직접 작성 흐름이 유지된다.
+- [x] 회의록 상세에 AI 후속 작업 section이 있다.
+- [x] 다음 행동 후보를 확인/수정 후 기존 following-action API로 저장할 수 있다.
+- [x] follow-up draft를 확인/수정/복사할 수 있다.
+- [x] User Web이 `/admin/api/*`를 호출하지 않는다.
+- [x] 모바일 390px/360px에서 버튼/텍스트가 겹치지 않는다.
 
 ### G06
 
@@ -97,4 +97,5 @@
 - 2026-07-26: G02 Prisma schema와 신규 migration 작성 완료. `cd BE && pnpm run prisma:validate`, `pnpm run prisma:generate`, `pnpm run typecheck` 통과. DB target이 Supabase host라 `migrate dev`, `migrate deploy`, `seed`는 실행하지 않았다.
 - 2026-07-26: G03 Meeting Note AI/STT provider call log와 safe failure 구현 완료. `cd BE && pnpm run typecheck`, `pnpm run lint`, `pnpm run test -- meeting-note`, `pnpm run build` 통과.
 - 2026-07-26: G04 Meeting Note next action/follow-up draft Backend 구현 완료. `cd BE && pnpm run typecheck`, `pnpm run lint`, `pnpm run test -- meeting-note`, `pnpm run test -- deal`, `pnpm run build` 통과.
-- 아직 G05~G06 코드 구현은 실행하지 않았다.
+- 2026-07-26: G05 Meeting Note AI User Web 구현 완료. `cd FE/user-web && pnpm run typecheck`, `pnpm run lint`, `pnpm run build`, `pnpm run test:e2e:mobile` 통과. `rg -n "/admin/api" FE/user-web/src` 확인 결과 API client 차단 로직 외 호출 없음. `git diff --check` 통과.
+- 아직 G06 closeout은 실행하지 않았다.

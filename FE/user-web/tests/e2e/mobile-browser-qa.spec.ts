@@ -42,6 +42,12 @@ const MOBILE_ROUTES: ReadonlyArray<{
     expectedText: "RQA002 모바일 회의록",
     hasMobileHeader: true,
   },
+  // 기능 : G05 회의록 상세 AI 후속 작업 섹션의 모바일 overflow를 함께 확인합니다.
+  {
+    path: "/app/meeting-notes/meeting-note-mobile-001",
+    expectedText: "AI 후속 작업",
+    hasMobileHeader: false,
+  },
   {
     path: "/app/business-cards",
     expectedText: MOBILE_LONG_FIXTURE.contactName,

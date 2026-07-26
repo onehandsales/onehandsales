@@ -1,6 +1,6 @@
 # User Web TODO
 
-상태: Confirmed
+상태: Completed
 확정일: 2026-07-26
 
 ## 1. 목적
@@ -82,3 +82,27 @@ pnpm run build
 pnpm run test:e2e
 pnpm run test:e2e:mobile
 ```
+
+## 8. 구현 결과
+
+- User Web meeting-note API client/type/mutation에 next action draft와 follow-up draft 계약을 추가했다.
+- 회의록 생성 dialog/page에서 AI/STT 실패 시 safe message와 retryable 다시 시도를 제공한다.
+- STT transcript는 접을 수 있는 임시 확인 영역에만 표시하고 저장 request body에는 포함하지 않는다.
+- 회의록 상세에 `AI 후속 작업` section을 추가했다.
+- 다음 행동 후보는 사용자가 확인/수정한 뒤 기존 딜 following-action 저장 API로 저장한다.
+- Follow-up 초안은 이메일/SMS 채널과 어조를 선택해 생성하고, 수정 후 복사할 수 있다.
+- 모바일 QA route에 회의록 상세를 포함했다.
+
+## 9. 검증 결과
+
+- `pnpm run typecheck` 통과
+- `pnpm run lint` 통과
+- `pnpm run build` 통과
+- `pnpm run test:e2e:mobile` 통과
+- `rg -n "/admin/api" FE/user-web/src` 확인 결과 API client 차단 로직 외 호출 없음
+- `git diff --check` 통과
+
+비고:
+
+- `pnpm run build`에서 Vite chunk size warning이 표시됐지만 build 실패는 아니다.
+- 전체 `pnpm run test:e2e`는 G06 closeout에서 Backend/User Web 전체 검증과 함께 실행한다.

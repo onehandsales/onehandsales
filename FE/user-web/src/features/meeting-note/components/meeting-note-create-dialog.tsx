@@ -48,7 +48,7 @@ import type {
   MeetingNoteAiDraftResponse,
   MeetingNoteSourceType,
 } from "@/features/meeting-note/types/meeting-note";
-import { getApiErrorMessage } from "@/lib/api-client";
+import { getApiErrorMessage, isApiErrorRetryable } from "@/lib/api-client";
 import { cn } from "@/utils/cn";
 
 type MeetingNoteCreateDialogProps = {
@@ -61,6 +61,8 @@ type MeetingNoteCreateDialogProps = {
   readonly onExpand?: (values: MeetingNoteCreateFormValues) => void;
   readonly onResizeStart?: () => void;
 };
+
+type MeetingNoteDraftRequestKind = "STT" | "TEXT";
 
 export type EntitySelectOption = {
   readonly id: string;
@@ -98,7 +100,10 @@ export function MeetingNoteCreateDialog({
   const [rawDraftText, setRawDraftText] = useState("");
   const [audioFile, setAudioFile] = useState<File | null>(null);
   const [transcript, setTranscript] = useState<string | null>(null);
+  const [isTranscriptOpen, setIsTranscriptOpen] = useState(false);
   const [draftClientError, setDraftClientError] = useState<string | null>(null);
+  const [lastDraftRequestKind, setLastDraftRequestKind] =
+    useState<MeetingNoteDraftRequestKind | null>(null);
   const {
     register,
     control,
@@ -140,7 +145,9 @@ export function MeetingNoteCreateDialog({
       setRawDraftText("");
       setAudioFile(null);
       setTranscript(null);
+      setIsTranscriptOpen(false);
       setDraftClientError(null);
+      setLastDraftRequestKind(null);
       resetTextAiDraftMutation();
       resetSttAiDraftMutation();
     }
@@ -225,6 +232,7 @@ export function MeetingNoteCreateDialog({
     });
     setDraftSourceType(draft.sourceType);
     setTranscript(draft.transcript);
+    setIsTranscriptOpen(Boolean(draft.transcript));
     setDraftClientError(null);
   };
 
@@ -262,6 +270,7 @@ export function MeetingNoteCreateDialog({
     }
 
     setDraftClientError(null);
+    setLastDraftRequestKind("TEXT");
     textAiDraftMutation.reset();
     sttAiDraftMutation.reset();
 
@@ -289,6 +298,7 @@ export function MeetingNoteCreateDialog({
     }
 
     setDraftClientError(null);
+    setLastDraftRequestKind("STT");
     textAiDraftMutation.reset();
     sttAiDraftMutation.reset();
 
@@ -314,6 +324,17 @@ export function MeetingNoteCreateDialog({
   const isDraftPending =
     textAiDraftMutation.isPending || sttAiDraftMutation.isPending;
   const draftApiError = textAiDraftMutation.error ?? sttAiDraftMutation.error;
+  // 기능 : 마지막 AI 초안 요청을 현재 form 값으로 다시 실행합니다.
+  const onRetryDraft = () => {
+    if (lastDraftRequestKind === "TEXT") {
+      void onCreateTextAiDraft();
+      return;
+    }
+
+    if (lastDraftRequestKind === "STT") {
+      void onCreateSttAiDraft();
+    }
+  };
 
   const panel = (
     <section
@@ -601,12 +622,32 @@ export function MeetingNoteCreateDialog({
 
             {transcript ? (
               <div className="grid gap-1.5 rounded-md border border-[#D8E0EA] bg-white p-3">
-                <span className="text-[12px] font-semibold text-[#374151]">
-                  녹취 텍스트
-                </span>
-                <p className="max-h-24 overflow-y-auto whitespace-pre-wrap text-[13px] leading-5 text-[#4B5563]">
-                  {transcript}
-                </p>
+                <button
+                  aria-expanded={isTranscriptOpen}
+                  className="flex min-w-0 items-center justify-between gap-2 text-left"
+                  type="button"
+                  onClick={() => setIsTranscriptOpen((current) => !current)}
+                >
+                  <span className="flex min-w-0 items-center gap-2">
+                    <span className="truncate text-[12px] font-semibold text-[#374151]">
+                      녹취 텍스트
+                    </span>
+                    <span className="rounded-full bg-[#EFF6FF] px-2 py-0.5 text-[11px] font-semibold text-[#1F4EF5]">
+                      임시 확인
+                    </span>
+                  </span>
+                  <ChevronDown
+                    className={cn(
+                      "h-4 w-4 shrink-0 text-[#9CA3AF] transition-transform",
+                      isTranscriptOpen && "rotate-180"
+                    )}
+                  />
+                </button>
+                {isTranscriptOpen ? (
+                  <p className="max-h-24 overflow-y-auto whitespace-pre-wrap break-words text-[13px] leading-5 text-[#4B5563]">
+                    {transcript}
+                  </p>
+                ) : null}
               </div>
             ) : null}
           </div>
@@ -652,7 +693,13 @@ export function MeetingNoteCreateDialog({
 
         {draftApiError ? (
           <ErrorState
+            className="flex-wrap"
             message={getApiErrorMessage(draftApiError)}
+            onRetry={
+              isApiErrorRetryable(draftApiError) && lastDraftRequestKind
+                ? onRetryDraft
+                : undefined
+            }
             title="AI 정리 실패"
             variant="inline"
           />
