@@ -1,7 +1,8 @@
 # User Web TODO
 
-상태: Confirmed
+상태: G06 Completed
 확정일: 2026-07-25
+최종 업데이트: 2026-07-26
 
 ## 1. 목적
 
@@ -108,3 +109,23 @@ pnpm run test:e2e:mobile
 - 딜 목록 summary가 API 응답 기준으로 표시된다.
 - 담당자 dealCount가 API 응답 기준으로 표시된다.
 - 모바일에서 텍스트와 버튼이 겹치지 않는다.
+
+## 6. G06 구현 기록
+
+- `DealListItem`에 `products`, `latestActivity` summary type을 반영했다.
+- `ContactListItem`에 `dealCount` type을 반영했다.
+- `/app/deals` desktop/mobile 목록에 제품 summary와 최신 activity를 표시했다.
+- `/app/contacts` desktop/mobile 목록에 연결 딜 수를 표시했다.
+- latest activity가 없으면 `updatedAt` 또는 기존 following action으로 summary를 꾸미지 않는다.
+- G06 E2E에서 desktop 표시, 390px/360px 모바일 overflow, `pageSize: 15` 응답 계약을 검증했다.
+
+검증 통과:
+
+```powershell
+cd FE/user-web
+pnpm run typecheck
+pnpm run lint
+pnpm run build
+pnpm exec playwright test tests/e2e/deal-record-summary.spec.ts
+pnpm run test:e2e
+```

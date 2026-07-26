@@ -1,7 +1,8 @@
 # 06 Deal Activity Timeline
 
-상태: Implementation-ready Plan
+상태: G06 Completed / G07 Ready
 확정일: 2026-07-25
+최종 업데이트: 2026-07-26
 순서: 06
 성격: Deal 중심 activity 정본 + 상세 timeline + record summary 기반 계획
 결정 상태: 사용자 결정과 `COMMON/DECISION-LOG.md` 06 baseline 반영
@@ -49,7 +50,7 @@
 | 수동 activity 삭제 | 1차 제외 | Trust/policy, retention, 감사 기준과 묶어 후속으로 결정한다. |
 | 자동 activity 수정/삭제 | 제외 | 시스템 이력 정합성을 위해 수정/삭제하지 않는다. |
 | 메모 activity 통합 | 후속 | 민감정보/원문 노출 정책 확정 뒤 별도 결정한다. |
-| 목록 summary | 후속 goal | DealActivity 정본 뒤 G05/G06에서 다룬다. |
+| 목록 summary | 포함 | DealActivity 정본 뒤 G05/G06에서 구현했다. |
 
 ## 5. 자동 activity 기준
 
@@ -100,10 +101,10 @@ G01_PLANNING_API_DB_CONTRACT
 
 각 `/goal`은 `COMMON/GOAL-SPECS`의 상세 명세 하나만 기준으로 실행한다.
 
-G02 완료 후 현재 다음 실행 문구:
+G06 완료 후 현재 다음 실행 문구:
 
 ```text
-/goal TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/06_DEAL_ACTIVITY_TIMELINE/COMMON/GOAL-SPECS/G03_DEAL_ACTIVITY_BACKEND.md 기준으로 G03을 구현해줘.
+/goal TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/06_DEAL_ACTIVITY_TIMELINE/COMMON/GOAL-SPECS/G07_QA_REVIEW_CLOSEOUT.md 기준으로 G07을 진행해줘.
 ```
 
 ## 8. 문서 구조

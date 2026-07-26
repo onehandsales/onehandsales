@@ -533,7 +533,7 @@ async function handleApiRequest(
   }
 
   if (pathname === "/api/deals" && method === "GET") {
-    return json(paginated(store.deals.map(toDealListItem), url));
+    return json(paginated(store.deals.map((deal) => toDealListItem(store, deal)), url));
   }
 
   if (pathname === "/api/deals" && method === "POST") {
@@ -1025,6 +1025,7 @@ function createStore(): UserWebApiMockStore {
     contactDepartment,
     contactJobGrade,
     createdAt: NOW,
+    dealCount: 1,
     email: MOBILE_LONG_FIXTURE.email,
     id: "contact-mobile-001",
     mobile: MOBILE_LONG_FIXTURE.phone,
@@ -1556,6 +1557,7 @@ function createContact(store: UserWebApiMockStore, body: unknown) {
     contactDepartment: store.contactDepartment,
     contactJobGrade: store.contactJobGrade,
     createdAt: now(),
+    dealCount: 0,
     email: stringField(body, "email") ?? MOBILE_LONG_FIXTURE.email,
     id: nextId(store, "contact"),
     mobile: stringField(body, "mobile") ?? MOBILE_LONG_FIXTURE.phone,
@@ -2761,7 +2763,9 @@ function toDealProduct(product: MutableRecord | undefined) {
   };
 }
 
-function toDealListItem(deal: MutableRecord) {
+function toDealListItem(store: UserWebApiMockStore, deal: MutableRecord) {
+  const dealId = stringField(deal, "id") ?? "deal-mobile-001";
+
   return {
     companies: Array.isArray(deal.companies) ? deal.companies : [],
     contacts: Array.isArray(deal.contacts) ? deal.contacts : [],
@@ -2771,10 +2775,42 @@ function toDealListItem(deal: MutableRecord) {
     dealStatus: stringField(deal, "dealStatus") ?? "INITIAL_CONTACT",
     dealStatusLabel: stringField(deal, "dealStatusLabel") ?? DEAL_STATUS_LABEL.INITIAL_CONTACT,
     expectedEndDate: stringField(deal, "expectedEndDate") ?? "2026-08-31",
-    id: stringField(deal, "id") ?? "deal-mobile-001",
+    id: dealId,
+    latestActivity: toDealLatestActivitySummary(store, dealId),
     latestFollowingAction: deal.latestFollowingAction ?? null,
     nextFollowingAction: deal.nextFollowingAction ?? null,
+    products: Array.isArray(deal.products)
+      ? deal.products.filter(isRecord).map(toDealProductSummary)
+      : [],
     updatedAt: stringField(deal, "updatedAt") ?? NOW,
+  };
+}
+
+function toDealProductSummary(product: MutableRecord) {
+  return {
+    id: stringField(product, "id") ?? "product-mobile-001",
+    isDeleted: product.isDeleted === true,
+    productCategory: nullableNestedRecord(product.productCategory),
+    productName: stringField(product, "productName") ?? "RQA002 모바일 상품",
+    productStatus: nullableNestedRecord(product.productStatus),
+  };
+}
+
+function toDealLatestActivitySummary(store: UserWebApiMockStore, dealId: string) {
+  const latestActivity = store.dealActivities
+    .filter((activity) => stringField(activity, "dealId") === dealId)
+    .sort(compareDealActivityDesc)[0];
+
+  if (!latestActivity) {
+    return null;
+  }
+
+  return {
+    activityType: stringField(latestActivity, "activityType") ?? "NOTE",
+    id: stringField(latestActivity, "id") ?? "deal-activity-mobile-001",
+    occurredAt: stringField(latestActivity, "occurredAt") ?? NOW,
+    summary: stringField(latestActivity, "summary"),
+    title: stringField(latestActivity, "title") ?? "딜 활동",
   };
 }
 
@@ -2803,10 +2839,11 @@ function summarizeMeetingItems(value: unknown, labelKey: string) {
 
 function paginated<TItem>(items: readonly TItem[], url: URL) {
   const page = Number(url.searchParams.get("page") ?? "1");
-  const pageSize = Number(url.searchParams.get("pageSize") ?? "20");
+  const pageSize = Number(url.searchParams.get("pageSize") ?? "15");
+  const offset = Math.max(page - 1, 0) * pageSize;
 
   return {
-    items: [...items],
+    items: items.slice(offset, offset + pageSize),
     page,
     pageSize,
     totalCount: items.length,
@@ -2932,6 +2969,10 @@ function nestedId(value: unknown) {
 
 function nestedRecord(value: unknown): MutableRecord {
   return isRecord(value) ? value : {};
+}
+
+function nullableNestedRecord(value: unknown): MutableRecord | null {
+  return isRecord(value) ? value : null;
 }
 
 function isPublicApiRequest(pathname: string) {

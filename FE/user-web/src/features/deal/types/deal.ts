@@ -84,6 +84,15 @@ export type DealActivity = {
   readonly updatedAt: string;
 };
 
+// 기능 : 딜 목록에 표시하는 최신 activity summary입니다.
+export type DealLatestActivitySummary = {
+  readonly id: string;
+  readonly activityType: DealActivityType;
+  readonly title: string;
+  readonly summary: string | null;
+  readonly occurredAt: string;
+};
+
 export type DealActivityListResponse = {
   readonly items: DealActivity[];
   readonly nextCursor: string | null;
@@ -189,6 +198,21 @@ export type DealProduct = {
   };
 };
 
+// 기능 : 딜 목록 product summary는 가격 원문 없이 관계 판단에 필요한 값만 사용합니다.
+export type DealProductSummary = {
+  readonly id: string;
+  readonly productName: string;
+  readonly isDeleted: boolean;
+  readonly productCategory: {
+    readonly id: string;
+    readonly categoryName: string;
+  } | null;
+  readonly productStatus: {
+    readonly id: string;
+    readonly statusName: string;
+  } | null;
+};
+
 export type LatestFollowingAction = {
   readonly id: string;
   readonly followingAction: string;
@@ -211,7 +235,7 @@ export type DealStageCountsResponse = {
   readonly items: DealStageCount[];
 };
 
-// 기능 : 딜 목록 item — products 없음
+// 기능 : 딜 목록 item — Backend list summary 응답을 그대로 표시합니다.
 export type DealListItem = {
   readonly id: string;
   readonly dealName: string;
@@ -221,6 +245,8 @@ export type DealListItem = {
   readonly expectedEndDate: string;
   readonly companies: DealCompany[];
   readonly contacts: DealContact[];
+  readonly products?: readonly DealProductSummary[];
+  readonly latestActivity?: DealLatestActivitySummary | null;
   readonly latestFollowingAction: LatestFollowingAction | null;
   readonly nextFollowingAction: NextFollowingAction | null;
   readonly createdAt: string;

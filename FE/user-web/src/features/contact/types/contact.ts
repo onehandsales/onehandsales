@@ -7,6 +7,7 @@ export type ContactListItem = {
   readonly email: string;
   readonly contactDepartment: { readonly id: string; readonly departmentName: string };
   readonly contactJobGrade: { readonly id: string; readonly jobGradeName: string };
+  readonly dealCount?: number;
   readonly createdAt: string;
 };
 

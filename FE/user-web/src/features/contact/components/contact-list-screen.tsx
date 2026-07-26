@@ -6,6 +6,7 @@ import {
   ChevronDown,
   Download,
   IdCard,
+  Link2,
   Mail,
   Phone,
   Plus,
@@ -77,13 +78,14 @@ const CONTACT_SORT_OPTIONS: Array<{
 const CONTACT_TABLE_COLUMNS = [
   { id: "username", defaultWidth: 180, minWidth: 145, maxWidth: 360 },
   { id: "company", defaultWidth: 190, minWidth: 155 },
+  { id: "dealCount", defaultWidth: 105, minWidth: 88 },
   { id: "department", defaultWidth: 140, minWidth: 105 },
   { id: "jobGrade", defaultWidth: 120, minWidth: 95 },
   { id: "mobile", defaultWidth: 160, minWidth: 135 },
   { id: "email", defaultWidth: 220, minWidth: 165 },
   { id: "createdAt", defaultWidth: 130, minWidth: 115 },
 ] satisfies readonly ResizableTableColumn[];
-const CONTACT_TABLE_COLUMNS_STORAGE_KEY = "onehand.table.contacts.columns";
+const CONTACT_TABLE_COLUMNS_STORAGE_KEY = "onehand.table.contacts.columns.v2";
 const CONTACT_LIST_TABLE_ROW_CLASS_NAME = cn(
   LIST_TABLE_ROW_CLASS_NAME,
   "h-12",
@@ -686,32 +688,38 @@ export function ContactListScreen({
                 회사
               </ListTableHeaderCell>
               <ListTableHeaderCell
+                icon={Link2}
+                {...getHeaderCellResizeProps("dealCount", 2)}
+              >
+                딜
+              </ListTableHeaderCell>
+              <ListTableHeaderCell
                 icon={BriefcaseBusiness}
-                {...getHeaderCellResizeProps("department", 2)}
+                {...getHeaderCellResizeProps("department", 3)}
               >
                 부서
               </ListTableHeaderCell>
               <ListTableHeaderCell
                 icon={IdCard}
-                {...getHeaderCellResizeProps("jobGrade", 3)}
+                {...getHeaderCellResizeProps("jobGrade", 4)}
               >
                 직급
               </ListTableHeaderCell>
               <ListTableHeaderCell
                 icon={Phone}
-                {...getHeaderCellResizeProps("mobile", 4)}
+                {...getHeaderCellResizeProps("mobile", 5)}
               >
                 전화
               </ListTableHeaderCell>
               <ListTableHeaderCell
                 icon={Mail}
-                {...getHeaderCellResizeProps("email", 5)}
+                {...getHeaderCellResizeProps("email", 6)}
               >
                 이메일
               </ListTableHeaderCell>
               <ListTableHeaderCell
                 icon={Activity}
-                {...getHeaderCellResizeProps("createdAt", 6)}
+                {...getHeaderCellResizeProps("createdAt", 7)}
               >
                 활동
               </ListTableHeaderCell>
@@ -943,6 +951,7 @@ function ContactMobileCard({
   readonly displayTimeZone: string;
 }) {
   const initial = contact.username.charAt(0).toUpperCase();
+  const dealCountLabel = formatContactDealCount(contact);
 
   return (
     <Link
@@ -969,6 +978,14 @@ function ContactMobileCard({
           {contact.company.companyName} ·{" "}
           {contact.contactDepartment.departmentName}
         </p>
+        {dealCountLabel ? (
+          <p className="mt-1 flex min-w-0 items-center gap-1.5 text-[12px] text-[#64748B]">
+            <Link2 className="h-3.5 w-3.5 shrink-0 text-[#9CA3AF]" />
+            <span className="min-w-0 break-words [overflow-wrap:anywhere]">
+              연결 딜 {dealCountLabel}
+            </span>
+          </p>
+        ) : null}
         {/* Row3: 연락처 + 현재 응답에서 가능한 활동 */}
         <div className="mt-1 flex items-center justify-between">
           <span className="text-[12px] text-[#6B7280]">
@@ -1021,6 +1038,18 @@ function ContactRow({
         </span>
       </div>
       <div className="min-w-0">
+        {typeof contact.dealCount === "number" ? (
+          <span
+            className="inline-flex h-5 max-w-full min-w-0 items-center overflow-hidden rounded-full bg-[#EFF6FF] px-2 text-[11px] font-semibold text-[#1D4ED8]"
+            title={`연결 딜 ${contact.dealCount.toLocaleString("ko-KR")}건`}
+          >
+            <span className="min-w-0 truncate whitespace-nowrap">
+              {contact.dealCount.toLocaleString("ko-KR")}건
+            </span>
+          </span>
+        ) : null}
+      </div>
+      <div className="min-w-0">
         <span
           className="block truncate text-[12px] font-medium text-[#4880EE]"
           title={contact.contactDepartment.departmentName}
@@ -1065,6 +1094,8 @@ export function ContactCard({
   readonly contact: ContactListItem;
   readonly displayTimeZone: string;
 }) {
+  const dealCountLabel = formatContactDealCount(contact);
+
   return (
     <Link
       className="flex items-start justify-between gap-4 bg-white px-6 py-3 hover:bg-white"
@@ -1081,6 +1112,7 @@ export function ContactCard({
         <div className="mt-2 space-y-1 text-[12px] text-[#64748B]">
           <p className="truncate">핸드폰 {contact.mobile || "-"}</p>
           <p className="truncate">이메일 {contact.email || "-"}</p>
+          {dealCountLabel ? <p>연결 딜 {dealCountLabel}</p> : null}
           <p>
             활동 {formatContactCreatedActivity(contact.createdAt, displayTimeZone)}
           </p>
@@ -1587,6 +1619,12 @@ function formatContactCreatedAt(value: string, timeZone: string) {
 
 function formatContactCreatedActivity(value: string, timeZone: string) {
   return `등록 ${formatContactCreatedAt(value, timeZone)}`;
+}
+
+function formatContactDealCount(contact: ContactListItem) {
+  return typeof contact.dealCount === "number"
+    ? `${contact.dealCount.toLocaleString("ko-KR")}건`
+    : null;
 }
 
 function getBrowserTimeZoneFallback() {

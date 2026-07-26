@@ -1,6 +1,6 @@
 # Goal Completion Checklist
 
-상태: G05 Completed / G06 Ready
+상태: G06 Completed / G07 Ready
 최종 업데이트: 2026-07-26
 
 ## 1. 목적
@@ -18,7 +18,7 @@
 | [x] | G03 Deal Activity Backend | Completed | 2026-07-26 | timeline API와 자동/수동 activity Backend 구현 | `G03_DEAL_ACTIVITY_BACKEND.md`, `pnpm run typecheck`, `pnpm run lint`, `pnpm run test -- deal`, `pnpm run test -- follow-up`, `pnpm run test -- schedule`, `pnpm run test -- meeting-note`, `pnpm run build` | G04 착수 가능 |
 | [x] | G04 Deal Activity User Web | Completed | 2026-07-26 | 딜 상세 timeline UX 구현 | `G04_DEAL_ACTIVITY_USER_WEB.md`, `pnpm run typecheck`, `pnpm run lint`, `pnpm run build`, `pnpm exec playwright test tests/e2e/deal-activity-timeline.spec.ts`, `pnpm run test:e2e` | G05 착수 가능 |
 | [x] | G05 Deal Record Summary Backend | Completed | 2026-07-26 | Deal/Contact list summary Backend 구현 | `G05_DEAL_RECORD_SUMMARY_BACKEND.md`, `pnpm run typecheck`, `pnpm run lint`, `pnpm run test -- deal`, `pnpm run test -- contact`, `pnpm run test -- ownership-isolation`, `pnpm run build` | G06 착수 가능 |
-| [ ] | G06 Deal Record Summary User Web | Ready |  | 목록 summary User Web 구현 |  |  |
+| [x] | G06 Deal Record Summary User Web | Completed | 2026-07-26 | 목록 summary User Web 구현 | `G06_DEAL_RECORD_SUMMARY_USER_WEB.md`, `pnpm run typecheck`, `pnpm run lint`, `pnpm run build`, `pnpm exec playwright test tests/e2e/deal-record-summary.spec.ts`, `pnpm run test:e2e` | G07 착수 가능 |
 | [ ] | G07 QA Review Closeout | Ready |  | REVIEW-CHECKLIST 통과와 문서 closeout |  |  |
 
 ## 3. Goal별 체크 조건
@@ -117,11 +117,18 @@ G05 증거:
 
 ### G06
 
-- [ ] 딜 목록에 products summary가 표시된다.
-- [ ] 딜 목록에 latest activity가 표시된다.
-- [ ] 담당자 목록에 dealCount가 표시된다.
-- [ ] API 응답 없는 summary를 FE에서 꾸미지 않는다.
-- [ ] desktop/mobile list layout이 깨지지 않는다.
+- [x] 딜 목록에 products summary가 표시된다.
+- [x] 딜 목록에 latest activity가 표시된다.
+- [x] 담당자 목록에 dealCount가 표시된다.
+- [x] API 응답 없는 summary를 FE에서 꾸미지 않는다.
+- [x] desktop/mobile list layout이 깨지지 않는다.
+
+G06 증거:
+
+- 구현 파일: `FE/user-web/src/features/deal/types/deal.ts`, `FE/user-web/src/features/deal/components/deal-pipeline-home-screen.tsx`, `FE/user-web/src/features/contact/types/contact.ts`, `FE/user-web/src/features/contact/components/contact-list-screen.tsx`
+- E2E: `FE/user-web/tests/e2e/deal-record-summary.spec.ts`
+- E2E mock 계약: `FE/user-web/tests/e2e/support/user-web-api-mocks.ts`
+- User Web 검증 통과: `pnpm run typecheck`, `pnpm run lint`, `pnpm run build`, `pnpm exec playwright test tests/e2e/deal-record-summary.spec.ts`, `pnpm run test:e2e`
 
 ### G07
 

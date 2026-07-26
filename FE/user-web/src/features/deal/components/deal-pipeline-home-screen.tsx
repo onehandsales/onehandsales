@@ -1,5 +1,6 @@
 // 기능 : 딜 파이프라인 홈 화면 — split view (Desktop) / 카드 (Mobile)
 import {
+  Activity,
   AlertCircle,
   ArrowUpDown,
   Banknote,
@@ -11,13 +12,14 @@ import {
   CircleDot,
   ClipboardList,
   Download,
+  Package,
   Plus,
   RotateCcw,
   SlidersHorizontal,
   UserRound,
   type LucideIcon,
 } from "lucide-react";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import {
   Link,
   useLocation,
@@ -53,6 +55,7 @@ import {
   DEAL_STATUS_LIST,
   type DealDetail,
   type DealListItem,
+  type DealProductSummary,
   type DealSort,
   type DealStatus,
 } from "@/features/deal/types/deal";
@@ -89,14 +92,16 @@ const SORT_OPTIONS: Array<{
 ];
 
 const DEAL_TABLE_COLUMNS = [
-  { id: "dealName", defaultWidth: 215, minWidth: 155, maxWidth: 420 },
-  { id: "relation", defaultWidth: 200, minWidth: 150 },
+  { id: "dealName", defaultWidth: 200, minWidth: 155, maxWidth: 420 },
+  { id: "relation", defaultWidth: 190, minWidth: 150 },
+  { id: "products", defaultWidth: 190, minWidth: 150 },
   { id: "status", defaultWidth: 106, minWidth: 92 },
-  { id: "cost", defaultWidth: 148, minWidth: 134 },
-  { id: "nextAction", defaultWidth: 235, minWidth: 160 },
-  { id: "deadline", defaultWidth: 150, minWidth: 132 },
+  { id: "cost", defaultWidth: 140, minWidth: 128 },
+  { id: "nextAction", defaultWidth: 190, minWidth: 150 },
+  { id: "latestActivity", defaultWidth: 220, minWidth: 160 },
+  { id: "deadline", defaultWidth: 140, minWidth: 122 },
 ] satisfies readonly ResizableTableColumn[];
-const DEAL_TABLE_COLUMNS_STORAGE_KEY = "onehand.table.deals.columns.v2";
+const DEAL_TABLE_COLUMNS_STORAGE_KEY = "onehand.table.deals.columns.v3";
 const DEAL_TABLE_ROW_CLASS_NAME =
   "grid h-12 min-w-full w-max cursor-pointer items-stretch border-b border-[#E5E7EB] bg-white text-left transition-colors hover:bg-[#F8FAFC] focus:outline-none focus-visible:bg-[#F8FAFC] [grid-template-columns:var(--list-table-grid-template)] [&>*]:flex [&>*]:h-full [&>*]:min-w-0 [&>*]:items-center [&>*]:border-r [&>*]:border-[#EEF0F3] [&>*]:px-3 [&>*:last-child]:border-r-0 [&>*>*]:min-w-0 xl:[&>*]:px-4";
 const DEAL_CREATE_PANEL_STORAGE_KEY = "onehand.deal.createPanelWidth";
@@ -769,26 +774,38 @@ export function DealPipelineHomeScreen({
                     회사/담당자
                   </ListTableHeaderCell>
                   <ListTableHeaderCell
+                    icon={Package}
+                    {...getHeaderCellResizeProps("products", 2)}
+                  >
+                    제품
+                  </ListTableHeaderCell>
+                  <ListTableHeaderCell
                     icon={CircleDot}
-                    {...getHeaderCellResizeProps("status", 2)}
+                    {...getHeaderCellResizeProps("status", 3)}
                   >
                     단계
                   </ListTableHeaderCell>
                   <ListTableHeaderCell
                     icon={Banknote}
-                    {...getHeaderCellResizeProps("cost", 3)}
+                    {...getHeaderCellResizeProps("cost", 4)}
                   >
                     금액
                   </ListTableHeaderCell>
                   <ListTableHeaderCell
                     icon={ClipboardList}
-                    {...getHeaderCellResizeProps("nextAction", 4)}
+                    {...getHeaderCellResizeProps("nextAction", 5)}
                   >
                     다음 행동
                   </ListTableHeaderCell>
                   <ListTableHeaderCell
+                    icon={Activity}
+                    {...getHeaderCellResizeProps("latestActivity", 6)}
+                  >
+                    최근 활동
+                  </ListTableHeaderCell>
+                  <ListTableHeaderCell
                     icon={CalendarClock}
-                    {...getHeaderCellResizeProps("deadline", 5)}
+                    {...getHeaderCellResizeProps("deadline", 7)}
                   >
                     마감
                   </ListTableHeaderCell>
@@ -1030,10 +1047,7 @@ function DealListRow({
   const contactLabel = formatDealContactLabel(deal);
   const companyLabel = formatDealCompanyLabel(deal);
   const nextActionLabel = formatDealNextActionLabel(deal);
-  const recentActivityLabel = formatDealRecentActivityLabel(
-    deal,
-    displayTimeZone,
-  );
+  const products = getDealProducts(deal);
   const deadlineLabel = getDeadlineDDayLabel(deal.expectedEndDate);
   const deadlineColor = getDeadlineDDayColor(deal.expectedEndDate);
   const deadlineDateLabel = formatDealDateShort(deal.expectedEndDate);
@@ -1074,6 +1088,9 @@ function DealListRow({
         </span>
       </div>
 
+      {/* 제품 */}
+      <DealProductSummaryCell products={products} />
+
       {/* 단계 */}
       <div className="min-w-0">
         <span
@@ -1113,13 +1130,13 @@ function DealListRow({
         >
           {nextActionLabel}
         </span>
-        <span
-          className="mt-0.5 block truncate text-[11px] text-[#64748B]"
-          title={recentActivityLabel}
-        >
-          {recentActivityLabel}
-        </span>
       </div>
+
+      {/* 최근 활동 */}
+      <DealLatestActivityCell
+        latestActivity={deal.latestActivity ?? null}
+        timeZone={displayTimeZone}
+      />
 
       {/* 마감 */}
       <div className="min-w-0">
@@ -1141,6 +1158,61 @@ function DealListRow({
   );
 }
 
+function DealProductSummaryCell({
+  products,
+}: {
+  readonly products: readonly DealProductSummary[];
+}) {
+  const primaryProduct = products[0];
+  const primaryLabel = formatDealProductSummary(products);
+  const metaLabel = formatDealProductMeta(primaryProduct);
+  const title = formatDealProductTitle(products);
+
+  return (
+    <div className="min-w-0 pr-3" title={title}>
+      {primaryLabel ? (
+        <>
+          <span className="block truncate text-[12px] font-semibold text-[#111827]">
+            {primaryLabel}
+          </span>
+          {metaLabel ? (
+            <span className="mt-0.5 block truncate text-[11px] text-[#64748B]">
+              {metaLabel}
+            </span>
+          ) : null}
+        </>
+      ) : null}
+    </div>
+  );
+}
+
+function DealLatestActivityCell({
+  latestActivity,
+  timeZone,
+}: {
+  readonly latestActivity: DealListItem["latestActivity"];
+  readonly timeZone: string;
+}) {
+  if (!latestActivity) {
+    return <div className="min-w-0" />;
+  }
+
+  const metaLabel = formatDealLatestActivityMeta(latestActivity, timeZone);
+
+  return (
+    <div className="min-w-0 pr-3" title={formatDealLatestActivityTitle(latestActivity)}>
+      <span className="block truncate text-[12px] font-semibold text-[#111827]">
+        {latestActivity.title}
+      </span>
+      {metaLabel ? (
+        <span className="mt-0.5 block truncate text-[11px] text-[#64748B]">
+          {metaLabel}
+        </span>
+      ) : null}
+    </div>
+  );
+}
+
 // ── 모바일 카드 ──
 
 function MobileDealCard({
@@ -1156,10 +1228,13 @@ function MobileDealCard({
   const deadlineColor = getDeadlineDDayColor(deal.expectedEndDate);
   const nextAction = deal.nextFollowingAction;
   const nextActionLabel = formatDealNextActionLabel(deal);
-  const recentActivityLabel = formatDealRecentActivityLabel(
-    deal,
-    displayTimeZone,
-  );
+  const products = getDealProducts(deal);
+  const productLabel = formatDealProductSummary(products);
+  const productMetaLabel = formatDealProductMeta(products[0]);
+  const latestActivity = deal.latestActivity ?? null;
+  const latestActivityMetaLabel = latestActivity
+    ? formatDealLatestActivityMeta(latestActivity, displayTimeZone)
+    : null;
 
   return (
     <Link
@@ -1194,6 +1269,40 @@ function MobileDealCard({
         {companyLabel} · {contactLabel}
       </p>
 
+      {productLabel || latestActivity ? (
+        <div className="mt-2 space-y-1.5">
+          {productLabel ? (
+            <MobileDealSummaryRow
+              icon={Package}
+              label="제품"
+              title={formatDealProductTitle(products)}
+            >
+              <span className="font-medium text-[#111827]">{productLabel}</span>
+              {productMetaLabel ? (
+                <span className="text-[#64748B]"> · {productMetaLabel}</span>
+              ) : null}
+            </MobileDealSummaryRow>
+          ) : null}
+          {latestActivity ? (
+            <MobileDealSummaryRow
+              icon={Activity}
+              label="최근 활동"
+              title={formatDealLatestActivityTitle(latestActivity)}
+            >
+              <span className="font-medium text-[#111827]">
+                {latestActivity.title}
+              </span>
+              {latestActivityMetaLabel ? (
+                <span className="text-[#64748B]">
+                  {" "}
+                  · {latestActivityMetaLabel}
+                </span>
+              ) : null}
+            </MobileDealSummaryRow>
+          ) : null}
+        </div>
+      ) : null}
+
       {/* Divider */}
       <div className="my-3 h-px bg-[#E5E7EB]" />
 
@@ -1203,9 +1312,6 @@ function MobileDealCard({
           <p className="text-[12px] text-[#6B7280]">다음 행동</p>
           <p className="mt-0.5 truncate text-[13px] text-[#1F2937]">
             {nextActionLabel}
-          </p>
-          <p className="mt-1 truncate text-[11px] text-[#64748B]">
-            {recentActivityLabel}
           </p>
         </div>
         {nextAction ? (
@@ -1231,6 +1337,31 @@ function MobileDealCard({
         </p>
       </div>
     </Link>
+  );
+}
+
+function MobileDealSummaryRow({
+  children,
+  icon: Icon,
+  label,
+  title,
+}: {
+  readonly children: ReactNode;
+  readonly icon: LucideIcon;
+  readonly label: string;
+  readonly title: string;
+}) {
+  return (
+    <p
+      className="flex min-w-0 items-start gap-1.5 text-[12px] leading-5 text-[#64748B]"
+      title={title}
+    >
+      <Icon className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[#9CA3AF]" />
+      <span className="shrink-0 font-medium text-[#64748B]">{label}</span>
+      <span className="min-w-0 flex-1 break-words [overflow-wrap:anywhere]">
+        {children}
+      </span>
+    </p>
   );
 }
 
@@ -1299,6 +1430,67 @@ function formatDeletedLabel(label: string, isDeleted: boolean): string {
   return isDeleted ? `${label} (삭제됨)` : label;
 }
 
+function getDealProducts(deal: DealListItem): readonly DealProductSummary[] {
+  return Array.isArray(deal.products) ? deal.products : [];
+}
+
+function formatDealProductSummary(
+  products: readonly DealProductSummary[],
+): string | null {
+  const firstProduct = products[0];
+
+  if (!firstProduct) {
+    return null;
+  }
+
+  const firstLabel = formatDeletedLabel(
+    firstProduct.productName,
+    firstProduct.isDeleted,
+  );
+  const remainingCount = products.length - 1;
+
+  return remainingCount > 0 ? `${firstLabel} 외 ${remainingCount}개` : firstLabel;
+}
+
+function formatDealProductMeta(product: DealProductSummary | undefined) {
+  if (!product) {
+    return "";
+  }
+
+  return [
+    product.productCategory?.categoryName,
+    product.productStatus?.statusName,
+  ]
+    .filter((value): value is string => Boolean(value?.trim()))
+    .join(" · ");
+}
+
+function formatDealProductTitle(products: readonly DealProductSummary[]) {
+  return products
+    .map((product) => formatDeletedLabel(product.productName, product.isDeleted))
+    .join(", ");
+}
+
+function formatDealLatestActivityTitle(
+  latestActivity: NonNullable<DealListItem["latestActivity"]>,
+) {
+  return [latestActivity.title, latestActivity.summary]
+    .filter((value): value is string => Boolean(value?.trim()))
+    .join(" · ");
+}
+
+function formatDealLatestActivityMeta(
+  latestActivity: NonNullable<DealListItem["latestActivity"]>,
+  timeZone: string,
+) {
+  return [
+    latestActivity.summary,
+    formatDealActivityDate(latestActivity.occurredAt, timeZone),
+  ]
+    .filter((value): value is string => Boolean(value?.trim()))
+    .join(" · ");
+}
+
 function formatDealNextActionLabel(deal: DealListItem) {
   const nextAction = deal.nextFollowingAction;
 
@@ -1310,18 +1502,6 @@ function formatDealNextActionLabel(deal: DealListItem) {
     nextAction.remainingCount > 0 ? ` 외 ${nextAction.remainingCount}개` : "";
 
   return `${nextAction.followingAction}${remainingLabel}`;
-}
-
-function formatDealRecentActivityLabel(deal: DealListItem, timeZone: string) {
-  const latestAction = deal.latestFollowingAction;
-
-  if (latestAction) {
-    const prefix = latestAction.checkComplete ? "최근 완료" : "최근 행동";
-
-    return `${prefix} ${formatDealActivityDate(latestAction.createdAt, timeZone)}`;
-  }
-
-  return `최근 수정 ${formatDealActivityDate(deal.updatedAt, timeZone)}`;
 }
 
 function formatDealActivityDate(value: string, timeZone: string) {

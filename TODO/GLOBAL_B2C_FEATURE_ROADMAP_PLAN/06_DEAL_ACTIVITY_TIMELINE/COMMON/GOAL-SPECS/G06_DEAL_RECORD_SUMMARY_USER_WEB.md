@@ -1,7 +1,8 @@
 # G06 Deal Record Summary User Web
 
-상태: Ready
+상태: Completed
 목표: 목록 summary User Web 구현
+완료일: 2026-07-26
 
 ## 1. 목적
 
@@ -56,3 +57,26 @@ pnpm run test:e2e
 - 담당자 dealCount가 API 응답 기준으로 표시된다.
 - 긴 제품명/activity title이 layout을 깨지 않는다.
 - 모바일에서 목록 카드가 겹치지 않는다.
+
+## 8. 구현 기록
+
+- Deal list item type에 `products`, `latestActivity` summary를 추가했다.
+- Contact list item type에 `dealCount`를 추가했다.
+- `/app/deals` desktop record table에 `제품`, `최근 활동` 열을 추가했다.
+- `/app/deals` mobile card에 제품과 최신 활동 summary를 줄바꿈 가능한 행으로 표시했다.
+- `/app/contacts` desktop/mobile 목록에 API 응답의 `dealCount`만 표시했다.
+- FE가 `updatedAt`, `latestFollowingAction` 등으로 latest activity fallback을 만들지 않게 정리했다.
+- E2E mock list response를 `pageSize: 15`, page slicing, G05 summary 응답 형태에 맞췄다.
+
+## 9. 검증 기록
+
+```powershell
+cd FE/user-web
+pnpm run typecheck
+pnpm run lint
+pnpm run build
+pnpm exec playwright test tests/e2e/deal-record-summary.spec.ts
+pnpm run test:e2e
+```
+
+결과: 모두 통과.
