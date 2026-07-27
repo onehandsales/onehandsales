@@ -1,17 +1,76 @@
 # References
 
-## 전체 참조
+## 1. 상위 입력 계획
 
 - `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/COMMON/REFERENCE-MAP.md`
+- `TODO/NEXT_BACKEND_API_BACKLOG_PLAN`
+- `TODO/USER_WEB_PRODUCTIZATION_GAP_PLAN`
 - `TODO/USER_WEB_PRODUCTIZATION_GAP_PLAN/COMMON/GLOBAL-B2C-FIRST-SALE-GATE.md`
 
-## 직접 참조
+## 2. UX/UI 기준
+
+- `AGENT/UXUI_AGENT/README.md`
+- `AGENT/UXUI_AGENT/UX_REVIEW_CHECKLIST.md`
+- `AGENT/UXUI_AGENT/PLANNING/UX_UI_DIRECTION.md`
+- `AGENT/UXUI_AGENT/PLANNING/UX_WRITING_GUIDE.md`
+- `AGENT/UXUI_AGENT/DECISIONS/018_uxui_multilingual_font_stack.md`
+- `AGENT/UXUI_AGENT/DECISIONS/020_uxui_notion_attio_reference.md`
+
+## 3. Software 기준
 
 - `AGENT/SOFTWARE_AGENT/COMMON/NEXT_FEATURE_PRIORITIES.md`
-- `AGENT/UXUI_AGENT/DECISIONS/018_uxui_multilingual_font_stack.md`
-- `AGENT/PM_AGENT/DECISIONS/029_global_b2c_series_a_priority.md`
-- `AGENT/PM_AGENT/PLANNING/MVP_SCOPE.md` Apple/LINE login 후속 후보
+- `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/ARCHITECTURE/BACKEND.md`
+- `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/CONVENTION/API_CONTRACT.md`
+- `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/CONVENTION/API_SPEC.md`
+- `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/CONVENTION/TRANSACTION.md`
+- `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/CONVENTION/OBSERVABILITY.md`
+- `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/CONVENTION/BACKEND.md`
+- `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/ENGINEERING_REVIEW_CHECKLIST.md`
+- `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/DECISIONS/005_backend_api_function_comment_rule.md`
+- `AGENT/SOFTWARE_AGENT/FRONT_AGENT/ARCHITECTURE/FRONTEND_USER_WEB.md`
+- `AGENT/SOFTWARE_AGENT/FRONT_AGENT/CONVENTION/FRONTEND_USER_WEB.md`
+- `AGENT/SOFTWARE_AGENT/FRONT_AGENT/CONVENTION/COMMENT_AND_LOGGING.md`
+- `AGENT/SOFTWARE_AGENT/FRONT_AGENT/ENGINEERING_REVIEW_CHECKLIST.md`
+- `AGENT/SOFTWARE_AGENT/COMMON/ERROR.md`
+- `AGENT/SOFTWARE_AGENT/DB_SCHEMA/AUTH_USER_SCHEMA.md`
+- `AGENT/SOFTWARE_AGENT/DB_SCHEMA/CONTACT_SCHEMA.md`
+- `AGENT/SOFTWARE_AGENT/DB_SCHEMA/TIME_AND_TIMEZONE_POLICY.md`
+
+## 4. 기존 결정 중 갱신 필요
+
+- `AGENT/PM_AGENT/DECISIONS/027_auth_session_and_provider_qa_policy.md`
 - `AGENT/PM_AGENT/DECISIONS/028_auth_provider_google_only_and_future_local_providers.md`
+- `AGENT/PM_AGENT/PLANNING/DATA_MODEL.md`
+- `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/README.md`
+- `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/ARCHITECTURE/BACKEND.md`
+- `AGENT/SOFTWARE_AGENT/FRONT_AGENT/README.md`
+- `AGENT/SOFTWARE_AGENT/FRONT_AGENT/ARCHITECTURE/FRONTEND_USER_WEB.md`
+- `AGENT/SOFTWARE_AGENT/DB_SCHEMA/AUTH_USER_SCHEMA.md`
+
+갱신 이유:
+
+- 기존 문서에는 Google only, Apple/LINE future, 신규/기존 사용자 판정은 `provider + providerUserId` 기준이라는 정책이 남아 있다.
+- 08 확정 정책은 Google/LINE/Apple 실제 구현과 verified email 기반 provider 연결을 포함한다.
+
+## 5. 코드 참조
+
+- `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/08_GLOBAL_DATA_I18N/COMMON/GOAL-IMPLEMENTATION-MATRIX.md`
 - `FE/user-web/src/features/public-site/i18n`
 - `FE/user-web/src/app/router/router.tsx`
+- `FE/user-web/src/features/auth`
+- `FE/user-web/src/features/contact`
+- `FE/user-web/src/features/company`
+- `FE/user-web/src/features/product`
+- `FE/user-web/src/features/deal`
+- `FE/user-web/src/features/import-export`
 - `BE/prisma/schema.prisma`
+- `BE/prisma/migrations`
+- `BE/prisma/seed.ts`
+- `BE/src/modules/auth`
+- `BE/src/modules/user`
+- `BE/src/modules/company`
+- `BE/src/modules/contact`
+- `BE/src/modules/product`
+- `BE/src/modules/deal`
+- `BE/src/modules/data-import`
+- Company/Contact/Product/Deal domain export 구현체
