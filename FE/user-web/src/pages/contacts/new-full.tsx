@@ -1,5 +1,6 @@
 import { useMemo } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { normalizeAppPhoneCountryCode } from "@/features/app-i18n";
 import { ContactCreateDialog } from "@/features/contact/components/contact-create-dialog";
 import type { ContactCreateFormValues } from "@/features/contact/schemas/contact-schema";
 
@@ -50,6 +51,10 @@ function readContactCreateDraft(
   return {
     username: readString(draft.username),
     mobile: readString(draft.mobile),
+    phoneCountryCode: normalizeAppPhoneCountryCode(
+      readString(draft.phoneCountryCode)
+    ),
+    phoneNationalNumber: readString(draft.phoneNationalNumber),
     email: readString(draft.email),
     companyId: readString(draft.companyId),
     companySearch: readString(draft.companySearch),

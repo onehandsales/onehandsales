@@ -1,6 +1,6 @@
 # Goal Completion Checklist
 
-상태: G01 Done / G02 Done / G03 Done / G04 Ready
+상태: G01 Done / G02 Done / G03 Done / G04 Ready / G05 Done
 최종 업데이트: 2026-07-28
 
 ## 1. 목적
@@ -17,7 +17,7 @@
 | [x] | G02 User Global Settings | Done | 2026-07-28 | User 설정 DB/API/Settings 구현 | `COMMON/GOAL-SPECS/G02_USER_GLOBAL_SETTINGS.md`, `BE/prisma/migrations/20260728010000_add_user_global_settings`, BE/FE 검증 명령 | G03 착수 가능 |
 | [x] | G03 App I18N Foundation | Done | 2026-07-28 | app i18n provider/resource 구현 | `COMMON/GOAL-SPECS/G03_APP_I18N_FOUNDATION.md`, `FE/user-web/src/features/app-i18n`, User Web 검증 명령 | G04 착수 가능 |
 | [ ] | G04 Currency Product Deal | Ready |  | Product/Deal currency 구현 |  | KRW/USD |
-| [ ] | G05 Contact Phone Global | Not Started |  | Contact phone 글로벌 필드와 migration 구현 |  | KR/US |
+| [x] | G05 Contact Phone Global | Done | 2026-07-28 | Contact phone 글로벌 필드와 migration 구현 | G05 spec, `BE/prisma/migrations/20260728030000_add_contact_global_phone`, BE/FE 검증 명령 | KR/US |
 | [ ] | G06 Company Region Address | Not Started |  | CompanyRegion code/address 구현 |  | Company만 적용 |
 | [ ] | G07 Import Export Localization | Not Started |  | Export/Import template 현지화 구현 |  | ko-KR/en |
 | [ ] | G08 Auth Google LINE Apple | Not Started |  | Google/LINE/Apple auth 구현 |  | provider env 수동 검증 필요 |
@@ -81,14 +81,14 @@
 
 ### G05 Contact Phone Global
 
-- [ ] `Contact.phoneCountryCode`가 추가됐다.
-- [ ] `Contact.phoneNationalNumber`가 추가됐다.
-- [ ] `Contact.phoneE164`가 추가됐다.
-- [ ] 기존 `mobile`은 유지된다.
-- [ ] KR/US 전화번호 입력/검증/표시가 동작한다.
-- [ ] 기존 `010-1234-5678` 데이터가 가능한 경우 자동 migration된다.
-- [ ] 변환 실패 데이터는 삭제/수정되지 않고 `mobile` fallback으로 표시된다.
-- [ ] Contact export/search/중복 기준이 `phoneE164` 우선이다.
+- [x] `Contact.phoneCountryCode`가 추가됐다.
+- [x] `Contact.phoneNationalNumber`가 추가됐다.
+- [x] `Contact.phoneE164`가 추가됐다.
+- [x] 기존 `mobile`은 유지된다.
+- [x] KR/US 전화번호 입력/검증/표시가 동작한다.
+- [x] 기존 `010-1234-5678` 데이터가 가능한 경우 자동 migration된다.
+- [x] 변환 실패 데이터는 삭제/수정되지 않고 `mobile` fallback으로 표시된다.
+- [x] Contact export/search/중복 기준이 `phoneE164` 우선이다.
 
 ### G06 Company Region Address
 
@@ -160,3 +160,4 @@
 - 2026-07-28: G01 Document Contract Sync 완료. AGENT/TODO 계약 문서의 current baseline과 08 target delta를 분리했고, `DOMAIN_GLOBAL_DATA_API.md` Error Response / FE 처리 기준과 `COMMON/PLANNING-REVIEW.md`를 추가했다. `cd BE; pnpm.cmd run prisma:validate` 통과.
 - 2026-07-28: G02 User Global Settings 완료. `User.countryCode`, `User.defaultCurrencyCode`, profile GET/PATCH, auth signup default, `/app/settings`와 계정 설정 모달을 연결했다. 검증은 BE `prisma:validate`, `prisma:generate`, `typecheck`, `lint`, `test -- auth user`, FE user-web `typecheck`, `lint`, `build` 통과.
 - 2026-07-28: G03 App I18N Foundation 완료. `FE/user-web/src/features/app-i18n`에 app 전용 provider/resource/formatter를 추가하고 Settings 저장 후 `User.preferredLocale` 기반 문구와 날짜/시간 formatter가 즉시 반영되도록 연결했다. 검증은 FE user-web `typecheck`, `lint`, `build` 통과. `features/app-i18n` 내부 public-site 참조 없음과 `/app` route prefix 유지 확인.
+- 2026-07-28: G05 Contact Phone Global 완료. `Contact.phoneCountryCode`, `phoneNationalNumber`, `phoneE164`와 KR legacy migration을 추가하고 Contact create/update/list/detail/export/search/business-card/import 경로를 KR/US 정규화와 E.164 우선 기준으로 맞췄다. 명함 보정과 import validation도 KR/US 전화번호를 허용한다. 검증은 BE `prisma:validate`, `prisma:generate`, `typecheck`, `lint`, `test -- contact data-import business-card search`, `build`, FE user-web `typecheck`, `lint`, `build` 통과.

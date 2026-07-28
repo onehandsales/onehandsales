@@ -102,8 +102,21 @@ export class CreateContactDto {
   @IsString()
   username!: string;
 
+  @IsOptional()
   @IsString()
-  mobile!: string;
+  mobile?: string;
+
+  @IsOptional()
+  @IsString()
+  phoneCountryCode?: string | null;
+
+  @IsOptional()
+  @IsString()
+  phoneNationalNumber?: string | null;
+
+  @IsOptional()
+  @IsString()
+  phoneE164?: string | null;
 
   @IsString()
   email!: string;
@@ -131,6 +144,18 @@ export class UpdateContactDto {
   @IsOptional()
   @IsString()
   mobile?: string;
+
+  @IsOptional()
+  @IsString()
+  phoneCountryCode?: string | null;
+
+  @IsOptional()
+  @IsString()
+  phoneNationalNumber?: string | null;
+
+  @IsOptional()
+  @IsString()
+  phoneE164?: string | null;
 
   @IsOptional()
   @IsString()

@@ -264,6 +264,18 @@ function getMobile(companyIndex: number, contactIndex: number): string {
   return `010-${middle}-${last}`;
 }
 
+// 기능 : 데모 담당자 휴대폰을 KR national/E.164 저장 필드로 변환합니다.
+function createSeedContactPhone(mobile: string) {
+  const nationalNumber = mobile.replace(/\D/g, "");
+
+  return {
+    mobile,
+    phoneCountryCode: "KR",
+    phoneNationalNumber: nationalNumber,
+    phoneE164: `+82${nationalNumber.slice(1)}`,
+  };
+}
+
 function getEmail(name: string, companyIndex: number): string {
   const domains = [
     "samsung.example",
@@ -474,12 +486,16 @@ async function seedLocalDemoSalesData() {
     const contacts = [];
     for (const [contactIndex, contactSeed] of seed.contacts.entries()) {
       const [username, departmentName, jobGradeName] = contactSeed;
+      const phone = createSeedContactPhone(getMobile(companyIndex, contactIndex));
       const contact = await prisma.contact.create({
         data: {
           userId,
           companyId: company.id,
           username,
-          mobile: getMobile(companyIndex, contactIndex),
+          mobile: phone.mobile,
+          phoneCountryCode: phone.phoneCountryCode,
+          phoneNationalNumber: phone.phoneNationalNumber,
+          phoneE164: phone.phoneE164,
           email: getEmail(username, companyIndex),
           contactDepartmentId: departmentMap.get(departmentName)!,
           contactJobGradeId: jobGradeMap.get(jobGradeName)!,

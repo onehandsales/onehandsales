@@ -1184,10 +1184,10 @@ function MobileField({
         aria-invalid={Boolean(errorMessage)}
         className="h-10 rounded-md border border-[#E2E5EC] px-3 text-[13px] outline-none transition focus:border-[#4880EE] focus:ring-1 focus:ring-[#4880EE]"
         id="business-card-contact-mobile"
-        inputMode="numeric"
+        inputMode="tel"
         {...register}
         onChange={onChange}
-        placeholder="010-0000-0000"
+        placeholder="010-1234-5678 / 415-555-1234"
       />
       {errorMessage ? (
         <p

@@ -10,6 +10,7 @@
 - `BE/prisma/migrations/20260611010000_add_contact_domain/migration.sql`
 - `BE/prisma/migrations/20260625010000_add_log_soft_delete_columns/migration.sql`
 - `BE/prisma/migrations/20260625020000_add_core_entity_soft_delete_columns/migration.sql`
+- `BE/prisma/migrations/20260728030000_add_contact_global_phone/migration.sql`
 
 현재 Contact 도메인은 Prisma schema와 migration에 반영되어 있다. 실제 DB 변경 내역은 migration 파일을 기준으로 확인하고, 이 문서는 테이블 역할과 관계를 이해하기 위한 구현 설명서로 유지한다.
 
@@ -63,7 +64,10 @@ Contact 1 ─ N MeetingNoteContact
 | `userId` | `String @db.Uuid` | 아니오 | 없음 | 담당자를 생성한 내부 `User.id` FK |
 | `companyId` | `String @db.Uuid` | 아니오 | 없음 | 담당자가 소속된 `Company.id` FK |
 | `username` | `String` | 아니오 | 없음 | 담당자 이름. 담당자 목록 검색 대상 |
-| `mobile` | `String` | 아니오 | 없음 | 핸드폰번호. API validation 기준은 `010-1111-2222` 형식 |
+| `mobile` | `String` | 아니오 | 없음 | legacy 핸드폰번호 표시/호환 필드. 즉시 제거하지 않는다. |
+| `phoneCountryCode` | `String?` | 예 | 없음 | 담당자 전화번호 국가 코드. 1차 지원값은 `KR`, `US` |
+| `phoneNationalNumber` | `String?` | 예 | 없음 | 국가별 national number 숫자 문자열 |
+| `phoneE164` | `String?` | 예 | 없음 | 검색, 중복, 외부 연동 기준이 되는 E.164 전화번호 |
 | `email` | `String` | 아니오 | 없음 | 이메일 |
 | `contactJobGradeId` | `String @db.Uuid` | 아니오 | 없음 | 담당자 직급 `ContactJobGrade.id` FK |
 | `contactDepartmentId` | `String @db.Uuid` | 아니오 | 없음 | 담당자 부서 `ContactDepartment.id` FK |
@@ -88,6 +92,7 @@ Indexes:
 
 - `userId + createdAt`: 사용자별 담당자 목록 등록일 DESC 정렬 기준
 - `userId + username`: 사용자별 담당자 이름 검색 기준
+- `userId + phoneE164`: 사용자별 글로벌 전화번호 검색/중복 기준
 - `userId + companyId`: 사용자별 회사 필터 기준
 - `userId + contactDepartmentId`: 사용자별 담당자 부서 필터 기준
 - `userId + contactJobGradeId`: 사용자별 담당자 직급 필터 기준
@@ -101,7 +106,9 @@ Indexes:
 - 담당자 목록 정렬은 기본 `createdAtDesc`와 이름순 `usernameAsc`를 지원한다.
 - `usernameAsc`는 `username ASC`, `createdAt DESC`, `id DESC` 순서로 정렬한다.
 - 담당자 목록 응답은 `updatedAt`을 반환하지 않는다.
-- 담당자 기본 정보 수정 API는 `username`, `mobile`, `email`, `companyId`, `contactDepartmentId`, `contactJobGradeId` 중 최소 1개를 수정할 수 있다.
+- 담당자 기본 정보 수정 API는 `username`, 글로벌 전화번호 필드, `mobile`, `email`, `companyId`, `contactDepartmentId`, `contactJobGradeId` 중 최소 1개를 수정할 수 있다.
+- 신규 Contact 전화번호 입력은 `phoneCountryCode`, `phoneNationalNumber`, `phoneE164`로 정규화하며 legacy `mobile`은 표시 fallback으로 유지한다.
+- 기존 `010-1234-5678` 형식의 `mobile`은 migration에서 가능한 경우 `KR`/E.164 필드로 보강한다. 변환 실패 row는 삭제하지 않고 `mobile` fallback으로 표시한다.
 - 담당자 생성 요청의 `contactMemo`는 이 테이블에 저장하지 않고 `ContactMemoLog` 첫 데이터로 저장한다.
 - 담당자 삭제 API는 row를 실제 삭제하지 않고 `deletedAt`, `deletedByUserId`, `trashExpiresAt`만 설정한다.
 - 일반 목록/상세/검색/옵션/export와 연결 딜 목록은 `deletedAt IS NULL` 담당자만 대상으로 한다.

@@ -59,6 +59,9 @@ export function updateContact(input: UpdateContactInput) {
     body: compactBody({
       username: input.username,
       mobile: input.mobile,
+      phoneCountryCode: input.phoneCountryCode,
+      phoneNationalNumber: input.phoneNationalNumber,
+      phoneE164: input.phoneE164,
       email: input.email,
       companyId: input.companyId,
       contactDepartmentId: input.contactDepartmentId,

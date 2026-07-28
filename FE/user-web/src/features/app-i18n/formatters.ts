@@ -3,6 +3,7 @@ import {
   DEFAULT_APP_LOCALE,
   DEFAULT_APP_TIME_ZONE,
   type AppLocale,
+  normalizeAppPhoneCountryCode,
   normalizeAppLocale,
   toIntlLocale,
 } from "@/features/app-i18n/constants";
@@ -134,18 +135,29 @@ export function formatPhoneDisplay(
   options: AppPhoneFormatOptions = {}
 ) {
   const trimmed = value?.trim();
+  const countryCode = normalizeAppPhoneCountryCode(options.countryCode);
 
   if (!trimmed) {
     return options.fallback ?? DEFAULT_FALLBACK;
   }
 
-  if (options.countryCode === "US" && /^\+?1\d{10}$/.test(trimmed)) {
+  if (countryCode === "US" && /^\+?1\d{10}$/.test(trimmed)) {
     const digits = trimmed.replace(/^\+?1/, "");
     return `+1 (${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(6)}`;
   }
 
-  if (options.countryCode === "KR" && /^\+?82\d{9,10}$/.test(trimmed)) {
-    return trimmed.startsWith("+") ? trimmed : `+${trimmed}`;
+  if (countryCode === "KR") {
+    const digits = trimmed.replace(/\D/g, "");
+    const nationalNumber = digits.startsWith("82")
+      ? `0${digits.slice(2)}`
+      : digits;
+
+    if (/^010\d{8}$/.test(nationalNumber)) {
+      return `${nationalNumber.slice(0, 3)}-${nationalNumber.slice(
+        3,
+        7
+      )}-${nationalNumber.slice(7)}`;
+    }
   }
 
   return trimmed;

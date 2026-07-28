@@ -11,6 +11,7 @@ import {
   type CreateBusinessCardScanLogInput,
   type ListBusinessCardScanLogsInput,
 } from "@/modules/business-card/application/ports/business-card-scan-log.repository";
+import { normalizeContactPhoneForCreate } from "@/modules/contact/application/services/contact-phone-normalizer";
 import { PrismaService } from "@/shared/infrastructure/prisma/prisma.service";
 
 const DEFAULT_COMPANY_FIELD_NAME = "미분류";
@@ -386,12 +387,17 @@ export class PrismaBusinessCardScanLogRepository
     readonly contact: { readonly id: string; readonly username: string };
     readonly resolution: BusinessCardResolutionValue;
   }> {
+    const phone = normalizeContactPhoneForCreate({ mobile: input.mobile });
     const existing = await this.client.contact.findFirst({
       where: {
         userId: input.userId,
         companyId: input.companyId,
         deletedAt: null,
-        OR: [{ mobile: input.mobile }, { email: input.email }],
+        OR: [
+          { phoneE164: phone.phoneE164 },
+          { mobile: input.mobile },
+          { email: input.email },
+        ],
       },
       select: {
         id: true,
@@ -412,7 +418,10 @@ export class PrismaBusinessCardScanLogRepository
         userId: input.userId,
         companyId: input.companyId,
         username: input.username,
-        mobile: input.mobile,
+        mobile: phone.mobile,
+        phoneCountryCode: phone.phoneCountryCode,
+        phoneNationalNumber: phone.phoneNationalNumber,
+        phoneE164: phone.phoneE164,
         email: input.email,
         contactDepartmentId: input.contactDepartmentId,
         contactJobGradeId: input.contactJobGradeId,

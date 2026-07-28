@@ -124,6 +124,7 @@ Legacy response 후보:
 {
   "username": "홍길동",
   "mobile": "010-1234-5678",
+  "phoneDisplay": "010-1234-5678",
   "phoneCountryCode": "KR",
   "phoneNationalNumber": "01012345678",
   "phoneE164": "+821012345678"
@@ -133,6 +134,7 @@ Legacy response 후보:
 정책:
 
 - 기존 `mobile`은 유지한다.
+- 목록/상세 응답에는 표시용 `phoneDisplay`를 포함한다.
 - 신규 글로벌 필드는 가능한 경우 항상 채운다.
 - 1차 지원 국가는 `KR`, `US`다.
 - 글로벌 필드가 없으면 `mobile` fallback을 사용한다.

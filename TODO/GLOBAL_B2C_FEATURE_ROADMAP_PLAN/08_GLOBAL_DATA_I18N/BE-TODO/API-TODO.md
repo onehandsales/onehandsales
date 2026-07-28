@@ -107,7 +107,7 @@ Company/CompanyRegion:
 ```json
 {
   "code": "CONTACT_PHONE_INVALID",
-  "field": "phone"
+  "field": "phoneNationalNumber"
 }
 ```
 

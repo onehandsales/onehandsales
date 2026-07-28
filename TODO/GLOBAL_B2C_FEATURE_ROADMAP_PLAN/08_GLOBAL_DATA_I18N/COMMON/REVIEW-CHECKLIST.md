@@ -1,6 +1,6 @@
 # Review Checklist
 
-상태: In Progress - G03 Done
+상태: In Progress - G05 Done
 목적: 08 구현 후 검토자가 확인할 체크리스트
 
 ## 1. Product Scope
@@ -8,7 +8,7 @@
 - [x] `/app` URL에 locale prefix가 붙지 않았다.
 - [x] 1차 앱 언어가 `ko-KR`, `en`으로 제한됐다.
 - [ ] `ja`, `zh-TW`, `zh-CN`이 08 범위에 섞이지 않았다.
-- [ ] KR/US, KRW/USD 범위를 넘는 국가/통화/전화번호가 과하게 열리지 않았다.
+- [x] KR/US, KRW/USD 범위를 넘는 국가/통화/전화번호가 과하게 열리지 않았다.
 - [ ] 결제/세금, Admin 운영, Analytics, Backup/Restore가 08에 섞이지 않았다.
 - [ ] 기존 한국 사용자 데이터가 깨지지 않았다.
 - [x] public-site i18n과 app i18n이 섞이지 않았다.
@@ -36,7 +36,7 @@
 - [ ] email 없는 provider 응답은 가입/로그인을 차단한다.
 - [x] `PATCH /api/users/me/profile`이 글로벌 설정을 저장한다.
 - [x] Product/Deal API가 `currencyCode`를 포함한다.
-- [ ] Contact API가 글로벌 전화번호 필드를 포함한다.
+- [x] Contact API가 글로벌 전화번호 필드를 포함한다.
 - [ ] Company/CompanyRegion API가 국가/지역 code를 포함한다.
 - [x] validation error는 code/field 중심이다.
 - [ ] 모든 사용자 데이터 API에 ownership 조건이 있다.
@@ -49,7 +49,7 @@
 - [x] `User.defaultCurrencyCode`가 추가됐다.
 - [x] `Product.currencyCode`가 추가됐다.
 - [x] `Deal.currencyCode`가 추가됐다.
-- [ ] Contact 글로벌 전화번호 필드가 추가됐다.
+- [x] Contact 글로벌 전화번호 필드가 추가됐다.
 - [ ] `CompanyRegion.countryCode`가 추가됐다.
 - [ ] `CompanyRegion.regionCode`가 추가됐다.
 - [ ] Company 주소 필드가 결정된 방식대로 반영됐다.
@@ -61,7 +61,7 @@
 - [ ] Export header가 locale별로 바뀐다.
 - [ ] Export 날짜/시간이 사용자 timezone 기준이다.
 - [x] Export 통화 표시가 `currencyCode` 기준이다.
-- [ ] Contact export에 Phone, Phone Country, Phone E.164가 있다.
+- [x] Contact export에 Phone, Phone Country, Phone E.164가 있다.
 - [ ] Import template locale 선택이 `ko-KR`, `en`만 제공한다.
 - [ ] 지원하지 않는 template locale fallback이 있다.
 
@@ -71,7 +71,7 @@
 - [x] `/app/settings` 저장 즉시 locale이 반영된다.
 - [x] 날짜/시간/통화/전화번호 format utility가 중복 하드코딩을 줄인다.
 - [ ] `₩`, `원`, `ko-KR`, `KRW` 하드코딩이 필요한 곳 외에는 제거됐다.
-- [ ] `010-0000-0000` 전용 validation copy가 KR/US 정책에 맞게 바뀌었다.
+- [x] `010-0000-0000` 전용 validation copy가 KR/US 정책에 맞게 바뀌었다.
 - [ ] User Web이 `/admin/api/*`를 호출하지 않는다.
 - [ ] 신규/수정 FE 함수와 컴포넌트에 `// 기능 : ...` 주석이 있다.
 
@@ -86,12 +86,12 @@
 
 ## 8. Verification
 
-- [ ] Backend `pnpm run prisma:validate` 통과
-- [ ] Backend `pnpm run prisma:generate` 통과
-- [ ] Backend `pnpm run typecheck` 통과
-- [ ] Backend `pnpm run lint` 통과
-- [ ] Backend 관련 test 통과
-- [ ] Backend `pnpm run build` 통과
+- [x] Backend `pnpm run prisma:validate` 통과
+- [x] Backend `pnpm run prisma:generate` 통과
+- [x] Backend `pnpm run typecheck` 통과
+- [x] Backend `pnpm run lint` 통과
+- [x] Backend 관련 test 통과
+- [x] Backend `pnpm run build` 통과
 - [x] User Web `pnpm run typecheck` 통과
 - [x] User Web `pnpm run lint` 통과
 - [x] User Web `pnpm run build` 통과

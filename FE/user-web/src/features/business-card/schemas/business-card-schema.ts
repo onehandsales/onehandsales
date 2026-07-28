@@ -6,7 +6,8 @@ import type {
 
 export const BUSINESS_CARD_MAX_FILE_SIZE_BYTES = 10 * 1024 * 1024;
 const allowedMimeTypes = new Set(["image/jpeg", "image/png", "image/webp"]);
-const mobilePattern = /^010-\d{4}-\d{4}$/;
+const krMobilePattern = /^010-\d{4}-\d{4}$/;
+const usPhonePattern = /^[2-9]\d{2}-[2-9]\d{2}-\d{4}$/;
 
 export const businessCardConfirmSchema = z.object({
   companyName: z.string().trim().min(1, "회사명을 입력해 주세요.").max(160),
@@ -16,7 +17,10 @@ export const businessCardConfirmSchema = z.object({
   contactMobile: z
     .string()
     .trim()
-    .regex(mobilePattern, "010-0000-0000 형식으로 입력해 주세요."),
+    .refine(
+      (value) => isSupportedBusinessCardPhone(value),
+      "KR/US 전화번호 형식으로 입력해 주세요."
+    ),
   contactEmail: z.string().trim().email("올바른 이메일 형식으로 입력해 주세요."),
   contactDepartmentName: z.string().trim().max(120).optional(),
   contactJobGradeName: z.string().trim().max(120).optional(),
@@ -86,7 +90,15 @@ export function toConfirmInput(
 }
 
 export function formatMobileNumber(value: string) {
-  const digits = value.replace(/\D/g, "").slice(0, 11);
+  const rawDigits = value.replace(/\D/g, "");
+  const digits =
+    rawDigits.length === 11 && rawDigits.startsWith("1")
+      ? rawDigits.slice(1)
+      : rawDigits.slice(0, 11);
+
+  if (digits.length === 10 && !digits.startsWith("010")) {
+    return `${digits.slice(0, 3)}-${digits.slice(3, 6)}-${digits.slice(6)}`;
+  }
 
   if (digits.length <= 3) {
     return digits;
@@ -97,6 +109,13 @@ export function formatMobileNumber(value: string) {
   }
 
   return `${digits.slice(0, 3)}-${digits.slice(3, 7)}-${digits.slice(7)}`;
+}
+
+// 기능 : 명함 보정 전화번호가 KR mobile 또는 US national number인지 확인합니다.
+function isSupportedBusinessCardPhone(value: string) {
+  const formatted = formatMobileNumber(value);
+
+  return krMobilePattern.test(formatted) || usPhonePattern.test(formatted);
 }
 
 function toOptionalText(value: string | undefined) {

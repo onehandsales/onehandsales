@@ -9,6 +9,7 @@ import {
   useCompanyRegions,
 } from "@/features/company/hooks/use-company-list";
 import { ContactCompanyField } from "@/features/contact/components/contact-company-field";
+import { ContactPhoneInputControl } from "@/features/contact/components/contact-phone-field";
 import { useCompanyOptions } from "@/features/contact/hooks/use-company-options";
 import {
   useContactDepartments,
@@ -76,6 +77,7 @@ export function ContactEditForm({
   });
   const companyId = watch("companyId") ?? "";
   const companySearch = watch("companySearch") ?? "";
+  const phoneCountryCode = watch("phoneCountryCode") ?? "KR";
   const departmentId = watch("contactDepartmentId") ?? "";
   const jobGradeId = watch("contactJobGradeId") ?? "";
   const companyFields = useMemo(
@@ -283,12 +285,31 @@ export function ContactEditForm({
         />
 
         <div className="grid gap-4 md:grid-cols-2">
-          <TextInput
-            error={errors.mobile?.message}
-            id="contact-detail-mobile"
-            label="휴대폰번호"
-            register={register("mobile")}
-          />
+          <div className="grid gap-2">
+            <label className="text-sm font-medium" htmlFor="contact-detail-phone">
+              전화번호
+            </label>
+            <ContactPhoneInputControl
+              ariaDescribedBy={
+                errors.phoneNationalNumber || errors.phoneCountryCode
+                  ? "contact-detail-phone-error"
+                  : undefined
+              }
+              countryCode={phoneCountryCode}
+              countryRegister={register("phoneCountryCode")}
+              id="contact-detail-phone"
+              invalid={Boolean(
+                errors.phoneNationalNumber || errors.phoneCountryCode
+              )}
+              nationalNumberRegister={register("phoneNationalNumber")}
+            />
+            {errors.phoneNationalNumber || errors.phoneCountryCode ? (
+              <p className="text-xs text-destructive" id="contact-detail-phone-error">
+                {errors.phoneNationalNumber?.message ??
+                  errors.phoneCountryCode?.message}
+              </p>
+            ) : null}
+          </div>
           <TextInput
             error={errors.email?.message}
             id="contact-detail-email"

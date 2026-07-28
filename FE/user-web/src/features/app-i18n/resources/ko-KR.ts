@@ -40,5 +40,7 @@ export const koKRResource = {
     USER_DEFAULT_CURRENCY_UNSUPPORTED: "지원하는 통화를 선택해 주세요.",
     CURRENCY_UNSUPPORTED: "지원하는 통화를 선택해 주세요.",
     AMOUNT_INTEGER_REQUIRED: "금액은 0 이상의 정수로 입력해 주세요.",
+    CONTACT_PHONE_COUNTRY_UNSUPPORTED: "지원하는 전화번호 국가를 선택해 주세요.",
+    CONTACT_PHONE_INVALID: "전화번호 형식을 확인해 주세요.",
   },
 } satisfies AppI18nResource;

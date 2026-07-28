@@ -530,6 +530,12 @@ model Contact {
   companyId           String    @db.Uuid
   username            String
   mobile              String
+  /// 기능 : 담당자 전화번호가 속한 KR/US 국가 코드를 저장한다.
+  phoneCountryCode    String?
+  /// 기능 : 국가별 표준 national number 숫자 문자열을 저장한다.
+  phoneNationalNumber String?
+  /// 기능 : 검색/중복/외부 연동 기준이 되는 E.164 전화번호를 저장한다.
+  phoneE164           String?
   email               String
   contactJobGradeId   String    @db.Uuid
   contactDepartmentId String    @db.Uuid
@@ -559,6 +565,7 @@ model Contact {
 
   @@index([userId, createdAt])
   @@index([userId, username])
+  @@index([userId, phoneE164])
   @@index([userId, companyId])
   @@index([userId, contactDepartmentId])
   @@index([userId, contactJobGradeId])

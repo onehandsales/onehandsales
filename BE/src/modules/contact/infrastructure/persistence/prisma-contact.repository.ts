@@ -32,6 +32,9 @@ type ContactWithRelations = {
   readonly id: string;
   readonly username: string;
   readonly mobile: string;
+  readonly phoneCountryCode: string | null;
+  readonly phoneNationalNumber: string | null;
+  readonly phoneE164: string | null;
   readonly email: string;
   readonly createdAt: Date;
   readonly updatedAt: Date;
@@ -209,6 +212,9 @@ export class PrismaContactRepository implements ContactRepository {
         companyId: input.companyId,
         username: input.username,
         mobile: input.mobile,
+        phoneCountryCode: input.phoneCountryCode,
+        phoneNationalNumber: input.phoneNationalNumber,
+        phoneE164: input.phoneE164,
         email: input.email,
         contactDepartmentId: input.contactDepartmentId,
         contactJobGradeId: input.contactJobGradeId,
@@ -238,6 +244,13 @@ export class PrismaContactRepository implements ContactRepository {
         ...(input.companyId !== undefined ? { companyId: input.companyId } : {}),
         ...(input.username !== undefined ? { username: input.username } : {}),
         ...(input.mobile !== undefined ? { mobile: input.mobile } : {}),
+        ...(input.phoneCountryCode !== undefined
+          ? { phoneCountryCode: input.phoneCountryCode }
+          : {}),
+        ...(input.phoneNationalNumber !== undefined
+          ? { phoneNationalNumber: input.phoneNationalNumber }
+          : {}),
+        ...(input.phoneE164 !== undefined ? { phoneE164: input.phoneE164 } : {}),
         ...(input.email !== undefined ? { email: input.email } : {}),
         ...(input.contactDepartmentId !== undefined
           ? { contactDepartmentId: input.contactDepartmentId }
@@ -767,6 +780,9 @@ export class PrismaContactRepository implements ContactRepository {
       },
       username: contact.username,
       mobile: contact.mobile,
+      phoneCountryCode: contact.phoneCountryCode,
+      phoneNationalNumber: contact.phoneNationalNumber,
+      phoneE164: contact.phoneE164,
       email: contact.email,
       contactDepartment: {
         id: contact.contactDepartment.id,

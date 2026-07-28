@@ -952,6 +952,7 @@ function ContactMobileCard({
 }) {
   const initial = contact.username.charAt(0).toUpperCase();
   const dealCountLabel = formatContactDealCount(contact);
+  const phoneText = formatContactPhoneText(contact);
 
   return (
     <Link
@@ -989,7 +990,7 @@ function ContactMobileCard({
         {/* Row3: 연락처 + 현재 응답에서 가능한 활동 */}
         <div className="mt-1 flex items-center justify-between">
           <span className="text-[12px] text-[#6B7280]">
-            {contact.mobile || contact.email || "-"}
+            {phoneText !== "-" ? phoneText : contact.email || "-"}
           </span>
           <span className="shrink-0 text-[11px] text-[#9CA3AF]">
             {formatContactCreatedActivity(contact.createdAt, displayTimeZone)}
@@ -1008,6 +1009,7 @@ function ContactRow({
   readonly displayTimeZone: string;
 }) {
   const navigate = useNavigate();
+  const phoneText = formatContactPhoneText(contact);
 
   return (
     <div
@@ -1067,9 +1069,9 @@ function ContactRow({
           </span>
         </span>
       </div>
-      <div className="min-w-0" title={contact.mobile || "-"}>
+      <div className="min-w-0" title={phoneText}>
         <span className="block min-w-0 truncate text-[12px] font-medium text-[#475569]">
-          {contact.mobile || "-"}
+          {phoneText}
         </span>
       </div>
       <div className="min-w-0" title={contact.email || "-"}>
@@ -1095,6 +1097,7 @@ export function ContactCard({
   readonly displayTimeZone: string;
 }) {
   const dealCountLabel = formatContactDealCount(contact);
+  const phoneText = formatContactPhoneText(contact);
 
   return (
     <Link
@@ -1110,7 +1113,7 @@ export function ContactCard({
           {contact.contactDepartment.departmentName}
         </p>
         <div className="mt-2 space-y-1 text-[12px] text-[#64748B]">
-          <p className="truncate">핸드폰 {contact.mobile || "-"}</p>
+          <p className="truncate">전화번호 {phoneText}</p>
           <p className="truncate">이메일 {contact.email || "-"}</p>
           {dealCountLabel ? <p>연결 딜 {dealCountLabel}</p> : null}
           <p>
@@ -1625,6 +1628,15 @@ function formatContactDealCount(contact: ContactListItem) {
   return typeof contact.dealCount === "number"
     ? `${contact.dealCount.toLocaleString("ko-KR")}건`
     : null;
+}
+
+// 기능 : 신규 글로벌 전화번호 표시값을 우선하고 legacy mobile로 fallback합니다.
+function formatContactPhoneText(contact: ContactListItem) {
+  const phoneDisplay = contact.phoneDisplay?.trim();
+
+  return phoneDisplay && phoneDisplay !== "-"
+    ? phoneDisplay
+    : contact.mobile || "-";
 }
 
 function getBrowserTimeZoneFallback() {

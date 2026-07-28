@@ -22,6 +22,7 @@ import {
   BusinessCardScanLogNotFoundError,
   BusinessCardScanNotConfirmableError,
 } from "@/modules/business-card/domain/business-card.errors";
+import { normalizeLegacyContactPhone } from "@/modules/contact/application/services/contact-phone-normalizer";
 import type { CurrentUserContext } from "@/shared/application/context/current-user.context";
 import { ValidationDomainError } from "@/shared/domain/errors/common.errors";
 import { AppLogger } from "@/shared/infrastructure/logger/app-logger.service";
@@ -34,8 +35,6 @@ const ALLOWED_IMAGE_MIME_TYPES = new Set([
   "image/png",
   "image/webp",
 ]);
-const MOBILE_PATTERN = /^010-\d{4}-\d{4}$/;
-const MOBILE_DIGIT_PATTERN = /^010\d{8}$/;
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const DEFAULT_COMPANY_FIELD_NAME = "미분류";
 const DEFAULT_COMPANY_REGION_NAME = "미지정";
@@ -370,24 +369,14 @@ export class BusinessCardApplicationService {
       return null;
     }
 
-    if (MOBILE_PATTERN.test(normalized)) {
-      return normalized;
-    }
-
-    const digits = normalized.replace(/\D/g, "");
-
-    if (!MOBILE_DIGIT_PATTERN.test(digits)) {
-      return null;
-    }
-
-    return `${digits.slice(0, 3)}-${digits.slice(3, 7)}-${digits.slice(7)}`;
+    return normalizeLegacyContactPhone(normalized)?.mobile ?? null;
   }
 
   private normalizeRequiredMobile(value: string): string {
     const mobile = this.normalizeMobileCandidate(value);
 
-    if (!mobile || !MOBILE_PATTERN.test(mobile)) {
-      throw new ValidationDomainError("contactMobile must match 010-1111-2222");
+    if (!mobile) {
+      throw new ValidationDomainError("contactMobile must be a KR or US phone");
     }
 
     return mobile;

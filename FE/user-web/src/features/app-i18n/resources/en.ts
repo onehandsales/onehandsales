@@ -40,5 +40,7 @@ export const enResource = {
     USER_DEFAULT_CURRENCY_UNSUPPORTED: "Choose a supported currency.",
     CURRENCY_UNSUPPORTED: "Choose a supported currency.",
     AMOUNT_INTEGER_REQUIRED: "Enter an integer amount of 0 or more.",
+    CONTACT_PHONE_COUNTRY_UNSUPPORTED: "Choose a supported phone country.",
+    CONTACT_PHONE_INVALID: "Check the phone number format.",
   },
 } satisfies AppI18nResource;

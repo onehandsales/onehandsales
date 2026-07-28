@@ -4,9 +4,12 @@ export const DEFAULT_APP_TIME_ZONE = "Asia/Seoul";
 export const DEFAULT_APP_COUNTRY_CODE = "KR";
 export const DEFAULT_APP_CURRENCY_CODE = "KRW";
 export const APP_SUPPORTED_CURRENCY_CODES = ["KRW", "USD"] as const;
+export const APP_SUPPORTED_PHONE_COUNTRY_CODES = ["KR", "US"] as const;
 
 export type AppLocale = (typeof APP_SUPPORTED_LOCALES)[number];
 export type AppCurrencyCode = (typeof APP_SUPPORTED_CURRENCY_CODES)[number];
+export type AppPhoneCountryCode =
+  (typeof APP_SUPPORTED_PHONE_COUNTRY_CODES)[number];
 
 export type AppI18nResource = {
   readonly common: {
@@ -47,6 +50,8 @@ export type AppI18nResource = {
     readonly USER_DEFAULT_CURRENCY_UNSUPPORTED: string;
     readonly CURRENCY_UNSUPPORTED: string;
     readonly AMOUNT_INTEGER_REQUIRED: string;
+    readonly CONTACT_PHONE_COUNTRY_UNSUPPORTED: string;
+    readonly CONTACT_PHONE_INVALID: string;
   };
 };
 
@@ -65,6 +70,24 @@ export function isAppLocale(value: string): value is AppLocale {
 // 기능 : 입력 통화 코드가 앱에서 지원하는 통화인지 확인합니다.
 export function isAppCurrencyCode(value: string): value is AppCurrencyCode {
   return APP_SUPPORTED_CURRENCY_CODES.includes(value as AppCurrencyCode);
+}
+
+// 기능 : 입력 국가 코드가 담당자 전화번호에서 지원하는 국가인지 확인합니다.
+export function isAppPhoneCountryCode(
+  value: string
+): value is AppPhoneCountryCode {
+  return APP_SUPPORTED_PHONE_COUNTRY_CODES.includes(value as AppPhoneCountryCode);
+}
+
+// 기능 : 서버/사용자 국가 코드를 담당자 전화번호 지원 국가로 정규화합니다.
+export function normalizeAppPhoneCountryCode(
+  value: string | null | undefined
+): AppPhoneCountryCode {
+  const normalized = value?.trim().toUpperCase();
+
+  return normalized && isAppPhoneCountryCode(normalized)
+    ? normalized
+    : DEFAULT_APP_COUNTRY_CODE;
 }
 
 // 기능 : 사용자/서버 통화 코드를 앱 지원 통화로 정규화합니다.

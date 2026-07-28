@@ -8,6 +8,7 @@ import {
   getBrowserAppLocale,
   normalizeAppCurrencyCode,
   normalizeAppLocale,
+  normalizeAppPhoneCountryCode,
 } from "@/features/app-i18n/constants";
 import { enResource } from "@/features/app-i18n/resources/en";
 import { koKRResource } from "@/features/app-i18n/resources/ko-KR";
@@ -56,7 +57,9 @@ export function AppI18nProvider({ children }: { readonly children: ReactNode }) 
   const browserLocale = useMemo(() => getBrowserAppLocale(), []);
   const locale = normalizeAppLocale(user?.preferredLocale ?? browserLocale);
   const timeZone = user?.timeZone || DEFAULT_APP_TIME_ZONE;
-  const countryCode = user?.countryCode || DEFAULT_APP_COUNTRY_CODE;
+  const countryCode = normalizeAppPhoneCountryCode(
+    user?.countryCode ?? DEFAULT_APP_COUNTRY_CODE
+  );
   const defaultCurrencyCode = normalizeAppCurrencyCode(user?.defaultCurrencyCode);
 
   const t = useCallback<AppI18nContextValue["t"]>(

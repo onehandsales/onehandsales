@@ -18,6 +18,11 @@ import {
   type UpdateContactInput,
 } from "@/modules/contact/application/ports/contact.repository";
 import {
+  formatContactPhoneDisplay,
+  normalizeContactPhoneForCreate,
+  normalizeContactPhoneForUpdate,
+} from "@/modules/contact/application/services/contact-phone-normalizer";
+import {
   ContactDepartmentInUseError,
   ContactDepartmentNotFoundError,
   ContactExportFailedError,
@@ -42,14 +47,16 @@ import {
   type XlsxWorkbookWriter,
 } from "@/shared/application/ports/xlsx-workbook.writer";
 import { createTrashRetentionTimestamps } from "@/shared/application/trash/trash-retention";
-import { ValidationDomainError } from "@/shared/domain/errors/common.errors";
+import {
+  FieldValidationDomainError,
+  ValidationDomainError,
+} from "@/shared/domain/errors/common.errors";
 import { AppLogger } from "@/shared/infrastructure/logger/app-logger.service";
 
 const CONTACT_PAGE_SIZE = 15;
 const MEMO_LOG_PAGE_SIZE = 10;
 const INITIAL_CONTACT_MEMO_TYPE = "초기 메모";
 const XLSX_DATE_NUM_FORMAT = "yyyy-mm-dd hh:mm:ss";
-const MOBILE_PATTERN = /^010-\d{4}-\d{4}$/;
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 // 역할 : ContactListQueryInput 데이터가 계층 사이에서 전달되는 구조를 정의합니다.
@@ -76,7 +83,10 @@ export interface ContactExportQueryInput {
 // 역할 : CreateContactCommand 데이터가 계층 사이에서 전달되는 구조를 정의합니다.
 export interface CreateContactCommand {
   readonly username: string;
-  readonly mobile: string;
+  readonly mobile?: string;
+  readonly phoneCountryCode?: string | null;
+  readonly phoneNationalNumber?: string | null;
+  readonly phoneE164?: string | null;
   readonly email: string;
   readonly companyId: string;
   readonly contactDepartmentId: string;
@@ -88,6 +98,9 @@ export interface CreateContactCommand {
 export interface UpdateContactCommand {
   readonly username?: string;
   readonly mobile?: string;
+  readonly phoneCountryCode?: string | null;
+  readonly phoneNationalNumber?: string | null;
+  readonly phoneE164?: string | null;
   readonly email?: string;
   readonly companyId?: string;
   readonly contactDepartmentId?: string;
@@ -117,6 +130,10 @@ export interface ContactListItemResponse {
   };
   readonly username: string;
   readonly mobile: string;
+  readonly phoneDisplay: string;
+  readonly phoneCountryCode: string | null;
+  readonly phoneNationalNumber: string | null;
+  readonly phoneE164: string | null;
   readonly email: string;
   readonly contactDepartment: {
     readonly id: string;
@@ -417,10 +434,14 @@ export class ContactApplicationService {
       input.username,
       "username is required"
     );
-    const mobile = this.normalizeRequiredText(input.mobile, "mobile is required");
+    const phone = normalizeContactPhoneForCreate({
+      mobile: input.mobile,
+      phoneCountryCode: input.phoneCountryCode,
+      phoneNationalNumber: input.phoneNationalNumber,
+      phoneE164: input.phoneE164,
+    });
     const email = this.normalizeRequiredText(input.email, "email is required");
     const contactMemo = this.normalizeOptionalText(input.contactMemo);
-    this.assertMobileFormat(mobile);
     this.assertEmailFormat(email);
 
     let createdContactId: string | null = null;
@@ -445,7 +466,10 @@ export class ContactApplicationService {
         userId: currentUser.id,
         companyId: input.companyId,
         username,
-        mobile,
+        mobile: phone.mobile,
+        phoneCountryCode: phone.phoneCountryCode,
+        phoneNationalNumber: phone.phoneNationalNumber,
+        phoneE164: phone.phoneE164,
         email,
         contactDepartmentId: input.contactDepartmentId,
         contactJobGradeId: input.contactJobGradeId,
@@ -980,7 +1004,7 @@ export class ContactApplicationService {
     return normalized.length > 0 ? normalized : undefined;
   }
 
-  // 기능 : 담당자 핸드폰번호가 계약 형식인지 검증합니다.
+  // 기능 : 목록/내보내기 필터 ID를 중복 없이 정규화합니다.
   private normalizeFilterIds(
     singleId: string | undefined,
     ids: readonly string[] | undefined
@@ -998,12 +1022,6 @@ export class ContactApplicationService {
     return normalizedIds;
   }
 
-  private assertMobileFormat(mobile: string): void {
-    if (!MOBILE_PATTERN.test(mobile)) {
-      throw new ValidationDomainError("mobile must match 010-1111-2222");
-    }
-  }
-
   // 기능 : 담당자 이메일이 기본 이메일 형식인지 검증합니다.
   private assertEmailFormat(email: string): void {
     if (!EMAIL_PATTERN.test(email)) {
@@ -1015,6 +1033,12 @@ export class ContactApplicationService {
   private normalizeContactUpdateInput(
     input: UpdateContactCommand
   ): UpdateContactInput {
+    const phone = normalizeContactPhoneForUpdate({
+      mobile: input.mobile,
+      phoneCountryCode: input.phoneCountryCode,
+      phoneNationalNumber: input.phoneNationalNumber,
+      phoneE164: input.phoneE164,
+    });
     const normalized: UpdateContactInput = {
       ...(input.username !== undefined
         ? {
@@ -1024,12 +1048,12 @@ export class ContactApplicationService {
             ),
           }
         : {}),
-      ...(input.mobile !== undefined
+      ...(phone
         ? {
-            mobile: this.normalizeRequiredText(
-              input.mobile,
-              "mobile is required"
-            ),
+            mobile: phone.mobile,
+            phoneCountryCode: phone.phoneCountryCode,
+            phoneNationalNumber: phone.phoneNationalNumber,
+            phoneE164: phone.phoneE164,
           }
         : {}),
       ...(input.email !== undefined
@@ -1044,12 +1068,16 @@ export class ContactApplicationService {
         : {}),
     };
 
-    if (normalized.mobile !== undefined) {
-      this.assertMobileFormat(normalized.mobile);
-    }
-
     if (normalized.email !== undefined) {
       this.assertEmailFormat(normalized.email);
+    }
+
+    if (Object.keys(normalized).length === 0) {
+      throw new FieldValidationDomainError(
+        "ValidationError",
+        "contact",
+        "At least one contact field is required"
+      );
     }
 
     return normalized;
@@ -1147,11 +1175,22 @@ export class ContactApplicationService {
 
   // 기능 : 담당자 레코드를 목록 응답 항목으로 변환합니다.
   private toContactListItem(contact: ContactRecord): ContactListItemResponse {
+    const phoneDisplay = formatContactPhoneDisplay({
+      mobile: contact.mobile,
+      phoneCountryCode: contact.phoneCountryCode,
+      phoneNationalNumber: contact.phoneNationalNumber,
+      phoneE164: contact.phoneE164,
+    });
+
     return {
       id: contact.id,
       company: contact.company,
       username: contact.username,
       mobile: contact.mobile,
+      phoneDisplay,
+      phoneCountryCode: contact.phoneCountryCode,
+      phoneNationalNumber: contact.phoneNationalNumber,
+      phoneE164: contact.phoneE164,
       email: contact.email,
       contactDepartment: contact.contactDepartment,
       contactJobGrade: contact.contactJobGrade,
@@ -1178,7 +1217,9 @@ export class ContactApplicationService {
         columns: [
           { header: "회사명", key: "companyName", width: 28 },
           { header: "담당자명", key: "username", width: 18 },
-          { header: "핸드폰번호", key: "mobile", width: 18 },
+          { header: "Phone", key: "phone", width: 20 },
+          { header: "Phone Country", key: "phoneCountry", width: 16 },
+          { header: "Phone E.164", key: "phoneE164", width: 20 },
           { header: "이메일", key: "email", width: 28 },
           { header: "부서", key: "departmentName", width: 18 },
           { header: "직급", key: "jobGradeName", width: 18 },
@@ -1201,7 +1242,14 @@ export class ContactApplicationService {
     return contacts.map((contact) => ({
       companyName: contact.company.companyName,
       username: contact.username,
-      mobile: contact.mobile,
+      phone: formatContactPhoneDisplay({
+        mobile: contact.mobile,
+        phoneCountryCode: contact.phoneCountryCode,
+        phoneNationalNumber: contact.phoneNationalNumber,
+        phoneE164: contact.phoneE164,
+      }),
+      phoneCountry: contact.phoneCountryCode ?? "",
+      phoneE164: contact.phoneE164 ?? "",
       email: contact.email,
       departmentName: contact.contactDepartment.departmentName,
       jobGradeName: contact.contactJobGrade.jobGradeName,

@@ -1,6 +1,6 @@
 # G05 Contact Phone Global
 
-상태: Not Started
+상태: Done
 목표: Contact 전화번호를 KR/US 글로벌 입력/저장/표시 구조로 전환한다.
 
 ## 1. 포함 범위
@@ -60,6 +60,7 @@ Contact 목록/상세/검색/export 관련 응답은 글로벌 필드와 legacy 
 ```json
 {
   "mobile": "010-1234-5678",
+  "phoneDisplay": "010-1234-5678",
   "phoneCountryCode": "KR",
   "phoneNationalNumber": "01012345678",
   "phoneE164": "+821012345678"
@@ -71,7 +72,7 @@ Contact 목록/상세/검색/export 관련 응답은 글로벌 필드와 legacy 
 ```json
 {
   "code": "CONTACT_PHONE_INVALID",
-  "field": "phone"
+  "field": "phoneNationalNumber"
 }
 ```
 
@@ -133,17 +134,24 @@ pnpm run build
 
 ## 11. Goal 검토 체크리스트
 
-- [ ] 기존 `mobile`이 유지된다.
-- [ ] 글로벌 전화번호 필드 3개가 추가됐다.
-- [ ] KR/US 입력과 검증이 있다.
-- [ ] Contact request가 글로벌 전화번호 필드를 받는다.
-- [ ] Contact response가 글로벌 필드와 legacy fallback을 포함한다.
-- [ ] business logic이 E.164 우선 기준을 따른다.
-- [ ] user flow에서 KR/US 선택과 legacy 표시가 동작한다.
-- [ ] `BE/prisma`를 참고했고 신규 column에 한글 주석이 있다.
-- [ ] 기존 한국 번호 자동 migration이 있다.
-- [ ] 변환 실패 데이터는 보존된다.
-- [ ] Contact UI가 legacy fallback을 표시한다.
-- [ ] Contact export가 Phone, Phone Country, Phone E.164를 준비한다.
-- [ ] 신규 코드에 한글 주석 규칙이 적용됐다.
-- [ ] 실행한 검증 결과를 기록했다.
+- [x] 기존 `mobile`이 유지된다.
+- [x] 글로벌 전화번호 필드 3개가 추가됐다.
+- [x] KR/US 입력과 검증이 있다.
+- [x] Contact request가 글로벌 전화번호 필드를 받는다.
+- [x] Contact response가 글로벌 필드와 legacy fallback을 포함한다.
+- [x] business logic이 E.164 우선 기준을 따른다.
+- [x] user flow에서 KR/US 선택과 legacy 표시가 동작한다.
+- [x] `BE/prisma`를 참고했고 신규 column에 한글 주석이 있다.
+- [x] 기존 한국 번호 자동 migration이 있다.
+- [x] 변환 실패 데이터는 보존된다.
+- [x] Contact UI가 legacy fallback을 표시한다.
+- [x] Contact export가 Phone, Phone Country, Phone E.164를 준비한다.
+- [x] 신규 코드에 한글 주석 규칙이 적용됐다.
+- [x] 실행한 검증 결과를 기록했다.
+
+## 12. 완료 기록
+
+- 완료일: 2026-07-28
+- Backend: `Contact.phoneCountryCode`, `Contact.phoneNationalNumber`, `Contact.phoneE164`, `userId + phoneE164` index, KR legacy migration, KR/US normalizer, Contact DTO/response/export/search/business-card/import 경로 반영.
+- Frontend: Contact type/API/schema, create/edit KR/US 전화번호 입력, list/detail `phoneDisplay` 우선 표시와 `mobile` fallback 반영. 명함 보정 전화번호 검증도 KR/US 입력을 허용하도록 보강.
+- 검증: BE `prisma:validate`, `prisma:generate`, `typecheck`, `lint`, `test -- contact`, `test -- data-import business-card search`, `build` 통과. FE user-web `typecheck`, `lint`, `build` 통과.

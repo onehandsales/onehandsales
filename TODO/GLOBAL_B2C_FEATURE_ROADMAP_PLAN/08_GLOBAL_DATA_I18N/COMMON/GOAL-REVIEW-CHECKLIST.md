@@ -1,6 +1,6 @@
 # Goal Review Checklist
 
-상태: G03 Reviewed / G04 Ready
+상태: G03 Reviewed / G04 Ready / G05 Reviewed
 목적: 각 `/goal` 완료 전 검토자가 반드시 확인할 공통/개별 체크리스트
 
 ## 1. 공통 Gate
@@ -53,10 +53,10 @@
 
 ## 6. G05 Contact Phone Global
 
-- [ ] Contact request/response에 글로벌 전화번호 필드가 포함된다.
-- [ ] Contact 신규 column이 `BE/prisma` 기준과 한글 주석 규칙을 따른다.
-- [ ] 기존 `mobile` fallback이 유지된다.
-- [ ] 기존 한국 번호 자동 migration과 실패 데이터 보존이 동작한다.
+- [x] Contact request/response에 글로벌 전화번호 필드가 포함된다.
+- [x] Contact 신규 column이 `BE/prisma` 기준과 한글 주석 규칙을 따른다.
+- [x] 기존 `mobile` fallback이 유지된다.
+- [x] 기존 한국 번호 자동 migration과 실패 데이터 보존이 동작한다.
 
 ## 7. G06 Company Region Address
 

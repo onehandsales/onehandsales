@@ -1,4 +1,7 @@
-import type { AppCurrencyCode } from "@/features/app-i18n";
+import type {
+  AppCurrencyCode,
+  AppPhoneCountryCode,
+} from "@/features/app-i18n";
 
 // 담당자 목록 아이템
 export type ContactListItem = {
@@ -6,6 +9,10 @@ export type ContactListItem = {
   readonly company: { readonly id: string; readonly companyName: string };
   readonly username: string;
   readonly mobile: string;
+  readonly phoneDisplay: string;
+  readonly phoneCountryCode: AppPhoneCountryCode | null;
+  readonly phoneNationalNumber: string | null;
+  readonly phoneE164: string | null;
   readonly email: string;
   readonly contactDepartment: { readonly id: string; readonly departmentName: string };
   readonly contactJobGrade: { readonly id: string; readonly jobGradeName: string };
@@ -90,7 +97,10 @@ export type ContactListParams = {
 // 생성 입력
 export type CreateContactInput = {
   readonly username: string;
-  readonly mobile: string;
+  readonly mobile?: string;
+  readonly phoneCountryCode: AppPhoneCountryCode;
+  readonly phoneNationalNumber: string;
+  readonly phoneE164?: string;
   readonly email: string;
   readonly companyId: string;
   readonly contactDepartmentId: string;
@@ -103,6 +113,9 @@ export type UpdateContactInput = {
   readonly contactId: string;
   readonly username?: string;
   readonly mobile?: string;
+  readonly phoneCountryCode?: AppPhoneCountryCode;
+  readonly phoneNationalNumber?: string;
+  readonly phoneE164?: string;
   readonly email?: string;
   readonly companyId?: string;
   readonly contactDepartmentId?: string;

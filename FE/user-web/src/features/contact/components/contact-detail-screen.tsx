@@ -422,6 +422,7 @@ function ContactSummaryHeader({
     defaultValues: toContactEditFormValues(contact),
   });
   const selectedCompanyId = watch("companyId");
+  const selectedPhoneCountryCode = watch("phoneCountryCode") ?? "KR";
   const selectedDepartmentId = watch("contactDepartmentId");
   const selectedJobGradeId = watch("contactJobGradeId");
 
@@ -442,7 +443,8 @@ function ContactSummaryHeader({
     errors.companyId?.message ??
     errors.contactDepartmentId?.message ??
     errors.contactJobGradeId?.message ??
-    errors.mobile?.message ??
+    errors.phoneNationalNumber?.message ??
+    errors.phoneCountryCode?.message ??
     errors.email?.message;
 
   if (isEditing) {
@@ -530,10 +532,11 @@ function ContactSummaryHeader({
 
         <div className="hidden h-5 w-px shrink-0 bg-[#E5E7EB] lg:block" />
 
+        <input type="hidden" {...register("phoneCountryCode")} />
         <InlineTextInput
           id="contact-summary-edit-mobile"
-          label="휴대폰"
-          register={register("mobile")}
+          label={selectedPhoneCountryCode === "US" ? "전화 +1" : "전화 +82"}
+          register={register("phoneNationalNumber")}
           widthClassName="w-[128px]"
         />
         <InlineTextInput
@@ -604,7 +607,7 @@ function ContactSummaryHeader({
       <div className="h-5 w-px shrink-0 bg-[#E5E7EB]" />
       <ContactInfoChip
         icon={Phone}
-        label={contact.mobile || "-"}
+        label={contact.phoneDisplay || contact.mobile || "-"}
       />
       <ContactInfoChip
         icon={Mail}

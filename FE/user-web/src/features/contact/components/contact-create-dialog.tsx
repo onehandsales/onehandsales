@@ -7,7 +7,6 @@ import {
   Loader2,
   Mail,
   Maximize2,
-  Phone,
 } from "lucide-react";
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { useForm } from "react-hook-form";
@@ -19,6 +18,7 @@ import {
   useCompanyRegions,
 } from "@/features/company/hooks/use-company-list";
 import { ContactCompanyField } from "@/features/contact/components/contact-company-field";
+import { ContactPhoneInputControl } from "@/features/contact/components/contact-phone-field";
 import { useCompanyOptions } from "@/features/contact/hooks/use-company-options";
 import {
   useContactDepartments,
@@ -95,6 +95,7 @@ export function ContactCreateDialog({
   });
   const companyId = watch("companyId") ?? "";
   const companySearch = watch("companySearch") ?? "";
+  const phoneCountryCode = watch("phoneCountryCode") ?? "KR";
   const departmentId = watch("contactDepartmentId") ?? "";
   const jobGradeId = watch("contactJobGradeId") ?? "";
   const contactMemo = watch("contactMemo") ?? "";
@@ -124,6 +125,9 @@ export function ContactCreateDialog({
         ...initialValues,
         username: initialValues?.username ?? "",
         mobile: initialValues?.mobile ?? "",
+        phoneCountryCode: initialValues?.phoneCountryCode ?? "KR",
+        phoneNationalNumber:
+          initialValues?.phoneNationalNumber ?? initialValues?.mobile ?? "",
         email: initialValues?.email ?? "",
         companyId: initialValues?.companyId ?? "",
         companySearch: initialValues?.companySearch ?? "",
@@ -443,24 +447,27 @@ export function ContactCreateDialog({
 
             <section className="grid cursor-auto gap-3 sm:grid-cols-2">
               <ContactCreatePanelProperty
-                error={errors.mobile?.message}
-                errorId="contact-mobile-error"
-                label="휴대폰번호"
+                error={
+                  errors.phoneNationalNumber?.message ??
+                  errors.phoneCountryCode?.message
+                }
+                errorId="contact-phone-error"
+                label="전화번호"
               >
-                <div className="relative">
-                  <Phone className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-                  <input
-                    aria-label="휴대폰번호"
-                    aria-describedby={
-                      errors.mobile ? "contact-mobile-error" : undefined
-                    }
-                    aria-invalid={Boolean(errors.mobile)}
-                    className="h-10 w-full rounded-md border border-[#E6EAF0] pl-9 pr-3 text-[13px] outline-none transition-colors focus:border-[#4880EE] focus:ring-1 focus:ring-[#4880EE]"
-                    id="contact-mobile"
-                    placeholder="010-0000-0000"
-                    {...register("mobile")}
-                  />
-                </div>
+                <ContactPhoneInputControl
+                  ariaDescribedBy={
+                    errors.phoneNationalNumber || errors.phoneCountryCode
+                      ? "contact-phone-error"
+                      : undefined
+                  }
+                  countryCode={phoneCountryCode}
+                  countryRegister={register("phoneCountryCode")}
+                  id="contact-phone"
+                  invalid={Boolean(
+                    errors.phoneNationalNumber || errors.phoneCountryCode
+                  )}
+                  nationalNumberRegister={register("phoneNationalNumber")}
+                />
               </ContactCreatePanelProperty>
 
               <ContactCreatePanelProperty

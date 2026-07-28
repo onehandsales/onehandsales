@@ -4,6 +4,7 @@ import {
   type SearchRepository,
   type SearchRepositoryInput,
 } from "@/modules/search/application/ports/search.repository";
+import { formatContactPhoneDisplay } from "@/modules/contact/application/services/contact-phone-normalizer";
 import { SearchTargetType } from "@/modules/search/domain/search-target-type";
 import { PrismaService } from "@/shared/infrastructure/prisma/prisma.service";
 
@@ -19,6 +20,9 @@ type ContactSearchRow = {
   readonly username: string;
   readonly email: string;
   readonly mobile: string;
+  readonly phoneCountryCode: string | null;
+  readonly phoneNationalNumber: string | null;
+  readonly phoneE164: string | null;
   readonly company: { readonly companyName: string };
   readonly contactDepartment: { readonly departmentName: string };
   readonly contactJobGrade: { readonly jobGradeName: string };
@@ -149,6 +153,7 @@ export class PrismaSearchRepository implements SearchRepository {
         OR: [
           { username: { contains: input.query } },
           { email: { contains: input.query } },
+          { phoneE164: { contains: input.query } },
           { mobile: { contains: input.query } },
           {
             company: {
@@ -169,6 +174,9 @@ export class PrismaSearchRepository implements SearchRepository {
         username: true,
         email: true,
         mobile: true,
+        phoneCountryCode: true,
+        phoneNationalNumber: true,
+        phoneE164: true,
         company: { select: { companyName: true } },
         contactDepartment: { select: { departmentName: true } },
         contactJobGrade: { select: { jobGradeName: true } },
@@ -400,9 +408,17 @@ export class PrismaSearchRepository implements SearchRepository {
 
   // 기능 : Prisma 담당자 행을 통합검색 결과 항목으로 변환합니다.
   private toContactItem(contact: ContactSearchRow): SearchItemRecord {
+    const phoneDisplay = formatContactPhoneDisplay({
+      mobile: contact.mobile,
+      phoneCountryCode: contact.phoneCountryCode,
+      phoneNationalNumber: contact.phoneNationalNumber,
+      phoneE164: contact.phoneE164,
+    });
+
     return {
       title: contact.username,
       subtitle: this.joinParts([
+        phoneDisplay,
         contact.company.companyName,
         contact.contactDepartment.departmentName,
         contact.contactJobGrade.jobGradeName,

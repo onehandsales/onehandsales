@@ -13,6 +13,7 @@ import type {
   ImportUserLogRecord,
   ListImportUserLogsInput,
 } from "@/modules/data-import/application/ports/import-template.repository";
+import { normalizeContactPhoneForCreate } from "@/modules/contact/application/services/contact-phone-normalizer";
 import { ImportJobNotReadyError } from "@/modules/data-import/domain/import-template.errors";
 import {
   DEAL_STATUS_CODES,
@@ -258,13 +259,19 @@ export class PrismaImportTemplateRepository implements ImportTemplateRepository 
           input.userId,
           this.readRequiredString(row.submittedData, "contactJobGradeName")
         );
+        const phone = normalizeContactPhoneForCreate({
+          mobile: this.readRequiredString(row.submittedData, "contactPhone"),
+        });
 
         await client.contact.create({
           data: {
             userId: input.userId,
             companyId: company.id,
             username: this.readRequiredString(row.submittedData, "contactName"),
-            mobile: this.readRequiredString(row.submittedData, "contactPhone"),
+            mobile: phone.mobile,
+            phoneCountryCode: phone.phoneCountryCode,
+            phoneNationalNumber: phone.phoneNationalNumber,
+            phoneE164: phone.phoneE164,
             email: this.readRequiredString(row.submittedData, "contactEmail"),
             contactDepartmentId: department.id,
             contactJobGradeId: jobGrade.id,
@@ -969,6 +976,9 @@ export class PrismaImportTemplateRepository implements ImportTemplateRepository 
       userId,
       resolution.contactJobGradeName
     );
+    const phone = normalizeContactPhoneForCreate({
+      mobile: resolution.contactPhone,
+    });
 
     return client.contact.create({
       data: {
@@ -976,7 +986,10 @@ export class PrismaImportTemplateRepository implements ImportTemplateRepository 
         companyId,
         username: contactName,
         email: resolution.contactEmail,
-        mobile: resolution.contactPhone,
+        mobile: phone.mobile,
+        phoneCountryCode: phone.phoneCountryCode,
+        phoneNationalNumber: phone.phoneNationalNumber,
+        phoneE164: phone.phoneE164,
         contactDepartmentId: department.id,
         contactJobGradeId: jobGrade.id,
       },

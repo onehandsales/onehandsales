@@ -24,7 +24,7 @@ const BUSINESS_CARD_OCR_PROMPT = [
   "contactDepartmentName means department/team.",
   "contactJobGradeName means title, role, rank, or position.",
   "Prefer Korean text as printed on the card.",
-  "For Korean mobile numbers, keep only 010 mobile numbers and format as 010-0000-0000.",
+  "For KR/US phone numbers, extract only clear phone numbers and keep the printed country context when present.",
 ].join("\n");
 
 interface OpenAiBusinessCardOcrJson {

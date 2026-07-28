@@ -49,6 +49,7 @@ import {
   DEAL_STATUS_CODES,
   getDealStatusLabel,
 } from "@/modules/deal/domain/deal-status";
+import { normalizeLegacyContactPhone } from "@/modules/contact/application/services/contact-phone-normalizer";
 import {
   ImportConfirmFailedError,
   ImportConfirmValidationFailedError,
@@ -89,8 +90,6 @@ const TEMPLATE_TYPE_ORDER: readonly ImportTemplateType[] = [
 ];
 const IMPORT_USER_LOG_PAGE_SIZE = 15;
 const IMPORT_JOB_DETAIL_ERROR_LIMIT = 50;
-const MOBILE_PATTERN = /^010-\d{4}-\d{4}$/;
-const MOBILE_DIGIT_PATTERN = /^010\d{8}$/;
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const DEAL_STATUS_TEMPLATE_OPTIONS = DEAL_STATUS_CODES.map((status) =>
   getDealStatusLabel(status)
@@ -2798,7 +2797,7 @@ export class DataImportApplicationService {
     };
   }
 
-  // 기능 : 휴대폰 필드 값을 010-0000-0000 형식으로 정규화합니다.
+  // 기능 : 휴대폰 필드 값을 KR/US 전화번호 표시 형식으로 정규화합니다.
   private normalizePhoneField(
     value: unknown,
     column: ImportTemplateColumn
@@ -2811,24 +2810,17 @@ export class DataImportApplicationService {
         : { value: null, errorMessage: null };
     }
 
-    if (MOBILE_PATTERN.test(normalized)) {
-      return {
-        value: normalized,
-        errorMessage: null,
-      };
-    }
+    const phone = normalizeLegacyContactPhone(normalized);
 
-    const digits = normalized.replace(/\D/g, "");
-
-    if (!MOBILE_DIGIT_PATTERN.test(digits)) {
+    if (!phone) {
       return {
         value: null,
-        errorMessage: `${column.label}은(는) 010-0000-0000 형식이어야 합니다.`,
+        errorMessage: `${column.label}은(는) KR/US 전화번호 형식이어야 합니다.`,
       };
     }
 
     return {
-      value: `${digits.slice(0, 3)}-${digits.slice(3, 7)}-${digits.slice(7)}`,
+      value: phone.mobile,
       errorMessage: null,
     };
   }
@@ -2900,21 +2892,16 @@ export class DataImportApplicationService {
     return normalized;
   }
 
-  // 기능 : 딜 담당자 보정의 휴대폰 값을 010-0000-0000 형식으로 정규화합니다.
+  // 기능 : 딜 담당자 보정의 휴대폰 값을 KR/US 전화번호 표시 형식으로 정규화합니다.
   private normalizeDealContactPhone(value: string | undefined, message: string): string {
     const normalized = value?.trim() ?? "";
+    const phone = normalizeLegacyContactPhone(normalized);
 
-    if (MOBILE_PATTERN.test(normalized)) {
-      return normalized;
-    }
-
-    const digits = normalized.replace(/\D/g, "");
-
-    if (!MOBILE_DIGIT_PATTERN.test(digits)) {
+    if (!phone) {
       throw new ValidationDomainError(message);
     }
 
-    return `${digits.slice(0, 3)}-${digits.slice(3, 7)}-${digits.slice(7)}`;
+    return phone.mobile;
   }
 
   // 기능 : 딜 제품 보정의 가격 값을 정규화합니다.

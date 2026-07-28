@@ -30,6 +30,9 @@ export interface ContactRecord {
   readonly company: ContactCompanyOptionRecord;
   readonly username: string;
   readonly mobile: string;
+  readonly phoneCountryCode: string | null;
+  readonly phoneNationalNumber: string | null;
+  readonly phoneE164: string | null;
   readonly email: string;
   readonly contactDepartment: ContactDepartmentRecord;
   readonly contactJobGrade: ContactJobGradeRecord;
@@ -95,6 +98,9 @@ export interface CreateContactInput {
   readonly companyId: string;
   readonly username: string;
   readonly mobile: string;
+  readonly phoneCountryCode: string | null;
+  readonly phoneNationalNumber: string | null;
+  readonly phoneE164: string | null;
   readonly email: string;
   readonly contactDepartmentId: string;
   readonly contactJobGradeId: string;
@@ -105,6 +111,9 @@ export interface UpdateContactInput {
   readonly companyId?: string;
   readonly username?: string;
   readonly mobile?: string;
+  readonly phoneCountryCode?: string | null;
+  readonly phoneNationalNumber?: string | null;
+  readonly phoneE164?: string | null;
   readonly email?: string;
   readonly contactDepartmentId?: string;
   readonly contactJobGradeId?: string;

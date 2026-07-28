@@ -1108,6 +1108,9 @@ function createContactRecord(
     company: { id: `${userId}-company`, companyName: `${marker} Company` },
     username: `${marker} Contact`,
     mobile: "010-0000-0000",
+    phoneCountryCode: "KR",
+    phoneNationalNumber: "01000000000",
+    phoneE164: "+821000000000",
     email: `${marker.toLowerCase()}@example.com`,
     contactDepartment: {
       id: `${userId}-department`,

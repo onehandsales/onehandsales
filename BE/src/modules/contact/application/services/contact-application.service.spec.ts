@@ -97,6 +97,9 @@ function createContactRecord(
     },
     username: "김민수",
     mobile: "010-1111-2222",
+    phoneCountryCode: "KR",
+    phoneNationalNumber: "01011112222",
+    phoneE164: "+821011112222",
     email: "minsu@example.com",
     contactDepartment: {
       id: "department-1",
