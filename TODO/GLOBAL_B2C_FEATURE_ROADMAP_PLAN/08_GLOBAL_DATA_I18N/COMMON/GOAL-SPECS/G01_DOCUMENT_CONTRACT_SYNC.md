@@ -1,6 +1,7 @@
 # G01 Document Contract Sync
 
-상태: Not Started
+상태: Done
+완료일: 2026-07-28
 목표: 08 구현 전 현재 코드와 문서 계약을 대조하고 AGENT 문서 갱신 대상을 확정한다.
 
 ## 1. 목적
@@ -91,17 +92,32 @@ cd BE
 pnpm run prisma:validate
 ```
 
+G01 실행 결과:
+
+- `rg -n "preferredLocale|timeZone|countryCode|defaultCurrencyCode|OAuthProvider|UserOAuthAccount|currencyCode|mobile|CompanyRegion|ImportTemplate" BE FE AGENT TODO` 실행 완료. 현재 코드/문서의 current baseline과 08 target delta를 대조했다.
+- `cd BE; pnpm.cmd run prisma:validate` 통과. PowerShell 실행 정책 때문에 `pnpm` 대신 `pnpm.cmd`를 사용했다.
+- `git diff --check` 통과. 출력된 LF/CRLF 경고는 기존 Git line-ending 변환 경고이며 whitespace error는 없다.
+- 충돌 문구 재검색 후 `AGENT/SOFTWARE_AGENT/COMMON/QA_CHECKLIST.md`, `AGENT/SOFTWARE_AGENT/FRONT_AGENT/ARCHITECTURE/TESTING.md`도 pre-08 기준으로 보정했다.
+
 ## 11. Goal 검토 체크리스트
 
-- [ ] 현재 코드의 User/Auth/Company/Contact/Product/Deal/DataImport 구조를 확인했다.
-- [ ] `/app` route에 locale prefix를 넣지 않는 현재 구조를 확인했다.
-- [ ] public-site i18n과 app i18n 분리 위치를 정했다.
-- [ ] 기존 AGENT 문서 갱신 대상 목록을 작성했다.
-- [ ] API spec의 request/response 예시가 현재 DTO와 충돌하지 않는다.
-- [ ] DB/Prisma 변경 예정 goal이 모두 `BE/prisma` 참고와 한글 주석 기준을 포함한다.
-- [ ] G02~G10 착수 blocking 질문이 없다.
-- [ ] `COMMON/GOAL-COMPLETION-CHECKLIST.md`의 G01 항목을 갱신했다.
+- [x] 현재 코드의 User/Auth/Company/Contact/Product/Deal/DataImport 구조를 확인했다.
+- [x] `/app` route에 locale prefix를 넣지 않는 현재 구조를 확인했다.
+- [x] public-site i18n과 app i18n 분리 위치를 정했다.
+- [x] 기존 AGENT 문서 갱신 대상 목록을 작성했다.
+- [x] API spec의 request/response 예시가 현재 DTO와 충돌하지 않는다.
+- [x] DB/Prisma 변경 예정 goal이 모두 `BE/prisma` 참고와 한글 주석 기준을 포함한다.
+- [x] G02~G10 착수 blocking 질문이 없다.
+- [x] `COMMON/GOAL-COMPLETION-CHECKLIST.md`의 G01 항목을 갱신했다.
 
 ## 12. 주석 기준
 
 G01은 코드 구현 goal이 아니므로 신규 코드 주석은 없다. G02 이후 구현 시 한글 주석 규칙을 적용한다.
+
+## 13. G01 산출물
+
+- `COMMON/PLANNING-REVIEW.md` 추가
+- `COMMON/API-SPEC/DOMAIN_GLOBAL_DATA_API.md` Error Response / FE 처리 기준 추가
+- `COMMON/GOAL-IMPLEMENTATION-MATRIX.md` Frontend 문서 경로 및 갱신 대상 보정
+- `COMMON/REFERENCES.md`, `COMMON/SOURCE-PLAN-COVERAGE.md` 갱신 완료 기록 추가
+- AGENT PM/Software/Frontend/DB/QA 문서에 2026-07-28 current baseline과 08 목표 delta 분리 기록

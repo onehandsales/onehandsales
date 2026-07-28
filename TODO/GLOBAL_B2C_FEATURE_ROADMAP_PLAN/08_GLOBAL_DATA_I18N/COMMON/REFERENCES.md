@@ -36,7 +36,7 @@
 - `AGENT/SOFTWARE_AGENT/DB_SCHEMA/CONTACT_SCHEMA.md`
 - `AGENT/SOFTWARE_AGENT/DB_SCHEMA/TIME_AND_TIMEZONE_POLICY.md`
 
-## 4. 기존 결정 중 갱신 필요
+## 4. 기존 결정 중 갱신 완료
 
 - `AGENT/PM_AGENT/DECISIONS/027_auth_session_and_provider_qa_policy.md`
 - `AGENT/PM_AGENT/DECISIONS/028_auth_provider_google_only_and_future_local_providers.md`
@@ -45,12 +45,15 @@
 - `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/ARCHITECTURE/BACKEND.md`
 - `AGENT/SOFTWARE_AGENT/FRONT_AGENT/README.md`
 - `AGENT/SOFTWARE_AGENT/FRONT_AGENT/ARCHITECTURE/FRONTEND_USER_WEB.md`
+- `AGENT/SOFTWARE_AGENT/FRONT_AGENT/ARCHITECTURE/TESTING.md`
+- `AGENT/SOFTWARE_AGENT/COMMON/QA_CHECKLIST.md`
 - `AGENT/SOFTWARE_AGENT/DB_SCHEMA/AUTH_USER_SCHEMA.md`
 
 갱신 이유:
 
 - 기존 문서에는 Google only, Apple/LINE future, 신규/기존 사용자 판정은 `provider + providerUserId` 기준이라는 정책이 남아 있다.
 - 08 확정 정책은 Google/LINE/Apple 실제 구현과 verified email 기반 provider 연결을 포함한다.
+- G01에서 위 문서에 2026-07-28 현재 runtime baseline과 08 목표 delta를 분리해 기록했다. G08/G10에서 구현 결과 기준으로 다시 확인한다.
 
 ## 5. 코드 참조
 

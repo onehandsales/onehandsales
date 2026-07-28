@@ -135,13 +135,14 @@ Current runtime behavior:
 - request id middleware applies to all routes.
 - CORS origins are derived from `USER_WEB_ORIGIN` and `ADMIN_WEB_ORIGIN`.
 - default port is `3000`.
-- User locale/region metadata columns are present on `User`: `preferredLocale`, signup/last-login locale, country code, and timezone metadata.
+- User locale/region metadata columns are present on `User`: `preferredLocale`, signup/last-login locale, signup/last-login country code, and timezone metadata. User default `countryCode` and `defaultCurrencyCode` are 08 G02 targets, not current columns.
 
 Auth/session runtime notes:
 
 - Supabase Auth is treated as an external identity provider. Backend application auth starts at `POST /api/auth/exchange`.
 - Signup and login share the same exchange path. New `provider + providerUserId` creates `User` and `UserOAuthAccount`; existing pairs update last-login metadata.
 - Backend requires provider email during exchange. Current runtime provider is Google only.
+- 08 G08 target extends runtime providers to Google, LINE, and Apple, then links a new provider account to an existing `User` when the provider email is verified and matches lowercase.
 - App access tokens carry `userId` and `sessionId`; `AuthGuard` checks DB session state instead of trusting JWT alone.
 - Refresh token originals are sent through httpOnly cookie and stored in DB only as hashes.
 - Same active device relogin rotates the existing session refresh token. Different device in the same slot replaces the active device when `replaceExistingDevice=true` and revokes the previous slot sessions.
@@ -155,7 +156,7 @@ Current backend gaps and intentional deferrals:
 - Persistent ImportJob recovery, Notification, Admin operation query/audit/sensitive raw APIs are not implemented yet.
 - Generic ExportJob is intentionally not used for the current export direction. Company, Contact, Product, and Deal each provide their own `GET /api/<domain>/export/xlsx` API.
 - MeetingNote Admin, rawText encryption/raw access, and generic DealActivity table are future scope.
-- Kakao OAuth provider setup is no longer a release blocker because Kakao login has been removed. Apple login and LINE login are future provider candidates only.
+- Kakao OAuth provider setup is no longer a release blocker because Kakao login has been removed. Before 08 G08 completion, Apple login and LINE login remain future provider candidates in runtime; 08 G08 is the implementation target that promotes them to active providers.
 - Country code fields may remain null in local/dev environments that do not provide proxy geo headers.
 - Prisma generate/migration/seed operating-state consistency still needs a dedicated release-readiness pass before production DB changes.
 

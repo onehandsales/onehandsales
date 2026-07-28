@@ -1,7 +1,7 @@
 # Goal Completion Checklist
 
-상태: Not Started
-최종 업데이트: 2026-07-27
+상태: G01 Done / G02 Ready
+최종 업데이트: 2026-07-28
 
 ## 1. 목적
 
@@ -13,7 +13,7 @@
 
 | 완료 | Goal | 상태 | 완료일 | 완료 기준 | 증거 | 비고 |
 |---|---|---|---|---|---|---|
-| [ ] | G01 Document Contract Sync | Not Started |  | 현재 코드와 계약 대조, AGENT 갱신 대상 확정 |  | G02 착수 전 필수 |
+| [x] | G01 Document Contract Sync | Done | 2026-07-28 | 현재 코드와 계약 대조, AGENT 갱신 대상 확정 | `COMMON/PLANNING-REVIEW.md`, G01 spec, `pnpm.cmd run prisma:validate` | G02 착수 가능 |
 | [ ] | G02 User Global Settings | Not Started |  | User 설정 DB/API 구현 |  | migration 필요 |
 | [ ] | G03 App I18N Foundation | Not Started |  | app i18n provider/resource 구현 |  | public-site와 분리 |
 | [ ] | G04 Currency Product Deal | Not Started |  | Product/Deal currency 구현 |  | KRW/USD |
@@ -43,12 +43,12 @@
 
 ### G01 Document Contract Sync
 
-- [ ] 현재 코드의 User/Auth/Company/Contact/Product/Deal/DataImport 구조를 확인했다.
-- [ ] 현재 `FE/user-web/src/app/router/router.tsx`에서 `/app` locale prefix가 없음을 확인했다.
-- [ ] 현재 public-site i18n과 app i18n 분리 지점을 확인했다.
-- [ ] 기존 AGENT 문서의 Google only, Apple/LINE future, provider-only 계정 판정 정책 갱신 대상을 목록화했다.
-- [ ] `NEXT_BACKEND_API_BACKLOG_PLAN`과 `USER_WEB_PRODUCTIZATION_GAP_PLAN` 반영 범위를 `SOURCE-PLAN-COVERAGE.md`에 기록했다.
-- [ ] G02~G10 착수 blocking 질문이 없다.
+- [x] 현재 코드의 User/Auth/Company/Contact/Product/Deal/DataImport 구조를 확인했다.
+- [x] 현재 `FE/user-web/src/app/router/router.tsx`에서 `/app` locale prefix가 없음을 확인했다.
+- [x] 현재 public-site i18n과 app i18n 분리 지점을 확인했다.
+- [x] 기존 AGENT 문서의 Google only, Apple/LINE future, provider-only 계정 판정 정책 갱신 대상을 목록화했다.
+- [x] `NEXT_BACKEND_API_BACKLOG_PLAN`과 `USER_WEB_PRODUCTIZATION_GAP_PLAN` 반영 범위를 `SOURCE-PLAN-COVERAGE.md`에 기록했다.
+- [x] G02~G10 착수 blocking 질문이 없다.
 
 ### G02 User Global Settings
 
@@ -157,3 +157,4 @@
 ## 4. 현재 기록
 
 - 2026-07-27: 08 구현 전 정책 결정과 goal 단위 실행 문서 작성.
+- 2026-07-28: G01 Document Contract Sync 완료. AGENT/TODO 계약 문서의 current baseline과 08 target delta를 분리했고, `DOMAIN_GLOBAL_DATA_API.md` Error Response / FE 처리 기준과 `COMMON/PLANNING-REVIEW.md`를 추가했다. `cd BE; pnpm.cmd run prisma:validate` 통과.

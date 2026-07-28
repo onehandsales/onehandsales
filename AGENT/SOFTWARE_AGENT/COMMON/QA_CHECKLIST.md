@@ -313,7 +313,7 @@ pnpm build
 
 - [x] Google OAuth는 실제 provider smoke로 가입/로그인 확인
 - [N/A] Kakao OAuth는 로그인 기능에서 제거되어 provider QA 대상이 아님
-- [N/A] Apple/LINE OAuth는 future provider 후보이며 현재 QA 대상이 아님
+- [N/A] Apple/LINE OAuth는 2026-07-10 pre-08 QA 기준으로 future provider 후보라 QA 대상이 아님. 08 G08에서는 실제 provider QA 또는 환경 미구성 N/A 사유를 다시 기록한다.
 
 ### 기기/세션 정책
 
@@ -340,7 +340,7 @@ pnpm build
 
 - Google 로그인, `/app` 진입, 새로고침 후 세션 유지, 새 탭 `/app` 세션 유지, 로그아웃 후 선호 locale login URL 이동, 로그아웃 후 뒤로가기 보호, 재로그인 후 기존 CRM 데이터 유지, 설정/계정 화면 사용자 정보 표시를 확인했다.
 - 가입 국가/마지막 로그인 국가는 `기록 없음`이어도 현재 정책상 정상으로 본다.
-- Apple/LINE future provider, 만료 토큰 강제 테스트, 모바일 여러 대 동시 로그인, Admin API/권한 침투성 테스트는 이번 범위에서 제외한다.
+- Apple/LINE provider, 만료 토큰 강제 테스트, 모바일 여러 대 동시 로그인, Admin API/권한 침투성 테스트는 2026-07-09 QA 범위에서 제외했다. Apple/LINE은 08 G08에서 구현/QA 대상으로 승격한다.
 
 ## 10. 홈 QA
 

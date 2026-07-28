@@ -32,6 +32,16 @@
 - `BE/prisma/migrations/20260702010000_add_deal_import_template/migration.sql`
 - `BE/prisma/migrations/20260708010000_add_user_locale_region_metadata/migration.sql`
 
+08 Global Data I18N 목표 delta:
+
+- User: `countryCode`, `defaultCurrencyCode` 추가. 기존 signup/last-login country metadata와 별도 사용자 기본 설정이다.
+- Auth: `OAuthProvider.LINE` 추가, Google/LINE/Apple runtime provider 허용, verified email 기반 provider account linking 추가.
+- Product/Deal: `currencyCode` 추가, 1차 허용 통화는 `KRW`, `USD`다.
+- Contact: 기존 `mobile` 유지, `phoneCountryCode`, `phoneNationalNumber`, `phoneE164` 추가.
+- Company/CompanyRegion: Company 자유 입력 주소와 CompanyRegion `countryCode`, `regionCode` 추가. Contact에는 주소/지역을 추가하지 않는다.
+- DataImport/Export: 사용자 locale/timezone/currency 기준 현지화. generic `ExportJob` table은 계속 제외한다.
+- Frontend: public-site URL locale i18n과 `/app` 내부 app i18n을 분리하고, `/app`에는 locale prefix를 붙이지 않는다.
+
 아직 DB에 구현되지 않은 계획 범위:
 
 - Product 후속 확장: `ProductLog`, `ProductConnection`
@@ -106,6 +116,8 @@ User
 - AuthSession: Backend app refresh session
 - preferredLocale
 - timeZone
+- countryCode (08 G02 목표, 현재 DB 미구현)
+- defaultCurrencyCode (08 G02 목표, 현재 DB 미구현)
 - signupLocale / signupCountryCode / signupTimeZone
 - lastLoginLocale / lastLoginCountryCode / lastLoginTimeZone
 - createdAt
@@ -117,6 +129,7 @@ User
 - User Web은 Supabase OAuth 이후 Backend `/api/auth/exchange`에서 내부 사용자와 앱 세션을 생성한다.
 - 현재 User Web device slot은 `mobile`, `personal_laptop` 두 개를 사용한다. 같은 slot의 다른 기기 로그인은 기존 slot 기기/session을 교체한다.
 - 국가 코드는 provider 계정 정보가 아니라 배포 프록시 geo header에서 가져온다. 해당 header가 없으면 `signupCountryCode`/`lastLoginCountryCode`는 비어 있을 수 있다.
+- 08 G08 목표에서는 `provider + providerUserId` 조회를 먼저 유지하고, 같은 verified email의 기존 `User`가 있으면 새 `UserOAuthAccount`를 연결한다. email이 없거나 verified email로 확인할 수 없으면 차단한다.
 
 ## 4. Company
 

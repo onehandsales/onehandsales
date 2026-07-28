@@ -210,7 +210,40 @@ Company DB / Transaction:
 - observability event: `company.created`, `company.updated`, `companyRegion.updated`
 - redaction: private memo 원문 logging 금지
 
-## 5. 구현 체크리스트
+## 5. Error Response / FE 처리 기준
+
+도메인 글로벌 데이터 API는 사용자 문구보다 `code`, `field` 중심의 응답을 우선한다. FE는 `code`와 `field`를 app i18n resource에 매핑해 locale별 field error/toast를 표시한다.
+
+공통 validation error 형태:
+
+```json
+{
+  "code": "CURRENCY_UNSUPPORTED",
+  "field": "currencyCode",
+  "message": "Unsupported currency code."
+}
+```
+
+예상 에러:
+
+| 상황 | error code | field | HTTP status | FE 처리 |
+|---|---|---|---:|---|
+| Product/Deal 통화가 `KRW`, `USD`가 아님 | `CURRENCY_UNSUPPORTED` | `currencyCode` | 400 | 통화 선택 field error 표시 |
+| Product/Deal 금액이 정수가 아님 | `AMOUNT_INTEGER_REQUIRED` | `productPrice` 또는 `dealCost` | 400 | 금액 입력 field error 표시 |
+| 연결 Product가 현재 사용자 소유가 아님 | `PRODUCT_NOT_FOUND` | `productId` | 404 | 선택값 초기화 후 일반 안내 toast 표시 |
+| Contact 전화번호 국가 코드가 KR/US가 아님 | `CONTACT_PHONE_COUNTRY_UNSUPPORTED` | `phoneCountryCode` | 400 | 전화번호 국가 선택 field error 표시 |
+| Contact 전화번호 정규화 실패 | `CONTACT_PHONE_INVALID` | `phoneNationalNumber` 또는 `phoneE164` | 400 | 전화번호 field error 표시 |
+| CompanyRegion 국가/지역 코드가 KR/US 표준 목록과 맞지 않음 | `COMPANY_REGION_UNSUPPORTED` | `countryCode` 또는 `regionCode` | 400 | 지역 선택 field error 표시 |
+| CompanyRegion이 현재 사용자 소유가 아님 | `COMPANY_REGION_NOT_FOUND` | `companyRegionId` | 404 | 선택값 초기화 후 일반 안내 toast 표시 |
+
+정책:
+
+- 기존 ownership/not found 응답은 대상 존재 여부를 과도하게 노출하지 않는다.
+- `message`는 개발/기본 fallback용이며 사용자 노출 문구 정본이 아니다.
+- FE는 G03 app i18n foundation 이후 `code`와 `field`를 기준으로 `ko-KR`, `en` 문구를 렌더링한다.
+- 서버 로그에는 phone/email, private memo, deal amount/product price 원문을 남기지 않는다.
+
+## 6. 구현 체크리스트
 
 - [ ] Product/Deal/Contact/Company DTO와 FE type이 일치한다.
 - [ ] 기존 한국 데이터 fallback이 있다.

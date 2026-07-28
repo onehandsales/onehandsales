@@ -12,6 +12,13 @@
 
 현재 User locale/region 메타데이터는 `BE/prisma/migrations/20260708010000_add_user_locale_region_metadata/migration.sql` 기준으로 반영되어 있다.
 
+08 Global Data I18N 목표 delta:
+
+- G02에서 `User.countryCode`, `User.defaultCurrencyCode`를 추가한다. 현재 `signupCountryCode`/`lastLoginCountryCode`와 다른 사용자 기본 설정 필드다.
+- G08에서 `OAuthProvider.LINE`을 추가하고 Google, LINE, Apple을 runtime provider로 허용한다.
+- G08에서 기존 `provider + providerUserId` 조회를 유지하되, 같은 verified email이 있으면 기존 `User`에 새 `UserOAuthAccount`를 연결한다.
+- provider email이 없거나 verified email로 확인할 수 없는 경우 가입/로그인을 차단한다.
+
 ## 2. 전체 관계
 
 ```text
@@ -72,7 +79,9 @@ AuthDevice 1 ─ N AuthSession
 |---|---|
 | `KAKAO` | Legacy value. 현재 로그인 기능에서는 사용하지 않는다. |
 | `GOOGLE` | 현재 활성 로그인 provider |
-| `APPLE` | Future candidate. iOS 대응 시 별도 구현한다. |
+| `APPLE` | 현재 Prisma enum에는 있으나 runtime에서는 비활성이다. 08 G08에서 활성 provider 목표로 승격한다. |
+
+참고: 현재 Prisma enum에는 `LINE`이 없다. 08 G08에서 schema/migration으로 추가해야 한다.
 
 ### AuthSessionStatus
 
@@ -123,6 +132,13 @@ AuthDevice 1 ─ N AuthSession
 | `createdAt` | `DateTime` | 아니오 | `now()` | 생성 시각 |
 | `updatedAt` | `DateTime` | 아니오 | `@updatedAt` | 수정 시각 |
 | `deletedAt` | `DateTime` | 예 | 없음 | 소프트 삭제 시각. 현재 계정 삭제 API는 없다. |
+
+08 G02 목표 컬럼:
+
+| 컬럼 | 타입 | Null | 기본값 | 주석 |
+|---|---|---:|---|---|
+| `countryCode` | `String` | 아니오 | `KR` | 사용자 기본 국가 코드. 설정 화면과 글로벌 데이터 기본값 계산에 사용한다. |
+| `defaultCurrencyCode` | `String` | 아니오 | `KRW` | 사용자 기본 통화 코드. Product/Deal currency fallback에 사용한다. |
 
 Relations:
 
@@ -175,6 +191,7 @@ Constraints:
 
 - 같은 외부 계정은 내부 사용자 하나에만 연결된다.
 - 현재 자동 회원가입/로그인 판단 기준은 이메일이 아니라 `provider + providerUserId`다.
+- 08 G08 목표에서는 같은 verified email의 기존 `User`가 있으면 새 `User`를 만들지 않고 이 테이블에 provider 계정을 추가한다.
 
 Indexes:
 

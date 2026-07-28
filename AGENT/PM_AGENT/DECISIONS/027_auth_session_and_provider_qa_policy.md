@@ -1,7 +1,7 @@
 # 027 Auth Session And Provider QA Policy
 
 Date: 2026-07-09
-Updated: 2026-07-15
+Updated: 2026-07-28
 
 ## Decision
 
@@ -20,10 +20,19 @@ Onehand Sales의 현재 인증은 Supabase OAuth를 외부 identity provider로 
 - Apple login은 iOS 앱 출시 또는 Apple platform 정책 대응이 필요해질 때 별도 구현한다.
 - LINE login은 일본/대만 시장 로컬 provider가 필요해질 때 별도 구현한다.
 
+## 08 Global Data I18N Transition
+
+- 위 Current Product State는 2026-07-28 현재 코드 기준이다.
+- `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/08_GLOBAL_DATA_I18N`의 G08 목표에서는 Apple/LINE을 future 후보가 아니라 실제 구현 provider로 승격한다.
+- 08 목표 provider 노출 순서는 Google, LINE, Apple이다. Kakao는 계속 legacy enum/과거 데이터 호환값으로만 남긴다.
+- G08 완료 후 `/api/auth/providers`, Supabase JWT exchange, FE provider type/copy, OAuth QA 결과를 기준으로 이 문서를 다시 갱신한다.
+
 ## Session Policy
 
 - 가입과 로그인은 같은 OAuth exchange 흐름이다.
 - 신규/기존 사용자 판정은 이메일이 아니라 `provider + providerUserId` 기준이다.
+- 08 목표에서는 먼저 `provider + providerUserId`를 조회하고, 없으면 같은 verified email의 기존 `User`에 새 `UserOAuthAccount`를 연결한다.
+- provider email이 없거나 verified email로 확인할 수 없으면 가입/로그인을 차단한다.
 - App access token은 `userId`와 `sessionId`를 담는다.
 - Refresh token 원문은 httpOnly cookie로만 내려가고 DB에는 hash만 저장한다.
 - 같은 active device에서 다시 로그인하면 session row를 새로 만들지 않고 refresh token을 회전한다.
@@ -37,6 +46,7 @@ Onehand Sales의 현재 인증은 Supabase OAuth를 외부 identity provider로 
 - 최근 로그인 환경은 `lastLoginLocale`, `lastLoginTimeZone`에 기록한다.
 - `signupCountryCode`, `lastLoginCountryCode`는 배포 프록시 geo header가 있을 때만 저장한다.
 - 로컬 또는 geo header가 없는 배포 환경에서 국가가 `기록 없음`으로 보이는 것은 현재 정상 동작이다.
+- 08 G02 목표에서는 사용자 기본 국가/통화 설정을 위해 `User.countryCode`, `User.defaultCurrencyCode`를 추가한다. 현재 signup/last-login country metadata와 구분한다.
 
 ## QA Next Step
 

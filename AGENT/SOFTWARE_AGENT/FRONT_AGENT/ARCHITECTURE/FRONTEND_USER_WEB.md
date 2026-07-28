@@ -84,6 +84,8 @@ legacy redirect 라우트:
 - `/app/notifications` -> `/app`. Notification Backend 구현 전까지 숨김
 - `/app/export` -> `/app`. Generic Export는 현재 정본 흐름이 아니므로 숨김
 
+08 Global Data I18N에서도 보호 앱 라우트는 `/app/*` 형태를 유지한다. `/ko/app` 또는 `/en/app` 같은 locale prefix route를 만들지 않는다.
+
 `import-export` feature 중 `/app/import`는 실제 Backend API와 연결되어 있고, `/app/export` route는 `/app`으로 redirect한다. 현재 Export 정본 흐름은 회사/담당자/제품/딜 각 목록 화면의 엑셀 다운로드다.
 현재 사이드바는 `/app/import`를 `데이터 업로드` 메뉴로 노출한다. `/app/export`와 `/app/notifications`는 route가 있어도 navigation에서 숨긴다.
 
@@ -105,6 +107,8 @@ legacy redirect 라우트:
 - `schedule`
 - `search`
 - `trash`
+
+08 G03 목표에서는 public-site i18n을 확장하지 않고, `/app` 내부 문구용 app i18n feature를 별도로 둔다. 후보 위치는 `FE/user-web/src/features/app-i18n`이다.
 
 ## 5. 현재 API 연동 상태
 
@@ -164,7 +168,7 @@ mock/placeholder 경계를 유지해야 하는 항목:
 - popup OAuth callback도 같은 `/auth/callback`을 사용하며 app session 저장 후 popup을 닫아 부모 창이 session을 복원한다.
 - 개발용 mock login flow는 User Web에서 제거되어 있다. E2E와 QA는 현재 로그인 UI의 Google provider 버튼을 기준으로 한다.
 - Google OAuth signup/login은 수동 QA 통과 상태다.
-- Kakao OAuth는 로그인 기능에서 제거되어 있다. Apple login은 iOS 대응 시, LINE login은 일본/대만 확장 시 별도 구현한다.
+- Kakao OAuth는 로그인 기능에서 제거되어 있다. 현재 runtime provider는 Google-only이고, 08 G08 목표에서 Google, LINE, Apple 순서의 provider 카드로 확장한다.
 - 로그아웃은 Backend `/api/auth/logout`, Supabase `signOut`, localStorage app token 삭제 후 선호 locale의 login URL로 이동한다. 예: `/ko/login`, `/en-us/login`.
 - app access token은 localStorage와 API client memory에 저장한다. refresh token은 Backend httpOnly cookie로만 다룬다.
 - exchange payload의 device slot은 화면 폭 `767px 이하`면 `mobile`, 그 외는 `personal_laptop`이다. `work_laptop`은 Backend enum에는 있지만 현재 User Web에서는 보내지 않는다.

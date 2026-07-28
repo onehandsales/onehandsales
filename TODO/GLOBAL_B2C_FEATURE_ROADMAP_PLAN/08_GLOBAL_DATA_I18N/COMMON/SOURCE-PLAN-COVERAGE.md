@@ -40,7 +40,7 @@
 
 ## 4. 기존 충돌 정책
 
-G01에서 아래 문서를 갱신해야 한다.
+G01에서 아래 문서를 갱신했다.
 
 - `AGENT/PM_AGENT/DECISIONS/027_auth_session_and_provider_qa_policy.md`
 - `AGENT/PM_AGENT/DECISIONS/028_auth_provider_google_only_and_future_local_providers.md`
@@ -49,6 +49,8 @@ G01에서 아래 문서를 갱신해야 한다.
 - `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/ARCHITECTURE/BACKEND.md`
 - `AGENT/SOFTWARE_AGENT/FRONT_AGENT/README.md`
 - `AGENT/SOFTWARE_AGENT/FRONT_AGENT/ARCHITECTURE/FRONTEND_USER_WEB.md`
+- `AGENT/SOFTWARE_AGENT/FRONT_AGENT/ARCHITECTURE/TESTING.md`
+- `AGENT/SOFTWARE_AGENT/COMMON/QA_CHECKLIST.md`
 - `AGENT/SOFTWARE_AGENT/DB_SCHEMA/AUTH_USER_SCHEMA.md`
 
 충돌 이유:
@@ -56,3 +58,9 @@ G01에서 아래 문서를 갱신해야 한다.
 - 기존 문서에는 Google only와 Apple/LINE future 정책이 남아 있다.
 - 기존 문서에는 신규/기존 사용자 판정을 `provider + providerUserId`만으로 한다는 정책이 남아 있다.
 - 08 확정 정책은 verified email 기반 provider 연결을 포함한다.
+
+G01 반영 결과:
+
+- 위 문서들은 2026-07-28 현재 runtime baseline과 08 목표 delta를 분리해 설명한다.
+- `/app` locale prefix 금지, public-site/app i18n 분리 위치, Google/LINE/Apple 목표 provider, verified email linking 목표를 문서화했다.
+- G08/G10에서 실제 구현 결과와 QA 결과를 기준으로 한 번 더 동기화한다.
