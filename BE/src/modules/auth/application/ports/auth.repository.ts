@@ -16,6 +16,8 @@ export interface AuthUserRecord {
   readonly status: AuthUserStatus;
   readonly timeZone: string;
   readonly preferredLocale: string;
+  readonly countryCode: string;
+  readonly defaultCurrencyCode: string;
   readonly signupLocale: string | null;
   readonly signupCountryCode: string | null;
   readonly signupTimeZone: string | null;
@@ -65,6 +67,8 @@ export interface CreateAuthUserInput {
   readonly role: AuthUserRole;
   readonly timeZone: string;
   readonly preferredLocale: string;
+  readonly countryCode: string;
+  readonly defaultCurrencyCode: string;
   readonly signupLocale: string;
   readonly signupCountryCode: string | null;
   readonly signupTimeZone: string;

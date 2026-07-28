@@ -1,6 +1,6 @@
 # Goal Completion Checklist
 
-상태: G01 Done / G02 Ready
+상태: G01 Done / G02 Done / G03 Ready
 최종 업데이트: 2026-07-28
 
 ## 1. 목적
@@ -14,7 +14,7 @@
 | 완료 | Goal | 상태 | 완료일 | 완료 기준 | 증거 | 비고 |
 |---|---|---|---|---|---|---|
 | [x] | G01 Document Contract Sync | Done | 2026-07-28 | 현재 코드와 계약 대조, AGENT 갱신 대상 확정 | `COMMON/PLANNING-REVIEW.md`, G01 spec, `pnpm.cmd run prisma:validate` | G02 착수 가능 |
-| [ ] | G02 User Global Settings | Not Started |  | User 설정 DB/API 구현 |  | migration 필요 |
+| [x] | G02 User Global Settings | Done | 2026-07-28 | User 설정 DB/API/Settings 구현 | `COMMON/GOAL-SPECS/G02_USER_GLOBAL_SETTINGS.md`, `BE/prisma/migrations/20260728010000_add_user_global_settings`, BE/FE 검증 명령 | G03 착수 가능 |
 | [ ] | G03 App I18N Foundation | Not Started |  | app i18n provider/resource 구현 |  | public-site와 분리 |
 | [ ] | G04 Currency Product Deal | Not Started |  | Product/Deal currency 구현 |  | KRW/USD |
 | [ ] | G05 Contact Phone Global | Not Started |  | Contact phone 글로벌 필드와 migration 구현 |  | KR/US |
@@ -52,13 +52,13 @@
 
 ### G02 User Global Settings
 
-- [ ] `User.countryCode`가 추가됐다.
-- [ ] `User.defaultCurrencyCode`가 추가됐다.
-- [ ] 기존 사용자는 `KR`, `KRW` fallback을 가진다.
-- [ ] `PATCH /api/users/me/profile`이 `preferredLocale`, `timeZone`, `countryCode`, `defaultCurrencyCode`를 검증/저장한다.
-- [ ] 신규 가입 기본값 추론이 브라우저 locale, proxy geo country, 브라우저 timezone, fallback 순서를 따른다.
-- [ ] 기존 사용자의 `timeZone`은 로그인 때 브라우저 timezone으로 덮어쓰지 않는다.
-- [ ] Backend 신규/수정 코드에 한글 주석 규칙이 적용됐다.
+- [x] `User.countryCode`가 추가됐다.
+- [x] `User.defaultCurrencyCode`가 추가됐다.
+- [x] 기존 사용자는 `KR`, `KRW` fallback을 가진다.
+- [x] `PATCH /api/users/me/profile`이 `preferredLocale`, `timeZone`, `countryCode`, `defaultCurrencyCode`를 검증/저장한다.
+- [x] 신규 가입 기본값 추론이 브라우저 locale, proxy geo country, 브라우저 timezone, fallback 순서를 따른다.
+- [x] 기존 사용자의 `timeZone`은 로그인 때 브라우저 timezone으로 덮어쓰지 않는다.
+- [x] Backend 신규/수정 코드에 한글 주석 규칙이 적용됐다.
 
 ### G03 App I18N Foundation
 
@@ -158,3 +158,4 @@
 
 - 2026-07-27: 08 구현 전 정책 결정과 goal 단위 실행 문서 작성.
 - 2026-07-28: G01 Document Contract Sync 완료. AGENT/TODO 계약 문서의 current baseline과 08 target delta를 분리했고, `DOMAIN_GLOBAL_DATA_API.md` Error Response / FE 처리 기준과 `COMMON/PLANNING-REVIEW.md`를 추가했다. `cd BE; pnpm.cmd run prisma:validate` 통과.
+- 2026-07-28: G02 User Global Settings 완료. `User.countryCode`, `User.defaultCurrencyCode`, profile GET/PATCH, auth signup default, `/app/settings`와 계정 설정 모달을 연결했다. 검증은 BE `prisma:validate`, `prisma:generate`, `typecheck`, `lint`, `test -- auth user`, FE user-web `typecheck`, `lint`, `build` 통과.

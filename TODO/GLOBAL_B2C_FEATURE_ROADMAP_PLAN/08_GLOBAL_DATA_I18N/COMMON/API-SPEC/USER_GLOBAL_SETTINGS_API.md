@@ -1,6 +1,6 @@
 # User Global Settings API
 
-상태: Ready for Goal Execution
+상태: Implemented
 
 ## 1. 목적
 
@@ -176,9 +176,9 @@ Observability:
 
 ## 7. 구현 체크리스트
 
-- [ ] 기존 profile response와 FE type이 충돌하지 않는다.
-- [ ] 기존 사용자는 `countryCode=KR`, `defaultCurrencyCode=KRW` fallback을 가진다.
-- [ ] 로그인 시 기존 사용자 `timeZone`이 자동 overwrite되지 않는다.
-- [ ] 설정 저장 후 FE가 app i18n state를 즉시 갱신할 수 있다.
-- [ ] Transaction 계약과 Observability 계약이 구현 결과와 일치한다.
-- [ ] Backend 신규/수정 코드에 한글 주석 규칙이 적용된다.
+- [x] 기존 profile response와 FE type이 충돌하지 않는다.
+- [x] 기존 사용자는 `countryCode=KR`, `defaultCurrencyCode=KRW` fallback을 가진다.
+- [x] 로그인 시 기존 사용자 `timeZone`이 자동 overwrite되지 않는다.
+- [x] 설정 저장 후 FE가 app i18n state를 즉시 갱신할 수 있다.
+- [x] Transaction 계약과 Observability 계약이 구현 결과와 일치한다.
+- [x] Backend 신규/수정 코드에 한글 주석 규칙이 적용된다.

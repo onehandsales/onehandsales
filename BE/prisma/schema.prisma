@@ -309,6 +309,10 @@ model User {
   status               UserStatus @default(ACTIVE)
   timeZone             String     @default("Asia/Seoul")
   preferredLocale      String     @default("ko-KR")
+  /// 기능 : 사용자의 기본 국가 코드이며 글로벌 입력값 기본값에 사용합니다.
+  countryCode          String     @default("KR")
+  /// 기능 : 사용자의 기본 통화 코드이며 금액 입력 기본값에 사용합니다.
+  defaultCurrencyCode  String     @default("KRW")
   signupLocale         String?
   signupCountryCode    String?
   signupTimeZone       String?

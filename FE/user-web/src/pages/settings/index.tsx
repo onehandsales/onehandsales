@@ -30,13 +30,17 @@ import { formatDateTime } from "@/utils/format";
 const DEFAULT_TIME_ZONE = "Asia/Seoul";
 const localeOptions = [
   { value: "ko-KR", label: "한국어" },
-  { value: "en-US", label: "English (US)" },
-  { value: "en-GB", label: "English (UK)" },
-  { value: "en-SG", label: "English (Singapore)" },
-  { value: "en-AU", label: "English (Australia)" },
-  { value: "en-CA", label: "English (Canada)" },
-  { value: "ja-JP", label: "日本語" },
-  { value: "zh-TW", label: "繁體中文" },
+  { value: "en", label: "English" },
+] as const;
+
+const countryOptions = [
+  { value: "KR", label: "대한민국" },
+  { value: "US", label: "미국" },
+] as const;
+
+const currencyOptions = [
+  { value: "KRW", label: "KRW" },
+  { value: "USD", label: "USD" },
 ] as const;
 
 const timeZoneOptions = [
@@ -105,6 +109,8 @@ function ProfileSection({
   const [name, setName] = useState("");
   const [preferredLocale, setPreferredLocale] = useState("ko-KR");
   const [timeZone, setTimeZone] = useState(DEFAULT_TIME_ZONE);
+  const [countryCode, setCountryCode] = useState("KR");
+  const [defaultCurrencyCode, setDefaultCurrencyCode] = useState("KRW");
   const [formError, setFormError] = useState<string | null>(null);
   const updateProfileMutation = useUpdateMyProfileMutation();
 
@@ -112,7 +118,15 @@ function ProfileSection({
     setName(profile?.name ?? "");
     setPreferredLocale(profile?.preferredLocale ?? "ko-KR");
     setTimeZone(profile?.timeZone ?? DEFAULT_TIME_ZONE);
-  }, [profile?.name, profile?.preferredLocale, profile?.timeZone]);
+    setCountryCode(profile?.countryCode ?? "KR");
+    setDefaultCurrencyCode(profile?.defaultCurrencyCode ?? "KRW");
+  }, [
+    profile?.countryCode,
+    profile?.defaultCurrencyCode,
+    profile?.name,
+    profile?.preferredLocale,
+    profile?.timeZone,
+  ]);
 
   const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -131,6 +145,8 @@ function ProfileSection({
         name: nextName.length > 0 ? nextName : null,
         preferredLocale,
         timeZone,
+        countryCode,
+        defaultCurrencyCode,
       });
       onSaved();
     } catch (nextError) {
@@ -144,18 +160,18 @@ function ProfileSection({
         <section className="grid gap-3">
           <SettingsCardHeader
             icon={UserRound}
-            description="개인 표시 정보와 시간대를 설정해요."
+            description="개인 표시 정보와 글로벌 기본값을 설정해요."
             title="프로필 설정"
           />
           <div className="rounded-lg border border-[#E2E5EC] bg-white p-5 shadow-sm">
-            <SettingsSkeleton rows={3} />
+            <SettingsSkeleton rows={5} />
           </div>
         </section>
       ) : error ? (
         <section className="grid gap-3">
           <SettingsCardHeader
             icon={UserRound}
-            description="개인 표시 정보와 시간대를 설정해요."
+            description="개인 표시 정보와 글로벌 기본값을 설정해요."
             title="프로필 설정"
           />
           <div className="rounded-lg border border-[#E2E5EC] bg-white p-5 shadow-sm">
@@ -166,7 +182,7 @@ function ProfileSection({
         <>
           <form onSubmit={onSubmit}>
             <div className="grid gap-4 rounded-lg border border-[#E2E5EC] bg-white px-5 py-4 shadow-sm">
-              <div className="grid gap-3 md:grid-cols-3">
+              <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
                 <label className="grid min-w-0 gap-1.5">
                   <span className="text-sm font-medium text-[#374151]">이름</span>
                   <input
@@ -201,6 +217,36 @@ function ProfileSection({
                     {getTimeZoneOptions(timeZone).map((option) => (
                       <option key={option} value={option}>
                         {option}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+                {/* 기능 : 글로벌 기본값을 위해 사용자의 기본 국가를 선택합니다. */}
+                <label className="grid min-w-0 gap-1.5">
+                  <span className="text-sm font-medium text-[#374151]">기본 국가</span>
+                  <select
+                    className="h-9 min-w-0 rounded-md border border-[#E2E5EC] bg-white px-3 text-sm outline-none focus:border-[#93C5FD]"
+                    onChange={(event) => setCountryCode(event.target.value)}
+                    value={countryCode}
+                  >
+                    {countryOptions.map((option) => (
+                      <option key={option.value} value={option.value}>
+                        {option.label}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+                {/* 기능 : 금액 입력 기본값을 위해 사용자의 기본 통화를 선택합니다. */}
+                <label className="grid min-w-0 gap-1.5">
+                  <span className="text-sm font-medium text-[#374151]">기본 통화</span>
+                  <select
+                    className="h-9 min-w-0 rounded-md border border-[#E2E5EC] bg-white px-3 text-sm outline-none focus:border-[#93C5FD]"
+                    onChange={(event) => setDefaultCurrencyCode(event.target.value)}
+                    value={defaultCurrencyCode}
+                  >
+                    {currencyOptions.map((option) => (
+                      <option key={option.value} value={option.value}>
+                        {option.label}
                       </option>
                     ))}
                   </select>
@@ -257,6 +303,16 @@ function ProfileSection({
                   icon={Timer}
                   label="최근 수정일"
                   value={formatDateTime(profile.updatedAt, { includeYear: true })}
+                />
+                <ReadOnlyField
+                  icon={BadgeCheck}
+                  label="기본 국가"
+                  value={toCountryLabel(profile.countryCode)}
+                />
+                <ReadOnlyField
+                  icon={BadgeCheck}
+                  label="기본 통화"
+                  value={profile.defaultCurrencyCode}
                 />
                 <ReadOnlyField
                   icon={Timer}
@@ -512,6 +568,16 @@ function toDeviceSlotLabel(slot: string) {
 
 function toRoleLabel(role: string) {
   return role === "ADMIN" ? "관리자" : "사용자";
+}
+
+// 기능 : 저장된 국가 코드를 설정 화면 표시 이름으로 변환합니다.
+function toCountryLabel(countryCode: string) {
+  const labels: Record<string, string> = {
+    KR: "대한민국",
+    US: "미국",
+  };
+
+  return labels[countryCode] ?? countryCode;
 }
 
 function toStatusLabel(status: string) {

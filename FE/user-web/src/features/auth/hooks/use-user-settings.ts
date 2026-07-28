@@ -38,6 +38,8 @@ export function useUpdateMyProfileMutation() {
         status: profile.status,
         timeZone: profile.timeZone,
         preferredLocale: profile.preferredLocale,
+        countryCode: profile.countryCode,
+        defaultCurrencyCode: profile.defaultCurrencyCode,
         signupLocale: profile.signupLocale,
         signupCountryCode: profile.signupCountryCode,
         signupTimeZone: profile.signupTimeZone,

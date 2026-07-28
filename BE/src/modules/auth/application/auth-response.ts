@@ -26,6 +26,8 @@ export interface MeResponse {
   readonly status: string;
   readonly timeZone: string;
   readonly preferredLocale: string;
+  readonly countryCode: string;
+  readonly defaultCurrencyCode: string;
   readonly signupLocale: string | null;
   readonly signupCountryCode: string | null;
   readonly signupTimeZone: string | null;
@@ -43,6 +45,8 @@ export interface AdminMeResponse {
   readonly role: "ADMIN";
   readonly timeZone: string;
   readonly preferredLocale: string;
+  readonly countryCode: string;
+  readonly defaultCurrencyCode: string;
 }
 
 // 기능 : 로그인/토큰 갱신 결과를 클라이언트 응답 형식으로 변환합니다.
@@ -84,6 +88,8 @@ export function toMeResponse(user: AuthMeRecord): MeResponse {
     status: user.status,
     timeZone: user.timeZone,
     preferredLocale: user.preferredLocale,
+    countryCode: user.countryCode,
+    defaultCurrencyCode: user.defaultCurrencyCode,
     signupLocale: user.signupLocale,
     signupCountryCode: user.signupCountryCode,
     signupTimeZone: user.signupTimeZone,
@@ -103,5 +109,7 @@ export function toAdminMeResponse(user: AuthMeRecord): AdminMeResponse {
     role: "ADMIN",
     timeZone: user.timeZone,
     preferredLocale: user.preferredLocale,
+    countryCode: user.countryCode,
+    defaultCurrencyCode: user.defaultCurrencyCode,
   };
 }

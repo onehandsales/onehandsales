@@ -6,8 +6,13 @@ import {
   type UserRepository,
 } from "@/modules/user/application/ports/user.repository";
 import { InactiveUserError } from "@/modules/auth/domain/auth.errors";
+import { UserGlobalSettingValidationError } from "@/modules/user/domain/user.errors";
 import type { CurrentUserContext } from "@/shared/application/context/current-user.context";
-import { normalizeOptionalIanaTimeZone } from "@/shared/application/time-zone/time-zone";
+import { isValidIanaTimeZone } from "@/shared/application/time-zone/time-zone";
+
+const SUPPORTED_LOCALES = ["ko-KR", "en"] as const;
+const SUPPORTED_COUNTRY_CODES = ["KR", "US"] as const;
+const SUPPORTED_CURRENCY_CODES = ["KRW", "USD"] as const;
 
 // 역할 : UpdateMyProfileUseCase 유스케이스의 application orchestration을 담당합니다.
 @Injectable()
@@ -25,9 +30,13 @@ export class UpdateMyProfileUseCase {
   ): Promise<UserProfileRecord> {
     // 1. 수정 가능한 입력값을 저장 가능한 값으로 정규화한다.
     const normalizedName = this.normalizeName(input.name);
-    const normalizedTimeZone = normalizeOptionalIanaTimeZone(input.timeZone);
+    const normalizedTimeZone = this.normalizeTimeZone(input.timeZone);
     const normalizedPreferredLocale = this.normalizePreferredLocale(
       input.preferredLocale
+    );
+    const normalizedCountryCode = this.normalizeCountryCode(input.countryCode);
+    const normalizedDefaultCurrencyCode = this.normalizeDefaultCurrencyCode(
+      input.defaultCurrencyCode
     );
 
     // 2. undefined 값이 optional property로 전달되지 않도록 저장소 입력을 구성한다.
@@ -36,6 +45,12 @@ export class UpdateMyProfileUseCase {
       ...(normalizedTimeZone !== undefined ? { timeZone: normalizedTimeZone } : {}),
       ...(normalizedPreferredLocale !== undefined
         ? { preferredLocale: normalizedPreferredLocale }
+        : {}),
+      ...(normalizedCountryCode !== undefined
+        ? { countryCode: normalizedCountryCode }
+        : {}),
+      ...(normalizedDefaultCurrencyCode !== undefined
+        ? { defaultCurrencyCode: normalizedDefaultCurrencyCode }
         : {}),
     };
 
@@ -76,42 +91,91 @@ export class UpdateMyProfileUseCase {
       return undefined;
     }
 
-    if (normalized === "ko" || normalized.toLowerCase() === "ko-kr") {
+    if (this.isSupportedValue(normalized, SUPPORTED_LOCALES)) {
+      return normalized;
+    }
+
+    const normalizedLower = normalized.toLowerCase();
+
+    if (normalizedLower === "ko" || normalizedLower === "ko-kr") {
       return "ko-KR";
     }
 
-    if (normalized === "ja" || normalized.toLowerCase() === "ja-jp") {
-      return "ja-JP";
+    if (normalizedLower === "en" || normalizedLower.startsWith("en-")) {
+      return "en";
     }
 
-    if (
-      normalized === "zh" ||
-      normalized.toLowerCase() === "zh-tw" ||
-      normalized.toLowerCase().startsWith("zh-hant")
-    ) {
-      return "zh-TW";
+    throw new UserGlobalSettingValidationError(
+      "USER_LOCALE_UNSUPPORTED",
+      "preferredLocale",
+      "preferredLocale must be ko-KR or en"
+    );
+  }
+
+  // 기능 : 사용자 설정 timezone을 IANA timezone ID로 검증합니다.
+  private normalizeTimeZone(timeZone: string | undefined): string | undefined {
+    if (timeZone === undefined) {
+      return undefined;
     }
 
-    if (normalized.toLowerCase() === "en-gb") {
-      return "en-GB";
+    const trimmed = timeZone.trim();
+
+    if (!trimmed || !isValidIanaTimeZone(trimmed)) {
+      throw new UserGlobalSettingValidationError(
+        "USER_TIMEZONE_INVALID",
+        "timeZone",
+        "timeZone must be a valid IANA timezone ID"
+      );
     }
 
-    if (normalized.toLowerCase() === "en-sg") {
-      return "en-SG";
+    return trimmed;
+  }
+
+  // 기능 : 사용자 기본 국가 코드를 08 1차 지원 국가로 검증합니다.
+  private normalizeCountryCode(countryCode: string | undefined): string | undefined {
+    const normalized = countryCode?.trim().toUpperCase();
+
+    if (normalized === undefined) {
+      return undefined;
     }
 
-    if (normalized.toLowerCase() === "en-au") {
-      return "en-AU";
+    if (this.isSupportedValue(normalized, SUPPORTED_COUNTRY_CODES)) {
+      return normalized;
     }
 
-    if (normalized.toLowerCase() === "en-ca") {
-      return "en-CA";
+    throw new UserGlobalSettingValidationError(
+      "USER_COUNTRY_UNSUPPORTED",
+      "countryCode",
+      "countryCode must be KR or US"
+    );
+  }
+
+  // 기능 : 사용자 기본 통화 코드를 08 1차 지원 통화로 검증합니다.
+  private normalizeDefaultCurrencyCode(
+    defaultCurrencyCode: string | undefined
+  ): string | undefined {
+    const normalized = defaultCurrencyCode?.trim().toUpperCase();
+
+    if (normalized === undefined) {
+      return undefined;
     }
 
-    if (normalized === "en" || normalized.toLowerCase().startsWith("en-")) {
-      return "en-US";
+    if (this.isSupportedValue(normalized, SUPPORTED_CURRENCY_CODES)) {
+      return normalized;
     }
 
-    return "ko-KR";
+    throw new UserGlobalSettingValidationError(
+      "USER_DEFAULT_CURRENCY_UNSUPPORTED",
+      "defaultCurrencyCode",
+      "defaultCurrencyCode must be KRW or USD"
+    );
+  }
+
+  // 기능 : 좁은 지원값 목록 안에 입력값이 포함되는지 확인합니다.
+  private isSupportedValue<TValue extends string>(
+    value: string,
+    supportedValues: readonly TValue[]
+  ): value is TValue {
+    return supportedValues.includes(value as TValue);
   }
 }

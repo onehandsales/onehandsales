@@ -27,6 +27,8 @@ export type AuthUser = {
   readonly status: string;
   readonly timeZone: string;
   readonly preferredLocale: string;
+  readonly countryCode: string;
+  readonly defaultCurrencyCode: string;
   readonly signupLocale: string | null;
   readonly signupCountryCode: string | null;
   readonly signupTimeZone: string | null;
@@ -83,6 +85,8 @@ export type UserProfileResponse = {
   readonly status: UserProfileStatus | string;
   readonly timeZone: string;
   readonly preferredLocale: string;
+  readonly countryCode: string;
+  readonly defaultCurrencyCode: string;
   readonly signupLocale: string | null;
   readonly signupCountryCode: string | null;
   readonly signupTimeZone: string | null;
@@ -99,6 +103,8 @@ export type UpdateUserProfileInput = {
   readonly name?: string | null;
   readonly timeZone?: string;
   readonly preferredLocale?: string;
+  readonly countryCode?: string;
+  readonly defaultCurrencyCode?: string;
 };
 
 export type MyDevice = {

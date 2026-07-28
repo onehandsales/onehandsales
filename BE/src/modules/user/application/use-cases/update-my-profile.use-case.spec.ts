@@ -9,13 +9,10 @@ import type { CurrentUserContext } from "@/shared/application/context/current-us
 
 describe("UpdateMyProfileUseCase", () => {
   it.each([
-    ["zh", "zh-TW"],
-    ["zh_Hant_TW", "zh-TW"],
-    ["zh-Hans", "ko-KR"],
-    ["zh_Hans", "ko-KR"],
-    ["en-SG", "en-SG"],
-    ["en-AU", "en-AU"],
-    ["en-CA", "en-CA"],
+    ["ko", "ko-KR"],
+    ["ko_KR", "ko-KR"],
+    ["en-US", "en"],
+    ["en-SG", "en"],
   ])("normalizes preferredLocale %s to %s", async (inputLocale, expectedLocale) => {
     const repository = new FakeUserRepository();
     const useCase = new UpdateMyProfileUseCase(repository);
@@ -28,6 +25,41 @@ describe("UpdateMyProfileUseCase", () => {
       preferredLocale: expectedLocale,
     });
     expect(profile.preferredLocale).toBe(expectedLocale);
+  });
+
+  // 기능 : 기본 국가와 기본 통화 입력값을 대문자 지원값으로 정규화합니다.
+  it("normalizes user country and currency settings", async () => {
+    const repository = new FakeUserRepository();
+    const useCase = new UpdateMyProfileUseCase(repository);
+
+    const profile = await useCase.execute(makeCurrentUser(), {
+      countryCode: "us",
+      defaultCurrencyCode: "usd",
+      timeZone: "America/New_York",
+    });
+
+    expect(repository.lastUpdateInput).toEqual({
+      timeZone: "America/New_York",
+      countryCode: "US",
+      defaultCurrencyCode: "USD",
+    });
+    expect(profile.countryCode).toBe("US");
+    expect(profile.defaultCurrencyCode).toBe("USD");
+  });
+
+  // 기능 : 지원하지 않는 사용자 locale은 명시적인 필드 오류로 거부합니다.
+  it("rejects unsupported user locale settings", async () => {
+    const repository = new FakeUserRepository();
+    const useCase = new UpdateMyProfileUseCase(repository);
+
+    await expect(
+      useCase.execute(makeCurrentUser(), {
+        preferredLocale: "ja-JP",
+      })
+    ).rejects.toMatchObject({
+      code: "USER_LOCALE_UNSUPPORTED",
+      field: "preferredLocale",
+    });
   });
 });
 
@@ -46,6 +78,8 @@ class FakeUserRepository implements UserRepository {
     return makeProfile({
       preferredLocale: input.preferredLocale ?? "ko-KR",
       timeZone: input.timeZone ?? "Asia/Seoul",
+      countryCode: input.countryCode ?? "KR",
+      defaultCurrencyCode: input.defaultCurrencyCode ?? "KRW",
       name: input.name === undefined ? "User" : input.name,
     });
   }
@@ -80,6 +114,8 @@ function makeProfile(
     status: "ACTIVE",
     timeZone: "Asia/Seoul",
     preferredLocale: "ko-KR",
+    countryCode: "KR",
+    defaultCurrencyCode: "KRW",
     signupLocale: "ko-KR",
     signupCountryCode: "KR",
     signupTimeZone: "Asia/Seoul",

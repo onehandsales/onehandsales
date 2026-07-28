@@ -51,23 +51,30 @@ export class HttpExceptionFilter implements ExceptionFilter {
 
   // 기능 : 도메인 오류 응답 body에 사용자에게 허용된 안전한 detail만 포함합니다.
   private createDomainErrorBody(status: HttpStatus, exception: DomainError) {
+    const safeDetails = this.pickSafeDetails(exception.details);
+
     return {
       statusCode: status,
       error: exception.code,
+      ...(typeof safeDetails["field"] === "string" ? { code: exception.code } : {}),
       message: exception.message,
-      ...this.pickSafeDetails(exception.details),
+      ...safeDetails,
     };
   }
 
-  // 기능 : retryable처럼 사용자 재시도 판단에 필요한 안전한 detail만 선별합니다.
+  // 기능 : retryable과 field처럼 사용자 처리에 필요한 안전한 detail만 선별합니다.
   private pickSafeDetails(details: Record<string, unknown> | null) {
-    if (typeof details?.["retryable"] !== "boolean") {
-      return {};
+    const safeDetails: Record<string, unknown> = {};
+
+    if (typeof details?.["retryable"] === "boolean") {
+      safeDetails["retryable"] = details["retryable"];
     }
 
-    return {
-      retryable: details["retryable"],
-    };
+    if (typeof details?.["field"] === "string") {
+      safeDetails["field"] = details["field"];
+    }
+
+    return safeDetails;
   }
 
   // 기능 : 도메인 오류 코드에 맞는 HTTP 상태 코드를 결정합니다.
@@ -109,6 +116,10 @@ export class HttpExceptionFilter implements ExceptionFilter {
       case "InvalidDeviceId":
       case "InvalidRefreshOrigin":
       case "ValidationError":
+      case "USER_LOCALE_UNSUPPORTED":
+      case "USER_TIMEZONE_INVALID":
+      case "USER_COUNTRY_UNSUPPORTED":
+      case "USER_DEFAULT_CURRENCY_UNSUPPORTED":
       case "InvalidImportMapping":
       case "UnsupportedImportFileType":
       case "ImportFileParseFailed":

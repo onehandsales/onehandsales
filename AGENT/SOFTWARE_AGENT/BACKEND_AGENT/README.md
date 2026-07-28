@@ -81,7 +81,7 @@ Current additional backend scope:
 - BusinessCard OCR OpenAI adapter는 Responses API와 strict JSON schema를 사용한다. prompt와 schema는 `BE/src/modules/business-card/infrastructure/providers/openai-business-card-ocr.provider.ts`에 둔다.
 - DataImport API는 회사/담당자/제품/딜 CSV/XLSX 업로드, AI 컬럼 매핑, 사용자 보정/검증, 셀 단위 validation 메시지, 확정 저장, 성공 내역 조회를 제공한다.
 - DataImport 확정 전 임시 job은 in-memory store를 사용한다. 확정 성공 시 도메인 row와 `ImportUserLog`/`ImportUserLogRow` snapshot을 같은 transaction에서 저장한다.
-- User에는 기본 timezone/preferredLocale과 signup/last-login locale, country code, timezone 메타데이터가 반영되어 있다. 사용자 기본 국가/통화인 `User.countryCode`, `User.defaultCurrencyCode`는 08 G02 구현 대상이다.
+- User에는 기본 timezone/preferredLocale, 사용자 기본 국가/통화인 `User.countryCode`, `User.defaultCurrencyCode`, signup/last-login locale, country code, timezone 메타데이터가 반영되어 있다.
 - Auth runtime은 Supabase OAuth token exchange 이후 Backend app session을 별도로 발급하는 구조다. app access token은 `userId`/`sessionId`를 담고, refresh token 원문은 httpOnly cookie로만 내려가며 DB에는 hash만 저장한다.
 - 신규/기존 사용자 판정은 이메일이 아니라 `provider + providerUserId` 기준이다. provider email은 현재 Backend exchange에서 필수다.
 - 08 G08 목표는 Google-only runtime을 Google/LINE/Apple로 확장하고, 같은 verified email의 기존 `User`에 새 provider 계정을 연결하는 것이다. G08 전까지 현재 runtime은 Google-only다.

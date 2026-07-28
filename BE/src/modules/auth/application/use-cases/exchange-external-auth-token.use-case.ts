@@ -28,7 +28,7 @@ import {
   type ExternalAuthVerifier,
   type VerifiedExternalUser,
 } from "@/shared/application/ports/external-auth-verifier.port";
-import { normalizeOptionalIanaTimeZone } from "@/shared/application/time-zone/time-zone";
+import { isValidIanaTimeZone } from "@/shared/application/time-zone/time-zone";
 import { createAuthTokenResponse, type AuthTokenResponse } from "../auth-response";
 
 // 역할 : ExchangeExternalAuthTokenCommand 데이터가 계층 사이에서 전달되는 구조를 정의합니다.
@@ -55,7 +55,14 @@ type AuthLoginMetadata = {
   readonly countryCode: string | null;
   readonly locale: string;
   readonly timeZone: string;
+  readonly userCountryCode: string;
+  readonly defaultCurrencyCode: string;
 };
+
+const DEFAULT_USER_LOCALE = "ko-KR";
+const DEFAULT_USER_TIME_ZONE = "Asia/Seoul";
+const DEFAULT_USER_COUNTRY_CODE = "KR";
+const DEFAULT_USER_CURRENCY_CODE = "KRW";
 
 // 역할 : ExchangeExternalAuthTokenUseCase 유스케이스의 application orchestration을 담당합니다.
 @Injectable()
@@ -85,10 +92,14 @@ export class ExchangeExternalAuthTokenUseCase {
     // 2. provider 사용자 정보와 기기 입력값을 내부 형식으로 검증/정규화한다.
     const email = this.normalizeEmail(verifiedUser.email);
     const slot = this.parseDeviceSlot(command.deviceSlot);
+    const countryCode = this.normalizeCountryCode(command.countryCode);
+    const userCountryCode = this.resolveUserCountryCode(countryCode);
     const loginMetadata: AuthLoginMetadata = {
-      countryCode: this.normalizeCountryCode(command.countryCode),
+      countryCode,
       locale: this.normalizeLocale(command.locale),
       timeZone: this.normalizeTimeZone(command.timeZone),
+      userCountryCode,
+      defaultCurrencyCode: this.resolveDefaultCurrencyCode(userCountryCode),
     };
     this.assertDeviceId(command.deviceId);
 
@@ -199,6 +210,8 @@ export class ExchangeExternalAuthTokenUseCase {
         role: adminRole ?? "USER",
         timeZone: loginMetadata.timeZone,
         preferredLocale: loginMetadata.locale,
+        countryCode: loginMetadata.userCountryCode,
+        defaultCurrencyCode: loginMetadata.defaultCurrencyCode,
         signupLocale: loginMetadata.locale,
         signupCountryCode: loginMetadata.countryCode,
         signupTimeZone: loginMetadata.timeZone,
@@ -371,54 +384,32 @@ export class ExchangeExternalAuthTokenUseCase {
 
   // 기능 : 서비스가 지원하는 locale 값으로 정규화합니다.
   private normalizeLocale(locale: string | null): string {
-    const normalized = locale?.trim().replace("_", "-");
+    const normalized = locale?.trim().replace("_", "-").toLowerCase();
 
     if (!normalized) {
+      return DEFAULT_USER_LOCALE;
+    }
+
+    if (normalized === "ko" || normalized === "ko-kr") {
       return "ko-KR";
     }
 
-    if (normalized === "ko" || normalized.toLowerCase() === "ko-kr") {
-      return "ko-KR";
+    if (normalized === "en" || normalized.startsWith("en-")) {
+      return "en";
     }
 
-    if (normalized === "ja" || normalized.toLowerCase() === "ja-jp") {
-      return "ja-JP";
-    }
-
-    if (
-      normalized === "zh" ||
-      normalized.toLowerCase() === "zh-tw" ||
-      normalized.toLowerCase().startsWith("zh-hant")
-    ) {
-      return "zh-TW";
-    }
-
-    if (normalized.toLowerCase() === "en-gb") {
-      return "en-GB";
-    }
-
-    if (normalized.toLowerCase() === "en-sg") {
-      return "en-SG";
-    }
-
-    if (normalized.toLowerCase() === "en-au") {
-      return "en-AU";
-    }
-
-    if (normalized.toLowerCase() === "en-ca") {
-      return "en-CA";
-    }
-
-    if (normalized === "en" || normalized.toLowerCase().startsWith("en-")) {
-      return "en-US";
-    }
-
-    return "ko-KR";
+    return DEFAULT_USER_LOCALE;
   }
 
-  // 기능 : 요청 timeZone을 IANA timezone ID로 정규화하고 없으면 UTC로 대체합니다.
+  // 기능 : 요청 timeZone을 IANA timezone ID로 정규화하고 없으면 한국 기본값으로 대체합니다.
   private normalizeTimeZone(timeZone: string | null): string {
-    return normalizeOptionalIanaTimeZone(timeZone ?? undefined) ?? "UTC";
+    const normalized = timeZone?.trim();
+
+    if (!normalized || !isValidIanaTimeZone(normalized)) {
+      return DEFAULT_USER_TIME_ZONE;
+    }
+
+    return normalized;
   }
 
   // 기능 : 프록시가 전달한 접속 국가 코드를 ISO 3166-1 alpha-2 형태로 정규화합니다.
@@ -430,6 +421,16 @@ export class ExchangeExternalAuthTokenUseCase {
     }
 
     return /^[A-Z]{2}$/.test(normalized) ? normalized : null;
+  }
+
+  // 기능 : 접속 국가를 사용자 기본 국가 지원 범위로 축소합니다.
+  private resolveUserCountryCode(countryCode: string | null): string {
+    return countryCode === "US" ? "US" : DEFAULT_USER_COUNTRY_CODE;
+  }
+
+  // 기능 : 사용자 기본 국가에 맞는 1차 지원 통화를 선택합니다.
+  private resolveDefaultCurrencyCode(countryCode: string): string {
+    return countryCode === "US" ? "USD" : DEFAULT_USER_CURRENCY_CODE;
   }
 
   // 기능 : 사용자 상태가 로그인 가능한 활성 상태인지 검증합니다.

@@ -1,6 +1,6 @@
 # G02 User Global Settings
 
-상태: Not Started
+상태: Done
 목표: 사용자 앱 언어, timezone, 국가, 기본 통화 설정을 DB/API/Settings에 연결한다.
 
 ## 1. 포함 범위
@@ -132,16 +132,32 @@ pnpm run build
 
 ## 11. Goal 검토 체크리스트
 
-- [ ] User 글로벌 설정 필드가 DB에 추가됐다.
-- [ ] 기존 사용자 fallback이 있다.
-- [ ] profile 조회/수정 API가 새 필드를 포함한다.
-- [ ] request body 허용값이 API spec과 일치한다.
-- [ ] response field가 FE profile type과 일치한다.
-- [ ] business logic fallback 순서가 문서와 일치한다.
-- [ ] settings user flow가 저장 즉시 반영된다.
-- [ ] `BE/prisma`를 참고했고 신규 column에 한글 주석이 있다.
-- [ ] validation error가 code/field 중심이다.
-- [ ] `/app/settings`에서 저장할 수 있다.
-- [ ] 언어 저장 후 현재 화면 반영을 위한 FE 상태 갱신 경로가 있다.
-- [ ] Backend/Frontend 신규 코드에 한글 주석 규칙이 적용됐다.
-- [ ] 실행한 검증 결과를 기록했다.
+- [x] User 글로벌 설정 필드가 DB에 추가됐다.
+- [x] 기존 사용자 fallback이 있다.
+- [x] profile 조회/수정 API가 새 필드를 포함한다.
+- [x] request body 허용값이 API spec과 일치한다.
+- [x] response field가 FE profile type과 일치한다.
+- [x] business logic fallback 순서가 문서와 일치한다.
+- [x] settings user flow가 저장 즉시 반영된다.
+- [x] `BE/prisma`를 참고했고 신규 column에 한글 주석이 있다.
+- [x] validation error가 code/field 중심이다.
+- [x] `/app/settings`에서 저장할 수 있다.
+- [x] 언어 저장 후 현재 화면 반영을 위한 FE 상태 갱신 경로가 있다.
+- [x] Backend/Frontend 신규 코드에 한글 주석 규칙이 적용됐다.
+- [x] 실행한 검증 결과를 기록했다.
+
+## 12. 완료 기록
+
+- 완료일: 2026-07-28
+- DB: `User.countryCode`, `User.defaultCurrencyCode`와 migration SQL COMMENT 추가.
+- Backend: `/api/users/me/profile`, `/api/me`, auth exchange/signup default에 사용자 국가/통화 설정과 legacy locale 응답 fallback 연결.
+- Frontend: `/app/settings`와 계정 설정 모달에서 `ko-KR|en`, `KR|US`, `KRW|USD`, IANA timezone 저장 지원.
+- 검증:
+  - `cd BE; pnpm.cmd run prisma:validate` 통과
+  - `cd BE; pnpm.cmd run prisma:generate` 통과
+  - `cd BE; pnpm.cmd run typecheck` 통과
+  - `cd BE; pnpm.cmd run lint` 통과
+  - `cd BE; pnpm.cmd run test -- auth user` 통과
+  - `cd FE/user-web; pnpm.cmd run typecheck` 통과
+  - `cd FE/user-web; pnpm.cmd run lint` 통과
+  - `cd FE/user-web; pnpm.cmd run build` 통과. Vite chunk size warning은 기존 번들 크기 경고로 실패 아님.

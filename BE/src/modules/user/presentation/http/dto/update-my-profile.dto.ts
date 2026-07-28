@@ -16,4 +16,14 @@ export class UpdateMyProfileDto {
   @IsString()
   @MaxLength(16)
   preferredLocale?: string;
+
+  @ValidateIf((_, value) => value !== undefined)
+  @IsString()
+  @MaxLength(2)
+  countryCode?: string;
+
+  @ValidateIf((_, value) => value !== undefined)
+  @IsString()
+  @MaxLength(3)
+  defaultCurrencyCode?: string;
 }

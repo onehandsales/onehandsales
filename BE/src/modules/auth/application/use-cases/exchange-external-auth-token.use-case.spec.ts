@@ -131,6 +131,8 @@ class FakeAuthRepository implements AuthRepository {
       status: "ACTIVE",
       timeZone: input.timeZone,
       preferredLocale: input.preferredLocale,
+      countryCode: input.countryCode,
+      defaultCurrencyCode: input.defaultCurrencyCode,
       signupLocale: input.signupLocale,
       signupCountryCode: input.signupCountryCode,
       signupTimeZone: input.signupTimeZone,
@@ -338,6 +340,8 @@ function makeAuthUser(overrides: Partial<AuthUserRecord> = {}): AuthUserRecord {
     status: "ACTIVE",
     timeZone: "Asia/Seoul",
     preferredLocale: "ko-KR",
+    countryCode: "KR",
+    defaultCurrencyCode: "KRW",
     signupLocale: "ko-KR",
     signupCountryCode: "KR",
     signupTimeZone: "Asia/Seoul",
@@ -387,6 +391,8 @@ describe("ExchangeExternalAuthTokenUseCase", () => {
     expect(repository.users).toHaveLength(1);
     expect(repository.devices).toHaveLength(1);
     expect(repository.sessions).toHaveLength(1);
+    expect(result.response.user.countryCode).toBe("KR");
+    expect(result.response.user.defaultCurrencyCode).toBe("KRW");
     expect(repository.sessions[0]?.refreshTokenHash).toBe(
       "hash:refresh:refresh-token"
     );
@@ -394,13 +400,11 @@ describe("ExchangeExternalAuthTokenUseCase", () => {
 
   // 기능 : 로그인 exchange locale을 현재 지원 시장 기준 값으로 정규화합니다.
   it.each([
-    ["zh", "zh-TW"],
-    ["zh_Hant_TW", "zh-TW"],
-    ["zh-Hans", "ko-KR"],
-    ["zh_Hans", "ko-KR"],
-    ["en-SG", "en-SG"],
-    ["en-AU", "en-AU"],
-    ["en-CA", "en-CA"],
+    ["ko", "ko-KR"],
+    ["ko_KR", "ko-KR"],
+    ["en-US", "en"],
+    ["en-SG", "en"],
+    ["zh-TW", "ko-KR"],
   ])("normalizes login locale %s to %s", async (inputLocale, expectedLocale) => {
     const repository = new FakeAuthRepository();
     const useCase = createUseCase(repository, {
@@ -418,6 +422,31 @@ describe("ExchangeExternalAuthTokenUseCase", () => {
     expect(result.response.user.signupLocale).toBe(expectedLocale);
     expect(result.response.user.lastLoginLocale).toBe(expectedLocale);
     expect(repository.users[0]?.preferredLocale).toBe(expectedLocale);
+  });
+
+  // 기능 : 신규 가입 기본 국가와 통화를 프록시 국가 기준으로 저장합니다.
+  it("sets user country and currency defaults for a US signup", async () => {
+    const repository = new FakeAuthRepository();
+    const useCase = createUseCase(repository, {
+      email: "user@example.com",
+      name: "User",
+    });
+
+    const result = await useCase.execute(
+      makeExchangeCommand({
+        locale: "en-US",
+        timeZone: "America/New_York",
+        countryCode: "US",
+      })
+    );
+
+    expect(result.response.user.preferredLocale).toBe("en");
+    expect(result.response.user.timeZone).toBe("America/New_York");
+    expect(result.response.user.countryCode).toBe("US");
+    expect(result.response.user.defaultCurrencyCode).toBe("USD");
+    expect(repository.users[0]?.countryCode).toBe("US");
+    expect(repository.users[0]?.defaultCurrencyCode).toBe("USD");
+    expect(repository.users[0]?.signupCountryCode).toBe("US");
   });
 
   // 기능 : 동일 슬롯에 다른 활성 기기가 있을 때 교체 옵션 없이는 거부되는지 검증합니다.
@@ -485,6 +514,8 @@ describe("ExchangeExternalAuthTokenUseCase", () => {
         email: "user@example.com",
         displayName: "User",
         timeZone: "America/New_York",
+        countryCode: "US",
+        defaultCurrencyCode: "USD",
         lastLoginTimeZone: "America/New_York",
       })
     );
@@ -508,10 +539,14 @@ describe("ExchangeExternalAuthTokenUseCase", () => {
     );
 
     expect(result.response.user.timeZone).toBe("America/New_York");
+    expect(result.response.user.countryCode).toBe("US");
+    expect(result.response.user.defaultCurrencyCode).toBe("USD");
     expect(result.response.user.lastLoginLocale).toBe("ko-KR");
     expect(result.response.user.lastLoginCountryCode).toBe("KR");
     expect(result.response.user.lastLoginTimeZone).toBe("Asia/Seoul");
     expect(repository.users[0]?.timeZone).toBe("America/New_York");
+    expect(repository.users[0]?.countryCode).toBe("US");
+    expect(repository.users[0]?.defaultCurrencyCode).toBe("USD");
   });
 
   // 기능 : 기존 Supabase user id 기반 OAuth 매핑을 provider 계정 ID 기반 매핑으로 승격합니다.

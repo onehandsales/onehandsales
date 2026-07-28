@@ -22,6 +22,8 @@ export interface UserProfileRecord {
   readonly status: UserProfileStatus;
   readonly timeZone: string;
   readonly preferredLocale: string;
+  readonly countryCode: string;
+  readonly defaultCurrencyCode: string;
   readonly signupLocale: string | null;
   readonly signupCountryCode: string | null;
   readonly signupTimeZone: string | null;
@@ -39,6 +41,8 @@ export interface UpdateUserProfileInput {
   readonly name?: string | null;
   readonly timeZone?: string;
   readonly preferredLocale?: string;
+  readonly countryCode?: string;
+  readonly defaultCurrencyCode?: string;
 }
 
 // 역할 : UserDeviceRecord 데이터가 계층 사이에서 전달되는 구조를 정의합니다.

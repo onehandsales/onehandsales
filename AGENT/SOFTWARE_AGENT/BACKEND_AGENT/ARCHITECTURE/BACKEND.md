@@ -135,7 +135,7 @@ Current runtime behavior:
 - request id middleware applies to all routes.
 - CORS origins are derived from `USER_WEB_ORIGIN` and `ADMIN_WEB_ORIGIN`.
 - default port is `3000`.
-- User locale/region metadata columns are present on `User`: `preferredLocale`, signup/last-login locale, signup/last-login country code, and timezone metadata. User default `countryCode` and `defaultCurrencyCode` are 08 G02 targets, not current columns.
+- User locale/region metadata and global defaults are present on `User`: `preferredLocale`, `timeZone`, `countryCode`, `defaultCurrencyCode`, signup/last-login locale, signup/last-login country code, and timezone metadata.
 
 Auth/session runtime notes:
 

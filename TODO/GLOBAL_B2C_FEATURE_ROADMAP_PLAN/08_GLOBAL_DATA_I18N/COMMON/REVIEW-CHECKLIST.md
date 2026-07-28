@@ -34,19 +34,19 @@
 - [ ] `POST /api/auth/exchange`가 Google, LINE, Apple을 처리한다.
 - [ ] 같은 verified email provider 계정이 기존 User에 연결된다.
 - [ ] email 없는 provider 응답은 가입/로그인을 차단한다.
-- [ ] `PATCH /api/users/me/profile`이 글로벌 설정을 저장한다.
+- [x] `PATCH /api/users/me/profile`이 글로벌 설정을 저장한다.
 - [ ] Product/Deal API가 `currencyCode`를 포함한다.
 - [ ] Contact API가 글로벌 전화번호 필드를 포함한다.
 - [ ] Company/CompanyRegion API가 국가/지역 code를 포함한다.
-- [ ] validation error는 code/field 중심이다.
+- [x] validation error는 code/field 중심이다.
 - [ ] 모든 사용자 데이터 API에 ownership 조건이 있다.
 
 ## 4. DB / Migration
 
-- [ ] 기존 migration 파일을 수정하지 않았다.
+- [x] 기존 migration 파일을 수정하지 않았다.
 - [ ] `OAuthProvider.LINE`이 추가됐다.
-- [ ] `User.countryCode`가 추가됐다.
-- [ ] `User.defaultCurrencyCode`가 추가됐다.
+- [x] `User.countryCode`가 추가됐다.
+- [x] `User.defaultCurrencyCode`가 추가됐다.
 - [ ] `Product.currencyCode`가 추가됐다.
 - [ ] `Deal.currencyCode`가 추가됐다.
 - [ ] Contact 글로벌 전화번호 필드가 추가됐다.
@@ -54,7 +54,7 @@
 - [ ] `CompanyRegion.regionCode`가 추가됐다.
 - [ ] Company 주소 필드가 결정된 방식대로 반영됐다.
 - [ ] 기존 한국 Contact/CompanyRegion 데이터 migration이 보존 중심으로 작성됐다.
-- [ ] Prisma schema와 migration SQL에 한글 주석/COMMENT가 있다.
+- [x] Prisma schema와 migration SQL에 한글 주석/COMMENT가 있다.
 
 ## 5. Import/Export
 

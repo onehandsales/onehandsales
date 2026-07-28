@@ -51,6 +51,10 @@ export class PrismaUserRepository implements UserRepository {
         ...(input.preferredLocale !== undefined
           ? { preferredLocale: input.preferredLocale }
           : {}),
+        ...(input.countryCode !== undefined ? { countryCode: input.countryCode } : {}),
+        ...(input.defaultCurrencyCode !== undefined
+          ? { defaultCurrencyCode: input.defaultCurrencyCode }
+          : {}),
       },
     });
 
@@ -111,6 +115,8 @@ export class PrismaUserRepository implements UserRepository {
     readonly status: UserStatus;
     readonly timeZone: string;
     readonly preferredLocale: string;
+    readonly countryCode: string;
+    readonly defaultCurrencyCode: string;
     readonly signupLocale: string | null;
     readonly signupCountryCode: string | null;
     readonly signupTimeZone: string | null;
@@ -134,7 +140,9 @@ export class PrismaUserRepository implements UserRepository {
       role: this.fromPrismaUserRole(user.role),
       status: this.fromPrismaUserStatus(user.status),
       timeZone: user.timeZone,
-      preferredLocale: user.preferredLocale,
+      preferredLocale: this.toSupportedPreferredLocale(user.preferredLocale),
+      countryCode: user.countryCode || "KR",
+      defaultCurrencyCode: user.defaultCurrencyCode || "KRW",
       signupLocale: user.signupLocale,
       signupCountryCode: user.signupCountryCode,
       signupTimeZone: user.signupTimeZone,
@@ -223,5 +231,20 @@ export class PrismaUserRepository implements UserRepository {
       case UserStatus.DELETED:
         return "DELETED";
     }
+  }
+
+  // 기능 : 이전 locale 데이터를 현재 지원 locale 응답값으로 정규화합니다.
+  private toSupportedPreferredLocale(preferredLocale: string): string {
+    const normalized = preferredLocale.trim().replace("_", "-").toLowerCase();
+
+    if (normalized === "ko" || normalized === "ko-kr") {
+      return "ko-KR";
+    }
+
+    if (normalized === "en" || normalized.startsWith("en-")) {
+      return "en";
+    }
+
+    return "ko-KR";
   }
 }

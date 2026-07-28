@@ -946,13 +946,17 @@ function ProfileModalQueryContent() {
 
 const accountLocaleOptions = [
   { value: "ko-KR", label: "한국어" },
-  { value: "en-US", label: "English (US)" },
-  { value: "en-GB", label: "English (UK)" },
-  { value: "en-SG", label: "English (Singapore)" },
-  { value: "en-AU", label: "English (Australia)" },
-  { value: "en-CA", label: "English (Canada)" },
-  { value: "ja-JP", label: "日本語" },
-  { value: "zh-TW", label: "繁體中文" },
+  { value: "en", label: "English" },
+] as const;
+
+const accountCountryOptions = [
+  { value: "KR", label: "대한민국" },
+  { value: "US", label: "미국" },
+] as const;
+
+const accountCurrencyOptions = [
+  { value: "KRW", label: "KRW" },
+  { value: "USD", label: "USD" },
 ] as const;
 
 const accountTimeZoneOptions = [
@@ -975,6 +979,8 @@ function AccountSettingsModalContent() {
   const profile = profileQuery.data ?? null;
   const [preferredLocale, setPreferredLocale] = useState("ko-KR");
   const [timeZone, setTimeZone] = useState("Asia/Seoul");
+  const [countryCode, setCountryCode] = useState("KR");
+  const [defaultCurrencyCode, setDefaultCurrencyCode] = useState("KRW");
   const [formError, setFormError] = useState<string | null>(null);
   const [saved, setSaved] = useState(false);
 
@@ -985,6 +991,8 @@ function AccountSettingsModalContent() {
 
     setPreferredLocale(profile.preferredLocale);
     setTimeZone(profile.timeZone);
+    setCountryCode(profile.countryCode);
+    setDefaultCurrencyCode(profile.defaultCurrencyCode);
   }, [profile]);
 
   const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
@@ -996,6 +1004,8 @@ function AccountSettingsModalContent() {
       await updateProfileMutation.mutateAsync({
         preferredLocale,
         timeZone,
+        countryCode,
+        defaultCurrencyCode,
       });
       setSaved(true);
     } catch (error) {
@@ -1011,7 +1021,7 @@ function AccountSettingsModalContent() {
             설정
           </h3>
           <p className="mt-3 text-[14px] leading-6 text-[#64748B]">
-            표시 언어와 시간대를 관리하세요
+            표시 언어와 글로벌 기본값을 관리하세요
           </p>
         </div>
 
@@ -1054,6 +1064,40 @@ function AccountSettingsModalContent() {
                     {getAccountTimeZoneOptions(timeZone).map((option) => (
                       <option key={option} value={option}>
                         {option}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+                {/* 기능 : 앱 전역 입력 기본값에 사용할 국가를 선택합니다. */}
+                <label className="grid gap-1.5">
+                  <span className="text-[13px] font-medium text-[#111827]">
+                    기본 국가
+                  </span>
+                  <select
+                    className="h-9 rounded-md border border-[#E2E5EC] bg-white px-3 text-[13px] text-[#374151] outline-none focus:border-[#93C5FD]"
+                    onChange={(event) => setCountryCode(event.target.value)}
+                    value={countryCode}
+                  >
+                    {accountCountryOptions.map((option) => (
+                      <option key={option.value} value={option.value}>
+                        {option.label}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+                {/* 기능 : 금액 입력 기본값에 사용할 통화를 선택합니다. */}
+                <label className="grid gap-1.5">
+                  <span className="text-[13px] font-medium text-[#111827]">
+                    기본 통화
+                  </span>
+                  <select
+                    className="h-9 rounded-md border border-[#E2E5EC] bg-white px-3 text-[13px] text-[#374151] outline-none focus:border-[#93C5FD]"
+                    onChange={(event) => setDefaultCurrencyCode(event.target.value)}
+                    value={defaultCurrencyCode}
+                  >
+                    {accountCurrencyOptions.map((option) => (
+                      <option key={option.value} value={option.value}>
+                        {option.label}
                       </option>
                     ))}
                   </select>
@@ -1415,6 +1459,8 @@ type ProfileModalContentProps = {
     readonly status: string;
     readonly timeZone: string;
     readonly preferredLocale: string;
+    readonly countryCode: string;
+    readonly defaultCurrencyCode: string;
     readonly signupLocale: string | null;
     readonly signupCountryCode: string | null;
     readonly signupTimeZone: string | null;
@@ -1474,6 +1520,14 @@ function ProfileModalContent({
                   value={formatLocaleLabel(profile.preferredLocale)}
                 />
                 <ProfileInfoRow label="시간대" value={profile.timeZone} />
+                <ProfileInfoRow
+                  label="기본 국가"
+                  value={formatCountryLabel(profile.countryCode)}
+                />
+                <ProfileInfoRow
+                  label="기본 통화"
+                  value={profile.defaultCurrencyCode}
+                />
               </div>
             </ProfileSection>
 
@@ -1706,14 +1760,15 @@ function formatProviderLabel(provider: string) {
 
 function formatLocaleLabel(locale: string) {
   if (locale === "ko-KR") return "한국어";
-  if (locale === "en-US") return "English (US)";
-  if (locale === "en-GB") return "English (UK)";
-  if (locale === "en-SG") return "English (Singapore)";
-  if (locale === "en-AU") return "English (Australia)";
-  if (locale === "en-CA") return "English (Canada)";
-  if (locale === "ja-JP") return "日本語";
-  if (locale === "zh-TW") return "繁體中文";
+  if (locale === "en") return "English";
   return locale;
+}
+
+// 기능 : 국가 코드를 계정 모달 표시 이름으로 변환합니다.
+function formatCountryLabel(countryCode: string) {
+  if (countryCode === "KR") return "대한민국";
+  if (countryCode === "US") return "미국";
+  return countryCode;
 }
 
 function formatDeviceSlotLabel(slot: string) {

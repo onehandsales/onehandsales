@@ -2,7 +2,7 @@
 
 상태: 통과
 검토일: 2026-07-28
-검토 범위: G01 Document Contract Sync
+검토 범위: G01 Document Contract Sync, G02 완료 후 current baseline 갱신
 
 ## 1. 판정
 
@@ -37,14 +37,14 @@ G01에서 확인한 충돌은 문서 보정으로 해결했다. 현재 구현 �
 
 - Auth runtime provider는 Google-only다.
 - `OAuthProvider.LINE`은 아직 Prisma enum에 없다.
-- `User.countryCode`, `User.defaultCurrencyCode`는 아직 없다.
+- `User.countryCode`, `User.defaultCurrencyCode`는 G02 완료로 현재 User schema에 있다.
 - Product/Deal `currencyCode`, Contact 글로벌 전화번호 필드, Company 주소/CompanyRegion code 필드는 아직 없다.
 - `/app` protected route에는 locale prefix가 없다.
 - public/auth URL locale i18n은 `FE/user-web/src/features/public-site/i18n` 기준이다.
 
 08 목표 기준:
 
-- G02에서 사용자 기본 국가/통화 설정을 추가한다.
+- G02에서 사용자 기본 국가/통화 설정을 추가했다.
 - G03에서 `/app` 내부 app i18n을 public-site i18n과 분리한다.
 - G04~G06에서 통화/전화번호/회사 지역 글로벌 필드를 순차 추가한다.
 - G08에서 Google, LINE, Apple provider와 verified email linking을 구현한다.
@@ -52,7 +52,7 @@ G01에서 확인한 충돌은 문서 보정으로 해결했다. 현재 구현 �
 
 ## 5. Blocking 질문
 
-현재 G02~G10 착수를 막는 blocking 질문은 없다.
+현재 G03~G10 착수를 막는 blocking 질문은 없다.
 
 주의 사항:
 
@@ -66,3 +66,4 @@ G01에서 확인한 충돌은 문서 보정으로 해결했다. 현재 구현 �
 - `cd BE; pnpm.cmd run prisma:validate` 통과.
 - `git diff --check` 통과. LF/CRLF 변환 경고만 있고 whitespace error는 없다.
 - 충돌 문구 재검색 결과는 과거 QA 기록, current baseline 설명, 08 목표 문구로 분류 가능하며 G02 착수 blocker가 아니다.
+- G02 완료 검증으로 BE `prisma:validate`, `prisma:generate`, `typecheck`, `lint`, `test -- auth user`와 FE user-web `typecheck`, `lint`, `build`가 통과했다.

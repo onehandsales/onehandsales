@@ -11,10 +11,10 @@
 현재 Auth/User 도메인은 Prisma schema와 migration에 반영되어 있다. 이 문서는 Auth/User 테이블의 역할, 관계, 컬럼 의미를 빠르게 확인하기 위한 구현 설명서로 유지한다.
 
 현재 User locale/region 메타데이터는 `BE/prisma/migrations/20260708010000_add_user_locale_region_metadata/migration.sql` 기준으로 반영되어 있다.
+사용자 기본 국가/통화 설정은 `BE/prisma/migrations/20260728010000_add_user_global_settings/migration.sql` 기준으로 반영되어 있다.
 
-08 Global Data I18N 목표 delta:
+08 Global Data I18N 남은 목표 delta:
 
-- G02에서 `User.countryCode`, `User.defaultCurrencyCode`를 추가한다. 현재 `signupCountryCode`/`lastLoginCountryCode`와 다른 사용자 기본 설정 필드다.
 - G08에서 `OAuthProvider.LINE`을 추가하고 Google, LINE, Apple을 runtime provider로 허용한다.
 - G08에서 기존 `provider + providerUserId` 조회를 유지하되, 같은 verified email이 있으면 기존 `User`에 새 `UserOAuthAccount`를 연결한다.
 - provider email이 없거나 verified email로 확인할 수 없는 경우 가입/로그인을 차단한다.
@@ -122,6 +122,8 @@ AuthDevice 1 ─ N AuthSession
 | `status` | `UserStatus` | 아니오 | `ACTIVE` | 사용자 상태 |
 | `timeZone` | `String` | 아니오 | `Asia/Seoul` | 사용자 기본 IANA timezone ID. 일정 range 계산 기본값으로 사용한다. |
 | `preferredLocale` | `String` | 아니오 | `ko-KR` | 사용자 기본 UI/content locale. |
+| `countryCode` | `String` | 아니오 | `KR` | 사용자 기본 국가 코드. 설정 화면과 글로벌 데이터 기본값 계산에 사용한다. |
+| `defaultCurrencyCode` | `String` | 아니오 | `KRW` | 사용자 기본 통화 코드. 금액 입력 기본값과 Product/Deal currency fallback에 사용한다. |
 | `signupLocale` | `String` | 예 | 없음 | 최초 가입/token exchange 시점의 locale. |
 | `signupCountryCode` | `String` | 예 | 없음 | 최초 가입/token exchange 시점의 국가 코드. |
 | `signupTimeZone` | `String` | 예 | 없음 | 최초 가입/token exchange 시점의 timezone. |
@@ -132,13 +134,6 @@ AuthDevice 1 ─ N AuthSession
 | `createdAt` | `DateTime` | 아니오 | `now()` | 생성 시각 |
 | `updatedAt` | `DateTime` | 아니오 | `@updatedAt` | 수정 시각 |
 | `deletedAt` | `DateTime` | 예 | 없음 | 소프트 삭제 시각. 현재 계정 삭제 API는 없다. |
-
-08 G02 목표 컬럼:
-
-| 컬럼 | 타입 | Null | 기본값 | 주석 |
-|---|---|---:|---|---|
-| `countryCode` | `String` | 아니오 | `KR` | 사용자 기본 국가 코드. 설정 화면과 글로벌 데이터 기본값 계산에 사용한다. |
-| `defaultCurrencyCode` | `String` | 아니오 | `KRW` | 사용자 기본 통화 코드. Product/Deal currency fallback에 사용한다. |
 
 Relations:
 
@@ -161,9 +156,10 @@ Indexes:
 
 로그인 메타데이터 정책:
 
-- 신규 사용자 생성 시 `timeZone`, `preferredLocale`, `signupLocale`, `signupCountryCode`, `signupTimeZone`, `lastLoginLocale`, `lastLoginCountryCode`, `lastLoginTimeZone`을 exchange metadata로 초기화한다.
+- 신규 사용자 생성 시 `timeZone`, `preferredLocale`, `countryCode`, `defaultCurrencyCode`, `signupLocale`, `signupCountryCode`, `signupTimeZone`, `lastLoginLocale`, `lastLoginCountryCode`, `lastLoginTimeZone`을 exchange metadata와 fallback으로 초기화한다.
 - 기존 사용자 로그인 시 `email`, `lastLoginLocale`, `lastLoginCountryCode`, `lastLoginTimeZone`, `lastLoginAt`을 갱신한다.
 - 기존 사용자의 `timeZone`은 로그인 시 브라우저 timezone으로 덮어쓰지 않는다. 사용자가 설정한 기본 timezone을 보존하고, 최근 로그인 환경은 `lastLoginTimeZone`에만 남긴다.
+- 기존 사용자의 `countryCode`, `defaultCurrencyCode`도 로그인 환경으로 덮어쓰지 않는다.
 - 국가 코드는 provider 계정 정보가 아니라 Backend가 받은 proxy geo header에서 가져온다. 헤더가 없으면 `signupCountryCode`/`lastLoginCountryCode`는 `null`일 수 있다.
 
 ## 6. Table: UserOAuthAccount
@@ -321,6 +317,8 @@ model User {
   status      UserStatus @default(ACTIVE)                  // 계정 상태
   timeZone    String     @default("Asia/Seoul")            // 사용자 기본 IANA timezone
   preferredLocale      String  @default("ko-KR")           // 사용자 기본 locale
+  countryCode          String  @default("KR")              // 사용자 기본 국가 코드
+  defaultCurrencyCode  String  @default("KRW")             // 사용자 기본 통화 코드
   signupLocale         String?                             // 최초 가입 시 locale
   signupCountryCode    String?                             // 최초 가입 시 국가 코드
   signupTimeZone       String?                             // 최초 가입 시 timezone

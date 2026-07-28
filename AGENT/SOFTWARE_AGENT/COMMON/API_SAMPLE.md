@@ -12,7 +12,7 @@ Export는 범용 `/api/exports` job이 아니라 Company/Contact/Product/Deal �
 | `GET /api/me` | 현재 로그인한 사용자 기본 정보를 조회합니다. |
 | `GET /admin/api/me` | 현재 로그인한 관리자 정보를 조회합니다. |
 | `GET /api/users/me/profile` | 내 프로필과 연결된 OAuth 계정 정보를 조회합니다. |
-| `PATCH /api/users/me/profile` | 내 이름, 타임존, 기본 locale 등 프로필 정보를 수정합니다. |
+| `PATCH /api/users/me/profile` | 내 이름, 타임존, 기본 locale, 기본 국가, 기본 통화 등 프로필 정보를 수정합니다. |
 | `GET /api/users/me/devices` | 내 로그인 기기 목록과 현재 기기 여부를 조회합니다. |
 
 **Company**

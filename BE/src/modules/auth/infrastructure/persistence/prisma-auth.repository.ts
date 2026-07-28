@@ -36,6 +36,8 @@ type UserRow = {
   readonly status: UserStatus;
   readonly timeZone: string;
   readonly preferredLocale: string;
+  readonly countryCode: string;
+  readonly defaultCurrencyCode: string;
   readonly signupLocale: string | null;
   readonly signupCountryCode: string | null;
   readonly signupTimeZone: string | null;
@@ -126,6 +128,8 @@ export class PrismaAuthRepository implements AuthRepository {
         status: UserStatus.ACTIVE,
         timeZone: input.timeZone,
         preferredLocale: input.preferredLocale,
+        countryCode: input.countryCode,
+        defaultCurrencyCode: input.defaultCurrencyCode,
         signupLocale: input.signupLocale,
         signupCountryCode: input.signupCountryCode,
         signupTimeZone: input.signupTimeZone,
@@ -392,7 +396,9 @@ export class PrismaAuthRepository implements AuthRepository {
       role: this.fromPrismaUserRole(user.role),
       status: this.fromPrismaUserStatus(user.status),
       timeZone: user.timeZone,
-      preferredLocale: user.preferredLocale,
+      preferredLocale: this.toSupportedPreferredLocale(user.preferredLocale),
+      countryCode: user.countryCode || "KR",
+      defaultCurrencyCode: user.defaultCurrencyCode || "KRW",
       signupLocale: user.signupLocale,
       signupCountryCode: user.signupCountryCode,
       signupTimeZone: user.signupTimeZone,
@@ -517,5 +523,20 @@ export class PrismaAuthRepository implements AuthRepository {
       case UserStatus.DELETED:
         return "DELETED";
     }
+  }
+
+  // 기능 : 이전 locale 데이터를 현재 지원 locale 응답값으로 정규화합니다.
+  private toSupportedPreferredLocale(preferredLocale: string): string {
+    const normalized = preferredLocale.trim().replace("_", "-").toLowerCase();
+
+    if (normalized === "ko" || normalized === "ko-kr") {
+      return "ko-KR";
+    }
+
+    if (normalized === "en" || normalized.startsWith("en-")) {
+      return "en";
+    }
+
+    return "ko-KR";
   }
 }

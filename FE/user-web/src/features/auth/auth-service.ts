@@ -396,25 +396,36 @@ function toSupabaseProvider(provider: AuthProviderId): Provider {
   return provider as Provider;
 }
 
+// 기능 : 공개 사이트 언어와 브라우저 언어를 G02 지원 locale로 축소합니다.
 function getPreferredLocaleForExchange() {
   const publicLanguage = window.localStorage.getItem(publicSiteLanguageStorageKey);
 
-  if (publicLanguage === "ko") return "ko-KR";
-  if (publicLanguage === "ja") return "ja-JP";
-  if (publicLanguage === "zh" || publicLanguage === "zh-TW") return "zh-TW";
+  if (publicLanguage === "ko" || publicLanguage === "ko-KR") return "ko-KR";
   if (
+    publicLanguage === "en" ||
     publicLanguage === "en-US" ||
     publicLanguage === "en-GB" ||
     publicLanguage === "en-SG" ||
     publicLanguage === "en-AU" ||
     publicLanguage === "en-CA"
   ) {
-    return publicLanguage;
+    return "en";
   }
 
-  return window.navigator.language || "ko-KR";
+  const browserLanguage = window.navigator.language?.toLowerCase() ?? "";
+
+  if (browserLanguage === "ko" || browserLanguage === "ko-kr") {
+    return "ko-KR";
+  }
+
+  if (browserLanguage === "en" || browserLanguage.startsWith("en-")) {
+    return "en";
+  }
+
+  return "ko-KR";
 }
 
+// 기능 : 브라우저 시간대를 전달하고 없으면 사용자 기본 시간대로 대체합니다.
 function getBrowserTimeZoneForExchange() {
-  return Intl.DateTimeFormat().resolvedOptions().timeZone || "UTC";
+  return Intl.DateTimeFormat().resolvedOptions().timeZone || "Asia/Seoul";
 }
