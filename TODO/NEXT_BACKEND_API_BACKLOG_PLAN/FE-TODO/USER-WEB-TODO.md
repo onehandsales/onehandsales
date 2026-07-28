@@ -1,7 +1,7 @@
 # User Web TODO
 
 상태: Draft
-최종 업데이트: 2026-07-26
+최종 업데이트: 2026-07-28
 
 ## 0. 완료 반영
 
@@ -16,12 +16,24 @@
 - [x] `NBA-014`: User Web 코드 변경 없이 06 범위 DB/Prisma 운영 gate closeout 완료
 - [x] `NBA-004 MeetingNote detail next action/follow-up draft subset`: `/app/meeting-notes/:meetingNoteId` AI 후속 작업 UX 구현 완료
 - [x] `NBA-011 MeetingNote provider log subset`: User Web safe failure UX와 `/admin/api/*` 미호출 기준 확인 완료
+- [x] `08_GLOBAL_DATA_I18N`: `/app/settings` global settings, `/app` i18n, currency/phone/region/address UI, import/export localization, Google/LINE/Apple auth buttons 구현 및 QA closeout 완료
 
 ## 1. 목적
 
 이 문서는 G07에서 분리한 Backend/API 후보가 `FE/user-web`에 미칠 수 있는 영향을 정리한다.
 
-이 문서에서 남은 active User Web 후보는 future API contract가 `confirmed`된 뒤 함께 확인할 client/screen 영향만 기록한다. `NBA-001`, `NBA-002`, `NBA-003` Deal subset, `NBA-004` MeetingNote detail subset, `NBA-006`, `NBA-008`, `NBA-009`, `NBA-010`, `NBA-011` provider log subset, `NBA-015`는 별도 계획에서 구현 완료된 이력으로만 남긴다.
+이 문서에서 남은 active User Web 후보는 future API contract가 `confirmed`된 뒤 함께 확인할 client/screen 영향만 기록한다. `NBA-001`, `NBA-002`, `NBA-003` Deal subset, `NBA-004` MeetingNote detail subset, `NBA-006`, `NBA-008`, `NBA-009`, `NBA-010`, `NBA-011` provider log subset, `NBA-015`, `08_GLOBAL_DATA_I18N`은 별도 계획에서 구현 완료된 이력으로만 남긴다.
+
+## 1.1 08에서 닫힌 User Web Global Data/I18N 범위
+
+- `/app/settings`에서 국가, 앱 언어, 기본 통화 저장과 저장 후 문구/formatter 반영을 구현했다.
+- `/app` 전용 i18n provider/resource/formatter와 핵심 화면 `ko-KR`/`en` 문구를 적용했다. `/app` route에 locale prefix는 추가하지 않는다.
+- Product/Deal 금액, 주간 보고서, export 화면에서 currency-aware 표시를 적용했다.
+- Contact 생성/수정/import/business-card/search/export 흐름에 KR/US 전화번호 UI와 validation을 적용했다.
+- Company 생성/수정/export 흐름에 country/region/address UI를 적용했다.
+- Import template language selector와 export header/date-time/currency 현지화를 적용했다.
+- 로그인/회원가입 provider 버튼은 Google, LINE, Apple을 한 줄 3개 배치로 제공하고, LINE/Apple도 Google과 동일한 버튼 톤을 따른다.
+- 실제 Google/LINE/Apple provider smoke와 운영 DB migration deploy는 운영 환경 설정 후 별도 확인한다.
 
 ## 2. Release follow-up 영향 후보
 

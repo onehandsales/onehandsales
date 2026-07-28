@@ -2,7 +2,7 @@
 
 상태: Draft
 작성일: 2026-07-20
-최종 업데이트: 2026-07-26
+최종 업데이트: 2026-07-28
 
 ## 0. 완료 반영
 
@@ -50,12 +50,16 @@
   - 구현 계획: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/07_MEETING_NOTE_AI_PROVIDER_LOG`
   - 완료 기록: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/07_MEETING_NOTE_AI_PROVIDER_LOG/COMMON/GOAL-SPECS/G06_QA_REVIEW_CLOSEOUT.md`
   - 현재 의미: 공통 `AiProviderCallLog` 기반 provider call log는 완료다. Admin/internal audit 조회, raw access reason, retention/cleanup은 후속 후보로 남긴다.
+- [x] `08_GLOBAL_DATA_I18N`: Done (2026-07-28)
+  - 구현 계획: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/08_GLOBAL_DATA_I18N`
+  - 완료 기록: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/08_GLOBAL_DATA_I18N/COMMON/GOAL-SPECS/G10_QA_DOCUMENT_CLOSEOUT.md`
+  - 현재 의미: first-sale global data/i18n/API subset은 완료다. 운영 DB migration deploy와 실제 Google/LINE/Apple provider smoke는 운영 확인 단계에서 본다.
 
 ## 1. 기준
 
 후보 분류는 `release blocker`, `release follow-up`, `product feature`, `ops/security`, `defer` 중 하나만 사용한다.
 
-완료 이력으로 승격된 `NBA-001`, `NBA-002`, `NBA-003` Deal subset, `NBA-004` MeetingNote detail subset, `NBA-006`, `NBA-008`, `NBA-009`, `NBA-010`, `NBA-011` provider log subset, `NBA-014`, `NBA-015` 외의 후보 API 계약은 `draft` 또는 `후보` 상태로만 남긴다.
+완료 이력으로 승격된 `NBA-001`, `NBA-002`, `NBA-003` Deal subset, `NBA-004` MeetingNote detail subset, `NBA-006`, `NBA-008`, `NBA-009`, `NBA-010`, `NBA-011` provider log subset, `NBA-014`, `NBA-015`, `08_GLOBAL_DATA_I18N` 외의 후보 API 계약은 `draft` 또는 `후보` 상태로만 남긴다.
 
 ## 2. 후보 매트릭스
 
@@ -76,10 +80,11 @@
 | NBA-012 | Trash 7일 이후 복구 정책 | AGENT 문서 | ops/security | Yes | 복구 가능 기한 이후 동작과 운영 책임을 명확히 한다. | status contract 또는 purge API 후보 | column/table/job 후보 | trash copy, restore error 처리 | irreversible delete, 유료 복구, 법적 보관 정책 영향이 있다. | Trash retention policy plan | 복구/영구삭제 정책과 운영 절차가 먼저 확정되어야 한다. |
 | NBA-013 | Admin 운영 UX/API | AGENT 문서 | ops/security | No | 고객 지원, 민감정보 마스킹, 감사 로그 기반 운영이 가능해진다. | 새 `/admin/api/*` | audit/admin table 후보 | Admin Web 화면 | 권한, 마스킹, 원문 조회 사유, audit log 리스크가 크다. | Admin operation API plan | Admin 운영 API와 화면은 이번 release QA 범위에서 제외됐다. |
 | NBA-014 | DB/Prisma migration 운영 gate closeout | G02~G06, `06_DEAL_ACTIVITY_TIMELINE` | release blocker | No | 06 범위 완료. DB 대상, Prisma 검증, migration/seed 금지 기준을 확인했다. | 없음 | Done for 06: `DealActivity` migration 작성, 기존 migration 미수정, 무단 migrate/seed 미실행 | 없음 | cloud DB 오적용 방지를 위해 원격 Supabase target에서 migrate/seed를 실행하지 않음 | Done for 06: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/06_DEAL_ACTIVITY_TIMELINE` | 06 범위 완료. 실제 운영 DB 적용 절차와 backup/restore는 별도 data reliability gate에서 다룬다. |
+| 08_GLOBAL_DATA_I18N | Global data, app i18n, auth provider subset | Productization gap, `08_GLOBAL_DATA_I18N` | first-sale global gap | Yes | 완료. 첫 판매 전 필요한 기본 앱 다국어, 글로벌 데이터 구조, Google/LINE/Apple 인증을 구현했다. | Done: User global settings, domain global data, import/export localization, auth provider API 구현 | Done: User settings, Product/Deal currency, Contact global phone, Company region/address, `OAuthProvider.LINE` migrations 작성 | Done: `/app/settings`, app i18n, currency/phone/region UI, import/export language, login/signup provider buttons | provider secret과 운영 DB migration deploy는 운영 확인 단계에서 필요 | Done: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/08_GLOBAL_DATA_I18N` | 완료. Active backlog에서 제외한다. 추가 국가/통화/provider와 provider smoke/DB deploy는 별도 운영/후속 범위다. |
 
 ## 3. 다음 실행 순서 제안
 
 1. `NBA-005`, `NBA-007`, `NBA-011` 잔여 Admin audit/retention, `NBA-012`, `NBA-013` 보안/운영 계약 정리
 2. `NBA-003`의 Company/Contact/Product latest summary 잔여 범위, `NBA-004` MeetingNote 목록 summary 설계
 3. MeetingNote 자동 발송/알림은 제품/운영 정책 확정 후 별도 설계
-4. 운영 DB 적용 절차, backup/restore, 장애 대응은 Global B2C data reliability gate에서 별도 결정
+4. 08 migration deploy, 실제 auth provider smoke, backup/restore, 장애 대응은 Global B2C data reliability/operation gate에서 별도 결정

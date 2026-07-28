@@ -2,8 +2,8 @@
 
 상태: Draft
 작성일: 2026-07-20
-최종 업데이트: 2026-07-26
-출처: `TODO/DONE/USER_WEB_RELEASE_QA_FOLLOWUP_PLAN` G07
+최종 업데이트: 2026-07-28
+출처: `TODO/DONE/USER_WEB_RELEASE_QA_FOLLOWUP_PLAN` G07, `TODO/USER_WEB_PRODUCTIZATION_GAP_PLAN`
 
 ## 0. 완료 반영 체크리스트
 
@@ -18,6 +18,7 @@
 - [x] `NBA-014` 06 범위 DB/Prisma migration 운영 gate closeout
 - [x] `NBA-004 MeetingNote detail next action/follow-up draft subset`: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/07_MEETING_NOTE_AI_PROVIDER_LOG`에서 구현 및 QA closeout 완료
 - [x] `NBA-011 MeetingNote AI/STT provider log subset`: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/07_MEETING_NOTE_AI_PROVIDER_LOG`에서 공통 `AiProviderCallLog` 확장으로 구현 및 QA closeout 완료
+- [x] `08_GLOBAL_DATA_I18N`: User global settings, `/app` i18n, currency/phone/region/address, import/export localization, Google/LINE/Apple auth 구현 및 QA closeout 완료
 - [x] Backend/API/DB/User Web 영향 반영 완료
 - [x] 완료 기록: `TODO_LOG/2026-07-21/G04_IMPORT_JOB_PERSISTENCE_QA_CLEANUP/WORK_LOG.md`
 - [x] 완료 기록: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/03_WEEKLY_SCHEDULE_REPORT/COMMON/TODO_LOG.md`
@@ -25,6 +26,7 @@
 - [x] 완료 기록: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/04_GOOGLE_CALENDAR_INTEGRATION/TODO_LOG/2026-07-23/G05_QA_REVIEW_CLOSEOUT/WORK_LOG.md`
 - [x] 완료 기록: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/06_DEAL_ACTIVITY_TIMELINE/COMMON/GOAL-SPECS/G07_QA_REVIEW_CLOSEOUT.md`
 - [x] 완료 기록: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/07_MEETING_NOTE_AI_PROVIDER_LOG/COMMON/GOAL-SPECS/G06_QA_REVIEW_CLOSEOUT.md`
+- [x] 완료 기록: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/08_GLOBAL_DATA_I18N/COMMON/GOAL-SPECS/G10_QA_DOCUMENT_CLOSEOUT.md`
 - [ ] 나머지 NBA 후보 계약 확정 및 구현 여부 판단
 
 ## 1. 목적
@@ -47,6 +49,7 @@ G07의 산출물이므로 이 문서는 구현 계획 확정본이 아니다. �
 - `NBA-015 Google Calendar Integration`은 2026-07-23 기준 구현 및 QA closeout이 완료되어 active backlog 후보에서 제외한다.
 - `NBA-001`, `NBA-002`, `NBA-008`, `NBA-003`의 Deal latest activity subset은 2026-07-26 기준 `06_DEAL_ACTIVITY_TIMELINE`에서 구현 및 QA closeout이 완료되어 active backlog 후보에서 제외한다.
 - `NBA-004` MeetingNote detail next action/follow-up draft subset과 `NBA-011` MeetingNote provider log subset은 2026-07-26 기준 `07_MEETING_NOTE_AI_PROVIDER_LOG`에서 구현 및 QA closeout이 완료되어 active backlog 후보에서 제외한다.
+- `08_GLOBAL_DATA_I18N`은 2026-07-28 기준 구현 및 QA closeout이 완료되어 first-sale global data/API gap에서 제외한다. 현재 `.env` 연결 DB도 `prisma migrate status` 기준 최신 상태이며, 실제 Google/LINE/Apple provider smoke는 운영 환경 설정 후 별도 확인한다.
 - Trash private memo backend restriction, MeetingNote 목록 summary, MeetingNote Admin provider audit/retention, Trash 7일 이후 복구 정책, Admin 운영 UX/API는 남은 후보다.
 
 ## 2.1 `NBA-015` 반영 기준
@@ -66,7 +69,7 @@ G07의 산출물이므로 이 문서는 구현 계획 확정본이 아니다. �
 남은 백로그로 오해하지 않을 범위:
 
 - 실제 Google provider smoke는 env 미준비로 미실행했으며 운영 확인 단계에서 별도로 본다.
-- Google export/write, realtime webhook/watch, 반복 일정 정식 모델, 여러 Google 계정 동시 연결, Google 외 provider는 04 완료 범위가 아니다.
+- Google export/write, realtime webhook/watch, 반복 일정 정식 모델, 여러 Google 계정 동시 연결, Google Calendar 외 다른 calendar provider는 04 완료 범위가 아니다.
 - Admin provider failure UI/log는 `NBA-013` 또는 별도 Admin/ops 계획에서 다룬다.
 
 ## 2.2 `NBA-001`, `NBA-002`, `NBA-003` Deal subset, `NBA-008`, `NBA-014` 반영 기준
@@ -114,6 +117,27 @@ G07의 산출물이므로 이 문서는 구현 계획 확정본이 아니다. �
 - 별도 transcript/raw provider response 저장 table
 - AI 후보 자동 저장, follow-up 자동 발송, 회의록 follow-up 알림
 
+## 2.4 `08_GLOBAL_DATA_I18N` 반영 기준
+
+`TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/08_GLOBAL_DATA_I18N`은 2026-07-28 G10 QA closeout 기준으로 Completed다. 이 백로그에서는 Global B2C 첫 판매용 현지화/글로벌 데이터/API 항목을 active 후보가 아니라 완료 이력으로만 유지한다.
+
+완료로 반영할 Backend/API/DB/User Web 영향:
+
+- `User.countryCode`, `User.preferredLocale`, `User.defaultCurrencyCode`와 profile GET/PATCH, signup 기본값, `/app/settings` 계정 설정 UX 구현
+- `/app` 전용 i18n provider/resource/formatter와 핵심 화면 `ko-KR`/`en` 번역 적용. `/app` URL에는 locale prefix를 붙이지 않음
+- Product/Deal `currencyCode`, KRW/USD 정수 금액 정책, currency-aware display/export/weekly report 구현
+- Contact `phoneCountryCode`, `phoneNationalNumber`, `phoneE164`와 KR legacy phone migration, KR/US 전화번호 정규화, import/business-card/search/export 반영
+- Company country/region/address 구조와 `CompanyRegion` country/region code API/FE select 구현
+- import template `locale=ko-KR|en`, domain export header/date-time/currency 현지화 구현
+- `/api/auth/providers` Google/LINE/Apple 순서, `OAuthProvider.LINE`, Supabase provider normalization, verified email 기반 기존 User linking, provider email required/safe exchange failure 구현
+- Backend `prisma:validate`, `prisma:generate`, `typecheck`, `lint`, `test`, `build`, User Web `typecheck`, `lint`, `build`, E2E/mobile E2E 검증 통과
+
+남은 백로그로 오해하지 않을 범위:
+
+- 현재 `.env` 연결 DB는 `pnpm.cmd exec prisma migrate status` 기준 최신 상태다. 08 migration 5개 배포는 완료 확인됐고, 이후 추가 DB 변경은 별도 운영 절차로만 적용한다.
+- 실제 Google/LINE/Apple OAuth provider smoke는 Supabase provider 설정과 provider secret 설정 후 수동 QA로 확인한다.
+- 추가 국가/통화/전화번호 포맷, `/app` 직접 translation key 전환, Google/LINE/Apple 외 신규 provider, `/app` locale route prefix는 새 계약 없이 확장하지 않는다.
+
 ## 3. 우선순위 분류 기준
 
 | 분류 | 의미 |
@@ -141,7 +165,7 @@ G07의 산출물이므로 이 문서는 구현 계획 확정본이 아니다. �
 - Prisma schema 또는 migration 추가
 - seed 수정 또는 운영/공유 DB migration 실행
 - Admin API 구현
-- 완료된 Notification/Weekly Schedule Report/Google Calendar Integration/Deal Activity Timeline/MeetingNote AI Provider Log 범위를 넘어서는 새 알림 endpoint, Admin provider failure UI, PDF/범용 ExportJob, 반복 일정, AI 요약, Google Calendar export/write/realtime webhook, 범용 activity bus, MeetingNote 자동 저장/자동 발송 구현
+- 완료된 Notification/Weekly Schedule Report/Google Calendar Integration/Deal Activity Timeline/MeetingNote AI Provider Log/Global Data I18N 범위를 넘어서는 새 알림 endpoint, Admin provider failure UI, PDF/범용 ExportJob, 반복 일정, AI 요약, Google Calendar export/write/realtime webhook, 범용 activity bus, MeetingNote 자동 저장/자동 발송, 신규 auth provider, `/app` locale prefix 구현
 - User Web에서 `/admin/api/*` 호출 추가
 - FE 단독 page size 변경
 

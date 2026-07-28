@@ -2,7 +2,7 @@
 
 상태: Draft Guide
 작성일: 2026-07-20
-최종 업데이트: 2026-07-26
+최종 업데이트: 2026-07-28
 성격: 제품화 gap 판단 가이드
 
 ## 0. 완료 반영 체크리스트
@@ -20,9 +20,10 @@
 - [x] `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/06_DEAL_ACTIVITY_TIMELINE` 구현 및 QA closeout
 - [x] MeetingNote AI Provider Log (`NBA-004` detail subset, `NBA-011` provider log subset)
 - [x] `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/07_MEETING_NOTE_AI_PROVIDER_LOG` 구현 및 QA closeout
+- [x] Global Data I18N (`08_GLOBAL_DATA_I18N`)
+- [x] `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/08_GLOBAL_DATA_I18N` 구현 및 QA closeout
 - [ ] Admin 운영 API/화면
 - [ ] 결제/구독/세금
-- [ ] `/app` 다국어/글로벌 데이터 모델
 - [ ] 제품 분석
 
 ## 1. 목적
@@ -57,6 +58,9 @@
 
 - Auth/User
 - Public/auth URL locale
+- Google/LINE/Apple auth
+- User global settings
+- `/app` i18n
 - `/app` home dashboard
 - Company
 - Contact
@@ -74,11 +78,12 @@
 - Search
 - Trash
 - Company/Contact/Product/Deal xlsx export
+- 글로벌 통화/전화번호/회사 지역/주소 및 Import/Export 현지화
 
 부족한 핵심 축:
 
 - 제품화 수준의 최종 UX/UI 완성도 판단
-- 첫 판매 기준인 Global B2C 유료 판매를 위한 결제/구독, 세금/컴플라이언스, `/app` 다국어, Admin 운영, 제품 분석
+- 첫 판매 기준인 Global B2C 유료 판매를 위한 결제/구독, 세금/컴플라이언스, Admin 운영, 제품 분석, 정책/신뢰/DB 운영 gate
 - Series A급 고급 리텐션/AI/모바일 현장 사용성
 - Admin 운영 API 같은 후속 기능의 우선순위 확정
 
@@ -99,7 +104,7 @@
 
 - 실제 Google provider smoke는 env 준비 후 운영 확인 단계에서 실행한다.
 - Google export/write, realtime webhook/watch, 반복 일정 정식 모델, 여러 Google 계정 동시 연결은 새 계획 없이는 확장하지 않는다.
-- 첫 판매 전 핵심 gap은 여전히 결제/구독/세금, Admin 운영, `/app` 다국어/다국가 데이터, 제품 분석, 정책/신뢰/DB 운영 gate다.
+- 첫 판매 전 핵심 gap은 여전히 결제/구독/세금, Admin 운영, 제품 분석, 정책/신뢰/DB 운영 gate다.
 
 ## 3.2 `06_DEAL_ACTIVITY_TIMELINE` 반영 기준
 
@@ -121,7 +126,7 @@
 - 수동 activity 삭제, retention, audit 정책
 - MeetingNote 목록 latest/next summary
 - MeetingNote Admin provider audit, retention/cleanup, raw access policy
-- 첫 판매 전 핵심 gap인 결제/구독/세금, Admin 운영, `/app` 다국어/다국가 데이터, 제품 분석, backup/restore와 운영 DB 적용 절차
+- 첫 판매 전 핵심 gap인 결제/구독/세금, Admin 운영, 제품 분석, backup/restore와 운영 DB 적용 절차
 
 ## 3.3 `07_MEETING_NOTE_AI_PROVIDER_LOG` 반영 기준
 
@@ -142,6 +147,27 @@
 - 회의록 follow-up 자동 발송 또는 알림
 - Admin/internal provider audit 조회, raw access reason, retention/cleanup policy
 - 별도 transcript/raw provider response 저장 table
+
+## 3.4 `08_GLOBAL_DATA_I18N` 반영 기준
+
+`TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/08_GLOBAL_DATA_I18N`은 2026-07-28 G10 QA closeout 기준으로 Completed다. 이 제품화 갭 문서에서는 `/app` 내부 다국어와 기본 글로벌 데이터 모델을 더 이상 미구현 gap으로 보지 않는다.
+
+완료로 반영할 User Web/제품 흐름:
+
+- `/app/settings`에서 국가, 앱 언어, 기본 통화 설정을 저장하고 저장 직후 문구와 formatter가 반영된다.
+- `/app` 핵심 화면은 `ko-KR`/`en` app i18n resource와 legacy static fallback으로 동작한다.
+- Product/Deal 금액은 `currencyCode`와 KRW/USD 표시 정책을 따른다.
+- Contact 전화번호는 KR/US 국가 코드, national number, E.164 기준으로 생성/수정/import/business-card/search/export 흐름에 반영된다.
+- Company는 country/region/address 구조와 region option을 사용한다.
+- Import template과 domain export는 `ko-KR`/`en` header/date-time/currency 현지화를 지원한다.
+- 로그인/회원가입은 Google, LINE, Apple provider를 동일한 UI 패턴으로 제공한다.
+
+남은 제품화 gap으로 분리할 범위:
+
+- 운영 DB에 08 migration을 배포하는 절차와 실제 Google/LINE/Apple provider smoke
+- 추가 국가/통화/전화번호 포맷, 국가별 세금/약관/가격 정책
+- app i18n legacy static fallback을 직접 translation key로 줄이는 polish
+- 결제/구독, Admin 운영, 제품 분석, backup/restore와 장애 대응 기준
 
 ## 4. 문서 구성
 
@@ -173,10 +199,11 @@
 - 완료된 Google Calendar Integration 범위를 넘어서는 Google Calendar export/write, realtime webhook/watch, 반복 일정, 여러 Google 계정 동시 연결
 - 완료된 MeetingNote AI Provider Log 범위를 넘어서는 회의록 목록 summary, 자동 follow-up 발송/알림, Admin provider audit 조회, 별도 transcript/raw provider response table
 - 완료된 Deal Activity Timeline 범위를 넘어서는 범용 activity bus, Company/Contact/Product latest summary, activity deletion/retention/audit 정책
+- 완료된 Global Data I18N 범위를 넘어서는 신규 국가/통화/provider, `/app` locale prefix, 운영 DB migration 실행, 실제 provider smoke를 문서 계획 없이 진행
 
 위 항목은 제품화 우선순위와 UX/UI 방향을 확정한 뒤 별도 계획에서 다룬다.
 
-단, 결제/구독, Admin 운영, 앱 내부 다국어, 제품 분석, 세금/컴플라이언스는 단순 후순위가 아니다. Global B2C 첫 판매 gate에 포함되는 별도 큰 계획으로 분리해서 다룬다.
+단, 결제/구독, Admin 운영, 제품 분석, 세금/컴플라이언스, 정책/운영 신뢰는 단순 후순위가 아니다. Global B2C 첫 판매 gate에 포함되는 별도 큰 계획으로 분리해서 다룬다.
 
 ## 7. 관련 문서
 

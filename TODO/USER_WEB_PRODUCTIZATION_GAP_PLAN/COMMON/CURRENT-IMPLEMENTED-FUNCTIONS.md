@@ -1,7 +1,7 @@
 # Current Implemented Functions
 
 상태: Draft Guide
-기준: 2026-07-26 현재 코드와 AGENT 구현 상태 문서
+기준: 2026-07-28 현재 코드와 AGENT 구현 상태 문서
 
 ## 0. 완료 반영 체크리스트
 
@@ -26,25 +26,31 @@
 - [x] MeetingNote AI/STT provider call log와 safe failure
 - [x] MeetingNote next action/follow-up draft API
 - [x] `/app/meeting-notes/:meetingNoteId` AI 후속 작업 UX
+- [x] User country/locale/default currency global settings
+- [x] `/app` i18n foundation과 핵심 화면 `ko-KR`/`en` 번역
+- [x] Product/Deal currency, Contact global phone, Company country/region/address
+- [x] Import template/export localization
+- [x] Google/LINE/Apple auth provider list, exchange, login/signup buttons
 
 ## 1. 구현 완료/부분 완료 표
 
 | 영역 | Backend 구현 | User Web 구현 | Admin Web 구현 | 현재 판단 |
 |---|---|---|---|---|
-| Auth/User | `/api/auth/providers`, exchange, refresh, logout, `/api/me`, profile, devices | Google OAuth login/signup, protected route, settings/profile/devices | `/admin/api/me` 기반 보호 route | User Web 완료, Admin auth만 부분 완료 |
+| Auth/User | `/api/auth/providers`, Google/LINE/Apple exchange, verified email linking, refresh, logout, `/api/me`, profile, country/locale/default currency, devices | Google/LINE/Apple OAuth login/signup, protected route, settings/profile/global preferences/devices | `/admin/api/me` 기반 보호 route | User Web 완료, Admin auth만 부분 완료. 실제 provider smoke는 운영 설정 후 확인 |
 | Public/auth locale | Backend 직접 없음 | `/{locale}`, `/{locale}/login`, signup/pricing/contact/about/security/terms/privacy, legacy redirect | N/A | 완료 |
+| App i18n/global settings | User profile country/locale/default currency API | `/app` i18n provider/resource/formatter, Settings 언어/국가/기본 통화 저장, 핵심 화면 `ko-KR`/`en` 문구 | N/A | 완료. legacy static text fallback 직접 keying은 polish 후보 |
 | Home | Schedule/Deal/MeetingNote API 조합 | `/app` dashboard | N/A | 완료 |
-| Company | list/detail/create/update/delete, field/region, memo/private memo, contacts/deals, xlsx export, trash | 목록, 상세, 생성 패널, 수정, 삭제/복구, export | N/A | 완료 |
-| Contact | list/detail/create/update/delete, company/job grade/department, memo/private memo, deals, dealCount, xlsx export, trash | 목록, 상세, 생성, 수정, 삭제/복구, dealCount, export | N/A | 완료 |
-| Product | list/detail/create/update/delete, category/status, memo/private memo, dealCount/sort, deals, xlsx export, trash | 목록, 상세, 생성, 수정, 삭제/복구, export | N/A | 완료 |
-| Deal | list, stage counts, detail/create/update/delete, company/contact/product options, following action, memo, xlsx export, trash, `DealActivity` timeline API, products/latest activity summary | pipeline/list/detail/create/update, stage tabs, linked records, next action, memo, 딜 활동 timeline, products/latest activity summary, export | N/A | 완료 |
+| Company | list/detail/create/update/delete, field/region, country/region/address, memo/private memo, contacts/deals, localized xlsx export, trash | 목록, 상세, 생성 패널, 국가/지역/주소 수정, 삭제/복구, export | N/A | 완료 |
+| Contact | list/detail/create/update/delete, company/job grade/department, global phone, memo/private memo, deals, dealCount, localized xlsx export, trash | 목록, 상세, 생성, KR/US 전화번호 수정, 삭제/복구, dealCount, export | N/A | 완료 |
+| Product | list/detail/create/update/delete, category/status, currencyCode, memo/private memo, dealCount/sort, deals, localized xlsx export, trash | 목록, 상세, 생성, 통화 수정, 삭제/복구, export | N/A | 완료 |
+| Deal | list, stage counts, detail/create/update/delete, company/contact/product options, currencyCode, following action, memo, localized xlsx export, trash, `DealActivity` timeline API, products/latest activity summary | pipeline/list/detail/create/update, stage tabs, linked records, currency-aware amount, next action, memo, 딜 활동 timeline, products/latest activity summary, export | N/A | 완료 |
 | Schedule | deal options, list/detail/create/update/delete, 월간/주간 조회, weekly report API, weekly xlsx export, Google Calendar OAuth/read-only import/sync/calendar selection/source metadata, 딜/회사/담당자/다음 행동 요약, timezone 처리 | `/app/schedules`, `/app/schedules/week`, detail, form, 월간/목록, 주간 보고서, Excel 다운로드, Google Calendar status/source badge/manual sync/calendar hidden handling | N/A | 완료. 주간 일정 보고서와 Google Calendar read-only import 포함 |
 | MeetingNote | list/detail/create/update/delete, AI draft, STT draft, provider call log, next action draft, follow-up draft, add deal link, trash | 목록, 상세, 작성, AI/STT draft UI, AI 후속 작업, 다음 행동 후보 편집 저장, follow-up draft 수정/복사, 딜 연동, 삭제/복구 | N/A | 완료. 목록 summary, 자동 발송/알림, Admin audit는 후속 |
-| BusinessCard OCR | `/api/business-card-scans`, scan/confirm/log/status | `/app/business-cards`, 이미지 업로드, 명함스캔, 확인/수정, 저장 | N/A | 완료 |
-| DataImport | import templates, uploads, mapping, row edit/validation, confirm, cancel, active job resume, import logs. pre-confirm job은 DB persistence | `/app/import`, `/app/import/review/:importJobId`, template download, CSV/XLSX upload, AI mapping, row edit/validation, resume, confirm, log detail | N/A | 완료. persistence/resume 포함 |
+| BusinessCard OCR | `/api/business-card-scans`, scan/confirm/log/status, KR/US phone normalization | `/app/business-cards`, 이미지 업로드, 명함스캔, KR/US 전화번호 확인/수정, 저장 | N/A | 완료 |
+| DataImport | localized import templates, uploads, mapping, row edit/validation, confirm, cancel, active job resume, import logs. pre-confirm job은 DB persistence | `/app/import`, `/app/import/review/:importJobId`, template language selector, CSV/XLSX upload, AI mapping, row edit/validation, resume, confirm, log detail | N/A | 완료. persistence/resume와 template localization 포함 |
 | Search | `GET /api/search` | GlobalSearch, loading/empty/error, result navigation | N/A | 완료 |
 | Trash | `/api/trash`, detail, restore, Schedule soft delete/restore | `/app/trash`, list/detail modal/restore, Schedule restore | N/A | 7일 이내 복구 완료. Schedule soft delete/restore 포함 |
-| Domain export | Company/Contact/Product/Deal xlsx endpoint, weekly schedule report xlsx export | 각 목록 `엑셀 다운로드`, `/app/schedules/week` Excel 다운로드 | N/A | 완료 |
+| Domain export | Company/Contact/Product/Deal localized xlsx endpoint, weekly schedule report localized xlsx export | 각 목록 `엑셀 다운로드`, `/app/schedules/week` Excel 다운로드, header/date-time/currency localization | N/A | 완료 |
 | Notification | notification list/read/settings/browser-push API, 일정/딜/Google-origin schedule reminder 생성, due processor, email/browser push delivery attempt | `/app/notifications`, unread badge, settings, browser push 권한 granted/denied/unsupported fallback | N/A | 완료. Google-origin schedule reminder 포함. 실제 SMTP/Web Push provider smoke는 env 준비 후 운영 확인 |
 | Generic ExportJob | 없음. 현재 제품 정본 아님 | `/app/export`는 `/app` redirect | N/A | 제외/후속 결정 필요 |
 | Admin operation | `/admin/api/me`만 있음 | N/A | 운영 route는 root redirect | 후속 |
@@ -90,11 +96,12 @@
 
 - 개인 영업자 MVP 핵심 루프는 대부분 구현되어 있다.
 - 그러나 이 MVP 상태는 판매 기준이 아니다.
-- 첫 판매 기준은 Global B2C 유료 판매 가능형이며, 현재 제품에는 결제/구독, Admin 운영, 앱 내부 다국어, 세금/컴플라이언스, 제품 분석, 운영 신뢰 계층이 아직 부족하다.
+- 첫 판매 기준은 Global B2C 유료 판매 가능형이며, 현재 제품에는 결제/구독, Admin 운영, 세금/컴플라이언스, 제품 분석, 운영 신뢰 계층이 아직 부족하다.
 - 주간 일정 보고서와 Excel export는 구현 완료됐으며, PDF/범용 ExportJob, 반복 일정, AI 요약은 후속 확장 범위다.
 - Google Calendar read-only import/sync/calendar selection/source badge/Trash restore는 구현 완료됐다. export/write/realtime webhook/watch/반복 일정/여러 Google 계정 동시 연결은 후속 확장 범위다.
 - 일정/딜 reminder 기반 Notification은 구현 완료됐지만, 실제 SMTP/Web Push provider smoke는 env 준비 후 운영 확인 단계에서 실행한다.
 - DealActivity timeline, Deal list products/latest activity, Contact dealCount, page size 15 계약은 구현 및 QA closeout 완료됐다. Company/Contact/Product latest summary, activity deletion/retention/audit 정책은 후속 범위다.
 - MeetingNote AI/STT provider log, 회의록 상세 next action/follow-up draft, User Web AI 후속 작업 UX는 구현 및 QA closeout 완료됐다. 회의록 목록 summary, 자동 발송/알림, Admin provider audit/retention은 후속 범위다.
+- `/app` i18n, user global settings, Product/Deal currency, Contact global phone, Company region/address, Import/Export localization, Google/LINE/Apple auth는 08에서 구현 및 QA closeout 완료됐다. 실제 provider smoke와 운영 DB migration deploy는 운영 확인 단계에서 실행한다.
 - 제품화 gap은 "API가 없어서 화면을 못 만든다"보다 "현재 핵심 루프를 Global B2C 첫 판매 gate까지 어떤 순서로 끌어올릴지"에 가깝다.
 - 따라서 다음 계획은 MVP 기능 추가 목록이 아니라 Global B2C 첫 판매 기준 대비 gap을 먼저 정리해야 한다.

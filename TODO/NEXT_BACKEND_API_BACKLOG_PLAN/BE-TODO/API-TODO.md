@@ -1,7 +1,7 @@
 # API TODO
 
 상태: Draft
-최종 업데이트: 2026-07-26
+최종 업데이트: 2026-07-28
 
 ## 0. 완료 반영
 
@@ -16,12 +16,13 @@
 - [x] `NBA-014` 06 범위 DB/Prisma migration 운영 gate closeout 완료
 - [x] `NBA-004 MeetingNote detail next action/follow-up draft subset`: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/07_MEETING_NOTE_AI_PROVIDER_LOG`에서 구현 및 QA closeout 완료
 - [x] `NBA-011 MeetingNote provider log subset`: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/07_MEETING_NOTE_AI_PROVIDER_LOG`에서 공통 `AiProviderCallLog` 확장으로 구현 및 QA closeout 완료
+- [x] `08_GLOBAL_DATA_I18N`: User global settings, domain global data, import/export localization, Google/LINE/Apple auth API 구현 및 QA closeout 완료
 
 ## 1. 목적
 
 이 문서는 G07에서 분리한 Backend/API 후속 후보를 실행 가능한 다음 계획으로 만들기 전의 초안이다.
 
-이 문서에서 남은 active 새 API 후보는 `COMMON/API-SPEC/README.md`에서 `draft` 또는 `후보` 상태로만 관리한다. `NBA-001`, `NBA-002`, `NBA-003` Deal subset, `NBA-004` MeetingNote detail subset, `NBA-006`, `NBA-008`, `NBA-009`, `NBA-010`, `NBA-011` provider log subset, `NBA-014`, `NBA-015`는 별도 계획에서 구현 완료된 이력으로만 남긴다.
+이 문서에서 남은 active 새 API 후보는 `COMMON/API-SPEC/README.md`에서 `draft` 또는 `후보` 상태로만 관리한다. `NBA-001`, `NBA-002`, `NBA-003` Deal subset, `NBA-004` MeetingNote detail subset, `NBA-006`, `NBA-008`, `NBA-009`, `NBA-010`, `NBA-011` provider log subset, `NBA-014`, `NBA-015`, `08_GLOBAL_DATA_I18N`은 별도 계획에서 구현 완료된 이력으로만 남긴다.
 
 ## 2. 06에서 닫힌 release blocker
 
@@ -53,6 +54,24 @@
   - Admin/internal provider audit 조회, raw access reason, retention/cleanup policy
   - 별도 transcript/raw provider response 저장 table
   - 회의록 follow-up 알림 또는 자동 발송
+
+## 2.2 08에서 닫힌 Global Data I18N API
+
+- 연결 계획: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/08_GLOBAL_DATA_I18N`
+- API 영향:
+  - User global settings/profile API에 country/locale/default currency 저장과 조회 반영
+  - Product/Deal create/update/list/detail/export/report API에 `currencyCode`와 currency-aware amount 반영
+  - Contact create/update/list/detail/search/import/business-card/export API에 KR/US 글로벌 전화번호 구조 반영
+  - Company create/update/list/detail/export API와 region option API에 country/region/address 구조 반영
+  - Import template API `locale=ko-KR|en`과 domain export API header/date-time/currency 현지화 반영
+  - `/api/auth/providers` Google/LINE/Apple provider list, Supabase exchange normalization, verified email linking, email-required safe failure 구현
+- Backend 영향:
+  - provider raw error와 token/secret은 사용자 응답과 log에 노출하지 않는다.
+  - `/app` 다국어는 public-site locale routing과 분리하고 User API에는 locale route prefix를 추가하지 않는다.
+- 08 밖으로 남는 범위:
+  - 운영 DB `prisma migrate deploy`
+  - 실제 Google/LINE/Apple provider smoke
+  - 추가 국가/통화/전화번호 포맷, Google/LINE/Apple 외 신규 provider, Admin provider 운영 화면
 
 ## 3. Release follow-up API 후보
 
