@@ -24,7 +24,7 @@ D:\workspace_repository\onehandsales\TODO\USER_WEB_PRODUCTIZATION_GAP_PLAN
 # 서버 구동 프론프트
 
 ```
-백엔드와 프론트 서버 Supabase 연동해서 구동시켜
+ENV값 건들지 말고, 백엔드와 프론트 서버 Supabase 연동해서 구동시켜, docker로 해달라는게 아니야.
 ```
 
 # DB Migration Sync 프롬프트
