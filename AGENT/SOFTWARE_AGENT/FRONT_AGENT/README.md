@@ -60,7 +60,7 @@ User Web:
 
 - 실제 API 연동 완료: URL locale Public/Auth site, Auth/User, Home(`/app`), Company, Contact, BusinessCard OCR, Product, Deal, Schedule, MeetingNote manual CRUD, MeetingNote AI/STT draft, MeetingNote deal link, Search, Trash, DataImport, Company/Contact/Product/Deal domain xlsx export.
 - mock/placeholder 경계: generic Export route/API, Notification.
-- Auth/User: 개발용 mock login은 제거되었고, Supabase OAuth provider login과 Backend token exchange가 정본이다. Public/auth canonical URL은 `/{locale}` 계열을 사용하고 기존 `/login` 등은 선호 locale URL로 redirect한다. 로그인/회원가입 provider 버튼은 가능한 경우 browser popup으로 OAuth를 시작하고, popup이 차단되면 기존 full-page redirect로 fallback한다. 현재 활성 provider는 Google만이며, 08 G08 목표에서 Google/LINE/Apple 카드형 provider 버튼으로 확장한다.
+- Auth/User: 개발용 mock login은 제거되었고, Supabase OAuth provider login과 Backend token exchange가 정본이다. Public/auth canonical URL은 `/{locale}` 계열을 사용하고 기존 `/login` 등은 선호 locale URL로 redirect한다. 로그인/회원가입 provider 버튼은 Google/LINE/Apple 카드형 버튼이며 가능한 경우 browser popup으로 OAuth를 시작하고, popup이 차단되면 기존 full-page redirect로 fallback한다.
 - 08 G03 App I18N foundation은 public/auth URL locale i18n과 `/app` 내부 i18n을 분리한다. public-site i18n은 `FE/user-web/src/features/public-site/i18n`에 유지하고, `/app` 문구/formatter 기반은 `FE/user-web/src/features/app-i18n`에서 `User.preferredLocale`, `User.timeZone`, `User.countryCode`, `User.defaultCurrencyCode` 기준으로 처리한다. `/app` route에는 locale prefix를 붙이지 않는다.
 - Auth device/session: 현재 User Web은 `mobile`/`personal_laptop` slot만 보내며 같은 slot의 다른 기기 로그인은 기존 active device/session을 교체한다.
 - BusinessCard OCR 화면은 `/app/business-cards`다. 목록은 등록일 최신순 고정, 상태 다중 필터와 `상태 초기화`를 제공하고, `명함스캔` 모달은 이미지 업로드 -> 진행 표시 -> 추출 결과 확인/수정 -> 저장 흐름을 사용한다.

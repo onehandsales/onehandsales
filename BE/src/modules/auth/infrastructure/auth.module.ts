@@ -5,6 +5,7 @@ import { CURRENT_USER_RESOLVER } from "@/shared/application/ports/current-user-r
 import { PrismaInfrastructureModule } from "@/shared/infrastructure/prisma/prisma-infrastructure.module";
 import { PrismaService } from "@/shared/infrastructure/prisma/prisma.service";
 import { SupabaseInfrastructureModule } from "@/shared/infrastructure/supabase/supabase-infrastructure.module";
+import { AppLogger } from "@/shared/infrastructure/logger/app-logger.service";
 import { AUTH_REPOSITORY } from "../application/ports/auth.repository";
 import { APP_TOKEN_ISSUER } from "../application/ports/app-token.port";
 import { SECURE_TOKEN_SERVICE } from "../application/ports/secure-token.port";
@@ -35,6 +36,7 @@ import { NodeSecureTokenService } from "./security/node-secure-token.service";
     JoseAppTokenIssuerAdapter,
     NodeSecureTokenService,
     AuthCookieService,
+    AppLogger,
     AuthGuard,
     AdminGuard,
     {

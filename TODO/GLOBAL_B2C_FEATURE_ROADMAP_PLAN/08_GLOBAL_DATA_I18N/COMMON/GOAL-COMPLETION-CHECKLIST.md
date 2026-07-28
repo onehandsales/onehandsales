@@ -1,6 +1,6 @@
 # Goal Completion Checklist
 
-상태: G01 Done / G02 Done / G03 Done / G04 Done / G05 Done / G06 Done / G07 Done
+상태: G01 Done / G02 Done / G03 Done / G04 Done / G05 Done / G06 Done / G07 Done / G08 Done
 최종 업데이트: 2026-07-28
 
 ## 1. 목적
@@ -20,7 +20,7 @@
 | [x] | G05 Contact Phone Global | Done | 2026-07-28 | Contact phone 글로벌 필드와 migration 구현 | G05 spec, `BE/prisma/migrations/20260728030000_add_contact_global_phone`, BE/FE 검증 명령 | KR/US |
 | [x] | G06 Company Region Address | Done | 2026-07-28 | CompanyRegion code/address 구현 | BE/FE 검증 통과 | Company만 적용 |
 | [x] | G07 Import Export Localization | Done | 2026-07-28 | Export/Import template 현지화 구현 | G07 spec, BE/FE 검증 명령 | ko-KR/en |
-| [ ] | G08 Auth Google LINE Apple | Not Started |  | Google/LINE/Apple auth 구현 |  | provider env 수동 검증 필요 |
+| [x] | G08 Auth Google LINE Apple | Done | 2026-07-28 | Google/LINE/Apple auth 구현 | G08 spec, Auth Provider API, BE/FE 검증 명령 | 실제 provider smoke는 Supabase/provider env 설정 후 G10 수동 QA |
 | [ ] | G09 App Screen Translation | Not Started |  | 핵심 `/app` 화면 번역 적용 |  | layout QA 필요 |
 | [ ] | G10 QA Document Closeout | Not Started |  | 최종 QA와 문서 동기화 |  | closeout |
 
@@ -113,16 +113,16 @@
 
 ### G08 Auth Google LINE Apple
 
-- [ ] `OAuthProvider.LINE`이 추가됐다.
-- [ ] Google, LINE, Apple이 `/api/auth/providers`에 이 순서로 반환된다.
-- [ ] `/api/auth/exchange`가 Google, LINE, Apple을 허용한다.
-- [ ] Kakao는 runtime provider로 노출되지 않는다.
-- [ ] 같은 verified email은 기존 User에 provider 계정으로 연결된다.
-- [ ] email 없음은 가입/로그인을 차단한다.
-- [ ] email 비교는 lowercase 기준이다.
-- [ ] 로그인/회원가입 화면에 Google, LINE, Apple 카드형 버튼이 이 순서로 보인다.
-- [ ] 이메일 로그인 UI를 추가하지 않았다.
-- [ ] 실패 메시지는 provider 이름만 포함한 일반 문구다.
+- [x] `OAuthProvider.LINE`이 추가됐다.
+- [x] Google, LINE, Apple이 `/api/auth/providers`에 이 순서로 반환된다.
+- [x] `/api/auth/exchange`가 Google, LINE, Apple을 허용한다.
+- [x] Kakao는 runtime provider로 노출되지 않는다.
+- [x] 같은 verified email은 기존 User에 provider 계정으로 연결된다.
+- [x] email 없음은 가입/로그인을 차단한다.
+- [x] email 비교는 lowercase 기준이다.
+- [x] 로그인/회원가입 화면에 Google, LINE, Apple 카드형 버튼이 이 순서로 보인다.
+- [x] 이메일 로그인 UI를 추가하지 않았다.
+- [x] 실패 메시지는 provider raw error 없이 일반 문구다.
 
 ### G09 App Screen Translation
 
@@ -163,3 +163,4 @@
 - 2026-07-28: G04 Currency Product Deal 완료. Product/Deal `currencyCode`, KRW/USD 정수 금액 정책, Deal Product currency 기본값, currency-aware 표시/export/report를 구현했다. 검증은 BE `prisma:validate`, `prisma:generate`, `typecheck`, `lint`, `test -- product deal schedule sales-report`, `build`, FE user-web `typecheck`, `lint`, `build` 통과.
 - 2026-07-28: G05 Contact Phone Global 완료. `Contact.phoneCountryCode`, `phoneNationalNumber`, `phoneE164`와 KR legacy migration을 추가하고 Contact create/update/list/detail/export/search/business-card/import 경로를 KR/US 정규화와 E.164 우선 기준으로 맞췄다. 명함 보정과 import validation도 KR/US 전화번호를 허용한다. 검증은 BE `prisma:validate`, `prisma:generate`, `typecheck`, `lint`, `test -- contact data-import business-card search`, `build`, FE user-web `typecheck`, `lint`, `build` 통과.
 - 2026-07-28: G07 Import Export Localization 완료. import template `locale=ko-KR|en` 다운로드, 도메인별 export header/date-time/currency 현지화, Contact export 전화번호 세분 컬럼, FE template language selector와 validation locale 표시를 구현했다. DB 변경과 신규 Generic ExportJob은 없다. 검증은 BE `typecheck`, `lint`, 관련 service test, 전체 `test`, `build`, FE user-web `typecheck`, `lint`, `build` 통과.
+- 2026-07-28: G08 Auth Google LINE Apple 완료. `OAuthProvider.LINE`과 migration을 추가하고 Google/LINE/Apple provider list, Supabase provider normalization, Apple/LINE runtime mapping, verified email 기존 User linking, provider email required/safe exchange failure 오류를 구현했다. 로그인/회원가입 provider 버튼은 Google, LINE, Apple 순서로 확장했고 이메일 로그인 UI는 추가하지 않았다. 검증은 BE `prisma:generate`, `prisma:validate`, `typecheck`, `lint`, 전체 `test`, `build`, FE user-web `typecheck`, `lint`, `build`, Playwright `/ko/login` 390x844 screenshot 확인 통과. 실제 provider smoke는 Supabase/provider 운영 설정과 secret이 필요해 G10 수동 QA로 남긴다.

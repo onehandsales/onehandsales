@@ -1,6 +1,6 @@
 # DB Schema TODO
 
-상태: Ready for Goal Execution
+상태: G08 Done
 
 ## 1. User
 
@@ -29,17 +29,7 @@
 
 ## 2. OAuthProvider / UserOAuthAccount
 
-기존 enum:
-
-```prisma
-enum OAuthProvider {
-  KAKAO
-  GOOGLE
-  APPLE
-}
-```
-
-변경:
+현재 enum:
 
 ```prisma
 enum OAuthProvider {
@@ -53,8 +43,8 @@ enum OAuthProvider {
 정책:
 
 - `KAKAO`는 legacy 호환을 위해 남기되 runtime provider로 노출하지 않는다.
-- `APPLE`은 08에서 runtime provider로 활성화한다.
-- `LINE`은 신규 enum/migration으로 추가한다.
+- `APPLE`은 runtime provider로 활성화됐다.
+- `LINE`은 신규 enum/migration으로 추가됐다.
 - `@@unique([provider, providerUserId])`는 유지한다.
 - 자동 연결은 verified email lowercase 비교로 처리한다.
 - provider email이 없으면 `User`를 만들지 않는다.

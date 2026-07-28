@@ -13,6 +13,7 @@ type RemoteJWKSet = ReturnType<JoseModule["createRemoteJWKSet"]>;
 
 type SupabaseJwtPayload = JWTPayload & {
   email?: string;
+  email_verified?: boolean;
   app_metadata?: Record<string, unknown>;
   user_metadata?: Record<string, unknown>;
 };
@@ -35,7 +36,7 @@ export class SupabaseJwtVerifierAdapter implements ExternalAuthVerifier {
     const issuer = getRequiredConfig(this.configService, "SUPABASE_JWT_ISSUER");
     const payload = await this.verifyJwt(accessToken, issuer);
     const provider = this.getProvider(payload);
-    const email = this.getEmail(payload);
+    const email = this.getVerifiedEmail(payload);
     const name = this.getName(payload);
 
     return {
@@ -89,22 +90,32 @@ export class SupabaseJwtVerifierAdapter implements ExternalAuthVerifier {
 
   // 기능 : Supabase JWT metadata에서 지원 OAuth 제공자를 추출합니다.
   private getProvider(payload: SupabaseJwtPayload): ExternalAuthProvider {
-    const provider = payload.app_metadata?.provider;
+    const providerCandidates = [
+      payload.app_metadata?.provider,
+      payload.user_metadata?.provider,
+      ...this.getStringArray(payload.app_metadata, "providers"),
+    ];
 
-    if (provider === "google") {
-      return provider;
+    for (const provider of providerCandidates) {
+      const normalized = this.normalizeProvider(provider);
+
+      if (normalized) {
+        return normalized;
+      }
     }
 
     throw new Error("Unsupported Supabase auth provider");
   }
 
-  // 기능 : Supabase JWT에서 이메일을 추출하고 표준 형식으로 정규화합니다.
-  private getEmail(payload: SupabaseJwtPayload): string {
-    if (!payload.email || payload.email.trim().length === 0) {
-      throw new Error("Supabase access token has no email");
+  // 기능 : Supabase JWT에서 검증 이메일을 추출하고 표준 형식으로 정규화합니다.
+  private getVerifiedEmail(payload: SupabaseJwtPayload): string | null {
+    const email = payload.email?.trim().toLowerCase();
+
+    if (!email || this.hasExplicitUnverifiedEmail(payload)) {
+      return null;
     }
 
-    return payload.email.trim().toLowerCase();
+    return email;
   }
 
   // 기능 : Supabase 사용자 metadata에서 표시 이름 후보를 추출합니다.
@@ -131,6 +142,31 @@ export class SupabaseJwtVerifierAdapter implements ExternalAuthVerifier {
     return payload.sub;
   }
 
+  // 기능 : provider metadata 값을 런타임 지원 OAuth provider로 축소합니다.
+  private normalizeProvider(value: unknown): ExternalAuthProvider | null {
+    if (typeof value !== "string") {
+      return null;
+    }
+
+    const provider = value.trim().toLowerCase();
+
+    if (provider === "google" || provider === "line" || provider === "apple") {
+      return provider;
+    }
+
+    return null;
+  }
+
+  // 기능 : Supabase가 명시적으로 미검증 처리한 이메일은 계정 연결에 사용하지 않습니다.
+  private hasExplicitUnverifiedEmail(payload: SupabaseJwtPayload): boolean {
+    const verified =
+      this.getBoolean(payload, "email_verified") ??
+      this.getBoolean(payload.user_metadata, "email_verified") ??
+      this.getBoolean(payload.app_metadata, "email_verified");
+
+    return verified === false;
+  }
+
   // 기능 : metadata에서 지정 키의 문자열 값을 안전하게 읽습니다.
   private getString(
     metadata: Record<string, unknown> | undefined,
@@ -138,5 +174,26 @@ export class SupabaseJwtVerifierAdapter implements ExternalAuthVerifier {
   ): string | null {
     const value = metadata?.[key];
     return typeof value === "string" ? value : null;
+  }
+
+  // 기능 : metadata에서 지정 키의 문자열 배열 값을 안전하게 읽습니다.
+  private getStringArray(
+    metadata: Record<string, unknown> | undefined,
+    key: string
+  ): string[] {
+    const value = metadata?.[key];
+
+    return Array.isArray(value)
+      ? value.filter((item): item is string => typeof item === "string")
+      : [];
+  }
+
+  // 기능 : metadata에서 지정 키의 boolean 값을 안전하게 읽습니다.
+  private getBoolean(
+    metadata: Record<string, unknown> | SupabaseJwtPayload | undefined,
+    key: string
+  ): boolean | null {
+    const value = metadata?.[key];
+    return typeof value === "boolean" ? value : null;
   }
 }

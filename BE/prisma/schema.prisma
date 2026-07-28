@@ -20,9 +20,14 @@ enum UserStatus {
 }
 
 enum OAuthProvider {
+  /// 기능 : 기존 Kakao OAuth 계정 값을 보존하되 신규 런타임 로그인에서는 사용하지 않습니다.
   KAKAO
+  /// 기능 : Google OAuth 계정을 런타임 로그인 제공자로 사용합니다.
   GOOGLE
+  /// 기능 : Apple OAuth 계정을 런타임 로그인 제공자로 사용합니다.
   APPLE
+  /// 기능 : LINE OAuth 계정을 런타임 로그인 제공자로 사용합니다.
+  LINE
 }
 
 enum AuthSessionStatus {

@@ -81,10 +81,10 @@ Default currency: KRW / USD
 
 - 기존 로그인/회원가입 화면의 소셜 버튼 영역만 수정한다.
 - 이메일 로그인, magic link, password login은 추가하지 않는다.
-- 버튼은 카드형 3개를 가로 배치한다.
+- 버튼은 카드형 3개를 기존 소셜 로그인 영역 안에 배치한다.
 - 순서는 Google -> LINE -> Apple이다.
 - 모바일에서는 겹치지 않도록 responsive grid 또는 wrap을 허용한다.
-- provider 실패 메시지는 provider 이름만 포함한 일반 문구를 보여준다.
+- provider 실패 메시지는 provider raw error 없이 일반 문구를 보여준다.
 
 예시:
 

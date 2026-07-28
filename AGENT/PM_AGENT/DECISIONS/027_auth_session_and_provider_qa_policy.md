@@ -15,23 +15,19 @@ Onehand Sales의 현재 인증은 Supabase OAuth를 외부 identity provider로 
 - 기존 `/login`, `/signup` 등 legacy 공개/인증 URL은 선호 locale URL로 redirect한다.
 - 로그아웃 후 이동 경로는 선호 locale의 login URL로 통일한다. 예: `/ko/login`, `/en-us/login`.
 - 개발용 mock login flow는 User Web에서 제거했다.
-- 현재 노출/허용 provider는 Google 하나다. Backend `/api/auth/providers`와 Supabase JWT exchange는 `google`만 허용한다.
+- 현재 노출/허용 provider는 Google, LINE, Apple이다. Backend `/api/auth/providers`와 Supabase JWT exchange는 `google`, `line`, `apple`만 허용한다.
 - Kakao OAuth는 제품 로그인 기능에서 제거했다. Prisma enum의 `KAKAO`는 과거 데이터 호환용 legacy 값으로만 남긴다.
-- Apple login은 iOS 앱 출시 또는 Apple platform 정책 대응이 필요해질 때 별도 구현한다.
-- LINE login은 일본/대만 시장 로컬 provider가 필요해질 때 별도 구현한다.
+- LINE/Apple 실제 provider smoke는 Supabase/provider 운영 설정과 secret이 필요하므로 G10 QA에서 결과 또는 미실행 사유를 남긴다.
 
-## 08 Global Data I18N Transition
+## 08 Global Data I18N Result
 
-- 위 Current Product State는 2026-07-28 현재 코드 기준이다.
-- `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/08_GLOBAL_DATA_I18N`의 G08 목표에서는 Apple/LINE을 future 후보가 아니라 실제 구현 provider로 승격한다.
-- 08 목표 provider 노출 순서는 Google, LINE, Apple이다. Kakao는 계속 legacy enum/과거 데이터 호환값으로만 남긴다.
-- G08 완료 후 `/api/auth/providers`, Supabase JWT exchange, FE provider type/copy, OAuth QA 결과를 기준으로 이 문서를 다시 갱신한다.
+- G08에서 provider 노출 순서를 Google, LINE, Apple로 확정했다. Kakao는 계속 legacy enum/과거 데이터 호환값으로만 남긴다.
+- `/api/auth/providers`, Supabase JWT exchange, FE provider type/copy는 Google/LINE/Apple 기준으로 갱신됐다.
 
 ## Session Policy
 
 - 가입과 로그인은 같은 OAuth exchange 흐름이다.
-- 신규/기존 사용자 판정은 이메일이 아니라 `provider + providerUserId` 기준이다.
-- 08 목표에서는 먼저 `provider + providerUserId`를 조회하고, 없으면 같은 verified email의 기존 `User`에 새 `UserOAuthAccount`를 연결한다.
+- 신규/기존 사용자 판정은 먼저 `provider + providerUserId`를 조회하고, 없으면 같은 verified email의 기존 `User`에 새 `UserOAuthAccount`를 연결한다.
 - provider email이 없거나 verified email로 확인할 수 없으면 가입/로그인을 차단한다.
 - App access token은 `userId`와 `sessionId`를 담는다.
 - Refresh token 원문은 httpOnly cookie로만 내려가고 DB에는 hash만 저장한다.

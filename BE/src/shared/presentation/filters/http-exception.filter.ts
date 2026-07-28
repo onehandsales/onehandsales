@@ -62,7 +62,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
     };
   }
 
-  // 기능 : retryable과 field처럼 사용자 처리에 필요한 안전한 detail만 선별합니다.
+  // 기능 : retryable, field, provider처럼 사용자 처리에 필요한 안전한 detail만 선별합니다.
   private pickSafeDetails(details: Record<string, unknown> | null) {
     const safeDetails: Record<string, unknown> = {};
 
@@ -72,6 +72,10 @@ export class HttpExceptionFilter implements ExceptionFilter {
 
     if (typeof details?.["field"] === "string") {
       safeDetails["field"] = details["field"];
+    }
+
+    if (typeof details?.["provider"] === "string") {
+      safeDetails["provider"] = details["provider"];
     }
 
     return safeDetails;
@@ -88,7 +92,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
         return HttpStatus.UNAUTHORIZED;
       case "Forbidden":
         return HttpStatus.FORBIDDEN;
-      case "ExternalUserEmailMissing":
+      case "AUTH_PROVIDER_EMAIL_REQUIRED":
         return HttpStatus.UNPROCESSABLE_ENTITY;
       case "OAuthAccountConflict":
       case "DeviceSlotAlreadyRegistered":
@@ -164,6 +168,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
       case "FollowUpDeliverySecretEncryptionKeyMissing":
         return HttpStatus.SERVICE_UNAVAILABLE;
       case "GoogleCalendarProviderUnavailable":
+      case "AUTH_PROVIDER_EXCHANGE_FAILED":
       case "AiWeeklySalesReportProviderFailed":
       case "FollowUpProviderRequestFailed":
         return HttpStatus.BAD_GATEWAY;

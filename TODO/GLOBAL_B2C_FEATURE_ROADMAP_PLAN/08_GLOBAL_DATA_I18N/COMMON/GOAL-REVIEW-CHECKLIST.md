@@ -1,6 +1,6 @@
 # Goal Review Checklist
 
-상태: G03 Reviewed / G04 Reviewed / G05 Reviewed / G06 Reviewed / G07 Reviewed
+상태: G03 Reviewed / G04 Reviewed / G05 Reviewed / G06 Reviewed / G07 Reviewed / G08 Reviewed
 목적: 각 `/goal` 완료 전 검토자가 반드시 확인할 공통/개별 체크리스트
 
 ## 1. 공통 Gate
@@ -74,10 +74,10 @@
 
 ## 9. G08 Auth Google LINE Apple
 
-- [ ] Auth request/response provider 값이 Google, LINE, Apple과 일치한다.
-- [ ] `OAuthProvider.LINE` enum 변경이 `BE/prisma` 기준과 한글 주석 규칙을 따른다.
-- [ ] verified email linking business logic이 구현됐다.
-- [ ] email 없음 차단과 safe provider failure 문구가 동작한다.
+- [x] Auth request/response provider 값이 Google, LINE, Apple과 일치한다.
+- [x] `OAuthProvider.LINE` enum 변경이 `BE/prisma` 기준과 한글 주석 규칙을 따른다.
+- [x] verified email linking business logic이 구현됐다.
+- [x] email 없음 차단과 safe provider failure 문구가 동작한다.
 
 ## 10. G09 App Screen Translation
 

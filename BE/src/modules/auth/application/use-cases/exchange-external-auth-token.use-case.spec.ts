@@ -10,11 +10,16 @@ import {
   type CreateAuthDeviceInput,
   type CreateAuthSessionInput,
   type CreateAuthUserInput,
+  type CreateOAuthAccountForUserInput,
   type UpdateUserLoginInput,
 } from "@/modules/auth/application/ports/auth.repository";
 import type { AppTokenIssuer } from "@/modules/auth/application/ports/app-token.port";
 import type { SecureTokenService } from "@/modules/auth/application/ports/secure-token.port";
-import { DeviceSlotAlreadyRegisteredError } from "@/modules/auth/domain/auth.errors";
+import {
+  AuthProviderExchangeFailedError,
+  DeviceSlotAlreadyRegisteredError,
+  ExternalUserEmailMissingError,
+} from "@/modules/auth/domain/auth.errors";
 import type {
   ExternalAuthProvider,
   ExternalAuthVerifier,
@@ -29,11 +34,15 @@ import {
 // 역할 : FakeExternalAuthVerifier 클래스가 맡은 백엔드 책임을 구현합니다.
 class FakeExternalAuthVerifier implements ExternalAuthVerifier {
   // 기능 : 테스트에서 반환할 외부 인증 사용자 정보를 주입받습니다.
-  constructor(private readonly verifiedUser: VerifiedExternalUser) {}
+  constructor(private readonly result: VerifiedExternalUser | Error) {}
 
   // 기능 : 테스트용 외부 인증 사용자 정보를 반환합니다.
   async verifyAccessToken(): Promise<VerifiedExternalUser> {
-    return this.verifiedUser;
+    if (this.result instanceof Error) {
+      throw this.result;
+    }
+
+    return this.result;
   }
 }
 
@@ -117,6 +126,28 @@ class FakeAuthRepository implements AuthRepository {
     );
 
     return updated;
+  }
+
+  // 기능 : fake 사용자 목록에서 검증 이메일과 일치하는 활성 사용자를 조회합니다.
+  async findUserByEmail(email: string): Promise<AuthUserRecord | null> {
+    return (
+      this.users.find((user) => user.email === email && !user.deletedAt) ?? null
+    );
+  }
+
+  // 기능 : fake 기존 사용자에 새 OAuth 계정을 연결합니다.
+  async createOAuthAccountForUser(
+    input: CreateOAuthAccountForUserInput
+  ): Promise<AuthOAuthAccountRecord> {
+    const account: AuthOAuthAccountRecord = {
+      id: `oauth-${this.oauthAccounts.length + 1}`,
+      userId: input.userId,
+      provider: input.provider,
+      providerUserId: input.providerUserId,
+    };
+    this.oauthAccounts.push(account);
+
+    return account;
   }
 
   // 기능 : fake 사용자와 OAuth 계정을 생성해 메모리 목록에 저장합니다.
@@ -584,25 +615,138 @@ describe("ExchangeExternalAuthTokenUseCase", () => {
       "google-provider-user-1"
     );
   });
+
+  // 기능 : LINE과 Apple provider도 신규 사용자 생성 흐름에서 OAuth 계정으로 저장되는지 검증합니다.
+  it.each(["line", "apple"] as const)(
+    "creates a user with %s OAuth account",
+    async (provider) => {
+      const repository = new FakeAuthRepository();
+      const useCase = createUseCase(repository, {
+        email: "user@example.com",
+        name: "User",
+        provider,
+      });
+
+      await useCase.execute(makeExchangeCommand());
+
+      expect(repository.users).toHaveLength(1);
+      expect(repository.oauthAccounts).toHaveLength(1);
+      expect(repository.oauthAccounts[0]?.provider).toBe(provider);
+    }
+  );
+
+  // 기능 : provider 계정이 없으면 verified email로 기존 사용자를 찾아 OAuth 계정을 연결합니다.
+  it("links a new provider account to an existing user by normalized verified email", async () => {
+    const repository = new FakeAuthRepository();
+    repository.users.push(
+      makeAuthUser({
+        id: "user-1",
+        email: "owner@example.com",
+        displayName: "Owner",
+      })
+    );
+    const useCase = createUseCase(
+      repository,
+      {
+        email: "Owner@Example.COM",
+        name: "Owner",
+        provider: "line",
+      },
+      {
+        authUserId: "supabase-line-user-1",
+        providerAccountId: "line-provider-user-1",
+      }
+    );
+
+    const result = await useCase.execute(
+      makeExchangeCommand({
+        locale: "en-US",
+      })
+    );
+
+    expect(result.response.user.id).toBe("user-1");
+    expect(result.response.user.email).toBe("owner@example.com");
+    expect(result.response.user.lastLoginLocale).toBe("en");
+    expect(repository.users).toHaveLength(1);
+    expect(repository.oauthAccounts).toEqual([
+      {
+        id: "oauth-1",
+        userId: "user-1",
+        provider: "line",
+        providerUserId: "line-provider-user-1",
+      },
+    ]);
+  });
+
+  // 기능 : provider가 검증 이메일을 제공하지 않으면 신규 사용자 생성이나 연결을 차단합니다.
+  it("rejects provider exchange when verified email is missing", async () => {
+    const repository = new FakeAuthRepository();
+    const useCase = createUseCase(repository, {
+      email: null,
+      name: "Apple User",
+      provider: "apple",
+    });
+
+    await expect(useCase.execute(makeExchangeCommand())).rejects.toMatchObject({
+      code: "AUTH_PROVIDER_EMAIL_REQUIRED",
+      details: {
+        provider: "apple",
+      },
+    });
+    await expect(useCase.execute(makeExchangeCommand())).rejects.toBeInstanceOf(
+      ExternalUserEmailMissingError
+    );
+    expect(repository.users).toHaveLength(0);
+    expect(repository.oauthAccounts).toHaveLength(0);
+  });
+
+  // 기능 : Supabase/provider 검증 실패 원문은 안전한 exchange 실패 오류로 축소합니다.
+  it("redacts raw provider verifier failures", async () => {
+    const repository = new FakeAuthRepository();
+    const useCase = createUseCaseWithVerifierResult(
+      repository,
+      new Error("raw provider quota secret")
+    );
+
+    await expect(useCase.execute(makeExchangeCommand())).rejects.toBeInstanceOf(
+      AuthProviderExchangeFailedError
+    );
+    await expect(useCase.execute(makeExchangeCommand())).rejects.toMatchObject({
+      code: "AUTH_PROVIDER_EXCHANGE_FAILED",
+      message: "Auth provider exchange failed",
+    });
+  });
 });
 
 // 기능 : ExchangeExternalAuthTokenUseCase 테스트 인스턴스를 생성합니다.
 function createUseCase(
   repository: FakeAuthRepository,
-  user: { readonly email: string; readonly name: string | null },
+  user: {
+    readonly email: string | null;
+    readonly name: string | null;
+    readonly provider?: ExternalAuthProvider;
+  },
   externalIds: {
     readonly authUserId?: string;
     readonly providerAccountId?: string;
   } = {}
 ): ExchangeExternalAuthTokenUseCase {
+  return createUseCaseWithVerifierResult(repository, {
+    provider: user.provider ?? "google",
+    providerAccountId: externalIds.providerAccountId ?? "external-user-1",
+    authUserId: externalIds.authUserId ?? "external-user-1",
+    email: user.email,
+    name: user.name,
+  });
+}
+
+// 기능 : verifier 결과를 직접 주입하는 테스트용 use case를 생성합니다.
+function createUseCaseWithVerifierResult(
+  repository: FakeAuthRepository,
+  result: VerifiedExternalUser | Error
+): ExchangeExternalAuthTokenUseCase {
   return new ExchangeExternalAuthTokenUseCase(
-    new FakeExternalAuthVerifier({
-      provider: "google",
-      providerAccountId: externalIds.providerAccountId ?? "external-user-1",
-      authUserId: externalIds.authUserId ?? "external-user-1",
-      email: user.email,
-      name: user.name,
-    }),
+    new FakeExternalAuthVerifier(result),
     repository,
     new FakeAppTokenIssuer(),
     new FakeSecureTokenService(),

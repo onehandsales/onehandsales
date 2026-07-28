@@ -1,13 +1,13 @@
 ﻿export const EXTERNAL_AUTH_VERIFIER = Symbol("EXTERNAL_AUTH_VERIFIER");
 
-export type ExternalAuthProvider = "google";
+export type ExternalAuthProvider = "google" | "line" | "apple";
 
 // 역할 : VerifiedExternalUser 인터페이스가 구현해야 하는 계약을 정의합니다.
 export interface VerifiedExternalUser {
   provider: ExternalAuthProvider;
   providerAccountId: string;
   authUserId: string;
-  email: string;
+  email: string | null;
   name: string | null;
 }
 

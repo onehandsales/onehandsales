@@ -1,6 +1,6 @@
 # Review Checklist
 
-상태: In Progress - G05 Done
+상태: In Progress - G08 Done
 목적: 08 구현 후 검토자가 확인할 체크리스트
 
 ## 1. Product Scope
@@ -18,9 +18,9 @@
 - [ ] `AGENT/UXUI_AGENT` 기준을 따랐다.
 - [ ] Notion식 workspace/page/database/detail 구조가 유지됐다.
 - [ ] Attio식 CRM record/linked record 맥락이 유지됐다.
-- [ ] 로그인/회원가입 화면은 provider 버튼 영역만 바뀌었다.
-- [ ] Google, LINE, Apple 버튼이 카드형으로 보이고 순서가 맞다.
-- [ ] 이메일 로그인 UI가 추가되지 않았다.
+- [x] 로그인/회원가입 화면은 provider 버튼 영역만 바뀌었다.
+- [x] Google, LINE, Apple 버튼이 카드형으로 보이고 순서가 맞다.
+- [x] 이메일 로그인 UI가 추가되지 않았다.
 - [ ] 한국어 문구는 해요체다.
 - [ ] 영어 문구는 짧고 자연스럽다.
 - [ ] 긴 영어 문구가 버튼/표/사이드바/모바일 화면을 깨지 않는다.
@@ -30,10 +30,10 @@
 - [ ] API spec에 계약 상태, 소비자, 호환성, request DTO, response DTO, success status가 있다.
 - [ ] mutation API에 transaction 필요 여부와 rollback 범위가 있다.
 - [ ] mutation/provider/batch API에 observability event key, request id, redaction 기준이 있다.
-- [ ] `GET /api/auth/providers`가 Google, LINE, Apple을 순서대로 반환한다.
-- [ ] `POST /api/auth/exchange`가 Google, LINE, Apple을 처리한다.
-- [ ] 같은 verified email provider 계정이 기존 User에 연결된다.
-- [ ] email 없는 provider 응답은 가입/로그인을 차단한다.
+- [x] `GET /api/auth/providers`가 Google, LINE, Apple을 순서대로 반환한다.
+- [x] `POST /api/auth/exchange`가 Google, LINE, Apple을 처리한다.
+- [x] 같은 verified email provider 계정이 기존 User에 연결된다.
+- [x] email 없는 provider 응답은 가입/로그인을 차단한다.
 - [x] `PATCH /api/users/me/profile`이 글로벌 설정을 저장한다.
 - [x] Product/Deal API가 `currencyCode`를 포함한다.
 - [x] Contact API가 글로벌 전화번호 필드를 포함한다.
@@ -44,7 +44,7 @@
 ## 4. DB / Migration
 
 - [x] 기존 migration 파일을 수정하지 않았다.
-- [ ] `OAuthProvider.LINE`이 추가됐다.
+- [x] `OAuthProvider.LINE`이 추가됐다.
 - [x] `User.countryCode`가 추가됐다.
 - [x] `User.defaultCurrencyCode`가 추가됐다.
 - [x] `Product.currencyCode`가 추가됐다.
@@ -81,8 +81,8 @@
 - [ ] 신규/수정 Backend class/interface에 `// 역할 : ...` 주석이 있다.
 - [ ] 신규/수정 Backend 내부 메소드에 `// 기능 : ...` 주석이 있다.
 - [ ] 긴 use case에는 numbered step comment가 있다.
-- [ ] provider raw error, token, secret, email 원문이 log에 남지 않는다.
-- [ ] transaction 경계가 명확하다.
+- [x] provider raw error, token, secret, email 원문이 log에 남지 않는다.
+- [x] transaction 경계가 명확하다.
 
 ## 8. Verification
 
@@ -95,8 +95,9 @@
 - [x] User Web `pnpm run typecheck` 통과
 - [x] User Web `pnpm run lint` 통과
 - [x] User Web `pnpm run build` 통과
-- [ ] E2E 또는 수동 QA 결과 기록
-- [ ] 모바일 360px/390px에서 auth/settings/domain form이 깨지지 않는다.
+- [x] E2E 또는 수동 QA 결과 기록
+- [x] 모바일 390px에서 auth login provider 버튼이 깨지지 않는다.
+- [ ] 모바일 360px/390px에서 settings/domain form이 깨지지 않는다.
 
 ## 9. Documentation Closeout
 

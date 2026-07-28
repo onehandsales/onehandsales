@@ -20,6 +20,7 @@ import {
   type CreateAuthDeviceInput,
   type CreateAuthSessionInput,
   type CreateAuthUserInput,
+  type CreateOAuthAccountForUserInput,
   type UpdateUserLoginInput,
 } from "@/modules/auth/application/ports/auth.repository";
 import type { CurrentUserContext } from "@/shared/application/context/current-user.context";
@@ -103,6 +104,43 @@ export class PrismaAuthRepository implements AuthRepository {
       where: { id: oauthAccountId },
       data: {
         providerUserId,
+        updatedAt: now,
+      },
+    });
+
+    return {
+      id: account.id,
+      userId: account.userId,
+      provider: this.fromPrismaProvider(account.provider),
+      providerUserId: account.providerUserId,
+    };
+  }
+
+  // 기능 : 검증된 이메일과 일치하는 삭제되지 않은 사용자를 오래된 가입순으로 조회합니다.
+  async findUserByEmail(email: string): Promise<AuthUserRecord | null> {
+    const user = await this.client.user.findFirst({
+      where: {
+        email,
+        deletedAt: null,
+      },
+      orderBy: [{ createdAt: "asc" }, { id: "asc" }],
+    });
+
+    return user ? this.mapUser(user) : null;
+  }
+
+  // 기능 : 기존 사용자에 새 OAuth 제공자 계정을 연결합니다.
+  async createOAuthAccountForUser(
+    input: CreateOAuthAccountForUserInput,
+    now: Date
+  ): Promise<AuthOAuthAccountRecord> {
+    const account = await this.client.userOAuthAccount.create({
+      data: {
+        userId: input.userId,
+        provider: this.toPrismaProvider(input.provider),
+        providerUserId: input.providerUserId,
+        providerEmail: input.providerEmail,
+        createdAt: now,
         updatedAt: now,
       },
     });
@@ -467,6 +505,10 @@ export class PrismaAuthRepository implements AuthRepository {
     switch (provider) {
       case "google":
         return OAuthProvider.GOOGLE;
+      case "line":
+        return OAuthProvider.LINE;
+      case "apple":
+        return OAuthProvider.APPLE;
     }
   }
 
@@ -475,8 +517,11 @@ export class PrismaAuthRepository implements AuthRepository {
     switch (provider) {
       case OAuthProvider.GOOGLE:
         return "google";
-      case OAuthProvider.KAKAO:
+      case OAuthProvider.LINE:
+        return "line";
       case OAuthProvider.APPLE:
+        return "apple";
+      case OAuthProvider.KAKAO:
         throw new Error("Inactive OAuth provider cannot be used for auth exchange");
     }
   }

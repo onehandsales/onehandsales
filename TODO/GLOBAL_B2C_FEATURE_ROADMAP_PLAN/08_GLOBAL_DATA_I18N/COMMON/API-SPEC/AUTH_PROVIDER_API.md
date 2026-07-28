@@ -1,6 +1,6 @@
 # Auth Provider API
 
-상태: Ready for Goal Execution
+상태: Done
 
 ## 1. 목적
 
@@ -152,10 +152,10 @@ Observability:
 
 ## 6. Error
 
-사용자 노출 문구는 FE에서 provider 이름만 포함해 표시한다.
+사용자 노출 문구는 FE에서 provider raw error 없이 일반 문구로 표시한다.
 
 ```text
-Apple 로그인에 실패했어요. 잠시 후 다시 시도해 주세요.
+로그인을 완료하지 못했어요. 잠시 후 다시 시도해 주세요.
 ```
 
 Backend error 후보:
@@ -163,7 +163,8 @@ Backend error 후보:
 ```json
 {
   "code": "AUTH_PROVIDER_EMAIL_REQUIRED",
-  "field": "provider"
+  "field": "provider",
+  "provider": "apple"
 }
 ```
 
@@ -183,12 +184,17 @@ Backend error 후보:
 
 ## 8. 구현 체크리스트
 
-- [ ] `OAuthProvider.LINE` migration이 있다.
-- [ ] APPLE mapping이 runtime에서 활성화됐다.
-- [ ] Kakao는 legacy enum으로만 유지된다.
-- [ ] provider email 없는 케이스가 차단된다.
-- [ ] email lowercase 비교 test가 있다.
-- [ ] 같은 verified email provider 연결 test가 있다.
-- [ ] provider raw error/token/secret이 log나 response에 노출되지 않는다.
-- [ ] Transaction 계약과 Observability 계약이 구현 결과와 일치한다.
-- [ ] Backend 신규/수정 코드에 한글 주석 규칙이 적용된다.
+- [x] `OAuthProvider.LINE` migration이 있다.
+- [x] APPLE mapping이 runtime에서 활성화됐다.
+- [x] Kakao는 legacy enum으로만 유지된다.
+- [x] provider email 없는 케이스가 차단된다.
+- [x] email lowercase 비교 test가 있다.
+- [x] 같은 verified email provider 연결 test가 있다.
+- [x] provider raw error/token/secret이 log나 response에 노출되지 않는다.
+- [x] Transaction 계약과 Observability 계약이 구현 결과와 일치한다.
+- [x] Backend 신규/수정 코드에 한글 주석 규칙이 적용된다.
+
+## 9. 구현 기록
+
+- 2026-07-28: `OAuthProvider.LINE` migration, Google/LINE/Apple provider list, Supabase provider normalization, verified email 기존 User linking, safe provider failure error를 구현했다.
+- 2026-07-28: Auth exchange는 `auth.exchange.succeeded`, `auth.exchange.failed`, `auth.oauthAccount.linked` 이벤트를 token/email/raw provider error 없이 기록한다.

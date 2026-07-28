@@ -17,6 +17,7 @@ import {
   type SecureTokenService,
 } from "@/modules/auth/application/ports/secure-token.port";
 import {
+  AuthProviderExchangeFailedError,
   DeviceSlotAlreadyRegisteredError,
   ExternalUserEmailMissingError,
   InactiveUserError,
@@ -29,6 +30,7 @@ import {
   type VerifiedExternalUser,
 } from "@/shared/application/ports/external-auth-verifier.port";
 import { isValidIanaTimeZone } from "@/shared/application/time-zone/time-zone";
+import { AppLogger } from "@/shared/infrastructure/logger/app-logger.service";
 import { createAuthTokenResponse, type AuthTokenResponse } from "../auth-response";
 
 // 역할 : ExchangeExternalAuthTokenCommand 데이터가 계층 사이에서 전달되는 구조를 정의합니다.
@@ -67,7 +69,7 @@ const DEFAULT_USER_CURRENCY_CODE = "KRW";
 // 역할 : ExchangeExternalAuthTokenUseCase 유스케이스의 application orchestration을 담당합니다.
 @Injectable()
 export class ExchangeExternalAuthTokenUseCase {
-  // 기능 : 외부 인증 검증기, 저장소, 토큰 서비스, 설정 서비스를 주입받습니다.
+  // 기능 : 외부 인증 검증기, 저장소, 토큰 서비스, 설정 서비스, logger를 주입받습니다.
   constructor(
     @Inject(EXTERNAL_AUTH_VERIFIER)
     private readonly externalAuthVerifier: ExternalAuthVerifier,
@@ -77,20 +79,19 @@ export class ExchangeExternalAuthTokenUseCase {
     private readonly appTokenIssuer: AppTokenIssuer,
     @Inject(SECURE_TOKEN_SERVICE)
     private readonly secureTokenService: SecureTokenService,
-    private readonly configService: ConfigService
+    private readonly configService: ConfigService,
+    private readonly logger?: AppLogger
   ) {}
 
   // 기능 : Supabase 토큰을 검증하고 사용자/기기/세션을 생성한 뒤 앱 토큰 응답을 반환합니다.
   async execute(
     command: ExchangeExternalAuthTokenCommand
   ): Promise<ExchangeExternalAuthTokenResult> {
-    // 1. 외부 인증 provider access token을 검증한다.
-    const verifiedUser = await this.externalAuthVerifier.verifyAccessToken(
-      command.supabaseAccessToken
-    );
+    // 1. 외부 인증 provider access token을 검증하고 원문 오류는 안전한 교환 실패로 축소한다.
+    const verifiedUser = await this.verifyExternalUser(command.supabaseAccessToken);
 
     // 2. provider 사용자 정보와 기기 입력값을 내부 형식으로 검증/정규화한다.
-    const email = this.normalizeEmail(verifiedUser.email);
+    const email = this.normalizeEmail(verifiedUser.email, verifiedUser.provider);
     const slot = this.parseDeviceSlot(command.deviceSlot);
     const countryCode = this.normalizeCountryCode(command.countryCode);
     const userCountryCode = this.resolveUserCountryCode(countryCode);
@@ -156,6 +157,10 @@ export class ExchangeExternalAuthTokenUseCase {
         throw new InactiveUserError();
       }
 
+      this.logEvent("auth.exchange.succeeded", {
+        provider: verifiedUser.provider,
+      });
+
       // 9. refresh token과 앱 access token 응답을 반환한다.
       return {
         refreshToken,
@@ -169,7 +174,21 @@ export class ExchangeExternalAuthTokenUseCase {
     });
   }
 
-  // 기능 : OAuth 계정 존재 여부에 따라 기존 사용자를 갱신하거나 새 사용자를 생성합니다.
+  // 기능 : 외부 인증 토큰을 검증하되 provider 원문 실패를 API 응답에 노출하지 않습니다.
+  private async verifyExternalUser(
+    supabaseAccessToken: string
+  ): Promise<VerifiedExternalUser> {
+    try {
+      return await this.externalAuthVerifier.verifyAccessToken(supabaseAccessToken);
+    } catch {
+      this.logEvent("auth.exchange.failed", {
+        reason: "provider_verification_failed",
+      });
+      throw new AuthProviderExchangeFailedError();
+    }
+  }
+
+  // 기능 : OAuth 계정 존재 여부와 검증 이메일 기준으로 기존 사용자를 갱신하거나 새 사용자를 생성합니다.
   private async syncUser(
     repository: AuthRepository,
     verifiedUser: VerifiedExternalUser,
@@ -187,6 +206,41 @@ export class ExchangeExternalAuthTokenUseCase {
     if (oauthAccount) {
       const updateInput = {
         userId: oauthAccount.userId,
+        email,
+        lastLoginLocale: loginMetadata.locale,
+        lastLoginCountryCode: loginMetadata.countryCode,
+        lastLoginTimeZone: loginMetadata.timeZone,
+      };
+
+      if (adminRole) {
+        return repository.updateUserAfterLogin(
+          { ...updateInput, role: adminRole },
+          now
+        );
+      }
+
+      return repository.updateUserAfterLogin(updateInput, now);
+    }
+
+    const existingUser = await repository.findUserByEmail(email);
+
+    if (existingUser) {
+      await repository.createOAuthAccountForUser(
+        {
+          userId: existingUser.id,
+          provider: verifiedUser.provider,
+          providerUserId: verifiedUser.providerAccountId,
+          providerEmail: email,
+        },
+        now
+      );
+      this.logEvent("auth.oauthAccount.linked", {
+        provider: verifiedUser.provider,
+        linkingStrategy: "verified_email",
+      });
+
+      const updateInput = {
+        userId: existingUser.id,
         email,
         lastLoginLocale: loginMetadata.locale,
         lastLoginCountryCode: loginMetadata.countryCode,
@@ -371,12 +425,16 @@ export class ExchangeExternalAuthTokenUseCase {
     }
   }
 
-  // 기능 : 이메일을 소문자 표준 형식으로 정규화하고 빈 값을 차단합니다.
-  private normalizeEmail(email: string): string {
-    const normalized = email.trim().toLowerCase();
+  // 기능 : 검증 이메일을 소문자 표준 형식으로 정규화하고 빈 값을 차단합니다.
+  private normalizeEmail(email: string | null, provider: string): string {
+    const normalized = email?.trim().toLowerCase() ?? "";
 
     if (normalized.length === 0) {
-      throw new ExternalUserEmailMissingError();
+      this.logEvent("auth.exchange.failed", {
+        provider,
+        reason: "email_required",
+      });
+      throw new ExternalUserEmailMissingError(provider);
     }
 
     return normalized;
@@ -474,6 +532,17 @@ export class ExchangeExternalAuthTokenUseCase {
   // 기능 : 기준 날짜에 지정한 일수를 더한 날짜를 반환합니다.
   private addDays(date: Date, days: number): Date {
     return new Date(date.getTime() + days * 24 * 60 * 60 * 1000);
+  }
+
+  // 기능 : 인증 exchange 이벤트를 token/email/raw provider 오류 없이 구조화해 기록합니다.
+  private logEvent(event: string, fields: Record<string, unknown>): void {
+    this.logger?.log(
+      JSON.stringify({
+        event,
+        ...fields,
+      }),
+      "ExchangeExternalAuthTokenUseCase"
+    );
   }
 }
 

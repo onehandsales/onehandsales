@@ -15,6 +15,7 @@ export type AuthProviderModalCopy = {
   readonly providerLoading: string;
   readonly noProviders: string;
   readonly providersErrorPrefix: string;
+  readonly providerFailure: string;
   readonly providerLabels: Record<AuthProviderId, string>;
 };
 
@@ -32,8 +33,11 @@ export const authProviderModalCopy: Record<
     providerLoading: "로그인 수단을 불러오고 있어요.",
     noProviders: "사용할 수 있는 로그인이 없어요.",
     providersErrorPrefix: "로그인 수단을 불러오지 못해 기본 버튼을 보여줘요.",
+    providerFailure: "로그인을 완료하지 못했어요. 잠시 후 다시 시도해 주세요.",
     providerLabels: {
       google: "Google로 계속하기",
+      line: "LINE으로 계속하기",
+      apple: "Apple로 계속하기",
     },
   },
   ja: {
@@ -47,8 +51,11 @@ export const authProviderModalCopy: Record<
     noProviders: "利用できるログイン方法がありません。",
     providersErrorPrefix:
       "ログイン方法を読み込めないため、既定のボタンを表示しています。",
+    providerFailure: "ログインを完了できませんでした。しばらくしてからお試しください。",
     providerLabels: {
       google: "Googleで続行",
+      line: "LINEで続行",
+      apple: "Appleで続行",
     },
   },
   "zh-TW": {
@@ -61,8 +68,11 @@ export const authProviderModalCopy: Record<
     providerLoading: "正在載入登入方式。",
     noProviders: "目前沒有可用的登入方式。",
     providersErrorPrefix: "無法載入登入方式，正在顯示預設按鈕。",
+    providerFailure: "無法完成登入。請稍後再試。",
     providerLabels: {
       google: "使用 Google 繼續",
+      line: "使用 LINE 繼續",
+      apple: "使用 Apple 繼續",
     },
   },
   "en-US": {
@@ -76,8 +86,11 @@ export const authProviderModalCopy: Record<
     noProviders: "No sign-in methods are available.",
     providersErrorPrefix:
       "Could not load sign-in methods, so default buttons are shown.",
+    providerFailure: "We could not complete sign-in. Please try again shortly.",
     providerLabels: {
       google: "Continue with Google",
+      line: "Continue with LINE",
+      apple: "Continue with Apple",
     },
   },
   "en-GB": {
@@ -91,8 +104,11 @@ export const authProviderModalCopy: Record<
     noProviders: "No sign-in options are available.",
     providersErrorPrefix:
       "Could not load sign-in options, so default buttons are shown.",
+    providerFailure: "We could not complete sign-in. Please try again shortly.",
     providerLabels: {
       google: "Continue with Google",
+      line: "Continue with LINE",
+      apple: "Continue with Apple",
     },
   },
 };

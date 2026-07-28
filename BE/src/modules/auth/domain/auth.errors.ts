@@ -2,9 +2,22 @@
 
 // 역할 : ExternalUserEmailMissingError 도메인 또는 애플리케이션 오류 상태를 표현합니다.
 export class ExternalUserEmailMissingError extends DomainError {
-  // 기능 : 외부 인증 사용자 이메일 누락 오류를 생성합니다.
+  // 기능 : 외부 인증 provider가 검증된 이메일을 주지 않은 오류를 생성합니다.
+  constructor(provider: string) {
+    super("AUTH_PROVIDER_EMAIL_REQUIRED", "Provider email is required", {
+      field: "provider",
+      provider,
+    });
+  }
+}
+
+// 역할 : AuthProviderExchangeFailedError 도메인 또는 애플리케이션 오류 상태를 표현합니다.
+export class AuthProviderExchangeFailedError extends DomainError {
+  // 기능 : 외부 인증 provider 교환 실패를 원문 없이 안전한 오류로 생성합니다.
   constructor() {
-    super("ExternalUserEmailMissing", "External auth user email is missing");
+    super("AUTH_PROVIDER_EXCHANGE_FAILED", "Auth provider exchange failed", {
+      field: "provider",
+    });
   }
 }
 

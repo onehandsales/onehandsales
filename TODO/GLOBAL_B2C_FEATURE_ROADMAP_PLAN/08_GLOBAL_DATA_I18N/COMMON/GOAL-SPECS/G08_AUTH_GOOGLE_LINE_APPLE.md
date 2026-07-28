@@ -1,6 +1,6 @@
 # G08 Auth Google LINE Apple
 
-상태: Not Started
+상태: Done
 목표: Google, LINE, Apple OAuth provider를 실제 로그인/회원가입 provider로 구현한다.
 
 ## 1. 포함 범위
@@ -109,7 +109,8 @@ Exchange 성공 response는 기존 app session 계약을 유지한다.
 ```json
 {
   "code": "AUTH_PROVIDER_EMAIL_REQUIRED",
-  "field": "provider"
+  "field": "provider",
+  "provider": "apple"
 }
 ```
 
@@ -175,23 +176,37 @@ pnpm run build
 
 실제 provider smoke는 환경변수와 Supabase 설정 완료 후 수동 QA로 기록한다.
 
+2026-07-28 구현 검증:
+
+- Backend `pnpm.cmd prisma:generate` 통과
+- Backend `pnpm.cmd prisma:validate` 통과
+- Backend `pnpm.cmd typecheck` 통과
+- Backend `pnpm.cmd lint` 통과
+- Backend `pnpm.cmd test -- exchange-external-auth-token list-auth-providers resolve-current-user` 통과
+- Backend `pnpm.cmd build` 통과
+- User Web `pnpm.cmd typecheck` 통과
+- User Web `pnpm.cmd lint` 통과
+- User Web `pnpm.cmd build` 통과
+- Playwright screenshot `/ko/login` 390x844 확인: Google, LINE, Apple 버튼 순서와 모바일 겹침 없음
+- 실제 Google/LINE/Apple provider smoke는 Supabase/provider 운영 설정과 secret이 필요해 G10 수동 QA로 남긴다.
+
 ## 12. Goal 검토 체크리스트
 
-- [ ] `OAuthProvider.LINE`이 추가됐다.
-- [ ] APPLE runtime mapping이 활성화됐다.
-- [ ] provider list 순서가 Google, LINE, Apple이다.
-- [ ] FE `AuthProviderId`와 BE `ExternalAuthProvider` 허용값이 Google, LINE, Apple로 일치한다.
-- [ ] `/api/auth/exchange`는 기존처럼 Authorization Bearer Supabase token을 사용한다.
-- [ ] provider list response가 버튼 순서와 일치한다.
-- [ ] business logic이 verified email linking 정책을 따른다.
-- [ ] user flow가 기존 로그인/회원가입 소셜 영역만 바꾼다.
-- [ ] `BE/prisma`를 참고했고 enum/migration에 한글 주석이 있다.
-- [ ] Kakao는 노출되지 않는다.
-- [ ] 같은 verified email은 기존 User에 연결된다.
-- [ ] email 없음은 차단된다.
-- [ ] email 비교는 lowercase 기준이다.
-- [ ] 로그인/회원가입 버튼은 Google, LINE, Apple 카드형 3개다.
-- [ ] 이메일 로그인 UI를 추가하지 않았다.
-- [ ] provider raw error/token/secret이 노출되지 않는다.
-- [ ] 신규 코드에 한글 주석 규칙이 적용됐다.
-- [ ] 실행한 검증 결과를 기록했다.
+- [x] `OAuthProvider.LINE`이 추가됐다.
+- [x] APPLE runtime mapping이 활성화됐다.
+- [x] provider list 순서가 Google, LINE, Apple이다.
+- [x] FE `AuthProviderId`와 BE `ExternalAuthProvider` 허용값이 Google, LINE, Apple로 일치한다.
+- [x] `/api/auth/exchange`는 기존처럼 Authorization Bearer Supabase token을 사용한다.
+- [x] provider list response가 버튼 순서와 일치한다.
+- [x] business logic이 verified email linking 정책을 따른다.
+- [x] user flow가 기존 로그인/회원가입 소셜 영역만 바꾼다.
+- [x] `BE/prisma`를 참고했고 enum/migration에 한글 주석이 있다.
+- [x] Kakao는 노출되지 않는다.
+- [x] 같은 verified email은 기존 User에 연결된다.
+- [x] email 없음은 차단된다.
+- [x] email 비교는 lowercase 기준이다.
+- [x] 로그인/회원가입 버튼은 Google, LINE, Apple 카드형 3개다.
+- [x] 이메일 로그인 UI를 추가하지 않았다.
+- [x] provider raw error/token/secret이 노출되지 않는다.
+- [x] 신규 코드에 한글 주석 규칙이 적용됐다.
+- [x] 실행한 검증 결과를 기록했다.

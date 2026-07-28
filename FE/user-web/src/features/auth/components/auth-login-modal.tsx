@@ -28,20 +28,26 @@ type AuthLoginModalProps = {
 
 const providerStyles: Record<AuthProviderId, string> = {
   google: "border-[#DADCE0] bg-white text-[#3C4043]",
+  line: "border-[#06C755] bg-[#06C755] text-white",
+  apple: "border-[#111111] bg-[#111111] text-white",
 };
 
 const providerLogos: Record<AuthProviderId, string> = {
   google: "/auth/google-logo.svg",
+  line: "/auth/line-logo.svg",
+  apple: "/auth/apple-logo.svg",
 };
 const providerLogoShellStyles: Record<AuthProviderId, string> = {
   google: "bg-white",
+  line: "bg-white",
+  apple: "bg-white",
 };
 const modalBodyClassName = "flex flex-1 flex-col px-8 pb-6 pt-7 max-[460px]:px-6";
 const loadingModalBodyClassName = "flex flex-1 items-center justify-center p-0";
 const modalCloseButtonClassName =
   "right-3.5 top-3.5 h-[32px] w-[32px] rounded-full border-0 bg-[#F3F4F6] text-[#9CA3AF]";
 const modalPanelClassName =
-  "h-[320px] w-[380px] max-w-[calc(100vw-2rem)] max-h-[calc(100vh-2rem)] rounded-[16px] border-0 shadow-[0_20px_50px_rgba(15,23,42,0.18),0_2px_8px_rgba(15,23,42,0.08)]";
+  "min-h-[408px] w-[380px] max-w-[calc(100vw-2rem)] max-h-[calc(100vh-2rem)] rounded-[16px] border-0 shadow-[0_20px_50px_rgba(15,23,42,0.18),0_2px_8px_rgba(15,23,42,0.08)]";
 
 export function AuthLoginModal({
   authError,
@@ -190,7 +196,7 @@ export function AuthLoginModal({
 
       {authError ? (
         <p className="mt-4 rounded-[10px] border border-red-200 bg-red-50 px-3 py-2 text-center text-xs text-red-700">
-          {authError}
+          {copy.providerFailure}
         </p>
       ) : null}
     </ModalShell>

@@ -15,14 +15,14 @@ Global B2C 첫 판매를 위해 로그인 이후 `/app` 업무 화면이 한국 
 
 - public/auth 진입면은 URL locale을 지원한다.
 - `/app` 내부 route는 locale prefix 없이 `/app/*`를 사용한다.
-- G01~G07은 완료됐고, G08 Auth Google LINE Apple부터 순차 착수 가능하다.
+- G01~G08은 완료됐고, G09 App Screen Translation부터 순차 착수 가능하다.
 - `/app` 내부 UI와 validation copy는 G09 전까지 부분 번역 상태다.
 - Contact 전화번호는 기존 `mobile` fallback을 유지하면서 KR/US 글로벌 필드를 사용한다.
 - Product/Deal 금액은 정수 금액과 `currencyCode`를 함께 사용한다.
 - Company는 기존 커스텀 `CompanyRegion`을 유지하면서 KR/US 국가/지역 code와 자유 입력 주소를 사용한다.
 - 사용자 timezone 기반 일정 처리는 일부 구현되어 있다.
 - Import template과 도메인 Export는 사용자 app 설정값 기준 현지화가 구현됐다.
-- Google login만 현재 정식 인증 provider로 본다. 08에서 Apple/LINE을 실제 구현 대상으로 승격한다.
+- Google, LINE, Apple login을 현재 정식 인증 provider로 본다. 실제 provider smoke는 Supabase/provider 운영 설정 후 G10에서 기록한다.
 
 ## 3. 확정 결정 요약
 

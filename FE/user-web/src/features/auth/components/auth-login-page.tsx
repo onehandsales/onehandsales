@@ -33,9 +33,11 @@ type AuthPageMode = "login" | "signup";
 
 const providerStyles: Record<AuthProviderId, string> = {
   google: "border-[#dededa] bg-white text-[#191919] hover:bg-[#f7f7f5]",
+  line: "border-[#06c755] bg-[#06c755] text-white hover:bg-[#05b64d]",
+  apple: "border-[#111111] bg-[#111111] text-white hover:bg-[#2a2a2a]",
 };
 
-const providerOrder: readonly AuthProviderId[] = ["google"];
+const providerOrder: readonly AuthProviderId[] = ["google", "line", "apple"];
 
 const loginCopy: Record<
   PublicSiteCopyLanguage,
@@ -49,6 +51,7 @@ const loginCopy: Record<
     readonly callbackLoading: string;
     readonly noProviders: string;
     readonly providersErrorPrefix: string;
+    readonly providerFailure: string;
     readonly switchLead: Record<AuthPageMode, string>;
     readonly switchAction: Record<AuthPageMode, string>;
     readonly termsPrefix: string;
@@ -72,11 +75,14 @@ const loginCopy: Record<
     },
     providers: {
       google: "Google",
+      line: "LINE",
+      apple: "Apple",
     },
     loading: "로그인 수단을 불러오고 있어요.",
     callbackLoading: "로그인하고 있어요.",
     noProviders: "사용할 수 있는 로그인이 없어요.",
     providersErrorPrefix: "로그인 수단을 불러오지 못했어요.",
+    providerFailure: "로그인을 완료하지 못했어요. 잠시 후 다시 시도해 주세요.",
     switchLead: {
       login: "신규 사용자이신가요?",
       signup: "기존 사용자이신가요?",
@@ -105,11 +111,14 @@ const loginCopy: Record<
     },
     providers: {
       google: "Google",
+      line: "LINE",
+      apple: "Apple",
     },
     loading: "ログイン方法を読み込んでいます。",
     callbackLoading: "ログインしています。",
     noProviders: "利用できるログイン方法がありません。",
     providersErrorPrefix: "ログイン方法を読み込めませんでした。",
+    providerFailure: "ログインを完了できませんでした。しばらくしてからお試しください。",
     switchLead: {
       login: "初めてご利用ですか？",
       signup: "既にアカウントをお持ちですか？",
@@ -138,11 +147,14 @@ const loginCopy: Record<
     },
     providers: {
       google: "Google",
+      line: "LINE",
+      apple: "Apple",
     },
     loading: "正在載入登入方式。",
     callbackLoading: "正在登入。",
     noProviders: "目前沒有可用的登入方式。",
     providersErrorPrefix: "無法載入登入方式。",
+    providerFailure: "無法完成登入。請稍後再試。",
     switchLead: {
       login: "新使用者？",
       signup: "已有帳戶？",
@@ -171,11 +183,14 @@ const loginCopy: Record<
     },
     providers: {
       google: "Google",
+      line: "LINE",
+      apple: "Apple",
     },
     loading: "Loading sign-in options.",
     callbackLoading: "Signing you in.",
     noProviders: "No sign-in methods are available.",
     providersErrorPrefix: "Could not load sign-in methods.",
+    providerFailure: "We could not complete sign-in. Please try again shortly.",
     switchLead: {
       login: "New here?",
       signup: "Already have an account?",
@@ -204,11 +219,14 @@ const loginCopy: Record<
     },
     providers: {
       google: "Google",
+      line: "LINE",
+      apple: "Apple",
     },
     loading: "Loading sign-in options.",
     callbackLoading: "Signing you in.",
     noProviders: "No sign-in options are available.",
     providersErrorPrefix: "Could not load sign-in options.",
+    providerFailure: "We could not complete sign-in. Please try again shortly.",
     switchLead: {
       login: "New here?",
       signup: "Already have an account?",
@@ -228,10 +246,14 @@ const loginCopy: Record<
 
 const providerLogos: Record<AuthProviderId, string> = {
   google: "/auth/google-logo.svg",
+  line: "/auth/line-logo.svg",
+  apple: "/auth/apple-logo.svg",
 };
 
 const providerLogoShellStyles: Record<AuthProviderId, string> = {
   google: "bg-white",
+  line: "bg-white",
+  apple: "bg-white",
 };
 
 export function AuthLoginPage({
@@ -355,7 +377,7 @@ export function AuthLoginPage({
 
           {authError ? (
             <p className="mt-5 rounded-[7px] border border-[#f1b6b6] bg-[#fff4f4] px-3 py-2 text-center text-[12px] font-medium leading-5 text-[#a12b2b]">
-              {authError}
+              {copy.providerFailure}
             </p>
           ) : null}
 

@@ -59,6 +59,16 @@ class FakeRepository implements AuthRepository {
     throw new Error("Not implemented in fake repository");
   }
 
+  // 기능 : 현재 테스트에서 사용하지 않는 이메일 사용자 조회 호출을 차단합니다.
+  async findUserByEmail(): Promise<AuthUserRecord | null> {
+    throw new Error("Not implemented in fake repository");
+  }
+
+  // 기능 : 현재 테스트에서 사용하지 않는 기존 사용자 OAuth 연결 호출을 차단합니다.
+  async createOAuthAccountForUser(): Promise<AuthOAuthAccountRecord> {
+    throw new Error("Not implemented in fake repository");
+  }
+
   // 기능 : 현재 테스트에서 사용하지 않는 OAuth 계정 식별자 갱신 호출을 차단합니다.
   async updateOAuthAccountProviderUserId(): Promise<AuthOAuthAccountRecord> {
     throw new Error("Not implemented in fake repository");

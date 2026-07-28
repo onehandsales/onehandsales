@@ -33,10 +33,10 @@ Account linking:
 4. 정규화 email과 일치하는 User가 없으면 신규 User를 생성한다.
 5. provider email이 없으면 가입/로그인을 차단한다.
 
-사용자 노출 실패 메시지는 provider 이름만 포함한다.
+사용자 노출 실패 메시지는 provider raw error 없이 일반 문구만 포함한다.
 
 ```text
-LINE 로그인에 실패했어요. 잠시 후 다시 시도해 주세요.
+로그인을 완료하지 못했어요. 잠시 후 다시 시도해 주세요.
 ```
 
 서버 로그에는 provider, error type, request id 같은 안전한 context만 남기고 token, secret, email 원문, raw provider error 전문은 남기지 않는다.

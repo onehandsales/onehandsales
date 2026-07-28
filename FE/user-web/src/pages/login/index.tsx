@@ -17,6 +17,8 @@ import { getApiErrorMessage } from "@/lib/api-client";
 
 const fallbackProviders: AuthProviderOption[] = [
   { provider: "google", label: "Google", enabled: true },
+  { provider: "line", label: "LINE", enabled: true },
+  { provider: "apple", label: "Apple", enabled: true },
 ];
 const minimumLoginLoadingMs = 1500;
 

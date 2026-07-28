@@ -13,10 +13,10 @@
 현재 User locale/region 메타데이터는 `BE/prisma/migrations/20260708010000_add_user_locale_region_metadata/migration.sql` 기준으로 반영되어 있다.
 사용자 기본 국가/통화 설정은 `BE/prisma/migrations/20260728010000_add_user_global_settings/migration.sql` 기준으로 반영되어 있다.
 
-08 Global Data I18N 남은 목표 delta:
+08 Global Data I18N 반영 상태:
 
-- G08에서 `OAuthProvider.LINE`을 추가하고 Google, LINE, Apple을 runtime provider로 허용한다.
-- G08에서 기존 `provider + providerUserId` 조회를 유지하되, 같은 verified email이 있으면 기존 `User`에 새 `UserOAuthAccount`를 연결한다.
+- G08에서 `OAuthProvider.LINE`을 추가했고 Google, LINE, Apple을 runtime provider로 허용한다.
+- 기존 `provider + providerUserId` 조회를 유지하되, 같은 verified email이 있으면 기존 `User`에 새 `UserOAuthAccount`를 연결한다.
 - provider email이 없거나 verified email로 확인할 수 없는 경우 가입/로그인을 차단한다.
 
 ## 2. 전체 관계
@@ -79,9 +79,10 @@ AuthDevice 1 ─ N AuthSession
 |---|---|
 | `KAKAO` | Legacy value. 현재 로그인 기능에서는 사용하지 않는다. |
 | `GOOGLE` | 현재 활성 로그인 provider |
-| `APPLE` | 현재 Prisma enum에는 있으나 runtime에서는 비활성이다. 08 G08에서 활성 provider 목표로 승격한다. |
+| `APPLE` | 현재 활성 로그인 provider |
+| `LINE` | 현재 활성 로그인 provider |
 
-참고: 현재 Prisma enum에는 `LINE`이 없다. 08 G08에서 schema/migration으로 추가해야 한다.
+참고: `LINE`은 `20260728050000_add_line_oauth_provider` migration으로 추가됐다.
 
 ### AuthSessionStatus
 
@@ -186,8 +187,8 @@ Constraints:
 주석:
 
 - 같은 외부 계정은 내부 사용자 하나에만 연결된다.
-- 현재 자동 회원가입/로그인 판단 기준은 이메일이 아니라 `provider + providerUserId`다.
-- 08 G08 목표에서는 같은 verified email의 기존 `User`가 있으면 새 `User`를 만들지 않고 이 테이블에 provider 계정을 추가한다.
+- 자동 회원가입/로그인 판단은 `provider + providerUserId`를 먼저 사용한다.
+- 기존 provider 계정이 없고 같은 verified email의 기존 `User`가 있으면 새 `User`를 만들지 않고 이 테이블에 provider 계정을 추가한다.
 
 Indexes:
 

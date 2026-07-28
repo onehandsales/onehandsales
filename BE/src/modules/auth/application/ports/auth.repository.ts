@@ -80,6 +80,14 @@ export interface CreateAuthUserInput {
   readonly providerEmail: string;
 }
 
+// 역할 : CreateOAuthAccountForUserInput 데이터가 계층 사이에서 전달되는 구조를 정의합니다.
+export interface CreateOAuthAccountForUserInput {
+  readonly userId: string;
+  readonly provider: ExternalAuthProvider;
+  readonly providerUserId: string;
+  readonly providerEmail: string;
+}
+
 // 역할 : UpdateUserLoginInput 데이터가 계층 사이에서 전달되는 구조를 정의합니다.
 export interface UpdateUserLoginInput {
   readonly userId: string;
@@ -119,6 +127,13 @@ export interface AuthRepository {
     provider: ExternalAuthProvider,
     providerUserId: string
   ): Promise<AuthOAuthAccountRecord | null>;
+  // 기능 : 검증된 이메일로 기존 활성 사용자를 조회합니다.
+  findUserByEmail(email: string): Promise<AuthUserRecord | null>;
+  // 기능 : 기존 사용자에 새 OAuth 계정을 연결합니다.
+  createOAuthAccountForUser(
+    input: CreateOAuthAccountForUserInput,
+    now: Date
+  ): Promise<AuthOAuthAccountRecord>;
   // 기능 : 기존 OAuth 계정의 provider 사용자 식별자를 최신 안정 식별자로 갱신합니다.
   updateOAuthAccountProviderUserId(
     oauthAccountId: string,

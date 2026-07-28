@@ -313,7 +313,7 @@ pnpm build
 
 - [x] Google OAuth는 실제 provider smoke로 가입/로그인 확인
 - [N/A] Kakao OAuth는 로그인 기능에서 제거되어 provider QA 대상이 아님
-- [N/A] Apple/LINE OAuth는 2026-07-10 pre-08 QA 기준으로 future provider 후보라 QA 대상이 아님. 08 G08에서는 실제 provider QA 또는 환경 미구성 N/A 사유를 다시 기록한다.
+- [ ] LINE/Apple OAuth 실제 provider smoke 또는 Supabase/provider 환경 미구성 N/A 사유 기록
 
 ### 기기/세션 정책
 

@@ -1,4 +1,4 @@
-export type AuthProviderId = "google";
+export type AuthProviderId = "google" | "line" | "apple";
 
 export type AuthProviderLoginMode = "redirect" | "popup";
 
