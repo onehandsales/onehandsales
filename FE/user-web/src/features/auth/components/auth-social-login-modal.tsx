@@ -3,10 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 import { ModalShell } from "@/components/ui/modal-shell";
 import { authService } from "@/features/auth/auth-service";
 import { useAuthSession } from "@/features/auth/auth-context";
-import {
-  authProviderModalCopy,
-  getAuthProviderContinueLabel,
-} from "@/features/auth/components/auth-provider-modal-copy";
+import { authProviderModalCopy } from "@/features/auth/components/auth-provider-modal-copy";
 import type {
   AuthProviderId,
   AuthProviderOption,
@@ -28,10 +25,14 @@ const fallbackProviders: AuthProviderOption[] = [
   { provider: "apple", label: "Apple", enabled: true },
 ];
 
+const sharedProviderButtonStyle =
+  "border-[#DADCE0] bg-white text-[#3C4043] hover:bg-[#F8FAFC]";
+
+// 기능 : 모달 OAuth 버튼도 provider별 배경색 없이 Google 버튼 기준 스타일을 공유합니다.
 const providerStyles: Record<AuthProviderId, string> = {
-  google: "border-[#DADCE0] bg-white text-[#3C4043]",
-  line: "border-[#06C755] bg-[#06C755] text-white",
-  apple: "border-[#111111] bg-[#111111] text-white",
+  google: sharedProviderButtonStyle,
+  line: sharedProviderButtonStyle,
+  apple: sharedProviderButtonStyle,
 };
 
 const providerLogos: Record<AuthProviderId, string> = {
@@ -157,24 +158,26 @@ export function AuthSocialLoginModal({
         {copy.providerLead}
       </p>
 
-      <div className="mt-3 grid gap-2.5">
+      {/* 기능 : OAuth provider 버튼을 3열로 고정해 모바일 모달에서도 한 줄 선택을 유지합니다. */}
+      <div className="mt-3 grid grid-cols-3 gap-2">
         {isProvidersLoading ? (
-          <div className="flex h-[50px] items-center justify-center rounded-[10px] border border-[#E5E7EB] bg-[#F9FAFB]">
+          <div className="col-span-3 flex h-[50px] items-center justify-center rounded-[10px] border border-[#E5E7EB] bg-[#F9FAFB]">
             <Loader2 className="h-4 w-4 animate-spin text-[#4880EE]" />
             <span className="sr-only">{copy.providerLoading}</span>
           </div>
         ) : null}
 
         {!isProvidersLoading && enabledProviders.length === 0 ? (
-          <div className="rounded-[10px] border border-dashed border-[#E5E7EB] bg-[#F9FAFB] px-4 py-4 text-center text-sm text-[#6B7280]">
+          <div className="col-span-3 rounded-[10px] border border-dashed border-[#E5E7EB] bg-[#F9FAFB] px-4 py-4 text-center text-sm text-[#6B7280]">
             {copy.noProviders}
           </div>
         ) : null}
 
         {enabledProviders.map((provider) => (
           <button
+            aria-label={copy.providerLabels[provider.provider] ?? provider.label}
             className={[
-              "flex h-[50px] w-full items-center rounded-[10px] border px-4 text-[15px] font-normal disabled:cursor-not-allowed disabled:opacity-60",
+              "relative grid h-[72px] min-w-0 place-items-center gap-1 rounded-[10px] border px-1.5 py-2 text-[12px] font-semibold disabled:cursor-not-allowed disabled:opacity-60",
               providerStyles[provider.provider],
             ].join(" ")}
             disabled={isPending}
@@ -182,6 +185,9 @@ export function AuthSocialLoginModal({
             onClick={() => onProviderLogin(provider.provider)}
             type="button"
           >
+            {isPending && pendingProvider === provider.provider ? (
+              <Loader2 className="absolute right-1.5 top-1.5 h-3.5 w-3.5 animate-spin" />
+            ) : null}
             <span
               className={[
                 "grid h-[30px] w-[30px] shrink-0 place-items-center rounded-md",
@@ -195,17 +201,8 @@ export function AuthSocialLoginModal({
                 src={providerLogos[provider.provider]}
               />
             </span>
-            <span className="flex-1 text-center">
-              {getAuthProviderContinueLabel({
-                language,
-                provider: provider.provider,
-                providerLabel: provider.label,
-              })}
-            </span>
-            <span className="w-[26px] shrink-0">
-              {isPending && pendingProvider === provider.provider ? (
-                <Loader2 className="h-4 w-4 animate-spin" />
-              ) : null}
+            <span className="min-w-0 max-w-full truncate text-center">
+              {provider.label}
             </span>
           </button>
         ))}

@@ -31,10 +31,14 @@ type AuthLoginPageProps = {
 
 type AuthPageMode = "login" | "signup";
 
+const sharedProviderButtonStyle =
+  "border-[#dededa] bg-white text-[#191919] hover:bg-[#f7f7f5]";
+
+// 기능 : 모든 OAuth 버튼을 Google 버튼과 같은 흰 배경/회색 테두리 스타일로 통일합니다.
 const providerStyles: Record<AuthProviderId, string> = {
-  google: "border-[#dededa] bg-white text-[#191919] hover:bg-[#f7f7f5]",
-  line: "border-[#06c755] bg-[#06c755] text-white hover:bg-[#05b64d]",
-  apple: "border-[#111111] bg-[#111111] text-white hover:bg-[#2a2a2a]",
+  google: sharedProviderButtonStyle,
+  line: sharedProviderButtonStyle,
+  apple: sharedProviderButtonStyle,
 };
 
 const providerOrder: readonly AuthProviderId[] = ["google", "line", "apple"];
@@ -322,16 +326,17 @@ export function AuthLoginPage({
                 <div className="h-px flex-1 bg-[#e9e9e7]" />
               </div>
 
-              <div className="mt-8 grid grid-cols-1 gap-3">
+              {/* 기능 : OAuth provider 버튼을 3열로 고정해 로그인/회원가입 선택지를 한 줄에 보여줍니다. */}
+              <div className="mt-8 grid grid-cols-3 gap-2.5">
                 {isProvidersLoading ? (
-                  <div className="flex h-[74px] items-center justify-center gap-2 rounded-[7px] border border-[#dededa] bg-white text-[13px] font-semibold text-[#777770]">
+                  <div className="col-span-3 flex h-[74px] items-center justify-center gap-2 rounded-[7px] border border-[#dededa] bg-white text-[13px] font-semibold text-[#777770]">
                     <Loader2 className="h-4 w-4 animate-spin text-[#2383e2]" />
                     {copy.loading}
                   </div>
                 ) : null}
 
                 {!isProvidersLoading && visibleProviders.length === 0 ? (
-                  <div className="rounded-[7px] border border-dashed border-[#dededa] bg-white px-4 py-5 text-center text-[13px] font-semibold text-[#777770]">
+                  <div className="col-span-3 rounded-[7px] border border-dashed border-[#dededa] bg-white px-4 py-5 text-center text-[13px] font-semibold text-[#777770]">
                     {copy.noProviders}
                   </div>
                 ) : null}
@@ -339,7 +344,7 @@ export function AuthLoginPage({
                 {visibleProviders.map((provider) => (
                   <button
                     className={[
-                      "relative grid h-[74px] place-items-center rounded-[7px] border px-3 py-2 text-[15px] font-semibold shadow-[0_1px_1px_rgba(15,15,15,0.02)] transition-colors disabled:cursor-not-allowed disabled:opacity-60",
+                      "relative grid h-[74px] min-w-0 place-items-center gap-1 rounded-[7px] border px-2 py-2 text-[13px] font-semibold shadow-[0_1px_1px_rgba(15,15,15,0.02)] transition-colors disabled:cursor-not-allowed disabled:opacity-60",
                       providerStyles[provider.provider],
                     ].join(" ")}
                     disabled={isPending}
@@ -363,7 +368,9 @@ export function AuthLoginPage({
                         src={providerLogos[provider.provider]}
                       />
                     </span>
-                    <span>{copy.providers[provider.provider]}</span>
+                    <span className="min-w-0 max-w-full truncate">
+                      {copy.providers[provider.provider]}
+                    </span>
                   </button>
                 ))}
               </div>
