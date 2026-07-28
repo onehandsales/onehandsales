@@ -10,4 +10,5 @@ export interface CurrentUserContext {
   readonly role: CurrentUserRole;
   readonly status: CurrentUserStatus;
   readonly timeZone: string;
+  readonly defaultCurrencyCode?: string;
 }

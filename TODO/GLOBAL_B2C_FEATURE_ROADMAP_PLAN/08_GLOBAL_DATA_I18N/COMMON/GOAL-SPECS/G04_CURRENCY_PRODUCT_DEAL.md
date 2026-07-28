@@ -1,6 +1,6 @@
 # G04 Currency Product Deal
 
-상태: Not Started
+상태: Done
 목표: Product/Deal 금액에 통화 의미를 명시한다.
 
 ## 1. 포함 범위
@@ -123,7 +123,7 @@ pnpm run prisma:validate
 pnpm run prisma:generate
 pnpm run typecheck
 pnpm run lint
-pnpm run test -- product deal
+pnpm run test -- product deal schedule sales-report
 pnpm run build
 ```
 
@@ -136,17 +136,49 @@ pnpm run build
 
 ## 11. Goal 검토 체크리스트
 
-- [ ] Product/Deal currency DB 필드가 있다.
-- [ ] 기존 데이터는 KRW 의미를 유지한다.
-- [ ] 허용 통화는 KRW/USD다.
-- [ ] 금액 입력은 정수만 허용한다.
-- [ ] Product/Deal request에 `currencyCode`가 있다.
-- [ ] Product/Deal response에 `currencyCode`가 있다.
-- [ ] business logic이 Product currency 우선, User default fallback을 따른다.
-- [ ] user flow에서 Deal currency 변경이 가능하다.
-- [ ] `BE/prisma`를 참고했고 신규 column에 한글 주석이 있다.
-- [ ] Deal은 Product currency를 기본값으로 가져온다.
-- [ ] Deal currency는 변경 가능하다.
-- [ ] Product/Deal export/report가 currency-aware하다.
-- [ ] 신규 코드에 한글 주석 규칙이 적용됐다.
-- [ ] 실행한 검증 결과를 기록했다.
+- [x] Product/Deal currency DB 필드가 있다.
+- [x] 기존 데이터는 KRW 의미를 유지한다.
+- [x] 허용 통화는 KRW/USD다.
+- [x] 금액 입력은 정수만 허용한다.
+- [x] Product/Deal request에 `currencyCode`가 있다.
+- [x] Product/Deal response에 `currencyCode`가 있다.
+- [x] business logic이 Product currency 우선, User default fallback을 따른다.
+- [x] user flow에서 Deal currency 변경이 가능하다.
+- [x] `BE/prisma`를 참고했고 신규 column에 한글 주석이 있다.
+- [x] Deal은 Product currency를 기본값으로 가져온다.
+- [x] Deal currency는 변경 가능하다.
+- [x] Product/Deal export/report가 currency-aware하다.
+- [x] 신규 코드에 한글 주석 규칙이 적용됐다.
+- [x] 실행한 검증 결과를 기록했다.
+
+## 12. 완료 기록
+
+- 완료일: 2026-07-28
+- DB 변경: `Product.currencyCode`, `Deal.currencyCode`
+- 신규 migration: `BE/prisma/migrations/20260728020000_add_product_deal_currency/migration.sql`
+- Backend 주요 구현: Product/Deal DTO, application service, Prisma repository, company/contact 연결 딜 응답, schedule/AI weekly report snapshot 통화 보존
+- Frontend 주요 구현: Product/Deal form 통화 선택, Deal 생성 Product 통화 기본값, currency formatter 표시, schedule/AI weekly report 개별 딜 통화 표시
+- 오류 계약: `CURRENCY_UNSUPPORTED`, `AMOUNT_INTEGER_REQUIRED`
+
+검증 결과:
+
+```powershell
+cd BE
+pnpm.cmd run prisma:validate
+pnpm.cmd run prisma:generate
+pnpm.cmd run typecheck
+pnpm.cmd run lint
+pnpm.cmd run test -- product deal schedule sales-report
+pnpm.cmd run build
+```
+
+```powershell
+cd FE/user-web
+pnpm.cmd run typecheck
+pnpm.cmd run lint
+pnpm.cmd run build
+```
+
+- BE `prisma:validate`, `prisma:generate`, `typecheck`, `lint`, `test -- product deal schedule sales-report`, `build` 통과.
+- FE `typecheck`, `lint`, `build` 통과.
+- FE `build`는 기존 번들 크기 경고만 출력했다.

@@ -23,6 +23,7 @@ export interface ProductRecord {
   readonly id: string;
   readonly productName: string;
   readonly productPrice: number;
+  readonly currencyCode: string;
   readonly productCategory: ProductCategoryRecord;
   readonly productStatus: ProductStatusRecord;
   readonly createdAt: Date;
@@ -76,6 +77,7 @@ export interface ProductDealRecord {
   readonly id: string;
   readonly dealName: string;
   readonly dealCost: number;
+  readonly currencyCode: string;
   readonly dealStatus: string;
   readonly createdAt: Date;
 }
@@ -91,6 +93,7 @@ export interface CreateProductInput {
   readonly userId: string;
   readonly productName: string;
   readonly productPrice: number;
+  readonly currencyCode: string;
   readonly productCategoryId: string;
   readonly productStatusId: string;
 }
@@ -99,6 +102,7 @@ export interface CreateProductInput {
 export interface UpdateProductInput {
   readonly productName?: string;
   readonly productPrice?: number;
+  readonly currencyCode?: string;
   readonly productCategoryId?: string;
   readonly productStatusId?: string;
 }

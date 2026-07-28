@@ -38,5 +38,7 @@ export const koKRResource = {
     USER_TIMEZONE_INVALID: "올바른 시간대를 선택해 주세요.",
     USER_COUNTRY_UNSUPPORTED: "지원하는 국가를 선택해 주세요.",
     USER_DEFAULT_CURRENCY_UNSUPPORTED: "지원하는 통화를 선택해 주세요.",
+    CURRENCY_UNSUPPORTED: "지원하는 통화를 선택해 주세요.",
+    AMOUNT_INTEGER_REQUIRED: "금액은 0 이상의 정수로 입력해 주세요.",
   },
 } satisfies AppI18nResource;

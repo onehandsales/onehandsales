@@ -33,6 +33,11 @@ import { ModalShell } from "@/components/ui/modal-shell";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { Toast } from "@/components/ui/toast";
 import { useToast } from "@/components/ui/use-toast";
+import {
+  CurrencyCodeSelect,
+  useAppI18n,
+  type AppCurrencyCode,
+} from "@/features/app-i18n";
 import { DealActivityTimelineSection } from "@/features/deal/components/deal-activity-timeline-section";
 import { DealEditDialog } from "@/features/deal/components/deal-edit-dialog";
 import { FollowUpTimelinePanel } from "@/features/follow-up-delivery";
@@ -214,6 +219,7 @@ function DealDetailSidePanel({
   readonly onFetchFollowingLogsNext: () => void;
 }) {
   const nextAction = followingLogs[0];
+  const { formatCurrency } = useAppI18n();
   const companyName = formatDealCompanySummary(detail);
   const contactName = formatDealContactSummary(detail);
   const products = Array.isArray(detail.products) ? detail.products : [];
@@ -240,7 +246,9 @@ function DealDetailSidePanel({
             <MetricCard
               icon={HandCoins}
               label="금액"
-              value={`${dealCost.toLocaleString("ko-KR")}원`}
+              value={formatCurrency(dealCost, {
+                currencyCode: detail.currencyCode,
+              })}
             />
             <MetricCard
               icon={CalendarClock}
@@ -297,6 +305,9 @@ function DealInlineEditForm({
   const initialDealCost = Number.isFinite(detail.dealCost) ? detail.dealCost : 0;
   const [dealName, setDealName] = useState(detail.dealName ?? "");
   const [dealCost, setDealCost] = useState(initialDealCost.toString());
+  const [currencyCode, setCurrencyCode] = useState<AppCurrencyCode>(
+    detail.currencyCode
+  );
   const [dealStatus, setDealStatus] = useState<DealStatus>(detail.dealStatus);
   const [expectedEndDate, setExpectedEndDate] = useState(
     detail.expectedEndDate ? detail.expectedEndDate.slice(0, 10) : ""
@@ -308,6 +319,7 @@ function DealInlineEditForm({
       dealId: detail.id,
       dealName: dealName.trim(),
       dealCost: Number(dealCost.replace(/,/g, "")),
+      currencyCode,
       dealStatus,
       expectedEndDate,
     });
@@ -330,12 +342,19 @@ function DealInlineEditForm({
       <div className="grid grid-cols-2 gap-2">
         <label className="grid gap-1.5 text-[12px] font-medium text-[#475569]">
           금액
-          <input
-            className="h-9 rounded-md border border-[#E2E5EC] bg-white px-3 text-[13px] text-[#111827] outline-none focus:border-[#93C5FD]"
-            inputMode="numeric"
-            onChange={(event) => setDealCost(event.target.value)}
-            value={dealCost}
-          />
+          <div className="flex h-9 overflow-hidden rounded-md border border-[#E2E5EC] bg-white focus-within:border-[#93C5FD]">
+            <input
+              className="min-w-0 flex-1 border-0 px-3 text-[13px] text-[#111827] outline-none"
+              inputMode="numeric"
+              onChange={(event) => setDealCost(event.target.value)}
+              value={dealCost}
+            />
+            <CurrencyCodeSelect
+              className="shrink-0 border-l border-[#E2E5EC] bg-[#F8FAFC] px-2 text-[12px] font-semibold text-[#475569] outline-none"
+              value={currencyCode}
+              onChange={setCurrencyCode}
+            />
+          </div>
         </label>
         <label className="grid gap-1.5 text-[12px] font-medium text-[#475569]">
           단계
@@ -643,6 +662,8 @@ function DealSummaryHeader({
   readonly onCancelEdit: () => void;
   readonly onSaved: () => void;
 }) {
+  const { formatCurrency } = useAppI18n();
+
   if (isEditing) {
     return (
       <div className="rounded-xl border border-[#BFDBFE] bg-white p-4">
@@ -673,7 +694,10 @@ function DealSummaryHeader({
       </span>
       <StatusBadge status={detail.dealStatus} />
       <div className="hidden h-5 w-px shrink-0 bg-[#E5E7EB] lg:block" />
-      <DealSummaryChip label="금액" value={`${dealCost.toLocaleString("ko-KR")}원`} />
+      <DealSummaryChip
+        label="금액"
+        value={formatCurrency(dealCost, { currencyCode: detail.currencyCode })}
+      />
       <DealSummaryChip label="마감" value={formatDate(detail.expectedEndDate)} />
       <DealSummaryChip label="회사" value={companyName} />
       <DealSummaryChip label="담당자" value={`${contactName} ${contactDepartmentName}`} />
@@ -814,6 +838,8 @@ function DealLinkedProductsTable({
 }: {
   readonly products: DealDetail["products"];
 }) {
+  const { formatCurrency } = useAppI18n();
+
   return (
     <DealLinkedTableFrame count={products.length} title="연결 제품">
       {products.length === 0 ? (
@@ -849,7 +875,9 @@ function DealLinkedProductsTable({
                 </div>
                 <div className="grid min-w-0 gap-0.5 text-right text-[11px] font-semibold leading-4">
                   <span className="truncate text-[#374151]">
-                    {product.productPrice.toLocaleString("ko-KR")}원
+                    {formatCurrency(product.productPrice, {
+                      currencyCode: product.currencyCode,
+                    })}
                   </span>
                 </div>
               </div>

@@ -107,6 +107,7 @@ type WeeklyReportDealRow = {
   readonly id: string;
   readonly dealName: string;
   readonly dealCost: number;
+  readonly currencyCode: string;
   readonly dealStatus: string;
   readonly expectedEndDate: Date;
   readonly dealCompanies: {
@@ -513,6 +514,7 @@ export class PrismaScheduleRepository implements ScheduleRepository {
               id: true,
               dealName: true,
               dealCost: true,
+              currencyCode: true,
               dealStatus: true,
               expectedEndDate: true,
               dealCompanies: {
@@ -918,6 +920,7 @@ export class PrismaScheduleRepository implements ScheduleRepository {
       id: deal.id,
       dealName: deal.dealName,
       dealCost: deal.dealCost,
+      currencyCode: deal.currencyCode,
       dealStatus: this.mapDealStatus(deal.dealStatus),
       expectedEndDate: deal.expectedEndDate,
       companies: deal.dealCompanies.map((dealCompany) => ({

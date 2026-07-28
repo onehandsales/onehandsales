@@ -75,6 +75,8 @@ API 이름:
 - Product가 연결된 Deal 생성은 Product `currencyCode`를 기본값으로 사용한다.
 - Product가 없거나 currency가 없으면 `User.defaultCurrencyCode`를 사용한다.
 - 사용자는 Deal currency를 변경할 수 있다.
+- 주간 일정 리포트와 AI 주간 리포트 snapshot의 개별 Deal 금액은 `currencyCode`를 함께 포함한다.
+- 주간 일정 리포트 summary는 기존 `totalDealCost`를 유지하고 `totalDealCostByCurrency`를 추가한다.
 
 Deal Business Logic:
 
@@ -245,10 +247,10 @@ Company DB / Transaction:
 
 ## 6. 구현 체크리스트
 
-- [ ] Product/Deal/Contact/Company DTO와 FE type이 일치한다.
-- [ ] 기존 한국 데이터 fallback이 있다.
-- [ ] KR/US 외 값은 1차에서 거부하거나 fallback 정책을 따른다.
-- [ ] API response는 FE가 locale별 표시를 만들 수 있는 code를 포함한다.
-- [ ] 각 domain mutation의 transaction 필요 여부가 기존 use case와 일치한다.
-- [ ] 각 domain observability event와 redaction 기준이 구현 결과와 일치한다.
-- [ ] Backend 신규/수정 코드에 한글 주석 규칙이 적용된다.
+- [x] Product/Deal/Contact/Company DTO와 FE type이 일치한다.
+- [x] 기존 한국 데이터 fallback이 있다.
+- [x] KR/US 외 값은 1차에서 거부하거나 fallback 정책을 따른다.
+- [x] API response는 FE가 locale별 표시를 만들 수 있는 code를 포함한다.
+- [x] 각 domain mutation의 transaction 필요 여부가 기존 use case와 일치한다.
+- [x] 각 domain observability event와 redaction 기준이 구현 결과와 일치한다.
+- [x] Backend 신규/수정 코드에 한글 주석 규칙이 적용된다.

@@ -38,6 +38,7 @@ import { ListFilterSelect } from "@/components/ui/list-filter-select";
 import { ListEmptyState } from "@/components/ui/state";
 import { Toast } from "@/components/ui/toast";
 import { useAuthSession } from "@/features/auth";
+import { useAppI18n } from "@/features/app-i18n";
 import { DealCreateDialog } from "@/features/deal/components/deal-create-dialog";
 import type { DealCreateFormValues } from "@/features/deal/schemas/deal-schema";
 import {
@@ -1044,6 +1045,7 @@ function DealListRow({
   readonly displayTimeZone: string;
   readonly onSelect: (id: string) => void;
 }) {
+  const { formatCurrency } = useAppI18n();
   const contactLabel = formatDealContactLabel(deal);
   const companyLabel = formatDealCompanyLabel(deal);
   const nextActionLabel = formatDealNextActionLabel(deal);
@@ -1051,6 +1053,9 @@ function DealListRow({
   const deadlineLabel = getDeadlineDDayLabel(deal.expectedEndDate);
   const deadlineColor = getDeadlineDDayColor(deal.expectedEndDate);
   const deadlineDateLabel = formatDealDateShort(deal.expectedEndDate);
+  const amountLabel = formatCurrency(deal.dealCost, {
+    currencyCode: deal.currencyCode,
+  });
 
   return (
     <div
@@ -1113,9 +1118,9 @@ function DealListRow({
       <div className="min-w-0">
         <span
           className="block truncate text-[12px] text-gray-900"
-          title={`${deal.dealCost.toLocaleString("ko-KR")}원`}
+          title={amountLabel}
         >
-          ₩ {deal.dealCost.toLocaleString("ko-KR")}
+          {amountLabel}
         </span>
       </div>
 
@@ -1222,6 +1227,7 @@ function MobileDealCard({
   readonly deal: DealListItem;
   readonly displayTimeZone: string;
 }) {
+  const { formatCurrency } = useAppI18n();
   const contactLabel = formatDealContactLabel(deal);
   const companyLabel = formatDealCompanyLabel(deal);
   const deadlineLabel = getDeadlineDDayLabel(deal.expectedEndDate);
@@ -1235,6 +1241,9 @@ function MobileDealCard({
   const latestActivityMetaLabel = latestActivity
     ? formatDealLatestActivityMeta(latestActivity, displayTimeZone)
     : null;
+  const amountLabel = formatCurrency(deal.dealCost, {
+    currencyCode: deal.currencyCode,
+  });
 
   return (
     <Link
@@ -1330,7 +1339,7 @@ function MobileDealCard({
       {/* Row5: 금액 + 마감일 */}
       <div className="mt-3 flex items-center justify-between gap-2">
         <p className="text-[17px] text-[#111827]">
-          ₩ {deal.dealCost.toLocaleString("ko-KR")}
+          {amountLabel}
         </p>
         <p className="text-[12px]" style={{ color: deadlineColor }}>
           마감 {formatDealDateShort(deal.expectedEndDate)}

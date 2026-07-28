@@ -125,6 +125,7 @@ export interface AiWeeklySnapshotProductRecord {
   readonly id: string | null;
   readonly productName: string;
   readonly productPrice: number | null;
+  readonly currencyCode: string | null;
   readonly category?: string | null;
   readonly status?: string | null;
 }
@@ -134,6 +135,7 @@ export interface AiWeeklySnapshotDealRecord {
   readonly dealName: string;
   readonly dealStatus: string;
   readonly dealCost: number;
+  readonly currencyCode: string;
   readonly expectedEndDate: Date;
   readonly companies: readonly AiWeeklySnapshotCompanyRecord[];
   readonly contacts: readonly AiWeeklySnapshotContactRecord[];
@@ -165,6 +167,7 @@ export interface AiWeeklySnapshotMeetingNoteRecord {
     readonly dealName: string;
     readonly dealStatus: string;
     readonly dealCost: number;
+    readonly currencyCode: string;
     readonly expectedEndDate: Date;
   }[];
 }

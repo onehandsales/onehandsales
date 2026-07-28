@@ -116,6 +116,8 @@ export class HttpExceptionFilter implements ExceptionFilter {
       case "InvalidDeviceId":
       case "InvalidRefreshOrigin":
       case "ValidationError":
+      case "CURRENCY_UNSUPPORTED":
+      case "AMOUNT_INTEGER_REQUIRED":
       case "USER_LOCALE_UNSUPPORTED":
       case "USER_TIMEZONE_INVALID":
       case "USER_COUNTRY_UNSUPPORTED":

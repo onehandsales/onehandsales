@@ -23,6 +23,7 @@ import {
 import {
   type ChangeEvent,
   type ReactNode,
+  useCallback,
   useEffect,
   useMemo,
   useRef,
@@ -39,6 +40,11 @@ import {
 import { ModalShell } from "@/components/ui/modal-shell";
 import { ErrorState } from "@/components/ui/state";
 import { useDropdownPlacement } from "@/components/ui/use-dropdown-placement";
+import {
+  CurrencyCodeSelect,
+  useAppI18n,
+  type AppCurrencyCode,
+} from "@/features/app-i18n";
 import {
   useCompanyFields,
   useCompanyRegions,
@@ -114,9 +120,12 @@ export function DealCreateDialog({
   onExpand,
   onResizeStart,
 }: DealCreateDialogProps) {
+  const { defaultCurrencyCode } = useAppI18n();
   const [selectedCompanyIds, setSelectedCompanyIds] = useState<string[]>([]);
   const [selectedContactIds, setSelectedContactIds] = useState<string[]>([]);
   const [selectedProductIds, setSelectedProductIds] = useState<string[]>([]);
+  const [isCurrencyManuallyChanged, setIsCurrencyManuallyChanged] =
+    useState(false);
   const [isCompanyCreateOpen, setIsCompanyCreateOpen] = useState(false);
   const [isContactCreateOpen, setIsContactCreateOpen] = useState(false);
   const [isProductCreateOpen, setIsProductCreateOpen] = useState(false);
@@ -140,6 +149,7 @@ export function DealCreateDialog({
   });
 
   const dealCostValue = watch("dealCost");
+  const currencyCodeValue = watch("currencyCode") ?? defaultCurrencyCode;
   const dealStatusValue = watch("dealStatus");
   const expectedEndDateValue = watch("expectedEndDate");
   const dealMemo = watch("dealMemo") ?? "";
@@ -156,17 +166,19 @@ export function DealCreateDialog({
         companyIds: initialValues?.companyIds ?? [],
         contactIds: initialValues?.contactIds ?? [],
         productIds: initialValues?.productIds ?? [],
+        currencyCode: initialValues?.currencyCode ?? defaultCurrencyCode,
       };
 
       reset(nextValues);
       setSelectedCompanyIds(nextValues.companyIds);
       setSelectedContactIds(nextValues.contactIds);
       setSelectedProductIds(nextValues.productIds);
+      setIsCurrencyManuallyChanged(Boolean(initialValues?.currencyCode));
       setIsCompanyCreateOpen(false);
       setIsContactCreateOpen(false);
       setIsProductCreateOpen(false);
     }
-  }, [initialValues, open, reset]);
+  }, [defaultCurrencyCode, initialValues, open, reset]);
 
   useEffect(() => {
     if (!open) {
@@ -191,6 +203,44 @@ export function DealCreateDialog({
   }, [initialValues, open]);
 
   const formId = "deal-create-form";
+  const productOptions = useMemo(
+    () => productOptionsQuery.data ?? [],
+    [productOptionsQuery.data],
+  );
+
+  // 기능 : 선택 제품 목록에서 첫 번째 제품 통화를 찾아 Deal 기본 통화로 사용합니다.
+  const resolveCurrencyCodeForProducts = useCallback((
+    productIds: readonly string[]
+  ): AppCurrencyCode => {
+    const productMap = new Map(
+      productOptions.map((product) => [product.id, product.currencyCode])
+    );
+
+    return (
+      productIds
+        .map((productId) => productMap.get(productId))
+        .find((currencyCode): currencyCode is AppCurrencyCode =>
+          Boolean(currencyCode)
+        ) ?? defaultCurrencyCode
+    );
+  }, [defaultCurrencyCode, productOptions]);
+
+  // 기능 : 제품 옵션이 늦게 로딩되어도 통화 직접 변경 전이면 첫 선택 제품 통화를 반영합니다.
+  useEffect(() => {
+    if (!open || isCurrencyManuallyChanged) {
+      return;
+    }
+
+    setValue("currencyCode", resolveCurrencyCodeForProducts(selectedProductIds), {
+      shouldValidate: true,
+    });
+  }, [
+    isCurrencyManuallyChanged,
+    open,
+    resolveCurrencyCodeForProducts,
+    selectedProductIds,
+    setValue,
+  ]);
 
   const onCompanyToggle = (companyId: string) => {
     const next = selectedCompanyIds.includes(companyId)
@@ -228,6 +278,22 @@ export function DealCreateDialog({
 
     setSelectedProductIds(next);
     setValue("productIds", next, { shouldValidate: true });
+
+    if (!isCurrencyManuallyChanged) {
+      setValue("currencyCode", resolveCurrencyCodeForProducts(next), {
+        shouldDirty: true,
+        shouldValidate: true,
+      });
+    }
+  };
+
+  // 기능 : 사용자가 직접 선택한 Deal 통화는 이후 제품 선택 기본값보다 우선합니다.
+  const onCurrencyCodeChange = (currencyCode: AppCurrencyCode) => {
+    setIsCurrencyManuallyChanged(true);
+    setValue("currencyCode", currencyCode, {
+      shouldDirty: true,
+      shouldValidate: true,
+    });
   };
 
   // 기능 : 금액 입력 표시에는 콤마를 넣고 form 값은 숫자 문자열로 유지합니다.
@@ -311,6 +377,12 @@ export function DealCreateDialog({
         shouldDirty: true,
         shouldValidate: true,
       });
+      if (!isCurrencyManuallyChanged) {
+        setValue("currencyCode", created.currencyCode, {
+          shouldDirty: true,
+          shouldValidate: true,
+        });
+      }
       setValue("productSearch", "", { shouldDirty: true });
     }
   };
@@ -337,7 +409,6 @@ export function DealCreateDialog({
           selectedCompanyIdSet.has(contact.companyId),
         )
       : [];
-  const productOptions = productOptionsQuery.data ?? [];
   const isDocked = mode === "docked";
   const isPage = mode === "page";
   const CloseIcon = isPage ? ArrowLeft : ChevronsRight;
@@ -456,11 +527,12 @@ export function DealCreateDialog({
 
             <section className="grid cursor-auto gap-3 sm:grid-cols-2">
               <DealCreatePanelProperty
-                error={errors.dealCost?.message}
+                error={errors.dealCost?.message ?? errors.currencyCode?.message}
                 errorId="deal-cost-error"
                 label="금액"
               >
                 <input type="hidden" {...register("dealCost")} />
+                <input type="hidden" {...register("currencyCode")} />
                 <div className="flex h-10 items-center overflow-hidden rounded-md border border-[#E6EAF0] focus-within:border-[#4880EE] focus-within:ring-1 focus-within:ring-[#4880EE]">
                   <span className="grid h-full w-10 shrink-0 place-items-center border-r border-[#E6EAF0] bg-[#F9FAFB]">
                     <HandCoins className="h-4 w-4 text-[#6B7280]" />
@@ -478,9 +550,11 @@ export function DealCreateDialog({
                     placeholder="0"
                     value={formatCurrencyInput(dealCostValue ?? "")}
                   />
-                  <span className="shrink-0 select-none border-l border-[#E6EAF0] bg-[#F9FAFB] px-3 text-[12px] font-medium text-[#9CA3AF]">
-                    KRW
-                  </span>
+                  <CurrencyCodeSelect
+                    className="h-full shrink-0 border-l border-[#E6EAF0] bg-[#F9FAFB] px-2 text-[12px] font-medium text-[#6B7280] outline-none"
+                    value={currencyCodeValue}
+                    onChange={onCurrencyCodeChange}
+                  />
                 </div>
               </DealCreatePanelProperty>
 

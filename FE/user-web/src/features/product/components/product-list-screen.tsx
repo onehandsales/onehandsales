@@ -1,6 +1,7 @@
 import {
   Activity,
   ArrowUpDown,
+  Banknote,
   BriefcaseBusiness,
   ChevronDown,
   CircleDot,
@@ -37,6 +38,7 @@ import { Pagination } from "@/components/ui/pagination";
 import { ListEmptyState } from "@/components/ui/state";
 import { Toast } from "@/components/ui/toast";
 import { useAuthSession } from "@/features/auth";
+import { useAppI18n } from "@/features/app-i18n";
 import { ProductCreateDialog } from "@/features/product/components/product-create-dialog";
 import type {
   ProductCreateFormValues,
@@ -77,6 +79,7 @@ const PRODUCT_SORT_OPTIONS: Array<{
 
 const PRODUCT_TABLE_COLUMNS = [
   { id: "productName", defaultWidth: 240, minWidth: 175, maxWidth: 420 },
+  { id: "price", defaultWidth: 150, minWidth: 120 },
   { id: "category", defaultWidth: 180, minWidth: 135 },
   { id: "status", defaultWidth: 140, minWidth: 115 },
   { id: "dealCount", defaultWidth: 110, minWidth: 95 },
@@ -707,26 +710,32 @@ export function ProductListScreen({
                 제품명
               </ListTableHeaderCell>
               <ListTableHeaderCell
+                icon={Banknote}
+                {...getHeaderCellResizeProps("price", 1)}
+              >
+                가격
+              </ListTableHeaderCell>
+              <ListTableHeaderCell
                 icon={Tags}
-                {...getHeaderCellResizeProps("category", 1)}
+                {...getHeaderCellResizeProps("category", 2)}
               >
                 카테고리
               </ListTableHeaderCell>
               <ListTableHeaderCell
                 icon={CircleDot}
-                {...getHeaderCellResizeProps("status", 2)}
+                {...getHeaderCellResizeProps("status", 3)}
               >
                 상태
               </ListTableHeaderCell>
               <ListTableHeaderCell
                 icon={BriefcaseBusiness}
-                {...getHeaderCellResizeProps("dealCount", 3)}
+                {...getHeaderCellResizeProps("dealCount", 4)}
               >
                 연결 딜
               </ListTableHeaderCell>
               <ListTableHeaderCell
                 icon={Activity}
-                {...getHeaderCellResizeProps("createdAt", 4)}
+                {...getHeaderCellResizeProps("createdAt", 5)}
               >
                 활동
               </ListTableHeaderCell>
@@ -965,6 +974,7 @@ function ProductMobileCard({
   readonly displayTimeZone: string;
 }) {
   const navigate = useNavigate();
+  const { formatCurrency } = useAppI18n();
 
   return (
     <button
@@ -996,7 +1006,9 @@ function ProductMobileCard({
         {/* Row3: 연결 딜 + 현재 응답에서 가능한 활동 */}
         <div className="mt-1 flex items-center justify-between">
           <span className="text-[12px] text-[#6B7280]">
-            딜 {product.dealCount.toLocaleString("ko-KR")}건
+            {formatCurrency(product.productPrice, {
+              currencyCode: product.currencyCode,
+            })} · 딜 {product.dealCount.toLocaleString("ko-KR")}건
           </span>
           <span className="shrink-0 text-[11px] text-[#9CA3AF]">
             {formatProductCreatedActivity(product.createdAt, displayTimeZone)}
@@ -1015,6 +1027,7 @@ function ProductRow({
   readonly displayTimeZone: string;
 }) {
   const navigate = useNavigate();
+  const { formatCurrency } = useAppI18n();
 
   return (
     <div
@@ -1033,6 +1046,11 @@ function ProductRow({
         <span className="block truncate text-[13px] font-semibold text-[#111827]">
           {product.productName}
         </span>
+      </div>
+      <div className="min-w-0 whitespace-nowrap text-[12px] font-semibold text-[#111827]">
+        {formatCurrency(product.productPrice, {
+          currencyCode: product.currencyCode,
+        })}
       </div>
       <div className="min-w-0">
         <Badge tone="indigo">{product.productCategory.categoryName}</Badge>

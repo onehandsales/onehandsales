@@ -2,6 +2,7 @@ import { Transform, type TransformFnParams, Type } from "class-transformer";
 import {
   IsArray,
   IsEnum,
+  IsIn,
   IsInt,
   IsOptional,
   IsString,
@@ -9,6 +10,7 @@ import {
   Min,
 } from "class-validator";
 import { ProductListSort } from "@/modules/product/application/ports/product.repository";
+import { SUPPORTED_CURRENCY_CODES } from "@/shared/application/currency/currency-code";
 
 function toOptionalStringArray(params: TransformFnParams): string[] | undefined {
   const { value } = params;
@@ -111,6 +113,10 @@ export class CreateProductDto {
   @Min(0)
   productPrice!: number;
 
+  @IsOptional()
+  @IsIn(SUPPORTED_CURRENCY_CODES)
+  currencyCode?: string;
+
   @IsUUID()
   productCategoryId!: string;
 
@@ -133,6 +139,10 @@ export class UpdateProductDto {
   @IsInt()
   @Min(0)
   productPrice?: number;
+
+  @IsOptional()
+  @IsIn(SUPPORTED_CURRENCY_CODES)
+  currencyCode?: string;
 
   @IsOptional()
   @IsUUID()

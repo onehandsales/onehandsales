@@ -35,6 +35,10 @@ import {
   type ExportedXlsxFileResponse,
   XLSX_CONTENT_TYPE,
 } from "@/shared/application/export/xlsx-export-file";
+import {
+  normalizeCurrencyCode,
+  resolveCurrencyCodeWithDefault,
+} from "@/shared/application/currency/currency-code";
 import type { CurrentUserContext } from "@/shared/application/context/current-user.context";
 import {
   XLSX_WORKBOOK_WRITER,
@@ -42,7 +46,10 @@ import {
   type XlsxWorkbookWriter,
 } from "@/shared/application/ports/xlsx-workbook.writer";
 import { createTrashRetentionTimestamps } from "@/shared/application/trash/trash-retention";
-import { ValidationDomainError } from "@/shared/domain/errors/common.errors";
+import {
+  FieldValidationDomainError,
+  ValidationDomainError,
+} from "@/shared/domain/errors/common.errors";
 import { AppLogger } from "@/shared/infrastructure/logger/app-logger.service";
 
 const PRODUCT_PAGE_SIZE = 15;
@@ -75,6 +82,7 @@ export interface ProductExportQueryInput {
 export interface CreateProductCommand {
   readonly productName: string;
   readonly productPrice: number;
+  readonly currencyCode?: string;
   readonly productCategoryId: string;
   readonly productStatusId: string;
   readonly productMemo?: string | null;
@@ -84,6 +92,7 @@ export interface CreateProductCommand {
 export interface UpdateProductCommand {
   readonly productName?: string;
   readonly productPrice?: number;
+  readonly currencyCode?: string;
   readonly productCategoryId?: string;
   readonly productStatusId?: string;
 }
@@ -106,6 +115,8 @@ export interface ProductPageResponse {
 export interface ProductListItemResponse {
   readonly id: string;
   readonly productName: string;
+  readonly productPrice: number;
+  readonly currencyCode: string;
   readonly productCategory: ProductCategoryRecord;
   readonly productStatus: ProductStatusRecord;
   readonly dealCount: number;
@@ -119,6 +130,7 @@ export interface ProductDetailResponse {
   readonly productCategory: ProductCategoryRecord;
   readonly productStatus: ProductStatusRecord;
   readonly productPrice: number;
+  readonly currencyCode: string;
   readonly createdAt: string;
   readonly updatedAt: string;
 }
@@ -133,6 +145,7 @@ export interface ProductDealItemResponse {
   readonly id: string;
   readonly dealName: string;
   readonly dealCost: number;
+  readonly currencyCode: string;
   readonly dealStatus: string;
   readonly createdAt: string;
 }
@@ -370,6 +383,10 @@ export class ProductApplicationService {
       "productName is required"
     );
     const productPrice = this.normalizeProductPrice(input.productPrice);
+    const currencyCode = resolveCurrencyCodeWithDefault(
+      input.currencyCode,
+      currentUser.defaultCurrencyCode
+    );
     const productMemo = this.normalizeOptionalText(input.productMemo);
     let createdProductId: string | null = null;
 
@@ -392,6 +409,7 @@ export class ProductApplicationService {
         userId: currentUser.id,
         productName,
         productPrice,
+        currencyCode,
         productCategoryId: input.productCategoryId,
         productStatusId: input.productStatusId,
       });
@@ -927,7 +945,11 @@ export class ProductApplicationService {
 
   private normalizeProductPrice(value: number): number {
     if (!Number.isInteger(value) || value < 0) {
-      throw new ValidationDomainError("productPrice must be an integer >= 0");
+      throw new FieldValidationDomainError(
+        "AMOUNT_INTEGER_REQUIRED",
+        "productPrice",
+        "productPrice must be an integer >= 0"
+      );
     }
 
     return value;
@@ -946,6 +968,9 @@ export class ProductApplicationService {
         : {}),
       ...(input.productPrice !== undefined
         ? { productPrice: this.normalizeProductPrice(input.productPrice) }
+        : {}),
+      ...(input.currencyCode !== undefined
+        ? { currencyCode: normalizeCurrencyCode(input.currencyCode) }
         : {}),
       ...(input.productCategoryId !== undefined
         ? { productCategoryId: input.productCategoryId }
@@ -1040,6 +1065,8 @@ export class ProductApplicationService {
     return {
       id: product.id,
       productName: product.productName,
+      productPrice: product.productPrice,
+      currencyCode: product.currencyCode,
       productCategory: product.productCategory,
       productStatus: product.productStatus,
       dealCount: product.dealCount,
@@ -1055,6 +1082,7 @@ export class ProductApplicationService {
       productCategory: product.productCategory,
       productStatus: product.productStatus,
       productPrice: product.productPrice,
+      currencyCode: product.currencyCode,
       createdAt: product.createdAt.toISOString(),
       updatedAt: product.updatedAt.toISOString(),
     };
@@ -1066,6 +1094,7 @@ export class ProductApplicationService {
       id: deal.id,
       dealName: deal.dealName,
       dealCost: deal.dealCost,
+      currencyCode: deal.currencyCode,
       dealStatus: deal.dealStatus,
       createdAt: deal.createdAt.toISOString(),
     };
@@ -1080,6 +1109,8 @@ export class ProductApplicationService {
         sheetName: "Products",
         columns: [
           { header: "제품명", key: "productName", width: 28 },
+          { header: "가격", key: "productPrice", width: 16 },
+          { header: "통화", key: "currencyCode", width: 10 },
           { header: "카테고리", key: "categoryName", width: 18 },
           { header: "상태", key: "statusName", width: 18 },
           { header: "딜 수", key: "dealCount", width: 12 },
@@ -1101,6 +1132,8 @@ export class ProductApplicationService {
   private toProductExportRows(products: ProductListRecord[]): XlsxRow[] {
     return products.map((product) => ({
       productName: product.productName,
+      productPrice: product.productPrice,
+      currencyCode: product.currencyCode,
       categoryName: product.productCategory.categoryName,
       statusName: product.productStatus.statusName,
       dealCount: product.dealCount,

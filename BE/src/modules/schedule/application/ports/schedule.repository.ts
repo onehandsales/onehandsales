@@ -89,6 +89,7 @@ export interface WeeklyReportDealRecord {
   readonly id: string;
   readonly dealName: string;
   readonly dealCost: number;
+  readonly currencyCode: string;
   readonly dealStatus: DealStatusCode;
   readonly expectedEndDate: Date;
   readonly companies: WeeklyReportCompanyRecord[];

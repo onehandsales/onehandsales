@@ -5,7 +5,11 @@ import type {
   AppDateValue,
   AppPhoneFormatOptions,
 } from "@/features/app-i18n/formatters";
-import type { AppI18nKey, AppLocale } from "@/features/app-i18n/constants";
+import type {
+  AppCurrencyCode,
+  AppI18nKey,
+  AppLocale,
+} from "@/features/app-i18n/constants";
 
 export type AppI18nTranslateOptions = {
   readonly values?: Record<string, string | number>;
@@ -15,7 +19,7 @@ export type AppI18nContextValue = {
   readonly locale: AppLocale;
   readonly timeZone: string;
   readonly countryCode: string;
-  readonly defaultCurrencyCode: string;
+  readonly defaultCurrencyCode: AppCurrencyCode;
   readonly t: (key: AppI18nKey, options?: AppI18nTranslateOptions) => string;
   readonly formatDate: (
     value: AppDateValue,

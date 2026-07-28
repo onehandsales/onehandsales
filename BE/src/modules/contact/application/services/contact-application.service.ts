@@ -145,6 +145,7 @@ export interface ContactDealItemResponse {
   readonly id: string;
   readonly dealName: string;
   readonly dealCost: number;
+  readonly currencyCode: string;
   readonly createdAt: string;
 }
 
@@ -1060,6 +1061,7 @@ export class ContactApplicationService {
       id: deal.id,
       dealName: deal.dealName,
       dealCost: deal.dealCost,
+      currencyCode: deal.currencyCode,
       createdAt: deal.createdAt.toISOString(),
     };
   }

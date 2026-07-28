@@ -145,6 +145,7 @@ export class PrismaContactRepository implements ContactRepository {
         id: true,
         dealName: true,
         dealCost: true,
+        currencyCode: true,
         createdAt: true,
       },
       orderBy: [{ createdAt: "desc" }, { id: "desc" }],

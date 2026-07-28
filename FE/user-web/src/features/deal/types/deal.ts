@@ -1,4 +1,5 @@
 // 기능 : Deal 도메인 타입 정의 — Backend Deal API 계약 기준
+import type { AppCurrencyCode } from "@/features/app-i18n";
 
 export type DealStatus =
   | "INITIAL_CONTACT"
@@ -188,6 +189,7 @@ export type DealProduct = {
   readonly productName: string;
   readonly isDeleted: boolean;
   readonly productPrice: number;
+  readonly currencyCode: AppCurrencyCode;
   readonly productCategory: {
     readonly id: string;
     readonly categoryName: string;
@@ -240,6 +242,7 @@ export type DealListItem = {
   readonly id: string;
   readonly dealName: string;
   readonly dealCost: number;
+  readonly currencyCode: AppCurrencyCode;
   readonly dealStatus: DealStatus;
   readonly dealStatusLabel: string;
   readonly expectedEndDate: string;
@@ -258,6 +261,7 @@ export type DealDetail = {
   readonly id: string;
   readonly dealName: string;
   readonly dealCost: number;
+  readonly currencyCode: AppCurrencyCode;
   readonly dealStatus: DealStatus;
   readonly dealStatusLabel: string;
   readonly expectedEndDate: string;
@@ -303,6 +307,7 @@ export type DealSort =
 export type CreateDealInput = {
   readonly dealName: string;
   readonly dealCost: number;
+  readonly currencyCode?: AppCurrencyCode;
   readonly companyIds: string[];
   readonly contactIds: string[];
   readonly productIds: string[];
@@ -317,6 +322,7 @@ export type UpdateDealInput = {
   readonly dealId: string;
   readonly dealName?: string;
   readonly dealCost?: number;
+  readonly currencyCode?: AppCurrencyCode;
   readonly companyIds?: string[];
   readonly contactIds?: string[];
   readonly productIds?: string[];
@@ -361,6 +367,7 @@ export type DealProductOption = {
   readonly productName: string;
   readonly isDeleted: boolean;
   readonly productPrice: number;
+  readonly currencyCode: AppCurrencyCode;
   readonly productCategory: {
     readonly id: string;
     readonly categoryName: string;

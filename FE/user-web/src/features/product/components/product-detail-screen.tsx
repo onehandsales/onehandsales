@@ -23,6 +23,12 @@ import {
   ModalFormSection,
 } from "@/components/ui/modal-form";
 import { ModalShell } from "@/components/ui/modal-shell";
+import {
+  APP_SUPPORTED_CURRENCY_CODES,
+  CurrencyCodeSelect,
+  useAppI18n,
+  type AppCurrencyCode,
+} from "@/features/app-i18n";
 import { ProductEditDialog } from "@/features/product/components/product-edit-dialog";
 import {
   useProductCategories,
@@ -72,6 +78,12 @@ const productSummaryEditSchema = z.object({
       (value) => value.length === 0 || /^\d+$/.test(value),
       "가격은 0 이상의 정수로 입력해 주세요."
     ),
+  currencyCode: z.enum(
+    APP_SUPPORTED_CURRENCY_CODES as unknown as [
+      AppCurrencyCode,
+      ...AppCurrencyCode[],
+    ]
+  ),
   productCategoryId: z.string().trim().min(1, "카테고리를 선택해 주세요."),
   productStatusId: z.string().trim().min(1, "상태를 선택해 주세요."),
 });
@@ -378,6 +390,7 @@ function ProductSummaryHeader({
   readonly onCancelEdit: () => void;
   readonly onSaved: () => void;
 }) {
+  const { formatCurrency } = useAppI18n();
   const updateProductMutation = useUpdateProductMutation();
   const categoriesQuery = useProductCategories();
   const statusesQuery = useProductStatuses();
@@ -402,6 +415,7 @@ function ProductSummaryHeader({
   });
   const selectedCategoryId = watch("productCategoryId");
   const selectedStatusId = watch("productStatusId");
+  const currencyCodeValue = watch("currencyCode") ?? product.currencyCode;
 
   useEffect(() => {
     if (isEditing) {
@@ -414,6 +428,7 @@ function ProductSummaryHeader({
       productId: product.id,
       productName: values.productName.trim(),
       productPrice: Number(values.productPrice || "0"),
+      currencyCode: values.currencyCode,
       productCategoryId: values.productCategoryId,
       productStatusId: values.productStatusId,
     });
@@ -423,7 +438,8 @@ function ProductSummaryHeader({
     errors.productName?.message ??
     errors.productCategoryId?.message ??
     errors.productStatusId?.message ??
-    errors.productPrice?.message;
+    errors.productPrice?.message ??
+    errors.currencyCode?.message;
 
   if (isEditing) {
     return (
@@ -494,6 +510,17 @@ function ProductSummaryHeader({
           register={register("productPrice")}
           widthClassName="w-[132px]"
         />
+        <input type="hidden" {...register("currencyCode")} />
+        <CurrencyCodeSelect
+          className="h-8 rounded-lg border border-[#DDE3EE] bg-white px-2 text-[12px] font-bold text-[#475569] outline-none transition-colors focus:border-[#4880EE] focus:ring-1 focus:ring-[#4880EE]"
+          value={currencyCodeValue}
+          onChange={(currencyCode) =>
+            setValue("currencyCode", currencyCode, {
+              shouldDirty: true,
+              shouldValidate: true,
+            })
+          }
+        />
 
         <div className="hidden h-5 w-px shrink-0 bg-[#E5E7EB] lg:block" />
         <div className="flex items-center gap-1.5 text-[13px]">
@@ -553,7 +580,9 @@ function ProductSummaryHeader({
       <div className="flex items-center gap-1.5 text-[13px]">
         <span className="font-semibold text-[#9CA3AF]">가격</span>
         <span className="font-extrabold text-[#111827]">
-          {product.productPrice ? `₩${product.productPrice.toLocaleString("ko-KR")}원` : "-"}
+          {formatCurrency(product.productPrice, {
+            currencyCode: product.currencyCode,
+          })}
         </span>
       </div>
       <div className="h-5 w-px shrink-0 bg-[#E5E7EB]" />
@@ -606,6 +635,7 @@ function toProductSummaryEditFormValues(
   return {
     productName: product.productName,
     productPrice: String(product.productPrice ?? 0),
+    currencyCode: product.currencyCode,
     productCategoryId: product.productCategory.id,
     productStatusId: product.productStatus.id,
   };
@@ -635,6 +665,7 @@ function ConnectedDealsTable({
   readonly deals: ProductDeal[];
   readonly isLoading: boolean;
 }) {
+  const { formatCurrency } = useAppI18n();
   const SHOW_LIMIT = 2;
   const hasMore = deals.length > SHOW_LIMIT;
 
@@ -670,7 +701,9 @@ function ConnectedDealsTable({
                 {deal.dealName}
               </span>
               <span className="shrink-0 text-[13px] font-semibold text-[#374151]">
-                ₩{deal.dealCost.toLocaleString("ko-KR")}
+                {formatCurrency(deal.dealCost, {
+                  currencyCode: deal.currencyCode,
+                })}
               </span>
               <span className="ml-1 shrink-0 rounded-md bg-[#EEF2FF] px-2 py-0.5 text-[11px] font-medium text-[#4338CA]">
                 {toDealStatusLabel(deal.dealStatus)}

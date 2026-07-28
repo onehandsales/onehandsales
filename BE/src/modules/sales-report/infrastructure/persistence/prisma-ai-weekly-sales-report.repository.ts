@@ -28,6 +28,7 @@ import type {
   FailReportGenerationInput,
   WeeklyReportJobWorkItem,
 } from "@/modules/sales-report/application/ports/ai-weekly-sales-report.repository";
+import { DEFAULT_CURRENCY_CODE } from "@/shared/application/currency/currency-code";
 import { PrismaService } from "@/shared/infrastructure/prisma/prisma.service";
 
 type SalesReportPrismaClient = PrismaService | Prisma.TransactionClient;
@@ -63,6 +64,7 @@ type DealSnapshotRow = {
   readonly dealName: string;
   readonly dealStatus: string;
   readonly dealCost: number;
+  readonly currencyCode: string;
   readonly expectedEndDate: Date;
   readonly dealCompanies: readonly {
     readonly company: {
@@ -89,6 +91,7 @@ type DealSnapshotRow = {
       readonly id: string;
       readonly productName: string;
       readonly productPrice: number;
+      readonly currencyCode: string;
       readonly productCategory: { readonly categoryName: string };
       readonly productStatus: { readonly statusName: string };
     };
@@ -644,6 +647,7 @@ export class PrismaAiWeeklySalesReportRepository
       dealName: true,
       dealStatus: true,
       dealCost: true,
+      currencyCode: true,
       expectedEndDate: true,
       dealCompanies: {
         where: {
@@ -694,6 +698,7 @@ export class PrismaAiWeeklySalesReportRepository
               id: true,
               productName: true,
               productPrice: true,
+              currencyCode: true,
               productCategory: { select: { categoryName: true } },
               productStatus: { select: { statusName: true } },
             },
@@ -864,6 +869,7 @@ export class PrismaAiWeeklySalesReportRepository
         id: product.productId,
         productName: product.productNameSnapshot,
         productPrice: product.productPriceSnapshot,
+        currencyCode: DEFAULT_CURRENCY_CODE,
         category: product.productCategorySnapshot,
         status: product.productStatusSnapshot,
       })),
@@ -873,6 +879,7 @@ export class PrismaAiWeeklySalesReportRepository
         dealName: deal.dealNameSnapshot,
         dealStatus: deal.dealStatusSnapshot,
         dealCost: deal.dealCostSnapshot,
+        currencyCode: DEFAULT_CURRENCY_CODE,
         expectedEndDate: deal.dealExpectedEndDateSnapshot,
       })),
     };
@@ -884,6 +891,7 @@ export class PrismaAiWeeklySalesReportRepository
       dealName: row.dealName,
       dealStatus: row.dealStatus,
       dealCost: row.dealCost,
+      currencyCode: row.currencyCode,
       expectedEndDate: row.expectedEndDate,
       companies: row.dealCompanies.map((item): AiWeeklySnapshotCompanyRecord => ({
         id: item.company.id,
@@ -905,6 +913,7 @@ export class PrismaAiWeeklySalesReportRepository
         id: item.product.id,
         productName: item.product.productName,
         productPrice: item.product.productPrice,
+        currencyCode: item.product.currencyCode,
         category: item.product.productCategory.categoryName,
         status: item.product.productStatus.statusName,
       })),

@@ -833,6 +833,7 @@ function createScheduleRepository(): ScheduleRepository {
             id: deal.id,
             dealName: deal.dealName,
             dealCost: 1000,
+            currencyCode: "KRW",
             dealStatus: DealStatusCode.INITIAL_CONTACT,
             expectedEndDate: new Date("2026-07-31T00:00:00.000Z"),
             companies: [],
@@ -1132,6 +1133,7 @@ function createProductRecord(
     userId,
     productName: `${marker} Product`,
     productPrice: 1000,
+    currencyCode: "KRW",
     productCategory: {
       id: `${userId}-category`,
       categoryName: `${marker} Category`,
@@ -1156,6 +1158,7 @@ function createDealRecord(
     userId,
     dealName: `${marker} Deal`,
     dealCost: 100000,
+    currencyCode: "KRW",
     dealStatus: DealStatusCode.INITIAL_CONTACT,
     expectedEndDate: new Date("2026-07-31T00:00:00.000Z"),
     companies: [
@@ -1196,6 +1199,7 @@ function createDealRecord(
         productName: `${marker} Product`,
         isDeleted: false,
         productPrice: 1000,
+        currencyCode: "KRW",
         productCategory: {
           id: `${userId}-category`,
           categoryName: `${marker} Category`,

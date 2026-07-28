@@ -4,6 +4,11 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { ManagedTaxonomyDropdown } from "@/components/ui/managed-taxonomy-dropdown";
 import {
+  APP_SUPPORTED_CURRENCY_CODES,
+  CurrencyCodeSelect,
+  type AppCurrencyCode,
+} from "@/features/app-i18n";
+import {
   useProductCategories,
   useProductStatuses,
 } from "@/features/product/hooks/use-product-detail";
@@ -30,6 +35,12 @@ const schema = z.object({
       (value) => value.length === 0 || /^\d+$/.test(value),
     "금액은 0 이상의 정수로 입력해 주세요."
     ),
+  currencyCode: z.enum(
+    APP_SUPPORTED_CURRENCY_CODES as unknown as [
+      AppCurrencyCode,
+      ...AppCurrencyCode[],
+    ]
+  ),
   productCategoryId: z.string().trim().min(1, "카테고리를 선택해 주세요."),
   productStatusId: z.string().trim().min(1, "상태를 선택해 주세요."),
 });
@@ -73,6 +84,7 @@ export function ProductEditForm({
   });
   const selectedCategoryId = watch("productCategoryId") ?? "";
   const selectedStatusId = watch("productStatusId") ?? "";
+  const currencyCodeValue = watch("currencyCode") ?? product.currencyCode;
   const categories = useMemo(
     () =>
       mergeProductCategories(
@@ -163,6 +175,7 @@ export function ProductEditForm({
       productId: product.id,
       productName: values.productName,
       productPrice: Number(values.productPrice || "0"),
+      currencyCode: values.currencyCode,
       productCategoryId: values.productCategoryId,
       productStatusId: values.productStatusId,
     });
@@ -328,17 +341,32 @@ export function ProductEditForm({
 
       <div className="grid gap-2">
         <label className="text-sm font-medium" htmlFor="product-detail-price">
-          금액 (원)
+          금액
         </label>
-        <input
-          aria-invalid={Boolean(errors.productPrice)}
-          className="h-10 rounded-md border px-3 text-sm outline-none focus:ring-2 focus:ring-ring"
-          id="product-detail-price"
-          inputMode="numeric"
-          {...register("productPrice")}
-        />
-        {errors.productPrice ? (
-          <p className="text-xs text-destructive">{errors.productPrice.message}</p>
+        <div className="flex h-10 overflow-hidden rounded-md border focus-within:ring-2 focus-within:ring-ring">
+          <input
+            aria-invalid={Boolean(errors.productPrice)}
+            className="min-w-0 flex-1 border-0 px-3 text-sm outline-none"
+            id="product-detail-price"
+            inputMode="numeric"
+            {...register("productPrice")}
+          />
+          <input type="hidden" {...register("currencyCode")} />
+          <CurrencyCodeSelect
+            className="shrink-0 border-l bg-muted px-2 text-xs font-medium text-muted-foreground outline-none"
+            value={currencyCodeValue}
+            onChange={(currencyCode) =>
+              setValue("currencyCode", currencyCode, {
+                shouldDirty: true,
+                shouldValidate: true,
+              })
+            }
+          />
+        </div>
+        {errors.productPrice || errors.currencyCode ? (
+          <p className="text-xs text-destructive">
+            {errors.productPrice?.message ?? errors.currencyCode?.message}
+          </p>
         ) : null}
       </div>
 
@@ -357,6 +385,7 @@ function toFormValues(product: ProductDetail): FormValues {
   return {
     productName: product.productName,
     productPrice: String(product.productPrice ?? 0),
+    currencyCode: product.currencyCode,
     productCategoryId: product.productCategory.id,
     productStatusId: product.productStatus.id,
   };

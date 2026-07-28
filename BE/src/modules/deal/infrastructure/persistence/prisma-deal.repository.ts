@@ -96,6 +96,7 @@ type DealProductRow = {
   readonly productName: string;
   readonly deletedAt: Date | null;
   readonly productPrice: number;
+  readonly currencyCode: string;
   readonly productCategory: {
     readonly id: string;
     readonly categoryName: string;
@@ -122,6 +123,7 @@ type DealListRow = {
   readonly id: string;
   readonly dealName: string;
   readonly dealCost: number;
+  readonly currencyCode: string;
   readonly dealStatus: string;
   readonly expectedEndDate: Date;
   readonly dealCompanies: Array<{
@@ -349,6 +351,7 @@ export class PrismaDealRepository implements DealRepository {
         userId: input.userId,
         dealName: input.dealName,
         dealCost: input.dealCost,
+        currencyCode: input.currencyCode,
         dealStatus: input.dealStatus,
         expectedEndDate: input.expectedEndDate,
       },
@@ -459,6 +462,9 @@ export class PrismaDealRepository implements DealRepository {
       data: {
         ...(input.dealName !== undefined ? { dealName: input.dealName } : {}),
         ...(input.dealCost !== undefined ? { dealCost: input.dealCost } : {}),
+        ...(input.currencyCode !== undefined
+          ? { currencyCode: input.currencyCode }
+          : {}),
         ...(input.expectedEndDate !== undefined
           ? { expectedEndDate: input.expectedEndDate }
           : {}),
@@ -977,6 +983,7 @@ export class PrismaDealRepository implements DealRepository {
       productName: true,
       deletedAt: true,
       productPrice: true,
+      currencyCode: true,
       productCategory: {
         select: {
           id: true,
@@ -1240,6 +1247,7 @@ export class PrismaDealRepository implements DealRepository {
       id: deal.id,
       dealName: deal.dealName,
       dealCost: deal.dealCost,
+      currencyCode: deal.currencyCode,
       dealStatus: this.mapDealStatus(deal.dealStatus),
       expectedEndDate: deal.expectedEndDate,
       companies: deal.dealCompanies.map((dealCompany) =>
@@ -1319,6 +1327,7 @@ export class PrismaDealRepository implements DealRepository {
       productName: product.productName,
       isDeleted: Boolean(product.deletedAt),
       productPrice: product.productPrice,
+      currencyCode: product.currencyCode,
       productCategory: {
         id: product.productCategory.id,
         categoryName: product.productCategory.categoryName,

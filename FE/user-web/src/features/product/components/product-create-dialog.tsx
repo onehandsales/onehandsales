@@ -13,6 +13,13 @@ import { z } from "zod";
 import { ManagedTaxonomyDropdown } from "@/components/ui/managed-taxonomy-dropdown";
 import { ErrorState } from "@/components/ui/state";
 import {
+  APP_SUPPORTED_CURRENCY_CODES,
+  CurrencyCodeSelect,
+  DEFAULT_APP_CURRENCY_CODE,
+  useAppI18n,
+  type AppCurrencyCode,
+} from "@/features/app-i18n";
+import {
   useProductCategories,
   useProductStatuses,
 } from "@/features/product/hooks/use-product-detail";
@@ -38,6 +45,12 @@ const productCreateFormSchema = z.object({
       (value) => value.length === 0 || /^\d+$/.test(value),
       "단가는 0 이상의 정수로 입력해 주세요.",
     ),
+  currencyCode: z.enum(
+    APP_SUPPORTED_CURRENCY_CODES as unknown as [
+      AppCurrencyCode,
+      ...AppCurrencyCode[],
+    ],
+  ),
   productCategoryId: z.string().trim().min(1, "카테고리를 선택해 주세요."),
   productStatusId: z.string().trim().min(1, "상태를 선택해 주세요."),
   productMemo: z.string().trim().optional(),
@@ -48,6 +61,7 @@ export type ProductCreateFormValues = z.infer<typeof productCreateFormSchema>;
 const emptyProductCreateFormValues: ProductCreateFormValues = {
   productName: "",
   productPrice: "0",
+  currencyCode: DEFAULT_APP_CURRENCY_CODE,
   productCategoryId: "",
   productStatusId: "",
   productMemo: "",
@@ -74,6 +88,7 @@ export function ProductCreateDialog({
   onExpand,
   onResizeStart,
 }: ProductCreateDialogProps) {
+  const { defaultCurrencyCode } = useAppI18n();
   const createProductMutation = useCreateProductMutation();
   const createCategoryMutation = useCreateCategoryMutation();
   const createStatusMutation = useCreateStatusMutation();
@@ -100,6 +115,7 @@ export function ProductCreateDialog({
 
   const selectedCategoryId = watch("productCategoryId");
   const selectedStatusId = watch("productStatusId");
+  const currencyCodeValue = watch("currencyCode") ?? defaultCurrencyCode;
   const productMemo = watch("productMemo") ?? "";
   const memoRegister = register("productMemo");
   const formId = "product-create-form";
@@ -119,6 +135,7 @@ export function ProductCreateDialog({
         ...initialValues,
         productName: initialValues?.productName ?? "",
         productPrice: initialValues?.productPrice ?? "0",
+        currencyCode: initialValues?.currencyCode ?? defaultCurrencyCode,
         productCategoryId: initialValues?.productCategoryId ?? "",
         productStatusId: initialValues?.productStatusId ?? "",
         productMemo: initialValues?.productMemo ?? "",
@@ -126,7 +143,7 @@ export function ProductCreateDialog({
       setPendingCategoryName("");
       setPendingStatusName("");
     }
-  }, [initialValues, open, reset]);
+  }, [defaultCurrencyCode, initialValues, open, reset]);
 
   useEffect(() => {
     if (!open) {
@@ -216,6 +233,7 @@ export function ProductCreateDialog({
     await createProductMutation.mutateAsync({
       productName: values.productName.trim(),
       productPrice: Number(values.productPrice || "0"),
+      currencyCode: values.currencyCode,
       productCategoryId: values.productCategoryId,
       productStatusId: values.productStatusId,
       productMemo: values.productMemo?.trim() || undefined,
@@ -408,14 +426,12 @@ export function ProductCreateDialog({
 
             <section className="grid cursor-auto gap-3 sm:grid-cols-2">
               <ProductCreatePanelProperty
-                error={errors.productPrice?.message}
+                error={errors.productPrice?.message ?? errors.currencyCode?.message}
                 errorId="product-price-error"
                 label="단가"
               >
+                <input type="hidden" {...register("currencyCode")} />
                 <div className="flex h-10 items-center overflow-hidden rounded-md border border-[#E6EAF0] focus-within:border-[#4880EE] focus-within:ring-1 focus-within:ring-[#4880EE]">
-                  <span className="shrink-0 select-none border-r border-[#E6EAF0] bg-[#F9FAFB] px-3 text-[13px] font-medium text-[#6B7280]">
-                    ₩
-                  </span>
                   <input
                     aria-label="단가"
                     aria-describedby={
@@ -428,9 +444,16 @@ export function ProductCreateDialog({
                     placeholder="0"
                     {...register("productPrice")}
                   />
-                  <span className="shrink-0 select-none border-l border-[#E6EAF0] bg-[#F9FAFB] px-3 text-[12px] font-medium text-[#9CA3AF]">
-                    KRW
-                  </span>
+                  <CurrencyCodeSelect
+                    className="h-full shrink-0 border-l border-[#E6EAF0] bg-[#F9FAFB] px-2 text-[12px] font-medium text-[#6B7280] outline-none"
+                    value={currencyCodeValue}
+                    onChange={(currencyCode) =>
+                      setValue("currencyCode", currencyCode, {
+                        shouldDirty: true,
+                        shouldValidate: true,
+                      })
+                    }
+                  />
                 </div>
               </ProductCreatePanelProperty>
             </section>

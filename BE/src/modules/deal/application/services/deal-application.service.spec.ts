@@ -68,6 +68,7 @@ const CURRENT_USER: CurrentUserContext = {
   role: "USER",
   status: "ACTIVE",
   timeZone: "Asia/Seoul",
+  defaultCurrencyCode: "USD",
 };
 
 interface StoredDeal {
@@ -75,6 +76,7 @@ interface StoredDeal {
   readonly userId: string;
   readonly dealName: string;
   readonly dealCost: number;
+  readonly currencyCode: string;
   readonly companyIds: string[];
   readonly contactIds: string[];
   readonly dealStatus: DealStatusCode;
@@ -139,6 +141,7 @@ class FakeDealRepository implements DealRepository {
       productName: "프리미엄 상품",
       isDeleted: false,
       productPrice: 1200000,
+      currencyCode: "USD",
       productCategory: { id: "category-1", categoryName: "보안" },
       productStatus: { id: "status-1", statusName: "판매중" },
     },
@@ -147,6 +150,7 @@ class FakeDealRepository implements DealRepository {
       productName: "추가 상품",
       isDeleted: false,
       productPrice: 300000,
+      currencyCode: "KRW",
       productCategory: { id: "category-2", categoryName: "연동" },
       productStatus: { id: "status-2", statusName: "검토중" },
     },
@@ -260,6 +264,7 @@ class FakeDealRepository implements DealRepository {
       userId: input.userId,
       dealName: input.dealName,
       dealCost: input.dealCost,
+      currencyCode: input.currencyCode,
       companyIds: [],
       contactIds: [],
       dealStatus: input.dealStatus,
@@ -289,6 +294,9 @@ class FakeDealRepository implements DealRepository {
       ...deal,
       ...(input.dealName !== undefined ? { dealName: input.dealName } : {}),
       ...(input.dealCost !== undefined ? { dealCost: input.dealCost } : {}),
+      ...(input.currencyCode !== undefined
+        ? { currencyCode: input.currencyCode }
+        : {}),
       ...(input.expectedEndDate !== undefined
         ? { expectedEndDate: input.expectedEndDate }
         : {}),
@@ -711,6 +719,7 @@ class FakeDealRepository implements DealRepository {
       id: deal.id,
       dealName: deal.dealName,
       dealCost: deal.dealCost,
+      currencyCode: deal.currencyCode,
       dealStatus: deal.dealStatus,
       expectedEndDate: deal.expectedEndDate,
       companies: deal.companyIds.map((companyId) => this.getCompany(companyId)),
@@ -1006,7 +1015,54 @@ describe("DealApplicationService", () => {
     expect(result.products[0]?.productCategory.categoryName).toBe("보안");
     expect(result.products[0]?.productStatus.statusName).toBe("판매중");
     expect(result.products[0]?.productPrice).toBe(1200000);
+    expect(result.currencyCode).toBe("USD");
+    expect(repository.deals[0]?.currencyCode).toBe("USD");
     expect(result.latestFollowingAction?.followingAction).toBe("제안서 발송");
+  });
+
+  // 기능 : 딜 생성에서 명시 통화가 제품 기본 통화보다 우선하는지 검증합니다.
+  it("uses explicit deal currency before product default currency", async () => {
+    const repository = new FakeDealRepository();
+    const service = createService(repository);
+
+    const result = await service.createDeal(CURRENT_USER, {
+      ...createDealCommand(),
+      currencyCode: "KRW",
+    });
+
+    expect(result.currencyCode).toBe("KRW");
+    expect(repository.deals[0]?.currencyCode).toBe("KRW");
+  });
+
+  // 기능 : 연결 제품이 없는 딜 생성은 사용자 기본 통화를 사용합니다.
+  it("uses current user default currency when no product is linked", async () => {
+    const repository = new FakeDealRepository();
+    const service = createService(repository);
+
+    const result = await service.createDeal(CURRENT_USER, {
+      ...createDealCommand(),
+      productIds: [],
+    });
+
+    expect(result.currencyCode).toBe("USD");
+    expect(result.products).toEqual([]);
+    expect(repository.deals[0]?.currencyCode).toBe("USD");
+  });
+
+  // 기능 : 지원하지 않는 딜 통화는 field 코드가 있는 검증 오류로 중단합니다.
+  it("rejects unsupported deal currency code", async () => {
+    const repository = new FakeDealRepository();
+    const service = createService(repository);
+
+    await expect(
+      service.createDeal(CURRENT_USER, {
+        ...createDealCommand(),
+        currencyCode: "EUR",
+      })
+    ).rejects.toMatchObject({
+      code: "CURRENCY_UNSUPPORTED",
+      details: { field: "currencyCode" },
+    });
   });
 
   it("lists deals with product summaries, latest activity summary, and page size 15", async () => {
@@ -1364,6 +1420,7 @@ describe("DealApplicationService", () => {
       "contactLabel",
       "dealStatusLabel",
       "dealCost",
+      "currencyCode",
       "expectedEndDate",
       "followingAction",
       "createdAt",
@@ -1382,6 +1439,7 @@ describe("DealApplicationService", () => {
         contactLabel: "송재근 부장",
         dealStatusLabel: "초기 접촉",
         dealCost: 3000000,
+        currencyCode: "USD",
         expectedEndDate: "2026-01-05",
         followingAction: "제안서 발송",
       })

@@ -1,3 +1,5 @@
+import type { AppCurrencyCode } from "@/features/app-i18n";
+
 export type ScheduleViewMode = "month" | "week";
 
 export type ScheduleSourceType = "INTERNAL" | "GOOGLE";
@@ -218,7 +220,13 @@ export type WeeklyScheduleReportSummary = {
   readonly scheduleDealLinkCount: number;
   readonly distinctLinkedDealCount: number;
   readonly totalDealCost: number;
+  readonly totalDealCostByCurrency: WeeklyScheduleReportCurrencyTotal[];
   readonly dealStatusCounts: WeeklyScheduleReportDealStatusCount[];
+};
+
+export type WeeklyScheduleReportCurrencyTotal = {
+  readonly currencyCode: AppCurrencyCode;
+  readonly totalDealCost: number;
 };
 
 export type WeeklyScheduleReportDealStatusCount = {
@@ -255,6 +263,7 @@ export type WeeklyScheduleReportDeal = {
   readonly id: string;
   readonly dealName: string;
   readonly dealCost: number;
+  readonly currencyCode: AppCurrencyCode;
   readonly dealStatus: string;
   readonly dealStatusLabel: string;
   readonly expectedEndDate: string;

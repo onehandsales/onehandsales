@@ -1,4 +1,5 @@
 // BE API response shapes — fields match what the BE actually returns
+import type { AppCurrencyCode } from "@/features/app-i18n";
 
 export type ProductCategory = {
   readonly id: string;
@@ -14,6 +15,8 @@ export type ProductStatus = {
 export type Product = {
   readonly id: string;
   readonly productName: string;
+  readonly productPrice: number;
+  readonly currencyCode: AppCurrencyCode;
   readonly productCategory: ProductCategory;
   readonly productStatus: ProductStatus;
   readonly dealCount: number;
@@ -27,6 +30,7 @@ export type ProductDetail = {
   readonly productCategory: ProductCategory;
   readonly productStatus: ProductStatus;
   readonly productPrice: number;
+  readonly currencyCode: AppCurrencyCode;
   readonly createdAt: string;
   readonly updatedAt: string;
 };
@@ -62,6 +66,7 @@ export type ProductSort = "createdAtDesc" | "dealCountDesc" | "dealCountAsc";
 export type CreateProductInput = {
   readonly productName: string;
   readonly productPrice: number;
+  readonly currencyCode?: AppCurrencyCode;
   readonly productCategoryId: string;
   readonly productStatusId: string;
   readonly productMemo?: string;
@@ -71,6 +76,7 @@ export type UpdateProductInput = {
   readonly productId: string;
   readonly productName?: string;
   readonly productPrice?: number;
+  readonly currencyCode?: AppCurrencyCode;
   readonly productCategoryId?: string;
   readonly productStatusId?: string;
 };
@@ -178,6 +184,7 @@ export type ProductDeal = {
   readonly id: string;
   readonly dealName: string;
   readonly dealCost: number;
+  readonly currencyCode: AppCurrencyCode;
   readonly dealStatus: string;
   readonly createdAt: string;
 };

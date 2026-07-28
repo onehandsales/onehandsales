@@ -1,3 +1,5 @@
+import type { AppCurrencyCode } from "@/features/app-i18n";
+
 // 담당자 목록 아이템
 export type ContactListItem = {
   readonly id: string;
@@ -64,6 +66,7 @@ export type ContactDeal = {
   readonly id: string;
   readonly dealName: string;
   readonly dealCost: number;
+  readonly currencyCode: AppCurrencyCode;
   readonly createdAt: string;
 };
 

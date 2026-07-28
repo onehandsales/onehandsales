@@ -1,3 +1,5 @@
+import type { AppCurrencyCode } from "@/features/app-i18n";
+
 export type CompanyField = {
   readonly id: string;
   readonly field: string;
@@ -111,6 +113,7 @@ export type CompanyDeal = {
   readonly id: string;
   readonly dealName: string;
   readonly dealCost: number;
+  readonly currencyCode: AppCurrencyCode;
   readonly createdAt: string;
 };
 

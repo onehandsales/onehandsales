@@ -82,6 +82,14 @@ describe("AiWeeklySalesReportApplicationService", () => {
         meetingNotes: 1,
       },
     });
+    expect(createdInputs[0]?.inputSnapshotJson).toMatchObject({
+      deals: [expect.objectContaining({ currencyCode: "USD" })],
+      schedules: [
+        expect.objectContaining({
+          deals: [expect.objectContaining({ currencyCode: "USD" })],
+        }),
+      ],
+    });
     const meetingNotes = createdInputs[0]?.inputSnapshotJson
       .meetingNotes as Record<string, unknown>[];
     expect(meetingNotes[0]).toMatchObject({
@@ -251,6 +259,7 @@ function createRepository(
             dealName: "Renewal deal",
             dealStatus: "NEGOTIATION",
             dealCost: 1000,
+            currencyCode: "USD",
             expectedEndDate: new Date("2026-07-24T00:00:00.000Z"),
           },
         ],
@@ -262,6 +271,7 @@ function createRepository(
         dealName: "Renewal deal",
         dealStatus: "NEGOTIATION",
         dealCost: 1000,
+        currencyCode: "USD",
         expectedEndDate: new Date("2026-07-24T00:00:00.000Z"),
         companies: [],
         contacts: [],
@@ -300,6 +310,7 @@ function createScheduleRepository(): ScheduleRepository {
             dealName: "Renewal deal",
             dealStatus: "NEGOTIATION",
             dealCost: 1000,
+            currencyCode: "USD",
             expectedEndDate: new Date("2026-07-24T00:00:00.000Z"),
             companies: [],
             contacts: [],

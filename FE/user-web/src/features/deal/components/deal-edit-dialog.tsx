@@ -16,6 +16,10 @@ import {
 } from "@/components/ui/modal-form";
 import { ModalShell } from "@/components/ui/modal-shell";
 import {
+  CurrencyCodeSelect,
+  type AppCurrencyCode,
+} from "@/features/app-i18n";
+import {
   DealStatusDropdown,
   ProductMultiSelectDropdown,
   SearchSelectField,
@@ -81,6 +85,7 @@ export function DealEditDialog({
     defaultValues: toDealUpdateFormValues(deal),
   });
   const dealCostValue = watch("dealCost");
+  const currencyCodeValue = watch("currencyCode") ?? deal.currencyCode;
   const dealStatusValue = watch("dealStatus");
   const expectedEndDateValue = watch("expectedEndDate");
   const companySearch = watch("companySearch") ?? "";
@@ -168,6 +173,14 @@ export function DealEditDialog({
     });
   };
 
+  // 기능 : 딜 수정 모달의 명시 통화 선택값을 form에 반영합니다.
+  const onCurrencyCodeChange = (currencyCode: AppCurrencyCode) => {
+    setValue("currencyCode", currencyCode, {
+      shouldDirty: true,
+      shouldValidate: true,
+    });
+  };
+
   // 기능 : 날짜 입력값을 YYYY-MM-DD 형태로 정규화해 form에 반영합니다.
   const onExpectedEndDateChange = (event: ChangeEvent<HTMLInputElement>) => {
     setValue("expectedEndDate", normalizeDateInput(event.target.value), {
@@ -220,24 +233,27 @@ export function DealEditDialog({
             </ModalFieldGroup>
 
             <ModalFieldGroup
-              error={errors.dealCost?.message}
+              error={errors.dealCost?.message ?? errors.currencyCode?.message}
               id="deal-edit-cost"
               label="금액"
             >
               <div className="relative">
                 <input type="hidden" {...register("dealCost")} />
+                <input type="hidden" {...register("currencyCode")} />
                 <HandCoins className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                 <input
                   aria-invalid={Boolean(errors.dealCost)}
-                  className="h-10 w-full rounded-md border pl-9 pr-10 text-sm outline-none focus:ring-2 focus:ring-ring"
+                  className="h-10 w-full rounded-md border pl-9 pr-24 text-sm outline-none focus:ring-2 focus:ring-ring"
                   id="deal-edit-cost"
                   inputMode="numeric"
                   onChange={onDealCostChange}
                   value={formatCurrencyInput(dealCostValue ?? "")}
                 />
-                <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-xs font-medium text-muted-foreground">
-                  원
-                </span>
+                <CurrencyCodeSelect
+                  className="absolute right-1 top-1/2 h-8 -translate-y-1/2 rounded-md border bg-muted px-2 text-xs font-medium text-muted-foreground outline-none"
+                  value={currencyCodeValue}
+                  onChange={onCurrencyCodeChange}
+                />
               </div>
             </ModalFieldGroup>
           </ModalFormRow>
@@ -407,6 +423,7 @@ function toDealUpdateFormValues(deal: DealDetail): DealUpdateFormValues {
       .filter((contact) => !contact.isDeleted && !contact.company.isDeleted)
       .map((contact) => contact.id),
     dealCost: String(deal.dealCost ?? 0),
+    currencyCode: deal.currencyCode,
     dealName: deal.dealName,
     dealStatus: deal.dealStatus,
     expectedEndDate: deal.expectedEndDate?.slice(0, 10) ?? "",
@@ -479,6 +496,7 @@ function mergeProductOptions(
       productCategory: product.productCategory,
       productName: product.productName,
       productPrice: product.productPrice,
+      currencyCode: product.currencyCode,
       productStatus: product.productStatus,
     }));
 

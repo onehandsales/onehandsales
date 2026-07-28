@@ -729,7 +729,7 @@ function SnapshotSummaryContent({
           id: item.id,
           meta: [
             item.dealStatus,
-            formatCurrency(item.dealCost),
+            formatCurrency(item.dealCost, item.currencyCode),
             `다음 액션 ${item.nextActionCount.toLocaleString("ko-KR")}건`,
           ],
           title: item.dealName ?? "제목 없는 딜",
@@ -1040,15 +1040,16 @@ function formatDateTime(value: string | null | undefined) {
   }
 }
 
-function formatCurrency(value: number) {
+// 기능 : AI 리포트 snapshot의 개별 딜 금액을 해당 딜 통화 기준으로 표시합니다.
+function formatCurrency(value: number, currencyCode = "KRW") {
   try {
     return new Intl.NumberFormat("ko-KR", {
-      currency: "KRW",
+      currency: currencyCode,
       maximumFractionDigits: 0,
       style: "currency",
     }).format(value);
   } catch {
-    return `${value.toLocaleString("ko-KR")} KRW`;
+    return `${value.toLocaleString("ko-KR")} ${currencyCode}`;
   }
 }
 

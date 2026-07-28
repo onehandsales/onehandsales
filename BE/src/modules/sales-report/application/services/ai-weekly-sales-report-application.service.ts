@@ -27,6 +27,7 @@ import {
   isValidIanaTimeZone,
   normalizeOptionalIanaTimeZone,
 } from "@/shared/application/time-zone/time-zone";
+import { DEFAULT_CURRENCY_CODE } from "@/shared/application/currency/currency-code";
 import { ValidationDomainError } from "@/shared/domain/errors/common.errors";
 import { AppLogger } from "@/shared/infrastructure/logger/app-logger.service";
 
@@ -459,6 +460,7 @@ export class AiWeeklySalesReportApplicationService {
       dealName: deal.dealName,
       dealStatus: deal.dealStatus,
       dealCost: deal.dealCost,
+      currencyCode: deal.currencyCode,
       expectedEndDate: this.formatDateOnly(deal.expectedEndDate),
       companies: deal.companies.map((company) => ({
         id: company.id,
@@ -490,6 +492,7 @@ export class AiWeeklySalesReportApplicationService {
       dealName: deal.dealName,
       dealStatus: deal.dealStatus,
       dealCost: deal.dealCost,
+      currencyCode: deal.currencyCode,
       expectedEndDate: this.formatDateOnly(deal.expectedEndDate),
       companies: deal.companies,
       contacts: deal.contacts,
@@ -525,6 +528,7 @@ export class AiWeeklySalesReportApplicationService {
         dealName: deal.dealName,
         dealStatus: deal.dealStatus,
         dealCost: deal.dealCost,
+        currencyCode: deal.currencyCode,
         expectedEndDate: this.formatDateOnly(deal.expectedEndDate),
       })),
     };
@@ -738,6 +742,8 @@ export class AiWeeklySalesReportApplicationService {
           dealName: this.getString(deal, "dealName"),
           dealStatus: this.getString(deal, "dealStatus"),
           dealCost: this.getNumber(deal, "dealCost"),
+          currencyCode:
+            this.getString(deal, "currencyCode") ?? DEFAULT_CURRENCY_CODE,
           expectedEndDate: this.getString(deal, "expectedEndDate"),
           companyCount: this.getObjectArray(deal, "companies").length,
           contactCount: this.getObjectArray(deal, "contacts").length,

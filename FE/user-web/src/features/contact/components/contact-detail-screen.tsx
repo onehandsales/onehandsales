@@ -22,6 +22,7 @@ import {
   ModalFormSection,
 } from "@/components/ui/modal-form";
 import { ModalShell } from "@/components/ui/modal-shell";
+import { useAppI18n } from "@/features/app-i18n";
 import { ContactEditDialog } from "@/features/contact/components/contact-edit-dialog";
 import { FollowUpTimelinePanel } from "@/features/follow-up-delivery";
 import {
@@ -629,6 +630,7 @@ function ConnectedDealsTable({
   readonly deals: ContactDeal[];
   readonly isLoading: boolean;
 }) {
+  const { formatCurrency } = useAppI18n();
   const SHOW_LIMIT = 2;
   const hasMore = deals.length > SHOW_LIMIT;
 
@@ -664,7 +666,9 @@ function ConnectedDealsTable({
                 {deal.dealName}
               </span>
               <span className="shrink-0 text-[13px] font-semibold text-[#374151]">
-                ₩{deal.dealCost.toLocaleString("ko-KR")}
+                {formatCurrency(deal.dealCost, {
+                  currencyCode: deal.currencyCode,
+                })}
               </span>
               <span className="ml-3 shrink-0 text-[12px] text-[#9CA3AF]">
                 {formatDate(deal.createdAt, { includeYear: true })}

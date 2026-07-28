@@ -387,6 +387,7 @@ function createWeeklySchedule(
         id: "weekly-deal-1",
         dealName: "Expansion",
         dealCost: 120000,
+        currencyCode: "KRW",
         dealStatus: DealStatusCode.NEGOTIATION,
         expectedEndDate: new Date("2026-06-30T00:00:00.000Z"),
         companies: [
@@ -684,6 +685,7 @@ describe("ScheduleApplicationService", () => {
       scheduleDealLinkCount: 1,
       distinctLinkedDealCount: 1,
       totalDealCost: 120000,
+      totalDealCostByCurrency: [{ currencyCode: "KRW", totalDealCost: 120000 }],
     });
     expect(report.summary.dealStatusCounts).toEqual([
       {
@@ -723,6 +725,7 @@ describe("ScheduleApplicationService", () => {
             id: "weekly-deal-2",
             dealName: "Renewal",
             dealCost: 80000,
+            currencyCode: "USD",
             dealStatus: DealStatusCode.PROPOSAL_QUOTE,
             expectedEndDate: new Date("2026-07-05T00:00:00.000Z"),
             companies: [],
@@ -763,6 +766,7 @@ describe("ScheduleApplicationService", () => {
       "딜",
       "딜단계",
       "딜금액합계",
+      "딜통화",
       "딜마감일",
       "다음행동",
     ]);
@@ -776,6 +780,7 @@ describe("ScheduleApplicationService", () => {
       dealNames: "Expansion, Renewal",
       dealStatusLabels: "협상, 제안/견적",
       dealCostTotal: 200000,
+      dealCurrencyCodes: "KRW, USD",
       expectedEndDates: "2026-06-30, 2026-07-05",
       nextFollowingActions: "Send proposal",
     });

@@ -68,6 +68,7 @@ export interface DealProductRecord {
   readonly productName: string;
   readonly isDeleted: boolean;
   readonly productPrice: number;
+  readonly currencyCode: string;
   readonly productCategory: {
     readonly id: string;
     readonly categoryName: string;
@@ -136,6 +137,7 @@ export interface DealListRecord {
   readonly id: string;
   readonly dealName: string;
   readonly dealCost: number;
+  readonly currencyCode: string;
   readonly dealStatus: DealStatusCode;
   readonly expectedEndDate: Date;
   readonly companies: DealCompanyRecord[];
@@ -194,6 +196,7 @@ export interface CreateDealInput {
   readonly userId: string;
   readonly dealName: string;
   readonly dealCost: number;
+  readonly currencyCode: string;
   readonly dealStatus: DealStatusCode;
   readonly expectedEndDate: Date;
 }
@@ -202,6 +205,7 @@ export interface CreateDealInput {
 export interface UpdateDealInput {
   readonly dealName?: string;
   readonly dealCost?: number;
+  readonly currencyCode?: string;
   readonly expectedEndDate?: Date;
   readonly dealStatus?: DealStatusCode;
 }

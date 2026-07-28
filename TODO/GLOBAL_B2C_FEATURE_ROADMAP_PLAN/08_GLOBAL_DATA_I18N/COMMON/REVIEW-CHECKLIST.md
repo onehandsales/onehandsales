@@ -35,7 +35,7 @@
 - [ ] 같은 verified email provider 계정이 기존 User에 연결된다.
 - [ ] email 없는 provider 응답은 가입/로그인을 차단한다.
 - [x] `PATCH /api/users/me/profile`이 글로벌 설정을 저장한다.
-- [ ] Product/Deal API가 `currencyCode`를 포함한다.
+- [x] Product/Deal API가 `currencyCode`를 포함한다.
 - [ ] Contact API가 글로벌 전화번호 필드를 포함한다.
 - [ ] Company/CompanyRegion API가 국가/지역 code를 포함한다.
 - [x] validation error는 code/field 중심이다.
@@ -47,8 +47,8 @@
 - [ ] `OAuthProvider.LINE`이 추가됐다.
 - [x] `User.countryCode`가 추가됐다.
 - [x] `User.defaultCurrencyCode`가 추가됐다.
-- [ ] `Product.currencyCode`가 추가됐다.
-- [ ] `Deal.currencyCode`가 추가됐다.
+- [x] `Product.currencyCode`가 추가됐다.
+- [x] `Deal.currencyCode`가 추가됐다.
 - [ ] Contact 글로벌 전화번호 필드가 추가됐다.
 - [ ] `CompanyRegion.countryCode`가 추가됐다.
 - [ ] `CompanyRegion.regionCode`가 추가됐다.
@@ -60,7 +60,7 @@
 
 - [ ] Export header가 locale별로 바뀐다.
 - [ ] Export 날짜/시간이 사용자 timezone 기준이다.
-- [ ] Export 통화 표시가 `currencyCode` 기준이다.
+- [x] Export 통화 표시가 `currencyCode` 기준이다.
 - [ ] Contact export에 Phone, Phone Country, Phone E.164가 있다.
 - [ ] Import template locale 선택이 `ko-KR`, `en`만 제공한다.
 - [ ] 지원하지 않는 template locale fallback이 있다.

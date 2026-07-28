@@ -22,6 +22,7 @@ import {
   ModalFormSection,
 } from "@/components/ui/modal-form";
 import { ModalShell } from "@/components/ui/modal-shell";
+import { useAppI18n } from "@/features/app-i18n";
 import { CompanyEditDialog } from "@/features/company/components/company-edit-dialog";
 import {
   useCompanyContacts,
@@ -774,6 +775,7 @@ function ConnectedDealsTable({
   readonly isLoading: boolean;
   readonly isSmallText: boolean;
 }) {
+  const { formatCurrency } = useAppI18n();
   const SHOW_LIMIT = 3;
   const hasMore = deals.length > SHOW_LIMIT;
 
@@ -826,7 +828,9 @@ function ConnectedDealsTable({
                       isSmallText ? "text-[11px]" : "text-[12px]"
                     }`}
                   >
-                    ₩{deal.dealCost.toLocaleString("ko-KR")}
+                    {formatCurrency(deal.dealCost, {
+                      currencyCode: deal.currencyCode,
+                    })}
                   </span>
                   <span
                     className={`${COMPANY_RELATED_CELL_CLASS_NAME} truncate font-medium leading-4 text-[#9CA3AF] ${

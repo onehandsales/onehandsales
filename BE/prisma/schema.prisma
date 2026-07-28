@@ -647,6 +647,8 @@ model Product {
   userId            String    @db.Uuid
   productName       String
   productPrice      Int
+  /// 기능 : 제품 금액이 어떤 통화 기준인지 보존한다.
+  currencyCode      String    @default("KRW")
   productCategoryId String    @db.Uuid
   productStatusId   String    @db.Uuid
   createdAt         DateTime  @default(now())
@@ -758,6 +760,8 @@ model Deal {
   userId          String    @db.Uuid
   dealName        String
   dealCost        Int
+  /// 기능 : 딜 금액이 어떤 통화 기준인지 보존한다.
+  currencyCode    String    @default("KRW")
   dealStatus      String
   expectedEndDate DateTime  @db.Date
   createdAt       DateTime  @default(now())

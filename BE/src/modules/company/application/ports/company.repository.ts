@@ -55,6 +55,7 @@ export interface CompanyDealRecord {
   readonly id: string;
   readonly dealName: string;
   readonly dealCost: number;
+  readonly currencyCode: string;
   readonly createdAt: Date;
 }
 

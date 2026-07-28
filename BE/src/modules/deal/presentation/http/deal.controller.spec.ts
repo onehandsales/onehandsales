@@ -193,6 +193,7 @@ describe("DealController", () => {
     const createBody = {
       dealName: "A회사 신규 도입",
       dealCost: 3000000,
+      currencyCode: "USD",
       companyIds: [COMPANY_ID],
       contactIds: [CONTACT_ID],
       productIds: [PRODUCT_ID],
@@ -203,6 +204,7 @@ describe("DealController", () => {
     const updateBody = {
       dealName: "A회사 재협상",
       dealCost: 5000000,
+      currencyCode: "KRW",
       companyIds: [COMPANY_ID],
       contactIds: [CONTACT_ID],
       productIds: [PRODUCT_ID],
@@ -335,6 +337,21 @@ describe("DealController", () => {
 
   // 기능 : DealStatus enum과 date-only validation이 HTTP boundary에서 동작하는지 검증합니다.
   it("rejects invalid enum and date request bodies", async () => {
+    await request(app.getHttpServer())
+      .post("/api/deals")
+      .send({
+        dealName: "A회사 신규 도입",
+        dealCost: 3000000,
+        currencyCode: "EUR",
+        companyIds: [COMPANY_ID],
+        contactIds: [CONTACT_ID],
+        productIds: [PRODUCT_ID],
+        dealStatus: DealStatusCode.INITIAL_CONTACT,
+        followingAction: "제안서 발송",
+        expectedEndDate: "2026-01-05",
+      })
+      .expect(400);
+
     await request(app.getHttpServer())
       .post("/api/deals")
       .send({

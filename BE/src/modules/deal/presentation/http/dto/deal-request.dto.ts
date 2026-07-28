@@ -23,6 +23,7 @@ import {
 } from "@/modules/deal/application/ports/deal-activity.repository";
 import { DealListSort } from "@/modules/deal/application/ports/deal.repository";
 import { DealStatusCode } from "@/modules/deal/domain/deal-status";
+import { SUPPORTED_CURRENCY_CODES } from "@/shared/application/currency/currency-code";
 
 const DATE_ONLY_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
 
@@ -136,6 +137,10 @@ export class CreateDealDto {
   @Min(0)
   dealCost!: number;
 
+  @IsOptional()
+  @IsIn(SUPPORTED_CURRENCY_CODES)
+  currencyCode?: string;
+
   @IsArray()
   @ArrayNotEmpty()
   @IsUUID(undefined, { each: true })
@@ -147,7 +152,6 @@ export class CreateDealDto {
   contactIds!: string[];
 
   @IsArray()
-  @ArrayNotEmpty()
   @IsUUID(undefined, { each: true })
   productIds!: string[];
 
@@ -179,6 +183,10 @@ export class UpdateDealDto {
   dealCost?: number;
 
   @IsOptional()
+  @IsIn(SUPPORTED_CURRENCY_CODES)
+  currencyCode?: string;
+
+  @IsOptional()
   @IsArray()
   @ArrayNotEmpty()
   @IsUUID(undefined, { each: true })
@@ -192,7 +200,6 @@ export class UpdateDealDto {
 
   @IsOptional()
   @IsArray()
-  @ArrayNotEmpty()
   @IsUUID(undefined, { each: true })
   productIds?: string[];
 

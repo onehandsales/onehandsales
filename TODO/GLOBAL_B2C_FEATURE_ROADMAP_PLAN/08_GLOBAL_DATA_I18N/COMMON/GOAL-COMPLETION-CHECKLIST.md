@@ -71,13 +71,13 @@
 
 ### G04 Currency Product Deal
 
-- [ ] `Product.currencyCode`가 추가됐다.
-- [ ] `Deal.currencyCode`가 추가됐다.
-- [ ] 기존 Product/Deal 데이터는 `KRW` 의미를 유지한다.
-- [ ] 허용 통화는 `KRW`, `USD`다.
-- [ ] 금액 입력은 정수만 허용한다.
-- [ ] Deal 생성 기본값은 Product currency 우선, User default currency fallback이다.
-- [ ] Product/Deal 목록/상세/form/report/export 표시가 currency-aware하다.
+- [x] `Product.currencyCode`가 추가됐다.
+- [x] `Deal.currencyCode`가 추가됐다.
+- [x] 기존 Product/Deal 데이터는 `KRW` 의미를 유지한다.
+- [x] 허용 통화는 `KRW`, `USD`다.
+- [x] 금액 입력은 정수만 허용한다.
+- [x] Deal 생성 기본값은 Product currency 우선, User default currency fallback이다.
+- [x] Product/Deal 목록/상세/form/report/export 표시가 currency-aware하다.
 
 ### G05 Contact Phone Global
 

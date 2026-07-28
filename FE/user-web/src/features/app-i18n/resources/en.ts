@@ -38,5 +38,7 @@ export const enResource = {
     USER_TIMEZONE_INVALID: "Choose a valid time zone.",
     USER_COUNTRY_UNSUPPORTED: "Choose a supported country.",
     USER_DEFAULT_CURRENCY_UNSUPPORTED: "Choose a supported currency.",
+    CURRENCY_UNSUPPORTED: "Choose a supported currency.",
+    AMOUNT_INTEGER_REQUIRED: "Enter an integer amount of 0 or more.",
   },
 } satisfies AppI18nResource;

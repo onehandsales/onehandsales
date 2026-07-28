@@ -59,6 +59,10 @@ import {
 } from "@/modules/deal/domain/deal-status";
 import type { CurrentUserContext } from "@/shared/application/context/current-user.context";
 import {
+  normalizeCurrencyCode,
+  resolveCurrencyCodeWithDefault,
+} from "@/shared/application/currency/currency-code";
+import {
   createTimestampedXlsxFileName,
   type ExportedXlsxFileResponse,
   XLSX_CONTENT_TYPE,
@@ -69,7 +73,10 @@ import {
   type XlsxWorkbookWriter,
 } from "@/shared/application/ports/xlsx-workbook.writer";
 import { createTrashRetentionTimestamps } from "@/shared/application/trash/trash-retention";
-import { ValidationDomainError } from "@/shared/domain/errors/common.errors";
+import {
+  FieldValidationDomainError,
+  ValidationDomainError,
+} from "@/shared/domain/errors/common.errors";
 import { AppLogger } from "@/shared/infrastructure/logger/app-logger.service";
 
 const DEAL_PAGE_SIZE = 15;
@@ -123,6 +130,7 @@ export interface CursorQueryInput {
 export interface CreateDealCommand {
   readonly dealName: string;
   readonly dealCost: number;
+  readonly currencyCode?: string;
   readonly companyIds: string[];
   readonly contactIds: string[];
   readonly productIds: string[];
@@ -136,6 +144,7 @@ export interface CreateDealCommand {
 export interface UpdateDealCommand {
   readonly dealName?: string;
   readonly dealCost?: number;
+  readonly currencyCode?: string;
   readonly companyIds?: string[];
   readonly contactIds?: string[];
   readonly productIds?: string[];
@@ -172,6 +181,7 @@ export interface DealListItemResponse {
   readonly id: string;
   readonly dealName: string;
   readonly dealCost: number;
+  readonly currencyCode: string;
   readonly dealStatus: DealStatusCode;
   readonly dealStatusLabel: string;
   readonly expectedEndDate: string;
@@ -679,18 +689,25 @@ export class DealApplicationService {
     let autoActivityCount = 0;
 
     await this.dealRepository.runInTransaction(async (repository) => {
-      await this.assertRelatedResourcesExist(
+      const relatedResources = await this.assertRelatedResourcesExist(
         currentUser.id,
         companyIds,
         contactIds,
         productIds,
         repository
       );
+      const currencyCode = this.resolveDealCreateCurrencyCode(
+        input.currencyCode,
+        productIds,
+        relatedResources.products,
+        currentUser.defaultCurrencyCode
+      );
 
       const deal = await repository.createDeal({
         userId: currentUser.id,
         dealName,
         dealCost,
+        currencyCode,
         dealStatus: input.dealStatus,
         expectedEndDate,
       });
@@ -1338,7 +1355,9 @@ export class DealApplicationService {
     contactIds: readonly string[],
     productIds: string[],
     repository: DealRepository = this.dealRepository
-  ): Promise<void> {
+  ): Promise<{
+    readonly products: DealProductRecord[];
+  }> {
     const [companies, contacts, products] = await Promise.all([
       repository.findCompanies(userId, companyIds),
       repository.findContacts(userId, contactIds),
@@ -1357,6 +1376,32 @@ export class DealApplicationService {
     ) {
       throw new RelatedResourceNotFoundError();
     }
+
+    return { products };
+  }
+
+  // 기능 : 딜 생성 통화를 명시 입력, 첫 선택 제품, 사용자 기본 통화 순서로 결정합니다.
+  private resolveDealCreateCurrencyCode(
+    explicitCurrencyCode: string | undefined,
+    productIds: readonly string[],
+    products: readonly DealProductRecord[],
+    defaultCurrencyCode: string | undefined
+  ): string {
+    if (explicitCurrencyCode !== undefined) {
+      return normalizeCurrencyCode(explicitCurrencyCode);
+    }
+
+    const productMap = new Map(
+      products.map((product) => [product.id, product.currencyCode])
+    );
+    const firstProductCurrencyCode = productIds
+      .map((productId) => productMap.get(productId))
+      .find((currencyCode): currencyCode is string => Boolean(currencyCode));
+
+    return resolveCurrencyCodeWithDefault(
+      firstProductCurrencyCode,
+      defaultCurrencyCode
+    );
   }
 
   // 기능 : 자동 activity를 source 기준으로 중복 확인 후 생성합니다.
@@ -1630,19 +1675,29 @@ export class DealApplicationService {
   // 기능 : 딜 금액 입력이 0 이상 정수인지 검증합니다.
   private normalizeDealCost(value: number): number {
     if (!Number.isInteger(value) || value < 0) {
-      throw new ValidationDomainError("dealCost must be an integer >= 0");
+      throw new FieldValidationDomainError(
+        "AMOUNT_INTEGER_REQUIRED",
+        "dealCost",
+        "dealCost must be an integer >= 0"
+      );
     }
 
     return value;
   }
 
-  // 기능 : 딜에 연결할 제품 ID 배열이 비어 있지 않고 중복이 없는지 검증합니다.
+  // 기능 : 딜에 연결할 제품 ID 배열에서 중복을 막고 빈 배열은 허용합니다.
   private normalizeProductIds(value: readonly string[]): string[] {
-    return this.normalizeRequiredIdArray(
-      value,
-      "productIds must contain at least one product",
-      "productIds must not contain duplicates"
-    );
+    if (!Array.isArray(value)) {
+      throw new ValidationDomainError("productIds must be an array");
+    }
+
+    const uniqueIds = new Set(value);
+
+    if (uniqueIds.size !== value.length) {
+      throw new ValidationDomainError("productIds must not contain duplicates");
+    }
+
+    return [...value];
   }
 
   // 기능 : 필수 ID 배열이 비어 있지 않고 중복이 없는지 검증합니다.
@@ -1726,6 +1781,9 @@ export class DealApplicationService {
         : {}),
       ...(input.dealCost !== undefined
         ? { dealCost: this.normalizeDealCost(input.dealCost) }
+        : {}),
+      ...(input.currencyCode !== undefined
+        ? { currencyCode: normalizeCurrencyCode(input.currencyCode) }
         : {}),
       ...(input.companyIds !== undefined
         ? {
@@ -1828,6 +1886,7 @@ export class DealApplicationService {
       id: deal.id,
       dealName: deal.dealName,
       dealCost: deal.dealCost,
+      currencyCode: deal.currencyCode,
       dealStatus: deal.dealStatus,
       dealStatusLabel: getDealStatusLabel(deal.dealStatus),
       expectedEndDate: this.toDateOnlyString(deal.expectedEndDate),
@@ -2110,6 +2169,7 @@ export class DealApplicationService {
           { header: "담당자", key: "contactLabel", width: 20 },
           { header: "딜단계", key: "dealStatusLabel", width: 18 },
           { header: "딜금액", key: "dealCost", width: 16 },
+          { header: "통화", key: "currencyCode", width: 10 },
           { header: "마감일", key: "expectedEndDate", width: 16 },
           { header: "다음행동", key: "followingAction", width: 32 },
           {
@@ -2138,6 +2198,7 @@ export class DealApplicationService {
         .join(", "),
       dealStatusLabel: getDealStatusLabel(deal.dealStatus),
       dealCost: deal.dealCost,
+      currencyCode: deal.currencyCode,
       expectedEndDate: this.toDateOnlyString(deal.expectedEndDate),
       followingAction: deal.nextFollowingAction?.log.followingAction ?? null,
       createdAt: deal.createdAt,

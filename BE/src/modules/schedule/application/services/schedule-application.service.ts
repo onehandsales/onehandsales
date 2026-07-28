@@ -45,6 +45,7 @@ import {
   isValidIanaTimeZone,
   normalizeOptionalIanaTimeZone,
 } from "@/shared/application/time-zone/time-zone";
+import { SUPPORTED_CURRENCY_CODES } from "@/shared/application/currency/currency-code";
 import { ValidationDomainError } from "@/shared/domain/errors/common.errors";
 import { AppLogger } from "@/shared/infrastructure/logger/app-logger.service";
 
@@ -122,7 +123,14 @@ export interface WeeklyScheduleReportSummaryResponse {
   readonly scheduleDealLinkCount: number;
   readonly distinctLinkedDealCount: number;
   readonly totalDealCost: number;
+  readonly totalDealCostByCurrency: WeeklyScheduleReportCurrencyTotalResponse[];
   readonly dealStatusCounts: WeeklyScheduleReportDealStatusCountResponse[];
+}
+
+// 역할 : 주간 일정 리포트 통화별 딜 금액 합계 응답 구조를 정의합니다.
+export interface WeeklyScheduleReportCurrencyTotalResponse {
+  readonly currencyCode: string;
+  readonly totalDealCost: number;
 }
 
 // 역할 : 주간 일정 리포트 딜 상태별 집계 응답 구조를 정의합니다.
@@ -163,6 +171,7 @@ export interface WeeklyScheduleReportDealResponse {
   readonly id: string;
   readonly dealName: string;
   readonly dealCost: number;
+  readonly currencyCode: string;
   readonly dealStatus: DealStatusCode;
   readonly dealStatusLabel: string;
   readonly expectedEndDate: string;
@@ -1317,8 +1326,41 @@ export class ScheduleApplicationService {
         (total, deal) => total + deal.dealCost,
         0
       ),
+      totalDealCostByCurrency: this.toWeeklyReportCurrencyTotals(distinctDeals),
       dealStatusCounts: this.toWeeklyReportDealStatusCounts(distinctDeals),
     };
+  }
+
+  // 기능 : 통화가 섞인 주간 리포트에서 금액 의미를 잃지 않도록 통화별 합계를 계산합니다.
+  private toWeeklyReportCurrencyTotals(
+    deals: readonly WeeklyReportDealRecord[]
+  ): WeeklyScheduleReportCurrencyTotalResponse[] {
+    const totals = new Map<string, number>();
+
+    for (const deal of deals) {
+      totals.set(
+        deal.currencyCode,
+        (totals.get(deal.currencyCode) ?? 0) + deal.dealCost
+      );
+    }
+
+    return Array.from(totals, ([currencyCode, totalDealCost]) => ({
+      currencyCode,
+      totalDealCost,
+    })).sort((left, right) => {
+      const leftIndex = SUPPORTED_CURRENCY_CODES.indexOf(
+        left.currencyCode as (typeof SUPPORTED_CURRENCY_CODES)[number]
+      );
+      const rightIndex = SUPPORTED_CURRENCY_CODES.indexOf(
+        right.currencyCode as (typeof SUPPORTED_CURRENCY_CODES)[number]
+      );
+
+      return (
+        (leftIndex === -1 ? Number.MAX_SAFE_INTEGER : leftIndex) -
+          (rightIndex === -1 ? Number.MAX_SAFE_INTEGER : rightIndex) ||
+        left.currencyCode.localeCompare(right.currencyCode)
+      );
+    });
   }
 
   // 기능 : 특정 local date에 겹치는 일정을 하루 bucket 응답으로 변환합니다.
@@ -1386,6 +1428,7 @@ export class ScheduleApplicationService {
       id: deal.id,
       dealName: deal.dealName,
       dealCost: deal.dealCost,
+      currencyCode: deal.currencyCode,
       dealStatus: deal.dealStatus,
       dealStatusLabel: getDealStatusLabel(deal.dealStatus),
       expectedEndDate: this.formatDateOnlyFromDate(deal.expectedEndDate),
@@ -1535,6 +1578,7 @@ export class ScheduleApplicationService {
       dealNames: "",
       dealStatusLabels: "",
       dealCostTotal: 0,
+      dealCurrencyCodes: "",
       expectedEndDates: "",
       nextFollowingActions: "",
     };
@@ -1563,6 +1607,9 @@ export class ScheduleApplicationService {
       dealCostTotal: schedule.deals.reduce(
         (total, deal) => total + deal.dealCost,
         0
+      ),
+      dealCurrencyCodes: this.joinWeeklyReportDealTexts(
+        Array.from(new Set(schedule.deals.map((deal) => deal.currencyCode)))
       ),
       expectedEndDates: this.joinWeeklyReportDealTexts(
         schedule.deals.map((deal) => deal.expectedEndDate)
@@ -1623,6 +1670,7 @@ export class ScheduleApplicationService {
           { header: "딜", key: "dealNames", width: 28 },
           { header: "딜단계", key: "dealStatusLabels", width: 20 },
           { header: "딜금액합계", key: "dealCostTotal", width: 16 },
+          { header: "딜통화", key: "dealCurrencyCodes", width: 12 },
           { header: "딜마감일", key: "expectedEndDates", width: 22 },
           { header: "다음행동", key: "nextFollowingActions", width: 32 },
         ],

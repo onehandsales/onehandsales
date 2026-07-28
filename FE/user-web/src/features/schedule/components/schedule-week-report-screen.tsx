@@ -23,12 +23,14 @@ import {
 } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { AiWeeklyReportSection } from "@/features/ai-weekly-report";
+import { useAppI18n } from "@/features/app-i18n";
 import { useAuthSession } from "@/features/auth";
 import { downloadWeeklyScheduleReportXlsx } from "@/features/schedule/api/schedule-api";
 import { useWeeklyScheduleReport } from "@/features/schedule/hooks/use-schedule-queries";
 import type {
   WeeklyScheduleReportDay,
   WeeklyScheduleReportDeal,
+  WeeklyScheduleReportCurrencyTotal,
   WeeklyScheduleReportSchedule,
 } from "@/features/schedule/types/schedule";
 import {
@@ -51,6 +53,7 @@ const WEEKLY_REPORT_COPY = {
 
 const DATE_ONLY_PATTERN = /^(\d{4})-(\d{2})-(\d{2})$/;
 const FALLBACK_XLSX_FILE_NAME = "weekly_schedules.xlsx";
+type CurrencyFormatter = ReturnType<typeof useAppI18n>["formatCurrency"];
 
 type CalendarDateParts = {
   readonly year: number;
@@ -299,6 +302,7 @@ function WeeklyReportSummary({
     readonly scheduleDealLinkCount: number;
     readonly distinctLinkedDealCount: number;
     readonly totalDealCost: number;
+    readonly totalDealCostByCurrency: ReadonlyArray<WeeklyScheduleReportCurrencyTotal>;
     readonly dealStatusCounts: ReadonlyArray<{
       readonly dealStatusLabel: string;
       readonly count: number;
@@ -306,6 +310,8 @@ function WeeklyReportSummary({
   };
   readonly timeZone?: string;
 }) {
+  const { formatCurrency } = useAppI18n();
+
   return (
     <section className="grid gap-3 border-b border-[#E2E5EC] pb-4">
       <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-5">
@@ -327,7 +333,11 @@ function WeeklyReportSummary({
         <WeeklyReportMetric
           icon={<FileText className="h-4 w-4" />}
           label="딜 금액"
-          value={formatDealCost(summary.totalDealCost)}
+          value={formatDealCostTotals(
+            summary.totalDealCostByCurrency,
+            summary.totalDealCost,
+            formatCurrency
+          )}
         />
         <WeeklyReportMetric
           icon={<CalendarDays className="h-4 w-4" />}
@@ -511,6 +521,8 @@ function WeeklyReportDealLink({
 }: {
   readonly deal: WeeklyScheduleReportDeal;
 }) {
+  const { formatCurrency } = useAppI18n();
+
   return (
     <Link
       className="grid min-w-0 gap-2 rounded-md border border-[#E2E5EC] bg-[#F8FAFC] px-3 py-3 text-left transition hover:border-[#93C5FD] hover:bg-white"
@@ -527,7 +539,7 @@ function WeeklyReportDealLink({
           </p>
         </div>
         <span className="shrink-0 text-[13px] font-semibold text-[#2563EB]">
-          {formatDealCost(deal.dealCost)}
+          {formatCurrency(deal.dealCost, { currencyCode: deal.currencyCode })}
         </span>
       </div>
 
@@ -833,8 +845,23 @@ function formatScheduleTimeRange(
   return formatGoogleScheduleClockRange(schedule, timeZone);
 }
 
-function formatDealCost(amount: number) {
-  return `₩ ${amount.toLocaleString("ko-KR")}`;
+// 기능 : 통화별 합계가 있으면 각 통화 단위로 표시하고, 구버전 응답은 기존 총액으로 보정합니다.
+function formatDealCostTotals(
+  totals: ReadonlyArray<WeeklyScheduleReportCurrencyTotal>,
+  fallbackTotal: number,
+  formatCurrency: CurrencyFormatter
+) {
+  if (totals.length === 0) {
+    return formatCurrency(fallbackTotal);
+  }
+
+  return totals
+    .map((total) =>
+      formatCurrency(total.totalDealCost, {
+        currencyCode: total.currencyCode,
+      })
+    )
+    .join(" / ");
 }
 
 function downloadBlobFile(file: ApiBlobResponse, fallbackFileName: string) {

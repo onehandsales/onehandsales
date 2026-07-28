@@ -1,6 +1,11 @@
 // 기능 : 딜 생성/수정 form Zod 스키마 — Backend Deal API 계약 기준
 import { z } from "zod";
 import {
+  APP_SUPPORTED_CURRENCY_CODES,
+  DEFAULT_APP_CURRENCY_CODE,
+  type AppCurrencyCode,
+} from "@/features/app-i18n";
+import {
   DEAL_STATUS_LIST,
   MANUAL_DEAL_ACTIVITY_TYPES,
   type CreateDealInput,
@@ -13,6 +18,12 @@ import {
 
 const dealStatusEnum = z.enum(
   DEAL_STATUS_LIST as [DealStatus, ...DealStatus[]]
+);
+const dealCurrencyCodeEnum = z.enum(
+  APP_SUPPORTED_CURRENCY_CODES as unknown as [
+    AppCurrencyCode,
+    ...AppCurrencyCode[],
+  ]
 );
 
 const manualDealActivityTypeEnum = z.enum(
@@ -46,6 +57,7 @@ const expectedEndDateSchema = z
 export const dealCreateFormSchema = z.object({
   dealName: z.string().trim().min(1, "딜이름을 입력해 주세요."),
   dealCost: dealCostSchema,
+  currencyCode: dealCurrencyCodeEnum,
   companyIds: z.array(z.string()).min(1, "회사를 선택해 주세요."),
   contactIds: z.array(z.string()).min(1, "담당자를 선택해 주세요."),
   productIds: z
@@ -67,6 +79,7 @@ export type DealCreateFormValues = z.infer<typeof dealCreateFormSchema>;
 export const dealUpdateFormSchema = z.object({
   dealName: z.string().trim().min(1, "딜이름을 입력해 주세요."),
   dealCost: dealCostSchema,
+  currencyCode: dealCurrencyCodeEnum,
   companyIds: z.array(z.string()).min(1, "회사를 선택해 주세요."),
   contactIds: z.array(z.string()).min(1, "담당자를 선택해 주세요."),
   productIds: z
@@ -132,6 +145,7 @@ export function toCreateDealInput(values: DealCreateFormValues): CreateDealInput
   return {
     dealName: values.dealName,
     dealCost: Number(values.dealCost),
+    currencyCode: values.currencyCode,
     companyIds: values.companyIds,
     contactIds: values.contactIds,
     productIds: values.productIds,
@@ -151,6 +165,7 @@ export function toUpdateDealInput(
     dealId,
     dealName: values.dealName,
     dealCost: Number(values.dealCost),
+    currencyCode: values.currencyCode,
     companyIds: values.companyIds,
     contactIds: values.contactIds,
     productIds: values.productIds,
@@ -192,6 +207,7 @@ export function toUpdateManualDealActivityInput(
 export const emptyDealCreateFormValues: DealCreateFormValues = {
   dealName: "",
   dealCost: "",
+  currencyCode: DEFAULT_APP_CURRENCY_CODE,
   companyIds: [],
   contactIds: [],
   productIds: [],

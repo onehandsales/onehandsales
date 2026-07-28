@@ -1,3 +1,5 @@
+import type { AppCurrencyCode } from "@/features/app-i18n";
+
 export type AiWeeklyReportStatus = "GENERATING" | "READY" | "FAILED";
 
 export type AiWeeklyReportPriority = "LOW" | "MEDIUM" | "HIGH";
@@ -138,6 +140,7 @@ export type AiWeeklyReportSnapshotDeal = {
   readonly dealName: string | null;
   readonly dealStatus: string | null;
   readonly dealCost: number;
+  readonly currencyCode: AppCurrencyCode;
   readonly expectedEndDate: string | null;
   readonly companyCount: number;
   readonly contactCount: number;

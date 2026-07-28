@@ -46,10 +46,10 @@
 
 ## 5. G04 Currency Product Deal
 
-- [ ] Product/Deal request/response에 `currencyCode`가 포함된다.
-- [ ] Product/Deal 신규 column이 `BE/prisma` 기준과 한글 주석 규칙을 따른다.
-- [ ] KRW/USD 정수 금액 정책이 지켜졌다.
-- [ ] Deal은 Product currency 기본값과 변경 가능 흐름을 모두 지원한다.
+- [x] Product/Deal request/response에 `currencyCode`가 포함된다.
+- [x] Product/Deal 신규 column이 `BE/prisma` 기준과 한글 주석 규칙을 따른다.
+- [x] KRW/USD 정수 금액 정책이 지켜졌다.
+- [x] Deal은 Product currency 기본값과 변경 가능 흐름을 모두 지원한다.
 
 ## 6. G05 Contact Phone Global
 

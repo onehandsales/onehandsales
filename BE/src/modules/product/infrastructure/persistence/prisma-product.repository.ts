@@ -32,6 +32,7 @@ type ProductWithRelations = {
   readonly id: string;
   readonly productName: string;
   readonly productPrice: number;
+  readonly currencyCode: string;
   readonly createdAt: Date;
   readonly updatedAt: Date;
   readonly productCategory: {
@@ -125,6 +126,7 @@ export class PrismaProductRepository implements ProductRepository {
         id: true,
         dealName: true,
         dealCost: true,
+        currencyCode: true,
         dealStatus: true,
         createdAt: true,
       },
@@ -179,6 +181,7 @@ export class PrismaProductRepository implements ProductRepository {
         userId: input.userId,
         productName: input.productName,
         productPrice: input.productPrice,
+        currencyCode: input.currencyCode,
         productCategoryId: input.productCategoryId,
         productStatusId: input.productStatusId,
       },
@@ -209,6 +212,9 @@ export class PrismaProductRepository implements ProductRepository {
           : {}),
         ...(input.productPrice !== undefined
           ? { productPrice: input.productPrice }
+          : {}),
+        ...(input.currencyCode !== undefined
+          ? { currencyCode: input.currencyCode }
           : {}),
         ...(input.productCategoryId !== undefined
           ? { productCategoryId: input.productCategoryId }
@@ -686,6 +692,7 @@ export class PrismaProductRepository implements ProductRepository {
       id: product.id,
       productName: product.productName,
       productPrice: product.productPrice,
+      currencyCode: product.currencyCode,
       productCategory: {
         id: product.productCategory.id,
         categoryName: product.productCategory.categoryName,

@@ -24,6 +24,14 @@ export class ValidationDomainError extends DomainError {
   }
 }
 
+// 역할 : FieldValidationDomainError 필드 단위 검증 실패를 안전한 API 오류로 표현합니다.
+export class FieldValidationDomainError extends DomainError {
+  // 기능 : 클라이언트가 처리할 오류 코드와 필드명을 포함한 검증 오류를 생성합니다.
+  constructor(code: string, field: string, message = "Validation failed") {
+    super(code, message, { field });
+  }
+}
+
 // 역할 : DeletedResourceError 도메인 또는 애플리케이션 오류 상태를 표현합니다.
 export class DeletedResourceError extends DomainError {
   // 기능 : 삭제된 리소스 접근 도메인 오류를 생성합니다.

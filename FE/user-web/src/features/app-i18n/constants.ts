@@ -3,8 +3,10 @@ export const DEFAULT_APP_LOCALE = "ko-KR";
 export const DEFAULT_APP_TIME_ZONE = "Asia/Seoul";
 export const DEFAULT_APP_COUNTRY_CODE = "KR";
 export const DEFAULT_APP_CURRENCY_CODE = "KRW";
+export const APP_SUPPORTED_CURRENCY_CODES = ["KRW", "USD"] as const;
 
 export type AppLocale = (typeof APP_SUPPORTED_LOCALES)[number];
+export type AppCurrencyCode = (typeof APP_SUPPORTED_CURRENCY_CODES)[number];
 
 export type AppI18nResource = {
   readonly common: {
@@ -43,6 +45,8 @@ export type AppI18nResource = {
     readonly USER_TIMEZONE_INVALID: string;
     readonly USER_COUNTRY_UNSUPPORTED: string;
     readonly USER_DEFAULT_CURRENCY_UNSUPPORTED: string;
+    readonly CURRENCY_UNSUPPORTED: string;
+    readonly AMOUNT_INTEGER_REQUIRED: string;
   };
 };
 
@@ -56,6 +60,22 @@ export type AppI18nKey = {
 // 기능 : 입력 locale이 앱에서 지원하는 locale인지 확인합니다.
 export function isAppLocale(value: string): value is AppLocale {
   return APP_SUPPORTED_LOCALES.includes(value as AppLocale);
+}
+
+// 기능 : 입력 통화 코드가 앱에서 지원하는 통화인지 확인합니다.
+export function isAppCurrencyCode(value: string): value is AppCurrencyCode {
+  return APP_SUPPORTED_CURRENCY_CODES.includes(value as AppCurrencyCode);
+}
+
+// 기능 : 사용자/서버 통화 코드를 앱 지원 통화로 정규화합니다.
+export function normalizeAppCurrencyCode(
+  value: string | null | undefined
+): AppCurrencyCode {
+  const normalized = value?.trim().toUpperCase();
+
+  return normalized && isAppCurrencyCode(normalized)
+    ? normalized
+    : DEFAULT_APP_CURRENCY_CODE;
 }
 
 // 기능 : 사용자/브라우저 locale을 앱 지원 locale로 정규화합니다.
