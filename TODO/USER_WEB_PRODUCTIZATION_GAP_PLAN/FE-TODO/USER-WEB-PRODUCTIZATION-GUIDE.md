@@ -72,7 +72,7 @@
 - 완료된 Google Calendar Integration 범위를 넘어서는 Google Calendar export/write, realtime webhook/watch, 반복 일정, 여러 Google 계정 동시 연결은 API/DB 계약 없이 확장하지 않는다.
 - 완료된 Deal Activity Timeline 범위를 넘어서는 범용 activity bus, Company/Contact/Product latest summary, activity deletion/retention/audit 정책은 API/DB/정책 계약 없이 확장하지 않는다.
 - 완료된 MeetingNote AI Provider Log 범위를 넘어서는 회의록 목록 summary, 자동 저장/자동 발송, 회의록 follow-up 알림, Admin provider audit 조회는 API/DB/정책 계약 없이 확장하지 않는다.
-- 완료된 Global Data I18N 범위를 넘어서는 신규 국가/통화/provider, `/app` locale prefix, provider smoke, 운영 DB migration deploy는 계약/운영 계획 없이 진행하지 않는다.
+- 완료된 Global Data I18N 범위를 넘어서는 신규 국가/통화/provider, `/app` locale prefix, provider smoke, 추가 DB migration은 계약/운영 계획 없이 진행하지 않는다.
 - `/app/export` generic export를 다시 노출하지 않는다.
 - page size를 FE 단독으로 바꾸지 않는다.
 - API 응답에 없는 latest activity, next action summary, product summary, dealCount를 임의로 계산해 사실처럼 표시하지 않는다. Deal list products/latest activity와 Contact dealCount는 06 API 응답 기준으로만 표시한다.

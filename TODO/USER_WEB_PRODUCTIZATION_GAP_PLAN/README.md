@@ -164,7 +164,7 @@
 
 남은 제품화 gap으로 분리할 범위:
 
-- 운영 DB에 08 migration을 배포하는 절차와 실제 Google/LINE/Apple provider smoke
+- 08 DB migration 최신 상태 확인 이력과 실제 Google/LINE/Apple provider smoke
 - 추가 국가/통화/전화번호 포맷, 국가별 세금/약관/가격 정책
 - app i18n legacy static fallback을 직접 translation key로 줄이는 polish
 - 결제/구독, Admin 운영, 제품 분석, backup/restore와 장애 대응 기준
@@ -199,7 +199,7 @@
 - 완료된 Google Calendar Integration 범위를 넘어서는 Google Calendar export/write, realtime webhook/watch, 반복 일정, 여러 Google 계정 동시 연결
 - 완료된 MeetingNote AI Provider Log 범위를 넘어서는 회의록 목록 summary, 자동 follow-up 발송/알림, Admin provider audit 조회, 별도 transcript/raw provider response table
 - 완료된 Deal Activity Timeline 범위를 넘어서는 범용 activity bus, Company/Contact/Product latest summary, activity deletion/retention/audit 정책
-- 완료된 Global Data I18N 범위를 넘어서는 신규 국가/통화/provider, `/app` locale prefix, 운영 DB migration 실행, 실제 provider smoke를 문서 계획 없이 진행
+- 완료된 Global Data I18N 범위를 넘어서는 신규 국가/통화/provider, `/app` locale prefix, 추가 DB migration 실행, 실제 provider smoke를 문서 계획 없이 진행
 
 위 항목은 제품화 우선순위와 UX/UI 방향을 확정한 뒤 별도 계획에서 다룬다.
 

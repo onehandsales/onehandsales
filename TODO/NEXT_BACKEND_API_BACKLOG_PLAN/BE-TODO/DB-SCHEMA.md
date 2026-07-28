@@ -45,7 +45,7 @@
 - `BE/prisma/migrations/20260728040000_add_company_global_region_address/migration.sql`
 - `BE/prisma/migrations/20260728050000_add_line_oauth_provider/migration.sql`
 - `BE/prisma/schema.prisma`의 `User.countryCode`, `User.preferredLocale`, `User.defaultCurrencyCode`, Product/Deal `currencyCode`, Contact 글로벌 전화번호 필드, Company country/region/address 필드, `CompanyRegion`, `OAuthProvider.LINE`
-- G10 검증 기준 현재 `.env` 연결 DB에는 08 migration 5개가 미적용 상태다. 운영 배포 전 대상 DB 확인 후 `prisma migrate deploy`가 필요하다.
+- 2026-07-28 후속 확인 기준 현재 `.env` 연결 DB는 `pnpm.cmd exec prisma migrate status`에서 최신 상태로 확인됐다.
 
 ## 2. 새 migration이 필요 없을 가능성이 높은 후보
 

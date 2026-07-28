@@ -69,7 +69,6 @@
   - provider raw error와 token/secret은 사용자 응답과 log에 노출하지 않는다.
   - `/app` 다국어는 public-site locale routing과 분리하고 User API에는 locale route prefix를 추가하지 않는다.
 - 08 밖으로 남는 범위:
-  - 운영 DB `prisma migrate deploy`
   - 실제 Google/LINE/Apple provider smoke
   - 추가 국가/통화/전화번호 포맷, Google/LINE/Apple 외 신규 provider, Admin provider 운영 화면
 

@@ -102,6 +102,6 @@
 - 일정/딜 reminder 기반 Notification은 구현 완료됐지만, 실제 SMTP/Web Push provider smoke는 env 준비 후 운영 확인 단계에서 실행한다.
 - DealActivity timeline, Deal list products/latest activity, Contact dealCount, page size 15 계약은 구현 및 QA closeout 완료됐다. Company/Contact/Product latest summary, activity deletion/retention/audit 정책은 후속 범위다.
 - MeetingNote AI/STT provider log, 회의록 상세 next action/follow-up draft, User Web AI 후속 작업 UX는 구현 및 QA closeout 완료됐다. 회의록 목록 summary, 자동 발송/알림, Admin provider audit/retention은 후속 범위다.
-- `/app` i18n, user global settings, Product/Deal currency, Contact global phone, Company region/address, Import/Export localization, Google/LINE/Apple auth는 08에서 구현 및 QA closeout 완료됐다. 실제 provider smoke와 운영 DB migration deploy는 운영 확인 단계에서 실행한다.
+- `/app` i18n, user global settings, Product/Deal currency, Contact global phone, Company region/address, Import/Export localization, Google/LINE/Apple auth는 08에서 구현 및 QA closeout 완료됐다. 08 DB migration은 최신 상태로 확인됐고, 실제 provider smoke는 운영 확인 단계에서 실행한다.
 - 제품화 gap은 "API가 없어서 화면을 못 만든다"보다 "현재 핵심 루프를 Global B2C 첫 판매 gate까지 어떤 순서로 끌어올릴지"에 가깝다.
 - 따라서 다음 계획은 MVP 기능 추가 목록이 아니라 Global B2C 첫 판매 기준 대비 gap을 먼저 정리해야 한다.

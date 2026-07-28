@@ -62,4 +62,4 @@ MVP는 판매 버전이 아니다. 이 단계의 목적은 개인 영업자의 �
 - Backend/API 후보는 화면에서 필요한 정보 구조와 Global B2C 운영 필요성이 확정된 뒤 계약화한다.
 - Series A급 기능은 기능 단독으로 만들지 않고 retention, revenue, analytics와 같이 판단한다.
 - Admin/결제/분석/정책/현지화는 후순위 장식이 아니라 첫 판매 gate의 일부로 본다.
-- 08에서 닫힌 현지화/글로벌 데이터 기본 범위는 완료로 보되, 운영 DB migration deploy와 실제 auth provider smoke는 판매 전 운영 확인에 포함한다.
+- 08에서 닫힌 현지화/글로벌 데이터 기본 범위와 DB migration 최신 상태 확인은 완료로 보되, 실제 auth provider smoke는 판매 전 운영 확인에 포함한다.

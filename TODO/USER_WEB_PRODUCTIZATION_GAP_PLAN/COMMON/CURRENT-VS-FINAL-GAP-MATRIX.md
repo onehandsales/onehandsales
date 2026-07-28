@@ -70,7 +70,7 @@
 | ImportJob 유실이 Global B2C 첫 판매 blocker인지 known limitation인지 | 완료 처리됨. `NBA-006`은 `01_IMPORT_JOB_PERSISTENCE`에서 구현 및 QA closeout 완료. |
 | Notification 실제 provider smoke와 회의록 follow-up 알림을 언제 다룰지 | 일정/딜 reminder와 회의록 follow-up draft는 완료됐고, 실제 SMTP/Web Push env 검증과 회의록 follow-up 알림/발송은 운영/후속 범위로 남는다. |
 | Google Calendar export/write/realtime webhook/watch/반복 일정/여러 Google 계정 동시 연결을 언제 다룰지 | 현재 read-only import와 한손 Schedule/Trash/Reminder 연결은 완료됐고, 쓰기/실시간/고급 캘린더 범위는 후속 확장으로 남는다. |
-| 08 migration deploy와 실제 Google/LINE/Apple provider smoke를 언제 실행할지 | 08 구현과 자동 QA는 완료됐지만 현재 `.env` 연결 DB에는 08 migration 5개가 미적용이며, 실제 provider smoke는 Supabase/provider secret 설정 후 운영 확인이 필요하다. |
+| 실제 Google/LINE/Apple provider smoke를 언제 실행할지 | 08 구현과 자동 QA, DB migration 최신 상태 확인은 완료됐다. 실제 provider smoke는 Supabase/provider secret 설정 후 운영 확인이 필요하다. |
 | Admin 운영을 결제 전에 어느 수준까지 구현할지 | 유료 고객 지원/민감정보 정책 범위가 달라진다. |
 
 ## 4. 권장 다음 큰 방향
