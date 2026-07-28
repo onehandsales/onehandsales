@@ -108,6 +108,7 @@ export function ProductListScreen({
   const outletContext =
     useOutletContext<AppShellOutletContext | undefined>();
   const { user } = useAuthSession();
+  const { t } = useAppI18n();
   const isDockedViewport = useMediaQuery("(min-width: 1024px)");
   const [searchText, setSearchText] = useState("");
   const [search, setSearch] = useState("");
@@ -470,7 +471,7 @@ export function ProductListScreen({
         actions={[
           {
             icon: Download,
-            tooltip: "엑셀 다운로드",
+            tooltip: t("importExport.excelDownload"),
             onClick: () => void onExport(),
             disabled: isExporting,
           },

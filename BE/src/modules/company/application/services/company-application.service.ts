@@ -35,6 +35,13 @@ import {
   type ExportedXlsxFileResponse,
   XLSX_CONTENT_TYPE,
 } from "@/shared/application/export/xlsx-export-file";
+import {
+  formatXlsxDateTime,
+  getXlsxLocalizedText,
+  resolveXlsxLocalizationContext,
+  type XlsxLocalizationContext,
+  type XlsxSupportedLocale,
+} from "@/shared/application/export/xlsx-localization";
 import type { CurrentUserContext } from "@/shared/application/context/current-user.context";
 import {
   XLSX_WORKBOOK_WRITER,
@@ -48,7 +55,27 @@ import { AppLogger } from "@/shared/infrastructure/logger/app-logger.service";
 const COMPANY_PAGE_SIZE = 15;
 const MEMO_LOG_PAGE_SIZE = 10;
 const INITIAL_COMPANY_MEMO_TYPE = "초기 메모";
-const XLSX_DATE_NUM_FORMAT = "yyyy-mm-dd hh:mm:ss";
+
+const COMPANY_EXPORT_SHEET_NAMES: Readonly<
+  Record<XlsxSupportedLocale, string>
+> = {
+  "ko-KR": "회사",
+  en: "Companies",
+};
+
+const COMPANY_EXPORT_HEADERS: Readonly<
+  Record<string, Readonly<Record<XlsxSupportedLocale, string>>>
+> = {
+  companyName: { "ko-KR": "회사명", en: "Company Name" },
+  companyField: { "ko-KR": "회사 분야", en: "Industry" },
+  companyRegion: { "ko-KR": "회사 지역", en: "Region" },
+  companyRegionCountryCode: { "ko-KR": "지역 국가", en: "Region Country" },
+  companyRegionCode: { "ko-KR": "지역 코드", en: "Region Code" },
+  address: { "ko-KR": "주소", en: "Address" },
+  contactCount: { "ko-KR": "담당자 수", en: "Contacts" },
+  dealCount: { "ko-KR": "딜 수", en: "Deals" },
+  createdAt: { "ko-KR": "등록일", en: "Created At" },
+};
 
 // 역할 : CompanyListQueryInput 데이터가 계층 사이에서 전달되는 구조를 정의합니다.
 export interface CompanyListQueryInput {
@@ -69,6 +96,8 @@ export interface CompanyExportQueryInput {
   readonly companyRegionId?: string;
   readonly companyRegionIds?: readonly string[];
   readonly sort?: CompanyListSort;
+  readonly locale?: string;
+  readonly timeZone?: string;
 }
 
 // 역할 : CreateCompanyInput 데이터가 계층 사이에서 전달되는 구조를 정의합니다.
@@ -363,7 +392,14 @@ export class CompanyApplicationService {
     });
 
     // 4. xlsx writer로 다운로드 파일 본문을 생성한다.
-    const content = await this.writeCompanyExportXlsx(companies);
+    const localization = resolveXlsxLocalizationContext({
+      locale: query.locale,
+      preferredLocale: currentUser.preferredLocale,
+      timeZone: query.timeZone,
+      userTimeZone: currentUser.timeZone,
+      defaultCurrencyCode: currentUser.defaultCurrencyCode,
+    });
+    const content = await this.writeCompanyExportXlsx(companies, localization);
 
     // 5. 검색어 없이 회사 export 이벤트를 기록한다.
     this.logEvent("company.exported", {
@@ -1062,36 +1098,52 @@ export class CompanyApplicationService {
 
   // 기능 : 회사 export 레코드를 xlsx Buffer로 변환합니다.
   private async writeCompanyExportXlsx(
-    companies: CompanyListRecord[]
+    companies: CompanyListRecord[],
+    localization: XlsxLocalizationContext
   ): Promise<Buffer> {
     try {
       return await this.xlsxWriter.writeWorksheet({
-        sheetName: "Companies",
-        columns: [
-          { header: "회사이름", key: "companyName", width: 28 },
-          { header: "회사분야", key: "companyField", width: 18 },
-          { header: "회사지역", key: "companyRegion", width: 18 },
-          { header: "지역국가", key: "companyRegionCountryCode", width: 12 },
-          { header: "지역코드", key: "companyRegionCode", width: 14 },
-          { header: "주소", key: "address", width: 34 },
-          { header: "담당자 수", key: "contactCount", width: 12 },
-          { header: "딜 수", key: "dealCount", width: 12 },
-          {
-            header: "등록일",
-            key: "createdAt",
-            width: 22,
-            numFmt: XLSX_DATE_NUM_FORMAT,
-          },
-        ],
-        rows: this.toCompanyExportRows(companies),
+        sheetName: getXlsxLocalizedText(
+          COMPANY_EXPORT_SHEET_NAMES,
+          localization.locale
+        ),
+        columns: this.getCompanyExportColumns(localization.locale),
+        rows: this.toCompanyExportRows(companies, localization),
       });
     } catch {
       throw new CompanyExportFailedError();
     }
   }
 
+  // 기능 : 회사 export header를 사용자 locale에 맞게 구성합니다.
+  private getCompanyExportColumns(locale: XlsxSupportedLocale) {
+    return [
+      { header: this.companyExportHeader("companyName", locale), key: "companyName", width: 28 },
+      { header: this.companyExportHeader("companyField", locale), key: "companyField", width: 18 },
+      { header: this.companyExportHeader("companyRegion", locale), key: "companyRegion", width: 18 },
+      {
+        header: this.companyExportHeader("companyRegionCountryCode", locale),
+        key: "companyRegionCountryCode",
+        width: 14,
+      },
+      { header: this.companyExportHeader("companyRegionCode", locale), key: "companyRegionCode", width: 14 },
+      { header: this.companyExportHeader("address", locale), key: "address", width: 34 },
+      { header: this.companyExportHeader("contactCount", locale), key: "contactCount", width: 12 },
+      { header: this.companyExportHeader("dealCount", locale), key: "dealCount", width: 12 },
+      { header: this.companyExportHeader("createdAt", locale), key: "createdAt", width: 22 },
+    ];
+  }
+
+  // 기능 : 회사 export 컬럼 key에 대응하는 locale별 header를 반환합니다.
+  private companyExportHeader(key: string, locale: XlsxSupportedLocale): string {
+    return getXlsxLocalizedText(COMPANY_EXPORT_HEADERS[key], locale);
+  }
+
   // 기능 : 회사 export 레코드를 ID 없는 xlsx 행 데이터로 변환합니다.
-  private toCompanyExportRows(companies: CompanyListRecord[]): XlsxRow[] {
+  private toCompanyExportRows(
+    companies: CompanyListRecord[],
+    localization: XlsxLocalizationContext
+  ): XlsxRow[] {
     return companies.map((company) => ({
       companyName: company.companyName,
       companyField: company.companyField.field,
@@ -1101,7 +1153,7 @@ export class CompanyApplicationService {
       address: company.address ?? "",
       contactCount: company.contactCount,
       dealCount: company.dealCount,
-      createdAt: company.createdAt,
+      createdAt: formatXlsxDateTime(company.createdAt, localization),
     }));
   }
 

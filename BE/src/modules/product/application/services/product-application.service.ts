@@ -36,6 +36,14 @@ import {
   XLSX_CONTENT_TYPE,
 } from "@/shared/application/export/xlsx-export-file";
 import {
+  formatXlsxCurrency,
+  formatXlsxDateTime,
+  getXlsxLocalizedText,
+  resolveXlsxLocalizationContext,
+  type XlsxLocalizationContext,
+  type XlsxSupportedLocale,
+} from "@/shared/application/export/xlsx-localization";
+import {
   normalizeCurrencyCode,
   resolveCurrencyCodeWithDefault,
 } from "@/shared/application/currency/currency-code";
@@ -55,7 +63,23 @@ import { AppLogger } from "@/shared/infrastructure/logger/app-logger.service";
 const PRODUCT_PAGE_SIZE = 15;
 const MEMO_LOG_PAGE_SIZE = 10;
 const INITIAL_PRODUCT_MEMO_TYPE = "초기 메모";
-const XLSX_DATE_NUM_FORMAT = "yyyy-mm-dd hh:mm:ss";
+
+const PRODUCT_EXPORT_SHEET_NAMES: Readonly<Record<XlsxSupportedLocale, string>> = {
+  "ko-KR": "제품",
+  en: "Products",
+};
+
+const PRODUCT_EXPORT_HEADERS: Readonly<
+  Record<string, Readonly<Record<XlsxSupportedLocale, string>>>
+> = {
+  productName: { "ko-KR": "제품명", en: "Product Name" },
+  productPrice: { "ko-KR": "가격", en: "Price" },
+  currencyCode: { "ko-KR": "통화", en: "Currency" },
+  categoryName: { "ko-KR": "카테고리", en: "Category" },
+  statusName: { "ko-KR": "상태", en: "Status" },
+  dealCount: { "ko-KR": "딜 수", en: "Deals" },
+  createdAt: { "ko-KR": "등록일", en: "Created At" },
+};
 
 // 역할 : ProductListQueryInput 데이터가 계층 사이에서 전달되는 구조를 정의합니다.
 export interface ProductListQueryInput {
@@ -76,6 +100,8 @@ export interface ProductExportQueryInput {
   readonly productStatusId?: string;
   readonly productStatusIds?: readonly string[];
   readonly sort?: ProductListSort;
+  readonly locale?: string;
+  readonly timeZone?: string;
 }
 
 // 역할 : CreateProductCommand 데이터가 계층 사이에서 전달되는 구조를 정의합니다.
@@ -275,7 +301,14 @@ export class ProductApplicationService {
     });
 
     // 4. xlsx writer로 다운로드 파일 본문을 생성한다.
-    const content = await this.writeProductExportXlsx(products);
+    const localization = resolveXlsxLocalizationContext({
+      locale: query.locale,
+      preferredLocale: currentUser.preferredLocale,
+      timeZone: query.timeZone,
+      userTimeZone: currentUser.timeZone,
+      defaultCurrencyCode: currentUser.defaultCurrencyCode,
+    });
+    const content = await this.writeProductExportXlsx(products, localization);
 
     // 5. 검색어 없이 제품 export 이벤트를 기록한다.
     this.logEvent("product.exported", {
@@ -1102,42 +1135,58 @@ export class ProductApplicationService {
 
   // 기능 : 제품 export 레코드를 xlsx Buffer로 변환합니다.
   private async writeProductExportXlsx(
-    products: ProductListRecord[]
+    products: ProductListRecord[],
+    localization: XlsxLocalizationContext
   ): Promise<Buffer> {
     try {
       return await this.xlsxWriter.writeWorksheet({
-        sheetName: "Products",
-        columns: [
-          { header: "제품명", key: "productName", width: 28 },
-          { header: "가격", key: "productPrice", width: 16 },
-          { header: "통화", key: "currencyCode", width: 10 },
-          { header: "카테고리", key: "categoryName", width: 18 },
-          { header: "상태", key: "statusName", width: 18 },
-          { header: "딜 수", key: "dealCount", width: 12 },
-          {
-            header: "등록일",
-            key: "createdAt",
-            width: 22,
-            numFmt: XLSX_DATE_NUM_FORMAT,
-          },
-        ],
-        rows: this.toProductExportRows(products),
+        sheetName: getXlsxLocalizedText(
+          PRODUCT_EXPORT_SHEET_NAMES,
+          localization.locale
+        ),
+        columns: this.getProductExportColumns(localization.locale),
+        rows: this.toProductExportRows(products, localization),
       });
     } catch {
       throw new ProductExportFailedError();
     }
   }
 
+  // 기능 : 제품 export header를 사용자 locale에 맞게 구성합니다.
+  private getProductExportColumns(locale: XlsxSupportedLocale) {
+    return [
+      { header: this.productExportHeader("productName", locale), key: "productName", width: 28 },
+      { header: this.productExportHeader("productPrice", locale), key: "productPrice", width: 18 },
+      { header: this.productExportHeader("currencyCode", locale), key: "currencyCode", width: 10 },
+      { header: this.productExportHeader("categoryName", locale), key: "categoryName", width: 18 },
+      { header: this.productExportHeader("statusName", locale), key: "statusName", width: 18 },
+      { header: this.productExportHeader("dealCount", locale), key: "dealCount", width: 12 },
+      { header: this.productExportHeader("createdAt", locale), key: "createdAt", width: 22 },
+    ];
+  }
+
+  // 기능 : 제품 export 컬럼 key에 대응하는 locale별 header를 반환합니다.
+  private productExportHeader(key: string, locale: XlsxSupportedLocale): string {
+    return getXlsxLocalizedText(PRODUCT_EXPORT_HEADERS[key], locale);
+  }
+
   // 기능 : 제품 export 레코드를 ID 없는 xlsx 행 데이터로 변환합니다.
-  private toProductExportRows(products: ProductListRecord[]): XlsxRow[] {
+  private toProductExportRows(
+    products: ProductListRecord[],
+    localization: XlsxLocalizationContext
+  ): XlsxRow[] {
     return products.map((product) => ({
       productName: product.productName,
-      productPrice: product.productPrice,
+      productPrice: formatXlsxCurrency(
+        product.productPrice,
+        product.currencyCode,
+        localization
+      ),
       currencyCode: product.currencyCode,
       categoryName: product.productCategory.categoryName,
       statusName: product.productStatus.statusName,
       dealCount: product.dealCount,
-      createdAt: product.createdAt,
+      createdAt: formatXlsxDateTime(product.createdAt, localization),
     }));
   }
 

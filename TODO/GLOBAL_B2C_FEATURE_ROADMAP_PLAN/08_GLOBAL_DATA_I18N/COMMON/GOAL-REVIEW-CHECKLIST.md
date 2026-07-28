@@ -1,6 +1,6 @@
 # Goal Review Checklist
 
-상태: G03 Reviewed / G04 Ready / G05 Reviewed / G06 Reviewed
+상태: G03 Reviewed / G04 Reviewed / G05 Reviewed / G06 Reviewed / G07 Reviewed
 목적: 각 `/goal` 완료 전 검토자가 반드시 확인할 공통/개별 체크리스트
 
 ## 1. 공통 Gate
@@ -67,10 +67,10 @@
 
 ## 8. G07 Import Export Localization
 
-- [ ] Import template request에 `locale` 계약이 있다.
-- [ ] Export response file의 header/value가 사용자 설정 기준이다.
-- [ ] DB 변경 없음 또는 변경 시 `BE/prisma` 기준과 한글 주석 규칙을 따른다.
-- [ ] Contact export에 Phone, Phone Country, Phone E.164가 포함된다.
+- [x] Import template request에 `locale` 계약이 있다.
+- [x] Export response file의 header/value가 사용자 설정 기준이다.
+- [x] DB 변경 없음 또는 변경 시 `BE/prisma` 기준과 한글 주석 규칙을 따른다.
+- [x] Contact export에 Phone, Phone Country, Phone E.164가 포함된다.
 
 ## 9. G08 Auth Google LINE Apple
 

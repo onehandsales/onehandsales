@@ -59,6 +59,14 @@ export class ListContactsQueryDto {
   @IsOptional()
   @IsEnum(ContactListSort)
   sort?: ContactListSort;
+
+  @IsOptional()
+  @IsString()
+  locale?: string;
+
+  @IsOptional()
+  @IsString()
+  timeZone?: string;
 }
 
 // 역할 : ExportContactsQueryDto HTTP export 요청 값을 검증하기 위한 DTO입니다.

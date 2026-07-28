@@ -2,11 +2,15 @@ import type {
   ContactPageRecord,
   ContactRecord,
   ContactRepository,
+  ExportContactsInput,
   ListContactsInput,
 } from "@/modules/contact/application/ports/contact.repository";
 import type { ContactPrivateMemoEncryptionPort } from "@/modules/contact/application/ports/contact-private-memo-encryption.port";
 import type { CurrentUserContext } from "@/shared/application/context/current-user.context";
-import type { XlsxWorkbookWriter } from "@/shared/application/ports/xlsx-workbook.writer";
+import type {
+  XlsxWorkbookWriter,
+  XlsxWorksheetInput,
+} from "@/shared/application/ports/xlsx-workbook.writer";
 import { AppLogger } from "@/shared/infrastructure/logger/app-logger.service";
 import { ContactApplicationService } from "./contact-application.service";
 
@@ -23,6 +27,7 @@ const CURRENT_USER: CurrentUserContext = {
 // 역할 : FakeContactRepository 담당자 service 테스트용 저장소를 메모리에서 구현합니다.
 class FakeContactRepository implements Partial<ContactRepository> {
   readonly listContactsInputs: ListContactsInput[] = [];
+  readonly listContactsForExportInputs: ExportContactsInput[] = [];
 
   // 기능 : fake 담당자 목록 조회 입력을 기록하고 dealCount 포함 결과를 반환합니다.
   async listContacts(input: ListContactsInput): Promise<ContactPageRecord> {
@@ -32,6 +37,14 @@ class FakeContactRepository implements Partial<ContactRepository> {
       items: [createContactRecord({ dealCount: 2 })],
       totalCount: 1,
     };
+  }
+
+  // 기능 : fake 담당자 export 입력을 기록하고 담당자 행을 반환합니다.
+  async listContactsForExport(
+    input: ExportContactsInput
+  ): Promise<ContactRecord[]> {
+    this.listContactsForExportInputs.push(input);
+    return [createContactRecord()];
   }
 }
 
@@ -55,17 +68,20 @@ const privateMemoEncryption: ContactPrivateMemoEncryptionPort = {
   },
 };
 
-const xlsxWriter = {
-  writeWorksheet: jest.fn(),
-} as unknown as XlsxWorkbookWriter;
+function createXlsxWriter() {
+  return {
+    writeWorksheet: jest.fn().mockResolvedValue(Buffer.from("xlsx")),
+  } as unknown as jest.Mocked<XlsxWorkbookWriter>;
+}
 
 describe("ContactApplicationService", () => {
   it("lists contacts with dealCount and page size 15", async () => {
     const repository = new FakeContactRepository();
+    const writer = createXlsxWriter();
     const service = new ContactApplicationService(
       repository as unknown as ContactRepository,
       privateMemoEncryption,
-      xlsxWriter,
+      writer,
       new FakeAppLogger()
     );
 
@@ -83,6 +99,50 @@ describe("ContactApplicationService", () => {
       totalPages: 1,
     });
     expect(result.items[0]?.dealCount).toBe(2);
+  });
+
+  it("exports localized phone columns and user timezone dates", async () => {
+    const repository = new FakeContactRepository();
+    const writer = createXlsxWriter();
+    const service = new ContactApplicationService(
+      repository as unknown as ContactRepository,
+      privateMemoEncryption,
+      writer,
+      new FakeAppLogger()
+    );
+    const exportUser: CurrentUserContext = {
+      ...CURRENT_USER,
+      preferredLocale: "en",
+      timeZone: "America/New_York",
+    };
+
+    await service.exportContactsXlsx(exportUser, {});
+
+    const worksheetInput = writer.writeWorksheet.mock.calls[0]?.[0] as
+      | XlsxWorksheetInput
+      | undefined;
+
+    // 기능 : 담당자 export가 전화번호 세분 컬럼과 locale header를 유지하는지 검증합니다.
+    expect(worksheetInput?.sheetName).toBe("Contacts");
+    expect(worksheetInput?.columns.map((column) => column.header)).toEqual([
+      "Company Name",
+      "Contact Name",
+      "Phone",
+      "Phone Country",
+      "Phone E.164",
+      "Email",
+      "Department",
+      "Title",
+      "Created At",
+    ]);
+    expect(worksheetInput?.rows[0]).toEqual(
+      expect.objectContaining({
+        phone: "010-1111-2222",
+        phoneCountry: "KR",
+        phoneE164: "+821011112222",
+        createdAt: "07/25/2026 21:00:00",
+      })
+    );
   });
 });
 

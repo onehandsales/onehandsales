@@ -115,7 +115,7 @@ export function CompanyListScreen({
   const outletContext =
     useOutletContext<AppShellOutletContext | undefined>();
   const { user } = useAuthSession();
-  const { locale } = useAppI18n();
+  const { locale, t } = useAppI18n();
   const isDockedViewport = useMediaQuery("(min-width: 1024px)");
   const [companyNameText, setCompanyNameText] = useState("");
   const [companyName, setCompanyName] = useState("");
@@ -507,7 +507,7 @@ export function CompanyListScreen({
         actions={[
           {
             icon: Download,
-            tooltip: "엑셀 다운로드",
+            tooltip: t("importExport.excelDownload"),
             onClick: () => void onExport(),
             disabled: exportCompaniesMutation.isPending,
           },

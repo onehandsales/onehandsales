@@ -38,13 +38,16 @@ export class ImportTemplateController {
   // API : 데이터 불러오기, 선택한 양식 xlsx 다운로드
   @Get(":templateId/download")
   async downloadTemplate(
+    @CurrentUser() currentUser: CurrentUserContext,
     @Param("templateId", ParseUUIDPipe) templateId: string,
     @Query() query: DownloadImportTemplateQueryDto,
     @Res({ passthrough: true }) response: Response
   ): Promise<StreamableFile> {
     // 1. path param과 query context를 application 계층으로 전달해 xlsx 파일을 생성한다.
     const file = await this.dataImportApplicationService.downloadImportTemplate({
+      currentUser,
       templateId,
+      ...(query.locale !== undefined ? { locale: query.locale } : {}),
       ...(query.companyName !== undefined ? { companyName: query.companyName } : {}),
     });
 

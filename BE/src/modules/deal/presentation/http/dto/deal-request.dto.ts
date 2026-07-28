@@ -84,6 +84,14 @@ export class ListDealsQueryDto {
   @IsOptional()
   @IsEnum(DealListSort)
   sort?: DealListSort;
+
+  @IsOptional()
+  @IsString()
+  locale?: string;
+
+  @IsOptional()
+  @IsString()
+  timeZone?: string;
 }
 
 // 역할 : ExportDealsQueryDto HTTP export query 요청 값을 검증하기 위한 DTO입니다.

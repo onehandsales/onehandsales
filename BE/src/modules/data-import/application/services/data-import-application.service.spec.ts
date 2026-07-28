@@ -7,7 +7,10 @@ import type {
   ImportJobRowRecord,
 } from "@/modules/data-import/application/ports/import-job.repository";
 import type { ImportMappingProvider } from "@/modules/data-import/application/ports/import-mapping.provider";
-import type { ImportTemplateRepository } from "@/modules/data-import/application/ports/import-template.repository";
+import type {
+  ImportTemplateRecord,
+  ImportTemplateRepository,
+} from "@/modules/data-import/application/ports/import-template.repository";
 import type { ImportUploadedFileStorage } from "@/modules/data-import/application/ports/import-uploaded-file-storage.port";
 import {
   ImportJobAlreadyClosedError,
@@ -18,7 +21,10 @@ import {
 } from "@/modules/data-import/domain/import-template.errors";
 import { ValidationDomainError } from "@/shared/domain/errors/common.errors";
 import type { CurrentUserContext } from "@/shared/application/context/current-user.context";
-import type { XlsxWorkbookWriter } from "@/shared/application/ports/xlsx-workbook.writer";
+import type {
+  XlsxWorkbookWriter,
+  XlsxWorksheetInput,
+} from "@/shared/application/ports/xlsx-workbook.writer";
 import type { AppLogger } from "@/shared/infrastructure/logger/app-logger.service";
 
 const CURRENT_USER: CurrentUserContext = {
@@ -37,6 +43,69 @@ const NOW = new Date("2026-07-21T00:00:00.000Z");
 const EXPIRES_AT = new Date("2026-07-28T00:00:00.000Z");
 
 describe("DataImportApplicationService persistent import job flow", () => {
+  it("downloads template columns with requested locale before user preference", async () => {
+    const fixture = createServiceFixture();
+    fixture.importTemplateRepository.findActiveTemplateById.mockResolvedValue(
+      createImportTemplateRecord({
+        templateType: "CONTACT",
+        templateName: "contact-template.xlsx",
+        columnsJson: [
+          {
+            key: "contactName",
+            label: "담당자명",
+            required: true,
+            type: "text",
+          },
+          {
+            key: "contactPhone",
+            label: "전화번호",
+            required: true,
+            type: "phone",
+          },
+          {
+            key: "contactDepartmentName",
+            label: "부서",
+            required: false,
+            type: "text",
+            options: ["Sales", "Support"],
+          },
+        ],
+        sampleRowsJson: [
+          {
+            contactName: "Alice",
+            contactPhone: "+821011112222",
+            contactDepartmentName: "Sales",
+          },
+        ],
+      })
+    );
+
+    const response = await fixture.service.downloadImportTemplate({
+      currentUser: { preferredLocale: "ko-KR" },
+      templateId: "template-contact",
+      locale: "en",
+    });
+
+    const worksheetInput = fixture.xlsxWriter.writeWorksheet.mock.calls[0]?.[0] as
+      | XlsxWorksheetInput
+      | undefined;
+
+    // 기능 : query locale이 사용자 기본 locale보다 우선해 템플릿 sheet/header에 적용되는지 검증합니다.
+    expect(response.content).toEqual(Buffer.from("xlsx"));
+    expect(worksheetInput?.sheetName).toBe("Contacts");
+    expect(worksheetInput?.columns.map((column) => column.header)).toEqual([
+      "Contact Name",
+      "Contact Phone",
+      "Contact Department",
+    ]);
+    expect(worksheetInput?.columns[2]?.listValidation).toEqual(
+      expect.objectContaining({
+        promptTitle: "Choose Contact Department",
+        errorTitle: "Check Contact Department",
+      })
+    );
+  });
+
   it("rejects invalid rows before delegating confirm", async () => {
     const fixture = createServiceFixture();
     fixture.importJobRepository.findJobByIdForUser.mockResolvedValue(
@@ -479,7 +548,7 @@ function createServiceFixture() {
   } satisfies jest.Mocked<ImportMappingProvider>;
 
   const xlsxWriter = {
-    writeWorksheet: jest.fn(),
+    writeWorksheet: jest.fn().mockResolvedValue(Buffer.from("xlsx")),
   } satisfies jest.Mocked<XlsxWorkbookWriter>;
 
   const logger = {
@@ -501,7 +570,25 @@ function createServiceFixture() {
     importTemplateRepository,
     importJobRepository,
     importUploadedFileStorage,
+    xlsxWriter,
     logger,
+  };
+}
+
+function createImportTemplateRecord(
+  overrides: Partial<ImportTemplateRecord> = {}
+): ImportTemplateRecord {
+  return {
+    id: "template-1",
+    templateType: "COMPANY",
+    templateVersion: "v1",
+    templateName: "template.xlsx",
+    columnsJson: [],
+    sampleRowsJson: [],
+    isActive: true,
+    createdAt: NOW,
+    updatedAt: NOW,
+    ...overrides,
   };
 }
 

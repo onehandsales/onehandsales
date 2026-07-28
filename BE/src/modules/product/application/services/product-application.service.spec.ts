@@ -405,16 +405,32 @@ describe("ProductApplicationService", () => {
     });
   });
 
-  it("keeps product amount and currency in export rows", async () => {
+  it("localizes product export headers, row currency, and timezone dates", async () => {
     const repository = new FakeProductRepository();
     const writer = new FakeXlsxWorkbookWriter();
     const service = createService(repository, writer);
+    const exportUser: CurrentUserContext = {
+      ...CURRENT_USER,
+      preferredLocale: "en",
+      timeZone: "America/New_York",
+    };
 
     await service.createProduct(CURRENT_USER, createProductCommand());
-    await service.exportProductsXlsx(CURRENT_USER, {
+    await service.exportProductsXlsx(exportUser, {
       sort: ProductListSort.CREATED_AT_DESC,
     });
 
+    // 기능 : 사용자 locale 기준의 sheet/header가 제품 export에 반영되는지 검증합니다.
+    expect(writer.lastInput?.sheetName).toBe("Products");
+    expect(writer.lastInput?.columns.map((column) => column.header)).toEqual([
+      "Product Name",
+      "Price",
+      "Currency",
+      "Category",
+      "Status",
+      "Deals",
+      "Created At",
+    ]);
     expect(writer.lastInput?.columns.map((column) => column.key)).toEqual([
       "productName",
       "productPrice",
@@ -427,8 +443,9 @@ describe("ProductApplicationService", () => {
     expect(writer.lastInput?.rows[0]).toEqual(
       expect.objectContaining({
         productName: "프리미엄 상품",
-        productPrice: 1200000,
+        productPrice: "$1,200,000",
         currencyCode: "USD",
+        createdAt: "06/12/2026 06:00:00",
       })
     );
   });

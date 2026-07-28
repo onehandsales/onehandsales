@@ -20,6 +20,10 @@ export enum ImportTemplateTypeDto {
 export class DownloadImportTemplateQueryDto {
   @IsOptional()
   @IsString()
+  locale?: string;
+
+  @IsOptional()
+  @IsString()
   companyName?: string;
 }
 

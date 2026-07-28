@@ -40,6 +40,13 @@ import {
   type ExportedXlsxFileResponse,
   XLSX_CONTENT_TYPE,
 } from "@/shared/application/export/xlsx-export-file";
+import {
+  formatXlsxDateTime,
+  getXlsxLocalizedText,
+  resolveXlsxLocalizationContext,
+  type XlsxLocalizationContext,
+  type XlsxSupportedLocale,
+} from "@/shared/application/export/xlsx-localization";
 import type { CurrentUserContext } from "@/shared/application/context/current-user.context";
 import {
   XLSX_WORKBOOK_WRITER,
@@ -56,8 +63,26 @@ import { AppLogger } from "@/shared/infrastructure/logger/app-logger.service";
 const CONTACT_PAGE_SIZE = 15;
 const MEMO_LOG_PAGE_SIZE = 10;
 const INITIAL_CONTACT_MEMO_TYPE = "초기 메모";
-const XLSX_DATE_NUM_FORMAT = "yyyy-mm-dd hh:mm:ss";
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+const CONTACT_EXPORT_SHEET_NAMES: Readonly<Record<XlsxSupportedLocale, string>> = {
+  "ko-KR": "담당자",
+  en: "Contacts",
+};
+
+const CONTACT_EXPORT_HEADERS: Readonly<
+  Record<string, Readonly<Record<XlsxSupportedLocale, string>>>
+> = {
+  companyName: { "ko-KR": "회사명", en: "Company Name" },
+  username: { "ko-KR": "담당자명", en: "Contact Name" },
+  phone: { "ko-KR": "전화번호", en: "Phone" },
+  phoneCountry: { "ko-KR": "전화번호 국가", en: "Phone Country" },
+  phoneE164: { "ko-KR": "국제 전화번호", en: "Phone E.164" },
+  email: { "ko-KR": "이메일", en: "Email" },
+  departmentName: { "ko-KR": "부서", en: "Department" },
+  jobGradeName: { "ko-KR": "직급", en: "Title" },
+  createdAt: { "ko-KR": "등록일", en: "Created At" },
+};
 
 // 역할 : ContactListQueryInput 데이터가 계층 사이에서 전달되는 구조를 정의합니다.
 export interface ContactListQueryInput {
@@ -78,6 +103,8 @@ export interface ContactExportQueryInput {
   readonly contactDepartmentId?: string;
   readonly contactJobGradeId?: string;
   readonly sort?: ContactListSort;
+  readonly locale?: string;
+  readonly timeZone?: string;
 }
 
 // 역할 : CreateContactCommand 데이터가 계층 사이에서 전달되는 구조를 정의합니다.
@@ -312,7 +339,14 @@ export class ContactApplicationService {
     });
 
     // 4. xlsx writer로 다운로드 파일 본문을 생성한다.
-    const content = await this.writeContactExportXlsx(contacts);
+    const localization = resolveXlsxLocalizationContext({
+      locale: query.locale,
+      preferredLocale: currentUser.preferredLocale,
+      timeZone: query.timeZone,
+      userTimeZone: currentUser.timeZone,
+      defaultCurrencyCode: currentUser.defaultCurrencyCode,
+    });
+    const content = await this.writeContactExportXlsx(contacts, localization);
 
     // 5. 검색어 없이 담당자 export 이벤트를 기록한다.
     this.logEvent("contact.exported", {
@@ -1209,36 +1243,48 @@ export class ContactApplicationService {
 
   // 기능 : 담당자 export 레코드를 xlsx Buffer로 변환합니다.
   private async writeContactExportXlsx(
-    contacts: ContactRecord[]
+    contacts: ContactRecord[],
+    localization: XlsxLocalizationContext
   ): Promise<Buffer> {
     try {
       return await this.xlsxWriter.writeWorksheet({
-        sheetName: "Contacts",
-        columns: [
-          { header: "회사명", key: "companyName", width: 28 },
-          { header: "담당자명", key: "username", width: 18 },
-          { header: "Phone", key: "phone", width: 20 },
-          { header: "Phone Country", key: "phoneCountry", width: 16 },
-          { header: "Phone E.164", key: "phoneE164", width: 20 },
-          { header: "이메일", key: "email", width: 28 },
-          { header: "부서", key: "departmentName", width: 18 },
-          { header: "직급", key: "jobGradeName", width: 18 },
-          {
-            header: "등록일",
-            key: "createdAt",
-            width: 22,
-            numFmt: XLSX_DATE_NUM_FORMAT,
-          },
-        ],
-        rows: this.toContactExportRows(contacts),
+        sheetName: getXlsxLocalizedText(
+          CONTACT_EXPORT_SHEET_NAMES,
+          localization.locale
+        ),
+        columns: this.getContactExportColumns(localization.locale),
+        rows: this.toContactExportRows(contacts, localization),
       });
     } catch {
       throw new ContactExportFailedError();
     }
   }
 
+  // 기능 : 담당자 export header를 사용자 locale에 맞게 구성합니다.
+  private getContactExportColumns(locale: XlsxSupportedLocale) {
+    return [
+      { header: this.contactExportHeader("companyName", locale), key: "companyName", width: 28 },
+      { header: this.contactExportHeader("username", locale), key: "username", width: 18 },
+      { header: this.contactExportHeader("phone", locale), key: "phone", width: 20 },
+      { header: this.contactExportHeader("phoneCountry", locale), key: "phoneCountry", width: 16 },
+      { header: this.contactExportHeader("phoneE164", locale), key: "phoneE164", width: 20 },
+      { header: this.contactExportHeader("email", locale), key: "email", width: 28 },
+      { header: this.contactExportHeader("departmentName", locale), key: "departmentName", width: 18 },
+      { header: this.contactExportHeader("jobGradeName", locale), key: "jobGradeName", width: 18 },
+      { header: this.contactExportHeader("createdAt", locale), key: "createdAt", width: 22 },
+    ];
+  }
+
+  // 기능 : 담당자 export 컬럼 key에 대응하는 locale별 header를 반환합니다.
+  private contactExportHeader(key: string, locale: XlsxSupportedLocale): string {
+    return getXlsxLocalizedText(CONTACT_EXPORT_HEADERS[key], locale);
+  }
+
   // 기능 : 담당자 export 레코드를 ID 없는 xlsx 행 데이터로 변환합니다.
-  private toContactExportRows(contacts: ContactRecord[]): XlsxRow[] {
+  private toContactExportRows(
+    contacts: ContactRecord[],
+    localization: XlsxLocalizationContext
+  ): XlsxRow[] {
     return contacts.map((contact) => ({
       companyName: contact.company.companyName,
       username: contact.username,
@@ -1253,7 +1299,7 @@ export class ContactApplicationService {
       email: contact.email,
       departmentName: contact.contactDepartment.departmentName,
       jobGradeName: contact.contactJobGrade.jobGradeName,
-      createdAt: contact.createdAt,
+      createdAt: formatXlsxDateTime(contact.createdAt, localization),
     }));
   }
 

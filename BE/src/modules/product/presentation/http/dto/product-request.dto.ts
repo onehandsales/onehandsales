@@ -63,6 +63,14 @@ export class ListProductsQueryDto {
   @IsOptional()
   @IsEnum(ProductListSort)
   sort?: ProductListSort;
+
+  @IsOptional()
+  @IsString()
+  locale?: string;
+
+  @IsOptional()
+  @IsString()
+  timeZone?: string;
 }
 
 // 역할 : ExportProductsQueryDto HTTP export 요청 값을 검증하기 위한 DTO입니다.

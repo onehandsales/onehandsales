@@ -25,6 +25,7 @@ import { PageHeader } from "@/components/layout/page-header";
 import { Pagination } from "@/components/ui/pagination";
 import { ListEmptyState } from "@/components/ui/state";
 import { Toast } from "@/components/ui/toast";
+import { useAppI18n, type AppLocale } from "@/features/app-i18n";
 import {
   useCreateImportJobMutation,
 } from "@/features/import-export/hooks/use-import-export-mutations";
@@ -105,12 +106,23 @@ const activeStatuses = new Set<ImportJobStatus>([
   "CONFIRMING",
 ]);
 
+const templateLanguageOptions: readonly {
+  readonly value: AppLocale;
+  readonly labelKey: "importExport.koreanTemplate" | "importExport.englishTemplate";
+}[] = [
+  { value: "ko-KR", labelKey: "importExport.koreanTemplate" },
+  { value: "en", labelKey: "importExport.englishTemplate" },
+];
+
 export function ImportScreen() {
   const navigate = useNavigate();
   const location = useLocation();
+  const { locale, t } = useAppI18n();
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [selectedTargetType, setSelectedTargetType] =
     useState<ImportTargetType>("COMPANY");
+  const [selectedTemplateLocale, setSelectedTemplateLocale] =
+    useState<AppLocale>(locale);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isDraggingFile, setIsDraggingFile] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
@@ -154,6 +166,10 @@ export function ImportScreen() {
     }
   }, [location.state]);
 
+  useEffect(() => {
+    setSelectedTemplateLocale(locale);
+  }, [locale]);
+
   const onFileSelected = (file: File | null) => {
     const validationMessage = validateImportFile(file);
 
@@ -196,6 +212,7 @@ export function ImportScreen() {
 
     const file = await downloadTemplateMutation.mutateAsync({
       templateId: selectedTemplate.id,
+      locale: selectedTemplateLocale,
     });
     downloadBlobFile(file, selectedTemplate.templateName);
   };
@@ -307,23 +324,47 @@ export function ImportScreen() {
               ) : null}
 
               <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-                <button
-                  className="inline-flex h-9 items-center justify-center gap-1.5 rounded-md border border-[#E5E7EB] bg-white px-3 text-[13px] font-semibold text-[#475569] transition hover:bg-[#F8FAFC] disabled:cursor-not-allowed disabled:opacity-60"
-                  disabled={
-                    downloadTemplateMutation.isPending ||
-                    templatesQuery.isLoading ||
-                    !selectedTemplate
-                  }
-                  onClick={() => void downloadSelectedTemplate()}
-                  type="button"
-                >
-                  {downloadTemplateMutation.isPending ? (
-                    <Loader2 className="h-4 w-4 animate-spin" />
-                  ) : (
-                    <FileSpreadsheet className="h-4 w-4" />
-                  )}
-                  양식 받기
-                </button>
+                <div className="flex min-w-0 flex-col gap-2 sm:flex-row sm:items-end">
+                  <label className="grid min-w-[168px] gap-1">
+                    <span className="text-[12px] font-semibold text-[#475569]">
+                      {t("importExport.templateLanguage")}
+                    </span>
+                    <select
+                      aria-label={t("importExport.templateLanguage")}
+                      className="h-9 rounded-md border border-[#D7DCE5] bg-white px-2 text-[13px] font-semibold text-[#111827] outline-none transition focus:border-[#4880EE]"
+                      onChange={(event) =>
+                        setSelectedTemplateLocale(event.target.value as AppLocale)
+                      }
+                      value={selectedTemplateLocale}
+                    >
+                      {templateLanguageOptions.map((option) => (
+                        <option key={option.value} value={option.value}>
+                          {t(option.labelKey)}
+                        </option>
+                      ))}
+                    </select>
+                    <span className="sr-only">
+                      {t("importExport.templateLanguageHelp")}
+                    </span>
+                  </label>
+                  <button
+                    className="inline-flex h-9 items-center justify-center gap-1.5 rounded-md border border-[#E5E7EB] bg-white px-3 text-[13px] font-semibold text-[#475569] transition hover:bg-[#F8FAFC] disabled:cursor-not-allowed disabled:opacity-60"
+                    disabled={
+                      downloadTemplateMutation.isPending ||
+                      templatesQuery.isLoading ||
+                      !selectedTemplate
+                    }
+                    onClick={() => void downloadSelectedTemplate()}
+                    type="button"
+                  >
+                    {downloadTemplateMutation.isPending ? (
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                    ) : (
+                      <FileSpreadsheet className="h-4 w-4" />
+                    )}
+                    {t("importExport.downloadTemplate")}
+                  </button>
+                </div>
                 <button
                   className="inline-flex h-10 items-center justify-center gap-1.5 rounded-md border border-[#1F4EF5] bg-[#1F4EF5] px-4 text-[13px] font-semibold text-white transition hover:bg-[#173FD0] disabled:cursor-not-allowed disabled:opacity-60"
                   data-testid="import-upload-submit"

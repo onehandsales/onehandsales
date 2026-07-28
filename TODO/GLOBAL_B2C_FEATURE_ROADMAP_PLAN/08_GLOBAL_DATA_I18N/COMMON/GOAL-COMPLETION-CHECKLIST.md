@@ -1,6 +1,6 @@
 # Goal Completion Checklist
 
-상태: G01 Done / G02 Done / G03 Done / G04 Ready / G05 Done / G06 Done
+상태: G01 Done / G02 Done / G03 Done / G04 Done / G05 Done / G06 Done / G07 Done
 최종 업데이트: 2026-07-28
 
 ## 1. 목적
@@ -16,10 +16,10 @@
 | [x] | G01 Document Contract Sync | Done | 2026-07-28 | 현재 코드와 계약 대조, AGENT 갱신 대상 확정 | `COMMON/PLANNING-REVIEW.md`, G01 spec, `pnpm.cmd run prisma:validate` | G02 착수 가능 |
 | [x] | G02 User Global Settings | Done | 2026-07-28 | User 설정 DB/API/Settings 구현 | `COMMON/GOAL-SPECS/G02_USER_GLOBAL_SETTINGS.md`, `BE/prisma/migrations/20260728010000_add_user_global_settings`, BE/FE 검증 명령 | G03 착수 가능 |
 | [x] | G03 App I18N Foundation | Done | 2026-07-28 | app i18n provider/resource 구현 | `COMMON/GOAL-SPECS/G03_APP_I18N_FOUNDATION.md`, `FE/user-web/src/features/app-i18n`, User Web 검증 명령 | G04 착수 가능 |
-| [ ] | G04 Currency Product Deal | Ready |  | Product/Deal currency 구현 |  | KRW/USD |
+| [x] | G04 Currency Product Deal | Done | 2026-07-28 | Product/Deal currency 구현 | G04 spec, BE/FE 검증 명령 | KRW/USD |
 | [x] | G05 Contact Phone Global | Done | 2026-07-28 | Contact phone 글로벌 필드와 migration 구현 | G05 spec, `BE/prisma/migrations/20260728030000_add_contact_global_phone`, BE/FE 검증 명령 | KR/US |
 | [x] | G06 Company Region Address | Done | 2026-07-28 | CompanyRegion code/address 구현 | BE/FE 검증 통과 | Company만 적용 |
-| [ ] | G07 Import Export Localization | Not Started |  | Export/Import template 현지화 구현 |  | ko-KR/en |
+| [x] | G07 Import Export Localization | Done | 2026-07-28 | Export/Import template 현지화 구현 | G07 spec, BE/FE 검증 명령 | ko-KR/en |
 | [ ] | G08 Auth Google LINE Apple | Not Started |  | Google/LINE/Apple auth 구현 |  | provider env 수동 검증 필요 |
 | [ ] | G09 App Screen Translation | Not Started |  | 핵심 `/app` 화면 번역 적용 |  | layout QA 필요 |
 | [ ] | G10 QA Document Closeout | Not Started |  | 최종 QA와 문서 동기화 |  | closeout |
@@ -103,13 +103,13 @@
 
 ### G07 Import Export Localization
 
-- [ ] Export header가 사용자 `preferredLocale` 기준으로 표시된다.
-- [ ] Export 날짜/시간이 사용자 `timeZone` 기준으로 표시된다.
-- [ ] Export 통화가 `currencyCode` 기준으로 표시된다.
-- [ ] Contact export에 Phone, Phone Country, Phone E.164가 포함된다.
-- [ ] Import template download가 `locale=ko-KR|en`을 지원한다.
-- [ ] Import template 기본값은 사용자 `preferredLocale`이다.
-- [ ] 지원하지 않는 locale fallback이 있다.
+- [x] Export header가 사용자 `preferredLocale` 기준으로 표시된다.
+- [x] Export 날짜/시간이 사용자 `timeZone` 기준으로 표시된다.
+- [x] Export 통화가 `currencyCode` 기준으로 표시된다.
+- [x] Contact export에 Phone, Phone Country, Phone E.164가 포함된다.
+- [x] Import template download가 `locale=ko-KR|en`을 지원한다.
+- [x] Import template 기본값은 사용자 `preferredLocale`이다.
+- [x] 지원하지 않는 locale fallback이 있다.
 
 ### G08 Auth Google LINE Apple
 
@@ -160,4 +160,6 @@
 - 2026-07-28: G01 Document Contract Sync 완료. AGENT/TODO 계약 문서의 current baseline과 08 target delta를 분리했고, `DOMAIN_GLOBAL_DATA_API.md` Error Response / FE 처리 기준과 `COMMON/PLANNING-REVIEW.md`를 추가했다. `cd BE; pnpm.cmd run prisma:validate` 통과.
 - 2026-07-28: G02 User Global Settings 완료. `User.countryCode`, `User.defaultCurrencyCode`, profile GET/PATCH, auth signup default, `/app/settings`와 계정 설정 모달을 연결했다. 검증은 BE `prisma:validate`, `prisma:generate`, `typecheck`, `lint`, `test -- auth user`, FE user-web `typecheck`, `lint`, `build` 통과.
 - 2026-07-28: G03 App I18N Foundation 완료. `FE/user-web/src/features/app-i18n`에 app 전용 provider/resource/formatter를 추가하고 Settings 저장 후 `User.preferredLocale` 기반 문구와 날짜/시간 formatter가 즉시 반영되도록 연결했다. 검증은 FE user-web `typecheck`, `lint`, `build` 통과. `features/app-i18n` 내부 public-site 참조 없음과 `/app` route prefix 유지 확인.
+- 2026-07-28: G04 Currency Product Deal 완료. Product/Deal `currencyCode`, KRW/USD 정수 금액 정책, Deal Product currency 기본값, currency-aware 표시/export/report를 구현했다. 검증은 BE `prisma:validate`, `prisma:generate`, `typecheck`, `lint`, `test -- product deal schedule sales-report`, `build`, FE user-web `typecheck`, `lint`, `build` 통과.
 - 2026-07-28: G05 Contact Phone Global 완료. `Contact.phoneCountryCode`, `phoneNationalNumber`, `phoneE164`와 KR legacy migration을 추가하고 Contact create/update/list/detail/export/search/business-card/import 경로를 KR/US 정규화와 E.164 우선 기준으로 맞췄다. 명함 보정과 import validation도 KR/US 전화번호를 허용한다. 검증은 BE `prisma:validate`, `prisma:generate`, `typecheck`, `lint`, `test -- contact data-import business-card search`, `build`, FE user-web `typecheck`, `lint`, `build` 통과.
+- 2026-07-28: G07 Import Export Localization 완료. import template `locale=ko-KR|en` 다운로드, 도메인별 export header/date-time/currency 현지화, Contact export 전화번호 세분 컬럼, FE template language selector와 validation locale 표시를 구현했다. DB 변경과 신규 Generic ExportJob은 없다. 검증은 BE `typecheck`, `lint`, 관련 service test, 전체 `test`, `build`, FE user-web `typecheck`, `lint`, `build` 통과.

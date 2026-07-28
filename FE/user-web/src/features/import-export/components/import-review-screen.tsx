@@ -19,6 +19,7 @@ import { Link, Navigate, useNavigate } from "react-router-dom";
 import { DataUploadIcon } from "@/components/icons/data-upload-icon";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { Toast } from "@/components/ui/toast";
+import { useAppI18n, type AppLocale } from "@/features/app-i18n";
 import {
   useCancelImportJobMutation,
   useConfirmImportJobMutation,
@@ -33,7 +34,9 @@ import {
 } from "@/features/import-export/hooks/use-import-export-queries";
 import type {
   ImportFieldValue,
+  ImportCellValidationError,
   ImportJobDetailResponse,
+  ImportJobErrorResponse,
   ImportJobRow,
   ImportJobRowStatus,
   ImportJobStatus,
@@ -65,6 +68,27 @@ const terminalStatuses = new Set<ImportJobStatus>([
   "EXPIRED",
 ]);
 
+const importFieldLabels: Readonly<
+  Record<string, Readonly<Record<AppLocale, string>>>
+> = {
+  companyName: { "ko-KR": "회사명", en: "Company Name" },
+  companyFieldName: { "ko-KR": "회사 분야", en: "Industry" },
+  companyRegionName: { "ko-KR": "회사 지역", en: "Region" },
+  productName: { "ko-KR": "제품명", en: "Product Name" },
+  productPrice: { "ko-KR": "제품 단가", en: "Unit Price" },
+  productCategoryName: { "ko-KR": "제품 카테고리", en: "Product Category" },
+  productStatusName: { "ko-KR": "제품 상태", en: "Product Status" },
+  dealName: { "ko-KR": "딜 이름", en: "Deal Name" },
+  dealCost: { "ko-KR": "딜 금액", en: "Deal Amount" },
+  dealStatus: { "ko-KR": "딜 단계", en: "Deal Stage" },
+  expectedEndDate: { "ko-KR": "예상 마감일", en: "Expected Close Date" },
+  contactName: { "ko-KR": "담당자명", en: "Contact Name" },
+  contactEmail: { "ko-KR": "담당자 이메일", en: "Contact Email" },
+  contactPhone: { "ko-KR": "담당자 전화번호", en: "Contact Phone" },
+  contactDepartmentName: { "ko-KR": "담당자 부서", en: "Contact Department" },
+  contactJobGradeName: { "ko-KR": "담당자 직급", en: "Contact Title" },
+};
+
 type ImportReviewScreenProps = {
   readonly importJobId: string;
 };
@@ -78,6 +102,7 @@ type DraftRow = {
 
 export function ImportReviewScreen({ importJobId }: ImportReviewScreenProps) {
   const navigate = useNavigate();
+  const { locale, t } = useAppI18n();
   const confirmIdempotencyKeyRef = useRef<string | null>(null);
   const [draftRows, setDraftRows] = useState<Readonly<Record<string, DraftRow>>>(
     {}
@@ -325,18 +350,23 @@ export function ImportReviewScreen({ importJobId }: ImportReviewScreenProps) {
             dirtyRowIds={dirtyRowIds}
             disabled={isClosed || isBusy}
             draftRows={draftRows}
+            locale={locale}
             onCellChange={changeDraftCell}
             onExcludedChange={changeDraftExcluded}
             onToggleErrorFilter={() => setShowOnlyErrors((current) => !current)}
             showOnlyErrors={showOnlyErrors}
+            t={t}
             visibleRows={visibleRows}
           />
         </section>
 
         <ProblemHistoryPanel
+          columns={detail.templateColumns}
           errorsQuery={errorsQuery}
           isOpen={problemPanelOpen}
+          locale={locale}
           onToggle={() => setProblemPanelOpen((current) => !current)}
+          t={t}
         />
       </div>
 
@@ -564,20 +594,24 @@ function RowsPanel({
   dirtyRowIds,
   disabled,
   draftRows,
+  locale,
   onCellChange,
   onExcludedChange,
   onToggleErrorFilter,
   showOnlyErrors,
+  t,
   visibleRows,
 }: {
   readonly detail: ImportJobDetailResponse;
   readonly dirtyRowIds: ReadonlySet<string>;
   readonly disabled: boolean;
   readonly draftRows: Readonly<Record<string, DraftRow>>;
+  readonly locale: AppLocale;
   readonly onCellChange: (rowId: string, fieldKey: string, value: string) => void;
   readonly onExcludedChange: (rowId: string, excluded: boolean) => void;
   readonly onToggleErrorFilter: () => void;
   readonly showOnlyErrors: boolean;
+  readonly t: ReturnType<typeof useAppI18n>["t"];
   readonly visibleRows: readonly ImportJobRow[];
 }) {
   return (
@@ -634,9 +668,11 @@ function RowsPanel({
                     disabled={disabled}
                     draft={draftRows[row.rowId]}
                     key={row.rowId}
+                    locale={locale}
                     onCellChange={onCellChange}
                     onExcludedChange={onExcludedChange}
                     row={row}
+                    t={t}
                   />
                 ))}
               </tbody>
@@ -650,9 +686,11 @@ function RowsPanel({
                 disabled={disabled}
                 draft={draftRows[row.rowId]}
                 key={row.rowId}
+                locale={locale}
                 onCellChange={onCellChange}
                 onExcludedChange={onExcludedChange}
                 row={row}
+                t={t}
               />
             ))}
           </div>
@@ -667,9 +705,11 @@ function EditableDesktopRow({
   dirty,
   disabled,
   draft,
+  locale,
   onCellChange,
   onExcludedChange,
   row,
+  t,
 }: EditableRowProps) {
   const excluded = draft?.excluded ?? row.status === "EXCLUDED";
 
@@ -695,8 +735,10 @@ function EditableDesktopRow({
           disabled={disabled || excluded}
           draft={draft}
           key={column.key}
+          locale={locale}
           onCellChange={onCellChange}
           row={row}
+          t={t}
         />
       ))}
     </tr>
@@ -708,9 +750,11 @@ function EditableMobileRow({
   dirty,
   disabled,
   draft,
+  locale,
   onCellChange,
   onExcludedChange,
   row,
+  t,
 }: EditableRowProps) {
   const excluded = draft?.excluded ?? row.status === "EXCLUDED";
 
@@ -739,7 +783,7 @@ function EditableMobileRow({
       </div>
       <div className="grid gap-3">
         {columns.map((column) => {
-          const error = getCellError(row, column.key);
+          const error = getCellError(row, column, locale, t);
 
           return (
             <label className="grid gap-1" key={column.key}>
@@ -775,25 +819,31 @@ type EditableRowProps = {
   readonly dirty: boolean;
   readonly disabled: boolean;
   readonly draft: DraftRow | undefined;
+  readonly locale: AppLocale;
   readonly onCellChange: (rowId: string, fieldKey: string, value: string) => void;
   readonly onExcludedChange: (rowId: string, excluded: boolean) => void;
   readonly row: ImportJobRow;
+  readonly t: ReturnType<typeof useAppI18n>["t"];
 };
 
 function EditableCell({
   column,
   disabled,
   draft,
+  locale,
   onCellChange,
   row,
+  t,
 }: {
   readonly column: ImportTemplateColumn;
   readonly disabled: boolean;
   readonly draft: DraftRow | undefined;
+  readonly locale: AppLocale;
   readonly onCellChange: (rowId: string, fieldKey: string, value: string) => void;
   readonly row: ImportJobRow;
+  readonly t: ReturnType<typeof useAppI18n>["t"];
 }) {
-  const error = getCellError(row, column.key);
+  const error = getCellError(row, column, locale, t);
 
   return (
     <td className="min-w-44 px-3 py-3 align-top">
@@ -818,13 +868,19 @@ function EditableCell({
 }
 
 function ProblemHistoryPanel({
+  columns,
   errorsQuery,
   isOpen,
+  locale,
   onToggle,
+  t,
 }: {
+  readonly columns: readonly ImportTemplateColumn[];
   readonly errorsQuery: ReturnType<typeof useImportJobErrors>;
   readonly isOpen: boolean;
+  readonly locale: AppLocale;
   readonly onToggle: () => void;
+  readonly t: ReturnType<typeof useAppI18n>["t"];
 }) {
   return (
     <section className="rounded-lg border border-[#E5E7EB] bg-white">
@@ -855,20 +911,29 @@ function ProblemHistoryPanel({
           ) : null}
           {errorsQuery.data && errorsQuery.data.items.length > 0 ? (
             <ul className="grid gap-2">
-              {errorsQuery.data.items.map((error) => (
-                <li
-                  className="rounded-md border border-[#EEF2F7] bg-[#FAFBFC] p-3 text-[12px] text-[#475569]"
-                  key={error.id}
-                >
-                  <span className="font-semibold text-[#111827]">
-                    {error.rowNumber ? `${error.rowNumber}행 · ` : ""}
-                    {error.safeMessage}
-                  </span>
-                  <span className="mt-1 block text-[#94A3B8]">
-                    {error.retryable ? "다시 시도 가능" : "확인이 필요해요"}
-                  </span>
-                </li>
-              ))}
+              {errorsQuery.data.items.map((error) => {
+                const safeMessage = getLocalizedImportJobError(
+                  error,
+                  columns,
+                  locale,
+                  t
+                );
+
+                return (
+                  <li
+                    className="rounded-md border border-[#EEF2F7] bg-[#FAFBFC] p-3 text-[12px] text-[#475569]"
+                    key={error.id}
+                  >
+                    <span className="font-semibold text-[#111827]">
+                      {error.rowNumber ? `${error.rowNumber}행 · ` : ""}
+                      {safeMessage}
+                    </span>
+                    <span className="mt-1 block text-[#94A3B8]">
+                      {error.retryable ? "다시 시도 가능" : "확인이 필요해요"}
+                    </span>
+                  </li>
+                );
+              })}
             </ul>
           ) : null}
         </div>
@@ -1021,8 +1086,95 @@ function hasRowError(row: ImportJobRow) {
   return row.status === "INVALID" || row.errors.length > 0;
 }
 
-function getCellError(row: ImportJobRow, fieldKey: string) {
-  return row.errors.find((error) => error.fieldKey === fieldKey)?.message ?? null;
+// 기능 : import row의 cell 오류를 현재 앱 locale에 맞는 문구로 변환합니다.
+function getCellError(
+  row: ImportJobRow,
+  column: ImportTemplateColumn,
+  locale: AppLocale,
+  t: ReturnType<typeof useAppI18n>["t"]
+) {
+  const error = row.errors.find(
+    (cellError) => cellError.fieldKey === column.key
+  );
+
+  return error ? getLocalizedImportCellError(error, column, locale, t) : null;
+}
+
+// 기능 : BE validation code와 column type을 기준으로 import 오류 문구 key를 고릅니다.
+function getLocalizedImportCellError(
+  error: ImportCellValidationError,
+  column: ImportTemplateColumn,
+  locale: AppLocale,
+  t: ReturnType<typeof useAppI18n>["t"]
+) {
+  const field = getImportFieldLabel(column, locale);
+  const message = error.message;
+  const code = error.code.toLowerCase();
+
+  if (code.includes("required") || message.includes("필수")) {
+    return t("importExport.validationRequiredImportField", {
+      values: { field },
+    });
+  }
+
+  if (
+    column.type === "number" ||
+    code.includes("number") ||
+    code.includes("integer") ||
+    message.includes("정수")
+  ) {
+    return t("importExport.validationNumberImportField", {
+      values: { field },
+    });
+  }
+
+  if (column.type === "email" || code.includes("email") || message.includes("이메일")) {
+    return t("importExport.validationEmailImportField", {
+      values: { field },
+    });
+  }
+
+  if (column.type === "phone" || code.includes("phone") || message.includes("전화번호")) {
+    return t("importExport.validationPhoneImportField", {
+      values: { field },
+    });
+  }
+
+  return t("importExport.validationInvalidImportField", {
+    values: { field },
+  });
+}
+
+// 기능 : import job 문제 이력의 서버 safeMessage를 앱 locale 기준 문구로 변환합니다.
+function getLocalizedImportJobError(
+  error: ImportJobErrorResponse,
+  columns: readonly ImportTemplateColumn[],
+  locale: AppLocale,
+  t: ReturnType<typeof useAppI18n>["t"]
+) {
+  const column = error.fieldKey
+    ? columns.find((item) => item.key === error.fieldKey)
+    : null;
+
+  if (!column) {
+    return error.safeMessage;
+  }
+
+  return getLocalizedImportCellError(
+    {
+      code: error.errorCode,
+      fieldKey: column.key,
+      message: error.safeMessage,
+    },
+    column,
+    locale,
+    t
+  );
+}
+
+// 기능 : import field key를 locale별 표시명으로 변환하고 없으면 서버 label을 사용합니다.
+function getImportFieldLabel(column: ImportTemplateColumn, locale: AppLocale) {
+  return importFieldLabels[column.key]?.[locale] ?? column.label;
 }
 
 function toDraftValue(value: string): ImportFieldValue {

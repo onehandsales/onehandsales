@@ -39,6 +39,7 @@ import { Pagination } from "@/components/ui/pagination";
 import { ListEmptyState } from "@/components/ui/state";
 import { Toast } from "@/components/ui/toast";
 import type { AppShellOutletContext } from "@/components/layout/app-shell";
+import { useAppI18n } from "@/features/app-i18n";
 import { useAuthSession } from "@/features/auth";
 import { ContactCreateDialog } from "@/features/contact/components/contact-create-dialog";
 import { ContactTaxonomyManageDialog } from "@/features/contact/components/contact-taxonomy-manage-dialog";
@@ -114,6 +115,7 @@ export function ContactListScreen({
   const outletContext =
     useOutletContext<AppShellOutletContext | undefined>();
   const { user } = useAuthSession();
+  const { t } = useAppI18n();
   const isDockedViewport = useMediaQuery("(min-width: 1024px)");
   const [usernameText, setUsernameText] = useState("");
   const [username, setUsername] = useState("");
@@ -436,7 +438,7 @@ export function ContactListScreen({
         actions={[
           {
             icon: Download,
-            tooltip: "엑셀 다운로드",
+            tooltip: t("importExport.excelDownload"),
             onClick: () => void onExport(),
             disabled: exportContactsMutation.isPending,
           },

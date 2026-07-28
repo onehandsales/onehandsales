@@ -42,6 +42,19 @@ export type AppI18nResource = {
     readonly businessCards: string;
     readonly settings: string;
   };
+  readonly importExport: {
+    readonly excelDownload: string;
+    readonly templateLanguage: string;
+    readonly templateLanguageHelp: string;
+    readonly koreanTemplate: string;
+    readonly englishTemplate: string;
+    readonly downloadTemplate: string;
+    readonly validationInvalidImportField: string;
+    readonly validationRequiredImportField: string;
+    readonly validationNumberImportField: string;
+    readonly validationEmailImportField: string;
+    readonly validationPhoneImportField: string;
+  };
   readonly errors: {
     readonly unknown: string;
     readonly USER_LOCALE_UNSUPPORTED: string;

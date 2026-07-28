@@ -126,6 +126,7 @@ export function DealPipelineHomeScreen({
   const outletContext =
     useOutletContext<AppShellOutletContext | undefined>();
   const { user } = useAuthSession();
+  const { t } = useAppI18n();
   const isDockedViewport = useMediaQuery("(min-width: 1024px)");
   const [activeTab, setActiveTab] = useState<StageTab>("ALL");
   const [searchText, setSearchText] = useState("");
@@ -509,7 +510,7 @@ export function DealPipelineHomeScreen({
           actions={[
             {
               icon: Download,
-              tooltip: "엑셀 다운로드",
+              tooltip: t("importExport.excelDownload"),
               onClick: () => void onExport(),
               disabled: isExporting,
             },
@@ -949,7 +950,7 @@ export function DealPipelineHomeScreen({
             {dealsQuery.data?.totalCount ?? 0}건
           </span>
           <button
-            aria-label="엑셀 다운로드"
+            aria-label={t("importExport.excelDownload")}
             className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-[#F3F4F6] text-[#4B5563] disabled:opacity-40"
             disabled={isExporting}
             onClick={() => void onExport()}

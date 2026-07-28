@@ -1,6 +1,7 @@
 # Import Export Localization API
 
-상태: Ready for Goal Execution
+상태: Implemented
+구현일: 2026-07-28
 
 ## 1. 목적
 
@@ -35,7 +36,7 @@ GET /api/import-templates/{templateId}/download?locale=en
 
 - 1차 지원 locale은 `ko-KR`, `en`이다.
 - 기본 locale은 `User.preferredLocale`이다.
-- 지원하지 않는 locale은 `en` 또는 사용자 locale fallback으로 처리한다.
+- 지원하지 않는 locale은 사용자 `preferredLocale`, 없거나 미지원이면 `ko-KR`로 fallback 처리한다.
 - 템플릿 언어 선택 UI는 Import 화면에서 제공한다.
 
 Business Logic / 비즈니스 로직 흐름:

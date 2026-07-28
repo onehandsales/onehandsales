@@ -1,6 +1,7 @@
 # G07 Import Export Localization
 
-상태: Not Started
+상태: Done
+완료일: 2026-07-28
 목표: Import template과 domain export를 사용자 앱 설정값 기준으로 현지화한다.
 
 ## 1. 포함 범위
@@ -125,17 +126,47 @@ pnpm run build
 
 ## 11. Goal 검토 체크리스트
 
-- [ ] Import template locale 선택이 있다.
-- [ ] `ko-KR`, `en` template header가 있다.
-- [ ] template request에 `locale` 계약이 있다.
-- [ ] export response 파일의 header/value 정책이 문서와 일치한다.
-- [ ] business logic이 Generic ExportJob 제외를 지킨다.
-- [ ] user flow에서 템플릿 언어 선택과 도메인 export가 동작한다.
-- [ ] DB 변경 없음 또는 변경 시 `BE/prisma` 참고와 한글 주석 기준을 지켰다.
-- [ ] Export header가 사용자 locale을 따른다.
-- [ ] Export date/time이 사용자 timezone을 따른다.
-- [ ] Export currency가 row currencyCode를 따른다.
-- [ ] Contact export에 Phone Country와 Phone E.164가 있다.
-- [ ] validation display 문구가 FE locale을 따른다.
-- [ ] 신규 코드에 한글 주석 규칙이 적용됐다.
-- [ ] 실행한 검증 결과를 기록했다.
+- [x] Import template locale 선택이 있다.
+- [x] `ko-KR`, `en` template header가 있다.
+- [x] template request에 `locale` 계약이 있다.
+- [x] export response 파일의 header/value 정책이 문서와 일치한다.
+- [x] business logic이 Generic ExportJob 제외를 지킨다.
+- [x] user flow에서 템플릿 언어 선택과 도메인 export가 동작한다.
+- [x] DB 변경 없음 또는 변경 시 `BE/prisma` 참고와 한글 주석 기준을 지켰다.
+- [x] Export header가 사용자 locale을 따른다.
+- [x] Export date/time이 사용자 timezone을 따른다.
+- [x] Export currency가 row currencyCode를 따른다.
+- [x] Contact export에 Phone Country와 Phone E.164가 있다.
+- [x] validation display 문구가 FE locale을 따른다.
+- [x] 신규 코드에 한글 주석 규칙이 적용됐다.
+- [x] 실행한 검증 결과를 기록했다.
+
+## 12. 완료 기록
+
+- 완료일: 2026-07-28
+- DB 변경: 없음
+- Backend 주요 구현: import template `locale=ko-KR|en` 다운로드, xlsx locale/timezone/currency 공통 helper, 회사/담당자/제품/딜 도메인 export header/value 현지화, 담당자 Phone/Phone Country/Phone E.164 export 검증
+- Frontend 주요 구현: import template language selector, template download locale query, export 다운로드 문구 app i18n, import review cell/problem validation 문구 locale 표시
+- 금지사항 확인: 신규 Generic ExportJob과 신규 DB table을 추가하지 않았다.
+
+검증 결과:
+
+```powershell
+cd BE
+pnpm.cmd typecheck
+pnpm.cmd lint
+pnpm.cmd test -- product-application.service.spec.ts deal-application.service.spec.ts contact-application.service.spec.ts data-import-application.service.spec.ts
+pnpm.cmd test
+pnpm.cmd build
+```
+
+```powershell
+cd FE/user-web
+pnpm.cmd typecheck
+pnpm.cmd lint
+pnpm.cmd build
+```
+
+- BE `typecheck`, `lint`, 관련 service test, 전체 `test`, `build` 통과.
+- FE `typecheck`, `lint`, `build` 통과.
+- FE `build`는 기존 번들 크기 경고만 출력했다.

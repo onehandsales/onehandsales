@@ -1422,13 +1422,31 @@ describe("DealApplicationService", () => {
     const repository = new FakeDealRepository();
     const writer = new FakeXlsxWorkbookWriter();
     const service = createService(repository, writer);
+    const exportUser: CurrentUserContext = {
+      ...CURRENT_USER,
+      preferredLocale: "en",
+      timeZone: "America/New_York",
+    };
     await service.createDeal(CURRENT_USER, createDealCommand());
 
-    const file = await service.exportDealsXlsx(CURRENT_USER, {
+    const file = await service.exportDealsXlsx(exportUser, {
       sort: DealListSort.CREATED_AT_DESC,
     });
 
     expect(file.fileName).toMatch(/^deals_\d{8}_\d{6}\.xlsx$/);
+    // 기능 : 사용자 locale 기준의 sheet/header가 딜 export에 반영되는지 검증합니다.
+    expect(writer.lastInput?.sheetName).toBe("Deals");
+    expect(writer.lastInput?.columns.map((column) => column.header)).toEqual([
+      "Deal Name",
+      "Companies",
+      "Contacts",
+      "Stage",
+      "Amount",
+      "Currency",
+      "Expected Close Date",
+      "Next Action",
+      "Created At",
+    ]);
     expect(writer.lastInput?.columns.map((column) => column.key)).toEqual([
       "dealName",
       "companyName",
@@ -1453,10 +1471,11 @@ describe("DealApplicationService", () => {
         companyName: "A회사",
         contactLabel: "송재근 부장",
         dealStatusLabel: "초기 접촉",
-        dealCost: 3000000,
+        dealCost: "$3,000,000",
         currencyCode: "USD",
         expectedEndDate: "2026-01-05",
         followingAction: "제안서 발송",
+        createdAt: "06/12/2026 06:00:00",
       })
     );
     expect(row).not.toHaveProperty("id");

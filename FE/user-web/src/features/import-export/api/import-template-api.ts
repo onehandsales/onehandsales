@@ -21,6 +21,10 @@ export function downloadImportTemplate(
     query.set("companyName", companyName);
   }
 
+  if (input.locale) {
+    query.set("locale", input.locale);
+  }
+
   const suffix = query.toString() ? `?${query.toString()}` : "";
 
   return apiBlobClient(

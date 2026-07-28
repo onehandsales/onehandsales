@@ -418,6 +418,7 @@ export class PrismaAuthRepository implements AuthRepository {
       displayName: user.displayName,
       role: this.fromPrismaUserRole(user.role),
       status: this.fromPrismaUserStatus(user.status),
+      preferredLocale: this.toSupportedPreferredLocale(user.preferredLocale),
       timeZone: user.timeZone,
       defaultCurrencyCode: user.defaultCurrencyCode || "KRW",
     };

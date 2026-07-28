@@ -9,6 +9,7 @@ export interface CurrentUserContext {
   readonly displayName: string | null;
   readonly role: CurrentUserRole;
   readonly status: CurrentUserStatus;
+  readonly preferredLocale?: string;
   readonly timeZone: string;
   readonly defaultCurrencyCode?: string;
 }

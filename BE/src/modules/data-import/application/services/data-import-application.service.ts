@@ -72,6 +72,11 @@ import {
   XLSX_CONTENT_TYPE,
 } from "@/shared/application/export/xlsx-export-file";
 import {
+  getXlsxLocalizedText,
+  normalizeXlsxLocale,
+  type XlsxSupportedLocale,
+} from "@/shared/application/export/xlsx-localization";
+import {
   XLSX_WORKBOOK_WRITER,
   type XlsxCellValue,
   type XlsxColumnDefinition,
@@ -122,6 +127,36 @@ const FIELD_ALIASES: Readonly<Record<string, readonly string[]>> = {
   contactJobGradeName: ["담당자직급", "직급", "직책", "position", "title", "rank"],
 };
 
+const IMPORT_TEMPLATE_COLUMN_LABELS: Readonly<
+  Record<string, Readonly<Record<XlsxSupportedLocale, string>>>
+> = {
+  companyName: { "ko-KR": "회사명", en: "Company Name" },
+  companyFieldName: { "ko-KR": "회사 분야", en: "Industry" },
+  companyRegionName: { "ko-KR": "회사 지역", en: "Region" },
+  productName: { "ko-KR": "제품명", en: "Product Name" },
+  productPrice: { "ko-KR": "제품 단가", en: "Unit Price" },
+  productCategoryName: { "ko-KR": "제품 카테고리", en: "Product Category" },
+  productStatusName: { "ko-KR": "제품 상태", en: "Product Status" },
+  dealName: { "ko-KR": "딜 이름", en: "Deal Name" },
+  dealCost: { "ko-KR": "딜 금액", en: "Deal Amount" },
+  dealStatus: { "ko-KR": "딜 단계", en: "Deal Stage" },
+  expectedEndDate: { "ko-KR": "예상 마감일", en: "Expected Close Date" },
+  contactName: { "ko-KR": "담당자명", en: "Contact Name" },
+  contactEmail: { "ko-KR": "담당자 이메일", en: "Contact Email" },
+  contactPhone: { "ko-KR": "담당자 전화번호", en: "Contact Phone" },
+  contactDepartmentName: { "ko-KR": "담당자 부서", en: "Contact Department" },
+  contactJobGradeName: { "ko-KR": "담당자 직급", en: "Contact Title" },
+};
+
+const IMPORT_TEMPLATE_SHEET_NAMES: Readonly<
+  Record<ImportTemplateType, Readonly<Record<XlsxSupportedLocale, string>>>
+> = {
+  COMPANY: { "ko-KR": "회사", en: "Companies" },
+  CONTACT: { "ko-KR": "담당자", en: "Contacts" },
+  PRODUCT: { "ko-KR": "제품", en: "Products" },
+  DEAL: { "ko-KR": "딜", en: "Deals" },
+};
+
 // 역할 : ImportTemplateColumnType 불러오기 양식 컬럼 값 타입을 정의합니다.
 export type ImportTemplateColumnType = "text" | "number" | "email" | "phone";
 
@@ -165,7 +200,9 @@ export interface ImportTemplateItemResponse {
 
 // 역할 : DownloadImportTemplateInput 양식 다운로드 요청 값을 정의합니다.
 export interface DownloadImportTemplateInput {
+  readonly currentUser: Pick<CurrentUserContext, "preferredLocale">;
   readonly templateId: string;
+  readonly locale?: string;
   readonly companyName?: string;
 }
 
@@ -501,7 +538,14 @@ export class DataImportApplicationService {
       throw new ImportTemplateNotFoundError();
     }
 
-    const columns = this.normalizeColumns(template.columnsJson);
+    const locale = normalizeXlsxLocale(
+      input.locale,
+      input.currentUser.preferredLocale
+    );
+    const columns = this.localizeTemplateColumns(
+      this.normalizeColumns(template.columnsJson),
+      locale
+    );
     const rows = this.applyTemplateContext(
       template.templateType,
       this.normalizeXlsxRows(template.sampleRowsJson),
@@ -509,8 +553,8 @@ export class DataImportApplicationService {
     );
 
     const content = await this.xlsxWriter.writeWorksheet({
-      sheetName: this.getSheetName(template.templateType),
-      columns: columns.map((column) => this.toXlsxColumn(column)),
+      sheetName: this.getSheetName(template.templateType, locale),
+      columns: columns.map((column) => this.toXlsxColumn(column, locale)),
       rows,
     });
 
@@ -2025,8 +2069,30 @@ export class DataImportApplicationService {
     }));
   }
 
+  // 기능 : 저장된 양식 컬럼 label을 다운로드 locale 기준 label로 바꿉니다.
+  private localizeTemplateColumns(
+    columns: readonly ImportTemplateColumn[],
+    locale: XlsxSupportedLocale
+  ): ImportTemplateColumn[] {
+    return columns.map((column) => {
+      const dictionary = IMPORT_TEMPLATE_COLUMN_LABELS[column.key];
+
+      if (!dictionary) {
+        return column;
+      }
+
+      return {
+        ...column,
+        label: getXlsxLocalizedText(dictionary, locale),
+      };
+    });
+  }
+
   // 기능 : 컬럼 정의를 xlsx writer 컬럼 정의로 변환합니다.
-  private toXlsxColumn(column: ImportTemplateColumn): XlsxColumnDefinition {
+  private toXlsxColumn(
+    column: ImportTemplateColumn,
+    locale: XlsxSupportedLocale
+  ): XlsxColumnDefinition {
     const options = this.getColumnOptions(column);
 
     return {
@@ -2039,10 +2105,20 @@ export class DataImportApplicationService {
             listValidation: {
               values: options,
               allowBlank: !column.required,
-              promptTitle: `${column.label} 선택`,
-              prompt: `${options.join(", ")} 중 하나를 선택해 주세요.`,
-              errorTitle: `${column.label} 값 확인`,
-              error: `${options.join(", ")} 중 하나만 입력할 수 있습니다.`,
+              promptTitle:
+                locale === "en" ? `Choose ${column.label}` : `${column.label} 선택`,
+              prompt:
+                locale === "en"
+                  ? `Choose one of: ${options.join(", ")}.`
+                  : `${options.join(", ")} 중 하나를 선택해 주세요.`,
+              errorTitle:
+                locale === "en"
+                  ? `Check ${column.label}`
+                  : `${column.label} 값 확인`,
+              error:
+                locale === "en"
+                  ? `Only these values are allowed: ${options.join(", ")}.`
+                  : `${options.join(", ")} 중 하나만 입력할 수 있습니다.`,
             },
           }
         : {}),
@@ -2050,17 +2126,11 @@ export class DataImportApplicationService {
   }
 
   // 기능 : 양식 타입에 맞는 워크시트 이름을 반환합니다.
-  private getSheetName(templateType: ImportTemplateType): string {
-    switch (templateType) {
-      case "COMPANY":
-        return "회사";
-      case "CONTACT":
-        return "담당자";
-      case "PRODUCT":
-        return "제품";
-      case "DEAL":
-        return "딜";
-    }
+  private getSheetName(
+    templateType: ImportTemplateType,
+    locale: XlsxSupportedLocale
+  ): string {
+    return getXlsxLocalizedText(IMPORT_TEMPLATE_SHEET_NAMES[templateType], locale);
   }
 
   // 기능 : 컬럼 타입과 라벨 길이에 맞는 엑셀 컬럼 폭을 계산합니다.

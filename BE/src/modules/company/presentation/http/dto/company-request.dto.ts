@@ -62,6 +62,14 @@ export class ListCompaniesQueryDto {
   @IsOptional()
   @IsEnum(CompanyListSort)
   sort?: CompanyListSort;
+
+  @IsOptional()
+  @IsString()
+  locale?: string;
+
+  @IsOptional()
+  @IsString()
+  timeZone?: string;
 }
 
 // 역할 : ExportCompaniesQueryDto HTTP export 요청 값을 검증하기 위한 DTO입니다.

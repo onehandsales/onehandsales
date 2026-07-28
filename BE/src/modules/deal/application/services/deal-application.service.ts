@@ -68,6 +68,14 @@ import {
   XLSX_CONTENT_TYPE,
 } from "@/shared/application/export/xlsx-export-file";
 import {
+  formatXlsxCurrency,
+  formatXlsxDateTime,
+  getXlsxLocalizedText,
+  resolveXlsxLocalizationContext,
+  type XlsxLocalizationContext,
+  type XlsxSupportedLocale,
+} from "@/shared/application/export/xlsx-localization";
+import {
   XLSX_WORKBOOK_WRITER,
   type XlsxRow,
   type XlsxWorkbookWriter,
@@ -85,7 +93,6 @@ const DEAL_ACTIVITY_PAGE_SIZE = 10;
 const DEAL_ACTIVITY_TITLE_MAX_LENGTH = 120;
 const DEAL_ACTIVITY_BODY_MAX_LENGTH = 2000;
 const DEAL_ACTIVITY_FUTURE_TOLERANCE_MS = 5 * 60 * 1000;
-const XLSX_DATE_NUM_FORMAT = "yyyy-mm-dd hh:mm:ss";
 const INITIAL_DEAL_MEMO_TYPE = "초기 메모";
 const DEAL_ACTIVITY_TYPE_SET = new Set<DealActivityTypeCode>(DEAL_ACTIVITY_TYPES);
 const MANUAL_DEAL_ACTIVITY_TYPE_SET = new Set<DealActivityTypeCode>(
@@ -94,6 +101,25 @@ const MANUAL_DEAL_ACTIVITY_TYPE_SET = new Set<DealActivityTypeCode>(
 const DEAL_ACTIVITY_LINKED_RECORD_TARGET_TYPE_SET = new Set<string>(
   DEAL_ACTIVITY_LINKED_RECORD_TARGET_TYPES
 );
+
+const DEAL_EXPORT_SHEET_NAMES: Readonly<Record<XlsxSupportedLocale, string>> = {
+  "ko-KR": "딜",
+  en: "Deals",
+};
+
+const DEAL_EXPORT_HEADERS: Readonly<
+  Record<string, Readonly<Record<XlsxSupportedLocale, string>>>
+> = {
+  dealName: { "ko-KR": "딜 이름", en: "Deal Name" },
+  companyName: { "ko-KR": "회사명", en: "Companies" },
+  contactLabel: { "ko-KR": "담당자", en: "Contacts" },
+  dealStatusLabel: { "ko-KR": "딜 단계", en: "Stage" },
+  dealCost: { "ko-KR": "딜 금액", en: "Amount" },
+  currencyCode: { "ko-KR": "통화", en: "Currency" },
+  expectedEndDate: { "ko-KR": "마감일", en: "Expected Close Date" },
+  followingAction: { "ko-KR": "다음 행동", en: "Next Action" },
+  createdAt: { "ko-KR": "등록일", en: "Created At" },
+};
 
 // 역할 : DealListQueryInput 데이터가 계층 사이에서 전달되는 구조를 정의합니다.
 export interface DealListQueryInput {
@@ -119,6 +145,8 @@ export interface DealExportQueryInput {
   readonly contactIds?: string[];
   readonly dealStatus?: DealStatusCode;
   readonly sort?: DealListSort;
+  readonly locale?: string;
+  readonly timeZone?: string;
 }
 
 // 역할 : CursorQueryInput 데이터가 계층 사이에서 전달되는 구조를 정의합니다.
@@ -495,7 +523,14 @@ export class DealApplicationService {
       ...(query.dealStatus ? { dealStatus: query.dealStatus } : {}),
     });
 
-    const content = await this.writeDealExportXlsx(deals);
+    const localization = resolveXlsxLocalizationContext({
+      locale: query.locale,
+      preferredLocale: currentUser.preferredLocale,
+      timeZone: query.timeZone,
+      userTimeZone: currentUser.timeZone,
+      defaultCurrencyCode: currentUser.defaultCurrencyCode,
+    });
+    const content = await this.writeDealExportXlsx(deals, localization);
 
     this.logEvent("deal.exported", {
       userId: currentUser.id,
@@ -2159,35 +2194,49 @@ export class DealApplicationService {
   }
 
   // 기능 : 딜 export 레코드를 xlsx Buffer로 변환합니다.
-  private async writeDealExportXlsx(deals: DealListRecord[]): Promise<Buffer> {
+  private async writeDealExportXlsx(
+    deals: DealListRecord[],
+    localization: XlsxLocalizationContext
+  ): Promise<Buffer> {
     try {
       return await this.xlsxWriter.writeWorksheet({
-        sheetName: "Deals",
-        columns: [
-          { header: "딜이름", key: "dealName", width: 28 },
-          { header: "회사이름", key: "companyName", width: 24 },
-          { header: "담당자", key: "contactLabel", width: 20 },
-          { header: "딜단계", key: "dealStatusLabel", width: 18 },
-          { header: "딜금액", key: "dealCost", width: 16 },
-          { header: "통화", key: "currencyCode", width: 10 },
-          { header: "마감일", key: "expectedEndDate", width: 16 },
-          { header: "다음행동", key: "followingAction", width: 32 },
-          {
-            header: "등록일",
-            key: "createdAt",
-            width: 22,
-            numFmt: XLSX_DATE_NUM_FORMAT,
-          },
-        ],
-        rows: this.toDealExportRows(deals),
+        sheetName: getXlsxLocalizedText(
+          DEAL_EXPORT_SHEET_NAMES,
+          localization.locale
+        ),
+        columns: this.getDealExportColumns(localization.locale),
+        rows: this.toDealExportRows(deals, localization),
       });
     } catch {
       throw new DealExportFailedError();
     }
   }
 
+  // 기능 : 딜 export header를 사용자 locale에 맞게 구성합니다.
+  private getDealExportColumns(locale: XlsxSupportedLocale) {
+    return [
+      { header: this.dealExportHeader("dealName", locale), key: "dealName", width: 28 },
+      { header: this.dealExportHeader("companyName", locale), key: "companyName", width: 24 },
+      { header: this.dealExportHeader("contactLabel", locale), key: "contactLabel", width: 20 },
+      { header: this.dealExportHeader("dealStatusLabel", locale), key: "dealStatusLabel", width: 18 },
+      { header: this.dealExportHeader("dealCost", locale), key: "dealCost", width: 18 },
+      { header: this.dealExportHeader("currencyCode", locale), key: "currencyCode", width: 10 },
+      { header: this.dealExportHeader("expectedEndDate", locale), key: "expectedEndDate", width: 18 },
+      { header: this.dealExportHeader("followingAction", locale), key: "followingAction", width: 32 },
+      { header: this.dealExportHeader("createdAt", locale), key: "createdAt", width: 22 },
+    ];
+  }
+
+  // 기능 : 딜 export 컬럼 key에 대응하는 locale별 header를 반환합니다.
+  private dealExportHeader(key: string, locale: XlsxSupportedLocale): string {
+    return getXlsxLocalizedText(DEAL_EXPORT_HEADERS[key], locale);
+  }
+
   // 기능 : 딜 export 레코드를 ID, 제품, 최근수정일 없는 xlsx 행 데이터로 변환합니다.
-  private toDealExportRows(deals: DealListRecord[]): XlsxRow[] {
+  private toDealExportRows(
+    deals: DealListRecord[],
+    localization: XlsxLocalizationContext
+  ): XlsxRow[] {
     return deals.map((deal) => ({
       dealName: deal.dealName,
       companyName: deal.companies
@@ -2197,11 +2246,11 @@ export class DealApplicationService {
         .map((contact) => this.createContactLabel(contact))
         .join(", "),
       dealStatusLabel: getDealStatusLabel(deal.dealStatus),
-      dealCost: deal.dealCost,
+      dealCost: formatXlsxCurrency(deal.dealCost, deal.currencyCode, localization),
       currencyCode: deal.currencyCode,
       expectedEndDate: this.toDateOnlyString(deal.expectedEndDate),
       followingAction: deal.nextFollowingAction?.log.followingAction ?? null,
-      createdAt: deal.createdAt,
+      createdAt: formatXlsxDateTime(deal.createdAt, localization),
     }));
   }
 

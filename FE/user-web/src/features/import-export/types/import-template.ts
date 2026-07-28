@@ -1,4 +1,5 @@
 import type { ApiBlobResponse } from "@/lib/api-client";
+import type { AppLocale } from "@/features/app-i18n";
 
 export type ImportTemplateType = "COMPANY" | "CONTACT" | "PRODUCT" | "DEAL";
 
@@ -34,6 +35,7 @@ export type ImportTemplateListResponse = {
 
 export type DownloadImportTemplateInput = {
   readonly templateId: string;
+  readonly locale?: AppLocale;
   readonly companyName?: string;
 };
 
