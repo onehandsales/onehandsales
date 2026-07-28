@@ -36,15 +36,15 @@ const providerStyles: Record<AuthProviderId, string> = {
 };
 
 const providerLogos: Record<AuthProviderId, string> = {
-  google: "/auth/google-logo.svg",
-  line: "/auth/line-logo.svg",
-  apple: "/auth/apple-logo.svg",
+  google: "/auth/google-logo.png",
+  line: "/auth/line-logo.png",
+  apple: "/auth/apple-logo.png",
 };
 
-const providerLogoShellStyles: Record<AuthProviderId, string> = {
-  google: "bg-white",
-  line: "bg-white",
-  apple: "bg-white",
+const providerLogoStyles: Record<AuthProviderId, string> = {
+  google: "h-7 w-7",
+  line: "h-[30px] w-[30px]",
+  apple: "h-[30px] w-[30px]",
 };
 
 export function AuthSocialLoginModal({
@@ -188,16 +188,14 @@ export function AuthSocialLoginModal({
             {isPending && pendingProvider === provider.provider ? (
               <Loader2 className="absolute right-1.5 top-1.5 h-3.5 w-3.5 animate-spin" />
             ) : null}
-            <span
-              className={[
-                "grid h-[30px] w-[30px] shrink-0 place-items-center rounded-md",
-                providerLogoShellStyles[provider.provider],
-              ].join(" ")}
-            >
+            <span className="grid h-9 w-9 shrink-0 place-items-center">
               <img
                 alt=""
                 aria-hidden="true"
-                className="h-[22px] w-[22px]"
+                className={[
+                  "block object-contain",
+                  providerLogoStyles[provider.provider],
+                ].join(" ")}
                 src={providerLogos[provider.provider]}
               />
             </span>

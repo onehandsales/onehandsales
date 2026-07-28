@@ -33,14 +33,14 @@ const providerStyles: Record<AuthProviderId, string> = {
 };
 
 const providerLogos: Record<AuthProviderId, string> = {
-  google: "/auth/google-logo.svg",
-  line: "/auth/line-logo.svg",
-  apple: "/auth/apple-logo.svg",
+  google: "/auth/google-logo.png",
+  line: "/auth/line-logo.png",
+  apple: "/auth/apple-logo.png",
 };
-const providerLogoShellStyles: Record<AuthProviderId, string> = {
-  google: "bg-white",
-  line: "bg-white",
-  apple: "bg-white",
+const providerLogoStyles: Record<AuthProviderId, string> = {
+  google: "h-7 w-7",
+  line: "h-[30px] w-[30px]",
+  apple: "h-[30px] w-[30px]",
 };
 const modalBodyClassName = "flex flex-1 flex-col px-8 pb-6 pt-7 max-[460px]:px-6";
 const loadingModalBodyClassName = "flex flex-1 items-center justify-center p-0";
@@ -153,16 +153,14 @@ export function AuthLoginModal({
             onClick={() => onProviderLogin(provider.provider)}
             type="button"
           >
-            <span
-              className={[
-                "grid h-[30px] w-[30px] shrink-0 place-items-center rounded-md",
-                providerLogoShellStyles[provider.provider],
-              ].join(" ")}
-            >
+            <span className="grid h-9 w-9 shrink-0 place-items-center">
               <img
                 alt=""
                 aria-hidden="true"
-                className="h-[22px] w-[22px]"
+                className={[
+                  "block object-contain",
+                  providerLogoStyles[provider.provider],
+                ].join(" ")}
                 src={providerLogos[provider.provider]}
               />
             </span>

@@ -249,15 +249,15 @@ const loginCopy: Record<
 };
 
 const providerLogos: Record<AuthProviderId, string> = {
-  google: "/auth/google-logo.svg",
-  line: "/auth/line-logo.svg",
-  apple: "/auth/apple-logo.svg",
+  google: "/auth/google-logo.png",
+  line: "/auth/line-logo.png",
+  apple: "/auth/apple-logo.png",
 };
 
-const providerLogoShellStyles: Record<AuthProviderId, string> = {
-  google: "bg-white",
-  line: "bg-white",
-  apple: "bg-white",
+const providerLogoStyles: Record<AuthProviderId, string> = {
+  google: "h-7 w-7",
+  line: "h-[30px] w-[30px]",
+  apple: "h-[30px] w-[30px]",
 };
 
 export function AuthLoginPage({
@@ -355,16 +355,14 @@ export function AuthLoginPage({
                     {isPending && pendingProvider === provider.provider ? (
                       <Loader2 className="absolute right-2.5 top-2.5 h-4 w-4 animate-spin text-[#777770]" />
                     ) : null}
-                    <span
-                      className={[
-                        "grid h-7 w-7 place-items-center rounded-[6px]",
-                        providerLogoShellStyles[provider.provider],
-                      ].join(" ")}
-                    >
+                    <span className="grid h-9 w-9 place-items-center">
                       <img
                         alt=""
                         aria-hidden="true"
-                        className="h-[22px] w-[22px]"
+                        className={[
+                          "block object-contain",
+                          providerLogoStyles[provider.provider],
+                        ].join(" ")}
                         src={providerLogos[provider.provider]}
                       />
                     </span>
