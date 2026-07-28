@@ -39,7 +39,11 @@ import { Pagination } from "@/components/ui/pagination";
 import { ListEmptyState } from "@/components/ui/state";
 import { Toast } from "@/components/ui/toast";
 import type { AppShellOutletContext } from "@/components/layout/app-shell";
-import { useAppI18n } from "@/features/app-i18n";
+import {
+  useAppI18n,
+  type AppI18nKey,
+  type AppLocale,
+} from "@/features/app-i18n";
 import { useAuthSession } from "@/features/auth";
 import { ContactCreateDialog } from "@/features/contact/components/contact-create-dialog";
 import { ContactTaxonomyManageDialog } from "@/features/contact/components/contact-taxonomy-manage-dialog";
@@ -70,10 +74,10 @@ import {
 
 const CONTACT_SORT_OPTIONS: Array<{
   readonly value: ContactSort;
-  readonly label: string;
+  readonly labelKey: AppI18nKey;
 }> = [
-  { value: "createdAtDesc", label: "최신순" },
-  { value: "usernameAsc", label: "이름순" },
+  { value: "createdAtDesc", labelKey: "contactList.sortCreatedAtDesc" },
+  { value: "usernameAsc", labelKey: "contactList.sortUsernameAsc" },
 ];
 
 const CONTACT_TABLE_COLUMNS = [
@@ -115,7 +119,7 @@ export function ContactListScreen({
   const outletContext =
     useOutletContext<AppShellOutletContext | undefined>();
   const { user } = useAuthSession();
-  const { t } = useAppI18n();
+  const { locale, t } = useAppI18n();
   const isDockedViewport = useMediaQuery("(min-width: 1024px)");
   const [usernameText, setUsernameText] = useState("");
   const [username, setUsername] = useState("");
@@ -192,6 +196,14 @@ export function ContactListScreen({
   const companyOptions = useMemo(
     () => companyOptionsQuery.data?.items ?? [],
     [companyOptionsQuery.data],
+  );
+  const sortOptions = useMemo(
+    () =>
+      CONTACT_SORT_OPTIONS.map((option) => ({
+        value: option.value,
+        label: t(option.labelKey),
+      })),
+    [t],
   );
 
   const displayTimeZone = user?.timeZone ?? getBrowserTimeZoneFallback();
@@ -422,7 +434,7 @@ export function ContactListScreen({
       state: { contactCreateDraft: values },
     });
   };
-  const onContactCreated = () => setNotice("담당자를 추가했어요.");
+  const onContactCreated = () => setNotice(t("contactList.createdNotice"));
 
   return (
     <section
@@ -434,7 +446,7 @@ export function ContactListScreen({
       }
     >
       <PageHeader
-        breadcrumbs={[{ label: "담당자", icon: IdCard }]}
+        breadcrumbs={[{ label: t("navigation.contacts"), icon: IdCard }]}
         actions={[
           {
             icon: Download,
@@ -444,7 +456,7 @@ export function ContactListScreen({
           },
           {
             icon: Plus,
-            tooltip: "담당자 생성",
+            tooltip: t("contactList.createContact"),
             onClick: openCreatePanel,
             hidden: isDockedCreateMounted,
             variant: "primary",
@@ -460,9 +472,9 @@ export function ContactListScreen({
             maxExpandedWidth={
               isCompactFilterMode ? DESKTOP_SEARCH_COMPACT_MAX_WIDTH : undefined
             }
-            placeholder="담당자를 검색하세요!"
+            placeholder={t("contactList.searchPlaceholder")}
             resetSignal={searchResetSignal}
-            submitLabel="담당자 검색 실행"
+            submitLabel={t("contactList.searchSubmit")}
             value={usernameText}
             onSubmit={onSearchSubmit}
             onValueChange={setUsernameText}
@@ -478,7 +490,7 @@ export function ContactListScreen({
             <button
               ref={compactFilterButtonRef}
               aria-expanded={isCompactFilterOpen}
-              aria-label="필터"
+              aria-label={t("companyList.filter")}
               aria-hidden={!isCompactFilterMode}
 	              className={cn(
 	                "absolute left-0 top-0 inline-flex h-8 w-[72px] shrink-0 items-center justify-center gap-1.5 rounded-md border-0 bg-transparent px-2 text-[13px] font-semibold transition-[opacity,transform,background-color,color] duration-150 focus:outline-none active:scale-[0.97]",
@@ -496,7 +508,7 @@ export function ContactListScreen({
               type="button"
             >
               <SlidersHorizontal className="h-3.5 w-3.5" />
-              <span>필터</span>
+              <span>{t("companyList.filter")}</span>
               {hasTaxonomyFilters ? (
                 <span className="absolute -right-1 -top-1 grid h-4 min-w-4 place-items-center rounded-full bg-[#4880EE] px-1 text-[10px] font-bold leading-none text-white">
                   {taxonomyFilterCount}
@@ -514,10 +526,10 @@ export function ContactListScreen({
               )}
             >
               <ContactTaxonomyFilterCombobox
-                emptyText="조건을 바꾸면 회사를 찾을 수 있어요."
+                emptyText={t("contactList.companyEmpty")}
                 getLabel={(c) => c.companyName}
                 icon={Building2}
-                itemKindLabel="회사"
+                itemKindLabel={t("dealCreate.company")}
                 items={companyOptions}
                 selectedIds={companyIds}
                 size="desktop"
@@ -528,10 +540,10 @@ export function ContactListScreen({
                 }}
               />
               <ContactTaxonomyFilterCombobox
-                emptyText="조건을 바꾸면 부서를 찾을 수 있어요."
+                emptyText={t("contactList.departmentEmpty")}
                 getLabel={(d) => d.departmentName}
                 icon={BriefcaseBusiness}
-                itemKindLabel="부서"
+                itemKindLabel={t("contactList.department")}
                 items={departments}
                 selectedIds={contactDepartmentIds}
                 size="desktop"
@@ -546,7 +558,7 @@ export function ContactListScreen({
           </div>
           <ListFilterSelect
             active={sort !== "createdAtDesc"}
-            ariaLabel="정렬 조건"
+            ariaLabel={t("dealList.sortAria")}
             icon={ArrowUpDown}
             className={
               isCompactFilterMode
@@ -557,18 +569,20 @@ export function ContactListScreen({
               setSort(nextSort);
               setPage(1);
             }}
-            options={CONTACT_SORT_OPTIONS}
+            options={sortOptions}
             searchable={false}
             value={sort}
           />
         </div>
         <span className="ml-2 shrink-0 text-[12px] text-[#9CA3AF]">
-          {contactList?.totalCount ?? 0}명
+          {t("contactList.contactCountValue", {
+            values: { count: contactList?.totalCount ?? 0 },
+          })}
         </span>
         <FilterChip
           active={hasSearch}
           icon={RotateCcw}
-          label="초기화"
+          label={t("common.reset")}
           onClick={() => {
             setUsername("");
             setUsernameText("");
@@ -595,12 +609,14 @@ export function ContactListScreen({
         >
           <div className="grid gap-3">
             <div className="grid gap-1.5">
-              <p className="text-[12px] font-semibold text-[#64748B]">회사</p>
+              <p className="text-[12px] font-semibold text-[#64748B]">
+                {t("dealCreate.company")}
+              </p>
               <ContactTaxonomyFilterCombobox
-                emptyText="조건을 바꾸면 회사를 찾을 수 있어요."
+                emptyText={t("contactList.companyEmpty")}
                 getLabel={(c) => c.companyName}
                 icon={Building2}
-                itemKindLabel="회사"
+                itemKindLabel={t("dealCreate.company")}
                 items={companyOptions}
                 layout="full"
                 selectedIds={companyIds}
@@ -613,12 +629,14 @@ export function ContactListScreen({
               />
             </div>
             <div className="grid gap-1.5">
-              <p className="text-[12px] font-semibold text-[#64748B]">부서</p>
+              <p className="text-[12px] font-semibold text-[#64748B]">
+                {t("contactList.department")}
+              </p>
               <ContactTaxonomyFilterCombobox
-                emptyText="조건을 바꾸면 부서를 찾을 수 있어요."
+                emptyText={t("contactList.departmentEmpty")}
                 getLabel={(d) => d.departmentName}
                 icon={BriefcaseBusiness}
-                itemKindLabel="부서"
+                itemKindLabel={t("contactList.department")}
                 items={departments}
                 layout="full"
                 selectedIds={contactDepartmentIds}
@@ -681,49 +699,49 @@ export function ContactListScreen({
                 icon={IdCard}
                 {...getHeaderCellResizeProps("username", 0)}
               >
-                담당자명
+                {t("contactList.name")}
               </ListTableHeaderCell>
               <ListTableHeaderCell
                 icon={Building2}
                 {...getHeaderCellResizeProps("company", 1)}
               >
-                회사
+                {t("dealCreate.company")}
               </ListTableHeaderCell>
               <ListTableHeaderCell
                 icon={Link2}
                 {...getHeaderCellResizeProps("dealCount", 2)}
               >
-                딜
+                {t("contactList.deal")}
               </ListTableHeaderCell>
               <ListTableHeaderCell
                 icon={BriefcaseBusiness}
                 {...getHeaderCellResizeProps("department", 3)}
               >
-                부서
+                {t("contactList.department")}
               </ListTableHeaderCell>
               <ListTableHeaderCell
                 icon={IdCard}
                 {...getHeaderCellResizeProps("jobGrade", 4)}
               >
-                직급
+                {t("contactList.jobGrade")}
               </ListTableHeaderCell>
               <ListTableHeaderCell
                 icon={Phone}
                 {...getHeaderCellResizeProps("mobile", 5)}
               >
-                전화
+                {t("contactList.mobile")}
               </ListTableHeaderCell>
               <ListTableHeaderCell
                 icon={Mail}
                 {...getHeaderCellResizeProps("email", 6)}
               >
-                이메일
+                {t("contactList.email")}
               </ListTableHeaderCell>
               <ListTableHeaderCell
                 icon={Activity}
                 {...getHeaderCellResizeProps("createdAt", 7)}
               >
-                활동
+                {t("contactList.activity")}
               </ListTableHeaderCell>
             </div>
 
@@ -737,13 +755,13 @@ export function ContactListScreen({
             ) : !contactList || contactList.items.length === 0 ? (
               <ListEmptyState
                 actionIcon={Plus}
-                actionLabel="담당자 생성"
+                actionLabel={t("contactList.createContact")}
                 icon={IdCard}
                 onAction={openCreatePanel}
                 title={
                   hasSearch
-                    ? "조건을 바꾸면 담당자를 찾을 수 있어요"
-                    : "데이터가 존재하지 않아요"
+                    ? t("contactList.emptyFiltered")
+                    : t("contactList.dataEmpty")
                 }
               />
             ) : (
@@ -752,6 +770,7 @@ export function ContactListScreen({
                   <ContactRow
                     contact={c}
                     displayTimeZone={displayTimeZone}
+                    locale={locale}
                     key={c.id}
                   />
                 ))}
@@ -801,10 +820,10 @@ export function ContactListScreen({
         {/* 모바일 필터 칩 행 */}
         <div className="flex h-10 shrink-0 items-center gap-2 overflow-x-auto border-b border-[#E5E7EB] px-4">
           <ContactTaxonomyFilterCombobox
-            emptyText="조건을 바꾸면 회사를 찾을 수 있어요."
+            emptyText={t("contactList.companyEmpty")}
             getLabel={(c) => c.companyName}
             icon={Building2}
-            itemKindLabel="회사"
+            itemKindLabel={t("dealCreate.company")}
             items={companyOptions}
             selectedIds={companyIds}
             size="mobile"
@@ -815,10 +834,10 @@ export function ContactListScreen({
             }}
           />
           <ContactTaxonomyFilterCombobox
-            emptyText="조건을 바꾸면 부서를 찾을 수 있어요."
+            emptyText={t("contactList.departmentEmpty")}
             getLabel={(d) => d.departmentName}
             icon={BriefcaseBusiness}
-            itemKindLabel="부서"
+            itemKindLabel={t("contactList.department")}
             items={departments}
             selectedIds={contactDepartmentIds}
             size="mobile"
@@ -831,10 +850,12 @@ export function ContactListScreen({
           />
           <div className="flex-1" />
           <span className="shrink-0 text-[11px] text-[#9CA3AF]">
-            {contactList?.totalCount ?? 0}명
+            {t("contactList.contactCountValue", {
+              values: { count: contactList?.totalCount ?? 0 },
+            })}
           </span>
           <button
-            aria-label="초기화"
+            aria-label={t("common.reset")}
             className={cn(
               "inline-flex h-7 shrink-0 items-center justify-center gap-1 rounded-md border-0 bg-transparent px-2 text-[12px] font-semibold transition-[background-color,color,transform] duration-150 focus:outline-none active:scale-[0.97]",
               hasSearch
@@ -852,7 +873,7 @@ export function ContactListScreen({
             type="button"
           >
             <RotateCcw className="h-3 w-3" />
-            <span>초기화</span>
+            <span>{t("common.reset")}</span>
           </button>
         </div>
 
@@ -877,19 +898,19 @@ export function ContactListScreen({
                 onClick={() => void contactsQuery.refetch()}
                 type="button"
               >
-                다시 시도
+                {t("common.retry")}
               </button>
             </div>
           ) : !contactList || contactList.items.length === 0 ? (
             <ListEmptyState
               actionIcon={Plus}
-              actionLabel="담당자 생성"
+              actionLabel={t("contactList.createContact")}
               icon={IdCard}
               onAction={openCreatePanel}
               title={
                 hasSearch
-                  ? "조건을 바꾸면 담당자를 찾을 수 있어요"
-                  : "데이터가 존재하지 않아요"
+                  ? t("contactList.emptyFiltered")
+                  : t("contactList.dataEmpty")
               }
             />
           ) : (
@@ -898,6 +919,7 @@ export function ContactListScreen({
                 key={contact.id}
                 contact={contact}
                 displayTimeZone={displayTimeZone}
+                locale={locale}
               />
             ))
           )}
@@ -916,7 +938,7 @@ export function ContactListScreen({
 
         {/* FAB */}
         <button
-          aria-label="담당자 생성"
+          aria-label={t("contactList.createContact")}
           className="fixed bottom-24 right-5 flex h-8 w-8 items-center justify-center rounded-full bg-[#4880EE] shadow-[0_4px_16px_rgba(59,130,246,0.27)] transition active:opacity-80"
           onClick={openCreatePanel}
           type="button"
@@ -948,12 +970,15 @@ export function ContactListScreen({
 function ContactMobileCard({
   contact,
   displayTimeZone,
+  locale,
 }: {
   readonly contact: ContactListItem;
   readonly displayTimeZone: string;
+  readonly locale: AppLocale;
 }) {
+  const { t } = useAppI18n();
   const initial = contact.username.charAt(0).toUpperCase();
-  const dealCountLabel = formatContactDealCount(contact);
+  const dealCountLabel = formatContactDealCount(contact, locale, t);
   const phoneText = formatContactPhoneText(contact);
 
   return (
@@ -985,7 +1010,7 @@ function ContactMobileCard({
           <p className="mt-1 flex min-w-0 items-center gap-1.5 text-[12px] text-[#64748B]">
             <Link2 className="h-3.5 w-3.5 shrink-0 text-[#9CA3AF]" />
             <span className="min-w-0 break-words [overflow-wrap:anywhere]">
-              연결 딜 {dealCountLabel}
+              {t("contactList.dealLinked", { values: { count: dealCountLabel } })}
             </span>
           </p>
         ) : null}
@@ -995,7 +1020,12 @@ function ContactMobileCard({
             {phoneText !== "-" ? phoneText : contact.email || "-"}
           </span>
           <span className="shrink-0 text-[11px] text-[#9CA3AF]">
-            {formatContactCreatedActivity(contact.createdAt, displayTimeZone)}
+            {formatContactCreatedActivity(
+              contact.createdAt,
+              displayTimeZone,
+              locale,
+              t,
+            )}
           </span>
         </div>
       </div>
@@ -1006,12 +1036,16 @@ function ContactMobileCard({
 function ContactRow({
   contact,
   displayTimeZone,
+  locale,
 }: {
   readonly contact: ContactListItem;
   readonly displayTimeZone: string;
+  readonly locale: AppLocale;
 }) {
   const navigate = useNavigate();
+  const { t } = useAppI18n();
   const phoneText = formatContactPhoneText(contact);
+  const dealCountLabel = formatContactDealCount(contact, locale, t);
 
   return (
     <div
@@ -1045,10 +1079,12 @@ function ContactRow({
         {typeof contact.dealCount === "number" ? (
           <span
             className="inline-flex h-5 max-w-full min-w-0 items-center overflow-hidden rounded-full bg-[#EFF6FF] px-2 text-[11px] font-semibold text-[#1D4ED8]"
-            title={`연결 딜 ${contact.dealCount.toLocaleString("ko-KR")}건`}
+            title={t("contactList.dealLinked", {
+              values: { count: dealCountLabel ?? "" },
+            })}
           >
             <span className="min-w-0 truncate whitespace-nowrap">
-              {contact.dealCount.toLocaleString("ko-KR")}건
+              {dealCountLabel}
             </span>
           </span>
         ) : null}
@@ -1083,9 +1119,19 @@ function ContactRow({
       </div>
       <div
         className="min-w-0 truncate text-[12px] font-medium text-[#64748B]"
-        title={formatContactCreatedActivity(contact.createdAt, displayTimeZone)}
+        title={formatContactCreatedActivity(
+          contact.createdAt,
+          displayTimeZone,
+          locale,
+          t,
+        )}
       >
-        {formatContactCreatedActivity(contact.createdAt, displayTimeZone)}
+        {formatContactCreatedActivity(
+          contact.createdAt,
+          displayTimeZone,
+          locale,
+          t,
+        )}
       </div>
     </div>
   );
@@ -1098,7 +1144,8 @@ export function ContactCard({
   readonly contact: ContactListItem;
   readonly displayTimeZone: string;
 }) {
-  const dealCountLabel = formatContactDealCount(contact);
+  const { locale, t } = useAppI18n();
+  const dealCountLabel = formatContactDealCount(contact, locale, t);
   const phoneText = formatContactPhoneText(contact);
 
   return (
@@ -1115,11 +1162,27 @@ export function ContactCard({
           {contact.contactDepartment.departmentName}
         </p>
         <div className="mt-2 space-y-1 text-[12px] text-[#64748B]">
-          <p className="truncate">전화번호 {phoneText}</p>
-          <p className="truncate">이메일 {contact.email || "-"}</p>
-          {dealCountLabel ? <p>연결 딜 {dealCountLabel}</p> : null}
+          <p className="truncate">
+            {t("contactList.phoneNumber", { values: { value: phoneText } })}
+          </p>
+          <p className="truncate">
+            {t("contactList.email")} {contact.email || "-"}
+          </p>
+          {dealCountLabel ? (
+            <p>
+              {t("contactList.dealLinked", {
+                values: { count: dealCountLabel },
+              })}
+            </p>
+          ) : null}
           <p>
-            활동 {formatContactCreatedActivity(contact.createdAt, displayTimeZone)}
+            {t("contactList.activity")}{" "}
+            {formatContactCreatedActivity(
+              contact.createdAt,
+              displayTimeZone,
+              locale,
+              t,
+            )}
           </p>
         </div>
       </div>
@@ -1152,6 +1215,8 @@ function ContactListError({
   readonly error: unknown;
   readonly onRetry: () => void;
 }) {
+  const { t } = useAppI18n();
+
   return (
     <div className="flex flex-1 flex-col items-center justify-center px-5 py-14 text-center">
       <p className="text-[13px] text-red-500">{getApiErrorMessage(error)}</p>
@@ -1160,7 +1225,7 @@ function ContactListError({
         onClick={onRetry}
         type="button"
       >
-        다시 시도
+        {t("common.retry")}
       </button>
     </div>
   );
@@ -1236,6 +1301,7 @@ function ContactTaxonomyFilterCombobox<
   readonly onCreateClick?: () => void;
   readonly onSelectedIdsChange: (ids: string[]) => void;
 }) {
+  const { t } = useAppI18n();
   const [isOpen, setIsOpen] = useState(false);
   const [search, setSearch] = useState("");
   const [popoverPosition, setPopoverPosition] =
@@ -1333,7 +1399,9 @@ function ContactTaxonomyFilterCombobox<
         <button
           ref={triggerRef}
           aria-expanded={isOpen}
-          aria-label={`${itemKindLabel} 필터`}
+          aria-label={t("common.searchName", {
+            values: { name: itemKindLabel },
+          })}
           className={cn(
             "inline-flex min-w-0 items-center gap-1.5 rounded-md border-0 bg-transparent px-2 font-semibold outline-none transition-[background-color,color,transform,opacity] duration-150 active:scale-[0.97]",
             layout === "full" && "w-full",
@@ -1384,7 +1452,9 @@ function ContactTaxonomyFilterCombobox<
           }}
         >
           <FilterPopoverSearchHeader
-            clearSearchLabel={`${itemKindLabel} 검색어 지우기`}
+            clearSearchLabel={t("common.clearSearchName", {
+              values: { name: itemKindLabel },
+            })}
             inputRef={inputRef}
             onClearSearch={() => setSearch("")}
             onReset={() => {
@@ -1411,9 +1481,15 @@ function ContactTaxonomyFilterCombobox<
                 toggleItem(firstItem);
               }
             }}
-            placeholder={`${itemKindLabel} 검색`}
-            resetLabel={`${itemKindLabel} 초기화`}
-            searchLabel={`${itemKindLabel} 검색`}
+            placeholder={t("common.searchName", {
+              values: { name: itemKindLabel },
+            })}
+            resetLabel={t("common.resetName", {
+              values: { name: itemKindLabel },
+            })}
+            searchLabel={t("common.searchName", {
+              values: { name: itemKindLabel },
+            })}
             searchValue={search}
           />
 
@@ -1473,7 +1549,9 @@ function ContactTaxonomyFilterCombobox<
               type="button"
             >
               <Plus className="h-3.5 w-3.5" />
-              새 {itemKindLabel} 추가
+              {t("contactList.addTaxonomy", {
+                values: { label: itemKindLabel },
+              })}
             </button>
           ) : null}
         </div>
@@ -1613,22 +1691,50 @@ function downloadBlobFile(file: ApiBlobResponse, fallbackFileName: string) {
   window.URL.revokeObjectURL(url);
 }
 
-function formatContactCreatedAt(value: string, timeZone: string) {
+function formatContactCreatedAt(
+  value: string,
+  timeZone: string,
+  locale: AppLocale,
+) {
   return formatDateWithOptions(value, {
     day: "2-digit",
+    locale: getIntlLocale(locale),
     month: "2-digit",
     timeZone,
     year: "numeric",
   });
 }
 
-function formatContactCreatedActivity(value: string, timeZone: string) {
-  return `등록 ${formatContactCreatedAt(value, timeZone)}`;
+function formatContactCreatedActivity(
+  value: string,
+  timeZone: string,
+  locale: AppLocale,
+  t: (
+    key: AppI18nKey,
+    options?: { readonly values?: Record<string, string | number> },
+  ) => string,
+) {
+  return t("contactList.registeredAt", {
+    values: { date: formatContactCreatedAt(value, timeZone, locale) },
+  });
 }
 
-function formatContactDealCount(contact: ContactListItem) {
+function formatContactDealCount(
+  contact: ContactListItem,
+  locale: AppLocale,
+  t: (
+    key: AppI18nKey,
+    options?: { readonly values?: Record<string, string | number> },
+  ) => string,
+) {
   return typeof contact.dealCount === "number"
-    ? `${contact.dealCount.toLocaleString("ko-KR")}건`
+    ? t("contactList.dealCount", {
+        values: {
+          count: new Intl.NumberFormat(getIntlLocale(locale)).format(
+            contact.dealCount,
+          ),
+        },
+      })
     : null;
 }
 
@@ -1647,6 +1753,10 @@ function getBrowserTimeZoneFallback() {
   } catch {
     return "Asia/Seoul";
   }
+}
+
+function getIntlLocale(locale: AppLocale) {
+  return locale === "ko-KR" ? "ko-KR" : "en-US";
 }
 
 function normalizeFilterText(value: string) {

@@ -38,7 +38,11 @@ import { Pagination } from "@/components/ui/pagination";
 import { ListEmptyState } from "@/components/ui/state";
 import { Toast } from "@/components/ui/toast";
 import { useAuthSession } from "@/features/auth";
-import { useAppI18n } from "@/features/app-i18n";
+import {
+  useAppI18n,
+  type AppI18nKey,
+  type AppLocale,
+} from "@/features/app-i18n";
 import { ProductCreateDialog } from "@/features/product/components/product-create-dialog";
 import type {
   ProductCreateFormValues,
@@ -70,11 +74,11 @@ type ProductListScreenProps = {
 
 const PRODUCT_SORT_OPTIONS: Array<{
   readonly value: ProductSort;
-  readonly label: string;
+  readonly labelKey: AppI18nKey;
 }> = [
-  { value: "createdAtDesc", label: "최신순" },
-  { value: "dealCountDesc", label: "딜 높은순" },
-  { value: "dealCountAsc", label: "딜 낮은순" },
+  { value: "createdAtDesc", labelKey: "productList.sortCreatedAtDesc" },
+  { value: "dealCountDesc", labelKey: "productList.sortDealCountDesc" },
+  { value: "dealCountAsc", labelKey: "productList.sortDealCountAsc" },
 ];
 
 const PRODUCT_TABLE_COLUMNS = [
@@ -108,7 +112,7 @@ export function ProductListScreen({
   const outletContext =
     useOutletContext<AppShellOutletContext | undefined>();
   const { user } = useAuthSession();
-  const { t } = useAppI18n();
+  const { locale, t } = useAppI18n();
   const isDockedViewport = useMediaQuery("(min-width: 1024px)");
   const [searchText, setSearchText] = useState("");
   const [search, setSearch] = useState("");
@@ -153,6 +157,14 @@ export function ProductListScreen({
   const statuses = useMemo(
     () => statusesQuery.data?.items ?? [],
     [statusesQuery.data],
+  );
+  const sortOptions = useMemo(
+    () =>
+      PRODUCT_SORT_OPTIONS.map((option) => ({
+        value: option.value,
+        label: t(option.labelKey),
+      })),
+    [t],
   );
 
   const listParams = useMemo(
@@ -453,7 +465,7 @@ export function ProductListScreen({
     });
   };
   const onProductCreated = () => {
-    setNotice("제품을 추가했어요.");
+    setNotice(t("productList.createdNotice"));
     void productsQuery.refetch();
   };
 
@@ -467,7 +479,7 @@ export function ProductListScreen({
       }
     >
       <PageHeader
-        breadcrumbs={[{ label: "제품", icon: Package }]}
+        breadcrumbs={[{ label: t("navigation.products"), icon: Package }]}
         actions={[
           {
             icon: Download,
@@ -477,7 +489,7 @@ export function ProductListScreen({
           },
           {
             icon: Plus,
-            tooltip: "제품 생성",
+            tooltip: t("productList.createProduct"),
             onClick: openCreatePanel,
             hidden: isDockedCreateMounted,
             variant: "primary",
@@ -493,9 +505,9 @@ export function ProductListScreen({
             maxExpandedWidth={
               isCompactFilterMode ? DESKTOP_SEARCH_COMPACT_MAX_WIDTH : undefined
             }
-            placeholder="제품을 검색하세요!"
+            placeholder={t("productList.searchPlaceholder")}
             resetSignal={searchResetSignal}
-            submitLabel="제품 검색 실행"
+            submitLabel={t("productList.searchSubmit")}
             value={searchText}
             onSubmit={onSearchSubmit}
             onValueChange={setSearchText}
@@ -511,7 +523,7 @@ export function ProductListScreen({
             <button
               ref={compactFilterButtonRef}
               aria-expanded={isCompactFilterOpen}
-              aria-label="필터"
+              aria-label={t("companyList.filter")}
               aria-hidden={!isCompactFilterMode}
 	              className={cn(
 	                "absolute left-0 top-0 inline-flex h-8 w-[72px] shrink-0 items-center justify-center gap-1.5 rounded-md border-0 bg-transparent px-2 text-[13px] font-semibold transition-[opacity,transform,background-color,color] duration-150 focus:outline-none active:scale-[0.97]",
@@ -529,7 +541,7 @@ export function ProductListScreen({
               type="button"
             >
               <SlidersHorizontal className="h-3.5 w-3.5" />
-              <span>필터</span>
+              <span>{t("companyList.filter")}</span>
               {hasTaxonomyFilters ? (
                 <span className="absolute -right-1 -top-1 grid h-4 min-w-4 place-items-center rounded-full bg-[#4880EE] px-1 text-[10px] font-bold leading-none text-white">
                   {taxonomyFilterCount}
@@ -547,10 +559,10 @@ export function ProductListScreen({
               )}
             >
               <ProductTaxonomyFilterCombobox
-                emptyText="조건을 바꾸면 카테고리를 찾을 수 있어요."
+                emptyText={t("productList.categoryEmpty")}
                 getLabel={(c) => c.categoryName}
                 icon={Tags}
-                itemKindLabel="카테고리"
+                itemKindLabel={t("productList.category")}
                 items={categories}
                 selectedIds={categoryFilterIds}
                 size="desktop"
@@ -562,10 +574,10 @@ export function ProductListScreen({
                 }}
               />
               <ProductTaxonomyFilterCombobox
-                emptyText="조건을 바꾸면 상태를 찾을 수 있어요."
+                emptyText={t("productList.statusEmpty")}
                 getLabel={(s) => s.statusName}
                 icon={CircleDot}
-                itemKindLabel="상태"
+                itemKindLabel={t("productList.status")}
                 items={statuses}
                 selectedIds={statusFilterIds}
                 size="desktop"
@@ -580,7 +592,7 @@ export function ProductListScreen({
           </div>
           <ListFilterSelect
             active={sort !== "createdAtDesc"}
-            ariaLabel="정렬 조건"
+            ariaLabel={t("dealList.sortAria")}
             icon={ArrowUpDown}
             className={
               isCompactFilterMode
@@ -591,18 +603,20 @@ export function ProductListScreen({
               setSort(nextSort);
               setPage(1);
             }}
-            options={PRODUCT_SORT_OPTIONS}
+            options={sortOptions}
             searchable={false}
             value={sort}
           />
         </div>
         <span className="ml-2 shrink-0 text-[12px] text-[#9CA3AF]">
-          {isExporting ? "내보내는 중..." : `${totalCount}개`}
+          {isExporting
+            ? t("productList.exporting")
+            : t("productList.countItems", { values: { count: totalCount } })}
         </span>
         <FilterChip
           active={hasFilters}
           icon={RotateCcw}
-          label="초기화"
+          label={t("common.reset")}
           onClick={() => {
             setSearch("");
             setSearchText("");
@@ -630,13 +644,13 @@ export function ProductListScreen({
           <div className="grid gap-3">
             <div className="grid gap-1.5">
               <p className="text-[12px] font-semibold text-[#64748B]">
-                카테고리
+                {t("productList.category")}
               </p>
               <ProductTaxonomyFilterCombobox
-                emptyText="조건을 바꾸면 카테고리를 찾을 수 있어요."
+                emptyText={t("productList.categoryEmpty")}
                 getLabel={(c) => c.categoryName}
                 icon={Tags}
-                itemKindLabel="카테고리"
+                itemKindLabel={t("productList.category")}
                 items={categories}
                 layout="full"
                 selectedIds={categoryFilterIds}
@@ -650,12 +664,14 @@ export function ProductListScreen({
               />
             </div>
             <div className="grid gap-1.5">
-              <p className="text-[12px] font-semibold text-[#64748B]">상태</p>
+              <p className="text-[12px] font-semibold text-[#64748B]">
+                {t("productList.status")}
+              </p>
               <ProductTaxonomyFilterCombobox
-                emptyText="조건을 바꾸면 상태를 찾을 수 있어요."
+                emptyText={t("productList.statusEmpty")}
                 getLabel={(s) => s.statusName}
                 icon={CircleDot}
-                itemKindLabel="상태"
+                itemKindLabel={t("productList.status")}
                 items={statuses}
                 layout="full"
                 selectedIds={statusFilterIds}
@@ -708,37 +724,37 @@ export function ProductListScreen({
                 icon={Package}
                 {...getHeaderCellResizeProps("productName", 0)}
               >
-                제품명
+                {t("productList.name")}
               </ListTableHeaderCell>
               <ListTableHeaderCell
                 icon={Banknote}
                 {...getHeaderCellResizeProps("price", 1)}
               >
-                가격
+                {t("productList.price")}
               </ListTableHeaderCell>
               <ListTableHeaderCell
                 icon={Tags}
                 {...getHeaderCellResizeProps("category", 2)}
               >
-                카테고리
+                {t("productList.category")}
               </ListTableHeaderCell>
               <ListTableHeaderCell
                 icon={CircleDot}
                 {...getHeaderCellResizeProps("status", 3)}
               >
-                상태
+                {t("productList.status")}
               </ListTableHeaderCell>
               <ListTableHeaderCell
                 icon={BriefcaseBusiness}
                 {...getHeaderCellResizeProps("dealCount", 4)}
               >
-                연결 딜
+                {t("productList.linkedDeals")}
               </ListTableHeaderCell>
               <ListTableHeaderCell
                 icon={Activity}
                 {...getHeaderCellResizeProps("createdAt", 5)}
               >
-                활동
+                {t("productList.activity")}
               </ListTableHeaderCell>
             </div>
 
@@ -747,13 +763,13 @@ export function ProductListScreen({
             ) : products.length === 0 ? (
               <ListEmptyState
                 actionIcon={Plus}
-                actionLabel="제품 생성"
+                actionLabel={t("productList.createProduct")}
                 icon={Package}
                 onAction={openCreatePanel}
                 title={
                   hasFilters
-                    ? "조건을 바꾸면 제품을 찾을 수 있어요"
-                    : "데이터가 존재하지 않아요"
+                    ? t("productList.emptyFiltered")
+                    : t("productList.dataEmpty")
                 }
               />
             ) : (
@@ -762,6 +778,7 @@ export function ProductListScreen({
                   <ProductRow
                     displayTimeZone={displayTimeZone}
                     key={product.id}
+                    locale={locale}
                     product={product}
                   />
                 ))}
@@ -796,10 +813,10 @@ export function ProductListScreen({
         {/* 모바일 필터 칩 행 */}
         <div className="flex h-10 shrink-0 items-center gap-2 overflow-x-auto border-b border-[#E5E7EB] px-4">
           <ProductTaxonomyFilterCombobox
-            emptyText="조건을 바꾸면 카테고리를 찾을 수 있어요."
+            emptyText={t("productList.categoryEmpty")}
             getLabel={(c) => c.categoryName}
             icon={Tags}
-            itemKindLabel="카테고리"
+            itemKindLabel={t("productList.category")}
             items={categories}
             selectedIds={categoryFilterIds}
             size="mobile"
@@ -811,10 +828,10 @@ export function ProductListScreen({
             }}
           />
           <ProductTaxonomyFilterCombobox
-            emptyText="조건을 바꾸면 상태를 찾을 수 있어요."
+            emptyText={t("productList.statusEmpty")}
             getLabel={(s) => s.statusName}
             icon={CircleDot}
-            itemKindLabel="상태"
+            itemKindLabel={t("productList.status")}
             items={statuses}
             selectedIds={statusFilterIds}
             size="mobile"
@@ -827,10 +844,10 @@ export function ProductListScreen({
           />
           <div className="flex-1" />
           <span className="shrink-0 text-[11px] text-[#9CA3AF]">
-            {totalCount}개
+            {t("productList.countItems", { values: { count: totalCount } })}
           </span>
           <button
-            aria-label="초기화"
+            aria-label={t("common.reset")}
             className={cn(
               "inline-flex h-7 shrink-0 items-center justify-center gap-1 rounded-md border-0 bg-transparent px-2 text-[12px] font-semibold transition-[background-color,color,transform] duration-150 focus:outline-none active:scale-[0.97]",
               hasFilters
@@ -848,7 +865,7 @@ export function ProductListScreen({
             type="button"
           >
             <RotateCcw className="h-3 w-3" />
-            <span>초기화</span>
+            <span>{t("common.reset")}</span>
           </button>
         </div>
 
@@ -888,19 +905,19 @@ export function ProductListScreen({
                 onClick={() => void productsQuery.refetch()}
                 type="button"
               >
-                다시 시도
+                {t("common.retry")}
               </button>
             </div>
           ) : products.length === 0 ? (
             <ListEmptyState
               actionIcon={Plus}
-              actionLabel="제품 생성"
+              actionLabel={t("productList.createProduct")}
               icon={Package}
               onAction={openCreatePanel}
               title={
                 hasFilters
-                  ? "조건을 바꾸면 제품을 찾을 수 있어요"
-                  : "데이터가 존재하지 않아요"
+                  ? t("productList.emptyFiltered")
+                  : t("productList.dataEmpty")
               }
             />
           ) : (
@@ -909,6 +926,7 @@ export function ProductListScreen({
                 key={product.id}
                 product={product}
                 displayTimeZone={displayTimeZone}
+                locale={locale}
               />
             ))
           )}
@@ -927,7 +945,7 @@ export function ProductListScreen({
 
         {/* FAB */}
         <button
-          aria-label="제품 생성"
+          aria-label={t("productList.createProduct")}
           className="fixed bottom-24 right-5 flex h-8 w-8 items-center justify-center rounded-full bg-[#4880EE] shadow-[0_4px_16px_rgba(59,130,246,0.27)] transition active:opacity-80"
           onClick={openCreatePanel}
           type="button"
@@ -970,12 +988,15 @@ export function ProductListScreen({
 function ProductMobileCard({
   product,
   displayTimeZone,
+  locale,
 }: {
   readonly product: Product;
   readonly displayTimeZone: string;
+  readonly locale: AppLocale;
 }) {
   const navigate = useNavigate();
-  const { formatCurrency } = useAppI18n();
+  const { formatCurrency, t } = useAppI18n();
+  const dealCountLabel = formatProductDealCount(product, locale, t);
 
   return (
     <button
@@ -1009,10 +1030,17 @@ function ProductMobileCard({
           <span className="text-[12px] text-[#6B7280]">
             {formatCurrency(product.productPrice, {
               currencyCode: product.currencyCode,
-            })} · 딜 {product.dealCount.toLocaleString("ko-KR")}건
+            })} · {t("productList.dealLinked", {
+              values: { count: dealCountLabel },
+            })}
           </span>
           <span className="shrink-0 text-[11px] text-[#9CA3AF]">
-            {formatProductCreatedActivity(product.createdAt, displayTimeZone)}
+            {formatProductCreatedActivity(
+              product.createdAt,
+              displayTimeZone,
+              locale,
+              t,
+            )}
           </span>
         </div>
       </div>
@@ -1023,12 +1051,15 @@ function ProductMobileCard({
 function ProductRow({
   product,
   displayTimeZone,
+  locale,
 }: {
   readonly product: Product;
   readonly displayTimeZone: string;
+  readonly locale: AppLocale;
 }) {
   const navigate = useNavigate();
-  const { formatCurrency } = useAppI18n();
+  const { formatCurrency, t } = useAppI18n();
+  const dealCountLabel = formatProductDealCount(product, locale, t);
 
   return (
     <div
@@ -1062,13 +1093,23 @@ function ProductRow({
         </Badge>
       </div>
       <div className="min-w-0 whitespace-nowrap text-[12px] font-medium text-[#475569]">
-        {product.dealCount.toLocaleString("ko-KR")}건
+        {dealCountLabel}
       </div>
       <div
         className="min-w-0 truncate text-[12px] font-medium text-[#64748B]"
-        title={formatProductCreatedActivity(product.createdAt, displayTimeZone)}
+        title={formatProductCreatedActivity(
+          product.createdAt,
+          displayTimeZone,
+          locale,
+          t,
+        )}
       >
-        {formatProductCreatedActivity(product.createdAt, displayTimeZone)}
+        {formatProductCreatedActivity(
+          product.createdAt,
+          displayTimeZone,
+          locale,
+          t,
+        )}
       </div>
     </div>
   );
@@ -1171,6 +1212,7 @@ function ProductTaxonomyFilterCombobox<
   readonly onCreateClick: () => void;
   readonly onSelectedIdsChange: (ids: string[]) => void;
 }) {
+  const { t } = useAppI18n();
   const [isOpen, setIsOpen] = useState(false);
   const [search, setSearch] = useState("");
   const [popoverPosition, setPopoverPosition] =
@@ -1266,7 +1308,9 @@ function ProductTaxonomyFilterCombobox<
         <button
           ref={triggerRef}
           aria-expanded={isOpen}
-          aria-label={`${itemKindLabel} 필터`}
+          aria-label={t("common.searchName", {
+            values: { name: itemKindLabel },
+          })}
           className={cn(
             "inline-flex min-w-0 items-center gap-1.5 rounded-md border-0 bg-transparent px-2 font-semibold outline-none transition-[background-color,color,transform,opacity] duration-150 active:scale-[0.97]",
             layout === "full" && "w-full",
@@ -1317,7 +1361,9 @@ function ProductTaxonomyFilterCombobox<
           }}
         >
           <FilterPopoverSearchHeader
-            clearSearchLabel={`${itemKindLabel} 검색어 지우기`}
+            clearSearchLabel={t("common.clearSearchName", {
+              values: { name: itemKindLabel },
+            })}
             inputRef={inputRef}
             onClearSearch={() => setSearch("")}
             onReset={() => {
@@ -1344,9 +1390,15 @@ function ProductTaxonomyFilterCombobox<
                 toggleItem(firstItem);
               }
             }}
-            placeholder={`${itemKindLabel} 검색`}
-            resetLabel={`${itemKindLabel} 초기화`}
-            searchLabel={`${itemKindLabel} 검색`}
+            placeholder={t("common.searchName", {
+              values: { name: itemKindLabel },
+            })}
+            resetLabel={t("common.resetName", {
+              values: { name: itemKindLabel },
+            })}
+            searchLabel={t("common.searchName", {
+              values: { name: itemKindLabel },
+            })}
             searchValue={search}
           />
 
@@ -1405,7 +1457,9 @@ function ProductTaxonomyFilterCombobox<
             type="button"
           >
             <Plus className="h-3.5 w-3.5" />
-            새 {itemKindLabel} 추가
+            {t("productList.addTaxonomy", {
+              values: { label: itemKindLabel },
+            })}
           </button>
         </div>
       ) : null}
@@ -1547,17 +1601,49 @@ function ProductListSkeleton() {
   );
 }
 
-function formatProductCreatedAt(value: string, timeZone: string) {
+function formatProductCreatedAt(
+  value: string,
+  timeZone: string,
+  locale: AppLocale,
+) {
   return formatDateWithOptions(value, {
     day: "2-digit",
+    locale: getIntlLocale(locale),
     month: "2-digit",
     timeZone,
     year: "numeric",
   });
 }
 
-function formatProductCreatedActivity(value: string, timeZone: string) {
-  return `등록 ${formatProductCreatedAt(value, timeZone)}`;
+function formatProductCreatedActivity(
+  value: string,
+  timeZone: string,
+  locale: AppLocale,
+  t: (
+    key: AppI18nKey,
+    options?: { readonly values?: Record<string, string | number> },
+  ) => string,
+) {
+  return t("productList.registeredAt", {
+    values: { date: formatProductCreatedAt(value, timeZone, locale) },
+  });
+}
+
+function formatProductDealCount(
+  product: Product,
+  locale: AppLocale,
+  t: (
+    key: AppI18nKey,
+    options?: { readonly values?: Record<string, string | number> },
+  ) => string,
+) {
+  return t("productList.dealCount", {
+    values: {
+      count: new Intl.NumberFormat(getIntlLocale(locale)).format(
+        product.dealCount,
+      ),
+    },
+  });
 }
 
 function getBrowserTimeZoneFallback() {
@@ -1566,6 +1652,10 @@ function getBrowserTimeZoneFallback() {
   } catch {
     return "Asia/Seoul";
   }
+}
+
+function getIntlLocale(locale: AppLocale) {
+  return locale === "ko-KR" ? "ko-KR" : "en-US";
 }
 
 function statusToneFromName(statusName: string) {

@@ -1,6 +1,6 @@
 # G09 App Screen Translation
 
-상태: Not Started
+상태: Done
 목표: `/app` 핵심 업무 화면 전체에 `ko-KR`, `en` 문구를 적용한다.
 
 ## 1. 포함 범위
@@ -116,16 +116,23 @@ pnpm run build
 
 ## 11. Goal 검토 체크리스트
 
-- [ ] 핵심 화면 전체에 `ko-KR`, `en` 문구가 적용됐다.
-- [ ] 공통 navigation/button/empty/error/validation/toast copy가 locale-aware하다.
-- [ ] 신규 request/response 변경이 없음을 확인했다.
-- [ ] FE가 필요한 response field와 error code를 기준으로 번역한다.
-- [ ] business logic이 app i18n key와 format utility를 사용한다.
-- [ ] user flow에서 locale별 문구가 일관된다.
-- [ ] DB/Prisma 변경 없음이 확인됐다.
-- [ ] 한국어는 해요체다.
-- [ ] 영어는 간결하고 사용자 친화적이다.
-- [ ] 긴 영어 문구가 UI를 깨지 않는다.
-- [ ] public-site i18n에 app 문구를 섞지 않았다.
-- [ ] 신규 코드에 한글 주석 규칙이 적용됐다.
-- [ ] 실행한 검증 결과를 기록했다.
+- [x] 핵심 화면 전체에 `ko-KR`, `en` 문구가 적용됐다.
+- [x] 공통 navigation/button/empty/error/validation/toast copy가 locale-aware하다.
+- [x] 신규 request/response 변경이 없음을 확인했다.
+- [x] FE가 필요한 response field와 error code를 기준으로 번역한다.
+- [x] business logic이 app i18n key와 format utility를 사용한다.
+- [x] user flow에서 locale별 문구가 일관된다.
+- [x] DB/Prisma 변경 없음이 확인됐다.
+- [x] 한국어는 해요체다.
+- [x] 영어는 간결하고 사용자 친화적이다.
+- [x] 긴 영어 문구가 UI를 깨지 않는다.
+- [x] public-site i18n에 app 문구를 섞지 않았다.
+- [x] 신규 코드에 한글 주석 규칙이 적용됐다.
+- [x] 실행한 검증 결과를 기록했다.
+
+## 12. 검증 기록
+
+- 2026-07-28 `FE/user-web`: `pnpm.cmd run typecheck` 통과
+- 2026-07-28 `FE/user-web`: `pnpm.cmd run lint` 통과
+- 2026-07-28 `FE/user-web`: `pnpm.cmd run build` 통과
+- Vite build에서 기존 chunk size warning이 표시됐으나 build 실패는 없었다.

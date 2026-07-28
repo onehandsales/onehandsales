@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useAuthSession } from "@/features/auth";
+import { useAppI18n, type AppI18nKey } from "@/features/app-i18n";
 
 type MenuRowProps = {
   readonly label: string;
@@ -30,7 +31,6 @@ function MenuRow({ label, to, iconBg, iconColor, icon: Icon, isLast }: MenuRowPr
         borderBottom: isLast ? "none" : "1px solid #F3F4F6",
       }}
     >
-      {/* Icon box */}
       <div
         className="inline-flex shrink-0 items-center justify-center"
         style={{
@@ -43,12 +43,10 @@ function MenuRow({ label, to, iconBg, iconColor, icon: Icon, isLast }: MenuRowPr
         <Icon style={{ width: 18, height: 18, color: iconColor }} />
       </div>
 
-      {/* Label */}
       <span className="flex-1 text-[14px] font-medium" style={{ color: "#1F2937" }}>
         {label}
       </span>
 
-      {/* Chevron */}
       <ChevronRight style={{ width: 16, height: 16, color: "#D1D5DB" }} />
     </Link>
   );
@@ -74,22 +72,82 @@ function SectionHeader({ title }: SectionHeaderProps) {
   );
 }
 
+const salesRows: ReadonlyArray<{
+  readonly labelKey: AppI18nKey;
+  readonly to: string;
+  readonly iconBg: string;
+  readonly iconColor: string;
+  readonly icon: LucideIcon;
+}> = [
+  {
+    labelKey: "navigation.companies",
+    to: "/app/companies",
+    iconBg: "#4880EE18",
+    iconColor: "#4880EE",
+    icon: Building2,
+  },
+  {
+    labelKey: "navigation.contacts",
+    to: "/app/contacts",
+    iconBg: "#4880EE18",
+    iconColor: "#4880EE",
+    icon: Users,
+  },
+  {
+    labelKey: "navigation.businessCards",
+    to: "/app/business-cards",
+    iconBg: "#05966918",
+    iconColor: "#059669",
+    icon: Camera,
+  },
+  {
+    labelKey: "navigation.products",
+    to: "/app/products",
+    iconBg: "#B4530918",
+    iconColor: "#B45309",
+    icon: Package,
+  },
+];
+
+const managementRows: ReadonlyArray<{
+  readonly labelKey: AppI18nKey;
+  readonly to: string;
+  readonly iconBg: string;
+  readonly iconColor: string;
+  readonly icon: LucideIcon;
+}> = [
+  {
+    labelKey: "navigation.trash",
+    to: "/app/trash",
+    iconBg: "#B91C1C18",
+    iconColor: "#B91C1C",
+    icon: Trash2,
+  },
+  {
+    labelKey: "navigation.settings",
+    to: "/app/settings",
+    iconBg: "#6B728018",
+    iconColor: "#6B7280",
+    icon: Settings,
+  },
+];
+
 export function MorePage() {
   const { user } = useAuthSession();
-  const name = user?.name ?? "사용자";
+  const { t } = useAppI18n();
+  const name = user?.name ?? t("more.user");
   const role = user?.role ?? "";
   const initial = name.charAt(0);
 
   return (
     <div className="min-h-screen bg-[#F9FAFB] px-0 py-0 lg:px-8 lg:py-8">
       <div className="mx-auto w-full max-w-[760px] overflow-hidden bg-white lg:rounded-lg lg:border lg:border-[#E5E7EB]">
-        {/* Profile Card */}
+        {/* 기능 : 사용자 프로필 진입 row는 계정 데이터와 locale 문구를 함께 표시합니다. */}
         <Link
           to="/app/settings"
           className="flex items-center gap-3 bg-white px-4 py-4"
           style={{ borderBottom: "1px solid #E5E7EB" }}
         >
-          {/* Avatar */}
           <div
             className="inline-flex shrink-0 items-center justify-center rounded-full text-[17px] font-bold"
             style={{
@@ -102,7 +160,6 @@ export function MorePage() {
             {initial}
           </div>
 
-          {/* Name & role */}
           <div className="min-w-0 flex-1">
             <p className="truncate text-[15px] font-bold" style={{ color: "#111827" }}>
               {name}
@@ -115,62 +172,37 @@ export function MorePage() {
           <ChevronRight style={{ width: 18, height: 18, color: "#D1D5DB", flexShrink: 0 }} />
         </Link>
 
-        {/* Section: 영업 관리 */}
-        <SectionHeader title="영업 관리" />
+        <SectionHeader title={t("more.salesManagement")} />
         <div style={{ borderTop: "1px solid #E5E7EB", borderBottom: "1px solid #E5E7EB" }}>
-          <MenuRow
-            label="회사"
-            to="/app/companies"
-            iconBg="#4880EE18"
-            iconColor="#4880EE"
-            icon={Building2}
-          />
-          <MenuRow
-            label="담당자"
-            to="/app/contacts"
-            iconBg="#4880EE18"
-            iconColor="#4880EE"
-            icon={Users}
-          />
-          <MenuRow
-            label="명함 스캔"
-            to="/app/business-cards"
-            iconBg="#05966918"
-            iconColor="#059669"
-            icon={Camera}
-          />
-          <MenuRow
-            label="제품"
-            to="/app/products"
-            iconBg="#B4530918"
-            iconColor="#B45309"
-            icon={Package}
-            isLast
-          />
+          {salesRows.map((row, index) => (
+            <MenuRow
+              key={row.to}
+              label={t(row.labelKey)}
+              to={row.to}
+              iconBg={row.iconBg}
+              iconColor={row.iconColor}
+              icon={row.icon}
+              isLast={index === salesRows.length - 1}
+            />
+          ))}
         </div>
 
-        {/* Section: 관리 */}
-        <SectionHeader title="관리" />
+        <SectionHeader title={t("more.management")} />
         <div style={{ borderTop: "1px solid #E5E7EB", borderBottom: "1px solid #E5E7EB" }}>
-          <MenuRow
-            label="휴지통"
-            to="/app/trash"
-            iconBg="#B91C1C18"
-            iconColor="#B91C1C"
-            icon={Trash2}
-          />
-          <MenuRow
-            label="설정"
-            to="/app/settings"
-            iconBg="#6B728018"
-            iconColor="#6B7280"
-            icon={Settings}
-            isLast
-          />
+          {managementRows.map((row, index) => (
+            <MenuRow
+              key={row.to}
+              label={t(row.labelKey)}
+              to={row.to}
+              iconBg={row.iconBg}
+              iconColor={row.iconColor}
+              icon={row.icon}
+              isLast={index === managementRows.length - 1}
+            />
+          ))}
         </div>
       </div>
 
-      {/* Version */}
       <p
         className="py-6 text-center text-[11px]"
         style={{ color: "#D1D5DB" }}

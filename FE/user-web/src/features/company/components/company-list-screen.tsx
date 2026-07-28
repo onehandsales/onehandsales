@@ -34,7 +34,11 @@ import { Pagination } from "@/components/ui/pagination";
 import { ListEmptyState } from "@/components/ui/state";
 import { Toast } from "@/components/ui/toast";
 import { useAuthSession } from "@/features/auth";
-import { useAppI18n, type AppLocale } from "@/features/app-i18n";
+import {
+  useAppI18n,
+  type AppI18nKey,
+  type AppLocale,
+} from "@/features/app-i18n";
 import { CompanyCreateDialog } from "@/features/company/components/company-create-dialog";
 import { CompanyTaxonomyCreateDialog } from "@/features/company/components/company-taxonomy-create-dialog";
 import {
@@ -71,13 +75,13 @@ type CompanyListScreenProps = {
 
 const COMPANY_SORT_OPTIONS: Array<{
   readonly value: CompanySort;
-  readonly label: string;
+  readonly labelKey: AppI18nKey;
 }> = [
-  { value: "createdAtDesc", label: "최신순" },
-  { value: "contactCountDesc", label: "담당자 높은순" },
-  { value: "contactCountAsc", label: "담당자 낮은순" },
-  { value: "dealCountDesc", label: "딜 높은순" },
-  { value: "dealCountAsc", label: "딜 낮은순" },
+  { value: "createdAtDesc", labelKey: "companyList.sortCreatedAtDesc" },
+  { value: "contactCountDesc", labelKey: "companyList.sortContactCountDesc" },
+  { value: "contactCountAsc", labelKey: "companyList.sortContactCountAsc" },
+  { value: "dealCountDesc", labelKey: "companyList.sortDealCountDesc" },
+  { value: "dealCountAsc", labelKey: "companyList.sortDealCountAsc" },
 ];
 
 const COMPANY_TABLE_COLUMNS = [
@@ -202,6 +206,14 @@ export function CompanyListScreen({
   const regions = useMemo(
     () => regionsQuery.data?.items ?? [],
     [regionsQuery.data],
+  );
+  const sortOptions = useMemo(
+    () =>
+      COMPANY_SORT_OPTIONS.map((option) => ({
+        value: option.value,
+        label: t(option.labelKey),
+      })),
+    [t],
   );
   const companyList = companiesQuery.data;
   const displayTimeZone = user?.timeZone ?? getBrowserTimeZoneFallback();
@@ -491,7 +503,7 @@ export function CompanyListScreen({
       state: { companyCreateDraft: values },
     });
   };
-  const onCompanyCreated = () => setNotice("회사를 추가했어요.");
+  const onCompanyCreated = () => setNotice(t("companyList.createdNotice"));
 
   return (
     <section
@@ -503,7 +515,7 @@ export function CompanyListScreen({
       }
     >
       <PageHeader
-        breadcrumbs={[{ label: "회사", icon: Building2 }]}
+        breadcrumbs={[{ label: t("navigation.companies"), icon: Building2 }]}
         actions={[
           {
             icon: Download,
@@ -513,7 +525,7 @@ export function CompanyListScreen({
           },
           {
             icon: Plus,
-            tooltip: "회사 생성",
+            tooltip: t("companyList.createCompany"),
             onClick: openCreatePanel,
             disabled: fieldsQuery.isLoading || regionsQuery.isLoading,
             hidden: isDockedCreateMounted,
@@ -563,7 +575,9 @@ export function CompanyListScreen({
           <button
             aria-expanded={isDesktopSearchOpen}
             aria-label={
-              isDesktopSearchOpen ? "회사 검색 실행" : "회사 검색 열기"
+              isDesktopSearchOpen
+                ? t("companyList.searchSubmit")
+                : t("companyList.searchOpen")
             }
             className={cn(
               "inline-flex h-8 shrink-0 items-center justify-center gap-1.5 rounded-md px-2 text-[13px] font-semibold text-[#5F6368] transition-[background-color,color,transform] duration-150 hover:text-[#374151] active:scale-[0.97]",
@@ -580,7 +594,7 @@ export function CompanyListScreen({
             type="button"
           >
             <Search className="h-3.5 w-3.5" />
-            {isDesktopSearchOpen ? null : <span>검색</span>}
+            {isDesktopSearchOpen ? null : <span>{t("companyList.search")}</span>}
           </button>
           <input
             ref={desktopSearchInputRef}
@@ -590,7 +604,7 @@ export function CompanyListScreen({
               isDesktopSearchOpen ? "opacity-100" : "opacity-0",
             )}
             onChange={(e) => setCompanyNameText(e.target.value)}
-            placeholder="회사를 검색하세요!"
+            placeholder={t("companyList.searchPlaceholder")}
             tabIndex={isDesktopSearchOpen ? 0 : -1}
             value={companyNameText}
           />
@@ -604,7 +618,7 @@ export function CompanyListScreen({
           <button
             ref={compactFilterButtonRef}
             aria-expanded={isCompactFilterOpen}
-            aria-label="필터"
+            aria-label={t("companyList.filter")}
             aria-hidden={!isCompactFilterMode}
 	            className={cn(
 	              "absolute left-0 top-0 inline-flex h-8 w-[72px] shrink-0 items-center justify-center gap-1.5 rounded-md border-0 bg-transparent px-2 text-[13px] font-semibold transition-[opacity,transform,background-color,color] duration-150 focus:outline-none active:scale-[0.97]",
@@ -622,7 +636,7 @@ export function CompanyListScreen({
             type="button"
           >
             <SlidersHorizontal className="h-3.5 w-3.5" />
-            <span>필터</span>
+            <span>{t("companyList.filter")}</span>
             {hasTaxonomyFilters ? (
               <span className="absolute -right-1 -top-1 grid h-4 min-w-4 place-items-center rounded-full bg-[#4880EE] px-1 text-[10px] font-bold leading-none text-white">
                 {taxonomyFilterCount}
@@ -640,10 +654,10 @@ export function CompanyListScreen({
             )}
           >
             <CompanyTaxonomyFilterCombobox
-              emptyText="조건을 바꾸면 분야를 찾을 수 있어요."
+              emptyText={t("companyList.fieldEmpty")}
               getLabel={(field) => field.field}
               icon={Tags}
-              itemKindLabel="분야"
+              itemKindLabel={t("companyList.field")}
               items={fields}
               selectedIds={companyFieldIds}
               size="desktop"
@@ -655,10 +669,10 @@ export function CompanyListScreen({
               }}
             />
             <CompanyTaxonomyFilterCombobox
-              emptyText="조건을 바꾸면 지역을 찾을 수 있어요."
+              emptyText={t("companyList.regionEmpty")}
               getLabel={(region) => formatCompanyRegionLabel(region, locale)}
               icon={MapPin}
-              itemKindLabel="지역"
+              itemKindLabel={t("companyList.region")}
               items={regions}
               selectedIds={companyRegionIds}
               size="desktop"
@@ -673,7 +687,7 @@ export function CompanyListScreen({
         </div>
         <ListFilterSelect
           active={sort !== "createdAtDesc"}
-          ariaLabel="정렬 조건"
+          ariaLabel={t("dealList.sortAria")}
           icon={ArrowUpDown}
           className={
             isCompactFilterMode
@@ -684,18 +698,20 @@ export function CompanyListScreen({
             setSort(nextSort);
             setPage(1);
           }}
-          options={COMPANY_SORT_OPTIONS}
+          options={sortOptions}
           searchable={false}
           value={sort}
         />
         </div>
         <span className="ml-2 shrink-0 text-[12px] text-[#9CA3AF]">
-          {companyList?.totalCount ?? 0}개
+          {t("companyList.countItems", {
+            values: { count: companyList?.totalCount ?? 0 },
+          })}
         </span>
         <FilterChip
           active={hasSearch}
           icon={RotateCcw}
-          label="초기화"
+          label={t("common.reset")}
           onClick={() => {
             setCompanyName("");
             setCompanyNameText("");
@@ -722,12 +738,14 @@ export function CompanyListScreen({
         >
           <div className="grid gap-3">
             <div className="grid gap-1.5">
-              <p className="text-[12px] font-semibold text-[#64748B]">분야</p>
+              <p className="text-[12px] font-semibold text-[#64748B]">
+                {t("companyList.field")}
+              </p>
               <CompanyTaxonomyFilterCombobox
-                emptyText="조건을 바꾸면 분야를 찾을 수 있어요."
+                emptyText={t("companyList.fieldEmpty")}
                 getLabel={(field) => field.field}
                 icon={Tags}
-                itemKindLabel="분야"
+                itemKindLabel={t("companyList.field")}
                 items={fields}
                 layout="full"
                 selectedIds={companyFieldIds}
@@ -741,12 +759,14 @@ export function CompanyListScreen({
               />
             </div>
             <div className="grid gap-1.5">
-              <p className="text-[12px] font-semibold text-[#64748B]">지역</p>
+              <p className="text-[12px] font-semibold text-[#64748B]">
+                {t("companyList.region")}
+              </p>
               <CompanyTaxonomyFilterCombobox
-                emptyText="조건을 바꾸면 지역을 찾을 수 있어요."
+                emptyText={t("companyList.regionEmpty")}
                 getLabel={(region) => formatCompanyRegionLabel(region, locale)}
                 icon={MapPin}
-                itemKindLabel="지역"
+                itemKindLabel={t("companyList.region")}
                 items={regions}
                 layout="full"
                 selectedIds={companyRegionIds}
@@ -803,37 +823,37 @@ export function CompanyListScreen({
                   icon={Building2}
                   {...getHeaderCellResizeProps("companyName", 0)}
                 >
-                  회사명
+                  {t("companyList.name")}
                 </ListTableHeaderCell>
                 <ListTableHeaderCell
                   icon={Tags}
                   {...getHeaderCellResizeProps("field", 1)}
                 >
-                  분야
+                  {t("companyList.field")}
                 </ListTableHeaderCell>
                 <ListTableHeaderCell
                   icon={MapPin}
                   {...getHeaderCellResizeProps("region", 2)}
                 >
-                  지역
+                  {t("companyList.region")}
                 </ListTableHeaderCell>
                 <ListTableHeaderCell
                   icon={UsersRound}
                   {...getHeaderCellResizeProps("contactCount", 3)}
                 >
-                  담당자
+                  {t("companyList.contactCount")}
                 </ListTableHeaderCell>
                 <ListTableHeaderCell
                   icon={BriefcaseBusiness}
                   {...getHeaderCellResizeProps("dealCount", 4)}
                 >
-                  진행 딜
+                  {t("companyList.dealCount")}
                 </ListTableHeaderCell>
                 <ListTableHeaderCell
                   icon={Activity}
                   {...getHeaderCellResizeProps("createdAt", 5)}
                 >
-                  활동
+                  {t("companyList.activity")}
                 </ListTableHeaderCell>
             </div>
 
@@ -847,13 +867,13 @@ export function CompanyListScreen({
             ) : !companyList || companyList.items.length === 0 ? (
               <ListEmptyState
                 actionIcon={Plus}
-                actionLabel="회사 생성"
+                actionLabel={t("companyList.createCompany")}
                 icon={Building2}
                 onAction={openCreatePanel}
                 title={
                   hasSearch
-                    ? "조건을 바꾸면 회사를 찾을 수 있어요"
-                    : "데이터가 존재하지 않아요"
+                    ? t("companyList.emptyFiltered")
+                    : t("companyList.dataEmpty")
                 }
               />
             ) : (
@@ -916,10 +936,10 @@ export function CompanyListScreen({
         {/* 모바일 필터 칩 행 */}
         <div className="flex h-10 shrink-0 items-center gap-2 overflow-x-auto border-b border-[#E5E7EB] px-4">
           <CompanyTaxonomyFilterCombobox
-              emptyText="조건을 바꾸면 분야를 찾을 수 있어요."
+              emptyText={t("companyList.fieldEmpty")}
             getLabel={(field) => field.field}
             icon={Tags}
-            itemKindLabel="분야"
+            itemKindLabel={t("companyList.field")}
             items={fields}
             selectedIds={companyFieldIds}
             size="mobile"
@@ -931,10 +951,10 @@ export function CompanyListScreen({
             }}
           />
           <CompanyTaxonomyFilterCombobox
-              emptyText="조건을 바꾸면 지역을 찾을 수 있어요."
+              emptyText={t("companyList.regionEmpty")}
             getLabel={(region) => formatCompanyRegionLabel(region, locale)}
             icon={MapPin}
-            itemKindLabel="지역"
+            itemKindLabel={t("companyList.region")}
             items={regions}
             selectedIds={companyRegionIds}
             size="mobile"
@@ -947,10 +967,12 @@ export function CompanyListScreen({
           />
           <div className="flex-1" />
           <span className="shrink-0 text-[11px] text-[#9CA3AF]">
-            {companyList?.totalCount ?? 0}개
+            {t("companyList.countItems", {
+              values: { count: companyList?.totalCount ?? 0 },
+            })}
           </span>
           <button
-            aria-label="초기화"
+            aria-label={t("common.reset")}
             className={cn(
               "inline-flex h-7 shrink-0 items-center justify-center gap-1 rounded-md border-0 bg-transparent px-2 text-[12px] font-semibold transition-[background-color,color,transform] duration-150 focus:outline-none active:scale-[0.97]",
               hasSearch
@@ -969,7 +991,7 @@ export function CompanyListScreen({
             type="button"
           >
             <RotateCcw className="h-3 w-3" />
-            <span>초기화</span>
+            <span>{t("common.reset")}</span>
           </button>
         </div>
 
@@ -994,19 +1016,19 @@ export function CompanyListScreen({
                 onClick={() => void companiesQuery.refetch()}
                 type="button"
               >
-                다시 시도
+                {t("common.retry")}
               </button>
             </div>
           ) : !companyList || companyList.items.length === 0 ? (
             <ListEmptyState
               actionIcon={Plus}
-              actionLabel="회사 생성"
+              actionLabel={t("companyList.createCompany")}
               icon={Building2}
               onAction={openCreatePanel}
               title={
                 hasSearch
-                  ? "조건을 바꾸면 회사를 찾을 수 있어요"
-                  : "데이터가 존재하지 않아요"
+                  ? t("companyList.emptyFiltered")
+                  : t("companyList.dataEmpty")
               }
             />
           ) : (
@@ -1034,7 +1056,7 @@ export function CompanyListScreen({
 
         {/* FAB */}
         <button
-          aria-label="회사 생성"
+          aria-label={t("companyList.createCompany")}
           className="fixed bottom-24 right-5 flex h-8 w-8 items-center justify-center rounded-full bg-[#4880EE] shadow-[0_4px_16px_rgba(59,130,246,0.27)] transition active:opacity-80"
           onClick={openCreatePanel}
           type="button"
@@ -1083,6 +1105,11 @@ function CompanyRow({
   readonly locale: AppLocale;
 }) {
   const navigate = useNavigate();
+  const { t } = useAppI18n();
+  const numberFormatter = useMemo(
+    () => new Intl.NumberFormat(getIntlLocale(locale)),
+    [locale],
+  );
   const companyRegionLabel = formatCompanyRegionLabel(
     company.companyRegion,
     locale
@@ -1127,16 +1154,30 @@ function CompanyRow({
         </span>
       </div>
       <div className="min-w-0 truncate whitespace-nowrap text-[12px] font-medium text-[#475569]">
-        {company.contactCount.toLocaleString("ko-KR")}명
+        {t("companyList.contactCountValue", {
+          values: { count: numberFormatter.format(company.contactCount) },
+        })}
       </div>
       <div className="min-w-0 truncate whitespace-nowrap text-[12px] font-medium text-[#475569]">
-        {company.dealCount.toLocaleString("ko-KR")}건
+        {t("companyList.dealCountValue", {
+          values: { count: numberFormatter.format(company.dealCount) },
+        })}
       </div>
       <div
         className="min-w-0 truncate text-[12px] font-medium text-[#64748B]"
-        title={formatCompanyCreatedActivity(company.createdAt, displayTimeZone)}
+        title={formatCompanyCreatedActivity(
+          company.createdAt,
+          displayTimeZone,
+          locale,
+          t,
+        )}
       >
-        {formatCompanyCreatedActivity(company.createdAt, displayTimeZone)}
+        {formatCompanyCreatedActivity(
+          company.createdAt,
+          displayTimeZone,
+          locale,
+          t,
+        )}
       </div>
     </div>
   );
@@ -1210,6 +1251,7 @@ function CompanyTaxonomyFilterCombobox<
   readonly onCreateClick: () => void;
   readonly onSelectedIdsChange: (ids: string[]) => void;
 }) {
+  const { t } = useAppI18n();
   const [isOpen, setIsOpen] = useState(false);
   const [search, setSearch] = useState("");
   const [popoverPosition, setPopoverPosition] =
@@ -1307,7 +1349,9 @@ function CompanyTaxonomyFilterCombobox<
         <button
           ref={triggerRef}
           aria-expanded={isOpen}
-          aria-label={`${itemKindLabel} 필터`}
+          aria-label={t("common.searchName", {
+            values: { name: itemKindLabel },
+          })}
           className={cn(
             "inline-flex min-w-0 items-center gap-1.5 rounded-md border-0 bg-transparent px-2 font-semibold outline-none transition-[background-color,color,transform,opacity] duration-150 active:scale-[0.97]",
             layout === "full" && "w-full",
@@ -1358,7 +1402,9 @@ function CompanyTaxonomyFilterCombobox<
           }}
         >
           <FilterPopoverSearchHeader
-            clearSearchLabel={`${itemKindLabel} 검색어 지우기`}
+            clearSearchLabel={t("common.clearSearchName", {
+              values: { name: itemKindLabel },
+            })}
             inputRef={inputRef}
             onClearSearch={() => setSearch("")}
             onReset={() => {
@@ -1385,9 +1431,15 @@ function CompanyTaxonomyFilterCombobox<
                 toggleItem(firstItem);
               }
             }}
-            placeholder={`${itemKindLabel} 검색`}
-            resetLabel={`${itemKindLabel} 초기화`}
-            searchLabel={`${itemKindLabel} 검색`}
+            placeholder={t("common.searchName", {
+              values: { name: itemKindLabel },
+            })}
+            resetLabel={t("common.resetName", {
+              values: { name: itemKindLabel },
+            })}
+            searchLabel={t("common.searchName", {
+              values: { name: itemKindLabel },
+            })}
             searchValue={search}
           />
 
@@ -1446,7 +1498,9 @@ function CompanyTaxonomyFilterCombobox<
             type="button"
           >
             <Plus className="h-3.5 w-3.5" />
-            새 {itemKindLabel} 추가
+            {t("companyList.addTaxonomy", {
+              values: { label: itemKindLabel },
+            })}
           </button>
         </div>
       ) : null}
@@ -1523,6 +1577,8 @@ function CompanyListError({
   readonly error: unknown;
   readonly onRetry: () => void;
 }) {
+  const { t } = useAppI18n();
+
   return (
     <div className="flex flex-1 flex-col items-center justify-center px-5 py-14 text-center">
       <p className="text-[13px] text-red-500">{getApiErrorMessage(error)}</p>
@@ -1531,7 +1587,7 @@ function CompanyListError({
         onClick={onRetry}
         type="button"
       >
-        다시 시도
+        {t("common.retry")}
       </button>
     </div>
   );
@@ -1561,17 +1617,29 @@ function downloadBlobFile(file: ApiBlobResponse, fallbackFileName: string) {
   window.URL.revokeObjectURL(url);
 }
 
-function formatCompanyCreatedAt(value: string, timeZone: string) {
+function formatCompanyCreatedAt(
+  value: string,
+  timeZone: string,
+  locale: AppLocale,
+) {
   return formatDateWithOptions(value, {
     day: "2-digit",
+    locale: getIntlLocale(locale),
     month: "2-digit",
     timeZone,
     year: "numeric",
   });
 }
 
-function formatCompanyCreatedActivity(value: string, timeZone: string) {
-  return `등록 ${formatCompanyCreatedAt(value, timeZone)}`;
+function formatCompanyCreatedActivity(
+  value: string,
+  timeZone: string,
+  locale: AppLocale,
+  t: (key: AppI18nKey, options?: { readonly values?: Record<string, string> }) => string,
+) {
+  return t("companyList.registeredAt", {
+    values: { date: formatCompanyCreatedAt(value, timeZone, locale) },
+  });
 }
 
 function getBrowserTimeZoneFallback() {
@@ -1580,6 +1648,10 @@ function getBrowserTimeZoneFallback() {
   } catch {
     return "Asia/Seoul";
   }
+}
+
+function getIntlLocale(locale: AppLocale) {
+  return locale === "ko-KR" ? "ko-KR" : "en-US";
 }
 
 function getDesktopSearchExpandedWidth() {
@@ -1679,6 +1751,11 @@ function CompanyMobileCard({
   readonly locale: AppLocale;
 }) {
   const navigate = useNavigate();
+  const { t } = useAppI18n();
+  const numberFormatter = useMemo(
+    () => new Intl.NumberFormat(getIntlLocale(locale)),
+    [locale],
+  );
   const initial = company.companyName.charAt(0).toUpperCase();
   const companyRegionLabel = formatCompanyRegionLabel(
     company.companyRegion,
@@ -1713,11 +1790,20 @@ function CompanyMobileCard({
         {/* Row3: 연결 record + 현재 응답에서 가능한 활동 */}
         <div className="mt-1 flex items-center justify-between">
           <span className="text-[12px] text-[#6B7280]">
-            담당자 {company.contactCount.toLocaleString("ko-KR")}명 · 딜{" "}
-            {company.dealCount.toLocaleString("ko-KR")}건
+            {t("companyList.mobileRelation", {
+              values: {
+                contacts: numberFormatter.format(company.contactCount),
+                deals: numberFormatter.format(company.dealCount),
+              },
+            })}
           </span>
           <span className="shrink-0 text-[11px] text-[#9CA3AF]">
-            {formatCompanyCreatedActivity(company.createdAt, displayTimeZone)}
+            {formatCompanyCreatedActivity(
+              company.createdAt,
+              displayTimeZone,
+              locale,
+              t,
+            )}
           </span>
         </div>
       </div>

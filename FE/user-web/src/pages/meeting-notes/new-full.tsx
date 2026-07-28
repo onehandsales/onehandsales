@@ -1,5 +1,6 @@
 import { useMemo } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { useAppI18n } from "@/features/app-i18n";
 import { MeetingNoteCreateDialog } from "@/features/meeting-note/components/meeting-note-create-dialog";
 import type { MeetingNoteCreateFormValues } from "@/features/meeting-note/schemas/meeting-note-schema";
 
@@ -7,6 +8,7 @@ import type { MeetingNoteCreateFormValues } from "@/features/meeting-note/schema
 export function MeetingNoteNewFullPage() {
   const location = useLocation();
   const navigate = useNavigate();
+  const { t } = useAppI18n();
   const initialValues = useMemo(
     () => readMeetingNoteCreateDraft(location.state),
     [location.state],
@@ -19,7 +21,7 @@ export function MeetingNoteNewFullPage() {
   const navigateAfterCreated = () => {
     void navigate("/app/meeting-notes", {
       replace: true,
-      state: { notice: "회의록을 추가했어요." },
+      state: { notice: t("meetingNoteCreate.createdNotice") },
     });
   };
 

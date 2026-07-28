@@ -11,69 +11,9 @@ export type AppCurrencyCode = (typeof APP_SUPPORTED_CURRENCY_CODES)[number];
 export type AppPhoneCountryCode =
   (typeof APP_SUPPORTED_PHONE_COUNTRY_CODES)[number];
 
-export type AppI18nResource = {
-  readonly common: {
-    readonly close: string;
-    readonly retry: string;
-    readonly save: string;
-    readonly saving: string;
-    readonly noRecord: string;
-  };
-  readonly settings: {
-    readonly profileTitle: string;
-    readonly profileDescription: string;
-    readonly name: string;
-    readonly noName: string;
-    readonly displayLanguage: string;
-    readonly timeZone: string;
-    readonly defaultCountry: string;
-    readonly defaultCurrency: string;
-    readonly profileSaved: string;
-    readonly nameTooLong: string;
-  };
-  readonly navigation: {
-    readonly home: string;
-    readonly companies: string;
-    readonly contacts: string;
-    readonly products: string;
-    readonly deals: string;
-    readonly schedules: string;
-    readonly meetingNotes: string;
-    readonly businessCards: string;
-    readonly settings: string;
-  };
-  readonly importExport: {
-    readonly excelDownload: string;
-    readonly templateLanguage: string;
-    readonly templateLanguageHelp: string;
-    readonly koreanTemplate: string;
-    readonly englishTemplate: string;
-    readonly downloadTemplate: string;
-    readonly validationInvalidImportField: string;
-    readonly validationRequiredImportField: string;
-    readonly validationNumberImportField: string;
-    readonly validationEmailImportField: string;
-    readonly validationPhoneImportField: string;
-  };
-  readonly errors: {
-    readonly unknown: string;
-    readonly USER_LOCALE_UNSUPPORTED: string;
-    readonly USER_TIMEZONE_INVALID: string;
-    readonly USER_COUNTRY_UNSUPPORTED: string;
-    readonly USER_DEFAULT_CURRENCY_UNSUPPORTED: string;
-    readonly CURRENCY_UNSUPPORTED: string;
-    readonly AMOUNT_INTEGER_REQUIRED: string;
-    readonly CONTACT_PHONE_COUNTRY_UNSUPPORTED: string;
-    readonly CONTACT_PHONE_INVALID: string;
-  };
-};
+export type AppI18nResource = Record<string, Readonly<Record<string, string>>>;
 
-type NamespaceKey<TNamespace extends keyof AppI18nResource> =
-  `${TNamespace}.${Extract<keyof AppI18nResource[TNamespace], string>}`;
-
-export type AppI18nKey = {
-  [TNamespace in keyof AppI18nResource]: NamespaceKey<TNamespace>;
-}[keyof AppI18nResource];
+export type AppI18nKey = `${string}.${string}`;
 
 // 기능 : 입력 locale이 앱에서 지원하는 locale인지 확인합니다.
 export function isAppLocale(value: string): value is AppLocale {

@@ -1,5 +1,6 @@
 import { useMemo } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { useAppI18n } from "@/features/app-i18n";
 import { CompanyCreateDialog } from "@/features/company/components/company-create-dialog";
 import {
   useCompanyFields,
@@ -11,6 +12,7 @@ import type { CompanyCreateFormValues } from "@/features/company/schemas/company
 export function CompanyNewFullPage() {
   const location = useLocation();
   const navigate = useNavigate();
+  const { t } = useAppI18n();
   const fieldsQuery = useCompanyFields();
   const regionsQuery = useCompanyRegions();
   const initialValues = useMemo(
@@ -25,7 +27,7 @@ export function CompanyNewFullPage() {
   const navigateAfterCreated = () => {
     void navigate("/app/companies", {
       replace: true,
-      state: { notice: "회사를 추가했어요." },
+      state: { notice: t("companyList.createdNotice") },
     });
   };
 

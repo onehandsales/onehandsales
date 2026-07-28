@@ -14,7 +14,7 @@ import {
 } from "lucide-react";
 import { useMemo } from "react";
 import { Link } from "react-router-dom";
-import { useAuthSession } from "@/features/auth";
+import { useAppI18n, type AppI18nKey } from "@/features/app-i18n";
 import { useDealList, useDealStageCounts } from "@/features/deal/hooks/use-deal-list";
 import {
   DEAL_STATUS_LABEL,
@@ -28,7 +28,6 @@ import type { MeetingNoteListItem } from "@/features/meeting-note/types/meeting-
 import { useScheduleList } from "@/features/schedule/hooks/use-schedule-queries";
 import type { Schedule } from "@/features/schedule/types/schedule";
 import { cn } from "@/utils/cn";
-import { formatDateWithOptions } from "@/utils/format";
 
 const ACTIVE_DEAL_STATUSES: DealStatus[] = [
   "INITIAL_CONTACT",
@@ -39,40 +38,40 @@ const ACTIVE_DEAL_STATUSES: DealStatus[] = [
 
 const QUICK_ACTIONS: QuickAction[] = [
   {
-    description: "새 영업 기회를 바로 등록",
+    descriptionKey: "home.dealRegisterDescription",
     href: "/app/deals/new",
     icon: BriefcaseBusiness,
-    label: "딜 등록",
+    labelKey: "home.dealRegister",
     tone: "blue",
   },
   {
-    description: "미팅 내용과 필요 조치 기록",
+    descriptionKey: "home.meetingNoteCreateDescription",
     href: "/app/meeting-notes?create=1",
     icon: NotebookPen,
-    label: "회의록 작성",
+    labelKey: "home.meetingNoteCreate",
     tone: "emerald",
   },
   {
-    description: "오늘 이후 미팅 일정 확인",
+    descriptionKey: "home.scheduleViewDescription",
     href: "/app/schedules",
     icon: CalendarDays,
-    label: "일정 보기",
+    labelKey: "home.scheduleView",
     tone: "amber",
   },
   {
-    description: "회사와 담당자를 빠르게 정리",
+    descriptionKey: "home.companyCreateDescription",
     href: "/app/companies/new",
     icon: Building2,
-    label: "회사 생성",
+    labelKey: "home.companyCreate",
     tone: "slate",
   },
 ];
 
 type QuickAction = {
-  readonly description: string;
+  readonly descriptionKey: AppI18nKey;
   readonly href: string;
   readonly icon: LucideIcon;
-  readonly label: string;
+  readonly labelKey: AppI18nKey;
   readonly tone: "amber" | "blue" | "emerald" | "slate";
 };
 
@@ -86,8 +85,8 @@ type ActivityItem = {
 
 // 기능 : CRM 시작 화면을 렌더링합니다.
 export function HomePage() {
-  const { user } = useAuthSession();
-  const timeZone = user?.timeZone ?? getBrowserTimeZoneFallback();
+  const { formatCurrency, formatDateTime, locale, t, timeZone } = useAppI18n();
+  const numberFormatter = useMemo(() => new Intl.NumberFormat(getIntlLocale(locale)), [locale]);
   const today = useMemo(() => new Date(), []);
   const todayKey = useMemo(
     () => toDateKeyInTimeZone(today.toISOString(), timeZone),
@@ -165,7 +164,13 @@ export function HomePage() {
   const dueSoonCount = activeDeadlineDeals.filter(
     (deal) => getDaysUntil(deal.expectedEndDate, today) <= 7
   ).length;
-  const recentActivity = buildRecentActivity(recentDeals, meetingNotes);
+  const recentActivity = buildRecentActivity({
+    deals: recentDeals,
+    formatCurrency,
+    formatDateTime,
+    meetingNotes,
+    t,
+  });
 
   const isAnyLoading =
     scheduleQuery.isLoading ||
@@ -180,27 +185,37 @@ export function HomePage() {
         <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
           <SummaryCard
             icon={CalendarClock}
-            label="오늘 일정"
+            label={t("home.scheduleToday")}
             tone="emerald"
-            value={`${todaySchedules.length.toLocaleString("ko-KR")}개`}
+            value={t("home.countItems", {
+              values: { count: numberFormatter.format(todaySchedules.length) },
+            })}
           />
           <SummaryCard
             icon={BriefcaseBusiness}
-            label="진행 딜"
+            label={t("home.totalDeals")}
             tone="blue"
-            value={`${activeDealCount.toLocaleString("ko-KR")}건`}
+            value={t("home.countCases", {
+              values: { count: numberFormatter.format(activeDealCount) },
+            })}
           />
           <SummaryCard
             icon={AlertCircle}
-            label="마감 임박"
+            label={t("home.dueSoon")}
             tone="amber"
-            value={`${dueSoonCount.toLocaleString("ko-KR")}건`}
+            value={t("home.countCases", {
+              values: { count: numberFormatter.format(dueSoonCount) },
+            })}
           />
           <SummaryCard
             icon={NotebookPen}
-            label="최근 회의록"
+            label={t("home.recentMeetingNotes")}
             tone="blue"
-            value={`${(meetingNotesQuery.data?.totalCount ?? 0).toLocaleString("ko-KR")}건`}
+            value={t("home.countCases", {
+              values: {
+                count: numberFormatter.format(meetingNotesQuery.data?.totalCount ?? 0),
+              },
+            })}
           />
         </div>
 
@@ -208,24 +223,24 @@ export function HomePage() {
           <div className="grid content-start gap-5">
             <DashboardSection
               actionHref="/app/schedules"
-              actionLabel="일정"
+              actionLabel={t("navigation.schedules")}
               icon={CalendarDays}
-              title="오늘 할 일"
+              title={t("home.taskToday")}
             >
               <div className="grid gap-4 lg:grid-cols-2">
                 <TaskPanel
-                  emptyText="오늘 일정을 등록하면 여기에서 볼 수 있어요."
+                  emptyText={t("home.emptyTodaySchedules")}
                   isLoading={scheduleQuery.isLoading}
-                  title="오늘 일정"
+                  title={t("home.scheduleToday")}
                 >
                   {todaySchedules.slice(0, 5).map((schedule) => (
                     <ScheduleTaskItem key={schedule.id} schedule={schedule} timeZone={timeZone} />
                   ))}
                 </TaskPanel>
                 <TaskPanel
-                  emptyText="후속조치를 등록하면 여기에서 볼 수 있어요."
+                  emptyText={t("home.emptyFollowUps")}
                   isLoading={recentDealsQuery.isLoading}
-                  title="딜 후속조치"
+                  title={t("home.dealsFollowUp")}
                 >
                   {followUpDeals.map((deal) => (
                     <FollowUpTaskItem deal={deal} key={deal.id} />
@@ -237,34 +252,47 @@ export function HomePage() {
             <div className="grid gap-5 xl:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)]">
               <DashboardSection
                 actionHref="/app/deals"
-                actionLabel="딜"
+                actionLabel={t("navigation.deals")}
                 icon={TrendingUp}
-                title="딜 현황"
+                title={t("home.dealStatus")}
               >
                 <div className="grid gap-3">
                   <div className="grid gap-3 rounded-lg border border-[#EEF2F7] bg-[#FAFBFC] p-3 sm:grid-cols-2">
-                    <MiniMetric label="진행 딜 금액" value={formatWon(pipelineValue)} />
+                    <MiniMetric label={t("home.totalDealAmount")} value={formatCurrency(pipelineValue)} />
                     <MiniMetric
-                      label="최근 목록 기준"
-                      value={`${recentDeals.length.toLocaleString("ko-KR")}건`}
+                      label={t("home.recentScope")}
+                      value={t("home.countCases", {
+                        values: { count: numberFormatter.format(recentDeals.length) },
+                      })}
                     />
                   </div>
-                  <StageBreakdown counts={stageCounts} isLoading={stageCountsQuery.isLoading} />
+                  <StageBreakdown
+                    counts={stageCounts}
+                    isLoading={stageCountsQuery.isLoading}
+                    numberFormatter={numberFormatter}
+                    t={t}
+                  />
                 </div>
               </DashboardSection>
 
               <DashboardSection
                 actionHref="/app/deals"
-                actionLabel="전체"
+                actionLabel={t("home.all")}
                 icon={AlertCircle}
-                title="마감 임박 딜"
+                title={t("home.dueSoonDeals")}
               >
                 <ListState
-                  emptyText="마감 임박 딜이 생기면 여기에서 볼 수 있어요."
+                  emptyText={t("home.emptyDueSoonDeals")}
                   isLoading={deadlineDealsQuery.isLoading}
                 >
                   {activeDeadlineDeals.map((deal) => (
-                    <DeadlineDealItem deal={deal} key={deal.id} today={today} />
+                    <DeadlineDealItem
+                      deal={deal}
+                      formatCurrency={formatCurrency}
+                      key={deal.id}
+                      t={t}
+                      today={today}
+                    />
                   ))}
                 </ListState>
               </DashboardSection>
@@ -276,12 +304,12 @@ export function HomePage() {
 
             <DashboardSection
               actionHref="/app/schedules"
-              actionLabel="전체"
+              actionLabel={t("home.all")}
               icon={Clock3}
-              title="다가오는 일정"
+              title={t("home.upcomingSchedules")}
             >
               <ListState
-                emptyText="일정을 만들면 다가오는 일정을 볼 수 있어요."
+                emptyText={t("home.emptySchedules")}
                 isLoading={scheduleQuery.isLoading}
               >
                 {upcomingSchedules.map((schedule) => (
@@ -292,11 +320,11 @@ export function HomePage() {
 
             <DashboardSection
               actionHref="/app/deals"
-              actionLabel="전체"
+              actionLabel={t("home.all")}
               icon={CheckCircle2}
-              title="최근 활동"
+              title={t("home.activitiesTitle")}
             >
-              <ListState emptyText="활동이 생기면 최근 기록을 볼 수 있어요." isLoading={isAnyLoading}>
+              <ListState emptyText={t("home.emptyActivities")} isLoading={isAnyLoading}>
                 {recentActivity.map((activity) => (
                   <ActivityItemRow activity={activity} key={`${activity.type}-${activity.href}`} />
                 ))}
@@ -416,20 +444,22 @@ function ScheduleTaskItem({
   readonly schedule: Schedule;
   readonly timeZone: string;
 }) {
+  const { formatDateTime, t } = useAppI18n();
+
   return (
     <Link
       className="grid min-w-0 grid-cols-[72px_minmax(0,1fr)] gap-3 px-3 py-3 transition hover:bg-white"
       to={`/app/schedules/${schedule.id}`}
     >
       <span className="text-[12px] font-bold text-[#047857]">
-        {formatTime(schedule.startAt, timeZone)}
+        {formatDateTime(schedule.startAt, { timeZone })}
       </span>
       <div className="min-w-0">
         <p className="truncate text-[13px] font-semibold text-[#111827]">
           {schedule.scheduleTitle}
         </p>
         <p className="mt-0.5 truncate text-[12px] text-[#64748B]">
-          {schedule.location || getScheduleDealLabel(schedule)}
+          {schedule.location || getScheduleDealLabel(schedule, t)}
         </p>
       </div>
     </Link>
@@ -437,6 +467,8 @@ function ScheduleTaskItem({
 }
 
 function FollowUpTaskItem({ deal }: { readonly deal: DealListItem }) {
+  const { t } = useAppI18n();
+
   return (
     <Link
       className="grid min-w-0 grid-cols-[minmax(0,1fr)_auto] gap-3 px-3 py-3 transition hover:bg-white"
@@ -447,7 +479,7 @@ function FollowUpTaskItem({ deal }: { readonly deal: DealListItem }) {
           {deal.latestFollowingAction?.followingAction ?? "-"}
         </p>
         <p className="mt-0.5 truncate text-[12px] text-[#64748B]">
-          {deal.dealName} · {getDealCompanyLabel(deal)}
+          {deal.dealName} · {getDealCompanyLabel(deal, t)}
         </p>
       </div>
       <span className="h-fit rounded-full bg-[#EFF6FF] px-2 py-1 text-[11px] font-semibold text-[#4880EE]">
@@ -475,9 +507,13 @@ function MiniMetric({
 function StageBreakdown({
   counts,
   isLoading,
+  numberFormatter,
+  t,
 }: {
   readonly counts: readonly DealStageCount[];
   readonly isLoading: boolean;
+  readonly numberFormatter: Intl.NumberFormat;
+  readonly t: (key: AppI18nKey, options?: { readonly values?: Record<string, string | number> }) => string;
 }) {
   const countMap = new Map(counts.map((item) => [item.dealStatus, item.count]));
   const maxCount = Math.max(1, ...DEAL_STATUS_LIST.map((status) => countMap.get(status) ?? 0));
@@ -500,7 +536,7 @@ function StageBreakdown({
                 {DEAL_STATUS_LABEL[status]}
               </span>
               <span className="text-[11px] font-semibold text-[#111827]">
-                {count.toLocaleString("ko-KR")}건
+                {t("home.countCases", { values: { count: numberFormatter.format(count) } })}
               </span>
             </div>
             <div className="h-1.5 overflow-hidden rounded-full bg-[#F1F5F9]">
@@ -521,9 +557,13 @@ function StageBreakdown({
 
 function DeadlineDealItem({
   deal,
+  formatCurrency,
+  t,
   today,
 }: {
   readonly deal: DealListItem;
+  readonly formatCurrency: (amount: number | null | undefined) => string;
+  readonly t: (key: AppI18nKey, options?: { readonly values?: Record<string, string | number> }) => string;
   readonly today: Date;
 }) {
   const daysUntil = getDaysUntil(deal.expectedEndDate, today);
@@ -536,7 +576,7 @@ function DeadlineDealItem({
       <div className="min-w-0">
         <p className="truncate text-[13px] font-semibold text-[#111827]">{deal.dealName}</p>
         <p className="mt-0.5 truncate text-[12px] text-[#64748B]">
-          {getDealCompanyLabel(deal)} · {formatWon(deal.dealCost)}
+          {getDealCompanyLabel(deal, t)} · {formatCurrency(deal.dealCost)}
         </p>
       </div>
       <span
@@ -549,7 +589,7 @@ function DeadlineDealItem({
               : "bg-[#F8FAFC] text-[#475569]"
         )}
       >
-        {formatDueLabel(daysUntil)}
+        {formatDueLabel(daysUntil, t)}
       </span>
     </Link>
   );
@@ -557,12 +597,14 @@ function DeadlineDealItem({
 
 
 function QuickActionPanel() {
+  const { t } = useAppI18n();
+
   return (
     <section className="overflow-hidden rounded-lg border border-[#E2E8F0] bg-white shadow-sm">
       <div className="flex h-12 items-center justify-between border-b border-[#EEF2F7] px-4">
         <div className="flex items-center gap-2">
           <Plus className="h-4 w-4 text-[#64748B]" strokeWidth={1.8} />
-          <h2 className="text-[14px] font-semibold text-[#111827]">빠른 실행</h2>
+          <h2 className="text-[14px] font-semibold text-[#111827]">{t("home.quickActions")}</h2>
         </div>
       </div>
       <div className="grid gap-2 p-4">
@@ -576,6 +618,7 @@ function QuickActionPanel() {
 
 function QuickActionLink({ action }: { readonly action: QuickAction }) {
   const Icon = action.icon;
+  const { t } = useAppI18n();
   const toneClass = {
     amber: "bg-[#FFF7ED] text-[#C2410C]",
     blue: "bg-[#EFF6FF] text-[#4880EE]",
@@ -592,9 +635,9 @@ function QuickActionLink({ action }: { readonly action: QuickAction }) {
         <Icon className="h-[18px] w-[18px]" strokeWidth={1.8} />
       </span>
       <span className="min-w-0 flex-1">
-        <span className="block text-[13px] font-semibold text-[#111827]">{action.label}</span>
+        <span className="block text-[13px] font-semibold text-[#111827]">{t(action.labelKey)}</span>
         <span className="mt-0.5 block truncate text-[12px] text-[#64748B]">
-          {action.description}
+          {t(action.descriptionKey)}
         </span>
       </span>
       <ArrowRight className="h-4 w-4 shrink-0 text-[#94A3B8] transition group-hover:text-[#111827]" />
@@ -609,6 +652,8 @@ function UpcomingScheduleItem({
   readonly schedule: Schedule;
   readonly timeZone: string;
 }) {
+  const { formatDate, formatDateTime, t } = useAppI18n();
+
   return (
     <Link
       className="grid min-w-0 grid-cols-[54px_minmax(0,1fr)] gap-3 px-1 py-2.5 transition hover:bg-[#FAFBFC]"
@@ -616,10 +661,10 @@ function UpcomingScheduleItem({
     >
       <div className="rounded-lg bg-[#ECFDF5] px-2 py-1 text-center">
         <p className="text-[11px] font-bold text-[#047857]">
-          {formatMonthDay(schedule.startAt, timeZone)}
+          {formatDate(schedule.startAt, { timeZone })}
         </p>
         <p className="mt-0.5 text-[11px] font-semibold text-[#065F46]">
-          {formatTime(schedule.startAt, timeZone)}
+          {formatDateTime(schedule.startAt, { timeZone })}
         </p>
       </div>
       <div className="min-w-0">
@@ -627,7 +672,7 @@ function UpcomingScheduleItem({
           {schedule.scheduleTitle}
         </p>
         <p className="mt-0.5 truncate text-[12px] text-[#64748B]">
-          {schedule.location || getScheduleDealLabel(schedule)}
+          {schedule.location || getScheduleDealLabel(schedule, t)}
         </p>
       </div>
     </Link>
@@ -712,34 +757,48 @@ function getActiveDealCount(counts: readonly DealStageCount[]) {
     .reduce((sum, item) => sum + item.count, 0);
 }
 
-function getDealCompanyLabel(deal: DealListItem) {
+type HomeTranslate = (
+  key: AppI18nKey,
+  options?: { readonly values?: Record<string, string | number> }
+) => string;
+
+function getDealCompanyLabel(deal: DealListItem, t: HomeTranslate) {
   return (
     deal.companies
-      .map((company) => formatDeletedLabel(company.companyName, company.isDeleted))
-      .join(", ") || "-"
+      .map((company) => formatDeletedLabel(company.companyName, company.isDeleted, t))
+      .join(", ") || t("common.none")
   );
 }
 
-function formatDeletedLabel(label: string, isDeleted: boolean): string {
-  return isDeleted ? `${label} (삭제됨)` : label;
+function formatDeletedLabel(label: string, isDeleted: boolean, t: HomeTranslate): string {
+  return isDeleted ? `${label} (${t("home.deleted")})` : label;
 }
 
-function buildRecentActivity(
-  deals: readonly DealListItem[],
-  meetingNotes: readonly MeetingNoteListItem[]
-) {
+function buildRecentActivity({
+  deals,
+  formatCurrency,
+  formatDateTime,
+  meetingNotes,
+  t,
+}: {
+  readonly deals: readonly DealListItem[];
+  readonly formatCurrency: (amount: number | null | undefined) => string;
+  readonly formatDateTime: (value: string | null | undefined) => string;
+  readonly meetingNotes: readonly MeetingNoteListItem[];
+  readonly t: HomeTranslate;
+}) {
   const dealItems: ActivityItem[] = deals.slice(0, 5).map((deal) => ({
     createdAt: deal.createdAt,
     href: `/app/deals/${deal.id}`,
-    meta: `${getDealCompanyLabel(deal)} · ${formatWon(deal.dealCost)}`,
+    meta: `${getDealCompanyLabel(deal, t)} · ${formatCurrency(deal.dealCost)}`,
     title: deal.dealName,
     type: "deal",
   }));
   const meetingItems: ActivityItem[] = meetingNotes.slice(0, 5).map((meetingNote) => ({
     createdAt: meetingNote.createdAt,
     href: `/app/meeting-notes/${meetingNote.id}`,
-    meta: getMeetingNoteSubtitle(meetingNote),
-    title: getMeetingNoteTitle(meetingNote),
+    meta: getMeetingNoteSubtitle(meetingNote, formatDateTime),
+    title: getMeetingNoteTitle(meetingNote, t),
     type: "meeting",
   }));
 
@@ -748,31 +807,32 @@ function buildRecentActivity(
     .slice(0, 6);
 }
 
-function getMeetingNoteTitle(meetingNote: MeetingNoteListItem) {
+function getMeetingNoteTitle(meetingNote: MeetingNoteListItem, t: HomeTranslate) {
   if (meetingNote.companies.label && meetingNote.contacts.label) {
     return `${meetingNote.companies.label} · ${meetingNote.contacts.label}`;
   }
 
-  return meetingNote.companies.label || meetingNote.contacts.label || "회의록";
+  return meetingNote.companies.label || meetingNote.contacts.label || t("home.meetingNote");
 }
 
-function getMeetingNoteSubtitle(meetingNote: MeetingNoteListItem) {
-  return [meetingNote.deals.label, formatShortDateTime(meetingNote.createdAt)]
+function getMeetingNoteSubtitle(
+  meetingNote: MeetingNoteListItem,
+  formatDateTime: (value: string | null | undefined) => string
+) {
+  return [meetingNote.deals.label, formatDateTime(meetingNote.createdAt)]
     .filter(Boolean)
     .join(" · ");
 }
 
-function getScheduleDealLabel(schedule: Schedule) {
-  return schedule.deals.map((deal) => deal.dealName).join(" · ") || "연결 딜 없음";
+function getScheduleDealLabel(schedule: Schedule, t: HomeTranslate) {
+  return schedule.deals.map((deal) => deal.dealName).join(" · ") || t("home.connectedDealMissing");
 }
 
-function formatWon(value: number) {
-  return `${value.toLocaleString("ko-KR")}원`;
-}
-
-function formatDueLabel(daysUntil: number) {
-  if (daysUntil < 0) return `${Math.abs(daysUntil)}일 지남`;
-  if (daysUntil === 0) return "오늘";
+function formatDueLabel(daysUntil: number, t: HomeTranslate) {
+  if (daysUntil < 0) {
+    return t("home.daysOverdue", { values: { days: Math.abs(daysUntil) } });
+  }
+  if (daysUntil === 0) return t("common.today");
 
   return `D-${daysUntil}`;
 }
@@ -793,31 +853,6 @@ function startOfDay(date: Date) {
   next.setHours(0, 0, 0, 0);
 
   return next;
-}
-
-function formatTime(value: string, timeZone: string) {
-  return formatDateWithOptions(value, {
-    hour: "2-digit",
-    minute: "2-digit",
-    timeZone,
-  });
-}
-
-function formatMonthDay(value: string, timeZone: string) {
-  return formatDateWithOptions(value, {
-    day: "2-digit",
-    month: "2-digit",
-    timeZone,
-  });
-}
-
-function formatShortDateTime(value: string) {
-  return formatDateWithOptions(value, {
-    day: "2-digit",
-    hour: "2-digit",
-    minute: "2-digit",
-    month: "2-digit",
-  });
 }
 
 function toDateKeyInTimeZone(value: string, timeZone: string) {
@@ -843,15 +878,10 @@ function toDateKeyInTimeZone(value: string, timeZone: string) {
   return `${parts.get("year")}-${parts.get("month")}-${parts.get("day")}`;
 }
 
-function getBrowserTimeZoneFallback() {
-  try {
-    return Intl.DateTimeFormat().resolvedOptions().timeZone || "Asia/Seoul";
-  } catch {
-    return "Asia/Seoul";
-  }
-}
-
-
 function toArrayLength(children: React.ReactNode) {
   return Array.isArray(children) ? children.filter(Boolean).length : children ? 1 : 0;
+}
+
+function getIntlLocale(locale: string) {
+  return locale === "en" ? "en-US" : locale;
 }

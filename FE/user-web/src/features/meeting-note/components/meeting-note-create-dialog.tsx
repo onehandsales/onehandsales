@@ -25,6 +25,7 @@ import { useForm, useWatch, type UseFormRegisterReturn } from "react-hook-form";
 import { ModalFieldGroup } from "@/components/ui/modal-form";
 import { ErrorState } from "@/components/ui/state";
 import { useDropdownPlacement } from "@/components/ui/use-dropdown-placement";
+import { useAppI18n, type AppLocale } from "@/features/app-i18n";
 import {
   useDealCompanyOptions,
   useDealContactOptions,
@@ -76,7 +77,6 @@ const textareaClassName =
   "resize-none rounded-md border border-[#E2E5EC] bg-white px-3 py-2 text-sm leading-5 text-[#111827] outline-none focus:border-[#4880EE] focus:ring-2 focus:ring-[#DBEAFE]";
 const actionButtonClassName =
   "inline-flex h-9 items-center justify-center gap-2 rounded-md border border-[#D8E0EA] bg-white px-3 text-[13px] font-semibold text-[#1F2937] transition-colors hover:bg-[#F8FAFC] disabled:cursor-not-allowed disabled:opacity-60";
-const weekdayLabels = ["일", "월", "화", "수", "목", "금", "토"];
 
 export function MeetingNoteCreateDialog({
   open,
@@ -88,6 +88,7 @@ export function MeetingNoteCreateDialog({
   onExpand,
   onResizeStart,
 }: MeetingNoteCreateDialogProps) {
+  const { t } = useAppI18n();
   const createMeetingNoteMutation = useCreateMeetingNoteMutation();
   const textAiDraftMutation = useCreateMeetingNoteTextAiDraftMutation();
   const sttAiDraftMutation = useCreateMeetingNoteSttAiDraftMutation();
@@ -242,7 +243,7 @@ export function MeetingNoteCreateDialog({
       companyIds.length === 0 ||
       contactIds.length === 0
     ) {
-      setDraftClientError("미팅일, 회사, 담당자를 먼저 선택해 주세요.");
+      setDraftClientError(t("meetingNoteCreate.contactFirstRequired"));
       return null;
     }
 
@@ -259,7 +260,7 @@ export function MeetingNoteCreateDialog({
     const text = rawDraftText.trim();
 
     if (!text) {
-      setDraftClientError("원문 메모를 입력해 주세요.");
+      setDraftClientError(t("meetingNoteCreate.rawMemoRequired"));
       return;
     }
 
@@ -287,7 +288,7 @@ export function MeetingNoteCreateDialog({
 
   const onCreateSttAiDraft = async () => {
     if (!audioFile) {
-      setDraftClientError("음성 파일을 선택해 주세요.");
+      setDraftClientError(t("meetingNoteCreate.audioRequired"));
       return;
     }
 
@@ -338,7 +339,7 @@ export function MeetingNoteCreateDialog({
 
   const panel = (
     <section
-      aria-label="회의록 생성"
+      aria-label={t("meetingNoteCreate.panelAria")}
       aria-modal={isPage ? undefined : !isDocked}
       className={
         isPage
@@ -356,7 +357,7 @@ export function MeetingNoteCreateDialog({
     >
       {isDocked ? (
         <button
-          aria-label="회의록 생성 패널 폭 조절"
+          aria-label={t("meetingNoteCreate.resizePanel")}
           className="absolute -left-1 top-0 z-10 h-full w-2 cursor-col-resize transition hover:bg-[#EFF6FF] focus:bg-[#EFF6FF] focus:outline-none"
           onMouseDown={(event) => {
             event.preventDefault();
@@ -368,22 +369,30 @@ export function MeetingNoteCreateDialog({
       <header className="flex h-10 shrink-0 items-center px-1.5">
         <div className="flex shrink-0 items-center gap-0.5">
           <button
-            aria-label={isPage ? "회의록 목록으로 이동" : "회의록 생성 패널 접기"}
+            aria-label={
+              isPage
+                ? t("meetingNoteCreate.backToList")
+                : t("meetingNoteCreate.collapsePanel")
+            }
             className="inline-flex h-8 w-8 items-center justify-center rounded-md text-[#8A8F98] transition hover:bg-[#F3F4F6] hover:text-[#374151] disabled:cursor-not-allowed disabled:opacity-50"
             disabled={createMeetingNoteMutation.isPending}
             onClick={() => onOpenChange(false)}
-            title={isPage ? "회의록 목록으로 이동" : "회의록 생성 패널 접기"}
+            title={
+              isPage
+                ? t("meetingNoteCreate.backToList")
+                : t("meetingNoteCreate.collapsePanel")
+            }
             type="button"
           >
             <CloseIcon className="h-4 w-4" />
           </button>
           {onExpand && !isPage ? (
             <button
-              aria-label="전체 생성 페이지로 열기"
+              aria-label={t("dealCreate.openFullPage")}
               className="inline-flex h-8 w-8 items-center justify-center rounded-md text-[#8A8F98] transition hover:bg-[#F3F4F6] hover:text-[#374151] disabled:cursor-not-allowed disabled:opacity-50"
               disabled={createMeetingNoteMutation.isPending}
               onClick={() => onExpand(getValues())}
-              title="전체 생성 페이지로 열기"
+              title={t("dealCreate.openFullPage")}
               type="button"
             >
               <Maximize2 className="h-4 w-4" />
@@ -410,7 +419,7 @@ export function MeetingNoteCreateDialog({
                 className="text-[16px] font-semibold text-[#94A3B8]"
                 htmlFor="meeting-create-title"
               >
-                회의록 제목
+                {t("meetingNoteCreate.title")}
               </label>
               <div className="relative">
                 <NotebookPen className="pointer-events-none absolute left-0 top-1/2 h-5 w-5 -translate-y-1/2 text-[#CBD5E1]" />
@@ -421,7 +430,7 @@ export function MeetingNoteCreateDialog({
                   aria-invalid={Boolean(errors.title)}
                   className="h-14 w-full border-0 bg-transparent pl-8 pr-1 text-[32px] font-semibold leading-none text-[#111827] outline-none placeholder:text-[#CBD5E1] placeholder:opacity-100"
                   id="meeting-create-title"
-                  placeholder="회의록 제목을 넣어주세요."
+                  placeholder={t("meetingNoteCreate.titlePlaceholder")}
                   {...register("title")}
                 />
               </div>
@@ -439,7 +448,7 @@ export function MeetingNoteCreateDialog({
               <MeetingDateTimeField
                 errorMessage={errors.meetingLocalDateTime?.message}
                 id="meeting-create-local-date-time"
-                label="미팅일"
+                label={t("meetingNoteCreate.meetingDate")}
                 register={register("meetingLocalDateTime")}
                 value={meetingLocalDateTime}
                 variant="panel"
@@ -454,12 +463,12 @@ export function MeetingNoteCreateDialog({
 
             <section className="grid cursor-auto gap-3 sm:grid-cols-2">
             <EntityMultiSelectField
-              emptyText="데이터가 존재하지 않아요"
+              emptyText={t("meetingNoteCreate.dataEmpty")}
               errorMessage={errors.companyIds?.message}
               icon={Building2}
               id="meeting-create-company-ids"
               isLoading={companyOptionsQuery.isFetching}
-              label="회사"
+              label={t("dealCreate.company")}
               options={companyOptions}
               selectedIds={companyIds}
               variant="panel"
@@ -471,12 +480,12 @@ export function MeetingNoteCreateDialog({
               }
             />
             <EntityMultiSelectField
-              emptyText="데이터가 존재하지 않아요"
+              emptyText={t("meetingNoteCreate.dataEmpty")}
               errorMessage={errors.contactIds?.message}
               icon={IdCard}
               id="meeting-create-contact-ids"
               isLoading={contactOptionsQuery.isFetching}
-              label="담당자"
+              label={t("dealCreate.contact")}
               options={contactOptions}
               selectedIds={contactIds}
               variant="panel"
@@ -491,12 +500,12 @@ export function MeetingNoteCreateDialog({
 
             <section className="grid cursor-auto gap-3 sm:grid-cols-2">
             <EntityMultiSelectField
-              emptyText="데이터가 존재하지 않아요"
+              emptyText={t("meetingNoteCreate.dataEmpty")}
               errorMessage={errors.productIds?.message}
               icon={Package}
               id="meeting-create-product-ids"
               isLoading={productOptionsQuery.isFetching}
-              label="제품(옵션)"
+              label={t("meetingNoteCreate.productOptional")}
               options={productOptions}
               selectedIds={productIds}
               variant="panel"
@@ -508,12 +517,12 @@ export function MeetingNoteCreateDialog({
               }
             />
             <EntityMultiSelectField
-              emptyText="데이터가 존재하지 않아요"
+              emptyText={t("meetingNoteCreate.dataEmpty")}
               errorMessage={errors.dealIds?.message}
               icon={BriefcaseBusiness}
               id="meeting-create-deal-ids"
               isLoading={dealOptionsQuery.isFetching}
-              label="딜(옵션)"
+              label={t("meetingNoteCreate.dealOptional")}
               options={dealOptions}
               selectedIds={dealIds}
               variant="panel"
@@ -528,11 +537,11 @@ export function MeetingNoteCreateDialog({
 
             <section className="grid cursor-auto gap-3">
               <div className="text-[16px] font-semibold text-[#94A3B8]">
-                AI 정리
+                {t("meetingNoteCreate.aiOrganize")}
               </div>
           <TextAreaField
             id="meeting-create-ai-raw-text"
-            label="원문 메모"
+            label={t("meetingNoteCreate.rawMemo")}
             rows={2}
             value={rawDraftText}
             variant="panel"
@@ -552,7 +561,7 @@ export function MeetingNoteCreateDialog({
                 ) : (
                   <Sparkles className="h-4 w-4" />
                 )}
-                AI로 정리
+                {t("meetingNoteCreate.aiWithText")}
               </button>
 
               <label
@@ -563,7 +572,7 @@ export function MeetingNoteCreateDialog({
                 htmlFor="meeting-create-audio-file"
               >
                 <FileAudio className="h-4 w-4" />
-                음성 파일
+                {t("meetingNoteCreate.audioFile")}
               </label>
               <input
                 accept="audio/*"
@@ -580,7 +589,7 @@ export function MeetingNoteCreateDialog({
                     selectedFile.size > maxAudioFileSizeBytes
                   ) {
                     setAudioFile(null);
-                    setDraftClientError("25MB 이하 음성 파일만 선택해 주세요.");
+                    setDraftClientError(t("meetingNoteCreate.audioTooLarge"));
                     return;
                   }
 
@@ -599,7 +608,7 @@ export function MeetingNoteCreateDialog({
                 ) : (
                   <Mic className="h-4 w-4" />
                 )}
-                음성으로 작성
+                {t("meetingNoteCreate.sttWrite")}
               </button>
             </div>
 
@@ -610,7 +619,7 @@ export function MeetingNoteCreateDialog({
                   <span className="truncate">{audioFile.name}</span>
                 </span>
                 <button
-                  aria-label="선택한 음성 파일 지우기"
+                  aria-label={t("meetingNoteCreate.audioClear")}
                   className="grid h-7 w-7 place-items-center rounded-md text-[#6B7280] hover:bg-[#F3F4F6]"
                   type="button"
                   onClick={() => setAudioFile(null)}
@@ -630,10 +639,10 @@ export function MeetingNoteCreateDialog({
                 >
                   <span className="flex min-w-0 items-center gap-2">
                     <span className="truncate text-[12px] font-semibold text-[#374151]">
-                      녹취 텍스트
+                      {t("meetingNoteCreate.transcript")}
                     </span>
                     <span className="rounded-full bg-[#EFF6FF] px-2 py-0.5 text-[11px] font-semibold text-[#1F4EF5]">
-                      임시 확인
+                      {t("meetingNoteCreate.temporaryCheck")}
                     </span>
                   </span>
                   <ChevronDown
@@ -655,12 +664,12 @@ export function MeetingNoteCreateDialog({
 
             <section className="grid cursor-auto gap-3">
               <div className="text-[16px] font-semibold text-[#94A3B8]">
-                미팅 내용
+                {t("meetingNoteCreate.meetingContent")}
               </div>
           <TextAreaField
             errorMessage={errors.details?.message}
             id="meeting-create-details"
-            label="상세 내용"
+            label={t("meetingNoteCreate.details")}
             register={register("details")}
             rows={3}
             variant="panel"
@@ -668,7 +677,7 @@ export function MeetingNoteCreateDialog({
           <TextAreaField
             errorMessage={errors.nextPlan?.message}
             id="meeting-create-next-plan"
-            label="다음 계획"
+            label={t("meetingNoteCreate.nextPlan")}
             register={register("nextPlan")}
             rows={1}
             variant="panel"
@@ -676,7 +685,7 @@ export function MeetingNoteCreateDialog({
           <TextAreaField
             errorMessage={errors.requiredAction?.message}
             id="meeting-create-required-action"
-            label="필요 액션"
+            label={t("meetingNoteCreate.requiredAction")}
             register={register("requiredAction")}
             rows={1}
             variant="panel"
@@ -686,7 +695,7 @@ export function MeetingNoteCreateDialog({
         {draftClientError ? (
           <ErrorState
             message={draftClientError}
-            title="AI 정리 조건 확인"
+            title={t("meetingNoteCreate.aiConditionTitle")}
             variant="inline"
           />
         ) : null}
@@ -700,7 +709,7 @@ export function MeetingNoteCreateDialog({
                 ? onRetryDraft
                 : undefined
             }
-            title="AI 정리 실패"
+            title={t("meetingNoteCreate.aiFailed")}
             variant="inline"
           />
         ) : null}
@@ -708,7 +717,7 @@ export function MeetingNoteCreateDialog({
         {optionError ? (
           <ErrorState
             message={getApiErrorMessage(optionError)}
-            title="선택 목록 조회 실패"
+            title={t("meetingNoteCreate.optionsFailed")}
             variant="inline"
           />
         ) : null}
@@ -716,7 +725,7 @@ export function MeetingNoteCreateDialog({
         {createMeetingNoteMutation.error ? (
           <ErrorState
             message={getApiErrorMessage(createMeetingNoteMutation.error)}
-            title="회의록 저장 실패"
+            title={t("meetingNoteCreate.saveFailed")}
             variant="inline"
           />
         ) : null}
@@ -738,7 +747,7 @@ export function MeetingNoteCreateDialog({
               onClick={() => onOpenChange(false)}
               type="button"
             >
-              {isPage ? "목록으로" : "닫기"}
+              {isPage ? t("dealCreate.list") : t("common.close")}
             </button>
             <button
               className="inline-flex h-9 items-center justify-center gap-2 rounded-md bg-[#4880EE] px-3.5 text-[13px] font-semibold text-white transition hover:bg-[#1D4ED8] disabled:cursor-not-allowed disabled:opacity-60"
@@ -750,7 +759,9 @@ export function MeetingNoteCreateDialog({
               ) : (
                 <Check className="h-4 w-4" />
               )}
-              {createMeetingNoteMutation.isPending ? "저장 중" : "저장"}
+              {createMeetingNoteMutation.isPending
+                ? t("common.saving")
+                : t("common.save")}
             </button>
           </div>
         </footer>
@@ -820,6 +831,7 @@ function MeetingDateTimeField({
   readonly variant?: MeetingNoteCreateFieldVariant;
   readonly onChange: (value: string) => void;
 }) {
+  const { locale, t } = useAppI18n();
   const [isOpen, setIsOpen] = useState(false);
   const wrapperRef = useRef<HTMLDivElement>(null);
   const placement = useDropdownPlacement({
@@ -834,6 +846,7 @@ function MeetingDateTimeField({
   const [viewYear, setViewYear] = useState(parts.year);
   const [viewMonth, setViewMonth] = useState(parts.month);
   const calendarDays = createCalendarDays(viewYear, viewMonth);
+  const weekdayLabels = getWeekdayLabels(locale);
 
   useEffect(() => {
     setViewYear(parts.year);
@@ -889,7 +902,7 @@ function MeetingDateTimeField({
         >
           <CalendarClock className="h-4 w-4 shrink-0 text-[#9CA3AF]" />
           <span className="min-w-0 flex-1 truncate text-left">
-            {formatDateTimeLabel(parts)}
+            {formatDateTimeLabel(parts, locale)}
           </span>
           <ChevronDown
             className={cn(
@@ -910,7 +923,7 @@ function MeetingDateTimeField({
           >
             <div className="flex items-center justify-between">
               <button
-                aria-label="이전 달"
+                aria-label={t("meetingNoteCreate.monthPrevious")}
                 className="grid h-7 w-7 place-items-center rounded-md text-[#64748B] hover:bg-[#F3F4F6]"
                 type="button"
                 onClick={() => moveMonth(-1)}
@@ -918,10 +931,10 @@ function MeetingDateTimeField({
                 <ChevronLeft className="h-4 w-4" />
               </button>
               <span className="text-[13px] font-semibold text-[#111827]">
-                {viewYear}년 {String(viewMonth).padStart(2, "0")}월
+                {formatCalendarMonthLabel(viewYear, viewMonth, locale)}
               </span>
               <button
-                aria-label="다음 달"
+                aria-label={t("meetingNoteCreate.monthNext")}
                 className="grid h-7 w-7 place-items-center rounded-md text-[#64748B] hover:bg-[#F3F4F6]"
                 type="button"
                 onClick={() => moveMonth(1)}
@@ -962,11 +975,11 @@ function MeetingDateTimeField({
 
             <div className="mt-3 flex items-center gap-2 border-t border-[#E6EAF0] pt-3">
               <span className="shrink-0 text-[12px] font-medium text-[#6B7280]">
-                시간
+                {t("meetingNoteCreate.time")}
               </span>
               <div className="ml-auto flex items-center gap-1.5">
                 <input
-                  aria-label="시간"
+                  aria-label={t("meetingNoteCreate.timeHour")}
                   className="h-9 w-12 rounded-md border border-[#E6EAF0] bg-white text-center text-[13px] outline-none focus:border-[#4880EE] focus:ring-1 focus:ring-[#4880EE]"
                   inputMode="numeric"
                   maxLength={2}
@@ -979,7 +992,7 @@ function MeetingDateTimeField({
                 />
                 <span className="text-[13px] font-semibold text-[#6B7280]">:</span>
                 <input
-                  aria-label="분"
+                  aria-label={t("meetingNoteCreate.timeMinute")}
                   className="h-9 w-12 rounded-md border border-[#E6EAF0] bg-white text-center text-[13px] outline-none focus:border-[#4880EE] focus:ring-1 focus:ring-[#4880EE]"
                   inputMode="numeric"
                   maxLength={2}
@@ -1109,6 +1122,7 @@ export function EntityMultiSelectField({
   readonly variant?: MeetingNoteCreateFieldVariant;
   readonly onChange: (ids: string[]) => void;
 }) {
+  const { t } = useAppI18n();
   const [isOpen, setIsOpen] = useState(false);
   const wrapperRef = useRef<HTMLDivElement>(null);
   const placement = useDropdownPlacement({
@@ -1122,12 +1136,17 @@ export function EntityMultiSelectField({
   );
   const hasSelection = selectedOptions.length > 0;
   const triggerText = isLoading
-    ? "목록을 불러오는 중"
+    ? t("common.loading")
     : hasSelection
       ? selectedOptions.length === 1
         ? selectedOptions[0]?.label
-        : `${selectedOptions[0]?.label ?? label} 외 ${selectedOptions.length - 1}개`
-      : `${label} 선택`;
+        : t("meetingNoteCreate.selectedMore", {
+            values: {
+              count: selectedOptions.length - 1,
+              label: selectedOptions[0]?.label ?? label,
+            },
+          })
+      : t("meetingNoteCreate.selectLabel", { values: { label } });
   const errorId =
     variant === "panel" ? `${id}-message` : `${id}-message`;
 
@@ -1212,7 +1231,7 @@ export function EntityMultiSelectField({
             <div className="max-h-[176px] overflow-y-auto py-1">
               {isLoading ? (
                 <p className="px-3 py-4 text-center text-[12px] text-[#9CA3AF]">
-                  목록을 불러오는 중
+                  {t("common.loading")}
                 </p>
               ) : options.length === 0 ? (
                 <p className="px-3 py-4 text-center text-[12px] text-[#9CA3AF]">
@@ -1319,11 +1338,22 @@ function toDateTimeValue(parts: DateTimeParts): string {
   ].join("T");
 }
 
-function formatDateTimeLabel(parts: DateTimeParts): string {
-  const period = parts.hour < 12 ? "오전" : "오후";
-  const hour = parts.hour % 12 || 12;
+function formatDateTimeLabel(parts: DateTimeParts, locale: AppLocale): string {
+  const date = new Date(
+    parts.year,
+    parts.month - 1,
+    parts.day,
+    parts.hour,
+    parts.minute,
+  );
 
-  return `${parts.year}-${padTwo(parts.month)}-${padTwo(parts.day)} ${period} ${padTwo(hour)}:${padTwo(parts.minute)}`;
+  return new Intl.DateTimeFormat(getIntlLocale(locale), {
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+  }).format(date);
 }
 
 function createCalendarDays(year: number, month: number) {
@@ -1339,6 +1369,33 @@ function createCalendarDays(year: number, month: number) {
       day: date.getDate(),
     };
   });
+}
+
+// 기능 : 날짜 선택기 상단 월 표기를 현재 앱 locale 기준으로 변환합니다.
+function formatCalendarMonthLabel(
+  year: number,
+  month: number,
+  locale: AppLocale,
+) {
+  return new Intl.DateTimeFormat(getIntlLocale(locale), {
+    month: "long",
+    year: "numeric",
+  }).format(new Date(year, month - 1, 1));
+}
+
+// 기능 : 달력 요일 헤더를 현재 앱 locale의 짧은 요일명으로 만듭니다.
+function getWeekdayLabels(locale: AppLocale) {
+  const formatter = new Intl.DateTimeFormat(getIntlLocale(locale), {
+    weekday: "short",
+  });
+
+  return Array.from({ length: 7 }, (_, index) =>
+    formatter.format(new Date(2026, 7, 2 + index)),
+  );
+}
+
+function getIntlLocale(locale: AppLocale) {
+  return locale === "ko-KR" ? "ko-KR" : "en-US";
 }
 
 function clampTimeUnit(value: string, max: number): number {

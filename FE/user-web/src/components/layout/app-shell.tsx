@@ -50,6 +50,7 @@ import {
   useMyProfile,
   useUpdateMyProfileMutation,
 } from "@/features/auth/hooks/use-user-settings";
+import { useAppI18n, type AppI18nKey } from "@/features/app-i18n";
 import { PageHeader } from "@/components/layout/page-header";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { getApiErrorMessage } from "@/lib/api-client";
@@ -64,6 +65,7 @@ export type AppShellOutletContext = {
 // ── 딜 상세 TopBar ──────────────────────────────────────────
 function DealDetailHeader({ dealId }: { readonly dealId: string }) {
   const navigate = useNavigate();
+  const { t } = useAppI18n();
   const dealQuery = useDealDetail(dealId);
   const deleteDealMutation = useDeleteDealMutation();
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
@@ -77,7 +79,7 @@ function DealDetailHeader({ dealId }: { readonly dealId: string }) {
       setDeleteConfirmOpen(false);
       void navigate("/app/deals", {
         replace: true,
-        state: { notice: "딜을 삭제했어요." },
+        state: { notice: t("shell.dealDeleted") },
       });
     } catch (error) {
       setDeleteError(getApiErrorMessage(error));
@@ -88,13 +90,13 @@ function DealDetailHeader({ dealId }: { readonly dealId: string }) {
     <>
       <PageHeader
         breadcrumbs={[
-          { label: "딜", to: "/app/deals", icon: BriefcaseBusiness },
+          { label: t("navigation.deals"), to: "/app/deals", icon: BriefcaseBusiness },
           { label: dealName },
         ]}
         actions={[
           {
             icon: Trash2,
-            tooltip: "삭제",
+            tooltip: t("common.delete"),
             variant: "danger",
             disabled: deleteDealMutation.isPending,
             onClick: () => {
@@ -105,8 +107,8 @@ function DealDetailHeader({ dealId }: { readonly dealId: string }) {
         ]}
       />
       <ConfirmDialog
-        cancelLabel="닫기"
-        confirmLabel="삭제"
+        cancelLabel={t("common.close")}
+        confirmLabel={t("common.delete")}
         errorMessage={deleteError}
         isPending={deleteDealMutation.isPending}
         onCancel={() => {
@@ -116,7 +118,9 @@ function DealDetailHeader({ dealId }: { readonly dealId: string }) {
         }}
         onConfirm={() => void onDelete()}
         open={deleteConfirmOpen}
-        title={`${dealQuery.data?.dealName ?? "딜"} 딜을 삭제할까요?`}
+        title={t("shell.deleteDealQuestion", {
+          values: { name: dealQuery.data?.dealName ?? t("entities.deal") },
+        })}
       />
     </>
   );
@@ -126,6 +130,7 @@ function DealDetailHeader({ dealId }: { readonly dealId: string }) {
 function ProductDetailHeader({ productId }: { readonly productId: string }) {
   const navigate = useNavigate();
   const { search: locationSearch } = useLocation();
+  const { t } = useAppI18n();
   const productQuery = useProductDetail(productId);
   const deleteProductMutation = useDeleteProductMutation();
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
@@ -147,7 +152,7 @@ function ProductDetailHeader({ productId }: { readonly productId: string }) {
       setDeleteConfirmOpen(false);
       void navigate("/app/products", {
         replace: true,
-        state: { notice: "제품을 삭제했어요." },
+        state: { notice: t("shell.productDeleted") },
       });
     } catch (error) {
       setDeleteError(getApiErrorMessage(error));
@@ -158,18 +163,18 @@ function ProductDetailHeader({ productId }: { readonly productId: string }) {
     <>
       <PageHeader
         breadcrumbs={[
-          { label: "제품", to: "/app/products", icon: Package },
+          { label: t("navigation.products"), to: "/app/products", icon: Package },
           { label: productName },
         ]}
         actions={[
           {
             icon: isEditing ? X : Pencil,
-            tooltip: isEditing ? "수정 취소" : "수정",
+            tooltip: isEditing ? t("shell.cancelEdit") : t("common.edit"),
             onClick: toggleEdit,
           },
           {
             icon: Trash2,
-            tooltip: "삭제",
+            tooltip: t("common.delete"),
             variant: "danger",
             disabled: deleteProductMutation.isPending,
             onClick: () => {
@@ -180,8 +185,8 @@ function ProductDetailHeader({ productId }: { readonly productId: string }) {
         ]}
       />
       <ConfirmDialog
-        cancelLabel="닫기"
-        confirmLabel="삭제"
+        cancelLabel={t("common.close")}
+        confirmLabel={t("common.delete")}
         errorMessage={deleteError}
         isPending={deleteProductMutation.isPending}
         onCancel={() => {
@@ -191,7 +196,9 @@ function ProductDetailHeader({ productId }: { readonly productId: string }) {
         }}
         onConfirm={() => void onDelete()}
         open={deleteConfirmOpen}
-        title={`${productQuery.data?.productName ?? "제품"} 제품을 삭제할까요?`}
+        title={t("shell.deleteProductQuestion", {
+          values: { name: productQuery.data?.productName ?? t("entities.product") },
+        })}
       />
     </>
   );
@@ -201,6 +208,7 @@ export function AppShell() {
   const { pathname } = useLocation();
   const navigate = useNavigate();
   const { logout, user } = useAuthSession();
+  const { t } = useAppI18n();
   const [searchOpen, setSearchOpen] = useState(false);
   const [accountMenuOpen, setAccountMenuOpen] = useState(false);
   const [isSidebarManuallyCollapsed, setIsSidebarManuallyCollapsed] =
@@ -217,9 +225,9 @@ export function AppShell() {
   const [onehandAppOpen, setOnehandAppOpen] = useState(true);
   const accountMenuRef = useRef<HTMLDivElement | null>(null);
   const isHome = pathname === HOME_PATH;
-  const userName = user?.name ?? user?.email?.split("@")[0] ?? "사용자";
-  const userEmail = user?.email ?? "로그인된 이메일 없음";
-  const accountSubtitle = user?.role === "ADMIN" ? "Admin" : "무료 요금제";
+  const userName = user?.name ?? user?.email?.split("@")[0] ?? t("shell.userFallback");
+  const userEmail = user?.email ?? t("shell.loggedInEmailMissing");
+  const accountSubtitle = user?.role === "ADMIN" ? t("shell.adminPlan") : t("shell.freePlan");
   const userInitial = getUserInitial(userName);
   const isSidebarCollapsed =
     isSidebarManuallyCollapsed || isSidebarAutoCollapsed;
@@ -380,23 +388,23 @@ export function AppShell() {
       return <ProductDetailHeader productId={productDetailId} />;
     if (isDealDetail) return <DealDetailHeader dealId={dealDetailId} />;
 
-    type PageMeta = { label: string; icon: typeof House };
+    type PageMeta = { labelKey: AppI18nKey; icon: typeof House };
     const pageMetaMap: Record<string, PageMeta> = {
-      "/app": { label: "홈", icon: House },
-      "/app/deals": { label: "딜", icon: BriefcaseBusiness },
-      "/app/deals/new": { label: "딜", icon: BriefcaseBusiness },
-      "/app/schedules": { label: "일정", icon: CalendarDays },
-      "/app/trash": { label: "휴지통", icon: Trash2 },
-      "/app/settings": { label: "설정", icon: Settings },
-      "/app/more": { label: "더보기", icon: MoreHorizontal },
+      "/app": { labelKey: "navigation.home", icon: House },
+      "/app/deals": { labelKey: "navigation.deals", icon: BriefcaseBusiness },
+      "/app/deals/new": { labelKey: "navigation.deals", icon: BriefcaseBusiness },
+      "/app/schedules": { labelKey: "navigation.schedules", icon: CalendarDays },
+      "/app/trash": { labelKey: "navigation.trash", icon: Trash2 },
+      "/app/settings": { labelKey: "navigation.settings", icon: Settings },
+      "/app/more": { labelKey: "navigation.more", icon: MoreHorizontal },
     };
-    const meta = pageMetaMap[pathname] ?? { label: "한손에 영업", icon: House };
+    const meta = pageMetaMap[pathname] ?? { labelKey: "shell.appFallbackTitle", icon: House };
     const actions =
       pathname === "/app/deals" || pathname === "/app"
         ? [
             {
               icon: Plus,
-              tooltip: "딜 생성",
+              tooltip: t("shell.dealCreate"),
               href: "/app/deals/new",
               variant: "primary" as const,
             },
@@ -404,7 +412,7 @@ export function AppShell() {
         : [];
     return (
       <PageHeader
-        breadcrumbs={[{ label: meta.label, icon: meta.icon }]}
+        breadcrumbs={[{ label: t(meta.labelKey), icon: meta.icon }]}
         actions={actions}
       />
     );
@@ -434,7 +442,7 @@ export function AppShell() {
             <div className="mx-1 my-1.5 h-px bg-[#F0F2F6]" />
             <AccountMenuItem
               icon={Settings}
-              label="설정"
+              label={t("shell.accountProfile")}
               onClick={() => {
                 setAccountMenuOpen(false);
                 setAccountModal("profile");
@@ -443,7 +451,7 @@ export function AppShell() {
             <div className="mx-1 my-1.5 h-px bg-[#F0F2F6]" />
             <AccountMenuItem
               icon={LogOut}
-              label="로그아웃"
+              label={t("shell.logout")}
               onClick={() => {
                 setAccountMenuOpen(false);
                 setLogoutConfirmOpen(true);
@@ -474,7 +482,7 @@ export function AppShell() {
         </div>
       </button>
       <button
-        aria-label="사이드 바 닫기"
+        aria-label={t("shell.sidebarClose")}
         className="group/collapse pointer-events-none absolute right-3 top-4 inline-flex h-7 w-7 items-center justify-center rounded-md text-[#111827] opacity-0 transition hover:bg-[#F1F2F5] group-hover/sidebar:pointer-events-auto group-hover/sidebar:opacity-100"
         onClick={(event) => {
           event.stopPropagation();
@@ -485,7 +493,7 @@ export function AppShell() {
       >
         <ChevronsLeft className="h-4 w-4" strokeWidth={1.9} />
         <span className="pointer-events-none absolute left-1/2 top-full z-50 mt-2 -translate-x-1/2 whitespace-nowrap rounded-md bg-[#111827] px-2 py-1 text-[11px] font-medium leading-none text-white opacity-0 shadow-lg transition-opacity group-hover/collapse:opacity-100">
-          사이드 바 닫기
+          {t("shell.sidebarClose")}
         </span>
       </button>
     </div>
@@ -505,7 +513,7 @@ export function AppShell() {
           }`}
           strokeWidth={2}
         />
-        <span>Onehand 앱</span>
+        <span>{t("navigation.appName")}</span>
       </button>
       {onehandAppOpen ? (
         <div className="flex flex-col gap-px">
@@ -525,7 +533,7 @@ export function AppShell() {
               }`}
               strokeWidth={1.75}
             />
-            <span>휴지통</span>
+            <span>{t("navigation.trash")}</span>
           </button>
         </div>
       ) : null}
@@ -533,7 +541,7 @@ export function AppShell() {
   );
 
   return (
-    <div className="min-h-dvh bg-background text-foreground">
+    <div className="min-h-dvh bg-background text-foreground" data-app-i18n-root>
       {/* ── Desktop Shell ── */}
       <div
         className="hidden min-h-dvh lg:flex"
@@ -552,7 +560,7 @@ export function AppShell() {
           {/* Search button */}
           <div className="flex gap-1 px-2 pb-1">
             <button
-              aria-label="홈"
+              aria-label={t("shell.homeAria")}
               className={`flex h-8 shrink-0 items-center gap-2 rounded-md px-2 text-[13px] transition ${
                 isHome
                   ? "bg-[#EFF6FF] text-[#4880EE]"
@@ -565,7 +573,7 @@ export function AppShell() {
                 className="h-[15px] w-[15px] shrink-0"
                 strokeWidth={1.75}
               />
-              <span>홈</span>
+              <span>{t("navigation.home")}</span>
             </button>
             <button
               type="button"
@@ -576,7 +584,7 @@ export function AppShell() {
                 className="h-[15px] w-[15px] shrink-0"
                 strokeWidth={1.75}
               />
-              <span>통합검색</span>
+              <span>{t("shell.integratedSearch")}</span>
               <kbd className="ml-auto hidden rounded border border-[#ECEEF3] bg-[#F6F7F8] px-1 py-0.5 text-[10px] font-medium leading-none sm:block">
                 ⌘K
               </kbd>
@@ -590,7 +598,7 @@ export function AppShell() {
           </div>
         </aside>
         <button
-          aria-label="사이드 바 열기"
+          aria-label={t("shell.sidebarOpen")}
           className={`fixed left-3 top-2.5 z-50 inline-flex h-9 w-9 items-center justify-center rounded-md text-black transition-opacity duration-500 hover:bg-[#FAFAFB] ${
             isSidebarOpenButtonVisible
               ? "pointer-events-auto opacity-100"
@@ -600,7 +608,7 @@ export function AppShell() {
             setIsSidebarManuallyCollapsed(false);
             setIsSidebarAutoCollapsed(false);
           }}
-          title="사이드 바 열기"
+          title={t("shell.sidebarOpen")}
           type="button"
         >
           <Menu className="h-5 w-5" strokeWidth={2} />
@@ -718,6 +726,8 @@ function LogoutConfirmModal({
   readonly userMeta: string;
   readonly userName: string;
 }) {
+  const { t } = useAppI18n();
+
   useEffect(() => {
     if (!open) {
       return;
@@ -749,7 +759,7 @@ function LogoutConfirmModal({
         role="dialog"
       >
         <h2 className="text-[22px] font-bold leading-tight text-[#111827]">
-          정말 로그아웃하시겠습니까?
+          {t("shell.logoutQuestion")}
         </h2>
 
         <div className="mt-5 flex items-center gap-3 rounded-xl bg-[#F8FAFC] px-4 py-3 shadow-[inset_0_0_0_1px_#E2E8F0]">
@@ -772,14 +782,14 @@ function LogoutConfirmModal({
             onClick={onConfirm}
             type="button"
           >
-            로그아웃
+            {t("shell.logoutConfirm")}
           </button>
           <button
             className="h-11 rounded-full bg-[#F8FAFC] px-4 text-[13px] font-semibold text-[#374151] shadow-[inset_0_0_0_1px_#E2E8F0] transition hover:bg-[#F1F5F9]"
             onClick={onCancel}
             type="button"
           >
-            취소
+            {t("shell.logoutCancel")}
           </button>
         </div>
       </section>
@@ -835,15 +845,16 @@ function AccountModalContent({
   readonly onSectionChange: (section: AccountModalSection) => void;
   readonly section: AccountModalSection;
 }) {
+  const { t } = useAppI18n();
   const accountModalItems: Array<{
     readonly icon: LucideIcon;
     readonly label: string;
     readonly section: AccountModalSection;
   }> = [
     { icon: UserRound, label: profileLabel, section: "profile" },
-    { icon: Settings, label: "설정", section: "settings" },
-    { icon: FileText, label: "이용약관", section: "terms" },
-    { icon: ShieldCheck, label: "개인정보", section: "privacy" },
+    { icon: Settings, label: t("navigation.settings"), section: "settings" },
+    { icon: FileText, label: t("shell.terms"), section: "terms" },
+    { icon: ShieldCheck, label: t("shell.privacy"), section: "privacy" },
   ];
 
   return (
@@ -864,7 +875,7 @@ function AccountModalContent({
 
       <div className="relative min-h-0 bg-white">
         <button
-          aria-label="닫기"
+          aria-label={t("common.close")}
           className="absolute right-4 top-4 z-10 grid h-8 w-8 shrink-0 place-items-center rounded-lg text-[#64748B] transition hover:bg-[#F3F6FB] hover:text-[#111827]"
           onClick={onClose}
           type="button"
@@ -945,13 +956,13 @@ function ProfileModalQueryContent() {
 }
 
 const accountLocaleOptions = [
-  { value: "ko-KR", label: "한국어" },
-  { value: "en", label: "English" },
+  { value: "ko-KR", labelKey: "settings.korean" },
+  { value: "en", labelKey: "importExport.englishTemplate" },
 ] as const;
 
 const accountCountryOptions = [
-  { value: "KR", label: "대한민국" },
-  { value: "US", label: "미국" },
+  { value: "KR", labelKey: "settings.korea" },
+  { value: "US", labelKey: "settings.unitedStates" },
 ] as const;
 
 const accountCurrencyOptions = [
@@ -974,6 +985,7 @@ const accountTimeZoneOptions = [
 ] as const;
 
 function AccountSettingsModalContent() {
+  const { t } = useAppI18n();
   const profileQuery = useMyProfile();
   const updateProfileMutation = useUpdateMyProfileMutation();
   const profile = profileQuery.data ?? null;
@@ -1018,10 +1030,10 @@ function AccountSettingsModalContent() {
       <div className="mx-auto w-full max-w-[800px]">
         <div>
           <h3 className="text-[28px] font-bold leading-tight text-[#111827]">
-            설정
+            {t("navigation.settings")}
           </h3>
           <p className="mt-3 text-[14px] leading-6 text-[#64748B]">
-            표시 언어와 글로벌 기본값을 관리하세요
+            {t("settings.profileDescription")}
           </p>
         </div>
 
@@ -1034,11 +1046,11 @@ function AccountSettingsModalContent() {
           />
         ) : profile ? (
           <form className="mt-10 grid gap-10" onSubmit={onSubmit}>
-            <ProfileSection title="지역 설정">
+            <ProfileSection title={t("settings.regionSettings")}>
               <div className="grid gap-4 md:grid-cols-2">
                 <label className="grid gap-1.5">
                   <span className="text-[13px] font-medium text-[#111827]">
-                    표시 언어
+                    {t("settings.displayLanguage")}
                   </span>
                   <select
                     className="h-9 rounded-md border border-[#E2E5EC] bg-white px-3 text-[13px] text-[#374151] outline-none focus:border-[#93C5FD]"
@@ -1047,14 +1059,14 @@ function AccountSettingsModalContent() {
                   >
                     {accountLocaleOptions.map((option) => (
                       <option key={option.value} value={option.value}>
-                        {option.label}
+                        {t(option.labelKey)}
                       </option>
                     ))}
                   </select>
                 </label>
                 <label className="grid gap-1.5">
                   <span className="text-[13px] font-medium text-[#111827]">
-                    시간대
+                    {t("settings.timeZone")}
                   </span>
                   <select
                     className="h-9 rounded-md border border-[#E2E5EC] bg-white px-3 text-[13px] text-[#374151] outline-none focus:border-[#93C5FD]"
@@ -1071,7 +1083,7 @@ function AccountSettingsModalContent() {
                 {/* 기능 : 앱 전역 입력 기본값에 사용할 국가를 선택합니다. */}
                 <label className="grid gap-1.5">
                   <span className="text-[13px] font-medium text-[#111827]">
-                    기본 국가
+                    {t("settings.defaultCountry")}
                   </span>
                   <select
                     className="h-9 rounded-md border border-[#E2E5EC] bg-white px-3 text-[13px] text-[#374151] outline-none focus:border-[#93C5FD]"
@@ -1080,7 +1092,7 @@ function AccountSettingsModalContent() {
                   >
                     {accountCountryOptions.map((option) => (
                       <option key={option.value} value={option.value}>
-                        {option.label}
+                        {t(option.labelKey)}
                       </option>
                     ))}
                   </select>
@@ -1088,7 +1100,7 @@ function AccountSettingsModalContent() {
                 {/* 기능 : 금액 입력 기본값에 사용할 통화를 선택합니다. */}
                 <label className="grid gap-1.5">
                   <span className="text-[13px] font-medium text-[#111827]">
-                    기본 통화
+                    {t("settings.defaultCurrency")}
                   </span>
                   <select
                     className="h-9 rounded-md border border-[#E2E5EC] bg-white px-3 text-[13px] text-[#374151] outline-none focus:border-[#93C5FD]"
@@ -1108,7 +1120,7 @@ function AccountSettingsModalContent() {
                   {formError ? (
                     <p className="text-[13px] text-destructive">{formError}</p>
                   ) : saved ? (
-                    <p className="text-[13px] text-[#0075DE]">저장했어요.</p>
+                    <p className="text-[13px] text-[#0075DE]">{t("settings.profileSaved")}</p>
                   ) : null}
                 </div>
                 <button
@@ -1116,28 +1128,28 @@ function AccountSettingsModalContent() {
                   disabled={updateProfileMutation.isPending}
                   type="submit"
                 >
-                  저장
+                  {t("settings.saveProfile")}
                 </button>
               </div>
             </ProfileSection>
 
-            <ProfileSection title="로그인 메타데이터">
+            <ProfileSection title={t("settings.loginMetadata")}>
               <div className="grid gap-1">
                 <ProfileInfoRow
-                  label="가입 국가"
-                  value={profile.signupCountryCode ?? "기록 없음"}
+                  label={t("settings.defaultCountryJoined")}
+                  value={profile.signupCountryCode ?? t("common.noRecord")}
                 />
                 <ProfileInfoRow
-                  label="가입 시간대"
-                  value={profile.signupTimeZone ?? "기록 없음"}
+                  label={t("settings.joinedTimeZone")}
+                  value={profile.signupTimeZone ?? t("common.noRecord")}
                 />
                 <ProfileInfoRow
-                  label="마지막 로그인 국가"
-                  value={profile.lastLoginCountryCode ?? "기록 없음"}
+                  label={t("settings.defaultCountryLastLogin")}
+                  value={profile.lastLoginCountryCode ?? t("common.noRecord")}
                 />
                 <ProfileInfoRow
-                  label="마지막 로그인 시간대"
-                  value={profile.lastLoginTimeZone ?? "기록 없음"}
+                  label={t("settings.lastLoginTimeZone")}
+                  value={profile.lastLoginTimeZone ?? t("common.noRecord")}
                 />
               </div>
             </ProfileSection>
@@ -1490,15 +1502,17 @@ function ProfileModalContent({
   profile,
   profileError,
 }: ProfileModalContentProps) {
+  const { formatDateTime, t } = useAppI18n();
+
   return (
     <section className="min-h-full bg-white px-8 py-10 md:px-12">
       <div className="mx-auto w-full max-w-[800px]">
         <div>
           <h3 className="text-[28px] font-bold leading-tight text-[#111827]">
-            프로필
+            {t("settings.profileTitle")}
           </h3>
           <p className="mt-3 text-[14px] leading-6 text-[#64748B]">
-            프로필, 로그인 정보 및 기기를 관리하세요
+            {t("settings.profileModalDescription")}
           </p>
         </div>
 
@@ -1508,61 +1522,61 @@ function ProfileModalContent({
           <ProfileErrorState error={profileError} onRetry={onRetryProfile} />
         ) : profile ? (
           <div className="mt-10 grid gap-10">
-            <ProfileSection title="계정">
+            <ProfileSection title={t("settings.accountTitle")}>
               <div className="grid gap-1">
                 <ProfileInfoRow
-                  label="선호하는 이름"
-                  value={profile.name ?? "이름 없음"}
+                  label={t("settings.name")}
+                  value={profile.name ?? t("settings.noName")}
                 />
-                <ProfileInfoRow label="이메일" value={profile.email ?? "이메일 없음"} />
+                <ProfileInfoRow label={t("settings.email")} value={profile.email ?? t("settings.emailMissing")} />
                 <ProfileInfoRow
-                  label="표시 언어"
-                  value={formatLocaleLabel(profile.preferredLocale)}
+                  label={t("settings.displayLanguage")}
+                  value={formatLocaleLabel(profile.preferredLocale, t)}
                 />
-                <ProfileInfoRow label="시간대" value={profile.timeZone} />
+                <ProfileInfoRow label={t("settings.timeZone")} value={profile.timeZone} />
                 <ProfileInfoRow
-                  label="기본 국가"
-                  value={formatCountryLabel(profile.countryCode)}
+                  label={t("settings.defaultCountry")}
+                  value={formatCountryLabel(profile.countryCode, t)}
                 />
                 <ProfileInfoRow
-                  label="기본 통화"
+                  label={t("settings.defaultCurrency")}
                   value={profile.defaultCurrencyCode}
                 />
               </div>
             </ProfileSection>
 
-            <ProfileSection title="계정 상태">
+            <ProfileSection title={t("settings.accountStatus")}>
               <div className="grid gap-1">
-                <ProfileInfoRow label="권한" value={profile.role} />
-                <ProfileInfoRow label="상태" value={profile.status} />
+                <ProfileInfoRow label={t("settings.role")} value={formatRoleLabel(profile.role, t)} />
+                <ProfileInfoRow label={t("settings.accountStatus")} value={formatStatusLabel(profile.status, t)} />
                 <ProfileInfoRow
-                  label="마지막 로그인"
-                  value={formatAccountModalDateTime(profile.lastLoginAt)}
+                  label={t("settings.lastLogin")}
+                  value={formatDateTime(profile.lastLoginAt, { fallback: t("common.noRecord") })}
                 />
                 <ProfileInfoRow
-                  label="프로필 수정일"
-                  value={formatAccountModalDateTime(profile.updatedAt)}
+                  label={t("settings.updatedAt")}
+                  value={formatDateTime(profile.updatedAt, { fallback: t("common.noRecord") })}
                 />
                 <ProfileInfoRow
-                  label="가입 국가"
-                  value={profile.signupCountryCode ?? "기록 없음"}
+                  label={t("settings.defaultCountryJoined")}
+                  value={profile.signupCountryCode ?? t("common.noRecord")}
                 />
                 <ProfileInfoRow
-                  label="마지막 로그인 국가"
-                  value={profile.lastLoginCountryCode ?? "기록 없음"}
+                  label={t("settings.defaultCountryLastLogin")}
+                  value={profile.lastLoginCountryCode ?? t("common.noRecord")}
                 />
                 <ProfileInfoRow
-                  label="가입 시간대"
-                  value={profile.signupTimeZone ?? "기록 없음"}
+                  label={t("settings.joinedTimeZone")}
+                  value={profile.signupTimeZone ?? t("common.noRecord")}
                 />
                 <ProfileInfoRow
-                  label="마지막 로그인 시간대"
-                  value={profile.lastLoginTimeZone ?? "기록 없음"}
+                  label={t("settings.lastLoginTimeZone")}
+                  value={profile.lastLoginTimeZone ?? t("common.noRecord")}
                 />
               </div>
             </ProfileSection>
 
-            <ProfileSection title="로그인 계정">
+            <ProfileSection title={t("settings.providerAccounts")}>
               {profile.oauthAccounts.length > 0 ? (
                 <div className="grid gap-1">
                   {profile.oauthAccounts.map((account) => (
@@ -1570,18 +1584,18 @@ function ProfileModalContent({
                       key={account.id}
                       label={formatProviderLabel(account.provider)}
                       value={[
-                        account.providerEmail ?? "이메일 없음",
-                        formatAccountModalDateTime(account.createdAt),
+                        account.providerEmail ?? t("settings.emailMissing"),
+                        formatDateTime(account.createdAt, { fallback: t("common.noRecord") }),
                       ].join(" · ")}
                     />
                   ))}
                 </div>
               ) : (
-                <ProfileEmptyText>연결된 로그인 계정이 없어요.</ProfileEmptyText>
+                <ProfileEmptyText>{t("settings.noOAuthAccounts")}</ProfileEmptyText>
               )}
             </ProfileSection>
 
-            <ProfileSection title="기기">
+            <ProfileSection title={t("settings.devicesTitle")}>
               {isDevicesLoading ? (
                 <ProfileInlineLoading />
               ) : devicesError ? (
@@ -1594,17 +1608,17 @@ function ProfileModalContent({
                     onClick={onRetryDevices}
                     type="button"
                   >
-                    다시 시도
+                    {t("common.retry")}
                   </button>
                 </div>
               ) : devices.length > 0 ? (
                 <ProfileDeviceTable devices={devices} />
               ) : (
-                <ProfileEmptyText>등록된 기기가 없어요.</ProfileEmptyText>
+                <ProfileEmptyText>{t("settings.devicesEmpty")}</ProfileEmptyText>
               )}
             </ProfileSection>
 
-            <ProfileSection title="사용자 ID">
+            <ProfileSection title={t("settings.userId")}>
               <div className="py-3">
                 <p className="break-all text-[13px] font-medium text-[#475569]">
                   {profile.id}
@@ -1657,11 +1671,13 @@ function ProfileDeviceTable({
 }: {
   readonly devices: ProfileModalContentProps["devices"];
 }) {
+  const { t } = useAppI18n();
+
   return (
     <div className="overflow-hidden">
       <div className="grid grid-cols-[minmax(0,1.4fr)_minmax(120px,0.8fr)] border-b border-[#F0F2F6] px-1 pb-2 text-[12px] text-[#8A8F98]">
-        <span>기기 이름</span>
-        <span>마지막 활동</span>
+        <span>{t("settings.deviceName")}</span>
+        <span>{t("settings.lastActivity")}</span>
       </div>
       <div>
         {devices.map((device) => (
@@ -1677,10 +1693,11 @@ function ProfileDeviceRow({
 }: {
   readonly device: ProfileModalContentProps["devices"][number];
 }) {
-  const label = device.label ?? formatDeviceSlotLabel(device.slot);
+  const { formatDateTime, t } = useAppI18n();
+  const label = device.label ?? formatDeviceSlotLabel(device.slot, t);
   const lastActive = device.isCurrentDevice
-    ? "지금"
-    : formatAccountModalDateTime(device.lastSeenAt);
+    ? t("settings.now")
+    : formatDateTime(device.lastSeenAt, { fallback: t("common.noRecord") });
 
   return (
     <div className="grid grid-cols-[minmax(0,1.4fr)_minmax(120px,0.8fr)] items-center border-b border-[#F0F2F6] px-1 py-3">
@@ -1692,7 +1709,7 @@ function ProfileDeviceRow({
           </p>
           {device.isCurrentDevice ? (
             <p className="mt-0.5 text-[12px] font-medium text-[#0075DE]">
-              이 기기
+              {t("settings.currentDevice")}
             </p>
           ) : null}
         </div>
@@ -1703,19 +1720,23 @@ function ProfileDeviceRow({
 }
 
 function ProfileLoadingState() {
+  const { t } = useAppI18n();
+
   return (
     <div className="mt-16 flex items-center justify-center gap-2 text-[13px] text-[#64748B]">
       <Loader2 className="h-4 w-4 animate-spin" />
-      프로필을 불러오고 있어요.
+      {t("settings.profileLoading")}
     </div>
   );
 }
 
 function ProfileInlineLoading() {
+  const { t } = useAppI18n();
+
   return (
     <div className="flex items-center justify-center gap-2 rounded-lg bg-[#F8FAFC] px-4 py-4 text-[13px] text-[#64748B]">
       <Loader2 className="h-4 w-4 animate-spin" />
-      기기를 불러오고 있어요.
+      {t("settings.devicesLoading")}
     </div>
   );
 }
@@ -1727,6 +1748,8 @@ function ProfileErrorState({
   readonly error: unknown;
   readonly onRetry: () => void;
 }) {
+  const { t } = useAppI18n();
+
   return (
     <div className="mt-12 rounded-lg bg-[#F8FAFC] px-5 py-6">
       <p className="text-[13px] leading-6 text-[#64748B]">
@@ -1737,7 +1760,7 @@ function ProfileErrorState({
         onClick={onRetry}
         type="button"
       >
-        다시 시도
+        {t("common.retry")}
       </button>
     </div>
   );
@@ -1758,40 +1781,37 @@ function formatProviderLabel(provider: string) {
   return provider;
 }
 
-function formatLocaleLabel(locale: string) {
-  if (locale === "ko-KR") return "한국어";
+function formatLocaleLabel(locale: string, t: (key: AppI18nKey) => string) {
+  if (locale === "ko-KR") return t("settings.korean");
   if (locale === "en") return "English";
   return locale;
 }
 
 // 기능 : 국가 코드를 계정 모달 표시 이름으로 변환합니다.
-function formatCountryLabel(countryCode: string) {
-  if (countryCode === "KR") return "대한민국";
-  if (countryCode === "US") return "미국";
+function formatCountryLabel(countryCode: string, t: (key: AppI18nKey) => string) {
+  if (countryCode === "KR") return t("settings.korea");
+  if (countryCode === "US") return t("settings.unitedStates");
   return countryCode;
 }
 
-function formatDeviceSlotLabel(slot: string) {
-  if (slot === "mobile") return "Mobile Device";
-  if (slot === "personal_laptop") return "Personal Device";
-  if (slot === "work_laptop") return "Work Device";
-  return "Device";
+function formatRoleLabel(role: string, t: (key: AppI18nKey) => string) {
+  if (role === "ADMIN") return t("settings.admin");
+  if (role === "USER") return t("settings.user");
+  return role;
 }
 
-function formatAccountModalDateTime(value: string | null) {
-  if (!value) {
-    return "기록 없음";
-  }
+function formatStatusLabel(status: string, t: (key: AppI18nKey) => string) {
+  if (status === "ACTIVE") return t("settings.active");
+  if (status === "SUSPENDED") return t("settings.suspended");
+  if (status === "DELETED") return t("settings.deleted");
+  return status;
+}
 
-  const date = new Date(value);
-  if (Number.isNaN(date.getTime())) {
-    return value;
-  }
-
-  return new Intl.DateTimeFormat("ko-KR", {
-    dateStyle: "medium",
-    timeStyle: "short",
-  }).format(date);
+function formatDeviceSlotLabel(slot: string, t: (key: AppI18nKey) => string) {
+  if (slot === "mobile") return t("settings.mobileSlot");
+  if (slot === "personal_laptop") return t("settings.personalLaptopSlot");
+  if (slot === "work_laptop") return t("settings.workLaptopSlot");
+  return t("settings.device");
 }
 
 function getUserInitial(name: string) {

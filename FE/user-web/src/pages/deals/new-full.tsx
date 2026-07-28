@@ -1,5 +1,6 @@
 import { useMemo } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { useAppI18n } from "@/features/app-i18n";
 import { DealCreateDialog } from "@/features/deal/components/deal-create-dialog";
 import type { DealCreateFormValues } from "@/features/deal/schemas/deal-schema";
 
@@ -7,6 +8,7 @@ import type { DealCreateFormValues } from "@/features/deal/schemas/deal-schema";
 export function DealNewFullPage() {
   const location = useLocation();
   const navigate = useNavigate();
+  const { t } = useAppI18n();
   const initialValues = useMemo(
     () => readDealCreateDraft(location.state),
     [location.state],
@@ -19,7 +21,7 @@ export function DealNewFullPage() {
   const navigateAfterCreated = () => {
     void navigate("/app/deals", {
       replace: true,
-      state: { notice: "딜을 추가했어요." },
+      state: { notice: t("dealList.createdNotice") },
     });
   };
 

@@ -38,7 +38,7 @@ import { ListFilterSelect } from "@/components/ui/list-filter-select";
 import { ListEmptyState } from "@/components/ui/state";
 import { Toast } from "@/components/ui/toast";
 import { useAuthSession } from "@/features/auth";
-import { useAppI18n } from "@/features/app-i18n";
+import { useAppI18n, type AppI18nKey } from "@/features/app-i18n";
 import { DealCreateDialog } from "@/features/deal/components/deal-create-dialog";
 import type { DealCreateFormValues } from "@/features/deal/schemas/deal-schema";
 import {
@@ -52,7 +52,6 @@ import {
 import { exportDealsXlsx } from "@/features/deal/api/deal-api";
 import { getApiErrorMessage } from "@/lib/api-client";
 import {
-  DEAL_STATUS_LABEL,
   DEAL_STATUS_LIST,
   type DealDetail,
   type DealListItem,
@@ -73,23 +72,20 @@ import {
 } from "@/hooks/use-resizable-table-columns";
 
 type StageTab = "ALL" | DealStatus;
+type AppTranslate = (key: AppI18nKey, options?: {
+  readonly values?: Record<string, string | number>;
+}) => string;
 
-const stageTabs: Array<{ readonly value: StageTab; readonly label: string }> = [
-  { value: "ALL", label: "전체" },
-  ...DEAL_STATUS_LIST.map((s) => ({
-    value: s as StageTab,
-    label: DEAL_STATUS_LABEL[s],
-  })),
-];
+const STAGE_TABS: readonly StageTab[] = ["ALL", ...DEAL_STATUS_LIST];
 
-const SORT_OPTIONS: Array<{
+const SORT_OPTION_DEFINITIONS: Array<{
   readonly value: DealSort;
-  readonly label: string;
+  readonly labelKey: AppI18nKey;
 }> = [
-  { value: "createdAtDesc", label: "최신순" },
-  { value: "dealCostDesc", label: "금액 높은순" },
-  { value: "dealCostAsc", label: "금액 낮은 순" },
-  { value: "expectedEndDateAsc", label: "마감일순" },
+  { value: "createdAtDesc", labelKey: "dealList.sortCreatedAtDesc" },
+  { value: "dealCostDesc", labelKey: "dealList.sortCostDesc" },
+  { value: "dealCostAsc", labelKey: "dealList.sortCostAsc" },
+  { value: "expectedEndDateAsc", labelKey: "dealList.sortExpectedEndDateAsc" },
 ];
 
 const DEAL_TABLE_COLUMNS = [
@@ -182,6 +178,14 @@ export function DealPipelineHomeScreen({
   const deals = useMemo(
     () => dealsQuery.data?.items ?? [],
     [dealsQuery.data?.items],
+  );
+  const sortOptions = useMemo(
+    () =>
+      SORT_OPTION_DEFINITIONS.map((option) => ({
+        value: option.value,
+        label: t(option.labelKey),
+      })),
+    [t],
   );
 
   useEffect(() => {
@@ -506,7 +510,7 @@ export function DealPipelineHomeScreen({
       >
         {/* PageHeader */}
         <PageHeader
-          breadcrumbs={[{ label: "딜", icon: BriefcaseBusiness }]}
+          breadcrumbs={[{ label: t("navigation.deals"), icon: BriefcaseBusiness }]}
           actions={[
             {
               icon: Download,
@@ -516,7 +520,7 @@ export function DealPipelineHomeScreen({
             },
             {
               icon: Plus,
-              tooltip: "딜 생성",
+              tooltip: t("dealList.createDeal"),
               onClick: openCreatePanel,
               hidden: isDockedCreateMounted,
               variant: "primary",
@@ -546,9 +550,9 @@ export function DealPipelineHomeScreen({
         {/* Stage Tabs */}
         <div className="relative flex shrink-0 items-end overflow-x-auto px-6 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
           <div className="absolute bottom-0 left-5 right-5 h-px bg-[#E6EAF0]" />
-          {stageTabs.map((tab) => {
-            const count = getStageCount(tab.value);
-            const isActive = activeTab === tab.value;
+          {STAGE_TABS.map((tab) => {
+            const count = getStageCount(tab);
+            const isActive = activeTab === tab;
             return (
               <button
                 className={cn(
@@ -557,11 +561,11 @@ export function DealPipelineHomeScreen({
                     ? "border-transparent text-[#4880EE]"
                     : "border-transparent text-[#6B7280] hover:text-[#111827]",
                 )}
-                key={tab.value}
-                onClick={() => onTabChange(tab.value)}
+                key={tab}
+                onClick={() => onTabChange(tab)}
                 type="button"
               >
-                {tab.label}
+                {getStageTabLabel(tab, t)}
                 <span
                   className={cn(
                     "rounded-full px-1.5 py-0.5 text-[11px] font-semibold",
@@ -595,9 +599,9 @@ export function DealPipelineHomeScreen({
                       ? DESKTOP_SEARCH_COMPACT_MAX_WIDTH
                       : undefined
                   }
-                  placeholder="딜명을 검색하세요!"
+                  placeholder={t("dealList.searchPlaceholder")}
                   resetSignal={searchResetSignal}
-                  submitLabel="딜 검색 실행"
+                  submitLabel={t("dealList.searchSubmit")}
                   value={searchText}
                   onSubmit={onSearchSubmit}
                   onValueChange={setSearchText}
@@ -613,7 +617,7 @@ export function DealPipelineHomeScreen({
                   <button
                     ref={compactFilterButtonRef}
                     aria-expanded={isCompactFilterOpen}
-                    aria-label="필터"
+                    aria-label={t("dealList.filter")}
                     aria-hidden={!isCompactFilterMode}
 	                    className={cn(
 	                      "absolute left-0 top-0 inline-flex h-8 w-[72px] shrink-0 items-center justify-center gap-1.5 rounded-md border-0 bg-transparent px-2 text-[13px] font-semibold transition-[opacity,transform,background-color,color] duration-150 focus:outline-none active:scale-[0.97]",
@@ -631,7 +635,7 @@ export function DealPipelineHomeScreen({
                     type="button"
                   >
                     <SlidersHorizontal className="h-3.5 w-3.5" />
-                    <span>필터</span>
+                    <span>{t("dealList.filter")}</span>
                     {hasEntityFilters ? (
                       <span className="absolute -right-1 -top-1 grid h-4 min-w-4 place-items-center rounded-full bg-[#4880EE] px-1 text-[10px] font-bold leading-none text-white">
                         {entityFilterCount}
@@ -649,19 +653,19 @@ export function DealPipelineHomeScreen({
                     )}
                   >
                     <DealFilterMultiSelect
-                      emptyText="조건을 바꾸면 회사를 찾을 수 있어요."
+                      emptyText={t("dealList.companyEmpty")}
                       getLabel={(company) => company.companyName}
                       icon={Building2}
-                      itemKindLabel="회사"
+                      itemKindLabel={t("dealCreate.company")}
                       items={companyOptionsQuery.data ?? []}
                       selectedIds={companyIds}
                       onSelectedIdsChange={onCompanyIdsChange}
                     />
                     <DealFilterMultiSelect
-                      emptyText="조건을 바꾸면 담당자를 찾을 수 있어요."
+                      emptyText={t("dealList.contactEmpty")}
                       getLabel={(contact) => contact.label}
                       icon={UserRound}
-                      itemKindLabel="담당자"
+                      itemKindLabel={t("dealCreate.contact")}
                       items={filteredContactOptions}
                       selectedIds={contactIds}
                       onSelectedIdsChange={onContactIdsChange}
@@ -670,7 +674,7 @@ export function DealPipelineHomeScreen({
                 </div>
                 <ListFilterSelect
                   active={sort !== "createdAtDesc"}
-                  ariaLabel="정렬 조건"
+                  ariaLabel={t("dealList.sortAria")}
                   icon={ArrowUpDown}
                   className={
                     isCompactFilterMode
@@ -678,16 +682,18 @@ export function DealPipelineHomeScreen({
                       : "w-[clamp(136px,14vw,178px)]"
                   }
                   onChange={onSortChange}
-                  options={SORT_OPTIONS}
+                  options={sortOptions}
                   searchable={false}
                   value={sort}
                 />
                 <div className="flex-1" />
                 <span className="shrink-0 text-[12px] text-[#9CA3AF]">
-                  {dealsQuery.data?.totalCount ?? 0}건
+                  {t("dealList.countCases", {
+                    values: { count: dealsQuery.data?.totalCount ?? 0 },
+                  })}
                 </span>
                 <button
-                  aria-label="초기화"
+                  aria-label={t("common.reset")}
                   className={cn(
                     "inline-flex h-8 shrink-0 items-center justify-center gap-1.5 rounded-md border-0 bg-transparent px-2 text-[13px] font-semibold transition-[background-color,color,transform] duration-150 focus:outline-none active:scale-[0.97]",
                     hasFilter
@@ -698,7 +704,7 @@ export function DealPipelineHomeScreen({
                   type="button"
                 >
                   <RotateCcw className="h-3.5 w-3.5" />
-                  <span>초기화</span>
+                  <span>{t("common.reset")}</span>
                 </button>
               </div>
 
@@ -718,13 +724,13 @@ export function DealPipelineHomeScreen({
                   <div className="grid gap-3">
                     <div className="grid gap-1.5">
                       <p className="text-[12px] font-semibold text-[#64748B]">
-                        회사
+                        {t("dealCreate.company")}
                       </p>
                       <DealFilterMultiSelect
-                        emptyText="조건을 바꾸면 회사를 찾을 수 있어요."
+                        emptyText={t("dealList.companyEmpty")}
                         getLabel={(company) => company.companyName}
                         icon={Building2}
-                        itemKindLabel="회사"
+                        itemKindLabel={t("dealCreate.company")}
                         items={companyOptionsQuery.data ?? []}
                         layout="full"
                         selectedIds={companyIds}
@@ -733,13 +739,13 @@ export function DealPipelineHomeScreen({
                     </div>
                     <div className="grid gap-1.5">
                       <p className="text-[12px] font-semibold text-[#64748B]">
-                        담당자
+                        {t("dealCreate.contact")}
                       </p>
                       <DealFilterMultiSelect
-                        emptyText="조건을 바꾸면 담당자를 찾을 수 있어요."
+                        emptyText={t("dealList.contactEmpty")}
                         getLabel={(contact) => contact.label}
                         icon={UserRound}
-                        itemKindLabel="담당자"
+                        itemKindLabel={t("dealCreate.contact")}
                         items={filteredContactOptions}
                         layout="full"
                         selectedIds={contactIds}
@@ -767,49 +773,49 @@ export function DealPipelineHomeScreen({
                     icon={BriefcaseBusiness}
                     {...getHeaderCellResizeProps("dealName", 0)}
                   >
-                    딜이름
+                    {t("dealCreate.dealName")}
                   </ListTableHeaderCell>
                   <ListTableHeaderCell
                     icon={Building2}
                     {...getHeaderCellResizeProps("relation", 1)}
                   >
-                    회사/담당자
+                    {t("dealList.companyContact")}
                   </ListTableHeaderCell>
                   <ListTableHeaderCell
                     icon={Package}
                     {...getHeaderCellResizeProps("products", 2)}
                   >
-                    제품
+                    {t("dealCreate.product")}
                   </ListTableHeaderCell>
                   <ListTableHeaderCell
                     icon={CircleDot}
                     {...getHeaderCellResizeProps("status", 3)}
                   >
-                    단계
+                    {t("dealCreate.dealStage")}
                   </ListTableHeaderCell>
                   <ListTableHeaderCell
                     icon={Banknote}
                     {...getHeaderCellResizeProps("cost", 4)}
                   >
-                    금액
+                    {t("dealCreate.amount")}
                   </ListTableHeaderCell>
                   <ListTableHeaderCell
                     icon={ClipboardList}
                     {...getHeaderCellResizeProps("nextAction", 5)}
                   >
-                    다음 행동
+                    {t("dealList.nextAction")}
                   </ListTableHeaderCell>
                   <ListTableHeaderCell
                     icon={Activity}
                     {...getHeaderCellResizeProps("latestActivity", 6)}
                   >
-                    최근 활동
+                    {t("dealList.latestActivity")}
                   </ListTableHeaderCell>
                   <ListTableHeaderCell
                     icon={CalendarClock}
                     {...getHeaderCellResizeProps("deadline", 7)}
                   >
-                    마감
+                    {t("dealList.deadline")}
                   </ListTableHeaderCell>
                 </div>
 
@@ -817,13 +823,13 @@ export function DealPipelineHomeScreen({
                 {deals.length === 0 ? (
                   <ListEmptyState
                     actionIcon={Plus}
-                    actionLabel="딜 생성"
+                    actionLabel={t("dealList.createDeal")}
                     icon={BriefcaseBusiness}
                     onAction={openCreatePanel}
                     title={
                       hasFilter
-                        ? "조건을 바꾸면 딜을 찾을 수 있어요"
-                        : "아직 등록된 딜이 없어요"
+                        ? t("dealList.emptyFiltered")
+                        : t("dealList.emptyDefault")
                     }
                   />
                 ) : (
@@ -833,6 +839,7 @@ export function DealPipelineHomeScreen({
                         deal={deal}
                         displayTimeZone={displayTimeZone}
                         key={deal.id}
+                        t={t}
                         onSelect={(dealId) => void navigate(`/app/deals/${dealId}`)}
                       />
                     ))}
@@ -869,9 +876,9 @@ export function DealPipelineHomeScreen({
         {/* 단계 탭 — 가로 스크롤 */}
         <div className="overflow-x-auto border-b border-[#E6EAF0] bg-white">
           <div className="flex min-w-max gap-0 px-2">
-            {stageTabs.map((tab) => {
-              const count = getStageCount(tab.value);
-              const isActive = activeTab === tab.value;
+            {STAGE_TABS.map((tab) => {
+              const count = getStageCount(tab);
+              const isActive = activeTab === tab;
               return (
                 <button
                   className={cn(
@@ -880,11 +887,11 @@ export function DealPipelineHomeScreen({
                       ? "border-transparent text-[#4880EE]"
                       : "border-transparent text-[#6B7280]",
                   )}
-                  key={tab.value}
-                  onClick={() => onTabChange(tab.value)}
+                  key={tab}
+                  onClick={() => onTabChange(tab)}
                   type="button"
                 >
-                  {tab.label}
+                  {getStageTabLabel(tab, t)}
                   <span
                     className={cn(
                       "rounded-full px-1.5 py-0.5 text-[11px] font-semibold",
@@ -918,7 +925,9 @@ export function DealPipelineHomeScreen({
             }}
             type="button"
           >
-            {sort === "dealCostAsc" ? "금액 낮은순" : "금액 높은순"}
+            {sort === "dealCostAsc"
+              ? t("dealList.sortCostAsc")
+              : t("dealList.sortCostDesc")}
             {sort === "dealCostAsc" ? (
               <ChevronUp className="h-3 w-3" />
             ) : (
@@ -942,12 +951,14 @@ export function DealPipelineHomeScreen({
             }
             type="button"
           >
-            마감일순
+            {t("dealList.sortExpectedEndDateAsc")}
             <ChevronDown className="h-3 w-3" />
           </button>
           <div className="flex-1" />
           <span className="shrink-0 text-[11px] text-[#9CA3AF]">
-            {dealsQuery.data?.totalCount ?? 0}건
+            {t("dealList.countCases", {
+              values: { count: dealsQuery.data?.totalCount ?? 0 },
+            })}
           </span>
           <button
             aria-label={t("importExport.excelDownload")}
@@ -978,13 +989,13 @@ export function DealPipelineHomeScreen({
           ) : deals.length === 0 ? (
             <ListEmptyState
               actionIcon={Plus}
-              actionLabel="딜 생성"
+              actionLabel={t("dealList.createDeal")}
               icon={BriefcaseBusiness}
               onAction={openCreatePanel}
               title={
                 hasFilter
-                  ? "조건을 바꾸면 딜을 찾을 수 있어요"
-                  : "아직 등록된 딜이 없어요"
+                  ? t("dealList.emptyFiltered")
+                  : t("dealList.emptyDefault")
               }
             />
           ) : (
@@ -995,6 +1006,7 @@ export function DealPipelineHomeScreen({
                     deal={deal}
                     displayTimeZone={displayTimeZone}
                     key={deal.id}
+                    t={t}
                   />
                 ))}
               </div>
@@ -1013,7 +1025,7 @@ export function DealPipelineHomeScreen({
 
         {/* FAB */}
         <button
-          aria-label="딜 생성"
+          aria-label={t("dealList.createDeal")}
           className="fixed bottom-24 right-5 z-40 inline-flex h-8 w-8 items-center justify-center rounded-full bg-[#4880EE] text-white shadow-[0_4px_16px_rgba(59,130,246,0.27)] transition hover:scale-[1.02]"
           onClick={openCreatePanel}
           type="button"
@@ -1040,16 +1052,18 @@ export function DealPipelineHomeScreen({
 function DealListRow({
   deal,
   displayTimeZone,
+  t,
   onSelect,
 }: {
   readonly deal: DealListItem;
   readonly displayTimeZone: string;
+  readonly t: AppTranslate;
   readonly onSelect: (id: string) => void;
 }) {
   const { formatCurrency } = useAppI18n();
-  const contactLabel = formatDealContactLabel(deal);
-  const companyLabel = formatDealCompanyLabel(deal);
-  const nextActionLabel = formatDealNextActionLabel(deal);
+  const contactLabel = formatDealContactLabel(deal, t);
+  const companyLabel = formatDealCompanyLabel(deal, t);
+  const nextActionLabel = formatDealNextActionLabel(deal, t);
   const products = getDealProducts(deal);
   const deadlineLabel = getDeadlineDDayLabel(deal.expectedEndDate);
   const deadlineColor = getDeadlineDDayColor(deal.expectedEndDate);
@@ -1095,7 +1109,7 @@ function DealListRow({
       </div>
 
       {/* 제품 */}
-      <DealProductSummaryCell products={products} />
+      <DealProductSummaryCell products={products} t={t} />
 
       {/* 단계 */}
       <div className="min-w-0">
@@ -1111,7 +1125,7 @@ function DealListRow({
               getDealStatusDotClass(deal.dealStatus),
             )}
           />
-          {deal.dealStatusLabel}
+          {getDealStatusLabel(deal.dealStatus, t)}
         </span>
       </div>
 
@@ -1149,13 +1163,13 @@ function DealListRow({
         <span
           className="inline-flex h-5 max-w-full items-center rounded-full bg-[#F9FAFB] px-2 text-[11px] font-semibold"
           style={{ color: deadlineColor }}
-          title={`마감 ${deadlineDateLabel}`}
+          title={`${t("dealList.deadlinePrefix")} ${deadlineDateLabel}`}
         >
           {deadlineLabel}
         </span>
         <span
           className="mt-0.5 block truncate text-[11px] text-[#64748B]"
-          title={`마감 ${deadlineDateLabel}`}
+          title={`${t("dealList.deadlinePrefix")} ${deadlineDateLabel}`}
         >
           {deadlineDateLabel}
         </span>
@@ -1166,13 +1180,15 @@ function DealListRow({
 
 function DealProductSummaryCell({
   products,
+  t,
 }: {
   readonly products: readonly DealProductSummary[];
+  readonly t: AppTranslate;
 }) {
   const primaryProduct = products[0];
-  const primaryLabel = formatDealProductSummary(products);
+  const primaryLabel = formatDealProductSummary(products, t);
   const metaLabel = formatDealProductMeta(primaryProduct);
-  const title = formatDealProductTitle(products);
+  const title = formatDealProductTitle(products, t);
 
   return (
     <div className="min-w-0 pr-3" title={title}>
@@ -1224,19 +1240,21 @@ function DealLatestActivityCell({
 function MobileDealCard({
   deal,
   displayTimeZone,
+  t,
 }: {
   readonly deal: DealListItem;
   readonly displayTimeZone: string;
+  readonly t: AppTranslate;
 }) {
   const { formatCurrency } = useAppI18n();
-  const contactLabel = formatDealContactLabel(deal);
-  const companyLabel = formatDealCompanyLabel(deal);
+  const contactLabel = formatDealContactLabel(deal, t);
+  const companyLabel = formatDealCompanyLabel(deal, t);
   const deadlineLabel = getDeadlineDDayLabel(deal.expectedEndDate);
   const deadlineColor = getDeadlineDDayColor(deal.expectedEndDate);
   const nextAction = deal.nextFollowingAction;
-  const nextActionLabel = formatDealNextActionLabel(deal);
+  const nextActionLabel = formatDealNextActionLabel(deal, t);
   const products = getDealProducts(deal);
-  const productLabel = formatDealProductSummary(products);
+  const productLabel = formatDealProductSummary(products, t);
   const productMetaLabel = formatDealProductMeta(products[0]);
   const latestActivity = deal.latestActivity ?? null;
   const latestActivityMetaLabel = latestActivity
@@ -1265,7 +1283,7 @@ function MobileDealCard({
               getDealStatusDotClass(deal.dealStatus),
             )}
           />
-          {deal.dealStatusLabel}
+          {getDealStatusLabel(deal.dealStatus, t)}
         </span>
       </div>
 
@@ -1284,8 +1302,8 @@ function MobileDealCard({
           {productLabel ? (
             <MobileDealSummaryRow
               icon={Package}
-              label="제품"
-              title={formatDealProductTitle(products)}
+              label={t("dealCreate.product")}
+              title={formatDealProductTitle(products, t)}
             >
               <span className="font-medium text-[#111827]">{productLabel}</span>
               {productMetaLabel ? (
@@ -1296,7 +1314,7 @@ function MobileDealCard({
           {latestActivity ? (
             <MobileDealSummaryRow
               icon={Activity}
-              label="최근 활동"
+              label={t("dealList.latestActivity")}
               title={formatDealLatestActivityTitle(latestActivity)}
             >
               <span className="font-medium text-[#111827]">
@@ -1319,14 +1337,18 @@ function MobileDealCard({
       {/* Row4: 다음 행동 + D-day */}
       <div className="flex items-start justify-between gap-2">
         <div className="min-w-0">
-          <p className="text-[12px] text-[#6B7280]">다음 행동</p>
+          <p className="text-[12px] text-[#6B7280]">
+            {t("dealList.nextAction")}
+          </p>
           <p className="mt-0.5 truncate text-[13px] text-[#1F2937]">
             {nextActionLabel}
           </p>
         </div>
         {nextAction ? (
           <div className="shrink-0 text-right">
-            <p className="text-[12px] text-[#6B7280]">마감 D-day</p>
+            <p className="text-[12px] text-[#6B7280]">
+              {t("dealList.deadlineDday")}
+            </p>
             <p
               className="mt-0.5 text-[12px] font-semibold"
               style={{ color: deadlineColor }}
@@ -1343,7 +1365,7 @@ function MobileDealCard({
           {amountLabel}
         </p>
         <p className="text-[12px]" style={{ color: deadlineColor }}>
-          마감 {formatDealDateShort(deal.expectedEndDate)}
+          {t("dealList.deadlinePrefix")} {formatDealDateShort(deal.expectedEndDate)}
         </p>
       </div>
     </Link>
@@ -1376,6 +1398,16 @@ function MobileDealSummaryRow({
 }
 
 // ── 유틸 ──
+
+// 기능 : Deal stage tab 값을 현재 앱 locale에 맞는 label로 변환합니다.
+function getStageTabLabel(tab: StageTab, t: AppTranslate) {
+  return tab === "ALL" ? t("dealList.all") : getDealStatusLabel(tab, t);
+}
+
+// 기능 : Deal 상태 코드를 화면 표시용 locale label로 변환합니다.
+function getDealStatusLabel(status: DealStatus, t: AppTranslate) {
+  return t(`dealStatus.${status}` as AppI18nKey);
+}
 
 function getDealStatusClass(status: DealStatus): string {
   switch (status) {
@@ -1411,12 +1443,16 @@ function getDealStatusDotClass(status: DealStatus): string {
   }
 }
 
-function formatDealContactLabel(deal: DealListItem) {
+function formatDealContactLabel(deal: DealListItem, t: AppTranslate) {
   return deal.contacts
     .map((contact) => {
       const jobGradeName = contact.contactJobGrade.jobGradeName.trim();
       const departmentName = contact.contactDepartment.departmentName.trim();
-      const contactName = formatDeletedLabel(contact.username, contact.isDeleted);
+      const contactName = formatDeletedLabel(
+        contact.username,
+        contact.isDeleted,
+        t,
+      );
       const nameWithJobGrade = jobGradeName
         ? `${contactName} ${jobGradeName}`
         : contactName;
@@ -1428,16 +1464,22 @@ function formatDealContactLabel(deal: DealListItem) {
     .join(", ");
 }
 
-function formatDealCompanyLabel(deal: DealListItem) {
+function formatDealCompanyLabel(deal: DealListItem, t: AppTranslate) {
   return (
     deal.companies
-      .map((company) => formatDeletedLabel(company.companyName, company.isDeleted))
+      .map((company) =>
+        formatDeletedLabel(company.companyName, company.isDeleted, t),
+      )
       .join(", ") || "-"
   );
 }
 
-function formatDeletedLabel(label: string, isDeleted: boolean): string {
-  return isDeleted ? `${label} (삭제됨)` : label;
+function formatDeletedLabel(
+  label: string,
+  isDeleted: boolean,
+  t: AppTranslate,
+): string {
+  return isDeleted ? `${label} (${t("common.deleted")})` : label;
 }
 
 function getDealProducts(deal: DealListItem): readonly DealProductSummary[] {
@@ -1446,6 +1488,7 @@ function getDealProducts(deal: DealListItem): readonly DealProductSummary[] {
 
 function formatDealProductSummary(
   products: readonly DealProductSummary[],
+  t: AppTranslate,
 ): string | null {
   const firstProduct = products[0];
 
@@ -1456,10 +1499,15 @@ function formatDealProductSummary(
   const firstLabel = formatDeletedLabel(
     firstProduct.productName,
     firstProduct.isDeleted,
+    t,
   );
   const remainingCount = products.length - 1;
 
-  return remainingCount > 0 ? `${firstLabel} 외 ${remainingCount}개` : firstLabel;
+  return remainingCount > 0
+    ? `${firstLabel} ${t("dealList.moreCount", {
+        values: { count: remainingCount },
+      })}`
+    : firstLabel;
 }
 
 function formatDealProductMeta(product: DealProductSummary | undefined) {
@@ -1475,9 +1523,14 @@ function formatDealProductMeta(product: DealProductSummary | undefined) {
     .join(" · ");
 }
 
-function formatDealProductTitle(products: readonly DealProductSummary[]) {
+function formatDealProductTitle(
+  products: readonly DealProductSummary[],
+  t: AppTranslate,
+) {
   return products
-    .map((product) => formatDeletedLabel(product.productName, product.isDeleted))
+    .map((product) =>
+      formatDeletedLabel(product.productName, product.isDeleted, t),
+    )
     .join(", ");
 }
 
@@ -1501,15 +1554,19 @@ function formatDealLatestActivityMeta(
     .join(" · ");
 }
 
-function formatDealNextActionLabel(deal: DealListItem) {
+function formatDealNextActionLabel(deal: DealListItem, t: AppTranslate) {
   const nextAction = deal.nextFollowingAction;
 
   if (!nextAction) {
-    return "없음";
+    return t("common.none");
   }
 
   const remainingLabel =
-    nextAction.remainingCount > 0 ? ` 외 ${nextAction.remainingCount}개` : "";
+    nextAction.remainingCount > 0
+      ? ` ${t("dealList.moreCount", {
+          values: { count: nextAction.remainingCount },
+        })}`
+      : "";
 
   return `${nextAction.followingAction}${remainingLabel}`;
 }
@@ -1613,6 +1670,7 @@ function DealFilterMultiSelect<TItem extends DealFilterItem>({
   readonly selectedIds: readonly string[];
   readonly onSelectedIdsChange: (ids: string[]) => void;
 }) {
+  const { t } = useAppI18n();
   const [isOpen, setIsOpen] = useState(false);
   const [filterText, setFilterText] = useState("");
   const [popoverPosition, setPopoverPosition] =
@@ -1704,7 +1762,9 @@ function DealFilterMultiSelect<TItem extends DealFilterItem>({
         <button
           ref={triggerRef}
           aria-expanded={isOpen}
-          aria-label={`${itemKindLabel} 필터`}
+          aria-label={t("common.searchName", {
+            values: { name: itemKindLabel },
+          })}
           className={cn(
             "inline-flex h-8 min-w-0 items-center gap-1.5 rounded-md border-0 bg-transparent px-2 text-[13px] font-semibold outline-none transition-[background-color,color,transform,opacity] duration-150 active:scale-[0.97]",
             layout === "full" && "w-full",
@@ -1748,7 +1808,9 @@ function DealFilterMultiSelect<TItem extends DealFilterItem>({
           }}
         >
           <FilterPopoverSearchHeader
-            clearSearchLabel={`${itemKindLabel} 검색어 지우기`}
+            clearSearchLabel={t("common.clearSearchName", {
+              values: { name: itemKindLabel },
+            })}
             inputRef={inputRef}
             onClearSearch={() => setFilterText("")}
             onReset={() => {
@@ -1775,9 +1837,15 @@ function DealFilterMultiSelect<TItem extends DealFilterItem>({
                 toggleItem(firstItem);
               }
             }}
-            placeholder={`${itemKindLabel} 검색`}
-            resetLabel={`${itemKindLabel} 초기화`}
-            searchLabel={`${itemKindLabel} 검색`}
+            placeholder={t("common.searchName", {
+              values: { name: itemKindLabel },
+            })}
+            resetLabel={t("common.resetName", {
+              values: { name: itemKindLabel },
+            })}
+            searchLabel={t("common.searchName", {
+              values: { name: itemKindLabel },
+            })}
             searchValue={filterText}
           />
 
@@ -1926,18 +1994,20 @@ function getDealCreatePanelMaxWidth(viewportWidth?: number) {
 }
 
 function ErrorState({ onRetry }: { readonly onRetry: () => void }) {
+  const { t } = useAppI18n();
+
   return (
     <div className="flex min-h-[320px] flex-col items-center justify-center px-5 py-12 text-center">
       <AlertCircle className="h-5 w-5 text-red-500" />
       <p className="mt-2 text-[13px] text-red-500">
-        딜 목록을 불러오지 못했어요.
+        {t("dealList.listLoadFailed")}
       </p>
       <button
         className="mt-3 inline-flex h-8 items-center rounded-md border border-[#E2E5EC] bg-white px-3 text-[12px] text-[#6B7280] hover:bg-[#F5F6F8]"
         onClick={onRetry}
         type="button"
       >
-        다시 시도
+        {t("common.retry")}
       </button>
     </div>
   );

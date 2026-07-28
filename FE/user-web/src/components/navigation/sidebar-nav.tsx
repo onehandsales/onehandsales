@@ -12,34 +12,37 @@ import {
 import { useState } from "react";
 import { NavLink } from "react-router-dom";
 import { DataUploadIcon } from "@/components/icons/data-upload-icon";
+import { useAppI18n, type AppI18nKey } from "@/features/app-i18n";
 import { cn } from "@/utils/cn";
 
 const groups: Array<{
-  readonly label: string;
+  readonly id: string;
+  readonly labelKey: AppI18nKey;
   readonly items: ReadonlyArray<{
-    readonly label: string;
+    readonly labelKey: AppI18nKey;
     readonly to: string;
     readonly icon: LucideIcon;
     readonly end?: boolean;
   }>;
 }> = [
   {
-    label: "주요 메뉴",
+    id: "main",
+    labelKey: "navigation.mainGroup",
     items: [
-      // { label: "홈", to: "/app", icon: House, end: true },
-      { label: "딜", to: "/app/deals", icon: BriefcaseBusiness },
-      { label: "회사", to: "/app/companies", icon: Building2 },
-      { label: "담당자", to: "/app/contacts", icon: IdCard },
-      { label: "제품", to: "/app/products", icon: Package },
+      { labelKey: "navigation.deals", to: "/app/deals", icon: BriefcaseBusiness },
+      { labelKey: "navigation.companies", to: "/app/companies", icon: Building2 },
+      { labelKey: "navigation.contacts", to: "/app/contacts", icon: IdCard },
+      { labelKey: "navigation.products", to: "/app/products", icon: Package },
     ],
   },
   {
-    label: "업무",
+    id: "work",
+    labelKey: "navigation.workGroup",
     items: [
-      { label: "일정", to: "/app/schedules", icon: CalendarDays },
-      { label: "회의록", to: "/app/meeting-notes", icon: NotebookPen },
-      { label: "명함 스캔", to: "/app/business-cards", icon: Camera },
-      { label: "데이터 업로드", to: "/app/import", icon: DataUploadIcon },
+      { labelKey: "navigation.schedules", to: "/app/schedules", icon: CalendarDays },
+      { labelKey: "navigation.meetingNotes", to: "/app/meeting-notes", icon: NotebookPen },
+      { labelKey: "navigation.businessCards", to: "/app/business-cards", icon: Camera },
+      { labelKey: "navigation.import", to: "/app/import", icon: DataUploadIcon },
     ],
   },
 ];
@@ -49,24 +52,25 @@ type SidebarNavProps = {
 };
 
 export function SidebarNav({ className }: SidebarNavProps) {
+  const { t } = useAppI18n();
   const [openGroups, setOpenGroups] = useState<Record<string, boolean>>(() =>
-    Object.fromEntries(groups.map((group) => [group.label, true]))
+    Object.fromEntries(groups.map((group) => [group.id, true]))
   );
 
   return (
     <nav className={cn("flex flex-col gap-3", className)}>
       {groups.map((group) => {
-        const isOpen = openGroups[group.label] ?? true;
+        const isOpen = openGroups[group.id] ?? true;
 
         return (
-          <div key={group.label}>
+          <div key={group.id}>
             <button
               aria-expanded={isOpen}
               className="mb-1 flex h-6 w-full items-center gap-1 rounded-md px-2 text-left text-[11px] font-semibold tracking-[0.02em] text-[#9CA3AF] transition hover:bg-[#F1F2F5] hover:text-[#6B7280]"
               onClick={() =>
                 setOpenGroups((current) => ({
                   ...current,
-                  [group.label]: !(current[group.label] ?? true),
+                  [group.id]: !(current[group.id] ?? true),
                 }))
               }
               type="button"
@@ -78,7 +82,7 @@ export function SidebarNav({ className }: SidebarNavProps) {
                 )}
                 strokeWidth={2}
               />
-              <span>{group.label}</span>
+              <span>{t(group.labelKey)}</span>
             </button>
             {isOpen ? (
               <div className="flex flex-col gap-px">
@@ -107,7 +111,7 @@ export function SidebarNav({ className }: SidebarNavProps) {
                           )}
                           strokeWidth={1.75}
                         />
-                        <span>{item.label}</span>
+                        <span>{t(item.labelKey)}</span>
                       </>
                     )}
                   </NavLink>

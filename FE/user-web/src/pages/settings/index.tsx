@@ -29,13 +29,13 @@ import { getApiErrorMessage } from "@/lib/api-client";
 
 const DEFAULT_TIME_ZONE = "Asia/Seoul";
 const localeOptions = [
-  { value: "ko-KR", label: "한국어" },
-  { value: "en", label: "English" },
+  { value: "ko-KR", labelKey: "settings.korean" },
+  { value: "en", labelKey: "importExport.englishTemplate" },
 ] as const;
 
 const countryOptions = [
-  { value: "KR", label: "대한민국" },
-  { value: "US", label: "미국" },
+  { value: "KR", labelKey: "settings.korea" },
+  { value: "US", labelKey: "settings.unitedStates" },
 ] as const;
 
 const currencyOptions = [
@@ -220,7 +220,7 @@ function ProfileSection({
                   >
                     {localeOptions.map((option) => (
                       <option key={option.value} value={option.value}>
-                        {option.label}
+                        {t(option.labelKey)}
                       </option>
                     ))}
                   </select>
@@ -253,7 +253,7 @@ function ProfileSection({
                   >
                     {countryOptions.map((option) => (
                       <option key={option.value} value={option.value}>
-                        {option.label}
+                        {t(option.labelKey)}
                       </option>
                     ))}
                   </select>
@@ -299,66 +299,66 @@ function ProfileSection({
           <section className="grid gap-3">
             <SettingsCardHeader
               icon={ShieldCheck}
-              description="로그인 계정, 권한, 연결 provider와 계정 이력을 확인해요."
-              title="계정 정보"
+              description={t("settings.accountDescription")}
+              title={t("settings.accountInformation")}
             />
             <div className="grid gap-5 rounded-lg border border-[#E2E5EC] bg-white p-5 shadow-sm">
               <dl className="grid gap-3 md:grid-cols-2">
-                <ReadOnlyField icon={UserRound} label="이메일" value={profile.email} />
+                <ReadOnlyField icon={UserRound} label={t("settings.email")} value={profile.email} />
                 <ReadOnlyField
                   icon={ShieldCheck}
-                  label="권한"
-                  value={toRoleLabel(profile.role)}
+                  label={t("settings.role")}
+                  value={toRoleLabel(profile.role, t)}
                 />
                 <ReadOnlyField
                   icon={BadgeCheck}
-                  label="계정 상태"
-                  value={toStatusLabel(profile.status)}
+                  label={t("settings.accountStatus")}
+                  value={toStatusLabel(profile.status, t)}
                 />
                 <ReadOnlyField
                   icon={Laptop}
-                  label="마지막 로그인"
+                  label={t("settings.lastLogin")}
                   value={formatDateTime(profile.lastLoginAt, { includeYear: true })}
                 />
                 <ReadOnlyField
                   icon={UserRound}
-                  label="가입일"
+                  label={t("settings.createdAt")}
                   value={formatDateTime(profile.createdAt, { includeYear: true })}
                 />
                 <ReadOnlyField
                   icon={Timer}
-                  label="최근 수정일"
+                  label={t("settings.updatedAt")}
                   value={formatDateTime(profile.updatedAt, { includeYear: true })}
                 />
                 <ReadOnlyField
                   icon={BadgeCheck}
-                  label="기본 국가"
-                  value={toCountryLabel(profile.countryCode)}
+                  label={t("settings.defaultCountry")}
+                  value={toCountryLabel(profile.countryCode, t)}
                 />
                 <ReadOnlyField
                   icon={BadgeCheck}
-                  label="기본 통화"
+                  label={t("settings.defaultCurrency")}
                   value={profile.defaultCurrencyCode}
                 />
                 <ReadOnlyField
                   icon={Timer}
-                  label="가입 시간대"
-                  value={profile.signupTimeZone ?? "-"}
+                  label={t("settings.joinedTimeZone")}
+                  value={profile.signupTimeZone ?? t("common.noRecord")}
                 />
                 <ReadOnlyField
                   icon={Timer}
-                  label="마지막 로그인 시간대"
-                  value={profile.lastLoginTimeZone ?? "-"}
+                  label={t("settings.lastLoginTimeZone")}
+                  value={profile.lastLoginTimeZone ?? t("common.noRecord")}
                 />
                 <ReadOnlyField
                   icon={BadgeCheck}
-                  label="가입 국가"
-                  value={profile.signupCountryCode ?? "-"}
+                  label={t("settings.defaultCountryJoined")}
+                  value={profile.signupCountryCode ?? t("common.noRecord")}
                 />
                 <ReadOnlyField
                   icon={BadgeCheck}
-                  label="마지막 로그인 국가"
-                  value={profile.lastLoginCountryCode ?? "-"}
+                  label={t("settings.defaultCountryLastLogin")}
+                  value={profile.lastLoginCountryCode ?? t("common.noRecord")}
                 />
               </dl>
 
@@ -382,12 +382,14 @@ function DeviceSection({
   readonly error: unknown;
   readonly onRetry: () => void;
 }) {
+  const { t } = useAppI18n();
+
   return (
     <section className="grid content-start gap-3">
       <SettingsCardHeader
         icon={Laptop}
-        description="로그인에 등록된 활성 기기만 표시해요."
-        title="등록 기기"
+        description={t("settings.devicesDescription")}
+        title={t("settings.devicesTitle")}
       />
       <div className="rounded-lg border border-[#E2E5EC] bg-white p-4 shadow-sm">
         {isLoading ? (
@@ -396,7 +398,7 @@ function DeviceSection({
           <InlineError error={error} onRetry={onRetry} />
         ) : devices.length === 0 ? (
           <p className="text-sm text-muted-foreground">
-            활성 기기가 생기면 여기에서 볼 수 있어요.
+            {t("settings.devicesEmpty")}
           </p>
         ) : (
           <div className="grid gap-3">
@@ -412,7 +414,7 @@ function DeviceSection({
 
 // 기능 : 등록된 기기 항목을 사용자 locale/timezone 기준 날짜와 함께 표시합니다.
 function DeviceItem({ device }: { readonly device: MyDevice }) {
-  const { formatDateTime } = useAppI18n();
+  const { formatDateTime, t } = useAppI18n();
   const Icon = device.slot === "mobile" ? Smartphone : Laptop;
 
   return (
@@ -424,29 +426,31 @@ function DeviceItem({ device }: { readonly device: MyDevice }) {
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-2">
             <h3 className="truncate text-sm font-semibold">
-              {device.label || toDeviceSlotLabel(device.slot)}
+              {device.label || toDeviceSlotLabel(device.slot, t)}
             </h3>
             {device.isCurrentDevice ? (
               <span className="rounded-md bg-[#EAF2FF] px-2 py-0.5 text-xs font-semibold text-[#1D4ED8]">
-                현재 기기
+                {t("settings.currentDevice")}
               </span>
             ) : null}
           </div>
           <p className="mt-1 text-xs text-muted-foreground">
-            {toDeviceSlotLabel(device.slot)} · 활성 세션{" "}
-            {device.activeSessionCount.toLocaleString()}개
+            {toDeviceSlotLabel(device.slot, t)} · {t("settings.activeSessionCount")}{" "}
+            {t("home.countItems", {
+              values: { count: device.activeSessionCount.toLocaleString() },
+            })}
           </p>
         </div>
       </div>
       <dl className="grid gap-2 text-xs text-muted-foreground">
         <div className="flex justify-between gap-3">
-          <dt>마지막 사용</dt>
+          <dt>{t("settings.lastSeenAt")}</dt>
           <dd className="text-right text-foreground">
             {formatDateTime(device.lastSeenAt, { includeYear: true })}
           </dd>
         </div>
         <div className="flex justify-between gap-3">
-          <dt>등록일</dt>
+          <dt>{t("settings.createdAt")}</dt>
           <dd className="text-right text-foreground">
             {formatDateTime(device.createdAt, { includeYear: true })}
           </dd>
@@ -462,17 +466,17 @@ function OAuthAccountList({
 }: {
   readonly accounts: UserProfileOAuthAccount[];
 }) {
-  const { formatDateTime } = useAppI18n();
+  const { formatDateTime, t } = useAppI18n();
 
   return (
     <section className="grid gap-3">
       <div className="flex items-center gap-2">
         <Link2 className="h-4 w-4 text-[#64748B]" />
-        <h3 className="text-sm font-semibold text-[#111827]">연결 provider</h3>
+        <h3 className="text-sm font-semibold text-[#111827]">{t("settings.providerAccounts")}</h3>
       </div>
       {accounts.length === 0 ? (
         <p className="rounded-md border border-[#E2E5EC] bg-white px-3 py-3 text-sm text-[#64748B]">
-          연결된 provider가 생기면 여기에서 볼 수 있어요.
+          {t("settings.noOAuthAccounts")}
         </p>
       ) : (
         <div className="grid gap-2">
@@ -486,7 +490,7 @@ function OAuthAccountList({
                   {toProviderLabel(account.provider)}
                 </p>
                 <p className="truncate text-xs text-muted-foreground">
-                  {account.providerEmail ?? "이메일 없음"}
+                  {account.providerEmail ?? t("settings.emailMissing")}
                 </p>
               </div>
               <span className="shrink-0 text-xs text-muted-foreground">
@@ -568,11 +572,13 @@ function InlineError({
   readonly error: unknown;
   readonly onRetry: () => void;
 }) {
+  const { t } = useAppI18n();
+
   return (
     <div className="grid justify-items-start gap-3 rounded-md border border-destructive/30 bg-red-50 px-4 py-3">
       <p className="text-sm text-destructive">{getApiErrorMessage(error)}</p>
       <Button onClick={onRetry} size="sm" type="button">
-        다시 시도
+        {t("common.retry")}
       </Button>
     </div>
   );
@@ -597,37 +603,40 @@ function toProviderLabel(provider: string) {
   return labels[provider] ?? provider;
 }
 
-function toDeviceSlotLabel(slot: string) {
-  const labels: Record<string, string> = {
-    mobile: "모바일",
-    personal_laptop: "개인 노트북",
-    work_laptop: "회사 노트북",
+function toDeviceSlotLabel(slot: string, t: (key: AppI18nKey) => string) {
+  const labels: Record<string, AppI18nKey> = {
+    mobile: "settings.mobileSlot",
+    personal_laptop: "settings.personalLaptopSlot",
+    work_laptop: "settings.workLaptopSlot",
   };
+  const labelKey = labels[slot];
 
-  return labels[slot] ?? slot;
+  return labelKey ? t(labelKey) : slot;
 }
 
-function toRoleLabel(role: string) {
-  return role === "ADMIN" ? "관리자" : "사용자";
+function toRoleLabel(role: string, t: (key: AppI18nKey) => string) {
+  return role === "ADMIN" ? t("settings.admin") : t("settings.user");
 }
 
 // 기능 : 저장된 국가 코드를 설정 화면 표시 이름으로 변환합니다.
-function toCountryLabel(countryCode: string) {
-  const labels: Record<string, string> = {
-    KR: "대한민국",
-    US: "미국",
+function toCountryLabel(countryCode: string, t: (key: AppI18nKey) => string) {
+  const labels: Record<string, AppI18nKey> = {
+    KR: "settings.korea",
+    US: "settings.unitedStates",
   };
+  const labelKey = labels[countryCode];
 
-  return labels[countryCode] ?? countryCode;
+  return labelKey ? t(labelKey) : countryCode;
 }
 
-function toStatusLabel(status: string) {
-  const labels: Record<string, string> = {
-    ACTIVE: "활성",
-    DELETED: "삭제됨",
-    SUSPENDED: "정지",
+function toStatusLabel(status: string, t: (key: AppI18nKey) => string) {
+  const labels: Record<string, AppI18nKey> = {
+    ACTIVE: "settings.active",
+    DELETED: "settings.deleted",
+    SUSPENDED: "settings.suspended",
   };
+  const labelKey = labels[status];
 
-  return labels[status] ?? status;
+  return labelKey ? t(labelKey) : status;
 }
 

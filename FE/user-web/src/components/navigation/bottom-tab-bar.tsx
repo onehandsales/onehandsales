@@ -1,21 +1,29 @@
 import { Briefcase, Calendar, House, MoreHorizontal, NotebookPen } from "lucide-react";
 import { NavLink } from "react-router-dom";
+import { useAppI18n, type AppI18nKey } from "@/features/app-i18n";
 
 const items: ReadonlyArray<{
-  readonly label: string;
+  readonly labelKey: AppI18nKey;
   readonly to: string;
   readonly icon: typeof House;
   readonly end?: boolean;
   readonly activeColor: string;
 }> = [
-  { label: "홈", to: "/app", icon: House, end: true, activeColor: "#4880EE" },
-  { label: "딜", to: "/app/deals", icon: Briefcase, activeColor: "#4880EE" },
-  { label: "일정", to: "/app/schedules", icon: Calendar, activeColor: "#4880EE" },
-  { label: "회의록", to: "/app/meeting-notes", icon: NotebookPen, activeColor: "#4880EE" },
-  { label: "더보기", to: "/app/more", icon: MoreHorizontal, activeColor: "#4880EE" },
+  { labelKey: "navigation.home", to: "/app", icon: House, end: true, activeColor: "#4880EE" },
+  { labelKey: "navigation.deals", to: "/app/deals", icon: Briefcase, activeColor: "#4880EE" },
+  { labelKey: "navigation.schedules", to: "/app/schedules", icon: Calendar, activeColor: "#4880EE" },
+  {
+    labelKey: "navigation.meetingNotes",
+    to: "/app/meeting-notes",
+    icon: NotebookPen,
+    activeColor: "#4880EE",
+  },
+  { labelKey: "navigation.more", to: "/app/more", icon: MoreHorizontal, activeColor: "#4880EE" },
 ];
 
 export function BottomTabBar() {
+  const { t } = useAppI18n();
+
   return (
     <nav
       className="fixed inset-x-0 bottom-0 z-30 border-t border-gray-200 bg-white px-1 pb-[max(env(safe-area-inset-bottom),8px)] pt-1 lg:hidden"
@@ -39,7 +47,7 @@ export function BottomTabBar() {
                     style={{ color: isActive ? item.activeColor : "#9CA3AF" }}
                   />
                   <span style={{ color: isActive ? item.activeColor : "#9CA3AF" }}>
-                    {item.label}
+                    {t(item.labelKey)}
                   </span>
                 </>
               )}

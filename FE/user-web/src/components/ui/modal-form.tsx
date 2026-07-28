@@ -1,5 +1,6 @@
 import { Plus } from "lucide-react";
 import type { FormEvent, FormHTMLAttributes, ReactNode } from "react";
+import { useAppI18n } from "@/features/app-i18n";
 import { cn } from "@/utils/cn";
 
 type ModalFormProps = FormHTMLAttributes<HTMLFormElement>;
@@ -246,14 +247,18 @@ type ModalFooterActionsProps = {
 // 기능 : Quick Create 계열 모달 footer의 취소/저장 액션을 통일합니다.
 export function ModalFooterActions({
   formId,
-  submitLabel = "저장",
-  pendingLabel = "저장 중",
+  submitLabel,
+  pendingLabel,
   submitIcon,
   isSubmitting = false,
   disabled = false,
   onCancel,
   onSubmit,
 }: ModalFooterActionsProps) {
+  const { t } = useAppI18n();
+  const resolvedSubmitLabel = submitLabel ?? t("common.save");
+  const resolvedPendingLabel = pendingLabel ?? t("common.saving");
+
   return (
     <>
       <button
@@ -261,7 +266,7 @@ export function ModalFooterActions({
         onClick={onCancel}
         type="button"
       >
-        닫기
+        {t("common.close")}
       </button>
       {onSubmit ? (
         <button
@@ -271,7 +276,7 @@ export function ModalFooterActions({
           type="button"
         >
           {submitIcon ?? <Plus className="h-4 w-4" />}
-          {isSubmitting ? pendingLabel : submitLabel}
+          {isSubmitting ? resolvedPendingLabel : resolvedSubmitLabel}
         </button>
       ) : (
         <button
@@ -281,7 +286,7 @@ export function ModalFooterActions({
           type="submit"
         >
           {submitIcon ?? <Plus className="h-4 w-4" />}
-          {isSubmitting ? pendingLabel : submitLabel}
+          {isSubmitting ? resolvedPendingLabel : resolvedSubmitLabel}
         </button>
       )}
     </>

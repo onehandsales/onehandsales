@@ -1,6 +1,7 @@
 import { ChevronDown, type LucideIcon } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { FilterPopoverSearchHeader } from "@/components/ui/filter-popover-search-header";
+import { useAppI18n } from "@/features/app-i18n";
 import { cn } from "@/utils/cn";
 
 export type ListFilterSelectOption<TValue extends string> = {
@@ -37,6 +38,7 @@ export function ListFilterSelect<TValue extends string>({
   searchable = true,
   value,
 }: ListFilterSelectProps<TValue>) {
+  const { t } = useAppI18n();
   const [isOpen, setIsOpen] = useState(false);
   const [search, setSearch] = useState("");
   const [popoverPosition, setPopoverPosition] =
@@ -189,7 +191,9 @@ export function ListFilterSelect<TValue extends string>({
         >
           {searchable ? (
             <FilterPopoverSearchHeader
-              clearSearchLabel={`${ariaLabel} 검색어 지우기`}
+              clearSearchLabel={t("common.clearSearchName", {
+                values: { name: ariaLabel },
+              })}
               inputRef={inputRef}
               onClearSearch={() => setSearch("")}
               onReset={resetOption}
@@ -214,15 +218,19 @@ export function ListFilterSelect<TValue extends string>({
                 }
               }}
               placeholder={ariaLabel}
-              resetLabel={`${ariaLabel} 초기화`}
-              searchLabel={`${ariaLabel} 검색`}
+              resetLabel={t("common.resetName", {
+                values: { name: ariaLabel },
+              })}
+              searchLabel={t("common.searchName", {
+                values: { name: ariaLabel },
+              })}
               searchValue={search}
             />
           ) : null}
           <div className="max-h-[220px] overflow-y-auto py-1">
             {filteredOptions.length === 0 ? (
               <p className="px-3 py-3 text-[12px] text-[#9CA3AF]">
-                검색어를 바꾸면 결과를 찾을 수 있어요.
+                {t("common.searchEmpty")}
               </p>
             ) : null}
             {filteredOptions.map((option) => {

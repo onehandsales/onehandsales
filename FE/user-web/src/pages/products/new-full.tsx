@@ -1,5 +1,6 @@
 import { useMemo } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { useAppI18n } from "@/features/app-i18n";
 import {
   ProductCreateDialog,
   type ProductCreateFormValues,
@@ -9,6 +10,7 @@ import {
 export function ProductNewFullPage() {
   const location = useLocation();
   const navigate = useNavigate();
+  const { t } = useAppI18n();
   const initialValues = useMemo(
     () => readProductCreateDraft(location.state),
     [location.state],
@@ -21,7 +23,7 @@ export function ProductNewFullPage() {
   const navigateAfterCreated = () => {
     void navigate("/app/products", {
       replace: true,
-      state: { notice: "제품을 추가했어요." },
+      state: { notice: t("productList.createdNotice") },
     });
   };
 

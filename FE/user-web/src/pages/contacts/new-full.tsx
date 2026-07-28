@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { normalizeAppPhoneCountryCode } from "@/features/app-i18n";
+import { normalizeAppPhoneCountryCode, useAppI18n } from "@/features/app-i18n";
 import { ContactCreateDialog } from "@/features/contact/components/contact-create-dialog";
 import type { ContactCreateFormValues } from "@/features/contact/schemas/contact-schema";
 
@@ -8,6 +8,7 @@ import type { ContactCreateFormValues } from "@/features/contact/schemas/contact
 export function ContactNewFullPage() {
   const location = useLocation();
   const navigate = useNavigate();
+  const { t } = useAppI18n();
   const initialValues = useMemo(
     () => readContactCreateDraft(location.state),
     [location.state],
@@ -20,7 +21,7 @@ export function ContactNewFullPage() {
   const navigateAfterCreated = () => {
     void navigate("/app/contacts", {
       replace: true,
-      state: { notice: "담당자를 추가했어요." },
+      state: { notice: t("contactList.createdNotice") },
     });
   };
 

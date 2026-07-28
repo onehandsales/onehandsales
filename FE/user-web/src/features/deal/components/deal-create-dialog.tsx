@@ -44,6 +44,7 @@ import {
   CurrencyCodeSelect,
   useAppI18n,
   type AppCurrencyCode,
+  type AppI18nKey,
 } from "@/features/app-i18n";
 import {
   useCompanyFields,
@@ -81,7 +82,6 @@ import {
   type DealCreateFormValues,
 } from "@/features/deal/schemas/deal-schema";
 import {
-  DEAL_STATUS_LABEL,
   DEAL_STATUS_LIST,
   type DealCompanyOption,
   type DealContactOption,
@@ -120,7 +120,7 @@ export function DealCreateDialog({
   onExpand,
   onResizeStart,
 }: DealCreateDialogProps) {
-  const { defaultCurrencyCode } = useAppI18n();
+  const { defaultCurrencyCode, t } = useAppI18n();
   const [selectedCompanyIds, setSelectedCompanyIds] = useState<string[]>([]);
   const [selectedContactIds, setSelectedContactIds] = useState<string[]>([]);
   const [selectedProductIds, setSelectedProductIds] = useState<string[]>([]);
@@ -419,7 +419,7 @@ export function DealCreateDialog({
 
   const panel = (
     <section
-      aria-label="딜 생성"
+      aria-label={t("dealCreate.panelAria")}
       aria-modal={isPage ? undefined : !isDocked}
       className={
         isPage
@@ -437,7 +437,7 @@ export function DealCreateDialog({
     >
       {isDocked ? (
         <button
-          aria-label="딜 생성 패널 폭 조절"
+          aria-label={t("dealCreate.resizePanel")}
           className="absolute -left-1 top-0 z-10 h-full w-2 cursor-col-resize transition hover:bg-[#EFF6FF] focus:bg-[#EFF6FF] focus:outline-none"
           onMouseDown={(event) => {
             event.preventDefault();
@@ -449,22 +449,26 @@ export function DealCreateDialog({
       <header className="flex h-10 shrink-0 items-center px-1.5">
         <div className="flex shrink-0 items-center gap-0.5">
           <button
-            aria-label={isPage ? "딜 목록으로 이동" : "딜 생성 패널 접기"}
+            aria-label={
+              isPage ? t("dealCreate.backToList") : t("dealCreate.collapsePanel")
+            }
             className="inline-flex h-8 w-8 items-center justify-center rounded-md text-[#8A8F98] transition hover:bg-[#F3F4F6] hover:text-[#374151] disabled:cursor-not-allowed disabled:opacity-50"
             disabled={createDealMutation.isPending}
             onClick={() => onOpenChange(false)}
-            title={isPage ? "딜 목록으로 이동" : "딜 생성 패널 접기"}
+            title={
+              isPage ? t("dealCreate.backToList") : t("dealCreate.collapsePanel")
+            }
             type="button"
           >
             <CloseIcon className="h-4 w-4" />
           </button>
           {onExpand && !isPage ? (
             <button
-              aria-label="전체 생성 페이지로 열기"
+              aria-label={t("dealCreate.openFullPage")}
               className="inline-flex h-8 w-8 items-center justify-center rounded-md text-[#8A8F98] transition hover:bg-[#F3F4F6] hover:text-[#374151] disabled:cursor-not-allowed disabled:opacity-50"
               disabled={createDealMutation.isPending}
               onClick={() => onExpand(getValues())}
-              title="전체 생성 페이지로 열기"
+              title={t("dealCreate.openFullPage")}
               type="button"
             >
               <Maximize2 className="h-4 w-4" />
@@ -503,7 +507,7 @@ export function DealCreateDialog({
                 className="text-[16px] font-semibold text-[#94A3B8]"
                 htmlFor="deal-name"
               >
-                딜이름
+                {t("dealCreate.dealName")}
               </label>
               <div className="relative">
                 <BriefcaseBusiness className="pointer-events-none absolute left-0 top-1/2 h-5 w-5 -translate-y-1/2 text-[#CBD5E1]" />
@@ -514,7 +518,7 @@ export function DealCreateDialog({
                   aria-invalid={Boolean(errors.dealName)}
                   className="h-14 w-full border-0 bg-transparent pl-8 pr-1 text-[32px] font-semibold leading-none text-[#111827] outline-none placeholder:text-[#CBD5E1] placeholder:opacity-100"
                   id="deal-name"
-                  placeholder="딜이름을 넣어주세요."
+                  placeholder={t("dealCreate.dealNamePlaceholder")}
                   {...register("dealName")}
                 />
               </div>
@@ -529,7 +533,7 @@ export function DealCreateDialog({
               <DealCreatePanelProperty
                 error={errors.dealCost?.message ?? errors.currencyCode?.message}
                 errorId="deal-cost-error"
-                label="금액"
+                label={t("dealCreate.amount")}
               >
                 <input type="hidden" {...register("dealCost")} />
                 <input type="hidden" {...register("currencyCode")} />
@@ -538,7 +542,7 @@ export function DealCreateDialog({
                     <HandCoins className="h-4 w-4 text-[#6B7280]" />
                   </span>
                   <input
-                    aria-label="금액"
+                    aria-label={t("dealCreate.amount")}
                     aria-describedby={
                       errors.dealCost ? "deal-cost-error" : undefined
                     }
@@ -561,11 +565,11 @@ export function DealCreateDialog({
               <DealCreatePanelProperty
                 error={errors.expectedEndDate?.message}
                 errorId="deal-end-date-error"
-                label="예상 마감일"
+                label={t("dealCreate.expectedEndDate")}
               >
                 <input type="hidden" {...register("expectedEndDate")} />
                 <input
-                  aria-label="예상 마감일"
+                  aria-label={t("dealCreate.expectedEndDate")}
                   aria-describedby={
                     errors.expectedEndDate ? "deal-end-date-error" : undefined
                   }
@@ -582,20 +586,20 @@ export function DealCreateDialog({
             <section className="grid cursor-auto gap-3 sm:grid-cols-2">
               <DealCreatePanelProperty
                 error={errors.companyIds?.message}
-                label="회사"
+                label={t("dealCreate.company")}
               >
                 <div className="grid gap-2">
                   <SearchSelectField
-                    ariaLabel="회사"
-                    createActionLabel="회사 생성"
-                    emptyText="검색어를 바꾸면 회사를 찾을 수 있어요."
+                    ariaLabel={t("dealCreate.company")}
+                    createActionLabel={t("dealCreate.createCompany")}
+                    emptyText={t("dealCreate.companyEmpty")}
                     getLabel={(company) => company.companyName}
                     icon={Building2}
                     id="deal-company"
                     inputClassName="border-[#E6EAF0] text-[13px] focus:border-[#4880EE] focus:ring-1 focus:ring-[#4880EE]"
                     isLoading={companyOptionsQuery.isLoading}
                     items={companyOptions}
-                    placeholder="회사 검색"
+                    placeholder={t("dealCreate.companySearch")}
                     search={companySearch}
                     selectedId=""
                     selectedLabel=""
@@ -626,14 +630,14 @@ export function DealCreateDialog({
 
               <DealCreatePanelProperty
                 error={errors.contactIds?.message}
-                label="담당자"
+                label={t("dealCreate.contact")}
               >
                 <div className="grid gap-2">
                   <SearchSelectField
-                    ariaLabel="담당자"
-                    createActionLabel="담당자 생성"
+                    ariaLabel={t("dealCreate.contact")}
+                    createActionLabel={t("dealCreate.createContact")}
                     disabled={selectedCompanyIds.length === 0}
-                    emptyText="검색어를 바꾸면 담당자를 찾을 수 있어요."
+                    emptyText={t("dealCreate.contactEmpty")}
                     getDescription={(contact) =>
                       contact.contactDepartment.departmentName
                     }
@@ -643,7 +647,7 @@ export function DealCreateDialog({
                     inputClassName="border-[#E6EAF0] text-[13px] focus:border-[#4880EE] focus:ring-1 focus:ring-[#4880EE]"
                     isLoading={contactOptionsQuery.isLoading}
                     items={contactOptions}
-                    placeholder="담당자 검색"
+                    placeholder={t("dealCreate.contactSearch")}
                     search={contactSearch}
                     selectedId=""
                     selectedLabel=""
@@ -675,10 +679,10 @@ export function DealCreateDialog({
             <section className="grid cursor-auto gap-3 sm:grid-cols-2">
               <DealCreatePanelProperty
                 error={errors.productIds?.message}
-                label="제품"
+                label={t("dealCreate.product")}
               >
                 <ProductMultiSelectDropdown
-                  createActionLabel="제품 생성"
+                  createActionLabel={t("dealCreate.createProduct")}
                   id="deal-products"
                   inputClassName="border-[#E6EAF0] text-[13px] focus:border-[#4880EE] focus:ring-1 focus:ring-[#4880EE]"
                   isLoading={productOptionsQuery.isLoading}
@@ -695,7 +699,7 @@ export function DealCreateDialog({
 
               <DealCreatePanelProperty
                 error={errors.dealStatus?.message}
-                label="딜 단계"
+                label={t("dealCreate.dealStage")}
               >
                 <input type="hidden" {...register("dealStatus")} />
                 <DealStatusDropdown
@@ -715,14 +719,14 @@ export function DealCreateDialog({
             <section className="grid cursor-auto gap-3 sm:grid-cols-2">
               <DealCreatePanelProperty
                 error={errors.followingAction?.message}
-                label="다음 행동"
+                label={t("dealCreate.nextAction")}
               >
                 <input
-                  aria-label="다음 행동"
+                  aria-label={t("dealCreate.nextAction")}
                   aria-invalid={Boolean(errors.followingAction)}
                   className="h-10 w-full rounded-md border border-[#E6EAF0] px-3 text-[13px] outline-none transition-colors focus:border-[#4880EE] focus:ring-1 focus:ring-[#4880EE]"
                   id="deal-following"
-                  placeholder="예: 제안서 발송"
+                  placeholder={t("dealCreate.nextActionPlaceholder")}
                   {...register("followingAction")}
                 />
               </DealCreatePanelProperty>
@@ -733,11 +737,11 @@ export function DealCreateDialog({
                 className="text-[16px] font-semibold text-[#94A3B8]"
                 htmlFor="deal-memo"
               >
-                메모
+                {t("dealCreate.memo")}
               </label>
               <div className="relative min-h-8">
                 <textarea
-                  aria-label="메모"
+                  aria-label={t("dealCreate.memo")}
                   className="min-h-0 w-full resize-none overflow-hidden border-0 bg-white px-0 py-1 text-[14px] leading-6 text-[#111827] outline-none"
                   id="deal-memo"
                   {...memoRegister}
@@ -753,7 +757,7 @@ export function DealCreateDialog({
                 />
                 {dealMemo.trim().length === 0 ? (
                   <span className="pointer-events-none absolute left-0 top-1 text-[14px] font-semibold leading-6 text-[#CBD5E1]">
-                    번뜩이는 생각들을 기록하세요!
+                    {t("dealCreate.memoPlaceholder")}
                   </span>
                 ) : null}
               </div>
@@ -762,7 +766,7 @@ export function DealCreateDialog({
             {createDealMutation.error ? (
               <ErrorState
                 message={getApiErrorMessage(createDealMutation.error)}
-                title="딜 저장 실패"
+                title={t("dealCreate.saveFailed")}
                 variant="inline"
               />
             ) : null}
@@ -783,7 +787,7 @@ export function DealCreateDialog({
               onClick={() => onOpenChange(false)}
               type="button"
             >
-              {isPage ? "목록으로" : "닫기"}
+              {isPage ? t("dealCreate.list") : t("common.close")}
             </button>
             <button
               className="inline-flex h-9 items-center justify-center gap-2 rounded-md bg-[#4880EE] px-3.5 text-[13px] font-semibold text-white transition hover:bg-[#1D4ED8] disabled:cursor-not-allowed disabled:opacity-60"
@@ -795,7 +799,7 @@ export function DealCreateDialog({
               ) : (
                 <Check className="h-4 w-4" />
               )}
-              {createDealMutation.isPending ? "저장 중" : "저장"}
+              {createDealMutation.isPending ? t("common.saving") : t("common.save")}
             </button>
           </div>
         </footer>
@@ -887,6 +891,7 @@ function QuickCompanyCreateDialog({
   onOpenChange,
   onCreated,
 }: QuickCompanyCreateDialogProps) {
+  const { t } = useAppI18n();
   const createCompanyMutation = useCreateCompanyMutation();
   const fieldsQuery = useCompanyFields();
   const regionsQuery = useCompanyRegions();
@@ -979,7 +984,7 @@ function QuickCompanyCreateDialog({
           <ModalFooterActions
             formId={formId}
             isSubmitting={createCompanyMutation.isPending}
-            submitLabel="회사 저장"
+            submitLabel={t("dealCreate.companySave")}
             onCancel={() => onOpenChange(false)}
             onSubmit={() => void onSubmit()}
           />
@@ -987,15 +992,15 @@ function QuickCompanyCreateDialog({
         open={open}
         panelClassName="max-h-[82vh] md:max-h-[560px]"
         size="sm"
-        title="회사 생성"
+        title={t("dealCreate.companyCreateTitle")}
         onOpenChange={onOpenChange}
       >
         <ModalForm id={formId} onSubmit={onSubmit}>
-          <ModalFormSection title="회사 기본 정보">
+          <ModalFormSection title={t("dealCreate.companyBasicInfo")}>
             <ModalFieldGroup
               error={errors.companyName?.message}
               id="deal-quick-company-name"
-              label="회사명"
+              label={t("dealCreate.companyName")}
             >
               <input
                 aria-invalid={Boolean(errors.companyName)}
@@ -1009,18 +1014,18 @@ function QuickCompanyCreateDialog({
               <ModalFieldGroup
                 error={errors.companyFieldId?.message}
                 id="deal-quick-company-field"
-                label="분야"
+                label={t("dealCreate.field")}
               >
                 <input type="hidden" {...register("companyFieldId")} />
                 <SearchSelectField
-                  createActionLabel="분야 추가"
-                  emptyText="검색어를 바꾸면 분야를 찾을 수 있어요."
+                  createActionLabel={t("dealCreate.fieldAdd")}
+                  emptyText={t("dealCreate.fieldEmpty")}
                   getLabel={(field) => field.field}
                   icon={Layers}
                   id="deal-quick-company-field"
                   isLoading={fieldsQuery.isLoading}
                   items={fields}
-                  placeholder="분야 선택"
+                  placeholder={t("dealCreate.fieldSelect")}
                   search={fieldSearch}
                   selectedId={selectedFieldId}
                   selectedLabel={selectedField?.field ?? fieldSearch}
@@ -1054,18 +1059,18 @@ function QuickCompanyCreateDialog({
               <ModalFieldGroup
                 error={errors.companyRegionId?.message}
                 id="deal-quick-company-region"
-                label="지역"
+                label={t("dealCreate.region")}
               >
                 <input type="hidden" {...register("companyRegionId")} />
                 <SearchSelectField
-                  createActionLabel="지역 추가"
-                  emptyText="검색어를 바꾸면 지역을 찾을 수 있어요."
+                  createActionLabel={t("dealCreate.regionAdd")}
+                  emptyText={t("dealCreate.regionEmpty")}
                   getLabel={(region) => region.region}
                   icon={MapPin}
                   id="deal-quick-company-region"
                   isLoading={regionsQuery.isLoading}
                   items={regions}
-                  placeholder="지역 검색"
+                  placeholder={t("dealCreate.regionSearch")}
                   search={regionSearch}
                   selectedId={selectedRegionId}
                   selectedLabel={selectedRegion?.region ?? regionSearch}
@@ -1098,10 +1103,10 @@ function QuickCompanyCreateDialog({
             </ModalFormRow>
           </ModalFormSection>
 
-          <ModalFormSection title="메모(옵션)">
+          <ModalFormSection title={t("dealCreate.memoOptional")}>
             <ModalFieldGroup id="deal-quick-company-memo">
               <textarea
-                aria-label="메모"
+                aria-label={t("dealCreate.memo")}
                 className="min-h-20 resize-y rounded-md border px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-ring"
                 id="deal-quick-company-memo"
                 {...register("companyMemo")}
@@ -1112,7 +1117,7 @@ function QuickCompanyCreateDialog({
           {createCompanyMutation.error ? (
             <ErrorState
               message={getApiErrorMessage(createCompanyMutation.error)}
-              title="회사 저장 실패"
+              title={t("dealCreate.companySaveFailed")}
               variant="inline"
             />
           ) : null}
@@ -1156,6 +1161,7 @@ function QuickContactCreateDialog({
   onOpenChange,
   onCreated,
 }: QuickContactCreateDialogProps) {
+  const { t } = useAppI18n();
   const createContactMutation = useCreateContactMutation();
   const departmentsQuery = useContactDepartments();
   const jobGradesQuery = useContactJobGrades();
@@ -1257,7 +1263,7 @@ function QuickContactCreateDialog({
           <ModalFooterActions
             formId={formId}
             isSubmitting={createContactMutation.isPending}
-            submitLabel="담당자 저장"
+            submitLabel={t("dealCreate.contactSave")}
             onCancel={() => onOpenChange(false)}
             onSubmit={() => void onSubmit()}
           />
@@ -1267,16 +1273,16 @@ function QuickContactCreateDialog({
         footerClassName="h-14"
         panelClassName="max-h-[calc(100vh-2rem)] md:max-h-[720px]"
         size="md"
-        title="담당자 생성"
+        title={t("dealCreate.contactCreateTitle")}
         onOpenChange={onOpenChange}
       >
         <ModalForm className="gap-3" id={formId} onSubmit={onSubmit}>
-          <ModalFormSection className="gap-2" title="담당자 기본 정보">
+          <ModalFormSection className="gap-2" title={t("dealCreate.contactBasicInfo")}>
             <ModalFormRow columns={2}>
               <ModalFieldGroup
                 error={errors.username?.message}
                 id="deal-quick-contact-name"
-                label="이름"
+                label={t("dealCreate.name")}
               >
                 <input
                   aria-invalid={Boolean(errors.username)}
@@ -1289,7 +1295,7 @@ function QuickContactCreateDialog({
               <ModalFieldGroup
                 error={errors.companyId?.message}
                 id="deal-quick-contact-company"
-                label="회사"
+                label={t("dealCreate.company")}
               >
                 <select
                   aria-invalid={Boolean(errors.companyId)}
@@ -1297,7 +1303,7 @@ function QuickContactCreateDialog({
                   id="deal-quick-contact-company"
                   {...register("companyId")}
                 >
-                  <option value="">회사 선택</option>
+                  <option value="">{t("dealCreate.companySelect")}</option>
                   {companyOptions.map((company) => (
                     <option key={company.id} value={company.id}>
                       {company.companyName}
@@ -1311,7 +1317,7 @@ function QuickContactCreateDialog({
               <ModalFieldGroup
                 error={errors.mobile?.message}
                 id="deal-quick-contact-mobile"
-                label="휴대폰번호"
+                label={t("dealCreate.mobile")}
               >
                 <input
                   aria-invalid={Boolean(errors.mobile)}
@@ -1325,7 +1331,7 @@ function QuickContactCreateDialog({
               <ModalFieldGroup
                 error={errors.email?.message}
                 id="deal-quick-contact-email"
-                label="이메일"
+                label={t("dealCreate.email")}
               >
                 <input
                   aria-invalid={Boolean(errors.email)}
@@ -1337,23 +1343,23 @@ function QuickContactCreateDialog({
             </ModalFormRow>
           </ModalFormSection>
 
-          <ModalFormSection className="gap-2" title="소속 정보">
+          <ModalFormSection className="gap-2" title={t("dealCreate.affiliation")}>
             <ModalFormRow columns={2}>
               <ModalFieldGroup
                 error={errors.contactDepartmentId?.message}
                 id="deal-quick-contact-department"
-                label="부서"
+                label={t("dealCreate.department")}
               >
                 <input type="hidden" {...register("contactDepartmentId")} />
                 <SearchSelectField
-                  createActionLabel="부서 추가"
-                  emptyText="검색어를 바꾸면 부서를 찾을 수 있어요."
+                  createActionLabel={t("dealCreate.departmentAdd")}
+                  emptyText={t("dealCreate.departmentEmpty")}
                   getLabel={(department) => department.departmentName}
                   icon={Users}
                   id="deal-quick-contact-department"
                   isLoading={departmentsQuery.isLoading}
                   items={departments}
-                  placeholder="부서 검색"
+                  placeholder={t("dealCreate.departmentSearch")}
                   search={departmentSearch}
                   selectedId={selectedDepartmentId}
                   selectedLabel={
@@ -1389,18 +1395,18 @@ function QuickContactCreateDialog({
               <ModalFieldGroup
                 error={errors.contactJobGradeId?.message}
                 id="deal-quick-contact-job-grade"
-                label="직급"
+                label={t("dealCreate.jobGrade")}
               >
                 <input type="hidden" {...register("contactJobGradeId")} />
                 <SearchSelectField
-                  createActionLabel="직급 추가"
-                  emptyText="검색어를 바꾸면 직급을 찾을 수 있어요."
+                  createActionLabel={t("dealCreate.jobGradeAdd")}
+                  emptyText={t("dealCreate.jobGradeEmpty")}
                   getLabel={(jobGrade) => jobGrade.jobGradeName}
                   icon={BadgeCheck}
                   id="deal-quick-contact-job-grade"
                   isLoading={jobGradesQuery.isLoading}
                   items={jobGrades}
-                  placeholder="직급 검색"
+                  placeholder={t("dealCreate.jobGradeSearch")}
                   search={jobGradeSearch}
                   selectedId={selectedJobGradeId}
                   selectedLabel={
@@ -1435,10 +1441,10 @@ function QuickContactCreateDialog({
             </ModalFormRow>
           </ModalFormSection>
 
-          <ModalFormSection className="gap-2" title="메모(옵션)">
+          <ModalFormSection className="gap-2" title={t("dealCreate.memoOptional")}>
             <ModalFieldGroup id="deal-quick-contact-memo">
               <textarea
-                aria-label="메모"
+                aria-label={t("dealCreate.memo")}
                 className="h-16 resize-none rounded-md border px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-ring"
                 id="deal-quick-contact-memo"
                 {...register("contactMemo")}
@@ -1449,7 +1455,7 @@ function QuickContactCreateDialog({
           {createContactMutation.error ? (
             <ErrorState
               message={getApiErrorMessage(createContactMutation.error)}
-              title="담당자 저장 실패"
+              title={t("dealCreate.contactSaveFailed")}
               variant="inline"
             />
           ) : null}
@@ -1527,6 +1533,7 @@ export function SearchSelectField<TItem extends { readonly id: string }>({
   onClear,
   onCreate,
 }: SearchSelectFieldProps<TItem>) {
+  const { t } = useAppI18n();
   const [isOpen, setIsOpen] = useState(false);
   const wrapperRef = useRef<HTMLDivElement>(null);
   const placement = useDropdownPlacement({
@@ -1584,12 +1591,14 @@ export function SearchSelectField<TItem extends { readonly id: string }>({
           setIsOpen(true);
         }}
         onFocus={() => setIsOpen(true)}
-        placeholder={disabled ? "회사를 먼저 선택해 주세요" : placeholder}
+        placeholder={disabled ? t("dealCreate.selectCompanyFirst") : placeholder}
         value={inputValue}
       />
       {selectedId || search ? (
         <button
-          aria-label={`${placeholder} 지우기`}
+          aria-label={t("dealCreate.clearSearch", {
+            values: { name: placeholder },
+          })}
           className="absolute right-2 top-5 grid h-7 w-7 -translate-y-1/2 place-items-center rounded-md text-muted-foreground hover:bg-muted"
           onClick={() => {
             onClear();
@@ -1619,7 +1628,7 @@ export function SearchSelectField<TItem extends { readonly id: string }>({
         >
           {isLoading ? (
             <p className="px-3 py-2 text-sm text-muted-foreground">
-              검색하고 있어요.
+              {t("dealCreate.searching")}
             </p>
           ) : visibleItems.length === 0 ? (
             <div className="grid gap-2 px-3 py-3">
@@ -1710,6 +1719,7 @@ export function DealStatusDropdown({
   buttonClassName,
   onChange,
 }: DealStatusDropdownProps) {
+  const { t } = useAppI18n();
   const [isOpen, setIsOpen] = useState(false);
   const wrapperRef = useRef<HTMLDivElement>(null);
 
@@ -1746,7 +1756,7 @@ export function DealStatusDropdown({
         type="button"
       >
         <span className="min-w-0 flex-1 truncate">
-          {DEAL_STATUS_LABEL[value]}
+          {getDealStatusLabel(value, t)}
         </span>
       </button>
       <ChevronDown
@@ -1779,7 +1789,7 @@ export function DealStatusDropdown({
                 role="option"
                 type="button"
               >
-                {DEAL_STATUS_LABEL[status]}
+                {getDealStatusLabel(status, t)}
               </button>
             );
           })}
@@ -1801,6 +1811,7 @@ export function ProductMultiSelectDropdown({
   onToggle,
   onCreate,
 }: ProductMultiSelectDropdownProps) {
+  const { t } = useAppI18n();
   const [isOpen, setIsOpen] = useState(false);
   const wrapperRef = useRef<HTMLDivElement>(null);
   const placement = useDropdownPlacement({
@@ -1871,7 +1882,9 @@ export function ProductMultiSelectDropdown({
           }}
           onFocus={() => setIsOpen(true)}
           placeholder={
-            selectedItems.length > 0 ? "제품 추가 검색" : "제품명 검색"
+            selectedItems.length > 0
+              ? t("dealCreate.productAddSearch")
+              : t("dealCreate.productNameSearch")
           }
           value={search}
         />
@@ -1911,22 +1924,24 @@ export function ProductMultiSelectDropdown({
         >
           <div className="hidden items-center justify-between border-b px-3 py-2">
             <span className="text-[11px] font-semibold text-muted-foreground">
-              제품 선택
+              {t("dealCreate.productSelect")}
             </span>
             <span className="text-[11px] text-muted-foreground">
-              {selectedIds.length}개 선택
+              {t("dealCreate.selectedCount", {
+                values: { count: selectedIds.length },
+              })}
             </span>
           </div>
 
           <div className="max-h-44 overflow-y-auto">
             {isLoading ? (
               <p className="px-3 py-4 text-center text-sm text-muted-foreground">
-                제품을 불러오고 있어요.
+                {t("dealCreate.productLoading")}
               </p>
             ) : visibleItems.length === 0 ? (
               <div className="grid gap-2 px-3 py-4">
                 <p className="text-center text-sm text-muted-foreground">
-                  검색어를 바꾸면 제품을 찾을 수 있어요.
+                  {t("dealCreate.productEmpty")}
                 </p>
                 {query.length > 0 && onCreate && createActionLabel ? (
                   <button
@@ -1980,6 +1995,14 @@ export function ProductMultiSelectDropdown({
 
 function normalizeText(value: string) {
   return value.trim().toLocaleLowerCase("ko-KR");
+}
+
+// 기능 : Deal 상태 코드를 현재 앱 locale의 짧은 라벨로 변환합니다.
+function getDealStatusLabel(
+  status: DealStatus,
+  t: (key: AppI18nKey) => string,
+) {
+  return t(`dealStatus.${status}` as AppI18nKey);
 }
 
 function findCompanyOptionByName(
