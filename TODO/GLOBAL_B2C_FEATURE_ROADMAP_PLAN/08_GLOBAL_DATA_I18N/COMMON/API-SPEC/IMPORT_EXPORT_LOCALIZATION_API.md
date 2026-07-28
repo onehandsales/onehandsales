@@ -149,11 +149,16 @@ Observability:
 
 ## 7. 구현 체크리스트
 
-- [ ] Import template locale 선택 API가 있다.
-- [ ] `ko-KR`, `en` header dictionary가 있다.
-- [ ] Export header가 사용자 locale 기준으로 바뀐다.
-- [ ] Export 날짜/시간이 사용자 timezone 기준으로 바뀐다.
-- [ ] Product/Deal export가 currency-aware하다.
-- [ ] Contact export가 legacy `mobile` fallback을 처리한다.
-- [ ] Transaction 계약과 Observability 계약이 구현 결과와 일치한다.
-- [ ] Backend/Frontend 신규 코드에 한글 주석 규칙이 적용된다.
+- [x] Import template locale 선택 API가 있다.
+- [x] `ko-KR`, `en` header dictionary가 있다.
+- [x] Export header가 사용자 locale 기준으로 바뀐다.
+- [x] Export 날짜/시간이 사용자 timezone 기준으로 바뀐다.
+- [x] Product/Deal export가 currency-aware하다.
+- [x] Contact export가 legacy `mobile` fallback을 처리한다.
+- [x] Transaction 계약과 Observability 계약이 구현 결과와 일치한다.
+- [x] Backend/Frontend 신규 코드에 한글 주석 규칙이 적용된다.
+
+## 8. G10 검토 기록
+
+- 2026-07-28: Import template `locale=ko-KR|en`, 도메인별 export header/value 현지화, Contact phone 세분 export, Product/Deal currency export 계약을 구현 결과와 대조했다.
+- 2026-07-28: User Web `test:e2e`와 `test:e2e:mobile`에서 Import/Export 관련 smoke가 통과했다.

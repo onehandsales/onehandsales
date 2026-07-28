@@ -1,10 +1,10 @@
 # API Spec
 
-상태: Ready for Goal Execution
+상태: Implemented / G10 Reviewed
 
 ## 1. 목적
 
-08의 Backend API 계약을 goal별 구현 전에 고정한다. 실제 DTO/route 이름은 G01에서 현재 코드와 대조한 뒤 보정할 수 있다.
+08의 Backend API 계약과 G10 기준 구현 결과를 함께 고정한다. 실제 DTO/route 이름은 G01~G10에서 현재 코드와 대조해 보정했다.
 
 ## 2. Spec 파일
 
@@ -12,6 +12,8 @@
 - `AUTH_PROVIDER_API.md`
 - `DOMAIN_GLOBAL_DATA_API.md`
 - `IMPORT_EXPORT_LOCALIZATION_API.md`
+
+G10 기준 네 spec 모두 구현 결과와 대조했다. 실제 OAuth provider smoke와 현재 연결 DB migration 적용은 운영 환경 의존 항목으로 별도 기록한다.
 
 ## 3. 공통 원칙
 

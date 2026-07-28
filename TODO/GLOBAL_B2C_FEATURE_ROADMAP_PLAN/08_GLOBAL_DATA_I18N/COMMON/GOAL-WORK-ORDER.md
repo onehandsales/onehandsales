@@ -75,5 +75,5 @@ G01_DOCUMENT_CONTRACT_SYNC
 ## 4. 현재 상태
 
 ```text
-G01~G03 완료. G04부터 순차 실행 가능.
+G01~G10 완료. 08 Global Data I18N은 G10 QA Document Closeout 기준으로 닫혔다.
 ```

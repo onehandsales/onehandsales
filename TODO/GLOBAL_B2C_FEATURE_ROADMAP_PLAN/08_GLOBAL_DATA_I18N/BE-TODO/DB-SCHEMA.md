@@ -1,6 +1,6 @@
 # DB Schema TODO
 
-상태: G08 Done
+상태: Implemented / G10 Reviewed
 
 ## 1. User
 
@@ -15,7 +15,7 @@
 - `lastLoginCountryCode`
 - `lastLoginTimeZone`
 
-추가 후보:
+반영 결과:
 
 - `countryCode String @default("KR")`
 - `defaultCurrencyCode String @default("KRW")`
@@ -51,7 +51,7 @@ enum OAuthProvider {
 
 ## 3. Product / Deal Currency
 
-추가 후보:
+반영 결과:
 
 ```prisma
 model Product {
@@ -79,7 +79,7 @@ model Deal {
 
 - `mobile String`
 
-추가 후보:
+반영 결과:
 
 ```prisma
 model Contact {
@@ -106,7 +106,7 @@ model Contact {
 - Company는 `companyRegionId`로 사용자 커스텀 `CompanyRegion`을 참조한다.
 - Contact에는 주소/지역 필드가 없다.
 
-추가 후보:
+반영 결과:
 
 ```prisma
 model Company {
@@ -153,6 +153,12 @@ California -> countryCode US, regionCode US-CA
 - migration은 기존 한국 데이터 보존을 최우선으로 한다.
 - 자동 mapping 실패 row는 삭제하지 않는다.
 - enum 추가는 application mapping, seed, test까지 함께 갱신한다.
+
+G10 migration 상태:
+
+- 저장소 migration: `20260728010000_add_user_global_settings`, `20260728020000_add_product_deal_currency`, `20260728030000_add_contact_global_phone`, `20260728040000_add_company_global_region_address`, `20260728050000_add_line_oauth_provider` 확인.
+- `pnpm.cmd run prisma:validate`와 `pnpm.cmd run prisma:generate` 통과.
+- `pnpm.cmd exec prisma migrate status` 기준 현재 `.env` 연결 DB에는 위 5개 migration이 미적용 상태다. G10은 배포 명령을 실행하지 않으므로 운영 적용은 별도 배포 절차에서 처리한다.
 
 ## 8. 새 Table 작성 기준
 

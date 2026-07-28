@@ -143,7 +143,11 @@ async function handleApiRequest(
 
   if (pathname === "/api/auth/providers" && method === "GET") {
     return json({
-      providers: [{ enabled: true, label: "Google", provider: "google" }],
+      providers: [
+        { enabled: true, label: "Google", provider: "google" },
+        { enabled: true, label: "LINE", provider: "line" },
+        { enabled: true, label: "Apple", provider: "apple" },
+      ],
     });
   }
 
@@ -1744,6 +1748,12 @@ function createWeeklyScheduleReport(store: UserWebApiMockStore, url: URL) {
       scheduledDayCount: reportSchedule ? 1 : 0,
       scheduleDealLinkCount: distinctDeals.length,
       totalDealCost,
+      totalDealCostByCurrency: [
+        {
+          currencyCode: "KRW",
+          totalDealCost,
+        },
+      ],
       totalScheduleCount: reportSchedule ? 1 : 0,
       totalScheduleEntryCount: reportSchedule ? 1 : 0,
       unlinkedScheduleCount: reportSchedule && distinctDeals.length === 0 ? 1 : 0,

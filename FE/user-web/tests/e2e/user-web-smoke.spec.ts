@@ -51,6 +51,8 @@ type CompanyField = {
 type CompanyRegion = {
   readonly id: string;
   readonly region: string;
+  readonly countryCode: "KR" | "US" | null;
+  readonly regionCode: string | null;
 };
 
 type Company = {
@@ -396,7 +398,7 @@ test.describe("User Web smoke E2E", () => {
       await expect(dialog).toBeVisible();
       await dialog.getByLabel("회사명").fill(COMPANY_NAME);
       await selectManagedOption(dialog, "분야명", "B2C SaaS");
-      await selectManagedOption(dialog, "지역명", "서울");
+      await selectCompanyRegionOption(dialog, "서울");
       await dialog.getByLabel("메모").fill("G34 smoke 회사 fixture");
       await dialog.getByRole("button", { name: "저장" }).click();
 
@@ -415,7 +417,7 @@ test.describe("User Web smoke E2E", () => {
 
       await expect(dialog).toBeVisible();
       await dialog.getByLabel("담당자명").fill(CONTACT_NAME);
-      await dialog.getByLabel("휴대폰번호").fill("010-1234-5678");
+      await dialog.getByLabel("전화번호", { exact: true }).fill("010-1234-5678");
       await dialog.getByLabel("이메일").fill("smoke@example.com");
       await selectSearchOption(dialog, "회사", COMPANY_NAME);
       await selectManagedOption(dialog, "부서명", "구매팀");
@@ -599,6 +601,8 @@ async function handleApiRequest(
     return json({
       providers: [
         { provider: "google", label: "Google", enabled: true },
+        { provider: "line", label: "LINE", enabled: true },
+        { provider: "apple", label: "Apple", enabled: true },
       ],
     });
   }
@@ -682,10 +686,16 @@ async function handleApiRequest(
   }
 
   if (path === "/api/company-regions" && method === "POST") {
-    const input = await readBody<{ readonly region?: string }>(route);
+    const input = await readBody<{
+      readonly countryCode?: "KR" | "US" | null;
+      readonly region?: string;
+      readonly regionCode?: string | null;
+    }>(route);
     store.companyRegions.push({
       id: nextId(store, "company-region"),
       region: input.region ?? "신규 지역",
+      countryCode: input.countryCode ?? null,
+      regionCode: input.regionCode ?? null,
     });
     return json(null, 204);
   }
@@ -922,7 +932,14 @@ function createStore(): SmokeStore {
   return {
     companies: [],
     companyFields: [{ id: "company-field-1", field: "B2C SaaS" }],
-    companyRegions: [{ id: "company-region-1", region: "서울" }],
+    companyRegions: [
+      {
+        countryCode: "KR",
+        id: "company-region-1",
+        region: "서울",
+        regionCode: "KR-11",
+      },
+    ],
     contacts: [],
     contactDepartments: [{ id: "contact-department-1", departmentName: "구매팀" }],
     contactJobGrades: [{ id: "contact-job-grade-1", jobGradeName: "팀장" }],
@@ -1718,6 +1735,11 @@ async function selectManagedOption(
     .getByRole("button", { name: optionName, exact: true })
     .first()
     .click();
+}
+
+// 기능 : 회사 생성 폼의 국가/지역 select 기반 지역 선택을 수행합니다.
+async function selectCompanyRegionOption(scope: Locator, optionName: string) {
+  await scope.getByLabel("지역", { exact: true }).selectOption({ label: optionName });
 }
 
 async function selectSearchOption(

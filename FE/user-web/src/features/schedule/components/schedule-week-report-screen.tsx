@@ -302,7 +302,7 @@ function WeeklyReportSummary({
     readonly scheduleDealLinkCount: number;
     readonly distinctLinkedDealCount: number;
     readonly totalDealCost: number;
-    readonly totalDealCostByCurrency: ReadonlyArray<WeeklyScheduleReportCurrencyTotal>;
+    readonly totalDealCostByCurrency?: ReadonlyArray<WeeklyScheduleReportCurrencyTotal>;
     readonly dealStatusCounts: ReadonlyArray<{
       readonly dealStatusLabel: string;
       readonly count: number;
@@ -311,6 +311,8 @@ function WeeklyReportSummary({
   readonly timeZone?: string;
 }) {
   const { formatCurrency } = useAppI18n();
+  // 기능 : G07 이전 응답이나 일부 mock 응답에는 통화별 합계가 없을 수 있어 총액 fallback으로 보정합니다.
+  const totalDealCostByCurrency = summary.totalDealCostByCurrency ?? [];
 
   return (
     <section className="grid gap-3 border-b border-[#E2E5EC] pb-4">
@@ -334,7 +336,7 @@ function WeeklyReportSummary({
           icon={<FileText className="h-4 w-4" />}
           label="딜 금액"
           value={formatDealCostTotals(
-            summary.totalDealCostByCurrency,
+            totalDealCostByCurrency,
             summary.totalDealCost,
             formatCurrency
           )}

@@ -65,7 +65,11 @@ test.describe("G04 Google Calendar UX", () => {
     await expect(
       page.getByText("Google Calendar가 연결됐어요.").first(),
     ).toBeVisible();
-    await page.getByRole("button", { exact: true, name: "닫기" }).click();
+    const connectedNotice = page.getByRole("dialog").filter({
+      hasText: "Google Calendar가 연결됐어요.",
+    });
+    await connectedNotice.getByRole("button", { exact: true, name: "닫기" }).click();
+    await expect(connectedNotice).toBeHidden();
     await expect(page.getByText("mobile-qa@example.test").first()).toBeVisible();
     await expect(page.getByText("1/2개").first()).toBeVisible();
 
@@ -92,7 +96,14 @@ test.describe("G04 Google Calendar UX", () => {
     expect(request.postDataJSON()).toEqual({
       selectedCalendarIds: ["primary"],
     });
-    await page.getByRole("button", { exact: true, name: "닫기" }).click();
+    await expect(calendarDialog).toBeHidden();
+    const selectionSavedNotice = page.getByRole("dialog").filter({
+      hasText: "캘린더 선택을 저장했어요.",
+    });
+    await selectionSavedNotice
+      .getByRole("button", { exact: true, name: "닫기" })
+      .click();
+    await expect(selectionSavedNotice).toBeHidden();
 
     await page.getByRole("button", { name: "연결 해제" }).click();
     const disconnectDialog = page.getByRole("dialog", { name: "연결 해제" });

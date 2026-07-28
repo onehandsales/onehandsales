@@ -1,6 +1,6 @@
 # Backend API TODO
 
-상태: Ready for Goal Execution
+상태: Implemented / G10 Reviewed
 
 ## 1. API 변경 범위
 
@@ -126,3 +126,10 @@ Company/CompanyRegion:
 - 기존 한국 데이터 migration은 실패 데이터 때문에 전체 배포를 중단하지 않는다.
 - Prisma schema와 migration SQL에는 의도를 설명하는 한글 주석/COMMENT를 남긴다.
 - Backend controller/use case/repository/helper에는 `AGENT/SOFTWARE_AGENT`의 한국어 주석 규칙을 적용한다.
+
+## 8. 구현 및 G10 검토 기록
+
+- 2026-07-28: User profile 글로벌 설정, Product/Deal currency, Contact phone, CompanyRegion code/address, Import template locale, domain export localization, Google/LINE/Apple auth provider API가 구현됐다.
+- 2026-07-28: Backend `prisma:validate`, `prisma:generate`, `typecheck`, `lint`, `test` 64 suites / 333 tests, `build` 통과.
+- 2026-07-28: `prisma migrate status` 기준 현재 `.env` 연결 DB에는 08 migration 5개가 아직 적용되지 않았다. G10에서는 원격 DB 변경을 실행하지 않았고, 운영 배포 전 `prisma migrate deploy`가 필요하다.
+- 2026-07-28: 실제 Google/LINE/Apple provider smoke는 Supabase/provider secret과 운영 설정이 필요해 로컬 G10에서는 실행하지 않았다.

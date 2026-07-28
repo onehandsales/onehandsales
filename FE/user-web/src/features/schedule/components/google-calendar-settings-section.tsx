@@ -78,6 +78,7 @@ export function GoogleCalendarSettingsSection({
     () => calendarsQuery.data?.calendars ?? [],
     [calendarsQuery.data?.calendars],
   );
+  const refetchStatus = statusQuery.refetch;
 
   useEffect(() => {
     const result = searchParams.get("googleCalendar");
@@ -93,7 +94,7 @@ export function GoogleCalendarSettingsSection({
     if (result === "connected") {
       setActionError(null);
       onNotice("Google Calendar가 연결됐어요.");
-      void statusQuery.refetch();
+      void refetchStatus();
       return;
     }
 
@@ -102,7 +103,7 @@ export function GoogleCalendarSettingsSection({
         ? "Google Calendar 연결 권한이 거절됐어요."
         : "Google Calendar와 연결하지 못했어요. 다시 시도해 주세요.",
     );
-  }, [onNotice, searchParams, setSearchParams, statusQuery]);
+  }, [onNotice, refetchStatus, searchParams, setSearchParams]);
 
   useEffect(() => {
     if (!calendarModalOpen || calendars.length === 0) {

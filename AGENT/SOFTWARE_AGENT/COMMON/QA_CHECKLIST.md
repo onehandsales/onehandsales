@@ -272,7 +272,7 @@ pnpm build
 ### 2026-07-09 기능 QA 후속 항목
 
 - `BUG-001`: 회의록 생성 시 최초 수동 QA에서 `InternalServerError`로 저장 실패했으나 최신 BE 재시작 후 API 직접 호출과 UI 재시도 모두 성공. 원인 후보는 오래된 `BE/dist/main` 프로세스 사용이다. 상태: Resolved
-- `FOLLOW-UP-001`: Apple login은 iOS 대응 시, LINE login은 일본/대만 확장 시 별도 provider QA로 추가
+- `FOLLOW-UP-001`: 08_GLOBAL_DATA_I18N 완료 기준 Google/LINE/Apple은 runtime provider다. 실제 provider smoke는 Supabase/provider 운영 설정과 secret 준비 후 별도 QA로 확인
 - `FOLLOW-UP-002`: 일정이 9일~10일처럼 여러 날짜에 걸칠 때 Google Calendar처럼 9일과 10일 양쪽에 표시되어야 함
 - `FOLLOW-UP-003`: 회사/담당자/제품/딜/일정 생성 UXUI 개선 필요. 이번 기능 QA의 실패로 보지는 않음
 
@@ -1060,10 +1060,10 @@ pnpm build
 - [ ] Admin 운영 화면은 현재 제품 QA 범위에서 제외
 - [ ] 과금/구독 결제는 현재 제품 QA 범위에서 제외
 - [ ] MeetingNote raw text/admin raw access는 미래 범위
-- [ ] Apple login은 iOS 대응 시, LINE login은 일본/대만 확장 시 별도 provider 설정/QA 필요
+- [ ] Google/LINE/Apple 실제 provider smoke는 Supabase/provider 운영 설정과 secret 준비 후 별도 provider 설정/QA 필요
 - [ ] 가입 국가/마지막 로그인 국가는 proxy geo header가 없는 환경에서 `기록 없음`일 수 있음
 - [ ] 현재 User Web은 `mobile`/`personal_laptop` 두 device slot만 사용하며 모바일 여러 대 동시 active session은 보장하지 않음
-- [ ] 현재 전화번호 입력/검증은 한국 휴대폰 형식 중심이며, 다국가 전화번호 모델은 후속 검토
+- [ ] 현재 전화번호 입력/검증은 KR/US 1차 지원이며, 그 외 국가 전화번호 모델은 후속 검토
 
 ## 29. 버그 리포트 템플릿
 

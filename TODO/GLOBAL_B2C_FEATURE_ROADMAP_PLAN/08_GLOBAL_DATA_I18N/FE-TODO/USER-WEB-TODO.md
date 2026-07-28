@@ -1,6 +1,6 @@
 # User Web TODO
 
-상태: Ready for Goal Execution
+상태: Implemented / G10 Reviewed
 
 ## 1. 화면 범위
 
@@ -115,3 +115,10 @@ Default currency: KRW / USD
 - `/app/*` route에 locale prefix가 붙지 않는다.
 - 로그인/회원가입 화면에서 Google, LINE, Apple 버튼만 의도한 영역에 추가된다.
 - User Web이 `/admin/api/*`를 호출하지 않는다.
+
+## 10. 구현 및 G10 검토 기록
+
+- 2026-07-28: G03~G09에서 app i18n foundation, `/app/settings` 글로벌 설정, Product/Deal currency UI, Contact KR/US phone UI, Company country/region/address UI, Import template language selector, Export 현지화 문구, Google/LINE/Apple auth provider 버튼, 핵심 `/app` 화면 번역을 구현했다.
+- 2026-07-28: G10에서 `pnpm.cmd run typecheck`, `pnpm.cmd run lint`, `pnpm.cmd run build`, `pnpm.cmd run test:e2e` 27 passed, `pnpm.cmd run test:e2e:mobile` 12 passed를 확인했다.
+- 2026-07-28: G10 QA 중 주간 보고서 구버전 응답 fallback, Settings Google Calendar notice 반복 표시, E2E mock provider/CompanyRegion 계약 불일치를 수정하고 재검증했다.
+- 2026-07-28: 실제 Google/LINE/Apple OAuth smoke는 Supabase/provider 운영 설정과 secret이 필요해 로컬 G10에서는 실행하지 않았다.

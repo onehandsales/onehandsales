@@ -1,6 +1,6 @@
 # G10 QA Document Closeout
 
-상태: Not Started
+상태: Done
 목표: 08 전체 구현 결과를 검증하고 문서를 동기화한다.
 
 ## 1. 포함 범위
@@ -89,42 +89,86 @@ pnpm run test:e2e
 pnpm run test:e2e:mobile
 ```
 
+## 8.1 G10 실행 결과
+
+검증일: 2026-07-28
+
+Backend:
+
+| Command | Result | Note |
+|---|---|---|
+| `pnpm.cmd run prisma:validate` | PASS | Prisma schema valid |
+| `pnpm.cmd run prisma:generate` | PASS | 최초 1회는 실행 중 Backend 프로세스의 Windows DLL lock으로 실패했고, Backend 실행 프로세스 중지 후 재실행 통과 |
+| `pnpm.cmd run typecheck` | PASS | `tsc --noEmit` |
+| `pnpm.cmd run lint` | PASS | ESLint |
+| `pnpm.cmd run test` | PASS | 64 suites / 333 tests |
+| `pnpm.cmd run build` | PASS | Nest build |
+| `pnpm.cmd exec prisma migrate status` | CHECKED | 현재 `.env` 연결 DB에는 08 migration 5개가 미적용 상태. G10에서는 원격 DB 변경을 실행하지 않음 |
+
+User Web:
+
+| Command | Result | Note |
+|---|---|---|
+| `pnpm.cmd run typecheck` | PASS | `tsc -b` |
+| `pnpm.cmd run lint` | PASS | ESLint |
+| `pnpm.cmd run build` | PASS | Vite build 통과, 기존 chunk size warning 유지 |
+| `pnpm.cmd run test:e2e` | PASS | 27 passed |
+| `pnpm.cmd run test:e2e:mobile` | PASS | 12 passed |
+
+G10 QA 중 수정:
+
+- 주간 보고서 화면에서 `totalDealCostByCurrency`가 없는 구버전/mock 응답을 받으면 fallback 총액으로 표시하도록 수정했다.
+- Settings 화면의 Google Calendar 연결 notice가 effect 재실행으로 반복 표시될 수 있는 문제를 stable callback으로 수정했다.
+- User Web E2E mock과 테스트를 G05/G06/G08 최신 계약인 전화번호 label, CompanyRegion country/region code, Google/LINE/Apple provider 목록 기준으로 갱신했다.
+
 ## 9. 수동 QA
 
-- [ ] 신규 사용자 가입 기본값이 기대대로 설정된다.
-- [ ] `/app/settings` 언어 변경이 즉시 반영된다.
-- [ ] `/app` URL에 locale prefix가 붙지 않는다.
-- [ ] Product/Deal KRW/USD 입력과 표시가 동작한다.
-- [ ] Contact KR/US 전화번호 입력과 legacy fallback이 동작한다.
-- [ ] Company KR/US region 선택과 legacy custom region 표시가 동작한다.
-- [ ] Import template `ko-KR`, `en` 선택 다운로드가 동작한다.
-- [ ] Export header/value가 사용자 설정 기준으로 나온다.
-- [ ] Google OAuth smoke가 통과한다.
-- [ ] LINE OAuth smoke가 통과한다.
-- [ ] Apple OAuth smoke가 통과한다.
+- [x] 신규 사용자 가입 기본값이 Backend auth exchange test와 User profile 계약으로 확인됐다.
+- [x] `/app/settings` 언어 변경이 즉시 반영된다.
+- [x] `/app` URL에 locale prefix가 붙지 않는다.
+- [x] Product/Deal KRW/USD 입력과 표시가 동작한다.
+- [x] Contact KR/US 전화번호 입력과 legacy fallback이 동작한다.
+- [x] Company KR/US region 선택과 legacy custom region 표시가 동작한다.
+- [x] Import template `ko-KR`, `en` 선택 다운로드가 동작한다.
+- [x] Export header/value가 사용자 설정 기준으로 나온다.
+- [x] Google OAuth 버튼/popup smoke는 E2E에서 통과했다.
+- [x] Google OAuth 실제 provider smoke 미실행 사유를 기록했다.
+- [x] LINE OAuth 실제 provider smoke 미실행 사유를 기록했다.
+- [x] Apple OAuth 실제 provider smoke 미실행 사유를 기록했다.
+
+실제 provider smoke 미실행 사유:
+
+- Supabase Google/LINE/Apple provider 운영 설정, provider secret, Apple Services ID/Team ID/Key ID/private key, LINE Channel ID/secret이 필요하다.
+- G10 로컬 검증에서는 외부 provider 계정 교환을 실행하지 않고, 버튼/popup, provider 목록, exchange use case, safe failure, verified email linking을 자동 검증 범위로 확인했다.
 
 ## 10. 문서 동기화
 
-- [ ] `README.md` 상태와 완료 결과를 갱신했다.
-- [ ] `COMMON/DECISION-LOG.md`가 구현 결과와 일치한다.
-- [ ] `COMMON/GOAL-COMPLETION-CHECKLIST.md`가 완료 상태를 반영한다.
-- [ ] `COMMON/REVIEW-CHECKLIST.md`를 closeout했다.
-- [ ] `BE-TODO/API-TODO.md`가 구현 결과와 일치한다.
-- [ ] `BE-TODO/DB-SCHEMA.md`가 구현 결과와 일치한다.
-- [ ] `FE-TODO/USER-WEB-TODO.md`가 구현 결과와 일치한다.
-- [ ] AGENT 문서의 이전 auth/i18n 정책이 갱신됐다.
-- [ ] 실행하지 못한 검증은 사유를 기록했다.
+- [x] `README.md` 상태와 완료 결과를 갱신했다.
+- [x] `COMMON/DECISION-LOG.md`가 구현 결과와 일치한다.
+- [x] `COMMON/GOAL-COMPLETION-CHECKLIST.md`가 완료 상태를 반영한다.
+- [x] `COMMON/REVIEW-CHECKLIST.md`를 closeout했다.
+- [x] `BE-TODO/API-TODO.md`가 구현 결과와 일치한다.
+- [x] `BE-TODO/DB-SCHEMA.md`가 구현 결과와 일치한다.
+- [x] `FE-TODO/USER-WEB-TODO.md`가 구현 결과와 일치한다.
+- [x] AGENT 문서의 이전 auth/i18n 정책이 갱신됐다.
+- [x] 실행하지 못한 검증은 사유를 기록했다.
 
 ## 11. Goal 검토 체크리스트
 
-- [ ] 08 전체 request 계약이 API spec과 일치한다.
-- [ ] 08 전체 response 계약이 API spec과 일치한다.
-- [ ] 08 전체 business logic이 `DECISION-LOG.md`와 일치한다.
-- [ ] 08 전체 user flow가 `USER-FLOW.md`와 일치한다.
-- [ ] 08 전체 DB/Prisma 변경이 `BE/prisma`와 한글 주석 기준을 따른다.
-- [ ] Backend 검증 command 결과를 기록했다.
-- [ ] User Web 검증 command 결과를 기록했다.
-- [ ] E2E 또는 수동 QA 결과를 기록했다.
-- [ ] provider smoke 결과 또는 미실행 사유를 기록했다.
-- [ ] 문서가 구현 결과와 일치한다.
-- [ ] 후속으로 남긴 범위를 정리했다.
+- [x] 08 전체 request 계약이 API spec과 일치한다.
+- [x] 08 전체 response 계약이 API spec과 일치한다.
+- [x] 08 전체 business logic이 `DECISION-LOG.md`와 일치한다.
+- [x] 08 전체 user flow가 `USER-FLOW.md`와 일치한다.
+- [x] 08 전체 DB/Prisma 변경이 `BE/prisma`와 한글 주석 기준을 따른다.
+- [x] Backend 검증 command 결과를 기록했다.
+- [x] User Web 검증 command 결과를 기록했다.
+- [x] E2E 또는 수동 QA 결과를 기록했다.
+- [x] provider smoke 결과 또는 미실행 사유를 기록했다.
+- [x] 문서가 구현 결과와 일치한다.
+- [x] 후속으로 남긴 범위를 정리했다.
+
+## 12. 후속/운영 체크
+
+- 현재 `.env` 연결 DB에는 08 migration 5개가 미적용 상태다. 운영 배포 전 배포 담당자가 대상 DB를 확인한 뒤 `prisma migrate deploy`를 실행해야 한다.
+- 실제 Google/LINE/Apple OAuth smoke는 provider 운영 설정과 secret 설정 후 별도 수동 QA로 확인한다.
+- Vite build의 large chunk warning은 기존 bundle 최적화 후속이며 G10 blocker는 아니다.

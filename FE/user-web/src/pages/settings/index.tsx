@@ -9,7 +9,7 @@ import {
   UserRound,
   type LucideIcon,
 } from "lucide-react";
-import { type FormEvent, useEffect, useState } from "react";
+import { type FormEvent, useCallback, useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Toast } from "@/components/ui/toast";
 import { type AppI18nKey, useAppI18n } from "@/features/app-i18n";
@@ -65,6 +65,14 @@ export function SettingsPage() {
   const devicesQuery = useMyDevices();
   const noticeMessage =
     notice?.type === "i18n" ? t(notice.key) : (notice?.message ?? null);
+  // 기능 : 연동 섹션에서 공통 안내 모달을 열 때 effect 재실행으로 같은 안내가 반복되지 않게 합니다.
+  const showTextNotice = useCallback((message: string) => {
+    setNotice({ message, type: "text" });
+  }, []);
+  // 기능 : 프로필 저장 성공 안내를 app i18n key 기반으로 표시합니다.
+  const showProfileSavedNotice = useCallback(() => {
+    setNotice({ key: "settings.profileSaved", type: "i18n" });
+  }, []);
 
   return (
     <section className="flex min-h-full flex-col bg-white">
@@ -83,15 +91,11 @@ export function SettingsPage() {
               error={profileQuery.error}
               isLoading={profileQuery.isLoading}
               onRetry={() => void profileQuery.refetch()}
-              onSaved={() => setNotice({ key: "settings.profileSaved", type: "i18n" })}
+              onSaved={showProfileSavedNotice}
               profile={profileQuery.data ?? null}
             />
-            <GoogleCalendarSettingsSection
-              onNotice={(message) => setNotice({ message, type: "text" })}
-            />
-            <FollowUpDeliverySettingsSection
-              onNotice={(message) => setNotice({ message, type: "text" })}
-            />
+            <GoogleCalendarSettingsSection onNotice={showTextNotice} />
+            <FollowUpDeliverySettingsSection onNotice={showTextNotice} />
           </div>
           <DeviceSection
             devices={devicesQuery.data?.devices ?? []}

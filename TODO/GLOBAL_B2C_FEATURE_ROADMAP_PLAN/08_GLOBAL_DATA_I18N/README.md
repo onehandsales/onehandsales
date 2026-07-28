@@ -1,6 +1,6 @@
 # 08 Global Data I18N
 
-상태: Ready for Goal Execution
+상태: Implemented / QA Closeout Done
 순서: 08
 성격: Global B2C 앱 내부 현지화와 글로벌 데이터 모델 구현 슬롯
 결정 상태: `COMMON/DECISION-LOG.md` 확정 결정 반영
@@ -15,14 +15,15 @@ Global B2C 첫 판매를 위해 로그인 이후 `/app` 업무 화면이 한국 
 
 - public/auth 진입면은 URL locale을 지원한다.
 - `/app` 내부 route는 locale prefix 없이 `/app/*`를 사용한다.
-- G01~G08은 완료됐고, G09 App Screen Translation부터 순차 착수 가능하다.
-- `/app` 내부 UI와 validation copy는 G09 전까지 부분 번역 상태다.
+- G01~G10은 완료됐다.
+- `/app` 내부 핵심 업무 화면 문구와 validation/empty/toast copy는 `ko-KR`, `en` 앱 i18n 기준으로 동작한다.
 - Contact 전화번호는 기존 `mobile` fallback을 유지하면서 KR/US 글로벌 필드를 사용한다.
 - Product/Deal 금액은 정수 금액과 `currencyCode`를 함께 사용한다.
 - Company는 기존 커스텀 `CompanyRegion`을 유지하면서 KR/US 국가/지역 code와 자유 입력 주소를 사용한다.
 - 사용자 timezone 기반 일정 처리는 일부 구현되어 있다.
 - Import template과 도메인 Export는 사용자 app 설정값 기준 현지화가 구현됐다.
-- Google, LINE, Apple login을 현재 정식 인증 provider로 본다. 실제 provider smoke는 Supabase/provider 운영 설정 후 G10에서 기록한다.
+- Google, LINE, Apple login을 현재 정식 인증 provider로 본다. 실제 provider smoke는 Supabase/provider 운영 설정과 secret이 필요해 G10에서 `N/A - 운영 provider 설정 필요`로 기록했다.
+- 2026-07-28 G10 검증에서 Backend 필수 검증, User Web type/lint/build, User Web E2E, 모바일 E2E가 통과했다. 현재 `.env` 연결 DB에는 08 migration 5개가 아직 적용되지 않아 운영 배포 전 `prisma migrate deploy`가 필요하다.
 
 ## 3. 확정 결정 요약
 
@@ -72,7 +73,14 @@ G01_DOCUMENT_CONTRACT_SYNC
 -> G10_QA_DOCUMENT_CLOSEOUT
 ```
 
-## 5. 참고
+## 5. G10 Closeout
+
+- Backend: `prisma:validate`, `prisma:generate`, `typecheck`, `lint`, `test`, `build` 통과.
+- User Web: `typecheck`, `lint`, `build`, `test:e2e`, `test:e2e:mobile` 통과.
+- Migration: 저장소에는 08 migration 5개가 있고 Prisma schema validation/generate가 통과했다. `prisma migrate status` 기준 현재 연결 DB에는 `20260728010000`~`20260728050000` 5개 migration 적용이 필요하다.
+- Provider smoke: Google/LINE/Apple 실제 OAuth smoke는 Supabase/provider 운영 설정과 secret이 필요해 이번 로컬 QA에서는 실행하지 않았다.
+
+## 6. 참고
 
 - `COMMON/REFERENCES.md`
 - `COMMON/DECISION-LOG.md`

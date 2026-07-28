@@ -145,7 +145,7 @@ async function createCompany(page: Page) {
   await expect(dialog).toBeVisible();
   await dialog.getByLabel("회사명").fill(BROWSER_COMPAT_COMPANY);
   await selectManagedOption(dialog, "분야명", "모바일 QA 분야");
-  await selectManagedOption(dialog, "지역명", "서울/수도권");
+  await selectCompanyRegionOption(dialog, "서울/수도권");
   await dialog.getByLabel("메모").fill("G03 Chrome Edge company smoke");
   await dialog.getByRole("button", { name: "저장" }).click();
 
@@ -161,7 +161,7 @@ async function createContact(page: Page) {
 
   await expect(dialog).toBeVisible();
   await dialog.getByLabel("담당자명").fill(BROWSER_COMPAT_CONTACT);
-  await dialog.getByLabel("휴대폰번호").fill("010-3333-0303");
+  await dialog.getByLabel("전화번호", { exact: true }).fill("010-3333-0303");
   await dialog.getByLabel("이메일").fill("rqa003.browser@example.test");
   await selectSearchOption(dialog, "회사", BROWSER_COMPAT_COMPANY);
   await selectManagedOption(dialog, "부서명", "영업기획본부");
@@ -313,6 +313,11 @@ async function selectManagedOption(
 ) {
   await scope.getByLabel(inputName, { exact: true }).fill(optionName);
   await scope.getByRole("button", { exact: true, name: optionName }).first().click();
+}
+
+// 기능 : G06 이후 회사 지역은 국가/지역 select 조합이므로 최신 UI 계약대로 option을 선택합니다.
+async function selectCompanyRegionOption(scope: Locator, optionName: string) {
+  await scope.getByLabel("지역", { exact: true }).selectOption({ label: optionName });
 }
 
 async function selectSearchOption(

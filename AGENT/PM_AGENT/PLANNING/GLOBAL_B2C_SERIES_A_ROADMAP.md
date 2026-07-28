@@ -54,8 +54,8 @@
 | DB/운영 정합성 | 기능 QA는 통과 | Prisma generate DLL lock 이력, migration 상태, seed/QA/production 데이터 분리, 배포 DB 정합성 | 최우선 |
 | 결제/구독 | MVP 제외 | 요금제, 무료체험, 월/연 결제, 환불, 쿠폰, 구독 상태, 결제 실패 복구, 영수증/인보이스 | 글로벌 유료 판매 전 필요 |
 | 글로벌 세금/컴플라이언스 | 미구현 | VAT/GST/판매세 계산/징수/신고, 환불/차지백, 국가별 약관/환불 정책 | 글로벌 유료 판매 전 필요 |
-| 앱 내부 다국어 | `/app`은 한국어 우선 | `/app` 전체 locale, 국가별 날짜/전화번호/통화/문구, UX writing 현지화 | 글로벌 확장 전 필요 |
-| 다국가 데이터 모델 | 한국 중심 | 다국가 전화번호, 국가/지역 입력, 통화, 국가별 export 표시 | 글로벌 확장 전 필요 |
+| 앱 내부 다국어 | 08_GLOBAL_DATA_I18N 완료 기준 `ko-KR`, `en` 1차 지원 | `ja`, `zh-TW`, `zh-CN` 등 실제 판매 시장별 앱 내부 locale과 UX writing | 글로벌 확장 전 필요 |
+| 다국가 데이터 모델 | 08_GLOBAL_DATA_I18N 완료 기준 KR/US 전화번호, 국가/지역, KRW/USD, locale export 1차 지원 | 지원 국가/통화/전화번호/주소 체계 확장 | 글로벌 확장 전 필요 |
 | Admin 운영 | `/admin/api/me`만 완료 | 사용자/도메인 조회, 결제 상태, 감사 로그, 민감 원문 조회, 고객 지원 도구 | 유료 운영 전 필요 |
 | Notification | Backend 없음, route 숨김 | 알림 목록, 읽음 처리, unread count, 설정, email/browser push | 리텐션 강화 전 필요 |
 | DataImport | pre-confirm job in-memory | ImportJob DB 영속화, 서버 재시작 후 이어받기, 배포 중 유실 방지 | QA 이후 우선 |

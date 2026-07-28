@@ -133,15 +133,15 @@ test.describe("G02 mobile browser release QA", () => {
       .getByRole("button", { exact: true, name: "모바일 QA 분야" })
       .click();
 
-    await dialog.getByLabel("지역명").click();
-    await expect(dialog.getByText("지역 검색")).toBeVisible();
+    // 기능 : G06 지역 선택은 검색 드롭다운이 아니라 국가/지역 select 조합으로 확인합니다.
+    const regionSelect = dialog.getByLabel("지역", { exact: true });
+    await regionSelect.focus();
+    await expect(regionSelect).toBeFocused();
+    await regionSelect.selectOption({ label: "서울/수도권" });
     await expectNoDocumentHorizontalOverflow(
       page,
-      `${testInfo.project.name} company region dropdown`,
+      `${testInfo.project.name} company region select`,
     );
-    await dialog
-      .getByRole("button", { exact: true, name: "서울/수도권" })
-      .click();
 
     const saveButton = dialog.getByRole("button", { exact: true, name: "저장" });
     await saveButton.focus();

@@ -86,3 +86,11 @@
 | Contact 개인 주소 | CRM 확장 요구가 명확해질 때 후속 |
 | 이메일/비밀번호 로그인 | 별도 auth strategy 결정 |
 | Kakao runtime 복구 | 현재 범위 밖 |
+
+## 5. G10 구현 확인
+
+- 2026-07-28: G01~G10 구현과 QA closeout을 완료했다.
+- Google/LINE/Apple은 runtime provider로 구현됐고 Kakao는 legacy enum/과거 데이터 호환으로만 유지한다.
+- `/app` 내부는 locale prefix 없이 `ko-KR`, `en` 앱 i18n을 사용한다.
+- 현재 `.env` 연결 DB에는 08 migration 5개가 미적용 상태라 운영 배포 전 별도 적용이 필요하다.
+- 실제 provider smoke는 Supabase/provider 운영 설정과 secret 준비 후 별도 수동 QA로 확인한다.
