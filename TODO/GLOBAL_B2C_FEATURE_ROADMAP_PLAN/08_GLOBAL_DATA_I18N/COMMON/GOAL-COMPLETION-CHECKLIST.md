@@ -1,6 +1,6 @@
 # Goal Completion Checklist
 
-상태: G01 Done / G02 Done / G03 Done / G04 Ready / G05 Done
+상태: G01 Done / G02 Done / G03 Done / G04 Ready / G05 Done / G06 Done
 최종 업데이트: 2026-07-28
 
 ## 1. 목적
@@ -18,7 +18,7 @@
 | [x] | G03 App I18N Foundation | Done | 2026-07-28 | app i18n provider/resource 구현 | `COMMON/GOAL-SPECS/G03_APP_I18N_FOUNDATION.md`, `FE/user-web/src/features/app-i18n`, User Web 검증 명령 | G04 착수 가능 |
 | [ ] | G04 Currency Product Deal | Ready |  | Product/Deal currency 구현 |  | KRW/USD |
 | [x] | G05 Contact Phone Global | Done | 2026-07-28 | Contact phone 글로벌 필드와 migration 구현 | G05 spec, `BE/prisma/migrations/20260728030000_add_contact_global_phone`, BE/FE 검증 명령 | KR/US |
-| [ ] | G06 Company Region Address | Not Started |  | CompanyRegion code/address 구현 |  | Company만 적용 |
+| [x] | G06 Company Region Address | Done | 2026-07-28 | CompanyRegion code/address 구현 | BE/FE 검증 통과 | Company만 적용 |
 | [ ] | G07 Import Export Localization | Not Started |  | Export/Import template 현지화 구현 |  | ko-KR/en |
 | [ ] | G08 Auth Google LINE Apple | Not Started |  | Google/LINE/Apple auth 구현 |  | provider env 수동 검증 필요 |
 | [ ] | G09 App Screen Translation | Not Started |  | 핵심 `/app` 화면 번역 적용 |  | layout QA 필요 |
@@ -92,14 +92,14 @@
 
 ### G06 Company Region Address
 
-- [ ] Company에 주소 자유 입력 필드가 추가됐거나 기존 구조와 연결됐다.
-- [ ] Contact에는 주소/지역 필드를 추가하지 않았다.
-- [ ] 기존 `CompanyRegion` 구조를 유지한다.
-- [ ] `CompanyRegion.countryCode`가 추가됐다.
-- [ ] `CompanyRegion.regionCode`가 추가됐다.
-- [ ] KR 시/도와 US State 선택 목록이 제공된다.
-- [ ] 기존 한국 region은 가능한 경우 자동 매핑된다.
-- [ ] 매핑 실패 region은 legacy custom region으로 유지된다.
+- [x] Company에 주소 자유 입력 필드가 추가됐거나 기존 구조와 연결됐다.
+- [x] Contact에는 주소/지역 필드를 추가하지 않았다.
+- [x] 기존 `CompanyRegion` 구조를 유지한다.
+- [x] `CompanyRegion.countryCode`가 추가됐다.
+- [x] `CompanyRegion.regionCode`가 추가됐다.
+- [x] KR 시/도와 US State 선택 목록이 제공된다.
+- [x] 기존 한국 region은 가능한 경우 자동 매핑된다.
+- [x] 매핑 실패 region은 legacy custom region으로 유지된다.
 
 ### G07 Import Export Localization
 

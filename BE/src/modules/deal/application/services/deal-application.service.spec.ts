@@ -93,14 +93,24 @@ class FakeDealRepository implements DealRepository {
       companyName: "A회사",
       isDeleted: false,
       companyField: { id: "field-1", field: "SaaS" },
-      companyRegion: { id: "region-1", region: "Seoul" },
+      companyRegion: {
+        id: "region-1",
+        region: "Seoul",
+        countryCode: null,
+        regionCode: null,
+      },
     },
     {
       id: "company-2",
       companyName: "B회사",
       isDeleted: false,
       companyField: { id: "field-2", field: "Commerce" },
-      companyRegion: { id: "region-2", region: "Busan" },
+      companyRegion: {
+        id: "region-2",
+        region: "Busan",
+        countryCode: null,
+        regionCode: null,
+      },
     },
   ];
 
@@ -1001,7 +1011,12 @@ describe("DealApplicationService", () => {
       companyName: "A회사",
       isDeleted: false,
       companyField: { id: "field-1", field: "SaaS" },
-      companyRegion: { id: "region-1", region: "Seoul" },
+      companyRegion: {
+        id: "region-1",
+        region: "Seoul",
+        countryCode: null,
+        regionCode: null,
+      },
     }]);
     expect(result.contacts[0]?.email).toBe("song@example.com");
     expect(result.contacts[0]?.mobile).toBe("010-1111-2222");

@@ -15,6 +15,7 @@ import {
   type CreateCompanyInput,
   type CreateCompanyMemoLogInput,
   type CreateCompanyPrivateMemoLogInput,
+  type CreateCompanyRegionInput,
   type DeleteCompanyMemoLogInput,
   type DeleteCompanyInput,
   type DeleteCompanyPrivateMemoLogInput,
@@ -32,6 +33,7 @@ type CompanyPrismaClient = PrismaService | Prisma.TransactionClient;
 type CompanyWithRelations = {
   readonly id: string;
   readonly companyName: string;
+  readonly address: string | null;
   readonly createdAt: Date;
   readonly updatedAt: Date;
   readonly companyField: {
@@ -41,6 +43,8 @@ type CompanyWithRelations = {
   readonly companyRegion: {
     readonly id: string;
     readonly region: string;
+    readonly countryCode: string | null;
+    readonly regionCode: string | null;
   };
 };
 
@@ -213,6 +217,7 @@ export class PrismaCompanyRepository implements CompanyRepository {
         companyName: input.companyName,
         companyFieldId: input.companyFieldId,
         companyRegionId: input.companyRegionId,
+        address: input.address,
       },
       select: {
         id: true,
@@ -245,6 +250,7 @@ export class PrismaCompanyRepository implements CompanyRepository {
         ...(input.companyRegionId !== undefined
           ? { companyRegionId: input.companyRegionId }
           : {}),
+        ...(input.address !== undefined ? { address: input.address } : {}),
       },
     });
 
@@ -339,6 +345,8 @@ export class PrismaCompanyRepository implements CompanyRepository {
       select: {
         id: true,
         region: true,
+        countryCode: true,
+        regionCode: true,
       },
       orderBy: [{ region: "asc" }, { id: "asc" }],
     });
@@ -357,6 +365,8 @@ export class PrismaCompanyRepository implements CompanyRepository {
       select: {
         id: true,
         region: true,
+        countryCode: true,
+        regionCode: true,
       },
     });
   }
@@ -378,12 +388,34 @@ export class PrismaCompanyRepository implements CompanyRepository {
     return Boolean(existing);
   }
 
+  // 기능 : 현재 사용자 안에서 같은 표준 회사 지역 code가 있는지 확인합니다.
+  async existsRegionByCode(
+    userId: string,
+    countryCode: string,
+    regionCode: string
+  ): Promise<boolean> {
+    const existing = await this.client.companyRegion.findFirst({
+      where: {
+        userId,
+        countryCode,
+        regionCode,
+      },
+      select: {
+        id: true,
+      },
+    });
+
+    return Boolean(existing);
+  }
+
   // 기능 : 현재 사용자의 회사 지역을 생성합니다.
-  async createRegion(userId: string, region: string): Promise<void> {
+  async createRegion(input: CreateCompanyRegionInput): Promise<void> {
     await this.client.companyRegion.create({
       data: {
-        userId,
-        region,
+        userId: input.userId,
+        region: input.region,
+        countryCode: input.countryCode,
+        regionCode: input.regionCode,
       },
     });
   }
@@ -736,6 +768,7 @@ export class PrismaCompanyRepository implements CompanyRepository {
     return {
       id: company.id,
       companyName: company.companyName,
+      address: company.address,
       companyField: {
         id: company.companyField.id,
         field: company.companyField.field,
@@ -743,6 +776,8 @@ export class PrismaCompanyRepository implements CompanyRepository {
       companyRegion: {
         id: company.companyRegion.id,
         region: company.companyRegion.region,
+        countryCode: company.companyRegion.countryCode,
+        regionCode: company.companyRegion.regionCode,
       },
       createdAt: company.createdAt,
       updatedAt: company.updatedAt,

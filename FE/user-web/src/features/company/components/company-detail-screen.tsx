@@ -53,6 +53,7 @@ import type {
   CompanyPrivateMemoLog,
   CompanyRegion,
 } from "@/features/company/types/company";
+import { formatCompanyRegionLabel } from "@/features/company/utils/company-region-options";
 import {
   toCreateCompanyMemoLogInput,
   toUpdateCompanyMemoLogInput,
@@ -395,6 +396,13 @@ function CompanySummaryHeader({
   readonly dealCount: number;
   readonly isSmallText: boolean;
 }) {
+  const { locale } = useAppI18n();
+  const companyRegionLabel = formatCompanyRegionLabel(
+    company.companyRegion,
+    locale
+  );
+  const companyAddress = company.address?.trim() ? company.address : "미입력";
+
   return (
     <section className="grid cursor-auto gap-6">
       <div className="grid gap-4">
@@ -419,7 +427,12 @@ function CompanySummaryHeader({
         <CompanyDocumentProperty
           label="지역"
           isSmallText={isSmallText}
-          value={company.companyRegion.region}
+          value={companyRegionLabel}
+        />
+        <CompanyDocumentProperty
+          label="주소"
+          isSmallText={isSmallText}
+          value={companyAddress}
         />
         <CompanyDocumentProperty
           isSmallText={isSmallText}

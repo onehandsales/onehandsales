@@ -31,6 +31,8 @@ export interface DealCompanyRecord {
   readonly companyRegion: {
     readonly id: string;
     readonly region: string;
+    readonly countryCode: string | null;
+    readonly regionCode: string | null;
   };
 }
 

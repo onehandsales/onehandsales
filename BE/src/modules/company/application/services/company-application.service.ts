@@ -13,6 +13,7 @@ import {
   type MemoLogCursor,
   type UpdateCompanyInput,
 } from "@/modules/company/application/ports/company.repository";
+import { normalizeCompanyRegionCodeInput } from "@/modules/company/application/services/company-region-code";
 import {
   PRIVATE_MEMO_ENCRYPTION_PORT,
   type PrivateMemoEncryptionPort,
@@ -75,6 +76,7 @@ export interface CreateCompanyInput {
   readonly companyName: string;
   readonly companyFieldId: string;
   readonly companyRegionId: string;
+  readonly address?: string | null;
   readonly companyMemo?: string | null;
 }
 
@@ -83,6 +85,7 @@ export interface UpdateCompanyCommand {
   readonly companyName?: string;
   readonly companyFieldId?: string;
   readonly companyRegionId?: string;
+  readonly address?: string | null;
 }
 
 // 역할 : CursorQueryInput 데이터가 계층 사이에서 전달되는 구조를 정의합니다.
@@ -110,7 +113,10 @@ export interface CompanyListItemResponse {
   readonly companyRegion: {
     readonly id: string;
     readonly region: string;
+    readonly countryCode: string | null;
+    readonly regionCode: string | null;
   };
+  readonly address: string | null;
   readonly contactCount: number;
   readonly dealCount: number;
   readonly createdAt: string;
@@ -127,7 +133,10 @@ export interface CompanyDetailResponse {
   readonly companyRegion: {
     readonly id: string;
     readonly region: string;
+    readonly countryCode: string | null;
+    readonly regionCode: string | null;
   };
+  readonly address: string | null;
   readonly createdAt: string;
   readonly updatedAt: string;
 }
@@ -180,6 +189,8 @@ export interface CompanyRegionListResponse {
   readonly items: Array<{
     readonly id: string;
     readonly region: string;
+    readonly countryCode: string | null;
+    readonly regionCode: string | null;
   }>;
 }
 
@@ -421,6 +432,7 @@ export class CompanyApplicationService {
       input.companyName,
       "companyName is required"
     );
+    const address = this.normalizeOptionalText(input.address) ?? null;
     const companyMemo = this.normalizeOptionalText(input.companyMemo);
 
     // 2. 회사 생성과 초기 메모 생성을 같은 transaction 안에서 실행한다.
@@ -443,6 +455,7 @@ export class CompanyApplicationService {
         companyName,
         companyFieldId: input.companyFieldId,
         companyRegionId: input.companyRegionId,
+        address,
       });
 
       // 5. 초기 메모가 있으면 일반 메모 로그 첫 데이터로 저장한다.
@@ -457,7 +470,7 @@ export class CompanyApplicationService {
     });
   }
 
-  // 기능 : 회사명, 회사 분야, 회사 지역 중 요청에 포함된 값만 수정합니다.
+  // 기능 : 회사명, 회사 분야, 회사 지역, 주소 중 요청에 포함된 값만 수정합니다.
   async updateCompany(
     currentUser: CurrentUserContext,
     companyId: string,
@@ -570,26 +583,44 @@ export class CompanyApplicationService {
   // 기능 : 현재 사용자의 회사 지역을 생성합니다.
   async createRegion(
     currentUser: CurrentUserContext,
-    region: string
+    input: {
+      readonly region: string;
+      readonly countryCode?: string | null;
+      readonly regionCode?: string | null;
+    }
   ): Promise<void> {
-    // 1. 지역명을 저장 가능한 필수 텍스트로 정규화한다.
-    const normalizedRegion = this.normalizeRequiredText(
-      region,
-      "region is required"
-    );
+    // 1. 지역명과 선택 code를 저장 가능한 형태로 정규화한다.
+    const normalizedRegion = normalizeCompanyRegionCodeInput(input);
 
-    // 2. 현재 사용자 안에서 같은 지역명이 이미 있는지 검증한다.
+    // 2. 현재 사용자 안에서 같은 표준 code 또는 지역명이 이미 있는지 검증한다.
+    if (
+      normalizedRegion.countryCode &&
+      normalizedRegion.regionCode &&
+      (await this.companyRepository.existsRegionByCode(
+        currentUser.id,
+        normalizedRegion.countryCode,
+        normalizedRegion.regionCode
+      ))
+    ) {
+      throw new DuplicateCompanyRegionError();
+    }
+
     if (
       await this.companyRepository.existsRegionByName(
         currentUser.id,
-        normalizedRegion
+        normalizedRegion.region
       )
     ) {
       throw new DuplicateCompanyRegionError();
     }
 
     // 3. 현재 사용자 소유의 회사 지역을 생성한다.
-    await this.companyRepository.createRegion(currentUser.id, normalizedRegion);
+    await this.companyRepository.createRegion({
+      userId: currentUser.id,
+      region: normalizedRegion.region,
+      countryCode: normalizedRegion.countryCode,
+      regionCode: normalizedRegion.regionCode,
+    });
   }
 
   // 기능 : 사용 중이 아닌 현재 사용자의 회사 지역을 삭제합니다.
@@ -918,6 +949,9 @@ export class CompanyApplicationService {
       ...(input.companyRegionId !== undefined
         ? { companyRegionId: input.companyRegionId }
         : {}),
+      ...(input.address !== undefined
+        ? { address: this.normalizeOptionalText(input.address) ?? null }
+        : {}),
     };
   }
 
@@ -981,6 +1015,7 @@ export class CompanyApplicationService {
       companyName: company.companyName,
       companyField: company.companyField,
       companyRegion: company.companyRegion,
+      address: company.address,
       contactCount: company.contactCount,
       dealCount: company.dealCount,
       createdAt: company.createdAt.toISOString(),
@@ -994,6 +1029,7 @@ export class CompanyApplicationService {
       companyName: company.companyName,
       companyField: company.companyField,
       companyRegion: company.companyRegion,
+      address: company.address,
       createdAt: company.createdAt.toISOString(),
       updatedAt: company.updatedAt.toISOString(),
     };
@@ -1035,6 +1071,9 @@ export class CompanyApplicationService {
           { header: "회사이름", key: "companyName", width: 28 },
           { header: "회사분야", key: "companyField", width: 18 },
           { header: "회사지역", key: "companyRegion", width: 18 },
+          { header: "지역국가", key: "companyRegionCountryCode", width: 12 },
+          { header: "지역코드", key: "companyRegionCode", width: 14 },
+          { header: "주소", key: "address", width: 34 },
           { header: "담당자 수", key: "contactCount", width: 12 },
           { header: "딜 수", key: "dealCount", width: 12 },
           {
@@ -1057,6 +1096,9 @@ export class CompanyApplicationService {
       companyName: company.companyName,
       companyField: company.companyField.field,
       companyRegion: company.companyRegion.region,
+      companyRegionCountryCode: company.companyRegion.countryCode ?? "",
+      companyRegionCode: company.companyRegion.regionCode ?? "",
+      address: company.address ?? "",
       contactCount: company.contactCount,
       dealCount: company.dealCount,
       createdAt: company.createdAt,

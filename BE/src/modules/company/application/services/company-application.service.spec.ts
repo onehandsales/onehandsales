@@ -13,6 +13,7 @@ import {
   type CreateCompanyInput,
   type CreateCompanyMemoLogInput,
   type CreateCompanyPrivateMemoLogInput,
+  type CreateCompanyRegionInput,
   type DeleteCompanyMemoLogInput,
   type DeleteCompanyInput,
   type DeleteCompanyPrivateMemoLogInput,
@@ -47,13 +48,40 @@ class FakeCompanyRepository implements CompanyRepository {
     ["field-2", CURRENT_USER.id],
   ]);
 
-  readonly regions = new Map<string, string>([
-    ["region-1", CURRENT_USER.id],
-    ["region-2", CURRENT_USER.id],
+  readonly regions = new Map<
+    string,
+    {
+      readonly userId: string;
+      readonly region: string;
+      readonly countryCode: string | null;
+      readonly regionCode: string | null;
+    }
+  >([
+    [
+      "region-1",
+      {
+        userId: CURRENT_USER.id,
+        region: "서울",
+        countryCode: "KR",
+        regionCode: "KR-11",
+      },
+    ],
+    [
+      "region-2",
+      {
+        userId: CURRENT_USER.id,
+        region: "California",
+        countryCode: "US",
+        regionCode: "US-CA",
+      },
+    ],
   ]);
 
   listCompaniesInputs: ListCompaniesInput[] = [];
   exportCompaniesInputs: ExportCompaniesInput[] = [];
+  createdCompanies: CreateCompanyInput[] = [];
+  updatedCompanies: UpdateCompanyInput[] = [];
+  createdRegions: CreateCompanyRegionInput[] = [];
 
   // 기능 : fake transaction을 현재 저장소에서 즉시 실행합니다.
   async runInTransaction<T>(
@@ -117,9 +145,9 @@ class FakeCompanyRepository implements CompanyRepository {
 
   // 기능 : fake 회사 생성을 처리합니다.
   async createCompany(
-    _input: CreateCompanyInput
+    input: CreateCompanyInput
   ): Promise<{ readonly id: string; readonly userId: string }> {
-    void _input;
+    this.createdCompanies.push(input);
     return { id: "company-1", userId: CURRENT_USER.id };
   }
 
@@ -127,11 +155,11 @@ class FakeCompanyRepository implements CompanyRepository {
   async updateCompany(
     _userId: string,
     _companyId: string,
-    _input: UpdateCompanyInput
+    input: UpdateCompanyInput
   ): Promise<boolean> {
     void _userId;
     void _companyId;
-    void _input;
+    this.updatedCompanies.push(input);
     return true;
   }
 
@@ -185,8 +213,9 @@ class FakeCompanyRepository implements CompanyRepository {
 
   // 기능 : fake 회사 지역 목록을 반환합니다.
   async listRegions(_userId: string): Promise<CompanyRegionRecord[]> {
-    void _userId;
-    return [];
+    return [...this.regions.entries()]
+      .filter(([, region]) => region.userId === _userId)
+      .map(([id, region]) => ({ id, ...region }));
   }
 
   // 기능 : fake 회사 지역 소유 여부를 반환합니다.
@@ -194,22 +223,37 @@ class FakeCompanyRepository implements CompanyRepository {
     userId: string,
     regionId: string
   ): Promise<CompanyRegionRecord | null> {
-    return this.regions.get(regionId) === userId
-      ? { id: regionId, region: regionId }
-      : null;
+    const region = this.regions.get(regionId);
+
+    return region?.userId === userId ? { id: regionId, ...region } : null;
   }
 
   // 기능 : fake 회사 지역 중복 여부를 반환합니다.
   async existsRegionByName(_userId: string, _region: string): Promise<boolean> {
-    void _userId;
-    void _region;
-    return false;
+    return [...this.regions.values()].some(
+      (region) => region.userId === _userId && region.region === _region
+    );
   }
 
   // 기능 : fake 회사 지역을 생성합니다.
-  async createRegion(_userId: string, _region: string): Promise<void> {
-    void _userId;
-    void _region;
+  // 기능 : fake 회사 지역 표준 code 중복 여부를 확인합니다.
+  async existsRegionByCode(
+    userId: string,
+    countryCode: string,
+    regionCode: string
+  ): Promise<boolean> {
+    return [...this.regions.values()].some(
+      (region) =>
+        region.userId === userId &&
+        region.countryCode === countryCode &&
+        region.regionCode === regionCode
+    );
+  }
+
+  // 기능 : fake 회사 지역 생성 입력을 기록합니다.
+  async createRegion(input: CreateCompanyRegionInput): Promise<void> {
+    this.createdRegions.push(input);
+    this.regions.set(`region-${this.regions.size + 1}`, input);
   }
 
   // 기능 : fake 회사 지역 사용 여부를 반환합니다.
@@ -362,6 +406,58 @@ describe("CompanyApplicationService", () => {
     expect(repository.exportCompaniesInputs[0]).toMatchObject({
       companyFieldIds: ["field-1", "field-2"],
       companyRegionIds: ["region-1"],
+    });
+  });
+
+  // 기능 : 회사 주소와 표준 지역 code가 application 계층에서 정규화되는지 검증합니다.
+  it("normalizes optional company address when creating a company", async () => {
+    const repository = new FakeCompanyRepository();
+    const service = createService(repository);
+
+    await service.createCompany(CURRENT_USER, {
+      companyName: " Global Account ",
+      companyFieldId: "field-1",
+      companyRegionId: "region-1",
+      address: "  123 Seoul-ro  ",
+    });
+
+    expect(repository.createdCompanies[0]).toMatchObject({
+      companyName: "Global Account",
+      address: "123 Seoul-ro",
+    });
+  });
+
+  it("creates a standard company region with country and region codes", async () => {
+    const repository = new FakeCompanyRepository();
+    const service = createService(repository);
+
+    await service.createRegion(CURRENT_USER, {
+      region: "New York",
+      countryCode: "us",
+      regionCode: "us-ny",
+    });
+
+    expect(repository.createdRegions[0]).toEqual({
+      userId: CURRENT_USER.id,
+      region: "New York",
+      countryCode: "US",
+      regionCode: "US-NY",
+    });
+  });
+
+  it("rejects unsupported company region codes", async () => {
+    const repository = new FakeCompanyRepository();
+    const service = createService(repository);
+
+    await expect(
+      service.createRegion(CURRENT_USER, {
+        region: "Unknown State",
+        countryCode: "US",
+        regionCode: "US-ZZ",
+      })
+    ).rejects.toMatchObject({
+      code: "COMPANY_REGION_UNSUPPORTED",
+      details: { field: "regionCode" },
     });
   });
 

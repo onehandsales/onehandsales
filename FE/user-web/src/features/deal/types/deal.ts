@@ -155,6 +155,8 @@ export type DealCompany = {
   readonly companyRegion: {
     readonly id: string;
     readonly region: string;
+    readonly countryCode: string | null;
+    readonly regionCode: string | null;
   };
 };
 
@@ -342,6 +344,8 @@ export type DealCompanyOption = {
   readonly companyRegion: {
     readonly id: string;
     readonly region: string;
+    readonly countryCode: string | null;
+    readonly regionCode: string | null;
   };
 };
 

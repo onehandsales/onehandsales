@@ -337,8 +337,8 @@ export class CompanyRegionController {
     @CurrentUser() currentUser: CurrentUserContext,
     @Body() body: CreateCompanyRegionDto
   ): Promise<void> {
-    // 1. request body의 지역명을 application 계층으로 전달한다.
-    await this.companyApplicationService.createRegion(currentUser, body.region);
+    // 1. request body의 지역명과 표준 code를 application 계층으로 전달한다.
+    await this.companyApplicationService.createRegion(currentUser, body);
   }
 
   // API : 회사 지역, 지역 삭제

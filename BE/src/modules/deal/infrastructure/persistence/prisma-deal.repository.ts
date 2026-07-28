@@ -66,6 +66,8 @@ type DealCompanyRow = {
   readonly companyRegion: {
     readonly id: string;
     readonly region: string;
+    readonly countryCode: string | null;
+    readonly regionCode: string | null;
   };
 };
 
@@ -940,6 +942,8 @@ export class PrismaDealRepository implements DealRepository {
         select: {
           id: true,
           region: true,
+          countryCode: true,
+          regionCode: true,
         },
       },
     } satisfies Prisma.CompanySelect;
@@ -1291,6 +1295,8 @@ export class PrismaDealRepository implements DealRepository {
       companyRegion: {
         id: company.companyRegion.id,
         region: company.companyRegion.region,
+        countryCode: company.companyRegion.countryCode,
+        regionCode: company.companyRegion.regionCode,
       },
     };
   }

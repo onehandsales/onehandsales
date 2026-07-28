@@ -61,6 +61,9 @@ function readCompanyCreateDraft(
     companyName: readString(draft.companyName),
     companyFieldId: readString(draft.companyFieldId),
     companyRegionId: readString(draft.companyRegionId),
+    countryCode: readCompanyRegionCountryCode(draft.countryCode),
+    regionCode: readString(draft.regionCode),
+    address: readString(draft.address),
     companyMemo: readString(draft.companyMemo),
   };
 }
@@ -71,4 +74,9 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 
 function readString(value: unknown) {
   return typeof value === "string" ? value : "";
+}
+
+// 기능 : route state에 저장된 회사 지역 국가 code를 지원 범위 안에서 복원합니다.
+function readCompanyRegionCountryCode(value: unknown) {
+  return value === "US" ? "US" : "KR";
 }

@@ -34,6 +34,7 @@ import { Pagination } from "@/components/ui/pagination";
 import { ListEmptyState } from "@/components/ui/state";
 import { Toast } from "@/components/ui/toast";
 import { useAuthSession } from "@/features/auth";
+import { useAppI18n, type AppLocale } from "@/features/app-i18n";
 import { CompanyCreateDialog } from "@/features/company/components/company-create-dialog";
 import { CompanyTaxonomyCreateDialog } from "@/features/company/components/company-taxonomy-create-dialog";
 import {
@@ -49,6 +50,7 @@ import type {
   CompanyListItem,
   CompanySort,
 } from "@/features/company/types/company";
+import { formatCompanyRegionLabel } from "@/features/company/utils/company-region-options";
 import { getApiErrorMessage, type ApiBlobResponse } from "@/lib/api-client";
 import { cn } from "@/utils/cn";
 import { formatDateWithOptions } from "@/utils/format";
@@ -113,6 +115,7 @@ export function CompanyListScreen({
   const outletContext =
     useOutletContext<AppShellOutletContext | undefined>();
   const { user } = useAuthSession();
+  const { locale } = useAppI18n();
   const isDockedViewport = useMediaQuery("(min-width: 1024px)");
   const [companyNameText, setCompanyNameText] = useState("");
   const [companyName, setCompanyName] = useState("");
@@ -653,7 +656,7 @@ export function CompanyListScreen({
             />
             <CompanyTaxonomyFilterCombobox
               emptyText="조건을 바꾸면 지역을 찾을 수 있어요."
-              getLabel={(region) => region.region}
+              getLabel={(region) => formatCompanyRegionLabel(region, locale)}
               icon={MapPin}
               itemKindLabel="지역"
               items={regions}
@@ -741,7 +744,7 @@ export function CompanyListScreen({
               <p className="text-[12px] font-semibold text-[#64748B]">지역</p>
               <CompanyTaxonomyFilterCombobox
                 emptyText="조건을 바꾸면 지역을 찾을 수 있어요."
-                getLabel={(region) => region.region}
+                getLabel={(region) => formatCompanyRegionLabel(region, locale)}
                 icon={MapPin}
                 itemKindLabel="지역"
                 items={regions}
@@ -860,6 +863,7 @@ export function CompanyListScreen({
                     company={company}
                     displayTimeZone={displayTimeZone}
                     key={company.id}
+                    locale={locale}
                   />
                 ))}
               </div>
@@ -928,7 +932,7 @@ export function CompanyListScreen({
           />
           <CompanyTaxonomyFilterCombobox
               emptyText="조건을 바꾸면 지역을 찾을 수 있어요."
-            getLabel={(region) => region.region}
+            getLabel={(region) => formatCompanyRegionLabel(region, locale)}
             icon={MapPin}
             itemKindLabel="지역"
             items={regions}
@@ -1011,6 +1015,7 @@ export function CompanyListScreen({
                 key={company.id}
                 company={company}
                 displayTimeZone={displayTimeZone}
+                locale={locale}
               />
             ))
           )}
@@ -1071,11 +1076,17 @@ export function CompanyListScreen({
 function CompanyRow({
   company,
   displayTimeZone,
+  locale,
 }: {
   readonly company: CompanyListItem;
   readonly displayTimeZone: string;
+  readonly locale: AppLocale;
 }) {
   const navigate = useNavigate();
+  const companyRegionLabel = formatCompanyRegionLabel(
+    company.companyRegion,
+    locale
+  );
 
   return (
     <div
@@ -1108,10 +1119,10 @@ function CompanyRow({
       <div className="min-w-0">
         <span
           className="inline-flex h-5 max-w-full min-w-0 items-center overflow-hidden rounded-full bg-[#EFF6FF] px-2 text-[11px] font-medium text-[#4880EE]"
-          title={company.companyRegion.region}
+          title={companyRegionLabel}
         >
           <span className="min-w-0 truncate whitespace-nowrap">
-            {company.companyRegion.region}
+            {companyRegionLabel}
           </span>
         </span>
       </div>
@@ -1661,12 +1672,18 @@ function getCompanyCreatePanelMaxWidth(viewportWidth?: number) {
 function CompanyMobileCard({
   company,
   displayTimeZone,
+  locale,
 }: {
   readonly company: CompanyListItem;
   readonly displayTimeZone: string;
+  readonly locale: AppLocale;
 }) {
   const navigate = useNavigate();
   const initial = company.companyName.charAt(0).toUpperCase();
+  const companyRegionLabel = formatCompanyRegionLabel(
+    company.companyRegion,
+    locale
+  );
 
   return (
     <button
@@ -1691,7 +1708,7 @@ function CompanyMobileCard({
         </div>
         {/* Row2: 지역 */}
         <p className="mt-0.5 text-[12px] text-[#6B7280]">
-          {company.companyRegion.region}
+          {companyRegionLabel}
         </p>
         {/* Row3: 연결 record + 현재 응답에서 가능한 활동 */}
         <div className="mt-1 flex items-center justify-between">

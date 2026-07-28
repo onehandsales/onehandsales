@@ -492,6 +492,8 @@ model Company {
   companyName     String
   companyFieldId  String    @db.Uuid
   companyRegionId String    @db.Uuid
+  /// 기능 : 회사 상세 주소를 국가별 강제 검증 없이 자유 입력으로 저장한다.
+  address         String?
   createdAt       DateTime  @default(now())
   updatedAt       DateTime  @updatedAt
   deletedAt       DateTime? @db.Timestamptz(3)
@@ -1871,10 +1873,14 @@ model CompanyField {
 }
 
 model CompanyRegion {
-  id        String   @id @default(uuid()) @db.Uuid
-  userId    String   @db.Uuid
-  region    String
-  createdAt DateTime @default(now())
+  id          String   @id @default(uuid()) @db.Uuid
+  userId      String   @db.Uuid
+  region      String
+  /// 기능 : 회사 지역이 속한 KR/US 국가 코드를 저장하고 legacy custom 지역은 null을 허용한다.
+  countryCode String?
+  /// 기능 : KR 시/도 또는 US State 표준 code를 저장하고 매핑 실패 custom 지역은 null을 유지한다.
+  regionCode  String?
+  createdAt   DateTime @default(now())
 
   /// 기능 : 회사 지역을 생성한 사용자다.
   user      User      @relation(fields: [userId], references: [id])
@@ -1883,6 +1889,7 @@ model CompanyRegion {
 
   @@unique([userId, region])
   @@index([userId])
+  @@index([userId, countryCode, regionCode])
 }
 
 model CompanyMemoLog {

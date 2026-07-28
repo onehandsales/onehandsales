@@ -115,6 +115,10 @@ export class CreateCompanyDto {
 
   @IsOptional()
   @IsString()
+  address?: string | null;
+
+  @IsOptional()
+  @IsString()
   companyMemo?: string | null;
 }
 
@@ -131,6 +135,10 @@ export class UpdateCompanyDto {
   @IsOptional()
   @IsUUID()
   companyRegionId?: string;
+
+  @IsOptional()
+  @IsString()
+  address?: string | null;
 }
 
 // 역할 : CreateCompanyFieldDto HTTP 요청 값을 검증하기 위한 DTO입니다.
@@ -143,6 +151,14 @@ export class CreateCompanyFieldDto {
 export class CreateCompanyRegionDto {
   @IsString()
   region!: string;
+
+  @IsOptional()
+  @IsString()
+  countryCode?: string | null;
+
+  @IsOptional()
+  @IsString()
+  regionCode?: string | null;
 }
 
 // 역할 : CreateCompanyMemoLogDto HTTP 요청 값을 검증하기 위한 DTO입니다.

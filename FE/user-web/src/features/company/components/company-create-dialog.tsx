@@ -11,12 +11,13 @@ import { useEffect, useRef, useState, type ReactNode } from "react";
 import { useForm } from "react-hook-form";
 import { ManagedTaxonomyDropdown } from "@/components/ui/managed-taxonomy-dropdown";
 import { ErrorState } from "@/components/ui/state";
+import { useAppI18n } from "@/features/app-i18n";
+import { CompanyRegionSelect } from "@/features/company/components/company-region-select";
 import {
   useCreateCompanyFieldMutation,
   useCreateCompanyMutation,
   useCreateCompanyRegionMutation,
   useDeleteCompanyFieldMutation,
-  useDeleteCompanyRegionMutation,
 } from "@/features/company/hooks/use-company-mutations";
 import {
   useCompanyFields,
@@ -32,6 +33,10 @@ import type {
   CompanyField,
   CompanyRegion,
 } from "@/features/company/types/company";
+import {
+  findCompanyRegionByCode,
+  type CompanyRegionSelectOption,
+} from "@/features/company/utils/company-region-options";
 import { getApiErrorMessage } from "@/lib/api-client";
 
 type CompanyCreateDialogProps = {
@@ -66,11 +71,11 @@ export function CompanyCreateDialog({
   onExpand,
   onResizeStart,
 }: CompanyCreateDialogProps) {
+  const { locale } = useAppI18n();
   const createCompanyMutation = useCreateCompanyMutation();
   const createFieldMutation = useCreateCompanyFieldMutation();
   const createRegionMutation = useCreateCompanyRegionMutation();
   const deleteFieldMutation = useDeleteCompanyFieldMutation();
-  const deleteRegionMutation = useDeleteCompanyRegionMutation();
   const fieldsQuery = useCompanyFields();
   const regionsQuery = useCompanyRegions();
   const {
@@ -87,10 +92,10 @@ export function CompanyCreateDialog({
   });
   const formId = "company-create-form";
   const [pendingFieldName, setPendingFieldName] = useState("");
-  const [pendingRegionName, setPendingRegionName] = useState("");
   const memoTextareaRef = useRef<HTMLTextAreaElement | null>(null);
   const selectedFieldId = watch("companyFieldId");
   const selectedRegionId = watch("companyRegionId");
+  const selectedCountryCode = watch("countryCode") ?? "KR";
   const companyMemo = watch("companyMemo") ?? "";
   const memoRegister = register("companyMemo");
 
@@ -102,10 +107,12 @@ export function CompanyCreateDialog({
         companyName: (initialValues?.companyName ?? initialCompanyName).trim(),
         companyFieldId: initialValues?.companyFieldId ?? "",
         companyRegionId: initialValues?.companyRegionId ?? "",
+        countryCode: initialValues?.countryCode ?? "KR",
+        regionCode: initialValues?.regionCode ?? "",
+        address: initialValues?.address ?? "",
         companyMemo: initialValues?.companyMemo ?? "",
       });
       setPendingFieldName("");
-      setPendingRegionName("");
     }
   }, [initialCompanyName, initialValues, open, reset]);
 
@@ -145,21 +152,6 @@ export function CompanyCreateDialog({
       setPendingFieldName("");
     }
   }, [fields, pendingFieldName, setValue]);
-
-  useEffect(() => {
-    if (!pendingRegionName) {
-      return;
-    }
-
-    const matchedRegion = regions.find(
-      (region) => region.region === pendingRegionName,
-    );
-
-    if (matchedRegion) {
-      setValue("companyRegionId", matchedRegion.id, { shouldValidate: true });
-      setPendingRegionName("");
-    }
-  }, [regions, pendingRegionName, setValue]);
 
   useEffect(() => {
     if (
@@ -204,22 +196,6 @@ export function CompanyCreateDialog({
     setPendingFieldName(name);
   };
 
-  const createRegion = async (name: string) => {
-    await createRegionMutation.mutateAsync({ region: name });
-    const updated = await regionsQuery.refetch();
-    const created = updated.data?.items.find((region) => region.region === name);
-
-    if (created) {
-      setValue("companyRegionId", created.id, {
-        shouldDirty: true,
-        shouldValidate: true,
-      });
-      return;
-    }
-
-    setPendingRegionName(name);
-  };
-
   const focusMemoTextarea = () => {
     memoTextareaRef.current?.focus();
   };
@@ -235,15 +211,60 @@ export function CompanyCreateDialog({
     }
   };
 
-  const deleteRegion = async (region: CompanyRegion) => {
-    await deleteRegionMutation.mutateAsync(region.id);
+  // 기능 : 표준 지역은 사용자별 CompanyRegion row가 없으면 생성한 뒤 선택합니다.
+  const selectRegionOption = async (option: CompanyRegionSelectOption | null) => {
+    if (!option) {
+      setValue("companyRegionId", "", { shouldDirty: true, shouldValidate: true });
+      setValue("regionCode", "", { shouldDirty: true });
+      return;
+    }
 
-    if (selectedRegionId === region.id) {
-      setValue("companyRegionId", "", {
+    if (option.countryCode) {
+      setValue("countryCode", option.countryCode, { shouldDirty: true });
+    }
+    setValue("regionCode", option.regionCode ?? "", { shouldDirty: true });
+
+    if (option.companyRegionId) {
+      setValue("companyRegionId", option.companyRegionId, {
+        shouldDirty: true,
+        shouldValidate: true,
+      });
+      return;
+    }
+
+    if (!option.countryCode || !option.regionCode) {
+      return;
+    }
+
+    await createRegionMutation.mutateAsync({
+      region: option.region,
+      countryCode: option.countryCode,
+      regionCode: option.regionCode,
+    });
+
+    const updated = await regionsQuery.refetch();
+    const created = findCompanyRegionByCode(
+      updated.data?.items ?? regions,
+      option.countryCode,
+      option.regionCode
+    );
+
+    if (created) {
+      setValue("companyRegionId", created.id, {
         shouldDirty: true,
         shouldValidate: true,
       });
     }
+  };
+
+  // 기능 : 국가가 바뀌면 이전 국가의 지역 선택을 비워 잘못된 code 조합을 막습니다.
+  const changeRegionCountry = (countryCode: "KR" | "US") => {
+    setValue("countryCode", countryCode, { shouldDirty: true });
+    setValue("regionCode", "", { shouldDirty: true });
+    setValue("companyRegionId", "", {
+      shouldDirty: true,
+      shouldValidate: true,
+    });
   };
 
   const isDocked = mode === "docked";
@@ -400,30 +421,33 @@ export function CompanyCreateDialog({
                 label="지역"
               >
                 <input type="hidden" {...register("companyRegionId")} />
-                <ManagedTaxonomyDropdown
-                  addPlaceholder="지역명"
-                  createActionLabel="새 지역 추가"
-                  emptyText="지역을 추가하면 선택할 수 있어요"
-                  getLabel={(region) => region.region}
-                  id="company-region-id"
+                <input type="hidden" {...register("countryCode")} />
+                <input type="hidden" {...register("regionCode")} />
+                <CompanyRegionSelect
+                  countryCode={selectedCountryCode}
+                  disabled={isRegionsLoading}
+                  idPrefix="company-create"
                   isCreating={createRegionMutation.isPending}
-                  isDeleting={deleteRegionMutation.isPending}
-                  items={regions}
-                  listClassName="max-h-[132px]"
-                  placeholder="지역 선택"
-                  selectedId={selectedRegionId}
-                  title="지역"
-                  onCreate={createRegion}
-                  onDelete={deleteRegion}
-                  onSelect={(id) =>
-                    setValue("companyRegionId", id, {
-                      shouldDirty: true,
-                      shouldValidate: true,
-                    })
-                  }
+                  locale={locale}
+                  regions={regions}
+                  selectedRegionId={selectedRegionId}
+                  onCountryChange={changeRegionCountry}
+                  onRegionSelect={selectRegionOption}
                 />
               </CompanyCreatePanelProperty>
             </section>
+
+            <CompanyCreatePanelProperty
+              error={errors.address?.message}
+              label="주소"
+            >
+              <input
+                className="h-10 w-full rounded-md border border-[#E5E7EB] bg-white px-3 text-[13px] font-medium text-[#111827] outline-none transition placeholder:text-[#CBD5E1] focus:border-[#4880EE] focus:ring-2 focus:ring-[#DBEAFE]"
+                id="company-address"
+                placeholder="주소를 입력해 주세요"
+                {...register("address")}
+              />
+            </CompanyCreatePanelProperty>
 
             <section className="grid cursor-auto gap-2">
               <label

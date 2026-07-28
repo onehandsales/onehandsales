@@ -1,6 +1,6 @@
 # G06 Company Region Address
 
-상태: Not Started
+상태: Done
 목표: Company 지역/주소를 KR/US 글로벌 code 기반으로 보강한다.
 
 ## 1. 포함 범위
@@ -146,17 +146,22 @@ pnpm run build
 
 ## 11. Goal 검토 체크리스트
 
-- [ ] Company에만 주소/지역 글로벌화가 적용됐다.
-- [ ] Contact에는 주소/지역 필드를 추가하지 않았다.
-- [ ] 기존 CompanyRegion 구조가 유지된다.
-- [ ] countryCode/regionCode가 추가됐다.
-- [ ] Company/CompanyRegion request가 국가/지역 code를 처리한다.
-- [ ] Company/CompanyRegion response가 locale 표시명 변환에 필요한 code를 포함한다.
-- [ ] business logic이 mapping 실패 데이터 보존을 따른다.
-- [ ] user flow에서 Country 선택 후 Region 목록이 바뀐다.
-- [ ] `BE/prisma`를 참고했고 신규 column/index에 한글 주석이 있다.
-- [ ] KR/US region dictionary가 있다.
-- [ ] 기존 한국 region 자동 매핑이 있다.
-- [ ] 매핑 실패 region은 legacy custom region으로 유지된다.
-- [ ] 신규 코드에 한글 주석 규칙이 적용됐다.
-- [ ] 실행한 검증 결과를 기록했다.
+- [x] Company에만 주소/지역 글로벌화가 적용됐다.
+- [x] Contact에는 주소/지역 필드를 추가하지 않았다.
+- [x] 기존 CompanyRegion 구조가 유지된다.
+- [x] countryCode/regionCode가 추가됐다.
+- [x] Company/CompanyRegion request가 국가/지역 code를 처리한다.
+- [x] Company/CompanyRegion response가 locale 표시명 변환에 필요한 code를 포함한다.
+- [x] business logic이 mapping 실패 데이터 보존을 따른다.
+- [x] user flow에서 Country 선택 후 Region 목록이 바뀐다.
+- [x] `BE/prisma`를 참고했고 신규 column/index에 한글 주석이 있다.
+- [x] KR/US region dictionary가 있다.
+- [x] 기존 한국 region 자동 매핑이 있다.
+- [x] 매핑 실패 region은 legacy custom region으로 유지된다.
+- [x] 신규 코드에 한글 주석 규칙이 적용됐다.
+- [x] 실행한 검증 결과를 기록했다.
+
+검증 결과:
+
+- `BE`: `pnpm.cmd prisma:validate`, `pnpm.cmd prisma:generate`, `pnpm.cmd typecheck`, `pnpm.cmd lint`, `pnpm.cmd test -- company`, `pnpm.cmd build`
+- `FE/user-web`: `pnpm.cmd typecheck`, `pnpm.cmd lint`, `pnpm.cmd build`

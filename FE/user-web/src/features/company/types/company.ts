@@ -8,6 +8,8 @@ export type CompanyField = {
 export type CompanyRegion = {
   readonly id: string;
   readonly region: string;
+  readonly countryCode: string | null;
+  readonly regionCode: string | null;
 };
 
 export type CompanyListItem = {
@@ -15,6 +17,7 @@ export type CompanyListItem = {
   readonly companyName: string;
   readonly companyField: CompanyField;
   readonly companyRegion: CompanyRegion;
+  readonly address: string | null;
   readonly contactCount: number;
   readonly dealCount: number;
   readonly createdAt: string;
@@ -25,6 +28,7 @@ export type CompanyDetail = {
   readonly companyName: string;
   readonly companyField: CompanyField;
   readonly companyRegion: CompanyRegion;
+  readonly address: string | null;
   readonly createdAt: string;
   readonly updatedAt: string;
 };
@@ -72,6 +76,7 @@ export type CreateCompanyInput = {
   readonly companyName: string;
   readonly companyFieldId: string;
   readonly companyRegionId: string;
+  readonly address?: string;
   readonly companyMemo?: string;
 };
 
@@ -80,6 +85,7 @@ export type UpdateCompanyInput = {
   readonly companyName?: string;
   readonly companyFieldId?: string;
   readonly companyRegionId?: string;
+  readonly address?: string;
 };
 
 export type CreateCompanyFieldInput = {
@@ -88,6 +94,8 @@ export type CreateCompanyFieldInput = {
 
 export type CreateCompanyRegionInput = {
   readonly region: string;
+  readonly countryCode?: string | null;
+  readonly regionCode?: string | null;
 };
 
 export type CompanyContact = {

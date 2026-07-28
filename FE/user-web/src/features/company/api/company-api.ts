@@ -65,6 +65,7 @@ export function updateCompany(input: UpdateCompanyInput) {
       companyName: input.companyName,
       companyFieldId: input.companyFieldId,
       companyRegionId: input.companyRegionId,
+      address: input.address,
     }),
   });
 }

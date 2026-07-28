@@ -16,12 +16,15 @@ export interface CompanyFieldRecord {
 export interface CompanyRegionRecord {
   readonly id: string;
   readonly region: string;
+  readonly countryCode: string | null;
+  readonly regionCode: string | null;
 }
 
 // 역할 : CompanyRecord 데이터가 계층 사이에서 전달되는 구조를 정의합니다.
 export interface CompanyRecord {
   readonly id: string;
   readonly companyName: string;
+  readonly address: string | null;
   readonly companyField: CompanyFieldRecord;
   readonly companyRegion: CompanyRegionRecord;
   readonly createdAt: Date;
@@ -112,6 +115,7 @@ export interface CreateCompanyInput {
   readonly companyName: string;
   readonly companyFieldId: string;
   readonly companyRegionId: string;
+  readonly address: string | null;
 }
 
 // 역할 : UpdateCompanyInput 데이터가 계층 사이에서 전달되는 구조를 정의합니다.
@@ -119,6 +123,15 @@ export interface UpdateCompanyInput {
   readonly companyName?: string;
   readonly companyFieldId?: string;
   readonly companyRegionId?: string;
+  readonly address?: string | null;
+}
+
+// 역할 : CreateCompanyRegionInput 회사 지역 생성에 필요한 값을 정의합니다.
+export interface CreateCompanyRegionInput {
+  readonly userId: string;
+  readonly region: string;
+  readonly countryCode: string | null;
+  readonly regionCode: string | null;
 }
 
 // 역할 : DeleteCompanyInput 회사 휴지통 이동에 필요한 값을 정의합니다.
@@ -242,8 +255,14 @@ export interface CompanyRepository {
   ): Promise<CompanyRegionRecord | null>;
   // 기능 : 현재 사용자 안에서 같은 회사 지역 이름이 있는지 확인합니다.
   existsRegionByName(userId: string, region: string): Promise<boolean>;
+  // 기능 : 현재 사용자 안에서 같은 표준 회사 지역 code가 있는지 확인합니다.
+  existsRegionByCode(
+    userId: string,
+    countryCode: string,
+    regionCode: string
+  ): Promise<boolean>;
   // 기능 : 현재 사용자의 회사 지역을 생성합니다.
-  createRegion(userId: string, region: string): Promise<void>;
+  createRegion(input: CreateCompanyRegionInput): Promise<void>;
   // 기능 : 회사 지역을 사용하는 회사가 있는지 확인합니다.
   isRegionInUse(userId: string, regionId: string): Promise<boolean>;
   // 기능 : 현재 사용자의 회사 지역을 삭제합니다.

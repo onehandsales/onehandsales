@@ -15,6 +15,9 @@ export const companyCreateFormSchema = z.object({
   companyName: z.string().trim().min(1, "회사명을 입력해 주세요."),
   companyFieldId: z.string().trim().min(1, "분야를 선택해 주세요."),
   companyRegionId: z.string().trim().min(1, "지역을 선택해 주세요."),
+  countryCode: z.enum(["KR", "US"]),
+  regionCode: z.string().trim().optional(),
+  address: z.string().trim().optional(),
   companyMemo: z.string().trim().optional(),
 });
 
@@ -24,6 +27,9 @@ export const companyEditFormSchema = z.object({
   companyName: z.string().trim().min(1, "회사명을 입력해 주세요."),
   companyFieldId: z.string().trim().min(1, "분야를 선택해 주세요."),
   companyRegionId: z.string().trim().min(1, "지역을 선택해 주세요."),
+  countryCode: z.enum(["KR", "US"]),
+  regionCode: z.string().trim().optional(),
+  address: z.string().trim().optional(),
 });
 
 export type CompanyEditFormValues = z.infer<typeof companyEditFormSchema>;
@@ -53,6 +59,9 @@ export const emptyCompanyCreateFormValues: CompanyCreateFormValues = {
   companyName: "",
   companyFieldId: "",
   companyRegionId: "",
+  countryCode: "KR",
+  regionCode: "",
+  address: "",
   companyMemo: "",
 };
 
@@ -78,6 +87,10 @@ export function toCompanyEditFormValues(
     companyName: company.companyName,
     companyFieldId: company.companyField.id,
     companyRegionId: company.companyRegion.id,
+    // 기능 : legacy/custom 지역은 기존 region ID를 유지하고 국가 선택만 KR 기본값으로 둡니다.
+    countryCode: company.companyRegion.countryCode === "US" ? "US" : "KR",
+    regionCode: company.companyRegion.regionCode ?? "",
+    address: company.address ?? "",
   };
 }
 
@@ -89,6 +102,7 @@ export function toCreateCompanyInput(
     companyName: values.companyName.trim(),
     companyFieldId: values.companyFieldId,
     companyRegionId: values.companyRegionId,
+    address: optionalText(values.address),
     companyMemo: optionalText(values.companyMemo),
   };
 }
@@ -103,6 +117,7 @@ export function toUpdateCompanyInput(
     companyName: values.companyName.trim(),
     companyFieldId: values.companyFieldId,
     companyRegionId: values.companyRegionId,
+    address: values.address?.trim() ?? "",
   };
 }
 

@@ -1,6 +1,6 @@
 # Goal Review Checklist
 
-상태: G03 Reviewed / G04 Ready / G05 Reviewed
+상태: G03 Reviewed / G04 Ready / G05 Reviewed / G06 Reviewed
 목적: 각 `/goal` 완료 전 검토자가 반드시 확인할 공통/개별 체크리스트
 
 ## 1. 공통 Gate
@@ -60,10 +60,10 @@
 
 ## 7. G06 Company Region Address
 
-- [ ] Company/CompanyRegion request/response에 국가/지역 code가 포함된다.
-- [ ] Company/CompanyRegion 신규 field가 `BE/prisma` 기준과 한글 주석 규칙을 따른다.
-- [ ] Contact에는 주소/지역 필드를 추가하지 않았다.
-- [ ] 기존 custom region 보존과 한국 region 자동 mapping이 동작한다.
+- [x] Company/CompanyRegion request/response에 국가/지역 code가 포함된다.
+- [x] Company/CompanyRegion 신규 field가 `BE/prisma` 기준과 한글 주석 규칙을 따른다.
+- [x] Contact에는 주소/지역 필드를 추가하지 않았다.
+- [x] 기존 custom region 보존과 한국 region 자동 mapping이 동작한다.
 
 ## 8. G07 Import Export Localization
 

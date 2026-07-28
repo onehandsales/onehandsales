@@ -124,6 +124,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
       case "USER_DEFAULT_CURRENCY_UNSUPPORTED":
       case "CONTACT_PHONE_COUNTRY_UNSUPPORTED":
       case "CONTACT_PHONE_INVALID":
+      case "COMPANY_REGION_UNSUPPORTED":
       case "InvalidImportMapping":
       case "UnsupportedImportFileType":
       case "ImportFileParseFailed":

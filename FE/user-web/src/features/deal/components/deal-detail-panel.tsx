@@ -70,6 +70,7 @@ import {
   type DealMemoLog,
   type DealStatus,
 } from "@/features/deal/types/deal";
+import { formatCompanyRegionLabel } from "@/features/company/utils/company-region-options";
 import { getApiErrorMessage } from "@/lib/api-client";
 import { cn } from "@/utils/cn";
 import { formatDate, formatDateTime } from "@/utils/format";
@@ -730,6 +731,8 @@ function DealLinkedCompaniesTable({
 }: {
   readonly companies: DealDetail["companies"];
 }) {
+  const { locale } = useAppI18n();
+
   return (
     <DealLinkedTableFrame count={companies.length} title="연결 회사">
       {companies.length === 0 ? (
@@ -738,6 +741,10 @@ function DealLinkedCompaniesTable({
         <div className={companies.length > 2 ? "max-h-[116px] overflow-y-auto" : ""}>
           {companies.map((company) => {
             const companyName = formatDeletedLabel(company.companyName, company.isDeleted);
+            const companyRegionLabel = formatCompanyRegionLabel(
+              company.companyRegion,
+              locale
+            );
 
             return (
               <Link
@@ -758,8 +765,8 @@ function DealLinkedCompaniesTable({
                 <span className="truncate text-center" title={company.companyField.field}>
                   {company.companyField.field}
                 </span>
-                <span className="truncate text-right" title={company.companyRegion.region}>
-                  {company.companyRegion.region}
+                <span className="truncate text-right" title={companyRegionLabel}>
+                  {companyRegionLabel}
                 </span>
               </div>
               <ChevronRight className="h-4 w-4 shrink-0 text-[#D1D5DB]" />

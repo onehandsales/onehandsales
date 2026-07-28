@@ -543,7 +543,13 @@ function createCompanyRepository(): CompanyRepository {
     },
     async findRegion(userId, regionId) {
       return regionId === `${userId}-region`
-        ? { id: regionId, region: `${userId} region` }
+        ? {
+            id: regionId,
+            region: `${userId} region`,
+            // 기능 : legacy/custom 지역 fixture는 표준 code 없이 소유권만 검증합니다.
+            countryCode: null,
+            regionCode: null,
+          }
         : null;
     },
   };
@@ -1088,8 +1094,15 @@ function createCompanyRecord(
     id,
     userId,
     companyName: `${marker} Company`,
+    // 기능 : 회사 주소와 글로벌 지역 code 필드를 ownership 테스트 fixture에 포함합니다.
+    address: null,
     companyField: { id: `${userId}-field`, field: `${marker} Field` },
-    companyRegion: { id: `${userId}-region`, region: `${marker} Region` },
+    companyRegion: {
+      id: `${userId}-region`,
+      region: `${marker} Region`,
+      countryCode: null,
+      regionCode: null,
+    },
     contactCount: 1,
     dealCount: 1,
     createdAt: CREATED_AT,
@@ -1170,7 +1183,13 @@ function createDealRecord(
         companyName: `${marker} Company`,
         isDeleted: false,
         companyField: { id: `${userId}-field`, field: `${marker} Field` },
-        companyRegion: { id: `${userId}-region`, region: `${marker} Region` },
+        companyRegion: {
+          id: `${userId}-region`,
+          region: `${marker} Region`,
+          // 기능 : deal ownership fixture에서는 legacy 지역 fallback만 검증합니다.
+          countryCode: null,
+          regionCode: null,
+        },
       },
     ],
     contacts: [
