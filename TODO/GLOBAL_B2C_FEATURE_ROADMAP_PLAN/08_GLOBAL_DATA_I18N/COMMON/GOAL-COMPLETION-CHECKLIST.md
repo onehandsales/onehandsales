@@ -1,6 +1,6 @@
 # Goal Completion Checklist
 
-상태: G01 Done / G02 Done / G03 Ready
+상태: G01 Done / G02 Done / G03 Done / G04 Ready
 최종 업데이트: 2026-07-28
 
 ## 1. 목적
@@ -15,8 +15,8 @@
 |---|---|---|---|---|---|---|
 | [x] | G01 Document Contract Sync | Done | 2026-07-28 | 현재 코드와 계약 대조, AGENT 갱신 대상 확정 | `COMMON/PLANNING-REVIEW.md`, G01 spec, `pnpm.cmd run prisma:validate` | G02 착수 가능 |
 | [x] | G02 User Global Settings | Done | 2026-07-28 | User 설정 DB/API/Settings 구현 | `COMMON/GOAL-SPECS/G02_USER_GLOBAL_SETTINGS.md`, `BE/prisma/migrations/20260728010000_add_user_global_settings`, BE/FE 검증 명령 | G03 착수 가능 |
-| [ ] | G03 App I18N Foundation | Not Started |  | app i18n provider/resource 구현 |  | public-site와 분리 |
-| [ ] | G04 Currency Product Deal | Not Started |  | Product/Deal currency 구현 |  | KRW/USD |
+| [x] | G03 App I18N Foundation | Done | 2026-07-28 | app i18n provider/resource 구현 | `COMMON/GOAL-SPECS/G03_APP_I18N_FOUNDATION.md`, `FE/user-web/src/features/app-i18n`, User Web 검증 명령 | G04 착수 가능 |
+| [ ] | G04 Currency Product Deal | Ready |  | Product/Deal currency 구현 |  | KRW/USD |
 | [ ] | G05 Contact Phone Global | Not Started |  | Contact phone 글로벌 필드와 migration 구현 |  | KR/US |
 | [ ] | G06 Company Region Address | Not Started |  | CompanyRegion code/address 구현 |  | Company만 적용 |
 | [ ] | G07 Import Export Localization | Not Started |  | Export/Import template 현지화 구현 |  | ko-KR/en |
@@ -62,12 +62,12 @@
 
 ### G03 App I18N Foundation
 
-- [ ] public-site i18n과 분리된 app i18n provider가 있다.
-- [ ] locale 지원값은 `ko-KR`, `en`으로 제한된다.
-- [ ] `/app` route에 locale prefix가 붙지 않는다.
-- [ ] `User.preferredLocale` 로딩 후 앱 문구가 설정값을 따른다.
-- [ ] `/app/settings` 저장 직후 locale이 즉시 반영된다.
-- [ ] Frontend 신규 component/hook/function에 `// 기능 : ...` 주석이 있다.
+- [x] public-site i18n과 분리된 app i18n provider가 있다.
+- [x] locale 지원값은 `ko-KR`, `en`으로 제한된다.
+- [x] `/app` route에 locale prefix가 붙지 않는다.
+- [x] `User.preferredLocale` 로딩 후 앱 문구가 설정값을 따른다.
+- [x] `/app/settings` 저장 직후 locale이 즉시 반영된다.
+- [x] Frontend 신규 component/hook/function에 `// 기능 : ...` 주석이 있다.
 
 ### G04 Currency Product Deal
 
@@ -159,3 +159,4 @@
 - 2026-07-27: 08 구현 전 정책 결정과 goal 단위 실행 문서 작성.
 - 2026-07-28: G01 Document Contract Sync 완료. AGENT/TODO 계약 문서의 current baseline과 08 target delta를 분리했고, `DOMAIN_GLOBAL_DATA_API.md` Error Response / FE 처리 기준과 `COMMON/PLANNING-REVIEW.md`를 추가했다. `cd BE; pnpm.cmd run prisma:validate` 통과.
 - 2026-07-28: G02 User Global Settings 완료. `User.countryCode`, `User.defaultCurrencyCode`, profile GET/PATCH, auth signup default, `/app/settings`와 계정 설정 모달을 연결했다. 검증은 BE `prisma:validate`, `prisma:generate`, `typecheck`, `lint`, `test -- auth user`, FE user-web `typecheck`, `lint`, `build` 통과.
+- 2026-07-28: G03 App I18N Foundation 완료. `FE/user-web/src/features/app-i18n`에 app 전용 provider/resource/formatter를 추가하고 Settings 저장 후 `User.preferredLocale` 기반 문구와 날짜/시간 formatter가 즉시 반영되도록 연결했다. 검증은 FE user-web `typecheck`, `lint`, `build` 통과. `features/app-i18n` 내부 public-site 참조 없음과 `/app` route prefix 유지 확인.

@@ -1,6 +1,6 @@
 # G03 App I18N Foundation
 
-상태: Not Started
+상태: Done
 목표: public-site와 분리된 `/app` 전용 i18n 기반을 만든다.
 
 ## 1. 포함 범위
@@ -101,15 +101,41 @@ rg -n "public-site" FE/user-web/src/features/app-i18n FE/user-web/src/app
 
 ## 11. Goal 검토 체크리스트
 
-- [ ] app i18n provider가 public-site i18n과 분리됐다.
-- [ ] 도메인별 namespace 구조가 있다.
-- [ ] locale은 `ko-KR`, `en`만 지원한다.
-- [ ] `/app` route prefix가 바뀌지 않았다.
-- [ ] request/response 의존값이 profile 계약과 일치한다.
-- [ ] business logic fallback이 `User.preferredLocale` 우선이다.
-- [ ] user flow상 Settings 저장 직후 문구가 바뀐다.
-- [ ] DB/Prisma 변경 없음이 확인됐다.
-- [ ] profile locale fallback이 있다.
-- [ ] Settings 저장 후 locale 즉시 반영 경로가 있다.
-- [ ] 신규 FE 코드에 `// 기능 : ...` 주석이 있다.
-- [ ] 실행한 검증 결과를 기록했다.
+- [x] app i18n provider가 public-site i18n과 분리됐다.
+- [x] 도메인별 namespace 구조가 있다.
+- [x] locale은 `ko-KR`, `en`만 지원한다.
+- [x] `/app` route prefix가 바뀌지 않았다.
+- [x] request/response 의존값이 profile 계약과 일치한다.
+- [x] business logic fallback이 `User.preferredLocale` 우선이다.
+- [x] user flow상 Settings 저장 직후 문구가 바뀐다.
+- [x] DB/Prisma 변경 없음이 확인됐다.
+- [x] profile locale fallback이 있다.
+- [x] Settings 저장 후 locale 즉시 반영 경로가 있다.
+- [x] 신규 FE 코드에 `// 기능 : ...` 주석이 있다.
+- [x] 실행한 검증 결과를 기록했다.
+
+## 12. 완료 기록
+
+- 완료일: 2026-07-28
+- 구현 위치: `FE/user-web/src/features/app-i18n`
+- Provider 연결: `FE/user-web/src/app/providers/app-providers.tsx`
+- Settings 연동: `FE/user-web/src/pages/settings/index.tsx`
+- 기존 formatter 호환 확장: `FE/user-web/src/utils/format.ts`
+- DB/Prisma 변경: 없음
+
+검증 결과:
+
+```powershell
+cd FE/user-web
+pnpm.cmd run typecheck
+pnpm.cmd run lint
+pnpm.cmd run build
+rg -n "public-site" FE/user-web/src/features/app-i18n
+rg -n "/app" FE/user-web/src/app/router/router.tsx
+rg -n "/ko/app|/en/app" FE/user-web/src/app/router/router.tsx
+```
+
+- `typecheck`, `lint`, `build` 통과.
+- `features/app-i18n` 내부 `public-site` 참조 없음.
+- 라우터는 `/app` route를 유지하고 `/ko/app`, `/en/app` route가 없다.
+- `build`는 기존 번들 크기 경고만 출력했다.

@@ -15,6 +15,7 @@ Global B2C 첫 판매를 위해 로그인 이후 `/app` 업무 화면이 한국 
 
 - public/auth 진입면은 URL locale을 지원한다.
 - `/app` 내부 route는 locale prefix 없이 `/app/*`를 사용한다.
+- G01~G03은 완료됐고, G04 Product/Deal currency부터 순차 착수 가능하다.
 - `/app` 내부 UI와 validation copy는 한국어 우선이다.
 - Contact 전화번호 검증은 한국 휴대폰 형식 중심이다.
 - Product/Deal 금액은 정수 금액만 있고 통화 코드가 없다.

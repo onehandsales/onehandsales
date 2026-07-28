@@ -1,6 +1,6 @@
 # Goal Review Checklist
 
-상태: Ready for Goal Execution
+상태: G03 Reviewed / G04 Ready
 목적: 각 `/goal` 완료 전 검토자가 반드시 확인할 공통/개별 체크리스트
 
 ## 1. 공통 Gate
@@ -39,10 +39,10 @@
 
 ## 4. G03 App I18N Foundation
 
-- [ ] 신규 Backend request/response 변경 없음이 명시되어 있다.
-- [ ] app i18n이 public-site i18n과 분리됐다.
-- [ ] `/app` URL locale prefix가 생기지 않았다.
-- [ ] `User.preferredLocale` 우선 fallback이 동작한다.
+- [x] 신규 Backend request/response 변경 없음이 명시되어 있다.
+- [x] app i18n이 public-site i18n과 분리됐다.
+- [x] `/app` URL locale prefix가 생기지 않았다.
+- [x] `User.preferredLocale` 우선 fallback이 동작한다.
 
 ## 5. G04 Currency Product Deal
 

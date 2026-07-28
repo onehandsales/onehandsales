@@ -94,6 +94,7 @@ legacy redirect 라우트:
 현재 `FE/user-web/src/features` 기준:
 
 - `auth`
+- `app-i18n`
 - `business-card`
 - `company`
 - `contact`
@@ -108,7 +109,7 @@ legacy redirect 라우트:
 - `search`
 - `trash`
 
-08 G03 목표에서는 public-site i18n을 확장하지 않고, `/app` 내부 문구용 app i18n feature를 별도로 둔다. 후보 위치는 `FE/user-web/src/features/app-i18n`이다.
+08 G03에서는 public-site i18n을 확장하지 않고, `/app` 내부 문구/formatter용 app i18n feature를 `FE/user-web/src/features/app-i18n`에 둔다. `AppI18nProvider`는 `AuthProvider` 내부에서 `User.preferredLocale`을 우선 사용하고, profile 로딩 전에는 browser locale과 `ko-KR` 순서로 fallback한다.
 
 ## 5. 현재 API 연동 상태
 

@@ -12,6 +12,7 @@ import {
 import { type FormEvent, useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Toast } from "@/components/ui/toast";
+import { type AppI18nKey, useAppI18n } from "@/features/app-i18n";
 import {
   useMyDevices,
   useMyProfile,
@@ -25,7 +26,6 @@ import type {
   UserProfileResponse,
 } from "@/features/auth/types/auth";
 import { getApiErrorMessage } from "@/lib/api-client";
-import { formatDateTime } from "@/utils/format";
 
 const DEFAULT_TIME_ZONE = "Asia/Seoul";
 const localeOptions = [
@@ -57,16 +57,24 @@ const timeZoneOptions = [
   "UTC",
 ] as const;
 
+// 기능 : 사용자 글로벌 설정, 연동 설정, 기기 현황을 한 화면에 표시합니다.
 export function SettingsPage() {
-  const [notice, setNotice] = useState<string | null>(null);
+  const { t } = useAppI18n();
+  const [notice, setNotice] = useState<SettingsNotice | null>(null);
   const profileQuery = useMyProfile();
   const devicesQuery = useMyDevices();
+  const noticeMessage =
+    notice?.type === "i18n" ? t(notice.key) : (notice?.message ?? null);
 
   return (
     <section className="flex min-h-full flex-col bg-white">
       <div className="mx-auto grid w-full max-w-7xl gap-5 px-5 py-6">
-        {notice ? (
-          <Toast message={notice} onClose={() => setNotice(null)} variant="success" />
+        {noticeMessage ? (
+          <Toast
+            message={noticeMessage}
+            onClose={() => setNotice(null)}
+            variant="success"
+          />
         ) : null}
 
         <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_380px]">
@@ -75,11 +83,15 @@ export function SettingsPage() {
               error={profileQuery.error}
               isLoading={profileQuery.isLoading}
               onRetry={() => void profileQuery.refetch()}
-              onSaved={() => setNotice("개인 정보를 저장했어요.")}
+              onSaved={() => setNotice({ key: "settings.profileSaved", type: "i18n" })}
               profile={profileQuery.data ?? null}
             />
-            <GoogleCalendarSettingsSection onNotice={setNotice} />
-            <FollowUpDeliverySettingsSection onNotice={setNotice} />
+            <GoogleCalendarSettingsSection
+              onNotice={(message) => setNotice({ message, type: "text" })}
+            />
+            <FollowUpDeliverySettingsSection
+              onNotice={(message) => setNotice({ message, type: "text" })}
+            />
           </div>
           <DeviceSection
             devices={devicesQuery.data?.devices ?? []}
@@ -93,6 +105,7 @@ export function SettingsPage() {
   );
 }
 
+// 기능 : 프로필과 글로벌 기본값을 조회하고 저장하는 설정 폼을 표시합니다.
 function ProfileSection({
   profile,
   isLoading,
@@ -106,6 +119,7 @@ function ProfileSection({
   readonly onRetry: () => void;
   readonly onSaved: () => void;
 }) {
+  const { formatDateTime, t } = useAppI18n();
   const [name, setName] = useState("");
   const [preferredLocale, setPreferredLocale] = useState("ko-KR");
   const [timeZone, setTimeZone] = useState(DEFAULT_TIME_ZONE);
@@ -134,7 +148,7 @@ function ProfileSection({
     const nextName = name.trim();
 
     if (nextName.length > 80) {
-      setFormError("이름은 80자 이하로 입력해 주세요.");
+      setFormError(t("settings.nameTooLong"));
       return;
     }
 
@@ -160,8 +174,8 @@ function ProfileSection({
         <section className="grid gap-3">
           <SettingsCardHeader
             icon={UserRound}
-            description="개인 표시 정보와 글로벌 기본값을 설정해요."
-            title="프로필 설정"
+            description={t("settings.profileDescription")}
+            title={t("settings.profileTitle")}
           />
           <div className="rounded-lg border border-[#E2E5EC] bg-white p-5 shadow-sm">
             <SettingsSkeleton rows={5} />
@@ -171,8 +185,8 @@ function ProfileSection({
         <section className="grid gap-3">
           <SettingsCardHeader
             icon={UserRound}
-            description="개인 표시 정보와 글로벌 기본값을 설정해요."
-            title="프로필 설정"
+            description={t("settings.profileDescription")}
+            title={t("settings.profileTitle")}
           />
           <div className="rounded-lg border border-[#E2E5EC] bg-white p-5 shadow-sm">
             <InlineError error={error} onRetry={onRetry} />
@@ -184,17 +198,21 @@ function ProfileSection({
             <div className="grid gap-4 rounded-lg border border-[#E2E5EC] bg-white px-5 py-4 shadow-sm">
               <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
                 <label className="grid min-w-0 gap-1.5">
-                  <span className="text-sm font-medium text-[#374151]">이름</span>
+                  <span className="text-sm font-medium text-[#374151]">
+                    {t("settings.name")}
+                  </span>
                   <input
                     className="h-9 min-w-0 rounded-md border border-[#E2E5EC] bg-white px-3 text-sm outline-none focus:border-[#93C5FD] focus:bg-white"
                     maxLength={80}
                     onChange={(event) => setName(event.target.value)}
-                    placeholder="이름 없음"
+                    placeholder={t("settings.noName")}
                     value={name}
                   />
                 </label>
                 <label className="grid min-w-0 gap-1.5">
-                  <span className="text-sm font-medium text-[#374151]">표시 언어</span>
+                  <span className="text-sm font-medium text-[#374151]">
+                    {t("settings.displayLanguage")}
+                  </span>
                   <select
                     className="h-9 min-w-0 rounded-md border border-[#E2E5EC] bg-white px-3 text-sm outline-none focus:border-[#93C5FD]"
                     onChange={(event) => setPreferredLocale(event.target.value)}
@@ -208,7 +226,9 @@ function ProfileSection({
                   </select>
                 </label>
                 <label className="grid min-w-0 gap-1.5">
-                  <span className="text-sm font-medium text-[#374151]">시간대</span>
+                  <span className="text-sm font-medium text-[#374151]">
+                    {t("settings.timeZone")}
+                  </span>
                   <select
                     className="h-9 min-w-0 rounded-md border border-[#E2E5EC] bg-white px-3 text-sm outline-none focus:border-[#93C5FD]"
                     onChange={(event) => setTimeZone(event.target.value)}
@@ -223,7 +243,9 @@ function ProfileSection({
                 </label>
                 {/* 기능 : 글로벌 기본값을 위해 사용자의 기본 국가를 선택합니다. */}
                 <label className="grid min-w-0 gap-1.5">
-                  <span className="text-sm font-medium text-[#374151]">기본 국가</span>
+                  <span className="text-sm font-medium text-[#374151]">
+                    {t("settings.defaultCountry")}
+                  </span>
                   <select
                     className="h-9 min-w-0 rounded-md border border-[#E2E5EC] bg-white px-3 text-sm outline-none focus:border-[#93C5FD]"
                     onChange={(event) => setCountryCode(event.target.value)}
@@ -238,7 +260,9 @@ function ProfileSection({
                 </label>
                 {/* 기능 : 금액 입력 기본값을 위해 사용자의 기본 통화를 선택합니다. */}
                 <label className="grid min-w-0 gap-1.5">
-                  <span className="text-sm font-medium text-[#374151]">기본 통화</span>
+                  <span className="text-sm font-medium text-[#374151]">
+                    {t("settings.defaultCurrency")}
+                  </span>
                   <select
                     className="h-9 min-w-0 rounded-md border border-[#E2E5EC] bg-white px-3 text-sm outline-none focus:border-[#93C5FD]"
                     onChange={(event) => setDefaultCurrencyCode(event.target.value)}
@@ -261,7 +285,9 @@ function ProfileSection({
                   variant="primary"
                 >
                   <Save className="h-3.5 w-3.5" />
-                  저장
+                  {updateProfileMutation.isPending
+                    ? t("common.saving")
+                    : t("common.save")}
                 </Button>
               </div>
               {formError ? (
@@ -384,7 +410,9 @@ function DeviceSection({
   );
 }
 
+// 기능 : 등록된 기기 항목을 사용자 locale/timezone 기준 날짜와 함께 표시합니다.
 function DeviceItem({ device }: { readonly device: MyDevice }) {
+  const { formatDateTime } = useAppI18n();
   const Icon = device.slot === "mobile" ? Smartphone : Laptop;
 
   return (
@@ -428,11 +456,14 @@ function DeviceItem({ device }: { readonly device: MyDevice }) {
   );
 }
 
+// 기능 : 연결된 OAuth provider 계정 목록을 사용자 locale/timezone 기준 날짜와 함께 표시합니다.
 function OAuthAccountList({
   accounts,
 }: {
   readonly accounts: UserProfileOAuthAccount[];
 }) {
+  const { formatDateTime } = useAppI18n();
+
   return (
     <section className="grid gap-3">
       <div className="flex items-center gap-2">
@@ -488,6 +519,16 @@ function ReadOnlyField({
     </div>
   );
 }
+
+type SettingsNotice =
+  | {
+      readonly key: AppI18nKey;
+      readonly type: "i18n";
+    }
+  | {
+      readonly message: string;
+      readonly type: "text";
+    };
 
 function getTimeZoneOptions(currentTimeZone: string) {
   const browserTimeZone =

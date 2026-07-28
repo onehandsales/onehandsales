@@ -27,6 +27,8 @@
 - 앱 번역 리소스는 도메인별 namespace 구조를 사용한다.
 - `User.preferredLocale`을 정본으로 사용하고 `/app/settings` 저장 즉시 화면에 반영한다.
 - 초기 로딩 fallback은 브라우저 locale 또는 `ko-KR`를 사용한다.
+- 2026-07-28 G03 완료 기준 app i18n foundation은 `FE/user-web/src/features/app-i18n`에 구현됐다.
+- G03 완료 기준 `/app/settings`의 profile 영역과 날짜/시간 표시는 app i18n provider를 사용한다. 전체 화면 문구 전환은 G09 범위다.
 
 예시 key:
 

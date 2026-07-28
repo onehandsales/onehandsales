@@ -1,17 +1,17 @@
 # Review Checklist
 
-상태: Not Started
+상태: In Progress - G03 Done
 목적: 08 구현 후 검토자가 확인할 체크리스트
 
 ## 1. Product Scope
 
-- [ ] `/app` URL에 locale prefix가 붙지 않았다.
-- [ ] 1차 앱 언어가 `ko-KR`, `en`으로 제한됐다.
+- [x] `/app` URL에 locale prefix가 붙지 않았다.
+- [x] 1차 앱 언어가 `ko-KR`, `en`으로 제한됐다.
 - [ ] `ja`, `zh-TW`, `zh-CN`이 08 범위에 섞이지 않았다.
 - [ ] KR/US, KRW/USD 범위를 넘는 국가/통화/전화번호가 과하게 열리지 않았다.
 - [ ] 결제/세금, Admin 운영, Analytics, Backup/Restore가 08에 섞이지 않았다.
 - [ ] 기존 한국 사용자 데이터가 깨지지 않았다.
-- [ ] public-site i18n과 app i18n이 섞이지 않았다.
+- [x] public-site i18n과 app i18n이 섞이지 않았다.
 
 ## 2. UX/UI
 
@@ -67,9 +67,9 @@
 
 ## 6. User Web
 
-- [ ] app i18n provider가 public-site i18n과 분리됐다.
-- [ ] `/app/settings` 저장 즉시 locale이 반영된다.
-- [ ] 날짜/시간/통화/전화번호 format utility가 중복 하드코딩을 줄인다.
+- [x] app i18n provider가 public-site i18n과 분리됐다.
+- [x] `/app/settings` 저장 즉시 locale이 반영된다.
+- [x] 날짜/시간/통화/전화번호 format utility가 중복 하드코딩을 줄인다.
 - [ ] `₩`, `원`, `ko-KR`, `KRW` 하드코딩이 필요한 곳 외에는 제거됐다.
 - [ ] `010-0000-0000` 전용 validation copy가 KR/US 정책에 맞게 바뀌었다.
 - [ ] User Web이 `/admin/api/*`를 호출하지 않는다.
@@ -92,9 +92,9 @@
 - [ ] Backend `pnpm run lint` 통과
 - [ ] Backend 관련 test 통과
 - [ ] Backend `pnpm run build` 통과
-- [ ] User Web `pnpm run typecheck` 통과
-- [ ] User Web `pnpm run lint` 통과
-- [ ] User Web `pnpm run build` 통과
+- [x] User Web `pnpm run typecheck` 통과
+- [x] User Web `pnpm run lint` 통과
+- [x] User Web `pnpm run build` 통과
 - [ ] E2E 또는 수동 QA 결과 기록
 - [ ] 모바일 360px/390px에서 auth/settings/domain form이 깨지지 않는다.
 
@@ -105,5 +105,5 @@
 - [ ] BE-TODO/DB-SCHEMA가 구현 결과와 일치한다.
 - [ ] FE-TODO/USER-WEB-TODO가 구현 결과와 일치한다.
 - [ ] AGENT 문서의 이전 auth/i18n 정책이 갱신됐다.
-- [ ] `COMMON/GOAL-COMPLETION-CHECKLIST.md`가 갱신됐다.
+- [x] `COMMON/GOAL-COMPLETION-CHECKLIST.md`가 갱신됐다.
 - [ ] 실행하지 못한 검증은 미실행 사유를 기록했다.
