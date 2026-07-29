@@ -1,0 +1,127 @@
+# Goal Completion Checklist
+
+상태: Not Started
+최종 업데이트: 2026-07-29
+
+## 1. 목적
+
+09 Product Analytics의 `/goal` 실행 완료 여부를 확인한다.
+
+구현 goal은 타입/테스트/build 결과 없이 완료로 체크하지 않는다. 실제 실행하지 못한 검증이 있으면 체크하지 않고 사유를 남긴다.
+
+## 2. Goal 완료 현황
+
+| 완료 | Goal | 상태 | 완료일 | 완료 기준 | 증거 | 비고 |
+|---|---|---|---|---|---|---|
+| [ ] | G01 Document Contract Sync | Not Started |  | 현재 코드/문서 대조와 blocking 해소 |  |  |
+| [ ] | G02 DB Schema Event Foundation | Not Started |  | Prisma schema/migration/repository 기반 |  |  |
+| [ ] | G03 Analytics Collector API | Not Started |  | `POST /api/analytics/events` 구현 |  |  |
+| [ ] | G04 Server Event Logging | Not Started |  | 핵심 server event 기록 지점 연결 |  |  |
+| [ ] | G05 User Web Client Events | Not Started |  | core `/app` route view wrapper 구현 |  |  |
+| [ ] | G06 Snapshot Retention Batch | Not Started |  | activation/retention snapshot 계산 |  |  |
+| [ ] | G07 AI Usage And Billing Reserved | Not Started |  | AI usage 요약과 billing reserved 정리 |  |  |
+| [ ] | G08 QA Document Closeout | Not Started |  | 검증과 문서 closeout |  |  |
+
+## 3. 공통 Contract Gate
+
+- [ ] 각 goal은 request 계약을 명시했거나 영향 없음으로 기록했다.
+- [ ] 각 goal은 response 계약을 명시했거나 영향 없음으로 기록했다.
+- [ ] 각 goal은 business logic을 명시했다.
+- [ ] 각 goal은 user flow를 명시했다.
+- [ ] 각 goal은 DB/Prisma 영향을 명시했거나 변경 없음으로 기록했다.
+- [ ] 각 goal은 코드 주석 기준을 명시했다.
+- [ ] 각 goal은 `COMMON/GOAL-IMPLEMENTATION-MATRIX.md`의 실제 수정 대상 파일과 완료 산출물을 확인했다.
+- [ ] API가 있는 goal은 계약 상태, 소비자, 호환성, DTO 이름, success status를 기록했다.
+- [ ] mutation/processor가 있는 goal은 transaction 필요 여부와 rollback 범위를 기록했다.
+- [ ] mutation/provider/batch가 있는 goal은 observability event key, request id, redaction 기준을 기록했다.
+- [ ] DB 변경 goal은 `BE/prisma/schema.prisma`, `BE/prisma/migrations`, `BE/prisma/seed.ts`를 확인했다.
+- [ ] 새 table/column/enum/index에는 Prisma schema 한글 주석과 migration SQL COMMENT가 있다.
+- [ ] 신규/수정 Backend 코드에는 `// API : ...`, `// 역할 : ...`, `// 기능 : ...` 주석이 있다.
+- [ ] 신규/수정 Frontend 코드에는 `// 기능 : ...` 주석이 있다.
+
+## 4. Goal별 체크 조건
+
+### G01 Document Contract Sync
+
+- [ ] 09 확정 결정과 현재 BE/FE/Prisma 구조를 대조했다.
+- [ ] `AuthSession`, `AuthDevice`, `AiProviderCallLog` 현재 구조를 확인했다.
+- [ ] Admin analytics가 11 범위임을 다시 확인했다.
+- [ ] Billing/paywall/churn이 12 범위임을 다시 확인했다.
+- [ ] `COMMON/API-SPEC`, `BE-TODO`, `FE-TODO`, `DB-SCHEMA` event 이름이 일치한다.
+
+### G02 DB Schema Event Foundation
+
+- [ ] `ProductAnalyticsEventSource` enum이 추가됐다.
+- [ ] `UserActivationStatus` enum이 추가됐다.
+- [ ] `ProductAnalyticsTargetType` enum이 추가됐다.
+- [ ] `ProductAnalyticsEvent` model이 추가됐다.
+- [ ] `UserActivationSnapshot` model이 추가됐다.
+- [ ] `RetentionCohortSnapshot` model이 추가됐다.
+- [ ] `occurredAt`, `eventDate`, `timeZone` 의미가 schema/comment/API spec에 일치한다.
+- [ ] `occurredAt`, `authSessionId`, `authDeviceId`, activation snapshot, retention cohort index가 있다.
+- [ ] migration SQL에 enum/table/column/index COMMENT가 있다.
+- [ ] raw event retention과 account deletion 기준을 방해하지 않는다.
+
+### G03 Analytics Collector API
+
+- [ ] `POST /api/analytics/events`가 구현됐다.
+- [ ] AuthGuard가 적용됐다.
+- [ ] Client request에 user/session/device id가 허용되지 않는다.
+- [ ] Backend가 user/session/device/timezone을 보강한다.
+- [ ] `app_route_viewed` routeKey allowlist가 적용됐다.
+- [ ] invalid payload는 저장되지 않는다.
+
+### G04 Server Event Logging
+
+- [ ] `auth_signup_completed`가 신규 가입에 기록된다.
+- [ ] `deal_created`가 딜 생성 성공 후 기록된다.
+- [ ] `deal_next_action_created`가 다음 행동 생성 성공 후 기록된다.
+- [ ] `schedule_created`가 일정 생성 성공 후 기록된다.
+- [ ] `schedule_deal_linked`가 일정-딜 연결 성공 후 기록된다.
+- [ ] `meeting_note_created`가 회의록 생성 성공 후 기록된다.
+- [ ] `meeting_note_deal_linked`가 회의록-딜 연결 성공 후 기록된다.
+- [ ] `business_card_scan_confirmed`가 명함 스캔 확인 저장 성공 후 기록된다.
+- [ ] `import_confirmed`가 import 확정 성공 후 기록된다.
+- [ ] `export_downloaded`가 xlsx 생성 성공 후 기록된다.
+- [ ] analytics 저장 실패가 제품 API 실패로 전파되지 않는다.
+
+### G05 User Web Client Events
+
+- [ ] `features/analytics` API client가 생겼다.
+- [ ] route view hook/wrapper가 core `/app` route만 추적한다.
+- [ ] raw URL/query/UUID param이 payload에 없다.
+- [ ] public/auth/legacy redirect route는 추적하지 않는다.
+- [ ] analytics 실패가 사용자에게 보이지 않는다.
+
+### G06 Snapshot Retention Batch
+
+- [ ] activation snapshot upsert가 구현됐다.
+- [ ] D1/D7/D30 retention cohort snapshot이 구현됐다.
+- [ ] optional processor runner가 env flag로 켜지고 꺼진다.
+- [ ] 365일 raw event purge use case가 있다.
+- [ ] snapshot log는 count/date 중심이고 payload 원문을 남기지 않는다.
+
+### G07 AI Usage And Billing Reserved
+
+- [ ] `AiProviderCallLog` 기반 AI usage summary가 구현됐다.
+- [ ] request/success/failure/token/cost가 계산된다.
+- [ ] `AiUsageDaily`는 만들지 않았다.
+- [ ] billing/paywall/churn event는 runtime 구현되지 않고 reserved 상태다.
+- [ ] 12에서 결정할 고려사항이 문서에 남았다.
+
+### G08 QA Document Closeout
+
+- [ ] Backend `pnpm run prisma:validate` 통과
+- [ ] Backend `pnpm run prisma:generate` 통과
+- [ ] Backend `pnpm run typecheck` 통과
+- [ ] Backend `pnpm run lint` 통과
+- [ ] Backend 관련 test 통과
+- [ ] Backend `pnpm run build` 통과
+- [ ] User Web `pnpm run typecheck` 통과
+- [ ] User Web `pnpm run lint` 통과
+- [ ] User Web `pnpm run build` 통과
+- [ ] README, BE-TODO, FE-TODO, DB-SCHEMA, API-SPEC이 구현 결과와 일치한다.
+
+## 5. 현재 기록
+
+- 2026-07-29: 09 구현 전 `/goal` 착수용 문서 작성. 구현은 아직 시작하지 않았다.
