@@ -1,7 +1,7 @@
 # Goal Completion Checklist
 
 상태: G01 Done / G02 Done / G03 Done / G04 Done / G05 Done / G06 Done / G07 Done / G08 Done / G09 Done / G10 Done
-최종 업데이트: 2026-07-28
+최종 업데이트: 2026-07-29
 
 ## 1. 목적
 
@@ -20,9 +20,9 @@
 | [x] | G05 Contact Phone Global | Done | 2026-07-28 | Contact phone 글로벌 필드와 migration 구현 | G05 spec, `BE/prisma/migrations/20260728030000_add_contact_global_phone`, BE/FE 검증 명령 | KR/US |
 | [x] | G06 Company Region Address | Done | 2026-07-28 | CompanyRegion code/address 구현 | BE/FE 검증 통과 | Company만 적용 |
 | [x] | G07 Import Export Localization | Done | 2026-07-28 | Export/Import template 현지화 구현 | G07 spec, BE/FE 검증 명령 | ko-KR/en |
-| [x] | G08 Auth Google LINE Apple | Done | 2026-07-28 | Google/LINE/Apple auth 구현 | G08 spec, Auth Provider API, BE/FE 검증 명령 | 실제 provider smoke는 Supabase/provider env 설정 후 G10 수동 QA |
+| [x] | G08 Auth Google LINE Apple | Done | 2026-07-28 | Google/LINE/Apple auth 구현 | G08 spec, Auth Provider API, BE/FE 검증 명령 | LINE/Apple 실제 provider smoke는 운영 설정 연결 후 수동 QA |
 | [x] | G09 App Screen Translation | Done | 2026-07-28 | 핵심 `/app` 화면 번역 적용 | G09 spec, User Web `typecheck`/`lint`/`build` | legacy static text fallback은 후속 직접 keying 개선 후보 |
-| [x] | G10 QA Document Closeout | Done | 2026-07-28 | 최종 QA와 문서 동기화 | G10 spec, BE/FE 검증 명령, E2E/mobile E2E | provider smoke와 DB deploy는 운영 환경 의존 |
+| [x] | G10 QA Document Closeout | Done | 2026-07-28 | 최종 QA와 문서 동기화 | G10 spec, BE/FE 검증 명령, E2E/mobile E2E | DB 최신 상태는 2026-07-29 재확인 완료, LINE/Apple smoke는 운영 환경 의존 |
 
 ## 3. Goal별 체크 조건
 
@@ -163,6 +163,7 @@
 - 2026-07-28: G04 Currency Product Deal 완료. Product/Deal `currencyCode`, KRW/USD 정수 금액 정책, Deal Product currency 기본값, currency-aware 표시/export/report를 구현했다. 검증은 BE `prisma:validate`, `prisma:generate`, `typecheck`, `lint`, `test -- product deal schedule sales-report`, `build`, FE user-web `typecheck`, `lint`, `build` 통과.
 - 2026-07-28: G05 Contact Phone Global 완료. `Contact.phoneCountryCode`, `phoneNationalNumber`, `phoneE164`와 KR legacy migration을 추가하고 Contact create/update/list/detail/export/search/business-card/import 경로를 KR/US 정규화와 E.164 우선 기준으로 맞췄다. 명함 보정과 import validation도 KR/US 전화번호를 허용한다. 검증은 BE `prisma:validate`, `prisma:generate`, `typecheck`, `lint`, `test -- contact data-import business-card search`, `build`, FE user-web `typecheck`, `lint`, `build` 통과.
 - 2026-07-28: G07 Import Export Localization 완료. import template `locale=ko-KR|en` 다운로드, 도메인별 export header/date-time/currency 현지화, Contact export 전화번호 세분 컬럼, FE template language selector와 validation locale 표시를 구현했다. DB 변경과 신규 Generic ExportJob은 없다. 검증은 BE `typecheck`, `lint`, 관련 service test, 전체 `test`, `build`, FE user-web `typecheck`, `lint`, `build` 통과.
-- 2026-07-28: G08 Auth Google LINE Apple 완료. `OAuthProvider.LINE`과 migration을 추가하고 Google/LINE/Apple provider list, Supabase provider normalization, Apple/LINE runtime mapping, verified email 기존 User linking, provider email required/safe exchange failure 오류를 구현했다. 로그인/회원가입 provider 버튼은 Google, LINE, Apple 순서로 확장했고 이메일 로그인 UI는 추가하지 않았다. 검증은 BE `prisma:generate`, `prisma:validate`, `typecheck`, `lint`, 전체 `test`, `build`, FE user-web `typecheck`, `lint`, `build`, Playwright `/ko/login` 390x844 screenshot 확인 통과. 실제 provider smoke는 Supabase/provider 운영 설정과 secret이 필요해 G10 수동 QA로 남긴다.
+- 2026-07-28: G08 Auth Google LINE Apple 완료. `OAuthProvider.LINE`과 migration을 추가하고 Google/LINE/Apple provider list, Supabase provider normalization, Apple/LINE runtime mapping, verified email 기존 User linking, provider email required/safe exchange failure 오류를 구현했다. 로그인/회원가입 provider 버튼은 Google, LINE, Apple 순서로 확장했고 이메일 로그인 UI는 추가하지 않았다. 검증은 BE `prisma:generate`, `prisma:validate`, `typecheck`, `lint`, 전체 `test`, `build`, FE user-web `typecheck`, `lint`, `build`, Playwright `/ko/login` 390x844 screenshot 확인 통과. LINE/Apple 실제 provider smoke는 Supabase/provider 운영 설정과 secret 연결 후 수동 QA로 남긴다.
 - 2026-07-28: G09 App Screen Translation 완료. 핵심 `/app` 화면의 nav/button/empty/error/validation/toast copy를 app i18n resource와 legacy static fallback으로 `ko-KR`, `en`에서 동작하도록 적용했다. 검증은 User Web `typecheck`, `lint`, `build` 통과. 후속으로 fallback 의존 문구의 직접 keying 축소를 남긴다.
-- 2026-07-28: G10 QA Document Closeout 완료. Backend `prisma:validate`, `prisma:generate`, `typecheck`, `lint`, `test` 64 suites / 333 tests, `build` 통과. User Web `typecheck`, `lint`, `build`, `test:e2e` 27 passed, `test:e2e:mobile` 12 passed. `prisma migrate status` 기준 현재 `.env` 연결 DB에는 08 migration 5개가 미적용 상태라 운영 배포 전 `migrate deploy`가 필요하다. 실제 provider smoke는 Supabase/provider 운영 설정과 secret이 필요해 미실행 사유를 기록했다.
+- 2026-07-28: G10 QA Document Closeout 완료. Backend `prisma:validate`, `prisma:generate`, `typecheck`, `lint`, `test` 64 suites / 333 tests, `build` 통과. User Web `typecheck`, `lint`, `build`, `test:e2e` 27 passed, `test:e2e:mobile` 12 passed. 당시 원격 DB 변경은 실행하지 않았고 provider smoke 미실행 사유를 기록했다.
+- 2026-07-29: `cd BE; pnpm.cmd exec prisma migrate status` 재확인 결과 현재 `BE/.env` 연결 DB는 최신 상태다. 현재 남은 운영 항목은 LINE/Apple provider 설정값 연결과 실제 OAuth smoke다.

@@ -188,7 +188,7 @@ pnpm run build
 - User Web `pnpm.cmd lint` 통과
 - User Web `pnpm.cmd build` 통과
 - Playwright screenshot `/ko/login` 390x844 확인: Google, LINE, Apple 버튼 순서와 모바일 겹침 없음
-- 실제 Google/LINE/Apple provider smoke는 Supabase/provider 운영 설정과 secret이 필요해 G10 수동 QA로 남긴다.
+- LINE/Apple 실제 provider smoke는 Supabase/provider 운영 설정과 secret 연결 후 수동 QA로 확인한다.
 
 ## 12. Goal 검토 체크리스트
 

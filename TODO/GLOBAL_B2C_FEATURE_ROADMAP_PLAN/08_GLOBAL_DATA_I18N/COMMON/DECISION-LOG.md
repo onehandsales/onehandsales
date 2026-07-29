@@ -92,5 +92,5 @@
 - 2026-07-28: G01~G10 구현과 QA closeout을 완료했다.
 - Google/LINE/Apple은 runtime provider로 구현됐고 Kakao는 legacy enum/과거 데이터 호환으로만 유지한다.
 - `/app` 내부는 locale prefix 없이 `ko-KR`, `en` 앱 i18n을 사용한다.
-- 현재 `.env` 연결 DB에는 08 migration 5개가 미적용 상태라 운영 배포 전 별도 적용이 필요하다.
-- 실제 provider smoke는 Supabase/provider 운영 설정과 secret 준비 후 별도 수동 QA로 확인한다.
+- 2026-07-29 `pnpm.cmd exec prisma migrate status` 재확인 기준 현재 `BE/.env` 연결 DB는 최신 상태다.
+- 현재 남은 운영 항목은 LINE/Apple provider 설정값 연결과 실제 OAuth smoke다.

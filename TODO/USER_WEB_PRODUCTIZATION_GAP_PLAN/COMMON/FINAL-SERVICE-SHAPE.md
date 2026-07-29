@@ -1,7 +1,7 @@
 # Final Service Shape
 
 상태: Draft Guide
-최종 업데이트: 2026-07-28
+최종 업데이트: 2026-07-29
 
 ## 1. 최종 서비스는 3단계로 보되 판매 기준은 Global B2C다
 
@@ -41,7 +41,7 @@ MVP는 판매 버전이 아니다. 이 단계의 목적은 개인 영업자의 �
 | 다국가 데이터 | 전화번호, 날짜/시간, 통화, 주소/지역 표시가 국가별로 자연스럽다. User global settings, Product/Deal currency, Contact KR/US phone, Company country/region/address, Import/Export localization은 08에서 구현 완료됐다. |
 | Admin 운영 | 사용자, 구독, 결제 이슈, 도메인 데이터, 민감정보 마스킹, 감사 로그를 운영할 수 있다. |
 | 고객 신뢰 | 약관, 개인정보, 보안, 계정 삭제, 데이터 export, 환불 정책이 실제 판매 범위와 맞는다. |
-| 제품 분석 | activation, retention, paid conversion, churn, ARPU, LTV/CAC, AI cost/user를 추적한다. |
+| 제품 분석 | activation, retention, paid conversion, churn, ARPU, LTV/CAC, AI cost/user를 추적한다. `09_PRODUCT_ANALYTICS`부터 작업 필요. |
 | 지원/운영 | 결제 실패, 로그인 문제, OCR/STT provider 실패, 데이터 복구 요청을 운영자가 처리할 수 있다. |
 
 ## 4. Series A급 제품/사업형
@@ -62,4 +62,4 @@ MVP는 판매 버전이 아니다. 이 단계의 목적은 개인 영업자의 �
 - Backend/API 후보는 화면에서 필요한 정보 구조와 Global B2C 운영 필요성이 확정된 뒤 계약화한다.
 - Series A급 기능은 기능 단독으로 만들지 않고 retention, revenue, analytics와 같이 판단한다.
 - Admin/결제/분석/정책/현지화는 후순위 장식이 아니라 첫 판매 gate의 일부로 본다.
-- 08에서 닫힌 현지화/글로벌 데이터 기본 범위와 DB migration 최신 상태 확인은 완료로 보되, 실제 auth provider smoke는 판매 전 운영 확인에 포함한다.
+- 08에서 닫힌 현지화/글로벌 데이터 기본 범위와 DB migration 최신 상태 재확인은 완료로 보되, LINE/Apple 실제 auth provider smoke는 판매 전 운영 확인에 포함한다.

@@ -1,7 +1,7 @@
 # User Web TODO
 
 상태: Draft
-최종 업데이트: 2026-07-28
+최종 업데이트: 2026-07-29
 
 ## 0. 완료 반영
 
@@ -33,7 +33,7 @@
 - Company 생성/수정/export 흐름에 country/region/address UI를 적용했다.
 - Import template language selector와 export header/date-time/currency 현지화를 적용했다.
 - 로그인/회원가입 provider 버튼은 Google, LINE, Apple을 한 줄 3개 배치로 제공하고, LINE/Apple도 Google과 동일한 버튼 톤을 따른다.
-- 실제 Google/LINE/Apple provider smoke는 운영 환경 설정 후 별도 확인한다. 08 DB migration은 최신 상태로 확인됐다.
+- LINE/Apple 실제 provider smoke는 운영 환경 설정 후 별도 확인한다. 08 DB migration은 2026-07-29 최신 상태로 재확인됐다.
 
 ## 2. Release follow-up 영향 후보
 

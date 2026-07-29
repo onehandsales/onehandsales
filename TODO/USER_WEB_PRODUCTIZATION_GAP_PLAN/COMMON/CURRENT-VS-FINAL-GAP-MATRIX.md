@@ -1,7 +1,7 @@
 # Current vs Final Gap Matrix
 
 상태: Draft Guide
-최종 업데이트: 2026-07-28
+최종 업데이트: 2026-07-29
 
 ## 0. 완료 반영
 
@@ -54,7 +54,7 @@
 | 세금/컴플라이언스 | VAT/GST, 환불, chargeback, 국가별 약관 | 구현 없음 | 글로벌 판매 운영 계층 필요 | First-sale global gap | 첫 판매 전 필요 |
 | `/app` 다국어 | 판매 시장 기준 앱 내부 언어/문구 지원 | `/app` i18n provider/resource/formatter와 핵심 화면 `ko-KR`/`en` 번역 구현 | 기본 app 다국어 gap은 08에서 닫힘. legacy static fallback 직접 keying 축소와 시장별 UX writing polish는 후속 | Closed for 08 / UX/UI productization | 완료, polish 후속 |
 | 다국가 데이터 모델 | 전화번호, 통화, 날짜/주소가 국가별로 자연스럽다. | User country/default currency, Product/Deal currency, Contact KR/US global phone, Company country/region/address, localized import/export 구현 | 기본 global data model gap은 08에서 닫힘. 추가 국가/통화/전화번호 포맷과 세금/가격 정책은 후속 결정 | Closed for 08 / First-sale ops decision | 완료, 운영 후속 |
-| 제품 분석 | activation, retention, paid conversion, churn, AI cost를 본다. | 정본 없음 | event taxonomy, analytics pipeline 필요 | First-sale global gap | 첫 판매 전 필요 |
+| 제품 분석 | activation, retention, paid conversion, churn, AI cost를 본다. | 정본 없음 | event taxonomy, analytics pipeline 필요. `09_PRODUCT_ANALYTICS`부터 작업 필요 | First-sale global gap | 첫 판매 전 필요 |
 | AI next action | 딜 리스크, follow-up, 다음 행동을 추천한다. | 회의록 상세 next action/follow-up draft 구현. 딜 리스크와 고급 영업 판단 AI는 없음 | 회의록 기반 AI 후속 작업은 시작됐지만 Series A급 딜 리스크/리포트/자동화는 후속 | Series A gap | 후속 |
 | 모바일 앱/PWA | 현장 입력, 카메라, 음성, push reminder가 자연스럽다. | 모바일 브라우저 Web과 browser push UX 구현 | native 앱/PWA 패키징, 모바일 카메라/음성 최적화는 후속 | Series A gap | 후순위 |
 
@@ -70,7 +70,7 @@
 | ImportJob 유실이 Global B2C 첫 판매 blocker인지 known limitation인지 | 완료 처리됨. `NBA-006`은 `01_IMPORT_JOB_PERSISTENCE`에서 구현 및 QA closeout 완료. |
 | Notification 실제 provider smoke와 회의록 follow-up 알림을 언제 다룰지 | 일정/딜 reminder와 회의록 follow-up draft는 완료됐고, 실제 SMTP/Web Push env 검증과 회의록 follow-up 알림/발송은 운영/후속 범위로 남는다. |
 | Google Calendar export/write/realtime webhook/watch/반복 일정/여러 Google 계정 동시 연결을 언제 다룰지 | 현재 read-only import와 한손 Schedule/Trash/Reminder 연결은 완료됐고, 쓰기/실시간/고급 캘린더 범위는 후속 확장으로 남는다. |
-| 실제 Google/LINE/Apple provider smoke를 언제 실행할지 | 08 구현과 자동 QA, DB migration 최신 상태 확인은 완료됐다. 실제 provider smoke는 Supabase/provider secret 설정 후 운영 확인이 필요하다. |
+| LINE/Apple 실제 provider smoke를 언제 실행할지 | 08 구현과 자동 QA, DB migration 최신 상태 재확인은 완료됐다. LINE/Apple 실제 provider smoke는 Supabase/provider secret 설정 후 운영 확인이 필요하다. |
 | Admin 운영을 결제 전에 어느 수준까지 구현할지 | 유료 고객 지원/민감정보 정책 범위가 달라진다. |
 
 ## 4. 권장 다음 큰 방향

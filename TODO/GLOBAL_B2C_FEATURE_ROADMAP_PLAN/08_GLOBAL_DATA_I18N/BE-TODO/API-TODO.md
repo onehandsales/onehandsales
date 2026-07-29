@@ -1,6 +1,6 @@
 # Backend API TODO
 
-상태: Implemented / G10 Reviewed
+상태: Implemented / G10 Reviewed / DB Status Rechecked
 
 ## 1. API 변경 범위
 
@@ -131,5 +131,5 @@ Company/CompanyRegion:
 
 - 2026-07-28: User profile 글로벌 설정, Product/Deal currency, Contact phone, CompanyRegion code/address, Import template locale, domain export localization, Google/LINE/Apple auth provider API가 구현됐다.
 - 2026-07-28: Backend `prisma:validate`, `prisma:generate`, `typecheck`, `lint`, `test` 64 suites / 333 tests, `build` 통과.
-- 2026-07-28: `prisma migrate status` 기준 현재 `.env` 연결 DB에는 08 migration 5개가 아직 적용되지 않았다. G10에서는 원격 DB 변경을 실행하지 않았고, 운영 배포 전 `prisma migrate deploy`가 필요하다.
-- 2026-07-28: 실제 Google/LINE/Apple provider smoke는 Supabase/provider secret과 운영 설정이 필요해 로컬 G10에서는 실행하지 않았다.
+- 2026-07-29: `cd BE; pnpm.cmd exec prisma migrate status` 재확인 기준 현재 `BE/.env` 연결 DB는 최신 상태다.
+- 2026-07-29: 현재 남은 운영 항목은 LINE/Apple provider secret/Supabase 설정 연결과 실제 OAuth smoke다. Google은 08 구현 범위에 포함되어 있으며 추가 provider smoke가 필요하면 운영 QA에서 함께 확인한다.

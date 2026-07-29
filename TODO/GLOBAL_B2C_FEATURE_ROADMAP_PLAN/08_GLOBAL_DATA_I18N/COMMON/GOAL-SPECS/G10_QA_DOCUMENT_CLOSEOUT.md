@@ -103,7 +103,7 @@ Backend:
 | `pnpm.cmd run lint` | PASS | ESLint |
 | `pnpm.cmd run test` | PASS | 64 suites / 333 tests |
 | `pnpm.cmd run build` | PASS | Nest build |
-| `pnpm.cmd exec prisma migrate status` | CHECKED | 현재 `.env` 연결 DB에는 08 migration 5개가 미적용 상태. G10에서는 원격 DB 변경을 실행하지 않음 |
+| `pnpm.cmd exec prisma migrate status` | CHECKED | G10 당시 원격 DB 변경은 실행하지 않음. 2026-07-29 재확인 기준 현재 `BE/.env` 연결 DB는 최신 상태 |
 
 User Web:
 
@@ -132,13 +132,12 @@ G10 QA 중 수정:
 - [x] Import template `ko-KR`, `en` 선택 다운로드가 동작한다.
 - [x] Export header/value가 사용자 설정 기준으로 나온다.
 - [x] Google OAuth 버튼/popup smoke는 E2E에서 통과했다.
-- [x] Google OAuth 실제 provider smoke 미실행 사유를 기록했다.
-- [x] LINE OAuth 실제 provider smoke 미실행 사유를 기록했다.
-- [x] Apple OAuth 실제 provider smoke 미실행 사유를 기록했다.
+- [x] LINE OAuth 실제 provider smoke는 운영 설정 연결 후 확인할 항목으로 기록했다.
+- [x] Apple OAuth 실제 provider smoke는 운영 설정 연결 후 확인할 항목으로 기록했다.
 
 실제 provider smoke 미실행 사유:
 
-- Supabase Google/LINE/Apple provider 운영 설정, provider secret, Apple Services ID/Team ID/Key ID/private key, LINE Channel ID/secret이 필요하다.
+- LINE/Apple Supabase provider 운영 설정, provider secret, Apple Services ID/Team ID/Key ID/private key, LINE Channel ID/secret이 필요하다.
 - G10 로컬 검증에서는 외부 provider 계정 교환을 실행하지 않고, 버튼/popup, provider 목록, exchange use case, safe failure, verified email linking을 자동 검증 범위로 확인했다.
 
 ## 10. 문서 동기화
@@ -169,6 +168,6 @@ G10 QA 중 수정:
 
 ## 12. 후속/운영 체크
 
-- 현재 `.env` 연결 DB에는 08 migration 5개가 미적용 상태다. 운영 배포 전 배포 담당자가 대상 DB를 확인한 뒤 `prisma migrate deploy`를 실행해야 한다.
-- 실제 Google/LINE/Apple OAuth smoke는 provider 운영 설정과 secret 설정 후 별도 수동 QA로 확인한다.
+- 2026-07-29 `cd BE; pnpm.cmd exec prisma migrate status` 재확인 기준 현재 `BE/.env` 연결 DB는 최신 상태다.
+- 실제 LINE/Apple OAuth smoke는 provider 운영 설정과 secret 설정 후 별도 수동 QA로 확인한다.
 - Vite build의 large chunk warning은 기존 bundle 최적화 후속이며 G10 blocker는 아니다.

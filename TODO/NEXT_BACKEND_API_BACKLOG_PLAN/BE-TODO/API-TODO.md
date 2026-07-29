@@ -1,7 +1,7 @@
 # API TODO
 
 상태: Draft
-최종 업데이트: 2026-07-28
+최종 업데이트: 2026-07-29
 
 ## 0. 완료 반영
 
@@ -69,7 +69,7 @@
   - provider raw error와 token/secret은 사용자 응답과 log에 노출하지 않는다.
   - `/app` 다국어는 public-site locale routing과 분리하고 User API에는 locale route prefix를 추가하지 않는다.
 - 08 밖으로 남는 범위:
-  - 실제 Google/LINE/Apple provider smoke
+  - LINE/Apple provider 설정값 연결과 실제 OAuth smoke
   - 추가 국가/통화/전화번호 포맷, Google/LINE/Apple 외 신규 provider, Admin provider 운영 화면
 
 ## 3. Release follow-up API 후보

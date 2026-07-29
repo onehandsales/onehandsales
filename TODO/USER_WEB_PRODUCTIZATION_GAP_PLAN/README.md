@@ -2,7 +2,7 @@
 
 상태: Draft Guide
 작성일: 2026-07-20
-최종 업데이트: 2026-07-28
+최종 업데이트: 2026-07-29
 성격: 제품화 gap 판단 가이드
 
 ## 0. 완료 반영 체크리스트
@@ -24,7 +24,7 @@
 - [x] `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/08_GLOBAL_DATA_I18N` 구현 및 QA closeout
 - [ ] Admin 운영 API/화면
 - [ ] 결제/구독/세금
-- [ ] 제품 분석
+- [ ] 제품 분석 (`09_PRODUCT_ANALYTICS`부터 작업 필요)
 
 ## 1. 목적
 
@@ -164,7 +164,7 @@
 
 남은 제품화 gap으로 분리할 범위:
 
-- 08 DB migration 최신 상태 확인 이력과 실제 Google/LINE/Apple provider smoke
+- 08 DB migration 최신 상태는 2026-07-29 재확인 완료. 남은 운영 항목은 LINE/Apple provider 설정값 연결과 실제 OAuth smoke
 - 추가 국가/통화/전화번호 포맷, 국가별 세금/약관/가격 정책
 - app i18n legacy static fallback을 직접 translation key로 줄이는 polish
 - 결제/구독, Admin 운영, 제품 분석, backup/restore와 장애 대응 기준
@@ -199,11 +199,11 @@
 - 완료된 Google Calendar Integration 범위를 넘어서는 Google Calendar export/write, realtime webhook/watch, 반복 일정, 여러 Google 계정 동시 연결
 - 완료된 MeetingNote AI Provider Log 범위를 넘어서는 회의록 목록 summary, 자동 follow-up 발송/알림, Admin provider audit 조회, 별도 transcript/raw provider response table
 - 완료된 Deal Activity Timeline 범위를 넘어서는 범용 activity bus, Company/Contact/Product latest summary, activity deletion/retention/audit 정책
-- 완료된 Global Data I18N 범위를 넘어서는 신규 국가/통화/provider, `/app` locale prefix, 추가 DB migration 실행, 실제 provider smoke를 문서 계획 없이 진행
+- 완료된 Global Data I18N 범위를 넘어서는 신규 국가/통화/provider, `/app` locale prefix, 추가 DB migration 실행, LINE/Apple provider smoke를 운영 계획 없이 진행
 
 위 항목은 제품화 우선순위와 UX/UI 방향을 확정한 뒤 별도 계획에서 다룬다.
 
-단, 결제/구독, Admin 운영, 제품 분석, 세금/컴플라이언스, 정책/운영 신뢰는 단순 후순위가 아니다. Global B2C 첫 판매 gate에 포함되는 별도 큰 계획으로 분리해서 다룬다.
+단, 결제/구독, Admin 운영, 제품 분석, 세금/컴플라이언스, 정책/운영 신뢰는 단순 후순위가 아니다. 특히 `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/09_PRODUCT_ANALYTICS` 이후 슬롯은 아직 작업 필요 상태이며, Global B2C 첫 판매 gate에 포함되는 별도 큰 계획으로 분리해서 다룬다.
 
 ## 7. 관련 문서
 

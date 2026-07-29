@@ -1,7 +1,7 @@
 # DB Schema TODO
 
 상태: Draft
-최종 업데이트: 2026-07-28
+최종 업데이트: 2026-07-29
 
 ## 0. 완료 반영
 
@@ -45,7 +45,7 @@
 - `BE/prisma/migrations/20260728040000_add_company_global_region_address/migration.sql`
 - `BE/prisma/migrations/20260728050000_add_line_oauth_provider/migration.sql`
 - `BE/prisma/schema.prisma`의 `User.countryCode`, `User.preferredLocale`, `User.defaultCurrencyCode`, Product/Deal `currencyCode`, Contact 글로벌 전화번호 필드, Company country/region/address 필드, `CompanyRegion`, `OAuthProvider.LINE`
-- 2026-07-28 후속 확인 기준 현재 `.env` 연결 DB는 `pnpm.cmd exec prisma migrate status`에서 최신 상태로 확인됐다.
+- 2026-07-29 후속 확인 기준 현재 `BE/.env` 연결 DB는 `pnpm.cmd exec prisma migrate status`에서 최신 상태로 재확인됐다.
 
 ## 2. 새 migration이 필요 없을 가능성이 높은 후보
 

@@ -2,7 +2,7 @@
 
 상태: Draft
 작성일: 2026-07-20
-최종 업데이트: 2026-07-28
+최종 업데이트: 2026-07-29
 
 ## 0. 완료 반영
 
@@ -45,7 +45,7 @@
 | NBA-012 | draft | Trash retention/restore status contract | User Web, Backend internal | 7일 이후 restore 실패 status, purge job, 유료/운영 복구 정책 후보. |
 | NBA-013 | draft | Admin operation API | Admin Web | `/admin/api/*` 운영 조회, masking, raw access reason, audit log 후보. |
 | NBA-014 | N/A | 새 API 없음 | Backend internal | 06 범위 완료: DB 대상, migration/seed 금지, Prisma 검증 gate 확인. 실제 운영 DB 적용 절차와 backup/restore는 별도 data reliability gate. |
-| 08_GLOBAL_DATA_I18N | implemented | User global settings, domain global data, import/export localization, auth provider API | User Web | 완료: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/08_GLOBAL_DATA_I18N/COMMON/API-SPEC` 기준 User settings, Product/Deal currency, Contact phone, Company region/address, Import/Export localization, Google/LINE/Apple auth 구현. DB migration은 최신 상태 확인 완료, 실제 provider smoke는 별도 운영 확인. |
+| 08_GLOBAL_DATA_I18N | implemented | User global settings, domain global data, import/export localization, auth provider API | User Web | 완료: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/08_GLOBAL_DATA_I18N/COMMON/API-SPEC` 기준 User settings, Product/Deal currency, Contact phone, Company region/address, Import/Export localization, Google/LINE/Apple auth 구현. DB migration은 2026-07-29 최신 상태 재확인 완료, LINE/Apple 실제 provider smoke는 별도 운영 확인. |
 
 ## 3. 공통 계약 규칙
 

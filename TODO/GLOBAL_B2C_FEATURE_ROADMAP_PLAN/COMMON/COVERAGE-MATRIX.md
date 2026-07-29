@@ -1,6 +1,6 @@
 # Coverage Matrix
 
-상태: Draft
+상태: Draft / 01~08 Done / 09 Next
 
 ## 0. 완료 반영
 
@@ -12,6 +12,11 @@
 - [x] `NBA-009 Schedule week report`: `03_WEEKLY_SCHEDULE_REPORT`에서 구현 및 QA closeout 완료
 - [x] 04 `Google Calendar Integration`: Done (2026-07-23)
 - [x] `NBA-015 Google Calendar Integration`: `04_GOOGLE_CALENDAR_INTEGRATION`에서 구현 및 QA closeout 완료
+- [x] 05 `AI Weekly Sales Report`: Done (2026-07-24)
+- [x] 06 `DealActivity Timeline`: Done (2026-07-26)
+- [x] 07 `MeetingNote AI Provider Log`: Done (2026-07-26)
+- [x] 08 `Global Data I18N`: Done (2026-07-28, DB 최신 상태 2026-07-29 재확인)
+- [ ] 09 `Product Analytics`: Next
 - [x] First-sale gate 반영: `NBA-014`, Product UX gate, Trust/policy gate, `NBA-007`은 `COMMON/FIRST-SALE-GATE-MAP.md`에 선행/횡단 기준으로 고정
 
 ## 1. 목적
@@ -46,30 +51,30 @@
 | Schedule | 반복 일정 | 후속 별도 결정 | 03에서 제외. recurrence rule, exception, DST, 알림 재생성, Calendar 연동 영향 검토 후 별도 확정 |
 | Calendar | Google Calendar connect/read-only import | 04 | Done: `NBA-015` 구현 완료. login OAuth와 Calendar scope 분리, primary 기본 선택+추가 calendar 선택, 10분 freshness 자동 sync+수동 sync, source badge, meeting URL, all-day 표시, Schedule soft delete/Trash restore 구현. Google export/write, 양방향 sync, webhook, 반복 일정 정식 모델은 제외 |
 | Calendar | external calendar sync 실패 처리 | 04, 11 | 04 Done: revoked/invalid_grant는 재연결 필요, transient failure는 사용자-facing 실패 표시까지 구현. Admin provider failure log와 운영 추적은 11에서 다룬다 |
-| AI report | AI 주간 영업 리포트 | 05 | 일정+딜+회의록 기반 |
-| AI report | AI follow-up/next action/딜 리스크 | 05, 07 | 리포트성은 05, 회의록 추출은 07 |
-| AI report | AI 데이터 정리 제안 | 05, 07 | Import/명함/회의록 품질 고도화 후보 |
-| Core record | DealActivity timeline | 06 | 딜 중심 activity |
-| Core record | Deal list products summary | 06 | NBA-001 |
-| Core record | Contact list dealCount | 06 | NBA-002 |
-| Core record | latest activity/next action summary | 06 | NBA-003/NBA-004와 연결 |
+| AI report | AI 주간 영업 리포트 | 05 | Done: 저장형 AI weekly report와 follow-up delivery 구현 완료 |
+| AI report | AI follow-up/next action/딜 리스크 | 05, 07 | Done subset: 05 follow-up delivery, 07 회의록 next action/follow-up draft. 딜 리스크 고도화는 후속 |
+| AI report | AI 데이터 정리 제안 | 05, 07 | 05/07에서 provider log와 후속 draft 기반은 완료. Import/명함 품질 제안은 후속 |
+| Core record | DealActivity timeline | 06 | Done: 딜 중심 activity 정본 구현 완료 |
+| Core record | Deal list products summary | 06 | Done: NBA-001 |
+| Core record | Contact list dealCount | 06 | Done: NBA-002 |
+| Core record | latest activity/next action summary | 06 | Partial Done: Deal list latestActivity 완료. Company/Contact/Product latest summary와 MeetingNote 목록 summary는 후속 |
 | Core record | 검색/필터 고도화 | 06 | 고급 필터, 정렬, 최근 항목, 진행 중 딜 우선 |
-| Core record | page size/pagination 계약 | 06 | NBA-008 |
+| Core record | page size/pagination 계약 | 06 | Done: NBA-008 |
 | Core record | 딜 가능성/확률 고도화 | 06 | pipeline priority |
 | Core record | 다음 행동 완료/미루기/일정 연결 | 06 | following action loop |
-| MeetingNote AI | AI/STT provider call log | 07 | NBA-011 |
-| MeetingNote AI | transcript 보관 정책 | 07 | 민감정보/retention 기준 필요 |
-| MeetingNote AI | 회의록 next action 추출 | 07 | 후보 추출 후 사용자 확인 |
-| MeetingNote AI | 회의록 목록 latest/next summary | 07, 06 | API field는 07, record summary 표시는 06 |
-| Global | `/app` 내부 다국어 | 08 | public/auth locale과 분리 |
-| Global | 다국가 전화번호 | 08 | E.164/국가별 입력 |
-| Global | 날짜/시간/timezone 표시 | 08 | API ISO, FE locale 표시 |
-| Global | 통화/금액/currency | 08 | Deal/Product 금액 모델 영향 |
-| Global | 주소/지역 모델 | 08 | 국가별 region/address |
-| Global | 글로벌 UX writing | 08 | locale별 문구/에러/empty |
-| Global auth | Apple login | 08, 10 | global auth 후보, iOS native 시 10과 연결 |
-| Global auth | LINE login | 08 | 일본/대만 확장 후보 |
-| Analytics | Event taxonomy | 09 | signup, activation, core action |
+| MeetingNote AI | AI/STT provider call log | 07 | Done subset: NBA-011 공통 `AiProviderCallLog` 확장 |
+| MeetingNote AI | transcript 보관 정책 | 07 | Done for 07: transcript 원문 저장 안 함. Admin/raw retention은 후속 |
+| MeetingNote AI | 회의록 next action 추출 | 07 | Done: 후보 추출 후 사용자 확인/수정 저장 |
+| MeetingNote AI | 회의록 목록 latest/next summary | 07, 06 | 후속: API field는 07, record summary 표시는 06 |
+| Global | `/app` 내부 다국어 | 08 | Done: public/auth locale과 분리된 `ko-KR`/`en` app i18n |
+| Global | 다국가 전화번호 | 08 | Done: KR/US phone, E.164, legacy fallback |
+| Global | 날짜/시간/timezone 표시 | 08 | Done: API ISO 유지, FE locale/timezone 표시 |
+| Global | 통화/금액/currency | 08 | Done: Product/Deal `currencyCode`, KRW/USD 표시 |
+| Global | 주소/지역 모델 | 08 | Done: Company country/region/address |
+| Global | 글로벌 UX writing | 08 | Done: 핵심 `/app` 문구/에러/empty `ko-KR`/`en`. 직접 keying 축소는 polish 후보 |
+| Global auth | Apple login | 08, 10 | Done for 08 implementation. Apple 운영 연결/smoke는 판매 전 QA, iOS native는 10과 연결 |
+| Global auth | LINE login | 08 | Done for 08 implementation. LINE 운영 연결/smoke는 판매 전 QA |
+| Analytics | Event taxonomy | 09 | Next: signup, activation, core action |
 | Analytics | Activation/retention/funnel/churn | 09 | paid conversion 포함 |
 | Analytics | AI usage/cost/user | 09 | 05/07/12와 연결 |
 | Growth | paywall/trial/coupon/referral/churn survey 실험 | 09, 12 | 분석/실험은 09, billing 적용은 12 |

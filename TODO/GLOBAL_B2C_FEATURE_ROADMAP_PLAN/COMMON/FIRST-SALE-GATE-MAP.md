@@ -1,7 +1,7 @@
 # First-sale Gate Map
 
-상태: Gate Baseline
-기준일: 2026-07-23
+상태: Gate Baseline / 08 반영
+기준일: 2026-07-29
 
 ## 1. 목적
 
@@ -19,6 +19,13 @@
 | Product UX first-sale gate | `USER_WEB_PRODUCTIZATION_GAP_PLAN` Product UX | 01~10 기능 closeout 이후, 첫 판매 전 별도 QA checklist로 적용 | 회사, 담당자, 제품, 딜, 일정, 회의록, 명함, import, search, trash, export 흐름이 반복 업무 도구처럼 이어진다. |
 | Trust/policy first-sale gate | 약관, 개인정보, 보안, 환불, 계정 삭제, 데이터 export/delete, 보관 기간 | 정책은 11/12, 파일 job 기반은 03과 연결. 첫 판매 전 하나의 checklist로 닫는다 | 판매 국가 기준 약관/개인정보/환불/세금/계정 삭제/데이터 export/delete/retention 정책이 Backend 데이터 처리 기준과 충돌하지 않는다. |
 | Trash private memo response gate | `NBA-007` | 11의 Trash/삭제 정책에 포함하되 별도 보안 항목으로 추적 | Trash list/detail/restore 관련 Backend response에서 private memo 원문 노출 여부가 명확히 제한된다. FE 숨김만으로 완료 처리하지 않는다. |
+
+2026-07-29 반영:
+
+- 08 Global Data I18N 구현과 QA closeout은 완료됐다.
+- 현재 `BE/.env` 연결 DB는 `pnpm.cmd exec prisma migrate status` 기준 최신 상태다.
+- LINE/Apple 실제 OAuth provider 연결과 smoke는 판매 전 운영 QA 항목으로 남긴다.
+- 09_PRODUCT_ANALYTICS 이후 슬롯은 아직 작업 필요 상태다.
 
 ## 3. DB/Prisma 운영 Gate 적용 규칙
 

@@ -13,7 +13,7 @@
 - `DOMAIN_GLOBAL_DATA_API.md`
 - `IMPORT_EXPORT_LOCALIZATION_API.md`
 
-G10 기준 네 spec 모두 구현 결과와 대조했다. 실제 OAuth provider smoke와 현재 연결 DB migration 적용은 운영 환경 의존 항목으로 별도 기록한다.
+G10 기준 네 spec 모두 구현 결과와 대조했다. 2026-07-29 `pnpm.cmd exec prisma migrate status` 재확인 기준 현재 `BE/.env` 연결 DB는 최신 상태다. 남은 운영 항목은 LINE/Apple 실제 OAuth provider smoke와 provider 설정값 연결이다.
 
 ## 3. 공통 원칙
 

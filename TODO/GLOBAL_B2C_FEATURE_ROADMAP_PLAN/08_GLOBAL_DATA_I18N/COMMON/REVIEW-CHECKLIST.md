@@ -1,6 +1,6 @@
 # Review Checklist
 
-상태: Done - G10 Reviewed
+상태: Done - G10 Reviewed / DB Status Rechecked
 목적: 08 구현 후 검토자가 확인할 체크리스트
 
 ## 1. Product Scope
@@ -112,6 +112,6 @@
 ## 10. G10 검토 기록
 
 - Backend 필수 검증과 User Web `typecheck`/`lint`/`build`/E2E/mobile E2E가 통과했다.
-- 실제 Google/LINE/Apple provider smoke는 Supabase/provider 운영 설정과 secret이 필요해 미실행 사유로 기록했다.
-- `pnpm.cmd exec prisma migrate status` 기준 현재 `.env` 연결 DB에는 08 migration 5개가 미적용 상태다. G10에서는 원격 DB 변경을 실행하지 않고 운영 배포 전 적용 필요 항목으로 남겼다.
+- 2026-07-29 `pnpm.cmd exec prisma migrate status` 재확인 기준 현재 `BE/.env` 연결 DB는 최신 상태다.
+- 현재 남은 운영 항목은 LINE/Apple provider 설정값 연결과 실제 OAuth smoke다.
 - Vite large chunk warning은 기존 bundle 최적화 후속이며 G10 blocker는 아니다.

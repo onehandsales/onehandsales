@@ -22,8 +22,8 @@ Global B2C 첫 판매를 위해 로그인 이후 `/app` 업무 화면이 한국 
 - Company는 기존 커스텀 `CompanyRegion`을 유지하면서 KR/US 국가/지역 code와 자유 입력 주소를 사용한다.
 - 사용자 timezone 기반 일정 처리는 일부 구현되어 있다.
 - Import template과 도메인 Export는 사용자 app 설정값 기준 현지화가 구현됐다.
-- Google, LINE, Apple login을 현재 정식 인증 provider로 본다. 실제 provider smoke는 Supabase/provider 운영 설정과 secret이 필요해 G10에서 `N/A - 운영 provider 설정 필요`로 기록했다.
-- 2026-07-28 G10 검증에서 Backend 필수 검증, User Web type/lint/build, User Web E2E, 모바일 E2E가 통과했다. 현재 `.env` 연결 DB에는 08 migration 5개가 아직 적용되지 않아 운영 배포 전 `prisma migrate deploy`가 필요하다.
+- Google, LINE, Apple login을 현재 정식 인증 provider로 본다. 현재 남은 운영 연결 항목은 LINE/Apple provider 설정값 주입과 실제 OAuth smoke다.
+- 2026-07-28 G10 검증에서 Backend 필수 검증, User Web type/lint/build, User Web E2E, 모바일 E2E가 통과했다. 2026-07-29 후속 확인에서 `BE/.env` 연결 DB는 `pnpm.cmd exec prisma migrate status` 기준 최신 상태로 확인됐다.
 
 ## 3. 확정 결정 요약
 
@@ -77,8 +77,8 @@ G01_DOCUMENT_CONTRACT_SYNC
 
 - Backend: `prisma:validate`, `prisma:generate`, `typecheck`, `lint`, `test`, `build` 통과.
 - User Web: `typecheck`, `lint`, `build`, `test:e2e`, `test:e2e:mobile` 통과.
-- Migration: 저장소에는 08 migration 5개가 있고 Prisma schema validation/generate가 통과했다. `prisma migrate status` 기준 현재 연결 DB에는 `20260728010000`~`20260728050000` 5개 migration 적용이 필요하다.
-- Provider smoke: Google/LINE/Apple 실제 OAuth smoke는 Supabase/provider 운영 설정과 secret이 필요해 이번 로컬 QA에서는 실행하지 않았다.
+- Migration: 저장소에는 08 migration 5개가 있고 Prisma schema validation/generate가 통과했다. 2026-07-29 `pnpm.cmd exec prisma migrate status` 재확인 기준 현재 `BE/.env` 연결 DB는 최신 상태다.
+- Provider smoke: 현재 남은 운영 항목은 LINE/Apple provider secret/Supabase 설정 연결과 실제 OAuth smoke다. Google은 08 구현 범위에 포함되어 있으며, 추가 provider smoke가 필요하면 운영 QA에서 함께 확인한다.
 
 ## 6. 참고
 

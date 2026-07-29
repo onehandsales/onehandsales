@@ -1,7 +1,7 @@
 # Decision Log
 
 상태: Decision Baseline
-기준일: 2026-07-21
+기준일: 2026-07-29
 
 ## 0. 완료 반영
 
@@ -13,6 +13,15 @@
 - [x] 완료 기록: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/03_WEEKLY_SCHEDULE_REPORT/COMMON/TODO_LOG.md`
 - [x] 04 Google Calendar Integration: Done (2026-07-23)
 - [x] 완료 기록: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/04_GOOGLE_CALENDAR_INTEGRATION/TODO_LOG/2026-07-23/G05_QA_REVIEW_CLOSEOUT/WORK_LOG.md`
+- [x] 05 AI Weekly Sales Report: Done (2026-07-24)
+- [x] 완료 기록: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/05_AI_WEEKLY_SALES_REPORT/COMMON/GOAL-COMPLETION-CHECKLIST.md`
+- [x] 06 Deal Activity Timeline: Done (2026-07-26)
+- [x] 완료 기록: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/06_DEAL_ACTIVITY_TIMELINE/COMMON/GOAL-SPECS/G07_QA_REVIEW_CLOSEOUT.md`
+- [x] 07 MeetingNote AI Provider Log: Done (2026-07-26)
+- [x] 완료 기록: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/07_MEETING_NOTE_AI_PROVIDER_LOG/COMMON/GOAL-SPECS/G06_QA_REVIEW_CLOSEOUT.md`
+- [x] 08 Global Data I18N: Done (2026-07-28), DB 최신 상태 2026-07-29 재확인
+- [x] 완료 기록: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/08_GLOBAL_DATA_I18N/COMMON/GOAL-SPECS/G10_QA_DOCUMENT_CLOSEOUT.md`
+- [ ] 09 Product Analytics: Next
 
 ## 1. 제품 방향 결정
 
@@ -45,11 +54,11 @@
 | 02 Notification Reminder | Done | 2026-07-22 구현 및 QA closeout 완료. 1차 채널은 앱 안 알림, browser push, email을 모두 포함한다. 1차 알림 대상은 일정 시작 전과 딜 마감일만 포함한다. 일정 알림은 시작 30분 전, 딜 마감 알림은 사용자 timezone 기준 마감일 1일 전 오전 9시에 보낸다. 다음 행동 알림은 딜 데이터 구조 변경 가능성이 있어 06 DealActivity/다음 행동 고도화에서 다시 설계한다. 회의록 후속 알림은 07에서 다시 설계한다. 실제 SMTP/Web Push provider smoke는 env 준비 후 운영 확인 단계로 남긴다. |
 | 03 Weekly Schedule Report | Done | 2026-07-22 구현 및 QA closeout 완료. 03은 주간 보고서 화면과 동기식 Excel 다운로드까지만 구현했다. `NBA-009 Schedule week report`를 confirmed 기능 goal로 승격했고, API는 `GET /api/schedules/week`, `GET /api/schedules/week/export/xlsx`로 확정/구현했다. `weekStart`는 월요일 date-only로 받고, 다일 일정은 겹치는 날짜마다 표시하며, 일정 없는 날도 7일 모두 표시한다. 딜 금액/단계/마감일/회사/담당자/다음 행동은 포함하되 일정 메모 본문은 제외하고 `hasMemo`만 둔다. 새 DB 구조와 migration은 만들지 않았다. 03은 Global B2C retention/Product UX 일부를 강화하지만 첫 판매 gate 전체를 닫지 않는다. 결제/Admin/앱 전체 다국어/통화 모델/제품 분석, 제품 요약, PDF, `/app/export`, 범용 ExportJob, 반복 일정 정식 모델은 별도 사용자 결정/goal로 분리한다. |
 | 04 Google Calendar Integration | Done | 2026-07-23 구현 및 QA closeout 완료. Google login과 Calendar scope를 분리했고, 사용자당 Google Calendar connection 1개에서 primary calendar 기본 선택과 추가 calendar 선택을 구현했다. 04는 Google read-only import이며 Google export, 양방향 sync, webhook, 반복 일정 정식 모델, 참석자 import, Google reminders import는 제외했다. `/app/schedules` 진입 시 10분 freshness 자동 sync와 수동 sync를 제공한다. sync range는 사용자 timezone 기준 과거 1개월/미래 3개월이다. Google description은 최초 import 때만 `Schedule.memo`로 저장하고 이후 sync는 memo를 덮어쓰지 않는다. safe `https://` meeting URL, all-day `isAllDay`, source badge를 구현했다. Google-origin schedule도 로컬 수정/딜 연결/메모/한손 `SCHEDULE_START_REMINDER`를 지원하며, 로컬 수정은 `Google · 로컬 수정` badge와 `LOCAL_MODIFIED`로 보호한다. Google 삭제/선택 해제/연결 해제 숨김은 물리 삭제하지 않고 보존한다. Schedule 삭제는 전체적으로 soft delete/Trash로 전환했고, 연결 해제는 `KEEP/HIDE/TRASH` 중 선택하며 기본은 `KEEP`이다. 실제 Google provider smoke는 env 준비 후 운영 확인 단계에서 실행한다. |
-| 05 AI Weekly Sales Report | 결정 baseline | 수동 생성형과 저장형으로 시작한다. 사용자가 `이번 주 리포트 생성`을 누르면 요약, 리스크, 다음 행동, follow-up 초안을 만든다. AI 제안은 자동으로 딜/일정/담당자를 변경하지 않는다. 05는 주간/cross-record 리포트, 07은 회의록 직후 후보 추출로 나눈다. AI 입력은 redaction 후 사용하고 비용 추적을 남긴다. |
-| 06 Deal Activity Timeline | 결정 baseline | Attio식 핵심 기능으로 `DealActivity` 별도 모델을 만든다. 단계 변경, 회의록 연결, 일정 연결, 다음 행동을 timeline에 자동 기록한다. 기존 memo/following action log는 즉시 폐기하지 않고 연결 또는 점진 통합한다. private memo는 timeline summary에서 제외한다. |
-| 07 MeetingNote AI Provider Log | 결정 baseline | 회의록 전용이 아니라 공통 `AiProviderCallLog`를 우선 검토한다. transcript는 사용자 확인 전 임시 데이터로 다루고, 장기 저장은 명시 정책이 있을 때만 허용한다. provider raw response는 저장 최소화한다. next action과 follow-up은 후보 생성 후 사용자 확인 방식으로 저장한다. |
-| 08 Global Data I18N | 결정 baseline | 첫 판매 locale은 `ko`와 `en`을 우선으로 제한하고, 이후 `ja`, `zh-tw`를 확장 후보로 둔다. phone은 E.164 기반으로 정리한다. Deal/Product 금액에는 `currencyCode`를 추가한다. `/app` i18n은 public site locale과 분리한다. Apple login은 iOS 전략과 연결하고, LINE login은 일본/대만 확장 시점에 검토한다. |
-| 09 Product Analytics | 결정 baseline | 자체 DB event log와 allowlist event taxonomy로 시작한다. activation 기준은 `첫 딜 생성 + 다음 행동/일정/회의록 중 하나 연결`이다. client event는 UX 행동 보조, server event는 과금/핵심 정본으로 본다. PII는 저장하지 않고 retention을 둔다. billing/paywall 이벤트는 12와 연결한다. |
+| 05 AI Weekly Sales Report | Done | 저장형 AI weekly report와 follow-up delivery 구현 및 QA closeout 완료. 고급 딜 리스크/자동화는 후속이다. |
+| 06 Deal Activity Timeline | Done | `DealActivity` 정본 모델/API/UX, 딜 목록 products/latest activity, 담당자 dealCount, page size 15 계약, 06 범위 DB/Prisma gate closeout 완료. Company/Contact/Product latest summary와 범용 activity bus는 후속이다. |
+| 07 MeetingNote AI Provider Log | Done | 공통 `AiProviderCallLog` target 확장, MeetingNote AI/STT safe failure, 상세 next action/follow-up draft, User Web AI 후속 작업 UX 구현 및 QA closeout 완료. 목록 summary, 자동 발송, Admin audit/retention은 후속이다. |
+| 08 Global Data I18N | Done | `/app` `ko-KR`/`en` i18n, user global settings, Product/Deal currency, Contact KR/US phone, Company country/region/address, Import/Export localization, Google/LINE/Apple auth 구현 완료. 2026-07-29 현재 DB 최신 상태 재확인 완료. LINE/Apple 운영 연결/smoke는 판매 전 운영 QA 항목이다. |
+| 09 Product Analytics | Next | 자체 DB event log 또는 분석 pipeline, allowlist event taxonomy, activation/retention/paid conversion/churn/AI cost 기준을 확정해야 한다. 09 이후 슬롯은 아직 작업 필요 상태다. billing/paywall 이벤트는 12와 연결한다. |
 | 10 Mobile PWA Field Use | 결정 baseline | native app 전에는 PWA와 모바일 웹에 집중한다. 우선 범위는 명함 촬영, 회의 직후 음성 기록, local draft, 권한 거부 fallback이다. offline full sync는 제외한다. 음성 파일은 STT/회의록 저장 이후 장기 보관하지 않는 방향을 기본값으로 둔다. browser push는 02와 연결한다. native app 전환은 PWA 사용 지표와 현장 사용 빈도로 판단한다. |
 | 11 Admin Operation | 결정 baseline | 최소 Admin부터 시작한다. 첫 Admin bootstrap은 `INITIAL_ADMIN_EMAILS`로 시작한다. 사용자와 핵심 domain data는 read-only 조회를 기본으로 하고, 민감정보는 masking한다. raw 조회는 reason 필수와 append-only audit log가 필요하다. 계정 삭제, 데이터 export, provider failure, DB/migration gate는 운영 신뢰 필수 범위로 포함한다. 단 `NBA-014` DB/Prisma 운영 gate는 11까지 미루지 않고 migration이 있는 goal마다 선행 체크한다. `NBA-007` Trash private memo backend response restriction은 Trash/삭제 정책에 묻지 않고 독립 보안 체크로 둔다. |
 | 12 Billing Subscription Tax | 결정 baseline | Global B2C는 Merchant of Record를 우선 검토한다. Stripe 직접 결제는 세금/환불/인보이스 운영 부담이 커서 2순위로 둔다. 판매 rollout은 한국/KRW 유료 검증, 일본/대만 확장, 영어권 확장 순서로 둔다. plan, entitlement, paywall은 단순하게 시작한다. AI 사용량 limit은 plan에 포함한다. 가격 수치는 PRD의 월 5,900~6,900원 가설을 출발점으로 두고 12 confirmed 문서에서 provider 수수료/세금을 반영해 확정한다. 기본 구조는 무료체험과 월간/연간 개인 플랜으로 둔다. failed payment grace period, refund, chargeback, invoice/tax 정책은 Admin 운영과 연결한다. |
