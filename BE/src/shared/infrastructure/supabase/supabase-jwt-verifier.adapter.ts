@@ -149,9 +149,15 @@ export class SupabaseJwtVerifierAdapter implements ExternalAuthVerifier {
     }
 
     const provider = value.trim().toLowerCase();
+    const normalizedProvider =
+      provider === "custom:line" ? "line" : provider;
 
-    if (provider === "google" || provider === "line" || provider === "apple") {
-      return provider;
+    if (
+      normalizedProvider === "google" ||
+      normalizedProvider === "line" ||
+      normalizedProvider === "apple"
+    ) {
+      return normalizedProvider;
     }
 
     return null;

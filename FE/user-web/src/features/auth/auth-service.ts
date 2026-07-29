@@ -393,6 +393,10 @@ function getOrCreateDeviceId() {
 }
 
 function toSupabaseProvider(provider: AuthProviderId): Provider {
+  if (provider === "line") {
+    return "custom:line" as Provider;
+  }
+
   return provider as Provider;
 }
 
