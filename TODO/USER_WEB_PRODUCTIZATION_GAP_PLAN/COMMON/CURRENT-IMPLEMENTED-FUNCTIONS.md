@@ -36,7 +36,7 @@
 
 | 영역 | Backend 구현 | User Web 구현 | Admin Web 구현 | 현재 판단 |
 |---|---|---|---|---|
-| Auth/User | `/api/auth/providers`, Google/LINE/Apple exchange, verified email linking, refresh, logout, `/api/me`, profile, country/locale/default currency, devices | Google/LINE/Apple OAuth login/signup, protected route, settings/profile/global preferences/devices | `/admin/api/me` 기반 보호 route | User Web 완료, Admin auth만 부분 완료. LINE/Apple 실제 provider smoke는 운영 설정 연결 후 확인 |
+| Auth/User | `/api/auth/providers`, Google/LINE/Apple exchange, verified email linking, refresh, logout, `/api/me`, profile, country/locale/default currency, devices | Google/LINE/Apple OAuth login/signup, protected route, settings/profile/global preferences/devices | `/admin/api/me` 기반 보호 route | User Web 완료, Admin auth만 부분 완료. LINE/Apple 실제 provider smoke도 2026-07-29 사용자 확인 기준 운영 완료 |
 | Public/auth locale | Backend 직접 없음 | `/{locale}`, `/{locale}/login`, signup/pricing/contact/about/security/terms/privacy, legacy redirect | N/A | 완료 |
 | App i18n/global settings | User profile country/locale/default currency API | `/app` i18n provider/resource/formatter, Settings 언어/국가/기본 통화 저장, 핵심 화면 `ko-KR`/`en` 문구 | N/A | 완료. legacy static text fallback 직접 keying은 polish 후보 |
 | Home | Schedule/Deal/MeetingNote API 조합 | `/app` dashboard | N/A | 완료 |
@@ -102,7 +102,7 @@
 - 일정/딜 reminder 기반 Notification은 구현 완료됐지만, 실제 SMTP/Web Push provider smoke는 env 준비 후 운영 확인 단계에서 실행한다.
 - DealActivity timeline, Deal list products/latest activity, Contact dealCount, page size 15 계약은 구현 및 QA closeout 완료됐다. Company/Contact/Product latest summary, activity deletion/retention/audit 정책은 후속 범위다.
 - MeetingNote AI/STT provider log, 회의록 상세 next action/follow-up draft, User Web AI 후속 작업 UX는 구현 및 QA closeout 완료됐다. 회의록 목록 summary, 자동 발송/알림, Admin provider audit/retention은 후속 범위다.
-- `/app` i18n, user global settings, Product/Deal currency, Contact global phone, Company region/address, Import/Export localization, Google/LINE/Apple auth는 08에서 구현 및 QA closeout 완료됐다. 08 DB migration은 2026-07-29 최신 상태로 재확인됐고, LINE/Apple 실제 provider smoke는 운영 확인 단계에서 실행한다.
+- `/app` i18n, user global settings, Product/Deal currency, Contact global phone, Company region/address, Import/Export localization, Google/LINE/Apple auth는 08에서 구현 및 QA closeout 완료됐다. 08 DB migration은 2026-07-29 최신 상태로 재확인됐고, LINE/Apple 실제 provider smoke도 2026-07-29 사용자 확인 기준 운영 완료됐다.
 - `09_PRODUCT_ANALYTICS` 이후 로드맵 슬롯은 아직 작업 필요 상태다.
 - 제품화 gap은 "API가 없어서 화면을 못 만든다"보다 "현재 핵심 루프를 Global B2C 첫 판매 gate까지 어떤 순서로 끌어올릴지"에 가깝다.
 - 따라서 다음 계획은 MVP 기능 추가 목록이 아니라 Global B2C 첫 판매 기준 대비 gap을 먼저 정리해야 한다.

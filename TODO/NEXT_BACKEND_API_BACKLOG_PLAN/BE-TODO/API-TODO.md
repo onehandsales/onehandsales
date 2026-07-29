@@ -69,8 +69,9 @@
   - provider raw error와 token/secret은 사용자 응답과 log에 노출하지 않는다.
   - `/app` 다국어는 public-site locale routing과 분리하고 User API에는 locale route prefix를 추가하지 않는다.
 - 08 밖으로 남는 범위:
-  - LINE/Apple provider 설정값 연결과 실제 OAuth smoke
   - 추가 국가/통화/전화번호 포맷, Google/LINE/Apple 외 신규 provider, Admin provider 운영 화면
+- 08 후속 운영 확인 완료:
+  - 2026-07-29 사용자 확인 기준 LINE/Apple provider 설정값 연결과 실제 OAuth 동작이 운영 환경에서 완료됐다.
 
 ## 3. Release follow-up API 후보
 

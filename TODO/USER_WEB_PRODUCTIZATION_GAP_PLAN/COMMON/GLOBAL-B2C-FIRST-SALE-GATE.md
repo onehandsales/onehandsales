@@ -14,7 +14,7 @@
 - [x] Product UX/Retention/Data reliability 중 MeetingNote AI 후속 작업 draft와 provider call log subset은 `07_MEETING_NOTE_AI_PROVIDER_LOG`에서 완료
 - [x] Global UX 중 `/app` i18n, user global settings, 통화/전화번호/주소/지역/Import/Export 현지화, Google/LINE/Apple auth는 `08_GLOBAL_DATA_I18N`에서 완료
 - [x] 08 운영 DB migration 최신 상태 확인 완료
-- [ ] LINE/Apple 실제 provider smoke와 provider 설정값 연결은 운영 확인 단계로 남음
+- [x] LINE/Apple 실제 provider smoke와 provider 설정값 연결은 2026-07-29 사용자 확인 기준 운영 완료
 - [ ] backup/restore, Admin provider audit/retention, 장애 대응 기준은 별도 gate로 남음
 
 ## 1. 목적
@@ -28,7 +28,7 @@ MVP는 판매 버전이 아니다. MVP는 핵심 업무 루프가 동작하는�
 | Gate | 판매 전 필요한 상태 | 현재 방향 |
 |---|---|---|
 | Product UX | 회사, 담당자, 제품, 딜, 일정, 주간 일정 보고서, Google Calendar read-only import, 회의록, 명함, import, search, trash, export가 반복 업무 도구처럼 자연스럽게 이어진다. | 현재 MVP 핵심 루프를 화면별로 제품화 QA한다. 주간 일정 보고서, Google Calendar read-only import, DealActivity timeline, 딜/담당자 record summary, 회의록 AI 후속 작업 draft는 구현 완료됐다. |
-| Global UX | 판매 국가 기준 언어, 날짜/시간, 통화, 전화번호, 주소, UX writing이 어색하지 않다. | 08에서 `/app` `ko-KR`/`en` i18n, 사용자 국가/기본 통화, Product/Deal currency, Contact KR/US phone, Company country/region/address, Import/Export localization, Google/LINE/Apple auth를 구현했다. 추가 시장별 UX writing과 LINE/Apple provider smoke는 운영 확인으로 남긴다. |
+| Global UX | 판매 국가 기준 언어, 날짜/시간, 통화, 전화번호, 주소, UX writing이 어색하지 않다. | 08에서 `/app` `ko-KR`/`en` i18n, 사용자 국가/기본 통화, Product/Deal currency, Contact KR/US phone, Company country/region/address, Import/Export localization, Google/LINE/Apple auth를 구현했다. LINE/Apple provider smoke는 2026-07-29 사용자 확인 기준 운영 완료됐고, 추가 시장별 UX writing은 후속 polish로 남긴다. |
 | Pricing/plan | 가격표, trial 여부, 무료/유료 제한, paywall, plan별 entitlement가 명확하다. | Public pricing과 app 내부 구독 상태 UX를 함께 정의한다. |
 | Billing | 결제 provider 또는 Merchant of Record, 구독 생성/갱신/해지, 환불, 결제 실패 복구, 영수증/인보이스가 준비된다. | Payment/subscription은 첫 판매 전 큰 계획으로 다룬다. |
 | Admin/support | 사용자, 구독, 결제 이슈, 민감정보 마스킹, 감사 로그, provider 실패를 운영자가 처리할 수 있다. | Admin Web/API 최소 운영 범위를 별도 계획으로 다룬다. |
@@ -54,7 +54,7 @@ MVP는 판매 버전이 아니다. MVP는 핵심 업무 루프가 동작하는�
 | Account/data deletion/billing UX | `/app` 언어와 global settings는 08에서 완료. 계정 삭제, 데이터 삭제/export 정책, 구독 상태 UX는 판매 전에 필요하다. |
 | Product analytics | 유료 판매 후 activation, conversion, churn을 보지 못하면 제품 판단이 불가능하다. `09_PRODUCT_ANALYTICS` 이후 작업 필요. |
 | Data reliability/DB gate | 06 범위 DB/Prisma gate, ImportJob persistence, 07 MeetingNote provider call log subset, 08 migration 작성/검증과 DB 최신 상태 확인은 완료. Admin provider audit/retention, backup/restore 기준은 판매 신뢰와 연결된다. |
-| Auth provider operation QA | Google/LINE/Apple 구현은 완료됐지만 LINE/Apple 실제 provider smoke는 Supabase/provider secret 설정 후 판매 전 확인해야 한다. |
+| Auth provider operation QA | Google/LINE/Apple 구현과 LINE/Apple 실제 provider smoke 모두 완료됐다. 2026-07-29 사용자 확인 기준 운영 환경에서 동작한다. |
 | Retention follow-up | 일정/딜 알림, 주간 일정 보고서, Google Calendar read-only import, 회의록 follow-up draft는 구현 완료. 회의록 follow-up 알림/발송, 실제 SMTP/Web Push provider smoke, 운영 모니터링 기준은 별도 확인이 필요하다. |
 
 ## 5. 판단 원칙

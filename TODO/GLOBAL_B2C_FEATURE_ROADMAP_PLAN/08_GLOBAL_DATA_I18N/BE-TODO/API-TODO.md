@@ -132,4 +132,4 @@ Company/CompanyRegion:
 - 2026-07-28: User profile 글로벌 설정, Product/Deal currency, Contact phone, CompanyRegion code/address, Import template locale, domain export localization, Google/LINE/Apple auth provider API가 구현됐다.
 - 2026-07-28: Backend `prisma:validate`, `prisma:generate`, `typecheck`, `lint`, `test` 64 suites / 333 tests, `build` 통과.
 - 2026-07-29: `cd BE; pnpm.cmd exec prisma migrate status` 재확인 기준 현재 `BE/.env` 연결 DB는 최신 상태다.
-- 2026-07-29: 현재 남은 운영 항목은 LINE/Apple provider secret/Supabase 설정 연결과 실제 OAuth smoke다. Google은 08 구현 범위에 포함되어 있으며 추가 provider smoke가 필요하면 운영 QA에서 함께 확인한다.
+- 2026-07-29: 사용자 확인 기준 LINE/Apple provider secret/Supabase 설정 연결과 실제 OAuth 동작이 운영 환경에서 완료됐다. Google은 08 구현 범위에 포함되어 있으며 추가 provider smoke가 필요하면 운영 QA에서 함께 확인한다.

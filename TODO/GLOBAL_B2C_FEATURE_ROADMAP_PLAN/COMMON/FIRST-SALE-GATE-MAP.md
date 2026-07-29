@@ -24,7 +24,7 @@
 
 - 08 Global Data I18N 구현과 QA closeout은 완료됐다.
 - 현재 `BE/.env` 연결 DB는 `pnpm.cmd exec prisma migrate status` 기준 최신 상태다.
-- LINE/Apple 실제 OAuth provider 연결과 smoke는 판매 전 운영 QA 항목으로 남긴다.
+- 2026-07-29 사용자 확인 기준 LINE/Apple 실제 OAuth provider 연결과 smoke가 완료됐다.
 - 09_PRODUCT_ANALYTICS 이후 슬롯은 아직 작업 필요 상태다.
 
 ## 3. DB/Prisma 운영 Gate 적용 규칙

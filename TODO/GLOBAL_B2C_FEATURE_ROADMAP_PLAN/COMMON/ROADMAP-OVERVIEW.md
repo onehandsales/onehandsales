@@ -11,7 +11,7 @@
 - [x] `05_AI_WEEKLY_SALES_REPORT`: Done (2026-07-24), AI weekly report/follow-up delivery 구현 및 QA closeout 완료
 - [x] `06_DEAL_ACTIVITY_TIMELINE`: Done (2026-07-26), DealActivity timeline/record summary subset/DB gate closeout 완료
 - [x] `07_MEETING_NOTE_AI_PROVIDER_LOG`: Done (2026-07-26), MeetingNote AI provider log/detail follow-up draft 완료
-- [x] `08_GLOBAL_DATA_I18N`: Done (2026-07-28), DB 최신 상태 2026-07-29 재확인. LINE/Apple 운영 연결/smoke는 판매 전 운영 QA 항목
+- [x] `08_GLOBAL_DATA_I18N`: Done (2026-07-28), DB 최신 상태 2026-07-29 재확인. 2026-07-29 사용자 확인 기준 LINE/Apple 운영 설정과 실제 OAuth 동작 완료
 - [ ] `09_PRODUCT_ANALYTICS`: Next
 - [ ] `10_MOBILE_PWA_FIELD_USE`
 - [ ] `11_ADMIN_OPERATION`

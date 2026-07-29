@@ -93,4 +93,4 @@
 - Google/LINE/Apple은 runtime provider로 구현됐고 Kakao는 legacy enum/과거 데이터 호환으로만 유지한다.
 - `/app` 내부는 locale prefix 없이 `ko-KR`, `en` 앱 i18n을 사용한다.
 - 2026-07-29 `pnpm.cmd exec prisma migrate status` 재확인 기준 현재 `BE/.env` 연결 DB는 최신 상태다.
-- 현재 남은 운영 항목은 LINE/Apple provider 설정값 연결과 실제 OAuth smoke다.
+- 2026-07-29 사용자 확인 기준 LINE/Apple provider 설정값 연결과 실제 OAuth 동작도 운영 환경에서 완료됐다.

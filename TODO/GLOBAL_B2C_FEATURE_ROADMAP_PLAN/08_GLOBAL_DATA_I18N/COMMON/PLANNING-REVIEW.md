@@ -56,7 +56,7 @@ G01에서 확인한 충돌은 문서 보정으로 해결했다. 현재 구현 �
 
 주의 사항:
 
-- G08의 LINE/Apple 수동 QA는 Supabase/provider 환경 설정이 필요하다. 환경이 없으면 G08/G10에 N/A 사유를 기록해야 한다.
+- G08의 LINE/Apple 수동 QA는 Supabase/provider 환경 설정이 필요했다. 2026-07-29 사용자 확인 기준 운영 환경 설정과 실제 OAuth 동작이 완료됐다.
 - G02 이후 DB 변경 goal은 `BE/prisma/schema.prisma`, migration SQL COMMENT, seed를 함께 확인하고 한글 주석 기준을 적용해야 한다.
 - G09 화면 번역은 UXUI_AGENT의 한국어 해요체와 짧은 영어 업무툴 톤을 기준으로 검토해야 한다.
 

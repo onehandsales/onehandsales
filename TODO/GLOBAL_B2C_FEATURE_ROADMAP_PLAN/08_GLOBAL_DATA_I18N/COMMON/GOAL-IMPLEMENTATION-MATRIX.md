@@ -441,7 +441,7 @@ DB 변경:
 
 - 로그인/회원가입 UI에는 Google, LINE, Apple 카드형 버튼 3개만 이 순서로 보인다.
 - 이메일 로그인 UI나 Microsoft/Kakao 버튼은 추가하지 않는다.
-- Apple/LINE smoke는 env가 없으면 “미실행 사유”를 G10에 남긴다.
+- Apple/LINE smoke는 G10 당시 env가 없으면 “미실행 사유”를 남기는 항목이었다. 2026-07-29 사용자 확인 기준 운영 환경에서는 LINE/Apple OAuth 동작이 완료됐다.
 
 ## G09 App Screen Translation
 

@@ -65,7 +65,7 @@
 | 05 | `05_AI_WEEKLY_SALES_REPORT` | AI 주간 영업 리포트 | Done: 저장형 AI weekly report와 follow-up delivery 구현 및 QA closeout 완료 |
 | 06 | `06_DEAL_ACTIVITY_TIMELINE` | DealActivity 타임라인 | Done: 딜 활동 정본, 딜 목록 products/latest activity, 담당자 dealCount, page size 15 계약 구현 및 QA closeout 완료 |
 | 07 | `07_MEETING_NOTE_AI_PROVIDER_LOG` | 회의록 AI/provider log 고도화 | Done: MeetingNote AI/STT provider log, 상세 next action/follow-up draft, User Web AI 후속 작업 UX 구현 및 QA closeout 완료 |
-| 08 | `08_GLOBAL_DATA_I18N` | 다국가 데이터 모델과 `/app` 다국어 | Done: `/app` i18n, 글로벌 데이터 모델, Import/Export localization, Google/LINE/Apple auth 구현 완료. 현재 DB 최신 상태 확인 완료, LINE/Apple 운영 연결/smoke만 남음 |
+| 08 | `08_GLOBAL_DATA_I18N` | 다국가 데이터 모델과 `/app` 다국어 | Done: `/app` i18n, 글로벌 데이터 모델, Import/Export localization, Google/LINE/Apple auth 구현 완료. 현재 DB 최신 상태 확인 완료. 2026-07-29 사용자 확인 기준 LINE/Apple 운영 설정과 실제 OAuth 동작도 완료 |
 | 09 | `09_PRODUCT_ANALYTICS` | 제품 분석 | Next: activation, retention, paid conversion, churn, AI cost/user 분석 기반 작업 필요 |
 | 10 | `10_MOBILE_PWA_FIELD_USE` | 모바일/PWA/현장 사용성 | Series A급 현장성 |
 | 11 | `11_ADMIN_OPERATION` | Admin 운영 | 상세 구현은 마지막 운영 묶음. 단 DB/Prisma gate, Trust/policy, Trash private memo는 first-sale gate로 선행 추적 |

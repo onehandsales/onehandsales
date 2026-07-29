@@ -44,6 +44,6 @@
 ## 4. 남은 주의점
 
 - 08은 문서상 ready 상태지만 실제 구현 전 G01에서 현재 코드 DTO 이름과 API path를 한 번 더 대조해야 한다.
-- Apple/LINE 실제 smoke는 외부 provider env와 Supabase 설정이 필요하므로 G08/G10에서 수동 QA 결과 또는 미실행 사유를 남겨야 한다.
+- Apple/LINE 실제 smoke는 외부 provider env와 Supabase 설정이 필요한 항목이어서 G08/G10에는 수동 QA 결과 또는 미실행 사유를 남겼다. 2026-07-29 사용자 확인 기준 운영 환경 설정과 실제 OAuth 동작이 완료됐다.
 - Product/Deal/Contact/Company 기존 export 구현체는 도메인별로 흩어져 있으므로 G07에서 실제 코드 위치를 먼저 확정해야 한다.
 - 기존 AGENT 문서의 Google only, Apple/LINE future, provider-only user 판정 정책은 G01 또는 G10에서 구현 결과와 동기화해야 한다.

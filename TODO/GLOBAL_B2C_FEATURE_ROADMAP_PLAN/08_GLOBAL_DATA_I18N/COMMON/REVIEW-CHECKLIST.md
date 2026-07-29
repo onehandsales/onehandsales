@@ -113,5 +113,5 @@
 
 - Backend 필수 검증과 User Web `typecheck`/`lint`/`build`/E2E/mobile E2E가 통과했다.
 - 2026-07-29 `pnpm.cmd exec prisma migrate status` 재확인 기준 현재 `BE/.env` 연결 DB는 최신 상태다.
-- 현재 남은 운영 항목은 LINE/Apple provider 설정값 연결과 실제 OAuth smoke다.
+- 2026-07-29 사용자 확인 기준 LINE/Apple provider 설정값 연결과 실제 OAuth 동작도 운영 환경에서 완료됐다.
 - Vite large chunk warning은 기존 bundle 최적화 후속이며 G10 blocker는 아니다.

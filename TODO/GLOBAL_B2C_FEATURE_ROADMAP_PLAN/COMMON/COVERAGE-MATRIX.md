@@ -72,8 +72,8 @@
 | Global | 통화/금액/currency | 08 | Done: Product/Deal `currencyCode`, KRW/USD 표시 |
 | Global | 주소/지역 모델 | 08 | Done: Company country/region/address |
 | Global | 글로벌 UX writing | 08 | Done: 핵심 `/app` 문구/에러/empty `ko-KR`/`en`. 직접 keying 축소는 polish 후보 |
-| Global auth | Apple login | 08, 10 | Done for 08 implementation. Apple 운영 연결/smoke는 판매 전 QA, iOS native는 10과 연결 |
-| Global auth | LINE login | 08 | Done for 08 implementation. LINE 운영 연결/smoke는 판매 전 QA |
+| Global auth | Apple login | 08, 10 | Done for 08 implementation. 2026-07-29 사용자 확인 기준 Apple 운영 설정과 실제 OAuth 동작 완료. iOS native는 10과 연결 |
+| Global auth | LINE login | 08 | Done for 08 implementation. 2026-07-29 사용자 확인 기준 LINE 운영 설정과 실제 OAuth 동작 완료 |
 | Analytics | Event taxonomy | 09 | Next: signup, activation, core action |
 | Analytics | Activation/retention/funnel/churn | 09 | paid conversion 포함 |
 | Analytics | AI usage/cost/user | 09 | 05/07/12와 연결 |

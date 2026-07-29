@@ -49,7 +49,7 @@ G07의 산출물이므로 이 문서는 구현 계획 확정본이 아니다. �
 - `NBA-015 Google Calendar Integration`은 2026-07-23 기준 구현 및 QA closeout이 완료되어 active backlog 후보에서 제외한다.
 - `NBA-001`, `NBA-002`, `NBA-008`, `NBA-003`의 Deal latest activity subset은 2026-07-26 기준 `06_DEAL_ACTIVITY_TIMELINE`에서 구현 및 QA closeout이 완료되어 active backlog 후보에서 제외한다.
 - `NBA-004` MeetingNote detail next action/follow-up draft subset과 `NBA-011` MeetingNote provider log subset은 2026-07-26 기준 `07_MEETING_NOTE_AI_PROVIDER_LOG`에서 구현 및 QA closeout이 완료되어 active backlog 후보에서 제외한다.
-- `08_GLOBAL_DATA_I18N`은 2026-07-28 기준 구현 및 QA closeout이 완료되어 first-sale global data/API gap에서 제외한다. 2026-07-29 `BE/.env` 연결 DB도 `prisma migrate status` 기준 최신 상태로 재확인했다. 현재 남은 운영 항목은 LINE/Apple provider 설정값 연결과 실제 OAuth smoke다.
+- `08_GLOBAL_DATA_I18N`은 2026-07-28 기준 구현 및 QA closeout이 완료되어 first-sale global data/API gap에서 제외한다. 2026-07-29 `BE/.env` 연결 DB도 `prisma migrate status` 기준 최신 상태로 재확인했다. 같은 날 사용자 확인 기준 LINE/Apple provider 설정값 연결과 실제 OAuth 동작도 운영 환경에서 완료됐다.
 - Trash private memo backend restriction, MeetingNote 목록 summary, MeetingNote Admin provider audit/retention, Trash 7일 이후 복구 정책, Admin 운영 UX/API는 남은 후보다.
 
 ## 2.1 `NBA-015` 반영 기준
@@ -135,7 +135,7 @@ G07의 산출물이므로 이 문서는 구현 계획 확정본이 아니다. �
 남은 백로그로 오해하지 않을 범위:
 
 - 현재 `BE/.env` 연결 DB는 2026-07-29 `pnpm.cmd exec prisma migrate status` 기준 최신 상태다. 08 migration 5개 배포는 완료 확인됐고, 이후 추가 DB 변경은 별도 운영 절차로만 적용한다.
-- 실제 LINE/Apple OAuth provider smoke는 Supabase provider 설정과 provider secret 설정 후 수동 QA로 확인한다.
+- 실제 LINE/Apple OAuth provider smoke는 2026-07-29 사용자 확인 기준 Supabase provider 설정과 provider secret 설정 후 운영 환경에서 완료됐다.
 - 추가 국가/통화/전화번호 포맷, `/app` 직접 translation key 전환, Google/LINE/Apple 외 신규 provider, `/app` locale route prefix는 새 계약 없이 확장하지 않는다.
 
 ## 3. 우선순위 분류 기준

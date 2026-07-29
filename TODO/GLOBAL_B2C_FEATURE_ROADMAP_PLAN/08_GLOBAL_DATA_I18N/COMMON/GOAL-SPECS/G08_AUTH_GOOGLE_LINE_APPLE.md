@@ -174,7 +174,7 @@ pnpm run lint
 pnpm run build
 ```
 
-실제 provider smoke는 환경변수와 Supabase 설정 완료 후 수동 QA로 기록한다.
+실제 provider smoke는 G08 당시 환경변수와 Supabase 설정 완료 후 수동 QA로 기록할 항목이었다. 2026-07-29 사용자 확인 기준 운영 환경에서 LINE/Apple 실제 OAuth smoke가 완료됐다.
 
 2026-07-28 구현 검증:
 
@@ -188,7 +188,7 @@ pnpm run build
 - User Web `pnpm.cmd lint` 통과
 - User Web `pnpm.cmd build` 통과
 - Playwright screenshot `/ko/login` 390x844 확인: Google, LINE, Apple 버튼 순서와 모바일 겹침 없음
-- LINE/Apple 실제 provider smoke는 Supabase/provider 운영 설정과 secret 연결 후 수동 QA로 확인한다.
+- LINE/Apple 실제 provider smoke는 2026-07-29 사용자 확인 기준 Supabase/provider 운영 설정과 secret 연결 후 운영 환경에서 완료됐다.
 
 ## 12. Goal 검토 체크리스트
 
