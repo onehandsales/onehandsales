@@ -1,6 +1,6 @@
 # Goal Completion Checklist
 
-상태: G02 Completed
+상태: G03 Completed
 최종 업데이트: 2026-07-30
 
 ## 1. 목적
@@ -15,7 +15,7 @@
 |---|---|---|---|---|---|---|
 | [x] | G01 Document Contract Sync | Completed | 2026-07-30 | 현재 코드/문서 대조와 blocking 해소 | G01 실행 결과, DB-SCHEMA event name 동기화, rg 검색, BE prisma validate | G02~G08 blocking 없음 |
 | [x] | G02 DB Schema Event Foundation | Completed | 2026-07-30 | Prisma schema/migration/repository 기반 | `ProductAnalyticsEvent`/snapshot schema, migration COMMENT, AnalyticsModule/repository/date/taxonomy/input policy, DB_SCHEMA 문서, BE prisma validate/generate/typecheck/lint/product-analytics test | G03 blocking 없음 |
-| [ ] | G03 Analytics Collector API | Not Started |  | `POST /api/analytics/events` 구현 |  |  |
+| [x] | G03 Analytics Collector API | Completed | 2026-07-30 | `POST /api/analytics/events` 구현 | AuthGuard controller, request DTO, collect use case, payload/routeKey/PII validation, session/device/timezone enrichment, BE test/typecheck/lint | G04 blocking 없음 |
 | [ ] | G04 Server Event Logging | Not Started |  | 핵심 server event 기록 지점 연결 |  |  |
 | [ ] | G05 User Web Client Events | Not Started |  | core `/app` route view wrapper 구현 |  |  |
 | [ ] | G06 Snapshot Retention Batch | Not Started |  | activation/retention snapshot 계산 |  |  |
@@ -64,12 +64,12 @@
 
 ### G03 Analytics Collector API
 
-- [ ] `POST /api/analytics/events`가 구현됐다.
-- [ ] AuthGuard가 적용됐다.
-- [ ] Client request에 user/session/device id가 허용되지 않는다.
-- [ ] Backend가 user/session/device/timezone을 보강한다.
-- [ ] `app_route_viewed` routeKey allowlist가 적용됐다.
-- [ ] invalid payload는 저장되지 않는다.
+- [x] `POST /api/analytics/events`가 구현됐다.
+- [x] AuthGuard가 적용됐다.
+- [x] Client request에 user/session/device id가 허용되지 않는다.
+- [x] Backend가 user/session/device/timezone을 보강한다.
+- [x] `app_route_viewed` routeKey allowlist가 적용됐다.
+- [x] invalid payload는 저장되지 않는다.
 
 ### G04 Server Event Logging
 
@@ -132,3 +132,4 @@
 - 2026-07-30: G01 추가 재검토 완료. `ProductAnalyticsEventRecorder` 명칭을 BE TODO와 G04 명세 사이에 맞췄고, G04 server event 구현 범위에 HTTP controller `RequestWithRequestId.requestId` 전달 작업과 controller spec 검증 기준을 추가했다. G02 idempotency 설명에서 G03/G04 역할을 분리했다.
 - 2026-07-30: G01 최종 재검토 완료. G01 상세 명세 상단 상태를 Completed로 동기화했고, G05/G06 신규 환경 변수는 `AGENT/SOFTWARE_AGENT/COMMON/ENVIRONMENT.md` 정본 갱신까지 구현 완료 조건에 포함하도록 보강했다. event/routeKey/reference path/BE Prisma validate 재확인을 통과했다.
 - 2026-07-30: G02 DB Schema Event Foundation 완료. Prisma event/snapshot schema와 migration COMMENT, AnalyticsModule/repository/date/taxonomy/input policy를 추가했고, DB_SCHEMA 문서를 갱신했다. BE `pnpm run prisma:validate`, `pnpm run prisma:generate`, `pnpm run test -- product-analytics`, `pnpm run typecheck`, `pnpm run lint`를 통과했다.
+- 2026-07-30: G03 Analytics Collector API 완료. `POST /api/analytics/events`에 AuthGuard, DTO, use case, routeKey/surface allowlist, PII key 차단, authSession/authDevice/timezone 보강을 연결했다. BE `pnpm run test -- analytics`, `pnpm run typecheck`, `pnpm run lint`를 통과했다.

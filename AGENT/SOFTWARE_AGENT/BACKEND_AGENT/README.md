@@ -98,7 +98,7 @@ Current additional backend scope:
 - Admin 페이지와 운영 조회/감사/민감 원문 API
 - MeetingNote Admin API
 - 범용 DealActivity table
-- 결제/구독, 글로벌 세금/컴플라이언스, 제품 분석, Series A급 AI/리텐션 기능
+- 결제/구독, 글로벌 세금/컴플라이언스, 제품 분석 server event/snapshot/AI usage 후속 목표, Series A급 AI/리텐션 기능
 
 범용 ExportJob은 현재 제품 방향에서 사용하지 않는다. Company/Contact/Product/Deal xlsx export는 각 도메인 Backend 모듈 안에서 구현되어 있다.
 

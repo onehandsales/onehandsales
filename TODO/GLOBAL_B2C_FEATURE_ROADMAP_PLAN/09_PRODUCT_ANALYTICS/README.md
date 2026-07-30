@@ -1,10 +1,10 @@
 # 09 Product Analytics
 
-상태: G02 Completed / G03 Ready
+상태: G03 Completed / G04 Ready
 순서: 09
 성격: Global B2C 첫 판매 전 제품 분석 수집/계산 기반 구현 슬롯
 결정 상태: `COMMON/DECISION-LOG.md` 확정 결정 반영
-구현 상태: G01 문서 계약 동기화와 G02 DB Schema Event Foundation 완료. 다음 작업은 G03 Analytics Collector API이다.
+구현 상태: G01 문서 계약 동기화, G02 DB Schema Event Foundation, G03 Analytics Collector API 완료. 다음 작업은 G04 Server Event Logging이다.
 
 ## 1. 목적
 
@@ -18,7 +18,7 @@
 - activation, retention 계산용 DB foundation은 추가됐고, 실제 snapshot 계산은 G06에서 구현한다.
 - `AiProviderCallLog`는 이미 존재하며 AI 요청 수, 실패율, token, 추정 비용의 1차 근거로 사용할 수 있다.
 - `AuthSession`, `AuthDevice`는 이미 존재하므로 09에서 별도 analytics session/device 식별자를 만들지 않는다.
-- User Web core `/app` route는 구현되어 있으나 page view/product usage event wrapper가 없다.
+- User Web core `/app` route는 구현되어 있고, page view wrapper는 G05에서 Backend G03 collector API를 호출한다.
 - Admin Web `/analytics` route는 현재 root redirect/placeholder 성격이며 09 구현 범위가 아니다.
 
 ## 3. 확정 결정 요약

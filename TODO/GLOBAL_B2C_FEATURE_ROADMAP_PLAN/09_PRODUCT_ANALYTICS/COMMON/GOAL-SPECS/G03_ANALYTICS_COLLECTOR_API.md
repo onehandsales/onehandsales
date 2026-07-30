@@ -1,6 +1,6 @@
 # G03 Analytics Collector API
 
-상태: Ready
+상태: Completed
 목표: User Web client event 수집 API `POST /api/analytics/events`를 구현한다.
 
 ## 1. 목적
@@ -138,11 +138,27 @@ pnpm run test -- analytics
 
 ## 12. Goal 검토 체크리스트
 
-- [ ] `POST /api/analytics/events`가 AuthGuard를 사용한다.
-- [ ] request DTO가 금지 field를 거절한다.
-- [ ] `app_route_viewed` payload routeKey allowlist가 동작한다.
-- [ ] Backend가 authSessionId/authDeviceId를 보강한다.
-- [ ] `occurredAt`은 server now다.
-- [ ] `eventDate`는 사용자 timezone 기준이다.
-- [ ] invalid payload가 저장되지 않는다.
-- [ ] 신규/수정 코드에 한국어 주석이 있다.
+- [x] `POST /api/analytics/events`가 AuthGuard를 사용한다.
+- [x] request DTO가 금지 field를 거절한다.
+- [x] `app_route_viewed` payload routeKey allowlist가 동작한다.
+- [x] Backend가 authSessionId/authDeviceId를 보강한다.
+- [x] `occurredAt`은 server now다.
+- [x] `eventDate`는 사용자 timezone 기준이다.
+- [x] invalid payload가 저장되지 않는다.
+- [x] 신규/수정 코드에 한국어 주석이 있다.
+
+## 13. 실행 결과
+
+- 완료일: 2026-07-30
+- API: `POST /api/analytics/events`
+- Backend 산출물:
+  - `AnalyticsController`
+  - `CollectProductAnalyticsEventDto`
+  - `CollectClientAnalyticsEventUseCase`
+  - analytics domain error
+  - routeKey/surface taxonomy allowlist
+  - AuthGuard, request id, authSession/authDevice enrichment 연결
+- 검증:
+  - `pnpm run test -- analytics` 통과
+  - `pnpm run typecheck` 통과
+  - `pnpm run lint` 통과

@@ -140,6 +140,11 @@ export class HttpExceptionFilter implements ExceptionFilter {
       case "SmsSenderVerificationCodeInvalid":
       case "GoogleCalendarSourceSelectionRequired":
       case "ScheduleMeetingUrlInvalid":
+      case "ANALYTICS_EVENT_UNSUPPORTED":
+      case "ANALYTICS_EVENT_VERSION_UNSUPPORTED":
+      case "ANALYTICS_PAYLOAD_INVALID":
+      case "ANALYTICS_PAYLOAD_PII_REJECTED":
+      case "ANALYTICS_ROUTE_KEY_UNSUPPORTED":
         return HttpStatus.BAD_REQUEST;
       case "ImportJobExpired":
       case "SmsSenderVerificationExpired":

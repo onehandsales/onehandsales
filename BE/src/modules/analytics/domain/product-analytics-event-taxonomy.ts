@@ -21,6 +21,54 @@ export const PRODUCT_ANALYTICS_CLIENT_EVENT_NAMES = [
 export type ProductAnalyticsClientEventName =
   (typeof PRODUCT_ANALYTICS_CLIENT_EVENT_NAMES)[number];
 
+// 기능 : User Web core /app route view가 저장할 수 있는 routeKey allowlist를 정의합니다.
+export const PRODUCT_ANALYTICS_APP_ROUTE_KEYS = [
+  "home",
+  "companies",
+  "company_create",
+  "company_detail",
+  "contacts",
+  "contact_create",
+  "contact_detail",
+  "products",
+  "product_create",
+  "product_detail",
+  "deals",
+  "deal_create",
+  "deal_detail",
+  "schedules",
+  "schedule_week",
+  "schedule_detail",
+  "meeting_notes",
+  "meeting_note_create",
+  "meeting_note_detail",
+  "business_cards",
+  "notifications",
+  "import",
+  "import_review",
+  "import_detail",
+  "trash",
+  "settings",
+  "more",
+] as const;
+
+// 역할 : ProductAnalyticsAppRouteKey User Web core /app routeKey를 정의합니다.
+export type ProductAnalyticsAppRouteKey =
+  (typeof PRODUCT_ANALYTICS_APP_ROUTE_KEYS)[number];
+
+// 기능 : User Web route view event의 진입 surface allowlist를 정의합니다.
+export const PRODUCT_ANALYTICS_ROUTE_VIEW_SURFACES = [
+  "sidebar",
+  "bottom_nav",
+  "direct",
+  "redirect",
+  "unknown",
+] as const;
+
+// 역할 : ProductAnalyticsRouteViewSurface route view event의 선택 surface 값을 정의합니다.
+export type ProductAnalyticsRouteViewSurface =
+  (typeof PRODUCT_ANALYTICS_ROUTE_VIEW_SURFACES)[number];
+
 // 기능 : 09에서 Backend mutation 성공 결과로 기록할 server 이벤트 이름을 정의합니다.
 export const PRODUCT_ANALYTICS_SERVER_EVENT_NAMES = [
   "auth_signup_completed",
@@ -100,6 +148,20 @@ export function isProductAnalyticsClientEventName(
   value: string
 ): value is ProductAnalyticsClientEventName {
   return isOneOf(PRODUCT_ANALYTICS_CLIENT_EVENT_NAMES, value);
+}
+
+// 기능 : 문자열 값이 User Web core /app routeKey인지 확인합니다.
+export function isProductAnalyticsAppRouteKey(
+  value: string
+): value is ProductAnalyticsAppRouteKey {
+  return isOneOf(PRODUCT_ANALYTICS_APP_ROUTE_KEYS, value);
+}
+
+// 기능 : 문자열 값이 route view event surface인지 확인합니다.
+export function isProductAnalyticsRouteViewSurface(
+  value: string
+): value is ProductAnalyticsRouteViewSurface {
+  return isOneOf(PRODUCT_ANALYTICS_ROUTE_VIEW_SURFACES, value);
 }
 
 // 기능 : 문자열 값이 09 server 이벤트 이름인지 확인합니다.

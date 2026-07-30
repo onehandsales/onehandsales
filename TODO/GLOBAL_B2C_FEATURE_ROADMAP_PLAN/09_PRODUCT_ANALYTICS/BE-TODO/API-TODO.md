@@ -6,7 +6,7 @@
 
 | Method | Path | 목적 | 상태 |
 |---|---|---|---|
-| `POST` | `/api/analytics/events` | User Web client event 수집 | 09 구현 |
+| `POST` | `/api/analytics/events` | User Web client event 수집 | G03 구현 완료 |
 | 내부 | `ProductAnalyticsEventRecorder.recordServerEvent` | server-side domain event 기록 | 09 구현 |
 | 내부/runner | `ProcessProductAnalyticsSnapshotsUseCase` | activation/retention snapshot 계산 | 09 구현 |
 | 내부/runner | `PurgeProductAnalyticsRawEventsUseCase` | 365일 초과 raw event batch hard delete | 09 구현 |
@@ -26,6 +26,7 @@ BE/src/modules/analytics/
       product-analytics.repository.ts
     services/
       product-analytics-date.ts
+      product-analytics-event-input-policy.ts
       product-analytics-event-recorder.ts
     use-cases/
       collect-client-analytics-event.use-case.ts

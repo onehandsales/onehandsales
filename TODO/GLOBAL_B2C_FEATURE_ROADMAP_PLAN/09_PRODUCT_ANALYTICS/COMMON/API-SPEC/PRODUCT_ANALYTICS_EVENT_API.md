@@ -1,6 +1,6 @@
 # Product Analytics Event API
 
-상태: Confirmed Plan
+상태: Implemented
 
 ## 1. 목적
 
@@ -8,7 +8,7 @@ User Web의 core `/app` route view 같은 client event를 자체 DB `ProductAnal
 
 ## 2. 계약 개요
 
-- 계약 상태: confirmed
+- 계약 상태: implemented
 - 소비자: User Web
 - 호환성: 신규 API, breaking change 없음
 - 인증: User AuthGuard
@@ -200,3 +200,16 @@ BE:
 - Prisma `DateTime @db.Date` 저장 변환은 같은 파일의 `toProductAnalyticsDateOnlyDate` helper만 사용한다.
 - Prisma `DateTime @db.Date` 조회 변환은 같은 파일의 `formatProductAnalyticsDateOnlyDate` helper만 사용한다.
 - repository는 Prisma JSON 저장 전에 application allowlist를 통과한 payload만 받는다.
+
+## 11. 구현 결과
+
+- 완료일: 2026-07-30
+- Backend:
+  - `BE/src/modules/analytics/presentation/http/analytics.controller.ts`
+  - `BE/src/modules/analytics/presentation/http/dto/collect-product-analytics-event.dto.ts`
+  - `BE/src/modules/analytics/application/use-cases/collect-client-analytics-event.use-case.ts`
+  - `BE/src/modules/analytics/domain/product-analytics.errors.ts`
+- 검증:
+  - `pnpm run test -- analytics` 통과
+  - `pnpm run typecheck` 통과
+  - `pnpm run lint` 통과

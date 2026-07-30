@@ -37,7 +37,7 @@ Canonical domain:
 
 ## 3. Current Implementation Snapshot
 
-Snapshot date: 2026-07-10
+Snapshot date: 2026-07-30
 
 Current source of truth:
 
@@ -50,6 +50,7 @@ Current source of truth:
 Currently imported modules in `AppModule`:
 
 - `health`
+- `analytics`
 - `auth`
 - `user`
 - `company`
@@ -77,6 +78,7 @@ Currently implemented API surface:
 - Trash: `GET /api/trash`, `GET /api/trash/:targetType/:targetId`, `POST /api/trash/:targetType/:targetId/restore`
 - DataImport: active templates, template xlsx download, CSV/XLSX upload for Company/Contact/Product/Deal, AI mapping, mapping validation, cell-scoped validation messages, confirm import, import user logs
 - Health: `GET /api/health`
+- Analytics: `POST /api/analytics/events`
 
 Implemented Backend TODO references:
 
@@ -127,6 +129,7 @@ Current response notes:
 - `GET /api/import-user-logs` uses fixed `pageSize=15` page-number pagination for successful import history.
 - Deal import creates the deal and `DealCompany`, `DealContact`, `DealProduct` links in one transaction when referenced company/contact/product values resolve. Missing-reference resolution arrays are forwarded as `dealCompanyResolutions`, `dealContactResolutions`, and `dealProductResolutions` through the FE API function, BE DTO, HTTP controller, application service, repository, and controller spec.
 - Temporary DataImport jobs use an in-memory store. Persistent job recovery across server restart is future scope.
+- `POST /api/analytics/events` uses AuthGuard, accepts only `eventName`, `eventVersion`, and allowlist `payload`, and stores Backend-enriched `ProductAnalyticsEvent`.
 
 Current runtime behavior:
 
@@ -149,6 +152,7 @@ Auth/session runtime notes:
 - Current User Web uses `mobile` and `personal_laptop` slots only. Backend also supports `work_laptop` for future clients.
 - Country code metadata is read from proxy geo headers only: `cf-ipcountry`, `x-vercel-ip-country`, `cloudfront-viewer-country`.
 - 2026-07-10 QA status: `typecheck`, `lint`, `test`, and `build` pass. Backend tests are 17 suites / 82 tests passed. HTTP smoke confirmed health 200, unauthenticated protected API 401, invalid token 401, and unknown route 404.
+- 2026-07-30 Product Analytics G03 QA status: `pnpm run test -- analytics`, `pnpm run typecheck`, `pnpm run lint` pass.
 
 Current backend gaps and intentional deferrals:
 
@@ -165,6 +169,7 @@ Current backend gaps and intentional deferrals:
 Implemented MVP modules:
 
 - `health`
+- `analytics`
 - `auth`
 - `user`
 - `company`
