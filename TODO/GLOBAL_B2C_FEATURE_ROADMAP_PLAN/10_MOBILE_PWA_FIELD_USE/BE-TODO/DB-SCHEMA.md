@@ -1,26 +1,99 @@
 # DB Schema TODO
 
-상태: Draft
+상태: Confirmed
 
-## 모델 후보
+## 1. 목적
 
-- 1차는 새 DB 없이 FE local draft일 수 있다.
-- server draft가 필요하면 `UserDraft` 후보를 검토한다.
-- audio/provider log는 07과 연결한다.
-- BusinessCard provider failure detail은 11 Provider failure log와 연결한다.
-- native app device/session 확장이 필요하면 AuthDevice 정책과 연결한다.
+10번 Mobile/PWA Field Use에서 필요한 DB 변경과 만들지 말아야 할 DB를 명확히 한다.
 
-## 결정 baseline 반영 후 세부 확인
+## 2. 먼저 확인할 스키마
 
-- offline draft는 client local draft 우선, server draft 예외 여부
-- server draft 보관 기간
-- 음성 파일은 STT/회의록 저장 이후 장기 보관하지 않는 기준
-- PWA push subscription은 02 Notification과 공유한다.
-- OCR failure detail을 BusinessCardScanLog에 얼마나 저장할지
-- native app device slot이 필요한지
+구현자는 DB 작업 전 아래 파일을 먼저 확인한다.
 
-## migration 주의
+- `BE/prisma/schema.prisma`
+- `BE/prisma/migrations`
+- `AGENT/SOFTWARE_AGENT/DB_SCHEMA/BUSINESS_CARD_SCHEMA.md`
+- `AGENT/SOFTWARE_AGENT/DB_SCHEMA/PRODUCT_ANALYTICS_SCHEMA.md`
+- `AGENT/SOFTWARE_AGENT/DB_SCHEMA/TIME_AND_TIMEZONE_POLICY.md`
 
-- 모바일 draft는 민감정보가 포함될 수 있다.
-- 장기 보관보다 짧은 TTL을 기본으로 검토한다.
-- provider 원문 에러와 사용자 메시지는 분리한다.
+## 3. 10번에서 필요한 유일한 migration
+
+G02에서 `BusinessCardScanLog`에 safe OCR failure fields를 추가한다.
+
+```prisma
+model BusinessCardScanLog {
+  safeErrorCode    String?
+  safeErrorMessage String?
+  retryable        Boolean @default(false)
+
+  @@index([userId, status, safeErrorCode, createdAt])
+}
+```
+
+주의:
+
+- 기존 migration 파일 수정 금지
+- 새 migration만 추가
+- 기존 row는 nullable/default로 보존
+- `safeErrorMessage`는 사용자에게 보여줄 수 있는 짧은 안전 문구만 저장
+- provider raw detail은 저장하지 않음
+
+## 4. 신규 DB를 만들지 않는 범위
+
+10번에서는 아래 DB/model/table을 만들지 않는다.
+
+- `UserDraft`
+- `LocalDraft`
+- `MobileDraft`
+- `/api/drafts/*`용 draft table
+- audio temporary storage table
+- image temporary storage table
+- native device table
+- marketing opt-in table
+- Admin provider failure dashboard table
+
+## 5. 기존 DB 재사용
+
+| 기능 | 기존 model | 처리 |
+|---|---|---|
+| BusinessCard OCR scan | `BusinessCardScanLog` | safe failure fields만 추가 |
+| MeetingNote STT draft | `AiProviderCallLog` | provider safe log 재사용 |
+| MeetingNote 최종 저장 | 기존 MeetingNote model | 사용자가 저장할 때만 생성 |
+| Notification setting | `UserNotificationSetting` | 기존 model 재사용 |
+| Browser push subscription | `BrowserPushSubscription` | 기존 model 재사용 |
+| Analytics | `ProductAnalyticsEvent` | eventName string/payloadJson 재사용 |
+
+## 6. 저장 금지 데이터
+
+- image binary/blob/base64
+- audio binary/blob/base64
+- provider raw response
+- provider raw error detail
+- AI prompt
+- transcript 전문
+- 명함 OCR raw text 전문
+- push endpoint/key
+- access token/refresh token
+
+## 7. migration 검증
+
+권장 command:
+
+```powershell
+pnpm --dir BE prisma validate
+pnpm --dir BE prisma migrate diff
+```
+
+운영/공유 DB에는 사용자 승인 없이 migrate/seed를 실행하지 않는다.
+
+## 8. Goal별 DB 영향
+
+| Goal | DB 영향 |
+|---|---|
+| G01 | 문서만, DB 변경 없음 |
+| G02 | `BusinessCardScanLog` safe failure fields migration |
+| G03 | 신규 migration 없음 |
+| G04 | 신규 migration 없음, local draft는 client only |
+| G05 | 신규 migration 없음 |
+| G06 | 신규 migration 없음, `ProductAnalyticsEvent` 재사용 |
+| G07 | 신규 migration 없음, 검토만 |
