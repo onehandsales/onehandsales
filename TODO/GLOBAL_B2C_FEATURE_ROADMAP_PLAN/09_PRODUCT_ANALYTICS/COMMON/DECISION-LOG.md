@@ -1,7 +1,7 @@
 # Decision Log
 
 상태: Confirmed
-최종 업데이트: 2026-07-29
+최종 업데이트: 2026-07-30
 
 ## 1. 09 1차 범위
 
@@ -23,6 +23,8 @@
 ## 3. Activation 기준
 
 결정: activation은 `첫 딜 생성 + 다음 행동/일정/회의록 중 하나 연결`이다.
+
+2026-07-30 사용자 재확인: 이 기준을 유지한다.
 
 의미:
 
@@ -102,6 +104,8 @@
 - 30일 이후 user-linked raw analytics event와 user-level snapshot은 실제 삭제한다.
 - 법무/세금/보안/결제 예외 기록은 별도 최소 보관 정책으로 다룬다.
 
+2026-07-30 사용자 재확인: raw event 365일 보관, 비식별 aggregate snapshot 장기 보관, 계정 삭제 30일 유예 후 user-linked raw event와 user-level snapshot 실제 삭제 기준을 유지한다.
+
 ## 10. AI Usage
 
 결정: 09 1차는 기존 `AiProviderCallLog`를 사용한다.
@@ -162,3 +166,20 @@ Backend:
 Frontend:
 
 - component/hook/function/event handler/API client: `// 기능 : ...`
+
+## 16. 09 Runtime Event Taxonomy 유지
+
+결정: 2026-07-30 사용자 재확인 기준, 09 runtime event taxonomy는 현재 `COMMON/EVENT-TAXONOMY.md`에 확정된 최소 event set 그대로 유지한다.
+
+- Notification 클릭/도달/발송 상세 event는 09에 추가하지 않는다.
+- Google Calendar sync 세부 event는 09에 추가하지 않는다.
+- AI weekly report와 follow-up delivery 세부 event는 09에 추가하지 않는다.
+- PWA 설치, 모바일 권한, 오프라인 draft event는 `10_MOBILE_PWA_FIELD_USE`에서 결정한다.
+- Admin 조회, 운영자 action, 민감정보 접근 event는 `11_ADMIN_OPERATION`에서 결정한다.
+- paywall, trial, coupon, referral, subscription, churn event는 `12_BILLING_SUBSCRIPTION_TAX`에서 결정한다.
+
+이유:
+
+- 09의 목표는 모든 행동 로깅이 아니라 Global B2C 첫 판매 전 필요한 분석 정본이다.
+- activation, retention, AI usage, core `/app` usage를 먼저 정확하게 만들기 위해 범위를 유지한다.
+- 10/11/12의 도메인 책임을 09에서 앞당겨 섞지 않는다.

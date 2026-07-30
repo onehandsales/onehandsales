@@ -38,6 +38,7 @@
 | AI usage | 09 1차는 기존 `AiProviderCallLog`로 사용자별 AI 요청 수/성공/실패/대기/취소/추정 비용을 계산한다. `AiUsageDaily`는 reserved다. |
 | Billing/growth | paywall/trial/coupon/referral/churn event name은 09에서 reserved만 한다. 최종 계약은 12가 override한다. |
 | Client page view | 1차는 핵심 `/app` route view만 수집한다. public site, UTM, 광고 attribution은 제외한다. |
+| Runtime taxonomy | 2026-07-30 사용자 재확인 기준 현재 최소 event set을 유지한다. Notification/Google Calendar/follow-up/PWA/Admin/Billing 세부 event는 10/11/12 또는 후속 계획에서 결정한다. |
 | 집계 방식 | raw event는 즉시 저장하고 activation/retention/cohort snapshot은 optional batch runner가 계산한다. |
 | Event naming | `snake_case`, allowlist, `eventVersion`, deprecated 규칙을 처음부터 둔다. |
 | 코드 주석 | 신규/수정 BE/FE 코드에는 `AGENT/SOFTWARE_AGENT` 기준의 한국어 주석을 반드시 둔다. |

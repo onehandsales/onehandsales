@@ -15,6 +15,7 @@
 | AI usage | 기존 `AiProviderCallLog`를 기준으로 사용자별 요청 수, 성공/실패/대기/취소, 추정 비용을 계산한다. |
 | Privacy | payload allowlist, PII 금지, 365일 raw event retention, 계정 삭제 30일 유예 후 실제 삭제 기준을 구현 계약에 넣는다. |
 | Reserved billing taxonomy | 12 Billing에서 확정할 paywall/trial/coupon/referral/churn event 이름을 reserved list로 남긴다. |
+| Runtime taxonomy 유지 | 2026-07-30 사용자 재확인 기준 09 runtime event는 현재 최소 event set 그대로 유지한다. |
 | Code comment rule | BE/FE 신규/수정 코드에 한국어 주석 규칙을 적용한다. |
 
 ## 2. 제외 범위
@@ -28,6 +29,7 @@
 | 광고 attribution/UTM | 판매 funnel 이후 marketing attribution 계획에서 다룬다. |
 | Billing/paywall 실제 상태 전이 | 12 Billing Subscription Tax에서 최종 확정한다. |
 | Churn survey 저장/화면 | 12에서 cancel flow와 함께 확정한다. |
+| Notification/Calendar/follow-up/PWA/Admin 세부 event | 09의 activation/retention/AI usage/core usage 정본 범위를 넘으므로 10/11/12 또는 후속 분석 계획에서 결정한다. |
 | 완성형 BI dashboard | 09는 수집/계산 기반이다. |
 | prompt/raw response 저장 | privacy와 cost log 정책상 금지한다. |
 
