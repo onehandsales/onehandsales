@@ -24,6 +24,9 @@ function createRepositoryFake(): jest.Mocked<ProductAnalyticsRepository> {
   repository.createEvent = jest.fn().mockResolvedValue({ id: "event-1" });
   repository.findAuthDeviceIdBySessionId = jest.fn().mockResolvedValue(null);
   repository.findFirstActivationCandidates = jest.fn().mockResolvedValue([]);
+  repository.listAiUsageProviderCallLogsForSummary = jest
+    .fn()
+    .mockResolvedValue([]);
   repository.upsertUserActivationSnapshot = jest.fn().mockResolvedValue(undefined);
   repository.listActivatedCohortDates = jest.fn().mockResolvedValue([]);
   repository.countActivatedUsersByDate = jest.fn().mockResolvedValue(0);

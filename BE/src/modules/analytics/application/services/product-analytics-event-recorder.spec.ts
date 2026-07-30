@@ -132,6 +132,7 @@ function createRepositoryFake(): jest.Mocked<ProductAnalyticsRepository> {
     deleteRawEventsBefore: jest.fn(),
     findAuthDeviceIdBySessionId: jest.fn().mockResolvedValue(DEVICE_ID),
     findFirstActivationCandidates: jest.fn(),
+    listAiUsageProviderCallLogsForSummary: jest.fn().mockResolvedValue([]),
     listActivatedCohortDates: jest.fn(),
     runInTransaction: jest.fn(async (work) =>
       work(createRepositoryFake())

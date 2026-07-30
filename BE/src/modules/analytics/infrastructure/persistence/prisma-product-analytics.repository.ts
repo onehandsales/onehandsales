@@ -1,7 +1,12 @@
-import { Prisma, UserActivationStatus as PrismaUserActivationStatus } from "@prisma/client";
+import {
+  Prisma,
+  UserActivationStatus as PrismaUserActivationStatus,
+} from "@prisma/client";
 import type {
   ActivationCandidate,
+  AiUsageProviderCallLogSummarySource,
   CreateProductAnalyticsEventInput,
+  ListAiUsageProviderCallLogsInput,
   ProductAnalyticsEventRecord,
   ProductAnalyticsRepository,
   UpsertRetentionCohortSnapshotInput,
@@ -347,11 +352,64 @@ export class PrismaProductAnalyticsRepository
     return result.count;
   }
 
+  // 기능 : AI usage summary에 필요한 provider 호출 로그 최소 field만 조회합니다.
+  async listAiUsageProviderCallLogsForSummary(
+    input: ListAiUsageProviderCallLogsInput
+  ): Promise<AiUsageProviderCallLogSummarySource[]> {
+    const rows = await this.client.aiProviderCallLog.findMany({
+      where: this.createAiUsageProviderCallLogWhere(input),
+      orderBy: [{ userId: "asc" }, { startedAt: "asc" }, { id: "asc" }],
+      select: {
+        costCurrency: true,
+        estimatedCostAmount: true,
+        operation: true,
+        startedAt: true,
+        status: true,
+        totalTokenCount: true,
+        user: {
+          select: {
+            id: true,
+            timeZone: true,
+          },
+        },
+        userId: true,
+      },
+    });
+
+    return rows.map((row) => ({
+      costCurrency: row.costCurrency,
+      estimatedCostAmount: row.estimatedCostAmount?.toString() ?? null,
+      operation: row.operation,
+      startedAt: row.startedAt,
+      status: row.status,
+      totalTokenCount: row.totalTokenCount,
+      userId: row.userId,
+      userTimeZone: row.user.timeZone,
+    }));
+  }
+
   // 기능 : application allowlist를 통과한 payload를 Prisma JSON 입력 형태로 변환합니다.
   private toPrismaPayload(
     payloadJson: Record<string, unknown>
   ): Prisma.InputJsonObject {
     return payloadJson as Prisma.InputJsonObject;
+  }
+
+  // 기능 : AI usage summary 조회 조건을 Prisma where 입력으로 변환합니다.
+  private createAiUsageProviderCallLogWhere(
+    input: ListAiUsageProviderCallLogsInput
+  ): Prisma.AiProviderCallLogWhereInput {
+    return {
+      ...(input.userId ? { userId: input.userId } : {}),
+      ...(input.from || input.to
+        ? {
+            startedAt: {
+              ...(input.from ? { gte: input.from } : {}),
+              ...(input.to ? { lte: input.to } : {}),
+            },
+          }
+        : {}),
+    };
   }
 
   // 기능 : 아직 이벤트가 채워지지 않은 activation 후보 기본값을 만듭니다.

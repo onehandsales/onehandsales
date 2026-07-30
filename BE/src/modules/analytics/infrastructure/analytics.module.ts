@@ -4,6 +4,7 @@ import { AuthModule } from "@/modules/auth/infrastructure/auth.module";
 import { CollectClientAnalyticsEventUseCase } from "@/modules/analytics/application/use-cases/collect-client-analytics-event.use-case";
 import { ProcessProductAnalyticsSnapshotsUseCase } from "@/modules/analytics/application/use-cases/process-product-analytics-snapshots.use-case";
 import { PurgeProductAnalyticsRawEventsUseCase } from "@/modules/analytics/application/use-cases/purge-product-analytics-raw-events.use-case";
+import { SummarizeAiUsageUseCase } from "@/modules/analytics/application/use-cases/summarize-ai-usage.use-case";
 import { AnalyticsController } from "@/modules/analytics/presentation/http/analytics.controller";
 import { AppLogger } from "@/shared/infrastructure/logger/app-logger.service";
 import { AnalyticsRecorderModule } from "./analytics-recorder.module";
@@ -17,6 +18,7 @@ import { ProductAnalyticsSnapshotProcessorRunner } from "./processor/product-ana
     CollectClientAnalyticsEventUseCase,
     ProcessProductAnalyticsSnapshotsUseCase,
     PurgeProductAnalyticsRawEventsUseCase,
+    SummarizeAiUsageUseCase,
     ProductAnalyticsSnapshotProcessorRunner,
     AppLogger,
   ],
@@ -24,6 +26,7 @@ import { ProductAnalyticsSnapshotProcessorRunner } from "./processor/product-ana
     AnalyticsRecorderModule,
     ProcessProductAnalyticsSnapshotsUseCase,
     PurgeProductAnalyticsRawEventsUseCase,
+    SummarizeAiUsageUseCase,
   ],
 })
 export class AnalyticsModule {}

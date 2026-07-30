@@ -10,7 +10,7 @@
 | 내부 | `ProductAnalyticsEventRecorder.recordServerEvent` | server-side domain event 기록 | G04 구현 완료 |
 | 내부/runner | `ProcessProductAnalyticsSnapshotsUseCase` | activation/retention snapshot 계산 | G06 구현 완료 |
 | 내부/runner | `PurgeProductAnalyticsRawEventsUseCase` | 365일 초과 raw event batch hard delete | G06 구현 완료 |
-| 내부 | `AiProviderCallLog` query | 사용자별 AI usage 계산 | 09 구현 |
+| 내부 | `SummarizeAiUsageUseCase` | 사용자별 AI usage 계산 | G07 구현 완료 |
 | 09 제외 | `/admin/api/analytics/*` | Admin analytics 조회 | 11로 이관 |
 | 09 제외 | `/api/experiments/assignments` | growth experiment assignment | 12 이후 |
 | 09 제외 | `/api/feedback/churn-surveys` | churn survey 수집 | 12로 이관 |

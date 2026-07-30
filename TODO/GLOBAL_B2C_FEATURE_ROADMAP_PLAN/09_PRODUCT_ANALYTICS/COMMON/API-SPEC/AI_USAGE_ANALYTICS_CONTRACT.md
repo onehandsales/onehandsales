@@ -1,6 +1,6 @@
 # AI Usage Analytics Contract
 
-상태: Confirmed Plan
+상태: Implemented
 
 ## 1. 목적
 
@@ -130,3 +130,11 @@ Response field:
 - paywall/upgrade event와 AI usage limit event를 어떤 이름으로 기록할지
 
 09 문서의 reserved 결정은 12 최종 계약에 의해 수정될 수 있다.
+
+## 9. 구현 결과
+
+- 완료일: 2026-07-30
+- 구현 파일: `SummarizeAiUsageUseCase`, `ProductAnalyticsRepository.listAiUsageProviderCallLogsForSummary`, `PrismaProductAnalyticsRepository`
+- `groupBy=DAY`는 현재 `User.timeZone`으로 `startedAt`을 `YYYY-MM-DD` dateKey로 변환한다.
+- repository select는 `AiProviderCallLog` 집계 field와 `User.id/timeZone`만 포함하고 prompt/raw response/provider raw response, email/displayName은 조회하지 않는다.
+- 검증: BE `pnpm.cmd run typecheck`, `pnpm.cmd run lint`, `pnpm.cmd run test -- analytics meeting-note`, `pnpm.cmd run build` 통과

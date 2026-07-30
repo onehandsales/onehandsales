@@ -226,6 +226,7 @@ API 산출물:
 - `BE/src/modules/analytics/infrastructure/processor/product-analytics-snapshot-processor.runner.ts`
 - `BE/src/modules/analytics/application/ports/product-analytics.repository.ts`
 - `BE/src/modules/analytics/infrastructure/persistence/prisma-product-analytics.repository.ts`
+- `BE/src/modules/analytics/infrastructure/analytics.module.ts`
 - `BE/src/modules/analytics/domain/product-analytics-event-taxonomy.ts`
 - `BE/src/modules/analytics/infrastructure/analytics.module.ts`
 - `BE/src/modules/analytics/infrastructure/analytics-recorder.module.ts`
@@ -272,9 +273,13 @@ API 산출물:
 
 테스트 기준:
 
-- `AiProviderCallLog` aggregation spec
-- `groupBy=DAY` 현재 `User.timeZone` 기준 dateKey spec
-- reserved event가 09 runtime allowlist에서 발생하지 않는 spec
+- `BE/src/modules/analytics/application/use-cases/summarize-ai-usage.use-case.spec.ts`
+- `BE/src/modules/analytics/infrastructure/persistence/prisma-product-analytics.repository.spec.ts`
+- `BE/src/modules/analytics/domain/product-analytics-event-taxonomy.spec.ts`
+- `cd BE && pnpm.cmd run typecheck`
+- `cd BE && pnpm.cmd run lint`
+- `cd BE && pnpm.cmd run test -- analytics meeting-note`
+- `cd BE && pnpm.cmd run build`
 
 완료 산출물:
 

@@ -69,6 +69,32 @@ export interface UpsertRetentionCohortSnapshotInput {
   readonly calculatedAt: Date;
 }
 
+// 역할 : AiUsageProviderCallStatusCode AI provider 호출 상태 집계 코드 값을 정의합니다.
+export type AiUsageProviderCallStatusCode =
+  | "PENDING"
+  | "SUCCEEDED"
+  | "FAILED"
+  | "CANCELED";
+
+// 역할 : ListAiUsageProviderCallLogsInput AI 사용량 요약용 provider 호출 로그 조회 조건을 정의합니다.
+export interface ListAiUsageProviderCallLogsInput {
+  readonly userId?: string;
+  readonly from?: Date;
+  readonly to?: Date;
+}
+
+// 역할 : AiUsageProviderCallLogSummarySource AI 사용량 집계에 필요한 비식별 provider 호출 로그 field를 정의합니다.
+export interface AiUsageProviderCallLogSummarySource {
+  readonly userId: string;
+  readonly operation: string;
+  readonly status: AiUsageProviderCallStatusCode;
+  readonly startedAt: Date;
+  readonly userTimeZone: string;
+  readonly totalTokenCount: number | null;
+  readonly estimatedCostAmount: string | null;
+  readonly costCurrency: string;
+}
+
 // 역할 : ProductAnalyticsRepository 제품 분석 raw event, snapshot, purge 영속성 계약을 정의합니다.
 export interface ProductAnalyticsRepository {
   // 기능 : 여러 snapshot upsert를 하나의 transaction 경계 안에서 실행합니다.
@@ -120,4 +146,9 @@ export interface ProductAnalyticsRepository {
 
   // 기능 : cutoff보다 오래된 제품 분석 raw event를 batch 단위로 삭제합니다.
   deleteRawEventsBefore(cutoff: Date, batchSize: number): Promise<number>;
+
+  // 기능 : provider 호출 상태와 비용을 기간 조건으로 집계하기 위한 최소 source row만 조회합니다.
+  listAiUsageProviderCallLogsForSummary(
+    input: ListAiUsageProviderCallLogsInput
+  ): Promise<AiUsageProviderCallLogSummarySource[]>;
 }

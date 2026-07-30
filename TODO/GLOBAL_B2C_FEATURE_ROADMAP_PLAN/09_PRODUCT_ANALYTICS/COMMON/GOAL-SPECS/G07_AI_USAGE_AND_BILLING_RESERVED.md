@@ -1,6 +1,6 @@
 # G07 AI Usage And Billing Reserved
 
-상태: Ready
+상태: Completed
 목표: 기존 `AiProviderCallLog` 기반 AI usage 요약을 만들고 billing/paywall/churn taxonomy는 reserved로만 정리한다.
 
 ## 1. 목적
@@ -149,10 +149,19 @@ pnpm run test -- analytics meeting-note
 
 ## 12. Goal 검토 체크리스트
 
-- [ ] `AiProviderCallLog` 기반으로 request/success/failure/pending/canceled/cost를 계산한다.
-- [ ] `groupBy=DAY`가 현재 `User.timeZone` 기준 날짜로 계산된다.
-- [ ] prompt/raw response/provider raw response를 조회하지 않는다.
-- [ ] `AiUsageDaily`를 만들지 않았다.
-- [ ] billing/paywall/churn reserved event가 runtime allowlist로 발생하지 않는다.
-- [ ] 12에서 결정할 AI quota/UsageMeter 고려사항이 남았다.
-- [ ] 신규/수정 코드에 한국어 주석이 있다.
+- [x] `AiProviderCallLog` 기반으로 request/success/failure/pending/canceled/cost를 계산한다.
+- [x] `groupBy=DAY`가 현재 `User.timeZone` 기준 날짜로 계산된다.
+- [x] prompt/raw response/provider raw response를 조회하지 않는다.
+- [x] `AiUsageDaily`를 만들지 않았다.
+- [x] billing/paywall/churn reserved event가 runtime allowlist로 발생하지 않는다.
+- [x] 12에서 결정할 AI quota/UsageMeter 고려사항이 남았다.
+- [x] 신규/수정 코드에 한국어 주석이 있다.
+
+## 13. 구현 결과
+
+- 완료일: 2026-07-30
+- `SummarizeAiUsageUseCase`가 `USER`, `DAY`, `OPERATION` groupBy 기준으로 request/status/token/cost를 요약한다.
+- `PrismaProductAnalyticsRepository.listAiUsageProviderCallLogsForSummary`는 `AiProviderCallLog`와 `User.id/timeZone`만 조회하고 `metadataJson`, prompt/raw response, email/displayName은 조회하지 않는다.
+- billing/paywall/churn event는 기존 reserved taxonomy에만 남기고 09 runtime allowlist에는 추가하지 않았다.
+- `AiUsageDaily`, `UsageMeter` table은 생성하지 않았다.
+- 검증: BE `pnpm.cmd run typecheck`, `pnpm.cmd run lint`, `pnpm.cmd run test -- analytics meeting-note`, `pnpm.cmd run build` 통과.

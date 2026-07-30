@@ -74,6 +74,6 @@ G01_DOCUMENT_CONTRACT_SYNC
 ## 4. 현재 상태
 
 ```text
-G01~G06 완료. G07~G08 미착수.
-다음 착수 대상은 G07_AI_USAGE_AND_BILLING_RESERVED이다.
+G01~G07 완료. G08 미착수.
+다음 착수 대상은 G08_QA_DOCUMENT_CLOSEOUT이다.
 ```

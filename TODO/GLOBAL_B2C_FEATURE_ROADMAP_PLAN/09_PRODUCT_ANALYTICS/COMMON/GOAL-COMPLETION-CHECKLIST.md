@@ -1,6 +1,6 @@
 # Goal Completion Checklist
 
-상태: G06 Completed
+상태: G07 Completed
 최종 업데이트: 2026-07-30
 
 ## 1. 목적
@@ -19,7 +19,7 @@
 | [x] | G04 Server Event Logging | Completed | 2026-07-30 | 핵심 server event 기록 지점 연결 | `ProductAnalyticsEventRecorder`, AnalyticsRecorderModule wiring, auth/deal/schedule/meeting-note/business-card/data-import/export server event 연결, requestId 전달, BE typecheck/lint/targeted test | G05 blocking 없음 |
 | [x] | G05 User Web Client Events | Completed | 2026-07-30 | core `/app` route view wrapper 구현 | `features/analytics` API/client hook/route mapper, AppShell 연결, `VITE_PRODUCT_ANALYTICS_ENABLED`, User Web unit/E2E/typecheck/lint/build | G06 blocking 없음 |
 | [x] | G06 Snapshot Retention Batch | Completed | 2026-07-30 | activation/retention snapshot 계산 | snapshot/purge use case, optional runner, repository query/upsert/purge, env 문서, BE typecheck/lint/analytics test/build | G07 blocking 없음 |
-| [ ] | G07 AI Usage And Billing Reserved | Not Started |  | AI usage 요약과 billing reserved 정리 |  |  |
+| [x] | G07 AI Usage And Billing Reserved | Completed | 2026-07-30 | AI usage 요약과 billing reserved 정리 | `SummarizeAiUsageUseCase`, AI usage repository source query, reserved taxonomy spec, BE typecheck/lint/analytics+meeting-note test/build | G08 blocking 없음 |
 | [ ] | G08 QA Document Closeout | Not Started |  | 검증과 문서 closeout |  |  |
 
 ## 3. 공통 Contract Gate
@@ -105,11 +105,11 @@
 
 ### G07 AI Usage And Billing Reserved
 
-- [ ] `AiProviderCallLog` 기반 AI usage summary가 구현됐다.
-- [ ] request/success/failure/token/cost가 계산된다.
-- [ ] `AiUsageDaily`는 만들지 않았다.
-- [ ] billing/paywall/churn event는 runtime 구현되지 않고 reserved 상태다.
-- [ ] 12에서 결정할 고려사항이 문서에 남았다.
+- [x] `AiProviderCallLog` 기반 AI usage summary가 구현됐다.
+- [x] request/success/failure/token/cost가 계산된다.
+- [x] `AiUsageDaily`는 만들지 않았다.
+- [x] billing/paywall/churn event는 runtime 구현되지 않고 reserved 상태다.
+- [x] 12에서 결정할 고려사항이 문서에 남았다.
 
 ### G08 QA Document Closeout
 
@@ -136,3 +136,4 @@
 - 2026-07-30: G04 Server Event Logging 완료. `ProductAnalyticsEventRecorder`와 AnalyticsRecorderModule을 추가하고 auth/deal/schedule/meeting-note/business-card/data-import/company/contact/product server event 기록 지점을 연결했다. HTTP controller requestId 전달, payload allowlist/PII 차단, best-effort warning log를 검증했고 BE `pnpm run typecheck`, `pnpm run lint`, `pnpm run test -- auth deal schedule meeting-note business-card data-import analytics`를 통과했다.
 - 2026-07-30: G05 User Web Client Events 완료. `FE/user-web/src/features/analytics`에 collector API client, routeKey mapper, `useAppRouteAnalytics` hook을 추가하고 `AppShell`에 1회 연결했다. `VITE_PRODUCT_ANALYTICS_ENABLED`가 `true`일 때만 `app_route_viewed`를 보내며 public/auth/legacy/redirect-only route와 raw query/UUID payload를 제외했다. FE `pnpm run test -- src/features/analytics`, `pnpm run typecheck`, `pnpm run lint`, `pnpm run build`, `pnpm run test:e2e:analytics`를 통과했다.
 - 2026-07-30: G06 Snapshot Retention Batch 완료. `ProcessProductAnalyticsSnapshotsUseCase`, `PurgeProductAnalyticsRawEventsUseCase`, `ProductAnalyticsSnapshotProcessorRunner`와 Prisma repository query/upsert/purge를 추가했다. activation은 첫 deal 생성과 첫 의미 행동 중 늦은 row의 eventDate/timeZone을 쓰고, retention은 D1/D7/D30 aggregate snapshot만 저장하며, purge는 365일 초과 `ProductAnalyticsEvent`만 삭제한다. BE `pnpm.cmd run typecheck`, `pnpm.cmd run lint`, `pnpm.cmd run test -- analytics`, `pnpm.cmd run build`를 통과했다.
+- 2026-07-30: G07 AI Usage And Billing Reserved 완료. `SummarizeAiUsageUseCase`와 `AiProviderCallLog` summary source query를 추가해 USER/DAY/OPERATION 기준 request/status/token/cost를 계산한다. DAY 집계는 현재 `User.timeZone`을 조회하고, prompt/raw response/provider raw response는 조회하지 않는다. billing/paywall/churn event는 reserved taxonomy로만 유지하며 12 Billing 고려사항을 문서에 남겼다. BE `pnpm.cmd run typecheck`, `pnpm.cmd run lint`, `pnpm.cmd run test -- analytics meeting-note`, `pnpm.cmd run build`를 통과했다.
