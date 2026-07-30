@@ -4,6 +4,7 @@ import {
   type NestModule,
 } from "@nestjs/common";
 import { ConfigModule } from "@nestjs/config";
+import { AnalyticsModule } from "./modules/analytics/infrastructure/analytics.module";
 import { AuthModule } from "./modules/auth/infrastructure/auth.module";
 import { BusinessCardModule } from "./modules/business-card/infrastructure/business-card.module";
 import { CompanyModule } from "./modules/company/infrastructure/company.module";
@@ -29,6 +30,7 @@ import { RequestIdMiddleware } from "./shared/presentation/middleware/request-id
       isGlobal: true,
       envFilePath: [".env.local", ".env"],
     }),
+    AnalyticsModule,
     HealthModule,
     AuthModule,
     BusinessCardModule,

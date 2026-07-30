@@ -306,6 +306,30 @@ enum DealActivitySourceType {
   FOLLOW_UP
 }
 
+/// 기능 : 제품 분석 이벤트가 어떤 경로에서 기록됐는지 구분합니다.
+enum ProductAnalyticsEventSource {
+  CLIENT
+  SERVER
+  SYSTEM
+}
+
+/// 기능 : 사용자 activation snapshot 계산 상태를 구분합니다.
+enum UserActivationStatus {
+  NOT_ACTIVATED
+  ACTIVATED
+}
+
+/// 기능 : 제품 분석 이벤트가 연결할 수 있는 안전한 대상 타입을 구분합니다.
+enum ProductAnalyticsTargetType {
+  USER
+  DEAL
+  SCHEDULE
+  MEETING_NOTE
+  BUSINESS_CARD_SCAN
+  IMPORT_JOB
+  EXPORT
+}
+
 model User {
   id                   String     @id @default(uuid()) @db.Uuid
   email                String?
@@ -409,6 +433,10 @@ model User {
   aiJobs                      AiJob[]
   /// 기능 : 사용자의 AI provider 호출 이력 목록입니다.
   aiProviderCallLogs          AiProviderCallLog[]
+  /// 기능 : 사용자의 제품 분석 원본 이벤트 목록입니다. 계정 실제 삭제 시 함께 삭제됩니다.
+  productAnalyticsEvents      ProductAnalyticsEvent[]
+  /// 기능 : 사용자의 activation 계산 snapshot입니다. 계정 실제 삭제 시 함께 삭제됩니다.
+  activationSnapshot          UserActivationSnapshot?
   /// Feature: external email account connections used for follow-up delivery.
   externalEmailConnections    ExternalEmailConnection[]
   /// Feature: short-lived OAuth state rows for follow-up email connections.
@@ -460,8 +488,10 @@ model AuthDevice {
   createdAt    DateTime         @default(now())
   updatedAt    DateTime         @updatedAt
 
-  user     User          @relation(fields: [userId], references: [id])
-  sessions AuthSession[]
+  user                   User                    @relation(fields: [userId], references: [id])
+  sessions               AuthSession[]
+  /// 기능 : 이 인증 기기에서 발생한 제품 분석 이벤트 목록입니다.
+  productAnalyticsEvents ProductAnalyticsEvent[]
 
   @@index([userId])
   @@index([userId, deviceSlot, status])
@@ -482,13 +512,132 @@ model AuthSession {
   createdAt        DateTime          @default(now())
   updatedAt        DateTime          @updatedAt
 
-  user       User       @relation(fields: [userId], references: [id])
-  authDevice AuthDevice @relation(fields: [authDeviceId], references: [id])
+  user                   User                    @relation(fields: [userId], references: [id])
+  authDevice             AuthDevice              @relation(fields: [authDeviceId], references: [id])
+  /// 기능 : 이 app session에서 발생한 제품 분석 이벤트 목록입니다.
+  productAnalyticsEvents ProductAnalyticsEvent[]
 
   @@index([userId])
   @@index([authDeviceId])
   @@index([status])
   @@index([expiresAt])
+}
+
+/// 기능 : Global B2C 제품 사용 분석을 위한 allowlist 기반 원본 이벤트입니다.
+model ProductAnalyticsEvent {
+  /// 기능 : 분석 이벤트 row의 고유 식별자입니다.
+  id             String                      @id @default(uuid()) @db.Uuid
+  /// 기능 : 이벤트를 발생시킨 사용자입니다. 계정 실제 삭제 시 함께 삭제됩니다.
+  userId         String                      @db.Uuid
+  /// 기능 : Backend app session 식별자입니다. Client가 보내지 않고 Backend가 현재 인증에서 채웁니다.
+  authSessionId  String?                     @db.Uuid
+  /// 기능 : 인증 device 식별자입니다. AuthSession 조회로 Backend가 채웁니다.
+  authDeviceId   String?                     @db.Uuid
+  /// 기능 : allowlist에 등록된 snake_case 이벤트 이름입니다.
+  eventName      String
+  /// 기능 : 이벤트 payload schema 버전입니다.
+  eventVersion   Int                         @default(1)
+  /// 기능 : client, server, system 중 이벤트 기록 출처입니다.
+  source         ProductAnalyticsEventSource
+  /// 기능 : 이벤트 발생 시각입니다. UTC instant로 저장합니다.
+  occurredAt     DateTime                    @db.Timestamptz(3)
+  /// 기능 : 이벤트 당시 사용자 timezone 기준 날짜입니다. D1/D7/D30 계산에 사용합니다.
+  eventDate      DateTime                    @db.Date
+  /// 기능 : 이벤트 당시 사용자 IANA timezone입니다.
+  timeZone       String
+  /// 기능 : 같은 server event의 중복 기록을 막는 선택 idempotency key입니다.
+  idempotencyKey String?
+  /// 기능 : 이벤트가 연결된 안전한 대상 타입입니다. 회사명/담당자명 같은 PII는 저장하지 않습니다.
+  targetType     ProductAnalyticsTargetType?
+  /// 기능 : 이벤트가 연결된 안전한 대상 UUID입니다. payload에는 중복 저장하지 않습니다.
+  targetId       String?                     @db.Uuid
+  /// 기능 : event별 allowlist schema를 통과한 비식별 payload입니다.
+  payloadJson    Json                        @default("{}")
+  /// 기능 : 이벤트가 수집된 시각입니다.
+  createdAt      DateTime                    @default(now()) @db.Timestamptz(3)
+
+  /// 기능 : 이벤트를 발생시킨 사용자입니다.
+  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  /// 기능 : 이벤트가 발생한 app session입니다.
+  authSession AuthSession? @relation(fields: [authSessionId], references: [id], onDelete: SetNull)
+  /// 기능 : 이벤트가 발생한 인증 기기입니다.
+  authDevice  AuthDevice?  @relation(fields: [authDeviceId], references: [id], onDelete: SetNull)
+
+  /// 기능 : server event idempotency key 중복 저장을 방지합니다.
+  @@unique([userId, eventName, idempotencyKey])
+  /// 기능 : 사용자별 핵심 event 발생 순서와 activation 계산 조회에 사용합니다.
+  @@index([userId, eventName, occurredAt])
+  /// 기능 : 사용자 timezone 기준 일자별 active 여부 계산에 사용합니다.
+  @@index([userId, eventDate])
+  /// 기능 : event 이름과 사용자 timezone 기준 날짜별 aggregate 계산에 사용합니다.
+  @@index([eventName, eventDate])
+  /// 기능 : client/server/system 출처별 수집 상태 확인에 사용합니다.
+  @@index([source, createdAt])
+  /// 기능 : 365일 raw event retention purge에 사용합니다.
+  @@index([occurredAt])
+  /// 기능 : 현재 app session에서 파생된 event 추적에 사용합니다.
+  @@index([authSessionId])
+  /// 기능 : 인증 device 단위 event 분석에 사용합니다.
+  @@index([authDeviceId])
+}
+
+/// 기능 : 사용자별 activation 달성 여부와 달성 시점을 저장합니다.
+model UserActivationSnapshot {
+  /// 기능 : activation snapshot row의 고유 식별자입니다.
+  id                      String               @id @default(uuid()) @db.Uuid
+  /// 기능 : activation을 계산할 사용자입니다. 계정 실제 삭제 시 함께 삭제됩니다.
+  userId                  String               @unique @db.Uuid
+  /// 기능 : 현재 activation 계산 상태입니다.
+  status                  UserActivationStatus @default(NOT_ACTIVATED)
+  /// 기능 : 첫 딜 생성 이벤트 시각입니다.
+  firstDealCreatedAt      DateTime?            @db.Timestamptz(3)
+  /// 기능 : 첫 다음 행동/일정/회의록 연결 이벤트 시각입니다.
+  firstMeaningfulActionAt DateTime?            @db.Timestamptz(3)
+  /// 기능 : activation 달성 시각입니다.
+  activatedAt             DateTime?            @db.Timestamptz(3)
+  /// 기능 : activation 달성 이벤트 row의 사용자 timezone 기준 날짜입니다.
+  activatedEventDate      DateTime?            @db.Date
+  /// 기능 : activation 달성 이벤트 row에 저장된 사용자 timezone입니다.
+  timeZone                String?
+  /// 기능 : snapshot 마지막 계산 시각입니다.
+  calculatedAt            DateTime             @default(now()) @db.Timestamptz(3)
+  /// 기능 : row 생성 시각입니다.
+  createdAt               DateTime             @default(now()) @db.Timestamptz(3)
+  /// 기능 : row 수정 시각입니다.
+  updatedAt               DateTime             @updatedAt @db.Timestamptz(3)
+
+  /// 기능 : activation snapshot을 소유한 사용자입니다.
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  /// 기능 : activation 상태와 cohort 날짜별 snapshot 조회에 사용합니다.
+  @@index([status, activatedEventDate])
+  /// 기능 : activation 달성 시각 기준 재계산 범위 조회에 사용합니다.
+  @@index([activatedAt])
+}
+
+/// 기능 : 비식별 cohort 단위 retention 계산 결과를 저장합니다.
+model RetentionCohortSnapshot {
+  /// 기능 : retention cohort snapshot row의 고유 식별자입니다.
+  id                String   @id @default(uuid()) @db.Uuid
+  /// 기능 : cohort 기준 날짜입니다. 사용자 timezone 기준 activation date를 사용합니다.
+  cohortDate        DateTime @db.Date
+  /// 기능 : retention day offset입니다. 예: 1, 7, 30.
+  dayOffset         Int
+  /// 기능 : cohort에 포함된 사용자 수입니다.
+  cohortUserCount   Int
+  /// 기능 : 해당 day에 active로 관측된 사용자 수입니다.
+  retainedUserCount Int
+  /// 기능 : snapshot 계산 시각입니다.
+  calculatedAt      DateTime @default(now()) @db.Timestamptz(3)
+  /// 기능 : row 생성 시각입니다.
+  createdAt         DateTime @default(now()) @db.Timestamptz(3)
+  /// 기능 : row 수정 시각입니다.
+  updatedAt         DateTime @updatedAt @db.Timestamptz(3)
+
+  /// 기능 : cohort 날짜와 retention day offset 중복 snapshot을 방지합니다.
+  @@unique([cohortDate, dayOffset])
+  /// 기능 : cohort 날짜 범위별 retention 조회에 사용합니다.
+  @@index([cohortDate])
 }
 
 model Company {
@@ -1261,9 +1410,9 @@ model AiWeeklySalesReportSuggestion {
   updatedAt     DateTime                          @default(now()) @updatedAt @db.Timestamptz(3)
 
   /// 기능 : 제안을 생성한 AI 리포트 version입니다. report 삭제 시 함께 삭제됩니다.
-  report AiWeeklySalesReport @relation(fields: [reportId], references: [id], onDelete: Cascade)
+  report           AiWeeklySalesReport @relation(fields: [reportId], references: [id], onDelete: Cascade)
   /// 기능 : 제안을 소유한 사용자입니다. report와 같은 userId를 가집니다.
-  user             User              @relation(fields: [userId], references: [id])
+  user             User                @relation(fields: [userId], references: [id])
   /// Feature: follow-up messages drafted from this report suggestion.
   followUpMessages FollowUpMessage[]
 
@@ -1477,7 +1626,7 @@ model FollowUpMessage {
   /// Feature: message owner. All history queries must include userId.
   user             User                           @relation(fields: [userId], references: [id], onDelete: Restrict)
   /// Feature: source AI report. History remains if a report version is removed.
-  sourceReport     AiWeeklySalesReport?          @relation(fields: [sourceReportId], references: [id], onDelete: SetNull)
+  sourceReport     AiWeeklySalesReport?           @relation(fields: [sourceReportId], references: [id], onDelete: SetNull)
   /// Feature: source AI follow-up suggestion. History remains if a suggestion is removed.
   sourceSuggestion AiWeeklySalesReportSuggestion? @relation(fields: [sourceSuggestionId], references: [id], onDelete: SetNull)
   /// Feature: email account used by an email follow-up.

@@ -1,6 +1,6 @@
 # G02 DB Schema Event Foundation
 
-상태: Ready
+상태: Completed
 목표: 제품 분석 raw event와 snapshot을 위한 Prisma schema, migration, repository 기반을 만든다.
 
 ## 1. 목적
@@ -174,18 +174,31 @@ pnpm run test -- product-analytics
 
 ## 12. Goal 검토 체크리스트
 
-- [ ] 기존 migration 파일을 수정하지 않았다.
-- [ ] 새 migration 파일을 만들었다.
-- [ ] 신규 enum/model/field에 Prisma 한국어 주석이 있다.
-- [ ] migration에 COMMENT 또는 의도 주석이 있다.
-- [ ] `ProductAnalyticsEvent`가 `userId`, `authSessionId`, `authDeviceId`를 가진다.
-- [ ] repository에 `createEvent`와 `findAuthDeviceIdBySessionId`가 있다.
-- [ ] `resolveProductAnalyticsEventDate` helper가 서버 로컬 timezone에 의존하지 않는다.
-- [ ] `addDaysToProductAnalyticsDate` helper가 서버 로컬 timezone에 의존하지 않는다.
-- [ ] `toProductAnalyticsDateOnlyDate` helper가 서버 로컬 timezone에 의존하지 않는다.
-- [ ] `formatProductAnalyticsDateOnlyDate` helper가 서버 로컬 timezone에 의존하지 않는다.
-- [ ] `occurredAt`, `eventDate`, `timeZone`이 있다.
-- [ ] `payloadJson`이 기본 `{}`를 가진다.
-- [ ] retention/cohort query를 위한 index가 있다.
-- [ ] server event는 repository 호출 전에 non-empty idempotencyKey가 검증된다.
-- [ ] `prisma:validate`, `prisma:generate`를 실행했다.
+- [x] 기존 migration 파일을 수정하지 않았다.
+- [x] 새 migration 파일을 만들었다.
+- [x] 신규 enum/model/field에 Prisma 한국어 주석이 있다.
+- [x] migration에 COMMENT 또는 의도 주석이 있다.
+- [x] `ProductAnalyticsEvent`가 `userId`, `authSessionId`, `authDeviceId`를 가진다.
+- [x] repository에 `createEvent`와 `findAuthDeviceIdBySessionId`가 있다.
+- [x] `resolveProductAnalyticsEventDate` helper가 서버 로컬 timezone에 의존하지 않는다.
+- [x] `addDaysToProductAnalyticsDate` helper가 서버 로컬 timezone에 의존하지 않는다.
+- [x] `toProductAnalyticsDateOnlyDate` helper가 서버 로컬 timezone에 의존하지 않는다.
+- [x] `formatProductAnalyticsDateOnlyDate` helper가 서버 로컬 timezone에 의존하지 않는다.
+- [x] `occurredAt`, `eventDate`, `timeZone`이 있다.
+- [x] `payloadJson`이 기본 `{}`를 가진다.
+- [x] retention/cohort query를 위한 index가 있다.
+- [x] server event는 repository 호출 전에 non-empty idempotencyKey가 검증된다.
+- [x] `prisma:validate`, `prisma:generate`를 실행했다.
+
+## 13. 실행 결과
+
+- 완료일: 2026-07-30
+- Prisma schema/migration: `ProductAnalyticsEvent`, `UserActivationSnapshot`, `RetentionCohortSnapshot` 추가
+- Backend foundation: `AnalyticsModule`, `ProductAnalyticsRepository`, Prisma repository, event taxonomy, date helper, input policy 추가
+- 문서: `AGENT/SOFTWARE_AGENT/DB_SCHEMA/PRODUCT_ANALYTICS_SCHEMA.md` 추가 및 09 상태 동기화
+- 검증:
+  - `pnpm run prisma:validate` 통과
+  - `pnpm run prisma:generate` 통과
+  - `pnpm run test -- product-analytics` 통과
+  - `pnpm run typecheck` 통과
+  - `pnpm run lint` 통과

@@ -74,6 +74,6 @@ G01_DOCUMENT_CONTRACT_SYNC
 ## 4. 현재 상태
 
 ```text
-G01 완료. G02~G08 미착수.
-다음 착수 대상은 G02_DB_SCHEMA_EVENT_FOUNDATION이다.
+G01~G02 완료. G03~G08 미착수.
+다음 착수 대상은 G03_ANALYTICS_COLLECTOR_API이다.
 ```

@@ -1,10 +1,10 @@
 # 09 Product Analytics
 
-상태: G01 Completed / G02 Ready
+상태: G02 Completed / G03 Ready
 순서: 09
 성격: Global B2C 첫 판매 전 제품 분석 수집/계산 기반 구현 슬롯
 결정 상태: `COMMON/DECISION-LOG.md` 확정 결정 반영
-구현 상태: G01 문서 계약 동기화 완료. BE/FE 구현은 미착수이며 다음 작업은 G02 DB Schema Event Foundation이다.
+구현 상태: G01 문서 계약 동기화와 G02 DB Schema Event Foundation 완료. 다음 작업은 G03 Analytics Collector API이다.
 
 ## 1. 목적
 
@@ -14,8 +14,8 @@
 
 ## 2. 현재 상태
 
-- `BE/prisma/schema.prisma`에 제품 분석 전용 event table이 없다.
-- activation, retention, paid conversion, churn, AI cost/user를 계산하는 정본이 없다.
+- `BE/prisma/schema.prisma`에 제품 분석 전용 event/snapshot table 기반이 추가됐다.
+- activation, retention 계산용 DB foundation은 추가됐고, 실제 snapshot 계산은 G06에서 구현한다.
 - `AiProviderCallLog`는 이미 존재하며 AI 요청 수, 실패율, token, 추정 비용의 1차 근거로 사용할 수 있다.
 - `AuthSession`, `AuthDevice`는 이미 존재하므로 09에서 별도 analytics session/device 식별자를 만들지 않는다.
 - User Web core `/app` route는 구현되어 있으나 page view/product usage event wrapper가 없다.

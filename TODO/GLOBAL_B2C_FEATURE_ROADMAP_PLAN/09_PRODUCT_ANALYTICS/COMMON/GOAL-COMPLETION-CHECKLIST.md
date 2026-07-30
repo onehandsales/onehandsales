@@ -1,6 +1,6 @@
 # Goal Completion Checklist
 
-상태: G01 Completed
+상태: G02 Completed
 최종 업데이트: 2026-07-30
 
 ## 1. 목적
@@ -14,7 +14,7 @@
 | 완료 | Goal | 상태 | 완료일 | 완료 기준 | 증거 | 비고 |
 |---|---|---|---|---|---|---|
 | [x] | G01 Document Contract Sync | Completed | 2026-07-30 | 현재 코드/문서 대조와 blocking 해소 | G01 실행 결과, DB-SCHEMA event name 동기화, rg 검색, BE prisma validate | G02~G08 blocking 없음 |
-| [ ] | G02 DB Schema Event Foundation | Not Started |  | Prisma schema/migration/repository 기반 |  |  |
+| [x] | G02 DB Schema Event Foundation | Completed | 2026-07-30 | Prisma schema/migration/repository 기반 | `ProductAnalyticsEvent`/snapshot schema, migration COMMENT, AnalyticsModule/repository/date/taxonomy/input policy, DB_SCHEMA 문서, BE prisma validate/generate/typecheck/lint/product-analytics test | G03 blocking 없음 |
 | [ ] | G03 Analytics Collector API | Not Started |  | `POST /api/analytics/events` 구현 |  |  |
 | [ ] | G04 Server Event Logging | Not Started |  | 핵심 server event 기록 지점 연결 |  |  |
 | [ ] | G05 User Web Client Events | Not Started |  | core `/app` route view wrapper 구현 |  |  |
@@ -51,16 +51,16 @@
 
 ### G02 DB Schema Event Foundation
 
-- [ ] `ProductAnalyticsEventSource` enum이 추가됐다.
-- [ ] `UserActivationStatus` enum이 추가됐다.
-- [ ] `ProductAnalyticsTargetType` enum이 추가됐다.
-- [ ] `ProductAnalyticsEvent` model이 추가됐다.
-- [ ] `UserActivationSnapshot` model이 추가됐다.
-- [ ] `RetentionCohortSnapshot` model이 추가됐다.
-- [ ] `occurredAt`, `eventDate`, `timeZone` 의미가 schema/comment/API spec에 일치한다.
-- [ ] `occurredAt`, `authSessionId`, `authDeviceId`, activation snapshot, retention cohort index가 있다.
-- [ ] migration SQL에 enum/table/column/index COMMENT가 있다.
-- [ ] raw event retention과 account deletion 기준을 방해하지 않는다.
+- [x] `ProductAnalyticsEventSource` enum이 추가됐다.
+- [x] `UserActivationStatus` enum이 추가됐다.
+- [x] `ProductAnalyticsTargetType` enum이 추가됐다.
+- [x] `ProductAnalyticsEvent` model이 추가됐다.
+- [x] `UserActivationSnapshot` model이 추가됐다.
+- [x] `RetentionCohortSnapshot` model이 추가됐다.
+- [x] `occurredAt`, `eventDate`, `timeZone` 의미가 schema/comment/API spec에 일치한다.
+- [x] `occurredAt`, `authSessionId`, `authDeviceId`, activation snapshot, retention cohort index가 있다.
+- [x] migration SQL에 enum/table/column/index COMMENT가 있다.
+- [x] raw event retention과 account deletion 기준을 방해하지 않는다.
 
 ### G03 Analytics Collector API
 
@@ -131,3 +131,4 @@
 - 2026-07-30: G01 재검토 완료. 상위 README/GOAL-WORK-ORDER 상태를 G01 완료 기준으로 동기화했고, AI usage `groupBy=DAY`가 필요한 `User.timeZone` 조회 계약을 `AI_USAGE_ANALYTICS_CONTRACT.md`와 `G07_AI_USAGE_AND_BILLING_RESERVED.md`에 보완했다.
 - 2026-07-30: G01 추가 재검토 완료. `ProductAnalyticsEventRecorder` 명칭을 BE TODO와 G04 명세 사이에 맞췄고, G04 server event 구현 범위에 HTTP controller `RequestWithRequestId.requestId` 전달 작업과 controller spec 검증 기준을 추가했다. G02 idempotency 설명에서 G03/G04 역할을 분리했다.
 - 2026-07-30: G01 최종 재검토 완료. G01 상세 명세 상단 상태를 Completed로 동기화했고, G05/G06 신규 환경 변수는 `AGENT/SOFTWARE_AGENT/COMMON/ENVIRONMENT.md` 정본 갱신까지 구현 완료 조건에 포함하도록 보강했다. event/routeKey/reference path/BE Prisma validate 재확인을 통과했다.
+- 2026-07-30: G02 DB Schema Event Foundation 완료. Prisma event/snapshot schema와 migration COMMENT, AnalyticsModule/repository/date/taxonomy/input policy를 추가했고, DB_SCHEMA 문서를 갱신했다. BE `pnpm run prisma:validate`, `pnpm run prisma:generate`, `pnpm run test -- product-analytics`, `pnpm run typecheck`, `pnpm run lint`를 통과했다.

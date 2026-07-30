@@ -17,13 +17,14 @@
 - `MEETING_NOTE_SCHEMA.md`: MeetingNote DB 구조
 - `BUSINESS_CARD_SCHEMA.md`: BusinessCardScanLog DB 구조
 - `DATA_IMPORT_SCHEMA.md`: DataImport 양식/성공 로그 DB 구조
+- `PRODUCT_ANALYTICS_SCHEMA.md`: Product Analytics raw event/snapshot DB 구조
 - `TIME_AND_TIMEZONE_POLICY.md`: DB/API/Frontend 시간과 timezone 처리 기준
 
 ## 3. 현재 DB 범위
 
 Snapshot date: 2026-07-10
 
-현재 Backend DB는 `BE/prisma/schema.prisma`와 migration 기준으로 Auth/User, Company, Contact, BusinessCard OCR, Product, Deal, Schedule, MeetingNote, DataImport 도메인을 포함한다. `User`에는 기본 timezone과 사용자 locale/region 메타데이터가 포함된다. Company/Contact/Product/Deal/MeetingNote 본문 row와 각 도메인의 메모, 비밀 메모, 다음 행동 로그에는 7일 휴지통 보관을 위한 soft delete 컬럼이 반영되어 있다. 별도 `Trash` table은 없고, Trash 목록/상세/복구 API는 기존 row의 `deletedAt`, `deletedByUserId`, `trashExpiresAt`을 기준으로 동작한다.
+현재 Backend DB는 `BE/prisma/schema.prisma`와 migration 기준으로 Auth/User, Company, Contact, BusinessCard OCR, Product, Deal, Schedule, MeetingNote, DataImport, Product Analytics 도메인을 포함한다. `User`에는 기본 timezone과 사용자 locale/region 메타데이터가 포함된다. Company/Contact/Product/Deal/MeetingNote 본문 row와 각 도메인의 메모, 비밀 메모, 다음 행동 로그에는 7일 휴지통 보관을 위한 soft delete 컬럼이 반영되어 있다. Product Analytics raw event는 User hard delete 시 함께 삭제하고, retention cohort snapshot은 userId 없는 aggregate로 보관한다. 별도 `Trash` table은 없고, Trash 목록/상세/복구 API는 기존 row의 `deletedAt`, `deletedByUserId`, `trashExpiresAt`을 기준으로 동작한다.
 
 Auth/User 기준:
 
@@ -74,6 +75,12 @@ Auth/User 기준:
 - `ImportTemplate`
 - `ImportUserLog`
 - `ImportUserLogRow`
+- `ProductAnalyticsEventSource`
+- `UserActivationStatus`
+- `ProductAnalyticsTargetType`
+- `ProductAnalyticsEvent`
+- `UserActivationSnapshot`
+- `RetentionCohortSnapshot`
 
 현재 반영된 주요 migration:
 
@@ -95,6 +102,7 @@ Auth/User 기준:
 - `BE/prisma/migrations/20260630010000_add_import_templates_and_logs/migration.sql`
 - `BE/prisma/migrations/20260702010000_add_deal_import_template/migration.sql`
 - `BE/prisma/migrations/20260708010000_add_user_locale_region_metadata/migration.sql`
+- `BE/prisma/migrations/20260730090000_add_product_analytics/migration.sql`
 
 Search는 기존 table을 읽는 기능이므로 별도 table이나 migration이 없다.
 
@@ -129,6 +137,7 @@ DataImport는 `ImportTemplate`, `ImportUserLog`, `ImportUserLogRow`를 사용한
 - persistent ImportJob table. 현재 확정 전 job은 in-memory store를 사용한다.
 - generic ExportJob table은 현재 범용 export를 쓰지 않는 정책으로 제외한다. Company/Contact/Product/Deal export는 각 도메인 API가 xlsx 파일을 직접 생성한다.
 - Notification table
+- Billing/paywall/churn final event table과 `UsageMeter`는 12 Billing Subscription Tax에서 확정한다.
 
 ## 6. 관리 규칙
 
@@ -151,6 +160,7 @@ DataImport는 `ImportTemplate`, `ImportUserLog`, `ImportUserLogRow`를 사용한
 - `AGENT/SOFTWARE_AGENT/DB_SCHEMA/MEETING_NOTE_SCHEMA.md`
 - `AGENT/SOFTWARE_AGENT/DB_SCHEMA/BUSINESS_CARD_SCHEMA.md`
 - `AGENT/SOFTWARE_AGENT/DB_SCHEMA/DATA_IMPORT_SCHEMA.md`
+- `AGENT/SOFTWARE_AGENT/DB_SCHEMA/PRODUCT_ANALYTICS_SCHEMA.md`
 - `AGENT/SOFTWARE_AGENT/DB_SCHEMA/TIME_AND_TIMEZONE_POLICY.md`
 - `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/ARCHITECTURE/BACKEND.md`
 - `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/CONVENTION/API_SPEC.md`
