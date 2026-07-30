@@ -1,6 +1,6 @@
 # G06 Snapshot Retention Batch
 
-상태: Ready
+상태: Completed
 목표: activation/retention snapshot 계산과 raw event retention purge를 구현한다.
 
 ## 1. 목적
@@ -170,8 +170,10 @@ interface UpsertRetentionCohortSnapshotInput {
 }
 
 interface ProductAnalyticsRepository {
+  runInTransaction<T>(work: (repository: ProductAnalyticsRepository) => Promise<T>): Promise<T>;
   findFirstActivationCandidates(fromDate: string, toDate: string, limit: number): Promise<ActivationCandidate[]>;
   upsertUserActivationSnapshot(input: UpsertUserActivationSnapshotInput): Promise<void>;
+  listActivatedCohortDates(fromDate: string, toDate: string, limit: number): Promise<string[]>;
   countActivatedUsersByDate(cohortDate: string): Promise<number>;
   countRetainedUsersByDate(cohortDate: string, targetDate: string, activeEventNames: readonly string[]): Promise<number>;
   upsertRetentionCohortSnapshot(input: UpsertRetentionCohortSnapshotInput): Promise<void>;
@@ -199,11 +201,20 @@ pnpm run test -- analytics
 
 ## 12. Goal 검토 체크리스트
 
-- [ ] activation 기준이 결정 로그와 일치한다.
-- [ ] retention은 사용자 timezone 기준 eventDate를 사용한다.
-- [ ] `RetentionCohortSnapshot`은 userId를 저장하지 않는다.
-- [ ] optional runner가 env flag로 켜지고 꺼진다.
-- [ ] `AGENT/SOFTWARE_AGENT/COMMON/ENVIRONMENT.md`에 snapshot/purge 환경 변수가 반영되어 있다.
-- [ ] purge는 365일 기준이다.
-- [ ] log에 payload 원문/user list가 없다.
-- [ ] 신규/수정 코드에 한국어 주석이 있다.
+- [x] activation 기준이 결정 로그와 일치한다.
+- [x] retention은 사용자 timezone 기준 eventDate를 사용한다.
+- [x] `RetentionCohortSnapshot`은 userId를 저장하지 않는다.
+- [x] optional runner가 env flag로 켜지고 꺼진다.
+- [x] `AGENT/SOFTWARE_AGENT/COMMON/ENVIRONMENT.md`에 snapshot/purge 환경 변수가 반영되어 있다.
+- [x] purge는 365일 기준이다.
+- [x] log에 payload 원문/user list가 없다.
+- [x] 신규/수정 코드에 한국어 주석이 있다.
+
+## 13. 구현 결과
+
+- 완료일: 2026-07-30
+- `ProcessProductAnalyticsSnapshotsUseCase`가 사용자별 activation snapshot을 upsert하고 cohort date별 D1/D7/D30 retention aggregate를 upsert한다.
+- `PurgeProductAnalyticsRawEventsUseCase`가 365일보다 오래된 `ProductAnalyticsEvent`만 batch hard delete한다.
+- `ProductAnalyticsSnapshotProcessorRunner`는 snapshot/purge env flag가 켜진 경우에만 interval로 실행된다.
+- `AGENT/SOFTWARE_AGENT/COMMON/ENVIRONMENT.md`에 snapshot processor와 retention purge 환경 변수를 추가했다.
+- 검증: BE `pnpm.cmd run typecheck`, `pnpm.cmd run lint`, `pnpm.cmd run test -- analytics`, `pnpm.cmd run build` 통과.

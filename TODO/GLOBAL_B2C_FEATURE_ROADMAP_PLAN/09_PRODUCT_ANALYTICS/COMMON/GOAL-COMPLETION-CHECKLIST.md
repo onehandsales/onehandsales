@@ -1,6 +1,6 @@
 # Goal Completion Checklist
 
-상태: G05 Completed
+상태: G06 Completed
 최종 업데이트: 2026-07-30
 
 ## 1. 목적
@@ -18,7 +18,7 @@
 | [x] | G03 Analytics Collector API | Completed | 2026-07-30 | `POST /api/analytics/events` 구현 | AuthGuard controller, request DTO, collect use case, payload/routeKey/PII validation, session/device/timezone enrichment, BE test/typecheck/lint | G04 blocking 없음 |
 | [x] | G04 Server Event Logging | Completed | 2026-07-30 | 핵심 server event 기록 지점 연결 | `ProductAnalyticsEventRecorder`, AnalyticsRecorderModule wiring, auth/deal/schedule/meeting-note/business-card/data-import/export server event 연결, requestId 전달, BE typecheck/lint/targeted test | G05 blocking 없음 |
 | [x] | G05 User Web Client Events | Completed | 2026-07-30 | core `/app` route view wrapper 구현 | `features/analytics` API/client hook/route mapper, AppShell 연결, `VITE_PRODUCT_ANALYTICS_ENABLED`, User Web unit/E2E/typecheck/lint/build | G06 blocking 없음 |
-| [ ] | G06 Snapshot Retention Batch | Not Started |  | activation/retention snapshot 계산 |  |  |
+| [x] | G06 Snapshot Retention Batch | Completed | 2026-07-30 | activation/retention snapshot 계산 | snapshot/purge use case, optional runner, repository query/upsert/purge, env 문서, BE typecheck/lint/analytics test/build | G07 blocking 없음 |
 | [ ] | G07 AI Usage And Billing Reserved | Not Started |  | AI usage 요약과 billing reserved 정리 |  |  |
 | [ ] | G08 QA Document Closeout | Not Started |  | 검증과 문서 closeout |  |  |
 
@@ -96,12 +96,12 @@
 
 ### G06 Snapshot Retention Batch
 
-- [ ] activation snapshot upsert가 구현됐다.
-- [ ] D1/D7/D30 retention cohort snapshot이 구현됐다.
-- [ ] optional processor runner가 env flag로 켜지고 꺼진다.
-- [ ] `AGENT/SOFTWARE_AGENT/COMMON/ENVIRONMENT.md`에 snapshot/purge 환경 변수가 반영됐다.
-- [ ] 365일 raw event purge use case가 있다.
-- [ ] snapshot log는 count/date 중심이고 payload 원문을 남기지 않는다.
+- [x] activation snapshot upsert가 구현됐다.
+- [x] D1/D7/D30 retention cohort snapshot이 구현됐다.
+- [x] optional processor runner가 env flag로 켜지고 꺼진다.
+- [x] `AGENT/SOFTWARE_AGENT/COMMON/ENVIRONMENT.md`에 snapshot/purge 환경 변수가 반영됐다.
+- [x] 365일 raw event purge use case가 있다.
+- [x] snapshot log는 count/date 중심이고 payload 원문을 남기지 않는다.
 
 ### G07 AI Usage And Billing Reserved
 
@@ -135,3 +135,4 @@
 - 2026-07-30: G03 Analytics Collector API 완료. `POST /api/analytics/events`에 AuthGuard, DTO, use case, routeKey/surface allowlist, PII key 차단, authSession/authDevice/timezone 보강을 연결했다. BE `pnpm run test -- analytics`, `pnpm run typecheck`, `pnpm run lint`를 통과했다.
 - 2026-07-30: G04 Server Event Logging 완료. `ProductAnalyticsEventRecorder`와 AnalyticsRecorderModule을 추가하고 auth/deal/schedule/meeting-note/business-card/data-import/company/contact/product server event 기록 지점을 연결했다. HTTP controller requestId 전달, payload allowlist/PII 차단, best-effort warning log를 검증했고 BE `pnpm run typecheck`, `pnpm run lint`, `pnpm run test -- auth deal schedule meeting-note business-card data-import analytics`를 통과했다.
 - 2026-07-30: G05 User Web Client Events 완료. `FE/user-web/src/features/analytics`에 collector API client, routeKey mapper, `useAppRouteAnalytics` hook을 추가하고 `AppShell`에 1회 연결했다. `VITE_PRODUCT_ANALYTICS_ENABLED`가 `true`일 때만 `app_route_viewed`를 보내며 public/auth/legacy/redirect-only route와 raw query/UUID payload를 제외했다. FE `pnpm run test -- src/features/analytics`, `pnpm run typecheck`, `pnpm run lint`, `pnpm run build`, `pnpm run test:e2e:analytics`를 통과했다.
+- 2026-07-30: G06 Snapshot Retention Batch 완료. `ProcessProductAnalyticsSnapshotsUseCase`, `PurgeProductAnalyticsRawEventsUseCase`, `ProductAnalyticsSnapshotProcessorRunner`와 Prisma repository query/upsert/purge를 추가했다. activation은 첫 deal 생성과 첫 의미 행동 중 늦은 row의 eventDate/timeZone을 쓰고, retention은 D1/D7/D30 aggregate snapshot만 저장하며, purge는 365일 초과 `ProductAnalyticsEvent`만 삭제한다. BE `pnpm.cmd run typecheck`, `pnpm.cmd run lint`, `pnpm.cmd run test -- analytics`, `pnpm.cmd run build`를 통과했다.

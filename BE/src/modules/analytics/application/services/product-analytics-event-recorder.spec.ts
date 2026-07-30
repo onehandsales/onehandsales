@@ -126,8 +126,18 @@ class FakeAppLogger extends AppLogger {
 // 기능 : ProductAnalyticsRepository 테스트 대역을 생성합니다.
 function createRepositoryFake(): jest.Mocked<ProductAnalyticsRepository> {
   return {
+    countActivatedUsersByDate: jest.fn(),
+    countRetainedUsersByDate: jest.fn(),
     createEvent: jest.fn().mockResolvedValue({ id: "event-1" }),
+    deleteRawEventsBefore: jest.fn(),
     findAuthDeviceIdBySessionId: jest.fn().mockResolvedValue(DEVICE_ID),
+    findFirstActivationCandidates: jest.fn(),
+    listActivatedCohortDates: jest.fn(),
+    runInTransaction: jest.fn(async (work) =>
+      work(createRepositoryFake())
+    ) as jest.Mocked<ProductAnalyticsRepository>["runInTransaction"],
+    upsertRetentionCohortSnapshot: jest.fn(),
+    upsertUserActivationSnapshot: jest.fn(),
   };
 }
 

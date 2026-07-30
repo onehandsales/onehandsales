@@ -97,6 +97,20 @@ export const PRODUCT_ANALYTICS_RUNTIME_EVENT_NAMES = [
 export type ProductAnalyticsRuntimeEventName =
   (typeof PRODUCT_ANALYTICS_RUNTIME_EVENT_NAMES)[number];
 
+// 기능 : D1/D7/D30 retention 계산에서 active day로 인정할 runtime event 이름을 정의합니다.
+export const PRODUCT_ANALYTICS_ACTIVE_RETENTION_EVENT_NAMES = [
+  "app_route_viewed",
+  "deal_created",
+  "deal_next_action_created",
+  "schedule_created",
+  "schedule_deal_linked",
+  "meeting_note_created",
+  "meeting_note_deal_linked",
+  "business_card_scan_confirmed",
+  "import_confirmed",
+  "export_downloaded",
+] as const satisfies readonly ProductAnalyticsRuntimeEventName[];
+
 // 기능 : 12 Billing에서 최종 확정할 reserved 분석 이벤트 이름을 정의합니다.
 export const PRODUCT_ANALYTICS_RESERVED_BILLING_EVENT_NAMES = [
   "paywall_viewed",

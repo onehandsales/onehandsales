@@ -226,7 +226,9 @@ API 산출물:
 - `BE/src/modules/analytics/infrastructure/processor/product-analytics-snapshot-processor.runner.ts`
 - `BE/src/modules/analytics/application/ports/product-analytics.repository.ts`
 - `BE/src/modules/analytics/infrastructure/persistence/prisma-product-analytics.repository.ts`
+- `BE/src/modules/analytics/domain/product-analytics-event-taxonomy.ts`
 - `BE/src/modules/analytics/infrastructure/analytics.module.ts`
+- `BE/src/modules/analytics/infrastructure/analytics-recorder.module.ts`
 - `AGENT/SOFTWARE_AGENT/COMMON/ENVIRONMENT.md`
 
 환경 변수:
@@ -239,15 +241,21 @@ API 산출물:
 
 테스트 기준:
 
-- activation 계산 spec
-- D1/D7/D30 retention 계산 spec
-- purge cutoff/batch delete spec
+- `BE/src/modules/analytics/application/use-cases/process-product-analytics-snapshots.use-case.spec.ts`
+- `BE/src/modules/analytics/application/use-cases/purge-product-analytics-raw-events.use-case.spec.ts`
+- `BE/src/modules/analytics/infrastructure/processor/product-analytics-snapshot-processor.runner.spec.ts`
+- `BE/src/modules/analytics/domain/product-analytics-event-taxonomy.spec.ts`
+- `cd BE && pnpm.cmd run typecheck`
+- `cd BE && pnpm.cmd run lint`
+- `cd BE && pnpm.cmd run test -- analytics`
+- `cd BE && pnpm.cmd run build`
 
 완료 산출물:
 
 - `UserActivationSnapshot`이 activation 기준으로 upsert된다.
 - `RetentionCohortSnapshot`이 userId 없이 aggregate로 upsert된다.
 - `PurgeProductAnalyticsRawEventsUseCase`가 365일 초과 raw event만 batch hard delete한다.
+- optional processor runner가 snapshot/purge env flag로 켜지고 꺼진다.
 - `AGENT/SOFTWARE_AGENT/COMMON/ENVIRONMENT.md`에 snapshot/purge 환경 변수가 반영된다.
 
 ## G07 AI Usage And Billing Reserved

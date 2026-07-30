@@ -23,7 +23,7 @@ import { PrismaProductAnalyticsRepository } from "./persistence/prisma-product-a
       provide: PRODUCT_ANALYTICS_REPOSITORY,
       // 기능 : Prisma 서비스로 제품 분석 저장소 구현체를 생성합니다.
       useFactory: (prismaService: PrismaService) =>
-        new PrismaProductAnalyticsRepository(prismaService),
+        new PrismaProductAnalyticsRepository(prismaService, prismaService),
       inject: [PrismaService],
     },
   ],

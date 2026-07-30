@@ -4,6 +4,7 @@ import {
   isProductAnalyticsRouteViewSurface,
   isProductAnalyticsRuntimeEventName,
   isProductAnalyticsServerEventName,
+  PRODUCT_ANALYTICS_ACTIVE_RETENTION_EVENT_NAMES,
   PRODUCT_ANALYTICS_APP_ROUTE_KEYS,
   PRODUCT_ANALYTICS_RESERVED_BILLING_EVENT_NAMES,
   PRODUCT_ANALYTICS_ROUTE_VIEW_SURFACES,
@@ -98,6 +99,25 @@ describe("product analytics event taxonomy", () => {
     expect(isProductAnalyticsServerEventName("deal_created")).toBe(true);
     expect(requiresProductAnalyticsIdempotencyKey("SERVER")).toBe(true);
     expect(requiresProductAnalyticsIdempotencyKey("CLIENT")).toBe(false);
+  });
+
+  it("keeps retention active events inside the 09 runtime allowlist", () => {
+    expect(PRODUCT_ANALYTICS_ACTIVE_RETENTION_EVENT_NAMES).toEqual([
+      "app_route_viewed",
+      "deal_created",
+      "deal_next_action_created",
+      "schedule_created",
+      "schedule_deal_linked",
+      "meeting_note_created",
+      "meeting_note_deal_linked",
+      "business_card_scan_confirmed",
+      "import_confirmed",
+      "export_downloaded",
+    ]);
+
+    for (const eventName of PRODUCT_ANALYTICS_ACTIVE_RETENTION_EVENT_NAMES) {
+      expect(isProductAnalyticsRuntimeEventName(eventName)).toBe(true);
+    }
   });
 
   it("keeps route view routeKey and surface allowlists fixed", () => {

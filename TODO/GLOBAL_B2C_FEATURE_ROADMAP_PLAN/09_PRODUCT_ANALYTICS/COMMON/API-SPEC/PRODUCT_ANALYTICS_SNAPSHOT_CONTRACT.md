@@ -1,6 +1,6 @@
 # Product Analytics Snapshot Contract
 
-상태: Confirmed Plan
+상태: Implemented
 
 ## 1. 목적
 
@@ -146,8 +146,10 @@ interface UpsertRetentionCohortSnapshotInput {
 }
 
 interface ProductAnalyticsRepository {
+  runInTransaction<T>(work: (repository: ProductAnalyticsRepository) => Promise<T>): Promise<T>;
   findFirstActivationCandidates(fromDate: string, toDate: string, limit: number): Promise<ActivationCandidate[]>;
   upsertUserActivationSnapshot(input: UpsertUserActivationSnapshotInput): Promise<void>;
+  listActivatedCohortDates(fromDate: string, toDate: string, limit: number): Promise<string[]>;
   countActivatedUsersByDate(cohortDate: string): Promise<number>;
   countRetainedUsersByDate(cohortDate: string, targetDate: string, activeEventNames: readonly string[]): Promise<number>;
   upsertRetentionCohortSnapshot(input: UpsertRetentionCohortSnapshotInput): Promise<void>;
@@ -182,7 +184,7 @@ PRODUCT_ANALYTICS_RETENTION_PURGE_ENABLED=false
 PRODUCT_ANALYTICS_RETENTION_PURGE_BATCH_SIZE=500
 ```
 
-G06 구현 시 위 변수는 `AGENT/SOFTWARE_AGENT/COMMON/ENVIRONMENT.md`의 Backend 환경 변수 정본에도 추가한다.
+G06 구현에서 위 변수는 `AGENT/SOFTWARE_AGENT/COMMON/ENVIRONMENT.md`의 Backend 환경 변수 정본에도 추가했다.
 
 기존 `NotificationDueProcessorRunner`, `AiWeeklySalesReportProcessorRunner`의 optional setInterval 패턴을 따른다.
 
@@ -208,3 +210,9 @@ Log context는 count/date 중심이다. userId 목록과 payload 원문을 남�
 - user-level AI usage 조회
 - masking/권한/audit log
 - Admin analytics page UI
+
+## 10. 구현 결과
+
+- 완료일: 2026-07-30
+- 구현 파일: `ProcessProductAnalyticsSnapshotsUseCase`, `PurgeProductAnalyticsRawEventsUseCase`, `ProductAnalyticsSnapshotProcessorRunner`, `PrismaProductAnalyticsRepository`
+- 검증: BE `pnpm.cmd run typecheck`, `pnpm.cmd run lint`, `pnpm.cmd run test -- analytics`, `pnpm.cmd run build` 통과
