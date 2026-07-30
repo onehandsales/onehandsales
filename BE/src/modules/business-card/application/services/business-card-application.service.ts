@@ -14,10 +14,18 @@ import {
   type BusinessCardExtractedRecord,
   type BusinessCardScanLogRecord,
   type BusinessCardScanLogRepository,
+  BusinessCardResolutionValue,
   BusinessCardScanStatusValue,
   type BusinessCardScanStatusValue as BusinessCardScanStatus,
   type BusinessCardUsageRecord,
 } from "@/modules/business-card/application/ports/business-card-scan-log.repository";
+import {
+  NOOP_PRODUCT_ANALYTICS_EVENT_RECORDER,
+  PRODUCT_ANALYTICS_EVENT_RECORDER,
+  type ProductAnalyticsServerEventRecorder,
+  type RecordProductAnalyticsServerEventCommand,
+  recordProductAnalyticsServerEventBestEffort,
+} from "@/modules/analytics/application/services/product-analytics-event-recorder";
 import {
   BusinessCardScanLogNotFoundError,
   BusinessCardScanNotConfirmableError,
@@ -136,7 +144,9 @@ export class BusinessCardApplicationService {
     private readonly scanLogRepository: BusinessCardScanLogRepository,
     @Inject(BUSINESS_CARD_OCR_PROVIDER)
     private readonly ocrProvider: BusinessCardOcrProvider,
-    private readonly logger: AppLogger
+    private readonly logger: AppLogger,
+    @Inject(PRODUCT_ANALYTICS_EVENT_RECORDER)
+    private readonly productAnalyticsEventRecorder: ProductAnalyticsServerEventRecorder = NOOP_PRODUCT_ANALYTICS_EVENT_RECORDER
   ) {}
 
   async scanBusinessCard(
@@ -227,7 +237,8 @@ export class BusinessCardApplicationService {
   async confirmScanLog(
     currentUser: CurrentUserContext,
     scanLogId: string,
-    input: ConfirmBusinessCardScanCommand
+    input: ConfirmBusinessCardScanCommand,
+    requestId: string | null = null
   ): Promise<ConfirmBusinessCardScanResponse> {
     const normalizedInput = this.normalizeConfirmInput(input);
     const result = await this.scanLogRepository.confirmScanLog({
@@ -252,6 +263,26 @@ export class BusinessCardApplicationService {
       contactId: result.result.contact.id,
       companyResolution: result.result.company.resolution,
       contactResolution: result.result.contact.resolution,
+    });
+
+    // 기능 : 확정된 명함 스캔의 제품 분석 이벤트는 PII 없이 성공 사실만 기록합니다.
+    await this.recordServerAnalyticsEvent({
+      userId: currentUser.id,
+      authSessionId: currentUser.sessionId,
+      requestId,
+      eventName: "business_card_scan_confirmed",
+      timeZone: currentUser.timeZone,
+      idempotencyKey: `business_card_scan_confirmed:${scanLogId}`,
+      targetType: "BUSINESS_CARD_SCAN",
+      targetId: scanLogId,
+      payload: {
+        companyResolution: result.result.company.resolution,
+        contactResolution: result.result.contact.resolution,
+        createdCompany:
+          result.result.company.resolution === BusinessCardResolutionValue.CREATED,
+        createdContact:
+          result.result.contact.resolution === BusinessCardResolutionValue.CREATED,
+      },
     });
 
     return {
@@ -534,6 +565,18 @@ export class BusinessCardApplicationService {
       error instanceof Error ? error.message : "Unknown business card OCR failure",
       "BusinessCardApplicationService"
     );
+  }
+
+  // 기능 : 명함 서버 이벤트를 best-effort로 기록해 OCR/확정 API를 막지 않습니다.
+  private async recordServerAnalyticsEvent(
+    command: RecordProductAnalyticsServerEventCommand
+  ): Promise<void> {
+    await recordProductAnalyticsServerEventBestEffort({
+      recorder: this.productAnalyticsEventRecorder,
+      logger: this.logger,
+      command,
+      logContext: "BusinessCardApplicationService",
+    });
   }
 
   private logEvent(event: string, fields: Record<string, unknown>): void {

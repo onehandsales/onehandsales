@@ -5,7 +5,7 @@ import {
   ValidationPipe,
 } from "@nestjs/common";
 import { Test } from "@nestjs/testing";
-import type { Request } from "express";
+import type { NextFunction, Request, Response } from "express";
 import * as request from "supertest";
 import { DataImportApplicationService } from "@/modules/data-import/application/services/data-import-application.service";
 import type { CurrentUserContext } from "@/shared/application/context/current-user.context";
@@ -26,6 +26,7 @@ const IMPORT_JOB_ID = "00000000-0000-4000-8000-000000000301";
 
 type RequestWithCurrentUser = Request & {
   currentUser?: CurrentUserContext;
+  requestId?: string;
 };
 
 type DataImportServiceFake = Pick<
@@ -115,6 +116,13 @@ describe("ImportJobController", () => {
       .compile();
 
     app = moduleRef.createNestApplication();
+    app.use(
+      (req: RequestWithCurrentUser, _res: Response, next: NextFunction) => {
+        // 기능 : request id middleware 없이도 controller의 requestId 전달 계약을 검증합니다.
+        req.requestId = "request-import-1";
+        next();
+      }
+    );
     app.useGlobalPipes(
       new ValidationPipe({
         whitelist: true,
@@ -281,7 +289,8 @@ describe("ImportJobController", () => {
     expect(service.confirmImportJob).toHaveBeenCalledWith(
       CURRENT_USER,
       IMPORT_JOB_ID,
-      body
+      body,
+      "request-import-1"
     );
   });
 });

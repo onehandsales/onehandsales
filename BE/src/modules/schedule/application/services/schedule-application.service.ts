@@ -28,6 +28,14 @@ import {
   ScheduleNotFoundError,
   ScheduleWeekReportExportFailedError,
 } from "@/modules/schedule/domain/schedule.errors";
+import {
+  NOOP_PRODUCT_ANALYTICS_EVENT_RECORDER,
+  PRODUCT_ANALYTICS_EVENT_RECORDER,
+  type ProductAnalyticsServerEventRecorder,
+  type RecordProductAnalyticsServerEventCommand,
+  recordProductAnalyticsServerEventBestEffort,
+  toProductAnalyticsLinkCountBucket,
+} from "@/modules/analytics/application/services/product-analytics-event-recorder";
 import { createTrashRetentionTimestamps } from "@/shared/application/trash/trash-retention";
 import {
   createTimestampedXlsxFileName,
@@ -307,7 +315,7 @@ type WeeklyReportRange = {
 // 역할 : ScheduleApplicationService 일정 도메인 application 유스케이스를 제공합니다.
 @Injectable()
 export class ScheduleApplicationService {
-  // 기능 : 일정 저장소와 로그 서비스를 주입받습니다.
+  // 기능 : 일정 저장소, reminder, xlsx writer, 로그 서비스, 분석 recorder를 주입받습니다.
   constructor(
     @Inject(SCHEDULE_REPOSITORY)
     private readonly scheduleRepository: ScheduleRepository,
@@ -315,7 +323,9 @@ export class ScheduleApplicationService {
     private readonly cancelScheduleNotificationReminder: CancelScheduleNotificationReminderUseCase,
     @Inject(XLSX_WORKBOOK_WRITER)
     private readonly xlsxWriter: XlsxWorkbookWriter,
-    private readonly logger: AppLogger
+    private readonly logger: AppLogger,
+    @Inject(PRODUCT_ANALYTICS_EVENT_RECORDER)
+    private readonly productAnalyticsEventRecorder: ProductAnalyticsServerEventRecorder = NOOP_PRODUCT_ANALYTICS_EVENT_RECORDER
   ) {}
 
   // 기능 : 현재 사용자의 일정 연결용 딜 옵션 전체 목록을 조회합니다.
@@ -461,7 +471,8 @@ export class ScheduleApplicationService {
   // 기능 : 현재 사용자의 일정을 생성하고 선택 딜을 같은 transaction에서 연결합니다.
   async createSchedule(
     currentUser: CurrentUserContext,
-    input: CreateScheduleCommand
+    input: CreateScheduleCommand,
+    requestId: string | null = null
   ): Promise<ScheduleResponse> {
     // 1. 일정 생성 요청 값을 검증하고 저장 가능한 값으로 정규화한다.
     const normalized = this.normalizeCreateInput(currentUser.id, input);
@@ -528,8 +539,43 @@ export class ScheduleApplicationService {
       scheduleId: createdScheduleId,
       dealCount: normalized.dealIds.length,
     });
+    // 7. 일정 생성 성공 후 일정 자체 server event를 기록한다.
+    await this.recordServerAnalyticsEvent({
+      userId: currentUser.id,
+      authSessionId: currentUser.sessionId,
+      requestId,
+      eventName: "schedule_created",
+      timeZone: currentUser.timeZone,
+      idempotencyKey: `schedule_created:${schedule.id}`,
+      targetType: "SCHEDULE",
+      targetId: schedule.id,
+      payload: {
+        sourceType: schedule.sourceType,
+        isAllDay: schedule.isAllDay,
+        hasDealLink: schedule.deals.length > 0,
+      },
+    });
 
-    // 7. 생성된 일정 상세를 API 응답 형식으로 변환한다.
+    for (const dealId of normalized.dealIds) {
+      // 8. 생성 요청에서 새로 연결된 딜마다 일정-딜 연결 server event를 기록한다.
+      await this.recordServerAnalyticsEvent({
+        userId: currentUser.id,
+        authSessionId: currentUser.sessionId,
+        requestId,
+        eventName: "schedule_deal_linked",
+        timeZone: currentUser.timeZone,
+        idempotencyKey: `schedule_deal_linked:${schedule.id}:${dealId}`,
+        targetType: "SCHEDULE",
+        targetId: schedule.id,
+        payload: {
+          linkCountBucket: toProductAnalyticsLinkCountBucket(
+            schedule.deals.length
+          ),
+        },
+      });
+    }
+
+    // 9. 생성된 일정 상세를 API 응답 형식으로 변환한다.
     return this.toScheduleResponse(schedule);
   }
 
@@ -537,7 +583,8 @@ export class ScheduleApplicationService {
   async updateSchedule(
     currentUser: CurrentUserContext,
     scheduleId: string,
-    input: UpdateScheduleCommand
+    input: UpdateScheduleCommand,
+    requestId: string | null = null
   ): Promise<ScheduleResponse> {
     // 1. 수정 가능한 필드가 최소 1개 있는지 먼저 검증한다.
     if (!this.hasUpdateFields(input)) {
@@ -560,6 +607,7 @@ export class ScheduleApplicationService {
     const nextScheduleTitle =
       normalized.scheduleFields.scheduleTitle ?? existing.scheduleTitle;
     const nextStartAt = normalized.scheduleFields.startAt ?? existing.startAt;
+    let addedDealIds: string[] = [];
 
     // 5. 일정 기본 정보 수정과 ScheduleDeal diff 반영을 같은 transaction에서 처리한다.
     await this.scheduleRepository.runInTransaction(async (repository) => {
@@ -593,6 +641,7 @@ export class ScheduleApplicationService {
         const dealIdsToAdd = normalized.dealIds.filter(
           (dealId) => !existingDealSet.has(dealId)
         );
+        addedDealIds = dealIdsToAdd;
         const dealIdsToRemove = existingDealIds.filter(
           (dealId) => !requestedDealSet.has(dealId)
         );
@@ -643,7 +692,26 @@ export class ScheduleApplicationService {
       dealIds: normalized.dealIds ?? null,
     });
 
-    // 9. 수정된 일정 상세를 API 응답 형식으로 변환한다.
+    for (const dealId of addedDealIds) {
+      // 9. 수정 요청에서 새로 추가된 일정-딜 연결만 server event로 기록한다.
+      await this.recordServerAnalyticsEvent({
+        userId: currentUser.id,
+        authSessionId: currentUser.sessionId,
+        requestId,
+        eventName: "schedule_deal_linked",
+        timeZone: currentUser.timeZone,
+        idempotencyKey: `schedule_deal_linked:${schedule.id}:${dealId}`,
+        targetType: "SCHEDULE",
+        targetId: schedule.id,
+        payload: {
+          linkCountBucket: toProductAnalyticsLinkCountBucket(
+            schedule.deals.length
+          ),
+        },
+      });
+    }
+
+    // 10. 수정된 일정 상세를 API 응답 형식으로 변환한다.
     return this.toScheduleResponse(schedule);
   }
 
@@ -1743,6 +1811,18 @@ export class ScheduleApplicationService {
       id: deal.id,
       dealName: deal.dealName,
     };
+  }
+
+  // 기능 : 제품 분석 server event를 제품 응답에 영향 없이 기록합니다.
+  private async recordServerAnalyticsEvent(
+    command: RecordProductAnalyticsServerEventCommand
+  ): Promise<void> {
+    await recordProductAnalyticsServerEventBestEffort({
+      recorder: this.productAnalyticsEventRecorder,
+      logger: this.logger,
+      command,
+      logContext: "ScheduleApplicationService",
+    });
   }
 
   // 기능 : 민감정보를 제외한 구조화 이벤트 로그를 기록합니다.

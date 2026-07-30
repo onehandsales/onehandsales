@@ -7,7 +7,7 @@
 | Method | Path | 목적 | 상태 |
 |---|---|---|---|
 | `POST` | `/api/analytics/events` | User Web client event 수집 | G03 구현 완료 |
-| 내부 | `ProductAnalyticsEventRecorder.recordServerEvent` | server-side domain event 기록 | 09 구현 |
+| 내부 | `ProductAnalyticsEventRecorder.recordServerEvent` | server-side domain event 기록 | G04 구현 완료 |
 | 내부/runner | `ProcessProductAnalyticsSnapshotsUseCase` | activation/retention snapshot 계산 | 09 구현 |
 | 내부/runner | `PurgeProductAnalyticsRawEventsUseCase` | 365일 초과 raw event batch hard delete | 09 구현 |
 | 내부 | `AiProviderCallLog` query | 사용자별 AI usage 계산 | 09 구현 |
@@ -37,6 +37,7 @@ BE/src/modules/analytics/
     product-analytics-event-taxonomy.ts
     product-analytics.errors.ts
   infrastructure/
+    analytics-recorder.module.ts
     analytics.module.ts
     persistence/
       prisma-product-analytics.repository.ts

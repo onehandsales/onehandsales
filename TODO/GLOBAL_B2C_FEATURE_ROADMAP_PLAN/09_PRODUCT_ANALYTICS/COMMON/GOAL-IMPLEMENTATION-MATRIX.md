@@ -123,6 +123,9 @@ API 산출물:
 
 수정 대상:
 
+- `BE/src/modules/analytics/application/services/product-analytics-event-recorder.ts`
+- `BE/src/modules/analytics/application/services/product-analytics-event-recorder.spec.ts`
+- `BE/src/modules/analytics/infrastructure/analytics-recorder.module.ts`
 - `BE/src/modules/auth/presentation/http/auth.controller.ts`: `auth_signup_completed` requestId 전달
 - `BE/src/modules/deal/presentation/http/deal.controller.ts`: deal/export server event requestId 전달
 - `BE/src/modules/schedule/presentation/http/schedule.controller.ts`: schedule server event requestId 전달
@@ -154,8 +157,9 @@ API 산출물:
 테스트 기준:
 
 - 수정된 controller spec에서 `RequestWithRequestId.requestId`가 application input으로 전달되는지 확인
-- auth/deal/schedule/meeting-note/business-card/data-import/company/contact/product service spec에서 recorder mock 호출 확인
-- recorder failure가 product mutation success를 막지 않는 spec
+- `product-analytics-event-recorder.spec.ts`에서 server event allowlist, PII 차단, best-effort warning log, bucket helper를 확인
+- `exchange-external-auth-token.use-case.spec.ts`에서 신규 가입/기존 로그인 recorder 호출 조건을 확인
+- auth/deal/schedule/meeting-note/business-card/data-import/company/contact/product event 연결 지점은 application code와 `rg "eventName:"` 검색으로 확인
 
 완료 산출물:
 

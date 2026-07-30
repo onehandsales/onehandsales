@@ -1,5 +1,6 @@
 import { Module } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
+import { AnalyticsRecorderModule } from "@/modules/analytics/infrastructure/analytics-recorder.module";
 import { AuthModule } from "@/modules/auth/infrastructure/auth.module";
 import { AppLogger } from "@/shared/infrastructure/logger/app-logger.service";
 import { PrismaInfrastructureModule } from "@/shared/infrastructure/prisma/prisma-infrastructure.module";
@@ -21,7 +22,7 @@ import { OpenAiMeetingNoteSttProvider } from "./providers/openai-meeting-note-st
 
 // 역할 : MeetingNoteModule 회의록 controller와 provider 의존성을 조립합니다.
 @Module({
-  imports: [AuthModule, PrismaInfrastructureModule],
+  imports: [AuthModule, AnalyticsRecorderModule, PrismaInfrastructureModule],
   controllers: [MeetingNoteController],
   providers: [
     MeetingNoteApplicationService,

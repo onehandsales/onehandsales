@@ -1,4 +1,5 @@
 import { Module } from "@nestjs/common";
+import { AnalyticsRecorderModule } from "@/modules/analytics/infrastructure/analytics-recorder.module";
 import { AuthModule } from "@/modules/auth/infrastructure/auth.module";
 import { NotificationModule } from "@/modules/notification/infrastructure/notification.module";
 import { AppLogger } from "@/shared/infrastructure/logger/app-logger.service";
@@ -29,6 +30,7 @@ import { NodeGoogleCalendarTokenEncryptionAdapter } from "./security/node-google
 // 역할 : ScheduleModule 모듈의 controller와 provider 의존성을 조립합니다.
 @Module({
   imports: [
+    AnalyticsRecorderModule,
     AuthModule,
     PrismaInfrastructureModule,
     NotificationModule,

@@ -1,6 +1,6 @@
 # Product Analytics Server Event Contract
 
-상태: Confirmed Plan
+상태: Implemented
 
 ## 1. 목적
 
@@ -10,7 +10,7 @@ Backend auth/deal/schedule/meeting-note/business-card/data-import/export use cas
 
 ## 2. 계약 개요
 
-- 계약 상태: confirmed
+- 계약 상태: implemented
 - 소비자: Backend internal
 - 호환성: 신규 내부 contract, 기존 API response 변경 없음
 - 인증: 각 caller use case의 기존 AuthGuard/CurrentUserContext 사용
@@ -46,7 +46,7 @@ interface RecordProductAnalyticsServerEventCommand {
   readonly occurredAt?: Date;
   readonly timeZone: string;
   readonly idempotencyKey: string;
-  readonly targetType?: ProductAnalyticsTargetTypeCode | null;
+  readonly targetType: ProductAnalyticsTargetTypeCode;
   readonly targetId?: string | null;
   readonly payload?: Record<string, unknown>;
 }
@@ -160,3 +160,10 @@ Event별 target, idempotencyKey, payload field 타입은 `COMMON/EVENT-TAXONOMY.
 - `DealApplicationService.exportDealsXlsx`
 
 각 수정 지점에는 한국어 `// 기능 : ...` 또는 numbered step comment를 둔다.
+
+## 10. 구현 결과
+
+- 2026-07-30 G04에서 `ProductAnalyticsEventRecorder`와 `AnalyticsRecorderModule` 구현 완료
+- auth/deal/schedule/meeting-note/business-card/data-import/company/contact/product caller wiring 완료
+- HTTP 기반 server event의 `RequestWithRequestId.requestId` 전달 완료
+- 검증: `pnpm run typecheck`, `pnpm run lint`, `pnpm run test -- auth deal schedule meeting-note business-card data-import analytics` 통과

@@ -17,6 +17,13 @@ import {
   type SecureTokenService,
 } from "@/modules/auth/application/ports/secure-token.port";
 import {
+  NOOP_PRODUCT_ANALYTICS_EVENT_RECORDER,
+  PRODUCT_ANALYTICS_EVENT_RECORDER,
+  type ProductAnalyticsServerEventRecorder,
+  type RecordProductAnalyticsServerEventCommand,
+  recordProductAnalyticsServerEventBestEffort,
+} from "@/modules/analytics/application/services/product-analytics-event-recorder";
+import {
   AuthProviderExchangeFailedError,
   DeviceSlotAlreadyRegisteredError,
   ExternalUserEmailMissingError,
@@ -45,6 +52,7 @@ export interface ExchangeExternalAuthTokenCommand {
   readonly countryCode: string | null;
   readonly userAgent: string | null;
   readonly ipAddress: string | null;
+  readonly requestId: string | null;
 }
 
 // 역할 : ExchangeExternalAuthTokenResult 데이터가 계층 사이에서 전달되는 구조를 정의합니다.
@@ -60,6 +68,13 @@ type AuthLoginMetadata = {
   readonly userCountryCode: string;
   readonly defaultCurrencyCode: string;
 };
+type SyncedAuthUser = {
+  readonly user: AuthUserRecord;
+  readonly createdNewUser: boolean;
+};
+type ExchangeExternalAuthTokenTransactionResult = ExchangeExternalAuthTokenResult & {
+  readonly signupAnalyticsCommand: RecordProductAnalyticsServerEventCommand | null;
+};
 
 const DEFAULT_USER_LOCALE = "ko-KR";
 const DEFAULT_USER_TIME_ZONE = "Asia/Seoul";
@@ -69,7 +84,7 @@ const DEFAULT_USER_CURRENCY_CODE = "KRW";
 // 역할 : ExchangeExternalAuthTokenUseCase 유스케이스의 application orchestration을 담당합니다.
 @Injectable()
 export class ExchangeExternalAuthTokenUseCase {
-  // 기능 : 외부 인증 검증기, 저장소, 토큰 서비스, 설정 서비스, logger를 주입받습니다.
+  // 기능 : 외부 인증 검증기, 저장소, 토큰 서비스, 설정 서비스, logger, 분석 recorder를 주입받습니다.
   constructor(
     @Inject(EXTERNAL_AUTH_VERIFIER)
     private readonly externalAuthVerifier: ExternalAuthVerifier,
@@ -80,7 +95,9 @@ export class ExchangeExternalAuthTokenUseCase {
     @Inject(SECURE_TOKEN_SERVICE)
     private readonly secureTokenService: SecureTokenService,
     private readonly configService: ConfigService,
-    private readonly logger?: AppLogger
+    private readonly logger?: AppLogger,
+    @Inject(PRODUCT_ANALYTICS_EVENT_RECORDER)
+    private readonly productAnalyticsEventRecorder: ProductAnalyticsServerEventRecorder = NOOP_PRODUCT_ANALYTICS_EVENT_RECORDER
   ) {}
 
   // 기능 : Supabase 토큰을 검증하고 사용자/기기/세션을 생성한 뒤 앱 토큰 응답을 반환합니다.
@@ -105,73 +122,103 @@ export class ExchangeExternalAuthTokenUseCase {
     this.assertDeviceId(command.deviceId);
 
     // 3. 사용자, 기기, 세션 생성을 하나의 transaction 안에서 처리한다.
-    return this.authRepository.runInTransaction(async (repository) => {
-      const now = new Date();
+    const transactionResult = await this.authRepository.runInTransaction(
+      async (repository): Promise<ExchangeExternalAuthTokenTransactionResult> => {
+        const now = new Date();
 
-      // 4. provider 계정 기준으로 내부 사용자를 생성하거나 갱신한다.
-      const user = await this.syncUser(
-        repository,
-        verifiedUser,
-        email,
-        now,
-        loginMetadata
-      );
-      this.assertActiveUser(user);
+        // 4. provider 계정 기준으로 내부 사용자를 생성하거나 갱신한다.
+        const syncedUser = await this.syncUser(
+          repository,
+          verifiedUser,
+          email,
+          now,
+          loginMetadata
+        );
+        const user = syncedUser.user;
+        this.assertActiveUser(user);
 
-      // 5. 기기 slot 충돌, 갱신, 교체 정책을 처리한다.
-      const device = await this.resolveDevice(repository, {
-        user,
-        slot,
-        deviceId: command.deviceId,
-        deviceLabel: command.deviceLabel,
-        replaceExistingDevice: command.replaceExistingDevice,
-        now,
-      });
+        // 5. 기기 slot 충돌, 갱신, 교체 정책을 처리한다.
+        const device = await this.resolveDevice(repository, {
+          user,
+          slot,
+          deviceId: command.deviceId,
+          deviceLabel: command.deviceLabel,
+          replaceExistingDevice: command.replaceExistingDevice,
+          now,
+        });
 
-      // 6. refresh token 원문을 생성하고 hash만 세션에 저장한다.
-      const refreshToken = this.secureTokenService.createToken();
-      const refreshTokenHash = this.hashRefreshToken(refreshToken);
-      const sessionExpiresAt = this.addDays(now, this.getSessionTtlDays());
-      const session = await this.createOrRotateSession(repository, {
-        userId: user.id,
-        authDeviceId: device.id,
-        refreshTokenHash,
-        expiresAt: sessionExpiresAt,
-        userAgent: command.userAgent,
-        ipAddressHash: command.ipAddress
-          ? this.secureTokenService.hash(`ip:${command.ipAddress}`)
-          : null,
-        now,
-      });
+        // 6. refresh token 원문을 생성하고 hash만 세션에 저장한다.
+        const refreshToken = this.secureTokenService.createToken();
+        const refreshTokenHash = this.hashRefreshToken(refreshToken);
+        const sessionExpiresAt = this.addDays(now, this.getSessionTtlDays());
+        const session = await this.createOrRotateSession(repository, {
+          userId: user.id,
+          authDeviceId: device.id,
+          refreshTokenHash,
+          expiresAt: sessionExpiresAt,
+          userAgent: command.userAgent,
+          ipAddressHash: command.ipAddress
+            ? this.secureTokenService.hash(`ip:${command.ipAddress}`)
+            : null,
+          now,
+        });
 
-      // 7. 생성된 sessionId로 앱 access token을 발급한다.
-      const issuedToken = await this.appTokenIssuer.issueAccessToken({
-        userId: user.id,
-        sessionId: session.id,
-      });
+        // 7. 생성된 sessionId로 앱 access token을 발급한다.
+        const issuedToken = await this.appTokenIssuer.issueAccessToken({
+          userId: user.id,
+          sessionId: session.id,
+        });
 
-      // 8. 클라이언트 응답에 필요한 최신 사용자 정보를 조회한다.
-      const me = await repository.getMe(user.id);
+        // 8. 클라이언트 응답에 필요한 최신 사용자 정보를 조회한다.
+        const me = await repository.getMe(user.id);
 
-      if (!me) {
-        throw new InactiveUserError();
+        if (!me) {
+          throw new InactiveUserError();
+        }
+
+        this.logEvent("auth.exchange.succeeded", {
+          provider: verifiedUser.provider,
+        });
+
+        // 9. 신규 사용자일 때만 transaction 밖에서 기록할 signup 분석 command를 만든다.
+        const signupAnalyticsCommand = syncedUser.createdNewUser
+          ? this.createSignupAnalyticsCommand({
+              userId: user.id,
+              authSessionId: session.id,
+              requestId: command.requestId,
+              provider: verifiedUser.provider,
+              loginMetadata,
+            })
+          : null;
+
+        // 10. refresh token과 앱 access token 응답을 반환한다.
+        return {
+          refreshToken,
+          response: createAuthTokenResponse({
+            accessToken: issuedToken.accessToken,
+            accessTokenExpiresAt: issuedToken.accessTokenExpiresAt,
+            user: me,
+            device,
+          }),
+          signupAnalyticsCommand,
+        };
       }
+    );
 
-      this.logEvent("auth.exchange.succeeded", {
-        provider: verifiedUser.provider,
+    if (transactionResult.signupAnalyticsCommand) {
+      // 11. 인증 transaction 성공 후 신규 가입 server event를 best-effort로 기록한다.
+      await recordProductAnalyticsServerEventBestEffort({
+        recorder: this.productAnalyticsEventRecorder,
+        logger: this.logger,
+        command: transactionResult.signupAnalyticsCommand,
+        logContext: "ExchangeExternalAuthTokenUseCase",
       });
+    }
 
-      // 9. refresh token과 앱 access token 응답을 반환한다.
-      return {
-        refreshToken,
-        response: createAuthTokenResponse({
-          accessToken: issuedToken.accessToken,
-          accessTokenExpiresAt: issuedToken.accessTokenExpiresAt,
-          user: me,
-          device,
-        }),
-      };
-    });
+    return {
+      refreshToken: transactionResult.refreshToken,
+      response: transactionResult.response,
+    };
   }
 
   // 기능 : 외부 인증 토큰을 검증하되 provider 원문 실패를 API 응답에 노출하지 않습니다.
@@ -195,7 +242,7 @@ export class ExchangeExternalAuthTokenUseCase {
     email: string,
     now: Date,
     loginMetadata: AuthLoginMetadata
-  ): Promise<AuthUserRecord> {
+  ): Promise<SyncedAuthUser> {
     const oauthAccount = await this.findOrUpgradeOAuthAccount(
       repository,
       verifiedUser,
@@ -213,13 +260,19 @@ export class ExchangeExternalAuthTokenUseCase {
       };
 
       if (adminRole) {
-        return repository.updateUserAfterLogin(
-          { ...updateInput, role: adminRole },
-          now
-        );
+        return {
+          user: await repository.updateUserAfterLogin(
+            { ...updateInput, role: adminRole },
+            now
+          ),
+          createdNewUser: false,
+        };
       }
 
-      return repository.updateUserAfterLogin(updateInput, now);
+      return {
+        user: await repository.updateUserAfterLogin(updateInput, now),
+        createdNewUser: false,
+      };
     }
 
     const existingUser = await repository.findUserByEmail(email);
@@ -248,36 +301,71 @@ export class ExchangeExternalAuthTokenUseCase {
       };
 
       if (adminRole) {
-        return repository.updateUserAfterLogin(
-          { ...updateInput, role: adminRole },
-          now
-        );
+        return {
+          user: await repository.updateUserAfterLogin(
+            { ...updateInput, role: adminRole },
+            now
+          ),
+          createdNewUser: false,
+        };
       }
 
-      return repository.updateUserAfterLogin(updateInput, now);
+      return {
+        user: await repository.updateUserAfterLogin(updateInput, now),
+        createdNewUser: false,
+      };
     }
 
-    return repository.createUserWithOAuthAccount(
-      {
-        email,
-        displayName: verifiedUser.name,
-        role: adminRole ?? "USER",
-        timeZone: loginMetadata.timeZone,
-        preferredLocale: loginMetadata.locale,
-        countryCode: loginMetadata.userCountryCode,
-        defaultCurrencyCode: loginMetadata.defaultCurrencyCode,
-        signupLocale: loginMetadata.locale,
-        signupCountryCode: loginMetadata.countryCode,
-        signupTimeZone: loginMetadata.timeZone,
-        lastLoginLocale: loginMetadata.locale,
-        lastLoginCountryCode: loginMetadata.countryCode,
-        lastLoginTimeZone: loginMetadata.timeZone,
-        provider: verifiedUser.provider,
-        providerUserId: verifiedUser.providerAccountId,
-        providerEmail: email,
+    return {
+      user: await repository.createUserWithOAuthAccount(
+        {
+          email,
+          displayName: verifiedUser.name,
+          role: adminRole ?? "USER",
+          timeZone: loginMetadata.timeZone,
+          preferredLocale: loginMetadata.locale,
+          countryCode: loginMetadata.userCountryCode,
+          defaultCurrencyCode: loginMetadata.defaultCurrencyCode,
+          signupLocale: loginMetadata.locale,
+          signupCountryCode: loginMetadata.countryCode,
+          signupTimeZone: loginMetadata.timeZone,
+          lastLoginLocale: loginMetadata.locale,
+          lastLoginCountryCode: loginMetadata.countryCode,
+          lastLoginTimeZone: loginMetadata.timeZone,
+          provider: verifiedUser.provider,
+          providerUserId: verifiedUser.providerAccountId,
+          providerEmail: email,
+        },
+        now
+      ),
+      createdNewUser: true,
+    };
+  }
+
+  // 기능 : 신규 가입 완료 server 분석 이벤트 command를 PII 없는 메타데이터로 생성합니다.
+  private createSignupAnalyticsCommand(input: {
+    readonly userId: string;
+    readonly authSessionId: string;
+    readonly requestId: string | null;
+    readonly provider: VerifiedExternalUser["provider"];
+    readonly loginMetadata: AuthLoginMetadata;
+  }): RecordProductAnalyticsServerEventCommand {
+    return {
+      userId: input.userId,
+      authSessionId: input.authSessionId,
+      requestId: input.requestId,
+      eventName: "auth_signup_completed",
+      timeZone: input.loginMetadata.timeZone,
+      idempotencyKey: `auth_signup_completed:${input.userId}:${input.provider}`,
+      targetType: "USER",
+      targetId: input.userId,
+      payload: {
+        provider: input.provider,
+        locale: input.loginMetadata.locale,
+        countryCode: input.loginMetadata.userCountryCode,
+        timeZone: input.loginMetadata.timeZone,
       },
-      now
-    );
+    };
   }
 
   // 기능 : 안정적인 provider 계정 ID로 OAuth 계정을 찾고, 기존 Supabase user id 기반 매핑은 갱신합니다.

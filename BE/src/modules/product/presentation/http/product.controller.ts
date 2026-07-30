@@ -10,6 +10,7 @@ import {
   Patch,
   Post,
   Query,
+  Req,
   Res,
   StreamableFile,
   UseGuards,
@@ -20,6 +21,7 @@ import type { CurrentUserContext } from "@/shared/application/context/current-us
 import { CurrentUser } from "@/shared/presentation/decorators/current-user.decorator";
 import { createXlsxDownloadResponse } from "@/shared/presentation/http/download-file-response";
 import { AuthGuard } from "@/shared/presentation/guards/auth.guard";
+import type { RequestWithRequestId } from "@/shared/presentation/middleware/request-id.middleware";
 import {
   CreateProductCategoryDto,
   CreateProductDto,
@@ -58,12 +60,14 @@ export class ProductController {
   async exportProductsXlsx(
     @CurrentUser() currentUser: CurrentUserContext,
     @Query() query: ExportProductsQueryDto,
+    @Req() request: RequestWithRequestId,
     @Res({ passthrough: true }) response: Response
   ): Promise<StreamableFile> {
     // 1. query 조건과 현재 사용자를 application 계층으로 전달해 xlsx 파일을 생성한다.
     const file = await this.productApplicationService.exportProductsXlsx(
       currentUser,
-      query
+      query,
+      request.requestId
     );
 
     // 2. 생성된 xlsx 파일 정보를 HTTP 다운로드 응답으로 변환한다.

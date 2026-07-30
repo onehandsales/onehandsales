@@ -1,5 +1,6 @@
 import { Module } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
+import { AnalyticsRecorderModule } from "@/modules/analytics/infrastructure/analytics-recorder.module";
 import { AuthModule } from "@/modules/auth/infrastructure/auth.module";
 import { BUSINESS_CARD_OCR_PROVIDER } from "@/modules/business-card/application/ports/business-card-ocr.provider";
 import { BUSINESS_CARD_SCAN_LOG_REPOSITORY } from "@/modules/business-card/application/ports/business-card-scan-log.repository";
@@ -13,7 +14,7 @@ import { OpenAiBusinessCardOcrProvider } from "./providers/openai-business-card-
 
 // 역할 : BusinessCardModule 명함 OCR controller와 provider 의존성을 조립합니다.
 @Module({
-  imports: [AuthModule, PrismaInfrastructureModule],
+  imports: [AuthModule, AnalyticsRecorderModule, PrismaInfrastructureModule],
   controllers: [BusinessCardController],
   providers: [
     BusinessCardApplicationService,

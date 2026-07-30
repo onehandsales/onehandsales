@@ -5,7 +5,7 @@ import {
   ValidationPipe,
 } from "@nestjs/common";
 import { Test } from "@nestjs/testing";
-import type { Request } from "express";
+import type { NextFunction, Request, Response } from "express";
 import * as request from "supertest";
 import { DealListSort } from "@/modules/deal/application/ports/deal.repository";
 import { DealApplicationService } from "@/modules/deal/application/services/deal-application.service";
@@ -34,6 +34,7 @@ const ACTIVITY_ID = "00000000-0000-4000-8000-000000000007";
 
 type RequestWithCurrentUser = Request & {
   currentUser?: CurrentUserContext;
+  requestId?: string;
 };
 
 type DealServiceFake = Pick<
@@ -143,6 +144,13 @@ describe("DealController", () => {
       .compile();
 
     app = moduleRef.createNestApplication();
+    app.use(
+      (req: RequestWithCurrentUser, _res: Response, next: NextFunction) => {
+        // 기능 : request id middleware 없이도 controller의 requestId 전달 계약을 검증합니다.
+        req.requestId = "request-deal-1";
+        next();
+      }
+    );
     app.useGlobalPipes(
       new ValidationPipe({
         whitelist: true,
@@ -185,7 +193,11 @@ describe("DealController", () => {
     expect(service.listCompanyOptions).toHaveBeenCalledWith(CURRENT_USER);
     expect(service.listContactOptions).toHaveBeenCalledWith(CURRENT_USER);
     expect(service.listProductOptions).toHaveBeenCalledWith(CURRENT_USER);
-    expect(service.exportDealsXlsx).toHaveBeenCalledWith(CURRENT_USER, {});
+    expect(service.exportDealsXlsx).toHaveBeenCalledWith(
+      CURRENT_USER,
+      {},
+      "request-deal-1"
+    );
   });
 
   // 기능 : 딜 상세, 생성, 수정 route가 계약 body를 application 계층으로 전달하는지 검증합니다.
@@ -224,7 +236,11 @@ describe("DealController", () => {
     await request(app.getHttpServer()).delete(`/api/deals/${DEAL_ID}`).expect(204);
 
     expect(service.getDeal).toHaveBeenCalledWith(CURRENT_USER, DEAL_ID);
-    expect(service.createDeal).toHaveBeenCalledWith(CURRENT_USER, createBody);
+    expect(service.createDeal).toHaveBeenCalledWith(
+      CURRENT_USER,
+      createBody,
+      "request-deal-1"
+    );
     expect(service.updateDeal).toHaveBeenCalledWith(
       CURRENT_USER,
       DEAL_ID,
@@ -312,7 +328,8 @@ describe("DealController", () => {
     expect(service.createFollowingActionLog).toHaveBeenCalledWith(
       CURRENT_USER,
       DEAL_ID,
-      { followingAction: "전화 follow-up" }
+      { followingAction: "전화 follow-up" },
+      "request-deal-1"
     );
     expect(service.updateFollowingActionLog).toHaveBeenCalledWith(
       CURRENT_USER,

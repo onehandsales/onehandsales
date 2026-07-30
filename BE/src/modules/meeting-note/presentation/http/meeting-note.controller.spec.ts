@@ -6,7 +6,7 @@ import {
   ValidationPipe,
 } from "@nestjs/common";
 import { Test } from "@nestjs/testing";
-import type { Request } from "express";
+import type { NextFunction, Request, Response } from "express";
 import * as request from "supertest";
 import {
   MeetingNoteFollowUpChannelValue,
@@ -43,6 +43,7 @@ const MEETING_NOTE_ID = "00000000-0000-4000-8000-000000000004";
 
 type RequestWithCurrentUser = Request & {
   currentUser?: CurrentUserContext;
+  requestId?: string;
 };
 
 type MeetingNoteServiceFake = Pick<
@@ -171,6 +172,13 @@ describe("MeetingNoteController", () => {
       .compile();
 
     app = moduleRef.createNestApplication();
+    app.use(
+      (req: RequestWithCurrentUser, _res: Response, next: NextFunction) => {
+        // 기능 : request id middleware 없이도 controller의 requestId 전달 계약을 검증합니다.
+        req.requestId = "request-meeting-note-1";
+        next();
+      }
+    );
     app.useGlobalPipes(
       new ValidationPipe({
         whitelist: true,
@@ -304,7 +312,8 @@ describe("MeetingNoteController", () => {
     expect(meetingNoteService.linkMeetingNoteDeals).toHaveBeenCalledWith(
       CURRENT_USER,
       MEETING_NOTE_ID,
-      { deals: [DEAL_ID] }
+      { deals: [DEAL_ID] },
+      "request-meeting-note-1"
     );
   });
 

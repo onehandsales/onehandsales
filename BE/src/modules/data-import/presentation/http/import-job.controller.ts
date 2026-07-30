@@ -10,6 +10,7 @@ import {
   Patch,
   Post,
   Query,
+  Req,
   Res,
   UploadedFile,
   UseGuards,
@@ -25,6 +26,7 @@ import type { CurrentUserContext } from "@/shared/application/context/current-us
 import { ValidationDomainError } from "@/shared/domain/errors/common.errors";
 import { CurrentUser } from "@/shared/presentation/decorators/current-user.decorator";
 import { AuthGuard } from "@/shared/presentation/guards/auth.guard";
+import type { RequestWithRequestId } from "@/shared/presentation/middleware/request-id.middleware";
 import {
   CancelImportJobRequest,
   ConfirmImportJobRequest,
@@ -173,13 +175,15 @@ export class ImportJobController {
   confirmImportJob(
     @CurrentUser() currentUser: CurrentUserContext,
     @Param("importJobId", ParseUUIDPipe) importJobId: string,
-    @Body() body: ConfirmImportJobRequest
+    @Body() body: ConfirmImportJobRequest,
+    @Req() request: RequestWithRequestId
   ) {
     // 1. 확정 요청을 application 계층으로 전달해 domain record와 성공 로그를 생성한다.
     return this.dataImportApplicationService.confirmImportJob(
       currentUser,
       importJobId,
-      body
+      body,
+      request.requestId
     );
   }
 

@@ -20,6 +20,7 @@ import {
   DeviceSlotAlreadyRegisteredError,
   ExternalUserEmailMissingError,
 } from "@/modules/auth/domain/auth.errors";
+import type { ProductAnalyticsServerEventRecorder } from "@/modules/analytics/application/services/product-analytics-event-recorder";
 import type {
   ExternalAuthProvider,
   ExternalAuthVerifier,
@@ -76,6 +77,14 @@ class FakeSecureTokenService implements SecureTokenService {
   hash(value: string): string {
     return `hash:${value}`;
   }
+}
+
+// 역할 : FakeProductAnalyticsEventRecorder 신규 가입 server event 호출을 기록합니다.
+class FakeProductAnalyticsEventRecorder
+  implements ProductAnalyticsServerEventRecorder
+{
+  // 기능 : 테스트에서 analytics event command를 검증할 수 있도록 mock 호출로 저장합니다.
+  readonly recordServerEvent = jest.fn().mockResolvedValue(undefined);
 }
 
 // 역할 : FakeAuthRepository 저장소 계약을 Prisma 기반 영속성 처리로 구현합니다.
@@ -398,6 +407,7 @@ function makeExchangeCommand(
     countryCode: "KR",
     userAgent: "Jest",
     ipAddress: "127.0.0.1",
+    requestId: "request-auth-1",
     ...overrides,
   };
 }
@@ -427,6 +437,75 @@ describe("ExchangeExternalAuthTokenUseCase", () => {
     expect(repository.sessions[0]?.refreshTokenHash).toBe(
       "hash:refresh:refresh-token"
     );
+  });
+
+  // 기능 : 신규 사용자 생성이 끝난 뒤 signup 완료 server analytics event를 기록합니다.
+  it("records signup analytics only after a new user is created", async () => {
+    const repository = new FakeAuthRepository();
+    const analyticsRecorder = new FakeProductAnalyticsEventRecorder();
+    const useCase = createUseCase(
+      repository,
+      {
+        email: "user@example.com",
+        name: "User",
+      },
+      {},
+      analyticsRecorder
+    );
+
+    await useCase.execute(
+      makeExchangeCommand({
+        requestId: "request-signup-1",
+      })
+    );
+
+    expect(analyticsRecorder.recordServerEvent).toHaveBeenCalledWith({
+      userId: "user-1",
+      authSessionId: "session-1",
+      requestId: "request-signup-1",
+      eventName: "auth_signup_completed",
+      timeZone: "Asia/Seoul",
+      idempotencyKey: "auth_signup_completed:user-1:google",
+      targetType: "USER",
+      targetId: "user-1",
+      payload: {
+        provider: "google",
+        locale: "ko-KR",
+        countryCode: "KR",
+        timeZone: "Asia/Seoul",
+      },
+    });
+  });
+
+  // 기능 : 기존 사용자의 반복 로그인에서는 신규 가입 완료 event를 기록하지 않습니다.
+  it("does not record signup analytics for an existing OAuth user", async () => {
+    const repository = new FakeAuthRepository();
+    const analyticsRecorder = new FakeProductAnalyticsEventRecorder();
+    repository.users.push(
+      makeAuthUser({
+        email: "user@example.com",
+        displayName: "User",
+      })
+    );
+    repository.oauthAccounts.push({
+      id: "oauth-1",
+      userId: "user-1",
+      provider: "google",
+      providerUserId: "external-user-1",
+    });
+    const useCase = createUseCase(
+      repository,
+      {
+        email: "user@example.com",
+        name: "User",
+      },
+      {},
+      analyticsRecorder
+    );
+
+    await useCase.execute(makeExchangeCommand());
+
+    expect(analyticsRecorder.recordServerEvent).not.toHaveBeenCalled();
   });
 
   // 기능 : 로그인 exchange locale을 현재 지원 시장 기준 값으로 정규화합니다.
@@ -729,21 +808,27 @@ function createUseCase(
   externalIds: {
     readonly authUserId?: string;
     readonly providerAccountId?: string;
-  } = {}
+  } = {},
+  productAnalyticsEventRecorder?: ProductAnalyticsServerEventRecorder
 ): ExchangeExternalAuthTokenUseCase {
-  return createUseCaseWithVerifierResult(repository, {
-    provider: user.provider ?? "google",
-    providerAccountId: externalIds.providerAccountId ?? "external-user-1",
-    authUserId: externalIds.authUserId ?? "external-user-1",
-    email: user.email,
-    name: user.name,
-  });
+  return createUseCaseWithVerifierResult(
+    repository,
+    {
+      provider: user.provider ?? "google",
+      providerAccountId: externalIds.providerAccountId ?? "external-user-1",
+      authUserId: externalIds.authUserId ?? "external-user-1",
+      email: user.email,
+      name: user.name,
+    },
+    productAnalyticsEventRecorder
+  );
 }
 
 // 기능 : verifier 결과를 직접 주입하는 테스트용 use case를 생성합니다.
 function createUseCaseWithVerifierResult(
   repository: FakeAuthRepository,
-  result: VerifiedExternalUser | Error
+  result: VerifiedExternalUser | Error,
+  productAnalyticsEventRecorder?: ProductAnalyticsServerEventRecorder
 ): ExchangeExternalAuthTokenUseCase {
   return new ExchangeExternalAuthTokenUseCase(
     new FakeExternalAuthVerifier(result),
@@ -753,6 +838,8 @@ function createUseCaseWithVerifierResult(
     new ConfigService({
       INITIAL_ADMIN_EMAILS: "admin@example.com",
       APP_SESSION_TTL_DAYS: "7",
-    })
+    }),
+    undefined,
+    productAnalyticsEventRecorder
   );
 }

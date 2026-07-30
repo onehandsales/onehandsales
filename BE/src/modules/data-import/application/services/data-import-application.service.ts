@@ -46,6 +46,14 @@ import {
   type ImportUploadedFileStorage,
 } from "@/modules/data-import/application/ports/import-uploaded-file-storage.port";
 import {
+  NOOP_PRODUCT_ANALYTICS_EVENT_RECORDER,
+  PRODUCT_ANALYTICS_EVENT_RECORDER,
+  type ProductAnalyticsServerEventRecorder,
+  type RecordProductAnalyticsServerEventCommand,
+  recordProductAnalyticsServerEventBestEffort,
+  toProductAnalyticsImportRowCountBucket,
+} from "@/modules/analytics/application/services/product-analytics-event-recorder";
+import {
   DEAL_STATUS_CODES,
   getDealStatusLabel,
 } from "@/modules/deal/domain/deal-status";
@@ -513,7 +521,9 @@ export class DataImportApplicationService {
     private readonly importMappingProvider: ImportMappingProvider,
     @Inject(XLSX_WORKBOOK_WRITER)
     private readonly xlsxWriter: XlsxWorkbookWriter,
-    private readonly logger: AppLogger
+    private readonly logger: AppLogger,
+    @Inject(PRODUCT_ANALYTICS_EVENT_RECORDER)
+    private readonly productAnalyticsEventRecorder: ProductAnalyticsServerEventRecorder = NOOP_PRODUCT_ANALYTICS_EVENT_RECORDER
   ) {}
 
   // 기능 : 활성화된 데이터 불러오기 양식 목록을 조회합니다.
@@ -1056,7 +1066,8 @@ export class DataImportApplicationService {
   async confirmImportJob(
     currentUser: CurrentUserContext,
     importJobId: string,
-    input: ConfirmImportJobInput
+    input: ConfirmImportJobInput,
+    requestId: string | null = null
   ): Promise<ConfirmImportJobResponse> {
     // 1. 현재 사용자 소유 job 상태가 확정 가능한 READY_TO_CONFIRM인지 검증한다.
     const confirmIdempotencyKey = this.normalizeConfirmIdempotencyKey(
@@ -1071,6 +1082,13 @@ export class DataImportApplicationService {
         job.importUserLogId
       ) {
         await this.deleteUploadedFileAfterClose(currentUser, importJobId, job);
+        await this.recordImportConfirmedAnalyticsEvent(
+          currentUser,
+          importJobId,
+          job.targetType,
+          job.importedRowCount,
+          requestId
+        );
 
         return {
           importJobId,
@@ -1151,6 +1169,14 @@ export class DataImportApplicationService {
         importUserLogId: result.importUserLogId,
         importedRowCount: result.importedRowCount,
       });
+
+      await this.recordImportConfirmedAnalyticsEvent(
+        currentUser,
+        importJobId,
+        job.targetType,
+        result.importedRowCount,
+        requestId
+      );
 
       return {
         importJobId,
@@ -1913,6 +1939,43 @@ export class DataImportApplicationService {
   }
 
   // 기능 : import job application 이벤트를 구조화된 logger 메시지로 남깁니다.
+  // 기능 : import 확정 서버 이벤트를 best-effort로 기록해 확정 응답을 막지 않습니다.
+  private async recordImportConfirmedAnalyticsEvent(
+    currentUser: CurrentUserContext,
+    importJobId: string,
+    importType: ImportTemplateType,
+    importedRowCount: number,
+    requestId: string | null
+  ): Promise<void> {
+    await this.recordServerAnalyticsEvent({
+      userId: currentUser.id,
+      authSessionId: currentUser.sessionId,
+      requestId,
+      eventName: "import_confirmed",
+      timeZone: currentUser.timeZone,
+      idempotencyKey: `import_confirmed:${importJobId}`,
+      targetType: "IMPORT_JOB",
+      targetId: importJobId,
+      payload: {
+        importType,
+        rowCountBucket: toProductAnalyticsImportRowCountBucket(importedRowCount),
+        importedRowCount,
+      },
+    });
+  }
+
+  // 기능 : 데이터 import 서버 이벤트를 best-effort로 기록해 본 API 응답을 막지 않습니다.
+  private async recordServerAnalyticsEvent(
+    command: RecordProductAnalyticsServerEventCommand
+  ): Promise<void> {
+    await recordProductAnalyticsServerEventBestEffort({
+      recorder: this.productAnalyticsEventRecorder,
+      logger: this.logger,
+      command,
+      logContext: "DataImportApplicationService",
+    });
+  }
+
   private logEvent(event: string, fields: Record<string, unknown>): void {
     this.logger.log(
       JSON.stringify({

@@ -152,7 +152,7 @@ Auth/session runtime notes:
 - Current User Web uses `mobile` and `personal_laptop` slots only. Backend also supports `work_laptop` for future clients.
 - Country code metadata is read from proxy geo headers only: `cf-ipcountry`, `x-vercel-ip-country`, `cloudfront-viewer-country`.
 - 2026-07-10 QA status: `typecheck`, `lint`, `test`, and `build` pass. Backend tests are 17 suites / 82 tests passed. HTTP smoke confirmed health 200, unauthenticated protected API 401, invalid token 401, and unknown route 404.
-- 2026-07-30 Product Analytics G03 QA status: `pnpm run test -- analytics`, `pnpm run typecheck`, `pnpm run lint` pass.
+- 2026-07-30 Product Analytics G04 QA status: `pnpm run test -- auth deal schedule meeting-note business-card data-import analytics`, `pnpm run typecheck`, `pnpm run lint` pass.
 
 Current backend gaps and intentional deferrals:
 

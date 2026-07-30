@@ -1,5 +1,6 @@
 import { Module } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
+import { AnalyticsRecorderModule } from "@/modules/analytics/infrastructure/analytics-recorder.module";
 import { AuthModule } from "@/modules/auth/infrastructure/auth.module";
 import { IMPORT_FILE_PARSER } from "@/modules/data-import/application/ports/import-file-parser.port";
 import {
@@ -29,7 +30,12 @@ import { LocalImportUploadedFileStorage } from "./storage/local-import-uploaded-
 
 // 역할 : DataImportModule 데이터 불러오기 controller와 provider 의존성을 조립합니다.
 @Module({
-  imports: [AuthModule, PrismaInfrastructureModule, XlsxInfrastructureModule],
+  imports: [
+    AuthModule,
+    AnalyticsRecorderModule,
+    PrismaInfrastructureModule,
+    XlsxInfrastructureModule,
+  ],
   controllers: [ImportTemplateController, ImportUserLogController, ImportJobController],
   providers: [
     DataImportApplicationService,

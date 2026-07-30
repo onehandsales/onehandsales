@@ -1,6 +1,6 @@
 # G04 Server Event Logging
 
-상태: Ready
+상태: Completed
 목표: 핵심 Backend domain 성공 event를 `ProductAnalyticsEvent`에 server event로 기록한다.
 
 ## 1. 목적
@@ -145,12 +145,18 @@ pnpm run lint
 pnpm run test -- auth deal schedule meeting-note business-card data-import analytics
 ```
 
+검증 결과:
+
+- 2026-07-30 `pnpm run typecheck` 통과
+- 2026-07-30 `pnpm run lint` 통과
+- 2026-07-30 `pnpm run test -- auth deal schedule meeting-note business-card data-import analytics` 통과, 39 suites / 237 tests
+
 ## 12. Goal 검토 체크리스트
 
-- [ ] recorder failure가 제품 API 실패로 전파되지 않는다.
-- [ ] server event payload에 PII/raw text가 없다.
-- [ ] activation 필수 event가 기록된다.
-- [ ] idempotencyKey가 중복 event를 막는다.
-- [ ] HTTP에서 발생한 server event는 `RequestWithRequestId.requestId`를 recorder command로 전달한다.
-- [ ] log에 payload 원문이 남지 않는다.
-- [ ] 신규/수정 코드에 한국어 주석이 있다.
+- [x] recorder failure가 제품 API 실패로 전파되지 않는다.
+- [x] server event payload에 PII/raw text가 없다.
+- [x] activation 필수 event가 기록된다.
+- [x] idempotencyKey가 중복 event를 막는다.
+- [x] HTTP에서 발생한 server event는 `RequestWithRequestId.requestId`를 recorder command로 전달한다.
+- [x] log에 payload 원문이 남지 않는다.
+- [x] 신규/수정 코드에 한국어 주석이 있다.

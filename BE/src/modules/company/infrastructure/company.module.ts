@@ -1,5 +1,6 @@
 ﻿import { Module } from "@nestjs/common";
 import { ConfigModule } from "@nestjs/config";
+import { AnalyticsRecorderModule } from "@/modules/analytics/infrastructure/analytics-recorder.module";
 import { AuthModule } from "@/modules/auth/infrastructure/auth.module";
 import { AppLogger } from "@/shared/infrastructure/logger/app-logger.service";
 import { PrismaInfrastructureModule } from "@/shared/infrastructure/prisma/prisma-infrastructure.module";
@@ -20,6 +21,7 @@ import {
 @Module({
   imports: [
     AuthModule,
+    AnalyticsRecorderModule,
     ConfigModule,
     PrismaInfrastructureModule,
     XlsxInfrastructureModule,

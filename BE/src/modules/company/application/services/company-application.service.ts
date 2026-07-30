@@ -1,6 +1,14 @@
 ﻿import { Buffer } from "node:buffer";
 import { Inject, Injectable } from "@nestjs/common";
 import {
+  NOOP_PRODUCT_ANALYTICS_EVENT_RECORDER,
+  PRODUCT_ANALYTICS_EVENT_RECORDER,
+  type ProductAnalyticsServerEventRecorder,
+  type RecordProductAnalyticsServerEventCommand,
+  recordProductAnalyticsServerEventBestEffort,
+  toProductAnalyticsExportRowCountBucket,
+} from "@/modules/analytics/application/services/product-analytics-event-recorder";
+import {
   type CompanyMemoLogRecord,
   COMPANY_REPOSITORY,
   type CompanyContactRecord,
@@ -257,7 +265,9 @@ export class CompanyApplicationService {
     private readonly privateMemoEncryption: PrivateMemoEncryptionPort,
     @Inject(XLSX_WORKBOOK_WRITER)
     private readonly xlsxWriter: XlsxWorkbookWriter,
-    private readonly logger: AppLogger
+    private readonly logger: AppLogger,
+    @Inject(PRODUCT_ANALYTICS_EVENT_RECORDER)
+    private readonly productAnalyticsEventRecorder: ProductAnalyticsServerEventRecorder = NOOP_PRODUCT_ANALYTICS_EVENT_RECORDER
   ) {}
 
   // 기능 : 현재 사용자의 회사 목록을 15개 단위 페이지로 조회합니다.
@@ -365,7 +375,8 @@ export class CompanyApplicationService {
   // 기능 : 검색과 필터가 반영된 회사 목록을 xlsx 파일로 생성합니다.
   async exportCompaniesXlsx(
     currentUser: CurrentUserContext,
-    query: CompanyExportQueryInput
+    query: CompanyExportQueryInput,
+    requestId: string | null = null
   ): Promise<ExportedXlsxFileResponse> {
     // 1. export 조회 조건을 저장소 입력에 맞게 정규화한다.
     const companyName = this.normalizeOptionalText(query.companyName);
@@ -410,7 +421,24 @@ export class CompanyApplicationService {
       companyRegionFilterCount: companyRegionIds.length,
     });
 
-    // 6. controller가 다운로드 응답으로 변환할 파일 정보를 반환한다.
+    // 6. 다운로드 성공 후 row count bucket만 포함해 제품 분석 export 이벤트를 기록한다.
+    await this.recordServerAnalyticsEvent({
+      userId: currentUser.id,
+      authSessionId: currentUser.sessionId,
+      requestId,
+      eventName: "export_downloaded",
+      timeZone: currentUser.timeZone,
+      idempotencyKey: `export_downloaded:${currentUser.id}:COMPANY:${requestId ?? "internal"}`,
+      targetType: "EXPORT",
+      targetId: null,
+      payload: {
+        exportType: "COMPANY",
+        rowCountBucket: toProductAnalyticsExportRowCountBucket(companies.length),
+        locale: localization.locale,
+      },
+    });
+
+    // 7. controller가 다운로드 응답으로 변환할 파일 정보를 반환한다.
     return {
       fileName: createTimestampedXlsxFileName("companies"),
       contentType: XLSX_CONTENT_TYPE,
@@ -1200,6 +1228,18 @@ export class CompanyApplicationService {
   }
 
   // 기능 : 민감정보를 제외한 구조화 이벤트 로그를 기록합니다.
+  // 기능 : 회사 서버 이벤트를 best-effort로 기록해 본 API 응답을 막지 않습니다.
+  private async recordServerAnalyticsEvent(
+    command: RecordProductAnalyticsServerEventCommand
+  ): Promise<void> {
+    await recordProductAnalyticsServerEventBestEffort({
+      recorder: this.productAnalyticsEventRecorder,
+      logger: this.logger,
+      command,
+      logContext: "CompanyApplicationService",
+    });
+  }
+
   private logEvent(event: string, fields: Record<string, unknown>): void {
     this.logger.log(
       JSON.stringify({

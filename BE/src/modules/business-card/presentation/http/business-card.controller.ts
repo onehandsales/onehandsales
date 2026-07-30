@@ -9,6 +9,7 @@ import {
   ParseUUIDPipe,
   Post,
   Query,
+  Req,
   UploadedFile,
   UseGuards,
   UseInterceptors,
@@ -21,6 +22,7 @@ import {
 import type { CurrentUserContext } from "@/shared/application/context/current-user.context";
 import { CurrentUser } from "@/shared/presentation/decorators/current-user.decorator";
 import { AuthGuard } from "@/shared/presentation/guards/auth.guard";
+import type { RequestWithRequestId } from "@/shared/presentation/middleware/request-id.middleware";
 import {
   ConfirmBusinessCardScanDto,
   ListBusinessCardScansQueryDto,
@@ -82,18 +84,20 @@ export class BusinessCardController {
     );
   }
 
-  // API : 사용자가 보정한 명함 데이터를 회사/담당자로 확정 저장
+  // API : 사용자가 보정한 명함 데이터를 회사/담당자로 확정 저장합니다.
   @Post(":scanLogId/confirm")
   @HttpCode(HttpStatus.OK)
   confirmScanLog(
     @CurrentUser() currentUser: CurrentUserContext,
     @Param("scanLogId", ParseUUIDPipe) scanLogId: string,
-    @Body() body: ConfirmBusinessCardScanDto
+    @Body() body: ConfirmBusinessCardScanDto,
+    @Req() request: RequestWithRequestId
   ) {
     return this.businessCardApplicationService.confirmScanLog(
       currentUser,
       scanLogId,
-      body
+      body,
+      request.requestId
     );
   }
 

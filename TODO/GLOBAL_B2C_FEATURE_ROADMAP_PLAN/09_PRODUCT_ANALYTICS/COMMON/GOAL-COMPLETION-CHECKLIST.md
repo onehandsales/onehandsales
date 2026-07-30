@@ -1,6 +1,6 @@
 # Goal Completion Checklist
 
-상태: G03 Completed
+상태: G04 Completed
 최종 업데이트: 2026-07-30
 
 ## 1. 목적
@@ -16,7 +16,7 @@
 | [x] | G01 Document Contract Sync | Completed | 2026-07-30 | 현재 코드/문서 대조와 blocking 해소 | G01 실행 결과, DB-SCHEMA event name 동기화, rg 검색, BE prisma validate | G02~G08 blocking 없음 |
 | [x] | G02 DB Schema Event Foundation | Completed | 2026-07-30 | Prisma schema/migration/repository 기반 | `ProductAnalyticsEvent`/snapshot schema, migration COMMENT, AnalyticsModule/repository/date/taxonomy/input policy, DB_SCHEMA 문서, BE prisma validate/generate/typecheck/lint/product-analytics test | G03 blocking 없음 |
 | [x] | G03 Analytics Collector API | Completed | 2026-07-30 | `POST /api/analytics/events` 구현 | AuthGuard controller, request DTO, collect use case, payload/routeKey/PII validation, session/device/timezone enrichment, BE test/typecheck/lint | G04 blocking 없음 |
-| [ ] | G04 Server Event Logging | Not Started |  | 핵심 server event 기록 지점 연결 |  |  |
+| [x] | G04 Server Event Logging | Completed | 2026-07-30 | 핵심 server event 기록 지점 연결 | `ProductAnalyticsEventRecorder`, AnalyticsRecorderModule wiring, auth/deal/schedule/meeting-note/business-card/data-import/export server event 연결, requestId 전달, BE typecheck/lint/targeted test | G05 blocking 없음 |
 | [ ] | G05 User Web Client Events | Not Started |  | core `/app` route view wrapper 구현 |  |  |
 | [ ] | G06 Snapshot Retention Batch | Not Started |  | activation/retention snapshot 계산 |  |  |
 | [ ] | G07 AI Usage And Billing Reserved | Not Started |  | AI usage 요약과 billing reserved 정리 |  |  |
@@ -73,17 +73,17 @@
 
 ### G04 Server Event Logging
 
-- [ ] `auth_signup_completed`가 신규 가입에 기록된다.
-- [ ] `deal_created`가 딜 생성 성공 후 기록된다.
-- [ ] `deal_next_action_created`가 다음 행동 생성 성공 후 기록된다.
-- [ ] `schedule_created`가 일정 생성 성공 후 기록된다.
-- [ ] `schedule_deal_linked`가 일정-딜 연결 성공 후 기록된다.
-- [ ] `meeting_note_created`가 회의록 생성 성공 후 기록된다.
-- [ ] `meeting_note_deal_linked`가 회의록-딜 연결 성공 후 기록된다.
-- [ ] `business_card_scan_confirmed`가 명함 스캔 확인 저장 성공 후 기록된다.
-- [ ] `import_confirmed`가 import 확정 성공 후 기록된다.
-- [ ] `export_downloaded`가 xlsx 생성 성공 후 기록된다.
-- [ ] analytics 저장 실패가 제품 API 실패로 전파되지 않는다.
+- [x] `auth_signup_completed`가 신규 가입에 기록된다.
+- [x] `deal_created`가 딜 생성 성공 후 기록된다.
+- [x] `deal_next_action_created`가 다음 행동 생성 성공 후 기록된다.
+- [x] `schedule_created`가 일정 생성 성공 후 기록된다.
+- [x] `schedule_deal_linked`가 일정-딜 연결 성공 후 기록된다.
+- [x] `meeting_note_created`가 회의록 생성 성공 후 기록된다.
+- [x] `meeting_note_deal_linked`가 회의록-딜 연결 성공 후 기록된다.
+- [x] `business_card_scan_confirmed`가 명함 스캔 확인 저장 성공 후 기록된다.
+- [x] `import_confirmed`가 import 확정 성공 후 기록된다.
+- [x] `export_downloaded`가 xlsx 생성 성공 후 기록된다.
+- [x] analytics 저장 실패가 제품 API 실패로 전파되지 않는다.
 
 ### G05 User Web Client Events
 
@@ -133,3 +133,4 @@
 - 2026-07-30: G01 최종 재검토 완료. G01 상세 명세 상단 상태를 Completed로 동기화했고, G05/G06 신규 환경 변수는 `AGENT/SOFTWARE_AGENT/COMMON/ENVIRONMENT.md` 정본 갱신까지 구현 완료 조건에 포함하도록 보강했다. event/routeKey/reference path/BE Prisma validate 재확인을 통과했다.
 - 2026-07-30: G02 DB Schema Event Foundation 완료. Prisma event/snapshot schema와 migration COMMENT, AnalyticsModule/repository/date/taxonomy/input policy를 추가했고, DB_SCHEMA 문서를 갱신했다. BE `pnpm run prisma:validate`, `pnpm run prisma:generate`, `pnpm run test -- product-analytics`, `pnpm run typecheck`, `pnpm run lint`를 통과했다.
 - 2026-07-30: G03 Analytics Collector API 완료. `POST /api/analytics/events`에 AuthGuard, DTO, use case, routeKey/surface allowlist, PII key 차단, authSession/authDevice/timezone 보강을 연결했다. BE `pnpm run test -- analytics`, `pnpm run typecheck`, `pnpm run lint`를 통과했다.
+- 2026-07-30: G04 Server Event Logging 완료. `ProductAnalyticsEventRecorder`와 AnalyticsRecorderModule을 추가하고 auth/deal/schedule/meeting-note/business-card/data-import/company/contact/product server event 기록 지점을 연결했다. HTTP controller requestId 전달, payload allowlist/PII 차단, best-effort warning log를 검증했고 BE `pnpm run typecheck`, `pnpm run lint`, `pnpm run test -- auth deal schedule meeting-note business-card data-import analytics`를 통과했다.

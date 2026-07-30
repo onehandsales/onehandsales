@@ -10,6 +10,7 @@ import {
   Patch,
   Post,
   Query,
+  Req,
   Res,
   StreamableFile,
   UseGuards,
@@ -20,6 +21,7 @@ import type { CurrentUserContext } from "@/shared/application/context/current-us
 import { CurrentUser } from "@/shared/presentation/decorators/current-user.decorator";
 import { createXlsxDownloadResponse } from "@/shared/presentation/http/download-file-response";
 import { AuthGuard } from "@/shared/presentation/guards/auth.guard";
+import type { RequestWithRequestId } from "@/shared/presentation/middleware/request-id.middleware";
 import {
   CreateScheduleDto,
   ExportWeeklyScheduleReportXlsxQueryDto,
@@ -100,10 +102,15 @@ export class ScheduleController {
   @HttpCode(HttpStatus.CREATED)
   createSchedule(
     @CurrentUser() currentUser: CurrentUserContext,
-    @Body() body: CreateScheduleDto
+    @Body() body: CreateScheduleDto,
+    @Req() request: RequestWithRequestId
   ) {
-    // 1. request body와 현재 사용자를 application 계층으로 전달한다.
-    return this.scheduleApplicationService.createSchedule(currentUser, body);
+    // 1. request body, 현재 사용자, request id를 application 계층으로 전달한다.
+    return this.scheduleApplicationService.createSchedule(
+      currentUser,
+      body,
+      request.requestId
+    );
   }
 
   // API : 일정, 단건 수정
@@ -111,13 +118,15 @@ export class ScheduleController {
   updateSchedule(
     @CurrentUser() currentUser: CurrentUserContext,
     @Param("scheduleId", ParseUUIDPipe) scheduleId: string,
-    @Body() body: UpdateScheduleDto
+    @Body() body: UpdateScheduleDto,
+    @Req() request: RequestWithRequestId
   ) {
-    // 1. path param, request body, 현재 사용자를 application 계층으로 전달한다.
+    // 1. path param, request body, 현재 사용자, request id를 application 계층으로 전달한다.
     return this.scheduleApplicationService.updateSchedule(
       currentUser,
       scheduleId,
-      body
+      body,
+      request.requestId
     );
   }
 

@@ -19,6 +19,7 @@ import { AuthGuard } from "@/shared/presentation/guards/auth.guard";
 import type { CurrentUserContext } from "@/shared/application/context/current-user.context";
 import { AuthCookieService } from "./auth-cookie.service";
 import { ExchangeExternalAuthTokenDto } from "./dto/exchange-external-auth-token.dto";
+import type { RequestWithRequestId } from "@/shared/presentation/middleware/request-id.middleware";
 
 // 역할 : AuthController HTTP API 요청을 받아 application 계층으로 위임합니다.
 @Controller("api/auth")
@@ -44,7 +45,7 @@ export class AuthController {
   async exchange(
     @Headers("authorization") authorization: string | undefined,
     @Body() body: ExchangeExternalAuthTokenDto,
-    @Req() request: Request,
+    @Req() request: RequestWithRequestId,
     @Res({ passthrough: true }) response: Response
   ) {
     // 1. Authorization 헤더와 요청 body를 application 계층 입력으로 변환한다.
@@ -59,6 +60,7 @@ export class AuthController {
       countryCode: this.getCountryCode(request),
       userAgent: request.header("User-Agent") ?? null,
       ipAddress: request.ip ?? null,
+      requestId: request.requestId,
     });
 
     // 2. refresh token을 httpOnly cookie로 설정한다.

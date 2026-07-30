@@ -2,6 +2,7 @@
 import { AuthGuard } from "@/shared/presentation/guards/auth.guard";
 import { AdminGuard } from "@/shared/presentation/guards/admin.guard";
 import { CURRENT_USER_RESOLVER } from "@/shared/application/ports/current-user-resolver.port";
+import { AnalyticsRecorderModule } from "@/modules/analytics/infrastructure/analytics-recorder.module";
 import { PrismaInfrastructureModule } from "@/shared/infrastructure/prisma/prisma-infrastructure.module";
 import { PrismaService } from "@/shared/infrastructure/prisma/prisma.service";
 import { SupabaseInfrastructureModule } from "@/shared/infrastructure/supabase/supabase-infrastructure.module";
@@ -24,7 +25,11 @@ import { NodeSecureTokenService } from "./security/node-secure-token.service";
 
 // 역할 : AuthModule 모듈의 controller와 provider 의존성을 조립합니다.
 @Module({
-  imports: [PrismaInfrastructureModule, SupabaseInfrastructureModule],
+  imports: [
+    AnalyticsRecorderModule,
+    PrismaInfrastructureModule,
+    SupabaseInfrastructureModule,
+  ],
   controllers: [AuthController, MeController, AdminMeController],
   providers: [
     ListAuthProvidersUseCase,

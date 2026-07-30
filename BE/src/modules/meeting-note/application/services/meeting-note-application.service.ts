@@ -23,6 +23,14 @@ import {
   RelatedDealNotFoundError,
   RelatedProductNotFoundError,
 } from "@/modules/meeting-note/domain/meeting-note.errors";
+import {
+  NOOP_PRODUCT_ANALYTICS_EVENT_RECORDER,
+  PRODUCT_ANALYTICS_EVENT_RECORDER,
+  type ProductAnalyticsServerEventRecorder,
+  type RecordProductAnalyticsServerEventCommand,
+  recordProductAnalyticsServerEventBestEffort,
+  toProductAnalyticsLinkCountBucket,
+} from "@/modules/analytics/application/services/product-analytics-event-recorder";
 import type { CurrentUserContext } from "@/shared/application/context/current-user.context";
 import { createTrashRetentionTimestamps } from "@/shared/application/trash/trash-retention";
 import {
@@ -293,11 +301,13 @@ interface NormalizedRelationInput {
 // 역할 : MeetingNoteApplicationService 회의록 use case orchestration을 담당합니다.
 @Injectable()
 export class MeetingNoteApplicationService {
-  // 기능 : 회의록 저장소와 구조화 logger를 주입받습니다.
+  // 기능 : 회의록 저장소, 구조화 logger, 분석 recorder를 주입받습니다.
   constructor(
     @Inject(MEETING_NOTE_REPOSITORY)
     private readonly meetingNoteRepository: MeetingNoteRepository,
-    private readonly logger: AppLogger
+    private readonly logger: AppLogger,
+    @Inject(PRODUCT_ANALYTICS_EVENT_RECORDER)
+    private readonly productAnalyticsEventRecorder: ProductAnalyticsServerEventRecorder = NOOP_PRODUCT_ANALYTICS_EVENT_RECORDER
   ) {}
 
   // 기능 : 현재 사용자의 회의록 목록을 필터와 페이지 조건으로 조회합니다.
@@ -425,7 +435,8 @@ export class MeetingNoteApplicationService {
   // 기능 : 현재 사용자의 수동 회의록을 생성하고 스냅샷 관계를 저장합니다.
   async createMeetingNote(
     currentUser: CurrentUserContext,
-    input: CreateMeetingNoteCommand
+    input: CreateMeetingNoteCommand,
+    requestId: string | null = null
   ): Promise<MeetingNoteResponse> {
     // 1. 현재 사용자 timezone과 생성 입력 값을 정규화합니다.
     const timeZone = this.normalizeUserTimeZone(currentUser.timeZone);
@@ -487,8 +498,43 @@ export class MeetingNoteApplicationService {
       productCount: meetingNote.products.length,
       dealCount: meetingNote.deals.length,
     });
+    // 7. 회의록 생성 성공 후 source와 연결 여부만 담아 server event를 기록한다.
+    await this.recordServerAnalyticsEvent({
+      userId: currentUser.id,
+      authSessionId: currentUser.sessionId,
+      requestId,
+      eventName: "meeting_note_created",
+      timeZone: currentUser.timeZone,
+      idempotencyKey: `meeting_note_created:${meetingNote.id}`,
+      targetType: "MEETING_NOTE",
+      targetId: meetingNote.id,
+      payload: {
+        sourceType: meetingNote.sourceType,
+        hasDealLink: this.countActiveMeetingNoteDeals(meetingNote) > 0,
+        hasAiDraft: meetingNote.sourceType !== MeetingNoteSourceTypeValue.MANUAL,
+      },
+    });
 
-    // 7. 저장소 record를 API 응답 구조로 변환합니다.
+    for (const deal of normalized.relations.deals ?? []) {
+      // 8. 생성 요청에서 새로 연결된 딜마다 회의록-딜 연결 server event를 기록한다.
+      await this.recordServerAnalyticsEvent({
+        userId: currentUser.id,
+        authSessionId: currentUser.sessionId,
+        requestId,
+        eventName: "meeting_note_deal_linked",
+        timeZone: currentUser.timeZone,
+        idempotencyKey: `meeting_note_deal_linked:${meetingNote.id}:${deal.dealId}`,
+        targetType: "MEETING_NOTE",
+        targetId: meetingNote.id,
+        payload: {
+          linkCountBucket: toProductAnalyticsLinkCountBucket(
+            this.countActiveMeetingNoteDeals(meetingNote)
+          ),
+        },
+      });
+    }
+
+    // 9. 저장소 record를 API 응답 구조로 변환합니다.
     return this.toMeetingNoteResponse(meetingNote);
   }
 
@@ -496,7 +542,8 @@ export class MeetingNoteApplicationService {
   async updateMeetingNote(
     currentUser: CurrentUserContext,
     meetingNoteId: string,
-    input: UpdateMeetingNoteCommand
+    input: UpdateMeetingNoteCommand,
+    requestId: string | null = null
   ): Promise<MeetingNoteResponse> {
     // 1. 수정 가능한 필드가 하나 이상 있는지 확인합니다.
     if (!this.hasUpdateFields(input)) {
@@ -517,6 +564,15 @@ export class MeetingNoteApplicationService {
     // 4. 기존 회의록 기준으로 수정 입력 값을 정규화합니다.
     const timeZone = this.normalizeUserTimeZone(currentUser.timeZone);
     const normalized = this.normalizeUpdateInput(input, timeZone);
+    const activeExistingDealIds = new Set(
+      existing.deals
+        .filter((deal) => !deal.isDeleted)
+        .map((deal) => deal.dealId)
+    );
+    const addedDealIds =
+      normalized.relations.deals
+        ?.filter((deal) => !activeExistingDealIds.has(deal.dealId))
+        .map((deal) => deal.dealId) ?? [];
 
     // 5. 기본 row 수정과 요청된 관계 스냅샷 교체를 하나의 트랜잭션에서 처리합니다.
     await this.meetingNoteRepository.runInTransaction(async (repository) => {
@@ -564,7 +620,26 @@ export class MeetingNoteApplicationService {
       meetingNoteId,
     });
 
-    // 9. 저장소 record를 API 응답 구조로 변환합니다.
+    for (const dealId of addedDealIds) {
+      // 9. 수정 요청에서 새로 추가된 회의록-딜 연결만 server event로 기록한다.
+      await this.recordServerAnalyticsEvent({
+        userId: currentUser.id,
+        authSessionId: currentUser.sessionId,
+        requestId,
+        eventName: "meeting_note_deal_linked",
+        timeZone: currentUser.timeZone,
+        idempotencyKey: `meeting_note_deal_linked:${meetingNote.id}:${dealId}`,
+        targetType: "MEETING_NOTE",
+        targetId: meetingNote.id,
+        payload: {
+          linkCountBucket: toProductAnalyticsLinkCountBucket(
+            this.countActiveMeetingNoteDeals(meetingNote)
+          ),
+        },
+      });
+    }
+
+    // 10. 저장소 record를 API 응답 구조로 변환합니다.
     return this.toMeetingNoteResponse(meetingNote);
   }
 
@@ -612,7 +687,8 @@ export class MeetingNoteApplicationService {
   async linkMeetingNoteDeals(
     currentUser: CurrentUserContext,
     meetingNoteId: string,
-    input: LinkMeetingNoteDealsCommand
+    input: LinkMeetingNoteDealsCommand,
+    requestId: string | null = null
   ): Promise<MeetingNoteResponse> {
     // 1. 현재 사용자 소유 회의록인지 먼저 조회합니다.
     const existing = await this.meetingNoteRepository.findMeetingNote(
@@ -626,7 +702,9 @@ export class MeetingNoteApplicationService {
 
     // 2. 요청 딜 ID를 정규화하고 이미 연결된 딜은 제외합니다.
     const requestedDeals = this.normalizeDealIds(input.deals, true);
-    const existingDealIds = new Set(existing.deals.map((deal) => deal.dealId));
+    const existingDealIds = new Set(
+      existing.deals.filter((deal) => !deal.isDeleted).map((deal) => deal.dealId)
+    );
     const dealsToLink = requestedDeals.filter(
       (deal) => !existingDealIds.has(deal.dealId)
     );
@@ -669,7 +747,26 @@ export class MeetingNoteApplicationService {
       linkedDealCount: dealsToLink.length,
     });
 
-    // 7. 저장소 record를 API 응답 구조로 변환합니다.
+    for (const deal of dealsToLink) {
+      // 7. 추가 연결 API에서 실제 새로 연결한 딜마다 server event를 기록한다.
+      await this.recordServerAnalyticsEvent({
+        userId: currentUser.id,
+        authSessionId: currentUser.sessionId,
+        requestId,
+        eventName: "meeting_note_deal_linked",
+        timeZone: currentUser.timeZone,
+        idempotencyKey: `meeting_note_deal_linked:${meetingNote.id}:${deal.dealId}`,
+        targetType: "MEETING_NOTE",
+        targetId: meetingNote.id,
+        payload: {
+          linkCountBucket: toProductAnalyticsLinkCountBucket(
+            this.countActiveMeetingNoteDeals(meetingNote)
+          ),
+        },
+      });
+    }
+
+    // 8. 저장소 record를 API 응답 구조로 변환합니다.
     return this.toMeetingNoteResponse(meetingNote);
   }
 
@@ -1791,6 +1888,23 @@ export class MeetingNoteApplicationService {
   }
 
   // 기능 : 민감 본문 없이 회의록 application 이벤트를 구조화 로그로 남깁니다.
+  // 기능 : 삭제되지 않은 딜 연결만 분석 payload의 연결 수로 계산합니다.
+  private countActiveMeetingNoteDeals(meetingNote: MeetingNoteRecord): number {
+    return meetingNote.deals.filter((deal) => !deal.isDeleted).length;
+  }
+
+  // 기능 : 회의록 서버 이벤트를 best-effort로 기록해 본 API 응답을 막지 않습니다.
+  private async recordServerAnalyticsEvent(
+    command: RecordProductAnalyticsServerEventCommand
+  ): Promise<void> {
+    await recordProductAnalyticsServerEventBestEffort({
+      recorder: this.productAnalyticsEventRecorder,
+      logger: this.logger,
+      command,
+      logContext: "MeetingNoteApplicationService",
+    });
+  }
+
   private logEvent(event: string, fields: Record<string, unknown>): void {
     this.logger.log(
       JSON.stringify({

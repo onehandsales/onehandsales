@@ -11,6 +11,7 @@ import {
   Patch,
   Post,
   Query,
+  Req,
   UploadedFile,
   UseGuards,
   UseInterceptors,
@@ -23,6 +24,7 @@ import { MeetingNoteApplicationService } from "@/modules/meeting-note/applicatio
 import type { CurrentUserContext } from "@/shared/application/context/current-user.context";
 import { CurrentUser } from "@/shared/presentation/decorators/current-user.decorator";
 import { AuthGuard } from "@/shared/presentation/guards/auth.guard";
+import type { RequestWithRequestId } from "@/shared/presentation/middleware/request-id.middleware";
 import {
   CreateMeetingNoteDto,
   CreateMeetingNoteFollowUpDraftDto,
@@ -169,12 +171,14 @@ export class MeetingNoteController {
   @HttpCode(HttpStatus.CREATED)
   createMeetingNote(
     @CurrentUser() currentUser: CurrentUserContext,
-    @Body() body: CreateMeetingNoteDto
+    @Body() body: CreateMeetingNoteDto,
+    @Req() request: RequestWithRequestId
   ) {
     // 1. request body와 현재 사용자 정보를 application 계층으로 전달합니다.
     return this.meetingNoteApplicationService.createMeetingNote(
       currentUser,
-      body
+      body,
+      request.requestId
     );
   }
 
@@ -184,13 +188,15 @@ export class MeetingNoteController {
   linkMeetingNoteDeals(
     @CurrentUser() currentUser: CurrentUserContext,
     @Param("meetingNoteId", ParseUUIDPipe) meetingNoteId: string,
-    @Body() body: LinkMeetingNoteDealsDto
+    @Body() body: LinkMeetingNoteDealsDto,
+    @Req() request: RequestWithRequestId
   ) {
     // 1. 회의록 ID와 추가 연결할 딜 목록을 application 계층으로 전달합니다.
     return this.meetingNoteApplicationService.linkMeetingNoteDeals(
       currentUser,
       meetingNoteId,
-      body
+      body,
+      request.requestId
     );
   }
 
@@ -199,13 +205,15 @@ export class MeetingNoteController {
   updateMeetingNote(
     @CurrentUser() currentUser: CurrentUserContext,
     @Param("meetingNoteId", ParseUUIDPipe) meetingNoteId: string,
-    @Body() body: UpdateMeetingNoteDto
+    @Body() body: UpdateMeetingNoteDto,
+    @Req() request: RequestWithRequestId
   ) {
     // 1. path param, request body, 현재 사용자 정보를 application 계층으로 전달합니다.
     return this.meetingNoteApplicationService.updateMeetingNote(
       currentUser,
       meetingNoteId,
-      body
+      body,
+      request.requestId
     );
   }
 

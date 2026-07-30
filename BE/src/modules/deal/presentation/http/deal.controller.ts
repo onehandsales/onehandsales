@@ -10,6 +10,7 @@ import {
   Patch,
   Post,
   Query,
+  Req,
   Res,
   StreamableFile,
   UseGuards,
@@ -20,6 +21,7 @@ import type { CurrentUserContext } from "@/shared/application/context/current-us
 import { CurrentUser } from "@/shared/presentation/decorators/current-user.decorator";
 import { AuthGuard } from "@/shared/presentation/guards/auth.guard";
 import { createXlsxDownloadResponse } from "@/shared/presentation/http/download-file-response";
+import type { RequestWithRequestId } from "@/shared/presentation/middleware/request-id.middleware";
 import {
   CreateDealDto,
   CreateDealFollowingActionLogDto,
@@ -68,12 +70,14 @@ export class DealController {
   async exportDealsXlsx(
     @CurrentUser() currentUser: CurrentUserContext,
     @Query() query: ExportDealsQueryDto,
+    @Req() request: RequestWithRequestId,
     @Res({ passthrough: true }) response: Response
   ): Promise<StreamableFile> {
-    // 1. query 조건과 현재 사용자를 application 계층으로 전달해 xlsx 파일을 생성한다.
+    // 1. query 조건, 현재 사용자, request id를 application 계층으로 전달해 xlsx 파일을 생성한다.
     const file = await this.dealApplicationService.exportDealsXlsx(
       currentUser,
-      query
+      query,
+      request.requestId
     );
 
     // 2. 생성된 xlsx 파일 정보를 HTTP 다운로드 응답으로 변환한다.
@@ -164,10 +168,15 @@ export class DealController {
   @HttpCode(HttpStatus.CREATED)
   createDeal(
     @CurrentUser() currentUser: CurrentUserContext,
-    @Body() body: CreateDealDto
+    @Body() body: CreateDealDto,
+    @Req() request: RequestWithRequestId
   ) {
-    // 1. request body와 현재 사용자를 application 계층으로 전달한다.
-    return this.dealApplicationService.createDeal(currentUser, body);
+    // 1. request body, 현재 사용자, request id를 application 계층으로 전달한다.
+    return this.dealApplicationService.createDeal(
+      currentUser,
+      body,
+      request.requestId
+    );
   }
 
   // API : 딜, 딜 기본 정보 수정
@@ -213,13 +222,15 @@ export class DealController {
   createFollowingActionLog(
     @CurrentUser() currentUser: CurrentUserContext,
     @Param("dealId", ParseUUIDPipe) dealId: string,
-    @Body() body: CreateDealFollowingActionLogDto
+    @Body() body: CreateDealFollowingActionLogDto,
+    @Req() request: RequestWithRequestId
   ) {
-    // 1. 딜 ID와 다음 행동 생성 요청을 application 계층으로 전달한다.
+    // 1. 딜 ID, 다음 행동 생성 요청, request id를 application 계층으로 전달한다.
     return this.dealApplicationService.createFollowingActionLog(
       currentUser,
       dealId,
-      body
+      body,
+      request.requestId
     );
   }
 

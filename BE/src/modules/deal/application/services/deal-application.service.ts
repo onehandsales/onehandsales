@@ -57,6 +57,14 @@ import {
   DealStatusCode,
   getDealStatusLabel,
 } from "@/modules/deal/domain/deal-status";
+import {
+  NOOP_PRODUCT_ANALYTICS_EVENT_RECORDER,
+  PRODUCT_ANALYTICS_EVENT_RECORDER,
+  type ProductAnalyticsServerEventRecorder,
+  type RecordProductAnalyticsServerEventCommand,
+  recordProductAnalyticsServerEventBestEffort,
+  toProductAnalyticsExportRowCountBucket,
+} from "@/modules/analytics/application/services/product-analytics-event-recorder";
 import type { CurrentUserContext } from "@/shared/application/context/current-user.context";
 import {
   normalizeCurrencyCode,
@@ -415,7 +423,7 @@ type NormalizedManualDealActivityUpdateInput = {
 // 역할 : DealApplicationService 딜 도메인 application 유스케이스를 제공합니다.
 @Injectable()
 export class DealApplicationService {
-  // 기능 : 딜 저장소, xlsx writer, 로그 서비스를 주입받습니다.
+  // 기능 : 딜 저장소, xlsx writer, 로그 서비스, 분석 recorder를 주입받습니다.
   constructor(
     @Inject(DEAL_REPOSITORY)
     private readonly dealRepository: DealRepository,
@@ -423,7 +431,9 @@ export class DealApplicationService {
     private readonly xlsxWriter: XlsxWorkbookWriter,
     private readonly scheduleDealDueReminder: ScheduleDealDueReminderUseCase,
     private readonly cancelDealDueReminder: CancelDealDueReminderUseCase,
-    private readonly logger: AppLogger
+    private readonly logger: AppLogger,
+    @Inject(PRODUCT_ANALYTICS_EVENT_RECORDER)
+    private readonly productAnalyticsEventRecorder: ProductAnalyticsServerEventRecorder = NOOP_PRODUCT_ANALYTICS_EVENT_RECORDER
   ) {}
 
   // 기능 : 현재 사용자의 딜 상태별 개수를 조회합니다.
@@ -507,7 +517,8 @@ export class DealApplicationService {
   // 기능 : 검색, 필터, 정렬이 반영된 딜 목록을 xlsx 파일로 생성합니다.
   async exportDealsXlsx(
     currentUser: CurrentUserContext,
-    query: DealExportQueryInput
+    query: DealExportQueryInput,
+    requestId: string | null = null
   ): Promise<ExportedXlsxFileResponse> {
     const search = this.normalizeOptionalText(query.search);
     const sort = query.sort ?? DealListSort.CREATED_AT_DESC;
@@ -540,6 +551,22 @@ export class DealApplicationService {
       companyFilterCount: companyIds.length,
       contactFilterCount: contactIds.length,
       hasDealStatus: Boolean(query.dealStatus),
+    });
+    // 6. 다운로드 성공 후 row count bucket만 담은 export 분석 이벤트를 기록한다.
+    await this.recordServerAnalyticsEvent({
+      userId: currentUser.id,
+      authSessionId: currentUser.sessionId,
+      requestId,
+      eventName: "export_downloaded",
+      timeZone: currentUser.timeZone,
+      idempotencyKey: `export_downloaded:${currentUser.id}:DEAL:${requestId ?? "internal"}`,
+      targetType: "EXPORT",
+      targetId: null,
+      payload: {
+        exportType: "DEAL",
+        rowCountBucket: toProductAnalyticsExportRowCountBucket(deals.length),
+        locale: localization.locale,
+      },
     });
 
     return {
@@ -695,7 +722,8 @@ export class DealApplicationService {
   // 기능 : 딜을 생성하고 첫 다음 행동 로그를 같은 transaction에서 생성합니다.
   async createDeal(
     currentUser: CurrentUserContext,
-    input: CreateDealCommand
+    input: CreateDealCommand,
+    requestId: string | null = null
   ): Promise<DealDetailResponse> {
     const dealName = this.normalizeRequiredText(
       input.dealName,
@@ -721,6 +749,7 @@ export class DealApplicationService {
     const expectedEndDate = this.parseDateOnly(input.expectedEndDate);
 
     let createdDealId: string | null = null;
+    let initialFollowingActionLogId: string | null = null;
     let autoActivityCount = 0;
 
     await this.dealRepository.runInTransaction(async (repository) => {
@@ -787,6 +816,7 @@ export class DealApplicationService {
         dealId: deal.id,
         followingAction,
       });
+      initialFollowingActionLogId = followingActionLog.id;
 
       autoActivityCount += await this.createAutomaticDealActivity(repository, {
         userId: currentUser.id,
@@ -851,6 +881,41 @@ export class DealApplicationService {
       createdDealId,
       autoActivityCount
     );
+    // 7. 딜 생성 성공 후 activation 계산 정본이 되는 server event를 기록한다.
+    await this.recordServerAnalyticsEvent({
+      userId: currentUser.id,
+      authSessionId: currentUser.sessionId,
+      requestId,
+      eventName: "deal_created",
+      timeZone: currentUser.timeZone,
+      idempotencyKey: `deal_created:${createdDeal.id}`,
+      targetType: "DEAL",
+      targetId: createdDeal.id,
+      payload: {
+        dealStatus: createdDeal.dealStatus,
+        currencyCode: createdDeal.currencyCode,
+        hasCompany: createdDeal.companies.length > 0,
+        hasContact: createdDeal.contacts.length > 0,
+        hasProduct: createdDeal.products.length > 0,
+      },
+    });
+
+    if (initialFollowingActionLogId) {
+      // 8. 딜 생성 중 초기 다음 행동이 만들어진 경우 별도 activation 보조 event를 기록한다.
+      await this.recordServerAnalyticsEvent({
+        userId: currentUser.id,
+        authSessionId: currentUser.sessionId,
+        requestId,
+        eventName: "deal_next_action_created",
+        timeZone: currentUser.timeZone,
+        idempotencyKey: `deal_next_action_created:${initialFollowingActionLogId}`,
+        targetType: "DEAL",
+        targetId: createdDeal.id,
+        payload: {
+          source: "deal_create",
+        },
+      });
+    }
 
     return this.toDealDetail(createdDeal);
   }
@@ -1104,7 +1169,8 @@ export class DealApplicationService {
   async createFollowingActionLog(
     currentUser: CurrentUserContext,
     dealId: string,
-    input: { readonly followingAction: string }
+    input: { readonly followingAction: string },
+    requestId: string | null = null
   ): Promise<DealFollowingActionLogResponse> {
     const followingAction = this.normalizeRequiredText(
       input.followingAction,
@@ -1150,6 +1216,20 @@ export class DealApplicationService {
       followingActionLogId: log.id,
     });
     this.logAutomaticActivityCreated(currentUser.id, dealId, autoActivityCount);
+    // 5. 사용자가 수동으로 다음 행동을 만든 성공 event를 activation 계산용으로 기록한다.
+    await this.recordServerAnalyticsEvent({
+      userId: currentUser.id,
+      authSessionId: currentUser.sessionId,
+      requestId,
+      eventName: "deal_next_action_created",
+      timeZone: currentUser.timeZone,
+      idempotencyKey: `deal_next_action_created:${log.id}`,
+      targetType: "DEAL",
+      targetId: dealId,
+      payload: {
+        source: "manual_log",
+      },
+    });
 
     return this.toFollowingActionLog(log);
   }
@@ -1462,6 +1542,18 @@ export class DealApplicationService {
       userId,
       dealId,
       count,
+    });
+  }
+
+  // 기능 : 제품 분석 server event를 제품 응답에 영향 없이 기록합니다.
+  private async recordServerAnalyticsEvent(
+    command: RecordProductAnalyticsServerEventCommand
+  ): Promise<void> {
+    await recordProductAnalyticsServerEventBestEffort({
+      recorder: this.productAnalyticsEventRecorder,
+      logger: this.logger,
+      command,
+      logContext: "DealApplicationService",
     });
   }
 
