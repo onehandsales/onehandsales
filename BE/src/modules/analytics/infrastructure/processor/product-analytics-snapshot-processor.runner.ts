@@ -26,8 +26,8 @@ export class ProductAnalyticsSnapshotProcessorRunner
     private readonly logger: AppLogger
   ) {}
 
+  // 기능 : snapshot 또는 purge가 명시적으로 활성화된 경우에만 interval tick을 시작합니다.
   onModuleInit(): void {
-    // 기능 : snapshot 또는 purge가 명시적으로 활성화된 경우에만 interval tick을 시작합니다.
     if (!this.isSnapshotEnabled() && !this.isPurgeEnabled()) {
       return;
     }
@@ -41,8 +41,8 @@ export class ProductAnalyticsSnapshotProcessorRunner
     }, intervalMs);
   }
 
+  // 기능 : module 종료 시 product analytics interval timer를 정리합니다.
   onModuleDestroy(): void {
-    // 기능 : module 종료 시 product analytics interval timer를 정리합니다.
     if (this.timer) {
       clearInterval(this.timer);
       this.timer = null;

@@ -1,6 +1,6 @@
 # Scope
 
-상태: Confirmed Plan
+상태: Completed
 
 ## 1. 포함 범위
 
@@ -100,3 +100,11 @@ Analytics payload에 저장하지 않는다.
 - AI usage는 `AiProviderCallLog` 기반으로 1차 계산된다.
 - billing/paywall/churn은 reserved taxonomy로만 남고 12 구현을 침범하지 않는다.
 - 모든 신규/수정 코드에는 한국어 주석 규칙이 적용된다.
+
+## 6. G08 Closeout
+
+- 완료일: 2026-07-30
+- 09 포함 범위는 G01~G08에서 구현 또는 검증 완료됐다.
+- G08에서 새 기능, Admin UI/API, Billing/paywall/churn, 운영 DB migrate/seed는 실행하지 않았다.
+- Backend/User Web 자동 검증과 event taxonomy/privacy 검색을 통과했다.
+- 후속 범위는 10 Mobile/PWA, 11 Admin Operation, 12 Billing Subscription Tax 또는 별도 후속 분석 계획에서 다룬다.

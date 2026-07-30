@@ -1,6 +1,6 @@
 # User Web TODO
 
-상태: G05 Completed
+상태: G05 Completed / G08 Verified
 
 ## 1. 09 User Web 목표
 
@@ -152,3 +152,11 @@ FE는 아래 값을 보내지 않는다.
 - `FE/user-web/src/lib/env.ts`와 `AGENT/SOFTWARE_AGENT/COMMON/ENVIRONMENT.md`에 `VITE_PRODUCT_ANALYTICS_ENABLED`를 반영했다.
 - `app_route_viewed` request는 `eventName`, `eventVersion`, `payload.routeKey`만 포함한다. `surface`, user/session/device id, raw query, UUID path param은 보내지 않는다.
 - `pnpm run test -- src/features/analytics`, `pnpm run typecheck`, `pnpm run lint`, `pnpm run build`, `pnpm run test:e2e:analytics`를 통과했다.
+
+## 9. G08 Closeout
+
+- 완료일: 2026-07-30
+- User Web `pnpm.cmd run typecheck`, `pnpm.cmd run lint`, `pnpm.cmd run build`를 통과했다.
+- build는 Vite chunk size warning만 있고 exit code 0이다.
+- 09는 새 사용자-facing 분석 화면을 만들지 않았고, analytics 실패 UI도 추가하지 않았다.
+- routeKey mapper와 hook은 core `/app` route만 전송하고 public/auth/legacy/redirect-only route와 raw query/UUID path param을 payload에 넣지 않는 기준을 유지한다.

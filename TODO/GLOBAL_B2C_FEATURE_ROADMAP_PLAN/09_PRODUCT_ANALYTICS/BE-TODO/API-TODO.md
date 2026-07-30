@@ -1,6 +1,6 @@
 # Backend API TODO
 
-상태: Confirmed Plan
+상태: Completed
 
 ## 1. API 범위
 
@@ -129,3 +129,11 @@ Backend 신규/수정 코드에는 아래 주석을 반드시 둔다.
 - class/interface: `// 역할 : ...`
 - use case/service/repository/helper: `// 기능 : ...`
 - 긴 orchestration: `// 1. ...`, `// 2. ...`
+
+## 8. G08 Closeout
+
+- 완료일: 2026-07-30
+- `POST /api/analytics/events`, server event recorder, snapshot/purge use case, AI usage summary use case 구현 상태를 확인했다.
+- `/admin/api/analytics/*`, billing/paywall/churn, growth experiment API는 09에서 만들지 않았고 각각 11/12/후속 범위로 유지했다.
+- Backend 검증은 `pnpm.cmd run prisma:validate`, `pnpm.cmd run prisma:generate`, `pnpm.cmd run typecheck`, `pnpm.cmd run lint`, `pnpm.cmd run test`, `pnpm.cmd run build`를 통과했다.
+- 실행하지 못한 G08 Backend 검증은 없다.

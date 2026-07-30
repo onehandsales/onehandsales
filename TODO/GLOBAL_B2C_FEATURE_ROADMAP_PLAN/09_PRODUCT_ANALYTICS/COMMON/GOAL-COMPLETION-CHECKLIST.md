@@ -1,6 +1,6 @@
 # Goal Completion Checklist
 
-상태: G07 Completed
+상태: G08 Completed
 최종 업데이트: 2026-07-30
 
 ## 1. 목적
@@ -20,24 +20,24 @@
 | [x] | G05 User Web Client Events | Completed | 2026-07-30 | core `/app` route view wrapper 구현 | `features/analytics` API/client hook/route mapper, AppShell 연결, `VITE_PRODUCT_ANALYTICS_ENABLED`, User Web unit/E2E/typecheck/lint/build | G06 blocking 없음 |
 | [x] | G06 Snapshot Retention Batch | Completed | 2026-07-30 | activation/retention snapshot 계산 | snapshot/purge use case, optional runner, repository query/upsert/purge, env 문서, BE typecheck/lint/analytics test/build | G07 blocking 없음 |
 | [x] | G07 AI Usage And Billing Reserved | Completed | 2026-07-30 | AI usage 요약과 billing reserved 정리 | `SummarizeAiUsageUseCase`, AI usage repository source query, reserved taxonomy spec, BE typecheck/lint/analytics+meeting-note test/build | G08 blocking 없음 |
-| [ ] | G08 QA Document Closeout | Not Started |  | 검증과 문서 closeout |  |  |
+| [x] | G08 QA Document Closeout | Completed | 2026-07-30 | 검증과 문서 closeout | BE prisma validate/generate/typecheck/lint/test/build, User Web typecheck/lint/build, taxonomy/privacy 검색, 문서 상태 동기화 | 09 완료 |
 
 ## 3. 공통 Contract Gate
 
-- [ ] 각 goal은 request 계약을 명시했거나 영향 없음으로 기록했다.
-- [ ] 각 goal은 response 계약을 명시했거나 영향 없음으로 기록했다.
-- [ ] 각 goal은 business logic을 명시했다.
-- [ ] 각 goal은 user flow를 명시했다.
-- [ ] 각 goal은 DB/Prisma 영향을 명시했거나 변경 없음으로 기록했다.
-- [ ] 각 goal은 코드 주석 기준을 명시했다.
-- [ ] 각 goal은 `COMMON/GOAL-IMPLEMENTATION-MATRIX.md`의 실제 수정 대상 파일과 완료 산출물을 확인했다.
-- [ ] API가 있는 goal은 계약 상태, 소비자, 호환성, DTO 이름, success status를 기록했다.
-- [ ] mutation/processor가 있는 goal은 transaction 필요 여부와 rollback 범위를 기록했다.
-- [ ] mutation/provider/batch가 있는 goal은 observability event key, request id, redaction 기준을 기록했다.
-- [ ] DB 변경 goal은 `BE/prisma/schema.prisma`, `BE/prisma/migrations`, `BE/prisma/seed.ts`를 확인했다.
-- [ ] 새 table/column/enum/index에는 Prisma schema 한글 주석과 migration SQL COMMENT가 있다.
-- [ ] 신규/수정 Backend 코드에는 `// API : ...`, `// 역할 : ...`, `// 기능 : ...` 주석이 있다.
-- [ ] 신규/수정 Frontend 코드에는 `// 기능 : ...` 주석이 있다.
+- [x] 각 goal은 request 계약을 명시했거나 영향 없음으로 기록했다.
+- [x] 각 goal은 response 계약을 명시했거나 영향 없음으로 기록했다.
+- [x] 각 goal은 business logic을 명시했다.
+- [x] 각 goal은 user flow를 명시했다.
+- [x] 각 goal은 DB/Prisma 영향을 명시했거나 변경 없음으로 기록했다.
+- [x] 각 goal은 코드 주석 기준을 명시했다.
+- [x] 각 goal은 `COMMON/GOAL-IMPLEMENTATION-MATRIX.md`의 실제 수정 대상 파일과 완료 산출물을 확인했다.
+- [x] API가 있는 goal은 계약 상태, 소비자, 호환성, DTO 이름, success status를 기록했다.
+- [x] mutation/processor가 있는 goal은 transaction 필요 여부와 rollback 범위를 기록했다.
+- [x] mutation/provider/batch가 있는 goal은 observability event key, request id, redaction 기준을 기록했다.
+- [x] DB 변경 goal은 `BE/prisma/schema.prisma`, `BE/prisma/migrations`, `BE/prisma/seed.ts`를 확인했다.
+- [x] 새 table/column/enum/index에는 Prisma schema 한글 주석과 migration SQL COMMENT가 있다.
+- [x] 신규/수정 Backend 코드에는 `// API : ...`, `// 역할 : ...`, `// 기능 : ...` 주석이 있다.
+- [x] 신규/수정 Frontend 코드에는 `// 기능 : ...` 주석이 있다.
 
 ## 4. Goal별 체크 조건
 
@@ -113,16 +113,17 @@
 
 ### G08 QA Document Closeout
 
-- [ ] Backend `pnpm run prisma:validate` 통과
-- [ ] Backend `pnpm run prisma:generate` 통과
-- [ ] Backend `pnpm run typecheck` 통과
-- [ ] Backend `pnpm run lint` 통과
-- [ ] Backend 관련 test 통과
-- [ ] Backend `pnpm run build` 통과
-- [ ] User Web `pnpm run typecheck` 통과
-- [ ] User Web `pnpm run lint` 통과
-- [ ] User Web `pnpm run build` 통과
-- [ ] README, BE-TODO, FE-TODO, DB-SCHEMA, API-SPEC이 구현 결과와 일치한다.
+- [x] Backend `pnpm.cmd run prisma:validate` 통과
+- [x] Backend `pnpm.cmd run prisma:generate` 통과
+- [x] Backend `pnpm.cmd run typecheck` 통과
+- [x] Backend `pnpm.cmd run lint` 통과
+- [x] Backend `pnpm.cmd run test` 통과: 76 suites / 391 tests
+- [x] Backend `pnpm.cmd run build` 통과
+- [x] User Web `pnpm.cmd run typecheck` 통과
+- [x] User Web `pnpm.cmd run lint` 통과
+- [x] User Web `pnpm.cmd run build` 통과
+- [x] README, BE-TODO, FE-TODO, DB-SCHEMA, API-SPEC이 구현 결과와 일치한다.
+- [x] 실행하지 못한 G08 검증은 없다.
 
 ## 5. 현재 기록
 
@@ -137,3 +138,4 @@
 - 2026-07-30: G05 User Web Client Events 완료. `FE/user-web/src/features/analytics`에 collector API client, routeKey mapper, `useAppRouteAnalytics` hook을 추가하고 `AppShell`에 1회 연결했다. `VITE_PRODUCT_ANALYTICS_ENABLED`가 `true`일 때만 `app_route_viewed`를 보내며 public/auth/legacy/redirect-only route와 raw query/UUID payload를 제외했다. FE `pnpm run test -- src/features/analytics`, `pnpm run typecheck`, `pnpm run lint`, `pnpm run build`, `pnpm run test:e2e:analytics`를 통과했다.
 - 2026-07-30: G06 Snapshot Retention Batch 완료. `ProcessProductAnalyticsSnapshotsUseCase`, `PurgeProductAnalyticsRawEventsUseCase`, `ProductAnalyticsSnapshotProcessorRunner`와 Prisma repository query/upsert/purge를 추가했다. activation은 첫 deal 생성과 첫 의미 행동 중 늦은 row의 eventDate/timeZone을 쓰고, retention은 D1/D7/D30 aggregate snapshot만 저장하며, purge는 365일 초과 `ProductAnalyticsEvent`만 삭제한다. BE `pnpm.cmd run typecheck`, `pnpm.cmd run lint`, `pnpm.cmd run test -- analytics`, `pnpm.cmd run build`를 통과했다.
 - 2026-07-30: G07 AI Usage And Billing Reserved 완료. `SummarizeAiUsageUseCase`와 `AiProviderCallLog` summary source query를 추가해 USER/DAY/OPERATION 기준 request/status/token/cost를 계산한다. DAY 집계는 현재 `User.timeZone`을 조회하고, prompt/raw response/provider raw response는 조회하지 않는다. billing/paywall/churn event는 reserved taxonomy로만 유지하며 12 Billing 고려사항을 문서에 남겼다. BE `pnpm.cmd run typecheck`, `pnpm.cmd run lint`, `pnpm.cmd run test -- analytics meeting-note`, `pnpm.cmd run build`를 통과했다.
+- 2026-07-30: G08 QA Document Closeout 완료. BE `pnpm.cmd run prisma:validate`, `pnpm.cmd run prisma:generate`, `pnpm.cmd run typecheck`, `pnpm.cmd run lint`, `pnpm.cmd run test`, `pnpm.cmd run build`를 통과했고 전체 test는 76 suites / 391 tests가 통과했다. User Web `pnpm.cmd run typecheck`, `pnpm.cmd run lint`, `pnpm.cmd run build`를 통과했고 build는 Vite chunk size warning만 있었다. event taxonomy/privacy 검색과 문서 상태 동기화를 완료했으며 실행하지 못한 G08 검증은 없다.

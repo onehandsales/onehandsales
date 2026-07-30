@@ -10,7 +10,7 @@
 
 ## 2. 계약 개요
 
-- 계약 상태: confirmed
+- 계약 상태: implemented
 - 소비자: Backend internal, 11 Admin future
 - 호환성: 기존 `AiProviderCallLog` 읽기 기반. 기존 AI 기능 변경 없음
 - 인증: 09 내부 use case 기준 없음. Admin API 노출은 11에서 별도 인증/권한 계약 작성

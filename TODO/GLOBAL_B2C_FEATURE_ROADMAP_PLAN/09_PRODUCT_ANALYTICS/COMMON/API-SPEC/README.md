@@ -1,6 +1,6 @@
 # API Spec
 
-상태: Confirmed Plan
+상태: Implemented
 
 ## 1. 목적
 
@@ -64,3 +64,11 @@ Backend:
 Frontend:
 
 - component/hook/function/event handler/API client: `// 기능 : ...`
+
+## 7. G08 Closeout
+
+- 완료일: 2026-07-30
+- `PRODUCT_ANALYTICS_EVENT_API.md`, `PRODUCT_ANALYTICS_SERVER_EVENT_CONTRACT.md`, `PRODUCT_ANALYTICS_SNAPSHOT_CONTRACT.md`, `AI_USAGE_ANALYTICS_CONTRACT.md`는 구현 상태와 대조 완료했다.
+- G08은 신규 request/response를 만들지 않았다.
+- User Web 소비자는 `/api/analytics/events`만 호출하고, Admin analytics full API는 11에서 별도 계약으로 만든다.
+- Backend/User Web 자동 검증과 event taxonomy/privacy 검색을 통과했다.

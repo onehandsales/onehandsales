@@ -1,6 +1,6 @@
 # Goal Specs
 
-상태: Confirmed Plan
+상태: Completed
 
 ## 1. 목적
 
@@ -32,21 +32,27 @@ G01_DOCUMENT_CONTRACT_SYNC
 
 ## 4. 공통 완료 조건
 
-- [ ] request 계약이 명시됐거나 영향 없음으로 기록됐다.
-- [ ] response 계약이 명시됐거나 영향 없음으로 기록됐다.
-- [ ] business logic이 goal 범위 안에서 명시됐다.
-- [ ] user flow가 goal 범위 안에서 명시됐다.
-- [ ] DB/Prisma 영향이 명시됐거나 변경 없음으로 기록됐다.
-- [ ] 코드 주석 기준이 명시됐다.
-- [ ] goal 범위 밖 기능을 구현하지 않았다.
-- [ ] `COMMON/DECISION-LOG.md`의 확정 결정과 충돌하지 않는다.
-- [ ] UX/UI 변경은 `AGENT/UXUI_AGENT` 기준을 따른다.
-- [ ] Software 변경은 `AGENT/SOFTWARE_AGENT` 기준을 따른다.
-- [ ] 신규/수정 코드에 한국어 주석 규칙이 적용됐다.
-- [ ] 실행한 검증 command와 결과를 기록했다.
-- [ ] 실행하지 못한 검증은 사유를 기록했다.
+- [x] request 계약이 명시됐거나 영향 없음으로 기록됐다.
+- [x] response 계약이 명시됐거나 영향 없음으로 기록됐다.
+- [x] business logic이 goal 범위 안에서 명시됐다.
+- [x] user flow가 goal 범위 안에서 명시됐다.
+- [x] DB/Prisma 영향이 명시됐거나 변경 없음으로 기록됐다.
+- [x] 코드 주석 기준이 명시됐다.
+- [x] goal 범위 밖 기능을 구현하지 않았다.
+- [x] `COMMON/DECISION-LOG.md`의 확정 결정과 충돌하지 않는다.
+- [x] UX/UI 변경은 `AGENT/UXUI_AGENT` 기준을 따른다.
+- [x] Software 변경은 `AGENT/SOFTWARE_AGENT` 기준을 따른다.
+- [x] 신규/수정 코드에 한국어 주석 규칙이 적용됐다.
+- [x] 실행한 검증 command와 결과를 기록했다.
+- [x] 실행하지 못한 검증은 사유를 기록했다.
 
-## 5. 필수 계약 문서
+## 5. G08 Closeout
+
+- 완료일: 2026-07-30
+- G01~G08 상세 명세는 모두 Completed 상태다.
+- G08에서 Backend/User Web 검증과 문서 closeout을 완료했고 실행하지 못한 검증은 없다.
+
+## 6. 필수 계약 문서
 
 모든 goal은 구현 전 `COMMON/IMPLEMENTATION-CONTRACT-RULES.md`를 읽고, 해당 goal 문서 안에서 아래 항목을 확인한다.
 

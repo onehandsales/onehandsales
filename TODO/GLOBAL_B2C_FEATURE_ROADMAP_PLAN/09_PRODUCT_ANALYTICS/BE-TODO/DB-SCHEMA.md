@@ -1,6 +1,6 @@
 # DB Schema TODO
 
-상태: Confirmed Plan
+상태: Completed
 
 ## 1. 현재 Prisma 기준
 
@@ -237,3 +237,11 @@ model RetentionCohortSnapshot {
 - raw event table은 빠르게 커질 수 있으므로 `eventDate`, `eventName`, `userId` index를 처음부터 둔다.
 - retention purge query가 index를 타도록 `occurredAt` 단일 index를 반드시 둔다.
 - PII/raw text가 저장되지 않도록 DB가 아니라 application allowlist에서 먼저 차단한다.
+
+## 8. G08 Closeout
+
+- 완료일: 2026-07-30
+- `BE/prisma/schema.prisma`, `BE/prisma/migrations/20260730090000_add_product_analytics/migration.sql`, `BE/prisma/seed.ts`를 확인했다.
+- `ProductAnalyticsEvent`, `UserActivationSnapshot`, `RetentionCohortSnapshot` schema와 migration SQL COMMENT가 존재한다.
+- G08에서 신규 DB schema 변경은 없고 운영/공유 DB `migrate`와 `seed`는 제외 범위라 실행하지 않았다.
+- `pnpm.cmd run prisma:validate`와 `pnpm.cmd run prisma:generate`를 통과했다.

@@ -1,6 +1,6 @@
 # G08 QA Document Closeout
 
-상태: Ready
+상태: Completed
 목표: 09 구현 결과를 검증하고 문서를 구현 상태와 일치시킨다.
 
 ## 1. 목적
@@ -126,11 +126,41 @@ rg -n "app_route_viewed|auth_signup_completed|deal_created|deal_next_action_crea
 
 ## 12. Goal 검토 체크리스트
 
-- [ ] Backend 검증 명령을 실행했다.
-- [ ] User Web 검증 명령을 실행했다.
-- [ ] 실행하지 못한 검증은 사유를 기록했다.
-- [ ] README/SCOPE/API-SPEC/BE-TODO/FE-TODO/DB-SCHEMA가 구현 결과와 일치한다.
-- [ ] `COMMON/GOAL-COMPLETION-CHECKLIST.md`가 갱신됐다.
-- [ ] privacy allowlist가 코드와 문서에서 일치한다.
-- [ ] 11 Admin 이관 범위가 유지됐다.
-- [ ] 12 Billing reserved 범위가 유지됐다.
+- [x] Backend 검증 명령을 실행했다.
+- [x] User Web 검증 명령을 실행했다.
+- [x] 실행하지 못한 검증은 사유를 기록했다.
+- [x] README/SCOPE/API-SPEC/BE-TODO/FE-TODO/DB-SCHEMA가 구현 결과와 일치한다.
+- [x] `COMMON/GOAL-COMPLETION-CHECKLIST.md`가 갱신됐다.
+- [x] privacy allowlist가 코드와 문서에서 일치한다.
+- [x] 11 Admin 이관 범위가 유지됐다.
+- [x] 12 Billing reserved 범위가 유지됐다.
+
+## 13. 구현 결과
+
+- 완료일: 2026-07-30
+- Backend 검증:
+  - `pnpm.cmd run prisma:validate` 통과
+  - `pnpm.cmd run prisma:generate` 통과
+  - `pnpm.cmd run typecheck` 통과
+  - `pnpm.cmd run lint` 통과
+  - `pnpm.cmd run test` 통과: 76 suites / 391 tests
+  - `pnpm.cmd run build` 통과
+- User Web 검증:
+  - `pnpm.cmd run typecheck` 통과
+  - `pnpm.cmd run lint` 통과
+  - `pnpm.cmd run build` 통과. Vite chunk size warning만 있고 exit code 0이다.
+- 검색 검증:
+  - G08 event taxonomy 검색 명령을 실행했고 runtime event, snapshot model, billing reserved event 경계를 코드/문서에서 확인했다.
+  - `PRODUCT_ANALYTICS_RUNTIME_EVENT_NAMES`는 09 runtime event만 포함하고, `PRODUCT_ANALYTICS_RESERVED_BILLING_EVENT_NAMES`는 runtime allowlist 밖 reserved로 유지된다.
+  - `console.log`/`console.warn`/`console.error`는 `BE/src/modules/analytics`, `FE/user-web/src/features/analytics`에서 발견되지 않았다.
+- privacy 검토:
+  - client event는 `eventName`, `eventVersion`, `payload.routeKey`만 보낸다.
+  - server event recorder는 event별 payload allowlist와 PII/raw text 의심 key 차단을 적용한다.
+  - AI usage repository query는 `AiProviderCallLog` 집계 field와 `User.id/timeZone`만 조회한다.
+- 문서 closeout:
+  - README/SCOPE/API-SPEC/BE-TODO/FE-TODO/DB-SCHEMA/GOAL-COMPLETION-CHECKLIST를 구현 상태와 검증 결과에 맞게 갱신했다.
+  - 실행하지 못한 G08 검증은 없다.
+- 후속 범위:
+  - Admin analytics full UI/API는 `11_ADMIN_OPERATION`으로 유지한다.
+  - Billing/paywall/churn 구현은 `12_BILLING_SUBSCRIPTION_TAX`로 유지한다.
+  - 모바일 PWA와 Notification/Calendar/follow-up 세부 event는 10 또는 별도 후속 분석 계획에서 결정한다.

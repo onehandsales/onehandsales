@@ -1,10 +1,10 @@
 # 09 Product Analytics
 
-상태: G07 Completed / G08 Ready
+상태: Completed
 순서: 09
 성격: Global B2C 첫 판매 전 제품 분석 수집/계산 기반 구현 슬롯
 결정 상태: `COMMON/DECISION-LOG.md` 확정 결정 반영
-구현 상태: G01 문서 계약 동기화, G02 DB Schema Event Foundation, G03 Analytics Collector API, G04 Server Event Logging, G05 User Web Client Events, G06 Snapshot Retention Batch, G07 AI Usage And Billing Reserved 완료. 다음 작업은 G08 QA Document Closeout이다.
+구현 상태: G01 문서 계약 동기화, G02 DB Schema Event Foundation, G03 Analytics Collector API, G04 Server Event Logging, G05 User Web Client Events, G06 Snapshot Retention Batch, G07 AI Usage And Billing Reserved, G08 QA Document Closeout 완료. 09 Product Analytics 구현과 문서 closeout은 완료됐다.
 
 ## 1. 목적
 
@@ -91,3 +91,12 @@ G01_DOCUMENT_CONTRACT_SYNC
 - `AGENT/UXUI_AGENT`
 - `AGENT/SOFTWARE_AGENT`
 - `BE/prisma/schema.prisma`
+
+## 7. G08 Closeout 결과
+
+- 완료일: 2026-07-30
+- Backend 검증: `pnpm.cmd run prisma:validate`, `pnpm.cmd run prisma:generate`, `pnpm.cmd run typecheck`, `pnpm.cmd run lint`, `pnpm.cmd run test`, `pnpm.cmd run build` 통과. 전체 Backend test는 76 suites / 391 tests 통과.
+- User Web 검증: `pnpm.cmd run typecheck`, `pnpm.cmd run lint`, `pnpm.cmd run build` 통과. build는 Vite chunk size warning만 있고 exit code 0이다.
+- event taxonomy 검색으로 runtime event 이름, snapshot model 이름, billing reserved event 이름이 문서와 코드에서 같은 경계로 유지되는 것을 확인했다.
+- privacy 검토로 client/server payload allowlist, PII/raw text/prompt/provider raw response 금지, AI usage 최소 field 조회 기준을 확인했다.
+- Admin analytics full UI/API는 11, Billing/paywall/churn 구현은 12, 모바일 PWA 세부 event는 10 또는 후속 분석 계획 범위로 유지한다.

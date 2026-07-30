@@ -10,7 +10,7 @@ Raw `ProductAnalyticsEvent`를 activation, D1/D7/D30 retention, cohort snapshot�
 
 ## 2. 계약 개요
 
-- 계약 상태: confirmed
+- 계약 상태: implemented
 - 소비자: Backend internal, 11 Admin future
 - 호환성: 신규 내부 contract, 기존 API response 변경 없음
 - 인증: 없음. runner 내부 실행
