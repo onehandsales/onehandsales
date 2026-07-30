@@ -1,7 +1,7 @@
 # User Web TODO
 
 상태: Draft
-최종 업데이트: 2026-07-29
+최종 업데이트: 2026-07-30
 
 ## 0. 완료 반영
 
@@ -17,12 +17,13 @@
 - [x] `NBA-004 MeetingNote detail next action/follow-up draft subset`: `/app/meeting-notes/:meetingNoteId` AI 후속 작업 UX 구현 완료
 - [x] `NBA-011 MeetingNote provider log subset`: User Web safe failure UX와 `/admin/api/*` 미호출 기준 확인 완료
 - [x] `08_GLOBAL_DATA_I18N`: `/app/settings` global settings, `/app` i18n, currency/phone/region/address UI, import/export localization, Google/LINE/Apple auth buttons 구현 및 QA closeout 완료
+- [x] `09_PRODUCT_ANALYTICS`: User Web route analytics wrapper, routeKey mapper, collector API client, analytics E2E 구현 및 QA closeout 완료
 
 ## 1. 목적
 
 이 문서는 G07에서 분리한 Backend/API 후보가 `FE/user-web`에 미칠 수 있는 영향을 정리한다.
 
-이 문서에서 남은 active User Web 후보는 future API contract가 `confirmed`된 뒤 함께 확인할 client/screen 영향만 기록한다. `NBA-001`, `NBA-002`, `NBA-003` Deal subset, `NBA-004` MeetingNote detail subset, `NBA-006`, `NBA-008`, `NBA-009`, `NBA-010`, `NBA-011` provider log subset, `NBA-015`, `08_GLOBAL_DATA_I18N`은 별도 계획에서 구현 완료된 이력으로만 남긴다.
+이 문서에서 남은 active User Web 후보는 future API contract가 `confirmed`된 뒤 함께 확인할 client/screen 영향만 기록한다. `NBA-001`, `NBA-002`, `NBA-003` Deal subset, `NBA-004` MeetingNote detail subset, `NBA-006`, `NBA-008`, `NBA-009`, `NBA-010`, `NBA-011` provider log subset, `NBA-015`, `08_GLOBAL_DATA_I18N`, `09_PRODUCT_ANALYTICS`는 별도 계획에서 구현 완료된 이력으로만 남긴다.
 
 ## 1.1 08에서 닫힌 User Web Global Data/I18N 범위
 
@@ -35,22 +36,35 @@
 - 로그인/회원가입 provider 버튼은 Google, LINE, Apple을 한 줄 3개 배치로 제공하고, LINE/Apple도 Google과 동일한 버튼 톤을 따른다.
 - LINE/Apple 실제 provider smoke는 2026-07-29 사용자 확인 기준 운영 환경에서 완료됐다. 08 DB migration은 2026-07-29 최신 상태로 재확인됐다.
 
+## 1.2 09에서 닫힌 User Web Product Analytics 범위
+
+- `FE/user-web/src/features/analytics`에 collector API client, routeKey mapper, hook, type/index 파일을 추가했다.
+- `AppShell`에서 `useAppRouteAnalytics`를 한 번만 호출한다.
+- `VITE_PRODUCT_ANALYTICS_ENABLED="true"`일 때만 `app_route_viewed`를 전송한다.
+- User Web이 보내는 payload는 `eventName`, `eventVersion`, `payload.routeKey`뿐이며 UUID path param, raw query, user/session/device/time/source/target/idempotency field를 보내지 않는다.
+- `/app/contacts/scan`, `/app/meeting-notes/new`, `/app/export` 같은 redirect-only route는 tracking에서 제외한다.
+- analytics API 실패는 사용자에게 표시하지 않는다.
+- FE `typecheck`, `lint`, `test`, `build`, `test:e2e:analytics`가 통과했다.
+
 ## 2. Release follow-up 영향 후보
 
 | 후보 ID | FE 영향 | 확인 기준 |
 |---|---|---|
 | NBA-005 | 명함 OCR 실패 copy와 retry UI | 사용자 copy는 provider/quota/API key 정보를 노출하지 않는다. |
 
-## 3. Product feature 영향 후보
+## 3. Product feature 영향 후보 및 완료 이력
+
+아래 표에는 남은 product feature 후보와 이미 완료되어 active FE TODO에서 제외된 이력을 함께 둔다.
 
 | 후보 ID | FE 영향 | 확인 기준 |
 |---|---|---|
 | NBA-003 잔여 | 회사/담당자/제품 목록 summary 표시 | Deal list `latestActivity`는 완료됐다. 남은 summary도 private memo와 일반 활동을 구분한다. |
 | NBA-004 | 부분 완료: 회의록 상세 AI 후속 작업 section, 다음 행동 후보 편집 저장, follow-up draft 수정/복사 구현. 회의록 목록 summary 표시는 후속 | 목록에는 AI/STT raw text나 민감 원문을 노출하지 않는다. 상세 AI 후보도 자동 저장/자동 발송하지 않는다. |
-| NBA-006 | Import resume 화면과 client state | 완료: 새로고침/탭 이동 복구 UX, 만료/실패 상태, confirm/cancel 흐름 구현 |
+| NBA-006 | 완료: Import resume 화면과 client state | Active FE TODO에서 제외한다. 새로고침/탭 이동 복구 UX, 만료/실패 상태, confirm/cancel 흐름 구현 완료 |
 | NBA-009 | 완료: `/app/schedules/week` route, 주간 보고서 화면, 이전/다음/이번 주 이동, Excel 다운로드, loading/empty/error/export error 처리 | Active FE TODO에서 제외한다. PDF/범용 ExportJob, 반복 일정, AI 요약은 별도 backlog에서 다룬다. |
-| NBA-010 | Notification route/sidebar 노출 | 완료: `/app/notifications`, unread badge, settings, browser push 권한 fallback UX 구현 |
+| NBA-010 | 완료: Notification route/sidebar 노출 | Active FE TODO에서 제외한다. `/app/notifications`, unread badge, settings, browser push 권한 fallback UX 구현 완료 |
 | NBA-015 | 완료: `/app/schedules` source badge/sync/calendar hidden handling, `/app/settings` Google Calendar 연결/선택/해제, `/app/trash` Schedule restore UX 구현 | Active FE TODO에서 제외한다. Google export/write, realtime webhook/watch, 반복 일정은 별도 backlog에서 다룬다. |
+| 09_PRODUCT_ANALYTICS | 완료: `/app` 보호 route 진입 시 routeKey allowlist 기반 `app_route_viewed` 전송 | Active FE TODO에서 제외한다. Admin analytics 화면과 billing/paywall/churn UI는 11/12에서 다룬다. |
 
 ## 4. Ops/security 영향 후보
 

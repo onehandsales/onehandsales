@@ -1,7 +1,7 @@
 # User Web Productization Guide
 
 상태: Draft Guide
-최종 업데이트: 2026-07-29
+최종 업데이트: 2026-07-30
 
 ## 0. 완료 반영
 
@@ -25,6 +25,8 @@
 - [x] Import template/export localization UX 구현 완료
 - [x] Google/LINE/Apple login/signup provider buttons 구현 완료
 - [x] `08_GLOBAL_DATA_I18N` User Web productization gap 종료
+- [x] `/app` route analytics wrapper와 routeKey mapper 구현 완료
+- [x] `09_PRODUCT_ANALYTICS` User Web product analytics foundation gap 종료
 
 ## 1. 목적
 
@@ -50,6 +52,7 @@
 |---|---|---|---|
 | Public/auth | locale 진입면과 Google/LINE/Apple login/signup provider 버튼 구현 | Global B2C 첫 판매용 가치 제안, 가격/플랜, trial 기준이 충분한가. LINE/Apple 실제 provider smoke도 운영 완료 상태로 유지되는가 | Provider UI와 LINE/Apple 운영 smoke는 08 완료. 가격/플랜은 중간 |
 | `/app` | home dashboard 구현 | 오늘 해야 할 일과 진행 딜이 바로 읽히는가 | 중간 |
+| `/app` route analytics | `AppShell`에서 보호된 `/app` route 진입을 routeKey allowlist 기반으로 전송 | 사용자는 analytics 전송 여부를 보지 않는다. Admin dashboard와 billing conversion UI는 아직 별도 | `09_PRODUCT_ANALYTICS` 완료. Admin/Billing 연결은 11/12 |
 | `/app/deals` | pipeline/list/detail, 딜 상세 activity timeline, 목록 제품 summary, 최신 활동 summary, currency-aware 금액 구현 | 딜 비교, 다음 행동, 연결 회사/담당자/제품 맥락이 충분한가 | `NBA-001`, `NBA-003` Deal subset, `NBA-008`, 08 currency 완료. 다음 행동 강조와 UX polish는 후속 |
 | `/app/companies` | 목록/상세/생성/메모/export, country/region/address 구현 | 담당자/진행 딜/최근 활동 맥락이 충분한가 | 08 region/address 완료. `NBA-003` latest summary는 후속 후보 |
 | `/app/contacts` | 목록/상세/생성/export, dealCount, KR/US phone 표시 구현 | 연결 딜 수와 회사 맥락이 충분한가 | `NBA-002`와 08 phone 완료. `NBA-003` latest summary는 후속 후보 |
@@ -73,6 +76,7 @@
 - 완료된 Deal Activity Timeline 범위를 넘어서는 범용 activity bus, Company/Contact/Product latest summary, activity deletion/retention/audit 정책은 API/DB/정책 계약 없이 확장하지 않는다.
 - 완료된 MeetingNote AI Provider Log 범위를 넘어서는 회의록 목록 summary, 자동 저장/자동 발송, 회의록 follow-up 알림, Admin provider audit 조회는 API/DB/정책 계약 없이 확장하지 않는다.
 - 완료된 Global Data I18N 범위를 넘어서는 신규 국가/통화/provider, `/app` locale prefix, 추가 DB migration은 계약/운영 계획 없이 진행하지 않는다.
+- 완료된 Product Analytics 범위를 넘어서는 Admin analytics dashboard, billing/paywall/churn runtime event, 모바일/PWA 세부 analytics event는 11/12/10 계약 없이 확장하지 않는다.
 - `/app/export` generic export를 다시 노출하지 않는다.
 - page size를 FE 단독으로 바꾸지 않는다.
 - API 응답에 없는 latest activity, next action summary, product summary, dealCount를 임의로 계산해 사실처럼 표시하지 않는다. Deal list products/latest activity와 Contact dealCount는 06 API 응답 기준으로만 표시한다.

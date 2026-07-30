@@ -1,7 +1,7 @@
 # Current Implemented Functions
 
 상태: Draft Guide
-기준: 2026-07-29 현재 코드와 AGENT 구현 상태 문서
+기준: 2026-07-30 현재 코드와 AGENT 구현 상태 문서
 
 ## 0. 완료 반영 체크리스트
 
@@ -31,6 +31,7 @@
 - [x] Product/Deal currency, Contact global phone, Company country/region/address
 - [x] Import template/export localization
 - [x] Google/LINE/Apple auth provider list, exchange, login/signup buttons
+- [x] Product analytics collector API, route/server event logging, activation/retention snapshot, AI usage summary
 
 ## 1. 구현 완료/부분 완료 표
 
@@ -55,7 +56,7 @@
 | Generic ExportJob | 없음. 현재 제품 정본 아님 | `/app/export`는 `/app` redirect | N/A | 제외/후속 결정 필요 |
 | Admin operation | `/admin/api/me`만 있음 | N/A | 운영 route는 root redirect | 후속 |
 | Payment/subscription | 없음 | pricing public page는 있음 | Admin subscription route redirect | 후속 |
-| Product analytics | 없음 | 없음 | analytics route redirect | 후속 |
+| Product analytics | `POST /api/analytics/events`, `ProductAnalyticsEvent`, server event recorder, activation/retention snapshot, AI usage summary | `/app` route analytics wrapper와 routeKey mapper. 사용자-facing analytics UI 없음 | analytics route redirect | 09 foundation 완료. Admin analytics UI/API는 11, billing conversion/churn source는 12 후속 |
 
 ## 2. User Web 실제 라우트 상태
 
@@ -96,13 +97,13 @@
 
 - 개인 영업자 MVP 핵심 루프는 대부분 구현되어 있다.
 - 그러나 이 MVP 상태는 판매 기준이 아니다.
-- 첫 판매 기준은 Global B2C 유료 판매 가능형이며, 현재 제품에는 결제/구독, Admin 운영, 세금/컴플라이언스, 제품 분석, 운영 신뢰 계층이 아직 부족하다.
+- 첫 판매 기준은 Global B2C 유료 판매 가능형이며, 현재 제품에는 결제/구독, Admin 운영, 세금/컴플라이언스, 운영 신뢰 계층이 아직 부족하다. 제품 분석 foundation은 09에서 완료됐지만 Admin dashboard와 billing conversion/churn 연결은 후속이다.
 - 주간 일정 보고서와 Excel export는 구현 완료됐으며, PDF/범용 ExportJob, 반복 일정, AI 요약은 후속 확장 범위다.
 - Google Calendar read-only import/sync/calendar selection/source badge/Trash restore는 구현 완료됐다. export/write/realtime webhook/watch/반복 일정/여러 Google 계정 동시 연결은 후속 확장 범위다.
 - 일정/딜 reminder 기반 Notification은 구현 완료됐지만, 실제 SMTP/Web Push provider smoke는 env 준비 후 운영 확인 단계에서 실행한다.
 - DealActivity timeline, Deal list products/latest activity, Contact dealCount, page size 15 계약은 구현 및 QA closeout 완료됐다. Company/Contact/Product latest summary, activity deletion/retention/audit 정책은 후속 범위다.
 - MeetingNote AI/STT provider log, 회의록 상세 next action/follow-up draft, User Web AI 후속 작업 UX는 구현 및 QA closeout 완료됐다. 회의록 목록 summary, 자동 발송/알림, Admin provider audit/retention은 후속 범위다.
 - `/app` i18n, user global settings, Product/Deal currency, Contact global phone, Company region/address, Import/Export localization, Google/LINE/Apple auth는 08에서 구현 및 QA closeout 완료됐다. 08 DB migration은 2026-07-29 최신 상태로 재확인됐고, LINE/Apple 실제 provider smoke도 2026-07-29 사용자 확인 기준 운영 완료됐다.
-- `09_PRODUCT_ANALYTICS` 이후 로드맵 슬롯은 아직 작업 필요 상태다.
+- `10_MOBILE_PWA_FIELD_USE`부터 12까지의 로드맵 슬롯은 아직 작업 필요 상태다.
 - 제품화 gap은 "API가 없어서 화면을 못 만든다"보다 "현재 핵심 루프를 Global B2C 첫 판매 gate까지 어떤 순서로 끌어올릴지"에 가깝다.
 - 따라서 다음 계획은 MVP 기능 추가 목록이 아니라 Global B2C 첫 판매 기준 대비 gap을 먼저 정리해야 한다.

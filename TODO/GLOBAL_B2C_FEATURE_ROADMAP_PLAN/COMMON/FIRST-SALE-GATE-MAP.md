@@ -1,7 +1,7 @@
 # First-sale Gate Map
 
-상태: Gate Baseline / 08 반영
-기준일: 2026-07-29
+상태: Gate Baseline / 09 반영
+기준일: 2026-07-30
 
 ## 1. 목적
 
@@ -25,7 +25,9 @@
 - 08 Global Data I18N 구현과 QA closeout은 완료됐다.
 - 현재 `BE/.env` 연결 DB는 `pnpm.cmd exec prisma migrate status` 기준 최신 상태다.
 - 2026-07-29 사용자 확인 기준 LINE/Apple 실제 OAuth provider 연결과 smoke가 완료됐다.
-- 09_PRODUCT_ANALYTICS 이후 슬롯은 아직 작업 필요 상태다.
+- 09 Product Analytics 구현과 QA closeout은 완료됐다. Product analytics raw event, route/server event, activation/retention snapshot, AI usage summary foundation은 첫 판매 전 gate에서 닫힌 상태로 본다.
+- Admin analytics UI/API는 11, billing/paywall/churn 실제 conversion source는 12에서 연결한다.
+- 10_MOBILE_PWA_FIELD_USE부터 12까지의 슬롯은 아직 작업 필요 상태다.
 
 ## 3. DB/Prisma 운영 Gate 적용 규칙
 

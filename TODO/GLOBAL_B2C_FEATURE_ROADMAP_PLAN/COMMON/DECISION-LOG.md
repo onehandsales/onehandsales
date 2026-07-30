@@ -1,7 +1,7 @@
 # Decision Log
 
 상태: Decision Baseline
-기준일: 2026-07-29
+기준일: 2026-07-30
 
 ## 0. 완료 반영
 
@@ -21,7 +21,8 @@
 - [x] 완료 기록: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/07_MEETING_NOTE_AI_PROVIDER_LOG/COMMON/GOAL-SPECS/G06_QA_REVIEW_CLOSEOUT.md`
 - [x] 08 Global Data I18N: Done (2026-07-28), DB 최신 상태 2026-07-29 재확인
 - [x] 완료 기록: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/08_GLOBAL_DATA_I18N/COMMON/GOAL-SPECS/G10_QA_DOCUMENT_CLOSEOUT.md`
-- [ ] 09 Product Analytics: Next
+- [x] 09 Product Analytics: Done (2026-07-30)
+- [x] 완료 기록: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/09_PRODUCT_ANALYTICS/COMMON/GOAL-SPECS/G08_QA_DOCUMENT_CLOSEOUT.md`
 
 ## 1. 제품 방향 결정
 
@@ -58,7 +59,7 @@
 | 06 Deal Activity Timeline | Done | `DealActivity` 정본 모델/API/UX, 딜 목록 products/latest activity, 담당자 dealCount, page size 15 계약, 06 범위 DB/Prisma gate closeout 완료. Company/Contact/Product latest summary와 범용 activity bus는 후속이다. |
 | 07 MeetingNote AI Provider Log | Done | 공통 `AiProviderCallLog` target 확장, MeetingNote AI/STT safe failure, 상세 next action/follow-up draft, User Web AI 후속 작업 UX 구현 및 QA closeout 완료. 목록 summary, 자동 발송, Admin audit/retention은 후속이다. |
 | 08 Global Data I18N | Done | `/app` `ko-KR`/`en` i18n, user global settings, Product/Deal currency, Contact KR/US phone, Company country/region/address, Import/Export localization, Google/LINE/Apple auth 구현 완료. 2026-07-29 현재 DB 최신 상태 재확인 완료. 2026-07-29 사용자 확인 기준 LINE/Apple 운영 설정과 실제 OAuth 동작도 완료됐다. |
-| 09 Product Analytics | Next | 자체 DB event log 또는 분석 pipeline, allowlist event taxonomy, activation/retention/paid conversion/churn/AI cost 기준을 확정해야 한다. 09 이후 슬롯은 아직 작업 필요 상태다. billing/paywall 이벤트는 12와 연결한다. |
+| 09 Product Analytics | Done | 자체 DB `ProductAnalyticsEvent` 기반 allowlist event taxonomy, `POST /api/analytics/events`, User Web route event wrapper, core server event logging, activation/retention snapshot, 365일 raw event purge, `AiProviderCallLog` 기반 AI usage summary를 구현하고 QA closeout을 완료했다. billing/paywall/churn event는 reserved taxonomy로만 남기고 실제 runtime flow는 12 Billing에서 연결한다. Admin analytics UI/API는 11에서 다룬다. |
 | 10 Mobile PWA Field Use | 결정 baseline | native app 전에는 PWA와 모바일 웹에 집중한다. 우선 범위는 명함 촬영, 회의 직후 음성 기록, local draft, 권한 거부 fallback이다. offline full sync는 제외한다. 음성 파일은 STT/회의록 저장 이후 장기 보관하지 않는 방향을 기본값으로 둔다. browser push는 02와 연결한다. native app 전환은 PWA 사용 지표와 현장 사용 빈도로 판단한다. |
 | 11 Admin Operation | 결정 baseline | 최소 Admin부터 시작한다. 첫 Admin bootstrap은 `INITIAL_ADMIN_EMAILS`로 시작한다. 사용자와 핵심 domain data는 read-only 조회를 기본으로 하고, 민감정보는 masking한다. raw 조회는 reason 필수와 append-only audit log가 필요하다. 계정 삭제, 데이터 export, provider failure, DB/migration gate는 운영 신뢰 필수 범위로 포함한다. 단 `NBA-014` DB/Prisma 운영 gate는 11까지 미루지 않고 migration이 있는 goal마다 선행 체크한다. `NBA-007` Trash private memo backend response restriction은 Trash/삭제 정책에 묻지 않고 독립 보안 체크로 둔다. |
 | 12 Billing Subscription Tax | 결정 baseline | Global B2C는 Merchant of Record를 우선 검토한다. Stripe 직접 결제는 세금/환불/인보이스 운영 부담이 커서 2순위로 둔다. 판매 rollout은 한국/KRW 유료 검증, 일본/대만 확장, 영어권 확장 순서로 둔다. plan, entitlement, paywall은 단순하게 시작한다. AI 사용량 limit은 plan에 포함한다. 가격 수치는 PRD의 월 5,900~6,900원 가설을 출발점으로 두고 12 confirmed 문서에서 provider 수수료/세금을 반영해 확정한다. 기본 구조는 무료체험과 월간/연간 개인 플랜으로 둔다. failed payment grace period, refund, chargeback, invoice/tax 정책은 Admin 운영과 연결한다. |

@@ -1,7 +1,7 @@
 # API TODO
 
 상태: Draft
-최종 업데이트: 2026-07-29
+최종 업데이트: 2026-07-30
 
 ## 0. 완료 반영
 
@@ -17,12 +17,13 @@
 - [x] `NBA-004 MeetingNote detail next action/follow-up draft subset`: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/07_MEETING_NOTE_AI_PROVIDER_LOG`에서 구현 및 QA closeout 완료
 - [x] `NBA-011 MeetingNote provider log subset`: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/07_MEETING_NOTE_AI_PROVIDER_LOG`에서 공통 `AiProviderCallLog` 확장으로 구현 및 QA closeout 완료
 - [x] `08_GLOBAL_DATA_I18N`: User global settings, domain global data, import/export localization, Google/LINE/Apple auth API 구현 및 QA closeout 완료
+- [x] `09_PRODUCT_ANALYTICS`: product analytics collector API, server event recorder, snapshot/AI usage internal use case 구현 및 QA closeout 완료
 
 ## 1. 목적
 
 이 문서는 G07에서 분리한 Backend/API 후속 후보를 실행 가능한 다음 계획으로 만들기 전의 초안이다.
 
-이 문서에서 남은 active 새 API 후보는 `COMMON/API-SPEC/README.md`에서 `draft` 또는 `후보` 상태로만 관리한다. `NBA-001`, `NBA-002`, `NBA-003` Deal subset, `NBA-004` MeetingNote detail subset, `NBA-006`, `NBA-008`, `NBA-009`, `NBA-010`, `NBA-011` provider log subset, `NBA-014`, `NBA-015`, `08_GLOBAL_DATA_I18N`은 별도 계획에서 구현 완료된 이력으로만 남긴다.
+이 문서에서 남은 active 새 API 후보는 `COMMON/API-SPEC/README.md`에서 `draft` 또는 `후보` 상태로만 관리한다. `NBA-001`, `NBA-002`, `NBA-003` Deal subset, `NBA-004` MeetingNote detail subset, `NBA-006`, `NBA-008`, `NBA-009`, `NBA-010`, `NBA-011` provider log subset, `NBA-014`, `NBA-015`, `08_GLOBAL_DATA_I18N`, `09_PRODUCT_ANALYTICS`는 별도 계획에서 구현 완료된 이력으로만 남긴다.
 
 ## 2. 06에서 닫힌 release blocker
 
@@ -72,6 +73,22 @@
   - 추가 국가/통화/전화번호 포맷, Google/LINE/Apple 외 신규 provider, Admin provider 운영 화면
 - 08 후속 운영 확인 완료:
   - 2026-07-29 사용자 확인 기준 LINE/Apple provider 설정값 연결과 실제 OAuth 동작이 운영 환경에서 완료됐다.
+
+## 2.3 09에서 닫힌 Product Analytics API
+
+- 연결 계획: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/09_PRODUCT_ANALYTICS`
+- API 영향:
+  - `POST /api/analytics/events` client collector API 구현
+  - product analytics server event recorder와 core mutation 성공 event command 구현
+  - snapshot processing, raw event purge, AI usage summary는 HTTP endpoint 없이 internal use case로 구현
+- Backend 영향:
+  - client request의 user/session/device/time/source/idempotency/target field는 거절하고 Backend 인증 context로 보강한다.
+  - server event는 idempotencyKey를 필수로 하고 product API 성공을 막지 않도록 best-effort로 기록한다.
+  - billing/paywall/churn event는 reserved taxonomy로만 유지하고 runtime allowlist에는 넣지 않는다.
+- 09 밖으로 남는 범위:
+  - Admin analytics dashboard/API
+  - 실제 billing/paywall/churn survey flow와 paid conversion source event
+  - 모바일/PWA field-use 세부 event
 
 ## 3. Release follow-up API 후보
 

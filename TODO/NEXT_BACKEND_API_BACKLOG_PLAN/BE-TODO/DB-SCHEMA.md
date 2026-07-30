@@ -1,7 +1,7 @@
 # DB Schema TODO
 
 상태: Draft
-최종 업데이트: 2026-07-29
+최종 업데이트: 2026-07-30
 
 ## 0. 완료 반영
 
@@ -17,10 +17,11 @@
 - [x] `NBA-004 MeetingNote detail next action/follow-up draft subset`: 새 action/follow-up 저장 table 없이 구현 완료
 - [x] `NBA-011 MeetingNote provider log subset`: `AiProviderOperation` meeting-note 값과 `AiProviderCallLog.targetType/targetId/index` 구현 완료
 - [x] `08_GLOBAL_DATA_I18N`: User global settings, Product/Deal currency, Contact global phone, Company country/region/address, `OAuthProvider.LINE` migration 구현 및 QA closeout 완료
+- [x] `09_PRODUCT_ANALYTICS`: ProductAnalyticsEvent/UserActivationSnapshot/RetentionCohortSnapshot schema와 migration 구현 및 QA closeout 완료
 
 ## 1. 현재 DB 변경 상태
 
-이 계획 후보에서 남은 active 후보 중 새로 확정된 Prisma schema 변경은 없다. `NBA-001`, `NBA-002`, `NBA-003` Deal subset, `NBA-004` MeetingNote detail subset, `NBA-006`, `NBA-008`, `NBA-009`, `NBA-010`, `NBA-011` provider log subset, `NBA-014`, `NBA-015`, `08_GLOBAL_DATA_I18N`은 별도 계획에서 구현 완료된 이력으로만 남긴다.
+이 계획 후보에서 남은 active 후보 중 새로 확정된 Prisma schema 변경은 없다. `NBA-001`, `NBA-002`, `NBA-003` Deal subset, `NBA-004` MeetingNote detail subset, `NBA-006`, `NBA-008`, `NBA-009`, `NBA-010`, `NBA-011` provider log subset, `NBA-014`, `NBA-015`, `08_GLOBAL_DATA_I18N`, `09_PRODUCT_ANALYTICS`는 별도 계획에서 구현 완료된 이력으로만 남긴다.
 
 실제 source of truth는 `BE/prisma/schema.prisma`와 migration 파일이다. 이 문서는 G07에서 분리된 후보의 DB/migration 가능성만 기록한다.
 
@@ -46,6 +47,13 @@
 - `BE/prisma/migrations/20260728050000_add_line_oauth_provider/migration.sql`
 - `BE/prisma/schema.prisma`의 `User.countryCode`, `User.preferredLocale`, `User.defaultCurrencyCode`, Product/Deal `currencyCode`, Contact 글로벌 전화번호 필드, Company country/region/address 필드, `CompanyRegion`, `OAuthProvider.LINE`
 - 2026-07-29 후속 확인 기준 현재 `BE/.env` 연결 DB는 `pnpm.cmd exec prisma migrate status`에서 최신 상태로 재확인됐다.
+
+09 완료 이력의 DB source of truth:
+
+- `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/09_PRODUCT_ANALYTICS`
+- `BE/prisma/migrations/20260730090000_add_product_analytics/migration.sql`
+- `BE/prisma/schema.prisma`의 `ProductAnalyticsEventSource`, `UserActivationStatus`, `ProductAnalyticsTargetType`, `ProductAnalyticsEvent`, `UserActivationSnapshot`, `RetentionCohortSnapshot`
+- `ProductAnalyticsEvent` raw event는 365일 purge 대상이며, snapshot과 `AiProviderCallLog`는 09 purge use case에서 삭제하지 않는다.
 
 ## 2. 새 migration이 필요 없을 가능성이 높은 후보
 

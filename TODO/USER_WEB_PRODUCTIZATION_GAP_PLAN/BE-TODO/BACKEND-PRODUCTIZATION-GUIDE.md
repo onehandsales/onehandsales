@@ -1,7 +1,7 @@
 # Backend Productization Guide
 
 상태: Draft Guide
-최종 업데이트: 2026-07-29
+최종 업데이트: 2026-07-30
 
 ## 0. 완료 반영
 
@@ -19,6 +19,8 @@
 - [x] `NBA-004` MeetingNote detail subset, `NBA-011` provider log subset active backend gap 종료
 - [x] Global Data I18N backend/API/DB 구현 완료
 - [x] `08_GLOBAL_DATA_I18N` active backend gap 종료
+- [x] Product Analytics backend/API/DB 구현 완료
+- [x] `09_PRODUCT_ANALYTICS` active backend gap 종료
 
 ## 1. 목적
 
@@ -26,7 +28,7 @@
 
 이 문서는 구현 지시서가 아니며, 새 endpoint나 migration을 바로 만들기 위한 계약 문서도 아니다.
 
-Backend 판단 기준은 MVP 기능 추가가 아니라 Global B2C 첫 판매 gate다. 현지화 데이터의 기본 구현은 08에서 닫혔고, 결제/구독, Admin 운영, 제품 분석, 정책/감사, 운영 신뢰는 판매 전에 별도 계획으로 계약화해야 한다.
+Backend 판단 기준은 MVP 기능 추가가 아니라 Global B2C 첫 판매 gate다. 현지화 데이터의 기본 구현은 08에서 닫혔고, 제품 분석 foundation은 09에서 닫혔다. 결제/구독, Admin 운영, 정책/감사, 운영 신뢰와 billing-linked conversion/churn 지표는 판매 전에 별도 계획으로 계약화해야 한다.
 
 ## 2. 현재 Backend 구현 요약
 
@@ -44,6 +46,7 @@ Backend 판단 기준은 MVP 기능 추가가 아니라 Global B2C 첫 판매 ga
 | Notification | list/read/settings/browser-push API, 일정/딜/Google-origin schedule reminder 생성, due processor, delivery attempt |
 | Search | integrated search |
 | Trash | list/detail/restore, Schedule restore |
+| Product analytics | collector API, ProductAnalyticsEvent raw event, server event recorder, activation/retention snapshot, AI usage summary |
 | Admin | `/admin/api/me` only |
 
 ## 3. Backend gap 판단 표
@@ -66,7 +69,7 @@ Backend 판단 기준은 MVP 기능 추가가 아니라 Global B2C 첫 판매 ga
 | MeetingNote provider audit 잔여 | 공통 `AiProviderCallLog` 기반 provider log subset 구현 완료. 별도 raw/transcript table 없음 | Admin/internal 조회, raw access reason, retention/cleanup, privacy policy | 후속 정책 전 구현 금지 |
 | Admin operation | `/admin/api/me` 외 없음 | masking, raw access reason, audit log, support flow | 첫 판매 전 별도 큰 계획 필요 |
 | Payment/subscription | 없음 | plan, entitlement, payment provider, admin ops | 첫 판매 전 별도 큰 계획 필요 |
-| Product analytics | 없음 | event taxonomy, data pipeline, privacy. `09_PRODUCT_ANALYTICS`부터 작업 필요 | 첫 판매 전 별도 계획 필요 |
+| Product analytics | 09 foundation 구현 완료 | Admin analytics dashboard/API, billing/paywall/churn runtime source, 모바일/PWA 세부 event 연결 | foundation 완료, 11/12/10 후속 전 확장 금지 |
 
 ## 4. API 계약 원칙
 
@@ -91,7 +94,7 @@ Backend/API 구현이 필요하면 아래를 먼저 만족해야 한다.
 ## 6. Backend 관점 권장 순서
 
 1. Global B2C 첫 판매 gate에 필요한 Backend/API/DB/운영 항목인지 확인한다.
-2. 결제, Admin, 정책/감사, 제품 분석, 운영 신뢰를 먼저 큰 bundle로 분리한다. 앱 다국어/다국가 데이터 기본 범위는 08 완료 이력으로 본다.
+2. 결제, Admin, 정책/감사, 운영 신뢰를 먼저 큰 bundle로 분리한다. 앱 다국어/다국가 데이터 기본 범위는 08 완료 이력, 제품 분석 foundation은 09 완료 이력으로 본다.
 3. 제품화 UX에서 실제 필요한 API gap인지 확인한다.
 4. 개인정보/보안/운영 정책이 얽힌 후보를 먼저 정책으로 확정한다.
-5. ImportJob, Weekly Schedule Report, Notification, Google Calendar Integration, Deal Activity Timeline, MeetingNote AI Provider Log, Global Data I18N은 완료됐고, Admin, Payment, Analytics, 운영 신뢰는 각각 별도 계획으로 분리한다.
+5. ImportJob, Weekly Schedule Report, Notification, Google Calendar Integration, Deal Activity Timeline, MeetingNote AI Provider Log, Global Data I18N, Product Analytics foundation은 완료됐고, Admin, Payment, 운영 신뢰, billing-linked analytics dashboard는 각각 별도 계획으로 분리한다.

@@ -1,6 +1,6 @@
 # Coverage Matrix
 
-상태: Draft / 01~08 Done / 09 Next
+상태: Draft / 01~09 Done / 10 Next
 
 ## 0. 완료 반영
 
@@ -16,7 +16,7 @@
 - [x] 06 `DealActivity Timeline`: Done (2026-07-26)
 - [x] 07 `MeetingNote AI Provider Log`: Done (2026-07-26)
 - [x] 08 `Global Data I18N`: Done (2026-07-28, DB 최신 상태 2026-07-29 재확인)
-- [ ] 09 `Product Analytics`: Next
+- [x] 09 `Product Analytics`: Done (2026-07-30)
 - [x] First-sale gate 반영: `NBA-014`, Product UX gate, Trust/policy gate, `NBA-007`은 `COMMON/FIRST-SALE-GATE-MAP.md`에 선행/횡단 기준으로 고정
 
 ## 1. 목적
@@ -74,10 +74,10 @@
 | Global | 글로벌 UX writing | 08 | Done: 핵심 `/app` 문구/에러/empty `ko-KR`/`en`. 직접 keying 축소는 polish 후보 |
 | Global auth | Apple login | 08, 10 | Done for 08 implementation. 2026-07-29 사용자 확인 기준 Apple 운영 설정과 실제 OAuth 동작 완료. iOS native는 10과 연결 |
 | Global auth | LINE login | 08 | Done for 08 implementation. 2026-07-29 사용자 확인 기준 LINE 운영 설정과 실제 OAuth 동작 완료 |
-| Analytics | Event taxonomy | 09 | Next: signup, activation, core action |
-| Analytics | Activation/retention/funnel/churn | 09 | paid conversion 포함 |
-| Analytics | AI usage/cost/user | 09 | 05/07/12와 연결 |
-| Growth | paywall/trial/coupon/referral/churn survey 실험 | 09, 12 | 분석/실험은 09, billing 적용은 12 |
+| Analytics | Event taxonomy | 09 | Done: `app_route_viewed`, signup, core server action, billing reserved taxonomy 분리 완료 |
+| Analytics | Activation/retention/funnel/churn | 09, 12 | 09 Done: activation/retention snapshot과 runtime funnel foundation 완료. paid conversion/churn runtime source는 12 Billing 구현 후 연결 |
+| Analytics | AI usage/cost/user | 09 | Done: `AiProviderCallLog` 기반 user/day/operation summary foundation 완료. Admin 화면은 11 |
+| Growth | paywall/trial/coupon/referral/churn survey 실험 | 09, 12 | 09 Done: reserved event 이름과 runtime 제외 경계 확정. 실제 paywall/billing 적용과 churn survey flow는 12 |
 | Mobile | PWA | 10 | manifest, service worker, install |
 | Mobile | 모바일 명함 촬영 | 10 | camera capture |
 | Mobile | BusinessCard OCR provider failure/error contract | 10, 11 | 사용자 UX는 10, 운영 추적은 11 |
@@ -97,13 +97,13 @@
 | Ops/Admin | Provider failure log | 11 | OpenAI/OCR/STT/Calendar/Push |
 | Billing | Pricing/plan/trial | 12 | 첫 판매 전 결정 |
 | Billing | Subscription/entitlement | 12 | plan별 기능/AI 제한 |
-| Billing | Paywall/upgrade flow | 12, 09 | 사용자 제한/전환 UX는 12, funnel 분석은 09 |
-| Billing | AI usage plan/overage | 12, 05, 07, 09 | 제한/과금은 12, 사용량 발생은 05/07, 비용 분석은 09 |
+| Billing | Paywall/upgrade flow | 12, 09 | 09에서 reserved taxonomy를 분리했다. 사용자 제한/전환 UX와 실제 billing event 발생은 12 |
+| Billing | AI usage plan/overage | 12, 05, 07, 09 | 09에서 비용 분석 foundation 완료. 제한/과금과 overage 정책은 12 |
 | Billing | Payment provider/webhook | 12 | Merchant of Record 우선, Stripe 직접 결제 2순위 |
 | Billing | Failed payment recovery | 12, 11 | 결제 실패 복구 UX/API는 12, 운영 대응은 11 |
 | Billing | Tax/invoice/refund/chargeback | 12 | 국가별 판매 정책 |
-| Billing | Coupon/referral | 12, 09 | 결제 적용은 12, 실험/분석은 09 |
-| Billing | Churn survey/cancel reason | 12, 09 | 해지 flow는 12, churn 분석은 09 |
+| Billing | Coupon/referral | 12, 09 | 09에서 reserved taxonomy/foundation만 확정했다. 결제 적용과 실험 운영은 12 |
+| Billing | Churn survey/cancel reason | 12, 09 | 09에서 reserved taxonomy/foundation만 확정했다. 해지 flow, survey source, billing-linked churn 분석은 12 이후 연결 |
 | Billing | Billing Admin 연동 | 11, 12 | 화면 운영은 11, 결제 도메인은 12 |
 
 ## 3. 누락 판단 규칙

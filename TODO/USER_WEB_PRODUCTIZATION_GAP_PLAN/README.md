@@ -2,7 +2,7 @@
 
 상태: Draft Guide
 작성일: 2026-07-20
-최종 업데이트: 2026-07-29
+최종 업데이트: 2026-07-30
 성격: 제품화 gap 판단 가이드
 
 ## 0. 완료 반영 체크리스트
@@ -22,9 +22,10 @@
 - [x] `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/07_MEETING_NOTE_AI_PROVIDER_LOG` 구현 및 QA closeout
 - [x] Global Data I18N (`08_GLOBAL_DATA_I18N`)
 - [x] `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/08_GLOBAL_DATA_I18N` 구현 및 QA closeout
+- [x] Product Analytics foundation (`09_PRODUCT_ANALYTICS`)
+- [x] `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/09_PRODUCT_ANALYTICS` 구현 및 QA closeout
 - [ ] Admin 운영 API/화면
 - [ ] 결제/구독/세금
-- [ ] 제품 분석 (`09_PRODUCT_ANALYTICS`부터 작업 필요)
 
 ## 1. 목적
 
@@ -83,7 +84,8 @@
 부족한 핵심 축:
 
 - 제품화 수준의 최종 UX/UI 완성도 판단
-- 첫 판매 기준인 Global B2C 유료 판매를 위한 결제/구독, 세금/컴플라이언스, Admin 운영, 제품 분석, 정책/신뢰/DB 운영 gate
+- 첫 판매 기준인 Global B2C 유료 판매를 위한 결제/구독, 세금/컴플라이언스, Admin 운영, 정책/신뢰/DB 운영 gate
+- 09에서 닫히지 않은 Admin analytics dashboard와 billing 기반 paid conversion/churn 분석 연결
 - Series A급 고급 리텐션/AI/모바일 현장 사용성
 - Admin 운영 API 같은 후속 기능의 우선순위 확정
 
@@ -104,7 +106,7 @@
 
 - 실제 Google provider smoke는 env 준비 후 운영 확인 단계에서 실행한다.
 - Google export/write, realtime webhook/watch, 반복 일정 정식 모델, 여러 Google 계정 동시 연결은 새 계획 없이는 확장하지 않는다.
-- 첫 판매 전 핵심 gap은 여전히 결제/구독/세금, Admin 운영, 제품 분석, 정책/신뢰/DB 운영 gate다.
+- 첫 판매 전 핵심 gap은 여전히 결제/구독/세금, Admin 운영, 정책/신뢰/DB 운영 gate다. 제품 분석 foundation은 09에서 닫혔고, Admin dashboard와 billing conversion/churn 연결은 후속이다.
 
 ## 3.2 `06_DEAL_ACTIVITY_TIMELINE` 반영 기준
 
@@ -126,7 +128,7 @@
 - 수동 activity 삭제, retention, audit 정책
 - MeetingNote 목록 latest/next summary
 - MeetingNote Admin provider audit, retention/cleanup, raw access policy
-- 첫 판매 전 핵심 gap인 결제/구독/세금, Admin 운영, 제품 분석, backup/restore와 운영 DB 적용 절차
+- 첫 판매 전 핵심 gap인 결제/구독/세금, Admin 운영, backup/restore와 운영 DB 적용 절차, 그리고 09 범위 밖에 남은 Admin analytics/Billing conversion 연결
 
 ## 3.3 `07_MEETING_NOTE_AI_PROVIDER_LOG` 반영 기준
 
@@ -167,7 +169,32 @@
 - 08 DB migration 최신 상태는 2026-07-29 재확인 완료. LINE/Apple provider 설정값 연결과 실제 OAuth 동작도 2026-07-29 사용자 확인 기준 운영 완료
 - 추가 국가/통화/전화번호 포맷, 국가별 세금/약관/가격 정책
 - app i18n legacy static fallback을 직접 translation key로 줄이는 polish
-- 결제/구독, Admin 운영, 제품 분석, backup/restore와 장애 대응 기준
+- 결제/구독, Admin 운영, backup/restore와 장애 대응 기준, 그리고 09 범위 밖에 남은 Admin analytics/Billing conversion 연결
+
+## 3.5 `09_PRODUCT_ANALYTICS` 반영 기준
+
+`TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/09_PRODUCT_ANALYTICS`는 2026-07-30 G08 QA closeout 기준으로 Completed다. 이 제품화 갭 문서에서는 제품 분석 foundation을 더 이상 미구현 gap으로 보지 않는다.
+
+완료로 반영할 User Web/제품 흐름:
+
+- 보호된 `/app` route 진입 시 `app_route_viewed` client event를 보낸다.
+- route path는 routeKey allowlist로 변환되고, UUID path param과 raw query는 payload에 들어가지 않는다.
+- User Web은 `eventName`, `eventVersion`, `payload.routeKey`만 보내며 user/session/device/time/source/target/idempotency field를 보내지 않는다.
+- `VITE_PRODUCT_ANALYTICS_ENABLED="true"`일 때만 전송한다.
+- analytics 수집 실패는 사용자 화면에 표시하지 않는다.
+
+완료로 반영할 Backend/제품 판단 기반:
+
+- signup, core action, route view를 allowlist event taxonomy로 수집한다.
+- activation과 D1/D7/D30 retention snapshot을 계산할 수 있다.
+- `AiProviderCallLog` 기반 AI usage/cost summary를 계산할 수 있다.
+- billing/paywall/churn event는 12에서 최종 구현하도록 reserved taxonomy로만 남겼다.
+
+남은 제품화 gap으로 분리할 범위:
+
+- Admin analytics dashboard/API는 `11_ADMIN_OPERATION` 범위다.
+- 실제 paywall, subscription, churn survey, paid conversion source event는 `12_BILLING_SUBSCRIPTION_TAX` 범위다.
+- 모바일/PWA 현장 사용 맥락의 세부 event는 10 또는 별도 후속 분석 계획에서 결정한다.
 
 ## 4. 문서 구성
 
@@ -200,10 +227,11 @@
 - 완료된 MeetingNote AI Provider Log 범위를 넘어서는 회의록 목록 summary, 자동 follow-up 발송/알림, Admin provider audit 조회, 별도 transcript/raw provider response table
 - 완료된 Deal Activity Timeline 범위를 넘어서는 범용 activity bus, Company/Contact/Product latest summary, activity deletion/retention/audit 정책
 - 완료된 Global Data I18N 범위를 넘어서는 신규 국가/통화/provider, `/app` locale prefix, 추가 DB migration 실행
+- 완료된 Product Analytics 범위를 넘어서는 Admin analytics dashboard, billing/paywall/churn runtime event, 모바일/PWA 세부 analytics event
 
 위 항목은 제품화 우선순위와 UX/UI 방향을 확정한 뒤 별도 계획에서 다룬다.
 
-단, 결제/구독, Admin 운영, 제품 분석, 세금/컴플라이언스, 정책/운영 신뢰는 단순 후순위가 아니다. 특히 `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/09_PRODUCT_ANALYTICS` 이후 슬롯은 아직 작업 필요 상태이며, Global B2C 첫 판매 gate에 포함되는 별도 큰 계획으로 분리해서 다룬다.
+단, 결제/구독, Admin 운영, 세금/컴플라이언스, 정책/운영 신뢰는 단순 후순위가 아니다. `09_PRODUCT_ANALYTICS` foundation은 완료됐지만, Admin analytics dashboard와 billing-linked conversion/churn flow는 각각 11/12의 별도 큰 계획으로 다룬다.
 
 ## 7. 관련 문서
 

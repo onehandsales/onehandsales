@@ -1,7 +1,7 @@
 # Current vs Final Gap Matrix
 
 상태: Draft Guide
-최종 업데이트: 2026-07-29
+최종 업데이트: 2026-07-30
 
 ## 0. 완료 반영
 
@@ -19,6 +19,8 @@
 - [x] MeetingNote AI/STT provider log, 상세 next action/follow-up draft, User Web AI 후속 작업 UX 구현 및 QA closeout 완료
 - [x] `08_GLOBAL_DATA_I18N`: Done (2026-07-28)
 - [x] `/app` i18n, user global settings, Product/Deal currency, Contact global phone, Company country/region/address, Import/Export localization, Google/LINE/Apple auth 구현 및 QA closeout 완료
+- [x] `09_PRODUCT_ANALYTICS`: Done (2026-07-30)
+- [x] product analytics event taxonomy, collector API, User Web route event, server event, activation/retention snapshot, AI usage summary 구현 및 QA closeout 완료
 
 ## 1. Gap 분류 기준
 
@@ -54,7 +56,7 @@
 | 세금/컴플라이언스 | VAT/GST, 환불, chargeback, 국가별 약관 | 구현 없음 | 글로벌 판매 운영 계층 필요 | First-sale global gap | 첫 판매 전 필요 |
 | `/app` 다국어 | 판매 시장 기준 앱 내부 언어/문구 지원 | `/app` i18n provider/resource/formatter와 핵심 화면 `ko-KR`/`en` 번역 구현 | 기본 app 다국어 gap은 08에서 닫힘. legacy static fallback 직접 keying 축소와 시장별 UX writing polish는 후속 | Closed for 08 / UX/UI productization | 완료, polish 후속 |
 | 다국가 데이터 모델 | 전화번호, 통화, 날짜/주소가 국가별로 자연스럽다. | User country/default currency, Product/Deal currency, Contact KR/US global phone, Company country/region/address, localized import/export 구현 | 기본 global data model gap은 08에서 닫힘. 추가 국가/통화/전화번호 포맷과 세금/가격 정책은 후속 결정 | Closed for 08 / First-sale ops decision | 완료, 운영 후속 |
-| 제품 분석 | activation, retention, paid conversion, churn, AI cost를 본다. | 정본 없음 | event taxonomy, analytics pipeline 필요. `09_PRODUCT_ANALYTICS`부터 작업 필요 | First-sale global gap | 첫 판매 전 필요 |
+| 제품 분석 | activation, retention, paid conversion, churn, AI cost를 본다. | 09 foundation 구현 완료. ProductAnalyticsEvent, route/server event, activation/retention snapshot, AI usage summary가 있다 | paid conversion/churn/ARPU는 Billing source event와 Admin dashboard/API 연결 후 완성 | Closed for 09 / First-sale linked gap | foundation 완료, 11/12 연결 후속 |
 | AI next action | 딜 리스크, follow-up, 다음 행동을 추천한다. | 회의록 상세 next action/follow-up draft 구현. 딜 리스크와 고급 영업 판단 AI는 없음 | 회의록 기반 AI 후속 작업은 시작됐지만 Series A급 딜 리스크/리포트/자동화는 후속 | Series A gap | 후속 |
 | 모바일 앱/PWA | 현장 입력, 카메라, 음성, push reminder가 자연스럽다. | 모바일 브라우저 Web과 browser push UX 구현 | native 앱/PWA 패키징, 모바일 카메라/음성 최적화는 후속 | Series A gap | 후순위 |
 
@@ -77,5 +79,5 @@
 
 1. User Web 화면별 제품화 gap을 실제 화면 기준으로 다시 확인한다.
 2. MVP를 판매 버전이 아니라 Global B2C 첫 판매 gate로 가기 위한 내부 품질 기준으로 고정한다.
-3. 결제, Admin, 정책/운영 신뢰, 제품 분석, 세금/컴플라이언스를 Global B2C 첫 판매 필수 bundle로 따로 계획한다.
+3. 결제, Admin, 정책/운영 신뢰, 세금/컴플라이언스를 Global B2C 첫 판매 필수 bundle로 따로 계획한다. 제품 분석 foundation은 09에서 완료됐고, Admin dashboard와 billing-linked conversion/churn은 11/12에 연결한다.
 4. API/DB 후보는 UX/UI와 첫 판매 운영 필요성으로 확인된 것만 `confirmed` 계약으로 승격한다.

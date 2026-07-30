@@ -2,7 +2,7 @@
 
 상태: Draft
 작성일: 2026-07-20
-최종 업데이트: 2026-07-29
+최종 업데이트: 2026-07-30
 출처: `TODO/DONE/USER_WEB_RELEASE_QA_FOLLOWUP_PLAN` G07, `TODO/USER_WEB_PRODUCTIZATION_GAP_PLAN`
 
 ## 0. 완료 반영 체크리스트
@@ -19,6 +19,7 @@
 - [x] `NBA-004 MeetingNote detail next action/follow-up draft subset`: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/07_MEETING_NOTE_AI_PROVIDER_LOG`에서 구현 및 QA closeout 완료
 - [x] `NBA-011 MeetingNote AI/STT provider log subset`: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/07_MEETING_NOTE_AI_PROVIDER_LOG`에서 공통 `AiProviderCallLog` 확장으로 구현 및 QA closeout 완료
 - [x] `08_GLOBAL_DATA_I18N`: User global settings, `/app` i18n, currency/phone/region/address, import/export localization, Google/LINE/Apple auth 구현 및 QA closeout 완료
+- [x] `09_PRODUCT_ANALYTICS`: Product analytics collector API, Prisma schema, server/client event logging, activation/retention snapshot, AI usage summary 구현 및 QA closeout 완료
 - [x] Backend/API/DB/User Web 영향 반영 완료
 - [x] 완료 기록: `TODO_LOG/2026-07-21/G04_IMPORT_JOB_PERSISTENCE_QA_CLEANUP/WORK_LOG.md`
 - [x] 완료 기록: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/03_WEEKLY_SCHEDULE_REPORT/COMMON/TODO_LOG.md`
@@ -27,6 +28,7 @@
 - [x] 완료 기록: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/06_DEAL_ACTIVITY_TIMELINE/COMMON/GOAL-SPECS/G07_QA_REVIEW_CLOSEOUT.md`
 - [x] 완료 기록: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/07_MEETING_NOTE_AI_PROVIDER_LOG/COMMON/GOAL-SPECS/G06_QA_REVIEW_CLOSEOUT.md`
 - [x] 완료 기록: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/08_GLOBAL_DATA_I18N/COMMON/GOAL-SPECS/G10_QA_DOCUMENT_CLOSEOUT.md`
+- [x] 완료 기록: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/09_PRODUCT_ANALYTICS/COMMON/GOAL-SPECS/G08_QA_DOCUMENT_CLOSEOUT.md`
 - [ ] 나머지 NBA 후보 계약 확정 및 구현 여부 판단
 
 ## 1. 목적
@@ -50,7 +52,8 @@ G07의 산출물이므로 이 문서는 구현 계획 확정본이 아니다. �
 - `NBA-001`, `NBA-002`, `NBA-008`, `NBA-003`의 Deal latest activity subset은 2026-07-26 기준 `06_DEAL_ACTIVITY_TIMELINE`에서 구현 및 QA closeout이 완료되어 active backlog 후보에서 제외한다.
 - `NBA-004` MeetingNote detail next action/follow-up draft subset과 `NBA-011` MeetingNote provider log subset은 2026-07-26 기준 `07_MEETING_NOTE_AI_PROVIDER_LOG`에서 구현 및 QA closeout이 완료되어 active backlog 후보에서 제외한다.
 - `08_GLOBAL_DATA_I18N`은 2026-07-28 기준 구현 및 QA closeout이 완료되어 first-sale global data/API gap에서 제외한다. 2026-07-29 `BE/.env` 연결 DB도 `prisma migrate status` 기준 최신 상태로 재확인했다. 같은 날 사용자 확인 기준 LINE/Apple provider 설정값 연결과 실제 OAuth 동작도 운영 환경에서 완료됐다.
-- Trash private memo backend restriction, MeetingNote 목록 summary, MeetingNote Admin provider audit/retention, Trash 7일 이후 복구 정책, Admin 운영 UX/API는 남은 후보다.
+- `09_PRODUCT_ANALYTICS`는 2026-07-30 기준 구현 및 QA closeout이 완료되어 first-sale product analytics foundation gap에서 제외한다. Admin analytics UI/API는 11, billing/paywall/churn runtime conversion source는 12에서 다룬다.
+- Trash private memo backend restriction, MeetingNote 목록 summary, MeetingNote Admin provider audit/retention, Trash 7일 이후 복구 정책, Admin 운영 UX/API, Billing 연동 conversion/churn flow는 남은 후보다.
 
 ## 2.1 `NBA-015` 반영 기준
 
@@ -138,6 +141,27 @@ G07의 산출물이므로 이 문서는 구현 계획 확정본이 아니다. �
 - 실제 LINE/Apple OAuth provider smoke는 2026-07-29 사용자 확인 기준 Supabase provider 설정과 provider secret 설정 후 운영 환경에서 완료됐다.
 - 추가 국가/통화/전화번호 포맷, `/app` 직접 translation key 전환, Google/LINE/Apple 외 신규 provider, `/app` locale route prefix는 새 계약 없이 확장하지 않는다.
 
+## 2.5 `09_PRODUCT_ANALYTICS` 반영 기준
+
+`TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/09_PRODUCT_ANALYTICS`는 2026-07-30 G08 QA closeout 기준으로 Completed다. 이 백로그에서는 제품 분석 기반 API/DB/User Web 항목을 active 후보가 아니라 완료 이력으로만 유지한다.
+
+완료로 반영할 Backend/API/DB/User Web 영향:
+
+- `ProductAnalyticsEvent`, `UserActivationSnapshot`, `RetentionCohortSnapshot` Prisma schema와 migration 구현
+- `POST /api/analytics/events` client event collector API 구현. 인증 context에서 user/session/device/timezone을 보강하고 client request의 user/session/time/source/target/idempotency field를 거절한다.
+- User Web `VITE_PRODUCT_ANALYTICS_ENABLED` flag, routeKey mapper, `useAppRouteAnalytics` hook, `/api/analytics/events` client 구현
+- auth/deal/schedule/meeting-note/business-card/import/export 성공 server event를 best-effort로 기록
+- activation snapshot과 D1/D7/D30 retention snapshot batch, 365일 raw event purge 구현
+- `AiProviderCallLog` 기반 AI usage summary use case와 repository query 구현. prompt/raw response/provider raw response/email/displayName은 조회하지 않는다.
+- billing/paywall/churn event 이름은 reserved taxonomy로만 남기고 09 runtime allowlist에서는 제외
+- Backend `prisma:validate`, `prisma:generate`, `typecheck`, `lint`, `test`, `build`, User Web `typecheck`, `lint`, `test`, `build`, analytics E2E 검증 통과
+
+남은 백로그로 오해하지 않을 범위:
+
+- Admin analytics dashboard/API는 09 범위가 아니며 `11_ADMIN_OPERATION`에서 다룬다.
+- 실제 paywall, subscription, churn survey, paid conversion source event 발생은 09 범위가 아니며 `12_BILLING_SUBSCRIPTION_TAX`에서 다룬다.
+- 모바일/PWA route/source 세부 event는 10 또는 별도 후속 분석 계획에서 결정한다.
+
 ## 3. 우선순위 분류 기준
 
 | 분류 | 의미 |
@@ -165,7 +189,7 @@ G07의 산출물이므로 이 문서는 구현 계획 확정본이 아니다. �
 - Prisma schema 또는 migration 추가
 - seed 수정 또는 운영/공유 DB migration 실행
 - Admin API 구현
-- 완료된 Notification/Weekly Schedule Report/Google Calendar Integration/Deal Activity Timeline/MeetingNote AI Provider Log/Global Data I18N 범위를 넘어서는 새 알림 endpoint, Admin provider failure UI, PDF/범용 ExportJob, 반복 일정, AI 요약, Google Calendar export/write/realtime webhook, 범용 activity bus, MeetingNote 자동 저장/자동 발송, 신규 auth provider, `/app` locale prefix 구현
+- 완료된 Notification/Weekly Schedule Report/Google Calendar Integration/Deal Activity Timeline/MeetingNote AI Provider Log/Global Data I18N/Product Analytics 범위를 넘어서는 새 알림 endpoint, Admin provider failure UI, PDF/범용 ExportJob, 반복 일정, AI 요약, Google Calendar export/write/realtime webhook, 범용 activity bus, MeetingNote 자동 저장/자동 발송, 신규 auth provider, `/app` locale prefix, analytics Admin dashboard, billing/paywall/churn runtime event 구현
 - User Web에서 `/admin/api/*` 호출 추가
 - FE 단독 page size 변경
 
