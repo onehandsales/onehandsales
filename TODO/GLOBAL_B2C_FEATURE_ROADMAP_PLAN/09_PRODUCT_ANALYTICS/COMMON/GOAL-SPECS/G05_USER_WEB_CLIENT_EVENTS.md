@@ -1,6 +1,6 @@
 # G05 User Web Client Events
 
-상태: Ready
+상태: Completed
 목표: User Web core `/app` route view client event wrapper를 구현한다.
 
 ## 1. 목적
@@ -138,12 +138,34 @@ pnpm run build
 
 ## 12. Goal 검토 체크리스트
 
-- [ ] core `/app` route만 tracking한다.
-- [ ] public/auth route는 tracking하지 않는다.
-- [ ] legacy redirect route는 tracking하지 않는다.
-- [ ] redirect-only route는 tracking하지 않는다.
-- [ ] `VITE_PRODUCT_ANALYTICS_ENABLED`가 `true`일 때만 전송한다.
-- [ ] `AGENT/SOFTWARE_AGENT/COMMON/ENVIRONMENT.md`에 신규 Vite 환경 변수가 반영되어 있다.
-- [ ] UUID path param과 raw query가 payload에 없다.
-- [ ] analytics failure가 사용자에게 보이지 않는다.
-- [ ] FE 신규/수정 코드에 `// 기능 : ...` 주석이 있다.
+- [x] core `/app` route만 tracking한다.
+- [x] public/auth route는 tracking하지 않는다.
+- [x] legacy redirect route는 tracking하지 않는다.
+- [x] redirect-only route는 tracking하지 않는다.
+- [x] `VITE_PRODUCT_ANALYTICS_ENABLED`가 `true`일 때만 전송한다.
+- [x] `AGENT/SOFTWARE_AGENT/COMMON/ENVIRONMENT.md`에 신규 Vite 환경 변수가 반영되어 있다.
+- [x] UUID path param과 raw query가 payload에 없다.
+- [x] analytics failure가 사용자에게 보이지 않는다.
+- [x] FE 신규/수정 코드에 `// 기능 : ...` 주석이 있다.
+
+## 13. 구현 결과
+
+- `FE/user-web/src/features/analytics`에 API client, hook, routeKey mapper, type/index 파일을 추가했다.
+- `FE/user-web/src/components/layout/app-shell.tsx`에서 `useAppRouteAnalytics`를 한 번만 호출한다.
+- `FE/user-web/src/lib/env.ts`에 `productAnalyticsEnabled`를 추가했다.
+- `AGENT/SOFTWARE_AGENT/COMMON/ENVIRONMENT.md`에 `VITE_PRODUCT_ANALYTICS_ENABLED`를 추가했다.
+- Unit test: `FE/user-web/src/features/analytics/**/*.test.ts(x)`
+- E2E smoke: `FE/user-web/tests/e2e/product-analytics-route.spec.ts`
+
+검증 결과:
+
+```powershell
+cd FE/user-web
+pnpm run test -- src/features/analytics
+pnpm run typecheck
+pnpm run lint
+pnpm run build
+pnpm run test:e2e:analytics
+```
+
+모두 통과.

@@ -110,12 +110,14 @@ VITE_API_URL
 VITE_SUPABASE_URL
 VITE_SUPABASE_ANON_KEY
 VITE_SUPABASE_REDIRECT_URL
+VITE_PRODUCT_ANALYTICS_ENABLED
 ```
 
 기본 local 기준:
 
 - `VITE_API_URL`: `http://localhost:3000`
 - `VITE_SUPABASE_REDIRECT_URL`: `http://localhost:5173/auth/callback`
+- `VITE_PRODUCT_ANALYTICS_ENABLED`: 기본 비활성. 운영 배포에서 User Web route 분석을 보낼 때만 `true`로 둔다.
 
 ## Admin Web
 

@@ -188,8 +188,10 @@ API 산출물:
 
 테스트 기준:
 
-- route key mapper unit test
-- User Web E2E 또는 mock API test
+- route key mapper unit test: `FE/user-web/src/features/analytics/utils/analytics-route-key.test.ts`
+- API client mock test: `FE/user-web/src/features/analytics/api/analytics-api.test.ts`
+- env disabled hook test: `FE/user-web/src/features/analytics/hooks/use-app-route-analytics.test.tsx`
+- User Web E2E route change smoke: `FE/user-web/tests/e2e/product-analytics-route.spec.ts`
 - `cd FE/user-web && pnpm run typecheck`
 - `cd FE/user-web && pnpm run lint`
 - `cd FE/user-web && pnpm run build`
@@ -203,6 +205,15 @@ API 산출물:
 - `AGENT/SOFTWARE_AGENT/COMMON/ENVIRONMENT.md`에 `VITE_PRODUCT_ANALYTICS_ENABLED`가 반영된다.
 - UUID path param/raw query가 payload에 없다.
 - analytics failure가 사용자 UX를 막지 않는다.
+
+구현 결과:
+
+- `FE/user-web/src/features/analytics` feature를 추가했다.
+- `trackAnalyticsEvent`는 `/api/analytics/events`에 `eventName`, `eventVersion`, `payload.routeKey`만 보낸다.
+- `resolveProductAnalyticsRouteKey`는 static/create route를 dynamic detail route보다 먼저 매칭하고 redirect-only route를 제외한다.
+- `useAppRouteAnalytics`는 `VITE_PRODUCT_ANALYTICS_ENABLED="true"`일 때만 전송하며 같은 직전 routeKey 중복을 막고 실패를 catch한다.
+- `AppShell`에 hook을 1회 연결했다.
+- FE `pnpm run test -- src/features/analytics`, `pnpm run typecheck`, `pnpm run lint`, `pnpm run build`, `pnpm run test:e2e:analytics` 통과.
 
 ## G06 Snapshot Retention Batch
 

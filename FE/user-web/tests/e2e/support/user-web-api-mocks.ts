@@ -74,6 +74,7 @@ export async function setupUserWebApiMocks(
 ) {
   const store = options.store ?? createStore();
   const protectedRequests: ApiRequestRecord[] = [];
+  const analyticsEvents: unknown[] = [];
 
   await page.route("**/*", async (route) => {
     const url = new URL(route.request().url());
@@ -109,11 +110,22 @@ export async function setupUserWebApiMocks(
     }
 
     await delayApiResponse(options.delayMs, { authorization, method, pathname: url.pathname });
+
+    // 기능 : 제품 분석 collector request를 저장하고 성공 응답을 반환합니다.
+    if (url.pathname === "/api/analytics/events" && method === "POST") {
+      analyticsEvents.push(await readJsonBody(route));
+      await fulfill(route, json({ accepted: true }));
+      return;
+    }
+
     const response = await handleApiRequest(store, route, method, url);
     await fulfill(route, response);
   });
 
   return {
+    analyticsEvents() {
+      return [...analyticsEvents];
+    },
     protectedRequestsWithoutAuthorization() {
       return protectedRequests.filter((request) => request.authorization === null);
     },

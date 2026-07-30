@@ -1,6 +1,6 @@
 # Goal Completion Checklist
 
-상태: G04 Completed
+상태: G05 Completed
 최종 업데이트: 2026-07-30
 
 ## 1. 목적
@@ -17,7 +17,7 @@
 | [x] | G02 DB Schema Event Foundation | Completed | 2026-07-30 | Prisma schema/migration/repository 기반 | `ProductAnalyticsEvent`/snapshot schema, migration COMMENT, AnalyticsModule/repository/date/taxonomy/input policy, DB_SCHEMA 문서, BE prisma validate/generate/typecheck/lint/product-analytics test | G03 blocking 없음 |
 | [x] | G03 Analytics Collector API | Completed | 2026-07-30 | `POST /api/analytics/events` 구현 | AuthGuard controller, request DTO, collect use case, payload/routeKey/PII validation, session/device/timezone enrichment, BE test/typecheck/lint | G04 blocking 없음 |
 | [x] | G04 Server Event Logging | Completed | 2026-07-30 | 핵심 server event 기록 지점 연결 | `ProductAnalyticsEventRecorder`, AnalyticsRecorderModule wiring, auth/deal/schedule/meeting-note/business-card/data-import/export server event 연결, requestId 전달, BE typecheck/lint/targeted test | G05 blocking 없음 |
-| [ ] | G05 User Web Client Events | Not Started |  | core `/app` route view wrapper 구현 |  |  |
+| [x] | G05 User Web Client Events | Completed | 2026-07-30 | core `/app` route view wrapper 구현 | `features/analytics` API/client hook/route mapper, AppShell 연결, `VITE_PRODUCT_ANALYTICS_ENABLED`, User Web unit/E2E/typecheck/lint/build | G06 blocking 없음 |
 | [ ] | G06 Snapshot Retention Batch | Not Started |  | activation/retention snapshot 계산 |  |  |
 | [ ] | G07 AI Usage And Billing Reserved | Not Started |  | AI usage 요약과 billing reserved 정리 |  |  |
 | [ ] | G08 QA Document Closeout | Not Started |  | 검증과 문서 closeout |  |  |
@@ -87,12 +87,12 @@
 
 ### G05 User Web Client Events
 
-- [ ] `features/analytics` API client가 생겼다.
-- [ ] route view hook/wrapper가 core `/app` route만 추적한다.
-- [ ] raw URL/query/UUID param이 payload에 없다.
-- [ ] public/auth/legacy redirect route는 추적하지 않는다.
-- [ ] `AGENT/SOFTWARE_AGENT/COMMON/ENVIRONMENT.md`에 `VITE_PRODUCT_ANALYTICS_ENABLED`가 반영됐다.
-- [ ] analytics 실패가 사용자에게 보이지 않는다.
+- [x] `features/analytics` API client가 생겼다.
+- [x] route view hook/wrapper가 core `/app` route만 추적한다.
+- [x] raw URL/query/UUID param이 payload에 없다.
+- [x] public/auth/legacy redirect route는 추적하지 않는다.
+- [x] `AGENT/SOFTWARE_AGENT/COMMON/ENVIRONMENT.md`에 `VITE_PRODUCT_ANALYTICS_ENABLED`가 반영됐다.
+- [x] analytics 실패가 사용자에게 보이지 않는다.
 
 ### G06 Snapshot Retention Batch
 
@@ -134,3 +134,4 @@
 - 2026-07-30: G02 DB Schema Event Foundation 완료. Prisma event/snapshot schema와 migration COMMENT, AnalyticsModule/repository/date/taxonomy/input policy를 추가했고, DB_SCHEMA 문서를 갱신했다. BE `pnpm run prisma:validate`, `pnpm run prisma:generate`, `pnpm run test -- product-analytics`, `pnpm run typecheck`, `pnpm run lint`를 통과했다.
 - 2026-07-30: G03 Analytics Collector API 완료. `POST /api/analytics/events`에 AuthGuard, DTO, use case, routeKey/surface allowlist, PII key 차단, authSession/authDevice/timezone 보강을 연결했다. BE `pnpm run test -- analytics`, `pnpm run typecheck`, `pnpm run lint`를 통과했다.
 - 2026-07-30: G04 Server Event Logging 완료. `ProductAnalyticsEventRecorder`와 AnalyticsRecorderModule을 추가하고 auth/deal/schedule/meeting-note/business-card/data-import/company/contact/product server event 기록 지점을 연결했다. HTTP controller requestId 전달, payload allowlist/PII 차단, best-effort warning log를 검증했고 BE `pnpm run typecheck`, `pnpm run lint`, `pnpm run test -- auth deal schedule meeting-note business-card data-import analytics`를 통과했다.
+- 2026-07-30: G05 User Web Client Events 완료. `FE/user-web/src/features/analytics`에 collector API client, routeKey mapper, `useAppRouteAnalytics` hook을 추가하고 `AppShell`에 1회 연결했다. `VITE_PRODUCT_ANALYTICS_ENABLED`가 `true`일 때만 `app_route_viewed`를 보내며 public/auth/legacy/redirect-only route와 raw query/UUID payload를 제외했다. FE `pnpm run test -- src/features/analytics`, `pnpm run typecheck`, `pnpm run lint`, `pnpm run build`, `pnpm run test:e2e:analytics`를 통과했다.

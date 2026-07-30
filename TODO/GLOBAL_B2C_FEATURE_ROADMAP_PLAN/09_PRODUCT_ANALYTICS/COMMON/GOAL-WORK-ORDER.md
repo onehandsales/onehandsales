@@ -74,6 +74,6 @@ G01_DOCUMENT_CONTRACT_SYNC
 ## 4. 현재 상태
 
 ```text
-G01~G04 완료. G05~G08 미착수.
-다음 착수 대상은 G05_USER_WEB_CLIENT_EVENTS이다.
+G01~G05 완료. G06~G08 미착수.
+다음 착수 대상은 G06_SNAPSHOT_RETENTION_BATCH이다.
 ```

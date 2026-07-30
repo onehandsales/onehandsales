@@ -593,6 +593,11 @@ async function handleApiRequest(
     return json({ groups: [] });
   }
 
+  // 기능 : 제품 분석 collector request를 smoke 테스트에서 조용히 수락합니다.
+  if (path === "/api/analytics/events" && method === "POST") {
+    return json({ accepted: true });
+  }
+
   if (path === "/api/me" && method === "GET") {
     return json(createE2EAuthUser());
   }

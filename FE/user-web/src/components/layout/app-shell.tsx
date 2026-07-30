@@ -26,6 +26,7 @@ import {
   X,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useAppRouteAnalytics } from "@/features/analytics";
 import { useAuthSession } from "@/features/auth";
 import {
   resolvePublicSiteLanguage,
@@ -206,6 +207,7 @@ function ProductDetailHeader({ productId }: { readonly productId: string }) {
 
 export function AppShell() {
   const { pathname } = useLocation();
+  useAppRouteAnalytics();
   const navigate = useNavigate();
   const { logout, user } = useAuthSession();
   const { t } = useAppI18n();

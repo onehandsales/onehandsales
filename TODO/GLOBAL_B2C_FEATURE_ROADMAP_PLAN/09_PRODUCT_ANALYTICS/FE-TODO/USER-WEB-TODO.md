@@ -1,6 +1,6 @@
 # User Web TODO
 
-상태: Confirmed Plan
+상태: G05 Completed
 
 ## 1. 09 User Web 목표
 
@@ -144,3 +144,11 @@ FE는 아래 값을 보내지 않는다.
 - analytics API 실패가 화면 전환과 mutation 성공 UX를 막지 않는다.
 - 신규/수정 FE 코드에 `// 기능 : ...` 한국어 주석이 있다.
 - `AGENT/SOFTWARE_AGENT/COMMON/ENVIRONMENT.md`에 신규 Vite 환경 변수가 반영되어 있다.
+
+## 8. 구현 결과
+
+- `FE/user-web/src/features/analytics`에 `trackAnalyticsEvent`, `useAppRouteAnalytics`, routeKey mapper, analytics type을 추가했다.
+- `FE/user-web/src/components/layout/app-shell.tsx`에 route analytics hook을 한 번만 연결했다.
+- `FE/user-web/src/lib/env.ts`와 `AGENT/SOFTWARE_AGENT/COMMON/ENVIRONMENT.md`에 `VITE_PRODUCT_ANALYTICS_ENABLED`를 반영했다.
+- `app_route_viewed` request는 `eventName`, `eventVersion`, `payload.routeKey`만 포함한다. `surface`, user/session/device id, raw query, UUID path param은 보내지 않는다.
+- `pnpm run test -- src/features/analytics`, `pnpm run typecheck`, `pnpm run lint`, `pnpm run build`, `pnpm run test:e2e:analytics`를 통과했다.
