@@ -69,7 +69,7 @@ interface CreateProductAnalyticsEventInput {
 }
 ```
 
-Repository 입력에서 `idempotencyKey`가 nullable인 이유는 `source=CLIENT` event가 null을 사용하기 때문이다. `source=SERVER` recorder는 G04/G03 계약에 따라 non-empty string을 검증한 뒤 repository를 호출한다.
+Repository 입력에서 `idempotencyKey`가 nullable인 이유는 G03 `source=CLIENT` event가 null을 사용하기 때문이다. G04 `source=SERVER` recorder는 non-empty string을 검증한 뒤 repository를 호출한다.
 
 ## 6. Response 계약
 

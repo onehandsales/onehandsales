@@ -139,6 +139,15 @@ Event별 target, idempotencyKey, payload field 타입은 `COMMON/EVENT-TAXONOMY.
 
 ## 9. 구현 지점
 
+- `AuthController.exchange`
+- `DealController`의 딜 생성, 다음 행동 생성, export handler
+- `ScheduleController`의 일정 생성/수정 handler
+- `MeetingNoteController`의 회의록 생성/수정/딜 연결 handler
+- `BusinessCardController.confirmScanLog`
+- `ImportJobController.confirmImportJob`
+- `CompanyController.exportCompaniesXlsx`
+- `ContactController.exportContactsXlsx`
+- `ProductController.exportProductsXlsx`
 - `ExchangeExternalAuthTokenUseCase`
 - `DealApplicationService`
 - `ScheduleApplicationService`

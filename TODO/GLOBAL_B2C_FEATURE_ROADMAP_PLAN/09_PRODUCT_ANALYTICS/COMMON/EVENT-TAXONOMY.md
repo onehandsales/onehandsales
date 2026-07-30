@@ -1,13 +1,15 @@
 # Event Taxonomy
 
 상태: Confirmed
-최종 업데이트: 2026-07-29
+최종 업데이트: 2026-07-30
 
 ## 1. 목적
 
 09에서 실제로 저장할 제품 분석 event 이름, source, target, idempotencyKey, payload schema를 고정한다.
 
 이 문서에 없는 event는 09 runtime에서 저장하지 않는다. Billing/paywall/churn event는 아래 `Reserved`에만 두고 실제 발생은 12에서 확정한다.
+
+2026-07-30 G01 재검토 결과, runtime event set은 변경하지 않고 아래 allowlist를 유지한다.
 
 ## 2. 공통 저장 규칙
 

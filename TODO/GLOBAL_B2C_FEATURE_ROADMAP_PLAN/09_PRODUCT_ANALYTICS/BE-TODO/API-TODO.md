@@ -7,7 +7,7 @@
 | Method | Path | 목적 | 상태 |
 |---|---|---|---|
 | `POST` | `/api/analytics/events` | User Web client event 수집 | 09 구현 |
-| 내부 | `ProductAnalyticsRecorder.recordServerEvent` | server-side domain event 기록 | 09 구현 |
+| 내부 | `ProductAnalyticsEventRecorder.recordServerEvent` | server-side domain event 기록 | 09 구현 |
 | 내부/runner | `ProcessProductAnalyticsSnapshotsUseCase` | activation/retention snapshot 계산 | 09 구현 |
 | 내부/runner | `PurgeProductAnalyticsRawEventsUseCase` | 365일 초과 raw event batch hard delete | 09 구현 |
 | 내부 | `AiProviderCallLog` query | 사용자별 AI usage 계산 | 09 구현 |
@@ -69,11 +69,13 @@ BE/src/modules/analytics/
 
 - HTTP API가 아니다.
 - auth/deal/schedule/meeting-note/business-card/data-import/company/contact/product application service/use case가 성공 후 명시적으로 호출한다.
+- HTTP에서 발생한 server event는 기존 controller가 `RequestWithRequestId.requestId`를 application input에 전달한다.
 - transaction에 묶지 않는다. 제품 기능 성공 후 best-effort로 기록한다.
 - 실패하면 `analytics.event.recordFailed` structured warning log만 남긴다.
 - 모든 server event는 idempotencyKey를 필수로 사용해 retry/중복 호출 시 같은 event가 중복 저장되지 않게 한다.
 - server event recorder도 `ProductAnalyticsRepository.findAuthDeviceIdBySessionId`로만 device를 보강한다.
 - server event recorder도 `resolveProductAnalyticsEventDate(occurredAt, command.timeZone)` helper로 `eventDate`를 계산한다.
+- background/internal 흐름만 `requestId=null`을 사용한다.
 
 ## 4. Server Event 기록 지점 구현 대상
 

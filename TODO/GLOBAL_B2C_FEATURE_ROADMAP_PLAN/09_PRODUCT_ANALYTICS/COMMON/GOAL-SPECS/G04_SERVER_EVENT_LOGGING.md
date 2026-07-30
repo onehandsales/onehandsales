@@ -12,6 +12,7 @@ G04는 activation과 core usage의 정본이 되는 server event를 실제 제�
 - server event recorder service
 - auth/deal/schedule/meeting-note/business-card/data-import/company/contact/product module provider wiring
 - auth/deal/schedule/meeting-note/business-card/import/export 성공 event 연결
+- HTTP controller에서 `RequestWithRequestId.requestId`를 application input으로 전달
 - recorder failure best-effort 처리
 - domain service spec
 
@@ -27,24 +28,27 @@ G04는 activation과 core usage의 정본이 되는 server event를 실제 제�
 1. `ProductAnalyticsEventRecorder`를 application service로 만든다.
 2. server event allowlist와 payload schema를 구현한다.
 3. `auth.module.ts`, `deal.module.ts`, `schedule.module.ts`, `meeting-note.module.ts`, `business-card.module.ts`, `data-import.module.ts`, `company.module.ts`, `contact.module.ts`, `product.module.ts`에 recorder dependency를 주입한다.
-4. `ExchangeExternalAuthTokenUseCase.execute`에서 신규 User 생성 branch에만 `auth_signup_completed`를 기록한다.
-5. `DealApplicationService.createDeal`에서 `deal_created`와 초기 다음 행동이 생성된 경우 `deal_next_action_created`를 기록한다.
-6. `DealApplicationService.createFollowingActionLog`에서 `deal_next_action_created`를 기록한다.
-7. `ScheduleApplicationService.createSchedule`에서 `schedule_created`와 신규 딜 연결별 `schedule_deal_linked`를 기록한다.
-8. `ScheduleApplicationService.updateSchedule`에서 새로 추가된 딜 연결별 `schedule_deal_linked`만 기록한다.
-9. `MeetingNoteApplicationService.createMeetingNote`에서 `meeting_note_created`와 신규 딜 연결별 `meeting_note_deal_linked`를 기록한다.
-10. `MeetingNoteApplicationService.updateMeetingNote`에서 새로 추가된 딜 연결별 `meeting_note_deal_linked`만 기록한다.
-11. `MeetingNoteApplicationService.linkMeetingNoteDeals`에서 `dealsToLink`별 `meeting_note_deal_linked`를 기록한다.
-12. `BusinessCardApplicationService.confirmScanLog`에서 `business_card_scan_confirmed`를 기록한다.
-13. `DataImportApplicationService.confirmImportJob`에서 `import_confirmed`를 기록한다.
-14. `CompanyApplicationService.exportCompaniesXlsx`, `ContactApplicationService.exportContactsXlsx`, `ProductApplicationService.exportProductsXlsx`, `DealApplicationService.exportDealsXlsx`에서 `export_downloaded`를 기록한다.
-15. recorder 호출은 try/catch로 감싸 제품 API 성공을 막지 않는다.
-16. idempotencyKey를 event별로 부여한다.
-17. recorder 실패 시 warning log만 남긴다.
+4. server event가 필요한 기존 HTTP controller method는 `@Req() request: RequestWithRequestId`를 받아 application input에 `requestId`를 전달한다.
+5. `ExchangeExternalAuthTokenUseCase.execute`에서 신규 User 생성 branch에만 `auth_signup_completed`를 기록한다.
+6. `DealApplicationService.createDeal`에서 `deal_created`와 초기 다음 행동이 생성된 경우 `deal_next_action_created`를 기록한다.
+7. `DealApplicationService.createFollowingActionLog`에서 `deal_next_action_created`를 기록한다.
+8. `ScheduleApplicationService.createSchedule`에서 `schedule_created`와 신규 딜 연결별 `schedule_deal_linked`를 기록한다.
+9. `ScheduleApplicationService.updateSchedule`에서 새로 추가된 딜 연결별 `schedule_deal_linked`만 기록한다.
+10. `MeetingNoteApplicationService.createMeetingNote`에서 `meeting_note_created`와 신규 딜 연결별 `meeting_note_deal_linked`를 기록한다.
+11. `MeetingNoteApplicationService.updateMeetingNote`에서 새로 추가된 딜 연결별 `meeting_note_deal_linked`만 기록한다.
+12. `MeetingNoteApplicationService.linkMeetingNoteDeals`에서 `dealsToLink`별 `meeting_note_deal_linked`를 기록한다.
+13. `BusinessCardApplicationService.confirmScanLog`에서 `business_card_scan_confirmed`를 기록한다.
+14. `DataImportApplicationService.confirmImportJob`에서 `import_confirmed`를 기록한다.
+15. `CompanyApplicationService.exportCompaniesXlsx`, `ContactApplicationService.exportContactsXlsx`, `ProductApplicationService.exportProductsXlsx`, `DealApplicationService.exportDealsXlsx`에서 `export_downloaded`를 기록한다.
+16. recorder 호출은 try/catch로 감싸 제품 API 성공을 막지 않는다.
+17. idempotencyKey를 event별로 부여한다.
+18. recorder 실패 시 warning log만 남긴다.
 
 ## 5. Request 계약
 
-HTTP request는 없다.
+신규 HTTP request는 없다.
+
+기존 HTTP handler에서 발생하는 server event는 `RequestWithRequestId.requestId`를 internal request로 넘긴다. Controller가 없는 background/internal 흐름만 `requestId=null`을 사용한다.
 
 Internal request:
 
@@ -127,6 +131,7 @@ Backend:
 
 - recorder class/interface: `// 역할 : ...`
 - recorder method: `// 기능 : server 분석 이벤트를 allowlist 기준으로 저장합니다.`
+- controller requestId 전달부: `// 기능 : HTTP request id를 server 분석 이벤트 추적용으로 전달합니다.`
 - auth/deal/schedule/meeting-note/business-card/data-import/company/contact/product use case에서 recorder 호출 전 numbered step comment를 둔다.
 - catch block에는 사용자 응답을 막지 않는 이유를 짧은 한국어 주석으로 남긴다.
 - server event `eventDate` 저장은 G02의 `resolveProductAnalyticsEventDate`, `toProductAnalyticsDateOnlyDate` helper만 사용한다.
@@ -146,5 +151,6 @@ pnpm run test -- auth deal schedule meeting-note business-card data-import analy
 - [ ] server event payload에 PII/raw text가 없다.
 - [ ] activation 필수 event가 기록된다.
 - [ ] idempotencyKey가 중복 event를 막는다.
+- [ ] HTTP에서 발생한 server event는 `RequestWithRequestId.requestId`를 recorder command로 전달한다.
 - [ ] log에 payload 원문이 남지 않는다.
 - [ ] 신규/수정 코드에 한국어 주석이 있다.

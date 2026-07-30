@@ -2,6 +2,7 @@
 
 상태: Confirmed
 확정일: 2026-07-29
+최종 업데이트: 2026-07-30
 
 ## 1. 원칙
 
@@ -73,5 +74,6 @@ G01_DOCUMENT_CONTRACT_SYNC
 ## 4. 현재 상태
 
 ```text
-G01~G08 미착수. 문서 계약은 작성 완료.
+G01 완료. G02~G08 미착수.
+다음 착수 대상은 G02_DB_SCHEMA_EVENT_FOUNDATION이다.
 ```

@@ -145,6 +145,14 @@ model ProductAnalyticsEvent {
 - `eventName`, `eventVersion`, `payloadJson` 구조는 domain taxonomy 파일과 API spec이 같은 내용을 말해야 한다.
 - 계정 삭제 hard delete 시 `ProductAnalyticsEvent`는 user relation cascade 또는 삭제 job으로 반드시 제거된다.
 
+Event name 동기화 기준:
+
+- `ProductAnalyticsEvent.eventName`은 DB enum이 아니라 string으로 둔다. event 의미 변경 시 `eventVersion` 또는 신규 event name으로 대응하기 위해서다.
+- 09 runtime 저장 allowlist 정본은 `COMMON/EVENT-TAXONOMY.md`다.
+- 09 runtime client event는 `app_route_viewed`만 저장한다.
+- 09 runtime server event는 `auth_signup_completed`, `deal_created`, `deal_next_action_created`, `schedule_created`, `schedule_deal_linked`, `meeting_note_created`, `meeting_note_deal_linked`, `business_card_scan_confirmed`, `import_confirmed`, `export_downloaded`만 저장한다.
+- `paywall_viewed`, `upgrade_clicked`, `trial_started`, `coupon_applied`, `referral_invited`, `subscription_started`, `subscription_canceled`, `churn_survey_submitted`는 09 runtime allowlist에 넣지 않고 12 Billing reserved로만 둔다.
+
 ## 4. UserActivationSnapshot
 
 ```prisma

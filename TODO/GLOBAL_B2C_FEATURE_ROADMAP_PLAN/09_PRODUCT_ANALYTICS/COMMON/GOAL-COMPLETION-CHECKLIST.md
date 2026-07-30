@@ -1,7 +1,7 @@
 # Goal Completion Checklist
 
-상태: Not Started
-최종 업데이트: 2026-07-29
+상태: G01 Completed
+최종 업데이트: 2026-07-30
 
 ## 1. 목적
 
@@ -13,7 +13,7 @@
 
 | 완료 | Goal | 상태 | 완료일 | 완료 기준 | 증거 | 비고 |
 |---|---|---|---|---|---|---|
-| [ ] | G01 Document Contract Sync | Not Started |  | 현재 코드/문서 대조와 blocking 해소 |  |  |
+| [x] | G01 Document Contract Sync | Completed | 2026-07-30 | 현재 코드/문서 대조와 blocking 해소 | G01 실행 결과, DB-SCHEMA event name 동기화, rg 검색, BE prisma validate | G02~G08 blocking 없음 |
 | [ ] | G02 DB Schema Event Foundation | Not Started |  | Prisma schema/migration/repository 기반 |  |  |
 | [ ] | G03 Analytics Collector API | Not Started |  | `POST /api/analytics/events` 구현 |  |  |
 | [ ] | G04 Server Event Logging | Not Started |  | 핵심 server event 기록 지점 연결 |  |  |
@@ -43,11 +43,11 @@
 
 ### G01 Document Contract Sync
 
-- [ ] 09 확정 결정과 현재 BE/FE/Prisma 구조를 대조했다.
-- [ ] `AuthSession`, `AuthDevice`, `AiProviderCallLog` 현재 구조를 확인했다.
-- [ ] Admin analytics가 11 범위임을 다시 확인했다.
-- [ ] Billing/paywall/churn이 12 범위임을 다시 확인했다.
-- [ ] `COMMON/API-SPEC`, `BE-TODO`, `FE-TODO`, `DB-SCHEMA` event 이름이 일치한다.
+- [x] 09 확정 결정과 현재 BE/FE/Prisma 구조를 대조했다.
+- [x] `AuthSession`, `AuthDevice`, `AiProviderCallLog` 현재 구조를 확인했다.
+- [x] Admin analytics가 11 범위임을 다시 확인했다.
+- [x] Billing/paywall/churn이 12 범위임을 다시 확인했다.
+- [x] `COMMON/API-SPEC`, `BE-TODO`, `FE-TODO`, `DB-SCHEMA` event 이름이 일치한다.
 
 ### G02 DB Schema Event Foundation
 
@@ -125,3 +125,6 @@
 ## 5. 현재 기록
 
 - 2026-07-29: 09 구현 전 `/goal` 착수용 문서 작성. 구현은 아직 시작하지 않았다.
+- 2026-07-30: G01 Document Contract Sync 완료. UXUI/SOFTWARE/PM/Prisma/BE/FE/Admin/10/11/12 경계를 확인했고, `DB-SCHEMA.md`에 event name 동기화 기준을 보완했다. 검증은 rg 검색과 BE `pnpm run prisma:validate`를 통과했다. G02~G08 착수 blocking 질문은 없다.
+- 2026-07-30: G01 재검토 완료. 상위 README/GOAL-WORK-ORDER 상태를 G01 완료 기준으로 동기화했고, AI usage `groupBy=DAY`가 필요한 `User.timeZone` 조회 계약을 `AI_USAGE_ANALYTICS_CONTRACT.md`와 `G07_AI_USAGE_AND_BILLING_RESERVED.md`에 보완했다.
+- 2026-07-30: G01 추가 재검토 완료. `ProductAnalyticsEventRecorder` 명칭을 BE TODO와 G04 명세 사이에 맞췄고, G04 server event 구현 범위에 HTTP controller `RequestWithRequestId.requestId` 전달 작업과 controller spec 검증 기준을 추가했다. G02 idempotency 설명에서 G03/G04 역할을 분리했다.

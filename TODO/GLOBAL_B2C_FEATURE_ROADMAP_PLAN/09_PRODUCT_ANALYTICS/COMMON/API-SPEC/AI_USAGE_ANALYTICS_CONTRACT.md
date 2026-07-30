@@ -89,18 +89,21 @@ Response field:
 1. `AiProviderCallLog.startedAt`을 UTC 기간 조건으로 조회한다.
 2. 모든 groupBy는 사용자별 집계를 기본으로 한다.
 3. `groupBy=DAY`는 현재 `User.timeZone`으로 `startedAt`을 `YYYY-MM-DD`로 변환해 계산한다.
-4. 기존 `AiProviderCallLog`에는 event 당시 timezone이 없으므로 09 AI usage day는 billing source of truth가 아니라 Admin 참고용 read model이다.
-5. status별 count는 `SUCCEEDED`, `FAILED`, `PENDING`, `CANCELED`를 분리해 계산한다.
-6. token과 estimated cost는 null을 0으로 보고 합산한다.
-7. prompt/raw response/provider raw response는 조회하지 않는다.
-8. Admin API 노출은 11에서 권한과 masking 기준을 추가한 뒤 연결한다.
+4. `User` 조회는 `id`와 `timeZone` 확인에만 사용하고 email, phone, displayName 같은 식별 정보는 조회/로그에 포함하지 않는다.
+5. 기존 `AiProviderCallLog`에는 event 당시 timezone이 없으므로 09 AI usage day는 billing source of truth가 아니라 Admin 참고용 read model이다.
+6. status별 count는 `SUCCEEDED`, `FAILED`, `PENDING`, `CANCELED`를 분리해 계산한다.
+7. token과 estimated cost는 null을 0으로 보고 합산한다.
+8. prompt/raw response/provider raw response는 조회하지 않는다.
+9. Admin API 노출은 11에서 권한과 masking 기준을 추가한 뒤 연결한다.
 
 ## 5. 연결된 DB 스키마
 
-- 조회: AiProviderCallLog
+- 조회: AiProviderCallLog, User
 - 생성: 없음
 - 수정: 없음
 - transaction: 없음
+
+`User`는 `groupBy=DAY`의 현재 timezone 계산용으로만 읽는다.
 
 ## 6. Transaction
 

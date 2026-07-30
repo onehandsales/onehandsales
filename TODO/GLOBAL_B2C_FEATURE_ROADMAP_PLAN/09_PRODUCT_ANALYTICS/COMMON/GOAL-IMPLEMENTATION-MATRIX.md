@@ -123,6 +123,15 @@ API 산출물:
 
 수정 대상:
 
+- `BE/src/modules/auth/presentation/http/auth.controller.ts`: `auth_signup_completed` requestId 전달
+- `BE/src/modules/deal/presentation/http/deal.controller.ts`: deal/export server event requestId 전달
+- `BE/src/modules/schedule/presentation/http/schedule.controller.ts`: schedule server event requestId 전달
+- `BE/src/modules/meeting-note/presentation/http/meeting-note.controller.ts`: meeting-note server event requestId 전달
+- `BE/src/modules/business-card/presentation/http/business-card.controller.ts`: business-card server event requestId 전달
+- `BE/src/modules/data-import/presentation/http/import-job.controller.ts`: import server event requestId 전달
+- `BE/src/modules/company/presentation/http/company.controller.ts`: export server event requestId 전달
+- `BE/src/modules/contact/presentation/http/contact.controller.ts`: export server event requestId 전달
+- `BE/src/modules/product/presentation/http/product.controller.ts`: export server event requestId 전달
 - `BE/src/modules/auth/application/use-cases/exchange-external-auth-token.use-case.ts`: `auth_signup_completed`
 - `BE/src/modules/deal/application/services/deal-application.service.ts`: `createDeal`, `createFollowingActionLog`, `exportDealsXlsx`
 - `BE/src/modules/schedule/application/services/schedule-application.service.ts`: `createSchedule`, `updateSchedule`
@@ -144,6 +153,7 @@ API 산출물:
 
 테스트 기준:
 
+- 수정된 controller spec에서 `RequestWithRequestId.requestId`가 application input으로 전달되는지 확인
 - auth/deal/schedule/meeting-note/business-card/data-import/company/contact/product service spec에서 recorder mock 호출 확인
 - recorder failure가 product mutation success를 막지 않는 spec
 
