@@ -15,6 +15,7 @@ G06은 raw event를 실제 KPI 계산에 쓸 수 있게 snapshot으로 만든다
 - D1/D7/D30 retention 계산
 - `RetentionCohortSnapshot` upsert
 - optional processor runner
+- 환경 변수 정본 문서 갱신
 - 365일 raw event purge use case
 - 관련 repository query
 
@@ -33,8 +34,9 @@ G06은 raw event를 실제 KPI 계산에 쓸 수 있게 snapshot으로 만든다
 4. `RetentionCohortSnapshot` upsert를 만든다.
 5. optional setInterval runner를 만든다.
 6. env flag와 batch size를 추가한다.
-7. raw event 365일 purge use case를 만든다.
-8. snapshot/purge log를 count/date 중심으로 남긴다.
+7. `AGENT/SOFTWARE_AGENT/COMMON/ENVIRONMENT.md`의 Backend 환경 변수 목록에 snapshot/purge env를 추가한다.
+8. raw event 365일 purge use case를 만든다.
+9. snapshot/purge log를 count/date 중심으로 남긴다.
 
 ## 5. Request 계약
 
@@ -201,6 +203,7 @@ pnpm run test -- analytics
 - [ ] retention은 사용자 timezone 기준 eventDate를 사용한다.
 - [ ] `RetentionCohortSnapshot`은 userId를 저장하지 않는다.
 - [ ] optional runner가 env flag로 켜지고 꺼진다.
+- [ ] `AGENT/SOFTWARE_AGENT/COMMON/ENVIRONMENT.md`에 snapshot/purge 환경 변수가 반영되어 있다.
 - [ ] purge는 365일 기준이다.
 - [ ] log에 payload 원문/user list가 없다.
 - [ ] 신규/수정 코드에 한국어 주석이 있다.

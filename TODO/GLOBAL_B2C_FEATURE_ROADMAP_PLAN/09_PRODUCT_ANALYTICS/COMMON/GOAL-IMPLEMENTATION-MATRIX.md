@@ -176,6 +176,7 @@ API 산출물:
 - `FE/user-web/src/features/analytics/utils/analytics-route-key.ts`
 - `FE/user-web/src/components/layout/app-shell.tsx`
 - `FE/user-web/src/lib/env.ts`
+- `AGENT/SOFTWARE_AGENT/COMMON/ENVIRONMENT.md`
 
 참조 대상:
 
@@ -195,6 +196,7 @@ API 산출물:
 - public/auth/legacy redirect route는 전송되지 않는다.
 - `/app/contacts/scan`, `/app/meeting-notes/new`, `/app/export` redirect-only route는 전송되지 않는다.
 - `VITE_PRODUCT_ANALYTICS_ENABLED="true"`일 때만 User Web client event가 전송된다.
+- `AGENT/SOFTWARE_AGENT/COMMON/ENVIRONMENT.md`에 `VITE_PRODUCT_ANALYTICS_ENABLED`가 반영된다.
 - UUID path param/raw query가 payload에 없다.
 - analytics failure가 사용자 UX를 막지 않는다.
 
@@ -210,6 +212,7 @@ API 산출물:
 - `BE/src/modules/analytics/application/ports/product-analytics.repository.ts`
 - `BE/src/modules/analytics/infrastructure/persistence/prisma-product-analytics.repository.ts`
 - `BE/src/modules/analytics/infrastructure/analytics.module.ts`
+- `AGENT/SOFTWARE_AGENT/COMMON/ENVIRONMENT.md`
 
 환경 변수:
 
@@ -230,6 +233,7 @@ API 산출물:
 - `UserActivationSnapshot`이 activation 기준으로 upsert된다.
 - `RetentionCohortSnapshot`이 userId 없이 aggregate로 upsert된다.
 - `PurgeProductAnalyticsRawEventsUseCase`가 365일 초과 raw event만 batch hard delete한다.
+- `AGENT/SOFTWARE_AGENT/COMMON/ENVIRONMENT.md`에 snapshot/purge 환경 변수가 반영된다.
 
 ## G07 AI Usage And Billing Reserved
 

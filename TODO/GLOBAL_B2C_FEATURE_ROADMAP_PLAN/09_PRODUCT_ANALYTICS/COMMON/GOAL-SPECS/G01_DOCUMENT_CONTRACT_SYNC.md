@@ -1,6 +1,6 @@
 # G01 Document Contract Sync
 
-상태: Ready
+상태: Completed
 목표: 09 구현 전 현재 코드와 문서 계약을 대조하고 blocking을 해소한다.
 
 ## 1. 목적

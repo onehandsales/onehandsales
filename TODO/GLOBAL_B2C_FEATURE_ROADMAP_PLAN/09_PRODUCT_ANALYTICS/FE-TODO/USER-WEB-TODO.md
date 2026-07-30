@@ -29,6 +29,7 @@ FE/user-web/src/features/analytics/
 - `FE/user-web/src/lib/env.ts`
 - `FE/user-web/src/lib/api-client.ts`
 - `FE/user-web/src/features/auth/auth-provider.tsx`
+- `AGENT/SOFTWARE_AGENT/COMMON/ENVIRONMENT.md`
 
 ## 3. Client Event API
 
@@ -123,6 +124,7 @@ FE는 아래 값을 보내지 않는다.
 - `apiClient`를 사용하되 analytics 실패는 catch 후 사용자에게 표시하지 않는다.
 - `console.log`를 남기지 않는다.
 - `FE/user-web/src/lib/env.ts`에 `productAnalyticsEnabled`를 추가한다.
+- `AGENT/SOFTWARE_AGENT/COMMON/ENVIRONMENT.md`의 User Web 환경 변수 목록에 `VITE_PRODUCT_ANALYTICS_ENABLED`를 추가한다.
 - `VITE_PRODUCT_ANALYTICS_ENABLED="true"`일 때만 `useAppRouteAnalytics`가 event를 전송한다.
 - `development/test` 기본값은 비활성이다. 운영 배포 환경에서만 `VITE_PRODUCT_ANALYTICS_ENABLED=true`를 명시한다.
 - test는 `VITE_PRODUCT_ANALYTICS_ENABLED="false"` 상태에서 API client mock으로 route mapper와 hook 호출 조건을 검증한다.
@@ -141,3 +143,4 @@ FE는 아래 값을 보내지 않는다.
 - route 변경 시 한 번만 event가 전송된다.
 - analytics API 실패가 화면 전환과 mutation 성공 UX를 막지 않는다.
 - 신규/수정 FE 코드에 `// 기능 : ...` 한국어 주석이 있다.
+- `AGENT/SOFTWARE_AGENT/COMMON/ENVIRONMENT.md`에 신규 Vite 환경 변수가 반영되어 있다.

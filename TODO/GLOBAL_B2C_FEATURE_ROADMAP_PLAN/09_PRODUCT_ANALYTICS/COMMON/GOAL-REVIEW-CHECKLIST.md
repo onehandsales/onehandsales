@@ -14,6 +14,7 @@
 - [ ] 기존 migration 파일을 수정하지 않았다.
 - [ ] 운영/공유 DB migrate/seed를 무단 실행하지 않았다.
 - [ ] 신규/수정 코드에 한국어 주석 규칙이 적용됐다.
+- [ ] 신규/수정 환경 변수는 `AGENT/SOFTWARE_AGENT/COMMON/ENVIRONMENT.md`에 반영됐다.
 - [ ] 실행한 검증 command와 결과가 기록됐다.
 - [ ] 실행하지 못한 검증은 사유를 기록했다.
 

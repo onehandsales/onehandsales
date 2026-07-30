@@ -91,6 +91,7 @@
 - [ ] route view hook/wrapper가 core `/app` route만 추적한다.
 - [ ] raw URL/query/UUID param이 payload에 없다.
 - [ ] public/auth/legacy redirect route는 추적하지 않는다.
+- [ ] `AGENT/SOFTWARE_AGENT/COMMON/ENVIRONMENT.md`에 `VITE_PRODUCT_ANALYTICS_ENABLED`가 반영됐다.
 - [ ] analytics 실패가 사용자에게 보이지 않는다.
 
 ### G06 Snapshot Retention Batch
@@ -98,6 +99,7 @@
 - [ ] activation snapshot upsert가 구현됐다.
 - [ ] D1/D7/D30 retention cohort snapshot이 구현됐다.
 - [ ] optional processor runner가 env flag로 켜지고 꺼진다.
+- [ ] `AGENT/SOFTWARE_AGENT/COMMON/ENVIRONMENT.md`에 snapshot/purge 환경 변수가 반영됐다.
 - [ ] 365일 raw event purge use case가 있다.
 - [ ] snapshot log는 count/date 중심이고 payload 원문을 남기지 않는다.
 
@@ -128,3 +130,4 @@
 - 2026-07-30: G01 Document Contract Sync 완료. UXUI/SOFTWARE/PM/Prisma/BE/FE/Admin/10/11/12 경계를 확인했고, `DB-SCHEMA.md`에 event name 동기화 기준을 보완했다. 검증은 rg 검색과 BE `pnpm run prisma:validate`를 통과했다. G02~G08 착수 blocking 질문은 없다.
 - 2026-07-30: G01 재검토 완료. 상위 README/GOAL-WORK-ORDER 상태를 G01 완료 기준으로 동기화했고, AI usage `groupBy=DAY`가 필요한 `User.timeZone` 조회 계약을 `AI_USAGE_ANALYTICS_CONTRACT.md`와 `G07_AI_USAGE_AND_BILLING_RESERVED.md`에 보완했다.
 - 2026-07-30: G01 추가 재검토 완료. `ProductAnalyticsEventRecorder` 명칭을 BE TODO와 G04 명세 사이에 맞췄고, G04 server event 구현 범위에 HTTP controller `RequestWithRequestId.requestId` 전달 작업과 controller spec 검증 기준을 추가했다. G02 idempotency 설명에서 G03/G04 역할을 분리했다.
+- 2026-07-30: G01 최종 재검토 완료. G01 상세 명세 상단 상태를 Completed로 동기화했고, G05/G06 신규 환경 변수는 `AGENT/SOFTWARE_AGENT/COMMON/ENVIRONMENT.md` 정본 갱신까지 구현 완료 조건에 포함하도록 보강했다. event/routeKey/reference path/BE Prisma validate 재확인을 통과했다.

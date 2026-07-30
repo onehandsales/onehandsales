@@ -182,6 +182,8 @@ PRODUCT_ANALYTICS_RETENTION_PURGE_ENABLED=false
 PRODUCT_ANALYTICS_RETENTION_PURGE_BATCH_SIZE=500
 ```
 
+G06 구현 시 위 변수는 `AGENT/SOFTWARE_AGENT/COMMON/ENVIRONMENT.md`의 Backend 환경 변수 정본에도 추가한다.
+
 기존 `NotificationDueProcessorRunner`, `AiWeeklySalesReportProcessorRunner`의 optional setInterval 패턴을 따른다.
 
 ## 8. Observability

@@ -15,6 +15,7 @@ G05는 사용자가 로그인 후 어떤 core 업무 화면을 보는지 측정�
 - route view hook/wrapper
 - AppShell 연결
 - `VITE_PRODUCT_ANALYTICS_ENABLED` runtime flag
+- 환경 변수 정본 문서 갱신
 - FE typecheck/lint/build 검증
 
 ## 3. 제외 범위
@@ -32,12 +33,13 @@ G05는 사용자가 로그인 후 어떤 core 업무 화면을 보는지 측정�
 3. route path를 routeKey allowlist로 변환하는 mapper를 만든다.
 4. `useAppRouteAnalytics` hook을 만든다.
 5. `FE/user-web/src/lib/env.ts`에 `productAnalyticsEnabled`를 추가한다.
-6. `FE/user-web/src/components/layout/app-shell.tsx`에 hook을 한 번만 연결한다.
-7. public/auth/legacy redirect route는 제외한다.
-8. `/app/contacts/scan`, `/app/meeting-notes/new`, `/app/export` redirect-only route는 제외한다.
-9. route mapper는 exact/static route와 `new`/`new/full` route를 dynamic `:id` route보다 먼저 검사한다.
-10. `VITE_PRODUCT_ANALYTICS_ENABLED="true"`가 아니면 event를 전송하지 않는다.
-11. analytics API 실패를 사용자에게 표시하지 않는다.
+6. `AGENT/SOFTWARE_AGENT/COMMON/ENVIRONMENT.md`의 User Web 환경 변수 목록에 `VITE_PRODUCT_ANALYTICS_ENABLED`를 추가한다.
+7. `FE/user-web/src/components/layout/app-shell.tsx`에 hook을 한 번만 연결한다.
+8. public/auth/legacy redirect route는 제외한다.
+9. `/app/contacts/scan`, `/app/meeting-notes/new`, `/app/export` redirect-only route는 제외한다.
+10. route mapper는 exact/static route와 `new`/`new/full` route를 dynamic `:id` route보다 먼저 검사한다.
+11. `VITE_PRODUCT_ANALYTICS_ENABLED="true"`가 아니면 event를 전송하지 않는다.
+12. analytics API 실패를 사용자에게 표시하지 않는다.
 
 ## 5. Request 계약
 
@@ -141,6 +143,7 @@ pnpm run build
 - [ ] legacy redirect route는 tracking하지 않는다.
 - [ ] redirect-only route는 tracking하지 않는다.
 - [ ] `VITE_PRODUCT_ANALYTICS_ENABLED`가 `true`일 때만 전송한다.
+- [ ] `AGENT/SOFTWARE_AGENT/COMMON/ENVIRONMENT.md`에 신규 Vite 환경 변수가 반영되어 있다.
 - [ ] UUID path param과 raw query가 payload에 없다.
 - [ ] analytics failure가 사용자에게 보이지 않는다.
 - [ ] FE 신규/수정 코드에 `// 기능 : ...` 주석이 있다.
