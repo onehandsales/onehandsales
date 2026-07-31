@@ -6,8 +6,8 @@
 
 | Goal | 상태 | 문서 |
 |---|---|---|
-| G01 | Ready | `G01_DOCUMENT_CONTRACT_SYNC.md` |
-| G02 | Ready after G01 | `G02_ADMIN_SECURITY_AUDIT_FOUNDATION.md` |
+| G01 | Completed | `G01_DOCUMENT_CONTRACT_SYNC.md` |
+| G02 | Ready | `G02_ADMIN_SECURITY_AUDIT_FOUNDATION.md` |
 | G03 | Ready after G02 | `G03_ADMIN_USER_OVERVIEW.md` |
 | G04 | Follow-up | `G04_ADMIN_DOMAIN_READONLY_TABS.md` |
 | G05 | Ready after G02 | `G05_TRASH_RETENTION_RECOVERY.md` |
@@ -17,8 +17,8 @@
 | G09 | Ready after G02 | `G09_SYSTEM_OPERATION_GATE.md` |
 | G10 | Final | `G10_QA_DOCUMENT_CLOSEOUT.md` |
 
-첫 착수 추천:
+다음 착수 추천:
 
 ```text
-/goal 11_ADMIN_OPERATION G01_DOCUMENT_CONTRACT_SYNC
+/goal 11_ADMIN_OPERATION G02_ADMIN_SECURITY_AUDIT_FOUNDATION
 ```
