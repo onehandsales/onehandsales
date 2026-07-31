@@ -1,6 +1,6 @@
 # G05 Mobile Notification Permission UX
 
-상태: Ready
+상태: Done
 
 ## 1. 목적
 
@@ -110,22 +110,50 @@ pnpm --dir FE/user-web test:e2e -- notification
 
 ## 11. Goal 검토 체크리스트
 
-- [ ] 회원가입/약관 동의로 browser push 자동 허용 처리하지 않았다.
-- [ ] `Notification.requestPermission()`은 사용자 클릭 이후에만 호출된다.
-- [ ] `granted`, `denied`, `default`, unsupported 상태 UI가 있다.
-- [ ] service notification과 marketing notification copy가 분리되어 있다.
-- [ ] endpoint/key/token이 log/analytics에 없다.
-- [ ] existing notification API를 재사용한다.
-- [ ] 신규 marketing opt-in DB/API를 만들지 않았다.
-- [ ] DB 추가/생성 없이 기존 notification model만 사용했다.
-- [ ] 새로 만들거나 의미 있게 수정한 공개 함수/핵심 함수에 한국어 주석을 적용했다.
-- [ ] Global B2C 개인 영업자 모바일 현장 업무 target을 벗어나지 않았다.
-- [ ] UX/UI 변경 전 `AGENT/UXUI_AGENT` 기준을 확인했다.
-- [ ] Software/architecture 변경 전 `AGENT/SOFTWARE_AGENT` 기준을 확인했다.
-- [ ] 360px/390px viewport에서 permission UX가 겹치지 않는다.
-- [ ] BE/FE/E2E targeted 검증 결과를 기록했다.
-- [ ] `COMMON/GOAL-REVIEW-CHECKLIST.md`를 확인했다.
+- [x] 회원가입/약관 동의로 browser push 자동 허용 처리하지 않았다.
+- [x] `Notification.requestPermission()`은 사용자 클릭 이후에만 호출된다.
+- [x] `granted`, `denied`, `default`, unsupported 상태 UI가 있다.
+- [x] service notification과 marketing notification copy가 분리되어 있다.
+- [x] endpoint/key/token이 log/analytics에 없다.
+- [x] existing notification API를 재사용한다.
+- [x] 신규 marketing opt-in DB/API를 만들지 않았다.
+- [x] DB 추가/생성 없이 기존 notification model만 사용했다.
+- [x] 새로 만들거나 의미 있게 수정한 공개 함수/핵심 함수에 한국어 주석을 적용했다.
+- [x] Global B2C 개인 영업자 모바일 현장 업무 target을 벗어나지 않았다.
+- [x] UX/UI 변경 전 `AGENT/UXUI_AGENT` 기준을 확인했다.
+- [x] Software/architecture 변경 전 `AGENT/SOFTWARE_AGENT` 기준을 확인했다.
+- [x] 360px/390px viewport에서 permission UX가 겹치지 않는다.
+- [x] BE/FE/E2E targeted 검증 결과를 기록했다.
+- [x] `COMMON/GOAL-REVIEW-CHECKLIST.md`를 확인했다.
 
 ## 12. 실행 결과
 
-구현 후 기록한다.
+완료일: 2026-07-31
+
+구현 요약:
+
+- User Web 알림 화면에서 서비스 알림 설정과 browser push 권한 UX를 분리했다.
+- `Notification.requestPermission()`은 `푸시 알림 켜기` 클릭 후 설명 dialog의 `계속` 클릭에서만 실행한다.
+- `granted`, `denied`, `default`, `unsupported` 상태별 안내 UI를 제공한다.
+- service notification과 marketing notification copy를 분리했고 신규 marketing opt-in DB/API는 만들지 않았다.
+- browser push 구독 생성/해제는 기존 notification settings/subscription API를 재사용한다.
+- endpoint/key/token은 log/analytics payload에 넣지 않는다.
+- 신규 DB migration 없이 기존 `UserNotificationSetting`, `BrowserPushSubscription` model만 사용했다.
+
+검증:
+
+```powershell
+pnpm.cmd --dir FE/user-web test -- notification
+pnpm.cmd --dir FE/user-web typecheck
+pnpm.cmd --dir FE/user-web lint
+pnpm.cmd --dir FE/user-web test:e2e -- notification
+pnpm.cmd --dir BE test -- notification
+```
+
+결과:
+
+- FE notification targeted Vitest 통과.
+- FE typecheck/lint 통과.
+- Notification permission E2E 통과.
+- BE notification targeted Jest 통과.
+- production build는 G05 권장 command가 아니어서 실행하지 않았다.

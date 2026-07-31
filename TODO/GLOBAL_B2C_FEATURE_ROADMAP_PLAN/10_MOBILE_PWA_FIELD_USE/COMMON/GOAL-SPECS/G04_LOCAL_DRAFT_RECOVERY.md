@@ -1,6 +1,6 @@
 # G04 Local Draft Recovery
 
-상태: Ready
+상태: Done
 
 ## 1. 목적
 
@@ -117,24 +117,51 @@ pnpm --dir FE/user-web test:e2e -- mobile-local-draft
 
 ## 11. Goal 검토 체크리스트
 
-- [ ] IndexedDB primary 구현이다.
-- [ ] IndexedDB unavailable fallback이 있다.
-- [ ] TTL은 저장 시점 기준 24시간이다.
-- [ ] restore prompt copy가 `작성 중이던 내용을 불러올까요?`다.
-- [ ] 버튼은 `불러오기`, `버리기`다.
-- [ ] 저장 성공/버리기/만료/schema mismatch 시 draft를 삭제한다.
-- [ ] image/audio blob/base64를 저장하지 않는다.
-- [ ] transcript 전문/provider raw response를 저장하지 않는다.
-- [ ] server draft API/DB를 만들지 않았다.
-- [ ] local draft analytics payload에 form text가 없다.
-- [ ] DB 추가/생성 없이 client local draft만 구현했다.
-- [ ] 새로 만들거나 의미 있게 수정한 공개 함수/핵심 함수에 한국어 주석을 적용했다.
-- [ ] Global B2C 개인 영업자 모바일 현장 업무 target을 벗어나지 않았다.
-- [ ] UX/UI 변경 전 `AGENT/UXUI_AGENT` 기준을 확인했다.
-- [ ] Software/architecture 변경 전 `AGENT/SOFTWARE_AGENT` 기준을 확인했다.
-- [ ] FE/E2E targeted 검증 결과를 기록했다.
-- [ ] `COMMON/GOAL-REVIEW-CHECKLIST.md`를 확인했다.
+- [x] IndexedDB primary 구현이다.
+- [x] IndexedDB unavailable fallback이 있다.
+- [x] TTL은 저장 시점 기준 24시간이다.
+- [x] restore prompt copy가 `작성 중이던 내용을 불러올까요?`다.
+- [x] 버튼은 `불러오기`, `버리기`다.
+- [x] 저장 성공/버리기/만료/schema mismatch 시 draft를 삭제한다.
+- [x] image/audio blob/base64를 저장하지 않는다.
+- [x] transcript 전문/provider raw response를 저장하지 않는다.
+- [x] server draft API/DB를 만들지 않았다.
+- [x] local draft analytics payload에 form text가 없다.
+- [x] DB 추가/생성 없이 client local draft만 구현했다.
+- [x] 새로 만들거나 의미 있게 수정한 공개 함수/핵심 함수에 한국어 주석을 적용했다.
+- [x] Global B2C 개인 영업자 모바일 현장 업무 target을 벗어나지 않았다.
+- [x] UX/UI 변경 전 `AGENT/UXUI_AGENT` 기준을 확인했다.
+- [x] Software/architecture 변경 전 `AGENT/SOFTWARE_AGENT` 기준을 확인했다.
+- [x] FE/E2E targeted 검증 결과를 기록했다.
+- [x] `COMMON/GOAL-REVIEW-CHECKLIST.md`를 확인했다.
 
 ## 12. 실행 결과
 
-구현 후 기록한다.
+완료일: 2026-07-31
+
+구현 요약:
+
+- IndexedDB primary, localStorage fallback 기반 24시간 TTL local draft 저장소를 추가했다.
+- BusinessCard confirm form과 MeetingNote create form에 restore prompt를 연결했다.
+- restore prompt copy는 `작성 중이던 내용을 불러올까요?`, action은 `불러오기`, `버리기`를 사용한다.
+- 저장 성공, 사용자 discard, 만료, schema mismatch 시 draft를 정리한다.
+- image/audio blob/base64, transcript 전문, provider raw response는 local draft에 저장하지 않는다.
+- `/api/drafts/*`, `UserDraft`, server draft sync, DB migration은 만들지 않았다.
+
+검증:
+
+```powershell
+pnpm.cmd --dir FE/user-web test -- local-draft
+pnpm.cmd --dir FE/user-web test -- business-card
+pnpm.cmd --dir FE/user-web test -- meeting-note
+pnpm.cmd --dir FE/user-web typecheck
+pnpm.cmd --dir FE/user-web lint
+pnpm.cmd --dir FE/user-web test:e2e -- mobile-local-draft
+```
+
+결과:
+
+- FE local-draft, business-card, meeting-note targeted Vitest 통과.
+- FE typecheck/lint 통과.
+- Mobile local draft E2E 통과.
+- Backend/DB 코드는 변경하지 않아 Backend 검증은 별도 실행하지 않았다.

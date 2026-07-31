@@ -1,6 +1,6 @@
 # G06 Mobile Field Analytics Events
 
-상태: Ready
+상태: Done
 
 ## 1. 목적
 
