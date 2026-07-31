@@ -19,7 +19,14 @@ import {
 } from "@/modules/meeting-note/application/ports/meeting-note.repository";
 import {
   MEETING_NOTE_AI_DRAFT_FAILED_SAFE_MESSAGE,
+  MEETING_NOTE_AUDIO_REQUIRED_SAFE_MESSAGE,
+  MEETING_NOTE_AUDIO_TOO_LARGE_SAFE_MESSAGE,
+  MEETING_NOTE_AUDIO_TYPE_UNSUPPORTED_SAFE_MESSAGE,
+  MEETING_NOTE_STT_AI_DRAFT_FAILED_SAFE_MESSAGE,
+  MEETING_NOTE_STT_PROVIDER_UNAVAILABLE_SAFE_MESSAGE,
+  MEETING_NOTE_STT_TRANSCRIPTION_FAILED_SAFE_MESSAGE,
   MeetingNoteAiDraftFailedError,
+  MeetingNoteAiDraftProviderUnavailableError,
   RelatedCompanyNotFoundError,
 } from "@/modules/meeting-note/domain/meeting-note.errors";
 import type { CurrentUserContext } from "@/shared/application/context/current-user.context";
@@ -305,6 +312,64 @@ describe("MeetingNoteAiDraftApplicationService", () => {
     expect(serializedLogInputs).not.toContain("kim@example.com");
   });
 
+  it("음성 파일 누락, 미지원 형식, 초과 크기를 G03 safe code로 거절한다", async () => {
+    const cases = [
+      {
+        audioFile: undefined,
+        code: "AUDIO_REQUIRED",
+        message: MEETING_NOTE_AUDIO_REQUIRED_SAFE_MESSAGE,
+      },
+      {
+        audioFile: {
+          buffer: Buffer.from("audio"),
+          fileName: "meeting.txt",
+          mimeType: "text/plain",
+          size: 5,
+        },
+        code: "AUDIO_TYPE_UNSUPPORTED",
+        message: MEETING_NOTE_AUDIO_TYPE_UNSUPPORTED_SAFE_MESSAGE,
+      },
+      {
+        audioFile: {
+          buffer: Buffer.from("audio"),
+          fileName: "meeting.webm",
+          mimeType: "audio/webm",
+          size: 25 * 1024 * 1024 + 1,
+        },
+        code: "AUDIO_TOO_LARGE",
+        message: MEETING_NOTE_AUDIO_TOO_LARGE_SAFE_MESSAGE,
+      },
+    ] satisfies readonly {
+      readonly audioFile: MeetingNoteDraftAudioFile | undefined;
+      readonly code: string;
+      readonly message: string;
+    }[];
+
+    for (const scenario of cases) {
+      const { aiDraftProvider, providerCallLogRepository, sttProvider, service } =
+        createFixture();
+
+      await expect(
+        service.createSttAiDraft(CURRENT_USER, {
+          audioFile: scenario.audioFile,
+          meetingLocalDateTime: "2026-06-15T09:30",
+          companies: ["company-1"],
+          contacts: ["contact-1"],
+        })
+      ).rejects.toMatchObject({
+        code: scenario.code,
+        message: scenario.message,
+        details: {
+          field: "audio",
+          retryable: true,
+        },
+      });
+      expect(sttProvider.transcribe).not.toHaveBeenCalled();
+      expect(aiDraftProvider.createTextDraft).not.toHaveBeenCalled();
+      expect(providerCallLogRepository.createProviderCallLog).not.toHaveBeenCalled();
+    }
+  });
+
   it("선택한 회사가 현재 사용자 소유가 아니면 provider를 호출하지 않는다", async () => {
     const {
       repository,
@@ -387,8 +452,8 @@ describe("MeetingNoteAiDraftApplicationService", () => {
         contacts: ["contact-1"],
       })
     ).rejects.toMatchObject({
-      code: "MeetingNoteAiDraftFailed",
-      message: MEETING_NOTE_AI_DRAFT_FAILED_SAFE_MESSAGE,
+      code: "STT_TRANSCRIPTION_FAILED",
+      message: MEETING_NOTE_STT_TRANSCRIPTION_FAILED_SAFE_MESSAGE,
     });
     expect(providerCallLogRepository.createProviderCallLog).toHaveBeenCalledTimes(
       1
@@ -401,10 +466,97 @@ describe("MeetingNoteAiDraftApplicationService", () => {
     expect(providerCallLogRepository.markProviderCallFailed).toHaveBeenCalledWith(
       expect.objectContaining({
         providerCallLogId: "provider-log-1",
-        safeErrorCode: "MeetingNoteAiDraftFailed",
+        safeErrorCode: "STT_TRANSCRIPTION_FAILED",
+        safeErrorMessage: MEETING_NOTE_STT_TRANSCRIPTION_FAILED_SAFE_MESSAGE,
         retryable: true,
       })
     );
     expect(aiDraftProvider.createTextDraft).not.toHaveBeenCalled();
+  });
+
+  it("STT provider 사용 불가를 STT_PROVIDER_UNAVAILABLE safe error로 기록한다", async () => {
+    const { aiDraftProvider, providerCallLogRepository, sttProvider, service } =
+      createFixture();
+    sttProvider.transcribe.mockRejectedValueOnce(
+      new MeetingNoteAiDraftProviderUnavailableError("api key secret")
+    );
+
+    await expect(
+      service.createSttAiDraft(CURRENT_USER, {
+        audioFile: {
+          buffer: Buffer.from("audio"),
+          fileName: "meeting.webm",
+          mimeType: "audio/webm",
+          size: 5,
+        },
+        meetingLocalDateTime: "2026-06-15T09:30",
+        companies: ["company-1"],
+        contacts: ["contact-1"],
+      })
+    ).rejects.toMatchObject({
+      code: "STT_PROVIDER_UNAVAILABLE",
+      message: MEETING_NOTE_STT_PROVIDER_UNAVAILABLE_SAFE_MESSAGE,
+    });
+    expect(providerCallLogRepository.markProviderCallFailed).toHaveBeenCalledWith(
+      expect.objectContaining({
+        providerCallLogId: "provider-log-1",
+        safeErrorCode: "STT_PROVIDER_UNAVAILABLE",
+        safeErrorMessage: MEETING_NOTE_STT_PROVIDER_UNAVAILABLE_SAFE_MESSAGE,
+        retryable: true,
+      })
+    );
+
+    const serializedLogInputs = JSON.stringify([
+      providerCallLogRepository.createProviderCallLog.mock.calls,
+      providerCallLogRepository.markProviderCallFailed.mock.calls,
+    ]);
+    expect(serializedLogInputs).not.toContain("api key secret");
+    expect(aiDraftProvider.createTextDraft).not.toHaveBeenCalled();
+  });
+
+  it("STT transcript 기반 AI draft 실패를 AI_DRAFT_FAILED safe error로 기록한다", async () => {
+    const { aiDraftProvider, providerCallLogRepository, service } =
+      createFixture();
+    aiDraftProvider.createTextDraft.mockRejectedValueOnce(
+      new MeetingNoteAiDraftFailedError("provider raw transcript secret", true)
+    );
+
+    await expect(
+      service.createSttAiDraft(CURRENT_USER, {
+        audioFile: {
+          buffer: Buffer.from("audio"),
+          fileName: "meeting.webm",
+          mimeType: "audio/webm",
+          size: 5,
+        },
+        meetingLocalDateTime: "2026-06-15T09:30",
+        companies: ["company-1"],
+        contacts: ["contact-1"],
+      })
+    ).rejects.toMatchObject({
+      code: "AI_DRAFT_FAILED",
+      message: MEETING_NOTE_STT_AI_DRAFT_FAILED_SAFE_MESSAGE,
+    });
+    expect(providerCallLogRepository.markProviderCallSucceeded).toHaveBeenCalledWith(
+      expect.objectContaining({
+        providerCallLogId: "provider-log-1",
+        requestId: "stt-1",
+      })
+    );
+    expect(providerCallLogRepository.markProviderCallFailed).toHaveBeenCalledWith(
+      expect.objectContaining({
+        providerCallLogId: "provider-log-2",
+        safeErrorCode: "AI_DRAFT_FAILED",
+        safeErrorMessage: MEETING_NOTE_STT_AI_DRAFT_FAILED_SAFE_MESSAGE,
+        retryable: true,
+      })
+    );
+
+    const serializedLogInputs = JSON.stringify([
+      providerCallLogRepository.createProviderCallLog.mock.calls,
+      providerCallLogRepository.markProviderCallFailed.mock.calls,
+    ]);
+    expect(serializedLogInputs).not.toContain("녹취 transcript");
+    expect(serializedLogInputs).not.toContain("provider raw transcript secret");
   });
 });

@@ -120,6 +120,8 @@ export class HttpExceptionFilter implements ExceptionFilter {
       case "InvalidDeviceId":
       case "InvalidRefreshOrigin":
       case "ValidationError":
+      case "AUDIO_REQUIRED":
+      case "AUDIO_TYPE_UNSUPPORTED":
       case "IMAGE_REQUIRED":
       case "IMAGE_TYPE_UNSUPPORTED":
       case "IMAGE_TOO_LARGE":
@@ -149,6 +151,8 @@ export class HttpExceptionFilter implements ExceptionFilter {
       case "ANALYTICS_PAYLOAD_PII_REJECTED":
       case "ANALYTICS_ROUTE_KEY_UNSUPPORTED":
         return HttpStatus.BAD_REQUEST;
+      case "AUDIO_TOO_LARGE":
+        return HttpStatus.PAYLOAD_TOO_LARGE;
       case "ImportJobExpired":
       case "SmsSenderVerificationExpired":
         return HttpStatus.GONE;
@@ -177,11 +181,15 @@ export class HttpExceptionFilter implements ExceptionFilter {
         return HttpStatus.SERVICE_UNAVAILABLE;
       case "GoogleCalendarProviderUnavailable":
       case "AUTH_PROVIDER_EXCHANGE_FAILED":
+      case "STT_PROVIDER_UNAVAILABLE":
+      case "AI_DRAFT_FAILED":
       case "AiWeeklySalesReportProviderFailed":
       case "FollowUpProviderRequestFailed":
         return HttpStatus.BAD_GATEWAY;
       case "MeetingNoteAiDraftFailed":
         return HttpStatus.BAD_GATEWAY;
+      case "STT_TRANSCRIPTION_FAILED":
+        return HttpStatus.UNPROCESSABLE_ENTITY;
       default:
         return HttpStatus.INTERNAL_SERVER_ERROR;
     }

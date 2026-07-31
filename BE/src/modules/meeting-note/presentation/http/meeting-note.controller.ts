@@ -1,26 +1,33 @@
 import type { Buffer } from "node:buffer";
 import {
+  ArgumentsHost,
   Body,
+  Catch,
   Controller,
   Delete,
+  ExceptionFilter,
   Get,
   HttpCode,
   HttpStatus,
   Param,
   ParseUUIDPipe,
+  PayloadTooLargeException,
   Patch,
   Post,
   Query,
   Req,
   UploadedFile,
+  UseFilters,
   UseGuards,
   UseInterceptors,
 } from "@nestjs/common";
 import { FileInterceptor } from "@nestjs/platform-express";
+import type { Response } from "express";
 import type { MeetingNoteDraftAudioFile } from "@/modules/meeting-note/application/ports/meeting-note-stt.provider";
 import { MeetingNoteAiActionDraftApplicationService } from "@/modules/meeting-note/application/services/meeting-note-ai-action-draft-application.service";
 import { MeetingNoteAiDraftApplicationService } from "@/modules/meeting-note/application/services/meeting-note-ai-draft-application.service";
 import { MeetingNoteApplicationService } from "@/modules/meeting-note/application/services/meeting-note-application.service";
+import { MEETING_NOTE_AUDIO_TOO_LARGE_SAFE_MESSAGE } from "@/modules/meeting-note/domain/meeting-note.errors";
 import type { CurrentUserContext } from "@/shared/application/context/current-user.context";
 import { CurrentUser } from "@/shared/presentation/decorators/current-user.decorator";
 import { AuthGuard } from "@/shared/presentation/guards/auth.guard";
@@ -44,6 +51,24 @@ interface UploadedMeetingNoteAudioFile {
   readonly originalname: string;
   readonly mimetype: string;
   readonly size: number;
+}
+
+// 역할 : MeetingNoteAudioUploadExceptionFilter STT 오디오 업로드 단계의 Multer 예외를 안전한 API 오류로 변환합니다.
+@Catch(PayloadTooLargeException)
+export class MeetingNoteAudioUploadExceptionFilter implements ExceptionFilter {
+  // 기능 : 25MB 초과 오디오 업로드를 G03 AUDIO_TOO_LARGE 계약 응답으로 변환합니다.
+  catch(_exception: PayloadTooLargeException, host: ArgumentsHost) {
+    const response = host.switchToHttp().getResponse<Response>();
+
+    response.status(HttpStatus.PAYLOAD_TOO_LARGE).json({
+      statusCode: HttpStatus.PAYLOAD_TOO_LARGE,
+      error: "AUDIO_TOO_LARGE",
+      code: "AUDIO_TOO_LARGE",
+      message: MEETING_NOTE_AUDIO_TOO_LARGE_SAFE_MESSAGE,
+      field: "audio",
+      retryable: true,
+    });
+  }
 }
 
 // 역할 : MeetingNoteController 회의록 HTTP API 요청을 application 계층으로 위임합니다.
@@ -100,7 +125,8 @@ export class MeetingNoteController {
 
   // API : 회의록 음성 STT+AI 초안 생성
   @Post("stt-draft")
-  @HttpCode(HttpStatus.OK)
+  @HttpCode(HttpStatus.CREATED)
+  @UseFilters(MeetingNoteAudioUploadExceptionFilter)
   @UseInterceptors(
     FileInterceptor("audio", {
       limits: { fileSize: MAX_AI_DRAFT_AUDIO_FILE_SIZE_BYTES },

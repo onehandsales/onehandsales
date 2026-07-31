@@ -227,6 +227,81 @@ test.describe("G02 mobile browser release QA", () => {
     ).toEqual([]);
     runtime.assertClean();
   });
+
+  test("uses meeting note audio upload fallback when browser recording is unsupported", async ({
+    page,
+  }, testInfo) => {
+    await page.addInitScript(() => {
+      Object.defineProperty(window, "MediaRecorder", {
+        configurable: true,
+        value: undefined,
+      });
+      Object.defineProperty(window.navigator, "mediaDevices", {
+        configurable: true,
+        value: undefined,
+      });
+    });
+    const store = createUserWebApiMockStore();
+    const initialMeetingNoteCount = store.meetingNotes.length;
+    const api = await setupUserWebApiMocks(page, { store });
+    const runtime = collectRuntimeErrors(page);
+    await seedAuthenticatedSession(page);
+
+    await page.goto("/app/meeting-notes?create=1");
+
+    const dialog = page.getByRole("dialog", { name: "회의록 생성" });
+    await expect(dialog).toBeVisible();
+    await setRegisteredInputValue(
+      dialog.locator("#meeting-create-local-date-time-value"),
+      "2026-07-31T10:30",
+    );
+    const titleInput = dialog.locator("#meeting-create-title");
+    await titleInput.fill("G03 모바일 STT fallback 회의록");
+    await dialog.getByRole("button", { name: "회사 선택" }).click();
+    await dialog.getByText(MOBILE_LONG_FIXTURE.companyName).first().click();
+    await titleInput.click();
+    await dialog.getByRole("button", { name: "담당자 선택" }).click();
+    await dialog.getByText(MOBILE_LONG_FIXTURE.contactName).first().click();
+    await titleInput.click();
+
+    await dialog.getByRole("button", { exact: true, name: "녹음" }).click();
+    await expect(
+      dialog.getByText("이 브라우저에서는 녹음을 사용할 수 없어요. 음성 파일로 올려 주세요."),
+    ).toBeVisible();
+
+    await dialog.locator("#meeting-create-audio-file").setInputFiles({
+      buffer: Buffer.from("fake meeting audio"),
+      mimeType: "audio/webm",
+      name: "meeting.webm",
+    });
+    await expect(dialog.getByText("meeting.webm")).toBeVisible();
+
+    await dialog.getByRole("button", { exact: true, name: "초안 만들기" }).click();
+
+    await expect(dialog.getByLabel("상세 내용")).toHaveValue(
+      "모바일 현장 미팅에서 도입 범위와 다음 확인 항목을 정리했어요.",
+    );
+    await expect(dialog.getByLabel("다음 계획")).toHaveValue(
+      "견적 조건을 확인한 뒤 다음 주에 재논의해요.",
+    );
+    await expect(dialog.getByLabel("필요 액션")).toHaveValue(
+      "보안 자료와 모바일 견적서를 보내요.",
+    );
+    await expect(
+      dialog.getByRole("button", { name: /녹취 텍스트/ }),
+    ).toBeVisible();
+    expect(store.meetingNotes.length).toBe(initialMeetingNoteCount);
+    await expectLocatorWithinViewport(page, dialog, "meeting note STT fallback dialog");
+    await expectNoDocumentHorizontalOverflow(
+      page,
+      `${testInfo.project.name} meeting note STT fallback`,
+    );
+    expect(
+      api.protectedRequestsWithoutAuthorization(),
+      "Meeting note STT fallback must keep Authorization on private API calls.",
+    ).toEqual([]);
+    runtime.assertClean();
+  });
 });
 
 function bottomNav(page: Page) {
@@ -423,6 +498,20 @@ async function expectLocatorWithinViewport(page: Page, locator: Locator, label: 
   expect(box.y + box.height, `${label} bottom edge`).toBeLessThanOrEqual(
     viewport.height + 2,
   );
+}
+
+async function setRegisteredInputValue(locator: Locator, value: string) {
+  await locator.evaluate((element, nextValue) => {
+    const input = element as HTMLInputElement;
+    const valueSetter = Object.getOwnPropertyDescriptor(
+      window.HTMLInputElement.prototype,
+      "value",
+    )?.set;
+
+    valueSetter?.call(input, nextValue);
+    input.dispatchEvent(new Event("input", { bubbles: true }));
+    input.dispatchEvent(new Event("change", { bubbles: true }));
+  }, value);
 }
 
 function collectRuntimeErrors(page: Page) {

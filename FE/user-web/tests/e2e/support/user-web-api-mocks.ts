@@ -712,6 +712,19 @@ async function handleApiRequest(
     return json(meetingNote, 201);
   }
 
+  if (pathname === "/api/meeting-notes/stt-draft" && method === "POST") {
+    return json(
+      {
+        details: "모바일 현장 미팅에서 도입 범위와 다음 확인 항목을 정리했어요.",
+        nextPlan: "견적 조건을 확인한 뒤 다음 주에 재논의해요.",
+        requiredAction: "보안 자료와 모바일 견적서를 보내요.",
+        sourceType: "STT_AI",
+        transcript: "모바일 현장 미팅 녹취 텍스트",
+      },
+      201,
+    );
+  }
+
   const meetingNoteDealsMatch = pathname.match(/^\/api\/meeting-notes\/([^/]+)\/deals$/);
   if (meetingNoteDealsMatch && method === "POST") {
     return json(requireItem(store.meetingNotes, meetingNoteDealsMatch[1]));

@@ -1,8 +1,10 @@
 import { Buffer } from "node:buffer";
 import {
+  type ArgumentsHost,
   type CanActivate,
   type ExecutionContext,
   type INestApplication,
+  PayloadTooLargeException,
   ValidationPipe,
 } from "@nestjs/common";
 import { Test } from "@nestjs/testing";
@@ -19,12 +21,18 @@ import { MeetingNoteApplicationService } from "@/modules/meeting-note/applicatio
 import { MeetingNoteSourceTypeValue } from "@/modules/meeting-note/application/ports/meeting-note.repository";
 import {
   MEETING_NOTE_AI_DRAFT_FAILED_SAFE_MESSAGE,
+  MEETING_NOTE_AUDIO_REQUIRED_SAFE_MESSAGE,
+  MEETING_NOTE_AUDIO_TOO_LARGE_SAFE_MESSAGE,
   MeetingNoteAiDraftFailedError,
+  MeetingNoteAudioValidationError,
 } from "@/modules/meeting-note/domain/meeting-note.errors";
 import type { CurrentUserContext } from "@/shared/application/context/current-user.context";
 import { AuthGuard } from "@/shared/presentation/guards/auth.guard";
 import { HttpExceptionFilter } from "@/shared/presentation/filters/http-exception.filter";
-import { MeetingNoteController } from "./meeting-note.controller";
+import {
+  MeetingNoteAudioUploadExceptionFilter,
+  MeetingNoteController,
+} from "./meeting-note.controller";
 
 const CURRENT_USER: CurrentUserContext = {
   id: "00000000-0000-4000-8000-000000000101",
@@ -45,6 +53,17 @@ type RequestWithCurrentUser = Request & {
   currentUser?: CurrentUserContext;
   requestId?: string;
 };
+
+// 기능 : Nest ArgumentsHost에서 response mock만 꺼낼 수 있는 테스트 대역을 생성합니다.
+function createArgumentsHostFake(response: unknown): ArgumentsHost {
+  return {
+    switchToHttp: () => ({
+      getRequest: jest.fn(),
+      getResponse: () => response,
+      getNext: jest.fn(),
+    }),
+  } as unknown as ArgumentsHost;
+}
 
 type MeetingNoteServiceFake = Pick<
   MeetingNoteApplicationService,
@@ -247,7 +266,7 @@ describe("MeetingNoteController", () => {
         filename: "meeting.webm",
         contentType: "audio/webm",
       })
-      .expect(200);
+      .expect(201);
 
     expect(aiDraftService.createSttAiDraft).toHaveBeenCalledWith(
       CURRENT_USER,
@@ -260,6 +279,37 @@ describe("MeetingNoteController", () => {
           mimeType: "audio/webm",
           size: 5,
         }),
+      })
+    );
+  });
+
+  it("multipart 음성 누락을 AUDIO_REQUIRED safe response로 반환한다", async () => {
+    aiDraftService.createSttAiDraft.mockRejectedValueOnce(
+      new MeetingNoteAudioValidationError(
+        "AUDIO_REQUIRED",
+        MEETING_NOTE_AUDIO_REQUIRED_SAFE_MESSAGE
+      )
+    );
+
+    const response = await request(app.getHttpServer())
+      .post("/api/meeting-notes/stt-draft")
+      .field("meetingLocalDateTime", "2026-06-15T09:30")
+      .field("companies", COMPANY_ID)
+      .field("contacts", CONTACT_ID)
+      .expect(400);
+
+    expect(response.body).toEqual({
+      statusCode: 400,
+      error: "AUDIO_REQUIRED",
+      code: "AUDIO_REQUIRED",
+      message: MEETING_NOTE_AUDIO_REQUIRED_SAFE_MESSAGE,
+      field: "audio",
+      retryable: true,
+    });
+    expect(aiDraftService.createSttAiDraft).toHaveBeenCalledWith(
+      CURRENT_USER,
+      expect.objectContaining({
+        audioFile: undefined,
       })
     );
   });
@@ -326,5 +376,29 @@ describe("MeetingNoteController", () => {
       CURRENT_USER,
       MEETING_NOTE_ID
     );
+  });
+});
+
+describe("MeetingNoteAudioUploadExceptionFilter", () => {
+  it("Multer file size error를 AUDIO_TOO_LARGE 413 응답으로 변환한다", () => {
+    const json = jest.fn();
+    const status = jest.fn(() => ({ json }));
+    const response = { status };
+    const host = createArgumentsHostFake(response);
+
+    new MeetingNoteAudioUploadExceptionFilter().catch(
+      new PayloadTooLargeException("File too large"),
+      host
+    );
+
+    expect(status).toHaveBeenCalledWith(413);
+    expect(json).toHaveBeenCalledWith({
+      statusCode: 413,
+      error: "AUDIO_TOO_LARGE",
+      code: "AUDIO_TOO_LARGE",
+      message: MEETING_NOTE_AUDIO_TOO_LARGE_SAFE_MESSAGE,
+      field: "audio",
+      retryable: true,
+    });
   });
 });

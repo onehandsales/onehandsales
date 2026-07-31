@@ -9,6 +9,7 @@ import {
   ChevronLeft,
   ChevronRight,
   ChevronsRight,
+  CircleStop,
   FileAudio,
   IdCard,
   Loader2,
@@ -37,6 +38,7 @@ import {
   useCreateMeetingNoteSttAiDraftMutation,
   useCreateMeetingNoteTextAiDraftMutation,
 } from "@/features/meeting-note/hooks/use-meeting-note-mutations";
+import { useMeetingNoteAudioRecorder } from "@/features/meeting-note/hooks/use-meeting-note-audio-recorder";
 import {
   emptyMeetingNoteCreateFormValues,
   meetingNoteCreateFormSchema,
@@ -92,6 +94,17 @@ export function MeetingNoteCreateDialog({
   const createMeetingNoteMutation = useCreateMeetingNoteMutation();
   const textAiDraftMutation = useCreateMeetingNoteTextAiDraftMutation();
   const sttAiDraftMutation = useCreateMeetingNoteSttAiDraftMutation();
+  const {
+    cancelRecording,
+    clearRecording: clearAudioRecording,
+    durationLabel: recordingDurationLabel,
+    errorCode: recordingErrorCode,
+    isSupported: isAudioRecordingSupported,
+    recordedFile,
+    startRecording,
+    status: recordingStatus,
+    stopRecording,
+  } = useMeetingNoteAudioRecorder();
   const companyOptionsQuery = useDealCompanyOptions();
   const contactOptionsQuery = useDealContactOptions();
   const productOptionsQuery = useDealProductOptions();
@@ -149,16 +162,34 @@ export function MeetingNoteCreateDialog({
       setIsTranscriptOpen(false);
       setDraftClientError(null);
       setLastDraftRequestKind(null);
+      clearAudioRecording();
       resetTextAiDraftMutation();
       resetSttAiDraftMutation();
     }
   }, [
+    clearAudioRecording,
     initialValues,
     open,
     reset,
     resetSttAiDraftMutation,
     resetTextAiDraftMutation,
   ]);
+
+  useEffect(() => {
+    if (!open || !recordedFile) {
+      return;
+    }
+
+    if (recordedFile.size > maxAudioFileSizeBytes) {
+      setAudioFile(null);
+      setDraftClientError(t("meetingNoteCreate.audioTooLarge"));
+      clearAudioRecording();
+      return;
+    }
+
+    setAudioFile(recordedFile);
+    setDraftClientError(null);
+  }, [clearAudioRecording, open, recordedFile, t]);
 
   useEffect(() => {
     if (!open) {
@@ -314,6 +345,27 @@ export function MeetingNoteCreateDialog({
     }
   };
 
+  const onStartAudioRecording = async () => {
+    setAudioFile(null);
+    setDraftClientError(null);
+    textAiDraftMutation.reset();
+    sttAiDraftMutation.reset();
+    await startRecording();
+  };
+
+  const onSelectAudioFile = (selectedFile: File | null) => {
+    clearAudioRecording();
+
+    if (selectedFile && selectedFile.size > maxAudioFileSizeBytes) {
+      setAudioFile(null);
+      setDraftClientError(t("meetingNoteCreate.audioTooLarge"));
+      return;
+    }
+
+    setAudioFile(selectedFile);
+    setDraftClientError(null);
+  };
+
   const onSubmit = handleSubmit(async (values) => {
     const created = await createMeetingNoteMutation.mutateAsync(
       toCreateMeetingNoteInput(values, draftSourceType)
@@ -325,6 +377,15 @@ export function MeetingNoteCreateDialog({
   const isDraftPending =
     textAiDraftMutation.isPending || sttAiDraftMutation.isPending;
   const draftApiError = textAiDraftMutation.error ?? sttAiDraftMutation.error;
+  const isRecordingBusy =
+    recordingStatus === "requesting" || recordingStatus === "recording";
+  const recordingFallbackMessage =
+    recordingErrorCode === "AUDIO_RECORDING_PERMISSION_DENIED"
+      ? t("meetingNoteCreate.recordingPermissionDenied")
+      : recordingErrorCode === "AUDIO_RECORDING_NOT_SUPPORTED" ||
+          !isAudioRecordingSupported
+        ? t("meetingNoteCreate.recordingUnsupported")
+        : null;
   // 기능 : 마지막 AI 초안 요청을 현재 form 값으로 다시 실행합니다.
   const onRetryDraft = () => {
     if (lastDraftRequestKind === "TEXT") {
@@ -564,53 +625,102 @@ export function MeetingNoteCreateDialog({
                 {t("meetingNoteCreate.aiWithText")}
               </button>
 
+              {recordingStatus === "recording" ? (
+                <>
+                  <span className="inline-flex h-9 items-center gap-2 rounded-md border border-[#FCA5A5] bg-white px-3 text-[13px] font-semibold text-[#B91C1C]">
+                    <span className="h-2 w-2 rounded-full bg-[#DC2626]" />
+                    {t("meetingNoteCreate.recording")} {recordingDurationLabel}
+                  </span>
+                  <button
+                    className={actionButtonClassName}
+                    disabled={isDraftPending}
+                    type="button"
+                    onClick={stopRecording}
+                  >
+                    <CircleStop className="h-4 w-4" />
+                    {t("meetingNoteCreate.recordStop")}
+                  </button>
+                  <button
+                    className={actionButtonClassName}
+                    disabled={isDraftPending}
+                    type="button"
+                    onClick={cancelRecording}
+                  >
+                    <X className="h-4 w-4" />
+                    {t("meetingNoteCreate.recordCancel")}
+                  </button>
+                </>
+              ) : recordingStatus === "requesting" ? (
+                <>
+                  <span className="inline-flex h-9 items-center gap-2 rounded-md border border-[#D8E0EA] bg-white px-3 text-[13px] font-semibold text-[#374151]">
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    {t("meetingNoteCreate.recordingPreparing")}
+                  </span>
+                  <button
+                    className={actionButtonClassName}
+                    type="button"
+                    onClick={cancelRecording}
+                  >
+                    <X className="h-4 w-4" />
+                    {t("meetingNoteCreate.recordCancel")}
+                  </button>
+                </>
+              ) : (
+                <button
+                  className={actionButtonClassName}
+                  disabled={isDraftPending || isRecordingBusy}
+                  type="button"
+                  onClick={() => void onStartAudioRecording()}
+                >
+                  <Mic className="h-4 w-4" />
+                  {t("meetingNoteCreate.recordStart")}
+                </button>
+              )}
+
               <label
                 className={cn(
                   actionButtonClassName,
-                  isDraftPending && "cursor-not-allowed opacity-60"
+                  (isDraftPending || isRecordingBusy) &&
+                    "cursor-not-allowed opacity-60"
                 )}
                 htmlFor="meeting-create-audio-file"
               >
                 <FileAudio className="h-4 w-4" />
-                {t("meetingNoteCreate.audioFile")}
+                {t("meetingNoteCreate.audioUploadFallback")}
               </label>
               <input
                 accept="audio/*"
                 className="sr-only"
-                disabled={isDraftPending}
+                disabled={isDraftPending || isRecordingBusy}
                 id="meeting-create-audio-file"
                 type="file"
                 onChange={(event) => {
                   const selectedFile = event.target.files?.[0] ?? null;
                   event.currentTarget.value = "";
-
-                  if (
-                    selectedFile &&
-                    selectedFile.size > maxAudioFileSizeBytes
-                  ) {
-                    setAudioFile(null);
-                    setDraftClientError(t("meetingNoteCreate.audioTooLarge"));
-                    return;
-                  }
-
-                  setAudioFile(selectedFile);
+                  onSelectAudioFile(selectedFile);
                 }}
               />
 
               <button
                 className={actionButtonClassName}
-                disabled={isDraftPending}
+                disabled={isDraftPending || isRecordingBusy}
                 type="button"
                 onClick={() => void onCreateSttAiDraft()}
               >
                 {sttAiDraftMutation.isPending ? (
                   <Loader2 className="h-4 w-4 animate-spin" />
                 ) : (
-                  <Mic className="h-4 w-4" />
+                  <Sparkles className="h-4 w-4" />
                 )}
-                {t("meetingNoteCreate.sttWrite")}
+                {t("meetingNoteCreate.sttDraft")}
               </button>
             </div>
+
+            {recordingFallbackMessage ? (
+              <p className="break-words text-[12px] leading-4 text-[#6B7280]">
+                {recordingFallbackMessage}
+              </p>
+            ) : null}
 
             {audioFile ? (
               <div className="flex items-center justify-between gap-3 rounded-md border border-[#E6EAF0] bg-white px-3 py-2 text-[13px] text-[#374151]">
@@ -622,7 +732,10 @@ export function MeetingNoteCreateDialog({
                   aria-label={t("meetingNoteCreate.audioClear")}
                   className="grid h-7 w-7 place-items-center rounded-md text-[#6B7280] hover:bg-[#F3F4F6]"
                   type="button"
-                  onClick={() => setAudioFile(null)}
+                  onClick={() => {
+                    clearAudioRecording();
+                    setAudioFile(null);
+                  }}
                 >
                   <X className="h-4 w-4" />
                 </button>

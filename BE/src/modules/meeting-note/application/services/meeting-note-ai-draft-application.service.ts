@@ -28,8 +28,15 @@ import {
   type ProductSnapshotRecord,
 } from "@/modules/meeting-note/application/ports/meeting-note.repository";
 import {
+  MEETING_NOTE_AUDIO_REQUIRED_SAFE_MESSAGE,
+  MEETING_NOTE_AUDIO_TOO_LARGE_SAFE_MESSAGE,
+  MEETING_NOTE_AUDIO_TYPE_UNSUPPORTED_SAFE_MESSAGE,
   MeetingNoteAiDraftFailedError,
   MeetingNoteAiDraftProviderUnavailableError,
+  MeetingNoteAudioValidationError,
+  MeetingNoteSttAiDraftFailedError,
+  MeetingNoteSttProviderUnavailableError,
+  MeetingNoteSttTranscriptionFailedError,
   RelatedCompanyNotFoundError,
   RelatedContactNotFoundError,
   RelatedDealNotFoundError,
@@ -232,7 +239,7 @@ export class MeetingNoteAiDraftApplicationService {
       return result;
     } catch (error) {
       const failedAt = new Date();
-      const safeFailure = this.toSafeProviderFailure(error);
+      const safeFailure = this.toSafeProviderFailure(error, operation);
 
       await this.providerCallLogRepository.markProviderCallFailed({
         userId,
@@ -249,12 +256,39 @@ export class MeetingNoteAiDraftApplicationService {
   }
 
   // 기능 : provider 오류를 사용자 응답과 DB log에 안전한 오류로 정규화합니다.
-  private toSafeProviderFailure(error: unknown): {
+  private toSafeProviderFailure(
+    error: unknown,
+    operation: MeetingNoteAiProviderCallOperationValue
+  ): {
     readonly error:
       | MeetingNoteAiDraftFailedError
-      | MeetingNoteAiDraftProviderUnavailableError;
+      | MeetingNoteAiDraftProviderUnavailableError
+      | MeetingNoteSttAiDraftFailedError
+      | MeetingNoteSttProviderUnavailableError
+      | MeetingNoteSttTranscriptionFailedError;
     readonly retryable: boolean;
   } {
+    if (operation === "MEETING_NOTE_STT_TRANSCRIPTION") {
+      if (error instanceof MeetingNoteAiDraftProviderUnavailableError) {
+        return {
+          error: new MeetingNoteSttProviderUnavailableError(),
+          retryable: true,
+        };
+      }
+
+      return {
+        error: new MeetingNoteSttTranscriptionFailedError(),
+        retryable: true,
+      };
+    }
+
+    if (operation === "MEETING_NOTE_STT_DRAFT") {
+      return {
+        error: new MeetingNoteSttAiDraftFailedError(),
+        retryable: true,
+      };
+    }
+
     if (error instanceof MeetingNoteAiDraftProviderUnavailableError) {
       return {
         error,
@@ -722,19 +756,31 @@ export class MeetingNoteAiDraftApplicationService {
     audioFile: MeetingNoteDraftAudioFile | undefined
   ): MeetingNoteDraftAudioFile {
     if (!audioFile) {
-      throw new ValidationDomainError("audio file is required");
+      throw new MeetingNoteAudioValidationError(
+        "AUDIO_REQUIRED",
+        MEETING_NOTE_AUDIO_REQUIRED_SAFE_MESSAGE
+      );
     }
 
     if (!Buffer.isBuffer(audioFile.buffer)) {
-      throw new ValidationDomainError("audio file buffer is required");
+      throw new MeetingNoteAudioValidationError(
+        "AUDIO_REQUIRED",
+        MEETING_NOTE_AUDIO_REQUIRED_SAFE_MESSAGE
+      );
     }
 
     if (audioFile.size <= 0 || audioFile.buffer.length === 0) {
-      throw new ValidationDomainError("audio file must not be empty");
+      throw new MeetingNoteAudioValidationError(
+        "AUDIO_REQUIRED",
+        MEETING_NOTE_AUDIO_REQUIRED_SAFE_MESSAGE
+      );
     }
 
     if (audioFile.size > MAX_AUDIO_FILE_SIZE_BYTES) {
-      throw new ValidationDomainError("audio file is too large");
+      throw new MeetingNoteAudioValidationError(
+        "AUDIO_TOO_LARGE",
+        MEETING_NOTE_AUDIO_TOO_LARGE_SAFE_MESSAGE
+      );
     }
 
     const mimeType = audioFile.mimeType.trim().toLowerCase();
@@ -743,7 +789,10 @@ export class MeetingNoteAiDraftApplicationService {
       !mimeType.startsWith("audio/") &&
       !ALLOWED_AUDIO_MIME_TYPES.has(mimeType)
     ) {
-      throw new ValidationDomainError("audio file type is not supported");
+      throw new MeetingNoteAudioValidationError(
+        "AUDIO_TYPE_UNSUPPORTED",
+        MEETING_NOTE_AUDIO_TYPE_UNSUPPORTED_SAFE_MESSAGE
+      );
     }
 
     return {

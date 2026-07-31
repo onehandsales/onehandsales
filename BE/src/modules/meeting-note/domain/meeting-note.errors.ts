@@ -4,6 +4,31 @@ export const MEETING_NOTE_AI_DRAFT_FAILED_SAFE_MESSAGE =
   "AI 초안을 만들지 못했어요. 직접 작성으로 이어갈 수 있어요.";
 export const MEETING_NOTE_AI_DRAFT_PROVIDER_UNAVAILABLE_SAFE_MESSAGE =
   "AI 기능 설정을 확인하고 있어요. 지금은 직접 작성으로 이어갈 수 있어요.";
+export const MEETING_NOTE_AUDIO_REQUIRED_SAFE_MESSAGE =
+  "녹음하거나 오디오 파일을 선택해 주세요.";
+export const MEETING_NOTE_AUDIO_TYPE_UNSUPPORTED_SAFE_MESSAGE =
+  "오디오 파일만 올릴 수 있어요.";
+export const MEETING_NOTE_AUDIO_TOO_LARGE_SAFE_MESSAGE =
+  "25MB 이하 오디오 파일만 올릴 수 있어요.";
+export const MEETING_NOTE_STT_PROVIDER_UNAVAILABLE_SAFE_MESSAGE =
+  "음성 인식 기능을 사용할 수 없어요. 잠시 후 다시 시도하거나 직접 작성으로 이어갈 수 있어요.";
+export const MEETING_NOTE_STT_TRANSCRIPTION_FAILED_SAFE_MESSAGE =
+  "음성을 텍스트로 바꾸지 못했어요. 다시 녹음하거나 파일을 바꿔 주세요.";
+export const MEETING_NOTE_STT_AI_DRAFT_FAILED_SAFE_MESSAGE =
+  "녹취를 회의록 초안으로 만들지 못했어요. 잠시 후 다시 시도하거나 직접 작성으로 이어갈 수 있어요.";
+
+export type MeetingNoteAudioValidationErrorCode =
+  | "AUDIO_REQUIRED"
+  | "AUDIO_TYPE_UNSUPPORTED"
+  | "AUDIO_TOO_LARGE";
+
+// 역할 : MeetingNoteAudioValidationError STT 오디오 업로드 검증 실패를 안전한 API 코드로 표현합니다.
+export class MeetingNoteAudioValidationError extends DomainError {
+  // 기능 : 사용자에게 보여줄 수 있는 오디오 검증 오류를 생성합니다.
+  constructor(code: MeetingNoteAudioValidationErrorCode, message: string) {
+    super(code, message, { field: "audio", retryable: true });
+  }
+}
 
 // 역할 : MeetingNoteNotFoundError 회의록을 찾지 못한 도메인 오류를 표현합니다.
 export class MeetingNoteNotFoundError extends DomainError {
@@ -70,6 +95,49 @@ export class MeetingNoteAiDraftFailedError extends DomainError {
     void internalMessage;
     super("MeetingNoteAiDraftFailed", MEETING_NOTE_AI_DRAFT_FAILED_SAFE_MESSAGE, {
       retryable,
+    });
+  }
+}
+
+// 역할 : MeetingNoteSttProviderUnavailableError STT provider 사용 불가 오류를 G03 안전 코드로 표현합니다.
+export class MeetingNoteSttProviderUnavailableError extends DomainError {
+  // 기능 : STT provider 설정 또는 가용성 오류를 사용자 안전 오류로 생성합니다.
+  constructor(
+    internalMessage = "Meeting note STT provider is unavailable"
+  ) {
+    void internalMessage;
+    super(
+      "STT_PROVIDER_UNAVAILABLE",
+      MEETING_NOTE_STT_PROVIDER_UNAVAILABLE_SAFE_MESSAGE,
+      { retryable: true }
+    );
+  }
+}
+
+// 역할 : MeetingNoteSttTranscriptionFailedError STT 변환 실패를 G03 안전 코드로 표현합니다.
+export class MeetingNoteSttTranscriptionFailedError extends DomainError {
+  // 기능 : STT provider 호출 또는 transcript 생성 실패를 사용자 안전 오류로 생성합니다.
+  constructor(
+    internalMessage = "Meeting note STT transcription failed"
+  ) {
+    void internalMessage;
+    super(
+      "STT_TRANSCRIPTION_FAILED",
+      MEETING_NOTE_STT_TRANSCRIPTION_FAILED_SAFE_MESSAGE,
+      { retryable: true }
+    );
+  }
+}
+
+// 역할 : MeetingNoteSttAiDraftFailedError STT transcript 기반 AI 초안 실패를 G03 안전 코드로 표현합니다.
+export class MeetingNoteSttAiDraftFailedError extends DomainError {
+  // 기능 : STT transcript를 회의록 초안으로 바꾸지 못한 오류를 사용자 안전 오류로 생성합니다.
+  constructor(
+    internalMessage = "Meeting note STT AI draft generation failed"
+  ) {
+    void internalMessage;
+    super("AI_DRAFT_FAILED", MEETING_NOTE_STT_AI_DRAFT_FAILED_SAFE_MESSAGE, {
+      retryable: true,
     });
   }
 }
