@@ -1,53 +1,56 @@
 # Scope
 
-상태: Draft
+상태: Confirmed
 
-## 포함 후보
+## 1. 포함 범위
 
 | 항목 | 내용 |
 |---|---|
-| 사용자 조회 | 사용자 목록/상세/상태 |
-| 도메인 조회 | 회사/담당자/제품/딜/일정/회의록 read-only 조회 |
-| 민감정보 마스킹 | 기본 masked response |
-| 원문 조회 사유 | 민감 원문 조회 시 reason과 audit |
-| Provider failure | AI/OCR/Calendar/Push 실패 확인 |
-| Trash/삭제 정책 | 만료, purge, 복구 불가, 유료 복구 후보 |
-| Trash private memo response restriction | `NBA-007`. Trash list/detail/restore 관련 Backend response에서 private memo 원문 제한 |
-| 계정 삭제/데이터 삭제 | 사용자 요청 기반 삭제 정책과 API 후보 |
-| 사용자 데이터 export 정책 | 자기 데이터 export, 민감정보 포함/제외 정책 |
-| 자동 민감정보 감지 | 회의록, 메모, export, Admin 원문 조회와 연결 |
-| DB/Prisma/migration gate | `NBA-014`. migration status, seed 정책, 배포 DB 정합성. 신규 migration goal에서는 11 이전에도 선행 체크 |
-| Backup/restore | 데이터 복구, 장애 대응, 운영 절차 |
-| Provider failure log | OpenAI/OCR/STT/Calendar/Push 장애 추적 |
+| Admin shell | `FE/admin-web` 운영 콘솔 shell, sidebar, topbar, protected route |
+| 사용자 목록/상세 | 사용자 검색, 상태, 가입/최근 로그인, locale/timezone/country, 도메인 count, 활동 summary |
+| 사용자 활동 | 09 analytics/server event와 핵심 domain created/updated 시각 기반 최근 활동 timeline |
+| 도메인 read-only | 회사/담당자/제품/딜/일정/회의록/명함/import/export 요약 탭 |
+| 민감정보 마스킹 | email, phone, OAuth provider email, meeting note body, memo, private memo, token, provider metadata redaction |
+| 원문 접근 사유 | 민감 원문 조회 시 reason 필수, 별도 API, audit log |
+| 감사 로그 | Admin login/access, 사용자 상세 조회, raw access, provider failure detail, Trash 만료 목록, account/data request, system gate action |
+| Trash/삭제 | 사용자 7일 무료 복구, 7일 이후 사용자 복구 제한, Admin 삭제 데이터 목록, 복구 문의 queue |
+| Trash private memo 제한 | Trash list/detail/restore response에서 private memo 원문 제외 |
+| Provider failure | AI/OCR/STT/Calendar/Push/Email/SMS safe failure 조회 |
+| Product analytics Admin summary | 09 foundation의 activation, retention, event count, AI usage/cost summary |
+| 계정 삭제 요청 | User Web 요청, 30일 유예, Admin 상태 조회, 실제 삭제/익명화 job 후보 |
+| 데이터 export 요청 | User Web 요청, Admin 상태 조회, 민감 export 옵션, 파일 만료 |
+| DB/migration gate | migration status, generate/validate, seed 금지, target 분류, 운영 적용 checklist |
+| Backup/restore gate | backup 확인, restore dry-run 기록, 장애 대응 checklist |
 
-## 제외 후보
+## 2. 제외 범위
 
 | 항목 | 이유 |
 |---|---|
-| 결제 관리 전체 | 12와 연결하되 여기서는 운영 기반 |
-| 내부 직원 권한 체계 고도화 | 최소 Admin 이후 |
-| 고객 성공 CRM | 별도 운영 도구 후보 |
+| 결제/구독/plan/entitlement | 12번 전용 범위 |
+| invoice/refund/failed payment recovery | 12번 전용 범위 |
+| paid conversion/churn/ARPU/LTV/CAC | 12 billing source 연결 후 판단 |
+| Admin 직접 복구 실행/비용 처리 | 12 또는 후속 recovery 정책과 연결되는 범위 |
+| Admin 직접 도메인 데이터 수정 | 11 1차는 read-only |
+| Customer/B2B tenant admin | 현재 Admin은 내부 최종 관리자 전용 |
+| provider raw response 저장 | 보안/개인정보 리스크로 금지 |
+| prompt 전문/STT transcript 전문 저장 | provider log와 Admin 화면 모두 금지 |
+| DB hard delete/purge for Trash | 사용자 의도와 맞지 않음. Trash는 soft delete 보존 |
 
-## 구현 전 세부 확인 질문
+## 3. 1차 추천 범위
 
-- 첫 Admin 사용자는 `INITIAL_ADMIN_EMAILS` 기반 bootstrap으로 시작한다.
-- 운영자가 민감정보 원문을 볼 때는 reason과 append-only audit log가 필요하다.
-- Admin 조회 가능 도메인은 사용자와 핵심 domain data의 read-only 범위로 시작한다.
-- audit log는 raw 조회와 주요 운영 action을 필수 대상으로 둔다.
-- Trash 보관 기간과 purge 시점을 7일/30일 중 무엇으로 볼지?
-- Trash list/detail response에서 private memo 원문을 어느 시점까지 제한할지?
-- 사용자가 자기 계정과 데이터를 삭제할 수 있어야 하는 범위는?
-- 사용자 데이터 export는 03 ExportJob을 재사용할지 별도 privacy export로 둘지?
-- DB/Prisma gate는 배포 전 수동 checklist인지 자동 smoke인지?
-- backup/restore는 provider 기능을 사용할지 앱 레벨 절차를 둘지?
+1차는 운영자가 사용자 상태와 장애를 판단할 수 있는 수준으로 좁힌다.
 
-## 완료 기준 초안
+- G01 문서/계약 sync
+- G02 Admin audit/security foundation
+- G03 사용자 목록/상세/활동 summary
+- G05 Trash 7일 이후 정책과 복구 문의
+- G06 provider failure 운영 조회
+- G07 09 기반 Admin analytics summary
+- G09 DB/migration/backup operation gate
+- G10 QA closeout
 
-- Admin이 사용자와 핵심 도메인 데이터를 조회할 수 있다.
-- 민감정보는 기본 마스킹된다.
-- 원문 조회는 사유와 audit log가 필요하다.
-- User Web이 Admin API를 호출할 수 없다.
-- Trash/삭제/계정 삭제/데이터 export 정책이 문서화된다.
-- Trash private memo backend response restriction 기준과 test 범위가 문서화된다.
-- DB/Prisma/migration gate와 backup/restore 기준이 문서화된다. 단 신규 migration goal의 선행 체크는 11 전에도 수행된다.
-- provider failure log가 사용자 메시지와 분리된다.
+## 4. 보류 또는 후속
+
+- G04 도메인 상세 탭은 사용자 상세 summary 이후 진행한다.
+- G08 계정 삭제/데이터 export 요청은 privacy/legal wording과 연결되므로 별도 goal로 실행한다.
+- Admin 직접 복구 실행과 비용 처리는 12 또는 후속 recovery goal에서 다룬다.

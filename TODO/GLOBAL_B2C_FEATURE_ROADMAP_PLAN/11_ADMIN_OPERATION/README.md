@@ -1,48 +1,97 @@
 # 11 Admin Operation
 
-상태: Draft Slot
+상태: Confirmed Planning
 순서: 11
-성격: 마지막 운영 묶음 검토 슬롯 + first-sale 운영 gate 상세 closeout
-결정 상태: `COMMON/DECISION-LOG.md` 2026-07-21 추천 결정 반영
+성격: Global B2C 첫 판매 전 내부 최종 관리자 운영 콘솔/API/신뢰 gate
+결정 상태: `COMMON/DECISION-LOG.md` 기준
 
 ## 1. 목적
 
-유료 고객 운영 전에 사용자, 구독 상태, 도메인 데이터, 민감정보 마스킹, 감사 로그, provider 실패를 운영자가 처리할 수 있는 Admin 기반을 만든다. 이 슬롯에는 Trash/삭제 정책, 계정 삭제/데이터 삭제, 사용자 데이터 export 정책, DB/Prisma/migration gate, backup/restore 같은 운영 신뢰 기능도 포함한다.
+11은 onehand.sales 최종 관리자만 사용하는 Admin 운영 기반을 만든다.
 
-주의: 이 슬롯이 11번이라는 이유로 모든 운영 gate를 11까지 미루지 않는다. `NBA-014` DB/Prisma 운영 gate는 신규 migration이 있는 goal마다 선행 체크하고, 11에서는 운영 closeout과 Admin/observability 상세 구현을 닫는다. `NBA-007` Trash private memo backend response restriction은 Trash/삭제 정책 안에 묻지 않고 별도 보안 항목으로 추적한다.
+핵심은 결제/구독 운영이 아니라, 유료 고객을 받기 전에 반드시 필요한 사용자 상태 확인, 도메인 데이터 read-only 조회, 민감정보 마스킹, 원문 접근 사유와 감사 로그, provider 실패 확인, Trash/삭제 복구 정책, 계정 삭제와 데이터 export 요청, DB/migration/backup 운영 gate를 닫는 것이다.
+
+결제, 구독, plan, entitlement, invoice, refund, failed payment recovery, paid conversion, churn, ARPU, LTV/CAC는 12번 `12_BILLING_SUBSCRIPTION_TAX`에서만 다룬다. 11의 Admin 화면에는 결제/구독 탭, 결제 상태, plan 상태, 복구 비용 처리 버튼을 만들지 않는다.
 
 ## 2. 현재 상태
 
-- `/admin/api/me`만 구현되어 있다.
-- Admin Web `/`는 placeholder이고 대부분 route가 redirect된다.
-- Admin 운영 API와 화면은 아직 없다.
-- Trash는 7일 이내 복구 중심이며 만료/purge/복구 불가/유료 복구 정책은 정리되지 않았다.
-- DB/Prisma/migration 운영 gate와 backup/restore 기준은 별도 운영 정리가 필요하다.
-- 계정 삭제, 데이터 삭제, 사용자 데이터 export 정책/API는 없다.
-- Trash private memo 원문을 Backend response에서 어디까지 제한할지 확정되어 있지 않다.
+- Backend는 `/admin/api/me`만 실제 구현되어 있다.
+- Admin Web은 placeholder/redirect 중심이다.
+- `User.role=ADMIN`은 존재하지만 Admin 운영 감사 로그 table은 없다.
+- `BE/prisma/schema.prisma`에는 핵심 도메인, soft delete, analytics, provider safe log foundation이 있다.
+- `AdminAuditLog`, `AdminSensitiveAccessLog`, `TrashRecoveryRequest`, `AccountDeletionRequest`, `UserDataExportRequest`, `AdminOperationCheckRun`은 아직 없다.
+- Trash는 `deletedAt`, `deletedByUserId`, `trashExpiresAt` 기반 soft delete 구조가 이미 있다.
+- 10번 Mobile/PWA와 충돌하지 않도록 BusinessCard OCR safe failure field는 현재 schema의 `BusinessCardScanLog.safeErrorCode`, `safeErrorMessage`, `retryable`를 사용한다.
 
-## 3. 착수 전 해야 할 일
+## 3. 확정 결정 요약
 
-추천 결정:
+| 항목 | 결정 |
+|---|---|
+| Admin 사용자 | onehand.sales 내부 최종 관리자만 사용한다. 고객사/B2B tenant admin이 아니다. |
+| 1차 범위 | 최소 운영 Admin + 운영 신뢰 항목 포함 |
+| 사용자 조회 | 사용자 목록/상세가 1순위다. 사용자가 무엇을 하는지 숫자 요약과 최근 활동으로 본다. |
+| 사용자 상세 기본 | 숫자 요약 + 최근 활동 타임라인 |
+| 도메인 상세 탭 | 별도 goal로 분리한다. 1차 사용자 상세 완성 후 진행한다. |
+| 데이터 조회 기본 | read-only, masked response |
+| 민감 원문 접근 | 기본 금지. 필요 시 reason 필수 + append-only audit log |
+| Provider failure | safe summary/detail만 본다. provider raw, prompt, token, quota detail은 저장/표시하지 않는다. |
+| Analytics | 09 foundation을 읽는 Admin 운영 요약만 만든다. 결제/구독 지표는 제외한다. |
+| Trash | DB hard delete/purge가 아니라 soft delete 유지다. 7일 무료 복구 이후에는 사용자 기본 위치와 무료 복구에서 숨기거나 제한하고, 데이터는 보존한다. |
+| Admin Trash 조회 | 요약 + 삭제 데이터 목록까지 본다. Admin 직접 복구 실행은 11 1차에서 제외한다. |
+| User Web 만료 Trash | Trash에 남기되 복구 버튼은 비활성화하고 복구 문의만 제공한다. 결제 연결은 하지 않는다. |
+| 계정 삭제 | 일반 Trash 정책과 별개다. 개인정보 삭제 요청은 30일 유예 후 user-linked 데이터 삭제/익명화 정책으로 다룬다. |
+| 결제/구독 | 11에서 완전히 제외한다. 12에서 처리한다. |
 
-- 최소 Admin부터 시작한다.
-- 사용자와 핵심 domain data는 read-only 조회를 기본으로 한다.
-- 민감정보는 masking하고 raw 조회는 reason 필수와 append-only audit log를 요구한다.
-- 계정 삭제, 데이터 export, provider failure, DB/migration gate는 운영 신뢰 필수 범위로 포함한다.
-- `NBA-014`는 release blocker 성격이므로 11 상세 구현 전에도 migration goal마다 선행 체크한다.
-- `NBA-007`은 Trash/삭제 정책과 별도 보안 체크로 두고, FE 숨김만으로 완료 처리하지 않는다.
-- User Web과 Admin Web API/client 경계는 섞지 않는다.
+## 4. Goal 실행 방식
 
-1. 결제/구독 이전에 필요한 최소 Admin 범위는 사용자/핵심 domain read-only와 provider failure 확인으로 둔다.
-2. 민감정보 마스킹과 원문 조회 사유 입력 정책을 정한다.
-3. raw 조회와 주요 운영 action은 append-only audit log를 남긴다.
-4. User Web과 Admin Web 코드 공유 금지 기준을 유지한다.
-5. Trash/삭제/복구/영구삭제 정책과 계정 삭제/데이터 삭제 범위를 정한다.
-6. Trash private memo backend response restriction 기준을 독립 항목으로 정한다.
-7. DB/Prisma/migration, backup/restore, provider failure 운영 기준을 정한다.
+11은 하나의 `/goal`로 구현하지 않는다. 각 `/goal`은 `COMMON/GOAL-SPECS`의 상세 명세 하나만 기준으로 실행한다.
 
-## 4. 참고
+권장 순서:
+
+```text
+G01_DOCUMENT_CONTRACT_SYNC
+-> G02_ADMIN_SECURITY_AUDIT_FOUNDATION
+-> G03_ADMIN_USER_OVERVIEW
+-> G04_ADMIN_DOMAIN_READONLY_TABS
+-> G05_TRASH_RETENTION_RECOVERY
+-> G06_PROVIDER_FAILURE_OPERATION
+-> G07_ADMIN_ANALYTICS_OVERVIEW
+-> G08_ACCOUNT_DATA_REQUESTS
+-> G09_SYSTEM_OPERATION_GATE
+-> G10_QA_DOCUMENT_CLOSEOUT
+```
+
+권장 1차 착수 묶음:
+
+```text
+G01 -> G02 -> G03 -> G05 -> G06 -> G07 -> G09 -> G10
+```
+
+`G04`는 사용자 상세의 별도 도메인 탭이고, 사용자가 앞서 결정한 대로 후속 goal로 분리한다. `G08`은 개인정보/삭제권 영향이 크므로 policy와 legal wording 확인 후 실행한다.
+
+## 5. 구현 전 필수 참조
 
 - `COMMON/REFERENCES.md`
-- `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/COMMON/FIRST-SALE-GATE-MAP.md`
-- `TODO/NEXT_BACKEND_API_BACKLOG_PLAN/COMMON/CANDIDATE-MATRIX.md` NBA-013
+- `COMMON/GOAL-WORK-ORDER.md`
+- `COMMON/PLANNING-REVIEW.md`
+- `COMMON/GOAL-SPECS/README.md`
+- `COMMON/API-SPEC/README.md`
+- `AGENT/UXUI_AGENT`
+- `AGENT/SOFTWARE_AGENT`
+- `BE/prisma/schema.prisma`
+- `BE/prisma/migrations`
+- `FE/admin-web`
+- `FE/user-web`는 Trash/account/data request 영향이 있는 goal에서만 확인한다.
+
+## 6. 완료 기준
+
+- Admin API는 모두 `/admin/api/*`로 분리된다.
+- Admin API는 AuthGuard + AdminGuard를 통과해야 한다.
+- User Web은 `/admin/api/*`를 호출하지 않는다.
+- Admin Web은 User Web feature/client를 직접 import하지 않는다.
+- 사용자 목록/상세/활동/도메인/Trash/provider failure/analytics/system gate를 masked read-only 기준으로 볼 수 있다.
+- 민감 원문 접근과 주요 운영 조회/action은 append-only audit log를 남긴다.
+- Trash 7일 이후 정책은 soft delete 보존과 후속 복구 정책 가능성을 해치지 않는다.
+- 결제/구독 기능과 지표는 11에서 구현되지 않는다.
+- 신규 Prisma model/field/enum/index에는 한글 주석과 migration SQL COMMENT가 있다.
+- 모든 goal은 자체 체크리스트와 검증 기록을 남긴다.
