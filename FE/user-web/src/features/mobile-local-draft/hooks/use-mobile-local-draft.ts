@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { trackMobileFieldAnalyticsEvent } from "@/features/analytics";
 import {
   createBrowserMobileLocalDraftStore,
   createMobileLocalDraftUserScopedHash,
@@ -241,10 +242,12 @@ export function useMobileLocalDraft<TPayload>({
   };
 }
 
-// 기능 : G04 범위에서는 서버 수집 확장 없이 브라우저 내부 client event만 발생시킵니다.
+// 기능 : local draft client event를 collector로 전송하고 기존 브라우저 내부 event도 발행합니다.
 export function emitMobileLocalDraftClientEvent(
   event: MobileLocalDraftClientEvent
 ) {
+  trackMobileFieldAnalyticsEvent(event);
+
   if (typeof window === "undefined" || typeof CustomEvent === "undefined") {
     return;
   }

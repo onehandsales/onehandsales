@@ -1,11 +1,13 @@
 import {
   isProductAnalyticsAppRouteKey,
+  isProductAnalyticsClientEventName,
   isProductAnalyticsReservedBillingEventName,
   isProductAnalyticsRouteViewSurface,
   isProductAnalyticsRuntimeEventName,
   isProductAnalyticsServerEventName,
   PRODUCT_ANALYTICS_ACTIVE_RETENTION_EVENT_NAMES,
   PRODUCT_ANALYTICS_APP_ROUTE_KEYS,
+  PRODUCT_ANALYTICS_CLIENT_EVENT_NAMES,
   PRODUCT_ANALYTICS_RESERVED_BILLING_EVENT_NAMES,
   PRODUCT_ANALYTICS_ROUTE_VIEW_SURFACES,
   PRODUCT_ANALYTICS_RUNTIME_EVENT_NAMES,
@@ -13,9 +15,23 @@ import {
   requiresProductAnalyticsIdempotencyKey,
 } from "./product-analytics-event-taxonomy";
 
-// 기능 : 09 문서에 확정된 runtime 이벤트 이름을 테스트 기준으로 고정합니다.
-const EXPECTED_RUNTIME_EVENT_NAMES = [
+// 기능 : 09/10 문서에 확정된 client 이벤트 이름을 테스트 기준으로 고정합니다.
+const EXPECTED_CLIENT_EVENT_NAMES = [
   "app_route_viewed",
+  "business_card_capture_started",
+  "business_card_capture_retried",
+  "meeting_note_recording_started",
+  "meeting_note_recording_completed",
+  "meeting_note_recording_failed",
+  "local_draft_saved",
+  "local_draft_restored",
+  "local_draft_discarded",
+  "mobile_push_permission_prompt_opened",
+  "mobile_push_permission_result",
+] as const;
+
+// 기능 : 09/10 문서에 확정된 server 이벤트 이름을 테스트 기준으로 고정합니다.
+const EXPECTED_SERVER_EVENT_NAMES = [
   "auth_signup_completed",
   "deal_created",
   "deal_next_action_created",
@@ -27,6 +43,12 @@ const EXPECTED_RUNTIME_EVENT_NAMES = [
   "business_card_ocr_failed",
   "import_confirmed",
   "export_downloaded",
+] as const;
+
+// 기능 : 09/10 문서에 확정된 runtime 이벤트 이름을 테스트 기준으로 고정합니다.
+const EXPECTED_RUNTIME_EVENT_NAMES = [
+  ...EXPECTED_CLIENT_EVENT_NAMES,
+  ...EXPECTED_SERVER_EVENT_NAMES,
 ] as const;
 
 // 기능 : 12 Billing으로 넘긴 reserved 이벤트 이름을 테스트 기준으로 고정합니다.
@@ -73,15 +95,14 @@ const EXPECTED_APP_ROUTE_KEYS = [
 ] as const;
 
 describe("product analytics event taxonomy", () => {
-  it("keeps the 09 runtime event allowlist fixed", () => {
+  it("keeps the 09/10 runtime event allowlist fixed", () => {
+    expect(PRODUCT_ANALYTICS_CLIENT_EVENT_NAMES).toEqual(
+      EXPECTED_CLIENT_EVENT_NAMES
+    );
     expect(PRODUCT_ANALYTICS_RUNTIME_EVENT_NAMES).toEqual(
       EXPECTED_RUNTIME_EVENT_NAMES
     );
-    expect(PRODUCT_ANALYTICS_SERVER_EVENT_NAMES).toEqual(
-      EXPECTED_RUNTIME_EVENT_NAMES.filter(
-        (eventName) => eventName !== "app_route_viewed"
-      )
-    );
+    expect(PRODUCT_ANALYTICS_SERVER_EVENT_NAMES).toEqual(EXPECTED_SERVER_EVENT_NAMES);
   });
 
   it("keeps billing events reserved outside the runtime allowlist", () => {
@@ -96,6 +117,7 @@ describe("product analytics event taxonomy", () => {
   });
 
   it("identifies runtime server events and idempotency requirements", () => {
+    expect(isProductAnalyticsClientEventName("local_draft_saved")).toBe(true);
     expect(isProductAnalyticsRuntimeEventName("deal_created")).toBe(true);
     expect(isProductAnalyticsServerEventName("deal_created")).toBe(true);
     expect(requiresProductAnalyticsIdempotencyKey("SERVER")).toBe(true);

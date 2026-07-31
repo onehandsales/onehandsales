@@ -1,3 +1,4 @@
+import { trackMobileFieldAnalyticsEvent } from "@/features/analytics";
 import type {
   BrowserPushPermissionState,
   CreateBrowserPushSubscriptionInput,
@@ -107,10 +108,12 @@ export function urlBase64ToUint8Array(value: string) {
   return output;
 }
 
-// 기능 : G05 범위에서 collector allowlist 확장 없이 안전한 client event만 브라우저 내부로 발행합니다.
+// 기능 : push permission client event를 collector로 전송하고 기존 브라우저 내부 event도 발행합니다.
 export function emitMobilePushPermissionClientEvent(
   event: MobilePushPermissionClientEvent
 ) {
+  trackMobileFieldAnalyticsEvent(event);
+
   if (typeof window === "undefined" || typeof CustomEvent === "undefined") {
     return;
   }

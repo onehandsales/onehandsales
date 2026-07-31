@@ -110,21 +110,64 @@ pnpm --dir FE/user-web test:e2e -- product-analytics-route
 
 ## 11. Goal 검토 체크리스트
 
-- [ ] 09 Product Analytics API를 재사용한다.
-- [ ] 신규 mobile event allowlist가 contract와 일치한다.
-- [ ] `business_card_ocr_failed` server event가 있다.
-- [ ] analytics payload에 PII/raw text가 없다.
-- [ ] forbidden payload key validation이 유지된다.
-- [ ] analytics 실패가 사용자 작업을 막지 않는다.
-- [ ] Admin analytics dashboard를 만들지 않았다.
-- [ ] DB 추가/생성 없이 `ProductAnalyticsEvent` 기존 model만 사용했다.
-- [ ] 새로 만들거나 의미 있게 수정한 공개 함수/핵심 함수에 한국어 주석을 적용했다.
-- [ ] Global B2C 개인 영업자 모바일 현장 업무 target을 벗어나지 않았다.
-- [ ] UX/UI 변경 전 `AGENT/UXUI_AGENT` 기준을 확인했다.
-- [ ] Software/architecture 변경 전 `AGENT/SOFTWARE_AGENT` 기준을 확인했다.
-- [ ] BE/FE/E2E targeted 검증 결과를 기록했다.
-- [ ] `COMMON/GOAL-REVIEW-CHECKLIST.md`를 확인했다.
+- [x] 09 Product Analytics API를 재사용한다.
+- [x] 신규 mobile event allowlist가 contract와 일치한다.
+- [x] `business_card_ocr_failed` server event가 있다.
+- [x] analytics payload에 PII/raw text가 없다.
+- [x] forbidden payload key validation이 유지된다.
+- [x] analytics 실패가 사용자 작업을 막지 않는다.
+- [x] Admin analytics dashboard를 만들지 않았다.
+- [x] DB 추가/생성 없이 `ProductAnalyticsEvent` 기존 model만 사용했다.
+- [x] 새로 만들거나 의미 있게 수정한 공개 함수/핵심 함수에 한국어 주석을 적용했다.
+- [x] Global B2C 개인 영업자 모바일 현장 업무 target을 벗어나지 않았다.
+- [x] UX/UI 변경 전 `AGENT/UXUI_AGENT` 기준을 확인했다.
+- [x] Software/architecture 변경 전 `AGENT/SOFTWARE_AGENT` 기준을 확인했다.
+- [x] BE/FE/E2E targeted 검증 결과를 기록했다.
+- [x] `COMMON/GOAL-REVIEW-CHECKLIST.md`를 확인했다.
 
 ## 12. 실행 결과
 
-구현 후 기록한다.
+완료일: 2026-07-31
+
+구현 요약:
+
+- 기존 `POST /api/analytics/events` collector를 재사용하고 G06 mobile client event 10개를 allowlist에 추가했다.
+- client collector는 G06 계약의 optional `occurredAt`, `targetType`, `targetId`를 검증하되 user/session/device/source/eventDate/idempotency 값은 계속 차단한다.
+- payload는 event별 allowlist schema로 정규화하고 `endpoint`, `p256dh`, `auth`, `audio`, `image`, `details`, `transcript`, PII/raw text key를 차단한다.
+- BusinessCard OCR 실패 server event `business_card_ocr_failed`는 기존 Product Analytics recorder와 BusinessCard service 경로에서 best effort로 기록되는 상태를 검증했다.
+- User Web에 mobile field analytics helper를 추가하고 명함 capture/retry, 회의록 녹음 start/completed/failed, local draft saved/restored/discarded, push permission prompt/result 이벤트를 collector 전송으로 연결했다.
+- analytics 전송 실패는 helper/recorder에서 catch하거나 warning log로 처리해 사용자 촬영, 녹음, draft, 권한 UX를 막지 않는다.
+- 신규 DB migration 없이 기존 `ProductAnalyticsEvent`만 사용했다.
+
+검증:
+
+```powershell
+pnpm.cmd --dir BE test -- product-analytics
+pnpm.cmd --dir BE test -- collect-client-analytics-event
+pnpm.cmd --dir BE test -- business-card-application
+pnpm.cmd --dir BE typecheck
+pnpm.cmd --dir BE lint
+pnpm.cmd --dir FE/user-web test -- analytics
+pnpm.cmd --dir FE/user-web test -- use-meeting-note-audio-recorder
+pnpm.cmd --dir FE/user-web test -- use-mobile-local-draft
+pnpm.cmd --dir FE/user-web test -- browser-push-permission
+pnpm.cmd --dir FE/user-web typecheck
+pnpm.cmd --dir FE/user-web lint
+pnpm.cmd --dir FE/user-web test:e2e:analytics
+git diff --check
+```
+
+결과:
+
+- BE product-analytics Jest 8 suites / 39 tests 통과.
+- BE collect-client-analytics-event Jest 1 suite / 23 tests 통과.
+- BE business-card-application Jest 1 suite / 5 tests 통과.
+- BE typecheck/lint 통과.
+- FE analytics Vitest 4 files / 45 tests 통과.
+- FE meeting-note recorder Vitest 1 file / 6 tests 통과.
+- FE local-draft Vitest 1 file / 3 tests 통과.
+- FE browser-push-permission Vitest 1 file / 4 tests 통과.
+- FE typecheck/lint 통과.
+- Product Analytics Playwright smoke 1 test 통과.
+- `git diff --check` 통과.
+- 운영/공유 DB migrate/seed는 실행하지 않았다.

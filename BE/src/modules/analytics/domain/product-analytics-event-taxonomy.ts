@@ -12,9 +12,19 @@ export const PRODUCT_ANALYTICS_EVENT_SOURCE_CODES = [
 export type ProductAnalyticsEventSourceCode =
   (typeof PRODUCT_ANALYTICS_EVENT_SOURCE_CODES)[number];
 
-// 기능 : 09에서 User Web client가 직접 보낼 수 있는 이벤트 이름을 정의합니다.
+// 기능 : 09/10에서 User Web client가 직접 보낼 수 있는 이벤트 이름을 정의합니다.
 export const PRODUCT_ANALYTICS_CLIENT_EVENT_NAMES = [
   "app_route_viewed",
+  "business_card_capture_started",
+  "business_card_capture_retried",
+  "meeting_note_recording_started",
+  "meeting_note_recording_completed",
+  "meeting_note_recording_failed",
+  "local_draft_saved",
+  "local_draft_restored",
+  "local_draft_discarded",
+  "mobile_push_permission_prompt_opened",
+  "mobile_push_permission_result",
 ] as const;
 
 // 역할 : ProductAnalyticsClientEventName User Web client 이벤트 이름을 정의합니다.

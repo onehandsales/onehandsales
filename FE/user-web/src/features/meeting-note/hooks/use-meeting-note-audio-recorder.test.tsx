@@ -1,9 +1,11 @@
 import { act, useEffect } from "react";
 import { createRoot, type Root } from "react-dom/client";
 import { afterEach, describe, expect, it, vi } from "vitest";
+import type { MeetingNoteRecordingAnalyticsEventInput } from "@/features/analytics";
 import {
   createMeetingNoteRecordingFile,
   formatMeetingNoteRecordingDuration,
+  getMeetingNoteRecordingDurationBucket,
   isMeetingNoteAudioRecordingSupported,
   selectMeetingNoteRecordingMimeType,
   useMeetingNoteAudioRecorder,
@@ -39,6 +41,10 @@ describe("meeting note audio recorder helpers", () => {
 
     expect(selectMeetingNoteRecordingMimeType()).toBe("audio/webm");
     expect(formatMeetingNoteRecordingDuration(65)).toBe("01:05");
+    expect(getMeetingNoteRecordingDurationBucket(59)).toBe("under_1m");
+    expect(getMeetingNoteRecordingDurationBucket(60)).toBe("1m_5m");
+    expect(getMeetingNoteRecordingDurationBucket(300)).toBe("5m_15m");
+    expect(getMeetingNoteRecordingDurationBucket(900)).toBe("over_15m");
 
     const file = createMeetingNoteRecordingFile(
       [new Blob(["audio"])],
@@ -62,7 +68,10 @@ describe("useMeetingNoteAudioRecorder", () => {
     const getUserMedia = vi.fn<MediaDevices["getUserMedia"]>();
     installMediaDevices(getUserMedia);
     installMediaRecorder(undefined);
-    const controller = await renderRecorderHook();
+    const events: MeetingNoteRecordingAnalyticsEventInput[] = [];
+    const controller = await renderRecorderHook({
+      trackEvent: (event) => events.push(event),
+    });
 
     await act(async () => {
       await controller.current.startRecording();
@@ -73,6 +82,15 @@ describe("useMeetingNoteAudioRecorder", () => {
       "AUDIO_RECORDING_NOT_SUPPORTED"
     );
     expect(getUserMedia).not.toHaveBeenCalled();
+    expect(events).toEqual([
+      {
+        eventName: "meeting_note_recording_failed",
+        eventVersion: 1,
+        payload: {
+          reason: "unsupported",
+        },
+      },
+    ]);
   });
 
   it("maps microphone permission denial to file upload fallback error", async () => {
@@ -82,7 +100,10 @@ describe("useMeetingNoteAudioRecorder", () => {
         createDomNamedError("NotAllowedError")
       )
     );
-    const controller = await renderRecorderHook();
+    const events: MeetingNoteRecordingAnalyticsEventInput[] = [];
+    const controller = await renderRecorderHook({
+      trackEvent: (event) => events.push(event),
+    });
 
     await act(async () => {
       await controller.current.startRecording();
@@ -93,6 +114,15 @@ describe("useMeetingNoteAudioRecorder", () => {
       "AUDIO_RECORDING_PERMISSION_DENIED"
     );
     expect(controller.current.recordedFile).toBeNull();
+    expect(events).toEqual([
+      {
+        eventName: "meeting_note_recording_failed",
+        eventVersion: 1,
+        payload: {
+          reason: "permission_denied",
+        },
+      },
+    ]);
   });
 
   it("records, stops, and exposes a File for the STT draft API", async () => {
@@ -103,7 +133,10 @@ describe("useMeetingNoteAudioRecorder", () => {
         createStreamFake(trackStop)
       )
     );
-    const controller = await renderRecorderHook();
+    const events: MeetingNoteRecordingAnalyticsEventInput[] = [];
+    const controller = await renderRecorderHook({
+      trackEvent: (event) => events.push(event),
+    });
 
     await act(async () => {
       await controller.current.startRecording();
@@ -121,6 +154,22 @@ describe("useMeetingNoteAudioRecorder", () => {
     });
     expect(controller.current.recordedFile?.size).toBeGreaterThan(0);
     expect(trackStop).toHaveBeenCalled();
+    expect(events).toEqual([
+      {
+        eventName: "meeting_note_recording_started",
+        eventVersion: 1,
+        payload: {
+          entryPoint: "meeting_note_create",
+        },
+      },
+      {
+        eventName: "meeting_note_recording_completed",
+        eventVersion: 1,
+        payload: {
+          durationBucket: "under_1m",
+        },
+      },
+    ]);
   });
 
   it("cancels active recording without keeping an audio file", async () => {
@@ -130,7 +179,10 @@ describe("useMeetingNoteAudioRecorder", () => {
         createStreamFake()
       )
     );
-    const controller = await renderRecorderHook();
+    const events: MeetingNoteRecordingAnalyticsEventInput[] = [];
+    const controller = await renderRecorderHook({
+      trackEvent: (event) => events.push(event),
+    });
 
     await act(async () => {
       await controller.current.startRecording();
@@ -142,11 +194,24 @@ describe("useMeetingNoteAudioRecorder", () => {
     expect(controller.current.status).toBe("idle");
     expect(controller.current.recordedFile).toBeNull();
     expect(controller.current.errorCode).toBeNull();
+    expect(events).toEqual([
+      {
+        eventName: "meeting_note_recording_started",
+        eventVersion: 1,
+        payload: {
+          entryPoint: "meeting_note_create",
+        },
+      },
+    ]);
   });
 });
 
 // 기능 : hook 테스트용 React root를 만들고 최신 recorder state를 노출합니다.
-async function renderRecorderHook() {
+async function renderRecorderHook(input: {
+  readonly trackEvent?: (
+    event: MeetingNoteRecordingAnalyticsEventInput
+  ) => void;
+} = {}) {
   const container = document.createElement("div");
   document.body.appendChild(container);
   let current: RecorderHookState | null = null;
@@ -159,6 +224,7 @@ async function renderRecorderHook() {
         onChange={(nextState) => {
           current = nextState;
         }}
+        trackEvent={input.trackEvent}
       />
     );
   });
@@ -181,10 +247,14 @@ async function renderRecorderHook() {
 // 기능 : 테스트 컴포넌트에서 hook state를 외부 controller로 전달합니다.
 function RecorderHookProbe({
   onChange,
+  trackEvent,
 }: {
   readonly onChange: (state: RecorderHookState) => void;
+  readonly trackEvent?: (
+    event: MeetingNoteRecordingAnalyticsEventInput
+  ) => void;
 }) {
-  const recorder = useMeetingNoteAudioRecorder();
+  const recorder = useMeetingNoteAudioRecorder({ trackEvent });
 
   useEffect(() => {
     onChange(recorder);

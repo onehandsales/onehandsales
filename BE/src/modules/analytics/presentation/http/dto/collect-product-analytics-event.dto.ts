@@ -15,6 +15,9 @@ export class CollectProductAnalyticsEventDto {
   userId?: unknown;
 
   @IsOptional()
+  organizationId?: unknown;
+
+  @IsOptional()
   authSessionId?: unknown;
 
   @IsOptional()

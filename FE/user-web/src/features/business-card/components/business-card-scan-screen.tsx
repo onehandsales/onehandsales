@@ -37,6 +37,10 @@ import { ModalShell } from "@/components/ui/modal-shell";
 import { Pagination } from "@/components/ui/pagination";
 import { ListEmptyState } from "@/components/ui/state";
 import { Toast } from "@/components/ui/toast";
+import {
+  PRODUCT_ANALYTICS_EVENT_VERSION,
+  trackMobileFieldAnalyticsEvent,
+} from "@/features/analytics";
 import { useAuthSession } from "@/features/auth";
 import {
   useConfirmBusinessCardScanMutation,
@@ -90,6 +94,13 @@ const BUSINESS_CARD_SCAN_TABLE_ROW_CLASS_NAME = cn(
   LIST_TABLE_ROW_CLASS_NAME,
   "h-12",
 );
+
+type BusinessCardCaptureMode = "camera" | "library" | "unknown";
+type BusinessCardCaptureRetryReason =
+  | "ocr_failed"
+  | "user_replace"
+  | "quality_hint"
+  | "unknown";
 
 const STATUS_FILTER_OPTIONS: Array<{
   readonly id: BusinessCardScanStatus;
@@ -756,7 +767,41 @@ function BusinessCardRegisterDialog({
     }
   }, [reset, scanLog]);
 
-  const onFileChange = (file: File | null) => {
+  // 기능 : 명함 촬영/선택 시작 이벤트를 PII 없이 기록합니다.
+  const trackCaptureStarted = (captureMode: BusinessCardCaptureMode) => {
+    trackMobileFieldAnalyticsEvent({
+      eventName: "business_card_capture_started",
+      eventVersion: PRODUCT_ANALYTICS_EVENT_VERSION,
+      payload: {
+        captureMode,
+        entryPoint: "business_cards",
+      },
+    });
+  };
+
+  // 기능 : 명함 재촬영/파일 변경 이벤트를 안전한 reason 값으로 기록합니다.
+  const trackCaptureRetried = (reason: BusinessCardCaptureRetryReason) => {
+    trackMobileFieldAnalyticsEvent({
+      eventName: "business_card_capture_retried",
+      eventVersion: PRODUCT_ANALYTICS_EVENT_VERSION,
+      payload: {
+        reason,
+      },
+    });
+  };
+
+  // 기능 : 명함 파일 선택 상태를 초기화하고 선택 성공 시 capture 시작 이벤트를 기록합니다.
+  const onFileChange = (
+    file: File | null,
+    captureMode: BusinessCardCaptureMode
+  ) => {
+    if (file) {
+      if (selectedFile) {
+        trackCaptureRetried("user_replace");
+      }
+      trackCaptureStarted(captureMode);
+    }
+
     scanMutation.reset();
     confirmMutation.reset();
     setSelectedFile(file);
@@ -779,7 +824,7 @@ function BusinessCardRegisterDialog({
 
   const clearSelectedFile = () => {
     resetFileInputValues();
-    onFileChange(null);
+    onFileChange(null, "unknown");
   };
 
   const openCaptureInput = () => {
@@ -792,7 +837,8 @@ function BusinessCardRegisterDialog({
   };
 
   const retryWithNewCapture = () => {
-    onFileChange(null);
+    trackCaptureRetried("ocr_failed");
+    onFileChange(null, "unknown");
     openCaptureInput();
   };
 
@@ -801,7 +847,8 @@ function BusinessCardRegisterDialog({
       return;
     }
 
-    onFileChange(null);
+    trackCaptureRetried("ocr_failed");
+    onFileChange(null, "unknown");
     resetSingleFileInputValue(filePickerInputRef.current);
     filePickerInputRef.current?.click();
   };
@@ -999,7 +1046,9 @@ function BusinessCardRegisterDialog({
               className="sr-only"
               disabled={isExtracted || isRegistering}
               id="business-card-image"
-              onChange={(event) => onFileChange(event.target.files?.[0] ?? null)}
+              onChange={(event) =>
+                onFileChange(event.target.files?.[0] ?? null, "camera")
+              }
               ref={fileInputRef}
               type="file"
             />
@@ -1008,7 +1057,9 @@ function BusinessCardRegisterDialog({
               aria-hidden="true"
               className="sr-only"
               disabled={isExtracted || isRegistering}
-              onChange={(event) => onFileChange(event.target.files?.[0] ?? null)}
+              onChange={(event) =>
+                onFileChange(event.target.files?.[0] ?? null, "library")
+              }
               ref={filePickerInputRef}
               tabIndex={-1}
               type="file"

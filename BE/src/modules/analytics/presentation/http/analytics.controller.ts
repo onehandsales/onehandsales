@@ -39,9 +39,12 @@ export class AnalyticsController {
       currentUser,
       eventName: body.eventName,
       eventVersion: body.eventVersion,
+      occurredAt: body.occurredAt,
       payload: body.payload,
       requestFieldNames: this.getPresentRequestFieldNames(body),
       requestId: request.requestId,
+      targetId: body.targetId,
+      targetType: body.targetType,
     });
   }
 
