@@ -1,7 +1,7 @@
 # Final Service Shape
 
 상태: Draft Guide
-최종 업데이트: 2026-07-30
+최종 업데이트: 2026-07-31
 
 ## 1. 최종 서비스는 3단계로 보되 판매 기준은 Global B2C다
 
@@ -23,7 +23,7 @@ MVP는 판매 버전이 아니다. 이 단계의 목적은 개인 영업자의 �
 | 딜 | 단계, 금액, 회사/담당자/제품, 다음 행동, 마감일, 최신 활동이 목록에서 빠르게 비교된다. Deal list products/latest activity와 Contact dealCount는 06에서 구현 완료됐다. |
 | 목록 | desktop은 업무용 record table 밀도, mobile은 card/list로 핵심 정보를 잃지 않는다. |
 | 상세 | 속성, linked record, 메모, 일정/회의록, 활동 맥락이 분명하다. 딜 상세 `DealActivity` timeline은 06에서 구현 완료됐다. |
-| 모바일 브라우저 | 390px/360px에서 핵심 생성/수정/조회/복구/업로드 흐름이 깨지지 않는다. |
+| 모바일 브라우저 | 390px/360px에서 핵심 생성/수정/조회/복구/업로드 흐름이 깨지지 않는다. 10에서 모바일 명함 촬영, 회의 음성 기록, local draft, push permission UX를 구현하고 mobile QA를 완료했다. |
 | 브라우저 | Chrome/Edge에서 reload, history, multi-tab, slow network 상태가 안정적이다. |
 | 보안 | 다른 사용자 데이터가 Search, Trash, Export, 직접 API 접근에서 섞이지 않는다. |
 | DB/운영 | Prisma generate, migration status, seed 정책, DB target이 배포 전 판단 가능하다. |
@@ -41,7 +41,7 @@ MVP는 판매 버전이 아니다. 이 단계의 목적은 개인 영업자의 �
 | 다국가 데이터 | 전화번호, 날짜/시간, 통화, 주소/지역 표시가 국가별로 자연스럽다. User global settings, Product/Deal currency, Contact KR/US phone, Company country/region/address, Import/Export localization은 08에서 구현 완료됐다. |
 | Admin 운영 | 사용자, 구독, 결제 이슈, 도메인 데이터, 민감정보 마스킹, 감사 로그를 운영할 수 있다. |
 | 고객 신뢰 | 약관, 개인정보, 보안, 계정 삭제, 데이터 export, 환불 정책이 실제 판매 범위와 맞는다. |
-| 제품 분석 | activation, retention, paid conversion, churn, ARPU, LTV/CAC, AI cost/user를 추적한다. 09에서 event taxonomy, route/server event, activation/retention snapshot, AI usage/cost foundation을 구현했다. paid conversion/churn/ARPU는 12 Billing source와 11 Admin analytics UI/API 연결 후 완성된다. |
+| 제품 분석 | activation, retention, paid conversion, churn, ARPU, LTV/CAC, AI cost/user를 추적한다. 09에서 event taxonomy, route/server event, activation/retention snapshot, AI usage/cost foundation을 구현했고 10에서 mobile field-use event를 연결했다. paid conversion/churn/ARPU는 12 Billing source와 11 Admin analytics UI/API 연결 후 완성된다. |
 | 지원/운영 | 결제 실패, 로그인 문제, OCR/STT provider 실패, 데이터 복구 요청을 운영자가 처리할 수 있다. |
 
 ## 4. Series A급 제품/사업형
@@ -50,7 +50,7 @@ MVP는 판매 버전이 아니다. 이 단계의 목적은 개인 영업자의 �
 |---|---|
 | 리텐션 | 다음 행동, 일정, 회의록 follow-up, 딜 지연, AI/고급 주간 리포트가 사용자를 다시 부른다. 기본 주간 일정 보고서, Google Calendar read-only import, 회의록 follow-up draft는 구현 완료 상태로 본다. follow-up 알림/자동 발송은 후속 정책 범위다. |
 | AI 핵심 가치 | 회의록 요약을 넘어 딜 리스크, 다음 행동, follow-up 문구, 영업 리포트를 제안한다. 회의록 상세 next action/follow-up draft는 07에서 구현 완료됐고, 딜 리스크와 고급 리포트는 후속이다. |
-| 모바일 현장성 | 모바일 브라우저 또는 앱에서 명함 촬영, 음성 기록, 빠른 입력, push reminder가 자연스럽다. |
+| 모바일 현장성 | 모바일 브라우저 또는 앱에서 명함 촬영, 음성 기록, 빠른 입력, push reminder가 자연스럽다. 모바일 브라우저 1차 현장성은 10에서 완료했고, PWA install/offline shell과 native app은 후속이다. |
 | Deal timeline | 일정, Google Calendar에서 가져온 일정, 회의록, follow-up, 다음 행동, 단계 변경이 하나의 영업 활동 흐름으로 연결된다. 기본 `DealActivity` timeline은 06에서 구현 완료됐고, 메모 통합과 범용 activity bus는 후속 정책 결정 범위다. |
 | 성장 실험 | trial, annual plan, AI plan, paywall, coupon/referral, churn survey를 운영한다. |
 | 운영 신뢰 | Admin, 감사 로그, 민감정보 원문 조회 사유, 장애/provider 상태 기록이 유료 고객을 감당한다. |
@@ -61,5 +61,5 @@ MVP는 판매 버전이 아니다. 이 단계의 목적은 개인 영업자의 �
 - 새 기능을 추가하는 것보다 먼저, 현재 핵심 루프가 Global B2C 유료 사용자에게 충분히 읽히고 안정적인지 본다.
 - Backend/API 후보는 화면에서 필요한 정보 구조와 Global B2C 운영 필요성이 확정된 뒤 계약화한다.
 - Series A급 기능은 기능 단독으로 만들지 않고 retention, revenue, analytics와 같이 판단한다.
-- Admin/결제/분석/정책/현지화는 후순위 장식이 아니라 첫 판매 gate의 일부로 본다. 분석 foundation은 09에서 닫혔고, Admin dashboard와 billing-linked 지표는 11/12에서 연결한다.
+- Admin/결제/분석/정책/현지화는 후순위 장식이 아니라 첫 판매 gate의 일부로 본다. 분석 foundation은 09에서 닫혔고 mobile field-use event는 10에서 닫혔으며, Admin dashboard와 billing-linked 지표는 11/12에서 연결한다.
 - 08에서 닫힌 현지화/글로벌 데이터 기본 범위와 DB migration 최신 상태 재확인은 완료로 보며, LINE/Apple 실제 auth provider smoke도 2026-07-29 사용자 확인 기준 운영 완료로 반영한다.

@@ -2,7 +2,7 @@
 
 상태: Draft
 작성일: 2026-07-20
-최종 업데이트: 2026-07-30
+최종 업데이트: 2026-07-31
 출처: `TODO/DONE/USER_WEB_RELEASE_QA_FOLLOWUP_PLAN` G07, `TODO/USER_WEB_PRODUCTIZATION_GAP_PLAN`
 
 ## 0. 완료 반영 체크리스트
@@ -20,6 +20,8 @@
 - [x] `NBA-011 MeetingNote AI/STT provider log subset`: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/07_MEETING_NOTE_AI_PROVIDER_LOG`에서 공통 `AiProviderCallLog` 확장으로 구현 및 QA closeout 완료
 - [x] `08_GLOBAL_DATA_I18N`: User global settings, `/app` i18n, currency/phone/region/address, import/export localization, Google/LINE/Apple auth 구현 및 QA closeout 완료
 - [x] `09_PRODUCT_ANALYTICS`: Product analytics collector API, Prisma schema, server/client event logging, activation/retention snapshot, AI usage summary 구현 및 QA closeout 완료
+- [x] `NBA-005 BusinessCard provider failure code/message contract`: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/10_MOBILE_PWA_FIELD_USE`에서 구현 및 QA closeout 완료
+- [x] `10_MOBILE_PWA_FIELD_USE`: BusinessCard OCR safe failure, MeetingNote mobile recording, local draft, push permission UX, mobile field analytics 구현 및 QA closeout 완료
 - [x] Backend/API/DB/User Web 영향 반영 완료
 - [x] 완료 기록: `TODO_LOG/2026-07-21/G04_IMPORT_JOB_PERSISTENCE_QA_CLEANUP/WORK_LOG.md`
 - [x] 완료 기록: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/03_WEEKLY_SCHEDULE_REPORT/COMMON/TODO_LOG.md`
@@ -29,6 +31,7 @@
 - [x] 완료 기록: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/07_MEETING_NOTE_AI_PROVIDER_LOG/COMMON/GOAL-SPECS/G06_QA_REVIEW_CLOSEOUT.md`
 - [x] 완료 기록: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/08_GLOBAL_DATA_I18N/COMMON/GOAL-SPECS/G10_QA_DOCUMENT_CLOSEOUT.md`
 - [x] 완료 기록: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/09_PRODUCT_ANALYTICS/COMMON/GOAL-SPECS/G08_QA_DOCUMENT_CLOSEOUT.md`
+- [x] 완료 기록: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/10_MOBILE_PWA_FIELD_USE/COMMON/GOAL-SPECS/G07_QA_DOCUMENT_CLOSEOUT.md`
 - [ ] 나머지 NBA 후보 계약 확정 및 구현 여부 판단
 
 ## 1. 목적
@@ -41,7 +44,7 @@ G07의 산출물이므로 이 문서는 구현 계획 확정본이 아니다. �
 
 ## 2. 현재 결론
 
-- BusinessCard provider failure contract는 남은 release follow-up 후보다.
+- BusinessCard provider failure contract는 2026-07-31 기준 10번에서 구현 및 QA closeout이 완료되어 active backlog 후보에서 제외한다.
 - `NBA-003` 중 Deal list `latestActivity`는 06에서 구현 완료됐고, Company/Contact/Product latest summary와 generic summary endpoint는 product feature 후보로 남긴다.
 - MeetingNote 상세 next action/follow-up draft와 AI/STT provider call log는 07에서 구현 완료됐다. MeetingNote 목록 latest/next summary는 product feature 후보로 남긴다.
 - `NBA-014`는 06 범위에서 DB target, migration/seed 금지, Prisma 검증 gate를 닫았다. 실제 운영 DB 적용 절차, backup/restore, 장애 대응, Admin raw audit 같은 data reliability 운영 기준은 별도 첫 판매 gate에서 다룬다.
@@ -53,6 +56,7 @@ G07의 산출물이므로 이 문서는 구현 계획 확정본이 아니다. �
 - `NBA-004` MeetingNote detail next action/follow-up draft subset과 `NBA-011` MeetingNote provider log subset은 2026-07-26 기준 `07_MEETING_NOTE_AI_PROVIDER_LOG`에서 구현 및 QA closeout이 완료되어 active backlog 후보에서 제외한다.
 - `08_GLOBAL_DATA_I18N`은 2026-07-28 기준 구현 및 QA closeout이 완료되어 first-sale global data/API gap에서 제외한다. 2026-07-29 `BE/.env` 연결 DB도 `prisma migrate status` 기준 최신 상태로 재확인했다. 같은 날 사용자 확인 기준 LINE/Apple provider 설정값 연결과 실제 OAuth 동작도 운영 환경에서 완료됐다.
 - `09_PRODUCT_ANALYTICS`는 2026-07-30 기준 구현 및 QA closeout이 완료되어 first-sale product analytics foundation gap에서 제외한다. Admin analytics UI/API는 11, billing/paywall/churn runtime conversion source는 12에서 다룬다.
+- `10_MOBILE_PWA_FIELD_USE`는 2026-07-31 기준 구현 및 QA closeout이 완료되어 mobile field-use API/DB/User Web gap에서 제외한다. PWA install/offline shell, native app, native push/contact/calendar는 후속 별도 로드맵이다.
 - Trash private memo backend restriction, MeetingNote 목록 summary, MeetingNote Admin provider audit/retention, Trash 7일 이후 복구 정책, Admin 운영 UX/API, Billing 연동 conversion/churn flow는 남은 후보다.
 
 ## 2.1 `NBA-015` 반영 기준
@@ -95,7 +99,6 @@ G07의 산출물이므로 이 문서는 구현 계획 확정본이 아니다. �
 - `NBA-003` 중 Company/Contact/Product latest activity, latest memo, next action summary
 - MeetingNote 목록 latest/next summary
 - MeetingNote Admin provider audit, retention/cleanup, raw access policy
-- BusinessCard provider failure contract
 - Trash private memo response restriction과 7일 이후 복구/영구삭제 정책
 - Admin 운영 API/UX와 data reliability 운영 절차
 
@@ -160,7 +163,27 @@ G07의 산출물이므로 이 문서는 구현 계획 확정본이 아니다. �
 
 - Admin analytics dashboard/API는 09 범위가 아니며 `11_ADMIN_OPERATION`에서 다룬다.
 - 실제 paywall, subscription, churn survey, paid conversion source event 발생은 09 범위가 아니며 `12_BILLING_SUBSCRIPTION_TAX`에서 다룬다.
-- 모바일/PWA route/source 세부 event는 10 또는 별도 후속 분석 계획에서 결정한다.
+- 모바일 field-use 세부 event는 10에서 완료됐다. Admin dashboard와 billing conversion/churn 연결은 각각 11/12에서 다룬다.
+
+## 2.6 `10_MOBILE_PWA_FIELD_USE` 반영 기준
+
+`TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/10_MOBILE_PWA_FIELD_USE`는 2026-07-31 G07 QA closeout 기준으로 Completed다. 이 백로그에서는 모바일 현장 입력성 API/DB/User Web 항목을 active 후보가 아니라 완료 이력으로만 유지한다.
+
+완료로 반영할 Backend/API/DB/User Web 영향:
+
+- BusinessCard OCR 실패 응답에 safe `errorCode`, `userMessage`, `retryable` 계약을 반영하고 provider raw detail은 사용자 응답에서 제외했다.
+- `BusinessCardScanLog`에 safe failure field를 추가하고 Prisma 한국어 주석과 migration SQL `COMMENT ON COLUMN`을 적용했다.
+- `/app/business-cards` 모바일 촬영 input은 `accept="image/*"`와 `capture="environment"`를 사용하고, 다시 촬영/파일 바꾸기/수동 입력 UX를 제공한다.
+- MeetingNote 모바일 녹음은 `MediaRecorder` 기반으로 기존 `POST /api/meeting-notes/stt-draft`를 재사용하고, 권한 거부/미지원 시 음성 파일 fallback을 제공한다.
+- BusinessCard/MeetingNote 작성 흐름은 서버 draft DB 없이 FE local draft 24시간 TTL, 복원/폐기 UX로 구현했다.
+- Browser push permission은 사용자 명시 클릭 이후에만 요청하고 service notification copy와 marketing copy를 분리했다.
+- Mobile field analytics event를 09 collector 위에 allowlist payload로 추가하고, analytics 실패는 사용자 작업을 막지 않는다.
+
+남은 백로그로 오해하지 않을 범위:
+
+- PWA install prompt/offline shell, full offline sync, iOS/Android native app, native push/contact/calendar는 10 완료 범위가 아니다.
+- Admin provider failure dashboard와 운영 추적은 `11_ADMIN_OPERATION`에서 다룬다.
+- Marketing opt-in, billing/paywall/churn runtime event는 `12_BILLING_SUBSCRIPTION_TAX`에서 다룬다.
 
 ## 3. 우선순위 분류 기준
 
@@ -189,7 +212,7 @@ G07의 산출물이므로 이 문서는 구현 계획 확정본이 아니다. �
 - Prisma schema 또는 migration 추가
 - seed 수정 또는 운영/공유 DB migration 실행
 - Admin API 구현
-- 완료된 Notification/Weekly Schedule Report/Google Calendar Integration/Deal Activity Timeline/MeetingNote AI Provider Log/Global Data I18N/Product Analytics 범위를 넘어서는 새 알림 endpoint, Admin provider failure UI, PDF/범용 ExportJob, 반복 일정, AI 요약, Google Calendar export/write/realtime webhook, 범용 activity bus, MeetingNote 자동 저장/자동 발송, 신규 auth provider, `/app` locale prefix, analytics Admin dashboard, billing/paywall/churn runtime event 구현
+- 완료된 Notification/Weekly Schedule Report/Google Calendar Integration/Deal Activity Timeline/MeetingNote AI Provider Log/Global Data I18N/Product Analytics/Mobile Field Use 범위를 넘어서는 새 알림 endpoint, Admin provider failure UI, PDF/범용 ExportJob, 반복 일정, AI 요약, Google Calendar export/write/realtime webhook, 범용 activity bus, MeetingNote 자동 저장/자동 발송, 신규 auth provider, `/app` locale prefix, analytics Admin dashboard, billing/paywall/churn runtime event, PWA install/offline shell, native app 구현
 - User Web에서 `/admin/api/*` 호출 추가
 - FE 단독 page size 변경
 

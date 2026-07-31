@@ -1,6 +1,6 @@
 # Coverage Matrix
 
-상태: Draft / 01~09 Done / 10 Next
+상태: Draft / 01~10 Done / 11 Next
 
 ## 0. 완료 반영
 
@@ -17,6 +17,7 @@
 - [x] 07 `MeetingNote AI Provider Log`: Done (2026-07-26)
 - [x] 08 `Global Data I18N`: Done (2026-07-28, DB 최신 상태 2026-07-29 재확인)
 - [x] 09 `Product Analytics`: Done (2026-07-30)
+- [x] 10 `Mobile PWA Field Use`: Done (2026-07-31)
 - [x] First-sale gate 반영: `NBA-014`, Product UX gate, Trust/policy gate, `NBA-007`은 `COMMON/FIRST-SALE-GATE-MAP.md`에 선행/횡단 기준으로 고정
 
 ## 1. 목적
@@ -72,19 +73,19 @@
 | Global | 통화/금액/currency | 08 | Done: Product/Deal `currencyCode`, KRW/USD 표시 |
 | Global | 주소/지역 모델 | 08 | Done: Company country/region/address |
 | Global | 글로벌 UX writing | 08 | Done: 핵심 `/app` 문구/에러/empty `ko-KR`/`en`. 직접 keying 축소는 polish 후보 |
-| Global auth | Apple login | 08, 10 | Done for 08 implementation. 2026-07-29 사용자 확인 기준 Apple 운영 설정과 실제 OAuth 동작 완료. iOS native는 10과 연결 |
+| Global auth | Apple login | 08, 후속 native app roadmap | Done for 08 implementation. 2026-07-29 사용자 확인 기준 Apple 운영 설정과 실제 OAuth 동작 완료. iOS native app은 10 완료 범위 밖 후속 로드맵 |
 | Global auth | LINE login | 08 | Done for 08 implementation. 2026-07-29 사용자 확인 기준 LINE 운영 설정과 실제 OAuth 동작 완료 |
 | Analytics | Event taxonomy | 09 | Done: `app_route_viewed`, signup, core server action, billing reserved taxonomy 분리 완료 |
 | Analytics | Activation/retention/funnel/churn | 09, 12 | 09 Done: activation/retention snapshot과 runtime funnel foundation 완료. paid conversion/churn runtime source는 12 Billing 구현 후 연결 |
 | Analytics | AI usage/cost/user | 09 | Done: `AiProviderCallLog` 기반 user/day/operation summary foundation 완료. Admin 화면은 11 |
 | Growth | paywall/trial/coupon/referral/churn survey 실험 | 09, 12 | 09 Done: reserved event 이름과 runtime 제외 경계 확정. 실제 paywall/billing 적용과 churn survey flow는 12 |
-| Mobile | PWA | 10 | manifest, service worker, install |
-| Mobile | 모바일 명함 촬영 | 10 | camera capture |
-| Mobile | BusinessCard OCR provider failure/error contract | 10, 11 | 사용자 UX는 10, 운영 추적은 11 |
-| Mobile | 모바일 음성 기록 | 10 | STT draft와 연결 |
-| Mobile | offline draft | 10 | 민감정보 TTL 필요 |
-| Mobile | iOS/Android native app | 10 | Series A급 후보 |
-| Mobile | native push/contact/calendar | 10 | native app 이후 |
+| Mobile | PWA | 10, 후속 별도 결정 | 10 Done: 모바일 웹 현장 입력성은 완료. manifest/service worker/install/offline shell은 10 1차 제외 범위라 PWA packaging 후속으로 유지 |
+| Mobile | 모바일 명함 촬영 | 10 | Done: `input type=file`, `accept="image/*"`, `capture="environment"` 기반 후면 카메라/앨범 선택, 재촬영/파일 변경/수동 입력 UX 구현 |
+| Mobile | BusinessCard OCR provider failure/error contract | 10, 11 | 10 Done: 사용자 safe `errorCode`, `userMessage`, `retryable` 계약과 DB safe failure field 구현. Admin 운영 추적은 11 |
+| Mobile | 모바일 음성 기록 | 10 | Done: `MediaRecorder` 녹음 UX와 기존 STT draft API 재사용, 음성 파일 fallback 구현 |
+| Mobile | offline draft | 10 | Done: 서버 draft DB 없이 FE local draft 24시간 TTL, 복원/폐기 UX 구현. full offline sync는 후속 |
+| Mobile | iOS/Android native app | 후속 native app roadmap | 10 1차 제외. 현장 사용 지표와 사용자 결정 후 별도 로드맵으로 승격 |
+| Mobile | native push/contact/calendar | 후속 native app roadmap | native app 이후 결정 |
 | Ops/Admin | Admin 사용자/도메인 조회 | 11 | 운영 콘솔 |
 | Ops/Admin | 민감정보 마스킹/원문 조회 사유/audit | 11 | Admin 필수 |
 | Ops/Admin | Trash/삭제 정책 고도화 | 11 | `NBA-012`. 만료, purge, 복구 불가, 유료 복구 후보 |

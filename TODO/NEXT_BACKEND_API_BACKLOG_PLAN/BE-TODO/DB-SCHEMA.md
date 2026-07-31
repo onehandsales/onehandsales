@@ -1,7 +1,7 @@
 # DB Schema TODO
 
 상태: Draft
-최종 업데이트: 2026-07-30
+최종 업데이트: 2026-07-31
 
 ## 0. 완료 반영
 
@@ -18,10 +18,12 @@
 - [x] `NBA-011 MeetingNote provider log subset`: `AiProviderOperation` meeting-note 값과 `AiProviderCallLog.targetType/targetId/index` 구현 완료
 - [x] `08_GLOBAL_DATA_I18N`: User global settings, Product/Deal currency, Contact global phone, Company country/region/address, `OAuthProvider.LINE` migration 구현 및 QA closeout 완료
 - [x] `09_PRODUCT_ANALYTICS`: ProductAnalyticsEvent/UserActivationSnapshot/RetentionCohortSnapshot schema와 migration 구현 및 QA closeout 완료
+- [x] `NBA-005 BusinessCard provider failure code/message contract`: `BusinessCardScanLog` safe failure fields와 migration SQL COMMENT 구현 완료
+- [x] `10_MOBILE_PWA_FIELD_USE`: G02 BusinessCard safe failure migration 외 신규 DB model 없이 구현 및 QA closeout 완료
 
 ## 1. 현재 DB 변경 상태
 
-이 계획 후보에서 남은 active 후보 중 새로 확정된 Prisma schema 변경은 없다. `NBA-001`, `NBA-002`, `NBA-003` Deal subset, `NBA-004` MeetingNote detail subset, `NBA-006`, `NBA-008`, `NBA-009`, `NBA-010`, `NBA-011` provider log subset, `NBA-014`, `NBA-015`, `08_GLOBAL_DATA_I18N`, `09_PRODUCT_ANALYTICS`는 별도 계획에서 구현 완료된 이력으로만 남긴다.
+이 계획 후보에서 남은 active 후보 중 새로 확정된 Prisma schema 변경은 없다. `NBA-001`, `NBA-002`, `NBA-003` Deal subset, `NBA-004` MeetingNote detail subset, `NBA-005`, `NBA-006`, `NBA-008`, `NBA-009`, `NBA-010`, `NBA-011` provider log subset, `NBA-014`, `NBA-015`, `08_GLOBAL_DATA_I18N`, `09_PRODUCT_ANALYTICS`, `10_MOBILE_PWA_FIELD_USE`는 별도 계획에서 구현 완료된 이력으로만 남긴다.
 
 실제 source of truth는 `BE/prisma/schema.prisma`와 migration 파일이다. 이 문서는 G07에서 분리된 후보의 DB/migration 가능성만 기록한다.
 
@@ -55,11 +57,17 @@
 - `BE/prisma/schema.prisma`의 `ProductAnalyticsEventSource`, `UserActivationStatus`, `ProductAnalyticsTargetType`, `ProductAnalyticsEvent`, `UserActivationSnapshot`, `RetentionCohortSnapshot`
 - `ProductAnalyticsEvent` raw event는 365일 purge 대상이며, snapshot과 `AiProviderCallLog`는 09 purge use case에서 삭제하지 않는다.
 
+10 완료 이력의 DB source of truth:
+
+- `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/10_MOBILE_PWA_FIELD_USE`
+- `BE/prisma/migrations/20260731010000_add_business_card_safe_failure_fields/migration.sql`
+- `BE/prisma/schema.prisma`의 `BusinessCardScanLog.safeErrorCode`, `BusinessCardScanLog.safeErrorMessage`, `BusinessCardScanLog.retryable`
+- G02 BusinessCard safe failure migration 외 10 범위 신규 DB model은 없다. `UserDraft`, server draft DB, audio/image binary DB 저장은 만들지 않았다.
+
 ## 2. 새 migration이 필요 없을 가능성이 높은 후보
 
 | 후보 ID | 후보 | 비고 |
 |---|---|---|
-| NBA-005 | BusinessCard provider failure contract | error/status contract 중심이며 DB 변경은 기본 필요 없다. |
 | NBA-007 | Trash private memo backend response restriction | response mapping 제한 중심이며 DB 변경은 기본 필요 없다. |
 
 ## 3. migration 가능성이 높은 후보

@@ -1,7 +1,7 @@
 # First-sale Gate Map
 
-상태: Gate Baseline / 09 반영
-기준일: 2026-07-30
+상태: Gate Baseline / 10 반영
+기준일: 2026-07-31
 
 ## 1. 목적
 
@@ -27,7 +27,8 @@
 - 2026-07-29 사용자 확인 기준 LINE/Apple 실제 OAuth provider 연결과 smoke가 완료됐다.
 - 09 Product Analytics 구현과 QA closeout은 완료됐다. Product analytics raw event, route/server event, activation/retention snapshot, AI usage summary foundation은 첫 판매 전 gate에서 닫힌 상태로 본다.
 - Admin analytics UI/API는 11, billing/paywall/churn 실제 conversion source는 12에서 연결한다.
-- 10_MOBILE_PWA_FIELD_USE부터 12까지의 슬롯은 아직 작업 필요 상태다.
+- 10 Mobile PWA Field Use 구현과 QA closeout은 완료됐다. 모바일 명함 촬영, OCR safe failure, 회의 녹음, local draft, browser push permission UX, mobile field analytics는 first-sale Product UX gate에서 닫힌 상태로 본다.
+- 11_ADMIN_OPERATION부터 12까지의 슬롯은 아직 작업 필요 상태다.
 
 ## 3. DB/Prisma 운영 Gate 적용 규칙
 
@@ -73,6 +74,7 @@
 - API에 없는 summary/count/latest를 FE가 사실처럼 꾸미지 않는다.
 - empty/loading/error/success 상태가 업무를 막지 않는다.
 - 모바일에서 핵심 확인과 현장 입력이 깨지지 않는다.
+- 명함 촬영, 회의 직후 음성 기록, local draft 복원/폐기, browser push permission 안내가 모바일 현장 업무 흐름에서 깨지지 않는다.
 - 민감정보와 private memo가 목록 summary나 preview에 섞이지 않는다.
 
 ## 5. Trust/Policy First-sale Gate 적용 규칙

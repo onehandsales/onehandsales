@@ -1,7 +1,7 @@
 # User Web TODO
 
 상태: Draft
-최종 업데이트: 2026-07-30
+최종 업데이트: 2026-07-31
 
 ## 0. 완료 반영
 
@@ -18,12 +18,14 @@
 - [x] `NBA-011 MeetingNote provider log subset`: User Web safe failure UX와 `/admin/api/*` 미호출 기준 확인 완료
 - [x] `08_GLOBAL_DATA_I18N`: `/app/settings` global settings, `/app` i18n, currency/phone/region/address UI, import/export localization, Google/LINE/Apple auth buttons 구현 및 QA closeout 완료
 - [x] `09_PRODUCT_ANALYTICS`: User Web route analytics wrapper, routeKey mapper, collector API client, analytics E2E 구현 및 QA closeout 완료
+- [x] `NBA-005 BusinessCard provider failure code/message contract`: `/app/business-cards` safe failure/retry/manual input UX 구현 완료
+- [x] `10_MOBILE_PWA_FIELD_USE`: 모바일 명함 촬영, 회의 녹음/fallback, local draft, push permission UX, mobile analytics 구현 및 QA closeout 완료
 
 ## 1. 목적
 
 이 문서는 G07에서 분리한 Backend/API 후보가 `FE/user-web`에 미칠 수 있는 영향을 정리한다.
 
-이 문서에서 남은 active User Web 후보는 future API contract가 `confirmed`된 뒤 함께 확인할 client/screen 영향만 기록한다. `NBA-001`, `NBA-002`, `NBA-003` Deal subset, `NBA-004` MeetingNote detail subset, `NBA-006`, `NBA-008`, `NBA-009`, `NBA-010`, `NBA-011` provider log subset, `NBA-015`, `08_GLOBAL_DATA_I18N`, `09_PRODUCT_ANALYTICS`는 별도 계획에서 구현 완료된 이력으로만 남긴다.
+이 문서에서 남은 active User Web 후보는 future API contract가 `confirmed`된 뒤 함께 확인할 client/screen 영향만 기록한다. `NBA-001`, `NBA-002`, `NBA-003` Deal subset, `NBA-004` MeetingNote detail subset, `NBA-005`, `NBA-006`, `NBA-008`, `NBA-009`, `NBA-010`, `NBA-011` provider log subset, `NBA-015`, `08_GLOBAL_DATA_I18N`, `09_PRODUCT_ANALYTICS`, `10_MOBILE_PWA_FIELD_USE`는 별도 계획에서 구현 완료된 이력으로만 남긴다.
 
 ## 1.1 08에서 닫힌 User Web Global Data/I18N 범위
 
@@ -46,11 +48,21 @@
 - analytics API 실패는 사용자에게 표시하지 않는다.
 - FE `typecheck`, `lint`, `test`, `build`, `test:e2e:analytics`가 통과했다.
 
+## 1.3 10에서 닫힌 User Web Mobile Field Use 범위
+
+- `/app/business-cards`에서 모바일 후면 카메라/앨범 선택 input, 다시 촬영, 파일 바꾸기, 수동 입력 UX를 구현했다.
+- OCR 실패 copy는 provider/quota/API key/internal stack을 노출하지 않고 safe failure action만 보여준다.
+- `/app/meeting-notes` 생성 흐름에 `MediaRecorder` 녹음 UX와 음성 파일 fallback을 구현하고 기존 STT draft API를 재사용했다.
+- 명함 확인 폼과 회의록 작성 폼은 FE local draft 24시간 TTL, 복원/폐기 UX를 사용한다.
+- `/app/notifications` browser push permission은 사용자 명시 클릭 이후에만 요청하고 granted/denied/default/unsupported 상태를 분리한다.
+- mobile field analytics event는 allowlist payload로만 전송하고 실패를 사용자에게 표시하지 않는다.
+- FE mobile E2E 360px/390px Chrome/Edge 20 tests가 통과했다.
+
 ## 2. Release follow-up 영향 후보
 
 | 후보 ID | FE 영향 | 확인 기준 |
 |---|---|---|
-| NBA-005 | 명함 OCR 실패 copy와 retry UI | 사용자 copy는 provider/quota/API key 정보를 노출하지 않는다. |
+| 없음 | 현재 문서 기준 신규 확정 release follow-up FE 후보 없음 | `NBA-005`는 10에서 완료됐다. |
 
 ## 3. Product feature 영향 후보 및 완료 이력
 
@@ -65,6 +77,7 @@
 | NBA-010 | 완료: Notification route/sidebar 노출 | Active FE TODO에서 제외한다. `/app/notifications`, unread badge, settings, browser push 권한 fallback UX 구현 완료 |
 | NBA-015 | 완료: `/app/schedules` source badge/sync/calendar hidden handling, `/app/settings` Google Calendar 연결/선택/해제, `/app/trash` Schedule restore UX 구현 | Active FE TODO에서 제외한다. Google export/write, realtime webhook/watch, 반복 일정은 별도 backlog에서 다룬다. |
 | 09_PRODUCT_ANALYTICS | 완료: `/app` 보호 route 진입 시 routeKey allowlist 기반 `app_route_viewed` 전송 | Active FE TODO에서 제외한다. Admin analytics 화면과 billing/paywall/churn UI는 11/12에서 다룬다. |
+| 10_MOBILE_PWA_FIELD_USE | 완료: 모바일 명함 촬영, OCR safe failure, 회의 녹음/fallback, local draft, push permission UX, mobile field analytics | Active FE TODO에서 제외한다. PWA install/offline shell/native app은 후속 별도 결정이다. |
 
 ## 4. Ops/security 영향 후보
 

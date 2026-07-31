@@ -2,7 +2,7 @@
 
 상태: Draft Guide
 작성일: 2026-07-20
-최종 업데이트: 2026-07-30
+최종 업데이트: 2026-07-31
 성격: 제품화 gap 판단 가이드
 
 ## 0. 완료 반영 체크리스트
@@ -24,6 +24,8 @@
 - [x] `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/08_GLOBAL_DATA_I18N` 구현 및 QA closeout
 - [x] Product Analytics foundation (`09_PRODUCT_ANALYTICS`)
 - [x] `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/09_PRODUCT_ANALYTICS` 구현 및 QA closeout
+- [x] Mobile Field Use (`10_MOBILE_PWA_FIELD_USE`)
+- [x] `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/10_MOBILE_PWA_FIELD_USE` 구현 및 QA closeout
 - [ ] Admin 운영 API/화면
 - [ ] 결제/구독/세금
 
@@ -74,19 +76,24 @@
 - MeetingNote
 - MeetingNote AI 후속 작업 draft
 - BusinessCard OCR
+- 모바일 명함 촬영/OCR safe failure
+- 모바일 회의 녹음/STT draft fallback
+- FE local draft 24시간 TTL
+- browser push permission UX
 - DataImport
 - Notification reminder
 - Search
 - Trash
 - Company/Contact/Product/Deal xlsx export
 - 글로벌 통화/전화번호/회사 지역/주소 및 Import/Export 현지화
+- Product Analytics foundation과 mobile field-use event
 
 부족한 핵심 축:
 
 - 제품화 수준의 최종 UX/UI 완성도 판단
 - 첫 판매 기준인 Global B2C 유료 판매를 위한 결제/구독, 세금/컴플라이언스, Admin 운영, 정책/신뢰/DB 운영 gate
 - 09에서 닫히지 않은 Admin analytics dashboard와 billing 기반 paid conversion/churn 분석 연결
-- Series A급 고급 리텐션/AI/모바일 현장 사용성
+- Series A급 고급 리텐션/AI와 native/PWA packaging 고도화
 - Admin 운영 API 같은 후속 기능의 우선순위 확정
 
 ## 3.1 `NBA-015` 반영 기준
@@ -106,7 +113,7 @@
 
 - 실제 Google provider smoke는 env 준비 후 운영 확인 단계에서 실행한다.
 - Google export/write, realtime webhook/watch, 반복 일정 정식 모델, 여러 Google 계정 동시 연결은 새 계획 없이는 확장하지 않는다.
-- 첫 판매 전 핵심 gap은 여전히 결제/구독/세금, Admin 운영, 정책/신뢰/DB 운영 gate다. 제품 분석 foundation은 09에서 닫혔고, Admin dashboard와 billing conversion/churn 연결은 후속이다.
+- 첫 판매 전 핵심 gap은 여전히 결제/구독/세금, Admin 운영, 정책/신뢰/DB 운영 gate다. 제품 분석 foundation은 09에서 닫혔고 모바일 현장 입력성은 10에서 닫혔으며, Admin dashboard와 billing conversion/churn 연결은 후속이다.
 
 ## 3.2 `06_DEAL_ACTIVITY_TIMELINE` 반영 기준
 
@@ -194,7 +201,27 @@
 
 - Admin analytics dashboard/API는 `11_ADMIN_OPERATION` 범위다.
 - 실제 paywall, subscription, churn survey, paid conversion source event는 `12_BILLING_SUBSCRIPTION_TAX` 범위다.
-- 모바일/PWA 현장 사용 맥락의 세부 event는 10 또는 별도 후속 분석 계획에서 결정한다.
+- 모바일 현장 사용 맥락의 세부 event는 10에서 완료됐다. Admin/Billing 연결 분석은 11/12에서 다룬다.
+
+## 3.6 `10_MOBILE_PWA_FIELD_USE` 반영 기준
+
+`TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/10_MOBILE_PWA_FIELD_USE`는 2026-07-31 G07 QA closeout 기준으로 Completed다. 이 제품화 갭 문서에서는 모바일 현장 입력성 1차 범위를 더 이상 미구현 gap으로 보지 않는다.
+
+완료로 반영할 User Web/제품 흐름:
+
+- `/app/business-cards`에서 모바일 후면 카메라/앨범 선택, 다시 촬영, 파일 바꾸기, 수동 입력 UX를 제공한다.
+- BusinessCard OCR 실패는 provider/quota/API key/internal stack 없이 safe `errorCode`, `userMessage`, `retryable` 기준으로 안내한다.
+- `/app/meeting-notes`에서 모바일 브라우저 녹음과 음성 파일 fallback으로 기존 STT draft API를 사용할 수 있다.
+- 명함 확인 폼과 회의록 작성 폼은 FE local draft 24시간 TTL과 복원/폐기 UX를 제공한다.
+- `/app/notifications` browser push permission은 사용자 명시 클릭 이후에만 요청하고 granted/denied/default/unsupported 상태를 분리한다.
+- mobile field analytics event는 allowlist payload로만 전송되며 이름, 전화번호, 이메일, 회사명, 회의록 본문, OCR raw text, provider raw detail을 보내지 않는다.
+- 360px/390px mobile QA와 BE/FE targeted 검증을 G07 closeout에서 통과했다.
+
+남은 제품화 gap으로 분리할 범위:
+
+- PWA install prompt/offline shell, full offline sync, iOS/Android native app, native push/contact/calendar
+- Admin provider failure dashboard와 운영 추적
+- Marketing opt-in, billing/paywall/churn runtime event
 
 ## 4. 문서 구성
 
@@ -227,7 +254,8 @@
 - 완료된 MeetingNote AI Provider Log 범위를 넘어서는 회의록 목록 summary, 자동 follow-up 발송/알림, Admin provider audit 조회, 별도 transcript/raw provider response table
 - 완료된 Deal Activity Timeline 범위를 넘어서는 범용 activity bus, Company/Contact/Product latest summary, activity deletion/retention/audit 정책
 - 완료된 Global Data I18N 범위를 넘어서는 신규 국가/통화/provider, `/app` locale prefix, 추가 DB migration 실행
-- 완료된 Product Analytics 범위를 넘어서는 Admin analytics dashboard, billing/paywall/churn runtime event, 모바일/PWA 세부 analytics event
+- 완료된 Product Analytics 범위를 넘어서는 Admin analytics dashboard, billing/paywall/churn runtime event
+- 완료된 Mobile Field Use 범위를 넘어서는 PWA install/offline shell, full offline sync, iOS/Android native app, native push/contact/calendar
 
 위 항목은 제품화 우선순위와 UX/UI 방향을 확정한 뒤 별도 계획에서 다룬다.
 

@@ -1,6 +1,6 @@
 # Roadmap Overview
 
-상태: Draft / 01~09 Done / 10 Next
+상태: Draft / 01~10 Done / 11 Next
 
 ## 0. 완료 현황
 
@@ -13,7 +13,7 @@
 - [x] `07_MEETING_NOTE_AI_PROVIDER_LOG`: Done (2026-07-26), MeetingNote AI provider log/detail follow-up draft 완료
 - [x] `08_GLOBAL_DATA_I18N`: Done (2026-07-28), DB 최신 상태 2026-07-29 재확인. 2026-07-29 사용자 확인 기준 LINE/Apple 운영 설정과 실제 OAuth 동작 완료
 - [x] `09_PRODUCT_ANALYTICS`: Done (2026-07-30), ProductAnalyticsEvent, route/server events, activation/retention snapshot, AI usage summary 구현 및 QA closeout 완료
-- [ ] `10_MOBILE_PWA_FIELD_USE`: Next
+- [x] `10_MOBILE_PWA_FIELD_USE`: Done (2026-07-31), 모바일 명함 촬영/OCR safe failure, 회의 녹음, local draft, push permission UX, mobile analytics 구현 및 QA closeout 완료
 - [ ] `11_ADMIN_OPERATION`
 - [ ] `12_BILLING_SUBSCRIPTION_TAX`
 
@@ -46,8 +46,8 @@ Product UX first-sale gate는 전체 시각 polish와 다르다. 핵심 `/app` �
 | 기능 신뢰 기반 | 01 | Done: Import 중 유실 같은 데이터 신뢰 문제 제거 |
 | 리텐션/일정 루프 | 02~05 | Done: 02 알림, 03 주간 일정 보고서, 04 Google Calendar 연동, 05 AI weekly report/follow-up delivery 완료 |
 | 영업 기록 고도화 | 06~07 | Done: 딜 활동과 회의록 AI 운영 이력을 실제 영업 판단 데이터로 연결 완료 |
-| Global B2C 제품화 | 08~09 | Done: 08 다국가 데이터/앱 다국어 기반, 09 제품 분석 기반 완료 |
-| Series A 확장성 | 10 | Next: 모바일/PWA/현장 사용성 후보 정리 |
+| Global B2C 제품화 | 08~10 | Done: 08 다국가 데이터/앱 다국어 기반, 09 제품 분석 기반, 10 모바일 현장 입력성 완료 |
+| Series A 확장성 | 10 이후 후속 | PWA install/offline shell, native app, native push/contact/calendar는 후속 로드맵으로 유지 |
 | 마지막 운영/판매 묶음 | 11~12 | Admin 운영과 결제/구독/세금 |
 
 ## 3. 기본 순서
@@ -61,8 +61,8 @@ Product UX first-sale gate는 전체 시각 polish와 다르다. 핵심 `/app` �
 7. `07_MEETING_NOTE_AI_PROVIDER_LOG` - Done
 8. `08_GLOBAL_DATA_I18N` - Done
 9. `09_PRODUCT_ANALYTICS` - Done
-10. `10_MOBILE_PWA_FIELD_USE` - Next
-11. `11_ADMIN_OPERATION`
+10. `10_MOBILE_PWA_FIELD_USE` - Done
+11. `11_ADMIN_OPERATION` - Next
 12. `12_BILLING_SUBSCRIPTION_TAX`
 
 ## 4. 선행/횡단 Gate

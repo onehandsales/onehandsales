@@ -1,6 +1,6 @@
 # Global B2C Feature Roadmap Plan
 
-상태: Draft Roadmap / 01~09 Done / 10 Next
+상태: Draft Roadmap / 01~10 Done / 11 Next
 작성일: 2026-07-20
 성격: 기능 선구현 로드맵 슬롯 + Global B2C first-sale gate 추적
 
@@ -15,7 +15,7 @@
 - [x] 07 `07_MEETING_NOTE_AI_PROVIDER_LOG`: Done (2026-07-26)
 - [x] 08 `08_GLOBAL_DATA_I18N`: Done (2026-07-28, DB 최신 상태 2026-07-29 재확인)
 - [x] 09 `09_PRODUCT_ANALYTICS`: Done (2026-07-30)
-- [ ] 10 `10_MOBILE_PWA_FIELD_USE`: Next
+- [x] 10 `10_MOBILE_PWA_FIELD_USE`: Done (2026-07-31)
 - [ ] 11 `11_ADMIN_OPERATION`
 - [ ] 12 `12_BILLING_SUBSCRIPTION_TAX`
 
@@ -50,7 +50,7 @@
 - Admin 운영과 구독/결제/세금 상세 구현은 마지막 묶음으로 둔다.
 - 단, `NBA-014` DB/Prisma 운영 gate와 Trust/policy first-sale gate는 11~12까지 미루지 않고 관련 goal마다 선행/병행 확인한다.
 - 01 작업을 시작할 때는 01 폴더 안에 추가 문서를 작성하고 검수/검토한 뒤 진행한다.
-- 01~09까지는 순차 실행이 완료됐고, 다음 착수 슬롯은 `10_MOBILE_PWA_FIELD_USE`다.
+- 01~10까지는 순차 실행이 완료됐고, 다음 착수 슬롯은 `11_ADMIN_OPERATION`이다.
 - 12개 슬롯의 추천 의사결정은 `COMMON/DECISION-LOG.md`를 기본값으로 삼는다.
 - 각 슬롯은 Notion식 작업공간 UX, Attio식 CRM record 관계, 사용 편의성 기준을 유지한다.
 
@@ -67,8 +67,8 @@
 | 07 | `07_MEETING_NOTE_AI_PROVIDER_LOG` | 회의록 AI/provider log 고도화 | Done: MeetingNote AI/STT provider log, 상세 next action/follow-up draft, User Web AI 후속 작업 UX 구현 및 QA closeout 완료 |
 | 08 | `08_GLOBAL_DATA_I18N` | 다국가 데이터 모델과 `/app` 다국어 | Done: `/app` i18n, 글로벌 데이터 모델, Import/Export localization, Google/LINE/Apple auth 구현 완료. 현재 DB 최신 상태 확인 완료. 2026-07-29 사용자 확인 기준 LINE/Apple 운영 설정과 실제 OAuth 동작도 완료 |
 | 09 | `09_PRODUCT_ANALYTICS` | 제품 분석 | Done: allowlist event taxonomy, client/server event 수집, activation/retention snapshot, AI usage summary, billing reserved event 경계 구현 및 QA closeout 완료 |
-| 10 | `10_MOBILE_PWA_FIELD_USE` | 모바일/PWA/현장 사용성 | Next: Series A급 현장성 |
-| 11 | `11_ADMIN_OPERATION` | Admin 운영 | 상세 구현은 마지막 운영 묶음. 단 DB/Prisma gate, Trust/policy, Trash private memo는 first-sale gate로 선행 추적 |
+| 10 | `10_MOBILE_PWA_FIELD_USE` | 모바일/PWA/현장 사용성 | Done: 모바일 명함 촬영, OCR safe failure, 회의 녹음, local draft, push permission UX, mobile analytics 구현 및 QA closeout 완료. PWA install/offline shell/native app은 후속 |
+| 11 | `11_ADMIN_OPERATION` | Admin 운영 | Next: 상세 구현은 마지막 운영 묶음. 단 DB/Prisma gate, Trust/policy, Trash private memo는 first-sale gate로 선행 추적 |
 | 12 | `12_BILLING_SUBSCRIPTION_TAX` | 결제/구독/세금 | 상세 구현은 마지막 판매 묶음. 단 환불/약관/세금 정책은 Trust/policy gate와 연결 |
 
 ## 4. 문서 구성
@@ -98,7 +98,7 @@
 
 ## 5. 착수 규칙
 
-1. `10_MOBILE_PWA_FIELD_USE`부터 12까지의 미완료 번호 폴더는 현재 `draft slot` 상태이며, 완료된 번호는 각 폴더의 README와 TODO_LOG/GOAL-SPECS를 정본 이력으로 본다.
+1. `11_ADMIN_OPERATION`부터 12까지의 미완료 번호 폴더는 현재 `draft slot` 상태이며, 완료된 번호는 각 폴더의 README와 TODO_LOG/GOAL-SPECS를 정본 이력으로 본다.
 2. 구현 전에 `COMMON/DECISION-LOG.md`에서 해당 슬롯의 추천 결정을 확인한다.
 3. `COMMON/COVERAGE-MATRIX.md`에서 해당 번호에 배정된 하위 기능을 모두 확인한다.
 4. `COMMON/FIRST-SALE-GATE-MAP.md`에서 해당 슬롯이 건드리는 first-sale gate가 있는지 확인한다.
@@ -107,7 +107,7 @@
 7. 신규 Prisma migration이 있으면 `NBA-014` DB/Prisma 운영 gate 체크를 `/goal` 착수 전 선행 조건으로 둔다.
 8. FE 작업이 있으면 `FE-TODO/USER-WEB-TODO.md`에 화면, route, 상태, client, 검증 기준을 적는다.
 9. 검수/검토가 끝나면 별도 `/goal` 문서로 쪼개 실행한다.
-10. UX/UI 전체 polish는 01~10의 주요 기능 흐름이 나온 뒤 별도 계획으로 잡되, Product UX first-sale gate는 첫 판매 전 별도 closeout으로 닫는다.
+10. UX/UI 전체 polish는 01~10의 주요 기능 흐름 closeout을 기준으로 별도 계획에서 잡되, Product UX first-sale gate는 첫 판매 전 별도 closeout으로 닫는다.
 
 ## 6. 먼저 읽을 문서
 

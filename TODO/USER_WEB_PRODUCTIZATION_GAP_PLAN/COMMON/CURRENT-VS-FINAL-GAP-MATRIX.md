@@ -1,7 +1,7 @@
 # Current vs Final Gap Matrix
 
 상태: Draft Guide
-최종 업데이트: 2026-07-30
+최종 업데이트: 2026-07-31
 
 ## 0. 완료 반영
 
@@ -21,6 +21,8 @@
 - [x] `/app` i18n, user global settings, Product/Deal currency, Contact global phone, Company country/region/address, Import/Export localization, Google/LINE/Apple auth 구현 및 QA closeout 완료
 - [x] `09_PRODUCT_ANALYTICS`: Done (2026-07-30)
 - [x] product analytics event taxonomy, collector API, User Web route event, server event, activation/retention snapshot, AI usage summary 구현 및 QA closeout 완료
+- [x] `10_MOBILE_PWA_FIELD_USE`: Done (2026-07-31)
+- [x] 모바일 명함 촬영, OCR safe failure, 회의 녹음/fallback, local draft, push permission UX, mobile field analytics 구현 및 QA closeout 완료
 
 ## 1. Gap 분류 기준
 
@@ -45,7 +47,7 @@
 | 회사/담당자/제품 목록 | linked record, 진행 딜, 최근 활동, 다음 행동 맥락이 보인다. | 기본 목록/count 구현. 담당자 `dealCount` 완료. Company/Product latest summary는 없음 | Contact dealCount gap은 닫힘. Company/Contact/Product latest activity summary는 후속 후보 | UX/API gap | 잔여 summary는 후속 |
 | 일정 | 월간/목록과 딜 연결이 된다. 주간 보고서와 외부 캘린더 import가 있다. | CRUD, 월간/목록, `/app/schedules/week`, weekly report API, Excel export, Google Calendar read-only import/sync/calendar selection/source badge 구현 | 주간 일정 보고서와 Google Calendar read-only import gap은 닫힘. Google export/write, realtime webhook/watch, 반복 일정, AI 요약은 후속 확장 | Closed for NBA-009/NBA-015 | 완료 |
 | 회의록 | 직접 작성, AI/STT, 딜 활동 연결, 후속 행동 추출이 된다. | 직접/AI/STT draft, provider log, 상세 next action/follow-up draft, 딜 연결 구현. 회의록 연결/해제는 딜 activity timeline에 안전한 summary로 연결 | 상세 AI 후속 작업 gap은 닫힘. 목록 latest/next summary, 자동 발송/알림, Admin audit/retention 정책은 후속 | Closed for 07 / Feature/Ops gap | 상세 완료, 잔여 후속 |
-| 명함 스캔 | 모바일 현장 촬영, OCR, 다국가 연락처 검증까지 자연스럽다. | 이미지 업로드 OCR과 KR/US 전화번호 정규화 구현 | 카메라 UX와 provider failure contract는 후속. KR/US 전화번호 gap은 08에서 닫힘 | Feature/Ops gap | 후속 |
+| 명함 스캔 | 모바일 현장 촬영, OCR, 다국가 연락처 검증까지 자연스럽다. | 이미지 업로드 OCR, 모바일 후면 카메라/앨범 선택, OCR safe failure, KR/US 전화번호 정규화 구현 | 카메라 capture와 provider safe failure gap은 10에서 닫힘. advanced crop/preview와 Admin provider failure dashboard는 후속 | Closed for 10 / Ops 11 | 완료, 운영 후속 |
 | Import | 업로드 중단/새로고침/배포에도 이어받는다. | ImportJob DB persistence/resume 구현 완료 | Live Supabase 수동 QA와 장기 운영 cleanup은 운영 확인 단계 | Closed for NBA-006 | 완료 |
 | Search | 빠르고 안전하며 다른 사용자 데이터가 섞이지 않는다. | 구현 및 보안 QA 완료 | 고급 필터/정렬은 후속 | UX/UI productization | 낮음 |
 | Trash | 7일 이내 복구와 만료 후 정책이 명확하다. | 7일 이내 복구와 Schedule soft delete/restore 구현 | 7일 이후 정책, private memo backend restriction 후보 | Ops/security gap | 후속 |
@@ -56,9 +58,9 @@
 | 세금/컴플라이언스 | VAT/GST, 환불, chargeback, 국가별 약관 | 구현 없음 | 글로벌 판매 운영 계층 필요 | First-sale global gap | 첫 판매 전 필요 |
 | `/app` 다국어 | 판매 시장 기준 앱 내부 언어/문구 지원 | `/app` i18n provider/resource/formatter와 핵심 화면 `ko-KR`/`en` 번역 구현 | 기본 app 다국어 gap은 08에서 닫힘. legacy static fallback 직접 keying 축소와 시장별 UX writing polish는 후속 | Closed for 08 / UX/UI productization | 완료, polish 후속 |
 | 다국가 데이터 모델 | 전화번호, 통화, 날짜/주소가 국가별로 자연스럽다. | User country/default currency, Product/Deal currency, Contact KR/US global phone, Company country/region/address, localized import/export 구현 | 기본 global data model gap은 08에서 닫힘. 추가 국가/통화/전화번호 포맷과 세금/가격 정책은 후속 결정 | Closed for 08 / First-sale ops decision | 완료, 운영 후속 |
-| 제품 분석 | activation, retention, paid conversion, churn, AI cost를 본다. | 09 foundation 구현 완료. ProductAnalyticsEvent, route/server event, activation/retention snapshot, AI usage summary가 있다 | paid conversion/churn/ARPU는 Billing source event와 Admin dashboard/API 연결 후 완성 | Closed for 09 / First-sale linked gap | foundation 완료, 11/12 연결 후속 |
+| 제품 분석 | activation, retention, paid conversion, churn, AI cost를 본다. | 09 foundation과 10 mobile field event 구현 완료. ProductAnalyticsEvent, route/server event, mobile field-use event, activation/retention snapshot, AI usage summary가 있다 | paid conversion/churn/ARPU는 Billing source event와 Admin dashboard/API 연결 후 완성 | Closed for 09/10 / First-sale linked gap | foundation 완료, 11/12 연결 후속 |
 | AI next action | 딜 리스크, follow-up, 다음 행동을 추천한다. | 회의록 상세 next action/follow-up draft 구현. 딜 리스크와 고급 영업 판단 AI는 없음 | 회의록 기반 AI 후속 작업은 시작됐지만 Series A급 딜 리스크/리포트/자동화는 후속 | Series A gap | 후속 |
-| 모바일 앱/PWA | 현장 입력, 카메라, 음성, push reminder가 자연스럽다. | 모바일 브라우저 Web과 browser push UX 구현 | native 앱/PWA 패키징, 모바일 카메라/음성 최적화는 후속 | Series A gap | 후순위 |
+| 모바일 앱/PWA | 현장 입력, 카메라, 음성, push reminder가 자연스럽다. | 10 기준 모바일 브라우저 명함 촬영, 회의 음성 기록, local draft, push permission UX, mobile analytics 구현 완료 | PWA install/offline shell, full offline sync, iOS/Android native app, native push/contact/calendar는 후속 | Closed for 10 / Series A native gap | 모바일 웹 완료, native/PWA 후속 |
 
 ## 3. 당장 판단해야 할 질문
 
@@ -71,6 +73,7 @@
 | 딜 목록에서 제품/최근 활동/다음 행동을 얼마나 1급 정보로 볼지 | 제품 summary, Deal latest activity, page size 15는 06에서 완료. 다음 행동 강조와 Company/Contact/Product latest summary는 후속 판단이다. |
 | ImportJob 유실이 Global B2C 첫 판매 blocker인지 known limitation인지 | 완료 처리됨. `NBA-006`은 `01_IMPORT_JOB_PERSISTENCE`에서 구현 및 QA closeout 완료. |
 | Notification 실제 provider smoke와 회의록 follow-up 알림을 언제 다룰지 | 일정/딜 reminder와 회의록 follow-up draft는 완료됐고, 실제 SMTP/Web Push env 검증과 회의록 follow-up 알림/발송은 운영/후속 범위로 남는다. |
+| PWA install/offline shell과 native app을 언제 다룰지 | 10에서 모바일 웹 현장 입력성은 완료됐다. PWA packaging, full offline sync, iOS/Android native app은 현장 사용 지표와 사용자 결정 후 별도 로드맵으로 다룬다. |
 | Google Calendar export/write/realtime webhook/watch/반복 일정/여러 Google 계정 동시 연결을 언제 다룰지 | 현재 read-only import와 한손 Schedule/Trash/Reminder 연결은 완료됐고, 쓰기/실시간/고급 캘린더 범위는 후속 확장으로 남는다. |
 | LINE/Apple 실제 provider smoke 실행 여부 | 08 구현과 자동 QA, DB migration 최신 상태 재확인은 완료됐다. LINE/Apple 실제 provider smoke도 2026-07-29 사용자 확인 기준 운영 완료됐다. |
 | Admin 운영을 결제 전에 어느 수준까지 구현할지 | 유료 고객 지원/민감정보 정책 범위가 달라진다. |
@@ -79,5 +82,5 @@
 
 1. User Web 화면별 제품화 gap을 실제 화면 기준으로 다시 확인한다.
 2. MVP를 판매 버전이 아니라 Global B2C 첫 판매 gate로 가기 위한 내부 품질 기준으로 고정한다.
-3. 결제, Admin, 정책/운영 신뢰, 세금/컴플라이언스를 Global B2C 첫 판매 필수 bundle로 따로 계획한다. 제품 분석 foundation은 09에서 완료됐고, Admin dashboard와 billing-linked conversion/churn은 11/12에 연결한다.
+3. 결제, Admin, 정책/운영 신뢰, 세금/컴플라이언스를 Global B2C 첫 판매 필수 bundle로 따로 계획한다. 제품 분석 foundation은 09에서 완료됐고 mobile field-use event는 10에서 완료됐으며, Admin dashboard와 billing-linked conversion/churn은 11/12에 연결한다.
 4. API/DB 후보는 UX/UI와 첫 판매 운영 필요성으로 확인된 것만 `confirmed` 계약으로 승격한다.

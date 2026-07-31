@@ -1,15 +1,16 @@
 # 10 Mobile PWA Field Use
 
-상태: Confirmed Planning
+상태: Done
 순서: 10
 성격: Global B2C 개인 영업자 모바일 현장 사용성 필수 구현 슬롯
 결정 상태: `COMMON/DECISION-LOG.md` 2026-07-30 확정 결정 반영
+완료일: 2026-07-31
 
 ## 1. 목적
 
 10번은 모바일이 필요한지 검증하는 슬롯이 아니다. 개인 영업자에게 모바일 현장 사용성은 필수 사용 환경이다.
 
-1차 구현은 native app이 아니라 모바일 브라우저/PWA 기반으로 진행한다. 가장 빠르게 Global B2C 사용자에게 현장 입력성을 제공하기 위해 `/app/business-cards`, `/app/meeting-notes`, `/app/notifications`의 모바일 사용 흐름을 구체화한다.
+1차 구현은 native app이 아니라 모바일 브라우저/PWA 기반으로 진행했다. 가장 빠르게 Global B2C 사용자에게 현장 입력성을 제공하기 위해 `/app/business-cards`, `/app/meeting-notes`, `/app/notifications`의 모바일 사용 흐름을 구체화했다.
 
 ## 2. 1차 확정 범위
 
@@ -37,7 +38,7 @@
 
 ## 4. `/goal` 실행 방식
 
-10번은 하나의 `/goal`로 끝내지 않는다. 각 `/goal`은 `COMMON/GOAL-SPECS`의 상세 명세 하나만 기준으로 실행한다.
+10번은 하나의 `/goal`로 끝내지 않고 각 `/goal`을 `COMMON/GOAL-SPECS`의 상세 명세 하나만 기준으로 실행했다.
 
 권장 순서:
 
@@ -81,3 +82,12 @@ G01_DOCUMENT_CONTRACT_SYNC
 - `AGENT/UXUI_AGENT`
 - `AGENT/SOFTWARE_AGENT`
 - `BE/prisma/schema.prisma`
+
+## 7. 완료 반영
+
+- G01~G07 순서로 구현과 QA closeout을 완료했다.
+- 명함 모바일 촬영, OCR safe failure 계약, 회의록 모바일 녹음과 음성 파일 fallback, client local draft 24시간 TTL, browser push permission UX, mobile field analytics event를 구현했다.
+- `BusinessCardScanLog` safe failure field migration 외 신규 DB model은 만들지 않았고, `UserDraft`, server draft DB, audio/image binary 저장은 만들지 않았다.
+- provider raw detail, transcript 전문, audio/image raw data, push endpoint/key/token, PII/raw text가 response/log/analytics/local draft에 저장되지 않는지 G07에서 확인했다.
+- 360px/390px mobile QA, BE/FE targeted test, BE/FE typecheck/lint, `git diff --check`를 통과했다.
+- PWA install/offline shell과 iOS/Android native app은 10 1차 완료 범위가 아니라 후속 로드맵 범위로 유지한다.

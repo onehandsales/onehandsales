@@ -1,7 +1,7 @@
 # API TODO
 
 상태: Draft
-최종 업데이트: 2026-07-30
+최종 업데이트: 2026-07-31
 
 ## 0. 완료 반영
 
@@ -18,12 +18,14 @@
 - [x] `NBA-011 MeetingNote provider log subset`: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/07_MEETING_NOTE_AI_PROVIDER_LOG`에서 공통 `AiProviderCallLog` 확장으로 구현 및 QA closeout 완료
 - [x] `08_GLOBAL_DATA_I18N`: User global settings, domain global data, import/export localization, Google/LINE/Apple auth API 구현 및 QA closeout 완료
 - [x] `09_PRODUCT_ANALYTICS`: product analytics collector API, server event recorder, snapshot/AI usage internal use case 구현 및 QA closeout 완료
+- [x] `NBA-005 BusinessCard provider failure code/message contract`: `10_MOBILE_PWA_FIELD_USE`에서 구현 및 QA closeout 완료
+- [x] `10_MOBILE_PWA_FIELD_USE`: BusinessCard safe failure, MeetingNote STT draft reuse, notification API reuse, mobile analytics event 구현 및 QA closeout 완료
 
 ## 1. 목적
 
 이 문서는 G07에서 분리한 Backend/API 후속 후보를 실행 가능한 다음 계획으로 만들기 전의 초안이다.
 
-이 문서에서 남은 active 새 API 후보는 `COMMON/API-SPEC/README.md`에서 `draft` 또는 `후보` 상태로만 관리한다. `NBA-001`, `NBA-002`, `NBA-003` Deal subset, `NBA-004` MeetingNote detail subset, `NBA-006`, `NBA-008`, `NBA-009`, `NBA-010`, `NBA-011` provider log subset, `NBA-014`, `NBA-015`, `08_GLOBAL_DATA_I18N`, `09_PRODUCT_ANALYTICS`는 별도 계획에서 구현 완료된 이력으로만 남긴다.
+이 문서에서 남은 active 새 API 후보는 `COMMON/API-SPEC/README.md`에서 `draft` 또는 `후보` 상태로만 관리한다. `NBA-001`, `NBA-002`, `NBA-003` Deal subset, `NBA-004` MeetingNote detail subset, `NBA-005`, `NBA-006`, `NBA-008`, `NBA-009`, `NBA-010`, `NBA-011` provider log subset, `NBA-014`, `NBA-015`, `08_GLOBAL_DATA_I18N`, `09_PRODUCT_ANALYTICS`, `10_MOBILE_PWA_FIELD_USE`는 별도 계획에서 구현 완료된 이력으로만 남긴다.
 
 ## 2. 06에서 닫힌 release blocker
 
@@ -88,7 +90,22 @@
 - 09 밖으로 남는 범위:
   - Admin analytics dashboard/API
   - 실제 billing/paywall/churn survey flow와 paid conversion source event
-  - 모바일/PWA field-use 세부 event
+
+## 2.4 10에서 닫힌 Mobile Field Use API
+
+- 연결 계획: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/10_MOBILE_PWA_FIELD_USE`
+- API 영향:
+  - BusinessCard scan response/list/detail safe failure 계약 구현
+  - MeetingNote 모바일 녹음은 기존 `POST /api/meeting-notes/stt-draft` 재사용
+  - Browser push permission UX는 기존 notification API 재사용
+  - Mobile field analytics event는 기존 `POST /api/analytics/events` collector 재사용
+- Backend 영향:
+  - provider raw detail, transcript 전문, audio/image raw data, push endpoint/key/token, PII/raw text를 response/log/analytics/local draft에 저장하지 않는다.
+  - 10 범위 신규 DB model은 없고 G02 BusinessCard safe failure migration만 추가했다.
+- 10 밖으로 남는 범위:
+  - PWA install/offline shell, full offline sync, iOS/Android native app, native push/contact/calendar
+  - Admin provider failure dashboard와 운영 추적
+  - marketing opt-in, billing/paywall/churn runtime event
 
 ## 3. Release follow-up API 후보
 
@@ -100,7 +117,7 @@
 
 남은 release follow-up 후보:
 
-- `NBA-005`: BusinessCard provider failure code/message contract
+- 현재 이 문서 기준 신규 확정 후보 없음. `NBA-005`는 10에서 완료됐다.
 
 남은 release follow-up 공통 다음 작업:
 
