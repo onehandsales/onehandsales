@@ -34,6 +34,8 @@ Admin shell
 - [ ] 민감정보는 기본 masked다.
 - [ ] 원문 조회는 reason modal을 통과해야 한다.
 - [ ] 위험 action은 확인 modal이 있다.
+- [ ] 사용자 상세의 notification/browser push 상태는 safe summary만 표시한다.
+- [ ] Analytics 화면의 mobile field-use section은 event count/bucket만 표시하고 raw payload를 보여주지 않는다.
 - [ ] Admin Web은 User Web API/client/feature를 import하지 않는다.
 - [ ] `lucide-react` icon을 사용한다.
 - [ ] `// 기능 : ...` 주석 규칙을 필요한 위치에 적용한다.

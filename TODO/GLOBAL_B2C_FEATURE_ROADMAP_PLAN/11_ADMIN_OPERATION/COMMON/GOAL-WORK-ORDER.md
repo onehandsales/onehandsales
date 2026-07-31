@@ -64,7 +64,7 @@ G01_DOCUMENT_CONTRACT_SYNC
 | G04 | `COMMON/GOAL-SPECS/G04_ADMIN_DOMAIN_READONLY_TABS.md` | 도메인 read-only tabs |
 | G05 | `COMMON/GOAL-SPECS/G05_TRASH_RETENTION_RECOVERY.md` | Trash 7일 이후 정책, 복구 문의, private memo 제한 |
 | G06 | `COMMON/GOAL-SPECS/G06_PROVIDER_FAILURE_OPERATION.md` | provider failure safe 운영 조회 |
-| G07 | `COMMON/GOAL-SPECS/G07_ADMIN_ANALYTICS_OVERVIEW.md` | 09 기반 Admin analytics overview |
+| G07 | `COMMON/GOAL-SPECS/G07_ADMIN_ANALYTICS_OVERVIEW.md` | 09/10 기반 Admin analytics overview |
 | G08 | `COMMON/GOAL-SPECS/G08_ACCOUNT_DATA_REQUESTS.md` | 계정 삭제/데이터 export 요청 |
 | G09 | `COMMON/GOAL-SPECS/G09_SYSTEM_OPERATION_GATE.md` | DB/migration/backup operation gate |
 | G10 | `COMMON/GOAL-SPECS/G10_QA_DOCUMENT_CLOSEOUT.md` | QA와 문서 closeout |

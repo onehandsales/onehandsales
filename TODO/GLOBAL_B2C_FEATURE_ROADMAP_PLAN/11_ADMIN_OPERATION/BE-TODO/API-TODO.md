@@ -29,7 +29,7 @@
 | G05 | `GET` | `/admin/api/trash/recovery-requests` | 복구 문의 queue | `ADMIN_TRASH_OPERATION_API.md` |
 | G06 | `GET` | `/admin/api/provider-failures` | provider 실패 목록 | `ADMIN_PROVIDER_FAILURE_API.md` |
 | G06 | `GET` | `/admin/api/provider-failures/:failureId` | provider 실패 safe 상세 | `ADMIN_PROVIDER_FAILURE_API.md` |
-| G07 | `GET` | `/admin/api/analytics/overview` | 09 기반 운영 분석 요약 | `ADMIN_ANALYTICS_API.md` |
+| G07 | `GET` | `/admin/api/analytics/overview` | 09/10 기반 운영 분석 요약 | `ADMIN_ANALYTICS_API.md` |
 | G08 | `POST` | `/api/users/me/data-export-requests` | 사용자 데이터 export 요청 | `ACCOUNT_DATA_REQUEST_API.md` |
 | G08 | `GET` | `/api/users/me/data-export-requests/:requestId` | export 요청 상태 | `ACCOUNT_DATA_REQUEST_API.md` |
 | G08 | `POST` | `/api/users/me/account-deletion-requests` | 계정 삭제 요청 | `ACCOUNT_DATA_REQUEST_API.md` |
@@ -44,9 +44,10 @@
 - Admin 사용자 상세 조회는 `AdminAuditLog`에 남긴다.
 - 민감 원문 조회는 `AdminSensitiveAccessLog`와 `AdminAuditLog`를 같은 transaction에서 남긴다.
 - provider failure detail 조회는 provider raw response, prompt, token, quota detail을 조회하지 않는다.
+- Admin 사용자 상세 notification summary는 browser push endpoint/key/userAgent 원문을 조회하지 않는다.
 - Trash 만료 이후에도 domain row를 hard delete하지 않는다.
 - account deletion은 일반 Trash와 별개로 30일 유예 후 실제 삭제/익명화 job 후보를 둔다.
-- analytics admin summary는 09 read model만 사용하고 billing/subscription source를 조회하지 않는다.
+- analytics admin summary는 09 read model과 10 mobile field-use event만 사용하고 billing/subscription source를 조회하지 않는다.
 
 ## 4. 검증 후보
 

@@ -27,7 +27,8 @@
 3. audit log 필수 action이 실제 기록되는지 확인한다.
 4. raw access reason 없는 요청이 실패하는지 확인한다.
 5. provider raw/prompt/token/quota detail select가 없는지 확인한다.
-6. Prisma validate/generate/typecheck/lint/test/build를 실행한다.
+6. browser push endpoint/key/userAgent 원문 select와 analytics raw payload dump가 없는지 확인한다.
+7. Prisma validate/generate/typecheck/lint/test/build를 실행한다.
 
 ## 4. Frontend 작업
 
@@ -128,11 +129,11 @@ pnpm run test:e2e
 문서 대조:
 
 ```powershell
-rg -n "subscription|billing|payment|invoice|refund|ARPU|churn|paid conversion" TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/11_ADMIN_OPERATION
-rg -n "provider raw|prompt|token|quota|private memo" TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/11_ADMIN_OPERATION
+rg -n "billing|payment|invoice|refund|ARPU|churn|paid conversion|subscription/plan|plan/payment|결제/구독|결제 상태|결제 연결|결제 버튼" TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/11_ADMIN_OPERATION
+rg -n "provider raw|prompt|token|quota|private memo|endpoint|p256dh|authCiphertext|userAgent|raw payload" TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/11_ADMIN_OPERATION
 ```
 
-위 검색 결과는 전부 제외/금지/12 이관 문구여야 한다. request/response schema, DB enum, Admin route, Admin page 작업 항목에 결제/구독 실행 필드가 있으면 closeout 실패로 본다.
+결제/구독 검색 결과는 전부 제외/금지/12 이관 문구여야 한다. push/privacy 검색 결과는 원문 금지, hash/ciphertext 안전 처리, safe summary/aggregate 문구여야 한다. request/response schema, DB enum, Admin route, Admin page 작업 항목에 결제/구독 실행 필드가 있으면 closeout 실패로 본다.
 
 ## 12. Goal 체크리스트
 
@@ -142,6 +143,8 @@ rg -n "provider raw|prompt|token|quota|private memo" TODO/GLOBAL_B2C_FEATURE_ROA
 - [ ] audit log 필수 action이 기록된다.
 - [ ] raw access reason 누락 요청이 실패한다.
 - [ ] provider raw/prompt/token/quota detail이 저장/응답/로그에 없다.
+- [ ] browser push endpoint/key/userAgent 원문이 Admin select/response/log에 없다.
+- [ ] mobile analytics raw payload가 Admin response에 dump되지 않는다.
 - [ ] Trash 만료가 hard delete/purge로 구현되지 않았다.
 - [ ] 결제/구독 기능이 11에 없다.
 - [ ] Prisma validate/generate가 통과했다.

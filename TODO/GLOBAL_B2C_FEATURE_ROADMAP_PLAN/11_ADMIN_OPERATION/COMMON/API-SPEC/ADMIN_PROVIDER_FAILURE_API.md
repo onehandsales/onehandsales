@@ -58,7 +58,8 @@ Business Logic:
 2. source별 ID는 `SOURCE:id` opaque string으로 만든다.
 3. safe error field만 반환한다.
 4. provider raw response, prompt, token, quota detail은 조회하지 않는다.
-5. 목록 조회 audit를 남긴다.
+5. browser push failure라도 endpointHash, endpointCiphertext, p256dh/auth ciphertext, userAgent 원문은 조회하지 않는다.
+6. 목록 조회 audit를 남긴다.
 
 Source mapping:
 
@@ -111,10 +112,11 @@ Business Logic:
 2. source별 safe select를 수행한다.
 3. 상세 조회 audit를 남긴다.
 4. safeContext는 PII 최소화 기준으로만 넣는다.
+5. PUSH safeContext에는 endpoint/key/userAgent 원문을 넣지 않는다.
 
 Transaction: audit 기록 포함 시 transaction 후보.
 
 Observability:
 
 - audit log: `ADMIN_PROVIDER_FAILURE_VIEW`
-- redaction: provider raw/prompt/token/quota detail 금지
+- redaction: provider raw/prompt/token/quota detail 금지, browser push endpoint/key/userAgent 원문 금지

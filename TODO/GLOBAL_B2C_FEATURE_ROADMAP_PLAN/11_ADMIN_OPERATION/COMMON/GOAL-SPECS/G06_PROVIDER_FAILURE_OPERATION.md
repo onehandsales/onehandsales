@@ -28,8 +28,9 @@
 4. `BusinessCardScanLog.safeErrorCode/safeErrorMessage/retryable`를 OCR failure로 연결한다.
 5. `NotificationDeliveryAttempt`, `FollowUpDeliveryAttempt` safe error를 연결한다.
 6. Calendar connection/source sync error safe field를 연결한다.
-7. list/detail API를 만든다.
-8. detail 조회 audit를 남긴다.
+7. browser push failure에서는 endpointHash, endpointCiphertext, p256dh/auth ciphertext, userAgent 원문을 조회하지 않는 select를 만든다.
+8. list/detail API를 만든다.
+9. detail 조회 audit를 남긴다.
 
 ## 4. Frontend 작업
 
@@ -82,6 +83,7 @@ GET /admin/api/provider-failures/OCR:business-card-scan-log-id
 - source별 select에서 금지 field를 조회하지 않는다.
 - detail 조회는 audit 대상이다.
 - BusinessCard 관련 DB 변경은 10번 migration을 재사용하고 중복하지 않는다.
+- PUSH failure는 `NotificationDeliveryAttempt` safe field만 사용하고 browser push subscription secret/raw identifier는 사용하지 않는다.
 
 ## 8. User Flow
 
@@ -136,6 +138,7 @@ pnpm run build
 - [ ] `AiProviderCallLog`가 연결된다.
 - [ ] `BusinessCardScanLog.safeError*`가 연결된다.
 - [ ] notification/follow-up/calendar safe failure가 연결된다.
+- [ ] browser push endpoint/key/userAgent 원문이 조회되지 않는다.
 - [ ] provider raw/prompt/token/quota detail을 조회하지 않는다.
 - [ ] detail 조회 audit가 남는다.
 - [ ] Admin Web `/provider-failures` 화면이 있다.

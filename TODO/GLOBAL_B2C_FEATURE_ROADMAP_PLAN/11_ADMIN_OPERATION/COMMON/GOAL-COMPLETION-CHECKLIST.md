@@ -13,6 +13,8 @@
 - [ ] 민감정보는 기본 masked다.
 - [ ] raw access는 reason과 audit log가 있다.
 - [ ] provider raw/prompt/token/quota detail이 저장/응답/로그에 없다.
+- [ ] browser push endpoint/key/userAgent 원문이 Admin select/response/log에 노출되지 않는다.
+- [ ] mobile field-use analytics는 event count와 allowlist payload bucket만 집계한다.
 - [ ] Trash 만료가 hard delete/purge로 구현되지 않았다.
 - [ ] 결제/구독/plan/paywall이 11에 들어오지 않았다.
 - [ ] Backend 신규/수정 코드에 필요한 한글 주석이 있다.

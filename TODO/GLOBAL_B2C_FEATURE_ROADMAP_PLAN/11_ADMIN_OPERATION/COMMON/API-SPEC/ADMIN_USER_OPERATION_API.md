@@ -120,6 +120,13 @@ Response:
     "lastActiveEventAt": "2026-07-31T00:00:00.000Z",
     "aiRequestCount30d": 14,
     "aiEstimatedCost30d": "0.42"
+  },
+  "notificationSummary": {
+    "browserPushEnabled": true,
+    "activeBrowserPushSubscriptions": 1,
+    "revokedBrowserPushSubscriptions": 0,
+    "lastBrowserPushDeliveryStatus": "SENT",
+    "lastDeliveryFailureSafeErrorCode": null
   }
 }
 ```
@@ -131,14 +138,15 @@ Business Logic:
 3. User 소유 도메인 count를 계산한다.
 4. Trash active/expired count를 계산한다.
 5. 09 snapshot과 `AiProviderCallLog` 기반 summary를 결합한다.
-6. `ADMIN_USER_DETAIL_VIEW` audit를 남긴다.
+6. 10번 notification permission UX 운영 확인을 위해 `UserNotificationSetting`, `BrowserPushSubscription`, `NotificationDeliveryAttempt`에서 safe notification summary를 계산한다.
+7. `ADMIN_USER_DETAIL_VIEW` audit를 남긴다.
 
 Transaction: audit 기록이 있으면 단일 transaction 후보.
 
 Observability:
 
 - audit log: 필수
-- redaction: email/displayName 원문 log 금지
+- redaction: email/displayName 원문 log 금지, browser push endpoint/key/userAgent 원문 response/log 금지
 
 ## 3. GET /admin/api/users/:userId/activity-timeline
 

@@ -42,8 +42,9 @@
 |---|---|
 | BusinessCard mobile capture/OCR safe failure | 11은 safe failure 조회만 한다 |
 | `BusinessCardScanLog.safeError*` migration | 11에서 중복 migration을 만들지 않는다 |
-| Mobile analytics 세부 event | 11에서 새 mobile event를 추가하지 않는다 |
-| Local draft/PWA | 11 scope 아님 |
+| Browser push permission UX | G03 사용자 상세에서 설정/구독 수/최근 delivery safe 상태만 운영 요약으로 본다. endpoint/key/userAgent 원문은 제외한다 |
+| Mobile analytics 세부 event | G07에서 기존 `ProductAnalyticsEvent`를 집계한다. 11에서 새 mobile event를 추가하지 않는다 |
+| Local draft/PWA | client-local 기능이므로 11 scope 아님. 단 local draft event count는 G07 analytics aggregate에 포함 가능 |
 
 ## 5. 제외 확인
 

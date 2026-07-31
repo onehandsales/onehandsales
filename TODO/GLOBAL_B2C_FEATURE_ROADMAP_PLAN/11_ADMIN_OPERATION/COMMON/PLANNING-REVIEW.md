@@ -37,4 +37,26 @@
 
 ## 4. 남은 검토 사항
 
-현재 문서 계획 기준으로 추가 수정 필요 사항 없음.
+초기 계획 검토 기준으로 추가 수정 필요 사항 없음.
+
+## 5. 10 Mobile/PWA 완료 후 재검토
+
+검토일: 2026-07-31
+
+`10_MOBILE_PWA_FIELD_USE` 완료 문서와 실제 schema/code 기준으로 11 반영 여부를 재검토했다.
+
+| 항목 | 판단 | 조치 |
+|---|---|---|
+| BusinessCard OCR safe failure | 이미 G06에 반영됨 | 유지 |
+| Notification/browser push permission UX | G03 사용자 상세 운영 요약에 명시가 부족했음 | `notificationSummary`, endpoint/key/userAgent 원문 금지 체크 추가 |
+| Mobile field-use analytics event | G07 Admin analytics에서 10 이벤트 집계가 명시적으로 부족했음 | `mobileFieldUse` aggregate 계약 추가 |
+| Push permission result bucket | `permissionState`만 예시에 있고 `browserPushEnabled` bucket이 빠져 있었음 | `browserPushEnabledTrue/False` aggregate 추가 |
+| 기존 `BrowserPushSubscription.userAgent` field | Admin 문서가 userAgent 저장 금지처럼 읽힐 수 있었음 | Admin select/response/log 원문 금지로 표현을 좁힘 |
+| Local draft | client-local 기능이므로 Admin 직접 관리 대상 아님 | scope 제외 유지, event count만 G07 집계 가능 |
+| PWA install/offline shell/native app | 10 1차 제외 및 후속 roadmap | 11에 추가하지 않음 |
+
+재검토 결과 새 goal은 필요 없고, G03/G06/G07/G10과 공통 체크리스트 보강으로 충분하다.
+
+## 6. 최종 확인
+
+10번 완료 반영 후 현재 11 문서 기준으로 추가 수정 필요 사항 없음.

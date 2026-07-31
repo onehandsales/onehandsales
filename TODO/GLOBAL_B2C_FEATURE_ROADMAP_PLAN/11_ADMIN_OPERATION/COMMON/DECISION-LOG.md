@@ -18,7 +18,7 @@
 - 민감정보 masking/raw access reason/audit
 - Trash 7일 이후 상태와 복구 문의
 - provider failure safe 조회
-- 09 Product Analytics 기반 Admin summary
+- 09 Product Analytics와 10 mobile field-use event 기반 Admin summary
 - DB/migration/backup operation gate
 
 ## 3. 사용자 상세
@@ -32,6 +32,8 @@
 - 진행 딜 9건
 - Trash 3건
 - 무료 복구 만료 1건
+- browser push 활성 구독 1건
+- 최근 delivery 실패 safe code
 - 최근 활동: 딜 생성, 일정 연결, 회의록 생성, 명함 확정, export 다운로드
 
 도메인별 read-only 상세 탭은 후속 goal로 분리한다.
@@ -98,6 +100,7 @@
 - API key/token
 - quota detail
 - private memo 원문
+- browser push endpoint/key/userAgent 원문
 
 ## 7. Trash
 
@@ -125,7 +128,7 @@
 
 ## 9. Analytics
 
-결정: 11 Admin Analytics는 09 foundation을 읽는 운영 요약이다.
+결정: 11 Admin Analytics는 09 foundation과 10 mobile field-use event를 읽는 운영 요약이다.
 
 포함:
 
@@ -134,6 +137,7 @@
 - active user count
 - route/event count
 - core workflow event count
+- mobile field-use event count/bucket
 - AI usage/cost summary
 
 제외:

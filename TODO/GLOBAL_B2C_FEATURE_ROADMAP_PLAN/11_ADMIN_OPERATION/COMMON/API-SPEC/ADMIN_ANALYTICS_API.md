@@ -66,6 +66,26 @@ Response:
     "successCount": 430,
     "failureCount": 30,
     "estimatedCost": "18.24"
+  },
+  "mobileFieldUse": {
+    "businessCardCaptureStarted": 44,
+    "businessCardCaptureRetried": 12,
+    "businessCardOcrFailed": 8,
+    "meetingNoteRecordingStarted": 31,
+    "meetingNoteRecordingCompleted": 25,
+    "meetingNoteRecordingFailed": 3,
+    "localDraftSaved": 52,
+    "localDraftRestored": 16,
+    "localDraftDiscarded": 14,
+    "mobilePushPermissionPromptOpened": 20,
+    "mobilePushPermissionResult": {
+      "granted": 8,
+      "denied": 3,
+      "default": 6,
+      "unsupported": 3,
+      "browserPushEnabledTrue": 8,
+      "browserPushEnabledFalse": 12
+    }
   }
 }
 ```
@@ -75,16 +95,17 @@ Business Logic:
 1. AdminGuard를 확인한다.
 2. `ProductAnalyticsEvent`, `UserActivationSnapshot`, `RetentionCohortSnapshot`을 조회한다.
 3. AI usage는 `AiProviderCallLog` aggregate를 사용한다.
-4. PII/raw payload를 조회하지 않는다.
-5. billing/subscription 관련 event는 11에서 만들거나 조회하지 않는다.
-6. 조회 audit를 남긴다.
+4. 10번 mobile field-use event는 eventName count와 allowlist payload bucket만 집계한다.
+5. PII/raw payload를 조회하지 않는다.
+6. billing/subscription 관련 event는 11에서 만들거나 조회하지 않는다.
+7. 조회 audit를 남긴다.
 
 Transaction: 없음.
 
 Observability:
 
 - audit log: `ADMIN_ANALYTICS_VIEW`
-- redaction: analytics payload raw dump 금지
+- redaction: analytics payload raw dump 금지, push endpoint/key/userAgent 원문 금지
 
 Error:
 

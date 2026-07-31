@@ -11,6 +11,7 @@
 - Admin Web `/users`
 - Admin Web `/users/:userId`
 - domain count, Trash count, activation/AI usage summary
+- notification/browser push safe summary
 
 ## 2. 제외 범위
 
@@ -27,15 +28,16 @@
 4. domain count aggregate를 만든다.
 5. Trash active/expired count aggregate를 만든다.
 6. 09 `UserActivationSnapshot`과 `AiProviderCallLog` summary를 조회한다.
-7. activity timeline read model을 만든다.
-8. 사용자 목록/상세 조회 audit를 남긴다.
+7. `UserNotificationSetting`, `BrowserPushSubscription`, `NotificationDeliveryAttempt` 기반 notification safe summary를 만든다.
+8. activity timeline read model을 만든다.
+9. 사용자 목록/상세 조회 audit를 남긴다.
 
 ## 4. Frontend 작업
 
 1. `/users` list page를 만든다.
 2. 검색, status, locale, country filter를 만든다.
 3. 사용자 row 선택 시 `/users/:userId`로 이동한다.
-4. 상세 page에 profile summary, domain counts, Trash summary, analytics summary를 배치한다.
+4. 상세 page에 profile summary, domain counts, Trash summary, analytics summary, notification summary를 배치한다.
 5. activity timeline을 표시한다.
 6. 결제/구독 card나 tab을 만들지 않는다.
 
@@ -81,6 +83,13 @@ GET /admin/api/users/:userId/activity-timeline?limit=30
   "analyticsSummary": {
     "activationStatus": "ACTIVATED",
     "aiRequestCount30d": 14
+  },
+  "notificationSummary": {
+    "browserPushEnabled": true,
+    "activeBrowserPushSubscriptions": 1,
+    "revokedBrowserPushSubscriptions": 0,
+    "lastBrowserPushDeliveryStatus": "SENT",
+    "lastDeliveryFailureSafeErrorCode": null
   }
 }
 ```
@@ -91,6 +100,7 @@ GET /admin/api/users/:userId/activity-timeline?limit=30
 - 사용자의 email/displayName은 기본 masked다.
 - Admin이 사용자를 “무엇을 하는지” 볼 때 원문 content가 아니라 count/timeline/event summary를 본다.
 - AI usage는 비용/횟수/상태만 보여주고 prompt/raw response는 보여주지 않는다.
+- Notification summary는 browser push 설정/구독 수/최근 delivery safe 상태만 보여주고 endpoint/key/userAgent 원문은 보여주지 않는다.
 - 12번 범위인 plan/payment/subscription은 응답에 없다.
 
 ## 8. User Flow
@@ -112,6 +122,7 @@ GET /admin/api/users/:userId/activity-timeline?limit=30
 - `BusinessCardScanLog`, `ImportJob`
 - `ProductAnalyticsEvent`, `UserActivationSnapshot`
 - `AiProviderCallLog`
+- `UserNotificationSetting`, `BrowserPushSubscription`, `NotificationDeliveryAttempt`
 - `AdminAuditLog`
 
 ## 10. 주석 기준
@@ -146,6 +157,8 @@ pnpm run build
 - [ ] domain count가 userId 기준으로 계산된다.
 - [ ] Trash active/expired count가 있다.
 - [ ] activation/AI usage summary가 있다.
+- [ ] notification/browser push safe summary가 있다.
+- [ ] browser push endpoint/key/userAgent 원문이 response/log에 없다.
 - [ ] 결제/구독 field가 response에 없다.
 - [ ] 사용자 목록/상세 조회 audit가 남는다.
 - [ ] Admin Web `/users` 화면이 있다.

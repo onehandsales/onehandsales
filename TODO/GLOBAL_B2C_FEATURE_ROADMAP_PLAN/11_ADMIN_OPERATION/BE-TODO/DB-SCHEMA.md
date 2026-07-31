@@ -11,6 +11,7 @@
 - Company/Contact/Product/Deal/Schedule/MeetingNote/메모 로그류는 `deletedAt`, `deletedByUserId`, `trashExpiresAt` 기반 soft delete를 가진다.
 - `AiProviderCallLog`, `BusinessCardScanLog`, `NotificationDeliveryAttempt`, `FollowUpDeliveryAttempt`, `ExternalCalendarConnection/Source`에 provider 실패를 safe field 중심으로 추적할 기반이 있다.
 - `ProductAnalyticsEvent`, `UserActivationSnapshot`, `RetentionCohortSnapshot`이 09에서 구현됐다.
+- `UserNotificationSetting`, `BrowserPushSubscription`은 10번 browser push permission UX의 운영 상태 요약에 사용할 수 있다. Admin response에는 endpoint/key/ciphertext/hash와 userAgent 원문을 노출하지 않는다.
 
 ## 2. 신규 model 후보
 

@@ -15,9 +15,10 @@
 1. 운영자가 `/users`에서 사용자 email/name/status/country/locale로 검색한다.
 2. 목록에서 사용자를 선택한다.
 3. `/users/:userId`에서 masked profile과 요약 count를 본다.
-4. 최근 활동 timeline에서 딜/일정/회의록/명함/import/export 흐름을 확인한다.
-5. 필요하면 `도메인 탭 보기`로 G04 화면에 진입한다.
-6. 사용자 상세 조회 audit가 남는다.
+4. notification/browser push 설정과 구독 수, 최근 delivery safe 상태를 본다.
+5. 최근 활동 timeline에서 딜/일정/회의록/명함/import/export 흐름을 확인한다.
+6. 필요하면 `도메인 탭 보기`로 G04 화면에 진입한다.
+7. 사용자 상세 조회 audit가 남는다.
 
 ## 3. 민감 원문 조회
 
@@ -52,8 +53,9 @@
 
 1. 운영자가 `/analytics`에 진입한다.
 2. 기간과 timezone을 선택한다.
-3. activation, retention, active user, core event count, route view, AI usage/cost를 본다.
-4. paid conversion/churn/revenue는 표시하지 않는다.
+3. activation, retention, active user, core event count, route view, mobile field-use, AI usage/cost를 본다.
+4. mobile field-use는 event count와 safe bucket만 표시한다.
+5. paid conversion/churn/revenue는 표시하지 않는다.
 
 ## 7. 계정 삭제와 데이터 export
 

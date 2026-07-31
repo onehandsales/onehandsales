@@ -54,6 +54,6 @@
 
 ## 7. Analytics
 
-- 11은 09 DB foundation만 읽는다.
+- 11은 09 DB foundation과 10 mobile field-use event를 읽는다. 새 analytics event source는 만들지 않는다.
 - billing/paywall/churn event를 새로 만들지 않는다.
 - external analytics provider forwarding을 만들지 않는다.

@@ -12,6 +12,7 @@
 - core event count
 - route view count
 - AI usage/cost summary
+- 10 mobile field-use event summary
 
 ## 2. 제외 범위
 
@@ -29,14 +30,15 @@
 2. `UserActivationSnapshot` activation summary를 만든다.
 3. `RetentionCohortSnapshot` retention summary를 만든다.
 4. `AiProviderCallLog` 기반 AI usage/cost summary를 연결한다.
-5. billing/subscription event를 추가하지 않는다.
-6. Admin analytics 조회 audit를 남긴다.
+5. 10번 mobile field-use eventName count와 allowlist payload bucket을 집계한다.
+6. billing/subscription event를 추가하지 않는다.
+7. Admin analytics 조회 audit를 남긴다.
 
 ## 4. Frontend 작업
 
 1. `/analytics` page를 만든다.
 2. 기간/timezone filter를 만든다.
-3. activation, retention, events, routes, AI usage section을 만든다.
+3. activation, retention, events, routes, AI usage, mobile field-use section을 만든다.
 4. 결제/구독 지표 section을 만들지 않는다.
 5. chart는 필요한 경우에만 쓰고 숫자 표를 같이 둔다.
 
@@ -68,22 +70,44 @@ GET /admin/api/analytics/overview?from=2026-07-01T00:00:00.000Z&to=2026-07-31T23
     "successCount": 430,
     "failureCount": 30,
     "estimatedCost": "18.24"
+  },
+  "mobileFieldUse": {
+    "businessCardCaptureStarted": 44,
+    "businessCardCaptureRetried": 12,
+    "businessCardOcrFailed": 8,
+    "meetingNoteRecordingStarted": 31,
+    "meetingNoteRecordingCompleted": 25,
+    "meetingNoteRecordingFailed": 3,
+    "localDraftSaved": 52,
+    "localDraftRestored": 16,
+    "localDraftDiscarded": 14,
+    "mobilePushPermissionPromptOpened": 20,
+    "mobilePushPermissionResult": {
+      "granted": 8,
+      "denied": 3,
+      "default": 6,
+      "unsupported": 3,
+      "browserPushEnabledTrue": 8,
+      "browserPushEnabledFalse": 12
+    }
   }
 }
 ```
 
 ## 7. Business Logic
 
-- 09 DB foundation만 source로 사용한다.
+- 09 DB foundation과 10 mobile field-use event만 source로 사용한다.
+- 10 mobile field-use event는 새 event를 추가하지 않고 기존 `ProductAnalyticsEvent`만 집계한다.
 - analytics payload raw JSON을 그대로 Admin response에 dump하지 않는다.
 - AI usage는 prompt/raw response 없이 count/token/cost/status만 집계한다.
+- push permission 집계는 `permissionState`, `browserPushEnabled` allowlist bucket만 사용한다.
 - billing-linked 지표는 12 전까지 reserved다.
 
 ## 8. User Flow
 
 1. Admin이 `/analytics`에 진입한다.
 2. 기간과 timezone을 선택한다.
-3. activation/retention/core events/AI usage를 확인한다.
+3. activation/retention/core events/mobile field-use/AI usage를 확인한다.
 4. 결제/구독 지표가 필요하면 12 범위로 이동한다.
 
 ## 9. DB/Prisma 영향
@@ -125,6 +149,8 @@ pnpm run build
 - [ ] core event count가 있다.
 - [ ] route view count가 있다.
 - [ ] AI usage/cost summary가 있다.
+- [ ] 10 mobile field-use event summary가 있다.
+- [ ] mobile analytics raw payload를 response에 dump하지 않는다.
 - [ ] billing/subscription/paid conversion/churn 지표가 없다.
 - [ ] analytics 조회 audit가 남는다.
 - [ ] Admin Web `/analytics` 화면이 있다.

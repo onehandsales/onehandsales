@@ -14,4 +14,4 @@
 - [ ] Trash 만료 정책이 soft delete 보존과 맞다.
 - [ ] 계정 삭제 정책이 Trash 정책과 별개로 설명되어 있다.
 - [ ] provider failure는 safe field 중심이다.
-- [ ] Admin analytics는 09 read model만 사용하고 billing 지표를 제외한다.
+- [ ] Admin analytics는 09 read model과 10 mobile field-use event만 사용하고 billing 지표를 제외한다.

@@ -45,9 +45,20 @@ Admin 주요 조회/action은 append-only audit를 남긴다.
 3. Trash count와 무료 복구 만료 count를 계산한다.
 4. 09 analytics snapshot/event 기반 activation/최근 활동 summary를 결합한다.
 5. AI usage summary는 `AiProviderCallLog`의 count/token/cost/status만 사용한다.
-6. 상세 조회 audit를 남긴다.
+6. notification summary는 `UserNotificationSetting`, `BrowserPushSubscription`, `NotificationDeliveryAttempt`에서 설정값, active/revoked 구독 수, 최근 safe delivery 상태만 계산한다.
+7. 상세 조회 audit를 남긴다.
 
-## 5. Trash
+## 5. Notification/Browser Push 운영 조회
+
+10번 Mobile/PWA 완료 후 Admin은 browser push permission UX 결과를 운영 관점에서 확인할 수 있다.
+
+1. 사용자 상세에는 `browserPushEnabled`, active/revoked subscription count, 최근 delivery status/safe error code만 노출한다.
+2. `BrowserPushSubscription.endpointHash`, `endpointCiphertext`, `p256dhCiphertext`, `authCiphertext`, `contentKeyVersion`은 조회하지 않는다.
+3. `userAgent` 원문은 기본 response에 포함하지 않는다. 필요한 경우 device family 수준의 safe label만 별도 mapper로 만든다.
+4. provider failure 화면에는 `NotificationDeliveryAttempt`의 safe error code/message/retryable만 연결한다.
+5. browser permission analytics는 `ProductAnalyticsEvent` allowlist payload의 `permissionState`, `browserPushEnabled` 집계만 사용한다.
+
+## 6. Trash
 
 일반 도메인 삭제는 soft delete다.
 
@@ -59,7 +70,7 @@ Admin 주요 조회/action은 append-only audit를 남긴다.
 6. Admin은 요약과 목록, 복구 문의 queue를 볼 수 있다.
 7. Admin 직접 복구 실행은 11 1차에서 하지 않는다.
 
-## 6. Provider Failure
+## 7. Provider Failure
 
 Admin provider failure는 safe log read model이다.
 
@@ -69,7 +80,7 @@ Admin provider failure는 safe log read model이다.
 4. safe error code/message, retryable, latency, requestId, target type/id만 반환한다.
 5. 상세 조회는 audit 대상이다.
 
-## 7. Account Deletion
+## 8. Account Deletion
 
 계정 삭제는 일반 Trash와 다르다.
 
@@ -81,7 +92,7 @@ Admin provider failure는 safe log read model이다.
 6. user-linked analytics raw event와 user-level snapshot은 실제 삭제 대상이다.
 7. 법무/보안/결제 예외 보관은 별도 policy로 분리한다.
 
-## 8. Data Export
+## 9. Data Export
 
 데이터 export 요청은 user-owned 데이터 기준이다.
 
@@ -92,7 +103,7 @@ Admin provider failure는 safe log read model이다.
 5. export 파일은 만료 시각을 가진다.
 6. Admin은 처리 상태를 볼 수 있지만 파일 원문을 기본 다운로드하지 않는다.
 
-## 9. System Operation Gate
+## 10. System Operation Gate
 
 Admin은 DB/migration/backup 상태를 기록하고 확인한다.
 
