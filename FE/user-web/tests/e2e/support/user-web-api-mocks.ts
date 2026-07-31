@@ -217,7 +217,7 @@ async function handleApiRequest(
   }
 
   if (pathname === "/api/notifications/browser-push/public-key" && method === "GET") {
-    return json({ publicKey: "mock-browser-push-public-key" });
+    return json({ publicKey: "AQIDBA" });
   }
 
   if (pathname === "/api/notifications/browser-subscriptions" && method === "POST") {

@@ -9,11 +9,12 @@ import {
   MonitorSmartphone,
   Save,
   Settings,
-  Smartphone,
+  ShieldCheck,
   X,
 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
+import { BrowserPushPermissionDialog } from "@/features/notification/components/browser-push-permission-dialog";
 import {
   useCreateBrowserPushSubscriptionMutation,
   useMarkNotificationReadMutation,
@@ -26,15 +27,27 @@ import {
   useNotificationSettings,
 } from "@/features/notification/hooks/use-notification-queries";
 import type {
+  BrowserPushPermissionRequest,
+  BrowserPushPermissionState,
   NotificationItem,
   NotificationReadFilter,
   UserNotificationSetting,
 } from "@/features/notification/types/notification";
+import {
+  emitMobilePushPermissionClientEvent,
+  getBrowserPushPermission,
+  getBrowserPushPermissionLabel,
+  getStoredBrowserPushSubscriptionId,
+  isBrowserPushSupported,
+  removeStoredBrowserPushSubscriptionId,
+  storeBrowserPushSubscriptionId,
+  toBrowserPushSubscriptionInput,
+  urlBase64ToUint8Array,
+} from "@/features/notification/utils/browser-push-permission";
 import { getApiErrorMessage } from "@/lib/api-client";
 import { formatDateWithOptions } from "@/utils/format";
 
 const PAGE_SIZE = 15;
-const PUSH_SUBSCRIPTION_ID_KEY = "onehand.sales.browserPushSubscriptionId";
 
 const filterOptions: readonly {
   readonly value: NotificationReadFilter;
@@ -45,6 +58,7 @@ const filterOptions: readonly {
   { value: "READ", label: "읽음" },
 ];
 
+// 기능 : 알림 목록, 서비스 설정, 모바일 browser push 권한 UX를 렌더링합니다.
 export function NotificationScreen() {
   const [read, setRead] = useState<NotificationReadFilter>("ALL");
   const [includeUpcoming, setIncludeUpcoming] = useState(false);
@@ -52,7 +66,9 @@ export function NotificationScreen() {
   const [settingsDraft, setSettingsDraft] =
     useState<UserNotificationSetting | null>(null);
   const [permissionState, setPermissionState] =
-    useState<NotificationPermission | "unsupported">("unsupported");
+    useState<BrowserPushPermissionState>("unsupported");
+  const [isPermissionDialogOpen, setIsPermissionDialogOpen] = useState(false);
+  const [isPermissionFlowPending, setIsPermissionFlowPending] = useState(false);
   const [pushNotice, setPushNotice] = useState<string | null>(null);
   const [storedSubscriptionId, setStoredSubscriptionId] = useState("");
   const notificationListQuery = useNotificationList({
@@ -68,9 +84,7 @@ export function NotificationScreen() {
   const settingsQuery = useNotificationSettings();
   const settings = settingsDraft ?? settingsQuery.data ?? null;
   const pushSupported = useMemo(() => isBrowserPushSupported(), []);
-  const publicKeyQuery = useBrowserPushPublicKey(
-    (settings?.browserPushEnabled ?? false) && pushSupported
-  );
+  const publicKeyQuery = useBrowserPushPublicKey(pushSupported);
   const markReadMutation = useMarkNotificationReadMutation();
   const updateSettingsMutation = useUpdateNotificationSettingsMutation();
   const createSubscriptionMutation = useCreateBrowserPushSubscriptionMutation();
@@ -97,11 +111,10 @@ export function NotificationScreen() {
 
   useEffect(() => {
     setPermissionState(getBrowserPushPermission());
-    setStoredSubscriptionId(
-      window.localStorage.getItem(PUSH_SUBSCRIPTION_ID_KEY) ?? ""
-    );
+    setStoredSubscriptionId(getStoredBrowserPushSubscriptionId());
   }, []);
 
+  // 기능 : 읽지 않은 알림을 읽음 상태로 변경합니다.
   const onMarkRead = async (notification: NotificationItem) => {
     if (notification.readAt) {
       return;
@@ -110,6 +123,7 @@ export function NotificationScreen() {
     await markReadMutation.mutateAsync(notification.id);
   };
 
+  // 기능 : 서비스 알림 설정을 기존 notification settings API로 저장합니다.
   const onSaveSettings = async () => {
     if (!settings) {
       return;
@@ -119,68 +133,135 @@ export function NotificationScreen() {
       scheduleReminderEnabled: settings.scheduleReminderEnabled,
       dealDueReminderEnabled: settings.dealDueReminderEnabled,
       emailNotificationEnabled: settings.emailNotificationEnabled,
-      browserPushEnabled: settings.browserPushEnabled,
     });
     setSettingsDraft(nextSettings);
     setPushNotice("알림 설정을 저장했어요.");
   };
 
-  const onRequestPermission = async () => {
-    if (!pushSupported || !("Notification" in window)) {
-      setPermissionState("unsupported");
-      return;
-    }
-
-    const permission = await window.Notification.requestPermission();
-    setPermissionState(permission);
-  };
-
-  const onSubscribeBrowserPush = async () => {
+  // 기능 : 사용자의 첫 번째 명시 클릭으로 browser push 권한 안내 dialog를 엽니다.
+  const onOpenBrowserPushPermissionDialog = () => {
     setPushNotice(null);
 
-    if (!settings?.browserPushEnabled) {
-      setPushNotice("브라우저 푸시 설정을 먼저 켜 주세요.");
+    if (!pushSupported || !("Notification" in window)) {
+      setPermissionState("unsupported");
+      emitMobilePushPermissionClientEvent({
+        eventName: "mobile_push_permission_result",
+        eventVersion: 1,
+        payload: {
+          browserPushEnabled: settings?.browserPushEnabled ?? false,
+          permissionState: "unsupported",
+        },
+      });
       return;
     }
 
-    if (!pushSupported || !publicKey) {
-      setPushNotice("브라우저 푸시를 사용할 수 없어요.");
-      return;
-    }
-
-    const permission = await window.Notification.requestPermission();
-    setPermissionState(permission);
-
-    if (permission !== "granted") {
-      setPushNotice("브라우저 푸시 권한을 허용해 주세요.");
-      return;
-    }
-
-    const registration = await navigator.serviceWorker.register(
-      "/notification-sw.js"
-    );
-    const existingSubscription =
-      await registration.pushManager.getSubscription();
-
-    if (existingSubscription) {
-      await existingSubscription.unsubscribe();
-    }
-
-    const subscription = await registration.pushManager.subscribe({
-      userVisibleOnly: true,
-      applicationServerKey: urlBase64ToUint8Array(publicKey),
+    emitMobilePushPermissionClientEvent({
+      eventName: "mobile_push_permission_prompt_opened",
+      eventVersion: 1,
+      payload: {
+        entryPoint: "notifications",
+      },
     });
-    const payload = toBrowserPushSubscriptionInput(subscription);
-    const response = await createSubscriptionMutation.mutateAsync(payload);
-
-    window.localStorage.setItem(PUSH_SUBSCRIPTION_ID_KEY, response.id);
-    setStoredSubscriptionId(response.id);
-    setSettingsDraft((current) =>
-      current ? { ...current, browserPushEnabled: true } : current
-    );
-    setPushNotice("브라우저 푸시 구독을 등록했어요.");
+    setIsPermissionDialogOpen(true);
   };
 
+  // 기능 : dialog의 계속 클릭 이후에만 browser permission prompt와 구독 등록을 진행합니다.
+  const onConfirmBrowserPushPermission = async (
+    request: BrowserPushPermissionRequest = { trigger: "USER_CLICK" }
+  ) => {
+    if (request.trigger !== "USER_CLICK") {
+      return;
+    }
+
+    setIsPermissionFlowPending(true);
+    setPushNotice(null);
+
+    try {
+      if (!pushSupported || !("Notification" in window)) {
+        setPermissionState("unsupported");
+        setPushNotice("이 브라우저에서는 푸시 알림을 사용할 수 없어요.");
+        setIsPermissionDialogOpen(false);
+        emitMobilePushPermissionClientEvent({
+          eventName: "mobile_push_permission_result",
+          eventVersion: 1,
+          payload: {
+            browserPushEnabled: settings?.browserPushEnabled ?? false,
+            permissionState: "unsupported",
+          },
+        });
+        return;
+      }
+
+      const permission = await window.Notification.requestPermission();
+      setPermissionState(permission);
+
+      if (permission !== "granted") {
+        const nextNotice =
+          permission === "denied"
+            ? "브라우저에서 알림이 차단되어 있어요. 기기 설정에서 권한을 바꾼 뒤 다시 시도해 주세요."
+            : "권한 요청을 닫았어요. 필요할 때 다시 켤 수 있어요.";
+
+        setPushNotice(nextNotice);
+        setIsPermissionDialogOpen(false);
+        emitMobilePushPermissionClientEvent({
+          eventName: "mobile_push_permission_result",
+          eventVersion: 1,
+          payload: {
+            browserPushEnabled: settings?.browserPushEnabled ?? false,
+            permissionState: permission,
+          },
+        });
+        return;
+      }
+
+      const refetchedPublicKey =
+        publicKey || (await publicKeyQuery.refetch()).data?.publicKey;
+      const resolvedPublicKey = refetchedPublicKey ?? "";
+
+      if (!resolvedPublicKey) {
+        setPushNotice("브라우저 푸시 서버 설정을 가져오지 못했어요.");
+        setIsPermissionDialogOpen(false);
+        return;
+      }
+
+      const registration = await navigator.serviceWorker.register(
+        "/notification-sw.js"
+      );
+      const existingSubscription =
+        await registration.pushManager.getSubscription();
+
+      if (existingSubscription) {
+        await existingSubscription.unsubscribe();
+      }
+
+      const subscription = await registration.pushManager.subscribe({
+        userVisibleOnly: true,
+        applicationServerKey: urlBase64ToUint8Array(resolvedPublicKey),
+      });
+      const payload = toBrowserPushSubscriptionInput(subscription);
+      const response = await createSubscriptionMutation.mutateAsync(payload);
+
+      storeBrowserPushSubscriptionId(response.id);
+      setStoredSubscriptionId(response.id);
+      setSettingsDraft((current) =>
+        current ? { ...current, browserPushEnabled: true } : current
+      );
+      setIsPermissionDialogOpen(false);
+      setPushNotice("브라우저 푸시 구독을 등록했어요.");
+      emitMobilePushPermissionClientEvent({
+        eventName: "mobile_push_permission_result",
+        eventVersion: 1,
+        payload: {
+          browserPushEnabled: true,
+          permissionState: "granted",
+        },
+      });
+    } finally {
+      setIsPermissionFlowPending(false);
+    }
+  };
+
+  // 기능 : 현재 기기의 browser push 구독을 해제하고 서버 설정을 갱신합니다.
   const onRevokeBrowserPush = async () => {
     setPushNotice(null);
 
@@ -199,7 +280,7 @@ export function NotificationScreen() {
       await revokeSubscriptionMutation.mutateAsync(storedSubscriptionId);
     }
 
-    window.localStorage.removeItem(PUSH_SUBSCRIPTION_ID_KEY);
+    removeStoredBrowserPushSubscriptionId();
     setStoredSubscriptionId("");
     setSettingsDraft((current) =>
       current ? { ...current, browserPushEnabled: false } : current
@@ -263,19 +344,26 @@ export function NotificationScreen() {
 
           <BrowserPushPanel
             hasPublicKeyError={publicKeyQuery.isError}
-            isPublicKeyReady={publicKey.length > 0}
-            isRegistering={createSubscriptionMutation.isPending}
+            isPermissionFlowPending={
+              isPermissionFlowPending || createSubscriptionMutation.isPending
+            }
             isRevoking={revokeSubscriptionMutation.isPending}
             browserPushEnabled={settings?.browserPushEnabled ?? false}
             permissionState={permissionState}
             pushSupported={pushSupported}
             storedSubscriptionId={storedSubscriptionId}
-            onRequestPermission={() => void onRequestPermission()}
+            onEnable={() => onOpenBrowserPushPermissionDialog()}
             onRevoke={() => void onRevokeBrowserPush()}
-            onSubscribe={() => void onSubscribeBrowserPush()}
           />
         </section>
       </div>
+
+      <BrowserPushPermissionDialog
+        isPending={isPermissionFlowPending || createSubscriptionMutation.isPending}
+        onConfirm={() => void onConfirmBrowserPushPermission()}
+        onOpenChange={setIsPermissionDialogOpen}
+        open={isPermissionDialogOpen}
+      />
     </section>
   );
 }
@@ -289,6 +377,7 @@ type NotificationListHeaderProps = {
   readonly onReadChange: (read: NotificationReadFilter) => void;
 };
 
+// 기능 : 알림 목록 필터와 안읽음 개수 요약을 렌더링합니다.
 function NotificationListHeader({
   currentRead,
   includeUpcoming,
@@ -355,6 +444,7 @@ type NotificationListProps = {
   readonly onMarkRead: (notification: NotificationItem) => void;
 };
 
+// 기능 : 알림 목록의 loading, empty, row 상태를 렌더링합니다.
 function NotificationList({
   isLoading,
   items,
@@ -400,6 +490,7 @@ type NotificationRowProps = {
   readonly onMarkRead: () => void;
 };
 
+// 기능 : 단일 알림 row와 관련 기록 이동/읽음 action을 렌더링합니다.
 function NotificationRow({
   isPending,
   notification,
@@ -500,6 +591,7 @@ type NotificationSettingsPanelProps = {
   readonly onSave: () => void;
 };
 
+// 기능 : 서비스 알림 설정과 마케팅 알림 분리 안내를 렌더링합니다.
 function NotificationSettingsPanel({
   isPending,
   settings,
@@ -520,7 +612,7 @@ function NotificationSettingsPanel({
     <div className="grid gap-4">
       <div className="flex items-center gap-2">
         <Settings className="h-5 w-5 text-muted-foreground" aria-hidden="true" />
-        <h2 className="text-base font-semibold">알림 설정</h2>
+        <h2 className="text-base font-semibold">서비스 알림</h2>
       </div>
 
       <div className="grid gap-2 rounded-lg border border-slate-200 bg-slate-50 p-3 text-sm">
@@ -592,25 +684,19 @@ function NotificationSettingsPanel({
         </span>
       </label>
 
-      <label className="flex items-start gap-3 rounded-lg border border-slate-200 bg-slate-50 p-3">
-        <input
-          checked={resolvedSettings.browserPushEnabled}
-          className="mt-1 h-4 w-4"
-          type="checkbox"
-          onChange={(event) =>
-            onChange({
-              ...resolvedSettings,
-              browserPushEnabled: event.target.checked,
-            })
-          }
+      <div className="flex items-start gap-3 rounded-lg border border-slate-200 bg-white p-3">
+        <ShieldCheck
+          className="mt-0.5 h-4 w-4 shrink-0 text-slate-500"
+          aria-hidden="true"
         />
         <span className="grid gap-1">
-          <span className="text-sm font-semibold">브라우저 푸시</span>
-          <span className="text-xs text-muted-foreground">
-            등록된 브라우저 구독에 발송해요.
+          <span className="text-sm font-semibold">마케팅 알림</span>
+          <span className="text-xs leading-5 text-muted-foreground">
+            광고성 알림은 별도 동의가 필요해요. 여기서는 회의와 딜 같은
+            서비스 알림만 설정해요.
           </span>
         </span>
-      </label>
+      </div>
 
       <button
         className="inline-flex min-h-10 items-center justify-center gap-2 rounded-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground disabled:cursor-not-allowed disabled:opacity-60"
@@ -632,37 +718,32 @@ function NotificationSettingsPanel({
 type BrowserPushPanelProps = {
   readonly browserPushEnabled: boolean;
   readonly hasPublicKeyError: boolean;
-  readonly isPublicKeyReady: boolean;
-  readonly isRegistering: boolean;
+  readonly isPermissionFlowPending: boolean;
   readonly isRevoking: boolean;
-  readonly permissionState: NotificationPermission | "unsupported";
+  readonly permissionState: BrowserPushPermissionState;
   readonly pushSupported: boolean;
   readonly storedSubscriptionId: string;
-  readonly onRequestPermission: () => void;
+  readonly onEnable: () => void;
   readonly onRevoke: () => void;
-  readonly onSubscribe: () => void;
 };
 
+// 기능 : browser push 권한과 구독 상태를 서비스 알림 설정과 분리해 안내합니다.
 function BrowserPushPanel({
   browserPushEnabled,
   hasPublicKeyError,
-  isPublicKeyReady,
-  isRegistering,
+  isPermissionFlowPending,
   isRevoking,
   permissionState,
   pushSupported,
   storedSubscriptionId,
-  onRequestPermission,
+  onEnable,
   onRevoke,
-  onSubscribe,
 }: BrowserPushPanelProps) {
-  const canSubscribe =
+  const isRegisteredOnThisDevice = Boolean(storedSubscriptionId);
+  const canOpenPermissionDialog = pushSupported && permissionState !== "denied";
+  const shouldShowMismatch =
     browserPushEnabled &&
-    pushSupported &&
-    isPublicKeyReady &&
-    permissionState !== "denied";
-  const canRequestPermission =
-    browserPushEnabled && pushSupported && permissionState !== "denied";
+    (!isRegisteredOnThisDevice || permissionState !== "granted");
 
   return (
     <div className="grid gap-4 border-t pt-4">
@@ -677,66 +758,84 @@ function BrowserPushPanel({
       <div className="grid gap-2 text-sm">
         <InfoItem
           label="권한"
-          value={getPermissionLabel(permissionState)}
+          value={getBrowserPushPermissionLabel(permissionState)}
         />
         <InfoItem
-          label="구독"
-          value={storedSubscriptionId ? "등록됨" : "미등록"}
+          label="이 기기"
+          value={isRegisteredOnThisDevice ? "등록됨" : "미등록"}
         />
       </div>
 
-      {!browserPushEnabled ? (
-        <p className="rounded-lg bg-slate-50 p-3 text-sm text-muted-foreground">
-          브라우저 푸시 설정을 켠 뒤 권한 요청과 구독 등록을 진행해요.
-        </p>
-      ) : null}
+      <div className="grid gap-2 rounded-lg border border-slate-200 bg-slate-50 p-3 text-sm text-slate-600">
+        <span className="font-semibold text-slate-800">서비스성 푸시 알림</span>
+        <span>
+          회의 리마인더와 딜 마감 알림을 이 브라우저로 받아요. 광고성
+          알림은 별도 동의가 필요해요.
+        </span>
+      </div>
 
-      {browserPushEnabled && hasPublicKeyError ? (
+      {hasPublicKeyError ? (
         <p className="rounded-lg bg-amber-50 p-3 text-sm text-amber-800">
           브라우저 푸시 서버 설정을 가져오지 못했어요.
         </p>
       ) : null}
 
-      {browserPushEnabled && !pushSupported ? (
+      {!pushSupported ? (
         <p className="rounded-lg bg-amber-50 p-3 text-sm text-amber-800">
           이 브라우저에서는 푸시 알림을 사용할 수 없어요.
         </p>
       ) : null}
 
-      {browserPushEnabled && permissionState === "denied" ? (
+      {permissionState === "denied" ? (
         <p className="rounded-lg bg-amber-50 p-3 text-sm text-amber-800">
-          브라우저 설정에서 알림 권한 차단을 해제한 뒤 다시 등록해 주세요.
+          브라우저에서 알림이 차단되어 있어요. 기기 설정에서 권한을 바꾼
+          뒤 다시 시도해 주세요.
         </p>
       ) : null}
 
-      <div className="grid gap-2 sm:grid-cols-2">
-        <button
-          className="inline-flex min-h-10 items-center justify-center gap-2 rounded-md border px-4 py-2 text-sm font-semibold hover:bg-muted disabled:cursor-not-allowed disabled:opacity-60"
-          disabled={!canRequestPermission}
-          type="button"
-          onClick={onRequestPermission}
-        >
+      {permissionState === "default" ? (
+        <p className="rounded-lg bg-slate-50 p-3 text-sm text-muted-foreground">
+          아직 이 브라우저에서 권한을 선택하지 않았어요.
+        </p>
+      ) : null}
+
+      {permissionState === "granted" && !isRegisteredOnThisDevice ? (
+        <p className="rounded-lg bg-slate-50 p-3 text-sm text-muted-foreground">
+          권한은 허용됐어요. 이 기기에 구독을 등록하면 알림을 받을 수
+          있어요.
+        </p>
+      ) : null}
+
+      {permissionState === "granted" && isRegisteredOnThisDevice ? (
+        <p className="rounded-lg bg-emerald-50 p-3 text-sm text-emerald-800">
+          이 기기에서 푸시 알림을 받을 수 있어요.
+        </p>
+      ) : null}
+
+      {shouldShowMismatch ? (
+        <p className="rounded-lg bg-blue-50 p-3 text-sm text-blue-800">
+          서비스 설정은 켜져 있지만 이 브라우저 권한이나 기기 구독은 아직
+          준비되지 않았어요.
+        </p>
+      ) : null}
+
+      <button
+        className="inline-flex min-h-10 items-center justify-center gap-2 rounded-md border border-[#4880EE] bg-[#4880EE] px-4 py-2 text-sm font-semibold text-white hover:bg-[#1F4EF5] disabled:cursor-not-allowed disabled:opacity-60"
+        disabled={!canOpenPermissionDialog || isPermissionFlowPending}
+        type="button"
+        onClick={onEnable}
+      >
+        {isPermissionFlowPending ? (
+          <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
+        ) : (
           <Bell className="h-4 w-4" aria-hidden="true" />
-          권한 요청
-        </button>
-        <button
-          className="inline-flex min-h-10 items-center justify-center gap-2 rounded-md border px-4 py-2 text-sm font-semibold hover:bg-muted disabled:cursor-not-allowed disabled:opacity-60"
-          disabled={!canSubscribe || isRegistering}
-          type="button"
-          onClick={onSubscribe}
-        >
-          {isRegistering ? (
-            <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
-          ) : (
-            <Smartphone className="h-4 w-4" aria-hidden="true" />
-          )}
-          구독 등록
-        </button>
-      </div>
+        )}
+        푸시 알림 켜기
+      </button>
 
       <button
         className="inline-flex min-h-10 items-center justify-center gap-2 rounded-md border border-red-200 px-4 py-2 text-sm font-semibold text-red-700 hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-60"
-        disabled={!storedSubscriptionId || isRevoking}
+        disabled={!isRegisteredOnThisDevice || isRevoking}
         type="button"
         onClick={onRevoke}
       >
@@ -759,6 +858,7 @@ type PaginationControlsProps = {
   readonly onPrev: () => void;
 };
 
+// 기능 : 알림 목록 page 이동 버튼과 현재 page 정보를 렌더링합니다.
 function PaginationControls({
   page,
   totalCount,
@@ -802,6 +902,7 @@ type InfoItemProps = {
   readonly value: string;
 };
 
+// 기능 : 알림 화면의 짧은 label-value 상태 정보를 렌더링합니다.
 function InfoItem({ label, value }: InfoItemProps) {
   return (
     <div className="grid gap-1 rounded-md bg-slate-50 p-3">
@@ -811,6 +912,7 @@ function InfoItem({ label, value }: InfoItemProps) {
   );
 }
 
+// 기능 : 알림 읽음 상태 badge를 렌더링합니다.
 function StatusBadge({
   notification,
 }: {
@@ -831,6 +933,7 @@ function StatusBadge({
   );
 }
 
+// 기능 : 알림 type code를 사용자용 badge로 렌더링합니다.
 function TypeBadge({ type }: { readonly type: NotificationItem["type"] }) {
   return (
     <span className="inline-flex items-center rounded-md border bg-white px-2 py-1 text-xs font-semibold text-slate-700">
@@ -839,6 +942,7 @@ function TypeBadge({ type }: { readonly type: NotificationItem["type"] }) {
   );
 }
 
+// 기능 : 알림 source type code를 사용자용 badge로 렌더링합니다.
 function SourceBadge({
   sourceType,
 }: {
@@ -851,6 +955,7 @@ function SourceBadge({
   );
 }
 
+// 기능 : 알림 type code를 화면 label로 변환합니다.
 function getNotificationTypeLabel(type: NotificationItem["type"]) {
   switch (type) {
     case "SCHEDULE_START_REMINDER":
@@ -862,6 +967,7 @@ function getNotificationTypeLabel(type: NotificationItem["type"]) {
   }
 }
 
+// 기능 : 알림 source type code를 화면 label로 변환합니다.
 function getSourceTypeLabel(sourceType: NotificationItem["sourceType"]) {
   switch (sourceType) {
     case "SCHEDULE":
@@ -878,6 +984,7 @@ type NoticeMessageProps = {
   readonly onDismiss: () => void;
 };
 
+// 기능 : 알림 화면 상단의 성공/안내 메시지를 렌더링합니다.
 function NoticeMessage({ message, onDismiss }: NoticeMessageProps) {
   return (
     <div className="flex items-start justify-between gap-3 rounded-lg border border-emerald-200 bg-emerald-50 p-3 text-sm text-emerald-800">
@@ -897,70 +1004,11 @@ function NoticeMessage({ message, onDismiss }: NoticeMessageProps) {
   );
 }
 
+// 기능 : 알림 화면 상단의 오류 메시지를 렌더링합니다.
 function ErrorMessage({ message }: { readonly message: string }) {
   return (
     <div className="rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-700">
       {message}
     </div>
   );
-}
-
-function isBrowserPushSupported() {
-  return (
-    typeof window !== "undefined" &&
-    typeof window.Notification !== "undefined" &&
-    typeof navigator.serviceWorker !== "undefined" &&
-    typeof window.PushManager !== "undefined"
-  );
-}
-
-function getBrowserPushPermission(): NotificationPermission | "unsupported" {
-  if (!isBrowserPushSupported()) {
-    return "unsupported";
-  }
-
-  return window.Notification.permission;
-}
-
-function getPermissionLabel(value: NotificationPermission | "unsupported") {
-  switch (value) {
-    case "granted":
-      return "허용";
-    case "denied":
-      return "차단";
-    case "default":
-      return "미설정";
-    default:
-      return "미지원";
-  }
-}
-
-function toBrowserPushSubscriptionInput(subscription: PushSubscription) {
-  const json = subscription.toJSON();
-  const p256dh = json.keys?.p256dh;
-  const auth = json.keys?.auth;
-
-  if (!json.endpoint || !p256dh || !auth) {
-    throw new Error("브라우저 푸시 구독 정보를 읽지 못했어요.");
-  }
-
-  return {
-    endpoint: json.endpoint,
-    keys: { p256dh, auth },
-    userAgent: navigator.userAgent,
-    deviceLabel: "User Web",
-  };
-}
-
-function urlBase64ToUint8Array(value: string) {
-  const padding = "=".repeat((4 - (value.length % 4)) % 4);
-  const base64 = `${value}${padding}`.replace(/-/g, "+").replace(/_/g, "/");
-  const rawData = window.atob(base64);
-  const output = new Uint8Array(rawData.length);
-
-  for (let index = 0; index < rawData.length; index += 1) {
-    output[index] = rawData.charCodeAt(index);
-  }
-
-  return output;
 }

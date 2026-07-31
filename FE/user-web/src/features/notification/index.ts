@@ -11,6 +11,9 @@ export {
 export { NotificationScreen } from "./components/notification-screen";
 export type {
   BrowserPushPublicKeyResponse,
+  BrowserPushPermissionRequest,
+  BrowserPushPermissionResult,
+  BrowserPushPermissionState,
   BrowserPushSubscriptionResponse,
   BrowserPushSubscriptionStatus,
   CreateBrowserPushSubscriptionInput,

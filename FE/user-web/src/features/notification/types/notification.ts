@@ -14,6 +14,36 @@ export type NotificationReadFilter = "ALL" | "READ" | "UNREAD";
 
 export type BrowserPushSubscriptionStatus = "ACTIVE" | "REVOKED";
 
+export type BrowserPushPermissionState =
+  | NotificationPermission
+  | "unsupported";
+
+export type BrowserPushPermissionRequest = {
+  readonly trigger: "USER_CLICK";
+};
+
+export type BrowserPushPermissionResult = {
+  readonly permissionState: BrowserPushPermissionState;
+  readonly subscriptionCreated: boolean;
+};
+
+export type MobilePushPermissionClientEvent =
+  | {
+      readonly eventName: "mobile_push_permission_prompt_opened";
+      readonly eventVersion: 1;
+      readonly payload: {
+        readonly entryPoint: "notifications" | "settings" | "field_flow";
+      };
+    }
+  | {
+      readonly eventName: "mobile_push_permission_result";
+      readonly eventVersion: 1;
+      readonly payload: {
+        readonly browserPushEnabled: boolean;
+        readonly permissionState: BrowserPushPermissionState;
+      };
+    };
+
 export type NotificationItem = {
   readonly id: string;
   readonly type: NotificationType;
