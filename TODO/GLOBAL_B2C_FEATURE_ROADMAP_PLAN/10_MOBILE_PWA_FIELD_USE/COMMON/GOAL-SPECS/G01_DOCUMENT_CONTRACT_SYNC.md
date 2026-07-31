@@ -1,6 +1,6 @@
 # G01 Document Contract Sync
 
-상태: Ready
+상태: Done
 
 ## 1. 목적
 
@@ -109,20 +109,46 @@ rg -n "safeErrorCode|UserDraft|Notification.requestPermission|MediaRecorder|capt
 
 ## 11. Goal 검토 체크리스트
 
-- [ ] `COMMON/API-SPEC`에 5개 contract가 있다.
-- [ ] G01~G07 goal 문서가 있다.
-- [ ] 모든 goal 문서에 request/response/backend business logic/user flow/DB 항목이 있다.
-- [ ] BE-TODO와 FE-TODO가 확정 결정사항을 반영한다.
-- [ ] Software Agent review 문서가 있다.
-- [ ] UXUI Agent 기준이 review/checklist에 반영되어 있다.
-- [ ] UX/UI 기준 확인 경로로 `AGENT/UXUI_AGENT`가 명시되어 있다.
-- [ ] Software/architecture 기준 확인 경로로 `AGENT/SOFTWARE_AGENT`가 명시되어 있다.
-- [ ] Global B2C 개인 영업자 모바일 현장 업무 target이 문서에 명시되어 있다.
-- [ ] DB 추가/생성 시 Prisma 한국어 주석과 migration SQL COMMENT를 확인하도록 문서화되어 있다.
-- [ ] 코드 작성 시 한국어 주석 기준을 확인하도록 문서화되어 있다.
-- [ ] G02에서만 DB migration이 필요하다고 명시되어 있다.
-- [ ] local draft는 DB/server draft가 아니라고 명시되어 있다.
+- [x] `COMMON/API-SPEC`에 5개 contract가 있다.
+- [x] G01~G07 goal 문서가 있다.
+- [x] 모든 goal 문서에 request/response/backend business logic/user flow/DB 항목이 있다.
+- [x] BE-TODO와 FE-TODO가 확정 결정사항을 반영한다.
+- [x] Software Agent review 문서가 있다.
+- [x] UXUI Agent 기준이 review/checklist에 반영되어 있다.
+- [x] UX/UI 기준 확인 경로로 `AGENT/UXUI_AGENT`가 명시되어 있다.
+- [x] Software/architecture 기준 확인 경로로 `AGENT/SOFTWARE_AGENT`가 명시되어 있다.
+- [x] Global B2C 개인 영업자 모바일 현장 업무 target이 문서에 명시되어 있다.
+- [x] DB 추가/생성 시 Prisma 한국어 주석과 migration SQL COMMENT를 확인하도록 문서화되어 있다.
+- [x] 코드 작성 시 한국어 주석 기준을 확인하도록 문서화되어 있다.
+- [x] G02에서만 DB migration이 필요하다고 명시되어 있다.
+- [x] local draft는 DB/server draft가 아니라고 명시되어 있다.
 
 ## 12. 실행 결과
 
-구현 후 기록한다.
+- 완료일: 2026-07-31
+- 검토 횟수: 2회
+- 코드 변경: 없음. G01은 문서 계약 동기화 goal이므로 Backend/Frontend runtime 코드를 수정하지 않았다.
+- 코드 주석: 신규 코드가 없어 적용 대상 없음. 이후 G02~G07에서 새로 만들거나 의미 있게 수정하는 공개 함수/핵심 함수에는 Backend `역할/API/기능`, Frontend `// 기능 : ...` 한국어 주석 기준을 적용하도록 문서에 고정되어 있다.
+- UX/UI 기준: `AGENT/UXUI_AGENT` 기준 경로가 `GOAL-WORK-ORDER`, `REFERENCES`, `PLANNING-REVIEW`, `UXUI-AGENT-REVIEW`, goal별 checklist에 명시되어 있음을 확인했다.
+- Software 기준: `AGENT/SOFTWARE_AGENT` 기준 경로가 `GOAL-WORK-ORDER`, `REFERENCES`, `PLANNING-REVIEW`, `SOFTWARE-AGENT-REVIEW`, goal별 checklist에 명시되어 있음을 확인했다.
+- DB 기준: `BE/prisma/schema.prisma`, `BE/prisma/migrations`, `BE/prisma/seed.ts` 확인 경로와 G02 전용 `BusinessCardScanLog` safe failure migration 기준이 문서화되어 있음을 확인했다.
+
+검증 command:
+
+```powershell
+rg --files TODO\GLOBAL_B2C_FEATURE_ROADMAP_PLAN\10_MOBILE_PWA_FIELD_USE
+rg -n "Request 계약|Response 계약|Backend Business Logic|User Flow|DB/Prisma|Goal 검토 체크리스트" TODO\GLOBAL_B2C_FEATURE_ROADMAP_PLAN\10_MOBILE_PWA_FIELD_USE\COMMON\GOAL-SPECS
+rg -n "safeErrorCode|UserDraft|Notification.requestPermission|MediaRecorder|capture=\"environment\"" TODO\GLOBAL_B2C_FEATURE_ROADMAP_PLAN\10_MOBILE_PWA_FIELD_USE
+Get-ChildItem TODO\GLOBAL_B2C_FEATURE_ROADMAP_PLAN\10_MOBILE_PWA_FIELD_USE\COMMON\API-SPEC -File -Filter "*_CONTRACT.md"
+Get-ChildItem TODO\GLOBAL_B2C_FEATURE_ROADMAP_PLAN\10_MOBILE_PWA_FIELD_USE\COMMON\GOAL-SPECS -File -Filter "G*.md"
+Get-ChildItem BE\prisma -Force
+```
+
+검증 결과:
+
+- API contract는 README 제외 5개로 확인했다.
+- Goal 문서는 G01~G07 총 7개로 확인했다.
+- 모든 G01~G07 문서에 request, response, backend business logic, user flow, DB/Prisma, goal checklist 섹션이 있음을 확인했다.
+- `safeErrorCode`, `UserDraft` 금지, `Notification.requestPermission`, `MediaRecorder`, `capture="environment"` 기준이 10번 문서 전반에 반영되어 있음을 확인했다.
+- `BE/prisma`에는 `schema.prisma`, `migrations`, `seed.ts`가 존재함을 확인했다.
+- G01 범위는 문서 동기화라 BE/FE test와 Prisma migration은 실행 대상이 아니다.
