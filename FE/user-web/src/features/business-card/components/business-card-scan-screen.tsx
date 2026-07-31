@@ -20,7 +20,11 @@ import {
   X,
 } from "lucide-react";
 import { useEffect, useMemo, useRef, useState, type ChangeEvent } from "react";
-import { useForm, type UseFormRegisterReturn } from "react-hook-form";
+import {
+  useForm,
+  useWatch,
+  type UseFormRegisterReturn,
+} from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import { FilterPopoverSearchHeader } from "@/components/ui/filter-popover-search-header";
 import { PageHeader } from "@/components/layout/page-header";
@@ -55,6 +59,14 @@ import type {
   BusinessCardScanLog,
   BusinessCardScanStatus,
 } from "@/features/business-card/types/business-card";
+import {
+  MobileLocalDraftRestorePrompt,
+  isBusinessCardConfirmLocalDraftEmpty,
+  toBusinessCardConfirmLocalDraftPayload,
+  toBusinessCardConfirmValuesFromLocalDraft,
+  useMobileLocalDraft,
+  type BusinessCardConfirmLocalDraftPayload,
+} from "@/features/mobile-local-draft";
 import {
   useResizableTableColumns,
   type ResizableTableColumn,
@@ -95,6 +107,8 @@ export function BusinessCardScanScreen() {
     []
   );
   const [isRegisterOpen, setIsRegisterOpen] = useState(false);
+  const [confirmDraftScanLog, setConfirmDraftScanLog] =
+    useState<BusinessCardScanLog | null>(null);
   const [selectedScanLogId, setSelectedScanLogId] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
   const displayTimeZone = user?.timeZone ?? getBrowserTimeZoneFallback();
@@ -118,6 +132,10 @@ export function BusinessCardScanScreen() {
     setStatusFilters([]);
     setPage(1);
   };
+  const openRegisterDialog = () => {
+    setConfirmDraftScanLog(null);
+    setIsRegisterOpen(true);
+  };
 
   return (
     <section className="flex min-h-full flex-col bg-white">
@@ -127,7 +145,7 @@ export function BusinessCardScanScreen() {
           {
             icon: Plus,
             tooltip: "명함 스캔",
-            onClick: () => setIsRegisterOpen(true),
+            onClick: openRegisterDialog,
             variant: "primary",
           },
         ]}
@@ -239,7 +257,7 @@ export function BusinessCardScanScreen() {
                 actionIcon={Plus}
                 actionLabel="명함 스캔"
                 icon={Camera}
-                onAction={() => setIsRegisterOpen(true)}
+                onAction={openRegisterDialog}
                 title="데이터가 존재하지 않아요"
               />
             ) : (
@@ -304,7 +322,7 @@ export function BusinessCardScanScreen() {
               actionIcon={Plus}
               actionLabel="명함 스캔"
               icon={Camera}
-              onAction={() => setIsRegisterOpen(true)}
+              onAction={openRegisterDialog}
               title="데이터가 존재하지 않아요"
             />
           ) : (
@@ -332,7 +350,7 @@ export function BusinessCardScanScreen() {
         <button
           aria-label="명함 스캔"
           className="fixed bottom-24 right-5 flex h-[52px] w-[52px] items-center justify-center rounded-full bg-[#4880EE] shadow-[0_4px_16px_rgba(59,130,246,0.27)] transition active:opacity-80"
-          onClick={() => setIsRegisterOpen(true)}
+          onClick={openRegisterDialog}
           type="button"
         >
           <Plus className="h-6 w-6 text-white" strokeWidth={2.5} />
@@ -340,18 +358,32 @@ export function BusinessCardScanScreen() {
       </section>
 
       <BusinessCardRegisterDialog
+        initialScanLog={confirmDraftScanLog}
         onConfirmed={(contactId) => {
           setNotice("명함을 담당자로 저장했어요.");
           setSelectedScanLogId(null);
+          setConfirmDraftScanLog(null);
           if (contactId) {
             window.setTimeout(() => setNotice(null), 4000);
           }
         }}
-        onOpenChange={setIsRegisterOpen}
+        onOpenChange={(open) => {
+          setIsRegisterOpen(open);
+
+          if (!open) {
+            setConfirmDraftScanLog(null);
+          }
+        }}
         open={isRegisterOpen}
+        userId={user?.id ?? null}
       />
       <BusinessCardDetailDialog
         isLoading={detailQuery.isFetching}
+        onConfirmEdit={(scanLog) => {
+          setSelectedScanLogId(null);
+          setConfirmDraftScanLog(scanLog);
+          setIsRegisterOpen(true);
+        }}
         onOpenChange={(open) => {
           if (!open) setSelectedScanLogId(null);
         }}
@@ -615,13 +647,17 @@ function normalizeFilterText(value: string) {
 }
 
 function BusinessCardRegisterDialog({
+  initialScanLog,
   open,
   onOpenChange,
   onConfirmed,
+  userId,
 }: {
+  readonly initialScanLog?: BusinessCardScanLog | null;
   readonly open: boolean;
   readonly onOpenChange: (open: boolean) => void;
   readonly onConfirmed: (contactId: string | null) => void;
+  readonly userId: string | null;
 }) {
   const navigate = useNavigate();
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -634,17 +670,45 @@ function BusinessCardRegisterDialog({
   const scanMutation = useScanBusinessCardMutation();
   const confirmMutation = useConfirmBusinessCardScanMutation();
   const {
+    control,
     register,
     handleSubmit,
     reset,
-    formState: { errors },
+    formState: { errors, isDirty },
   } = useForm<BusinessCardConfirmFormValues>({
     resolver: zodResolver(businessCardConfirmSchema),
     defaultValues: emptyBusinessCardConfirmFormValues,
   });
+  const watchedConfirmValues = useWatch({ control });
   const actionError = scanMutation.error ?? confirmMutation.error ?? null;
   const isExtracted = scanLog?.status === "OCR_SUCCESS";
   const isRegistering = scanMutation.isPending;
+  const confirmDraftPayload = useMemo<BusinessCardConfirmLocalDraftPayload>(
+    () =>
+      scanLog?.status === "OCR_SUCCESS"
+        ? toBusinessCardConfirmLocalDraftPayload(scanLog.id, {
+            ...emptyBusinessCardConfirmFormValues,
+            ...watchedConfirmValues,
+          })
+        : { scanLogId: "" },
+    [scanLog, watchedConfirmValues]
+  );
+  const {
+    discardDraft: discardConfirmDraft,
+    promptDraft,
+    restorePromptDraft,
+  } = useMobileLocalDraft<BusinessCardConfirmLocalDraftPayload>({
+    draftId: scanLog?.status === "OCR_SUCCESS" ? scanLog.id : null,
+    draftType: "BUSINESS_CARD_CONFIRM",
+    enabled: open && scanLog?.status === "OCR_SUCCESS",
+    isPayloadEmpty: isBusinessCardConfirmLocalDraftEmpty,
+    onRestore: (payload) => {
+      reset(toBusinessCardConfirmValuesFromLocalDraft(payload));
+    },
+    payload: confirmDraftPayload,
+    shouldSave: isDirty,
+    userId,
+  });
 
   useEffect(() => {
     if (!open) {
@@ -653,8 +717,17 @@ function BusinessCardRegisterDialog({
       setScanLog(null);
       setRegistrationProgress(0);
       reset(emptyBusinessCardConfirmFormValues);
+      return;
     }
-  }, [open, reset]);
+
+    if (initialScanLog?.status === "OCR_SUCCESS") {
+      setSelectedFile(null);
+      setFileError(null);
+      setScanLog(initialScanLog);
+      setRegistrationProgress(0);
+      reset(toConfirmFormValues(initialScanLog));
+    }
+  }, [initialScanLog, open, reset]);
 
   useEffect(() => {
     if (!isRegistering) {
@@ -761,6 +834,7 @@ function BusinessCardRegisterDialog({
     const response = await confirmMutation.mutateAsync(
       toConfirmInput(scanLog.id, values)
     );
+    await discardConfirmDraft("saved");
     onConfirmed(response.contact.id);
     onOpenChange(false);
   });
@@ -824,6 +898,12 @@ function BusinessCardRegisterDialog({
       {isExtracted ? (
         <div className="grid gap-4">
           <RegisterStatusPanel scanLog={scanLog} />
+          {promptDraft ? (
+            <MobileLocalDraftRestorePrompt
+              onDiscard={() => void discardConfirmDraft("user_discarded")}
+              onRestore={restorePromptDraft}
+            />
+          ) : null}
           <form className="grid gap-4" onSubmit={onConfirm}>
             <div className="grid gap-4 md:grid-cols-2">
               <TextField
@@ -1004,18 +1084,21 @@ function BusinessCardDetailDialog({
   isLoading,
   scanLog,
   timeZone,
+  onConfirmEdit,
   onOpenChange,
 }: {
   readonly open: boolean;
   readonly isLoading: boolean;
   readonly scanLog: BusinessCardScanLog | null;
   readonly timeZone: string;
+  readonly onConfirmEdit: (scanLog: BusinessCardScanLog) => void;
   readonly onOpenChange: (open: boolean) => void;
 }) {
   return (
     <ModalShell
       bodyClassName="px-5 py-4"
       footer={
+        <div className="flex justify-end gap-2">
         <button
           className="inline-flex h-9 items-center rounded-md border border-[#E2E5EC] bg-white px-4 text-[13px] font-medium text-[#4B5563] hover:bg-[#F9FAFB]"
           onClick={() => onOpenChange(false)}
@@ -1023,6 +1106,17 @@ function BusinessCardDetailDialog({
         >
           닫기
         </button>
+          {scanLog?.status === "OCR_SUCCESS" ? (
+            <button
+              className="inline-flex h-9 items-center gap-2 rounded-md bg-[#4880EE] px-4 text-[13px] font-semibold text-white hover:bg-[#1D4ED8]"
+              onClick={() => onConfirmEdit(scanLog)}
+              type="button"
+            >
+              <Save className="h-4 w-4" />
+              확인하기
+            </button>
+          ) : null}
+        </div>
       }
       onOpenChange={onOpenChange}
       open={open}

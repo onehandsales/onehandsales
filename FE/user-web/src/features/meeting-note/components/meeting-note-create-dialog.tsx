@@ -21,12 +21,13 @@ import {
   X,
   type LucideIcon,
 } from "lucide-react";
-import { type ReactNode, useEffect, useRef, useState } from "react";
+import { type ReactNode, useEffect, useMemo, useRef, useState } from "react";
 import { useForm, useWatch, type UseFormRegisterReturn } from "react-hook-form";
 import { ModalFieldGroup } from "@/components/ui/modal-form";
 import { ErrorState } from "@/components/ui/state";
 import { useDropdownPlacement } from "@/components/ui/use-dropdown-placement";
 import { useAppI18n, type AppLocale } from "@/features/app-i18n";
+import { useAuthSession } from "@/features/auth";
 import {
   useDealCompanyOptions,
   useDealContactOptions,
@@ -51,6 +52,16 @@ import type {
   MeetingNoteAiDraftResponse,
   MeetingNoteSourceType,
 } from "@/features/meeting-note/types/meeting-note";
+import {
+  MobileLocalDraftRestorePrompt,
+  getOrCreateMeetingNoteCreateClientDraftId,
+  isMeetingNoteCreateLocalDraftEmpty,
+  rotateMeetingNoteCreateClientDraftId,
+  toMeetingNoteCreateLocalDraftPayload,
+  toMeetingNoteCreateValuesFromLocalDraft,
+  useMobileLocalDraft,
+  type MeetingNoteCreateLocalDraftPayload,
+} from "@/features/mobile-local-draft";
 import { getApiErrorMessage, isApiErrorRetryable } from "@/lib/api-client";
 import { cn } from "@/utils/cn";
 
@@ -75,6 +86,7 @@ export type EntitySelectOption = {
 
 const formId = "meeting-note-create-form";
 const maxAudioFileSizeBytes = 25 * 1024 * 1024;
+const emptyEntityIds: string[] = [];
 const textareaClassName =
   "resize-none rounded-md border border-[#E2E5EC] bg-white px-3 py-2 text-sm leading-5 text-[#111827] outline-none focus:border-[#4880EE] focus:ring-2 focus:ring-[#DBEAFE]";
 const actionButtonClassName =
@@ -91,6 +103,7 @@ export function MeetingNoteCreateDialog({
   onResizeStart,
 }: MeetingNoteCreateDialogProps) {
   const { t } = useAppI18n();
+  const { user } = useAuthSession();
   const createMeetingNoteMutation = useCreateMeetingNoteMutation();
   const textAiDraftMutation = useCreateMeetingNoteTextAiDraftMutation();
   const sttAiDraftMutation = useCreateMeetingNoteSttAiDraftMutation();
@@ -111,6 +124,9 @@ export function MeetingNoteCreateDialog({
   const dealOptionsQuery = useDealList({ page: 1, sort: "createdAtDesc" });
   const [draftSourceType, setDraftSourceType] =
     useState<MeetingNoteSourceType>("MANUAL");
+  const [clientDraftId, setClientDraftId] = useState(() =>
+    getOrCreateMeetingNoteCreateClientDraftId()
+  );
   const [rawDraftText, setRawDraftText] = useState("");
   const [audioFile, setAudioFile] = useState<File | null>(null);
   const [transcript, setTranscript] = useState<string | null>(null);
@@ -125,18 +141,68 @@ export function MeetingNoteCreateDialog({
     getValues,
     reset,
     setValue,
-    formState: { errors },
+    formState: { errors, isDirty },
   } = useForm<MeetingNoteCreateFormValues>({
     resolver: zodResolver(meetingNoteCreateFormSchema),
     defaultValues: emptyMeetingNoteCreateFormValues,
   });
 
-  const companyIds = useWatch({ control, name: "companyIds" }) ?? [];
-  const contactIds = useWatch({ control, name: "contactIds" }) ?? [];
-  const productIds = useWatch({ control, name: "productIds" }) ?? [];
-  const dealIds = useWatch({ control, name: "dealIds" }) ?? [];
+  const companyIds =
+    useWatch({ control, name: "companyIds" }) ?? emptyEntityIds;
+  const contactIds =
+    useWatch({ control, name: "contactIds" }) ?? emptyEntityIds;
+  const productIds =
+    useWatch({ control, name: "productIds" }) ?? emptyEntityIds;
+  const dealIds = useWatch({ control, name: "dealIds" }) ?? emptyEntityIds;
+  const title = useWatch({ control, name: "title" }) ?? "";
+  const details = useWatch({ control, name: "details" }) ?? "";
+  const nextPlan = useWatch({ control, name: "nextPlan" }) ?? "";
+  const requiredAction = useWatch({ control, name: "requiredAction" }) ?? "";
   const meetingLocalDateTime =
     useWatch({ control, name: "meetingLocalDateTime" }) ?? "";
+  const localDraftPayload = useMemo<MeetingNoteCreateLocalDraftPayload>(
+    () =>
+      toMeetingNoteCreateLocalDraftPayload(clientDraftId, {
+        title,
+        meetingLocalDateTime,
+        companyIds,
+        contactIds,
+        productIds,
+        dealIds,
+        details,
+        nextPlan,
+        requiredAction,
+      }),
+    [
+      clientDraftId,
+      companyIds,
+      contactIds,
+      dealIds,
+      details,
+      meetingLocalDateTime,
+      nextPlan,
+      productIds,
+      requiredAction,
+      title,
+    ]
+  );
+  const {
+    discardDraft: discardMeetingNoteDraft,
+    promptDraft,
+    restorePromptDraft,
+  } = useMobileLocalDraft<MeetingNoteCreateLocalDraftPayload>({
+    draftId: clientDraftId,
+    draftType: "MEETING_NOTE_CREATE",
+    enabled: open,
+    isPayloadEmpty: isMeetingNoteCreateLocalDraftEmpty,
+    onRestore: (payload) => {
+      reset(toMeetingNoteCreateValuesFromLocalDraft(payload, getValues()));
+      setDraftSourceType("MANUAL");
+    },
+    payload: localDraftPayload,
+    shouldSave: isDirty,
+    userId: user?.id ?? null,
+  });
   const optionError =
     companyOptionsQuery.error ??
     contactOptionsQuery.error ??
@@ -370,9 +436,17 @@ export function MeetingNoteCreateDialog({
     const created = await createMeetingNoteMutation.mutateAsync(
       toCreateMeetingNoteInput(values, draftSourceType)
     );
+    await discardMeetingNoteDraft("saved");
+    setClientDraftId(rotateMeetingNoteCreateClientDraftId());
     onCreated(created);
     onOpenChange(false);
   });
+
+  // 기능 : 사용자가 복구를 거부하면 기존 draft를 지우고 다음 입력은 새 draft ID로 저장합니다.
+  const onDiscardPromptDraft = async () => {
+    await discardMeetingNoteDraft("user_discarded");
+    setClientDraftId(rotateMeetingNoteCreateClientDraftId());
+  };
 
   const isDraftPending =
     textAiDraftMutation.isPending || sttAiDraftMutation.isPending;
@@ -504,6 +578,13 @@ export function MeetingNoteCreateDialog({
                 </p>
               ) : null}
             </section>
+
+            {promptDraft ? (
+              <MobileLocalDraftRestorePrompt
+                onDiscard={() => void onDiscardPromptDraft()}
+                onRestore={restorePromptDraft}
+              />
+            ) : null}
 
             <section className="grid cursor-auto gap-3 sm:grid-cols-2">
               <MeetingDateTimeField
