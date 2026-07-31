@@ -19,14 +19,14 @@
 
 ## 3. G02 BusinessCard UI TODO
 
-- [ ] 모바일 CTA는 실제 업무 시작 버튼이어야 하며 landing/hero를 만들지 않는다.
-- [ ] native file/camera input을 사용한다.
-- [ ] input attribute는 `type="file"`, `accept="image/*"`, `capture="environment"`를 사용한다.
-- [ ] custom `getUserMedia` camera UI를 만들지 않는다.
-- [ ] upload loading/progress 상태를 보여준다.
-- [ ] OCR 실패 시 safe `userMessage`만 표시한다.
-- [ ] OCR 실패 CTA는 `다시 촬영`, `파일 바꾸기`, `수동 입력`을 제공한다.
-- [ ] provider/quota/API key/internal error 문구를 사용자에게 표시하지 않는다.
+- [x] 모바일 CTA는 실제 업무 시작 버튼이어야 하며 landing/hero를 만들지 않는다.
+- [x] native file/camera input을 사용한다.
+- [x] input attribute는 `type="file"`, `accept="image/*"`, `capture="environment"`를 사용한다.
+- [x] custom `getUserMedia` camera UI를 만들지 않는다.
+- [x] upload loading/progress 상태를 보여준다.
+- [x] OCR 실패 시 safe `userMessage`만 표시한다.
+- [x] OCR 실패 CTA는 `다시 촬영`, `파일 바꾸기`, `수동 입력`을 제공한다.
+- [x] provider/quota/API key/internal error 문구를 사용자에게 표시하지 않는다.
 
 ## 4. G03 MeetingNote UI TODO
 

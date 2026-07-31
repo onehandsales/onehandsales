@@ -181,13 +181,13 @@ export class OpenAiBusinessCardOcrProvider implements BusinessCardOcrProvider {
 
     if (!response.ok) {
       this.logProviderFailure("responses", response.status, response.statusText);
-      throw new Error("OpenAI business card OCR request failed");
+      throw new Error(this.toSafeProviderFailureMessage(response.status));
     }
 
     try {
       return await response.json();
     } catch {
-      throw new Error("OpenAI business card OCR response was not JSON");
+      throw new Error("OpenAI business card OCR response was not valid JSON");
     }
   }
 
@@ -340,6 +340,19 @@ export class OpenAiBusinessCardOcrProvider implements BusinessCardOcrProvider {
       : null;
   }
 
+  // 기능 : provider HTTP 상태를 사용자에게 노출하지 않는 안전 오류 분류로 변환합니다.
+  private toSafeProviderFailureMessage(statusCode: number): string {
+    if (statusCode === 429) {
+      return "OpenAI business card OCR rate limited";
+    }
+
+    if (statusCode >= 500) {
+      return "OpenAI business card OCR provider unavailable";
+    }
+
+    return "OpenAI business card OCR request failed";
+  }
+
   private logProviderFailure(
     operation: string,
     statusCode: number,
@@ -353,7 +366,7 @@ export class OpenAiBusinessCardOcrProvider implements BusinessCardOcrProvider {
         statusCode,
         retryable: statusCode >= 500 || statusCode === 429,
       }),
-      statusText,
+      statusText ? "OpenAI business card OCR request failed" : undefined,
       "OpenAiBusinessCardOcrProvider"
     );
   }

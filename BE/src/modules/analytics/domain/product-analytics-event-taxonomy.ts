@@ -79,6 +79,7 @@ export const PRODUCT_ANALYTICS_SERVER_EVENT_NAMES = [
   "meeting_note_created",
   "meeting_note_deal_linked",
   "business_card_scan_confirmed",
+  "business_card_ocr_failed",
   "import_confirmed",
   "export_downloaded",
 ] as const;

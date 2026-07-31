@@ -5,6 +5,19 @@ export type BusinessCardScanStatus =
 
 export type BusinessCardResolution = "EXISTING" | "CREATED";
 
+export type BusinessCardSafeFailureCode =
+  | "IMAGE_QUALITY_LOW"
+  | "OCR_PARSE_FAILED"
+  | "OCR_PROVIDER_UNAVAILABLE"
+  | "OCR_RATE_LIMITED"
+  | "OCR_UNKNOWN_FAILED";
+
+export type BusinessCardFailure = {
+  readonly errorCode: BusinessCardSafeFailureCode;
+  readonly userMessage: string;
+  readonly retryable: boolean;
+};
+
 export type BusinessCardExtractedFields = {
   readonly companyName: string | null;
   readonly companyFieldName: string | null;
@@ -41,6 +54,7 @@ export type BusinessCardScanLog = {
     readonly costCurrency: string;
     readonly pendingTimeMs: number | null;
   };
+  readonly failure: BusinessCardFailure | null;
   readonly createdAt: string;
   readonly updatedAt: string;
 };

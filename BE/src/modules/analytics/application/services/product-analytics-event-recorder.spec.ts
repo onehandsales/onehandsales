@@ -92,6 +92,18 @@ const SERVER_EVENT_CASES: readonly ServerEventCase[] = [
     },
   },
   {
+    eventName: "business_card_ocr_failed",
+    targetType: "BUSINESS_CARD_SCAN",
+    targetId: TARGET_ID,
+    payload: {
+      safeErrorCode: "OCR_PARSE_FAILED",
+      retryable: true,
+      provider: "OPENAI",
+      model: "gpt-4o-mini",
+      fileSizeBucket: "1_5mb",
+    },
+  },
+  {
     eventName: "import_confirmed",
     targetType: "IMPORT_JOB",
     targetId: TARGET_ID,

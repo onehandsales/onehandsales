@@ -120,6 +120,9 @@ export class HttpExceptionFilter implements ExceptionFilter {
       case "InvalidDeviceId":
       case "InvalidRefreshOrigin":
       case "ValidationError":
+      case "IMAGE_REQUIRED":
+      case "IMAGE_TYPE_UNSUPPORTED":
+      case "IMAGE_TOO_LARGE":
       case "CURRENCY_UNSUPPORTED":
       case "AMOUNT_INTEGER_REQUIRED":
       case "USER_LOCALE_UNSUPPORTED":

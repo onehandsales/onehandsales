@@ -1726,6 +1726,12 @@ model BusinessCardScanLog {
   totalCost             Float?
   costCurrency          String                  @default("USD")
   pendingTimeMs         Float?
+  /// 기능 : 사용자에게 노출해도 안전한 OCR 실패 코드입니다. provider raw error는 저장하지 않습니다.
+  safeErrorCode         String?
+  /// 기능 : 사용자에게 노출해도 안전한 OCR 실패 안내 문구입니다.
+  safeErrorMessage      String?
+  /// 기능 : 사용자가 촬영 또는 업로드를 다시 시도할 수 있는 실패인지 구분합니다.
+  retryable             Boolean                 @default(false)
   confirmedAt           DateTime?               @db.Timestamptz(3)
   createdAt             DateTime                @default(now()) @db.Timestamptz(3)
   updatedAt             DateTime                @updatedAt @db.Timestamptz(3)
@@ -1736,6 +1742,7 @@ model BusinessCardScanLog {
 
   @@index([userId, createdAt])
   @@index([userId, status, createdAt])
+  @@index([userId, status, safeErrorCode, createdAt])
   @@index([userId, companyId])
   @@index([userId, contactId])
 }

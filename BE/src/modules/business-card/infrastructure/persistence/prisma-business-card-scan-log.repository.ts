@@ -3,6 +3,7 @@ import {
   BusinessCardResolutionValue,
   type BusinessCardConfirmRepositoryResult,
   type BusinessCardConfirmResult,
+  type BusinessCardSafeFailureCodeValue,
   type BusinessCardScanLogPageRecord,
   type BusinessCardScanLogRecord,
   type BusinessCardScanLogRepository,
@@ -48,6 +49,9 @@ type BusinessCardScanLogRow = {
   readonly totalCost: number | null;
   readonly costCurrency: string;
   readonly pendingTimeMs: number | null;
+  readonly safeErrorCode: string | null;
+  readonly safeErrorMessage: string | null;
+  readonly retryable: boolean;
   readonly confirmedAt: Date | null;
   readonly createdAt: Date;
   readonly updatedAt: Date;
@@ -88,6 +92,9 @@ export class PrismaBusinessCardScanLogRepository
         totalCost: input.totalCost,
         costCurrency: input.costCurrency,
         pendingTimeMs: input.pendingTimeMs,
+        safeErrorCode: input.safeErrorCode,
+        safeErrorMessage: input.safeErrorMessage,
+        retryable: input.retryable,
       },
     });
 
@@ -466,6 +473,9 @@ export class PrismaBusinessCardScanLogRepository
       totalCost: row.totalCost,
       costCurrency: row.costCurrency,
       pendingTimeMs: row.pendingTimeMs,
+      safeErrorCode: row.safeErrorCode as BusinessCardSafeFailureCodeValue | null,
+      safeErrorMessage: row.safeErrorMessage,
+      retryable: row.retryable,
       confirmedAt: row.confirmedAt,
       createdAt: row.createdAt,
       updatedAt: row.updatedAt,

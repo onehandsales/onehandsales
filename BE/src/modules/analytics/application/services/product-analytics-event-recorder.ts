@@ -37,6 +37,29 @@ type ProductAnalyticsImportRowCountBucket =
 type ProductAnalyticsExportRowCountBucket =
   | "0"
   | ProductAnalyticsImportRowCountBucket;
+type ProductAnalyticsBusinessCardOcrFailureCode =
+  | "IMAGE_QUALITY_LOW"
+  | "OCR_PARSE_FAILED"
+  | "OCR_PROVIDER_UNAVAILABLE"
+  | "OCR_RATE_LIMITED"
+  | "OCR_UNKNOWN_FAILED";
+type ProductAnalyticsBusinessCardFileSizeBucket =
+  | "0_1mb"
+  | "1_5mb"
+  | "5_10mb"
+  | "over_10mb"
+  | "unknown";
+
+const BUSINESS_CARD_OCR_FAILURE_CODES: readonly ProductAnalyticsBusinessCardOcrFailureCode[] =
+  [
+    "IMAGE_QUALITY_LOW",
+    "OCR_PARSE_FAILED",
+    "OCR_PROVIDER_UNAVAILABLE",
+    "OCR_RATE_LIMITED",
+    "OCR_UNKNOWN_FAILED",
+  ];
+const BUSINESS_CARD_FILE_SIZE_BUCKETS: readonly ProductAnalyticsBusinessCardFileSizeBucket[] =
+  ["0_1mb", "1_5mb", "5_10mb", "over_10mb", "unknown"];
 
 // 역할 : RecordProductAnalyticsServerEventCommand server 분석 이벤트 저장 요청을 application 계층에 전달합니다.
 export interface RecordProductAnalyticsServerEventCommand {
@@ -76,6 +99,7 @@ const SERVER_EVENT_TARGET_TYPES: ProductAnalyticsEventTargetMap = {
   meeting_note_created: "MEETING_NOTE",
   meeting_note_deal_linked: "MEETING_NOTE",
   business_card_scan_confirmed: "BUSINESS_CARD_SCAN",
+  business_card_ocr_failed: "BUSINESS_CARD_SCAN",
   import_confirmed: "IMPORT_JOB",
   export_downloaded: "EXPORT",
 };
@@ -284,6 +308,8 @@ export class ProductAnalyticsEventRecorder
         return this.normalizeMeetingNoteCreatedPayload(payload);
       case "business_card_scan_confirmed":
         return this.normalizeBusinessCardScanConfirmedPayload(payload);
+      case "business_card_ocr_failed":
+        return this.normalizeBusinessCardOcrFailedPayload(payload);
       case "import_confirmed":
         return this.normalizeImportConfirmedPayload(payload);
       case "export_downloaded":
@@ -419,6 +445,35 @@ export class ProductAnalyticsEventRecorder
       ]),
       createdCompany: this.readBoolean(payload, "createdCompany"),
       createdContact: this.readBoolean(payload, "createdContact"),
+    };
+  }
+
+  // 기능 : 명함 OCR 실패 event payload를 safe code와 비식별 provider 메타데이터로 축소합니다.
+  private normalizeBusinessCardOcrFailedPayload(
+    payload: Record<string, unknown>
+  ): Record<string, unknown> {
+    this.assertOnlyKeys(payload, [
+      "safeErrorCode",
+      "retryable",
+      "provider",
+      "model",
+      "fileSizeBucket",
+    ]);
+
+    return {
+      safeErrorCode: this.readString(
+        payload,
+        "safeErrorCode",
+        BUSINESS_CARD_OCR_FAILURE_CODES
+      ),
+      retryable: this.readBoolean(payload, "retryable"),
+      provider: this.readString(payload, "provider"),
+      model: this.readString(payload, "model"),
+      fileSizeBucket: this.readString(
+        payload,
+        "fileSizeBucket",
+        BUSINESS_CARD_FILE_SIZE_BUCKETS
+      ),
     };
   }
 

@@ -9,7 +9,7 @@
 상태:
 
 - `OCR_SUCCESS`: OCR 후보 값 생성 완료. 사용자가 확인/수정해야 한다.
-- `OCR_FAILED`: OCR 자동 입력 실패. 에러 상세는 별도 애플리케이션 로그에 남긴다.
+- `OCR_FAILED`: OCR 자동 입력 실패. 사용자에게 노출 가능한 safe failure code/message/retryable만 저장하고 provider raw detail은 저장하지 않는다.
 - `CONFIRMED`: 사용자가 확인한 값으로 회사/담당자 저장 완료.
 
 주요 컬럼:
@@ -42,6 +42,9 @@
 | `totalCost` | total cost. 현재 가격표를 코드에 고정하지 않아 nullable | yes |
 | `costCurrency` | 비용 통화. 기본값 `USD` | no |
 | `pendingTimeMs` | OCR 요청 처리 시간(ms) | yes |
+| `safeErrorCode` | 사용자에게 노출해도 안전한 OCR 실패 코드 | yes |
+| `safeErrorMessage` | 사용자에게 노출해도 안전한 OCR 실패 안내 문구 | yes |
+| `retryable` | 사용자가 다시 촬영/업로드를 시도할 수 있는 실패인지 여부. 기본값 `false` | no |
 | `confirmedAt` | 확정 저장 시각 | yes |
 | `createdAt` | 생성 시각 | no |
 | `updatedAt` | 수정 시각 | no |
@@ -50,6 +53,7 @@
 
 - `[userId, createdAt]`: 사용자별 최신 명함 스캔 내역
 - `[userId, status, createdAt]`: 상태 필터. FE 상태 다중 필터는 `GET /api/business-card-scans`에 반복 query 또는 comma-separated query로 전달한다.
+- `[userId, status, safeErrorCode, createdAt]`: 사용자별 OCR 실패 코드 분석과 실패 상태 필터
 - `[userId, companyId]`: 확정 저장 후 회사 기준 분석
 - `[userId, contactId]`: 확정 저장 후 담당자 기준 분석
 
@@ -65,6 +69,7 @@
 1. `POST /api/business-card-scans`가 이미지를 OCR provider에 전달한다.
 2. OpenAI adapter는 strict JSON schema 응답으로 회사/담당자 후보 값을 받는다.
 3. 성공/실패와 관계없이 `BusinessCardScanLog`를 생성한다.
-4. 성공 시 FE는 추출값을 사용자에게 보여주고 확인/수정하게 한다.
-5. `POST /api/business-card-scans/:scanLogId/confirm`이 보정값으로 기존 회사/담당자를 재사용하거나 새로 만든다.
-6. 같은 transaction에서 scan log를 `CONFIRMED`로 업데이트하고 `companyId`, `contactId`, resolution을 기록한다.
+4. 실패 시 `safeErrorCode`, `safeErrorMessage`, `retryable`만 사용자 응답에 포함하고 provider raw detail은 응답/DB에 저장하지 않는다.
+5. 성공 시 FE는 추출값을 사용자에게 보여주고 확인/수정하게 한다.
+6. `POST /api/business-card-scans/:scanLogId/confirm`이 보정값으로 기존 회사/담당자를 재사용하거나 새로 만든다.
+7. 같은 transaction에서 scan log를 `CONFIRMED`로 업데이트하고 `companyId`, `contactId`, resolution을 기록한다.

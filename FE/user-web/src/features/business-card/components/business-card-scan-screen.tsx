@@ -21,7 +21,7 @@ import {
 } from "lucide-react";
 import { useEffect, useMemo, useRef, useState, type ChangeEvent } from "react";
 import { useForm, type UseFormRegisterReturn } from "react-hook-form";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { FilterPopoverSearchHeader } from "@/components/ui/filter-popover-search-header";
 import { PageHeader } from "@/components/layout/page-header";
 import {
@@ -623,10 +623,13 @@ function BusinessCardRegisterDialog({
   readonly onOpenChange: (open: boolean) => void;
   readonly onConfirmed: (contactId: string | null) => void;
 }) {
+  const navigate = useNavigate();
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [fileError, setFileError] = useState<string | null>(null);
   const [scanLog, setScanLog] = useState<BusinessCardScanLog | null>(null);
   const [registrationProgress, setRegistrationProgress] = useState(0);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const filePickerInputRef = useRef<HTMLInputElement>(null);
   const previewUrl = useObjectUrl(selectedFile);
   const scanMutation = useScanBusinessCardMutation();
   const confirmMutation = useConfirmBusinessCardScanMutation();
@@ -681,11 +684,58 @@ function BusinessCardRegisterDialog({
   }, [reset, scanLog]);
 
   const onFileChange = (file: File | null) => {
+    scanMutation.reset();
+    confirmMutation.reset();
     setSelectedFile(file);
     setFileError(validateBusinessCardImage(file));
     setScanLog(null);
     setRegistrationProgress(0);
     reset(emptyBusinessCardConfirmFormValues);
+  };
+
+  const resetSingleFileInputValue = (input: HTMLInputElement | null) => {
+    if (input) {
+      input.value = "";
+    }
+  };
+
+  const resetFileInputValues = () => {
+    resetSingleFileInputValue(fileInputRef.current);
+    resetSingleFileInputValue(filePickerInputRef.current);
+  };
+
+  const clearSelectedFile = () => {
+    resetFileInputValues();
+    onFileChange(null);
+  };
+
+  const openCaptureInput = () => {
+    if (isRegistering) {
+      return;
+    }
+
+    resetSingleFileInputValue(fileInputRef.current);
+    fileInputRef.current?.click();
+  };
+
+  const retryWithNewCapture = () => {
+    onFileChange(null);
+    openCaptureInput();
+  };
+
+  const changeSelectedFile = () => {
+    if (isRegistering) {
+      return;
+    }
+
+    onFileChange(null);
+    resetSingleFileInputValue(filePickerInputRef.current);
+    filePickerInputRef.current?.click();
+  };
+
+  const moveToManualInput = () => {
+    onOpenChange(false);
+    navigate("/app/contacts/new");
   };
 
   const onScan = async () => {
@@ -838,7 +888,7 @@ function BusinessCardRegisterDialog({
           <label
             className={cn(
               "relative grid min-h-[300px] cursor-pointer place-items-center overflow-hidden rounded-lg border border-dashed bg-[#F9FAFB] p-4 text-center transition hover:bg-[#F3F4F6]",
-              (scanLog || isRegistering) && "pointer-events-none opacity-90"
+              (isExtracted || isRegistering) && "pointer-events-none opacity-90"
             )}
             htmlFor="business-card-image"
           >
@@ -864,11 +914,23 @@ function BusinessCardRegisterDialog({
               </div>
             )}
             <input
-              accept="image/jpeg,image/png,image/webp"
+              accept="image/*"
+              capture="environment"
               className="sr-only"
-              disabled={Boolean(scanLog) || isRegistering}
+              disabled={isExtracted || isRegistering}
               id="business-card-image"
               onChange={(event) => onFileChange(event.target.files?.[0] ?? null)}
+              ref={fileInputRef}
+              type="file"
+            />
+            <input
+              accept="image/*"
+              aria-hidden="true"
+              className="sr-only"
+              disabled={isExtracted || isRegistering}
+              onChange={(event) => onFileChange(event.target.files?.[0] ?? null)}
+              ref={filePickerInputRef}
+              tabIndex={-1}
               type="file"
             />
             {isRegistering ? (
@@ -905,7 +967,7 @@ function BusinessCardRegisterDialog({
                 <button
                   aria-label="선택한 파일 지우기"
                   className="grid h-7 w-7 shrink-0 place-items-center rounded-md text-[#9CA3AF] hover:bg-[#F3F4F6]"
-                  onClick={() => onFileChange(null)}
+                  onClick={clearSelectedFile}
                   type="button"
                 >
                   <X className="h-4 w-4" />
@@ -918,7 +980,14 @@ function BusinessCardRegisterDialog({
             <p className="text-[12px] font-medium text-red-600">{fileError}</p>
           ) : null}
 
-          {scanLog ? <RegisterStatusPanel scanLog={scanLog} /> : null}
+          {scanLog ? (
+            <RegisterStatusPanel
+              onChangeFile={changeSelectedFile}
+              onManualInput={moveToManualInput}
+              onRetryCapture={retryWithNewCapture}
+              scanLog={scanLog}
+            />
+          ) : null}
           {actionError ? (
             <p className="rounded-md border border-red-200 bg-red-50 px-3 py-2 text-[12px] text-red-600">
               {getApiErrorMessage(actionError)}
@@ -982,6 +1051,10 @@ function BusinessCardDetailDialog({
               </Link>
             ) : null}
           </div>
+
+          {scanLog.status === "OCR_FAILED" ? (
+            <RegisterStatusPanel scanLog={scanLog} />
+          ) : null}
 
           <div className="grid gap-3 md:grid-cols-2">
             <DetailItem label="회사명" value={scanLog.extracted.companyName} />
@@ -1057,6 +1130,13 @@ function ScanLogMobileRow({
   readonly displayTimeZone: string;
   readonly onOpen: () => void;
 }) {
+  const summaryText =
+    scanLog.status === "OCR_FAILED"
+      ? (scanLog.failure?.userMessage ?? "다시 스캔해 주세요.")
+      : `${scanLog.extracted.contactName ?? "-"} · ${
+          scanLog.extracted.contactMobile ?? "-"
+        }`;
+
   return (
     <button
       className="flex w-full items-start gap-3 border-b border-[#E5E7EB] bg-white px-4 py-[14px] text-left transition active:bg-[#F9FAFB]"
@@ -1074,8 +1154,7 @@ function ScanLogMobileRow({
           <StatusBadge status={scanLog.status} />
         </div>
         <p className="mt-0.5 truncate text-[12px] text-[#6B7280]">
-          {scanLog.extracted.contactName ?? "-"} ·{" "}
-          {scanLog.extracted.contactMobile ?? "-"}
+          {summaryText}
         </p>
         <p className="mt-1 text-[11px] text-[#9CA3AF]">
           등록 {formatDate(scanLog.createdAt, displayTimeZone)}
@@ -1086,11 +1165,68 @@ function ScanLogMobileRow({
   );
 }
 
-function RegisterStatusPanel({ scanLog }: { readonly scanLog: BusinessCardScanLog }) {
+function RegisterStatusPanel({
+  scanLog,
+  onRetryCapture,
+  onChangeFile,
+  onManualInput,
+}: {
+  readonly scanLog: BusinessCardScanLog;
+  readonly onRetryCapture?: () => void;
+  readonly onChangeFile?: () => void;
+  readonly onManualInput?: () => void;
+}) {
   if (scanLog.status === "OCR_FAILED") {
+    const failure = scanLog.failure ?? {
+      errorCode: "OCR_UNKNOWN_FAILED",
+      userMessage: "명함을 읽지 못했어요. 다시 찍거나 파일을 바꿔 주세요.",
+      retryable: true,
+    };
+    const hasActions = Boolean(onRetryCapture || onChangeFile || onManualInput);
+
     return (
-      <div className="rounded-md border border-red-200 bg-red-50 px-3 py-2 text-[12px] text-red-600">
-        자동 입력에 실패했어요. 잠시 후 다시 시도해 주세요. 이미지는 저장하지 않았어요.
+      <div className="grid gap-3 rounded-md border border-red-200 bg-red-50 px-3 py-3 text-[12px] text-red-700">
+        <div className="flex min-w-0 items-start gap-2">
+          <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" />
+          <div className="min-w-0">
+            <p className="font-semibold">{failure.userMessage}</p>
+            <p className="mt-1 text-red-600">이미지는 저장하지 않았어요.</p>
+          </div>
+        </div>
+        {hasActions ? (
+          <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
+            {onRetryCapture ? (
+              <button
+                className="inline-flex h-9 w-full items-center justify-center gap-1.5 rounded-md bg-white px-3 text-[12px] font-semibold text-red-700 ring-1 ring-inset ring-red-200 hover:bg-red-50"
+                onClick={onRetryCapture}
+                type="button"
+              >
+                <Camera className="h-3.5 w-3.5" />
+                다시 촬영
+              </button>
+            ) : null}
+            {onChangeFile ? (
+              <button
+                className="inline-flex h-9 w-full items-center justify-center gap-1.5 rounded-md bg-white px-3 text-[12px] font-semibold text-red-700 ring-1 ring-inset ring-red-200 hover:bg-red-50"
+                onClick={onChangeFile}
+                type="button"
+              >
+                <FileImage className="h-3.5 w-3.5" />
+                파일 바꾸기
+              </button>
+            ) : null}
+            {onManualInput ? (
+              <button
+                className="inline-flex h-9 w-full items-center justify-center gap-1.5 rounded-md bg-white px-3 text-[12px] font-semibold text-red-700 ring-1 ring-inset ring-red-200 hover:bg-red-50"
+                onClick={onManualInput}
+                type="button"
+              >
+                <UserRound className="h-3.5 w-3.5" />
+                수동 입력
+              </button>
+            ) : null}
+          </div>
+        ) : null}
       </div>
     );
   }

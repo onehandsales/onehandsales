@@ -12,6 +12,8 @@ import {
   BUSINESS_CARD_SCAN_LOG_REPOSITORY,
   type BusinessCardConfirmResult,
   type BusinessCardExtractedRecord,
+  BusinessCardSafeFailureCodeValue,
+  type BusinessCardSafeFailureCodeValue as BusinessCardSafeFailureCode,
   type BusinessCardScanLogRecord,
   type BusinessCardScanLogRepository,
   BusinessCardResolutionValue,
@@ -27,6 +29,7 @@ import {
   recordProductAnalyticsServerEventBestEffort,
 } from "@/modules/analytics/application/services/product-analytics-event-recorder";
 import {
+  BusinessCardImageValidationError,
   BusinessCardScanLogNotFoundError,
   BusinessCardScanNotConfirmableError,
 } from "@/modules/business-card/domain/business-card.errors";
@@ -39,15 +42,34 @@ const BUSINESS_CARD_SCAN_PAGE_SIZE = 15;
 const MAX_IMAGE_FILE_SIZE_BYTES = 10 * 1024 * 1024;
 const ALLOWED_IMAGE_MIME_TYPES = new Set([
   "image/jpeg",
-  "image/jpg",
   "image/png",
   "image/webp",
 ]);
+const BUSINESS_CARD_UNKNOWN_FAILURE_MESSAGE =
+  "명함을 읽지 못했어요. 다시 찍거나 파일을 바꿔 주세요.";
+const BUSINESS_CARD_SAFE_FAILURE_MESSAGES: Record<
+  BusinessCardSafeFailureCode,
+  string
+> = {
+  IMAGE_QUALITY_LOW:
+    "사진이 흐려서 내용을 읽기 어려워요. 밝은 곳에서 다시 찍어 주세요.",
+  OCR_PARSE_FAILED: BUSINESS_CARD_UNKNOWN_FAILURE_MESSAGE,
+  OCR_PROVIDER_UNAVAILABLE:
+    "지금은 명함을 읽기 어려워요. 잠시 후 다시 시도해 주세요.",
+  OCR_RATE_LIMITED: "요청이 많아요. 잠시 후 다시 시도해 주세요.",
+  OCR_UNKNOWN_FAILED: BUSINESS_CARD_UNKNOWN_FAILURE_MESSAGE,
+};
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const DEFAULT_COMPANY_FIELD_NAME = "미분류";
 const DEFAULT_COMPANY_REGION_NAME = "미지정";
 const DEFAULT_CONTACT_DEPARTMENT_NAME = "미지정";
 const DEFAULT_CONTACT_JOB_GRADE_NAME = "미지정";
+
+interface BusinessCardSafeFailure {
+  readonly errorCode: BusinessCardSafeFailureCode;
+  readonly userMessage: string;
+  readonly retryable: boolean;
+}
 
 // 역할 : BusinessCardScanQueryInput 명함 스캔 목록 조회 조건을 정의합니다.
 export interface BusinessCardScanQueryInput {
@@ -99,6 +121,13 @@ export interface BusinessCardUsageResponse {
   readonly pendingTimeMs: number | null;
 }
 
+// 역할 : BusinessCardFailureResponse 명함 OCR 실패 시 사용자에게 노출 가능한 안전 응답을 정의합니다.
+export interface BusinessCardFailureResponse {
+  readonly errorCode: BusinessCardSafeFailureCode;
+  readonly userMessage: string;
+  readonly retryable: boolean;
+}
+
 // 역할 : BusinessCardScanLogResponse 명함 스캔 로그 API 응답을 정의합니다.
 export interface BusinessCardScanLogResponse {
   readonly id: string;
@@ -116,6 +145,7 @@ export interface BusinessCardScanLogResponse {
     readonly model: string;
   };
   readonly usage: BusinessCardUsageResponse;
+  readonly failure: BusinessCardFailureResponse | null;
   readonly createdAt: string;
   readonly updatedAt: string;
 }
@@ -151,7 +181,8 @@ export class BusinessCardApplicationService {
 
   async scanBusinessCard(
     currentUser: CurrentUserContext,
-    imageFile: UploadedBusinessCardImageFile | undefined
+    imageFile: UploadedBusinessCardImageFile | undefined,
+    requestId: string | null = null
   ): Promise<BusinessCardScanLogResponse> {
     const normalizedImageFile = this.normalizeImageFile(imageFile);
     const metadata = this.ocrProvider.getMetadata();
@@ -162,6 +193,21 @@ export class BusinessCardApplicationService {
         imageFile: normalizedImageFile,
       });
       const extracted = this.normalizeExtractedFields(ocrResult.extracted);
+
+      if (this.isEmptyExtractedFields(extracted)) {
+        return this.createFailedScanLogResponse({
+          currentUser,
+          imageFile: normalizedImageFile,
+          metadata,
+          requestId,
+          safeFailure: this.createSafeFailure(
+            BusinessCardSafeFailureCodeValue.IMAGE_QUALITY_LOW
+          ),
+          startedAt,
+          usage: ocrResult.usage,
+        });
+      }
+
       const scanLog = await this.scanLogRepository.createScanLog({
         userId: currentUser.id,
         status: BusinessCardScanStatusValue.OCR_SUCCESS,
@@ -170,6 +216,9 @@ export class BusinessCardApplicationService {
         aiProvider: metadata.aiProvider,
         aiModel: metadata.aiModel,
         promptSnapshot: metadata.promptSnapshot,
+        safeErrorCode: null,
+        safeErrorMessage: null,
+        retryable: false,
       });
 
       this.logEvent("businessCard.ocrSucceeded", {
@@ -180,19 +229,15 @@ export class BusinessCardApplicationService {
 
       return this.toScanLogResponse(scanLog);
     } catch (error) {
-      const scanLog = await this.scanLogRepository.createScanLog({
-        userId: currentUser.id,
-        status: BusinessCardScanStatusValue.OCR_FAILED,
-        ...this.emptyExtractedFields(),
-        ...this.toUsageRecord(this.emptyUsage(), metadata, startedAt),
-        aiProvider: metadata.aiProvider,
-        aiModel: metadata.aiModel,
-        promptSnapshot: metadata.promptSnapshot,
+      return this.createFailedScanLogResponse({
+        currentUser,
+        imageFile: normalizedImageFile,
+        metadata,
+        requestId,
+        safeFailure: this.toSafeFailure(error),
+        startedAt,
+        usage: this.emptyUsage(),
       });
-
-      this.logProviderFailure(currentUser.id, scanLog.id, metadata, error);
-
-      return this.toScanLogResponse(scanLog);
     }
   }
 
@@ -292,29 +337,95 @@ export class BusinessCardApplicationService {
     };
   }
 
+  // 기능 : OCR 실패를 safe failure 로그와 best-effort 분석 이벤트로 기록합니다.
+  private async createFailedScanLogResponse(input: {
+    readonly currentUser: CurrentUserContext;
+    readonly imageFile: BusinessCardOcrImageFile;
+    readonly metadata: BusinessCardOcrProviderMetadata;
+    readonly requestId: string | null;
+    readonly safeFailure: BusinessCardSafeFailure;
+    readonly startedAt: number;
+    readonly usage: BusinessCardOcrUsage;
+  }): Promise<BusinessCardScanLogResponse> {
+    const scanLog = await this.scanLogRepository.createScanLog({
+      userId: input.currentUser.id,
+      status: BusinessCardScanStatusValue.OCR_FAILED,
+      ...this.emptyExtractedFields(),
+      ...this.toUsageRecord(input.usage, input.metadata, input.startedAt),
+      aiProvider: input.metadata.aiProvider,
+      aiModel: input.metadata.aiModel,
+      promptSnapshot: input.metadata.promptSnapshot,
+      safeErrorCode: input.safeFailure.errorCode,
+      safeErrorMessage: input.safeFailure.userMessage,
+      retryable: input.safeFailure.retryable,
+    });
+
+    this.logProviderFailure(
+      input.currentUser.id,
+      scanLog.id,
+      input.metadata,
+      input.safeFailure
+    );
+
+    await this.recordServerAnalyticsEvent({
+      userId: input.currentUser.id,
+      authSessionId: input.currentUser.sessionId,
+      requestId: input.requestId,
+      eventName: "business_card_ocr_failed",
+      timeZone: input.currentUser.timeZone,
+      idempotencyKey: `business_card_ocr_failed:${scanLog.id}`,
+      targetType: "BUSINESS_CARD_SCAN",
+      targetId: scanLog.id,
+      payload: {
+        safeErrorCode: input.safeFailure.errorCode,
+        retryable: input.safeFailure.retryable,
+        provider: input.metadata.aiProvider,
+        model: input.metadata.aiModel,
+        fileSizeBucket: this.toFileSizeBucket(input.imageFile.size),
+      },
+    });
+
+    return this.toScanLogResponse(scanLog);
+  }
+
   private normalizeImageFile(
     imageFile: UploadedBusinessCardImageFile | undefined
   ): BusinessCardOcrImageFile {
     if (!imageFile) {
-      throw new ValidationDomainError("business card image is required");
+      throw new BusinessCardImageValidationError(
+        "IMAGE_REQUIRED",
+        "이미지를 선택해 주세요."
+      );
     }
 
     if (!Buffer.isBuffer(imageFile.buffer)) {
-      throw new ValidationDomainError("business card image buffer is required");
+      throw new BusinessCardImageValidationError(
+        "IMAGE_REQUIRED",
+        "이미지를 선택해 주세요."
+      );
     }
 
     if (imageFile.size <= 0 || imageFile.buffer.length === 0) {
-      throw new ValidationDomainError("business card image must not be empty");
+      throw new BusinessCardImageValidationError(
+        "IMAGE_REQUIRED",
+        "이미지를 선택해 주세요."
+      );
     }
 
     if (imageFile.size > MAX_IMAGE_FILE_SIZE_BYTES) {
-      throw new ValidationDomainError("business card image is too large");
+      throw new BusinessCardImageValidationError(
+        "IMAGE_TOO_LARGE",
+        "10MB 이하 이미지만 올릴 수 있어요."
+      );
     }
 
     const mimeType = imageFile.mimetype.trim().toLowerCase();
 
     if (!ALLOWED_IMAGE_MIME_TYPES.has(mimeType)) {
-      throw new ValidationDomainError("business card image type is not supported");
+      throw new BusinessCardImageValidationError(
+        "IMAGE_TYPE_UNSUPPORTED",
+        "JPG, PNG, WebP 이미지만 올릴 수 있어요."
+      );
     }
 
     return {
@@ -345,6 +456,73 @@ export class BusinessCardApplicationService {
         extracted.contactJobGradeName
       ),
     };
+  }
+
+  // 기능 : OCR 결과가 모두 비어 있으면 사용자가 바로 보정하기 어려운 저품질 이미지로 판단합니다.
+  private isEmptyExtractedFields(extracted: BusinessCardExtractedRecord): boolean {
+    return Object.values(extracted).every((value) => value === null);
+  }
+
+  // 기능 : safe failure code를 사용자 안내 문구와 재시도 여부로 변환합니다.
+  private createSafeFailure(
+    errorCode: BusinessCardSafeFailureCode,
+    retryable = true
+  ): BusinessCardSafeFailure {
+    return {
+      errorCode,
+      userMessage: BUSINESS_CARD_SAFE_FAILURE_MESSAGES[errorCode],
+      retryable,
+    };
+  }
+
+  // 기능 : provider 오류를 raw detail 없이 안전한 실패 코드로 축소합니다.
+  private toSafeFailure(error: unknown): BusinessCardSafeFailure {
+    const message = error instanceof Error ? error.message.toLowerCase() : "";
+
+    if (message.includes("rate limited")) {
+      return this.createSafeFailure(BusinessCardSafeFailureCodeValue.OCR_RATE_LIMITED);
+    }
+
+    if (
+      message.includes("provider unavailable") ||
+      message.includes("request failed") ||
+      message.includes("api_key") ||
+      message.includes("api key")
+    ) {
+      return this.createSafeFailure(
+        BusinessCardSafeFailureCodeValue.OCR_PROVIDER_UNAVAILABLE
+      );
+    }
+
+    if (
+      message.includes("not json") ||
+      message.includes("valid json") ||
+      message.includes("empty") ||
+      message.includes("schema")
+    ) {
+      return this.createSafeFailure(BusinessCardSafeFailureCodeValue.OCR_PARSE_FAILED);
+    }
+
+    return this.createSafeFailure(BusinessCardSafeFailureCodeValue.OCR_UNKNOWN_FAILED);
+  }
+
+  // 기능 : analytics payload에 원본 파일 크기 대신 안전한 bucket만 남깁니다.
+  private toFileSizeBucket(size: number): string {
+    const oneMb = 1024 * 1024;
+
+    if (size <= oneMb) {
+      return "0_1mb";
+    }
+
+    if (size <= oneMb * 5) {
+      return "1_5mb";
+    }
+
+    if (size <= MAX_IMAGE_FILE_SIZE_BYTES) {
+      return "5_10mb";
+    }
+
+    return "over_10mb";
   }
 
   private normalizeConfirmInput(
@@ -542,8 +720,32 @@ export class BusinessCardApplicationService {
         costCurrency: scanLog.costCurrency,
         pendingTimeMs: scanLog.pendingTimeMs,
       },
+      failure: this.toFailureResponse(scanLog),
       createdAt: scanLog.createdAt.toISOString(),
       updatedAt: scanLog.updatedAt.toISOString(),
+    };
+  }
+
+  // 기능 : OCR 실패 로그를 사용자에게 보여줄 수 있는 안전 응답으로 변환합니다.
+  private toFailureResponse(
+    scanLog: BusinessCardScanLogRecord
+  ): BusinessCardFailureResponse | null {
+    if (scanLog.status !== BusinessCardScanStatusValue.OCR_FAILED) {
+      return null;
+    }
+
+    if (!scanLog.safeErrorCode) {
+      return this.createSafeFailure(
+        BusinessCardSafeFailureCodeValue.OCR_UNKNOWN_FAILED
+      );
+    }
+
+    return {
+      errorCode: scanLog.safeErrorCode,
+      userMessage:
+        this.normalizeOptionalText(scanLog.safeErrorMessage) ??
+        BUSINESS_CARD_SAFE_FAILURE_MESSAGES[scanLog.safeErrorCode],
+      retryable: scanLog.retryable,
     };
   }
 
@@ -551,7 +753,7 @@ export class BusinessCardApplicationService {
     userId: string,
     scanLogId: string,
     metadata: BusinessCardOcrProviderMetadata,
-    error: unknown
+    safeFailure: BusinessCardSafeFailure
   ): void {
     this.logger.error(
       JSON.stringify({
@@ -560,9 +762,10 @@ export class BusinessCardApplicationService {
         scanLogId,
         aiProvider: metadata.aiProvider,
         aiModel: metadata.aiModel,
-        reason: error instanceof Error ? error.name : "UnknownError",
+        safeErrorCode: safeFailure.errorCode,
+        retryable: safeFailure.retryable,
       }),
-      error instanceof Error ? error.message : "Unknown business card OCR failure",
+      safeFailure.userMessage,
       "BusinessCardApplicationService"
     );
   }

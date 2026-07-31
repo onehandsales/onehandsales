@@ -1,6 +1,6 @@
 # G02 BusinessCard Mobile Capture And Failure
 
-상태: Ready
+상태: Done
 
 ## 1. 목적
 
@@ -137,25 +137,64 @@ pnpm --dir FE/user-web test:e2e -- mobile-business-card-capture
 
 ## 11. Goal 검토 체크리스트
 
-- [ ] `BE/prisma/schema.prisma`를 먼저 확인했다.
-- [ ] 새 migration만 추가했다.
-- [ ] `BusinessCardScanLog` safe failure fields가 있다.
-- [ ] 추가 field에 Prisma 한국어 주석이 있다.
-- [ ] migration SQL에 `COMMENT ON COLUMN`이 있다.
-- [ ] create/list/detail response에 `failure`가 있다.
-- [ ] OCR failed response에서 `failure`가 null이 아니다.
-- [ ] provider raw error/detail이 response/log/analytics에 없다.
-- [ ] mobile input이 `accept="image/*"`와 `capture="environment"`를 사용한다.
-- [ ] custom camera UI를 만들지 않았다.
-- [ ] 실패 UX에 `다시 촬영`, `파일 바꾸기`, `수동 입력`이 있다.
-- [ ] 새로 만들거나 의미 있게 수정한 공개 함수/핵심 함수에 한국어 주석을 적용했다.
-- [ ] Global B2C 개인 영업자 모바일 현장 업무 target을 벗어나지 않았다.
-- [ ] UX/UI 변경 전 `AGENT/UXUI_AGENT` 기준을 확인했다.
-- [ ] Software/architecture 변경 전 `AGENT/SOFTWARE_AGENT` 기준을 확인했다.
-- [ ] 360px/390px viewport에서 주요 CTA가 겹치지 않는다.
-- [ ] BE/FE/E2E targeted 검증 결과를 기록했다.
-- [ ] `COMMON/GOAL-REVIEW-CHECKLIST.md`를 확인했다.
+- [x] `BE/prisma/schema.prisma`를 먼저 확인했다.
+- [x] 새 migration만 추가했다.
+- [x] `BusinessCardScanLog` safe failure fields가 있다.
+- [x] 추가 field에 Prisma 한국어 주석이 있다.
+- [x] migration SQL에 `COMMENT ON COLUMN`이 있다.
+- [x] create/list/detail response에 `failure`가 있다.
+- [x] OCR failed response에서 `failure`가 null이 아니다.
+- [x] provider raw error/detail이 response/log/analytics에 없다.
+- [x] mobile input이 `accept="image/*"`와 `capture="environment"`를 사용한다.
+- [x] custom camera UI를 만들지 않았다.
+- [x] 실패 UX에 `다시 촬영`, `파일 바꾸기`, `수동 입력`이 있다.
+- [x] 새로 만들거나 의미 있게 수정한 공개 함수/핵심 함수에 한국어 주석을 적용했다.
+- [x] Global B2C 개인 영업자 모바일 현장 업무 target을 벗어나지 않았다.
+- [x] UX/UI 변경 전 `AGENT/UXUI_AGENT` 기준을 확인했다.
+- [x] Software/architecture 변경 전 `AGENT/SOFTWARE_AGENT` 기준을 확인했다.
+- [x] 360px/390px viewport에서 주요 CTA가 겹치지 않는다.
+- [x] BE/FE/E2E targeted 검증 결과를 기록했다.
+- [x] `COMMON/GOAL-REVIEW-CHECKLIST.md`를 확인했다.
 
 ## 12. 실행 결과
 
-구현 후 기록한다.
+완료일: 2026-07-31
+
+구현 요약:
+
+- `BusinessCardScanLog`에 `safeErrorCode`, `safeErrorMessage`, `retryable`과 `[userId, status, safeErrorCode, createdAt]` 인덱스를 추가했다.
+- `BusinessCardScanLogResponse.failure`를 create/list/detail 응답 mapper에 추가했다. `OCR_SUCCESS`/`CONFIRMED`는 `null`, `OCR_FAILED`는 safe failure 객체를 반환한다.
+- 과거 `OCR_FAILED` row는 `OCR_UNKNOWN_FAILED` fallback을 반환한다.
+- OCR 실패 시 `business_card_ocr_failed` server analytics event를 best effort로 기록한다.
+- User Web 명함 스캔 모달은 `accept="image/*"`, `capture="environment"` input을 사용하고 실패 시 `다시 촬영`, `파일 바꾸기`, `수동 입력` CTA를 제공한다.
+- provider raw error/detail/raw response는 response/log/analytics에 포함하지 않았다.
+
+검증:
+
+```powershell
+pnpm.cmd --dir BE run prisma:validate
+pnpm.cmd --dir BE exec prisma generate --no-engine
+pnpm.cmd --dir BE exec jest src/modules/business-card/application/services/business-card-application.service.spec.ts src/modules/analytics/domain/product-analytics-event-taxonomy.spec.ts src/modules/analytics/application/services/product-analytics-event-recorder.spec.ts --runInBand
+pnpm.cmd --dir BE exec jest src/modules/business-card/presentation/http/business-card.controller.spec.ts src/modules/business-card/application/services/business-card-application.service.spec.ts --runInBand
+pnpm.cmd --dir BE run typecheck
+pnpm.cmd --dir BE run lint
+pnpm.cmd --dir BE test -- --runInBand
+pnpm.cmd --dir BE run build
+pnpm.cmd --dir FE/user-web exec vitest run src/features/business-card/schemas/business-card-schema.test.ts
+pnpm.cmd --dir FE/user-web run typecheck
+pnpm.cmd --dir FE/user-web run lint
+pnpm.cmd --dir FE/user-web run test
+pnpm.cmd --dir FE/user-web run build
+pnpm.cmd --dir FE/user-web exec playwright test -c playwright.release-qa.config.ts tests/e2e/mobile-browser-qa.spec.ts --project=mobile-chrome-390 --project=mobile-chrome-360
+```
+
+결과:
+
+- Prisma schema validation 통과.
+- Prisma Client type generation은 `pnpm.cmd --dir BE run prisma:generate`가 Windows DLL lock `EPERM`으로 실패했으나, running engine 교체 없이 `--no-engine` generate로 client type 갱신을 완료했다.
+- BE targeted Jest 2회 통과, 전체 Jest 78 suites / 398 tests 통과.
+- BE typecheck/lint/build 통과.
+- FE targeted Vitest 통과, 전체 Vitest 4 files / 42 tests 통과.
+- FE typecheck/lint/build 통과.
+- Mobile Playwright release QA 390px/360px 8 tests 통과.
+- `.env`의 DB host가 Supabase pooler임을 확인했고, 운영/공유성 DB에 migrate/seed는 실행하지 않았다.

@@ -25,13 +25,13 @@
 
 ## 3. G02 BusinessCard API 구현 TODO
 
-- [ ] `POST /api/business-card-scans` multipart `image` validation을 계약과 맞춘다.
-- [ ] OCR provider error를 safe code/userMessage/retryable로 map한다.
-- [ ] `BusinessCardScanLogResponse.failure`를 create/list/detail에 추가한다.
-- [ ] 과거 `OCR_FAILED` row에 safe field가 없는 경우 fallback response를 반환한다.
-- [ ] provider raw error/detail을 response/log/analytics에 포함하지 않는다.
-- [ ] OCR 실패 시 `business_card_ocr_failed` server event를 best effort로 기록한다.
-- [ ] confirm API regression test로 기존 company/contact 연결 transaction을 보호한다.
+- [x] `POST /api/business-card-scans` multipart `image` validation을 계약과 맞춘다.
+- [x] OCR provider error를 safe code/userMessage/retryable로 map한다.
+- [x] `BusinessCardScanLogResponse.failure`를 create/list/detail에 추가한다.
+- [x] 과거 `OCR_FAILED` row에 safe field가 없는 경우 fallback response를 반환한다.
+- [x] provider raw error/detail을 response/log/analytics에 포함하지 않는다.
+- [x] OCR 실패 시 `business_card_ocr_failed` server event를 best effort로 기록한다.
+- [x] confirm API regression test로 기존 company/contact 연결 transaction을 보호한다.
 
 ## 4. G03 MeetingNote API 구현 TODO
 

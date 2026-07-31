@@ -729,6 +729,7 @@ async function handleApiRequest(
   if (pathname === "/api/business-card-scans" && method === "POST") {
     const scan = {
       ...store.businessCardScans[0],
+      failure: null,
       id: nextId(store, "business-card"),
       status: "OCR_SUCCESS",
     };
@@ -752,6 +753,7 @@ async function handleApiRequest(
       },
       scanLog: {
         ...scan,
+        failure: null,
         status: "CONFIRMED",
       },
     });
@@ -2479,6 +2481,7 @@ function createBusinessCardScan() {
       contactId: "contact-mobile-001",
       contactResolution: "EXISTING",
     },
+    failure: null,
     status: "OCR_SUCCESS",
     updatedAt: NOW,
     usage: {
