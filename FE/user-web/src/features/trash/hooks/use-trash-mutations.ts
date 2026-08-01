@@ -5,9 +5,15 @@ import { dealQueryKeys } from "@/features/deal/api/deal-query-keys";
 import { meetingNoteQueryKeys } from "@/features/meeting-note/api/meeting-note-query-keys";
 import { productQueryKeys } from "@/features/product/api/product-query-keys";
 import { scheduleQueryKeys } from "@/features/schedule/api/schedule-query-keys";
-import { restoreTrashItem } from "@/features/trash/api/trash-api";
+import {
+  createTrashRecoveryRequest,
+  restoreTrashItem,
+} from "@/features/trash/api/trash-api";
 import { trashQueryKeys } from "@/features/trash/api/trash-query-keys";
-import type { RestoreTrashItemInput } from "@/features/trash/types/trash";
+import type {
+  CreateTrashRecoveryRequestInput,
+  RestoreTrashItemInput,
+} from "@/features/trash/types/trash";
 
 export function useRestoreTrashItemMutation() {
   const queryClient = useQueryClient();
@@ -23,6 +29,25 @@ export function useRestoreTrashItemMutation() {
       void queryClient.invalidateQueries({ queryKey: scheduleQueryKeys.all });
       void queryClient.invalidateQueries({
         queryKey: meetingNoteQueryKeys.all,
+      });
+    },
+  });
+}
+
+// 기능 : 만료 Trash row 복구 문의 mutation과 cache 갱신을 구성합니다.
+export function useCreateTrashRecoveryRequestMutation() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (input: CreateTrashRecoveryRequestInput) =>
+      createTrashRecoveryRequest(input),
+    onSuccess: (_response, variables) => {
+      void queryClient.invalidateQueries({ queryKey: trashQueryKeys.lists() });
+      void queryClient.invalidateQueries({
+        queryKey: trashQueryKeys.detail({
+          targetType: variables.targetType,
+          targetId: variables.targetId,
+        }),
       });
     },
   });

@@ -1,4 +1,8 @@
+import { Prisma, TrashRecoveryRequestStatus } from "@prisma/client";
 import {
+  type CreateTrashRecoveryRequestInput,
+  type FindOpenTrashRecoveryRequestInput,
+  type FindTrashRecoveryTargetInput,
   type GetTrashDetailInput,
   type ListTrashInput,
   type RestoreTrashItemInput,
@@ -9,7 +13,12 @@ import {
   type TrashItemKindFilter,
   type TrashListResult,
   type TrashLogTypeFilter,
+  type TrashRecoveryRequestRecord,
+  type TrashRecoveryRequestStatusValue,
+  type TrashRecoveryRequestSummary,
+  type TrashRecoveryTargetRecord,
   type TrashRepository,
+  type TrashRestoreWindow,
   type TrashRestoreBlockedReason,
   type TrashRestoreRepositoryResult,
   type TrashSort,
@@ -17,6 +26,7 @@ import {
 } from "@/modules/trash/application/ports/trash.repository";
 import { PrismaService } from "@/shared/infrastructure/prisma/prisma.service";
 
+type TrashPrismaClient = PrismaService | Prisma.TransactionClient;
 type TrashDomain = Exclude<TrashDomainFilter, "ALL">;
 type TrashItemKind = Exclude<TrashItemKindFilter, "ALL">;
 type TrashLogType = Exclude<TrashLogTypeFilter, "ALL">;
@@ -37,12 +47,28 @@ type DeletedItemInput = {
   readonly parentType?: TrashDomain;
   readonly parentId?: string | null;
   readonly parentTitle?: string | null;
+  readonly hasPrivateMemo?: boolean;
+  readonly now: Date;
+};
+
+type RecoveryRequestRow = {
+  readonly id: string;
+  readonly targetType: string;
+  readonly targetId: string;
+  readonly status: TrashRecoveryRequestStatus;
+  readonly createdAt: Date;
 };
 
 const DEFAULT_PAGE = 1;
 const DEFAULT_PAGE_SIZE = 15;
 const MAX_PAGE_SIZE = 100;
 const MEMO_TITLE_MAX_LENGTH = 40;
+const OPEN_RECOVERY_REQUEST_STATUSES: readonly TrashRecoveryRequestStatus[] = [
+  TrashRecoveryRequestStatus.REQUESTED,
+  TrashRecoveryRequestStatus.REVIEWING,
+  TrashRecoveryRequestStatus.WAITING_RECOVERY_POLICY,
+  TrashRecoveryRequestStatus.RECOVERY_AVAILABLE,
+];
 
 const TARGET_METADATA: readonly TargetMetadata[] = [
   {
@@ -136,8 +162,24 @@ function isTrashItem(item: TrashItem | null): item is TrashItem {
 
 // 역할 : PrismaTrashRepository 휴지통 저장소 계약을 Prisma 기반 영속성 처리로 구현합니다.
 export class PrismaTrashRepository implements TrashRepository {
-  // 기능 : 휴지통 조회와 복구에 사용할 Prisma 클라이언트를 주입받습니다.
-  constructor(private readonly client: PrismaService) {}
+  // 기능 : 휴지통 조회와 복구에 사용할 Prisma 클라이언트와 transaction runner를 주입받습니다.
+  constructor(
+    private readonly client: TrashPrismaClient,
+    private readonly transactionRunner: PrismaService | null = null
+  ) {}
+
+  // 기능 : 휴지통 저장소 작업을 Prisma transaction 안에서 실행합니다.
+  async runInTransaction<T>(
+    work: (repository: TrashRepository) => Promise<T>
+  ): Promise<T> {
+    if (!this.transactionRunner) {
+      return work(this);
+    }
+
+    return this.transactionRunner.$transaction(async (transaction) => {
+      return work(new PrismaTrashRepository(transaction, null));
+    });
+  }
 
   // 기능 : 현재 사용자의 복구 가능 삭제 항목을 조건에 맞춰 조회합니다.
   async listTrash(input: ListTrashInput): Promise<TrashListResult> {
@@ -146,9 +188,10 @@ export class PrismaTrashRepository implements TrashRepository {
     const collectedItems = await this.collectTrashItems(input);
     const filteredItems = this.filterByQuery(collectedItems, input.query);
     const sortedItems = this.sortTrashItems(filteredItems, input.sort);
+    const pageItems = sortedItems.slice((page - 1) * pageSize, page * pageSize);
 
     return {
-      items: sortedItems.slice((page - 1) * pageSize, page * pageSize),
+      items: await this.attachRecoveryRequests(input.userId, pageItems),
       page,
       pageSize,
       totalCount: filteredItems.length,
@@ -193,36 +236,112 @@ export class PrismaTrashRepository implements TrashRepository {
 
   // 기능 : 휴지통 대상 유형에 맞는 상세 정보를 조회합니다.
   async getTrashDetail(input: GetTrashDetailInput): Promise<TrashDetail | null> {
-    switch (input.targetType) {
-      case "COMPANY":
-        return this.getCompanyDetail(input);
-      case "CONTACT":
-        return this.getContactDetail(input);
-      case "PRODUCT":
-        return this.getProductDetail(input);
-      case "DEAL":
-        return this.getDealDetail(input);
-      case "SCHEDULE":
-        return this.getScheduleDetail(input);
-      case "MEETING_NOTE":
-        return this.getMeetingNoteDetail(input);
-      case "COMPANY_MEMO_LOG":
-        return this.getCompanyMemoLogDetail(input);
-      case "COMPANY_PRIVATE_MEMO_LOG":
-        return this.getCompanyPrivateMemoLogDetail(input);
-      case "CONTACT_MEMO_LOG":
-        return this.getContactMemoLogDetail(input);
-      case "CONTACT_PRIVATE_MEMO_LOG":
-        return this.getContactPrivateMemoLogDetail(input);
-      case "PRODUCT_MEMO_LOG":
-        return this.getProductMemoLogDetail(input);
-      case "PRODUCT_PRIVATE_MEMO_LOG":
-        return this.getProductPrivateMemoLogDetail(input);
-      case "DEAL_MEMO_LOG":
-        return this.getDealMemoLogDetail(input);
-      case "DEAL_FOLLOWING_ACTION_LOG":
-        return this.getDealFollowingActionLogDetail(input);
+    const detail = await (async (): Promise<TrashDetail | null> => {
+      switch (input.targetType) {
+        case "COMPANY":
+          return this.getCompanyDetail(input);
+        case "CONTACT":
+          return this.getContactDetail(input);
+        case "PRODUCT":
+          return this.getProductDetail(input);
+        case "DEAL":
+          return this.getDealDetail(input);
+        case "SCHEDULE":
+          return this.getScheduleDetail(input);
+        case "MEETING_NOTE":
+          return this.getMeetingNoteDetail(input);
+        case "COMPANY_MEMO_LOG":
+          return this.getCompanyMemoLogDetail(input);
+        case "COMPANY_PRIVATE_MEMO_LOG":
+          return this.getCompanyPrivateMemoLogDetail(input);
+        case "CONTACT_MEMO_LOG":
+          return this.getContactMemoLogDetail(input);
+        case "CONTACT_PRIVATE_MEMO_LOG":
+          return this.getContactPrivateMemoLogDetail(input);
+        case "PRODUCT_MEMO_LOG":
+          return this.getProductMemoLogDetail(input);
+        case "PRODUCT_PRIVATE_MEMO_LOG":
+          return this.getProductPrivateMemoLogDetail(input);
+        case "DEAL_MEMO_LOG":
+          return this.getDealMemoLogDetail(input);
+        case "DEAL_FOLLOWING_ACTION_LOG":
+          return this.getDealFollowingActionLogDetail(input);
+      }
+    })();
+
+    return detail
+      ? await this.attachDetailRecoveryRequest(input.userId, detail)
+      : null;
+  }
+
+  // 기능 : 복구 문의 대상 Trash row의 안전 snapshot을 조회합니다.
+  async findRecoveryTarget(
+    input: FindTrashRecoveryTargetInput
+  ): Promise<TrashRecoveryTargetRecord | null> {
+    const detail = await this.getTrashDetail(input);
+
+    if (!detail) {
+      return null;
     }
+
+    return {
+      targetType: detail.targetType,
+      targetId: detail.targetId,
+      titleSnapshot: detail.title,
+      deletedAt: detail.deletedAt,
+      trashExpiresAt: detail.trashExpiresAt,
+      restoreWindow: detail.restoreWindow,
+    };
+  }
+
+  // 기능 : 같은 사용자와 대상의 열린 복구 문의를 조회합니다.
+  async findOpenRecoveryRequest(
+    input: FindOpenTrashRecoveryRequestInput
+  ): Promise<TrashRecoveryRequestRecord | null> {
+    const request = await this.client.trashRecoveryRequest.findFirst({
+      where: {
+        userId: input.userId,
+        targetType: input.targetType,
+        targetId: input.targetId,
+        status: { in: [...OPEN_RECOVERY_REQUEST_STATUSES] },
+      },
+      select: {
+        id: true,
+        targetType: true,
+        targetId: true,
+        status: true,
+        createdAt: true,
+      },
+      orderBy: [{ createdAt: "desc" }, { id: "desc" }],
+    });
+
+    return request ? this.toRecoveryRequestRecord(request) : null;
+  }
+
+  // 기능 : 만료된 Trash row에 대한 복구 문의를 생성합니다.
+  async createRecoveryRequest(
+    input: CreateTrashRecoveryRequestInput
+  ): Promise<TrashRecoveryRequestRecord> {
+    const request = await this.client.trashRecoveryRequest.create({
+      data: {
+        userId: input.userId,
+        targetType: input.targetType,
+        targetId: input.targetId,
+        titleSnapshot: input.titleSnapshot,
+        deletedAt: input.deletedAt,
+        trashExpiresAt: input.trashExpiresAt,
+        message: input.message,
+      },
+      select: {
+        id: true,
+        targetType: true,
+        targetId: true,
+        status: true,
+        createdAt: true,
+      },
+    });
+
+    return this.toRecoveryRequestRecord(request);
   }
 
   // 기능 : 삭제된 회사의 상세 모달 데이터를 조회합니다.
@@ -246,6 +365,11 @@ export class PrismaTrashRepository implements TrashRepository {
             region: true,
           },
         },
+        _count: {
+          select: {
+            privateMemoLogs: true,
+          },
+        },
       },
     });
 
@@ -256,10 +380,12 @@ export class PrismaTrashRepository implements TrashRepository {
     return this.createTrashDetail({
       targetType: "COMPANY",
       targetId: company.id,
+      now: input.now,
       title: company.companyName,
       deletedAt: company.deletedAt,
       trashExpiresAt: company.trashExpiresAt,
       summary: `${company.companyName} 회사 데이터`,
+      hasPrivateMemo: company._count.privateMemoLogs > 0,
       fields: [
         this.createField("회사명", company.companyName),
         this.createField("분야", company.companyField.field),
@@ -296,6 +422,11 @@ export class PrismaTrashRepository implements TrashRepository {
             jobGradeName: true,
           },
         },
+        _count: {
+          select: {
+            privateMemoLogs: true,
+          },
+        },
       },
     });
 
@@ -306,10 +437,12 @@ export class PrismaTrashRepository implements TrashRepository {
     return this.createTrashDetail({
       targetType: "CONTACT",
       targetId: contact.id,
+      now: input.now,
       title: contact.username,
       deletedAt: contact.deletedAt,
       trashExpiresAt: contact.trashExpiresAt,
       summary: `${contact.username} 담당자 데이터`,
+      hasPrivateMemo: contact._count.privateMemoLogs > 0,
       fields: [
         this.createField("담당자명", contact.username),
         this.createField("회사", contact.company.companyName),
@@ -343,6 +476,11 @@ export class PrismaTrashRepository implements TrashRepository {
             statusName: true,
           },
         },
+        _count: {
+          select: {
+            privateMemoLogs: true,
+          },
+        },
       },
     });
 
@@ -353,10 +491,12 @@ export class PrismaTrashRepository implements TrashRepository {
     return this.createTrashDetail({
       targetType: "PRODUCT",
       targetId: product.id,
+      now: input.now,
       title: product.productName,
       deletedAt: product.deletedAt,
       trashExpiresAt: product.trashExpiresAt,
       summary: `${product.productName} 제품 데이터`,
+      hasPrivateMemo: product._count.privateMemoLogs > 0,
       fields: [
         this.createField("제품명", product.productName),
         this.createField("가격", this.formatNumber(product.productPrice)),
@@ -390,6 +530,7 @@ export class PrismaTrashRepository implements TrashRepository {
     return this.createTrashDetail({
       targetType: "DEAL",
       targetId: deal.id,
+      now: input.now,
       title: deal.dealName,
       deletedAt: deal.deletedAt,
       trashExpiresAt: deal.trashExpiresAt,
@@ -448,6 +589,7 @@ export class PrismaTrashRepository implements TrashRepository {
     return this.createTrashDetail({
       targetType: "SCHEDULE",
       targetId: schedule.id,
+      now: input.now,
       title: schedule.scheduleTitle,
       deletedAt: schedule.deletedAt,
       trashExpiresAt: schedule.trashExpiresAt,
@@ -473,6 +615,7 @@ export class PrismaTrashRepository implements TrashRepository {
     });
   }
 
+  // 기능 : 삭제된 회의록의 상세 모달 데이터를 조회하되 본문 원문은 응답에서 제외합니다.
   private async getMeetingNoteDetail(
     input: GetTrashDetailInput
   ): Promise<TrashDetail | null> {
@@ -482,9 +625,6 @@ export class PrismaTrashRepository implements TrashRepository {
         id: true,
         title: true,
         meetingAt: true,
-        details: true,
-        nextPlan: true,
-        requiredAction: true,
         deletedAt: true,
         trashExpiresAt: true,
         companies: {
@@ -505,6 +645,7 @@ export class PrismaTrashRepository implements TrashRepository {
     return this.createTrashDetail({
       targetType: "MEETING_NOTE",
       targetId: meetingNote.id,
+      now: input.now,
       title: meetingNote.title,
       deletedAt: meetingNote.deletedAt,
       trashExpiresAt: meetingNote.trashExpiresAt,
@@ -524,10 +665,8 @@ export class PrismaTrashRepository implements TrashRepository {
             meetingNote.contacts.map((contact) => contact.contactUsernameSnapshot)
           )
         ),
-        this.createField("다음 계획", meetingNote.nextPlan),
-        this.createField("필요 액션", meetingNote.requiredAction),
       ],
-      content: meetingNote.details,
+      content: "회의록 본문은 복구 후 상세 화면에서 확인할 수 있어요.",
     });
   }
 
@@ -559,6 +698,7 @@ export class PrismaTrashRepository implements TrashRepository {
     return this.createTrashDetail({
       targetType: "COMPANY_MEMO_LOG",
       targetId: memoLog.id,
+      now: input.now,
       title: this.createMemoTitle(memoLog.memoType, memoLog.memo),
       deletedAt: memoLog.deletedAt,
       trashExpiresAt: memoLog.trashExpiresAt,
@@ -600,15 +740,17 @@ export class PrismaTrashRepository implements TrashRepository {
     return this.createTrashDetail({
       targetType: "COMPANY_PRIVATE_MEMO_LOG",
       targetId: memoLog.id,
+      now: input.now,
       title: "비밀 메모",
       deletedAt: memoLog.deletedAt,
       trashExpiresAt: memoLog.trashExpiresAt,
       parentType: "COMPANY",
       parentId: memoLog.company.id,
       parentTitle: memoLog.company.companyName,
+      hasPrivateMemo: true,
       summary: `${memoLog.company.companyName} 회사 비밀 메모`,
       fields: [this.createField("회사", memoLog.company.companyName)],
-      content: "비밀 메모는 복구 후 상세 화면에서 확인할 수 있습니다.",
+      content: "비밀 메모는 복구 후 상세 화면에서 확인할 수 있어요.",
     });
   }
 
@@ -640,6 +782,7 @@ export class PrismaTrashRepository implements TrashRepository {
     return this.createTrashDetail({
       targetType: "CONTACT_MEMO_LOG",
       targetId: memoLog.id,
+      now: input.now,
       title: this.createMemoTitle(memoLog.memoType, memoLog.memo),
       deletedAt: memoLog.deletedAt,
       trashExpiresAt: memoLog.trashExpiresAt,
@@ -681,15 +824,17 @@ export class PrismaTrashRepository implements TrashRepository {
     return this.createTrashDetail({
       targetType: "CONTACT_PRIVATE_MEMO_LOG",
       targetId: memoLog.id,
+      now: input.now,
       title: "비밀 메모",
       deletedAt: memoLog.deletedAt,
       trashExpiresAt: memoLog.trashExpiresAt,
       parentType: "CONTACT",
       parentId: memoLog.contact.id,
       parentTitle: memoLog.contact.username,
+      hasPrivateMemo: true,
       summary: `${memoLog.contact.username} 담당자 비밀 메모`,
       fields: [this.createField("담당자", memoLog.contact.username)],
-      content: "비밀 메모는 복구 후 상세 화면에서 확인할 수 있습니다.",
+      content: "비밀 메모는 복구 후 상세 화면에서 확인할 수 있어요.",
     });
   }
 
@@ -721,6 +866,7 @@ export class PrismaTrashRepository implements TrashRepository {
     return this.createTrashDetail({
       targetType: "PRODUCT_MEMO_LOG",
       targetId: memoLog.id,
+      now: input.now,
       title: this.createMemoTitle(memoLog.memoType, memoLog.memo),
       deletedAt: memoLog.deletedAt,
       trashExpiresAt: memoLog.trashExpiresAt,
@@ -762,15 +908,17 @@ export class PrismaTrashRepository implements TrashRepository {
     return this.createTrashDetail({
       targetType: "PRODUCT_PRIVATE_MEMO_LOG",
       targetId: memoLog.id,
+      now: input.now,
       title: "비밀 메모",
       deletedAt: memoLog.deletedAt,
       trashExpiresAt: memoLog.trashExpiresAt,
       parentType: "PRODUCT",
       parentId: memoLog.product.id,
       parentTitle: memoLog.product.productName,
+      hasPrivateMemo: true,
       summary: `${memoLog.product.productName} 제품 비밀 메모`,
       fields: [this.createField("제품", memoLog.product.productName)],
-      content: "비밀 메모는 복구 후 상세 화면에서 확인할 수 있습니다.",
+      content: "비밀 메모는 복구 후 상세 화면에서 확인할 수 있어요.",
     });
   }
 
@@ -802,6 +950,7 @@ export class PrismaTrashRepository implements TrashRepository {
     return this.createTrashDetail({
       targetType: "DEAL_MEMO_LOG",
       targetId: memoLog.id,
+      now: input.now,
       title: this.createMemoTitle(memoLog.memoType, memoLog.memo),
       deletedAt: memoLog.deletedAt,
       trashExpiresAt: memoLog.trashExpiresAt,
@@ -845,6 +994,7 @@ export class PrismaTrashRepository implements TrashRepository {
     return this.createTrashDetail({
       targetType: "DEAL_FOLLOWING_ACTION_LOG",
       targetId: actionLog.id,
+      now: input.now,
       title: actionLog.followingAction,
       deletedAt: actionLog.deletedAt,
       trashExpiresAt: actionLog.trashExpiresAt,
@@ -864,6 +1014,7 @@ export class PrismaTrashRepository implements TrashRepository {
   private createTrashDetail(input: {
     readonly targetType: TrashTargetType;
     readonly targetId: string;
+    readonly now: Date;
     readonly title: string;
     readonly deletedAt: Date;
     readonly trashExpiresAt: Date;
@@ -873,13 +1024,21 @@ export class PrismaTrashRepository implements TrashRepository {
     readonly parentType?: TrashDomain;
     readonly parentId?: string | null;
     readonly parentTitle?: string | null;
+    readonly hasPrivateMemo?: boolean;
   }): TrashDetail {
+    const restoreWindow = this.getRestoreWindow(input.trashExpiresAt, input.now);
     const detail: TrashDetail = {
       targetType: input.targetType,
       targetId: input.targetId,
       title: input.title,
       deletedAt: input.deletedAt,
       trashExpiresAt: input.trashExpiresAt,
+      restoreWindow,
+      canRestore: restoreWindow === "ACTIVE",
+      canRequestRecovery: restoreWindow === "EXPIRED",
+      hasPrivateMemo: input.hasPrivateMemo ?? false,
+      privateMemoIncluded: false,
+      recoveryRequest: null,
       summary: input.summary,
       fields: input.fields,
       ...(input.content !== undefined ? { content: input.content } : {}),
@@ -912,9 +1071,6 @@ export class PrismaTrashRepository implements TrashRepository {
       userId: input.userId,
       deletedAt: {
         not: null,
-      },
-      trashExpiresAt: {
-        gt: input.now,
       },
     };
   }
@@ -949,6 +1105,7 @@ export class PrismaTrashRepository implements TrashRepository {
     return `${formatter.format(startAt)} - ${formatter.format(endAt)}`;
   }
 
+  // 기능 : 미팅 URL 원문 대신 hostname만 표시 값으로 변환합니다.
   private formatMeetingUrl(value: string | null) {
     if (!value) {
       return null;
@@ -961,6 +1118,7 @@ export class PrismaTrashRepository implements TrashRepository {
     }
   }
 
+  // 기능 : 일정 출처와 외부 캘린더 연결 상태를 사용자 표시 label로 변환합니다.
   private createScheduleSourceLabel(schedule: {
     readonly sourceType: string;
     readonly externalSyncStatus: string | null;
@@ -971,7 +1129,7 @@ export class PrismaTrashRepository implements TrashRepository {
         readonly status: string;
       };
     } | null;
-    }) {
+  }) {
     if (schedule.sourceType !== "GOOGLE") {
       return "한손";
     }
@@ -991,6 +1149,7 @@ export class PrismaTrashRepository implements TrashRepository {
     return schedule.externalCalendarSource?.calendarName ?? "Google";
   }
 
+  // 기능 : 빈 스냅샷을 제거하고 쉼표 구분 label 문자열로 합칩니다.
   private joinLabels(labels: readonly string[]) {
     const normalizedLabels = labels
       .map((label) => label.trim())
@@ -1073,6 +1232,11 @@ export class PrismaTrashRepository implements TrashRepository {
         companyName: true,
         deletedAt: true,
         trashExpiresAt: true,
+        _count: {
+          select: {
+            privateMemoLogs: true,
+          },
+        },
       },
     });
 
@@ -1081,9 +1245,11 @@ export class PrismaTrashRepository implements TrashRepository {
         this.createTrashItem({
           targetType: "COMPANY",
           targetId: company.id,
+          now: input.now,
           title: company.companyName,
           deletedAt: company.deletedAt,
           trashExpiresAt: company.trashExpiresAt,
+          hasPrivateMemo: company._count.privateMemoLogs > 0,
         })
       )
       .filter(isTrashItem);
@@ -1098,6 +1264,11 @@ export class PrismaTrashRepository implements TrashRepository {
         username: true,
         deletedAt: true,
         trashExpiresAt: true,
+        _count: {
+          select: {
+            privateMemoLogs: true,
+          },
+        },
       },
     });
 
@@ -1106,9 +1277,11 @@ export class PrismaTrashRepository implements TrashRepository {
         this.createTrashItem({
           targetType: "CONTACT",
           targetId: contact.id,
+          now: input.now,
           title: contact.username,
           deletedAt: contact.deletedAt,
           trashExpiresAt: contact.trashExpiresAt,
+          hasPrivateMemo: contact._count.privateMemoLogs > 0,
         })
       )
       .filter(isTrashItem);
@@ -1123,6 +1296,11 @@ export class PrismaTrashRepository implements TrashRepository {
         productName: true,
         deletedAt: true,
         trashExpiresAt: true,
+        _count: {
+          select: {
+            privateMemoLogs: true,
+          },
+        },
       },
     });
 
@@ -1131,9 +1309,11 @@ export class PrismaTrashRepository implements TrashRepository {
         this.createTrashItem({
           targetType: "PRODUCT",
           targetId: product.id,
+          now: input.now,
           title: product.productName,
           deletedAt: product.deletedAt,
           trashExpiresAt: product.trashExpiresAt,
+          hasPrivateMemo: product._count.privateMemoLogs > 0,
         })
       )
       .filter(isTrashItem);
@@ -1156,6 +1336,7 @@ export class PrismaTrashRepository implements TrashRepository {
         this.createTrashItem({
           targetType: "DEAL",
           targetId: deal.id,
+          now: input.now,
           title: deal.dealName,
           deletedAt: deal.deletedAt,
           trashExpiresAt: deal.trashExpiresAt,
@@ -1181,6 +1362,7 @@ export class PrismaTrashRepository implements TrashRepository {
         this.createTrashItem({
           targetType: "SCHEDULE",
           targetId: schedule.id,
+          now: input.now,
           title: schedule.scheduleTitle,
           deletedAt: schedule.deletedAt,
           trashExpiresAt: schedule.trashExpiresAt,
@@ -1205,6 +1387,7 @@ export class PrismaTrashRepository implements TrashRepository {
         this.createTrashItem({
           targetType: "MEETING_NOTE",
           targetId: meetingNote.id,
+          now: input.now,
           title: meetingNote.title,
           deletedAt: meetingNote.deletedAt,
           trashExpiresAt: meetingNote.trashExpiresAt,
@@ -1237,6 +1420,7 @@ export class PrismaTrashRepository implements TrashRepository {
         this.createTrashItem({
           targetType: "COMPANY_MEMO_LOG",
           targetId: memoLog.id,
+          now: input.now,
           title: this.createMemoTitle(memoLog.memoType, memoLog.memo),
           deletedAt: memoLog.deletedAt,
           trashExpiresAt: memoLog.trashExpiresAt,
@@ -1270,12 +1454,14 @@ export class PrismaTrashRepository implements TrashRepository {
         this.createTrashItem({
           targetType: "COMPANY_PRIVATE_MEMO_LOG",
           targetId: memoLog.id,
+          now: input.now,
           title: "비밀 메모",
           deletedAt: memoLog.deletedAt,
           trashExpiresAt: memoLog.trashExpiresAt,
           parentType: "COMPANY",
           parentId: memoLog.company.id,
           parentTitle: memoLog.company.companyName,
+          hasPrivateMemo: true,
         })
       )
       .filter(isTrashItem);
@@ -1305,6 +1491,7 @@ export class PrismaTrashRepository implements TrashRepository {
         this.createTrashItem({
           targetType: "CONTACT_MEMO_LOG",
           targetId: memoLog.id,
+          now: input.now,
           title: this.createMemoTitle(memoLog.memoType, memoLog.memo),
           deletedAt: memoLog.deletedAt,
           trashExpiresAt: memoLog.trashExpiresAt,
@@ -1338,12 +1525,14 @@ export class PrismaTrashRepository implements TrashRepository {
         this.createTrashItem({
           targetType: "CONTACT_PRIVATE_MEMO_LOG",
           targetId: memoLog.id,
+          now: input.now,
           title: "비밀 메모",
           deletedAt: memoLog.deletedAt,
           trashExpiresAt: memoLog.trashExpiresAt,
           parentType: "CONTACT",
           parentId: memoLog.contact.id,
           parentTitle: memoLog.contact.username,
+          hasPrivateMemo: true,
         })
       )
       .filter(isTrashItem);
@@ -1373,6 +1562,7 @@ export class PrismaTrashRepository implements TrashRepository {
         this.createTrashItem({
           targetType: "PRODUCT_MEMO_LOG",
           targetId: memoLog.id,
+          now: input.now,
           title: this.createMemoTitle(memoLog.memoType, memoLog.memo),
           deletedAt: memoLog.deletedAt,
           trashExpiresAt: memoLog.trashExpiresAt,
@@ -1406,12 +1596,14 @@ export class PrismaTrashRepository implements TrashRepository {
         this.createTrashItem({
           targetType: "PRODUCT_PRIVATE_MEMO_LOG",
           targetId: memoLog.id,
+          now: input.now,
           title: "비밀 메모",
           deletedAt: memoLog.deletedAt,
           trashExpiresAt: memoLog.trashExpiresAt,
           parentType: "PRODUCT",
           parentId: memoLog.product.id,
           parentTitle: memoLog.product.productName,
+          hasPrivateMemo: true,
         })
       )
       .filter(isTrashItem);
@@ -1441,6 +1633,7 @@ export class PrismaTrashRepository implements TrashRepository {
         this.createTrashItem({
           targetType: "DEAL_MEMO_LOG",
           targetId: memoLog.id,
+          now: input.now,
           title: this.createMemoTitle(memoLog.memoType, memoLog.memo),
           deletedAt: memoLog.deletedAt,
           trashExpiresAt: memoLog.trashExpiresAt,
@@ -1475,6 +1668,7 @@ export class PrismaTrashRepository implements TrashRepository {
         this.createTrashItem({
           targetType: "DEAL_FOLLOWING_ACTION_LOG",
           targetId: actionLog.id,
+          now: input.now,
           title: actionLog.followingAction,
           deletedAt: actionLog.deletedAt,
           trashExpiresAt: actionLog.trashExpiresAt,
@@ -1493,9 +1687,6 @@ export class PrismaTrashRepository implements TrashRepository {
       deletedAt: {
         not: null,
       },
-      trashExpiresAt: {
-        gt: input.now,
-      },
     };
   }
 
@@ -1505,12 +1696,22 @@ export class PrismaTrashRepository implements TrashRepository {
       return null;
     }
 
+    const restoreWindow = this.getRestoreWindow(
+      input.trashExpiresAt,
+      input.now
+    );
     const item: TrashItem = {
       targetType: input.targetType,
       targetId: input.targetId,
       title: input.title,
       deletedAt: input.deletedAt,
       trashExpiresAt: input.trashExpiresAt,
+      restoreWindow,
+      canRestore: restoreWindow === "ACTIVE",
+      canRequestRecovery: restoreWindow === "EXPIRED",
+      hasPrivateMemo: input.hasPrivateMemo ?? false,
+      privateMemoIncluded: false,
+      recoveryRequest: null,
     };
 
     if (!input.parentType) {
@@ -1523,6 +1724,131 @@ export class PrismaTrashRepository implements TrashRepository {
       parentId: input.parentId ?? null,
       parentTitle: input.parentTitle ?? null,
     };
+  }
+
+  // 기능 : 목록 page item에 열린 복구 문의 summary를 결합합니다.
+  private async attachRecoveryRequests(
+    userId: string,
+    items: readonly TrashItem[]
+  ): Promise<TrashItem[]> {
+    if (items.length === 0) {
+      return [];
+    }
+
+    const recoveryRequestMap = await this.getOpenRecoveryRequestMap(
+      userId,
+      items
+    );
+
+    return items.map((item) => {
+      const recoveryRequest =
+        recoveryRequestMap.get(this.createRecoveryRequestKey(item)) ?? null;
+
+      return this.withRecoveryRequest(item, recoveryRequest);
+    });
+  }
+
+  // 기능 : 단건 상세 item에 열린 복구 문의 summary를 결합합니다.
+  private async attachDetailRecoveryRequest(
+    userId: string,
+    detail: TrashDetail
+  ): Promise<TrashDetail> {
+    const recoveryRequestMap = await this.getOpenRecoveryRequestMap(userId, [
+      detail,
+    ]);
+    const recoveryRequest =
+      recoveryRequestMap.get(this.createRecoveryRequestKey(detail)) ?? null;
+
+    return this.withRecoveryRequest(detail, recoveryRequest);
+  }
+
+  // 기능 : 지정한 Trash 대상들의 열린 복구 문의를 key map으로 조회합니다.
+  private async getOpenRecoveryRequestMap(
+    userId: string,
+    items: ReadonlyArray<Pick<TrashItem, "targetType" | "targetId">>
+  ): Promise<Map<string, TrashRecoveryRequestSummary>> {
+    const requests = await this.client.trashRecoveryRequest.findMany({
+      where: {
+        userId,
+        status: { in: [...OPEN_RECOVERY_REQUEST_STATUSES] },
+        OR: items.map((item) => ({
+          targetType: item.targetType,
+          targetId: item.targetId,
+        })),
+      },
+      select: {
+        id: true,
+        targetType: true,
+        targetId: true,
+        status: true,
+        createdAt: true,
+      },
+      orderBy: [{ createdAt: "desc" }, { id: "desc" }],
+    });
+
+    const requestMap = new Map<string, TrashRecoveryRequestSummary>();
+
+    for (const request of requests) {
+      const key = this.createRecoveryRequestKey(request);
+
+      if (!requestMap.has(key)) {
+        requestMap.set(key, this.toRecoveryRequestSummary(request));
+      }
+    }
+
+    return requestMap;
+  }
+
+  // 기능 : 복구 요청 summary 유무에 따라 canRequestRecovery 상태를 갱신합니다.
+  private withRecoveryRequest<TItem extends TrashItem | TrashDetail>(
+    item: TItem,
+    recoveryRequest: TrashRecoveryRequestSummary | null
+  ): TItem {
+    return {
+      ...item,
+      recoveryRequest,
+      canRequestRecovery:
+        item.restoreWindow === "EXPIRED" && recoveryRequest === null,
+    } as TItem;
+  }
+
+  // 기능 : Trash 대상 tuple을 복구 요청 조회 key 문자열로 변환합니다.
+  private createRecoveryRequestKey(
+    item: { readonly targetType: string; readonly targetId: string }
+  ): string {
+    return `${item.targetType}:${item.targetId}`;
+  }
+
+  // 기능 : Prisma 복구 문의 row를 User/Admin 공통 summary로 변환합니다.
+  private toRecoveryRequestSummary(
+    request: RecoveryRequestRow
+  ): TrashRecoveryRequestSummary {
+    return {
+      id: request.id,
+      status: request.status as TrashRecoveryRequestStatusValue,
+      createdAt: request.createdAt,
+    };
+  }
+
+  // 기능 : Prisma 복구 문의 row를 application service 반환 record로 변환합니다.
+  private toRecoveryRequestRecord(
+    request: RecoveryRequestRow
+  ): TrashRecoveryRequestRecord {
+    return {
+      id: request.id,
+      targetType: request.targetType as TrashTargetType,
+      targetId: request.targetId,
+      status: request.status as TrashRecoveryRequestStatusValue,
+      createdAt: request.createdAt,
+    };
+  }
+
+  // 기능 : 무료 셀프 복구 기간이 남았는지 기준 상태를 계산합니다.
+  private getRestoreWindow(
+    trashExpiresAt: Date,
+    now: Date
+  ): TrashRestoreWindow {
+    return trashExpiresAt.getTime() >= now.getTime() ? "ACTIVE" : "EXPIRED";
   }
 
   // 기능 : 메모 유형과 내용을 이용해 목록 표시용 제목을 만듭니다.
@@ -1890,7 +2216,7 @@ export class PrismaTrashRepository implements TrashRepository {
         not: null,
       },
       trashExpiresAt: {
-        gt: input.now,
+        gte: input.now,
       },
     };
   }

@@ -1,6 +1,7 @@
 import { ConflictException, NotFoundException } from "@nestjs/common";
 import type { ScheduleNotificationReminderUseCase } from "@/modules/notification/application/use-cases/notification-reminder-scheduling.use-cases";
 import type { TrashRepository } from "@/modules/trash/application/ports/trash.repository";
+import { TrashRecoveryRequestNotAllowedBeforeExpiryError } from "@/modules/trash/domain/trash.errors";
 import type { CurrentUserContext } from "@/shared/application/context/current-user.context";
 import type { AppLogger } from "@/shared/infrastructure/logger/app-logger.service";
 import { TrashApplicationService } from "./trash-application.service";
@@ -21,11 +22,22 @@ const PARENT_DELETED_MESSAGE =
 
 // 기능 : TrashApplicationService 테스트용 repository mock을 생성합니다.
 function createRepository(): jest.Mocked<TrashRepository> {
-  return {
+  const repository = {
     listTrash: jest.fn(),
     getTrashDetail: jest.fn(),
     restoreTrashItem: jest.fn(),
+    findRecoveryTarget: jest.fn(),
+    findOpenRecoveryRequest: jest.fn(),
+    createRecoveryRequest: jest.fn(),
+    runInTransaction: jest.fn(),
   };
+
+  repository.runInTransaction.mockImplementation(
+    async (work: (repository: TrashRepository) => Promise<unknown>) =>
+      work(repository)
+  );
+
+  return repository;
 }
 
 describe("TrashApplicationService", () => {
@@ -140,5 +152,103 @@ describe("TrashApplicationService", () => {
       expect.stringContaining("schedule.restored"),
       "TrashApplicationService"
     );
+  });
+
+  it("creates a recovery request only for an expired trash item", async () => {
+    const repository = createRepository();
+    const service = new TrashApplicationService(repository);
+    const deletedAt = new Date("2026-07-20T00:00:00.000Z");
+    const trashExpiresAt = new Date("2026-07-27T00:00:00.000Z");
+    const createdAt = new Date("2026-08-01T00:00:00.000Z");
+
+    repository.findRecoveryTarget.mockResolvedValue({
+      targetType: "COMPANY",
+      targetId: TARGET_ID,
+      titleSnapshot: "만료 회사",
+      deletedAt,
+      trashExpiresAt,
+      restoreWindow: "EXPIRED",
+    });
+    repository.findOpenRecoveryRequest.mockResolvedValue(null);
+    repository.createRecoveryRequest.mockResolvedValue({
+      id: "00000000-0000-4000-8000-000000000401",
+      targetType: "COMPANY",
+      targetId: TARGET_ID,
+      status: "REQUESTED",
+      createdAt,
+    });
+
+    const response = await service.createRecoveryRequest(CURRENT_USER, {
+      targetType: "COMPANY",
+      targetId: TARGET_ID,
+      message: " 복구가 필요해요 ",
+    });
+
+    expect(response.status).toBe("REQUESTED");
+    expect(repository.createRecoveryRequest).toHaveBeenCalledWith({
+      userId: CURRENT_USER.id,
+      targetType: "COMPANY",
+      targetId: TARGET_ID,
+      titleSnapshot: "만료 회사",
+      deletedAt,
+      trashExpiresAt,
+      message: "복구가 필요해요",
+    });
+  });
+
+  it("returns an existing open recovery request for the same trash item", async () => {
+    const repository = createRepository();
+    const service = new TrashApplicationService(repository);
+    const deletedAt = new Date("2026-07-20T00:00:00.000Z");
+    const trashExpiresAt = new Date("2026-07-27T00:00:00.000Z");
+    const createdAt = new Date("2026-08-01T00:00:00.000Z");
+
+    repository.findRecoveryTarget.mockResolvedValue({
+      targetType: "DEAL",
+      targetId: TARGET_ID,
+      titleSnapshot: "만료 딜",
+      deletedAt,
+      trashExpiresAt,
+      restoreWindow: "EXPIRED",
+    });
+    repository.findOpenRecoveryRequest.mockResolvedValue({
+      id: "00000000-0000-4000-8000-000000000402",
+      targetType: "DEAL",
+      targetId: TARGET_ID,
+      status: "REVIEWING",
+      createdAt,
+    });
+
+    const response = await service.createRecoveryRequest(CURRENT_USER, {
+      targetType: "DEAL",
+      targetId: TARGET_ID,
+      message: "중복 문의",
+    });
+
+    expect(response.status).toBe("REVIEWING");
+    expect(repository.createRecoveryRequest).not.toHaveBeenCalled();
+  });
+
+  it("rejects recovery requests before the restore window expires", async () => {
+    const repository = createRepository();
+    const service = new TrashApplicationService(repository);
+
+    repository.findRecoveryTarget.mockResolvedValue({
+      targetType: "PRODUCT",
+      targetId: TARGET_ID,
+      titleSnapshot: "복구 가능 제품",
+      deletedAt: new Date("2026-07-31T00:00:00.000Z"),
+      trashExpiresAt: new Date("2026-08-07T00:00:00.000Z"),
+      restoreWindow: "ACTIVE",
+    });
+
+    await expect(
+      service.createRecoveryRequest(CURRENT_USER, {
+        targetType: "PRODUCT",
+        targetId: TARGET_ID,
+        message: "아직은 문의 불가",
+      })
+    ).rejects.toBeInstanceOf(TrashRecoveryRequestNotAllowedBeforeExpiryError);
+    expect(repository.createRecoveryRequest).not.toHaveBeenCalled();
   });
 });

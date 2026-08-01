@@ -1,6 +1,6 @@
 # G05 Trash Retention Recovery
 
-상태: Ready after G02
+상태: Completed
 목표: Trash 7일 이후 정책을 soft delete 보존 기준으로 확정하고, User Web 복구 문의와 Admin Trash 조회를 만든다.
 
 ## 1. 포함 범위
@@ -172,15 +172,52 @@ pnpm run build
 
 ## 12. Goal 체크리스트
 
-- [ ] Trash 만료 row가 hard delete되지 않는다.
-- [ ] `trashExpiresAt` 의미가 무료 복구 만료로 구현된다.
-- [ ] User Trash 만료 row는 restore disabled다.
-- [ ] User Trash 만료 row에서 복구 문의를 만들 수 있다.
-- [ ] 결제/paywall이 없다.
-- [ ] `TrashRecoveryRequest` schema와 migration이 있다.
-- [ ] private memo 원문이 Trash response에 없다.
-- [ ] Admin Trash summary API가 있다.
-- [ ] Admin Trash records API가 있다.
-- [ ] Admin recovery request queue API가 있다.
-- [ ] Admin Trash 조회 audit가 남는다.
-- [ ] 검증 command 결과를 기록했다.
+- [x] Trash 만료 row가 hard delete되지 않는다.
+- [x] `trashExpiresAt` 의미가 무료 복구 만료로 구현된다.
+- [x] User Trash 만료 row는 restore disabled다.
+- [x] User Trash 만료 row에서 복구 문의를 만들 수 있다.
+- [x] 결제/paywall이 없다.
+- [x] `TrashRecoveryRequest` schema와 migration이 있다.
+- [x] private memo 원문이 Trash response에 없다.
+- [x] Admin Trash summary API가 있다.
+- [x] Admin Trash records API가 있다.
+- [x] Admin recovery request queue API가 있다.
+- [x] Admin Trash 조회 audit가 남는다.
+- [x] 검증 command 결과를 기록했다.
+
+## 12.1 완료 기록
+
+- Backend
+  - User Trash list/detail이 만료 row를 유지해 조회하고 `restoreWindow`, `canRestore`, `canRequestRecovery`, `privateMemoIncluded`, `recoveryRequest`를 반환한다.
+  - `POST /api/trash/recovery-requests` 구현 완료. 만료 row만 허용하고 같은 target의 열린 요청은 기존 요청을 반환한다.
+  - `GET /admin/api/users/:userId/trash-summary`, `GET /admin/api/users/:userId/trash-records`, `GET /admin/api/trash/recovery-requests` 구현 완료.
+  - Admin Trash summary/list/queue 조회는 `ADMIN_TRASH_VIEW` audit를 남긴다.
+- Privacy / Policy
+  - Trash hard delete/purge 구현 없음.
+  - 결제/paywall/구독 연결 구현 없음.
+  - private memo ciphertext/key 원문은 User/Admin Trash response에서 제외한다.
+  - 회의록 본문 원문은 Trash 상세에서 복구 후 확인 안내로 대체한다.
+- DB
+  - `TrashRecoveryRequestStatus` enum과 `TrashRecoveryRequest` model/migration 추가.
+  - 열린 복구 요청 중복 방지를 위한 partial unique index 추가.
+  - 신규 schema와 migration에 기능 주석/SQL COMMENT 추가.
+- Frontend
+  - User Web `/app/trash`에서 만료 row에 `무료 복구 기간이 지났어요` 표시.
+  - 만료 row 복구 버튼 disabled 및 `복구 문의` modal 구현.
+  - 문의 접수 후 목록/상세 cache 갱신과 접수 상태 표시.
+  - Admin Web `/users/:userId/trash` 사용자별 Trash summary/list 구현.
+  - Admin Web `/trash/recovery-requests` 복구 요청 queue 구현.
+- 검증
+  - `cd BE && pnpm run prisma:validate`: 통과.
+  - `cd BE && pnpm run prisma:generate`: 통과.
+  - `cd BE && pnpm run typecheck`: 통과.
+  - `cd BE && pnpm run lint`: 통과.
+  - `cd BE && pnpm run test -- trash`: 통과, 3 suites / 12 tests.
+  - `cd BE && pnpm run test -- admin trash`: 통과, 10 suites / 32 tests. Jest worker 종료 경고가 1회 있었으나 테스트 실패는 없음.
+  - `cd BE && pnpm run build`: 통과.
+  - `cd FE/user-web && pnpm run typecheck`: 통과.
+  - `cd FE/user-web && pnpm run lint`: 통과.
+  - `cd FE/user-web && pnpm run build`: 통과. Vite chunk size warning만 있음.
+  - `cd FE/admin-web && pnpm run typecheck`: 통과.
+  - `cd FE/admin-web && pnpm run lint`: 통과.
+  - `cd FE/admin-web && pnpm run build`: 통과.

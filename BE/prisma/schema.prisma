@@ -380,6 +380,16 @@ enum AdminSensitiveFieldSet {
   TRASH_RECORD_DETAIL
 }
 
+/// 기능 : Trash 복구 요청의 운영 처리 상태를 구분합니다.
+enum TrashRecoveryRequestStatus {
+  REQUESTED
+  REVIEWING
+  WAITING_RECOVERY_POLICY
+  RECOVERY_AVAILABLE
+  REJECTED
+  CLOSED
+}
+
 model User {
   id                   String     @id @default(uuid()) @db.Uuid
   email                String?
@@ -505,6 +515,8 @@ model User {
   adminAuditLogs              AdminAuditLog[]             @relation("AdminAuditActor")
   /// 기능 : 이 사용자가 수행한 Admin 민감 원문 조회 로그 목록입니다.
   adminSensitiveAccessLogs    AdminSensitiveAccessLog[]   @relation("AdminSensitiveAccessActor")
+  /// 기능 : 사용자가 만료된 Trash row에 대해 남긴 복구 요청 목록입니다.
+  trashRecoveryRequests       TrashRecoveryRequest[]
 
   @@index([role])
   @@index([status])
@@ -648,6 +660,40 @@ model AdminSensitiveAccessLog {
   @@index([adminUserId, createdAt])
   @@index([targetUserId, createdAt])
   @@index([targetType, targetId, createdAt])
+}
+
+/// 기능 : 무료 셀프 복구 기간이 지난 Trash row에 대해 사용자가 남긴 복구 요청입니다.
+model TrashRecoveryRequest {
+  /// 기능 : Trash 복구 요청 row의 고유 식별자입니다.
+  id             String                     @id @default(uuid()) @db.Uuid
+  /// 기능 : 복구 요청을 생성한 사용자 ID입니다.
+  userId         String                     @db.Uuid
+  /// 기능 : 복구 요청 대상 Trash targetType 문자열입니다.
+  targetType     String
+  /// 기능 : 복구 요청 대상 record ID입니다.
+  targetId       String                     @db.Uuid
+  /// 기능 : 요청 생성 시점의 표시 제목 snapshot입니다.
+  titleSnapshot  String
+  /// 기능 : 요청 대상 row가 Trash로 이동된 시각 snapshot입니다.
+  deletedAt      DateTime                   @db.Timestamptz(3)
+  /// 기능 : 무료 셀프 복구 가능 기간이 끝난 시각 snapshot입니다.
+  trashExpiresAt DateTime                   @db.Timestamptz(3)
+  /// 기능 : 사용자가 입력한 복구 문의 메시지입니다.
+  message        String                     @db.Text
+  /// 기능 : Admin 운영자가 처리할 복구 요청 상태입니다.
+  status         TrashRecoveryRequestStatus @default(REQUESTED)
+  /// 기능 : 복구 요청 생성 시각입니다.
+  createdAt      DateTime                   @default(now()) @db.Timestamptz(3)
+  /// 기능 : 복구 요청 마지막 수정 시각입니다.
+  updatedAt      DateTime                   @updatedAt @db.Timestamptz(3)
+
+  /// 기능 : 복구 요청을 생성한 사용자입니다.
+  user           User                       @relation(fields: [userId], references: [id], onDelete: Restrict)
+
+  @@index([userId, status, createdAt])
+  @@index([targetType, targetId])
+  @@index([status, createdAt])
+  @@index([createdAt])
 }
 
 /// 기능 : Global B2C 제품 사용 분석을 위한 allowlist 기반 원본 이벤트입니다.

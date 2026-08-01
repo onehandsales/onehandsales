@@ -30,6 +30,20 @@ export type TrashLogTypeFilter =
   | "PRIVATE_MEMO"
   | "FOLLOWING_ACTION";
 export type TrashSort = "RECENT" | "EXPIRES_SOON";
+export type TrashRestoreWindow = "ACTIVE" | "EXPIRED";
+export type TrashRecoveryRequestStatus =
+  | "REQUESTED"
+  | "REVIEWING"
+  | "WAITING_RECOVERY_POLICY"
+  | "RECOVERY_AVAILABLE"
+  | "REJECTED"
+  | "CLOSED";
+
+export interface TrashRecoveryRequestSummary {
+  readonly id: string;
+  readonly status: TrashRecoveryRequestStatus;
+  readonly createdAt: string;
+}
 
 export interface TrashItem {
   readonly targetType: TrashTargetType;
@@ -41,6 +55,12 @@ export interface TrashItem {
   readonly deletedAt: string;
   readonly trashExpiresAt?: string | null;
   readonly permanentDeleteAt?: string | null;
+  readonly restoreWindow: TrashRestoreWindow;
+  readonly canRestore: boolean;
+  readonly canRequestRecovery: boolean;
+  readonly hasPrivateMemo: boolean;
+  readonly privateMemoIncluded: false;
+  readonly recoveryRequest: TrashRecoveryRequestSummary | null;
 }
 
 export interface TrashDetailField {
@@ -57,6 +77,12 @@ export interface TrashDetail {
   readonly parentTitle?: string | null;
   readonly deletedAt: string;
   readonly trashExpiresAt: string;
+  readonly restoreWindow: TrashRestoreWindow;
+  readonly canRestore: boolean;
+  readonly canRequestRecovery: boolean;
+  readonly hasPrivateMemo: boolean;
+  readonly privateMemoIncluded: false;
+  readonly recoveryRequest: TrashRecoveryRequestSummary | null;
   readonly summary: string;
   readonly fields: TrashDetailField[];
   readonly content?: string | null;
@@ -92,4 +118,16 @@ export interface TrashRestoreResponse {
   readonly targetType: TrashTargetType;
   readonly targetId: string;
   readonly restoredAt: string;
+}
+
+export interface CreateTrashRecoveryRequestInput extends TrashTargetInput {
+  readonly message: string;
+}
+
+export interface TrashRecoveryRequestResponse {
+  readonly id: string;
+  readonly targetType: TrashTargetType;
+  readonly targetId: string;
+  readonly status: TrashRecoveryRequestStatus;
+  readonly createdAt: string;
 }

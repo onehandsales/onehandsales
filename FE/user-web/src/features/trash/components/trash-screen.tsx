@@ -9,8 +9,10 @@ import {
   Loader2,
   LockKeyhole,
   MapPin,
+  MessageSquare,
   Package,
   RotateCcw,
+  Send,
   StickyNote,
   Timer,
   Trash2,
@@ -29,7 +31,10 @@ import { ModalShell } from "@/components/ui/modal-shell";
 import { Pagination } from "@/components/ui/pagination";
 import { ListEmptyState } from "@/components/ui/state";
 import { Toast } from "@/components/ui/toast";
-import { useRestoreTrashItemMutation } from "@/features/trash/hooks/use-trash-mutations";
+import {
+  useCreateTrashRecoveryRequestMutation,
+  useRestoreTrashItemMutation,
+} from "@/features/trash/hooks/use-trash-mutations";
 import {
   useTrashDetail,
   useTrashList,
@@ -62,6 +67,8 @@ const TRASH_TABLE_COLUMNS = [
 ] satisfies readonly ResizableTableColumn[];
 const TRASH_TABLE_COLUMNS_STORAGE_KEY = "onehand.table.trash.columns";
 const TRASH_LIST_TABLE_ROW_CLASS_NAME = cn(LIST_TABLE_ROW_CLASS_NAME, "h-12");
+
+type TrashRecoveryDialogTarget = TrashItem | TrashDetail;
 
 const itemKindOptions: readonly {
   readonly value: TrashItemKindFilter;
@@ -199,6 +206,9 @@ export function TrashScreen() {
   const [page, setPage] = useState(1);
   const [notice, setNotice] = useState<string | null>(null);
   const [selectedItem, setSelectedItem] = useState<TrashItem | null>(null);
+  const [recoveryRequestTarget, setRecoveryRequestTarget] =
+    useState<TrashRecoveryDialogTarget | null>(null);
+  const [recoveryMessage, setRecoveryMessage] = useState("");
   const { getHeaderCellResizeProps, tableContainerRef, tableContainerStyle } =
     useResizableTableColumns({
       allowHorizontalOverflow: true,
@@ -215,11 +225,15 @@ export function TrashScreen() {
     sort,
   });
   const restoreMutation = useRestoreTrashItemMutation();
+  const recoveryRequestMutation = useCreateTrashRecoveryRequestMutation();
   const trashList = trashQuery.data;
   const items = useMemo(() => trashList?.items ?? [], [trashList?.items]);
   const totalPages = trashList?.totalPages ?? 1;
   const pendingTargetKey = restoreMutation.isPending
     ? getItemKey(restoreMutation.variables)
+    : null;
+  const pendingRecoveryTargetKey = recoveryRequestMutation.isPending
+    ? getItemKey(recoveryRequestMutation.variables)
     : null;
   const hasFilter =
     itemKind !== "ALL" ||
@@ -255,8 +269,33 @@ export function TrashScreen() {
       targetType: item.targetType,
       targetId: item.targetId,
     });
-      setNotice(`${getDisplayTitle(item)} 항목을 복구했어요.`);
+    setNotice(`${getDisplayTitle(item)} 항목을 복구했어요.`);
     setSelectedItem(null);
+  };
+
+  // 기능 : 복구 문의 modal을 열고 이전 입력/오류 상태를 초기화합니다.
+  const openRecoveryRequestDialog = (item: TrashRecoveryDialogTarget) => {
+    setRecoveryRequestTarget(item);
+    setRecoveryMessage("");
+    recoveryRequestMutation.reset();
+  };
+
+  // 기능 : 만료된 Trash row의 복구 문의 생성을 처리합니다.
+  const onCreateRecoveryRequest = async () => {
+    if (!recoveryRequestTarget) {
+      return;
+    }
+
+    const target = recoveryRequestTarget;
+
+    await recoveryRequestMutation.mutateAsync({
+      targetType: target.targetType,
+      targetId: target.targetId,
+      message: recoveryMessage,
+    });
+    setNotice(`${getDisplayTitle(target)} 복구 문의를 접수했어요.`);
+    setRecoveryRequestTarget(null);
+    setRecoveryMessage("");
   };
 
   return (
@@ -471,19 +510,44 @@ export function TrashScreen() {
       </section>
 
       <TrashDetailDialog
+        isRecoveryRequestPending={
+          selectedItem
+            ? pendingRecoveryTargetKey === getItemKey(selectedItem)
+            : false
+        }
         isRestorePending={
           selectedItem ? pendingTargetKey === getItemKey(selectedItem) : false
         }
         item={selectedItem}
         open={selectedItem !== null}
+        recoveryRequestError={
+          selectedItem ? recoveryRequestMutation.error : null
+        }
         restoreError={selectedItem ? restoreMutation.error : null}
         onOpenChange={(open) => {
           if (!open) {
             restoreMutation.reset();
+            recoveryRequestMutation.reset();
             setSelectedItem(null);
           }
         }}
+        onRequestRecovery={openRecoveryRequestDialog}
         onRestore={(item) => void onRestore(item)}
+      />
+      <TrashRecoveryRequestDialog
+        error={recoveryRequestMutation.error}
+        isPending={recoveryRequestMutation.isPending}
+        message={recoveryMessage}
+        target={recoveryRequestTarget}
+        onMessageChange={setRecoveryMessage}
+        onOpenChange={(open) => {
+          if (!open) {
+            recoveryRequestMutation.reset();
+            setRecoveryRequestTarget(null);
+            setRecoveryMessage("");
+          }
+        }}
+        onSubmit={() => void onCreateRecoveryRequest()}
       />
     </section>
   );
@@ -678,18 +742,24 @@ function TrashMobileCard({
 type TrashDetailDialogProps = {
   readonly open: boolean;
   readonly item: TrashItem | null;
+  readonly isRecoveryRequestPending: boolean;
   readonly isRestorePending: boolean;
+  readonly recoveryRequestError: unknown;
   readonly restoreError: unknown;
   readonly onOpenChange: (open: boolean) => void;
+  readonly onRequestRecovery: (item: TrashRecoveryDialogTarget) => void;
   readonly onRestore: (item: TrashItem) => void;
 };
 
 function TrashDetailDialog({
   open,
   item,
+  isRecoveryRequestPending,
   isRestorePending,
+  recoveryRequestError,
   restoreError,
   onOpenChange,
+  onRequestRecovery,
   onRestore,
 }: TrashDetailDialogProps) {
   const detailInput = item
@@ -697,17 +767,25 @@ function TrashDetailDialog({
     : null;
   const detailQuery = useTrashDetail(detailInput, open && detailInput !== null);
   const detail = detailQuery.data ?? null;
-  const displayItem = detail ?? item;
-  const expiresAt = displayItem ? getTrashExpiresAt(displayItem) : null;
-  const expired = displayItem ? isExpired(displayItem) : false;
-  const remaining = getRemainingState(expiresAt);
-  const restoreErrorMessage = restoreError
-    ? getApiErrorMessage(restoreError)
-    : null;
 
   if (!open || !item) {
     return null;
   }
+
+  const displayItem = detail ?? item;
+  const expiresAt = displayItem ? getTrashExpiresAt(displayItem) : null;
+  const canRestore = displayItem ? getCanRestore(displayItem) : false;
+  const canRequestRecovery = displayItem
+    ? getCanRequestRecovery(displayItem)
+    : false;
+  const recoveryRequest = displayItem?.recoveryRequest ?? null;
+  const remaining = getRemainingState(expiresAt);
+  const restoreErrorMessage = restoreError
+    ? getApiErrorMessage(restoreError)
+    : null;
+  const recoveryRequestErrorMessage = recoveryRequestError
+    ? getApiErrorMessage(recoveryRequestError)
+    : null;
 
   return (
     <ModalShell
@@ -723,8 +801,8 @@ function TrashDetailDialog({
           <button
             aria-label="복구"
             className="inline-flex h-10 items-center justify-center gap-2 rounded-md bg-[#4880EE] px-4 text-sm font-semibold text-white transition hover:bg-[#3B73E4] disabled:cursor-not-allowed disabled:opacity-50"
-            disabled={expired || isRestorePending}
-            onClick={() => onRestore(item)}
+            disabled={!canRestore || isRestorePending}
+            onClick={() => onRestore(displayItem)}
             title="복구"
             type="button"
           >
@@ -735,6 +813,33 @@ function TrashDetailDialog({
             )}
             복구
           </button>
+          {canRequestRecovery ? (
+            <button
+              aria-label="복구 문의"
+              className="inline-flex h-10 items-center justify-center gap-2 rounded-md border border-[#C7D2FE] bg-white px-4 text-sm font-semibold text-[#1D4ED8] transition hover:bg-[#EFF6FF] disabled:cursor-not-allowed disabled:opacity-50"
+              disabled={isRecoveryRequestPending}
+              onClick={() => onRequestRecovery(displayItem)}
+              title="복구 문의"
+              type="button"
+            >
+              {isRecoveryRequestPending ? (
+                <Loader2 className="h-4 w-4 animate-spin" aria-hidden />
+              ) : (
+                <MessageSquare className="h-4 w-4" aria-hidden />
+              )}
+              복구 문의
+            </button>
+          ) : recoveryRequest ? (
+            <button
+              aria-label="문의 접수됨"
+              className="inline-flex h-10 items-center justify-center gap-2 rounded-md border border-[#E5E7EB] bg-[#F8FAFC] px-4 text-sm font-semibold text-[#64748B]"
+              disabled
+              type="button"
+            >
+              <MessageSquare className="h-4 w-4" aria-hidden />
+              문의 접수됨
+            </button>
+          ) : null}
         </>
       }
       open={open}
@@ -749,6 +854,14 @@ function TrashDetailDialog({
             role="alert"
           >
             {restoreErrorMessage}
+          </p>
+        ) : null}
+        {recoveryRequestErrorMessage ? (
+          <p
+            className="rounded-md border border-red-200 bg-red-50 px-3 py-2 text-[12px] font-medium text-red-600"
+            role="alert"
+          >
+            {recoveryRequestErrorMessage}
           </p>
         ) : null}
 
@@ -774,6 +887,96 @@ function TrashDetailDialog({
           <TrashDetailContent detail={detail} remaining={remaining} />
         ) : null}
       </div>
+    </ModalShell>
+  );
+}
+
+type TrashRecoveryRequestDialogProps = {
+  readonly target: TrashRecoveryDialogTarget | null;
+  readonly message: string;
+  readonly isPending: boolean;
+  readonly error: unknown;
+  readonly onMessageChange: (message: string) => void;
+  readonly onOpenChange: (open: boolean) => void;
+  readonly onSubmit: () => void;
+};
+
+// 기능 : 만료 Trash row의 복구 문의 메시지 입력 modal을 렌더링합니다.
+function TrashRecoveryRequestDialog({
+  target,
+  message,
+  isPending,
+  error,
+  onMessageChange,
+  onOpenChange,
+  onSubmit,
+}: TrashRecoveryRequestDialogProps) {
+  const errorMessage = error ? getApiErrorMessage(error) : null;
+  const canSubmit = message.trim().length > 0 && message.trim().length <= 1000;
+
+  return (
+    <ModalShell
+      footer={
+        <>
+          <button
+            className="h-10 rounded-md border px-4 text-sm font-medium hover:bg-muted"
+            disabled={isPending}
+            onClick={() => onOpenChange(false)}
+            type="button"
+          >
+            닫기
+          </button>
+          <button
+            aria-label="복구 문의 접수"
+            className="inline-flex h-10 items-center justify-center gap-2 rounded-md bg-[#4880EE] px-4 text-sm font-semibold text-white transition hover:bg-[#3B73E4] disabled:cursor-not-allowed disabled:opacity-50"
+            disabled={!canSubmit || isPending}
+            onClick={onSubmit}
+            type="button"
+          >
+            {isPending ? (
+              <Loader2 className="h-4 w-4 animate-spin" aria-hidden />
+            ) : (
+              <Send className="h-4 w-4" aria-hidden />
+            )}
+            접수
+          </button>
+        </>
+      }
+      open={target !== null}
+      size="sm"
+      title="복구 문의"
+      onOpenChange={onOpenChange}
+    >
+      {target ? (
+        <div className="grid gap-4">
+          <section className="rounded-lg border border-[#E2E5EC] bg-[#F9FAFB] px-3 py-3">
+            <p className="truncate text-[14px] font-bold text-[#111827]">
+              {getDisplayTitle(target)}
+            </p>
+            <p className="mt-1 text-[12px] font-semibold text-[#C2410C]">
+              무료 복구 기간이 지났어요.
+            </p>
+          </section>
+          <label className="grid gap-2 text-[13px] font-semibold text-[#111827]">
+            문의 내용
+            <textarea
+              className="min-h-[132px] resize-y rounded-md border border-[#D1D5DB] bg-white px-3 py-2 text-[13px] font-medium leading-6 outline-none focus:border-[#4880EE] focus:ring-2 focus:ring-[#D7E3FF]"
+              maxLength={1000}
+              onChange={(event) => onMessageChange(event.target.value)}
+              placeholder="복구가 필요한 이유를 적어 주세요."
+              value={message}
+            />
+          </label>
+          <div className="flex items-center justify-between gap-3 text-[12px]">
+            <span className="font-medium text-[#64748B]">
+              {message.trim().length}/1000
+            </span>
+            {errorMessage ? (
+              <span className="font-semibold text-red-500">{errorMessage}</span>
+            ) : null}
+          </div>
+        </div>
+      ) : null}
     </ModalShell>
   );
 }
@@ -837,6 +1040,14 @@ function TrashDetailContent({
         />
         <TrashDetailMetaRow label="남은 기간" value={remaining.label} />
       </section>
+
+      {detail.restoreWindow === "EXPIRED" ? (
+        <section className="rounded-lg border border-[#FED7AA] bg-[#FFF7ED] px-3 py-3 text-[13px] font-semibold text-[#C2410C]">
+          {detail.recoveryRequest
+            ? "무료 복구 기간이 지났고 복구 문의가 접수돼 있어요."
+            : "무료 복구 기간이 지났어요."}
+        </section>
+      ) : null}
 
       <section className="grid gap-3">
         <h4 className="text-[13px] font-bold text-[#111827]">주요 내용</h4>
@@ -987,17 +1198,47 @@ function getTrashExpiresAt(item: {
   return item.trashExpiresAt ?? item.permanentDeleteAt ?? null;
 }
 
-function isExpired(item: {
+// 기능 : API의 canRestore 값이 없을 때도 만료 시각 기준으로 복구 가능 여부를 계산합니다.
+function getCanRestore(item: {
+  readonly canRestore?: boolean;
   readonly trashExpiresAt?: string | null;
   readonly permanentDeleteAt?: string | null;
 }) {
+  if (typeof item.canRestore === "boolean") {
+    return item.canRestore;
+  }
+
   const expiresAt = getTrashExpiresAt(item);
 
   if (!expiresAt) {
     return false;
   }
 
-  return new Date(expiresAt).getTime() <= Date.now();
+  return new Date(expiresAt).getTime() >= Date.now();
+}
+
+// 기능 : API의 canRequestRecovery 값이 없을 때도 만료 시각 기준으로 문의 가능 여부를 계산합니다.
+function getCanRequestRecovery(item: {
+  readonly canRequestRecovery?: boolean;
+  readonly recoveryRequest?: unknown;
+  readonly trashExpiresAt?: string | null;
+  readonly permanentDeleteAt?: string | null;
+}) {
+  if (typeof item.canRequestRecovery === "boolean") {
+    return item.canRequestRecovery;
+  }
+
+  if (item.recoveryRequest) {
+    return false;
+  }
+
+  const expiresAt = getTrashExpiresAt(item);
+
+  if (!expiresAt) {
+    return false;
+  }
+
+  return new Date(expiresAt).getTime() < Date.now();
 }
 
 type RemainingState = {
@@ -1017,7 +1258,7 @@ function getRemainingState(value: string | null): RemainingState {
   }
 
   if (diffMs <= 0) {
-    return { label: "만료됨", tone: "expired" };
+    return { label: "무료 복구 기간이 지났어요", tone: "expired" };
   }
 
   const hours = Math.ceil(diffMs / (60 * 60 * 1000));

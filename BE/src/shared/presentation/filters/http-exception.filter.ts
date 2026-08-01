@@ -154,6 +154,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
       case "ADMIN_DOMAIN_UNSUPPORTED":
       case "ADMIN_REASON_REQUIRED":
       case "ADMIN_SENSITIVE_FIELDSET_UNSUPPORTED":
+      case "TRASH_TARGET_TYPE_UNSUPPORTED":
         return HttpStatus.BAD_REQUEST;
       case "AUDIO_TOO_LARGE":
         return HttpStatus.PAYLOAD_TOO_LARGE;
@@ -194,7 +195,10 @@ export class HttpExceptionFilter implements ExceptionFilter {
         return HttpStatus.BAD_GATEWAY;
       case "ADMIN_TARGET_NOT_FOUND":
       case "ADMIN_USER_NOT_FOUND":
+      case "TRASH_RECORD_NOT_FOUND":
         return HttpStatus.NOT_FOUND;
+      case "TRASH_RECOVERY_REQUEST_NOT_ALLOWED_BEFORE_EXPIRY":
+        return HttpStatus.CONFLICT;
       case "STT_TRANSCRIPTION_FAILED":
         return HttpStatus.UNPROCESSABLE_ENTITY;
       default:

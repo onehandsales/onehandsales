@@ -151,6 +151,7 @@ function createClientMock() {
     productUserPrivateMemoLog: { groupBy: emptyGroupBy },
     dealFollowingActionLog: { groupBy: emptyGroupBy },
     dealMemoLog: { groupBy: emptyGroupBy },
+    trashRecoveryRequest: { groupBy: emptyGroupBy },
     userActivationSnapshot: {
       findUnique: jest.fn().mockResolvedValue({
         status: "ACTIVATED",

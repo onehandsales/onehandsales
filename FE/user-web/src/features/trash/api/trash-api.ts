@@ -1,8 +1,10 @@
 import type {
+  CreateTrashRecoveryRequestInput,
   TrashDetail,
   ListTrashInput,
   RestoreTrashItemInput,
   TrashListResponse,
+  TrashRecoveryRequestResponse,
   TrashRestoreResponse,
   TrashTargetInput,
 } from "@/features/trash/types/trash";
@@ -63,5 +65,22 @@ export function restoreTrashItem(input: RestoreTrashItemInput) {
       method: "POST",
       body: {},
     }
+  );
+}
+
+// 기능 : 만료된 휴지통 row의 복구 문의 생성 API를 호출합니다.
+export function createTrashRecoveryRequest(
+  input: CreateTrashRecoveryRequestInput,
+) {
+  return apiClient<TrashRecoveryRequestResponse>(
+    "/api/trash/recovery-requests",
+    {
+      method: "POST",
+      body: {
+        targetType: input.targetType,
+        targetId: input.targetId,
+        message: input.message,
+      },
+    },
   );
 }

@@ -67,6 +67,12 @@ export function AdminUserDetailScreen() {
         >
           도메인
         </Link>
+        <Link
+          to={`/users/${normalizedUserId}/trash`}
+          className="inline-flex h-9 items-center rounded-md border px-3 text-sm font-semibold text-muted-foreground hover:bg-muted"
+        >
+          Trash
+        </Link>
       </nav>
 
       {overviewQuery.isLoading ? <DetailLoadingState /> : null}
@@ -162,6 +168,12 @@ function TrashSummaryPanel({
       <Metric label="복구 가능" value={overview.trashSummary.active} />
       <Metric label="만료" value={overview.trashSummary.expired} />
       <Metric label="복구 요청" value={overview.trashSummary.recoveryRequests} />
+      <Link
+        className="inline-flex h-9 items-center justify-center rounded-md border text-sm font-semibold text-primary hover:bg-muted"
+        to={`/users/${overview.id}/trash`}
+      >
+        Trash row 보기
+      </Link>
     </section>
   );
 }

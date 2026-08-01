@@ -7,7 +7,12 @@ import {
 } from "@nestjs/common";
 import { ScheduleNotificationReminderUseCase } from "@/modules/notification/application/use-cases/notification-reminder-scheduling.use-cases";
 import type { CurrentUserContext } from "@/shared/application/context/current-user.context";
+import { ValidationDomainError } from "@/shared/domain/errors/common.errors";
 import { AppLogger } from "@/shared/infrastructure/logger/app-logger.service";
+import {
+  TrashRecoveryRequestNotAllowedBeforeExpiryError,
+  TrashRecordNotFoundError,
+} from "@/modules/trash/domain/trash.errors";
 import {
   TRASH_REPOSITORY,
   type GetTrashDetailInput,
@@ -18,6 +23,13 @@ import {
 } from "../ports/trash.repository";
 
 type ListTrashRequest = Omit<ListTrashInput, "userId" | "now">;
+
+// 역할 : CreateTrashRecoveryRequestCommand 복구 문의 생성 입력을 정의합니다.
+export interface CreateTrashRecoveryRequestCommand {
+  readonly targetType: TrashTargetType;
+  readonly targetId: string;
+  readonly message: string;
+}
 
 // 역할 : TrashApplicationService 휴지통 조회와 복구 use case를 조율합니다.
 @Injectable()
@@ -64,6 +76,53 @@ export class TrashApplicationService {
     }
 
     return detail;
+  }
+
+  // 기능 : 만료된 휴지통 row에 대한 복구 문의를 생성하거나 열린 요청을 반환합니다.
+  async createRecoveryRequest(
+    currentUser: CurrentUserContext,
+    command: CreateTrashRecoveryRequestCommand
+  ) {
+    const now = new Date();
+    const message = this.normalizeRecoveryMessage(command.message);
+
+    // 1. 대상 조회, 만료 검증, 중복 확인, 생성을 하나의 transaction으로 묶는다.
+    return this.trashRepository.runInTransaction(async (repository) => {
+      const target = await repository.findRecoveryTarget({
+        userId: currentUser.id,
+        targetType: command.targetType,
+        targetId: command.targetId,
+        now,
+      });
+
+      if (!target) {
+        throw new TrashRecordNotFoundError();
+      }
+
+      if (target.restoreWindow !== "EXPIRED") {
+        throw new TrashRecoveryRequestNotAllowedBeforeExpiryError();
+      }
+
+      const existingRequest = await repository.findOpenRecoveryRequest({
+        userId: currentUser.id,
+        targetType: command.targetType,
+        targetId: command.targetId,
+      });
+
+      if (existingRequest) {
+        return existingRequest;
+      }
+
+      return repository.createRecoveryRequest({
+        userId: currentUser.id,
+        targetType: target.targetType,
+        targetId: target.targetId,
+        titleSnapshot: target.titleSnapshot,
+        deletedAt: target.deletedAt,
+        trashExpiresAt: target.trashExpiresAt,
+        message,
+      });
+    });
   }
 
   // 기능 : 현재 사용자의 휴지통 단건을 복구합니다.
@@ -114,5 +173,18 @@ export class TrashApplicationService {
     }
 
     return restored;
+  }
+
+  // 기능 : 복구 문의 메시지를 공백 제거 후 저장 가능한 길이로 검증합니다.
+  private normalizeRecoveryMessage(message: string): string {
+    const normalized = message.trim();
+
+    if (normalized.length === 0 || normalized.length > 1000) {
+      throw new ValidationDomainError(
+        "message must be between 1 and 1000 characters"
+      );
+    }
+
+    return normalized;
   }
 }

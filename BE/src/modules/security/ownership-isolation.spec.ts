@@ -1022,6 +1022,12 @@ function createTrashRepository(): TrashRepository {
       title: `${RQA004_A_MARKER} deleted company`,
       deletedAt: CREATED_AT,
       trashExpiresAt: UPDATED_AT,
+      restoreWindow: "ACTIVE",
+      canRestore: true,
+      canRequestRecovery: false,
+      hasPrivateMemo: false,
+      privateMemoIncluded: false,
+      recoveryRequest: null,
     },
     {
       userId: CURRENT_USER_B.id,
@@ -1030,6 +1036,12 @@ function createTrashRepository(): TrashRepository {
       title: `${RQA004_B_MARKER} deleted company`,
       deletedAt: CREATED_AT,
       trashExpiresAt: UPDATED_AT,
+      restoreWindow: "ACTIVE",
+      canRestore: true,
+      canRequestRecovery: false,
+      hasPrivateMemo: false,
+      privateMemoIncluded: false,
+      recoveryRequest: null,
     },
   ];
 
@@ -1059,6 +1071,12 @@ function createTrashRepository(): TrashRepository {
             title: item.title,
             deletedAt: item.deletedAt,
             trashExpiresAt: item.trashExpiresAt,
+            restoreWindow: item.restoreWindow,
+            canRestore: item.canRestore,
+            canRequestRecovery: item.canRequestRecovery,
+            hasPrivateMemo: item.hasPrivateMemo,
+            privateMemoIncluded: item.privateMemoIncluded,
+            recoveryRequest: item.recoveryRequest,
             summary: item.title,
             fields: [{ label: "title", value: item.title }],
           }
@@ -1081,6 +1099,18 @@ function createTrashRepository(): TrashRepository {
             restoredAt: input.now,
           }
         : null;
+    },
+    async findRecoveryTarget() {
+      return null;
+    },
+    async findOpenRecoveryRequest() {
+      return null;
+    },
+    async createRecoveryRequest() {
+      throw new Error("not implemented in ownership isolation fixture");
+    },
+    async runInTransaction(work) {
+      return work(this);
     },
   };
 }

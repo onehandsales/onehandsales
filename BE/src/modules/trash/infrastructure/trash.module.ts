@@ -18,8 +18,9 @@ import { PrismaTrashRepository } from "./persistence/prisma-trash.repository";
     AppLogger,
     {
       provide: TRASH_REPOSITORY,
+      // 기능 : Prisma 서비스로 transaction 가능한 Trash 저장소 구현체를 생성합니다.
       useFactory: (prismaService: PrismaService) =>
-        new PrismaTrashRepository(prismaService),
+        new PrismaTrashRepository(prismaService, prismaService),
       inject: [PrismaService],
     },
   ],

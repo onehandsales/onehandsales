@@ -3,6 +3,7 @@ import {
   NotificationDeliveryChannel,
   Prisma,
   ProductAnalyticsTargetType,
+  TrashRecoveryRequestStatus,
 } from "@prisma/client";
 import {
   AdminUserListSort,
@@ -81,6 +82,12 @@ const zeroTrashSummary: AdminUserTrashSummaryRecord = {
   expired: 0,
   recoveryRequests: 0,
 };
+const OPEN_RECOVERY_REQUEST_STATUSES: readonly TrashRecoveryRequestStatus[] = [
+  TrashRecoveryRequestStatus.REQUESTED,
+  TrashRecoveryRequestStatus.REVIEWING,
+  TrashRecoveryRequestStatus.WAITING_RECOVERY_POLICY,
+  TrashRecoveryRequestStatus.RECOVERY_AVAILABLE,
+];
 
 // 역할 : PrismaAdminUserRepository Admin 사용자 overview read model을 Prisma 조회로 구현합니다.
 export class PrismaAdminUserRepository implements AdminUserRepository {
@@ -396,12 +403,14 @@ export class PrismaAdminUserRepository implements AdminUserRepository {
       return new Map();
     }
 
-    const [activeRows, expiredRows] = await Promise.all([
+    const [activeRows, expiredRows, recoveryRequestRows] = await Promise.all([
       this.countTrashRowsByUserIds(userIds, now, "active"),
       this.countTrashRowsByUserIds(userIds, now, "expired"),
+      this.countOpenRecoveryRequestsByUserIds(userIds),
     ]);
     const activeMap = this.sumCountMaps(activeRows);
     const expiredMap = this.sumCountMaps(expiredRows);
+    const recoveryRequestMap = this.toCountMap(recoveryRequestRows);
 
     return new Map(
       userIds.map((userId) => [
@@ -409,10 +418,29 @@ export class PrismaAdminUserRepository implements AdminUserRepository {
         {
           active: activeMap.get(userId) ?? 0,
           expired: expiredMap.get(userId) ?? 0,
-          recoveryRequests: 0,
+          recoveryRequests: recoveryRequestMap.get(userId) ?? 0,
         },
       ])
     );
+  }
+
+  // 기능 : 사용자 ID별 열린 Trash 복구 요청 수를 aggregate합니다.
+  private async countOpenRecoveryRequestsByUserIds(
+    userIds: readonly string[]
+  ): Promise<UserCountRow[]> {
+    const rows = await this.client.trashRecoveryRequest.groupBy({
+      by: ["userId"],
+      where: {
+        userId: { in: [...userIds] },
+        status: { in: [...OPEN_RECOVERY_REQUEST_STATUSES] },
+      },
+      _count: { _all: true },
+    });
+
+    return rows.map((row) => ({
+      userId: row.userId,
+      _count: { _all: row._count._all },
+    }));
   }
 
   // 기능 : Trash 상태별 soft delete row count map 목록을 생성합니다.

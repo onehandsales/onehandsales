@@ -5,15 +5,19 @@ import { PrismaInfrastructureModule } from "@/shared/infrastructure/prisma/prism
 import { PrismaService } from "@/shared/infrastructure/prisma/prisma.service";
 import { ADMIN_AUDIT_REPOSITORY } from "../application/ports/admin-audit.repository";
 import { ADMIN_DOMAIN_RECORD_REPOSITORY } from "../application/ports/admin-domain-record.repository";
+import { ADMIN_TRASH_REPOSITORY } from "../application/ports/admin-trash.repository";
 import { ADMIN_USER_REPOSITORY } from "../application/ports/admin-user.repository";
 import { AdminAuditApplicationService } from "../application/services/admin-audit-application.service";
 import { AdminDomainRecordApplicationService } from "../application/services/admin-domain-record-application.service";
+import { AdminTrashApplicationService } from "../application/services/admin-trash-application.service";
 import { AdminUserApplicationService } from "../application/services/admin-user-application.service";
 import { AdminAuditController } from "../presentation/http/admin-audit.controller";
 import { AdminDomainRecordController } from "../presentation/http/admin-domain-record.controller";
+import { AdminTrashController } from "../presentation/http/admin-trash.controller";
 import { AdminUserController } from "../presentation/http/admin-user.controller";
 import { PrismaAdminAuditRepository } from "./persistence/prisma-admin-audit.repository";
 import { PrismaAdminDomainRecordRepository } from "./persistence/prisma-admin-domain-record.repository";
+import { PrismaAdminTrashRepository } from "./persistence/prisma-admin-trash.repository";
 import { PrismaAdminUserRepository } from "./persistence/prisma-admin-user.repository";
 
 // 역할 : AdminOperationModule Admin 운영 API controller와 provider 의존성을 조립합니다.
@@ -23,11 +27,13 @@ import { PrismaAdminUserRepository } from "./persistence/prisma-admin-user.repos
     AdminAuditController,
     AdminUserController,
     AdminDomainRecordController,
+    AdminTrashController,
   ],
   providers: [
     AdminAuditApplicationService,
     AdminUserApplicationService,
     AdminDomainRecordApplicationService,
+    AdminTrashApplicationService,
     AppLogger,
     {
       provide: ADMIN_AUDIT_REPOSITORY,
@@ -48,6 +54,13 @@ import { PrismaAdminUserRepository } from "./persistence/prisma-admin-user.repos
       // 기능 : Prisma 서비스로 Admin 도메인 read-only 저장소 구현체를 생성합니다.
       useFactory: (prismaService: PrismaService) =>
         new PrismaAdminDomainRecordRepository(prismaService, prismaService),
+      inject: [PrismaService],
+    },
+    {
+      provide: ADMIN_TRASH_REPOSITORY,
+      // 기능 : Prisma 서비스로 Admin Trash 운영 조회 저장소 구현체를 생성합니다.
+      useFactory: (prismaService: PrismaService) =>
+        new PrismaAdminTrashRepository(prismaService, prismaService),
       inject: [PrismaService],
     },
   ],
