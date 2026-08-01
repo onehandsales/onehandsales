@@ -10,31 +10,26 @@ import type {
 } from "@/modules/admin-operation/application/ports/admin-analytics.repository";
 
 // 역할 : AdminAnalyticsRangeResponse Admin analytics 조회 범위 응답을 정의합니다.
-export interface AdminAnalyticsRangeResponse extends AdminAnalyticsRangeRecord {}
+export type AdminAnalyticsRangeResponse = AdminAnalyticsRangeRecord;
 
 // 역할 : AdminAnalyticsActivationResponse activation 상태 집계 응답을 정의합니다.
-export interface AdminAnalyticsActivationResponse
-  extends AdminAnalyticsActivationRecord {}
+export type AdminAnalyticsActivationResponse = AdminAnalyticsActivationRecord;
 
 // 역할 : AdminAnalyticsRetentionResponse retention cohort 집계 응답을 정의합니다.
-export interface AdminAnalyticsRetentionResponse
-  extends AdminAnalyticsRetentionRecord {}
+export type AdminAnalyticsRetentionResponse = AdminAnalyticsRetentionRecord;
 
 // 역할 : AdminAnalyticsEventCountResponse 제품 분석 event count 응답을 정의합니다.
-export interface AdminAnalyticsEventCountResponse
-  extends AdminAnalyticsEventCountRecord {}
+export type AdminAnalyticsEventCountResponse = AdminAnalyticsEventCountRecord;
 
 // 역할 : AdminAnalyticsRouteViewResponse route view count 응답을 정의합니다.
-export interface AdminAnalyticsRouteViewResponse
-  extends AdminAnalyticsRouteViewRecord {}
+export type AdminAnalyticsRouteViewResponse = AdminAnalyticsRouteViewRecord;
 
 // 역할 : AdminAnalyticsAiUsageResponse AI 사용량과 비용 집계 응답을 정의합니다.
-export interface AdminAnalyticsAiUsageResponse
-  extends AdminAnalyticsAiUsageRecord {}
+export type AdminAnalyticsAiUsageResponse = AdminAnalyticsAiUsageRecord;
 
 // 역할 : AdminAnalyticsMobileFieldUseResponse 10 mobile field-use event 집계 응답을 정의합니다.
-export interface AdminAnalyticsMobileFieldUseResponse
-  extends AdminAnalyticsMobileFieldUseRecord {}
+export type AdminAnalyticsMobileFieldUseResponse =
+  AdminAnalyticsMobileFieldUseRecord;
 
 // 역할 : AdminAnalyticsOverviewResponse Admin analytics overview API 응답을 정의합니다.
 export interface AdminAnalyticsOverviewResponse {

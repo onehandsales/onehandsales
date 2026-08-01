@@ -1,6 +1,6 @@
 # Account Data Request API
 
-상태: Confirmed Planning
+상태: Implemented
 연결 Goal: G08
 소비자: User Web, Admin Web
 
@@ -39,8 +39,16 @@ Business Logic:
 
 1. AuthGuard로 현재 사용자를 확인한다.
 2. open export request가 있으면 중복 생성하지 않는다.
-3. request row를 만든다.
-4. provider raw, token, Admin audit/internal note는 export 대상에서 제외한다.
+3. 만료된 `READY` request는 `EXPIRED`로 전환한 뒤 open request를 판단한다.
+4. request row를 만든다.
+5. provider raw, token, Admin audit/internal note는 export 대상에서 제외한다.
+
+Error:
+
+| 상황 | code | status |
+|---|---|---|
+| `includeSensitive=true` | `DATA_EXPORT_INCLUDE_SENSITIVE_UNSUPPORTED` | 400 |
+| 지원하지 않는 format | `DATA_EXPORT_FORMAT_UNSUPPORTED` | 400 |
 
 ## 2. GET /api/users/me/data-export-requests/:requestId
 
@@ -114,8 +122,15 @@ Business Logic:
 1. confirmText를 정확히 검증한다.
 2. 기존 open deletion request가 있으면 기존 request를 반환한다.
 3. `scheduledDeletionAt = now + 30일`로 저장한다.
-4. 세션 revoke 또는 접근 차단 정책을 G08 구현 시 확정한다.
-5. 일반 Trash row hard delete와 섞지 않는다.
+4. 유예 기간 중 취소 flow를 유지하기 위해 G08에서는 세션 revoke/접근 차단을 적용하지 않는다.
+5. 세션 revoke/접근 차단은 실제 삭제/익명화 job 정책에서 확정한다.
+6. 일반 Trash row hard delete와 섞지 않는다.
+
+Error:
+
+| 상황 | code | status |
+|---|---|---|
+| confirmText 불일치 | `ACCOUNT_DELETION_CONFIRM_TEXT_INVALID` | 400 |
 
 ## 4. POST /api/users/me/account-deletion-requests/:requestId/cancel
 
@@ -131,11 +146,28 @@ Response:
 
 Business Logic:
 
-1. 현재 사용자 소유 request만 취소한다.
-2. `scheduledDeletionAt` 이전 request만 취소할 수 있다.
-3. 이미 processing/completed면 취소할 수 없다.
+1. requestId UUID 형식을 검증한다.
+2. 현재 사용자 소유 request만 취소한다.
+3. `canCancelUntil` 이전 request만 취소할 수 있다.
+4. 이미 processing/completed면 취소할 수 없다.
+
+Error:
+
+| 상황 | code | status |
+|---|---|---|
+| 요청 없음 또는 소유권 없음 | `ACCOUNT_DELETION_REQUEST_NOT_FOUND` | 404 |
+| requestId 형식 오류 | `ACCOUNT_DELETION_REQUEST_ID_INVALID` | 400 |
+| 취소 불가 상태 또는 유예 만료 | `ACCOUNT_DELETION_REQUEST_NOT_CANCELABLE` | 409 |
 
 ## 5. GET /admin/api/account-deletion-requests
+
+Query:
+
+| field | 설명 |
+|---|---|
+| `status` | `REQUESTED`, `CANCELLED`, `PROCESSING`, `COMPLETED`, `ALL` |
+| `cursor` | 이전 응답의 `nextCursor` |
+| `limit` | 기본 30, 최대 100 |
 
 Response:
 
@@ -157,6 +189,14 @@ Response:
 ```
 
 ## 6. GET /admin/api/data-export-requests
+
+Query:
+
+| field | 설명 |
+|---|---|
+| `status` | `REQUESTED`, `PROCESSING`, `READY`, `EXPIRED`, `FAILED`, `ALL` |
+| `cursor` | 이전 응답의 `nextCursor` |
+| `limit` | 기본 30, 최대 100 |
 
 Response:
 
@@ -181,9 +221,9 @@ Response:
 Transaction:
 
 - request 생성/취소: 필요
-- Admin 목록 조회: 없음 또는 audit 기록 transaction 후보
+- Admin 목록 조회: queue 조회와 audit 기록을 같은 transaction으로 묶음
 
 Observability:
 
-- audit log: Admin request queue 조회/상태 변경
+- audit log: Admin request queue 조회
 - redaction: reasonMessage는 log 원문 저장 금지

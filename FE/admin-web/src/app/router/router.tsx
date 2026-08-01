@@ -2,6 +2,7 @@ import { createBrowserRouter, Navigate } from "react-router-dom";
 import { AdminShell } from "@/components/layout/admin-shell";
 import { PlaceholderPage } from "@/components/layout/placeholder-page";
 import { ProtectedAdminRoute } from "@/features/auth";
+import { AccountRequestsPage } from "@/pages/account-requests";
 import { AnalyticsPage } from "@/pages/analytics";
 import { AuditLogsPage } from "@/pages/audit-logs";
 import { LoginPage } from "@/pages/login";
@@ -29,6 +30,7 @@ export const router = createBrowserRouter([
       { path: "users/:userId/domain", element: <UserDomainPage /> },
       { path: "users/:userId/trash", element: <UserTrashPage /> },
       { path: "provider-failures", element: <ProviderFailuresPage /> },
+      { path: "account-requests", element: <AccountRequestsPage /> },
       { path: "trash/recovery-requests", element: <TrashRecoveryRequestsPage /> },
       { path: "organizations", element: <Navigate replace to="/" /> },
       { path: "subscriptions", element: <Navigate replace to="/" /> },

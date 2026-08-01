@@ -5,6 +5,7 @@ import {
 } from "@nestjs/common";
 import { ConfigModule } from "@nestjs/config";
 import { AnalyticsModule } from "./modules/analytics/infrastructure/analytics.module";
+import { AccountRequestModule } from "./modules/account-request/infrastructure/account-request.module";
 import { AdminOperationModule } from "./modules/admin-operation/infrastructure/admin-operation.module";
 import { AuthModule } from "./modules/auth/infrastructure/auth.module";
 import { BusinessCardModule } from "./modules/business-card/infrastructure/business-card.module";
@@ -32,6 +33,7 @@ import { RequestIdMiddleware } from "./shared/presentation/middleware/request-id
       envFilePath: [".env.local", ".env"],
     }),
     AnalyticsModule,
+    AccountRequestModule,
     AdminOperationModule,
     HealthModule,
     AuthModule,

@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import { type FormEvent, useCallback, useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
+import { AccountDataRequestsSettingsSection } from "@/features/account-request";
 import { Toast } from "@/components/ui/toast";
 import { type AppI18nKey, useAppI18n } from "@/features/app-i18n";
 import {
@@ -94,6 +95,7 @@ export function SettingsPage() {
               onSaved={showProfileSavedNotice}
               profile={profileQuery.data ?? null}
             />
+            <AccountDataRequestsSettingsSection onNotice={showTextNotice} />
             <GoogleCalendarSettingsSection onNotice={showTextNotice} />
             <FollowUpDeliverySettingsSection onNotice={showTextNotice} />
           </div>
@@ -643,4 +645,3 @@ function toStatusLabel(status: string, t: (key: AppI18nKey) => string) {
 
   return labelKey ? t(labelKey) : status;
 }
-

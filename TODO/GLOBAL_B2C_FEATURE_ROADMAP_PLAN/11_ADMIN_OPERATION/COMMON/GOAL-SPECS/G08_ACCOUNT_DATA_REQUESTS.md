@@ -1,6 +1,6 @@
 # G08 Account Data Requests
 
-상태: Policy-sensitive
+상태: Implemented
 목표: 사용자 데이터 export 요청과 계정 삭제 요청을 User Web/Admin Web 운영 queue로 만든다.
 
 ## 1. 포함 범위
@@ -102,6 +102,7 @@ Admin Web:
 - user-linked analytics raw event와 user-level snapshot은 실제 삭제 대상이다.
 - export는 provider raw/token/admin audit/internal note를 포함하지 않는다.
 - `includeSensitive=true`는 별도 확인 UI와 Backend validation이 필요하다.
+- G08 구현은 계정 삭제 요청 queue와 취소 flow를 제공하며, 유예 기간 중 세션 revoke/접근 차단은 실제 삭제 job 정책에서 확정한다.
 
 ## 8. User Flow
 
@@ -160,18 +161,32 @@ cd FE/admin-web
 pnpm run build
 ```
 
+실행 결과:
+
+- `cd BE && pnpm run prisma:validate`: pass
+- `cd BE && pnpm run prisma:generate`: pass
+- `cd BE && pnpm run test -- account deletion data-export`: pass, 3 suites / 14 tests
+- `cd BE && pnpm run typecheck`: pass
+- `cd BE && pnpm run lint`: pass
+- `cd FE/user-web && pnpm run build`: pass
+- `cd FE/user-web && pnpm run lint`: pass
+- `cd FE/admin-web && pnpm run build`: pass
+- `cd FE/admin-web && pnpm run lint`: pass
+
+참고: 현재 로컬 Node는 `v22.21.1`이라 package engine `>=24 <25` 경고가 표시된다.
+
 ## 12. Goal 체크리스트
 
-- [ ] `AccountDeletionRequest` schema와 migration이 있다.
-- [ ] `UserDataExportRequest` schema와 migration이 있다.
-- [ ] 신규 Prisma 주석과 migration COMMENT가 있다.
-- [ ] data export 요청 API가 있다.
-- [ ] account deletion 요청 API가 있다.
-- [ ] account deletion 취소 API가 있다.
-- [ ] 30일 유예가 저장된다.
-- [ ] 일반 Trash hard delete 정책과 섞이지 않는다.
-- [ ] provider raw/token/admin audit가 export에 포함되지 않는다.
-- [ ] User Web settings UI가 있다.
-- [ ] Admin Web request queue가 있다.
-- [ ] 결제/구독 문구가 없다.
-- [ ] 검증 command 결과를 기록했다.
+- [x] `AccountDeletionRequest` schema와 migration이 있다.
+- [x] `UserDataExportRequest` schema와 migration이 있다.
+- [x] 신규 Prisma 주석과 migration COMMENT가 있다.
+- [x] data export 요청 API가 있다.
+- [x] account deletion 요청 API가 있다.
+- [x] account deletion 취소 API가 있다.
+- [x] 30일 유예가 저장된다.
+- [x] 일반 Trash hard delete 정책과 섞이지 않는다.
+- [x] provider raw/token/admin audit가 export에 포함되지 않는다.
+- [x] User Web settings UI가 있다.
+- [x] Admin Web request queue가 있다.
+- [x] 결제/구독 문구가 없다.
+- [x] 검증 command 결과를 기록했다.

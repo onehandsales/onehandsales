@@ -86,11 +86,12 @@ Admin provider failure는 safe log read model이다.
 
 1. 사용자가 `/app/settings`에서 삭제 요청을 생성한다.
 2. request row를 만들고 `scheduledDeletionAt=requestedAt+30일`을 저장한다.
-3. 세션 revoke 또는 접근 차단을 적용한다.
-4. 유예 기간 내 취소 API를 제공한다.
-5. 유예 기간 이후 삭제/익명화 job이 실행될 수 있게 한다.
-6. user-linked analytics raw event와 user-level snapshot은 실제 삭제 대상이다.
-7. 법무/보안/결제 예외 보관은 별도 policy로 분리한다.
+3. G08에서는 유예 기간 내 취소를 위해 즉시 세션 revoke/접근 차단을 적용하지 않는다.
+4. 세션 revoke 또는 접근 차단은 실제 삭제/익명화 job 정책에서 확정한다.
+5. 유예 기간 내 취소 API를 제공한다.
+6. 유예 기간 이후 삭제/익명화 job이 실행될 수 있게 한다.
+7. user-linked analytics raw event와 user-level snapshot은 실제 삭제 대상이다.
+8. 법무/보안/결제 예외 보관은 별도 policy로 분리한다.
 
 ## 9. Data Export
 

@@ -158,6 +158,11 @@ export class HttpExceptionFilter implements ExceptionFilter {
       case "ADMIN_REASON_REQUIRED":
       case "ADMIN_SENSITIVE_FIELDSET_UNSUPPORTED":
       case "TRASH_TARGET_TYPE_UNSUPPORTED":
+      case "DATA_EXPORT_REQUEST_ID_INVALID":
+      case "DATA_EXPORT_INCLUDE_SENSITIVE_UNSUPPORTED":
+      case "DATA_EXPORT_FORMAT_UNSUPPORTED":
+      case "ACCOUNT_DELETION_CONFIRM_TEXT_INVALID":
+      case "ACCOUNT_DELETION_REQUEST_ID_INVALID":
         return HttpStatus.BAD_REQUEST;
       case "AUDIO_TOO_LARGE":
         return HttpStatus.PAYLOAD_TOO_LARGE;
@@ -199,8 +204,11 @@ export class HttpExceptionFilter implements ExceptionFilter {
       case "ADMIN_TARGET_NOT_FOUND":
       case "ADMIN_USER_NOT_FOUND":
       case "TRASH_RECORD_NOT_FOUND":
+      case "DATA_EXPORT_REQUEST_NOT_FOUND":
+      case "ACCOUNT_DELETION_REQUEST_NOT_FOUND":
         return HttpStatus.NOT_FOUND;
       case "TRASH_RECOVERY_REQUEST_NOT_ALLOWED_BEFORE_EXPIRY":
+      case "ACCOUNT_DELETION_REQUEST_NOT_CANCELABLE":
         return HttpStatus.CONFLICT;
       case "STT_TRANSCRIPTION_FAILED":
         return HttpStatus.UNPROCESSABLE_ENTITY;
