@@ -7,6 +7,7 @@ import { AnalyticsPage } from "@/pages/analytics";
 import { AuditLogsPage } from "@/pages/audit-logs";
 import { LoginPage } from "@/pages/login";
 import { ProviderFailuresPage } from "@/pages/provider-failures";
+import { SystemPage } from "@/pages/system";
 import { TrashRecoveryRequestsPage } from "@/pages/trash/recovery-requests";
 import { UserDetailPage } from "@/pages/users/detail";
 import { UserDomainPage } from "@/pages/users/domain";
@@ -36,7 +37,7 @@ export const router = createBrowserRouter([
       { path: "subscriptions", element: <Navigate replace to="/" /> },
       { path: "analytics", element: <AnalyticsPage /> },
       { path: "audit-logs", element: <AuditLogsPage /> },
-      { path: "system", element: <Navigate replace to="/" /> },
+      { path: "system", element: <SystemPage /> },
       { path: "support", element: <Navigate replace to="/" /> },
     ],
   },

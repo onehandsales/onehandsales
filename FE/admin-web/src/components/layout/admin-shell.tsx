@@ -4,6 +4,7 @@ import {
   LayoutDashboard,
   ScrollText,
   ServerCrash,
+  ShieldCheck,
   Trash2,
   UsersRound,
 } from "lucide-react";
@@ -17,6 +18,7 @@ const navigationItems = [
   { label: "계정 요청", path: "/account-requests", icon: ClipboardList },
   { label: "Trash 요청", path: "/trash/recovery-requests", icon: Trash2 },
   { label: "감사 로그", path: "/audit-logs", icon: ScrollText },
+  { label: "운영 gate", path: "/system", icon: ShieldCheck },
 ];
 
 // 기능 : Admin Web의 좌측 navigation과 본문 outlet을 렌더링합니다.

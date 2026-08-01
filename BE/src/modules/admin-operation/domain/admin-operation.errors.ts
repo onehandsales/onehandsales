@@ -93,3 +93,39 @@ export class AdminTimezoneInvalidError extends DomainError {
     });
   }
 }
+
+// 역할 : AdminSystemEnvironmentUnsupportedError 운영 gate 대상 환경 검증 오류를 표현합니다.
+export class AdminSystemEnvironmentUnsupportedError extends DomainError {
+  // 기능 : 지원하지 않는 운영 gate environment 입력을 field detail과 함께 반환합니다.
+  constructor() {
+    super(
+      "ADMIN_SYSTEM_ENVIRONMENT_UNSUPPORTED",
+      "지원하지 않는 운영 점검 환경이에요",
+      { field: "environment" }
+    );
+  }
+}
+
+// 역할 : AdminSystemSecretInNoteBlockedError 운영 gate notes secret 의심값 오류를 표현합니다.
+export class AdminSystemSecretInNoteBlockedError extends DomainError {
+  // 기능 : notes에 DB URL, token, secret 의심값이 있을 때 저장을 거부합니다.
+  constructor() {
+    super(
+      "ADMIN_SYSTEM_SECRET_IN_NOTE_BLOCKED",
+      "점검 메모에는 DB URL, token, secret 값을 저장할 수 없어요",
+      { field: "notes" }
+    );
+  }
+}
+
+// 역할 : AdminSystemCheckStatusInvalidError 운영 gate status 검증 오류를 표현합니다.
+export class AdminSystemCheckStatusInvalidError extends DomainError {
+  // 기능 : 전체 또는 항목별 운영 gate status가 allowlist 밖일 때 field detail을 반환합니다.
+  constructor(field: string) {
+    super(
+      "ADMIN_SYSTEM_CHECK_STATUS_INVALID",
+      "점검 상태는 PASS, WARN, FAIL 중 하나여야 해요",
+      { field }
+    );
+  }
+}

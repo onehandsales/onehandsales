@@ -1,6 +1,6 @@
 # Admin System Operation API
 
-상태: Confirmed Planning
+상태: Implemented
 연결 Goal: G09
 소비자: Admin Web
 
@@ -8,7 +8,7 @@
 
 - API 이름: Admin 운영 gate 최신 상태 API
 - API 식별자: `GetLatestAdminOperationCheck`
-- Response: `AdminOperationCheckRunResponse`
+- Response: `AdminOperationCheckRunResponse | null`
 - Status: `200`
 
 Response:
@@ -33,12 +33,21 @@ Response:
 }
 ```
 
+최신 점검 기록이 없으면 body는 `null`이다.
+
 Business Logic:
 
 1. AdminGuard를 확인한다.
 2. 최신 `AdminOperationCheckRun`을 조회한다.
 3. secret, DB URL, token을 반환하지 않는다.
-4. 조회 audit를 남긴다.
+4. `ADMIN_SYSTEM_CHECK_VIEW` audit를 남긴다.
+
+Transaction:
+
+- 필요: 있음
+- 변경 model: `AdminAuditLog`
+- 외부 provider 호출: 없음
+- rollback 범위: latest 조회 audit log
 
 ## 2. POST /admin/api/system/operation-checks
 
@@ -67,6 +76,15 @@ Body:
 }
 ```
 
+Validation:
+
+| field | 허용 값 |
+|---|---|
+| `environment` | `local`, `qa`, `staging`, `production` |
+| `status` | `PASS`, `WARN`, `FAIL` |
+| `items.*` | `PASS`, `WARN`, `FAIL` |
+| `notes` | 2000자 이하, DB URL/token/secret 의심 pattern 금지 |
+
 Business Logic:
 
 1. AdminGuard를 확인한다.
@@ -74,7 +92,7 @@ Business Logic:
 3. DB URL, secret, token 같은 금지 문자열 pattern을 notes에서 차단한다.
 4. `AdminOperationCheckRun`을 생성한다.
 5. `ADMIN_SYSTEM_CHECK_RECORDED` audit를 남긴다.
-6. Admin API가 migrate/seed를 직접 실행하지 않는다.
+6. Admin API가 migrate/seed/backup/restore를 직접 실행하지 않는다.
 
 Transaction:
 

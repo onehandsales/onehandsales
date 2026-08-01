@@ -1,5 +1,6 @@
-import { PlaceholderPage } from "@/components/layout/placeholder-page";
+import { AdminSystemOperationScreen } from "@/features/system-config";
 
+// 기능 : Admin 운영 gate 페이지를 렌더링합니다.
 export function SystemPage() {
-  return <PlaceholderPage title="시스템 설정" />;
+  return <AdminSystemOperationScreen />;
 }

@@ -8,6 +8,7 @@ import { ADMIN_AUDIT_REPOSITORY } from "../application/ports/admin-audit.reposit
 import { ADMIN_ANALYTICS_REPOSITORY } from "../application/ports/admin-analytics.repository";
 import { ADMIN_DOMAIN_RECORD_REPOSITORY } from "../application/ports/admin-domain-record.repository";
 import { ADMIN_PROVIDER_FAILURE_REPOSITORY } from "../application/ports/admin-provider-failure.repository";
+import { ADMIN_SYSTEM_OPERATION_REPOSITORY } from "../application/ports/admin-system-operation.repository";
 import { ADMIN_TRASH_REPOSITORY } from "../application/ports/admin-trash.repository";
 import { ADMIN_USER_REPOSITORY } from "../application/ports/admin-user.repository";
 import { AdminAccountRequestApplicationService } from "../application/services/admin-account-request-application.service";
@@ -15,6 +16,7 @@ import { AdminAuditApplicationService } from "../application/services/admin-audi
 import { AdminAnalyticsApplicationService } from "../application/services/admin-analytics-application.service";
 import { AdminDomainRecordApplicationService } from "../application/services/admin-domain-record-application.service";
 import { AdminProviderFailureApplicationService } from "../application/services/admin-provider-failure-application.service";
+import { AdminSystemOperationApplicationService } from "../application/services/admin-system-operation-application.service";
 import { AdminTrashApplicationService } from "../application/services/admin-trash-application.service";
 import { AdminUserApplicationService } from "../application/services/admin-user-application.service";
 import { AdminAccountRequestController } from "../presentation/http/admin-account-request.controller";
@@ -22,6 +24,7 @@ import { AdminAuditController } from "../presentation/http/admin-audit.controlle
 import { AdminAnalyticsController } from "../presentation/http/admin-analytics.controller";
 import { AdminDomainRecordController } from "../presentation/http/admin-domain-record.controller";
 import { AdminProviderFailureController } from "../presentation/http/admin-provider-failure.controller";
+import { AdminSystemOperationController } from "../presentation/http/admin-system-operation.controller";
 import { AdminTrashController } from "../presentation/http/admin-trash.controller";
 import { AdminUserController } from "../presentation/http/admin-user.controller";
 import { PrismaAdminAccountRequestRepository } from "./persistence/prisma-admin-account-request.repository";
@@ -29,6 +32,7 @@ import { PrismaAdminAuditRepository } from "./persistence/prisma-admin-audit.rep
 import { PrismaAdminAnalyticsRepository } from "./persistence/prisma-admin-analytics.repository";
 import { PrismaAdminDomainRecordRepository } from "./persistence/prisma-admin-domain-record.repository";
 import { PrismaAdminProviderFailureRepository } from "./persistence/prisma-admin-provider-failure.repository";
+import { PrismaAdminSystemOperationRepository } from "./persistence/prisma-admin-system-operation.repository";
 import { PrismaAdminTrashRepository } from "./persistence/prisma-admin-trash.repository";
 import { PrismaAdminUserRepository } from "./persistence/prisma-admin-user.repository";
 
@@ -43,6 +47,7 @@ import { PrismaAdminUserRepository } from "./persistence/prisma-admin-user.repos
     AdminProviderFailureController,
     AdminAnalyticsController,
     AdminAccountRequestController,
+    AdminSystemOperationController,
   ],
   providers: [
     AdminAccountRequestApplicationService,
@@ -52,6 +57,7 @@ import { PrismaAdminUserRepository } from "./persistence/prisma-admin-user.repos
     AdminTrashApplicationService,
     AdminProviderFailureApplicationService,
     AdminAnalyticsApplicationService,
+    AdminSystemOperationApplicationService,
     AppLogger,
     {
       provide: ADMIN_AUDIT_REPOSITORY,
@@ -103,6 +109,16 @@ import { PrismaAdminUserRepository } from "./persistence/prisma-admin-user.repos
       // 기능 : Prisma 서비스로 Admin 계정 데이터 요청 queue 저장소 구현체를 생성합니다.
       useFactory: (prismaService: PrismaService) =>
         new PrismaAdminAccountRequestRepository(
+          prismaService,
+          prismaService
+        ),
+      inject: [PrismaService],
+    },
+    {
+      provide: ADMIN_SYSTEM_OPERATION_REPOSITORY,
+      // 기능 : Prisma 서비스로 Admin 운영 gate 점검 저장소 구현체를 생성합니다.
+      useFactory: (prismaService: PrismaService) =>
+        new PrismaAdminSystemOperationRepository(
           prismaService,
           prismaService
         ),

@@ -15,11 +15,11 @@
 
 ## 2. 현재 상태
 
-- Backend는 `/admin/api/me`만 실제 구현되어 있다.
-- Admin Web은 placeholder/redirect 중심이다.
-- `User.role=ADMIN`은 존재하지만 Admin 운영 감사 로그 table은 없다.
-- `BE/prisma/schema.prisma`에는 핵심 도메인, soft delete, analytics, provider safe log foundation이 있다.
-- `AdminAuditLog`, `AdminSensitiveAccessLog`, `TrashRecoveryRequest`, `AccountDeletionRequest`, `UserDataExportRequest`, `AdminOperationCheckRun`은 아직 없다.
+- Backend는 G02~G09 범위의 Admin 운영 API와 User 영향 API가 구현되어 있다.
+- Admin Web은 사용자/도메인/Trash/provider/analytics/account request/system gate 운영 화면을 제공한다.
+- `User.role=ADMIN`과 Admin 운영 감사 로그 table이 있다.
+- `BE/prisma/schema.prisma`에는 핵심 도메인, soft delete, analytics, provider safe log foundation, 11 Admin 운영 table이 있다.
+- `AdminAuditLog`, `AdminSensitiveAccessLog`, `TrashRecoveryRequest`, `AccountDeletionRequest`, `UserDataExportRequest`, `AdminOperationCheckRun`은 schema와 migration이 있다.
 - Trash는 `deletedAt`, `deletedByUserId`, `trashExpiresAt` 기반 soft delete 구조가 이미 있다.
 - 10번 Mobile/PWA와 충돌하지 않도록 BusinessCard OCR safe failure field는 현재 schema의 `BusinessCardScanLog.safeErrorCode`, `safeErrorMessage`, `retryable`를 사용한다.
 - 10번 완료 후 `UserNotificationSetting`, `BrowserPushSubscription`, `NotificationDeliveryAttempt`, `ProductAnalyticsEvent`의 mobile field-use event는 Admin에서 safe summary/aggregate로 조회할 수 있는 기반이 됐다. 단 push endpoint/key/userAgent 원문과 analytics raw payload는 노출하지 않는다.

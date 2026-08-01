@@ -163,6 +163,9 @@ export class HttpExceptionFilter implements ExceptionFilter {
       case "DATA_EXPORT_FORMAT_UNSUPPORTED":
       case "ACCOUNT_DELETION_CONFIRM_TEXT_INVALID":
       case "ACCOUNT_DELETION_REQUEST_ID_INVALID":
+      case "ADMIN_SYSTEM_ENVIRONMENT_UNSUPPORTED":
+      case "ADMIN_SYSTEM_SECRET_IN_NOTE_BLOCKED":
+      case "ADMIN_SYSTEM_CHECK_STATUS_INVALID":
         return HttpStatus.BAD_REQUEST;
       case "AUDIO_TOO_LARGE":
         return HttpStatus.PAYLOAD_TOO_LARGE;

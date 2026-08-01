@@ -407,6 +407,13 @@ enum UserDataExportRequestStatus {
   FAILED
 }
 
+/// 기능 : Admin 운영 gate 점검 결과 상태를 구분합니다.
+enum AdminOperationCheckRunStatus {
+  PASS
+  WARN
+  FAIL
+}
+
 model User {
   id                   String     @id @default(uuid()) @db.Uuid
   email                String?
@@ -538,6 +545,8 @@ model User {
   accountDeletionRequests     AccountDeletionRequest[]
   /// 기능 : 사용자가 요청한 본인 데이터 export queue 목록입니다.
   dataExportRequests          UserDataExportRequest[]
+  /// 기능 : 이 관리자가 기록한 운영 gate 점검 기록 목록입니다.
+  adminOperationCheckRuns     AdminOperationCheckRun[]
 
   @@index([role])
   @@index([status])
@@ -791,6 +800,33 @@ model UserDataExportRequest {
   @@index([status, requestedAt])
   @@index([expiresAt])
   @@index([createdAt])
+}
+
+/// 기능 : Admin이 기록한 DB/migration/backup/restore/provider smoke 운영 gate 점검 row입니다.
+model AdminOperationCheckRun {
+  /// 기능 : 운영 gate 점검 기록 row의 고유 식별자입니다.
+  id              String                       @id @default(uuid()) @db.Uuid
+  /// 기능 : 점검을 기록한 관리자 사용자 ID입니다.
+  adminUserId     String                       @db.Uuid
+  /// 기능 : 점검 대상 환경입니다. 예: local, qa, staging, production.
+  environment     String
+  /// 기능 : 전체 운영 gate 점검 결과입니다.
+  status          AdminOperationCheckRunStatus
+  /// 기능 : prisma validate/generate, migration, seed, backup, restore, provider smoke 결과 JSON입니다. secret은 저장하지 않습니다.
+  itemsJson       Json                         @default("{}")
+  /// 기능 : 운영자가 남긴 점검 메모입니다. DB URL, token, secret 저장은 validation으로 차단합니다.
+  notes           String?                      @db.Text
+  /// 기능 : 점검 기준 시각입니다.
+  checkedAt       DateTime                     @default(now()) @db.Timestamptz(3)
+  /// 기능 : 점검 기록 row 생성 시각입니다.
+  createdAt       DateTime                     @default(now()) @db.Timestamptz(3)
+
+  /// 기능 : 운영 gate 점검을 기록한 관리자 사용자입니다.
+  adminUser       User                         @relation(fields: [adminUserId], references: [id], onDelete: Restrict)
+
+  @@index([environment, checkedAt])
+  @@index([status, checkedAt])
+  @@index([adminUserId, checkedAt])
 }
 
 /// 기능 : Global B2C 제품 사용 분석을 위한 allowlist 기반 원본 이벤트입니다.
