@@ -41,3 +41,13 @@ export class AdminSensitiveFieldSetUnsupportedError extends DomainError {
     );
   }
 }
+
+// 역할 : AdminUserNotFoundError Admin 사용자 overview 대상 없음 오류를 표현합니다.
+export class AdminUserNotFoundError extends DomainError {
+  // 기능 : Admin 사용자 목록/상세/timeline 대상 사용자가 없을 때의 오류를 생성합니다.
+  constructor() {
+    super("ADMIN_USER_NOT_FOUND", "사용자를 찾을 수 없어요", {
+      field: "userId",
+    });
+  }
+}

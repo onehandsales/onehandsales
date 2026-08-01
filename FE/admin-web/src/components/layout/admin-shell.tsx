@@ -1,8 +1,9 @@
-import { LayoutDashboard, ScrollText } from "lucide-react";
+import { LayoutDashboard, ScrollText, UsersRound } from "lucide-react";
 import { NavLink, Outlet } from "react-router-dom";
 
 const navigationItems = [
   { label: "대시보드", path: "/", icon: LayoutDashboard },
+  { label: "사용자", path: "/users", icon: UsersRound },
   { label: "감사 로그", path: "/audit-logs", icon: ScrollText },
 ];
 

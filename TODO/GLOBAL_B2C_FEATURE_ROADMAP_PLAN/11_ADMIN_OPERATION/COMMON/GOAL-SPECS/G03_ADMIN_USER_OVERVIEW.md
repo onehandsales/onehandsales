@@ -1,6 +1,6 @@
 # G03 Admin User Overview
 
-상태: Ready after G02
+상태: Completed
 목표: Admin이 사용자 목록, 사용자 상세 요약, 최근 활동 timeline을 read-only/masked로 볼 수 있게 한다.
 
 ## 1. 포함 범위
@@ -150,18 +150,48 @@ pnpm run build
 
 ## 12. Goal 체크리스트
 
-- [ ] 사용자 목록 API가 있다.
-- [ ] 사용자 상세 요약 API가 있다.
-- [ ] activity timeline API가 있다.
-- [ ] email/displayName은 masked다.
-- [ ] domain count가 userId 기준으로 계산된다.
-- [ ] Trash active/expired count가 있다.
-- [ ] activation/AI usage summary가 있다.
-- [ ] notification/browser push safe summary가 있다.
-- [ ] browser push endpoint/key/userAgent 원문이 response/log에 없다.
-- [ ] 결제/구독 field가 response에 없다.
-- [ ] 사용자 목록/상세 조회 audit가 남는다.
-- [ ] Admin Web `/users` 화면이 있다.
-- [ ] Admin Web `/users/:userId` 화면이 있다.
-- [ ] loading/empty/error 상태가 있다.
-- [ ] 검증 command 결과를 기록했다.
+- [x] 사용자 목록 API가 있다.
+- [x] 사용자 상세 요약 API가 있다.
+- [x] activity timeline API가 있다.
+- [x] email/displayName은 masked다.
+- [x] domain count가 userId 기준으로 계산된다.
+- [x] Trash active/expired count가 있다.
+- [x] activation/AI usage summary가 있다.
+- [x] notification/browser push safe summary가 있다.
+- [x] browser push endpoint/key/userAgent 원문이 response/log에 없다.
+- [x] 결제/구독 field가 response에 없다.
+- [x] 사용자 목록/상세 조회 audit가 남는다.
+- [x] Admin Web `/users` 화면이 있다.
+- [x] Admin Web `/users/:userId` 화면이 있다.
+- [x] loading/empty/error 상태가 있다.
+- [x] 검증 command 결과를 기록했다.
+
+## 13. 완료 기록
+
+- Backend 구현:
+  - `GET /admin/api/users`
+  - `GET /admin/api/users/:userId`
+  - `GET /admin/api/users/:userId/activity-timeline`
+  - 사용자 목록/상세 조회 `AdminAuditLog` 기록
+  - email/displayName masking mapper
+  - domain count, Trash count, activation/AI usage, notification/browser push safe summary
+- Frontend 구현:
+  - Admin Web `/users`
+  - Admin Web `/users/:userId`
+  - 검색/status/country/locale/sort filter
+  - profile/domain/trash/analytics/notification/timeline summary
+- DB 변경:
+  - 신규 schema/migration 없음
+  - 운영/공유 DB migrate/seed 실행 없음
+- Redaction 검토:
+  - browser push endpoint/key/userAgent 원문 select 없음
+  - analytics payload raw dump 없음
+  - provider prompt/raw/token/quota detail response 없음
+  - 결제/구독 field response 없음
+- 검증 command:
+  - `cd BE && pnpm run typecheck` 통과
+  - `cd BE && pnpm run lint` 통과
+  - `cd BE && pnpm run test -- admin user` 통과 (`82 passed`, `430 passed`)
+  - `cd FE/admin-web && pnpm run typecheck` 통과
+  - `cd FE/admin-web && pnpm run lint` 통과
+  - `cd FE/admin-web && pnpm run build` 통과

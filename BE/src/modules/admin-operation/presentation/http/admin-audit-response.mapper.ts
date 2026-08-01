@@ -10,6 +10,7 @@ import type {
   AdminSensitiveAccessRecord,
   AdminSensitiveRawDataRecord,
 } from "@/modules/admin-operation/application/ports/admin-audit.repository";
+import { maskEmail } from "./admin-redaction.mapper";
 
 const REASON_PREVIEW_MAX_LENGTH = 80;
 
@@ -88,23 +89,6 @@ function toAdminAuditLogListItemResponse(
     requestId: item.requestId,
     createdAt: item.createdAt.toISOString(),
   };
-}
-
-// 기능 : email 로컬 파트를 일부만 남긴 masking 문자열을 생성합니다.
-function maskEmail(email: string | null): string | null {
-  if (!email) {
-    return null;
-  }
-
-  const [localPart, domainPart] = email.split("@");
-
-  if (!localPart || !domainPart) {
-    return "****";
-  }
-
-  const visiblePrefix = localPart.slice(0, Math.min(2, localPart.length));
-
-  return `${visiblePrefix}***@${domainPart}`;
 }
 
 // 기능 : 감사 로그 목록에서 사용할 짧은 사유 preview를 생성합니다.

@@ -192,6 +192,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
       case "MeetingNoteAiDraftFailed":
         return HttpStatus.BAD_GATEWAY;
       case "ADMIN_TARGET_NOT_FOUND":
+      case "ADMIN_USER_NOT_FOUND":
         return HttpStatus.NOT_FOUND;
       case "STT_TRANSCRIPTION_FAILED":
         return HttpStatus.UNPROCESSABLE_ENTITY;
