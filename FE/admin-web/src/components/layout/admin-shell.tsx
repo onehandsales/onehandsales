@@ -1,9 +1,16 @@
-import { LayoutDashboard, ScrollText, Trash2, UsersRound } from "lucide-react";
+import {
+  LayoutDashboard,
+  ScrollText,
+  ServerCrash,
+  Trash2,
+  UsersRound,
+} from "lucide-react";
 import { NavLink, Outlet } from "react-router-dom";
 
 const navigationItems = [
   { label: "대시보드", path: "/", icon: LayoutDashboard },
   { label: "사용자", path: "/users", icon: UsersRound },
+  { label: "Provider 실패", path: "/provider-failures", icon: ServerCrash },
   { label: "Trash 요청", path: "/trash/recovery-requests", icon: Trash2 },
   { label: "감사 로그", path: "/audit-logs", icon: ScrollText },
 ];

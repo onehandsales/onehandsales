@@ -1,6 +1,6 @@
 # Admin Provider Failure API
 
-상태: Confirmed Planning
+상태: Implemented
 연결 Goal: G06
 소비자: Admin Web
 
@@ -17,7 +17,9 @@ Query:
 | Field | Type | Required | Validation |
 |---|---|---|---|
 | `providerType` | string | no | `AI`, `OCR`, `STT`, `CALENDAR`, `PUSH`, `EMAIL`, `SMS` |
+| `featureArea` | string | no | `AI_WEEKLY_REPORT`, `FOLLOW_UP`, `MEETING_NOTE`, `BUSINESS_CARD_SCAN`, `NOTIFICATION`, `CALENDAR_SYNC` |
 | `status` | string | no | `FAILED`, `RETRYABLE`, `ALL` |
+| `retryable` | boolean string | no | `true`, `false` |
 | `userId` | uuid | no | target user |
 | `from` | ISO string | no | UTC |
 | `to` | ISO string | no | UTC |
@@ -52,6 +54,10 @@ Response:
 }
 ```
 
+Response field note:
+
+- `status`: `FAILED`, `PENDING`, `CANCELED`
+
 Business Logic:
 
 1. 기존 safe provider log source를 union read model로 조회한다.
@@ -60,6 +66,8 @@ Business Logic:
 4. provider raw response, prompt, token, quota detail은 조회하지 않는다.
 5. browser push failure라도 endpointHash, endpointCiphertext, p256dh/auth ciphertext, userAgent 원문은 조회하지 않는다.
 6. 목록 조회 audit를 남긴다.
+7. `AiProviderCallLog`의 `MEETING_NOTE_STT_TRANSCRIPTION`은 `providerType=STT`, 그 외 AI draft/report 호출은 `providerType=AI`로 normalize한다.
+8. `CALENDAR` 상세 ID는 source 구분을 위해 `CALENDAR_CONNECTION:id`, `CALENDAR_SOURCE:id`를 사용한다.
 
 Source mapping:
 
@@ -114,9 +122,10 @@ Business Logic:
 4. safeContext는 PII 최소화 기준으로만 넣는다.
 5. PUSH safeContext에는 endpoint/key/userAgent 원문을 넣지 않는다.
 
-Transaction: audit 기록 포함 시 transaction 후보.
+Transaction: 목록/상세 조회와 audit 기록을 같은 application transaction 안에서 처리한다.
 
 Observability:
 
 - audit log: `ADMIN_PROVIDER_FAILURE_VIEW`
 - redaction: provider raw/prompt/token/quota detail 금지, browser push endpoint/key/userAgent 원문 금지
+- audit metadata: source prefix, provider type, source model, feature area, status, retryable, safe error code만 저장한다.

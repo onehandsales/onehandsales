@@ -1,6 +1,6 @@
 # G06 Provider Failure Operation
 
-상태: Ready after G02
+상태: Completed
 목표: AI/OCR/STT/Calendar/Push/Email/SMS provider 실패를 Admin에서 safe summary/detail로 조회한다.
 
 ## 1. 포함 범위
@@ -31,6 +31,7 @@
 7. browser push failure에서는 endpointHash, endpointCiphertext, p256dh/auth ciphertext, userAgent 원문을 조회하지 않는 select를 만든다.
 8. list/detail API를 만든다.
 9. detail 조회 audit를 남긴다.
+10. 목록 조회 audit를 남긴다.
 
 ## 4. Frontend 작업
 
@@ -81,7 +82,7 @@ GET /admin/api/provider-failures/OCR:business-card-scan-log-id
 - 기존 log source를 공통 DTO로 normalize한다.
 - source ID는 `SOURCE:id` opaque string으로 만든다.
 - source별 select에서 금지 field를 조회하지 않는다.
-- detail 조회는 audit 대상이다.
+- 목록/detail 조회는 audit 대상이다.
 - BusinessCard 관련 DB 변경은 10번 migration을 재사용하고 중복하지 않는다.
 - PUSH failure는 `NotificationDeliveryAttempt` safe field만 사용하고 browser push subscription secret/raw identifier는 사용하지 않는다.
 
@@ -119,28 +120,36 @@ GET /admin/api/provider-failures/OCR:business-card-scan-log-id
 
 ```powershell
 cd BE
-pnpm run typecheck
-pnpm run lint
-pnpm run test -- admin provider
+pnpm run typecheck # pass
+pnpm run lint # pass
+pnpm run test -- admin provider # pass, 17 suites / 51 tests
 ```
 
 ```powershell
 cd FE/admin-web
-pnpm run typecheck
-pnpm run lint
-pnpm run build
+pnpm run typecheck # pass
+pnpm run lint # pass
+pnpm run build # pass
 ```
 
 ## 12. Goal 체크리스트
 
-- [ ] provider failure list API가 있다.
-- [ ] provider failure detail API가 있다.
-- [ ] `AiProviderCallLog`가 연결된다.
-- [ ] `BusinessCardScanLog.safeError*`가 연결된다.
-- [ ] notification/follow-up/calendar safe failure가 연결된다.
-- [ ] browser push endpoint/key/userAgent 원문이 조회되지 않는다.
-- [ ] provider raw/prompt/token/quota detail을 조회하지 않는다.
-- [ ] detail 조회 audit가 남는다.
-- [ ] Admin Web `/provider-failures` 화면이 있다.
-- [ ] retryable/status/provider type filter가 있다.
-- [ ] 검증 command 결과를 기록했다.
+- [x] provider failure list API가 있다.
+- [x] provider failure detail API가 있다.
+- [x] `AiProviderCallLog`가 연결된다.
+- [x] `BusinessCardScanLog.safeError*`가 연결된다.
+- [x] notification/follow-up/calendar safe failure가 연결된다.
+- [x] browser push endpoint/key/userAgent 원문이 조회되지 않는다.
+- [x] provider raw/prompt/token/quota detail을 조회하지 않는다.
+- [x] detail 조회 audit가 남는다.
+- [x] Admin Web `/provider-failures` 화면이 있다.
+- [x] retryable/status/provider type filter가 있다.
+- [x] 검증 command 결과를 기록했다.
+
+## 13. 구현 기록
+
+- Backend: `AdminProviderFailureController`, `AdminProviderFailureApplicationService`, `PrismaAdminProviderFailureRepository`를 추가했다.
+- Backend: `AiProviderCallLog`, `BusinessCardScanLog`, `NotificationDeliveryAttempt`, `FollowUpDeliveryAttempt`, `ExternalCalendarConnection`, `ExternalCalendarSource`를 공통 safe DTO로 normalize했다.
+- Backend: source별 Prisma select에서 provider raw/prompt/token/quota, browser push endpoint/key/userAgent, calendar token/syncToken을 제외하는 테스트를 추가했다.
+- Frontend: Admin Web `/provider-failures` route, table/filter/detail panel, API client, query hook을 추가했다.
+- API: `COMMON/API-SPEC/ADMIN_PROVIDER_FAILURE_API.md`를 implemented 상태로 갱신하고 `featureArea`, `retryable`, calendar source ID prefix 계약을 반영했다.

@@ -4,6 +4,7 @@ import { PlaceholderPage } from "@/components/layout/placeholder-page";
 import { ProtectedAdminRoute } from "@/features/auth";
 import { AuditLogsPage } from "@/pages/audit-logs";
 import { LoginPage } from "@/pages/login";
+import { ProviderFailuresPage } from "@/pages/provider-failures";
 import { TrashRecoveryRequestsPage } from "@/pages/trash/recovery-requests";
 import { UserDetailPage } from "@/pages/users/detail";
 import { UserDomainPage } from "@/pages/users/domain";
@@ -26,6 +27,7 @@ export const router = createBrowserRouter([
       { path: "users/:userId", element: <UserDetailPage /> },
       { path: "users/:userId/domain", element: <UserDomainPage /> },
       { path: "users/:userId/trash", element: <UserTrashPage /> },
+      { path: "provider-failures", element: <ProviderFailuresPage /> },
       { path: "trash/recovery-requests", element: <TrashRecoveryRequestsPage /> },
       { path: "organizations", element: <Navigate replace to="/" /> },
       { path: "subscriptions", element: <Navigate replace to="/" /> },
