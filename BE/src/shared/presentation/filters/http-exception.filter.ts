@@ -91,6 +91,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
       case "Unauthorized":
         return HttpStatus.UNAUTHORIZED;
       case "Forbidden":
+      case "ADMIN_FORBIDDEN":
         return HttpStatus.FORBIDDEN;
       case "AUTH_PROVIDER_EMAIL_REQUIRED":
         return HttpStatus.UNPROCESSABLE_ENTITY;
@@ -150,6 +151,8 @@ export class HttpExceptionFilter implements ExceptionFilter {
       case "ANALYTICS_PAYLOAD_INVALID":
       case "ANALYTICS_PAYLOAD_PII_REJECTED":
       case "ANALYTICS_ROUTE_KEY_UNSUPPORTED":
+      case "ADMIN_REASON_REQUIRED":
+      case "ADMIN_SENSITIVE_FIELDSET_UNSUPPORTED":
         return HttpStatus.BAD_REQUEST;
       case "AUDIO_TOO_LARGE":
         return HttpStatus.PAYLOAD_TOO_LARGE;
@@ -188,6 +191,8 @@ export class HttpExceptionFilter implements ExceptionFilter {
         return HttpStatus.BAD_GATEWAY;
       case "MeetingNoteAiDraftFailed":
         return HttpStatus.BAD_GATEWAY;
+      case "ADMIN_TARGET_NOT_FOUND":
+        return HttpStatus.NOT_FOUND;
       case "STT_TRANSCRIPTION_FAILED":
         return HttpStatus.UNPROCESSABLE_ENTITY;
       default:

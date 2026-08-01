@@ -20,6 +20,16 @@ describe("AdminGuard", () => {
     expect(() => guard.canActivate(createContext("USER"))).toThrow(
       ForbiddenException
     );
+
+    try {
+      guard.canActivate(createContext("USER"));
+    } catch (error) {
+      expect(error).toBeInstanceOf(ForbiddenException);
+      expect((error as ForbiddenException).getResponse()).toEqual({
+        code: "ADMIN_FORBIDDEN",
+        message: "관리자 권한이 필요해요",
+      });
+    }
   });
 });
 
