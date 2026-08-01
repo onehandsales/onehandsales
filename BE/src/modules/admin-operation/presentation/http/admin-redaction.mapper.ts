@@ -33,3 +33,22 @@ export function maskDisplayName(displayName: string | null): string | null {
 
   return `${visiblePrefix}${"*".repeat(maskLength)}`;
 }
+
+// 기능 : 전화번호 숫자 일부만 남긴 masking 문자열을 생성합니다.
+export function maskPhone(phone: string | null): string | null {
+  const normalized = phone?.trim();
+
+  if (!normalized) {
+    return null;
+  }
+
+  const digits = normalized.replace(/\D/g, "");
+
+  if (digits.length <= 4) {
+    return "****";
+  }
+
+  const visibleSuffix = digits.slice(-4);
+
+  return `****-${visibleSuffix}`;
+}

@@ -1,6 +1,6 @@
 # G04 Admin Domain Readonly Tabs
 
-상태: Follow-up
+상태: Completed
 목표: 사용자 상세에서 회사/담당자/제품/딜/일정/회의록/명함/import를 read-only 탭으로 조회한다.
 
 ## 1. 포함 범위
@@ -118,13 +118,43 @@ pnpm run build
 
 ## 12. Goal 체크리스트
 
-- [ ] domain query allowlist가 있다.
-- [ ] userId 소유 조건이 모든 domain 조회에 있다.
-- [ ] private memo 원문이 response에 없다.
-- [ ] meeting note body 원문이 기본 response에 없다.
-- [ ] deleted row include 필터가 있다.
-- [ ] domain records 조회 audit가 남는다.
-- [ ] Admin Web domain tabs가 있다.
-- [ ] detail drawer가 safe field만 표시한다.
-- [ ] 결제/구독 탭이 없다.
-- [ ] 검증 command 결과를 기록했다.
+- [x] domain query allowlist가 있다.
+- [x] userId 소유 조건이 모든 domain 조회에 있다.
+- [x] private memo 원문이 response에 없다.
+- [x] meeting note body 원문이 기본 response에 없다.
+- [x] deleted row include 필터가 있다.
+- [x] domain records 조회 audit가 남는다.
+- [x] Admin Web domain tabs가 있다.
+- [x] detail drawer가 safe field만 표시한다.
+- [x] 결제/구독 탭이 없다.
+- [x] 검증 command 결과를 기록했다.
+
+## 12.1 완료 기록
+
+- Backend
+  - `GET /admin/api/users/:userId/domain-records` 구현 완료.
+  - `COMPANY`, `CONTACT`, `PRODUCT`, `DEAL`, `SCHEDULE`, `MEETING_NOTE`, `BUSINESS_CARD_SCAN`, `IMPORT_JOB` domain allowlist 구현.
+  - 모든 domain 조회에 `userId` 소유 조건 적용.
+  - `includeDeleted`는 soft delete domain에서 `deletedAt` 필터를 제어한다.
+  - `ADMIN_DOMAIN_RECORDS_VIEW` audit를 목록 조회와 같은 transaction에서 생성한다.
+- Privacy / Redaction
+  - private memo ciphertext/key 원문 select/response 없음.
+  - meeting note `details`, `rawText`, `nextPlan`, `requiredAction` 기본 response 없음.
+  - business card `promptSnapshot`, token, cost 원문 계열 select/response 없음.
+  - 담당자/명함 email/phone은 masked summary로만 응답한다.
+- Frontend
+  - Admin Web `/users/:userId/domain` route 구현.
+  - 사용자 상세에서 Overview/도메인 탭 링크 제공.
+  - domain segmented tabs, filter, cursor pagination, domain별 table column 구현.
+  - detail drawer는 safe summary와 sensitive flags만 표시한다.
+  - 회의록 본문 원문은 G02 `SensitiveRawAccessDialog` reason modal을 통해 별도 raw 결과 modal로만 표시한다.
+- DB
+  - 신규 DB 변경 없음.
+  - migrate/seed 실행 없음.
+- 검증
+  - `cd BE && pnpm run typecheck`: 통과.
+  - `cd BE && pnpm run test -- admin domain`: 통과, 8 suites / 25 tests.
+  - `cd BE && pnpm run lint`: 통과.
+  - `cd FE/admin-web && pnpm run typecheck`: 통과.
+  - `cd FE/admin-web && pnpm run lint`: 통과.
+  - `cd FE/admin-web && pnpm run build`: 통과.

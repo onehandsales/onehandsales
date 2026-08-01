@@ -135,3 +135,59 @@ export type AdminUserActivityTimelineResponse = {
   readonly items: AdminUserActivityTimelineItem[];
   readonly nextCursor: string | null;
 };
+
+// 역할 : AdminDomainRecordDomain Admin 사용자 도메인 탭 값을 정의합니다.
+export type AdminDomainRecordDomain =
+  | "COMPANY"
+  | "CONTACT"
+  | "PRODUCT"
+  | "DEAL"
+  | "SCHEDULE"
+  | "MEETING_NOTE"
+  | "BUSINESS_CARD_SCAN"
+  | "IMPORT_JOB";
+
+// 역할 : AdminDomainRecordSort Admin 사용자 도메인 탭 정렬 값을 정의합니다.
+export type AdminDomainRecordSort =
+  | "createdAt.desc"
+  | "updatedAt.desc"
+  | "deletedAt.desc";
+
+// 역할 : AdminDomainRecordsParams Admin 사용자 도메인 목록 조회 params를 정의합니다.
+export type AdminDomainRecordsParams = {
+  readonly domain: AdminDomainRecordDomain;
+  readonly q?: string;
+  readonly includeDeleted?: boolean;
+  readonly cursor?: string;
+  readonly limit?: number;
+  readonly sort?: AdminDomainRecordSort;
+};
+
+// 역할 : AdminDomainRecordSummary Admin 사용자 도메인 row summary 응답을 정의합니다.
+export type AdminDomainRecordSummary = Record<
+  string,
+  string | number | boolean | null
+>;
+
+// 역할 : AdminDomainRecordSensitiveFlags Admin 사용자 도메인 민감 필드 flag 응답을 정의합니다.
+export type AdminDomainRecordSensitiveFlags = Record<string, boolean>;
+
+// 역할 : AdminDomainRecordItem Admin 사용자 도메인 read-only row 응답을 정의합니다.
+export type AdminDomainRecordItem = {
+  readonly id: string;
+  readonly displayTitle: string;
+  readonly status: "ACTIVE" | "DELETED";
+  readonly summary: AdminDomainRecordSummary;
+  readonly sensitiveFlags: AdminDomainRecordSensitiveFlags;
+  readonly createdAt: string;
+  readonly updatedAt: string;
+  readonly deletedAt: string | null;
+  readonly trashExpiresAt: string | null;
+};
+
+// 역할 : AdminDomainRecordsResponse Admin 사용자 도메인 목록 응답을 정의합니다.
+export type AdminDomainRecordsResponse = {
+  readonly domain: AdminDomainRecordDomain;
+  readonly items: AdminDomainRecordItem[];
+  readonly nextCursor: string | null;
+};

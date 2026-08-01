@@ -1,4 +1,5 @@
 import type {
+  AdminDomainRecordsParams,
   AdminUserActivityTimelineParams,
   AdminUserListParams,
 } from "../types/admin-user";
@@ -12,4 +13,6 @@ export const adminUserKeys = {
   detail: (userId: string) => [...adminUserKeys.all, "detail", userId] as const,
   timeline: (userId: string, params: AdminUserActivityTimelineParams) =>
     [...adminUserKeys.detail(userId), "activity-timeline", params] as const,
+  domainRecords: (userId: string, params: AdminDomainRecordsParams) =>
+    [...adminUserKeys.detail(userId), "domain-records", params] as const,
 };

@@ -42,6 +42,16 @@ export class AdminSensitiveFieldSetUnsupportedError extends DomainError {
   }
 }
 
+// 역할 : AdminDomainUnsupportedError Admin 도메인 탭 미지원 domain 오류를 표현합니다.
+export class AdminDomainUnsupportedError extends DomainError {
+  // 기능 : domain query가 G04 allowlist 밖인 경우 field detail을 포함합니다.
+  constructor() {
+    super("ADMIN_DOMAIN_UNSUPPORTED", "지원하지 않는 도메인 조회예요", {
+      field: "domain",
+    });
+  }
+}
+
 // 역할 : AdminUserNotFoundError Admin 사용자 overview 대상 없음 오류를 표현합니다.
 export class AdminUserNotFoundError extends DomainError {
   // 기능 : Admin 사용자 목록/상세/timeline 대상 사용자가 없을 때의 오류를 생성합니다.

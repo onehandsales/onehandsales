@@ -54,6 +54,21 @@ export function AdminUserDetailScreen() {
         </div>
       </header>
 
+      <nav className="flex flex-wrap items-center gap-2">
+        <Link
+          to={`/users/${normalizedUserId}`}
+          className="inline-flex h-9 items-center rounded-md bg-primary px-3 text-sm font-semibold text-primary-foreground"
+        >
+          Overview
+        </Link>
+        <Link
+          to={`/users/${normalizedUserId}/domain`}
+          className="inline-flex h-9 items-center rounded-md border px-3 text-sm font-semibold text-muted-foreground hover:bg-muted"
+        >
+          도메인
+        </Link>
+      </nav>
+
       {overviewQuery.isLoading ? <DetailLoadingState /> : null}
       {overviewQuery.isError ? (
         <DetailErrorState onRetry={() => void overviewQuery.refetch()} />

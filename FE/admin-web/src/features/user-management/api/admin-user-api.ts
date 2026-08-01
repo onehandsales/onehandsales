@@ -1,5 +1,7 @@
 import { adminApiClient } from "@/lib/admin-api-client";
 import type {
+  AdminDomainRecordsParams,
+  AdminDomainRecordsResponse,
   AdminUserActivityTimelineParams,
   AdminUserActivityTimelineResponse,
   AdminUserListParams,
@@ -37,9 +39,24 @@ export function listAdminUserActivityTimeline(
   );
 }
 
+// 기능 : Admin 사용자 도메인 read-only 목록 API를 호출합니다.
+export function listAdminUserDomainRecords(
+  userId: string,
+  params: AdminDomainRecordsParams
+): Promise<AdminDomainRecordsResponse> {
+  const queryString = toQueryString(params);
+
+  return adminApiClient<AdminDomainRecordsResponse>(
+    `/users/${userId}/domain-records${queryString ? `?${queryString}` : ""}`
+  );
+}
+
 // 기능 : 비어 있지 않은 params를 query string으로 변환합니다.
 function toQueryString(
-  params: AdminUserListParams | AdminUserActivityTimelineParams
+  params:
+    | AdminUserListParams
+    | AdminUserActivityTimelineParams
+    | AdminDomainRecordsParams
 ): string {
   const searchParams = new URLSearchParams();
 

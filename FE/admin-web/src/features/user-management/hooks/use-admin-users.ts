@@ -1,11 +1,13 @@
 import { useQuery } from "@tanstack/react-query";
 import {
   getAdminUserOverview,
+  listAdminUserDomainRecords,
   listAdminUserActivityTimeline,
   listAdminUsers,
 } from "../api/admin-user-api";
 import { adminUserKeys } from "../api/admin-user-keys";
 import type {
+  AdminDomainRecordsParams,
   AdminUserActivityTimelineParams,
   AdminUserListParams,
 } from "../types/admin-user";
@@ -36,5 +38,17 @@ export function useAdminUserActivityTimeline(
     enabled: userId.length > 0,
     queryKey: adminUserKeys.timeline(userId, params),
     queryFn: () => listAdminUserActivityTimeline(userId, params),
+  });
+}
+
+// 기능 : Admin 사용자 도메인 read-only 목록 query를 실행합니다.
+export function useAdminUserDomainRecords(
+  userId: string,
+  params: AdminDomainRecordsParams
+) {
+  return useQuery({
+    enabled: userId.length > 0,
+    queryKey: adminUserKeys.domainRecords(userId, params),
+    queryFn: () => listAdminUserDomainRecords(userId, params),
   });
 }

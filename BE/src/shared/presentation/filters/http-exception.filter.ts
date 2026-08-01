@@ -151,6 +151,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
       case "ANALYTICS_PAYLOAD_INVALID":
       case "ANALYTICS_PAYLOAD_PII_REJECTED":
       case "ANALYTICS_ROUTE_KEY_UNSUPPORTED":
+      case "ADMIN_DOMAIN_UNSUPPORTED":
       case "ADMIN_REASON_REQUIRED":
       case "ADMIN_SENSITIVE_FIELDSET_UNSUPPORTED":
         return HttpStatus.BAD_REQUEST;

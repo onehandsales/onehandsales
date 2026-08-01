@@ -1,6 +1,6 @@
 # Admin Domain Readonly API
 
-상태: Confirmed Planning
+상태: Implemented
 연결 Goal: G04
 소비자: Admin Web
 
