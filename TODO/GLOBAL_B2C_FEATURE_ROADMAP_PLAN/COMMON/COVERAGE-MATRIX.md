@@ -1,6 +1,6 @@
 # Coverage Matrix
 
-상태: Draft / 01~10 Done / 11 Next
+상태: Draft / 01~11 Done / 12 Next
 
 ## 0. 완료 반영
 
@@ -18,6 +18,8 @@
 - [x] 08 `Global Data I18N`: Done (2026-07-28, DB 최신 상태 2026-07-29 재확인)
 - [x] 09 `Product Analytics`: Done (2026-07-30)
 - [x] 10 `Mobile PWA Field Use`: Done (2026-07-31)
+- [x] 11 `Admin Operation`: Done (2026-08-01)
+- [x] `NBA-007`, `NBA-011` Admin/internal 범위, `NBA-012`, `NBA-013`, 11 범위 `NBA-014`: `11_ADMIN_OPERATION`에서 구현 및 QA closeout 완료
 - [x] First-sale gate 반영: `NBA-014`, Product UX gate, Trust/policy gate, `NBA-007`은 `COMMON/FIRST-SALE-GATE-MAP.md`에 선행/횡단 기준으로 고정
 
 ## 1. 목적
@@ -32,10 +34,10 @@
 
 | 분류 | 기능 | 포함 슬롯 | 비고 |
 |---|---|---|---|
-| First-sale gate | DB/Prisma/migration 운영 gate | 선행 gate, 11 | `NBA-014`, `RQA-005` release blocker. 신규 migration goal마다 선행 체크하고 상세 closeout은 11 |
-| First-sale gate | Product UX first-sale QA | 01~10 closeout, 선행 gate | 회사/담당자/제품/딜/일정/회의록/명함/import/search/trash/export 업무 흐름 검토 |
+| First-sale gate | DB/Prisma/migration 운영 gate | 선행 gate, 11 | Done: 신규 migration goal마다 선행 체크했고 11에서 `AdminOperationCheckRun` 기반 운영 점검 기록을 구현했다. 실제 backup/restore 실행은 Admin API가 직접 수행하지 않는다 |
+| First-sale gate | Product UX first-sale QA | 01~11 closeout, 선행 gate | 회사/담당자/제품/딜/일정/회의록/명함/import/search/trash/export/account request 영향 흐름 검토 |
 | First-sale gate | Trust/policy first-sale QA | 03, 11, 12, 선행 gate | 약관, 개인정보, 보안, 환불, 계정 삭제, 데이터 export/delete, retention |
-| First-sale gate | Trash private memo backend response restriction | 11, 선행 gate | `NBA-007`. FE 숨김이 아니라 Backend response 원문 제한 여부를 독립 확인 |
+| First-sale gate | Trash private memo backend response restriction | 11, 선행 gate | Done: `NBA-007`. User/Admin Trash response에서 private memo 원문을 노출하지 않는 계약과 QA 확인 완료 |
 | Import/Data | ImportJob 영속화 | 01 | Done: 확정 전 job, preview row, TTL, resume 구현 완료 |
 | Import/Data | Import 원본/preview 보관 정책 | 01 | Done: 개인정보와 cleanup 기준 포함 |
 | Import/Data | Import/Export 파일 저장 기반 | 01, 후속 별도 결정 | Import 파일은 01 완료. Export job/file은 03에서 제외하고 Trust/policy/Admin gate와 함께 별도 결정 |
@@ -51,7 +53,7 @@
 | Schedule | 일정/회의록 export | 후속 별도 결정 | 03에서 제외. 기존 domain xlsx 이후 확장 여부를 별도 확정 |
 | Schedule | 반복 일정 | 후속 별도 결정 | 03에서 제외. recurrence rule, exception, DST, 알림 재생성, Calendar 연동 영향 검토 후 별도 확정 |
 | Calendar | Google Calendar connect/read-only import | 04 | Done: `NBA-015` 구현 완료. login OAuth와 Calendar scope 분리, primary 기본 선택+추가 calendar 선택, 10분 freshness 자동 sync+수동 sync, source badge, meeting URL, all-day 표시, Schedule soft delete/Trash restore 구현. Google export/write, 양방향 sync, webhook, 반복 일정 정식 모델은 제외 |
-| Calendar | external calendar sync 실패 처리 | 04, 11 | 04 Done: revoked/invalid_grant는 재연결 필요, transient failure는 사용자-facing 실패 표시까지 구현. Admin provider failure log와 운영 추적은 11에서 다룬다 |
+| Calendar | external calendar sync 실패 처리 | 04, 11 | Done: 04에서 사용자-facing 실패 처리, 11에서 Admin provider failure 운영 조회를 구현했다 |
 | AI report | AI 주간 영업 리포트 | 05 | Done: 저장형 AI weekly report와 follow-up delivery 구현 완료 |
 | AI report | AI follow-up/next action/딜 리스크 | 05, 07 | Done subset: 05 follow-up delivery, 07 회의록 next action/follow-up draft. 딜 리스크 고도화는 후속 |
 | AI report | AI 데이터 정리 제안 | 05, 07 | 05/07에서 provider log와 후속 draft 기반은 완료. Import/명함 품질 제안은 후속 |
@@ -77,35 +79,35 @@
 | Global auth | LINE login | 08 | Done for 08 implementation. 2026-07-29 사용자 확인 기준 LINE 운영 설정과 실제 OAuth 동작 완료 |
 | Analytics | Event taxonomy | 09 | Done: `app_route_viewed`, signup, core server action, billing reserved taxonomy 분리 완료 |
 | Analytics | Activation/retention/funnel/churn | 09, 12 | 09 Done: activation/retention snapshot과 runtime funnel foundation 완료. paid conversion/churn runtime source는 12 Billing 구현 후 연결 |
-| Analytics | AI usage/cost/user | 09 | Done: `AiProviderCallLog` 기반 user/day/operation summary foundation 완료. Admin 화면은 11 |
+| Analytics | AI usage/cost/user | 09, 11 | Done: 09 `AiProviderCallLog` 기반 user/day/operation summary foundation 완료, 11 Admin analytics 화면/API 구현 완료 |
 | Growth | paywall/trial/coupon/referral/churn survey 실험 | 09, 12 | 09 Done: reserved event 이름과 runtime 제외 경계 확정. 실제 paywall/billing 적용과 churn survey flow는 12 |
 | Mobile | PWA | 10, 후속 별도 결정 | 10 Done: 모바일 웹 현장 입력성은 완료. manifest/service worker/install/offline shell은 10 1차 제외 범위라 PWA packaging 후속으로 유지 |
 | Mobile | 모바일 명함 촬영 | 10 | Done: `input type=file`, `accept="image/*"`, `capture="environment"` 기반 후면 카메라/앨범 선택, 재촬영/파일 변경/수동 입력 UX 구현 |
-| Mobile | BusinessCard OCR provider failure/error contract | 10, 11 | 10 Done: 사용자 safe `errorCode`, `userMessage`, `retryable` 계약과 DB safe failure field 구현. Admin 운영 추적은 11 |
+| Mobile | BusinessCard OCR provider failure/error contract | 10, 11 | Done: 10 사용자 safe failure 계약과 DB safe failure field 구현, 11 Admin provider failure 운영 조회 구현 |
 | Mobile | 모바일 음성 기록 | 10 | Done: `MediaRecorder` 녹음 UX와 기존 STT draft API 재사용, 음성 파일 fallback 구현 |
 | Mobile | offline draft | 10 | Done: 서버 draft DB 없이 FE local draft 24시간 TTL, 복원/폐기 UX 구현. full offline sync는 후속 |
 | Mobile | iOS/Android native app | 후속 native app roadmap | 10 1차 제외. 현장 사용 지표와 사용자 결정 후 별도 로드맵으로 승격 |
 | Mobile | native push/contact/calendar | 후속 native app roadmap | native app 이후 결정 |
-| Ops/Admin | Admin 사용자/도메인 조회 | 11 | 운영 콘솔 |
-| Ops/Admin | 민감정보 마스킹/원문 조회 사유/audit | 11 | Admin 필수 |
-| Ops/Admin | Trash/삭제 정책 고도화 | 11 | `NBA-012`. 만료, purge, 복구 불가, 유료 복구 후보 |
-| Ops/Admin | Trash private memo backend response restriction | 11 | `NBA-007`. private memo 원문 미노출은 Trash 정책과 별도 보안 체크 |
-| Ops/Admin | 계정 삭제/데이터 삭제 | 11 | trust/policy/API |
-| Ops/Admin | 사용자 데이터 export 정책 | 11, 03 | 정책은 11, 파일 job은 03 |
-| Ops/Admin | 자동 민감정보 감지 | 11 | export/admin/meeting note와 연결 |
-| Ops/Admin | DB/Prisma/migration 운영 gate | 선행 gate, 11 | `NBA-014`. 11 상세 구현 전에도 migration goal마다 체크 |
-| Ops/Admin | backup/restore/장애 대응 | 11 | 운영 신뢰 |
-| Ops/Admin | Provider failure log | 11 | OpenAI/OCR/STT/Calendar/Push |
+| Ops/Admin | Admin 사용자/도메인 조회 | 11 | Done: 사용자 목록/상세, 활동 timeline, 도메인 read-only tab 구현 |
+| Ops/Admin | 민감정보 마스킹/원문 조회 사유/audit | 11 | Done: masking, reason validation, append-only audit/sensitive log 구현 |
+| Ops/Admin | Trash/삭제 정책 고도화 | 11 | Done: `NBA-012`. 만료 row 유지, User 복구 문의, Admin recovery queue 구현. hard delete/purge와 유료 복구 결제는 제외 |
+| Ops/Admin | Trash private memo backend response restriction | 11 | Done: `NBA-007`. private memo 원문 미노출 보안 체크 완료 |
+| Ops/Admin | 계정 삭제/데이터 삭제 | 11 | Done: account deletion/data export request API와 Admin queue 구현 |
+| Ops/Admin | 사용자 데이터 export 정책 | 11, 03 | Done: 요청/운영 queue 정책은 11. 파일 job/대량 export는 후속 별도 결정 |
+| Ops/Admin | 자동 민감정보 감지 | 후속 별도 결정 | 11의 masking/raw access와 별도인 자동 탐지 기능은 아직 계약화하지 않는다 |
+| Ops/Admin | DB/Prisma/migration 운영 gate | 선행 gate, 11 | Done: `NBA-014` 11 system operation gate 구현. 이후 migration goal마다 선행 체크는 유지 |
+| Ops/Admin | backup/restore/장애 대응 | 11 | Done: Admin system gate에서 점검 결과를 기록한다. 실제 backup/restore 실행 runbook은 운영 절차로 별도 관리 |
+| Ops/Admin | Provider failure log | 11 | Done: OpenAI/OCR/STT/Calendar/Push safe summary/detail 운영 조회 구현 |
 | Billing | Pricing/plan/trial | 12 | 첫 판매 전 결정 |
 | Billing | Subscription/entitlement | 12 | plan별 기능/AI 제한 |
 | Billing | Paywall/upgrade flow | 12, 09 | 09에서 reserved taxonomy를 분리했다. 사용자 제한/전환 UX와 실제 billing event 발생은 12 |
 | Billing | AI usage plan/overage | 12, 05, 07, 09 | 09에서 비용 분석 foundation 완료. 제한/과금과 overage 정책은 12 |
 | Billing | Payment provider/webhook | 12 | Merchant of Record 우선, Stripe 직접 결제 2순위 |
-| Billing | Failed payment recovery | 12, 11 | 결제 실패 복구 UX/API는 12, 운영 대응은 11 |
+| Billing | Failed payment recovery | 12 | 결제 실패 복구 UX/API와 운영 대응은 12 Billing 도메인에서 결정 |
 | Billing | Tax/invoice/refund/chargeback | 12 | 국가별 판매 정책 |
 | Billing | Coupon/referral | 12, 09 | 09에서 reserved taxonomy/foundation만 확정했다. 결제 적용과 실험 운영은 12 |
 | Billing | Churn survey/cancel reason | 12, 09 | 09에서 reserved taxonomy/foundation만 확정했다. 해지 flow, survey source, billing-linked churn 분석은 12 이후 연결 |
-| Billing | Billing Admin 연동 | 11, 12 | 화면 운영은 11, 결제 도메인은 12 |
+| Billing | Billing Admin 연동 | 12 | 11 Admin 운영은 결제/구독을 제외했다. Billing Admin 화면/API는 12 결제 도메인과 함께 결정 |
 
 ## 3. 누락 판단 규칙
 

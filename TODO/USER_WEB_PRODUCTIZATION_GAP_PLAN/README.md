@@ -2,7 +2,7 @@
 
 상태: Draft Guide
 작성일: 2026-07-20
-최종 업데이트: 2026-07-31
+최종 업데이트: 2026-08-01
 성격: 제품화 gap 판단 가이드
 
 ## 0. 완료 반영 체크리스트
@@ -26,7 +26,8 @@
 - [x] `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/09_PRODUCT_ANALYTICS` 구현 및 QA closeout
 - [x] Mobile Field Use (`10_MOBILE_PWA_FIELD_USE`)
 - [x] `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/10_MOBILE_PWA_FIELD_USE` 구현 및 QA closeout
-- [ ] Admin 운영 API/화면
+- [x] Admin 운영 API/화면 (`11_ADMIN_OPERATION`)
+- [x] `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/11_ADMIN_OPERATION` 구현 및 QA closeout
 - [ ] 결제/구독/세금
 
 ## 1. 목적
@@ -87,14 +88,14 @@
 - Company/Contact/Product/Deal xlsx export
 - 글로벌 통화/전화번호/회사 지역/주소 및 Import/Export 현지화
 - Product Analytics foundation과 mobile field-use event
+- Admin 운영 API/Web, audit/redaction, provider failure, analytics overview, Trash/account request/system gate
 
 부족한 핵심 축:
 
 - 제품화 수준의 최종 UX/UI 완성도 판단
-- 첫 판매 기준인 Global B2C 유료 판매를 위한 결제/구독, 세금/컴플라이언스, Admin 운영, 정책/신뢰/DB 운영 gate
-- 09에서 닫히지 않은 Admin analytics dashboard와 billing 기반 paid conversion/churn 분석 연결
+- 첫 판매 기준인 Global B2C 유료 판매를 위한 결제/구독, 세금/컴플라이언스, Billing 정책/신뢰 gate
+- billing 기반 paid conversion/churn/ARPU 분석 연결
 - Series A급 고급 리텐션/AI와 native/PWA packaging 고도화
-- Admin 운영 API 같은 후속 기능의 우선순위 확정
 
 ## 3.1 `NBA-015` 반영 기준
 
@@ -113,7 +114,7 @@
 
 - 실제 Google provider smoke는 env 준비 후 운영 확인 단계에서 실행한다.
 - Google export/write, realtime webhook/watch, 반복 일정 정식 모델, 여러 Google 계정 동시 연결은 새 계획 없이는 확장하지 않는다.
-- 첫 판매 전 핵심 gap은 여전히 결제/구독/세금, Admin 운영, 정책/신뢰/DB 운영 gate다. 제품 분석 foundation은 09에서 닫혔고 모바일 현장 입력성은 10에서 닫혔으며, Admin dashboard와 billing conversion/churn 연결은 후속이다.
+- 첫 판매 전 핵심 gap은 결제/구독/세금과 Billing 정책/신뢰 gate다. 제품 분석 foundation은 09에서 닫혔고, 모바일 현장 입력성은 10에서 닫혔으며, Admin 운영과 Admin analytics dashboard는 11에서 닫혔다. billing conversion/churn 연결은 12 후속이다.
 
 ## 3.2 `06_DEAL_ACTIVITY_TIMELINE` 반영 기준
 
@@ -134,8 +135,8 @@
 - 일반 메모와 private memo의 activity 통합 정책
 - 수동 activity 삭제, retention, audit 정책
 - MeetingNote 목록 latest/next summary
-- MeetingNote Admin provider audit, retention/cleanup, raw access policy
-- 첫 판매 전 핵심 gap인 결제/구독/세금, Admin 운영, backup/restore와 운영 DB 적용 절차, 그리고 09 범위 밖에 남은 Admin analytics/Billing conversion 연결
+- MeetingNote Admin provider audit/raw access policy는 11에서 완료. 회의록 목록 summary와 자동 발송/알림은 후속
+- 첫 판매 전 핵심 gap인 결제/구독/세금, Billing conversion 연결, 그리고 backup/restore 실행 runbook과 운영 DB 적용 절차
 
 ## 3.3 `07_MEETING_NOTE_AI_PROVIDER_LOG` 반영 기준
 
@@ -154,7 +155,6 @@
 
 - 회의록 목록 latest/next summary
 - 회의록 follow-up 자동 발송 또는 알림
-- Admin/internal provider audit 조회, raw access reason, retention/cleanup policy
 - 별도 transcript/raw provider response 저장 table
 
 ## 3.4 `08_GLOBAL_DATA_I18N` 반영 기준
@@ -176,7 +176,7 @@
 - 08 DB migration 최신 상태는 2026-07-29 재확인 완료. LINE/Apple provider 설정값 연결과 실제 OAuth 동작도 2026-07-29 사용자 확인 기준 운영 완료
 - 추가 국가/통화/전화번호 포맷, 국가별 세금/약관/가격 정책
 - app i18n legacy static fallback을 직접 translation key로 줄이는 polish
-- 결제/구독, Admin 운영, backup/restore와 장애 대응 기준, 그리고 09 범위 밖에 남은 Admin analytics/Billing conversion 연결
+- 결제/구독, backup/restore 실행 runbook과 장애 대응 기준, 그리고 Billing conversion 연결
 
 ## 3.5 `09_PRODUCT_ANALYTICS` 반영 기준
 
@@ -199,9 +199,9 @@
 
 남은 제품화 gap으로 분리할 범위:
 
-- Admin analytics dashboard/API는 `11_ADMIN_OPERATION` 범위다.
+- Admin analytics dashboard/API는 `11_ADMIN_OPERATION`에서 완료됐다.
 - 실제 paywall, subscription, churn survey, paid conversion source event는 `12_BILLING_SUBSCRIPTION_TAX` 범위다.
-- 모바일 현장 사용 맥락의 세부 event는 10에서 완료됐다. Admin/Billing 연결 분석은 11/12에서 다룬다.
+- 모바일 현장 사용 맥락의 세부 event는 10에서 완료됐다. Admin 분석 화면은 11에서 완료됐고 Billing 연결 분석은 12에서 다룬다.
 
 ## 3.6 `10_MOBILE_PWA_FIELD_USE` 반영 기준
 
@@ -220,8 +220,27 @@
 남은 제품화 gap으로 분리할 범위:
 
 - PWA install prompt/offline shell, full offline sync, iOS/Android native app, native push/contact/calendar
-- Admin provider failure dashboard와 운영 추적
+- Admin provider failure dashboard와 운영 추적은 11에서 완료
 - Marketing opt-in, billing/paywall/churn runtime event
+
+## 3.7 `11_ADMIN_OPERATION` 반영 기준
+
+`TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/11_ADMIN_OPERATION`은 2026-08-01 G10 QA closeout 기준으로 Completed다. 이 제품화 gap 문서에서는 최소 Admin 운영 API/화면을 더 이상 미구현 gap으로 보지 않는다.
+
+완료로 반영할 운영/제품 흐름:
+
+- Admin Web `/users`, `/users/:userId`, `/users/:userId/domain`, `/users/:userId/trash`에서 사용자 상태, 활동, 도메인 데이터, Trash를 read-only/masked 기준으로 본다.
+- Admin Web `/provider-failures`, `/analytics`, `/account-requests`, `/trash/recovery-requests`, `/audit-logs`, `/system`을 운영 화면으로 제공한다.
+- `/admin/api/*`는 AuthGuard/AdminGuard를 통과하고 User Web은 `/admin/api/*`를 호출하지 않는다.
+- 민감 원문 접근은 reason 필수와 append-only audit/sensitive log를 사용한다.
+- User Web `/app/trash`는 만료 row를 유지하고 restore disabled와 복구 문의 흐름을 제공한다.
+- provider raw/prompt/token/quota detail, browser push endpoint/key/userAgent 원문, analytics raw payload, private memo 원문은 Admin/User response/log에 노출하지 않는다.
+
+남은 제품화 gap으로 분리할 범위:
+
+- 결제/구독/plan/payment/invoice/refund/failed payment recovery와 Billing Admin 연동은 `12_BILLING_SUBSCRIPTION_TAX` 범위다.
+- Admin 직접 Trash 복구 실행, 유료 복구 결제, Trash hard delete/purge는 11 범위가 아니다.
+- Admin system gate는 점검 결과 기록용이며, 실제 backup/restore 실행 runbook과 장애 대응 drill은 별도 운영 절차로 남는다.
 
 ## 4. 문서 구성
 
@@ -246,20 +265,20 @@
 
 아래 항목은 이 가이드 작성만으로 바로 구현하지 않는다.
 
-- Notification 확장: 회의록 follow-up 알림, Admin provider failure UI, 실제 SMTP/Web Push provider smoke
-- Admin 운영 API/화면
+- Notification 확장: 회의록 follow-up 알림, 실제 SMTP/Web Push provider smoke
 - 결제/구독
 - AI 주간 영업 리포트, PDF/범용 ExportJob, 반복 일정 같은 주간 일정 보고서 확장
 - 완료된 Google Calendar Integration 범위를 넘어서는 Google Calendar export/write, realtime webhook/watch, 반복 일정, 여러 Google 계정 동시 연결
 - 완료된 MeetingNote AI Provider Log 범위를 넘어서는 회의록 목록 summary, 자동 follow-up 발송/알림, Admin provider audit 조회, 별도 transcript/raw provider response table
 - 완료된 Deal Activity Timeline 범위를 넘어서는 범용 activity bus, Company/Contact/Product latest summary, activity deletion/retention/audit 정책
 - 완료된 Global Data I18N 범위를 넘어서는 신규 국가/통화/provider, `/app` locale prefix, 추가 DB migration 실행
-- 완료된 Product Analytics 범위를 넘어서는 Admin analytics dashboard, billing/paywall/churn runtime event
+- 완료된 Product Analytics/Admin Operation 범위를 넘어서는 billing/paywall/churn runtime event
 - 완료된 Mobile Field Use 범위를 넘어서는 PWA install/offline shell, full offline sync, iOS/Android native app, native push/contact/calendar
+- 완료된 Admin Operation 범위를 넘어서는 Billing Admin 연동, Admin 직접 Trash 복구 실행, 유료 복구 결제, Trash hard delete/purge
 
 위 항목은 제품화 우선순위와 UX/UI 방향을 확정한 뒤 별도 계획에서 다룬다.
 
-단, 결제/구독, Admin 운영, 세금/컴플라이언스, 정책/운영 신뢰는 단순 후순위가 아니다. `09_PRODUCT_ANALYTICS` foundation은 완료됐지만, Admin analytics dashboard와 billing-linked conversion/churn flow는 각각 11/12의 별도 큰 계획으로 다룬다.
+단, 결제/구독, 세금/컴플라이언스, 정책/운영 신뢰는 단순 후순위가 아니다. `09_PRODUCT_ANALYTICS` foundation과 `11_ADMIN_OPERATION` Admin analytics dashboard는 완료됐고, billing-linked conversion/churn flow는 12의 별도 큰 계획으로 다룬다.
 
 ## 7. 관련 문서
 

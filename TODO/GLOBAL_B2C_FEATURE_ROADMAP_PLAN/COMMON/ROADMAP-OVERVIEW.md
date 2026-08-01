@@ -1,6 +1,6 @@
 # Roadmap Overview
 
-상태: Draft / 01~10 Done / 11 Next
+상태: Draft / 01~11 Done / 12 Next
 
 ## 0. 완료 현황
 
@@ -14,7 +14,7 @@
 - [x] `08_GLOBAL_DATA_I18N`: Done (2026-07-28), DB 최신 상태 2026-07-29 재확인. 2026-07-29 사용자 확인 기준 LINE/Apple 운영 설정과 실제 OAuth 동작 완료
 - [x] `09_PRODUCT_ANALYTICS`: Done (2026-07-30), ProductAnalyticsEvent, route/server events, activation/retention snapshot, AI usage summary 구현 및 QA closeout 완료
 - [x] `10_MOBILE_PWA_FIELD_USE`: Done (2026-07-31), 모바일 명함 촬영/OCR safe failure, 회의 녹음, local draft, push permission UX, mobile analytics 구현 및 QA closeout 완료
-- [ ] `11_ADMIN_OPERATION`
+- [x] `11_ADMIN_OPERATION`: Done (2026-08-01), Admin 운영 API/Web, audit/redaction, Trash/account request/provider/system gate, QA closeout 완료
 - [ ] `12_BILLING_SUBSCRIPTION_TAX`
 
 ## 1. 로드맵 기준
@@ -25,7 +25,7 @@
 
 단, 기능 먼저 만든다는 것은 화면만 임시로 붙인다는 뜻이 아니다. 각 기능은 Backend/API/DB/FE 상태 관리가 이후 UX/UI 제품화 QA에서 유지보수 가능한 형태로 남아야 한다.
 
-Product UX first-sale gate는 전체 시각 polish와 다르다. 핵심 `/app` 업무 흐름이 첫 판매 가능한 수준인지 확인하는 gate이며, 01~10 기능 closeout 이후 첫 판매 전 별도로 닫는다.
+Product UX first-sale gate는 전체 시각 polish와 다르다. 핵심 `/app` 업무 흐름이 첫 판매 가능한 수준인지 확인하는 gate이며, 01~11 기능 closeout 이후 첫 판매 전 별도로 닫는다.
 
 제품 방향은 Notion식 작업공간 UX, Attio식 CRM record 관계 UX, 사용자가 설정 없이 바로 쓰는 편의성을 기준으로 한다.
 
@@ -48,7 +48,7 @@ Product UX first-sale gate는 전체 시각 polish와 다르다. 핵심 `/app` �
 | 영업 기록 고도화 | 06~07 | Done: 딜 활동과 회의록 AI 운영 이력을 실제 영업 판단 데이터로 연결 완료 |
 | Global B2C 제품화 | 08~10 | Done: 08 다국가 데이터/앱 다국어 기반, 09 제품 분석 기반, 10 모바일 현장 입력성 완료 |
 | Series A 확장성 | 10 이후 후속 | PWA install/offline shell, native app, native push/contact/calendar는 후속 로드맵으로 유지 |
-| 마지막 운영/판매 묶음 | 11~12 | Admin 운영과 결제/구독/세금 |
+| 마지막 운영/판매 묶음 | 11~12 | Done: 11 Admin 운영 완료. Next: 12 결제/구독/세금 |
 
 ## 3. 기본 순서
 
@@ -62,7 +62,7 @@ Product UX first-sale gate는 전체 시각 polish와 다르다. 핵심 `/app` �
 8. `08_GLOBAL_DATA_I18N` - Done
 9. `09_PRODUCT_ANALYTICS` - Done
 10. `10_MOBILE_PWA_FIELD_USE` - Done
-11. `11_ADMIN_OPERATION` - Next
+11. `11_ADMIN_OPERATION` - Done
 12. `12_BILLING_SUBSCRIPTION_TAX`
 
 ## 4. 선행/횡단 Gate
@@ -72,7 +72,7 @@ Product UX first-sale gate는 전체 시각 polish와 다르다. 핵심 `/app` �
 | Gate | 실행 순서 기준 |
 |---|---|
 | `NBA-014` DB/Prisma 운영 gate | 신규 Prisma migration이 있는 goal 착수 전마다 확인한다. 11까지 미루지 않는다. |
-| Product UX first-sale gate | 01~10 주요 기능 closeout 이후, 첫 판매 전 별도 QA checklist로 닫는다. |
+| Product UX first-sale gate | 01~11 주요 기능 closeout 이후, 첫 판매 전 별도 QA checklist로 닫는다. |
 | Trust/policy first-sale gate | 03/11/12에 흩어진 export/delete/retention/billing/policy를 첫 판매 전 하나의 gate로 닫는다. |
 | `NBA-007` Trash private memo response gate | 11 Trash/삭제 정책의 일부지만 private memo 원문 제한은 독립 보안 체크로 둔다. |
 
@@ -83,7 +83,7 @@ Product UX first-sale gate는 전체 시각 polish와 다르다. 핵심 `/app` �
 - 사용자 결정이 있으면 순서를 바꿀 수 있다.
 - 순서를 바꿀 때는 `COMMON/DECISION-LOG.md`에 이유를 남긴다.
 - 앞 번호 기능의 DB/API가 뒤 번호 기능의 전제가 되면 앞 번호를 먼저 끝낸다.
-- Admin과 결제/구독/세금 상세 구현은 명시적 사용자 결정 전까지 11~12로 유지한다.
+- Admin 운영은 11에서 완료됐고, 결제/구독/세금 상세 구현은 명시적 사용자 결정 전까지 12로 유지한다.
 - 단, `NBA-014` DB/Prisma 운영 gate와 Trust/policy first-sale gate는 11~12 순서를 기다리지 않는다.
 
 ## 6. Coverage 원칙

@@ -1,7 +1,7 @@
 # User Web TODO
 
 상태: Draft
-최종 업데이트: 2026-07-31
+최종 업데이트: 2026-08-01
 
 ## 0. 완료 반영
 
@@ -20,12 +20,16 @@
 - [x] `09_PRODUCT_ANALYTICS`: User Web route analytics wrapper, routeKey mapper, collector API client, analytics E2E 구현 및 QA closeout 완료
 - [x] `NBA-005 BusinessCard provider failure code/message contract`: `/app/business-cards` safe failure/retry/manual input UX 구현 완료
 - [x] `10_MOBILE_PWA_FIELD_USE`: 모바일 명함 촬영, 회의 녹음/fallback, local draft, push permission UX, mobile analytics 구현 및 QA closeout 완료
+- [x] `NBA-007 Trash private memo backend response restriction`: `/app/trash`가 private memo 원문 없이 동작하도록 확인 완료
+- [x] `NBA-012 Trash 7일 이후 복구 정책`: `/app/trash` 만료 row, restore disabled, 복구 문의 UX 구현 완료
+- [x] `NBA-013 Admin 운영 UX/API`: User Web 영향 없음과 `/admin/api/*` 미호출 기준 확인 완료
+- [x] `11_ADMIN_OPERATION`: User Web Trash/account/data request 영향과 `/admin/api/*` 경계 QA closeout 완료
 
 ## 1. 목적
 
 이 문서는 G07에서 분리한 Backend/API 후보가 `FE/user-web`에 미칠 수 있는 영향을 정리한다.
 
-이 문서에서 남은 active User Web 후보는 future API contract가 `confirmed`된 뒤 함께 확인할 client/screen 영향만 기록한다. `NBA-001`, `NBA-002`, `NBA-003` Deal subset, `NBA-004` MeetingNote detail subset, `NBA-005`, `NBA-006`, `NBA-008`, `NBA-009`, `NBA-010`, `NBA-011` provider log subset, `NBA-015`, `08_GLOBAL_DATA_I18N`, `09_PRODUCT_ANALYTICS`, `10_MOBILE_PWA_FIELD_USE`는 별도 계획에서 구현 완료된 이력으로만 남긴다.
+이 문서에서 남은 active User Web 후보는 future API contract가 `confirmed`된 뒤 함께 확인할 client/screen 영향만 기록한다. `NBA-001`, `NBA-002`, `NBA-003` Deal subset, `NBA-004` MeetingNote detail subset, `NBA-005`, `NBA-006`, `NBA-007`, `NBA-008`, `NBA-009`, `NBA-010`, `NBA-011`, `NBA-012`, `NBA-013`, `NBA-015`, `08_GLOBAL_DATA_I18N`, `09_PRODUCT_ANALYTICS`, `10_MOBILE_PWA_FIELD_USE`, `11_ADMIN_OPERATION`은 별도 계획에서 구현 완료된 이력으로만 남긴다.
 
 ## 1.1 08에서 닫힌 User Web Global Data/I18N 범위
 
@@ -76,17 +80,18 @@
 | NBA-009 | 완료: `/app/schedules/week` route, 주간 보고서 화면, 이전/다음/이번 주 이동, Excel 다운로드, loading/empty/error/export error 처리 | Active FE TODO에서 제외한다. PDF/범용 ExportJob, 반복 일정, AI 요약은 별도 backlog에서 다룬다. |
 | NBA-010 | 완료: Notification route/sidebar 노출 | Active FE TODO에서 제외한다. `/app/notifications`, unread badge, settings, browser push 권한 fallback UX 구현 완료 |
 | NBA-015 | 완료: `/app/schedules` source badge/sync/calendar hidden handling, `/app/settings` Google Calendar 연결/선택/해제, `/app/trash` Schedule restore UX 구현 | Active FE TODO에서 제외한다. Google export/write, realtime webhook/watch, 반복 일정은 별도 backlog에서 다룬다. |
-| 09_PRODUCT_ANALYTICS | 완료: `/app` 보호 route 진입 시 routeKey allowlist 기반 `app_route_viewed` 전송 | Active FE TODO에서 제외한다. Admin analytics 화면과 billing/paywall/churn UI는 11/12에서 다룬다. |
+| 09_PRODUCT_ANALYTICS | 완료: `/app` 보호 route 진입 시 routeKey allowlist 기반 `app_route_viewed` 전송 | Active FE TODO에서 제외한다. Admin analytics 화면은 11에서 완료됐고 billing/paywall/churn UI는 12에서 다룬다. |
 | 10_MOBILE_PWA_FIELD_USE | 완료: 모바일 명함 촬영, OCR safe failure, 회의 녹음/fallback, local draft, push permission UX, mobile field analytics | Active FE TODO에서 제외한다. PWA install/offline shell/native app은 후속 별도 결정이다. |
+| 11_ADMIN_OPERATION | 완료: `/app/trash` 만료 row/복구 문의, account/data request 영향, `/admin/api/*` 미호출 QA | Active FE TODO에서 제외한다. Billing/paywall/churn UI는 12에서 다룬다. |
 
 ## 4. Ops/security 영향 후보
 
 | 후보 ID | FE 영향 | 확인 기준 |
 |---|---|---|
-| NBA-007 | Trash detail response type 조정 | private memo 원문이 없어도 복구 판단 UI가 깨지지 않아야 한다. |
-| NBA-011 | 일반 사용자 provider log 노출 없음. 생성/상세 AI 실패 UX는 07에서 safe message/retry로 구현 | transcript/provider log는 User Web 일반 화면에 노출하지 않는다. Admin/internal 조회는 User Web 밖에서 별도 정책으로 다룬다. |
-| NBA-012 | Trash restore error/copy 조정 | 7일 이후 restore 실패 안내와 위험 액션 copy가 필요하다. |
-| NBA-013 | User Web 영향 없음 | User Web은 `/admin/api/*`를 호출하지 않는다. |
+| NBA-007 | 완료: Trash detail response type 조정 | private memo 원문 없이 `/app/trash` 복구 판단 UI가 동작한다. |
+| NBA-011 | 완료: 일반 사용자 provider log 노출 없음. 생성/상세 AI 실패 UX는 07에서 safe message/retry로 구현, Admin/internal 조회는 11 Admin Web에서 분리 | transcript/provider log는 User Web 일반 화면에 노출하지 않는다. |
+| NBA-012 | 완료: Trash restore error/copy 조정 | 7일 이후 restore disabled 안내와 복구 문의 UX를 11에서 구현했다. |
+| NBA-013 | 완료: User Web 영향 없음 | User Web은 `/admin/api/*`를 호출하지 않는 기준을 11 QA에서 확인했다. |
 | NBA-014 | User Web 영향 없음 | 06 범위 DB/Prisma 운영 gate는 FE 코드 변경 없이 닫혔다. 운영 DB 적용 절차는 별도 data reliability gate다. |
 
 ## 5. 공통 FE 규칙

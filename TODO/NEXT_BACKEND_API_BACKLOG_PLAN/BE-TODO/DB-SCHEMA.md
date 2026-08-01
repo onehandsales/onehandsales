@@ -1,7 +1,7 @@
 # DB Schema TODO
 
 상태: Draft
-최종 업데이트: 2026-07-31
+최종 업데이트: 2026-08-01
 
 ## 0. 완료 반영
 
@@ -20,10 +20,15 @@
 - [x] `09_PRODUCT_ANALYTICS`: ProductAnalyticsEvent/UserActivationSnapshot/RetentionCohortSnapshot schema와 migration 구현 및 QA closeout 완료
 - [x] `NBA-005 BusinessCard provider failure code/message contract`: `BusinessCardScanLog` safe failure fields와 migration SQL COMMENT 구현 완료
 - [x] `10_MOBILE_PWA_FIELD_USE`: G02 BusinessCard safe failure migration 외 신규 DB model 없이 구현 및 QA closeout 완료
+- [x] `NBA-007 Trash private memo backend response restriction`: 신규 private memo DB 없이 response restriction 구현 완료
+- [x] `NBA-011` Admin/internal provider audit 범위: `AdminAuditLog`, `AdminSensitiveAccessLog` 기반으로 구현 완료
+- [x] `NBA-012 Trash 7일 이후 복구 정책`: `TrashRecoveryRequest` schema/migration 구현 완료
+- [x] `NBA-013 Admin 운영 UX/API`: Admin 운영 관련 schema/migration 구현 완료
+- [x] `11_ADMIN_OPERATION`: Admin audit/security, Trash recovery, account/data request, system operation check migration 구현 및 QA closeout 완료
 
 ## 1. 현재 DB 변경 상태
 
-이 계획 후보에서 남은 active 후보 중 새로 확정된 Prisma schema 변경은 없다. `NBA-001`, `NBA-002`, `NBA-003` Deal subset, `NBA-004` MeetingNote detail subset, `NBA-005`, `NBA-006`, `NBA-008`, `NBA-009`, `NBA-010`, `NBA-011` provider log subset, `NBA-014`, `NBA-015`, `08_GLOBAL_DATA_I18N`, `09_PRODUCT_ANALYTICS`, `10_MOBILE_PWA_FIELD_USE`는 별도 계획에서 구현 완료된 이력으로만 남긴다.
+이 계획 후보에서 남은 active 후보 중 새로 확정된 Prisma schema 변경은 없다. `NBA-001`, `NBA-002`, `NBA-003` Deal subset, `NBA-004` MeetingNote detail subset, `NBA-005`, `NBA-006`, `NBA-007`, `NBA-008`, `NBA-009`, `NBA-010`, `NBA-011`, `NBA-012`, `NBA-013`, `NBA-014`, `NBA-015`, `08_GLOBAL_DATA_I18N`, `09_PRODUCT_ANALYTICS`, `10_MOBILE_PWA_FIELD_USE`, `11_ADMIN_OPERATION`은 별도 계획에서 구현 완료된 이력으로만 남긴다.
 
 실제 source of truth는 `BE/prisma/schema.prisma`와 migration 파일이다. 이 문서는 G07에서 분리된 후보의 DB/migration 가능성만 기록한다.
 
@@ -64,11 +69,19 @@
 - `BE/prisma/schema.prisma`의 `BusinessCardScanLog.safeErrorCode`, `BusinessCardScanLog.safeErrorMessage`, `BusinessCardScanLog.retryable`
 - G02 BusinessCard safe failure migration 외 10 범위 신규 DB model은 없다. `UserDraft`, server draft DB, audio/image binary DB 저장은 만들지 않았다.
 
+11 완료 이력의 DB source of truth:
+
+- `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/11_ADMIN_OPERATION`
+- `BE/prisma/migrations/20260801010000_add_admin_audit_security_foundation/migration.sql`
+- `BE/prisma/migrations/20260801020000_add_trash_recovery_request/migration.sql`
+- `BE/prisma/migrations/20260801030000_add_account_data_requests/migration.sql`
+- `BE/prisma/migrations/20260801040000_add_admin_operation_check_run/migration.sql`
+- `BE/prisma/schema.prisma`의 `User.role`, `AdminAuditLog`, `AdminSensitiveAccessLog`, `TrashRecoveryRequest`, `AccountDeletionRequest`, `UserDataExportRequest`, `AdminOperationCheckRun` 계열 model/enum
+- 기존 migration 파일은 수정하지 않았고, 신규 Prisma 주석과 migration SQL COMMENT를 확인했다.
+
 ## 2. 새 migration이 필요 없을 가능성이 높은 후보
 
-| 후보 ID | 후보 | 비고 |
-|---|---|---|
-| NBA-007 | Trash private memo backend response restriction | response mapping 제한 중심이며 DB 변경은 기본 필요 없다. |
+현재 문서 기준 신규 확정 후보 없음. `NBA-007`은 11에서 response restriction으로 닫혔고, 관련 Trash recovery request DB는 11 migration으로 구현됐다.
 
 ## 3. migration 가능성이 높은 후보
 
@@ -76,13 +89,10 @@
 |---|---|---|
 | NBA-003 잔여 | Company/Contact/Product latest memo/activity/next action summary | Deal list `latestActivity`는 `DealActivity`로 완료됐다. 나머지 record summary는 별도 summary/index 설계 후보가 생길 수 있다. |
 | NBA-004 | MeetingNote 목록 next/latest summary | 상세 next action/follow-up draft는 새 저장 table 없이 07에서 완료됐다. 목록 summary를 저장하면 column/table 후보가 생긴다. |
-| NBA-011 잔여 | MeetingNote Admin provider audit/retention | 공통 provider call log target 확장은 07에서 완료됐다. Admin 조회 audit, raw access reason, retention/cleanup 정책에 따라 추가 table/column 후보가 생길 수 있다. |
-| NBA-012 | Trash 7일 이후 복구 정책 | purge job 기록, 복구 예약, 유료 복구 정책에 따라 column/table 후보가 생길 수 있다. |
-| NBA-013 | Admin 운영 UX/API | admin audit log, raw access reason, support action log table 후보가 필요할 수 있다. |
 
 ## 4. RQA-005 운영 gate
 
-`RQA-005`는 새 migration 추가 문제가 아니라 현재 DB 대상과 migration 적용 상태를 안전하게 분류하지 못한 운영 gate 문제다. 06에서는 active DB target이 원격 Supabase임을 확인했고, 공유/운영성 DB에 무단 migrate/seed를 실행하지 않는 기준으로 closeout했다.
+`RQA-005`는 새 migration 추가 문제가 아니라 현재 DB 대상과 migration 적용 상태를 안전하게 분류하지 못한 운영 gate 문제다. 06에서는 active DB target이 원격 Supabase임을 확인했고, 공유/운영성 DB에 무단 migrate/seed를 실행하지 않는 기준으로 closeout했다. 11에서는 `AdminOperationCheckRun`으로 migration/seed/backup/restore/provider smoke 점검 결과를 기록하는 system gate를 구현했다.
 
 다음 조건이 충족되기 전에는 migrate/seed를 실행하지 않는다.
 

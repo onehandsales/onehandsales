@@ -1,7 +1,7 @@
 # Final Service Shape
 
 상태: Draft Guide
-최종 업데이트: 2026-07-31
+최종 업데이트: 2026-08-01
 
 ## 1. 최종 서비스는 3단계로 보되 판매 기준은 Global B2C다
 
@@ -39,10 +39,10 @@ MVP는 판매 버전이 아니다. 이 단계의 목적은 개인 영업자의 �
 | 세금/컴플라이언스 | VAT/GST/판매세 또는 Merchant of Record 처리가 가능하다. |
 | 앱 내부 다국어 | 실제 판매 국가 기준으로 `/app` 내부 locale과 UX writing이 준비된다. 기본 `ko-KR`/`en` app i18n은 08에서 구현 완료됐다. |
 | 다국가 데이터 | 전화번호, 날짜/시간, 통화, 주소/지역 표시가 국가별로 자연스럽다. User global settings, Product/Deal currency, Contact KR/US phone, Company country/region/address, Import/Export localization은 08에서 구현 완료됐다. |
-| Admin 운영 | 사용자, 구독, 결제 이슈, 도메인 데이터, 민감정보 마스킹, 감사 로그를 운영할 수 있다. |
+| Admin 운영 | 사용자, 도메인 데이터, 민감정보 마스킹, 감사 로그, provider 실패, Trash/account/data request, system gate를 운영할 수 있다. 11에서 최소 운영 범위는 완료됐고, 구독/결제 이슈 운영은 12 Billing 도메인과 연결한다. |
 | 고객 신뢰 | 약관, 개인정보, 보안, 계정 삭제, 데이터 export, 환불 정책이 실제 판매 범위와 맞는다. |
-| 제품 분석 | activation, retention, paid conversion, churn, ARPU, LTV/CAC, AI cost/user를 추적한다. 09에서 event taxonomy, route/server event, activation/retention snapshot, AI usage/cost foundation을 구현했고 10에서 mobile field-use event를 연결했다. paid conversion/churn/ARPU는 12 Billing source와 11 Admin analytics UI/API 연결 후 완성된다. |
-| 지원/운영 | 결제 실패, 로그인 문제, OCR/STT provider 실패, 데이터 복구 요청을 운영자가 처리할 수 있다. |
+| 제품 분석 | activation, retention, paid conversion, churn, ARPU, LTV/CAC, AI cost/user를 추적한다. 09에서 event taxonomy, route/server event, activation/retention snapshot, AI usage/cost foundation을 구현했고 10에서 mobile field-use event를 연결했으며 11에서 Admin analytics UI/API를 구현했다. paid conversion/churn/ARPU는 12 Billing source 연결 후 완성된다. |
+| 지원/운영 | 로그인 문제, OCR/STT/Calendar/Push provider 실패, 데이터 복구 요청은 11 Admin 운영으로 처리할 수 있다. 결제 실패와 구독 문제는 12 Billing 운영 범위다. |
 
 ## 4. Series A급 제품/사업형
 
@@ -53,7 +53,7 @@ MVP는 판매 버전이 아니다. 이 단계의 목적은 개인 영업자의 �
 | 모바일 현장성 | 모바일 브라우저 또는 앱에서 명함 촬영, 음성 기록, 빠른 입력, push reminder가 자연스럽다. 모바일 브라우저 1차 현장성은 10에서 완료했고, PWA install/offline shell과 native app은 후속이다. |
 | Deal timeline | 일정, Google Calendar에서 가져온 일정, 회의록, follow-up, 다음 행동, 단계 변경이 하나의 영업 활동 흐름으로 연결된다. 기본 `DealActivity` timeline은 06에서 구현 완료됐고, 메모 통합과 범용 activity bus는 후속 정책 결정 범위다. |
 | 성장 실험 | trial, annual plan, AI plan, paywall, coupon/referral, churn survey를 운영한다. |
-| 운영 신뢰 | Admin, 감사 로그, 민감정보 원문 조회 사유, 장애/provider 상태 기록이 유료 고객을 감당한다. |
+| 운영 신뢰 | 11 Admin 운영으로 감사 로그, 민감정보 원문 조회 사유, provider 상태 기록, system gate 기록을 갖췄다. 실제 장애 대응 drill과 Billing 운영 신뢰는 후속으로 검증한다. |
 
 ## 5. 최종 형태 판단 원칙
 
@@ -61,5 +61,5 @@ MVP는 판매 버전이 아니다. 이 단계의 목적은 개인 영업자의 �
 - 새 기능을 추가하는 것보다 먼저, 현재 핵심 루프가 Global B2C 유료 사용자에게 충분히 읽히고 안정적인지 본다.
 - Backend/API 후보는 화면에서 필요한 정보 구조와 Global B2C 운영 필요성이 확정된 뒤 계약화한다.
 - Series A급 기능은 기능 단독으로 만들지 않고 retention, revenue, analytics와 같이 판단한다.
-- Admin/결제/분석/정책/현지화는 후순위 장식이 아니라 첫 판매 gate의 일부로 본다. 분석 foundation은 09에서 닫혔고 mobile field-use event는 10에서 닫혔으며, Admin dashboard와 billing-linked 지표는 11/12에서 연결한다.
+- Admin/결제/분석/정책/현지화는 후순위 장식이 아니라 첫 판매 gate의 일부로 본다. 분석 foundation은 09에서 닫혔고 mobile field-use event는 10에서 닫혔으며, Admin dashboard는 11에서 닫혔다. billing-linked 지표는 12에서 연결한다.
 - 08에서 닫힌 현지화/글로벌 데이터 기본 범위와 DB migration 최신 상태 재확인은 완료로 보며, LINE/Apple 실제 auth provider smoke도 2026-07-29 사용자 확인 기준 운영 완료로 반영한다.

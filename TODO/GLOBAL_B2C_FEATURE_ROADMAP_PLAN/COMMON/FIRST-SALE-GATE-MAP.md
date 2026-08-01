@@ -1,7 +1,7 @@
 # First-sale Gate Map
 
-상태: Gate Baseline / 10 반영
-기준일: 2026-07-31
+상태: Gate Baseline / 11 반영
+기준일: 2026-08-01
 
 ## 1. 목적
 
@@ -15,24 +15,24 @@
 
 | Gate | 원본 기준 | Global 반영 | 완료 기준 |
 |---|---|---|---|
-| DB/Prisma 운영 gate | `NBA-014`, `RQA-005`, release blocker | 상세 closeout은 11. 단 신규 Prisma migration이 있는 모든 goal의 선행 체크로 적용 | DB target, migration status, Prisma generate, seed 정책, rollback/backup 영향이 확인됐다. 공유/운영성 DB에 무단 migrate를 실행하지 않는다. |
-| Product UX first-sale gate | `USER_WEB_PRODUCTIZATION_GAP_PLAN` Product UX | 01~10 기능 closeout 이후, 첫 판매 전 별도 QA checklist로 적용 | 회사, 담당자, 제품, 딜, 일정, 회의록, 명함, import, search, trash, export 흐름이 반복 업무 도구처럼 이어진다. |
+| DB/Prisma 운영 gate | `NBA-014`, `RQA-005`, release blocker | 11에서 system operation gate 구현 완료. 단 신규 Prisma migration이 있는 모든 goal의 선행 체크로 계속 적용 | DB target, migration status, Prisma generate, seed 정책, rollback/backup 영향이 확인됐다. 공유/운영성 DB에 무단 migrate를 실행하지 않는다. |
+| Product UX first-sale gate | `USER_WEB_PRODUCTIZATION_GAP_PLAN` Product UX | 01~11 기능 closeout 이후, 첫 판매 전 별도 QA checklist로 적용 | 회사, 담당자, 제품, 딜, 일정, 회의록, 명함, import, search, trash, export, account/data request 영향 흐름이 반복 업무 도구처럼 이어진다. |
 | Trust/policy first-sale gate | 약관, 개인정보, 보안, 환불, 계정 삭제, 데이터 export/delete, 보관 기간 | 정책은 11/12, 파일 job 기반은 03과 연결. 첫 판매 전 하나의 checklist로 닫는다 | 판매 국가 기준 약관/개인정보/환불/세금/계정 삭제/데이터 export/delete/retention 정책이 Backend 데이터 처리 기준과 충돌하지 않는다. |
 | Trash private memo response gate | `NBA-007` | 11의 Trash/삭제 정책에 포함하되 별도 보안 항목으로 추적 | Trash list/detail/restore 관련 Backend response에서 private memo 원문 노출 여부가 명확히 제한된다. FE 숨김만으로 완료 처리하지 않는다. |
 
-2026-07-29 반영:
+2026-08-01 반영:
 
 - 08 Global Data I18N 구현과 QA closeout은 완료됐다.
 - 현재 `BE/.env` 연결 DB는 `pnpm.cmd exec prisma migrate status` 기준 최신 상태다.
 - 2026-07-29 사용자 확인 기준 LINE/Apple 실제 OAuth provider 연결과 smoke가 완료됐다.
 - 09 Product Analytics 구현과 QA closeout은 완료됐다. Product analytics raw event, route/server event, activation/retention snapshot, AI usage summary foundation은 첫 판매 전 gate에서 닫힌 상태로 본다.
-- Admin analytics UI/API는 11, billing/paywall/churn 실제 conversion source는 12에서 연결한다.
 - 10 Mobile PWA Field Use 구현과 QA closeout은 완료됐다. 모바일 명함 촬영, OCR safe failure, 회의 녹음, local draft, browser push permission UX, mobile field analytics는 first-sale Product UX gate에서 닫힌 상태로 본다.
-- 11_ADMIN_OPERATION부터 12까지의 슬롯은 아직 작업 필요 상태다.
+- 11 Admin Operation 구현과 QA closeout은 완료됐다. Admin analytics UI/API, provider failure 운영 조회, Trash/account request/system gate, audit/redaction은 첫 판매 전 운영 gate에서 닫힌 상태로 본다.
+- billing/paywall/churn 실제 conversion source와 결제/구독/세금 운영은 12에서 연결한다.
 
 ## 3. DB/Prisma 운영 Gate 적용 규칙
 
-`NBA-014`는 11 Admin/Ops 상세 구현에 들어가 있지만, 실제 실행 순서는 11까지 미루지 않는다.
+`NBA-014`는 11 Admin/Ops 상세 구현에서 system operation gate로 닫혔다. 다만 신규 migration이 생기는 향후 goal에서는 계속 선행 조건으로 적용한다.
 
 다음 작업은 `/goal` 착수 전 `NBA-014` 체크를 선행 조건으로 둔다.
 
@@ -93,7 +93,7 @@ Trust/policy는 11과 12의 상세 구현만 기다리면 첫 판매 전 검토�
 연결 슬롯:
 
 - 03: ExportJob, 파일 생성/다운로드, export retention
-- 11: 계정 삭제, 데이터 삭제, 사용자 데이터 export 정책, Trash, Admin audit, provider failure
+- 11: Done. 계정 삭제, 데이터 삭제, 사용자 데이터 export 정책, Trash, Admin audit, provider failure
 - 12: 결제, 구독, 세금, 환불, invoice, failed payment
 
 ## 6. Trash Private Memo Gate 적용 규칙

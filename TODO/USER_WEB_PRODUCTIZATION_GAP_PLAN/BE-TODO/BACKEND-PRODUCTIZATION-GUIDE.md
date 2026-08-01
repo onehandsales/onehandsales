@@ -1,7 +1,7 @@
 # Backend Productization Guide
 
 상태: Draft Guide
-최종 업데이트: 2026-07-31
+최종 업데이트: 2026-08-01
 
 ## 0. 완료 반영
 
@@ -23,6 +23,8 @@
 - [x] `09_PRODUCT_ANALYTICS` active backend gap 종료
 - [x] Mobile Field Use backend/API/DB 구현 완료
 - [x] `NBA-005`, `10_MOBILE_PWA_FIELD_USE` active backend gap 종료
+- [x] Admin Operation backend/API/DB 구현 완료
+- [x] `NBA-007`, `NBA-011` Admin/internal 범위, `NBA-012`, `NBA-013`, 11 범위 `NBA-014`, `11_ADMIN_OPERATION` active backend gap 종료
 
 ## 1. 목적
 
@@ -30,7 +32,7 @@
 
 이 문서는 구현 지시서가 아니며, 새 endpoint나 migration을 바로 만들기 위한 계약 문서도 아니다.
 
-Backend 판단 기준은 MVP 기능 추가가 아니라 Global B2C 첫 판매 gate다. 현지화 데이터의 기본 구현은 08에서 닫혔고, 제품 분석 foundation은 09에서 닫혔으며, 모바일 현장 입력성 1차 범위는 10에서 닫혔다. 결제/구독, Admin 운영, 정책/감사, 운영 신뢰와 billing-linked conversion/churn 지표는 판매 전에 별도 계획으로 계약화해야 한다.
+Backend 판단 기준은 MVP 기능 추가가 아니라 Global B2C 첫 판매 gate다. 현지화 데이터의 기본 구현은 08에서 닫혔고, 제품 분석 foundation은 09에서 닫혔으며, 모바일 현장 입력성 1차 범위는 10에서 닫혔고, Admin 운영 1차 범위는 11에서 닫혔다. 결제/구독, Billing 정책/감사, Billing 운영 신뢰와 billing-linked conversion/churn 지표는 판매 전에 12에서 계약화해야 한다.
 
 ## 2. 현재 Backend 구현 요약
 
@@ -49,7 +51,7 @@ Backend 판단 기준은 MVP 기능 추가가 아니라 Global B2C 첫 판매 ga
 | Search | integrated search |
 | Trash | list/detail/restore, Schedule restore |
 | Product analytics | collector API, ProductAnalyticsEvent raw event, server event recorder, activation/retention snapshot, AI usage summary, mobile field-use event allowlist |
-| Admin | `/admin/api/me` only |
+| Admin | `/admin/api/*` 사용자/도메인/Trash/provider/analytics/account/system/audit API, raw access reason, audit/sensitive log |
 
 ## 3. Backend gap 판단 표
 
@@ -61,17 +63,17 @@ Backend 판단 기준은 MVP 기능 추가가 아니라 Global B2C 첫 판매 ga
 | Latest activity summary | Deal list `latestActivity` 구현 완료. Company/Contact/Product summary 없음 | 잔여 summary의 memo/private memo/activity 의미와 개인정보 제외 기준 | Deal subset 완료, 잔여는 후속 |
 | BusinessCard provider failure | 10에서 구현 완료 | safe `errorCode`, `userMessage`, `retryable`, provider raw detail 미노출, `BusinessCardScanLog` safe failure field QA 완료 | 완료 |
 | ImportJob persistence | 구현 완료 | ImportJob/Row/Error/UploadedFile, TTL/delete tracking, resume API, redaction/ownership QA 완료 | 완료 |
-| Trash private memo restriction | FE에서 preview를 가림 | Backend response에서 원문 제한할지 정책 결정 | 아직 구현 금지 |
+| Trash private memo restriction | 11에서 구현 완료 | User/Admin Trash response에서 private memo 원문 미노출 확인 | 완료 |
 | Page size 15 cleanup | 구현 완료 | service response, API 문서, Backend/User Web test 기준 확인 | 완료 |
 | Schedule week report | 구현 완료 | `GET /api/schedules/week`, `GET /api/schedules/week/export/xlsx`, 기존 `User`, `Schedule`, `ScheduleDeal`, `Deal`, `DealCompany`, `DealContact`, `Company`, `Contact`, `DealFollowingActionLog` runtime aggregation, timezone/weekStart/ownership/redaction QA 완료. PDF/범용 ExportJob, 반복 일정, AI 요약은 별도 후속 범위 | 완료 |
 | Notification | 구현 완료 | Notification/UserNotificationSetting/NotificationDeliveryAttempt/BrowserPushSubscription, redaction/ownership/provider failure QA 완료. 실제 SMTP/Web Push provider smoke는 env 준비 후 운영 확인 | 완료 |
 | Google Calendar Integration | 구현 완료 | Google OAuth connect/callback/status/calendar list/selection/sync/disconnect, token encryption/redaction, Schedule Google metadata, soft delete/Trash restore, reminder QA 완료. 실제 Google provider smoke는 env 준비 후 운영 확인. export/write/realtime webhook/watch/반복 일정/여러 Google 계정 동시 연결은 별도 후속 범위 | 완료 |
 | MeetingNote AI follow-up draft | 구현 완료 | next action/follow-up draft API, provider log, safe failure, ownership/redaction QA 완료. 자동 저장/자동 발송은 하지 않음 | 완료 |
 | Global Data I18N | 구현 완료 | User country/locale/default currency, app i18n API 기반 설정, Product/Deal currency, Contact KR/US phone, Company country/region/address, import/export localization, Google/LINE/Apple auth 구현 완료. 현재 `BE/.env` 연결 DB는 2026-07-29 최신 상태 재확인 완료, LINE/Apple 실제 provider smoke도 2026-07-29 사용자 확인 기준 운영 완료 | 완료 |
-| MeetingNote provider audit 잔여 | 공통 `AiProviderCallLog` 기반 provider log subset 구현 완료. 별도 raw/transcript table 없음 | Admin/internal 조회, raw access reason, retention/cleanup, privacy policy | 후속 정책 전 구현 금지 |
-| Admin operation | `/admin/api/me` 외 없음 | masking, raw access reason, audit log, support flow | 첫 판매 전 별도 큰 계획 필요 |
+| MeetingNote provider audit 잔여 | 공통 `AiProviderCallLog` 기반 provider log subset 구현 완료. 별도 raw/transcript table 없음. 11에서 Admin provider failure 조회와 raw access audit 구현 | 회의록 목록 summary, 자동 발송/알림은 후속. provider raw/prompt/token/quota detail 저장은 계속 금지 | Admin audit 완료, 제품 후속 |
+| Admin operation | 11에서 구현 완료 | 사용자/도메인/Trash/provider/analytics/account/system/audit, masking, raw access reason, audit log, support flow | 완료 |
 | Payment/subscription | 없음 | plan, entitlement, payment provider, admin ops | 첫 판매 전 별도 큰 계획 필요 |
-| Product analytics | 09 foundation과 10 mobile field-use event 구현 완료 | Admin analytics dashboard/API, billing/paywall/churn runtime source 연결 | foundation 완료, 11/12 후속 전 확장 금지 |
+| Product analytics | 09 foundation과 10 mobile field-use event, 11 Admin analytics 구현 완료 | billing/paywall/churn runtime source 연결 | Admin 분석 완료, 12 전 billing 확장 금지 |
 
 ## 4. API 계약 원칙
 
@@ -96,7 +98,7 @@ Backend/API 구현이 필요하면 아래를 먼저 만족해야 한다.
 ## 6. Backend 관점 권장 순서
 
 1. Global B2C 첫 판매 gate에 필요한 Backend/API/DB/운영 항목인지 확인한다.
-2. 결제, Admin, 정책/감사, 운영 신뢰를 먼저 큰 bundle로 분리한다. 앱 다국어/다국가 데이터 기본 범위는 08 완료 이력, 제품 분석 foundation은 09 완료 이력, 모바일 현장 입력성 1차 범위는 10 완료 이력으로 본다.
+2. 결제, Billing 정책/감사, Billing 운영 신뢰를 먼저 큰 bundle로 분리한다. 앱 다국어/다국가 데이터 기본 범위는 08 완료 이력, 제품 분석 foundation은 09 완료 이력, 모바일 현장 입력성 1차 범위는 10 완료 이력, Admin 운영 1차 범위는 11 완료 이력으로 본다.
 3. 제품화 UX에서 실제 필요한 API gap인지 확인한다.
 4. 개인정보/보안/운영 정책이 얽힌 후보를 먼저 정책으로 확정한다.
-5. ImportJob, Weekly Schedule Report, Notification, Google Calendar Integration, Deal Activity Timeline, MeetingNote AI Provider Log, Global Data I18N, Product Analytics foundation, Mobile Field Use는 완료됐고, Admin, Payment, 운영 신뢰, billing-linked analytics dashboard는 각각 별도 계획으로 분리한다.
+5. ImportJob, Weekly Schedule Report, Notification, Google Calendar Integration, Deal Activity Timeline, MeetingNote AI Provider Log, Global Data I18N, Product Analytics foundation, Mobile Field Use, Admin Operation은 완료됐고, Payment/Billing, Billing-linked analytics source, 실제 backup/restore 실행 runbook은 별도 계획으로 분리한다.

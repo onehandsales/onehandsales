@@ -2,7 +2,7 @@
 
 상태: Draft
 작성일: 2026-07-20
-최종 업데이트: 2026-07-31
+최종 업데이트: 2026-08-01
 출처: `TODO/DONE/USER_WEB_RELEASE_QA_FOLLOWUP_PLAN` G07, `TODO/USER_WEB_PRODUCTIZATION_GAP_PLAN`
 
 ## 0. 완료 반영 체크리스트
@@ -22,6 +22,12 @@
 - [x] `09_PRODUCT_ANALYTICS`: Product analytics collector API, Prisma schema, server/client event logging, activation/retention snapshot, AI usage summary 구현 및 QA closeout 완료
 - [x] `NBA-005 BusinessCard provider failure code/message contract`: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/10_MOBILE_PWA_FIELD_USE`에서 구현 및 QA closeout 완료
 - [x] `10_MOBILE_PWA_FIELD_USE`: BusinessCard OCR safe failure, MeetingNote mobile recording, local draft, push permission UX, mobile field analytics 구현 및 QA closeout 완료
+- [x] `NBA-007 Trash private memo backend response restriction`: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/11_ADMIN_OPERATION`에서 구현 및 QA closeout 완료
+- [x] `NBA-011` Admin/internal provider audit 조회 범위: `11_ADMIN_OPERATION`에서 provider failure 운영 조회와 raw access audit 기준 구현 완료
+- [x] `NBA-012 Trash 7일 이후 복구 정책`: `11_ADMIN_OPERATION`에서 User 만료 row/복구 문의와 Admin recovery queue 구현 완료
+- [x] `NBA-013 Admin 운영 UX/API`: `11_ADMIN_OPERATION`에서 `/admin/api/*`와 Admin Web 운영 화면 구현 및 QA closeout 완료
+- [x] 11 범위 `NBA-014` DB/Prisma/system operation gate closeout 완료
+- [x] `11_ADMIN_OPERATION`: Admin 운영 API/Web, audit/redaction, provider/trash/account/system gate 구현 및 QA closeout 완료
 - [x] Backend/API/DB/User Web 영향 반영 완료
 - [x] 완료 기록: `TODO_LOG/2026-07-21/G04_IMPORT_JOB_PERSISTENCE_QA_CLEANUP/WORK_LOG.md`
 - [x] 완료 기록: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/03_WEEKLY_SCHEDULE_REPORT/COMMON/TODO_LOG.md`
@@ -32,7 +38,8 @@
 - [x] 완료 기록: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/08_GLOBAL_DATA_I18N/COMMON/GOAL-SPECS/G10_QA_DOCUMENT_CLOSEOUT.md`
 - [x] 완료 기록: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/09_PRODUCT_ANALYTICS/COMMON/GOAL-SPECS/G08_QA_DOCUMENT_CLOSEOUT.md`
 - [x] 완료 기록: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/10_MOBILE_PWA_FIELD_USE/COMMON/GOAL-SPECS/G07_QA_DOCUMENT_CLOSEOUT.md`
-- [ ] 나머지 NBA 후보 계약 확정 및 구현 여부 판단
+- [x] 완료 기록: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/11_ADMIN_OPERATION/COMMON/GOAL-SPECS/G10_QA_DOCUMENT_CLOSEOUT.md`
+- [ ] 나머지 product/billing 후보 계약 확정 및 구현 여부 판단
 
 ## 1. 목적
 
@@ -47,7 +54,7 @@ G07의 산출물이므로 이 문서는 구현 계획 확정본이 아니다. �
 - BusinessCard provider failure contract는 2026-07-31 기준 10번에서 구현 및 QA closeout이 완료되어 active backlog 후보에서 제외한다.
 - `NBA-003` 중 Deal list `latestActivity`는 06에서 구현 완료됐고, Company/Contact/Product latest summary와 generic summary endpoint는 product feature 후보로 남긴다.
 - MeetingNote 상세 next action/follow-up draft와 AI/STT provider call log는 07에서 구현 완료됐다. MeetingNote 목록 latest/next summary는 product feature 후보로 남긴다.
-- `NBA-014`는 06 범위에서 DB target, migration/seed 금지, Prisma 검증 gate를 닫았다. 실제 운영 DB 적용 절차, backup/restore, 장애 대응, Admin raw audit 같은 data reliability 운영 기준은 별도 첫 판매 gate에서 다룬다.
+- `NBA-014`는 06 범위에서 DB target, migration/seed 금지, Prisma 검증 gate를 닫았고 11에서 Admin system operation gate도 구현했다. 남은 data reliability 범위는 실제 운영 DB 적용 절차, backup/restore 실행 runbook, 장애 대응 drill이다.
 - `NBA-006 ImportJob persistence/resume API`는 2026-07-21 기준 구현 및 QA closeout이 완료되어 active backlog 후보에서 제외한다.
 - `NBA-009 Schedule week report`는 2026-07-22 기준 구현 및 QA closeout이 완료되어 active backlog 후보에서 제외한다.
 - `NBA-010 Notification`은 2026-07-22 기준 구현 및 QA closeout이 완료되어 active backlog 후보에서 제외한다.
@@ -55,9 +62,10 @@ G07의 산출물이므로 이 문서는 구현 계획 확정본이 아니다. �
 - `NBA-001`, `NBA-002`, `NBA-008`, `NBA-003`의 Deal latest activity subset은 2026-07-26 기준 `06_DEAL_ACTIVITY_TIMELINE`에서 구현 및 QA closeout이 완료되어 active backlog 후보에서 제외한다.
 - `NBA-004` MeetingNote detail next action/follow-up draft subset과 `NBA-011` MeetingNote provider log subset은 2026-07-26 기준 `07_MEETING_NOTE_AI_PROVIDER_LOG`에서 구현 및 QA closeout이 완료되어 active backlog 후보에서 제외한다.
 - `08_GLOBAL_DATA_I18N`은 2026-07-28 기준 구현 및 QA closeout이 완료되어 first-sale global data/API gap에서 제외한다. 2026-07-29 `BE/.env` 연결 DB도 `prisma migrate status` 기준 최신 상태로 재확인했다. 같은 날 사용자 확인 기준 LINE/Apple provider 설정값 연결과 실제 OAuth 동작도 운영 환경에서 완료됐다.
-- `09_PRODUCT_ANALYTICS`는 2026-07-30 기준 구현 및 QA closeout이 완료되어 first-sale product analytics foundation gap에서 제외한다. Admin analytics UI/API는 11, billing/paywall/churn runtime conversion source는 12에서 다룬다.
+- `09_PRODUCT_ANALYTICS`는 2026-07-30 기준 구현 및 QA closeout이 완료되어 first-sale product analytics foundation gap에서 제외한다. Admin analytics UI/API는 11에서 완료됐고, billing/paywall/churn runtime conversion source는 12에서 다룬다.
 - `10_MOBILE_PWA_FIELD_USE`는 2026-07-31 기준 구현 및 QA closeout이 완료되어 mobile field-use API/DB/User Web gap에서 제외한다. PWA install/offline shell, native app, native push/contact/calendar는 후속 별도 로드맵이다.
-- Trash private memo backend restriction, MeetingNote 목록 summary, MeetingNote Admin provider audit/retention, Trash 7일 이후 복구 정책, Admin 운영 UX/API, Billing 연동 conversion/churn flow는 남은 후보다.
+- `11_ADMIN_OPERATION`은 2026-08-01 기준 구현 및 QA closeout이 완료되어 Admin 운영 API/DB/Admin Web gap에서 제외한다. 결제/구독/plan/payment/invoice/refund는 11에서 제외했고 12에서 다룬다.
+- MeetingNote 목록 summary, Company/Contact/Product latest summary, Billing 연동 conversion/churn flow, PWA/native packaging은 남은 후보다.
 
 ## 2.1 `NBA-015` 반영 기준
 
@@ -77,7 +85,7 @@ G07의 산출물이므로 이 문서는 구현 계획 확정본이 아니다. �
 
 - 실제 Google provider smoke는 env 미준비로 미실행했으며 운영 확인 단계에서 별도로 본다.
 - Google export/write, realtime webhook/watch, 반복 일정 정식 모델, 여러 Google 계정 동시 연결, Google Calendar 외 다른 calendar provider는 04 완료 범위가 아니다.
-- Admin provider failure UI/log는 `NBA-013` 또는 별도 Admin/ops 계획에서 다룬다.
+- Admin provider failure 운영 조회와 log 기준은 11에서 완료됐다.
 
 ## 2.2 `NBA-001`, `NBA-002`, `NBA-003` Deal subset, `NBA-008`, `NBA-014` 반영 기준
 
@@ -98,9 +106,8 @@ G07의 산출물이므로 이 문서는 구현 계획 확정본이 아니다. �
 
 - `NBA-003` 중 Company/Contact/Product latest activity, latest memo, next action summary
 - MeetingNote 목록 latest/next summary
-- MeetingNote Admin provider audit, retention/cleanup, raw access policy
-- Trash private memo response restriction과 7일 이후 복구/영구삭제 정책
-- Admin 운영 API/UX와 data reliability 운영 절차
+- MeetingNote Admin provider audit/raw access policy, Trash private memo response restriction, 7일 이후 복구 문의, Admin 운영 API/UX는 11에서 완료
+- 실제 backup/restore 실행 runbook과 장애 대응 drill
 
 ## 2.3 `NBA-004` MeetingNote detail subset, `NBA-011` provider log subset 반영 기준
 
@@ -119,7 +126,7 @@ G07의 산출물이므로 이 문서는 구현 계획 확정본이 아니다. �
 남은 백로그로 분리할 범위:
 
 - `GET /api/meeting-notes` 목록 latest/next summary response field
-- Admin/internal provider audit 조회 API, raw access reason, retention/cleanup policy
+- Admin/internal provider audit 조회 API와 raw access reason은 11에서 완료
 - 별도 transcript/raw provider response 저장 table
 - AI 후보 자동 저장, follow-up 자동 발송, 회의록 follow-up 알림
 
@@ -161,9 +168,9 @@ G07의 산출물이므로 이 문서는 구현 계획 확정본이 아니다. �
 
 남은 백로그로 오해하지 않을 범위:
 
-- Admin analytics dashboard/API는 09 범위가 아니며 `11_ADMIN_OPERATION`에서 다룬다.
+- Admin analytics dashboard/API는 09 범위가 아니며 `11_ADMIN_OPERATION`에서 완료됐다.
 - 실제 paywall, subscription, churn survey, paid conversion source event 발생은 09 범위가 아니며 `12_BILLING_SUBSCRIPTION_TAX`에서 다룬다.
-- 모바일 field-use 세부 event는 10에서 완료됐다. Admin dashboard와 billing conversion/churn 연결은 각각 11/12에서 다룬다.
+- 모바일 field-use 세부 event는 10에서 완료됐다. Admin dashboard는 11에서 완료됐고 billing conversion/churn 연결은 12에서 다룬다.
 
 ## 2.6 `10_MOBILE_PWA_FIELD_USE` 반영 기준
 
@@ -182,8 +189,30 @@ G07의 산출물이므로 이 문서는 구현 계획 확정본이 아니다. �
 남은 백로그로 오해하지 않을 범위:
 
 - PWA install prompt/offline shell, full offline sync, iOS/Android native app, native push/contact/calendar는 10 완료 범위가 아니다.
-- Admin provider failure dashboard와 운영 추적은 `11_ADMIN_OPERATION`에서 다룬다.
+- Admin provider failure dashboard와 운영 추적은 `11_ADMIN_OPERATION`에서 완료됐다.
 - Marketing opt-in, billing/paywall/churn runtime event는 `12_BILLING_SUBSCRIPTION_TAX`에서 다룬다.
+
+## 2.7 `11_ADMIN_OPERATION` 반영 기준
+
+`TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/11_ADMIN_OPERATION`은 2026-08-01 G10 QA closeout 기준으로 Completed다. 이 백로그에서는 Admin 운영 API/DB/Admin Web 항목을 active 후보가 아니라 완료 이력으로만 유지한다.
+
+완료로 반영할 Backend/API/DB/Admin Web 영향:
+
+- `/admin/api/*`를 User API와 분리하고 AuthGuard/AdminGuard를 적용했다.
+- `INITIAL_ADMIN_EMAILS` 기반 첫 Admin bootstrap과 `/admin/api/me` 확인 흐름을 유지한다.
+- Admin 사용자 목록/상세, 활동 timeline, 도메인 read-only records, User Trash summary/records API와 Admin Web 화면을 구현했다.
+- raw/sensitive access는 reason validation과 append-only audit/sensitive log를 사용하며 일반 상세 API에 섞지 않는다.
+- `AdminAuditLog`, `AdminSensitiveAccessLog`, `TrashRecoveryRequest`, `AccountDeletionRequest`, `UserDataExportRequest`, `AdminOperationCheckRun` schema/migration을 구현했다.
+- User Trash 만료 row는 hard delete/purge하지 않고 복구 버튼 disabled와 복구 문의 흐름을 제공한다.
+- Admin provider failure, analytics overview, account deletion/data export request queue, trash recovery request queue, system operation gate 화면/API를 구현했다.
+- provider raw/prompt/token/quota detail, browser push endpoint/key/userAgent 원문, analytics raw payload dump, private memo 원문 노출 금지 조건을 QA closeout에서 확인했다.
+
+남은 백로그로 오해하지 않을 범위:
+
+- 결제/구독/plan/payment/invoice/refund/failed payment recovery/billing-linked conversion/churn은 11 범위가 아니며 `12_BILLING_SUBSCRIPTION_TAX`에서 다룬다.
+- Admin 직접 DB migrate/seed/backup/restore 실행은 만들지 않았다. 11 system gate는 점검 결과 기록용이다.
+- Admin 직접 Trash 복구 실행, 유료 복구 결제, Trash hard delete/purge는 11 범위가 아니다.
+- 자동 민감정보 감지, generic ExportJob 파일 생성/대량 export는 별도 계약 없이는 확장하지 않는다.
 
 ## 3. 우선순위 분류 기준
 
@@ -211,8 +240,8 @@ G07의 산출물이므로 이 문서는 구현 계획 확정본이 아니다. �
 - 기존 response field 추가
 - Prisma schema 또는 migration 추가
 - seed 수정 또는 운영/공유 DB migration 실행
-- Admin API 구현
-- 완료된 Notification/Weekly Schedule Report/Google Calendar Integration/Deal Activity Timeline/MeetingNote AI Provider Log/Global Data I18N/Product Analytics/Mobile Field Use 범위를 넘어서는 새 알림 endpoint, Admin provider failure UI, PDF/범용 ExportJob, 반복 일정, AI 요약, Google Calendar export/write/realtime webhook, 범용 activity bus, MeetingNote 자동 저장/자동 발송, 신규 auth provider, `/app` locale prefix, analytics Admin dashboard, billing/paywall/churn runtime event, PWA install/offline shell, native app 구현
+- 11에서 완료된 Admin 운영 범위를 넘어서는 새 Admin API 구현
+- 완료된 Notification/Weekly Schedule Report/Google Calendar Integration/Deal Activity Timeline/MeetingNote AI Provider Log/Global Data I18N/Product Analytics/Mobile Field Use/Admin Operation 범위를 넘어서는 새 알림 endpoint, PDF/범용 ExportJob, 반복 일정, AI 요약, Google Calendar export/write/realtime webhook, 범용 activity bus, MeetingNote 자동 저장/자동 발송, 신규 auth provider, `/app` locale prefix, billing/paywall/churn runtime event, PWA install/offline shell, native app 구현
 - User Web에서 `/admin/api/*` 호출 추가
 - FE 단독 page size 변경
 

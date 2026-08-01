@@ -1,7 +1,7 @@
 # API TODO
 
 상태: Draft
-최종 업데이트: 2026-07-31
+최종 업데이트: 2026-08-01
 
 ## 0. 완료 반영
 
@@ -20,12 +20,17 @@
 - [x] `09_PRODUCT_ANALYTICS`: product analytics collector API, server event recorder, snapshot/AI usage internal use case 구현 및 QA closeout 완료
 - [x] `NBA-005 BusinessCard provider failure code/message contract`: `10_MOBILE_PWA_FIELD_USE`에서 구현 및 QA closeout 완료
 - [x] `10_MOBILE_PWA_FIELD_USE`: BusinessCard safe failure, MeetingNote STT draft reuse, notification API reuse, mobile analytics event 구현 및 QA closeout 완료
+- [x] `NBA-007 Trash private memo backend response restriction`: `11_ADMIN_OPERATION`에서 구현 및 QA closeout 완료
+- [x] `NBA-011` Admin/internal provider audit 조회 범위: `11_ADMIN_OPERATION`에서 provider failure 운영 조회와 raw access audit 기준 구현 완료
+- [x] `NBA-012 Trash 7일 이후 복구 정책`: `11_ADMIN_OPERATION`에서 User 만료 row/복구 문의와 Admin recovery queue 구현 완료
+- [x] `NBA-013 Admin 운영 UX/API`: `11_ADMIN_OPERATION`에서 `/admin/api/*`와 Admin Web 운영 화면 구현 완료
+- [x] `11_ADMIN_OPERATION`: Admin 운영 API/Web, audit/redaction, provider/trash/account/system gate 구현 및 QA closeout 완료
 
 ## 1. 목적
 
 이 문서는 G07에서 분리한 Backend/API 후속 후보를 실행 가능한 다음 계획으로 만들기 전의 초안이다.
 
-이 문서에서 남은 active 새 API 후보는 `COMMON/API-SPEC/README.md`에서 `draft` 또는 `후보` 상태로만 관리한다. `NBA-001`, `NBA-002`, `NBA-003` Deal subset, `NBA-004` MeetingNote detail subset, `NBA-005`, `NBA-006`, `NBA-008`, `NBA-009`, `NBA-010`, `NBA-011` provider log subset, `NBA-014`, `NBA-015`, `08_GLOBAL_DATA_I18N`, `09_PRODUCT_ANALYTICS`, `10_MOBILE_PWA_FIELD_USE`는 별도 계획에서 구현 완료된 이력으로만 남긴다.
+이 문서에서 남은 active 새 API 후보는 `COMMON/API-SPEC/README.md`에서 `draft` 또는 `후보` 상태로만 관리한다. `NBA-001`, `NBA-002`, `NBA-003` Deal subset, `NBA-004` MeetingNote detail subset, `NBA-005`, `NBA-006`, `NBA-007`, `NBA-008`, `NBA-009`, `NBA-010`, `NBA-011`, `NBA-012`, `NBA-013`, `NBA-014`, `NBA-015`, `08_GLOBAL_DATA_I18N`, `09_PRODUCT_ANALYTICS`, `10_MOBILE_PWA_FIELD_USE`, `11_ADMIN_OPERATION`은 별도 계획에서 구현 완료된 이력으로만 남긴다.
 
 ## 2. 06에서 닫힌 release blocker
 
@@ -54,7 +59,7 @@
   - AI 후보는 자동 저장하지 않고 follow-up draft는 자동 발송하지 않음
 - 07 밖으로 남는 범위:
   - `GET /api/meeting-notes` 목록 latest/next summary
-  - Admin/internal provider audit 조회, raw access reason, retention/cleanup policy
+  - Admin/internal provider audit 조회와 raw access reason은 11에서 완료
   - 별도 transcript/raw provider response 저장 table
   - 회의록 follow-up 알림 또는 자동 발송
 
@@ -72,7 +77,7 @@
   - provider raw error와 token/secret은 사용자 응답과 log에 노출하지 않는다.
   - `/app` 다국어는 public-site locale routing과 분리하고 User API에는 locale route prefix를 추가하지 않는다.
 - 08 밖으로 남는 범위:
-  - 추가 국가/통화/전화번호 포맷, Google/LINE/Apple 외 신규 provider, Admin provider 운영 화면
+  - 추가 국가/통화/전화번호 포맷, Google/LINE/Apple 외 신규 provider. Admin provider 운영 화면은 11에서 완료
 - 08 후속 운영 확인 완료:
   - 2026-07-29 사용자 확인 기준 LINE/Apple provider 설정값 연결과 실제 OAuth 동작이 운영 환경에서 완료됐다.
 
@@ -88,7 +93,7 @@
   - server event는 idempotencyKey를 필수로 하고 product API 성공을 막지 않도록 best-effort로 기록한다.
   - billing/paywall/churn event는 reserved taxonomy로만 유지하고 runtime allowlist에는 넣지 않는다.
 - 09 밖으로 남는 범위:
-  - Admin analytics dashboard/API
+  - Admin analytics dashboard/API는 11에서 완료
   - 실제 billing/paywall/churn survey flow와 paid conversion source event
 
 ## 2.4 10에서 닫힌 Mobile Field Use API
@@ -104,8 +109,26 @@
   - 10 범위 신규 DB model은 없고 G02 BusinessCard safe failure migration만 추가했다.
 - 10 밖으로 남는 범위:
   - PWA install/offline shell, full offline sync, iOS/Android native app, native push/contact/calendar
-  - Admin provider failure dashboard와 운영 추적
+  - Admin provider failure dashboard와 운영 추적은 11에서 완료
   - marketing opt-in, billing/paywall/churn runtime event
+
+## 2.5 11에서 닫힌 Admin Operation API
+
+- 연결 계획: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/11_ADMIN_OPERATION`
+- API 영향:
+  - `/admin/api/*` 사용자/도메인/Trash/provider/analytics/account/system/audit API 구현
+  - `POST /api/trash/recovery-requests` 만료 Trash 복구 문의 API 구현
+  - 계정 삭제/데이터 export request User/Admin API 구현
+  - Admin raw access reason validation과 sensitive/audit log transaction 구현
+- Backend 영향:
+  - Admin API는 AuthGuard와 AdminGuard를 모두 통과한다.
+  - User API와 Admin API를 같은 endpoint의 role 분기로 합치지 않는다.
+  - provider raw/prompt/token/quota detail, browser push endpoint/key/userAgent 원문, analytics raw payload dump, private memo 원문은 response/log에 노출하지 않는다.
+  - Admin system gate는 migration/seed/backup/restore/provider smoke 점검 결과를 기록하지만 shell command를 직접 실행하지 않는다.
+- 11 밖으로 남는 범위:
+  - 결제/구독/plan/payment/invoice/refund/failed payment recovery와 billing-linked conversion/churn event
+  - Admin 직접 Trash 복구 실행, 유료 복구 결제, Trash hard delete/purge
+  - 자동 민감정보 감지와 generic ExportJob 파일 생성/대량 export
 
 ## 3. Release follow-up API 후보
 
@@ -140,10 +163,7 @@
 
 ## 5. Ops/security API 후보
 
-- `NBA-007`: Trash private memo backend response restriction
-- `NBA-011`: MeetingNote Admin/internal provider audit, retention/cleanup policy. 공통 provider call log subset은 07에서 완료
-- `NBA-012`: Trash 7일 이후 복구 정책
-- `NBA-013`: Admin 운영 UX/API
+현재 이 문서 기준 신규 확정 ops/security API 후보는 없다. `NBA-007`, `NBA-011` Admin/internal 범위, `NBA-012`, `NBA-013`은 11에서 완료됐다.
 
 공통 다음 작업:
 

@@ -1,7 +1,7 @@
 # Global B2C First Sale Gate
 
 상태: Draft Guide
-최종 업데이트: 2026-07-31
+최종 업데이트: 2026-08-01
 
 ## 0. 완료 반영
 
@@ -17,7 +17,8 @@
 - [x] LINE/Apple 실제 provider smoke와 provider 설정값 연결은 2026-07-29 사용자 확인 기준 운영 완료
 - [x] Product analytics foundation은 `09_PRODUCT_ANALYTICS`에서 완료
 - [x] Mobile field-use 1차 범위는 `10_MOBILE_PWA_FIELD_USE`에서 완료
-- [ ] backup/restore, Admin provider audit/retention, 장애 대응 기준은 별도 gate로 남음
+- [x] Admin operation 1차 범위는 `11_ADMIN_OPERATION`에서 완료
+- [ ] backup/restore 실행 runbook, 장애 대응 drill, Billing 운영 기준은 별도 gate로 남음
 
 ## 1. 목적
 
@@ -33,10 +34,10 @@ MVP는 판매 버전이 아니다. MVP는 핵심 업무 루프가 동작하는�
 | Global UX | 판매 국가 기준 언어, 날짜/시간, 통화, 전화번호, 주소, UX writing이 어색하지 않다. | 08에서 `/app` `ko-KR`/`en` i18n, 사용자 국가/기본 통화, Product/Deal currency, Contact KR/US phone, Company country/region/address, Import/Export localization, Google/LINE/Apple auth를 구현했다. LINE/Apple provider smoke는 2026-07-29 사용자 확인 기준 운영 완료됐고, 추가 시장별 UX writing은 후속 polish로 남긴다. |
 | Pricing/plan | 가격표, trial 여부, 무료/유료 제한, paywall, plan별 entitlement가 명확하다. | Public pricing과 app 내부 구독 상태 UX를 함께 정의한다. |
 | Billing | 결제 provider 또는 Merchant of Record, 구독 생성/갱신/해지, 환불, 결제 실패 복구, 영수증/인보이스가 준비된다. | Payment/subscription은 첫 판매 전 큰 계획으로 다룬다. |
-| Admin/support | 사용자, 구독, 결제 이슈, 민감정보 마스킹, 감사 로그, provider 실패를 운영자가 처리할 수 있다. | Admin Web/API 최소 운영 범위를 별도 계획으로 다룬다. |
+| Admin/support | 사용자, 민감정보 마스킹, 감사 로그, provider 실패, Trash/account/data request, system gate를 운영자가 처리할 수 있다. 결제/구독 이슈는 Billing 도메인과 연결한다. | 11에서 Admin Web/API 최소 운영 범위를 구현했다. 결제/구독/plan/payment/invoice/refund 운영은 12에서 다룬다. |
 | Trust/policy | 약관, 개인정보, 보안, 환불, 계정 삭제, 데이터 export/delete, 보관 기간 정책이 판매 범위와 맞는다. | 정책 문서와 Backend 데이터 처리 기준을 함께 확정한다. |
-| Data reliability | migration, seed, backup/restore, import job 유실, provider log, 장애 대응 기준이 있다. | ImportJob persistence, Google Calendar token encryption/redaction, callback/redirect QA, 06 범위 DB target/migrate/seed gate, 07 MeetingNote provider call log subset, 08 migration 파일 작성과 DB 최신 상태 확인은 완료. backup/restore, Admin provider audit/retention, 장애 대응 기준은 별도 계획으로 남긴다. |
-| Analytics | activation, retention, paid conversion, churn, ARPU, AI cost/user를 볼 수 있다. | 09에서 event taxonomy, client/server event 수집, activation/retention snapshot, AI usage/cost summary foundation을 구현했고 10에서 mobile field-use event를 연결했다. paid conversion/churn/ARPU는 12 Billing runtime source와 11 Admin analytics UI/API가 연결되어야 완성된다. |
+| Data reliability | migration, seed, backup/restore, import job 유실, provider log, 장애 대응 기준이 있다. | ImportJob persistence, Google Calendar token encryption/redaction, callback/redirect QA, 06/11 범위 DB target/migrate/seed gate, 07 MeetingNote provider call log subset, 08 migration 파일 작성과 DB 최신 상태 확인, 11 Admin system operation check record는 완료. 실제 backup/restore 실행 runbook과 장애 대응 drill은 별도 운영 절차로 남긴다. |
+| Analytics | activation, retention, paid conversion, churn, ARPU, AI cost/user를 볼 수 있다. | 09에서 event taxonomy, client/server event 수집, activation/retention snapshot, AI usage/cost summary foundation을 구현했고 10에서 mobile field-use event를 연결했으며 11에서 Admin analytics UI/API를 구현했다. paid conversion/churn/ARPU는 12 Billing runtime source가 연결되어야 완성된다. |
 | Retention | 다음 행동, 일정, 딜 지연, 회의록 follow-up을 사용자가 놓치지 않는다. | 일정/딜 Notification reminder, 주간 일정 보고서, Google Calendar read-only import와 Google-origin schedule reminder, 딜 activity timeline, 회의록 follow-up draft, browser push permission UX는 완료. 회의록 follow-up 알림/발송과 실제 SMTP/Web Push provider smoke는 후속 운영 확인으로 분리한다. |
 
 ## 3. Gate 판정 상태
@@ -52,10 +53,10 @@ MVP는 판매 버전이 아니다. MVP는 핵심 업무 루프가 동작하는�
 | 묶음 | 이유 |
 |---|---|
 | Global B2C sales policy/payment | 가격, trial, plan, 결제 provider, 세금/환불 기준이 없으면 판매할 수 없다. |
-| Admin minimal operation | 유료 고객의 계정/결제/데이터 문제를 운영할 최소 화면과 API가 필요하다. |
-| Account/data deletion/billing UX | `/app` 언어와 global settings는 08에서 완료. 계정 삭제, 데이터 삭제/export 정책, 구독 상태 UX는 판매 전에 필요하다. |
-| Product analytics | 09 foundation과 10 mobile field-use event는 완료됐다. 유료 판매 후 conversion/churn을 운영하려면 12 Billing source event와 11 Admin analytics 화면/API 연결이 필요하다. |
-| Data reliability/DB gate | 06 범위 DB/Prisma gate, ImportJob persistence, 07 MeetingNote provider call log subset, 08 migration 작성/검증과 DB 최신 상태 확인은 완료. Admin provider audit/retention, backup/restore 기준은 판매 신뢰와 연결된다. |
+| Admin minimal operation | 완료. 11에서 계정/데이터/민감정보/provider/Trash/system gate 운영 화면과 API를 구현했다. 결제/구독 운영은 12 범위다. |
+| Account/data deletion/billing UX | `/app` 언어와 global settings는 08에서 완료. 계정 삭제 요청과 데이터 export 요청 UX/API/Admin queue는 11에서 완료. 구독 상태 UX는 12 Billing 범위다. |
+| Product analytics | 09 foundation, 10 mobile field-use event, 11 Admin analytics 화면/API는 완료됐다. 유료 판매 후 conversion/churn을 운영하려면 12 Billing source event 연결이 필요하다. |
+| Data reliability/DB gate | 06 범위 DB/Prisma gate, ImportJob persistence, 07 MeetingNote provider call log subset, 08 migration 작성/검증과 DB 최신 상태 확인, 11 Admin system operation gate는 완료. 실제 backup/restore 실행 runbook과 장애 대응 drill은 판매 신뢰와 연결된다. |
 | Auth provider operation QA | Google/LINE/Apple 구현과 LINE/Apple 실제 provider smoke 모두 완료됐다. 2026-07-29 사용자 확인 기준 운영 환경에서 동작한다. |
 | Retention follow-up | 일정/딜 알림, 주간 일정 보고서, Google Calendar read-only import, 회의록 follow-up draft, browser push permission UX, 09 activation/retention snapshot foundation, 10 mobile field event는 구현 완료. 회의록 follow-up 알림/발송, 실제 SMTP/Web Push provider smoke, 운영 모니터링 기준은 별도 확인이 필요하다. |
 
