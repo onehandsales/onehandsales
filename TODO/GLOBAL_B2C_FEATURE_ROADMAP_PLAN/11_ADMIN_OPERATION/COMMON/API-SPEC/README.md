@@ -1,6 +1,6 @@
 # API Spec
 
-상태: Confirmed Planning
+상태: Implemented
 
 ## 1. 원칙
 

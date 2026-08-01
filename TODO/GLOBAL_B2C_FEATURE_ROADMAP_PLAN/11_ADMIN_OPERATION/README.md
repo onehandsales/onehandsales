@@ -1,6 +1,6 @@
 # 11 Admin Operation
 
-상태: Confirmed Planning
+상태: Completed
 순서: 11
 성격: Global B2C 첫 판매 전 내부 최종 관리자 운영 콘솔/API/신뢰 gate
 결정 상태: `COMMON/DECISION-LOG.md` 기준
@@ -15,7 +15,7 @@
 
 ## 2. 현재 상태
 
-- Backend는 G02~G09 범위의 Admin 운영 API와 User 영향 API가 구현되어 있다.
+- Backend는 G02~G09 구현 범위의 Admin 운영 API와 User 영향 API가 구현되어 있다.
 - Admin Web은 사용자/도메인/Trash/provider/analytics/account request/system gate 운영 화면을 제공한다.
 - `User.role=ADMIN`과 Admin 운영 감사 로그 table이 있다.
 - `BE/prisma/schema.prisma`에는 핵심 도메인, soft delete, analytics, provider safe log foundation, 11 Admin 운영 table이 있다.
@@ -23,6 +23,7 @@
 - Trash는 `deletedAt`, `deletedByUserId`, `trashExpiresAt` 기반 soft delete 구조가 이미 있다.
 - 10번 Mobile/PWA와 충돌하지 않도록 BusinessCard OCR safe failure field는 현재 schema의 `BusinessCardScanLog.safeErrorCode`, `safeErrorMessage`, `retryable`를 사용한다.
 - 10번 완료 후 `UserNotificationSetting`, `BrowserPushSubscription`, `NotificationDeliveryAttempt`, `ProductAnalyticsEvent`의 mobile field-use event는 Admin에서 safe summary/aggregate로 조회할 수 있는 기반이 됐다. 단 push endpoint/key/userAgent 원문과 analytics raw payload는 노출하지 않는다.
+- `G10_QA_DOCUMENT_CLOSEOUT` 기준 최종 검증, 문서 정합성 점검, 보안/개인정보 redaction 리뷰가 완료됐다.
 
 ## 3. 확정 결정 요약
 
@@ -98,3 +99,4 @@ G01 -> G02 -> G03 -> G05 -> G06 -> G07 -> G09 -> G10
 - 결제/구독 기능과 지표는 11에서 구현되지 않는다.
 - 신규 Prisma model/field/enum/index에는 한글 주석과 migration SQL COMMENT가 있다.
 - 모든 goal은 자체 체크리스트와 검증 기록을 남긴다.
+- G10 closeout 검증 결과는 `COMMON/GOAL-SPECS/G10_QA_DOCUMENT_CLOSEOUT.md`에 기록되어 있다.

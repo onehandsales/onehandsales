@@ -1,6 +1,6 @@
 # Admin Audit Security API
 
-상태: Confirmed Planning
+상태: Implemented
 연결 Goal: G02
 소비자: Admin Web
 

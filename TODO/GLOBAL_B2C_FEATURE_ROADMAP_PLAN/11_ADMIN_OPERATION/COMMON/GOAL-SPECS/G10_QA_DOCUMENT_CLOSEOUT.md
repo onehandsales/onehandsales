@@ -1,6 +1,6 @@
 # G10 QA Document Closeout
 
-상태: Final
+상태: Completed
 목표: 11 Admin Operation 구현 결과를 QA하고 문서/계약/검증 기록을 closeout한다.
 
 ## 1. 포함 범위
@@ -137,18 +137,54 @@ rg -n "provider raw|prompt|token|quota|private memo|endpoint|p256dh|authCipherte
 
 ## 12. Goal 체크리스트
 
-- [ ] G01~G09 체크리스트 상태를 확인했다.
-- [ ] API spec과 구현 endpoint가 일치한다.
-- [ ] AdminGuard 적용이 확인됐다.
-- [ ] audit log 필수 action이 기록된다.
-- [ ] raw access reason 누락 요청이 실패한다.
-- [ ] provider raw/prompt/token/quota detail이 저장/응답/로그에 없다.
-- [ ] browser push endpoint/key/userAgent 원문이 Admin select/response/log에 없다.
-- [ ] mobile analytics raw payload가 Admin response에 dump되지 않는다.
-- [ ] Trash 만료가 hard delete/purge로 구현되지 않았다.
-- [ ] 결제/구독 기능이 11에 없다.
-- [ ] Prisma validate/generate가 통과했다.
-- [ ] Backend typecheck/lint/test/build 결과를 기록했다.
-- [ ] Admin Web typecheck/lint/build/E2E 결과를 기록했다.
-- [ ] User Web 영향 검증 결과를 기록했다.
-- [ ] 문서 완료 기록을 남겼다.
+- [x] G01~G09 체크리스트 상태를 확인했다.
+- [x] API spec과 구현 endpoint가 일치한다.
+- [x] AdminGuard 적용이 확인됐다.
+- [x] audit log 필수 action이 기록된다.
+- [x] raw access reason 누락 요청이 실패한다.
+- [x] provider raw/prompt/token/quota detail이 저장/응답/로그에 없다.
+- [x] browser push endpoint/key/userAgent 원문이 Admin select/response/log에 없다.
+- [x] mobile analytics raw payload가 Admin response에 dump되지 않는다.
+- [x] Trash 만료가 hard delete/purge로 구현되지 않았다.
+- [x] 결제/구독 기능이 11에 없다.
+- [x] Prisma validate/generate가 통과했다.
+- [x] Backend typecheck/lint/test/build 결과를 기록했다.
+- [x] Admin Web typecheck/lint/build/E2E 결과를 기록했다.
+- [x] User Web 영향 검증 결과를 기록했다.
+- [x] 문서 완료 기록을 남겼다.
+
+## 13. 완료 기록
+
+- 완료일: 2026-08-01
+- 완료 goal: G01~G09 완료 상태 확인. G02 문서와 일부 API spec의 stale 상태를 실제 구현 기준으로 `Implemented`/`Completed`로 보정.
+- DB migration:
+  - `20260801010000_add_admin_audit_security_foundation`
+  - `20260801020000_add_trash_recovery_request`
+  - `20260801030000_add_account_data_requests`
+  - `20260801040000_add_admin_operation_check_run`
+  - 신규 migration 파일 존재, 기존 migration 미수정, Prisma schema 주석과 migration SQL COMMENT 확인.
+- Backend 검증:
+  - `pnpm run prisma:validate`: 통과.
+  - `pnpm run prisma:generate`: 통과.
+  - `pnpm run typecheck`: 통과.
+  - `pnpm run lint`: 통과.
+  - `pnpm run test`: 통과. 94 suites / 479 tests. 종료 시 Jest worker force-exit 경고 1건이 있었고 실패는 없음.
+  - `pnpm run build`: 통과.
+- Admin Web 검증:
+  - `pnpm run typecheck`: 통과.
+  - `pnpm run lint`: 통과.
+  - `pnpm run build`: 통과. Vite build 완료.
+  - `pnpm run test:e2e`: 통과. 1 test. 현재 노출 Admin route, non-admin 차단, reason modal validation, 운영 gate smoke 확인.
+- User Web 검증:
+  - `pnpm run typecheck`: 통과.
+  - `pnpm run lint`: 통과.
+  - `pnpm run build`: 통과. Vite chunk size warning 있음.
+  - `pnpm run test:e2e`: 통과. 32 tests. `/app/trash`, `/app/settings`, Google Calendar settings, product analytics route redaction 포함.
+- Security/privacy/redaction:
+  - Admin controllers의 `@UseGuards(AuthGuard, AdminGuard)` 적용 확인.
+  - raw access reason validation과 audit/sensitive log transaction 확인.
+  - provider raw/prompt/token/quota detail, browser push endpoint/key/userAgent 원문, analytics raw payload dump 금지 조건 확인.
+  - 결제/구독 검색 결과는 제외/금지/12 이관 문구 또는 11 제외 범위 문구로만 확인됨.
+- 환경 참고:
+  - 로컬 실행 환경은 Node `v22.21.1`, pnpm `10.20.0`. 문서 기준 Node 24와 다르지만 위 검증 명령은 해당 환경에서 실행 완료.
+- 남은 후속: G10 closeout 기준 blocker 없음.

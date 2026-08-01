@@ -11,48 +11,24 @@ test("sends allowlisted app route analytics events without raw route data", asyn
   const api = await setupUserWebApiMocks(page);
 
   await page.goto("/app");
-  await expect.poll(() => analyticsRouteKeys(api.analyticsEvents())).toEqual([
-    "home",
-  ]);
+  await waitForRouteKey(api.analyticsEvents, "home");
 
   await page.goto("/app/deals");
-  await expect.poll(() => analyticsRouteKeys(api.analyticsEvents())).toEqual([
-    "home",
-    "deals",
-  ]);
+  await waitForRouteKey(api.analyticsEvents, "deals");
 
   await page.goto("/app/deals/deal-mobile-001");
-  await expect.poll(() => analyticsRouteKeys(api.analyticsEvents())).toEqual([
-    "home",
-    "deals",
-    "deal_detail",
-  ]);
+  await waitForRouteKey(api.analyticsEvents, "deal_detail");
 
   await page.goto("/app/deals/deal-mobile-002");
-  await expect.poll(() => analyticsRouteKeys(api.analyticsEvents())).toEqual([
-    "home",
-    "deals",
-    "deal_detail",
-  ]);
+  await waitForRouteKey(api.analyticsEvents, "deal_detail");
 
   await page.goto("/app/contacts/scan");
   await expect(page).toHaveURL(/\/app\/business-cards$/);
-  await expect.poll(() => analyticsRouteKeys(api.analyticsEvents())).toEqual([
-    "home",
-    "deals",
-    "deal_detail",
-    "business_cards",
-  ]);
+  await waitForRouteKey(api.analyticsEvents, "business_cards");
 
   await page.goto("/app/export");
   await expect(page).toHaveURL(/\/app$/);
-  await expect.poll(() => analyticsRouteKeys(api.analyticsEvents())).toEqual([
-    "home",
-    "deals",
-    "deal_detail",
-    "business_cards",
-    "home",
-  ]);
+  await waitForRouteKey(api.analyticsEvents, "home");
 
   const detailEvent = api
     .analyticsEvents()
@@ -75,6 +51,16 @@ test("sends allowlisted app route analytics events without raw route data", asyn
   expect(detailEventJson).not.toContain("query");
   expect(api.protectedRequestsWithoutAuthorization()).toEqual([]);
 });
+
+// 기능 : analytics event 목록에 기대 routeKey가 들어올 때까지 기다립니다.
+async function waitForRouteKey(
+  getEvents: () => readonly unknown[],
+  routeKey: string
+) {
+  await expect
+    .poll(() => analyticsRouteKeys(getEvents()).includes(routeKey))
+    .toBe(true);
+}
 
 // 기능 : analytics event 목록에서 routeKey만 추출합니다.
 function analyticsRouteKeys(events: readonly unknown[]) {

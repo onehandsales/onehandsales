@@ -1,6 +1,6 @@
 # Admin Trash Operation API
 
-상태: Confirmed Planning
+상태: Implemented
 연결 Goal: G05
 소비자: Admin Web
 

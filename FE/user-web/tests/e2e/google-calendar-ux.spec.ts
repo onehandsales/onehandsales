@@ -8,6 +8,7 @@ test.describe("G04 Google Calendar UX", () => {
   test("shows calendar status, hidden filter, source badge, and manual sync on schedules", async ({
     page,
   }) => {
+    await page.clock.setFixedTime(new Date("2026-07-20T09:00:00.000Z"));
     const api = await setupUserWebApiMocks(page);
     await seedAuthenticatedSession(page);
 

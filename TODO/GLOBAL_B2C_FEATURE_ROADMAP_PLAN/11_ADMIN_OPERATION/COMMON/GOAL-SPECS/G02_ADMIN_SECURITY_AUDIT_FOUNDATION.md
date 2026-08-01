@@ -1,6 +1,6 @@
 # G02 Admin Security Audit Foundation
 
-상태: Ready after G01
+상태: Completed
 목표: Admin API의 권한, 감사 로그, 민감 원문 접근 사유 입력 기반을 만든다.
 
 ## 1. 포함 범위
@@ -174,16 +174,36 @@ pnpm run build
 
 ## 12. Goal 체크리스트
 
-- [ ] AdminGuard가 `role=ADMIN` 기준으로 동작한다.
-- [ ] 일반 사용자는 `/admin/api/*`에 접근할 수 없다.
-- [ ] `AdminAuditLog` schema와 migration이 있다.
-- [ ] `AdminSensitiveAccessLog` schema와 migration이 있다.
-- [ ] 신규 Prisma 주석과 migration COMMENT가 있다.
-- [ ] `GET /admin/api/audit-logs`가 동작한다.
-- [ ] `POST /admin/api/sensitive/raw-access`가 reason 없이는 실패한다.
-- [ ] raw access와 sensitive log가 같은 transaction에 있다.
-- [ ] audit log에 원문 민감값이 저장되지 않는다.
-- [ ] provider raw/prompt/token/quota detail fieldSet이 없다.
-- [ ] Admin Web `/audit-logs` 화면이 있다.
-- [ ] reason modal validation이 있다.
-- [ ] 검증 command 결과를 기록했다.
+- [x] AdminGuard가 `role=ADMIN` 기준으로 동작한다.
+- [x] 일반 사용자는 `/admin/api/*`에 접근할 수 없다.
+- [x] `AdminAuditLog` schema와 migration이 있다.
+- [x] `AdminSensitiveAccessLog` schema와 migration이 있다.
+- [x] 신규 Prisma 주석과 migration COMMENT가 있다.
+- [x] `GET /admin/api/audit-logs`가 동작한다.
+- [x] `POST /admin/api/sensitive/raw-access`가 reason 없이는 실패한다.
+- [x] raw access와 sensitive log가 같은 transaction에 있다.
+- [x] audit log에 원문 민감값이 저장되지 않는다.
+- [x] provider raw/prompt/token/quota detail fieldSet이 없다.
+- [x] Admin Web `/audit-logs` 화면이 있다.
+- [x] reason modal validation이 있다.
+- [x] 검증 command 결과를 기록했다.
+
+## 13. 완료 기록
+
+- 완료일: 2026-08-01
+- 완료 내용:
+  - `AdminAuditLog`, `AdminSensitiveAccessLog`, 관련 enum과 User relation이 schema/migration에 반영됨.
+  - `GET /admin/api/audit-logs`, `POST /admin/api/sensitive/raw-access` 구현 확인.
+  - raw access reason 10~1000자 validation과 `AdminAuditLog`/`AdminSensitiveAccessLog` 같은 transaction 기록 확인.
+  - Admin Web `/audit-logs`와 공통 reason modal 구현 확인.
+- 검증 결과:
+  - `cd BE && pnpm run prisma:validate`: 통과.
+  - `cd BE && pnpm run prisma:generate`: 통과.
+  - `cd BE && pnpm run typecheck`: 통과.
+  - `cd BE && pnpm run lint`: 통과.
+  - `cd BE && pnpm run test`: 통과. 94 suites / 479 tests.
+  - `cd BE && pnpm run build`: 통과.
+  - `cd FE/admin-web && pnpm run typecheck`: 통과.
+  - `cd FE/admin-web && pnpm run lint`: 통과.
+  - `cd FE/admin-web && pnpm run build`: 통과.
+  - `cd FE/admin-web && pnpm run test:e2e`: 통과. 1 test.

@@ -1,6 +1,6 @@
 # Admin User Operation API
 
-상태: Confirmed Planning
+상태: Implemented
 연결 Goal: G03
 소비자: Admin Web
 

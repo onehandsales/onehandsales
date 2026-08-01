@@ -16,6 +16,9 @@ export default defineConfig({
   },
   webServer: {
     command: "pnpm exec vite --host 0.0.0.0 --port 5175",
+    env: {
+      VITE_PRODUCT_ANALYTICS_ENABLED: "true",
+    },
     reuseExistingServer: true,
     timeout: 120_000,
     url: "http://127.0.0.1:5175",
