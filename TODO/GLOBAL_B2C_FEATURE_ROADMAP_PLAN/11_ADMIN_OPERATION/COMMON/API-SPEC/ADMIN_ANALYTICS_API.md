@@ -1,6 +1,6 @@
 # Admin Analytics API
 
-상태: Confirmed Planning
+상태: Implemented
 연결 Goal: G07
 소비자: Admin Web
 
@@ -101,6 +101,11 @@ Business Logic:
 7. 조회 audit를 남긴다.
 
 Transaction: 없음.
+
+Implementation note:
+
+- 조회 본문은 transaction 없이 read model aggregate로 처리하고, 조회 성공 후 `ADMIN_ANALYTICS_VIEW` audit를 append-only로 남긴다.
+- `countryCode`, `preferredLocale` filter는 사용자 relation이 있는 activation/event/AI usage aggregate에 적용한다. `RetentionCohortSnapshot`은 비식별 cohort snapshot이라 기간/timezone 기준으로 조회한다.
 
 Observability:
 

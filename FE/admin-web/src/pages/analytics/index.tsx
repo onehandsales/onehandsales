@@ -1,5 +1,5 @@
-import { PlaceholderPage } from "@/components/layout/placeholder-page";
+import { AdminAnalyticsOverviewScreen } from "@/features/usage-analytics";
 
 export function AnalyticsPage() {
-  return <PlaceholderPage title="사용량 분석" />;
+  return <AdminAnalyticsOverviewScreen />;
 }

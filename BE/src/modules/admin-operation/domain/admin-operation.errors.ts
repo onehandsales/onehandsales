@@ -61,3 +61,35 @@ export class AdminUserNotFoundError extends DomainError {
     });
   }
 }
+
+// 역할 : AdminAnalyticsRangeRequiredError Admin analytics 기간 필수 검증 오류를 표현합니다.
+export class AdminAnalyticsRangeRequiredError extends DomainError {
+  // 기능 : from/to가 없거나 올바른 ISO instant가 아닐 때 field detail을 포함합니다.
+  constructor(field: "from" | "to") {
+    super("ADMIN_ANALYTICS_RANGE_REQUIRED", "분석 기간을 입력해 주세요", {
+      field,
+    });
+  }
+}
+
+// 역할 : AdminAnalyticsRangeTooLargeError Admin analytics 기간 상한 검증 오류를 표현합니다.
+export class AdminAnalyticsRangeTooLargeError extends DomainError {
+  // 기능 : 조회 기간이 운영 overview 상한을 넘었을 때 오류를 생성합니다.
+  constructor() {
+    super(
+      "ADMIN_ANALYTICS_RANGE_TOO_LARGE",
+      "분석 기간은 최대 366일까지 조회할 수 있어요",
+      { field: "to" }
+    );
+  }
+}
+
+// 역할 : AdminTimezoneInvalidError Admin analytics timezone 검증 오류를 표현합니다.
+export class AdminTimezoneInvalidError extends DomainError {
+  // 기능 : IANA timezone으로 해석할 수 없는 값에 대한 오류를 생성합니다.
+  constructor() {
+    super("ADMIN_TIMEZONE_INVALID", "지원하지 않는 timezone이에요", {
+      field: "timeZone",
+    });
+  }
+}

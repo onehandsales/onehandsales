@@ -1,4 +1,5 @@
 import {
+  BarChart3,
   LayoutDashboard,
   ScrollText,
   ServerCrash,
@@ -11,6 +12,7 @@ const navigationItems = [
   { label: "대시보드", path: "/", icon: LayoutDashboard },
   { label: "사용자", path: "/users", icon: UsersRound },
   { label: "Provider 실패", path: "/provider-failures", icon: ServerCrash },
+  { label: "사용량 분석", path: "/analytics", icon: BarChart3 },
   { label: "Trash 요청", path: "/trash/recovery-requests", icon: Trash2 },
   { label: "감사 로그", path: "/audit-logs", icon: ScrollText },
 ];

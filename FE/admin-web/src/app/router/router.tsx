@@ -2,6 +2,7 @@ import { createBrowserRouter, Navigate } from "react-router-dom";
 import { AdminShell } from "@/components/layout/admin-shell";
 import { PlaceholderPage } from "@/components/layout/placeholder-page";
 import { ProtectedAdminRoute } from "@/features/auth";
+import { AnalyticsPage } from "@/pages/analytics";
 import { AuditLogsPage } from "@/pages/audit-logs";
 import { LoginPage } from "@/pages/login";
 import { ProviderFailuresPage } from "@/pages/provider-failures";
@@ -31,7 +32,7 @@ export const router = createBrowserRouter([
       { path: "trash/recovery-requests", element: <TrashRecoveryRequestsPage /> },
       { path: "organizations", element: <Navigate replace to="/" /> },
       { path: "subscriptions", element: <Navigate replace to="/" /> },
-      { path: "analytics", element: <Navigate replace to="/" /> },
+      { path: "analytics", element: <AnalyticsPage /> },
       { path: "audit-logs", element: <AuditLogsPage /> },
       { path: "system", element: <Navigate replace to="/" /> },
       { path: "support", element: <Navigate replace to="/" /> },

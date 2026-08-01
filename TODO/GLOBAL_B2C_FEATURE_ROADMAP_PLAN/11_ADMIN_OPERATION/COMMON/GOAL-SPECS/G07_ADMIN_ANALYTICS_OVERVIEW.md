@@ -1,6 +1,6 @@
 # G07 Admin Analytics Overview
 
-상태: Ready after G02
+상태: Implemented
 목표: 09 Product Analytics foundation을 읽어 Admin 운영 분석 요약을 만든다.
 
 ## 1. 포함 범위
@@ -136,22 +136,26 @@ cd BE
 pnpm run test -- product-analytics admin
 ```
 
+결과: 통과. 20개 test suite, 77개 test 통과.
+
 ```powershell
 cd FE/admin-web
 pnpm run build
 ```
 
+결과: 통과. `tsc -b && vite build` 완료.
+
 ## 12. Goal 체크리스트
 
-- [ ] Admin analytics overview API가 있다.
-- [ ] activation summary가 있다.
-- [ ] retention summary가 있다.
-- [ ] core event count가 있다.
-- [ ] route view count가 있다.
-- [ ] AI usage/cost summary가 있다.
-- [ ] 10 mobile field-use event summary가 있다.
-- [ ] mobile analytics raw payload를 response에 dump하지 않는다.
-- [ ] billing/subscription/paid conversion/churn 지표가 없다.
-- [ ] analytics 조회 audit가 남는다.
-- [ ] Admin Web `/analytics` 화면이 있다.
-- [ ] 검증 command 결과를 기록했다.
+- [x] Admin analytics overview API가 있다.
+- [x] activation summary가 있다.
+- [x] retention summary가 있다.
+- [x] core event count가 있다.
+- [x] route view count가 있다.
+- [x] AI usage/cost summary가 있다.
+- [x] 10 mobile field-use event summary가 있다.
+- [x] mobile analytics raw payload를 response에 dump하지 않는다.
+- [x] billing/subscription/paid conversion/churn 지표가 없다.
+- [x] analytics 조회 audit가 남는다.
+- [x] Admin Web `/analytics` 화면이 있다.
+- [x] 검증 command 결과를 기록했다.
