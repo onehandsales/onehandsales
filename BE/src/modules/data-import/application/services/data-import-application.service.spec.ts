@@ -1,5 +1,8 @@
 import { DataImportApplicationService } from "./data-import-application.service";
-import type { ImportFileParser } from "@/modules/data-import/application/ports/import-file-parser.port";
+import type {
+  ImportFileParser,
+  ImportUploadedFile,
+} from "@/modules/data-import/application/ports/import-file-parser.port";
 import type {
   ImportJobDetailRecord,
   ImportJobErrorRecord,
@@ -105,6 +108,152 @@ describe("DataImportApplicationService persistent import job flow", () => {
         errorTitle: "Check Contact Department",
       })
     );
+  });
+
+  it("deletes original uploaded binary after creating an import job snapshot", async () => {
+    const fixture = createServiceFixture();
+    fixture.importTemplateRepository.findActiveTemplateByType.mockResolvedValue(
+      createImportTemplateRecord({
+        columnsJson: [
+          {
+            key: "companyName",
+            label: "회사명",
+            required: true,
+            type: "text",
+          },
+        ],
+      })
+    );
+    fixture.importFileParser.parse.mockResolvedValue({
+      sourceColumns: ["companyName"],
+      rows: [
+        {
+          rowNumber: 2,
+          rawData: { companyName: "Acme" },
+        },
+      ],
+    });
+    fixture.importUploadedFileStorage.store.mockResolvedValue({
+      checksum: "checksum-1",
+      storageProvider: "LOCAL",
+      storageBucket: null,
+      storageKey: "user/job/source.xlsx",
+    });
+    fixture.importJobRepository.createJob.mockResolvedValue(
+      createImportJobDetail({ status: "UPLOADED", mappingJson: {}, mappingSource: "NONE" })
+    );
+
+    const response = await fixture.service.createImportJob(CURRENT_USER, {
+      targetType: "COMPANY",
+      file: createUploadedImportFile(),
+    });
+
+    expect(fixture.importUploadedFileStorage.delete).toHaveBeenCalledWith({
+      storageKey: "user/job/source.xlsx",
+    });
+    const createJobCallOrder =
+      fixture.importJobRepository.createJob.mock.invocationCallOrder[0] ?? 0;
+    const deleteCallOrder =
+      fixture.importUploadedFileStorage.delete.mock.invocationCallOrder[0] ?? 0;
+    expect(createJobCallOrder).toBeGreaterThan(0);
+    expect(createJobCallOrder).toBeLessThan(deleteCallOrder);
+    expect(
+      fixture.importJobRepository.updateUploadedFileStatusForUser
+    ).toHaveBeenCalledWith({
+      userId: CURRENT_USER.id,
+      importJobId: IMPORT_JOB_ID,
+      status: "DELETED",
+      deletedAt: expect.any(Date),
+    });
+    expect(response.job.id).toBe(IMPORT_JOB_ID);
+    expect(JSON.stringify(response)).not.toContain("user/job/source.xlsx");
+  });
+
+  it("keeps create import job success when immediate uploaded binary deletion fails", async () => {
+    const fixture = createServiceFixture();
+    fixture.importTemplateRepository.findActiveTemplateByType.mockResolvedValue(
+      createImportTemplateRecord()
+    );
+    fixture.importFileParser.parse.mockResolvedValue({
+      sourceColumns: ["companyName"],
+      rows: [{ rowNumber: 2, rawData: { companyName: "Acme" } }],
+    });
+    fixture.importUploadedFileStorage.store.mockResolvedValue({
+      checksum: "checksum-1",
+      storageProvider: "LOCAL",
+      storageBucket: null,
+      storageKey: "raw/storage-key/source.xlsx",
+    });
+    fixture.importUploadedFileStorage.delete.mockRejectedValue(
+      new Error("raw/storage-key/source.xlsx provider detail")
+    );
+    fixture.importJobRepository.createJob.mockResolvedValue(
+      createImportJobDetail({ status: "UPLOADED", mappingJson: {}, mappingSource: "NONE" })
+    );
+
+    const response = await fixture.service.createImportJob(CURRENT_USER, {
+      targetType: "COMPANY",
+      file: createUploadedImportFile(),
+    });
+
+    expect(response.job.id).toBe(IMPORT_JOB_ID);
+    expect(
+      fixture.importJobRepository.updateUploadedFileStatusForUser
+    ).not.toHaveBeenCalledWith(expect.objectContaining({ status: "DELETED" }));
+    expect(fixture.importJobRepository.createError).toHaveBeenCalledWith(
+      expect.objectContaining({
+        userId: CURRENT_USER.id,
+        importJobId: IMPORT_JOB_ID,
+        errorType: "STORAGE",
+        errorCode: "STORAGE_DELETE_FAILED",
+        severity: "WARNING",
+        retryable: true,
+      })
+    );
+    expect(JSON.stringify(response)).not.toContain("raw/storage-key/source.xlsx");
+    expect(JSON.stringify(response)).not.toContain("provider detail");
+
+    const failedLog = fixture.logger.log.mock.calls.find((call) =>
+      String(call[0]).includes("importJob.fileDeleteFailed")
+    )?.[0];
+    expect(failedLog).toEqual(expect.any(String));
+    expect(String(failedLog)).toContain("STORAGE_DELETE_FAILED");
+    expect(String(failedLog)).not.toContain("raw/storage-key/source.xlsx");
+    expect(String(failedLog)).not.toContain("provider detail");
+  });
+
+  it("keeps orphan file best-effort delete when import job DB creation fails", async () => {
+    const fixture = createServiceFixture();
+    fixture.importTemplateRepository.findActiveTemplateByType.mockResolvedValue(
+      createImportTemplateRecord()
+    );
+    fixture.importFileParser.parse.mockResolvedValue({
+      sourceColumns: ["companyName"],
+      rows: [{ rowNumber: 2, rawData: { companyName: "Acme" } }],
+    });
+    fixture.importUploadedFileStorage.store.mockResolvedValue({
+      checksum: "checksum-1",
+      storageProvider: "LOCAL",
+      storageBucket: null,
+      storageKey: "user/job/source.xlsx",
+    });
+    fixture.importJobRepository.createJob.mockRejectedValue(
+      new Error("database unavailable")
+    );
+
+    await expect(
+      fixture.service.createImportJob(CURRENT_USER, {
+        targetType: "COMPANY",
+        file: createUploadedImportFile(),
+      })
+    ).rejects.toThrow("database unavailable");
+
+    expect(fixture.importUploadedFileStorage.delete).toHaveBeenCalledWith({
+      storageKey: "user/job/source.xlsx",
+    });
+    expect(
+      fixture.importJobRepository.updateUploadedFileStatusForUser
+    ).not.toHaveBeenCalled();
   });
 
   it("rejects invalid rows before delegating confirm", async () => {
@@ -693,6 +842,7 @@ function createServiceFixture() {
     ),
     importTemplateRepository,
     importJobRepository,
+    importFileParser,
     importUploadedFileStorage,
     xlsxWriter,
     logger,
@@ -712,6 +862,18 @@ function createImportTemplateRecord(
     isActive: true,
     createdAt: NOW,
     updatedAt: NOW,
+    ...overrides,
+  };
+}
+
+function createUploadedImportFile(
+  overrides: Partial<ImportUploadedFile> = {}
+): ImportUploadedFile {
+  return {
+    buffer: Buffer.from("companyName\nAcme"),
+    originalname: "source.xlsx",
+    mimetype: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    size: 100,
     ...overrides,
   };
 }

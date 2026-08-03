@@ -666,9 +666,11 @@ export class DataImportApplicationService {
       file: input.file,
     });
 
+    let job: ImportJobDetailRecord;
+
     try {
       // 3. job, parsed row, uploaded file metadata를 하나의 transaction으로 생성한다.
-      const job = await this.importJobRepository.runInTransaction((repositories) =>
+      job = await this.importJobRepository.runInTransaction((repositories) =>
         repositories.createJob({
           id: importJobId,
           userId: currentUser.id,
@@ -710,20 +712,27 @@ export class DataImportApplicationService {
           },
         })
       );
-
-      this.logEvent("importJob.created", {
-        userId: currentUser.id,
-        importJobId: job.id,
-        targetType: job.targetType,
-        totalRowCount: job.totalRowCount,
-      });
-
-      return this.toImportJobDetailResponse(job, { includeErrors: true });
     } catch (error) {
       // 4. DB 생성 실패 시 orphan 원본 파일을 best effort로 삭제한다.
       await this.safeDeleteStoredImportFile(storedFile.storageKey);
       throw error;
     }
+
+    // 5. DB snapshot 생성 성공 직후 원본 binary를 즉시 삭제하고 response 구조는 유지한다.
+    await this.deleteUploadedFileAfterCreate({
+      userId: currentUser.id,
+      importJobId: job.id,
+      storageKey: storedFile.storageKey,
+    });
+
+    this.logEvent("importJob.created", {
+      userId: currentUser.id,
+      importJobId: job.id,
+      targetType: job.targetType,
+      totalRowCount: job.totalRowCount,
+    });
+
+    return this.toImportJobDetailResponse(job, { includeErrors: true });
   }
 
   // 기능 : 원본 컬럼을 대상 양식 컬럼으로 AI 매핑하고 실패 시 규칙 기반 매핑으로 대체합니다.
@@ -1572,6 +1581,55 @@ export class DataImportApplicationService {
     } catch {
       throw new ImportFileStorageFailedError();
     }
+  }
+
+  // 기능 : DB snapshot 생성 직후 원본 file binary를 삭제하고 metadata를 최소 보관 상태로 바꿉니다.
+  private async deleteUploadedFileAfterCreate(input: {
+    readonly userId: string;
+    readonly importJobId: string;
+    readonly storageKey: string;
+  }): Promise<void> {
+    try {
+      // 1. transaction 이후 외부 storage delete를 실행해 DB lock 시간을 늘리지 않는다.
+      await this.importUploadedFileStorage.delete({
+        storageKey: input.storageKey,
+      });
+
+      await this.importJobRepository.updateUploadedFileStatusForUser({
+        userId: input.userId,
+        importJobId: input.importJobId,
+        status: "DELETED",
+        deletedAt: new Date(),
+      });
+    } catch {
+      // 2. delete 실패 시 metadata deletedAt을 비워 둬 G05 cleanup이 storage delete를 재시도하게 한다.
+      await this.recordUploadedFileDeleteWarning(input.userId, input.importJobId);
+    }
+  }
+
+  // 기능 : 원본 file delete 실패를 사용자 입력 원문 없이 안전한 warning으로 기록합니다.
+  private async recordUploadedFileDeleteWarning(
+    userId: string,
+    importJobId: string
+  ): Promise<void> {
+    try {
+      // 1. ImportJobError에는 safe message만 저장하고 storageKey/raw error detail은 남기지 않는다.
+      await this.importJobRepository.createError({
+        userId,
+        importJobId,
+        errorType: "STORAGE",
+        errorCode: "STORAGE_DELETE_FAILED",
+        severity: "WARNING",
+        safeMessage: "원본 파일 삭제에 실패했습니다.",
+        retryable: true,
+      });
+    } catch {
+      // 2. warning 기록 실패도 create response를 막지 않고 운영 safe log만 남긴다.
+    }
+
+    this.logEvent("importJob.fileDeleteFailed", {
+      safeErrorCode: "STORAGE_DELETE_FAILED",
+    });
   }
 
   // 기능 : DB 생성 실패 등 보상 처리에서 원본 파일 삭제를 best effort로 수행합니다.
