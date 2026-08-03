@@ -10,6 +10,7 @@
 - [x] DataImport 새로고침/탭 이동 resume UX
 - [x] DataImport confirm/cancel/expired/failed 상태 처리
 - [x] DataImport storage delete failure/redaction/ownership QA
+- [ ] DataImport G05~G08 최종형 보관/삭제/입력량 제한 보강 구현 및 QA
 - [x] Weekly Schedule Report API: `GET /api/schedules/week`
 - [x] Weekly Schedule Report export API: `GET /api/schedules/week/export/xlsx`
 - [x] `/app/schedules/week` 주간 보고서 UX와 Excel 다운로드
@@ -54,7 +55,7 @@
 | Schedule | deal options, list/detail/create/update/delete, 월간/주간 조회, weekly report API, weekly xlsx export, Google Calendar OAuth/read-only import/sync/calendar selection/source metadata, 딜/회사/담당자/다음 행동 요약, timezone 처리 | `/app/schedules`, `/app/schedules/week`, detail, form, 월간/목록, 주간 보고서, Excel 다운로드, Google Calendar status/source badge/manual sync/calendar hidden handling | N/A | 완료. 주간 일정 보고서와 Google Calendar read-only import 포함 |
 | MeetingNote | list/detail/create/update/delete, AI draft, STT draft, provider call log, next action draft, follow-up draft, add deal link, trash | 목록, 상세, 작성, AI/STT draft UI, 모바일 녹음/fallback, AI 후속 작업, 다음 행동 후보 편집 저장, follow-up draft 수정/복사, 딜 연동, 삭제/복구, local draft | Admin provider/audit에서 safe 운영 조회 | 완료. Admin audit/raw access는 11 완료. 목록 summary와 자동 발송/알림은 후속 |
 | BusinessCard OCR | `/api/business-card-scans`, scan/confirm/log/status, safe failure field, KR/US phone normalization | `/app/business-cards`, 모바일 촬영/앨범 선택, OCR safe failure, 이미지 업로드, 명함스캔, KR/US 전화번호 확인/수정, local draft, 저장 | Admin provider failure에서 safe 운영 조회 | 완료. Admin provider failure dashboard는 11 완료 |
-| DataImport | localized import templates, uploads, mapping, row edit/validation, confirm, cancel, active job resume, import logs. pre-confirm job은 DB persistence | `/app/import`, `/app/import/review/:importJobId`, template language selector, CSV/XLSX upload, AI mapping, row edit/validation, resume, confirm, log detail | N/A | 완료. persistence/resume와 template localization 포함 |
+| DataImport | localized import templates, uploads, mapping, row edit/validation, confirm, cancel, active job resume, import logs. pre-confirm job은 DB persistence. G05~G08 최종형 보관/삭제/입력량 제한은 구현 대기 | `/app/import`, `/app/import/review/:importJobId`, template language selector, CSV/XLSX upload, AI mapping, row edit/validation, resume, confirm, log detail. G07/G08에서 row detail 만료 안내와 제한 초과 안내 보강 필요 | N/A | G01~G04 완료. G05~G08 구현/QA/문서 업데이트 후 01은 최종 서비스 형태 기준 완전 종료 |
 | Search | `GET /api/search` | GlobalSearch, loading/empty/error, result navigation | N/A | 완료 |
 | Trash | `/api/trash`, detail, restore, Schedule soft delete/restore, 만료 row/recovery request | `/app/trash`, list/detail modal/restore, Schedule restore, 만료 row restore disabled, 복구 문의 | Admin User Trash와 recovery request queue | 7일 이내 복구와 7일 이후 복구 문의 완료. hard delete/purge와 유료 복구 결제는 제외 |
 | Domain export | Company/Contact/Product/Deal localized xlsx endpoint, weekly schedule report localized xlsx export | 각 목록 `엑셀 다운로드`, `/app/schedules/week` Excel 다운로드, header/date-time/currency localization | N/A | 완료 |

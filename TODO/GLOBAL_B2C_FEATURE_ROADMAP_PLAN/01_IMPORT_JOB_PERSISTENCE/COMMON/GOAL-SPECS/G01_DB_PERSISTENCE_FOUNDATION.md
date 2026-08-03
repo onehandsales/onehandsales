@@ -4,6 +4,16 @@
 완료일: 2026-07-21
 완료 근거: `TODO_LOG/2026-07-21/G04_IMPORT_JOB_PERSISTENCE_QA_CLEANUP/WORK_LOG.md`
 
+## 0. 재작업 체크리스트
+
+- [ ] Request/Response 영향 확인: G01은 DB foundation goal이며 신규 User HTTP API는 G02에서 다룬다.
+- [ ] Business Logic 확인: import persistence repository boundary와 transaction 전제만 만든다.
+- [ ] User Flow 확인: 직접 UI 변경은 없으며, 이어받기 flow 영향은 G03에서 다룬다.
+- [ ] DB/Prisma 확인: `BE/prisma/schema.prisma`, `BE/prisma/migrations`, `BE-TODO/DB-SCHEMA.md`를 대조한다.
+- [ ] 소프트웨어 아키텍처/컨벤션 확인: `AGENT/SOFTWARE_AGENT/BACKEND_AGENT`, `AGENT/SOFTWARE_AGENT/DB_SCHEMA` 기준으로 schema, repository, migration 책임을 맞춘다.
+- [ ] 코드 주석 확인: 신규 Prisma model/field/enum/index, migration SQL COMMENT, 복잡한 repository 분기에는 한글 주석 또는 DB COMMENT를 반드시 남긴다.
+- [ ] 문서 확인: schema 변경 시 `BE-TODO/DB-SCHEMA.md`, `COMMON/API-SPEC/IMPORT_JOB_API.md`, `COMMON/GOAL-WORK-ORDER.md`를 함께 갱신한다.
+
 ## 1. 목적
 
 확정 전 import 작업을 DB에 저장할 수 있도록 Prisma schema, migration, repository 기반을 만든다.
@@ -11,7 +21,7 @@
 ## 2. 선행 조건
 
 - `BE/prisma/schema.prisma`가 현재 DB schema source of truth다.
-- 기존 `ImportUserLog`, `ImportUserLogRow`는 성공 이력으로 유지한다.
+- 기존 `ImportUserLog`, `ImportUserLogRow`는 성공 이력으로 유지한다. 단, 2026-08-03 최종형 G07에서는 `ImportUserLogRow`를 30일 row-level retention 대상으로 보강한다.
 - migration 대상 DB가 로컬 dev/test인지 확인한다. 공유/운영성 DB에는 무단 migrate를 실행하지 않는다.
 
 ## 3. 포함 범위

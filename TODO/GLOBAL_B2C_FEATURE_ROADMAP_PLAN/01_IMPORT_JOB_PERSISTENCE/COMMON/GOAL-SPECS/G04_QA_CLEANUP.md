@@ -4,6 +4,16 @@
 완료일: 2026-07-21
 완료 근거: `TODO_LOG/2026-07-21/G04_IMPORT_JOB_PERSISTENCE_QA_CLEANUP/WORK_LOG.md`
 
+## 0. 재작업 체크리스트
+
+- [ ] Request/Response 검증: `COMMON/API-SPEC/IMPORT_JOB_API.md`와 실제 Backend DTO/FE client type이 일치하는지 확인한다.
+- [ ] Business Logic 검증: upload, mapping, row edit, validate, confirm, cancel, expire, cleanup 관련 회귀를 확인한다.
+- [ ] User Flow 검증: `COMMON/USER-FLOW.md`, `FE-TODO/USER-WEB-TODO.md`, `AGENT/UXUI_AGENT` 기준으로 사용자가 단순 import 흐름만 보게 한다.
+- [ ] DB/Prisma 검증: `BE/prisma/schema.prisma`, `BE/prisma/migrations`, `BE-TODO/DB-SCHEMA.md`와 실제 migration/test 상태를 대조한다.
+- [ ] 소프트웨어 아키텍처/컨벤션 검증: `AGENT/SOFTWARE_AGENT` 기준으로 controller/use case/repository/adapter/FE feature boundary 위반이 없는지 본다.
+- [ ] 코드 주석 검증: 새로 작성되거나 수정된 정책/분기/transaction/cleanup/DB 관련 코드에 한글 주석이 있는지 확인한다.
+- [ ] 문서 검증: 구현 결과와 README, SCOPE, API-SPEC, BE-TODO, FE-TODO, GOAL-WORK-ORDER가 충돌하지 않는지 갱신한다.
+
 ## 1. 목적
 
 G01~G03 구현 결과가 Global B2C 첫 판매 gate의 Data reliability 범위와 충돌하지 않는지 확인하고, import persistence 기능을 QA 기준으로 닫는다.

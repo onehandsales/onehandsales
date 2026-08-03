@@ -63,4 +63,5 @@ MVP는 판매 버전이 아니다. 이 단계의 목적은 개인 영업자의 �
 - Series A급 기능은 기능 단독으로 만들지 않고 retention, revenue, analytics와 같이 판단한다.
 - Admin/결제/분석/정책/현지화는 후순위 장식이 아니라 첫 판매 gate의 일부로 본다. 분석 foundation은 09에서 닫혔고 mobile field-use event는 10에서 닫혔으며, Admin dashboard는 11에서 닫혔다. billing-linked 지표는 12에서 연결한다.
 - 08에서 닫힌 현지화/글로벌 데이터 기본 범위와 DB migration 최신 상태 재확인은 완료로 보며, LINE/Apple 실제 auth provider smoke도 2026-07-29 사용자 확인 기준 운영 완료로 반영한다.
+- `01_IMPORT_JOB_PERSISTENCE`는 G01~G04로 ImportJob persistence/resume를 닫았고, G05~G08 terminal cleanup, 원본 file binary 즉시 삭제, `ImportUserLogRow` 30일 cleanup, 10MB/5,000행 제한까지 구현/QA하면 Import 범위는 최종 서비스 형태 기준으로 완전 종료한다.
 - 현재 진행 순서는 12 결제/구독/세금 구현을 먼저 완료한 뒤, 01~12 전체와 `NEXT_BACKEND_API_BACKLOG_PLAN`, `USER_WEB_PRODUCTIZATION_GAP_PLAN`을 다시 대조하는 것이다. 미완성/후속 항목은 새 TODO 폴더로 승격하고, UX/UI 디자인 유지보수는 그 이후 별도 계획으로 진행한다.

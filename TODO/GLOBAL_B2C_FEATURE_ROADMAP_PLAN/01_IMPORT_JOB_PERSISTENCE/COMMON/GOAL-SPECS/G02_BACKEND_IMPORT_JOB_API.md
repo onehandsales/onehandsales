@@ -4,6 +4,16 @@
 완료일: 2026-07-21
 완료 근거: `TODO_LOG/2026-07-21/G04_IMPORT_JOB_PERSISTENCE_QA_CLEANUP/WORK_LOG.md`
 
+## 0. 재작업 체크리스트
+
+- [ ] Request/Response 영향 확인: `COMMON/API-SPEC/IMPORT_JOB_API.md`의 request, response, error contract와 DTO 이름을 맞춘다.
+- [ ] Business Logic 확인: upload, mapping, row edit, validate, confirm, cancel, expire, error history 흐름을 이 문서 기준으로 구현한다.
+- [ ] User Flow 확인: User Web이 `파일 올리기 -> 컬럼 매칭 확인 -> 오류 행만 수정 -> 가져오기 완료` 흐름만 보도록 API 의미를 유지한다.
+- [ ] DB/Prisma 확인: `BE/prisma/schema.prisma`, `BE/prisma/migrations`, `BE-TODO/DB-SCHEMA.md`와 transaction/FK/cascade 정책을 대조한다.
+- [ ] 소프트웨어 아키텍처/컨벤션 확인: `AGENT/SOFTWARE_AGENT/BACKEND_AGENT`, `AGENT/SOFTWARE_AGENT/DB_SCHEMA`, `BE/src/modules/data-import` 기준으로 controller, use case, repository, adapter 책임을 나눈다.
+- [ ] 코드 주석 확인: transaction, storage write/delete 보정, ownership, redaction, status transition처럼 의도가 중요한 코드에는 한글 주석을 반드시 추가한다.
+- [ ] 문서 확인: API 동작 변경 시 `COMMON/API-SPEC/IMPORT_JOB_API.md`, `BE-TODO/API-TODO.md`, `FE-TODO/USER-WEB-TODO.md`를 함께 갱신한다.
+
 ## 1. 목적
 
 기존 in-memory 확정 전 import job 흐름을 DB 기반 API로 교체한다. 사용자는 같은 가져오기 화면을 쓰지만, Backend는 upload, mapping, row edit, validation, confirm, cancel, error history를 DB에서 복구할 수 있어야 한다.

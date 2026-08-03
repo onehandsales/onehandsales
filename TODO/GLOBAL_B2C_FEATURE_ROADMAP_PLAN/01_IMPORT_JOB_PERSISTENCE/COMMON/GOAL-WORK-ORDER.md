@@ -1,7 +1,7 @@
 ﻿# Goal Work Order
 
-상태: Done
-완료일: 2026-07-21
+상태: G01~G04 구현 완료 / G05~G08 구현 대기 / 01 최종 서비스 형태 미완료
+G01~G04 완료일: 2026-07-21
 
 ## 0. 완료 체크리스트
 
@@ -10,6 +10,10 @@
 - [x] G03 User Web resume UX
 - [x] G04 QA / cleanup
 - [x] 완료 기록: `TODO_LOG/2026-07-21/G04_IMPORT_JOB_PERSISTENCE_QA_CLEANUP/WORK_LOG.md`
+- [ ] G05 Terminal ImportJob cleanup
+- [ ] G06 Original file binary minimization
+- [ ] G07 Import success row retention
+- [ ] G08 Import volume limits
 
 ## 1. 원칙
 
@@ -23,6 +27,15 @@
 파일 올리기 -> 컬럼 매칭 확인 -> 오류 행만 수정 -> 가져오기 완료
 ```
 
+필수 구현 기준:
+
+- 각 goal은 착수 전 자체 체크리스트를 확인하고, 완료 시 체크리스트 항목별 결과를 남긴다.
+- Request, response, business logic, user flow, DB/Prisma 영향은 구현 전 반드시 문서에서 확인한다.
+- Backend 작업은 `AGENT/SOFTWARE_AGENT/BACKEND_AGENT`, `AGENT/SOFTWARE_AGENT/DB_SCHEMA`, `BE/prisma/schema.prisma`, `BE/prisma/migrations`를 기준으로 한다.
+- Frontend/User Web 작업은 `AGENT/SOFTWARE_AGENT/FRONT_AGENT`, `AGENT/UXUI_AGENT`, `COMMON/USER-FLOW.md`, `FE-TODO/USER-WEB-TODO.md`를 기준으로 한다.
+- DB 관련 작업은 `BE/prisma`의 실제 schema/migration 상태를 먼저 확인하고, 신규 schema/migration/comment가 필요한지 판단한다.
+- 코드 작성 시 한글 주석은 필수다. 특히 cleanup, retention, validation, transaction, runner, DB 삭제/보존 분기에는 의도를 설명하는 한글 주석을 남긴다.
+
 ## 2. G01 DB Persistence Foundation
 
 상세 명세: `COMMON/GOAL-SPECS/G01_DB_PERSISTENCE_FOUNDATION.md`
@@ -31,7 +44,7 @@
 
 - `ImportJob`, `ImportJobRow`, `ImportJobError`, `ImportUploadedFile` DB schema를 추가한다.
 - Prisma client가 새 model과 enum을 사용할 수 있게 한다.
-- 기존 `ImportUserLog`, `ImportUserLogRow`는 성공 이력으로 유지한다.
+- 기존 `ImportUserLog`, `ImportUserLogRow`는 성공 이력으로 유지한다. 단, 최종형 G07에서는 `ImportUserLogRow`를 30일 row-level retention 대상으로 보강한다.
 
 작업:
 
@@ -180,3 +193,160 @@ pnpm run test:e2e
 - 핵심 수동 QA가 통과한다.
 - 새 DB table의 보관/삭제 정책이 운영 문서와 충돌하지 않는다.
 - 사용자 화면은 Notion식 단순함과 Attio식 CRM 연결 정확성을 유지한다.
+
+## 6. G05 Terminal ImportJob Cleanup
+
+상세 명세: `COMMON/GOAL-SPECS/G05_TERMINAL_IMPORT_JOB_CLEANUP.md`
+
+목표:
+
+- Global B2C 최종 서비스 형태 기준으로 terminal ImportJob 임시 snapshot을 7일 보관 후 자동 cleanup한다.
+
+작업:
+
+1. terminal cleanup use case를 만든다.
+2. terminal cleanup 대상 조회 repository method를 만든다.
+3. `ImportJob` aggregate batch delete repository method를 만든다.
+4. `ImportUploadedFile.deletedAt`이 없는 job은 storage delete를 재시도한다.
+5. storage delete 실패 job은 DB 삭제하지 않는다.
+6. env flag 기반 optional runner를 만든다.
+7. cleanup summary log만 남긴다.
+8. Admin/User HTTP API와 화면을 추가하지 않는다.
+
+검증:
+
+```powershell
+cd BE
+pnpm run typecheck
+pnpm run lint
+pnpm run test -- data-import
+pnpm run build
+```
+
+완료 기준:
+
+- terminal 상태 후 7일 지난 `ImportJob` aggregate가 batch 삭제된다.
+- G05 실행으로는 `ImportUserLog`, `ImportUserLogRow`, 실제 CRM 데이터가 삭제되지 않는다.
+- 원본 파일 삭제 실패 job은 storage key 추적을 잃지 않는다.
+- cleanup runner는 env flag가 켜졌을 때만 실행된다.
+- log에는 raw row, 파일명, storage key, job ID 목록을 남기지 않는다.
+
+## 7. G06 Original File Binary Minimization
+
+상세 명세: `COMMON/GOAL-SPECS/G06_ORIGINAL_FILE_BINARY_MINIMIZATION.md`
+
+목표:
+
+- 원본 업로드 file binary를 parse와 DB snapshot 생성 성공 직후 삭제한다.
+- 새로고침/이어받기는 원본 파일이 아니라 `ImportJobRow` DB snapshot만으로 유지한다.
+
+작업:
+
+1. `CreateImportJob` 성공 흐름에서 DB transaction 이후 storage delete를 호출한다.
+2. delete 성공 시 `ImportUploadedFile.status=DELETED`, `deletedAt`을 기록한다.
+3. delete 실패 시 job 생성은 성공으로 유지하고 `ImportJobError` safe warning을 만든다.
+4. response/log에 파일명, `storageKey`, raw storage error detail이 노출되지 않게 한다.
+5. delete 실패 metadata가 G05 cleanup 재시도 대상이 되게 한다.
+
+검증:
+
+```powershell
+cd BE
+pnpm.cmd run typecheck
+pnpm.cmd run lint
+pnpm.cmd run test -- data-import
+pnpm.cmd run build
+```
+
+완료 기준:
+
+- 정상 upload 직후 원본 file binary가 storage에서 삭제된다.
+- resume UX는 DB snapshot만으로 동작한다.
+- storage delete 실패는 import 성공을 막지 않고 safe warning만 남긴다.
+- 실패 파일은 G05 cleanup에서 재시도할 수 있는 metadata를 유지한다.
+
+## 8. G07 Import Success Row Retention
+
+상세 명세: `COMMON/GOAL-SPECS/G07_IMPORT_SUCCESS_ROW_RETENTION.md`
+
+목표:
+
+- `ImportUserLog` summary는 장기 유지한다.
+- row-level submitted data인 `ImportUserLogRow`는 생성 후 30일이 지나면 삭제한다.
+
+작업:
+
+1. `ImportUserLogRow` cleanup use case를 만든다.
+2. 삭제 대상 row id를 `createdAt asc, id asc` 기준 batch 조회한 뒤 삭제한다.
+3. `ImportUserLog`, 실제 Company/Contact/Product/Deal row는 삭제하지 않는다.
+4. cleanup summary log만 남긴다.
+5. User Web success history detail에서 row detail이 비어도 summary를 정상 표시한다.
+
+검증:
+
+```powershell
+cd BE
+pnpm.cmd run typecheck
+pnpm.cmd run lint
+pnpm.cmd run test -- data-import
+pnpm.cmd run build
+```
+
+User Web을 변경한 경우:
+
+```powershell
+cd FE/user-web
+pnpm.cmd run typecheck
+pnpm.cmd run lint
+pnpm.cmd run build
+```
+
+완료 기준:
+
+- 31일 지난 `ImportUserLogRow`가 삭제된다.
+- 29일 지난 `ImportUserLogRow`는 유지된다.
+- `ImportUserLog` summary와 실제 CRM 데이터는 유지된다.
+- row detail이 없는 import log 상세가 사용자에게 정상 상태로 보인다.
+
+## 9. G08 Import Volume Limits
+
+상세 명세: `COMMON/GOAL-SPECS/G08_IMPORT_VOLUME_LIMITS.md`
+
+목표:
+
+- 대용량 background worker 없이 01 import flow를 최종 서비스 기준으로 닫는다.
+- 10MB/5,000 data row 제한을 적용하고 초과 시 안전하게 거부한다.
+
+작업:
+
+1. 기존 10MB file size 제한이 실제 upload API에서 유지되는지 확인한다.
+2. parser 결과 data row가 5,000행을 초과하면 validation error로 실패시킨다.
+3. 제한 초과 시 `ImportJob`, `ImportJobRow`, `ImportUploadedFile`, storage object를 만들지 않는다.
+4. User Web upload 화면에서 safe error message를 표시한다.
+5. raw row/file detail이 response/log에 노출되지 않게 한다.
+
+검증:
+
+```powershell
+cd BE
+pnpm.cmd run typecheck
+pnpm.cmd run lint
+pnpm.cmd run test -- data-import
+pnpm.cmd run build
+```
+
+User Web을 변경한 경우:
+
+```powershell
+cd FE/user-web
+pnpm.cmd run typecheck
+pnpm.cmd run lint
+pnpm.cmd run build
+```
+
+완료 기준:
+
+- 5,000행 import는 통과한다.
+- 5,001행 import는 DB/storage 흔적 없이 실패한다.
+- 사용자는 파일을 나눠 올리라는 명확한 안내를 본다.
+- 대용량 worker/progress/partial retry는 01 범위에 추가되지 않는다.

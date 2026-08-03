@@ -35,6 +35,7 @@
 | provider raw response 저장 | 보안/개인정보 리스크로 금지 |
 | prompt 전문/STT transcript 전문 저장 | provider log와 Admin 화면 모두 금지 |
 | DB hard delete/purge for Trash | 사용자 의도와 맞지 않음. Trash는 soft delete 보존 |
+| ImportJob cleanup 실패 전용 Admin 화면/API | 01 cleanup은 safe summary log만 남기고, 반복 장애 시 post-12 Admin 운영 후속에서 aggregate/system gate로 검토 |
 
 ## 3. 1차 추천 범위
 
@@ -54,3 +55,4 @@
 - G04 도메인 상세 탭은 사용자 상세 summary 이후 진행한다.
 - G08 계정 삭제/데이터 export 요청은 privacy/legal wording과 연결되므로 별도 goal로 실행한다.
 - Admin 직접 복구 실행과 비용 처리는 12 또는 후속 recovery goal에서 다룬다.
+- ImportJob terminal cleanup 실패 표시가 필요해지면 raw row/file/storage key를 노출하지 않는 aggregate 운영 지표로만 후속 검토한다.

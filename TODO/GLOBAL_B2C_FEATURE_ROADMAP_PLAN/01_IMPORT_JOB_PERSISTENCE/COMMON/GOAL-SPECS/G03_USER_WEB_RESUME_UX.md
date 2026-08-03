@@ -4,6 +4,16 @@
 완료일: 2026-07-21
 완료 근거: `TODO_LOG/2026-07-21/G04_IMPORT_JOB_PERSISTENCE_QA_CLEANUP/WORK_LOG.md`
 
+## 0. 재작업 체크리스트
+
+- [ ] Request/Response 영향 확인: User Web API client/type이 `COMMON/API-SPEC/IMPORT_JOB_API.md`의 response를 그대로 따른다.
+- [ ] Business Logic 확인: API response를 source of truth로 사용하고 FE에서 임의 summary를 만들지 않는다.
+- [ ] User Flow 확인: `COMMON/USER-FLOW.md`와 `FE-TODO/USER-WEB-TODO.md` 기준으로 upload, resume, review, confirm, cancel, expired flow를 유지한다.
+- [ ] UX/UI 확인: `AGENT/UXUI_AGENT`, `AGENT/SOFTWARE_AGENT/FRONT_AGENT` 기준으로 Notion식 단순 흐름과 Attio식 record 연결 정확성을 지킨다.
+- [ ] DB/Prisma 확인: 직접 DB 작업은 없지만 화면 상태가 `ImportJob`, `ImportJobRow`, `ImportUserLog` response 계약과 충돌하지 않는지 확인한다.
+- [ ] 코드 주석 확인: route 분기, query invalidation, expired/canceled/failed 상태 처리, mobile row card 전환에는 한글 주석을 반드시 추가한다.
+- [ ] 문서 확인: 화면 흐름 변경 시 `COMMON/USER-FLOW.md`, `FE-TODO/USER-WEB-TODO.md`, `COMMON/API-SPEC/IMPORT_JOB_API.md`를 함께 갱신한다.
+
 ## 1. 목적
 
 User Web에서 확정 전 import 작업을 새로고침, 탭 이동, 서버 재시작 이후에도 이어서 볼 수 있게 한다. 사용자는 내부 DB 개념을 보지 않고 단순한 흐름만 경험해야 한다.

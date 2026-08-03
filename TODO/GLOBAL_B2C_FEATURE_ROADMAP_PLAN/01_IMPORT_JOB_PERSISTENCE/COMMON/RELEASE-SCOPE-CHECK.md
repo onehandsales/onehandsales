@@ -1,7 +1,7 @@
 ﻿# Release Scope Check
 
-상태: Done
-완료일: 2026-07-21
+상태: G01~G04 release scope 완료 / G05~G08 최종형 구현 대기 / 01 최종 서비스 형태 미완료
+G01~G04 완료일: 2026-07-21
 
 ## 1. 목적
 
@@ -37,8 +37,8 @@
 | Gate/Gap | 01 포함 여부 | 판단 |
 |---|---:|---|
 | Product UX의 Import 흐름 | Yes | `/app/import`의 upload, mapping, row edit, confirm, resume UX를 다룬다. |
-| Data reliability의 import job 유실 방지 | Yes | DB persistence, TTL, cleanup, refresh/server restart 복구를 다룬다. |
-| Trust/policy의 import 데이터 보관 기간 | Partial | 7일 TTL, confirm/cancel/expire file delete 정책은 포함한다. 전체 개인정보/약관 정책은 별도 계획이다. |
+| Data reliability의 import job 유실 방지 | Yes | DB persistence, TTL, cleanup, refresh/server restart 복구를 다룬다. G05에서 terminal snapshot 7일 후 자동 cleanup을 최종형으로 보강한다. |
+| Trust/policy의 import 데이터 보관 기간 | Partial | 7일 TTL, 원본 file binary 즉시 삭제, terminal snapshot 7일 cleanup, 성공 row-level snapshot 30일 cleanup은 포함한다. 전체 개인정보/약관 정책은 별도 계획이다. |
 | Admin/support | No | ImportJobError는 redacted 이력만 남긴다. 운영 Admin 화면/API는 별도 계획이다. |
 | Global UX/localization | No | 01은 한국어 User Web 문구 기준으로 작성한다. `/app` 다국어는 별도 첫 판매 계획이다. |
 | Pricing/plan, Billing | No | 결제/구독/entitlement는 01 범위가 아니다. |
@@ -56,7 +56,11 @@
 - confirm 전 실제 도메인 데이터 미생성
 - confirm transaction 전체 rollback
 - 원본 파일 binary DB 저장 금지
-- 원본 파일 confirm/cancel/expire 이후 삭제 추적
+- 원본 파일 parse와 DB snapshot 생성 성공 직후 storage binary 삭제
+- 원본 파일 삭제 실패 metadata 추적과 cleanup 재시도
+- terminal ImportJob 임시 snapshot 7일 후 자동 cleanup
+- `ImportUserLogRow` row-level submitted data 30일 후 cleanup
+- 10MB/5,000 data row upload 제한
 - raw row, provider raw response, phone/email logging 금지
 - 사용자는 단순한 `파일 올리기 -> 컬럼 매칭 확인 -> 오류 행만 수정 -> 가져오기 완료` 흐름만 본다.
 
@@ -76,7 +80,7 @@
 
 ## 6. 완료 판정
 
-01은 `NBA-006` 구현 및 QA closeout까지 완료했다.
+01은 2026-07-21 기준 `NBA-006`의 G01~G04 구현 및 QA closeout까지 완료했다. 2026-08-03 최종형으로 승격한 G05~G08은 아직 구현 전이므로, 01 전체를 최종 서비스 형태로 완료 처리하지 않는다.
 
 완료 goal은 아래 순서로 진행했다.
 

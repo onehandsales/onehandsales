@@ -44,6 +44,7 @@
 | User Web 만료 Trash | Trash에 남기되 복구 버튼은 비활성화하고 복구 문의만 제공한다. 결제 연결은 하지 않는다. |
 | 계정 삭제 | 일반 Trash 정책과 별개다. 개인정보 삭제 요청은 30일 유예 후 user-linked 데이터 삭제/익명화 정책으로 다룬다. |
 | 결제/구독 | 11에서 완전히 제외한다. 12에서 처리한다. |
+| ImportJob cleanup 운영 표시 | 01 cleanup 실패 전용 Admin 화면/API는 만들지 않는다. safe summary log만 남기고, 반복 장애 시 post-12 Admin 운영 후속에서 aggregate/system gate로 검토한다. |
 
 ## 4. Goal 실행 방식
 

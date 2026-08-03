@@ -1,7 +1,7 @@
 ﻿# ImportJob Persistence DB Schema
 
 상태: Confirmed
-구현 상태: Done (G01/G04 완료, 2026-07-21)
+구현 상태: G01/G04 구현 완료 (2026-07-21) / G05~G08 DB/retention 최종형 구현 대기 (2026-08-03 확정)
 기준: `BE/prisma/schema.prisma`, `AGENT/SOFTWARE_AGENT/DB_SCHEMA/DATA_IMPORT_SCHEMA.md`
 
 ## 1. 목적
@@ -484,7 +484,7 @@ COMMENT ON COLUMN "ImportJobError"."detailJson" IS '지원/디버깅용 redacted
 COMMENT ON COLUMN "ImportJobError"."retryable" IS '같은 요청 재시도가 의미 있는지 여부.';
 COMMENT ON COLUMN "ImportJobError"."createdAt" IS '오류 생성 시각. UTC instant.';
 
-COMMENT ON TABLE "ImportUploadedFile" IS '업로드 원본 파일의 저장 위치와 삭제 상태를 기록한다. 파일 binary는 DB에 저장하지 않는다.';
+COMMENT ON TABLE "ImportUploadedFile" IS '업로드 원본 파일의 저장 위치와 삭제 상태를 기록한다. 파일 binary는 DB에 저장하지 않고, parse와 DB snapshot 생성 성공 직후 storage에서도 삭제한다.';
 COMMENT ON COLUMN "ImportUploadedFile"."id" IS 'ImportUploadedFile UUID primary key.';
 COMMENT ON COLUMN "ImportUploadedFile"."importJobId" IS '연결된 ImportJob ID. job 하나에 원본 파일 하나를 원칙으로 한다.';
 COMMENT ON COLUMN "ImportUploadedFile"."userId" IS '파일 소유 사용자 ID.';
@@ -495,7 +495,7 @@ COMMENT ON COLUMN "ImportUploadedFile"."checksum" IS '업로드 파일 checksum.
 COMMENT ON COLUMN "ImportUploadedFile"."storageProvider" IS '파일 저장 adapter/provider 이름. 예: local, s3.';
 COMMENT ON COLUMN "ImportUploadedFile"."storageBucket" IS 'bucket 기반 storage를 사용할 때 bucket 이름.';
 COMMENT ON COLUMN "ImportUploadedFile"."storageKey" IS 'storage 내부 object key. signed URL을 응답으로 노출하지 않는다.';
-COMMENT ON COLUMN "ImportUploadedFile"."status" IS '원본 파일 보관 상태. STORED, PARSED, DELETED, EXPIRED 중 하나이다.';
+COMMENT ON COLUMN "ImportUploadedFile"."status" IS '원본 파일 보관 상태. STORED, PARSED, DELETED, EXPIRED 중 하나이다. 정상 최종형 flow에서는 DB snapshot 생성 직후 DELETED가 된다.';
 COMMENT ON COLUMN "ImportUploadedFile"."uploadedAt" IS '파일 업로드 완료 시각. UTC instant.';
 COMMENT ON COLUMN "ImportUploadedFile"."deletedAt" IS '파일 삭제 완료 또는 삭제 처리 시각. UTC instant.';
 COMMENT ON COLUMN "ImportUploadedFile"."expiresAt" IS '원본 파일 보관 만료 시각. ImportJob expiresAt과 동일하게 시작한다.';
@@ -506,10 +506,18 @@ COMMENT ON COLUMN "ImportUploadedFile"."updatedAt" IS 'metadata row 마지막 �
 ## 7. 데이터 보관 정책
 
 - `ImportJob.expiresAt`: 생성 시각 + 7일.
-- active job 만료 처리: detail/list 조회, confirm 시도, cleanup batch에서 `EXPIRED`로 전환한다.
-- 원본 파일 삭제: confirm, cancel, expire 중 하나가 발생하면 storage delete를 시도하고 `ImportUploadedFile.status`, `deletedAt`을 갱신한다.
-- terminal metadata cleanup 후보: `CONFIRMED`, `CANCELED`, `EXPIRED`, `FAILED`가 된 지 7일이 지난 `ImportJob*` metadata는 별도 batch에서 삭제할 수 있다.
-- 성공 history: `ImportUserLog`, `ImportUserLogRow`는 import 결과 조회용으로 유지한다.
+- active job 만료 처리: detail/list 조회, confirm 시도, cleanup 관련 흐름에서 `EXPIRED`로 전환한다.
+- 원본 파일 binary 보관: DB에 저장하지 않는다.
+- 원본 파일 storage 보관: parse와 DB snapshot 생성 성공 직후 storage delete를 시도하고 `ImportUploadedFile.status=DELETED`, `deletedAt`을 갱신한다.
+- 원본 파일 즉시 삭제 실패: import job 생성은 성공으로 유지하고 `ImportJobError(errorType=STORAGE, errorCode=STORAGE_DELETE_FAILED, severity=WARNING)`를 redacted 형태로 생성한다.
+- terminal metadata cleanup 확정: `CONFIRMED`, `CANCELED`, `EXPIRED`, `FAILED`가 된 지 7일이 지난 `ImportJob` aggregate는 G05 별도 batch에서 삭제한다.
+- cleanup 기준 시점: `CONFIRMED`는 `confirmedAt`, `CANCELED`는 `canceledAt`, `FAILED`는 `failedAt`, `EXPIRED`는 `expiresAt`을 사용한다. legacy fallback은 `updatedAt`이다.
+- cleanup 삭제 대상: `ImportJob` 삭제를 기준으로 하며 `ImportJobRow`, `ImportJobError`, `ImportUploadedFile`은 cascade로 함께 삭제한다.
+- terminal cleanup 유지 대상: `ImportUserLog`, 실제 Company/Contact/Product/Deal row는 유지한다.
+- storage delete 미완료: `ImportUploadedFile.deletedAt`이 없으면 cleanup에서 storage delete를 재시도하고, 실패하면 DB snapshot을 삭제하지 않는다.
+- 성공 history summary: `ImportUserLog`는 import 결과 조회용 summary 정본으로 장기 유지한다.
+- 성공 history row-level snapshot: `ImportUserLogRow`는 생성 후 30일이 지나면 별도 cleanup에서 row 자체를 삭제한다. 축약 보관하지 않는다.
+- 입력량 제한: file size는 10MB 이하, data row는 header를 제외하고 5,000행 이하로 제한한다. 이 제한은 schema constraint가 아니라 application validation이다.
 - 개인정보 삭제 요청: 사용자 소유 `ImportJob*`, `ImportUploadedFile` metadata와 storage object를 삭제 범위에 포함한다.
 
 ## 8. 구현 주의
@@ -520,6 +528,9 @@ COMMENT ON COLUMN "ImportUploadedFile"."updatedAt" IS 'metadata row 마지막 �
 - `ImportJobError.detailJson`에는 provider 원문, AI prompt, 이메일, 전화번호, 회사명 원문 대량 dump를 넣지 않는다.
 - confirm transaction 안에서는 외부 storage 삭제나 AI provider 호출을 하지 않는다.
 - `failedRowCount`는 부분 성공 정책을 열어둘 필드지만 01의 confirm은 전체 rollback을 기본으로 한다.
+- G06 즉시 삭제는 `CreateImportJob` DB transaction 성공 이후 실행한다. DB transaction 실패 시에는 기존 orphan object best-effort delete 흐름을 유지한다.
+- G07 `ImportUserLogRow` cleanup은 `ImportUserLog` summary와 실제 CRM 데이터를 삭제하지 않는다.
+- G08 row limit 초과 요청은 `ImportJob`, `ImportJobRow`, `ImportUploadedFile`을 만들기 전에 실패해야 한다.
 
 ## 9. 검증 명령
 

@@ -1,13 +1,13 @@
 ﻿# Planning Review
 
-상태: Done
+상태: G01~G04 완료 검토 기록 / G05~G08 구현 대기 / 01 최종 서비스 형태 미완료
 검토일: 2026-07-21
 
 ## 1. 결론
 
-- 판정: 완료
+- 판정: G01~G04 완료
 - 이유: `NBA-006 ImportJob persistence/resume API` 범위가 API, DB, BE, FE, UX, QA, goal 상세 명세까지 구현 및 QA closeout 완료 상태로 연결되어 있다.
-- 구현 상태: Done
+- 구현 상태: G01~G04 Done. 2026-08-03 확정한 G05~G08은 아직 구현 전이다.
 - 완료 기록: `TODO_LOG/2026-07-21/G04_IMPORT_JOB_PERSISTENCE_QA_CLEANUP/WORK_LOG.md`
 
 완료 전 첫 실행 문구 기록:
@@ -110,7 +110,8 @@ DB/운영:
 
 - DDL, index, FK, check constraint, table/column comment가 있다.
 - 원본 파일 binary는 DB에 넣지 않는다.
-- TTL 7일과 confirm/cancel/expire file delete 정책이 있다.
+- G01~G04 기준 TTL 7일과 confirm/cancel/expire file delete 정책이 있다.
+- 2026-08-03 최종형 보강 기준으로 원본 file binary 즉시 삭제, terminal snapshot 7일 cleanup, `ImportUserLogRow` 30일 cleanup, 10MB/5,000행 제한을 G05~G08로 추가 확정했다.
 - raw row/provider raw response/PII logging 금지 기준이 있다.
 - 공유/운영성 DB migration은 무단 실행하지 않는 기준이 있다.
 
@@ -164,6 +165,15 @@ DB/운영:
 
 ## 9. 완료 여부
 
-- 완료 여부: Done
+- 완료 여부: G01~G04 Done. 01 최종 서비스 형태는 G05~G08 구현 전까지 Done이 아니다.
 - 완료 전 반드시 수정할 항목: 없음
 - 완료 goal 순서: G01 -> G02 -> G03 -> G04
+
+## 10. 2026-08-03 최종형 보강 메모
+
+G01~G04 완료 판정은 유지한다. 다만 01을 최종 서비스 기준으로 완전 종결하려면 아래 후속 goal을 추가 구현해야 한다.
+
+- G05: terminal ImportJob 임시 snapshot 7일 후 cleanup
+- G06: 원본 업로드 file binary parse/DB snapshot 직후 삭제
+- G07: `ImportUserLogRow` row-level submitted data 30일 후 cleanup
+- G08: 대용량 worker 제외, 10MB/5,000 data row upload 제한

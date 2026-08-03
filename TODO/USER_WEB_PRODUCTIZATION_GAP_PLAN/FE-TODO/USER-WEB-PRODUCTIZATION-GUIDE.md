@@ -5,8 +5,9 @@
 
 ## 0. 완료 반영
 
-- [x] `/app/import` ImportJob persistence/resume UX 구현 완료
+- [x] `/app/import` ImportJob persistence/resume UX G01~G04 구현 완료
 - [x] `NBA-006` User Web productization gap 종료
+- [ ] `01_IMPORT_JOB_PERSISTENCE` G07~G08 최종형 User Web 영향 구현 및 QA
 - [x] `/app/schedules/week` Weekly Schedule Report UX와 Excel 다운로드 구현 완료
 - [x] `NBA-009` User Web productization gap 종료
 - [x] `/app/notifications` Notification reminder UX 구현 완료
@@ -67,7 +68,7 @@
 | `/app/schedules/week` | 주간 보고서, 이전/다음/이번 주 이동, Excel 다운로드, loading/empty/error/export error 구현 | 주간 일정 보고서는 구현 완료. PDF/범용 ExportJob, 반복 일정, AI 요약은 별도 후속 확장 | `NBA-009` 완료 |
 | `/app/meeting-notes` | 수동/AI/STT draft/딜 연결, 모바일 녹음/fallback, local draft, 상세 AI 후속 작업, 다음 행동 후보 편집 저장, follow-up draft 수정/복사 구현 | 회의록 목록에서도 최신/다음 행동 맥락이 충분히 보이는가. 상세 AI 후보는 자동 저장/자동 발송하지 않는가 | `NBA-004` detail subset, `NBA-011` provider log subset, 10 mobile recording/local draft 완료. Admin audit는 11 완료. 목록 summary, 자동 발송/알림은 후속 |
 | `/app/business-cards` | OCR/upload/confirm, 모바일 촬영/앨범 선택, OCR safe failure, local draft, KR/US phone validation 구현 | advanced crop/preview가 필요한지 | `NBA-005`, 08 phone, 10 mobile capture 완료. Admin 운영 추적은 11 완료 |
-| `/app/import` | template language selector, upload/mapping/row edit/validation/resume/confirm/cancel/log 구현 | 새로고침/탭 이동/배포 중 유실 복구와 template localization 구현 완료 | `NBA-006`, 08 완료 |
+| `/app/import` | template language selector, upload/mapping/row edit/validation/resume/confirm/cancel/log 구현 | 새로고침/탭 이동/배포 중 유실 복구와 template localization G01~G04는 완료. G07 row detail 만료 안내와 G08 10MB/5,000행 제한 초과 안내까지 구현/QA하면 01 Import UX는 최종 서비스 형태 기준으로 완전 종료 | `NBA-006`, 08 완료. G07/G08 User Web 영향은 01 최종형 보강 |
 | `/app/trash` | list/detail/restore, Schedule restore, 만료 row restore disabled, 복구 문의 구현 | private memo 원문 없이 7일 이후 정책이 안전하게 읽히는가. Admin 직접 복구/유료 복구는 11 제외 범위다 | `NBA-007`, `NBA-012`, `NBA-015`, `11_ADMIN_OPERATION` 완료 |
 | `/app/settings` | profile/devices, 국가/앱 언어/기본 통화, Google Calendar 연결/캘린더 선택/연결 해제 구현 | 첫 판매 전 계정 삭제/데이터 삭제/구독 상태 UX가 충분한가 | global settings는 08 완료. Account/data request는 11 완료. Payment subscription UX는 12와 연결. Google Calendar 설정은 `NBA-015` 완료 |
 | `/app/more` | 보조 메뉴 구현 | 숨긴 기능이 잘못 노출되지 않는가 | 낮음 |

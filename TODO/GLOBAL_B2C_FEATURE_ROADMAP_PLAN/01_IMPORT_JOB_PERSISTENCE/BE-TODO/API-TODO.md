@@ -1,7 +1,7 @@
 ﻿# Backend API TODO
 
 상태: Confirmed
-구현 상태: Done (G02/G04 완료, 2026-07-21)
+구현 상태: G02/G04 구현 완료 (2026-07-21) / G05~G08 Backend 최종형 구현 대기 (2026-08-03 확정)
 기준 API 계약: `COMMON/API-SPEC/IMPORT_JOB_API.md`
 
 ## 1. 목표
@@ -48,6 +48,75 @@ Backend에서 반드시 DTO 이름을 맞춘다:
 - `ImportCellValidationError`
 - `ImportJobErrorResponse`
 
+## 3.1 G05~G08 최종형 내부 계약
+
+G05~G08은 01 ImportJob Persistence를 최종 서비스 기준으로 닫기 위한 Backend 보강이다. User/Admin HTTP API를 새로 만들지 않고, 기존 `POST /api/imports` validation과 내부 application use case/optional runner로 처리한다.
+
+기준 문서:
+
+- `COMMON/FINAL-SERVICE-SHAPE.md`
+- `COMMON/GOAL-SPECS/G05_TERMINAL_IMPORT_JOB_CLEANUP.md`
+- `COMMON/GOAL-SPECS/G06_ORIGINAL_FILE_BINARY_MINIMIZATION.md`
+- `COMMON/GOAL-SPECS/G07_IMPORT_SUCCESS_ROW_RETENTION.md`
+- `COMMON/GOAL-SPECS/G08_IMPORT_VOLUME_LIMITS.md`
+
+G05 내부 command/result:
+
+```ts
+interface CleanupTerminalImportJobsCommand {
+  readonly now: Date;
+  readonly retentionDays: 7;
+  readonly batchSize: number;
+}
+
+interface CleanupTerminalImportJobsResult {
+  readonly deletedJobCount: number;
+  readonly fileDeleteRetriedCount: number;
+  readonly fileDeleteFailedCount: number;
+  readonly skippedJobCount: number;
+  readonly cleanupCutoffAt: string;
+}
+```
+
+환경 변수:
+
+```env
+IMPORT_JOB_CLEANUP_ENABLED=true
+IMPORT_JOB_CLEANUP_INTERVAL_MS=300000
+IMPORT_JOB_CLEANUP_BATCH_SIZE=500
+```
+
+Admin 화면/API는 만들지 않는다. cleanup 실패는 safe summary log로만 남긴다.
+
+G06 원본 파일 binary 최소 보관:
+
+- `CreateImportJob` DB transaction 성공 직후 storage delete를 실행한다.
+- 삭제 성공 시 `ImportUploadedFile.status=DELETED`, `deletedAt=now`로 갱신한다.
+- 삭제 실패 시 import job 생성은 성공으로 유지하고 `ImportJobError(errorType=STORAGE, errorCode=STORAGE_DELETE_FAILED, severity=WARNING)`를 redacted 형태로 만든다.
+- response와 log에는 파일명, `storageKey`, raw parser/storage error detail을 노출하지 않는다.
+
+G07 성공 row-level 이력 cleanup command/result:
+
+```ts
+interface CleanupImportUserLogRowsCommand {
+  readonly now: Date;
+  readonly retentionDays: 30;
+  readonly batchSize: number;
+}
+
+interface CleanupImportUserLogRowsResult {
+  readonly deletedRowCount: number;
+  readonly cleanupCutoffAt: string;
+}
+```
+
+G08 upload 제한:
+
+- file size는 10MB 이하로 유지한다.
+- parser 결과 data row는 5,000행 이하만 허용한다.
+- 5,001행 이상이면 `ImportJob`, `ImportJobRow`, `ImportUploadedFile`, storage object를 만들기 전에 실패해야 한다.
+- 사용자 표시용 safe message는 `5,000행 이하로 나눠서 다시 올려주세요` 계열로 통일한다.
+
 ## 4. Business Logic 흐름
 
 ### 4.1 Upload
@@ -56,12 +125,17 @@ Backend에서 반드시 DTO 이름을 맞춘다:
 2. `targetType`, file을 validation한다.
 3. `targetType` 기준 active `ImportTemplate`을 조회하고 선택된 template id를 `ImportJob.templateId`에 저장한다.
 4. file name, byte size, MIME type, checksum을 계산한다.
-5. 원본 file binary는 storage adapter에 저장한다.
+5. file size가 10MB를 초과하면 job/storage/row 생성 전에 safe validation error로 실패한다.
 6. CSV/XLSX parser로 `sourceColumns`와 raw row를 만든다.
-7. `expiresAt = now + 7 days`로 계산한다.
-8. DB transaction에서 `ImportJob.sourceColumnsJson`, `ImportUploadedFile`, `ImportJobRow`를 생성한다.
-9. parse warning이나 초기 validation 오류가 있으면 `ImportJobError`를 redacted 형태로 생성한다.
-10. `ImportJobDetailResponse`를 반환한다.
+7. data row가 5,000행을 초과하면 job/storage/row 생성 전에 safe validation error로 실패한다.
+8. 원본 file binary는 storage adapter에 임시 저장한다.
+9. `expiresAt = now + 7 days`로 계산한다.
+10. DB transaction에서 `ImportJob.sourceColumnsJson`, `ImportUploadedFile`, `ImportJobRow`를 생성한다.
+11. parse warning이나 초기 validation 오류가 있으면 `ImportJobError`를 redacted 형태로 생성한다.
+12. DB transaction 성공 직후 원본 file binary를 storage에서 삭제한다.
+13. 삭제 성공 시 `ImportUploadedFile.status=DELETED`, `deletedAt`을 갱신한다.
+14. 삭제 실패 시 job 생성은 성공으로 유지하고 storage warning만 redacted 형태로 기록한다.
+15. `ImportJobDetailResponse`를 반환한다.
 
 ### 4.2 Mapping
 
@@ -143,6 +217,8 @@ Backend에서 반드시 DTO 이름을 맞춘다:
 - `ListImportJobErrorsUseCase`
 - `ExpireImportJobsUseCase`
 - `DeleteImportUploadedFileUseCase`
+- `CleanupTerminalImportJobsUseCase`
+- `CleanupImportUserLogRowsUseCase`
 
 ### Repository / Port
 
@@ -179,6 +255,8 @@ Transaction이 필요한 API:
 - `ValidateImportJob`: row validation과 job status/count 동시 갱신
 - `ConfirmImportJob`: domain row, relation row, success log, job 상태 동시 갱신
 - `CancelImportJob`: job/file metadata 상태 동시 갱신
+- `CleanupTerminalImportJobs`: 삭제 대상 조회와 DB batch delete
+- `CleanupImportUserLogRows`: 삭제 대상 row id 조회와 DB batch delete
 
 Transaction 밖에서 실행해야 하는 것:
 
@@ -190,7 +268,8 @@ Transaction 밖에서 실행해야 하는 것:
 실패 보정:
 
 - storage write 성공 후 DB transaction 실패 시 orphan object delete를 시도한다.
-- confirm transaction 성공 후 storage delete 실패 시 import 자체는 성공으로 유지하고 `ImportJobError`에 `STORAGE_DELETE_FAILED`를 남긴다.
+- create transaction 성공 후 즉시 storage delete 실패 시 import 자체는 성공으로 유지하고 `ImportJobError`에 `STORAGE_DELETE_FAILED`를 남긴다.
+- legacy 또는 삭제 실패 파일은 terminal cleanup에서 storage delete를 재시도한다.
 - confirm transaction 실패 시 domain row와 `ImportUserLog*`는 모두 rollback되어야 한다.
 
 ## 7. Error / Logging 기준
@@ -207,6 +286,8 @@ Transaction 밖에서 실행해야 하는 것:
 | confirm 준비 안 됨 | `ImportJobNotReady` | 409 |
 | mapping 없음 | `ImportMappingRequired` | 409 |
 | 파일 형식 불가 | `UnsupportedImportFileType` | 400 |
+| 파일 크기 초과 | `ImportFileTooLarge` | 400 |
+| 행 수 초과 | `ImportRowLimitExceeded` | 400 |
 | 파일 parsing 실패 | `ImportFileParseFailed` | 400 |
 | storage 실패 | `ImportFileStorageFailed` | 503 |
 | confirm 실패 | `ImportConfirmFailed` | 500 |
@@ -225,6 +306,9 @@ Structured log event key:
 - `importJob.expired`
 - `importJob.errorsListed`
 - `importJob.fileDeleteFailed`
+- `importJob.cleanup.completed`
+- `importUserLogRows.cleanup.completed`
+- `importJob.rowLimitExceeded`
 
 Logging 금지:
 
@@ -239,6 +323,7 @@ Logging 금지:
 ### Unit
 
 - upload request validation
+- file size와 row limit validation
 - mapping fallback
 - row validation and summary count
 - expired job transition
@@ -249,11 +334,14 @@ Logging 금지:
 ### Integration
 
 - upload 후 DB에 `ImportJob`, `ImportUploadedFile`, `ImportJobRow`가 생성되는지
+- 5,001행 upload가 DB/storage 흔적 없이 실패하는지
 - `GET /api/imports/:importJobId`가 서버 재시작 상황에서도 복구 가능한 response를 반환하는지
 - 다른 user의 job id 접근 시 404인지
 - mapping 수정 후 row status/count가 갱신되는지
 - invalid row가 있으면 confirm이 409인지
 - confirm 성공 시 domain row와 `ImportUserLog*`가 같은 transaction으로 생성되는지
+- confirm 성공 후 원본 file binary가 즉시 삭제되고 metadata가 갱신되는지
+- `ImportUserLogRow` 30일 cleanup이 summary와 domain row를 삭제하지 않는지
 - confirm 실패 시 domain row와 success log가 rollback되는지
 - cancel 후 confirm이 막히는지
 - expired job이 confirm되지 않는지
@@ -270,5 +358,8 @@ Logging 금지:
 - 새로고침, 탭 이동, 서버 재시작 후에도 `/api/imports/:importJobId`로 같은 상태가 복구된다.
 - confirm은 전체 transaction rollback 기준을 지킨다.
 - 원본 파일 binary는 DB에 저장하지 않는다.
+- 원본 파일 binary는 정상 upload 직후 storage에서도 삭제한다.
+- `ImportUserLogRow`는 30일 보관 후 삭제된다.
+- 5,001행 이상 upload는 DB/storage 흔적 없이 거부된다.
 - `ImportJobError`와 structured log는 민감정보를 남기지 않는다.
 - `COMMON/API-SPEC/IMPORT_JOB_API.md`와 구현 DTO/request/response 이름이 일치한다.

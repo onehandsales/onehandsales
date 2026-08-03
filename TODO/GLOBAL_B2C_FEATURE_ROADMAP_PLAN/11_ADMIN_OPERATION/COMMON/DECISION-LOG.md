@@ -159,3 +159,20 @@
 - recovery request에서 결제 버튼/paywall을 넣지 않는다.
 - analytics에 billing-linked conversion/churn을 넣지 않는다.
 - 12번에서 payment/subscription/tax/MoR/refund/invoice를 다룬다.
+
+## 11. ImportJob Cleanup 운영 표시
+
+결정일: 2026-08-03
+
+결정: 01 ImportJob terminal cleanup에는 Admin 화면/API를 추가하지 않는다.
+
+- 01 후속 cleanup은 `CONFIRMED`, `CANCELED`, `EXPIRED`, `FAILED` 상태가 된 뒤 7일 지난 ImportJob 임시 snapshot을 정리하는 Backend 운영 위생 기능이다.
+- cleanup 실패는 Admin Web에 별도 목록으로 노출하지 않고 safe summary log로만 남긴다.
+- cleanup log에는 import row 원문, 파일명, `storageKey`, 사용자 입력값, provider raw, job ID 목록을 남기지 않는다.
+- storage delete가 실패한 job은 DB snapshot을 삭제하지 않고 추적 가능한 metadata를 유지한다.
+- cleanup 실패가 운영상 반복되면 post-12 Admin 운영 후속에서 aggregate/system gate 항목으로만 검토한다.
+
+예시:
+
+- 포함: `deletedJobCount`, `fileDeleteRetriedCount`, `fileDeleteFailedCount`
+- 제외: `ImportJobRow.rawDataJson`, 업로드 파일명, storage object key, 사용자 email/phone, job ID 배열

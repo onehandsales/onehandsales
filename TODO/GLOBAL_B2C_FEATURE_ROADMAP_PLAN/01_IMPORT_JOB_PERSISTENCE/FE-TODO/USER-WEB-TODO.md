@@ -1,7 +1,7 @@
 # User Web TODO
 
 상태: Confirmed
-구현 상태: Done (G03/G04 완료, 2026-07-21)
+구현 상태: G03/G04 구현 완료 (2026-07-21) / G07~G08 User Web 최종형 영향 구현 대기 (2026-08-03 확정)
 기준 문서:
 
 - `COMMON/USER-FLOW.md`
@@ -25,7 +25,7 @@
 |---|---|
 | `/app/import` | 가져오기 시작, 진행 중 작업 이어받기, 성공 내역 목록 |
 | `/app/import/review/:importJobId` | 확정 전 가져오기 상세/resume |
-| `/app/import/:importUserLogId` | 확정 성공 이력 상세. 기존 route를 유지한다. |
+| `/app/import/:importUserLogId` | 확정 성공 이력 상세. 기존 route를 유지하며, row detail 보관 기간이 지나 빈 상태여도 summary를 정상 표시한다. |
 
 Route 정책:
 
@@ -55,6 +55,7 @@ Upload request 기준:
 - User Web은 사용자가 선택한 대상(`COMPANY`, `CONTACT`, `PRODUCT`, `DEAL`)과 file만 `POST /api/imports`에 보낸다.
 - `templateId`는 사용자에게 노출하지 않는다. Backend가 `targetType` 기준 active template을 찾아 `ImportJob.templateId`에 저장한다.
 - 업로드 후 response의 `sourceColumns`와 `templateColumns`를 기준으로 mapping UI를 복구한다.
+- `POST /api/imports`가 10MB/5,000행 제한 초과 error를 반환하면 upload 화면에서 안전한 안내만 보여주고 기술 detail은 노출하지 않는다.
 
 ## 4. Query Key
 
@@ -99,6 +100,7 @@ Mutation 후 invalidation:
 - `이어서 확인할 수 있어요.`
 - `새 파일로 시작하기`
 - `이어서 보기`
+- `5,000행 이하로 나눠서 다시 올려주세요.`
 
 ### `/app/import/review/:importJobId`
 
@@ -167,8 +169,17 @@ Job-level error:
 - `회사명을 입력해 주세요.`
 - `휴대폰 번호를 다시 확인해 주세요.`
 - `파일을 읽지 못했어요. 형식을 확인하고 다시 올려 주세요.`
+- `한 번에 가져올 수 있는 행 수를 초과했어요. 5,000행 이하로 나눠서 다시 올려주세요.`
+- `파일 크기가 너무 커요. 10MB 이하 파일로 다시 올려주세요.`
 - `문제가 생겼어요. 잠시 후 다시 시도해 주세요.`
 - `이 가져오기는 만료됐어요. 새 파일로 다시 시작해 주세요.`
+
+Success history row detail 만료:
+
+- `/app/import/:importUserLogId`에서 `ImportUserLog` summary는 있지만 row detail이 비어 있으면 오류로 보지 않는다.
+- summary count, createdAt, targetType, importedRowCount를 계속 보여준다.
+- row detail table 영역에는 짧은 안내만 표시한다.
+- 예시 문구: `행별 상세 내역은 보관 기간이 지나 정리됐어요. 가져오기 요약은 계속 확인할 수 있어요.`
 
 ## 8. 상태 보존
 
@@ -225,6 +236,8 @@ Job-level error:
 - 다른 사용자 job 404 응답은 `/app/import` 안내로 처리된다.
 - invalid row 수정 후 confirm button이 활성화된다.
 - confirm 성공 후 success history detail로 이동한다.
+- row detail 보관 기간이 지난 success history detail이 깨지지 않는다.
+- 5,001행 초과 upload error가 upload 화면에서 안전한 문구로 표시된다.
 - cancel 후 active job 목록에서 사라진다.
 
 ## 12. 완료 기준
@@ -232,5 +245,7 @@ Job-level error:
 - 사용자는 `파일 올리기 -> 컬럼 매칭 확인 -> 오류 행만 수정 -> 가져오기 완료` 흐름으로만 이해한다.
 - 새로고침/탭 이동 후 같은 job 상태가 복구된다.
 - 만료/취소/실패 상태가 사용자를 막다른 화면에 두지 않는다.
+- row detail이 cleanup되어도 성공 이력 summary 화면이 정상 동작한다.
+- 10MB/5,000행 제한 초과가 사용자가 이해할 수 있는 문구로 표시된다.
 - API request/response 타입이 `COMMON/API-SPEC/IMPORT_JOB_API.md`와 일치한다.
 - 원본 파일 보관/삭제 문구가 실제 Backend 정책과 충돌하지 않는다.

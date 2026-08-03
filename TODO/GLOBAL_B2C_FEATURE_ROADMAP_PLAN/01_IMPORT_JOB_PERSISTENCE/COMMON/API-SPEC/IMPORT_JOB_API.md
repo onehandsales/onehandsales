@@ -1,14 +1,14 @@
 ﻿# ImportJob Persistence API
 
 계약 상태: confirmed
-구현 상태: Done (2026-07-21)
+구현 상태: G01~G04 API 구현 완료 (2026-07-21) / G05~G08 최종형 API 영향 구현 대기 (2026-08-03 확정)
 소비자:
 - User Web
 
 호환성:
 - breaking change 여부: 있음. 기존 `/api/imports` 계열은 in-memory job store에서 DB persisted job store로 동작 의미가 바뀐다.
 - 기존 FE 영향: `/app/import`는 job resume, row patch, validate, cancel 흐름을 추가해야 한다.
-- migration 또는 fallback: `ImportJob`, `ImportJobRow`, `ImportJobError`, `ImportUploadedFile` migration이 선행되어야 한다. 기존 `ImportUserLog`, `ImportUserLogRow`는 성공 이력으로 유지한다.
+- migration 또는 fallback: `ImportJob`, `ImportJobRow`, `ImportJobError`, `ImportUploadedFile` migration이 선행되어야 한다. 기존 `ImportUserLog`는 성공 이력 summary로 유지하고, `ImportUserLogRow`는 G07 기준 30일 row-level retention을 적용한다.
 
 ## 1. 공통 계약
 
@@ -235,7 +235,7 @@ Body:
 | 필드 | 타입 | 필수 | 설명 |
 |---|---|---|---|
 | `targetType` | enum | 필수 | `COMPANY`, `CONTACT`, `PRODUCT`, `DEAL` |
-| `file` | file | 필수 | CSV/XLSX. 현재 파일 크기 제한은 기존 구현 제한을 유지한다. |
+| `file` | file | 필수 | CSV/XLSX. 10MB 이하, header 제외 data row 5,000행 이하. |
 
 `templateId`는 사용자가 직접 선택하거나 request로 넘기지 않는다. Backend가 `targetType`의 active import template을 조회하고, 선택된 template id를 `ImportJob.templateId`에 저장한다.
 
@@ -245,12 +245,17 @@ Body:
 2. multipart request를 validation한다.
 3. `targetType`, `isActive = true`인 active template을 조회한다.
 4. 파일명, MIME, byte size, checksum을 계산한다.
-5. 원본 파일을 storage adapter에 저장한다.
+5. byte size가 10MB를 초과하면 job/storage/row 생성 전에 safe validation error로 실패한다.
 6. 파일을 parsing해 `sourceColumns`와 raw row를 만든다.
-7. `expiresAt = now + 7일`으로 계산한다.
-8. transaction 안에서 `ImportJob.sourceColumnsJson`, `ImportUploadedFile`, `ImportJobRow`를 생성한다.
-9. parsing warning 또는 validation 초기 오류가 있으면 `ImportJobError`와 row errors를 저장한다.
-10. 생성된 `ImportJobDetailResponse`를 반환한다.
+7. header 제외 data row가 5,000행을 초과하면 job/storage/row 생성 전에 safe validation error로 실패한다.
+8. 원본 파일을 storage adapter에 임시 저장한다.
+9. `expiresAt = now + 7일`으로 계산한다.
+10. transaction 안에서 `ImportJob.sourceColumnsJson`, `ImportUploadedFile`, `ImportJobRow`를 생성한다.
+11. parsing warning 또는 validation 초기 오류가 있으면 `ImportJobError`와 row errors를 저장한다.
+12. transaction 성공 직후 원본 file binary를 storage에서 삭제한다.
+13. 삭제 성공 시 `ImportUploadedFile.status=DELETED`, `deletedAt`을 기록한다.
+14. 삭제 실패 시 job 생성은 성공으로 유지하고 `ImportJobError`에 safe storage warning을 남긴다.
+15. 생성된 `ImportJobDetailResponse`를 반환한다.
 
 ### Response
 
@@ -288,13 +293,15 @@ Body:
 | 인증 없음 | `Unauthorized` | 401 | 로그인 화면으로 이동 | warn |
 | template 없음 | `ImportTemplateNotFound` | 404 | 양식 목록을 다시 불러온다 | warn |
 | 파일 형식 불가 | `UnsupportedImportFileType` | 400 | `CSV 또는 XLSX 파일을 올려 주세요.` | warn |
+| 파일 크기 초과 | `ImportFileTooLarge` | 400 | `파일 크기가 너무 커요. 10MB 이하 파일로 다시 올려주세요.` | warn |
+| 행 수 초과 | `ImportRowLimitExceeded` | 400 | `5,000행 이하로 나눠서 다시 올려주세요.` | warn |
 | 파일 parsing 실패 | `ImportFileParseFailed` | 400 | `파일을 읽지 못했어요. 형식을 확인하고 다시 올려 주세요.` | warn |
 | storage 실패 | `ImportFileStorageFailed` | 503 | `파일을 저장하지 못했어요. 잠시 후 다시 시도해 주세요.` | error |
 
 ### FE/BE 처리 기준
 
 - FE: 성공 시 `/app/import/review/:importJobId`로 이동한다.
-- BE: storage binary를 DB에 넣지 않는다.
+- BE: storage binary를 DB에 넣지 않고, 정상 job 생성 직후 storage에서도 삭제한다.
 - 검증: 업로드 후 서버 재시작 뒤에도 job detail 조회가 가능해야 한다.
 
 ## 4. job 상세/resume API
@@ -717,7 +724,7 @@ Body:
 7. `ImportUserLog`, `ImportUserLogRow`를 같은 transaction에서 생성한다.
 8. `ImportJobRow`를 `IMPORTED`로 바꾼다.
 9. `ImportJob`을 `CONFIRMED`로 바꾸고 `confirmedAt`, `importedRowCount`, `importUserLogId`를 저장한다.
-10. 원본 파일 storage delete를 transaction 밖 후속 처리로 실행하고 `ImportUploadedFile.deletedAt`을 기록한다.
+10. 원본 파일이 아직 삭제되지 않은 legacy/delete-failed 상태라면 storage delete를 transaction 밖 후속 처리로 재시도하고 `ImportUploadedFile.deletedAt`을 기록한다.
 11. `ConfirmImportJobResponse`를 반환한다.
 
 ### Response
@@ -800,7 +807,7 @@ Path:
 1. 현재 사용자와 job ownership을 확인한다.
 2. terminal job이면 현재 상태에 맞는 response 또는 conflict를 반환한다.
 3. transaction 안에서 job status를 `CANCELED`로 바꾸고 `canceledAt`을 저장한다.
-4. 원본 파일은 storage delete 후 `ImportUploadedFile.status = DELETED`, `deletedAt`을 저장한다.
+4. 원본 파일이 아직 삭제되지 않은 legacy/delete-failed 상태라면 storage delete를 재시도하고 `ImportUploadedFile.status = DELETED`, `deletedAt`을 저장한다.
 5. body 없는 성공 응답을 반환한다.
 
 ### Response
