@@ -239,6 +239,7 @@ DDL 기준:
 - 기존 migration 파일은 수정하지 않는다.
 - SQL migration 생성 후 `prisma migrate dev` 또는 프로젝트 표준 migration command로 검증한다.
 - `Json`은 PostgreSQL `jsonb`로 생성된다.
+- SQL 작성 시 한글 주석은 필수다. Prisma migration SQL, raw SQL, cleanup/retention 보조 SQL에는 `COMMENT ON TABLE`, `COMMENT ON COLUMN` 또는 `-- 한글 주석`으로 테이블/컬럼 목적, 보관/삭제 기준, 안전 조건을 남긴다.
 - 모든 시스템 시각은 UTC instant이며 `timestamptz(3)`를 사용한다.
 
 ```sql

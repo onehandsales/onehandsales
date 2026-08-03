@@ -11,6 +11,7 @@
 - [ ] User Flow 확인: `/app/import/:importUserLogId`에서 row detail 만료 상태를 정상 안내로 보여준다.
 - [ ] UX/UI 확인: User Web 변경 시 `AGENT/UXUI_AGENT`, `FE-TODO/USER-WEB-TODO.md`, `COMMON/USER-FLOW.md`를 대조한다.
 - [ ] DB/Prisma 확인: `BE/prisma/schema.prisma`, `BE/prisma/migrations`, `BE-TODO/DB-SCHEMA.md`를 대조하고 신규 migration이 필요한지 확인한다.
+- [ ] SQL 주석 확인: Prisma migration SQL, raw SQL, cleanup/retention 보조 SQL을 작성하면 한글 `COMMENT ON` 또는 `-- 한글 주석`으로 목적, 보관/삭제 기준, 안전 조건을 남긴다.
 - [ ] 소프트웨어 아키텍처/컨벤션 확인: `AGENT/SOFTWARE_AGENT/BACKEND_AGENT`, `AGENT/SOFTWARE_AGENT/FRONT_AGENT`, `AGENT/SOFTWARE_AGENT/DB_SCHEMA`를 읽고 cleanup use case, repository, FE query 상태 처리를 맞춘다.
 - [ ] 코드 주석 확인: 30일 cutoff 계산, batch 삭제, `ImportUserLog`/domain row 보존, row detail 빈 상태 UI 처리에는 한글 주석을 반드시 추가한다.
 - [ ] 테스트 확인: 31일 row 삭제, 29일 row 유지, summary/domain 유지, 빈 row detail UI를 검증한다.

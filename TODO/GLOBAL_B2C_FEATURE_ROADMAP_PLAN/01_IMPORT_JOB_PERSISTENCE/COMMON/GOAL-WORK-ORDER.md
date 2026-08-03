@@ -33,9 +33,11 @@ G01~G04 완료일: 2026-07-21
 - 각 goal은 착수 전 자체 체크리스트를 확인하고, 완료 시 체크리스트 항목별 결과를 남긴다.
 - Request, response, business logic, user flow, DB/Prisma 영향은 구현 전 반드시 문서에서 확인한다.
 - Backend 작업은 `AGENT/SOFTWARE_AGENT/BACKEND_AGENT`, `AGENT/SOFTWARE_AGENT/DB_SCHEMA`, `BE/prisma/schema.prisma`, `BE/prisma/migrations`를 기준으로 한다.
+- 소프트웨어 아키텍처, transaction, logging, observability, module boundary, repository/use case 책임 같은 IT 관련 판단은 `AGENT/SOFTWARE_AGENT`를 기준으로 한다.
 - Frontend/User Web 작업은 `AGENT/SOFTWARE_AGENT/FRONT_AGENT`, `AGENT/UXUI_AGENT`, `COMMON/USER-FLOW.md`, `FE-TODO/USER-WEB-TODO.md`를 기준으로 한다.
 - DB 관련 작업은 `BE/prisma`의 실제 schema/migration 상태를 먼저 확인하고, 신규 schema/migration/comment가 필요한지 판단한다.
 - 코드 작성 시 한글 주석은 필수다. 특히 cleanup, retention, validation, transaction, runner, DB 삭제/보존 분기에는 의도를 설명하는 한글 주석을 남긴다.
+- SQL 작성 시 한글 주석은 필수다. Prisma migration SQL, raw SQL, cleanup/retention 보조 SQL에는 `COMMENT ON TABLE`, `COMMENT ON COLUMN` 또는 `-- 한글 주석`으로 목적, 보관/삭제 기준, 안전 조건을 남긴다.
 
 ## 2. G01 DB Persistence Foundation
 

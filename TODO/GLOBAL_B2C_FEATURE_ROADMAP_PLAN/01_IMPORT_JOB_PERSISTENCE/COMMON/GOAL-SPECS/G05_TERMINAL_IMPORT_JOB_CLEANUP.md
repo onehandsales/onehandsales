@@ -9,7 +9,9 @@
 - [ ] Request/Response 영향 확인: 신규 User/Admin HTTP API를 만들지 않고 내부 command/result만 구현한다.
 - [ ] Business Logic 확인: terminal status, cutoff, storage delete 재시도, DB 삭제 가능 조건을 이 문서 기준으로 구현한다.
 - [ ] User Flow 확인: User Web 화면 변경이 없는 goal이며, 사용자-facing 문구를 추가하지 않는다.
+- [ ] UX/UI 영향 확인: 직접 화면 변경은 없지만 `AGENT/UXUI_AGENT` 기준에 어긋나는 사용자-facing 문구나 Admin/User 화면을 추가하지 않는다.
 - [ ] DB/Prisma 확인: `BE/prisma/schema.prisma`, `BE/prisma/migrations`, `BE-TODO/DB-SCHEMA.md`를 대조하고 신규 migration이 필요 없는지 확인한다.
+- [ ] SQL 주석 확인: Prisma migration SQL, raw SQL, cleanup/retention 보조 SQL을 작성하면 한글 `COMMENT ON` 또는 `-- 한글 주석`으로 목적, 보관/삭제 기준, 안전 조건을 남긴다.
 - [ ] 소프트웨어 아키텍처/컨벤션 확인: `AGENT/SOFTWARE_AGENT/BACKEND_AGENT`, `AGENT/SOFTWARE_AGENT/DB_SCHEMA`를 읽고 use case, repository, runner, logging 구조를 맞춘다.
 - [ ] 코드 주석 확인: cleanup 대상 선정, storage delete 재시도, DB 삭제 skip 조건, runner 중복 실행 방지에는 한글 주석을 반드시 추가한다.
 - [ ] 테스트 확인: terminal status, active 제외, legacy fallback, storage delete 실패, env flag runner, safe summary log를 검증한다.

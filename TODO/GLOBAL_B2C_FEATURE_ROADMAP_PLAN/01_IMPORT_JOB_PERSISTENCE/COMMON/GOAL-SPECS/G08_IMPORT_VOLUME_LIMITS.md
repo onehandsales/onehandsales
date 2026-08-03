@@ -11,6 +11,7 @@
 - [ ] User Flow 확인: upload 화면에서 제한 초과 안내를 보여주고 기존 import resume/review 흐름은 유지한다.
 - [ ] UX/UI 확인: User Web 변경 시 `AGENT/UXUI_AGENT`, `FE-TODO/USER-WEB-TODO.md`, `COMMON/USER-FLOW.md`를 대조한다.
 - [ ] DB/Prisma 확인: `BE/prisma/schema.prisma`, `BE/prisma/migrations`, `BE-TODO/DB-SCHEMA.md`를 대조하고 row limit을 DB constraint가 아니라 application validation으로 유지한다.
+- [ ] SQL 주석 확인: Prisma migration SQL, raw SQL, cleanup/retention 보조 SQL을 작성하면 한글 `COMMENT ON` 또는 `-- 한글 주석`으로 목적, 보관/삭제 기준, 안전 조건을 남긴다.
 - [ ] 소프트웨어 아키텍처/컨벤션 확인: `AGENT/SOFTWARE_AGENT/BACKEND_AGENT`, `AGENT/SOFTWARE_AGENT/FRONT_AGENT`, `AGENT/SOFTWARE_AGENT/DB_SCHEMA`를 읽고 validation, parser, controller/use case 책임을 맞춘다.
 - [ ] 코드 주석 확인: row count 계산 기준, storage 생성 전 실패 분기, safe validation response 처리에는 한글 주석을 반드시 추가한다.
 - [ ] 테스트 확인: 5,000행 통과, 5,001행 실패, storage 미호출, DB 미생성, safe error response/log를 검증한다.

@@ -9,7 +9,9 @@
 - [ ] Request/Response 영향 확인: `COMMON/API-SPEC/IMPORT_JOB_API.md`의 request, response, error contract와 DTO 이름을 맞춘다.
 - [ ] Business Logic 확인: upload, mapping, row edit, validate, confirm, cancel, expire, error history 흐름을 이 문서 기준으로 구현한다.
 - [ ] User Flow 확인: User Web이 `파일 올리기 -> 컬럼 매칭 확인 -> 오류 행만 수정 -> 가져오기 완료` 흐름만 보도록 API 의미를 유지한다.
+- [ ] UX/UI 영향 확인: Backend 중심 goal이어도 response/error 의미가 `AGENT/UXUI_AGENT`와 `COMMON/USER-FLOW.md`의 단순 import 흐름을 깨지 않는지 확인한다.
 - [ ] DB/Prisma 확인: `BE/prisma/schema.prisma`, `BE/prisma/migrations`, `BE-TODO/DB-SCHEMA.md`와 transaction/FK/cascade 정책을 대조한다.
+- [ ] SQL 주석 확인: Prisma migration SQL, raw SQL, cleanup/retention 보조 SQL을 작성하면 한글 `COMMENT ON` 또는 `-- 한글 주석`으로 목적, 보관/삭제 기준, 안전 조건을 남긴다.
 - [ ] 소프트웨어 아키텍처/컨벤션 확인: `AGENT/SOFTWARE_AGENT/BACKEND_AGENT`, `AGENT/SOFTWARE_AGENT/DB_SCHEMA`, `BE/src/modules/data-import` 기준으로 controller, use case, repository, adapter 책임을 나눈다.
 - [ ] 코드 주석 확인: transaction, storage write/delete 보정, ownership, redaction, status transition처럼 의도가 중요한 코드에는 한글 주석을 반드시 추가한다.
 - [ ] 문서 확인: API 동작 변경 시 `COMMON/API-SPEC/IMPORT_JOB_API.md`, `BE-TODO/API-TODO.md`, `FE-TODO/USER-WEB-TODO.md`를 함께 갱신한다.

@@ -11,6 +11,7 @@
 - [ ] DB/Prisma 검증: `BE/prisma/schema.prisma`, `BE/prisma/migrations`, `BE-TODO/DB-SCHEMA.md`와 실제 cleanup/delete 대상이 일치하는지 확인한다.
 - [ ] 소프트웨어 아키텍처/컨벤션 검증: `AGENT/SOFTWARE_AGENT` 기준으로 use case, repository, runner, controller, FE feature boundary 위반이 없는지 확인한다.
 - [ ] 코드 주석 검증: G05~G08에서 작성하거나 수정한 cleanup, retention, validation, transaction, runner, DB 삭제/보존 분기에 한글 주석이 있는지 확인한다.
+- [ ] SQL 주석 검증: G05~G08에서 Prisma migration SQL, raw SQL, cleanup/retention 보조 SQL을 작성했다면 한글 `COMMENT ON` 또는 `-- 한글 주석`이 있는지 확인한다.
 - [ ] 문서 동기화 검증: `01_IMPORT_JOB_PERSISTENCE`, `NEXT_BACKEND_API_BACKLOG_PLAN`, `USER_WEB_PRODUCTIZATION_GAP_PLAN`의 상태가 구현 결과와 일치하는지 갱신한다.
 - [ ] QA 기록 검증: 실행 명령, 수동 QA 결과, 남은 리스크를 작업 결과 또는 `TODO_LOG`에 남긴다.
 

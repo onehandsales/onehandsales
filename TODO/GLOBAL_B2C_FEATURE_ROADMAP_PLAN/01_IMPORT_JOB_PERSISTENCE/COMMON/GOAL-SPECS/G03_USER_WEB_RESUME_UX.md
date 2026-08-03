@@ -11,6 +11,7 @@
 - [ ] User Flow 확인: `COMMON/USER-FLOW.md`와 `FE-TODO/USER-WEB-TODO.md` 기준으로 upload, resume, review, confirm, cancel, expired flow를 유지한다.
 - [ ] UX/UI 확인: `AGENT/UXUI_AGENT`, `AGENT/SOFTWARE_AGENT/FRONT_AGENT` 기준으로 Notion식 단순 흐름과 Attio식 record 연결 정확성을 지킨다.
 - [ ] DB/Prisma 확인: 직접 DB 작업은 없지만 화면 상태가 `ImportJob`, `ImportJobRow`, `ImportUserLog` response 계약과 충돌하지 않는지 확인한다.
+- [ ] SQL 주석 확인: User Web goal이라도 raw SQL이나 migration SQL을 작성하게 되면 한글 `COMMENT ON` 또는 `-- 한글 주석`으로 목적, 보관/삭제 기준, 안전 조건을 남긴다.
 - [ ] 코드 주석 확인: route 분기, query invalidation, expired/canceled/failed 상태 처리, mobile row card 전환에는 한글 주석을 반드시 추가한다.
 - [ ] 문서 확인: 화면 흐름 변경 시 `COMMON/USER-FLOW.md`, `FE-TODO/USER-WEB-TODO.md`, `COMMON/API-SPEC/IMPORT_JOB_API.md`를 함께 갱신한다.
 

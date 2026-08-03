@@ -89,10 +89,11 @@ Import 업로드, 원본/preview 보관 정책, AI 매핑, 검증, 확정 전 �
 G05~G09를 포함해 01의 모든 `/goal` 착수 시 아래 기준을 반드시 따른다.
 
 - 각 goal 문서에는 자체 체크리스트가 있어야 하며, request, response, business logic, user flow, DB/Prisma 영향 확인을 포함해야 한다.
-- Backend/API/architecture/convention은 `AGENT/SOFTWARE_AGENT`와 `BE/src/modules/data-import`를 확인한 뒤 구현한다.
+- Backend/API/architecture/convention과 소프트웨어 아키텍처 판단, transaction, logging, observability 같은 IT 관련 구현 판단은 `AGENT/SOFTWARE_AGENT`와 `BE/src/modules/data-import`를 확인한 뒤 구현한다.
 - UX/UI와 User Web 흐름은 `AGENT/UXUI_AGENT`, `AGENT/SOFTWARE_AGENT/FRONT_AGENT`, `COMMON/USER-FLOW.md`, `FE-TODO/USER-WEB-TODO.md`를 기준으로 한다.
 - DB 관련 작업은 `BE/prisma/schema.prisma`, `BE/prisma/migrations`, `BE-TODO/DB-SCHEMA.md`를 먼저 대조한다.
 - 코드 작성 시 한글 주석은 필수다. cleanup, retention, validation, transaction, runner, DB 삭제/보존 분기처럼 의도가 중요한 코드에는 반드시 한글 주석으로 이유를 남긴다.
+- SQL 작성 시에도 한글 주석은 필수다. Prisma migration SQL, raw SQL, cleanup/retention 보조 SQL에는 `COMMENT ON TABLE`, `COMMENT ON COLUMN` 또는 `-- 한글 주석`으로 목적, 보관/삭제 기준, 안전 조건을 남긴다.
 
 ## 4. 완료 판정
 

@@ -12,6 +12,7 @@
 - [ ] DB/Prisma 검증: `BE/prisma/schema.prisma`, `BE/prisma/migrations`, `BE-TODO/DB-SCHEMA.md`와 실제 migration/test 상태를 대조한다.
 - [ ] 소프트웨어 아키텍처/컨벤션 검증: `AGENT/SOFTWARE_AGENT` 기준으로 controller/use case/repository/adapter/FE feature boundary 위반이 없는지 본다.
 - [ ] 코드 주석 검증: 새로 작성되거나 수정된 정책/분기/transaction/cleanup/DB 관련 코드에 한글 주석이 있는지 확인한다.
+- [ ] SQL 주석 검증: Prisma migration SQL, raw SQL, cleanup/retention 보조 SQL을 작성했다면 한글 `COMMENT ON` 또는 `-- 한글 주석`이 있는지 확인한다.
 - [ ] 문서 검증: 구현 결과와 README, SCOPE, API-SPEC, BE-TODO, FE-TODO, GOAL-WORK-ORDER가 충돌하지 않는지 갱신한다.
 
 ## 1. 목적

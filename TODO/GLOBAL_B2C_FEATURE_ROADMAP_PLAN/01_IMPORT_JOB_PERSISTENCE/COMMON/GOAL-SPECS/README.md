@@ -54,10 +54,12 @@ G01~G04 완료일: 2026-07-21
 
 - 모든 goal 문서는 자체 체크리스트를 가져야 한다. 체크리스트에는 request, response, business logic, user flow, DB/Prisma 영향 확인이 포함되어야 한다.
 - Backend 작업 전 `AGENT/SOFTWARE_AGENT/BACKEND_AGENT`, `AGENT/SOFTWARE_AGENT/DB_SCHEMA`, `BE/prisma/schema.prisma`, `BE/prisma/migrations`, `BE/src/modules/data-import`를 확인한다.
+- 소프트웨어 아키텍처, transaction, logging, observability, module boundary, repository/use case 책임 같은 IT 관련 판단은 `AGENT/SOFTWARE_AGENT`를 기준으로 한다.
 - User Web 작업이 있으면 `AGENT/SOFTWARE_AGENT/FRONT_AGENT`, `AGENT/UXUI_AGENT`, `FE/user-web/src/features/import-export`를 확인한다.
 - Request, response, business logic, user flow는 `COMMON/API-SPEC/IMPORT_JOB_API.md`, `COMMON/USER-FLOW.md`, 각 goal 문서의 계약을 기준으로 맞춘다.
 - DB 관련 작업은 반드시 `BE/prisma/schema.prisma`, `BE/prisma/migrations`, `BE-TODO/DB-SCHEMA.md`를 대조한다.
 - DB schema, migration, repository, cleanup, retention, validation, transaction, runner, UI 상태 처리 등 새로 작성하거나 수정하는 코드에는 한글 주석을 반드시 남긴다.
+- SQL 작성 시 한글 주석은 필수다. Prisma migration SQL, raw SQL, cleanup/retention 보조 SQL에는 `COMMENT ON TABLE`, `COMMENT ON COLUMN` 또는 `-- 한글 주석`으로 목적, 보관/삭제 기준, 안전 조건을 남긴다.
 - raw row, 파일명, `storageKey`, provider raw detail, 사용자 email/phone/name은 response/log/Admin 화면에 노출하지 않는다.
 
 ## 4. 완료 전 첫 실행 권장 문구 기록

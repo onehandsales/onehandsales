@@ -9,7 +9,9 @@
 - [ ] Request/Response 영향 확인: `CreateImportJobResponse` 구조는 유지하고 raw storage/file detail을 노출하지 않는다.
 - [ ] Business Logic 확인: parse, storage 임시 저장, DB snapshot 생성, transaction 성공 후 즉시 storage delete 순서를 이 문서 기준으로 구현한다.
 - [ ] User Flow 확인: User Web에 원본 파일 삭제 여부를 기능으로 표시하지 않고 기존 resume flow를 유지한다.
+- [ ] UX/UI 영향 확인: 직접 화면 변경은 없지만 `AGENT/UXUI_AGENT` 기준에 어긋나는 사용자-facing 문구나 파일 보관 상태 UI를 추가하지 않는다.
 - [ ] DB/Prisma 확인: `BE/prisma/schema.prisma`, `BE/prisma/migrations`, `BE-TODO/DB-SCHEMA.md`를 대조하고 기존 `ImportUploadedFile`, `ImportJobError` field만 사용하는지 확인한다.
+- [ ] SQL 주석 확인: Prisma migration SQL, raw SQL, cleanup/retention 보조 SQL을 작성하면 한글 `COMMENT ON` 또는 `-- 한글 주석`으로 목적, 보관/삭제 기준, 안전 조건을 남긴다.
 - [ ] 소프트웨어 아키텍처/컨벤션 확인: `AGENT/SOFTWARE_AGENT/BACKEND_AGENT`, `AGENT/SOFTWARE_AGENT/DB_SCHEMA`를 읽고 use case, repository, storage port 책임을 맞춘다.
 - [ ] 코드 주석 확인: transaction 이후 file delete, delete 실패 warning, G05 재시도 metadata 유지 분기에는 한글 주석을 반드시 추가한다.
 - [ ] 테스트 확인: delete 성공, delete 실패, DB 실패 시 orphan best-effort delete, response/log redaction을 검증한다.

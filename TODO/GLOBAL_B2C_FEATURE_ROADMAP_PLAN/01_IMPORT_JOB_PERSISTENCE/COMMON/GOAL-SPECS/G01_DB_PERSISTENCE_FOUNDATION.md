@@ -9,7 +9,9 @@
 - [ ] Request/Response 영향 확인: G01은 DB foundation goal이며 신규 User HTTP API는 G02에서 다룬다.
 - [ ] Business Logic 확인: import persistence repository boundary와 transaction 전제만 만든다.
 - [ ] User Flow 확인: 직접 UI 변경은 없으며, 이어받기 flow 영향은 G03에서 다룬다.
+- [ ] UX/UI 영향 확인: 직접 화면 변경은 없지만 schema/API naming이 `AGENT/UXUI_AGENT` 기준 사용자 흐름에 노출되지 않게 한다.
 - [ ] DB/Prisma 확인: `BE/prisma/schema.prisma`, `BE/prisma/migrations`, `BE-TODO/DB-SCHEMA.md`를 대조한다.
+- [ ] SQL 주석 확인: Prisma migration SQL, raw SQL을 작성하면 한글 `COMMENT ON` 또는 `-- 한글 주석`으로 목적, 보관/삭제 기준, 안전 조건을 남긴다.
 - [ ] 소프트웨어 아키텍처/컨벤션 확인: `AGENT/SOFTWARE_AGENT/BACKEND_AGENT`, `AGENT/SOFTWARE_AGENT/DB_SCHEMA` 기준으로 schema, repository, migration 책임을 맞춘다.
 - [ ] 코드 주석 확인: 신규 Prisma model/field/enum/index, migration SQL COMMENT, 복잡한 repository 분기에는 한글 주석 또는 DB COMMENT를 반드시 남긴다.
 - [ ] 문서 확인: schema 변경 시 `BE-TODO/DB-SCHEMA.md`, `COMMON/API-SPEC/IMPORT_JOB_API.md`, `COMMON/GOAL-WORK-ORDER.md`를 함께 갱신한다.
