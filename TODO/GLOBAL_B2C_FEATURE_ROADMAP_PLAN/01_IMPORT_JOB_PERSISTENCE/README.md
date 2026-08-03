@@ -1,11 +1,11 @@
 ﻿# 01 ImportJob Persistence
 
-상태: G01~G04 구현 완료 / G05~G08 구현 대기 / 01 최종 서비스 형태 미완료
+상태: G01~G04 구현 완료 / G05~G08 구현 대기 / G09 최종 QA 대기 / 01 최종 서비스 형태 미완료
 G01~G04 완료일: 2026-07-21
 완료 커밋: `0c2a47b`, `c788388`, `a3b9dc7`, `fd6dd23`, `284c078`, `1177578`
 순서: 01
 성격: Global B2C 데이터 신뢰 기반 구현 계획
-결정 상태: 2026-07-21 G01~G04 완료, 2026-08-03 최종 서비스 형태 G05~G08 추가 결정 반영. G05~G08 구현과 QA 전까지 01은 최종 종결이 아니다.
+결정 상태: 2026-07-21 G01~G04 완료, 2026-08-03 최종 서비스 형태 G05~G08 추가 결정 반영. G05~G08 구현과 G09 최종 QA 전까지 01은 최종 종결이 아니다.
 
 ## 0. 완료 체크리스트
 
@@ -30,11 +30,12 @@ G01~G04 완료일: 2026-07-21
 - [x] `COMMON/GOAL-SPECS/G06_ORIGINAL_FILE_BINARY_MINIMIZATION.md` 작성
 - [x] `COMMON/GOAL-SPECS/G07_IMPORT_SUCCESS_ROW_RETENTION.md` 작성
 - [x] `COMMON/GOAL-SPECS/G08_IMPORT_VOLUME_LIMITS.md` 작성
+- [x] `COMMON/GOAL-SPECS/G09_FINAL_SERVICE_QA_CLOSEOUT.md` 작성
 - [ ] G05 Terminal ImportJob Cleanup 구현 및 QA
 - [ ] G06 Original File Binary Minimization 구현 및 QA
 - [ ] G07 Import Success Row Retention 구현 및 QA
 - [ ] G08 Import Volume Limits 구현 및 QA
-- [ ] G05~G08 완료 후 `01_IMPORT_JOB_PERSISTENCE`, `NEXT_BACKEND_API_BACKLOG_PLAN`, `USER_WEB_PRODUCTIZATION_GAP_PLAN` 상태 동기화
+- [ ] G09 Final Service QA Closeout 및 `01_IMPORT_JOB_PERSISTENCE`, `NEXT_BACKEND_API_BACKLOG_PLAN`, `USER_WEB_PRODUCTIZATION_GAP_PLAN` 상태 동기화
 
 ## 1. 목적
 
@@ -85,7 +86,7 @@ Import 업로드, 원본/preview 보관 정책, AI 매핑, 검증, 확정 전 �
 
 ## 3.2 구현 필수 기준
 
-G05~G08을 포함해 01의 모든 `/goal` 착수 시 아래 기준을 반드시 따른다.
+G05~G09를 포함해 01의 모든 `/goal` 착수 시 아래 기준을 반드시 따른다.
 
 - 각 goal 문서에는 자체 체크리스트가 있어야 하며, request, response, business logic, user flow, DB/Prisma 영향 확인을 포함해야 한다.
 - Backend/API/architecture/convention은 `AGENT/SOFTWARE_AGENT`와 `BE/src/modules/data-import`를 확인한 뒤 구현한다.
@@ -95,16 +96,16 @@ G05~G08을 포함해 01의 모든 `/goal` 착수 시 아래 기준을 반드시 
 
 ## 4. 완료 판정
 
-- 판정: G01~G04 구현 완료. G05~G08은 01 완전 종결을 위한 최종 서비스 형태 보강 구현 대상
-- 최종 종결 조건: G05~G08 구현, Backend/User Web 영향 QA, 문서 상태 업데이트가 끝나면 01은 Global B2C 최종 서비스 형태 기준으로 완전 종료한다.
+- 판정: G01~G04 구현 완료. G05~G08은 01 완전 종결을 위한 최종 서비스 형태 보강 구현 대상이고, G09는 해당 보강을 닫는 최종 QA/문서 closeout 대상이다.
+- 최종 종결 조건: G05~G08 구현, G09 Backend/User Web 통합 QA, 문서 상태 업데이트가 끝나면 01은 Global B2C 최종 서비스 형태 기준으로 완전 종료한다.
 - 직접 대상: `TODO/NEXT_BACKEND_API_BACKLOG_PLAN`의 `NBA-006 ImportJob persistence/resume API`
 - 완료 순서: G01 DB -> G02 Backend API -> G03 User Web -> G04 QA
 - 완료 근거: `TODO_LOG/2026-07-21/G04_IMPORT_JOB_PERSISTENCE_QA_CLEANUP/WORK_LOG.md`
 
 최종 종결 시 반드시 같이 업데이트할 문서:
 
-- `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/01_IMPORT_JOB_PERSISTENCE`: G05~G08 완료 체크, 상태를 최종 서비스 형태 완료로 변경, 완료 근거와 QA 결과 기록
-- `TODO/NEXT_BACKEND_API_BACKLOG_PLAN`: `NBA-006`을 G01~G08 전체 기준 최종 종료로 정리
+- `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/01_IMPORT_JOB_PERSISTENCE`: G05~G09 완료 체크, 상태를 최종 서비스 형태 완료로 변경, 완료 근거와 QA 결과 기록
+- `TODO/NEXT_BACKEND_API_BACKLOG_PLAN`: `NBA-006`을 G01~G09 전체 기준 최종 종료로 정리
 - `TODO/USER_WEB_PRODUCTIZATION_GAP_PLAN`: DataImport/Import UX gap이 최종 서비스 형태 기준으로 닫혔음을 반영
 
 01은 Global B2C 첫 판매 전체 bundle이 아니다. 결제, Admin 운영, 앱 내부 다국어, 제품 분석, Notification은 별도 계획으로 분리한다. 대용량 import worker, 범용 ExportJob, 일정/회의록 import, ImportJob 전용 Admin 화면/API도 01 최종 종료 조건이 아니다.
@@ -123,6 +124,7 @@ G05~G08을 포함해 01의 모든 `/goal` 착수 시 아래 기준을 반드시 
 - `COMMON/GOAL-SPECS/G06_ORIGINAL_FILE_BINARY_MINIMIZATION.md`
 - `COMMON/GOAL-SPECS/G07_IMPORT_SUCCESS_ROW_RETENTION.md`
 - `COMMON/GOAL-SPECS/G08_IMPORT_VOLUME_LIMITS.md`
+- `COMMON/GOAL-SPECS/G09_FINAL_SERVICE_QA_CLOSEOUT.md`
 - `BE-TODO/DB-SCHEMA.md`
 - `BE-TODO/API-TODO.md`
 - `FE-TODO/USER-WEB-TODO.md`

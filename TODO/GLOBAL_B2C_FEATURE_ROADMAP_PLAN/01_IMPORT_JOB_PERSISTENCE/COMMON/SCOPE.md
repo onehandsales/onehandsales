@@ -1,6 +1,6 @@
 ﻿# Scope
 
-상태: G01~G04 구현 완료 / G05~G08 구현 대기 / 01 최종 서비스 형태 미완료
+상태: G01~G04 구현 완료 / G05~G08 구현 대기 / G09 최종 QA 대기 / 01 최종 서비스 형태 미완료
 G01~G04 완료일: 2026-07-21
 
 ## 0. 완료 체크리스트
@@ -17,6 +17,7 @@ G01~G04 완료일: 2026-07-21
 - [ ] G06 original file binary 즉시 삭제 구현
 - [ ] G07 ImportUserLogRow 30일 cleanup 구현
 - [ ] G08 10MB/5,000행 import 제한 구현
+- [ ] G09 최종 서비스 QA closeout 및 상위 문서 상태 동기화
 
 ## 1. 목적
 
@@ -97,6 +98,7 @@ G01~G04 완료일: 2026-07-21
 - `ImportUserLogRow`는 생성 30일 후 삭제되고, `ImportUserLog` summary와 실제 CRM 데이터는 유지된다.
 - 5,001행 이상 upload는 job/storage/row 생성 없이 안전한 validation message로 거부된다.
 - User Web은 API 응답에 없는 summary를 임의로 꾸미지 않는다.
+- G05~G08 구현 후 G09 최종 QA와 문서 동기화가 완료된다.
 
 ## 6. 검증 기준
 

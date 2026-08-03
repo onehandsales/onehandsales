@@ -1,6 +1,6 @@
 ﻿# Release Scope Check
 
-상태: G01~G04 release scope 완료 / G05~G08 최종형 구현 대기 / 01 최종 서비스 형태 미완료
+상태: G01~G04 release scope 완료 / G05~G08 최종형 구현 대기 / G09 최종 QA 대기 / 01 최종 서비스 형태 미완료
 G01~G04 완료일: 2026-07-21
 
 ## 1. 목적
@@ -80,12 +80,18 @@ G01~G04 완료일: 2026-07-21
 
 ## 6. 완료 판정
 
-01은 2026-07-21 기준 `NBA-006`의 G01~G04 구현 및 QA closeout까지 완료했다. 2026-08-03 최종형으로 승격한 G05~G08은 아직 구현 전이므로, 01 전체를 최종 서비스 형태로 완료 처리하지 않는다.
+01은 2026-07-21 기준 `NBA-006`의 G01~G04 구현 및 QA closeout까지 완료했다. 2026-08-03 최종형으로 승격한 G05~G08은 아직 구현 전이고, 이를 닫는 G09 최종 QA도 대기 중이므로 01 전체를 최종 서비스 형태로 완료 처리하지 않는다.
 
 완료 goal은 아래 순서로 진행했다.
 
 ```text
 G01_DB_PERSISTENCE_FOUNDATION -> G02_BACKEND_IMPORT_JOB_API -> G03_USER_WEB_RESUME_UX -> G04_QA_CLEANUP
+```
+
+최종형 보강 완료 goal은 아래 순서로 진행한다.
+
+```text
+G05_TERMINAL_IMPORT_JOB_CLEANUP -> G06_ORIGINAL_FILE_BINARY_MINIMIZATION -> G07_IMPORT_SUCCESS_ROW_RETENTION -> G08_IMPORT_VOLUME_LIMITS -> G09_FINAL_SERVICE_QA_CLOSEOUT
 ```
 
 Global B2C 첫 판매 전체 구현은 이 계획 하나로 착수하면 안 된다. 첫 판매 전체는 결제, Admin, 현지화, 분석, 정책을 포함하는 별도 계획 bundle로 나누어야 한다.

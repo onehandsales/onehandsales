@@ -172,6 +172,7 @@ User Web은 row detail이 정리된 import log 상세를 오류로 보지 않는
 - `COMMON/GOAL-SPECS/G06_ORIGINAL_FILE_BINARY_MINIMIZATION.md`
 - `COMMON/GOAL-SPECS/G07_IMPORT_SUCCESS_ROW_RETENTION.md`
 - `COMMON/GOAL-SPECS/G08_IMPORT_VOLUME_LIMITS.md`
+- `COMMON/GOAL-SPECS/G09_FINAL_SERVICE_QA_CLOSEOUT.md`
 - `BE-TODO/DB-SCHEMA.md`
 - `BE-TODO/API-TODO.md`
 - `FE-TODO/USER-WEB-TODO.md`
@@ -184,7 +185,7 @@ User Web은 row detail이 정리된 import log 상세를 오류로 보지 않는
 
 G01~G04는 이 직접 요구사항을 구현하고 QA closeout까지 완료한 범위다.
 
-G05~G08은 상위 문서의 완료 범위를 뒤집는 새 기능이 아니라, Global B2C 최종 서비스 형태에서 01을 더 이상 붙잡지 않기 위한 보관/삭제/입력량 제한 보강이다.
+G05~G08은 상위 문서의 완료 범위를 뒤집는 새 기능이 아니라, Global B2C 최종 서비스 형태에서 01을 더 이상 붙잡지 않기 위한 보관/삭제/입력량 제한 보강이다. G09는 이 보강 묶음이 기존 import flow와 충돌하지 않는지 확인하고 문서를 최종 종료 상태로 맞추는 QA closeout이다.
 
 정합성:
 
@@ -195,11 +196,11 @@ G05~G08은 상위 문서의 완료 범위를 뒤집는 새 기능이 아니라, 
 
 완전 종료 판정:
 
-- G05~G08 구현, Backend/User Web 영향 QA, 문서 상태 업데이트가 끝나면 `01_IMPORT_JOB_PERSISTENCE`는 최종 서비스 형태 기준으로 완전 종료한다.
+- G05~G08 구현, G09 Backend/User Web 통합 QA, 문서 상태 업데이트가 끝나면 `01_IMPORT_JOB_PERSISTENCE`는 최종 서비스 형태 기준으로 완전 종료한다.
 - 이후 대용량 import worker, 범용 ExportJob, 일정/회의록 import, ImportJob Admin 전용 화면/API, 결제/구독 연동은 01의 미완성이 아니라 별도 TODO 또는 12/post-12 후속 범위로 본다.
 
 완전 종료 시 문서 동기화:
 
-- `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/01_IMPORT_JOB_PERSISTENCE`: G05~G08 완료 체크, 완료일, 완료 커밋, Backend/User Web QA 결과를 기록하고 상태를 최종 서비스 형태 완료로 변경한다.
-- `TODO/NEXT_BACKEND_API_BACKLOG_PLAN`: `NBA-006 ImportJob persistence/resume API`가 G01~G08 전체 기준으로 최종 종료됐음을 반영한다.
+- `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/01_IMPORT_JOB_PERSISTENCE`: G05~G09 완료 체크, 완료일, 완료 커밋, Backend/User Web QA 결과를 기록하고 상태를 최종 서비스 형태 완료로 변경한다.
+- `TODO/NEXT_BACKEND_API_BACKLOG_PLAN`: `NBA-006 ImportJob persistence/resume API`가 G01~G09 전체 기준으로 최종 종료됐음을 반영한다.
 - `TODO/USER_WEB_PRODUCTIZATION_GAP_PLAN`: DataImport persistence/resume, row detail 만료 안내, import 제한 초과 안내까지 포함해 Import 관련 productization gap이 닫혔음을 반영한다.

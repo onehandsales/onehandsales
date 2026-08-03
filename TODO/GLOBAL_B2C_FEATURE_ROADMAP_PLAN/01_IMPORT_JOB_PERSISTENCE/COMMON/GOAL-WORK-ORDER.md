@@ -1,6 +1,6 @@
 ﻿# Goal Work Order
 
-상태: G01~G04 구현 완료 / G05~G08 구현 대기 / 01 최종 서비스 형태 미완료
+상태: G01~G04 구현 완료 / G05~G08 구현 대기 / G09 최종 QA 대기 / 01 최종 서비스 형태 미완료
 G01~G04 완료일: 2026-07-21
 
 ## 0. 완료 체크리스트
@@ -14,6 +14,7 @@ G01~G04 완료일: 2026-07-21
 - [ ] G06 Original file binary minimization
 - [ ] G07 Import success row retention
 - [ ] G08 Import volume limits
+- [ ] G09 Final service QA closeout
 
 ## 1. 원칙
 
@@ -350,3 +351,48 @@ pnpm.cmd run build
 - 5,001행 import는 DB/storage 흔적 없이 실패한다.
 - 사용자는 파일을 나눠 올리라는 명확한 안내를 본다.
 - 대용량 worker/progress/partial retry는 01 범위에 추가되지 않는다.
+
+## 10. G09 Final Service QA Closeout
+
+상세 명세: `COMMON/GOAL-SPECS/G09_FINAL_SERVICE_QA_CLOSEOUT.md`
+
+목표:
+
+- G05~G08 최종형 보강이 기존 G01~G04 import persistence/resume 흐름과 충돌하지 않는지 통합 QA한다.
+- `01_IMPORT_JOB_PERSISTENCE`, `NEXT_BACKEND_API_BACKLOG_PLAN`, `USER_WEB_PRODUCTIZATION_GAP_PLAN` 문서를 구현 결과에 맞춰 최종 종료 상태로 동기화한다.
+
+작업:
+
+1. G01~G04 기존 import flow 회귀 QA를 실행한다.
+2. G05 terminal cleanup, G06 original file binary 즉시 삭제, G07 `ImportUserLogRow` 30일 cleanup, G08 10MB/5,000행 제한을 통합 검증한다.
+3. Backend request/response/log redaction을 확인한다.
+4. User Web normal import, resume, row detail 만료, 제한 초과 안내를 확인한다.
+5. DB/Prisma schema, migration, cleanup/delete 대상이 문서와 일치하는지 확인한다.
+6. `TODO_LOG` 또는 작업 결과에 검증 명령과 수동 QA 결과를 남긴다.
+7. 01/NEXT_BACKEND/USER_WEB 문서 상태를 최종 종료 기준으로 갱신한다.
+
+검증:
+
+```powershell
+cd BE
+pnpm.cmd run prisma:validate
+pnpm.cmd run typecheck
+pnpm.cmd run lint
+pnpm.cmd run test -- data-import
+pnpm.cmd run build
+```
+
+```powershell
+cd FE/user-web
+pnpm.cmd run typecheck
+pnpm.cmd run lint
+pnpm.cmd run build
+pnpm.cmd run test:e2e
+```
+
+완료 기준:
+
+- G05~G08 구현 결과가 전체 import flow와 충돌하지 않는다.
+- Backend/User Web 검증 명령과 수동 QA가 통과한다.
+- raw row, 파일명, `storageKey`, provider raw detail, email, phone, name이 response/log/Admin 화면에 노출되지 않는다.
+- `01_IMPORT_JOB_PERSISTENCE`, `NEXT_BACKEND_API_BACKLOG_PLAN`, `USER_WEB_PRODUCTIZATION_GAP_PLAN` 상태가 모두 최종 종료 기준으로 동기화된다.

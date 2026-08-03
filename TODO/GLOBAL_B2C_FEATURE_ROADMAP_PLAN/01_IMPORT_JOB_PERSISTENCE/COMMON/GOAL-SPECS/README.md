@@ -1,11 +1,11 @@
 # Goal Specs
 
-상태: G01~G04 구현 완료 / G05~G08 구현 대기 / 01 최종 서비스 형태 미완료
+상태: G01~G04 구현 완료 / G05~G08 구현 대기 / G09 최종 QA 대기 / 01 최종 서비스 형태 미완료
 G01~G04 완료일: 2026-07-21
 
 ## 1. 목적
 
-이 폴더는 `01_IMPORT_JOB_PERSISTENCE`를 `/goal`로 실행할 때 각 작업 단위가 바로 구현에 들어갈 수 있도록 상세 명세를 둔 완료 기록이다.
+이 폴더는 `01_IMPORT_JOB_PERSISTENCE`를 `/goal`로 실행할 때 각 작업 단위가 바로 착수될 수 있도록 상세 명세와 완료 기록을 함께 둔다.
 
 `COMMON/GOAL-WORK-ORDER.md`는 실행 순서이고, 이 폴더의 문서는 각 `/goal`의 실제 구현 계약이다.
 
@@ -20,6 +20,7 @@ G01~G04 완료일: 2026-07-21
 - [ ] G06 `G06_ORIGINAL_FILE_BINARY_MINIMIZATION.md`
 - [ ] G07 `G07_IMPORT_SUCCESS_ROW_RETENTION.md`
 - [ ] G08 `G08_IMPORT_VOLUME_LIMITS.md`
+- [ ] G09 `G09_FINAL_SERVICE_QA_CLOSEOUT.md`
 
 ## 2. Goal 목록
 
@@ -33,6 +34,7 @@ G01~G04 완료일: 2026-07-21
 | G06 | Confirmed | `G06_ORIGINAL_FILE_BINARY_MINIMIZATION.md` | 원본 업로드 file binary를 parse와 DB snapshot 생성 직후 삭제 |
 | G07 | Confirmed | `G07_IMPORT_SUCCESS_ROW_RETENTION.md` | `ImportUserLogRow` row-level submitted data를 30일 후 cleanup |
 | G08 | Confirmed | `G08_IMPORT_VOLUME_LIMITS.md` | 대용량 worker 없이 10MB/5,000행 제한 적용 |
+| G09 | Confirmed | `G09_FINAL_SERVICE_QA_CLOSEOUT.md` | G05~G08 최종형 보강 통합 QA와 01/NEXT_BACKEND/USER_WEB 문서 closeout |
 
 ## 3. 실행 규칙
 
@@ -45,6 +47,7 @@ G01~G04 완료일: 2026-07-21
 - G06은 G05와 독립적으로 실행할 수 있지만, storage delete 실패 재시도는 G05 계약과 맞춘다.
 - G07은 Backend cleanup과 User Web import log 상세의 빈 row 상태 처리를 함께 확인한다.
 - G08은 upload API validation과 User Web upload error 표시를 함께 확인한다.
+- G09는 G05~G08이 모두 완료된 뒤에만 실행하며, 01의 최종 서비스 형태 완료 판정을 닫는다.
 - 각 goal은 해당 문서의 완료 기준을 만족해야 완료로 본다.
 
 공통 구현 기준:
@@ -85,4 +88,10 @@ G08 실행 권장 문구:
 
 ```text
 /goal TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/01_IMPORT_JOB_PERSISTENCE/COMMON/GOAL-SPECS/G08_IMPORT_VOLUME_LIMITS.md 기준으로 G08을 구현해줘.
+```
+
+G09 실행 권장 문구:
+
+```text
+/goal TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/01_IMPORT_JOB_PERSISTENCE/COMMON/GOAL-SPECS/G09_FINAL_SERVICE_QA_CLOSEOUT.md 기준으로 G09 최종 QA와 문서 closeout을 진행해줘.
 ```
