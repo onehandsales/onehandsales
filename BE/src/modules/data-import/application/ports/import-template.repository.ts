@@ -33,6 +33,8 @@ export interface ImportTemplateRepository {
   listUserLogs(input: ListImportUserLogsInput): Promise<ImportUserLogPageRecord>;
   // 기능 : 현재 사용자의 성공한 불러오기 로그 상세를 조회합니다.
   findUserLog(input: FindImportUserLogInput): Promise<ImportUserLogRecord | null>;
+  // 기능 : 보관 기간이 지난 성공 이력 row snapshot을 batch 단위로 삭제합니다.
+  deleteImportUserLogRowsBefore(cutoff: Date, batchSize: number): Promise<number>;
   // 기능 : 회사 불러오기 확정 생성과 성공 로그 저장을 같은 트랜잭션으로 처리합니다.
   confirmCompanyImport(input: ConfirmImportInput): Promise<ConfirmImportResult>;
   // 기능 : 담당자 불러오기 확정 생성과 성공 로그 저장을 같은 트랜잭션으로 처리합니다.

@@ -1,7 +1,7 @@
 ﻿# ImportJob Persistence API
 
 계약 상태: confirmed
-구현 상태: G01~G04 API 구현 완료 (2026-07-21) / G05~G08 최종형 API 영향 구현 대기 (2026-08-03 확정)
+구현 상태: G01~G07 API 구현 완료 / G08 최종형 API 영향 구현 대기
 소비자:
 - User Web
 
@@ -128,6 +128,7 @@
 - AI mapping provider 호출은 DB transaction 밖에서 실행한다. provider 결과만 transaction 안에서 저장한다.
 - 원본 파일 storage write/delete는 DB transaction과 완전히 원자화할 수 없으므로 실패 시 `ImportJobError`와 file status로 추적한다.
 - application log event key는 `importJob.*` dot notation을 사용한다.
+- 성공 이력 상세의 row-level snapshot은 G07 retention 이후 `rows=[]`일 수 있으며, summary field는 계속 반환한다.
 - PII, row raw data, 전화번호, 이메일, 회사명, 담당자명, provider raw response는 structured log에 평문으로 남기지 않는다.
 
 ## 2. 진행 중 작업 목록 API

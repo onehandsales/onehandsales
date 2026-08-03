@@ -186,6 +186,35 @@ export class PrismaImportTemplateRepository implements ImportTemplateRepository 
     };
   }
 
+  // 기능 : ImportUserLog summary와 domain row를 보존하고 오래된 row-level snapshot만 삭제합니다.
+  async deleteImportUserLogRowsBefore(
+    cutoff: Date,
+    batchSize: number
+  ): Promise<number> {
+    const rows = await this.prismaService.importUserLogRow.findMany({
+      where: {
+        createdAt: { lte: cutoff },
+      },
+      select: {
+        id: true,
+      },
+      orderBy: [{ createdAt: "asc" }, { id: "asc" }],
+      take: batchSize,
+    });
+
+    if (rows.length === 0) {
+      return 0;
+    }
+
+    const deleted = await this.prismaService.importUserLogRow.deleteMany({
+      where: {
+        id: { in: rows.map((row) => row.id) },
+      },
+    });
+
+    return deleted.count;
+  }
+
   // 기능 : 회사 불러오기 확정 생성과 성공 로그 저장을 같은 트랜잭션으로 처리합니다.
   async confirmCompanyImport(input: ConfirmImportInput): Promise<ConfirmImportResult> {
     return this.prismaService.$transaction(async (client) => {

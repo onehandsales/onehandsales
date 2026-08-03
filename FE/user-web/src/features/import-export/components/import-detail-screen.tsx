@@ -174,7 +174,10 @@ export function ImportDetailScreen({ importUserLogId }: ImportDetailScreenProps)
               <div>
                 <FileSpreadsheet className="mx-auto h-6 w-6 text-[#9CA3AF]" />
                 <p className="mt-3 text-sm font-semibold text-[#111827]">
-                  업로드한 데이터가 생기면 여기에서 볼 수 있어요.
+                  행별 상세 내역은 보관 기간이 지나 정리됐어요.
+                </p>
+                <p className="mt-1 text-sm text-[#64748B]">
+                  가져오기 요약은 계속 확인할 수 있어요.
                 </p>
               </div>
             </div>

@@ -4,11 +4,12 @@ import {
   DataImportApplicationService,
   IMPORT_JOB_CLEANUP_DEFAULT_BATCH_SIZE,
   IMPORT_JOB_CLEANUP_RETENTION_DAYS,
+  IMPORT_USER_LOG_ROW_CLEANUP_RETENTION_DAYS,
 } from "@/modules/data-import/application/services/data-import-application.service";
 
 export const IMPORT_JOB_CLEANUP_DEFAULT_INTERVAL_MS = 300_000;
 
-// 역할 : ImportJobCleanupRunner 환경 변수 기반 terminal import job cleanup timer를 관리합니다.
+// 역할 : ImportJobCleanupRunner 환경 변수 기반 import retention cleanup timer를 관리합니다.
 @Injectable()
 export class ImportJobCleanupRunner implements OnModuleInit, OnModuleDestroy {
   private timer: ReturnType<typeof setInterval> | null = null;
@@ -60,16 +61,37 @@ export class ImportJobCleanupRunner implements OnModuleInit, OnModuleDestroy {
         IMPORT_JOB_CLEANUP_DEFAULT_BATCH_SIZE
       );
 
-      // 1. runner는 실행 시각과 고정 retention 정책만 command로 전달한다.
+      // 1. 같은 tick 안에서 terminal job cleanup과 성공 이력 row cleanup을 각각 독립 실행한다.
+      await this.runTerminalImportJobCleanup(batchSize);
+      await this.runImportUserLogRowCleanup(batchSize);
+    } finally {
+      this.running = false;
+    }
+  }
+
+  // 기능 : terminal import job cleanup 실패가 다음 retention 작업을 막지 않도록 격리합니다.
+  private async runTerminalImportJobCleanup(batchSize: number): Promise<void> {
+    try {
       await this.dataImportApplicationService.cleanupTerminalImportJobs({
         now: new Date(),
         retentionDays: IMPORT_JOB_CLEANUP_RETENTION_DAYS,
         batchSize,
       });
     } catch {
-      // 2. cleanup use case가 safe failure log를 남기므로 runner는 timer 지속만 보장한다.
-    } finally {
-      this.running = false;
+      // 1. cleanup use case가 safe failure log를 남기므로 runner는 다음 작업을 계속한다.
+    }
+  }
+
+  // 기능 : 성공 이력 row cleanup을 같은 env flag와 batch size 기준으로 실행합니다.
+  private async runImportUserLogRowCleanup(batchSize: number): Promise<void> {
+    try {
+      await this.dataImportApplicationService.cleanupImportUserLogRows({
+        now: new Date(),
+        retentionDays: IMPORT_USER_LOG_ROW_CLEANUP_RETENTION_DAYS,
+        batchSize,
+      });
+    } catch {
+      // 1. cleanup use case가 safe failure log를 남기므로 runner timer를 중단하지 않는다.
     }
   }
 

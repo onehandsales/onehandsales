@@ -27,6 +27,28 @@ type MockTransactionClient = {
   };
 };
 
+type MockCleanupPrismaService = {
+  readonly importUserLogRow: {
+    readonly findMany: jest.Mock;
+    readonly deleteMany: jest.Mock;
+  };
+  readonly importUserLog: {
+    readonly deleteMany: jest.Mock;
+  };
+  readonly company: {
+    readonly deleteMany: jest.Mock;
+  };
+  readonly contact: {
+    readonly deleteMany: jest.Mock;
+  };
+  readonly product: {
+    readonly deleteMany: jest.Mock;
+  };
+  readonly deal: {
+    readonly deleteMany: jest.Mock;
+  };
+};
+
 const USER_ID = "00000000-0000-4000-8000-000000000101";
 const IMPORT_JOB_ID = "00000000-0000-4000-8000-000000000301";
 const IMPORT_USER_LOG_ID = "00000000-0000-4000-8000-000000000401";
@@ -88,6 +110,70 @@ describe("PrismaImportTemplateRepository persistent confirm", () => {
     expect(client.company.create).not.toHaveBeenCalled();
     expect(client.importJobRow.updateMany).not.toHaveBeenCalled();
   });
+
+  it("deletes 31-day-old import success row snapshots and retains 29-day rows", async () => {
+    const prismaService = createCleanupPrismaService();
+    const repository = new PrismaImportTemplateRepository(
+      prismaService as unknown as PrismaService
+    );
+    const cleanupCutoffAt = new Date("2026-06-21T00:00:00.000Z");
+    const thirtyOneDayRowAt = new Date("2026-06-20T00:00:00.000Z");
+    const retainedTwentyNineDayRowAt = new Date("2026-06-22T00:00:00.000Z");
+    prismaService.importUserLogRow.findMany.mockResolvedValue([
+      { id: "row-old-1" },
+      { id: "row-old-2" },
+    ]);
+    prismaService.importUserLogRow.deleteMany.mockResolvedValue({ count: 2 });
+
+    const deletedCount = await repository.deleteImportUserLogRowsBefore(
+      cleanupCutoffAt,
+      500
+    );
+
+    expect(thirtyOneDayRowAt.getTime()).toBeLessThanOrEqual(
+      cleanupCutoffAt.getTime()
+    );
+    expect(cleanupCutoffAt.getTime()).toBeLessThan(
+      retainedTwentyNineDayRowAt.getTime()
+    );
+    expect(prismaService.importUserLogRow.findMany).toHaveBeenCalledWith({
+      where: {
+        createdAt: { lte: cleanupCutoffAt },
+      },
+      select: {
+        id: true,
+      },
+      orderBy: [{ createdAt: "asc" }, { id: "asc" }],
+      take: 500,
+    });
+    expect(prismaService.importUserLogRow.deleteMany).toHaveBeenCalledWith({
+      where: {
+        id: { in: ["row-old-1", "row-old-2"] },
+      },
+    });
+    expect(prismaService.importUserLog.deleteMany).not.toHaveBeenCalled();
+    expect(prismaService.company.deleteMany).not.toHaveBeenCalled();
+    expect(prismaService.contact.deleteMany).not.toHaveBeenCalled();
+    expect(prismaService.product.deleteMany).not.toHaveBeenCalled();
+    expect(prismaService.deal.deleteMany).not.toHaveBeenCalled();
+    expect(deletedCount).toBe(2);
+  });
+
+  it("does not issue deleteMany when import success row cleanup has no candidates", async () => {
+    const prismaService = createCleanupPrismaService();
+    const repository = new PrismaImportTemplateRepository(
+      prismaService as unknown as PrismaService
+    );
+    prismaService.importUserLogRow.findMany.mockResolvedValue([]);
+
+    const deletedCount = await repository.deleteImportUserLogRowsBefore(
+      new Date("2026-06-21T00:00:00.000Z"),
+      500
+    );
+
+    expect(prismaService.importUserLogRow.deleteMany).not.toHaveBeenCalled();
+    expect(deletedCount).toBe(0);
+  });
 });
 
 function createRepository(
@@ -127,6 +213,30 @@ function createTransactionClient(): MockTransactionClient {
     },
     companyRegion: {
       upsert: jest.fn().mockResolvedValue({ id: "region-1", region: "Seoul" }),
+    },
+  };
+}
+
+function createCleanupPrismaService(): MockCleanupPrismaService {
+  return {
+    importUserLogRow: {
+      findMany: jest.fn(),
+      deleteMany: jest.fn(),
+    },
+    importUserLog: {
+      deleteMany: jest.fn(),
+    },
+    company: {
+      deleteMany: jest.fn(),
+    },
+    contact: {
+      deleteMany: jest.fn(),
+    },
+    product: {
+      deleteMany: jest.fn(),
+    },
+    deal: {
+      deleteMany: jest.fn(),
     },
   };
 }

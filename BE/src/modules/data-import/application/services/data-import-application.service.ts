@@ -106,6 +106,8 @@ const IMPORT_JOB_DETAIL_ERROR_LIMIT = 50;
 export const IMPORT_JOB_CLEANUP_RETENTION_DAYS = 7;
 export const IMPORT_JOB_CLEANUP_DEFAULT_BATCH_SIZE = 500;
 const IMPORT_JOB_CLEANUP_DAY_MS = 24 * 60 * 60 * 1000;
+export const IMPORT_USER_LOG_ROW_CLEANUP_RETENTION_DAYS = 30;
+const IMPORT_USER_LOG_ROW_CLEANUP_DAY_MS = 24 * 60 * 60 * 1000;
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const DEAL_STATUS_TEMPLATE_OPTIONS = DEAL_STATUS_CODES.map((status) =>
   getDealStatusLabel(status)
@@ -328,6 +330,19 @@ export interface CleanupTerminalImportJobsResult {
   readonly fileDeleteRetriedCount: number;
   readonly fileDeleteFailedCount: number;
   readonly skippedJobCount: number;
+  readonly cleanupCutoffAt: string;
+}
+
+// 역할 : CleanupImportUserLogRowsCommand 성공 이력 row-level snapshot 정리 내부 command를 정의합니다.
+export interface CleanupImportUserLogRowsCommand {
+  readonly now: Date;
+  readonly retentionDays: 30;
+  readonly batchSize: number;
+}
+
+// 역할 : CleanupImportUserLogRowsResult 성공 이력 row-level snapshot 정리 결과 요약을 정의합니다.
+export interface CleanupImportUserLogRowsResult {
+  readonly deletedRowCount: number;
   readonly cleanupCutoffAt: string;
 }
 
@@ -554,6 +569,20 @@ export class DataImportApplicationService {
     } catch (error) {
       this.logEvent("importJob.cleanup.failed", {
         safeErrorCode: "IMPORT_JOB_CLEANUP_FAILED",
+      });
+      throw error;
+    }
+  }
+
+  // 기능 : 성공한 불러오기 이력의 row-level snapshot을 30일 보관 후 삭제합니다.
+  async cleanupImportUserLogRows(
+    command: CleanupImportUserLogRowsCommand
+  ): Promise<CleanupImportUserLogRowsResult> {
+    try {
+      return await this.executeCleanupImportUserLogRows(command);
+    } catch (error) {
+      this.logEvent("importUserLogRows.cleanup.failed", {
+        safeErrorCode: "IMPORT_USER_LOG_ROWS_CLEANUP_FAILED",
       });
       throw error;
     }
@@ -1560,6 +1589,51 @@ export class DataImportApplicationService {
   // 기능 : 종료 import job 정리에 사용할 보관 기간 cutoff 시점을 계산합니다.
   private createImportJobCleanupCutoffAt(now: Date, retentionDays: 7): Date {
     return new Date(now.getTime() - retentionDays * IMPORT_JOB_CLEANUP_DAY_MS);
+  }
+
+  // 기능 : 성공 이력 row-level snapshot cleanup command를 검증하고 batch 삭제를 실행합니다.
+  private async executeCleanupImportUserLogRows(
+    command: CleanupImportUserLogRowsCommand
+  ): Promise<CleanupImportUserLogRowsResult> {
+    // 1. row-level 성공 이력 보관 기간은 개인정보 최소 보관 정책상 30일만 허용한다.
+    if (command.retentionDays !== IMPORT_USER_LOG_ROW_CLEANUP_RETENTION_DAYS) {
+      throw new ValidationDomainError(
+        "IMPORT_USER_LOG_ROW_CLEANUP_RETENTION_DAYS_INVALID"
+      );
+    }
+
+    const batchSize = this.normalizePositiveInteger(
+      command.batchSize,
+      IMPORT_JOB_CLEANUP_DEFAULT_BATCH_SIZE
+    );
+    const cleanupCutoffAt = this.createImportUserLogRowCleanupCutoffAt(
+      command.now,
+      command.retentionDays
+    );
+
+    // 2. ImportUserLog summary와 실제 CRM row는 유지하고 row snapshot만 batch 삭제한다.
+    const deletedRowCount =
+      await this.importTemplateRepository.deleteImportUserLogRowsBefore(
+        cleanupCutoffAt,
+        batchSize
+      );
+    const result: CleanupImportUserLogRowsResult = {
+      deletedRowCount,
+      cleanupCutoffAt: cleanupCutoffAt.toISOString(),
+    };
+
+    // 3. submittedDataJson, targetLabel 목록, import log id 배열 없이 집계값만 남긴다.
+    this.logEvent("importUserLogRows.cleanup.completed", { ...result });
+
+    return result;
+  }
+
+  // 기능 : 성공 이력 row-level snapshot 정리에 사용할 30일 cutoff 시점을 계산합니다.
+  private createImportUserLogRowCleanupCutoffAt(
+    now: Date,
+    retentionDays: 30
+  ): Date {
+    return new Date(now.getTime() - retentionDays * IMPORT_USER_LOG_ROW_CLEANUP_DAY_MS);
   }
 
   // 기능 : 업로드 원본 파일을 storage port에 저장하고 실패를 domain error로 변환합니다.

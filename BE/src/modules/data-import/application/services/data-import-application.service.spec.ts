@@ -740,6 +740,53 @@ describe("DataImportApplicationService persistent import job flow", () => {
     );
   });
 
+  it("cleans import success row snapshots after 30 retention days with safe summary log", async () => {
+    const fixture = createServiceFixture();
+    fixture.importTemplateRepository.deleteImportUserLogRowsBefore.mockResolvedValue(2);
+
+    const result = await fixture.service.cleanupImportUserLogRows({
+      now: NOW,
+      retentionDays: 30,
+      batchSize: 500,
+    });
+
+    expect(
+      fixture.importTemplateRepository.deleteImportUserLogRowsBefore
+    ).toHaveBeenCalledWith(new Date("2026-06-21T00:00:00.000Z"), 500);
+    expect(result).toEqual({
+      deletedRowCount: 2,
+      cleanupCutoffAt: "2026-06-21T00:00:00.000Z",
+    });
+
+    const cleanupLog = fixture.logger.log.mock.calls.find((call) =>
+      String(call[0]).includes("importUserLogRows.cleanup.completed")
+    )?.[0];
+    expect(cleanupLog).toEqual(expect.any(String));
+    expect(String(cleanupLog)).toContain("deletedRowCount");
+    expect(String(cleanupLog)).not.toContain("submittedDataJson");
+    expect(String(cleanupLog)).not.toContain("Acme raw-secret-value");
+    expect(String(cleanupLog)).not.toContain(IMPORT_USER_LOG_ID);
+  });
+
+  it("fails import success row cleanup when retention days are not the fixed 30-day policy", async () => {
+    const fixture = createServiceFixture();
+
+    await expect(
+      fixture.service.cleanupImportUserLogRows({
+        now: NOW,
+        retentionDays: 29 as 30,
+        batchSize: 500,
+      })
+    ).rejects.toBeInstanceOf(ValidationDomainError);
+
+    expect(
+      fixture.importTemplateRepository.deleteImportUserLogRowsBefore
+    ).not.toHaveBeenCalled();
+    expect(JSON.stringify(fixture.logger.log.mock.calls)).toContain(
+      "importUserLogRows.cleanup.failed"
+    );
+  });
+
   it("expires active jobs with uploaded file metadata cleanup before listing", async () => {
     const fixture = createServiceFixture();
     fixture.importJobRepository.listExpiredActiveJobsForUser.mockResolvedValue([
@@ -778,6 +825,7 @@ function createServiceFixture() {
     findActiveTemplateByType: jest.fn(),
     listUserLogs: jest.fn(),
     findUserLog: jest.fn(),
+    deleteImportUserLogRowsBefore: jest.fn().mockResolvedValue(0),
     confirmCompanyImport: jest.fn(),
     confirmContactImport: jest.fn(),
     confirmProductImport: jest.fn(),
