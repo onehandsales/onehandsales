@@ -76,7 +76,7 @@
 |---|---|---|
 | NBA-003 잔여 | 회사/담당자/제품 목록 summary 표시 | Deal list `latestActivity`는 완료됐다. 남은 summary도 private memo와 일반 활동을 구분한다. |
 | NBA-004 | 부분 완료: 회의록 상세 AI 후속 작업 section, 다음 행동 후보 편집 저장, follow-up draft 수정/복사 구현. 회의록 목록 summary 표시는 후속 | 목록에는 AI/STT raw text나 민감 원문을 노출하지 않는다. 상세 AI 후보도 자동 저장/자동 발송하지 않는다. |
-| NBA-006 | 완료: Import resume 화면과 client state | Active FE TODO에서 제외한다. 새로고침/탭 이동 복구 UX, 만료/실패 상태, confirm/cancel 흐름 구현 완료 |
+| NBA-006 | 완료: Import resume 화면, client state, row detail 만료 안내, upload 제한 초과 안내 | Active FE TODO에서 제외한다. 새로고침/탭 이동 복구 UX, 만료/실패 상태, confirm/cancel 흐름, 성공 이력 row detail 만료 상태, 10MB/5,000행 제한 초과 안내까지 구현 및 G09 closeout 완료 |
 | NBA-009 | 완료: `/app/schedules/week` route, 주간 보고서 화면, 이전/다음/이번 주 이동, Excel 다운로드, loading/empty/error/export error 처리 | Active FE TODO에서 제외한다. PDF/범용 ExportJob, 반복 일정, AI 요약은 별도 backlog에서 다룬다. |
 | NBA-010 | 완료: Notification route/sidebar 노출 | Active FE TODO에서 제외한다. `/app/notifications`, unread badge, settings, browser push 권한 fallback UX 구현 완료 |
 | NBA-015 | 완료: `/app/schedules` source badge/sync/calendar hidden handling, `/app/settings` Google Calendar 연결/선택/해제, `/app/trash` Schedule restore UX 구현 | Active FE TODO에서 제외한다. Google export/write, realtime webhook/watch, 반복 일정은 별도 backlog에서 다룬다. |

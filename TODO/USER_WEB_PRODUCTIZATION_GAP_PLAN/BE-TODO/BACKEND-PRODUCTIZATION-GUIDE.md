@@ -47,7 +47,7 @@ Backend 판단 기준은 MVP 기능 추가가 아니라 Global B2C 첫 판매 ga
 | Schedule | CRUD, deal link, timezone local time handling, weekly report API, weekly xlsx export, Google Calendar connect/import/sync/calendar selection/source metadata/local edit/soft delete |
 | MeetingNote | CRUD, AI/STT draft, provider call log, next action draft, follow-up draft, deal link, trash |
 | BusinessCard | OCR scan log, upload scan, safe failure fields, KR/US phone normalization, confirm company/contact |
-| DataImport | localized templates, upload/mapping/row edit/validation/confirm/cancel/logs, DB persistent pre-confirm job |
+| DataImport | localized templates, upload/mapping/row edit/validation/confirm/cancel/logs, 확정 전 job DB persistence, terminal cleanup, 원본 file binary 즉시 삭제, `ImportUserLogRow` 30일 cleanup, 10MB/5,000행 제한 |
 | Notification | list/read/settings/browser-push API, 일정/딜/Google-origin schedule reminder 생성, due processor, delivery attempt |
 | Search | integrated search |
 | Trash | list/detail/restore, Schedule restore |

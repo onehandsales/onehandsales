@@ -8,7 +8,7 @@
 ## 0. 완료 반영 체크리스트
 
 - [x] DataImport 기본 흐름
-- [x] DataImport ImportJob persistence/resume (`NBA-006`)
+- [x] DataImport ImportJob persistence/resume 및 최종형 보관/삭제/입력량 제한 (`NBA-006`)
 - [x] `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/01_IMPORT_JOB_PERSISTENCE` G01~G04 구현 및 QA closeout
 - [x] `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/01_IMPORT_JOB_PERSISTENCE` G05~G08 최종형 보관/삭제/입력량 제한 보강과 G09 최종 QA closeout 완료
 - [x] Weekly Schedule Report (`NBA-009`)
