@@ -1,7 +1,7 @@
 # User Web Productization Guide
 
 상태: Draft Guide
-최종 업데이트: 2026-08-01
+최종 업데이트: 2026-08-03
 
 ## 0. 완료 반영
 
@@ -83,6 +83,7 @@
 - 완료된 MeetingNote AI Provider Log 범위를 넘어서는 회의록 목록 summary, 자동 저장/자동 발송, 회의록 follow-up 알림, Admin provider audit 조회는 API/DB/정책 계약 없이 확장하지 않는다.
 - 완료된 Global Data I18N 범위를 넘어서는 신규 국가/통화/provider, `/app` locale prefix, 추가 DB migration은 계약/운영 계획 없이 진행하지 않는다.
 - 완료된 Product Analytics/Mobile Field Use/Admin Operation 범위를 넘어서는 billing/paywall/churn runtime event, PWA install/offline shell, native app은 별도 계약 없이 확장하지 않는다.
+- 12 완료 후 post-12 재검토 전에는 UX/UI 전체 유지보수를 먼저 시작하지 않는다.
 - `/app/export` generic export를 다시 노출하지 않는다.
 - page size를 FE 단독으로 바꾸지 않는다.
 - API 응답에 없는 latest activity, next action summary, product summary, dealCount를 임의로 계산해 사실처럼 표시하지 않는다. Deal list products/latest activity와 Contact dealCount는 06 API 응답 기준으로만 표시한다.
@@ -95,3 +96,4 @@
 3. API 응답이 부족한 문제인지 분리한다.
 4. API가 필요하면 `TODO/NEXT_BACKEND_API_BACKLOG_PLAN` 후보와 연결한다.
 5. 구현은 별도 TODO 계획과 `/goal`로 분리한다.
+6. 12 완료 후에는 `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/COMMON/POST-12-REVIEW-AND-FOLLOWUP.md` 기준으로 화면별 gap을 다시 분류하고, UX/UI 디자인 유지보수는 그 이후 별도 계획으로 진행한다.

@@ -1,7 +1,7 @@
 # Current vs Final Gap Matrix
 
 상태: Draft Guide
-최종 업데이트: 2026-08-01
+최종 업데이트: 2026-08-03
 
 ## 0. 완료 반영
 
@@ -82,7 +82,9 @@
 
 ## 4. 권장 다음 큰 방향
 
-1. User Web 화면별 제품화 gap을 실제 화면 기준으로 다시 확인한다.
-2. MVP를 판매 버전이 아니라 Global B2C 첫 판매 gate로 가기 위한 내부 품질 기준으로 고정한다.
-3. 결제, 정책/운영 신뢰, 세금/컴플라이언스를 Global B2C 첫 판매 필수 bundle로 따로 계획한다. 제품 분석 foundation은 09에서 완료됐고 mobile field-use event는 10에서 완료됐으며 Admin dashboard는 11에서 완료됐다. billing-linked conversion/churn은 12에 연결한다.
-4. API/DB 후보는 UX/UI와 첫 판매 운영 필요성으로 확인된 것만 `confirmed` 계약으로 승격한다.
+1. 먼저 `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/12_BILLING_SUBSCRIPTION_TAX`를 진행한다.
+2. 12에서 결제, 정책/운영 신뢰, 세금/컴플라이언스, billing-linked conversion/churn source를 계약화하고 구현한다.
+3. 12 완료 후 `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/COMMON/POST-12-REVIEW-AND-FOLLOWUP.md` 기준으로 User Web 화면별 제품화 gap을 실제 화면과 API/DB 기준으로 다시 확인한다.
+4. `TODO/NEXT_BACKEND_API_BACKLOG_PLAN`과 이 gap matrix를 함께 대조해 미구현/후속/보류 항목을 새 TODO 폴더로 승격한다.
+5. API/DB 후보는 UX/UI와 첫 판매 운영 필요성으로 확인된 것만 `confirmed` 계약으로 승격한다.
+6. UX/UI 디자인 유지보수는 12와 post-12 후속 후보 재분류 이후 별도 계획에서 진행한다.

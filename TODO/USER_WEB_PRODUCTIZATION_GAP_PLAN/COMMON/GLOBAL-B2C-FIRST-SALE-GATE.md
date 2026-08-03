@@ -1,7 +1,7 @@
 # Global B2C First Sale Gate
 
 상태: Draft Guide
-최종 업데이트: 2026-08-01
+최종 업데이트: 2026-08-03
 
 ## 0. 완료 반영
 
@@ -18,6 +18,7 @@
 - [x] Product analytics foundation은 `09_PRODUCT_ANALYTICS`에서 완료
 - [x] Mobile field-use 1차 범위는 `10_MOBILE_PWA_FIELD_USE`에서 완료
 - [x] Admin operation 1차 범위는 `11_ADMIN_OPERATION`에서 완료
+- [ ] 12 Billing 완료 후 01~12 전체 post-12 재검토
 - [ ] backup/restore 실행 runbook, 장애 대응 drill, Billing 운영 기준은 별도 gate로 남음
 
 ## 1. 목적
@@ -39,6 +40,8 @@ MVP는 판매 버전이 아니다. MVP는 핵심 업무 루프가 동작하는�
 | Data reliability | migration, seed, backup/restore, import job 유실, provider log, 장애 대응 기준이 있다. | ImportJob persistence, Google Calendar token encryption/redaction, callback/redirect QA, 06/11 범위 DB target/migrate/seed gate, 07 MeetingNote provider call log subset, 08 migration 파일 작성과 DB 최신 상태 확인, 11 Admin system operation check record는 완료. 실제 backup/restore 실행 runbook과 장애 대응 drill은 별도 운영 절차로 남긴다. |
 | Analytics | activation, retention, paid conversion, churn, ARPU, AI cost/user를 볼 수 있다. | 09에서 event taxonomy, client/server event 수집, activation/retention snapshot, AI usage/cost summary foundation을 구현했고 10에서 mobile field-use event를 연결했으며 11에서 Admin analytics UI/API를 구현했다. paid conversion/churn/ARPU는 12 Billing runtime source가 연결되어야 완성된다. |
 | Retention | 다음 행동, 일정, 딜 지연, 회의록 follow-up을 사용자가 놓치지 않는다. | 일정/딜 Notification reminder, 주간 일정 보고서, Google Calendar read-only import와 Google-origin schedule reminder, 딜 activity timeline, 회의록 follow-up draft, browser push permission UX는 완료. 회의록 follow-up 알림/발송과 실제 SMTP/Web Push provider smoke는 후속 운영 확인으로 분리한다. |
+
+12 완료 후에는 `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/COMMON/POST-12-REVIEW-AND-FOLLOWUP.md` 기준으로 이 gate를 다시 닫는다. 이때 01~12 전체, `NEXT_BACKEND_API_BACKLOG_PLAN`, `USER_WEB_PRODUCTIZATION_GAP_PLAN`, 실제 BE/FE/Prisma 상태를 함께 대조한다.
 
 ## 3. Gate 판정 상태
 
@@ -66,3 +69,4 @@ MVP는 판매 버전이 아니다. MVP는 핵심 업무 루프가 동작하는�
 - 첫 판매는 기능 수가 아니라 결제, 운영, 신뢰, 현지화, 분석이 연결된 상태로 판단한다.
 - Series A 기능은 첫 판매 gate를 통과한 뒤 지표를 보고 확장한다.
 - 이 문서는 구현 지시서가 아니며, 실제 구현은 별도 TODO 계획과 `/goal`로 분리한다.
+- 12 완료 후 post-12 재검토에서 미완성/후속으로 남은 항목은 새 TODO 폴더로 승격한다. UX/UI 디자인 유지보수는 그 이후 별도 계획으로 진행한다.

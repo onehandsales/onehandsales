@@ -2,7 +2,7 @@
 
 상태: Draft
 작성일: 2026-07-20
-최종 업데이트: 2026-08-01
+최종 업데이트: 2026-08-03
 출처: `TODO/DONE/USER_WEB_RELEASE_QA_FOLLOWUP_PLAN` G07, `TODO/USER_WEB_PRODUCTIZATION_GAP_PLAN`
 
 ## 0. 완료 반영 체크리스트
@@ -66,6 +66,8 @@ G07의 산출물이므로 이 문서는 구현 계획 확정본이 아니다. �
 - `10_MOBILE_PWA_FIELD_USE`는 2026-07-31 기준 구현 및 QA closeout이 완료되어 mobile field-use API/DB/User Web gap에서 제외한다. PWA install/offline shell, native app, native push/contact/calendar는 후속 별도 로드맵이다.
 - `11_ADMIN_OPERATION`은 2026-08-01 기준 구현 및 QA closeout이 완료되어 Admin 운영 API/DB/Admin Web gap에서 제외한다. 결제/구독/plan/payment/invoice/refund는 11에서 제외했고 12에서 다룬다.
 - MeetingNote 목록 summary, Company/Contact/Product latest summary, Billing 연동 conversion/churn flow, PWA/native packaging은 남은 후보다.
+- 사용자 결정 기준으로 12를 먼저 진행한다. 12 완료 후 `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/COMMON/POST-12-REVIEW-AND-FOLLOWUP.md`에 따라 이 백로그를 다시 읽고, 잔여 후보를 새 TODO 폴더로 승격할지 결정한다.
+- 12 완료 전에는 `NBA-003`, `NBA-004`, backup/restore runbook, 장애 대응 drill을 무작위로 구현하지 않는다. 다만 post-12 재검토 seed로 유지한다.
 
 ## 2.1 `NBA-015` 반영 기준
 

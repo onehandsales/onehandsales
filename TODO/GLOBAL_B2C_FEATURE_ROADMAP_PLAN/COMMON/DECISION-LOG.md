@@ -1,7 +1,7 @@
 # Decision Log
 
 상태: Decision Baseline
-기준일: 2026-08-01
+기준일: 2026-08-03
 
 ## 0. 완료 반영
 
@@ -50,6 +50,7 @@
 | `/goal` 관계 | 이 로드맵은 `/goal`이 아니며, 각 번호 폴더를 보강한 뒤 별도 `/goal`로 전환한다. |
 | 슬롯 의사결정 | 각 슬롯은 이 문서의 추천 결정을 기본값으로 삼고, 구현 전 `SCOPE/API/DB/FE` 문서에서 confirmed로 승격한다. |
 | First-sale gate | `COMMON/FIRST-SALE-GATE-MAP.md`를 Global roadmap의 선행 gate 기준으로 둔다. `TODO/NEXT_BACKEND_API_BACKLOG_PLAN`과 `TODO/USER_WEB_PRODUCTIZATION_GAP_PLAN`의 최종 방향이 01~12 순서에서 약해지지 않게 추적한다. |
+| 12 이후 재검토 | 12를 먼저 진행한 뒤, 01~12 전체와 `TODO/NEXT_BACKEND_API_BACKLOG_PLAN`, `TODO/USER_WEB_PRODUCTIZATION_GAP_PLAN`, 실제 BE/FE/Prisma 상태를 다시 학습한다. 미구현/후속/보류 항목은 기존 완료 폴더를 되돌리지 않고 새 TODO 폴더로 승격한다. UX/UI 디자인 유지보수는 이 재검토와 후속 작업 재분류 이후 별도 계획으로 진행한다. |
 
 ## 3. 슬롯별 추천 결정
 
@@ -89,3 +90,4 @@
 - `TODO/USER_WEB_PRODUCTIZATION_GAP_PLAN/COMMON/GLOBAL-B2C-FIRST-SALE-GATE.md`
 - `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/COMMON/COVERAGE-MATRIX.md`
 - `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/COMMON/FIRST-SALE-GATE-MAP.md`
+- `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/COMMON/POST-12-REVIEW-AND-FOLLOWUP.md`

@@ -1,7 +1,7 @@
 # User Web TODO
 
 상태: Draft
-최종 업데이트: 2026-08-01
+최종 업데이트: 2026-08-03
 
 ## 0. 완료 반영
 
@@ -83,6 +83,8 @@
 | 09_PRODUCT_ANALYTICS | 완료: `/app` 보호 route 진입 시 routeKey allowlist 기반 `app_route_viewed` 전송 | Active FE TODO에서 제외한다. Admin analytics 화면은 11에서 완료됐고 billing/paywall/churn UI는 12에서 다룬다. |
 | 10_MOBILE_PWA_FIELD_USE | 완료: 모바일 명함 촬영, OCR safe failure, 회의 녹음/fallback, local draft, push permission UX, mobile field analytics | Active FE TODO에서 제외한다. PWA install/offline shell/native app은 후속 별도 결정이다. |
 | 11_ADMIN_OPERATION | 완료: `/app/trash` 만료 row/복구 문의, account/data request 영향, `/admin/api/*` 미호출 QA | Active FE TODO에서 제외한다. Billing/paywall/churn UI는 12에서 다룬다. |
+
+12 완료 후에는 `GLOBAL_B2C_FEATURE_ROADMAP_PLAN/COMMON/POST-12-REVIEW-AND-FOLLOWUP.md` 기준으로 위 잔여 후보를 다시 분류한다. User Web UX/UI 전체 유지보수는 12와 post-12 후속 후보 재분류 이후 별도 계획에서 진행한다.
 
 ## 4. Ops/security 영향 후보
 

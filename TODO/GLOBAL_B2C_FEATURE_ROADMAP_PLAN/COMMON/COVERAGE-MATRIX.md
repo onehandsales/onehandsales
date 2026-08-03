@@ -1,6 +1,6 @@
 # Coverage Matrix
 
-상태: Draft / 01~11 Done / 12 Next
+상태: Draft / 01~11 Done / 12 Next / Post-12 Review Planned
 
 ## 0. 완료 반영
 
@@ -21,6 +21,7 @@
 - [x] 11 `Admin Operation`: Done (2026-08-01)
 - [x] `NBA-007`, `NBA-011` Admin/internal 범위, `NBA-012`, `NBA-013`, 11 범위 `NBA-014`: `11_ADMIN_OPERATION`에서 구현 및 QA closeout 완료
 - [x] First-sale gate 반영: `NBA-014`, Product UX gate, Trust/policy gate, `NBA-007`은 `COMMON/FIRST-SALE-GATE-MAP.md`에 선행/횡단 기준으로 고정
+- [ ] Post-12 전체 재검토: 12 완료 후 `COMMON/POST-12-REVIEW-AND-FOLLOWUP.md` 기준으로 01~12와 입력 계획 2개를 다시 대조하고 새 TODO 후보를 확정
 
 ## 1. 목적
 
@@ -108,9 +109,11 @@
 | Billing | Coupon/referral | 12, 09 | 09에서 reserved taxonomy/foundation만 확정했다. 결제 적용과 실험 운영은 12 |
 | Billing | Churn survey/cancel reason | 12, 09 | 09에서 reserved taxonomy/foundation만 확정했다. 해지 flow, survey source, billing-linked churn 분석은 12 이후 연결 |
 | Billing | Billing Admin 연동 | 12 | 11 Admin 운영은 결제/구독을 제외했다. Billing Admin 화면/API는 12 결제 도메인과 함께 결정 |
+| Post-12 review | 01~12 전체 재학습과 후속 TODO 승격 | 12 이후 | `NEXT_BACKEND_API_BACKLOG_PLAN`, `USER_WEB_PRODUCTIZATION_GAP_PLAN`, 실제 BE/FE/Prisma 상태를 다시 대조해 미구현/후속/보류 항목을 새 TODO 폴더로 재배치한다. UX/UI 디자인 유지보수는 이 재검토 이후 별도 계획으로 진행한다 |
 
 ## 3. 누락 판단 규칙
 
 - 새 기능 후보가 나오면 이 문서에 먼저 배정한다.
 - 기존 12개 슬롯에 자연스럽게 들어가지 않으면 새 번호 폴더를 만들기 전에 사용자 결정이 필요하다.
 - 한 기능이 여러 슬롯에 걸치면 사용자-facing 구현 슬롯과 운영/정책 슬롯을 둘 다 적는다.
+- 12 완료 후 발견된 미구현/후속 후보는 기존 01~12 완료 폴더를 되돌려 열지 않고 새 TODO 폴더로 승격한다.

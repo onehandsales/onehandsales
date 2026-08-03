@@ -1,7 +1,7 @@
 # Current Implemented Functions
 
 상태: Draft Guide
-기준: 2026-08-01 현재 코드와 AGENT 구현 상태 문서
+기준: 2026-08-03 현재 코드와 AGENT 구현 상태 문서
 
 ## 0. 완료 반영 체크리스트
 
@@ -119,3 +119,4 @@
 - `11_ADMIN_OPERATION`은 완료됐고, 12 결제/구독/세금 로드맵 슬롯은 아직 작업 필요 상태다. PWA install/offline shell/native app은 10 완료 범위 밖 후속이다.
 - 제품화 gap은 "API가 없어서 화면을 못 만든다"보다 "현재 핵심 루프를 Global B2C 첫 판매 gate까지 어떤 순서로 끌어올릴지"에 가깝다.
 - 따라서 다음 계획은 MVP 기능 추가 목록이 아니라 Global B2C 첫 판매 기준 대비 gap을 먼저 정리해야 한다.
+- 현재 결정된 순서는 12 결제/구독/세금 구현을 먼저 진행한 뒤, `GLOBAL_B2C_FEATURE_ROADMAP_PLAN` 01~12 전체와 `NEXT_BACKEND_API_BACKLOG_PLAN`, `USER_WEB_PRODUCTIZATION_GAP_PLAN`을 다시 대조하는 것이다. 재검토에서 남은 미구현/후속 항목은 새 TODO 폴더로 승격하고, UX/UI 디자인 유지보수는 그 이후 별도 계획으로 진행한다.

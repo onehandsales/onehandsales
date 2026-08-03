@@ -2,7 +2,7 @@
 
 상태: Draft Guide
 작성일: 2026-07-20
-최종 업데이트: 2026-08-01
+최종 업데이트: 2026-08-03
 성격: 제품화 gap 판단 가이드
 
 ## 0. 완료 반영 체크리스트
@@ -96,6 +96,13 @@
 - 첫 판매 기준인 Global B2C 유료 판매를 위한 결제/구독, 세금/컴플라이언스, Billing 정책/신뢰 gate
 - billing 기반 paid conversion/churn/ARPU 분석 연결
 - Series A급 고급 리텐션/AI와 native/PWA packaging 고도화
+
+진행 순서 결정:
+
+- 먼저 `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/12_BILLING_SUBSCRIPTION_TAX`를 진행한다.
+- 12 완료 후 `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/COMMON/POST-12-REVIEW-AND-FOLLOWUP.md` 기준으로 이 제품화 gap 문서와 `TODO/NEXT_BACKEND_API_BACKLOG_PLAN`, 01~12 전체를 다시 학습한다.
+- 미구현/후속/보류 항목은 기존 완료 폴더를 재개하지 않고 새 TODO 폴더로 승격한다.
+- UX/UI 디자인 유지보수는 12 완료와 post-12 재검토 이후 별도 계획으로 진행한다.
 
 ## 3.1 `NBA-015` 반영 기준
 
@@ -260,6 +267,7 @@
 3. UX/UI만 보강하면 되는지, API/DB/운영/정책 계약이 필요한지 분리한다.
 4. Backend/API가 필요하면 `COMMON/API-SPEC`이 있는 별도 TODO 계획을 만든다.
 5. 실제 구현은 별도 `/goal` 문서로 쪼갠 뒤 진행한다.
+6. 12 완료 후에는 `GLOBAL_B2C_FEATURE_ROADMAP_PLAN/COMMON/POST-12-REVIEW-AND-FOLLOWUP.md` 기준으로 전체 gap을 다시 분류하고, 필요한 항목만 새 TODO로 승격한다.
 
 ## 6. 지금 바로 구현하지 않을 것
 
@@ -292,3 +300,4 @@
 - `AGENT/SOFTWARE_AGENT/FRONT_AGENT/ARCHITECTURE/FRONTEND_USER_WEB.md`
 - `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/CONVENTION/API_CONTRACT.md`
 - `TODO/NEXT_BACKEND_API_BACKLOG_PLAN`
+- `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/COMMON/POST-12-REVIEW-AND-FOLLOWUP.md`

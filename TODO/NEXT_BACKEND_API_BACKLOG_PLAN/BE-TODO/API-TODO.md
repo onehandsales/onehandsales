@@ -1,7 +1,7 @@
 # API TODO
 
 상태: Draft
-최종 업데이트: 2026-08-01
+최종 업데이트: 2026-08-03
 
 ## 0. 완료 반영
 
@@ -153,6 +153,8 @@
 
 - `NBA-003`: Company/Contact/Product latest memo/activity/next action summary. Deal list `latestActivity` subset은 06에서 완료
 - `NBA-004`: MeetingNote 목록 next/latest summary. 상세 next action/follow-up draft subset은 07에서 완료
+
+위 후보는 12 완료 후 `GLOBAL_B2C_FEATURE_ROADMAP_PLAN/COMMON/POST-12-REVIEW-AND-FOLLOWUP.md` 기준 재검토에서 새 TODO로 승격할지 결정한다. 12 완료 전에는 이 draft 문서만으로 API를 구현하지 않는다.
 
 공통 다음 작업:
 

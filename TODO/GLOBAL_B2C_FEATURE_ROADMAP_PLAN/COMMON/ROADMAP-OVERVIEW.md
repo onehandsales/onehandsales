@@ -1,6 +1,6 @@
 # Roadmap Overview
 
-상태: Draft / 01~11 Done / 12 Next
+상태: Draft / 01~11 Done / 12 Next / Post-12 Review Planned
 
 ## 0. 완료 현황
 
@@ -49,6 +49,7 @@ Product UX first-sale gate는 전체 시각 polish와 다르다. 핵심 `/app` �
 | Global B2C 제품화 | 08~10 | Done: 08 다국가 데이터/앱 다국어 기반, 09 제품 분석 기반, 10 모바일 현장 입력성 완료 |
 | Series A 확장성 | 10 이후 후속 | PWA install/offline shell, native app, native push/contact/calendar는 후속 로드맵으로 유지 |
 | 마지막 운영/판매 묶음 | 11~12 | Done: 11 Admin 운영 완료. Next: 12 결제/구독/세금 |
+| Post-12 재검토 | 01~12 완료 후 | 12 완료 뒤 01~12 전체와 입력 계획 2개를 다시 학습하고 미구현/후속 항목을 새 TODO로 재배치 |
 
 ## 3. 기본 순서
 
@@ -64,6 +65,19 @@ Product UX first-sale gate는 전체 시각 polish와 다르다. 핵심 `/app` �
 10. `10_MOBILE_PWA_FIELD_USE` - Done
 11. `11_ADMIN_OPERATION` - Done
 12. `12_BILLING_SUBSCRIPTION_TAX`
+
+## 3A. 12 이후 재검토 원칙
+
+사용자 결정 기준으로 다음 큰 흐름은 12를 먼저 진행하는 것이다. 12 완료 전에는 billing/paywall/churn/paid conversion source와 정책/운영 기준이 확정되지 않으므로, 전체 UX/UI 유지보수나 잔여 기능 대규모 정리는 먼저 진행하지 않는다.
+
+12 완료 후에는 `COMMON/POST-12-REVIEW-AND-FOLLOWUP.md`를 기준으로 아래를 다시 확인한다.
+
+1. `GLOBAL_B2C_FEATURE_ROADMAP_PLAN` 01~12 전체 README, API-SPEC, GOAL-SPECS, TODO_LOG/closeout
+2. `NEXT_BACKEND_API_BACKLOG_PLAN`의 잔여 후보와 완료 이력
+3. `USER_WEB_PRODUCTIZATION_GAP_PLAN`의 제품화 gap과 first-sale gate
+4. 실제 `BE`, `FE/user-web`, `FE/admin-web`, `BE/prisma/schema.prisma` 상태
+
+재검토 결과 미구현/후속/보류로 남은 항목은 기존 완료 폴더를 다시 여는 방식이 아니라 새 TODO 폴더로 승격한다. UX/UI 디자인 유지보수는 이 재검토와 필요한 후속 기능/운영 정리 이후 별도 계획으로 잡는다.
 
 ## 4. 선행/횡단 Gate
 

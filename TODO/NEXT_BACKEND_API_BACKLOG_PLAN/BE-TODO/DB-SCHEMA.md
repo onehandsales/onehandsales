@@ -1,7 +1,7 @@
 # DB Schema TODO
 
 상태: Draft
-최종 업데이트: 2026-08-01
+최종 업데이트: 2026-08-03
 
 ## 0. 완료 반영
 
@@ -89,6 +89,8 @@
 |---|---|---|
 | NBA-003 잔여 | Company/Contact/Product latest memo/activity/next action summary | Deal list `latestActivity`는 `DealActivity`로 완료됐다. 나머지 record summary는 별도 summary/index 설계 후보가 생길 수 있다. |
 | NBA-004 | MeetingNote 목록 next/latest summary | 상세 next action/follow-up draft는 새 저장 table 없이 07에서 완료됐다. 목록 summary를 저장하면 column/table 후보가 생긴다. |
+
+위 후보는 12 완료 후 전체 재검토에서 first-sale follow-up인지 product follow-up인지 다시 분류한다. 신규 schema나 migration은 API/UX 필요성과 `NBA-014` DB/Prisma 운영 gate가 확인되기 전까지 추가하지 않는다.
 
 ## 4. RQA-005 운영 gate
 

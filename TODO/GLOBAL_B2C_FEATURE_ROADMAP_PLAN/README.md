@@ -2,6 +2,7 @@
 
 상태: Draft Roadmap / 01~11 Done / 12 Next
 작성일: 2026-07-20
+최종 업데이트: 2026-08-03
 성격: 기능 선구현 로드맵 슬롯 + Global B2C first-sale gate 추적
 
 ## 0. 완료 현황
@@ -51,6 +52,8 @@
 - 단, `NBA-014` DB/Prisma 운영 gate와 Trust/policy first-sale gate는 11~12까지 미루지 않고 관련 goal마다 선행/병행 확인한다.
 - 01 작업을 시작할 때는 01 폴더 안에 추가 문서를 작성하고 검수/검토한 뒤 진행한다.
 - 01~11까지는 순차 실행이 완료됐고, 다음 착수 슬롯은 `12_BILLING_SUBSCRIPTION_TAX`다.
+- 12를 먼저 진행한 뒤, 01~12 전체와 `TODO/NEXT_BACKEND_API_BACKLOG_PLAN`, `TODO/USER_WEB_PRODUCTIZATION_GAP_PLAN`을 다시 학습하고 미구현/후속 항목을 새 TODO 폴더로 재배치한다.
+- UX/UI 디자인 유지보수는 12와 post-12 후속 항목 재분류 이후 별도 계획으로 진행한다.
 - 12개 슬롯의 추천 의사결정은 `COMMON/DECISION-LOG.md`를 기본값으로 삼는다.
 - 각 슬롯은 Notion식 작업공간 UX, Attio식 CRM record 관계, 사용 편의성 기준을 유지한다.
 
@@ -79,6 +82,7 @@
 - `COMMON/COVERAGE-MATRIX.md`: 앞으로 만들 모든 기능 후보를 01~12 슬롯에 배정한 표
 - `COMMON/DECISION-LOG.md`: 이 로드맵에서 확정한 결정 기록
 - `COMMON/FIRST-SALE-GATE-MAP.md`: `NBA-014`, Product UX, Trust/policy, `NBA-007`의 first-sale gate 반영 기준
+- `COMMON/POST-12-REVIEW-AND-FOLLOWUP.md`: 12 완료 후 01~12 전체 재검토와 후속 TODO 승격 규칙
 - `01_*` ~ `12_*`: 각 기능 슬롯별 착수 전 검토 문서
 
 각 번호 폴더는 다음 구조를 가진다.
@@ -108,6 +112,9 @@
 8. FE 작업이 있으면 `FE-TODO/USER-WEB-TODO.md`에 화면, route, 상태, client, 검증 기준을 적는다.
 9. 검수/검토가 끝나면 별도 `/goal` 문서로 쪼개 실행한다.
 10. UX/UI 전체 polish는 01~11의 주요 기능 흐름 closeout을 기준으로 별도 계획에서 잡되, Product UX first-sale gate는 첫 판매 전 별도 closeout으로 닫는다.
+11. 12 완료 후에는 `COMMON/POST-12-REVIEW-AND-FOLLOWUP.md` 기준으로 01~12 전체, `NEXT_BACKEND_API_BACKLOG_PLAN`, `USER_WEB_PRODUCTIZATION_GAP_PLAN`, 실제 BE/FE/Prisma 구현을 다시 대조한다.
+12. post-12 재검토에서 미구현/후속/보류로 남은 항목은 기존 완료 폴더를 재개하지 않고 새 TODO 폴더로 승격한다.
+13. UX/UI 디자인 유지보수는 post-12 재검토와 후속 작업 재분류 이후 별도 계획으로 진행한다.
 
 ## 6. 먼저 읽을 문서
 
@@ -116,6 +123,7 @@
 - `TODO/USER_WEB_PRODUCTIZATION_GAP_PLAN/COMMON/CURRENT-IMPLEMENTED-FUNCTIONS.md`
 - `TODO/NEXT_BACKEND_API_BACKLOG_PLAN/COMMON/CANDIDATE-MATRIX.md`
 - `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/COMMON/FIRST-SALE-GATE-MAP.md`
+- `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/COMMON/POST-12-REVIEW-AND-FOLLOWUP.md`
 - `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/COMMON/DECISION-LOG.md`
 - `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/COMMON/COVERAGE-MATRIX.md`
 - `TODO/DONE/MVP-STARTER_PLAN/README.md`

@@ -1,7 +1,7 @@
 # First-sale Gate Map
 
 상태: Gate Baseline / 11 반영
-기준일: 2026-08-01
+기준일: 2026-08-03
 
 ## 1. 목적
 
@@ -29,6 +29,7 @@
 - 10 Mobile PWA Field Use 구현과 QA closeout은 완료됐다. 모바일 명함 촬영, OCR safe failure, 회의 녹음, local draft, browser push permission UX, mobile field analytics는 first-sale Product UX gate에서 닫힌 상태로 본다.
 - 11 Admin Operation 구현과 QA closeout은 완료됐다. Admin analytics UI/API, provider failure 운영 조회, Trash/account request/system gate, audit/redaction은 첫 판매 전 운영 gate에서 닫힌 상태로 본다.
 - billing/paywall/churn 실제 conversion source와 결제/구독/세금 운영은 12에서 연결한다.
+- 12 완료 후에는 `COMMON/POST-12-REVIEW-AND-FOLLOWUP.md` 기준으로 01~12 전체와 입력 계획 2개를 다시 대조하고, first-sale gate에 남은 항목을 새 TODO로 승격한다.
 
 ## 3. DB/Prisma 운영 Gate 적용 규칙
 
@@ -116,3 +117,15 @@ Trust/policy는 11과 12의 상세 구현만 기다리면 첫 판매 전 검토�
 - `/app` 핵심 업무 흐름의 route/state/client contract를 바꾼다.
 - Trash, export, delete, retention, billing, policy를 건드린다.
 - private memo, transcript, provider raw detail, payment detail 같은 민감정보를 다룬다.
+
+## 8. 12 이후 Gate Closeout
+
+12 완료 후에는 first-sale gate를 다시 닫는다. 이때 `NEXT_BACKEND_API_BACKLOG_PLAN`과 `USER_WEB_PRODUCTIZATION_GAP_PLAN`의 잔여 후보가 12 구현 결과와 충돌하지 않는지 확인한다.
+
+검토 순서:
+
+1. Billing, subscription, tax, refund, invoice, failed payment, entitlement, paywall이 12에서 어디까지 구현됐는지 확인한다.
+2. paid conversion, churn, ARPU, AI cost/user 분석 source가 12 이후 실제 이벤트와 연결됐는지 확인한다.
+3. Product UX first-sale gate에서 회사, 담당자, 제품, 딜, 일정, 회의록, 명함, import, search, trash, export, account/data request, billing 상태 흐름을 다시 확인한다.
+4. Trust/policy gate에서 약관, 개인정보, 환불, 세금, 인보이스, chargeback, 계정 삭제, 데이터 export/delete, retention이 실제 Backend 데이터 처리와 충돌하지 않는지 확인한다.
+5. 미완성 또는 후속으로 남은 항목은 기존 완료 폴더를 재개하지 않고 새 TODO 폴더로 승격한다.

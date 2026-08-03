@@ -1,7 +1,7 @@
 # Backend Productization Guide
 
 상태: Draft Guide
-최종 업데이트: 2026-08-01
+최종 업데이트: 2026-08-03
 
 ## 0. 완료 반영
 
@@ -99,6 +99,7 @@ Backend/API 구현이 필요하면 아래를 먼저 만족해야 한다.
 
 1. Global B2C 첫 판매 gate에 필요한 Backend/API/DB/운영 항목인지 확인한다.
 2. 결제, Billing 정책/감사, Billing 운영 신뢰를 먼저 큰 bundle로 분리한다. 앱 다국어/다국가 데이터 기본 범위는 08 완료 이력, 제품 분석 foundation은 09 완료 이력, 모바일 현장 입력성 1차 범위는 10 완료 이력, Admin 운영 1차 범위는 11 완료 이력으로 본다.
-3. 제품화 UX에서 실제 필요한 API gap인지 확인한다.
-4. 개인정보/보안/운영 정책이 얽힌 후보를 먼저 정책으로 확정한다.
-5. ImportJob, Weekly Schedule Report, Notification, Google Calendar Integration, Deal Activity Timeline, MeetingNote AI Provider Log, Global Data I18N, Product Analytics foundation, Mobile Field Use, Admin Operation은 완료됐고, Payment/Billing, Billing-linked analytics source, 실제 backup/restore 실행 runbook은 별도 계획으로 분리한다.
+3. 12 완료 후 `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/COMMON/POST-12-REVIEW-AND-FOLLOWUP.md` 기준으로 01~12 전체, `NEXT_BACKEND_API_BACKLOG_PLAN`, 이 제품화 guide, 실제 BE/FE/Prisma 상태를 다시 대조한다.
+4. 제품화 UX에서 실제 필요한 API gap인지 확인한다.
+5. 개인정보/보안/운영 정책이 얽힌 후보를 먼저 정책으로 확정한다.
+6. ImportJob, Weekly Schedule Report, Notification, Google Calendar Integration, Deal Activity Timeline, MeetingNote AI Provider Log, Global Data I18N, Product Analytics foundation, Mobile Field Use, Admin Operation은 완료됐고, Payment/Billing, Billing-linked analytics source는 12에서 먼저 다룬다. 실제 backup/restore 실행 runbook과 잔여 summary 후보는 post-12 재검토 후 새 TODO로 승격할지 결정한다.

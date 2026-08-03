@@ -2,7 +2,7 @@
 
 상태: Draft
 작성일: 2026-07-20
-최종 업데이트: 2026-08-01
+최종 업데이트: 2026-08-03
 
 ## 0. 완료 반영
 
@@ -118,8 +118,9 @@
 
 ## 3. 다음 실행 순서 제안
 
-1. `NBA-003`의 Company/Contact/Product latest summary 잔여 범위, `NBA-004` MeetingNote 목록 summary 설계
-2. MeetingNote 자동 발송/알림은 제품/운영 정책 확정 후 별도 설계
-3. Backup/restore 실행 runbook, 장애 대응은 11 system gate 기록과 별개로 운영 절차에서 별도 결정
-4. Product Analytics foundation은 09에서 완료됐고, mobile field-use event는 10에서 완료됐으며, Admin analytics dashboard는 11에서 완료됐다. billing-linked conversion/churn flow는 12에서 결정한다.
-5. Billing/subscription/tax/MoR/refund/invoice는 `12_BILLING_SUBSCRIPTION_TAX`에서 계약화한다.
+1. 먼저 `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/12_BILLING_SUBSCRIPTION_TAX`를 계약화하고 구현한다.
+2. 12 완료 후 `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/COMMON/POST-12-REVIEW-AND-FOLLOWUP.md` 기준으로 이 matrix를 다시 읽는다.
+3. `NBA-003`의 Company/Contact/Product latest summary 잔여 범위와 `NBA-004` MeetingNote 목록 summary는 post-12 재검토 seed로 유지한다.
+4. Backup/restore 실행 runbook, 장애 대응 drill은 11 system gate 기록과 별개로 post-12 운영 신뢰 후보로 다시 판단한다.
+5. Product Analytics foundation은 09에서 완료됐고, mobile field-use event는 10에서 완료됐으며, Admin analytics dashboard는 11에서 완료됐다. billing-linked conversion/churn flow는 12 구현 결과 기준으로 다시 판단한다.
+6. MeetingNote 자동 발송/알림, PWA/native packaging, Google Calendar write/webhook/recurrence, generic ExportJob은 post-12 재검토에서 first-sale follow-up인지 Series A later인지 다시 분류한다.
