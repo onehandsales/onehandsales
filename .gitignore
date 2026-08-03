@@ -13,3 +13,4 @@ test-results/
 .codex-logs
 /IMAGE_SAMPLE
 .runtime-logs
+/temp
