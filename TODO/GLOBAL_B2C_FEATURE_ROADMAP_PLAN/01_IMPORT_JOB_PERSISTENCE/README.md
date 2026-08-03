@@ -1,11 +1,11 @@
 ﻿# 01 ImportJob Persistence
 
-상태: G01~G04 구현 완료 / G05~G08 구현 대기 / G09 최종 QA 대기 / 01 최종 서비스 형태 미완료
+상태: G01~G08 구현 완료 / G09 최종 QA 대기 / 01 최종 서비스 형태 미완료
 G01~G04 완료일: 2026-07-21
 완료 커밋: `0c2a47b`, `c788388`, `a3b9dc7`, `fd6dd23`, `284c078`, `1177578`
 순서: 01
 성격: Global B2C 데이터 신뢰 기반 구현 계획
-결정 상태: 2026-07-21 G01~G04 완료, 2026-08-03 최종 서비스 형태 G05~G08 추가 결정 반영. G05~G08 구현과 G09 최종 QA 전까지 01은 최종 종결이 아니다.
+결정 상태: 2026-07-21 G01~G04 완료, 2026-08-03 최종 서비스 형태 G05~G08 구현 완료. G09 최종 QA 전까지 01은 최종 종결이 아니다.
 
 ## 0. 완료 체크리스트
 
@@ -31,10 +31,10 @@ G01~G04 완료일: 2026-07-21
 - [x] `COMMON/GOAL-SPECS/G07_IMPORT_SUCCESS_ROW_RETENTION.md` 작성
 - [x] `COMMON/GOAL-SPECS/G08_IMPORT_VOLUME_LIMITS.md` 작성
 - [x] `COMMON/GOAL-SPECS/G09_FINAL_SERVICE_QA_CLOSEOUT.md` 작성
-- [ ] G05 Terminal ImportJob Cleanup 구현 및 QA
-- [ ] G06 Original File Binary Minimization 구현 및 QA
-- [ ] G07 Import Success Row Retention 구현 및 QA
-- [ ] G08 Import Volume Limits 구현 및 QA
+- [x] G05 Terminal ImportJob Cleanup 구현 및 QA
+- [x] G06 Original File Binary Minimization 구현 및 QA
+- [x] G07 Import Success Row Retention 구현 및 QA
+- [x] G08 Import Volume Limits 구현 및 QA
 - [ ] G09 Final Service QA Closeout 및 `01_IMPORT_JOB_PERSISTENCE`, `NEXT_BACKEND_API_BACKLOG_PLAN`, `USER_WEB_PRODUCTIZATION_GAP_PLAN` 상태 동기화
 
 ## 1. 목적

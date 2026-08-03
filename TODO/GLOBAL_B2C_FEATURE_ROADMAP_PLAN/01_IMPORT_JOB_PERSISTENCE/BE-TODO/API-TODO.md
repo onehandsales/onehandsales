@@ -1,7 +1,7 @@
 ﻿# Backend API TODO
 
 상태: Confirmed
-구현 상태: G02/G04 구현 완료 (2026-07-21) / G05~G07 구현 완료 (2026-08-03) / G08 Backend 최종형 구현 대기
+구현 상태: G02/G04 구현 완료 (2026-07-21) / G05~G08 구현 완료 (2026-08-03) / G09 최종 QA 대기
 기준 API 계약: `COMMON/API-SPEC/IMPORT_JOB_API.md`
 
 ## 1. 목표
@@ -115,7 +115,7 @@ G08 upload 제한:
 - file size는 10MB 이하로 유지한다.
 - parser 결과 data row는 5,000행 이하만 허용한다.
 - 5,001행 이상이면 `ImportJob`, `ImportJobRow`, `ImportUploadedFile`, storage object를 만들기 전에 실패해야 한다.
-- 사용자 표시용 safe message는 `5,000행 이하로 나눠서 다시 올려주세요` 계열로 통일한다.
+- 사용자 표시용 safe message는 `한 번에 가져올 수 있는 행 수를 초과했어요. 5,000행 이하로 나눠서 다시 올려주세요.` 계열로 통일한다.
 
 ## 4. Business Logic 흐름
 

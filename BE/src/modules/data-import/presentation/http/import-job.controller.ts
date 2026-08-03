@@ -1,18 +1,23 @@
 import type { Buffer } from "node:buffer";
 import {
+  ArgumentsHost,
   Body,
+  Catch,
   Controller,
+  ExceptionFilter,
   Get,
   HttpCode,
   HttpStatus,
   Param,
   ParseUUIDPipe,
+  PayloadTooLargeException,
   Patch,
   Post,
   Query,
   Req,
   Res,
   UploadedFile,
+  UseFilters,
   UseGuards,
   UseInterceptors,
 } from "@nestjs/common";
@@ -50,6 +55,23 @@ interface UploadedImportFile {
   readonly size: number;
 }
 
+// 역할 : ImportJobUploadExceptionFilter 데이터 가져오기 파일 업로드 단계의 Multer 예외를 안전한 API 오류로 변환합니다.
+@Catch(PayloadTooLargeException)
+export class ImportJobUploadExceptionFilter implements ExceptionFilter {
+  // 기능 : 10MB 초과 업로드를 G08 ImportFileTooLarge 계약 응답으로 변환합니다.
+  catch(_exception: PayloadTooLargeException, host: ArgumentsHost) {
+    const response = host.switchToHttp().getResponse<Response>();
+
+    response.status(HttpStatus.BAD_REQUEST).json({
+      statusCode: HttpStatus.BAD_REQUEST,
+      error: "ImportFileTooLarge",
+      code: "ImportFileTooLarge",
+      message: "파일 크기가 너무 커요. 10MB 이하 파일로 다시 올려주세요.",
+      field: "file",
+    });
+  }
+}
+
 // 역할 : ImportJobController 확정 전 데이터 불러오기 HTTP API를 처리합니다.
 @UseGuards(AuthGuard)
 @Controller("api/imports")
@@ -62,6 +84,7 @@ export class ImportJobController {
   // API : 데이터 불러오기 파일 업로드 및 임시 job 생성
   @Post()
   @HttpCode(HttpStatus.CREATED)
+  @UseFilters(ImportJobUploadExceptionFilter)
   @UseInterceptors(
     FileInterceptor("file", {
       limits: { fileSize: MAX_IMPORT_FILE_SIZE_BYTES },

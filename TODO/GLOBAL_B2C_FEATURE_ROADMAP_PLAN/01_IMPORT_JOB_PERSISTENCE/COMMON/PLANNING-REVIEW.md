@@ -1,13 +1,13 @@
 ﻿# Planning Review
 
-상태: G01~G04 완료 검토 기록 / G05~G08 구현 대기 / G09 최종 QA 대기 / 01 최종 서비스 형태 미완료
+상태: G01~G04 완료 검토 기록 / G05~G08 최종형 구현 완료 / G09 최종 QA 대기 / 01 최종 서비스 형태 미완료
 검토일: 2026-07-21
 
 ## 1. 결론
 
 - 판정: G01~G04 완료
 - 이유: `NBA-006 ImportJob persistence/resume API` 범위가 API, DB, BE, FE, UX, QA, goal 상세 명세까지 구현 및 QA closeout 완료 상태로 연결되어 있다.
-- 구현 상태: G01~G04 Done. 2026-08-03 확정한 G05~G08은 아직 구현 전이며, 이를 닫는 G09 최종 QA도 대기 중이다.
+- 구현 상태: G01~G08 Done. 2026-08-03 확정한 G05~G08 최종형 보강을 구현했고, 이를 통합 검증해 닫는 G09 최종 QA는 대기 중이다.
 - 완료 기록: `TODO_LOG/2026-07-21/G04_IMPORT_JOB_PERSISTENCE_QA_CLEANUP/WORK_LOG.md`
 
 완료 전 첫 실행 문구 기록:

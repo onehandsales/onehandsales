@@ -107,6 +107,30 @@ export class UnsupportedImportFileTypeError extends DomainError {
   }
 }
 
+// 역할 : ImportFileTooLargeError import 업로드 파일 크기 초과 오류를 표현합니다.
+export class ImportFileTooLargeError extends DomainError {
+  // 기능 : 10MB 초과 파일을 안전한 사용자 문구와 file field 오류로 변환합니다.
+  constructor() {
+    super(
+      "ImportFileTooLarge",
+      "파일 크기가 너무 커요. 10MB 이하 파일로 다시 올려주세요.",
+      { field: "file" }
+    );
+  }
+}
+
+// 역할 : ImportRowLimitExceededError import data row 제한 초과 오류를 표현합니다.
+export class ImportRowLimitExceededError extends DomainError {
+  // 기능 : 5,000행 초과 업로드를 안전한 사용자 문구와 file field 오류로 변환합니다.
+  constructor() {
+    super(
+      "ImportRowLimitExceeded",
+      "한 번에 가져올 수 있는 행 수를 초과했어요. 5,000행 이하로 나눠서 다시 올려주세요.",
+      { field: "file" }
+    );
+  }
+}
+
 // 역할 : ImportFileParseFailedError import 파일 파싱 실패 오류를 표현합니다.
 export class ImportFileParseFailedError extends DomainError {
   // 기능 : 파일 파싱 실패 오류를 생성합니다.

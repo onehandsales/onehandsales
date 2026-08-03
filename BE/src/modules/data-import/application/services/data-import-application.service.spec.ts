@@ -1,4 +1,8 @@
-import { DataImportApplicationService } from "./data-import-application.service";
+import {
+  DataImportApplicationService,
+  IMPORT_JOB_MAX_DATA_ROW_COUNT,
+  IMPORT_JOB_MAX_FILE_SIZE_BYTES,
+} from "./data-import-application.service";
 import type {
   ImportFileParser,
   ImportUploadedFile,
@@ -22,6 +26,8 @@ import {
   ImportJobNotFoundError,
   ImportJobNotReadyError,
   ImportConfirmValidationFailedError,
+  ImportFileTooLargeError,
+  ImportRowLimitExceededError,
 } from "@/modules/data-import/domain/import-template.errors";
 import { ValidationDomainError } from "@/shared/domain/errors/common.errors";
 import type { CurrentUserContext } from "@/shared/application/context/current-user.context";
@@ -167,6 +173,119 @@ describe("DataImportApplicationService persistent import job flow", () => {
     });
     expect(response.job.id).toBe(IMPORT_JOB_ID);
     expect(JSON.stringify(response)).not.toContain("user/job/source.xlsx");
+  });
+
+  it("rejects files over 10MB before parsing, storage, and DB creation", async () => {
+    const fixture = createServiceFixture();
+    fixture.importTemplateRepository.findActiveTemplateByType.mockResolvedValue(
+      createImportTemplateRecord()
+    );
+
+    await expect(
+      fixture.service.createImportJob(CURRENT_USER, {
+        targetType: "COMPANY",
+        file: createUploadedImportFile({
+          size: IMPORT_JOB_MAX_FILE_SIZE_BYTES + 1,
+        }),
+      })
+    ).rejects.toBeInstanceOf(ImportFileTooLargeError);
+
+    expect(fixture.importFileParser.parse).not.toHaveBeenCalled();
+    expect(fixture.importUploadedFileStorage.store).not.toHaveBeenCalled();
+    expect(fixture.importJobRepository.runInTransaction).not.toHaveBeenCalled();
+    expect(fixture.importJobRepository.createJob).not.toHaveBeenCalled();
+  });
+
+  it("accepts import uploads with exactly 5,000 data rows", async () => {
+    const fixture = createServiceFixture();
+    const rows = createParsedRows(IMPORT_JOB_MAX_DATA_ROW_COUNT);
+    fixture.importTemplateRepository.findActiveTemplateByType.mockResolvedValue(
+      createImportTemplateRecord()
+    );
+    fixture.importFileParser.parse.mockResolvedValue({
+      sourceColumns: ["companyName"],
+      rows,
+    });
+    fixture.importUploadedFileStorage.store.mockResolvedValue({
+      checksum: "checksum-1",
+      storageProvider: "LOCAL",
+      storageBucket: null,
+      storageKey: "user/job/source.xlsx",
+    });
+    fixture.importJobRepository.createJob.mockResolvedValue(
+      createImportJobDetail({
+        rows: rows.map((row, index) =>
+          createImportJobRow({
+            id: `row-${index + 1}`,
+            rowNumber: row.rowNumber,
+            rawDataJson: row.rawData,
+          })
+        ),
+        status: "UPLOADED",
+        mappingJson: {},
+        mappingSource: "NONE",
+        totalRowCount: IMPORT_JOB_MAX_DATA_ROW_COUNT,
+      })
+    );
+
+    await fixture.service.createImportJob(CURRENT_USER, {
+      targetType: "COMPANY",
+      file: createUploadedImportFile(),
+    });
+
+    expect(fixture.importUploadedFileStorage.store).toHaveBeenCalledTimes(1);
+    expect(fixture.importJobRepository.createJob).toHaveBeenCalledWith(
+      expect.objectContaining({
+        totalRowCount: IMPORT_JOB_MAX_DATA_ROW_COUNT,
+        rows: expect.arrayContaining([
+          expect.objectContaining({
+            rowNumber: 2,
+            rawDataJson: { companyName: "Company 1" },
+          }),
+        ]),
+      })
+    );
+  });
+
+  it("rejects 5,001 data rows before storage and DB creation with a safe log", async () => {
+    const fixture = createServiceFixture();
+    fixture.importTemplateRepository.findActiveTemplateByType.mockResolvedValue(
+      createImportTemplateRecord()
+    );
+    fixture.importFileParser.parse.mockResolvedValue({
+      sourceColumns: ["companyName"],
+      rows: [
+        ...createParsedRows(IMPORT_JOB_MAX_DATA_ROW_COUNT),
+        {
+          rowNumber: IMPORT_JOB_MAX_DATA_ROW_COUNT + 2,
+          rawData: { companyName: "Acme raw-secret-value" },
+        },
+      ],
+    });
+
+    await expect(
+      fixture.service.createImportJob(CURRENT_USER, {
+        targetType: "COMPANY",
+        file: createUploadedImportFile({ originalname: "secret-source.csv" }),
+      })
+    ).rejects.toBeInstanceOf(ImportRowLimitExceededError);
+
+    expect(fixture.importUploadedFileStorage.store).not.toHaveBeenCalled();
+    expect(fixture.importUploadedFileStorage.delete).not.toHaveBeenCalled();
+    expect(fixture.importJobRepository.runInTransaction).not.toHaveBeenCalled();
+    expect(fixture.importJobRepository.createJob).not.toHaveBeenCalled();
+    expect(fixture.importJobRepository.createRows).not.toHaveBeenCalled();
+    expect(fixture.importJobRepository.createUploadedFile).not.toHaveBeenCalled();
+
+    const limitLog = fixture.logger.log.mock.calls.find((call) =>
+      String(call[0]).includes("importJob.rowLimitExceeded")
+    )?.[0];
+    expect(limitLog).toEqual(expect.any(String));
+    expect(String(limitLog)).toContain("ImportRowLimitExceeded");
+    expect(String(limitLog)).toContain("5001_10000");
+    expect(String(limitLog)).not.toContain("secret-source.csv");
+    expect(String(limitLog)).not.toContain("Acme raw-secret-value");
+    expect(String(limitLog)).not.toContain(CURRENT_USER.id);
   });
 
   it("keeps create import job success when immediate uploaded binary deletion fails", async () => {
@@ -924,6 +1043,13 @@ function createUploadedImportFile(
     size: 100,
     ...overrides,
   };
+}
+
+function createParsedRows(count: number) {
+  return Array.from({ length: count }, (_, index) => ({
+    rowNumber: index + 2,
+    rawData: { companyName: `Company ${index + 1}` },
+  }));
 }
 
 function createCleanupCandidate(

@@ -6,6 +6,8 @@ import type {
 } from "@/features/import-export/types/import-export";
 
 export const IMPORT_MAX_FILE_SIZE_BYTES = 10 * 1024 * 1024;
+// 기능 : 업로드 화면에서 Backend data row 제한 정책을 사용자에게 안내합니다.
+export const IMPORT_MAX_DATA_ROW_COUNT = 5_000;
 
 export const importTargetOptions: readonly {
   readonly value: ImportTargetType;
@@ -160,7 +162,7 @@ export function validateImportFile(file: File | null): string | null {
   }
 
   if (file.size > IMPORT_MAX_FILE_SIZE_BYTES) {
-    return "10MB 이하 파일만 올릴 수 있어요.";
+    return "파일 크기가 너무 커요. 10MB 이하 파일로 다시 올려주세요.";
   }
 
   return null;

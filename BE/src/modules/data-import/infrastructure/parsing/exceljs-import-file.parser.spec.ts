@@ -1,6 +1,7 @@
 import * as ExcelJS from "exceljs";
 import { ExceljsImportFileParser } from "./exceljs-import-file.parser";
 import {
+  ImportFileTooLargeError,
   ImportFileParseFailedError,
   UnsupportedImportFileTypeError,
 } from "@/modules/data-import/domain/import-template.errors";
@@ -93,6 +94,19 @@ describe("ExceljsImportFileParser", () => {
         size: 16,
       })
     ).rejects.toBeInstanceOf(UnsupportedImportFileTypeError);
+  });
+
+  it("rejects oversized files with the API contract error before parsing", async () => {
+    const parser = new ExceljsImportFileParser();
+
+    await expect(
+      parser.parse({
+        buffer: Buffer.from("companyName\nAcme"),
+        originalname: "source.csv",
+        mimetype: "text/csv",
+        size: 10 * 1024 * 1024 + 1,
+      })
+    ).rejects.toBeInstanceOf(ImportFileTooLargeError);
   });
 
   it("rejects unparseable files with the API contract error", async () => {

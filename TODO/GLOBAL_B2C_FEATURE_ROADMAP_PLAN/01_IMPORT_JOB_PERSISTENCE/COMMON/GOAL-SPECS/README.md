@@ -1,6 +1,6 @@
 # Goal Specs
 
-상태: G01~G04 구현 완료 / G05~G08 구현 대기 / G09 최종 QA 대기 / 01 최종 서비스 형태 미완료
+상태: G01~G08 구현 완료 / G09 최종 QA 대기 / 01 최종 서비스 형태 미완료
 G01~G04 완료일: 2026-07-21
 
 ## 1. 목적
@@ -16,10 +16,10 @@ G01~G04 완료일: 2026-07-21
 - [x] G03 `G03_USER_WEB_RESUME_UX.md`
 - [x] G04 `G04_QA_CLEANUP.md`
 - [x] 최종 QA closeout: `TODO_LOG/2026-07-21/G04_IMPORT_JOB_PERSISTENCE_QA_CLEANUP/WORK_LOG.md`
-- [ ] G05 `G05_TERMINAL_IMPORT_JOB_CLEANUP.md`
-- [ ] G06 `G06_ORIGINAL_FILE_BINARY_MINIMIZATION.md`
-- [ ] G07 `G07_IMPORT_SUCCESS_ROW_RETENTION.md`
-- [ ] G08 `G08_IMPORT_VOLUME_LIMITS.md`
+- [x] G05 `G05_TERMINAL_IMPORT_JOB_CLEANUP.md`
+- [x] G06 `G06_ORIGINAL_FILE_BINARY_MINIMIZATION.md`
+- [x] G07 `G07_IMPORT_SUCCESS_ROW_RETENTION.md`
+- [x] G08 `G08_IMPORT_VOLUME_LIMITS.md`
 - [ ] G09 `G09_FINAL_SERVICE_QA_CLOSEOUT.md`
 
 ## 2. Goal 목록
@@ -30,10 +30,10 @@ G01~G04 완료일: 2026-07-21
 | G02 | Done | `G02_BACKEND_IMPORT_JOB_API.md` | DB 기반 import API와 business logic |
 | G03 | Done | `G03_USER_WEB_RESUME_UX.md` | User Web resume UX와 API client |
 | G04 | Done | `G04_QA_CLEANUP.md` | 통합 QA, redaction, cross-user, 문서 closeout |
-| G05 | Confirmed | `G05_TERMINAL_IMPORT_JOB_CLEANUP.md` | terminal ImportJob 임시 snapshot 7일 보관 후 자동 cleanup |
-| G06 | Confirmed | `G06_ORIGINAL_FILE_BINARY_MINIMIZATION.md` | 원본 업로드 file binary를 parse와 DB snapshot 생성 직후 삭제 |
-| G07 | Confirmed | `G07_IMPORT_SUCCESS_ROW_RETENTION.md` | `ImportUserLogRow` row-level submitted data를 30일 후 cleanup |
-| G08 | Confirmed | `G08_IMPORT_VOLUME_LIMITS.md` | 대용량 worker 없이 10MB/5,000행 제한 적용 |
+| G05 | Done | `G05_TERMINAL_IMPORT_JOB_CLEANUP.md` | terminal ImportJob 임시 snapshot 7일 보관 후 자동 cleanup |
+| G06 | Done | `G06_ORIGINAL_FILE_BINARY_MINIMIZATION.md` | 원본 업로드 file binary를 parse와 DB snapshot 생성 직후 삭제 |
+| G07 | Done | `G07_IMPORT_SUCCESS_ROW_RETENTION.md` | `ImportUserLogRow` row-level submitted data를 30일 후 cleanup |
+| G08 | Done | `G08_IMPORT_VOLUME_LIMITS.md` | 대용량 worker 없이 10MB/5,000행 제한 적용 |
 | G09 | Confirmed | `G09_FINAL_SERVICE_QA_CLOSEOUT.md` | G05~G08 최종형 보강 통합 QA와 01/NEXT_BACKEND/USER_WEB 문서 closeout |
 
 ## 3. 실행 규칙

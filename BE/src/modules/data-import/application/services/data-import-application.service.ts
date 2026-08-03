@@ -62,6 +62,7 @@ import {
   ImportConfirmFailedError,
   ImportConfirmValidationFailedError,
   ImportFileStorageFailedError,
+  ImportFileTooLargeError,
   ImportJobAlreadyClosedError,
   ImportJobAlreadyConfirmedError,
   ImportJobExpiredError,
@@ -69,6 +70,7 @@ import {
   ImportJobNotReadyError,
   ImportJobRowNotFoundError,
   ImportMappingRequiredError,
+  ImportRowLimitExceededError,
   ImportTemplateNotFoundError,
   ImportTemplateSchemaInvalidError,
   ImportUserLogNotFoundError,
@@ -103,6 +105,10 @@ const TEMPLATE_TYPE_ORDER: readonly ImportTemplateType[] = [
 ];
 const IMPORT_USER_LOG_PAGE_SIZE = 15;
 const IMPORT_JOB_DETAIL_ERROR_LIMIT = 50;
+// 기능 : import upload 원본 파일은 10MB 이하만 application validation에서 허용합니다.
+export const IMPORT_JOB_MAX_FILE_SIZE_BYTES = 10 * 1024 * 1024;
+// 기능 : import parser가 만든 header 제외 data row는 5,000행 이하만 허용합니다.
+export const IMPORT_JOB_MAX_DATA_ROW_COUNT = 5_000;
 export const IMPORT_JOB_CLEANUP_RETENTION_DAYS = 7;
 export const IMPORT_JOB_CLEANUP_DEFAULT_BATCH_SIZE = 500;
 const IMPORT_JOB_CLEANUP_DAY_MS = 24 * 60 * 60 * 1000;
@@ -679,16 +685,23 @@ export class DataImportApplicationService {
       throw new ImportTemplateNotFoundError();
     }
 
+    // 2. controller interceptor 우회 경로에서도 storage 저장 전 파일 크기 제한을 보장한다.
+    this.assertImportFileSizeLimit(input.file.size);
+
     const importJobId = randomUUID();
     const originalFileName = this.normalizeUploadedFileName(input.file.originalname);
     const parsedFile = await this.importFileParser.parse({
       ...input.file,
       originalname: originalFileName,
     });
+
+    // 3. header를 제외한 data row만 5,000행 제한 기준으로 검증한다.
+    this.assertImportDataRowLimit(input.targetType, parsedFile.rows.length);
+
     const now = new Date();
     const expiresAt = this.createImportJobExpiresAt(now);
 
-    // 2. 원본 파일을 먼저 저장해 새로고침/배포 중에도 job metadata가 참조할 수 있게 한다.
+    // 4. 제한 검증 통과 후 원본 파일을 임시 저장해 job metadata가 참조할 수 있게 한다.
     const storedFile = await this.storeUploadedImportFile(currentUser, {
       importJobId,
       originalFileName,
@@ -698,7 +711,7 @@ export class DataImportApplicationService {
     let job: ImportJobDetailRecord;
 
     try {
-      // 3. job, parsed row, uploaded file metadata를 하나의 transaction으로 생성한다.
+      // 5. job, parsed row, uploaded file metadata를 하나의 transaction으로 생성한다.
       job = await this.importJobRepository.runInTransaction((repositories) =>
         repositories.createJob({
           id: importJobId,
@@ -742,12 +755,12 @@ export class DataImportApplicationService {
         })
       );
     } catch (error) {
-      // 4. DB 생성 실패 시 orphan 원본 파일을 best effort로 삭제한다.
+      // 6. DB 생성 실패 시 orphan 원본 파일을 best effort로 삭제한다.
       await this.safeDeleteStoredImportFile(storedFile.storageKey);
       throw error;
     }
 
-    // 5. DB snapshot 생성 성공 직후 원본 binary를 즉시 삭제하고 response 구조는 유지한다.
+    // 7. DB snapshot 생성 성공 직후 원본 binary를 즉시 삭제하고 response 구조는 유지한다.
     await this.deleteUploadedFileAfterCreate({
       userId: currentUser.id,
       importJobId: job.id,
@@ -1510,6 +1523,46 @@ export class DataImportApplicationService {
     this.ensureJobMutable(job);
 
     return job;
+  }
+
+  // 기능 : storage 생성 전 import 업로드 파일 크기가 10MB 이하인지 검증합니다.
+  private assertImportFileSizeLimit(fileSizeBytes: number): void {
+    if (fileSizeBytes <= IMPORT_JOB_MAX_FILE_SIZE_BYTES) {
+      return;
+    }
+
+    throw new ImportFileTooLargeError();
+  }
+
+  // 기능 : parser가 만든 data row 수가 5,000행 이하인지 검증하고 safe 초과 로그를 남깁니다.
+  private assertImportDataRowLimit(
+    targetType: ImportTemplateType,
+    dataRowCount: number
+  ): void {
+    if (dataRowCount <= IMPORT_JOB_MAX_DATA_ROW_COUNT) {
+      return;
+    }
+
+    this.logEvent("importJob.rowLimitExceeded", {
+      targetType,
+      rowCountBucket: this.toImportDataRowCountBucket(dataRowCount),
+      safeErrorCode: "ImportRowLimitExceeded",
+    });
+
+    throw new ImportRowLimitExceededError();
+  }
+
+  // 기능 : row limit 초과 로그에서 실제 row 수 대신 안전한 범위 bucket만 남깁니다.
+  private toImportDataRowCountBucket(dataRowCount: number): string {
+    if (dataRowCount <= 10_000) {
+      return "5001_10000";
+    }
+
+    if (dataRowCount <= 50_000) {
+      return "10001_50000";
+    }
+
+    return "50001_plus";
   }
 
   // 기능 : import job의 7일 TTL 만료 시각을 계산합니다.

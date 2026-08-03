@@ -137,6 +137,8 @@ export class HttpExceptionFilter implements ExceptionFilter {
       case "COMPANY_REGION_UNSUPPORTED":
       case "InvalidImportMapping":
       case "UnsupportedImportFileType":
+      case "ImportFileTooLarge":
+      case "ImportRowLimitExceeded":
       case "ImportFileParseFailed":
       case "GoogleCalendarOAuthStateInvalid":
       case "FollowUpEmailOAuthStateInvalid":

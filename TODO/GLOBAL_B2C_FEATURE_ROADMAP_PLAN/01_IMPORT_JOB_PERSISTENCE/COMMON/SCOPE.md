@@ -1,6 +1,6 @@
 ﻿# Scope
 
-상태: G01~G04 구현 완료 / G05~G08 구현 대기 / G09 최종 QA 대기 / 01 최종 서비스 형태 미완료
+상태: G01~G08 구현 완료 / G09 최종 QA 대기 / 01 최종 서비스 형태 미완료
 G01~G04 완료일: 2026-07-21
 
 ## 0. 완료 체크리스트
@@ -13,10 +13,10 @@ G01~G04 완료일: 2026-07-21
 - [x] redacted ImportJobError 이력
 - [x] User Web 새로고침/탭 이동 resume UX
 - [x] G04 QA closeout
-- [ ] G05 terminal ImportJob cleanup 구현
-- [ ] G06 original file binary 즉시 삭제 구현
-- [ ] G07 ImportUserLogRow 30일 cleanup 구현
-- [ ] G08 10MB/5,000행 import 제한 구현
+- [x] G05 terminal ImportJob cleanup 구현
+- [x] G06 original file binary 즉시 삭제 구현
+- [x] G07 ImportUserLogRow 30일 cleanup 구현
+- [x] G08 10MB/5,000행 import 제한 구현
 - [ ] G09 최종 서비스 QA closeout 및 상위 문서 상태 동기화
 
 ## 1. 목적

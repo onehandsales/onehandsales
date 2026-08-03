@@ -1,4 +1,6 @@
 import {
+  PayloadTooLargeException,
+  type ArgumentsHost,
   type CanActivate,
   type ExecutionContext,
   type INestApplication,
@@ -8,9 +10,14 @@ import { Test } from "@nestjs/testing";
 import type { NextFunction, Request, Response } from "express";
 import * as request from "supertest";
 import { DataImportApplicationService } from "@/modules/data-import/application/services/data-import-application.service";
+import { ImportRowLimitExceededError } from "@/modules/data-import/domain/import-template.errors";
 import type { CurrentUserContext } from "@/shared/application/context/current-user.context";
+import { HttpExceptionFilter } from "@/shared/presentation/filters/http-exception.filter";
 import { AuthGuard } from "@/shared/presentation/guards/auth.guard";
-import { ImportJobController } from "./import-job.controller";
+import {
+  ImportJobController,
+  ImportJobUploadExceptionFilter,
+} from "./import-job.controller";
 
 const CURRENT_USER: CurrentUserContext = {
   id: "00000000-0000-4000-8000-000000000101",
@@ -76,6 +83,17 @@ class FakeAuthGuard implements CanActivate {
   }
 }
 
+// 기능 : Nest ArgumentsHost에서 response mock만 꺼낼 수 있는 테스트 대역을 생성합니다.
+function createArgumentsHostFake(response: unknown): ArgumentsHost {
+  return {
+    switchToHttp: () => ({
+      getRequest: jest.fn(),
+      getResponse: () => response,
+      getNext: jest.fn(),
+    }),
+  } as unknown as ArgumentsHost;
+}
+
 function createDataImportServiceFake(): jest.Mocked<DataImportServiceFake> {
   return {
     cancelImportJob: jest.fn().mockResolvedValue(undefined),
@@ -130,6 +148,7 @@ describe("ImportJobController", () => {
         transform: true,
       })
     );
+    app.useGlobalFilters(new HttpExceptionFilter());
     await app.init();
   });
 
@@ -151,6 +170,24 @@ describe("ImportJobController", () => {
         buffer: expect.any(Buffer),
       }),
     });
+  });
+
+  it("returns safe row limit validation response for oversized parsed data rows", async () => {
+    service.createImportJob.mockRejectedValueOnce(new ImportRowLimitExceededError());
+
+    await request(app.getHttpServer())
+      .post("/api/imports")
+      .field("targetType", "COMPANY")
+      .attach("file", Buffer.from("companyName\nAcme"), "source.csv")
+      .expect(400)
+      .expect({
+        statusCode: 400,
+        error: "ImportRowLimitExceeded",
+        code: "ImportRowLimitExceeded",
+        message:
+          "한 번에 가져올 수 있는 행 수를 초과했어요. 5,000행 이하로 나눠서 다시 올려주세요.",
+        field: "file",
+      });
   });
 
   it("routes mapping updates to the application service", async () => {
@@ -292,5 +329,28 @@ describe("ImportJobController", () => {
       body,
       "request-import-1"
     );
+  });
+});
+
+describe("ImportJobUploadExceptionFilter", () => {
+  it("maps Multer file size errors into ImportFileTooLarge response", () => {
+    const json = jest.fn();
+    const status = jest.fn(() => ({ json }));
+    const response = { status };
+    const host = createArgumentsHostFake(response);
+
+    new ImportJobUploadExceptionFilter().catch(
+      new PayloadTooLargeException("File too large"),
+      host
+    );
+
+    expect(status).toHaveBeenCalledWith(400);
+    expect(json).toHaveBeenCalledWith({
+      statusCode: 400,
+      error: "ImportFileTooLarge",
+      code: "ImportFileTooLarge",
+      message: "파일 크기가 너무 커요. 10MB 이하 파일로 다시 올려주세요.",
+      field: "file",
+    });
   });
 });

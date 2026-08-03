@@ -36,6 +36,7 @@ import {
   useImportUserLogList,
 } from "@/features/import-export/hooks/use-import-template-queries";
 import {
+  IMPORT_MAX_DATA_ROW_COUNT,
   importTargetOptions,
   validateImportFile,
 } from "@/features/import-export/schemas/import-export-schema";
@@ -313,7 +314,7 @@ export function ImportScreen() {
                     {selectedFile ? selectedFile.name : "CSV 또는 XLSX 파일 올리기"}
                   </p>
                   <p className="mt-1 text-[12px] text-[#64748B]">
-                    10MB 이하 파일을 사용할 수 있어요.
+                    {`10MB 이하, ${IMPORT_MAX_DATA_ROW_COUNT.toLocaleString("ko-KR")}행 이하 파일을 사용할 수 있어요.`}
                   </p>
                 </div>
               </div>

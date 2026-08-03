@@ -1,6 +1,6 @@
 ﻿# Release Scope Check
 
-상태: G01~G04 release scope 완료 / G05~G08 최종형 구현 대기 / G09 최종 QA 대기 / 01 최종 서비스 형태 미완료
+상태: G01~G08 release scope 구현 완료 / G09 최종 QA 대기 / 01 최종 서비스 형태 미완료
 G01~G04 완료일: 2026-07-21
 
 ## 1. 목적

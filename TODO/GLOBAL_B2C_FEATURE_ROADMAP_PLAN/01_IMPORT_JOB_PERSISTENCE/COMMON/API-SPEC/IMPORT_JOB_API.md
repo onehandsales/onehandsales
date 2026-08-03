@@ -1,7 +1,7 @@
 ﻿# ImportJob Persistence API
 
 계약 상태: confirmed
-구현 상태: G01~G07 API 구현 완료 / G08 최종형 API 영향 구현 대기
+구현 상태: G01~G08 API 구현 완료 / G09 최종 QA 대기
 소비자:
 - User Web
 
@@ -295,7 +295,7 @@ Body:
 | template 없음 | `ImportTemplateNotFound` | 404 | 양식 목록을 다시 불러온다 | warn |
 | 파일 형식 불가 | `UnsupportedImportFileType` | 400 | `CSV 또는 XLSX 파일을 올려 주세요.` | warn |
 | 파일 크기 초과 | `ImportFileTooLarge` | 400 | `파일 크기가 너무 커요. 10MB 이하 파일로 다시 올려주세요.` | warn |
-| 행 수 초과 | `ImportRowLimitExceeded` | 400 | `5,000행 이하로 나눠서 다시 올려주세요.` | warn |
+| 행 수 초과 | `ImportRowLimitExceeded` | 400 | `한 번에 가져올 수 있는 행 수를 초과했어요. 5,000행 이하로 나눠서 다시 올려주세요.` | warn |
 | 파일 parsing 실패 | `ImportFileParseFailed` | 400 | `파일을 읽지 못했어요. 형식을 확인하고 다시 올려 주세요.` | warn |
 | storage 실패 | `ImportFileStorageFailed` | 503 | `파일을 저장하지 못했어요. 잠시 후 다시 시도해 주세요.` | error |
 

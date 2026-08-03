@@ -6,6 +6,7 @@ import type {
   ParsedImportRow,
 } from "@/modules/data-import/application/ports/import-file-parser.port";
 import {
+  ImportFileTooLargeError,
   ImportFileParseFailedError,
   UnsupportedImportFileTypeError,
 } from "@/modules/data-import/domain/import-template.errors";
@@ -56,7 +57,7 @@ export class ExceljsImportFileParser implements ImportFileParser {
     }
 
     if (file.size > MAX_IMPORT_FILE_SIZE_BYTES) {
-      throw new ValidationDomainError("10MB 이하 파일만 업로드할 수 있습니다.");
+      throw new ImportFileTooLargeError();
     }
 
     const extension = this.getExtension(file.originalname);
