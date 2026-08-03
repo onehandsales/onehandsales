@@ -1,11 +1,13 @@
 ﻿# 01 ImportJob Persistence
 
-상태: G01~G08 구현 완료 / G09 최종 QA 대기 / 01 최종 서비스 형태 미완료
+상태: G01~G09 구현 및 최종 QA 완료 / 01 최종 서비스 형태 완료
 G01~G04 완료일: 2026-07-21
+G05~G09 완료일: 2026-08-03
 완료 커밋: `0c2a47b`, `c788388`, `a3b9dc7`, `fd6dd23`, `284c078`, `1177578`
+G05~G08 완료 커밋: `3bbda338`, `5e43dd5c`, `bac7a7da`, `e7accd53`
 순서: 01
 성격: Global B2C 데이터 신뢰 기반 구현 계획
-결정 상태: 2026-07-21 G01~G04 완료, 2026-08-03 최종 서비스 형태 G05~G08 구현 완료. G09 최종 QA 전까지 01은 최종 종결이 아니다.
+결정 상태: 2026-07-21 G01~G04 완료, 2026-08-03 최종 서비스 형태 G05~G09 구현 및 QA closeout 완료. 01은 최종 서비스 형태 기준으로 종결한다.
 
 ## 0. 완료 체크리스트
 
@@ -35,7 +37,8 @@ G01~G04 완료일: 2026-07-21
 - [x] G06 Original File Binary Minimization 구현 및 QA
 - [x] G07 Import Success Row Retention 구현 및 QA
 - [x] G08 Import Volume Limits 구현 및 QA
-- [ ] G09 Final Service QA Closeout 및 `01_IMPORT_JOB_PERSISTENCE`, `NEXT_BACKEND_API_BACKLOG_PLAN`, `USER_WEB_PRODUCTIZATION_GAP_PLAN` 상태 동기화
+- [x] G09 Final Service QA Closeout 및 `01_IMPORT_JOB_PERSISTENCE`, `NEXT_BACKEND_API_BACKLOG_PLAN`, `USER_WEB_PRODUCTIZATION_GAP_PLAN` 상태 동기화
+- [x] G09 QA closeout 기록: `TODO_LOG/2026-08-03/G09_IMPORT_JOB_FINAL_SERVICE_QA_CLOSEOUT/WORK_LOG.md`
 
 ## 1. 목적
 
@@ -47,7 +50,7 @@ Import 업로드, 원본/preview 보관 정책, AI 매핑, 검증, 확정 전 �
 - 확정 전 ImportJob은 `ImportJob`, `ImportJobRow`, `ImportJobError`, `ImportUploadedFile`로 저장된다.
 - 새로고침, 탭 이동, 서버 재시작/배포 이후에도 `/api/imports/:importJobId`와 active job 조회로 상태를 복구할 수 있다.
 - 원본 파일 metadata, TTL, storage delete 실패 이력, redacted error/log 기준을 적용했다. G01~G04 당시에는 confirm/cancel/expire 이후 삭제 추적까지 닫았고, 2026-08-03 최종형에서는 원본 binary 즉시 삭제로 보강한다.
-- 자동 검증과 route-mocked E2E QA는 완료했다. 실제 Supabase Cloud 수동 QA는 운영 확인 단계에서 별도로 실행한다.
+- 자동 검증과 route-mocked E2E QA는 G09에서 재통과했다. 실제 Supabase Cloud 수동 QA는 운영 확인 단계에서 별도로 실행한다.
 
 ## 3. 확정 방향
 
@@ -97,17 +100,17 @@ G05~G09를 포함해 01의 모든 `/goal` 착수 시 아래 기준을 반드시 
 
 ## 4. 완료 판정
 
-- 판정: G01~G04 구현 완료. G05~G08은 01 완전 종결을 위한 최종 서비스 형태 보강 구현 대상이고, G09는 해당 보강을 닫는 최종 QA/문서 closeout 대상이다.
-- 최종 종결 조건: G05~G08 구현, G09 Backend/User Web 통합 QA, 문서 상태 업데이트가 끝나면 01은 Global B2C 최종 서비스 형태 기준으로 완전 종료한다.
+- 판정: G01~G09 구현 및 최종 QA 완료. G05~G08 최종 서비스 형태 보강과 G09 문서 closeout까지 완료했다.
+- 최종 종결 조건: G05~G08 구현, G09 Backend/User Web 통합 QA, 문서 상태 업데이트 완료. 01은 Global B2C 최종 서비스 형태 기준으로 완전 종료한다.
 - 직접 대상: `TODO/NEXT_BACKEND_API_BACKLOG_PLAN`의 `NBA-006 ImportJob persistence/resume API`
 - 완료 순서: G01 DB -> G02 Backend API -> G03 User Web -> G04 QA
 - 완료 근거: `TODO_LOG/2026-07-21/G04_IMPORT_JOB_PERSISTENCE_QA_CLEANUP/WORK_LOG.md`
 
 최종 종결 시 반드시 같이 업데이트할 문서:
 
-- `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/01_IMPORT_JOB_PERSISTENCE`: G05~G09 완료 체크, 상태를 최종 서비스 형태 완료로 변경, 완료 근거와 QA 결과 기록
-- `TODO/NEXT_BACKEND_API_BACKLOG_PLAN`: `NBA-006`을 G01~G09 전체 기준 최종 종료로 정리
-- `TODO/USER_WEB_PRODUCTIZATION_GAP_PLAN`: DataImport/Import UX gap이 최종 서비스 형태 기준으로 닫혔음을 반영
+- `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/01_IMPORT_JOB_PERSISTENCE`: G05~G09 완료 체크, 상태를 최종 서비스 형태 완료로 변경, 완료 근거와 QA 결과 기록 완료
+- `TODO/NEXT_BACKEND_API_BACKLOG_PLAN`: `NBA-006`을 G01~G09 전체 기준 최종 종료로 정리 완료
+- `TODO/USER_WEB_PRODUCTIZATION_GAP_PLAN`: DataImport/Import UX gap이 최종 서비스 형태 기준으로 닫혔음을 반영 완료
 
 01은 Global B2C 첫 판매 전체 bundle이 아니다. 결제, Admin 운영, 앱 내부 다국어, 제품 분석, Notification은 별도 계획으로 분리한다. 대용량 import worker, 범용 ExportJob, 일정/회의록 import, ImportJob 전용 Admin 화면/API도 01 최종 종료 조건이 아니다.
 

@@ -5,7 +5,7 @@
 
 ## 0. 완료 반영
 
-- [x] `NBA-006 ImportJob persistence/resume API`: ImportJob/ImportJobRow/ImportJobError/ImportUploadedFile DB persistence 구현 완료
+- [x] `NBA-006 ImportJob persistence/resume API`: ImportJob/ImportJobRow/ImportJobError/ImportUploadedFile DB persistence, terminal cleanup, success row retention cleanup, upload limit 검증 구현 및 최종 QA closeout 완료
 - [x] `NBA-009 Schedule week report`: 새 DB/migration 없이 기존 `User`, `Schedule`, `ScheduleDeal`, `Deal`, `DealCompany`, `DealContact`, `Company`, `Contact`, `DealFollowingActionLog` runtime aggregation으로 구현 완료
 - [x] `NBA-010 Notification`: Notification/UserNotificationSetting/NotificationDeliveryAttempt/BrowserPushSubscription DB persistence 구현 완료
 - [x] `NBA-015 Google Calendar Integration`: ExternalCalendarConnection/ExternalCalendarSource, Schedule Google metadata, soft delete/trash fields, sync lock/status DB persistence 구현 완료

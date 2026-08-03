@@ -5,7 +5,7 @@
 
 ## 0. 완료 반영
 
-- [x] `NBA-006 ImportJob persistence/resume API`: User Web import resume UX와 client state 구현 완료
+- [x] `NBA-006 ImportJob persistence/resume API`: User Web import resume UX, row detail 만료 안내, upload 제한 초과 안내 구현 및 최종 QA closeout 완료
 - [x] `NBA-009 Schedule week report`: `/app/schedules/week` 주간 보고서 UX와 Excel 다운로드 구현 완료
 - [x] `NBA-010 Notification`: `/app/notifications`, unread badge, settings, browser push fallback UX 구현 완료
 - [x] `NBA-015 Google Calendar Integration`: `/app/schedules`, `/app/settings`, `/app/trash` Google Calendar UX 구현 완료

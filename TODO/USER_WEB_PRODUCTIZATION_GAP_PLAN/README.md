@@ -10,7 +10,7 @@
 - [x] DataImport 기본 흐름
 - [x] DataImport ImportJob persistence/resume (`NBA-006`)
 - [x] `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/01_IMPORT_JOB_PERSISTENCE` G01~G04 구현 및 QA closeout
-- [ ] `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/01_IMPORT_JOB_PERSISTENCE` G05~G08 최종형 보관/삭제/입력량 제한 보강 구현 및 QA
+- [x] `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/01_IMPORT_JOB_PERSISTENCE` G05~G08 최종형 보관/삭제/입력량 제한 보강과 G09 최종 QA closeout 완료
 - [x] Weekly Schedule Report (`NBA-009`)
 - [x] `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/03_WEEKLY_SCHEDULE_REPORT` 구현 및 QA closeout
 - [x] Notification reminder (`NBA-010`)
@@ -82,7 +82,7 @@
 - 모바일 회의 녹음/STT draft fallback
 - FE local draft 24시간 TTL
 - browser push permission UX
-- DataImport. 단, `01_IMPORT_JOB_PERSISTENCE`는 G05~G08 보관/삭제/입력량 제한 보강 구현과 QA가 끝나면 최종 서비스 형태 기준으로 완전 종료한다.
+- DataImport. `01_IMPORT_JOB_PERSISTENCE`는 G01~G09 기준으로 최종 서비스 형태 완료 상태다.
 - Notification reminder
 - Search
 - Trash

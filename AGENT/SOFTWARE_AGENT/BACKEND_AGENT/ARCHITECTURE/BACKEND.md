@@ -122,13 +122,14 @@ Current response notes:
 - `POST /api/trash/:targetType/:targetId/restore` clears `deletedAt`, `deletedByUserId`, and `trashExpiresAt` and returns the restored target metadata.
 - `GET /api/import-templates/active` returns active import templates for Company, Contact, Product, and Deal.
 - `GET /api/import-templates/:templateId/download` returns an xlsx template. Contact templates may receive `companyName` as context.
-- `POST /api/imports` accepts a CSV/XLSX file as `file`, creates an in-memory import job, and returns preview rows. The file limit is 10 MB.
+- `POST /api/imports` accepts a CSV/XLSX file as `file`, validates 10 MB and 5,000 data row limits, creates a persisted `ImportJob`/row/file metadata snapshot, deletes the original file binary after DB snapshot creation, and returns preview rows.
+- `GET /api/imports/active` and `GET /api/imports/:importJobId` restore active import review state from DB for refresh, tab movement, server restart, and deploy recovery.
 - `POST /api/imports/:importJobId/map` calls the import mapping provider and falls back to heuristic mapping if the provider fails.
 - `PATCH /api/imports/:importJobId/mapping` applies the user's mapping and validates mapped rows. Preview validation messages are scoped to the missing or invalid cell instead of being repeated across unrelated columns.
 - `POST /api/imports/:importJobId/confirm` creates Company, Contact, Product, or Deal rows and writes `ImportUserLog`/`ImportUserLogRow` snapshots in a database transaction.
 - `GET /api/import-user-logs` uses fixed `pageSize=15` page-number pagination for successful import history.
 - Deal import creates the deal and `DealCompany`, `DealContact`, `DealProduct` links in one transaction when referenced company/contact/product values resolve. Missing-reference resolution arrays are forwarded as `dealCompanyResolutions`, `dealContactResolutions`, and `dealProductResolutions` through the FE API function, BE DTO, HTTP controller, application service, repository, and controller spec.
-- Temporary DataImport jobs use an in-memory store. Persistent job recovery across server restart is future scope.
+- Temporary DataImport jobs use `ImportJob`, `ImportJobRow`, `ImportJobError`, and `ImportUploadedFile` persistence. Terminal ImportJob snapshots are cleaned up after 7 days, and successful `ImportUserLogRow` row-level snapshots are cleaned up after 30 days.
 - `POST /api/analytics/events` uses AuthGuard, accepts only `eventName`, `eventVersion`, and allowlist `payload`, and stores Backend-enriched `ProductAnalyticsEvent`.
 
 Current runtime behavior:
@@ -157,7 +158,7 @@ Auth/session runtime notes:
 Current backend gaps and intentional deferrals:
 
 - Admin pages and Admin Web query APIs such as `/admin/api/dashboard`, `/admin/api/users`, `/admin/api/companies`, `/admin/api/contacts`, `/admin/api/products`, and `/admin/api/deals` are deferred.
-- Persistent ImportJob recovery, Notification, Admin operation query/audit/sensitive raw APIs are not implemented yet.
+- DataImport ImportJob persistence/recovery is implemented. Remaining backend gaps are tracked in the later roadmap documents rather than inside the DataImport persistence slot.
 - Generic ExportJob is intentionally not used for the current export direction. Company, Contact, Product, and Deal each provide their own `GET /api/<domain>/export/xlsx` API.
 - MeetingNote Admin, rawText encryption/raw access, and generic DealActivity table are future scope.
 - Kakao OAuth provider setup is no longer a release blocker because Kakao login has been removed. Apple and LINE are active runtime providers together with Google; actual provider smoke still depends on Supabase/provider operational configuration.
@@ -326,7 +327,7 @@ Database principles:
 - RLS is a last line of defense; backend queries still filter by `userId`.
 - Admin RLS bypass must go through explicit Admin methods.
 
-Search and MeetingNote AI/STT draft do not introduce new database tables in the current implementation. BusinessCard OCR uses `BusinessCardScanLog` because success/failure/conversion and provider usage metrics must be analyzed. DataImport uses `ImportTemplate`, `ImportUserLog`, and `ImportUserLogRow`; pre-confirmation jobs are temporary in-memory records.
+Search and MeetingNote AI/STT draft do not introduce new database tables in the current implementation. BusinessCard OCR uses `BusinessCardScanLog` because success/failure/conversion and provider usage metrics must be analyzed. DataImport uses `ImportTemplate`, `ImportJob`, `ImportJobRow`, `ImportJobError`, `ImportUploadedFile`, `ImportUserLog`, and `ImportUserLogRow`; pre-confirmation jobs are persisted with 7-day TTL/cleanup and successful row-level history snapshots have 30-day cleanup.
 
 ## 11. Enum And Lookup Policy
 

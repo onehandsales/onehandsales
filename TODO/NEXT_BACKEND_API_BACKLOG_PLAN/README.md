@@ -7,8 +7,8 @@
 
 ## 0. 완료 반영 체크리스트
 
-- [x] `NBA-006 ImportJob persistence/resume API`: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/01_IMPORT_JOB_PERSISTENCE` G01~G04에서 구현 및 QA closeout 완료
-- [ ] `01_IMPORT_JOB_PERSISTENCE` G05~G08 최종형 보관/삭제/입력량 제한 보강 구현 및 QA. 완료 시 01/NBA-006은 최종 서비스 형태 기준 완전 종료
+- [x] `NBA-006 ImportJob persistence/resume API`: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/01_IMPORT_JOB_PERSISTENCE` G01~G09에서 구현 및 최종 QA closeout 완료
+- [x] `01_IMPORT_JOB_PERSISTENCE` G05~G08 최종형 보관/삭제/입력량 제한 보강과 G09 통합 QA 완료. 01/NBA-006은 최종 서비스 형태 기준 완전 종료
 - [x] `NBA-009 Schedule week report`: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/03_WEEKLY_SCHEDULE_REPORT`에서 구현 및 QA closeout 완료
 - [x] `NBA-010 Notification`: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/02_NOTIFICATION_REMINDER`에서 구현 및 QA closeout 완료
 - [x] `NBA-015 Google Calendar Integration`: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/04_GOOGLE_CALENDAR_INTEGRATION`에서 구현 및 QA closeout 완료
@@ -31,6 +31,7 @@
 - [x] `11_ADMIN_OPERATION`: Admin 운영 API/Web, audit/redaction, provider/trash/account/system gate 구현 및 QA closeout 완료
 - [x] Backend/API/DB/User Web 영향 반영 완료
 - [x] 완료 기록: `TODO_LOG/2026-07-21/G04_IMPORT_JOB_PERSISTENCE_QA_CLEANUP/WORK_LOG.md`
+- [x] 완료 기록: `TODO_LOG/2026-08-03/G09_IMPORT_JOB_FINAL_SERVICE_QA_CLOSEOUT/WORK_LOG.md`
 - [x] 완료 기록: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/03_WEEKLY_SCHEDULE_REPORT/COMMON/TODO_LOG.md`
 - [x] 완료 기록: `TODO_LOG/2026-07-22/G05_QA_REVIEW_CLOSEOUT/WORK_LOG.md`
 - [x] 완료 기록: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/04_GOOGLE_CALENDAR_INTEGRATION/TODO_LOG/2026-07-23/G05_QA_REVIEW_CLOSEOUT/WORK_LOG.md`
@@ -56,8 +57,8 @@ G07의 산출물이므로 이 문서는 구현 계획 확정본이 아니다. �
 - `NBA-003` 중 Deal list `latestActivity`는 06에서 구현 완료됐고, Company/Contact/Product latest summary와 generic summary endpoint는 product feature 후보로 남긴다.
 - MeetingNote 상세 next action/follow-up draft와 AI/STT provider call log는 07에서 구현 완료됐다. MeetingNote 목록 latest/next summary는 product feature 후보로 남긴다.
 - `NBA-014`는 06 범위에서 DB target, migration/seed 금지, Prisma 검증 gate를 닫았고 11에서 Admin system operation gate도 구현했다. 남은 data reliability 범위는 실제 운영 DB 적용 절차, backup/restore 실행 runbook, 장애 대응 drill이다.
-- `NBA-006 ImportJob persistence/resume API`는 2026-07-21 기준 구현 및 QA closeout이 완료되어 active backlog 후보에서 제외한다.
-- 2026-08-03 기준 `01_IMPORT_JOB_PERSISTENCE`는 G05~G08 최종형 보강을 추가 확정했다. 이는 NBA-006을 active backlog로 되돌리는 것이 아니라, 같은 01 범위 안에서 terminal cleanup, 원본 file binary 즉시 삭제, `ImportUserLogRow` 30일 cleanup, 10MB/5,000행 제한을 구현해 01을 최종 서비스 형태로 완전 종료하기 위한 보강이다.
+- `NBA-006 ImportJob persistence/resume API`는 2026-08-03 기준 `01_IMPORT_JOB_PERSISTENCE` G01~G09 구현 및 최종 QA closeout이 완료되어 active backlog 후보에서 제외한다.
+- 2026-08-03 기준 `01_IMPORT_JOB_PERSISTENCE`는 terminal cleanup, 원본 file binary 즉시 삭제, `ImportUserLogRow` 30일 cleanup, 10MB/5,000행 제한까지 구현해 최종 서비스 형태로 완전 종료했다.
 - `NBA-009 Schedule week report`는 2026-07-22 기준 구현 및 QA closeout이 완료되어 active backlog 후보에서 제외한다.
 - `NBA-010 Notification`은 2026-07-22 기준 구현 및 QA closeout이 완료되어 active backlog 후보에서 제외한다.
 - `NBA-015 Google Calendar Integration`은 2026-07-23 기준 구현 및 QA closeout이 완료되어 active backlog 후보에서 제외한다.

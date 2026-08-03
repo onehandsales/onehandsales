@@ -1,7 +1,8 @@
 ﻿# Goal Work Order
 
-상태: G01~G08 구현 완료 / G09 최종 QA 대기 / 01 최종 서비스 형태 미완료
+상태: G01~G09 구현 및 최종 QA 완료 / 01 최종 서비스 형태 완료
 G01~G04 완료일: 2026-07-21
+G05~G09 완료일: 2026-08-03
 
 ## 0. 완료 체크리스트
 
@@ -14,7 +15,7 @@ G01~G04 완료일: 2026-07-21
 - [x] G06 Original file binary minimization
 - [x] G07 Import success row retention
 - [x] G08 Import volume limits
-- [ ] G09 Final service QA closeout
+- [x] G09 Final service QA closeout
 
 ## 1. 원칙
 

@@ -1,7 +1,8 @@
 # Goal Specs
 
-상태: G01~G08 구현 완료 / G09 최종 QA 대기 / 01 최종 서비스 형태 미완료
+상태: G01~G09 구현 및 최종 QA 완료 / 01 최종 서비스 형태 완료
 G01~G04 완료일: 2026-07-21
+G05~G09 완료일: 2026-08-03
 
 ## 1. 목적
 
@@ -20,7 +21,7 @@ G01~G04 완료일: 2026-07-21
 - [x] G06 `G06_ORIGINAL_FILE_BINARY_MINIMIZATION.md`
 - [x] G07 `G07_IMPORT_SUCCESS_ROW_RETENTION.md`
 - [x] G08 `G08_IMPORT_VOLUME_LIMITS.md`
-- [ ] G09 `G09_FINAL_SERVICE_QA_CLOSEOUT.md`
+- [x] G09 `G09_FINAL_SERVICE_QA_CLOSEOUT.md`
 
 ## 2. Goal 목록
 
@@ -34,7 +35,7 @@ G01~G04 완료일: 2026-07-21
 | G06 | Done | `G06_ORIGINAL_FILE_BINARY_MINIMIZATION.md` | 원본 업로드 file binary를 parse와 DB snapshot 생성 직후 삭제 |
 | G07 | Done | `G07_IMPORT_SUCCESS_ROW_RETENTION.md` | `ImportUserLogRow` row-level submitted data를 30일 후 cleanup |
 | G08 | Done | `G08_IMPORT_VOLUME_LIMITS.md` | 대용량 worker 없이 10MB/5,000행 제한 적용 |
-| G09 | Confirmed | `G09_FINAL_SERVICE_QA_CLOSEOUT.md` | G05~G08 최종형 보강 통합 QA와 01/NEXT_BACKEND/USER_WEB 문서 closeout |
+| G09 | Done | `G09_FINAL_SERVICE_QA_CLOSEOUT.md` | G05~G08 최종형 보강 통합 QA와 01/NEXT_BACKEND/USER_WEB 문서 closeout |
 
 ## 3. 실행 규칙
 

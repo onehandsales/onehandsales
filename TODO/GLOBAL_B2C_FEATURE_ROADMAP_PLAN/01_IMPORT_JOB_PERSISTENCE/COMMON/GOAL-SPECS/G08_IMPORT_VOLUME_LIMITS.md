@@ -1,6 +1,6 @@
 # G08 Import Volume Limits
 
-상태: Confirmed
+상태: Done
 결정일: 2026-08-03
 성격: 01 ImportJob Persistence 최종 서비스 형태 보강 구현 명세
 

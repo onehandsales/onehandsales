@@ -1,7 +1,7 @@
 ﻿# ImportJob Persistence API
 
 계약 상태: confirmed
-구현 상태: G01~G08 API 구현 완료 / G09 최종 QA 대기
+구현 상태: G01~G09 API 구현 및 최종 QA 완료
 소비자:
 - User Web
 

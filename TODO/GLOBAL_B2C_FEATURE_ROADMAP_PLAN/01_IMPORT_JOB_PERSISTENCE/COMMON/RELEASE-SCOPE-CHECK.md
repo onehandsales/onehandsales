@@ -1,7 +1,8 @@
 ﻿# Release Scope Check
 
-상태: G01~G08 release scope 구현 완료 / G09 최종 QA 대기 / 01 최종 서비스 형태 미완료
+상태: G01~G09 release scope 구현 및 최종 QA 완료 / 01 최종 서비스 형태 완료
 G01~G04 완료일: 2026-07-21
+G05~G09 완료일: 2026-08-03
 
 ## 1. 목적
 
@@ -37,7 +38,7 @@ G01~G04 완료일: 2026-07-21
 | Gate/Gap | 01 포함 여부 | 판단 |
 |---|---:|---|
 | Product UX의 Import 흐름 | Yes | `/app/import`의 upload, mapping, row edit, confirm, resume UX를 다룬다. |
-| Data reliability의 import job 유실 방지 | Yes | DB persistence, TTL, cleanup, refresh/server restart 복구를 다룬다. G05에서 terminal snapshot 7일 후 자동 cleanup을 최종형으로 보강한다. |
+| Data reliability의 import job 유실 방지 | Yes | DB persistence, TTL, cleanup, refresh/server restart 복구를 다룬다. G05에서 terminal snapshot 7일 후 자동 cleanup을 최종형으로 보강 완료했다. |
 | Trust/policy의 import 데이터 보관 기간 | Partial | 7일 TTL, 원본 file binary 즉시 삭제, terminal snapshot 7일 cleanup, 성공 row-level snapshot 30일 cleanup은 포함한다. 전체 개인정보/약관 정책은 별도 계획이다. |
 | Admin/support | No | ImportJobError는 redacted 이력만 남긴다. 운영 Admin 화면/API는 별도 계획이다. |
 | Global UX/localization | No | 01은 한국어 User Web 문구 기준으로 작성한다. `/app` 다국어는 별도 첫 판매 계획이다. |
@@ -80,18 +81,18 @@ G01~G04 완료일: 2026-07-21
 
 ## 6. 완료 판정
 
-01은 2026-07-21 기준 `NBA-006`의 G01~G04 구현 및 QA closeout까지 완료했다. 2026-08-03 최종형으로 승격한 G05~G08은 아직 구현 전이고, 이를 닫는 G09 최종 QA도 대기 중이므로 01 전체를 최종 서비스 형태로 완료 처리하지 않는다.
+01은 2026-07-21 기준 `NBA-006`의 G01~G04 구현 및 QA closeout을 완료했고, 2026-08-03 기준 G05~G08 최종형 보강과 G09 최종 QA closeout도 완료했다. 따라서 01 전체를 최종 서비스 형태로 완료 처리한다.
 
 완료 goal은 아래 순서로 진행했다.
 
 ```text
-G01_DB_PERSISTENCE_FOUNDATION -> G02_BACKEND_IMPORT_JOB_API -> G03_USER_WEB_RESUME_UX -> G04_QA_CLEANUP
+G01_DB_PERSISTENCE_FOUNDATION -> G02_BACKEND_IMPORT_JOB_API -> G03_USER_WEB_RESUME_UX -> G04_QA_CLEANUP -> G05_TERMINAL_IMPORT_JOB_CLEANUP -> G06_ORIGINAL_FILE_BINARY_MINIMIZATION -> G07_IMPORT_SUCCESS_ROW_RETENTION -> G08_IMPORT_VOLUME_LIMITS -> G09_FINAL_SERVICE_QA_CLOSEOUT
 ```
 
-최종형 보강 완료 goal은 아래 순서로 진행한다.
+최종형 보강 완료 기록:
 
 ```text
-G05_TERMINAL_IMPORT_JOB_CLEANUP -> G06_ORIGINAL_FILE_BINARY_MINIMIZATION -> G07_IMPORT_SUCCESS_ROW_RETENTION -> G08_IMPORT_VOLUME_LIMITS -> G09_FINAL_SERVICE_QA_CLOSEOUT
+TODO_LOG/2026-08-03/G09_IMPORT_JOB_FINAL_SERVICE_QA_CLOSEOUT/WORK_LOG.md
 ```
 
 Global B2C 첫 판매 전체 구현은 이 계획 하나로 착수하면 안 된다. 첫 판매 전체는 결제, Admin, 현지화, 분석, 정책을 포함하는 별도 계획 bundle로 나누어야 한다.

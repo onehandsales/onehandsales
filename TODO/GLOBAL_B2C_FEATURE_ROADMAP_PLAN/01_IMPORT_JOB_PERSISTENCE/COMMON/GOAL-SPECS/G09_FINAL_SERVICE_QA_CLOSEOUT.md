@@ -1,19 +1,26 @@
 # G09 Final Service QA Closeout
 
-상태: Confirmed
+상태: Done
 성격: 01 ImportJob Persistence 최종 서비스 형태 QA / closeout 명세
 
 ## 0. 착수/완료 체크리스트
 
-- [ ] Request/Response 검증: `COMMON/API-SPEC/IMPORT_JOB_API.md`와 실제 Backend DTO, FE client type, error response가 일치하는지 확인한다.
-- [ ] Business Logic 검증: G05 terminal cleanup, G06 original file binary 즉시 삭제, G07 `ImportUserLogRow` 30일 cleanup, G08 10MB/5,000행 제한이 서로 충돌하지 않는지 확인한다.
-- [ ] User Flow 검증: `COMMON/USER-FLOW.md`, `FE-TODO/USER-WEB-TODO.md`, `AGENT/UXUI_AGENT` 기준으로 정상 import, 이어받기, 제한 초과, row detail 만료 화면이 사용자가 이해할 수 있는 흐름인지 확인한다.
-- [ ] DB/Prisma 검증: `BE/prisma/schema.prisma`, `BE/prisma/migrations`, `BE-TODO/DB-SCHEMA.md`와 실제 cleanup/delete 대상이 일치하는지 확인한다.
-- [ ] 소프트웨어 아키텍처/컨벤션 검증: `AGENT/SOFTWARE_AGENT` 기준으로 use case, repository, runner, controller, FE feature boundary 위반이 없는지 확인한다.
-- [ ] 코드 주석 검증: G05~G08에서 작성하거나 수정한 cleanup, retention, validation, transaction, runner, DB 삭제/보존 분기에 한글 주석이 있는지 확인한다.
-- [ ] SQL 주석 검증: G05~G08에서 Prisma migration SQL, raw SQL, cleanup/retention 보조 SQL을 작성했다면 한글 `COMMENT ON` 또는 `-- 한글 주석`이 있는지 확인한다.
-- [ ] 문서 동기화 검증: `01_IMPORT_JOB_PERSISTENCE`, `NEXT_BACKEND_API_BACKLOG_PLAN`, `USER_WEB_PRODUCTIZATION_GAP_PLAN`의 상태가 구현 결과와 일치하는지 갱신한다.
-- [ ] QA 기록 검증: 실행 명령, 수동 QA 결과, 남은 리스크를 작업 결과 또는 `TODO_LOG`에 남긴다.
+- [x] Request/Response 검증: `COMMON/API-SPEC/IMPORT_JOB_API.md`와 실제 Backend DTO, FE client type, error response가 일치하는지 확인한다.
+- [x] Business Logic 검증: G05 terminal cleanup, G06 original file binary 즉시 삭제, G07 `ImportUserLogRow` 30일 cleanup, G08 10MB/5,000행 제한이 서로 충돌하지 않는지 확인한다.
+- [x] User Flow 검증: `COMMON/USER-FLOW.md`, `FE-TODO/USER-WEB-TODO.md`, `AGENT/UXUI_AGENT` 기준으로 정상 import, 이어받기, 제한 초과, row detail 만료 화면이 사용자가 이해할 수 있는 흐름인지 확인한다.
+- [x] DB/Prisma 검증: `BE/prisma/schema.prisma`, `BE/prisma/migrations`, `BE-TODO/DB-SCHEMA.md`와 실제 cleanup/delete 대상이 일치하는지 확인한다.
+- [x] 소프트웨어 아키텍처/컨벤션 검증: `AGENT/SOFTWARE_AGENT` 기준으로 use case, repository, runner, controller, FE feature boundary 위반이 없는지 확인한다.
+- [x] 코드 주석 검증: G05~G08에서 작성하거나 수정한 cleanup, retention, validation, transaction, runner, DB 삭제/보존 분기에 한글 주석이 있는지 확인한다.
+- [x] SQL 주석 검증: G05~G08에서 Prisma migration SQL, raw SQL, cleanup/retention 보조 SQL을 작성했다면 한글 `COMMENT ON` 또는 `-- 한글 주석`이 있는지 확인한다.
+- [x] 문서 동기화 검증: `01_IMPORT_JOB_PERSISTENCE`, `NEXT_BACKEND_API_BACKLOG_PLAN`, `USER_WEB_PRODUCTIZATION_GAP_PLAN`의 상태가 구현 결과와 일치하는지 갱신한다.
+- [x] QA 기록 검증: 실행 명령, 수동 QA 결과, 남은 리스크를 작업 결과 또는 `TODO_LOG`에 남긴다.
+
+완료 기록:
+
+- `TODO_LOG/2026-08-03/G09_IMPORT_JOB_FINAL_SERVICE_QA_CLOSEOUT/WORK_LOG.md`
+- Backend: `prisma:validate`, `typecheck`, `lint`, `test -- data-import`, `build` 통과
+- User Web: `typecheck`, `lint`, `build`, `test:e2e` 통과
+- User Web import component 확인: `vitest run import-screen/import-detail-screen` 통과
 
 ## 1. 목적
 

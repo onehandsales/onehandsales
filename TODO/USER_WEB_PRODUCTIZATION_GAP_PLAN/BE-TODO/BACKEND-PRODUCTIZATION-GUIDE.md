@@ -7,7 +7,7 @@
 
 - [x] ImportJob persistence/resume backend/API/DB G01~G04 구현 완료
 - [x] `NBA-006` active backend gap 종료
-- [ ] `01_IMPORT_JOB_PERSISTENCE` G05~G08 최종형 보관/삭제/입력량 제한 Backend 보강 구현 및 QA
+- [x] `01_IMPORT_JOB_PERSISTENCE` G05~G08 최종형 보관/삭제/입력량 제한 Backend 보강과 G09 최종 QA closeout 완료
 - [x] Weekly Schedule Report backend/API 구현 완료
 - [x] `NBA-009` active backend gap 종료
 - [x] Notification reminder backend/API/DB 구현 완료
@@ -63,7 +63,7 @@ Backend 판단 기준은 MVP 기능 추가가 아니라 Global B2C 첫 판매 ga
 | Contact dealCount | 구현 완료 | `GET /api/contacts` dealCount, soft delete 제외/user ownership QA 완료 | 완료 |
 | Latest activity summary | Deal list `latestActivity` 구현 완료. Company/Contact/Product summary 없음 | 잔여 summary의 memo/private memo/activity 의미와 개인정보 제외 기준 | Deal subset 완료, 잔여는 후속 |
 | BusinessCard provider failure | 10에서 구현 완료 | safe `errorCode`, `userMessage`, `retryable`, provider raw detail 미노출, `BusinessCardScanLog` safe failure field QA 완료 | 완료 |
-| ImportJob persistence | G01~G04 구현 완료 / G05~G08 구현 대기 | ImportJob/Row/Error/UploadedFile, TTL/delete tracking, resume API, redaction/ownership QA 완료. G05~G08에서 terminal cleanup, 원본 file binary 즉시 삭제, `ImportUserLogRow` 30일 cleanup, 10MB/5,000행 제한까지 보강하면 01은 최종 서비스 형태 기준으로 완전 종료 | G05~G08 완료 후 완전 종료 |
+| ImportJob persistence | G01~G09 구현 및 최종 QA closeout 완료 | ImportJob/Row/Error/UploadedFile, TTL/delete tracking, resume API, redaction/ownership QA 완료. terminal cleanup, 원본 file binary 즉시 삭제, `ImportUserLogRow` 30일 cleanup, 10MB/5,000행 제한까지 보강해 01은 최종 서비스 형태 기준으로 완전 종료 | 완료 |
 | Trash private memo restriction | 11에서 구현 완료 | User/Admin Trash response에서 private memo 원문 미노출 확인 | 완료 |
 | Page size 15 cleanup | 구현 완료 | service response, API 문서, Backend/User Web test 기준 확인 | 완료 |
 | Schedule week report | 구현 완료 | `GET /api/schedules/week`, `GET /api/schedules/week/export/xlsx`, 기존 `User`, `Schedule`, `ScheduleDeal`, `Deal`, `DealCompany`, `DealContact`, `Company`, `Contact`, `DealFollowingActionLog` runtime aggregation, timezone/weekStart/ownership/redaction QA 완료. PDF/범용 ExportJob, 반복 일정, AI 요약은 별도 후속 범위 | 완료 |

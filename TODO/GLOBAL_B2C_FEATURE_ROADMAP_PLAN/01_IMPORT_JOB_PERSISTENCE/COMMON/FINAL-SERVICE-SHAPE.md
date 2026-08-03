@@ -3,6 +3,7 @@
 상태: Confirmed
 결정일: 2026-08-03
 성격: 01 ImportJob Persistence 최종 서비스 형태 보강 결정
+완료 상태: G05~G09 구현 및 QA closeout 완료 (2026-08-03)
 
 ## 1. 목적
 
@@ -196,11 +197,11 @@ G05~G08은 상위 문서의 완료 범위를 뒤집는 새 기능이 아니라, 
 
 완전 종료 판정:
 
-- G05~G08 구현, G09 Backend/User Web 통합 QA, 문서 상태 업데이트가 끝나면 `01_IMPORT_JOB_PERSISTENCE`는 최종 서비스 형태 기준으로 완전 종료한다.
+- G05~G08 구현, G09 Backend/User Web 통합 QA, 문서 상태 업데이트가 완료되어 `01_IMPORT_JOB_PERSISTENCE`는 최종 서비스 형태 기준으로 완전 종료한다.
 - 이후 대용량 import worker, 범용 ExportJob, 일정/회의록 import, ImportJob Admin 전용 화면/API, 결제/구독 연동은 01의 미완성이 아니라 별도 TODO 또는 12/post-12 후속 범위로 본다.
 
-완전 종료 시 문서 동기화:
+완전 종료 문서 동기화 결과:
 
-- `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/01_IMPORT_JOB_PERSISTENCE`: G05~G09 완료 체크, 완료일, 완료 커밋, Backend/User Web QA 결과를 기록하고 상태를 최종 서비스 형태 완료로 변경한다.
-- `TODO/NEXT_BACKEND_API_BACKLOG_PLAN`: `NBA-006 ImportJob persistence/resume API`가 G01~G09 전체 기준으로 최종 종료됐음을 반영한다.
-- `TODO/USER_WEB_PRODUCTIZATION_GAP_PLAN`: DataImport persistence/resume, row detail 만료 안내, import 제한 초과 안내까지 포함해 Import 관련 productization gap이 닫혔음을 반영한다.
+- `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/01_IMPORT_JOB_PERSISTENCE`: G05~G09 완료 체크, 완료일, Backend/User Web QA 결과를 기록하고 상태를 최종 서비스 형태 완료로 변경했다.
+- `TODO/NEXT_BACKEND_API_BACKLOG_PLAN`: `NBA-006 ImportJob persistence/resume API`가 G01~G09 전체 기준으로 최종 종료됐음을 반영했다.
+- `TODO/USER_WEB_PRODUCTIZATION_GAP_PLAN`: DataImport persistence/resume, row detail 만료 안내, import 제한 초과 안내까지 포함해 Import 관련 productization gap이 닫혔음을 반영했다.

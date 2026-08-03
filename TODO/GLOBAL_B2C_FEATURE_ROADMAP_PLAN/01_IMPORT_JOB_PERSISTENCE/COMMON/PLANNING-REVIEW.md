@@ -1,14 +1,14 @@
 ﻿# Planning Review
 
-상태: G01~G04 완료 검토 기록 / G05~G08 최종형 구현 완료 / G09 최종 QA 대기 / 01 최종 서비스 형태 미완료
+상태: G01~G09 완료 검토 기록 / 01 최종 서비스 형태 완료
 검토일: 2026-07-21
 
 ## 1. 결론
 
-- 판정: G01~G04 완료
+- 판정: G01~G09 완료
 - 이유: `NBA-006 ImportJob persistence/resume API` 범위가 API, DB, BE, FE, UX, QA, goal 상세 명세까지 구현 및 QA closeout 완료 상태로 연결되어 있다.
-- 구현 상태: G01~G08 Done. 2026-08-03 확정한 G05~G08 최종형 보강을 구현했고, 이를 통합 검증해 닫는 G09 최종 QA는 대기 중이다.
-- 완료 기록: `TODO_LOG/2026-07-21/G04_IMPORT_JOB_PERSISTENCE_QA_CLEANUP/WORK_LOG.md`
+- 구현 상태: G01~G09 Done. 2026-08-03 확정한 G05~G08 최종형 보강과 G09 통합 QA closeout까지 완료했다.
+- 완료 기록: `TODO_LOG/2026-07-21/G04_IMPORT_JOB_PERSISTENCE_QA_CLEANUP/WORK_LOG.md`, `TODO_LOG/2026-08-03/G09_IMPORT_JOB_FINAL_SERVICE_QA_CLOSEOUT/WORK_LOG.md`
 
 완료 전 첫 실행 문구 기록:
 
@@ -31,6 +31,12 @@
 - `COMMON/GOAL-SPECS/G02_BACKEND_IMPORT_JOB_API.md`
 - `COMMON/GOAL-SPECS/G03_USER_WEB_RESUME_UX.md`
 - `COMMON/GOAL-SPECS/G04_QA_CLEANUP.md`
+- `COMMON/GOAL-SPECS/G05_TERMINAL_IMPORT_JOB_CLEANUP.md`
+- `COMMON/GOAL-SPECS/G06_ORIGINAL_FILE_BINARY_MINIMIZATION.md`
+- `COMMON/GOAL-SPECS/G07_IMPORT_SUCCESS_ROW_RETENTION.md`
+- `COMMON/GOAL-SPECS/G08_IMPORT_VOLUME_LIMITS.md`
+- `COMMON/GOAL-SPECS/G09_FINAL_SERVICE_QA_CLOSEOUT.md`
+- `COMMON/FINAL-SERVICE-SHAPE.md`
 - `COMMON/RELEASE-SCOPE-CHECK.md`
 - `COMMON/REFERENCES.md`
 - `BE-TODO/API-TODO.md`
@@ -165,13 +171,13 @@ DB/운영:
 
 ## 9. 완료 여부
 
-- 완료 여부: G01~G04 Done. 01 최종 서비스 형태는 G05~G08 구현과 G09 최종 QA 전까지 Done이 아니다.
+- 완료 여부: G01~G09 Done. 01은 최종 서비스 형태 기준 Done이다.
 - 완료 전 반드시 수정할 항목: 없음
-- 완료 goal 순서: G01 -> G02 -> G03 -> G04
+- 완료 goal 순서: G01 -> G02 -> G03 -> G04 -> G05 -> G06 -> G07 -> G08 -> G09
 
-## 10. 2026-08-03 최종형 보강 메모
+## 10. 2026-08-03 최종형 보강 완료 메모
 
-G01~G04 완료 판정은 유지한다. 다만 01을 최종 서비스 기준으로 완전 종결하려면 아래 후속 goal을 추가 구현해야 한다.
+G01~G04 완료 판정은 유지한다. 2026-08-03 아래 후속 goal과 최종 QA까지 완료했으므로 01은 최종 서비스 기준으로 완전 종결한다.
 
 - G05: terminal ImportJob 임시 snapshot 7일 후 cleanup
 - G06: 원본 업로드 file binary parse/DB snapshot 직후 삭제

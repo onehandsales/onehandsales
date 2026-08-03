@@ -1,7 +1,7 @@
 # User Flow
 
 상태: Confirmed
-구현 상태: G03/G04 User Flow 구현 완료 (2026-07-21) / G07 row detail 만료 UX 구현 완료 / G08 upload 제한 안내 구현 완료 / G09 최종 QA 대기
+구현 상태: G03/G04 User Flow 구현 완료 (2026-07-21) / G07 row detail 만료 UX 구현 완료 / G08 upload 제한 안내 구현 완료 / G09 최종 QA 완료
 
 ## 1. UX 원칙
 
