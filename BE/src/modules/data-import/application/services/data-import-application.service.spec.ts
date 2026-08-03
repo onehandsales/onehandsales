@@ -5,6 +5,7 @@ import type {
   ImportJobErrorRecord,
   ImportJobRepositoryContext,
   ImportJobRowRecord,
+  TerminalImportJobCleanupCandidate,
 } from "@/modules/data-import/application/ports/import-job.repository";
 import type { ImportMappingProvider } from "@/modules/data-import/application/ports/import-mapping.provider";
 import type {
@@ -469,6 +470,127 @@ describe("DataImportApplicationService persistent import job flow", () => {
     expect(JSON.stringify(response)).not.toContain("raw-secret-value");
   });
 
+  it("deletes confirmed terminal jobs after 7 cleanup retention days", async () => {
+    const fixture = createServiceFixture();
+    fixture.importJobRepository.listTerminalJobsForCleanup.mockResolvedValue([
+      createCleanupCandidate({
+        status: "CONFIRMED",
+        confirmedAt: new Date("2026-07-14T00:00:00.000Z"),
+        uploadedFile: {
+          storageKey: "user/job/source.xlsx",
+          deletedAt: new Date("2026-07-14T00:00:00.000Z"),
+        },
+      }),
+    ]);
+    fixture.importJobRepository.deleteJobs.mockResolvedValue(1);
+
+    const result = await fixture.service.cleanupTerminalImportJobs({
+      now: NOW,
+      retentionDays: 7,
+      batchSize: 500,
+    });
+
+    expect(fixture.importJobRepository.listTerminalJobsForCleanup).toHaveBeenCalledWith({
+      now: NOW,
+      retentionDays: 7,
+      limit: 500,
+    });
+    expect(fixture.importUploadedFileStorage.delete).not.toHaveBeenCalled();
+    expect(fixture.importJobRepository.deleteJobs).toHaveBeenCalledWith({
+      importJobIds: [IMPORT_JOB_ID],
+    });
+    expect(result).toEqual({
+      deletedJobCount: 1,
+      fileDeleteRetriedCount: 0,
+      fileDeleteFailedCount: 0,
+      skippedJobCount: 0,
+      cleanupCutoffAt: "2026-07-14T00:00:00.000Z",
+    });
+  });
+
+  it("retries undeleted uploaded file before terminal job deletion and logs only safe summary", async () => {
+    const fixture = createServiceFixture();
+    fixture.importJobRepository.listTerminalJobsForCleanup.mockResolvedValue([
+      createCleanupCandidate({
+        id: "job-raw-sensitive-id",
+        uploadedFile: {
+          storageKey: "raw/storage-key/source.xlsx",
+          deletedAt: null,
+        },
+      }),
+    ]);
+    fixture.importJobRepository.deleteJobs.mockResolvedValue(1);
+
+    await fixture.service.cleanupTerminalImportJobs({
+      now: NOW,
+      retentionDays: 7,
+      batchSize: 500,
+    });
+
+    expect(fixture.importUploadedFileStorage.delete).toHaveBeenCalledWith({
+      storageKey: "raw/storage-key/source.xlsx",
+    });
+    expect(fixture.importJobRepository.deleteJobs).toHaveBeenCalledWith({
+      importJobIds: ["job-raw-sensitive-id"],
+    });
+
+    const cleanupLog = fixture.logger.log.mock.calls.find((call) =>
+      String(call[0]).includes("importJob.cleanup.completed")
+    )?.[0];
+    expect(cleanupLog).toEqual(expect.any(String));
+    expect(String(cleanupLog)).toContain("fileDeleteRetriedCount");
+    expect(String(cleanupLog)).not.toContain("raw/storage-key/source.xlsx");
+    expect(String(cleanupLog)).not.toContain("source.xlsx");
+    expect(String(cleanupLog)).not.toContain("job-raw-sensitive-id");
+  });
+
+  it("skips DB deletion when terminal cleanup cannot delete stored uploaded file", async () => {
+    const fixture = createServiceFixture();
+    fixture.importJobRepository.listTerminalJobsForCleanup.mockResolvedValue([
+      createCleanupCandidate({
+        uploadedFile: {
+          storageKey: "user/job/source.xlsx",
+          deletedAt: null,
+        },
+      }),
+    ]);
+    fixture.importUploadedFileStorage.delete.mockRejectedValue(
+      new Error("storage unavailable")
+    );
+
+    const result = await fixture.service.cleanupTerminalImportJobs({
+      now: NOW,
+      retentionDays: 7,
+      batchSize: 500,
+    });
+
+    expect(fixture.importJobRepository.deleteJobs).not.toHaveBeenCalled();
+    expect(result).toEqual({
+      deletedJobCount: 0,
+      fileDeleteRetriedCount: 1,
+      fileDeleteFailedCount: 1,
+      skippedJobCount: 1,
+      cleanupCutoffAt: "2026-07-14T00:00:00.000Z",
+    });
+  });
+
+  it("fails terminal cleanup when retention days are not the fixed 7-day policy", async () => {
+    const fixture = createServiceFixture();
+
+    await expect(
+      fixture.service.cleanupTerminalImportJobs({
+        now: NOW,
+        retentionDays: 6 as 7,
+        batchSize: 500,
+      })
+    ).rejects.toBeInstanceOf(ValidationDomainError);
+
+    expect(fixture.importJobRepository.listTerminalJobsForCleanup).not.toHaveBeenCalled();
+    expect(JSON.stringify(fixture.logger.log.mock.calls)).toContain(
+      "importJob.cleanup.failed"
+    );
+  });
+
   it("expires active jobs with uploaded file metadata cleanup before listing", async () => {
     const fixture = createServiceFixture();
     fixture.importJobRepository.listExpiredActiveJobsForUser.mockResolvedValue([
@@ -519,6 +641,8 @@ function createServiceFixture() {
     findJobByIdForUser: jest.fn(),
     listActiveJobsForUser: jest.fn(),
     listExpiredActiveJobsForUser: jest.fn().mockResolvedValue([]),
+    listTerminalJobsForCleanup: jest.fn().mockResolvedValue([]),
+    deleteJobs: jest.fn().mockResolvedValue(0),
     expireJobsForUser: jest.fn().mockResolvedValue(0),
     updateJobStatusForUser: jest.fn(),
     createRows: jest.fn(),
@@ -588,6 +712,26 @@ function createImportTemplateRecord(
     isActive: true,
     createdAt: NOW,
     updatedAt: NOW,
+    ...overrides,
+  };
+}
+
+function createCleanupCandidate(
+  overrides: Partial<TerminalImportJobCleanupCandidate> = {}
+): TerminalImportJobCleanupCandidate {
+  return {
+    id: IMPORT_JOB_ID,
+    userId: CURRENT_USER.id,
+    status: "CONFIRMED",
+    confirmedAt: new Date("2026-07-14T00:00:00.000Z"),
+    canceledAt: null,
+    failedAt: null,
+    expiresAt: EXPIRES_AT,
+    updatedAt: new Date("2026-07-14T00:00:00.000Z"),
+    uploadedFile: {
+      storageKey: "user/job/source.xlsx",
+      deletedAt: new Date("2026-07-14T00:00:00.000Z"),
+    },
     ...overrides,
   };
 }

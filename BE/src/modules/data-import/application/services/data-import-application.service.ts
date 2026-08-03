@@ -103,6 +103,9 @@ const TEMPLATE_TYPE_ORDER: readonly ImportTemplateType[] = [
 ];
 const IMPORT_USER_LOG_PAGE_SIZE = 15;
 const IMPORT_JOB_DETAIL_ERROR_LIMIT = 50;
+export const IMPORT_JOB_CLEANUP_RETENTION_DAYS = 7;
+export const IMPORT_JOB_CLEANUP_DEFAULT_BATCH_SIZE = 500;
+const IMPORT_JOB_CLEANUP_DAY_MS = 24 * 60 * 60 * 1000;
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const DEAL_STATUS_TEMPLATE_OPTIONS = DEAL_STATUS_CODES.map((status) =>
   getDealStatusLabel(status)
@@ -310,6 +313,22 @@ export type CancelImportJobRequest = object;
 // 역할 : ListImportJobErrorsRequest import job 오류 이력 조회 조건을 정의합니다.
 export interface ListImportJobErrorsRequest {
   readonly limit?: number;
+}
+
+// 역할 : CleanupTerminalImportJobsCommand 종료 import job 자동 정리 내부 command를 정의합니다.
+export interface CleanupTerminalImportJobsCommand {
+  readonly now: Date;
+  readonly retentionDays: 7;
+  readonly batchSize: number;
+}
+
+// 역할 : CleanupTerminalImportJobsResult 종료 import job 자동 정리 결과 요약을 정의합니다.
+export interface CleanupTerminalImportJobsResult {
+  readonly deletedJobCount: number;
+  readonly fileDeleteRetriedCount: number;
+  readonly fileDeleteFailedCount: number;
+  readonly skippedJobCount: number;
+  readonly cleanupCutoffAt: string;
 }
 
 // 역할 : ImportCellValidationError cell 단위 import 검증 오류 응답을 정의합니다.
@@ -525,6 +544,20 @@ export class DataImportApplicationService {
     @Inject(PRODUCT_ANALYTICS_EVENT_RECORDER)
     private readonly productAnalyticsEventRecorder: ProductAnalyticsServerEventRecorder = NOOP_PRODUCT_ANALYTICS_EVENT_RECORDER
   ) {}
+
+  // 기능 : 종료 import job snapshot을 7일 보관 후 원본 파일 정리 상태에 맞춰 삭제합니다.
+  async cleanupTerminalImportJobs(
+    command: CleanupTerminalImportJobsCommand
+  ): Promise<CleanupTerminalImportJobsResult> {
+    try {
+      return await this.executeCleanupTerminalImportJobs(command);
+    } catch (error) {
+      this.logEvent("importJob.cleanup.failed", {
+        safeErrorCode: "IMPORT_JOB_CLEANUP_FAILED",
+      });
+      throw error;
+    }
+  }
 
   // 기능 : 활성화된 데이터 불러오기 양식 목록을 조회합니다.
   async listActiveTemplates(): Promise<ImportTemplateListResponse> {
@@ -1446,6 +1479,80 @@ export class DataImportApplicationService {
     return new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
   }
 
+  // 기능 : cleanup command 검증, storage delete 재시도, DB aggregate 삭제를 순서대로 수행합니다.
+  private async executeCleanupTerminalImportJobs(
+    command: CleanupTerminalImportJobsCommand
+  ): Promise<CleanupTerminalImportJobsResult> {
+    // 1. 보관 기간은 운영 정책상 7일만 허용해 잘못된 내부 호출을 빠르게 드러낸다.
+    if (command.retentionDays !== IMPORT_JOB_CLEANUP_RETENTION_DAYS) {
+      throw new ValidationDomainError("IMPORT_JOB_CLEANUP_RETENTION_DAYS_INVALID");
+    }
+
+    const batchSize = this.normalizePositiveInteger(
+      command.batchSize,
+      IMPORT_JOB_CLEANUP_DEFAULT_BATCH_SIZE
+    );
+    const cleanupCutoffAt = this.createImportJobCleanupCutoffAt(
+      command.now,
+      command.retentionDays
+    );
+
+    // 2. terminal 상태이고 상태별 기준 시점이 cutoff를 지난 job만 repository에서 조회한다.
+    const candidates = await this.importJobRepository.listTerminalJobsForCleanup({
+      now: command.now,
+      retentionDays: command.retentionDays,
+      limit: batchSize,
+    });
+
+    const deletableImportJobIds: string[] = [];
+    let fileDeleteRetriedCount = 0;
+    let fileDeleteFailedCount = 0;
+
+    for (const candidate of candidates) {
+      if (!candidate.uploadedFile || candidate.uploadedFile.deletedAt) {
+        deletableImportJobIds.push(candidate.id);
+        continue;
+      }
+
+      fileDeleteRetriedCount += 1;
+
+      try {
+        // 3. metadata가 남은 legacy 파일은 DB 삭제 전에 storage delete를 먼저 재시도한다.
+        await this.importUploadedFileStorage.delete({
+          storageKey: candidate.uploadedFile.storageKey,
+        });
+        deletableImportJobIds.push(candidate.id);
+      } catch {
+        // 4. storage delete 실패 시 추적 metadata 보존을 위해 해당 job의 DB 삭제를 건너뛴다.
+        fileDeleteFailedCount += 1;
+      }
+    }
+
+    const deletedJobCount =
+      deletableImportJobIds.length === 0
+        ? 0
+        : await this.importJobRepository.runInTransaction((repositories) =>
+            repositories.deleteJobs({ importJobIds: deletableImportJobIds })
+          );
+    const result: CleanupTerminalImportJobsResult = {
+      deletedJobCount,
+      fileDeleteRetriedCount,
+      fileDeleteFailedCount,
+      skippedJobCount: Math.max(candidates.length - deletedJobCount, 0),
+      cleanupCutoffAt: cleanupCutoffAt.toISOString(),
+    };
+
+    // 5. 운영 로그에는 집계값만 남기고 file name, storageKey, job id 목록은 남기지 않는다.
+    this.logEvent("importJob.cleanup.completed", { ...result });
+
+    return result;
+  }
+
+  // 기능 : 종료 import job 정리에 사용할 보관 기간 cutoff 시점을 계산합니다.
+  private createImportJobCleanupCutoffAt(now: Date, retentionDays: 7): Date {
+    return new Date(now.getTime() - retentionDays * IMPORT_JOB_CLEANUP_DAY_MS);
+  }
+
   // 기능 : 업로드 원본 파일을 storage port에 저장하고 실패를 domain error로 변환합니다.
   private async storeUploadedImportFile(
     currentUser: CurrentUserContext,
@@ -1580,6 +1687,15 @@ export class DataImportApplicationService {
     }
 
     return Math.min(Math.max(value as number, 1), maxValue);
+  }
+
+  // 기능 : 내부 batch/interval 숫자 값을 양의 정수로 정규화합니다.
+  private normalizePositiveInteger(value: number, defaultValue: number): number {
+    if (!Number.isInteger(value) || value <= 0) {
+      return defaultValue;
+    }
+
+    return value;
   }
 
   // 기능 : 저장된 source column JSON을 문자열 컬럼 배열로 변환합니다.
@@ -1938,7 +2054,6 @@ export class DataImportApplicationService {
     return value === null ? null : this.toTextValue(value);
   }
 
-  // 기능 : import job application 이벤트를 구조화된 logger 메시지로 남깁니다.
   // 기능 : import 확정 서버 이벤트를 best-effort로 기록해 확정 응답을 막지 않습니다.
   private async recordImportConfirmedAnalyticsEvent(
     currentUser: CurrentUserContext,
@@ -1976,6 +2091,7 @@ export class DataImportApplicationService {
     });
   }
 
+  // 기능 : import job application 이벤트를 구조화된 logger 메시지로 남깁니다.
   private logEvent(event: string, fields: Record<string, unknown>): void {
     this.logger.log(
       JSON.stringify({

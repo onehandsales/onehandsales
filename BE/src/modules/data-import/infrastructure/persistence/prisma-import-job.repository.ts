@@ -6,6 +6,7 @@ import type {
   CreateImportJobRowsInput,
   CreateImportUploadedFileInput,
   CreateImportUploadedFileForUserInput,
+  DeleteImportJobsInput,
   ExpireImportJobsForUserInput,
   FindImportJobForUserInput,
   ImportJobDetailRecord,
@@ -20,9 +21,11 @@ import type {
   ImportUploadedFileRepository,
   ListActiveImportJobsForUserInput,
   ListExpiredImportJobsForUserInput,
+  ListTerminalImportJobsForCleanupInput,
   ListImportJobErrorsPageForUserInput,
   ListImportJobRowsForUserInput,
   PersistentImportJobStatus,
+  TerminalImportJobCleanupCandidate,
   UpdateImportJobStatusForUserInput,
   UpdateImportJobRowsForUserInput,
   UpdateImportUploadedFileStatusForUserInput,
@@ -68,7 +71,14 @@ const ACTIVE_IMPORT_JOB_STATUSES: readonly PersistentImportJobStatus[] = [
   "READY_TO_CONFIRM",
   "CONFIRMING",
 ];
+const TERMINAL_IMPORT_JOB_STATUSES: readonly PersistentImportJobStatus[] = [
+  "CONFIRMED",
+  "CANCELED",
+  "FAILED",
+  "EXPIRED",
+];
 const DEFAULT_IMPORT_JOB_DETAIL_ERROR_LIMIT = 50;
+const IMPORT_JOB_CLEANUP_DAY_MS = 24 * 60 * 60 * 1000;
 
 // 역할 : ImportJob DB persistence repository 계약을 Prisma 기반으로 구현합니다.
 export class PrismaImportJobRepository
@@ -209,6 +219,106 @@ export class PrismaImportJobRepository
     });
 
     return jobs.map((job) => this.mapJobDetail(job));
+  }
+
+  // 기능 : 종료 상태와 상태별 기준 시점으로 7일 보관 기간이 지난 cleanup 후보를 조회합니다.
+  async listTerminalJobsForCleanup(
+    input: ListTerminalImportJobsForCleanupInput
+  ): Promise<TerminalImportJobCleanupCandidate[]> {
+    const cutoffAt = this.createCleanupCutoffAt(input.now, input.retentionDays);
+    const jobs = await this.client.importJob.findMany({
+      where: {
+        OR: [
+          {
+            status: "CONFIRMED",
+            confirmedAt: { lte: cutoffAt },
+          },
+          {
+            status: "CONFIRMED",
+            confirmedAt: null,
+            updatedAt: { lte: cutoffAt },
+          },
+          {
+            status: "CANCELED",
+            canceledAt: { lte: cutoffAt },
+          },
+          {
+            status: "CANCELED",
+            canceledAt: null,
+            updatedAt: { lte: cutoffAt },
+          },
+          {
+            status: "FAILED",
+            failedAt: { lte: cutoffAt },
+          },
+          {
+            status: "FAILED",
+            failedAt: null,
+            updatedAt: { lte: cutoffAt },
+          },
+          {
+            status: "EXPIRED",
+            expiresAt: { lte: cutoffAt },
+          },
+        ],
+      },
+      select: {
+        id: true,
+        userId: true,
+        status: true,
+        confirmedAt: true,
+        canceledAt: true,
+        failedAt: true,
+        expiresAt: true,
+        updatedAt: true,
+        uploadedFile: {
+          select: {
+            storageKey: true,
+            deletedAt: true,
+          },
+        },
+      },
+      orderBy: [{ updatedAt: "asc" }, { id: "asc" }],
+      take: input.limit,
+    });
+
+    return jobs
+      .filter((job) =>
+        TERMINAL_IMPORT_JOB_STATUSES.includes(job.status as PersistentImportJobStatus)
+      )
+      .map((job) => ({
+        id: job.id,
+        userId: job.userId,
+        status: job.status as PersistentImportJobStatus,
+        confirmedAt: job.confirmedAt,
+        canceledAt: job.canceledAt,
+        failedAt: job.failedAt,
+        expiresAt: job.expiresAt,
+        updatedAt: job.updatedAt,
+        uploadedFile: job.uploadedFile
+          ? {
+              storageKey: job.uploadedFile.storageKey,
+              deletedAt: job.uploadedFile.deletedAt,
+            }
+          : null,
+      }));
+  }
+
+  // 기능 : ImportUserLog를 직접 건드리지 않고 ImportJob aggregate만 batch 삭제합니다.
+  async deleteJobs(input: DeleteImportJobsInput): Promise<number> {
+    const importJobIds = [...new Set(input.importJobIds)];
+
+    if (importJobIds.length === 0) {
+      return 0;
+    }
+
+    const deleted = await this.client.importJob.deleteMany({
+      where: {
+        id: { in: importJobIds },
+      },
+    });
+
+    return deleted.count;
   }
 
   // 기능 : 현재 사용자 소유 job 상태를 expectedStatus 조건까지 확인해 변경합니다.
@@ -603,6 +713,11 @@ export class PrismaImportJobRepository
     if (!row) {
       throw new ImportJobNotFoundError();
     }
+  }
+
+  // 기능 : 종료 import job 정리에 사용할 보관 기간 cutoff 시점을 계산합니다.
+  private createCleanupCutoffAt(now: Date, retentionDays: 7): Date {
+    return new Date(now.getTime() - retentionDays * IMPORT_JOB_CLEANUP_DAY_MS);
   }
 
   // 기능 : Prisma job 상세 row를 application detail record로 변환합니다.

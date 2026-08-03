@@ -1,7 +1,7 @@
 ﻿# Backend API TODO
 
 상태: Confirmed
-구현 상태: G02/G04 구현 완료 (2026-07-21) / G05~G08 Backend 최종형 구현 대기 (2026-08-03 확정)
+구현 상태: G02/G04 구현 완료 (2026-07-21) / G05 구현 완료 (2026-08-03) / G06~G08 Backend 최종형 구현 대기
 기준 API 계약: `COMMON/API-SPEC/IMPORT_JOB_API.md`
 
 ## 1. 목표

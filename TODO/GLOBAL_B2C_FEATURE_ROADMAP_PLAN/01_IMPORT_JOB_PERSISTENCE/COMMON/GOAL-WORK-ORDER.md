@@ -1,6 +1,6 @@
 ﻿# Goal Work Order
 
-상태: G01~G04 구현 완료 / G05~G08 구현 대기 / G09 최종 QA 대기 / 01 최종 서비스 형태 미완료
+상태: G01~G05 구현 완료 / G06~G08 구현 대기 / G09 최종 QA 대기 / 01 최종 서비스 형태 미완료
 G01~G04 완료일: 2026-07-21
 
 ## 0. 완료 체크리스트
@@ -10,7 +10,7 @@ G01~G04 완료일: 2026-07-21
 - [x] G03 User Web resume UX
 - [x] G04 QA / cleanup
 - [x] 완료 기록: `TODO_LOG/2026-07-21/G04_IMPORT_JOB_PERSISTENCE_QA_CLEANUP/WORK_LOG.md`
-- [ ] G05 Terminal ImportJob cleanup
+- [x] G05 Terminal ImportJob cleanup
 - [ ] G06 Original file binary minimization
 - [ ] G07 Import success row retention
 - [ ] G08 Import volume limits

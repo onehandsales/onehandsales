@@ -1,4 +1,8 @@
 import { PrismaImportJobRepository } from "./prisma-import-job.repository";
+import type {
+  PersistentImportJobStatus,
+  PersistentImportUploadedFileStatus,
+} from "@/modules/data-import/application/ports/import-job.repository";
 import { ImportJobNotFoundError } from "@/modules/data-import/domain/import-template.errors";
 import type { PrismaService } from "@/shared/infrastructure/prisma/prisma.service";
 
@@ -8,6 +12,7 @@ type MockModel<TRecord> = {
   readonly findFirst: jest.Mock<Promise<TRecord | null>, [unknown]>;
   readonly findMany: jest.Mock<Promise<TRecord[]>, [unknown]>;
   readonly updateMany: jest.Mock<Promise<{ readonly count: number }>, [unknown]>;
+  readonly deleteMany: jest.Mock<Promise<{ readonly count: number }>, [unknown]>;
 };
 
 type MockPrismaClient = {
@@ -15,6 +20,9 @@ type MockPrismaClient = {
   readonly importJobRow: MockModel<ImportJobRowFixture>;
   readonly importJobError: MockModel<ImportJobErrorFixture>;
   readonly importUploadedFile: MockModel<ImportUploadedFileFixture>;
+  readonly importUserLog: {
+    readonly deleteMany: jest.Mock<Promise<{ readonly count: number }>, [unknown]>;
+  };
 };
 
 type ImportJobFixture = {
@@ -25,7 +33,7 @@ type ImportJobFixture = {
   readonly templateVersion: string;
   readonly templateColumnsJson: readonly unknown[];
   readonly sourceColumnsJson: readonly string[];
-  readonly status: "UPLOADED";
+  readonly status: PersistentImportJobStatus;
   readonly mappingJson: Record<string, string | null>;
   readonly mappingSource: "NONE";
   readonly contextLabel: string | null;
@@ -91,7 +99,7 @@ type ImportUploadedFileFixture = {
   readonly storageProvider: string;
   readonly storageBucket: string | null;
   readonly storageKey: string;
-  readonly status: "STORED";
+  readonly status: PersistentImportUploadedFileStatus;
   readonly uploadedAt: Date;
   readonly deletedAt: Date | null;
   readonly expiresAt: Date;
@@ -185,6 +193,135 @@ describe("PrismaImportJobRepository", () => {
       orderBy: [{ createdAt: "desc" }, { id: "desc" }],
       take: 3,
     });
+  });
+
+  it("lists terminal cleanup candidates with 7-day cutoff and no active statuses", async () => {
+    const client = createMockClient();
+    const cutoffAt = new Date("2026-07-14T00:00:00.000Z");
+    const cleanupJob = {
+      ...createJobFixture({
+        status: "CONFIRMED",
+        confirmedAt: cutoffAt,
+        updatedAt: cutoffAt,
+      }),
+      uploadedFile: {
+        storageKey: "imports/job-1/source.xlsx",
+        deletedAt: cutoffAt,
+      },
+    };
+    client.importJob.findMany.mockResolvedValue([cleanupJob]);
+    const repository = createRepository(client);
+
+    const jobs = await repository.listTerminalJobsForCleanup({
+      now: NOW,
+      retentionDays: 7,
+      limit: 10,
+    });
+
+    expect(client.importJob.findMany).toHaveBeenCalledWith({
+      where: {
+        OR: [
+          { status: "CONFIRMED", confirmedAt: { lte: cutoffAt } },
+          { status: "CONFIRMED", confirmedAt: null, updatedAt: { lte: cutoffAt } },
+          { status: "CANCELED", canceledAt: { lte: cutoffAt } },
+          { status: "CANCELED", canceledAt: null, updatedAt: { lte: cutoffAt } },
+          { status: "FAILED", failedAt: { lte: cutoffAt } },
+          { status: "FAILED", failedAt: null, updatedAt: { lte: cutoffAt } },
+          { status: "EXPIRED", expiresAt: { lte: cutoffAt } },
+        ],
+      },
+      select: {
+        id: true,
+        userId: true,
+        status: true,
+        confirmedAt: true,
+        canceledAt: true,
+        failedAt: true,
+        expiresAt: true,
+        updatedAt: true,
+        uploadedFile: {
+          select: {
+            storageKey: true,
+            deletedAt: true,
+          },
+        },
+      },
+      orderBy: [{ updatedAt: "asc" }, { id: "asc" }],
+      take: 10,
+    });
+    expect(
+      JSON.stringify(client.importJob.findMany.mock.calls[0]?.[0])
+    ).not.toContain("UPLOADED");
+    expect(jobs[0]).toEqual(
+      expect.objectContaining({
+        id: "job-1",
+        status: "CONFIRMED",
+        uploadedFile: {
+          storageKey: "imports/job-1/source.xlsx",
+          deletedAt: cutoffAt,
+        },
+      })
+    );
+  });
+
+  it("uses expiresAt for expired terminal cleanup instead of updatedAt fallback", async () => {
+    const client = createMockClient();
+    client.importJob.findMany.mockResolvedValue([]);
+    const repository = createRepository(client);
+
+    await repository.listTerminalJobsForCleanup({
+      now: NOW,
+      retentionDays: 7,
+      limit: 10,
+    });
+
+    const query = JSON.stringify(client.importJob.findMany.mock.calls[0]?.[0]);
+    expect(query).toContain('"status":"EXPIRED"');
+    expect(query).toContain('"expiresAt"');
+    expect(query).not.toContain('"status":"EXPIRED","updatedAt"');
+  });
+
+  it("uses now minus 7 days cutoff so six-day terminal jobs are retained", async () => {
+    const client = createMockClient();
+    client.importJob.findMany.mockResolvedValue([]);
+    const repository = createRepository(client);
+    const sixDayTerminalAt = new Date("2026-07-15T00:00:00.000Z");
+    const cleanupCutoffAt = new Date("2026-07-14T00:00:00.000Z");
+
+    await repository.listTerminalJobsForCleanup({
+      now: NOW,
+      retentionDays: 7,
+      limit: 10,
+    });
+
+    expect(cleanupCutoffAt.getTime()).toBeLessThan(sixDayTerminalAt.getTime());
+    expect(client.importJob.findMany).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: expect.objectContaining({
+          OR: expect.arrayContaining([
+            { status: "CONFIRMED", confirmedAt: { lte: cleanupCutoffAt } },
+          ]),
+        }),
+      })
+    );
+  });
+
+  it("deletes ImportJob aggregate without deleting ImportUserLog records", async () => {
+    const client = createMockClient();
+    client.importJob.deleteMany.mockResolvedValue({ count: 2 });
+    const repository = createRepository(client);
+
+    const deletedCount = await repository.deleteJobs({
+      importJobIds: ["job-1", "job-2", "job-2"],
+    });
+
+    expect(client.importJob.deleteMany).toHaveBeenCalledWith({
+      where: {
+        id: { in: ["job-1", "job-2"] },
+      },
+    });
+    expect(client.importUserLog.deleteMany).not.toHaveBeenCalled();
+    expect(deletedCount).toBe(2);
   });
 
   it("creates a job with source column snapshot, rows, and uploaded file", async () => {
@@ -388,6 +525,9 @@ function createMockClient(): MockPrismaClient {
     importJobRow: createMockModel<ImportJobRowFixture>(),
     importJobError: createMockModel<ImportJobErrorFixture>(),
     importUploadedFile: createMockModel<ImportUploadedFileFixture>(),
+    importUserLog: {
+      deleteMany: jest.fn<Promise<{ readonly count: number }>, [unknown]>(),
+    },
   };
 }
 
@@ -398,6 +538,7 @@ function createMockModel<TRecord>(): MockModel<TRecord> {
     findFirst: jest.fn<Promise<TRecord | null>, [unknown]>(),
     findMany: jest.fn<Promise<TRecord[]>, [unknown]>(),
     updateMany: jest.fn<Promise<{ readonly count: number }>, [unknown]>(),
+    deleteMany: jest.fn<Promise<{ readonly count: number }>, [unknown]>(),
   };
 }
 
@@ -414,7 +555,9 @@ function createJobDetailFixture(): ImportJobFixture & {
   };
 }
 
-function createJobFixture(): ImportJobFixture {
+function createJobFixture(
+  overrides: Partial<ImportJobFixture> = {}
+): ImportJobFixture {
   return {
     id: "job-1",
     userId: "user-1",
@@ -445,6 +588,7 @@ function createJobFixture(): ImportJobFixture {
     lastErrorMessage: null,
     createdAt: NOW,
     updatedAt: NOW,
+    ...overrides,
   };
 }
 

@@ -237,6 +237,34 @@ export interface ListExpiredImportJobsForUserInput {
   readonly limit?: number;
 }
 
+// 역할 : ListTerminalImportJobsForCleanupInput 종료 import job 정리 대상 조회 조건을 정의합니다.
+export interface ListTerminalImportJobsForCleanupInput {
+  readonly now: Date;
+  readonly retentionDays: 7;
+  readonly limit: number;
+}
+
+// 역할 : TerminalImportJobCleanupCandidate 종료 import job 정리 판단에 필요한 최소 record를 정의합니다.
+export interface TerminalImportJobCleanupCandidate {
+  readonly id: string;
+  readonly userId: string;
+  readonly status: PersistentImportJobStatus;
+  readonly confirmedAt: Date | null;
+  readonly canceledAt: Date | null;
+  readonly failedAt: Date | null;
+  readonly expiresAt: Date;
+  readonly updatedAt: Date;
+  readonly uploadedFile: {
+    readonly storageKey: string;
+    readonly deletedAt: Date | null;
+  } | null;
+}
+
+// 역할 : DeleteImportJobsInput ImportJob aggregate 일괄 삭제 조건을 정의합니다.
+export interface DeleteImportJobsInput {
+  readonly importJobIds: readonly string[];
+}
+
 // 역할 : ExpireImportJobsForUserInput TTL 만료 처리 대상 import job 조건을 정의합니다.
 export interface ExpireImportJobsForUserInput {
   readonly userId: string;
@@ -337,6 +365,14 @@ export interface ImportJobRepository {
   listExpiredActiveJobsForUser(
     input: ListExpiredImportJobsForUserInput
   ): Promise<ImportJobDetailRecord[]>;
+
+  // 기능 : 7일 보관 기간을 지난 종료 import job 정리 후보를 조회합니다.
+  listTerminalJobsForCleanup(
+    input: ListTerminalImportJobsForCleanupInput
+  ): Promise<TerminalImportJobCleanupCandidate[]>;
+
+  // 기능 : ImportJob aggregate를 기준으로 row/error/uploaded file 관계를 함께 삭제합니다.
+  deleteJobs(input: DeleteImportJobsInput): Promise<number>;
 
   // 기능 : 현재 사용자 소유 import job을 TTL 만료 상태로 변경합니다.
   expireJobsForUser(input: ExpireImportJobsForUserInput): Promise<number>;

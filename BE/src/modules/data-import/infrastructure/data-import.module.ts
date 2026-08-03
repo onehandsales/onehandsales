@@ -22,6 +22,7 @@ import { AppLogger } from "@/shared/infrastructure/logger/app-logger.service";
 import { PrismaInfrastructureModule } from "@/shared/infrastructure/prisma/prisma-infrastructure.module";
 import { PrismaService } from "@/shared/infrastructure/prisma/prisma.service";
 import { XlsxInfrastructureModule } from "@/shared/infrastructure/xlsx/xlsx-infrastructure.module";
+import { ImportJobCleanupRunner } from "./import-job-cleanup.runner";
 import { ExceljsImportFileParser } from "./parsing/exceljs-import-file.parser";
 import { PrismaImportJobRepository } from "./persistence/prisma-import-job.repository";
 import { PrismaImportTemplateRepository } from "./persistence/prisma-import-template.repository";
@@ -39,6 +40,7 @@ import { LocalImportUploadedFileStorage } from "./storage/local-import-uploaded-
   controllers: [ImportTemplateController, ImportUserLogController, ImportJobController],
   providers: [
     DataImportApplicationService,
+    ImportJobCleanupRunner,
     AppLogger,
     {
       provide: IMPORT_FILE_PARSER,
