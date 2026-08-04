@@ -46,7 +46,9 @@ Frontend:
 
 - G04 Playwright를 build/다른 Playwright와 병렬 실행했을 때 dev server 대기 중 1회 timeout이 있었고, 단독 재실행은 3/3 통과했다.
 - FE build의 Tailwind `duration-[500ms]` ambiguous class 경고와 Vite chunk size 경고는 기존 경고이며 G05 blocker가 아니다.
-- 실제 Google provider smoke는 env 미준비로 미실행했다.
-  - `GOOGLE_CALENDAR_CLIENT_ID`: 미설정
-  - `GOOGLE_CALENDAR_CLIENT_SECRET`: 미설정
-  - `GOOGLE_CALENDAR_REDIRECT_URI`: 미설정
+- 2026-07-23 G05 closeout 당시 실제 Google provider smoke는 env 미준비로 미실행했다.
+- 2026-08-04 사용자 확인 기준 실제 배포 환경 Google provider smoke QA가 완료됐다.
+  - OAuth connect/callback redirect
+  - calendar list/selection
+  - manual sync/import
+  - Google-origin schedule 표시

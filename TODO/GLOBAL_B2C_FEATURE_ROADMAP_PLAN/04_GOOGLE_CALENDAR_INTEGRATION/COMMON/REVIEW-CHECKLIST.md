@@ -144,10 +144,11 @@ pnpm exec playwright test tests/e2e/weekly-schedule-report-ux.spec.ts --project=
 ## 6. 실제 Google provider smoke
 
 - 자동 테스트와 코드 검증 통과로 04 Done 판정 조건은 충족했다.
-- 실제 Google OAuth/provider smoke는 env 미준비로 미실행했다.
-  - `GOOGLE_CALENDAR_CLIENT_ID`: 미설정
-  - `GOOGLE_CALENDAR_CLIENT_SECRET`: 미설정
-  - `GOOGLE_CALENDAR_REDIRECT_URI`: 미설정
+- 실제 Google OAuth/provider smoke는 2026-08-04 사용자 확인 기준 배포 환경에서 완료했다.
+  - OAuth connect/callback redirect
+  - calendar list/selection
+  - manual sync/import
+  - Google-origin schedule 표시
 
 ## 7. Security/Privacy
 

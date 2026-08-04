@@ -138,6 +138,8 @@ pnpm run build
 
 Smoke env가 없으면 완료 보고에 "실제 Google provider smoke는 env 미준비로 미실행"이라고 명시한다.
 
+2026-08-04 사용자 확인 기준 실제 배포 환경 Google provider smoke QA가 완료됐다.
+
 ## 10. 완료 기준
 
 - `COMMON/REVIEW-CHECKLIST.md`의 critical 항목이 모두 통과한다.

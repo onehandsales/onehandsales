@@ -7,7 +7,7 @@
 
 - 판정: 구현 및 QA closeout 완료
 - 이유: 04의 제품 결정, 포함/제외 범위, API 계약, DB schema, FE 작업, goal 순서, 아키텍처/UXUI guardrail, QA 체크리스트가 구현 결과와 일치한다.
-- 구현 상태: G01~G05 완료. Backend/Frontend 검증 명령과 G04 Playwright 검증이 통과했다. 실제 Google provider smoke는 env 미준비로 미실행했다.
+- 구현 상태: G01~G05 완료. Backend/Frontend 검증 명령과 G04 Playwright 검증이 통과했다. 실제 Google provider smoke도 2026-08-04 사용자 확인 기준 배포 환경에서 완료했다.
 
 ## 2. 사용자 결정 반영
 

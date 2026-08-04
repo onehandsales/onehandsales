@@ -17,7 +17,7 @@
 - 모든 Schedule 삭제는 휴지통 기반 soft delete로 동작하고 `SCHEDULE` Trash list/detail/restore가 연결됐다.
 - Google-origin schedule도 딜/메모/로컬 필드 수정과 한손 `SCHEDULE_START_REMINDER` 대상이다.
 - 자동 테스트와 코드 검증으로 Done 판정을 완료했다.
-- 실제 Google provider smoke는 env 미준비로 미실행했다. G05 work log에 사유를 기록했다.
+- 실제 Google provider smoke는 2026-08-04 사용자 확인 기준 배포 환경에서 완료했다.
 
 ## 3. 확정 범위
 
@@ -70,7 +70,7 @@
 | 연결 해제 | 기본값은 유지. 사용자는 `KEEP`, `HIDE`, `TRASH` 중 선택한다. `TRASH`도 hard delete가 아니다. |
 | 알림 | Google reminders는 가져오지 않는다. 한손 일정 알림 설정으로 `SCHEDULE_START_REMINDER`를 만든다. |
 | OAuth return | 시작 화면으로 돌아온다. 허용 returnTo는 `/app/schedules`, `/app/settings`다. |
-| 완료 판정 | 자동 테스트와 코드 검증으로 Done 처리. 실제 Google provider smoke는 Done blocker가 아니며 G05에서 실행 여부와 미실행 사유를 기록한다. |
+| 완료 판정 | 자동 테스트와 코드 검증으로 Done 처리했고, 실제 Google provider smoke도 2026-08-04 사용자 확인 기준 배포 환경에서 완료했다. |
 
 ## 5. 구현 문서
 

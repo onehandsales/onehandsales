@@ -20,6 +20,7 @@
 - [x] `02_NOTIFICATION_REMINDER` 배포 환경 실제 SMTP/Web Push provider smoke QA 완료 (2026-08-04 사용자 확인)
 - [x] Google Calendar Integration (`NBA-015`)
 - [x] `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/04_GOOGLE_CALENDAR_INTEGRATION` 구현 및 QA closeout
+- [x] `04_GOOGLE_CALENDAR_INTEGRATION` 배포 환경 실제 Google provider smoke QA 완료 (2026-08-04 사용자 확인)
 - [x] Deal Activity Timeline (`NBA-001`, `NBA-002`, `NBA-003` Deal subset, `NBA-008`, `NBA-014` 06 범위)
 - [x] `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/06_DEAL_ACTIVITY_TIMELINE` 구현 및 QA closeout
 - [x] MeetingNote AI Provider Log (`NBA-004` detail subset, `NBA-011` provider log subset)
@@ -123,7 +124,7 @@
 
 남은 제품화 gap으로 분리할 범위:
 
-- 실제 Google provider smoke는 env 준비 후 운영 확인 단계에서 실행한다.
+- 실제 Google provider smoke는 2026-08-04 사용자 확인 기준 배포 환경에서 완료했다.
 - Google export/write, realtime webhook/watch, 반복 일정 정식 모델, 여러 Google 계정 동시 연결은 새 계획 없이는 확장하지 않는다.
 - 첫 판매 전 핵심 gap은 결제/구독/세금과 Billing 정책/신뢰 gate다. 제품 분석 foundation은 09에서 닫혔고, 모바일 현장 입력성은 10에서 닫혔으며, Admin 운영과 Admin analytics dashboard는 11에서 닫혔다. billing conversion/churn 연결은 12 후속이다.
 

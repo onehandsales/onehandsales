@@ -94,5 +94,5 @@
 - Schedule soft delete와 Trash restore가 동작한다.
 - Google-origin schedule badge와 hidden/filtered state가 FE에 표시된다.
 - Google-origin schedule도 onehand schedule reminder가 생성/변경/취소된다.
-- 실제 Google provider smoke를 제외한 자동 테스트와 build/typecheck/lint가 통과한다.
+- 자동 테스트와 build/typecheck/lint가 통과하고, 실제 Google provider smoke도 2026-08-04 사용자 확인 기준 배포 환경에서 완료됐다.
 - provider token, raw event body, Google description 원문 전체를 log에 남기지 않는다.
