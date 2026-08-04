@@ -2,7 +2,7 @@
 
 상태: Draft Guide
 작성일: 2026-07-20
-최종 업데이트: 2026-08-03
+최종 업데이트: 2026-08-04
 성격: 제품화 gap 판단 가이드
 
 ## 0. 완료 반영 체크리스트
@@ -15,6 +15,7 @@
 - [x] `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/03_WEEKLY_SCHEDULE_REPORT` 구현 및 QA closeout
 - [x] Notification reminder (`NBA-010`)
 - [x] `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/02_NOTIFICATION_REMINDER` 구현 및 QA closeout
+- [x] `02_NOTIFICATION_REMINDER` 배포 환경 실제 SMTP/Web Push provider smoke QA 완료 (2026-08-04 사용자 확인)
 - [x] Google Calendar Integration (`NBA-015`)
 - [x] `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/04_GOOGLE_CALENDAR_INTEGRATION` 구현 및 QA closeout
 - [x] Deal Activity Timeline (`NBA-001`, `NBA-002`, `NBA-003` Deal subset, `NBA-008`, `NBA-014` 06 범위)
@@ -274,7 +275,7 @@
 
 아래 항목은 이 가이드 작성만으로 바로 구현하지 않는다.
 
-- Notification 확장: 회의록 follow-up 알림, 실제 SMTP/Web Push provider smoke
+- Notification 확장: 회의록 follow-up 알림
 - 결제/구독
 - AI 주간 영업 리포트, PDF/범용 ExportJob, 반복 일정 같은 주간 일정 보고서 확장
 - 완료된 Google Calendar Integration 범위를 넘어서는 Google Calendar export/write, realtime webhook/watch, 반복 일정, 여러 Google 계정 동시 연결

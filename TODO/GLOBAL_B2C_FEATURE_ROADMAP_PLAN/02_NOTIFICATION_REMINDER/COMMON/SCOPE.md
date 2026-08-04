@@ -1,7 +1,8 @@
 # Scope
 
-상태: Confirmed
+상태: Done / 배포 환경 provider smoke QA 완료
 확정일: 2026-07-22
+배포 환경 provider QA 완료일: 2026-08-04
 
 ## 1. 목적
 
@@ -80,3 +81,4 @@
 - email/browser push delivery attempt가 성공/실패/retry 상태를 기록한다.
 - 다른 사용자의 알림과 subscription에 접근할 수 없다.
 - push endpoint/key와 provider raw error가 response/log에 노출되지 않는다.
+- 2026-08-04 사용자 확인 기준 배포 환경 실제 SMTP/Web Push provider smoke QA가 통과했다.

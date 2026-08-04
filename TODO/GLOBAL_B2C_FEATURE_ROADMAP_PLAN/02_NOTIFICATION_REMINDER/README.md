@@ -1,8 +1,9 @@
 # 02 Notification Reminder
 
-상태: Done
-구현 상태: G01 DB foundation 완료 / G02 Backend API 완료 / G03 reminder generation-delivery 완료 / G04 User Web UX 완료 / G05 QA closeout 완료
+상태: Done / 배포 환경 provider smoke QA 완료
+구현 상태: G01 DB foundation 완료 / G02 Backend API 완료 / G03 reminder generation-delivery 완료 / G04 User Web UX 완료 / G05 QA closeout 완료 / 배포 환경 SMTP/Web Push provider smoke QA 완료
 확정일: 2026-07-22
+배포 환경 provider QA 완료일: 2026-08-04
 순서: 02
 성격: 구현 착수 가능한 `/goal` 계획
 결정 상태: 사용자 결정 2026-07-22 반영
@@ -32,7 +33,7 @@
 - FE `features/notification`, `pages/notifications`, `public/notification-sw.js`는 02 API 계약에 맞게 정리됐다.
 - `/app/notifications` route는 노출됐고 app shell unread badge와 연결됐다.
 - Backend G01 DB foundation은 완료됐다. `NotificationModule`, Prisma schema/migration, repository adapter, browser push subscription 암호화 기반이 있다.
-- Backend User API와 G03 일정/딜 reminder 예약, due processor, SMTP/Web Push adapter는 구현됐다.
+- Backend User API와 G03 일정/딜 reminder 예약, due processor, SMTP/Web Push adapter는 구현됐고 2026-08-04 사용자 확인 기준 배포 환경 provider smoke QA도 완료됐다.
 - BE package에는 SMTP/Web Push 발송 dependency(`nodemailer`, `web-push`)가 있다.
 
 ## 3. 구현 결과 목표
@@ -108,4 +109,5 @@ G01_DB_NOTIFICATION_FOUNDATION
 
 - Closeout 날짜: 2026-07-22
 - QA 기록: `TODO_LOG/2026-07-22/G05_QA_REVIEW_CLOSEOUT/WORK_LOG.md`
-- 실제 SMTP/Web Push provider smoke는 `BE/.env`에 provider env가 없어 실행하지 않았다. G05에서는 adapter/stub과 provider failure 강제 테스트 기준으로 검증했다.
+- 배포 환경 provider QA 기록: 2026-08-04 사용자 확인 기준 실제 SMTP/Web Push provider smoke QA 완료
+- G05 당시에는 `BE/.env`에 provider env가 없어 adapter/stub과 provider failure 강제 테스트 기준으로 먼저 검증했고, 이후 운영 ENV 연결 후 실제 발송 QA까지 닫았다.

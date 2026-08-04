@@ -3,7 +3,7 @@
 상태: G05 Reviewed
 목적: 02 구현 완료 후 검토자가 확인할 체크리스트
 
-검토 결과: G05 QA Review Closeout 완료 (2026-07-22)
+검토 결과: G05 QA Review Closeout 완료 (2026-07-22), 배포 환경 provider smoke QA 완료 (2026-08-04 사용자 확인)
 근거: `TODO_LOG/2026-07-22/G05_QA_REVIEW_CLOSEOUT/WORK_LOG.md`
 
 ## 1. Product Scope
@@ -51,6 +51,7 @@
 - [x] due processor가 pending notification을 SENT로 전환한다.
 - [x] email delivery attempt가 생성되고 성공/실패가 기록된다.
 - [x] browser push delivery attempt가 생성되고 성공/실패가 기록된다.
+- [x] 배포 환경 실제 SMTP/Web Push provider smoke QA가 완료됐다. (2026-08-04 사용자 확인)
 - [x] retryable failure는 retry 정책을 따른다.
 - [x] non-retryable push subscription failure는 subscription revoke로 이어진다.
 - [x] provider 실패가 앱 안 알림을 rollback하지 않는다.

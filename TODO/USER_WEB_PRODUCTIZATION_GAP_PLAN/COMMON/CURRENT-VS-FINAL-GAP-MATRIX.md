@@ -1,7 +1,7 @@
 # Current vs Final Gap Matrix
 
 상태: Draft Guide
-최종 업데이트: 2026-08-03
+최종 업데이트: 2026-08-04
 
 ## 0. 완료 반영
 
@@ -55,7 +55,7 @@
 | Search | 빠르고 안전하며 다른 사용자 데이터가 섞이지 않는다. | 구현 및 보안 QA 완료 | 고급 필터/정렬은 후속 | UX/UI productization | 낮음 |
 | Trash | 7일 이내 복구와 만료 후 정책이 명확하다. | 7일 이내 복구, Schedule soft delete/restore, 만료 row restore disabled, 복구 문의, Admin recovery queue 구현 | Trash 만료/복구 문의/private memo backend restriction gap은 11에서 닫힘. Admin 직접 복구 실행, 유료 복구, hard delete/purge는 제외 | Closed for 11 / Ops follow-up | 완료, 제외 범위 별도 |
 | Export | 도메인별 export와 민감 export 정책이 안전하다. | 도메인별 xlsx와 `ko-KR`/`en` header/date-time/currency localization, data export request 운영 queue 구현 | 기본 현지화 gap은 08에서 닫힘. 데이터 export 요청 운영은 11에서 닫힘. 대량/비동기 ExportJob 파일 생성은 후속 | Ops/security follow-up | 후속 |
-| Notification | 다음 행동/일정/딜 지연 reminder가 온다. | 일정/딜/Google-origin schedule reminder, 앱 안 알림, email/browser push delivery attempt, `/app/notifications` 구현 | 실제 SMTP/Web Push provider smoke는 env 준비 후 운영 확인. 회의록 follow-up 알림은 후속 기능 | Closed for NBA-010/NBA-015 | 완료 |
+| Notification | 다음 행동/일정/딜 지연 reminder가 온다. | 일정/딜/Google-origin schedule reminder, 앱 안 알림, email/browser push delivery attempt, `/app/notifications` 구현. 실제 SMTP/Web Push provider smoke도 2026-08-04 사용자 확인 기준 배포 환경에서 완료 | 회의록 follow-up 알림은 후속 기능 | Closed for NBA-010/NBA-015 | 완료 |
 | Admin 운영 | 사용자/민감정보/감사/provider/Trash/account/system gate를 운영하고, 결제/구독 운영은 Billing 도메인과 연결한다. | 11 기준 `/admin/api/*`와 Admin Web 운영 화면 구현. 결제/구독/plan/payment/invoice/refund는 제외 | 최소 Admin 운영 gap은 11에서 닫힘. Billing Admin 연동은 12 결제 도메인 후속 | Closed for 11 / Billing 12 gap | 운영 완료, Billing 후속 |
 | 결제/구독 | trial, 월/연 구독, 환불, 영수증, failed payment recovery | 구현 없음 | 결제 provider/MoR, plan, entitlement 필요 | First-sale global gap | 첫 판매 전 필요 |
 | 세금/컴플라이언스 | VAT/GST, 환불, chargeback, 국가별 약관 | 구현 없음 | 글로벌 판매 운영 계층 필요 | First-sale global gap | 첫 판매 전 필요 |
@@ -75,7 +75,7 @@
 | User Web의 최우선 화면이 `/app` 홈인지 `/app/deals`인지 | UX polish와 API summary 우선순위가 달라진다. |
 | 딜 목록에서 제품/최근 활동/다음 행동을 얼마나 1급 정보로 볼지 | 제품 summary, Deal latest activity, page size 15는 06에서 완료. 다음 행동 강조와 Company/Contact/Product latest summary는 후속 판단이다. |
 | ImportJob 유실이 Global B2C 첫 판매 blocker인지 known limitation인지 | 완료 처리됨. `NBA-006`은 `01_IMPORT_JOB_PERSISTENCE` G01~G09에서 구현 및 최종 QA closeout 완료. |
-| Notification 실제 provider smoke와 회의록 follow-up 알림을 언제 다룰지 | 일정/딜 reminder와 회의록 follow-up draft는 완료됐고, 실제 SMTP/Web Push env 검증과 회의록 follow-up 알림/발송은 운영/후속 범위로 남는다. |
+| Notification 실제 provider smoke와 회의록 follow-up 알림을 언제 다룰지 | 일정/딜 reminder와 회의록 follow-up draft는 완료됐고, 실제 SMTP/Web Push env 검증은 2026-08-04 사용자 확인 기준 배포 환경에서 완료됐다. 회의록 follow-up 알림/발송만 후속 범위로 남는다. |
 | PWA install/offline shell과 native app을 언제 다룰지 | 10에서 모바일 웹 현장 입력성은 완료됐다. PWA packaging, full offline sync, iOS/Android native app은 현장 사용 지표와 사용자 결정 후 별도 로드맵으로 다룬다. |
 | Google Calendar export/write/realtime webhook/watch/반복 일정/여러 Google 계정 동시 연결을 언제 다룰지 | 현재 read-only import와 한손 Schedule/Trash/Reminder 연결은 완료됐고, 쓰기/실시간/고급 캘린더 범위는 후속 확장으로 남는다. |
 | LINE/Apple 실제 provider smoke 실행 여부 | 08 구현과 자동 QA, DB migration 최신 상태 재확인은 완료됐다. LINE/Apple 실제 provider smoke도 2026-07-29 사용자 확인 기준 운영 완료됐다. |

@@ -1,6 +1,7 @@
 # G05 QA Review Closeout
 
 상태: Done
+배포 환경 provider QA 완료일: 2026-08-04
 
 ## 1. 목적
 
@@ -21,6 +22,7 @@
 - 딜 마감 알림 QA
 - email delivery stub/provider QA
 - browser push permission/subscription QA
+- 배포 환경 실제 SMTP/Web Push provider smoke QA
 - provider failure redaction QA
 - cross-user 접근 차단 QA
 - 문서와 구현 결과 정합성 점검
@@ -79,6 +81,7 @@ pnpm run test:e2e
 
 - Backend/User Web 검증 명령이 통과한다.
 - 핵심 수동 QA가 통과한다.
+- 2026-08-04 사용자 확인 기준 배포 환경 실제 SMTP/Web Push provider smoke QA가 통과했다.
 - email/browser push provider 실패가 앱 안 알림을 깨뜨리지 않는다.
 - cross-user 접근 차단이 확인된다.
 - push endpoint/key, provider raw response, email body 전문이 log/response에 노출되지 않는다.
