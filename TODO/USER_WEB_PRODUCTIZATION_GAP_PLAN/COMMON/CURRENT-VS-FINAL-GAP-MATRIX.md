@@ -1,5 +1,7 @@
 # Current vs Final Gap Matrix
 
+2026-08-04 `03_WEEKLY_SCHEDULE_REPORT` 최종형 재대조 완료: 주간 일정 보고서 영역은 추가 후속 구현 없음. Google-origin source/meeting URL과 currency-aware weekly report까지 실제 코드에 반영되어 있으며, 남은 AI/PDF/ExportJob/반복 일정/Google write-realtime/watch 항목은 별도 계획 또는 post-12 후보로 분리한다.
+
 상태: Draft Guide
 최종 업데이트: 2026-08-04
 

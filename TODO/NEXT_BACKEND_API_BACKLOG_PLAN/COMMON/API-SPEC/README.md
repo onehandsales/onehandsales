@@ -1,5 +1,7 @@
 # API Spec
 
+2026-08-04 `NBA-009 Schedule week report` 최종형 재대조 완료: 03 추가 API 계약 없음. 기존 `GET /api/schedules/week`, `GET /api/schedules/week/export/xlsx` 계약과 04/08 후속 반영 범위가 실제 코드와 일치한다.
+
 상태: Draft
 작성일: 2026-07-20
 최종 업데이트: 2026-08-03

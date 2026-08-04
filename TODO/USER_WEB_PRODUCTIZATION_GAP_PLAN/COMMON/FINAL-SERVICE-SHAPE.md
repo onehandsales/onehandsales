@@ -1,5 +1,7 @@
 # Final Service Shape
 
+2026-08-04 `03_WEEKLY_SCHEDULE_REPORT` 최종형 재대조 완료: 기본 주간 일정 보고서는 최종 서비스 형태 기준으로 추가 후속 구현 없음. Series A급 AI/고급 주간 리포트와 PDF/범용 ExportJob/반복 일정/Google write-realtime/watch는 별도 계획 또는 post-12 후보로 유지한다.
+
 상태: Draft Guide
 최종 업데이트: 2026-08-03
 

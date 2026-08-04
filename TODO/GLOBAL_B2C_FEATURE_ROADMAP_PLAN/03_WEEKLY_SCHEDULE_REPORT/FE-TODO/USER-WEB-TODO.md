@@ -1,5 +1,7 @@
 # User Web TODO
 
+2026-08-04 최종 서비스 형태 재대조 완료: 03 User Web 추가 후속 구현 없음. `/app/schedules/week`, Google-origin source badge/meeting URL, currency-aware weekly report display는 실제 코드와 일치한다.
+
 상태: completed
 최종 업데이트: 2026-07-22
 정본 계약: `COMMON/API-SPEC/WEEKLY_SCHEDULE_REPORT_API.md`

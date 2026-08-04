@@ -1,5 +1,7 @@
 # Weekly Schedule Report API Spec
 
+2026-08-04 최종 서비스 형태 재대조 완료: 03 추가 API 계약 없음. 상세 판단은 `../FINAL-SERVICE-FOLLOWUP-AUDIT.md`를 따른다.
+
 상태: confirmed
 최종 업데이트: 2026-07-22
 

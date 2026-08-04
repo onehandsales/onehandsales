@@ -1,5 +1,7 @@
 # Current Implemented Functions
 
+2026-08-04 `03_WEEKLY_SCHEDULE_REPORT` 최종형 재대조 완료: Weekly Schedule Report는 추가 후속 구현 없이 구현 완료 상태다. Google-origin source/meeting URL과 currency-aware weekly report도 실제 코드에 반영되어 있다.
+
 상태: Draft Guide
 기준: 2026-08-03 현재 코드와 AGENT 구현 상태 문서
 

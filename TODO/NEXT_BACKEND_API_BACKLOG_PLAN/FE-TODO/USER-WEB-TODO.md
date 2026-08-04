@@ -1,5 +1,7 @@
 # User Web TODO
 
+2026-08-04 `NBA-009 Schedule week report` 최종형 재대조 완료: `/app/schedules/week` 추가 User Web 후속 구현 없음. Google-origin source badge/meeting URL과 currency-aware weekly report display는 실제 코드에 반영되어 있으며 PDF/범용 ExportJob/반복 일정/AI 고급 리포트 UI는 별도 계획 또는 post-12 후보로 유지한다.
+
 상태: Draft
 최종 업데이트: 2026-08-03
 

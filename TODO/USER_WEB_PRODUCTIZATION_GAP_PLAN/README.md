@@ -1,5 +1,7 @@
 # User Web Productization Gap Plan
 
+2026-08-04 `03_WEEKLY_SCHEDULE_REPORT` 최종형 재대조 완료: 03 추가 후속 구현 없음. `/app/schedules/week`, weekly report API/xlsx, Google-origin source/meeting URL, currency-aware weekly report는 실제 코드와 일치하며, AI 고급 리포트/PDF/범용 ExportJob/반복 일정/Google write-realtime/watch/회의록 follow-up 알림은 별도 계획 또는 post-12 후보로 유지한다.
+
 상태: Draft Guide
 작성일: 2026-07-20
 최종 업데이트: 2026-08-04

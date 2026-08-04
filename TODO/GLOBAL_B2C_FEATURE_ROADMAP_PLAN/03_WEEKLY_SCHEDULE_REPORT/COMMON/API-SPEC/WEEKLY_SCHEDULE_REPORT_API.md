@@ -1,5 +1,7 @@
 # Weekly Schedule Report API
 
+2026-08-04 최종 서비스 형태 재대조 완료: 이 API spec에 추가할 03 후속 계약 없음. 04/08에서 반영된 Google-origin source/meeting URL과 currency-aware weekly report는 실제 코드에 구현되어 있으며, PDF/범용 ExportJob/반복 일정/AI 고급 리포트는 별도 계획 또는 post-12 후보로 유지한다.
+
 상태: confirmed
 최종 업데이트: 2026-07-22
 소비자: User Web

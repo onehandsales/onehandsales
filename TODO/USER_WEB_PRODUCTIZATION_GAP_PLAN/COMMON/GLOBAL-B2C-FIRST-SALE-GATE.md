@@ -1,5 +1,7 @@
 # Global B2C First Sale Gate
 
+2026-08-04 `03_WEEKLY_SCHEDULE_REPORT` 최종형 재대조 완료: Product UX/Retention 중 기본 주간 일정 보고서는 추가 후속 구현 없이 완료 상태로 본다. AI 고급 주간 리포트, PDF/범용 ExportJob, 반복 일정, Google write/realtime/watch는 이 gate에서 03 재오픈 사유가 아니라 별도 계획 또는 post-12 후보로 판단한다.
+
 상태: Draft Guide
 최종 업데이트: 2026-08-04
 

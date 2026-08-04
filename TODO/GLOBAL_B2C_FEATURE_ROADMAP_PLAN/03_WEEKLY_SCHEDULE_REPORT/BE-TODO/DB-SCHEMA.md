@@ -1,5 +1,7 @@
 # DB Schema TODO
 
+2026-08-04 최종 서비스 형태 재대조 완료: 03 추가 DB/Prisma/migration 후속 없음. weekly report는 기존 Schedule/Deal 계열 runtime aggregation과 04/08에서 이미 반영된 Google/currency 필드를 사용한다.
+
 상태: completed
 최종 업데이트: 2026-07-22
 정본 계약: `COMMON/API-SPEC/WEEKLY_SCHEDULE_REPORT_API.md`

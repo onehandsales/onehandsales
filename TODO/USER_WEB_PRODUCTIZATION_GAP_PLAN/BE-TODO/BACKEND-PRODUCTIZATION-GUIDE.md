@@ -1,5 +1,7 @@
 # Backend Productization Guide
 
+2026-08-04 `03_WEEKLY_SCHEDULE_REPORT` 최종형 재대조 완료: Schedule week report Backend/API/DB 추가 후속 구현 없음. Google-origin source/meeting URL과 currency-aware weekly report까지 실제 코드에 반영되어 있으며, PDF/범용 ExportJob/반복 일정/AI 고급 리포트는 별도 계획 또는 post-12 후보로 유지한다.
+
 상태: Draft Guide
 최종 업데이트: 2026-08-04
 

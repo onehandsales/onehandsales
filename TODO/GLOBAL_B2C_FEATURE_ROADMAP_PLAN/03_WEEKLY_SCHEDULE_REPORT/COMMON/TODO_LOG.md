@@ -1,5 +1,22 @@
 # TODO Log
 
+## 2026-08-04 Final Service Follow-up Audit
+
+### 결론
+
+- `TODO/USER_WEB_PRODUCTIZATION_GAP_PLAN`, `TODO/NEXT_BACKEND_API_BACKLOG_PLAN`, `01_IMPORT_JOB_PERSISTENCE`, 실제 `BE`/`FE` 구현 상태를 다시 대조했다.
+- 03 범위에서 추가 구현할 후속 작업은 없다.
+- Google-origin active schedule의 source/meeting URL 반영과 currency-aware weekly report는 04/08 후속 구현으로 실제 코드에 반영되어 있다.
+- AI/고급 주간 영업 리포트, PDF/범용 ExportJob, 반복 일정, Google Calendar export/write/realtime webhook/watch, 회의록 follow-up 알림/자동 발송은 03 미완료가 아니라 별도 계획 또는 post-12 후보로 유지한다.
+- 상세 기록: `COMMON/FINAL-SERVICE-FOLLOWUP-AUDIT.md`.
+
+### 재검증
+
+| 명령 | 결과 |
+|---|---|
+| `cd BE; pnpm.cmd test -- schedule` | 통과, 11 suites / 56 tests |
+| `cd FE/user-web; pnpm.cmd test:e2e -- tests/e2e/weekly-schedule-report-ux.spec.ts` | 통과, 1 test |
+
 상태: Closed
 최종 업데이트: 2026-07-22
 

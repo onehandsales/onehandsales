@@ -1,5 +1,7 @@
 # Next Backend API Backlog Plan
 
+2026-08-04 `NBA-009 Schedule week report` 최종형 재대조 완료: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/03_WEEKLY_SCHEDULE_REPORT/COMMON/FINAL-SERVICE-FOLLOWUP-AUDIT.md` 기준 03 추가 후속 구현 없음. Google-origin source/meeting URL과 currency-aware weekly report는 실제 코드에 반영되어 있으며, PDF/범용 ExportJob/반복 일정/AI 고급 리포트는 active NBA-009 backlog가 아니라 별도 계획 또는 post-12 후보로 유지한다.
+
 상태: Draft
 작성일: 2026-07-20
 최종 업데이트: 2026-08-04

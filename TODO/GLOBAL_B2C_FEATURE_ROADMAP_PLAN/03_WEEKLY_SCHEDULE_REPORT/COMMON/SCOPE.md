@@ -1,5 +1,8 @@
 # Scope
 
+2026-08-04 최종 서비스 형태 재대조: 03 추가 후속 구현 없음. PDF/범용 ExportJob/반복 일정/AI 고급 리포트/Google Calendar write-realtime/watch/회의록 follow-up 알림은 03 재오픈 사유가 아니라 별도 계획 또는 post-12 후보로 유지한다.
+재대조 기록: `FINAL-SERVICE-FOLLOWUP-AUDIT.md`
+
 상태: confirmed
 최종 업데이트: 2026-07-22
 정본 계약: `COMMON/API-SPEC/WEEKLY_SCHEDULE_REPORT_API.md`
