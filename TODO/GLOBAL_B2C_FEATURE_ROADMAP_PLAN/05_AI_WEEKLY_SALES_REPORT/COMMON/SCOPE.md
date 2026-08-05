@@ -1,7 +1,7 @@
 # 05 Scope
 
-상태: Confirmed split scope
-최종 업데이트: 2026-07-24
+상태: G01-G09 Done / G10 Ready
+최종 업데이트: 2026-08-05
 
 ## 1. 포함 범위
 
@@ -11,6 +11,7 @@
 |---|---|
 | `05-A` | 저장형 AI 주간 리포트, 비동기 job, version, 실패 이력, 입력 snapshot, 리스크/다음 행동/follow-up/data cleanup 제안 |
 | `05-B` | Gmail/Microsoft 365 연결, 국제 SMS 발신번호 인증, follow-up compose, 즉시 발송, 발송 이력, timeline |
+| `05-B-G10` | Gmail/Microsoft 365 실제 email provider API 발송, reconnect-required, smoke allowlist, safe failure 검증 |
 
 ## 2. 05-A 완료 기준
 
@@ -45,3 +46,13 @@
 - Google Calendar write/webhook
 - 자동 Deal/Schedule/MeetingNote mutation
 - 계정 삭제/법적 삭제 요청 정책
+
+## 5. G10 추가 완료 기준
+
+- Gmail API로 allowlist 수신자 실제 발송이 성공한다.
+- Microsoft Graph API로 allowlist 수신자 실제 발송이 성공한다.
+- smoke mode에서 allowlist 밖 수신자는 provider 호출 없이 실패 이력만 남긴다.
+- token/revoked/invalid_grant/insufficient scope는 `RECONNECT_REQUIRED`와 FE 다시 연결 CTA로 이어진다.
+- provider raw response, token, subject/body, recipient email이 structured log와 Admin provider failure detail에 남지 않는다.
+- 신규/수정 코드에는 한국어 주석을 추가한다.
+- DB/Prisma/migration을 수정하면 한국어 주석과 SQL comment를 추가한다.

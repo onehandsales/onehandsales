@@ -1,6 +1,6 @@
 # 05-B User Web TODO
 
-상태: Implemented
+상태: Implemented / G10 Ready
 
 ## 1. 신규 feature 후보
 
@@ -114,3 +114,12 @@ SMS:
 - 실패 메시지는 safe error만 표시한다.
 - 발송 본문을 console/log에 출력하지 않는다.
 - 모바일 390px/360px에서 compose와 timeline이 겹치지 않는다.
+
+## 8. G10 email provider 보강
+
+- Gmail/Microsoft `RECONNECT_REQUIRED` 상태에서 `다시 연결` CTA를 보여준다.
+- send scope 부족, token revoke, invalid_grant는 `이메일 연결이 만료됐어요. 다시 연결해 주세요.` 흐름으로 처리한다.
+- smoke allowlist 차단은 `검증용 수신자에게만 보낼 수 있어요.`처럼 safe 문구로 처리한다.
+- provider raw error, token, 운영 allowlist 값은 화면과 client log에 노출하지 않는다.
+- 새 component/hook/API client/event handler를 작성하거나 수정하면 한국어 `// 기능 : ...` 주석을 추가한다.
+- 390px/360px 모바일에서 settings, compose, timeline이 겹치지 않는지 다시 확인한다.

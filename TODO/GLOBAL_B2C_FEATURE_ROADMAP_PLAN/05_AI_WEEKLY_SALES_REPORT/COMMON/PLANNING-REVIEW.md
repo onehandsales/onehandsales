@@ -1,13 +1,13 @@
 # Planning Review
 
-상태: G01-G09 Done / QA Closed
-검토일: 2026-07-24
+상태: G01-G09 Done / G10 Ready
+검토일: 2026-08-05
 
 ## 1. 결론
 
-- 판정: G01~G09 구현/검토 완료, 05 AI Weekly Sales Report QA closeout 종료
-- 이유: 05의 제품 결정, 포함/제외 범위, API 계약, DB schema, FE 작업, goal 순서, 아키텍처/UXUI guardrail, QA 체크리스트 기준으로 Backend/DB/User Web 구현과 closeout 검증이 완료되어 있다.
-- 구현 상태: AI weekly report와 follow-up delivery의 Backend/DB/User Web 구현, regression 명령, ownership/privacy/provider failure/mobile QA 문서화가 완료됐다.
+- 판정: G01~G09 구현/검토 완료, G10 실제 email provider 발송 후속 구현 문서화 완료
+- 이유: 05의 제품 결정, 포함/제외 범위, API 계약, DB schema, FE 작업, goal 순서, 아키텍처/UXUI guardrail, QA 체크리스트 기준으로 Backend/DB/User Web 구현과 closeout 검증은 완료되어 있다. 다만 실제 Gmail/Microsoft production email send adapter는 G09에서 credential/callback URL 미확정으로 smoke 완료 처리하지 않았고, 2026-08-05 기준 G10 후속 goal로 분리했다.
+- 구현 상태: AI weekly report와 follow-up delivery foundation의 Backend/DB/User Web 구현, regression 명령, ownership/privacy/provider failure/mobile QA 문서화는 완료됐다. Gmail/Microsoft 실제 provider 발송은 G10 구현 전이다.
 
 ## 2. 사용자 결정 반영
 
@@ -40,6 +40,24 @@
 | 이력 표시 | AI report와 Deal/Contact/MeetingNote/Schedule timeline |
 | 실패 처리 | safe error, retryable transient error 재시도 |
 | Admin | masked safe error만 허용. 민감 원문 조회 제외 |
+
+### 2026-08-05 G10 추가 결정
+
+| 항목 | 반영 결과 |
+|---|---|
+| provider | Gmail과 Microsoft 365 둘 다 실제 발송 구현 |
+| 발송 방식 | 사용자 본인 연결 계정으로 발송 |
+| provider API | Gmail API와 Microsoft Graph API 직접 호출 |
+| OAuth scope | send-only 최소 scope |
+| Microsoft tenant | 기본 `common` |
+| smoke allowlist | Backend env로 제한 |
+| smoke 차단 | provider 호출 없이 failed attempt 저장 |
+| reconnect | token/revoked/invalid_grant/insufficient scope는 `RECONNECT_REQUIRED` |
+| body format | plain text |
+| body storage | 기존 계약대로 `FollowUpMessage`에 subject/body 전체 저장 |
+| SMS | G10 제외 |
+| B2B/SMS 확장 | 별도 후속 |
+| 09/11 | 신규 goal 불필요. 09 event 추가 없음, 11 `FollowUpDeliveryAttempt` source 유지 |
 
 ## 3. 검토 대상
 
@@ -92,6 +110,15 @@
 | G08 Follow-up User Web | 완료 | `FE/user-web/src/features/follow-up-delivery`, `/app/settings`, AI report compose, timeline UI 구현. `/admin/api` 검색 no match. FE 검증과 Chrome mobile E2E 통과 |
 | G09 QA Review Closeout | 완료 | `COMMON/REVIEW-CHECKLIST.md` closed. BE `prisma:validate`, `typecheck`, `lint`, `test`, `build` 통과. FE `typecheck`, `lint`, `build`, `test:e2e:mobile` 통과. 실제 provider smoke 미실행 사유와 runbook/release note 기록 |
 
+### G10 문서화 결과
+
+- `COMMON/GOAL-SPECS/G10_FOLLOW_UP_EMAIL_PROVIDER_INTEGRATION.md`를 추가했다.
+- `COMMON/API-SPEC/FOLLOW_UP_EMAIL_PROVIDER_INTEGRATION_API.md`에 request/response, business logic, DB, transaction, observability 계약을 보강했다.
+- `COMMON/FOLLOW_UP_EMAIL_PROVIDER_BUSINESS-LOGIC.md`와 `COMMON/FOLLOW_UP_EMAIL_PROVIDER_USER-FLOW.md`를 추가했다.
+- `BE-TODO/FOLLOW_UP_EMAIL_PROVIDER_DB-SCHEMA.md`에 신규 migration 기본 불필요와 DB 주석 필수 기준을 기록했다.
+- `COMMON/G10_CROSS_PLAN_COVERAGE.md`에 09/11 추가 문서가 필요 없는 이유를 기록했다.
+- `COMMON/G10_DOCUMENT_REVIEW.md`에 문서 검토 결과를 남겼다.
+
 ## 4. 핵심 설계 판단
 
 | 판단 | 내용 |
@@ -110,7 +137,9 @@
 
 ## 5. 미해결 Critical/Major
 
-없음.
+G10 문서화 기준 critical/major는 없다.
+
+G10 구현 기준으로는 실제 Gmail/Microsoft provider credential, callback URL, production-equivalent allowlist 수신자 smoke가 남아 있다.
 
 ## 6. G09 Closeout 결과
 
@@ -124,7 +153,7 @@
 
 ## 7. 사용자의 추가 결정이 필요한 질문
 
-현재 05 완료를 막는 질문은 없다.
+G10 문서화와 구현 착수를 막는 추가 사용자 결정은 없다.
 
 05 범위 밖에서 별도 goal로 확정할 항목:
 

@@ -1,14 +1,14 @@
 # Architecture Guardrails
 
-상태: Confirmed
-최종 업데이트: 2026-07-24
+상태: Confirmed / G10 Added
+최종 업데이트: 2026-08-05
 
 ## 1. 선행 기준
 
 - Backend/DB/Frontend 구조는 `AGENT/SOFTWARE_AGENT`를 따른다.
 - UX/UI와 문구는 `AGENT/UXUI_AGENT`를 따른다.
 - API 계약은 `COMMON/API-SPEC/*`를 우선한다.
-- DB migration을 만든다.
+- G02/G05는 DB migration을 만들었다. G10은 기본 신규 migration 없이 기존 follow-up delivery model을 사용한다.
 - Prisma schema와 migration SQL에는 한글 주석 기준을 지킨다.
 
 ## 2. Backend 계층
@@ -55,6 +55,9 @@
 - 발송 제목/본문 전체는 DB 이력에 영구 보관한다.
 - structured log에는 제목/본문 원문을 남기지 않는다.
 - 비용은 내부 추적만 하고 사용자 화면에는 기본 노출하지 않는다.
+- G10 email 실제 발송은 Gmail API와 Microsoft Graph API를 직접 호출한다.
+- G10 smoke mode에서는 allowlist 밖 수신자에게 provider 호출을 하지 않는다.
+- G10은 email sync, sequence/campaign, B2B sender 정책, SMS 실제 provider 구현을 포함하지 않는다.
 
 ## 6. Frontend
 

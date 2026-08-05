@@ -1,7 +1,7 @@
 # Goal Work Order
 
-상태: G01-G09 Done
-확정일: 2026-07-24
+상태: G01-G09 Done / G10 Ready
+확정일: 2026-08-05
 
 ## 1. 원칙
 
@@ -19,6 +19,8 @@ DB migration을 허용한다. Prisma schema와 migration에는 한글 주석 기
 
 05-B는 Gmail/Microsoft 365 email과 국제 SMS follow-up delivery다. 예약 발송, campaign/bulk 발송, SMTP 직접 설정은 만들지 않는다.
 
+G10은 G01~G09 closeout 뒤 남은 실제 Gmail/Microsoft 365 email provider 발송을 닫는 후속 goal이다. SMS 실제 provider, B2B sender 정책, email sync, sequence/campaign은 G10에 포함하지 않는다.
+
 ## 2. 실행 순서
 
 ```text
@@ -31,6 +33,7 @@ G01_PLANNING_API_DB_CONTRACT
 -> G07_FOLLOW_UP_DRAFT_SEND_BACKEND
 -> G08_FOLLOW_UP_USER_WEB
 -> G09_QA_REVIEW_CLOSEOUT
+-> G10_FOLLOW_UP_EMAIL_PROVIDER_INTEGRATION
 ```
 
 ## 3. G01 Planning API DB Contract
@@ -108,7 +111,18 @@ G01_PLANNING_API_DB_CONTRACT
 
 - Backend/User Web 검증, migration, ownership, redaction, provider failure, mobile QA를 점검한다.
 
-## 12. 완료 기록
+## 12. G10 Follow-up Email Provider Integration
+
+상세 명세: `COMMON/GOAL-SPECS/G10_FOLLOW_UP_EMAIL_PROVIDER_INTEGRATION.md`
+
+목표:
+
+- Gmail/Microsoft 365 실제 email provider API 발송을 구현한다.
+- token refresh, reconnect-required, smoke allowlist, safe failure, User Web reconnect CTA를 닫는다.
+- SMS, B2B, email sync, sequence/campaign은 제외한다.
+
+## 13. 완료 기록
 
 - G01~G09 완료 상태는 `COMMON/GOAL-COMPLETION-CHECKLIST.md`를 따른다.
 - G09 QA closeout 결과는 `COMMON/REVIEW-CHECKLIST.md`와 `TODO_LOG/2026-07-24/G09_QA_REVIEW_CLOSEOUT/WORK_LOG.md`에 기록했다.
+- G10 완료 전에는 실제 Gmail/Microsoft provider smoke를 완료로 체크하지 않는다.

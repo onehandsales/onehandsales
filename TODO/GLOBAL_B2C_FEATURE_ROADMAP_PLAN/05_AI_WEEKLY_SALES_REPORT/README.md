@@ -1,9 +1,9 @@
 # 05 AI Weekly Sales Report
 
-상태: G01-G09 Done
+상태: G01-G09 Done / G10 Ready
 순서: 05
-성격: 저장형 AI 주간 영업 리포트 + follow-up email/SMS 실행
-결정 상태: 2026-07-24 G01~G09 구현/검토 완료
+성격: 저장형 AI 주간 영업 리포트 + follow-up email/SMS 실행 + 실제 email provider 발송 후속
+결정 상태: 2026-07-24 G01~G09 구현/검토 완료, 2026-08-05 G10 후속 구현 문서화
 구현 기준: `COMMON/GOAL-WORK-ORDER.md`
 
 ## 1. 목적
@@ -22,6 +22,8 @@
 - UXUI 기준은 `AGENT/UXUI_AGENT`, software 기준은 `AGENT/SOFTWARE_AGENT`를 따른다.
 - G01~G09 구현과 QA Review Closeout이 완료됐다.
 - 실제 Gmail/Microsoft/SMS provider smoke는 운영 credential/callback URL 미확정으로 완료 처리하지 않았고, 미실행 사유와 운영 설정 기준은 G09 work log/runbook에 기록했다.
+- 2026-08-05 기준 실제 Gmail/Microsoft production email 발송 adapter는 G10 후속 구현으로 분리했다.
+- G10 문서에는 request, response, business logic, user flow, DB 영향, 코드 한글 주석 필수, goal별 체크리스트, 검토 기준을 포함했다.
 
 ## 3. 확정 범위
 
@@ -37,6 +39,7 @@
 - summary, risk, next action, follow-up draft, data cleanup section
 - AI suggestion target record 열기
 - Gmail/Microsoft 365 email 연결
+- Gmail/Microsoft 365 실제 email provider API 발송
 - 국제 SMS 발신번호 인증
 - follow-up compose 확인/수정
 - email/SMS 즉시 발송
@@ -85,23 +88,55 @@
 | 실패 | provider 실패는 safe error와 retryable flag로 처리한다. |
 | Admin | 이번 범위에는 Admin 민감 원문 조회를 포함하지 않는다. |
 
+## 4A. G10 추가 후속 범위
+
+G10은 기존 05-B foundation을 다시 여는 작업이 아니라 실제 Gmail/Microsoft 365 email 발송을 운영 가능 상태로 닫는 후속 goal이다.
+
+포함:
+
+- Gmail API `users.messages.send` 실제 발송
+- Microsoft Graph `/me/sendMail` 실제 발송
+- access token refresh 후 발송
+- invalid_grant/revoked/insufficient scope 시 `RECONNECT_REQUIRED` 전환
+- send-only scope 검증
+- smoke allowlist backend env와 allowlist 밖 수신자 provider 호출 차단
+- safe error와 `FollowUpDeliveryAttempt` 기록
+- User Web reconnect CTA와 safe failure rendering 보강
+- provider raw/token/body/recipient log redaction 검증
+
+제외:
+
+- SMS 실제 provider 구현
+- B2B tenant sender 정책
+- email sync
+- sequence/campaign/bulk marketing
+- unsubscribe 관리
+- 신규 09 analytics event
+- 신규 11 Admin provider failure 화면/API
+
 ## 5. 구현 문서
 
 - Scope: `COMMON/SCOPE.md`
 - API 계약: `COMMON/API-SPEC/README.md`
 - AI report API: `COMMON/API-SPEC/AI_WEEKLY_REPORT_API.md`
 - Follow-up API: `COMMON/API-SPEC/FOLLOW_UP_DELIVERY_API.md`
+- Follow-up email provider API: `COMMON/API-SPEC/FOLLOW_UP_EMAIL_PROVIDER_INTEGRATION_API.md`
 - Backend API TODO: `BE-TODO/API-TODO.md`
 - DB Schema TODO: `BE-TODO/DB-SCHEMA.md`
 - AI report DB SQL: `BE-TODO/AI_WEEKLY_REPORT_DB-SCHEMA.md`
 - Follow-up DB SQL: `BE-TODO/FOLLOW_UP_DELIVERY_DB-SCHEMA.md`
+- Follow-up email provider DB: `BE-TODO/FOLLOW_UP_EMAIL_PROVIDER_DB-SCHEMA.md`
 - User Web TODO: `FE-TODO/USER-WEB-TODO.md`
 - AI report User Web TODO: `FE-TODO/AI_WEEKLY_REPORT_USER-WEB-TODO.md`
 - Follow-up User Web TODO: `FE-TODO/FOLLOW_UP_DELIVERY_USER-WEB-TODO.md`
 - AI report business logic: `COMMON/AI_WEEKLY_REPORT_BUSINESS-LOGIC.md`
 - Follow-up business logic: `COMMON/FOLLOW_UP_DELIVERY_BUSINESS-LOGIC.md`
+- Follow-up email provider business logic: `COMMON/FOLLOW_UP_EMAIL_PROVIDER_BUSINESS-LOGIC.md`
 - AI report user flow: `COMMON/AI_WEEKLY_REPORT_USER-FLOW.md`
 - Follow-up user flow: `COMMON/FOLLOW_UP_DELIVERY_USER-FLOW.md`
+- Follow-up email provider user flow: `COMMON/FOLLOW_UP_EMAIL_PROVIDER_USER-FLOW.md`
+- G10 cross-plan coverage: `COMMON/G10_CROSS_PLAN_COVERAGE.md`
+- G10 document review: `COMMON/G10_DOCUMENT_REVIEW.md`
 - Goal 실행 순서: `COMMON/GOAL-WORK-ORDER.md`
 - Goal 완료 체크리스트: `COMMON/GOAL-COMPLETION-CHECKLIST.md`
 - Goal 상세 명세: `COMMON/GOAL-SPECS/*`
@@ -115,3 +150,4 @@
 - G09 work log: `TODO_LOG/2026-07-24/G09_QA_REVIEW_CLOSEOUT/WORK_LOG.md`
 - Release note draft: `TODO_LOG/2026-07-24/G09_QA_REVIEW_CLOSEOUT/RELEASE_NOTE_DRAFT.md`
 - Operations runbook draft: `TODO_LOG/2026-07-24/G09_QA_REVIEW_CLOSEOUT/OPERATIONS_RUNBOOK_DRAFT.md`
+- G10 후속 goal spec: `COMMON/GOAL-SPECS/G10_FOLLOW_UP_EMAIL_PROVIDER_INTEGRATION.md`

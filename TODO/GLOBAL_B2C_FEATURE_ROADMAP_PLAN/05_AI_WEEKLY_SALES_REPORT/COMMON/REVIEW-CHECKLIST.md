@@ -1,7 +1,7 @@
 # 05 Review Checklist
 
-상태: Closed
-최종 업데이트: 2026-07-24
+상태: Closed / G10 Separate Review Added
+최종 업데이트: 2026-08-05
 
 ## 1. 공통
 
@@ -52,3 +52,9 @@
 - FE build의 large chunk warning은 남아 있지만 G09 blocker가 아니며 별도 code-splitting/performance task로 분리한다.
 - 실제 Gmail/Microsoft/SMS provider smoke는 credential과 provider console callback URL 미확정으로 완료 처리하지 않았다.
 - provider smoke 미실행 사유와 운영 설정은 `TODO_LOG/2026-07-24/G09_QA_REVIEW_CLOSEOUT/WORK_LOG.md`와 `OPERATIONS_RUNBOOK_DRAFT.md`에 기록했다.
+
+## 6. G10 별도 검토
+
+G10 실제 Gmail/Microsoft email provider 발송 후속 문서 검토는 `COMMON/G10_DOCUMENT_REVIEW.md`에 분리했다.
+
+G10은 G09 closeout 결과를 뒤집지 않고, G09에서 미실행으로 기록한 실제 provider smoke와 production email send adapter를 별도 goal로 닫는다.
