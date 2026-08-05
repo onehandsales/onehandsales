@@ -1,10 +1,10 @@
 # User Web Productization Gap Plan
 
-2026-08-04 `03_WEEKLY_SCHEDULE_REPORT` 최종형 재대조 완료: 03 추가 후속 구현 없음. `/app/schedules/week`, weekly report API/xlsx, Google-origin source/meeting URL, currency-aware weekly report는 실제 코드와 일치하며, AI 고급 리포트/PDF/범용 ExportJob/반복 일정/Google write-realtime/watch/회의록 follow-up 알림은 별도 계획 또는 post-12 후보로 유지한다.
+2026-08-05 `05_AI_WEEKLY_SALES_REPORT` 반영 완료: 저장형 AI weekly report, follow-up delivery, Gmail/Microsoft 실제 email provider adapter 구현과 자동 검증은 완료됐다. 운영 credential/callback/allowlist 기반 Gmail/Microsoft provider smoke는 pending이며, SMS 실제 provider/B2B/sequence/email sync/회의록 자동 follow-up 알림은 post-12 또는 별도 확장 후보로 유지한다.
 
 상태: Draft Guide
 작성일: 2026-07-20
-최종 업데이트: 2026-08-04
+최종 업데이트: 2026-08-05
 성격: 제품화 gap 판단 가이드
 
 ## 0. 완료 반영 체크리스트
@@ -21,6 +21,9 @@
 - [x] Google Calendar Integration (`NBA-015`)
 - [x] `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/04_GOOGLE_CALENDAR_INTEGRATION` 구현 및 QA closeout
 - [x] `04_GOOGLE_CALENDAR_INTEGRATION` 배포 환경 실제 Google provider smoke QA 완료 (2026-08-04 사용자 확인)
+- [x] AI Weekly Sales Report / Follow-up Delivery (`05_AI_WEEKLY_SALES_REPORT`)
+- [x] `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/05_AI_WEEKLY_SALES_REPORT` G01~G09 구현 및 QA closeout
+- [x] `05_AI_WEEKLY_SALES_REPORT` G10 Gmail/Microsoft provider adapter, reconnect, safe failure, smoke allowlist 구현 및 자동 검증 완료
 - [x] Deal Activity Timeline (`NBA-001`, `NBA-002`, `NBA-003` Deal subset, `NBA-008`, `NBA-014` 06 범위)
 - [x] `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/06_DEAL_ACTIVITY_TIMELINE` 구현 및 QA closeout
 - [x] MeetingNote AI Provider Log (`NBA-004` detail subset, `NBA-011` provider log subset)
@@ -79,6 +82,8 @@
 - Schedule
 - Weekly Schedule Report
 - Google Calendar Integration
+- AI Weekly Sales Report
+- Follow-up Delivery
 - MeetingNote
 - MeetingNote AI 후속 작업 draft
 - BusinessCard OCR
@@ -104,12 +109,35 @@
 
 진행 순서 결정:
 
-- 먼저 `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/12_BILLING_SUBSCRIPTION_TAX`를 진행한다.
-- 12 완료 후 `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/COMMON/POST-12-REVIEW-AND-FOLLOWUP.md` 기준으로 이 제품화 gap 문서와 `TODO/NEXT_BACKEND_API_BACKLOG_PLAN`, 01~12 전체를 다시 학습한다.
+- 12 착수 전에 `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/COMMON/POST-12-REVIEW-AND-FOLLOWUP.md` 기준으로 01~11 pre-12 재대조를 진행한다.
+- 2026-08-05 기준 01~05는 재대조와 문서 반영이 완료됐고, 다음 대상은 06~11이다.
+- 01~11 pre-12 재대조가 끝나면 `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/12_BILLING_SUBSCRIPTION_TAX`를 진행한다.
+- 12 완료 후 이 제품화 gap 문서와 `TODO/NEXT_BACKEND_API_BACKLOG_PLAN`, 01~12 전체를 다시 학습한다.
 - 미구현/후속/보류 항목은 기존 완료 폴더를 재개하지 않고 새 TODO 폴더로 승격한다.
-- UX/UI 디자인 유지보수는 12 완료와 post-12 재검토 이후 별도 계획으로 진행한다.
+- UX/UI 디자인 유지보수는 01~11 pre-12 재대조, 12 완료, post-12 재검토 이후 별도 계획으로 진행한다.
 
-## 3.1 `NBA-015` 반영 기준
+## 3.1 `05_AI_WEEKLY_SALES_REPORT` 반영 기준
+
+`TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/05_AI_WEEKLY_SALES_REPORT`는 2026-07-24 G01~G09 기준 AI weekly report/follow-up delivery 구현 및 QA closeout이 완료됐고, 2026-08-05 G10 기준 Gmail/Microsoft 실제 email provider adapter 구현과 자동 검증이 완료됐다. 이 제품화 gap 문서에서는 저장형 AI weekly report와 follow-up delivery를 더 이상 미구현 gap으로 보지 않는다.
+
+완료로 반영할 User Web/제품 흐름:
+
+- `/app/schedules/week`에서 AI weekly report를 수동 생성하고 생성 중/성공/실패/version/snapshot summary 상태를 볼 수 있다.
+- AI report는 summary, risk, next action, follow-up draft, data cleanup suggestion을 저장형 report로 제공한다.
+- AI suggestion은 원본 딜/일정/회의록/담당자를 자동 변경하지 않고, 사용자가 확인하는 제안과 초안으로만 동작한다.
+- `/app/settings`에서 Gmail/Microsoft 연결, 재연결, 연결 해제와 SMS 발신번호 인증 화면을 관리한다.
+- follow-up compose에서 수신자/제목/본문을 사용자가 확인/수정한 뒤 즉시 발송한다.
+- Gmail API와 Microsoft Graph provider adapter, token refresh, reconnect-required, safe error, smoke allowlist 차단이 구현됐다.
+- AI report와 record timeline에서 follow-up 발송 이력을 확인할 수 있다.
+
+남은 제품화 gap으로 분리할 범위:
+
+- Gmail/Microsoft production-equivalent provider smoke는 운영 credential, provider console callback URL, allowlist 수신자 준비 후 확인한다.
+- SMS 실제 provider, B2B tenant sender, email sync, sequence/campaign/bulk, unsubscribe 관리는 05 완료 범위가 아니다.
+- 회의록 follow-up 자동 발송/알림, Company/Contact/Product latest summary, MeetingNote 목록 summary, generic ExportJob, Google/Microsoft calendar write/watch는 post-12 재검토 후보로 유지한다.
+- AI usage plan/overage, paywall, entitlement는 12 Billing 범위다.
+
+## 3.2 `NBA-015` 반영 기준
 
 `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/04_GOOGLE_CALENDAR_INTEGRATION`은 2026-07-23 G05 QA closeout 기준으로 Done이다. 이 제품화 갭 문서에서는 Google Calendar read-only import를 미구현 gap으로 보지 않는다.
 
@@ -128,7 +156,7 @@
 - Google export/write, realtime webhook/watch, 반복 일정 정식 모델, 여러 Google 계정 동시 연결은 새 계획 없이는 확장하지 않는다.
 - 첫 판매 전 핵심 gap은 결제/구독/세금과 Billing 정책/신뢰 gate다. 제품 분석 foundation은 09에서 닫혔고, 모바일 현장 입력성은 10에서 닫혔으며, Admin 운영과 Admin analytics dashboard는 11에서 닫혔다. billing conversion/churn 연결은 12 후속이다.
 
-## 3.2 `06_DEAL_ACTIVITY_TIMELINE` 반영 기준
+## 3.3 `06_DEAL_ACTIVITY_TIMELINE` 반영 기준
 
 `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/06_DEAL_ACTIVITY_TIMELINE`은 2026-07-26 G07 QA closeout 기준으로 Completed다. 이 제품화 갭 문서에서는 아래 범위를 더 이상 미구현 gap으로 보지 않는다.
 
@@ -150,7 +178,7 @@
 - MeetingNote Admin provider audit/raw access policy는 11에서 완료. 회의록 목록 summary와 자동 발송/알림은 후속
 - 첫 판매 전 핵심 gap인 결제/구독/세금, Billing conversion 연결, 그리고 backup/restore 실행 runbook과 운영 DB 적용 절차
 
-## 3.3 `07_MEETING_NOTE_AI_PROVIDER_LOG` 반영 기준
+## 3.4 `07_MEETING_NOTE_AI_PROVIDER_LOG` 반영 기준
 
 `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/07_MEETING_NOTE_AI_PROVIDER_LOG`는 2026-07-26 G06 QA closeout 기준으로 Completed다. 이 제품화 갭 문서에서는 아래 범위를 더 이상 미구현 gap으로 보지 않는다.
 
@@ -169,7 +197,7 @@
 - 회의록 follow-up 자동 발송 또는 알림
 - 별도 transcript/raw provider response 저장 table
 
-## 3.4 `08_GLOBAL_DATA_I18N` 반영 기준
+## 3.5 `08_GLOBAL_DATA_I18N` 반영 기준
 
 `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/08_GLOBAL_DATA_I18N`은 2026-07-28 G10 QA closeout 기준으로 Completed다. 이 제품화 갭 문서에서는 `/app` 내부 다국어와 기본 글로벌 데이터 모델을 더 이상 미구현 gap으로 보지 않는다.
 
@@ -190,7 +218,7 @@
 - app i18n legacy static fallback을 직접 translation key로 줄이는 polish
 - 결제/구독, backup/restore 실행 runbook과 장애 대응 기준, 그리고 Billing conversion 연결
 
-## 3.5 `09_PRODUCT_ANALYTICS` 반영 기준
+## 3.6 `09_PRODUCT_ANALYTICS` 반영 기준
 
 `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/09_PRODUCT_ANALYTICS`는 2026-07-30 G08 QA closeout 기준으로 Completed다. 이 제품화 갭 문서에서는 제품 분석 foundation을 더 이상 미구현 gap으로 보지 않는다.
 
@@ -215,7 +243,7 @@
 - 실제 paywall, subscription, churn survey, paid conversion source event는 `12_BILLING_SUBSCRIPTION_TAX` 범위다.
 - 모바일 현장 사용 맥락의 세부 event는 10에서 완료됐다. Admin 분석 화면은 11에서 완료됐고 Billing 연결 분석은 12에서 다룬다.
 
-## 3.6 `10_MOBILE_PWA_FIELD_USE` 반영 기준
+## 3.7 `10_MOBILE_PWA_FIELD_USE` 반영 기준
 
 `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/10_MOBILE_PWA_FIELD_USE`는 2026-07-31 G07 QA closeout 기준으로 Completed다. 이 제품화 갭 문서에서는 모바일 현장 입력성 1차 범위를 더 이상 미구현 gap으로 보지 않는다.
 
@@ -235,7 +263,7 @@
 - Admin provider failure dashboard와 운영 추적은 11에서 완료
 - Marketing opt-in, billing/paywall/churn runtime event
 
-## 3.7 `11_ADMIN_OPERATION` 반영 기준
+## 3.8 `11_ADMIN_OPERATION` 반영 기준
 
 `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/11_ADMIN_OPERATION`은 2026-08-01 G10 QA closeout 기준으로 Completed다. 이 제품화 gap 문서에서는 최소 Admin 운영 API/화면을 더 이상 미구현 gap으로 보지 않는다.
 
@@ -280,7 +308,8 @@
 
 - Notification 확장: 회의록 follow-up 알림
 - 결제/구독
-- AI 주간 영업 리포트, PDF/범용 ExportJob, 반복 일정 같은 주간 일정 보고서 확장
+- PDF/범용 ExportJob, 반복 일정 같은 주간 일정 보고서 확장
+- 완료된 AI Weekly Sales Report/Follow-up Delivery 범위를 넘어서는 SMS 실제 provider, B2B sender, email sync, sequence/campaign, 자동 follow-up 발송/알림
 - 완료된 Google Calendar Integration 범위를 넘어서는 Google Calendar export/write, realtime webhook/watch, 반복 일정, 여러 Google 계정 동시 연결
 - 완료된 MeetingNote AI Provider Log 범위를 넘어서는 회의록 목록 summary, 자동 follow-up 발송/알림, Admin provider audit 조회, 별도 transcript/raw provider response table
 - 완료된 Deal Activity Timeline 범위를 넘어서는 범용 activity bus, Company/Contact/Product latest summary, activity deletion/retention/audit 정책

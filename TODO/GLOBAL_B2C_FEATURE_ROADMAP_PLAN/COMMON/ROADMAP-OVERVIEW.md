@@ -1,6 +1,6 @@
 # Roadmap Overview
 
-상태: Draft / 01~11 Done / 01~11 Pre-12 Follow-up In Progress / 12 Next / Post-12 Final Review Planned
+상태: Draft / 01~11 Implemented / 01~11 Pre-12 Follow-up In Progress / 05 Provider Smoke Pending / 12 Next / Post-12 Final Review Planned
 
 ## 0. 완료 현황
 
@@ -8,14 +8,14 @@
 - [x] `02_NOTIFICATION_REMINDER`: Done (2026-07-22)
 - [x] `03_WEEKLY_SCHEDULE_REPORT`: Done (2026-07-22), 새 DB/migration 없음
 - [x] `04_GOOGLE_CALENDAR_INTEGRATION`: Done (2026-07-23), DB migration/QA closeout 완료
-- [x] `05_AI_WEEKLY_SALES_REPORT`: Done (2026-07-24), AI weekly report/follow-up delivery 구현 및 QA closeout 완료
+- [x] `05_AI_WEEKLY_SALES_REPORT`: G01-G09 Done (2026-07-24), G10 Gmail/Microsoft email provider code/automatic validation done (2026-08-05), provider smoke pending
 - [x] `06_DEAL_ACTIVITY_TIMELINE`: Done (2026-07-26), DealActivity timeline/record summary subset/DB gate closeout 완료
 - [x] `07_MEETING_NOTE_AI_PROVIDER_LOG`: Done (2026-07-26), MeetingNote AI provider log/detail follow-up draft 완료
 - [x] `08_GLOBAL_DATA_I18N`: Done (2026-07-28), DB 최신 상태 2026-07-29 재확인. 2026-07-29 사용자 확인 기준 LINE/Apple 운영 설정과 실제 OAuth 동작 완료
 - [x] `09_PRODUCT_ANALYTICS`: Done (2026-07-30), ProductAnalyticsEvent, route/server events, activation/retention snapshot, AI usage summary 구현 및 QA closeout 완료
 - [x] `10_MOBILE_PWA_FIELD_USE`: Done (2026-07-31), 모바일 명함 촬영/OCR safe failure, 회의 녹음, local draft, push permission UX, mobile analytics 구현 및 QA closeout 완료
 - [x] `11_ADMIN_OPERATION`: Done (2026-08-01), Admin 운영 API/Web, audit/redaction, Trash/account request/provider/system gate, QA closeout 완료
-- [ ] 01~11 pre-12 후속 재대조: 2026-08-05 기준 01~04 진행/확인 완료, 05~11 다음 대상
+- [ ] 01~11 pre-12 후속 재대조: 2026-08-05 기준 01~05 진행/확인 완료, 06~11 다음 대상
 - [ ] `12_BILLING_SUBSCRIPTION_TAX`
 
 ## 1. 로드맵 기준
@@ -45,7 +45,7 @@ Product UX first-sale gate는 전체 시각 polish와 다르다. 핵심 `/app` �
 |---|---|---|
 | First-sale 선행/횡단 gate | 전체 | `NBA-014`, Product UX, Trust/policy, `NBA-007`은 번호 순서와 별개로 추적 |
 | 기능 신뢰 기반 | 01 | Done: Import 중 유실 같은 데이터 신뢰 문제 제거 |
-| 리텐션/일정 루프 | 02~05 | Done: 02 알림, 03 주간 일정 보고서, 04 Google Calendar 연동, 05 AI weekly report/follow-up delivery 완료 |
+| 리텐션/일정 루프 | 02~05 | Implemented: 02 알림, 03 주간 일정 보고서, 04 Google Calendar 연동, 05 AI weekly report/follow-up delivery와 Gmail/Microsoft email provider adapter 구현 완료. 05 운영 provider smoke는 별도 확인 |
 | 영업 기록 고도화 | 06~07 | Done: 딜 활동과 회의록 AI 운영 이력을 실제 영업 판단 데이터로 연결 완료 |
 | Global B2C 제품화 | 08~10 | Done: 08 다국가 데이터/앱 다국어 기반, 09 제품 분석 기반, 10 모바일 현장 입력성 완료 |
 | Series A 확장성 | 10 이후 후속 | PWA install/offline shell, native app, native push/contact/calendar는 후속 로드맵으로 유지 |
@@ -59,7 +59,7 @@ Product UX first-sale gate는 전체 시각 polish와 다르다. 핵심 `/app` �
 2. `02_NOTIFICATION_REMINDER` - Done
 3. `03_WEEKLY_SCHEDULE_REPORT` - Done
 4. `04_GOOGLE_CALENDAR_INTEGRATION` - Done
-5. `05_AI_WEEKLY_SALES_REPORT` - Done
+5. `05_AI_WEEKLY_SALES_REPORT` - Implemented / Provider Smoke Pending
 6. `06_DEAL_ACTIVITY_TIMELINE` - Done
 7. `07_MEETING_NOTE_AI_PROVIDER_LOG` - Done
 8. `08_GLOBAL_DATA_I18N` - Done
@@ -72,7 +72,7 @@ Product UX first-sale gate는 전체 시각 polish와 다르다. 핵심 `/app` �
 
 사용자 결정 기준으로 다음 큰 흐름은 12 착수 전에 01~11 완료 슬롯을 한 번 더 대조해 후속 조치가 필요한 항목을 먼저 정리하는 것이다. 12는 결제/구독/세금 정보와 직접 연결되므로, billing/paywall/churn/paid conversion/invoice/tax 판단은 12 전 임시 구현으로 처리하지 않는다.
 
-2026-08-05 기준 현재 01~04는 진행/확인 완료로 보고, 다음 대상은 05~11이다.
+2026-08-05 기준 현재 01~05는 진행/확인 완료로 보고, 다음 대상은 06~11이다.
 
 01~11 pre-12 후속 재대조에서는 `COMMON/POST-12-REVIEW-AND-FOLLOWUP.md`를 기준으로 아래를 다시 확인한다.
 

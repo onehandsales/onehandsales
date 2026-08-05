@@ -1,9 +1,9 @@
 # User Web TODO
 
-2026-08-04 `NBA-009 Schedule week report` 최종형 재대조 완료: `/app/schedules/week` 추가 User Web 후속 구현 없음. Google-origin source badge/meeting URL과 currency-aware weekly report display는 실제 코드에 반영되어 있으며 PDF/범용 ExportJob/반복 일정/AI 고급 리포트 UI는 별도 계획 또는 post-12 후보로 유지한다.
+2026-08-05 `05_AI_WEEKLY_SALES_REPORT` 반영 완료: `/app/schedules/week` AI report section, `/app/settings` follow-up provider settings, compose/send/retry/timeline UX는 구현/자동 검증 완료 상태다. 운영 credential/callback/allowlist 기반 provider smoke는 pending이다.
 
 상태: Draft
-최종 업데이트: 2026-08-03
+최종 업데이트: 2026-08-05
 
 ## 0. 완료 반영
 
@@ -11,6 +11,7 @@
 - [x] `NBA-009 Schedule week report`: `/app/schedules/week` 주간 보고서 UX와 Excel 다운로드 구현 완료
 - [x] `NBA-010 Notification`: `/app/notifications`, unread badge, settings, browser push fallback UX 구현 완료
 - [x] `NBA-015 Google Calendar Integration`: `/app/schedules`, `/app/settings`, `/app/trash` Google Calendar UX 구현 완료
+- [x] `05_AI_WEEKLY_SALES_REPORT`: `/app/schedules/week` AI report, `/app/settings` follow-up provider settings, compose/send/retry/timeline UX 구현 완료
 - [x] `NBA-001 Deal list products summary`: `/app/deals` desktop/mobile 목록 표시 구현 완료
 - [x] `NBA-002 Contact list dealCount`: `/app/contacts` desktop/mobile 목록 표시 구현 완료
 - [x] `NBA-003 Deal latest activity subset`: `/app/deals` 최신 활동 summary 표시 구현 완료
@@ -31,7 +32,7 @@
 
 이 문서는 G07에서 분리한 Backend/API 후보가 `FE/user-web`에 미칠 수 있는 영향을 정리한다.
 
-이 문서에서 남은 active User Web 후보는 future API contract가 `confirmed`된 뒤 함께 확인할 client/screen 영향만 기록한다. `NBA-001`, `NBA-002`, `NBA-003` Deal subset, `NBA-004` MeetingNote detail subset, `NBA-005`, `NBA-006`, `NBA-007`, `NBA-008`, `NBA-009`, `NBA-010`, `NBA-011`, `NBA-012`, `NBA-013`, `NBA-015`, `08_GLOBAL_DATA_I18N`, `09_PRODUCT_ANALYTICS`, `10_MOBILE_PWA_FIELD_USE`, `11_ADMIN_OPERATION`은 별도 계획에서 구현 완료된 이력으로만 남긴다.
+이 문서에서 남은 active User Web 후보는 future API contract가 `confirmed`된 뒤 함께 확인할 client/screen 영향만 기록한다. `NBA-001`, `NBA-002`, `NBA-003` Deal subset, `NBA-004` MeetingNote detail subset, `NBA-005`, `NBA-006`, `NBA-007`, `NBA-008`, `NBA-009`, `NBA-010`, `NBA-011`, `NBA-012`, `NBA-013`, `NBA-015`, `05_AI_WEEKLY_SALES_REPORT`, `08_GLOBAL_DATA_I18N`, `09_PRODUCT_ANALYTICS`, `10_MOBILE_PWA_FIELD_USE`, `11_ADMIN_OPERATION`은 별도 계획에서 구현 완료된 이력으로만 남긴다.
 
 ## 1.1 08에서 닫힌 User Web Global Data/I18N 범위
 
@@ -64,6 +65,15 @@
 - mobile field analytics event는 allowlist payload로만 전송하고 실패를 사용자에게 표시하지 않는다.
 - FE mobile E2E 360px/390px Chrome/Edge 20 tests가 통과했다.
 
+## 1.4 05에서 닫힌 User Web AI Weekly Report / Follow-up Delivery 범위
+
+- `/app/schedules/week`에 AI weekly report section, 생성/진행/성공/실패/version/snapshot summary UX를 구현했다.
+- AI report follow-up suggestion에서 compose dialog로 진입하고, 사용자가 subject/body/recipient를 확인/수정한 뒤 발송한다.
+- `/app/settings`에서 Gmail/Microsoft 연결, reconnect/disconnect, SMS sender verification 화면을 제공한다.
+- compose/timeline에서 safe failure, retry, reconnect CTA를 표시한다.
+- User Web은 follow-up 설정/발송 흐름에서 provider raw response, token, subject/body 원문을 log/analytics로 보내지 않는다.
+- G10 FE `typecheck`, `lint`, `build`, mobile e2e 검증이 통과했다. Gmail/Microsoft 실제 수신자 smoke는 운영 credential/callback/allowlist 준비 후 확인한다.
+
 ## 2. Release follow-up 영향 후보
 
 | 후보 ID | FE 영향 | 확인 기준 |
@@ -78,8 +88,9 @@
 |---|---|---|
 | NBA-003 잔여 | 회사/담당자/제품 목록 summary 표시 | Deal list `latestActivity`는 완료됐다. 남은 summary도 private memo와 일반 활동을 구분한다. |
 | NBA-004 | 부분 완료: 회의록 상세 AI 후속 작업 section, 다음 행동 후보 편집 저장, follow-up draft 수정/복사 구현. 회의록 목록 summary 표시는 후속 | 목록에는 AI/STT raw text나 민감 원문을 노출하지 않는다. 상세 AI 후보도 자동 저장/자동 발송하지 않는다. |
+| 05_AI_WEEKLY_SALES_REPORT | 완료: `/app/schedules/week` AI report section, `/app/settings` follow-up provider settings, compose/send/retry/timeline UX 구현. Gmail/Microsoft reconnect CTA와 safe error rendering 보강 | Active FE TODO에서 제외한다. 실제 provider smoke는 운영 credential/callback/allowlist로 별도 확인한다. SMS 실제 provider/B2B/sequence/email sync는 후속 |
 | NBA-006 | 완료: Import resume 화면, client state, row detail 만료 안내, upload 제한 초과 안내 | Active FE TODO에서 제외한다. 새로고침/탭 이동 복구 UX, 만료/실패 상태, confirm/cancel 흐름, 성공 이력 row detail 만료 상태, 10MB/5,000행 제한 초과 안내까지 구현 및 G09 closeout 완료 |
-| NBA-009 | 완료: `/app/schedules/week` route, 주간 보고서 화면, 이전/다음/이번 주 이동, Excel 다운로드, loading/empty/error/export error 처리 | Active FE TODO에서 제외한다. PDF/범용 ExportJob, 반복 일정, AI 요약은 별도 backlog에서 다룬다. |
+| NBA-009 | 완료: `/app/schedules/week` route, 주간 보고서 화면, 이전/다음/이번 주 이동, Excel 다운로드, loading/empty/error/export error 처리 | Active FE TODO에서 제외한다. AI weekly report는 05에서 구현 완료됐고, PDF/범용 ExportJob과 반복 일정은 별도 backlog에서 다룬다. |
 | NBA-010 | 완료: Notification route/sidebar 노출 | Active FE TODO에서 제외한다. `/app/notifications`, unread badge, settings, browser push 권한 fallback UX 구현 완료 |
 | NBA-015 | 완료: `/app/schedules` source badge/sync/calendar hidden handling, `/app/settings` Google Calendar 연결/선택/해제, `/app/trash` Schedule restore UX 구현 | Active FE TODO에서 제외한다. Google export/write, realtime webhook/watch, 반복 일정은 별도 backlog에서 다룬다. |
 | 09_PRODUCT_ANALYTICS | 완료: `/app` 보호 route 진입 시 routeKey allowlist 기반 `app_route_viewed` 전송 | Active FE TODO에서 제외한다. Admin analytics 화면은 11에서 완료됐고 billing/paywall/churn UI는 12에서 다룬다. |

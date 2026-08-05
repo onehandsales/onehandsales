@@ -1,6 +1,6 @@
 # Coverage Matrix
 
-상태: Draft / 01~11 Done / 05 G10 Ready / 12 Next / Post-12 Review Planned
+상태: Draft / 01~11 Implemented / 05 G10 Implemented / Provider Smoke Pending / 12 Next / Post-12 Review Planned
 
 ## 0. 완료 반영
 
@@ -12,7 +12,7 @@
 - [x] `NBA-009 Schedule week report`: `03_WEEKLY_SCHEDULE_REPORT`에서 구현 및 QA closeout 완료
 - [x] 04 `Google Calendar Integration`: Done (2026-07-23)
 - [x] `NBA-015 Google Calendar Integration`: `04_GOOGLE_CALENDAR_INTEGRATION`에서 구현 및 QA closeout 완료
-- [x] 05 `AI Weekly Sales Report`: G01-G09 Done (2026-07-24), G10 actual email provider integration Ready (2026-08-05)
+- [x] 05 `AI Weekly Sales Report`: G01-G09 Done (2026-07-24), G10 actual email provider integration implemented and automatically validated (2026-08-05), provider smoke pending
 - [x] 06 `DealActivity Timeline`: Done (2026-07-26)
 - [x] 07 `MeetingNote AI Provider Log`: Done (2026-07-26)
 - [x] 08 `Global Data I18N`: Done (2026-07-28, DB 최신 상태 2026-07-29 재확인)
@@ -43,7 +43,7 @@
 | Import/Data | Import 원본/preview 보관 정책 | 01 | Done: 개인정보와 cleanup 기준 포함 |
 | Import/Data | Import/Export 파일 저장 기반 | 01, 후속 별도 결정 | Import 파일은 01 완료. Export job/file은 03에서 제외하고 Trust/policy/Admin gate와 함께 별도 결정 |
 | Notification | In-app notification | 02 | Done: 목록, 읽음, unread count, `/app/notifications` 구현 완료 |
-| Notification | Email/browser push | 02 | Done: email/browser push delivery attempt와 settings 구현 완료. 실제 provider smoke는 env 준비 후 운영 확인 |
+| Notification | Email/browser push | 02 | Done: email/browser push delivery attempt와 settings 구현 완료. 실제 SMTP/Web Push provider smoke도 2026-08-04 사용자 확인 기준 운영 완료 |
 | Notification | 일정/딜 reminder | 02 | Done: 일정 시작 30분 전, 딜 마감 1일 전 오전 9시 생성/발송 처리 구현 완료 |
 | Notification | 다음 행동 reminder | 06 | 02에서 제외. 딜 데이터 구조 변경 가능성이 있어 DealActivity/다음 행동 고도화에서 설계 |
 | Notification | 회의록 후속 reminder | 07 | 02에서 제외. MeetingNote AI/provider log와 follow-up 후보 설계에서 검토 |
@@ -55,8 +55,8 @@
 | Schedule | 반복 일정 | 후속 별도 결정 | 03에서 제외. recurrence rule, exception, DST, 알림 재생성, Calendar 연동 영향 검토 후 별도 확정 |
 | Calendar | Google Calendar connect/read-only import | 04 | Done: `NBA-015` 구현 완료. login OAuth와 Calendar scope 분리, primary 기본 선택+추가 calendar 선택, 10분 freshness 자동 sync+수동 sync, source badge, meeting URL, all-day 표시, Schedule soft delete/Trash restore 구현. Google export/write, 양방향 sync, webhook, 반복 일정 정식 모델은 제외 |
 | Calendar | external calendar sync 실패 처리 | 04, 11 | Done: 04에서 사용자-facing 실패 처리, 11에서 Admin provider failure 운영 조회를 구현했다 |
-| AI report | AI 주간 영업 리포트 | 05 | G01-G09 Done: 저장형 AI weekly report와 follow-up delivery foundation 구현 완료. G10 Ready: Gmail/Microsoft 실제 email provider 발송 후속 문서화 |
-| AI report | AI follow-up/next action/딜 리스크 | 05, 07 | Done subset: 05 follow-up delivery foundation, 07 회의록 next action/follow-up draft. 05 G10은 실제 email provider 발송을 닫는다. 딜 리스크 고도화는 후속 |
+| AI report | AI 주간 영업 리포트 | 05 | Implemented: 저장형 AI weekly report와 follow-up delivery foundation 구현 완료. G10에서 Gmail/Microsoft 실제 email provider 발송 adapter, reconnect, safe failure, smoke allowlist 구현/자동 검증 완료. 운영 provider smoke는 pending |
+| AI report | AI follow-up/next action/딜 리스크 | 05, 07 | Done subset: 05 follow-up delivery foundation과 Gmail/Microsoft email send adapter, 07 회의록 next action/follow-up draft. 딜 리스크 고도화와 자동화는 후속 |
 | AI report | AI 데이터 정리 제안 | 05, 07 | 05/07에서 provider log와 후속 draft 기반은 완료. Import/명함 품질 제안은 후속 |
 | Core record | DealActivity timeline | 06 | Done: 딜 중심 activity 정본 구현 완료 |
 | Core record | Deal list products summary | 06 | Done: NBA-001 |

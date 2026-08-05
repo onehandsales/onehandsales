@@ -1,10 +1,10 @@
 # Next Backend API Backlog Plan
 
-2026-08-04 `NBA-009 Schedule week report` 최종형 재대조 완료: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/03_WEEKLY_SCHEDULE_REPORT/COMMON/FINAL-SERVICE-FOLLOWUP-AUDIT.md` 기준 03 추가 후속 구현 없음. Google-origin source/meeting URL과 currency-aware weekly report는 실제 코드에 반영되어 있으며, PDF/범용 ExportJob/반복 일정/AI 고급 리포트는 active NBA-009 backlog가 아니라 별도 계획 또는 post-12 후보로 유지한다.
+2026-08-05 `05_AI_WEEKLY_SALES_REPORT` 반영 완료: 저장형 AI weekly report, follow-up delivery, Gmail/Microsoft 실제 email provider adapter 구현과 자동 검증은 완료됐다. 운영 credential/callback/allowlist 기반 Gmail/Microsoft provider smoke는 pending이며, SMS 실제 provider는 05/NEXT active backlog가 아니라 post-12 또는 별도 SMS 확장 후보로 유지한다.
 
 상태: Draft
 작성일: 2026-07-20
-최종 업데이트: 2026-08-04
+최종 업데이트: 2026-08-05
 출처: `TODO/DONE/USER_WEB_RELEASE_QA_FOLLOWUP_PLAN` G07, `TODO/USER_WEB_PRODUCTIZATION_GAP_PLAN`
 
 ## 0. 완료 반영 체크리스트
@@ -16,6 +16,8 @@
 - [x] `NBA-010 Notification` 배포 환경 실제 SMTP/Web Push provider smoke QA 완료 (2026-08-04 사용자 확인)
 - [x] `NBA-015 Google Calendar Integration`: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/04_GOOGLE_CALENDAR_INTEGRATION`에서 구현 및 QA closeout 완료
 - [x] `NBA-015 Google Calendar Integration` 배포 환경 실제 Google provider smoke QA 완료 (2026-08-04 사용자 확인)
+- [x] `05_AI_WEEKLY_SALES_REPORT`: AI weekly report API/DB/User Web, follow-up delivery API/DB/User Web 구현 및 G01~G09 QA closeout 완료
+- [x] `05_AI_WEEKLY_SALES_REPORT` G10 Gmail/Microsoft email provider adapter, reconnect, safe failure, smoke allowlist 구현 및 자동 검증 완료
 - [x] `NBA-001 Deal list products summary`: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/06_DEAL_ACTIVITY_TIMELINE`에서 구현 및 QA closeout 완료
 - [x] `NBA-002 Contact list dealCount`: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/06_DEAL_ACTIVITY_TIMELINE`에서 구현 및 QA closeout 완료
 - [x] `NBA-003 Deal latest activity subset`: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/06_DEAL_ACTIVITY_TIMELINE`에서 부분 구현 및 QA closeout 완료
@@ -66,6 +68,7 @@ G07의 산출물이므로 이 문서는 구현 계획 확정본이 아니다. �
 - `NBA-009 Schedule week report`는 2026-07-22 기준 구현 및 QA closeout이 완료되어 active backlog 후보에서 제외한다.
 - `NBA-010 Notification`은 2026-07-22 기준 구현 및 QA closeout이 완료되어 active backlog 후보에서 제외한다. 실제 SMTP/Web Push provider smoke도 2026-08-04 사용자 확인 기준 배포 환경에서 완료됐다.
 - `NBA-015 Google Calendar Integration`은 2026-07-23 기준 구현 및 QA closeout이 완료됐고, 실제 Google provider smoke도 2026-08-04 사용자 확인 기준 배포 환경에서 완료되어 active backlog 후보에서 제외한다.
+- `05_AI_WEEKLY_SALES_REPORT`는 2026-07-24 G01~G09 기준 AI weekly report와 follow-up delivery foundation 구현/QA closeout이 완료됐고, 2026-08-05 G10 기준 Gmail/Microsoft 실제 email provider adapter 구현과 자동 검증이 완료됐다. 운영 credential/callback/allowlist 기반 provider smoke는 pending으로 남긴다.
 - `NBA-001`, `NBA-002`, `NBA-008`, `NBA-003`의 Deal latest activity subset은 2026-07-26 기준 `06_DEAL_ACTIVITY_TIMELINE`에서 구현 및 QA closeout이 완료되어 active backlog 후보에서 제외한다.
 - `NBA-004` MeetingNote detail next action/follow-up draft subset과 `NBA-011` MeetingNote provider log subset은 2026-07-26 기준 `07_MEETING_NOTE_AI_PROVIDER_LOG`에서 구현 및 QA closeout이 완료되어 active backlog 후보에서 제외한다.
 - `08_GLOBAL_DATA_I18N`은 2026-07-28 기준 구현 및 QA closeout이 완료되어 first-sale global data/API gap에서 제외한다. 2026-07-29 `BE/.env` 연결 DB도 `prisma migrate status` 기준 최신 상태로 재확인했다. 같은 날 사용자 확인 기준 LINE/Apple provider 설정값 연결과 실제 OAuth 동작도 운영 환경에서 완료됐다.
@@ -73,7 +76,7 @@ G07의 산출물이므로 이 문서는 구현 계획 확정본이 아니다. �
 - `10_MOBILE_PWA_FIELD_USE`는 2026-07-31 기준 구현 및 QA closeout이 완료되어 mobile field-use API/DB/User Web gap에서 제외한다. PWA install/offline shell, native app, native push/contact/calendar는 후속 별도 로드맵이다.
 - `11_ADMIN_OPERATION`은 2026-08-01 기준 구현 및 QA closeout이 완료되어 Admin 운영 API/DB/Admin Web gap에서 제외한다. 결제/구독/plan/payment/invoice/refund는 11에서 제외했고 12에서 다룬다.
 - MeetingNote 목록 summary, Company/Contact/Product latest summary, Billing 연동 conversion/churn flow, PWA/native packaging은 남은 후보다.
-- 사용자 결정 기준으로 12를 먼저 진행한다. 12 완료 후 `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/COMMON/POST-12-REVIEW-AND-FOLLOWUP.md`에 따라 이 백로그를 다시 읽고, 잔여 후보를 새 TODO 폴더로 승격할지 결정한다.
+- 사용자 결정 기준으로 12 착수 전 01~11 pre-12 재대조를 진행한다. 2026-08-05 기준 01~05는 진행/확인 완료로 보고, 다음 대상은 06~11이다. 01~11 재대조 후 12를 진행하고, 12 완료 뒤 `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/COMMON/POST-12-REVIEW-AND-FOLLOWUP.md`에 따라 이 백로그를 다시 읽고 잔여 후보를 새 TODO 폴더로 승격할지 결정한다.
 - 12 완료 전에는 `NBA-003`, `NBA-004`, backup/restore runbook, 장애 대응 drill을 무작위로 구현하지 않는다. 다만 post-12 재검토 seed로 유지한다.
 
 ## 2.1 `NBA-015` 반영 기준
@@ -96,7 +99,28 @@ G07의 산출물이므로 이 문서는 구현 계획 확정본이 아니다. �
 - Google export/write, realtime webhook/watch, 반복 일정 정식 모델, 여러 Google 계정 동시 연결, Google Calendar 외 다른 calendar provider는 04 완료 범위가 아니다.
 - Admin provider failure 운영 조회와 log 기준은 11에서 완료됐다.
 
-## 2.2 `NBA-001`, `NBA-002`, `NBA-003` Deal subset, `NBA-008`, `NBA-014` 반영 기준
+## 2.2 `05_AI_WEEKLY_SALES_REPORT` 반영 기준
+
+`TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/05_AI_WEEKLY_SALES_REPORT`는 2026-07-24 G01~G09 기준 AI weekly report/follow-up delivery 구현 및 QA closeout이 완료됐고, 2026-08-05 G10 기준 Gmail/Microsoft 실제 email provider adapter 구현과 자동 검증이 완료됐다. 이 백로그에서는 active Backend/API/DB 후보가 아니라 완료 이력과 운영 smoke pending 조건으로만 유지한다.
+
+완료로 반영할 Backend/API/DB/User Web 영향:
+
+- `POST /api/sales-reports/weekly`, `GET /api/sales-reports/weekly`, `GET /api/sales-reports/weekly/:reportId`, snapshot summary API 구현
+- AI weekly report async job, version/failed version, input snapshot summary, suggestion 저장 구현
+- `/api/follow-up-delivery/*` Gmail/Microsoft OAuth connection, SMS sender verification, consent notice API 구현
+- `/api/follow-up-messages/*` draft/update/send/retry/list/detail API 구현
+- Gmail API `users.messages.send`와 Microsoft Graph `/me/sendMail` 실제 email provider adapter 구현
+- access token refresh, reconnect-required, send-only scope 검증, safe failure, smoke allowlist 차단 구현
+- `AiWeeklySalesReport`, `AiWeeklySalesReportSuggestion`, `AiJob`, `ExternalEmailConnection`, `FollowUpMessage`, `FollowUpDeliveryAttempt` 계열 DB persistence 구현
+- `/app/schedules/week` AI report section, `/app/settings` follow-up provider settings, compose/send/retry/timeline UX 구현
+
+남은 백로그로 오해하지 않을 범위:
+
+- 운영 credential, provider console callback URL, allowlist 수신자가 필요한 Gmail/Microsoft production-equivalent smoke는 pending이다.
+- SMS 실제 provider, B2B tenant sender, email sync, sequence/campaign/bulk, unsubscribe, 신규 09 analytics event, 신규 11 Admin provider failure API는 05 완료 범위가 아니다.
+- MeetingNote 자동 follow-up 발송/알림, Company/Contact/Product latest summary, MeetingNote 목록 summary, generic ExportJob, Google/Microsoft calendar write/watch는 post-12 재검토 후보로 유지한다.
+
+## 2.3 `NBA-001`, `NBA-002`, `NBA-003` Deal subset, `NBA-008`, `NBA-014` 반영 기준
 
 `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/06_DEAL_ACTIVITY_TIMELINE`은 2026-07-26 G07 QA closeout 기준으로 Completed다. 이 백로그에서는 아래 항목을 active 후보가 아니라 완료 이력으로만 유지한다.
 
@@ -118,7 +142,7 @@ G07의 산출물이므로 이 문서는 구현 계획 확정본이 아니다. �
 - MeetingNote Admin provider audit/raw access policy, Trash private memo response restriction, 7일 이후 복구 문의, Admin 운영 API/UX는 11에서 완료
 - 실제 backup/restore 실행 runbook과 장애 대응 drill
 
-## 2.3 `NBA-004` MeetingNote detail subset, `NBA-011` provider log subset 반영 기준
+## 2.4 `NBA-004` MeetingNote detail subset, `NBA-011` provider log subset 반영 기준
 
 `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/07_MEETING_NOTE_AI_PROVIDER_LOG`는 2026-07-26 G06 QA closeout 기준으로 Completed다. 이 백로그에서는 아래 항목을 active 후보가 아니라 완료 이력으로만 유지한다.
 
@@ -139,7 +163,7 @@ G07의 산출물이므로 이 문서는 구현 계획 확정본이 아니다. �
 - 별도 transcript/raw provider response 저장 table
 - AI 후보 자동 저장, follow-up 자동 발송, 회의록 follow-up 알림
 
-## 2.4 `08_GLOBAL_DATA_I18N` 반영 기준
+## 2.5 `08_GLOBAL_DATA_I18N` 반영 기준
 
 `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/08_GLOBAL_DATA_I18N`은 2026-07-28 G10 QA closeout 기준으로 Completed다. 이 백로그에서는 Global B2C 첫 판매용 현지화/글로벌 데이터/API 항목을 active 후보가 아니라 완료 이력으로만 유지한다.
 
@@ -160,7 +184,7 @@ G07의 산출물이므로 이 문서는 구현 계획 확정본이 아니다. �
 - 실제 LINE/Apple OAuth provider smoke는 2026-07-29 사용자 확인 기준 Supabase provider 설정과 provider secret 설정 후 운영 환경에서 완료됐다.
 - 추가 국가/통화/전화번호 포맷, `/app` 직접 translation key 전환, Google/LINE/Apple 외 신규 provider, `/app` locale route prefix는 새 계약 없이 확장하지 않는다.
 
-## 2.5 `09_PRODUCT_ANALYTICS` 반영 기준
+## 2.6 `09_PRODUCT_ANALYTICS` 반영 기준
 
 `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/09_PRODUCT_ANALYTICS`는 2026-07-30 G08 QA closeout 기준으로 Completed다. 이 백로그에서는 제품 분석 기반 API/DB/User Web 항목을 active 후보가 아니라 완료 이력으로만 유지한다.
 
@@ -181,7 +205,7 @@ G07의 산출물이므로 이 문서는 구현 계획 확정본이 아니다. �
 - 실제 paywall, subscription, churn survey, paid conversion source event 발생은 09 범위가 아니며 `12_BILLING_SUBSCRIPTION_TAX`에서 다룬다.
 - 모바일 field-use 세부 event는 10에서 완료됐다. Admin dashboard는 11에서 완료됐고 billing conversion/churn 연결은 12에서 다룬다.
 
-## 2.6 `10_MOBILE_PWA_FIELD_USE` 반영 기준
+## 2.7 `10_MOBILE_PWA_FIELD_USE` 반영 기준
 
 `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/10_MOBILE_PWA_FIELD_USE`는 2026-07-31 G07 QA closeout 기준으로 Completed다. 이 백로그에서는 모바일 현장 입력성 API/DB/User Web 항목을 active 후보가 아니라 완료 이력으로만 유지한다.
 
@@ -201,7 +225,7 @@ G07의 산출물이므로 이 문서는 구현 계획 확정본이 아니다. �
 - Admin provider failure dashboard와 운영 추적은 `11_ADMIN_OPERATION`에서 완료됐다.
 - Marketing opt-in, billing/paywall/churn runtime event는 `12_BILLING_SUBSCRIPTION_TAX`에서 다룬다.
 
-## 2.7 `11_ADMIN_OPERATION` 반영 기준
+## 2.8 `11_ADMIN_OPERATION` 반영 기준
 
 `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/11_ADMIN_OPERATION`은 2026-08-01 G10 QA closeout 기준으로 Completed다. 이 백로그에서는 Admin 운영 API/DB/Admin Web 항목을 active 후보가 아니라 완료 이력으로만 유지한다.
 

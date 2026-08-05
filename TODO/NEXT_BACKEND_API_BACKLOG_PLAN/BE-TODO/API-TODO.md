@@ -1,9 +1,9 @@
 # API TODO
 
-2026-08-04 `NBA-009 Schedule week report` 최종형 재대조 완료: 03 추가 Backend/API 후속 구현 없음. `GET /api/schedules/week`, `GET /api/schedules/week/export/xlsx`, Google-origin source/meeting URL, currency-aware weekly report는 실제 코드에 반영되어 있으며 PDF/범용 ExportJob/반복 일정/AI 고급 리포트는 별도 계획 또는 post-12 후보로 유지한다.
+2026-08-05 `05_AI_WEEKLY_SALES_REPORT` 반영 완료: AI weekly report/follow-up delivery API와 Gmail/Microsoft 실제 email provider adapter는 구현/자동 검증 완료 상태다. 운영 credential/callback/allowlist 기반 provider smoke는 pending이다.
 
 상태: Draft
-최종 업데이트: 2026-08-03
+최종 업데이트: 2026-08-05
 
 ## 0. 완료 반영
 
@@ -11,6 +11,7 @@
 - [x] `NBA-009 Schedule week report`: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/03_WEEKLY_SCHEDULE_REPORT`에서 구현 및 QA closeout 완료
 - [x] `NBA-010 Notification`: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/02_NOTIFICATION_REMINDER`에서 구현 및 QA closeout 완료
 - [x] `NBA-015 Google Calendar Integration`: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/04_GOOGLE_CALENDAR_INTEGRATION`에서 구현 및 QA closeout 완료
+- [x] `05_AI_WEEKLY_SALES_REPORT`: AI weekly report API, follow-up delivery API, Gmail/Microsoft provider adapter 구현 및 자동 검증 완료
 - [x] `NBA-001 Deal list products summary`: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/06_DEAL_ACTIVITY_TIMELINE`에서 구현 및 QA closeout 완료
 - [x] `NBA-002 Contact list dealCount`: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/06_DEAL_ACTIVITY_TIMELINE`에서 구현 및 QA closeout 완료
 - [x] `NBA-003 Deal latest activity subset`: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/06_DEAL_ACTIVITY_TIMELINE`에서 부분 구현 및 QA closeout 완료
@@ -32,7 +33,7 @@
 
 이 문서는 G07에서 분리한 Backend/API 후속 후보를 실행 가능한 다음 계획으로 만들기 전의 초안이다.
 
-이 문서에서 남은 active 새 API 후보는 `COMMON/API-SPEC/README.md`에서 `draft` 또는 `후보` 상태로만 관리한다. `NBA-001`, `NBA-002`, `NBA-003` Deal subset, `NBA-004` MeetingNote detail subset, `NBA-005`, `NBA-006`, `NBA-007`, `NBA-008`, `NBA-009`, `NBA-010`, `NBA-011`, `NBA-012`, `NBA-013`, `NBA-014`, `NBA-015`, `08_GLOBAL_DATA_I18N`, `09_PRODUCT_ANALYTICS`, `10_MOBILE_PWA_FIELD_USE`, `11_ADMIN_OPERATION`은 별도 계획에서 구현 완료된 이력으로만 남긴다.
+이 문서에서 남은 active 새 API 후보는 `COMMON/API-SPEC/README.md`에서 `draft` 또는 `후보` 상태로만 관리한다. `NBA-001`, `NBA-002`, `NBA-003` Deal subset, `NBA-004` MeetingNote detail subset, `NBA-005`, `NBA-006`, `NBA-007`, `NBA-008`, `NBA-009`, `NBA-010`, `NBA-011`, `NBA-012`, `NBA-013`, `NBA-014`, `NBA-015`, `05_AI_WEEKLY_SALES_REPORT`, `08_GLOBAL_DATA_I18N`, `09_PRODUCT_ANALYTICS`, `10_MOBILE_PWA_FIELD_USE`, `11_ADMIN_OPERATION`은 별도 계획에서 구현 완료된 이력으로만 남긴다.
 
 ## 2. 06에서 닫힌 release blocker
 
@@ -65,7 +66,24 @@
   - 별도 transcript/raw provider response 저장 table
   - 회의록 follow-up 알림 또는 자동 발송
 
-## 2.2 08에서 닫힌 Global Data I18N API
+## 2.2 05에서 닫힌 AI Weekly Sales Report / Follow-up Delivery API
+
+- 연결 계획: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/05_AI_WEEKLY_SALES_REPORT`
+- API 영향:
+  - `POST /api/sales-reports/weekly`, `GET /api/sales-reports/weekly`, `GET /api/sales-reports/weekly/:reportId`, `GET /api/sales-reports/weekly/:reportId/snapshot-summary` 구현
+  - `/api/follow-up-delivery/*` settings/OAuth/SMS sender/consent API 구현
+  - `/api/follow-up-messages/*` draft/update/send/retry/list/detail API 구현
+  - Gmail API `users.messages.send`와 Microsoft Graph `/me/sendMail` provider adapter 구현
+- Backend 영향:
+  - provider 호출은 DB transaction 밖에서 수행한다.
+  - provider raw response, token, subject/body, recipient 원문은 structured log와 Admin provider failure detail에 남기지 않는다.
+  - smoke mode에서는 allowlist 밖 수신자를 provider 호출 없이 차단하고 safe failed attempt만 저장한다.
+- 05 밖으로 남는 범위:
+  - 운영 credential/callback/allowlist 기반 Gmail/Microsoft provider smoke
+  - SMS 실제 provider, B2B sender, email sync, sequence/campaign, unsubscribe
+  - MeetingNote follow-up 자동 발송/알림과 신규 analytics/Admin API 확장
+
+## 2.3 08에서 닫힌 Global Data I18N API
 
 - 연결 계획: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/08_GLOBAL_DATA_I18N`
 - API 영향:
@@ -83,7 +101,7 @@
 - 08 후속 운영 확인 완료:
   - 2026-07-29 사용자 확인 기준 LINE/Apple provider 설정값 연결과 실제 OAuth 동작이 운영 환경에서 완료됐다.
 
-## 2.3 09에서 닫힌 Product Analytics API
+## 2.4 09에서 닫힌 Product Analytics API
 
 - 연결 계획: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/09_PRODUCT_ANALYTICS`
 - API 영향:
@@ -98,7 +116,7 @@
   - Admin analytics dashboard/API는 11에서 완료
   - 실제 billing/paywall/churn survey flow와 paid conversion source event
 
-## 2.4 10에서 닫힌 Mobile Field Use API
+## 2.5 10에서 닫힌 Mobile Field Use API
 
 - 연결 계획: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/10_MOBILE_PWA_FIELD_USE`
 - API 영향:
@@ -114,7 +132,7 @@
   - Admin provider failure dashboard와 운영 추적은 11에서 완료
   - marketing opt-in, billing/paywall/churn runtime event
 
-## 2.5 11에서 닫힌 Admin Operation API
+## 2.6 11에서 닫힌 Admin Operation API
 
 - 연결 계획: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/11_ADMIN_OPERATION`
 - API 영향:

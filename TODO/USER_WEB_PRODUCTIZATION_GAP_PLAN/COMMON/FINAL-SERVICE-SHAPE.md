@@ -1,9 +1,9 @@
 # Final Service Shape
 
-2026-08-04 `03_WEEKLY_SCHEDULE_REPORT` 최종형 재대조 완료: 기본 주간 일정 보고서는 최종 서비스 형태 기준으로 추가 후속 구현 없음. Series A급 AI/고급 주간 리포트와 PDF/범용 ExportJob/반복 일정/Google write-realtime/watch는 별도 계획 또는 post-12 후보로 유지한다.
+2026-08-05 `05_AI_WEEKLY_SALES_REPORT` 반영 완료: 저장형 AI weekly report/follow-up delivery와 Gmail/Microsoft 실제 email provider adapter는 구현/자동 검증 완료 상태다. 운영 provider smoke와 SMS/B2B/sequence/email sync/자동 follow-up 알림은 별도 후속이다.
 
 상태: Draft Guide
-최종 업데이트: 2026-08-03
+최종 업데이트: 2026-08-05
 
 ## 1. 최종 서비스는 3단계로 보되 판매 기준은 Global B2C다
 
@@ -19,7 +19,7 @@ MVP는 판매 버전이 아니다. 이 단계의 목적은 개인 영업자의 �
 
 | 영역 | 최종적으로 필요한 상태 |
 |---|---|
-| 핵심 업무 | 회사, 담당자, 제품, 딜, 일정, 주간 일정 보고서, Google Calendar read-only import, 회의록, 회의록 AI 후속 작업, 명함 OCR, Import, Search, Trash, Export를 한 사람의 영업 루프로 사용할 수 있다. |
+| 핵심 업무 | 회사, 담당자, 제품, 딜, 일정, 주간 일정 보고서, Google Calendar read-only import, AI weekly report/follow-up delivery, 회의록, 회의록 AI 후속 작업, 명함 OCR, Import, Search, Trash, Export를 한 사람의 영업 루프로 사용할 수 있다. |
 | UX/UI | Notion식 workspace/page/database/detail 문법과 Attio식 CRM linked record 맥락이 살아 있다. |
 | 홈 | 오늘 일정, 진행 딜, 다음 행동, 최근 회의록이 바로 읽힌다. |
 | 딜 | 단계, 금액, 회사/담당자/제품, 다음 행동, 마감일, 최신 활동이 목록에서 빠르게 비교된다. Deal list products/latest activity와 Contact dealCount는 06에서 구현 완료됐다. |
@@ -50,8 +50,8 @@ MVP는 판매 버전이 아니다. 이 단계의 목적은 개인 영업자의 �
 
 | 영역 | 최종적으로 필요한 상태 |
 |---|---|
-| 리텐션 | 다음 행동, 일정, 회의록 follow-up, 딜 지연, AI/고급 주간 리포트가 사용자를 다시 부른다. 기본 주간 일정 보고서, Google Calendar read-only import, 회의록 follow-up draft는 구현 완료 상태로 본다. follow-up 알림/자동 발송은 후속 정책 범위다. |
-| AI 핵심 가치 | 회의록 요약을 넘어 딜 리스크, 다음 행동, follow-up 문구, 영업 리포트를 제안한다. 회의록 상세 next action/follow-up draft는 07에서 구현 완료됐고, 딜 리스크와 고급 리포트는 후속이다. |
+| 리텐션 | 다음 행동, 일정, 회의록 follow-up, 딜 지연, AI report가 사용자를 다시 부른다. 기본 주간 일정 보고서, Google Calendar read-only import, 05 AI weekly report/follow-up delivery, 회의록 follow-up draft는 구현 완료 상태로 본다. follow-up 알림/자동 발송과 운영 provider smoke는 후속 정책/운영 범위다. |
+| AI 핵심 가치 | 회의록 요약을 넘어 딜 리스크, 다음 행동, follow-up 문구, 영업 리포트를 제안한다. 05 저장형 AI weekly report/follow-up delivery와 07 회의록 상세 next action/follow-up draft는 구현 완료됐고, 딜 리스크 고도화와 자동화는 후속이다. |
 | 모바일 현장성 | 모바일 브라우저 또는 앱에서 명함 촬영, 음성 기록, 빠른 입력, push reminder가 자연스럽다. 모바일 브라우저 1차 현장성은 10에서 완료했고, PWA install/offline shell과 native app은 후속이다. |
 | Deal timeline | 일정, Google Calendar에서 가져온 일정, 회의록, follow-up, 다음 행동, 단계 변경이 하나의 영업 활동 흐름으로 연결된다. 기본 `DealActivity` timeline은 06에서 구현 완료됐고, 메모 통합과 범용 activity bus는 후속 정책 결정 범위다. |
 | 성장 실험 | trial, annual plan, AI plan, paywall, coupon/referral, churn survey를 운영한다. |
@@ -66,4 +66,5 @@ MVP는 판매 버전이 아니다. 이 단계의 목적은 개인 영업자의 �
 - Admin/결제/분석/정책/현지화는 후순위 장식이 아니라 첫 판매 gate의 일부로 본다. 분석 foundation은 09에서 닫혔고 mobile field-use event는 10에서 닫혔으며, Admin dashboard는 11에서 닫혔다. billing-linked 지표는 12에서 연결한다.
 - 08에서 닫힌 현지화/글로벌 데이터 기본 범위와 DB migration 최신 상태 재확인은 완료로 보며, LINE/Apple 실제 auth provider smoke도 2026-07-29 사용자 확인 기준 운영 완료로 반영한다.
 - `01_IMPORT_JOB_PERSISTENCE`는 G01~G09로 ImportJob persistence/resume, terminal cleanup, 원본 file binary 즉시 삭제, `ImportUserLogRow` 30일 cleanup, 10MB/5,000행 제한까지 닫았으므로 Import 범위는 최종 서비스 형태 기준으로 완전 종료됐다.
+- `05_AI_WEEKLY_SALES_REPORT`는 저장형 AI weekly report와 follow-up delivery, Gmail/Microsoft actual email provider adapter까지 구현/자동 검증 완료 상태로 본다. 운영 provider smoke는 credential/callback/allowlist 준비 후 확인하고, SMS 실제 provider/B2B/sequence/email sync/자동 follow-up 알림은 후속이다.
 - 현재 진행 순서는 12 결제/구독/세금 구현을 먼저 완료한 뒤, 01~12 전체와 `NEXT_BACKEND_API_BACKLOG_PLAN`, `USER_WEB_PRODUCTIZATION_GAP_PLAN`을 다시 대조하는 것이다. 미완성/후속 항목은 새 TODO 폴더로 승격하고, UX/UI 디자인 유지보수는 그 이후 별도 계획으로 진행한다.

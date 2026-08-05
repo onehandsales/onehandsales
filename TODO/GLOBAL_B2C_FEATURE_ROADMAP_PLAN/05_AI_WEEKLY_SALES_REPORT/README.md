@@ -24,6 +24,7 @@
 - 실제 Gmail/Microsoft/SMS provider smoke는 운영 credential/callback URL 미확정으로 완료 처리하지 않았고, 미실행 사유와 운영 설정 기준은 G09 work log/runbook에 기록했다.
 - 2026-08-05 기준 실제 Gmail/Microsoft production email 발송 adapter는 G10에서 구현했고, 로컬 credential 미설정으로 production-equivalent 실제 수신자 smoke만 남았다.
 - G10 문서에는 request, response, business logic, user flow, DB 영향, 코드 한글 주석 필수, goal별 체크리스트, 검토 기준을 포함했다.
+- 2026-08-05 기준 `TODO/NEXT_BACKEND_API_BACKLOG_PLAN`과 `TODO/USER_WEB_PRODUCTIZATION_GAP_PLAN`에는 05 구현 완료 이력과 provider smoke pending 조건을 반영했다.
 
 ## 3. 확정 범위
 
@@ -151,3 +152,5 @@ G10은 기존 05-B foundation을 다시 여는 작업이 아니라 실제 Gmail/
 - Release note draft: `TODO_LOG/2026-07-24/G09_QA_REVIEW_CLOSEOUT/RELEASE_NOTE_DRAFT.md`
 - Operations runbook draft: `TODO_LOG/2026-07-24/G09_QA_REVIEW_CLOSEOUT/OPERATIONS_RUNBOOK_DRAFT.md`
 - G10 후속 goal spec: `COMMON/GOAL-SPECS/G10_FOLLOW_UP_EMAIL_PROVIDER_INTEGRATION.md`
+- G10 구현 검토: `COMMON/G10_DOCUMENT_REVIEW.md`
+- G10 상위 입력 문서 반영: `TODO/NEXT_BACKEND_API_BACKLOG_PLAN`, `TODO/USER_WEB_PRODUCTIZATION_GAP_PLAN`

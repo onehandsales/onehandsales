@@ -1,6 +1,6 @@
 # G10 Cross Plan Coverage
 
-상태: confirmed
+상태: Implemented / Provider Smoke Pending
 연결 Goal: G10_FOLLOW_UP_EMAIL_PROVIDER_INTEGRATION
 작성일: 2026-08-05
 
@@ -24,18 +24,18 @@ G10 후속 작업 여부는 아래 문서와 실제 코드 상태를 기준으�
 
 | 영역 | 상태 | G10 판단 |
 |---|---|---|
-| OAuth 연결 | Gmail/Microsoft authorization URL, token exchange, profile 조회 기반 있음 | 유지하고 send scope 검증 보강 |
+| OAuth 연결 | Gmail/Microsoft authorization URL, token exchange, profile 조회, send scope 검증 구현 완료 | 유지 |
 | Token 저장 | follow-up delivery encryption port와 `ExternalEmailConnection` 있음 | 유지 |
 | Draft/send API | `/api/follow-up-messages/*` 있음 | 기존 API 유지 |
-| 실제 email send | production에서 `FollowUpProviderUnavailable`로 끝남 | G10 직접 구현 대상 |
+| 실제 email send | Gmail API와 Microsoft Graph adapter 구현 및 자동 검증 완료. 운영 credential 기반 실제 수신자 smoke는 미실행 | 05 G10 구현 완료, provider smoke pending |
 | SMS send | production provider 없음 | G10 제외 |
-| User Web settings/compose | follow-up delivery feature 있음 | reconnect/safe error UX 보강 |
+| User Web settings/compose | follow-up delivery feature와 reconnect/safe error UX 보강 완료 | 유지 |
 | Admin provider failure | 11에서 `FollowUpDeliveryAttempt` source 사용 | safe field 유지, 새 11 goal 불필요 |
 | Product analytics | follow-up 세부 event는 09 scope 밖 | 새 09 goal 불필요 |
 
-## 3. 05에 남길 후속 구현
+## 3. 05에서 닫은 구현과 남은 운영 검증
 
-G10으로 05에 문서화하고 구현한다.
+G10으로 05에 문서화하고 구현했다.
 
 - Gmail API 실제 email send adapter
 - Microsoft Graph 실제 email send adapter
@@ -46,6 +46,9 @@ G10으로 05에 문서화하고 구현한다.
 - smoke allowlist 차단 시 provider 호출 없이 safe failed attempt 저장
 - User Web reconnect CTA와 safe failure rendering 보강
 - provider raw/token/body/recipient log redaction 검증
+
+운영 credential이 필요해 05 완료 체크 전 남는 검증:
+
 - Gmail/Microsoft production-equivalent allowlist smoke 검증
 
 ## 4. 09에 문서화하지 않는 이유
@@ -92,4 +95,4 @@ G10에서 하지 않는다.
 - [x] 09 Product Analytics 신규 goal이 필요 없는 이유를 확인했다.
 - [x] 11 Admin Operation 신규 goal이 필요 없는 이유를 확인했다.
 - [x] SMS/B2B/sequence/email sync를 G10 범위에서 제외했다.
-- [x] 실제 코드의 production email send 미구현 상태를 G10 직접 구현 대상으로 기록했다.
+- [x] 실제 코드의 production email send 구현 완료와 provider smoke pending 상태를 기록했다.

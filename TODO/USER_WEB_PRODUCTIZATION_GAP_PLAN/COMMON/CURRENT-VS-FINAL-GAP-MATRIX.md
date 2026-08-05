@@ -1,9 +1,9 @@
 # Current vs Final Gap Matrix
 
-2026-08-04 `03_WEEKLY_SCHEDULE_REPORT` 최종형 재대조 완료: 주간 일정 보고서 영역은 추가 후속 구현 없음. Google-origin source/meeting URL과 currency-aware weekly report까지 실제 코드에 반영되어 있으며, 남은 AI/PDF/ExportJob/반복 일정/Google write-realtime/watch 항목은 별도 계획 또는 post-12 후보로 분리한다.
+2026-08-05 `05_AI_WEEKLY_SALES_REPORT` 반영 완료: 저장형 AI weekly report/follow-up delivery와 Gmail/Microsoft 실제 email provider adapter는 구현/자동 검증 완료 상태다. 운영 provider smoke, SMS 실제 provider, B2B/sequence/email sync, 자동 follow-up 알림은 별도 후속으로 분리한다.
 
 상태: Draft Guide
-최종 업데이트: 2026-08-04
+최종 업데이트: 2026-08-05
 
 ## 0. 완료 반영
 
@@ -16,6 +16,8 @@
 - [x] 일정/딜 reminder 기반 retention loop와 `/app/notifications` UX 구현 완료
 - [x] `NBA-015 Google Calendar Integration`: Done (2026-07-23)
 - [x] Google Calendar read-only import, calendar selection, sync/source badge, Schedule Trash restore 구현 완료
+- [x] `05_AI_WEEKLY_SALES_REPORT`: G01~G09 Done (2026-07-24), G10 Implemented (2026-08-05)
+- [x] AI weekly report, follow-up delivery, Gmail/Microsoft email provider adapter, reconnect, safe failure, smoke allowlist 구현 및 자동 검증 완료
 - [x] `06_DEAL_ACTIVITY_TIMELINE`: Done (2026-07-26)
 - [x] 딜 상세 `DealActivity` timeline, 딜 목록 products/latest activity, 담당자 목록 dealCount, page size 15 계약 구현 및 QA closeout 완료
 - [x] `07_MEETING_NOTE_AI_PROVIDER_LOG`: Done (2026-07-26)
@@ -51,6 +53,7 @@
 | 딜 목록 | 단계, 금액, 회사/담당자/제품, 다음 행동, 마감일이 빠르게 비교된다. | pipeline/list/detail, 제품 summary, 최신 활동 summary, page size 15 계약 구현 완료 | 딜 목록 products/latest activity gap은 닫힘. 다음 행동 강조, 고급 필터, UX polish는 후속 | Closed for 06 / UX/UI productization | 완료, polish 후속 |
 | 회사/담당자/제품 목록 | linked record, 진행 딜, 최근 활동, 다음 행동 맥락이 보인다. | 기본 목록/count 구현. 담당자 `dealCount` 완료. Company/Product latest summary는 없음 | Contact dealCount gap은 닫힘. Company/Contact/Product latest activity summary는 후속 후보 | UX/API gap | 잔여 summary는 후속 |
 | 일정 | 월간/목록과 딜 연결이 된다. 주간 보고서와 외부 캘린더 import가 있다. | CRUD, 월간/목록, `/app/schedules/week`, weekly report API, Excel export, Google Calendar read-only import/sync/calendar selection/source badge 구현 | 주간 일정 보고서와 Google Calendar read-only import gap은 닫힘. Google export/write, realtime webhook/watch, 반복 일정, AI 요약은 후속 확장 | Closed for NBA-009/NBA-015 | 완료 |
+| AI 주간 리포트/follow-up | 주간 영업 흐름을 AI로 해석하고, 사용자가 확인한 follow-up을 실제 발송/기록한다. | 05 기준 저장형 AI weekly report, async job/version/suggestion, follow-up settings/draft/send/retry/timeline, Gmail/Microsoft email provider adapter 구현 | AI weekly report/follow-up delivery gap은 닫힘. Gmail/Microsoft 운영 provider smoke는 pending. SMS 실제 provider, B2B sender, sequence/campaign, email sync, 자동 follow-up 알림은 후속 | Closed for 05 / Ops smoke pending | 구현 완료, smoke 후속 |
 | 회의록 | 직접 작성, AI/STT, 딜 활동 연결, 후속 행동 추출이 된다. | 직접/AI/STT draft, provider log, 상세 next action/follow-up draft, 딜 연결 구현. 회의록 연결/해제는 딜 activity timeline에 안전한 summary로 연결 | 상세 AI 후속 작업 gap은 닫힘. Admin audit/raw access는 11에서 닫힘. 목록 latest/next summary와 자동 발송/알림은 후속 | Closed for 07/11 / Feature gap | 상세/Admin 완료, 목록 후속 |
 | 명함 스캔 | 모바일 현장 촬영, OCR, 다국가 연락처 검증까지 자연스럽다. | 이미지 업로드 OCR, 모바일 후면 카메라/앨범 선택, OCR safe failure, KR/US 전화번호 정규화 구현 | 카메라 capture와 provider safe failure gap은 10에서 닫힘. Admin provider failure dashboard는 11에서 닫힘. advanced crop/preview는 후속 | Closed for 10/11 | 완료, UX 후속 |
 | Import | 업로드 중단/새로고침/배포에도 이어받고, 원본/row snapshot 보관 기간과 입력량 제한이 Global B2C 신뢰 기준과 맞는다. | ImportJob DB persistence/resume, terminal cleanup, 원본 file binary 즉시 삭제, `ImportUserLogRow` 30일 cleanup, 10MB/5,000행 제한 구현 완료 | ImportJob/DataImport 최종형 gap 없음. 대용량 import worker와 ImportJob Admin 화면/API는 별도 후속 범위 | Closed for NBA-006 G01~G09 | 완료 |
@@ -64,7 +67,7 @@
 | `/app` 다국어 | 판매 시장 기준 앱 내부 언어/문구 지원 | `/app` i18n provider/resource/formatter와 핵심 화면 `ko-KR`/`en` 번역 구현 | 기본 app 다국어 gap은 08에서 닫힘. legacy static fallback 직접 keying 축소와 시장별 UX writing polish는 후속 | Closed for 08 / UX/UI productization | 완료, polish 후속 |
 | 다국가 데이터 모델 | 전화번호, 통화, 날짜/주소가 국가별로 자연스럽다. | User country/default currency, Product/Deal currency, Contact KR/US global phone, Company country/region/address, localized import/export 구현 | 기본 global data model gap은 08에서 닫힘. 추가 국가/통화/전화번호 포맷과 세금/가격 정책은 후속 결정 | Closed for 08 / First-sale ops decision | 완료, 운영 후속 |
 | 제품 분석 | activation, retention, paid conversion, churn, AI cost를 본다. | 09 foundation, 10 mobile field event, 11 Admin analytics overview 구현 완료 | paid conversion/churn/ARPU는 12 Billing source event 연결 후 완성 | Closed for 09/10/11 / First-sale Billing gap | Admin 분석 완료, Billing 후속 |
-| AI next action | 딜 리스크, follow-up, 다음 행동을 추천한다. | 회의록 상세 next action/follow-up draft 구현. 딜 리스크와 고급 영업 판단 AI는 없음 | 회의록 기반 AI 후속 작업은 시작됐지만 Series A급 딜 리스크/리포트/자동화는 후속 | Series A gap | 후속 |
+| AI next action | 딜 리스크, follow-up, 다음 행동을 추천한다. | 05 AI weekly report suggestion/follow-up delivery와 07 회의록 상세 next action/follow-up draft 구현 | 저장형 AI report와 사용자가 확인하는 follow-up 실행은 닫힘. Series A급 딜 리스크 고도화, 자동 mutation, 자동 follow-up 발송은 후속 | Closed for 05/07 / Series A gap | 기본 AI 후속 완료, 고도화 후속 |
 | 모바일 앱/PWA | 현장 입력, 카메라, 음성, push reminder가 자연스럽다. | 10 기준 모바일 브라우저 명함 촬영, 회의 음성 기록, local draft, push permission UX, mobile analytics 구현 완료 | PWA install/offline shell, full offline sync, iOS/Android native app, native push/contact/calendar는 후속 | Closed for 10 / Series A native gap | 모바일 웹 완료, native/PWA 후속 |
 
 ## 3. 당장 판단해야 할 질문
@@ -78,6 +81,7 @@
 | 딜 목록에서 제품/최근 활동/다음 행동을 얼마나 1급 정보로 볼지 | 제품 summary, Deal latest activity, page size 15는 06에서 완료. 다음 행동 강조와 Company/Contact/Product latest summary는 후속 판단이다. |
 | ImportJob 유실이 Global B2C 첫 판매 blocker인지 known limitation인지 | 완료 처리됨. `NBA-006`은 `01_IMPORT_JOB_PERSISTENCE` G01~G09에서 구현 및 최종 QA closeout 완료. |
 | Notification 실제 provider smoke와 회의록 follow-up 알림을 언제 다룰지 | 일정/딜 reminder와 회의록 follow-up draft는 완료됐고, 실제 SMTP/Web Push env 검증은 2026-08-04 사용자 확인 기준 배포 환경에서 완료됐다. 회의록 follow-up 알림/발송만 후속 범위로 남는다. |
+| 05 follow-up email provider smoke를 언제 닫을지 | Gmail/Microsoft adapter와 allowlist 차단은 구현/자동 검증 완료. 운영 credential/callback/allowlist 수신자 기반 실제 발송 smoke만 남아 있다. |
 | PWA install/offline shell과 native app을 언제 다룰지 | 10에서 모바일 웹 현장 입력성은 완료됐다. PWA packaging, full offline sync, iOS/Android native app은 현장 사용 지표와 사용자 결정 후 별도 로드맵으로 다룬다. |
 | Google Calendar export/write/realtime webhook/watch/반복 일정/여러 Google 계정 동시 연결을 언제 다룰지 | 현재 read-only import와 한손 Schedule/Trash/Reminder 연결은 완료됐고, 쓰기/실시간/고급 캘린더 범위는 후속 확장으로 남는다. |
 | LINE/Apple 실제 provider smoke 실행 여부 | 08 구현과 자동 QA, DB migration 최신 상태 재확인은 완료됐다. LINE/Apple 실제 provider smoke도 2026-07-29 사용자 확인 기준 운영 완료됐다. |
@@ -85,9 +89,10 @@
 
 ## 4. 권장 다음 큰 방향
 
-1. 먼저 `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/12_BILLING_SUBSCRIPTION_TAX`를 진행한다.
-2. 12에서 결제, 정책/운영 신뢰, 세금/컴플라이언스, billing-linked conversion/churn source를 계약화하고 구현한다.
-3. 12 완료 후 `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/COMMON/POST-12-REVIEW-AND-FOLLOWUP.md` 기준으로 User Web 화면별 제품화 gap을 실제 화면과 API/DB 기준으로 다시 확인한다.
-4. `TODO/NEXT_BACKEND_API_BACKLOG_PLAN`과 이 gap matrix를 함께 대조해 미구현/후속/보류 항목을 새 TODO 폴더로 승격한다.
-5. API/DB 후보는 UX/UI와 첫 판매 운영 필요성으로 확인된 것만 `confirmed` 계약으로 승격한다.
-6. UX/UI 디자인 유지보수는 12와 post-12 후속 후보 재분류 이후 별도 계획에서 진행한다.
+1. 12 착수 전 01~11 pre-12 재대조를 진행한다. 2026-08-05 기준 01~05는 진행/확인 완료로 보고, 다음 대상은 06~11이다.
+2. 01~11 pre-12 재대조 후 `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/12_BILLING_SUBSCRIPTION_TAX`를 진행한다.
+3. 12에서 결제, 정책/운영 신뢰, 세금/컴플라이언스, billing-linked conversion/churn source를 계약화하고 구현한다.
+4. 12 완료 후 `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/COMMON/POST-12-REVIEW-AND-FOLLOWUP.md` 기준으로 User Web 화면별 제품화 gap을 실제 화면과 API/DB 기준으로 다시 확인한다.
+5. `TODO/NEXT_BACKEND_API_BACKLOG_PLAN`과 이 gap matrix를 함께 대조해 미구현/후속/보류 항목을 새 TODO 폴더로 승격한다.
+6. API/DB 후보는 UX/UI와 첫 판매 운영 필요성으로 확인된 것만 `confirmed` 계약으로 승격한다.
+7. UX/UI 디자인 유지보수는 01~11 pre-12 재대조, 12, post-12 후속 후보 재분류 이후 별도 계획에서 진행한다.

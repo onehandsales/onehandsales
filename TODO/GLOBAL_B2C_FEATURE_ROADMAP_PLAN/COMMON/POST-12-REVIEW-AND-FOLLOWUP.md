@@ -12,7 +12,7 @@
 ## 2. 사용자 결정
 
 - 12 착수 전에 `GLOBAL_B2C_FEATURE_ROADMAP_PLAN`의 01~11 완료 슬롯을 순서대로 다시 대조한다.
-- 2026-08-05 기준 현재 pre-12 후속 재대조는 01~04까지 진행/확인 완료로 본다. 다음 대상은 05~11이다.
+- 2026-08-05 기준 현재 pre-12 후속 재대조는 01~05까지 진행/확인 완료로 본다. 다음 대상은 06~11이다.
 - 각 슬롯은 해당 README, COMMON 문서, GOAL-SPECS, TODO_LOG/closeout, `NEXT_BACKEND_API_BACKLOG_PLAN`, `USER_WEB_PRODUCTIZATION_GAP_PLAN`, 실제 BE/FE/Prisma 상태를 함께 대조한다.
 - 미구현, 부분 구현, 후속 조치, 의도적으로 제외한 항목을 다시 분류한다.
 - 문서 stale 정리, 완료 근거 보강, audit 기록은 기존 완료 폴더에 남길 수 있다.
@@ -25,8 +25,8 @@
 ## 3. 01~11 Pre-12 후속 재대조 순서
 
 1. 현재 진행 상태를 확인한다.
-   - 01~04 진행/확인 완료 여부
-   - 05~11 남은 재대조 대상
+   - 01~05 진행/확인 완료 여부
+   - 06~11 남은 재대조 대상
    - 12로 보류해야 하는 billing-linked 항목
 2. `GLOBAL_B2C_FEATURE_ROADMAP_PLAN`의 01~11을 순서대로 다시 읽는다.
    - README

@@ -1,8 +1,8 @@
 # Global B2C Feature Roadmap Plan
 
-상태: Draft Roadmap / 01~11 Done / 12 Next
+상태: Draft Roadmap / 01~11 Implemented / 05 Provider Smoke Pending / 12 Next
 작성일: 2026-07-20
-최종 업데이트: 2026-08-03
+최종 업데이트: 2026-08-05
 성격: 기능 선구현 로드맵 슬롯 + Global B2C first-sale gate 추적
 
 ## 0. 완료 현황
@@ -11,7 +11,7 @@
 - [x] 02 `02_NOTIFICATION_REMINDER`: Done (2026-07-22)
 - [x] 03 `03_WEEKLY_SCHEDULE_REPORT`: Done (2026-07-22)
 - [x] 04 `04_GOOGLE_CALENDAR_INTEGRATION`: Done (2026-07-23)
-- [x] 05 `05_AI_WEEKLY_SALES_REPORT`: Done (2026-07-24)
+- [x] 05 `05_AI_WEEKLY_SALES_REPORT`: G01-G09 Done (2026-07-24), G10 code/automatic validation done (2026-08-05), provider smoke pending
 - [x] 06 `06_DEAL_ACTIVITY_TIMELINE`: Done (2026-07-26)
 - [x] 07 `07_MEETING_NOTE_AI_PROVIDER_LOG`: Done (2026-07-26)
 - [x] 08 `08_GLOBAL_DATA_I18N`: Done (2026-07-28, DB 최신 상태 2026-07-29 재확인)
@@ -51,9 +51,11 @@
 - Admin 운영은 11에서 완료했고, 구독/결제/세금 상세 구현은 12로 둔다.
 - 단, `NBA-014` DB/Prisma 운영 gate와 Trust/policy first-sale gate는 11~12까지 미루지 않고 관련 goal마다 선행/병행 확인한다.
 - 01 작업을 시작할 때는 01 폴더 안에 추가 문서를 작성하고 검수/검토한 뒤 진행한다.
-- 01~11까지는 순차 실행이 완료됐고, 다음 착수 슬롯은 `12_BILLING_SUBSCRIPTION_TAX`다.
-- 12를 먼저 진행한 뒤, 01~12 전체와 `TODO/NEXT_BACKEND_API_BACKLOG_PLAN`, `TODO/USER_WEB_PRODUCTIZATION_GAP_PLAN`을 다시 학습하고 미구현/후속 항목을 새 TODO 폴더로 재배치한다.
-- UX/UI 디자인 유지보수는 12와 post-12 후속 항목 재분류 이후 별도 계획으로 진행한다.
+- 01~11까지는 순차 실행이 완료됐고, 12 착수 전 01~11 pre-12 재대조를 진행한다.
+- 2026-08-05 기준 01~05는 진행/확인 완료로 보고, 다음 대상은 06~11이다.
+- 01~11 pre-12 재대조가 끝나면 `12_BILLING_SUBSCRIPTION_TAX`를 진행한다.
+- 12 완료 후 01~12 전체와 `TODO/NEXT_BACKEND_API_BACKLOG_PLAN`, `TODO/USER_WEB_PRODUCTIZATION_GAP_PLAN`을 다시 학습하고 미구현/후속 항목을 새 TODO 폴더로 재배치한다.
+- UX/UI 디자인 유지보수는 01~11 pre-12 재대조, 12, post-12 후속 항목 재분류 이후 별도 계획으로 진행한다.
 - 12개 슬롯의 추천 의사결정은 `COMMON/DECISION-LOG.md`를 기본값으로 삼는다.
 - 각 슬롯은 Notion식 작업공간 UX, Attio식 CRM record 관계, 사용 편의성 기준을 유지한다.
 
@@ -65,7 +67,7 @@
 | 02 | `02_NOTIFICATION_REMINDER` | 알림/리마인더 | Done: 일정/딜 reminder 기반 retention loop 완료 |
 | 03 | `03_WEEKLY_SCHEDULE_REPORT` | 주간 일정 보고서 | Done: 화면 보고서와 동기식 Excel 다운로드 완료 |
 | 04 | `04_GOOGLE_CALENDAR_INTEGRATION` | Google Calendar 연동 | Done: Google read-only import, calendar 선택, sync, source badge, Schedule soft delete/Trash 구현 및 QA closeout 완료 |
-| 05 | `05_AI_WEEKLY_SALES_REPORT` | AI 주간 영업 리포트 | Done: 저장형 AI weekly report와 follow-up delivery 구현 및 QA closeout 완료 |
+| 05 | `05_AI_WEEKLY_SALES_REPORT` | AI 주간 영업 리포트 | Implemented: 저장형 AI weekly report, follow-up delivery, Gmail/Microsoft 실제 email provider adapter 구현 및 자동 검증 완료. 운영 credential/callback/allowlist 기반 provider smoke는 pending |
 | 06 | `06_DEAL_ACTIVITY_TIMELINE` | DealActivity 타임라인 | Done: 딜 활동 정본, 딜 목록 products/latest activity, 담당자 dealCount, page size 15 계약 구현 및 QA closeout 완료 |
 | 07 | `07_MEETING_NOTE_AI_PROVIDER_LOG` | 회의록 AI/provider log 고도화 | Done: MeetingNote AI/STT provider log, 상세 next action/follow-up draft, User Web AI 후속 작업 UX 구현 및 QA closeout 완료 |
 | 08 | `08_GLOBAL_DATA_I18N` | 다국가 데이터 모델과 `/app` 다국어 | Done: `/app` i18n, 글로벌 데이터 모델, Import/Export localization, Google/LINE/Apple auth 구현 완료. 현재 DB 최신 상태 확인 완료. 2026-07-29 사용자 확인 기준 LINE/Apple 운영 설정과 실제 OAuth 동작도 완료 |

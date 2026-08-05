@@ -1,9 +1,9 @@
 # DB Schema TODO
 
-2026-08-04 `NBA-009 Schedule week report` 최종형 재대조 완료: 03 추가 DB/Prisma/migration 후속 없음. weekly report는 기존 Schedule/Deal 계열 runtime aggregation과 04/08에서 이미 반영된 Google/currency 필드를 사용한다.
+2026-08-05 `05_AI_WEEKLY_SALES_REPORT` 반영 완료: AI weekly report와 follow-up delivery DB foundation은 구현 완료됐고, G10 Gmail/Microsoft provider adapter는 신규 migration 없이 기존 follow-up delivery model을 사용한다.
 
 상태: Draft
-최종 업데이트: 2026-08-03
+최종 업데이트: 2026-08-05
 
 ## 0. 완료 반영
 
@@ -11,6 +11,7 @@
 - [x] `NBA-009 Schedule week report`: 새 DB/migration 없이 기존 `User`, `Schedule`, `ScheduleDeal`, `Deal`, `DealCompany`, `DealContact`, `Company`, `Contact`, `DealFollowingActionLog` runtime aggregation으로 구현 완료
 - [x] `NBA-010 Notification`: Notification/UserNotificationSetting/NotificationDeliveryAttempt/BrowserPushSubscription DB persistence 구현 완료
 - [x] `NBA-015 Google Calendar Integration`: ExternalCalendarConnection/ExternalCalendarSource, Schedule Google metadata, soft delete/trash fields, sync lock/status DB persistence 구현 완료
+- [x] `05_AI_WEEKLY_SALES_REPORT`: AI weekly report/job/suggestion/provider log와 follow-up delivery DB persistence 구현 완료. G10 신규 migration 없음
 - [x] `NBA-001 Deal list products summary`: 기존 `DealProduct` 관계 aggregation으로 구현 완료
 - [x] `NBA-002 Contact list dealCount`: 기존 `DealContact` 관계 aggregation으로 구현 완료
 - [x] `NBA-003 Deal latest activity subset`: `DealActivity` 정본 model/migration 기반으로 구현 완료
@@ -30,7 +31,7 @@
 
 ## 1. 현재 DB 변경 상태
 
-이 계획 후보에서 남은 active 후보 중 새로 확정된 Prisma schema 변경은 없다. `NBA-001`, `NBA-002`, `NBA-003` Deal subset, `NBA-004` MeetingNote detail subset, `NBA-005`, `NBA-006`, `NBA-007`, `NBA-008`, `NBA-009`, `NBA-010`, `NBA-011`, `NBA-012`, `NBA-013`, `NBA-014`, `NBA-015`, `08_GLOBAL_DATA_I18N`, `09_PRODUCT_ANALYTICS`, `10_MOBILE_PWA_FIELD_USE`, `11_ADMIN_OPERATION`은 별도 계획에서 구현 완료된 이력으로만 남긴다.
+이 계획 후보에서 남은 active 후보 중 새로 확정된 Prisma schema 변경은 없다. `NBA-001`, `NBA-002`, `NBA-003` Deal subset, `NBA-004` MeetingNote detail subset, `NBA-005`, `NBA-006`, `NBA-007`, `NBA-008`, `NBA-009`, `NBA-010`, `NBA-011`, `NBA-012`, `NBA-013`, `NBA-014`, `NBA-015`, `05_AI_WEEKLY_SALES_REPORT`, `08_GLOBAL_DATA_I18N`, `09_PRODUCT_ANALYTICS`, `10_MOBILE_PWA_FIELD_USE`, `11_ADMIN_OPERATION`은 별도 계획에서 구현 완료된 이력으로만 남긴다.
 
 실제 source of truth는 `BE/prisma/schema.prisma`와 migration 파일이다. 이 문서는 G07에서 분리된 후보의 DB/migration 가능성만 기록한다.
 
@@ -45,6 +46,15 @@
 - `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/07_MEETING_NOTE_AI_PROVIDER_LOG`
 - `BE/prisma/migrations/20260726020000_add_meeting_note_ai_provider_log_target/migration.sql`
 - `BE/prisma/schema.prisma`의 `AiProviderOperation` meeting-note 값과 `AiProviderCallLog.targetType`, `AiProviderCallLog.targetId`
+
+05 완료 이력의 DB source of truth:
+
+- `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/05_AI_WEEKLY_SALES_REPORT`
+- `BE/prisma/migrations/20260724010000_ai_weekly_report_db/migration.sql`
+- `BE/prisma/migrations/20260724020000_add_follow_up_delivery_foundation/migration.sql`
+- `BE/prisma/migrations/20260724030000_allow_follow_up_email_disconnect_token_clear/migration.sql`
+- `BE/prisma/schema.prisma`의 `AiWeeklySalesReport`, `AiWeeklySalesReportSuggestion`, `AiJob`, `AiProviderCallLog`, `ExternalEmailConnection`, `ExternalEmailOAuthState`, `SmsSenderNumber`, `FollowUpMessage`, `FollowUpDeliveryAttempt`, `FollowUpConsentNotice`
+- G10 Gmail/Microsoft email provider adapter는 신규 migration 없이 기존 `ExternalEmailConnection`, `FollowUpMessage`, `FollowUpDeliveryAttempt`를 사용한다.
 
 08 완료 이력의 DB source of truth:
 

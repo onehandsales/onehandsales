@@ -8,7 +8,7 @@
 
 G10은 05-B에서 이미 만든 follow-up email 연결/compose/send 흐름을 실제 Gmail/Microsoft 365 발송까지 닫는다.
 
-현재 코드에는 OAuth URL 생성, token exchange, profile 조회, token 암호화 저장, draft/send 상태 전환, delivery attempt 저장 기반이 있다. 남은 핵심은 production에서 `sendEmail()`이 `FollowUpProviderUnavailable`로 끝나는 부분을 실제 provider API 호출로 교체하고, 실패를 안전하게 저장/표시하는 것이다.
+현재 코드에는 OAuth URL 생성, token exchange, profile 조회, token 암호화 저장, draft/send 상태 전환, delivery attempt 저장, Gmail/Microsoft 실제 provider API 발송 기반이 있다. 남은 핵심은 운영 credential/callback/allowlist 기반 production-equivalent smoke로 실제 수신자 발송을 확인하는 것이다.
 
 ## 2. 확정 결정
 
