@@ -24,8 +24,8 @@ import type {
   FollowUpEmailProvider,
   FollowUpSmsSenderNumber,
 } from "@/features/follow-up-delivery/types/follow-up-delivery";
+import { getFollowUpApiErrorMessage } from "@/features/follow-up-delivery/utils/follow-up-safe-error-message";
 import { env } from "@/lib/env";
-import { getApiErrorMessage } from "@/lib/api-client";
 import { formatDateTime } from "@/utils/format";
 
 type FollowUpDeliverySettingsSectionProps = {
@@ -130,7 +130,7 @@ function EmailConnectionSettings({
       });
       window.location.assign(response.authorizationUrl);
     } catch (error) {
-      setActionError(getApiErrorMessage(error));
+      setActionError(getFollowUpApiErrorMessage(error));
     }
   };
 
@@ -149,7 +149,7 @@ function EmailConnectionSettings({
       onChanged();
       onNotice(`${toProviderLabel(disconnectTarget.provider)} 연결을 해제했어요.`);
     } catch (error) {
-      setActionError(getApiErrorMessage(error));
+      setActionError(getFollowUpApiErrorMessage(error));
     }
   };
 
@@ -287,7 +287,7 @@ function SmsSenderSettings({
       onChanged();
       onNotice("문자 발신번호 인증 코드를 보냈어요.");
     } catch (error) {
-      setActionError(getApiErrorMessage(error));
+      setActionError(getFollowUpApiErrorMessage(error));
     }
   };
 
@@ -310,7 +310,7 @@ function SmsSenderSettings({
       onChanged();
       onNotice("문자 발신번호를 인증했어요.");
     } catch (error) {
-      setActionError(getApiErrorMessage(error));
+      setActionError(getFollowUpApiErrorMessage(error));
     }
   };
 
@@ -322,7 +322,7 @@ function SmsSenderSettings({
       onChanged();
       onNotice("문자 발신번호를 회수했어요.");
     } catch (error) {
-      setActionError(getApiErrorMessage(error));
+      setActionError(getFollowUpApiErrorMessage(error));
     }
   };
 
@@ -514,7 +514,9 @@ function InlineError({
     <div className="grid justify-items-start gap-3 rounded-md border border-destructive/30 bg-red-50 px-4 py-3">
       <div className="flex items-start gap-2">
         <AlertCircle className="mt-0.5 h-4 w-4 shrink-0 text-destructive" />
-        <p className="text-sm text-destructive">{getApiErrorMessage(error)}</p>
+        <p className="text-sm text-destructive">
+          {getFollowUpApiErrorMessage(error)}
+        </p>
       </div>
       <Button onClick={onRetry} size="sm" type="button">
         <RotateCw className="h-3.5 w-3.5" />

@@ -1,6 +1,6 @@
 # Goal Completion Checklist
 
-상태: G01-G09 Done / G10 Ready
+상태: G01-G09 Done / G10 Implemented / Provider Smoke Pending
 최종 업데이트: 2026-08-05
 
 ## 1. 목적
@@ -32,7 +32,7 @@
 | [x] | G07 Follow-up Draft Send Backend | Done | 2026-07-24 | draft, update, send, retry, list/detail API가 spec과 일치한다. | `/api/follow-up-messages/*`, 2026-07-24 `test -- follow-up` 6 suites / 29 tests 통과 | 구현/검토 완료 |
 | [x] | G08 Follow-up User Web | Done | 2026-07-24 | settings, compose, send, retry, timeline UX가 FE TODO와 API 계약에 맞게 연결된다. | `FE/user-web/src/features/follow-up-delivery`, `/app/settings`, `/admin/api` 검색 no match, FE `typecheck`, `lint`, `build`, Chrome mobile E2E 6 tests 통과 | 구현/검토 완료 |
 | [x] | G09 QA Review Closeout | Done | 2026-07-24 | `COMMON/REVIEW-CHECKLIST.md` critical 항목과 BE/FE 검증 명령이 완료된다. | `REVIEW-CHECKLIST.md`, `TODO_LOG/2026-07-24/G09_QA_REVIEW_CLOSEOUT/WORK_LOG.md`, BE full commands, FE full commands, mobile E2E 6 tests 통과 | 실제 provider smoke는 env/callback 미확정으로 미실행 사유 기록 |
-| [ ] | G10 Follow-up Email Provider Integration | Ready | - | Gmail/Microsoft 실제 provider API 발송, reconnect-required, smoke allowlist, safe failure, FE reconnect CTA가 완료된다. | `COMMON/GOAL-SPECS/G10_FOLLOW_UP_EMAIL_PROVIDER_INTEGRATION.md`, `COMMON/G10_DOCUMENT_REVIEW.md` | 구현 전 |
+| [ ] | G10 Follow-up Email Provider Integration | Implemented / Provider Smoke Pending | - | Gmail/Microsoft 실제 provider API 발송, reconnect-required, smoke allowlist, safe failure, FE reconnect CTA가 완료된다. | 2026-08-05 code 구현, BE `prisma:validate`, `typecheck`, `lint`, `test -- follow-up` 8 suites / 40 tests, `build` 통과. FE `typecheck`, `lint`, `build`, `test:e2e:mobile` 10 tests 통과. | 로컬 `BE/.env`에 Gmail/Microsoft credential과 smoke allowlist env가 없어 production-equivalent Gmail/Microsoft 실제 수신자 smoke는 미실행 |
 
 ## 4. Goal별 체크 조건
 
@@ -119,21 +119,26 @@
 
 ### G10 Follow-up Email Provider Integration
 
-- [ ] `COMMON/API-SPEC/FOLLOW_UP_EMAIL_PROVIDER_INTEGRATION_API.md` request/response 계약을 구현과 대조했다.
-- [ ] Gmail API 실제 발송 adapter를 구현했다.
-- [ ] Microsoft Graph 실제 발송 adapter를 구현했다.
-- [ ] access token refresh 후 발송을 구현했다.
-- [ ] invalid_grant/revoked/insufficient scope를 `RECONNECT_REQUIRED`로 전환했다.
-- [ ] smoke allowlist env와 차단 로직을 구현했다.
-- [ ] allowlist 밖 수신자는 provider 호출 없이 failed attempt만 저장한다.
-- [ ] safe error와 retryable mapping을 테스트했다.
-- [ ] User Web reconnect CTA와 safe error rendering을 확인했다.
-- [ ] provider raw/token/body/recipient가 structured log와 Admin provider failure detail에 없는지 확인했다.
-- [ ] 신규/수정 Backend/Frontend/DB 코드에 한국어 주석을 추가했다.
-- [ ] BE 검증 명령을 실행했다.
-- [ ] FE 검증 명령을 실행했다.
+- [x] `COMMON/API-SPEC/FOLLOW_UP_EMAIL_PROVIDER_INTEGRATION_API.md` request/response 계약을 구현과 대조했다.
+- [x] Gmail API 실제 발송 adapter를 구현했다.
+- [x] Microsoft Graph 실제 발송 adapter를 구현했다.
+- [x] access token refresh 후 발송을 구현했다.
+- [x] invalid_grant/revoked/insufficient scope를 `RECONNECT_REQUIRED`로 전환했다.
+- [x] smoke allowlist env와 차단 로직을 구현했다.
+- [x] allowlist 밖 수신자는 provider 호출 없이 failed attempt만 저장한다.
+- [x] safe error와 retryable mapping을 테스트했다.
+- [x] User Web reconnect CTA와 safe error rendering을 확인했다.
+- [x] provider raw/token/body/recipient가 structured log와 Admin provider failure detail에 없는지 확인했다.
+- [x] 신규/수정 Backend/Frontend/DB 코드에 한국어 주석을 추가했다.
+- [x] BE 검증 명령을 실행했다.
+- [x] FE 검증 명령을 실행했다.
 - [ ] Gmail/Microsoft production-equivalent allowlist smoke를 실행했다.
-- [ ] 검토에서 이상이 있으면 수정하고 다시 검토했다.
+- [x] 검토에서 이상이 있으면 수정하고 다시 검토했다.
+
+G10 운영 smoke 미완료 사유:
+
+- 2026-08-05 확인 기준 로컬 `BE/.env`에 `FOLLOW_UP_GOOGLE_CLIENT_ID`, `FOLLOW_UP_GOOGLE_CLIENT_SECRET`, `FOLLOW_UP_MICROSOFT_CLIENT_ID`, `FOLLOW_UP_MICROSOFT_CLIENT_SECRET`, `FOLLOW_UP_EMAIL_SMOKE_MODE`, `FOLLOW_UP_EMAIL_SMOKE_ALLOWED_RECIPIENTS`가 없다.
+- 따라서 Gmail/Microsoft OAuth 실제 연결, allowlist 수신자 실제 발송, allowlist 밖 차단의 운영형 smoke는 credential과 provider console callback URL 등록 후 다시 실행해야 한다.
 
 ## 4.1 2026-07-24 후속 재검토 메모
 

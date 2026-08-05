@@ -27,7 +27,12 @@ import type {
   FollowUpDeliveryChannel,
   FollowUpMessage,
 } from "@/features/follow-up-delivery/types/follow-up-delivery";
-import { ApiClientError, getApiErrorMessage } from "@/lib/api-client";
+import {
+  getFollowUpApiErrorMessage,
+  getFollowUpSafeErrorMessage,
+  isFollowUpEmailReconnectSafeError,
+} from "@/features/follow-up-delivery/utils/follow-up-safe-error-message";
+import { ApiClientError } from "@/lib/api-client";
 import { cn } from "@/utils/cn";
 
 type FollowUpComposeDialogProps = {
@@ -171,7 +176,7 @@ export function FollowUpComposeDialog({
       setBody(message.body);
       setBodyConfirmed(false);
     } catch (error) {
-      setActionError(getApiErrorMessage(error));
+      setActionError(getFollowUpApiErrorMessage(error));
     }
   };
 
@@ -212,7 +217,7 @@ export function FollowUpComposeDialog({
       await settingsQuery.refetch();
       await sendDraft();
     } catch (error) {
-      setActionError(getApiErrorMessage(error));
+      setActionError(getFollowUpApiErrorMessage(error));
       setConsentOpen(false);
     }
   };
@@ -246,7 +251,7 @@ export function FollowUpComposeDialog({
         return;
       }
 
-      setActionError(getApiErrorMessage(error));
+      setActionError(getFollowUpApiErrorMessage(error));
     }
   };
 
@@ -427,7 +432,17 @@ export function FollowUpComposeDialog({
           ) : null}
 
           {draft?.status === "FAILED" && draft.safeErrorMessage ? (
-            <InlineAlert message={draft.safeErrorMessage} />
+            <InlineAlert
+              message={getFollowUpSafeErrorMessage({
+                safeErrorCode: draft.safeErrorCode,
+                fallbackMessage: draft.safeErrorMessage,
+              })}
+            />
+          ) : null}
+
+          {draft?.status === "FAILED" &&
+          isFollowUpEmailReconnectSafeError(draft.safeErrorCode) ? (
+            <ReconnectGuidance />
           ) : null}
 
           {actionError ? <InlineAlert message={actionError} /> : null}
@@ -471,6 +486,22 @@ export function FollowUpComposeDialog({
         </p>
       </ModalShell>
     </>
+  );
+}
+
+// 기능 : 이메일 재연결이 필요한 발송 실패에서 설정 이동 CTA를 표시합니다.
+function ReconnectGuidance() {
+  return (
+    <div className="flex flex-col gap-3 rounded-md border border-[#FDE68A] bg-[#FFFBEB] px-3 py-3 text-[13px] text-[#92400E] sm:flex-row sm:items-center sm:justify-between">
+      <span>설정에서 이메일 계정을 다시 연결한 뒤 재시도해 주세요.</span>
+      <Link
+        className="inline-flex h-8 w-fit items-center gap-1.5 rounded-md border border-[#F59E0B] bg-white px-3 text-[12px] font-semibold text-[#92400E] transition hover:bg-[#FFF7ED]"
+        to="/app/settings"
+      >
+        <Settings className="h-3.5 w-3.5" />
+        설정 열기
+      </Link>
+    </div>
   );
 }
 

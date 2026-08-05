@@ -43,6 +43,7 @@ export type FollowUpDraftProviderOperationValue =
   | "FOLLOW_UP_EMAIL_DRAFT"
   | "FOLLOW_UP_SMS_DRAFT";
 
+// 역할 : follow-up source AI report 조회 결과 계약을 정의합니다.
 export interface FollowUpReportRecord {
   readonly id: string;
   readonly userId: string;
@@ -52,6 +53,7 @@ export interface FollowUpReportRecord {
   readonly locale: string;
 }
 
+// 역할 : follow-up source AI suggestion 조회 결과 계약을 정의합니다.
 export interface FollowUpSuggestionRecord {
   readonly id: string;
   readonly reportId: string;
@@ -67,11 +69,13 @@ export interface FollowUpSuggestionRecord {
   readonly payloadJson: Record<string, unknown>;
 }
 
+// 역할 : follow-up 초안 생성 source aggregate 계약을 정의합니다.
 export interface FollowUpDraftSourceRecord {
   readonly report: FollowUpReportRecord;
   readonly suggestion: FollowUpSuggestionRecord;
 }
 
+// 역할 : follow-up 수신 담당자 조회 결과 계약을 정의합니다.
 export interface FollowUpContactRecord {
   readonly id: string;
   readonly userId: string;
@@ -80,19 +84,25 @@ export interface FollowUpContactRecord {
   readonly email: string;
 }
 
+// 역할 : follow-up email 발송에 사용할 외부 email connection 조회 결과 계약을 정의합니다.
 export interface FollowUpEmailConnectionRecord {
   readonly id: string;
   readonly userId: string;
   readonly provider: ExternalEmailProviderValue;
+  readonly providerAccountId: string | null;
   readonly providerAccountEmail: string;
   readonly status: ExternalEmailConnectionStatusValue;
   readonly encryptedAccessToken: string | null;
   readonly encryptedRefreshToken: string | null;
+  readonly tokenExpiresAt: Date | null;
+  readonly grantedScopes: readonly string[];
   readonly connectedAt: Date;
+  readonly reconnectRequiredAt: Date | null;
   readonly lastSentAt: Date | null;
   readonly lastSendSafeErrorCode: string | null;
 }
 
+// 역할 : follow-up SMS 발송에 사용할 발신번호 조회 결과 계약을 정의합니다.
 export interface FollowUpSmsSenderNumberRecord {
   readonly id: string;
   readonly userId: string;
@@ -104,6 +114,7 @@ export interface FollowUpSmsSenderNumberRecord {
   readonly lastSendSafeErrorCode: string | null;
 }
 
+// 역할 : follow-up 첫 발송 주의 안내 확인 이력 계약을 정의합니다.
 export interface FollowUpConsentNoticeRecord {
   readonly id: string;
   readonly userId: string;
@@ -111,6 +122,7 @@ export interface FollowUpConsentNoticeRecord {
   readonly acknowledgedAt: Date;
 }
 
+// 역할 : follow-up message가 노출될 timeline target 계약을 정의합니다.
 export interface FollowUpMessageTargetRecord {
   readonly id: string;
   readonly userId: string;
@@ -122,6 +134,7 @@ export interface FollowUpMessageTargetRecord {
   readonly createdAt: Date;
 }
 
+// 역할 : follow-up provider 발송 시도 이력 계약을 정의합니다.
 export interface FollowUpDeliveryAttemptRecord {
   readonly id: string;
   readonly userId: string;
@@ -146,6 +159,7 @@ export interface FollowUpDeliveryAttemptRecord {
   readonly updatedAt: Date;
 }
 
+// 역할 : follow-up message 기본 조회 결과 계약을 정의합니다.
 export interface FollowUpMessageRecord {
   readonly id: string;
   readonly userId: string;
@@ -178,16 +192,19 @@ export interface FollowUpMessageRecord {
   readonly updatedAt: Date;
 }
 
+// 역할 : follow-up message 상세 조회 결과 계약을 정의합니다.
 export interface FollowUpMessageDetailRecord extends FollowUpMessageRecord {
   readonly targets: readonly FollowUpMessageTargetRecord[];
   readonly deliveryAttempts: readonly FollowUpDeliveryAttemptRecord[];
 }
 
+// 역할 : follow-up message 목록 페이지 조회 결과 계약을 정의합니다.
 export interface FollowUpMessagePageRecord {
   readonly items: readonly FollowUpMessageDetailRecord[];
   readonly totalCount: number;
 }
 
+// 역할 : AI draft provider 성공 이력 저장 입력 계약을 정의합니다.
 export interface CreateDraftProviderCallSucceededInput {
   readonly userId: string;
   readonly reportId: string;
@@ -206,6 +223,7 @@ export interface CreateDraftProviderCallSucceededInput {
   readonly metadataJson: Record<string, unknown>;
 }
 
+// 역할 : AI draft provider 실패 이력 저장 입력 계약을 정의합니다.
 export interface CreateDraftProviderCallFailedInput {
   readonly userId: string;
   readonly reportId: string;
@@ -221,6 +239,7 @@ export interface CreateDraftProviderCallFailedInput {
   readonly metadataJson: Record<string, unknown>;
 }
 
+// 역할 : follow-up 초안과 provider call 성공 이력을 함께 저장하는 입력 계약을 정의합니다.
 export interface CreateFollowUpDraftInput {
   readonly userId: string;
   readonly sourceReportId: string;
@@ -243,6 +262,7 @@ export interface CreateFollowUpDraftInput {
   readonly providerCall: CreateDraftProviderCallSucceededInput;
 }
 
+// 역할 : follow-up message timeline target 생성 입력 계약을 정의합니다.
 export interface CreateFollowUpMessageTargetInput {
   readonly userId: string;
   readonly targetType: FollowUpTargetTypeValue;
@@ -251,6 +271,7 @@ export interface CreateFollowUpMessageTargetInput {
   readonly targetLabel: string | null;
 }
 
+// 역할 : follow-up 초안 수정 입력 계약을 정의합니다.
 export interface UpdateFollowUpMessageDraftInput {
   readonly userId: string;
   readonly messageId: string;
@@ -263,6 +284,7 @@ export interface UpdateFollowUpMessageDraftInput {
   readonly bodyPreview?: string;
 }
 
+// 역할 : follow-up 발송 시도 시작 입력 계약을 정의합니다.
 export interface BeginFollowUpDeliveryAttemptInput {
   readonly userId: string;
   readonly messageId: string;
@@ -270,11 +292,13 @@ export interface BeginFollowUpDeliveryAttemptInput {
   readonly now: Date;
 }
 
+// 역할 : follow-up 발송 시도 시작 결과 계약을 정의합니다.
 export interface BeginFollowUpDeliveryAttemptResult {
   readonly message: FollowUpMessageDetailRecord;
   readonly attempt: FollowUpDeliveryAttemptRecord;
 }
 
+// 역할 : follow-up 발송 성공 반영 입력 계약을 정의합니다.
 export interface MarkFollowUpDeliverySucceededInput {
   readonly userId: string;
   readonly messageId: string;
@@ -289,6 +313,7 @@ export interface MarkFollowUpDeliverySucceededInput {
   readonly sentAt: Date;
 }
 
+// 역할 : follow-up 발송 실패 반영 입력 계약을 정의합니다.
 export interface MarkFollowUpDeliveryFailedInput {
   readonly userId: string;
   readonly messageId: string;
@@ -303,6 +328,19 @@ export interface MarkFollowUpDeliveryFailedInput {
   readonly failedAt: Date;
 }
 
+// 역할 : email connection refresh token 저장 입력 계약을 정의합니다.
+export interface RefreshFollowUpEmailConnectionTokensInput {
+  readonly userId: string;
+  readonly connectionId: string;
+  readonly providerAccountId: string | null;
+  readonly providerAccountEmail: string;
+  readonly encryptedAccessToken: string;
+  readonly encryptedRefreshToken?: string;
+  readonly tokenExpiresAt: Date | null;
+  readonly grantedScopes: readonly string[];
+}
+
+// 역할 : follow-up message 목록 조회 입력 계약을 정의합니다.
 export interface ListFollowUpMessagesInput {
   readonly userId: string;
   readonly sourceReportId: string | null;
@@ -312,6 +350,7 @@ export interface ListFollowUpMessagesInput {
   readonly pageSize: number;
 }
 
+// 역할 : follow-up message 저장소가 구현해야 하는 application persistence 계약을 정의합니다.
 export interface FollowUpMessageRepository {
   runInTransaction<T>(
     work: (repository: FollowUpMessageRepository) => Promise<T>
@@ -370,6 +409,9 @@ export interface FollowUpMessageRepository {
   markDeliveryFailed(
     input: MarkFollowUpDeliveryFailedInput
   ): Promise<FollowUpMessageDetailRecord | null>;
+  refreshEmailConnectionTokens(
+    input: RefreshFollowUpEmailConnectionTokensInput
+  ): Promise<FollowUpEmailConnectionRecord | null>;
   listMessages(
     input: ListFollowUpMessagesInput
   ): Promise<FollowUpMessagePageRecord>;

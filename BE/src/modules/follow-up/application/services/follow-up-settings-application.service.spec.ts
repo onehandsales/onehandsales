@@ -27,6 +27,7 @@ import type {
 } from "@/modules/follow-up/application/ports/follow-up-settings.repository";
 import {
   FollowUpEmailOAuthStateInvalidError,
+  FollowUpEmailScopeInsufficientError,
   SmsSenderVerificationCodeInvalidError,
 } from "@/modules/follow-up/domain/follow-up-delivery.errors";
 import { NodeFollowUpDeliverySecretEncryptionService } from "@/modules/follow-up/infrastructure/security/node-follow-up-delivery-secret-encryption.service";
@@ -154,6 +155,29 @@ describe("FollowUpSettingsApplicationService", () => {
     expect(serialized).not.toContain("phoneE164Ciphertext");
     expect(serialized).not.toContain("verificationCodeHash");
   });
+
+  it("rejects email callback when provider did not grant send scope", async () => {
+    const fixture = createFixture();
+    fixture.emailProvider.nextTokenSet = {
+      accessToken: "access-token-secret",
+      refreshToken: "refresh-token-secret",
+      expiresAt: new Date(Date.now() + 60 * 60 * 1000),
+      scopes: ["openid", "email"],
+      providerAccountId: "provider-account-1",
+      providerAccountEmail: "connected@example.com",
+    };
+    await fixture.service.startEmailConnection(USER, "google", {
+      redirectUri: "https://api.example.test/follow-up/callback",
+    });
+
+    await expect(
+      fixture.service.handleEmailConnectionCallback("google", {
+        code: "provider-code-secret",
+        state: fixture.emailProvider.lastState,
+      })
+    ).rejects.toBeInstanceOf(FollowUpEmailScopeInsufficientError);
+    expect(fixture.repository.emailConnections).toHaveLength(0);
+  });
 });
 
 function createFixture() {
@@ -195,6 +219,7 @@ function createConfigService(): ConfigService {
 
 class FakeEmailProvider implements FollowUpEmailDeliveryProvider {
   lastState = "";
+  nextTokenSet: FollowUpEmailTokenSet | null = null;
 
   createAuthorizationUrl(input: {
     provider: "GOOGLE" | "MICROSOFT";
@@ -212,14 +237,24 @@ class FakeEmailProvider implements FollowUpEmailDeliveryProvider {
   }
 
   exchangeAuthorizationCode(): Promise<FollowUpEmailTokenSet> {
-    return Promise.resolve({
+    const tokenSet = this.nextTokenSet ?? {
       accessToken: "access-token-secret",
       refreshToken: "refresh-token-secret",
       expiresAt: new Date(Date.now() + 60 * 60 * 1000),
-      scopes: ["email"],
+      scopes: [
+        "openid",
+        "email",
+        "offline_access",
+        "User.Read",
+        "Mail.Send",
+        "https://www.googleapis.com/auth/gmail.send",
+      ],
       providerAccountId: "provider-account-1",
       providerAccountEmail: "connected@example.com",
-    });
+    };
+    this.nextTokenSet = null;
+
+    return Promise.resolve(tokenSet);
   }
 
   refreshAccessToken(): Promise<FollowUpEmailTokenSet> {

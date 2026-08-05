@@ -1,6 +1,6 @@
 # G10 Follow-up Email Provider Integration
 
-상태: Ready
+상태: Implemented / Provider Smoke Pending
 작성일: 2026-08-05
 
 ## 1. 목표
@@ -214,14 +214,20 @@ rg -n "console\\.log|providerRaw|accessToken|refreshToken|recipientEmail|subject
 
 - [ ] Gmail 실제 발송이 production-equivalent 환경에서 성공한다.
 - [ ] Microsoft 365 실제 발송이 production-equivalent 환경에서 성공한다.
-- [ ] smoke allowlist 차단이 provider 호출 없이 failed attempt를 남긴다.
-- [ ] reconnect-required 상태 전환과 FE CTA가 동작한다.
-- [ ] provider raw/token/body/recipient가 structured log와 Admin provider failure detail에 없다.
-- [ ] BE 검증 명령이 통과한다.
-- [ ] FE 검증 명령이 통과한다.
-- [ ] 운영 credential/callback URL 기준과 smoke 결과가 work log에 기록된다.
-- [ ] 검토에서 이상이 있으면 수정하고 다시 검토했다.
-- [ ] `COMMON/GOAL-COMPLETION-CHECKLIST.md`에 G10 완료 증거를 갱신했다.
+- [x] smoke allowlist 차단이 provider 호출 없이 failed attempt를 남긴다.
+- [x] reconnect-required 상태 전환과 FE CTA가 동작한다.
+- [x] provider raw/token/body/recipient가 structured log와 Admin provider failure detail에 없다.
+- [x] BE 검증 명령이 통과한다.
+- [x] FE 검증 명령이 통과한다.
+- [x] 운영 credential/callback URL 기준과 smoke pending 사유가 work log/runbook에 기록된다.
+- [x] 검토에서 이상이 있으면 수정하고 다시 검토했다.
+- [x] `COMMON/GOAL-COMPLETION-CHECKLIST.md`에 G10 구현 증거와 smoke pending 사유를 갱신했다.
+
+2026-08-05 구현 증거:
+
+- BE: `pnpm run prisma:validate`, `pnpm run typecheck`, `pnpm run lint`, `pnpm run test -- follow-up` 8 suites / 40 tests, `pnpm run build` 통과.
+- FE: `pnpm run typecheck`, `pnpm run lint`, `pnpm run build`, `pnpm run test:e2e:mobile` 10 tests 통과.
+- 로컬 `BE/.env`에 Gmail/Microsoft credential과 smoke allowlist env가 없어 production-equivalent 실제 발송 smoke는 미실행이다.
 
 ## 13. Review Loop
 

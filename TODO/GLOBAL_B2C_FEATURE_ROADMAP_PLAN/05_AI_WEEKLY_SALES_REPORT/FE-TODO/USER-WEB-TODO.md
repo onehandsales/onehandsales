@@ -1,6 +1,6 @@
 # 05 User Web TODO
 
-상태: G04/G08/G09 Done / G10 Ready
+상태: G04/G08/G09 Done / G10 Implemented / Provider Smoke Pending
 
 ## 1. Source of truth
 

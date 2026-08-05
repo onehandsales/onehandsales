@@ -1,6 +1,6 @@
 # Goal Specs
 
-상태: G01-G09 Done / G10 Ready
+상태: G01-G09 Done / G10 Implemented / Provider Smoke Pending
 최종 업데이트: 2026-08-05
 
 ## 실행 순서

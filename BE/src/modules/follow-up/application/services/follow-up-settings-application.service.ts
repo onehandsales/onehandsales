@@ -21,6 +21,7 @@ import {
 import {
   FollowUpEmailConnectionNotFoundError,
   FollowUpEmailOAuthStateInvalidError,
+  FollowUpEmailScopeInsufficientError,
   FollowUpProviderRequestFailedError,
   SmsSenderNumberNotFoundError,
   SmsSenderVerificationCodeInvalidError,
@@ -124,6 +125,7 @@ export interface FollowUpConsentNoticeResponse {
   readonly acknowledgedAt: string;
 }
 
+// 역할 : follow-up delivery 설정과 외부 발신 수단 연결 use case를 조율합니다.
 @Injectable()
 export class FollowUpSettingsApplicationService {
   constructor(
@@ -169,6 +171,7 @@ export class FollowUpSettingsApplicationService {
     providerInput: string,
     input: StartEmailConnectionCommand
   ): Promise<StartEmailConnectionResponse> {
+    // 1. OAuth 설정과 provider 입력을 검증한다.
     this.secretEncryption.assertReady();
     const provider = this.normalizeEmailProvider(providerInput);
     const redirectUri = this.normalizeRedirectUri(input.redirectUri);
@@ -176,6 +179,7 @@ export class FollowUpSettingsApplicationService {
     const stateExpiresAt = new Date(now.getTime() + OAUTH_STATE_TTL_MS);
     const state = randomUUID();
     const stateHash = this.secretEncryption.hashOAuthState(state);
+    // 2. send-only scope로 provider authorization URL을 만든다.
     const authorization = await this.emailProvider.createAuthorizationUrl({
       provider,
       state,
@@ -183,6 +187,7 @@ export class FollowUpSettingsApplicationService {
       scopes: this.getEmailScopes(provider),
     });
 
+    // 3. raw state 대신 hash만 저장해 callback 재사용을 막는다.
     await this.repository.runInTransaction((repository) =>
       repository.createEmailOAuthState({
         userId: currentUser.id,
@@ -210,6 +215,7 @@ export class FollowUpSettingsApplicationService {
     providerInput: string,
     input: EmailConnectionCallbackCommand
   ): Promise<EmailConnectionCallbackResponse> {
+    // 1. callback query와 저장된 OAuth state hash를 검증한다.
     this.secretEncryption.assertReady();
     const provider = this.normalizeEmailProvider(providerInput);
     const code = this.normalizeRequiredText(input.code, "code");
@@ -229,17 +235,21 @@ export class FollowUpSettingsApplicationService {
       throw new FollowUpEmailOAuthStateInvalidError();
     }
 
+    // 2. transaction 밖에서 provider token/profile을 조회한다.
     const tokenSet = await this.emailProvider.exchangeAuthorizationCode({
       provider,
       code,
       redirectUri: stateRecord.redirectUri,
     });
+    // 3. send scope와 refresh 가능성을 확인한 뒤 token을 암호화한다.
+    this.assertEmailTokenSetCanSend(provider, tokenSet);
     const encryptedAccessToken = this.secretEncryption.encryptEmailToken(
       tokenSet.accessToken
     ).ciphertext;
     const encryptedRefreshToken = tokenSet.refreshToken
       ? this.secretEncryption.encryptEmailToken(tokenSet.refreshToken).ciphertext
       : undefined;
+    // 4. connection upsert와 state consumed 처리를 같은 transaction에 저장한다.
     const connection = await this.repository.runInTransaction((repository) =>
       repository.consumeOAuthStateAndUpsertEmailConnection({
         stateId: stateRecord.id,
@@ -618,6 +628,38 @@ export class FollowUpSettingsApplicationService {
     provider: ExternalEmailProviderValue
   ): readonly string[] {
     return provider === "GOOGLE" ? GOOGLE_SCOPES : MICROSOFT_SCOPES;
+  }
+
+  // 기능 : provider callback이 발송 scope와 refresh token 조건을 만족하는지 검증합니다.
+  private assertEmailTokenSetCanSend(
+    provider: ExternalEmailProviderValue,
+    tokenSet: { readonly refreshToken?: string; readonly scopes: readonly string[] }
+  ): void {
+    if (!this.hasRequiredEmailSendScope(provider, tokenSet.scopes)) {
+      throw new FollowUpEmailScopeInsufficientError();
+    }
+
+    if (provider === "MICROSOFT" && !tokenSet.refreshToken) {
+      throw new FollowUpProviderRequestFailedError(
+        "Follow-up Microsoft email refresh token was missing."
+      );
+    }
+  }
+
+  // 기능 : provider별 최소 발송 권한이 granted scope에 포함됐는지 확인합니다.
+  private hasRequiredEmailSendScope(
+    provider: ExternalEmailProviderValue,
+    scopes: readonly string[]
+  ): boolean {
+    const normalizedScopes = new Set(scopes.map((scope) => scope.toLowerCase()));
+
+    if (provider === "GOOGLE") {
+      return normalizedScopes.has(
+        "https://www.googleapis.com/auth/gmail.send"
+      );
+    }
+
+    return normalizedScopes.has("mail.send");
   }
 
   private toEmailConnectionSettingsResponse(

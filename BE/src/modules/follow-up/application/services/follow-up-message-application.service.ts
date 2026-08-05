@@ -11,6 +11,7 @@ import {
   FOLLOW_UP_SMS_DELIVERY_PROVIDER,
   type FollowUpDeliveryChannelValue,
   type FollowUpEmailDeliveryProvider,
+  type FollowUpEmailTokenSet,
   type FollowUpProviderDeliveryFailure,
   type FollowUpProviderDeliveryResult,
   type FollowUpSmsDeliveryProvider,
@@ -40,6 +41,7 @@ import {
   FollowUpConsentNoticeRequiredError,
   FollowUpDraftSourceInvalidError,
   FollowUpEmailReconnectRequiredError,
+  FollowUpEmailScopeInsufficientError,
   FollowUpInvalidRecipientError,
   FollowUpMessageAlreadySentError,
   FollowUpMessageNotFoundError,
@@ -64,6 +66,7 @@ const MAX_EMAIL_BODY_LENGTH = 20_000;
 const MAX_SMS_ASCII_TWO_SEGMENT_LENGTH = 306;
 const MAX_SMS_UNICODE_TWO_SEGMENT_LENGTH = 134;
 const BODY_PREVIEW_LENGTH = 160;
+const EMAIL_TOKEN_REFRESH_SKEW_MS = 60 * 1000;
 
 export interface CreateFollowUpDraftCommand {
   readonly sourceReportId?: unknown;
@@ -204,6 +207,14 @@ interface DeliveryProviderCallInput {
   readonly contact: FollowUpContactRecord;
 }
 
+// 역할 : email access token refresh/복호화 결과를 표현합니다.
+interface EmailAccessTokenResolution {
+  readonly ok: boolean;
+  readonly accessToken?: string;
+  readonly failure?: FollowUpProviderDeliveryFailure;
+}
+
+// 역할 : follow-up message 초안 생성, 수정, 발송 use case를 조율합니다.
 @Injectable()
 export class FollowUpMessageApplicationService {
   constructor(
@@ -675,6 +686,7 @@ export class FollowUpMessageApplicationService {
     messageId: string,
     retry: boolean
   ): Promise<FollowUpMessageResponse> {
+    // 1. message 소유권, 상태, 본문, 첫 발송 안내, 발신 수단을 검증한다.
     const currentMessage = await this.findMessageOrThrow(
       currentUser.id,
       messageId
@@ -689,6 +701,7 @@ export class FollowUpMessageApplicationService {
     const contact = await this.findRecipientForSend(currentMessage);
     await this.assertSenderReadyForSend(currentUser.id, currentMessage);
 
+    // 2. 짧은 transaction 안에서 SENDING 상태와 delivery attempt를 만든다.
     const begin = await this.repository.runInTransaction((repository) =>
       repository.beginDeliveryAttempt({
         userId: currentUser.id,
@@ -702,12 +715,14 @@ export class FollowUpMessageApplicationService {
       return this.throwCurrentDispatchConflict(currentUser.id, messageId);
     }
 
+    // 3. transaction 밖에서 token refresh와 provider 실제 발송을 수행한다.
     const result = await this.callDeliveryProvider({
       message: begin.message,
       attempt: begin.attempt,
       contact,
     });
     const completedAt = new Date();
+    // 4. provider 결과를 다시 짧은 transaction으로 message/attempt에 반영한다.
     const updated = result.ok
       ? await this.repository.runInTransaction((repository) =>
           repository.markDeliverySucceeded({
@@ -734,7 +749,7 @@ export class FollowUpMessageApplicationService {
             safeErrorCode: result.safeErrorCode,
             safeErrorMessage: result.safeErrorMessage,
             retryable: result.retryable,
-            latencyMs: null,
+            latencyMs: result.latencyMs ?? null,
             detailJson: result.detailJson,
             failedAt: completedAt,
           })
@@ -744,6 +759,7 @@ export class FollowUpMessageApplicationService {
       throw new FollowUpMessageNotSendableError();
     }
 
+    // 5. structured log에는 message 본문, 제목, 수신자 email 없이 safe context만 남긴다.
     this.logEvent(result.ok ? "followUp.message.sent" : "followUp.message.failed", {
       userId: currentUser.id,
       messageId,
@@ -887,14 +903,25 @@ export class FollowUpMessageApplicationService {
       throw new FollowUpEmailReconnectRequiredError();
     }
 
-    const subject = this.normalizeEmailSubject(input.message.subject);
-    const accessToken = this.secretEncryption.decryptEmailToken({
-      ciphertext: connection.encryptedAccessToken,
+    const scopeFailure = this.createEmailScopeFailureIfNeeded(connection);
+    if (scopeFailure) {
+      return scopeFailure;
+    }
+
+    const tokenResolution = await this.resolveEmailAccessToken({
+      connection,
+      userId: input.message.userId,
     });
+
+    if (!tokenResolution.ok) {
+      return this.requireEmailFailure(tokenResolution);
+    }
+
+    const subject = this.normalizeEmailSubject(input.message.subject);
 
     return this.emailProvider.sendEmail({
       provider: connection.provider,
-      accessToken,
+      accessToken: this.requireResolvedAccessToken(tokenResolution),
       from: {
         ...(input.message.senderDisplayName
           ? { displayName: input.message.senderDisplayName }
@@ -911,6 +938,259 @@ export class FollowUpMessageApplicationService {
       body: input.message.body,
       idempotencyKey: input.attempt.id,
     });
+  }
+
+  // 기능 : access token 만료 시 refresh하고 새 암호화 token을 저장합니다.
+  private async resolveEmailAccessToken(input: {
+    readonly userId: string;
+    readonly connection: FollowUpEmailConnectionRecord;
+  }): Promise<EmailAccessTokenResolution> {
+    const connection = input.connection;
+
+    if (!this.shouldRefreshEmailAccessToken(connection)) {
+      return {
+        ok: true,
+        accessToken: this.secretEncryption.decryptEmailToken({
+          ciphertext: this.requireEncryptedAccessToken(connection),
+        }),
+      };
+    }
+
+    if (!connection.encryptedRefreshToken) {
+      return {
+        ok: false,
+        failure: this.createEmailConnectionFailure({
+          provider: connection.provider,
+          safeErrorCode: "FollowUpEmailReconnectRequired",
+          safeErrorMessage:
+            "이메일 연결이 만료됐어요. 다시 연결한 뒤 재시도해 주세요.",
+          providerStatusReason: "REFRESH_TOKEN_MISSING",
+          safeCategory: "AUTH",
+          retryable: false,
+          externalCallSkipped: true,
+        }),
+      };
+    }
+
+    try {
+      // access token refresh는 외부 HTTP 호출이므로 DB transaction 밖에서 먼저 수행한다.
+      const tokenSet = await this.emailProvider.refreshAccessToken({
+        provider: connection.provider,
+        refreshToken: this.secretEncryption.decryptEmailToken({
+          ciphertext: connection.encryptedRefreshToken,
+        }),
+      });
+      const refreshedScopeFailure = this.createEmailScopeFailureFromTokenSet(
+        connection.provider,
+        tokenSet
+      );
+
+      if (refreshedScopeFailure) {
+        return { ok: false, failure: refreshedScopeFailure };
+      }
+
+      const encryptedAccessToken = this.secretEncryption.encryptEmailToken(
+        tokenSet.accessToken
+      ).ciphertext;
+      const encryptedRefreshToken = tokenSet.refreshToken
+        ? this.secretEncryption.encryptEmailToken(tokenSet.refreshToken)
+            .ciphertext
+        : undefined;
+      // refresh 결과 저장은 발송 provider 호출과 분리된 짧은 transaction으로 처리한다.
+      const refreshed = await this.repository.runInTransaction((repository) =>
+        repository.refreshEmailConnectionTokens({
+          userId: input.userId,
+          connectionId: connection.id,
+          providerAccountId:
+            tokenSet.providerAccountId ?? connection.providerAccountId,
+          providerAccountEmail: tokenSet.providerAccountEmail,
+          encryptedAccessToken,
+          ...(encryptedRefreshToken ? { encryptedRefreshToken } : {}),
+          tokenExpiresAt: tokenSet.expiresAt ?? null,
+          grantedScopes: tokenSet.scopes,
+        })
+      );
+
+      if (!refreshed) {
+        return {
+          ok: false,
+          failure: this.createEmailConnectionFailure({
+            provider: connection.provider,
+            safeErrorCode: "FollowUpEmailReconnectRequired",
+            safeErrorMessage:
+              "이메일 연결이 만료됐어요. 다시 연결한 뒤 재시도해 주세요.",
+            providerStatusReason: "CONNECTION_REFRESH_LOST",
+            safeCategory: "AUTH",
+            retryable: false,
+          }),
+        };
+      }
+
+      return {
+        ok: true,
+        accessToken: tokenSet.accessToken,
+      };
+    } catch (error) {
+      return {
+        ok: false,
+        failure: this.createEmailRefreshFailure(connection.provider, error),
+      };
+    }
+  }
+
+  // 기능 : 발송 전에 저장된 granted scope가 provider 발송 권한을 포함하는지 확인합니다.
+  private createEmailScopeFailureIfNeeded(
+    connection: FollowUpEmailConnectionRecord
+  ): FollowUpProviderDeliveryFailure | null {
+    return this.hasEmailSendScope(connection.provider, connection.grantedScopes)
+      ? null
+      : this.createEmailConnectionFailure({
+          provider: connection.provider,
+          safeErrorCode: "FollowUpEmailScopeInsufficient",
+          safeErrorMessage:
+            "메일 발송 권한이 부족해요. 이메일 계정을 다시 연결해 주세요.",
+          providerStatusReason: "MISSING_SEND_SCOPE",
+          safeCategory: "AUTH",
+          retryable: false,
+          externalCallSkipped: true,
+        });
+  }
+
+  // 기능 : refresh token response scope가 send 권한을 유지하는지 확인합니다.
+  private createEmailScopeFailureFromTokenSet(
+    provider: FollowUpEmailConnectionRecord["provider"],
+    tokenSet: FollowUpEmailTokenSet
+  ): FollowUpProviderDeliveryFailure | null {
+    return this.hasEmailSendScope(provider, tokenSet.scopes)
+      ? null
+      : this.createEmailConnectionFailure({
+          provider,
+          safeErrorCode: "FollowUpEmailScopeInsufficient",
+          safeErrorMessage:
+            "메일 발송 권한이 부족해요. 이메일 계정을 다시 연결해 주세요.",
+          providerStatusReason: "REFRESH_SCOPE_MISSING",
+          safeCategory: "AUTH",
+          retryable: false,
+        });
+  }
+
+  // 기능 : provider별 최소 email send scope 포함 여부를 확인합니다.
+  private hasEmailSendScope(
+    provider: FollowUpEmailConnectionRecord["provider"],
+    scopes: readonly string[]
+  ): boolean {
+    const normalizedScopes = new Set(scopes.map((scope) => scope.toLowerCase()));
+
+    if (provider === "GOOGLE") {
+      return normalizedScopes.has(
+        "https://www.googleapis.com/auth/gmail.send"
+      );
+    }
+
+    return normalizedScopes.has("mail.send");
+  }
+
+  // 기능 : 저장된 access token 만료 시점이 발송 직전 refresh 대상인지 판단합니다.
+  private shouldRefreshEmailAccessToken(
+    connection: FollowUpEmailConnectionRecord
+  ): boolean {
+    return (
+      connection.tokenExpiresAt !== null &&
+      connection.tokenExpiresAt.getTime() <= Date.now() + EMAIL_TOKEN_REFRESH_SKEW_MS
+    );
+  }
+
+  // 기능 : refresh 실패를 reconnect 또는 temporary safe failure로 분류합니다.
+  private createEmailRefreshFailure(
+    provider: FollowUpEmailConnectionRecord["provider"],
+    error: unknown
+  ): FollowUpProviderDeliveryFailure {
+    if (
+      error instanceof FollowUpEmailReconnectRequiredError ||
+      error instanceof FollowUpEmailScopeInsufficientError
+    ) {
+      return this.createEmailConnectionFailure({
+        provider,
+        safeErrorCode: error.code,
+        safeErrorMessage:
+          error instanceof FollowUpEmailScopeInsufficientError
+            ? "메일 발송 권한이 부족해요. 이메일 계정을 다시 연결해 주세요."
+            : "이메일 연결이 만료됐어요. 다시 연결한 뒤 재시도해 주세요.",
+        providerStatusReason: error.code,
+        safeCategory: "AUTH",
+        retryable: false,
+      });
+    }
+
+    return this.createEmailConnectionFailure({
+      provider,
+      safeErrorCode: "FollowUpProviderTemporaryFailure",
+      safeErrorMessage:
+        "메일 provider 응답이 지연되고 있어요. 잠시 뒤 다시 시도해 주세요.",
+      providerStatusReason:
+        error instanceof Error && error.name.trim().length > 0
+          ? error.name
+          : "REFRESH_REQUEST_FAILED",
+      safeCategory: "TEMPORARY",
+      retryable: true,
+    });
+  }
+
+  // 기능 : email connection 자체에서 발생한 safe failure 결과를 만듭니다.
+  private createEmailConnectionFailure(input: {
+    readonly provider: FollowUpEmailConnectionRecord["provider"];
+    readonly safeErrorCode: string;
+    readonly safeErrorMessage: string;
+    readonly providerStatusReason: string;
+    readonly safeCategory: string;
+    readonly retryable: boolean;
+    readonly externalCallSkipped?: boolean;
+  }): FollowUpProviderDeliveryFailure {
+    return {
+      ok: false,
+      provider: input.provider.toLowerCase(),
+      safeErrorCode: input.safeErrorCode,
+      safeErrorMessage: input.safeErrorMessage,
+      retryable: input.retryable,
+      detailJson: {
+        providerStatusReason: input.providerStatusReason,
+        safeCategory: input.safeCategory,
+        ...(input.externalCallSkipped ? { externalCallSkipped: true } : {}),
+      },
+    };
+  }
+
+  // 기능 : connection row에 access token ciphertext가 있음을 보장합니다.
+  private requireEncryptedAccessToken(
+    connection: FollowUpEmailConnectionRecord
+  ): string {
+    if (!connection.encryptedAccessToken) {
+      throw new FollowUpEmailReconnectRequiredError();
+    }
+
+    return connection.encryptedAccessToken;
+  }
+
+  // 기능 : token resolution 성공 결과에서 access token을 안전하게 꺼냅니다.
+  private requireResolvedAccessToken(
+    resolution: EmailAccessTokenResolution
+  ): string {
+    if (!resolution.ok || !resolution.accessToken) {
+      throw new FollowUpEmailReconnectRequiredError();
+    }
+
+    return resolution.accessToken;
+  }
+
+  // 기능 : token resolution 실패 결과에서 provider failure를 안전하게 꺼냅니다.
+  private requireEmailFailure(
+    resolution: EmailAccessTokenResolution
+  ): FollowUpProviderDeliveryFailure {
+    if (resolution.ok || !resolution.failure) {
+      throw new FollowUpEmailReconnectRequiredError();
+    }
+
+    return resolution.failure;
   }
 
   private async callSmsProvider(
@@ -948,6 +1228,7 @@ export class FollowUpMessageApplicationService {
   ): FollowUpProviderDeliveryFailure {
     if (
       error instanceof FollowUpEmailReconnectRequiredError ||
+      error instanceof FollowUpEmailScopeInsufficientError ||
       error instanceof FollowUpSmsSenderNotVerifiedError ||
       error instanceof FollowUpInvalidRecipientError
     ) {

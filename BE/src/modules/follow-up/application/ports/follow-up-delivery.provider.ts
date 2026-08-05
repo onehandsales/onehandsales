@@ -17,6 +17,7 @@ export type FollowUpProviderOperation =
   | "SMS_VERIFY_SEND"
   | "SMS_SEND";
 
+// 역할 : 외부 provider 실패에서 저장 가능한 비식별 상세 정보를 정의합니다.
 export interface FollowUpProviderSafeDetail extends Record<string, unknown> {
   providerRequestId?: string;
   retryAfterSeconds?: number;
@@ -24,6 +25,7 @@ export interface FollowUpProviderSafeDetail extends Record<string, unknown> {
   providerStatusReason?: string;
 }
 
+// 역할 : follow-up provider 발송 성공 결과 계약을 정의합니다.
 export interface FollowUpProviderDeliverySuccess {
   ok: true;
   provider: string;
@@ -35,6 +37,7 @@ export interface FollowUpProviderDeliverySuccess {
   detailJson?: FollowUpProviderSafeDetail;
 }
 
+// 역할 : follow-up provider 발송 실패 결과 계약을 정의합니다.
 export interface FollowUpProviderDeliveryFailure {
   ok: false;
   provider: string;
@@ -42,6 +45,7 @@ export interface FollowUpProviderDeliveryFailure {
   safeErrorCode: string;
   safeErrorMessage: string;
   retryable: boolean;
+  latencyMs?: number;
   detailJson: FollowUpProviderSafeDetail;
 }
 
@@ -49,6 +53,7 @@ export type FollowUpProviderDeliveryResult =
   | FollowUpProviderDeliverySuccess
   | FollowUpProviderDeliveryFailure;
 
+// 역할 : email OAuth authorization URL 생성 입력 계약을 정의합니다.
 export interface FollowUpEmailAuthorizationUrlInput {
   provider: ExternalEmailProviderValue;
   state: string;
@@ -56,11 +61,13 @@ export interface FollowUpEmailAuthorizationUrlInput {
   scopes: readonly string[];
 }
 
+// 역할 : email OAuth authorization URL 생성 결과 계약을 정의합니다.
 export interface FollowUpEmailAuthorizationUrlResult {
   authorizationUrl: string;
   stateExpiresAt?: Date;
 }
 
+// 역할 : 외부 email provider token/profile 조회 결과 계약을 정의합니다.
 export interface FollowUpEmailTokenSet {
   accessToken: string;
   refreshToken?: string;
@@ -70,6 +77,7 @@ export interface FollowUpEmailTokenSet {
   providerAccountEmail: string;
 }
 
+// 역할 : follow-up email 실제 발송 입력 계약을 정의합니다.
 export interface FollowUpEmailSendInput {
   provider: ExternalEmailProviderValue;
   accessToken: string;
@@ -86,6 +94,7 @@ export interface FollowUpEmailSendInput {
   idempotencyKey: string;
 }
 
+// 역할 : follow-up email provider adapter가 구현해야 하는 계약을 정의합니다.
 export interface FollowUpEmailDeliveryProvider {
   createAuthorizationUrl(
     input: FollowUpEmailAuthorizationUrlInput
@@ -107,6 +116,7 @@ export interface FollowUpEmailDeliveryProvider {
   sendEmail(input: FollowUpEmailSendInput): Promise<FollowUpProviderDeliveryResult>;
 }
 
+// 역할 : SMS 인증 코드 발송 입력 계약을 정의합니다.
 export interface FollowUpSmsVerificationInput {
   provider?: string;
   senderPhoneE164: string;
@@ -115,6 +125,7 @@ export interface FollowUpSmsVerificationInput {
   idempotencyKey: string;
 }
 
+// 역할 : follow-up SMS 실제 발송 입력 계약을 정의합니다.
 export interface FollowUpSmsSendInput {
   provider?: string;
   senderPhoneE164: string;
@@ -123,6 +134,7 @@ export interface FollowUpSmsSendInput {
   idempotencyKey: string;
 }
 
+// 역할 : follow-up SMS provider adapter가 구현해야 하는 계약을 정의합니다.
 export interface FollowUpSmsDeliveryProvider {
   sendVerificationCode(
     input: FollowUpSmsVerificationInput

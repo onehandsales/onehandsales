@@ -1,9 +1,9 @@
 # 05 AI Weekly Sales Report
 
-상태: G01-G09 Done / G10 Ready
+상태: G01-G09 Done / G10 Implemented / Provider Smoke Pending
 순서: 05
 성격: 저장형 AI 주간 영업 리포트 + follow-up email/SMS 실행 + 실제 email provider 발송 후속
-결정 상태: 2026-07-24 G01~G09 구현/검토 완료, 2026-08-05 G10 후속 구현 문서화
+결정 상태: 2026-07-24 G01~G09 구현/검토 완료, 2026-08-05 G10 코드 구현/자동 검증 완료, 운영 provider smoke pending
 구현 기준: `COMMON/GOAL-WORK-ORDER.md`
 
 ## 1. 목적
@@ -22,7 +22,7 @@
 - UXUI 기준은 `AGENT/UXUI_AGENT`, software 기준은 `AGENT/SOFTWARE_AGENT`를 따른다.
 - G01~G09 구현과 QA Review Closeout이 완료됐다.
 - 실제 Gmail/Microsoft/SMS provider smoke는 운영 credential/callback URL 미확정으로 완료 처리하지 않았고, 미실행 사유와 운영 설정 기준은 G09 work log/runbook에 기록했다.
-- 2026-08-05 기준 실제 Gmail/Microsoft production email 발송 adapter는 G10 후속 구현으로 분리했다.
+- 2026-08-05 기준 실제 Gmail/Microsoft production email 발송 adapter는 G10에서 구현했고, 로컬 credential 미설정으로 production-equivalent 실제 수신자 smoke만 남았다.
 - G10 문서에는 request, response, business logic, user flow, DB 영향, 코드 한글 주석 필수, goal별 체크리스트, 검토 기준을 포함했다.
 
 ## 3. 확정 범위

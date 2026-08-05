@@ -3,6 +3,7 @@ import type {
   ExternalEmailProviderValue,
   FollowUpEmailAuthorizationUrlResult,
   FollowUpEmailDeliveryProvider,
+  FollowUpEmailSendInput,
   FollowUpEmailTokenSet,
   FollowUpProviderDeliveryResult,
   FollowUpSmsDeliveryProvider,
@@ -28,6 +29,7 @@ import type {
   ListFollowUpMessagesInput,
   MarkFollowUpDeliveryFailedInput,
   MarkFollowUpDeliverySucceededInput,
+  RefreshFollowUpEmailConnectionTokensInput,
   UpdateFollowUpMessageDraftInput,
 } from "@/modules/follow-up/application/ports/follow-up-message.repository";
 import { FollowUpDeliverySafeErrorMapper } from "@/modules/follow-up/application/services/follow-up-delivery-safe-error.mapper";
@@ -241,6 +243,117 @@ describe("FollowUpMessageApplicationService", () => {
     ]);
   });
 
+  it("refreshes an expired email access token before sending", async () => {
+    const fixture = createFixture();
+    const connection = fixture.repository.emailConnections[0];
+    if (!connection) {
+      throw new Error("Expected email connection");
+    }
+
+    fixture.repository.emailConnections[0] = {
+      ...connection,
+      encryptedRefreshToken: "encrypted-refresh-token",
+      tokenExpiresAt: new Date("2026-07-24T04:30:00.000Z"),
+    };
+    fixture.emailProvider.refreshResults.push({
+      accessToken: "new-access-token",
+      refreshToken: "new-refresh-token",
+      expiresAt: new Date("2026-07-24T06:30:00.000Z"),
+      scopes: ["https://www.googleapis.com/auth/gmail.send"],
+      providerAccountId: "refreshed-provider-account",
+      providerAccountEmail: "owner@example.com",
+    });
+    const draft = await fixture.service.createDraft(USER, {
+      sourceReportId: REPORT_ID,
+      sourceSuggestionId: SUGGESTION_ID,
+      channel: "EMAIL",
+      languageTag: "en-US",
+      recipientContactId: CONTACT_ID,
+    });
+
+    const sent = await fixture.service.sendMessage(USER, draft.id);
+
+    expect(sent.status).toBe("SENT");
+    expect(fixture.emailProvider.refreshCalls).toEqual([
+      {
+        provider: "GOOGLE",
+        refreshToken: "decrypted:encrypted-refresh-token",
+      },
+    ]);
+    expect(fixture.emailProvider.sendCalls[0]?.accessToken).toBe(
+      "new-access-token"
+    );
+    expect(fixture.repository.emailConnections[0]).toMatchObject({
+      encryptedAccessToken: "new-access-token",
+      encryptedRefreshToken: "new-refresh-token",
+      providerAccountId: "refreshed-provider-account",
+      grantedScopes: ["https://www.googleapis.com/auth/gmail.send"],
+    });
+  });
+
+  it("fails without a provider call and marks reconnect when send scope is missing", async () => {
+    const fixture = createFixture();
+    const connection = fixture.repository.emailConnections[0];
+    if (!connection) {
+      throw new Error("Expected email connection");
+    }
+
+    fixture.repository.emailConnections[0] = {
+      ...connection,
+      grantedScopes: ["email"],
+    };
+    const draft = await fixture.service.createDraft(USER, {
+      sourceReportId: REPORT_ID,
+      sourceSuggestionId: SUGGESTION_ID,
+      channel: "EMAIL",
+      languageTag: "en-US",
+      recipientContactId: CONTACT_ID,
+    });
+
+    const failed = await fixture.service.sendMessage(USER, draft.id);
+
+    expect(failed).toMatchObject({
+      status: "FAILED",
+      safeErrorCode: "FollowUpEmailScopeInsufficient",
+      retryable: false,
+    });
+    expect(fixture.emailProvider.sendCalls).toHaveLength(0);
+    expect(fixture.repository.emailConnections[0]?.status).toBe(
+      "RECONNECT_REQUIRED"
+    );
+    expect(
+      fixture.repository.emailConnections[0]?.reconnectRequiredAt
+    ).toBeInstanceOf(Date);
+  });
+
+  it("marks reconnect when provider auth failure is returned", async () => {
+    const fixture = createFixture();
+    fixture.emailProvider.results.push({
+      ok: false,
+      provider: "google",
+      providerStatusCode: "401",
+      safeErrorCode: "FollowUpEmailReconnectRequired",
+      safeErrorMessage:
+        "이메일 연결이 만료됐어요. 다시 연결한 뒤 재시도해 주세요.",
+      retryable: false,
+      detailJson: { providerStatusReason: "AUTH" },
+    });
+    const draft = await fixture.service.createDraft(USER, {
+      sourceReportId: REPORT_ID,
+      sourceSuggestionId: SUGGESTION_ID,
+      channel: "EMAIL",
+      languageTag: "en-US",
+      recipientContactId: CONTACT_ID,
+    });
+
+    const failed = await fixture.service.sendMessage(USER, draft.id);
+
+    expect(failed.safeErrorCode).toBe("FollowUpEmailReconnectRequired");
+    expect(fixture.repository.emailConnections[0]?.status).toBe(
+      "RECONNECT_REQUIRED"
+    );
+  });
+
   it("blocks send without consent and lists history by report or target without full body", async () => {
     const fixture = createFixture({ includeConsent: false });
     const draft = await fixture.service.createDraft(USER, {
@@ -422,7 +535,12 @@ function createConsentNotice(channel: "EMAIL" | "SMS"): FollowUpConsentNoticeRec
 
 class FakeEmailProvider implements FollowUpEmailDeliveryProvider {
   results: FollowUpProviderDeliveryResult[] = [];
-  sendCalls: readonly unknown[] = [];
+  refreshResults: FollowUpEmailTokenSet[] = [];
+  refreshCalls: readonly {
+    readonly provider: ExternalEmailProviderValue;
+    readonly refreshToken: string;
+  }[] = [];
+  sendCalls: readonly FollowUpEmailSendInput[] = [];
 
   createAuthorizationUrl(): Promise<FollowUpEmailAuthorizationUrlResult> {
     return Promise.resolve({ authorizationUrl: "https://oauth.example.test" });
@@ -440,15 +558,28 @@ class FakeEmailProvider implements FollowUpEmailDeliveryProvider {
 
   refreshAccessToken(input: {
     provider: ExternalEmailProviderValue;
+    refreshToken: string;
   }): Promise<FollowUpEmailTokenSet> {
-    return this.exchangeAuthorizationCode(input);
+    this.refreshCalls = [...this.refreshCalls, input];
+
+    return Promise.resolve(
+      this.refreshResults.shift() ?? {
+        accessToken: "refreshed-access-token",
+        expiresAt: new Date(Date.now() + 60 * 60 * 1000),
+        scopes:
+          input.provider === "GOOGLE"
+            ? ["https://www.googleapis.com/auth/gmail.send"]
+            : ["Mail.Send"],
+        providerAccountEmail: `${input.provider.toLowerCase()}@example.com`,
+      }
+    );
   }
 
   revokeConnection(): Promise<void> {
     return Promise.resolve();
   }
 
-  sendEmail(input: unknown): Promise<FollowUpProviderDeliveryResult> {
+  sendEmail(input: FollowUpEmailSendInput): Promise<FollowUpProviderDeliveryResult> {
     this.sendCalls = [...this.sendCalls, input];
 
     return Promise.resolve(
@@ -532,11 +663,15 @@ class InMemoryFollowUpMessageRepository implements FollowUpMessageRepository {
       id: EMAIL_CONNECTION_ID,
       userId: USER.id,
       provider: "GOOGLE",
+      providerAccountId: "provider-account-1",
       providerAccountEmail: "owner@example.com",
       status: "CONNECTED",
       encryptedAccessToken: "encrypted-token",
       encryptedRefreshToken: null,
+      tokenExpiresAt: new Date(Date.now() + 60 * 60 * 1000),
+      grantedScopes: ["https://www.googleapis.com/auth/gmail.send"],
       connectedAt: new Date("2026-07-24T04:00:00.000Z"),
+      reconnectRequiredAt: null,
       lastSentAt: null,
       lastSendSafeErrorCode: null,
     },
@@ -890,6 +1025,24 @@ class InMemoryFollowUpMessageRepository implements FollowUpMessageRepository {
       return Promise.resolve(null);
     }
 
+    const connection = this.emailConnections.find(
+      (candidate) =>
+        candidate.id === message.emailConnectionId &&
+        candidate.userId === input.userId
+    );
+    if (
+      connection &&
+      (input.safeErrorCode === "FollowUpEmailReconnectRequired" ||
+        input.safeErrorCode === "FollowUpEmailScopeInsufficient")
+    ) {
+      this.replaceEmailConnection({
+        ...connection,
+        status: "RECONNECT_REQUIRED",
+        reconnectRequiredAt: input.failedAt,
+        lastSendSafeErrorCode: input.safeErrorCode,
+      });
+    }
+
     return Promise.resolve(
       this.mergeMessage(message, {
         status: "FAILED",
@@ -903,6 +1056,36 @@ class InMemoryFollowUpMessageRepository implements FollowUpMessageRepository {
         failedAt: input.failedAt,
       })
     );
+  }
+
+  refreshEmailConnectionTokens(
+    input: RefreshFollowUpEmailConnectionTokensInput
+  ): Promise<FollowUpEmailConnectionRecord | null> {
+    const connection = this.emailConnections.find(
+      (candidate) =>
+        candidate.id === input.connectionId &&
+        candidate.userId === input.userId &&
+        candidate.status === "CONNECTED"
+    );
+
+    if (!connection) {
+      return Promise.resolve(null);
+    }
+
+    const updated: FollowUpEmailConnectionRecord = {
+      ...connection,
+      providerAccountId: input.providerAccountId,
+      providerAccountEmail: input.providerAccountEmail,
+      encryptedAccessToken: input.encryptedAccessToken,
+      encryptedRefreshToken:
+        input.encryptedRefreshToken ?? connection.encryptedRefreshToken,
+      tokenExpiresAt: input.tokenExpiresAt,
+      grantedScopes: input.grantedScopes,
+      lastSendSafeErrorCode: null,
+    };
+    this.replaceEmailConnection(updated);
+
+    return Promise.resolve(updated);
   }
 
   listMessages(input: ListFollowUpMessagesInput): Promise<FollowUpMessagePageRecord> {
@@ -1003,6 +1186,16 @@ class InMemoryFollowUpMessageRepository implements FollowUpMessageRepository {
 
     if (index >= 0) {
       this.messages[index] = message;
+    }
+  }
+
+  private replaceEmailConnection(connection: FollowUpEmailConnectionRecord): void {
+    const index = this.emailConnections.findIndex(
+      (candidate) => candidate.id === connection.id
+    );
+
+    if (index >= 0) {
+      this.emailConnections[index] = connection;
     }
   }
 

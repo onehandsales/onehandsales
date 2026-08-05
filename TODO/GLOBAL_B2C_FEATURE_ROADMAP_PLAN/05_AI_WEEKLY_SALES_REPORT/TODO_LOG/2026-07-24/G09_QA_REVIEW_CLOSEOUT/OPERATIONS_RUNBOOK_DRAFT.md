@@ -28,6 +28,8 @@ Backend key names to confirm:
 - `FOLLOW_UP_MICROSOFT_CLIENT_ID`
 - `FOLLOW_UP_MICROSOFT_CLIENT_SECRET`
 - `FOLLOW_UP_MICROSOFT_TENANT_ID` if the tenant is not `common`
+- `FOLLOW_UP_EMAIL_SMOKE_MODE`
+- `FOLLOW_UP_EMAIL_SMOKE_ALLOWED_RECIPIENTS`
 - `OPENAI_API_KEY`
 - `OPENAI_AI_WEEKLY_SALES_REPORT_MODEL` if the default model should be overridden
 - production SMS provider credential keys after the real SMS adapter is selected
@@ -38,6 +40,7 @@ Fallbacks:
 - `ENCRYPTION_KEY_VERSION` can satisfy the follow-up encryption key version in local/dev.
 - AI weekly report uses the OpenAI provider by default. Set `AI_WEEKLY_REPORT_PROVIDER=deterministic` only for local deterministic smoke data.
 - Non-production SMS delivery uses the test provider; production returns a safe provider-unavailable result until a real adapter is configured.
+- Follow-up email smoke mode only calls Gmail/Microsoft for recipients listed in `FOLLOW_UP_EMAIL_SMOKE_ALLOWED_RECIPIENTS`.
 
 ## 4. OAuth Callback URLs
 
@@ -60,3 +63,16 @@ The User Web builds the callback URL from `VITE_API_URL`, so release smoke must 
 - Simulate provider rate limit/timeout/unavailable and confirm safe error and retry behavior.
 - Verify history appears in AI report, deal detail, and contact detail timelines.
 - Run mobile 390px/360px QA for `/app/schedules/week`, compose dialog, settings, and timeline.
+
+## 6. G10 Email Provider Smoke
+
+Run this only after Gmail/Microsoft OAuth credentials are present and callback URLs are registered.
+
+- Set `FOLLOW_UP_EMAIL_SMOKE_MODE=true`.
+- Set `FOLLOW_UP_EMAIL_SMOKE_ALLOWED_RECIPIENTS` to dedicated test inboxes only.
+- Connect Gmail in `/app/settings`.
+- Send one follow-up email to an allowlist recipient and confirm `FollowUpDeliveryAttempt.status=SENT`.
+- Send one follow-up email to a non-allowlist recipient and confirm `FollowUpDeliveryAttempt.status=FAILED`, `safeErrorCode=FollowUpEmailSmokeRecipientNotAllowed`, and no provider call.
+- Revoke or invalidate Gmail token and confirm message failure sets `ExternalEmailConnection.status=RECONNECT_REQUIRED`.
+- Repeat the same allowlist send, non-allowlist block, and reconnect-required checks for Microsoft 365.
+- Confirm logs and provider failure detail contain provider/status/safe code/latency only, not token, recipient email, sender email, subject, body, or raw provider response.

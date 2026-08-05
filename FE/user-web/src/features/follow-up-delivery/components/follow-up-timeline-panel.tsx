@@ -20,7 +20,11 @@ import type {
   FollowUpMessageListItem,
   FollowUpTargetType,
 } from "@/features/follow-up-delivery/types/follow-up-delivery";
-import { getApiErrorMessage } from "@/lib/api-client";
+import {
+  getFollowUpApiErrorMessage,
+  getFollowUpSafeErrorMessage,
+  isFollowUpEmailReconnectSafeError,
+} from "@/features/follow-up-delivery/utils/follow-up-safe-error-message";
 import { cn } from "@/utils/cn";
 import { formatDateTime } from "@/utils/format";
 import { normalizeInternalAppPath } from "@/utils/target-path";
@@ -130,7 +134,7 @@ function FollowUpTimelineItem({
     try {
       await retryMutation.mutateAsync(message.id);
     } catch (error) {
-      setRetryError(getApiErrorMessage(error));
+      setRetryError(getFollowUpApiErrorMessage(error));
     }
   };
 
@@ -175,9 +179,22 @@ function FollowUpTimelineItem({
             </p>
             <TargetLinks message={detailQuery.data ?? message} />
             {message.safeErrorMessage ? (
-              <InlineAlert message={message.safeErrorMessage} />
+              <InlineAlert
+                message={getFollowUpSafeErrorMessage({
+                  safeErrorCode: message.safeErrorCode,
+                  fallbackMessage: message.safeErrorMessage,
+                })}
+              />
             ) : null}
             {retryError ? <InlineAlert message={retryError} /> : null}
+            {isFollowUpEmailReconnectSafeError(message.safeErrorCode) ? (
+              <Link
+                className="inline-flex h-8 w-fit items-center rounded-md border border-[#F59E0B] bg-[#FFFBEB] px-3 text-[12px] font-semibold text-[#92400E] transition hover:bg-[#FFF7ED]"
+                to="/app/settings"
+              >
+                이메일 다시 연결
+              </Link>
+            ) : null}
             {message.status === "FAILED" && message.retryable ? (
               <div className="flex justify-end">
                 <Button
@@ -302,7 +319,9 @@ function InlineError({
     <div className="grid justify-items-start gap-3 rounded-md border border-destructive/30 bg-red-50 px-3 py-3">
       <div className="flex items-start gap-2">
         <AlertCircle className="mt-0.5 h-4 w-4 shrink-0 text-destructive" />
-        <p className="text-sm text-destructive">{getApiErrorMessage(error)}</p>
+        <p className="text-sm text-destructive">
+          {getFollowUpApiErrorMessage(error)}
+        </p>
       </div>
       <Button onClick={onRetry} size="sm" type="button">
         다시 시도

@@ -2,6 +2,11 @@ export { FollowUpDeliverySettingsSection } from "./components/follow-up-delivery
 export { FollowUpComposeDialog } from "./components/follow-up-compose-dialog";
 export { FollowUpTimelinePanel } from "./components/follow-up-timeline-panel";
 export {
+  getFollowUpApiErrorMessage,
+  getFollowUpSafeErrorMessage,
+  isFollowUpEmailReconnectSafeError,
+} from "./utils/follow-up-safe-error-message";
+export {
   useFollowUpDeliverySettings,
   useFollowUpMessageDetail,
   useFollowUpMessageList,

@@ -1,6 +1,6 @@
 # Goal Work Order
 
-상태: G01-G09 Done / G10 Ready
+상태: G01-G09 Done / G10 Implemented / Provider Smoke Pending
 확정일: 2026-08-05
 
 ## 1. 원칙

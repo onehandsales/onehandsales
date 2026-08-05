@@ -28,6 +28,7 @@ import type {
   ListFollowUpMessagesInput,
   MarkFollowUpDeliveryFailedInput,
   MarkFollowUpDeliverySucceededInput,
+  RefreshFollowUpEmailConnectionTokensInput,
   UpdateFollowUpMessageDraftInput,
 } from "@/modules/follow-up/application/ports/follow-up-message.repository";
 import {
@@ -55,6 +56,7 @@ type FollowUpDraftSourceRow = Prisma.AiWeeklySalesReportSuggestionGetPayload<{
   };
 }>;
 
+// 역할 : Prisma로 follow-up message, delivery attempt, sender 상태를 저장합니다.
 export class PrismaFollowUpMessageRepository
   implements FollowUpMessageRepository
 {
@@ -75,6 +77,7 @@ export class PrismaFollowUpMessageRepository
     );
   }
 
+  // 기능 : AI report와 suggestion 소유권을 함께 확인해 초안 source를 조회합니다.
   async findDraftSource(input: {
     readonly userId: string;
     readonly reportId: string;
@@ -94,6 +97,7 @@ export class PrismaFollowUpMessageRepository
     return suggestion ? this.mapDraftSource(suggestion) : null;
   }
 
+  // 기능 : 사용자 소유 담당자 중 삭제되지 않은 수신자를 조회합니다.
   async findContactForUser(input: {
     readonly userId: string;
     readonly contactId: string;
@@ -116,6 +120,7 @@ export class PrismaFollowUpMessageRepository
     return contact;
   }
 
+  // 기능 : AI suggestion 맥락 안에서 선택 수신자가 허용되는지 확인합니다.
   async isRecipientAllowedForSuggestion(input: {
     readonly userId: string;
     readonly suggestion: FollowUpSuggestionRecord;
@@ -155,6 +160,7 @@ export class PrismaFollowUpMessageRepository
     );
   }
 
+  // 기능 : 사용자가 최근 연결한 발송 가능한 email connection을 조회합니다.
   async findReadyEmailConnectionForUser(
     userId: string
   ): Promise<FollowUpEmailConnectionRecord | null> {
@@ -171,6 +177,7 @@ export class PrismaFollowUpMessageRepository
     return connection ? this.mapEmailConnection(connection) : null;
   }
 
+  // 기능 : message 발송에 묶인 email connection이 현재 발송 가능한지 조회합니다.
   async findEmailConnectionForSend(input: {
     readonly userId: string;
     readonly connectionId: string;
@@ -188,6 +195,7 @@ export class PrismaFollowUpMessageRepository
     return connection ? this.mapEmailConnection(connection) : null;
   }
 
+  // 기능 : 사용자가 최근 인증한 SMS 발신번호를 조회합니다.
   async findVerifiedSmsSenderNumberForUser(
     userId: string
   ): Promise<FollowUpSmsSenderNumberRecord | null> {
@@ -203,6 +211,7 @@ export class PrismaFollowUpMessageRepository
     return senderNumber ? this.mapSmsSenderNumber(senderNumber) : null;
   }
 
+  // 기능 : message 발송에 묶인 SMS 발신번호가 현재 발송 가능한지 조회합니다.
   async findSmsSenderNumberForSend(input: {
     readonly userId: string;
     readonly senderNumberId: string;
@@ -219,6 +228,7 @@ export class PrismaFollowUpMessageRepository
     return senderNumber ? this.mapSmsSenderNumber(senderNumber) : null;
   }
 
+  // 기능 : 채널별 첫 발송 주의 안내 확인 이력을 조회합니다.
   async findConsentNotice(input: {
     readonly userId: string;
     readonly channel: "EMAIL" | "SMS";
@@ -235,6 +245,7 @@ export class PrismaFollowUpMessageRepository
     return notice;
   }
 
+  // 기능 : follow-up 초안과 AI provider 성공 이력을 같은 transaction에 저장합니다.
   async createDraftWithProviderCall(
     input: CreateFollowUpDraftInput
   ): Promise<FollowUpMessageDetailRecord> {
@@ -300,6 +311,7 @@ export class PrismaFollowUpMessageRepository
     return this.mapMessageDetail(message);
   }
 
+  // 기능 : AI provider 실패 이력을 민감 원문 없이 저장합니다.
   async createDraftProviderCallFailure(
     input: CreateDraftProviderCallFailedInput
   ): Promise<void> {
@@ -322,6 +334,7 @@ export class PrismaFollowUpMessageRepository
     });
   }
 
+  // 기능 : 사용자 소유 follow-up message 상세를 조회합니다.
   async findMessageForUser(input: {
     readonly userId: string;
     readonly messageId: string;
@@ -337,6 +350,7 @@ export class PrismaFollowUpMessageRepository
     return message ? this.mapMessageDetail(message) : null;
   }
 
+  // 기능 : 전송 전 또는 retry 가능한 실패 message의 편집 내용을 저장합니다.
   async updateDraftMessage(
     input: UpdateFollowUpMessageDraftInput
   ): Promise<FollowUpMessageDetailRecord | null> {
@@ -364,6 +378,7 @@ export class PrismaFollowUpMessageRepository
     });
   }
 
+  // 기능 : 중복 발송을 막기 위해 message 상태를 SENDING으로 바꾸고 attempt를 만듭니다.
   async beginDeliveryAttempt(
     input: BeginFollowUpDeliveryAttemptInput
   ): Promise<BeginFollowUpDeliveryAttemptResult | null> {
@@ -422,6 +437,7 @@ export class PrismaFollowUpMessageRepository
     };
   }
 
+  // 기능 : provider 발송 성공 결과를 message와 attempt에 반영합니다.
   async markDeliverySucceeded(
     input: MarkFollowUpDeliverySucceededInput
   ): Promise<FollowUpMessageDetailRecord | null> {
@@ -503,6 +519,7 @@ export class PrismaFollowUpMessageRepository
     return message;
   }
 
+  // 기능 : provider 발송 실패 결과를 safe error 중심으로 message와 attempt에 반영합니다.
   async markDeliveryFailed(
     input: MarkFollowUpDeliveryFailedInput
   ): Promise<FollowUpMessageDetailRecord | null> {
@@ -564,7 +581,7 @@ export class PrismaFollowUpMessageRepository
       return null;
     }
 
-    await this.markSenderFailure(message, input.safeErrorCode);
+    await this.markSenderFailure(message, input.safeErrorCode, input.failedAt);
     await this.createFollowUpDealActivities({
       message,
       attemptId: input.attemptId,
@@ -584,6 +601,40 @@ export class PrismaFollowUpMessageRepository
     return message;
   }
 
+  // 기능 : refresh 성공 후 새 access token과 scope 정보를 connection에 저장합니다.
+  async refreshEmailConnectionTokens(
+    input: RefreshFollowUpEmailConnectionTokensInput
+  ): Promise<FollowUpEmailConnectionRecord | null> {
+    const result = await this.client.externalEmailConnection.updateMany({
+      where: {
+        id: input.connectionId,
+        userId: input.userId,
+        status: PrismaExternalEmailConnectionStatus.CONNECTED,
+      },
+      data: {
+        providerAccountId: input.providerAccountId,
+        providerAccountEmail: input.providerAccountEmail,
+        encryptedAccessToken: input.encryptedAccessToken,
+        ...(input.encryptedRefreshToken
+          ? { encryptedRefreshToken: input.encryptedRefreshToken }
+          : {}),
+        tokenExpiresAt: input.tokenExpiresAt,
+        grantedScopes: [...input.grantedScopes],
+        lastSendSafeErrorCode: null,
+      },
+    });
+
+    if (result.count !== 1) {
+      return null;
+    }
+
+    return this.findEmailConnectionForSend({
+      userId: input.userId,
+      connectionId: input.connectionId,
+    });
+  }
+
+  // 기능 : follow-up message 이력을 source 또는 timeline target 기준으로 페이지 조회합니다.
   async listMessages(
     input: ListFollowUpMessagesInput
   ): Promise<FollowUpMessagePageRecord> {
@@ -738,7 +789,8 @@ export class PrismaFollowUpMessageRepository
 
   private async markSenderFailure(
     message: FollowUpMessageRow,
-    safeErrorCode: string
+    safeErrorCode: string,
+    failedAt: Date
   ): Promise<void> {
     if (message.emailConnectionId) {
       await this.client.externalEmailConnection.updateMany({
@@ -748,6 +800,12 @@ export class PrismaFollowUpMessageRepository
         },
         data: {
           lastSendSafeErrorCode: safeErrorCode,
+          ...(this.isEmailReconnectSafeError(safeErrorCode)
+            ? {
+                status: PrismaExternalEmailConnectionStatus.RECONNECT_REQUIRED,
+                reconnectRequiredAt: failedAt,
+              }
+            : {}),
         },
       });
     }
@@ -763,6 +821,14 @@ export class PrismaFollowUpMessageRepository
         },
       });
     }
+  }
+
+  // 기능 : email provider 인증/권한 실패 safe code를 재연결 필요 상태로 분류합니다.
+  private isEmailReconnectSafeError(safeErrorCode: string): boolean {
+    return (
+      safeErrorCode === "FollowUpEmailReconnectRequired" ||
+      safeErrorCode === "FollowUpEmailScopeInsufficient"
+    );
   }
 
   private createDraftUpdateData(
@@ -882,11 +948,15 @@ export class PrismaFollowUpMessageRepository
       id: true,
       userId: true,
       provider: true,
+      providerAccountId: true,
       providerAccountEmail: true,
       status: true,
       encryptedAccessToken: true,
       encryptedRefreshToken: true,
+      tokenExpiresAt: true,
+      grantedScopes: true,
       connectedAt: true,
+      reconnectRequiredAt: true,
       lastSentAt: true,
       lastSendSafeErrorCode: true,
     } satisfies Prisma.ExternalEmailConnectionSelect;
