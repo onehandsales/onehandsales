@@ -1,7 +1,7 @@
 # Decision Log
 
 상태: Decision Baseline
-기준일: 2026-08-03
+기준일: 2026-08-05
 
 ## 0. 완료 반영
 
@@ -50,7 +50,7 @@
 | `/goal` 관계 | 이 로드맵은 `/goal`이 아니며, 각 번호 폴더를 보강한 뒤 별도 `/goal`로 전환한다. |
 | 슬롯 의사결정 | 각 슬롯은 이 문서의 추천 결정을 기본값으로 삼고, 구현 전 `SCOPE/API/DB/FE` 문서에서 confirmed로 승격한다. |
 | First-sale gate | `COMMON/FIRST-SALE-GATE-MAP.md`를 Global roadmap의 선행 gate 기준으로 둔다. `TODO/NEXT_BACKEND_API_BACKLOG_PLAN`과 `TODO/USER_WEB_PRODUCTIZATION_GAP_PLAN`의 최종 방향이 01~12 순서에서 약해지지 않게 추적한다. |
-| 12 이후 재검토 | 12를 먼저 진행한 뒤, 01~12 전체와 `TODO/NEXT_BACKEND_API_BACKLOG_PLAN`, `TODO/USER_WEB_PRODUCTIZATION_GAP_PLAN`, 실제 BE/FE/Prisma 상태를 다시 학습한다. 미구현/후속/보류 항목은 기존 완료 폴더를 되돌리지 않고 새 TODO 폴더로 승격한다. UX/UI 디자인 유지보수는 이 재검토와 후속 작업 재분류 이후 별도 계획으로 진행한다. |
+| 01~11 pre-12 후속 재대조와 post-12 최종 재검토 | 2026-08-05 사용자 결정 기준으로 12 착수 전에 01~11 완료 슬롯을 먼저 다시 대조한다. 현재 01~04는 진행/확인 완료로 보고 05~11을 다음 대상으로 둔다. billing/paywall/churn/paid conversion/invoice/tax에 직접 연결되는 항목은 12 전 임시 구현으로 처리하지 않고 12 또는 post-12 seed로 보류한다. 12 완료 후에는 01~12 전체와 입력 계획 2개, 실제 BE/FE/Prisma 상태를 다시 학습해 최종 후속 TODO로 재배치한다. |
 
 ## 3. 슬롯별 추천 결정
 
