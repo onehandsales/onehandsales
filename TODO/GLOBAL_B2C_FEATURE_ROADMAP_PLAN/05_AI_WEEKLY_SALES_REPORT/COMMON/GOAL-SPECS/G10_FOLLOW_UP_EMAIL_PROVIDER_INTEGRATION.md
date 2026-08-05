@@ -225,7 +225,7 @@ rg -n "console\\.log|providerRaw|accessToken|refreshToken|recipientEmail|subject
 
 2026-08-05 구현 증거:
 
-- BE: `pnpm run prisma:validate`, `pnpm run typecheck`, `pnpm run lint`, `pnpm run test -- follow-up` 8 suites / 40 tests, `pnpm run build` 통과.
+- BE: `pnpm run prisma:validate`, `pnpm run typecheck`, `pnpm run lint`, `pnpm run test -- follow-up` 8 suites / 41 tests, `pnpm run build` 통과.
 - FE: `pnpm run typecheck`, `pnpm run lint`, `pnpm run build`, `pnpm run test:e2e:mobile` 10 tests 통과.
 - 로컬 `BE/.env`에 Gmail/Microsoft credential과 smoke allowlist env가 없어 production-equivalent 실제 발송 smoke는 미실행이다.
 

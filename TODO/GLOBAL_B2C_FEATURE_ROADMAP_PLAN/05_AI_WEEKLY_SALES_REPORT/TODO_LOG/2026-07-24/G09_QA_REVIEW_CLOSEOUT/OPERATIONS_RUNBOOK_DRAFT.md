@@ -68,6 +68,7 @@ The User Web builds the callback URL from `VITE_API_URL`, so release smoke must 
 
 Run this only after Gmail/Microsoft OAuth credentials are present and callback URLs are registered.
 
+- Run in a deployed production-equivalent Backend or set `NODE_ENV=production`; non-production without provider credentials uses local test-provider fallback and is not valid evidence for G10 production smoke.
 - Set `FOLLOW_UP_EMAIL_SMOKE_MODE=true`.
 - Set `FOLLOW_UP_EMAIL_SMOKE_ALLOWED_RECIPIENTS` to dedicated test inboxes only.
 - Connect Gmail in `/app/settings`.

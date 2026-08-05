@@ -109,6 +109,33 @@ describe("ConfigurableFollowUpEmailDeliveryProvider", () => {
     });
   });
 
+  it("fails safely in production when provider credentials are missing", async () => {
+    const fetchMock = mockFetch(new Response(null, { status: 202 }));
+    const provider = createProvider({});
+
+    const result = await provider.sendEmail({
+      provider: "GOOGLE",
+      accessToken: "access-token-secret",
+      from: { email: "owner@example.com" },
+      to: { email: "buyer@example.com" },
+      subject: "Follow-up",
+      body: "Please review the quote.",
+      idempotencyKey: "attempt-missing-config",
+    });
+
+    expect(fetchMock).not.toHaveBeenCalled();
+    expect(result).toMatchObject({
+      ok: false,
+      provider: "google",
+      safeErrorCode: "FollowUpProviderUnavailable",
+      retryable: false,
+      detailJson: {
+        providerStatusReason: "PROVIDER_NOT_CONFIGURED",
+        safeCategory: "CONFIG",
+      },
+    });
+  });
+
   it("blocks smoke recipients outside allowlist before provider calls", async () => {
     const fetchMock = mockFetch(new Response(null, { status: 202 }));
     const provider = createProvider({
