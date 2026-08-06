@@ -77,6 +77,7 @@ PRE12_FOLLOWUP_RECHECK/
       G03_MEETING_NOTE_FOLLOW_UP_REMINDER_CONTRACT.md
       G04_RECORD_SUMMARY_CONTRACT.md
       G05_PROVIDER_SMOKE_CLOSEOUT.md
+      G06_06_RECORD_SUMMARY_DEFER_CLOSEOUT.md
       G99_PRE12_CLOSEOUT.md
   BE-TODO/
     API-TODO.md
@@ -93,6 +94,7 @@ PRE12_FOLLOWUP_RECHECK/
 4. 06 작업 중 발견한 보정은 06 완료 범위를 넓히는 방식이 아니라 이 폴더의 후보 상태로 기록한다.
 5. billing/paywall/churn/paid conversion/invoice/tax와 연결된 항목은 12 전 구현하지 않는다.
 6. `NBA-003` 잔여 record summary는 2026-08-06 A 결정에 따라 12 전 API/DB/FE 계약화 대상으로 보지 않는다.
+7. G06은 06/NBA-003 defer 결정의 문서 closeout으로만 사용하고 구현 goal로 전환하지 않는다.
 
 ## 7. 먼저 읽을 문서
 

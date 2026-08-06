@@ -11,8 +11,9 @@
 | G01 | `G01_06_SCOPE_GUARD_AND_CODE_AUDIT.md` | 06 작업 결과가 범위를 넓히지 않았는지 audit |
 | G02 | `G02_NEXT_ACTION_REMINDER_CONTRACT.md` | 다음 행동 reminder 계약 여부 결정 |
 | G03 | `G03_MEETING_NOTE_FOLLOW_UP_REMINDER_CONTRACT.md` | 회의록 follow-up reminder/자동 발송 후보 분리 |
-| G04 | `G04_RECORD_SUMMARY_CONTRACT.md` | 2026-08-06 A 결정에 따른 Company/Contact/Product/MeetingNote summary 후보 보류 |
+| G04 | `G04_RECORD_SUMMARY_CONTRACT.md` | NBA-003 record summary 보류 결정과 NBA-004 MeetingNote list summary 분리 |
 | G05 | `G05_PROVIDER_SMOKE_CLOSEOUT.md` | 05 G10 운영 provider smoke closeout |
+| G06 | `G06_06_RECORD_SUMMARY_DEFER_CLOSEOUT.md` | 06/NBA-003 record summary defer 결정 closeout |
 | G99 | `G99_PRE12_CLOSEOUT.md` | pre-12 재대조 closeout과 상위 문서 반영 |
 
 ## 2. 공통 금지
