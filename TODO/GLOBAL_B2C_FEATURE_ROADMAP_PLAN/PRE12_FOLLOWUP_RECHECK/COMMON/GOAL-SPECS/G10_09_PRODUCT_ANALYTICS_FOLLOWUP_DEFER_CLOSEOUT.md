@@ -1,13 +1,16 @@
 # G10 09 Product Analytics Follow-up Defer Closeout
 
-상태: Draft / 문서 closeout / 구현 금지
+상태: Completed / 문서 closeout 완료 / 구현 금지
 작성일: 2026-08-06
+검토일: 2026-08-06
 
 ## 1. 목표
 
 `09_PRODUCT_ANALYTICS`에서 완료한 Product Analytics foundation을 재오픈하지 않고, 09 밖으로 남은 후속 후보를 PRE12 후보로 분류한다.
 
 이 goal은 구현 goal이 아니다. `BE`, `FE` 코드 변경, API 계약 확정, Prisma migration 생성, analytics runtime event 추가, 외부 provider SDK/adapter 추가는 하지 않는다.
+
+2026-08-06 재대조 결과, `NEXT_BACKEND_API_BACKLOG_PLAN`과 `USER_WEB_PRODUCTIZATION_GAP_PLAN`에는 있으나 09 또는 PRE12에 누락된 추가 후속 후보는 발견되지 않았다. 확인된 후속 후보는 `PRE12-F26`~`PRE12-F30` 또는 기존 `PRE12-F12`, `PRE12-F01`, `PRE12-F02`, `PRE12-F10`으로 이미 분류되어 있다.
 
 ## 2. 판단 근거
 
@@ -78,13 +81,23 @@
 
 확인한 주요 코드 기준:
 
+- `BE/prisma/schema.prisma`와 `BE/prisma/migrations/20260730090000_add_product_analytics/migration.sql`에는 `ProductAnalyticsEvent`, `UserActivationSnapshot`, `RetentionCohortSnapshot` 및 관련 enum/index/COMMENT가 있다.
+- `BE/src/modules/analytics`에는 `POST /api/analytics/events`, `ProductAnalyticsEventRecorder`, snapshot/purge use case, AI usage summary use case, runtime/reserved taxonomy가 있다.
+- `BE/src/modules/data-import`에는 01 ImportJob 완료 범위를 09 analytics로 연결하는 `import_confirmed` server event 기록이 있다.
+- `FE/user-web/src/features/analytics`와 `FE/user-web/src/components/layout/app-shell.tsx`에는 `VITE_PRODUCT_ANALYTICS_ENABLED` gate, `trackAnalyticsEvent`, `useAppRouteAnalytics`, routeKey mapper가 있다.
+- `BE/src/modules/admin-operation`과 `FE/admin-web/src/features/usage-analytics`에는 11 범위의 Admin analytics overview가 있으며, billing/subscription 지표는 제외된다.
+- billing/paywall/churn event는 `PRODUCT_ANALYTICS_RESERVED_BILLING_EVENT_NAMES`에만 있고 09 runtime allowlist로 발생하지 않는다.
+- `ExperimentAssignment`, external analytics provider forwarding, public/UTM attribution runtime, PWA/native install attribution 구현은 확인되지 않았다. `FE/user-web/src/pages/privacy`의 analytics provider 문구는 public privacy copy이며 실제 provider SDK/adapter 구현 근거가 아니다.
+
 ```powershell
 rg -n "model ProductAnalyticsEvent|model UserActivationSnapshot|model RetentionCohortSnapshot|model AccountDeletionRequest|AiUsageDaily|UsageMeter|ExperimentAssignment|ChurnSurveyResponse|BillingEvent|UserSubscription" BE\prisma\schema.prisma
-rg -n "PRODUCT_ANALYTICS_CLIENT_EVENT_NAMES|PRODUCT_ANALYTICS_SERVER_EVENT_NAMES|RESERVED_PRODUCT_ANALYTICS_BILLING_EVENT_NAMES" BE\src\modules\analytics
-rg -n '@Post\("events"\)|@Controller\("api/analytics"\)|CollectProductAnalyticsEvent' BE\src\modules\analytics
+rg -n "PRODUCT_ANALYTICS_CLIENT_EVENT_NAMES|PRODUCT_ANALYTICS_SERVER_EVENT_NAMES|PRODUCT_ANALYTICS_RESERVED_BILLING_EVENT_NAMES" BE\src\modules\analytics
+rg -n "Controller|Post|CollectProductAnalyticsEvent|ProductAnalyticsEventRecorder|ProcessProductAnalyticsSnapshotsUseCase|PurgeProductAnalyticsRawEventsUseCase|SummarizeAiUsageUseCase" BE\src\modules\analytics -g "*.ts"
+rg -n "import_confirmed|ProductAnalyticsEventRecorder|analyticsEventRecorder|recordServerEvent" BE\src\modules\data-import TODO\GLOBAL_B2C_FEATURE_ROADMAP_PLAN\01_IMPORT_JOB_PERSISTENCE -g "*.ts" -g "*.md"
 rg -n "useAppRouteAnalytics|trackAnalyticsEvent|VITE_PRODUCT_ANALYTICS_ENABLED" FE\user-web\src
 rg -n "admin/api/analytics|AdminAnalytics|usage analytics" BE\src\modules\admin-operation FE\admin-web\src
 rg -n "AccountDeletionRequest|scheduledDeletionAt|user\.delete|account deletion" BE\src\modules FE\user-web\src FE\admin-web\src
+rg -n "ExperimentAssignment|experiments/assignments|Segment|PostHog|Mixpanel|GoogleAnalytics|gtag|amplitude|UTM|utm_|ad attribution|attribution|external analytics|analytics provider|provider forwarding" BE\src FE\user-web\src FE\admin-web\src -g "*.ts" -g "*.tsx"
 ```
 
 ## 7. 완료 기준

@@ -20,7 +20,7 @@
 - `GOAL-SPECS/README.md`: goal 상세 명세 목록
 - `GOAL-SPECS/G08_07_MEETING_NOTE_AI_FOLLOWUP_DEFER_CLOSEOUT.md`: 07 MeetingNote AI 후속 후보 closeout
 - `GOAL-SPECS/G09_08_GLOBAL_DATA_I18N_FOLLOWUP_DEFER_CLOSEOUT.md`: 08 Global Data I18N 후속 후보 closeout 완료
-- `GOAL-SPECS/G10_09_PRODUCT_ANALYTICS_FOLLOWUP_DEFER_CLOSEOUT.md`: 09 Product Analytics 후속 후보 closeout
+- `GOAL-SPECS/G10_09_PRODUCT_ANALYTICS_FOLLOWUP_DEFER_CLOSEOUT.md`: 09 Product Analytics 후속 후보 closeout 완료
 - `GOAL-SPECS/G11_10_MOBILE_PWA_FIELD_USE_FOLLOWUP_CLOSEOUT.md`: 10 Mobile PWA Field Use 후속 후보와 문서/코드 정합성 closeout
 - `GOAL-SPECS/G12_11_ADMIN_OPERATION_FOLLOWUP_CLOSEOUT.md`: 11 Admin Operation 후속 후보와 문서/코드 정합성 closeout
 
@@ -74,7 +74,7 @@
 
 08 재대조 기준으로 `/app` 기본 `ko-KR/en` i18n, User global settings, KR/US phone/region, KRW/USD currency, Import/Export localization, Google/LINE/Apple auth는 완료다. 시장/국가/auth 확장과 UX polish는 08 미완성이 아니라 `PRE12-F17`~`PRE12-F25` 후속 후보 또는 post-12 seed로 분류했고 G09 closeout을 완료했다.
 
-09 재대조 기준으로 자체 DB `ProductAnalyticsEvent`, collector, core event, activation/retention, AI usage summary, billing reserved taxonomy, 10 mobile field-use event, 11 Admin analytics overview는 완료다. account deletion 실제 처리, 세부 event 확장, 외부 provider, attribution/experiment, PWA/native install attribution은 09 미완성이 아니라 PRE12 후속 후보 또는 post-12 seed로 분류한다.
+09 재대조 기준으로 자체 DB `ProductAnalyticsEvent`, collector, core event, activation/retention, AI usage summary, billing reserved taxonomy, 10 mobile field-use event, 11 Admin analytics overview는 완료다. account deletion 실제 처리, 세부 event 확장, 외부 provider, attribution/experiment, PWA/native install attribution은 09 미완성이 아니라 `PRE12-F26`~`PRE12-F30` 후속 후보 또는 post-12 seed로 분류했고 G10 closeout을 완료했다.
 
 10 재대조 기준으로 BusinessCard capture/OCR safe failure, MeetingNote recording/STT fallback, local draft, browser push permission UX, mobile field analytics는 완료다. 10 FE/BE TODO 체크리스트 미체크와 FE route architecture stale은 기능 미완성이 아니라 `pre-12-doc-cleanup` 후보로 분류한다.
 

@@ -127,7 +127,7 @@ rg -n "NotificationSourceType|schedule.*reminder|deal.*reminder|NEXT_ACTION|MEET
 rg -n "@Controller" BE\src\modules\notification BE\src\modules\deal BE\src\modules\meeting-note BE\src\modules\follow-up -g "*.controller.ts"
 rg -n "SUPPORTED_LOCALES|SUPPORTED_COUNTRY_CODES|SUPPORTED_CURRENCY_CODES|SUPPORTED_CONTACT_PHONE_COUNTRY_CODES|COMPANY_REGION_COUNTRY_CODES" BE\src -g "*.ts"
 rg -n "ExternalAuthProvider|OAuthProvider|normalizeProvider" BE\src\modules\auth BE\src\shared -g "*.ts"
-rg -n "ProductAnalyticsEvent|PRODUCT_ANALYTICS_CLIENT_EVENT_NAMES|PRODUCT_ANALYTICS_SERVER_EVENT_NAMES|RESERVED_PRODUCT_ANALYTICS_BILLING_EVENT_NAMES" BE\src\modules\analytics BE\prisma\schema.prisma
+rg -n "ProductAnalyticsEvent|PRODUCT_ANALYTICS_CLIENT_EVENT_NAMES|PRODUCT_ANALYTICS_SERVER_EVENT_NAMES|PRODUCT_ANALYTICS_RESERVED_BILLING_EVENT_NAMES" BE\src\modules\analytics BE\prisma\schema.prisma
 rg -n "AccountDeletionRequest|scheduledDeletionAt|user\.delete|account deletion" BE\src\modules BE\prisma\schema.prisma
 rg -n "@Controller\(|@UseGuards\(|data-export-requests/.*/download|TrashRecoveryRequest|AdminOperationCheckRun" BE\src\modules\admin-operation BE\src\modules\account-request BE\src\modules\trash BE\prisma\schema.prisma
 ```
