@@ -21,6 +21,7 @@
 | AI data cleanup 제안 저장/적용 | MeetingNote/record cleanup suggestion 생성, 적용, 되돌리기 | post-12-seed / 별도 data quality 계획 | 구현 금지 |
 | MeetingNote transcript/raw/follow-up draft 저장/조회 | transcript, provider raw response, follow-up draft body 저장 또는 raw access API | defer / 정책 필요 | 구현 금지 |
 | Import scale/source/Admin 확장 | 대용량 import worker API, 일정/회의록 import source API, ImportJob Admin 전용 API | post-12-seed | 12 전 구현 금지 |
+| Google Calendar 고급 sync/provider 확장 | export/write/양방향 sync, webhook/watch, recurrence, reminders, attendee/contact auto-link, multi-account, Google 외 provider API 계약 | post-12-seed / `PRE12-F10` | 12 전 구현 금지 |
 | Gmail/Microsoft provider smoke closeout | 새 API 없음 | not applicable | 운영 smoke 기록만 가능 |
 | App locale 확장 | User profile locale 허용값, app translation resource delivery 방식 검토 | post-12-seed | `ja`, `zh-TW`, `zh-CN` 구현 금지 |
 | Global country/currency/phone 확장 | User country/default currency, Contact phone, Company region dictionary 확장 계약 | post-12-seed | 12 전 구현 금지 |

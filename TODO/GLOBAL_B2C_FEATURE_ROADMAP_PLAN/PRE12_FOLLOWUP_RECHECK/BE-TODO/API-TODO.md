@@ -13,6 +13,7 @@
 | 영역 | 현재 사실 |
 | --- | --- |
 | Notification | `NotificationSourceType`은 `SCHEDULE`, `DEAL`만 사용한다. 일정 시작 reminder와 딜 마감 reminder 중심이다. |
+| Google Calendar | `/api/schedules/google` connect/status/calendars/selection/sync/disconnect와 callback은 04 범위로 완료됐다. OAuth scope는 `calendar.readonly`이고 export/write/watch/reminders/attendee/multi-account/other provider API는 없다. |
 | DealActivity | `NEXT_ACTION_CREATED`, `NEXT_ACTION_COMPLETION_CHANGED`, `MEETING_NOTE_LINKED`, `FOLLOW_UP_SENT/FAILED` 같은 activity event가 있다. |
 | MeetingNote AI | `AiProviderOperation`에 MeetingNote draft/STT/next action/follow-up draft operation이 있다. |
 | Follow-up Delivery | `FollowUpMessage`, `FollowUpDeliveryAttempt`, `ExternalEmailConnection` 계열이 있고 Gmail/Microsoft email adapter는 구현됐다. SMS provider는 production 실제 provider가 아니라 test/not-configured provider 상태다. |
@@ -41,6 +42,7 @@ G00과 API contract 확정 전에는 아래 Backend 변경을 하지 않는다.
 - 일정/회의록 import API 추가
 - ImportJob Admin 전용 API 추가
 - generic ExportJob API 추가
+- Google Calendar export/write/양방향 sync/webhook/watch/reminders/attendee import/multi-account/other provider API 추가
 - billing/paywall/churn API 추가
 - User locale/country/currency 허용값 확장
 - Contact phone country 확장
@@ -62,6 +64,8 @@ G00과 API contract 확정 전에는 아래 Backend 변경을 하지 않는다.
 - 자동 민감정보 감지/DLP API 또는 processor 추가
 
 2026-08-06 A 결정에 따라 Company/Contact/Product latest summary, generic summary endpoint, record별 상세 timeline은 12 전 API contract 확정 대상으로 올리지 않는다.
+
+04 재대조 기준으로 Google Calendar Backend/API 범위는 read-only import/sync, calendar 선택, source metadata, Trash restore, Google-origin reminder까지 완료다. Google export/write/양방향 sync, realtime webhook/watch, 반복 일정 정식 모델, reminders/attendee import, multi-account/provider 확장은 04 미완성이 아니라 `PRE12-F10` 후속 후보로만 둔다.
 
 08 재대조 기준으로 Google/LINE/Apple 외 provider, `/app` locale prefix, 추가 국가/통화/전화번호 포맷은 새 계약 없이 확장하지 않는다. 국가별 tax/terms/pricing과 amount precision은 12 Billing 결정 전 Backend API 작업으로 올리지 않는다.
 
@@ -98,6 +102,7 @@ G00과 API contract 확정 전에는 아래 Backend 변경을 하지 않는다.
 | PWA/native packaging과 attribution | manifest/install/offline/full offline sync/native push/contact/calendar/native app install attribution API 필요 여부 결정 | post-12-seed / 별도 mobile roadmap |
 | 10 FE/BE TODO 체크리스트 정합성 | 10 BE TODO의 G03/G05/G06 체크박스를 실제 완료 상태와 맞추는 문서 정리. 새 API 없음 | pre-12-doc-cleanup |
 | generic ExportJob/PDF | BE `ExportJob`/`/api/exports`는 현재 없음. FE 잔여 코드가 있어도 post-12 전 API를 열지 않음 | post-12-seed |
+| Google Calendar 고급 sync/provider 확장 | 현재 API는 read-only sync와 selected calendar 관리만 제공한다. write/export/watch/reminders/attendee/multi-account/other provider는 새 API contract 필요 | post-12-seed / `PRE12-F10` |
 | 11 Admin 문서 체크리스트 정합성 | 11 BE/API TODO와 goal index를 실제 완료 상태와 맞추는 문서 정리. 새 API 없음 | pre-12-doc-cleanup |
 | Admin 직접 Trash 복구/유료 복구/hard delete/purge | Admin restore mutation, payment recovery API, purge/hard delete API 기준 필요 | Question / 정책 및 billing 필요 |
 | User data export artifact/download | artifact 생성 processor, storage signed URL, download controller, file TTL/ownership/audit 기준 필요 | post-12-seed / `PRE12-F09` 연결 |

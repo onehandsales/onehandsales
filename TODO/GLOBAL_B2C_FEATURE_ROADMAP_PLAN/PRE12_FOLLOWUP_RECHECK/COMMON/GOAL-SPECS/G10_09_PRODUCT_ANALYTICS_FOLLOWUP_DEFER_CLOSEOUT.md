@@ -56,7 +56,7 @@
 | billing/paywall/churn/paid conversion | `PRE12-F12` | 09 reserved taxonomy는 12 Billing 구현을 대신하지 않는다. |
 | AI usage plan/quota/paywall source | `PRE12-F12` | 09 `AiProviderCallLog` summary는 Admin 참고용이다. 12에서 `AiUsageDaily`/`UsageMeter` 여부를 결정한다. |
 | Notification reminder 기능 자체 | `PRE12-F01`, `PRE12-F02` | 09에서 새 알림 기능을 만들지 않는다. 필요한 것은 별도 세부 analytics event 후보 `PRE12-F27`뿐이다. |
-| Google Calendar write/watch/recurrence 기능 자체 | `PRE12-F10` | 09는 Calendar sync detail event를 만들지 않는다. Calendar 기능 확장은 기존 후보를 따른다. |
+| Google Calendar 고급 sync/provider 기능 자체 | `PRE12-F10` | 09는 Calendar sync detail event를 만들지 않는다. Calendar export/write/watch/recurrence/reminders/attendee/multi-account/provider 확장은 기존 후보를 따른다. |
 | PWA/native app 기능 자체 | `PRE12-F30` | 10 완료 범위는 mobile browser field-use다. PWA/offline/native는 10 미완성이 아니라 별도 mobile roadmap 후속이다. |
 
 ## 5. 구현 금지

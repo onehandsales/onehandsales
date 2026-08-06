@@ -37,7 +37,8 @@
 - AI data cleanup 제안 저장/적용 API 추가
 - MeetingNote transcript/raw provider response/follow-up draft 저장 table 또는 raw 조회 API 추가
 - 대용량 import worker, 일정/회의록 import, ImportJob Admin 전용 화면/API 추가
-- generic ExportJob, PDF, recurrence, Google Calendar write/watch
+- generic ExportJob, PDF, recurrence
+- Google Calendar export/write/양방향 sync/webhook/watch/reminders/attendees/multi-account/other provider
 - billing/paywall/churn/paid conversion runtime flow
 - `/app` `ja`, `zh-TW`, `zh-CN` locale 추가
 - 전 세계 country/currency/phone dictionary 추가

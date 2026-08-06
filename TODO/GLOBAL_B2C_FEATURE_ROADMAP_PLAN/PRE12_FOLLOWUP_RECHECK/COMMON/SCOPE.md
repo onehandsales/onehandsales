@@ -15,6 +15,7 @@
 | 01~06 재대조 결과 정리 | 01~04 완료, 05 provider smoke pending 상태와 06 후속 재검토 A 결정을 07~11 재대조에서 참고할 수 있게 정리한다. |
 | 01 Import 확장 후보 분리 | 대용량 import worker, 일정/회의록 import, ImportJob Admin 전용 화면/API가 01 미완성이 아니라 별도 post-12 seed임을 고정한다. |
 | 02 후속 후보 분리 | 다음 행동 알림, 회의록 후속 알림, Notification 데이터 TTL/cleanup 정책이 02 구현 범위가 아니었음을 고정한다. |
+| 04 후속 후보 분리 | Google read-only import/sync 완료 범위와 Google export/write/양방향 sync, realtime webhook/watch, 반복 일정 정식 모델, reminders/attendee import, 여러 Google 계정, Google Calendar 외 provider 후보를 분리한다. |
 | 06 작업 경계 설정 | DealActivity event와 실제 Notification reminder를 분리한다. |
 | 07 작업 경계 설정 | MeetingNote 상세 AI draft와 MeetingNote 목록 summary/자동 발송/알림/AI data cleanup/raw 저장 후보를 분리한다. |
 | 08 작업 경계 설정 | `/app` 기본 i18n/global data/auth provider 완료 범위와 시장/국가/통화/auth 확장 후보를 분리한다. |
@@ -31,6 +32,7 @@
 | 06 DealActivity 구현 재개 | 06은 이미 완료 슬롯이다. 현재 작업이 있더라도 이 문서는 06 범위 확장을 지시하지 않는다. |
 | 07 MeetingNote AI 구현 재개 | 07은 이미 완료 슬롯이다. 목록 summary, 자동 발송, 알림은 별도 후보다. |
 | 01 ImportJob 구현 재개 | 대용량 import worker, 일정/회의록 import, ImportJob Admin 전용 화면/API는 01 완료 의미를 깨지 않고 post-12에서 재검토한다. |
+| 04 Google Calendar 구현 재개 | 04는 Google read-only import/sync, 선택 calendar, source badge, Trash restore, Google-origin reminder, provider smoke 기준으로 완료됐다. 고급 sync/provider 확장은 `PRE12-F10`으로만 둔다. |
 | 08 Global Data I18N 구현 재개 | 08은 `ko-KR/en`, KR/US, KRW/USD, Google/LINE/Apple 기준으로 완료됐다. 시장/국가/auth 확장은 별도 후속이다. |
 | 09 Product Analytics 구현 재개 | 09는 자체 DB analytics 정본, collector, core event, snapshot/retention, AI usage summary, billing reserved taxonomy로 완료됐다. 후속 event/provider/attribution/deletion job은 별도 후보다. |
 | 12 Billing 구현 | 결제, 구독, 세금, paywall, churn, paid conversion은 12 결정 없이는 기준을 확정할 수 없다. |
@@ -46,7 +48,31 @@
 | 11 Admin Operation 구현 재개 | 11은 최소 Admin 운영 API/화면과 audit/redaction 기준으로 완료됐다. 문서 stale이나 후속 후보를 근거로 Admin 기능을 재구현하지 않는다. |
 | Admin 직접 Trash 복구/유료 복구/hard delete/purge pre-12 구현 | 11은 User 복구 문의와 Admin queue까지만 완료했다. 복구 실행/과금/삭제 정책은 recovery policy와 12 Billing 이후 판단한다. |
 
-## 4. 06 작업에 직접 영향을 주는 기준
+## 4. 04 Google Calendar에 직접 영향을 주는 기준
+
+04에서 완료로 보는 범위:
+
+- Google OAuth connect/reconnect/disconnect/status
+- Google calendar list 조회와 selected calendar 저장
+- 선택 calendar event read-only import/sync
+- `/app/schedules` freshness auto sync와 manual sync
+- Google source badge, hidden source 처리, Trash restore
+- Google-origin schedule reminder
+- 실제 Google provider smoke 기록
+
+04 완료 범위로 다루면 안 되는 범위:
+
+- Google Calendar export/write 또는 양방향 sync 추가
+- realtime webhook/watch channel 추가
+- 반복 일정 정식 모델 추가
+- Google reminders import 또는 reminder mapping 추가
+- 참석자 import, contact auto-link, attendee response UI 추가
+- 여러 Google 계정 동시 연결 추가
+- Google Calendar 외 provider 추가
+
+위 항목은 새 후보로 중복 생성하지 않고 `PRE12-F10`으로 연결한다.
+
+## 5. 06 작업에 직접 영향을 주는 기준
 
 06에서 다뤄도 되는 범위:
 
@@ -71,7 +97,7 @@
 - AI data cleanup 제안 저장/적용 API 추가
 - MeetingNote transcript/raw provider response/follow-up draft 저장 table 추가
 
-## 5. 08 Global Data I18N에 직접 영향을 주는 기준
+## 6. 08 Global Data I18N에 직접 영향을 주는 기준
 
 08에서 완료로 보는 범위:
 
@@ -95,7 +121,7 @@
 - `/app` locale route prefix 추가
 - legacy static fallback 직접 keying, Settings OAuth 계정 라벨, bundle chunk 최적화를 08 blocker로 취급
 
-## 6. 기존 PRE12 후보와 연결되는 08 항목
+## 7. 기존 PRE12 후보와 연결되는 08 항목
 
 08 재대조에서 다시 발견됐지만 새 후보로 중복 생성하지 않는 항목:
 
@@ -106,7 +132,7 @@
 | billing/paywall/churn/paid conversion | `PRE12-F12` |
 | Import scale/source/Admin 확장 | `PRE12-F13` |
 
-## 7. 09 Product Analytics에 직접 영향을 주는 기준
+## 8. 09 Product Analytics에 직접 영향을 주는 기준
 
 09에서 완료로 보는 범위:
 
@@ -129,7 +155,7 @@
 - `AiUsageDaily`, `UsageMeter`, `BillingEvent`, `UserSubscription`, `ChurnSurveyResponse`를 09/PRE12에서 생성
 - PWA install/offline shell/full offline sync, iOS/Android native app, native push/contact/calendar, native install attribution을 09 완료 범위로 끼워 넣기
 
-## 8. 기존 PRE12 후보와 연결되는 09 항목
+## 9. 기존 PRE12 후보와 연결되는 09 항목
 
 09 재대조에서 다시 발견됐지만 기존 후보와 연결하거나 09 전용 새 후보로 분리하는 항목:
 
@@ -142,7 +168,7 @@
 | public site/UTM/ad attribution/growth experiment | `PRE12-F29` |
 | PWA/native packaging과 install attribution | `PRE12-F30` |
 
-## 9. 10 Mobile PWA Field Use에 직접 영향을 주는 기준
+## 10. 10 Mobile PWA Field Use에 직접 영향을 주는 기준
 
 10에서 완료로 보는 범위:
 
@@ -164,7 +190,7 @@
 - 10 FE/BE TODO 체크리스트 미체크를 근거로 기능을 재구현
 - stale FE architecture 문서에 맞추기 위해 `/app/notifications` route를 숨김 route로 되돌리기
 
-## 10. 11 Admin Operation에 직접 영향을 주는 기준
+## 11. 11 Admin Operation에 직접 영향을 주는 기준
 
 11에서 완료로 보는 범위:
 
@@ -191,7 +217,7 @@
 - 자동 민감정보 감지/DLP model 또는 processor 추가
 - billing/subscription/plan/payment/invoice/refund/failed payment recovery/Admin Billing 화면/API 추가
 
-## 11. 상태 분류 기준
+## 12. 상태 분류 기준
 
 | 상태 | 의미 |
 | --- | --- |
@@ -203,7 +229,7 @@
 | `Question` | 사용자의 제품 판단 또는 정책 결정이 필요한 항목 |
 | `defer` | 현재 의도적으로 미루는 항목 |
 
-## 12. 관련 문서
+## 13. 관련 문서
 
 - `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/02_NOTIFICATION_REMINDER/README.md`
 - `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/05_AI_WEEKLY_SALES_REPORT/COMMON/GOAL-COMPLETION-CHECKLIST.md`

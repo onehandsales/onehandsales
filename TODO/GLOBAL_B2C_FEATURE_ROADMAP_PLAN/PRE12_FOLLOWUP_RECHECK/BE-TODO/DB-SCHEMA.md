@@ -16,6 +16,7 @@
 | `UserNotificationSetting` | 일정 reminder와 딜 마감 reminder 설정 중심이다. |
 | `Notification` | source type/id, dedupe key, status, scheduledAt 기반이다. |
 | `NotificationDeliveryAttempt`, `BrowserPushSubscription` | provider safe error와 push subscription 암호화 저장은 완료됐지만 TTL cleanup 정책/runner는 없다. |
+| `ExternalCalendarConnection`, `ExternalCalendarSource`, `Schedule` external fields | 04에서 Google read-only import/sync metadata로 완료됐다. provider는 `GOOGLE`만 있고 `ExternalCalendarConnection`은 `@@unique([userId, provider])`로 사용자당 Google 연결 1개 기준이다. recurrence/reminders/attendee/watch channel/other provider table은 없다. |
 | `DealActivityType` | next action, schedule, meeting note, follow-up event를 activity로 기록한다. |
 | `DealActivitySourceType` | `SYSTEM`, `USER`, `NEXT_ACTION`, `SCHEDULE`, `MEETING_NOTE`, `FOLLOW_UP`가 있다. |
 | `AiProviderOperation` | Weekly report, follow-up draft, MeetingNote AI/STT/draft operation을 포함한다. |
@@ -51,6 +52,7 @@
 - 일정/회의록 import source snapshot과 mapping 저장 방식
 - ImportJob Admin 운영 조회/cleanup 저장 방식
 - ExportJob/file retention 정책
+- Google Calendar write/watch channel, recurrence/reminder/attendee mapping, multi-account connection key, Google 외 calendar provider 모델
 - billing entitlement/paywall/churn 모델
 - `/app` 신규 locale 지원을 위한 User locale 확장
 - 신규 country/currency/phone dictionary 확장
@@ -71,6 +73,8 @@
 - 자동 민감정보 감지/DLP scan result, false positive/override 저장 모델
 
 2026-08-06 A 결정으로 Company/Contact/Product latest summary와 generic summary endpoint는 12 전 DB 설계 후보로 승격하지 않는다.
+
+04 재대조 기준으로 Google Calendar DB 영향은 Google read-only source metadata까지 완료다. `ExternalCalendarProvider=GOOGLE`, 사용자당 provider 1개 unique, `Schedule` external metadata 기준을 재오픈하지 않고 write/watch/recurrence/reminders/attendee/multi-account/other provider schema는 `PRE12-F10` 후속 후보로만 둔다.
 
 08 재대조 기준으로 global data/i18n의 1차 schema는 완료다. 추가 country/currency/phone/auth provider/money/address 변경은 08 미완성이 아니라 post-12 또는 12 Billing 정책 이후의 별도 migration 후보로 둔다.
 
@@ -108,6 +112,7 @@
 | PWA/native packaging과 attribution | install attribution, full offline sync metadata, native device/push/contact/calendar/app install event 저장 필요 여부 결정 | post-12 seed / 별도 mobile roadmap |
 | 10 FE/BE TODO 체크리스트 정합성 | DB 변경 없음. 문서 체크리스트 정리만 대상 | pre-12-doc-cleanup |
 | generic ExportJob/PDF | `ExportJob`, file TTL, audit, ownership, deletion policy가 필요하지만 post-12 전 migration 금지 | post-12 seed |
+| Google Calendar 고급 sync/provider 확장 | write/watch channel, recurrence/reminder/attendee mapping, multi-account connection key, provider abstraction table 필요 여부 결정 | post-12 seed / `PRE12-F10` |
 | 11 Admin 문서 체크리스트 정합성 | DB 변경 없음. 문서 체크리스트 정리만 대상 | pre-12-doc-cleanup |
 | Admin 직접 Trash 복구/유료 복구/hard delete/purge | 복구 실행 결과, 결제 연결, purge audit/hold table 필요 여부 결정. 11에서는 없음 | Question / 정책 및 billing 필요 |
 | User data export artifact/download | `ExportJob` 또는 `UserDataExportRequest` status transition으로 충분한지 결정. file TTL/storage/audit 기준 필요 | post-12 seed / `PRE12-F09` 연결 |
