@@ -2,6 +2,7 @@
 
 상태: Draft / migration 없음
 작성일: 2026-08-06
+최종 업데이트: 2026-08-06
 
 ## 1. 목적
 
@@ -31,6 +32,8 @@
 - ExportJob/file retention 정책
 - billing entitlement/paywall/churn 모델
 
+2026-08-06 A 결정으로 Company/Contact/Product latest summary와 generic summary endpoint는 12 전 DB 설계 후보로 승격하지 않는다.
+
 ## 4. 후보별 DB 영향
 
 | 후보 | 가능한 DB 영향 | 현재 판단 |
@@ -38,7 +41,7 @@
 | 다음 행동 reminder | `NotificationSourceType` 확장, `UserNotificationSetting` 필드 추가, `DealFollowingActionLog` due field 검토 | 결정 필요 |
 | 회의록 follow-up reminder | Notification source 확장 또는 별도 reminder table 검토 | post-12 seed |
 | follow-up 자동 발송 | send schedule, consent, unsubscribe, retry policy table 검토 | post-12 seed |
-| record summary | denormalized summary table 또는 runtime aggregation 여부 결정 | 결정 필요 |
+| record summary | denormalized summary table 또는 runtime aggregation 여부 결정 | Company/Contact/Product는 defer. 비고: post-12 B2B/team CRM strategy seed. MeetingNote list summary는 post-12-seed. |
 | provider smoke | DB 변경 없음 | 운영 기록 |
 
 ## 5. DB/Prisma gate
@@ -57,4 +60,3 @@
 - `AGENT/SOFTWARE_AGENT/DB_SCHEMA/TIME_AND_TIMEZONE_POLICY.md`
 - `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/06_DEAL_ACTIVITY_TIMELINE/BE-TODO/DB-SCHEMA.md`
 - `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/07_MEETING_NOTE_AI_PROVIDER_LOG/BE-TODO/DB-SCHEMA.md`
-

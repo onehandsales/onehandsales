@@ -2,6 +2,7 @@
 
 상태: Draft / confirmed backend API 없음
 작성일: 2026-08-06
+최종 업데이트: 2026-08-06
 
 ## 1. 목적
 
@@ -30,6 +31,8 @@ G00과 API contract 확정 전에는 아래 Backend 변경을 하지 않는다.
 - generic ExportJob API 추가
 - billing/paywall/churn API 추가
 
+2026-08-06 A 결정에 따라 Company/Contact/Product latest summary, generic summary endpoint, record별 상세 timeline은 12 전 API contract 확정 대상으로 올리지 않는다.
+
 ## 4. 후보별 Backend 영향
 
 | 후보 | 예상 Backend 영향 | 현재 상태 |
@@ -37,7 +40,7 @@ G00과 API contract 확정 전에는 아래 Backend 변경을 하지 않는다.
 | 다음 행동 reminder | Notification source/setting/scheduler/dedupe/cancel rule 확정 필요 | Question |
 | 회의록 follow-up reminder | MeetingNote source, follow-up draft/send 상태, notification rule 확정 필요 | post-12-seed |
 | MeetingNote 자동 발송 | consent, retry, unsubscribe, send policy, provider cost policy 필요 | post-12-seed |
-| record summary | 기존 list API field 추가 또는 별도 summary endpoint, redaction 기준 필요 | Question |
+| record summary | 기존 list API field 추가 또는 별도 summary endpoint, redaction 기준 필요 | Company/Contact/Product는 defer. 비고: post-12 B2B/team CRM strategy seed. MeetingNote list summary는 post-12-seed. |
 | provider smoke | 새 API 없음. 운영 환경과 runbook 기록만 필요 | pre-12-follow-up-needed |
 
 ## 5. 권장 검색 명령

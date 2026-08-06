@@ -1,9 +1,9 @@
 # User Web TODO
 
-2026-08-05 `05_AI_WEEKLY_SALES_REPORT` 반영 완료: `/app/schedules/week` AI report section, `/app/settings` follow-up provider settings, compose/send/retry/timeline UX는 구현/자동 검증 완료 상태다. 운영 credential/callback/allowlist 기반 provider smoke는 pending이다.
+2026-08-06 `06_DEAL_ACTIVITY_TIMELINE` 후속 재검토 A 결정 반영: `NBA-003` 잔여 Company/Contact/Product latest summary, generic summary endpoint, record별 상세 timeline은 12 전 FE 작업으로 올리지 않는다.
 
 상태: Draft
-최종 업데이트: 2026-08-05
+최종 업데이트: 2026-08-06
 
 ## 0. 완료 반영
 
@@ -86,7 +86,7 @@
 
 | 후보 ID | FE 영향 | 확인 기준 |
 |---|---|---|
-| NBA-003 잔여 | 회사/담당자/제품 목록 summary 표시 | Deal list `latestActivity`는 완료됐다. 남은 summary도 private memo와 일반 활동을 구분한다. |
+| NBA-003 잔여 | 회사/담당자/제품 목록 summary 표시 | Deal list `latestActivity`는 완료됐다. 2026-08-06 A 결정으로 남은 summary, generic summary endpoint, record별 상세 timeline은 12 전 FE 작업으로 올리지 않는다. B2B/team CRM 성격의 post-12 전략 후보로 둔다. |
 | NBA-004 | 부분 완료: 회의록 상세 AI 후속 작업 section, 다음 행동 후보 편집 저장, follow-up draft 수정/복사 구현. 회의록 목록 summary 표시는 후속 | 목록에는 AI/STT raw text나 민감 원문을 노출하지 않는다. 상세 AI 후보도 자동 저장/자동 발송하지 않는다. |
 | 05_AI_WEEKLY_SALES_REPORT | 완료: `/app/schedules/week` AI report section, `/app/settings` follow-up provider settings, compose/send/retry/timeline UX 구현. Gmail/Microsoft reconnect CTA와 safe error rendering 보강 | Active FE TODO에서 제외한다. 실제 provider smoke는 운영 credential/callback/allowlist로 별도 확인한다. SMS 실제 provider/B2B/sequence/email sync는 후속 |
 | NBA-006 | 완료: Import resume 화면, client state, row detail 만료 안내, upload 제한 초과 안내 | Active FE TODO에서 제외한다. 새로고침/탭 이동 복구 UX, 만료/실패 상태, confirm/cancel 흐름, 성공 이력 row detail 만료 상태, 10MB/5,000행 제한 초과 안내까지 구현 및 G09 closeout 완료 |
@@ -97,7 +97,7 @@
 | 10_MOBILE_PWA_FIELD_USE | 완료: 모바일 명함 촬영, OCR safe failure, 회의 녹음/fallback, local draft, push permission UX, mobile field analytics | Active FE TODO에서 제외한다. PWA install/offline shell/native app은 후속 별도 결정이다. |
 | 11_ADMIN_OPERATION | 완료: `/app/trash` 만료 row/복구 문의, account/data request 영향, `/admin/api/*` 미호출 QA | Active FE TODO에서 제외한다. Billing/paywall/churn UI는 12에서 다룬다. |
 
-12 완료 후에는 `GLOBAL_B2C_FEATURE_ROADMAP_PLAN/COMMON/POST-12-REVIEW-AND-FOLLOWUP.md` 기준으로 위 잔여 후보를 다시 분류한다. User Web UX/UI 전체 유지보수는 12와 post-12 후속 후보 재분류 이후 별도 계획에서 진행한다.
+12 완료 후에는 `GLOBAL_B2C_FEATURE_ROADMAP_PLAN/COMMON/POST-12-REVIEW-AND-FOLLOWUP.md` 기준으로 위 잔여 후보를 다시 분류한다. User Web UX/UI 전체 유지보수는 12와 post-12 후속 후보 재분류 이후 별도 계획에서 진행한다. 2026-08-06 A 결정 기준으로 UX/UI 전체 polish는 지금 06 후속으로 진행하지 않는다.
 
 ## 4. Ops/security 영향 후보
 

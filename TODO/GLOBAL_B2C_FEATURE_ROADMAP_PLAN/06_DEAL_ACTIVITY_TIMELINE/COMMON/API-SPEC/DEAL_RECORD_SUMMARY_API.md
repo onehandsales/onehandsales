@@ -4,6 +4,7 @@
 확정일: 2026-07-25
 Backend 구현일: 2026-07-26
 User Web 구현일: 2026-07-26
+최종 업데이트: 2026-08-06
 소비자: User Web
 호환성: 기존 list response field 추가. 기존 필드는 제거하지 않는다.
 
@@ -11,7 +12,7 @@ User Web 구현일: 2026-07-26
 
 `NEXT_BACKEND_API_BACKLOG_PLAN`의 `NBA-001`, `NBA-002`, `NBA-008`과 `NBA-003` 중 Deal latest activity subset을 DealActivity 정본 위에 반영한다.
 
-원본 `NBA-003`의 Company/Contact/Product latest summary, latest memo summary, next action summary, generic summary endpoint는 06 범위가 아니다. 이 제외 기준은 `COMMON/SOURCE-PLAN-COVERAGE.md`를 따른다.
+원본 `NBA-003`의 Company/Contact/Product latest summary, latest memo summary, next action summary, generic summary endpoint는 06 범위가 아니다. 이 제외 기준은 `COMMON/SOURCE-PLAN-COVERAGE.md`를 따른다. 2026-08-06 A 결정에 따라 잔여 record summary와 record별 상세 timeline은 12 전 계약화/구현 대상도 아니다.
 
 G05/G06에서 구현하며, G02~G04의 DealActivity timeline 구현이 선행된다.
 

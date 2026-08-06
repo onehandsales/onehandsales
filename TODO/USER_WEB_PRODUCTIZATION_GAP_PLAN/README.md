@@ -1,10 +1,10 @@
 # User Web Productization Gap Plan
 
-2026-08-05 `05_AI_WEEKLY_SALES_REPORT` 반영 완료: 저장형 AI weekly report, follow-up delivery, Gmail/Microsoft 실제 email provider adapter 구현과 자동 검증은 완료됐다. 운영 credential/callback/allowlist 기반 Gmail/Microsoft provider smoke는 pending이며, SMS 실제 provider/B2B/sequence/email sync/회의록 자동 follow-up 알림은 post-12 또는 별도 확장 후보로 유지한다.
+2026-08-06 `06_DEAL_ACTIVITY_TIMELINE` 후속 재검토 A 결정 반영: 06은 Completed 상태를 유지하고, Company/Contact/Product latest summary, generic summary endpoint, record별 상세 timeline은 12 전 제품화 gap으로 승격하지 않는다. 해당 후보는 B2B/team CRM 성격이 강한 post-12 전략 후보로 유지한다.
 
 상태: Draft Guide
 작성일: 2026-07-20
-최종 업데이트: 2026-08-05
+최종 업데이트: 2026-08-06
 성격: 제품화 gap 판단 가이드
 
 ## 0. 완료 반영 체크리스트
@@ -110,7 +110,7 @@
 진행 순서 결정:
 
 - 12 착수 전에 `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/COMMON/POST-12-REVIEW-AND-FOLLOWUP.md` 기준으로 01~11 pre-12 재대조를 진행한다.
-- 2026-08-05 기준 01~05는 재대조와 문서 반영이 완료됐고, 다음 대상은 06~11이다.
+- 2026-08-06 기준 06 후속 재검토 A 결정까지 문서 반영이 완료됐고, 다음 대상은 07~11이다.
 - 01~11 pre-12 재대조가 끝나면 `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/12_BILLING_SUBSCRIPTION_TAX`를 진행한다.
 - 12 완료 후 이 제품화 gap 문서와 `TODO/NEXT_BACKEND_API_BACKLOG_PLAN`, 01~12 전체를 다시 학습한다.
 - 미구현/후속/보류 항목은 기존 완료 폴더를 재개하지 않고 새 TODO 폴더로 승격한다.
@@ -134,7 +134,7 @@
 
 - Gmail/Microsoft production-equivalent provider smoke는 운영 credential, provider console callback URL, allowlist 수신자 준비 후 확인한다.
 - SMS 실제 provider, B2B tenant sender, email sync, sequence/campaign/bulk, unsubscribe 관리는 05 완료 범위가 아니다.
-- 회의록 follow-up 자동 발송/알림, Company/Contact/Product latest summary, MeetingNote 목록 summary, generic ExportJob, Google/Microsoft calendar write/watch는 post-12 재검토 후보로 유지한다.
+- 회의록 follow-up 자동 발송/알림, Company/Contact/Product latest summary, MeetingNote 목록 summary, generic ExportJob, Google/Microsoft calendar write/watch는 post-12 재검토 후보로 유지한다. 단 Company/Contact/Product latest summary와 generic summary endpoint는 2026-08-06 A 결정에 따라 12 전 제품화 gap으로 승격하지 않는다.
 - AI usage plan/overage, paywall, entitlement는 12 Billing 범위다.
 
 ## 3.2 `NBA-015` 반영 기준
@@ -171,7 +171,7 @@
 
 남은 제품화 gap으로 분리할 범위:
 
-- Company/Contact/Product latest activity, latest memo, next action summary
+- Company/Contact/Product latest activity, latest memo, next action summary. 2026-08-06 A 결정에 따라 12 전 API/DB/FE 계약화/구현 대상이 아니며 B2B/team CRM 성격의 post-12 전략 후보로 둔다.
 - 일반 메모와 private memo의 activity 통합 정책
 - 수동 activity 삭제, retention, audit 정책
 - MeetingNote 목록 latest/next summary
@@ -312,13 +312,13 @@
 - 완료된 AI Weekly Sales Report/Follow-up Delivery 범위를 넘어서는 SMS 실제 provider, B2B sender, email sync, sequence/campaign, 자동 follow-up 발송/알림
 - 완료된 Google Calendar Integration 범위를 넘어서는 Google Calendar export/write, realtime webhook/watch, 반복 일정, 여러 Google 계정 동시 연결
 - 완료된 MeetingNote AI Provider Log 범위를 넘어서는 회의록 목록 summary, 자동 follow-up 발송/알림, Admin provider audit 조회, 별도 transcript/raw provider response table
-- 완료된 Deal Activity Timeline 범위를 넘어서는 범용 activity bus, Company/Contact/Product latest summary, activity deletion/retention/audit 정책
+- 완료된 Deal Activity Timeline 범위를 넘어서는 범용 activity bus, Company/Contact/Product latest summary, generic summary endpoint, record별 상세 timeline, activity deletion/retention/audit 정책. `NBA-003` 잔여는 2026-08-06 A 결정에 따라 12 전 제품화 gap으로 승격하지 않는다.
 - 완료된 Global Data I18N 범위를 넘어서는 신규 국가/통화/provider, `/app` locale prefix, 추가 DB migration 실행
 - 완료된 Product Analytics/Admin Operation 범위를 넘어서는 billing/paywall/churn runtime event
 - 완료된 Mobile Field Use 범위를 넘어서는 PWA install/offline shell, full offline sync, iOS/Android native app, native push/contact/calendar
 - 완료된 Admin Operation 범위를 넘어서는 Billing Admin 연동, Admin 직접 Trash 복구 실행, 유료 복구 결제, Trash hard delete/purge
 
-위 항목은 제품화 우선순위와 UX/UI 방향을 확정한 뒤 별도 계획에서 다룬다.
+위 항목은 제품화 우선순위와 UX/UI 방향을 확정한 뒤 별도 계획에서 다룬다. UX/UI 전체 polish는 지금 06 후속으로 진행하지 않고, 12와 post-12 재검토 이후 별도 전면 유지보수 계획에서 다룬다.
 
 단, 결제/구독, 세금/컴플라이언스, 정책/운영 신뢰는 단순 후순위가 아니다. `09_PRODUCT_ANALYTICS` foundation과 `11_ADMIN_OPERATION` Admin analytics dashboard는 완료됐고, billing-linked conversion/churn flow는 12의 별도 큰 계획으로 다룬다.
 

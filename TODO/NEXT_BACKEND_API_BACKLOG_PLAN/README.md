@@ -1,10 +1,10 @@
 # Next Backend API Backlog Plan
 
-2026-08-05 `05_AI_WEEKLY_SALES_REPORT` 반영 완료: 저장형 AI weekly report, follow-up delivery, Gmail/Microsoft 실제 email provider adapter 구현과 자동 검증은 완료됐다. 운영 credential/callback/allowlist 기반 Gmail/Microsoft provider smoke는 pending이며, SMS 실제 provider는 05/NEXT active backlog가 아니라 post-12 또는 별도 SMS 확장 후보로 유지한다.
+2026-08-06 `06_DEAL_ACTIVITY_TIMELINE` 후속 재검토 A 결정 반영: `NBA-003` 잔여 Company/Contact/Product latest summary, generic summary endpoint, record별 상세 timeline은 12 전 API/DB/FE 계약화/구현 대상이 아니며 post-12 B2B/team CRM 전략 후보로 유지한다.
 
 상태: Draft
 작성일: 2026-07-20
-최종 업데이트: 2026-08-05
+최종 업데이트: 2026-08-06
 출처: `TODO/DONE/USER_WEB_RELEASE_QA_FOLLOWUP_PLAN` G07, `TODO/USER_WEB_PRODUCTIZATION_GAP_PLAN`
 
 ## 0. 완료 반영 체크리스트
@@ -60,7 +60,7 @@ G07의 산출물이므로 이 문서는 구현 계획 확정본이 아니다. �
 ## 2. 현재 결론
 
 - BusinessCard provider failure contract는 2026-07-31 기준 10번에서 구현 및 QA closeout이 완료되어 active backlog 후보에서 제외한다.
-- `NBA-003` 중 Deal list `latestActivity`는 06에서 구현 완료됐고, Company/Contact/Product latest summary와 generic summary endpoint는 product feature 후보로 남긴다.
+- `NBA-003` 중 Deal list `latestActivity`는 06에서 구현 완료됐다. Company/Contact/Product latest summary, generic summary endpoint, record별 상세 timeline은 2026-08-06 A 결정에 따라 12 전 계약화/구현하지 않고 post-12 B2B/team CRM 전략 후보로 남긴다.
 - MeetingNote 상세 next action/follow-up draft와 AI/STT provider call log는 07에서 구현 완료됐다. MeetingNote 목록 latest/next summary는 product feature 후보로 남긴다.
 - `NBA-014`는 06 범위에서 DB target, migration/seed 금지, Prisma 검증 gate를 닫았고 11에서 Admin system operation gate도 구현했다. 남은 data reliability 범위는 실제 운영 DB 적용 절차, backup/restore 실행 runbook, 장애 대응 drill이다.
 - `NBA-006 ImportJob persistence/resume API`는 2026-08-03 기준 `01_IMPORT_JOB_PERSISTENCE` G01~G09 구현 및 최종 QA closeout이 완료되어 active backlog 후보에서 제외한다.
@@ -75,9 +75,9 @@ G07의 산출물이므로 이 문서는 구현 계획 확정본이 아니다. �
 - `09_PRODUCT_ANALYTICS`는 2026-07-30 기준 구현 및 QA closeout이 완료되어 first-sale product analytics foundation gap에서 제외한다. Admin analytics UI/API는 11에서 완료됐고, billing/paywall/churn runtime conversion source는 12에서 다룬다.
 - `10_MOBILE_PWA_FIELD_USE`는 2026-07-31 기준 구현 및 QA closeout이 완료되어 mobile field-use API/DB/User Web gap에서 제외한다. PWA install/offline shell, native app, native push/contact/calendar는 후속 별도 로드맵이다.
 - `11_ADMIN_OPERATION`은 2026-08-01 기준 구현 및 QA closeout이 완료되어 Admin 운영 API/DB/Admin Web gap에서 제외한다. 결제/구독/plan/payment/invoice/refund는 11에서 제외했고 12에서 다룬다.
-- MeetingNote 목록 summary, Company/Contact/Product latest summary, Billing 연동 conversion/churn flow, PWA/native packaging은 남은 후보다.
-- 사용자 결정 기준으로 12 착수 전 01~11 pre-12 재대조를 진행한다. 2026-08-05 기준 01~05는 진행/확인 완료로 보고, 다음 대상은 06~11이다. 01~11 재대조 후 12를 진행하고, 12 완료 뒤 `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/COMMON/POST-12-REVIEW-AND-FOLLOWUP.md`에 따라 이 백로그를 다시 읽고 잔여 후보를 새 TODO 폴더로 승격할지 결정한다.
-- 12 완료 전에는 `NBA-003`, `NBA-004`, backup/restore runbook, 장애 대응 drill을 무작위로 구현하지 않는다. 다만 post-12 재검토 seed로 유지한다.
+- MeetingNote 목록 summary, Company/Contact/Product latest summary, Billing 연동 conversion/churn flow, PWA/native packaging은 남은 후보다. 단 Company/Contact/Product latest summary와 generic summary endpoint는 12 전 구현 후보가 아니다.
+- 사용자 결정 기준으로 12 착수 전 01~11 pre-12 재대조를 진행한다. 2026-08-06 기준 06 후속 재검토 A 결정까지 반영 완료됐고, 다음 대상은 07~11이다. 01~11 재대조 후 12를 진행하고, 12 완료 뒤 `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/COMMON/POST-12-REVIEW-AND-FOLLOWUP.md`에 따라 이 백로그를 다시 읽고 잔여 후보를 새 TODO 폴더로 승격할지 결정한다.
+- 12 완료 전에는 `NBA-003`, `NBA-004`, backup/restore runbook, 장애 대응 drill을 무작위로 구현하지 않는다. 특히 `NBA-003` 잔여는 A 결정에 따라 12 전 계약 초안도 만들지 않고 post-12 전략 재검토 seed로 유지한다.
 
 ## 2.1 `NBA-015` 반영 기준
 
@@ -118,7 +118,7 @@ G07의 산출물이므로 이 문서는 구현 계획 확정본이 아니다. �
 
 - 운영 credential, provider console callback URL, allowlist 수신자가 필요한 Gmail/Microsoft production-equivalent smoke는 pending이다.
 - SMS 실제 provider, B2B tenant sender, email sync, sequence/campaign/bulk, unsubscribe, 신규 09 analytics event, 신규 11 Admin provider failure API는 05 완료 범위가 아니다.
-- MeetingNote 자동 follow-up 발송/알림, Company/Contact/Product latest summary, MeetingNote 목록 summary, generic ExportJob, Google/Microsoft calendar write/watch는 post-12 재검토 후보로 유지한다.
+- MeetingNote 자동 follow-up 발송/알림, Company/Contact/Product latest summary, MeetingNote 목록 summary, generic ExportJob, Google/Microsoft calendar write/watch는 post-12 재검토 후보로 유지한다. 단 Company/Contact/Product latest summary와 generic summary endpoint는 2026-08-06 A 결정에 따라 12 전 계약화/구현 대상이 아니다.
 
 ## 2.3 `NBA-001`, `NBA-002`, `NBA-003` Deal subset, `NBA-008`, `NBA-014` 반영 기준
 
@@ -137,7 +137,7 @@ G07의 산출물이므로 이 문서는 구현 계획 확정본이 아니다. �
 
 남은 백로그로 분리할 범위:
 
-- `NBA-003` 중 Company/Contact/Product latest activity, latest memo, next action summary
+- `NBA-003` 중 Company/Contact/Product latest activity, latest memo, next action summary. 2026-08-06 A 결정에 따라 12 전 계약화/구현 대상이 아니며 B2B/team CRM 성격의 post-12 전략 후보로 둔다.
 - MeetingNote 목록 latest/next summary
 - MeetingNote Admin provider audit/raw access policy, Trash private memo response restriction, 7일 이후 복구 문의, Admin 운영 API/UX는 11에서 완료
 - 실제 backup/restore 실행 runbook과 장애 대응 drill
@@ -275,6 +275,7 @@ G07의 산출물이므로 이 문서는 구현 계획 확정본이 아니다. �
 - seed 수정 또는 운영/공유 DB migration 실행
 - 11에서 완료된 Admin 운영 범위를 넘어서는 새 Admin API 구현
 - 완료된 Notification/Weekly Schedule Report/Google Calendar Integration/Deal Activity Timeline/MeetingNote AI Provider Log/Global Data I18N/Product Analytics/Mobile Field Use/Admin Operation 범위를 넘어서는 새 알림 endpoint, PDF/범용 ExportJob, 반복 일정, AI 요약, Google Calendar export/write/realtime webhook, 범용 activity bus, MeetingNote 자동 저장/자동 발송, 신규 auth provider, `/app` locale prefix, billing/paywall/churn runtime event, PWA install/offline shell, native app 구현
+- 2026-08-06 A 결정으로 보류된 Company/Contact/Product latest summary, generic summary endpoint, record별 상세 timeline 구현
 - User Web에서 `/admin/api/*` 호출 추가
 - FE 단독 page size 변경
 

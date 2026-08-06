@@ -1,7 +1,15 @@
 # G04 Record Summary Contract
 
-상태: Question
-목표: Company/Contact/Product latest summary와 MeetingNote list latest/next summary 후보를 구현 전 계약 수준으로 분리한다.
+상태: defer / 2026-08-06 A 결정 반영
+목표: NBA-003 Company/Contact/Product latest summary, generic summary endpoint, record별 상세 timeline은 A 결정에 따라 defer로 고정하고, NBA-004 MeetingNote list latest/next summary는 기존 post-12-seed로 분리 유지한다.
+
+## 0. 2026-08-06 결정
+
+- 06은 Completed 상태를 유지한다.
+- Company/Contact/Product latest activity, latest memo, next action summary는 12 전 API/DB/FE 계약화 대상이 아니다.
+- generic summary endpoint와 record별 상세 timeline도 12 전 구현 대상이 아니다.
+- B/C로 논의된 전체 record summary와 record별 상세 timeline 확장은 B2B 또는 team CRM에서 더 강한 가치가 있는 후보로 본다.
+- UX/UI 전체 polish는 지금 하지 않고, 12와 post-12 재검토 이후 별도 UX/UI 전면 유지보수 계획에서 다룬다.
 
 ## 1. 현재 사실
 
@@ -10,7 +18,7 @@
 - 07은 MeetingNote 상세 next action/follow-up draft를 완료했다.
 - `NBA-004`의 MeetingNote list latest/next summary는 남아 있다.
 
-## 2. 계약 전에 결정할 기준
+## 2. post-12 재검토 때 다시 볼 기준
 
 | 기준 | 질문 |
 | --- | --- |
@@ -26,10 +34,12 @@
 - confirmed API 없이 response field를 추가하지 않는다.
 - FE에서 API에 없는 summary를 조합해 사실처럼 표시하지 않는다.
 - MeetingNote raw text나 private memo를 list summary에 노출하지 않는다.
+- 12 전에는 Company/Contact/Product latest summary 계약 초안을 만들지 않는다.
+- 12 전에는 generic summary endpoint나 record별 상세 timeline을 설계하지 않는다.
 
 ## 4. 완료 기준
 
-- 구현하기로 결정한 summary마다 API/DB/FE 계약 초안이 생긴다.
-- 구현하지 않기로 결정한 후보는 `post-12-seed` 또는 `defer`로 남긴다.
+- 2026-08-06 A 결정이 `README.md`, `CANDIDATE-MATRIX.md`, `BE-TODO`, `FE-TODO`, 상위 입력 문서에 일관되게 반영된다.
+- NBA-003 잔여 후보는 `defer`로 남긴다.
+- NBA-004 MeetingNote list summary는 기존처럼 `post-12-seed`로 남긴다.
 - 06 완료 의미를 바꾸지 않는다.
-

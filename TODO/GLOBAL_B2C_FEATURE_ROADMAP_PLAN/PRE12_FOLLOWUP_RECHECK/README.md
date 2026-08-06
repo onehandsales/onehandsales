@@ -2,7 +2,8 @@
 
 상태: Draft / 12 전 후속 범위 정리 / 구현 시작 금지
 작성일: 2026-08-06
-성격: 01~11 완료 슬롯 재대조에서 나온 후속 후보를 06~11 재대조와 12 착수 전 결정에 연결하는 작업 폴더
+최종 업데이트: 2026-08-06
+성격: 01~11 완료 슬롯 재대조에서 나온 후속 후보를 06 후속 재검토 A 결정 및 07~11 재대조와 12 착수 전 결정에 연결하는 작업 폴더
 
 ## 1. 목적
 
@@ -30,6 +31,8 @@
 | 06 DealActivity | 완료 이력 유지 | 현재 06 작업은 DealActivity timeline, Deal list latestActivity, products summary, Contact dealCount 범위를 넘기지 않는다. |
 | 07 MeetingNote AI | 완료 이력 유지 | 상세 next action/follow-up draft와 provider log는 완료다. 회의록 목록 summary, 자동 발송, 알림은 07 완료 범위가 아니다. |
 
+2026-08-06 사용자 결정 A에 따라 `NBA-003` 잔여인 Company/Contact/Product latest summary, generic summary endpoint, record별 상세 timeline은 12 전 계약화/구현 대상이 아니다. 이 후보들은 B2B 또는 team CRM 성격이 더 강한 post-12 전략 재검토 seed로 남기며, UX/UI 전체 polish도 지금 06 후속으로 하지 않고 별도 전면 유지보수 계획에서 다룬다.
+
 ## 3. 06 작업 시 바로 적용할 경계
 
 다른 터미널에서 진행 중인 06 작업은 아래 경계를 지킨다.
@@ -47,8 +50,8 @@
 | 다음 행동 reminder | Question / 계약 필요 | G00에서 12 전 처리 여부를 결정한다. 결정 전 구현 금지. |
 | 회의록 follow-up reminder | post-12-seed | G00에서 상태를 재확인한다. 자동 발송과 함께 정책 결정이 필요하다. |
 | Gmail/Microsoft provider smoke | pre-12-follow-up-needed | G05에서 운영 credential/callback/allowlist 준비 후 실행 기록만 닫는다. 코드 구현 후보가 아니다. |
-| Company/Contact/Product latest summary | post-12-seed 또는 별도 record summary 후보 | G04에서 summary/privacy 계약을 먼저 만든다. |
-| MeetingNote list latest/next summary | post-12-seed 또는 별도 MeetingNote list 후보 | G04에서 07 결과와 연결해 계약을 먼저 만든다. |
+| Company/Contact/Product latest summary | defer | 2026-08-06 A 결정으로 12 전 G04 계약화와 구현을 하지 않는다. 비고: post-12 B2B/team CRM strategy seed로 12 완료 후 Global B2C 지표와 B2B/team CRM 전략에서 재검토한다. |
+| MeetingNote list latest/next summary | post-12-seed 또는 별도 MeetingNote list 후보 | 12 전 구현하지 않는다. 07 결과와 연결한 목록 summary 계약은 post-12 재검토에서 필요성이 확인될 때만 만든다. |
 | generic ExportJob/PDF/recurrence/Google write/watch | post-12-seed | 12 완료 후 최종 재검토에서 새 TODO로 승격할지 판단한다. |
 | billing/paywall/churn/paid conversion | billing-blocked | 12 전 임시 구현 금지. |
 
@@ -61,6 +64,7 @@ PRE12_FOLLOWUP_RECHECK/
     README.md
     SCOPE.md
     CANDIDATE-MATRIX.md
+    06_RECORD_SUMMARY_DEFER_DECISION.md
     GOAL-WORK-ORDER.md
     PLANNING-REVIEW.md
     API-SPEC/
@@ -88,6 +92,7 @@ PRE12_FOLLOWUP_RECHECK/
 3. `draft` 또는 `Question` 상태의 후보는 controller, service, repository, Prisma schema, FE route로 구현하지 않는다.
 4. 06 작업 중 발견한 보정은 06 완료 범위를 넓히는 방식이 아니라 이 폴더의 후보 상태로 기록한다.
 5. billing/paywall/churn/paid conversion/invoice/tax와 연결된 항목은 12 전 구현하지 않는다.
+6. `NBA-003` 잔여 record summary는 2026-08-06 A 결정에 따라 12 전 API/DB/FE 계약화 대상으로 보지 않는다.
 
 ## 7. 먼저 읽을 문서
 
@@ -102,4 +107,3 @@ PRE12_FOLLOWUP_RECHECK/
 - `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/COMMON/COVERAGE-MATRIX.md`
 - `TODO/NEXT_BACKEND_API_BACKLOG_PLAN`
 - `TODO/USER_WEB_PRODUCTIZATION_GAP_PLAN`
-

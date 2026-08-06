@@ -3,12 +3,15 @@
 상태: Completed
 목표: 목록 summary User Web 구현
 완료일: 2026-07-26
+최종 업데이트: 2026-08-06
 
 ## 1. 목적
 
 G05 Backend summary를 User Web 목록에 반영한다.
 
 FE는 `COMMON/SOURCE-PLAN-COVERAGE.md` 기준으로 06에 승격된 summary만 표시한다.
+
+2026-08-06 A 결정에 따라 Company/Contact/Product latest summary, generic summary endpoint, record별 상세 timeline은 12 전 G06 후속으로 표시하지 않는다. UX/UI 전체 polish는 별도 전면 유지보수 계획에서 다룬다.
 
 ## 2. 선행 조건
 
@@ -32,6 +35,7 @@ FE는 `COMMON/SOURCE-PLAN-COVERAGE.md` 기준으로 06에 승격된 summary만 �
 - 고급 필터 UI
 - page size 변경
 - 목록 전체 redesign
+- record별 상세 activity timeline
 
 ## 5. UX 기준
 

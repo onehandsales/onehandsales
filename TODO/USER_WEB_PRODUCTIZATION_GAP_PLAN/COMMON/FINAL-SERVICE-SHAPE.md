@@ -1,9 +1,9 @@
 # Final Service Shape
 
-2026-08-05 `05_AI_WEEKLY_SALES_REPORT` 반영 완료: 저장형 AI weekly report/follow-up delivery와 Gmail/Microsoft 실제 email provider adapter는 구현/자동 검증 완료 상태다. 운영 provider smoke와 SMS/B2B/sequence/email sync/자동 follow-up 알림은 별도 후속이다.
+2026-08-06 `06_DEAL_ACTIVITY_TIMELINE` 후속 재검토 A 결정 반영: 06은 Completed 상태이며 `NBA-003` 잔여 record summary/generic summary/record별 timeline은 12 전 구현하지 않는 post-12 B2B/team CRM 전략 후보로 둔다.
 
 상태: Draft Guide
-최종 업데이트: 2026-08-05
+최종 업데이트: 2026-08-06
 
 ## 1. 최종 서비스는 3단계로 보되 판매 기준은 Global B2C다
 
@@ -22,7 +22,7 @@ MVP는 판매 버전이 아니다. 이 단계의 목적은 개인 영업자의 �
 | 핵심 업무 | 회사, 담당자, 제품, 딜, 일정, 주간 일정 보고서, Google Calendar read-only import, AI weekly report/follow-up delivery, 회의록, 회의록 AI 후속 작업, 명함 OCR, Import, Search, Trash, Export를 한 사람의 영업 루프로 사용할 수 있다. |
 | UX/UI | Notion식 workspace/page/database/detail 문법과 Attio식 CRM linked record 맥락이 살아 있다. |
 | 홈 | 오늘 일정, 진행 딜, 다음 행동, 최근 회의록이 바로 읽힌다. |
-| 딜 | 단계, 금액, 회사/담당자/제품, 다음 행동, 마감일, 최신 활동이 목록에서 빠르게 비교된다. Deal list products/latest activity와 Contact dealCount는 06에서 구현 완료됐다. |
+| 딜 | 단계, 금액, 회사/담당자/제품, 다음 행동, 마감일, 최신 활동이 목록에서 빠르게 비교된다. Deal list products/latest activity와 Contact dealCount는 06에서 구현 완료됐다. Company/Contact/Product latest summary는 12 전 구현하지 않고 post-12 전략 재검토로 남긴다. |
 | 목록 | desktop은 업무용 record table 밀도, mobile은 card/list로 핵심 정보를 잃지 않는다. |
 | 상세 | 속성, linked record, 메모, 일정/회의록, 활동 맥락이 분명하다. 딜 상세 `DealActivity` timeline은 06에서 구현 완료됐다. |
 | 모바일 브라우저 | 390px/360px에서 핵심 생성/수정/조회/복구/업로드 흐름이 깨지지 않는다. 10에서 모바일 명함 촬영, 회의 음성 기록, local draft, push permission UX를 구현하고 mobile QA를 완료했다. |
@@ -53,7 +53,7 @@ MVP는 판매 버전이 아니다. 이 단계의 목적은 개인 영업자의 �
 | 리텐션 | 다음 행동, 일정, 회의록 follow-up, 딜 지연, AI report가 사용자를 다시 부른다. 기본 주간 일정 보고서, Google Calendar read-only import, 05 AI weekly report/follow-up delivery, 회의록 follow-up draft는 구현 완료 상태로 본다. follow-up 알림/자동 발송과 운영 provider smoke는 후속 정책/운영 범위다. |
 | AI 핵심 가치 | 회의록 요약을 넘어 딜 리스크, 다음 행동, follow-up 문구, 영업 리포트를 제안한다. 05 저장형 AI weekly report/follow-up delivery와 07 회의록 상세 next action/follow-up draft는 구현 완료됐고, 딜 리스크 고도화와 자동화는 후속이다. |
 | 모바일 현장성 | 모바일 브라우저 또는 앱에서 명함 촬영, 음성 기록, 빠른 입력, push reminder가 자연스럽다. 모바일 브라우저 1차 현장성은 10에서 완료했고, PWA install/offline shell과 native app은 후속이다. |
-| Deal timeline | 일정, Google Calendar에서 가져온 일정, 회의록, follow-up, 다음 행동, 단계 변경이 하나의 영업 활동 흐름으로 연결된다. 기본 `DealActivity` timeline은 06에서 구현 완료됐고, 메모 통합과 범용 activity bus는 후속 정책 결정 범위다. |
+| Deal timeline | 일정, Google Calendar에서 가져온 일정, 회의록, follow-up, 다음 행동, 단계 변경이 하나의 영업 활동 흐름으로 연결된다. 기본 `DealActivity` timeline은 06에서 구현 완료됐고, 메모 통합, 범용 activity bus, Company/Contact/Product별 상세 timeline은 후속 정책 결정 범위다. |
 | 성장 실험 | trial, annual plan, AI plan, paywall, coupon/referral, churn survey를 운영한다. |
 | 운영 신뢰 | 11 Admin 운영으로 감사 로그, 민감정보 원문 조회 사유, provider 상태 기록, system gate 기록을 갖췄다. 실제 장애 대응 drill과 Billing 운영 신뢰는 후속으로 검증한다. |
 
@@ -67,4 +67,5 @@ MVP는 판매 버전이 아니다. 이 단계의 목적은 개인 영업자의 �
 - 08에서 닫힌 현지화/글로벌 데이터 기본 범위와 DB migration 최신 상태 재확인은 완료로 보며, LINE/Apple 실제 auth provider smoke도 2026-07-29 사용자 확인 기준 운영 완료로 반영한다.
 - `01_IMPORT_JOB_PERSISTENCE`는 G01~G09로 ImportJob persistence/resume, terminal cleanup, 원본 file binary 즉시 삭제, `ImportUserLogRow` 30일 cleanup, 10MB/5,000행 제한까지 닫았으므로 Import 범위는 최종 서비스 형태 기준으로 완전 종료됐다.
 - `05_AI_WEEKLY_SALES_REPORT`는 저장형 AI weekly report와 follow-up delivery, Gmail/Microsoft actual email provider adapter까지 구현/자동 검증 완료 상태로 본다. 운영 provider smoke는 credential/callback/allowlist 준비 후 확인하고, SMS 실제 provider/B2B/sequence/email sync/자동 follow-up 알림은 후속이다.
+- 2026-08-06 A 결정에 따라 `NBA-003` 잔여 Company/Contact/Product latest summary, generic summary endpoint, record별 상세 timeline은 12 전 구현하지 않고 post-12 B2B/team CRM 전략 후보로 둔다.
 - 현재 진행 순서는 12 결제/구독/세금 구현을 먼저 완료한 뒤, 01~12 전체와 `NEXT_BACKEND_API_BACKLOG_PLAN`, `USER_WEB_PRODUCTIZATION_GAP_PLAN`을 다시 대조하는 것이다. 미완성/후속 항목은 새 TODO 폴더로 승격하고, UX/UI 디자인 유지보수는 그 이후 별도 계획으로 진행한다.

@@ -2,6 +2,7 @@
 
 상태: Draft / confirmed User Web 작업 없음
 작성일: 2026-08-06
+최종 업데이트: 2026-08-06
 
 ## 1. 목적
 
@@ -30,13 +31,15 @@ G00과 API contract 확정 전에는 아래 User Web 변경을 하지 않는다.
 - generic ExportJob/PDF/export route 추가
 - billing/paywall/churn UI 추가
 
+2026-08-06 A 결정에 따라 Company/Contact/Product latest summary, generic summary endpoint, record별 상세 timeline은 12 전 User Web 작업으로 올리지 않는다. UX/UI 전체 polish는 별도 전면 유지보수 계획에서 다룬다.
+
 ## 4. 후보별 FE 영향
 
 | 후보 | 예상 FE 영향 | 현재 상태 |
 | --- | --- | --- |
 | 다음 행동 reminder | notification settings, next action form, deal detail 상태 표시 | Question |
 | 회의록 follow-up reminder | meeting note detail/list, notification settings, follow-up draft 상태 표시 | post-12-seed |
-| record summary | Company/Contact/Product/MeetingNote list item summary 위치와 empty fallback | Question |
+| record summary | Company/Contact/Product/MeetingNote list item summary 위치와 empty fallback | Company/Contact/Product는 defer. 비고: post-12 B2B/team CRM strategy seed. MeetingNote list summary는 post-12-seed. |
 | provider smoke | 화면 변경 없음. 운영 smoke 결과 문서 반영 | pre-12-follow-up-needed |
 
 ## 5. UX 기준
@@ -52,4 +55,3 @@ G00과 API contract 확정 전에는 아래 User Web 변경을 하지 않는다.
 - `AGENT/SOFTWARE_AGENT/FRONT_AGENT/ARCHITECTURE/FRONTEND_USER_WEB.md`
 - `AGENT/SOFTWARE_AGENT/FRONT_AGENT/CONVENTION/FRONTEND_USER_WEB.md`
 - `../COMMON/CANDIDATE-MATRIX.md`
-

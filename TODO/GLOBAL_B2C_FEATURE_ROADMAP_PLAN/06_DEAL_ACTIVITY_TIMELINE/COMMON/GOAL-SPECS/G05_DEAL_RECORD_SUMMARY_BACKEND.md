@@ -3,12 +3,15 @@
 상태: Completed
 목표: 목록 summary Backend 구현
 완료일: 2026-07-26
+최종 업데이트: 2026-08-06
 
 ## 1. 목적
 
 `COMMON/API-SPEC/DEAL_RECORD_SUMMARY_API.md` 기준으로 딜/담당자 목록 summary를 Backend에 반영한다.
 
 상위 backlog 기준으로는 `NBA-001`, `NBA-002`, `NBA-008`, `NBA-003`의 Deal latest activity subset만 구현한다.
+
+2026-08-06 A 결정에 따라 Company/Contact/Product latest summary, generic summary endpoint, record별 상세 timeline은 12 전 G05 후속으로 계약화/구현하지 않는다.
 
 ## 2. 선행 조건
 
@@ -31,6 +34,7 @@
 - 고급 검색/필터
 - 딜 가능성/확률
 - generic summary endpoint
+- record별 상세 activity timeline
 
 ## 5. Backend 기준
 

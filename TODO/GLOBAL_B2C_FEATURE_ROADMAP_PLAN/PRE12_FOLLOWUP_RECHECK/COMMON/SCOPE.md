@@ -2,6 +2,7 @@
 
 상태: Draft
 작성일: 2026-08-06
+최종 업데이트: 2026-08-06
 
 ## 1. 목적
 
@@ -11,7 +12,7 @@
 
 | 범위 | 설명 |
 | --- | --- |
-| 01~05 재대조 결과 정리 | 01~04 완료, 05 provider smoke pending 상태를 06~11 재대조에서 참고할 수 있게 정리한다. |
+| 01~05 재대조 결과 정리 | 01~04 완료, 05 provider smoke pending 상태와 06 후속 재검토 A 결정을 07~11 재대조에서 참고할 수 있게 정리한다. |
 | 02 후속 후보 분리 | 다음 행동 알림과 회의록 후속 알림이 02 구현 범위가 아니었음을 고정한다. |
 | 06 작업 경계 설정 | DealActivity event와 실제 Notification reminder를 분리한다. |
 | 07 작업 경계 설정 | MeetingNote 상세 AI draft와 MeetingNote 목록 summary/자동 발송/알림을 분리한다. |
@@ -28,6 +29,7 @@
 | 새 API 즉시 구현 | 현재 `COMMON/API-SPEC`에는 confirmed API가 없다. |
 | 새 Prisma migration 즉시 작성 | 후보 계약이 확정되기 전에는 schema를 바꾸지 않는다. |
 | UX/UI 전체 polish | Product UX first-sale gate와 UX/UI 유지보수는 별도 흐름이다. |
+| Company/Contact/Product latest summary pre-12 계약화 | 2026-08-06 A 결정에 따라 `NBA-003` 잔여 record summary는 B2B/team CRM 성격이 강한 post-12 전략 후보로 둔다. |
 
 ## 4. 06 작업에 직접 영향을 주는 기준
 
@@ -49,6 +51,7 @@
 - follow-up body 전체 또는 meeting note raw text 전문 노출
 - Company/Contact/Product latest summary response field 추가
 - MeetingNote list latest/next summary response field 추가
+- Company/Contact/Product summary 전용 endpoint 또는 record별 상세 activity timeline 추가
 
 ## 5. 상태 분류 기준
 
@@ -68,4 +71,3 @@
 - `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/06_DEAL_ACTIVITY_TIMELINE/COMMON/SCOPE.md`
 - `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/06_DEAL_ACTIVITY_TIMELINE/COMMON/SOURCE-PLAN-COVERAGE.md`
 - `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/07_MEETING_NOTE_AI_PROVIDER_LOG/COMMON/SOURCE-PLAN-COVERAGE.md`
-

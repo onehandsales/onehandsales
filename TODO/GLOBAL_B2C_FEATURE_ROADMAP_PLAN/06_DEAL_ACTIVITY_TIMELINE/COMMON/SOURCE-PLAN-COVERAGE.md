@@ -2,6 +2,7 @@
 
 상태: Confirmed
 확정일: 2026-07-25
+최종 업데이트: 2026-08-06
 
 ## 1. 목적
 
@@ -18,7 +19,7 @@
 |---|---|---|---|
 | `NBA-001` Deal list `products` summary | 포함 | G05/G06, `DEAL_RECORD_SUMMARY_API.md` | `GET /api/deals` item에 `products`를 추가한다. |
 | `NBA-002` Contact list `dealCount` | 포함 | G05/G06, `DEAL_RECORD_SUMMARY_API.md` | `GET /api/contacts` item에 active deal count를 추가한다. |
-| `NBA-003` latest memo/activity/next action summary | 부분 포함 | G05/G06, `DealActivity` 기반 Deal latest activity | 06은 Deal list `latestActivity`만 포함한다. Company/Contact/Product latest summary와 generic summary endpoint는 후속이다. |
+| `NBA-003` latest memo/activity/next action summary | 부분 포함 | G05/G06, `DealActivity` 기반 Deal latest activity | 06은 Deal list `latestActivity`만 포함한다. Company/Contact/Product latest summary와 generic summary endpoint는 2026-08-06 A 결정에 따라 12 전 계약화/구현 대상이 아니다. |
 | `NBA-008` Page size 15 contract cleanup | 포함 | G05/G06, G07 | FE 단독 변경 없이 Backend/API/FE/test 계약을 15개 기준으로 확인한다. |
 | `NBA-014` DB/Prisma migration 운영 gate | 포함, 실행 gate | G02/G07 | DB target, migration status, seed/generate 정책을 확인한다. 사용자 결정 없이 공유/운영성 DB에 migrate/seed를 실행하지 않는다. |
 | `NBA-004` MeetingNote next/latest summary | 제외 | 후속 MeetingNote 계획 | 회의록 raw text, AI/STT 요약, next action 추출 정책이 필요하다. |
@@ -49,6 +50,13 @@
 - 모든 record를 묶는 generic summary endpoint
 
 이 경계는 Global B2C에서 필요한 CRM 맥락을 Deal 중심으로 먼저 정본화하고, 개인정보/메모 정책이 정해지지 않은 summary 확장을 막기 위한 것이다.
+
+2026-08-06 후속 재검토 결론:
+
+- 06은 Completed 상태를 유지한다.
+- Company/Contact/Product latest summary, generic summary endpoint, record별 상세 activity timeline은 12 전 API/DB/FE 계약화 대상이 아니다.
+- 위 후보는 B2B 또는 team CRM 성격이 더 강한 post-12 전략 재검토 seed로 보존한다.
+- UX/UI 전체 polish는 06 후속으로 쪼개서 진행하지 않고, 12와 post-12 재검토 이후 별도 UX/UI 전면 유지보수 계획에서 다룬다.
 
 ## 4. USER_WEB_PRODUCTIZATION_GAP_PLAN 반영
 
@@ -81,7 +89,7 @@
 
 ## 6. 구현자가 확장하지 말아야 할 것
 
-- Company/Contact/Product 전체 latest activity summary를 06에 끼워 넣지 않는다.
+- Company/Contact/Product 전체 latest activity summary를 06에 끼워 넣지 않는다. 2026-08-06 A 결정에 따라 12 전 계약화도 하지 않는다.
 - private memo나 일반 memo를 최신 활동 summary로 합치지 않는다.
 - MeetingNote raw text, transcript, provider log를 User API response에 노출하지 않는다.
 - Admin API, billing/subscription/tax, product analytics, app i18n/l10n을 06에 섞지 않는다.

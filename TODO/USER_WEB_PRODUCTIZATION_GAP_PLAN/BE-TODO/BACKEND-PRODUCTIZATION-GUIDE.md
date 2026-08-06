@@ -1,9 +1,9 @@
 # Backend Productization Guide
 
-2026-08-05 `05_AI_WEEKLY_SALES_REPORT` 반영 완료: AI weekly report/follow-up delivery API/DB와 Gmail/Microsoft actual email provider adapter는 구현/자동 검증 완료 상태다. 운영 provider smoke는 pending이다.
+2026-08-06 `06_DEAL_ACTIVITY_TIMELINE` 후속 재검토 A 결정 반영: `NBA-003` 잔여 Company/Contact/Product latest summary, generic summary endpoint, record별 상세 timeline은 12 전 Backend/API/DB gap으로 승격하지 않는다.
 
 상태: Draft Guide
-최종 업데이트: 2026-08-05
+최종 업데이트: 2026-08-06
 
 ## 0. 완료 반영
 
@@ -66,7 +66,7 @@ Backend 판단 기준은 MVP 기능 추가가 아니라 Global B2C 첫 판매 ga
 | DB/Prisma ops | 06 범위 DB target/migrate/seed gate 확인 완료 | 실제 운영 DB 적용 절차, backup/restore, 장애 대응 기준 | 첫 판매 전 data reliability gate 필요 |
 | Deal products summary | 구현 완료 | `GET /api/deals` products summary, ownership aggregation QA 완료 | 완료 |
 | Contact dealCount | 구현 완료 | `GET /api/contacts` dealCount, soft delete 제외/user ownership QA 완료 | 완료 |
-| Latest activity summary | Deal list `latestActivity` 구현 완료. Company/Contact/Product summary 없음 | 잔여 summary의 memo/private memo/activity 의미와 개인정보 제외 기준 | Deal subset 완료, 잔여는 후속 |
+| Latest activity summary | Deal list `latestActivity` 구현 완료. Company/Contact/Product summary 없음 | 2026-08-06 A 결정: 잔여 summary, generic summary endpoint, record별 상세 timeline은 12 전 계약화하지 않는다. post-12에서 Global B2C 지표와 B2B/team CRM 전략 기준으로 다시 판단 | Deal subset 완료, 잔여는 defer |
 | BusinessCard provider failure | 10에서 구현 완료 | safe `errorCode`, `userMessage`, `retryable`, provider raw detail 미노출, `BusinessCardScanLog` safe failure field QA 완료 | 완료 |
 | ImportJob persistence | G01~G09 구현 및 최종 QA closeout 완료 | ImportJob/Row/Error/UploadedFile, TTL/delete tracking, resume API, redaction/ownership QA 완료. terminal cleanup, 원본 file binary 즉시 삭제, `ImportUserLogRow` 30일 cleanup, 10MB/5,000행 제한까지 보강해 01은 최종 서비스 형태 기준으로 완전 종료 | 완료 |
 | Trash private memo restriction | 11에서 구현 완료 | User/Admin Trash response에서 private memo 원문 미노출 확인 | 완료 |
@@ -109,4 +109,4 @@ Backend/API 구현이 필요하면 아래를 먼저 만족해야 한다.
 3. 12 완료 후 `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/COMMON/POST-12-REVIEW-AND-FOLLOWUP.md` 기준으로 01~12 전체, `NEXT_BACKEND_API_BACKLOG_PLAN`, 이 제품화 guide, 실제 BE/FE/Prisma 상태를 다시 대조한다.
 4. 제품화 UX에서 실제 필요한 API gap인지 확인한다.
 5. 개인정보/보안/운영 정책이 얽힌 후보를 먼저 정책으로 확정한다.
-6. ImportJob, Weekly Schedule Report, Notification, Google Calendar Integration, AI Weekly Sales Report/Follow-up Delivery, Deal Activity Timeline, MeetingNote AI Provider Log, Global Data I18N, Product Analytics foundation, Mobile Field Use, Admin Operation은 완료됐고, Payment/Billing, Billing-linked analytics source는 12에서 먼저 다룬다. 실제 backup/restore 실행 runbook, 05 provider smoke, 잔여 summary 후보는 post-12 재검토 후 새 TODO 또는 운영 절차로 승격할지 결정한다.
+6. ImportJob, Weekly Schedule Report, Notification, Google Calendar Integration, AI Weekly Sales Report/Follow-up Delivery, Deal Activity Timeline, MeetingNote AI Provider Log, Global Data I18N, Product Analytics foundation, Mobile Field Use, Admin Operation은 완료됐고, Payment/Billing, Billing-linked analytics source는 12에서 먼저 다룬다. 실제 backup/restore 실행 runbook, 05 provider smoke, 잔여 summary 후보는 post-12 재검토 후 새 TODO 또는 운영 절차로 승격할지 결정한다. `NBA-003` 잔여 record summary는 2026-08-06 A 결정상 12 전 Backend 계약화 대상이 아니다.

@@ -2,7 +2,7 @@
 
 상태: Completed
 확정일: 2026-07-25
-최종 업데이트: 2026-07-26
+최종 업데이트: 2026-08-06
 순서: 06
 성격: Deal 중심 activity 정본 + 상세 timeline + record summary 기반 계획
 결정 상태: 사용자 결정과 `COMMON/DECISION-LOG.md` 06 baseline 반영
@@ -27,6 +27,8 @@
 06은 전체 목표를 지금 문서화하되, 구현은 `/goal` 단위로 나눠 순차 진행한다.
 
 상위 입력 계획 반영 범위는 `COMMON/SOURCE-PLAN-COVERAGE.md`를 정본으로 본다. 06은 `NEXT_BACKEND_API_BACKLOG_PLAN`의 `NBA-001`, `NBA-002`, `NBA-008`, `NBA-014`와 `NBA-003` 중 Deal latest activity subset을 포함한다. `USER_WEB_PRODUCTIZATION_GAP_PLAN`의 first-sale global bundle인 Admin 운영, 결제/구독/세금, 앱 내부 다국어, 다국가 데이터 모델, 제품 분석은 06에서 구현하지 않고 별도 큰 계획으로 분리한다.
+
+2026-08-06 후속 재검토에서 사용자 결정 A를 반영했다. 06은 Completed 상태를 유지하고, Company/Contact/Product latest summary, generic summary endpoint, record별 상세 activity timeline은 12 전 계약화/구현 대상이 아니다. 해당 후보는 B2B 또는 team CRM 성격이 더 강한 post-12 전략 재검토 seed로 남기며, UX/UI 전체 polish도 지금 06 후속으로 하지 않는다.
 
 1. `DealActivity` DB 정본 모델을 만든다.
 2. 딜 상세에서 `GET /api/deals/:dealId/activities`로 timeline을 조회한다.

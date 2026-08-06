@@ -1,9 +1,9 @@
 # Global B2C First Sale Gate
 
-2026-08-05 `05_AI_WEEKLY_SALES_REPORT` 반영 완료: Product UX/Retention 중 AI weekly report/follow-up delivery와 Gmail/Microsoft actual email provider adapter는 구현/자동 검증 완료 상태로 본다. 운영 provider smoke와 SMS/B2B/sequence/email sync/자동 follow-up 알림은 별도 후속이다.
+2026-08-06 `06_DEAL_ACTIVITY_TIMELINE` 후속 재검토 A 결정 반영: Product UX 중 06 Deal/Contact summary 범위는 완료됐고, Company/Contact/Product latest summary/generic summary/record별 timeline은 12 전 첫 판매 gate로 승격하지 않는다.
 
 상태: Draft Guide
-최종 업데이트: 2026-08-05
+최종 업데이트: 2026-08-06
 
 ## 0. 완료 반영
 
@@ -15,7 +15,7 @@
 - [x] Product UX/Retention 중 Google Calendar read-only import는 `04_GOOGLE_CALENDAR_INTEGRATION`에서 완료
 - [x] Product UX/Retention 중 AI weekly report/follow-up delivery는 `05_AI_WEEKLY_SALES_REPORT`에서 구현 및 QA closeout 완료
 - [x] `05_AI_WEEKLY_SALES_REPORT` G10 Gmail/Microsoft actual email provider adapter 구현 및 자동 검증 완료. 운영 provider smoke는 pending
-- [x] Product UX 중 DealActivity timeline과 record summary는 `06_DEAL_ACTIVITY_TIMELINE`에서 완료
+- [x] Product UX 중 DealActivity timeline, Deal list products/latestActivity, Contact dealCount는 `06_DEAL_ACTIVITY_TIMELINE`에서 완료. Company/Contact/Product latest summary와 generic summary endpoint는 2026-08-06 A 결정에 따라 12 전 gate가 아니다.
 - [x] DB/Prisma 운영 gate 중 06 범위 DB target/migrate/seed gate는 `06_DEAL_ACTIVITY_TIMELINE`에서 closeout 완료
 - [x] Product UX/Retention/Data reliability 중 MeetingNote AI 후속 작업 draft와 provider call log subset은 `07_MEETING_NOTE_AI_PROVIDER_LOG`에서 완료
 - [x] Global UX 중 `/app` i18n, user global settings, 통화/전화번호/주소/지역/Import/Export 현지화, Google/LINE/Apple auth는 `08_GLOBAL_DATA_I18N`에서 완료
@@ -37,7 +37,7 @@ MVP는 판매 버전이 아니다. MVP는 핵심 업무 루프가 동작하는�
 
 | Gate | 판매 전 필요한 상태 | 현재 방향 |
 |---|---|---|
-| Product UX | 회사, 담당자, 제품, 딜, 일정, 주간 일정 보고서, Google Calendar read-only import, AI weekly report/follow-up delivery, 회의록, 명함, import, search, trash, export가 반복 업무 도구처럼 자연스럽게 이어진다. | 현재 MVP 핵심 루프를 화면별로 제품화 QA한다. 주간 일정 보고서, Google Calendar read-only import, AI weekly report/follow-up delivery, DealActivity timeline, 딜/담당자 record summary, 회의록 AI 후속 작업 draft, 모바일 명함 촬영/회의 녹음/local draft/push permission UX는 구현 완료됐다. |
+| Product UX | 회사, 담당자, 제품, 딜, 일정, 주간 일정 보고서, Google Calendar read-only import, AI weekly report/follow-up delivery, 회의록, 명함, import, search, trash, export가 반복 업무 도구처럼 자연스럽게 이어진다. | 현재 MVP 핵심 루프를 화면별로 제품화 QA한다. 주간 일정 보고서, Google Calendar read-only import, AI weekly report/follow-up delivery, DealActivity timeline, Deal list products/latestActivity, Contact dealCount, 회의록 AI 후속 작업 draft, 모바일 명함 촬영/회의 녹음/local draft/push permission UX는 구현 완료됐다. Company/Contact/Product latest summary는 12 전 first-sale gate가 아니라 post-12 전략 후보로 둔다. |
 | Global UX | 판매 국가 기준 언어, 날짜/시간, 통화, 전화번호, 주소, UX writing이 어색하지 않다. | 08에서 `/app` `ko-KR`/`en` i18n, 사용자 국가/기본 통화, Product/Deal currency, Contact KR/US phone, Company country/region/address, Import/Export localization, Google/LINE/Apple auth를 구현했다. LINE/Apple provider smoke는 2026-07-29 사용자 확인 기준 운영 완료됐고, 추가 시장별 UX writing은 후속 polish로 남긴다. |
 | Pricing/plan | 가격표, trial 여부, 무료/유료 제한, paywall, plan별 entitlement가 명확하다. | Public pricing과 app 내부 구독 상태 UX를 함께 정의한다. |
 | Billing | 결제 provider 또는 Merchant of Record, 구독 생성/갱신/해지, 환불, 결제 실패 복구, 영수증/인보이스가 준비된다. | Payment/subscription은 첫 판매 전 큰 계획으로 다룬다. |

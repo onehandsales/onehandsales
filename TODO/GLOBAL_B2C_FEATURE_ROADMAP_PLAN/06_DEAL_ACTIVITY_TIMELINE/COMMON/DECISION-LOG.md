@@ -2,6 +2,7 @@
 
 상태: Confirmed
 확정일: 2026-07-25
+최종 업데이트: 2026-08-06
 
 ## 1. 제품 방향
 
@@ -45,3 +46,17 @@
 - Controller method는 `// API : ...`, 내부 함수는 `// 기능 : ...`, class/interface는 `// 역할 : ...` 형태를 따른다.
 - 복잡한 application orchestration에는 필요한 경우 번호가 있는 한글 주석을 둔다.
 - UI 표시 문구는 `AGENT/UXUI_AGENT/PLANNING/UX_WRITING_GUIDE.md`의 톤을 따른다.
+
+## 5. 2026-08-06 후속 재검토 결정
+
+사용자 결정 A에 따라 06 완료 의미를 유지한다.
+
+| 항목 | 결정 | 이유 |
+|---|---|---|
+| 06 재오픈 | 하지 않는다. | `DealActivity`, 딜 상세 timeline, Deal list `products/latestActivity`, Contact list `dealCount`, page size 15 계약은 G07 기준 완료됐다. |
+| Company/Contact/Product latest summary | 12 전 계약화/구현하지 않는다. | Global B2C first-sale 필수 blocker로 확정되지 않았고, B2B/team CRM에서 더 강한 가치가 있는 후보로 본다. |
+| generic summary endpoint | 12 전 만들지 않는다. | 현재 first-sale 개인 영업자 흐름에서는 Deal 중심 activity 정본이 우선이고, 범용 record summary는 API/DB/정책 영향이 크다. |
+| record별 상세 activity timeline | 12 전 만들지 않는다. | Company/Contact/Product별 timeline은 Attio식 최종 방향에는 맞지만 팀 CRM/고급 CRM 성격이 강하다. |
+| UX/UI polish | 지금 06 후속으로 하지 않는다. | UX/UI는 12와 post-12 재검토 이후 별도 전면 유지보수 계획에서 한 번에 다룬다. |
+
+이 결정은 잔여 후보를 삭제한다는 뜻이 아니다. `PRE12_FOLLOWUP_RECHECK`와 post-12 재검토에서 근거만 보존하고, 새 TODO 승격 여부는 12 완료 후 다시 판단한다.

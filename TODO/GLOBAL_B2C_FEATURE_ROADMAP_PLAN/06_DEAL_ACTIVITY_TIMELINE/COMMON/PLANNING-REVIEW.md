@@ -2,7 +2,7 @@
 
 상태: Completed
 검토일: 2026-07-25
-최종 업데이트: 2026-07-26
+최종 업데이트: 2026-08-06
 
 ## 1. 결론
 
@@ -23,6 +23,7 @@
 | 수동 기록 삭제 | 1차 제외 |
 | UX 기준 | Notion식 작업공간 UX + Attio식 CRM record 관계 UX |
 | 구현 전략 | 기능 구현 우선, 전체 UX polish는 후속 |
+| 2026-08-06 후속 재검토 | A 결정: 06은 Completed 유지. Company/Contact/Product latest summary, generic summary endpoint, record별 상세 timeline은 12 전 계약화/구현하지 않고 post-12 전략 후보로 둔다. |
 
 ## 3. 검토 대상
 
@@ -102,8 +103,10 @@
 
 - 수동 activity 삭제를 언제 포함할지
 - 일반 메모 activity 통합을 할지
-- 회사/제품 latest activity summary를 G06 이후 포함할지
+- 회사/담당자/제품 latest activity summary를 12 완료 후 post-12/B2B-team-CRM 전략 후보로 승격할지
 - 고급 검색/필터와 딜 확률/score를 별도 goal로 언제 다룰지
+
+2026-08-06 A 결정으로 위 record summary 후보는 12 전 추가 구현이나 계약 초안 작성 대상이 아니다. UX/UI 전체 polish도 지금 06 후속으로 진행하지 않고, 12와 post-12 재검토 이후 별도 계획에서 다룬다.
 
 ## 9. 현재 상태
 

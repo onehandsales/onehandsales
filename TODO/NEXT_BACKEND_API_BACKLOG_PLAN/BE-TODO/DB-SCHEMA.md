@@ -1,9 +1,9 @@
 # DB Schema TODO
 
-2026-08-05 `05_AI_WEEKLY_SALES_REPORT` 반영 완료: AI weekly report와 follow-up delivery DB foundation은 구현 완료됐고, G10 Gmail/Microsoft provider adapter는 신규 migration 없이 기존 follow-up delivery model을 사용한다.
+2026-08-06 `06_DEAL_ACTIVITY_TIMELINE` 후속 재검토 A 결정 반영: `NBA-003` 잔여 Company/Contact/Product latest summary, generic summary endpoint, record별 상세 timeline은 12 전 DB 설계/migration 후보로 승격하지 않는다.
 
 상태: Draft
-최종 업데이트: 2026-08-05
+최종 업데이트: 2026-08-06
 
 ## 0. 완료 반영
 
@@ -99,10 +99,10 @@
 
 | 후보 ID | 후보 | DB 영향 후보 |
 |---|---|---|
-| NBA-003 잔여 | Company/Contact/Product latest memo/activity/next action summary | Deal list `latestActivity`는 `DealActivity`로 완료됐다. 나머지 record summary는 별도 summary/index 설계 후보가 생길 수 있다. |
+| NBA-003 잔여 | Company/Contact/Product latest memo/activity/next action summary | Deal list `latestActivity`는 `DealActivity`로 완료됐다. 2026-08-06 A 결정에 따라 나머지 record summary, generic summary endpoint, record별 상세 timeline은 12 전 summary/index 설계 후보로 승격하지 않는다. |
 | NBA-004 | MeetingNote 목록 next/latest summary | 상세 next action/follow-up draft는 새 저장 table 없이 07에서 완료됐다. 목록 summary를 저장하면 column/table 후보가 생긴다. |
 
-위 후보는 12 완료 후 전체 재검토에서 first-sale follow-up인지 product follow-up인지 다시 분류한다. 신규 schema나 migration은 API/UX 필요성과 `NBA-014` DB/Prisma 운영 gate가 확인되기 전까지 추가하지 않는다.
+위 후보는 12 완료 후 전체 재검토에서 first-sale follow-up인지 product follow-up인지 다시 분류한다. `NBA-003` 잔여는 B2B/team CRM 성격이 강한 post-12 전략 후보로 보며, 신규 schema나 migration은 API/UX 필요성과 `NBA-014` DB/Prisma 운영 gate가 확인되기 전까지 추가하지 않는다.
 
 ## 4. RQA-005 운영 gate
 

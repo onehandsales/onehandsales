@@ -1,9 +1,9 @@
 # Current Implemented Functions
 
-2026-08-05 `05_AI_WEEKLY_SALES_REPORT` 반영 완료: AI weekly report/follow-up delivery와 Gmail/Microsoft 실제 email provider adapter는 구현/자동 검증 완료 상태다. 운영 credential/callback/allowlist 기반 provider smoke는 pending이다.
+2026-08-06 `06_DEAL_ACTIVITY_TIMELINE` 후속 재검토 A 결정 반영: 06은 Completed 상태를 유지하고, `NBA-003` 잔여 record summary는 12 전 구현하지 않는 post-12 B2B/team CRM 전략 후보로 둔다.
 
 상태: Draft Guide
-기준: 2026-08-05 현재 코드와 AGENT 구현 상태 문서
+기준: 2026-08-06 현재 코드와 AGENT 구현 상태 문서
 
 ## 0. 완료 반영 체크리스트
 
@@ -120,7 +120,7 @@
 - Google Calendar read-only import/sync/calendar selection/source badge/Trash restore는 구현 완료됐다. export/write/realtime webhook/watch/반복 일정/여러 Google 계정 동시 연결은 후속 확장 범위다.
 - AI Weekly Sales Report와 Follow-up Delivery는 05에서 구현 및 QA closeout 완료됐고, G10에서 Gmail/Microsoft 실제 email provider adapter와 reconnect/safe failure/smoke allowlist가 구현/자동 검증됐다. 운영 provider smoke는 credential/callback/allowlist 준비 후 확인한다.
 - 일정/딜 reminder 기반 Notification은 구현 완료됐고, 실제 SMTP/Web Push provider smoke도 2026-08-04 사용자 확인 기준 배포 환경에서 완료됐다.
-- DealActivity timeline, Deal list products/latest activity, Contact dealCount, page size 15 계약은 구현 및 QA closeout 완료됐다. Company/Contact/Product latest summary, activity deletion/retention/audit 정책은 후속 범위다.
+- DealActivity timeline, Deal list products/latest activity, Contact dealCount, page size 15 계약은 구현 및 QA closeout 완료됐다. Company/Contact/Product latest summary, generic summary endpoint, record별 상세 timeline, activity deletion/retention/audit 정책은 후속 범위다. 2026-08-06 A 결정에 따라 `NBA-003` 잔여 record summary는 12 전 구현하지 않고 post-12 B2B/team CRM 전략 후보로 둔다.
 - MeetingNote AI/STT provider log, 회의록 상세 next action/follow-up draft, User Web AI 후속 작업 UX는 구현 및 QA closeout 완료됐다. Admin provider audit/raw access 운영은 11에서 완료됐고, 회의록 목록 summary와 자동 발송/알림은 후속 범위다.
 - BusinessCard 모바일 촬영/OCR safe failure, MeetingNote 모바일 녹음/fallback, local draft, browser push permission UX, mobile field analytics는 10에서 구현 및 QA closeout 완료됐다.
 - `/app` i18n, user global settings, Product/Deal currency, Contact global phone, Company region/address, Import/Export localization, Google/LINE/Apple auth는 08에서 구현 및 QA closeout 완료됐다. 08 DB migration은 2026-07-29 최신 상태로 재확인됐고, LINE/Apple 실제 provider smoke도 2026-07-29 사용자 확인 기준 운영 완료됐다.

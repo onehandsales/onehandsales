@@ -13,6 +13,7 @@
 
 - `SCOPE.md`: 포함 범위, 제외 범위, 06 작업 경계
 - `CANDIDATE-MATRIX.md`: 후보별 출처, 현재 구현 상태, 기본 분류, 다음 조치
+- `06_RECORD_SUMMARY_DEFER_DECISION.md`: 2026-08-06 A 결정에 따른 `NBA-003` 잔여 record summary 보류 기준
 - `GOAL-WORK-ORDER.md`: `/goal` 실행 순서
 - `PLANNING-REVIEW.md`: 기획 검토 결과
 - `API-SPEC/README.md`: 현재 확정 API 없음, 후보 API 계약 상태
@@ -31,10 +32,11 @@
 - generic ExportJob, PDF, recurrence, Google Calendar write/watch
 - billing/paywall/churn/paid conversion runtime flow
 
+2026-08-06 A 결정 기준으로 Company/Contact/Product latest summary, generic summary endpoint, record별 상세 timeline은 pre-12 계약화 대상도 아니다. post-12 재검토 전에는 G04를 구현 계약 goal로 전환하지 않는다.
+
 ## 4. 관련 문서
 
 - `../README.md`
 - `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/06_DEAL_ACTIVITY_TIMELINE`
 - `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/07_MEETING_NOTE_AI_PROVIDER_LOG`
 - `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/COMMON/POST-12-REVIEW-AND-FOLLOWUP.md`
-

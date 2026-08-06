@@ -1,9 +1,9 @@
 # API TODO
 
-2026-08-05 `05_AI_WEEKLY_SALES_REPORT` 반영 완료: AI weekly report/follow-up delivery API와 Gmail/Microsoft 실제 email provider adapter는 구현/자동 검증 완료 상태다. 운영 credential/callback/allowlist 기반 provider smoke는 pending이다.
+2026-08-06 `06_DEAL_ACTIVITY_TIMELINE` 후속 재검토 A 결정 반영: `NBA-003` 잔여 Company/Contact/Product latest summary, generic summary endpoint, record별 상세 timeline은 12 전 API 계약화/구현 대상이 아니다.
 
 상태: Draft
-최종 업데이트: 2026-08-05
+최종 업데이트: 2026-08-06
 
 ## 0. 완료 반영
 
@@ -171,12 +171,12 @@
 
 ## 4. Product feature API 후보
 
-- `NBA-003`: Company/Contact/Product latest memo/activity/next action summary. Deal list `latestActivity` subset은 06에서 완료
+- `NBA-003`: Company/Contact/Product latest memo/activity/next action summary. Deal list `latestActivity` subset은 06에서 완료. 2026-08-06 A 결정으로 잔여 summary, generic summary endpoint, record별 상세 timeline은 12 전 API 계약화/구현 대상이 아니다.
 - `NBA-004`: MeetingNote 목록 next/latest summary. 상세 next action/follow-up draft subset은 07에서 완료
 
 위 후보는 12 완료 후 `GLOBAL_B2C_FEATURE_ROADMAP_PLAN/COMMON/POST-12-REVIEW-AND-FOLLOWUP.md` 기준 재검토에서 새 TODO로 승격할지 결정한다. 12 완료 전에는 이 draft 문서만으로 API를 구현하지 않는다.
 
-공통 다음 작업:
+post-12 재검토 시 볼 기준:
 
 - 사용자-facing 가치와 MVP 이후 우선순위를 먼저 확정한다.
 - 새 endpoint가 필요한지, 기존 list response 확장으로 충분한지 분리한다.

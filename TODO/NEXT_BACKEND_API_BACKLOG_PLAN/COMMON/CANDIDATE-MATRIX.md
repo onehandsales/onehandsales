@@ -1,10 +1,10 @@
 # Candidate Matrix
 
-2026-08-05 `05_AI_WEEKLY_SALES_REPORT` 반영 완료: AI weekly report/follow-up delivery와 Gmail/Microsoft 실제 email provider adapter는 구현/자동 검증 완료 상태다. 운영 credential/callback/allowlist 기반 provider smoke는 pending이다.
+2026-08-06 `06_DEAL_ACTIVITY_TIMELINE` 후속 재검토 A 결정 반영: `NBA-003` 잔여 Company/Contact/Product latest summary, generic summary endpoint, record별 상세 timeline은 12 전 계약화/구현 대상이 아니며 post-12 B2B/team CRM 전략 후보로 유지한다.
 
 상태: Draft
 작성일: 2026-07-20
-최종 업데이트: 2026-08-05
+최종 업데이트: 2026-08-06
 
 ## 0. 완료 반영
 
@@ -41,7 +41,7 @@
 - [x] `NBA-003 Deal latest activity subset`: Partial Done (2026-07-26)
   - 구현 계획: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/06_DEAL_ACTIVITY_TIMELINE`
   - 완료 기록: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/06_DEAL_ACTIVITY_TIMELINE/COMMON/GOAL-SPECS/G07_QA_REVIEW_CLOSEOUT.md`
-  - 현재 의미: Deal list `latestActivity`는 완료다. Company/Contact/Product latest summary와 generic summary endpoint는 후속 후보로 남긴다.
+  - 현재 의미: Deal list `latestActivity`는 완료다. Company/Contact/Product latest summary, generic summary endpoint, record별 상세 timeline은 2026-08-06 A 결정에 따라 12 전 계약화/구현하지 않고 post-12 B2B/team CRM 전략 후보로 남긴다.
 - [x] `NBA-008 Page size 15 contract cleanup`: Done (2026-07-26)
   - 구현 계획: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/06_DEAL_ACTIVITY_TIMELINE`
   - 완료 기록: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/06_DEAL_ACTIVITY_TIMELINE/COMMON/GOAL-SPECS/G07_QA_REVIEW_CLOSEOUT.md`
@@ -107,7 +107,7 @@
 |---|---|---|---|---|---|---|---|---|---|---|---|
 | NBA-001 | Deal list `products` summary | UX/UI QA, `06_DEAL_ACTIVITY_TIMELINE` | release follow-up | Yes | 완료. 딜 목록에서 제품 linked record까지 바로 비교할 수 있다. | Done: `GET /api/deals` item `products` field 추가 | Done: 기존 `DealProduct` aggregation 사용 | Done: `/app/deals` desktop/mobile 표시 | ownership aggregation QA 완료 | Done: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/06_DEAL_ACTIVITY_TIMELINE` | 완료. Active backlog에서 제외한다. |
 | NBA-002 | Contact list `dealCount` | UX/UI QA, `06_DEAL_ACTIVITY_TIMELINE` | release follow-up | Yes | 완료. 담당자 목록에서 영업 연결도를 빠르게 판단할 수 있다. | Done: `GET /api/contacts` item `dealCount` field 추가 | Done: 기존 `DealContact` aggregation 사용 | Done: `/app/contacts` desktop/mobile 표시 | ownership/soft delete aggregation QA 완료 | Done: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/06_DEAL_ACTIVITY_TIMELINE` | 완료. Active backlog에서 제외한다. |
-| NBA-003 | Company/Contact/Product latest memo/activity/next action summary | UX/UI QA, `06_DEAL_ACTIVITY_TIMELINE` | product feature | Yes | 부분 완료. Deal list latest activity는 완료됐고, 나머지 record summary는 후속이다. | Partial Done: `GET /api/deals` item `latestActivity` field 추가. Company/Contact/Product summary는 후보 | Done for Deal: `DealActivity` model/migration. 남은 summary는 추가 설계 필요 | Done for Deal list. Company/Contact/Product 화면은 후속 | private memo/provider raw/meeting note raw/follow-up body redaction QA 완료. 잔여 summary도 같은 기준 필요 | Core record activity summary design for remaining records | Deal subset 완료. Company/Contact/Product latest summary와 generic summary endpoint는 후속 후보로 유지한다. |
+| NBA-003 | Company/Contact/Product latest memo/activity/next action summary | UX/UI QA, `06_DEAL_ACTIVITY_TIMELINE` | defer | Yes | 부분 완료. Deal list latest activity는 완료됐고, 나머지 record summary는 12 전 구현하지 않는다. B2B/team CRM 성격이 더 강한 post-12 전략 후보로 본다. | Partial Done: `GET /api/deals` item `latestActivity` field 추가. Company/Contact/Product summary와 generic summary endpoint는 12 전 계약화하지 않음 | Done for Deal: `DealActivity` model/migration. 잔여 summary/index 설계는 post-12 재검토 전까지 만들지 않음 | Done for Deal list. Company/Contact/Product 화면 summary는 post-12 재검토 전까지 만들지 않음 | private memo/provider raw/meeting note raw/follow-up body redaction QA 완료. 잔여 summary를 만들 경우에도 별도 정책 필요 | Post-12 B2C/B2B record activity strategy recheck | 2026-08-06 A 결정: 06 완료 유지. Company/Contact/Product latest summary, generic summary endpoint, record별 상세 timeline은 12 전 계약화/구현 금지. |
 | NBA-004 | MeetingNote next/latest summary and detail draft | UX/UI QA, `07_MEETING_NOTE_AI_PROVIDER_LOG` | product feature | Yes | 부분 완료. 회의록 상세에서 다음 행동 후보와 follow-up 문안 초안을 바로 만들 수 있다. 목록 summary는 후속이다. | Partial Done: detail `next-actions/draft`, `follow-up-draft` API 구현. 목록 response field는 후보 | Done for 07: 새 action table 없이 provider log는 공통 `AiProviderCallLog` target 확장 사용. 목록 summary 저장은 후속 설계 필요 | Done for detail. 회의록 목록 summary 표시는 후속 | AI/STT 원문, transcript, follow-up body를 log/list에 노출하지 않는 redaction QA 완료. 목록 summary도 같은 기준 필요 | Remaining MeetingNote list summary contract | detail draft subset 완료. 목록 latest/next summary와 자동 저장/자동 발송은 후속 후보로 유지한다. |
 | NBA-005 | BusinessCard provider failure code/message contract | UX/UI QA, `10_MOBILE_PWA_FIELD_USE` | release follow-up | Yes | 완료. OCR 실패 시 사용자는 provider/quota/API key/internal stack 없이 안전한 안내와 재시도 행동을 본다. | Done: BusinessCard scan response/list/detail에 safe failure `errorCode`, `userMessage`, `retryable` 반영 | Done: `BusinessCardScanLog` safe failure fields와 migration SQL COMMENT 구현 | Done: 모바일 실패 copy, 다시 촬영, 파일 바꾸기, 수동 입력 UX | provider raw detail response/log/analytics/local draft 미노출 QA 완료 | Done: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/10_MOBILE_PWA_FIELD_USE` | 완료. Active backlog에서 제외한다. Admin provider failure dashboard는 11에서 완료됐다. |
 | NBA-006 | ImportJob persistence/resume API | AGENT 문서 | product feature | Yes | 완료. 업로드, 매핑, 검증 중 새로고침/탭 이동 복구와 import 데이터 보관/삭제/입력량 제한 기준이 닫혔다. | Done: `/api/imports` 계열 persistence/resume API와 G05~G08 최종형 보강 구현 완료 | Done: ImportJob/Row/Error/UploadedFile schema 및 migration 구현. terminal cleanup, `ImportUserLogRow` 30일 cleanup, 10MB/5,000행 제한은 기존 schema 중심으로 구현 | Done: import review resume UX, row detail 만료 안내, 10MB/5,000행 제한 초과 안내 구현 | redaction, ownership, TTL/delete tracking, terminal cleanup, 원본 file binary 즉시 삭제 QA 완료 | Done: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/01_IMPORT_JOB_PERSISTENCE` G01~G09 | 완료. Active backlog에서 제외한다. |
@@ -127,10 +127,10 @@
 
 ## 3. 다음 실행 순서 제안
 
-1. 12 착수 전 01~11 pre-12 재대조를 진행한다. 2026-08-05 기준 01~05는 진행/확인 완료로 보고, 다음 대상은 06~11이다.
+1. 12 착수 전 01~11 pre-12 재대조를 진행한다. 2026-08-06 기준 06 후속 재검토 A 결정까지 반영 완료됐고, 다음 대상은 07~11이다.
 2. 01~11 pre-12 재대조 후 `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/12_BILLING_SUBSCRIPTION_TAX`를 계약화하고 구현한다.
 3. 12 완료 후 `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/COMMON/POST-12-REVIEW-AND-FOLLOWUP.md` 기준으로 이 matrix를 다시 읽는다.
-4. `NBA-003`의 Company/Contact/Product latest summary 잔여 범위와 `NBA-004` MeetingNote 목록 summary는 post-12 재검토 seed로 유지한다.
+4. `NBA-003`의 Company/Contact/Product latest summary 잔여 범위는 2026-08-06 A 결정에 따라 12 전 계약화하지 않고 post-12 B2C/B2B record activity 전략 재검토 seed로 유지한다. `NBA-004` MeetingNote 목록 summary도 post-12 재검토 seed로 유지한다.
 5. Backup/restore 실행 runbook, 장애 대응 drill은 11 system gate 기록과 별개로 post-12 운영 신뢰 후보로 다시 판단한다.
 6. Product Analytics foundation은 09에서 완료됐고, mobile field-use event는 10에서 완료됐으며, Admin analytics dashboard는 11에서 완료됐다. billing-linked conversion/churn flow는 12 구현 결과 기준으로 다시 판단한다.
 7. MeetingNote 자동 발송/알림, PWA/native packaging, Google Calendar write/webhook/recurrence, generic ExportJob은 post-12 재검토에서 first-sale follow-up인지 Series A later인지 다시 분류한다.

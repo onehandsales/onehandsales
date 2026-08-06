@@ -1,9 +1,9 @@
 # User Web Productization Guide
 
-2026-08-05 `05_AI_WEEKLY_SALES_REPORT` 반영 완료: `/app/schedules/week` AI report section, `/app/settings` follow-up provider settings, compose/send/retry/timeline UX는 구현/자동 검증 완료 상태다. 운영 provider smoke는 pending이다.
+2026-08-06 `06_DEAL_ACTIVITY_TIMELINE` 후속 재검토 A 결정 반영: `NBA-003` 잔여 Company/Contact/Product latest summary, generic summary endpoint, record별 상세 timeline은 12 전 User Web gap으로 승격하지 않는다.
 
 상태: Draft Guide
-최종 업데이트: 2026-08-05
+최종 업데이트: 2026-08-06
 
 ## 0. 완료 반영
 
@@ -65,10 +65,10 @@
 | Public/auth | locale 진입면과 Google/LINE/Apple login/signup provider 버튼 구현 | Global B2C 첫 판매용 가치 제안, 가격/플랜, trial 기준이 충분한가. LINE/Apple 실제 provider smoke도 운영 완료 상태로 유지되는가 | Provider UI와 LINE/Apple 운영 smoke는 08 완료. 가격/플랜은 중간 |
 | `/app` | home dashboard 구현 | 오늘 해야 할 일과 진행 딜이 바로 읽히는가 | 중간 |
 | `/app` route analytics | `AppShell`에서 보호된 `/app` route 진입을 routeKey allowlist 기반으로 전송하고, mobile field-use event도 allowlist payload로 전송 | 사용자는 analytics 전송 여부를 보지 않는다. Admin dashboard는 11에서 완료됐고 billing conversion UI는 12 범위다 | `09_PRODUCT_ANALYTICS`, `10_MOBILE_PWA_FIELD_USE`, `11_ADMIN_OPERATION` 완료. Billing 연결은 12 |
-| `/app/deals` | pipeline/list/detail, 딜 상세 activity timeline, 목록 제품 summary, 최신 활동 summary, currency-aware 금액 구현 | 딜 비교, 다음 행동, 연결 회사/담당자/제품 맥락이 충분한가 | `NBA-001`, `NBA-003` Deal subset, `NBA-008`, 08 currency 완료. 다음 행동 강조와 UX polish는 후속 |
-| `/app/companies` | 목록/상세/생성/메모/export, country/region/address 구현 | 담당자/진행 딜/최근 활동 맥락이 충분한가 | 08 region/address 완료. `NBA-003` latest summary는 후속 후보 |
-| `/app/contacts` | 목록/상세/생성/export, dealCount, KR/US phone 표시 구현 | 연결 딜 수와 회사 맥락이 충분한가 | `NBA-002`와 08 phone 완료. `NBA-003` latest summary는 후속 후보 |
-| `/app/products` | 목록/상세/생성/export, currencyCode 구현 | 제품이 어느 딜에서 쓰이는지 빠르게 보이는가 | 08 currency 완료. `NBA-003` latest summary는 후속 후보 |
+| `/app/deals` | pipeline/list/detail, 딜 상세 activity timeline, 목록 제품 summary, 최신 활동 summary, currency-aware 금액 구현 | 딜 비교, 다음 행동, 연결 회사/담당자/제품 맥락이 충분한가 | `NBA-001`, `NBA-003` Deal subset, `NBA-008`, 08 currency 완료. 다음 행동 강조와 UX polish는 12와 post-12 이후 별도 UX/UI 전면 유지보수에서 판단 |
+| `/app/companies` | 목록/상세/생성/메모/export, country/region/address 구현 | 담당자/진행 딜/최근 활동 맥락이 충분한가 | 08 region/address 완료. `NBA-003` latest summary는 2026-08-06 A 결정에 따라 12 전 FE gap으로 승격하지 않음 |
+| `/app/contacts` | 목록/상세/생성/export, dealCount, KR/US phone 표시 구현 | 연결 딜 수와 회사 맥락이 충분한가 | `NBA-002`와 08 phone 완료. `NBA-003` latest summary는 2026-08-06 A 결정에 따라 12 전 FE gap으로 승격하지 않음 |
+| `/app/products` | 목록/상세/생성/export, currencyCode 구현 | 제품이 어느 딜에서 쓰이는지 빠르게 보이는가 | 08 currency 완료. `NBA-003` latest summary는 2026-08-06 A 결정에 따라 12 전 FE gap으로 승격하지 않음 |
 | `/app/schedules` | 목록/월간/상세, Google Calendar status/source badge/manual sync/calendar hidden handling 구현 | 일정과 딜, Google에서 가져온 일정이 하루/주 단위 영업 판단으로 연결되는가 | 기본 일정 및 `NBA-015` 완료 |
 | `/app/schedules/week` | 주간 보고서, 이전/다음/이번 주 이동, Excel 다운로드, loading/empty/error/export error, AI weekly report section 구현 | 주간 일정 보고서와 AI weekly report는 구현 완료. PDF/범용 ExportJob, 반복 일정은 별도 후속 확장. Gmail/Microsoft provider smoke는 운영 credential/callback/allowlist 준비 후 확인 | `NBA-009`, `05_AI_WEEKLY_SALES_REPORT` 완료 |
 | `/app/meeting-notes` | 수동/AI/STT draft/딜 연결, 모바일 녹음/fallback, local draft, 상세 AI 후속 작업, 다음 행동 후보 편집 저장, follow-up draft 수정/복사 구현 | 회의록 목록에서도 최신/다음 행동 맥락이 충분히 보이는가. 상세 AI 후보는 자동 저장/자동 발송하지 않는가 | `NBA-004` detail subset, `NBA-011` provider log subset, 10 mobile recording/local draft 완료. Admin audit는 11 완료. 목록 summary, 자동 발송/알림은 후속 |
@@ -86,7 +86,7 @@
 - 완료된 주간 일정 보고서와 AI weekly report 범위를 넘어서는 PDF/범용 ExportJob, 반복 일정, 자동 AI mutation은 API/DB 계약 없이 확장하지 않는다.
 - 완료된 Google Calendar Integration 범위를 넘어서는 Google Calendar export/write, realtime webhook/watch, 반복 일정, 여러 Google 계정 동시 연결은 API/DB 계약 없이 확장하지 않는다.
 - 완료된 Follow-up Delivery 범위를 넘어서는 SMS 실제 provider, B2B sender, email sync, sequence/campaign, 자동 follow-up 발송/알림은 API/DB/정책 계약 없이 확장하지 않는다.
-- 완료된 Deal Activity Timeline 범위를 넘어서는 범용 activity bus, Company/Contact/Product latest summary, activity deletion/retention/audit 정책은 API/DB/정책 계약 없이 확장하지 않는다.
+- 완료된 Deal Activity Timeline 범위를 넘어서는 범용 activity bus, Company/Contact/Product latest summary, generic summary endpoint, record별 상세 timeline, activity deletion/retention/audit 정책은 API/DB/정책 계약 없이 확장하지 않는다. `NBA-003` 잔여는 2026-08-06 A 결정에 따라 12 전 FE 작업으로 올리지 않는다.
 - 완료된 MeetingNote AI Provider Log 범위를 넘어서는 회의록 목록 summary, 자동 저장/자동 발송, 회의록 follow-up 알림, Admin provider audit 조회는 API/DB/정책 계약 없이 확장하지 않는다.
 - 완료된 Global Data I18N 범위를 넘어서는 신규 국가/통화/provider, `/app` locale prefix, 추가 DB migration은 계약/운영 계획 없이 진행하지 않는다.
 - 완료된 Product Analytics/Mobile Field Use/Admin Operation 범위를 넘어서는 billing/paywall/churn runtime event, PWA install/offline shell, native app은 별도 계약 없이 확장하지 않는다.
