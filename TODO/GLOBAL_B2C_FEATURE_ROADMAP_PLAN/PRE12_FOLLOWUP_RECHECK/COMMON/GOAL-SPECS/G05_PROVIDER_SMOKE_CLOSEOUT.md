@@ -7,7 +7,8 @@
 
 - Gmail API actual send adapter는 구현 및 자동 검증이 완료됐다.
 - Microsoft Graph actual send adapter는 구현 및 자동 검증이 완료됐다.
-- 로컬 `BE/.env`에 운영 credential, provider console callback URL, smoke allowlist 환경이 없어 production-equivalent 실제 수신자 smoke가 미실행 상태로 남았다.
+- token refresh, reconnect-required, send-only scope, smoke allowlist, allowlist 밖 safe failure, FE reconnect CTA는 05 G10 범위로 구현됐다.
+- 로컬 `BE/.env`에 `FOLLOW_UP_GOOGLE_CLIENT_ID`, `FOLLOW_UP_GOOGLE_CLIENT_SECRET`, `FOLLOW_UP_MICROSOFT_CLIENT_ID`, `FOLLOW_UP_MICROSOFT_CLIENT_SECRET`, `FOLLOW_UP_EMAIL_SMOKE_MODE`, `FOLLOW_UP_EMAIL_SMOKE_ALLOWED_RECIPIENTS`와 provider console callback URL이 없어 production-equivalent 실제 수신자 smoke가 미실행 상태로 남았다.
 
 ## 2. 포함 범위
 
@@ -23,7 +24,10 @@
 
 - Gmail/Microsoft adapter 코드 재구현
 - SMS 실제 provider 구현
-- B2B sender, email sync, sequence/campaign 구현
+- B2B tenant sender, email sync/inbox import, sequence/campaign/bulk, unsubscribe, 예약 발송 구현
+- SMTP 직접 설정, external email SaaS provider, HTML email, 첨부파일, tracking pixel 구현
+- 사용자-facing cost/plan/quota/paywall/entitlement UI/API 구현
+- AI weekly report 자동 생성 또는 AI suggestion 자동 mutation 구현
 - 신규 09 analytics event
 - 신규 11 Admin provider failure API
 
@@ -32,4 +36,3 @@
 - 성공하면 05 G10 provider smoke pending 상태를 closeout 문서에 반영한다.
 - 운영 credential이 없으면 pending 사유와 필요한 환경값을 문서에 유지한다.
 - 비밀값, access token, refresh token, 수신자 개인정보 원문은 문서에 기록하지 않는다.
-

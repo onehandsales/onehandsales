@@ -23,6 +23,7 @@
 | Import scale/source/Admin 확장 | 대용량 import worker API, 일정/회의록 import source API, ImportJob Admin 전용 API | post-12-seed | 12 전 구현 금지 |
 | Google Calendar 고급 sync/provider 확장 | export/write/양방향 sync, webhook/watch, recurrence, reminders, attendee/contact auto-link, multi-account, Google 외 provider API 계약 | post-12-seed / `PRE12-F10` | 12 전 구현 금지 |
 | Gmail/Microsoft provider smoke closeout | 새 API 없음 | not applicable | 운영 smoke 기록만 가능 |
+| Follow-up delivery 고급 provider/growth 확장 | SMS vendor adapter, B2B tenant sender, email sync/inbox import, sequence/campaign/bulk, unsubscribe, scheduled send, SMTP/external email SaaS, HTML email/attachment/tracking contract | post-12-seed / `PRE12-F05`/`PRE12-F06` | 구현 금지 |
 | App locale 확장 | User profile locale 허용값, app translation resource delivery 방식 검토 | post-12-seed | `ja`, `zh-TW`, `zh-CN` 구현 금지 |
 | Global country/currency/phone 확장 | User country/default currency, Contact phone, Company region dictionary 확장 계약 | post-12-seed | 12 전 구현 금지 |
 | Amount precision/minor unit | Product/Deal amount 저장 단위, import/export/report 변환 계약 | billing-blocked | 12 money model 전 구현 금지 |
@@ -30,11 +31,11 @@
 | Auth strategy 확장 | email/password, Microsoft, Kakao runtime, 신규 provider 계약 | defer / 정책 필요 | 구현 금지 |
 | `/app` locale route prefix | User API path 변경 없음. FE routing contract 이슈 | defer / guardrail | 새 라우팅 계약 없이 구현 금지 |
 | app i18n/Settings/bundle polish | 새 API 없음 | post-12-seed / UXUI quality | API 구현 대상 아님 |
-| account deletion 실제 hard delete/anonymization | 30일 유예 만료 request 처리, session revoke/access block, hard delete/anonymization, audit/result contract | Question / 정책 필요 | 구현 금지 |
+| account deletion 실제 hard delete/anonymization | 30일 유예 만료 request 처리, AI report full input snapshot과 follow-up subject/body log retention/deletion, session revoke/access block, hard delete/anonymization, audit/result contract | Question / 정책 필요 | 구현 금지 |
 | Product analytics 세부 event 확장 | Notification/Calendar/follow-up delivery/click/reach/sync/detail event taxonomy와 payload allowlist | post-12-seed / 별도 analytics 계획 | 구현 금지 |
 | external analytics provider forwarding | Backend provider forwarding adapter/outbox/retry 또는 FE SDK 삽입 방식 결정 | post-12-seed / growth/ops | 구현 금지 |
 | public site/UTM/ad attribution/growth experiment | public route event, attribution cookie/referrer policy, experiment assignment API | post-12-seed / growth/marketing | 구현 금지 |
-| AI usage billing source/paywall runtime | `AiUsageDaily` 또는 `UsageMeter`, plan/quota/paywall/upgrade event contract | billing-blocked | 12 전 구현 금지 |
+| AI usage billing source/paywall runtime | `AiProviderCallLog`/`FollowUpDeliveryAttempt` 내부 cost 추정과 `AiUsageDaily` 또는 `UsageMeter`, plan/quota/paywall/upgrade event contract 연결 | billing-blocked | 12 전 구현 금지 |
 | PWA/native packaging과 install attribution | install/offline/full offline sync/native push/contact/calendar/native app install attribution API 필요 여부 결정 | post-12-seed / 별도 mobile roadmap | 구현 금지 |
 | 10 FE/BE TODO 체크리스트 정합성 | 새 API 없음. 완료 체크리스트 문서 정리만 대상 | pre-12-doc-cleanup | API 구현 대상 아님 |
 | User Web route/architecture 문서 정합성 | 새 API 없음. 실제 route 기준 문서 정리만 대상 | pre-12-doc-cleanup | API 구현 대상 아님 |

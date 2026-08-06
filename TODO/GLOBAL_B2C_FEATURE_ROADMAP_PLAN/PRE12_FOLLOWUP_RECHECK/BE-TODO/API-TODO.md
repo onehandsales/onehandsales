@@ -16,7 +16,7 @@
 | Google Calendar | `/api/schedules/google` connect/status/calendars/selection/sync/disconnect와 callback은 04 범위로 완료됐다. OAuth scope는 `calendar.readonly`이고 export/write/watch/reminders/attendee/multi-account/other provider API는 없다. |
 | DealActivity | `NEXT_ACTION_CREATED`, `NEXT_ACTION_COMPLETION_CHANGED`, `MEETING_NOTE_LINKED`, `FOLLOW_UP_SENT/FAILED` 같은 activity event가 있다. |
 | MeetingNote AI | `AiProviderOperation`에 MeetingNote draft/STT/next action/follow-up draft operation이 있다. |
-| Follow-up Delivery | `FollowUpMessage`, `FollowUpDeliveryAttempt`, `ExternalEmailConnection` 계열이 있고 Gmail/Microsoft email adapter는 구현됐다. SMS provider는 production 실제 provider가 아니라 test/not-configured provider 상태다. |
+| Follow-up Delivery | `FollowUpMessage`, `FollowUpDeliveryAttempt`, `ExternalEmailConnection` 계열이 있고 Gmail/Microsoft email adapter는 구현됐다. SMS provider는 production 실제 provider가 아니라 test/not-configured provider 상태이며, 예약 발송/sequence/campaign/unsubscribe/email sync API는 없다. |
 | ImportJob | `/api/imports` 계열 persistence/resume/confirm/cancel과 10MB/5,000 data row 제한은 01에서 완료됐다. 현재 import 대상은 회사, 담당자, 제품, 딜이다. |
 | MeetingNote raw storage | transcript/raw provider response/follow-up draft body 전용 저장 API나 table은 없다. 07은 safe metadata log만 남긴다. |
 | Global Data I18N | User global settings, Product/Deal currency, Contact KR/US phone, Company KR/US region/address, Import/Export localization, Google/LINE/Apple auth는 08에서 완료됐다. |
@@ -34,6 +34,8 @@ G00과 API contract 확정 전에는 아래 Backend 변경을 하지 않는다.
 - MeetingNote follow-up reminder scheduling use case 추가
 - Notification/NotificationDeliveryAttempt/BrowserPushSubscription TTL cleanup runner 또는 Admin cleanup API 추가
 - Follow-up 자동 발송 worker 추가
+- AI weekly report 자동 생성 또는 AI suggestion 자동 mutation API 추가
+- Follow-up delivery SMS 실제 provider/vendor API, B2B tenant sender, email sync/inbox import, sequence/campaign/bulk, unsubscribe, 예약 발송, SMTP/external email SaaS, HTML/첨부/tracking API 추가
 - Company/Contact/Product list summary API field 추가
 - MeetingNote list summary API field 추가
 - AI data cleanup 제안 저장/적용 API 추가
@@ -67,6 +69,8 @@ G00과 API contract 확정 전에는 아래 Backend 변경을 하지 않는다.
 
 04 재대조 기준으로 Google Calendar Backend/API 범위는 read-only import/sync, calendar 선택, source metadata, Trash restore, Google-origin reminder까지 완료다. Google export/write/양방향 sync, realtime webhook/watch, 반복 일정 정식 모델, reminders/attendee import, multi-account/provider 확장은 04 미완성이 아니라 `PRE12-F10` 후속 후보로만 둔다.
 
+05 재대조 기준으로 AI weekly report API, snapshot-summary, follow-up delivery settings, Gmail/Microsoft connect/callback/disconnect, draft/send/retry/list API와 send adapter는 완료다. 운영 provider smoke는 새 API 없이 G05 기록으로만 닫고, SMS 실제 provider와 B2B/email growth 확장은 `PRE12-F05`/`PRE12-F06` 후속 후보로 둔다.
+
 08 재대조 기준으로 Google/LINE/Apple 외 provider, `/app` locale prefix, 추가 국가/통화/전화번호 포맷은 새 계약 없이 확장하지 않는다. 국가별 tax/terms/pricing과 amount precision은 12 Billing 결정 전 Backend API 작업으로 올리지 않는다.
 
 09 재대조 기준으로 Product Analytics foundation은 완료다. account deletion 실제 처리, Notification/Calendar/follow-up 세부 analytics event, 외부 provider forwarding, public/UTM attribution, growth experiment, billing usage source-of-truth, PWA/native attribution은 09 미완성이 아니라 PRE12 후속 후보 또는 12 이후 계획으로 둔다.
@@ -88,17 +92,18 @@ G00과 API contract 확정 전에는 아래 Backend 변경을 하지 않는다.
 | transcript/raw/follow-up draft 저장 | retention, 삭제권, raw access audit, redaction, Admin/User 노출 기준 필요 | defer / 정책 필요 |
 | Import scale/source/Admin 확장 | worker queue/status/cancel/retry, schedule/meeting-note source mapping, Admin 조회/cleanup API 기준 필요 | post-12-seed |
 | provider smoke | 새 API 없음. 운영 환경과 runbook 기록만 필요 | pre-12-follow-up-needed |
+| Follow-up delivery 고급 provider/growth 확장 | SMS vendor adapter, B2B tenant sender, email sync/import, sequence/campaign/bulk, unsubscribe, scheduled send, SMTP/external SaaS/HTML/attachment/tracking API contract 필요 | post-12-seed / `PRE12-F05`/`PRE12-F06` |
 | App locale 확장 | `preferredLocale` 허용값, validation error, app translation delivery 기준 확정 필요 | post-12-seed |
 | Global country/currency/phone 확장 | User/Contact/Company/Product/Deal validation과 import/export/report 변환 기준 필요 | post-12-seed |
 | amount precision/minor unit | Product/Deal amount 저장 단위, 기존 row migration, import/export/report 호환 기준 필요 | billing-blocked |
 | address/tax/terms/pricing policy | 청구 주소, 세금, 약관, 가격 정책과 API 경계 확정 필요 | billing-blocked |
 | auth strategy 확장 | password reset, email verification, provider linking, account recovery, abuse/rate limit 기준 필요 | defer / 정책 필요 |
 | app i18n/Settings/bundle polish | 새 Backend API 없음. 필요 시 FE 유지보수만 검토 | post-12-seed / UXUI quality |
-| account deletion 실제 처리 | 30일 유예 만료 request 조회, processing lock, session revoke/access block, hard delete/anonymization, audit/result API 기준 필요 | Question / 정책 필요 |
+| account deletion 실제 처리 | 30일 유예 만료 request 조회, AI report full snapshot과 follow-up subject/body log retention/deletion, processing lock, session revoke/access block, hard delete/anonymization, audit/result API 기준 필요 | Question / 정책 필요 |
 | Product analytics 세부 event 확장 | Notification/Calendar/follow-up domain event hook, event allowlist, payload privacy contract 필요 | post-12-seed / 별도 analytics 계획 |
 | external analytics provider forwarding | provider port/adapter, retry/dead-letter, consent/DPA, redaction, failure isolation 기준 필요 | post-12-seed / growth/ops |
 | public/UTM attribution/growth experiment | public route event collector, attribution cookie/referrer policy, experiment assignment API 기준 필요 | post-12-seed / growth/marketing |
-| AI usage billing source | `AiProviderCallLog` summary와 `AiUsageDaily`/`UsageMeter` 중 billing source-of-truth 결정 필요 | billing-blocked |
+| AI usage billing source | `AiProviderCallLog` summary, `FollowUpDeliveryAttempt` cost 추정과 `AiUsageDaily`/`UsageMeter` 중 billing source-of-truth 결정 필요 | billing-blocked |
 | PWA/native packaging과 attribution | manifest/install/offline/full offline sync/native push/contact/calendar/native app install attribution API 필요 여부 결정 | post-12-seed / 별도 mobile roadmap |
 | 10 FE/BE TODO 체크리스트 정합성 | 10 BE TODO의 G03/G05/G06 체크박스를 실제 완료 상태와 맞추는 문서 정리. 새 API 없음 | pre-12-doc-cleanup |
 | generic ExportJob/PDF | BE `ExportJob`/`/api/exports`는 현재 없음. FE 잔여 코드가 있어도 post-12 전 API를 열지 않음 | post-12-seed |

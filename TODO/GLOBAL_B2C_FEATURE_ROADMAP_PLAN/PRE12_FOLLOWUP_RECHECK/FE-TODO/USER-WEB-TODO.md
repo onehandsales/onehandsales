@@ -15,7 +15,7 @@
 | Notification | `/app/notifications`, notification settings, browser push 설정은 02 범위로 완료됐다. |
 | Weekly report | `/app/schedules/week`와 Excel export는 03 범위로 완료됐다. |
 | Google Calendar | `/app/schedules`, `/app/settings`, schedule detail source badge/sync/status는 04 범위로 완료됐다. Google export/write/watch/reminders/attendee/multi-account/other provider UI는 없다. |
-| AI weekly report/follow-up | `/app/schedules/week` AI report section, `/app/settings` follow-up delivery settings, compose/send/retry UX는 05 범위로 구현됐다. |
+| AI weekly report/follow-up | `/app/schedules/week` AI report section, `/app/settings` follow-up delivery settings, compose/send/retry/timeline UX는 05 범위로 구현됐다. SMS 실제 provider, B2B sender/email sync/sequence/campaign/unsubscribe UI는 없다. |
 | DealActivity | deal list `latestActivity`, deal detail activity timeline은 06 범위다. |
 | MeetingNote AI | meeting note detail AI next action/follow-up draft section은 07 범위다. STT transcript는 생성 흐름의 임시 확인용이고 저장/목록/상세 summary 대상이 아니다. |
 | Import | `/app/import` review/resume, row detail 만료 안내, 10MB/5,000행 제한 안내는 01 범위로 완료됐다. |
@@ -31,6 +31,8 @@ G00과 API contract 확정 전에는 아래 User Web 변경을 하지 않는다.
 - 다음 행동 reminder 설정 UI 추가
 - MeetingNote follow-up reminder UI 추가
 - follow-up 자동 발송 toggle 추가
+- AI weekly report 자동 생성/AI suggestion 자동 mutation UI 추가
+- Follow-up delivery SMS 실제 provider, B2B tenant sender, email sync/inbox import, sequence/campaign/bulk, unsubscribe, 예약 발송, SMTP/external email SaaS, HTML/첨부/tracking UI 추가
 - Notification TTL/cleanup 정책 확정 전 알림 이력 자동 삭제 안내, 보관 기간 설정 UI, Admin cleanup UI 추가
 - Company/Contact/Product latest summary를 API 없이 FE에서 조합 표시
 - MeetingNote list latest/next summary를 API 없이 FE에서 조합 표시
@@ -67,6 +69,8 @@ G00과 API contract 확정 전에는 아래 User Web 변경을 하지 않는다.
 
 04 재대조 기준으로 User Web의 Google Calendar 범위는 read-only import/sync, calendar 선택, source badge/status, Trash restore, Google-origin reminder UX까지 완료다. Google export/write/양방향 sync, webhook/watch 상태 UI, 반복 일정 정식 모델, reminders/attendee import, 여러 Google 계정, Google 외 provider UX는 04 미완성이 아니라 `PRE12-F10` 후속 후보로만 둔다.
 
+05 재대조 기준으로 `/app/schedules/week` AI report와 `/app/settings` follow-up delivery, compose/send/retry/timeline UX는 완료다. 운영 provider smoke는 화면 변경 없이 문서 기록으로만 닫고, SMS 실제 provider와 B2B/email growth 확장, 사용자-facing cost/paywall, 자동 생성/자동 mutation은 05 미완성이 아니라 후속 후보로 둔다.
+
 09 재대조 기준으로 Product Analytics User Web foundation은 완료다. 신규 사용자-facing analytics 화면, external provider SDK, billing/paywall/churn UI, public attribution, PWA/native install flow는 09 미완성이 아니라 PRE12 후속 후보 또는 12 이후 계획으로 둔다.
 
 10 재대조 기준으로 Mobile Field Use User Web 범위는 완료다. `10/FE-TODO/USER-WEB-TODO.md`의 G03~G06 미체크는 기능 미구현이 아니라 문서 체크리스트 정리 대상이며, `FE/ARCHITECTURE.md`와 `FE/user-web/ARCHITECTURE.md`의 `/app/notifications` stale 설명은 실제 router 기준으로 정정한다.
@@ -85,6 +89,7 @@ G00과 API contract 확정 전에는 아래 User Web 변경을 하지 않는다.
 | transcript/raw/follow-up draft 저장 표시 | transcript 보관 상태, raw access 안내, draft 저장/발송 상태 | defer / 정책 필요 |
 | Import scale/source/Admin 확장 | 대용량 import progress, 일정/회의록 source mapping, Admin-only job cleanup/조회 화면 | post-12-seed |
 | provider smoke | 화면 변경 없음. 운영 smoke 결과 문서 반영 | pre-12-follow-up-needed |
+| Follow-up delivery 고급 provider/growth 확장 | SMS actual provider 상태, B2B sender, email sync/inbox import, sequence/campaign/bulk, unsubscribe, 예약 발송, SMTP/external SaaS, HTML/첨부/tracking UX 기준 필요 | post-12-seed / `PRE12-F05`/`PRE12-F06` |
 | App locale/market UX 확장 | `/app` `ja`, `zh-TW` resource, validation/empty/toast copy, market UX writing QA | post-12-seed |
 | `zh-CN` 지원 | public/auth/app locale, market routing, policy copy, 결제/세금/인프라 요구 확인 | defer / 시장 진입 결정 필요 |
 | Global country/currency/phone 확장 | Settings option, Contact phone UI, Company region selector, Product/Deal currency selector 확장 | post-12-seed |
@@ -98,7 +103,7 @@ G00과 API contract 확정 전에는 아래 User Web 변경을 하지 않는다.
 | Product analytics 세부 event 확장 | Notification/Calendar/follow-up 화면의 click/reach/sync/detail tracking 위치와 payload privacy 기준 필요 | post-12-seed / 별도 analytics 계획 |
 | external analytics provider forwarding | FE SDK를 직접 넣을지, Backend forwarding만 사용할지, consent/banner/DNT 기준 결정 필요 | post-12-seed / growth/ops |
 | public/UTM attribution/growth experiment | public/auth route attribution, campaign parameter 보존, experiment assignment 표시/노출 기준 필요 | post-12-seed / growth/marketing |
-| AI usage billing source/paywall UI | 12의 plan/quota/paywall/upgrade contract와 API 필요 | billing-blocked |
+| AI usage billing source/paywall UI | 05/09 내부 cost/usage 기록과 별개로 12의 plan/quota/paywall/upgrade contract와 API 필요 | billing-blocked |
 | PWA/native packaging과 attribution | install prompt, offline shell/full offline sync, native app deep link, native push/contact/calendar bridge, install attribution UX 기준 필요 | post-12-seed / 별도 mobile roadmap |
 | 10 FE/BE TODO 체크리스트 정합성 | 10 FE TODO의 G03~G06 체크박스를 실제 완료 상태와 맞추는 문서 정리 | pre-12-doc-cleanup |
 | User Web route/architecture 문서 정합성 | 실제 router 기준 `/app/notifications` 활성, `/app/export` redirect 상태를 architecture 문서에 반영 | pre-12-doc-cleanup |

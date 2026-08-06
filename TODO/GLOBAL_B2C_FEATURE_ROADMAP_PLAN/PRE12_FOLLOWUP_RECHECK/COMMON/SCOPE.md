@@ -16,6 +16,7 @@
 | 01 Import 확장 후보 분리 | 대용량 import worker, 일정/회의록 import, ImportJob Admin 전용 화면/API가 01 미완성이 아니라 별도 post-12 seed임을 고정한다. |
 | 02 후속 후보 분리 | 다음 행동 알림, 회의록 후속 알림, Notification 데이터 TTL/cleanup 정책이 02 구현 범위가 아니었음을 고정한다. |
 | 04 후속 후보 분리 | Google read-only import/sync 완료 범위와 Google export/write/양방향 sync, realtime webhook/watch, 반복 일정 정식 모델, reminders/attendee import, 여러 Google 계정, Google Calendar 외 provider 후보를 분리한다. |
+| 05 후속 후보 분리 | AI weekly report/follow-up delivery 완료 범위와 Gmail/Microsoft provider smoke, SMS 실제 provider, B2B/email growth, cost/legal deletion 후보를 분리한다. |
 | 06 작업 경계 설정 | DealActivity event와 실제 Notification reminder를 분리한다. |
 | 07 작업 경계 설정 | MeetingNote 상세 AI draft와 MeetingNote 목록 summary/자동 발송/알림/AI data cleanup/raw 저장 후보를 분리한다. |
 | 08 작업 경계 설정 | `/app` 기본 i18n/global data/auth provider 완료 범위와 시장/국가/통화/auth 확장 후보를 분리한다. |
@@ -33,6 +34,7 @@
 | 07 MeetingNote AI 구현 재개 | 07은 이미 완료 슬롯이다. 목록 summary, 자동 발송, 알림은 별도 후보다. |
 | 01 ImportJob 구현 재개 | 대용량 import worker, 일정/회의록 import, ImportJob Admin 전용 화면/API는 01 완료 의미를 깨지 않고 post-12에서 재검토한다. |
 | 04 Google Calendar 구현 재개 | 04는 Google read-only import/sync, 선택 calendar, source badge, Trash restore, Google-origin reminder, provider smoke 기준으로 완료됐다. 고급 sync/provider 확장은 `PRE12-F10`으로만 둔다. |
+| 05 AI Weekly Sales Report 구현 재개 | 05는 저장형 AI weekly report, 사용자 확인 기반 follow-up delivery, Gmail/Microsoft send adapter 기준으로 완료됐다. provider smoke는 운영 closeout이고 SMS/B2B/email growth/cost/legal deletion은 별도 후속이다. |
 | 08 Global Data I18N 구현 재개 | 08은 `ko-KR/en`, KR/US, KRW/USD, Google/LINE/Apple 기준으로 완료됐다. 시장/국가/auth 확장은 별도 후속이다. |
 | 09 Product Analytics 구현 재개 | 09는 자체 DB analytics 정본, collector, core event, snapshot/retention, AI usage summary, billing reserved taxonomy로 완료됐다. 후속 event/provider/attribution/deletion job은 별도 후보다. |
 | 12 Billing 구현 | 결제, 구독, 세금, paywall, churn, paid conversion은 12 결정 없이는 기준을 확정할 수 없다. |
@@ -72,7 +74,42 @@
 
 위 항목은 새 후보로 중복 생성하지 않고 `PRE12-F10`으로 연결한다.
 
-## 5. 06 작업에 직접 영향을 주는 기준
+## 5. 05 AI Weekly Sales Report에 직접 영향을 주는 기준
+
+05에서 완료로 보는 범위:
+
+- 저장형 AI weekly report 수동 생성, async job, version/failed version, snapshot-summary
+- summary/risk/next action/follow-up draft/data cleanup suggestion 저장과 사용자-facing summary 노출
+- `/app/schedules/week` AI report section, `/app/settings` follow-up delivery settings, compose/send/retry/timeline UX
+- 사용자가 확인/수정한 email/SMS immediate send와 full subject/body delivery log 보관
+- Gmail/Microsoft send-only adapter, token refresh, reconnect-required, safe failure, smoke allowlist
+
+05 완료 범위로 다루면 안 되는 범위:
+
+- AI weekly report 자동 생성 또는 AI suggestion 자동 Deal/Schedule/Contact/MeetingNote mutation
+- Gmail/Microsoft provider smoke pending을 새 코드 구현 후보로 전환
+- SMS 실제 provider/vendor 연동
+- B2B tenant sender, email sync/inbox import, sequence/campaign/bulk, unsubscribe
+- scheduled send, SMTP 직접 설정, external email SaaS provider, HTML email, attachments, tracking pixel
+- 사용자-facing cost/plan/quota/paywall/entitlement UI/API
+- full input snapshot과 follow-up subject/body 영구 로그의 legal deletion/retention 정책 없이 hard delete/anonymization 구현
+- AI weekly/follow-up delivery 세부 analytics event를 09 runtime allowlist에 임의 추가
+- 신규 Admin provider failure UI/API 재구현
+
+05 재대조에서 다시 발견됐지만 새 후보로 중복 생성하지 않는 항목:
+
+| 항목 | PRE12 후보 |
+| --- | --- |
+| Gmail/Microsoft 운영 provider smoke | `PRE12-F04` |
+| SMS 실제 provider/vendor 연동 | `PRE12-F05` |
+| B2B sender/email sync/sequence/campaign/bulk/unsubscribe/예약 발송/SMTP/HTML/첨부/tracking | `PRE12-F06` |
+| MeetingNote follow-up reminder/자동 발송 | `PRE12-F02`/`PRE12-F03` |
+| 사용자-facing cost/AI usage billing source | `PRE12-F12` |
+| AI weekly/follow-up 영구 로그 legal deletion/retention | `PRE12-F26` |
+| AI weekly/follow-up 세부 analytics event | `PRE12-F27` |
+| Admin provider failure 조회/감사 | `PRE12-F16` 및 11 완료 문서 |
+
+## 6. 06 작업에 직접 영향을 주는 기준
 
 06에서 다뤄도 되는 범위:
 
@@ -97,7 +134,7 @@
 - AI data cleanup 제안 저장/적용 API 추가
 - MeetingNote transcript/raw provider response/follow-up draft 저장 table 추가
 
-## 6. 08 Global Data I18N에 직접 영향을 주는 기준
+## 7. 08 Global Data I18N에 직접 영향을 주는 기준
 
 08에서 완료로 보는 범위:
 
@@ -121,7 +158,7 @@
 - `/app` locale route prefix 추가
 - legacy static fallback 직접 keying, Settings OAuth 계정 라벨, bundle chunk 최적화를 08 blocker로 취급
 
-## 7. 기존 PRE12 후보와 연결되는 08 항목
+## 8. 기존 PRE12 후보와 연결되는 08 항목
 
 08 재대조에서 다시 발견됐지만 새 후보로 중복 생성하지 않는 항목:
 
@@ -132,7 +169,7 @@
 | billing/paywall/churn/paid conversion | `PRE12-F12` |
 | Import scale/source/Admin 확장 | `PRE12-F13` |
 
-## 8. 09 Product Analytics에 직접 영향을 주는 기준
+## 9. 09 Product Analytics에 직접 영향을 주는 기준
 
 09에서 완료로 보는 범위:
 
@@ -155,7 +192,7 @@
 - `AiUsageDaily`, `UsageMeter`, `BillingEvent`, `UserSubscription`, `ChurnSurveyResponse`를 09/PRE12에서 생성
 - PWA install/offline shell/full offline sync, iOS/Android native app, native push/contact/calendar, native install attribution을 09 완료 범위로 끼워 넣기
 
-## 9. 기존 PRE12 후보와 연결되는 09 항목
+## 10. 기존 PRE12 후보와 연결되는 09 항목
 
 09 재대조에서 다시 발견됐지만 기존 후보와 연결하거나 09 전용 새 후보로 분리하는 항목:
 
@@ -168,7 +205,7 @@
 | public site/UTM/ad attribution/growth experiment | `PRE12-F29` |
 | PWA/native packaging과 install attribution | `PRE12-F30` |
 
-## 10. 10 Mobile PWA Field Use에 직접 영향을 주는 기준
+## 11. 10 Mobile PWA Field Use에 직접 영향을 주는 기준
 
 10에서 완료로 보는 범위:
 
@@ -190,7 +227,7 @@
 - 10 FE/BE TODO 체크리스트 미체크를 근거로 기능을 재구현
 - stale FE architecture 문서에 맞추기 위해 `/app/notifications` route를 숨김 route로 되돌리기
 
-## 11. 11 Admin Operation에 직접 영향을 주는 기준
+## 12. 11 Admin Operation에 직접 영향을 주는 기준
 
 11에서 완료로 보는 범위:
 
@@ -217,7 +254,7 @@
 - 자동 민감정보 감지/DLP model 또는 processor 추가
 - billing/subscription/plan/payment/invoice/refund/failed payment recovery/Admin Billing 화면/API 추가
 
-## 12. 상태 분류 기준
+## 13. 상태 분류 기준
 
 | 상태 | 의미 |
 | --- | --- |
@@ -229,7 +266,7 @@
 | `Question` | 사용자의 제품 판단 또는 정책 결정이 필요한 항목 |
 | `defer` | 현재 의도적으로 미루는 항목 |
 
-## 13. 관련 문서
+## 14. 관련 문서
 
 - `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/02_NOTIFICATION_REMINDER/README.md`
 - `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/05_AI_WEEKLY_SALES_REPORT/COMMON/GOAL-COMPLETION-CHECKLIST.md`

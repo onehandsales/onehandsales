@@ -11,7 +11,7 @@
 
 ## 2. 문서 목록
 
-- `SCOPE.md`: 포함 범위, 제외 범위, 06/07/10 작업 경계
+- `SCOPE.md`: 포함 범위, 제외 범위, 05/06/07/10 작업 경계
 - `CANDIDATE-MATRIX.md`: 후보별 출처, 현재 구현 상태, 기본 분류, 다음 조치
 - `06_RECORD_SUMMARY_DEFER_DECISION.md`: 2026-08-06 A 결정에 따른 `NBA-003` 잔여 record summary 보류 기준
 - `GOAL-WORK-ORDER.md`: `/goal` 실행 순서
@@ -32,6 +32,8 @@
 - 다음 행동 reminder scheduling use case 추가
 - 회의록 follow-up reminder scheduling use case 추가
 - MeetingNote follow-up 자동 발송
+- AI weekly report 자동 생성 또는 AI suggestion 자동 mutation
+- Follow-up delivery SMS 실제 provider, B2B tenant sender, email sync/inbox import, sequence/campaign/bulk, unsubscribe, 예약 발송, SMTP/external email SaaS, HTML email/첨부/tracking pixel
 - Company/Contact/Product latest summary response field 추가
 - MeetingNote list latest/next summary response field 추가
 - AI data cleanup 제안 저장/적용 API 추가
@@ -63,6 +65,8 @@
 
 2026-08-06 A 결정 기준으로 Company/Contact/Product latest summary, generic summary endpoint, record별 상세 timeline은 pre-12 계약화 대상도 아니다. post-12 재검토 전에는 G04를 구현 계약 goal로 전환하지 않는다.
 
+05 재대조 기준으로 저장형 AI weekly report, 사용자 확인 기반 follow-up draft/send/retry/timeline, Gmail/Microsoft send adapter는 완료다. Gmail/Microsoft provider smoke는 운영 closeout만 남고, SMS 실제 provider, B2B sender/email sync/sequence/campaign/bulk/unsubscribe, 예약 발송/SMTP/HTML/첨부/tracking, 사용자 비용 노출, 영구 로그 legal deletion 정책은 05 미완성이 아니라 PRE12 후속 후보로 분리한다.
+
 08 재대조 기준으로 `/app` 기본 `ko-KR/en` i18n, User global settings, KR/US phone/region, KRW/USD currency, Import/Export localization, Google/LINE/Apple auth는 완료다. 시장/국가/auth 확장과 UX polish는 08 미완성이 아니라 PRE12 후속 후보 또는 post-12 seed로 분류한다.
 
 09 재대조 기준으로 자체 DB `ProductAnalyticsEvent`, collector, core event, activation/retention, AI usage summary, billing reserved taxonomy, 10 mobile field-use event, 11 Admin analytics overview는 완료다. account deletion 실제 처리, 세부 event 확장, 외부 provider, attribution/experiment, PWA/native install attribution은 09 미완성이 아니라 PRE12 후속 후보 또는 post-12 seed로 분류한다.
@@ -75,6 +79,7 @@
 
 - `../README.md`
 - `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/01_IMPORT_JOB_PERSISTENCE`
+- `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/05_AI_WEEKLY_SALES_REPORT`
 - `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/06_DEAL_ACTIVITY_TIMELINE`
 - `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/07_MEETING_NOTE_AI_PROVIDER_LOG`
 - `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/08_GLOBAL_DATA_I18N`

@@ -20,7 +20,9 @@
 | `DealActivityType` | next action, schedule, meeting note, follow-up event를 activity로 기록한다. |
 | `DealActivitySourceType` | `SYSTEM`, `USER`, `NEXT_ACTION`, `SCHEDULE`, `MEETING_NOTE`, `FOLLOW_UP`가 있다. |
 | `AiProviderOperation` | Weekly report, follow-up draft, MeetingNote AI/STT/draft operation을 포함한다. |
-| `FollowUpMessage`, `FollowUpDeliveryAttempt` | follow-up draft/send/retry/history와 provider attempt를 저장한다. |
+| `AiWeeklySalesReport`, `AiWeeklySalesReportSuggestion`, `AiJob`, `AiProviderCallLog` | 05에서 저장형 weekly report, version/failed version, input snapshot, safe provider log, suggestion을 완료했다. 자동 생성 schedule/cursor나 AI suggestion 자동 mutation 적용 모델은 없다. |
+| `ExternalEmailConnection`, `ExternalEmailOAuthState`, `SmsSenderNumber`, `FollowUpConsentNotice` | 05에서 Gmail/Microsoft email connection과 SMS sender verification/consent foundation을 완료했다. B2B tenant sender, email sync, campaign/sequence, unsubscribe, external SMTP/SaaS provider 모델은 없다. |
+| `FollowUpMessage`, `FollowUpDeliveryAttempt` | follow-up draft/send/retry/history와 provider attempt를 저장한다. 예약 발송, bulk/campaign, tracking/attachment 전용 모델은 없다. |
 | `ImportJob`, `ImportJobRow`, `ImportJobError`, `ImportUploadedFile` | 01에서 persistence/resume과 보관/삭제/입력량 제한 기준을 닫았다. |
 | MeetingNote raw 저장 table | `MeetingNoteTranscript`, `MeetingNoteFollowUpDraft`, raw provider response 전용 table은 없다. |
 | `User.preferredLocale`, `User.timeZone`, `User.countryCode`, `User.defaultCurrencyCode` | 08에서 user global settings로 완료됐다. 1차 허용값은 `ko-KR/en`, `KR/US`, `KRW/USD`다. |
@@ -43,6 +45,8 @@
 - next action reminder의 source type과 due date model
 - MeetingNote follow-up reminder의 source type, source id, cancel rule
 - follow-up 자동 발송 정책과 저장 모델
+- AI weekly report 자동 생성 scheduler/cursor 또는 AI suggestion 자동 mutation 이력 모델
+- SMS 실제 provider/vendor, B2B tenant sender, email sync/inbox import, sequence/campaign/bulk, unsubscribe, scheduled send, tracking/attachment 저장 모델
 - Notification/NotificationDeliveryAttempt/BrowserPushSubscription TTL cleanup 기준을 확정하지 않은 상태의 삭제 migration 또는 cleanup cursor table
 - Company/Contact/Product latest summary의 저장 방식
 - MeetingNote list summary의 저장 방식
@@ -76,6 +80,8 @@
 
 04 재대조 기준으로 Google Calendar DB 영향은 Google read-only source metadata까지 완료다. `ExternalCalendarProvider=GOOGLE`, 사용자당 provider 1개 unique, `Schedule` external metadata 기준을 재오픈하지 않고 write/watch/recurrence/reminders/attendee/multi-account/other provider schema는 `PRE12-F10` 후속 후보로만 둔다.
 
+05 재대조 기준으로 AI weekly report와 follow-up delivery의 1차 schema는 완료다. Gmail/Microsoft provider smoke는 DB 변경 없이 운영 기록으로만 닫고, SMS 실제 provider, B2B/email growth 확장, 사용자-facing cost/paywall, 영구 로그 legal deletion 정책은 `PRE12-F05`/`PRE12-F06`/`PRE12-F12`/`PRE12-F26` 후속 후보로 둔다.
+
 08 재대조 기준으로 global data/i18n의 1차 schema는 완료다. 추가 country/currency/phone/auth provider/money/address 변경은 08 미완성이 아니라 post-12 또는 12 Billing 정책 이후의 별도 migration 후보로 둔다.
 
 09 재대조 기준으로 analytics 1차 schema는 완료다. `ProductAnalyticsEvent`와 snapshot model을 재오픈하지 않고, account deletion 실제 처리, 세부 event taxonomy, provider forwarding, attribution/experiment, billing usage source, PWA/native attribution은 별도 migration 후보로만 둔다.
@@ -97,6 +103,7 @@
 | transcript/raw/follow-up draft 저장 | raw text 저장 table, TTL, 삭제권, sensitive access log 기준 필요 | defer / 정책 필요 |
 | Import scale/source/Admin 확장 | background job queue, source별 row snapshot, Admin cleanup/audit table 필요 여부 결정 | post-12 seed |
 | provider smoke | DB 변경 없음 | 운영 기록 |
+| Follow-up delivery 고급 provider/growth 확장 | SMS vendor config/outbox, tenant sender, email sync/import, sequence/campaign/bulk, unsubscribe, scheduled send, tracking/attachment 저장 모델 필요 여부 결정 | post-12 seed / `PRE12-F05`/`PRE12-F06` |
 | App locale 확장 | User locale enum/table 분리 여부, 기존 locale migration 필요 여부 | post-12 seed |
 | Global country/currency/phone 확장 | country/currency/phone/region dictionary table 또는 code enum 확장 여부 결정 | post-12 seed |
 | amount precision/minor unit | Product/Deal amount 저장 단위, 기존 정수 row migration, export/report 호환 field 필요 여부 결정 | billing-blocked |
@@ -104,11 +111,11 @@
 | Contact personal address | Contact address field 또는 address child table 필요 여부 결정 | post-12 seed / CRM 확장 |
 | auth strategy 확장 | password credential, reset token, provider linking 정책 table 필요 여부 결정 | defer / 정책 필요 |
 | app i18n/Settings/bundle polish | DB 변경 없음 | UXUI quality |
-| account deletion 실제 처리 | job lock/result table 또는 기존 `AccountDeletionRequest` status transition으로 충분한지 결정. `User` hard delete/anonymization 범위와 cascade 영향 검증 필요 | Question / 정책 필요 |
+| account deletion 실제 처리 | job lock/result table 또는 기존 `AccountDeletionRequest` status transition으로 충분한지 결정. `AiWeeklySalesReport.inputSnapshotJson`, `FollowUpMessage.subject/body`, `FollowUpDeliveryAttempt.detailJson`, `User` hard delete/anonymization 범위와 cascade 영향 검증 필요 | Question / 정책 필요 |
 | Product analytics 세부 event 확장 | 신규 table보다는 taxonomy/payload contract 확장이 우선. 필요 시 event version 또는 derived aggregate table 검토 | post-12 seed / 별도 analytics 계획 |
 | external analytics provider forwarding | provider delivery outbox, retry/dead-letter, consent snapshot 저장 필요 여부 결정 | post-12 seed / growth/ops |
 | public/UTM attribution/growth experiment | attribution touchpoint, campaign/referrer, `ExperimentAssignment` 저장 모델 필요 여부 결정 | post-12 seed / growth/marketing |
-| AI usage billing source | `AiUsageDaily`와 `UsageMeter` 중 billing source-of-truth 결정. `AiProviderCallLog`는 09 Admin 참고용 summary source다 | billing-blocked |
+| AI usage billing source | `AiUsageDaily`와 `UsageMeter` 중 billing source-of-truth 결정. `AiProviderCallLog`와 `FollowUpDeliveryAttempt.estimatedCostAmount`는 내부 참고/운영용 기록일 뿐 billing source-of-truth가 아니다 | billing-blocked |
 | PWA/native packaging과 attribution | install attribution, full offline sync metadata, native device/push/contact/calendar/app install event 저장 필요 여부 결정 | post-12 seed / 별도 mobile roadmap |
 | 10 FE/BE TODO 체크리스트 정합성 | DB 변경 없음. 문서 체크리스트 정리만 대상 | pre-12-doc-cleanup |
 | generic ExportJob/PDF | `ExportJob`, file TTL, audit, ownership, deletion policy가 필요하지만 post-12 전 migration 금지 | post-12 seed |

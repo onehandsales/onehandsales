@@ -18,6 +18,7 @@
 - 03에서 제외된 PDF, generic ExportJob, 반복 일정 정식 모델
 - 04에서 제외된 Google export/write/양방향 sync, realtime webhook/watch, 반복 일정 정식 모델, Google reminders import, 참석자/contact auto-link, 여러 Google 계정, Google Calendar 외 provider
 - 05에서 남은 Gmail/Microsoft provider smoke
+- 05에서 제외된 SMS 실제 provider, B2B tenant sender, email sync/inbox import, sequence/campaign/bulk, unsubscribe, 예약 발송, SMTP/external email SaaS, HTML/첨부/tracking, 사용자 비용 노출, 영구 로그 legal deletion 정책
 - 06에서 닫은 DealActivity 범위와 06 밖으로 남은 record summary 후보
 - 07에서 닫은 MeetingNote 상세 AI 후보와 07 밖으로 남은 목록 summary, 자동 발송, 알림, AI data cleanup, raw/transcript 저장 후보
 - 08에서 닫은 Global Data I18N 범위와 08 밖으로 남은 시장/국가/통화/전화번호/auth/UX polish 후보
@@ -35,7 +36,7 @@
 | 02 Notification | 완료 | 일정/딜 reminder, in-app/email/browser push, provider smoke는 완료다. 다음 행동 알림과 회의록 후속 알림은 구현되지 않았다. Notification 데이터 TTL/cleanup은 구현 완료 범위가 아니라 정책 후속 후보로 분리한다. |
 | 03 Weekly Schedule Report | 완료 | PDF, generic ExportJob, recurrence는 03 재오픈 대상이 아니다. |
 | 04 Google Calendar | 완료 | read-only import/sync/source badge/Trash restore/Google-origin reminder/provider smoke는 완료다. Google export/write/양방향 sync, webhook/watch, 반복 일정 정식 모델, reminders/attendee import, 여러 Google 계정, Google Calendar 외 provider는 후속이다. |
-| 05 AI Weekly Sales Report | 구현 완료 / provider smoke pending | Gmail/Microsoft email adapter와 자동 검증은 완료됐다. 운영 credential/callback/allowlist 기반 실제 수신자 smoke는 남아 있다. |
+| 05 AI Weekly Sales Report | 구현 완료 / provider smoke pending | AI weekly report 저장/버전/스냅샷, 사용자 확인 기반 follow-up draft/send/retry/timeline, Gmail/Microsoft email adapter와 자동 검증은 완료됐다. 운영 credential/callback/allowlist 기반 실제 수신자 smoke는 남아 있다. SMS 실제 provider, B2B sender/email sync/sequence/campaign/bulk/unsubscribe, 예약 발송/SMTP/HTML/첨부/tracking, 사용자 비용 노출, 영구 로그 legal deletion 정책은 후속이다. |
 | 06 DealActivity | 완료 이력 유지 / A 결정 반영 | 06은 DealActivity timeline, Deal list latestActivity, products summary, Contact dealCount 범위를 넘기지 않고 완료로 유지한다. |
 | 07 MeetingNote AI | 완료 이력 유지 | 상세 next action/follow-up draft와 provider log는 완료다. 회의록 목록 summary, 자동 발송, 알림, AI data cleanup, transcript/raw/follow-up draft 저장은 07 완료 범위가 아니다. |
 | 08 Global Data I18N | 완료 이력 유지 | `/app` `ko-KR/en`, User global settings, KR/US phone/region, KRW/USD currency, Import/Export localization, Google/LINE/Apple auth는 완료다. `ja/zh-TW`, `zh-CN`, 전 세계 국가/통화/전화번호, minor unit, 상세 주소 검증, auth strategy 확장은 08 미완성이 아니다. |
@@ -64,13 +65,15 @@
 | MeetingNote follow-up 자동 발송 | post-12-seed | G03에서 reminder와 분리한다. 명시적 사용자 확인 없는 발송은 구현 금지다. |
 | Notification 데이터 TTL/cleanup | post-12-seed / trust-ops policy | 02의 `Notification` 90일, `NotificationDeliveryAttempt` 30일, revoked `BrowserPushSubscription` 90일 보관 후보는 실제 cleanup 구현이 없다. 정책/운영 계약 전 구현하지 않는다. |
 | Gmail/Microsoft provider smoke | pre-12-follow-up-needed | G05에서 운영 credential/callback/allowlist 준비 후 실행 기록만 닫는다. 코드 구현 후보가 아니다. |
+| SMS 실제 provider | post-12-seed | `PRE12-F05`로 유지한다. 현재 SMS sender verification UI/API foundation은 있으나 실제 vendor 연동은 없다. |
+| Follow-up delivery 고급 provider/growth 확장 | post-12-seed | `PRE12-F06`으로 유지한다. B2B tenant sender, email sync/inbox import, sequence/campaign/bulk, unsubscribe, 예약 발송, SMTP/external email SaaS, HTML/첨부/tracking은 05 완료 범위가 아니다. |
 | Company/Contact/Product latest summary | defer | 2026-08-06 A 결정으로 12 전 G04 계약화와 구현을 하지 않는다. |
 | MeetingNote list latest/next summary | post-12-seed 또는 별도 MeetingNote list 후보 | 12 전 구현하지 않는다. 07 결과와 연결한 목록 summary 계약은 post-12 재검토에서 필요성이 확인될 때만 만든다. |
 | AI data cleanup 제안 저장/적용 | post-12-seed / 별도 data quality 계획 | 07에서는 제외한다. 09 또는 별도 data quality 계획에서 권한, 적용, 감사 로그, rollback 기준을 정한 뒤 판단한다. |
 | transcript/raw provider response/follow-up draft 저장 | defer / 정책 필요 | retention, 삭제권, raw access audit, redaction 정책 없이는 구현하지 않는다. |
 | Import scale/source/Admin 확장 | post-12-seed | 대용량 import worker, 일정/회의록 import, ImportJob Admin 전용 화면/API는 01 미완성이 아니다. |
 | generic ExportJob/PDF 및 Google Calendar 고급 연동 | post-12-seed | `PRE12-F09`와 `PRE12-F10`으로 유지한다. Google export/write/양방향 sync, webhook/watch, 반복 일정, reminders/attendee, multi-account/provider 확장은 12 완료 후 새 TODO로 승격할지 판단한다. |
-| billing/paywall/churn/paid conversion | billing-blocked | 12 전 임시 구현 금지. |
+| billing/paywall/churn/paid conversion/AI usage billing source | billing-blocked | 05/09의 내부 cost/usage summary는 과금 정본이 아니다. 12 전 임시 구현 금지. |
 | `/app` `ja`, `zh-TW` 번역과 시장별 UX writing | post-12-seed | 일본/대만 판매 준비 goal에서 다룬다. 08 완료 범위는 `ko-KR/en`이다. |
 | `zh-CN` 중국 본토 지원 | defer / 시장 진입 결정 필요 | 중국 본토 시장, 인프라, 정책, 결제/세금 기준이 없으면 구현하지 않는다. |
 | 전 세계 국가/통화/전화번호 확장 | post-12-seed | KR/US, KRW/USD 1차 검증 뒤 실제 판매 국가 기준으로 확장한다. |
