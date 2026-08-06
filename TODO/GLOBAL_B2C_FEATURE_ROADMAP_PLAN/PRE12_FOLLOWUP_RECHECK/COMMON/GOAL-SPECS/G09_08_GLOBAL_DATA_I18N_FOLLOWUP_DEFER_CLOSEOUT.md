@@ -1,13 +1,16 @@
 # G09 08 Global Data I18N Follow-up Defer Closeout
 
-상태: Draft / 문서 closeout / 구현 금지
+상태: Completed / 문서 closeout 완료 / 구현 금지
 작성일: 2026-08-06
+검토일: 2026-08-06
 
 ## 1. 목표
 
 `08_GLOBAL_DATA_I18N`에서 완료한 Global Data I18N 범위를 재오픈하지 않고, 08 밖으로 남은 후속 후보를 PRE12 후보로 분류한다.
 
 이 goal은 구현 goal이 아니다. `BE`, `FE` 코드 변경, API 계약 확정, Prisma migration 생성은 하지 않는다.
+
+2026-08-06 재대조 결과, `NEXT_BACKEND_API_BACKLOG_PLAN`과 `USER_WEB_PRODUCTIZATION_GAP_PLAN`에는 있으나 08 또는 PRE12에 누락된 추가 후속 후보는 발견되지 않았다. 확인된 후속 후보는 `PRE12-F17`~`PRE12-F25` 또는 기존 `PRE12-F09`, `PRE12-F11`, `PRE12-F12`, `PRE12-F13`으로 이미 분류되어 있다.
 
 ## 2. 판단 근거
 
@@ -74,12 +77,19 @@
 
 확인한 주요 코드 기준:
 
+- `BE/prisma/schema.prisma`에는 User global settings, Product/Deal `currencyCode`, Contact global phone, Company/CompanyRegion country/region/address, `OAuthProvider.LINE`이 있다.
+- `BE/src/modules/user`와 `BE/src/shared/application`은 profile locale/country/currency와 xlsx locale을 `ko-KR/en`, `KR/US`, `KRW/USD` 기준으로 제한한다.
+- `BE/src/modules/contact`와 `BE/src/modules/company`는 Contact phone과 Company region/address를 KR/US 1차 범위로 정규화한다.
+- `FE/user-web/src/features/app-i18n/constants.ts`는 `/app` locale을 `ko-KR/en`, 통화를 `KRW/USD`로 제한한다.
+- `FE/user-web/src/features/public-site`에는 public/auth용 `ja`, `zh-TW`가 있지만 `/app` i18n 지원 locale은 아니다.
+- `BE/src/modules/auth`와 `FE/user-web/src/features/auth`는 runtime login provider를 Google, LINE, Apple로 노출한다. Kakao는 legacy enum/data 호환이고 email/password, Microsoft runtime login은 08 범위가 아니다.
+- Contact personal address, Product/Deal minor unit 또는 amount precision schema/API/UX 구현은 확인되지 않았다. `addressbook#contacts@group.v.calendar.google.com` 검색 결과는 Google Calendar contacts group 상수이며 Contact address 구현 근거가 아니다.
+
 ```powershell
-rg -n "APP_SUPPORTED_LOCALES|APP_SUPPORTED_CURRENCY_CODES|APP_SUPPORTED_PHONE_COUNTRY_CODES" FE\user-web\src\features\app-i18n
-rg -n "SUPPORTED_LOCALES|SUPPORTED_COUNTRY_CODES|SUPPORTED_CURRENCY_CODES" BE\src\modules\user BE\src\shared\application
-rg -n "ExternalAuthProvider|OAuthProvider|providerOrder" BE\src\modules\auth BE\src\shared FE\user-web\src\features\auth
-rg -n 'path: "/app"|localizedPublicSiteRoutes' FE\user-web\src\app\router\router.tsx
+rg -n "SUPPORTED_LOCALES|SUPPORTED_COUNTRY_CODES|SUPPORTED_CURRENCY_CODES|SUPPORTED_CONTACT_PHONE_COUNTRY_CODES|COMPANY_REGION_COUNTRY_CODES|KRW|USD|ko-KR|zh-CN|zh-TW|ja" BE\src FE\user-web\src -g "*.ts" -g "*.tsx"
+rg -n "OAuthProvider|normalizeProvider|GOOGLE|LINE|APPLE|MICROSOFT|KAKAO|password|email/password|auth/providers|auth/exchange" BE\src\modules\auth FE\user-web\src -g "*.ts" -g "*.tsx"
 rg -n "phoneCountryCode|phoneNationalNumber|phoneE164|currencyCode|CompanyRegion" BE\prisma\schema.prisma
+rg -n "contact.*address|address.*contact|ContactAddress|personalAddress|minorUnit|amountPrecision|cents|Decimal.*amount" BE\src FE\user-web\src BE\prisma\schema.prisma -g "*.ts" -g "*.tsx" -g "*.prisma"
 ```
 
 ## 7. 완료 기준

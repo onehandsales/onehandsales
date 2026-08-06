@@ -20,7 +20,7 @@
 | G06 | `G06_06_RECORD_SUMMARY_DEFER_CLOSEOUT` | Decided | 06/NBA-003 record summary defer 결정과 문서 동기화 범위를 닫는다. | 문서 closeout만 가능 |
 | G07 | `G07_01_IMPORT_EXPANSION_DEFER_CLOSEOUT` | Decided | 01 import scale/source/Admin 확장 후보가 01 미완성이 아님을 닫는다. | 문서 closeout만 가능 |
 | G08 | `G08_07_MEETING_NOTE_AI_FOLLOWUP_DEFER_CLOSEOUT` | Completed | 07 MeetingNote AI 후속 후보가 07 미완성이 아님을 닫고 PRE12 후보로 분류했다. | 문서 closeout만 가능 |
-| G09 | `G09_08_GLOBAL_DATA_I18N_FOLLOWUP_DEFER_CLOSEOUT` | Pending | 08 Global Data I18N 후속 후보가 08 미완성이 아님을 닫고 PRE12 후보로 분류한다. | 문서 closeout만 가능 |
+| G09 | `G09_08_GLOBAL_DATA_I18N_FOLLOWUP_DEFER_CLOSEOUT` | Completed | 08 Global Data I18N 후속 후보가 08 미완성이 아님을 닫고 PRE12 후보로 분류했다. | 문서 closeout만 가능 |
 | G10 | `G10_09_PRODUCT_ANALYTICS_FOLLOWUP_DEFER_CLOSEOUT` | Pending | 09 Product Analytics 후속 후보가 09 미완성이 아님을 닫고 PRE12 후보로 분류한다. | 문서 closeout만 가능 |
 | G11 | `G11_10_MOBILE_PWA_FIELD_USE_FOLLOWUP_CLOSEOUT` | Pending | 10 Mobile PWA Field Use 후속 후보와 문서/코드 정합성 이슈가 10 미완성이 아님을 닫고 PRE12 후보로 분류한다. | 문서 closeout만 가능 |
 | G12 | `G12_11_ADMIN_OPERATION_FOLLOWUP_CLOSEOUT` | Completed | 11 Admin Operation 후속 후보와 문서/코드 정합성 이슈가 11 미완성이 아님을 닫고 PRE12 후보로 분류한다. | 문서 closeout만 가능 |
@@ -40,7 +40,7 @@
 - G06은 구현 작업이 아니라 06/NBA-003 defer 결정의 문서 closeout이다.
 - G07은 구현 작업이 아니라 01 import 확장 후보의 문서 closeout이다.
 - G08은 구현 작업이 아니라 07 MeetingNote AI 후속 후보의 문서 closeout이며 완료됐다.
-- G09는 구현 작업이 아니라 08 Global Data I18N 후속 후보의 문서 closeout이다.
+- G09는 구현 작업이 아니라 08 Global Data I18N 후속 후보의 문서 closeout이며 완료됐다.
 - G10은 구현 작업이 아니라 09 Product Analytics 후속 후보의 문서 closeout이다.
 - G11은 구현 작업이 아니라 10 Mobile PWA Field Use 후속 후보와 문서/코드 정합성 이슈의 문서 closeout이다.
 - G12는 구현 작업이 아니라 11 Admin Operation 후속 후보와 문서/코드 정합성 이슈의 문서 closeout이다.
