@@ -14,7 +14,7 @@
 | --- | --- |
 | 01~06 재대조 결과 정리 | 01~04 완료, 05 provider smoke pending 상태와 06 후속 재검토 A 결정을 07~11 재대조에서 참고할 수 있게 정리한다. |
 | 01 Import 확장 후보 분리 | 대용량 import worker, 일정/회의록 import, ImportJob Admin 전용 화면/API가 01 미완성이 아니라 별도 post-12 seed임을 고정한다. |
-| 02 후속 후보 분리 | 다음 행동 알림과 회의록 후속 알림이 02 구현 범위가 아니었음을 고정한다. |
+| 02 후속 후보 분리 | 다음 행동 알림, 회의록 후속 알림, Notification 데이터 TTL/cleanup 정책이 02 구현 범위가 아니었음을 고정한다. |
 | 06 작업 경계 설정 | DealActivity event와 실제 Notification reminder를 분리한다. |
 | 07 작업 경계 설정 | MeetingNote 상세 AI draft와 MeetingNote 목록 summary/자동 발송/알림/AI data cleanup/raw 저장 후보를 분리한다. |
 | 08 작업 경계 설정 | `/app` 기본 i18n/global data/auth provider 완료 범위와 시장/국가/통화/auth 확장 후보를 분리한다. |
@@ -60,6 +60,7 @@
 06에서 다루면 안 되는 범위:
 
 - Notification reminder row 생성
+- Notification/NotificationDeliveryAttempt/BrowserPushSubscription TTL cleanup 추가
 - due processor와 next action due date 연동
 - MeetingNote follow-up reminder 생성
 - MeetingNote follow-up 자동 발송

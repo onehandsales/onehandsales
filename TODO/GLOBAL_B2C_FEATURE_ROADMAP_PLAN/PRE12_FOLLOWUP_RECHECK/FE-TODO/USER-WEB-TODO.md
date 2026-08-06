@@ -31,6 +31,7 @@ G00과 API contract 확정 전에는 아래 User Web 변경을 하지 않는다.
 - 다음 행동 reminder 설정 UI 추가
 - MeetingNote follow-up reminder UI 추가
 - follow-up 자동 발송 toggle 추가
+- Notification TTL/cleanup 정책 확정 전 알림 이력 자동 삭제 안내, 보관 기간 설정 UI, Admin cleanup UI 추가
 - Company/Contact/Product latest summary를 API 없이 FE에서 조합 표시
 - MeetingNote list latest/next summary를 API 없이 FE에서 조합 표시
 - AI data cleanup 제안 저장/적용 UI 추가
@@ -75,6 +76,7 @@ G00과 API contract 확정 전에는 아래 User Web 변경을 하지 않는다.
 | --- | --- | --- |
 | 다음 행동 reminder | notification settings, next action form, deal detail 상태 표시 | Question |
 | 회의록 follow-up reminder | meeting note detail/list, notification settings, follow-up draft 상태 표시 | post-12-seed |
+| Notification 데이터 TTL/cleanup | `/app/notifications` 표시 기간, 삭제된 알림 안내, provider failure 이력 노출 여부, 설정 UI 필요 여부 | post-12-seed / `PRE12-F38` |
 | record summary | Company/Contact/Product/MeetingNote list item summary 위치와 empty fallback | Company/Contact/Product는 defer. 비고: post-12 B2B/team CRM strategy seed. MeetingNote list summary는 post-12-seed. |
 | AI data cleanup | cleanup suggestion 확인/적용/되돌리기 UX, 적용 전 diff 표시 | post-12-seed / 별도 data quality 계획 |
 | transcript/raw/follow-up draft 저장 표시 | transcript 보관 상태, raw access 안내, draft 저장/발송 상태 | defer / 정책 필요 |

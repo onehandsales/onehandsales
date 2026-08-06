@@ -14,6 +14,7 @@
 - 01에서 제외된 대용량 import worker, 일정/회의록 import, ImportJob Admin 전용 화면/API
 - 02에서 제외된 다음 행동 알림
 - 02에서 제외된 회의록 후속 알림
+- 02 문서에 보관 후보로 남은 Notification 데이터 TTL/cleanup 정책
 - 03에서 제외된 PDF, generic ExportJob, 반복 일정 정식 모델
 - 05에서 남은 Gmail/Microsoft provider smoke
 - 06에서 닫은 DealActivity 범위와 06 밖으로 남은 record summary 후보
@@ -30,7 +31,7 @@
 | 영역 | 현재 판정 | 구현 판단 |
 | --- | --- | --- |
 | 01 ImportJob | 완료 | 대용량 worker, 일정/회의록 import, generic ExportJob, Admin 전용 화면/API는 01 미완성이 아니다. |
-| 02 Notification | 완료 | 일정/딜 reminder, in-app/email/browser push, provider smoke는 완료다. 다음 행동 알림과 회의록 후속 알림은 구현되지 않았다. |
+| 02 Notification | 완료 | 일정/딜 reminder, in-app/email/browser push, provider smoke는 완료다. 다음 행동 알림과 회의록 후속 알림은 구현되지 않았다. Notification 데이터 TTL/cleanup은 구현 완료 범위가 아니라 정책 후속 후보로 분리한다. |
 | 03 Weekly Schedule Report | 완료 | PDF, generic ExportJob, recurrence는 03 재오픈 대상이 아니다. |
 | 04 Google Calendar | 완료 | read-only import/sync/source badge/Trash restore/provider smoke는 완료다. write, webhook, recurrence는 후속이다. |
 | 05 AI Weekly Sales Report | 구현 완료 / provider smoke pending | Gmail/Microsoft email adapter와 자동 검증은 완료됐다. 운영 credential/callback/allowlist 기반 실제 수신자 smoke는 남아 있다. |
@@ -60,6 +61,7 @@
 | 다음 행동 reminder | Question / 계약 필요 | G00에서 12 전 처리 여부를 결정한다. 결정 전 구현 금지. |
 | 회의록 follow-up reminder | post-12-seed | G03에서 상태를 재확인한다. 자동 발송과 함께 정책 결정이 필요하다. |
 | MeetingNote follow-up 자동 발송 | post-12-seed | G03에서 reminder와 분리한다. 명시적 사용자 확인 없는 발송은 구현 금지다. |
+| Notification 데이터 TTL/cleanup | post-12-seed / trust-ops policy | 02의 `Notification` 90일, `NotificationDeliveryAttempt` 30일, revoked `BrowserPushSubscription` 90일 보관 후보는 실제 cleanup 구현이 없다. 정책/운영 계약 전 구현하지 않는다. |
 | Gmail/Microsoft provider smoke | pre-12-follow-up-needed | G05에서 운영 credential/callback/allowlist 준비 후 실행 기록만 닫는다. 코드 구현 후보가 아니다. |
 | Company/Contact/Product latest summary | defer | 2026-08-06 A 결정으로 12 전 G04 계약화와 구현을 하지 않는다. |
 | MeetingNote list latest/next summary | post-12-seed 또는 별도 MeetingNote list 후보 | 12 전 구현하지 않는다. 07 결과와 연결한 목록 summary 계약은 post-12 재검토에서 필요성이 확인될 때만 만든다. |

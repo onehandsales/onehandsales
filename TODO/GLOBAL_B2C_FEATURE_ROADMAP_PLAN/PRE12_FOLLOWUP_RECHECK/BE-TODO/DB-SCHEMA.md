@@ -15,6 +15,7 @@
 | `NotificationSourceType` | `SCHEDULE`, `DEAL`만 존재한다. |
 | `UserNotificationSetting` | 일정 reminder와 딜 마감 reminder 설정 중심이다. |
 | `Notification` | source type/id, dedupe key, status, scheduledAt 기반이다. |
+| `NotificationDeliveryAttempt`, `BrowserPushSubscription` | provider safe error와 push subscription 암호화 저장은 완료됐지만 TTL cleanup 정책/runner는 없다. |
 | `DealActivityType` | next action, schedule, meeting note, follow-up event를 activity로 기록한다. |
 | `DealActivitySourceType` | `SYSTEM`, `USER`, `NEXT_ACTION`, `SCHEDULE`, `MEETING_NOTE`, `FOLLOW_UP`가 있다. |
 | `AiProviderOperation` | Weekly report, follow-up draft, MeetingNote AI/STT/draft operation을 포함한다. |
@@ -41,6 +42,7 @@
 - next action reminder의 source type과 due date model
 - MeetingNote follow-up reminder의 source type, source id, cancel rule
 - follow-up 자동 발송 정책과 저장 모델
+- Notification/NotificationDeliveryAttempt/BrowserPushSubscription TTL cleanup 기준을 확정하지 않은 상태의 삭제 migration 또는 cleanup cursor table
 - Company/Contact/Product latest summary의 저장 방식
 - MeetingNote list summary의 저장 방식
 - AI data cleanup suggestion의 저장/적용/rollback 방식
@@ -85,6 +87,7 @@
 | 다음 행동 reminder | `NotificationSourceType` 확장, `UserNotificationSetting` 필드 추가, `DealFollowingActionLog` due field 검토 | 결정 필요 |
 | 회의록 follow-up reminder | Notification source 확장 또는 별도 reminder table 검토 | post-12 seed |
 | follow-up 자동 발송 | send schedule, consent, unsubscribe, retry policy table 검토 | post-12 seed |
+| Notification 데이터 TTL/cleanup | `Notification.createdAt`, `NotificationDeliveryAttempt.createdAt`, `BrowserPushSubscription.revokedAt` 기준 hard delete/보존 정책과 provider failure 운영 조회 영향 검토 | post-12 seed / `PRE12-F38` |
 | record summary | denormalized summary table 또는 runtime aggregation 여부 결정 | Company/Contact/Product는 defer. 비고: post-12 B2B/team CRM strategy seed. MeetingNote list summary는 post-12-seed. |
 | AI data cleanup | suggestion table, 적용 이력, rollback/audit table 필요 여부 결정 | post-12 seed / 별도 data quality 계획 |
 | transcript/raw/follow-up draft 저장 | raw text 저장 table, TTL, 삭제권, sensitive access log 기준 필요 | defer / 정책 필요 |

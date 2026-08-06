@@ -31,6 +31,7 @@ G00과 API contract 확정 전에는 아래 Backend 변경을 하지 않는다.
 - `NotificationType` 확장
 - next action reminder scheduling use case 추가
 - MeetingNote follow-up reminder scheduling use case 추가
+- Notification/NotificationDeliveryAttempt/BrowserPushSubscription TTL cleanup runner 또는 Admin cleanup API 추가
 - Follow-up 자동 발송 worker 추가
 - Company/Contact/Product list summary API field 추가
 - MeetingNote list summary API field 추가
@@ -77,6 +78,7 @@ G00과 API contract 확정 전에는 아래 Backend 변경을 하지 않는다.
 | 다음 행동 reminder | Notification source/setting/scheduler/dedupe/cancel rule 확정 필요 | Question |
 | 회의록 follow-up reminder | MeetingNote source, follow-up draft/send 상태, notification rule 확정 필요 | post-12-seed |
 | MeetingNote 자동 발송 | consent, retry, unsubscribe, send policy, provider cost policy 필요 | post-12-seed |
+| Notification 데이터 TTL/cleanup | `Notification`/delivery attempt/revoked subscription 삭제 기준, batch runner, Admin/provider failure 조회 보존 기간, 계정 삭제 실제 처리와의 충돌 기준 필요 | post-12-seed / `PRE12-F38` |
 | record summary | 기존 list API field 추가 또는 별도 summary endpoint, redaction 기준 필요 | Company/Contact/Product는 defer. 비고: post-12 B2B/team CRM strategy seed. MeetingNote list summary는 post-12-seed. |
 | AI data cleanup | cleanup suggestion 생성/적용/rollback API, audit log, ownership/redaction 기준 필요 | post-12-seed / 별도 data quality 계획 |
 | transcript/raw/follow-up draft 저장 | retention, 삭제권, raw access audit, redaction, Admin/User 노출 기준 필요 | defer / 정책 필요 |
