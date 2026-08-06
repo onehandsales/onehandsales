@@ -29,6 +29,12 @@
 | Auth strategy 확장 | email/password, Microsoft, Kakao runtime, 신규 provider 계약 | defer / 정책 필요 | 구현 금지 |
 | `/app` locale route prefix | User API path 변경 없음. FE routing contract 이슈 | defer / guardrail | 새 라우팅 계약 없이 구현 금지 |
 | app i18n/Settings/bundle polish | 새 API 없음 | post-12-seed / UXUI quality | API 구현 대상 아님 |
+| account deletion 실제 hard delete/anonymization | 30일 유예 만료 request 처리, session revoke/access block, hard delete/anonymization, audit/result contract | Question / 정책 필요 | 구현 금지 |
+| Product analytics 세부 event 확장 | Notification/Calendar/follow-up delivery/click/reach/sync/detail event taxonomy와 payload allowlist | post-12-seed / 별도 analytics 계획 | 구현 금지 |
+| external analytics provider forwarding | Backend provider forwarding adapter/outbox/retry 또는 FE SDK 삽입 방식 결정 | post-12-seed / growth/ops | 구현 금지 |
+| public site/UTM/ad attribution/growth experiment | public route event, attribution cookie/referrer policy, experiment assignment API | post-12-seed / growth/marketing | 구현 금지 |
+| AI usage billing source/paywall runtime | `AiUsageDaily` 또는 `UsageMeter`, plan/quota/paywall/upgrade event contract | billing-blocked | 12 전 구현 금지 |
+| PWA/native packaging과 install attribution | install/offline/native app install attribution API 필요 여부 결정 | post-12-seed / 별도 mobile roadmap | 구현 금지 |
 
 ## 3. API 계약을 만들 때 필수로 채울 항목
 
@@ -59,3 +65,7 @@
 - `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/08_GLOBAL_DATA_I18N/COMMON/API-SPEC/DOMAIN_GLOBAL_DATA_API.md`
 - `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/08_GLOBAL_DATA_I18N/COMMON/API-SPEC/AUTH_PROVIDER_API.md`
 - `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/08_GLOBAL_DATA_I18N/COMMON/API-SPEC/IMPORT_EXPORT_LOCALIZATION_API.md`
+- `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/09_PRODUCT_ANALYTICS/COMMON/API-SPEC/AI_USAGE_ANALYTICS_CONTRACT.md`
+- `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/09_PRODUCT_ANALYTICS/COMMON/API-SPEC/PRODUCT_ANALYTICS_EVENT_API.md`
+- `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/10_MOBILE_PWA_FIELD_USE/COMMON/API-SPEC`
+- `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/11_ADMIN_OPERATION/COMMON/API-SPEC`

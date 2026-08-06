@@ -19,6 +19,7 @@
 | ImportJob | `/api/imports` 계열 persistence/resume/confirm/cancel과 10MB/5,000 data row 제한은 01에서 완료됐다. 현재 import 대상은 회사, 담당자, 제품, 딜이다. |
 | MeetingNote raw storage | transcript/raw provider response/follow-up draft body 전용 저장 API나 table은 없다. 07은 safe metadata log만 남긴다. |
 | Global Data I18N | User global settings, Product/Deal currency, Contact KR/US phone, Company KR/US region/address, Import/Export localization, Google/LINE/Apple auth는 08에서 완료됐다. |
+| Product Analytics | `POST /api/analytics/events`, server-side recorder, activation/retention snapshot, AI usage summary, 10 mobile field-use event, 11 Admin analytics overview가 있다. 09는 외부 provider, billing runtime, public attribution, experiment, account deletion 실제 job을 만들지 않았다. |
 
 ## 3. 구현 금지
 
@@ -43,10 +44,18 @@ G00과 API contract 확정 전에는 아래 Backend 변경을 하지 않는다.
 - Company region country 확장 또는 국가별 상세 주소 validation 추가
 - Product/Deal amount minor unit 전환
 - email/password, Microsoft, Kakao runtime, 신규 auth provider 추가
+- account deletion 실제 hard delete/anonymization worker 또는 manual execution API 추가
+- Notification/Calendar/follow-up 세부 analytics event 수집 API/allowlist 추가
+- 외부 analytics provider forwarding API/adapter/worker 추가
+- public site/UTM/ad attribution API 또는 `/api/experiments/assignments` 추가
+- `AiUsageDaily`/`UsageMeter` 기반 billing usage API 추가
+- PWA install/offline shell/native app/native install attribution API 추가
 
 2026-08-06 A 결정에 따라 Company/Contact/Product latest summary, generic summary endpoint, record별 상세 timeline은 12 전 API contract 확정 대상으로 올리지 않는다.
 
 08 재대조 기준으로 Google/LINE/Apple 외 provider, `/app` locale prefix, 추가 국가/통화/전화번호 포맷은 새 계약 없이 확장하지 않는다. 국가별 tax/terms/pricing과 amount precision은 12 Billing 결정 전 Backend API 작업으로 올리지 않는다.
+
+09 재대조 기준으로 Product Analytics foundation은 완료다. account deletion 실제 처리, Notification/Calendar/follow-up 세부 analytics event, 외부 provider forwarding, public/UTM attribution, growth experiment, billing usage source-of-truth, PWA/native attribution은 09 미완성이 아니라 PRE12 후속 후보 또는 12 이후 계획으로 둔다.
 
 ## 4. 후보별 Backend 영향
 
@@ -66,6 +75,12 @@ G00과 API contract 확정 전에는 아래 Backend 변경을 하지 않는다.
 | address/tax/terms/pricing policy | 청구 주소, 세금, 약관, 가격 정책과 API 경계 확정 필요 | billing-blocked |
 | auth strategy 확장 | password reset, email verification, provider linking, account recovery, abuse/rate limit 기준 필요 | defer / 정책 필요 |
 | app i18n/Settings/bundle polish | 새 Backend API 없음. 필요 시 FE 유지보수만 검토 | post-12-seed / UXUI quality |
+| account deletion 실제 처리 | 30일 유예 만료 request 조회, processing lock, session revoke/access block, hard delete/anonymization, audit/result API 기준 필요 | Question / 정책 필요 |
+| Product analytics 세부 event 확장 | Notification/Calendar/follow-up domain event hook, event allowlist, payload privacy contract 필요 | post-12-seed / 별도 analytics 계획 |
+| external analytics provider forwarding | provider port/adapter, retry/dead-letter, consent/DPA, redaction, failure isolation 기준 필요 | post-12-seed / growth/ops |
+| public/UTM attribution/growth experiment | public route event collector, attribution cookie/referrer policy, experiment assignment API 기준 필요 | post-12-seed / growth/marketing |
+| AI usage billing source | `AiProviderCallLog` summary와 `AiUsageDaily`/`UsageMeter` 중 billing source-of-truth 결정 필요 | billing-blocked |
+| PWA/native packaging과 attribution | manifest/install/offline/native app install attribution API 필요 여부 결정 | post-12-seed / 별도 mobile roadmap |
 
 ## 5. 권장 검색 명령
 
@@ -75,6 +90,8 @@ rg -n "NotificationSourceType|schedule.*reminder|deal.*reminder|NEXT_ACTION|MEET
 rg -n "@Controller" BE\src\modules\notification BE\src\modules\deal BE\src\modules\meeting-note BE\src\modules\follow-up -g "*.controller.ts"
 rg -n "SUPPORTED_LOCALES|SUPPORTED_COUNTRY_CODES|SUPPORTED_CURRENCY_CODES|SUPPORTED_CONTACT_PHONE_COUNTRY_CODES|COMPANY_REGION_COUNTRY_CODES" BE\src -g "*.ts"
 rg -n "ExternalAuthProvider|OAuthProvider|normalizeProvider" BE\src\modules\auth BE\src\shared -g "*.ts"
+rg -n "ProductAnalyticsEvent|PRODUCT_ANALYTICS_CLIENT_EVENT_NAMES|PRODUCT_ANALYTICS_SERVER_EVENT_NAMES|RESERVED_PRODUCT_ANALYTICS_BILLING_EVENT_NAMES" BE\src\modules\analytics BE\prisma\schema.prisma
+rg -n "AccountDeletionRequest|scheduledDeletionAt|user\.delete|account deletion" BE\src\modules BE\prisma\schema.prisma
 ```
 
 ## 6. 관련 문서
@@ -83,6 +100,10 @@ rg -n "ExternalAuthProvider|OAuthProvider|normalizeProvider" BE\src\modules\auth
 - `../COMMON/CANDIDATE-MATRIX.md`
 - `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/08_GLOBAL_DATA_I18N/BE-TODO/API-TODO.md`
 - `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/08_GLOBAL_DATA_I18N/COMMON/API-SPEC/README.md`
+- `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/09_PRODUCT_ANALYTICS/BE-TODO/API-TODO.md`
+- `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/09_PRODUCT_ANALYTICS/COMMON/API-SPEC/AI_USAGE_ANALYTICS_CONTRACT.md`
+- `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/10_MOBILE_PWA_FIELD_USE/COMMON/SOURCE-PLAN-COVERAGE.md`
+- `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/11_ADMIN_OPERATION/BE-TODO/API-TODO.md`
 - `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/CONVENTION/API_SPEC.md`
 - `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/CONVENTION/TRANSACTION.md`
 - `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/CONVENTION/OBSERVABILITY.md`

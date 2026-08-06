@@ -23,7 +23,7 @@
 | PRE12-F09 | generic ExportJob/PDF | 03/11 후속 | 03은 sync Excel만 완료했고 generic ExportJob/PDF는 제외됐다. | post-12-seed | Trust/policy, file TTL, audit, Admin queue와 함께 재검토. |
 | PRE12-F10 | Google Calendar write/watch/recurrence | 03/04 후속 | 04는 read-only import/sync만 완료했다. write, webhook, recurrence는 제외됐다. | post-12-seed | Calendar 정책과 conflict resolution 결정 필요. |
 | PRE12-F11 | backup/restore runbook/drill | NBA-014/data reliability | 11 Admin system gate는 운영 결과 기록이지 shell 실행/운영 drill runbook이 아니다. | post-12-seed | 운영 절차 문서로 승격할지 재검토. |
-| PRE12-F12 | billing/paywall/churn/paid conversion | 09/11/12 연결 | 09는 reserved taxonomy, 11은 Admin operation만 완료했다. | billing-blocked | 12 전 구현 금지. |
+| PRE12-F12 | billing/paywall/churn/paid conversion/AI usage billing source | 09/11/12 연결 | 09는 reserved taxonomy와 Admin 참고용 AI usage summary만 완료했다. `AiUsageDaily`, `UsageMeter`, `BillingEvent`, `UserSubscription`, `ChurnSurveyResponse`는 만들지 않았고 11도 billing 지표를 표시하지 않는다. | billing-blocked | 12 전 구현 금지. 12에서 09 reserved taxonomy와 AI usage billing source-of-truth를 다시 sync한다. |
 | PRE12-F13 | Import scale/source/Admin 확장 | 01 제외 | 01은 회사/담당자/제품/딜 import와 10MB/5,000 data row 제한, 보관/삭제/복구 기준으로 완료됐다. 대용량 worker, 일정/회의록 import, ImportJob Admin 전용 화면/API는 01 최종형 밖이다. | post-12-seed | 12 전 구현하지 않는다. post-12 product scale/Admin ops/import source 전략에서 새 TODO 승격 여부를 판단한다. |
 | PRE12-F14 | AI data cleanup 제안 저장/적용 | 07 제외, USER_WEB productization gap | 07은 data cleanup suggestion을 1차 제외했다. 05 AI weekly report에는 저장형 report suggestion이 있으나 MeetingNote cleanup 적용 흐름은 없다. | post-12-seed / 별도 data quality 계획 | 09 Product Analytics 또는 별도 data quality TODO에서 권한, 적용, 감사 로그, rollback 기준을 먼저 정한다. |
 | PRE12-F15 | MeetingNote transcript/raw provider response/follow-up draft 저장 | NBA-011 원본 후보, 07 명시 제외 | 07은 전용 transcript/follow-up draft/raw provider response table을 만들지 않고 공통 `AiProviderCallLog` safe metadata만 남긴다. | defer / 정책 필요 | retention, 삭제권, raw access audit, redaction 정책 없이는 구현 금지. |
@@ -37,6 +37,11 @@
 | PRE12-F23 | Auth strategy 확장 | 08 제외, NEXT backlog | 런타임 provider는 Google/LINE/Apple이다. 이메일/비밀번호, Microsoft login, Kakao runtime 복구는 없다. | defer / auth strategy 필요 | 보안, 계정 복구, 약관, provider 운영 정책을 확정하기 전 추가 provider 또는 password auth 구현 금지. |
 | PRE12-F24 | `/app` locale route prefix | 08 guardrail | 현재 `/app` route는 locale prefix 없이 `/app/*`만 사용한다. public/auth locale routing과 app i18n은 분리돼 있다. | defer / guardrail | 새 라우팅 계약 없이 `/:locale/app` 또는 `/ko/app` 구조를 만들지 않는다. |
 | PRE12-F25 | app i18n 직접 keying, OAuth 계정 라벨, bundle 최적화 polish | 08 G09/G10, 실제 FE 코드 재대조 | 핵심 `/app` 화면은 app i18n resource와 legacy static fallback으로 동작한다. Settings OAuth account label은 `line/apple`이 raw 값으로 보일 수 있고, Vite large chunk warning은 기존 후속으로 남았다. | post-12-seed / UXUI quality | 08 완료를 재오픈하지 않고 UX/UI 제품화 유지보수 또는 bundle optimization 계획에서 처리한다. |
+| PRE12-F26 | account deletion 실제 hard delete/anonymization job | 09/11/trust 연결 | 09는 삭제 요청 후 30일 유예와 user-linked analytics 삭제 기준을 세웠고 Prisma cascade도 준비돼 있다. 11은 계정 삭제 request/cancel/Admin queue를 구현했지만 실제 hard delete/anonymization processor는 제외했다. | Question / 정책 필요 | privacy/legal/session revoke/access block/billing 영향 결정 전 구현 금지. 실제 job 계약이 생기면 11 Account Request와 09 analytics deletion 기준을 함께 재대조한다. |
+| PRE12-F27 | Product analytics 세부 event 확장 | 09 Decision Log, 10/11/12 연결 | 09 runtime taxonomy는 최소 core event와 10 mobile field-use event까지다. Notification delivery/click/reach, Google Calendar sync detail, AI weekly/follow-up delivery detail event는 runtime allowlist에 없다. | post-12-seed / 별도 analytics 계획 | 02/04/05/10/11/12 완료 의미를 침범하지 않고 별도 analytics event taxonomy 계약에서만 추가한다. |
+| PRE12-F28 | 외부 analytics provider forwarding | 09 Scope/Decision | 현재 source-of-truth는 자체 DB `ProductAnalyticsEvent`다. Segment/PostHog/Mixpanel/GA forwarding port, adapter, runtime call은 구현돼 있지 않다. | post-12-seed / growth/ops | 12 이후 growth/ops 요구와 privacy/DPA 기준이 확인될 때 provider adapter 계획으로 승격한다. 자체 DB 정본은 유지한다. |
+| PRE12-F29 | public site/UTM/ad attribution/growth experiment | 09/10/NEXT/USER_WEB gap | 09는 core `/app` route view만 수집하고 public site, UTM, ad attribution을 제외했다. `ExperimentAssignment`와 `/api/experiments/assignments`도 만들지 않았다. | post-12-seed / growth/marketing | marketing attribution, experiment assignment model/API, public route analytics는 별도 growth 계획에서 다룬다. |
+| PRE12-F30 | PWA/native packaging과 install attribution | 09 후속, 10 완료/제외 | 10은 모바일 브라우저 field-use event와 UX를 완료했지만 PWA install/offline shell, iOS/Android native app, native install attribution은 완료 범위가 아니었다. | post-12-seed / 별도 mobile roadmap | 10을 재오픈하지 않고 mobile roadmap에서 PWA/offline/native packaging과 install attribution 계약을 만든다. |
 
 ## 3. 06과 직접 충돌하는 후보
 
@@ -74,7 +79,19 @@
 | auth provider | Google/LINE/Apple runtime provider와 Kakao legacy 호환 | 이메일/비밀번호, Microsoft, Kakao runtime 복구, 신규 provider 추가 |
 | app route | `/app/*` 고정 route | `/app` locale prefix 추가 |
 
-## 6. 관련 문서
+## 6. 09와 직접 충돌하는 후보
+
+아래 후보는 09 Product Analytics foundation을 재오픈하지 않고 PRE12 후보 또는 후속 analytics/mobile/trust 계획으로만 남긴다.
+
+| 후보 | 09/10/11에서 완료된 것 | 09/PRE12에서 금지 |
+| --- | --- | --- |
+| account deletion 실제 처리 | 09 schema/cascade 기준과 11 request/cancel/Admin queue | 실제 hard delete/anonymization job을 정책 없이 추가 |
+| 세부 analytics event | 09 core events, 10 mobile field-use, 11 Admin overview | Notification/Calendar/follow-up click/reach/sync/detail event를 몰래 runtime allowlist에 추가 |
+| external provider | 자체 DB `ProductAnalyticsEvent` source of truth | provider forwarding port/adapter/runtime call 추가 |
+| attribution/experiment | core `/app` routeKey와 billing reserved taxonomy | public route/UTM/ad attribution/experiment assignment API/model 추가 |
+| PWA/native attribution | mobile browser field-use events | PWA install/offline/native app/native install attribution을 09 완료 범위로 끼워 넣기 |
+
+## 7. 관련 문서
 
 - `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/COMMON/COVERAGE-MATRIX.md`
 - `TODO/NEXT_BACKEND_API_BACKLOG_PLAN/README.md`
@@ -82,3 +99,7 @@
 - `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/07_MEETING_NOTE_AI_PROVIDER_LOG/COMMON/SOURCE-PLAN-COVERAGE.md`
 - `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/08_GLOBAL_DATA_I18N/COMMON/SOURCE-PLAN-COVERAGE.md`
 - `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/08_GLOBAL_DATA_I18N/COMMON/DECISION-LOG.md`
+- `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/09_PRODUCT_ANALYTICS/COMMON/SOURCE-PLAN-COVERAGE.md`
+- `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/09_PRODUCT_ANALYTICS/COMMON/DECISION-LOG.md`
+- `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/10_MOBILE_PWA_FIELD_USE/COMMON/SOURCE-PLAN-COVERAGE.md`
+- `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/11_ADMIN_OPERATION/COMMON/SOURCE-PLAN-COVERAGE.md`

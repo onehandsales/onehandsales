@@ -12,12 +12,13 @@
 - G07의 01 import scale/source/Admin 확장 defer 결정 closeout 완료
 - G08의 07 MeetingNote AI 후속 후보 defer 결정 closeout 완료
 - G09의 08 Global Data I18N 후속 후보 defer 결정 closeout 완료
+- G10의 09 Product Analytics 후속 후보 defer 결정 closeout 완료
 
 ## 2. 포함 범위
 
 - `README.md` 상태 갱신
 - `COMMON/CANDIDATE-MATRIX.md` 상태 갱신
-- G06~G09 문서 closeout 결과 반영
+- G06~G10 문서 closeout 결과 반영
 - 상위 `GLOBAL_B2C_FEATURE_ROADMAP_PLAN` 문서에 closeout 반영
 - `NEXT_BACKEND_API_BACKLOG_PLAN`, `USER_WEB_PRODUCTIZATION_GAP_PLAN`에 필요한 요약 반영 여부 판단
 - 12 착수 전 남은 보류 목록 확정
@@ -36,3 +37,4 @@
 - 06 후속 재검토 A 결정과 07~11 재대조 대상이 분리되어 남는다.
 - 07 MeetingNote AI 완료 범위와 07 밖의 follow-up/list summary/AI data cleanup/raw storage 후보가 분리되어 남는다.
 - 08 Global Data I18N 완료 범위와 08 밖의 market locale/global data/money/address/auth polish 후보가 분리되어 남는다.
+- 09 Product Analytics 완료 범위와 09 밖의 account deletion 실제 처리, 세부 event, 외부 provider, attribution/experiment, PWA/native 후보가 분리되어 남는다.

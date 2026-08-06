@@ -26,6 +26,9 @@
 | `Contact.phoneCountryCode`, `Contact.phoneNationalNumber`, `Contact.phoneE164` | 08에서 KR/US phone normalization과 legacy mobile fallback으로 완료됐다. |
 | `Company.address`, `CompanyRegion.countryCode`, `CompanyRegion.regionCode` | 08에서 Company free address와 KR/US region code로 완료됐다. Contact address는 없다. |
 | `OAuthProvider` | `KAKAO`, `GOOGLE`, `APPLE`, `LINE` enum이 있다. Runtime auth provider는 Google/LINE/Apple이고 Kakao는 legacy 호환이다. |
+| `ProductAnalyticsEvent`, `UserActivationSnapshot`, `RetentionCohortSnapshot` | 09에서 analytics 정본, activation/retention snapshot, raw event retention 기준으로 완료됐다. |
+| `AccountDeletionRequest`, `UserDataExportRequest` | 11에서 계정 삭제 요청/취소/Admin queue와 데이터 export request workflow로 완료됐다. 실제 계정 hard delete/anonymization processor는 없다. |
+| `AiUsageDaily`, `UsageMeter`, `BillingEvent`, `UserSubscription`, `ChurnSurveyResponse`, `ExperimentAssignment` | 현재 schema에 없다. 09에서는 만들지 않았고 12 또는 12 이후 후보로 남긴다. |
 
 ## 3. 새 migration 금지 기준
 
@@ -49,10 +52,18 @@
 - 국가별 상세 주소 validation, tax/terms/pricing 저장 모델
 - Contact personal address 저장 모델
 - email/password, Microsoft, Kakao runtime, 신규 auth provider 저장 모델
+- account deletion 실제 hard delete/anonymization job 상태/lock/result 저장 모델
+- Notification/Calendar/follow-up 세부 analytics event 확장을 위한 새 enum/table
+- external analytics provider forwarding outbox/dead-letter table
+- public/UTM/ad attribution과 growth experiment assignment 저장 모델
+- `AiUsageDaily`, `UsageMeter`, `BillingEvent`, `UserSubscription`, `ChurnSurveyResponse`
+- PWA install/offline shell/native app/native install attribution 저장 모델
 
 2026-08-06 A 결정으로 Company/Contact/Product latest summary와 generic summary endpoint는 12 전 DB 설계 후보로 승격하지 않는다.
 
 08 재대조 기준으로 global data/i18n의 1차 schema는 완료다. 추가 country/currency/phone/auth provider/money/address 변경은 08 미완성이 아니라 post-12 또는 12 Billing 정책 이후의 별도 migration 후보로 둔다.
+
+09 재대조 기준으로 analytics 1차 schema는 완료다. `ProductAnalyticsEvent`와 snapshot model을 재오픈하지 않고, account deletion 실제 처리, 세부 event taxonomy, provider forwarding, attribution/experiment, billing usage source, PWA/native attribution은 별도 migration 후보로만 둔다.
 
 ## 4. 후보별 DB 영향
 
@@ -73,6 +84,12 @@
 | Contact personal address | Contact address field 또는 address child table 필요 여부 결정 | post-12 seed / CRM 확장 |
 | auth strategy 확장 | password credential, reset token, provider linking 정책 table 필요 여부 결정 | defer / 정책 필요 |
 | app i18n/Settings/bundle polish | DB 변경 없음 | UXUI quality |
+| account deletion 실제 처리 | job lock/result table 또는 기존 `AccountDeletionRequest` status transition으로 충분한지 결정. `User` hard delete/anonymization 범위와 cascade 영향 검증 필요 | Question / 정책 필요 |
+| Product analytics 세부 event 확장 | 신규 table보다는 taxonomy/payload contract 확장이 우선. 필요 시 event version 또는 derived aggregate table 검토 | post-12 seed / 별도 analytics 계획 |
+| external analytics provider forwarding | provider delivery outbox, retry/dead-letter, consent snapshot 저장 필요 여부 결정 | post-12 seed / growth/ops |
+| public/UTM attribution/growth experiment | attribution touchpoint, campaign/referrer, `ExperimentAssignment` 저장 모델 필요 여부 결정 | post-12 seed / growth/marketing |
+| AI usage billing source | `AiUsageDaily`와 `UsageMeter` 중 billing source-of-truth 결정. `AiProviderCallLog`는 09 Admin 참고용 summary source다 | billing-blocked |
+| PWA/native packaging과 attribution | install attribution, offline sync metadata, native device/app install event 저장 필요 여부 결정 | post-12 seed / 별도 mobile roadmap |
 
 ## 5. DB/Prisma gate
 
@@ -92,3 +109,7 @@
 - `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/07_MEETING_NOTE_AI_PROVIDER_LOG/BE-TODO/DB-SCHEMA.md`
 - `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/08_GLOBAL_DATA_I18N/BE-TODO/DB-SCHEMA.md`
 - `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/08_GLOBAL_DATA_I18N/COMMON/GOAL-COMPLETION-CHECKLIST.md`
+- `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/09_PRODUCT_ANALYTICS/BE-TODO/DB-SCHEMA.md`
+- `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/09_PRODUCT_ANALYTICS/COMMON/API-SPEC/AI_USAGE_ANALYTICS_CONTRACT.md`
+- `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/10_MOBILE_PWA_FIELD_USE/COMMON/SOURCE-PLAN-COVERAGE.md`
+- `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/11_ADMIN_OPERATION/BE-TODO/DB-SCHEMA.md`
