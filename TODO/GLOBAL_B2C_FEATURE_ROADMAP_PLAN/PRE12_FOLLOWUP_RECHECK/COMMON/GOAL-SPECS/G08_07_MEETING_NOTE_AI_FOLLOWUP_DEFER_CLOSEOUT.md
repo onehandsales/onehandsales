@@ -1,6 +1,7 @@
 # G08 07 MeetingNote AI Follow-up Defer Closeout
 
-상태: Pending
+상태: Completed
+완료일: 2026-08-06
 목표: 07 완료 범위를 유지하면서 07에서 제외되었거나 후속으로 남은 MeetingNote AI 후보를 `PRE12_FOLLOWUP_RECHECK` 안에서 분류하고, 구현 금지 경계를 닫는다.
 
 ## 1. 판단 근거
@@ -67,3 +68,12 @@ rg -n "ai-draft|stt-draft|next-actions/draft|follow-up-draft" BE\src\modules\mee
 - `BE-TODO`, `FE-TODO`, `COMMON/API-SPEC`에 07 후속 후보의 구현 금지 조건이 연결된다.
 - 07 완료 폴더에는 새 구현 goal을 만들지 않는다.
 - 코드, Prisma migration, FE route/client 변경이 없다.
+
+## 7. 실행 결과
+
+- 07 원문과 실제 BE/FE 코드를 재대조한 결과, MeetingNote AI/STT provider log, detail next action draft, detail follow-up draft, User Web AI 후속 작업 section은 구현 완료 범위로 유지한다.
+- `PRE12-F02`, `PRE12-F03`, `PRE12-F08`, `PRE12-F14`, `PRE12-F15`, `PRE12-F16`이 07 후속 또는 11 완료 참조 후보로 이미 분리되어 있음을 확인했다.
+- `NotificationSourceType`은 `SCHEDULE`, `DEAL`만 유지된다. MeetingNote follow-up reminder source는 열려 있지 않다.
+- 별도 `MeetingNoteTranscript`, `MeetingNoteFollowUpDraft`, `MeetingNoteProviderCallLog`, `AiDataCleanupSuggestion` table은 없다.
+- `GET /api/meeting-notes` list summary field와 User Web list summary 조합은 07 범위로 구현하지 않는다.
+- G08은 문서 closeout으로 완료하며, 07 폴더에 새 구현 goal을 만들지 않는다.

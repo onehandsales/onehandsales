@@ -20,7 +20,8 @@
 | `DealActivityType` | next action, schedule, meeting note, follow-up event를 activity로 기록한다. |
 | `DealActivitySourceType` | `SYSTEM`, `USER`, `NEXT_ACTION`, `SCHEDULE`, `MEETING_NOTE`, `FOLLOW_UP`가 있다. |
 | `DealActivity` | 06에서 Deal timeline source-of-truth로 추가됐다. soft delete/trash/restore/retention/audit field, score field, summary cache table은 없다. |
-| `AiProviderOperation` | Weekly report, follow-up draft, MeetingNote AI/STT/draft operation을 포함한다. |
+| `AiProviderOperation` | Weekly report, follow-up draft, MeetingNote AI/STT/next action/follow-up draft operation을 포함한다. |
+| `AiProviderCallLog` | MeetingNote provider log를 공통 로그로 기록하며 `targetType`, `targetId`, `[userId, targetType, targetId, createdAt]` index가 있다. |
 | `AiWeeklySalesReport`, `AiWeeklySalesReportSuggestion`, `AiJob`, `AiProviderCallLog` | 05에서 저장형 weekly report, version/failed version, input snapshot, safe provider log, suggestion을 완료했다. 자동 생성 schedule/cursor나 AI suggestion 자동 mutation 적용 모델은 없다. |
 | `ExternalEmailConnection`, `ExternalEmailOAuthState`, `SmsSenderNumber`, `FollowUpConsentNotice` | 05에서 Gmail/Microsoft email connection과 SMS sender verification/consent foundation을 완료했다. B2B tenant sender, email sync, campaign/sequence, unsubscribe, external SMTP/SaaS provider 모델은 없다. |
 | `FollowUpMessage`, `FollowUpDeliveryAttempt` | follow-up draft/send/retry/history와 provider attempt를 저장한다. 예약 발송, bulk/campaign, tracking/attachment 전용 모델은 없다. |
@@ -81,6 +82,8 @@
 2026-08-06 A 결정으로 Company/Contact/Product latest summary와 generic summary endpoint는 12 전 DB 설계 후보로 승격하지 않는다.
 
 06 재대조 기준으로 `DealActivity` schema와 migration은 timeline/manual create-update/자동 event 기록용으로 완료됐다. 삭제/보존/감사, memo 통합, 공통 activity bus, 검색/필터/score/AI 판단, summary cache는 `PRE12-F39`로만 두고 06 미완성 migration으로 보지 않는다.
+
+07 재대조 기준으로 MeetingNote AI/STT provider log는 공통 `AiProviderCallLog` operation/target 확장으로 완료됐다. 별도 `MeetingNoteTranscript`, `MeetingNoteFollowUpDraft`, `MeetingNoteProviderCallLog`, `AiDataCleanupSuggestion` table은 없고, list summary 저장 방식이나 reminder/자동 발송 저장 모델은 `PRE12-F02`/`PRE12-F03`/`PRE12-F08`/`PRE12-F14`/`PRE12-F15` 후속 후보로만 둔다.
 
 04 재대조 기준으로 Google Calendar DB 영향은 Google read-only source metadata까지 완료다. `ExternalCalendarProvider=GOOGLE`, 사용자당 provider 1개 unique, `Schedule` external metadata 기준을 재오픈하지 않고 write/watch/recurrence/reminders/attendee/multi-account/other provider schema는 `PRE12-F10` 후속 후보로만 둔다.
 

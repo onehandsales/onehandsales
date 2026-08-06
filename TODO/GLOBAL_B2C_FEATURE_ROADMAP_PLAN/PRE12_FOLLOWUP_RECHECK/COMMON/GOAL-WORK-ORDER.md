@@ -19,7 +19,7 @@
 | G05 | `G05_PROVIDER_SMOKE_CLOSEOUT` | Pending | 05 G10 Gmail/Microsoft provider smoke 실행 조건과 결과 기록을 닫는다. | 운영 smoke와 문서 기록 가능 |
 | G06 | `G06_06_RECORD_SUMMARY_DEFER_CLOSEOUT` | Decided | 06/NBA-003 record summary defer 결정과 문서 동기화 범위를 닫는다. | 문서 closeout만 가능 |
 | G07 | `G07_01_IMPORT_EXPANSION_DEFER_CLOSEOUT` | Decided | 01 import scale/source/Admin 확장 후보가 01 미완성이 아님을 닫는다. | 문서 closeout만 가능 |
-| G08 | `G08_07_MEETING_NOTE_AI_FOLLOWUP_DEFER_CLOSEOUT` | Pending | 07 MeetingNote AI 후속 후보가 07 미완성이 아님을 닫고 PRE12 후보로 분류한다. | 문서 closeout만 가능 |
+| G08 | `G08_07_MEETING_NOTE_AI_FOLLOWUP_DEFER_CLOSEOUT` | Completed | 07 MeetingNote AI 후속 후보가 07 미완성이 아님을 닫고 PRE12 후보로 분류했다. | 문서 closeout만 가능 |
 | G09 | `G09_08_GLOBAL_DATA_I18N_FOLLOWUP_DEFER_CLOSEOUT` | Pending | 08 Global Data I18N 후속 후보가 08 미완성이 아님을 닫고 PRE12 후보로 분류한다. | 문서 closeout만 가능 |
 | G10 | `G10_09_PRODUCT_ANALYTICS_FOLLOWUP_DEFER_CLOSEOUT` | Pending | 09 Product Analytics 후속 후보가 09 미완성이 아님을 닫고 PRE12 후보로 분류한다. | 문서 closeout만 가능 |
 | G11 | `G11_10_MOBILE_PWA_FIELD_USE_FOLLOWUP_CLOSEOUT` | Pending | 10 Mobile PWA Field Use 후속 후보와 문서/코드 정합성 이슈가 10 미완성이 아님을 닫고 PRE12 후보로 분류한다. | 문서 closeout만 가능 |
@@ -39,7 +39,7 @@
 - G02, G03은 사용자 결정 또는 계약 확정이 필요하므로 병렬 구현 대상이 아니다. G04의 NBA-003 분기는 2026-08-06 A 결정으로 pre-12 구현 계약화 대상에서 제외됐고, NBA-004 MeetingNote list summary는 기존 post-12-seed로 유지한다.
 - G06은 구현 작업이 아니라 06/NBA-003 defer 결정의 문서 closeout이다.
 - G07은 구현 작업이 아니라 01 import 확장 후보의 문서 closeout이다.
-- G08은 구현 작업이 아니라 07 MeetingNote AI 후속 후보의 문서 closeout이다.
+- G08은 구현 작업이 아니라 07 MeetingNote AI 후속 후보의 문서 closeout이며 완료됐다.
 - G09는 구현 작업이 아니라 08 Global Data I18N 후속 후보의 문서 closeout이다.
 - G10은 구현 작업이 아니라 09 Product Analytics 후속 후보의 문서 closeout이다.
 - G11은 구현 작업이 아니라 10 Mobile PWA Field Use 후속 후보와 문서/코드 정합성 이슈의 문서 closeout이다.

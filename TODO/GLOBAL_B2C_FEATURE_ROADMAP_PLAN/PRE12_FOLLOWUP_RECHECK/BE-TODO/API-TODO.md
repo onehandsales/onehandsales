@@ -15,7 +15,7 @@
 | Notification | `NotificationSourceType`은 `SCHEDULE`, `DEAL`만 사용한다. 일정 시작 reminder와 딜 마감 reminder 중심이다. |
 | Google Calendar | `/api/schedules/google` connect/status/calendars/selection/sync/disconnect와 callback은 04 범위로 완료됐다. OAuth scope는 `calendar.readonly`이고 export/write/watch/reminders/attendee/multi-account/other provider API는 없다. |
 | DealActivity | `GET/POST/PATCH /api/deals/:dealId/activities`와 자동 event, manual create/update, Deal list products/latestActivity, Contact dealCount가 06에서 완료됐다. manual delete API, automatic activity update/delete API, memo/private memo activity 통합, all-domain activity bus, advanced search/filter/score/AI 판단 API는 없다. |
-| MeetingNote AI | `AiProviderOperation`에 MeetingNote draft/STT/next action/follow-up draft operation이 있다. |
+| MeetingNote AI | `POST /api/meeting-notes/ai-draft`, `POST /api/meeting-notes/stt-draft`, `POST /api/meeting-notes/:meetingNoteId/next-actions/draft`, `POST /api/meeting-notes/:meetingNoteId/follow-up-draft`가 07에서 완료됐다. `AiProviderOperation`에는 MeetingNote draft/STT/next action/follow-up draft operation이 있고, 후보 자동 저장/자동 발송 API는 없다. |
 | Follow-up Delivery | `FollowUpMessage`, `FollowUpDeliveryAttempt`, `ExternalEmailConnection` 계열이 있고 Gmail/Microsoft email adapter는 구현됐다. SMS provider는 production 실제 provider가 아니라 test/not-configured provider 상태이며, 예약 발송/sequence/campaign/unsubscribe/email sync API는 없다. |
 | ImportJob | `/api/imports` 계열 persistence/resume/confirm/cancel과 10MB/5,000 data row 제한은 01에서 완료됐다. 현재 import 대상은 회사, 담당자, 제품, 딜이다. |
 | MeetingNote raw storage | transcript/raw provider response/follow-up draft body 전용 저장 API나 table은 없다. 07은 safe metadata log만 남긴다. |
@@ -69,6 +69,8 @@ G00과 API contract 확정 전에는 아래 Backend 변경을 하지 않는다.
 2026-08-06 A 결정에 따라 Company/Contact/Product latest summary, generic summary endpoint, record별 상세 timeline은 12 전 API contract 확정 대상으로 올리지 않는다.
 
 06 재대조 기준으로 DealActivity timeline, manual create/update, 자동 event, Deal list products/latestActivity, Contact dealCount, page size 15는 완료다. 삭제/보존/감사, memo 통합, 공통 activity bus, 검색/필터, score, AI 자동 판단, summary cache API는 `PRE12-F39`로만 두고 06 미완성으로 재오픈하지 않는다.
+
+07 재대조 기준으로 MeetingNote AI/STT provider log, detail next action draft, detail follow-up draft API는 완료다. MeetingNote follow-up reminder/자동 발송, list latest/next summary, AI data cleanup 저장/적용, transcript/raw/follow-up draft 저장/조회 API는 07 미완성이 아니라 `PRE12-F02`/`PRE12-F03`/`PRE12-F08`/`PRE12-F14`/`PRE12-F15` 후속 후보로만 둔다. 11에서 닫힌 Admin provider audit/raw access는 07 또는 PRE12에서 재구현하지 않는다.
 
 04 재대조 기준으로 Google Calendar Backend/API 범위는 read-only import/sync, calendar 선택, source metadata, Trash restore, Google-origin reminder까지 완료다. Google export/write/양방향 sync, realtime webhook/watch, 반복 일정 정식 모델, reminders/attendee import, multi-account/provider 확장은 04 미완성이 아니라 `PRE12-F10` 후속 후보로만 둔다.
 

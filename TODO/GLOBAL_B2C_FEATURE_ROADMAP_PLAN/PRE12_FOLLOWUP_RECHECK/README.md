@@ -9,7 +9,7 @@
 
 이 폴더는 `GLOBAL_B2C_FEATURE_ROADMAP_PLAN`의 기존 01~11 완료 의미를 깨지 않으면서, 12 착수 전에 다시 확인해야 하는 후속 후보를 한곳에 묶는다.
 
-현재 문서는 01~11 재대조와 06 후속 재검토 A 결정, 10 Mobile Field Use 문서/코드 정합성 재검토, 11 Admin Operation 문서/코드 정합성 재검토를 반영했다. 따라서 이 문서는 특히 01, 02, 03, 05, 06, 07, 08, 09, 10, 11 사이에서 오해하기 쉬운 다음 항목을 분리한다.
+현재 문서는 01~11 재대조와 06 후속 재검토 A 결정, 07 MeetingNote AI 후속 후보 재대조, 10 Mobile Field Use 문서/코드 정합성 재검토, 11 Admin Operation 문서/코드 정합성 재검토를 반영했다. 따라서 이 문서는 특히 01, 02, 03, 05, 06, 07, 08, 09, 10, 11 사이에서 오해하기 쉬운 다음 항목을 분리한다.
 
 - 01에서 제외된 대용량 import worker, 일정/회의록 import, ImportJob Admin 전용 화면/API
 - 02에서 제외된 다음 행동 알림
@@ -38,7 +38,7 @@
 | 04 Google Calendar | 완료 | read-only import/sync/source badge/Trash restore/Google-origin reminder/provider smoke는 완료다. Google export/write/양방향 sync, webhook/watch, 반복 일정 정식 모델, reminders/attendee import, 여러 Google 계정, Google Calendar 외 provider는 후속이다. |
 | 05 AI Weekly Sales Report | 구현 완료 / provider smoke pending | AI weekly report 저장/버전/스냅샷, 사용자 확인 기반 follow-up draft/send/retry/timeline, Gmail/Microsoft email adapter와 자동 검증은 완료됐다. 운영 credential/callback/allowlist 기반 실제 수신자 smoke는 남아 있다. SMS 실제 provider, B2B sender/email sync/sequence/campaign/bulk/unsubscribe, 예약 발송/SMTP/HTML/첨부/tracking, 사용자 비용 노출, 영구 로그 legal deletion 정책은 후속이다. |
 | 06 DealActivity | 완료 이력 유지 / A 결정 반영 | 06은 DealActivity timeline, manual create/update, Deal list latestActivity, products summary, Contact dealCount 범위를 넘기지 않고 완료로 유지한다. record summary 잔여는 `PRE12-F07`, activity lifecycle/search/score 확장은 `PRE12-F39`로 분리한다. |
-| 07 MeetingNote AI | 완료 이력 유지 | 상세 next action/follow-up draft와 provider log는 완료다. 회의록 목록 summary, 자동 발송, 알림, AI data cleanup, transcript/raw/follow-up draft 저장은 07 완료 범위가 아니다. |
+| 07 MeetingNote AI | 완료 이력 유지 / G08 closeout 완료 | 상세 next action/follow-up draft와 provider log는 완료다. 회의록 목록 summary, 자동 발송, 알림, AI data cleanup, transcript/raw/follow-up draft 저장은 07 완료 범위가 아니다. Admin provider audit/raw access는 11 완료 범위를 참조한다. |
 | 08 Global Data I18N | 완료 이력 유지 | `/app` `ko-KR/en`, User global settings, KR/US phone/region, KRW/USD currency, Import/Export localization, Google/LINE/Apple auth는 완료다. `ja/zh-TW`, `zh-CN`, 전 세계 국가/통화/전화번호, minor unit, 상세 주소 검증, auth strategy 확장은 08 미완성이 아니다. |
 | 09 Product Analytics | 완료 이력 유지 | 자체 DB `ProductAnalyticsEvent`, collector, server/client event, activation/retention snapshot, AI usage summary, 10 mobile field-use event와 11 Admin analytics 연결은 완료다. account deletion 실제 hard delete/anonymization job, 세부 event 확장, 외부 provider, UTM/experiment, PWA/native install attribution은 09 완료 범위가 아니다. |
 | 10 Mobile PWA Field Use | 완료 이력 유지 / 문서 정합성 후보 있음 | 명함 촬영/OCR safe failure, 회의 녹음/STT fallback, FE local draft 24시간 TTL, browser push permission UX, mobile field analytics는 완료다. PWA install/offline shell/full offline sync/iOS/Android native app/native push/contact/calendar는 후속이고, 10 FE/BE TODO 체크리스트 미체크와 FE route architecture stale은 문서 정리 후보다. |
@@ -145,7 +145,7 @@ PRE12_FOLLOWUP_RECHECK/
 5. billing/paywall/churn/paid conversion/invoice/tax와 연결된 항목은 12 전 구현하지 않는다.
 6. `NBA-003` 잔여 record summary는 2026-08-06 A 결정에 따라 12 전 API/DB/FE 계약 대상으로 보지 않는다.
 7. G06, G07, G08, G09, G10, G11, G12는 문서 closeout으로만 사용하고 구현 goal로 전환하지 않는다.
-8. G08은 07 후속 후보를 PRE12 후보로 닫는 closeout이며, 07 폴더에 새 구현 goal을 만들지 않는다.
+8. G08은 07 후속 후보를 PRE12 후보로 닫은 closeout이며, 07 폴더에 새 구현 goal을 만들지 않는다.
 9. G09는 08 후속 후보를 PRE12 후보로 닫는 closeout이며, 08 폴더에 새 구현 goal을 만들지 않는다.
 10. G10은 09 후속 후보를 PRE12 후보로 닫는 closeout이며, 09 폴더에 새 구현 goal을 만들지 않는다.
 11. G11은 10 후속 후보와 문서/코드 정합성 이슈를 PRE12 후보로 닫는 closeout이며, 10 폴더에 새 구현 goal을 만들지 않는다.

@@ -17,7 +17,7 @@
 | Google Calendar | `/app/schedules`, `/app/settings`, schedule detail source badge/sync/status는 04 범위로 완료됐다. Google export/write/watch/reminders/attendee/multi-account/other provider UI는 없다. |
 | AI weekly report/follow-up | `/app/schedules/week` AI report section, `/app/settings` follow-up delivery settings, compose/send/retry/timeline UX는 05 범위로 구현됐다. SMS 실제 provider, B2B sender/email sync/sequence/campaign/unsubscribe UI는 없다. |
 | DealActivity | deal list products/latestActivity, deal detail activity timeline, manual create/update UI는 06 범위로 완료됐다. manual delete/restore, memo/private memo 통합, all-domain activity bus, advanced search/filter, score, AI activity 자동 판단 UI는 없다. |
-| MeetingNote AI | meeting note detail AI next action/follow-up draft section은 07 범위다. STT transcript는 생성 흐름의 임시 확인용이고 저장/목록/상세 summary 대상이 아니다. |
+| MeetingNote AI | meeting note detail AI next action/follow-up draft section, 후보 편집 후 existing Deal following-action 저장, follow-up draft 수정/복사는 07 범위로 완료됐다. STT transcript는 생성 흐름의 임시 확인용이고 저장/목록/상세 summary 대상이 아니다. |
 | Import | `/app/import` review/resume, row detail 만료 안내, 10MB/5,000행 제한 안내는 01 범위로 완료됐다. |
 | Global Data I18N | `/app` `ko-KR/en`, Settings global profile, Product/Deal currency, Contact KR/US phone, Company KR/US region/address, Import/Export localization, Google/LINE/Apple auth는 08 범위로 완료됐다. |
 | Product Analytics | User Web analytics helper, `/app` route view hook, mobile field-use client event, `VITE_PRODUCT_ANALYTICS_ENABLED` gate가 있다. analytics 실패는 사용자-facing UI로 표시하지 않는다. |
@@ -67,6 +67,8 @@ G00과 API contract 확정 전에는 아래 User Web 변경을 하지 않는다.
 2026-08-06 A 결정에 따라 Company/Contact/Product latest summary, generic summary endpoint, record별 상세 timeline은 12 전 User Web 작업으로 올리지 않는다. UX/UI 전체 polish는 별도 전면 유지보수 계획에서 다룬다.
 
 06 재대조 기준으로 deal detail timeline, manual create/update, Deal list products/latestActivity, Contact dealCount, page size 15는 완료다. activity 삭제/보존/감사, memo 통합, 공통 activity bus, 고급 검색/필터, score, AI 자동 판단, summary cache/fallback UI는 `PRE12-F39` 후속 후보로만 두고 06 미완성으로 재오픈하지 않는다.
+
+07 재대조 기준으로 meeting note detail AI 후속 작업 section, next action 후보 편집/저장 흐름, follow-up draft 수정/복사 UX는 완료다. MeetingNote list latest/next summary, follow-up reminder/자동 발송 UI, AI data cleanup 적용 UI, transcript/raw/follow-up draft 장기 보관 표시, Admin provider audit UI는 07 미완성이 아니라 `PRE12-F02`/`PRE12-F03`/`PRE12-F08`/`PRE12-F14`/`PRE12-F15`/`PRE12-F16` 기준으로만 판단한다.
 
 08 재대조 기준으로 `/app` 기본 Global Data I18N은 완료다. market locale 확장, country/currency/phone 확장, auth strategy 확장, Settings OAuth 계정 라벨과 bundle 최적화는 08 blocker가 아니다.
 

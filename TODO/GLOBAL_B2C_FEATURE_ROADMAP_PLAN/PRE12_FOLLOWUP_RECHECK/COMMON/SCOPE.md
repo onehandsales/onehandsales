@@ -31,7 +31,7 @@
 | 제외 항목 | 이유 |
 | --- | --- |
 | 06 DealActivity 구현 재개 | 06은 이미 완료 슬롯이다. manual create/update와 safe timeline/list summary 범위를 넘는 삭제/보존/감사/search/score/AI 확장은 `PRE12-F39`로만 둔다. |
-| 07 MeetingNote AI 구현 재개 | 07은 이미 완료 슬롯이다. 목록 summary, 자동 발송, 알림은 별도 후보다. |
+| 07 MeetingNote AI 구현 재개 | 07은 이미 완료 슬롯이다. detail AI draft/provider log 범위를 넘는 목록 summary, 자동 발송, 알림, AI data cleanup, transcript/raw/follow-up draft 저장은 별도 후보다. |
 | 01 ImportJob 구현 재개 | 대용량 import worker, 일정/회의록 import, ImportJob Admin 전용 화면/API는 01 완료 의미를 깨지 않고 post-12에서 재검토한다. |
 | 04 Google Calendar 구현 재개 | 04는 Google read-only import/sync, 선택 calendar, source badge, Trash restore, Google-origin reminder, provider smoke 기준으로 완료됐다. 고급 sync/provider 확장은 `PRE12-F10`으로만 둔다. |
 | 05 AI Weekly Sales Report 구현 재개 | 05는 저장형 AI weekly report, 사용자 확인 기반 follow-up delivery, Gmail/Microsoft send adapter 기준으로 완료됐다. provider smoke는 운영 closeout이고 SMS/B2B/email growth/cost/legal deletion은 별도 후속이다. |
@@ -42,7 +42,6 @@
 | 새 Prisma migration 즉시 작성 | 후보 계약이 확정되기 전에는 schema를 바꾸지 않는다. |
 | UX/UI 전체 polish | Product UX first-sale gate와 UX/UI 유지보수는 별도 흐름이다. |
 | Company/Contact/Product latest summary pre-12 계약화 | 2026-08-06 A 결정에 따라 `NBA-003` 잔여 record summary는 B2B/team CRM 성격이 강한 post-12 전략 후보로 둔다. |
-| 07 MeetingNote AI 구현 재개 | 07은 완료 슬롯이다. AI data cleanup, list summary, follow-up reminder/자동 발송, transcript/raw/follow-up draft 저장은 별도 후보로만 둔다. |
 | 08 market/global expansion pre-12 구현 | `ja/zh-TW`, `zh-CN`, 전 세계 국가/통화/전화번호, USD minor unit, 상세 주소 검증, 신규 auth provider는 08 완료 범위를 넓히지 않는다. |
 | 09 analytics/growth/trust 확장 pre-12 구현 | account deletion 실제 job, 세부 event taxonomy, 외부 provider forwarding, public/UTM attribution, growth experiment, PWA/native attribution은 09 완료 범위를 넓히지 않는다. |
 | 10 Mobile PWA Field Use 구현 재개 | 10은 mobile browser field-use 기준으로 완료됐다. PWA/offline/native, server draft DB, media/raw 저장, `/app/export`/`/api/exports`는 10 완료 범위가 아니다. |
@@ -153,7 +152,45 @@
 | DealActivity delete/retention/audit, memo 통합, 공통 activity bus, 검색/filter, score, AI 자동 판단 | `PRE12-F39` |
 | backup/restore runbook/drill | `PRE12-F11` |
 
-## 7. 08 Global Data I18N에 직접 영향을 주는 기준
+## 7. 07 MeetingNote AI에 직접 영향을 주는 기준
+
+07에서 완료로 보는 범위:
+
+- MeetingNote AI/STT draft provider call log
+- 공통 `AiProviderCallLog`의 MeetingNote operation과 `targetType`/`targetId` 연결
+- `POST /api/meeting-notes/ai-draft`
+- `POST /api/meeting-notes/stt-draft`
+- `POST /api/meeting-notes/:meetingNoteId/next-actions/draft`
+- `POST /api/meeting-notes/:meetingNoteId/follow-up-draft`
+- User Web meeting note detail의 AI 후속 작업 section
+- STT transcript 임시 표시와 저장 request body 제외
+- next action 후보를 사용자가 확인한 뒤 기존 Deal following-action API로 저장
+- follow-up draft를 사용자가 수정/복사하는 흐름
+- provider raw, prompt, transcript 전문, follow-up body 전문 미저장 redaction 기준
+
+07 완료 범위로 다루면 안 되는 범위:
+
+- MeetingNote follow-up reminder source, scheduler, notification row 추가
+- MeetingNote follow-up 자동 발송 worker, 예약 발송, 자동 발송 toggle 추가
+- `GET /api/meeting-notes` `latestSummary`, `nextActionSummary` response field 추가
+- FE에서 API에 없는 MeetingNote list summary를 조합 표시
+- `MeetingNoteTranscript`, `MeetingNoteFollowUpDraft`, `MeetingNoteProviderCallLog`, `AiDataCleanupSuggestion` table 추가
+- transcript 원문, follow-up body 전체, provider raw response를 User Web 목록/상세에 장기 보관 상태로 표시
+- 11에서 닫힌 Admin provider failure 조회, raw access reason, audit/sensitive access log를 07 또는 PRE12에서 재구현
+- MeetingNote AI detail 후보를 자동 저장하거나 자동 Deal/Schedule/Contact/MeetingNote mutation으로 적용
+
+07 재대조에서 다시 발견됐지만 새 후보로 중복 생성하지 않는 항목:
+
+| 항목 | PRE12 후보 |
+| --- | --- |
+| 회의록 follow-up reminder | `PRE12-F02` |
+| MeetingNote follow-up 자동 발송 | `PRE12-F03` |
+| MeetingNote list latest/next summary | `PRE12-F08` |
+| AI data cleanup 저장/적용 | `PRE12-F14` |
+| transcript/raw provider response/follow-up draft 저장 | `PRE12-F15` |
+| MeetingNote Admin/internal provider audit 조회 | `PRE12-F16` 및 11 완료 문서 |
+
+## 8. 08 Global Data I18N에 직접 영향을 주는 기준
 
 08에서 완료로 보는 범위:
 
@@ -177,7 +214,7 @@
 - `/app` locale route prefix 추가
 - legacy static fallback 직접 keying, Settings OAuth 계정 라벨, bundle chunk 최적화를 08 blocker로 취급
 
-## 8. 기존 PRE12 후보와 연결되는 08 항목
+## 9. 기존 PRE12 후보와 연결되는 08 항목
 
 08 재대조에서 다시 발견됐지만 새 후보로 중복 생성하지 않는 항목:
 
@@ -188,7 +225,7 @@
 | billing/paywall/churn/paid conversion | `PRE12-F12` |
 | Import scale/source/Admin 확장 | `PRE12-F13` |
 
-## 9. 09 Product Analytics에 직접 영향을 주는 기준
+## 10. 09 Product Analytics에 직접 영향을 주는 기준
 
 09에서 완료로 보는 범위:
 
@@ -211,7 +248,7 @@
 - `AiUsageDaily`, `UsageMeter`, `BillingEvent`, `UserSubscription`, `ChurnSurveyResponse`를 09/PRE12에서 생성
 - PWA install/offline shell/full offline sync, iOS/Android native app, native push/contact/calendar, native install attribution을 09 완료 범위로 끼워 넣기
 
-## 10. 기존 PRE12 후보와 연결되는 09 항목
+## 11. 기존 PRE12 후보와 연결되는 09 항목
 
 09 재대조에서 다시 발견됐지만 기존 후보와 연결하거나 09 전용 새 후보로 분리하는 항목:
 
@@ -224,7 +261,7 @@
 | public site/UTM/ad attribution/growth experiment | `PRE12-F29` |
 | PWA/native packaging과 install attribution | `PRE12-F30` |
 
-## 11. 10 Mobile PWA Field Use에 직접 영향을 주는 기준
+## 12. 10 Mobile PWA Field Use에 직접 영향을 주는 기준
 
 10에서 완료로 보는 범위:
 
@@ -246,7 +283,7 @@
 - 10 FE/BE TODO 체크리스트 미체크를 근거로 기능을 재구현
 - stale FE architecture 문서에 맞추기 위해 `/app/notifications` route를 숨김 route로 되돌리기
 
-## 12. 11 Admin Operation에 직접 영향을 주는 기준
+## 13. 11 Admin Operation에 직접 영향을 주는 기준
 
 11에서 완료로 보는 범위:
 
@@ -273,7 +310,7 @@
 - 자동 민감정보 감지/DLP model 또는 processor 추가
 - billing/subscription/plan/payment/invoice/refund/failed payment recovery/Admin Billing 화면/API 추가
 
-## 13. 상태 분류 기준
+## 14. 상태 분류 기준
 
 | 상태 | 의미 |
 | --- | --- |
@@ -285,7 +322,7 @@
 | `Question` | 사용자의 제품 판단 또는 정책 결정이 필요한 항목 |
 | `defer` | 현재 의도적으로 미루는 항목 |
 
-## 14. 관련 문서
+## 15. 관련 문서
 
 - `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/02_NOTIFICATION_REMINDER/README.md`
 - `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/05_AI_WEEKLY_SALES_REPORT/COMMON/GOAL-COMPLETION-CHECKLIST.md`

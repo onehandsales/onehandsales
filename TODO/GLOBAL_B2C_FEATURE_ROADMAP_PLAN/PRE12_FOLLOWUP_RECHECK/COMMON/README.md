@@ -68,6 +68,8 @@
 
 06 재대조 기준으로 DealActivity model/repo/API, 자동 event, manual create/update, Deal list products/latestActivity, Contact dealCount, page size 15는 완료다. 삭제/보존/감사, memo 통합, 공통 activity bus, 검색/필터, score, AI 자동 판단, summary cache는 06 미완성이 아니라 `PRE12-F39` 후속 후보로 분리한다.
 
+07 재대조 기준으로 MeetingNote AI/STT provider log, detail next action draft, detail follow-up draft, User Web AI 후속 작업 section은 완료다. MeetingNote 목록 latest/next summary, follow-up reminder/자동 발송, AI data cleanup 저장/적용, transcript/raw/follow-up draft 저장은 07 미완성이 아니라 `PRE12-F02`/`PRE12-F03`/`PRE12-F08`/`PRE12-F14`/`PRE12-F15` 후속 후보로 분리하고, Admin provider audit/raw access는 11 완료 범위를 참조한다.
+
 05 재대조 기준으로 저장형 AI weekly report, 사용자 확인 기반 follow-up draft/send/retry/timeline, Gmail/Microsoft send adapter는 완료다. Gmail/Microsoft provider smoke는 운영 closeout만 남고, SMS 실제 provider, B2B sender/email sync/sequence/campaign/bulk/unsubscribe, 예약 발송/SMTP/HTML/첨부/tracking, 사용자 비용 노출, 영구 로그 legal deletion 정책은 05 미완성이 아니라 PRE12 후속 후보로 분리한다.
 
 08 재대조 기준으로 `/app` 기본 `ko-KR/en` i18n, User global settings, KR/US phone/region, KRW/USD currency, Import/Export localization, Google/LINE/Apple auth는 완료다. 시장/국가/auth 확장과 UX polish는 08 미완성이 아니라 PRE12 후속 후보 또는 post-12 seed로 분류한다.
