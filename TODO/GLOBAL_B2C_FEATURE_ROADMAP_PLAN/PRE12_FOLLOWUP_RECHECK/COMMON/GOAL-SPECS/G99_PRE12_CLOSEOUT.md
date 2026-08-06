@@ -10,6 +10,7 @@
 - G02~G04 후보가 구현 대상인지 보류 대상인지 분류 완료
 - G06의 06/NBA-003 defer 결정 closeout 완료
 - G07의 01 import scale/source/Admin 확장 defer 결정 closeout 완료
+- G08의 07 MeetingNote AI 후속 후보 defer 결정 closeout 완료
 
 ## 2. 포함 범위
 
@@ -31,3 +32,4 @@
 - 12 착수 전 구현 금지 항목이 명확히 남는다.
 - 기존 01~11 완료 폴더의 closeout 의미가 깨지지 않는다.
 - 06 후속 재검토 A 결정과 07~11 재대조 대상이 분리되어 남는다.
+- 07 MeetingNote AI 완료 범위와 07 밖의 follow-up/list summary/AI data cleanup/raw storage 후보가 분리되어 남는다.

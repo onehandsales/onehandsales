@@ -1,7 +1,7 @@
 # G00 Scope Classification
 
 상태: Ready
-목표: 12 전 후속 후보의 상태를 확정하고 06 작업에 적용할 경계를 다시 고정한다.
+목표: 12 전 후속 후보의 상태를 확정하고 06/07 작업 경계를 다시 고정한다.
 
 ## 1. 목적
 
@@ -9,12 +9,12 @@ G00은 구현 goal이 아니다. 문서와 실제 코드 상태를 다시 대조
 
 ## 2. 포함 범위
 
-- 01~06 재대조 결과 확인
+- 01~11 완료 슬롯 재대조 결과 확인
 - 01 Import scale/source/Admin 확장 후보 상태 확인
 - 06, 07 문서와 현재 코드 상태 확인
 - `NotificationSourceType`, `DealActivityType`, `DealActivitySourceType`, `AiProviderOperation` 상태 확인
 - 후보 matrix 갱신
-- 06 작업자가 바로 참고할 구현 금지 조건 보강
+- 06/07 후속 작업자가 바로 참고할 구현 금지 조건 보강
 
 ## 3. 제외 범위
 
@@ -28,7 +28,7 @@ G00은 구현 goal이 아니다. 문서와 실제 코드 상태를 다시 대조
 
 - `COMMON/CANDIDATE-MATRIX.md`의 모든 후보가 상태를 가진다.
 - `COMMON/API-SPEC/README.md`에 confirmed API가 없음을 유지하거나, confirmed로 올릴 후보가 있으면 별도 사용자 결정 근거가 기록된다.
-- 06에서 구현 가능한 범위와 금지 범위가 `README.md`, `SCOPE.md`, `BE-TODO/API-TODO.md`, `FE-TODO/USER-WEB-TODO.md`에 일관되게 남는다.
+- 06/07에서 구현 가능한 범위와 금지 범위가 `README.md`, `SCOPE.md`, `BE-TODO/API-TODO.md`, `FE-TODO/USER-WEB-TODO.md`에 일관되게 남는다.
 
 ## 5. 권장 확인 명령
 

@@ -3,7 +3,7 @@
 상태: Draft / 12 전 후속 범위 정리 / 구현 시작 금지
 작성일: 2026-08-06
 최종 업데이트: 2026-08-06
-성격: 01~11 완료 슬롯 재대조에서 나온 후속 후보를 06 후속 재검토 A 결정 및 07~11 재대조와 12 착수 전 결정에 연결하는 작업 폴더
+성격: 01~11 완료 슬롯 재대조에서 나온 후속 후보를 12 착수 전 결정에 연결하는 작업 폴더
 
 ## 1. 목적
 
@@ -17,9 +17,9 @@
 - 03에서 제외된 PDF, generic ExportJob, 반복 일정 정식 모델
 - 05에서 남은 Gmail/Microsoft provider smoke
 - 06에서 닫은 DealActivity 범위와 06 밖으로 남은 record summary 후보
-- 07에서 닫은 MeetingNote 상세 AI 후보와 07 밖으로 남은 목록 summary, 자동 발송, 알림 후보
+- 07에서 닫은 MeetingNote 상세 AI 후보와 07 밖으로 남은 목록 summary, 자동 발송, 알림, AI data cleanup, raw/transcript 저장 후보
 
-이 폴더는 13번 기능 폴더가 아니다. 12 전에 기존 완료 슬롯을 재대조하기 위한 보조 계획이며, 12 Billing 범위를 우회하는 구현 계획도 아니다.
+이 폴더는 13번 기능 폴더가 아니다. 12 전에 기존 완료 슬롯을 재대조하기 위한 보조 계획이며, 12 Billing 범위를 우회하는 구현 계획이 아니다.
 
 ## 2. 현재 결론
 
@@ -31,7 +31,7 @@
 | 04 Google Calendar | 완료 | read-only import/sync/source badge/Trash restore/provider smoke는 완료다. write, webhook, recurrence는 후속이다. |
 | 05 AI Weekly Sales Report | 구현 완료 / provider smoke pending | Gmail/Microsoft email adapter와 자동 검증은 완료됐다. 운영 credential/callback/allowlist 기반 실제 수신자 smoke는 남아 있다. |
 | 06 DealActivity | 완료 이력 유지 / A 결정 반영 | 06은 DealActivity timeline, Deal list latestActivity, products summary, Contact dealCount 범위를 넘기지 않고 완료로 유지한다. |
-| 07 MeetingNote AI | 완료 이력 유지 | 상세 next action/follow-up draft와 provider log는 완료다. 회의록 목록 summary, 자동 발송, 알림은 07 완료 범위가 아니다. |
+| 07 MeetingNote AI | 완료 이력 유지 | 상세 next action/follow-up draft와 provider log는 완료다. 회의록 목록 summary, 자동 발송, 알림, AI data cleanup, transcript/raw/follow-up draft 저장은 07 완료 범위가 아니다. |
 
 2026-08-06 사용자 결정 A에 따라 `NBA-003` 잔여인 Company/Contact/Product latest summary, generic summary endpoint, record별 상세 timeline은 12 전 계약화/구현 대상이 아니다. 이 후보들은 B2B 또는 team CRM 성격이 더 강한 post-12 전략 재검토 seed로 남기며, UX/UI 전체 polish도 지금 06 후속으로 하지 않고 별도 전면 유지보수 계획에서 다룬다.
 
@@ -50,12 +50,15 @@
 | 후보 | 기본 상태 | 다음 처리 |
 | --- | --- | --- |
 | 다음 행동 reminder | Question / 계약 필요 | G00에서 12 전 처리 여부를 결정한다. 결정 전 구현 금지. |
-| 회의록 follow-up reminder | post-12-seed | G00에서 상태를 재확인한다. 자동 발송과 함께 정책 결정이 필요하다. |
+| 회의록 follow-up reminder | post-12-seed | G03에서 상태를 재확인한다. 자동 발송과 함께 정책 결정이 필요하다. |
+| MeetingNote follow-up 자동 발송 | post-12-seed | G03에서 reminder와 분리한다. 명시적 사용자 확인 없는 발송은 구현 금지다. |
 | Gmail/Microsoft provider smoke | pre-12-follow-up-needed | G05에서 운영 credential/callback/allowlist 준비 후 실행 기록만 닫는다. 코드 구현 후보가 아니다. |
-| Company/Contact/Product latest summary | defer | 2026-08-06 A 결정으로 12 전 G04 계약화와 구현을 하지 않는다. 비고: post-12 B2B/team CRM strategy seed로 12 완료 후 Global B2C 지표와 B2B/team CRM 전략에서 재검토한다. |
+| Company/Contact/Product latest summary | defer | 2026-08-06 A 결정으로 12 전 G04 계약화와 구현을 하지 않는다. |
 | MeetingNote list latest/next summary | post-12-seed 또는 별도 MeetingNote list 후보 | 12 전 구현하지 않는다. 07 결과와 연결한 목록 summary 계약은 post-12 재검토에서 필요성이 확인될 때만 만든다. |
-| Import scale/source/Admin 확장 | post-12-seed | 대용량 import worker, 일정/회의록 import, ImportJob Admin 전용 화면/API는 01 미완성이 아니다. 12 완료 후 product scale/Admin ops/import source 전략에서 새 TODO 승격 여부를 판단한다. |
-| generic ExportJob/PDF/recurrence/Google write/watch | post-12-seed | 12 완료 후 최종 재검토에서 새 TODO로 승격할지 판단한다. 반복 일정은 03과 04 양쪽 제외 범위에 연결된다. |
+| AI data cleanup 제안 저장/적용 | post-12-seed / 별도 data quality 계획 | 07에서는 제외한다. 09 또는 별도 data quality 계획에서 권한, 적용, 감사 로그, rollback 기준을 정한 뒤 판단한다. |
+| transcript/raw provider response/follow-up draft 저장 | defer / 정책 필요 | retention, 삭제권, raw access audit, redaction 정책 없이는 구현하지 않는다. |
+| Import scale/source/Admin 확장 | post-12-seed | 대용량 import worker, 일정/회의록 import, ImportJob Admin 전용 화면/API는 01 미완성이 아니다. |
+| generic ExportJob/PDF/recurrence/Google write/watch | post-12-seed | 12 완료 후 최종 재검토에서 새 TODO로 승격할지 판단한다. |
 | billing/paywall/churn/paid conversion | billing-blocked | 12 전 임시 구현 금지. |
 
 ## 5. 문서 구조
@@ -82,6 +85,7 @@ PRE12_FOLLOWUP_RECHECK/
       G05_PROVIDER_SMOKE_CLOSEOUT.md
       G06_06_RECORD_SUMMARY_DEFER_CLOSEOUT.md
       G07_01_IMPORT_EXPANSION_DEFER_CLOSEOUT.md
+      G08_07_MEETING_NOTE_AI_FOLLOWUP_DEFER_CLOSEOUT.md
       G99_PRE12_CLOSEOUT.md
   BE-TODO/
     API-TODO.md
@@ -93,12 +97,13 @@ PRE12_FOLLOWUP_RECHECK/
 ## 6. 실행 원칙
 
 1. G00을 먼저 실행해 후보 상태를 확정한다.
-2. API/DB/FE 구현이 필요한 후보는 `COMMON/API-SPEC` 계약을 `confirmed`로 올린 뒤 별도 goal로 쪼갠다.
+2. API/DB/FE 구현이 필요한 후보는 `COMMON/API-SPEC` 계약이 `confirmed`로 오른 뒤 별도 goal로 쪼갠다.
 3. `draft` 또는 `Question` 상태의 후보는 controller, service, repository, Prisma schema, FE route로 구현하지 않는다.
 4. 06 작업 중 발견한 보정은 06 완료 범위를 넓히는 방식이 아니라 이 폴더의 후보 상태로 기록한다.
 5. billing/paywall/churn/paid conversion/invoice/tax와 연결된 항목은 12 전 구현하지 않는다.
-6. `NBA-003` 잔여 record summary는 2026-08-06 A 결정에 따라 12 전 API/DB/FE 계약화 대상으로 보지 않는다.
-7. G06은 06/NBA-003 defer 결정의 문서 closeout으로만 사용하고 구현 goal로 전환하지 않는다.
+6. `NBA-003` 잔여 record summary는 2026-08-06 A 결정에 따라 12 전 API/DB/FE 계약 대상으로 보지 않는다.
+7. G06, G07, G08은 문서 closeout으로만 사용하고 구현 goal로 전환하지 않는다.
+8. G08은 07 후속 후보를 PRE12 후보로 닫는 closeout이며, 07 폴더에 새 구현 goal을 만들지 않는다.
 
 ## 7. 먼저 읽을 문서
 

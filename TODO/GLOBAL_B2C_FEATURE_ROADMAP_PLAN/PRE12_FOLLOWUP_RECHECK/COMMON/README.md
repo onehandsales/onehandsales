@@ -7,7 +7,7 @@
 
 `COMMON`은 12 전 후속 후보 재대조에서 Frontend와 Backend가 함께 봐야 하는 범위, 후보 상태, goal 순서, 구현 금지 조건을 관리한다.
 
-이 계획은 곧바로 기능 구현을 시작하기 위한 문서가 아니다. 먼저 01~06에서 나온 후속 후보가 07 또는 post-12 후보로 남아야 하는지, 12 Billing과 충돌하는지 분류한다.
+이 계획은 곧바로 기능 구현을 시작하기 위한 문서가 아니다. 먼저 01~11 완료 슬롯 재대조에서 나온 후속 후보가 pre-12 closeout, post-12 seed, defer, billing-blocked 중 어디에 남아야 하는지 분류한다.
 
 ## 2. 문서 목록
 
@@ -18,6 +18,7 @@
 - `PLANNING-REVIEW.md`: 기획 검토 결과
 - `API-SPEC/README.md`: 현재 확정 API 없음, 후보 API 계약 상태
 - `GOAL-SPECS/README.md`: goal 상세 명세 목록
+- `GOAL-SPECS/G08_07_MEETING_NOTE_AI_FOLLOWUP_DEFER_CLOSEOUT.md`: 07 MeetingNote AI 후속 후보 closeout
 
 ## 3. 현재 구현 금지 기준
 
@@ -29,6 +30,8 @@
 - MeetingNote follow-up 자동 발송
 - Company/Contact/Product latest summary response field 추가
 - MeetingNote list latest/next summary response field 추가
+- AI data cleanup 제안 저장/적용 API 추가
+- MeetingNote transcript/raw provider response/follow-up draft 저장 table 또는 raw 조회 API 추가
 - 대용량 import worker, 일정/회의록 import, ImportJob Admin 전용 화면/API 추가
 - generic ExportJob, PDF, recurrence, Google Calendar write/watch
 - billing/paywall/churn/paid conversion runtime flow

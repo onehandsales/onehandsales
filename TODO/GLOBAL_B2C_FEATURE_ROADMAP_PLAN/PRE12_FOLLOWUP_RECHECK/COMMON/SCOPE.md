@@ -16,7 +16,7 @@
 | 01 Import 확장 후보 분리 | 대용량 import worker, 일정/회의록 import, ImportJob Admin 전용 화면/API가 01 미완성이 아니라 별도 post-12 seed임을 고정한다. |
 | 02 후속 후보 분리 | 다음 행동 알림과 회의록 후속 알림이 02 구현 범위가 아니었음을 고정한다. |
 | 06 작업 경계 설정 | DealActivity event와 실제 Notification reminder를 분리한다. |
-| 07 작업 경계 설정 | MeetingNote 상세 AI draft와 MeetingNote 목록 summary/자동 발송/알림을 분리한다. |
+| 07 작업 경계 설정 | MeetingNote 상세 AI draft와 MeetingNote 목록 summary/자동 발송/알림/AI data cleanup/raw 저장 후보를 분리한다. |
 | 후보 상태 분류 | `pre-12-follow-up-needed`, `post-12-seed`, `billing-blocked`, `Question`, `defer` 중 하나로 분류한다. |
 | 구현 전 계약 요구 | API/DB/FE 변경 후보는 API contract와 DB 영향 문서를 먼저 확정하도록 한다. |
 
@@ -32,6 +32,7 @@
 | 새 Prisma migration 즉시 작성 | 후보 계약이 확정되기 전에는 schema를 바꾸지 않는다. |
 | UX/UI 전체 polish | Product UX first-sale gate와 UX/UI 유지보수는 별도 흐름이다. |
 | Company/Contact/Product latest summary pre-12 계약화 | 2026-08-06 A 결정에 따라 `NBA-003` 잔여 record summary는 B2B/team CRM 성격이 강한 post-12 전략 후보로 둔다. |
+| 07 MeetingNote AI 구현 재개 | 07은 완료 슬롯이다. AI data cleanup, list summary, follow-up reminder/자동 발송, transcript/raw/follow-up draft 저장은 별도 후보로만 둔다. |
 
 ## 4. 06 작업에 직접 영향을 주는 기준
 
@@ -54,6 +55,8 @@
 - Company/Contact/Product latest summary response field 추가
 - MeetingNote list latest/next summary response field 추가
 - Company/Contact/Product summary 전용 endpoint 또는 record별 상세 activity timeline 추가
+- AI data cleanup 제안 저장/적용 API 추가
+- MeetingNote transcript/raw provider response/follow-up draft 저장 table 추가
 
 ## 5. 상태 분류 기준
 
