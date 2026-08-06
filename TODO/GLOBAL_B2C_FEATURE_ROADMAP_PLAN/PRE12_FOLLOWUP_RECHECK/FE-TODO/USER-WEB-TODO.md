@@ -21,6 +21,7 @@
 | Import | `/app/import` review/resume, row detail 만료 안내, 10MB/5,000행 제한 안내는 01 범위로 완료됐다. |
 | Global Data I18N | `/app` `ko-KR/en`, Settings global profile, Product/Deal currency, Contact KR/US phone, Company KR/US region/address, Import/Export localization, Google/LINE/Apple auth는 08 범위로 완료됐다. |
 | Product Analytics | User Web analytics helper, `/app` route view hook, mobile field-use client event, `VITE_PRODUCT_ANALYTICS_ENABLED` gate가 있다. analytics 실패는 사용자-facing UI로 표시하지 않는다. |
+| Mobile Field Use | BusinessCard capture/OCR safe failure, MeetingNote recording/STT fallback, FE local draft 24시간 TTL, `/app/notifications` browser push permission UX, mobile field analytics는 10 범위로 완료됐다. `/app/export`는 `/app`으로 redirect된다. |
 
 ## 3. 구현 금지
 
@@ -49,13 +50,18 @@ G00과 API contract 확정 전에는 아래 User Web 변경을 하지 않는다.
 - 외부 analytics provider SDK/script 삽입
 - public site/UTM/ad attribution, campaign attribution, experiment assignment UI 추가
 - billing/paywall/churn/AI quota 사용량 UI를 12 전 추가
-- PWA install/offline shell/native app/native install attribution UI 추가
+- PWA install/offline shell/full offline sync/native app/native push/contact/calendar/native install attribution UI 추가
+- `UserDraft`, server draft DB, audio/image binary, transcript/provider raw 저장 UX 추가
+- FE에 남은 `ExportScreen`/`/api/exports` 잔여 코드를 `/app/export` 활성 route로 연결
+- stale FE architecture 문서에 맞추기 위해 `/app/notifications`를 redirect로 되돌림
 
 2026-08-06 A 결정에 따라 Company/Contact/Product latest summary, generic summary endpoint, record별 상세 timeline은 12 전 User Web 작업으로 올리지 않는다. UX/UI 전체 polish는 별도 전면 유지보수 계획에서 다룬다.
 
 08 재대조 기준으로 `/app` 기본 Global Data I18N은 완료다. market locale 확장, country/currency/phone 확장, auth strategy 확장, Settings OAuth 계정 라벨과 bundle 최적화는 08 blocker가 아니다.
 
 09 재대조 기준으로 Product Analytics User Web foundation은 완료다. 신규 사용자-facing analytics 화면, external provider SDK, billing/paywall/churn UI, public attribution, PWA/native install flow는 09 미완성이 아니라 PRE12 후속 후보 또는 12 이후 계획으로 둔다.
+
+10 재대조 기준으로 Mobile Field Use User Web 범위는 완료다. `10/FE-TODO/USER-WEB-TODO.md`의 G03~G06 미체크는 기능 미구현이 아니라 문서 체크리스트 정리 대상이며, `FE/ARCHITECTURE.md`와 `FE/user-web/ARCHITECTURE.md`의 `/app/notifications` stale 설명은 실제 router 기준으로 정정한다.
 
 ## 4. 후보별 FE 영향
 
@@ -82,7 +88,10 @@ G00과 API contract 확정 전에는 아래 User Web 변경을 하지 않는다.
 | external analytics provider forwarding | FE SDK를 직접 넣을지, Backend forwarding만 사용할지, consent/banner/DNT 기준 결정 필요 | post-12-seed / growth/ops |
 | public/UTM attribution/growth experiment | public/auth route attribution, campaign parameter 보존, experiment assignment 표시/노출 기준 필요 | post-12-seed / growth/marketing |
 | AI usage billing source/paywall UI | 12의 plan/quota/paywall/upgrade contract와 API 필요 | billing-blocked |
-| PWA/native packaging과 attribution | install prompt, offline shell, native app deep link, install attribution UX 기준 필요 | post-12-seed / 별도 mobile roadmap |
+| PWA/native packaging과 attribution | install prompt, offline shell/full offline sync, native app deep link, native push/contact/calendar bridge, install attribution UX 기준 필요 | post-12-seed / 별도 mobile roadmap |
+| 10 FE/BE TODO 체크리스트 정합성 | 10 FE TODO의 G03~G06 체크박스를 실제 완료 상태와 맞추는 문서 정리 | pre-12-doc-cleanup |
+| User Web route/architecture 문서 정합성 | 실제 router 기준 `/app/notifications` 활성, `/app/export` redirect 상태를 architecture 문서에 반영 | pre-12-doc-cleanup |
+| FE generic ExportJob 잔여 코드 | `ExportScreen`, `/api/exports` client/hook/type을 post-12 전 dead code로 둘지 정리/주석화/삭제할지 판단 | post-12-seed |
 
 ## 5. UX 기준
 
@@ -97,6 +106,8 @@ G00과 API contract 확정 전에는 아래 User Web 변경을 하지 않는다.
 - analytics 실패는 사용자 작업을 막거나 toast/modal/banner로 노출하지 않는다.
 - external analytics SDK/script는 consent/privacy/DPA 기준 없이 User Web에 삽입하지 않는다.
 - account deletion 실제 처리와 billing/paywall/churn은 12/정책 결정 전 표시하지 않는다.
+- `/app/notifications`는 실제 구현된 route로 보고, stale 문서에 맞춰 숨기지 않는다.
+- `/app/export`는 post-12 ExportJob 계약 전까지 활성화하지 않는다.
 
 ## 6. 관련 문서
 

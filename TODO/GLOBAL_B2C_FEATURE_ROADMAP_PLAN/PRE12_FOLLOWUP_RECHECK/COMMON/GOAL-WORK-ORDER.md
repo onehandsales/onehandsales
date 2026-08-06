@@ -11,7 +11,7 @@
 
 | 순서 | Goal | 상태 | 목적 | 구현 가능 여부 |
 | ---: | --- | --- | --- | --- |
-| G00 | `G00_SCOPE_CLASSIFICATION` | Ready | 후보 상태를 확정하고 06 작업에 영향을 주는 경계를 다시 고정한다. | 문서/코드 검색만 가능 |
+| G00 | `G00_SCOPE_CLASSIFICATION` | Ready | 후보 상태를 확정하고 완료 슬롯에 영향을 주는 경계를 다시 고정한다. | 문서/코드 검색만 가능 |
 | G01 | `G01_06_SCOPE_GUARD_AND_CODE_AUDIT` | Pending | 06 완료 결과가 Notification/MeetingNote/Follow-up 범위를 잘못 넓히지 않았는지 확인한다. | 문서 보정 가능, 기능 구현 금지 |
 | G02 | `G02_NEXT_ACTION_REMINDER_CONTRACT` | Question | 다음 행동 reminder를 12 전에 할지, post-12 seed로 남길지 결정하고 계약 초안을 만든다. | 사용자 결정과 confirmed API 전 구현 금지 |
 | G03 | `G03_MEETING_NOTE_FOLLOW_UP_REMINDER_CONTRACT` | Question | 회의록 follow-up reminder와 자동 발송 후보를 분리한다. | 사용자 결정과 confirmed API 전 구현 금지 |
@@ -22,7 +22,8 @@
 | G08 | `G08_07_MEETING_NOTE_AI_FOLLOWUP_DEFER_CLOSEOUT` | Pending | 07 MeetingNote AI 후속 후보가 07 미완성이 아님을 닫고 PRE12 후보로 분류한다. | 문서 closeout만 가능 |
 | G09 | `G09_08_GLOBAL_DATA_I18N_FOLLOWUP_DEFER_CLOSEOUT` | Pending | 08 Global Data I18N 후속 후보가 08 미완성이 아님을 닫고 PRE12 후보로 분류한다. | 문서 closeout만 가능 |
 | G10 | `G10_09_PRODUCT_ANALYTICS_FOLLOWUP_DEFER_CLOSEOUT` | Pending | 09 Product Analytics 후속 후보가 09 미완성이 아님을 닫고 PRE12 후보로 분류한다. | 문서 closeout만 가능 |
-| G99 | `G99_PRE12_CLOSEOUT` | Pending | 06 후속 재검토 A 결정과 07~11 재대조 결과, 특히 08 Global Data I18N/09 Product Analytics 후속 분류를 상위 문서에 반영한다. | 문서 closeout 가능 |
+| G11 | `G11_10_MOBILE_PWA_FIELD_USE_FOLLOWUP_CLOSEOUT` | Pending | 10 Mobile PWA Field Use 후속 후보와 문서/코드 정합성 이슈가 10 미완성이 아님을 닫고 PRE12 후보로 분류한다. | 문서 closeout만 가능 |
+| G99 | `G99_PRE12_CLOSEOUT` | Pending | 06 후속 재검토 A 결정과 07~11 재대조 결과, 특히 08 Global Data I18N/09 Product Analytics/10 Mobile Field Use 후속 분류를 상위 문서에 반영한다. | 문서 closeout 가능 |
 
 ## 3. 선행 조건
 
@@ -40,6 +41,7 @@
 - G08은 구현 작업이 아니라 07 MeetingNote AI 후속 후보의 문서 closeout이다.
 - G09는 구현 작업이 아니라 08 Global Data I18N 후속 후보의 문서 closeout이다.
 - G10은 구현 작업이 아니라 09 Product Analytics 후속 후보의 문서 closeout이다.
+- G11은 구현 작업이 아니라 10 Mobile PWA Field Use 후속 후보와 문서/코드 정합성 이슈의 문서 closeout이다.
 - G99는 모든 선택된 pre-12 작업이 끝난 뒤 실행한다.
 
 ## 5. 관련 문서

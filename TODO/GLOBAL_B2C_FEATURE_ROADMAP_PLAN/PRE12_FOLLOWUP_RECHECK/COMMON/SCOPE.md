@@ -19,7 +19,8 @@
 | 07 작업 경계 설정 | MeetingNote 상세 AI draft와 MeetingNote 목록 summary/자동 발송/알림/AI data cleanup/raw 저장 후보를 분리한다. |
 | 08 작업 경계 설정 | `/app` 기본 i18n/global data/auth provider 완료 범위와 시장/국가/통화/auth 확장 후보를 분리한다. |
 | 09 작업 경계 설정 | Product Analytics foundation 완료 범위와 account deletion 실제 처리, 세부 event, 외부 provider, attribution/experiment, PWA/native 후보를 분리한다. |
-| 후보 상태 분류 | `pre-12-follow-up-needed`, `post-12-seed`, `billing-blocked`, `Question`, `defer` 중 하나로 분류한다. |
+| 10 작업 경계 설정 | mobile browser field-use 완료 범위와 PWA/offline/native, generic ExportJob, 문서 체크리스트/architecture 정합성 후보를 분리한다. |
+| 후보 상태 분류 | `done`, `pre-12-follow-up-needed`, `pre-12-doc-cleanup`, `post-12-seed`, `billing-blocked`, `Question`, `defer` 중 하나로 분류한다. |
 | 구현 전 계약 요구 | API/DB/FE 변경 후보는 API contract와 DB 영향 문서를 먼저 확정하도록 한다. |
 
 ## 3. 제외 범위
@@ -39,6 +40,8 @@
 | 07 MeetingNote AI 구현 재개 | 07은 완료 슬롯이다. AI data cleanup, list summary, follow-up reminder/자동 발송, transcript/raw/follow-up draft 저장은 별도 후보로만 둔다. |
 | 08 market/global expansion pre-12 구현 | `ja/zh-TW`, `zh-CN`, 전 세계 국가/통화/전화번호, USD minor unit, 상세 주소 검증, 신규 auth provider는 08 완료 범위를 넓히지 않는다. |
 | 09 analytics/growth/trust 확장 pre-12 구현 | account deletion 실제 job, 세부 event taxonomy, 외부 provider forwarding, public/UTM attribution, growth experiment, PWA/native attribution은 09 완료 범위를 넓히지 않는다. |
+| 10 Mobile PWA Field Use 구현 재개 | 10은 mobile browser field-use 기준으로 완료됐다. PWA/offline/native, server draft DB, media/raw 저장, `/app/export`/`/api/exports`는 10 완료 범위가 아니다. |
+| 10 mobile/PWA 확장 pre-12 구현 | PWA install/offline shell/full offline sync, native app, native push/contact/calendar, native install attribution은 10 완료 범위를 넓히지 않는다. |
 
 ## 4. 06 작업에 직접 영향을 주는 기준
 
@@ -120,7 +123,7 @@
 - public site route view, UTM/referrer/ad attribution, campaign attribution 추가
 - `ExperimentAssignment`, `/api/experiments/assignments` 같은 growth experiment model/API 추가
 - `AiUsageDaily`, `UsageMeter`, `BillingEvent`, `UserSubscription`, `ChurnSurveyResponse`를 09/PRE12에서 생성
-- PWA install/offline shell, iOS/Android native app, native install attribution을 09 완료 범위로 끼워 넣기
+- PWA install/offline shell/full offline sync, iOS/Android native app, native push/contact/calendar, native install attribution을 09 완료 범위로 끼워 넣기
 
 ## 8. 기존 PRE12 후보와 연결되는 09 항목
 
@@ -135,18 +138,41 @@
 | public site/UTM/ad attribution/growth experiment | `PRE12-F29` |
 | PWA/native packaging과 install attribution | `PRE12-F30` |
 
-## 9. 상태 분류 기준
+## 9. 10 Mobile PWA Field Use에 직접 영향을 주는 기준
+
+10에서 완료로 보는 범위:
+
+- BusinessCard mobile capture와 OCR safe failure 계약
+- MeetingNote mobile recording, audio file fallback, 기존 STT draft API 재사용
+- FE local draft 24시간 TTL, IndexedDB primary/localStorage fallback, restore/discard UX
+- Browser push permission UX와 기존 notification settings/subscription API 재사용
+- Mobile field-use analytics event와 payload privacy allowlist
+- `BusinessCardScanLog` safe failure field 외 10 범위 신규 DB model 미생성
+
+10 완료 범위로 다루면 안 되는 범위:
+
+- `UserDraft`, `/api/drafts/*`, server draft DB 추가
+- audio/image binary, transcript 전문, provider raw response 저장
+- PWA manifest, offline shell, full offline sync, cache strategy, workbox/vite-plugin-pwa 추가
+- iOS/Android native app, native push/contact/calendar bridge 추가
+- `/app/export` route 활성화
+- `/api/exports`, `ExportJob`, export file retention API/model 추가
+- 10 FE/BE TODO 체크리스트 미체크를 근거로 기능을 재구현
+- stale FE architecture 문서에 맞추기 위해 `/app/notifications` route를 숨김 route로 되돌리기
+
+## 10. 상태 분류 기준
 
 | 상태 | 의미 |
 | --- | --- |
 | `done` | 실제 구현과 QA가 이미 닫힌 항목 |
 | `pre-12-follow-up-needed` | 12 전 별도 goal로 처리할 수 있고, billing 결정과 직접 충돌하지 않는 항목 |
+| `pre-12-doc-cleanup` | 실제 기능 구현은 닫혔지만 문서 체크리스트, architecture 설명, dead-code 메모 같은 정합성 정리가 필요한 항목 |
 | `post-12-seed` | 12 이후 최종 재검토에서 새 TODO로 승격할지 판단할 항목 |
 | `billing-blocked` | 12 결정 없이는 구현 기준을 확정할 수 없는 항목 |
 | `Question` | 사용자의 제품 판단 또는 정책 결정이 필요한 항목 |
 | `defer` | 현재 의도적으로 미루는 항목 |
 
-## 10. 관련 문서
+## 11. 관련 문서
 
 - `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/02_NOTIFICATION_REMINDER/README.md`
 - `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/05_AI_WEEKLY_SALES_REPORT/COMMON/GOAL-COMPLETION-CHECKLIST.md`
@@ -161,3 +187,6 @@
 - `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/09_PRODUCT_ANALYTICS/COMMON/DECISION-LOG.md`
 - `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/10_MOBILE_PWA_FIELD_USE/COMMON/SOURCE-PLAN-COVERAGE.md`
 - `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/11_ADMIN_OPERATION/COMMON/SOURCE-PLAN-COVERAGE.md`
+- `FE/ARCHITECTURE.md`
+- `FE/user-web/ARCHITECTURE.md`
+- `FE/user-web/src/app/router/router.tsx`

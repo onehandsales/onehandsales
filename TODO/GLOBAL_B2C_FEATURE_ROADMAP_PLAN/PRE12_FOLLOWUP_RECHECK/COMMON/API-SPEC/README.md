@@ -34,7 +34,10 @@
 | external analytics provider forwarding | Backend provider forwarding adapter/outbox/retry 또는 FE SDK 삽입 방식 결정 | post-12-seed / growth/ops | 구현 금지 |
 | public site/UTM/ad attribution/growth experiment | public route event, attribution cookie/referrer policy, experiment assignment API | post-12-seed / growth/marketing | 구현 금지 |
 | AI usage billing source/paywall runtime | `AiUsageDaily` 또는 `UsageMeter`, plan/quota/paywall/upgrade event contract | billing-blocked | 12 전 구현 금지 |
-| PWA/native packaging과 install attribution | install/offline/native app install attribution API 필요 여부 결정 | post-12-seed / 별도 mobile roadmap | 구현 금지 |
+| PWA/native packaging과 install attribution | install/offline/full offline sync/native push/contact/calendar/native app install attribution API 필요 여부 결정 | post-12-seed / 별도 mobile roadmap | 구현 금지 |
+| 10 FE/BE TODO 체크리스트 정합성 | 새 API 없음. 완료 체크리스트 문서 정리만 대상 | pre-12-doc-cleanup | API 구현 대상 아님 |
+| User Web route/architecture 문서 정합성 | 새 API 없음. 실제 route 기준 문서 정리만 대상 | pre-12-doc-cleanup | API 구현 대상 아님 |
+| generic ExportJob/PDF | `/api/exports`, `ExportJob`, export file TTL/ownership/audit contract | post-12-seed | 12 전 구현 금지 |
 
 ## 3. API 계약을 만들 때 필수로 채울 항목
 

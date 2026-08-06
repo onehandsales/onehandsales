@@ -29,6 +29,7 @@
 | Major | Candidate Matrix | 다음 행동 reminder와 회의록 follow-up reminder는 제품 정책 결정이 필요하다. | 06 작업 범위가 커질 수 있다. | 06에서는 DealActivity event까지만 다루고 알림은 G02/G03에서 별도 결정한다. |
 | Minor | 08 Global Data I18N | `/app` locale, 국가/통화/전화번호, 금액 정밀도, 주소/세금/약관, auth provider 확장 후보가 08 완료 범위와 섞일 수 있다. | 08을 불필요하게 재오픈하거나 12 Billing 전제 작업을 앞당길 수 있다. | G09에서 `PRE12-F17`~`PRE12-F25`로 분리하고, market/auth/billing 정책 결정 전에는 구현 goal로 승격하지 않는다. |
 | Minor | 09 Product Analytics | account deletion 실제 처리, 세부 event, external provider, UTM/experiment, PWA/native attribution 후보가 09 완료 범위와 섞일 수 있다. | 09를 불필요하게 재오픈하거나 12 Billing/marketing/trust 정책을 앞당길 수 있다. | G10에서 `PRE12-F26`~`PRE12-F30`로 분리하고, 12/정책/analytics taxonomy 결정 전에는 구현 goal로 승격하지 않는다. |
+| Minor | 10 Mobile PWA Field Use | 10 FE/BE TODO 체크리스트 미체크, FE generic ExportJob 잔여 코드, FE architecture stale route 설명이 10 미완성으로 오해될 수 있다. | 10을 불필요하게 재오픈하거나 `/app/export`/`/api/exports`, PWA/offline/native를 12 전 구현할 위험이 있다. | G11에서 `PRE12-F09`, `PRE12-F30`, `PRE12-F31`, `PRE12-F32`로 분리하고, 문서 정리 외 기능 구현은 금지한다. |
 | Minor | 상위 문서 | 이 새 폴더를 상위 roadmap에 연결해야 한다. | 다음 작업자가 폴더를 놓칠 수 있다. | G99 또는 현재 문서 작성 작업에서 상위 README/overview를 갱신한다. |
 
 ## 4. 구현 가능 여부
@@ -42,6 +43,8 @@
   - FE 표시 위치와 상태 정의
   - 08 후속 후보의 market/auth/billing 정책 결정
   - 09 후속 후보의 privacy/trust/analytics taxonomy/growth/billing/mobile roadmap 결정
+  - 10 후속 후보의 PWA/offline/native mobile roadmap 결정
+  - 10 문서 체크리스트와 FE architecture route 설명의 정합성 정리
 
 ## 5. 관련 문서
 

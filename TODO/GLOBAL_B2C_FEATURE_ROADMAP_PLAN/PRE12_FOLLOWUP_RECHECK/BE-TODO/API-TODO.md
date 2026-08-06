@@ -20,6 +20,7 @@
 | MeetingNote raw storage | transcript/raw provider response/follow-up draft body 전용 저장 API나 table은 없다. 07은 safe metadata log만 남긴다. |
 | Global Data I18N | User global settings, Product/Deal currency, Contact KR/US phone, Company KR/US region/address, Import/Export localization, Google/LINE/Apple auth는 08에서 완료됐다. |
 | Product Analytics | `POST /api/analytics/events`, server-side recorder, activation/retention snapshot, AI usage summary, 10 mobile field-use event, 11 Admin analytics overview가 있다. 09는 외부 provider, billing runtime, public attribution, experiment, account deletion 실제 job을 만들지 않았다. |
+| Mobile Field Use | BusinessCard OCR safe failure, 기존 MeetingNote STT draft, 기존 Notification browser push subscription API, 09 analytics collector 재사용으로 10 범위가 완료됐다. 10은 `UserDraft`, `/api/drafts/*`, media/raw 저장 API, PWA/native API, `/api/exports`를 만들지 않았다. |
 
 ## 3. 구현 금지
 
@@ -49,13 +50,18 @@ G00과 API contract 확정 전에는 아래 Backend 변경을 하지 않는다.
 - 외부 analytics provider forwarding API/adapter/worker 추가
 - public site/UTM/ad attribution API 또는 `/api/experiments/assignments` 추가
 - `AiUsageDaily`/`UsageMeter` 기반 billing usage API 추가
-- PWA install/offline shell/native app/native install attribution API 추가
+- PWA install/offline shell/full offline sync/native app/native push/contact/calendar/native install attribution API 추가
+- `UserDraft`, `/api/drafts/*`, server draft DB API 추가
+- audio/image binary, transcript 전문, provider raw response 저장/조회 API 추가
+- `/api/exports`, `ExportJob` API를 10/PRE12 후속처럼 추가
 
 2026-08-06 A 결정에 따라 Company/Contact/Product latest summary, generic summary endpoint, record별 상세 timeline은 12 전 API contract 확정 대상으로 올리지 않는다.
 
 08 재대조 기준으로 Google/LINE/Apple 외 provider, `/app` locale prefix, 추가 국가/통화/전화번호 포맷은 새 계약 없이 확장하지 않는다. 국가별 tax/terms/pricing과 amount precision은 12 Billing 결정 전 Backend API 작업으로 올리지 않는다.
 
 09 재대조 기준으로 Product Analytics foundation은 완료다. account deletion 실제 처리, Notification/Calendar/follow-up 세부 analytics event, 외부 provider forwarding, public/UTM attribution, growth experiment, billing usage source-of-truth, PWA/native attribution은 09 미완성이 아니라 PRE12 후속 후보 또는 12 이후 계획으로 둔다.
+
+10 재대조 기준으로 Mobile Field Use Backend/API 범위는 완료다. `10/BE-TODO/API-TODO.md`의 G03/G05/G06 미체크는 기능 미구현이 아니라 문서 체크리스트 정리 대상이다. `/api/exports`와 `ExportJob`은 03/11 후속 `PRE12-F09`로만 본다.
 
 ## 4. 후보별 Backend 영향
 
@@ -80,7 +86,9 @@ G00과 API contract 확정 전에는 아래 Backend 변경을 하지 않는다.
 | external analytics provider forwarding | provider port/adapter, retry/dead-letter, consent/DPA, redaction, failure isolation 기준 필요 | post-12-seed / growth/ops |
 | public/UTM attribution/growth experiment | public route event collector, attribution cookie/referrer policy, experiment assignment API 기준 필요 | post-12-seed / growth/marketing |
 | AI usage billing source | `AiProviderCallLog` summary와 `AiUsageDaily`/`UsageMeter` 중 billing source-of-truth 결정 필요 | billing-blocked |
-| PWA/native packaging과 attribution | manifest/install/offline/native app install attribution API 필요 여부 결정 | post-12-seed / 별도 mobile roadmap |
+| PWA/native packaging과 attribution | manifest/install/offline/full offline sync/native push/contact/calendar/native app install attribution API 필요 여부 결정 | post-12-seed / 별도 mobile roadmap |
+| 10 FE/BE TODO 체크리스트 정합성 | 10 BE TODO의 G03/G05/G06 체크박스를 실제 완료 상태와 맞추는 문서 정리. 새 API 없음 | pre-12-doc-cleanup |
+| generic ExportJob/PDF | BE `ExportJob`/`/api/exports`는 현재 없음. FE 잔여 코드가 있어도 post-12 전 API를 열지 않음 | post-12-seed |
 
 ## 5. 권장 검색 명령
 

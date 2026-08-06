@@ -34,7 +34,7 @@
 | AI usage | 09는 `AiProviderCallLog` 기반 Admin 참고용 AI usage summary를 만든다. `AiUsageDaily`와 `UsageMeter`는 없다. |
 | billing reserved | paywall/trial/coupon/referral/subscription/churn event name은 reserved taxonomy에만 있고 runtime allowlist로 발생하지 않는다. |
 | Admin analytics | 11에서 `/admin/api/analytics/overview`와 Admin Web `/analytics` overview가 구현됐다. billing/subscription 지표는 표시하지 않는다. |
-| mobile field-use | 10에서 business card capture, meeting note recording, browser push permission 같은 mobile field-use event를 추가했다. PWA install/offline shell/native app은 후속이다. |
+| mobile field-use | 10에서 business card capture, meeting note recording, browser push permission 같은 mobile field-use event를 추가했다. PWA install/offline shell/full offline sync/native app/native push/contact/calendar는 후속이다. |
 
 ## 3. PRE12 후보 분류
 
@@ -45,7 +45,7 @@
 | Product analytics 세부 event 확장 | `PRE12-F27` | post-12-seed / 별도 analytics 계획 | Notification delivery/click/reach, Google Calendar sync detail, AI weekly/follow-up delivery detail event는 09 최소 taxonomy 밖이다. |
 | 외부 analytics provider forwarding | `PRE12-F28` | post-12-seed / growth/ops | 자체 DB 정본을 유지한다. Segment/PostHog/Mixpanel/GA류 provider port/adapter/runtime call은 09 대상이 아니다. |
 | public site/UTM/ad attribution/growth experiment | `PRE12-F29` | post-12-seed / growth/marketing | 09는 core `/app` route view만 수집했다. public route, UTM/referrer/ad attribution, `ExperimentAssignment`는 후속이다. |
-| PWA/native packaging과 install attribution | `PRE12-F30` | post-12-seed / 별도 mobile roadmap | 10은 mobile browser field-use까지 완료했다. PWA install/offline shell, iOS/Android native app, native install attribution은 후속이다. |
+| PWA/native packaging과 install attribution | `PRE12-F30` | post-12-seed / 별도 mobile roadmap | 10은 mobile browser field-use까지 완료했다. PWA install/offline shell/full offline sync, iOS/Android native app, native push/contact/calendar, native install attribution은 후속이다. |
 
 ## 4. 기존/신규 PRE12 후보로 연결할 항목
 
@@ -72,7 +72,7 @@
 - public site/UTM/referrer/ad attribution 수집 추가
 - account deletion 실제 hard delete/anonymization processor 추가
 - session revoke/access block/deletion-complete UX를 정책 없이 추가
-- PWA install/offline shell, iOS/Android native app, native install attribution 추가
+- PWA install/offline shell/full offline sync, iOS/Android native app, native push/contact/calendar, native install attribution 추가
 
 ## 6. 코드 재대조 기준
 

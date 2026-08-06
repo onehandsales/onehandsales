@@ -20,7 +20,7 @@
 | PRE12-F06 | B2B sender/email sync/sequence/campaign | 05 G10 제외 | G10은 Gmail/Microsoft send adapter만 닫는다. | post-12-seed | Growth/B2B 정책 후 별도 계획. |
 | PRE12-F07 | Company/Contact/Product latest summary | NBA-003 잔여, 06 제외 | 06은 Deal list `latestActivity`만 완료했다. 2026-08-06 A 결정으로 06 완료 범위를 재오픈하지 않는다. | defer | 12 전 G04 계약화와 구현은 하지 않는다. post-12 B2B/team CRM strategy seed로 재검토한다. |
 | PRE12-F08 | MeetingNote list latest/next summary | NBA-004 잔여, 07 제외 | 07은 상세 next action/follow-up draft만 완료했다. list response에는 `latestSummary`, `nextActionSummary`가 없다. | post-12-seed | 12 전 구현하지 않는다. raw text 제외 계약은 post-12 필요성이 확인될 때만 만든다. |
-| PRE12-F09 | generic ExportJob/PDF | 03/11 후속 | 03은 sync Excel만 완료했고 generic ExportJob/PDF는 제외됐다. | post-12-seed | Trust/policy, file TTL, audit, Admin queue와 함께 재검토. |
+| PRE12-F09 | generic ExportJob/PDF | 03/11 후속, 10 재대조 | 03은 sync Excel만 완료했고 generic ExportJob/PDF는 제외됐다. 실제 BE `ExportJob`/`/api/exports` 구현은 없고 `/app/export`는 `/app`으로 redirect된다. 다만 FE에는 `ExportScreen`, `/api/exports` client/hook/type 잔여 코드가 남아 있다. | post-12-seed | Trust/policy, file TTL, audit, Admin queue와 함께 재검토. post-12 전에는 FE 잔여 코드를 활성 route/API로 연결하지 않는다. |
 | PRE12-F10 | Google Calendar write/watch/recurrence | 03/04 후속 | 04는 read-only import/sync만 완료했다. write, webhook, recurrence는 제외됐다. | post-12-seed | Calendar 정책과 conflict resolution 결정 필요. |
 | PRE12-F11 | backup/restore runbook/drill | NBA-014/data reliability | 11 Admin system gate는 운영 결과 기록이지 shell 실행/운영 drill runbook이 아니다. | post-12-seed | 운영 절차 문서로 승격할지 재검토. |
 | PRE12-F12 | billing/paywall/churn/paid conversion/AI usage billing source | 09/11/12 연결 | 09는 reserved taxonomy와 Admin 참고용 AI usage summary만 완료했다. `AiUsageDaily`, `UsageMeter`, `BillingEvent`, `UserSubscription`, `ChurnSurveyResponse`는 만들지 않았고 11도 billing 지표를 표시하지 않는다. | billing-blocked | 12 전 구현 금지. 12에서 09 reserved taxonomy와 AI usage billing source-of-truth를 다시 sync한다. |
@@ -41,7 +41,9 @@
 | PRE12-F27 | Product analytics 세부 event 확장 | 09 Decision Log, 10/11/12 연결 | 09 runtime taxonomy는 최소 core event와 10 mobile field-use event까지다. Notification delivery/click/reach, Google Calendar sync detail, AI weekly/follow-up delivery detail event는 runtime allowlist에 없다. | post-12-seed / 별도 analytics 계획 | 02/04/05/10/11/12 완료 의미를 침범하지 않고 별도 analytics event taxonomy 계약에서만 추가한다. |
 | PRE12-F28 | 외부 analytics provider forwarding | 09 Scope/Decision | 현재 source-of-truth는 자체 DB `ProductAnalyticsEvent`다. Segment/PostHog/Mixpanel/GA forwarding port, adapter, runtime call은 구현돼 있지 않다. | post-12-seed / growth/ops | 12 이후 growth/ops 요구와 privacy/DPA 기준이 확인될 때 provider adapter 계획으로 승격한다. 자체 DB 정본은 유지한다. |
 | PRE12-F29 | public site/UTM/ad attribution/growth experiment | 09/10/NEXT/USER_WEB gap | 09는 core `/app` route view만 수집하고 public site, UTM, ad attribution을 제외했다. `ExperimentAssignment`와 `/api/experiments/assignments`도 만들지 않았다. | post-12-seed / growth/marketing | marketing attribution, experiment assignment model/API, public route analytics는 별도 growth 계획에서 다룬다. |
-| PRE12-F30 | PWA/native packaging과 install attribution | 09 후속, 10 완료/제외 | 10은 모바일 브라우저 field-use event와 UX를 완료했지만 PWA install/offline shell, iOS/Android native app, native install attribution은 완료 범위가 아니었다. | post-12-seed / 별도 mobile roadmap | 10을 재오픈하지 않고 mobile roadmap에서 PWA/offline/native packaging과 install attribution 계약을 만든다. |
+| PRE12-F30 | PWA/native packaging과 install attribution | 09 후속, 10 완료/제외 | 10은 모바일 브라우저 field-use event와 UX를 완료했지만 PWA install/offline shell/full offline sync, iOS/Android native app, native push/contact/calendar, native install attribution은 완료 범위가 아니었다. | post-12-seed / 별도 mobile roadmap | 10을 재오픈하지 않고 mobile roadmap에서 PWA/offline/native packaging, native bridge, install attribution 계약을 만든다. |
+| PRE12-F31 | 10 Mobile Field Use 문서 체크리스트 정합성 | 10 재대조 | 10 `README`, `GOAL-COMPLETION-CHECKLIST`, G07 closeout과 실제 BE/FE 코드는 완료를 가리킨다. 하지만 `10/FE-TODO/USER-WEB-TODO.md`의 G03~G06과 `10/BE-TODO/API-TODO.md`의 G03/G05/G06 구현 체크박스가 미완료로 남아 있다. | pre-12-doc-cleanup | 10을 기능 미완성으로 재오픈하지 않는다. 문서 체크리스트만 실제 완료 상태와 맞춘다. |
+| PRE12-F32 | User Web route/architecture 문서 정합성 | 10 재대조, 실제 FE router | 실제 `FE/user-web/src/app/router/router.tsx`에는 `/app/notifications` route가 활성이고 `/app/export`만 `/app`으로 redirect된다. `FE/ARCHITECTURE.md`와 `FE/user-web/ARCHITECTURE.md`는 `/app/notifications`도 redirect라고 적고 있어 stale이다. | pre-12-doc-cleanup | 실제 route 기준으로 architecture 문서를 정정한다. 문서에 맞추기 위해 `/app/notifications`를 숨기지 않는다. |
 
 ## 3. 06과 직접 충돌하는 후보
 
@@ -89,9 +91,21 @@
 | 세부 analytics event | 09 core events, 10 mobile field-use, 11 Admin overview | Notification/Calendar/follow-up click/reach/sync/detail event를 몰래 runtime allowlist에 추가 |
 | external provider | 자체 DB `ProductAnalyticsEvent` source of truth | provider forwarding port/adapter/runtime call 추가 |
 | attribution/experiment | core `/app` routeKey와 billing reserved taxonomy | public route/UTM/ad attribution/experiment assignment API/model 추가 |
-| PWA/native attribution | mobile browser field-use events | PWA install/offline/native app/native install attribution을 09 완료 범위로 끼워 넣기 |
+| PWA/native attribution | mobile browser field-use events | PWA install/offline/full offline sync/native app/native push/contact/calendar/native install attribution을 09 완료 범위로 끼워 넣기 |
 
-## 7. 관련 문서
+## 7. 10과 직접 충돌하는 후보
+
+아래 후보는 10 Mobile PWA Field Use 완료 범위를 넓히지 않고 PRE12 후보 또는 문서 정리 후보로만 남긴다.
+
+| 후보 | 10에서 완료된 것 | 10/PRE12에서 금지 |
+| --- | --- | --- |
+| PWA/native packaging | mobile browser field-use, browser push permission UX, mobile field analytics | manifest/offline shell/full offline sync/native app/native push/contact/calendar bridge를 10 완료 범위로 끼워 넣기 |
+| server draft/media/raw 저장 | FE local draft 24시간 TTL, server draft DB 미생성, media/raw 저장 금지 | `UserDraft`, `/api/drafts/*`, audio/image binary, transcript 전문, provider raw 저장 추가 |
+| generic ExportJob/PDF | `/app/export` redirect 유지, BE `ExportJob`/`/api/exports` 미구현 | FE 잔여 `ExportScreen`을 route/API에 연결하거나 BE `ExportJob`을 10 후속처럼 구현 |
+| 10 문서 체크리스트 | 10 README/G07 closeout/코드 기준 완료 | FE/BE TODO 미체크를 근거로 10 기능을 재구현 |
+| User Web route architecture | 실제 `/app/notifications` 활성, `/app/export` redirect | stale architecture 문서에 맞추기 위해 `/app/notifications`를 숨김 route로 되돌리기 |
+
+## 8. 관련 문서
 
 - `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/COMMON/COVERAGE-MATRIX.md`
 - `TODO/NEXT_BACKEND_API_BACKLOG_PLAN/README.md`
@@ -103,3 +117,6 @@
 - `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/09_PRODUCT_ANALYTICS/COMMON/DECISION-LOG.md`
 - `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/10_MOBILE_PWA_FIELD_USE/COMMON/SOURCE-PLAN-COVERAGE.md`
 - `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/11_ADMIN_OPERATION/COMMON/SOURCE-PLAN-COVERAGE.md`
+- `FE/ARCHITECTURE.md`
+- `FE/user-web/ARCHITECTURE.md`
+- `FE/user-web/src/app/router/router.tsx`

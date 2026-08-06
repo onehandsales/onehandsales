@@ -29,6 +29,9 @@
 | `ProductAnalyticsEvent`, `UserActivationSnapshot`, `RetentionCohortSnapshot` | 09에서 analytics 정본, activation/retention snapshot, raw event retention 기준으로 완료됐다. |
 | `AccountDeletionRequest`, `UserDataExportRequest` | 11에서 계정 삭제 요청/취소/Admin queue와 데이터 export request workflow로 완료됐다. 실제 계정 hard delete/anonymization processor는 없다. |
 | `AiUsageDaily`, `UsageMeter`, `BillingEvent`, `UserSubscription`, `ChurnSurveyResponse`, `ExperimentAssignment` | 현재 schema에 없다. 09에서는 만들지 않았고 12 또는 12 이후 후보로 남긴다. |
+| `BusinessCardScanLog.safeErrorCode/safeErrorMessage/retryable` | 10에서 BusinessCard OCR safe failure 계약으로 완료됐다. 10 범위 신규 DB model은 이것 외에 없다. |
+| `UserDraft`, server draft DB, media/raw 저장 table | 현재 schema에 없다. 10 local draft는 FE storage 기준이며 audio/image binary, transcript 전문, provider raw response를 DB에 저장하지 않는다. |
+| `ExportJob` | 현재 schema에 없다. 03/11 후속 `PRE12-F09`로만 본다. FE 잔여 코드가 있어도 10 또는 PRE12에서 migration을 만들지 않는다. |
 
 ## 3. 새 migration 금지 기준
 
@@ -57,13 +60,17 @@
 - external analytics provider forwarding outbox/dead-letter table
 - public/UTM/ad attribution과 growth experiment assignment 저장 모델
 - `AiUsageDaily`, `UsageMeter`, `BillingEvent`, `UserSubscription`, `ChurnSurveyResponse`
-- PWA install/offline shell/native app/native install attribution 저장 모델
+- PWA install/offline shell/full offline sync/native app/native push/contact/calendar/native install attribution 저장 모델
+- `UserDraft`, server draft DB, audio/image binary, transcript 전문, provider raw response 저장 table
+- `ExportJob`, export file retention, `/api/exports` 전용 저장 모델
 
 2026-08-06 A 결정으로 Company/Contact/Product latest summary와 generic summary endpoint는 12 전 DB 설계 후보로 승격하지 않는다.
 
 08 재대조 기준으로 global data/i18n의 1차 schema는 완료다. 추가 country/currency/phone/auth provider/money/address 변경은 08 미완성이 아니라 post-12 또는 12 Billing 정책 이후의 별도 migration 후보로 둔다.
 
 09 재대조 기준으로 analytics 1차 schema는 완료다. `ProductAnalyticsEvent`와 snapshot model을 재오픈하지 않고, account deletion 실제 처리, 세부 event taxonomy, provider forwarding, attribution/experiment, billing usage source, PWA/native attribution은 별도 migration 후보로만 둔다.
+
+10 재대조 기준으로 Mobile Field Use의 DB 영향은 BusinessCard safe failure field까지로 닫혔다. `UserDraft`, server draft DB, media/raw 저장 table, PWA/native attribution table, `ExportJob`은 10 미완성이 아니라 별도 후속 후보로만 둔다.
 
 ## 4. 후보별 DB 영향
 
@@ -89,7 +96,9 @@
 | external analytics provider forwarding | provider delivery outbox, retry/dead-letter, consent snapshot 저장 필요 여부 결정 | post-12 seed / growth/ops |
 | public/UTM attribution/growth experiment | attribution touchpoint, campaign/referrer, `ExperimentAssignment` 저장 모델 필요 여부 결정 | post-12 seed / growth/marketing |
 | AI usage billing source | `AiUsageDaily`와 `UsageMeter` 중 billing source-of-truth 결정. `AiProviderCallLog`는 09 Admin 참고용 summary source다 | billing-blocked |
-| PWA/native packaging과 attribution | install attribution, offline sync metadata, native device/app install event 저장 필요 여부 결정 | post-12 seed / 별도 mobile roadmap |
+| PWA/native packaging과 attribution | install attribution, full offline sync metadata, native device/push/contact/calendar/app install event 저장 필요 여부 결정 | post-12 seed / 별도 mobile roadmap |
+| 10 FE/BE TODO 체크리스트 정합성 | DB 변경 없음. 문서 체크리스트 정리만 대상 | pre-12-doc-cleanup |
+| generic ExportJob/PDF | `ExportJob`, file TTL, audit, ownership, deletion policy가 필요하지만 post-12 전 migration 금지 | post-12 seed |
 
 ## 5. DB/Prisma gate
 
