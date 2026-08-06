@@ -18,6 +18,7 @@
 | Admin API client | `FE/admin-web/src/lib/admin-api-client.ts`는 `/admin/api${path}`를 호출한다. |
 | Smoke E2E | `FE/admin-web/tests/e2e/admin-web-smoke.spec.ts`는 11 Admin 운영 route와 mock API를 검증한다. |
 | Architecture 문서 | `FE/admin-web/ARCHITECTURE.md`는 실제 route/API 구현 전 상태 설명이 남아 있어 stale이다. |
+| Legacy admin-query | `FE/admin-web/src/features/admin-query`, `pages/dashboard`, `pages/organizations`에는 현재 router/API 계약과 맞지 않는 legacy 잔여 코드가 있다. `/dashboard`는 route로 열려 있지 않고 `/organizations`는 redirect이므로 11 미완성으로 보지 않는다. |
 
 ## 3. 구현 금지
 
@@ -25,6 +26,7 @@ G12 closeout과 별도 Admin Web contract 확정 전에는 아래 변경을 하�
 
 - stale architecture 문서에 맞추기 위해 실제 Admin route를 redirect로 되돌림
 - `subscriptions` placeholder를 활성 Billing Admin 화면으로 연결
+- legacy `admin-query`의 `/dashboard`, `/sensitive/raw`, domain별 API path를 현재 계약 없이 활성 route에 연결
 - Admin 직접 Trash 복구 실행 버튼 추가
 - 유료 복구 결제 버튼, refund/invoice/payment action 추가
 - Trash hard delete/purge 버튼 추가
@@ -37,7 +39,7 @@ G12 closeout과 별도 Admin Web contract 확정 전에는 아래 변경을 하�
 | 후보 | 예상 FE 영향 | 현재 상태 |
 | --- | --- | --- |
 | 11 Admin 문서 체크리스트 정합성 | 11 `FE-TODO/ADMIN-WEB-TODO.md`와 goal checklist를 실제 route/API 완료 상태와 맞추는 문서 정리. 새 화면 없음 | pre-12-doc-cleanup |
-| Admin Web architecture 문서 정합성 | `FE/admin-web/ARCHITECTURE.md`의 route/API 설명을 실제 router와 feature-first 구조 기준으로 정정 | pre-12-doc-cleanup |
+| Admin Web architecture/legacy route 정합성 | `FE/admin-web/ARCHITECTURE.md`의 route/API 설명과 비활성 legacy `admin-query` 잔여 코드를 실제 router와 feature-first 구조 기준으로 정리 | pre-12-doc-cleanup |
 | Admin 직접 Trash 복구/유료 복구/hard delete/purge | recovery request detail, 실행 confirmation, billing/payment 연결, audit/result 표시 기준 필요 | Question / 정책 및 billing 필요 |
 | User data export artifact/download | Admin queue에서 artifact 상태, 만료, failed reason, download 가능 여부 표시 기준 필요. 실제 download는 User/export contract와 연결 | post-12-seed / `PRE12-F09` 연결 |
 | 자동 민감정보 감지 | scan result, confidence, override, audit trail 화면 필요 여부 결정 | defer / 정책 필요 |
@@ -49,6 +51,7 @@ G12 closeout과 별도 Admin Web contract 확정 전에는 아래 변경을 하�
 - masked/safe summary로 충분한 화면에 raw field를 추가하지 않는다.
 - `/subscriptions` redirect는 12 Billing 전에는 유지한다.
 - architecture 문서가 stale이면 문서를 고치고 route를 되돌리지 않는다.
+- legacy `admin-query` 잔여 코드는 실제 11 API 계약 기준으로 정리하고, 오래된 API path를 다시 열지 않는다.
 
 ## 6. 관련 문서
 

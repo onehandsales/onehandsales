@@ -9,7 +9,7 @@
 
 이 폴더는 `GLOBAL_B2C_FEATURE_ROADMAP_PLAN`의 기존 01~11 완료 의미를 깨지 않으면서, 12 착수 전에 다시 확인해야 하는 후속 후보를 한곳에 묶는다.
 
-현재 문서는 01~11 재대조와 06 후속 재검토 A 결정, 07 MeetingNote AI 후속 후보 재대조, 08 Global Data I18N 후속 후보 재대조, 09 Product Analytics 후속 후보 재대조, 10 Mobile Field Use 후속 후보 closeout, 11 Admin Operation 문서/코드 정합성 재검토를 반영했다. 따라서 이 문서는 특히 01, 02, 03, 05, 06, 07, 08, 09, 10, 11 사이에서 오해하기 쉬운 다음 항목을 분리한다.
+현재 문서는 01~11 재대조와 06 후속 재검토 A 결정, 07 MeetingNote AI 후속 후보 재대조, 08 Global Data I18N 후속 후보 재대조, 09 Product Analytics 후속 후보 재대조, 10 Mobile Field Use 후속 후보 closeout, 11 Admin Operation 후속 후보 closeout을 반영했다. 따라서 이 문서는 특히 01, 02, 03, 05, 06, 07, 08, 09, 10, 11 사이에서 오해하기 쉬운 다음 항목을 분리한다.
 
 - 01에서 제외된 대용량 import worker, 일정/회의록 import, ImportJob Admin 전용 화면/API
 - 02에서 제외된 다음 행동 알림
@@ -42,7 +42,7 @@
 | 08 Global Data I18N | 완료 이력 유지 / G09 closeout 완료 | `/app` `ko-KR/en`, User global settings, KR/US phone/region, KRW/USD currency, Import/Export localization, Google/LINE/Apple auth는 완료다. `ja/zh-TW`, `zh-CN`, 전 세계 국가/통화/전화번호, minor unit, 상세 주소 검증, auth strategy 확장은 08 미완성이 아니다. |
 | 09 Product Analytics | 완료 이력 유지 / G10 closeout 완료 | 자체 DB `ProductAnalyticsEvent`, collector, server/client event, activation/retention snapshot, AI usage summary, 10 mobile field-use event와 11 Admin analytics 연결은 완료다. account deletion 실제 hard delete/anonymization job, 세부 event 확장, 외부 provider, UTM/experiment, PWA/native install attribution은 09 완료 범위가 아니다. |
 | 10 Mobile PWA Field Use | 완료 이력 유지 / G11 closeout 완료 | 명함 촬영/OCR safe failure, 회의 녹음/STT fallback, FE local draft 24시간 TTL, browser push permission UX, mobile field analytics는 완료다. PWA install/offline shell/full offline sync/iOS/Android native app/native push/contact/calendar는 후속이고, 10 FE/BE TODO 체크리스트 미체크와 FE route architecture stale은 문서 정리 후보다. 남는 후보는 `PRE12-F30`, `PRE12-F31`, `PRE12-F32`와 기존 `PRE12-F09`로 분리한다. |
-| 11 Admin Operation | 완료 이력 유지 / 문서 정합성 후보 있음 | `/admin/api/*`, Admin Web 운영 화면, audit/redaction, Trash/account request/provider/system gate는 완료다. 11 문서 체크리스트와 Admin Web architecture 일부는 stale이고, Admin 직접 Trash 복구/유료 복구/hard delete/purge, export artifact/download, 자동 민감정보 감지는 11 완료 범위가 아니다. |
+| 11 Admin Operation | 완료 이력 유지 / G12 closeout 완료 | `/admin/api/*`, Admin Web 운영 화면, audit/redaction, Trash/account request/provider/system gate는 완료다. 11 문서 체크리스트와 Admin Web architecture/legacy route 일부는 stale이고, Admin 직접 Trash 복구/유료 복구/hard delete/purge, export artifact/download, 자동 민감정보 감지는 11 완료 범위가 아니다. 남는 후보는 `PRE12-F33`~`PRE12-F37`과 기존 `PRE12-F09`, `PRE12-F11`, `PRE12-F12`, `PRE12-F13`, `PRE12-F26` 연결로 분리한다. |
 
 2026-08-06 사용자 결정 A에 따라 `NBA-003` 잔여인 Company/Contact/Product latest summary, generic summary endpoint, record별 상세 timeline은 12 전 계약화/구현 대상이 아니다. 이 후보들은 B2B 또는 team CRM 성격이 더 강한 post-12 전략 재검토 seed로 남기며, UX/UI 전체 polish도 지금 06 후속으로 하지 않고 별도 전면 유지보수 계획에서 다룬다.
 
@@ -93,7 +93,7 @@
 | 10 FE/BE TODO 체크리스트 정합성 | pre-12-doc-cleanup | 10 README/G07 closeout/실제 코드 기준 완료다. `10/FE-TODO`의 G03~G06, `10/BE-TODO`의 G03/G05/G06 미체크는 기능 미구현이 아니라 문서 체크리스트 정리 대상이다. |
 | User Web route/architecture 문서 정합성 | pre-12-doc-cleanup | 실제 `/app/notifications`는 활성이고 `/app/export`만 redirect다. FE architecture 문서의 stale route 설명을 실제 router 기준으로 정정한다. |
 | 11 문서 체크리스트/goal index 정합성 | pre-12-doc-cleanup | 11 README/G10 closeout/실제 코드 기준 완료다. `11/COMMON/GOAL-COMPLETION-CHECKLIST`, `11/COMMON/GOAL-SPECS/README`, `11/BE-TODO`, `11/FE-TODO`의 planning/미체크 상태는 기능 미구현이 아니라 문서 정리 대상이다. |
-| Admin Web architecture 문서 정합성 | pre-12-doc-cleanup | 실제 Admin Web route와 API 연동은 11 범위로 활성화됐다. `FE/admin-web/ARCHITECTURE.md`의 stale 설명을 실제 router/API 기준으로 정정한다. |
+| Admin Web architecture/legacy route 정합성 | pre-12-doc-cleanup | 실제 Admin Web route와 API 연동은 11 범위로 활성화됐다. `FE/admin-web/ARCHITECTURE.md`의 stale 설명과 비활성 legacy `admin-query` 잔여 코드를 실제 router/API 기준으로 정리한다. |
 | Admin 직접 Trash 복구/유료 복구/hard delete/purge | Question / 정책 및 billing 필요 | 11은 User 복구 문의와 Admin queue까지만 완료했다. Admin mutation, 유료 복구 결제, hard delete/purge는 recovery policy와 12 Billing 이후 판단한다. |
 | User data export artifact/download endpoint | post-12-seed / `PRE12-F09` 연결 | 11은 request/Admin queue를 완료했고 실제 artifact 생성 processor, signed URL, download controller는 없다. ExportJob/file retention/audit 계약 전 구현하지 않는다. |
 | 자동 민감정보 감지 | defer / 정책 필요 | 11의 masking/raw access와 별개인 자동 탐지 기능이다. 보안/data governance 계약 전 구현하지 않는다. |

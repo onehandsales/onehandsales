@@ -22,7 +22,7 @@
 - `GOAL-SPECS/G09_08_GLOBAL_DATA_I18N_FOLLOWUP_DEFER_CLOSEOUT.md`: 08 Global Data I18N 후속 후보 closeout 완료
 - `GOAL-SPECS/G10_09_PRODUCT_ANALYTICS_FOLLOWUP_DEFER_CLOSEOUT.md`: 09 Product Analytics 후속 후보 closeout 완료
 - `GOAL-SPECS/G11_10_MOBILE_PWA_FIELD_USE_FOLLOWUP_CLOSEOUT.md`: 10 Mobile PWA Field Use 후속 후보와 문서/코드 정합성 closeout 완료
-- `GOAL-SPECS/G12_11_ADMIN_OPERATION_FOLLOWUP_CLOSEOUT.md`: 11 Admin Operation 후속 후보와 문서/코드 정합성 closeout
+- `GOAL-SPECS/G12_11_ADMIN_OPERATION_FOLLOWUP_CLOSEOUT.md`: 11 Admin Operation 후속 후보와 문서/코드 정합성 closeout 완료
 
 ## 3. 현재 구현 금지 기준
 
@@ -78,7 +78,7 @@
 
 10 재대조 기준으로 BusinessCard capture/OCR safe failure, MeetingNote recording/STT fallback, local draft, browser push permission UX, mobile field analytics는 완료다. 10 FE/BE TODO 체크리스트 미체크와 FE route architecture stale은 기능 미완성이 아니라 `pre-12-doc-cleanup` 후보로 분류했고 G11 closeout을 완료했다. 남는 후보는 `PRE12-F30`, `PRE12-F31`, `PRE12-F32`와 기존 `PRE12-F09`로 본다.
 
-11 재대조 기준으로 `/admin/api/*`, Admin Web 운영 화면, audit/redaction, Trash/account request/provider/system gate는 완료다. 11 문서 체크리스트와 Admin Web architecture stale은 기능 미완성이 아니라 `pre-12-doc-cleanup` 후보로 분류하고, Admin 직접 Trash 복구/유료 복구/hard delete/purge, export artifact/download, 자동 민감정보 감지는 11 완료 범위를 넓히지 않는 후속 후보로만 둔다.
+11 재대조 기준으로 `/admin/api/*`, Admin Web 운영 화면, audit/redaction, Trash/account request/provider/system gate는 완료다. 11 문서 체크리스트와 Admin Web architecture/legacy route stale은 기능 미완성이 아니라 `pre-12-doc-cleanup` 후보로 분류했고 G12 closeout을 완료했다. Admin 직접 Trash 복구/유료 복구/hard delete/purge, export artifact/download, 자동 민감정보 감지는 11 완료 범위를 넓히지 않는 `PRE12-F35`~`PRE12-F37` 후속 후보로만 둔다.
 
 ## 4. 관련 문서
 
