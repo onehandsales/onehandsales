@@ -1,7 +1,7 @@
 # Pre-12 Follow-up And Post-12 Review Rule
 
 상태: Decision Baseline
-기준일: 2026-08-05
+기준일: 2026-08-06
 
 ## 1. 목적
 
@@ -12,7 +12,8 @@
 ## 2. 사용자 결정
 
 - 12 착수 전에 `GLOBAL_B2C_FEATURE_ROADMAP_PLAN`의 01~11 완료 슬롯을 순서대로 다시 대조한다.
-- 2026-08-05 기준 현재 pre-12 후속 재대조는 01~05까지 진행/확인 완료로 본다. 다음 대상은 06~11이다.
+- 2026-08-06 기준 현재 pre-12 후속 재대조는 01~05까지 진행/확인 완료로 본다. 06은 병행 작업/검토 대상이며, 다음 대상은 07~11이다.
+- 12 전 후속 후보 분류와 확정 전 작업 문서화는 `PRE12_FOLLOWUP_RECHECK`를 정본 작업공간으로 사용한다.
 - 각 슬롯은 해당 README, COMMON 문서, GOAL-SPECS, TODO_LOG/closeout, `NEXT_BACKEND_API_BACKLOG_PLAN`, `USER_WEB_PRODUCTIZATION_GAP_PLAN`, 실제 BE/FE/Prisma 상태를 함께 대조한다.
 - 미구현, 부분 구현, 후속 조치, 의도적으로 제외한 항목을 다시 분류한다.
 - 문서 stale 정리, 완료 근거 보강, audit 기록은 기존 완료 폴더에 남길 수 있다.
@@ -54,6 +55,7 @@
    - 기존 01~11 완료 폴더의 closeout 의미를 깨지 않는다.
    - 새 TODO는 `COMMON`, `FE-TODO`, `BE-TODO` 구조를 가진다.
    - API/DB 변경이 있으면 계약 상태를 최소 `confirmed`로 올린 뒤 `/goal`로 쪼갠다.
+   - 12 전 01~11 후속 후보는 먼저 `PRE12_FOLLOWUP_RECHECK`에서 `Question`, `pre-12-follow-up-needed`, `post-12-seed`, `billing-blocked` 등으로 분류한다.
 7. 01~11 재대조가 끝나면 12 착수 전 남은 보류 항목 목록을 확정한다.
 
 ## 3A. Post-12 최종 재검토 순서
@@ -136,5 +138,6 @@
 - `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/COMMON/ROADMAP-OVERVIEW.md`
 - `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/COMMON/WORKFLOW.md`
 - `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/COMMON/FIRST-SALE-GATE-MAP.md`
+- `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/PRE12_FOLLOWUP_RECHECK`
 - `TODO/NEXT_BACKEND_API_BACKLOG_PLAN`
 - `TODO/USER_WEB_PRODUCTIZATION_GAP_PLAN`

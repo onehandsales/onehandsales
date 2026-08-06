@@ -1,6 +1,6 @@
 # Coverage Matrix
 
-상태: Draft / 01~11 Implemented / 05 G10 Implemented / Provider Smoke Pending / 12 Next / Post-12 Review Planned
+상태: Draft / 01~11 Implemented / Pre-12 Follow-up Workspace Created / 05 G10 Implemented / Provider Smoke Pending / 12 Next / Post-12 Review Planned
 
 ## 0. 완료 반영
 
@@ -21,6 +21,7 @@
 - [x] 11 `Admin Operation`: Done (2026-08-01)
 - [x] `NBA-007`, `NBA-011` Admin/internal 범위, `NBA-012`, `NBA-013`, 11 범위 `NBA-014`: `11_ADMIN_OPERATION`에서 구현 및 QA closeout 완료
 - [x] First-sale gate 반영: `NBA-014`, Product UX gate, Trust/policy gate, `NBA-007`은 `COMMON/FIRST-SALE-GATE-MAP.md`에 선행/횡단 기준으로 고정
+- [ ] Pre-12 후속 후보 재분류: `PRE12_FOLLOWUP_RECHECK` 생성 완료. 12 착수 전 01~11 제외/후속/보류 후보를 구현 없이 먼저 분류
 - [ ] Post-12 전체 재검토: 12 완료 후 `COMMON/POST-12-REVIEW-AND-FOLLOWUP.md` 기준으로 01~12와 입력 계획 2개를 다시 대조하고 새 TODO 후보를 확정
 
 ## 1. 목적
@@ -45,8 +46,8 @@
 | Notification | In-app notification | 02 | Done: 목록, 읽음, unread count, `/app/notifications` 구현 완료 |
 | Notification | Email/browser push | 02 | Done: email/browser push delivery attempt와 settings 구현 완료. 실제 SMTP/Web Push provider smoke도 2026-08-04 사용자 확인 기준 운영 완료 |
 | Notification | 일정/딜 reminder | 02 | Done: 일정 시작 30분 전, 딜 마감 1일 전 오전 9시 생성/발송 처리 구현 완료 |
-| Notification | 다음 행동 reminder | 06 | 02에서 제외. 딜 데이터 구조 변경 가능성이 있어 DealActivity/다음 행동 고도화에서 설계 |
-| Notification | 회의록 후속 reminder | 07 | 02에서 제외. MeetingNote AI/provider log와 follow-up 후보 설계에서 검토 |
+| Notification | 다음 행동 reminder | 06, `PRE12_FOLLOWUP_RECHECK` | 02에서 제외. 06 구현 범위는 DealActivity event/summary이며, Notification reminder 생성은 아직 확정 API/DB가 없다. `PRE12_FOLLOWUP_RECHECK` G02에서 먼저 계약을 분류한다 |
+| Notification | 회의록 후속 reminder | 07, `PRE12_FOLLOWUP_RECHECK` | 02에서 제외. 07 구현 범위는 MeetingNote AI/provider log와 follow-up draft이며, 자동 reminder/send는 아직 확정 API/DB가 없다. `PRE12_FOLLOWUP_RECHECK` G03에서 먼저 계약을 분류한다 |
 | Schedule | 주간 일정 보고서 | 03 | Done: `NBA-009` 구현 완료. `/app/schedules/week`, `GET /api/schedules/week`, `weekStart`, `timeZone`, 7일 days report. 새 DB/migration 없음 |
 | Schedule | 주간 보고서 Excel | 03 | Done: `GET /api/schedules/week/export/xlsx` 동기식 다운로드 구현 완료 |
 | Schedule | 주간 보고서 PDF | 후속 별도 결정 | 03에서 제외. 화면+Excel 안정화 후 print/export 정책으로 별도 확정 |
@@ -109,6 +110,7 @@
 | Billing | Coupon/referral | 12, 09 | 09에서 reserved taxonomy/foundation만 확정했다. 결제 적용과 실험 운영은 12 |
 | Billing | Churn survey/cancel reason | 12, 09 | 09에서 reserved taxonomy/foundation만 확정했다. 해지 flow, survey source, billing-linked churn 분석은 12 이후 연결 |
 | Billing | Billing Admin 연동 | 12 | 11 Admin 운영은 결제/구독을 제외했다. Billing Admin 화면/API는 12 결제 도메인과 함께 결정 |
+| Pre-12 recheck | 01~11 제외/후속/보류 후보 재분류 | `PRE12_FOLLOWUP_RECHECK` | 13번 기능 슬롯이 아니다. 12 전에는 `Question`, `pre-12-follow-up-needed`, `post-12-seed`, `billing-blocked`를 분리하고, 확정 API/DB/FE 계약 없는 후보는 구현하지 않는다 |
 | Post-12 review | 01~12 전체 재학습과 후속 TODO 승격 | 12 이후 | `NEXT_BACKEND_API_BACKLOG_PLAN`, `USER_WEB_PRODUCTIZATION_GAP_PLAN`, 실제 BE/FE/Prisma 상태를 다시 대조해 미구현/후속/보류 항목을 새 TODO 폴더로 재배치한다. UX/UI 디자인 유지보수는 이 재검토 이후 별도 계획으로 진행한다 |
 
 ## 3. 누락 판단 규칙

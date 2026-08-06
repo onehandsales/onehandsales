@@ -1,6 +1,6 @@
 # Roadmap Overview
 
-상태: Draft / 01~11 Implemented / 01~11 Pre-12 Follow-up In Progress / 05 Provider Smoke Pending / 12 Next / Post-12 Final Review Planned
+상태: Draft / 01~11 Implemented / Pre-12 Follow-up Workspace Created / 05 Provider Smoke Pending / 12 Next / Post-12 Final Review Planned
 
 ## 0. 완료 현황
 
@@ -15,7 +15,7 @@
 - [x] `09_PRODUCT_ANALYTICS`: Done (2026-07-30), ProductAnalyticsEvent, route/server events, activation/retention snapshot, AI usage summary 구현 및 QA closeout 완료
 - [x] `10_MOBILE_PWA_FIELD_USE`: Done (2026-07-31), 모바일 명함 촬영/OCR safe failure, 회의 녹음, local draft, push permission UX, mobile analytics 구현 및 QA closeout 완료
 - [x] `11_ADMIN_OPERATION`: Done (2026-08-01), Admin 운영 API/Web, audit/redaction, Trash/account request/provider/system gate, QA closeout 완료
-- [ ] 01~11 pre-12 후속 재대조: 2026-08-05 기준 01~05 진행/확인 완료, 06~11 다음 대상
+- [ ] 01~11 pre-12 후속 재대조: 2026-08-06 기준 01~05 진행/확인 완료, 06 병행 작업/검토 대상, 07~11 다음 대상. 상세 분류 작업공간은 `PRE12_FOLLOWUP_RECHECK`
 - [ ] `12_BILLING_SUBSCRIPTION_TAX`
 
 ## 1. 로드맵 기준
@@ -50,7 +50,7 @@ Product UX first-sale gate는 전체 시각 polish와 다르다. 핵심 `/app` �
 | Global B2C 제품화 | 08~10 | Done: 08 다국가 데이터/앱 다국어 기반, 09 제품 분석 기반, 10 모바일 현장 입력성 완료 |
 | Series A 확장성 | 10 이후 후속 | PWA install/offline shell, native app, native push/contact/calendar는 후속 로드맵으로 유지 |
 | 마지막 운영/판매 묶음 | 11~12 | Done: 11 Admin 운영 완료. Next: 12 결제/구독/세금 |
-| 01~11 Pre-12 후속 재대조 | 01~11 완료 슬롯 | 12 착수 전 01~11 전체와 입력 계획 2개를 다시 대조하고, billing과 직접 무관한 후속 항목을 먼저 정리 |
+| 01~11 Pre-12 후속 재대조 | `PRE12_FOLLOWUP_RECHECK`, 01~11 완료 슬롯 | 12 착수 전 01~11 전체와 입력 계획 2개를 다시 대조하고, billing과 직접 무관한 후속 항목을 먼저 정리 |
 | Post-12 최종 재검토 | 01~12 완료 후 | 12 완료 뒤 01~12 전체와 입력 계획 2개를 다시 학습하고 미구현/후속 항목을 새 TODO로 재배치 |
 
 ## 3. 기본 순서
@@ -72,9 +72,9 @@ Product UX first-sale gate는 전체 시각 polish와 다르다. 핵심 `/app` �
 
 사용자 결정 기준으로 다음 큰 흐름은 12 착수 전에 01~11 완료 슬롯을 한 번 더 대조해 후속 조치가 필요한 항목을 먼저 정리하는 것이다. 12는 결제/구독/세금 정보와 직접 연결되므로, billing/paywall/churn/paid conversion/invoice/tax 판단은 12 전 임시 구현으로 처리하지 않는다.
 
-2026-08-05 기준 현재 01~05는 진행/확인 완료로 보고, 다음 대상은 06~11이다.
+2026-08-06 기준 현재 01~05는 진행/확인 완료로 보고, 06은 병행 작업/검토 대상, 다음 대상은 07~11이다.
 
-01~11 pre-12 후속 재대조에서는 `COMMON/POST-12-REVIEW-AND-FOLLOWUP.md`를 기준으로 아래를 다시 확인한다.
+01~11 pre-12 후속 재대조에서는 `COMMON/POST-12-REVIEW-AND-FOLLOWUP.md`와 `PRE12_FOLLOWUP_RECHECK`를 기준으로 아래를 다시 확인한다.
 
 1. `GLOBAL_B2C_FEATURE_ROADMAP_PLAN` 01~11 전체 README, API-SPEC, GOAL-SPECS, TODO_LOG/closeout
 2. `NEXT_BACKEND_API_BACKLOG_PLAN`의 잔여 후보와 완료 이력

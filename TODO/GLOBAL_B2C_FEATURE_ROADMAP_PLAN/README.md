@@ -1,8 +1,8 @@
 # Global B2C Feature Roadmap Plan
 
-상태: Draft Roadmap / 01~11 Implemented / 05 Provider Smoke Pending / 12 Next
+상태: Draft Roadmap / 01~11 Implemented / Pre-12 Follow-up Workspace Created / 05 Provider Smoke Pending / 12 Next
 작성일: 2026-07-20
-최종 업데이트: 2026-08-05
+최종 업데이트: 2026-08-06
 성격: 기능 선구현 로드맵 슬롯 + Global B2C first-sale gate 추적
 
 ## 0. 완료 현황
@@ -18,6 +18,7 @@
 - [x] 09 `09_PRODUCT_ANALYTICS`: Done (2026-07-30)
 - [x] 10 `10_MOBILE_PWA_FIELD_USE`: Done (2026-07-31)
 - [x] 11 `11_ADMIN_OPERATION`: Done (2026-08-01)
+- [ ] PRE12 `PRE12_FOLLOWUP_RECHECK`: Draft workspace (2026-08-06). 12 착수 전 01~11 후속 후보 재분류 전용이며, 13번 기능 슬롯이 아니다.
 - [ ] 12 `12_BILLING_SUBSCRIPTION_TAX`
 
 ## 1. 목적
@@ -52,7 +53,8 @@
 - 단, `NBA-014` DB/Prisma 운영 gate와 Trust/policy first-sale gate는 11~12까지 미루지 않고 관련 goal마다 선행/병행 확인한다.
 - 01 작업을 시작할 때는 01 폴더 안에 추가 문서를 작성하고 검수/검토한 뒤 진행한다.
 - 01~11까지는 순차 실행이 완료됐고, 12 착수 전 01~11 pre-12 재대조를 진행한다.
-- 2026-08-05 기준 01~05는 진행/확인 완료로 보고, 다음 대상은 06~11이다.
+- 2026-08-06 기준 01~05는 진행/확인 완료로 보고, 06은 병행 작업/검토 대상, 다음 대상은 07~11이다.
+- 12 전 후속 후보 분류와 작업 후보 문서화는 `PRE12_FOLLOWUP_RECHECK`를 정본 작업공간으로 사용한다.
 - 01~11 pre-12 재대조가 끝나면 `12_BILLING_SUBSCRIPTION_TAX`를 진행한다.
 - 12 완료 후 01~12 전체와 `TODO/NEXT_BACKEND_API_BACKLOG_PLAN`, `TODO/USER_WEB_PRODUCTIZATION_GAP_PLAN`을 다시 학습하고 미구현/후속 항목을 새 TODO 폴더로 재배치한다.
 - UX/UI 디자인 유지보수는 01~11 pre-12 재대조, 12, post-12 후속 항목 재분류 이후 별도 계획으로 진행한다.
@@ -85,6 +87,7 @@
 - `COMMON/DECISION-LOG.md`: 이 로드맵에서 확정한 결정 기록
 - `COMMON/FIRST-SALE-GATE-MAP.md`: `NBA-014`, Product UX, Trust/policy, `NBA-007`의 first-sale gate 반영 기준
 - `COMMON/POST-12-REVIEW-AND-FOLLOWUP.md`: 12 완료 후 01~12 전체 재검토와 후속 TODO 승격 규칙
+- `PRE12_FOLLOWUP_RECHECK`: 12 착수 전 01~11 후속 후보 재분류와 확정 전 goal 후보 문서화
 - `01_*` ~ `12_*`: 각 기능 슬롯별 착수 전 검토 문서
 
 각 번호 폴더는 다음 구조를 가진다.
@@ -114,9 +117,10 @@
 8. FE 작업이 있으면 `FE-TODO/USER-WEB-TODO.md`에 화면, route, 상태, client, 검증 기준을 적는다.
 9. 검수/검토가 끝나면 별도 `/goal` 문서로 쪼개 실행한다.
 10. UX/UI 전체 polish는 01~11의 주요 기능 흐름 closeout을 기준으로 별도 계획에서 잡되, Product UX first-sale gate는 첫 판매 전 별도 closeout으로 닫는다.
-11. 12 완료 후에는 `COMMON/POST-12-REVIEW-AND-FOLLOWUP.md` 기준으로 01~12 전체, `NEXT_BACKEND_API_BACKLOG_PLAN`, `USER_WEB_PRODUCTIZATION_GAP_PLAN`, 실제 BE/FE/Prisma 구현을 다시 대조한다.
-12. post-12 재검토에서 미구현/후속/보류로 남은 항목은 기존 완료 폴더를 재개하지 않고 새 TODO 폴더로 승격한다.
-13. UX/UI 디자인 유지보수는 post-12 재검토와 후속 작업 재분류 이후 별도 계획으로 진행한다.
+11. 12 착수 전 01~11 후속 후보는 `PRE12_FOLLOWUP_RECHECK`에서 먼저 분류하고, API/DB/FE 계약이 확정된 항목만 별도 goal로 쪼갠다.
+12. 12 완료 후에는 `COMMON/POST-12-REVIEW-AND-FOLLOWUP.md` 기준으로 01~12 전체, `NEXT_BACKEND_API_BACKLOG_PLAN`, `USER_WEB_PRODUCTIZATION_GAP_PLAN`, 실제 BE/FE/Prisma 구현을 다시 대조한다.
+13. post-12 재검토에서 미구현/후속/보류로 남은 항목은 기존 완료 폴더를 재개하지 않고 새 TODO 폴더로 승격한다.
+14. UX/UI 디자인 유지보수는 post-12 재검토와 후속 작업 재분류 이후 별도 계획으로 진행한다.
 
 ## 6. 먼저 읽을 문서
 
@@ -126,6 +130,7 @@
 - `TODO/NEXT_BACKEND_API_BACKLOG_PLAN/COMMON/CANDIDATE-MATRIX.md`
 - `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/COMMON/FIRST-SALE-GATE-MAP.md`
 - `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/COMMON/POST-12-REVIEW-AND-FOLLOWUP.md`
+- `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/PRE12_FOLLOWUP_RECHECK/README.md`
 - `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/COMMON/DECISION-LOG.md`
 - `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/COMMON/COVERAGE-MATRIX.md`
 - `TODO/DONE/MVP-STARTER_PLAN/README.md`
