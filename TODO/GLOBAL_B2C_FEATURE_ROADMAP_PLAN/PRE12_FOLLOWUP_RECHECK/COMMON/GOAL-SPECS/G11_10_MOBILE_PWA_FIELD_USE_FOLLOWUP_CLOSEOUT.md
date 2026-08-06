@@ -1,13 +1,16 @@
 # G11 10 Mobile PWA Field Use Follow-up Closeout
 
-상태: Draft / 문서 closeout / 구현 금지
+상태: Completed / 문서 closeout 완료 / 구현 금지
 작성일: 2026-08-06
+검토일: 2026-08-06
 
 ## 1. 목표
 
 `10_MOBILE_PWA_FIELD_USE`에서 완료한 mobile browser field-use 범위를 재오픈하지 않고, 10 밖으로 남은 후속 후보와 문서/코드 정합성 이슈를 PRE12 후보로 분류한다.
 
 이 goal은 구현 goal이 아니다. `BE`, `FE` 코드 변경, API 계약 확정, Prisma migration 생성, PWA/offline/native 구현, 신규 User Web route 활성화는 하지 않는다.
+
+2026-08-06 재검토 결과, `NEXT_BACKEND_API_BACKLOG_PLAN`과 `USER_WEB_PRODUCTIZATION_GAP_PLAN`에는 있으나 10/PRE12에 빠진 10 직접 후속 후보는 추가로 확인되지 않았다. 기능 구현은 재오픈하지 않고 `PRE12-F09`, `PRE12-F30`, `PRE12-F31`, `PRE12-F32` 분류를 유지한다.
 
 ## 2. 판단 근거
 
@@ -27,13 +30,13 @@
 | 범위 | 현재 사실 |
 | --- | --- |
 | 모바일 기본 방향 | 10은 native app이 아니라 mobile browser field-use를 완료 범위로 닫았다. |
-| BusinessCard capture | `input type=file`, `accept="image/*"`, `capture="environment"` 기반 후면 카메라/앨범 선택 UX가 있다. |
-| BusinessCard OCR safe failure | `BusinessCardScanLog` safe failure field와 `business_card_ocr_failed` server event가 있다. provider raw detail은 사용자 response/analytics/local draft에 넣지 않는다. |
-| MeetingNote recording/STT | `MediaRecorder` 지원 감지, 사용자 클릭 후 microphone permission, audio file fallback, 기존 `/api/meeting-notes/stt-draft` 재사용이 있다. |
-| Local draft | FE IndexedDB primary, localStorage fallback, 24시간 TTL, 복원/폐기 UX가 있다. server draft DB, `UserDraft`, audio/image binary 저장은 없다. |
-| Browser push permission UX | `/app/notifications`에서 사용자 클릭 후 `Notification.requestPermission()`을 호출하고 기존 notification settings/subscription API를 재사용한다. |
-| Mobile analytics | 09 collector 위에 mobile field-use client event allowlist와 PII/raw payload 금지 기준이 있다. |
-| PWA/offline/native | manifest/offline shell/workbox/native app 구현은 없다. `notification-sw.js`는 browser push용 service worker로만 본다. |
+| BusinessCard capture | `FE/user-web/src/features/business-card/components/business-card-scan-screen.tsx`에 `input type=file`, `accept="image/*"`, `capture="environment"` 기반 후면 카메라/앨범 선택 UX가 있다. |
+| BusinessCard OCR safe failure | `BE/prisma/migrations/20260731010000_add_business_card_safe_failure_fields/migration.sql`, `BE/prisma/schema.prisma`, `BE/src/modules/business-card`에 `BusinessCardScanLog` safe failure field와 `business_card_ocr_failed` server event가 있다. provider raw detail은 사용자 response/analytics/local draft에 넣지 않는다. |
+| MeetingNote recording/STT | `FE/user-web/src/features/meeting-note/hooks/use-meeting-note-audio-recorder.ts`에서 `MediaRecorder` 지원 감지와 사용자 클릭 후 microphone permission을 처리하고, `BE/src/modules/meeting-note/presentation/http/meeting-note.controller.ts`의 기존 `/api/meeting-notes/stt-draft`를 재사용한다. |
+| Local draft | `FE/user-web/src/features/mobile-local-draft`에 IndexedDB primary, localStorage fallback, 24시간 TTL, 복원/폐기 UX가 있다. server draft DB, `UserDraft`, audio/image binary 저장은 없다. |
+| Browser push permission UX | `/app/notifications`에서 사용자 클릭 후 `Notification.requestPermission()`을 호출하고 기존 notification settings/subscription API를 재사용한다. `FE/user-web/public/notification-sw.js`는 browser push용 service worker로만 본다. |
+| Mobile analytics | `BE/src/modules/analytics`와 `FE/user-web/src/features/analytics`에 mobile field-use client event allowlist와 PII/raw payload 금지 기준이 있다. |
+| PWA/offline/native | `FE/user-web`에서 `vite-plugin-pwa`, `workbox`, `manifest.webmanifest`, offline shell/full offline sync/native app 구현은 확인되지 않았다. |
 
 ## 3. 문서/코드 정합성 발견 사항
 
@@ -76,8 +79,9 @@
 rg -n "safeErrorCode|safeErrorMessage|business_card_ocr_failed|OCR_FAILED" BE\prisma\schema.prisma BE\src\modules\business-card FE\user-web\src\features\business-card -g "*.ts" -g "*.tsx" -g "*.prisma"
 rg -n "stt-draft|MediaRecorder|getUserMedia|audioFile|transcriptLength" BE\src\modules\meeting-note FE\user-web\src\features\meeting-note -g "*.ts" -g "*.tsx"
 rg -n "MOBILE_LOCAL_DRAFT_TTL_MS|IndexedDB|localStorage|audioBase64|transcript|providerResponse" FE\user-web\src\features\mobile-local-draft -g "*.ts" -g "*.tsx"
-rg -n "requestPermission|browser-subscriptions|public-key|endpointHash|p256dhCiphertext" BE\src\modules\notification FE\user-web\src\features\notification FE\user-web\public\notification-sw.js -g "*.ts" -g "*.tsx" -g "*.js"
+rg -n "Notification.requestPermission|browser-push|public-key|endpointHash|p256dhCiphertext|notification-sw" BE\src\modules\notification FE\user-web\src\features\notification FE\user-web\public\notification-sw.js -g "*.ts" -g "*.tsx" -g "*.js"
 rg -n "business_card_capture|meeting_note_recording|local_draft|mobile_push_permission|FORBIDDEN_PAYLOAD_KEY_CODES" BE\src\modules\analytics FE\user-web\src\features\analytics -g "*.ts" -g "*.tsx"
+rg -n "UserDraft|/api/drafts|model UserDraft|MobileDraft" BE\src BE\prisma\schema.prisma FE\user-web\src -g "*.ts" -g "*.tsx" -g "*.prisma"
 rg -n "api/exports|ExportJob|exportJob|ExportScreen" BE\src BE\prisma\schema.prisma FE\user-web\src -g "*.ts" -g "*.tsx" -g "*.prisma"
 rg -n "path: \"notifications\"|path: \"export\"|notification-sw|serviceWorker|workbox|vite-plugin-pwa|manifest" FE\user-web
 ```
@@ -90,3 +94,4 @@ rg -n "path: \"notifications\"|path: \"export\"|notification-sw|serviceWorker|wo
 - [x] 10 FE/BE TODO 체크리스트 정합성 이슈를 `PRE12-F31`로 분리했다.
 - [x] User Web route/architecture 문서 stale 이슈를 `PRE12-F32`로 분리했다.
 - [x] `UserDraft`, server draft DB, media/raw 저장, PWA/offline/native, `/app/export`, `/api/exports` 구현 금지를 명시했다.
+- [x] `NEXT_BACKEND_API_BACKLOG_PLAN`과 `USER_WEB_PRODUCTIZATION_GAP_PLAN`에는 있으나 10/PRE12에 빠진 10 직접 후속 후보가 추가로 없는지 재확인했다.

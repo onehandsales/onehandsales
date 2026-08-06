@@ -18,7 +18,7 @@
 | G08 | `G08_07_MEETING_NOTE_AI_FOLLOWUP_DEFER_CLOSEOUT.md` | 07 MeetingNote AI 후속 후보 defer/closeout |
 | G09 | `G09_08_GLOBAL_DATA_I18N_FOLLOWUP_DEFER_CLOSEOUT.md` | 08 Global Data I18N 후속 후보 defer/closeout 완료 |
 | G10 | `G10_09_PRODUCT_ANALYTICS_FOLLOWUP_DEFER_CLOSEOUT.md` | 09 Product Analytics 후속 후보 defer/closeout 완료 |
-| G11 | `G11_10_MOBILE_PWA_FIELD_USE_FOLLOWUP_CLOSEOUT.md` | 10 Mobile PWA Field Use 후속 후보와 문서/코드 정합성 closeout |
+| G11 | `G11_10_MOBILE_PWA_FIELD_USE_FOLLOWUP_CLOSEOUT.md` | 10 Mobile PWA Field Use 후속 후보와 문서/코드 정합성 closeout 완료 |
 | G12 | `G12_11_ADMIN_OPERATION_FOLLOWUP_CLOSEOUT.md` | 11 Admin Operation 후속 후보와 문서/코드 정합성 closeout |
 | G99 | `G99_PRE12_CLOSEOUT.md` | pre-12 재대조 closeout과 상위 문서 반영 |
 

@@ -22,7 +22,7 @@
 | G08 | `G08_07_MEETING_NOTE_AI_FOLLOWUP_DEFER_CLOSEOUT` | Completed | 07 MeetingNote AI 후속 후보가 07 미완성이 아님을 닫고 PRE12 후보로 분류했다. | 문서 closeout만 가능 |
 | G09 | `G09_08_GLOBAL_DATA_I18N_FOLLOWUP_DEFER_CLOSEOUT` | Completed | 08 Global Data I18N 후속 후보가 08 미완성이 아님을 닫고 PRE12 후보로 분류했다. | 문서 closeout만 가능 |
 | G10 | `G10_09_PRODUCT_ANALYTICS_FOLLOWUP_DEFER_CLOSEOUT` | Completed | 09 Product Analytics 후속 후보가 09 미완성이 아님을 닫고 PRE12 후보로 분류했다. | 문서 closeout만 가능 |
-| G11 | `G11_10_MOBILE_PWA_FIELD_USE_FOLLOWUP_CLOSEOUT` | Pending | 10 Mobile PWA Field Use 후속 후보와 문서/코드 정합성 이슈가 10 미완성이 아님을 닫고 PRE12 후보로 분류한다. | 문서 closeout만 가능 |
+| G11 | `G11_10_MOBILE_PWA_FIELD_USE_FOLLOWUP_CLOSEOUT` | Completed | 10 Mobile PWA Field Use 후속 후보와 문서/코드 정합성 이슈가 10 미완성이 아님을 닫고 PRE12 후보로 분류했다. | 문서 closeout만 가능 |
 | G12 | `G12_11_ADMIN_OPERATION_FOLLOWUP_CLOSEOUT` | Completed | 11 Admin Operation 후속 후보와 문서/코드 정합성 이슈가 11 미완성이 아님을 닫고 PRE12 후보로 분류한다. | 문서 closeout만 가능 |
 | G99 | `G99_PRE12_CLOSEOUT` | Pending | 06 후속 재검토 A 결정과 07~11 재대조 결과, 특히 08 Global Data I18N/09 Product Analytics/10 Mobile Field Use/11 Admin Operation 후속 분류를 상위 문서에 반영한다. | 문서 closeout 가능 |
 
@@ -42,7 +42,7 @@
 - G08은 구현 작업이 아니라 07 MeetingNote AI 후속 후보의 문서 closeout이며 완료됐다.
 - G09는 구현 작업이 아니라 08 Global Data I18N 후속 후보의 문서 closeout이며 완료됐다.
 - G10은 구현 작업이 아니라 09 Product Analytics 후속 후보의 문서 closeout이며 완료됐다.
-- G11은 구현 작업이 아니라 10 Mobile PWA Field Use 후속 후보와 문서/코드 정합성 이슈의 문서 closeout이다.
+- G11은 구현 작업이 아니라 10 Mobile PWA Field Use 후속 후보와 문서/코드 정합성 이슈의 문서 closeout이며 완료됐다.
 - G12는 구현 작업이 아니라 11 Admin Operation 후속 후보와 문서/코드 정합성 이슈의 문서 closeout이다.
 - G99는 모든 선택된 pre-12 작업이 끝난 뒤 실행한다.
 
