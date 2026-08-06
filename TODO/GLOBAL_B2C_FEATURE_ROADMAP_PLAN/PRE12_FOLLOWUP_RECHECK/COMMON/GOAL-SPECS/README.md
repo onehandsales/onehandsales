@@ -16,6 +16,7 @@
 | G06 | `G06_06_RECORD_SUMMARY_DEFER_CLOSEOUT.md` | 06/NBA-003 record summary defer 결정 closeout |
 | G07 | `G07_01_IMPORT_EXPANSION_DEFER_CLOSEOUT.md` | 01 import scale/source/Admin 확장 후보 defer 결정 closeout |
 | G08 | `G08_07_MEETING_NOTE_AI_FOLLOWUP_DEFER_CLOSEOUT.md` | 07 MeetingNote AI 후속 후보 defer/closeout |
+| G09 | `G09_08_GLOBAL_DATA_I18N_FOLLOWUP_DEFER_CLOSEOUT.md` | 08 Global Data I18N 후속 후보 defer/closeout |
 | G99 | `G99_PRE12_CLOSEOUT.md` | pre-12 재대조 closeout과 상위 문서 반영 |
 
 ## 2. 공통 금지
@@ -26,3 +27,4 @@
 - billing-linked 후보는 12 전 구현하지 않는다.
 - 2026-08-06 A 결정으로 `NBA-003` 잔여 record summary는 12 전 계약화하지 않는다.
 - 07 완료 범위를 넓혀서 MeetingNote list summary, follow-up 자동 발송/알림, AI data cleanup, transcript/raw 저장 기능을 끼워 넣지 않는다.
+- 08 완료 범위를 넓혀서 신규 locale/country/currency/phone/auth provider, minor unit, `/app` locale prefix를 끼워 넣지 않는다.

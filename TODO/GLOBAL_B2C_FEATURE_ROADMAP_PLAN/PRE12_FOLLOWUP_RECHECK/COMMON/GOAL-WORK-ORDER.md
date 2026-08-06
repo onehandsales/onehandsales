@@ -20,7 +20,8 @@
 | G06 | `G06_06_RECORD_SUMMARY_DEFER_CLOSEOUT` | Decided | 06/NBA-003 record summary defer 결정과 문서 동기화 범위를 닫는다. | 문서 closeout만 가능 |
 | G07 | `G07_01_IMPORT_EXPANSION_DEFER_CLOSEOUT` | Decided | 01 import scale/source/Admin 확장 후보가 01 미완성이 아님을 닫는다. | 문서 closeout만 가능 |
 | G08 | `G08_07_MEETING_NOTE_AI_FOLLOWUP_DEFER_CLOSEOUT` | Pending | 07 MeetingNote AI 후속 후보가 07 미완성이 아님을 닫고 PRE12 후보로 분류한다. | 문서 closeout만 가능 |
-| G99 | `G99_PRE12_CLOSEOUT` | Pending | 06 후속 재검토 A 결정과 07~11 재대조 결과, 이 폴더의 후보 분류를 상위 문서에 반영한다. | 문서 closeout 가능 |
+| G09 | `G09_08_GLOBAL_DATA_I18N_FOLLOWUP_DEFER_CLOSEOUT` | Pending | 08 Global Data I18N 후속 후보가 08 미완성이 아님을 닫고 PRE12 후보로 분류한다. | 문서 closeout만 가능 |
+| G99 | `G99_PRE12_CLOSEOUT` | Pending | 06 후속 재검토 A 결정과 07~11 재대조 결과, 특히 08 Global Data I18N 후속 분류를 상위 문서에 반영한다. | 문서 closeout 가능 |
 
 ## 3. 선행 조건
 
@@ -36,6 +37,7 @@
 - G06은 구현 작업이 아니라 06/NBA-003 defer 결정의 문서 closeout이다.
 - G07은 구현 작업이 아니라 01 import 확장 후보의 문서 closeout이다.
 - G08은 구현 작업이 아니라 07 MeetingNote AI 후속 후보의 문서 closeout이다.
+- G09는 구현 작업이 아니라 08 Global Data I18N 후속 후보의 문서 closeout이다.
 - G99는 모든 선택된 pre-12 작업이 끝난 뒤 실행한다.
 
 ## 5. 관련 문서

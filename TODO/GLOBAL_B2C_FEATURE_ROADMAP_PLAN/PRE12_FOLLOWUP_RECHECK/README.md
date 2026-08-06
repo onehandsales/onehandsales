@@ -9,7 +9,7 @@
 
 이 폴더는 `GLOBAL_B2C_FEATURE_ROADMAP_PLAN`의 기존 01~11 완료 의미를 깨지 않으면서, 12 착수 전에 다시 확인해야 하는 후속 후보를 한곳에 묶는다.
 
-현재 사용자는 01~06 재대조와 06 후속 재검토 A 결정을 반영했다. 따라서 이 문서는 특히 01, 02, 03, 05, 06, 07 사이에서 오해하기 쉬운 다음 항목을 분리한다.
+현재 사용자는 01~08 재대조와 06 후속 재검토 A 결정을 반영했다. 따라서 이 문서는 특히 01, 02, 03, 05, 06, 07, 08 사이에서 오해하기 쉬운 다음 항목을 분리한다.
 
 - 01에서 제외된 대용량 import worker, 일정/회의록 import, ImportJob Admin 전용 화면/API
 - 02에서 제외된 다음 행동 알림
@@ -18,6 +18,7 @@
 - 05에서 남은 Gmail/Microsoft provider smoke
 - 06에서 닫은 DealActivity 범위와 06 밖으로 남은 record summary 후보
 - 07에서 닫은 MeetingNote 상세 AI 후보와 07 밖으로 남은 목록 summary, 자동 발송, 알림, AI data cleanup, raw/transcript 저장 후보
+- 08에서 닫은 Global Data I18N 범위와 08 밖으로 남은 시장/국가/통화/전화번호/auth/UX polish 후보
 
 이 폴더는 13번 기능 폴더가 아니다. 12 전에 기존 완료 슬롯을 재대조하기 위한 보조 계획이며, 12 Billing 범위를 우회하는 구현 계획이 아니다.
 
@@ -32,6 +33,7 @@
 | 05 AI Weekly Sales Report | 구현 완료 / provider smoke pending | Gmail/Microsoft email adapter와 자동 검증은 완료됐다. 운영 credential/callback/allowlist 기반 실제 수신자 smoke는 남아 있다. |
 | 06 DealActivity | 완료 이력 유지 / A 결정 반영 | 06은 DealActivity timeline, Deal list latestActivity, products summary, Contact dealCount 범위를 넘기지 않고 완료로 유지한다. |
 | 07 MeetingNote AI | 완료 이력 유지 | 상세 next action/follow-up draft와 provider log는 완료다. 회의록 목록 summary, 자동 발송, 알림, AI data cleanup, transcript/raw/follow-up draft 저장은 07 완료 범위가 아니다. |
+| 08 Global Data I18N | 완료 이력 유지 | `/app` `ko-KR/en`, User global settings, KR/US phone/region, KRW/USD currency, Import/Export localization, Google/LINE/Apple auth는 완료다. `ja/zh-TW`, `zh-CN`, 전 세계 국가/통화/전화번호, minor unit, 상세 주소 검증, auth strategy 확장은 08 미완성이 아니다. |
 
 2026-08-06 사용자 결정 A에 따라 `NBA-003` 잔여인 Company/Contact/Product latest summary, generic summary endpoint, record별 상세 timeline은 12 전 계약화/구현 대상이 아니다. 이 후보들은 B2B 또는 team CRM 성격이 더 강한 post-12 전략 재검토 seed로 남기며, UX/UI 전체 polish도 지금 06 후속으로 하지 않고 별도 전면 유지보수 계획에서 다룬다.
 
@@ -60,6 +62,15 @@
 | Import scale/source/Admin 확장 | post-12-seed | 대용량 import worker, 일정/회의록 import, ImportJob Admin 전용 화면/API는 01 미완성이 아니다. |
 | generic ExportJob/PDF/recurrence/Google write/watch | post-12-seed | 12 완료 후 최종 재검토에서 새 TODO로 승격할지 판단한다. |
 | billing/paywall/churn/paid conversion | billing-blocked | 12 전 임시 구현 금지. |
+| `/app` `ja`, `zh-TW` 번역과 시장별 UX writing | post-12-seed | 일본/대만 판매 준비 goal에서 다룬다. 08 완료 범위는 `ko-KR/en`이다. |
+| `zh-CN` 중국 본토 지원 | defer / 시장 진입 결정 필요 | 중국 본토 시장, 인프라, 정책, 결제/세금 기준이 없으면 구현하지 않는다. |
+| 전 세계 국가/통화/전화번호 확장 | post-12-seed | KR/US, KRW/USD 1차 검증 뒤 실제 판매 국가 기준으로 확장한다. |
+| USD cent/minor unit | billing-blocked | 12 Billing money model과 기존 금액 migration 기준 없이 구현하지 않는다. |
+| 국가별 상세 주소 검증/세금/약관/가격 정책 | billing-blocked | 12 Payment/Tax/Policy 범위와 연결한다. |
+| Contact 개인 주소 | post-12-seed | CRM 확장 요구가 명확해질 때 별도 Contact data expansion으로 판단한다. |
+| Auth strategy 확장 | defer / 정책 필요 | 이메일/비밀번호, Microsoft login, Kakao runtime 복구, 신규 provider는 별도 auth strategy 결정 전 구현 금지. |
+| `/app` locale route prefix | defer / guardrail | 새 라우팅 계약 없이 `/app`에 locale prefix를 붙이지 않는다. |
+| app i18n/Settings/bundle polish | post-12-seed / UXUI quality | legacy static fallback 직접 keying, Settings OAuth 계정 라벨, Vite large chunk warning은 08 blocker가 아니다. |
 
 ## 5. 문서 구조
 
@@ -86,6 +97,7 @@ PRE12_FOLLOWUP_RECHECK/
       G06_06_RECORD_SUMMARY_DEFER_CLOSEOUT.md
       G07_01_IMPORT_EXPANSION_DEFER_CLOSEOUT.md
       G08_07_MEETING_NOTE_AI_FOLLOWUP_DEFER_CLOSEOUT.md
+      G09_08_GLOBAL_DATA_I18N_FOLLOWUP_DEFER_CLOSEOUT.md
       G99_PRE12_CLOSEOUT.md
   BE-TODO/
     API-TODO.md
@@ -102,8 +114,9 @@ PRE12_FOLLOWUP_RECHECK/
 4. 06 작업 중 발견한 보정은 06 완료 범위를 넓히는 방식이 아니라 이 폴더의 후보 상태로 기록한다.
 5. billing/paywall/churn/paid conversion/invoice/tax와 연결된 항목은 12 전 구현하지 않는다.
 6. `NBA-003` 잔여 record summary는 2026-08-06 A 결정에 따라 12 전 API/DB/FE 계약 대상으로 보지 않는다.
-7. G06, G07, G08은 문서 closeout으로만 사용하고 구현 goal로 전환하지 않는다.
+7. G06, G07, G08, G09는 문서 closeout으로만 사용하고 구현 goal로 전환하지 않는다.
 8. G08은 07 후속 후보를 PRE12 후보로 닫는 closeout이며, 07 폴더에 새 구현 goal을 만들지 않는다.
+9. G09는 08 후속 후보를 PRE12 후보로 닫는 closeout이며, 08 폴더에 새 구현 goal을 만들지 않는다.
 
 ## 7. 먼저 읽을 문서
 
@@ -116,5 +129,8 @@ PRE12_FOLLOWUP_RECHECK/
 - `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/COMMON/ROADMAP-OVERVIEW.md`
 - `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/COMMON/POST-12-REVIEW-AND-FOLLOWUP.md`
 - `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/COMMON/COVERAGE-MATRIX.md`
+- `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/08_GLOBAL_DATA_I18N`
+- `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/08_GLOBAL_DATA_I18N/COMMON/SOURCE-PLAN-COVERAGE.md`
+- `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/08_GLOBAL_DATA_I18N/COMMON/DECISION-LOG.md`
 - `TODO/NEXT_BACKEND_API_BACKLOG_PLAN`
 - `TODO/USER_WEB_PRODUCTIZATION_GAP_PLAN`

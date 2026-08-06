@@ -19,6 +19,7 @@
 | DealActivity | deal list `latestActivity`, deal detail activity timeline은 06 범위다. |
 | MeetingNote AI | meeting note detail AI next action/follow-up draft section은 07 범위다. STT transcript는 생성 흐름의 임시 확인용이고 저장/목록/상세 summary 대상이 아니다. |
 | Import | `/app/import` review/resume, row detail 만료 안내, 10MB/5,000행 제한 안내는 01 범위로 완료됐다. |
+| Global Data I18N | `/app` `ko-KR/en`, Settings global profile, Product/Deal currency, Contact KR/US phone, Company KR/US region/address, Import/Export localization, Google/LINE/Apple auth는 08 범위로 완료됐다. |
 
 ## 3. 구현 금지
 
@@ -36,8 +37,16 @@ G00과 API contract 확정 전에는 아래 User Web 변경을 하지 않는다.
 - ImportJob Admin 전용 화면 추가
 - generic ExportJob/PDF/export route 추가
 - billing/paywall/churn UI 추가
+- `/app` `ja`, `zh-TW`, `zh-CN` translation 추가
+- `/app` locale route prefix 추가
+- 전 세계 country/currency/phone option 추가
+- Product/Deal amount minor unit 입력 전환
+- 국가별 상세 주소 validation UI 또는 Contact 개인 주소 UI 추가
+- email/password, Microsoft, Kakao runtime, 신규 auth provider 버튼 추가
 
 2026-08-06 A 결정에 따라 Company/Contact/Product latest summary, generic summary endpoint, record별 상세 timeline은 12 전 User Web 작업으로 올리지 않는다. UX/UI 전체 polish는 별도 전면 유지보수 계획에서 다룬다.
+
+08 재대조 기준으로 `/app` 기본 Global Data I18N은 완료다. market locale 확장, country/currency/phone 확장, auth strategy 확장, Settings OAuth 계정 라벨과 bundle 최적화는 08 blocker가 아니다.
 
 ## 4. 후보별 FE 영향
 
@@ -50,6 +59,15 @@ G00과 API contract 확정 전에는 아래 User Web 변경을 하지 않는다.
 | transcript/raw/follow-up draft 저장 표시 | transcript 보관 상태, raw access 안내, draft 저장/발송 상태 | defer / 정책 필요 |
 | Import scale/source/Admin 확장 | 대용량 import progress, 일정/회의록 source mapping, Admin-only job cleanup/조회 화면 | post-12-seed |
 | provider smoke | 화면 변경 없음. 운영 smoke 결과 문서 반영 | pre-12-follow-up-needed |
+| App locale/market UX 확장 | `/app` `ja`, `zh-TW` resource, validation/empty/toast copy, market UX writing QA | post-12-seed |
+| `zh-CN` 지원 | public/auth/app locale, market routing, policy copy, 결제/세금/인프라 요구 확인 | defer / 시장 진입 결정 필요 |
+| Global country/currency/phone 확장 | Settings option, Contact phone UI, Company region selector, Product/Deal currency selector 확장 | post-12-seed |
+| amount precision/minor unit | 금액 입력/표시/import/export/report 호환 UX 변경 | billing-blocked |
+| address/tax/terms/pricing policy | 청구 주소, 세금/약관/가격 표시 UX | billing-blocked |
+| Contact personal address | Contact create/edit/detail/list/export UX 확장 | post-12-seed / CRM 확장 |
+| Auth strategy 확장 | email/password, Microsoft, Kakao runtime, 신규 provider 버튼과 오류 UX | defer / 정책 필요 |
+| `/app` locale route prefix | router, legacy redirect, auth callback, deep link 전체 변경 필요 | defer / guardrail |
+| i18n/Settings/bundle polish | legacy static fallback 직접 keying, Settings OAuth account `LINE/Apple` 라벨, Vite chunk split | post-12-seed / UXUI quality |
 
 ## 5. UX 기준
 
@@ -58,6 +76,8 @@ G00과 API contract 확정 전에는 아래 User Web 변경을 하지 않는다.
 - 모바일에서는 table 확장이 아니라 card/list summary 기준을 우선 검토한다.
 - private memo, meeting note raw text, follow-up body 전체를 list summary에 노출하지 않는다.
 - transcript 원문과 provider raw response는 저장 정책이 확정되기 전까지 UI에 장기 보관 상태로 표현하지 않는다.
+- public/auth locale이 있다고 해서 `/app` locale 지원이 완료된 것으로 간주하지 않는다.
+- `/app` route는 새 routing contract 전까지 `/app/*`를 유지한다.
 
 ## 6. 관련 문서
 
@@ -65,3 +85,5 @@ G00과 API contract 확정 전에는 아래 User Web 변경을 하지 않는다.
 - `AGENT/SOFTWARE_AGENT/FRONT_AGENT/ARCHITECTURE/FRONTEND_USER_WEB.md`
 - `AGENT/SOFTWARE_AGENT/FRONT_AGENT/CONVENTION/FRONTEND_USER_WEB.md`
 - `../COMMON/CANDIDATE-MATRIX.md`
+- `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/08_GLOBAL_DATA_I18N/FE-TODO/USER-WEB-TODO.md`
+- `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/08_GLOBAL_DATA_I18N/COMMON/USER-FLOW.md`

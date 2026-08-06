@@ -19,6 +19,7 @@
 - `API-SPEC/README.md`: 현재 확정 API 없음, 후보 API 계약 상태
 - `GOAL-SPECS/README.md`: goal 상세 명세 목록
 - `GOAL-SPECS/G08_07_MEETING_NOTE_AI_FOLLOWUP_DEFER_CLOSEOUT.md`: 07 MeetingNote AI 후속 후보 closeout
+- `GOAL-SPECS/G09_08_GLOBAL_DATA_I18N_FOLLOWUP_DEFER_CLOSEOUT.md`: 08 Global Data I18N 후속 후보 closeout
 
 ## 3. 현재 구현 금지 기준
 
@@ -35,8 +36,17 @@
 - 대용량 import worker, 일정/회의록 import, ImportJob Admin 전용 화면/API 추가
 - generic ExportJob, PDF, recurrence, Google Calendar write/watch
 - billing/paywall/churn/paid conversion runtime flow
+- `/app` `ja`, `zh-TW`, `zh-CN` locale 추가
+- 전 세계 country/currency/phone dictionary 추가
+- USD cent/minor unit migration 또는 amount precision 변경
+- 국가별 tax/terms/pricing/address validation 추가
+- Contact 개인 주소 field 추가
+- email/password login, Microsoft login, Kakao runtime 복구, 신규 auth provider 추가
+- `/app` locale route prefix 추가
 
 2026-08-06 A 결정 기준으로 Company/Contact/Product latest summary, generic summary endpoint, record별 상세 timeline은 pre-12 계약화 대상도 아니다. post-12 재검토 전에는 G04를 구현 계약 goal로 전환하지 않는다.
+
+08 재대조 기준으로 `/app` 기본 `ko-KR/en` i18n, User global settings, KR/US phone/region, KRW/USD currency, Import/Export localization, Google/LINE/Apple auth는 완료다. 시장/국가/auth 확장과 UX polish는 08 미완성이 아니라 PRE12 후속 후보 또는 post-12 seed로 분류한다.
 
 ## 4. 관련 문서
 
@@ -44,4 +54,5 @@
 - `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/01_IMPORT_JOB_PERSISTENCE`
 - `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/06_DEAL_ACTIVITY_TIMELINE`
 - `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/07_MEETING_NOTE_AI_PROVIDER_LOG`
+- `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/08_GLOBAL_DATA_I18N`
 - `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/COMMON/POST-12-REVIEW-AND-FOLLOWUP.md`

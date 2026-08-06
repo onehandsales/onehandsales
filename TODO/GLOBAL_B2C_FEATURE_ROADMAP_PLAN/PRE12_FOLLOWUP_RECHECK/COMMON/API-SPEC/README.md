@@ -22,6 +22,13 @@
 | MeetingNote transcript/raw/follow-up draft 저장/조회 | transcript, provider raw response, follow-up draft body 저장 또는 raw access API | defer / 정책 필요 | 구현 금지 |
 | Import scale/source/Admin 확장 | 대용량 import worker API, 일정/회의록 import source API, ImportJob Admin 전용 API | post-12-seed | 12 전 구현 금지 |
 | Gmail/Microsoft provider smoke closeout | 새 API 없음 | not applicable | 운영 smoke 기록만 가능 |
+| App locale 확장 | User profile locale 허용값, app translation resource delivery 방식 검토 | post-12-seed | `ja`, `zh-TW`, `zh-CN` 구현 금지 |
+| Global country/currency/phone 확장 | User country/default currency, Contact phone, Company region dictionary 확장 계약 | post-12-seed | 12 전 구현 금지 |
+| Amount precision/minor unit | Product/Deal amount 저장 단위, import/export/report 변환 계약 | billing-blocked | 12 money model 전 구현 금지 |
+| Country address/tax/terms/pricing policy | billing/tax/policy API 또는 address validation API | billing-blocked | 12 전 구현 금지 |
+| Auth strategy 확장 | email/password, Microsoft, Kakao runtime, 신규 provider 계약 | defer / 정책 필요 | 구현 금지 |
+| `/app` locale route prefix | User API path 변경 없음. FE routing contract 이슈 | defer / guardrail | 새 라우팅 계약 없이 구현 금지 |
+| app i18n/Settings/bundle polish | 새 API 없음 | post-12-seed / UXUI quality | API 구현 대상 아님 |
 
 ## 3. API 계약을 만들 때 필수로 채울 항목
 
@@ -47,3 +54,8 @@
 - `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/CONVENTION/API_CONTRACT.md`
 - `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/CONVENTION/TRANSACTION.md`
 - `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/CONVENTION/OBSERVABILITY.md`
+- `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/08_GLOBAL_DATA_I18N/COMMON/API-SPEC/README.md`
+- `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/08_GLOBAL_DATA_I18N/COMMON/API-SPEC/USER_GLOBAL_SETTINGS_API.md`
+- `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/08_GLOBAL_DATA_I18N/COMMON/API-SPEC/DOMAIN_GLOBAL_DATA_API.md`
+- `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/08_GLOBAL_DATA_I18N/COMMON/API-SPEC/AUTH_PROVIDER_API.md`
+- `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/08_GLOBAL_DATA_I18N/COMMON/API-SPEC/IMPORT_EXPORT_LOCALIZATION_API.md`
