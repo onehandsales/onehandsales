@@ -32,6 +32,7 @@
 | `BusinessCardScanLog.safeErrorCode/safeErrorMessage/retryable` | 10에서 BusinessCard OCR safe failure 계약으로 완료됐다. 10 범위 신규 DB model은 이것 외에 없다. |
 | `UserDraft`, server draft DB, media/raw 저장 table | 현재 schema에 없다. 10 local draft는 FE storage 기준이며 audio/image binary, transcript 전문, provider raw response를 DB에 저장하지 않는다. |
 | `ExportJob` | 현재 schema에 없다. 03/11 후속 `PRE12-F09`로만 본다. FE 잔여 코드가 있어도 10 또는 PRE12에서 migration을 만들지 않는다. |
+| `AdminAuditLog`, `AdminSensitiveAccessLog`, `TrashRecoveryRequest`, `AdminOperationCheckRun` | 11 Admin Operation에서 운영 audit/redaction, Trash recovery queue, system gate record로 완료됐다. Admin 직접 restore/payment/purge 실행 model은 없다. |
 
 ## 3. 새 migration 금지 기준
 
@@ -63,6 +64,9 @@
 - PWA install/offline shell/full offline sync/native app/native push/contact/calendar/native install attribution 저장 모델
 - `UserDraft`, server draft DB, audio/image binary, transcript 전문, provider raw response 저장 table
 - `ExportJob`, export file retention, `/api/exports` 전용 저장 모델
+- Admin 직접 Trash 복구 실행, 유료 복구 결제, hard delete/purge 상태/결과 저장 모델
+- data export artifact 생성/다운로드 worker 상태, storage object, signed URL audit 저장 모델
+- 자동 민감정보 감지/DLP scan result, false positive/override 저장 모델
 
 2026-08-06 A 결정으로 Company/Contact/Product latest summary와 generic summary endpoint는 12 전 DB 설계 후보로 승격하지 않는다.
 
@@ -71,6 +75,8 @@
 09 재대조 기준으로 analytics 1차 schema는 완료다. `ProductAnalyticsEvent`와 snapshot model을 재오픈하지 않고, account deletion 실제 처리, 세부 event taxonomy, provider forwarding, attribution/experiment, billing usage source, PWA/native attribution은 별도 migration 후보로만 둔다.
 
 10 재대조 기준으로 Mobile Field Use의 DB 영향은 BusinessCard safe failure field까지로 닫혔다. `UserDraft`, server draft DB, media/raw 저장 table, PWA/native attribution table, `ExportJob`은 10 미완성이 아니라 별도 후속 후보로만 둔다.
+
+11 재대조 기준으로 Admin Operation의 1차 DB 영향은 Admin audit/security, Trash recovery request, account/data request, system operation check run으로 닫혔다. 11 문서 체크리스트 미체크를 근거로 새 migration을 만들지 않는다. Admin 직접 Trash 복구/유료 복구/hard delete/purge, data export artifact/download, 자동 민감정보 감지는 별도 정책/운영 계약 전 migration 후보로 올리지 않는다.
 
 ## 4. 후보별 DB 영향
 
@@ -99,6 +105,10 @@
 | PWA/native packaging과 attribution | install attribution, full offline sync metadata, native device/push/contact/calendar/app install event 저장 필요 여부 결정 | post-12 seed / 별도 mobile roadmap |
 | 10 FE/BE TODO 체크리스트 정합성 | DB 변경 없음. 문서 체크리스트 정리만 대상 | pre-12-doc-cleanup |
 | generic ExportJob/PDF | `ExportJob`, file TTL, audit, ownership, deletion policy가 필요하지만 post-12 전 migration 금지 | post-12 seed |
+| 11 Admin 문서 체크리스트 정합성 | DB 변경 없음. 문서 체크리스트 정리만 대상 | pre-12-doc-cleanup |
+| Admin 직접 Trash 복구/유료 복구/hard delete/purge | 복구 실행 결과, 결제 연결, purge audit/hold table 필요 여부 결정. 11에서는 없음 | Question / 정책 및 billing 필요 |
+| User data export artifact/download | `ExportJob` 또는 `UserDataExportRequest` status transition으로 충분한지 결정. file TTL/storage/audit 기준 필요 | post-12 seed / `PRE12-F09` 연결 |
+| 자동 민감정보 감지 | scan result, override, audit, retention 저장 모델 필요 여부 결정 | defer / 정책 필요 |
 
 ## 5. DB/Prisma gate
 
@@ -122,3 +132,5 @@
 - `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/09_PRODUCT_ANALYTICS/COMMON/API-SPEC/AI_USAGE_ANALYTICS_CONTRACT.md`
 - `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/10_MOBILE_PWA_FIELD_USE/COMMON/SOURCE-PLAN-COVERAGE.md`
 - `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/11_ADMIN_OPERATION/BE-TODO/DB-SCHEMA.md`
+- `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/11_ADMIN_OPERATION/COMMON/GOAL-SPECS/G10_QA_DOCUMENT_CLOSEOUT.md`
+- `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/PRE12_FOLLOWUP_RECHECK/COMMON/GOAL-SPECS/G12_11_ADMIN_OPERATION_FOLLOWUP_CLOSEOUT.md`

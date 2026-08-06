@@ -38,6 +38,11 @@
 | 10 FE/BE TODO 체크리스트 정합성 | 새 API 없음. 완료 체크리스트 문서 정리만 대상 | pre-12-doc-cleanup | API 구현 대상 아님 |
 | User Web route/architecture 문서 정합성 | 새 API 없음. 실제 route 기준 문서 정리만 대상 | pre-12-doc-cleanup | API 구현 대상 아님 |
 | generic ExportJob/PDF | `/api/exports`, `ExportJob`, export file TTL/ownership/audit contract | post-12-seed | 12 전 구현 금지 |
+| 11 Admin 문서 체크리스트/goal index 정합성 | 새 API 없음. 완료 체크리스트와 goal index 문서 정리만 대상 | pre-12-doc-cleanup | API 구현 대상 아님 |
+| Admin Web architecture 문서 정합성 | 새 API 없음. 실제 Admin route/API 기준 architecture 문서 정리만 대상 | pre-12-doc-cleanup | API 구현 대상 아님 |
+| Admin 직접 Trash 복구/유료 복구/hard delete/purge | Admin restore mutation, paid recovery payment, purge/hard delete API가 필요할 수 있으나 정책 미확정 | Question / 정책 및 billing 필요 | 구현 금지 |
+| User data export artifact/download endpoint | artifact 생성 processor, signed URL, `GET /api/users/me/data-export-requests/:requestId/download` 또는 `/api/exports` 계약 필요 | post-12-seed / `PRE12-F09` 연결 | 12 전 구현 금지 |
+| 자동 민감정보 감지 | PII/DLP scan API/worker 또는 저장 시 detection hook 필요 여부 결정 | defer / 정책 필요 | 구현 금지 |
 
 ## 3. API 계약을 만들 때 필수로 채울 항목
 

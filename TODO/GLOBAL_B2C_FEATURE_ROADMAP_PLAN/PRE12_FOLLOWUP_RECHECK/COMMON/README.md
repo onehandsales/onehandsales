@@ -22,6 +22,7 @@
 - `GOAL-SPECS/G09_08_GLOBAL_DATA_I18N_FOLLOWUP_DEFER_CLOSEOUT.md`: 08 Global Data I18N 후속 후보 closeout
 - `GOAL-SPECS/G10_09_PRODUCT_ANALYTICS_FOLLOWUP_DEFER_CLOSEOUT.md`: 09 Product Analytics 후속 후보 closeout
 - `GOAL-SPECS/G11_10_MOBILE_PWA_FIELD_USE_FOLLOWUP_CLOSEOUT.md`: 10 Mobile PWA Field Use 후속 후보와 문서/코드 정합성 closeout
+- `GOAL-SPECS/G12_11_ADMIN_OPERATION_FOLLOWUP_CLOSEOUT.md`: 11 Admin Operation 후속 후보와 문서/코드 정합성 closeout
 
 ## 3. 현재 구현 금지 기준
 
@@ -53,6 +54,11 @@
 - `UserDraft`, `/api/drafts/*`, server draft DB, media/raw 저장을 10 후속처럼 추가
 - `/app/export`, `/api/exports`, `ExportJob`을 10/PRE12 후속처럼 활성화
 - stale FE architecture 문서에 맞추기 위해 `/app/notifications` route를 숨김 route로 되돌리기
+- 11 문서 체크리스트/goal index 미체크를 근거로 Admin 기능 재구현
+- stale Admin Web architecture 문서에 맞추기 위해 11 Admin route/API를 숨기거나 되돌리기
+- Admin 직접 Trash 복구 mutation, 유료 복구 결제, Trash hard delete/purge 추가
+- data export artifact 생성 processor, storage signed URL, download endpoint 추가
+- 자동 민감정보 감지/DLP model 또는 processor 추가
 
 2026-08-06 A 결정 기준으로 Company/Contact/Product latest summary, generic summary endpoint, record별 상세 timeline은 pre-12 계약화 대상도 아니다. post-12 재검토 전에는 G04를 구현 계약 goal로 전환하지 않는다.
 
@@ -61,6 +67,8 @@
 09 재대조 기준으로 자체 DB `ProductAnalyticsEvent`, collector, core event, activation/retention, AI usage summary, billing reserved taxonomy, 10 mobile field-use event, 11 Admin analytics overview는 완료다. account deletion 실제 처리, 세부 event 확장, 외부 provider, attribution/experiment, PWA/native install attribution은 09 미완성이 아니라 PRE12 후속 후보 또는 post-12 seed로 분류한다.
 
 10 재대조 기준으로 BusinessCard capture/OCR safe failure, MeetingNote recording/STT fallback, local draft, browser push permission UX, mobile field analytics는 완료다. 10 FE/BE TODO 체크리스트 미체크와 FE route architecture stale은 기능 미완성이 아니라 `pre-12-doc-cleanup` 후보로 분류한다.
+
+11 재대조 기준으로 `/admin/api/*`, Admin Web 운영 화면, audit/redaction, Trash/account request/provider/system gate는 완료다. 11 문서 체크리스트와 Admin Web architecture stale은 기능 미완성이 아니라 `pre-12-doc-cleanup` 후보로 분류하고, Admin 직접 Trash 복구/유료 복구/hard delete/purge, export artifact/download, 자동 민감정보 감지는 11 완료 범위를 넓히지 않는 후속 후보로만 둔다.
 
 ## 4. 관련 문서
 

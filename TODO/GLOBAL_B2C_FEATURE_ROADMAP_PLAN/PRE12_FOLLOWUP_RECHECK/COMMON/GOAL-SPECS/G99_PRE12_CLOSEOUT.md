@@ -14,12 +14,13 @@
 - G09의 08 Global Data I18N 후속 후보 defer 결정 closeout 완료
 - G10의 09 Product Analytics 후속 후보 defer 결정 closeout 완료
 - G11의 10 Mobile PWA Field Use 후속 후보와 문서/코드 정합성 closeout 완료
+- G12의 11 Admin Operation 후속 후보와 문서/코드 정합성 closeout 완료
 
 ## 2. 포함 범위
 
 - `README.md` 상태 갱신
 - `COMMON/CANDIDATE-MATRIX.md` 상태 갱신
-- G06~G11 문서 closeout 결과 반영
+- G06~G12 문서 closeout 결과 반영
 - 상위 `GLOBAL_B2C_FEATURE_ROADMAP_PLAN` 문서에 closeout 반영
 - `NEXT_BACKEND_API_BACKLOG_PLAN`, `USER_WEB_PRODUCTIZATION_GAP_PLAN`에 필요한 요약 반영 여부 판단
 - 12 착수 전 남은 보류 목록 확정
@@ -40,3 +41,4 @@
 - 08 Global Data I18N 완료 범위와 08 밖의 market locale/global data/money/address/auth polish 후보가 분리되어 남는다.
 - 09 Product Analytics 완료 범위와 09 밖의 account deletion 실제 처리, 세부 event, 외부 provider, attribution/experiment, PWA/native 후보가 분리되어 남는다.
 - 10 Mobile PWA Field Use 완료 범위와 10 밖의 PWA/offline/native, generic ExportJob, 문서 체크리스트/architecture 정합성 후보가 분리되어 남는다.
+- 11 Admin Operation 완료 범위와 11 밖의 Admin 문서 정합성, Admin 직접 Trash 복구/유료 복구/hard delete/purge, export artifact/download, 자동 민감정보 감지 후보가 분리되어 남는다.

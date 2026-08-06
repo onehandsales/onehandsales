@@ -44,6 +44,11 @@
 | PRE12-F30 | PWA/native packaging과 install attribution | 09 후속, 10 완료/제외 | 10은 모바일 브라우저 field-use event와 UX를 완료했지만 PWA install/offline shell/full offline sync, iOS/Android native app, native push/contact/calendar, native install attribution은 완료 범위가 아니었다. | post-12-seed / 별도 mobile roadmap | 10을 재오픈하지 않고 mobile roadmap에서 PWA/offline/native packaging, native bridge, install attribution 계약을 만든다. |
 | PRE12-F31 | 10 Mobile Field Use 문서 체크리스트 정합성 | 10 재대조 | 10 `README`, `GOAL-COMPLETION-CHECKLIST`, G07 closeout과 실제 BE/FE 코드는 완료를 가리킨다. 하지만 `10/FE-TODO/USER-WEB-TODO.md`의 G03~G06과 `10/BE-TODO/API-TODO.md`의 G03/G05/G06 구현 체크박스가 미완료로 남아 있다. | pre-12-doc-cleanup | 10을 기능 미완성으로 재오픈하지 않는다. 문서 체크리스트만 실제 완료 상태와 맞춘다. |
 | PRE12-F32 | User Web route/architecture 문서 정합성 | 10 재대조, 실제 FE router | 실제 `FE/user-web/src/app/router/router.tsx`에는 `/app/notifications` route가 활성이고 `/app/export`만 `/app`으로 redirect된다. `FE/ARCHITECTURE.md`와 `FE/user-web/ARCHITECTURE.md`는 `/app/notifications`도 redirect라고 적고 있어 stale이다. | pre-12-doc-cleanup | 실제 route 기준으로 architecture 문서를 정정한다. 문서에 맞추기 위해 `/app/notifications`를 숨기지 않는다. |
+| PRE12-F33 | 11 Admin Operation 문서 체크리스트/goal index 정합성 | 11 재대조 | 11 `README`, G10 closeout, 개별 goal spec, 실제 BE/FE 코드는 완료를 가리킨다. 하지만 `11/COMMON/GOAL-COMPLETION-CHECKLIST`, `11/COMMON/GOAL-SPECS/README`, `11/BE-TODO`, `11/FE-TODO`는 planning/미체크 상태가 일부 남아 있다. | pre-12-doc-cleanup | 11을 기능 미완성으로 재오픈하지 않는다. 문서 체크리스트와 goal index를 실제 완료 상태와 맞춘다. |
+| PRE12-F34 | Admin Web architecture 문서 정합성 | 11 재대조, 실제 Admin Web router | 실제 `FE/admin-web/src/app/router/router.tsx`에는 11 Admin 운영 route가 활성화되어 있다. `/subscriptions`, `/organizations`, `/support`는 redirect이고 메뉴에 billing/subscription은 없다. `FE/admin-web/ARCHITECTURE.md`는 대부분 redirect와 `/admin/api/me`만 연동이라고 적고 있어 stale이다. | pre-12-doc-cleanup | 실제 Admin route/API 기준으로 architecture 문서를 정정한다. 문서에 맞추기 위해 Admin route를 숨기지 않는다. |
+| PRE12-F35 | Admin 직접 Trash 복구 실행/유료 복구/Trash hard delete/purge | NEXT/USER gap, 11 제외 | 11은 User self-restore, 만료 row 유지, User 복구 문의, Admin recovery queue까지 완료했다. Admin restore mutation, paid recovery 결제, Trash hard delete/purge는 없다. | Question / 정책 및 billing 필요 | recovery policy, 결제/환불 영향, private memo/redaction, audit, rollback 기준이 확정되기 전 구현 금지. 12 Billing 이후 별도 recovery/ops goal로 판단한다. |
+| PRE12-F36 | User data export artifact 생성/download endpoint | 11 G08, USER_WEB export gap, `PRE12-F09` 연결 | 11은 `UserDataExportRequest` 요청/상태 조회와 Admin queue를 구현했다. 실제 artifact 생성 processor, storage signed URL provider, download controller는 없다. 응답 mapper는 artifact가 준비된 경우의 `downloadUrl`만 표현한다. | post-12-seed / `PRE12-F09` 연결 | ExportJob/file TTL/ownership/audit/Admin queue 계약과 함께 재검토한다. post-12 전에는 download endpoint나 artifact processor를 열지 않는다. |
+| PRE12-F37 | 자동 민감정보 감지 | NEXT_BACKEND 잔여, Global coverage | 11은 masking, raw access reason, audit/sensitive log를 완료했지만 자동 PII/sensitive detection은 구현하지 않았다. `GLOBAL` coverage에는 후속 별도 결정으로 남아 있다. | defer / 정책 필요 | 보안/data governance, 오탐/누락 처리, raw access audit, 사용자 권리와 retention 기준 확정 전 구현 금지. |
 
 ## 3. 06과 직접 충돌하는 후보
 
@@ -105,7 +110,19 @@
 | 10 문서 체크리스트 | 10 README/G07 closeout/코드 기준 완료 | FE/BE TODO 미체크를 근거로 10 기능을 재구현 |
 | User Web route architecture | 실제 `/app/notifications` 활성, `/app/export` redirect | stale architecture 문서에 맞추기 위해 `/app/notifications`를 숨김 route로 되돌리기 |
 
-## 8. 관련 문서
+## 8. 11과 직접 충돌하는 후보
+
+아래 후보는 11 Admin Operation 완료 범위를 넓히지 않고 PRE12 후보 또는 문서 정리 후보로만 남긴다.
+
+| 후보 | 11에서 완료된 것 | 11/PRE12에서 금지 |
+| --- | --- | --- |
+| Admin 문서 체크리스트 | 11 README/G10 closeout/개별 goal spec/실제 코드 기준 완료 | stale checklist나 planning status를 근거로 11 기능 재구현 |
+| Admin Web architecture | 실제 11 Admin route/API 활성, `/subscriptions` redirect | stale architecture 문서에 맞춰 실제 Admin route/API를 숨기거나 되돌리기 |
+| Admin 직접 Trash 복구/유료 복구/hard delete/purge | User self-restore, 만료 row 유지, User 복구 문의, Admin recovery queue | Admin restore mutation, paid recovery payment, Trash hard delete/purge 추가 |
+| Data export artifact/download | data export request/status/Admin queue | ExportJob/file retention 계약 없이 artifact processor/download endpoint 추가 |
+| 자동 민감정보 감지 | masking, raw access reason, append-only audit/sensitive log | 정책 없이 PII/DLP 자동 탐지 model/processor 추가 |
+
+## 9. 관련 문서
 
 - `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/COMMON/COVERAGE-MATRIX.md`
 - `TODO/NEXT_BACKEND_API_BACKLOG_PLAN/README.md`
@@ -118,5 +135,7 @@
 - `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/10_MOBILE_PWA_FIELD_USE/COMMON/SOURCE-PLAN-COVERAGE.md`
 - `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/11_ADMIN_OPERATION/COMMON/SOURCE-PLAN-COVERAGE.md`
 - `FE/ARCHITECTURE.md`
+- `FE/admin-web/ARCHITECTURE.md`
+- `FE/admin-web/src/app/router/router.tsx`
 - `FE/user-web/ARCHITECTURE.md`
 - `FE/user-web/src/app/router/router.tsx`

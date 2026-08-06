@@ -19,6 +19,7 @@
 | G09 | `G09_08_GLOBAL_DATA_I18N_FOLLOWUP_DEFER_CLOSEOUT.md` | 08 Global Data I18N 후속 후보 defer/closeout |
 | G10 | `G10_09_PRODUCT_ANALYTICS_FOLLOWUP_DEFER_CLOSEOUT.md` | 09 Product Analytics 후속 후보 defer/closeout |
 | G11 | `G11_10_MOBILE_PWA_FIELD_USE_FOLLOWUP_CLOSEOUT.md` | 10 Mobile PWA Field Use 후속 후보와 문서/코드 정합성 closeout |
+| G12 | `G12_11_ADMIN_OPERATION_FOLLOWUP_CLOSEOUT.md` | 11 Admin Operation 후속 후보와 문서/코드 정합성 closeout |
 | G99 | `G99_PRE12_CLOSEOUT.md` | pre-12 재대조 closeout과 상위 문서 반영 |
 
 ## 2. 공통 금지
@@ -33,3 +34,5 @@
 - 09 완료 범위를 넓혀서 account deletion 실제 job, 세부 analytics event, 외부 provider, public/UTM attribution, growth experiment, billing runtime model, PWA/native attribution을 끼워 넣지 않는다.
 - 10 완료 범위를 넓혀서 PWA/offline/native app, `UserDraft`, server draft DB, media/raw 저장, `/app/export`, `/api/exports`를 끼워 넣지 않는다.
 - 10 문서 체크리스트나 FE architecture stale 문서를 기능 미구현 근거로 보지 않는다.
+- 11 완료 범위를 넓혀서 Admin 직접 Trash 복구/유료 복구/hard delete/purge, export artifact/download, 자동 민감정보 감지, Billing Admin을 끼워 넣지 않는다.
+- 11 문서 체크리스트나 Admin Web architecture stale 문서를 기능 미구현 근거로 보지 않는다.

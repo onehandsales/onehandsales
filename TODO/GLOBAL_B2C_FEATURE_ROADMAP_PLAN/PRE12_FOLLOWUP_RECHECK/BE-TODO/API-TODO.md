@@ -21,6 +21,7 @@
 | Global Data I18N | User global settings, Product/Deal currency, Contact KR/US phone, Company KR/US region/address, Import/Export localization, Google/LINE/Apple auth는 08에서 완료됐다. |
 | Product Analytics | `POST /api/analytics/events`, server-side recorder, activation/retention snapshot, AI usage summary, 10 mobile field-use event, 11 Admin analytics overview가 있다. 09는 외부 provider, billing runtime, public attribution, experiment, account deletion 실제 job을 만들지 않았다. |
 | Mobile Field Use | BusinessCard OCR safe failure, 기존 MeetingNote STT draft, 기존 Notification browser push subscription API, 09 analytics collector 재사용으로 10 범위가 완료됐다. 10은 `UserDraft`, `/api/drafts/*`, media/raw 저장 API, PWA/native API, `/api/exports`를 만들지 않았다. |
+| Admin Operation | `/admin/api/*`, AuthGuard/AdminGuard, Admin users/domain/trash/provider/analytics/account-request/audit/system API가 있다. 11은 Admin 직접 Trash 복구 mutation, 유료 복구 결제, Trash hard delete/purge, export artifact/download endpoint, 자동 민감정보 감지를 만들지 않았다. |
 
 ## 3. 구현 금지
 
@@ -54,6 +55,10 @@ G00과 API contract 확정 전에는 아래 Backend 변경을 하지 않는다.
 - `UserDraft`, `/api/drafts/*`, server draft DB API 추가
 - audio/image binary, transcript 전문, provider raw response 저장/조회 API 추가
 - `/api/exports`, `ExportJob` API를 10/PRE12 후속처럼 추가
+- stale 11 문서 체크리스트를 근거로 Admin API 재구현
+- Admin 직접 Trash 복구 mutation, 유료 복구 결제 API, Trash hard delete/purge API 추가
+- data export artifact 생성 processor, signed URL, download endpoint 추가
+- 자동 민감정보 감지/DLP API 또는 processor 추가
 
 2026-08-06 A 결정에 따라 Company/Contact/Product latest summary, generic summary endpoint, record별 상세 timeline은 12 전 API contract 확정 대상으로 올리지 않는다.
 
@@ -62,6 +67,8 @@ G00과 API contract 확정 전에는 아래 Backend 변경을 하지 않는다.
 09 재대조 기준으로 Product Analytics foundation은 완료다. account deletion 실제 처리, Notification/Calendar/follow-up 세부 analytics event, 외부 provider forwarding, public/UTM attribution, growth experiment, billing usage source-of-truth, PWA/native attribution은 09 미완성이 아니라 PRE12 후속 후보 또는 12 이후 계획으로 둔다.
 
 10 재대조 기준으로 Mobile Field Use Backend/API 범위는 완료다. `10/BE-TODO/API-TODO.md`의 G03/G05/G06 미체크는 기능 미구현이 아니라 문서 체크리스트 정리 대상이다. `/api/exports`와 `ExportJob`은 03/11 후속 `PRE12-F09`로만 본다.
+
+11 재대조 기준으로 Admin Operation Backend/API 범위는 완료다. `11/COMMON/GOAL-COMPLETION-CHECKLIST`, `11/COMMON/GOAL-SPECS/README`, `11/BE-TODO/API-TODO.md`의 planning/미체크 상태는 기능 미구현이 아니라 문서 체크리스트 정리 대상이다. Admin 직접 Trash 복구/유료 복구/hard delete/purge, data export artifact/download, 자동 민감정보 감지는 11 밖의 후속 후보로만 본다.
 
 ## 4. 후보별 Backend 영향
 
@@ -89,6 +96,10 @@ G00과 API contract 확정 전에는 아래 Backend 변경을 하지 않는다.
 | PWA/native packaging과 attribution | manifest/install/offline/full offline sync/native push/contact/calendar/native app install attribution API 필요 여부 결정 | post-12-seed / 별도 mobile roadmap |
 | 10 FE/BE TODO 체크리스트 정합성 | 10 BE TODO의 G03/G05/G06 체크박스를 실제 완료 상태와 맞추는 문서 정리. 새 API 없음 | pre-12-doc-cleanup |
 | generic ExportJob/PDF | BE `ExportJob`/`/api/exports`는 현재 없음. FE 잔여 코드가 있어도 post-12 전 API를 열지 않음 | post-12-seed |
+| 11 Admin 문서 체크리스트 정합성 | 11 BE/API TODO와 goal index를 실제 완료 상태와 맞추는 문서 정리. 새 API 없음 | pre-12-doc-cleanup |
+| Admin 직접 Trash 복구/유료 복구/hard delete/purge | Admin restore mutation, payment recovery API, purge/hard delete API 기준 필요 | Question / 정책 및 billing 필요 |
+| User data export artifact/download | artifact 생성 processor, storage signed URL, download controller, file TTL/ownership/audit 기준 필요 | post-12-seed / `PRE12-F09` 연결 |
+| 자동 민감정보 감지 | PII/DLP detection 위치, 오탐/누락 처리, audit/redaction 기준 필요 | defer / 정책 필요 |
 
 ## 5. 권장 검색 명령
 
@@ -100,18 +111,21 @@ rg -n "SUPPORTED_LOCALES|SUPPORTED_COUNTRY_CODES|SUPPORTED_CURRENCY_CODES|SUPPOR
 rg -n "ExternalAuthProvider|OAuthProvider|normalizeProvider" BE\src\modules\auth BE\src\shared -g "*.ts"
 rg -n "ProductAnalyticsEvent|PRODUCT_ANALYTICS_CLIENT_EVENT_NAMES|PRODUCT_ANALYTICS_SERVER_EVENT_NAMES|RESERVED_PRODUCT_ANALYTICS_BILLING_EVENT_NAMES" BE\src\modules\analytics BE\prisma\schema.prisma
 rg -n "AccountDeletionRequest|scheduledDeletionAt|user\.delete|account deletion" BE\src\modules BE\prisma\schema.prisma
+rg -n "@Controller\(|@UseGuards\(|data-export-requests/.*/download|TrashRecoveryRequest|AdminOperationCheckRun" BE\src\modules\admin-operation BE\src\modules\account-request BE\src\modules\trash BE\prisma\schema.prisma
 ```
 
 ## 6. 관련 문서
 
 - `../COMMON/API-SPEC/README.md`
 - `../COMMON/CANDIDATE-MATRIX.md`
+- `../COMMON/GOAL-SPECS/G12_11_ADMIN_OPERATION_FOLLOWUP_CLOSEOUT.md`
 - `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/08_GLOBAL_DATA_I18N/BE-TODO/API-TODO.md`
 - `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/08_GLOBAL_DATA_I18N/COMMON/API-SPEC/README.md`
 - `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/09_PRODUCT_ANALYTICS/BE-TODO/API-TODO.md`
 - `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/09_PRODUCT_ANALYTICS/COMMON/API-SPEC/AI_USAGE_ANALYTICS_CONTRACT.md`
 - `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/10_MOBILE_PWA_FIELD_USE/COMMON/SOURCE-PLAN-COVERAGE.md`
 - `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/11_ADMIN_OPERATION/BE-TODO/API-TODO.md`
+- `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/11_ADMIN_OPERATION/COMMON/GOAL-SPECS/G10_QA_DOCUMENT_CLOSEOUT.md`
 - `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/CONVENTION/API_SPEC.md`
 - `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/CONVENTION/TRANSACTION.md`
 - `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/CONVENTION/OBSERVABILITY.md`

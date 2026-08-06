@@ -22,6 +22,7 @@
 | Global Data I18N | `/app` `ko-KR/en`, Settings global profile, Product/Deal currency, Contact KR/US phone, Company KR/US region/address, Import/Export localization, Google/LINE/Apple auth는 08 범위로 완료됐다. |
 | Product Analytics | User Web analytics helper, `/app` route view hook, mobile field-use client event, `VITE_PRODUCT_ANALYTICS_ENABLED` gate가 있다. analytics 실패는 사용자-facing UI로 표시하지 않는다. |
 | Mobile Field Use | BusinessCard capture/OCR safe failure, MeetingNote recording/STT fallback, FE local draft 24시간 TTL, `/app/notifications` browser push permission UX, mobile field analytics는 10 범위로 완료됐다. `/app/export`는 `/app`으로 redirect된다. |
+| Admin Operation 영향 | `/app/trash` 만료 row/복구 문의와 `/app/settings` account deletion/data export request UI는 11에서 완료됐다. User Web은 `/admin/api/*`를 호출하지 않는다. |
 
 ## 3. 구현 금지
 
@@ -54,6 +55,9 @@ G00과 API contract 확정 전에는 아래 User Web 변경을 하지 않는다.
 - `UserDraft`, server draft DB, audio/image binary, transcript/provider raw 저장 UX 추가
 - FE에 남은 `ExportScreen`/`/api/exports` 잔여 코드를 `/app/export` 활성 route로 연결
 - stale FE architecture 문서에 맞추기 위해 `/app/notifications`를 redirect로 되돌림
+- Admin 직접 Trash 복구/유료 복구/hard delete/purge UI를 User Web에서 우회 표시
+- data export artifact 생성/download UI를 실제 file job/download contract 없이 활성화
+- 자동 민감정보 감지 결과나 raw access 상태를 User Web에 표시
 
 2026-08-06 A 결정에 따라 Company/Contact/Product latest summary, generic summary endpoint, record별 상세 timeline은 12 전 User Web 작업으로 올리지 않는다. UX/UI 전체 polish는 별도 전면 유지보수 계획에서 다룬다.
 
@@ -62,6 +66,8 @@ G00과 API contract 확정 전에는 아래 User Web 변경을 하지 않는다.
 09 재대조 기준으로 Product Analytics User Web foundation은 완료다. 신규 사용자-facing analytics 화면, external provider SDK, billing/paywall/churn UI, public attribution, PWA/native install flow는 09 미완성이 아니라 PRE12 후속 후보 또는 12 이후 계획으로 둔다.
 
 10 재대조 기준으로 Mobile Field Use User Web 범위는 완료다. `10/FE-TODO/USER-WEB-TODO.md`의 G03~G06 미체크는 기능 미구현이 아니라 문서 체크리스트 정리 대상이며, `FE/ARCHITECTURE.md`와 `FE/user-web/ARCHITECTURE.md`의 `/app/notifications` stale 설명은 실제 router 기준으로 정정한다.
+
+11 재대조 기준으로 User Web 영향 범위는 `/app/trash` 만료 row/복구 문의와 `/app/settings` account deletion/data export request UI까지 완료다. 실제 account deletion hard delete/anonymization, data export artifact/download, Admin 직접 Trash 복구/유료 복구/hard delete/purge, 자동 민감정보 감지는 11 미완성이 아니라 정책/ExportJob/Billing 이후 후속 후보로 둔다.
 
 ## 4. 후보별 FE 영향
 
@@ -92,6 +98,9 @@ G00과 API contract 확정 전에는 아래 User Web 변경을 하지 않는다.
 | 10 FE/BE TODO 체크리스트 정합성 | 10 FE TODO의 G03~G06 체크박스를 실제 완료 상태와 맞추는 문서 정리 | pre-12-doc-cleanup |
 | User Web route/architecture 문서 정합성 | 실제 router 기준 `/app/notifications` 활성, `/app/export` redirect 상태를 architecture 문서에 반영 | pre-12-doc-cleanup |
 | FE generic ExportJob 잔여 코드 | `ExportScreen`, `/api/exports` client/hook/type을 post-12 전 dead code로 둘지 정리/주석화/삭제할지 판단 | post-12-seed |
+| 11 Admin/User 영향 문서 정합성 | 11 User Web 영향 문서와 실제 `/app/trash`, `/app/settings`, `/admin/api/*` 차단 기준을 맞추는 문서 정리 | pre-12-doc-cleanup |
+| User data export artifact/download | export request status UI 이후 실제 download 가능 상태, 만료, 실패 UX 기준 필요 | post-12-seed / `PRE12-F09` 연결 |
+| Admin 직접 Trash 복구/유료 복구/hard delete/purge | User Web에서는 요청/안내 UX만 가능하다. 실행/결제/삭제 정책은 별도 결정 필요 | Question / 정책 및 billing 필요 |
 
 ## 5. UX 기준
 
@@ -108,6 +117,8 @@ G00과 API contract 확정 전에는 아래 User Web 변경을 하지 않는다.
 - account deletion 실제 처리와 billing/paywall/churn은 12/정책 결정 전 표시하지 않는다.
 - `/app/notifications`는 실제 구현된 route로 보고, stale 문서에 맞춰 숨기지 않는다.
 - `/app/export`는 post-12 ExportJob 계약 전까지 활성화하지 않는다.
+- data export download link는 실제 artifact/download contract 전까지 사용자에게 완료 상태로 노출하지 않는다.
+- Trash 유료 복구나 Admin 직접 복구 실행을 User Web에서 결제/버튼 흐름으로 암시하지 않는다.
 
 ## 6. 관련 문서
 
@@ -115,8 +126,10 @@ G00과 API contract 확정 전에는 아래 User Web 변경을 하지 않는다.
 - `AGENT/SOFTWARE_AGENT/FRONT_AGENT/ARCHITECTURE/FRONTEND_USER_WEB.md`
 - `AGENT/SOFTWARE_AGENT/FRONT_AGENT/CONVENTION/FRONTEND_USER_WEB.md`
 - `../COMMON/CANDIDATE-MATRIX.md`
+- `../COMMON/GOAL-SPECS/G12_11_ADMIN_OPERATION_FOLLOWUP_CLOSEOUT.md`
 - `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/08_GLOBAL_DATA_I18N/FE-TODO/USER-WEB-TODO.md`
 - `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/08_GLOBAL_DATA_I18N/COMMON/USER-FLOW.md`
 - `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/09_PRODUCT_ANALYTICS/FE-TODO/USER-WEB-TODO.md`
 - `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/10_MOBILE_PWA_FIELD_USE/FE-TODO/USER-WEB-TODO.md`
 - `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/11_ADMIN_OPERATION/FE-TODO/USER-WEB-TODO.md`
+- `FE/user-web/src/lib/api-client.ts`

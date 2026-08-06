@@ -20,6 +20,7 @@
 | 08 작업 경계 설정 | `/app` 기본 i18n/global data/auth provider 완료 범위와 시장/국가/통화/auth 확장 후보를 분리한다. |
 | 09 작업 경계 설정 | Product Analytics foundation 완료 범위와 account deletion 실제 처리, 세부 event, 외부 provider, attribution/experiment, PWA/native 후보를 분리한다. |
 | 10 작업 경계 설정 | mobile browser field-use 완료 범위와 PWA/offline/native, generic ExportJob, 문서 체크리스트/architecture 정합성 후보를 분리한다. |
+| 11 작업 경계 설정 | Admin Operation 완료 범위와 Admin 문서 정합성, Admin 직접 Trash 복구/유료 복구/hard delete/purge, export artifact/download, 자동 민감정보 감지 후보를 분리한다. |
 | 후보 상태 분류 | `done`, `pre-12-follow-up-needed`, `pre-12-doc-cleanup`, `post-12-seed`, `billing-blocked`, `Question`, `defer` 중 하나로 분류한다. |
 | 구현 전 계약 요구 | API/DB/FE 변경 후보는 API contract와 DB 영향 문서를 먼저 확정하도록 한다. |
 
@@ -42,6 +43,8 @@
 | 09 analytics/growth/trust 확장 pre-12 구현 | account deletion 실제 job, 세부 event taxonomy, 외부 provider forwarding, public/UTM attribution, growth experiment, PWA/native attribution은 09 완료 범위를 넓히지 않는다. |
 | 10 Mobile PWA Field Use 구현 재개 | 10은 mobile browser field-use 기준으로 완료됐다. PWA/offline/native, server draft DB, media/raw 저장, `/app/export`/`/api/exports`는 10 완료 범위가 아니다. |
 | 10 mobile/PWA 확장 pre-12 구현 | PWA install/offline shell/full offline sync, native app, native push/contact/calendar, native install attribution은 10 완료 범위를 넓히지 않는다. |
+| 11 Admin Operation 구현 재개 | 11은 최소 Admin 운영 API/화면과 audit/redaction 기준으로 완료됐다. 문서 stale이나 후속 후보를 근거로 Admin 기능을 재구현하지 않는다. |
+| Admin 직접 Trash 복구/유료 복구/hard delete/purge pre-12 구현 | 11은 User 복구 문의와 Admin queue까지만 완료했다. 복구 실행/과금/삭제 정책은 recovery policy와 12 Billing 이후 판단한다. |
 
 ## 4. 06 작업에 직접 영향을 주는 기준
 
@@ -160,7 +163,34 @@
 - 10 FE/BE TODO 체크리스트 미체크를 근거로 기능을 재구현
 - stale FE architecture 문서에 맞추기 위해 `/app/notifications` route를 숨김 route로 되돌리기
 
-## 10. 상태 분류 기준
+## 10. 11 Admin Operation에 직접 영향을 주는 기준
+
+11에서 완료로 보는 범위:
+
+- `/admin/api/*` AuthGuard/AdminGuard 분리
+- `INITIAL_ADMIN_EMAILS` 기반 Admin bootstrap과 `/admin/api/me`
+- Admin 사용자 목록/상세, 활동 timeline, 도메인 read-only records
+- Admin Trash summary/records와 Trash recovery request queue
+- provider failure safe summary/detail
+- Admin analytics overview
+- account deletion/data export request API와 Admin queue
+- audit log, sensitive raw access reason, append-only sensitive access log
+- system operation gate record API와 Admin Web `/system`
+- User Web `/admin/api/*` 호출 차단
+- provider raw/prompt/token/quota, browser push endpoint/key/userAgent, analytics raw payload, private memo 원문 미노출
+
+11 완료 범위로 다루면 안 되는 범위:
+
+- 11 문서 체크리스트/goal index 미체크를 근거로 기능을 재구현
+- stale Admin Web architecture 문서에 맞춰 실제 Admin route/API를 숨기거나 되돌리기
+- Admin 직접 Trash 복구 mutation, 유료 복구 결제, Trash hard delete/purge 추가
+- Admin 직접 DB migrate/seed/backup/restore shell command 실행
+- 실제 account deletion hard delete/anonymization processor 추가
+- data export artifact 생성 processor, storage signed URL, download endpoint 추가
+- 자동 민감정보 감지/DLP model 또는 processor 추가
+- billing/subscription/plan/payment/invoice/refund/failed payment recovery/Admin Billing 화면/API 추가
+
+## 11. 상태 분류 기준
 
 | 상태 | 의미 |
 | --- | --- |
@@ -172,7 +202,7 @@
 | `Question` | 사용자의 제품 판단 또는 정책 결정이 필요한 항목 |
 | `defer` | 현재 의도적으로 미루는 항목 |
 
-## 11. 관련 문서
+## 12. 관련 문서
 
 - `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/02_NOTIFICATION_REMINDER/README.md`
 - `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/05_AI_WEEKLY_SALES_REPORT/COMMON/GOAL-COMPLETION-CHECKLIST.md`
@@ -188,5 +218,7 @@
 - `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/10_MOBILE_PWA_FIELD_USE/COMMON/SOURCE-PLAN-COVERAGE.md`
 - `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/11_ADMIN_OPERATION/COMMON/SOURCE-PLAN-COVERAGE.md`
 - `FE/ARCHITECTURE.md`
+- `FE/admin-web/ARCHITECTURE.md`
+- `FE/admin-web/src/app/router/router.tsx`
 - `FE/user-web/ARCHITECTURE.md`
 - `FE/user-web/src/app/router/router.tsx`
